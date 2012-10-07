@@ -45,9 +45,10 @@
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
 struct _EDataCalPrivate {
+	GDBusConnection *connection;
 	EGdbusCal *gdbus_object;
-
 	ECalBackend *backend;
+	gchar *object_path;
 
 	GStaticRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
@@ -55,7 +56,9 @@ struct _EDataCalPrivate {
 
 enum {
 	PROP_0,
-	PROP_BACKEND
+	PROP_BACKEND,
+	PROP_CONNECTION,
+	PROP_OBJECT_PATH
 };
 
 static EOperationPool *ops_pool = NULL;
@@ -149,7 +152,16 @@ typedef struct {
 	} d;
 } OperationData;
 
-G_DEFINE_TYPE (EDataCal, e_data_cal, G_TYPE_OBJECT);
+/* Forward Declarations */
+static void	e_data_cal_initable_init	(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EDataCal,
+	e_data_cal,
+	G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_data_cal_initable_init))
 
 /* Function to get a new EDataCalView path, used by get_view below */
 static gchar *
@@ -498,27 +510,6 @@ e_data_cal_create_error_fmt (EDataCalCallStatus status,
 	g_free (custom_msg);
 
 	return error;
-}
-
-/**
- * e_data_cal_register_gdbus_object:
- *
- * Registers GDBus object of this EDataCal.
- *
- * Since: 2.32
- **/
-guint
-e_data_cal_register_gdbus_object (EDataCal *cal,
-                                  GDBusConnection *connection,
-                                  const gchar *object_path,
-                                  GError **error)
-{
-	g_return_val_if_fail (cal != NULL, 0);
-	g_return_val_if_fail (E_IS_DATA_CAL (cal), 0);
-	g_return_val_if_fail (connection != NULL, 0);
-	g_return_val_if_fail (object_path != NULL, 0);
-
-	return e_gdbus_cal_register_object (cal->priv->gdbus_object, connection, object_path, error);
 }
 
 static gboolean
@@ -1532,6 +1523,26 @@ data_cal_set_backend (EDataCal *cal,
 }
 
 static void
+data_cal_set_connection (EDataCal *cal,
+                         GDBusConnection *connection)
+{
+	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
+	g_return_if_fail (cal->priv->connection == NULL);
+
+	cal->priv->connection = g_object_ref (connection);
+}
+
+static void
+data_cal_set_object_path (EDataCal *cal,
+                          const gchar *object_path)
+{
+	g_return_if_fail (object_path != NULL);
+	g_return_if_fail (cal->priv->object_path == NULL);
+
+	cal->priv->object_path = g_strdup (object_path);
+}
+
+static void
 data_cal_set_property (GObject *object,
                        guint property_id,
                        const GValue *value,
@@ -1542,6 +1553,18 @@ data_cal_set_property (GObject *object,
 			data_cal_set_backend (
 				E_DATA_CAL (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_CONNECTION:
+			data_cal_set_connection (
+				E_DATA_CAL (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			data_cal_set_object_path (
+				E_DATA_CAL (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -1561,6 +1584,20 @@ data_cal_get_property (GObject *object,
 				e_data_cal_get_backend (
 				E_DATA_CAL (object)));
 			return;
+
+		case PROP_CONNECTION:
+			g_value_set_object (
+				value,
+				e_data_cal_get_connection (
+				E_DATA_CAL (object)));
+			return;
+
+		case PROP_OBJECT_PATH:
+			g_value_set_string (
+				value,
+				e_data_cal_get_object_path (
+				E_DATA_CAL (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1573,7 +1610,12 @@ data_cal_dispose (GObject *object)
 
 	priv = E_DATA_CAL_GET_PRIVATE (object);
 
-	if (priv->backend) {
+	if (priv->connection != NULL) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
+	}
+
+	if (priv->backend != NULL) {
 		g_object_unref (priv->backend);
 		priv->backend = NULL;
 	}
@@ -1589,6 +1631,8 @@ data_cal_finalize (GObject *object)
 
 	priv = E_DATA_CAL_GET_PRIVATE (object);
 
+	g_free (priv->object_path);
+
 	if (priv->pending_ops) {
 		g_hash_table_destroy (priv->pending_ops);
 		priv->pending_ops = NULL;
@@ -1603,6 +1647,22 @@ data_cal_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_parent_class)->finalize (object);
+}
+
+static gboolean
+data_cal_initable_init (GInitable *initable,
+                        GCancellable *cancellable,
+                        GError **error)
+{
+	EDataCal *cal;
+
+	cal = E_DATA_CAL (initable);
+
+	return e_gdbus_cal_register_object (
+		cal->priv->gdbus_object,
+		cal->priv->connection,
+		cal->priv->object_path,
+		error);
 }
 
 static void
@@ -1630,8 +1690,40 @@ e_data_cal_class_init (EDataCalClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTION,
+		g_param_spec_object (
+			"connection",
+			"Connection",
+			"The GDBusConnection on which to "
+			"export the calendar interface",
+			G_TYPE_DBUS_CONNECTION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path at which to "
+			"export the calendar interface",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
 	if (!ops_pool)
 		ops_pool = e_operation_pool_new (10, operation_thread, NULL);
+}
+
+static void
+e_data_cal_initable_init (GInitableIface *interface)
+{
+	interface->init = data_cal_initable_init;
 }
 
 static void
@@ -1709,19 +1801,90 @@ e_data_cal_init (EDataCal *ecal)
 		G_CALLBACK (impl_Cal_close), ecal);
 }
 
+/**
+ * e_data_cal_new:
+ * @backend: an #ECalBackend
+ * @connection: a #GDBusConnection
+ * @object_path: object path for the D-Bus interface
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #EDataCal and exports the Calendar D-Bus interface
+ * on @connection at @object_path.  The #EDataCal handles incoming remote
+ * method invocations and forwards them to the @backend.  If the Calendar
+ * interface fails to export, the function sets @error and returns %NULL.
+ *
+ * Returns: an #EDataCal, or %NULL on error
+ **/
 EDataCal *
-e_data_cal_new (ECalBackend *backend)
+e_data_cal_new (ECalBackend *backend,
+                GDBusConnection *connection,
+                const gchar *object_path,
+                GError **error)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+	g_return_val_if_fail (object_path != NULL, NULL);
 
-	return g_object_new (E_TYPE_DATA_CAL, "backend", backend, NULL);
+	return g_initable_new (
+		E_TYPE_DATA_CAL, NULL, error,
+		"backend", backend,
+		"connection", connection,
+		"object-path", object_path,
+		NULL);
 }
 
+/**
+ * e_data_cal_get_backend:
+ * @cal: an #EDataCal
+ *
+ * Returns the #ECalBackend to which incoming remote method invocations
+ * are being forwarded.
+ *
+ * Returns: the #ECalBackend
+ **/
 ECalBackend *
 e_data_cal_get_backend (EDataCal *cal)
 {
 	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
 
 	return cal->priv->backend;
+}
+
+/**
+ * e_data_cal_get_connection:
+ * @cal: an #EDataCal
+ *
+ * Returns the #GDBusConnection on which the Calendar D-Bus interface
+ * is exported.
+ *
+ * Returns: the #GDBusConnection
+ *
+ * Since: 3.8
+ **/
+GDBusConnection *
+e_data_cal_get_connection (EDataCal *cal)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
+
+	return cal->priv->connection;
+}
+
+/**
+ * e_data_cal_get_object_path:
+ * @cal: an #EDataCal
+ *
+ * Returns the object path at which the Calendar D-Bus interface is
+ * exported.
+ *
+ * Returns: the object path
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_data_cal_get_object_path (EDataCal *cal)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
+
+	return cal->priv->object_path;
 }
 

@@ -203,7 +203,7 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 	GDBusConnection *connection;
 	ESourceRegistry *registry;
 	ESource *source;
-	gchar *path = NULL;
+	gchar *object_path;
 	const gchar *sender;
 	GList *list;
 	GError *error = NULL;
@@ -262,39 +262,45 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 
 	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
 
-	g_mutex_lock (priv->calendars_lock);
-
 	e_dbus_server_hold (E_DBUS_SERVER (factory));
 
-	path = construct_cal_factory_path ();
-	calendar = e_data_cal_new (E_CAL_BACKEND (backend));
-	g_hash_table_insert (priv->calendars, g_strdup (path), calendar);
-	e_cal_backend_add_client (E_CAL_BACKEND (backend), calendar);
-	e_data_cal_register_gdbus_object (calendar, connection, path, &error);
-	g_object_weak_ref (
-		G_OBJECT (calendar), (GWeakNotify)
-		calendar_freed_cb, factory);
+	object_path = construct_cal_factory_path ();
+
+	calendar = e_data_cal_new (
+		E_CAL_BACKEND (backend),
+		connection, object_path, &error);
+
+	if (calendar != NULL) {
+		g_mutex_lock (priv->calendars_lock);
+		g_hash_table_insert (
+			priv->calendars, g_strdup (object_path), calendar);
+		g_mutex_unlock (priv->calendars_lock);
+
+		e_cal_backend_add_client (E_CAL_BACKEND (backend), calendar);
+
+		g_object_weak_ref (
+			G_OBJECT (calendar), (GWeakNotify)
+			calendar_freed_cb, factory);
+
+		/* Update the hash of open connections. */
+		g_mutex_lock (priv->connections_lock);
+		list = g_hash_table_lookup (priv->connections, sender);
+		list = g_list_prepend (list, calendar);
+		g_hash_table_insert (
+			priv->connections, g_strdup (sender), list);
+		g_mutex_unlock (priv->connections_lock);
+	}
 
 	g_object_unref (backend);
 
-	/* Update the hash of open connections. */
-	g_mutex_lock (priv->connections_lock);
-	list = g_hash_table_lookup (priv->connections, sender);
-	list = g_list_prepend (list, calendar);
-	g_hash_table_insert (priv->connections, g_strdup (sender), list);
-	g_mutex_unlock (priv->connections_lock);
-
-	g_mutex_unlock (priv->calendars_lock);
-
-	g_free (uid);
-
 	e_gdbus_cal_factory_complete_get_cal (
-		object, invocation, path, error);
+		object, invocation, object_path, error);
 
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 
-	g_free (path);
+	g_free (object_path);
+	g_free (uid);
 
 	return TRUE;
 }

@@ -124,14 +124,16 @@ GError *	e_data_cal_create_error_fmt	(EDataCalCallStatus status,
 const gchar *	e_data_cal_status_to_string	(EDataCalCallStatus status);
 
 GType		e_data_cal_get_type		(void) G_GNUC_CONST;
-EDataCal *	e_data_cal_new			(struct _ECalBackend *backend);
-struct _ECalBackend *
-		e_data_cal_get_backend		(EDataCal *cal);
-guint		e_data_cal_register_gdbus_object
-						(EDataCal *cal,
+EDataCal *	e_data_cal_new			(struct _ECalBackend *backend,
 						 GDBusConnection *connection,
 						 const gchar *object_path,
 						 GError **error);
+struct _ECalBackend *
+		e_data_cal_get_backend		(EDataCal *cal);
+GDBusConnection *
+		e_data_cal_get_connection	(EDataCal *cal);
+const gchar *	e_data_cal_get_object_path	(EDataCal *cal);
+
 void		e_data_cal_respond_open		(EDataCal *cal,
 						 guint32 opid,
 						 GError *error);
