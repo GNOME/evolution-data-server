@@ -58,7 +58,6 @@ static EOperationPool *ops_pool = NULL;
 
 typedef enum {
 	OP_OPEN,
-	OP_REMOVE,
 	OP_REFRESH,
 	OP_GET_CONTACT,
 	OP_GET_CONTACTS,
@@ -104,7 +103,6 @@ typedef struct {
 			gchar *prop_value;
 		} sbp;
 
-		/* OP_REMOVE */
 		/* OP_REFRESH */
 		/* OP_CANCEL_ALL */
 		/* OP_CLOSE */
@@ -171,9 +169,6 @@ operation_thread (gpointer data,
 	case OP_REMOVE_CONTACTS:
 		e_book_backend_remove_contacts (backend, op->book, op->id, op->cancellable, op->d.ids);
 		e_util_free_string_slist (op->d.ids);
-		break;
-	case OP_REMOVE:
-		e_book_backend_remove (backend, op->book, op->id, op->cancellable);
 		break;
 	case OP_REFRESH:
 		e_book_backend_refresh (backend, op->book, op->id, op->cancellable);
@@ -497,21 +492,6 @@ impl_Book_open (EGdbusBook *object,
 }
 
 static gboolean
-impl_Book_remove (EGdbusBook *object,
-                  GDBusMethodInvocation *invocation,
-                  EDataBook *book)
-{
-	OperationData *op;
-
-	op = op_new (OP_REMOVE, book);
-
-	e_gdbus_book_complete_remove (book->priv->gdbus_object, invocation, op->id);
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
 impl_Book_refresh (EGdbusBook *object,
                    GDBusMethodInvocation *invocation,
                    EDataBook *book)
@@ -799,24 +779,6 @@ e_data_book_respond_open (EDataBook *book,
 
 	if (error)
 		g_error_free (error);
-}
-
-void
-e_data_book_respond_remove (EDataBook *book,
-                            guint opid,
-                            GError *error)
-{
-	op_complete (book, opid);
-
-	/* Translators: This is prefix to a detailed error message */
-	g_prefix_error (&error, "%s", _("Cannot remove book: "));
-
-	e_gdbus_book_emit_remove_done (book->priv->gdbus_object, opid, error);
-
-	if (error)
-		g_error_free (error);
-	else
-		e_book_backend_set_is_removed (book->priv->backend, TRUE);
 }
 
 /**
@@ -1331,9 +1293,6 @@ e_data_book_init (EDataBook *ebook)
 	g_signal_connect (
 		gdbus_object, "handle-open",
 		G_CALLBACK (impl_Book_open), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-remove",
-		G_CALLBACK (impl_Book_remove), ebook);
 	g_signal_connect (
 		gdbus_object, "handle-refresh",
 		G_CALLBACK (impl_Book_refresh), ebook);

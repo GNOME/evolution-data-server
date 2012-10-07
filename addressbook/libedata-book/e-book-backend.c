@@ -452,33 +452,6 @@ e_book_backend_open (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_remove:
- * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @cancellable: a #GCancellable for the operation
- * @opid: the ID to use for this operation
- *
- * Executes a 'remove' request to remove all of @backend's data,
- * specified by @opid on @book.
- * This might be finished with e_data_book_respond_remove().
- **/
-void
-e_book_backend_remove (EBookBackend *backend,
-                       EDataBook *book,
-                       guint32 opid,
-                       GCancellable *cancellable)
-{
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->remove);
-
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_remove (book, opid, EDB_OPENING_ERROR);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->remove) (backend, book, opid, cancellable);
-}
-
-/**
  * e_book_backend_refresh:
  * @backend: an #EBookBackend
  * @book: an #EDataBook

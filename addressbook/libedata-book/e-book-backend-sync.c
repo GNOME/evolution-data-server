@@ -87,29 +87,6 @@ e_book_backend_sync_create_contacts (EBookBackendSync *backend,
 }
 
 /**
- * e_book_backend_sync_remove:
- * @backend: an #EBookBackendSync
- * @book: an #EDataBook
- * @cancellable: a #GCancellable for the operation
- * @error: #GError to set, when something fails
- *
- * Remove @book's database and storage overhead from the storage
- * medium. This will delete all contacts in @book.
- **/
-void
-e_book_backend_sync_remove (EBookBackendSync *backend,
-                            EDataBook *book,
-                            GCancellable *cancellable,
-                            GError **error)
-{
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->remove_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
-
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->remove_sync) (backend, book, cancellable, error);
-}
-
-/**
  * e_book_backend_sync_refresh:
  * @backend: An EBookBackendSync object.
  * @book: An EDataBook object.
@@ -400,19 +377,6 @@ book_backend_open (EBookBackend *backend,
 }
 
 static void
-book_backend_remove (EBookBackend *backend,
-                     EDataBook *book,
-                     guint32 opid,
-                     GCancellable *cancellable)
-{
-	GError *error = NULL;
-
-	e_book_backend_sync_remove (E_BOOK_BACKEND_SYNC (backend), book, cancellable, &error);
-
-	e_data_book_respond_remove (book, opid, error);
-}
-
-static void
 book_backend_refresh (EBookBackend *backend,
                       EDataBook *book,
                       guint32 opid,
@@ -601,7 +565,6 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *class)
 	EBookBackendClass *backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	backend_class->open			= book_backend_open;
-	backend_class->remove			= book_backend_remove;
 	backend_class->refresh			= book_backend_refresh;
 	backend_class->get_backend_property	= book_backend_get_backend_property;
 	backend_class->set_backend_property	= book_backend_set_backend_property;

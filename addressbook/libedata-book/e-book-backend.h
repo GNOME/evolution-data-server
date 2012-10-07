@@ -175,10 +175,6 @@ struct _EBookBackendClass {
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 gboolean only_if_exists);
-	void		(*remove)		(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable);
 
 	void		(*refresh)		(EBookBackend *backend,
 						 EDataBook *book,
@@ -265,10 +261,6 @@ void		e_book_backend_open		(EBookBackend *backend,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 gboolean only_if_exists);
-void		e_book_backend_remove		(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable);
 void		e_book_backend_refresh		(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,

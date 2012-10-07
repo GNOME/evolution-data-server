@@ -155,9 +155,6 @@ guint		e_data_book_register_gdbus_object
 void		e_data_book_respond_open	(EDataBook *book,
 						 guint32 opid,
 						 GError *error);
-void		e_data_book_respond_remove	(EDataBook *book,
-						 guint32 opid,
-						 GError *error);
 void		e_data_book_respond_refresh	(EDataBook *book,
 						 guint32 opid,
 						 GError *error);

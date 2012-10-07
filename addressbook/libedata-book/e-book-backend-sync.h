@@ -50,10 +50,6 @@ struct _EBookBackendSyncClass {
 						 GCancellable *cancellable,
 						 gboolean only_if_exists,
 						 GError **error);
-	void		(*remove_sync)		(EBookBackendSync *backend,
-						 EDataBook *book,
-						 GCancellable *cancellable,
-						 GError **error);
 	void		(*refresh_sync)		(EBookBackendSync *backend,
 						 EDataBook *book,
 						 GCancellable *cancellable,
@@ -120,10 +116,6 @@ void		e_book_backend_sync_open	(EBookBackendSync *backend,
 						 EDataBook *book,
 						 GCancellable *cancellable,
 						 gboolean only_if_exists,
-						 GError **error);
-void		e_book_backend_sync_remove	(EBookBackendSync *backend,
-						 EDataBook *book,
-						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_backend_sync_refresh	(EBookBackendSync *backend,
 						 EDataBook *book,
