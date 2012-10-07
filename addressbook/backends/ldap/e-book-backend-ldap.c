@@ -4939,12 +4939,12 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 }
 
 static void
-e_book_backend_ldap_start_book_view (EBookBackend *backend,
-                                     EDataBookView *view)
+e_book_backend_ldap_start_view (EBookBackend *backend,
+                                EDataBookView *view)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 
-	d (printf ("start_book_view (%p)\n", view));
+	d (printf ("start_view (%p)\n", view));
 
 	e_book_backend_ldap_search (bl, NULL /* XXX ugh */, view);
 }
@@ -5358,7 +5358,7 @@ start_views (EBookBackend *backend)
 	struct call_data cd;
 
 	cd.backend = backend;
-	cd.func = e_book_backend_ldap_start_book_view;
+	cd.func = e_book_backend_ldap_start_view;
 
 	e_book_backend_foreach_view (backend, call_cb, &cd);
 }
@@ -5736,7 +5736,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	parent_class->get_contact		= e_book_backend_ldap_get_contact;
 	parent_class->get_contact_list		= e_book_backend_ldap_get_contact_list;
 	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;
-	parent_class->start_book_view		= e_book_backend_ldap_start_book_view;
+	parent_class->start_view		= e_book_backend_ldap_start_view;
 	parent_class->stop_book_view		= e_book_backend_ldap_stop_book_view;
 
 	object_class->finalize = e_book_backend_ldap_finalize;

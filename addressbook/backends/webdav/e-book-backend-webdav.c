@@ -1064,8 +1064,8 @@ book_view_thread (gpointer data)
 }
 
 static void
-e_book_backend_webdav_start_book_view (EBookBackend *backend,
-                                      EDataBookView *book_view)
+e_book_backend_webdav_start_view (EBookBackend *backend,
+                                  EDataBookView *book_view)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1476,7 +1476,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	backend_class->get_contact		= e_book_backend_webdav_get_contact;
 	backend_class->get_contact_list		= e_book_backend_webdav_get_contact_list;
 	backend_class->get_contact_list_uids	= e_book_backend_webdav_get_contact_list_uids;
-	backend_class->start_book_view		= e_book_backend_webdav_start_book_view;
+	backend_class->start_view		= e_book_backend_webdav_start_view;
 	backend_class->stop_book_view		= e_book_backend_webdav_stop_book_view;
 
 	object_class->dispose			= e_book_backend_webdav_dispose;

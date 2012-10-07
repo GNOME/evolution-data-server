@@ -685,7 +685,7 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_start_book_view:
+ * e_book_backend_start_view:
  * @backend: an #EBookBackend
  * @view: the #EDataBookView to start
  *
@@ -693,14 +693,18 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
  * matching contacts.
  **/
 void
-e_book_backend_start_book_view (EBookBackend *backend,
-                                EDataBookView *view)
+e_book_backend_start_view (EBookBackend *backend,
+                           EDataBookView *view)
 {
+	EBookBackendClass *class;
+
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view) (backend, view);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->start_view);
+
+	class->start_view (backend, view);
 }
 
 /**

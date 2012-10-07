@@ -645,7 +645,7 @@ bookview_start_thread (gpointer data)
 	EDataBookView *book_view = data;
 
 	if (book_view->priv->running)
-		e_book_backend_start_book_view (book_view->priv->backend, book_view);
+		e_book_backend_start_view (book_view->priv->backend, book_view);
 	g_object_unref (book_view);
 
 	return NULL;

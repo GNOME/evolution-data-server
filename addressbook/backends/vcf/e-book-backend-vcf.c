@@ -534,8 +534,8 @@ book_view_thread (gpointer data)
 }
 
 static void
-e_book_backend_vcf_start_book_view (EBookBackend *backend,
-                                    EDataBookView *book_view)
+e_book_backend_vcf_start_view (EBookBackend *backend,
+                               EDataBookView *book_view)
 {
 	VCFBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_VCF (backend));
 
@@ -545,7 +545,7 @@ e_book_backend_vcf_start_book_view (EBookBackend *backend,
 	e_flag_wait (closure->running);
 
 	/* at this point we know the book view thread is actually running */
-	d (printf ("returning from start_book_view\n"));
+	d (printf ("returning from start_view\n"));
 
 }
 
@@ -743,7 +743,7 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *class)
 	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
-	backend_class->start_book_view		= e_book_backend_vcf_start_book_view;
+	backend_class->start_view		= e_book_backend_vcf_start_view;
 	backend_class->stop_book_view		= e_book_backend_vcf_stop_book_view;
 
 	sync_class->open_sync			= e_book_backend_vcf_open;

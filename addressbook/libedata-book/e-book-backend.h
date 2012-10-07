@@ -212,7 +212,7 @@ struct _EBookBackendClass {
 						 GCancellable *cancellable,
 						 const gchar *query);
 
-	void		(*start_book_view)	(EBookBackend *backend,
+	void		(*start_view)		(EBookBackend *backend,
 						 EDataBookView *book_view);
 	void		(*stop_book_view)	(EBookBackend *backend,
 						 EDataBookView *book_view);
@@ -297,7 +297,7 @@ void		e_book_backend_get_contact_list_uids
 						 GCancellable *cancellable,
 						 const gchar *query);
 
-void		e_book_backend_start_book_view	(EBookBackend *backend,
+void		e_book_backend_start_view	(EBookBackend *backend,
 						 EDataBookView *view);
 void		e_book_backend_stop_book_view	(EBookBackend *backend,
 						 EDataBookView *view);

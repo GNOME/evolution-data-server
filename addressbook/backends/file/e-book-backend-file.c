@@ -1666,8 +1666,8 @@ book_view_thread (gpointer data)
 }
 
 static void
-e_book_backend_file_start_book_view (EBookBackend *backend,
-                                     EDataBookView *book_view)
+e_book_backend_file_start_view (EBookBackend *backend,
+                                EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
 
@@ -1677,7 +1677,7 @@ e_book_backend_file_start_book_view (EBookBackend *backend,
 	e_flag_wait (closure->running);
 
 	/* at this point we know the book view thread is actually running */
-	d (printf ("returning from start_book_view\n"));
+	d (printf ("returning from start_view\n"));
 }
 
 static void
@@ -2362,7 +2362,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
-	backend_class->start_book_view		= e_book_backend_file_start_book_view;
+	backend_class->start_view		= e_book_backend_file_start_view;
 	backend_class->stop_book_view		= e_book_backend_file_stop_book_view;
 	backend_class->sync			= e_book_backend_file_sync;
 	backend_class->notify_update            = e_book_backend_file_notify_update;
