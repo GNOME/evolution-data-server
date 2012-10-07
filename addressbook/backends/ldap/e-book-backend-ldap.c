@@ -453,61 +453,39 @@ can_browse (EBookBackend *backend)
 	return e_source_ldap_get_can_browse (extension);
 }
 
-static gboolean
-pick_view_cb (EDataBookView *view,
-              gpointer user_data)
-{
-	EDataBookView **pick = user_data;
-
-	g_return_val_if_fail (user_data != NULL, FALSE);
-
-	/* just always use the first book view */
-	*pick = view;
-
-	return view == NULL;
-}
-
 static EDataBookView *
 find_book_view (EBookBackendLDAP *bl)
 {
-	EDataBookView *pick = NULL;
+	EDataBookView *view = NULL;
+	GList *list;
 
-	e_book_backend_foreach_view (E_BOOK_BACKEND (bl), pick_view_cb, &pick);
+	list = e_book_backend_list_views (E_BOOK_BACKEND (bl));
 
-	return pick;
-}
+	if (list != NULL) {
+		/* FIXME Drop the EDataBookView reference for backward-
+		 *       compatibility, but at some point the LDAP backend
+		 *       should learn to expect a new reference from this
+		 *       function and clean up after itself.  Currently
+		 *       this is not thread-safe. */
+		view = E_DATA_BOOK_VIEW (list->data);
+		g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	}
 
-struct check_data
-{
-	EDataBookView *to_find;
-	gboolean found;
-};
-
-static gboolean
-check_view_cb (EDataBookView *view,
-               gpointer user_data)
-{
-	struct check_data *cd = user_data;
-
-	g_return_val_if_fail (user_data != NULL, FALSE);
-
-	cd->found = view == cd->to_find;
-
-	return !cd->found;
+	return view;
 }
 
 static gboolean
 book_view_is_valid (EBookBackendLDAP *bl,
                     EDataBookView *book_view)
 {
-	struct check_data cd;
+	GList *list;
+	gboolean found;
 
-	cd.to_find = book_view;
-	cd.found = FALSE;
+	list = e_book_backend_list_views (E_BOOK_BACKEND (bl));
+	found = (g_list_find (list, book_view) != NULL);
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
-	e_book_backend_foreach_view (E_BOOK_BACKEND (bl), check_view_cb, &cd);
-
-	return cd.found;
+	return found;
 }
 
 static void
