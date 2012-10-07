@@ -49,10 +49,10 @@ struct _ECalBackendPrivate {
 
 	/* List of Cal objects */
 	GMutex *clients_mutex;
-	GSList *clients;
+	GList *clients;
 
 	GMutex *views_mutex;
-	GSList *views;
+	GList *views;
 
 	/* ECalBackend to pass notifications on to */
 	ECalBackend *notification_proxy;
@@ -252,9 +252,9 @@ cal_backend_finalize (GObject *object)
 
 	g_assert (priv->clients == NULL);
 
-	g_slist_free (priv->views);
+	g_list_free (priv->views);
 	/* should be NULL, anyway */
-	g_slist_free (priv->clients);
+	g_list_free (priv->clients);
 
 	g_mutex_free (priv->clients_mutex);
 	g_mutex_free (priv->views_mutex);
@@ -666,7 +666,7 @@ e_cal_backend_add_client (ECalBackend *backend,
 	g_object_weak_ref (G_OBJECT (cal), cal_destroy_cb, backend);
 
 	g_mutex_lock (priv->clients_mutex);
-	priv->clients = g_slist_append (priv->clients, cal);
+	priv->clients = g_list_append (priv->clients, cal);
 	g_mutex_unlock (priv->clients_mutex);
 }
 
@@ -686,7 +686,7 @@ e_cal_backend_remove_client_private (ECalBackend *backend,
 
 	/* Disconnect */
 	g_mutex_lock (backend->priv->clients_mutex);
-	backend->priv->clients = g_slist_remove (backend->priv->clients, cal);
+	backend->priv->clients = g_list_remove (backend->priv->clients, cal);
 
 	if (backend->priv->clients == NULL)
 		backend->priv->opening = FALSE;
@@ -730,7 +730,7 @@ e_cal_backend_add_view (ECalBackend *backend,
 
 	g_mutex_lock (backend->priv->views_mutex);
 
-	backend->priv->views = g_slist_append (backend->priv->views, view);
+	backend->priv->views = g_list_append (backend->priv->views, view);
 
 	g_mutex_unlock (backend->priv->views_mutex);
 }
@@ -753,7 +753,7 @@ e_cal_backend_remove_view (ECalBackend *backend,
 
 	g_mutex_lock (backend->priv->views_mutex);
 
-	backend->priv->views = g_slist_remove (backend->priv->views, view);
+	backend->priv->views = g_list_remove (backend->priv->views, view);
 
 	g_mutex_unlock (backend->priv->views_mutex);
 }
@@ -775,7 +775,7 @@ e_cal_backend_foreach_view (ECalBackend *backend,
                                                   gpointer user_data),
                             gpointer user_data)
 {
-	const GSList *views;
+	GList *views;
 	EDataCalView *view;
 	gboolean stop = FALSE;
 
@@ -1603,7 +1603,7 @@ e_cal_backend_notify_error (ECalBackend *backend,
                             const gchar *message)
 {
 	ECalBackendPrivate *priv = backend->priv;
-	GSList *l;
+	GList *l;
 
 	if (priv->notification_proxy) {
 		e_cal_backend_notify_error (priv->notification_proxy, message);
@@ -1631,7 +1631,7 @@ e_cal_backend_notify_readonly (ECalBackend *backend,
                                gboolean is_readonly)
 {
 	ECalBackendPrivate *priv;
-	GSList *l;
+	GList *l;
 
 	priv = backend->priv;
 	priv->readonly = is_readonly;
@@ -1664,7 +1664,7 @@ e_cal_backend_notify_online (ECalBackend *backend,
                              gboolean is_online)
 {
 	ECalBackendPrivate *priv;
-	GSList *clients;
+	GList *clients;
 
 	priv = backend->priv;
 
@@ -1675,7 +1675,7 @@ e_cal_backend_notify_online (ECalBackend *backend,
 
 	g_mutex_lock (priv->clients_mutex);
 
-	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
+	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_cal_report_online (E_DATA_CAL (clients->data), is_online);
 
 	g_mutex_unlock (priv->clients_mutex);
@@ -1707,7 +1707,7 @@ e_cal_backend_notify_opened (ECalBackend *backend,
                              GError *error)
 {
 	ECalBackendPrivate *priv;
-	GSList *clients;
+	GList *clients;
 
 	priv = backend->priv;
 	g_mutex_lock (priv->clients_mutex);
@@ -1715,7 +1715,7 @@ e_cal_backend_notify_opened (ECalBackend *backend,
 	priv->opening = FALSE;
 	priv->opened = error == NULL;
 
-	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
+	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_cal_report_opened (E_DATA_CAL (clients->data), error);
 
 	g_mutex_unlock (priv->clients_mutex);
@@ -1740,7 +1740,7 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
                                        const gchar *prop_value)
 {
 	ECalBackendPrivate *priv;
-	GSList *clients;
+	GList *clients;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (prop_name != NULL);
@@ -1750,7 +1750,7 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
 	priv = backend->priv;
 	g_mutex_lock (priv->clients_mutex);
 
-	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
+	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_cal_report_backend_property_changed (E_DATA_CAL (clients->data), prop_name, prop_value);
 
 	g_mutex_unlock (priv->clients_mutex);
