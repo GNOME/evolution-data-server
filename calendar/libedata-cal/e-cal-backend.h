@@ -420,33 +420,6 @@ void		e_cal_backend_notify_component_removed
 						 ECalComponent *old_component,
 						 ECalComponent *new_component);
 
-#ifndef E_CAL_DISABLE_DEPRECATED
-void		e_cal_backend_notify_object_created
-						(ECalBackend *backend,
-						 const gchar *calobj);
-void		e_cal_backend_notify_objects_added
-						(ECalBackend *backend,
-						 EDataCalView *view,
-						 const GSList *objects);
-void		e_cal_backend_notify_object_modified
-						(ECalBackend *backend,
-						 const gchar *old_object,
-						 const gchar *object);
-void		e_cal_backend_notify_objects_modified
-						(ECalBackend *backend,
-						 EDataCalView *view,
-						 const GSList *objects);
-void		e_cal_backend_notify_object_removed
-						(ECalBackend *backend,
-						 const ECalComponentId *id,
-						 const gchar *old_object,
-						 const gchar *new_object);
-void		e_cal_backend_notify_objects_removed
-						(ECalBackend *backend,
-						 EDataCalView *view,
-						 const GSList *ids);
-#endif
-
 void		e_cal_backend_notify_error	(ECalBackend *backend,
 						 const gchar *message);
 void		e_cal_backend_notify_readonly	(ECalBackend *backend,
