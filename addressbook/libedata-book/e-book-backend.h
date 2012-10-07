@@ -306,10 +306,6 @@ void		e_book_backend_add_view		(EBookBackend *backend,
 void		e_book_backend_remove_view	(EBookBackend *backend,
 						 EDataBookView *view);
 GList *		e_book_backend_list_views	(EBookBackend *backend);
-void		e_book_backend_foreach_view	(EBookBackend *backend,
-						 gboolean (*callback) (EDataBookView *view,
-						                       gpointer user_data),
-						                       gpointer user_data);
 
 void		e_book_backend_notify_update	(EBookBackend *backend,
 						 const EContact *contact);
@@ -340,6 +336,13 @@ void		e_book_backend_respond_opened	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GError *error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+void		e_book_backend_foreach_view	(EBookBackend *backend,
+						 gboolean (*callback) (EDataBookView *view,
+						                       gpointer user_data),
+						                       gpointer user_data);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

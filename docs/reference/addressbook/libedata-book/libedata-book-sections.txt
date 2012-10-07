@@ -36,7 +36,6 @@ e_book_backend_stop_view
 e_book_backend_add_view
 e_book_backend_remove_view
 e_book_backend_list_views
-e_book_backend_foreach_view
 e_book_backend_notify_update
 e_book_backend_notify_remove
 e_book_backend_notify_complete
@@ -48,6 +47,7 @@ e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
 e_book_backend_respond_opened
+e_book_backend_foreach_view
 <SUBSECTION Standard>
 E_BOOK_BACKEND
 E_IS_BOOK_BACKEND

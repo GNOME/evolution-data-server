@@ -872,6 +872,8 @@ e_book_backend_list_views (EBookBackend *backend)
  * @callback returns %FALSE to stop further processing.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_backend_list_views() instead.
  **/
 void
 e_book_backend_foreach_view (EBookBackend *backend,
