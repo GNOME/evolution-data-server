@@ -22,9 +22,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-23 19:08+0200\n"
-"PO-Revision-Date: 2012-09-23 19:08+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2012-10-05 23:36+0000\n"
+"PO-Revision-Date: 2012-10-07 21:24+0200\n"
 "Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -172,7 +173,7 @@ msgstr "Uso indirizzo email"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
 msgid "Failed to bind using either v3 or v2 binds"
-msgstr ""
+msgstr "Bind non riuscito usando sia i bind v3 che v2"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1090
 msgid "Reconnecting to LDAP server..."
@@ -1231,8 +1232,9 @@ msgid "Calendar doesn't support Free/Busy"
 msgstr "Il calendario non supporta libero/occupato"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
+#, fuzzy
 msgid "Schedule outbox url not found"
-msgstr ""
+msgstr "URL schedule outbox non trovato"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
 msgid "Unexpected result in schedule-response"
@@ -2281,13 +2283,13 @@ msgstr "STARTTLS non supportato"
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Connessione al server IMAP %s in modalità sicura non riuscita: "
 
-#: ../camel/camel-imapx-server.c:3580
+#: ../camel/camel-imapx-server.c:3582
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Il server IMAP %s non supporta l'autenticazione %s"
 
-#: ../camel/camel-imapx-server.c:3591 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3593 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:259
 #: ../camel/providers/pop3/camel-pop3-store.c:587
@@ -2296,13 +2298,13 @@ msgstr "Il server IMAP %s non supporta l'autenticazione %s"
 msgid "No support for %s authentication"
 msgstr "Nessun supporto per l'autenticazione %s"
 
-#: ../camel/camel-imapx-server.c:3610
+#: ../camel/camel-imapx-server.c:3612
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:502
 msgid "Cannot authenticate without a username"
 msgstr "Impossibile effettuare l'autenticazione senza un nome utente"
 
-#: ../camel/camel-imapx-server.c:3619
+#: ../camel/camel-imapx-server.c:3621
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:511
 #: ../camel/providers/pop3/camel-pop3-store.c:512
@@ -2310,98 +2312,98 @@ msgstr "Impossibile effettuare l'autenticazione senza un nome utente"
 msgid "Authentication password not available"
 msgstr "Password di autenticazione non disponibile"
 
-#: ../camel/camel-imapx-server.c:3821
+#: ../camel/camel-imapx-server.c:3823
 msgid "Error fetching message"
 msgstr "Errore nel recuperare il messaggio"
 
-#: ../camel/camel-imapx-server.c:3903
+#: ../camel/camel-imapx-server.c:3905
 msgid "Failed to copy the tmp file"
 msgstr "Copia del file tmp non riuscito"
 
-#: ../camel/camel-imapx-server.c:3917
+#: ../camel/camel-imapx-server.c:3919
 msgid "Failed to close the tmp stream"
 msgstr "Chiusura dello stream tmp non riuscita"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4017
 msgid "Error copying messages"
 msgstr "Errore nel copiare i messaggi"
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4152
 msgid "Error appending message"
 msgstr "Errore nell'accodare il messaggio"
 
-#: ../camel/camel-imapx-server.c:4333
+#: ../camel/camel-imapx-server.c:4335
 msgid "Error fetching message headers"
 msgstr "Errore nel recuperare le intestazioni di messaggio"
 
 # chiesto su #evolution, solo una svista sul termine, è == fetch
-#: ../camel/camel-imapx-server.c:4468
+#: ../camel/camel-imapx-server.c:4470
 msgid "Error retrieving message"
 msgstr "Errore nel recuperare il messaggio"
 
-#: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
+#: ../camel/camel-imapx-server.c:4592 ../camel/camel-imapx-server.c:4785
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Recupero informazioni di indice per nuovi messaggi in «%s»"
 
-#: ../camel/camel-imapx-server.c:4641
+#: ../camel/camel-imapx-server.c:4643
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Scansione per messaggi cambiati in «%s»"
 
-#: ../camel/camel-imapx-server.c:4684
+#: ../camel/camel-imapx-server.c:4686
 msgid "Error fetching new messages"
 msgstr "Errore nel recuperare i nuovi messaggi"
 
-#: ../camel/camel-imapx-server.c:4874
+#: ../camel/camel-imapx-server.c:4876
 msgid "Error while fetching messages"
 msgstr "Errore durante il recupero dei messaggi"
 
-#: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
+#: ../camel/camel-imapx-server.c:4884 ../camel/camel-imapx-server.c:4920
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Recupero informazioni di indice per %d messaggio in «%s»"
 msgstr[1] "Recupero informazioni di indice per %d messaggi in «%s»"
 
-#: ../camel/camel-imapx-server.c:5043 ../camel/camel-imapx-server.c:5079
+#: ../camel/camel-imapx-server.c:5045 ../camel/camel-imapx-server.c:5081
 msgid "Error refreshing folder"
 msgstr "Errore nell'aggiornare la cartella"
 
 # prima era "ripulire"
-#: ../camel/camel-imapx-server.c:5172
+#: ../camel/camel-imapx-server.c:5174
 msgid "Error expunging message"
 msgstr "Errore nel rimuovere il messaggio"
 
-#: ../camel/camel-imapx-server.c:5269
+#: ../camel/camel-imapx-server.c:5271
 msgid "Error fetching folders"
 msgstr "Errore nel recuperare le cartelle"
 
-#: ../camel/camel-imapx-server.c:5348
+#: ../camel/camel-imapx-server.c:5350
 msgid "Error subscribing to folder"
 msgstr "Errore nell'eseguire la sottoscrizione alla cartella"
 
-#: ../camel/camel-imapx-server.c:5409
+#: ../camel/camel-imapx-server.c:5411
 msgid "Error creating folder"
 msgstr "Errore nel creare la cartella"
 
-#: ../camel/camel-imapx-server.c:5458
+#: ../camel/camel-imapx-server.c:5460
 msgid "Error deleting folder"
 msgstr "Errore nell'eliminare la cartella"
 
-#: ../camel/camel-imapx-server.c:5519
+#: ../camel/camel-imapx-server.c:5521
 msgid "Error renaming folder"
 msgstr "Errore nel rinominare la cartelle"
 
-#: ../camel/camel-imapx-server.c:5580
+#: ../camel/camel-imapx-server.c:5582
 msgid "Error performing NOOP"
 msgstr "Errore nell'eseguire NOOP"
 
-#: ../camel/camel-imapx-server.c:5676
+#: ../camel/camel-imapx-server.c:5678
 msgid "Error syncing changes"
 msgstr "Errore nel sincronizzare le modifiche"
 
-#: ../camel/camel-imapx-server.c:6447
+#: ../camel/camel-imapx-server.c:6449
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
@@ -2409,12 +2411,12 @@ msgstr "Impossibile ottenere il messaggio avente ID %s: %s"
 
 # eeeeeeeehhh????
 # che ci sta a fare il such?
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6450
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Nessun messaggio disponibile."
 
-#: ../camel/camel-imapx-server.c:6603 ../camel/camel-imapx-server.c:6618
+#: ../camel/camel-imapx-server.c:6605 ../camel/camel-imapx-server.c:6620
 msgid "Cannot create spool file: "
 msgstr "Impossibile creare il file di spool: "
 
@@ -3418,7 +3420,6 @@ msgid "Error storing '%s': "
 msgstr "Errore nell'archiviare «%s»: "
 
 #: ../camel/camel-vee-folder.c:1169
-#, fuzzy
 msgid "Automatically _update on change in source folders"
 msgstr "A_ggiornamento automatico con modifiche nelle cartelle sorgenti"
 
@@ -3439,7 +3440,6 @@ msgid "Cannot rename folder: %s: No such folder"
 msgstr "Impossibile rinominare la cartella: %s: cartella inesistente"
 
 #: ../camel/camel-vee-store.c:532
-#, fuzzy
 msgid "Enable _Unmatched folder"
 msgstr "Abilitare cartella senza corrisponden_za"
 
