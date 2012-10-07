@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service-type id="calendar">
+  <_name>Calendar</_name>
+  <_description>Integrate your calendars</_description>
+  <icon>x-office-calendar</icon>
+  <translations>@GETTEXT_PACKAGE@</translations>
+</service-type>

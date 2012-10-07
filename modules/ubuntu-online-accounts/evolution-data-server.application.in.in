@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="evolution-data-server">
+  <description>Evolution-Data-Server</description>
+  <translations>@GETTEXT_PACKAGE@</translations>
+  <service-types>
+    <service-type id="mail"/>
+    <service-type id="calendar"/>
+    <service-type id="contacts"/>
+  </service-types>
+</application>

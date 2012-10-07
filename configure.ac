@@ -1691,6 +1691,16 @@ modules/Makefile
 modules/cache-reaper/Makefile
 modules/gnome-online-accounts/Makefile
 modules/google-backend/Makefile
+modules/ubuntu-online-accounts/Makefile
+modules/ubuntu-online-accounts/calendar.service-type.in
+modules/ubuntu-online-accounts/contacts.service-type.in
+modules/ubuntu-online-accounts/evolution-data-server.application.in
+modules/ubuntu-online-accounts/google-calendar.service.in
+modules/ubuntu-online-accounts/google-contacts.service.in
+modules/ubuntu-online-accounts/google-gmail.service.in
+modules/ubuntu-online-accounts/mail.service-type.in
+modules/ubuntu-online-accounts/yahoo-calendar.service.in
+modules/ubuntu-online-accounts/yahoo-mail.service.in
 modules/trust-prompt/Makefile
 modules/yahoo-backend/Makefile
 private/Makefile

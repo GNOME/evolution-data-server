@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="yahoo-calendar">
+  <type>calendar</type>
+  <_name>Yahoo! Calendar</_name>
+  <provider>yahoo</provider>
+  <translations>@GETTEXT_PACKAGE@</translations>
+
+  <!-- default settings (account settings have precedence over these) -->
+  <template>
+    <group name="auth">
+      <setting name="method">password</setting>
+      <setting name="mechanism">password</setting>
+    </group>
+  </template>
+</service>
