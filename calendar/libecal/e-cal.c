@@ -1240,17 +1240,13 @@ gboolean
 e_cal_remove (ECal *ecal,
               GError **error)
 {
-	ECalPrivate *priv;
+	ESource *source;
 
-	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-	priv = ecal->priv;
-	e_return_error_if_fail (priv->gdbus_cal, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
 
-	if (!e_gdbus_cal_call_remove_sync (priv->gdbus_cal, NULL, error)) {
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
-	}
+	source = e_cal_get_source (ecal);
 
-	return TRUE;
+	return e_source_remove_sync (source, NULL, error);
 }
 
 #if 0
