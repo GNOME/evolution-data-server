@@ -339,8 +339,6 @@ e_data_book_view_notify_update_prefiltered_vcard
 e_data_book_view_notify_remove
 e_data_book_view_notify_complete
 e_data_book_view_notify_progress
-e_data_book_view_ref
-e_data_book_view_unref
 e_data_book_view_get_fields_of_interest
 <SUBSECTION Standard>
 E_DATA_BOOK_VIEW

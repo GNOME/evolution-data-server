@@ -107,8 +107,6 @@ void		e_data_book_view_notify_progress
 						(EDataBookView *book_view,
 						 guint percent,
 						 const gchar *message);
-void		e_data_book_view_ref		(EDataBookView *book_view);
-void		e_data_book_view_unref		(EDataBookView *book_view);
 
 GHashTable *	e_data_book_view_get_fields_of_interest
 						(EDataBookView *view);

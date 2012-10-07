@@ -4816,7 +4816,7 @@ ldap_search_dtor (LDAPOp *op)
 	/* unhook us from our EDataBookView */
 	g_object_set_data (G_OBJECT (search_op->view), "EBookBackendLDAP.BookView::search_op", NULL);
 
-	e_data_book_view_unref (search_op->view);
+	g_object_unref (search_op->view);
 
 	if (!search_op->aborted)
 		g_free (search_op);
@@ -4913,7 +4913,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 
 			op->view = view;
 			op->aborted = FALSE;
-			e_data_book_view_ref (view);
+			g_object_ref (view);
 
 			ldap_op_add ((LDAPOp *) op, E_BOOK_BACKEND (bl), book, view,
 				     0, search_msgid,

@@ -1805,7 +1805,7 @@ e_book_backend_google_start_book_view (EBookBackend *backend,
 
 	priv->bookviews = g_list_append (priv->bookviews, bookview);
 
-	e_data_book_view_ref (bookview);
+	g_object_ref (bookview);
 	e_data_book_view_notify_progress (bookview, -1, _("Loading…"));
 
 	/* Ensure that we're ready to support a view */
@@ -1840,7 +1840,7 @@ e_book_backend_google_stop_book_view (EBookBackend *backend,
 	/* Remove the view from the list of active views */
 	if ((view = g_list_find (priv->bookviews, bookview)) != NULL) {
 		priv->bookviews = g_list_delete_link (priv->bookviews, view);
-		e_data_book_view_unref (bookview);
+		g_object_unref (bookview);
 	}
 }
 
@@ -2131,7 +2131,7 @@ e_book_backend_google_dispose (GObject *object)
 	google_cancel_all_operations (E_BOOK_BACKEND (object));
 
 	while (priv->bookviews) {
-		e_data_book_view_unref (priv->bookviews->data);
+		g_object_unref (priv->bookviews->data);
 		priv->bookviews = g_list_delete_link (priv->bookviews, priv->bookviews);
 	}
 

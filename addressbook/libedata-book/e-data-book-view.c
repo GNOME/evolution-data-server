@@ -920,32 +920,3 @@ e_data_book_view_get_fields_of_interest (EDataBookView *view)
 	return view->priv->fields_of_interest;
 }
 
-/**
- * e_data_book_view_ref
- * @book_view: an #EBookView
- *
- * Increase the reference count of the book view. This is a function to aid
- * the transition from Bonobo to DBUS.
- *
- * Since: 2.26
- */
-void
-e_data_book_view_ref (EDataBookView *book_view)
-{
-	g_object_ref (book_view);
-}
-
-/**
- * e_data_book_view_unref
- * @book_view: an #EBookView
- *
- * Decrease the reference count of the book view. This is a function to aid
- * the transition from Bonobo to DBUS.
- *
- * Since: 2.26
- */
-void
-e_data_book_view_unref (EDataBookView *book_view)
-{
-	g_object_unref (book_view);
-}

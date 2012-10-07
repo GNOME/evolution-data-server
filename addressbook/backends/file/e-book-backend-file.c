@@ -1553,7 +1553,7 @@ book_view_thread (gpointer data)
 
 	/* ref the book view because it'll be removed and unrefed
 	 * when/if it's stopped */
-	e_data_book_view_ref (book_view);
+	g_object_ref (book_view);
 
 	db                 = bf->priv->file_db;
 	query              = e_data_book_view_get_card_query (book_view);
@@ -1561,7 +1561,7 @@ book_view_thread (gpointer data)
 
 	if (!db) {
 		e_data_book_view_notify_complete (book_view, EDB_NOT_OPENED_ERROR);
-		e_data_book_view_unref (book_view);
+		g_object_unref (book_view);
 		return NULL;
 	}
 
@@ -1658,7 +1658,7 @@ book_view_thread (gpointer data)
 	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
-	e_data_book_view_unref (book_view);
+	g_object_unref (book_view);
 
 	d (printf ("finished population of book view\n"));
 

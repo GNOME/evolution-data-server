@@ -1051,11 +1051,11 @@ book_view_thread (gpointer data)
 
 	/* ref the book view because it'll be removed and unrefed when/if
 	 * it's stopped */
-	e_data_book_view_ref (book_view);
+	g_object_ref (book_view);
 
 	error = download_contacts (webdav, closure->running, book_view);
 
-	e_data_book_view_unref (book_view);
+	g_object_unref (book_view);
 
 	if (error)
 		g_error_free (error);
