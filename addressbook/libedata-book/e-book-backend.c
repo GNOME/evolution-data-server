@@ -220,20 +220,20 @@ book_backend_authenticate_sync (EBackend *backend,
 		registry, source, auth, cancellable, error);
 }
 
-static gboolean
-view_notify_update (EDataBookView *view,
-                    gpointer contact)
-{
-	e_data_book_view_notify_update (view, contact);
-
-	return TRUE;
-}
-
 static void
 book_backend_notify_update (EBookBackend *backend,
                             const EContact *contact)
 {
-	e_book_backend_foreach_view (backend, view_notify_update, (gpointer) contact);
+	GList *list, *link;
+
+	list = e_book_backend_list_views (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EDataBookView *view = E_DATA_BOOK_VIEW (link->data);
+		e_data_book_view_notify_update (view, contact);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 static void
@@ -1092,16 +1092,15 @@ void
 e_book_backend_notify_update (EBookBackend *backend,
                               const EContact *contact)
 {
-	E_BOOK_BACKEND_GET_CLASS (backend)->notify_update (backend, contact);
-}
+	EBookBackendClass *class;
 
-static gboolean
-view_notify_remove (EDataBookView *view,
-                    gpointer id)
-{
-	e_data_book_view_notify_remove (view, id);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_CONTACT (contact));
 
-	return TRUE;
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->notify_update != NULL);
+
+	class->notify_update (backend, contact);
 }
 
 /**
@@ -1120,16 +1119,19 @@ void
 e_book_backend_notify_remove (EBookBackend *backend,
                               const gchar *id)
 {
-	e_book_backend_foreach_view (backend, view_notify_remove, (gpointer) id);
-}
+	GList *list, *link;
 
-static gboolean
-view_notify_complete (EDataBookView *view,
-                      gpointer unused)
-{
-	e_data_book_view_notify_complete (view, NULL /* SUCCESS */);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (id != NULL);
 
-	return TRUE;
+	list = e_book_backend_list_views (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EDataBookView *view = E_DATA_BOOK_VIEW (link->data);
+		e_data_book_view_notify_remove (view, id);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -1143,10 +1145,20 @@ view_notify_complete (EDataBookView *view,
 void
 e_book_backend_notify_complete (EBookBackend *backend)
 {
-	e_book_backend_foreach_view (backend, view_notify_complete, NULL);
+	GList *list, *link;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	list = e_book_backend_list_views (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EDataBookView *view = E_DATA_BOOK_VIEW (link->data);
+		e_data_book_view_notify_complete (view, NULL /* SUCCESS */);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
-
 /**
  * e_book_backend_notify_error:
  * @backend: an #EBookBackend
