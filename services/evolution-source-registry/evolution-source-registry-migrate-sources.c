@@ -270,6 +270,11 @@ migrate_keyring_entry (const gchar *uid,
 	GList *found_list = NULL;
 	gchar *display_name;
 
+	/* Don't migrate entries with empty attributes */
+	if (!user || !server || !protocol) {
+	      return;
+	}
+
 	/* This is a best-effort routine, so we don't really care about
 	 * errors.  We leave the old keyring entry in place since it may
 	 * be reused for address book or calendar migration. */
