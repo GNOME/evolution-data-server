@@ -1,0 +1,5 @@
+BEGIN:VCARD
+FN:Micheal Jackson
+TEL;HOME:+1234567
+EMAIL;TYPE=home,work:micheal@jackson.com
+END:VCARD
