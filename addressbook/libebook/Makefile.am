@@ -49,6 +49,7 @@ libebook_1_2_la_SOURCES =				\
 	e-destination.c					\
 	e-name-western.c				\
 	e-name-western-tables.h                         \
+	e-source-backend-summary-setup.c			\
 	e-vcard.c					\
 	e-error.h
 
@@ -79,6 +80,7 @@ libebookinclude_HEADERS =				\
 	e-contact.h					\
 	e-destination.h					\
 	e-name-western.h				\
+	e-source-backend-summary-setup.h		\
 	e-vcard.h
 
 %-$(API_VERSION).pc: %.pc

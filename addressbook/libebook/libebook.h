@@ -34,6 +34,7 @@
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
 #include <libebook/e-name-western.h>
+#include <libebook/e-source-backend-summary-setup.h>
 #include <libebook/e-vcard.h>
 
 #undef __LIBEBOOK_H_INSIDE__

@@ -111,6 +111,18 @@ typedef struct {
 	EContact        *contact;
 } EBookChange;
 
+/**
+ * EBookIndexType:
+ * @E_BOOK_INDEX_PREFIX: An index suitable for searching contacts with a prefix pattern
+ * @E_BOOK_INDEX_SUFFIX: An index suitable for searching contacts with a suffix pattern
+ *
+ * The type of index defined for e_source_backend_summary_setup_set_indexed_fields()
+ */
+typedef enum {
+	E_BOOK_INDEX_PREFIX = 0,
+	E_BOOK_INDEX_SUFFIX
+} EBookIndexType;
+
 G_END_DECLS
 
 #endif /* __E_BOOK_TYPES_H__ */
