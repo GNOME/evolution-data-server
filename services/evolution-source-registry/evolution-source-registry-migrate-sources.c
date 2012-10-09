@@ -3183,6 +3183,9 @@ migrate_parse_gconf_xml_start_element (GMarkupParseContext *context,
 			"mtime", NULL,
 			G_MARKUP_COLLECT_STRING |
 			G_MARKUP_COLLECT_OPTIONAL,
+			"muser", NULL,
+			G_MARKUP_COLLECT_STRING |
+			G_MARKUP_COLLECT_OPTIONAL,
 			"type", NULL,
 			G_MARKUP_COLLECT_STRING |
 			G_MARKUP_COLLECT_OPTIONAL,
