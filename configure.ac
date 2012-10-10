@@ -40,7 +40,6 @@ m4_define([libsecret_minimum_version], [0.5])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.38.1])
 m4_define([libgdata_minimum_version], [0.10])
-m4_define([oauth_minimum_version], [0.9.4])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
 
@@ -359,15 +358,6 @@ if test "x$enable_goa" = xyes; then
 	[AC_MSG_ERROR([
 
 	goa-1.0 not found (or version < goa_minimum_version)
-
-	If you want to disable GNOME Online Accounts support,
-	please append --disable-goa to configure.
-	])])
-
-	PKG_CHECK_MODULES([OAUTH], [oauth >= oauth_minimum_version],,
-	[AC_MSG_ERROR([
-
-	oauth not found (or version < oauth_minimum_version)
 
 	If you want to disable GNOME Online Accounts support,
 	please append --disable-goa to configure.

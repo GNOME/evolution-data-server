@@ -19,7 +19,6 @@
 #include "e-gdata-goa-authorizer.h"
 
 #include <string.h>
-#include <oauth.h>
 
 #define E_GDATA_GOA_AUTHORIZER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -110,10 +109,9 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	key = (gpointer) "oauth_version";
 	g_hash_table_insert (parameters, key, g_strdup ("1.0"));
 
-	string = oauth_gen_nonce ();
 	key = (gpointer) "oauth_nonce";
-	g_hash_table_insert (parameters, key, g_strdup (string));
-	free (string);  /* do not use g_free () */
+	string = g_strdup_printf ("%u", g_random_int ());
+	g_hash_table_insert (parameters, key, string); /* takes ownership */
 
 	key = (gpointer) "oauth_timestamp";
 	string = g_strdup_printf ("%" G_GINT64_FORMAT, (gint64) time (NULL));
