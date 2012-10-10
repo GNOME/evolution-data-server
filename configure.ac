@@ -365,14 +365,7 @@ if test "x$enable_goa" = xyes; then
 	If you want to disable GNOME Online Accounts support,
 	please append --disable-goa to configure.])])
 
-	if `$PKG_CONFIG --atleast-version=0.9.1 libgdata`; then
-		AC_DEFINE(HAVE_GOA,1,[Have goa-1.0 and libgdata >= 0.9.1])
-	else
-		AC_MSG_ERROR([
-	libgdata >= 0.9.1 is required for GNOME Online Accounts support.
-	If you want to disable GNOME Online Accounts support, please
-	append --disable-goa to configure.])
-	fi
+	AC_DEFINE(HAVE_GOA, 1, [Define to 1 if you have the goa-1.0 package.])
 fi
 AM_CONDITIONAL(HAVE_GOA, [test x$enable_goa = xyes])
 
