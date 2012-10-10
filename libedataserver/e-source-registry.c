@@ -146,6 +146,7 @@ struct _ThreadClosure {
 	GMainLoop *main_loop;
 	GCond *main_loop_cond;
 	GMutex *main_loop_mutex;
+	GError *error;
 };
 
 enum {
@@ -240,6 +241,10 @@ thread_closure_free (ThreadClosure *closure)
 	g_main_loop_unref (closure->main_loop);
 	g_cond_free (closure->main_loop_cond);
 	g_mutex_free (closure->main_loop_mutex);
+
+	/* The GError should be NULL at this point,
+	 * regardless of whether an error occurred. */
+	g_warn_if_fail (closure->error == NULL);
 
 	g_slice_free (ThreadClosure, closure);
 }
@@ -711,9 +716,8 @@ source_registry_object_manager_thread (gpointer data)
 	ThreadClosure *closure = data;
 	GSource *idle_source;
 	GList *list, *link;
-	gulong object_added_id;
-	gulong object_removed_id;
-	GError *error = NULL;
+	gulong object_added_id = 0;
+	gulong object_removed_id = 0;
 
 	/* GDBusObjectManagerClient grabs the thread-default GMainContext
 	 * at creation time and only emits signals from that GMainContext.
@@ -731,15 +735,19 @@ source_registry_object_manager_thread (gpointer data)
 		G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE,
 		SOURCES_DBUS_SERVICE_NAME,
 		DBUS_OBJECT_PATH,
-		NULL, &error);
+		NULL, &closure->error);
 
-	/* If this fails there's really no point in continuing
-	 * since we rely on the object manager to populate the
-	 * registry.  Abort the process with a fatal error. */
-	if (error != NULL) {
-		g_error ("%s", error->message);
-		g_assert_not_reached ();
-	}
+	/* Sanity check. */
+	g_warn_if_fail (
+		((object_manager != NULL) && (closure->error == NULL)) ||
+		((object_manager == NULL) && (closure->error != NULL)));
+
+	/* If we failed to create the GDBusObjectManagerClient, skip
+	 * straight to the main loop.  The GError will be propagated
+	 * back to the caller, the main loop will terminate, and the
+	 * partially-initialized ESourceRegistry will be destroyed. */
+	if (object_manager == NULL)
+		goto notify;
 
 	/* Give the registry a handle to the object manager. */
 	closure->registry->priv->dbus_object_manager =
@@ -767,17 +775,6 @@ source_registry_object_manager_thread (gpointer data)
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
-	/* Schedule a one-time idle callback to broadcast through a
-	 * condition variable that our main loop is up and running. */
-
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		source_registry_object_manager_running,
-		closure, (GDestroyNotify) NULL);
-	g_source_attach (idle_source, closure->main_context);
-	g_source_unref (idle_source);
-
 	/* Listen for D-Bus object additions and removals. */
 
 	object_added_id = g_signal_connect (
@@ -790,16 +787,29 @@ source_registry_object_manager_thread (gpointer data)
 		G_CALLBACK (source_registry_object_removed_cb),
 		closure->registry);
 
+notify:
+	/* Schedule a one-time idle callback to broadcast through a
+	 * condition variable that our main loop is up and running. */
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		source_registry_object_manager_running,
+		closure, (GDestroyNotify) NULL);
+	g_source_attach (idle_source, closure->main_context);
+	g_source_unref (idle_source);
+
 	/* Now we mostly idle here for the rest of the session. */
 
 	g_main_loop_run (closure->main_loop);
 
 	/* Clean up and exit. */
 
-	g_signal_handler_disconnect (object_manager, object_added_id);
-	g_signal_handler_disconnect (object_manager, object_removed_id);
-
-	g_object_unref (object_manager);
+	if (object_manager != NULL) {
+		g_signal_handler_disconnect (object_manager, object_added_id);
+		g_signal_handler_disconnect (object_manager, object_removed_id);
+		g_object_unref (object_manager);
+	}
 
 	g_main_context_pop_thread_default (closure->main_context);
 
@@ -1005,10 +1015,12 @@ source_registry_initable_init (GInitable *initable,
 			closure->main_loop_mutex);
 	g_mutex_unlock (closure->main_loop_mutex);
 
-	/* We should now have a GDBusObjectManagerClient available. */
-	g_return_val_if_fail (
-		G_IS_DBUS_OBJECT_MANAGER_CLIENT (
-		registry->priv->dbus_object_manager), FALSE);
+	/* Check for error in the manager thread. */
+	if (closure->error != NULL) {
+		g_propagate_error (error, closure->error);
+		closure->error = NULL;
+		return FALSE;
+	}
 
 	/* The registry should now be populated with sources. */
 	g_warn_if_fail (g_hash_table_size (registry->priv->sources) > 0);
