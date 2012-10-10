@@ -25,6 +25,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_GDATA_GOA_AUTHORIZER, EGDataGoaAuthorizerPrivate))
 
+#define HMAC_SHA1_LEN 20 /* bytes, raw */
+
 struct _EGDataGoaAuthorizerPrivate {
 
 	/* GoaObject is already thread-safe. */
@@ -70,6 +72,9 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	GHashTableIter iter;
 	SoupURI *soup_uri;
 	GList *keys, *i;
+	GHmac *signature_hmac;
+	guchar signature_digest[HMAC_SHA1_LEN];
+	gsize signature_digest_len;
 	gchar *string;
 	gchar *request_uri;
 	gpointer key;
@@ -169,10 +174,25 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 
 	/* Sign the request. */
 
+	signature_digest_len = sizeof (signature_digest);
+
+	signature_hmac = g_hmac_new (
+		G_CHECKSUM_SHA1,
+		(guchar *) signing_key->str,
+		signing_key->len);
+	g_hmac_update (
+		signature_hmac,
+		(guchar *) base_string->str,
+		base_string->len);
+	g_hmac_get_digest (
+		signature_hmac,
+		signature_digest,
+		&signature_digest_len);
+	g_hmac_unref (signature_hmac);
+
 	key = (gpointer) "oauth_signature";
-	string = oauth_sign_hmac_sha1 (base_string->str, signing_key->str);
-	g_hash_table_insert (parameters, key, g_strdup (string));
-	free (string);  /* do not use g_free () */
+	string = g_base64_encode (signature_digest, signature_digest_len);
+	g_hash_table_insert (parameters, key, string);  /* takes ownership */
 
 	g_free (request_uri);
 
