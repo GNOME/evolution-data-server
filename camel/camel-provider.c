@@ -73,16 +73,79 @@ static CamelProvider vee_provider = {
 
 static GOnce setup_once = G_ONCE_INIT;
 
+static void
+provider_register_internal (CamelProvider *provider)
+{
+	CamelProviderConfEntry *conf;
+	CamelProviderPortEntry *port;
+	GList *link;
+	gint ii;
+
+	g_return_if_fail (provider != NULL);
+	g_return_if_fail (provider->protocol != NULL);
+
+	LOCK ();
+
+	if (g_hash_table_lookup (provider_table, provider->protocol) != NULL) {
+		g_warning (
+			"Trying to re-register CamelProvider for protocol '%s'",
+			provider->protocol);
+		UNLOCK ();
+		return;
+	}
+
+	/* Translate all strings here */
+#define P_(string) dgettext (provider->translation_domain, string)
+
+	provider->name = P_(provider->name);
+	provider->description = P_(provider->description);
+
+	conf = provider->extra_conf;
+	if (conf != NULL) {
+		for (ii = 0; conf[ii].type != CAMEL_PROVIDER_CONF_END; ii++) {
+			if (conf[ii].text != NULL)
+				conf[ii].text = P_(conf[ii].text);
+		}
+	}
+
+	for (link = provider->authtypes; link != NULL; link = link->next) {
+		CamelServiceAuthType *auth = link->data;
+
+		auth->name = P_(auth->name);
+		auth->description = P_(auth->description);
+	}
+
+	if (provider->port_entries != NULL) {
+		provider->url_flags |= CAMEL_URL_NEED_PORT;
+		port = provider->port_entries;
+		for (ii = 0; port[ii].port != 0; ii++)
+			if (port[ii].desc != NULL)
+				port[ii].desc = P_(port[ii].desc);
+	} else {
+		provider->url_flags &= ~CAMEL_URL_NEED_PORT;
+	}
+
+	g_hash_table_insert (
+		provider_table,
+		(gpointer) provider->protocol, provider);
+
+	UNLOCK ();
+}
+
 static gpointer
 provider_setup (gpointer param)
 {
-	module_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-	provider_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+	module_table = g_hash_table_new (
+		(GHashFunc) camel_strcase_hash,
+		(GEqualFunc) camel_strcase_equal);
+	provider_table = g_hash_table_new (
+		(GHashFunc) camel_strcase_hash,
+		(GEqualFunc) camel_strcase_equal);
 
-	vee_provider.object_types[CAMEL_PROVIDER_STORE] = camel_vee_store_get_type ();
+	vee_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_TYPE_VEE_STORE;
 	vee_provider.url_hash = camel_url_hash;
 	vee_provider.url_equal = camel_url_equal;
-	camel_provider_register (&vee_provider);
+	provider_register_internal (&vee_provider);
 
 	return NULL;
 }
@@ -230,60 +293,9 @@ camel_provider_load (const gchar *path,
 void
 camel_provider_register (CamelProvider *provider)
 {
-	gint i;
-	CamelProviderConfEntry *conf;
-	CamelProviderPortEntry *port;
-	GList *l;
+	g_once (&setup_once, provider_setup, NULL);
 
-	g_return_if_fail (provider != NULL);
-
-	g_assert (provider_table);
-
-	LOCK ();
-
-	if (g_hash_table_lookup (provider_table, provider->protocol) != NULL) {
-		g_warning ("Trying to re-register camel provider for protocol '%s'", provider->protocol);
-		UNLOCK ();
-		return;
-	}
-
-	/* Translate all strings here */
-#define P_(string) dgettext (provider->translation_domain, string)
-
-	provider->name = P_(provider->name);
-	provider->description = P_(provider->description);
-	conf = provider->extra_conf;
-	if (conf) {
-		for (i = 0; conf[i].type != CAMEL_PROVIDER_CONF_END; i++) {
-			if (conf[i].text)
-				conf[i].text = P_(conf[i].text);
-		}
-	}
-
-	l = provider->authtypes;
-	while (l) {
-		CamelServiceAuthType *auth = l->data;
-
-		auth->name = P_(auth->name);
-		auth->description = P_(auth->description);
-		l = l->next;
-	}
-
-	if (provider->port_entries) {
-		provider->url_flags |= CAMEL_URL_NEED_PORT;
-		port = provider->port_entries;
-		for (i = 0; port[i].port != 0; i++)
-			if (port[i].desc)
-				port[i].desc = P_(port[i].desc);
-	}
-	else
-		provider->url_flags &= ~CAMEL_URL_NEED_PORT;
-
-	g_hash_table_insert (
-		provider_table,
-		(gpointer) provider->protocol, provider);
-
-	UNLOCK ();
+	provider_register_internal (provider);
 }
 
 static gint
