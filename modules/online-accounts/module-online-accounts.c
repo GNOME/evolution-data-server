@@ -35,6 +35,7 @@
 	((obj), E_TYPE_ONLINE_ACCOUNTS, EOnlineAccounts))
 
 #define CAMEL_OAUTH_MECHANISM_NAME  "XOAUTH"
+#define CAMEL_OAUTH2_MECHANISM_NAME "XOAUTH2"
 
 typedef struct _EOnlineAccounts EOnlineAccounts;
 typedef struct _EOnlineAccountsClass EOnlineAccountsClass;
@@ -269,6 +270,25 @@ online_accounts_config_oauth (EOnlineAccounts *extension,
 }
 
 static void
+online_accounts_config_oauth2 (EOnlineAccounts *extension,
+                               ESource *source,
+                               GoaObject *goa_object)
+{
+	ESourceExtension *source_extension;
+	const gchar *extension_name;
+
+	if (goa_object_peek_oauth2_based (goa_object) == NULL)
+		return;
+
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	source_extension = e_source_get_extension (source, extension_name);
+
+	e_source_authentication_set_method (
+		E_SOURCE_AUTHENTICATION (source_extension),
+		CAMEL_OAUTH2_MECHANISM_NAME);
+}
+
+static void
 online_accounts_config_password (EOnlineAccounts *extension,
                                  ESource *source,
                                  GoaObject *goa_object)
@@ -433,7 +453,9 @@ online_accounts_config_mail_account (EOnlineAccounts *extension,
 {
 	EServerSideSource *server_side_source;
 
+	/* Only one or the other should be present, not both. */
 	online_accounts_config_oauth (extension, source, goa_object);
+	online_accounts_config_oauth2 (extension, source, goa_object);
 
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "imap-use-tls" tells
@@ -482,7 +504,9 @@ online_accounts_config_mail_transport (EOnlineAccounts *extension,
 {
 	EServerSideSource *server_side_source;
 
+	/* Only one or the other should be present, not both. */
 	online_accounts_config_oauth (extension, source, goa_object);
+	online_accounts_config_oauth2 (extension, source, goa_object);
 
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "smtp-use-tls" tells
@@ -493,6 +517,53 @@ online_accounts_config_mail_transport (EOnlineAccounts *extension,
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
 	e_server_side_source_set_writable (server_side_source, TRUE);
 	e_server_side_source_set_removable (server_side_source, FALSE);
+}
+
+static void
+online_accounts_config_sources (EOnlineAccounts *extension,
+                                ESource *source,
+                                GoaObject *goa_object)
+{
+	ESourceRegistryServer *server;
+	ECollectionBackend *backend;
+	GList *list, *link;
+
+	/* XXX This function was primarily intended to smooth the
+	 *     transition of mail accounts from XOAUTH to XOAUTH2,
+	 *     but it may be useful for other types of migration. */
+
+	online_accounts_config_collection (extension, source, goa_object);
+
+	server = online_accounts_get_server (extension);
+	backend = e_source_registry_server_ref_backend (server, source);
+	g_return_if_fail (backend != NULL);
+
+	list = e_collection_backend_list_mail_sources (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		const gchar *extension_name;
+
+		source = E_SOURCE (link->data);
+
+		extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
+		if (e_source_has_extension (source, extension_name))
+			online_accounts_config_mail_account (
+				extension, source, goa_object);
+
+		extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
+		if (e_source_has_extension (source, extension_name))
+			online_accounts_config_mail_identity (
+				extension, source, goa_object);
+
+		extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
+		if (e_source_has_extension (source, extension_name))
+			online_accounts_config_mail_transport (
+				extension, source, goa_object);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+
+	g_object_unref (backend);
 }
 
 static void
@@ -713,7 +784,7 @@ online_accounts_populate_accounts_table (EOnlineAccounts *extension,
 				g_strdup (source_uid));
 
 			goa_object = GOA_OBJECT (match->data);
-			online_accounts_config_collection (
+			online_accounts_config_sources (
 				extension, source, goa_object);
 		} else {
 			g_queue_push_tail (&trash, source);
