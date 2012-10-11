@@ -58,11 +58,11 @@ G_DEFINE_TYPE_WITH_CODE (
 		e_gdata_goa_authorizer_interface_init))
 
 static GHashTable *
-gdata_goa_authorizer_get_parameters (SoupMessage *message,
-                                     const gchar *consumer_key,
-                                     const gchar *consumer_secret,
-                                     const gchar *access_token,
-                                     const gchar *access_token_secret)
+gdata_goa_authorizer_get_oauth1_parameters (SoupMessage *message,
+                                            const gchar *consumer_key,
+                                            const gchar *consumer_secret,
+                                            const gchar *access_token,
+                                            const gchar *access_token_secret)
 {
 	GString *query;
 	GString *base_string;
@@ -202,8 +202,8 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 }
 
 static void
-gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
-                                        SoupMessage *message)
+gdata_goa_authorizer_add_oauth1_authorization (GDataAuthorizer *authorizer,
+                                               SoupMessage *message)
 {
 	EGDataGoaAuthorizerPrivate *priv;
 	GoaOAuthBased *goa_oauth_based;
@@ -239,7 +239,7 @@ gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
 	consumer_key = goa_oauth_based_get_consumer_key (goa_oauth_based);
 	consumer_secret = goa_oauth_based_get_consumer_secret (goa_oauth_based);
 
-	parameters = gdata_goa_authorizer_get_parameters (
+	parameters = gdata_goa_authorizer_get_oauth1_parameters (
 		message,
 		consumer_key,
 		consumer_secret,
@@ -275,6 +275,62 @@ gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
 	g_hash_table_destroy (parameters);
 
 	g_object_unref (goa_oauth_based);
+}
+
+static void
+gdata_goa_authorizer_add_oauth2_authorization (GDataAuthorizer *authorizer,
+                                               SoupMessage *message)
+{
+	EGDataGoaAuthorizerPrivate *priv;
+	GString *authorization;
+	gchar *base64_encoded;
+
+	/* This MUST be called with the mutex already locked. */
+
+	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+
+	/* We can't add an Authorization header without an access token.
+	 * Let the request fail.  GData should refresh us if it gets back
+	 * a "401 Authorization required" response from Google, and then
+	 * automatically retry the request. */
+	if (priv->access_token == NULL)
+		return;
+
+	authorization = g_string_new ("Bearer ");
+
+	base64_encoded = g_base64_encode (
+		(guchar *) priv->access_token,
+		strlen (priv->access_token));
+	g_string_append (authorization, base64_encoded);
+	g_free (base64_encoded);
+
+	/* Use replace here, not append, to make sure
+	 * there's only one "Authorization" header. */
+	soup_message_headers_replace (
+		message->request_headers,
+		"Authorization", authorization->str);
+
+	g_string_free (authorization, TRUE);
+}
+
+static void
+gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
+                                        SoupMessage *message)
+{
+	EGDataGoaAuthorizerPrivate *priv;
+
+	/* This MUST be called with the mutex already locked. */
+
+	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+
+	/* Prefer OAuth 2.0 over OAuth 1.0. */
+	if (goa_object_peek_oauth2_based (priv->goa_object) != NULL) {
+		gdata_goa_authorizer_add_oauth2_authorization (
+			authorizer, message);
+	} else if (goa_object_peek_oauth_based (priv->goa_object) != NULL) {
+		gdata_goa_authorizer_add_oauth1_authorization (
+			authorizer, message);
+	}
 }
 
 static gboolean
@@ -439,8 +495,9 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 {
 	EGDataGoaAuthorizerPrivate *priv;
 	GoaOAuthBased *goa_oauth_based;
+	GoaOAuth2Based *goa_oauth2_based;
 	GoaAccount *goa_account;
-	gboolean success = TRUE;
+	gboolean success = FALSE;
 
 	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
@@ -454,16 +511,36 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 
 	goa_account = goa_object_get_account (priv->goa_object);
 	goa_oauth_based = goa_object_get_oauth_based (priv->goa_object);
+	goa_oauth2_based = goa_object_get_oauth2_based (priv->goa_object);
 
-	success &= goa_account_call_ensure_credentials_sync (
+	success = goa_account_call_ensure_credentials_sync (
 		goa_account, NULL, cancellable, error);
 
-	success &= goa_oauth_based_call_get_access_token_sync (
-		goa_oauth_based, &priv->access_token,
-		&priv->access_token_secret, NULL, cancellable, error);
+	if (!success)
+		goto exit;
 
-	g_object_unref (goa_account);
-	g_object_unref (goa_oauth_based);
+	/* Prefer OAuth 2.0 over OAuth 1.0. */
+	if (goa_oauth2_based != NULL) {
+		success = goa_oauth2_based_call_get_access_token_sync (
+			goa_oauth2_based, &priv->access_token,
+			NULL, cancellable, error);
+	} else if (goa_oauth_based != NULL) {
+		success = goa_oauth_based_call_get_access_token_sync (
+			goa_oauth_based, &priv->access_token,
+			&priv->access_token_secret, NULL, cancellable, error);
+	} else {
+		g_warn_if_reached ();  /* should never happen */
+	}
+
+exit:
+	if (goa_account != NULL)
+		g_object_unref (goa_account);
+
+	if (goa_oauth_based != NULL)
+		g_object_unref (goa_oauth_based);
+
+	if (goa_oauth2_based != NULL)
+		g_object_unref (goa_oauth2_based);
 
 	g_static_mutex_unlock (&mutex);
 
