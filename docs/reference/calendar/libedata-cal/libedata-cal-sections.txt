@@ -340,8 +340,8 @@ e_data_cal_factory_get_type
 <TITLE>EDataCalView</TITLE>
 e_data_cal_view_new
 e_data_cal_view_register_gdbus_object
-e_data_cal_view_get_text
-e_data_cal_view_get_object_sexp
+e_data_cal_view_get_backend
+e_data_cal_view_get_sexp
 e_data_cal_view_object_matches
 e_data_cal_view_component_matches
 e_data_cal_view_is_started

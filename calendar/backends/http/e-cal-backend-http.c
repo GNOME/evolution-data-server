@@ -1110,7 +1110,9 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	d (g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
+	cbsexp = e_data_cal_view_get_sexp (query);
+
+	d (g_message (G_STRLOC ": Starting query (%s)", e_cal_backend_sexp_text (cbsexp)));
 
 	if (!priv->store) {
 		GError *error = EDC_ERROR (NoSuchCal);
@@ -1120,8 +1122,6 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 	}
 
 	/* process all components in the cache */
-	cbsexp = e_cal_backend_sexp_new (e_data_cal_view_get_text (query));
-
 	objects = NULL;
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (cbsexp,
 									    &occur_start,
@@ -1143,7 +1143,6 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 
 	g_slist_free_full (components, g_object_unref);
 	g_slist_free (objects);
-	g_object_unref (cbsexp);
 
 	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }

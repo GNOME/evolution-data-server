@@ -1809,6 +1809,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ECalBackendSExp *sexp;
 	MatchObjectData match_data = { 0, };
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
@@ -1816,15 +1817,17 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	d (g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
+	sexp = e_data_cal_view_get_sexp (query);
+
+	d (g_message (G_STRLOC ": Starting query (%s)", e_cal_backend_sexp_text (sexp)));
 
 	/* try to match all currently existing objects */
 	match_data.search_needed = TRUE;
-	match_data.query = e_data_cal_view_get_text (query);
+	match_data.query = e_cal_backend_sexp_text (sexp);
 	match_data.comps_list = NULL;
 	match_data.as_string = FALSE;
 	match_data.backend = backend;
-	match_data.obj_sexp = e_data_cal_view_get_object_sexp (query);
+	match_data.obj_sexp = e_data_cal_view_get_sexp (query);
 	match_data.view = query;
 
 	if (!strcmp (match_data.query, "#t"))
@@ -1850,7 +1853,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 				      &match_data);
 
 		e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
-			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
+			    e_cal_backend_sexp_text (sexp), G_OBJECT_TYPE_NAME (backend),
 			    g_hash_table_size (priv->comp_uid_hash));
 	} else {
 		/* matches objects in new "interval tree" way */
@@ -1861,7 +1864,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 			       &match_data);
 
 		e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
-			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
+			    e_cal_backend_sexp_text (sexp), G_OBJECT_TYPE_NAME (backend),
 			    g_list_length (objs_occuring_in_tw));
 	}
 

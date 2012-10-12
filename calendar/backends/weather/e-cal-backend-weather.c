@@ -710,7 +710,7 @@ e_cal_backend_weather_start_view (ECalBackend *backend,
 		return;
 	}
 
-	sexp = e_data_cal_view_get_object_sexp (query);
+	sexp = e_data_cal_view_get_sexp (query);
 	if (!sexp) {
 		error = EDC_ERROR (InvalidQuery);
 		e_data_cal_view_notify_complete (query, error);

@@ -1260,7 +1260,7 @@ e_cal_backend_contacts_start_view (ECalBackend *backend,
 	ECalBackendSExp *sexp;
 	ContactRecordCB *cb_data;
 
-	sexp = e_data_cal_view_get_object_sexp (query);
+	sexp = e_data_cal_view_get_sexp (query);
 	if (!sexp) {
 		GError *error = EDC_ERROR (InvalidQuery);
 		e_data_cal_view_notify_complete (query, error);

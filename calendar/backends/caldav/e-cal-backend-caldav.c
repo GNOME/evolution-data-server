@@ -4533,10 +4533,8 @@ caldav_start_view (ECalBackend *backend,
 	gboolean prunning_by_time;
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
-	sexp_string = e_data_cal_view_get_text (query);
-	sexp = e_cal_backend_sexp_new (sexp_string);
-
-	/* FIXME:check invalid sexp */
+	sexp = e_data_cal_view_get_sexp (query);
+	sexp_string = e_cal_backend_sexp_text (sexp);
 
 	if (g_str_equal (sexp_string, "#t")) {
 		do_search = FALSE;
@@ -4564,7 +4562,6 @@ caldav_start_view (ECalBackend *backend,
 		g_object_unref (comp);
 	}
 
-	g_object_unref (sexp);
 	g_slist_free (list);
 
 	e_data_cal_view_notify_complete (query, NULL /* Success */);

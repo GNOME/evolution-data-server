@@ -72,9 +72,10 @@ guint		e_data_cal_view_register_gdbus_object
 						 GDBusConnection *connection,
 						 const gchar *object_path,
 						 GError **error);
-const gchar *	e_data_cal_view_get_text	(EDataCalView *view);
+struct _ECalBackend *
+		e_data_cal_view_get_backend	(EDataCalView *view);
 struct _ECalBackendSExp *
-		e_data_cal_view_get_object_sexp	(EDataCalView *view);
+		e_data_cal_view_get_sexp	(EDataCalView *view);
 gboolean	e_data_cal_view_object_matches	(EDataCalView *view,
 						 const gchar *object);
 gboolean	e_data_cal_view_component_matches
