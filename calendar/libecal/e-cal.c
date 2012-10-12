@@ -63,10 +63,10 @@
 #define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
 
 static guint active_cals = 0, cal_connection_closed_id = 0;
-static EGdbusCalFactory *cal_factory_proxy = NULL;
-static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK_FACTORY()   g_static_rec_mutex_lock   (&cal_factory_proxy_lock)
-#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_proxy_lock)
+static EGdbusCalFactory *cal_factory = NULL;
+static GStaticRecMutex cal_factory_lock = G_STATIC_REC_MUTEX_INIT;
+#define LOCK_FACTORY()   g_static_rec_mutex_lock   (&cal_factory_lock)
+#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_lock)
 
 #define LOCK_CACHE()   g_static_rec_mutex_lock   (&priv->cache_lock)
 #define UNLOCK_CACHE() g_static_rec_mutex_unlock (&priv->cache_lock)
@@ -660,10 +660,10 @@ e_cal_class_init (ECalClass *class)
 }
 
 static void
-cal_factory_proxy_closed_cb (GDBusConnection *connection,
-                             gboolean remote_peer_vanished,
-                             GError *error,
-                             gpointer user_data)
+cal_factory_closed_cb (GDBusConnection *connection,
+                       gboolean remote_peer_vanished,
+                       GError *error,
+                       gpointer user_data)
 {
 	GError *err = NULL;
 
@@ -672,12 +672,12 @@ cal_factory_proxy_closed_cb (GDBusConnection *connection,
 	if (cal_connection_closed_id) {
 		g_dbus_connection_signal_unsubscribe (connection, cal_connection_closed_id);
 		cal_connection_closed_id = 0;
-		g_signal_handlers_disconnect_by_func (connection, cal_factory_proxy_closed_cb, NULL);
+		g_signal_handlers_disconnect_by_func (connection, cal_factory_closed_cb, NULL);
 	}
 
-	if (cal_factory_proxy) {
-		g_object_unref (cal_factory_proxy);
-		cal_factory_proxy = NULL;
+	if (cal_factory != NULL) {
+		g_object_unref (cal_factory);
+		cal_factory = NULL;
 	}
 
 	if (error) {
@@ -706,36 +706,37 @@ cal_factory_connection_gone_cb (GDBusConnection *connection,
 {
 	/* signal subscription takes care of correct parameters,
 	 * thus just do what is to be done here */
-	cal_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
+	cal_factory_closed_cb (connection, TRUE, NULL, user_data);
 }
 
 /* one-time start up for libecal */
 static gboolean
-e_cal_activate (GError **error)
+e_cal_activate (GCancellable *cancellable,
+                GError **error)
 {
 	GDBusConnection *connection;
 
 	LOCK_FACTORY ();
-	if (G_LIKELY (cal_factory_proxy)) {
+	if (G_LIKELY (cal_factory != NULL)) {
 		UNLOCK_FACTORY ();
 		return TRUE;
 	}
 
-	cal_factory_proxy = e_gdbus_cal_factory_proxy_new_for_bus_sync (
+	cal_factory = e_gdbus_cal_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
 		CALENDAR_DBUS_SERVICE_NAME,
 		"/org/gnome/evolution/dataserver/CalendarFactory",
-		NULL,
-		error);
+		cancellable, error);
 
-	if (!cal_factory_proxy) {
+	if (cal_factory == NULL) {
 		UNLOCK_FACTORY ();
 		return FALSE;
 	}
 
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
-	cal_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
+	cal_connection_closed_id = g_dbus_connection_signal_subscribe (
+		connection,
 		NULL,					/* sender */
 		"org.freedesktop.DBus",			/* interface */
 		"NameOwnerChanged",			/* member */
@@ -744,7 +745,9 @@ e_cal_activate (GError **error)
 		G_DBUS_SIGNAL_FLAGS_NONE,
 		cal_factory_connection_gone_cb, NULL, NULL);
 
-	g_signal_connect (connection, "closed", G_CALLBACK (cal_factory_proxy_closed_cb), NULL);
+	g_signal_connect (
+		connection, "closed",
+		G_CALLBACK (cal_factory_closed_cb), NULL);
 
 	UNLOCK_FACTORY ();
 
@@ -912,16 +915,17 @@ e_cal_new (ESource *source,
 {
 	ECal *ecal;
 	ECalPrivate *priv;
-	gchar *path;
 	gchar **strv;
 	const gchar *uid;
+	gchar *object_path;
 	GError *error = NULL;
 	GDBusConnection *connection;
 
 	g_return_val_if_fail (source && E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (type < E_CAL_SOURCE_TYPE_LAST, NULL);
 
-	if (!e_cal_activate (&error)) {
+	/* XXX Oops, e_cal_new() forgot to take a GCancellable. */
+	if (!e_cal_activate (NULL, &error)) {
 		unwrap_gerror (&error);
 		g_warning ("Cannot activate ECal: %s\n", error ? error->message : "Unknown error");
 		if (error)
@@ -938,36 +942,50 @@ e_cal_new (ESource *source,
 	uid = e_source_get_uid (source);
 	strv = e_gdbus_cal_factory_encode_get_cal (uid, convert_type (priv->type));
 
-	if (!e_gdbus_cal_factory_call_get_cal_sync (G_DBUS_PROXY (cal_factory_proxy), (const gchar * const *) strv, &path, NULL, &error)) {
-		g_strfreev (strv);
-		unwrap_gerror (&error);
-		g_warning ("Cannot get cal from factory: %s", error ? error->message : "Unknown error");
-		if (error)
-			g_error_free (error);
-		g_object_unref (ecal);
-		return NULL;
-	}
+	e_gdbus_cal_factory_call_get_cal_sync (
+		G_DBUS_PROXY (cal_factory),
+		(const gchar * const *) strv, &object_path, NULL, &error);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((object_path != NULL) && (error == NULL)) ||
+		((object_path == NULL) && (error != NULL)), NULL);
+
 	g_strfreev (strv);
 
-	priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
-						      G_DBUS_PROXY_FLAGS_NONE,
-						      CALENDAR_DBUS_SERVICE_NAME,
-						      path,
-						      NULL,
-						      &error));
-
-	if (!priv->gdbus_cal) {
-		g_free (path);
+	if (error != NULL) {
 		unwrap_gerror (&error);
-		g_warning ("Cannot create cal proxy: %s", error ? error->message : "Unknown error");
+		g_error_free (error);
+		g_object_unref (ecal);
+		return NULL;
+	}
+
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
+
+	priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (
+		connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		object_path,
+		NULL, &error));
+
+	g_free (object_path);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((priv->gdbus_cal != NULL) && (error == NULL)) ||
+		((priv->gdbus_cal == NULL) && (error != NULL)), NULL);
+
+	if (error != NULL) {
+		unwrap_gerror (&error);
 		if (error)
 			g_error_free (error);
 		g_object_unref (ecal);
 		return NULL;
 	}
 
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->gdbus_cal));
-	priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+	priv->gone_signal_id = g_dbus_connection_signal_subscribe (
+		connection,
 		"org.freedesktop.DBus",			/* sender */
 		"org.freedesktop.DBus",			/* interface */
 		"NameOwnerChanged",			/* member */
@@ -975,17 +993,29 @@ e_cal_new (ESource *source,
 		CALENDAR_DBUS_SERVICE_NAME,		/* arg0 */
 		G_DBUS_SIGNAL_FLAGS_NONE,
 		gdbus_cal_connection_gone_cb, ecal, NULL);
-	g_signal_connect (connection, "closed", G_CALLBACK (gdbus_cal_closed_cb), ecal);
 
-	g_signal_connect (priv->gdbus_cal, "backend-error", G_CALLBACK (backend_error_cb), ecal);
-	g_signal_connect (priv->gdbus_cal, "readonly", G_CALLBACK (readonly_cb), ecal);
-	g_signal_connect (priv->gdbus_cal, "online", G_CALLBACK (online_cb), ecal);
-	g_signal_connect (priv->gdbus_cal, "free-busy-data", G_CALLBACK (free_busy_data_cb), ecal);
+	g_signal_connect (
+		connection, "closed",
+		G_CALLBACK (gdbus_cal_closed_cb), ecal);
+
+	g_signal_connect (
+		priv->gdbus_cal, "backend-error",
+		G_CALLBACK (backend_error_cb), ecal);
+
+	g_signal_connect (
+		priv->gdbus_cal, "readonly",
+		G_CALLBACK (readonly_cb), ecal);
+
+	g_signal_connect (
+		priv->gdbus_cal, "online",
+		G_CALLBACK (online_cb), ecal);
+
+	g_signal_connect (
+		priv->gdbus_cal, "free-busy-data",
+		G_CALLBACK (free_busy_data_cb), ecal);
 
 	/* Set the local attachment store path for the calendar */
 	set_local_attachment_store (ecal);
-
-	g_free (path);
 
 	return ecal;
 }
@@ -3918,7 +3948,7 @@ e_cal_get_query (ECal *ecal,
 
 	status = E_CALENDAR_STATUS_OK;
 
-	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory)),
 							G_DBUS_PROXY_FLAGS_NONE,
 							CALENDAR_DBUS_SERVICE_NAME,
 							query_path,
