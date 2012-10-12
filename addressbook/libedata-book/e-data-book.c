@@ -195,9 +195,10 @@ operation_thread (gpointer data,
 		break;
 	case OP_GET_VIEW:
 		if (op->d.query) {
+			EDataBookView *view;
 			EBookBackendSExp *card_sexp;
-			EDataBookView *book_view;
-			gchar *path;
+			GDBusConnection *connection;
+			gchar *object_path;
 			GError *error = NULL;
 
 			card_sexp = e_book_backend_sexp_new (op->d.query);
@@ -210,27 +211,35 @@ operation_thread (gpointer data,
 				break;
 			}
 
-			path = construct_bookview_path ();
+			object_path = construct_bookview_path ();
+			connection = e_gdbus_book_stub_get_connection (
+				op->book->priv->gdbus_object);
 
-			book_view = e_data_book_view_new (op->book, card_sexp);
-			e_data_book_view_register_gdbus_object (book_view, e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object), path, &error);
+			view = e_data_book_view_new (
+				op->book, card_sexp,
+				connection, object_path, &error);
 
-			if (error) {
+			g_object_unref (card_sexp);
+
+			/* Sanity check. */
+			g_return_if_fail (
+				((view != NULL) && (error == NULL)) ||
+				((view == NULL) && (error != NULL)));
+
+			if (error != NULL) {
 				/* Translators: This is prefix to a detailed error message */
 				g_prefix_error (&error, "%s", _("Invalid query: "));
 				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
 				g_error_free (error);
-				g_object_unref (book_view);
-				g_free (path);
-
+				g_free (object_path);
 				break;
 			}
 
-			e_book_backend_add_view (backend, book_view);
+			e_book_backend_add_view (backend, view);
 
-			e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, NULL, path);
+			e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, NULL, object_path);
 
-			g_free (path);
+			g_free (object_path);
 		}
 		g_free (op->d.query);
 		break;

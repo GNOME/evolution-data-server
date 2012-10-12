@@ -44,7 +44,9 @@
 #define THRESHOLD_SECONDS 2
 
 struct _EDataBookViewPrivate {
+	GDBusConnection *connection;
 	EGdbusBookView *gdbus_object;
+	gchar *object_path;
 
 	EDataBook *book;
 	EBookBackend *backend;
@@ -68,13 +70,24 @@ struct _EDataBookViewPrivate {
 	GHashTable *fields_of_interest;
 };
 
-G_DEFINE_TYPE (EDataBookView, e_data_book_view, G_TYPE_OBJECT);
-
 enum {
 	PROP_0,
 	PROP_BACKEND,
+	PROP_CONNECTION,
+	PROP_OBJECT_PATH,
 	PROP_SEXP
 };
+
+/* Forward Declarations */
+static void	e_data_book_view_initable_init	(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EDataBookView,
+	e_data_book_view,
+	G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_data_book_view_initable_init))
 
 static guint
 str_ic_hash (gconstpointer key)
@@ -354,6 +367,26 @@ data_book_view_set_backend (EDataBookView *view,
 }
 
 static void
+data_book_view_set_connection (EDataBookView *view,
+                               GDBusConnection *connection)
+{
+	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
+	g_return_if_fail (view->priv->connection == NULL);
+
+	view->priv->connection = g_object_ref (connection);
+}
+
+static void
+data_book_view_set_object_path (EDataBookView *view,
+                                const gchar *object_path)
+{
+	g_return_if_fail (object_path != NULL);
+	g_return_if_fail (view->priv->object_path == NULL);
+
+	view->priv->object_path = g_strdup (object_path);
+}
+
+static void
 data_book_view_set_sexp (EDataBookView *view,
                          EBookBackendSExp *sexp)
 {
@@ -374,6 +407,18 @@ data_book_view_set_property (GObject *object,
 			data_book_view_set_backend (
 				E_DATA_BOOK_VIEW (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_CONNECTION:
+			data_book_view_set_connection (
+				E_DATA_BOOK_VIEW (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			data_book_view_set_object_path (
+				E_DATA_BOOK_VIEW (object),
+				g_value_get_string (value));
 			return;
 
 		case PROP_SEXP:
@@ -400,6 +445,20 @@ data_book_view_get_property (GObject *object,
 				E_DATA_BOOK_VIEW (object)));
 			return;
 
+		case PROP_CONNECTION:
+			g_value_set_object (
+				value,
+				e_data_book_view_get_connection (
+				E_DATA_BOOK_VIEW (object)));
+			return;
+
+		case PROP_OBJECT_PATH:
+			g_value_set_string (
+				value,
+				e_data_book_view_get_object_path (
+				E_DATA_BOOK_VIEW (object)));
+			return;
+
 		case PROP_SEXP:
 			g_value_set_object (
 				value,
@@ -417,6 +476,11 @@ data_book_view_dispose (GObject *object)
 	EDataBookViewPrivate *priv;
 
 	priv = E_DATA_BOOK_VIEW_GET_PRIVATE (object);
+
+	if (priv->connection != NULL) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
+	}
 
 	if (priv->book != NULL) {
 		/* Remove the weak reference */
@@ -456,6 +520,8 @@ data_book_view_finalize (GObject *object)
 
 	priv = E_DATA_BOOK_VIEW_GET_PRIVATE (object);
 
+	g_free (priv->object_path);
+
 	reset_array (priv->adds);
 	reset_array (priv->changes);
 	reset_array (priv->removes);
@@ -472,6 +538,22 @@ data_book_view_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_view_parent_class)->finalize (object);
+}
+
+static gboolean
+data_book_view_initable_init (GInitable *initable,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	EDataBookView *view;
+
+	view = E_DATA_BOOK_VIEW (initable);
+
+	return e_gdbus_book_view_register_object (
+		view->priv->gdbus_object,
+		view->priv->connection,
+		view->priv->object_path,
+		error);
 }
 
 static void
@@ -501,6 +583,32 @@ e_data_book_view_class_init (EDataBookViewClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_CONNECTION,
+		g_param_spec_object (
+			"connection",
+			"Connection",
+			"The GDBusConnection on which "
+			"to export the view interface",
+			G_TYPE_DBUS_CONNECTION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path at which to "
+			"export the view interface",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_SEXP,
 		g_param_spec_object (
 			"sexp",
@@ -510,6 +618,12 @@ e_data_book_view_class_init (EDataBookViewClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+}
+
+static void
+e_data_book_view_initable_init (GInitableIface *interface)
+{
+	interface->init = data_book_view_initable_init;
 }
 
 static void
@@ -568,20 +682,30 @@ e_data_book_view_init (EDataBookView *view)
  */
 EDataBookView *
 e_data_book_view_new (EDataBook *book,
-                      EBookBackendSExp *sexp)
+                      EBookBackendSExp *sexp,
+                      GDBusConnection *connection,
+                      const gchar *object_path,
+                      GError **error)
 {
 	EDataBookView *view;
 	EBookBackend *backend;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+	g_return_val_if_fail (object_path != NULL, NULL);
 
 	backend = e_data_book_get_backend (book);
 
-	view = g_object_new (
-		E_TYPE_DATA_BOOK_VIEW,
+	view = g_initable_new (
+		E_TYPE_DATA_BOOK_VIEW, NULL, error,
 		"backend", backend,
+		"connection", connection,
+		"object-path", object_path,
 		"sexp", sexp, NULL);
+
+	if (view == NULL)
+		return NULL;
 
 	view->priv->book = book;
 	/* Attach a weak reference to the book, so
@@ -591,25 +715,6 @@ e_data_book_view_new (EDataBook *book,
 		book_destroyed_cb, view);
 
 	return view;
-}
-
-/**
- * e_data_book_view_register_gdbus_object:
- *
- * Since: 2.32
- **/
-guint
-e_data_book_view_register_gdbus_object (EDataBookView *query,
-                                        GDBusConnection *connection,
-                                        const gchar *object_path,
-                                        GError **error)
-{
-	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (query), 0);
-	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), 0);
-	g_return_val_if_fail (object_path != NULL, 0);
-
-	return e_gdbus_book_view_register_object (
-		query->priv->gdbus_object, connection, object_path, error);
 }
 
 /**
@@ -642,6 +747,44 @@ e_data_book_view_get_sexp (EDataBookView *view)
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), NULL);
 
 	return view->priv->sexp;
+}
+
+/**
+ * e_data_book_view_get_connection:
+ * @view: an #EDataBookView
+ *
+ * Returns the #GDBusConnection on which the AddressBookView D-Bus
+ * interface is exported.
+ *
+ * Returns: the #GDBusConnection
+ *
+ * Since: 3.8
+ **/
+GDBusConnection *
+e_data_book_view_get_connection (EDataBookView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), NULL);
+
+	return view->priv->connection;
+}
+
+/**
+ * e_data_book_view_get_object_path:
+ * @view: an #EDataBookView
+ *
+ * Returns the object path at which the AddressBookView D-Bus interface
+ * is exported.
+ *
+ * Returns: the object path
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_data_book_view_get_object_path (EDataBookView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (view), NULL);
+
+	return view->priv->object_path;
 }
 
 /**

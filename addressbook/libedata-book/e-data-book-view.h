@@ -71,14 +71,16 @@ struct _EDataBookViewClass {
 
 GType		e_data_book_view_get_type	(void) G_GNUC_CONST;
 EDataBookView *	e_data_book_view_new		(struct _EDataBook *book,
-						 EBookBackendSExp *sexp);
-guint		e_data_book_view_register_gdbus_object
-						(EDataBookView *query,
+						 EBookBackendSExp *sexp,
 						 GDBusConnection *connection,
 						 const gchar *object_path,
 						 GError **error);
 struct _EBookBackend *
 		e_data_book_view_get_backend	(EDataBookView *view);
+GDBusConnection *
+		e_data_book_view_get_connection	(EDataBookView *view);
+const gchar *	e_data_book_view_get_object_path
+						(EDataBookView *view);
 EBookBackendSExp *
 		e_data_book_view_get_sexp	(EDataBookView *view);
 EBookClientViewFlags
