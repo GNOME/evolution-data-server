@@ -283,7 +283,6 @@ gdata_goa_authorizer_add_oauth2_authorization (GDataAuthorizer *authorizer,
 {
 	EGDataGoaAuthorizerPrivate *priv;
 	GString *authorization;
-	gchar *base64_encoded;
 
 	/* This MUST be called with the mutex already locked. */
 
@@ -296,13 +295,8 @@ gdata_goa_authorizer_add_oauth2_authorization (GDataAuthorizer *authorizer,
 	if (priv->access_token == NULL)
 		return;
 
-	authorization = g_string_new ("Bearer ");
-
-	base64_encoded = g_base64_encode (
-		(guchar *) priv->access_token,
-		strlen (priv->access_token));
-	g_string_append (authorization, base64_encoded);
-	g_free (base64_encoded);
+	authorization = g_string_new ("OAuth ");
+	g_string_append (authorization, priv->access_token);
 
 	/* Use replace here, not append, to make sure
 	 * there's only one "Authorization" header. */
