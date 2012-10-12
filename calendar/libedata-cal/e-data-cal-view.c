@@ -42,7 +42,9 @@
 #define THRESHOLD_SECONDS 2
 
 struct _EDataCalViewPrivate {
+	GDBusConnection *connection;
 	EGdbusCalView *gdbus_object;
+	gchar *object_path;
 
 	/* The backend we are monitoring */
 	ECalBackend *backend;
@@ -73,10 +75,21 @@ struct _EDataCalViewPrivate {
 enum {
 	PROP_0,
 	PROP_BACKEND,
+	PROP_CONNECTION,
+	PROP_OBJECT_PATH,
 	PROP_SEXP
 };
 
-G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
+/* Forward Declarations */
+static void	e_data_cal_view_initable_init	(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EDataCalView,
+	e_data_cal_view,
+	G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_data_cal_view_initable_init))
 
 static guint
 str_ic_hash (gconstpointer key)
@@ -296,6 +309,26 @@ data_cal_view_set_backend (EDataCalView *view,
 }
 
 static void
+data_cal_view_set_connection (EDataCalView *view,
+                              GDBusConnection *connection)
+{
+	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
+	g_return_if_fail (view->priv->connection == NULL);
+
+	view->priv->connection = g_object_ref (connection);
+}
+
+static void
+data_cal_view_set_object_path (EDataCalView *view,
+                               const gchar *object_path)
+{
+	g_return_if_fail (object_path != NULL);
+	g_return_if_fail (view->priv->object_path == NULL);
+
+	view->priv->object_path = g_strdup (object_path);
+}
+
+static void
 data_cal_view_set_sexp (EDataCalView *view,
                         ECalBackendSExp *sexp)
 {
@@ -316,6 +349,18 @@ data_cal_view_set_property (GObject *object,
 			data_cal_view_set_backend (
 				E_DATA_CAL_VIEW (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_CONNECTION:
+			data_cal_view_set_connection (
+				E_DATA_CAL_VIEW (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			data_cal_view_set_object_path (
+				E_DATA_CAL_VIEW (object),
+				g_value_get_string (value));
 			return;
 
 		case PROP_SEXP:
@@ -339,6 +384,20 @@ data_cal_view_get_property (GObject *object,
 			g_value_set_object (
 				value,
 				e_data_cal_view_get_backend (
+				E_DATA_CAL_VIEW (object)));
+			return;
+
+		case PROP_CONNECTION:
+			g_value_set_object (
+				value,
+				e_data_cal_view_get_connection (
+				E_DATA_CAL_VIEW (object)));
+			return;
+
+		case PROP_OBJECT_PATH:
+			g_value_set_string (
+				value,
+				e_data_cal_view_get_object_path (
 				E_DATA_CAL_VIEW (object)));
 			return;
 
@@ -368,6 +427,11 @@ data_cal_view_dispose (GObject *object)
 		priv->backend = NULL;
 	}
 
+	if (priv->connection != NULL) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
+	}
+
 	if (priv->sexp != NULL) {
 		g_object_unref (priv->sexp);
 		priv->sexp = NULL;
@@ -393,6 +457,8 @@ data_cal_view_finalize (GObject *object)
 
 	priv = E_DATA_CAL_VIEW_GET_PRIVATE (object);
 
+	g_free (priv->object_path);
+
 	reset_array (priv->adds);
 	reset_array (priv->changes);
 	reset_array (priv->removes);
@@ -410,6 +476,22 @@ data_cal_view_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_view_parent_class)->finalize (object);
+}
+
+static gboolean
+data_cal_view_initable_init (GInitable *initable,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	EDataCalView *view;
+
+	view = E_DATA_CAL_VIEW (initable);
+
+	return e_gdbus_cal_view_register_object (
+		view->priv->gdbus_object,
+		view->priv->connection,
+		view->priv->object_path,
+		error);
 }
 
 static void
@@ -439,6 +521,32 @@ e_data_cal_view_class_init (EDataCalViewClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_CONNECTION,
+		g_param_spec_object (
+			"connection",
+			"Connection",
+			"The GDBusConnection on which "
+			"to export the view interface",
+			G_TYPE_DBUS_CONNECTION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path at which to "
+			"export the view interface",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_SEXP,
 		g_param_spec_object (
 			"sexp",
@@ -448,6 +556,12 @@ e_data_cal_view_class_init (EDataCalViewClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+}
+
+static void
+e_data_cal_view_initable_init (GInitableIface *interface)
+{
+	interface->init = data_cal_view_initable_init;
 }
 
 static void
@@ -500,33 +614,23 @@ e_data_cal_view_init (EDataCalView *view)
 
 EDataCalView *
 e_data_cal_view_new (ECalBackend *backend,
-                     ECalBackendSExp *sexp)
+                     ECalBackendSExp *sexp,
+                     GDBusConnection *connection,
+                     const gchar *object_path,
+                     GError **error)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_SEXP (sexp), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+	g_return_val_if_fail (object_path != NULL, NULL);
 
-	return g_object_new (
-		E_TYPE_DATA_CAL_VIEW,
-		"backend", backend, "sexp", sexp, NULL);
-}
-
-/**
- * e_data_cal_view_register_gdbus_object:
- *
- * Since: 2.32
- **/
-guint
-e_data_cal_view_register_gdbus_object (EDataCalView *view,
-                                       GDBusConnection *connection,
-                                       const gchar *object_path,
-                                       GError **error)
-{
-	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), 0);
-	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), 0);
-	g_return_val_if_fail (object_path != NULL, 0);
-
-	return e_gdbus_cal_view_register_object (
-		view->priv->gdbus_object, connection, object_path, error);
+	return g_initable_new (
+		E_TYPE_DATA_CAL_VIEW, NULL, error,
+		"backend", backend,
+		"connection", connection,
+		"object-path", object_path,
+		"sexp", sexp,
+		NULL);
 }
 
 static void
@@ -748,6 +852,44 @@ e_data_cal_view_get_backend (EDataCalView *view)
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 
 	return view->priv->backend;
+}
+
+/**
+ * e_data_cal_view_get_connection:
+ * @view: an #EDataCalView
+ *
+ * Returns the #GDBusConnection on which the CalendarView D-Bus
+ * interface is exported.
+ *
+ * Returns: the #GDBusConnection
+ *
+ * Since: 3.8
+ **/
+GDBusConnection *
+e_data_cal_view_get_connection (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
+
+	return view->priv->connection;
+}
+
+/**
+ * e_data_cal_view_get_object_path:
+ * @view: an #EDataCalView
+ *
+ * Return the object path at which the CalendarView D-Bus inteface is
+ * exported.
+ *
+ * Returns: the object path
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_data_cal_view_get_object_path (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
+
+	return view->priv->object_path;
 }
 
 /**

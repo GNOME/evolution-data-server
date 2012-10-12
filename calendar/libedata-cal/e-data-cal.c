@@ -254,7 +254,8 @@ operation_thread (gpointer data,
 		if (op->d.sexp) {
 			EDataCalView *view;
 			ECalBackendSExp *obj_sexp;
-			gchar *path;
+			GDBusConnection *connection;
+			gchar *object_path;
 			GError *error = NULL;
 
 			/* we handle this entirely here, since it doesn't require any
@@ -268,32 +269,34 @@ operation_thread (gpointer data,
 				break;
 			}
 
-			view = e_data_cal_view_new (backend, obj_sexp);
+			object_path = construct_calview_path ();
+			connection = e_gdbus_cal_stub_get_connection (
+				op->cal->priv->gdbus_object);
+
+			view = e_data_cal_view_new (
+				backend, obj_sexp,
+				connection, object_path, &error);
+
 			g_object_unref (obj_sexp);
-			if (!view) {
-				g_free (op->d.sexp);
-				e_data_cal_respond_get_view (op->cal, op->id, EDC_ERROR (OtherError), NULL);
-				break;
-			}
 
-			path = construct_calview_path ();
-			e_data_cal_view_register_gdbus_object (view, e_gdbus_cal_stub_get_connection (op->cal->priv->gdbus_object), path, &error);
+			/* Sanity check. */
+			g_return_if_fail (
+				((view != NULL) && (error == NULL)) ||
+				((view == NULL) && (error != NULL)));
 
-			if (error) {
-				g_object_unref (view);
+			if (error != NULL) {
 				g_free (op->d.sexp);
 				e_data_cal_respond_get_view (op->cal, op->id, EDC_ERROR_EX (OtherError, error->message), NULL);
 				g_error_free (error);
-				g_free (path);
-
+				g_free (object_path);
 				break;
 			}
 
 			e_cal_backend_add_view (backend, view);
 
-			e_data_cal_respond_get_view (op->cal, op->id, EDC_ERROR (Success), path);
+			e_data_cal_respond_get_view (op->cal, op->id, EDC_ERROR (Success), object_path);
 
-			g_free (path);
+			g_free (object_path);
 		}
 		g_free (op->d.sexp);
 		break;

@@ -66,14 +66,15 @@ struct _EDataCalViewClass {
 
 GType		e_data_cal_view_get_type	(void) G_GNUC_CONST;
 EDataCalView *	e_data_cal_view_new		(struct _ECalBackend *backend,
-						 struct _ECalBackendSExp *sexp);
-guint		e_data_cal_view_register_gdbus_object
-						(EDataCalView *view,
+						 struct _ECalBackendSExp *sexp,
 						 GDBusConnection *connection,
 						 const gchar *object_path,
 						 GError **error);
 struct _ECalBackend *
 		e_data_cal_view_get_backend	(EDataCalView *view);
+GDBusConnection *
+		e_data_cal_view_get_connection	(EDataCalView *view);
+const gchar *	e_data_cal_view_get_object_path	(EDataCalView *view);
 struct _ECalBackendSExp *
 		e_data_cal_view_get_sexp	(EDataCalView *view);
 gboolean	e_data_cal_view_object_matches	(EDataCalView *view,
