@@ -1069,9 +1069,15 @@ e_book_backend_webdav_start_view (EBookBackend *backend,
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	const gchar *query = e_data_book_view_get_card_query (book_view);
-	GList *contacts = e_book_backend_cache_get_contacts (priv->cache, query);
+	EBookBackendSExp *sexp;
+	const gchar *query;
+	GList *contacts;
 	GList *l;
+
+	sexp = e_data_book_view_get_sexp (book_view);
+	query = e_book_backend_sexp_text (sexp);
+
+	contacts = e_book_backend_cache_get_contacts (priv->cache, query);
 
 	for (l = contacts; l != NULL; l = g_list_next (l)) {
 		EContact *contact = l->data;

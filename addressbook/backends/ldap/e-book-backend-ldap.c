@@ -4785,6 +4785,8 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
                             EDataBook *book,
                             EDataBookView *view)
 {
+	EBookBackendSExp *sexp;
+	const gchar *query;
 	gchar *ldap_query;
 	GList *contacts;
 	GList *l;
@@ -4796,6 +4798,9 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 		g_get_current_time (&start);
 	}
 
+	sexp = e_data_book_view_get_sexp (view);
+	query = e_book_backend_sexp_text (sexp);
+
 	if (!e_backend_get_online (E_BACKEND (bl))) {
 		if (!(bl->priv->marked_for_offline && bl->priv->cache)) {
 			GError *edb_err = EDB_ERROR (REPOSITORY_OFFLINE);
@@ -4804,8 +4809,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 			return;
 		}
 
-		contacts = e_book_backend_cache_get_contacts (bl->priv->cache,
-							      e_data_book_view_get_card_query (view));
+		contacts = e_book_backend_cache_get_contacts (bl->priv->cache, query);
 
 		for (l = contacts; l; l = g_list_next (l)) {
 			EContact *contact = l->data;
@@ -4819,7 +4823,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 		return;
 	}
 
-	ldap_query = e_book_backend_ldap_build_query (bl, e_data_book_view_get_card_query (view));
+	ldap_query = e_book_backend_ldap_build_query (bl, query);
 
 	/* search for nonempty full names */
 	if (!ldap_query && can_browse ((EBookBackend *) bl))

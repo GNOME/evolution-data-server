@@ -71,40 +71,37 @@ struct _EDataBookViewClass {
 
 GType		e_data_book_view_get_type	(void) G_GNUC_CONST;
 EDataBookView *	e_data_book_view_new		(struct _EDataBook *book,
-						 const gchar *card_query,
-						 EBookBackendSExp *card_sexp);
+						 EBookBackendSExp *sexp);
 guint		e_data_book_view_register_gdbus_object
 						(EDataBookView *query,
 						 GDBusConnection *connection,
 						 const gchar *object_path,
 						 GError **error);
-
-const gchar *	e_data_book_view_get_card_query	(EDataBookView *book_view);
-EBookBackendSExp *
-		e_data_book_view_get_card_sexp	(EDataBookView *book_view);
 struct _EBookBackend *
-		e_data_book_view_get_backend	(EDataBookView *book_view);
+		e_data_book_view_get_backend	(EDataBookView *view);
+EBookBackendSExp *
+		e_data_book_view_get_sexp	(EDataBookView *view);
 EBookClientViewFlags
-		e_data_book_view_get_flags	(EDataBookView *book_view);
-void		e_data_book_view_notify_update	(EDataBookView *book_view,
+		e_data_book_view_get_flags	(EDataBookView *view);
+void		e_data_book_view_notify_update	(EDataBookView *view,
 						 const EContact *contact);
 
 void		e_data_book_view_notify_update_vcard
-						(EDataBookView *book_view,
+						(EDataBookView *view,
 						 const gchar *id,
 						 const gchar *vcard);
 void		e_data_book_view_notify_update_prefiltered_vcard
-						(EDataBookView *book_view,
+						(EDataBookView *view,
 						 const gchar *id,
 						 const gchar *vcard);
 
-void		e_data_book_view_notify_remove	(EDataBookView *book_view,
+void		e_data_book_view_notify_remove	(EDataBookView *view,
 						 const gchar *id);
 void		e_data_book_view_notify_complete
-						(EDataBookView *book_view,
+						(EDataBookView *view,
 						 const GError *error);
 void		e_data_book_view_notify_progress
-						(EDataBookView *book_view,
+						(EDataBookView *view,
 						 guint percent,
 						 const gchar *message);
 

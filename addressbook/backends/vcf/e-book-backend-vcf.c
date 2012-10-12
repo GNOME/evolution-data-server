@@ -415,7 +415,7 @@ e_book_backend_vcf_get_contact (EBookBackendSync *backend,
 typedef struct {
 	EBookBackendVCF      *bvcf;
 	gboolean            search_needed;
-	EBookBackendSExp *card_sexp;
+	EBookBackendSExp *sexp;
 	GSList              *list;
 } GetContactListClosure;
 
@@ -423,7 +423,7 @@ static void
 foreach_get_contact_compare (gchar *vcard_string,
                              GetContactListClosure *closure)
 {
-	if ((!closure->search_needed) || e_book_backend_sexp_match_vcard  (closure->card_sexp, vcard_string)) {
+	if ((!closure->search_needed) || e_book_backend_sexp_match_vcard  (closure->sexp, vcard_string)) {
 		closure->list = g_slist_append (closure->list, g_strdup (vcard_string));
 	}
 }
@@ -442,12 +442,12 @@ e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
 
 	closure.bvcf = bvcf;
 	closure.search_needed = strcmp (search, "(contains \"x-evolution-any-field\" \"\")");
-	closure.card_sexp = e_book_backend_sexp_new (search);
+	closure.sexp = e_book_backend_sexp_new (search);
 	closure.list = NULL;
 
 	g_list_foreach (bvcf->priv->contact_list, (GFunc) foreach_get_contact_compare, &closure);
 
-	g_object_unref (closure.card_sexp);
+	g_object_unref (closure.sexp);
 
 	*contacts = closure.list;
 }
@@ -495,6 +495,7 @@ book_view_thread (gpointer data)
 {
 	EDataBookView *book_view = data;
 	VCFBackendSearchClosure *closure = get_closure (book_view);
+	EBookBackendSExp *sexp;
 	const gchar *query;
 	GList *l;
 
@@ -502,7 +503,8 @@ book_view_thread (gpointer data)
 	 * when/if it's stopped */
 	g_object_ref (book_view);
 
-	query = e_data_book_view_get_card_query (book_view);
+	sexp = e_data_book_view_get_sexp (book_view);
+	query = e_book_backend_sexp_text (sexp);
 
 	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")"))
 		e_data_book_view_notify_progress (book_view, -1, _("Loading..."));

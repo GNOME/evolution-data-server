@@ -1273,7 +1273,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	DBC            *dbc;
 	gint            db_error;
 	DBT  id_dbt, vcard_dbt;
-	EBookBackendSExp *card_sexp = NULL;
+	EBookBackendSExp *sexp = NULL;
 	gboolean search_needed;
 	const gchar *search = query;
 	GSList *contact_list = NULL, *l;
@@ -1326,8 +1326,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
 			search_needed = FALSE;
 
-		card_sexp = e_book_backend_sexp_new (search);
-		if (!card_sexp) {
+		sexp = e_book_backend_sexp_new (search);
+		if (!sexp) {
 			g_propagate_error (perror, EDB_ERROR (INVALID_QUERY));
 			return;
 		}
@@ -1354,7 +1354,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			    (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_REVISION_NAME) + 1
 			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME))) {
 
-				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
+				if ((!search_needed) || (sexp != NULL && e_book_backend_sexp_match_vcard  (sexp, vcard_dbt.data))) {
 					contact_list = g_slist_prepend (contact_list, vcard_dbt.data);
 				} else {
 					free (vcard_dbt.data);
@@ -1366,7 +1366,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 		}
-		g_object_unref (card_sexp);
+		g_object_unref (sexp);
 
 		if (db_error == DB_NOTFOUND) {
 			/* Success */
@@ -1397,7 +1397,7 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 	DBC            *dbc;
 	gint            db_error;
 	DBT  id_dbt, vcard_dbt;
-	EBookBackendSExp *card_sexp = NULL;
+	EBookBackendSExp *sexp = NULL;
 	gboolean search_needed;
 	const gchar *search = query;
 	GSList *uids = NULL;
@@ -1419,8 +1419,8 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
 			search_needed = FALSE;
 
-		card_sexp = e_book_backend_sexp_new (search);
-		if (!card_sexp) {
+		sexp = e_book_backend_sexp_new (search);
+		if (!sexp) {
 			g_propagate_error (perror, EDB_ERROR (INVALID_QUERY));
 			return;
 		}
@@ -1447,7 +1447,7 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 			    (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_REVISION_NAME) + 1
 			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME))) {
 
-				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
+				if ((!search_needed) || (sexp != NULL && e_book_backend_sexp_match_vcard  (sexp, vcard_dbt.data))) {
 					uids = g_slist_prepend (uids, g_strdup (id_dbt.data));
 				}
 			}
@@ -1457,7 +1457,7 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 		}
-		g_object_unref (card_sexp);
+		g_object_unref (sexp);
 
 		if (db_error == DB_NOTFOUND) {
 			/* Success */
@@ -1529,6 +1529,7 @@ book_view_thread (gpointer data)
 	EDataBookView *book_view;
 	FileBackendSearchClosure *closure;
 	EBookBackendFile *bf;
+	EBookBackendSExp *sexp;
 	const gchar *query;
 	DB  *db;
 	DBT id_dbt, vcard_dbt;
@@ -1555,8 +1556,10 @@ book_view_thread (gpointer data)
 	 * when/if it's stopped */
 	g_object_ref (book_view);
 
-	db                 = bf->priv->file_db;
-	query              = e_data_book_view_get_card_query (book_view);
+	sexp = e_data_book_view_get_sexp (book_view);
+	query = e_book_backend_sexp_text (sexp);
+
+	db = bf->priv->file_db;
 	fields_of_interest = e_data_book_view_get_fields_of_interest (book_view);
 
 	if (!db) {
@@ -2203,11 +2206,16 @@ view_notify_update (EBookBackendFile *backend,
                     EDataBookView *view,
                     EContact *contact)
 {
+	EBookBackendSExp *sexp;
 	GHashTable *fields   = e_data_book_view_get_fields_of_interest (view);
+	const gchar *query;
 	gboolean    notified = FALSE;
 	gboolean    with_all_required_fields = FALSE;
 
-	if (e_book_backend_sqlitedb_is_summary_query (e_data_book_view_get_card_query (view)) &&
+	sexp = e_data_book_view_get_sexp (view);
+	query = e_book_backend_sexp_text (sexp);
+
+	if (e_book_backend_sqlitedb_is_summary_query (query) &&
 	    e_book_backend_sqlitedb_is_summary_fields (fields)) {
 
 		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);

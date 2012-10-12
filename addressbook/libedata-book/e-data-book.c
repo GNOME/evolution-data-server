@@ -212,7 +212,7 @@ operation_thread (gpointer data,
 
 			path = construct_bookview_path ();
 
-			book_view = e_data_book_view_new (op->book, op->d.query, card_sexp);
+			book_view = e_data_book_view_new (op->book, card_sexp);
 			e_data_book_view_register_gdbus_object (book_view, e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object), path, &error);
 
 			if (error) {
