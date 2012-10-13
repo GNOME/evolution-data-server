@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.6.1 2012-10-15
+--------------------------------------
+
+Bug Fixes:
+	Bug 685588 - Remove useless LIBICAL_CFLAGS and LIBICAL_LIBS
+	             (Peter Hurley)
+	Bug 685725 - Handle "muser" attributes in %gconf.xml files
+	             (Bastien Nocera)
+	Bug 685713 - ESourceRegistry's manager thread aborts on error
+	             (Matthew Barnes)
+
+Other Changes:
+	* Do not hardcode -lgcov (Antoine Jacoutot)
+	* Drop the check for libgdata >= 0.9.1 for GOA support.
+	  (Matthew Barnes)
+	* ESourceRegistryServer: File monitor should set flags on new sources.
+	  (Matthew Barnes)
+
+Translations:
+	Alexander Shopov (bg)
+	Jiri Eischmann (cs)
+	Flemming Christensen (da)
+	Timo Jyrinki (fi)
+	Luca Ferretti (it)
+	Milo Casagrande (it)
+	Žygimantas Beručka (lt)
+	Ani Peter (ml)
+	Kjartan Maraas (nb)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.6.0 2012-09-24
 --------------------------------------
 
