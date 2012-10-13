@@ -128,6 +128,7 @@ e_book_backend_factory_get_type
 <TITLE>EBookBackendSExp</TITLE>
 EBookBackendSExp
 e_book_backend_sexp_new
+e_book_backend_sexp_text
 e_book_backend_sexp_match_vcard
 e_book_backend_sexp_match_contact
 <SUBSECTION Standard>

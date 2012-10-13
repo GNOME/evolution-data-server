@@ -32,6 +32,7 @@ typedef struct _SearchContext SearchContext;
 
 struct _EBookBackendSExpPrivate {
 	ESExp *search_sexp;
+	gchar *text;
 	SearchContext *search_context;
 };
 
@@ -1022,6 +1023,7 @@ e_book_backend_sexp_new (const gchar *text)
 	gint i;
 
 	sexp->priv->search_sexp = e_sexp_new ();
+	sexp->priv->text = g_strdup (text);
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
@@ -1045,6 +1047,24 @@ e_book_backend_sexp_new (const gchar *text)
 	return sexp;
 }
 
+/**
+ * e_book_backend_sexp_text:
+ * @sexp: an #EBookBackendSExp
+ *
+ * Retrieve the text expression for the given #EBookBackendSExp object.
+ *
+ * Returns: the text expression
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_book_backend_sexp_text (EBookBackendSExp *sexp)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp), NULL);
+
+	return sexp->priv->text;
+}
+
 static void
 e_book_backend_sexp_finalize (GObject *object)
 {
@@ -1053,7 +1073,7 @@ e_book_backend_sexp_finalize (GObject *object)
 	priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (object);
 
 	e_sexp_unref (priv->search_sexp);
-
+	g_free (priv->text);
 	g_free (priv->search_context);
 
 	/* Chain up to parent's finalize() method. */

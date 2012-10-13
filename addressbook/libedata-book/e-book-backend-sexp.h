@@ -67,6 +67,7 @@ struct _EBookBackendSExpClass {
 GType		e_book_backend_sexp_get_type	(void) G_GNUC_CONST;
 EBookBackendSExp *
 		e_book_backend_sexp_new		(const gchar *text);
+const gchar *	e_book_backend_sexp_text	(EBookBackendSExp *sexp);
 gboolean	e_book_backend_sexp_match_vcard	(EBookBackendSExp *sexp,
 						 const gchar *vcard);
 gboolean	e_book_backend_sexp_match_contact
