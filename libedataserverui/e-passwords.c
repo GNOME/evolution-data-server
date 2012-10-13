@@ -46,6 +46,10 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
+
+/* XXX Yeah, yeah... */
+#define SECRET_API_SUBJECT_TO_CHANGE
+
 #include <libsecret/secret.h>
 
 #include <libedataserver/libedataserver.h>

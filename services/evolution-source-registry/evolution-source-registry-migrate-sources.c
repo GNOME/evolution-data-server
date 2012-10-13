@@ -21,6 +21,10 @@
 #include <glib/gstdio.h>
 #include <camel/camel.h>
 #include <libsoup/soup.h>
+
+/* XXX Yeah, yeah... */
+#define SECRET_API_SUBJECT_TO_CHANGE
+
 #include <libsecret/secret.h>
 
 #include <libebackend/libebackend.h>
