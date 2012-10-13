@@ -493,6 +493,7 @@ e_source_collection_get_type
 <TITLE>ESourceExtension</TITLE>
 ESourceExtension
 E_SOURCE_PARAM_SETTING
+e_source_extension_ref_source
 e_source_extension_get_source
 <SUBSECTION Standard>
 E_SOURCE_EXTENSION

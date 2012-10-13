@@ -36,7 +36,7 @@
 	((obj), E_TYPE_SOURCE_EXTENSION, ESourceExtensionPrivate))
 
 struct _ESourceExtensionPrivate {
-	gpointer source;  /* weak pointer */
+	GWeakRef source;
 };
 
 enum {
@@ -54,12 +54,8 @@ source_extension_set_source (ESourceExtension *extension,
                              ESource *source)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
-	g_return_if_fail (extension->priv->source == NULL);
 
-	extension->priv->source = source;
-
-	g_object_add_weak_pointer (
-		G_OBJECT (source), &extension->priv->source);
+	g_weak_ref_set (&extension->priv->source, source);
 }
 
 static void
@@ -87,8 +83,8 @@ source_extension_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_SOURCE:
-			g_value_set_object (
-				value, e_source_extension_get_source (
+			g_value_take_object (
+				value, e_source_extension_ref_source (
 				E_SOURCE_EXTENSION (object)));
 			return;
 	}
@@ -103,11 +99,7 @@ source_extension_dispose (GObject *object)
 
 	priv = E_SOURCE_EXTENSION_GET_PRIVATE (object);
 
-	if (priv->source != NULL) {
-		g_object_remove_weak_pointer (
-			G_OBJECT (priv->source), &priv->source);
-		priv->source = NULL;
-	}
+	g_weak_ref_set (&priv->source, NULL);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_source_extension_parent_class)->dispose (object);
@@ -121,11 +113,13 @@ source_extension_notify (GObject *object,
 	ESourceExtension *extension;
 
 	extension = E_SOURCE_EXTENSION (object);
-	source = e_source_extension_get_source (extension);
+	source = e_source_extension_ref_source (extension);
 	g_return_if_fail (source != NULL);
 
 	if ((pspec->flags & E_SOURCE_PARAM_SETTING) != 0)
 		e_source_changed (source);
+
+	g_object_unref (source);
 }
 
 static void
@@ -161,23 +155,56 @@ e_source_extension_init (ESourceExtension *extension)
 }
 
 /**
+ * e_source_extension_ref_source:
+ * @extension: an #ESourceExtension
+ *
+ * Returns the #ESource instance to which the @extension belongs.
+ *
+ * The returned #ESource is referenced for thread-safety.  Unreference
+ * the #ESource with g_object_unref() when finished with it.
+ *
+ * Returns: the #ESource instance
+ *
+ * Since: 3.8
+ **/
+ESource *
+e_source_extension_ref_source (ESourceExtension *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_EXTENSION (extension), NULL);
+
+	return g_weak_ref_get (&extension->priv->source);
+}
+
+/**
  * e_source_extension_get_source:
  * @extension: an #ESourceExtension
  *
  * Returns the #ESource instance to which @extension belongs.
  *
+ * Note this function is not thread-safe.  The returned #ESource could
+ * be finalized by another thread while the caller is still using it.
+ *
  * Returns: (transfer none): the #ESource instance
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.8: Use e_source_extension_ref_source() instead.
  **/
 ESource *
 e_source_extension_get_source (ESourceExtension *extension)
 {
+	ESource *source;
+
 	g_return_val_if_fail (E_IS_SOURCE_EXTENSION (extension), NULL);
 
-	/* If the ESource was finalized and our weak pointer set this
-	 * to NULL, then the type cast macro will fail and we'll get a
-	 * runtime warning about it, which is what we want. */
-	return E_SOURCE (extension->priv->source);
+	source = e_source_extension_ref_source (extension);
+
+	/* XXX Drop the ESource reference for backward-compatibility.
+	 *     This is risky.  Without a reference, the ESource could
+	 *     be finalized while the caller is still using it. */
+	if (source != NULL)
+		g_object_unref (source);
+
+	return source;
 }
 

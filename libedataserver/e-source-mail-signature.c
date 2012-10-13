@@ -174,7 +174,7 @@ source_mail_signature_constructed (GObject *object)
 		constructed (object);
 
 	extension = E_SOURCE_EXTENSION (object);
-	source = e_source_extension_get_source (extension);
+	source = e_source_extension_ref_source (extension);
 	uid = e_source_get_uid (source);
 
 	config_dir = e_get_user_config_dir ();
@@ -184,6 +184,8 @@ source_mail_signature_constructed (GObject *object)
 	g_mkdir_with_parents (base_dir, 0700);
 	g_free (base_dir);
 	g_free (path);
+
+	g_object_unref (source);
 }
 
 static void

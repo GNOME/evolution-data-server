@@ -106,13 +106,15 @@ timeout_node_invoke (gpointer data)
 	ESource *source;
 
 	extension = E_SOURCE_EXTENSION (node->extension);
-	source = e_source_extension_get_source (extension);
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	source = e_source_extension_ref_source (extension);
+	g_return_val_if_fail (source != NULL, FALSE);
 
 	/* We allow timeouts to be scheduled for disabled data sources
 	 * but we don't invoke the callback.  Keeps the logic simple. */
 	if (e_source_get_enabled (source))
 		node->callback (source, node->user_data);
+
+	g_object_unref (source);
 
 	return TRUE;
 }
@@ -309,7 +311,7 @@ source_refresh_constructed (GObject *object)
 	G_OBJECT_CLASS (e_source_refresh_parent_class)->constructed (object);
 
 	extension = E_SOURCE_EXTENSION (object);
-	source = e_source_extension_get_source (extension);
+	source = e_source_extension_ref_source (extension);
 
 	/* There should be no lifecycle issues here
 	 * since we get finalized with our ESource. */
@@ -317,6 +319,8 @@ source_refresh_constructed (GObject *object)
 		source, "notify::enabled",
 		G_CALLBACK (source_refresh_notify_enabled_cb),
 		extension);
+
+	g_object_unref (source);
 }
 
 static void

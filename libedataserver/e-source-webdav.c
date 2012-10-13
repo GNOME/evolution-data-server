@@ -123,7 +123,7 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 	g_mutex_unlock (webdav_extension->priv->property_lock);
 
 	extension = E_SOURCE_EXTENSION (webdav_extension);
-	source = e_source_extension_get_source (extension);
+	source = e_source_extension_ref_source (extension);
 
 	g_object_set (
 		extension,
@@ -149,6 +149,8 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 		"secure", (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS),
 		NULL);
 
+	g_object_unref (source);
+
 	soup_uri_free (soup_uri);
 }
 
@@ -167,7 +169,7 @@ source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
 	gboolean secure;
 
 	extension = E_SOURCE_EXTENSION (webdav_extension);
-	source = e_source_extension_get_source (extension);
+	source = e_source_extension_ref_source (extension);
 
 	g_object_get (
 		extension,
@@ -192,6 +194,8 @@ source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
 		extension,
 		"secure", &secure,
 		NULL);
+
+	g_object_unref (source);
 
 	g_mutex_lock (webdav_extension->priv->property_lock);
 
@@ -383,7 +387,7 @@ source_webdav_constructed (GObject *object)
 	 *     how it's supposed to work if everyone follows the rules. */
 
 	extension = E_SOURCE_EXTENSION (object);
-	source = e_source_extension_get_source (extension);
+	source = e_source_extension_ref_source (extension);
 
 	g_signal_connect (
 		extension, "notify::resource-path",
@@ -424,6 +428,8 @@ source_webdav_constructed (GObject *object)
 	g_signal_connect (
 		extension, "notify::secure",
 		G_CALLBACK (source_webdav_notify_cb), object);
+
+	g_object_unref (source);
 }
 
 static void

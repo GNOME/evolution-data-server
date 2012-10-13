@@ -331,7 +331,7 @@ source_camel_constructed (GObject *object)
 	class = E_SOURCE_CAMEL_GET_CLASS (object);
 	priv = E_SOURCE_CAMEL_GET_PRIVATE (object);
 
-	source = e_source_extension_get_source (E_SOURCE_EXTENSION (object));
+	source = e_source_extension_ref_source (E_SOURCE_EXTENSION (object));
 
 	priv->settings = g_object_new (class->settings_type, NULL);
 
@@ -412,6 +412,8 @@ source_camel_constructed (GObject *object)
 	g_array_set_size (priv->value_array, array_index);
 
 	g_free (properties);
+
+	g_object_unref (source);
 }
 
 static void
