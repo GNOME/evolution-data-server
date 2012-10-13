@@ -888,6 +888,14 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 			((source == NULL) && (error != NULL)));
 
 		if (error == NULL) {
+			/* File monitors are only placed on directories
+			 * where data sources are writable and removable,
+			 * so it should be safe to assume these flags. */
+			e_server_side_source_set_writable (
+				E_SERVER_SIDE_SOURCE (source), TRUE);
+			e_server_side_source_set_removable (
+				E_SERVER_SIDE_SOURCE (source), TRUE);
+
 			e_source_registry_server_add_source (server, source);
 			g_object_unref (source);
 		} else {
