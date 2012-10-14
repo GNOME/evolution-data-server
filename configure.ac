@@ -1611,8 +1611,8 @@ libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
 modules/Makefile
 modules/cache-reaper/Makefile
+modules/gnome-online-accounts/Makefile
 modules/google-backend/Makefile
-modules/online-accounts/Makefile
 modules/yahoo-backend/Makefile
 private/Makefile
 services/Makefile

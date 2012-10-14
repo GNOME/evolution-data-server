@@ -1,5 +1,5 @@
 /*
- * module-online-accounts.c
+ * module-gnome-online-accounts.c
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,19 +28,19 @@
 #include "goaewsclient.h"
 
 /* Standard GObject macros */
-#define E_TYPE_ONLINE_ACCOUNTS \
-	(e_online_accounts_get_type ())
-#define E_ONLINE_ACCOUNTS(obj) \
+#define E_TYPE_GNOME_ONLINE_ACCOUNTS \
+	(e_gnome_online_accounts_get_type ())
+#define E_GNOME_ONLINE_ACCOUNTS(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), E_TYPE_ONLINE_ACCOUNTS, EOnlineAccounts))
+	((obj), E_TYPE_GNOME_ONLINE_ACCOUNTS, EGnomeOnlineAccounts))
 
 #define CAMEL_OAUTH_MECHANISM_NAME  "XOAUTH"
 #define CAMEL_OAUTH2_MECHANISM_NAME "XOAUTH2"
 
-typedef struct _EOnlineAccounts EOnlineAccounts;
-typedef struct _EOnlineAccountsClass EOnlineAccountsClass;
+typedef struct _EGnomeOnlineAccounts EGnomeOnlineAccounts;
+typedef struct _EGnomeOnlineAccountsClass EGnomeOnlineAccountsClass;
 
-struct _EOnlineAccounts {
+struct _EGnomeOnlineAccounts {
 	EExtension parent;
 
 	GoaClient *goa_client;
@@ -50,7 +50,7 @@ struct _EOnlineAccounts {
 	GHashTable *goa_to_eds;
 };
 
-struct _EOnlineAccountsClass {
+struct _EGnomeOnlineAccountsClass {
 	EExtensionClass parent_class;
 };
 
@@ -78,15 +78,15 @@ void e_module_load (GTypeModule *type_module);
 void e_module_unload (GTypeModule *type_module);
 
 /* Forward Declarations */
-GType e_online_accounts_get_type (void);
+GType e_gnome_online_accounts_get_type (void);
 
 G_DEFINE_DYNAMIC_TYPE (
-	EOnlineAccounts,
-	e_online_accounts,
+	EGnomeOnlineAccounts,
+	e_gnome_online_accounts,
 	E_TYPE_EXTENSION)
 
 static const gchar *
-online_accounts_get_backend_name (const gchar *goa_provider_type)
+gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 {
 	const gchar *eds_backend_name = NULL;
 
@@ -108,7 +108,7 @@ online_accounts_get_backend_name (const gchar *goa_provider_type)
 }
 
 static ESourceRegistryServer *
-online_accounts_get_server (EOnlineAccounts *extension)
+gnome_online_accounts_get_server (EGnomeOnlineAccounts *extension)
 {
 	EExtensible *extensible;
 
@@ -118,16 +118,16 @@ online_accounts_get_server (EOnlineAccounts *extension)
 }
 
 static gboolean
-online_accounts_provider_type_to_backend_name (GBinding *binding,
-                                               const GValue *source_value,
-                                               GValue *target_value,
-                                               gpointer unused)
+gnome_online_accounts_provider_type_to_backend_name (GBinding *binding,
+                                                     const GValue *source_value,
+                                                     GValue *target_value,
+                                                     gpointer unused)
 {
 	const gchar *provider_type;
 	const gchar *backend_name;
 
 	provider_type = g_value_get_string (source_value);
-	backend_name = online_accounts_get_backend_name (provider_type);
+	backend_name = gnome_online_accounts_get_backend_name (provider_type);
 	g_return_val_if_fail (backend_name != NULL, FALSE);
 	g_value_set_string (target_value, backend_name);
 
@@ -135,10 +135,10 @@ online_accounts_provider_type_to_backend_name (GBinding *binding,
 }
 
 static gboolean
-online_accounts_object_is_non_null (GBinding *binding,
-                                    const GValue *source_value,
-                                    GValue *target_value,
-                                    gpointer unused)
+gnome_online_accounts_object_is_non_null (GBinding *binding,
+                                          const GValue *source_value,
+                                          GValue *target_value,
+                                          gpointer unused)
 {
 	gpointer v_object;
 
@@ -149,7 +149,7 @@ online_accounts_object_is_non_null (GBinding *binding,
 }
 
 static ESource *
-online_accounts_new_source (EOnlineAccounts *extension)
+gnome_online_accounts_new_source (EGnomeOnlineAccounts *extension)
 {
 	ESourceRegistryServer *server;
 	ESource *source;
@@ -158,7 +158,7 @@ online_accounts_new_source (EOnlineAccounts *extension)
 
 	/* This being a brand new data source, creating the instance
 	 * should never fail but we'll check for errors just the same. */
-	server = online_accounts_get_server (extension);
+	server = gnome_online_accounts_get_server (extension);
 	file = e_server_side_source_new_user_file (NULL);
 	source = e_server_side_source_new (server, file, &error);
 	g_object_unref (file);
@@ -173,9 +173,9 @@ online_accounts_new_source (EOnlineAccounts *extension)
 }
 
 static void
-online_accounts_config_exchange (EOnlineAccounts *extension,
-                                 ESource *source,
-                                 GoaObject *goa_object)
+gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
+                                       ESource *source,
+                                       GoaObject *goa_object)
 {
 #ifdef HAVE_GOA_PASSWORD_BASED
 	ESourceExtension *source_extension;
@@ -251,9 +251,9 @@ online_accounts_config_exchange (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_oauth (EOnlineAccounts *extension,
-                              ESource *source,
-                              GoaObject *goa_object)
+gnome_online_accounts_config_oauth (EGnomeOnlineAccounts *extension,
+                                    ESource *source,
+                                    GoaObject *goa_object)
 {
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
@@ -270,9 +270,9 @@ online_accounts_config_oauth (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_oauth2 (EOnlineAccounts *extension,
-                               ESource *source,
-                               GoaObject *goa_object)
+gnome_online_accounts_config_oauth2 (EGnomeOnlineAccounts *extension,
+                                     ESource *source,
+                                     GoaObject *goa_object)
 {
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
@@ -289,9 +289,9 @@ online_accounts_config_oauth2 (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_password (EOnlineAccounts *extension,
-                                 ESource *source,
-                                 GoaObject *goa_object)
+gnome_online_accounts_config_password (EGnomeOnlineAccounts *extension,
+                                       ESource *source,
+                                       GoaObject *goa_object)
 {
 #ifdef HAVE_GOA_PASSWORD_BASED
 	GoaAccount *goa_account;
@@ -372,9 +372,9 @@ exit:
 }
 
 static void
-online_accounts_config_collection (EOnlineAccounts *extension,
-                                   ESource *source,
-                                   GoaObject *goa_object)
+gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
+                                         ESource *source,
+                                         GoaObject *goa_object)
 {
 	GoaAccount *goa_account;
 	ESourceExtension *source_extension;
@@ -402,7 +402,7 @@ online_accounts_config_collection (EOnlineAccounts *extension,
 		goa_account, "provider-type",
 		source_extension, "backend-name",
 		G_BINDING_SYNC_CREATE,
-		online_accounts_provider_type_to_backend_name,
+		gnome_online_accounts_provider_type_to_backend_name,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
@@ -415,7 +415,7 @@ online_accounts_config_collection (EOnlineAccounts *extension,
 		goa_object, "calendar",
 		source_extension, "calendar-enabled",
 		G_BINDING_SYNC_CREATE,
-		online_accounts_object_is_non_null,
+		gnome_online_accounts_object_is_non_null,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
@@ -423,7 +423,7 @@ online_accounts_config_collection (EOnlineAccounts *extension,
 		goa_object, "contacts",
 		source_extension, "contacts-enabled",
 		G_BINDING_SYNC_CREATE,
-		online_accounts_object_is_non_null,
+		gnome_online_accounts_object_is_non_null,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
@@ -431,15 +431,15 @@ online_accounts_config_collection (EOnlineAccounts *extension,
 		goa_object, "mail",
 		source_extension, "mail-enabled",
 		G_BINDING_SYNC_CREATE,
-		online_accounts_object_is_non_null,
+		gnome_online_accounts_object_is_non_null,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
 	g_object_unref (goa_account);
 
 	/* Handle optional GOA interfaces. */
-	online_accounts_config_exchange (extension, source, goa_object);
-	online_accounts_config_password (extension, source, goa_object);
+	gnome_online_accounts_config_exchange (extension, source, goa_object);
+	gnome_online_accounts_config_password (extension, source, goa_object);
 
 	/* The data source should not be removable by clients. */
 	e_server_side_source_set_removable (
@@ -447,15 +447,15 @@ online_accounts_config_collection (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_mail_account (EOnlineAccounts *extension,
-                                     ESource *source,
-                                     GoaObject *goa_object)
+gnome_online_accounts_config_mail_account (EGnomeOnlineAccounts *extension,
+                                           ESource *source,
+                                           GoaObject *goa_object)
 {
 	EServerSideSource *server_side_source;
 
 	/* Only one or the other should be present, not both. */
-	online_accounts_config_oauth (extension, source, goa_object);
-	online_accounts_config_oauth2 (extension, source, goa_object);
+	gnome_online_accounts_config_oauth (extension, source, goa_object);
+	gnome_online_accounts_config_oauth2 (extension, source, goa_object);
 
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "imap-use-tls" tells
@@ -469,9 +469,9 @@ online_accounts_config_mail_account (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_mail_identity (EOnlineAccounts *extension,
-                                      ESource *source,
-                                      GoaObject *goa_object)
+gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
+                                            ESource *source,
+                                            GoaObject *goa_object)
 {
 	GoaMail *goa_mail;
 	ESourceExtension *source_extension;
@@ -498,15 +498,15 @@ online_accounts_config_mail_identity (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_mail_transport (EOnlineAccounts *extension,
-                                       ESource *source,
-                                       GoaObject *goa_object)
+gnome_online_accounts_config_mail_transport (EGnomeOnlineAccounts *extension,
+                                             ESource *source,
+                                             GoaObject *goa_object)
 {
 	EServerSideSource *server_side_source;
 
 	/* Only one or the other should be present, not both. */
-	online_accounts_config_oauth (extension, source, goa_object);
-	online_accounts_config_oauth2 (extension, source, goa_object);
+	gnome_online_accounts_config_oauth (extension, source, goa_object);
+	gnome_online_accounts_config_oauth2 (extension, source, goa_object);
 
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "smtp-use-tls" tells
@@ -520,9 +520,9 @@ online_accounts_config_mail_transport (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_config_sources (EOnlineAccounts *extension,
-                                ESource *source,
-                                GoaObject *goa_object)
+gnome_online_accounts_config_sources (EGnomeOnlineAccounts *extension,
+                                      ESource *source,
+                                      GoaObject *goa_object)
 {
 	ESourceRegistryServer *server;
 	ECollectionBackend *backend;
@@ -532,9 +532,9 @@ online_accounts_config_sources (EOnlineAccounts *extension,
 	 *     transition of mail accounts from XOAUTH to XOAUTH2,
 	 *     but it may be useful for other types of migration. */
 
-	online_accounts_config_collection (extension, source, goa_object);
+	gnome_online_accounts_config_collection (extension, source, goa_object);
 
-	server = online_accounts_get_server (extension);
+	server = gnome_online_accounts_get_server (extension);
 	backend = e_source_registry_server_ref_backend (server, source);
 	g_return_if_fail (backend != NULL);
 
@@ -547,17 +547,17 @@ online_accounts_config_sources (EOnlineAccounts *extension,
 
 		extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 		if (e_source_has_extension (source, extension_name))
-			online_accounts_config_mail_account (
+			gnome_online_accounts_config_mail_account (
 				extension, source, goa_object);
 
 		extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 		if (e_source_has_extension (source, extension_name))
-			online_accounts_config_mail_identity (
+			gnome_online_accounts_config_mail_identity (
 				extension, source, goa_object);
 
 		extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
 		if (e_source_has_extension (source, extension_name))
-			online_accounts_config_mail_transport (
+			gnome_online_accounts_config_mail_transport (
 				extension, source, goa_object);
 	}
 
@@ -567,9 +567,9 @@ online_accounts_config_sources (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_create_collection (EOnlineAccounts *extension,
-                                   EBackendFactory *backend_factory,
-                                   GoaObject *goa_object)
+gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
+                                         EBackendFactory *backend_factory,
+                                         GoaObject *goa_object)
 {
 	GoaAccount *goa_account;
 	ESourceRegistryServer *server;
@@ -580,18 +580,18 @@ online_accounts_create_collection (EOnlineAccounts *extension,
 	const gchar *account_id;
 	const gchar *parent_uid;
 
-	server = online_accounts_get_server (extension);
+	server = gnome_online_accounts_get_server (extension);
 
-	collection_source = online_accounts_new_source (extension);
+	collection_source = gnome_online_accounts_new_source (extension);
 	g_return_if_fail (E_IS_SOURCE (collection_source));
 
-	mail_account_source = online_accounts_new_source (extension);
+	mail_account_source = gnome_online_accounts_new_source (extension);
 	g_return_if_fail (E_IS_SOURCE (mail_account_source));
 
-	mail_identity_source = online_accounts_new_source (extension);
+	mail_identity_source = gnome_online_accounts_new_source (extension);
 	g_return_if_fail (E_IS_SOURCE (mail_identity_source));
 
-	mail_transport_source = online_accounts_new_source (extension);
+	mail_transport_source = gnome_online_accounts_new_source (extension);
 	g_return_if_fail (E_IS_SOURCE (mail_transport_source));
 
 	/* Configure parent/child relationships. */
@@ -608,13 +608,13 @@ online_accounts_create_collection (EOnlineAccounts *extension,
 		mail_transport_source);
 
 	/* Now it's our turn. */
-	online_accounts_config_collection (
+	gnome_online_accounts_config_collection (
 		extension, collection_source, goa_object);
-	online_accounts_config_mail_account (
+	gnome_online_accounts_config_mail_account (
 		extension, mail_account_source, goa_object);
-	online_accounts_config_mail_identity (
+	gnome_online_accounts_config_mail_identity (
 		extension, mail_identity_source, goa_object);
-	online_accounts_config_mail_transport (
+	gnome_online_accounts_config_mail_transport (
 		extension, mail_transport_source, goa_object);
 
 	/* Export the new source collection. */
@@ -640,8 +640,8 @@ online_accounts_create_collection (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_remove_collection (EOnlineAccounts *extension,
-                                   ESource *source)
+gnome_online_accounts_remove_collection (EGnomeOnlineAccounts *extension,
+                                         ESource *source)
 {
 	GError *error = NULL;
 
@@ -656,9 +656,9 @@ online_accounts_remove_collection (EOnlineAccounts *extension,
 }
 
 static void
-online_accounts_account_added_cb (GoaClient *goa_client,
-                                  GoaObject *goa_object,
-                                  EOnlineAccounts *extension)
+gnome_online_accounts_account_added_cb (GoaClient *goa_client,
+                                        GoaObject *goa_object,
+                                        EGnomeOnlineAccounts *extension)
 {
 	GoaAccount *goa_account;
 	ESourceRegistryServer *server;
@@ -668,11 +668,11 @@ online_accounts_account_added_cb (GoaClient *goa_client,
 	const gchar *account_id;
 	const gchar *source_uid;
 
-	server = online_accounts_get_server (extension);
+	server = gnome_online_accounts_get_server (extension);
 
 	goa_account = goa_object_get_account (goa_object);
 	provider_type = goa_account_get_provider_type (goa_account);
-	backend_name = online_accounts_get_backend_name (provider_type);
+	backend_name = gnome_online_accounts_get_backend_name (provider_type);
 
 	account_id = goa_account_get_id (goa_account);
 	source_uid = g_hash_table_lookup (extension->goa_to_eds, account_id);
@@ -682,7 +682,7 @@ online_accounts_account_added_cb (GoaClient *goa_client,
 			E_DATA_FACTORY (server), backend_name);
 
 	if (backend_factory != NULL) {
-		online_accounts_create_collection (
+		gnome_online_accounts_create_collection (
 			extension, backend_factory, goa_object);
 		g_object_unref (backend_factory);
 	}
@@ -691,9 +691,9 @@ online_accounts_account_added_cb (GoaClient *goa_client,
 }
 
 static void
-online_accounts_account_removed_cb (GoaClient *goa_client,
-                                    GoaObject *goa_object,
-                                    EOnlineAccounts *extension)
+gnome_online_accounts_account_removed_cb (GoaClient *goa_client,
+                                          GoaObject *goa_object,
+                                          EGnomeOnlineAccounts *extension)
 {
 	ESource *source = NULL;
 	ESourceRegistryServer *server;
@@ -701,7 +701,7 @@ online_accounts_account_removed_cb (GoaClient *goa_client,
 	const gchar *account_id;
 	const gchar *source_uid;
 
-	server = online_accounts_get_server (extension);
+	server = gnome_online_accounts_get_server (extension);
 
 	goa_account = goa_object_get_account (goa_object);
 
@@ -713,7 +713,7 @@ online_accounts_account_removed_cb (GoaClient *goa_client,
 			server, source_uid);
 
 	if (source != NULL) {
-		online_accounts_remove_collection (extension, source);
+		gnome_online_accounts_remove_collection (extension, source);
 		g_object_unref (source);
 	}
 
@@ -721,8 +721,8 @@ online_accounts_account_removed_cb (GoaClient *goa_client,
 }
 
 static gint
-online_accounts_compare_id (GoaObject *goa_object,
-                            const gchar *target_id)
+gnome_online_accounts_compare_id (GoaObject *goa_object,
+                                  const gchar *target_id)
 {
 	GoaAccount *goa_account;
 	const gchar *account_id;
@@ -737,15 +737,15 @@ online_accounts_compare_id (GoaObject *goa_object,
 }
 
 static void
-online_accounts_populate_accounts_table (EOnlineAccounts *extension,
-                                         GList *goa_objects)
+gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
+                                               GList *goa_objects)
 {
 	ESourceRegistryServer *server;
 	GQueue trash = G_QUEUE_INIT;
 	GList *list, *link;
 	const gchar *extension_name;
 
-	server = online_accounts_get_server (extension);
+	server = gnome_online_accounts_get_server (extension);
 
 	extension_name = E_SOURCE_EXTENSION_GOA;
 	list = e_source_registry_server_list_sources (server, extension_name);
@@ -770,7 +770,7 @@ online_accounts_populate_accounts_table (EOnlineAccounts *extension,
 		/* Verify the GOA account still exists. */
 		match = g_list_find_custom (
 			goa_objects, account_id,
-			(GCompareFunc) online_accounts_compare_id);
+			(GCompareFunc) gnome_online_accounts_compare_id);
 
 		/* If a matching GoaObject was found, add its ID
 		 * to our accounts hash table.  Otherwise remove
@@ -784,7 +784,7 @@ online_accounts_populate_accounts_table (EOnlineAccounts *extension,
 				g_strdup (source_uid));
 
 			goa_object = GOA_OBJECT (match->data);
-			online_accounts_config_sources (
+			gnome_online_accounts_config_sources (
 				extension, source, goa_object);
 		} else {
 			g_queue_push_tail (&trash, source);
@@ -794,25 +794,25 @@ online_accounts_populate_accounts_table (EOnlineAccounts *extension,
 	/* Empty the trash. */
 	while (!g_queue_is_empty (&trash)) {
 		ESource *source = g_queue_pop_head (&trash);
-		online_accounts_remove_collection (extension, source);
+		gnome_online_accounts_remove_collection (extension, source);
 	}
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 static void
-online_accounts_create_client_cb (GObject *source_object,
-                                  GAsyncResult *result,
-                                  gpointer user_data)
+gnome_online_accounts_create_client_cb (GObject *source_object,
+                                        GAsyncResult *result,
+                                        gpointer user_data)
 {
-	EOnlineAccounts *extension;
+	EGnomeOnlineAccounts *extension;
 	GoaClient *goa_client;
 	GList *list, *link;
 	GError *error = NULL;
 
 	/* If we get back a G_IO_ERROR_CANCELLED then it means the
-	 * EOnlineAccounts is already finalized, so be careful not
-	 * to touch it until after we have a valid GoaClient. */
+	 * EGnomeOnlineAccounts is already finalized, so be careful
+	 * not to touch it until after we have a valid GoaClient. */
 
 	goa_client = goa_client_new_finish (result, &error);
 
@@ -827,9 +827,9 @@ online_accounts_create_client_cb (GObject *source_object,
 
 	g_return_if_fail (GOA_IS_CLIENT (goa_client));
 
-	/* Should be safe to dereference the EOnlineAccounts now. */
+	/* Should be safe to dereference the EGnomeOnlineAccounts now. */
 
-	extension = E_ONLINE_ACCOUNTS (user_data);
+	extension = E_GNOME_ONLINE_ACCOUNTS (user_data);
 	extension->goa_client = goa_client;  /* takes ownership */
 
 	/* Don't need the GCancellable anymore. */
@@ -844,10 +844,10 @@ online_accounts_create_client_cb (GObject *source_object,
 	 * no corresponding GoaAccount (presumably meaning the GOA account
 	 * was somehow deleted between E-D-S sessions) then the ESource in
 	 * which the extension was found gets deleted. */
-	online_accounts_populate_accounts_table (extension, list);
+	gnome_online_accounts_populate_accounts_table (extension, list);
 
 	for (link = list; link != NULL; link = g_list_next (link))
-		online_accounts_account_added_cb (
+		gnome_online_accounts_account_added_cb (
 			extension->goa_client,
 			GOA_OBJECT (link->data),
 			extension);
@@ -857,16 +857,18 @@ online_accounts_create_client_cb (GObject *source_object,
 	/* Listen for Online Account changes. */
 	g_signal_connect (
 		extension->goa_client, "account-added",
-		G_CALLBACK (online_accounts_account_added_cb), extension);
+		G_CALLBACK (gnome_online_accounts_account_added_cb),
+		extension);
 	g_signal_connect (
 		extension->goa_client, "account-removed",
-		G_CALLBACK (online_accounts_account_removed_cb), extension);
+		G_CALLBACK (gnome_online_accounts_account_removed_cb),
+		extension);
 }
 
 static void
-online_accounts_bus_acquired_cb (EDBusServer *server,
-                                 GDBusConnection *connection,
-                                 EOnlineAccounts *extension)
+gnome_online_accounts_bus_acquired_cb (EDBusServer *server,
+                                       GDBusConnection *connection,
+                                       EGnomeOnlineAccounts *extension)
 {
 	/* Connect to the GNOME Online Accounts service. */
 
@@ -875,16 +877,16 @@ online_accounts_bus_acquired_cb (EDBusServer *server,
 	 * we cancel the operation from dispose(). */
 	goa_client_new (
 		extension->create_client,
-		online_accounts_create_client_cb,
+		gnome_online_accounts_create_client_cb,
 		extension);
 }
 
 static void
-online_accounts_dispose (GObject *object)
+gnome_online_accounts_dispose (GObject *object)
 {
-	EOnlineAccounts *extension;
+	EGnomeOnlineAccounts *extension;
 
-	extension = E_ONLINE_ACCOUNTS (object);
+	extension = E_GNOME_ONLINE_ACCOUNTS (object);
 
 	if (extension->goa_client != NULL) {
 		g_signal_handlers_disconnect_matched (
@@ -904,24 +906,26 @@ online_accounts_dispose (GObject *object)
 	}
 
 	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_online_accounts_parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->
+		dispose (object);
 }
 
 static void
-online_accounts_finalize (GObject *object)
+gnome_online_accounts_finalize (GObject *object)
 {
-	EOnlineAccounts *extension;
+	EGnomeOnlineAccounts *extension;
 
-	extension = E_ONLINE_ACCOUNTS (object);
+	extension = E_GNOME_ONLINE_ACCOUNTS (object);
 
 	g_hash_table_destroy (extension->goa_to_eds);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_online_accounts_parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->
+		finalize (object);
 }
 
 static void
-online_accounts_constructed (GObject *object)
+gnome_online_accounts_constructed (GObject *object)
 {
 	EExtension *extension;
 	EExtensible *extensible;
@@ -934,34 +938,36 @@ online_accounts_constructed (GObject *object)
 
 	g_signal_connect (
 		extensible, "bus-acquired",
-		G_CALLBACK (online_accounts_bus_acquired_cb), extension);
+		G_CALLBACK (gnome_online_accounts_bus_acquired_cb),
+		extension);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_online_accounts_parent_class)->constructed (object);
+	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->
+		constructed (object);
 }
 
 static void
-e_online_accounts_class_init (EOnlineAccountsClass *class)
+e_gnome_online_accounts_class_init (EGnomeOnlineAccountsClass *class)
 {
 	GObjectClass *object_class;
 	EExtensionClass *extension_class;
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = online_accounts_dispose;
-	object_class->finalize = online_accounts_finalize;
-	object_class->constructed = online_accounts_constructed;
+	object_class->dispose = gnome_online_accounts_dispose;
+	object_class->finalize = gnome_online_accounts_finalize;
+	object_class->constructed = gnome_online_accounts_constructed;
 
 	extension_class = E_EXTENSION_CLASS (class);
 	extension_class->extensible_type = E_TYPE_SOURCE_REGISTRY_SERVER;
 }
 
 static void
-e_online_accounts_class_finalize (EOnlineAccountsClass *class)
+e_gnome_online_accounts_class_finalize (EGnomeOnlineAccountsClass *class)
 {
 }
 
 static void
-e_online_accounts_init (EOnlineAccounts *extension)
+e_gnome_online_accounts_init (EGnomeOnlineAccounts *extension)
 {
 	/* Used to cancel unfinished goa_client_new(). */
 	extension->create_client = g_cancellable_new ();
@@ -976,7 +982,7 @@ e_online_accounts_init (EOnlineAccounts *extension)
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
-	e_online_accounts_register_type (type_module);
+	e_gnome_online_accounts_register_type (type_module);
 }
 
 G_MODULE_EXPORT void
