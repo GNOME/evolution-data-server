@@ -1000,6 +1000,26 @@ ESourceTaskListPrivate
 </SECTION>
 
 <SECTION>
+<FILE>e-source-uoa</FILE>
+<TITLE>ESourceUoa</TITLE>
+ESourceUoa
+E_SOURCE_EXTENSION_UOA
+e_source_uoa_get_account_id
+e_source_uoa_set_account_id
+<SUBSECTION Standard>
+E_SOURCE_UOA
+E_IS_SOURCE_UOA
+E_TYPE_SOURCE_UOA
+E_SOURCE_UOA_CLASS
+E_IS_SOURCE_UOA_CLASS
+E_SOURCE_UOA_GET_CLASS
+ESourceUoaClass
+<SUBSECTION Private>
+ESourceUoaPrivate
+e_source_uoa_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-webdav</FILE>
 <TITLE>ESourceWebdav</TITLE>
 ESourceWebdav

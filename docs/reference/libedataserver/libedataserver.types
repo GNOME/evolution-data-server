@@ -32,5 +32,6 @@ e_source_security_get_type
 e_source_selectable_get_type
 e_source_smime_get_type
 e_source_task_list_get_type
+e_source_uoa_get_type
 e_source_webdav_get_type
 

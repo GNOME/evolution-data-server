@@ -43,6 +43,7 @@
     <xi:include href="xml/e-source-security.xml"/>
     <xi:include href="xml/e-source-smime.xml"/>
     <xi:include href="xml/e-source-task-list.xml"/>
+    <xi:include href="xml/e-source-uoa.xml"/>
     <xi:include href="xml/e-source-webdav.xml"/>
   </chapter>
 

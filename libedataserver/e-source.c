@@ -96,6 +96,7 @@
 #include "e-source-security.h"
 #include "e-source-selectable.h"
 #include "e-source-smime.h"
+#include "e-source-uoa.h"
 #include "e-source-webdav.h"
 
 #define E_SOURCE_GET_PRIVATE(obj) \
@@ -1653,6 +1654,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_SELECTABLE);
 	g_type_ensure (E_TYPE_SOURCE_SMIME);
 	g_type_ensure (E_TYPE_SOURCE_TASK_LIST);
+	g_type_ensure (E_TYPE_SOURCE_UOA);
 	g_type_ensure (E_TYPE_SOURCE_WEBDAV);
 }
 

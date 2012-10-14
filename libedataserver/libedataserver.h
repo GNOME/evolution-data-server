@@ -65,6 +65,7 @@
 #include <libedataserver/e-source-security.h>
 #include <libedataserver/e-source-selectable.h>
 #include <libedataserver/e-source-smime.h>
+#include <libedataserver/e-source-uoa.h>
 #include <libedataserver/e-source-webdav.h>
 #include <libedataserver/e-source.h>
 #include <libedataserver/e-time-utils.h>
