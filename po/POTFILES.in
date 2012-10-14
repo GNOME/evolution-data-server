@@ -211,8 +211,8 @@ libedataserverui/e-name-selector-list.c
 libedataserverui/e-passwords.c
 libedataserverui/e-passwords-win32.c
 libedataserverui/e-source-selector-dialog.c
+modules/gnome-online-accounts/goaewsclient.c
 modules/google-backend/module-google-backend.c
-modules/online-accounts/goaewsclient.c
 modules/yahoo-backend/module-yahoo-backend.c
 services/evolution-addressbook-factory/evolution-addressbook-factory.c
 services/evolution-calendar-factory/evolution-calendar-factory.c
