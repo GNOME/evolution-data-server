@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-openpgp.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceOpenPGP *extension;
  *

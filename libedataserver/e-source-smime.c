@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-smime.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceSMIME *extension;
  *

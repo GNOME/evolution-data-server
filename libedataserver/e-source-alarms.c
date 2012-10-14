@@ -26,7 +26,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-alarms.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceAlarms *extension;
  *

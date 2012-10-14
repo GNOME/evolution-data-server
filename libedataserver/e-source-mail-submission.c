@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-mail-submission.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceMailSubmission *extension;
  *

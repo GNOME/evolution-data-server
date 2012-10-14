@@ -29,7 +29,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-calendar.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceCalendar *extension;
  *
@@ -47,7 +47,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-calendar.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceCalendar *extension;
  *
@@ -65,7 +65,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-calendar.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceCalendar *extension;
  *

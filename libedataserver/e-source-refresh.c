@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-refresh.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceRefresh *extension;
  *

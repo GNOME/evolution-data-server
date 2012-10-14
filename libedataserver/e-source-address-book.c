@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-address-book.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceAddressBook *extension;
  *

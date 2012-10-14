@@ -28,7 +28,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-goa.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceGoa *extension;
  *

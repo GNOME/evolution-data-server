@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-mail-signature.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceMailSignature *extension;
  *

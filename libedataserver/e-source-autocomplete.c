@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-autocomplete.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceAutocomplete *extension;
  *
