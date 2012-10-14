@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-security.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceSecurity *extension;
  *

@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-offline.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceOffline *extension;
  *

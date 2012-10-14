@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-mail-transport.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceMailTransport *extension;
  *

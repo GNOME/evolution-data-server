@@ -33,7 +33,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-resource.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceResource *extension;
  *

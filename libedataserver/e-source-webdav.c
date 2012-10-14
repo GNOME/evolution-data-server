@@ -36,7 +36,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-webdav.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceWebdav *extension;
  *

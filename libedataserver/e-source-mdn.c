@@ -28,7 +28,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-mdn.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceMDN *extension;
  *

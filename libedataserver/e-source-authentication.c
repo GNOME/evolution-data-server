@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-authentication.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceAuthentication *extension;
  *

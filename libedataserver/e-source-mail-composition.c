@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-mail-composition.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceMailComposition *extension;
  *

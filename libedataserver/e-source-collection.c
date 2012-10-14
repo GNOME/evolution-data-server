@@ -27,7 +27,7 @@
  * Access the extension as follows:
  *
  * |[
- *    #include <libedataserver/e-source-collection.h>
+ *    #include <libedataserver/libedataserver.h>
  *
  *    ESourceCollection *extension;
  *

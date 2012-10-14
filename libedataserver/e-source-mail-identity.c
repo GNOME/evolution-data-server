@@ -28,7 +28,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libedataserver/e-source-mail-identity.h>
+ *   #include <libedataserver/libedataserver.h>
  *
  *   ESourceMailIdentity *extension;
  *
