@@ -87,6 +87,13 @@ void		e_name_selector_dialog_set_scrolling_policy
 						(ENameSelectorDialog *name_selector_dialog,
 						 GtkPolicyType hscrollbar_policy,
 						 GtkPolicyType vscrollbar_policy);
+void		e_name_selector_dialog_set_section_visible
+						(ENameSelectorDialog *name_selector_dialog,
+						 const gchar *name,
+						 gboolean visible);
+gboolean	e_name_selector_dialog_get_section_visible
+						(ENameSelectorDialog *name_selector_dialog,
+						 const gchar *name);
 
 G_END_DECLS
 
