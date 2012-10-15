@@ -1266,6 +1266,86 @@ e_binding_transform_enum_nick_to_value (GBinding *binding,
 }
 
 /**
+ * e_enum_from_string:
+ * @type: The enum type
+ * @string: The string containing the enum value or nick
+ * @enum_value: A return location to store the result
+ *
+ * Fetches the appropriate enumeration value for @string in the given
+ * enum type @type and stores the result in @enum_value
+ *
+ * Returns: %TRUE if the string was a valid name or nick
+ *        for the given @type, %FALSE if the conversion failed.
+ */
+gboolean
+e_enum_from_string (GType type,
+		    const gchar *string,
+		    gint *enum_value)
+{
+  GEnumClass *eclass;
+  GEnumValue *ev;
+  gchar *endptr;
+  gint value;
+  gboolean retval = TRUE;
+
+  g_return_val_if_fail (G_TYPE_IS_ENUM (type), 0);
+  g_return_val_if_fail (string != NULL, 0);
+
+  value = g_ascii_strtoull (string, &endptr, 0);
+  if (endptr != string) /* parsed a number */
+    *enum_value = value;
+  else
+    {
+      eclass = g_type_class_ref (type);
+      ev = g_enum_get_value_by_name (eclass, string);
+      if (!ev)
+	ev = g_enum_get_value_by_nick (eclass, string);
+
+      if (ev)
+	*enum_value = ev->value;
+      else
+        retval = FALSE;
+
+      g_type_class_unref (eclass);
+    }
+
+  return retval;
+}
+
+/**
+ * e_enum_to_string:
+ * @etype: An enum type
+ * @eval: The enum value to convert
+ *
+ * Converts an enum value to a string using strings from the GType system.
+ *
+ * Returns: the string representing @eval 
+ */
+const gchar *
+e_enum_to_string (GType etype,
+		  gint  eval)
+{
+  GEnumClass  *eclass;
+  const gchar *string = NULL;
+  guint       i;
+  
+  eclass = g_type_class_ref (etype);
+
+  g_return_val_if_fail (eclass != NULL, NULL);
+  for (i = 0; i < eclass->n_values; i++)
+    {
+      if (eval == eclass->values[i].value)
+        {
+          string = eclass->values[i].value_nick;
+          break;
+        }
+    }
+  g_type_class_unref (eclass);
+  return string;
+}
+
+
+/**
  * EAsyncClosure:
  *
  * #EAsyncClosure provides a simple way to run an asynchronous function

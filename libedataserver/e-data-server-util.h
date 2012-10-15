@@ -101,6 +101,11 @@ gboolean	e_binding_transform_enum_nick_to_value
 						 const GValue *source_value,
 						 GValue *target_value,
 						 gpointer not_used);
+gboolean        e_enum_from_string              (GType type,
+						 const gchar *string,
+						 gint *enum_value);
+const gchar    *e_enum_to_string                (GType etype,
+						 gint eval);
 
 typedef struct _EAsyncClosure EAsyncClosure;
 
