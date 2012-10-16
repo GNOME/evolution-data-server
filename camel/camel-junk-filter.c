@@ -29,22 +29,21 @@ camel_junk_filter_default_init (CamelJunkFilterInterface *interface)
  * camel_junk_filter_classify:
  * @junk_filter: a #CamelJunkFilter
  * @message: a #CamelMimeMessage
- * @status: location to write the #CamelJunkStatus
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Classifies @message as junk, not junk or inconclusive.
  *
- * If an error occurs, the function sets @error and returns %FALSE.
+ * If an error occurs, the function sets @error and returns
+ * %CAMEL_JUNK_STATUS_ERROR.
  *
- * Returns: %TRUE if @message was successfully classified
+ * Returns: the junk status determined by @junk_filter
  *
  * Since: 3.2
  **/
-gboolean
+CamelJunkStatus
 camel_junk_filter_classify (CamelJunkFilter *junk_filter,
                             CamelMimeMessage *message,
-                            CamelJunkStatus *status,
                             GCancellable *cancellable,
                             GError **error)
 {
@@ -52,13 +51,12 @@ camel_junk_filter_classify (CamelJunkFilter *junk_filter,
 
 	g_return_val_if_fail (CAMEL_IS_JUNK_FILTER (junk_filter), FALSE);
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
-	g_return_val_if_fail (status != NULL, FALSE);
 
 	interface = CAMEL_JUNK_FILTER_GET_INTERFACE (junk_filter);
 	g_return_val_if_fail (interface->classify != NULL, FALSE);
 
 	return interface->classify (
-		junk_filter, message, status, cancellable, error);
+		junk_filter, message, cancellable, error);
 }
 
 /**

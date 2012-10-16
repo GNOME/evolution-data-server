@@ -59,9 +59,8 @@ struct _CamelJunkFilterInterface {
 	GTypeInterface parent_interface;
 
 	/* Required Methods */
-	gboolean	(*classify)		(CamelJunkFilter *junk_filter,
+	CamelJunkStatus	(*classify)		(CamelJunkFilter *junk_filter,
 						 CamelMimeMessage *message,
-						 CamelJunkStatus *status,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*learn_junk)		(CamelJunkFilter *junk_filter,
@@ -80,9 +79,8 @@ struct _CamelJunkFilterInterface {
 };
 
 GType		camel_junk_filter_get_type	(void) G_GNUC_CONST;
-gboolean	camel_junk_filter_classify	(CamelJunkFilter *junk_filter,
+CamelJunkStatus	camel_junk_filter_classify	(CamelJunkFilter *junk_filter,
 						 CamelMimeMessage *message,
-						 CamelJunkStatus *status,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_junk_filter_learn_junk	(CamelJunkFilter *junk_filter,

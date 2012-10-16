@@ -176,6 +176,8 @@ typedef enum {
 
 /**
  * CamelJunkStatus:
+ * @CAMEL_JUNK_STATUS_ERROR:
+ *     An error occurred while invoking the junk filter.
  * @CAMEL_JUNK_STATUS_INCONCLUSIVE:
  *     The junk filter could not determine whether the message is junk.
  * @CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK:
@@ -186,6 +188,7 @@ typedef enum {
  * These are result codes used when passing messages through a junk filter.
  **/
 typedef enum {
+	CAMEL_JUNK_STATUS_ERROR,
 	CAMEL_JUNK_STATUS_INCONCLUSIVE,
 	CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK,
 	CAMEL_JUNK_STATUS_MESSAGE_IS_NOT_JUNK

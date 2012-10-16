@@ -917,8 +917,8 @@ junk_test (struct _CamelSExp *f,
 	/* Consult 3rd party junk filtering software. */
 
 	message = camel_filter_search_get_message (fms, f);
-	camel_junk_filter_classify (
-		junk_filter, message, &status, NULL, &error);
+	status = camel_junk_filter_classify (
+		junk_filter, message, NULL, &error);
 
 	if (error == NULL) {
 		const gchar *status_desc;
@@ -948,6 +948,7 @@ junk_test (struct _CamelSExp *f,
 				"Junk filter classification: %s\n",
 				status_desc);
 	} else {
+		g_warn_if_fail (status == CAMEL_JUNK_STATUS_ERROR);
 		g_warning ("%s: %s", G_STRFUNC, error->message);
 		g_error_free (error);
 		message_is_junk = FALSE;
