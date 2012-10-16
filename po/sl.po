@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-16 20:33+0000\n"
-"PO-Revision-Date: 2012-09-19 15:22+0100\n"
+"POT-Creation-Date: 2012-10-16 00:21+0000\n"
+"PO-Revision-Date: 2012-10-16 08:50+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -127,6 +127,10 @@ msgid "Loading…"
 msgstr "Nalaganje ..."
 
 #: ../addressbook/backends/google/e-book-google-utils.c:1562
+#: ../data/sources/system-address-book.source.in.h:1
+#: ../data/sources/system-calendar.source.in.h:1
+#: ../data/sources/system-memo-list.source.in.h:1
+#: ../data/sources/system-task-list.source.in.h:1
 msgid "Personal"
 msgstr "Osebno"
 
@@ -2271,13 +2275,13 @@ msgstr "STARTTLS ni podprt"
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela:"
 
-#: ../camel/camel-imapx-server.c:3580
+#: ../camel/camel-imapx-server.c:3582
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Strežnik IMAP %s ne podpira zahtevanega načina overitve %s."
 
-#: ../camel/camel-imapx-server.c:3591
+#: ../camel/camel-imapx-server.c:3593
 #: ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:259
@@ -2287,13 +2291,13 @@ msgstr "Strežnik IMAP %s ne podpira zahtevanega načina overitve %s."
 msgid "No support for %s authentication"
 msgstr "Ni podpore za način overitve %s."
 
-#: ../camel/camel-imapx-server.c:3610
+#: ../camel/camel-imapx-server.c:3612
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:502
 msgid "Cannot authenticate without a username"
 msgstr "Brez uporabniškega imena ni mogoče overiti povezave."
 
-#: ../camel/camel-imapx-server.c:3619
+#: ../camel/camel-imapx-server.c:3621
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:511
 #: ../camel/providers/pop3/camel-pop3-store.c:512
@@ -2301,55 +2305,55 @@ msgstr "Brez uporabniškega imena ni mogoče overiti povezave."
 msgid "Authentication password not available"
 msgstr "Geslo za overitev ni na voljo."
 
-#: ../camel/camel-imapx-server.c:3821
+#: ../camel/camel-imapx-server.c:3823
 msgid "Error fetching message"
 msgstr "Napaka med pridobivanjem sporočila"
 
-#: ../camel/camel-imapx-server.c:3903
+#: ../camel/camel-imapx-server.c:3905
 msgid "Failed to copy the tmp file"
 msgstr "Kopiranje datoteke tmp je spodletelo"
 
-#: ../camel/camel-imapx-server.c:3917
+#: ../camel/camel-imapx-server.c:3919
 msgid "Failed to close the tmp stream"
 msgstr "Zapiranje pretoka tmp je spodletelo"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4017
 msgid "Error copying messages"
 msgstr "Napaka med kopiranjem sporočil"
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4152
 msgid "Error appending message"
 msgstr "Napaka med pripenjanjem sporočila"
 
-#: ../camel/camel-imapx-server.c:4333
+#: ../camel/camel-imapx-server.c:4335
 msgid "Error fetching message headers"
 msgstr "Napaka med pridobivanjem glave sporočila"
 
-#: ../camel/camel-imapx-server.c:4468
+#: ../camel/camel-imapx-server.c:4470
 msgid "Error retrieving message"
 msgstr "Napaka med pridobivanjem sporočila"
 
-#: ../camel/camel-imapx-server.c:4590
-#: ../camel/camel-imapx-server.c:4783
+#: ../camel/camel-imapx-server.c:4592
+#: ../camel/camel-imapx-server.c:4785
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Pridobivanje podatkov povzetka za nova sporočila v '%s'."
 
-#: ../camel/camel-imapx-server.c:4641
+#: ../camel/camel-imapx-server.c:4643
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Preiskovanje spremenjenih sporočil v '%s'"
 
-#: ../camel/camel-imapx-server.c:4684
+#: ../camel/camel-imapx-server.c:4686
 msgid "Error fetching new messages"
 msgstr "Napaka med pridobivanjem novih sporočil"
 
-#: ../camel/camel-imapx-server.c:4874
+#: ../camel/camel-imapx-server.c:4876
 msgid "Error while fetching messages"
 msgstr "Napaka med pridobivanjem sporočil"
 
-#: ../camel/camel-imapx-server.c:4882
-#: ../camel/camel-imapx-server.c:4918
+#: ../camel/camel-imapx-server.c:4884
+#: ../camel/camel-imapx-server.c:4920
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2358,56 +2362,56 @@ msgstr[1] "Pridobivanje podatkov povzetka za %d novo sporočilo v '%s'."
 msgstr[2] "Pridobivanje podatkov povzetka za %d novi sporočili v '%s'."
 msgstr[3] "Pridobivanje podatkov povzetka za %d nova sporočila v '%s'."
 
-#: ../camel/camel-imapx-server.c:5043
-#: ../camel/camel-imapx-server.c:5079
+#: ../camel/camel-imapx-server.c:5045
+#: ../camel/camel-imapx-server.c:5081
 msgid "Error refreshing folder"
 msgstr "Napaka med osveževanjem mape"
 
-#: ../camel/camel-imapx-server.c:5172
+#: ../camel/camel-imapx-server.c:5174
 msgid "Error expunging message"
 msgstr "Napaka med uničevanjem sporočila"
 
-#: ../camel/camel-imapx-server.c:5269
+#: ../camel/camel-imapx-server.c:5271
 msgid "Error fetching folders"
 msgstr "Napaka med pridobivanjem map"
 
-#: ../camel/camel-imapx-server.c:5348
+#: ../camel/camel-imapx-server.c:5350
 msgid "Error subscribing to folder"
 msgstr "Napaka naročanja na mapo"
 
-#: ../camel/camel-imapx-server.c:5409
+#: ../camel/camel-imapx-server.c:5411
 msgid "Error creating folder"
 msgstr "Napaka med ustvarjanjem mape"
 
-#: ../camel/camel-imapx-server.c:5458
+#: ../camel/camel-imapx-server.c:5460
 msgid "Error deleting folder"
 msgstr "Napaka med brisanjem mape"
 
-#: ../camel/camel-imapx-server.c:5519
+#: ../camel/camel-imapx-server.c:5521
 msgid "Error renaming folder"
 msgstr "Napaka med preimenovanjem mape"
 
-#: ../camel/camel-imapx-server.c:5580
+#: ../camel/camel-imapx-server.c:5582
 msgid "Error performing NOOP"
 msgstr "Napaka med izvajanjem ukaza NOOP"
 
-#: ../camel/camel-imapx-server.c:5676
+#: ../camel/camel-imapx-server.c:5678
 msgid "Error syncing changes"
 msgstr "Napaka med usklajevanjem sprememb"
 
-#: ../camel/camel-imapx-server.c:6447
+#: ../camel/camel-imapx-server.c:6449
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ni mogoče dobiti sporočila zID %s: %s"
 
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6450
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Na voljo ni takšnega sporočila."
 
-#: ../camel/camel-imapx-server.c:6603
-#: ../camel/camel-imapx-server.c:6618
+#: ../camel/camel-imapx-server.c:6605
+#: ../camel/camel-imapx-server.c:6620
 msgid "Cannot create spool file: "
 msgstr "Ni mogoče ustvariti vrstilne datoteke:"
 
@@ -2659,22 +2663,22 @@ msgstr "Ponudnik navidezne mape elektronske pošte"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Za branje pošte kot poizvedbe po drugem sklopu map"
 
-#: ../camel/camel-provider.c:195
+#: ../camel/camel-provider.c:258
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Ni mogoče naložiti %s: nalaganje modulov na tem sistemu ni podprto."
 
-#: ../camel/camel-provider.c:204
+#: ../camel/camel-provider.c:267
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Ni mogoče naložiti %s: %s"
 
-#: ../camel/camel-provider.c:213
+#: ../camel/camel-provider.c:276
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Ni mogoče naložiti %s: v modulu ni kode začenjanja."
 
-#: ../camel/camel-provider.c:412
+#: ../camel/camel-provider.c:424
 #: ../camel/camel-session.c:406
 #, c-format
 msgid "No provider available for protocol '%s'"
@@ -4539,6 +4543,7 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Shranjevalna mesta POP3 nimajo določene hierarhije map"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
+#: ../data/sources/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -4852,6 +4857,53 @@ msgstr "Enote opomnika rojstnih dni in obletnic"
 msgid "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or \"days\""
 msgstr "Enote opomnika za rojstni dan ali obletnico so \"minute\", \"ure\" ali \"dnevi\"."
 
+#: ../data/sources/birthdays.source.in.h:1
+#| msgid "Birthday and anniversary reminder"
+msgid "Birthdays & Anniversaries"
+msgstr "Rojstni dnevi in obletnice"
+
+#: ../data/sources/caldav-stub.source.in.h:1
+msgid "CalDAV"
+msgstr "CalDAV"
+
+#: ../data/sources/contacts-stub.source.in.h:1
+#: ../libedataserverui/e-name-selector-dialog.c:427
+#: ../modules/google-backend/module-google-backend.c:183
+msgid "Contacts"
+msgstr "Stiki"
+
+#: ../data/sources/google-stub.source.in.h:1
+msgid "Google"
+msgstr "Google"
+
+#: ../data/sources/ldap-stub.source.in.h:1
+#| msgid "IMAP server %s"
+msgid "On LDAP Servers"
+msgstr "Na strežnikih LDAP"
+
+#: ../data/sources/local.source.in.h:1
+#: ../data/sources/local-stub.source.in.h:1
+msgid "On This Computer"
+msgstr "Na tem računalniku"
+
+#: ../data/sources/vfolder.source.in.h:1
+#| msgid "Folders"
+msgid "Search Folders"
+msgstr "Iskalne mape"
+
+#: ../data/sources/weather-stub.source.in.h:1
+#| msgid "Weather: Fog"
+msgid "Weather"
+msgstr "Vreme"
+
+#: ../data/sources/webcal-stub.source.in.h:1
+msgid "On The Web"
+msgstr "Na spletu"
+
+#: ../data/sources/webdav-stub.source.in.h:1
+msgid "WebDAV"
+msgstr "WebDAV"
+
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
 #: ../libebackend/e-authentication-mediator.c:849
@@ -4936,7 +4988,7 @@ msgid "File must have a '.source' extension"
 msgstr "Pripona datoteke mora biti '.source'"
 
 #: ../libebackend/e-source-registry-server.c:522
-#: ../libedataserver/e-source-registry.c:1523
+#: ../libedataserver/e-source-registry.c:1535
 msgid "The user declined to authenticate"
 msgstr "Overitev je prekinjena s strani uporabnika"
 
@@ -5473,11 +5525,6 @@ msgstr "Iskanje"
 msgid "Address Book"
 msgstr "Imenik"
 
-#: ../libedataserverui/e-name-selector-dialog.c:427
-#: ../modules/google-backend/module-google-backend.c:183
-msgid "Contacts"
-msgstr "Stiki"
-
 #: ../libedataserverui/e-name-selector-dialog.c:545
 msgid "Select Contacts from Address Book"
 msgstr "Izberi stike iz imenika"
@@ -5644,9 +5691,6 @@ msgstr "Istovetnost"
 
 #~ msgid "%s: there was no source for UID '%s' stored in GConf."
 #~ msgstr "%s: v GConf ni shranjenega vira za UID '%s'."
-
-#~ msgid "On This Computer"
-#~ msgstr "Na tem računalniku"
 
 #~ msgid "Invalid source"
 #~ msgstr "Neveljaven vir"
