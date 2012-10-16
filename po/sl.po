@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-10-16 00:21+0000\n"
-"PO-Revision-Date: 2012-10-16 07:56+0100\n"
+"POT-Creation-Date: 2012-10-16 06:34+0000\n"
+"PO-Revision-Date: 2012-10-16 08:48+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -23,17 +23,17 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1232
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4785
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1210
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4743
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:931
 #: ../addressbook/libebook/e-book-client.c:106
-#: ../addressbook/libedata-book/e-data-book.c:432
+#: ../addressbook/libedata-book/e-data-book.c:447
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:570
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
-#: ../calendar/libecal/e-cal.c:4033
-#: ../calendar/libecal/e-cal-client.c:148
+#: ../calendar/libecal/e-cal.c:4059
+#: ../calendar/libecal/e-cal-client.c:125
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:525
 #: ../camel/providers/imap/camel-imap-store.c:469
@@ -47,7 +47,7 @@ msgid "Failed to remove file '%s': %s"
 msgstr "Odstranjevanje datoteke `%s' je spodletelo: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:164
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:616
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:618
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Ustvarjanje mape %s je spodletelo: %s"
@@ -62,18 +62,18 @@ msgstr "Ustvarjanje trde povezave za vir '%s' je spodletelo: %s"
 msgid "No UID in the contact"
 msgstr "Ni vrednosti UID stika"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1569
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:508
+#: ../addressbook/backends/file/e-book-backend-file.c:1572
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:510
 msgid "Loading..."
 msgstr "Nalaganje ..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1572
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4886
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:510
+#: ../addressbook/backends/file/e-book-backend-file.c:1575
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4848
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:512
 msgid "Searching..."
 msgstr "Iskanje ..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:2115
+#: ../addressbook/backends/file/e-book-backend-file.c:2118
 #, c-format
 msgid "Failed to build summary for an address book %s"
 msgstr "Izgradnja povzetka za imenik %s je spodletela."
@@ -89,7 +89,7 @@ msgid "Querying for updated groups…"
 msgstr "Poizvedovanje za posodobitvami skupin ..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1202
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1655
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1633
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:287
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
 msgid "The backend does not support bulk additions"
@@ -111,7 +111,7 @@ msgid "Deleting contact…"
 msgstr "Izbriši stik ..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1601
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2312
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2275
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:367
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:487
 msgid "The backend does not support bulk modifications"
@@ -154,81 +154,81 @@ msgstr "Sodelavci"
 msgid "Not connected"
 msgstr "Ni povezave"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:793
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:771
 msgid "Using Distinguished Name (DN)"
 msgstr "Z uporabo razločnega imena (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:796
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:774
 msgid "Using Email Address"
 msgstr "Z uporabo elektronskega naslova"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:947
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Povezovanje je spodletelo z vezmi različice v2 in v3"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1090
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1068
 msgid "Reconnecting to LDAP server..."
 msgstr "Ponovno povezovanje s strežnikom LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1216
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1194
 msgid "Invalid DN syntax"
 msgstr "Neveljavna razločna skladnja DN"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1231
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4784
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1209
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4742
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Prišlo je do napake LDAP 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1754
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1717
 msgid "Adding contact to LDAP server..."
 msgstr "Dodajanje stika na strežnik LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1885
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1848
 msgid "Removing contact from LDAP server..."
 msgstr "Odstranjujem stik iz strežnika LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2022
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2405
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1985
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2368
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: vrnjena je prazna vrednost (NULL) predmeta ldap_first_entry"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2265
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2228
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2419
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2297
 msgid "Modifying contact from LDAP server..."
 msgstr "Spreminjam stik na strežniku LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2673
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2636
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2849
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4694
 msgid "Receiving LDAP search results..."
 msgstr "Sprejemanje rezultatov iskanja LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4907
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4869
 msgid "Error performing search"
 msgstr "Napaka med iskanjem"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5028
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4990
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Prejemanje stikov (%d) ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5552
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5447
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Pridobivanje razločnega imena (DN) za uporabnika '%s' je spodletelo."
 
-#: ../addressbook/backends/vcf/e-book-backend-vcf.c:645
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:647
 #, c-format
 msgid "Failed to open addressbook at '%s': %s"
 msgstr "Odpiranje imenika na '%s' je spodletelo: %s"
@@ -270,7 +270,7 @@ msgstr "Ni telesa odziva med razultati ukaza webdav PROPFIND"
 msgid "Loading Contacts (%d%%)"
 msgstr "Nalaganje stikov (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1293
 msgid "Cannot transform SoupURI to string"
 msgstr "Naslova SoupURI ni mogoče preoblikovati v niz"
 
@@ -279,12 +279,12 @@ msgid "No such book"
 msgstr "Ni takega imenika"
 
 #: ../addressbook/libebook/e-book-client.c:97
-#: ../addressbook/libedata-book/e-data-book.c:306
+#: ../addressbook/libedata-book/e-data-book.c:321
 msgid "Contact not found"
 msgstr "Stika ni mogoče najti"
 
 #: ../addressbook/libebook/e-book-client.c:99
-#: ../addressbook/libedata-book/e-data-book.c:307
+#: ../addressbook/libedata-book/e-data-book.c:322
 msgid "Contact ID already exists"
 msgstr "ID stika že obstaja"
 
@@ -293,16 +293,16 @@ msgid "No such source"
 msgstr "Ni takega vira"
 
 #: ../addressbook/libebook/e-book-client.c:103
-#: ../addressbook/libedata-book/e-data-book.c:323
+#: ../addressbook/libedata-book/e-data-book.c:338
 msgid "No space"
 msgstr "Ni prostora"
 
-#: ../addressbook/libebook/e-book-client.c:488
+#: ../addressbook/libebook/e-book-client.c:857
 msgid "Failed to run book factory"
 msgstr "Zaganjanje tovarne imenika je spodletelo"
 
-#: ../addressbook/libebook/e-book-client.c:2244
-#: ../calendar/libecal/e-cal-client.c:4602
+#: ../addressbook/libebook/e-book-client.c:2390
+#: ../calendar/libecal/e-cal-client.c:4772
 msgid "Cannot get connection to view"
 msgstr "Ni mogoče pridobiti povezave za ogled"
 
@@ -914,145 +914,145 @@ msgid "Contact '%s' not found"
 msgstr "Stika '%s' ni mogoče najti"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:201
-#: ../addressbook/libedata-book/e-data-book.c:214
+#: ../addressbook/libedata-book/e-data-book.c:208
+#: ../addressbook/libedata-book/e-data-book.c:231
 #: ../addressbook/libedata-book/e-data-book.c:724
 msgid "Invalid query: "
 msgstr "Neveljavna poizvedba:"
 
-#: ../addressbook/libedata-book/e-data-book.c:302
-#: ../calendar/libedata-cal/e-data-cal.c:415
+#: ../addressbook/libedata-book/e-data-book.c:317
+#: ../calendar/libedata-cal/e-data-cal.c:427
 msgid "Success"
 msgstr "Uspešno zaključeno"
 
-#: ../addressbook/libedata-book/e-data-book.c:303
-#: ../calendar/libecal/e-cal.c:4001
-#: ../calendar/libedata-cal/e-data-cal.c:416
+#: ../addressbook/libedata-book/e-data-book.c:318
+#: ../calendar/libecal/e-cal.c:4027
+#: ../calendar/libedata-cal/e-data-cal.c:428
 #: ../libedataserver/e-client.c:122
 msgid "Backend is busy"
 msgstr "Zaledje je zaposleno"
 
-#: ../addressbook/libedata-book/e-data-book.c:304
-#: ../calendar/libedata-cal/e-data-cal.c:417
+#: ../addressbook/libedata-book/e-data-book.c:319
+#: ../calendar/libedata-cal/e-data-cal.c:429
 #: ../libedataserver/e-client.c:132
 msgid "Repository offline"
 msgstr "Skladišče ni povezano"
 
-#: ../addressbook/libedata-book/e-data-book.c:305
-#: ../calendar/libecal/e-cal.c:4015
-#: ../calendar/libedata-cal/e-data-cal.c:418
+#: ../addressbook/libedata-book/e-data-book.c:320
+#: ../calendar/libecal/e-cal.c:4041
+#: ../calendar/libedata-cal/e-data-cal.c:430
 #: ../libedataserver/e-client.c:138
 msgid "Permission denied"
 msgstr "Ni ustreznih dovoljenj"
 
-#: ../addressbook/libedata-book/e-data-book.c:308
-#: ../calendar/libedata-cal/e-data-cal.c:423
+#: ../addressbook/libedata-book/e-data-book.c:323
+#: ../calendar/libedata-cal/e-data-cal.c:435
 msgid "Authentication Failed"
 msgstr "Overitev je spodletela"
 
-#: ../addressbook/libedata-book/e-data-book.c:309
-#: ../calendar/libedata-cal/e-data-cal.c:424
+#: ../addressbook/libedata-book/e-data-book.c:324
+#: ../calendar/libedata-cal/e-data-cal.c:436
 msgid "Authentication Required"
 msgstr "Zahtevana je overitev"
 
-#: ../addressbook/libedata-book/e-data-book.c:310
-#: ../calendar/libedata-cal/e-data-cal.c:425
+#: ../addressbook/libedata-book/e-data-book.c:325
+#: ../calendar/libedata-cal/e-data-cal.c:437
 msgid "Unsupported field"
 msgstr "Nepodprto polje"
 
-#: ../addressbook/libedata-book/e-data-book.c:311
-#: ../calendar/libedata-cal/e-data-cal.c:427
+#: ../addressbook/libedata-book/e-data-book.c:326
+#: ../calendar/libedata-cal/e-data-cal.c:439
 #: ../libedataserver/e-client.c:146
 msgid "Unsupported authentication method"
 msgstr "Nepodprt način overitve"
 
-#: ../addressbook/libedata-book/e-data-book.c:312
-#: ../calendar/libedata-cal/e-data-cal.c:428
+#: ../addressbook/libedata-book/e-data-book.c:327
+#: ../calendar/libedata-cal/e-data-cal.c:440
 #: ../libedataserver/e-client.c:148
 msgid "TLS not available"
 msgstr "TLS ni na voljo"
 
-#: ../addressbook/libedata-book/e-data-book.c:313
+#: ../addressbook/libedata-book/e-data-book.c:328
 msgid "Address book does not exist"
 msgstr "Imenik ne obstaja."
 
-#: ../addressbook/libedata-book/e-data-book.c:314
+#: ../addressbook/libedata-book/e-data-book.c:329
 msgid "Book removed"
 msgstr "Knjiga je odstranjena"
 
-#: ../addressbook/libedata-book/e-data-book.c:315
-#: ../calendar/libedata-cal/e-data-cal.c:431
+#: ../addressbook/libedata-book/e-data-book.c:330
+#: ../calendar/libedata-cal/e-data-cal.c:443
 msgid "Not available in offline mode"
 msgstr "Ni na voljo v načinu brez povezave"
 
-#: ../addressbook/libedata-book/e-data-book.c:316
-#: ../calendar/libedata-cal/e-data-cal.c:432
+#: ../addressbook/libedata-book/e-data-book.c:331
+#: ../calendar/libedata-cal/e-data-cal.c:444
 #: ../libedataserver/e-client.c:150
 msgid "Search size limit exceeded"
 msgstr "Presežena je omejitev velikosti iskanja"
 
-#: ../addressbook/libedata-book/e-data-book.c:317
-#: ../calendar/libedata-cal/e-data-cal.c:433
+#: ../addressbook/libedata-book/e-data-book.c:332
+#: ../calendar/libedata-cal/e-data-cal.c:445
 #: ../libedataserver/e-client.c:152
 msgid "Search time limit exceeded"
 msgstr "Presežena je omejitev časa iskanja"
 
-#: ../addressbook/libedata-book/e-data-book.c:318
-#: ../calendar/libedata-cal/e-data-cal.c:434
+#: ../addressbook/libedata-book/e-data-book.c:333
+#: ../calendar/libedata-cal/e-data-cal.c:446
 #: ../libedataserver/e-client.c:154
 msgid "Invalid query"
 msgstr "Neveljavna poizvedba"
 
-#: ../addressbook/libedata-book/e-data-book.c:319
-#: ../calendar/libedata-cal/e-data-cal.c:435
+#: ../addressbook/libedata-book/e-data-book.c:334
+#: ../calendar/libedata-cal/e-data-cal.c:447
 #: ../libedataserver/e-client.c:156
 msgid "Query refused"
 msgstr "Poizvedba zavrnjena"
 
-#: ../addressbook/libedata-book/e-data-book.c:320
-#: ../calendar/libedata-cal/e-data-cal.c:436
+#: ../addressbook/libedata-book/e-data-book.c:335
+#: ../calendar/libedata-cal/e-data-cal.c:448
 #: ../libedataserver/e-client.c:142
 msgid "Could not cancel"
 msgstr "Ni mogoče preklicati"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:322
-#: ../calendar/libedata-cal/e-data-cal.c:438
+#: ../addressbook/libedata-book/e-data-book.c:337
+#: ../calendar/libedata-cal/e-data-cal.c:450
 msgid "Invalid server version"
 msgstr "Neveljavna različica strežnika"
 
-#: ../addressbook/libedata-book/e-data-book.c:324
-#: ../calendar/libecal/e-cal.c:3999
-#: ../calendar/libedata-cal/e-data-cal.c:439
+#: ../addressbook/libedata-book/e-data-book.c:339
+#: ../calendar/libecal/e-cal.c:4025
+#: ../calendar/libedata-cal/e-data-cal.c:451
 #: ../libedataserver/e-client.c:120
 msgid "Invalid argument"
 msgstr "Neveljaven argument"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:326
-#: ../calendar/libecal/e-cal.c:4038
-#: ../calendar/libedata-cal/e-data-cal.c:441
+#: ../addressbook/libedata-book/e-data-book.c:341
+#: ../calendar/libecal/e-cal.c:4064
+#: ../calendar/libedata-cal/e-data-cal.c:453
 #: ../libedataserver/e-client.c:144
 msgid "Not supported"
 msgstr "Ni podprto"
 
-#: ../addressbook/libedata-book/e-data-book.c:327
-#: ../calendar/libedata-cal/e-data-cal.c:442
+#: ../addressbook/libedata-book/e-data-book.c:342
+#: ../calendar/libedata-cal/e-data-cal.c:454
 #: ../libedataserver/e-client.c:162
 msgid "Backend is not opened yet"
 msgstr "Ozadnji program še ni odprt"
 
-#: ../addressbook/libedata-book/e-data-book.c:335
-#: ../calendar/libecal/e-cal-client.c:619
-#: ../calendar/libedata-cal/e-data-cal.c:450
+#: ../addressbook/libedata-book/e-data-book.c:350
+#: ../calendar/libecal/e-cal-client.c:1004
+#: ../calendar/libedata-cal/e-data-cal.c:462
 #: ../libedataserver/e-client.c:160
 msgid "Other error"
 msgstr "Drugačna napaka"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:542
-#: ../addressbook/libedata-book/e-data-book.c:909
+#: ../addressbook/libedata-book/e-data-book.c:891
 msgid "Cannot get contact: "
 msgstr "Ni mogoče pridobiti stika:"
 
@@ -1064,13 +1064,13 @@ msgstr "Prazna poizvedba:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:617
-#: ../addressbook/libedata-book/e-data-book.c:1007
+#: ../addressbook/libedata-book/e-data-book.c:989
 msgid "Cannot add contact: "
 msgstr "Ni mogoče dodati stika:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:642
-#: ../addressbook/libedata-book/e-data-book.c:1041
+#: ../addressbook/libedata-book/e-data-book.c:1023
 msgid "Cannot modify contacts: "
 msgstr "Ni mogoče spremeniti stikov:"
 
@@ -1080,38 +1080,33 @@ msgid "Cannot open book: "
 msgstr "Ni mogoče odpreti imenika:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:812
-msgid "Cannot remove book: "
-msgstr "Ni mogoče odstraniti imenika:"
-
-#. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:839
+#: ../addressbook/libedata-book/e-data-book.c:821
 msgid "Cannot refresh address book: "
 msgstr "Ni mogoče osvežiti imenika:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:865
+#: ../addressbook/libedata-book/e-data-book.c:847
 msgid "Cannot get backend property: "
 msgstr "Ni mogoče pridobiti lastnosti ozadnjega programa:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:890
-#: ../calendar/libedata-cal/e-data-cal.c:1016
+#: ../addressbook/libedata-book/e-data-book.c:872
+#: ../calendar/libedata-cal/e-data-cal.c:975
 msgid "Cannot set backend property: "
 msgstr "Ni mogoče nastaviti lastnosti ozadnjega programa:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:927
+#: ../addressbook/libedata-book/e-data-book.c:909
 msgid "Cannot get contact list: "
 msgstr "Ni mogoče pridobiti seznama stikov:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:961
+#: ../addressbook/libedata-book/e-data-book.c:943
 msgid "Cannot get contact list uids: "
 msgstr "Ni mogoče pridobiti seznama naslovov UID stikov: %s"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1066
+#: ../addressbook/libedata-book/e-data-book.c:1048
 msgid "Cannot remove contacts: "
 msgstr "Ni mogoče odstraniti stika:"
 
@@ -1200,15 +1195,15 @@ msgstr "Sistem CalDAV ne podpira množičnega spreminjanja"
 msgid "CalDAV does not support bulk removals"
 msgstr "Sistem CalDAV ne podpira množičnega odstranjevanja"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4606
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4603
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Koledar ne podpira možnosti prostosti/zasedenosti"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4611
 msgid "Schedule outbox url not found"
 msgstr "Naslova URL odhodnega predala ni mogoče najti"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4710
 msgid "Unexpected result in schedule-response"
 msgstr "Nepričakovan rezultat v odzivu"
 
@@ -1305,87 +1300,87 @@ msgstr "Vreme: nevihtno"
 msgid "Forecast"
 msgstr "Napoved"
 
-#: ../calendar/libecal/e-cal.c:4003
+#: ../calendar/libecal/e-cal.c:4029
 msgid "Repository is offline"
 msgstr "Skladišče ni na zvezi"
 
-#: ../calendar/libecal/e-cal.c:4005
-#: ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4031
+#: ../calendar/libecal/e-cal-client.c:112
 msgid "No such calendar"
 msgstr "Ni takega koledarja"
 
-#: ../calendar/libecal/e-cal.c:4007
-#: ../calendar/libecal/e-cal-client.c:137
-#: ../calendar/libedata-cal/e-data-cal.c:420
+#: ../calendar/libecal/e-cal.c:4033
+#: ../calendar/libecal/e-cal-client.c:114
+#: ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Object not found"
 msgstr "Predmeta ni mogoče najti"
 
-#: ../calendar/libecal/e-cal.c:4009
-#: ../calendar/libecal/e-cal-client.c:139
-#: ../calendar/libedata-cal/e-data-cal.c:421
+#: ../calendar/libecal/e-cal.c:4035
+#: ../calendar/libecal/e-cal-client.c:116
+#: ../calendar/libedata-cal/e-data-cal.c:433
 msgid "Invalid object"
 msgstr "Neveljaven predmet"
 
-#: ../calendar/libecal/e-cal.c:4011
+#: ../calendar/libecal/e-cal.c:4037
 msgid "URI not loaded"
 msgstr "Naslov URI ni naložen"
 
-#: ../calendar/libecal/e-cal.c:4013
+#: ../calendar/libecal/e-cal.c:4039
 msgid "URI already loaded"
 msgstr "Naslov URI je že naložen"
 
-#: ../calendar/libecal/e-cal.c:4017
+#: ../calendar/libecal/e-cal.c:4043
 msgid "Unknown User"
 msgstr "Neznan uporabnik"
 
-#: ../calendar/libecal/e-cal.c:4019
-#: ../calendar/libecal/e-cal-client.c:143
-#: ../calendar/libedata-cal/e-data-cal.c:422
+#: ../calendar/libecal/e-cal.c:4045
+#: ../calendar/libecal/e-cal-client.c:120
+#: ../calendar/libedata-cal/e-data-cal.c:434
 msgid "Object ID already exists"
 msgstr "Predmet ID že obstaja"
 
-#: ../calendar/libecal/e-cal.c:4021
+#: ../calendar/libecal/e-cal.c:4047
 msgid "Protocol not supported"
 msgstr "Protokol ni podprt"
 
-#: ../calendar/libecal/e-cal.c:4023
+#: ../calendar/libecal/e-cal.c:4049
 msgid "Operation has been canceled"
 msgstr "Opravilo je preklicano"
 
-#: ../calendar/libecal/e-cal.c:4025
+#: ../calendar/libecal/e-cal.c:4051
 msgid "Could not cancel operation"
 msgstr "Ni mogoče preklicati dejanja"
 
-#: ../calendar/libecal/e-cal.c:4027
+#: ../calendar/libecal/e-cal.c:4053
 #: ../libedataserver/e-client.c:128
 msgid "Authentication failed"
 msgstr "Overitev je spodletela"
 
-#: ../calendar/libecal/e-cal.c:4029
+#: ../calendar/libecal/e-cal.c:4055
 #: ../camel/providers/smtp/camel-smtp-transport.c:857
 #: ../libedataserver/e-client.c:130
 msgid "Authentication required"
 msgstr "Zahtevana je overitev"
 
-#: ../calendar/libecal/e-cal.c:4031
+#: ../calendar/libecal/e-cal.c:4057
 msgid "A D-Bus exception has occurred"
 msgstr "Prišlo je do izjemne napake vodila D-Bus"
 
-#: ../calendar/libecal/e-cal.c:4035
+#: ../calendar/libecal/e-cal.c:4061
 msgid "No error"
 msgstr "Brez napake"
 
-#: ../calendar/libecal/e-cal-client.c:141
-#: ../calendar/libedata-cal/e-data-cal.c:430
+#: ../calendar/libecal/e-cal-client.c:118
+#: ../calendar/libedata-cal/e-data-cal.c:442
 msgid "Unknown user"
 msgstr "Neznan uporabnik"
 
-#: ../calendar/libecal/e-cal-client.c:145
-#: ../calendar/libedata-cal/e-data-cal.c:419
+#: ../calendar/libecal/e-cal-client.c:122
+#: ../calendar/libedata-cal/e-data-cal.c:431
 msgid "Invalid range"
 msgstr "Neveljavno območje"
 
-#: ../calendar/libecal/e-cal-client.c:610
+#: ../calendar/libecal/e-cal-client.c:995
 msgid "Failed to run calendar factory"
 msgstr "Zagon tovarne koledarja je spodletel"
 
@@ -1656,96 +1651,91 @@ msgstr "\"%s\" pričakuje vsaj en argument"
 msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
 msgstr "\"%s\" pričakuje, da so vsi argumenti nizi ali da je natanko en argument neresnična Boolova vrednost (#f)"
 
-#: ../calendar/libedata-cal/e-data-cal.c:426
+#: ../calendar/libedata-cal/e-data-cal.c:438
 msgid "Unsupported method"
 msgstr "Nepodprta metoda"
 
-#: ../calendar/libedata-cal/e-data-cal.c:429
+#: ../calendar/libedata-cal/e-data-cal.c:441
 msgid "Calendar does not exist"
 msgstr "KOledar ne obstaja"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:909
+#: ../calendar/libedata-cal/e-data-cal.c:895
 msgid "Cannot open calendar: "
 msgstr "Ni mogoče odpreti koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:934
-msgid "Cannot remove calendar: "
-msgstr "Ni mogoče odstraniti koledarja:"
-
-#. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:961
+#: ../calendar/libedata-cal/e-data-cal.c:920
 msgid "Cannot refresh calendar: "
 msgstr "Ni mogoče osvežiti koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:990
+#: ../calendar/libedata-cal/e-data-cal.c:949
 msgid "Cannot retrieve backend property: "
 msgstr "Ni mogoče pridobiti lastnosti ozadnjega programa:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1045
+#: ../calendar/libedata-cal/e-data-cal.c:1004
 msgid "Cannot retrieve calendar object path: "
 msgstr "Ni mogoče pridobiti poti predmeta koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1075
+#: ../calendar/libedata-cal/e-data-cal.c:1034
 msgid "Cannot retrieve calendar object list: "
 msgstr "Ni mogoče pridobiti seznama predmetov koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1104
+#: ../calendar/libedata-cal/e-data-cal.c:1063
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Ni mogoče pridobiti seznama koledarja prosti/zasedeni:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1142
+#: ../calendar/libedata-cal/e-data-cal.c:1101
 msgid "Cannot create calendar object: "
 msgstr "Ni mogoče ustvariti predmeta koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1177
+#: ../calendar/libedata-cal/e-data-cal.c:1136
 msgid "Cannot modify calendar object: "
 msgstr "Ni mogoče spremeniti predmeta koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1217
+#: ../calendar/libedata-cal/e-data-cal.c:1176
 msgid "Cannot remove calendar object: "
 msgstr "Ni mogoče odstraniti predmeta koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1254
+#: ../calendar/libedata-cal/e-data-cal.c:1213
 msgid "Cannot receive calendar objects: "
 msgstr "Ni mogoče prejeti predmetov koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1285
+#: ../calendar/libedata-cal/e-data-cal.c:1244
 msgid "Cannot send calendar objects: "
 msgstr "Ni mogoče poslati predmetov koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1317
+#: ../calendar/libedata-cal/e-data-cal.c:1276
 msgid "Could not retrieve attachment uris: "
 msgstr "Ni mogoče pridobiti naslovov URI prilog:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1345
+#: ../calendar/libedata-cal/e-data-cal.c:1304
 msgid "Could not discard reminder: "
 msgstr "Opomnika ni mogoče zavreči:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1374
+#: ../calendar/libedata-cal/e-data-cal.c:1333
 msgid "Could not get calendar view path: "
 msgstr "Ni mogoče pridobiti poti pogleda koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1404
+#: ../calendar/libedata-cal/e-data-cal.c:1363
 msgid "Could not retrieve calendar time zone: "
 msgstr "Ni mogoče pridobiti časovnega območja koledarja:"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1430
+#: ../calendar/libedata-cal/e-data-cal.c:1389
 msgid "Could not add calendar time zone: "
 msgstr "Ni mogoče dodati časovnega območja koledarja:"
 
@@ -1965,8 +1955,8 @@ msgstr "Neveljavni argumenti pri (system-flag)"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Neveljavni argumenti pri (user-tag)"
 
-#: ../camel/camel-filter-search.c:949
-#: ../camel/camel-filter-search.c:958
+#: ../camel/camel-filter-search.c:1020
+#: ../camel/camel-filter-search.c:1029
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Napaka med izvajanjem iskanja s filtrom: %s: %s"
@@ -4551,47 +4541,47 @@ msgstr "Sendmail"
 msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
 msgstr "Za dostavljanje pošte preko programa \"sendmail\" na krajevnem sistemu."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:52
 msgid "Mail delivery via the sendmail program"
 msgstr "Dostava pošte preko programa sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:93
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Ni mogoče razčleniti seznama prejemnikov"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:126
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
 #, c-format
-msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr "Ni mogoče ustvariti cevi do programa sendmail: %s: elektronska sporočila niso poslana."
+msgid "Could not create pipe to '%s': %s: mail not sent"
+msgstr "Ni mogoče ustvariti cevi do programa  '%s': %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:148
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
 #, c-format
-msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Ni mogoče razvejiti programa sendmail: %s: elektronska sporočila niso poslana."
+msgid "Could not fork '%s': %s: mail not sent"
+msgstr "Ni mogoče razvejiti programa '%s': %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 msgid "Could not send message: "
 msgstr "Ni mogoče poslati sporočila:"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
 #, c-format
-msgid "sendmail exited with signal %s: mail not sent."
-msgstr "program sendmail je zaključen s signalom %s: elektronska sporočila niso poslana."
+msgid "'%s' exited with signal %s: mail not sent."
+msgstr "program '%s' je zaključen s signalom %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
 #, c-format
-msgid "Could not execute %s: mail not sent."
-msgstr "Ni mogoče izvršiti %s: elektronska sporočila niso poslana."
+msgid "Could not execute '%s': mail not sent."
+msgstr "Ni mogoče izvesti '%s': elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
 #, c-format
-msgid "sendmail exited with status %d: mail not sent."
-msgstr "program sendmail je zaključen s stanjem %d: elektronska sporočila niso poslana."
+msgid "'%s' exited with status %d: mail not sent."
+msgstr "program '%s' je zaključen s stanjem %d: elektronska pošta ni poslana."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4930,12 +4920,6 @@ msgstr "Dodajanje gesla v zbirko ključev"
 msgid "Password was incorrect"
 msgstr "Geslo je napačno."
 
-#: ../libebackend/e-authentication-session.c:1331
-#: ../libebackend/e-authentication-session.c:1507
-#: ../libebackend/e-authentication-session.c:1690
-msgid "Keyring operation was cancelled"
-msgstr "Opravilo zbirke ključev je preklicano."
-
 #: ../libebackend/e-backend.c:190
 #, c-format
 msgid "%s does not support authentication"
@@ -5194,7 +5178,7 @@ msgstr "Podatkovni vir '%s' ni zapisliv"
 msgid "Unnamed"
 msgstr "Neimenovano"
 
-#: ../libedataserver/e-source-mail-signature.c:485
+#: ../libedataserver/e-source-mail-signature.c:487
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Datoteka skripta podpisa mora biti krajevna datoteka."
@@ -5567,31 +5551,31 @@ msgstr "_Uredi %s"
 msgid "_Delete %s"
 msgstr "_Izbriši %s"
 
-#: ../libedataserverui/e-passwords.c:126
+#: ../libedataserverui/e-passwords.c:127
 msgid "Keyring key is unusable: no user or host name"
 msgstr "Ključ zbirke ključev ni uporaben: ni določenega uporabnika ali imena gostitelja"
 
-#: ../libedataserverui/e-passwords.c:701
+#: ../libedataserverui/e-passwords.c:460
 #: ../libedataserverui/e-passwords-win32.c:614
 msgid "You have the Caps Lock key on."
 msgstr "Vključene so velike črke."
 
-#: ../libedataserverui/e-passwords.c:821
+#: ../libedataserverui/e-passwords.c:580
 #: ../libedataserverui/e-passwords-win32.c:737
 msgid "_Remember this passphrase"
 msgstr "_Zapomni si šifrirno geslo"
 
-#: ../libedataserverui/e-passwords.c:822
+#: ../libedataserverui/e-passwords.c:581
 #: ../libedataserverui/e-passwords-win32.c:738
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "Zapomni si _šifrirno geslo do konca seje"
 
-#: ../libedataserverui/e-passwords.c:827
+#: ../libedataserverui/e-passwords.c:586
 #: ../libedataserverui/e-passwords-win32.c:743
 msgid "_Remember this password"
 msgstr "_Zapomni si geslo"
 
-#: ../libedataserverui/e-passwords.c:828
+#: ../libedataserverui/e-passwords.c:587
 #: ../libedataserverui/e-passwords-win32.c:744
 msgid "_Remember this password for the remainder of this session"
 msgstr "Zapomni si _geslo do konca seje"
@@ -5604,46 +5588,46 @@ msgstr "_Cilj"
 msgid "Select destination"
 msgstr "Izbor cilja"
 
-#: ../modules/google-backend/module-google-backend.c:118
-#: ../modules/yahoo-backend/module-yahoo-backend.c:200
-msgid "Calendar"
-msgstr "Koledar"
-
 #. TODO: more specific
-#: ../modules/online-accounts/goaewsclient.c:184
+#: ../modules/gnome-online-accounts/goaewsclient.c:184
 #, c-format
 msgid "Code: %u - Unexpected response from server"
 msgstr "Koda: %u - nepričakovan odziv strežnika"
 
 #. TODO: more specific
-#: ../modules/online-accounts/goaewsclient.c:205
+#: ../modules/gnome-online-accounts/goaewsclient.c:205
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Razčlenjevanje samodejnega odgovora XML je spodletelo"
 
 #. TODO: more specific
-#: ../modules/online-accounts/goaewsclient.c:214
+#: ../modules/gnome-online-accounts/goaewsclient.c:214
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Iskanje predmeta samodejne zaznave je spodletelo"
 
 #. TODO: more specific
-#: ../modules/online-accounts/goaewsclient.c:226
+#: ../modules/gnome-online-accounts/goaewsclient.c:226
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Iskanje predmeta odziva je spodletelo"
 
 #. TODO: more specific
-#: ../modules/online-accounts/goaewsclient.c:238
+#: ../modules/gnome-online-accounts/goaewsclient.c:238
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Iskanje predmeta računa je spodletelo"
 
 #. TODO: more specific
-#: ../modules/online-accounts/goaewsclient.c:252
+#: ../modules/gnome-online-accounts/goaewsclient.c:252
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Iskanje predmetov ASUrl in OABUrl v odzivu samodejne zaznave je spodletelo"
+
+#: ../modules/google-backend/module-google-backend.c:118
+#: ../modules/yahoo-backend/module-yahoo-backend.c:200
+msgid "Calendar"
+msgstr "Koledar"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
@@ -5675,6 +5659,15 @@ msgstr "Zastavice"
 #: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
 msgstr "Istovetnost"
+
+#~ msgid "Cannot remove book: "
+#~ msgstr "Ni mogoče odstraniti imenika:"
+
+#~ msgid "Cannot remove calendar: "
+#~ msgstr "Ni mogoče odstraniti koledarja:"
+
+#~ msgid "Keyring operation was cancelled"
+#~ msgstr "Opravilo zbirke ključev je preklicano."
 
 #~ msgid "Closing tmp stream failed: "
 #~ msgstr "Zapiranje začasnega pretoka je spodletelo:"
