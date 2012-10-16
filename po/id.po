@@ -8,18 +8,18 @@
 # Andika Triwidada <andika@gmail.com>, 2010, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server master\n"
+"Project-Id-Version: evolution-data-server gnome-3-6\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-17 16:36+0000\n"
-"PO-Revision-Date: 2012-09-24 18:27+0700\n"
+"POT-Creation-Date: 2012-10-15 21:25+0000\n"
+"PO-Revision-Date: 2012-10-16 07:14+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.3\n"
+"X-Generator: Poedit 1.5.4\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
@@ -126,6 +126,10 @@ msgid "Loading…"
 msgstr "Memuat…"
 
 #: ../addressbook/backends/google/e-book-google-utils.c:1562
+#: ../data/sources/system-address-book.source.in.h:1
+#: ../data/sources/system-calendar.source.in.h:1
+#: ../data/sources/system-memo-list.source.in.h:1
+#: ../data/sources/system-task-list.source.in.h:1
 msgid "Personal"
 msgstr "Pribadi"
 
@@ -2234,13 +2238,13 @@ msgstr "STARTTLS tidak didukung"
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Gagal menyambung ke server IMAP %s dalam mode aman: "
 
-#: ../camel/camel-imapx-server.c:3580
+#: ../camel/camel-imapx-server.c:3582
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s tidak mendukung otentikasi %s"
 
-#: ../camel/camel-imapx-server.c:3591 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3593 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:259
 #: ../camel/providers/pop3/camel-pop3-store.c:587
@@ -2249,13 +2253,13 @@ msgstr "Server IMAP %s tidak mendukung otentikasi %s"
 msgid "No support for %s authentication"
 msgstr "Tak ada dukungan bagi otentikasi %s"
 
-#: ../camel/camel-imapx-server.c:3610
+#: ../camel/camel-imapx-server.c:3612
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:502
 msgid "Cannot authenticate without a username"
 msgstr "Tak bisa mengotentikasi tanpa nama pengguna"
 
-#: ../camel/camel-imapx-server.c:3619
+#: ../camel/camel-imapx-server.c:3621
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:511
 #: ../camel/providers/pop3/camel-pop3-store.c:512
@@ -2263,106 +2267,106 @@ msgstr "Tak bisa mengotentikasi tanpa nama pengguna"
 msgid "Authentication password not available"
 msgstr "Sandi otentikasi tak tersedia"
 
-#: ../camel/camel-imapx-server.c:3821
+#: ../camel/camel-imapx-server.c:3823
 msgid "Error fetching message"
 msgstr "Galat saat mengambil pesan"
 
-#: ../camel/camel-imapx-server.c:3903
+#: ../camel/camel-imapx-server.c:3905
 msgid "Failed to copy the tmp file"
 msgstr "Galat menyalin berkas tmp"
 
-#: ../camel/camel-imapx-server.c:3917
+#: ../camel/camel-imapx-server.c:3919
 msgid "Failed to close the tmp stream"
 msgstr "Gagal menutup stream tmp"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4017
 msgid "Error copying messages"
 msgstr "Galat saat menyalin pesan"
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4152
 msgid "Error appending message"
 msgstr "Galat saat menambahkan pesan di belakang"
 
-#: ../camel/camel-imapx-server.c:4333
+#: ../camel/camel-imapx-server.c:4335
 msgid "Error fetching message headers"
 msgstr "Galat saat mengambil tajuk pesan"
 
-#: ../camel/camel-imapx-server.c:4468
+#: ../camel/camel-imapx-server.c:4470
 msgid "Error retrieving message"
 msgstr "Galat saat mengambil pesan"
 
-#: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
+#: ../camel/camel-imapx-server.c:4592 ../camel/camel-imapx-server.c:4785
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Mengambil ringkasan informasi untuk pesan baru dalam '%s'"
 
-#: ../camel/camel-imapx-server.c:4641
+#: ../camel/camel-imapx-server.c:4643
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Memindai pesan-pesan yang berubah dalam '%s'"
 
-#: ../camel/camel-imapx-server.c:4684
+#: ../camel/camel-imapx-server.c:4686
 msgid "Error fetching new messages"
 msgstr "Galat saat mengambil pesan baru"
 
-#: ../camel/camel-imapx-server.c:4874
+#: ../camel/camel-imapx-server.c:4876
 msgid "Error while fetching messages"
 msgstr "Galat saat mengambil pesan"
 
-#: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
+#: ../camel/camel-imapx-server.c:4884 ../camel/camel-imapx-server.c:4920
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Mengambil ringkasan informasi untuk %d pesan dalam '%s'"
 
-#: ../camel/camel-imapx-server.c:5043 ../camel/camel-imapx-server.c:5079
+#: ../camel/camel-imapx-server.c:5045 ../camel/camel-imapx-server.c:5081
 msgid "Error refreshing folder"
 msgstr "Galat saat menyegarkan folder"
 
-#: ../camel/camel-imapx-server.c:5172
+#: ../camel/camel-imapx-server.c:5174
 msgid "Error expunging message"
 msgstr "Galat saat menghapus pesan-pesan lama"
 
-#: ../camel/camel-imapx-server.c:5269
+#: ../camel/camel-imapx-server.c:5271
 msgid "Error fetching folders"
 msgstr "Galat saat mengambil folder"
 
-#: ../camel/camel-imapx-server.c:5348
+#: ../camel/camel-imapx-server.c:5350
 msgid "Error subscribing to folder"
 msgstr "Galat saat berlangganan ke folder"
 
-#: ../camel/camel-imapx-server.c:5409
+#: ../camel/camel-imapx-server.c:5411
 msgid "Error creating folder"
 msgstr "Galat saat membuat folder"
 
-#: ../camel/camel-imapx-server.c:5458
+#: ../camel/camel-imapx-server.c:5460
 msgid "Error deleting folder"
 msgstr "Galat saat menghapus folder"
 
-#: ../camel/camel-imapx-server.c:5519
+#: ../camel/camel-imapx-server.c:5521
 msgid "Error renaming folder"
 msgstr "Galat saat mengubah nama folder"
 
-#: ../camel/camel-imapx-server.c:5580
+#: ../camel/camel-imapx-server.c:5582
 msgid "Error performing NOOP"
 msgstr "Galat saat melaksanakan NOOP"
 
-#: ../camel/camel-imapx-server.c:5676
+#: ../camel/camel-imapx-server.c:5678
 msgid "Error syncing changes"
 msgstr "Galat saat menyelaraskan perubahan"
 
-#: ../camel/camel-imapx-server.c:6447
+#: ../camel/camel-imapx-server.c:6449
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Tidak dapat memperoleh pesan dengan ID %s: %s"
 
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6450
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Tidak ada pesan yang tersedia."
 
-#: ../camel/camel-imapx-server.c:6603 ../camel/camel-imapx-server.c:6618
+#: ../camel/camel-imapx-server.c:6605 ../camel/camel-imapx-server.c:6620
 msgid "Cannot create spool file: "
 msgstr "Tidak bisa membuat berkas spool: "
 
@@ -2613,22 +2617,22 @@ msgstr "Penyedia folder surel virtual"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Untuk membaca surat sebagai query dari seperangkat folder lain"
 
-#: ../camel/camel-provider.c:195
+#: ../camel/camel-provider.c:258
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Tidak bisa membuka %s: Pemuatan modul tidak didukung pada sistem ini."
 
-#: ../camel/camel-provider.c:204
+#: ../camel/camel-provider.c:267
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Tidak bisa membuka %s: %s"
 
-#: ../camel/camel-provider.c:213
+#: ../camel/camel-provider.c:276
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Tidak bisa membuka %s: Tidak ada kode inisialisasi dalam modul."
 
-#: ../camel/camel-provider.c:412 ../camel/camel-session.c:406
+#: ../camel/camel-provider.c:424 ../camel/camel-session.c:406
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Tidak ada penyedia untuk protokol '%s'"
@@ -4539,6 +4543,7 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Penyimpanan POP3 tak punya hirarki folder"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
+#: ../data/sources/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -4550,52 +4555,47 @@ msgstr ""
 "Untuk penyerahan surat dengan melewatkannya ke program \"sendmail\" pada "
 "sistem lokal."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:52
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
 msgid "Mail delivery via the sendmail program"
 msgstr "Pengiriman surat dilakukan menggunakan program sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:93
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Tidak bisa mengurai daftar penerima"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:126
 #, c-format
-#| msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr "Tidak bisa membuat pipa ke '%s': %s: surat tidak terkirim"
+msgid "Could not create pipe to sendmail: %s: mail not sent"
+msgstr "Tidak bisa membuat pipa untuk sendmail: %s: surat tidak terkirim"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:148
 #, c-format
-#| msgid "Could not fork sendmail: %s: mail not sent"
-msgid "Could not fork '%s': %s: mail not sent"
-msgstr "Tidak bisa fork '%s': %s: surat tidak terkirim"
+msgid "Could not fork sendmail: %s: mail not sent"
+msgstr "Tidak bisa menjalankan sendmail: %s: surat tidak terkirim"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
 msgid "Could not send message: "
 msgstr "Tidak bisa mengirim pesan: "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
-#| msgid "sendmail exited with signal %s: mail not sent."
-msgid "'%s' exited with signal %s: mail not sent."
-msgstr "'%s' keluar dengan sinyal %s: surat tidak terkirim."
+msgid "sendmail exited with signal %s: mail not sent."
+msgstr "sendmail keluar dengan sinyal %s: surat tidak terkirim."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
-#| msgid "Could not execute %s: mail not sent."
-msgid "Could not execute '%s': mail not sent."
-msgstr "Tidak bisa mengeksekusi '%s': surat tidak terkirim."
+msgid "Could not execute %s: mail not sent."
+msgstr "Tidak bisa mengeksekusi %s: surat tidak terkirim."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
-#| msgid "sendmail exited with status %d: mail not sent."
-msgid "'%s' exited with status %d: mail not sent."
-msgstr "'%s' keluar dengan status %d: surat tidak terkirim."
+msgid "sendmail exited with status %d: mail not sent."
+msgstr "sendmail keluar dengan status %d: surat tidak terkirim."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4867,6 +4867,49 @@ msgstr ""
 "Unit bagi pengingat ulang tahun atau perayaan tahunan, \"minutes\" (menit), "
 "\"hours\" (jam), atau \"days\" (hari)"
 
+#: ../data/sources/birthdays.source.in.h:1
+msgid "Birthdays & Anniversaries"
+msgstr "Ulang Tahun & Perayaan Tahunan"
+
+#: ../data/sources/caldav-stub.source.in.h:1
+msgid "CalDAV"
+msgstr "CalDAV"
+
+#: ../data/sources/contacts-stub.source.in.h:1
+#: ../libedataserverui/e-name-selector-dialog.c:427
+#: ../modules/google-backend/module-google-backend.c:183
+msgid "Contacts"
+msgstr "Kontak"
+
+#: ../data/sources/google-stub.source.in.h:1
+msgid "Google"
+msgstr "Google"
+
+#: ../data/sources/ldap-stub.source.in.h:1
+msgid "On LDAP Servers"
+msgstr "Pada Server LDAP"
+
+#: ../data/sources/local.source.in.h:1
+#: ../data/sources/local-stub.source.in.h:1
+msgid "On This Computer"
+msgstr "Pada Komputer Ini"
+
+#: ../data/sources/vfolder.source.in.h:1
+msgid "Search Folders"
+msgstr "Cari Folder"
+
+#: ../data/sources/weather-stub.source.in.h:1
+msgid "Weather"
+msgstr "Cuaca"
+
+#: ../data/sources/webcal-stub.source.in.h:1
+msgid "On The Web"
+msgstr "Di Web"
+
+#: ../data/sources/webdav-stub.source.in.h:1
+msgid "WebDAV"
+msgstr "WebDAV"
+
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
 #: ../libebackend/e-authentication-mediator.c:849
@@ -4953,7 +4996,7 @@ msgid "File must have a '.source' extension"
 msgstr "Sumber mesti memiliki ekstensi '.source'"
 
 #: ../libebackend/e-source-registry-server.c:522
-#: ../libedataserver/e-source-registry.c:1523
+#: ../libedataserver/e-source-registry.c:1535
 msgid "The user declined to authenticate"
 msgstr "Pengguna menolak mengotentikasi"
 
@@ -5485,11 +5528,6 @@ msgstr "Cari"
 #: ../libedataserverui/e-name-selector-dialog.c:424
 msgid "Address Book"
 msgstr "Buku Alamat"
-
-#: ../libedataserverui/e-name-selector-dialog.c:427
-#: ../modules/google-backend/module-google-backend.c:183
-msgid "Contacts"
-msgstr "Kontak"
 
 #: ../libedataserverui/e-name-selector-dialog.c:545
 msgid "Select Contacts from Address Book"
