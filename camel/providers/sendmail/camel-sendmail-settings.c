@@ -25,14 +25,18 @@
 struct _CamelSendmailSettingsPrivate {
 	GMutex *property_lock;
 	gchar *custom_binary;
+	gchar *custom_args;
 
 	gboolean use_custom_binary;
+	gboolean use_custom_args;
 };
 
 enum {
 	PROP_0,
 	PROP_USE_CUSTOM_BINARY,
-	PROP_CUSTOM_BINARY
+	PROP_USE_CUSTOM_ARGS,
+	PROP_CUSTOM_BINARY,
+	PROP_CUSTOM_ARGS
 };
 
 G_DEFINE_TYPE (CamelSendmailSettings, camel_sendmail_settings, CAMEL_TYPE_SETTINGS)
@@ -50,8 +54,20 @@ sendmail_settings_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_USE_CUSTOM_ARGS:
+			camel_sendmail_settings_set_use_custom_args (
+				CAMEL_SENDMAIL_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_CUSTOM_BINARY:
 			camel_sendmail_settings_set_custom_binary (
+				CAMEL_SENDMAIL_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_CUSTOM_ARGS:
+			camel_sendmail_settings_set_custom_args (
 				CAMEL_SENDMAIL_SETTINGS (object),
 				g_value_get_string (value));
 			return;
@@ -74,10 +90,24 @@ sendmail_settings_get_property (GObject *object,
 				CAMEL_SENDMAIL_SETTINGS (object)));
 			return;
 
+		case PROP_USE_CUSTOM_ARGS:
+			g_value_set_boolean (
+				value,
+				camel_sendmail_settings_get_use_custom_args (
+				CAMEL_SENDMAIL_SETTINGS (object)));
+			return;
+
 		case PROP_CUSTOM_BINARY:
 			g_value_take_string (
 				value,
 				camel_sendmail_settings_dup_custom_binary (
+				CAMEL_SENDMAIL_SETTINGS (object)));
+			return;
+
+		case PROP_CUSTOM_ARGS:
+			g_value_take_string (
+				value,
+				camel_sendmail_settings_dup_custom_args (
 				CAMEL_SENDMAIL_SETTINGS (object)));
 			return;
 	}
@@ -95,6 +125,7 @@ sendmail_settings_finalize (GObject *object)
 	g_mutex_free (priv->property_lock);
 
 	g_free (priv->custom_binary);
+	g_free (priv->custom_args);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_sendmail_settings_parent_class)->finalize (object);
@@ -126,11 +157,35 @@ camel_sendmail_settings_class_init (CamelSendmailSettingsClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_USE_CUSTOM_ARGS,
+		g_param_spec_boolean (
+			"use-custom-args",
+			"Use Custom Arguments",
+			"Whether the custom-args property identifies arguments to use",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_CUSTOM_BINARY,
 		g_param_spec_string (
 			"custom-binary",
 			"Custom Binary",
 			"Custom binary to run, instead of sendmail",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CUSTOM_ARGS,
+		g_param_spec_string (
+			"custom-args",
+			"Custom Arguments",
+			"Custom arguments to use, instead of default (predefined) arguments",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -183,6 +238,47 @@ camel_sendmail_settings_set_use_custom_binary (CamelSendmailSettings *settings,
 	settings->priv->use_custom_binary = use_custom_binary;
 
 	g_object_notify (G_OBJECT (settings), "use-custom-binary");
+}
+
+/**
+ * camel_sendmail_settings_get_use_custom_args:
+ * @settings: a #CamelSendmailSettings
+ *
+ * Returns whether the 'custom-args' property should be used as arguments to use, instead of default arguments.
+ *
+ * Returns: whether the 'custom-args' property should be used as arguments to use, instead of default arguments
+ *
+ * Since: 3.8
+ **/
+gboolean
+camel_sendmail_settings_get_use_custom_args (CamelSendmailSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_custom_args;
+}
+
+/**
+ * camel_sendmail_settings_set_use_custom_args:
+ * @settings: a #CamelSendmailSettings
+ * @use_custom_args: whether to use custom arguments
+ *
+ * Sets whether to use custom arguments, instead of default arguments.
+ *
+ * Since: 3.8
+ **/
+void
+camel_sendmail_settings_set_use_custom_args (CamelSendmailSettings *settings,
+					     gboolean use_custom_args)
+{
+	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
+
+	if ((settings->priv->use_custom_args ? 1 : 0) == (use_custom_args ? 1 : 0))
+		return;
+
+	settings->priv->use_custom_args = use_custom_args;
+
+	g_object_notify (G_OBJECT (settings), "use-custom-args");
 }
 
 /**
@@ -266,4 +362,87 @@ camel_sendmail_settings_set_custom_binary (CamelSendmailSettings *settings,
 	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "custom-binary");
+}
+
+/**
+ * camel_sendmail_settings_get_custom_args:
+ * @settings: a #CamelSendmailSettings
+ *
+ * Returns the custom arguments to use, instead of default arguments.
+ *
+ * Returns: the custom arguments to use, instead of default arguments, or %NULL
+ *
+ * Since: 3.8
+ **/
+const gchar *
+camel_sendmail_settings_get_custom_args (CamelSendmailSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings), NULL);
+
+	return settings->priv->custom_args;
+}
+
+/**
+ * camel_sendmail_settings_dup_custom_args:
+ * @settings: a #CamelSendmailSettings
+ *
+ * Thread-safe variation of camel_sendmail_settings_get_custom_args().
+ * Use this function when accessing @settings from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelSendmailSettings:custom-args
+ *
+ * Since: 3.8
+ **/
+gchar *
+camel_sendmail_settings_dup_custom_args (CamelSendmailSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_sendmail_settings_get_custom_args (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
+ * camel_sendmail_settings_set_custom_args:
+ * @settings: a #CamelSendmailSettings
+ * @custom_args: a custom arguments, or %NULL
+ *
+ * Sets the custom arguments to use, instead of default arguments.
+ *
+ * Since: 3.8
+ **/
+void
+camel_sendmail_settings_set_custom_args (CamelSendmailSettings *settings,
+					const gchar *custom_args)
+{
+	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
+
+	/* The default namespace is an empty string. */
+	if (custom_args && !*custom_args)
+		custom_args = NULL;
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	if (g_strcmp0 (settings->priv->custom_args, custom_args) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
+
+	g_free (settings->priv->custom_args);
+	settings->priv->custom_args = g_strdup (custom_args);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	g_object_notify (G_OBJECT (settings), "custom-args");
 }

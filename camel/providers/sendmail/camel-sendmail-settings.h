@@ -59,10 +59,20 @@ GType		camel_sendmail_settings_get_type	(void);
 gboolean	camel_sendmail_settings_get_use_custom_binary	(CamelSendmailSettings *settings);
 void		camel_sendmail_settings_set_use_custom_binary	(CamelSendmailSettings *settings,
 								 gboolean use_custom_binary);
+
 const gchar *	camel_sendmail_settings_get_custom_binary	(CamelSendmailSettings *settings);
 gchar *		camel_sendmail_settings_dup_custom_binary	(CamelSendmailSettings *settings);
 void		camel_sendmail_settings_set_custom_binary	(CamelSendmailSettings *settings,
 								 const gchar *custom_binary);
+
+gboolean	camel_sendmail_settings_get_use_custom_args	(CamelSendmailSettings *settings);
+void		camel_sendmail_settings_set_use_custom_args	(CamelSendmailSettings *settings,
+								 gboolean use_custom_args);
+
+const gchar *	camel_sendmail_settings_get_custom_args		(CamelSendmailSettings *settings);
+gchar *		camel_sendmail_settings_dup_custom_args		(CamelSendmailSettings *settings);
+void		camel_sendmail_settings_set_custom_args		(CamelSendmailSettings *settings,
+								 const gchar *custom_args);
 
 G_END_DECLS
 
