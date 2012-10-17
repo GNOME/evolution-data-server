@@ -4637,18 +4637,19 @@ poll_ldap (EBookBackendLDAP *bl)
 	LDAPMessage    *res;
 	struct timeval timeout;
 	const gchar *ldap_timeout_string;
+	gboolean again;
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap || !bl->priv->poll_timeout) {
 		bl->priv->poll_timeout = 0;
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		return FALSE;
 	}
-	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (!bl->priv->active_ops) {
 		g_warning ("poll_ldap being called for backend with no active operations");
 		bl->priv->poll_timeout = 0;
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		return FALSE;
 	}
 
@@ -4660,16 +4661,16 @@ poll_ldap (EBookBackendLDAP *bl)
 	else
 		timeout.tv_usec = LDAP_RESULT_TIMEOUT_MILLIS * 1000;
 
-	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	rc = ldap_result (bl->priv->ldap, LDAP_RES_ANY, 0, &timeout, &res);
-	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (rc != 0) {/* rc == 0 means timeout exceeded */
 		if (rc == -1) {
 			EDataBookView *book_view = find_book_view (bl);
 			g_warning ("%s: ldap_result returned -1, restarting ops", G_STRFUNC);
 
-			if (!e_book_backend_ldap_reconnect (bl, book_view, LDAP_SERVER_DOWN)) {
-				g_warning ("%s: Failed to reconnect to LDAP server", G_STRFUNC);
+			if (!bl->priv->poll_timeout || !e_book_backend_ldap_reconnect (bl, book_view, LDAP_SERVER_DOWN)) {
+				if (bl->priv->poll_timeout)
+					g_warning ("%s: Failed to reconnect to LDAP server", G_STRFUNC);
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				return FALSE;
 			}
 #if 0
@@ -4699,7 +4700,11 @@ poll_ldap (EBookBackendLDAP *bl)
 		}
 	}
 
-	return TRUE;
+	/* the poll_timeout is set to 0, when finalizing the backend */
+	again = bl->priv->poll_timeout > 0;
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	return again;
 }
 
 static void
@@ -5456,8 +5461,10 @@ e_book_backend_ldap_finalize (GObject *object)
 	g_static_rec_mutex_free (&priv->op_hash_mutex);
 
 	/* Remove the timeout before unbinding to avoid a race. */
-	if (priv->poll_timeout > 0)
+	if (priv->poll_timeout > 0) {
 		g_source_remove (priv->poll_timeout);
+		priv->poll_timeout = 0;
+	}
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (priv->ldap)
