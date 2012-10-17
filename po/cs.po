@@ -13,10 +13,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server\n"
+"Project-Id-Version: evolution-data-server gnome-3.6\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-16 20:33+0000\n"
+"POT-Creation-Date: 2012-10-15 21:25+0000\n"
 "PO-Revision-Date: 2012-09-16 22:49+0200\n"
 "Last-Translator: Jiri Eischmann <jiri@eischmann.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
@@ -131,6 +131,10 @@ msgid "Loading…"
 msgstr "Načítá se…"
 
 #: ../addressbook/backends/google/e-book-google-utils.c:1562
+#: ../data/sources/system-address-book.source.in.h:1
+#: ../data/sources/system-calendar.source.in.h:1
+#: ../data/sources/system-memo-list.source.in.h:1
+#: ../data/sources/system-task-list.source.in.h:1
 msgid "Personal"
 msgstr "Osobní"
 
@@ -2239,13 +2243,13 @@ msgstr "STARTTLS není podporováno"
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: "
 
-#: ../camel/camel-imapx-server.c:3580
+#: ../camel/camel-imapx-server.c:3582
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s nepodporuje ověřování totožnosti %s"
 
-#: ../camel/camel-imapx-server.c:3591 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3593 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:259
 #: ../camel/providers/pop3/camel-pop3-store.c:587
@@ -2254,13 +2258,13 @@ msgstr "Server IMAP %s nepodporuje ověřování totožnosti %s"
 msgid "No support for %s authentication"
 msgstr "Typ ověřování totožnosti %s není podporován"
 
-#: ../camel/camel-imapx-server.c:3610
+#: ../camel/camel-imapx-server.c:3612
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:502
 msgid "Cannot authenticate without a username"
 msgstr "Nelze ověřit totožnost bez uživatelského jména"
 
-#: ../camel/camel-imapx-server.c:3619
+#: ../camel/camel-imapx-server.c:3621
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:511
 #: ../camel/providers/pop3/camel-pop3-store.c:512
@@ -2268,53 +2272,53 @@ msgstr "Nelze ověřit totožnost bez uživatelského jména"
 msgid "Authentication password not available"
 msgstr "Heslo pro ověření totožnosti není k dispozici"
 
-#: ../camel/camel-imapx-server.c:3821
+#: ../camel/camel-imapx-server.c:3823
 msgid "Error fetching message"
 msgstr "Chyba při získávání zprávy"
 
-#: ../camel/camel-imapx-server.c:3903
+#: ../camel/camel-imapx-server.c:3905
 msgid "Failed to copy the tmp file"
 msgstr "Selhalo kopírování souboru tmp"
 
-#: ../camel/camel-imapx-server.c:3917
+#: ../camel/camel-imapx-server.c:3919
 msgid "Failed to close the tmp stream"
 msgstr "Selhalo zavření proudu tmp"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4017
 msgid "Error copying messages"
 msgstr "Chyba při kopírování zpráv"
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4152
 msgid "Error appending message"
 msgstr "Chyba při přidávání zprávy"
 
-#: ../camel/camel-imapx-server.c:4333
+#: ../camel/camel-imapx-server.c:4335
 msgid "Error fetching message headers"
 msgstr "Chyba při získávání hlaviček zprávy"
 
-#: ../camel/camel-imapx-server.c:4468
+#: ../camel/camel-imapx-server.c:4470
 msgid "Error retrieving message"
 msgstr "Chyba při získávání zprávy"
 
-#: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
+#: ../camel/camel-imapx-server.c:4592 ../camel/camel-imapx-server.c:4785
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Stahování souhrnných informací o nových zprávách v „%s“"
 
-#: ../camel/camel-imapx-server.c:4641
+#: ../camel/camel-imapx-server.c:4643
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Hledání změněných zpráv v „%s“"
 
-#: ../camel/camel-imapx-server.c:4684
+#: ../camel/camel-imapx-server.c:4686
 msgid "Error fetching new messages"
 msgstr "Chyba při získávání nových zpráv"
 
-#: ../camel/camel-imapx-server.c:4874
+#: ../camel/camel-imapx-server.c:4876
 msgid "Error while fetching messages"
 msgstr "Chyba během získávání zpráv"
 
-#: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
+#: ../camel/camel-imapx-server.c:4884 ../camel/camel-imapx-server.c:4920
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2322,54 +2326,54 @@ msgstr[0] "Stahují se souhrnné informace o %d nové zprávě v „%s“"
 msgstr[1] "Stahují se souhrnné informace o %d nových zprávách v „%s“"
 msgstr[2] "Stahují se souhrnné informace o %d nových zprávách v „%s“"
 
-#: ../camel/camel-imapx-server.c:5043 ../camel/camel-imapx-server.c:5079
+#: ../camel/camel-imapx-server.c:5045 ../camel/camel-imapx-server.c:5081
 msgid "Error refreshing folder"
 msgstr "Chyba při obnovování složky"
 
-#: ../camel/camel-imapx-server.c:5172
+#: ../camel/camel-imapx-server.c:5174
 msgid "Error expunging message"
 msgstr "Chyba při trvalém odstranění zprávy"
 
-#: ../camel/camel-imapx-server.c:5269
+#: ../camel/camel-imapx-server.c:5271
 msgid "Error fetching folders"
 msgstr "Chyba při získávání složek"
 
-#: ../camel/camel-imapx-server.c:5348
+#: ../camel/camel-imapx-server.c:5350
 msgid "Error subscribing to folder"
 msgstr "Chyba při přihlašování ke složce"
 
-#: ../camel/camel-imapx-server.c:5409
+#: ../camel/camel-imapx-server.c:5411
 msgid "Error creating folder"
 msgstr "Chyba při vytváření složky"
 
-#: ../camel/camel-imapx-server.c:5458
+#: ../camel/camel-imapx-server.c:5460
 msgid "Error deleting folder"
 msgstr "Chyba při odstraňování složky"
 
-#: ../camel/camel-imapx-server.c:5519
+#: ../camel/camel-imapx-server.c:5521
 msgid "Error renaming folder"
 msgstr "Chyba při přejmenovávání složky"
 
-#: ../camel/camel-imapx-server.c:5580
+#: ../camel/camel-imapx-server.c:5582
 msgid "Error performing NOOP"
 msgstr "Chyba při vykonávání NOOP"
 
-#: ../camel/camel-imapx-server.c:5676
+#: ../camel/camel-imapx-server.c:5678
 msgid "Error syncing changes"
 msgstr "Chyba při synchronizaci změn"
 
-#: ../camel/camel-imapx-server.c:6447
+#: ../camel/camel-imapx-server.c:6449
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nelze získat zprávu s ID %s: %s"
 
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6450
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Žádná taková zpráva není k dispozici."
 
-#: ../camel/camel-imapx-server.c:6603 ../camel/camel-imapx-server.c:6618
+#: ../camel/camel-imapx-server.c:6605 ../camel/camel-imapx-server.c:6620
 msgid "Cannot create spool file: "
 msgstr "Nelze vytvořit soubor fronty: "
 
@@ -2619,22 +2623,22 @@ msgstr "Poskytovatel pošty pro virtuální složky"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Pro čtení pošty jako dotazu na jinou množinu složek"
 
-#: ../camel/camel-provider.c:195
+#: ../camel/camel-provider.c:258
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Nelze načíst %s: Načítání modulů není v tomto systému podporováno."
 
-#: ../camel/camel-provider.c:204
+#: ../camel/camel-provider.c:267
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Nelze načíst %s: %s"
 
-#: ../camel/camel-provider.c:213
+#: ../camel/camel-provider.c:276
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Nelze načíst %s: V modulu není inicializační kód."
 
-#: ../camel/camel-provider.c:412 ../camel/camel-session.c:406
+#: ../camel/camel-provider.c:424 ../camel/camel-session.c:406
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Pro protokol „%s“ není k dispozici poskytovatel"
@@ -4540,6 +4544,7 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Úložiště POP3 nemá hierarchii složek"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
+#: ../data/sources/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -4858,6 +4863,49 @@ msgid ""
 msgstr ""
 "Jednotky pro připomínku narozenin nebo výročí „minuty“, „hodiny“, nebo „dny“"
 
+#: ../data/sources/birthdays.source.in.h:1
+msgid "Birthdays & Anniversaries"
+msgstr "Narozeniny a výročí"
+
+#: ../data/sources/caldav-stub.source.in.h:1
+msgid "CalDAV"
+msgstr "CalDAV"
+
+#: ../data/sources/contacts-stub.source.in.h:1
+#: ../libedataserverui/e-name-selector-dialog.c:427
+#: ../modules/google-backend/module-google-backend.c:183
+msgid "Contacts"
+msgstr "Kontakty"
+
+#: ../data/sources/google-stub.source.in.h:1
+msgid "Google"
+msgstr "Google"
+
+#: ../data/sources/ldap-stub.source.in.h:1
+msgid "On LDAP Servers"
+msgstr "Na serveru LDAP"
+
+#: ../data/sources/local.source.in.h:1
+#: ../data/sources/local-stub.source.in.h:1
+msgid "On This Computer"
+msgstr "V tomto počítači"
+
+#: ../data/sources/vfolder.source.in.h:1
+msgid "Search Folders"
+msgstr "Prohledávané složky"
+
+#: ../data/sources/weather-stub.source.in.h:1
+msgid "Weather"
+msgstr "Počasí"
+
+#: ../data/sources/webcal-stub.source.in.h:1
+msgid "On The Web"
+msgstr "Na webu"
+
+#: ../data/sources/webdav-stub.source.in.h:1
+msgid "WebDAV"
+msgstr "WebDAV"
+
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
 #: ../libebackend/e-authentication-mediator.c:849
@@ -4946,7 +4994,7 @@ msgid "File must have a '.source' extension"
 msgstr "Soubor musí mít koncovku „.source“"
 
 #: ../libebackend/e-source-registry-server.c:522
-#: ../libedataserver/e-source-registry.c:1523
+#: ../libedataserver/e-source-registry.c:1535
 msgid "The user declined to authenticate"
 msgstr "Uživatel odmítl ověření totožnosti"
 
@@ -5479,11 +5527,6 @@ msgstr "Hledat"
 msgid "Address Book"
 msgstr "Adresář"
 
-#: ../libedataserverui/e-name-selector-dialog.c:427
-#: ../modules/google-backend/module-google-backend.c:183
-msgid "Contacts"
-msgstr "Kontakty"
-
 #: ../libedataserverui/e-name-selector-dialog.c:545
 msgid "Select Contacts from Address Book"
 msgstr "Vyberte kontakty z adresáře"
@@ -5638,112 +5681,3 @@ msgstr "Příznaky"
 #: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
 msgstr "Identita"
-
-#~ msgid "Authenticating with the server…"
-#~ msgstr "Probíhá ověřování totožnosti vůči serveru…"
-
-#~ msgid "%s: there was no source for UID '%s' stored in GConf."
-#~ msgstr "%s: v gconf nebyl uložen zdroj pro UID „%s“."
-
-#~ msgid "On This Computer"
-#~ msgstr "V tomto počítači"
-
-#~ msgid "Invalid source"
-#~ msgstr "Neplatný zdroj"
-
-#~ msgid "Incorrect uri '%s'"
-#~ msgstr "Neplatná adresa URI „%s“"
-
-#~ msgid "Failed to find system book"
-#~ msgstr "Nelze systémový adresář"
-
-#~ msgid "There was no source for UID '%s' stored in a source list."
-#~ msgstr "V seznamu zdrojů nebyl žádný zdroj pro UID „%s“."
-
-#~ msgid "Cannot authenticate user: "
-#~ msgstr "Uživatele nelze ověřit: "
-
-#~ msgid "Empty URI"
-#~ msgstr "Prázdná adresa URI"
-
-#~ msgid ""
-#~ "Enter password for address book %s (user %s)\n"
-#~ "Reason: %s"
-#~ msgstr ""
-#~ "Zadejte heslo pro adresář %s (uživatel %s)\n"
-#~ "Důvod: %s"
-
-#~ msgid "Enter password for address book %s (user %s)"
-#~ msgstr "Zadejte heslo pro adresář %s (uživatel %s)"
-
-#~ msgid "Enter password for %s (user %s)"
-#~ msgstr "Zadejte heslo pro %s (uživatel %s)"
-
-#~ msgid "Enter password for %s to enable proxy for user %s"
-#~ msgstr "Zadejte heslo %s k povolení proxy pro uživatele %s"
-
-#~ msgid "Invalid source type"
-#~ msgstr "Neplatný typ zdroje"
-
-#~ msgid "Updating %s folder"
-#~ msgstr "Aktualizace složky %s"
-
-#~ msgid "Connection to Server"
-#~ msgstr "Přepojení k serveru"
-
-#~ msgid "_Use custom command to connect to server"
-#~ msgstr "_Používat pro připojení k serveru vlastní příkaz"
-
-#~ msgid "Co_mmand:"
-#~ msgstr "Pří_kaz:"
-
-#~ msgid "Command:"
-#~ msgstr "Příkaz:"
-
-#~ msgid "Numbe_r of cached connections to use"
-#~ msgstr "P_očet spojení v mezipaměti k použití"
-
-#~ msgid "Closing tmp stream failed: "
-#~ msgstr "Zavírání dočasného proudu selhalo: "
-
-#~ msgid "SMTP Authentication"
-#~ msgstr "Ověřování SMTP"
-
-#~ msgid "Accessing LDAP Server anonymously"
-#~ msgstr "Probíhá anonymní přístup k serveru LDAP"
-
-#~ msgid ""
-#~ "Enter password for calendar %s (user %s)\n"
-#~ "Reason: %s"
-#~ msgstr ""
-#~ "Zadejte heslo pro kalendář %s (uživatel %s)\n"
-#~ "Důvod: %s"
-
-#~ msgid "Enter password for calendar %s (user %s)"
-#~ msgstr "Zadejte heslo pro kalendář %s (uživatel %s)"
-
-#~ msgid ""
-#~ "Enter password for task list %s (user %s)\n"
-#~ "Reason: %s"
-#~ msgstr ""
-#~ "Zadejte heslo pro seznam úkolů %s (uživatel %s)\n"
-#~ "Důvod: %s"
-
-#~ msgid "Enter password for task list %s (user %s)"
-#~ msgstr "Zadejte heslo pro seznam úkolů %s (uživatel %s)"
-
-#~ msgid ""
-#~ "Enter password for memo list %s (user %s)\n"
-#~ "Reason: %s"
-#~ msgstr ""
-#~ "Zadejte heslo pro seznam poznámek %s (uživatel %s)\n"
-#~ "Důvod: %s"
-
-#~ msgid "Enter password for memo list %s (user %s)"
-#~ msgstr "Zadejte heslo pro seznam poznámek %s (uživatel %s)"
-
-#~ msgid "Enter Passphrase"
-#~ msgstr "Zadejte heslo"
-
-#~ msgid "Enter Password"
-#~ msgstr "Zadejte heslo"
