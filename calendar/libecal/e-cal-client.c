@@ -44,8 +44,7 @@
 	((obj), E_TYPE_CAL_CLIENT, ECalClientPrivate))
 
 struct _ECalClientPrivate {
-	/* GDBus data */
-	GDBusProxy *gdbus_cal;
+	GDBusProxy *dbus_proxy;
 	guint gone_signal_id;
 
 	ECalClientSourceType source_type;
@@ -370,16 +369,16 @@ gdbus_cal_client_disconnect (ECalClient *client)
 	/* Ensure that everything relevant is NULL */
 	LOCK_FACTORY ();
 
-	if (client->priv->gdbus_cal) {
-		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (client->priv->gdbus_cal));
+	if (client->priv->dbus_proxy != NULL) {
+		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (client->priv->dbus_proxy));
 
 		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_client_closed_cb, client);
 		g_dbus_connection_signal_unsubscribe (connection, client->priv->gone_signal_id);
 		client->priv->gone_signal_id = 0;
 
-		e_gdbus_cal_call_close_sync (client->priv->gdbus_cal, NULL, NULL);
-		g_object_unref (client->priv->gdbus_cal);
-		client->priv->gdbus_cal = NULL;
+		e_gdbus_cal_call_close_sync (client->priv->dbus_proxy, NULL, NULL);
+		g_object_unref (client->priv->dbus_proxy);
+		client->priv->dbus_proxy = NULL;
 	}
 
 	UNLOCK_FACTORY ();
@@ -627,13 +626,11 @@ cal_client_finalize (GObject *object)
 static GDBusProxy *
 cal_client_get_dbus_proxy (EClient *client)
 {
-	ECalClient *cal_client;
+	ECalClientPrivate *priv;
 
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
+	priv = E_CAL_CLIENT_GET_PRIVATE (client);
 
-	cal_client = E_CAL_CLIENT (client);
-
-	return cal_client->priv->gdbus_cal;
+	return priv->dbus_proxy;
 }
 
 static void
@@ -739,7 +736,7 @@ cal_client_get_backend_property_sync (EClient *client,
 
 	cal_client = E_CAL_CLIENT (client);
 
-	if (!cal_client->priv->gdbus_cal) {
+	if (cal_client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -803,7 +800,7 @@ cal_client_set_backend_property_sync (EClient *client,
 
 	cal_client = E_CAL_CLIENT (client);
 
-	if (!cal_client->priv->gdbus_cal) {
+	if (cal_client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -847,7 +844,7 @@ cal_client_open_sync (EClient *client,
 
 	cal_client = E_CAL_CLIENT (client);
 
-	if (!cal_client->priv->gdbus_cal) {
+	if (cal_client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -885,7 +882,7 @@ cal_client_refresh_sync (EClient *client,
 
 	cal_client = E_CAL_CLIENT (client);
 
-	if (!cal_client->priv->gdbus_cal) {
+	if (cal_client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -1031,7 +1028,7 @@ e_cal_client_new (ESource *source,
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
 
-	client->priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (
+	client->priv->dbus_proxy = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (
 		connection,
 		G_DBUS_PROXY_FLAGS_NONE,
 		CALENDAR_DBUS_SERVICE_NAME,
@@ -1067,27 +1064,27 @@ e_cal_client_new (ESource *source,
 		G_CALLBACK (gdbus_cal_client_closed_cb), client);
 
 	g_signal_connect (
-		client->priv->gdbus_cal, "backend_error",
+		client->priv->dbus_proxy, "backend_error",
 		G_CALLBACK (backend_error_cb), client);
 
 	g_signal_connect (
-		client->priv->gdbus_cal, "readonly",
+		client->priv->dbus_proxy, "readonly",
 		G_CALLBACK (readonly_cb), client);
 
 	g_signal_connect (
-		client->priv->gdbus_cal, "online",
+		client->priv->dbus_proxy, "online",
 		G_CALLBACK (online_cb), client);
 
 	g_signal_connect (
-		client->priv->gdbus_cal, "opened",
+		client->priv->dbus_proxy, "opened",
 		G_CALLBACK (opened_cb), client);
 
 	g_signal_connect (
-		client->priv->gdbus_cal, "free-busy-data",
+		client->priv->dbus_proxy, "free-busy-data",
 		G_CALLBACK (free_busy_data_cb), client);
 
 	g_signal_connect (
-		client->priv->gdbus_cal, "backend-property-changed",
+		client->priv->dbus_proxy, "backend-property-changed",
 		G_CALLBACK (backend_property_changed_cb), client);
 
 	return client;
@@ -1135,12 +1132,12 @@ e_cal_client_get_local_attachment_store (ECalClient *client)
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 
-	if (client->priv->cache_dir || !client->priv->gdbus_cal)
+	if (client->priv->cache_dir || !client->priv->dbus_proxy)
 		return client->priv->cache_dir;
 
 	cache_dir = e_client_get_backend_property_from_cache (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_CACHE_DIR);
 	if (!cache_dir)
-		e_gdbus_cal_call_get_backend_property_sync (client->priv->gdbus_cal, CLIENT_BACKEND_PROPERTY_CACHE_DIR, &cache_dir, NULL, &error);
+		e_gdbus_cal_call_get_backend_property_sync (client->priv->dbus_proxy, CLIENT_BACKEND_PROPERTY_CACHE_DIR, &cache_dir, NULL, &error);
 
 	if (error == NULL) {
 		client->priv->cache_dir = cache_dir;
@@ -2721,7 +2718,7 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -2919,7 +2916,7 @@ e_cal_client_get_object_sync (ECalClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3088,7 +3085,7 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (ecalcomps != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3230,7 +3227,7 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3376,7 +3373,7 @@ e_cal_client_get_object_list_as_comps_sync (ECalClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (ecalcomps != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3478,7 +3475,7 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3604,7 +3601,7 @@ e_cal_client_create_object_sync (ECalClient *client,
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3731,7 +3728,7 @@ e_cal_client_create_objects_sync (ECalClient *client,
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3844,7 +3841,7 @@ e_cal_client_modify_object_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -3964,7 +3961,7 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (comps != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4083,7 +4080,7 @@ e_cal_client_remove_object_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4192,7 +4189,7 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4290,7 +4287,7 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4453,7 +4450,7 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	g_return_val_if_fail (users != NULL, FALSE);
 	g_return_val_if_fail (modified_icalcomp != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4576,7 +4573,7 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (attachment_uris != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4687,7 +4684,7 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (auid != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -4838,7 +4835,7 @@ e_cal_client_get_view_sync (ECalClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (view != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -5095,7 +5092,7 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 	g_return_val_if_fail (tzid != NULL, FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
@@ -5208,7 +5205,7 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 		return FALSE;
 	}
 
-	if (!client->priv->gdbus_cal) {
+	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}

@@ -366,7 +366,7 @@ e_book_activate (GCancellable *cancellable,
 }
 
 static void
-readonly_cb (EGdbusBook *object,
+readonly_cb (EGdbusBook *dbus_proxy,
              gboolean readonly,
              EBook *book)
 {
@@ -381,7 +381,7 @@ readonly_cb (EGdbusBook *object,
 }
 
 static void
-online_cb (EGdbusBook *object,
+online_cb (EGdbusBook *dbus_proxy,
            gboolean is_online,
            EBook *book)
 {
