@@ -47,12 +47,14 @@ struct _ESourceMailSubmissionPrivate {
 	GMutex *property_lock;
 	gchar *sent_folder;
 	gchar *transport_uid;
+	gboolean replies_to_origin_folder;
 };
 
 enum {
 	PROP_0,
 	PROP_SENT_FOLDER,
-	PROP_TRANSPORT_UID
+	PROP_TRANSPORT_UID,
+	PROP_REPLIES_TO_ORIGIN_FOLDER
 };
 
 G_DEFINE_TYPE (
@@ -78,6 +80,12 @@ source_mail_submission_set_property (GObject *object,
 				E_SOURCE_MAIL_SUBMISSION (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_REPLIES_TO_ORIGIN_FOLDER:
+			e_source_mail_submission_set_replies_to_origin_folder (
+				E_SOURCE_MAIL_SUBMISSION (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -101,6 +109,13 @@ source_mail_submission_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_mail_submission_dup_transport_uid (
+				E_SOURCE_MAIL_SUBMISSION (object)));
+			return;
+
+		case PROP_REPLIES_TO_ORIGIN_FOLDER:
+			g_value_set_boolean (
+				value,
+				e_source_mail_submission_get_replies_to_origin_folder (
 				E_SOURCE_MAIL_SUBMISSION (object)));
 			return;
 	}
@@ -163,6 +178,19 @@ e_source_mail_submission_class_init (ESourceMailSubmissionClass *class)
 			"Transport UID",
 			"ESource UID of a Mail Transport",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REPLIES_TO_ORIGIN_FOLDER,
+		g_param_spec_boolean (
+			"replies-to-origin-folder",
+			"Replies to origin folder",
+			"Whether to save replies to folder of the message being replied to, instead of the Sent folder",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -341,4 +369,47 @@ e_source_mail_submission_set_transport_uid (ESourceMailSubmission *extension,
 	g_mutex_unlock (extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "transport-uid");
+}
+
+/**
+ * e_source_mail_submission_get_replies_to_origin_folder:
+ * @extension: an #ESourceMailSubmission
+ *
+ * Returns whether save replies in the folder of the message
+ * being replied to, instead of the Sent folder.
+ *
+ * Returns: whether save replies in the folder of the message being replied to
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_source_mail_submission_get_replies_to_origin_folder (ESourceMailSubmission *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension), FALSE);
+
+	return extension->priv->replies_to_origin_folder;
+}
+
+/**
+ * e_source_mail_submission_set_replies_to_origin_folder:
+ * @extension: an #ESourceMailSubmission
+ * @replies_to_origin_folder: new value
+ *
+ * Sets whether save replies in the folder of the message
+ * being replied to, instead of the Sent folder.
+ *
+ * Since: 3.8
+ **/
+void
+e_source_mail_submission_set_replies_to_origin_folder (ESourceMailSubmission *extension,
+						       gboolean replies_to_origin_folder)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
+
+	if ((extension->priv->replies_to_origin_folder ? 1 : 0) == (replies_to_origin_folder ? 1 : 0))
+		return;
+
+	extension->priv->replies_to_origin_folder = replies_to_origin_folder;
+
+	g_object_notify (G_OBJECT (extension), "replies-to-origin-folder");
 }

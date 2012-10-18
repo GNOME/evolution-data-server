@@ -93,6 +93,11 @@ gchar *		e_source_mail_submission_dup_transport_uid
 void		e_source_mail_submission_set_transport_uid
 					(ESourceMailSubmission *extension,
 					 const gchar *transport_uid);
+gboolean	e_source_mail_submission_get_replies_to_origin_folder
+					(ESourceMailSubmission *extension);
+void		e_source_mail_submission_set_replies_to_origin_folder
+					(ESourceMailSubmission *extension,
+					 gboolean replies_to_origin_folder);
 
 G_END_DECLS
 
