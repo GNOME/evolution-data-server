@@ -81,24 +81,39 @@ static CamelProvider news_provider = {
 	/* ... */
 };
 
+CamelServiceAuthType camel_nntp_anonymous_authtype = {
+	N_("Anonymous"),
+
+	N_("This option will connect to the NNTP server anonymously, without "
+	   "authentication."),
+
+	"ANONYMOUS",
+	FALSE
+};
+
 CamelServiceAuthType camel_nntp_password_authtype = {
 	N_("Password"),
 
 	N_("This option will authenticate with the NNTP server using a "
 	   "plaintext password."),
 
-	"",
+	"PLAIN",
 	TRUE
 };
 
 void
 camel_provider_module_init (void)
 {
+	GList *auth_types;
+
+	auth_types = g_list_append (NULL, &camel_nntp_anonymous_authtype);
+	auth_types = g_list_append (auth_types, &camel_nntp_password_authtype);
+
 	news_provider.object_types[CAMEL_PROVIDER_STORE] = camel_nntp_store_get_type ();
 
 	news_provider.url_hash = nntp_url_hash;
 	news_provider.url_equal = nntp_url_equal;
-	news_provider.authtypes = g_list_append (NULL, &camel_nntp_password_authtype);
+	news_provider.authtypes = auth_types;
 	news_provider.translation_domain = GETTEXT_PACKAGE;
 
 	camel_provider_register (&news_provider);

@@ -256,9 +256,7 @@ connect_to_server (CamelService *service,
 	gboolean retval = FALSE;
 	guchar *buf;
 	guint len;
-	gchar *host;
-	gchar *path;
-	gchar *user;
+	gchar *host, *path, *user, *mechanism;
 
 	session = camel_service_get_session (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
@@ -268,6 +266,7 @@ connect_to_server (CamelService *service,
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+	mechanism = camel_network_settings_dup_auth_mechanism (network_settings);
 
 	g_object_unref (settings);
 
@@ -304,8 +303,17 @@ connect_to_server (CamelService *service,
 		goto fail;
 	}
 
-	/* if we have username, try it here */
-	if (user != NULL && *user != '\0') {
+	/* backward compatibility, empty 'mechanism' is a non-migrated account */
+	if ((user != NULL && *user != '\0' && (!mechanism || !*mechanism)) ||
+	    (mechanism && *mechanism && g_strcmp0 (mechanism, "ANONYMOUS") != 0)) {
+
+		if (!user || !*user) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Cannot authenticate without a username"));
+			goto fail;
+		}
 
 		/* XXX No SASL support. */
 		if (!camel_session_authenticate_sync (
@@ -335,6 +343,7 @@ connect_to_server (CamelService *service,
 fail:
 	g_free (host);
 	g_free (user);
+	g_free (mechanism);
 
 	return retval;
 }
@@ -467,6 +476,7 @@ nntp_store_get_name (CamelService *service,
 	return name;
 }
 
+extern CamelServiceAuthType camel_nntp_anonymous_authtype;
 extern CamelServiceAuthType camel_nntp_password_authtype;
 
 static CamelAuthenticationResult
@@ -495,7 +505,7 @@ nntp_store_authenticate_sync (CamelService *service,
 
 	g_object_unref (settings);
 
-	if (user == NULL) {
+	if (!user || !*user) {
 		g_set_error_literal (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -547,7 +557,12 @@ nntp_store_query_auth_types_sync (CamelService *service,
                                   GCancellable *cancellable,
                                   GError **error)
 {
-	return g_list_append (NULL, &camel_nntp_password_authtype);
+	GList *auth_types;
+
+	auth_types = g_list_append (NULL, &camel_nntp_anonymous_authtype);
+	auth_types = g_list_append (auth_types, &camel_nntp_password_authtype);
+
+	return auth_types;
 }
 
 static CamelFolder *
