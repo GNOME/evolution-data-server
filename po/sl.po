@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-10-16 06:34+0000\n"
-"PO-Revision-Date: 2012-10-16 08:48+0100\n"
+"POT-Creation-Date: 2012-10-17 17:47+0000\n"
+"PO-Revision-Date: 2012-10-18 08:08+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1210
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4743
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4748
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:931
 #: ../addressbook/libebook/e-book-client.c:106
@@ -68,7 +68,7 @@ msgid "Loading..."
 msgstr "Nalaganje ..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1575
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4848
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4853
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:512
 msgid "Searching..."
 msgstr "Iskanje ..."
@@ -175,7 +175,7 @@ msgid "Invalid DN syntax"
 msgstr "Neveljavna razločna skladnja DN"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1209
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4742
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4747
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Prišlo je do napake LDAP 0x%x (%s)"
@@ -210,20 +210,20 @@ msgstr "Spreminjam stik na strežniku LDAP ..."
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4694
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4699
 msgid "Receiving LDAP search results..."
 msgstr "Sprejemanje rezultatov iskanja LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4869
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4874
 msgid "Error performing search"
 msgstr "Napaka med iskanjem"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4990
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4995
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Prejemanje stikov (%d) ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5447
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5454
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Pridobivanje razločnega imena (DN) za uporabnika '%s' je spodletelo."
@@ -1955,8 +1955,8 @@ msgstr "Neveljavni argumenti pri (system-flag)"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Neveljavni argumenti pri (user-tag)"
 
-#: ../camel/camel-filter-search.c:1020
-#: ../camel/camel-filter-search.c:1029
+#: ../camel/camel-filter-search.c:1021
+#: ../camel/camel-filter-search.c:1030
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Napaka med izvajanjem iskanja s filtrom: %s: %s"
@@ -4549,36 +4549,41 @@ msgstr "sendmail"
 msgid "Mail delivery via the sendmail program"
 msgstr "Dostava pošte preko programa sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:165
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Ni mogoče razčleniti seznama prejemnikov"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:181
+#, c-format
+msgid "Could not parse arguments"
+msgstr "Argumentov ni mogoče razčleniti"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:212
 #, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
 msgstr "Ni mogoče ustvariti cevi do programa  '%s': %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:237
 #, c-format
 msgid "Could not fork '%s': %s: mail not sent"
 msgstr "Ni mogoče razvejiti programa '%s': %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:286
 msgid "Could not send message: "
 msgstr "Ni mogoče poslati sporočila:"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:316
 #, c-format
 msgid "'%s' exited with signal %s: mail not sent."
 msgstr "program '%s' je zaključen s signalom %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:326
 #, c-format
 msgid "Could not execute '%s': mail not sent."
 msgstr "Ni mogoče izvesti '%s': elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:331
 #, c-format
 msgid "'%s' exited with status %d: mail not sent."
 msgstr "program '%s' je zaključen s stanjem %d: elektronska pošta ni poslana."
