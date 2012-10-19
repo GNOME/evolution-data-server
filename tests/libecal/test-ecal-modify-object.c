@@ -32,32 +32,33 @@ main (gint argc,
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
 	ecal_test_utils_cal_open (cal, FALSE);
 
-	ecal_test_utils_create_component (cal, INITIAL_BEGIN_TIME,
-			INITIAL_BEGIN_TIMEZONE, INITIAL_END_TIME,
-			INITIAL_END_TIMEZONE, EVENT_SUMMARY, &e_component,
-			&uid);
+	ecal_test_utils_create_component (
+		cal,
+		INITIAL_BEGIN_TIME, INITIAL_BEGIN_TIMEZONE,
+		INITIAL_END_TIME, INITIAL_END_TIMEZONE,
+		EVENT_SUMMARY, &e_component, &uid);
 	component = e_cal_component_get_icalcomponent (e_component);
 
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
-	ecal_test_utils_cal_assert_objects_equal_shallow (component,
-			component_final);
+	ecal_test_utils_cal_assert_objects_equal_shallow (
+		component, component_final);
 	icalcomponent_free (component_final);
 
 	/* make and commit changes */
 	icaltime = icaltime_from_string (FINAL_BEGIN_TIME);
 	icalcomponent_set_dtstart (component, icaltime);
-	ecal_test_utils_cal_component_set_icalcomponent (e_component,
-			component);
+	ecal_test_utils_cal_component_set_icalcomponent (
+		e_component, component);
 	ecal_test_utils_cal_modify_object (cal, component, CALOBJ_MOD_ALL);
 
 	/* verify */
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
 	e_component_final = e_cal_component_new ();
-	ecal_test_utils_cal_component_set_icalcomponent (e_component_final,
-				component_final);
+	ecal_test_utils_cal_component_set_icalcomponent (
+		e_component_final, component_final);
 
-	ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
-			e_component_final);
+	ecal_test_utils_cal_assert_e_cal_components_equal (
+		e_component, e_component_final);
 
 	g_object_unref (e_component_final);
 	g_free (uid);

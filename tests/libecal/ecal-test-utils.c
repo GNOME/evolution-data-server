@@ -57,8 +57,9 @@ ecal_test_utils_cal_new_temp (gchar **uri,
 	gchar *file_template;
 	gchar *uri_result;
 
-	file_template = g_build_filename (g_get_tmp_dir (),
-			"ecal-test-XXXXXX/", NULL);
+	file_template = g_build_filename (
+		g_get_tmp_dir (),
+		"ecal-test-XXXXXX/", NULL);
 	g_mkstemp (file_template);
 
 	uri_result = g_strconcat ("local:", file_template, NULL);
@@ -92,8 +93,9 @@ ecal_test_utils_cal_open (ECal *cal,
 		source = e_cal_get_source (cal);
 		uid = e_source_get_uid (source);
 
-		g_warning ("failed to open calendar: `%s': %s", uid,
-				error->message);
+		g_warning (
+			"failed to open calendar: `%s': %s",
+			uid, error->message);
 		exit (1);
 	}
 }
@@ -195,78 +197,79 @@ void
 ecal_test_utils_cal_get_capabilities (ECal *cal)
 {
 	test_print ("calendar capabilities:\n");
-	test_print ("        One alarm only:                  %s\n"
-		 "        Organizers must attend meetings: %s\n"
-		 "        Organizers must accept meetings: %s\n"
-		 "        Master object for recurrences:   %s\n"
-		 "        Can save schedules:              %s\n"
-		 "        No alarm repeat:                 %s\n"
-		 "        No audio alarms:                 %s\n"
-		 "        No display alarms:               %s\n"
-		 "        No email alarms:                 %s\n"
-		 "        No procedure alarms:             %s\n"
-		 "        No task assignment:              %s\n"
-		 "        No 'this and future':            %s\n"
-		 "        No 'this and prior':             %s\n"
-		 "        No transparency:                 %s\n"
-		 "        Organizer not email address:     %s\n"
-		 "        Remove alarms:                   %s\n"
-		 "        Create messages:                 %s\n"
-		 "        No conv. to assigned task:       %s\n"
-		 "        No conv. to recurring:           %s\n"
-		 "        No general options:              %s\n"
-		 "        Requires send options:           %s\n"
-		 "        Delegate supported:              %s\n"
-		 "        No organizer required:           %s\n"
-		 "        Delegate to many:                %s\n"
-		 "        Has unaccepted meeting:          %s\n"
-		 ,
-		 b2s (e_cal_get_one_alarm_only (cal)),
-		 b2s (e_cal_get_organizer_must_attend (cal)),
-		 b2s (e_cal_get_organizer_must_accept (cal)),
-		 b2s (e_cal_get_recurrences_no_master (cal)),
-		 b2s (e_cal_get_save_schedules (cal)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_THISANDFUTURE)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_THISANDPRIOR)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_TRANSPARENCY)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_REMOVE_ALARMS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_CREATE_MESSAGES)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_NO_ORGANIZER)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY)),
-		 b2s (e_cal_get_static_capability (cal,
-				 CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING))
-		 );
+	test_print (
+		"        One alarm only:                  %s\n"
+		"        Organizers must attend meetings: %s\n"
+		"        Organizers must accept meetings: %s\n"
+		"        Master object for recurrences:   %s\n"
+		"        Can save schedules:              %s\n"
+		"        No alarm repeat:                 %s\n"
+		"        No audio alarms:                 %s\n"
+		"        No display alarms:               %s\n"
+		"        No email alarms:                 %s\n"
+		"        No procedure alarms:             %s\n"
+		"        No task assignment:              %s\n"
+		"        No 'this and future':            %s\n"
+		"        No 'this and prior':             %s\n"
+		"        No transparency:                 %s\n"
+		"        Organizer not email address:     %s\n"
+		"        Remove alarms:                   %s\n"
+		"        Create messages:                 %s\n"
+		"        No conv. to assigned task:       %s\n"
+		"        No conv. to recurring:           %s\n"
+		"        No general options:              %s\n"
+		"        Requires send options:           %s\n"
+		"        Delegate supported:              %s\n"
+		"        No organizer required:           %s\n"
+		"        Delegate to many:                %s\n"
+		"        Has unaccepted meeting:          %s\n"
+		,
+		b2s (e_cal_get_one_alarm_only (cal)),
+		b2s (e_cal_get_organizer_must_attend (cal)),
+		b2s (e_cal_get_organizer_must_accept (cal)),
+		b2s (e_cal_get_recurrences_no_master (cal)),
+		b2s (e_cal_get_save_schedules (cal)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_THISANDFUTURE)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_THISANDPRIOR)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_TRANSPARENCY)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_REMOVE_ALARMS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_CREATE_MESSAGES)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_GEN_OPTIONS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_REQ_SEND_OPTIONS)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_NO_ORGANIZER)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY)),
+		b2s (e_cal_get_static_capability (cal,
+		CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING))
+		);
 }
 
 void
@@ -287,10 +290,11 @@ ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
 	uid_a = icalcomponent_get_uid (a);
 	uid_b = icalcomponent_get_uid (b);
 	if (g_strcmp0 (uid_a, uid_b)) {
-		g_error ("icomponents not equal:\n"
-			 "        uid A: '%s'\n"
-			 "        uid b: '%s'\n",
-			 uid_a, uid_b);
+		g_error (
+			"icomponents not equal:\n"
+			"        uid A: '%s'\n"
+			"        uid b: '%s'\n",
+			uid_a, uid_b);
 	}
 }
 
@@ -436,8 +440,9 @@ ecal_test_utils_cal_create_object (ECal *cal,
 	}
 
 	ical_string = icalcomponent_as_ical_string (component);
-	test_print ("successfully created icalcomponent object '%s'\n%s\n", uid,
-			ical_string);
+	test_print (
+		"successfully created icalcomponent object '%s'\n%s\n", uid,
+		ical_string);
 	g_free (ical_string);
 
 	return uid;
@@ -660,8 +665,9 @@ ecal_test_utils_get_query (ECal *cal,
 	ECalView *query = NULL;
 
 	if (!e_cal_get_query (cal, sexp, &query, &error)) {
-		g_error (G_STRLOC ": Unable to obtain calendar view: %s\n",
-				error->message);
+		g_error (
+			G_STRLOC ": Unable to obtain calendar view: %s\n",
+			error->message);
 	}
 	test_print ("successfully retrieved calendar view for query '%s'", sexp);
 

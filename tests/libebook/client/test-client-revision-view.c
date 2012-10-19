@@ -94,8 +94,9 @@ objects_added (EBookClientView *view,
 		print_contact (contact);
 
 		if (e_contact_get_const (contact, E_CONTACT_FULL_NAME) != NULL)
-			g_error ("received contact name `%s' when only the uid and revision was requested",
-				 (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+			g_error (
+				"received contact name `%s' when only the uid and revision was requested",
+				(gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
 	}
 
 	if (!loading_view)

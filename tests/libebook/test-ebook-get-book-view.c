@@ -123,7 +123,8 @@ main (gint argc,
 	query = e_book_query_any_field_contains ("");
 
 	loop = g_main_loop_new (NULL, TRUE);
-	ebook_test_utils_book_async_get_book_view (book, query,
+	ebook_test_utils_book_async_get_book_view (
+		book, query,
 			(GSourceFunc) get_book_view_cb, loop);
 
 	g_main_loop_run (loop);

@@ -51,8 +51,9 @@ ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 	filename = g_build_filename (SRCDIR, EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
-		g_warning ("failed to read test contact file '%s': %s",
-				filename, error->message);
+		g_warning (
+			"failed to read test contact file '%s': %s",
+			filename, error->message);
 		exit (1);
 	}
 
@@ -78,11 +79,11 @@ ebook_test_utils_book_add_contact_from_test_case_verify (EBook *book,
 	uid = g_strdup (ebook_test_utils_book_add_contact (book, contact_orig));
 	contact_final = ebook_test_utils_book_get_contact (book, uid);
 
-        /* verify the contact was added "successfully" (not thorough) */
+	/* verify the contact was added "successfully" (not thorough) */
 	g_assert (ebook_test_utils_contacts_are_equal_shallow (contact_orig, contact_final));
 
 	if (contact)
-                *contact = g_object_ref (contact_final);
+		*contact = g_object_ref (contact_final);
 
 	return uid;
 }
@@ -96,8 +97,8 @@ ebook_test_utils_contacts_are_equal_shallow (EContact *a,
 {
 	const gchar *uid_a, *uid_b;
 
-        /* Avoid warnings if one or more are NULL, to make this function
-         * "NULL-friendly" */
+	/* Avoid warnings if one or more are NULL, to make this function
+	 * "NULL-friendly" */
 	if (!a && !b)
 		return TRUE;
 	if (!E_IS_CONTACT (a) || !E_IS_CONTACT (b))
@@ -121,8 +122,9 @@ ebook_test_utils_book_add_contact (EBook *book,
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to add contact to addressbook: `%s': %s",
-				name, error->message);
+		g_warning (
+			"failed to add contact to addressbook: `%s': %s",
+			name, error->message);
 		exit (1);
 	}
 
@@ -136,8 +138,9 @@ add_contact_cb (EBook *book,
                 EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously add the contact '%s': "
-				"status %d (%s)", uid, error->code, error->message);
+		g_warning (
+			"failed to asynchronously add the contact '%s': "
+			"status %d (%s)", uid, error->code, error->message);
 		exit (1);
 	}
 
@@ -182,8 +185,9 @@ ebook_test_utils_book_commit_contact (EBook *book,
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to commit changes to contact '%s' to addressbook: `%s': %s",
-				uid, name, error->message);
+		g_warning (
+			"failed to commit changes to contact '%s' to "
+			"addressbook: `%s': %s", uid, name, error->message);
 		exit (1);
 	}
 }
@@ -194,8 +198,9 @@ commit_contact_cb (EBook *book,
                    EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously commit the contact: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously commit the contact: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -238,8 +243,9 @@ ebook_test_utils_book_get_contact (EBook *book,
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to get contact '%s' in addressbook: `%s': "
-				"%s", uid, name, error->message);
+		g_warning (
+			"failed to get contact '%s' in addressbook: `%s': "
+			"%s", uid, name, error->message);
 		exit (1);
 	}
 
@@ -255,13 +261,15 @@ get_contact_cb (EBook *book,
 	const gchar *uid;
 
 	if (error) {
-		g_warning ("failed to asynchronously get the contact: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously get the contact: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
-	test_print ("successfully asynchronously retrieved the contact '%s'\n",
+	test_print (
+		"successfully asynchronously retrieved the contact '%s'\n",
 			uid);
 
 	if (closure->cb)
@@ -301,8 +309,9 @@ ebook_test_utils_book_get_required_fields (EBook *book)
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to get required fields for addressbook "
-				"`%s': %s", name, error->message);
+		g_warning (
+			"failed to get required fields for addressbook "
+			"`%s': %s", name, error->message);
 		exit (1);
 	}
 
@@ -316,8 +325,9 @@ get_required_fields_cb (EBook *book,
                         EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously get the required fields: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously get the required fields: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -361,8 +371,9 @@ ebook_test_utils_book_get_static_capabilities (EBook *book)
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to get capabilities for addressbook: `%s': "
-				"%s", name, error->message);
+		g_warning (
+			"failed to get capabilities for addressbook: `%s': "
+			"%s", name, error->message);
 		exit (1);
 	}
 
@@ -381,8 +392,9 @@ ebook_test_utils_book_get_supported_auth_methods (EBook *book)
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to get supported auth methods for "
-				"addressbook `%s': %s", name, error->message);
+		g_warning (
+			"failed to get supported auth methods for "
+			"addressbook `%s': %s", name, error->message);
 		exit (1);
 	}
 
@@ -396,8 +408,9 @@ get_supported_auth_methods_cb (EBook *book,
                                EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously get the supported auth "
-				"methods: status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously get the supported auth "
+			"methods: status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -441,8 +454,9 @@ ebook_test_utils_book_get_supported_fields (EBook *book)
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to get supported fields for addressbook "
-				"`%s': %s", name, error->message);
+		g_warning (
+			"failed to get supported fields for addressbook "
+			"`%s': %s", name, error->message);
 		exit (1);
 	}
 
@@ -456,8 +470,9 @@ get_supported_fields_cb (EBook *book,
                         EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously get the supported fields: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously get the supported fields: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -500,8 +515,9 @@ ebook_test_utils_book_remove_contact (EBook *book,
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to remove contact '%s' from addressbook: `%s': %s",
-				uid, name, error->message);
+		g_warning (
+			"failed to remove contact '%s' from addressbook: "
+			"`%s': %s", uid, name, error->message);
 		exit (1);
 	}
 }
@@ -512,8 +528,9 @@ remove_contact_cb (EBook *book,
                    EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously remove the contact: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously remove the contact: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -539,7 +556,9 @@ ebook_test_utils_book_async_remove_contact (EBook *book,
 	if (!e_book_remove_contact_async (book, contact,
 				(EBookAsyncCallback) remove_contact_cb,
 				closure)) {
-		g_warning ("failed to set up async removeContacts (for a single contact)");
+		g_warning (
+			"failed to set up async removeContacts "
+			"(for a single contact)");
 		exit (1);
 	}
 }
@@ -550,8 +569,9 @@ remove_contact_by_id_cb (EBook *book,
                          EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously remove the contact by id: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously remove the contact by id: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -594,8 +614,9 @@ ebook_test_utils_book_remove_contacts (EBook *book,
 
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
-		g_warning ("failed to remove contacts from addressbook: `%s': %s",
-				name, error->message);
+		g_warning (
+			"failed to remove contacts from addressbook: `%s': %s",
+			name, error->message);
 		exit (1);
 	}
 }
@@ -606,8 +627,9 @@ remove_contacts_cb (EBook *book,
                     EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously remove the contacts: "
-				"status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously remove the contacts: "
+			"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
@@ -638,15 +660,13 @@ ebook_test_utils_book_async_remove_contacts (EBook *book,
 	}
 }
 
-
-
 typedef struct {
-	GMainLoop       *loop;
-	const gchar     *uid;
+	GMainLoop *loop;
+	const gchar *uid;
 	ESourceRegistry *registry;
-	ESource         *scratch;
-	ESource         *source;
-	EBook           *book;
+	ESource *scratch;
+	ESource *source;
+	EBook *book;
 } CreateBookData;
 
 static gboolean
@@ -669,7 +689,7 @@ create_book_idle (CreateBookData *data)
 	if (!data->book)
 		g_error ("Unable to create the book: %s", error->message);
 
-	g_idle_add ((GSourceFunc)quit_idle, data);
+	g_idle_add ((GSourceFunc) quit_idle, data);
 
 	return FALSE;
 }
@@ -697,7 +717,7 @@ register_source_idle (CreateBookData *data)
 	/* XXX e_source_registry_commit_source_sync isnt really sync... or else
 	 * we could call e_source_registry_ref_source() immediately
 	 */
-	g_timeout_add (20, (GSourceFunc)create_book_idle, data);
+	g_timeout_add (20, (GSourceFunc) create_book_idle, data);
 
 	return FALSE;
 }
@@ -710,7 +730,7 @@ ebook_test_utils_book_with_uid (const gchar *uid)
 	data.uid = uid;
 
 	data.loop = g_main_loop_new (NULL, FALSE);
-	g_idle_add ((GSourceFunc)register_source_idle, &data);
+	g_idle_add ((GSourceFunc) register_source_idle, &data);
 	g_main_loop_run (data.loop);
 	g_main_loop_unref (data.loop);
 
@@ -724,9 +744,9 @@ ebook_test_utils_book_with_uid (const gchar *uid)
 EBook *
 ebook_test_utils_book_new_temp (gchar **uri)
 {
-	EBook           *book;
-	gchar           *uid;
-	guint64          real_time = g_get_real_time ();
+	EBook *book;
+	gchar *uid;
+	guint64 real_time = g_get_real_time ();
 
 	uid  = g_strdup_printf ("test-book-%" G_GINT64_FORMAT, real_time);
 	book = ebook_test_utils_book_with_uid (uid);
@@ -752,8 +772,9 @@ ebook_test_utils_book_open (EBook *book,
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
 
-		g_warning ("failed to open addressbook: `%s': %s", name,
-				error->message);
+		g_warning (
+			"failed to open addressbook: `%s': %s", name,
+			error->message);
 		exit (1);
 	}
 }
@@ -772,8 +793,9 @@ ebook_test_utils_book_get_book_view (EBook *book,
 		source = e_book_get_source (book);
 		name = e_source_get_display_name (source);
 
-		g_warning ("failed to get view for addressbook: `%s': %s",
-				name, error->message);
+		g_warning (
+			"failed to get view for addressbook: `%s': %s",
+			name, error->message);
 		exit (1);
 	}
 }
@@ -785,8 +807,9 @@ get_book_view_cb (EBook *book,
                   EBookTestClosure *closure)
 {
 	if (error) {
-		g_warning ("failed to asynchronously get book view for the "
-				"book: status %d (%s)", error->code, error->message);
+		g_warning (
+			"failed to asynchronously get book view for the "
+			"book: status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 

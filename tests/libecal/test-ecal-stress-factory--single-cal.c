@@ -25,8 +25,8 @@ main (gint argc,
 #if 0
 	/* open and close the same calendar repeatedly */
 	for (i = 0; i < NUM_OPENS - 1; i++) {
-		cal = ecal_test_utils_cal_new_from_uri (uri,
-				E_CAL_SOURCE_TYPE_EVENT);
+		cal = ecal_test_utils_cal_new_from_uri (
+			uri, E_CAL_SOURCE_TYPE_EVENT);
 		ecal_test_utils_cal_open (cal, FALSE);
 		g_object_unref (cal);
 	}

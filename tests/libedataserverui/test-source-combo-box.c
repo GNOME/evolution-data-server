@@ -93,7 +93,8 @@ main (gint argc,
 	registry = e_source_registry_new_sync (NULL, &error);
 
 	if (error != NULL) {
-		g_error ("Failed to load ESource registry: %s",
+		g_error (
+			"Failed to load ESource registry: %s",
 			error->message);
 		g_assert_not_reached ();
 	}

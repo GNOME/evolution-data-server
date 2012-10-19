@@ -39,9 +39,13 @@ main (gint argc,
 
 	/* verify */
 	zone_final = ecal_test_utils_cal_get_timezone (cal, TZID_NEW);
-	g_assert (!g_strcmp0 (icaltimezone_get_tzid (zone),
+	g_assert (
+		!g_strcmp0 (
+			icaltimezone_get_tzid (zone),
 			icaltimezone_get_tzid (zone_final)));
-	g_assert (!g_strcmp0 (icaltimezone_get_tznames (zone),
+	g_assert (
+		!g_strcmp0 (
+			icaltimezone_get_tznames (zone),
 			icaltimezone_get_tznames (zone_final)));
 
 	icaltimezone_free (zone, TRUE);

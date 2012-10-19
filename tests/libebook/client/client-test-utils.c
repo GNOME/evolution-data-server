@@ -288,8 +288,6 @@ foreach_configured_source_async_next (gpointer *foreach_async_data,
 	return FALSE;
 }
 
-
-
 typedef struct {
 	GMainLoop       *loop;
 	const gchar     *uid;
@@ -319,7 +317,7 @@ create_book_idle (CreateBookData *data)
 	if (!data->book)
 		g_error ("Unable to create the book: %s", error->message);
 
-	g_idle_add ((GSourceFunc)quit_idle, data);
+	g_idle_add ((GSourceFunc) quit_idle, data);
 
 	return FALSE;
 }
@@ -347,7 +345,7 @@ register_source_idle (CreateBookData *data)
 	/* XXX e_source_registry_commit_source_sync isnt really sync... or else
 	 * we could call e_source_registry_ref_source() immediately
 	 */
-	g_timeout_add (20, (GSourceFunc)create_book_idle, data);
+	g_timeout_add (20, (GSourceFunc) create_book_idle, data);
 
 	return FALSE;
 }
@@ -360,7 +358,7 @@ ebook_test_utils_book_with_uid (const gchar *uid)
 	data.uid = uid;
 
 	data.loop = g_main_loop_new (NULL, FALSE);
-	g_idle_add ((GSourceFunc)register_source_idle, &data);
+	g_idle_add ((GSourceFunc) register_source_idle, &data);
 	g_main_loop_run (data.loop);
 	g_main_loop_unref (data.loop);
 
@@ -402,7 +400,8 @@ new_vcard_from_test_case (const gchar *case_name)
 	filename = g_build_filename (SRCDIR, "..", "data", "vcards", case_filename, NULL);
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
-		g_warning ("failed to read test contact file '%s': %s",
+		g_warning (
+			"failed to read test contact file '%s': %s",
 				filename, error->message);
 		exit (1);
 	}

@@ -58,10 +58,11 @@ objects_added_cb (GObject *object,
 		struct icaltimetype recurrence    = icalcomponent_get_recurrenceid (component);
 		struct icaltimetype last_modified = get_last_modified (component);
 
-		g_print ("Object added %s (recurrence id:%s, last-modified:%s)\n",
-			 icalcomponent_get_uid (component),
-			 icaltime_as_ical_string (recurrence),
-			 icaltime_as_ical_string (last_modified));
+		g_print (
+			"Object added %s (recurrence id:%s, last-modified:%s)\n",
+			icalcomponent_get_uid (component),
+			icaltime_as_ical_string (recurrence),
+			icaltime_as_ical_string (last_modified));
 
 		g_assert (icalcomponent_get_summary (component) == NULL);
 	}
@@ -81,10 +82,11 @@ objects_modified_cb (GObject *object,
 		struct icaltimetype recurrence    = icalcomponent_get_recurrenceid (component);
 		struct icaltimetype last_modified = get_last_modified (component);
 
-		g_print ("Object modified %s (recurrence id:%s, last-modified:%s)\n",
-			 icalcomponent_get_uid (component),
-			 icaltime_as_ical_string (recurrence),
-			 icaltime_as_ical_string (last_modified));
+		g_print (
+			"Object modified %s (recurrence id:%s, last-modified:%s)\n",
+			icalcomponent_get_uid (component),
+			icaltime_as_ical_string (recurrence),
+			icaltime_as_ical_string (last_modified));
 
 		g_assert (icalcomponent_get_summary (component) == NULL);
 	}
@@ -143,7 +145,8 @@ alter_cal_client (gpointer user_data)
 	}
 
 	icalcomponent_set_uid (icalcomp, uid);
-	icalcomponent_set_recurrenceid (icalcomp,
+	icalcomponent_set_recurrenceid (
+		icalcomp,
 					icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
 	icalcomponent_set_summary (icalcomp, "Modified event summary");
 

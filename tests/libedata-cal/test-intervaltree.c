@@ -365,8 +365,9 @@ random_test (void)
 			{
 				g_free (rid);
 				e_intervaltree_dump (tree);
-				g_print ("Deleting interval %d - %d ERROR\n", interval->start,
-					 interval->end);
+				g_print (
+					"Deleting interval %d - %d ERROR\n", interval->start,
+					interval->end);
 				exit (-1);
 			}
 

@@ -44,17 +44,18 @@ main (gint argc,
 
 	g_type_init ();
 
-	open_timeout_id = g_timeout_add_seconds (OPEN_ASYNC_TIMEOUT,
-			(GSourceFunc) open_timeout_cb, NULL);
+	open_timeout_id = g_timeout_add_seconds (
+		OPEN_ASYNC_TIMEOUT, (GSourceFunc) open_timeout_cb, NULL);
 
 	loop = g_main_loop_new (NULL, TRUE);
 
         /* open and close many calendars in parallel */
 	for (i = 0; i < NUM_CALS; i++) {
-		cals[i] = ecal_test_utils_cal_new_temp (&uri,
-				E_CAL_SOURCE_TYPE_EVENT);
-		ecal_test_utils_cal_async_open (cals[i], FALSE,
-				(GSourceFunc) open_complete_cb, loop);
+		cals[i] = ecal_test_utils_cal_new_temp (
+			&uri, E_CAL_SOURCE_TYPE_EVENT);
+		ecal_test_utils_cal_async_open (
+			cals[i], FALSE,
+			(GSourceFunc) open_complete_cb, loop);
 
 		g_free (uri);
 	}

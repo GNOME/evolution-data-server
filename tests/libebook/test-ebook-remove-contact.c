@@ -15,15 +15,15 @@ main (gint argc,
 
 	g_type_init ();
 
-        /*
-         * Setup
-         */
+	/*
+	 * Setup
+	 */
 	book = ebook_test_utils_book_new_temp (NULL);
 	ebook_test_utils_book_open (book, FALSE);
 
-        /*
-         * Sync version
-         */
+	/*
+	 * Sync version
+	 */
 	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", NULL);
 	ebook_test_utils_book_remove_contact (book, uid);
 	contact_final = NULL;
@@ -34,9 +34,9 @@ main (gint argc,
 
 	g_free (uid);
 
-        /*
-         * Async version
-         */
+	/*
+	 * Async version
+	 */
 	book = ebook_test_utils_book_new_temp (NULL);
 	ebook_test_utils_book_open (book, FALSE);
 
@@ -46,8 +46,8 @@ main (gint argc,
 
 	loop = g_main_loop_new (NULL, TRUE);
 	/* contact_final is unref'd by e_book_remove_contact() here */
-	ebook_test_utils_book_async_remove_contact (book, contact_final,
-			ebook_test_utils_callback_quit, loop);
+	ebook_test_utils_book_async_remove_contact (
+		book, contact_final, ebook_test_utils_callback_quit, loop);
 
 	g_main_loop_run (loop);
 

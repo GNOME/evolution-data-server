@@ -66,8 +66,8 @@ main (gint argc,
 	 * Async version
 	 */
 	loop = g_main_loop_new (NULL, TRUE);
-	ebook_test_utils_book_async_get_supported_fields (book,
-			(GSourceFunc) get_supported_fields_cb, loop);
+	ebook_test_utils_book_async_get_supported_fields (
+		book, (GSourceFunc) get_supported_fields_cb, loop);
 
 	g_main_loop_run (loop);
 

@@ -25,8 +25,8 @@ main (gint argc,
 	ebook_test_utils_book_open (book, FALSE);
 
 	loop = g_main_loop_new (NULL, TRUE);
-	ebook_test_utils_book_async_remove (book,
-			ebook_test_utils_callback_quit, loop);
+	ebook_test_utils_book_async_remove (
+		book, ebook_test_utils_callback_quit, loop);
 
 	g_main_loop_run (loop);
 #endif

@@ -35,10 +35,10 @@ gint main (gint argc, gchar **argv)
 		test_query ("(or (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\")) (contains? \"substring\"))");
 
 		test_query ("(and (and (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))"
-			    " (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
+			" (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
 
 		test_query ("(or (and (occur-in-time-range? (make-time \"20080727T220000Z\") (make-time \"20080907T220000Z\"))"
-			    " (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
+			" (or (contains? \"substring\") (has-categories? \"blah\"))) (has-alarms?))");
 	}
 	else
 		test_query (argv[1]);
