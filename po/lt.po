@@ -8,24 +8,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
-"=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-16 16:58+0000\n"
-"PO-Revision-Date: 2012-09-30 13:43+0300\n"
-"Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2012-10-17 11:49+0000\n"
+"PO-Revision-Date: 2012-10-19 20:41+0300\n"
+"Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1232
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4785
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4790
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:931
 #: ../addressbook/libebook/e-book-client.c:106
@@ -33,7 +31,8 @@ msgstr ""
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:570
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
-#: ../calendar/libecal/e-cal.c:4033 ../calendar/libecal/e-cal-client.c:148
+#: ../calendar/libecal/e-cal.c:4033
+#: ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:525
 #: ../camel/providers/imap/camel-imap-store.c:469
@@ -68,7 +67,7 @@ msgid "Loading..."
 msgstr "Įkeliama..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1572
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4886
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4891
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:510
 msgid "Searching..."
 msgstr "Ieškoma..."
@@ -127,6 +126,10 @@ msgid "Loading…"
 msgstr "Įkeliama…"
 
 #: ../addressbook/backends/google/e-book-google-utils.c:1562
+#: ../data/sources/system-address-book.source.in.h:1
+#: ../data/sources/system-calendar.source.in.h:1
+#: ../data/sources/system-memo-list.source.in.h:1
+#: ../data/sources/system-task-list.source.in.h:1
 msgid "Personal"
 msgstr "Asmeniniai"
 
@@ -171,7 +174,7 @@ msgid "Invalid DN syntax"
 msgstr "Netinkama DN sintaksė"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1231
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4784
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4789
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP klaida 0x%x (%s)"
@@ -206,20 +209,20 @@ msgstr "Keičiamas adresatas iš LDAP serverio..."
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: grąžintas neapdorotas paieškos rezultato tipas %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4741
 msgid "Receiving LDAP search results..."
 msgstr "Gaunami LDAP paieškos rezultatai..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4907
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4912
 msgid "Error performing search"
 msgstr "Klaida atliekant paiešką"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5028
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5033
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Atsiunčiami kontaktai (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5552
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5559
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Nepavyko gauti DN naudotojui „%s“"
@@ -922,18 +925,21 @@ msgid "Success"
 msgstr "Atlikta sėkmingai"
 
 #: ../addressbook/libedata-book/e-data-book.c:303
-#: ../calendar/libecal/e-cal.c:4001 ../calendar/libedata-cal/e-data-cal.c:416
+#: ../calendar/libecal/e-cal.c:4001
+#: ../calendar/libedata-cal/e-data-cal.c:416
 #: ../libedataserver/e-client.c:122
 msgid "Backend is busy"
 msgstr "Posistemė užimta"
 
 #: ../addressbook/libedata-book/e-data-book.c:304
-#: ../calendar/libedata-cal/e-data-cal.c:417 ../libedataserver/e-client.c:132
+#: ../calendar/libedata-cal/e-data-cal.c:417
+#: ../libedataserver/e-client.c:132
 msgid "Repository offline"
 msgstr "Saugykla atsijungusi"
 
 #: ../addressbook/libedata-book/e-data-book.c:305
-#: ../calendar/libecal/e-cal.c:4015 ../calendar/libedata-cal/e-data-cal.c:418
+#: ../calendar/libecal/e-cal.c:4015
+#: ../calendar/libedata-cal/e-data-cal.c:418
 #: ../libedataserver/e-client.c:138
 msgid "Permission denied"
 msgstr "Priėjimas uždraustas"
@@ -954,12 +960,14 @@ msgid "Unsupported field"
 msgstr "Nepalaikomas laukelis"
 
 #: ../addressbook/libedata-book/e-data-book.c:311
-#: ../calendar/libedata-cal/e-data-cal.c:427 ../libedataserver/e-client.c:146
+#: ../calendar/libedata-cal/e-data-cal.c:427
+#: ../libedataserver/e-client.c:146
 msgid "Unsupported authentication method"
 msgstr "Nepalaikomas tapatybės nustatymo metodas"
 
 #: ../addressbook/libedata-book/e-data-book.c:312
-#: ../calendar/libedata-cal/e-data-cal.c:428 ../libedataserver/e-client.c:148
+#: ../calendar/libedata-cal/e-data-cal.c:428
+#: ../libedataserver/e-client.c:148
 msgid "TLS not available"
 msgstr "TLS neprieinamas"
 
@@ -977,27 +985,32 @@ msgid "Not available in offline mode"
 msgstr "Neprieinama atsijungimo veiksenoje"
 
 #: ../addressbook/libedata-book/e-data-book.c:316
-#: ../calendar/libedata-cal/e-data-cal.c:432 ../libedataserver/e-client.c:150
+#: ../calendar/libedata-cal/e-data-cal.c:432
+#: ../libedataserver/e-client.c:150
 msgid "Search size limit exceeded"
 msgstr "Viršyta paieškos dydžio riba"
 
 #: ../addressbook/libedata-book/e-data-book.c:317
-#: ../calendar/libedata-cal/e-data-cal.c:433 ../libedataserver/e-client.c:152
+#: ../calendar/libedata-cal/e-data-cal.c:433
+#: ../libedataserver/e-client.c:152
 msgid "Search time limit exceeded"
 msgstr "Viršyta paieškos laiko riba"
 
 #: ../addressbook/libedata-book/e-data-book.c:318
-#: ../calendar/libedata-cal/e-data-cal.c:434 ../libedataserver/e-client.c:154
+#: ../calendar/libedata-cal/e-data-cal.c:434
+#: ../libedataserver/e-client.c:154
 msgid "Invalid query"
 msgstr "Netinkama užklausa"
 
 #: ../addressbook/libedata-book/e-data-book.c:319
-#: ../calendar/libedata-cal/e-data-cal.c:435 ../libedataserver/e-client.c:156
+#: ../calendar/libedata-cal/e-data-cal.c:435
+#: ../libedataserver/e-client.c:156
 msgid "Query refused"
 msgstr "Užklausa atmesta"
 
 #: ../addressbook/libedata-book/e-data-book.c:320
-#: ../calendar/libedata-cal/e-data-cal.c:436 ../libedataserver/e-client.c:142
+#: ../calendar/libedata-cal/e-data-cal.c:436
+#: ../libedataserver/e-client.c:142
 msgid "Could not cancel"
 msgstr "Nepavyko atšaukti"
 
@@ -1009,26 +1022,30 @@ msgid "Invalid server version"
 msgstr "Netinkama serverio versija"
 
 #: ../addressbook/libedata-book/e-data-book.c:324
-#: ../calendar/libecal/e-cal.c:3999 ../calendar/libedata-cal/e-data-cal.c:439
+#: ../calendar/libecal/e-cal.c:3999
+#: ../calendar/libedata-cal/e-data-cal.c:439
 #: ../libedataserver/e-client.c:120
 msgid "Invalid argument"
 msgstr "Netinkamas argumentas"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:326
-#: ../calendar/libecal/e-cal.c:4038 ../calendar/libedata-cal/e-data-cal.c:441
+#: ../calendar/libecal/e-cal.c:4038
+#: ../calendar/libedata-cal/e-data-cal.c:441
 #: ../libedataserver/e-client.c:144
 msgid "Not supported"
 msgstr "Nepalaikoma"
 
 #: ../addressbook/libedata-book/e-data-book.c:327
-#: ../calendar/libedata-cal/e-data-cal.c:442 ../libedataserver/e-client.c:162
+#: ../calendar/libedata-cal/e-data-cal.c:442
+#: ../libedataserver/e-client.c:162
 msgid "Backend is not opened yet"
 msgstr "Posistemė dar neatverta"
 
 #: ../addressbook/libedata-book/e-data-book.c:335
 #: ../calendar/libecal/e-cal-client.c:619
-#: ../calendar/libedata-cal/e-data-cal.c:450 ../libedataserver/e-client.c:160
+#: ../calendar/libedata-cal/e-data-cal.c:450
+#: ../libedataserver/e-client.c:160
 msgid "Other error"
 msgstr "Kita klaida"
 
@@ -1131,16 +1148,8 @@ msgid "Failed to connect to a server using SSL: %s"
 msgstr "Nepavyko prisijungti prie serverio naudojant SSL: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
-msgid ""
-"Failed to connect to a server using SSL. One possible reason is an invalid "
-"certificate being used by the server. If this is expected, like self-signed "
-"certificate being used on the server, then disable certificate validity "
-"tests by selecting 'Ignore invalid SSL certificate' option in Properties"
-msgstr ""
-"Nepavyko prisijungti prie serverio naudojant SSL. Viena iš galimų priežasčių "
-"yra netinkamas serverio naudojamas liudijimas. Jei tai tikėta, pvz. serveris "
-"naudoja paties pasirašytą liudijimą, tuomet išjunkite liudijimo galiojimo "
-"tikrinimą pasirinkę „nepaisyti netinkamo SSL liudijimo“ parinkty nustatymuose"
+msgid "Failed to connect to a server using SSL. One possible reason is an invalid certificate being used by the server. If this is expected, like self-signed certificate being used on the server, then disable certificate validity tests by selecting 'Ignore invalid SSL certificate' option in Properties"
+msgstr "Nepavyko prisijungti prie serverio naudojant SSL. Viena iš galimų priežasčių yra netinkamas serverio naudojamas liudijimas. Jei tai tikėta, pvz. serveris naudoja paties pasirašytą liudijimą, tuomet išjunkite liudijimo galiojimo tikrinimą pasirinkę „nepaisyti netinkamo SSL liudijimo“ parinkty nustatymuose"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
 #, c-format
@@ -1299,16 +1308,19 @@ msgstr "Oro prognozė"
 msgid "Repository is offline"
 msgstr "Saugykla nepasiekiama"
 
-#: ../calendar/libecal/e-cal.c:4005 ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4005
+#: ../calendar/libecal/e-cal-client.c:135
 msgid "No such calendar"
 msgstr "Nėra tokio kalendoriaus"
 
-#: ../calendar/libecal/e-cal.c:4007 ../calendar/libecal/e-cal-client.c:137
+#: ../calendar/libecal/e-cal.c:4007
+#: ../calendar/libecal/e-cal-client.c:137
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Object not found"
 msgstr "Objektas nerastas"
 
-#: ../calendar/libecal/e-cal.c:4009 ../calendar/libecal/e-cal-client.c:139
+#: ../calendar/libecal/e-cal.c:4009
+#: ../calendar/libecal/e-cal-client.c:139
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Invalid object"
 msgstr "Netinkamas objektas"
@@ -1325,7 +1337,8 @@ msgstr "URI jau įkeltas"
 msgid "Unknown User"
 msgstr "Nežinomas naudotojas"
 
-#: ../calendar/libecal/e-cal.c:4019 ../calendar/libecal/e-cal-client.c:143
+#: ../calendar/libecal/e-cal.c:4019
+#: ../calendar/libecal/e-cal-client.c:143
 #: ../calendar/libedata-cal/e-data-cal.c:422
 msgid "Object ID already exists"
 msgstr "Toks objekto ID jau naudojamas"
@@ -1342,7 +1355,8 @@ msgstr "Operacija atšaukta"
 msgid "Could not cancel operation"
 msgstr "Nepavyko atšaukti operacijos"
 
-#: ../calendar/libecal/e-cal.c:4027 ../libedataserver/e-client.c:128
+#: ../calendar/libecal/e-cal.c:4027
+#: ../libedataserver/e-client.c:128
 msgid "Authentication failed"
 msgstr "Tapatybės nustatyti nepavyko"
 
@@ -1502,17 +1516,20 @@ msgstr "30-ta"
 msgid "31st"
 msgstr "31-a"
 
-#: ../calendar/libecal/e-cal-util.c:696 ../calendar/libecal/e-cal-util.c:723
+#: ../calendar/libecal/e-cal-util.c:696
+#: ../calendar/libecal/e-cal-util.c:723
 msgctxt "Priority"
 msgid "High"
 msgstr "Aukštas"
 
-#: ../calendar/libecal/e-cal-util.c:698 ../calendar/libecal/e-cal-util.c:725
+#: ../calendar/libecal/e-cal-util.c:698
+#: ../calendar/libecal/e-cal-util.c:725
 msgctxt "Priority"
 msgid "Normal"
 msgstr "Normalus"
 
-#: ../calendar/libecal/e-cal-util.c:700 ../calendar/libecal/e-cal-util.c:727
+#: ../calendar/libecal/e-cal-util.c:700
+#: ../calendar/libecal/e-cal-util.c:727
 msgctxt "Priority"
 msgid "Low"
 msgstr "Žemas"
@@ -1568,8 +1585,7 @@ msgstr "„%s“ reikia, kad pirmasis argumentas būtų simbolių seka"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:134
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr ""
-"„%s“ reikia, kad pirmasis argumentas būtų datos/laiko seka ISO 8601 formatu"
+msgstr "„%s“ reikia, kad pirmasis argumentas būtų datos/laiko seka ISO 8601 formatu"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:176
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:535
@@ -1626,13 +1642,8 @@ msgstr "„%s“ reikia, kad antrasis argumentas būtų seka"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:922
 #, c-format
-msgid ""
-"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
-"\"classification\""
-msgstr ""
-"„%s“ reikia, kad pirmas argumentas būtų „any“, „summary“, „description“, "
-"„location“, „attendee“, „organizer“ arba „classification“"
+msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\", or \"attendee\", or \"organizer\", or \"classification\""
+msgstr "„%s“ reikia, kad pirmas argumentas būtų „any“, „summary“, „description“, „location“, „attendee“, „organizer“ arba „classification“"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1084
 #, c-format
@@ -1641,12 +1652,8 @@ msgstr "„%s“ reikia bent vieno argumento"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1098
 #, c-format
-msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
-msgstr ""
-"„%s“ reikia, kad visi argumentai būtų sekos arba tik vienas iš jų būtų "
-"loginis neiginys (#f)"
+msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
+msgstr "„%s“ reikia, kad visi argumentai būtų sekos arba tik vienas iš jų būtų loginis neiginys (#f)"
 
 #: ../calendar/libedata-cal/e-data-cal.c:426
 msgid "Unsupported method"
@@ -1829,7 +1836,8 @@ msgstr ""
 msgid "Resynchronizing with server"
 msgstr "Vėl sinchronizuojama su serveriu"
 
-#: ../camel/camel-disco-folder.c:76 ../camel/camel-offline-folder.c:93
+#: ../camel/camel-disco-folder.c:76
+#: ../camel/camel-offline-folder.c:93
 msgid "Downloading new messages for offline mode"
 msgstr "Atsisiunčiami nauji laiškai darbui atsijungus"
 
@@ -1838,16 +1846,23 @@ msgstr "Atsisiunčiami nauji laiškai darbui atsijungus"
 msgid "Preparing folder '%s' for offline"
 msgstr "Aplankas „%s“ ruošiamas darbui atsijungus"
 
-#: ../camel/camel-disco-folder.c:487 ../camel/camel-offline-folder.c:334
+#: ../camel/camel-disco-folder.c:487
+#: ../camel/camel-offline-folder.c:334
 msgid "Copy folder content locally for _offline operation"
 msgstr "Nukopijuoti aplanko turinį į savo kompiuterį darbui _atsijungus"
 
-#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:413
-#: ../camel/camel-imapx-folder.c:446 ../camel/camel-imapx-folder.c:482
-#: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:614
-#: ../camel/camel-imapx-folder.c:648 ../camel/camel-imapx-folder.c:688
-#: ../camel/camel-imapx-folder.c:724 ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1398 ../camel/camel-imapx-store.c:1487
+#: ../camel/camel-disco-store.c:469
+#: ../camel/camel-imapx-folder.c:413
+#: ../camel/camel-imapx-folder.c:446
+#: ../camel/camel-imapx-folder.c:482
+#: ../camel/camel-imapx-folder.c:538
+#: ../camel/camel-imapx-folder.c:614
+#: ../camel/camel-imapx-folder.c:648
+#: ../camel/camel-imapx-folder.c:688
+#: ../camel/camel-imapx-folder.c:724
+#: ../camel/camel-imapx-store.c:276
+#: ../camel/camel-imapx-store.c:1398
+#: ../camel/camel-imapx-store.c:1487
 #: ../camel/camel-imapx-store.c:1536
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
@@ -1868,7 +1883,8 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę"
 msgid "Canceled"
 msgstr "Atšaukta"
 
-#: ../camel/camel-filter-driver.c:916 ../camel/camel-filter-search.c:772
+#: ../camel/camel-filter-driver.c:916
+#: ../camel/camel-filter-search.c:772
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Nepavyko sukurti antrinio proceso „%s“: %s"
@@ -1878,16 +1894,19 @@ msgstr "Nepavyko sukurti antrinio proceso „%s“: %s"
 msgid "Invalid message stream received from %s: %s"
 msgstr "Iš %s gautas netinkamai suformuotas laiškas: %s"
 
-#: ../camel/camel-filter-driver.c:1169 ../camel/camel-filter-driver.c:1178
+#: ../camel/camel-filter-driver.c:1169
+#: ../camel/camel-filter-driver.c:1178
 msgid "Syncing folders"
 msgstr "Sinchronizuojami aplankai"
 
-#: ../camel/camel-filter-driver.c:1276 ../camel/camel-filter-driver.c:1761
+#: ../camel/camel-filter-driver.c:1276
+#: ../camel/camel-filter-driver.c:1761
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Klaida apdorojant filtrą: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1287 ../camel/camel-filter-driver.c:1774
+#: ../camel/camel-filter-driver.c:1287
+#: ../camel/camel-filter-driver.c:1774
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Klaida vykdant filtrą: %s: %s"
@@ -1907,16 +1926,19 @@ msgstr "Nepavyko apdoroti kaupo aplanko"
 msgid "Getting message %d (%d%%)"
 msgstr "Gaunamas laiškas %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1424 ../camel/camel-filter-driver.c:1446
+#: ../camel/camel-filter-driver.c:1424
+#: ../camel/camel-filter-driver.c:1446
 #, c-format
 msgid "Failed on message %d"
 msgstr "Nesėkmė ties laišku %d"
 
-#: ../camel/camel-filter-driver.c:1463 ../camel/camel-filter-driver.c:1573
+#: ../camel/camel-filter-driver.c:1463
+#: ../camel/camel-filter-driver.c:1573
 msgid "Syncing folder"
 msgstr "Sinchronizuojamas aplankas"
 
-#: ../camel/camel-filter-driver.c:1468 ../camel/camel-filter-driver.c:1581
+#: ../camel/camel-filter-driver.c:1468
+#: ../camel/camel-filter-driver.c:1581
 msgid "Complete"
 msgstr "Užbaigta"
 
@@ -1942,7 +1964,8 @@ msgstr "Netinkami (system-flag) argumentai"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Netinkami (user-tag) argumentai"
 
-#: ../camel/camel-filter-search.c:949 ../camel/camel-filter-search.c:958
+#: ../camel/camel-filter-search.c:949
+#: ../camel/camel-filter-search.c:958
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Klaida vykdant filtro paiešką: %s: %s"
@@ -2005,7 +2028,8 @@ msgstr "Gaunama „%s“ kvotos informacija"
 msgid "Refreshing folder '%s'"
 msgstr "Atnaujinamas aplankas „%s“"
 
-#: ../camel/camel-folder-search.c:420 ../camel/camel-folder-search.c:587
+#: ../camel/camel-folder-search.c:420
+#: ../camel/camel-folder-search.c:587
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2014,7 +2038,8 @@ msgstr ""
 "Nepavyko apdoroti paieškos išraiškos: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:432 ../camel/camel-folder-search.c:599
+#: ../camel/camel-folder-search.c:432
+#: ../camel/camel-folder-search.c:599
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2024,7 +2049,8 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:822 ../camel/camel-folder-search.c:865
+#: ../camel/camel-folder-search.c:822
+#: ../camel/camel-folder-search.c:865
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) reikalauja vienintelio loginio rezultato"
@@ -2036,7 +2062,8 @@ msgid "(%s) not allowed inside %s"
 msgstr "(%s) neleistinas viduje %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:939 ../camel/camel-folder-search.c:947
+#: ../camel/camel-folder-search.c:939
+#: ../camel/camel-folder-search.c:947
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) reikalauja atitikties tipo eilutės"
@@ -2053,7 +2080,8 @@ msgstr "(%s) tikisi masyvinio rezultato"
 msgid "(%s) requires the folder set"
 msgstr "(%s) reikalauja aplankų rinkinio"
 
-#: ../camel/camel-gpg-context.c:663 ../camel/camel-gpg-context.c:668
+#: ../camel/camel-gpg-context.c:663
+#: ../camel/camel-gpg-context.c:668
 #: ../camel/camel-gpg-context.c:1331
 #, c-format
 msgid "Failed to execute gpg: %s"
@@ -2080,7 +2108,8 @@ msgstr ""
 msgid "Failed to parse gpg userid hint."
 msgstr "Nepavyko apdoroti gpg userid patarimo."
 
-#: ../camel/camel-gpg-context.c:794 ../camel/camel-gpg-context.c:809
+#: ../camel/camel-gpg-context.c:794
+#: ../camel/camel-gpg-context.c:809
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Nepavyko apdoroti gpg slaptažodžio užklausos."
@@ -2109,14 +2138,11 @@ msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Netikėta užklausa iš GnuPG dėl „%s“"
 
 #: ../camel/camel-gpg-context.c:852
-msgid ""
-"Note the encrypted content doesn't contain information about a recipient, "
-"thus there will be a password prompt for each of stored private key."
-msgstr ""
-"Pastaba: šifruotas turinys neturi informacijos apie gavėją, todėl bus "
-"klausiama slaptažodžio kiekvienam įrašytam privačiam raktui."
+msgid "Note the encrypted content doesn't contain information about a recipient, thus there will be a password prompt for each of stored private key."
+msgstr "Pastaba: šifruotas turinys neturi informacijos apie gavėją, todėl bus klausiama slaptažodžio kiekvienam įrašytam privačiam raktui."
 
-#: ../camel/camel-gpg-context.c:883 ../camel/camel-net-utils.c:523
+#: ../camel/camel-gpg-context.c:883
+#: ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:388
 #: ../libedataserver/e-client.c:140
@@ -2127,8 +2153,7 @@ msgstr "Atšaukta"
 #: ../camel/camel-gpg-context.c:904
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
-"Nepavyko atrakinti slapto rakto: 3 kartus pateiktas blogas slaptažodis."
+msgstr "Nepavyko atrakinti slapto rakto: 3 kartus pateiktas blogas slaptažodis."
 
 #: ../camel/camel-gpg-context.c:917
 #, c-format
@@ -2140,19 +2165,26 @@ msgstr "Netikėtas atsakymas iš GnuPG: %s"
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Nepavyko užkoduoti: nenurodyti tinkami gavėjai."
 
-#: ../camel/camel-gpg-context.c:1595 ../camel/camel-smime-context.c:832
+#: ../camel/camel-gpg-context.c:1595
+#: ../camel/camel-smime-context.c:832
 msgid "Could not generate signing data: "
 msgstr "Nepavyko sukurti pasirašymo duomenų:"
 
-#: ../camel/camel-gpg-context.c:1644 ../camel/camel-gpg-context.c:1848
-#: ../camel/camel-gpg-context.c:1958 ../camel/camel-gpg-context.c:2105
-#: ../camel/camel-gpg-context.c:2205 ../camel/camel-gpg-context.c:2253
+#: ../camel/camel-gpg-context.c:1644
+#: ../camel/camel-gpg-context.c:1848
+#: ../camel/camel-gpg-context.c:1958
+#: ../camel/camel-gpg-context.c:2105
+#: ../camel/camel-gpg-context.c:2205
+#: ../camel/camel-gpg-context.c:2253
 msgid "Failed to execute gpg."
 msgstr "Nepavyko paleisti gpg programos."
 
-#: ../camel/camel-gpg-context.c:1723 ../camel/camel-gpg-context.c:1731
-#: ../camel/camel-gpg-context.c:1739 ../camel/camel-gpg-context.c:1759
-#: ../camel/camel-smime-context.c:959 ../camel/camel-smime-context.c:973
+#: ../camel/camel-gpg-context.c:1723
+#: ../camel/camel-gpg-context.c:1731
+#: ../camel/camel-gpg-context.c:1739
+#: ../camel/camel-gpg-context.c:1759
+#: ../camel/camel-smime-context.c:959
+#: ../camel/camel-smime-context.c:973
 #: ../camel/camel-smime-context.c:982
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
@@ -2170,7 +2202,8 @@ msgstr "Nepavyko sukurti šifravimo duomenų:"
 msgid "This is a digitally encrypted message part"
 msgstr "Ši laiško dalis yra užšifruota skaitmeniu būdu"
 
-#: ../camel/camel-gpg-context.c:2035 ../camel/camel-gpg-context.c:2044
+#: ../camel/camel-gpg-context.c:2035
+#: ../camel/camel-gpg-context.c:2044
 #: ../camel/camel-gpg-context.c:2067
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
@@ -2181,7 +2214,8 @@ msgstr "Nepavyko iššifruoti laiško: netinkamas laiško formatas"
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Nepavyko atkoduoti MIME bloko: protokolo klaida"
 
-#: ../camel/camel-gpg-context.c:2146 ../camel/camel-smime-context.c:1273
+#: ../camel/camel-gpg-context.c:2146
+#: ../camel/camel-smime-context.c:1273
 msgid "Encrypted content"
 msgstr "Užšifruotas turinys"
 
@@ -2237,13 +2271,14 @@ msgstr "STARTTLS nepalaikomas"
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Nepavyko prisijungti prie IMAP serverio %s saugia veiksena: "
 
-#: ../camel/camel-imapx-server.c:3580
+#: ../camel/camel-imapx-server.c:3582
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP serveris %s nepalaiko %s tapatybės nustatymo"
 
-#: ../camel/camel-imapx-server.c:3591 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3593
+#: ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:259
 #: ../camel/providers/pop3/camel-pop3-store.c:587
@@ -2252,13 +2287,13 @@ msgstr "IMAP serveris %s nepalaiko %s tapatybės nustatymo"
 msgid "No support for %s authentication"
 msgstr "Nepalaikomas %s tipo tapatybės nustatymas"
 
-#: ../camel/camel-imapx-server.c:3610
+#: ../camel/camel-imapx-server.c:3612
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:502
 msgid "Cannot authenticate without a username"
 msgstr "Negalima nustatyti tapatybės be naudotojo vardo"
 
-#: ../camel/camel-imapx-server.c:3619
+#: ../camel/camel-imapx-server.c:3621
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:511
 #: ../camel/providers/pop3/camel-pop3-store.c:512
@@ -2266,53 +2301,55 @@ msgstr "Negalima nustatyti tapatybės be naudotojo vardo"
 msgid "Authentication password not available"
 msgstr "Tapatybės patvirtinimo slaptažodis neprieinamas"
 
-#: ../camel/camel-imapx-server.c:3821
+#: ../camel/camel-imapx-server.c:3823
 msgid "Error fetching message"
 msgstr "Klaida gaunant laišką"
 
-#: ../camel/camel-imapx-server.c:3903
+#: ../camel/camel-imapx-server.c:3905
 msgid "Failed to copy the tmp file"
 msgstr "Nepavyko nukopijuoti laikimo failo"
 
-#: ../camel/camel-imapx-server.c:3917
+#: ../camel/camel-imapx-server.c:3919
 msgid "Failed to close the tmp stream"
 msgstr "Nepavyko užverti laikinojo srauto"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4017
 msgid "Error copying messages"
 msgstr "Klaida kopijuojant laiškus"
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4152
 msgid "Error appending message"
 msgstr "Klaida pridedant laišką"
 
-#: ../camel/camel-imapx-server.c:4333
+#: ../camel/camel-imapx-server.c:4335
 msgid "Error fetching message headers"
 msgstr "Klaida gaunant pranešimų antraštes"
 
-#: ../camel/camel-imapx-server.c:4468
+#: ../camel/camel-imapx-server.c:4470
 msgid "Error retrieving message"
 msgstr "Klaida gaunant laišką"
 
-#: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
+#: ../camel/camel-imapx-server.c:4592
+#: ../camel/camel-imapx-server.c:4785
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Gaunama naujų laiškų santrauka iš „%s“"
 
-#: ../camel/camel-imapx-server.c:4641
+#: ../camel/camel-imapx-server.c:4643
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "%s ieškoma pakeistų laiškų"
 
-#: ../camel/camel-imapx-server.c:4684
+#: ../camel/camel-imapx-server.c:4686
 msgid "Error fetching new messages"
 msgstr "Klaida tikrinant naujus laiškus"
 
-#: ../camel/camel-imapx-server.c:4874
+#: ../camel/camel-imapx-server.c:4876
 msgid "Error while fetching messages"
 msgstr "Klaida gaunant pranešimus"
 
-#: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
+#: ../camel/camel-imapx-server.c:4884
+#: ../camel/camel-imapx-server.c:4920
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2320,54 +2357,56 @@ msgstr[0] "Gaunama %d laiško santrauka iš „%s“"
 msgstr[1] "Gaunama %d laiškų santraukos iš „%s“"
 msgstr[2] "Gaunama %d laiškų santraukos iš „%s“"
 
-#: ../camel/camel-imapx-server.c:5043 ../camel/camel-imapx-server.c:5079
+#: ../camel/camel-imapx-server.c:5045
+#: ../camel/camel-imapx-server.c:5081
 msgid "Error refreshing folder"
 msgstr "Klaida atnaujinant aplanką"
 
-#: ../camel/camel-imapx-server.c:5172
+#: ../camel/camel-imapx-server.c:5174
 msgid "Error expunging message"
 msgstr "Klaida sunaikinant laišką"
 
-#: ../camel/camel-imapx-server.c:5269
+#: ../camel/camel-imapx-server.c:5271
 msgid "Error fetching folders"
 msgstr "Klaida gaunant aplankus"
 
-#: ../camel/camel-imapx-server.c:5348
+#: ../camel/camel-imapx-server.c:5350
 msgid "Error subscribing to folder"
 msgstr "Klaida registruojantis prie aplanko"
 
-#: ../camel/camel-imapx-server.c:5409
+#: ../camel/camel-imapx-server.c:5411
 msgid "Error creating folder"
 msgstr "Klaida kuriant aplanką"
 
-#: ../camel/camel-imapx-server.c:5458
+#: ../camel/camel-imapx-server.c:5460
 msgid "Error deleting folder"
 msgstr "Klaida trinant aplanką"
 
-#: ../camel/camel-imapx-server.c:5519
+#: ../camel/camel-imapx-server.c:5521
 msgid "Error renaming folder"
 msgstr "Klaida pervadinant aplanką"
 
-#: ../camel/camel-imapx-server.c:5580
+#: ../camel/camel-imapx-server.c:5582
 msgid "Error performing NOOP"
 msgstr "Klaida atliekant NOOP"
 
-#: ../camel/camel-imapx-server.c:5676
+#: ../camel/camel-imapx-server.c:5678
 msgid "Error syncing changes"
 msgstr "Klaida sinchronizuojant pakeitimus"
 
-#: ../camel/camel-imapx-server.c:6447
+#: ../camel/camel-imapx-server.c:6449
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nepavyko gauti laiško, kurio ID %s: %s"
 
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6450
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Nėra tokio laiško."
 
-#: ../camel/camel-imapx-server.c:6603 ../camel/camel-imapx-server.c:6618
+#: ../camel/camel-imapx-server.c:6605
+#: ../camel/camel-imapx-server.c:6620
 msgid "Cannot create spool file: "
 msgstr "Nepavyko sukurti kaupos failo:"
 
@@ -2393,9 +2432,7 @@ msgstr "Slaptažodis"
 #: ../camel/camel-imapx-store.c:253
 #: ../camel/providers/imap/camel-imap-provider.c:100
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"Naudojant šią parinktį jungiantis prie IMAP serverio bus naudojamas grynojo "
-"teksto slaptažodis."
+msgstr "Naudojant šią parinktį jungiantis prie IMAP serverio bus naudojamas grynojo teksto slaptažodis."
 
 #: ../camel/camel-imapx-store.c:351
 #: ../camel/providers/imap/camel-imap-store.c:2064
@@ -2405,7 +2442,8 @@ msgid "No such folder %s"
 msgstr "Nėra tokio aplanko %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:376 ../camel/camel-imapx-store.c:866
+#: ../camel/camel-imapx-store.c:376
+#: ../camel/camel-imapx-store.c:866
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2432,8 +2470,7 @@ msgstr "Nėra tokio aplanko: %s"
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Aplanko vardas „%s“ yra neleistinas, kadangi jame yra simbolis „%c“"
 
 #: ../camel/camel-imapx-store.c:1431
@@ -2467,9 +2504,7 @@ msgstr "Nepavyko sukurti %s užrakto failo: %s"
 #: ../camel/camel-lock.c:145
 #, c-format
 msgid "Timed out trying to get lock file on %s.  Try again later."
-msgstr ""
-"Baigėsi skirtasis laikas bandant gauti užrakto failą vietoje %s. Bandykite "
-"vėliau."
+msgstr "Baigėsi skirtasis laikas bandant gauti užrakto failą vietoje %s. Bandykite vėliau."
 
 #: ../camel/camel-lock.c:205
 #, c-format
@@ -2491,7 +2526,8 @@ msgstr "Nepavyko sukurti rezervuoto pagalbos nukreipimo: %s"
 msgid "Cannot fork locking helper: %s"
 msgstr "Nepavyko paleisti rezervuoto pagalbos proceso: %s"
 
-#: ../camel/camel-lock-client.c:211 ../camel/camel-lock-client.c:239
+#: ../camel/camel-lock-client.c:211
+#: ../camel/camel-lock-client.c:239
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr "Nepavyko užrakinti „%s“: užrakto pagelbiklio protokolo klaida"
@@ -2550,7 +2586,8 @@ msgstr "Klaida skaitant pašto failą: %s"
 msgid "Error writing mail temp file: %s"
 msgstr "Klaida įrašant laikiną pašto failą: %s"
 
-#: ../camel/camel-movemail.c:493 ../camel/camel-movemail.c:562
+#: ../camel/camel-movemail.c:493
+#: ../camel/camel-movemail.c:562
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "Klaida kopijuojant laikiną pašto failą: %s"
@@ -2607,7 +2644,8 @@ msgstr "Nepavyko prisijungti prie %s:"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Laiškai aplanke „%s“ sinchronizuojami su disku"
 
-#: ../camel/camel-offline-journal.c:145 ../camel/camel-offline-journal.c:177
+#: ../camel/camel-offline-journal.c:145
+#: ../camel/camel-offline-journal.c:177
 #, c-format
 msgid "Cannot write offline journal for folder '%s': %s"
 msgstr "Nepavyko įrašyti atjungto žurnalo aplankui „%s“: %s"
@@ -2620,22 +2658,23 @@ msgstr "Virtualių aplankų pašto tiekiklis"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Pašto skaitymui kaip kito aplankų sąrašo užklausa"
 
-#: ../camel/camel-provider.c:195
+#: ../camel/camel-provider.c:258
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Nepavyko įkelti %s: modulių įkėlimas šioje sistemoje nepalaikomas."
 
-#: ../camel/camel-provider.c:204
+#: ../camel/camel-provider.c:267
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Nepavyko įkelti %s: %s"
 
-#: ../camel/camel-provider.c:213
+#: ../camel/camel-provider.c:276
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Nepavyko įkelti %s: modulyje nėra inicializacijos kodo."
 
-#: ../camel/camel-provider.c:412 ../camel/camel-session.c:406
+#: ../camel/camel-provider.c:424
+#: ../camel/camel-session.c:406
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Nėra protokolo „%s“ tiekėjo"
@@ -2685,24 +2724,16 @@ msgid "CRAM-MD5"
 msgstr "CRAM-MD5"
 
 #: ../camel/camel-sasl-cram-md5.c:48
-msgid ""
-"This option will connect to the server using a secure CRAM-MD5 password, if "
-"the server supports it."
-msgstr ""
-"Su šia parinktimi prie serverio bus jungiamasi naudojant saugų CRAM-MD5 "
-"slaptažodį, jei serveris tai palaiko."
+msgid "This option will connect to the server using a secure CRAM-MD5 password, if the server supports it."
+msgstr "Su šia parinktimi prie serverio bus jungiamasi naudojant saugų CRAM-MD5 slaptažodį, jei serveris tai palaiko."
 
 #: ../camel/camel-sasl-digest-md5.c:59
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:61
-msgid ""
-"This option will connect to the server using a secure DIGEST-MD5 password, "
-"if the server supports it."
-msgstr ""
-"Su šia parinktimi prie serverio bus jungiamasi naudojant saugų DIGEST–MD5 "
-"slaptažodį, jei serveris tai palaiko."
+msgid "This option will connect to the server using a secure DIGEST-MD5 password, if the server supports it."
+msgstr "Su šia parinktimi prie serverio bus jungiamasi naudojant saugų DIGEST–MD5 slaptažodį, jei serveris tai palaiko."
 
 #: ../camel/camel-sasl-digest-md5.c:855
 #, c-format
@@ -2717,8 +2748,7 @@ msgstr "Serverio užklausa netinkama\n"
 #: ../camel/camel-sasl-digest-md5.c:874
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr ""
-"Serverio užklausoje buvo netvarkingas „Apsaugos kokybės“ prieigos raktas"
+msgstr "Serverio užklausoje buvo netvarkingas „Apsaugos kokybės“ prieigos raktas"
 
 #: ../camel/camel-sasl-digest-md5.c:907
 #, c-format
@@ -2741,53 +2771,31 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:93
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
-"Ši parinktis leidžia jungtis prie serverio naudojant Kerberos 5 tapatybės "
-"nustatymui."
+msgstr "Ši parinktis leidžia jungtis prie serverio naudojant Kerberos 5 tapatybės nustatymui."
 
 #: ../camel/camel-sasl-gssapi.c:134
-msgid ""
-"The specified mechanism is not supported by the provided credential, or is "
-"unrecognized by the implementation."
-msgstr ""
-"Pasirinktas mechanizmas nepalaiko pateikto mandato arba yra neatpažįstamas "
-"naudojamoje versijoje."
+msgid "The specified mechanism is not supported by the provided credential, or is unrecognized by the implementation."
+msgstr "Pasirinktas mechanizmas nepalaiko pateikto mandato arba yra neatpažįstamas naudojamoje versijoje."
 
 #: ../camel/camel-sasl-gssapi.c:139
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Pateiktas target_name parametras yra blogai suformuotas."
 
 #: ../camel/camel-sasl-gssapi.c:142
-msgid ""
-"The provided target_name parameter contained an invalid or unsupported type "
-"of name."
-msgstr ""
-"Pateiktame target_name parametre yra nurodytas klaidingo arba nepalaikomo "
-"tipo vardas."
+msgid "The provided target_name parameter contained an invalid or unsupported type of name."
+msgstr "Pateiktame target_name parametre yra nurodytas klaidingo arba nepalaikomo tipo vardas."
 
 #: ../camel/camel-sasl-gssapi.c:146
-msgid ""
-"The input_token contains different channel bindings to those specified via "
-"the input_chan_bindings parameter."
-msgstr ""
-"Nesutampa kanalo sąsajos pateiktos tarp input_token ir input_chan_bindings "
-"parametrų."
+msgid "The input_token contains different channel bindings to those specified via the input_chan_bindings parameter."
+msgstr "Nesutampa kanalo sąsajos pateiktos tarp input_token ir input_chan_bindings parametrų."
 
 #: ../camel/camel-sasl-gssapi.c:151
-msgid ""
-"The input_token contains an invalid signature, or a signature that could not "
-"be verified."
-msgstr ""
-"input_token parametre yra neteisingas parašas arba tas parašas negali būti "
-"patikrintas."
+msgid "The input_token contains an invalid signature, or a signature that could not be verified."
+msgstr "input_token parametre yra neteisingas parašas arba tas parašas negali būti patikrintas."
 
 #: ../camel/camel-sasl-gssapi.c:155
-msgid ""
-"The supplied credentials were not valid for context initiation, or the "
-"credential handle did not reference any credentials."
-msgstr ""
-"Pateiktas mandatas nenaudojamas prisijungimo metu arba jis nesutampa su "
-"jokia tinkama mandato nuoroda."
+msgid "The supplied credentials were not valid for context initiation, or the credential handle did not reference any credentials."
+msgstr "Pateiktas mandatas nenaudojamas prisijungimo metu arba jis nesutampa su jokia tinkama mandato nuoroda."
 
 #: ../camel/camel-sasl-gssapi.c:160
 msgid "The supplied context handle did not refer to a valid context."
@@ -2805,8 +2813,10 @@ msgstr "Mandato vientisumo patikros nesėkmingos."
 msgid "The referenced credentials have expired."
 msgstr "Pateiktasis mandatas nebegalioja."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:340
-#: ../camel/camel-sasl-gssapi.c:388 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:175
+#: ../camel/camel-sasl-gssapi.c:340
+#: ../camel/camel-sasl-gssapi.c:388
+#: ../camel/camel-sasl-gssapi.c:405
 #: ../camel/providers/smtp/camel-smtp-transport.c:575
 #, c-format
 msgid "Bad authentication response from server."
@@ -2821,11 +2831,10 @@ msgstr "Nepalaikomas saugumo lygis."
 msgid "Login"
 msgstr "Prisijungti"
 
-#: ../camel/camel-sasl-login.c:42 ../camel/camel-sasl-plain.c:46
+#: ../camel/camel-sasl-login.c:42
+#: ../camel/camel-sasl-plain.c:46
 msgid "This option will connect to the server using a simple password."
-msgstr ""
-"Naudojant šią parinktį prisijungimui prie serverio naudojamas grynojo teksto "
-"slaptažodis."
+msgstr "Naudojant šią parinktį prisijungimui prie serverio naudojamas grynojo teksto slaptažodis."
 
 #: ../camel/camel-sasl-login.c:110
 #, c-format
@@ -2837,12 +2846,8 @@ msgid "NTLM / SPA"
 msgstr "NTLM / SPA"
 
 #: ../camel/camel-sasl-ntlm.c:49
-msgid ""
-"This option will connect to a Windows-based server using NTLM / Secure "
-"Password Authentication."
-msgstr ""
-"Naudojant šią parinktį galima prisijungti prie Windows serverio naudojant "
-"tapatybės nustatymui NTLM / saugų slaptažodį."
+msgid "This option will connect to a Windows-based server using NTLM / Secure Password Authentication."
+msgstr "Naudojant šią parinktį galima prisijungti prie Windows serverio naudojant tapatybės nustatymui NTLM / saugų slaptažodį."
 
 #: ../camel/camel-sasl-plain.c:44
 msgid "PLAIN"
@@ -2854,8 +2859,7 @@ msgstr "POP prieš SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:48
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
-"Naudojant šią parinktį bus nustatoma POP ryšio tapatybė prieš bandant SMTP"
+msgstr "Naudojant šią parinktį bus nustatoma POP ryšio tapatybė prieš bandant SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:84
 msgid "POP Source UID"
@@ -2866,7 +2870,8 @@ msgstr "POP šaltinio UID"
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "POP prieš SMTP tapatybės nustatymą naudojant nežinomą transportavimą"
 
-#: ../camel/camel-sasl-popb4smtp.c:108 ../camel/camel-sasl-popb4smtp.c:117
+#: ../camel/camel-sasl-popb4smtp.c:108
+#: ../camel/camel-sasl-popb4smtp.c:117
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr "POP prieš SMTP tapatybės nustatymą bandyta su %s tarnyba"
@@ -2895,7 +2900,8 @@ msgstr "Laiškų persiuntimas nepalaikomas"
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Įveskite %s slaptažodį %s kompiuteryje %s."
 
-#: ../camel/camel-smime-context.c:351 ../camel/camel-smime-context.c:1060
+#: ../camel/camel-smime-context.c:351
+#: ../camel/camel-smime-context.c:1060
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Nepavyko rasti „%s“ liudijimo"
@@ -2928,7 +2934,8 @@ msgstr "Nepavyko rasti liudijimų grandinės"
 msgid "Cannot add CMS Signing time"
 msgstr "Nepavyko pridėti CMS pasirašymo laiko"
 
-#: ../camel/camel-smime-context.c:439 ../camel/camel-smime-context.c:454
+#: ../camel/camel-smime-context.c:439
+#: ../camel/camel-smime-context.c:454
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "„%s“ šifravimo liudijimo nėra"
@@ -2998,15 +3005,18 @@ msgstr "Paraše nėra pasirašytų duomenų"
 msgid "Digests missing from enveloped data"
 msgstr "Įpakuotuose duomenyse nėra santraukų"
 
-#: ../camel/camel-smime-context.c:591 ../camel/camel-smime-context.c:602
+#: ../camel/camel-smime-context.c:591
+#: ../camel/camel-smime-context.c:602
 msgid "Cannot calculate digests"
 msgstr "Negalima suskaičiuoti santraukų"
 
-#: ../camel/camel-smime-context.c:609 ../camel/camel-smime-context.c:613
+#: ../camel/camel-smime-context.c:609
+#: ../camel/camel-smime-context.c:613
 msgid "Cannot set message digests"
 msgstr "Negalima nurodyti laiškų santraukų"
 
-#: ../camel/camel-smime-context.c:623 ../camel/camel-smime-context.c:628
+#: ../camel/camel-smime-context.c:623
+#: ../camel/camel-smime-context.c:628
 msgid "Certificate import failed"
 msgstr "Liudijimo importuoti nepavyko"
 
@@ -3018,8 +3028,7 @@ msgstr "Liudijimas yra vienintelis laiškas, negalima patikrinti liudijimų"
 #: ../camel/camel-smime-context.c:641
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
-"Liudijimas yra vienintelis laiškas, liudijimai importuoti ir patikrinti"
+msgstr "Liudijimas yra vienintelis laiškas, liudijimai importuoti ir patikrinti"
 
 #: ../camel/camel-smime-context.c:645
 msgid "Cannot find signature digests"
@@ -3030,7 +3039,8 @@ msgstr "Nepavyko rasti parašo santraukų"
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Pasirašė: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:844 ../camel/camel-smime-context.c:1134
+#: ../camel/camel-smime-context.c:844
+#: ../camel/camel-smime-context.c:1134
 msgid "Cannot create encoder context"
 msgstr "Nepavyko sukurti šifravimo konteksto"
 
@@ -3038,11 +3048,13 @@ msgstr "Nepavyko sukurti šifravimo konteksto"
 msgid "Failed to add data to CMS encoder"
 msgstr "Nepavyko pridėti duomenų CMS šifravimui"
 
-#: ../camel/camel-smime-context.c:855 ../camel/camel-smime-context.c:1151
+#: ../camel/camel-smime-context.c:855
+#: ../camel/camel-smime-context.c:1151
 msgid "Failed to encode data"
 msgstr "Nepavyko užšifruoti duomenų"
 
-#: ../camel/camel-smime-context.c:999 ../camel/camel-smime-context.c:1248
+#: ../camel/camel-smime-context.c:999
+#: ../camel/camel-smime-context.c:1248
 msgid "Decoder failed"
 msgstr "Iškoduoti nepavyko"
 
@@ -3102,13 +3114,15 @@ msgid "Scanning folders in '%s'"
 msgstr "Tikrinami „%s“ aplankai"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:2078 ../camel/camel-store.c:2088
+#: ../camel/camel-store.c:2078
+#: ../camel/camel-store.c:2088
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Šiukšlinė"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:2081 ../camel/camel-store.c:2092
+#: ../camel/camel-store.c:2081
+#: ../camel/camel-store.c:2092
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Brukalas"
@@ -3123,13 +3137,15 @@ msgstr "Nepavyko sukurti aplanko: %s: aplankas jau yra"
 msgid "Creating folder '%s'"
 msgstr "Sukuriamas aplankas „%s“"
 
-#: ../camel/camel-store.c:2672 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2672
+#: ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:306
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nepavyko ištrinti aplanko: %s: netinkama operacija"
 
-#: ../camel/camel-store.c:2815 ../camel/camel-vee-store.c:460
+#: ../camel/camel-store.c:2815
+#: ../camel/camel-vee-store.c:460
 #: ../camel/providers/local/camel-maildir-store.c:788
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3168,7 +3184,8 @@ msgstr "Atsisakoma aplanko „%s“"
 msgid "NSPR error code %d"
 msgstr "NSPR klaida kode %d"
 
-#: ../camel/camel-tcp-stream-raw.c:649 ../camel/camel-tcp-stream-raw.c:662
+#: ../camel/camel-tcp-stream-raw.c:649
+#: ../camel/camel-tcp-stream-raw.c:662
 #, c-format
 msgid "The proxy host does not support SOCKS4"
 msgstr "Įgaliotasis serveris nepalaiko SOCKS4"
@@ -3178,7 +3195,8 @@ msgstr "Įgaliotasis serveris nepalaiko SOCKS4"
 msgid "The proxy host denied our request: code %d"
 msgstr "Įgaliotasis serveris atmetė mūsų užklausą: kodas %d"
 
-#: ../camel/camel-tcp-stream-raw.c:773 ../camel/camel-tcp-stream-raw.c:781
+#: ../camel/camel-tcp-stream-raw.c:773
+#: ../camel/camel-tcp-stream-raw.c:781
 #, c-format
 msgid "The proxy host does not support SOCKS5"
 msgstr "Įgaliotasis serveris nepalaiko SOCKS5"
@@ -3241,7 +3259,8 @@ msgstr "Kompiuterio vardas per ilgas (daugiausiai leidžiama 255 simboliai)"
 
 #. SOCKS5
 #. reserved - must be 0
-#: ../camel/camel-tcp-stream-raw.c:912 ../camel/camel-tcp-stream-raw.c:922
+#: ../camel/camel-tcp-stream-raw.c:912
+#: ../camel/camel-tcp-stream-raw.c:922
 #, c-format
 msgid "Invalid reply from proxy server"
 msgstr "Netinkamas atsakas iš įgaliotojo serverio"
@@ -3338,7 +3357,8 @@ msgstr "Nepavyko apdoroti URL „%s“"
 msgid "Updating folder '%s'"
 msgstr "Atnaujinamas aplankas „%s“"
 
-#: ../camel/camel-vee-folder.c:855 ../camel/camel-vee-folder.c:965
+#: ../camel/camel-vee-folder.c:855
+#: ../camel/camel-vee-folder.c:965
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nepavyko nukopijuoti arba perkelti laiškų į virtualų aplanką"
@@ -3569,8 +3589,7 @@ msgstr "Pritaikyti _filtrus naujiems laiškams visuose aplankuose"
 #: ../camel/providers/imap/camel-imap-provider.c:59
 #: ../camel/providers/imapx/camel-imapx-provider.c:63
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr ""
-"_Pritaikyti filtrus naujiems laiškams šio serverio gautų laiškų aplanke"
+msgstr "_Pritaikyti filtrus naujiems laiškams šio serverio gautų laiškų aplanke"
 
 #: ../camel/providers/imap/camel-imap-provider.c:61
 #: ../camel/providers/imapx/camel-imapx-provider.c:65
@@ -3693,12 +3712,8 @@ msgid "Local delivery"
 msgstr "Vietinis pristatymas"
 
 #: ../camel/providers/local/camel-local-provider.c:65
-msgid ""
-"For retrieving (moving) local mail from standard mbox-formatted spools into "
-"folders managed by Evolution."
-msgstr ""
-"Skirtas gauti (perkelti) vietinį paštą iš standartinių mbox formato kaupų į "
-"Evolution valdomus aplankus."
+msgid "For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."
+msgstr "Skirtas gauti (perkelti) vietinį paštą iš standartinių mbox formato kaupų į Evolution valdomus aplankus."
 
 #: ../camel/providers/local/camel-local-provider.c:79
 #: ../camel/providers/local/camel-local-provider.c:99
@@ -4045,12 +4060,8 @@ msgstr "Nepavyko išsaugoti aplanko: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:856
 #: ../camel/providers/local/camel-mbox-summary.c:1123
 #, c-format
-msgid ""
-"MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
-"it.)"
-msgstr ""
-"MBOX failas sugadintas, prašome sutvarkyti. (Tikėtasi eilutės Nuo, tačiau "
-"jos negauta.)"
+msgid "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get it.)"
+msgstr "MBOX failas sugadintas, prašome sutvarkyti. (Tikėtasi eilutės Nuo, tačiau jos negauta.)"
 
 #: ../camel/providers/local/camel-mbox-summary.c:866
 #: ../camel/providers/local/camel-mbox-summary.c:1136
@@ -4236,11 +4247,8 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "Negalite kopijuoti žinučių iš NNTP aplanko!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
-msgid ""
-"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
-"_Rodyti sutrumpintus aplankų užrašus (pvz., „c.o.linux“ vietoje „comp.os."
-"linux“)"
+msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr "_Rodyti sutrumpintus aplankų užrašus (pvz., „c.o.linux“ vietoje „comp.os.linux“)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:51
 msgid "In the subscription _dialog, show relative folder names"
@@ -4263,12 +4271,8 @@ msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "Tai tiekėjas, naudojamas skaitant ir rašant į USENET naujienų grupes."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:87
-msgid ""
-"This option will authenticate with the NNTP server using a plaintext "
-"password."
-msgstr ""
-"Naudojant šią parinktį, tapatybės NNTP serveryje bus nustatyta naudojant "
-"paprasto teksto pavidalo slaptažodį."
+msgid "This option will authenticate with the NNTP server using a plaintext password."
+msgstr "Naudojant šią parinktį, tapatybės NNTP serveryje bus nustatyta naudojant paprasto teksto pavidalo slaptažodį."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:286
 #, c-format
@@ -4299,8 +4303,7 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-store.c:1152
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr ""
-"Jūs negalite sukurti aplanko naujienų saugykloje - vietoj to užsisakykit."
+msgstr "Jūs negalite sukurti aplanko naujienų saugykloje - vietoj to užsisakykit."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1168
 #, c-format
@@ -4310,8 +4313,7 @@ msgstr "Negalima pervadinti aplanko naujienų saugykloje."
 #: ../camel/providers/nntp/camel-nntp-store.c:1191
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
-msgstr ""
-"Negalima pašalinti aplanko naujienų saugykloje, vietoj to atsisakykite."
+msgstr "Negalima pašalinti aplanko naujienų saugykloje, vietoj to atsisakykite."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1390
 #, c-format
@@ -4322,8 +4324,7 @@ msgid ""
 msgstr ""
 "Jūs negalite užsisakyti šios naujienų grupės:\n"
 "\n"
-"Nėra tokios naujienų grupės. Pasirinktas elementas greičiausiai yra "
-"aukštesnysis aplankas."
+"Nėra tokios naujienų grupės. Pasirinktas elementas greičiausiai yra aukštesnysis aplankas."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1438
 #, c-format
@@ -4437,23 +4438,12 @@ msgid "For connecting to and downloading mail from POP servers."
 msgstr "Prisijungimui ir pašto atsiuntimui iš POP serverių."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:85
-msgid ""
-"This option will connect to the POP server using a plaintext password. This "
-"is the only option supported by many POP servers."
-msgstr ""
-"Su šia parinktimi jungiantis prie POP serverio bus naudojamas paprasto "
-"teksto slaptažodis. Tai vienintelė parinktis, palaikoma daugelio POP "
-"serverių."
+msgid "This option will connect to the POP server using a plaintext password. This is the only option supported by many POP servers."
+msgstr "Su šia parinktimi jungiantis prie POP serverio bus naudojamas paprasto teksto slaptažodis. Tai vienintelė parinktis, palaikoma daugelio POP serverių."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:95
-msgid ""
-"This option will connect to the POP server using an encrypted password via "
-"the APOP protocol. This may not work for all users even on servers that "
-"claim to support it."
-msgstr ""
-"Su šia parinktimi jungiantis prie POP serverio bus naudojamas užšifruotas "
-"slaptažodis per APOP protokolą. Tai gali veikti ne visiems vartotojams netgi "
-"serveriuose, kurie teigia, jog jį palaiko."
+msgid "This option will connect to the POP server using an encrypted password via the APOP protocol. This may not work for all users even on servers that claim to support it."
+msgstr "Su šia parinktimi jungiantis prie POP serverio bus naudojamas užšifruotas slaptažodis per APOP protokolą. Tai gali veikti ne visiems vartotojams netgi serveriuose, kurie teigia, jog jį palaiko."
 
 #. Translators: This is the separator between an error and an explanation
 #: ../camel/providers/pop3/camel-pop3-store.c:83
@@ -4508,12 +4498,8 @@ msgstr "POP3 tarnyba, skirta %s serveryje %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:546
 #, c-format
-msgid ""
-"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
-"attack suspected. Please contact your admin."
-msgstr ""
-"Nepavyko prisijungti prie POP serverio %s:\tGautas netaisyklingas APOP ID. "
-"Įtariama impersonacijos ataka. Susisiekite su administratoriumi."
+msgid "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation attack suspected. Please contact your admin."
+msgstr "Nepavyko prisijungti prie POP serverio %s:\tGautas netaisyklingas APOP ID. Įtariama impersonacijos ataka. Susisiekite su administratoriumi."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:598
 #, c-format
@@ -4551,15 +4537,13 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3 saugyklose nėra aplankų hierarchijos"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
+#: ../data/sources/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:38
-msgid ""
-"For delivering mail by passing it to the \"sendmail\" program on the local "
-"system."
-msgstr ""
-"Pašto siuntimui, perleidžiant jį vietinės sistemos „sendmail“ programai."
+msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
+msgstr "Pašto siuntimui, perleidžiant jį vietinės sistemos „sendmail“ programai."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:49
 msgid "sendmail"
@@ -4621,8 +4605,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:52
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr ""
-"Pašto siuntimui, prisijungiant prie nutolusio pašto serverio naudojant SMTP."
+msgstr "Pašto siuntimui, prisijungiant prie nutolusio pašto serverio naudojant SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:154
 #: ../camel/providers/smtp/camel-smtp-transport.c:162
@@ -4864,11 +4847,55 @@ msgid "Birthday and anniversary reminder units"
 msgstr "Gimtadienių ir jubiliejų priminėjo vienetai"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-msgid ""
-"Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
-"\"days\""
-msgstr ""
-"Vienetai gimtadienių ir jubiliejų priminėjui, „minutes“, „hours“ arba „days“"
+msgid "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or \"days\""
+msgstr "Vienetai gimtadienių ir jubiliejų priminėjui, „minutes“, „hours“ arba „days“"
+
+#: ../data/sources/birthdays.source.in.h:1
+#| msgid "Birthday and anniversary reminder"
+msgid "Birthdays & Anniversaries"
+msgstr "Gimtadieniai ir jubiliejai"
+
+#: ../data/sources/caldav-stub.source.in.h:1
+msgid "CalDAV"
+msgstr "CalDAV"
+
+#: ../data/sources/contacts-stub.source.in.h:1
+#: ../libedataserverui/e-name-selector-dialog.c:427
+#: ../modules/google-backend/module-google-backend.c:183
+msgid "Contacts"
+msgstr "Kontaktai"
+
+#: ../data/sources/google-stub.source.in.h:1
+msgid "Google"
+msgstr "Google"
+
+#: ../data/sources/ldap-stub.source.in.h:1
+#| msgid "IMAP server %s"
+msgid "On LDAP Servers"
+msgstr "LDAP serveriuose"
+
+#: ../data/sources/local.source.in.h:1
+#: ../data/sources/local-stub.source.in.h:1
+msgid "On This Computer"
+msgstr "Šiame kompiuteryje"
+
+#: ../data/sources/vfolder.source.in.h:1
+#| msgid "Folders"
+msgid "Search Folders"
+msgstr "Paieškos aplankai"
+
+#: ../data/sources/weather-stub.source.in.h:1
+#| msgid "Weather: Fog"
+msgid "Weather"
+msgstr "Oras"
+
+#: ../data/sources/webcal-stub.source.in.h:1
+msgid "On The Web"
+msgstr "Internete"
+
+#: ../data/sources/webdav-stub.source.in.h:1
+msgid "WebDAV"
+msgstr "WebDAV"
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
@@ -4926,31 +4953,27 @@ msgstr "%s nepalaiko nutolusių resursų trynimo"
 msgid "Data source is missing a [%s] group"
 msgstr "Duomenų šaltiniui trūksta [%s] grupės"
 
-#: ../libebackend/e-server-side-source.c:916 ../libedataserver/e-source.c:1111
+#: ../libebackend/e-server-side-source.c:916
+#: ../libedataserver/e-source.c:1111
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių resursų kūrimo"
 
 #: ../libebackend/e-server-side-source.c:930
 #, c-format
-msgid ""
-"Data source '%s' has no collection backend to create the remote resource"
-msgstr ""
-"Duomenų šaltinis „%s“ neturi kolekcijos realizacijos nutolusiam resursui "
-"sukurti"
+msgid "Data source '%s' has no collection backend to create the remote resource"
+msgstr "Duomenų šaltinis „%s“ neturi kolekcijos realizacijos nutolusiam resursui sukurti"
 
-#: ../libebackend/e-server-side-source.c:958 ../libedataserver/e-source.c:1220
+#: ../libebackend/e-server-side-source.c:958
+#: ../libedataserver/e-source.c:1220
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių resursų trynimo"
 
 #: ../libebackend/e-server-side-source.c:972
 #, c-format
-msgid ""
-"Data source '%s' has no collection backend to delete the remote resource"
-msgstr ""
-"Duomenų šaltinis „%s“ neturi kolekcijos realizacijos nutolusiam resursui "
-"ištrinti"
+msgid "Data source '%s' has no collection backend to delete the remote resource"
+msgstr "Duomenų šaltinis „%s“ neturi kolekcijos realizacijos nutolusiam resursui ištrinti"
 
 #: ../libebackend/e-server-side-source.c:1285
 #, c-format
@@ -4958,7 +4981,7 @@ msgid "File must have a '.source' extension"
 msgstr "Failas turi turėti „.source“ plėtinį"
 
 #: ../libebackend/e-source-registry-server.c:522
-#: ../libedataserver/e-source-registry.c:1523
+#: ../libedataserver/e-source-registry.c:1535
 msgid "The user declined to authenticate"
 msgstr "Naudotojas atsisakė patvirtinti tapatybę"
 
@@ -5177,7 +5200,8 @@ msgstr "Parašo scenarijus turi būti vietinis failas"
 #. * in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1650 ../libedataserver/e-time-utils.c:1949
+#: ../libedataserver/e-time-utils.c:1650
+#: ../libedataserver/e-time-utils.c:1949
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a, %Y-%m-%d, %I:%M:%S"
 
@@ -5185,7 +5209,8 @@ msgstr "%a, %Y-%m-%d, %I:%M:%S"
 #. * in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1655 ../libedataserver/e-time-utils.c:1940
+#: ../libedataserver/e-time-utils.c:1655
+#: ../libedataserver/e-time-utils.c:1940
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a, %Y-%m-%d, %H:%M:%S"
 
@@ -5193,7 +5218,8 @@ msgstr "%a, %Y-%m-%d, %H:%M:%S"
 #. * in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1660 ../libedataserver/e-time-utils.c:1945
+#: ../libedataserver/e-time-utils.c:1660
+#: ../libedataserver/e-time-utils.c:1945
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a, %Y-%m-%d, %I:%M"
 
@@ -5201,7 +5227,8 @@ msgstr "%a, %Y-%m-%d, %I:%M"
 #. * in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1665 ../libedataserver/e-time-utils.c:1936
+#: ../libedataserver/e-time-utils.c:1665
+#: ../libedataserver/e-time-utils.c:1936
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a, %Y-%m-%d, %H:%M"
 
@@ -5219,7 +5246,8 @@ msgstr "%a, %Y-%m-%d, %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1678 ../libedataserver/e-time-utils.c:1798
+#: ../libedataserver/e-time-utils.c:1678
+#: ../libedataserver/e-time-utils.c:1798
 #: ../libedataserver/e-time-utils.c:1931
 msgid "%a %m/%d/%Y"
 msgstr "%a, %Y-%m-%d"
@@ -5260,19 +5288,22 @@ msgstr "%Y-%m-%d, %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1712 ../libedataserver/e-time-utils.c:1801
+#: ../libedataserver/e-time-utils.c:1712
+#: ../libedataserver/e-time-utils.c:1801
 msgid "%m/%d/%Y"
 msgstr "%Y-%m-%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1872 ../libedataserver/e-time-utils.c:1993
+#: ../libedataserver/e-time-utils.c:1872
+#: ../libedataserver/e-time-utils.c:1993
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1876 ../libedataserver/e-time-utils.c:1985
+#: ../libedataserver/e-time-utils.c:1876
+#: ../libedataserver/e-time-utils.c:1985
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -5280,14 +5311,16 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1881 ../libedataserver/e-time-utils.c:1990
+#: ../libedataserver/e-time-utils.c:1881
+#: ../libedataserver/e-time-utils.c:1990
 msgid "%I:%M %p"
 msgstr "%I:%M"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1885 ../libedataserver/e-time-utils.c:1982
+#: ../libedataserver/e-time-utils.c:1885
+#: ../libedataserver/e-time-utils.c:1982
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -5307,12 +5340,8 @@ msgid "Proxy type to use"
 msgstr "Naudotinas įgaliotojo serverio tipas"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
-msgid ""
-"What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
-"means manual proxy."
-msgstr ""
-"Kokio tipo įgaliotąjį serverį naudoti. „0“ – sistemos; „1“ – jokio; „2“ – "
-"numatytąjį."
+msgid "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" means manual proxy."
+msgstr "Kokio tipo įgaliotąjį serverį naudoti. „0“ – sistemos; „1“ – jokio; „2“ – numatytąjį."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
@@ -5352,8 +5381,7 @@ msgstr "Įgaliotojo serverio naudotojo vardas"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
 msgid "User name to use to authenticate against proxy server."
-msgstr ""
-"Naudotojo vardas, naudotinas nustatyti tapatybei įgaliotajame serveryje."
+msgstr "Naudotojo vardas, naudotinas nustatyti tapatybei įgaliotajame serveryje."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
 msgid "Proxy authentication password"
@@ -5454,9 +5482,7 @@ msgstr "Kategorijos savybės"
 
 #: ../libedataserverui/e-category-editor.c:287
 #, c-format
-msgid ""
-"There is already a category '%s' in the configuration. Please use another "
-"name"
+msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Konfigūracijoje kategorija „%s“ jau yra. Pasirinkite kitą pavadinimą."
 
 #: ../libedataserverui/e-name-selector-dialog.c:278
@@ -5491,11 +5517,6 @@ msgstr "Ieškoti"
 #: ../libedataserverui/e-name-selector-dialog.c:424
 msgid "Address Book"
 msgstr "Adresų knyga"
-
-#: ../libedataserverui/e-name-selector-dialog.c:427
-#: ../modules/google-backend/module-google-backend.c:183
-msgid "Contacts"
-msgstr "Kontaktai"
 
 #: ../libedataserverui/e-name-selector-dialog.c:545
 msgid "Select Contacts from Address Book"
@@ -5651,3 +5672,4 @@ msgstr "Požymiai"
 #: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
 msgstr "Tapatybė"
+
