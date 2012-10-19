@@ -660,32 +660,103 @@ ebook_test_utils_book_async_remove_contacts (EBook *book,
 	}
 }
 
+
+
+typedef struct {
+	GMainLoop       *loop;
+	const gchar     *uid;
+	ESourceRegistry *registry;
+	ESource         *scratch;
+	ESource         *source;
+	EBook           *book;
+} CreateBookData;
+
+static gboolean
+quit_idle (CreateBookData *data)
+{
+	g_main_loop_quit (data->loop);
+	return FALSE;
+}
+
+static gboolean
+create_book_idle (CreateBookData *data)
+{
+	GError *error = NULL;
+
+	data->source = e_source_registry_ref_source (data->registry, data->uid);
+	if (!data->source)
+		g_error ("Unable to fetch newly created source uid '%s' from the registry", data->uid);
+
+	data->book = e_book_new (data->source, &error);
+	if (!data->book)
+		g_error ("Unable to create the book: %s", error->message);
+
+	g_idle_add ((GSourceFunc)quit_idle, data);
+
+	return FALSE;
+}
+
+static gboolean
+register_source_idle (CreateBookData *data)
+{
+	GError *error = NULL;
+	ESourceBackend  *backend;
+
+	data->registry = e_source_registry_new_sync (NULL, &error);
+	if (!data->registry)
+		g_error ("Unable to create the registry: %s", error->message);
+
+	data->scratch = e_source_new_with_uid (data->uid, NULL, &error);
+	if (!data->scratch)
+		g_error ("Failed to create source with uid '%s': %s", data->uid, error->message);
+
+	backend = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	e_source_backend_set_backend_name (backend, "local");
+
+	if (!e_source_registry_commit_source_sync (data->registry, data->scratch, NULL, &error))
+		g_error ("Unable to add new source to the registry for uid %s: %s", data->uid, error->message);
+
+	/* XXX e_source_registry_commit_source_sync isnt really sync... or else
+	 * we could call e_source_registry_ref_source() immediately
+	 */
+	g_timeout_add (20, (GSourceFunc)create_book_idle, data);
+
+	return FALSE;
+}
+
+static EBook *
+ebook_test_utils_book_with_uid (const gchar *uid)
+{
+	CreateBookData data = { 0, };
+
+	data.uid = uid;
+
+	data.loop = g_main_loop_new (NULL, FALSE);
+	g_idle_add ((GSourceFunc)register_source_idle, &data);
+	g_main_loop_run (data.loop);
+	g_main_loop_unref (data.loop);
+
+	g_object_unref (data.scratch);
+	g_object_unref (data.source);
+	g_object_unref (data.registry);
+
+	return data.book;
+}
+
 EBook *
 ebook_test_utils_book_new_temp (gchar **uri)
 {
-	EBook *book;
-	gchar *file_template;
-	gchar *uri_result;
+	EBook           *book;
+	gchar           *uid;
+	guint64          real_time = g_get_real_time ();
 
-	file_template = g_build_filename (
-		g_get_tmp_dir (), "ebook-test-XXXXXX/", NULL);
-	g_mkstemp (file_template);
-
-	uri_result = g_strconcat ("local:", file_template, NULL);
-	if (!uri_result) {
-		g_warning ("failed to convert %s to a 'local:' URI", file_template);
-		exit (1);
-	}
-	g_free (file_template);
-
-	/* FIXME We don't build EBooks from URIs anymore. */
-	/* book = ebook_test_utils_book_new_from_uri (uri_result); */
-	book = NULL;
+	uid  = g_strdup_printf ("test-book-%" G_GINT64_FORMAT, real_time);
+	book = ebook_test_utils_book_with_uid (uid);
 
 	if (uri)
-                *uri = g_strdup (uri_result);
+		*uri = g_strdup (uid);
 
-	g_free (uri_result);
+	g_free (uid);
 
 	return book;
 }
