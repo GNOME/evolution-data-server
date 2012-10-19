@@ -19,6 +19,7 @@ main (gint argc,
 	book = ebook_test_utils_book_new_temp (&uri);
 	ebook_test_utils_book_open (book, FALSE);
 
+#if 0 /* ebook_test_utils_book_async_remove() Not implemented */
 	/* Async version */
 	book = ebook_test_utils_book_new_temp (&uri);
 	ebook_test_utils_book_open (book, FALSE);
@@ -28,6 +29,7 @@ main (gint argc,
 		book, ebook_test_utils_callback_quit, loop);
 
 	g_main_loop_run (loop);
+#endif
 
 	return 0;
 }
