@@ -102,8 +102,15 @@ GtkWidget *	e_source_viewer_new		(GCancellable *cancellable,
 						 GError **error);
 ESourceRegistry *
 		e_source_viewer_get_registry	(ESourceViewer *viewer);
-ESource *	e_source_viewer_ref_selected	(ESourceViewer *viewer);
-void		e_source_viewer_set_selected	(ESourceViewer *viewer,
+GtkTreePath *	e_source_viewer_dup_selected_path
+						(ESourceViewer *viewer);
+gboolean	e_source_viewer_set_selected_path
+						(ESourceViewer *viewer,
+						 GtkTreePath *path);
+ESource *	e_source_viewer_ref_selected_source
+						(ESourceViewer *viewer);
+gboolean	e_source_viewer_set_selected_source
+						(ESourceViewer *viewer,
 						 ESource *source);
 GNode *		e_source_viewer_build_display_tree
 						(ESourceViewer *viewer);
@@ -325,13 +332,15 @@ source_viewer_build_model (ESourceViewer *viewer)
 	GHashTable *source_index;
 	GtkTreeView *tree_view;
 	GtkTreeModel *model;
-	ESource *selected;
+	GtkTreePath *sel_path;
+	ESource *sel_source;
 	GNode *root;
 
 	tree_view = GTK_TREE_VIEW (viewer->tree_view);
 
 	source_index = viewer->source_index;
-	selected = e_source_viewer_ref_selected (viewer);
+	sel_path = e_source_viewer_dup_selected_path (viewer);
+	sel_source = e_source_viewer_ref_selected_source (viewer);
 
 	/* Save expanded sources to restore later. */
 	gtk_tree_view_map_expanded_rows (
@@ -370,11 +379,17 @@ source_viewer_build_model (ESourceViewer *viewer)
 		g_object_unref (source);
 	}
 
-	/* Restore the selected source. */
-	if (selected != NULL) {
-		e_source_viewer_set_selected (viewer, selected);
-		g_object_unref (selected);
+	/* Restore the selection. */
+	if (sel_source != NULL && sel_path != NULL) {
+		if (!e_source_viewer_set_selected_source (viewer, sel_source))
+			e_source_viewer_set_selected_path (viewer, sel_path);
 	}
+
+	if (sel_path != NULL)
+		gtk_tree_path_free (sel_path);
+
+	if (sel_source != NULL)
+		g_object_unref (sel_source);
 }
 
 static void
@@ -418,7 +433,7 @@ source_viewer_source_changed_cb (ESourceRegistry *registry,
 
 	source_viewer_update_row (viewer, source);
 
-	selected = e_source_viewer_ref_selected (viewer);
+	selected = e_source_viewer_ref_selected_source (viewer);
 	if (selected != NULL) {
 		if (e_source_equal (source, selected))
 			source_viewer_set_text (viewer, source);
@@ -442,7 +457,7 @@ source_viewer_selection_changed_cb (GtkTreeSelection *selection,
 	const gchar *uid = NULL;
 	gboolean removable = FALSE;
 
-	source = e_source_viewer_ref_selected (viewer);
+	source = e_source_viewer_ref_selected_source (viewer);
 
 	source_viewer_set_text (viewer, source);
 
@@ -501,7 +516,7 @@ source_viewer_delete_button_clicked_cb (GtkButton *delete_button,
 
 	g_return_if_fail (viewer->delete_operation == NULL);
 
-	source = e_source_viewer_ref_selected (viewer);
+	source = e_source_viewer_ref_selected_source (viewer);
 	g_return_if_fail (source != NULL);
 
 	uid = e_source_get_uid (source);
@@ -934,8 +949,55 @@ e_source_viewer_get_registry (ESourceViewer *viewer)
 	return viewer->registry;
 }
 
+GtkTreePath *
+e_source_viewer_dup_selected_path (ESourceViewer *viewer)
+{
+	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	g_return_val_if_fail (E_IS_SOURCE_VIEWER (viewer), NULL);
+
+	tree_view = GTK_TREE_VIEW (viewer->tree_view);
+	selection = gtk_tree_view_get_selection (tree_view);
+
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+		return NULL;
+
+	return gtk_tree_model_get_path (model, &iter);
+}
+
+gboolean
+e_source_viewer_set_selected_path (ESourceViewer *viewer,
+                                   GtkTreePath *path)
+{
+	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	g_return_val_if_fail (E_IS_SOURCE_VIEWER (viewer), FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+
+	tree_view = GTK_TREE_VIEW (viewer->tree_view);
+	selection = gtk_tree_view_get_selection (tree_view);
+
+	/* Check that the path is valid. */
+	model = gtk_tree_view_get_model (tree_view);
+	if (!gtk_tree_model_get_iter (model, &iter, path))
+		return FALSE;
+
+	gtk_tree_selection_unselect_all (selection);
+
+	gtk_tree_view_expand_to_path (tree_view, path);
+	gtk_tree_selection_select_path (selection, path);
+
+	return TRUE;
+}
+
 ESource *
-e_source_viewer_ref_selected (ESourceViewer *viewer)
+e_source_viewer_ref_selected_source (ESourceViewer *viewer)
 {
 	ESource *source;
 	GtkTreeSelection *selection;
@@ -946,10 +1008,9 @@ e_source_viewer_ref_selected (ESourceViewer *viewer)
 	g_return_val_if_fail (E_IS_SOURCE_VIEWER (viewer), NULL);
 
 	tree_view = GTK_TREE_VIEW (viewer->tree_view);
-	model = gtk_tree_view_get_model (tree_view);
 	selection = gtk_tree_view_get_selection (tree_view);
 
-	if (!gtk_tree_selection_get_selected (selection, NULL, &iter))
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
 		return NULL;
 
 	gtk_tree_model_get (model, &iter, COLUMN_SOURCE, &source, -1);
@@ -957,37 +1018,29 @@ e_source_viewer_ref_selected (ESourceViewer *viewer)
 	return source;
 }
 
-void
-e_source_viewer_set_selected (ESourceViewer *viewer,
-                              ESource *source)
+gboolean
+e_source_viewer_set_selected_source (ESourceViewer *viewer,
+                                     ESource *source)
 {
 	GHashTable *source_index;
 	GtkTreeRowReference *reference;
-	GtkTreeSelection *selection;
-	GtkTreeView *tree_view;
 	GtkTreePath *path;
+	gboolean success;
 
-	g_return_if_fail (E_IS_SOURCE_VIEWER (viewer));
-	g_return_if_fail (E_IS_SOURCE (source));
-
-	tree_view = GTK_TREE_VIEW (viewer->tree_view);
-	selection = gtk_tree_view_get_selection (tree_view);
+	g_return_val_if_fail (E_IS_SOURCE_VIEWER (viewer), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	source_index = viewer->source_index;
 	reference = g_hash_table_lookup (source_index, source);
 
-	/* XXX Maybe we should return a success/fail boolean? */
 	if (!gtk_tree_row_reference_valid (reference))
-		return;
-
-	gtk_tree_selection_unselect_all (selection);
+		return FALSE;
 
 	path = gtk_tree_row_reference_get_path (reference);
-
-	gtk_tree_view_expand_to_path (tree_view, path);
-	gtk_tree_selection_select_path (selection, path);
-
+	success = e_source_viewer_set_selected_path (viewer, path);
 	gtk_tree_path_free (path);
+
+	return success;
 }
 
 /* Helper for e_source_viewer_build_display_tree() */
