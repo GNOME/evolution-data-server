@@ -124,8 +124,9 @@ init_closure (EDataBookView *book_view,
 	closure->thread  = NULL;
 	closure->running = e_flag_new ();
 
-	g_object_set_data_full (G_OBJECT (book_view), WEBDAV_CLOSURE_NAME, closure,
-			(GDestroyNotify) closure_destroy);
+	g_object_set_data_full (
+		G_OBJECT (book_view), WEBDAV_CLOSURE_NAME,
+		closure, (GDestroyNotify) closure_destroy);
 
 	return closure;
 }
@@ -227,13 +228,15 @@ upload_contact (EBookBackendWebdav *webdav,
 		/* only override if etag is still the same on the server */
 		etag = e_contact_get (contact, E_CONTACT_REV);
 		if (etag == NULL) {
-			soup_message_headers_append (message->request_headers,
-						    "If-None-Match", "*");
+			soup_message_headers_append (
+				message->request_headers,
+				"If-None-Match", "*");
 		} else if (etag[0] == 'W' && etag[1] == '/') {
 			g_warning ("we only have a weak ETag, don't use If-Match synchronisation");
 		} else {
-			soup_message_headers_append (message->request_headers,
-						    "If-Match", etag);
+			soup_message_headers_append (
+				message->request_headers,
+				"If-Match", etag);
 			g_free (etag);
 		}
 	}
@@ -243,8 +246,9 @@ upload_contact (EBookBackendWebdav *webdav,
 	e_contact_set (contact, E_CONTACT_UID, NULL);
 	e_contact_set (contact, E_CONTACT_REV, NULL);
 	request = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	soup_message_set_request (message, "text/vcard", SOUP_MEMORY_TEMPORARY,
-				 request, strlen (request));
+	soup_message_set_request (
+		message, "text/vcard", SOUP_MEMORY_TEMPORARY,
+		request, strlen (request));
 
 	status   = soup_session_send_message (webdav->priv->session, message);
 	new_etag = soup_message_headers_get (message->response_headers, "ETag");
@@ -321,10 +325,11 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
 	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
 	if (vcards->next != NULL) {
-		e_data_book_respond_create_contacts (book, opid,
-						     EDB_ERROR_EX (NOT_SUPPORTED,
-						     _("The backend does not support bulk additions")),
-						     NULL);
+		e_data_book_respond_create_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk additions")),
+			NULL);
 		return;
 	}
 
@@ -335,8 +340,9 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 
 	/* do 3 rand() calls to construct a unique ID... poor way but should be
 	 * good enough for us */
-	uid = g_strdup_printf ("%s%08X-%08X-%08X.vcf", priv->uri, rand (), rand (),
-			      rand ());
+	uid = g_strdup_printf (
+		"%s%08X-%08X-%08X.vcf",
+		priv->uri, rand (), rand (), rand ());
 
 	contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 
@@ -349,9 +355,12 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 		if (status == 401 || status == 407) {
 			e_data_book_respond_create_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
 		} else {
-			e_data_book_respond_create_contacts (book, opid,
-					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					_("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
+			e_data_book_respond_create_contacts (
+				book, opid,
+				e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Create resource '%s' failed with HTTP status: %d (%s)"),
+				uid, status, status_reason),
 					NULL);
 		}
 		g_free (uid);
@@ -372,8 +381,9 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 		g_object_unref (contact);
 
 		if (new_contact == NULL) {
-			e_data_book_respond_create_contacts (book, opid,
-					EDB_ERROR (OTHER_ERROR), NULL);
+			e_data_book_respond_create_contacts (
+				book, opid,
+				EDB_ERROR (OTHER_ERROR), NULL);
 			g_free (uid);
 			return;
 		}
@@ -420,32 +430,36 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 	guint                      status;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_remove_contacts (book, opid,
-				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		e_data_book_respond_remove_contacts (
+			book, opid,
+			EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
 
 	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
 	 * in our static capability list. */
 	if (id_list->next != NULL) {
-		e_data_book_respond_remove_contacts (book, opid,
-						     EDB_ERROR_EX (NOT_SUPPORTED,
-						     _("The backend does not support bulk removals")),
-						     NULL);
+		e_data_book_respond_remove_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk removals")),
+			NULL);
 		return;
 	}
 
 	status = delete_contact (webdav, uid);
 	if (status != 204) {
 		if (status == 401 || status == 407) {
-			e_data_book_respond_remove_contacts (book, opid,
-							     webdav_handle_auth_request (webdav), NULL);
+			e_data_book_respond_remove_contacts (
+				book, opid,
+				webdav_handle_auth_request (webdav), NULL);
 		} else {
 			g_warning ("DELETE failed with HTTP status %d", status);
-			e_data_book_respond_remove_contacts (book, opid,
-							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-									 _("DELETE failed with HTTP status %d"), status),
-							     NULL);
+			e_data_book_respond_remove_contacts (
+				book, opid,
+				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("DELETE failed with HTTP status %d"), status),
+				NULL);
 		}
 		return;
 	}
@@ -474,18 +488,21 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 	const gchar *vcard = vcards->data;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create_contacts (book, opid,
-				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		e_data_book_respond_create_contacts (
+			book, opid,
+			EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
 
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
 	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
 	if (vcards->next != NULL) {
-		e_data_book_respond_modify_contacts (book, opid,
-						     EDB_ERROR_EX (NOT_SUPPORTED,
-						     _("The backend does not support bulk modifications")),
-						     NULL);
+		e_data_book_respond_modify_contacts (
+			book, opid,
+			EDB_ERROR_EX (
+				NOT_SUPPORTED,
+				_("The backend does not support bulk modifications")),
+			NULL);
 		return;
 	}
 
@@ -503,17 +520,20 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 		if (status == 412) {
 			/* too bad no special error code in evolution for this... */
 			e_data_book_respond_modify_contacts (book, opid,
-					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					_("Contact on server changed -> not modifying")),
-					NULL);
+				e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Contact on server changed -> not modifying")),
+				NULL);
 			g_free (status_reason);
 			return;
 		}
 
 		e_data_book_respond_modify_contacts (book, opid,
-				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-				_("Modify contact failed with HTTP status: %d (%s)"), status, status_reason),
-				NULL);
+			e_data_book_create_error_fmt (
+			E_DATA_BOOK_STATUS_OTHER_ERROR,
+			_("Modify contact failed with HTTP status: %d (%s)"),
+			status, status_reason),
+			NULL);
 		g_free (status_reason);
 		return;
 	}
@@ -728,8 +748,9 @@ send_propfind (EBookBackendWebdav *webdav)
 	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
 	soup_message_headers_append (message->request_headers, "Connection", "close");
 	soup_message_headers_append (message->request_headers, "Depth", "1");
-	soup_message_set_request (message, "text/xml", SOUP_MEMORY_TEMPORARY,
-			(gchar *) request, strlen (request));
+	soup_message_set_request (
+		message, "text/xml", SOUP_MEMORY_TEMPORARY,
+		(gchar *) request, strlen (request));
 
 	soup_session_send_message (priv->session, message);
 
@@ -925,7 +946,9 @@ download_contacts (EBookBackendWebdav *webdav,
 	if (status != 207) {
 		GError *error;
 
-		error = e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("PROPFIND on webdav failed with HTTP status %d (%s)"),
+		error = e_data_book_create_error_fmt (
+			E_DATA_BOOK_STATUS_OTHER_ERROR,
+			_("PROPFIND on webdav failed with HTTP status %d (%s)"),
 			status,
 			message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
 			(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")));
@@ -950,9 +973,10 @@ download_contacts (EBookBackendWebdav *webdav,
 	}
 
 	/* parse response */
-	reader = xmlReaderForMemory (message->response_body->data,
-				    message->response_body->length, NULL, NULL,
-				    XML_PARSE_NOWARNING);
+	reader = xmlReaderForMemory (
+		message->response_body->data,
+		message->response_body->length, NULL, NULL,
+		XML_PARSE_NOWARNING);
 
 	elements = parse_propfind_response (reader);
 
@@ -1087,7 +1111,7 @@ e_book_backend_webdav_start_view (EBookBackend *backend,
 	g_list_free (contacts);
 
 	/* this way the UI is notified about cached contacts immediately,
-	   and the update thread notifies about possible changes only */
+	 * and the update thread notifies about possible changes only */
 	e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
 	if (e_backend_get_online (E_BACKEND (backend))) {

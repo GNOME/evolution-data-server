@@ -150,9 +150,10 @@ put_component_to_store (ECalBackendWeather *cb,
 
 	priv = cb->priv;
 
-	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
-				   resolve_tzid, cb, icaltimezone_get_utc_timezone (),
-				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
+	e_cal_util_get_component_occur_times (
+		comp, &time_start, &time_end,
+		resolve_tzid, cb, icaltimezone_get_utc_timezone (),
+		e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
 
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 }
@@ -607,9 +608,10 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend,
 	}
 
 	*objects = NULL;
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
-								    &occur_start,
-								    &occur_end);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (
+		sexp,
+		&occur_start,
+		&occur_end);
 
 	components = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)

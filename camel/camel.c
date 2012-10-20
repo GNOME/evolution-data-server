@@ -131,7 +131,7 @@ camel_init (const gchar *configdir,
 				"sql:", nss_configdir, NULL);
 #else
 			gchar *user_nss_dir = g_build_filename (
-				 g_get_home_dir (), ".pki/nssdb", NULL );
+				g_get_home_dir (), ".pki/nssdb", NULL );
 			if (g_mkdir_with_parents (user_nss_dir, 0700))
 				g_warning (
 					"Failed to create SQL "

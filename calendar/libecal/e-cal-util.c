@@ -602,10 +602,11 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	aod.triggers = NULL;
 	aod.n_triggers = 0;
 
-	e_cal_recur_generate_instances (comp, alarm_start, alarm_end,
-					add_alarm_occurrences_cb, &aod,
-					resolve_tzid, user_data,
-					default_timezone);
+	e_cal_recur_generate_instances (
+		comp, alarm_start, alarm_end,
+		add_alarm_occurrences_cb, &aod,
+		resolve_tzid, user_data,
+		default_timezone);
 
 	/* We add the ABSOLUTE triggers separately */
 	generate_absolute_triggers (comp, &aod, resolve_tzid, user_data, default_timezone);
@@ -766,8 +767,9 @@ add_timezone_cb (icalparameter *param,
 	if (!vtz_comp)
 		return;
 
-	icalcomponent_add_component (f_data->vcal_comp,
-				     icalcomponent_new_clone (vtz_comp));
+	icalcomponent_add_component (
+		f_data->vcal_comp,
+		icalcomponent_new_clone (vtz_comp));
 }
 
 /**
@@ -1267,15 +1269,16 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		e_cal_component_get_completed (comp, &tt);
 		if (tt) {
 			/* COMPLETED must be in UTC. */
-			completed_time = icaltime_as_timet_with_zone (*tt,
-								      icaltimezone_get_utc_timezone ());
+			completed_time = icaltime_as_timet_with_zone (
+				*tt, icaltimezone_get_utc_timezone ());
 			e_cal_component_free_icaltimetype (tt);
 		}
 
 		e_cal_component_get_due (comp, &dt_due);
 		if (dt_due.value != NULL)
-			due_time = componenttime_to_utc_timet (&dt_due, tz_cb, tz_cb_data,
-							       default_timezone);
+			due_time = componenttime_to_utc_timet (
+				&dt_due, tz_cb, tz_cb_data,
+				default_timezone);
 
 		e_cal_component_free_datetime (&dt_due);
 

@@ -1321,11 +1321,12 @@ gdata_gd_email_address_from_attribute (EVCardAttribute *attr,
 		email = gdata_gd_email_address_new (values->data, rel, label, primary);
 		g_free (rel);
 
-		__debug__ ("New %semail entry %s (%s/%s)",
-			   gdata_gd_email_address_is_primary (email) ? "primary " : "",
-			   gdata_gd_email_address_get_address (email),
-			   gdata_gd_email_address_get_relation_type (email),
-			   gdata_gd_email_address_get_label (email));
+		__debug__ (
+			"New %semail entry %s (%s/%s)",
+			gdata_gd_email_address_is_primary (email) ? "primary " : "",
+			gdata_gd_email_address_get_address (email),
+			gdata_gd_email_address_get_relation_type (email),
+			gdata_gd_email_address_get_label (email));
 	}
 
 	return email;
@@ -1360,12 +1361,13 @@ gdata_gd_im_address_from_attribute (EVCardAttribute *attr,
 		g_free (rel);
 		g_free (protocol);
 
-		__debug__ ("New %s%s entry %s (%s/%s)",
-			   gdata_gd_im_address_is_primary (im) ? "primary " : "",
-			   gdata_gd_im_address_get_protocol (im),
-			   gdata_gd_im_address_get_address (im),
-			   gdata_gd_im_address_get_relation_type (im),
-			   gdata_gd_im_address_get_label (im));
+		__debug__ (
+			"New %s%s entry %s (%s/%s)",
+			gdata_gd_im_address_is_primary (im) ? "primary " : "",
+			gdata_gd_im_address_get_protocol (im),
+			gdata_gd_im_address_get_address (im),
+			gdata_gd_im_address_get_relation_type (im),
+			gdata_gd_im_address_get_label (im));
 	}
 
 	return im;
@@ -1396,11 +1398,12 @@ gdata_gd_phone_number_from_attribute (EVCardAttribute *attr,
 		number = gdata_gd_phone_number_new (values->data, rel, label, NULL, primary);
 		g_free (rel);
 
-		__debug__ ("New %sphone-number entry %s (%s/%s)",
-			   gdata_gd_phone_number_is_primary (number) ? "primary " : "",
-			   gdata_gd_phone_number_get_number (number),
-			   gdata_gd_phone_number_get_relation_type (number),
-			   gdata_gd_phone_number_get_label (number));
+		__debug__ (
+			"New %sphone-number entry %s (%s/%s)",
+			gdata_gd_phone_number_is_primary (number) ? "primary " : "",
+			gdata_gd_phone_number_get_number (number),
+			gdata_gd_phone_number_get_relation_type (number),
+			gdata_gd_phone_number_get_label (number));
 	}
 
 	return number;
@@ -1468,11 +1471,12 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr,
 			return NULL;
 		}
 
-		__debug__ ("New %spostal address entry %s (%s/%s)",
-			   gdata_gd_postal_address_is_primary (address) ? "primary " : "",
-			   gdata_gd_postal_address_get_address (address),
-			   gdata_gd_postal_address_get_relation_type (address),
-			   gdata_gd_postal_address_get_label (address));
+		__debug__ (
+			"New %spostal address entry %s (%s/%s)",
+			gdata_gd_postal_address_is_primary (address) ? "primary " : "",
+			gdata_gd_postal_address_get_address (address),
+			gdata_gd_postal_address_get_relation_type (address),
+			gdata_gd_postal_address_get_label (address));
 	}
 
 	return address;
@@ -1507,11 +1511,12 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr,
 
 		/* TITLE and ROLE are dealt with separately in gdata_entry_update_from_e_contact() */
 
-		__debug__ ("New %sorganization entry %s (%s/%s)",
-			   gdata_gd_organization_is_primary (org) ? "primary " : "",
-			   gdata_gd_organization_get_name (org),
-			   gdata_gd_organization_get_relation_type (org),
-			   gdata_gd_organization_get_label (org));
+		__debug__ (
+			"New %sorganization entry %s (%s/%s)",
+			gdata_gd_organization_is_primary (org) ? "primary " : "",
+			gdata_gd_organization_get_name (org),
+			gdata_gd_organization_get_relation_type (org),
+			gdata_gd_organization_get_label (org));
 	}
 
 	return org;
@@ -1541,11 +1546,12 @@ gdata_gc_contact_website_from_attribute (EVCardAttribute *attr,
 		website = gdata_gcontact_website_new (values->data, rel, label, primary);
 		g_free (rel);
 
-		__debug__ ("New %suri entry %s (%s/%s)",
-			   gdata_gcontact_website_is_primary (website) ? "primary " : "",
-			   gdata_gcontact_website_get_uri (website),
-			   gdata_gcontact_website_get_relation_type (website),
-			   gdata_gcontact_website_get_label (website));
+		__debug__ (
+			"New %suri entry %s (%s/%s)",
+			gdata_gcontact_website_is_primary (website) ? "primary " : "",
+			gdata_gcontact_website_get_uri (website),
+			gdata_gcontact_website_get_relation_type (website),
+			gdata_gcontact_website_get_label (website));
 	}
 
 	return website;

@@ -3536,8 +3536,8 @@ imap_folder_summary_uid_or_error (CamelFolderSummary *summary,
 
 CamelMimeMessage *
 imap_get_message_cached (CamelFolder *folder,
-			 const gchar *message_uid,
-			 GCancellable *cancellable)
+                         const gchar *message_uid,
+                         GCancellable *cancellable)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelMimeMessage *msg = NULL;

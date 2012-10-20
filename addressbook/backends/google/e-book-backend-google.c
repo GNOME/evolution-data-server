@@ -401,8 +401,9 @@ check_get_new_contacts_finished (GetContactsData *data)
 
 	/* Are we finished yet? */
 	if (data->update_complete == FALSE || data->num_contacts_pending_photos > 0) {
-		__debug__ ("Bailing from check_get_new_contacts_finished(): update_complete: %u, num_contacts_pending_photos: %u, data: %p",
-			   data->update_complete, data->num_contacts_pending_photos, data);
+		__debug__ (
+			"Bailing from check_get_new_contacts_finished(): update_complete: %u, num_contacts_pending_photos: %u, data: %p",
+			data->update_complete, data->num_contacts_pending_photos, data);
 		return;
 	}
 
@@ -554,13 +555,15 @@ process_contact_cb (GDataEntry *entry,
 			cancellable = g_cancellable_new ();
 
 			photo_data->cancellable = g_object_ref (cancellable);
-			photo_data->cancelled_handle = g_cancellable_connect (data->cancellable, (GCallback) process_contact_photo_cancelled_cb,
-									      g_object_ref (cancellable), (GDestroyNotify) g_object_unref);
+			photo_data->cancelled_handle = g_cancellable_connect (
+				data->cancellable, (GCallback) process_contact_photo_cancelled_cb,
+				g_object_ref (cancellable), (GDestroyNotify) g_object_unref);
 
 			/* Download the photo. */
-			gdata_contacts_contact_get_photo_async (GDATA_CONTACTS_CONTACT (entry),
-								GDATA_CONTACTS_SERVICE (priv->service), cancellable,
-								(GAsyncReadyCallback) process_contact_photo_cb, photo_data);
+			gdata_contacts_contact_get_photo_async (
+				GDATA_CONTACTS_CONTACT (entry),
+				GDATA_CONTACTS_SERVICE (priv->service), cancellable,
+				(GAsyncReadyCallback) process_contact_photo_cb, photo_data);
 
 			g_object_unref (cancellable);
 			g_free (old_photo_etag);
@@ -852,8 +855,11 @@ create_group (EBookBackend *backend,
 	__debug__ ("Creating group %s", category_name);
 
 	/* Insert the new group */
-	new_group = GDATA_ENTRY (gdata_contacts_service_insert_group (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_GROUP (group),
-								      NULL, error));
+	new_group = GDATA_ENTRY (
+		gdata_contacts_service_insert_group (
+			GDATA_CONTACTS_SERVICE (priv->service),
+			GDATA_CONTACTS_GROUP (group),
+			NULL, error));
 	g_object_unref (group);
 
 	if (new_group == NULL)
@@ -1114,10 +1120,11 @@ create_contact_photo_cb (GDataContactsContact *contact,
 		data->photo = NULL;
 
 		/* We now have to re-query for the contact, since setting its photo changes the contact's ETag. */
-		gdata_service_query_single_entry_async (priv->service,
-							gdata_contacts_service_get_primary_authorization_domain (),
-							gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
-							data->cancellable, (GAsyncReadyCallback) create_contact_photo_query_cb, data);
+		gdata_service_query_single_entry_async (
+			priv->service,
+			gdata_contacts_service_get_primary_authorization_domain (),
+			gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
+			data->cancellable, (GAsyncReadyCallback) create_contact_photo_query_cb, data);
 		return;
 	} else {
 		/* Error. */
@@ -1152,10 +1159,11 @@ create_contact_cb (GDataService *service,
 	/* Add a photo for the new contact, if appropriate. This has to be done before we respond to the contact creation operation so that
 	 * we can update the EContact with the photo data and ETag. */
 	if (data->photo != NULL) {
-		gdata_contacts_contact_set_photo_async (GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
-							(const guint8 *) data->photo->data.inlined.data, data->photo->data.inlined.length,
-							data->photo->data.inlined.mime_type, data->cancellable,
-							(GAsyncReadyCallback) create_contact_photo_cb, data);
+		gdata_contacts_contact_set_photo_async (
+			GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
+			(const guint8 *) data->photo->data.inlined.data, data->photo->data.inlined.length,
+			data->photo->data.inlined.mime_type, data->cancellable,
+			(GAsyncReadyCallback) create_contact_photo_cb, data);
 		return;
 	}
 
@@ -1197,10 +1205,11 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
 	if (vcards->next != NULL) {
-		e_data_book_respond_create_contacts (book, opid,
-						     EDB_ERROR_EX (NOT_SUPPORTED,
-						     _("The backend does not support bulk additions")),
-						     NULL);
+		e_data_book_respond_create_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk additions")),
+			NULL);
 		return;
 	}
 
@@ -1241,8 +1250,9 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
 	data->new_contact = NULL;
 	data->photo = g_object_steal_data (G_OBJECT (entry), "photo");
 
-	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
-						     (GAsyncReadyCallback) create_contact_cb, data);
+	gdata_contacts_service_insert_contact_async (
+		GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
+		(GAsyncReadyCallback) create_contact_cb, data);
 
 	g_object_unref (cancellable);
 	g_object_unref (entry);
@@ -1318,10 +1328,11 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
 	if (id_list->next != NULL) {
-		e_data_book_respond_remove_contacts (book, opid,
-						     EDB_ERROR_EX (NOT_SUPPORTED,
-						     _("The backend does not support bulk removals")),
-						     NULL);
+		e_data_book_respond_remove_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk removals")),
+			NULL);
 		return;
 	}
 	g_return_if_fail (!id_list->next);
@@ -1349,8 +1360,9 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 	data->uid = g_strdup (uid);
 
 	cancellable = start_operation (backend, opid, cancellable, _("Deleting contact…"));
-	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
-					  entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
+	gdata_service_delete_entry_async (
+		GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
+		entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
@@ -1478,10 +1490,11 @@ modify_contact_photo_cb (GDataContactsContact *contact,
 		}
 
 		/* We now have to re-query for the contact, since setting its photo changes the contact's ETag. */
-		gdata_service_query_single_entry_async (priv->service,
-							gdata_contacts_service_get_primary_authorization_domain (),
-							gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
-							data->cancellable, (GAsyncReadyCallback) modify_contact_photo_query_cb, data);
+		gdata_service_query_single_entry_async (
+			priv->service,
+			gdata_contacts_service_get_primary_authorization_domain (),
+			gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
+			data->cancellable, (GAsyncReadyCallback) modify_contact_photo_query_cb, data);
 		return;
 	} else {
 		/* Error. */
@@ -1533,16 +1546,18 @@ modify_contact_cb (GDataService *service,
 		case UPDATE_PHOTO:
 			/* Set the photo. */
 			g_return_if_fail (data->photo != NULL);
-			gdata_contacts_contact_set_photo_async (GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
-								(const guint8 *) data->photo->data.inlined.data, data->photo->data.inlined.length,
-								data->photo->data.inlined.mime_type, data->cancellable,
-								(GAsyncReadyCallback) modify_contact_photo_cb, data);
+			gdata_contacts_contact_set_photo_async (
+				GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
+				(const guint8 *) data->photo->data.inlined.data, data->photo->data.inlined.length,
+				data->photo->data.inlined.mime_type, data->cancellable,
+				(GAsyncReadyCallback) modify_contact_photo_cb, data);
 			return;
 		case REMOVE_PHOTO:
 			/* Unset the photo. */
 			g_return_if_fail (data->photo == NULL);
-			gdata_contacts_contact_set_photo_async (GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
-								NULL, 0, NULL, data->cancellable, (GAsyncReadyCallback) modify_contact_photo_cb, data);
+			gdata_contacts_contact_set_photo_async (
+				GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
+				NULL, 0, NULL, data->cancellable, (GAsyncReadyCallback) modify_contact_photo_cb, data);
 			return;
 		default:
 			g_assert_not_reached ();
@@ -1678,8 +1693,9 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 		e_contact_photo_free (old_photo);
 	}
 
-	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
-					  entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
+	gdata_service_update_entry_async (
+		GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
+		entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
 	g_object_unref (cancellable);
 
 	g_object_unref (cached_contact);

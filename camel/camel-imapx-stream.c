@@ -93,8 +93,9 @@ imapx_stream_fill (CamelIMAPXStream *is,
 			 * if we *know* there are data to receive. So set the error
 			 * accordingly */
 			if (!left)
-				g_set_error (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-					    _("Source stream returned no data"));
+				g_set_error (
+					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					_("Source stream returned no data"));
 			return -1;
 		}
 	}

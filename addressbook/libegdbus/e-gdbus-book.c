@@ -290,7 +290,8 @@ e_gdbus_book_call_open_sync (GDBusProxy *proxy,
                              GCancellable *cancellable,
                              GError **error)
 {
-	return e_gdbus_proxy_call_sync_boolean__void (proxy, in_only_if_exists, cancellable, error,
+	return e_gdbus_proxy_call_sync_boolean__void (
+		proxy, in_only_if_exists, cancellable, error,
 		e_gdbus_book_call_open,
 		e_gdbus_book_call_open_finish);
 }
@@ -317,7 +318,8 @@ e_gdbus_book_call_refresh_sync (GDBusProxy *proxy,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	return e_gdbus_proxy_call_sync_void__void (proxy, cancellable, error,
+	return e_gdbus_proxy_call_sync_void__void (
+		proxy, cancellable, error,
 		e_gdbus_book_call_refresh,
 		e_gdbus_book_call_refresh_finish);
 }
@@ -348,7 +350,8 @@ e_gdbus_book_call_get_contact_sync (GDBusProxy *proxy,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__string (proxy, in_uid, out_vcard, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__string (
+		proxy, in_uid, out_vcard, cancellable, error,
 		e_gdbus_book_call_get_contact,
 		e_gdbus_book_call_get_contact_finish);
 }
@@ -379,7 +382,8 @@ e_gdbus_book_call_get_contact_list_sync (GDBusProxy *proxy,
                                          GCancellable *cancellable,
                                          GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__strv (proxy, in_query, out_vcards, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__strv (
+		proxy, in_query, out_vcards, cancellable, error,
 		e_gdbus_book_call_get_contact_list,
 		e_gdbus_book_call_get_contact_list_finish);
 }
@@ -410,7 +414,8 @@ e_gdbus_book_call_get_contact_list_uids_sync (GDBusProxy *proxy,
                                               GCancellable *cancellable,
                                               GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__strv (proxy, in_query, out_uids, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__strv (
+		proxy, in_query, out_uids, cancellable, error,
 		e_gdbus_book_call_get_contact_list_uids,
 		e_gdbus_book_call_get_contact_list_uids_finish);
 }
@@ -441,7 +446,8 @@ e_gdbus_book_call_add_contacts_sync (GDBusProxy *proxy,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__strv (proxy, in_vcards, out_uids, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__strv (
+		proxy, in_vcards, out_uids, cancellable, error,
 		e_gdbus_book_call_add_contacts,
 		e_gdbus_book_call_add_contacts_finish);
 }
@@ -470,7 +476,8 @@ e_gdbus_book_call_remove_contacts_sync (GDBusProxy *proxy,
                                         GCancellable *cancellable,
                                         GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_list, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_list, cancellable, error,
 		e_gdbus_book_call_remove_contacts,
 		e_gdbus_book_call_remove_contacts_finish);
 }
@@ -499,7 +506,8 @@ e_gdbus_book_call_modify_contacts_sync (GDBusProxy *proxy,
                                         GCancellable *cancellable,
                                         GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_vcards, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_vcards, cancellable, error,
 		e_gdbus_book_call_modify_contacts,
 		e_gdbus_book_call_modify_contacts_finish);
 }
@@ -530,7 +538,8 @@ e_gdbus_book_call_get_backend_property_sync (GDBusProxy *proxy,
                                              GCancellable *cancellable,
                                              GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__string (proxy, in_prop_name, out_prop_value, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__string (
+		proxy, in_prop_name, out_prop_value, cancellable, error,
 		e_gdbus_book_call_get_backend_property,
 		e_gdbus_book_call_get_backend_property_finish);
 }
@@ -576,7 +585,8 @@ e_gdbus_book_call_set_backend_property_sync (GDBusProxy *proxy,
                                              GCancellable *cancellable,
                                              GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_prop_name_value, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_prop_name_value, cancellable, error,
 		e_gdbus_book_call_set_backend_property,
 		e_gdbus_book_call_set_backend_property_finish);
 }
@@ -607,7 +617,8 @@ e_gdbus_book_call_get_view_sync (GDBusProxy *proxy,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__string (proxy, in_query, out_view_path, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__string (
+		proxy, in_query, out_view_path, cancellable, error,
 		e_gdbus_book_call_get_view,
 		e_gdbus_book_call_get_view_finish);
 }
@@ -996,7 +1007,8 @@ emit_notifications_in_idle (gpointer user_data)
 	}
 
 	if (has_changes) {
-		g_dbus_connection_emit_signal (connection, NULL, path, "org.freedesktop.DBus.Properties", "PropertiesChanged",
+		g_dbus_connection_emit_signal (
+			connection, NULL, path, "org.freedesktop.DBus.Properties", "PropertiesChanged",
 			g_variant_new ("(sa{sv}as)", GDBUS_BOOK_INTERFACE_NAME, builder, invalidated_builder),
 			NULL);
 	} else {
@@ -1069,7 +1081,8 @@ e_gdbus_book_register_object (EGdbusBook *object,
 	g_object_set_data (G_OBJECT (object), "gdbus-codegen-connection", (gpointer) connection);
 	g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
 
-	return g_dbus_connection_register_object (connection, object_path, (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info,
+	return g_dbus_connection_register_object (
+		connection, object_path, (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info,
 			&e_gdbus_book_interface_vtable, object, (GDestroyNotify) on_object_unregistered, error);
 }
 
@@ -1219,17 +1232,18 @@ e_gdbus_book_proxy_new (GDBusConnection *connection,
                         GAsyncReadyCallback callback,
                         gpointer user_data)
 {
-	g_async_initable_new_async (E_TYPE_GDBUS_BOOK_PROXY,
-				G_PRIORITY_DEFAULT,
-				cancellable,
-				callback,
-				user_data,
-				"g-flags", flags,
-				"g-name", name,
-				"g-connection", connection,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
-				NULL);
+	g_async_initable_new_async (
+		E_TYPE_GDBUS_BOOK_PROXY,
+		G_PRIORITY_DEFAULT,
+		cancellable,
+		callback,
+		user_data,
+		"g-flags", flags,
+		"g-name", name,
+		"g-connection", connection,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
+		NULL);
 }
 
 /**
@@ -1282,15 +1296,16 @@ e_gdbus_book_proxy_new_sync (GDBusConnection *connection,
                              GError **error)
 {
 	GInitable *initable;
-	initable = g_initable_new (E_TYPE_GDBUS_BOOK_PROXY,
-				cancellable,
-				error,
-				"g-flags", flags,
-				"g-name", name,
-				"g-connection", connection,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
-				NULL);
+	initable = g_initable_new (
+		E_TYPE_GDBUS_BOOK_PROXY,
+		cancellable,
+		error,
+		"g-flags", flags,
+		"g-name", name,
+		"g-connection", connection,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
+		NULL);
 	if (initable != NULL)
 		return E_GDBUS_BOOK (initable);
 	else
@@ -1320,17 +1335,18 @@ e_gdbus_book_proxy_new_for_bus (GBusType bus_type,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
-	g_async_initable_new_async (E_TYPE_GDBUS_BOOK_PROXY,
-				G_PRIORITY_DEFAULT,
-				cancellable,
-				callback,
-				user_data,
-				"g-flags", flags,
-				"g-name", name,
-				"g-bus-type", bus_type,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
-				NULL);
+	g_async_initable_new_async (
+		E_TYPE_GDBUS_BOOK_PROXY,
+		G_PRIORITY_DEFAULT,
+		cancellable,
+		callback,
+		user_data,
+		"g-flags", flags,
+		"g-name", name,
+		"g-bus-type", bus_type,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
+		NULL);
 }
 
 /**
@@ -1384,15 +1400,16 @@ e_gdbus_book_proxy_new_for_bus_sync (GBusType bus_type,
 {
 	GInitable *initable;
 
-	initable = g_initable_new (E_TYPE_GDBUS_BOOK_PROXY,
-				cancellable,
-				error,
-				"g-flags", flags,
-				"g-name", name,
-				"g-bus-type", bus_type,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
-				NULL);
+	initable = g_initable_new (
+		E_TYPE_GDBUS_BOOK_PROXY,
+		cancellable,
+		error,
+		"g-flags", flags,
+		"g-name", name,
+		"g-bus-type", bus_type,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_INTERFACE_NAME,
+		NULL);
 	if (initable != NULL)
 		return E_GDBUS_BOOK (initable);
 	else

@@ -91,9 +91,10 @@ insert_contact (EBookBackendVCF *vcf,
 
 		vcf->priv->contact_list = g_list_prepend (vcf->priv->contact_list, vcard);
 
-		g_hash_table_insert (vcf->priv->contacts,
-				     id,
-				     vcf->priv->contact_list);
+		g_hash_table_insert (
+			vcf->priv->contacts,
+			id,
+			vcf->priv->contact_list);
 	}
 }
 
@@ -258,8 +259,9 @@ do_create (EBookBackendVCF *bvcf,
 		bvcf->priv->dirty = TRUE;
 
 		if (!bvcf->priv->flush_timeout_tag)
-			bvcf->priv->flush_timeout_tag = g_timeout_add (FILE_FLUSH_TIMEOUT,
-								       vcf_flush_file, bvcf);
+			bvcf->priv->flush_timeout_tag = g_timeout_add (
+				FILE_FLUSH_TIMEOUT,
+				vcf_flush_file, bvcf);
 	}
 
 	g_mutex_unlock (bvcf->priv->mutex);
@@ -282,9 +284,10 @@ e_book_backend_vcf_create_contacts (EBookBackendSync *backend,
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
 	 * in our static capability list. */
 	if (vcards->next != NULL) {
-		g_propagate_error (perror,
-				   EDB_ERROR_EX (NOT_SUPPORTED,
-				   _("The backend does not support bulk additions")));
+		g_propagate_error (
+			perror,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk additions")));
 		return;
 	}
 
@@ -314,9 +317,10 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
 	 * in our static capability list. */
 	if (id_list->next != NULL) {
-		g_propagate_error (perror,
-				   EDB_ERROR_EX (NOT_SUPPORTED,
-				   _("The backend does not support bulk removals")));
+		g_propagate_error (
+			perror,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk removals")));
 		return;
 	}
 
@@ -339,8 +343,9 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 
 	bvcf->priv->dirty = TRUE;
 	if (!bvcf->priv->flush_timeout_tag)
-		bvcf->priv->flush_timeout_tag = g_timeout_add (FILE_FLUSH_TIMEOUT,
-							       vcf_flush_file, bvcf);
+		bvcf->priv->flush_timeout_tag = g_timeout_add (
+			FILE_FLUSH_TIMEOUT,
+			vcf_flush_file, bvcf);
 	g_mutex_unlock (bvcf->priv->mutex);
 
 	*ids = g_slist_append (*ids, g_strdup (id));
@@ -362,9 +367,10 @@ e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
 	 * in our static capability list. */
 	if (vcards->next != NULL) {
-		g_propagate_error (perror,
-				   EDB_ERROR_EX (NOT_SUPPORTED,
-				   _("The backend does not support bulk modifications")));
+		g_propagate_error (
+			perror,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk modifications")));
 		return;
 	}
 
@@ -384,8 +390,9 @@ e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
 	elem->data = g_strdup (vcards->data);
 	bvcf->priv->dirty = TRUE;
 	if (!bvcf->priv->flush_timeout_tag)
-		bvcf->priv->flush_timeout_tag = g_timeout_add (FILE_FLUSH_TIMEOUT,
-							       vcf_flush_file, bvcf);
+		bvcf->priv->flush_timeout_tag = g_timeout_add (
+			FILE_FLUSH_TIMEOUT,
+			vcf_flush_file, bvcf);
 	g_mutex_unlock (bvcf->priv->mutex);
 
 	*modified_contacts = g_slist_append (*modified_contacts, contact);
@@ -478,8 +485,10 @@ init_closure (EDataBookView *book_view,
 	closure->thread = NULL;
 	closure->running = e_flag_new ();
 
-	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendVCF.BookView::closure",
-				closure, (GDestroyNotify) closure_destroy);
+	g_object_set_data_full (
+		G_OBJECT (book_view),
+		"EBookBackendVCF.BookView::closure",
+		closure, (GDestroyNotify) closure_destroy);
 
 	return closure;
 }
@@ -487,7 +496,9 @@ init_closure (EDataBookView *book_view,
 static VCFBackendSearchClosure *
 get_closure (EDataBookView *book_view)
 {
-	return g_object_get_data (G_OBJECT (book_view), "EBookBackendVCF.BookView::closure");
+	return g_object_get_data (
+		G_OBJECT (book_view),
+		"EBookBackendVCF.BookView::closure");
 }
 
 static gpointer

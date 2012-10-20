@@ -391,9 +391,10 @@ put_component_to_store (ECalBackendHttp *cb,
 			return FALSE;
 	}
 
-	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
-				   resolve_tzid, cb, icaltimezone_get_utc_timezone (),
-				   e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
+	e_cal_util_get_component_occur_times (
+		comp, &time_start, &time_end,
+		resolve_tzid, cb, icaltimezone_get_utc_timezone (),
+		e_cal_backend_get_kind (E_CAL_BACKEND (cb)));
 
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 
@@ -887,7 +888,8 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 				_("Could not create cache file")));
 			e_cal_backend_notify_opened (
 				E_CAL_BACKEND (backend),
-				EDC_ERROR_EX (OtherError,
+				EDC_ERROR_EX (
+				OtherError,
 				_("Could not create cache file")));
 			return;
 		}
@@ -1076,9 +1078,10 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend,
 	cbsexp = e_cal_backend_sexp_new (sexp);
 
 	*objects = NULL;
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (cbsexp,
-									    &occur_start,
-									    &occur_end);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (
+		cbsexp,
+		&occur_start,
+		&occur_end);
 
 	components = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
@@ -1123,9 +1126,10 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 
 	/* process all components in the cache */
 	objects = NULL;
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (cbsexp,
-									    &occur_start,
-									    &occur_end);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (
+		cbsexp,
+		&occur_start,
+		&occur_end);
 
 	components = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
@@ -1230,8 +1234,9 @@ create_user_free_busy (ECalBackendHttp *cbhttp,
         /* add all objects in the given interval */
 	iso_start = isodate_from_time_t (start);
 	iso_end = isodate_from_time_t (end);
-	query = g_strdup_printf ("occur-in-time-range? (make-time \"%s\") (make-time \"%s\")",
-				 iso_start, iso_end);
+	query = g_strdup_printf (
+		"occur-in-time-range? (make-time \"%s\") (make-time \"%s\")",
+		iso_start, iso_end);
 	obj_sexp = e_cal_backend_sexp_new (query);
 	g_free (query);
 	g_free (iso_start);
@@ -1252,8 +1257,9 @@ create_user_free_busy (ECalBackendHttp *cbhttp,
 			continue;
 
                 /* If the event is TRANSPARENT, skip it. */
-		prop = icalcomponent_get_first_property (icalcomp,
-							 ICAL_TRANSP_PROPERTY);
+		prop = icalcomponent_get_first_property (
+			icalcomp,
+			ICAL_TRANSP_PROPERTY);
 		if (prop) {
 			icalproperty_transp transp_val = icalproperty_get_transp (prop);
 			if (transp_val == ICAL_TRANSP_TRANSPARENT ||
@@ -1267,12 +1273,13 @@ create_user_free_busy (ECalBackendHttp *cbhttp,
 		vcalendar_comp = icalcomponent_get_parent (icalcomp);
 		if (!vcalendar_comp)
 			vcalendar_comp = icalcomp;
-		e_cal_recur_generate_instances (comp, start, end,
-						free_busy_instance,
-						vfb,
-						resolve_tzid,
-						vcalendar_comp,
-						icaltimezone_get_utc_timezone ());
+		e_cal_recur_generate_instances (
+			comp, start, end,
+			free_busy_instance,
+			vfb,
+			resolve_tzid,
+			vcalendar_comp,
+			icaltimezone_get_utc_timezone ());
 	}
 	g_object_unref (obj_sexp);
 

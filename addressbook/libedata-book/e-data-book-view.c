@@ -941,8 +941,9 @@ e_data_book_view_notify_update (EDataBookView *view,
 		view->priv->sexp, (EContact *) contact);
 
 	if (want_in_view) {
-		vcard = e_vcard_to_string (E_VCARD (contact),
-					   EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (
+			E_VCARD (contact),
+			EVC_FORMAT_VCARD_30);
 
 		if (currently_in_view)
 			notify_change (view, id, vcard);

@@ -136,10 +136,11 @@ remove_file (const gchar *filename,
 		if (errno == EACCES || errno == EPERM) {
 			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
 		} else {
-			g_propagate_error (error, e_data_book_create_error_fmt
-					   (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					    _("Failed to remove file '%s': %s"),
-					    filename, g_strerror (errno)));
+			g_propagate_error (
+				error, e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Failed to remove file '%s': %s"),
+				filename, g_strerror (errno)));
 		}
 		return FALSE;
 	}
@@ -159,10 +160,11 @@ create_directory (const gchar *dirname,
 		if (errno == EACCES || errno == EPERM)
 			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
 		else
-			g_propagate_error (error,
-					   e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-									 _("Failed to make directory %s: %s"),
-									 dirname, g_strerror (errno)));
+			g_propagate_error (
+				error, e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Failed to make directory %s: %s"),
+				dirname, g_strerror (errno)));
 		return FALSE;
 	}
 	return TRUE;
@@ -369,16 +371,18 @@ safe_name_for_photo (EBookBackendFile *bf,
 	/* Get a suitable filename extension */
 	if (photo->data.inlined.mime_type != NULL &&
 	    photo->data.inlined.mime_type[0] != '\0') {
-		suffix = g_uri_escape_string (photo->data.inlined.mime_type,
-					      NULL, TRUE);
+		suffix = g_uri_escape_string (
+			photo->data.inlined.mime_type,
+			NULL, TRUE);
 	} else {
 		gchar *mime_type = NULL;
 		gchar *content_type = NULL;
 
-		content_type = g_content_type_guess (NULL,
-						     photo->data.inlined.data,
-						     photo->data.inlined.length,
-						     NULL);
+		content_type = g_content_type_guess (
+			NULL,
+			photo->data.inlined.data,
+			photo->data.inlined.length,
+			NULL);
 
 		if (content_type)
 			mime_type = g_content_type_get_mime_type (content_type);
@@ -393,8 +397,9 @@ safe_name_for_photo (EBookBackendFile *bf,
 	}
 
 	/* Create a filename based on the uid/field */
-	name = g_strconcat (e_contact_get_const (contact, E_CONTACT_UID), "_",
-			    e_contact_field_name (field), NULL);
+	name = g_strconcat (
+		e_contact_get_const (contact, E_CONTACT_UID), "_",
+		e_contact_field_name (field), NULL);
 	name = g_strdelimit (name, NULL, '_');
 
 	do {
@@ -433,8 +438,9 @@ hard_link_photo (EBookBackendFile *bf,
 		suffix = "data";
 
 	/* Create a filename based on uid/field */
-	name = g_strconcat (e_contact_get_const (contact, E_CONTACT_UID), "_",
-			    e_contact_field_name (field), NULL);
+	name = g_strconcat (
+		e_contact_get_const (contact, E_CONTACT_UID), "_",
+		e_contact_field_name (field), NULL);
 	name = g_strdelimit (name, NULL, '_');
 
 	do {
@@ -454,10 +460,11 @@ hard_link_photo (EBookBackendFile *bf,
 		if (errno == EACCES || errno == EPERM) {
 			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
 		} else {
-			g_propagate_error (error, e_data_book_create_error_fmt
-					   (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					    _("Failed to create hardlink for resource '%s': %s"),
-					    src_filename, g_strerror (errno)));
+			g_propagate_error (
+				error, e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Failed to create hardlink for resource '%s': %s"),
+				src_filename, g_strerror (errno)));
 		}
 		g_free (fullname);
 		fullname = NULL;
@@ -648,13 +655,15 @@ maybe_transform_vcard_for_photo (EBookBackendFile *bf,
 	PhotoModifiedStatus status;
 	gboolean            modified = FALSE;
 
-	status   = maybe_transform_vcard_field_for_photo (bf, old_contact, contact,
-							  E_CONTACT_PHOTO, error);
+	status = maybe_transform_vcard_field_for_photo (
+		bf, old_contact, contact,
+		E_CONTACT_PHOTO, error);
 	modified = (status == STATUS_MODIFIED);
 
 	if (status != STATUS_ERROR) {
-		status   = maybe_transform_vcard_field_for_photo (bf, old_contact, contact,
-								  E_CONTACT_LOGO, error);
+		status = maybe_transform_vcard_field_for_photo (
+			bf, old_contact, contact,
+			E_CONTACT_LOGO, error);
 		modified = modified || (status == STATUS_MODIFIED);
 	}
 
@@ -793,8 +802,9 @@ e_book_backend_file_bump_revision (EBookBackendFile *bf)
 	db_error = db->put (db, NULL, &revision_name_dbt, &revision_dbt, 0);
 
 	if (db_error != 0)
-		g_warning (G_STRLOC ": db->put failed while bumping the revision string: %s",
-			   db_strerror (db_error));
+		g_warning (
+			G_STRLOC ": db->put failed while bumping the revision string: %s",
+			db_strerror (db_error));
 
 	e_book_backend_notify_property_changed (E_BOOK_BACKEND (bf),
 						BOOK_BACKEND_PROPERTY_REVISION,
@@ -920,9 +930,10 @@ do_create (EBookBackendFile *bf,
 			break;
 		} else if (status == STATUS_ERROR) {
 			/* Contact could not be added */
-			g_warning (G_STRLOC ": db->put failed with %s",
-				   (perror && *perror) ? (*perror)->message :
-				   "Unknown error transforming vcard");
+			g_warning (
+				G_STRLOC ": db->put failed with %s",
+				(perror && *perror) ? (*perror)->message :
+				"Unknown error transforming vcard");
 			g_object_unref (contact);
 
 			/* Abort as soon as an error occurs */
@@ -1143,8 +1154,9 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		/* Transform incomming photo blobs to uris before storing this to the DB */
 		status = maybe_transform_vcard_for_photo (bf, old_contact, contact, NULL, perror);
 		if (status == STATUS_ERROR) {
-			g_warning (G_STRLOC ": Error transforming contact %s: %s",
-				   id, (perror && *perror) ? (*perror)->message : "Unknown Error");
+			g_warning (
+				G_STRLOC ": Error transforming contact %s: %s",
+				id, (perror && *perror) ? (*perror)->message : "Unknown Error");
 
 			g_free (id);
 			g_object_unref (old_contact);
@@ -1288,11 +1300,12 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		return;
 	}
 
-	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
-						       SQLITEDB_FOLDER_ID,
-						       search, NULL,
-						       &searched_summary,
-						       &with_all_required_fields, NULL);
+	summary_list = e_book_backend_sqlitedb_search (
+		bf->priv->sqlitedb,
+		SQLITEDB_FOLDER_ID,
+		search, NULL,
+		&searched_summary,
+		&with_all_required_fields, NULL);
 
 	if (summary_list) {
 
@@ -1410,9 +1423,10 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 		return;
 	}
 
-	uids = e_book_backend_sqlitedb_search_uids (bf->priv->sqlitedb,
-						    SQLITEDB_FOLDER_ID,
-						    search, &searched, NULL);
+	uids = e_book_backend_sqlitedb_search_uids (
+		bf->priv->sqlitedb,
+		SQLITEDB_FOLDER_ID,
+		search, &searched, NULL);
 
 	if (!searched) {
 		search_needed = TRUE;
@@ -1499,8 +1513,10 @@ init_closure (EDataBookView *book_view,
 	closure->thread = NULL;
 	closure->running = e_flag_new ();
 
-	g_object_set_data_full (G_OBJECT (book_view), "EBookBackendFile.BookView::closure",
-				closure, (GDestroyNotify) closure_destroy);
+	g_object_set_data_full (
+		G_OBJECT (book_view),
+		"EBookBackendFile.BookView::closure",
+		closure, (GDestroyNotify) closure_destroy);
 
 	return closure;
 }
@@ -1508,7 +1524,9 @@ init_closure (EDataBookView *book_view,
 static FileBackendSearchClosure *
 get_closure (EDataBookView *book_view)
 {
-	return g_object_get_data (G_OBJECT (book_view), "EBookBackendFile.BookView::closure");
+	return g_object_get_data (
+		G_OBJECT (book_view),
+		"EBookBackendFile.BookView::closure");
 }
 
 static void
@@ -1579,10 +1597,11 @@ book_view_thread (gpointer data)
 	d (printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
 
-	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
-						       SQLITEDB_FOLDER_ID,
-						       query, fields_of_interest,
-						       &searched, &with_all_required_fields, NULL);
+	summary_list = e_book_backend_sqlitedb_search (
+		bf->priv->sqlitedb,
+		SQLITEDB_FOLDER_ID,
+		query, fields_of_interest,
+		&searched, &with_all_required_fields, NULL);
 
 	if (searched) {
 
@@ -1601,8 +1620,9 @@ book_view_thread (gpointer data)
 				vcard = load_vcard (bf, NULL, data->uid, &error);
 
 				if (error) {
-					g_warning ("Error loading contact %s: %s",
-						   data->uid, error->message);
+					g_warning (
+						"Error loading contact %s: %s",
+						data->uid, error->message);
 					g_error_free (error);
 				}
 
@@ -1647,12 +1667,14 @@ book_view_thread (gpointer data)
 
 			dbc->c_close (dbc);
 			if (db_error && db_error != DB_NOTFOUND)
-				g_warning ("e_book_backend_file_search: error building list: %s",
-					   db_strerror (db_error));
+				g_warning (
+					"e_book_backend_file_search: error building list: %s",
+					db_strerror (db_error));
 		}
 		else if (db_error == DB_RUNRECOVERY) {
-			g_warning ("e_book_backend_file_search: error getting the cursor for %s",
-				   bf->priv->filename);
+			g_warning (
+				"e_book_backend_file_search: error getting the cursor for %s",
+				bf->priv->filename);
 			abort ();
 		}
 
@@ -1728,8 +1750,9 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf,
 
 	if (strcmp (old_version, "0.0")
 	    && strcmp (old_version, "0.1")) {
-		g_warning ("unsupported version '%s' found in PAS backend file\n",
-			   old_version);
+		g_warning (
+			"unsupported version '%s' found in PAS backend file\n",
+			old_version);
 		return FALSE;
 	}
 
@@ -2098,12 +2121,13 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	bf->priv->dirname = dirname;
 	bf->priv->filename = filename;
 
-	bf->priv->sqlitedb = e_book_backend_sqlitedb_new (bf->priv->dirname,
-							  SQLITEDB_EMAIL_ID,
-							  SQLITEDB_FOLDER_ID,
-							  SQLITEDB_FOLDER_NAME,
-							  FALSE,
-							  perror);
+	bf->priv->sqlitedb = e_book_backend_sqlitedb_new (
+		bf->priv->dirname,
+		SQLITEDB_EMAIL_ID,
+		SQLITEDB_FOLDER_ID,
+		SQLITEDB_FOLDER_NAME,
+		FALSE,
+		perror);
 	if (!bf->priv->sqlitedb)
 		return;
 
@@ -2114,9 +2138,11 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_propagate_error (perror, local_error);
 			return;
 		} else if (!build_sqlitedb (bf->priv)) {
-			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					     _("Failed to build summary for an address book %s"),
-				     bf->priv->filename));
+			g_propagate_error (
+				perror, e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Failed to build summary for an address book %s"),
+				bf->priv->filename));
 		}
 	}
 

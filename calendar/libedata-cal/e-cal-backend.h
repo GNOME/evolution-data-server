@@ -437,8 +437,8 @@ void		e_cal_backend_respond_opened	(ECalBackend *backend,
 #ifndef EDS_DISABLE_DEPRECATED
 void		e_cal_backend_foreach_view	(ECalBackend *backend,
 						 gboolean (*callback) (EDataCalView *view,
-						                       gpointer user_data),
-						                       gpointer user_data);
+								       gpointer user_data),
+								       gpointer user_data);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

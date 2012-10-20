@@ -54,9 +54,9 @@ sendmail_get_name (CamelService *service,
 
 static GPtrArray *
 parse_sendmail_args (const gchar *binary,
-		     const gchar *args,
-		     const gchar *from_addr,
-		     CamelAddress *recipients)
+                     const gchar *args,
+                     const gchar *from_addr,
+                     CamelAddress *recipients)
 {
 	GPtrArray *args_arr;
 	gint ii, len, argc = 0;
@@ -170,10 +170,11 @@ sendmail_send_to_sync (CamelTransport *transport,
 		}
 	}
 
-	argv_arr = parse_sendmail_args (binary,
-					custom_args ? custom_args : "-i -f %F -- %R",
-					from_addr,
-					recipients);
+	argv_arr = parse_sendmail_args (
+		binary,
+		custom_args ? custom_args : "-i -f %F -- %R",
+		from_addr,
+		recipients);
 
 	if (!argv_arr) {
 		g_set_error (

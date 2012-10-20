@@ -43,9 +43,9 @@ G_DEFINE_TYPE (CamelSendmailSettings, camel_sendmail_settings, CAMEL_TYPE_SETTIN
 
 static void
 sendmail_settings_set_property (GObject *object,
-				guint property_id,
-				const GValue *value,
-				GParamSpec *pspec)
+                                guint property_id,
+                                const GValue *value,
+                                GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_USE_CUSTOM_BINARY:
@@ -78,9 +78,9 @@ sendmail_settings_set_property (GObject *object,
 
 static void
 sendmail_settings_get_property (GObject *object,
-				guint property_id,
-				GValue *value,
-				GParamSpec *pspec)
+                                guint property_id,
+                                GValue *value,
+                                GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_USE_CUSTOM_BINARY:
@@ -228,7 +228,7 @@ camel_sendmail_settings_get_use_custom_binary (CamelSendmailSettings *settings)
  **/
 void
 camel_sendmail_settings_set_use_custom_binary (CamelSendmailSettings *settings,
-					       gboolean use_custom_binary)
+                                               gboolean use_custom_binary)
 {
 	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
 
@@ -269,7 +269,7 @@ camel_sendmail_settings_get_use_custom_args (CamelSendmailSettings *settings)
  **/
 void
 camel_sendmail_settings_set_use_custom_args (CamelSendmailSettings *settings,
-					     gboolean use_custom_args)
+                                             gboolean use_custom_args)
 {
 	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
 
@@ -341,7 +341,7 @@ camel_sendmail_settings_dup_custom_binary (CamelSendmailSettings *settings)
  **/
 void
 camel_sendmail_settings_set_custom_binary (CamelSendmailSettings *settings,
-					   const gchar *custom_binary)
+                                           const gchar *custom_binary)
 {
 	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
 
@@ -424,7 +424,7 @@ camel_sendmail_settings_dup_custom_args (CamelSendmailSettings *settings)
  **/
 void
 camel_sendmail_settings_set_custom_args (CamelSendmailSettings *settings,
-					const gchar *custom_args)
+                                        const gchar *custom_args)
 {
 	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
 

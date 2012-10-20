@@ -863,8 +863,9 @@ e_book_backend_summary_touch (EBookBackendSummary *summary)
 	summary->priv->dirty = TRUE;
 	if (!summary->priv->flush_timeout
 	    && summary->priv->flush_timeout_millis)
-		summary->priv->flush_timeout = g_timeout_add (summary->priv->flush_timeout_millis,
-							      summary_flush_func, summary);
+		summary->priv->flush_timeout = g_timeout_add (
+			summary->priv->flush_timeout_millis,
+			summary_flush_func, summary);
 }
 
 /**
@@ -962,8 +963,9 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
 			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
 					     (ESExpIFunc *) check_symbols[i].func, summary);
 		} else {
-			e_sexp_add_function (sexp, 0, check_symbols[i].name,
-					    check_symbols[i].func, summary);
+			e_sexp_add_function (
+				sexp, 0, check_symbols[i].name,
+				check_symbols[i].func, summary);
 		}
 	}
 
@@ -1206,8 +1208,9 @@ e_book_backend_summary_search (EBookBackendSummary *summary,
 			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, summary);
 		} else {
-			e_sexp_add_function (sexp, 0, symbols[i].name,
-					    symbols[i].func, summary);
+			e_sexp_add_function (
+				sexp, 0, symbols[i].name,
+				symbols[i].func, summary);
 		}
 	}
 

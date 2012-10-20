@@ -401,8 +401,9 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
-		stmt = sqlite3_mprintf ("INSERT OR IGNORE INTO folders VALUES ( %Q, %Q, %Q, %d, %d, %d ) ",
-					folderid, folder_name, NULL, 0, 0, FOLDER_VERSION);
+		stmt = sqlite3_mprintf (
+			"INSERT OR IGNORE INTO folders VALUES ( %Q, %Q, %Q, %d, %d, %d ) ",
+			folderid, folder_name, NULL, 0, 0, FOLDER_VERSION);
 
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 
@@ -571,8 +572,9 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	ebsdb->priv->store_vcard = store_vcard;
 	if (g_mkdir_with_parents (path, 0777) < 0) {
 		g_static_mutex_unlock (&dbcon_lock);
-		g_set_error (error, E_BOOK_SDB_ERROR,
-				0, "Can not make parent directory: errno %d", errno);
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			"Can not make parent directory: errno %d", errno);
 		return NULL;
 	}
 	filename = g_build_filename (path, DB_FILENAME, NULL);
@@ -703,8 +705,9 @@ e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
 	GSList l;
 	l.data = contact;
 	l.next = NULL;
-	return e_book_backend_sqlitedb_add_contacts (ebsdb, folderid, &l,
-						     partial_content, error);
+	return e_book_backend_sqlitedb_add_contacts (
+		ebsdb, folderid, &l,
+		partial_content, error);
 }
 
 /**
@@ -741,8 +744,9 @@ e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
 		gchar *stmt;
 		EContact *contact = (EContact *) l->data;
 
-		stmt = insert_stmt_from_contact (contact, partial_content, folderid,
-						 priv->store_vcard);
+		stmt = insert_stmt_from_contact (
+			contact, partial_content, folderid,
+			priv->store_vcard);
 		book_backend_sql_exec (priv->db, stmt, NULL, NULL, &err);
 
 		g_free (stmt);
@@ -770,10 +774,12 @@ e_book_backend_sqlitedb_remove_contact (EBookBackendSqliteDB *ebsdb,
                                         GError **error)
 {
 	GSList l;
+
 	l.data = (gchar *) uid; /* Won't modify it, I promise :) */
 	l.next = NULL;
-	return e_book_backend_sqlitedb_remove_contacts (ebsdb, folderid, &l,
-							error);
+
+	return e_book_backend_sqlitedb_remove_contacts (
+		ebsdb, folderid, &l, error);
 }
 
 /**
@@ -916,8 +922,9 @@ e_book_backend_sqlitedb_get_contact (EBookBackendSqliteDB *ebsdb,
 {
 	GError *err = NULL;
 	EContact *contact = NULL;
-	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid,
-								 fields_of_interest, with_all_required_fields, &err);
+	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (
+		ebsdb, folderid, uid,
+		fields_of_interest, with_all_required_fields, &err);
 	if (!err && vcard) {
 		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 		g_free (vcard);
@@ -1088,7 +1095,8 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 		*with_all_required_fields = local_with_all_required_fields;
 
 	if (!vcard_str && error && !*error)
-		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
 			_("Contact '%s' not found"), uid ? uid : "NULL");
 
 	return vcard_str;
@@ -1169,8 +1177,9 @@ e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
 					      (ESExpIFunc *) check_symbols[i].func, NULL);
 		} else {
-			e_sexp_add_function (sexp, 0, check_symbols[i].name,
-					     check_symbols[i].func, NULL);
+			e_sexp_add_function (
+				sexp, 0, check_symbols[i].name,
+				check_symbols[i].func, NULL);
 		}
 	}
 
@@ -1454,8 +1463,9 @@ sexp_to_sql_query (const gchar *query)
 			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, NULL);
 		else
-			e_sexp_add_function (sexp, 0, symbols[i].name,
-					    symbols[i].func, NULL);
+			e_sexp_add_function (
+				sexp, 0, symbols[i].name,
+				symbols[i].func, NULL);
 	}
 
 	e_sexp_input_text (sexp, query, strlen (query));
@@ -1597,8 +1607,9 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 			book_backend_sql_exec (ebsdb->priv->db, stmt, store_data_to_vcard, &vcard_data, &err);
 			sqlite3_free (stmt);
 		} else
-			book_backend_sql_exec (ebsdb->priv->db, select_stmt,
-					       store_data_to_vcard, &vcard_data, &err);
+			book_backend_sql_exec (
+				ebsdb->priv->db, select_stmt,
+				store_data_to_vcard, &vcard_data, &err);
 
 		g_free (select_stmt);
 
@@ -1722,9 +1733,10 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 		gchar *sql_query;
 
 		sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
-		search_contacts = book_backend_sqlitedb_search_query (ebsdb, sql_query, folderid,
-								      fields_of_interest,
-								      &local_with_all_required_fields, error);
+		search_contacts = book_backend_sqlitedb_search_query (
+			ebsdb, sql_query, folderid,
+			fields_of_interest,
+			&local_with_all_required_fields, error);
 		g_free (sql_query);
 
 		local_searched = TRUE;
@@ -1734,8 +1746,10 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 		local_searched = TRUE;
 		local_with_all_required_fields = TRUE;
 	} else {
-		g_set_error (error, E_BOOK_SDB_ERROR,
-				0, "Full search_contacts are not stored in cache. Hence only summary query is supported.");
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			"Full search_contacts are not stored in cache. "
+			"Hence only summary query is supported.");
 	}
 
 	if (searched)
@@ -1786,8 +1800,10 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 
 		local_searched = TRUE;
 	} else {
-		g_set_error (error, E_BOOK_SDB_ERROR,
-				0, "Full vcards are not stored in cache. Hence only summary query is supported.");
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			"Full vcards are not stored in cache. "
+			"Hence only summary query is supported.");
 	}
 
 	if (searched)
@@ -1898,8 +1914,9 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
-		stmt = sqlite3_mprintf ("UPDATE folders SET is_populated = %d WHERE folder_id = %Q",
-					populated, folderid);
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET is_populated = %d WHERE folder_id = %Q",
+			populated, folderid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		sqlite3_free (stmt);
 	}
@@ -1962,7 +1979,8 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
-		stmt = sqlite3_mprintf ("UPDATE folders SET partial_content = %d WHERE folder_id = %Q",
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET partial_content = %d WHERE folder_id = %Q",
 					partial_content, folderid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		sqlite3_free (stmt);
@@ -2035,8 +2053,9 @@ e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
-		stmt = sqlite3_mprintf ("UPDATE %Q SET bdata = %Q WHERE uid = %Q", folderid,
-					value, uid);
+		stmt = sqlite3_mprintf (
+			"UPDATE %Q SET bdata = %Q WHERE uid = %Q",
+			folderid, value, uid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		sqlite3_free (stmt);
 	}
@@ -2093,8 +2112,9 @@ e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
-		stmt = sqlite3_mprintf ("UPDATE folders SET sync_data = %Q WHERE folder_id = %Q",
-					sync_data, folderid);
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET sync_data = %Q WHERE folder_id = %Q",
+			sync_data, folderid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		sqlite3_free (stmt);
 	}
@@ -2124,8 +2144,9 @@ e_book_backend_sqlitedb_get_key_value (EBookBackendSqliteDB *ebsdb,
 
 	READER_LOCK (ebsdb);
 
-	stmt = sqlite3_mprintf ("SELECT value FROM keys WHERE folder_id = %Q AND key = %Q",
-							folderid, key);
+	stmt = sqlite3_mprintf (
+		"SELECT value FROM keys WHERE folder_id = %Q AND key = %Q",
+		folderid, key);
 	book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb , &ret, error);
 	sqlite3_free (stmt);
 
@@ -2154,8 +2175,9 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
-		stmt = sqlite3_mprintf ("INSERT or REPLACE INTO keys (key, value, folder_id)	\
-					values (%Q, %Q, %Q)", key, value, folderid);
+		stmt = sqlite3_mprintf (
+			"INSERT or REPLACE INTO keys (key, value, folder_id) "
+			"values (%Q, %Q, %Q)", key, value, folderid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		sqlite3_free (stmt);
 	}
@@ -2185,8 +2207,9 @@ e_book_backend_sqlitedb_get_partially_cached_ids (EBookBackendSqliteDB *ebsdb,
 
 	READER_LOCK (ebsdb);
 
-	stmt = sqlite3_mprintf ("SELECT uid FROM %Q WHERE partial_content = 1",
-							folderid);
+	stmt = sqlite3_mprintf (
+		"SELECT uid FROM %Q WHERE partial_content = 1",
+		folderid);
 	book_backend_sql_exec (ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 	sqlite3_free (stmt);
 
@@ -2286,7 +2309,8 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 
 	g_free (filename);
 	if (ret == -1) {
-		g_set_error (error, E_BOOK_SDB_ERROR,
+		g_set_error (
+			error, E_BOOK_SDB_ERROR,
 				0, "Unable to remove the db file: errno %d", errno);
 		return FALSE;
 	}

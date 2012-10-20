@@ -1765,8 +1765,8 @@ e_name_selector_dialog_set_scrolling_policy (ENameSelectorDialog *name_selector_
  **/
 void
 e_name_selector_dialog_set_section_visible (ENameSelectorDialog *name_selector_dialog,
-					    const gchar *name,
-					    gboolean visible)
+                                            const gchar *name,
+                                            gboolean visible)
 {
 	Section *section;
 	gint index;
@@ -1796,7 +1796,7 @@ e_name_selector_dialog_set_section_visible (ENameSelectorDialog *name_selector_d
  **/
 gboolean
 e_name_selector_dialog_get_section_visible (ENameSelectorDialog *name_selector_dialog,
-					    const gchar *name)
+                                            const gchar *name)
 {
 	Section *section;
 	gint index;

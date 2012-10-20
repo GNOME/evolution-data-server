@@ -214,8 +214,9 @@ e_destination_copy (const EDestination *dest)
 
 	/* deep copy, recursively copy our children */
 	for (iter = dest->priv->list_dests; iter != NULL; iter = g_list_next (iter)) {
-		new_dest->priv->list_dests = g_list_append (new_dest->priv->list_dests,
-							    e_destination_copy (E_DESTINATION (iter->data)));
+		new_dest->priv->list_dests = g_list_append (
+			new_dest->priv->list_dests,
+			e_destination_copy (E_DESTINATION (iter->data)));
 	}
 
 	/* XXX other settings? */
@@ -387,13 +388,17 @@ e_destination_set_contact (EDestination *dest,
 			gint list_iterations = 0;
 			gint lists_count = 0;
 
-			hash_table = g_hash_table_new_full (g_str_hash, g_str_equal,
-						(GDestroyNotify) g_free, NULL);
+			hash_table = g_hash_table_new_full (
+				g_str_hash, g_str_equal,
+				(GDestroyNotify) g_free, NULL);
 
 			g_hash_table_insert (hash_table, g_strdup ("0"), dest);
 
-			e_destination_set_name (dest,
-				e_contact_get_const (dest->priv->contact, E_CONTACT_FILE_AS));
+			e_destination_set_name (
+				dest,
+				e_contact_get_const (
+					dest->priv->contact,
+					E_CONTACT_FILE_AS));
 
 			attrs = g_list_copy (e_vcard_get_attributes (E_VCARD (dest->priv->contact)));
 			list_length = g_list_length (attrs);
@@ -1358,8 +1363,10 @@ e_destination_xml_encode (const EDestination *dest)
 		}
 
 		xmlNewProp (dest_node, (xmlChar *)"is_list", (xmlChar *)"yes");
-		xmlNewProp (dest_node, (xmlChar *)"show_addresses",
-			    e_destination_list_show_addresses (dest) ? (xmlChar *)"yes" : (xmlChar *)"no");
+		xmlNewProp (
+			dest_node, (xmlChar *)"show_addresses",
+			e_destination_list_show_addresses (dest) ?
+			(xmlChar *)"yes" : (xmlChar *)"no");
 	}
 
 	str = e_destination_get_source_uid (dest);
@@ -1378,10 +1385,15 @@ e_destination_xml_encode (const EDestination *dest)
 		xmlNewProp (uri_node, (xmlChar *)"email_num", (xmlChar *) buf);
 	}
 
-	xmlNewProp (dest_node, (xmlChar *)"html_mail", e_destination_get_html_mail_pref (dest) ? (xmlChar *)"yes" : (xmlChar *)"no");
+	xmlNewProp (
+		dest_node, (xmlChar *)"html_mail",
+		e_destination_get_html_mail_pref (dest) ?
+		(xmlChar *)"yes" : (xmlChar *)"no");
 
-	xmlNewProp (dest_node, (xmlChar *)"auto_recipient",
-		    e_destination_is_auto_recipient (dest) ? (xmlChar *)"yes" : (xmlChar *)"no");
+	xmlNewProp (
+		dest_node, (xmlChar *)"auto_recipient",
+		e_destination_is_auto_recipient (dest) ?
+		(xmlChar *)"yes" : (xmlChar *)"no");
 
 	return dest_node;
 }
@@ -1769,23 +1781,27 @@ e_destination_export_to_vcard_attribute (EDestination *dest,
 	e_vcard_attribute_remove_params (attr);
 
 	if (e_destination_get_contact_uid (dest))
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
-							e_destination_get_contact_uid (dest));
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
+			e_destination_get_contact_uid (dest));
 	if (e_destination_get_source_uid (dest))
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_X_DEST_SOURCE_UID),
-							e_destination_get_source_uid (dest));
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_X_DEST_SOURCE_UID),
+			e_destination_get_source_uid (dest));
 	if (-1 != e_destination_get_email_num (dest)) {
 		gchar buf[10];
 		g_snprintf (buf, sizeof (buf), "%d", e_destination_get_email_num (dest));
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_X_DEST_EMAIL_NUM),
-							buf);
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_X_DEST_EMAIL_NUM),
+			buf);
 	}
-	e_vcard_attribute_add_param_with_value (attr,
-						e_vcard_attribute_param_new (EVC_X_DEST_HTML_MAIL),
-						e_destination_get_html_mail_pref (dest) ? "TRUE" : "FALSE");
+	e_vcard_attribute_add_param_with_value (
+		attr,
+		e_vcard_attribute_param_new (EVC_X_DEST_HTML_MAIL),
+		e_destination_get_html_mail_pref (dest) ? "TRUE" : "FALSE");
 
 	if (e_destination_get_address (dest))
 		e_vcard_attribute_add_value (attr, e_destination_get_address (dest));

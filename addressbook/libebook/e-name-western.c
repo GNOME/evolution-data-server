@@ -735,8 +735,12 @@ e_name_western_reorder_asshole (ENameWestern *name,
 	 * Create our new reordered version of the name.
 	 */
 #define NULLSTR(a) ((a) == NULL ? "" : (a))
-	newfull = g_strdup_printf ("%s %s %s %s", NULLSTR (prefix), NULLSTR (firstmidnick),
-				   NULLSTR (last), NULLSTR (suffix));
+	newfull = g_strdup_printf (
+		"%s %s %s %s",
+		NULLSTR (prefix),
+		NULLSTR (firstmidnick),
+		NULLSTR (last),
+		NULLSTR (suffix));
 	g_strstrip (newfull);
 	g_free (name->full);
 	name->full = newfull;

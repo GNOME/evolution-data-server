@@ -340,8 +340,8 @@ void		e_book_backend_respond_opened	(EBookBackend *backend,
 #ifndef EDS_DISABLE_DEPRECATED
 void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
-						                       gpointer user_data),
-						                       gpointer user_data);
+								       gpointer user_data),
+								       gpointer user_data);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

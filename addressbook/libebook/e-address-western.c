@@ -393,8 +393,9 @@ e_address_western_parse (const gchar *in_address)
 			}
 			else {
 				if (eaw->street == NULL) {
-					e_address_western_extract_street (lines[cntr], &eaw->street,
-										&eaw->extended );
+					e_address_western_extract_street (
+						lines[cntr], &eaw->street,
+						&eaw->extended );
 				}
 				else {
 					gchar *temp;

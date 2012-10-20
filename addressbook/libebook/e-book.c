@@ -220,34 +220,34 @@ e_book_class_init (EBookClass *e_book_class)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (e_book_class);
 
-	e_book_signals[WRITABLE_STATUS] =
-		g_signal_new ("writable_status",
-			      G_OBJECT_CLASS_TYPE (gobject_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClass, writable_status),
-			      NULL, NULL,
-			      e_book_marshal_NONE__BOOL,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_BOOLEAN);
+	e_book_signals[WRITABLE_STATUS] = g_signal_new (
+		"writable_status",
+		G_OBJECT_CLASS_TYPE (gobject_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClass, writable_status),
+		NULL, NULL,
+		e_book_marshal_NONE__BOOL,
+		G_TYPE_NONE, 1,
+		G_TYPE_BOOLEAN);
 
-	e_book_signals[CONNECTION_STATUS] =
-		g_signal_new ("connection_status",
-			      G_OBJECT_CLASS_TYPE (gobject_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClass, connection_status),
-			      NULL, NULL,
-			      e_book_marshal_NONE__BOOL,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_BOOLEAN);
+	e_book_signals[CONNECTION_STATUS] = g_signal_new (
+		"connection_status",
+		G_OBJECT_CLASS_TYPE (gobject_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClass, connection_status),
+		NULL, NULL,
+		e_book_marshal_NONE__BOOL,
+		G_TYPE_NONE, 1,
+		G_TYPE_BOOLEAN);
 
-	e_book_signals[BACKEND_DIED] =
-		g_signal_new ("backend_died",
-			      G_OBJECT_CLASS_TYPE (gobject_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClass, backend_died),
-			      NULL, NULL,
-			      e_book_marshal_NONE__NONE,
-			      G_TYPE_NONE, 0);
+	e_book_signals[BACKEND_DIED] = g_signal_new (
+		"backend_died",
+		G_OBJECT_CLASS_TYPE (gobject_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClass, backend_died),
+		NULL, NULL,
+		e_book_marshal_NONE__NONE,
+		G_TYPE_NONE, 0);
 
 	gobject_class->dispose = e_book_dispose;
 	gobject_class->finalize = e_book_finalize;
@@ -1910,8 +1910,9 @@ e_book_get_book_view (EBook *book,
 		*book_view = _e_book_view_new (book, gdbus_bookview);
 	} else {
 		*book_view = NULL;
-		g_set_error_literal (error, E_BOOK_ERROR, E_BOOK_ERROR_DBUS_EXCEPTION,
-			     "Cannot get connection to view");
+		g_set_error_literal (
+			error, E_BOOK_ERROR, E_BOOK_ERROR_DBUS_EXCEPTION,
+			"Cannot get connection to view");
 		ret = FALSE;
 	}
 
@@ -2871,12 +2872,13 @@ make_me_card (void)
 		g_string_append_printf (vcard, "FN:%s\n", s);
 
 		western = e_name_western_parse (s);
-		g_string_append_printf (vcard, "N:%s;%s;%s;%s;%s\n",
-					western->last ? western->last : "",
-					western->first ? western->first : "",
-					western->middle ? western->middle : "",
-					western->prefix ? western->prefix : "",
-					western->suffix ? western->suffix : "");
+		g_string_append_printf (
+			vcard, "N:%s;%s;%s;%s;%s\n",
+			western->last ? western->last : "",
+			western->first ? western->first : "",
+			western->middle ? western->middle : "",
+			western->prefix ? western->prefix : "",
+			western->suffix ? western->suffix : "");
 		e_name_western_free (western);
 	}
 	g_string_append (vcard, "END:VCARD");

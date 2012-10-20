@@ -71,7 +71,7 @@ G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT)
 
 static gboolean
 is_source_enabled_with_parents (ESourceRegistry *registry,
-				ESource *source)
+                                ESource *source)
 {
 	ESource *parent;
 	const gchar *parent_uid;

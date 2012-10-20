@@ -418,13 +418,15 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache,
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid ((icaltimezone *) zone))) {
-		retval = e_file_cache_replace_object (E_FILE_CACHE (cache),
-						      icaltimezone_get_tzid ((icaltimezone *) zone),
-						      obj);
+		retval = e_file_cache_replace_object (
+			E_FILE_CACHE (cache),
+			icaltimezone_get_tzid ((icaltimezone *) zone),
+			obj);
 	} else {
-		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
-						  icaltimezone_get_tzid ((icaltimezone *) zone),
-						  obj);
+		retval = e_file_cache_add_object (
+			E_FILE_CACHE (cache),
+			icaltimezone_get_tzid ((icaltimezone *) zone),
+			obj);
 	}
 	g_free (obj);
 
@@ -465,12 +467,14 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache,
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), "default_zone")) {
-		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), "default_zone",
-						      obj);
+		retval = e_file_cache_replace_object (
+			E_FILE_CACHE (cache), "default_zone",
+			obj);
 	} else {
-		retval = e_file_cache_add_object (E_FILE_CACHE (cache),
-						 "default_zone",
-						  obj);
+		retval = e_file_cache_add_object (
+			E_FILE_CACHE (cache),
+			"default_zone",
+			obj);
 	}
 	g_free (obj);
 

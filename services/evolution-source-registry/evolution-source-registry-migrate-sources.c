@@ -1056,7 +1056,8 @@ migrate_parse_url_rename_params (CamelURL *url)
 		gchar *value = NULL;
 
 		enum_class = g_type_class_ref (CAMEL_TYPE_NETWORK_SECURITY_METHOD);
-		enum_value = g_enum_get_value (enum_class,
+		enum_value = g_enum_get_value (
+			enum_class,
 			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 		if (enum_value != NULL) {
 			value = g_strdup (enum_value->value_nick);

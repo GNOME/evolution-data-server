@@ -307,79 +307,96 @@ e_cal_view_class_init (ECalViewClass *class)
 
 	g_type_class_add_private (class, sizeof (ECalViewPrivate));
 
-	g_object_class_install_property (object_class, PROP_VIEW,
-		g_param_spec_pointer ("view", "The GDBus view proxy", NULL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (
+		object_class,
+		PROP_VIEW,
+		g_param_spec_pointer (
+			"view",
+			"The GDBus view proxy",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (object_class, PROP_CLIENT,
-		g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
-        /**
-         * ECalView::objects-added:
-         * @view:: self
-         * @objects: (type GLib.List) (transfer none) (element-type long):
-         */
-	signals[OBJECTS_ADDED] =
-		g_signal_new ("objects_added",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewClass, objects_added),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
-        /**
-         * ECalView::objects-modified:
-         * @view:: self
-         * @objects: (type GLib.List) (transfer none) (element-type long):
-         */
-	signals[OBJECTS_MODIFIED] =
-		g_signal_new ("objects_modified",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewClass, objects_modified),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
-        /**
-         * ECalView::objects-removed:
-         * @view:: self
-         * @objects: (type GLib.List) (transfer none) (element-type ECalComponentId):
-         */
-	signals[OBJECTS_REMOVED] =
-		g_signal_new ("objects_removed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewClass, objects_removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[VIEW_PROGRESS] =
-		g_signal_new ("view_progress",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewClass, view_progress),
-			      NULL, NULL,
-			      e_cal_marshal_VOID__STRING_UINT,
-			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
+	g_object_class_install_property (
+		object_class,
+		PROP_CLIENT,
+		g_param_spec_object (
+			"client",
+			"The e-cal for the view",
+			NULL,
+			E_TYPE_CAL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
+
+	/**
+	 * ECalView::objects-added:
+	 * @view:: self
+	 * @objects: (type GLib.List) (transfer none) (element-type long):
+	 */
+	signals[OBJECTS_ADDED] = g_signal_new (
+		"objects_added",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalViewClass, objects_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	/**
+	 * ECalView::objects-modified:
+	 * @view:: self
+	 * @objects: (type GLib.List) (transfer none) (element-type long):
+	 */
+	signals[OBJECTS_MODIFIED] = g_signal_new (
+		"objects_modified",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalViewClass, objects_modified),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	/**
+	 * ECalView::objects-removed:
+	 * @view:: self
+	 * @objects: (type GLib.List) (transfer none) (element-type ECalComponentId):
+	 */
+	signals[OBJECTS_REMOVED] = g_signal_new (
+		"objects_removed",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalViewClass, objects_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[VIEW_PROGRESS] = g_signal_new (
+		"view_progress",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalViewClass, view_progress),
+		NULL, NULL,
+		e_cal_marshal_VOID__STRING_UINT,
+		G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
 
 	/* XXX The "view-done" signal is deprecated. */
-	signals[VIEW_DONE] =
-		g_signal_new ("view_done",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewClass, view_done),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__INT,
-			      G_TYPE_NONE, 1, G_TYPE_INT);
+	signals[VIEW_DONE] = g_signal_new (
+		"view_done",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalViewClass, view_done),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__INT,
+		G_TYPE_NONE, 1, G_TYPE_INT);
 
-	signals[VIEW_COMPLETE] =
-		g_signal_new ("view_complete",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalViewClass, view_complete),
-			      NULL, NULL,
-			      e_cal_marshal_VOID__UINT_STRING,
-			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+	signals[VIEW_COMPLETE] = g_signal_new (
+		"view_complete",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalViewClass, view_complete),
+		NULL, NULL,
+		e_cal_marshal_VOID__UINT_STRING,
+		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 }
 
 /**
@@ -400,7 +417,8 @@ _e_cal_view_new (ECal *ecal,
 {
 	ECalView *view;
 
-	view = g_object_new (E_TYPE_CAL_VIEW,
+	view = g_object_new (
+		E_TYPE_CAL_VIEW,
 		"client", ecal,
 		"view", gdbus_calview,
 		NULL);

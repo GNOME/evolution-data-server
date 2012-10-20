@@ -1031,8 +1031,9 @@ e_book_backend_sexp_new (const gchar *text)
 					     (ESExpIFunc *) symbols[i].func, sexp->priv->search_context);
 		}
 		else {
-			e_sexp_add_function (sexp->priv->search_sexp, 0, symbols[i].name,
-					    symbols[i].func, sexp->priv->search_context);
+			e_sexp_add_function (
+				sexp->priv->search_sexp, 0, symbols[i].name,
+				symbols[i].func, sexp->priv->search_context);
 		}
 	}
 

@@ -435,8 +435,9 @@ time_to_gdate_with_zone (GDate *date,
 	g_return_if_fail (date != NULL);
 	g_return_if_fail (time != -1);
 
-	tt = icaltime_from_timet_with_zone (time, FALSE,
-					    zone ? zone : icaltimezone_get_utc_timezone ());
+	tt = icaltime_from_timet_with_zone (
+		time, FALSE,
+		zone ? zone : icaltimezone_get_utc_timezone ());
 
 	g_date_set_dmy (date, tt.day, tt.month, tt.year);
 }

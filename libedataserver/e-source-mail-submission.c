@@ -402,7 +402,7 @@ e_source_mail_submission_get_replies_to_origin_folder (ESourceMailSubmission *ex
  **/
 void
 e_source_mail_submission_set_replies_to_origin_folder (ESourceMailSubmission *extension,
-						       gboolean replies_to_origin_folder)
+                                                       gboolean replies_to_origin_folder)
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
 

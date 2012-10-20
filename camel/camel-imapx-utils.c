@@ -388,15 +388,17 @@ create_initial_capabilities_table (void)
 	/* TODO add imapx_utils_uninit()
 	 *      to free hash table
 	 */
-	capa_htable = g_hash_table_new_full (g_str_hash,
-					     g_str_equal,
-					     g_free,
-					     NULL);
+	capa_htable = g_hash_table_new_full (
+		g_str_hash,
+		g_str_equal,
+		g_free,
+		NULL);
 
 	for (i = 0; i < G_N_ELEMENTS (capa_table); i++) {
-		g_hash_table_insert (capa_htable,
-				     g_strdup (capa_table[i].name),
-				     GUINT_TO_POINTER (capa_table[i].flag));
+		g_hash_table_insert (
+			capa_htable,
+			g_strdup (capa_table[i].name),
+			GUINT_TO_POINTER (capa_table[i].flag));
 	}
 }
 
@@ -432,9 +434,10 @@ imapx_parse_capability (CamelIMAPXStream *stream,
 				while ((c = *p))
 					*p++ = toupper(c);
 				if (!strncmp ((gchar *) token, "AUTH=", 5)) {
-					g_hash_table_insert (cinfo->auth_types,
-							g_strdup ((gchar *) token + 5),
-							GINT_TO_POINTER (1));
+					g_hash_table_insert (
+						cinfo->auth_types,
+						g_strdup ((gchar *) token + 5),
+						GINT_TO_POINTER (1));
 					break;
 				}
 			case IMAPX_TOK_INT:
@@ -483,8 +486,8 @@ imapx_register_capability (const gchar *capability)
 	 * (1 << 0), so we can use GPOINTER_TO_UINT (NULL) as
 	 * invalid value
 	 */
-	capa_id = GPOINTER_TO_UINT (g_hash_table_lookup (capa_htable,
-							 capability));
+	capa_id = GPOINTER_TO_UINT (
+		g_hash_table_lookup (capa_htable, capability));
 	if (capa_id > 0)
 		goto exit;
 
@@ -505,9 +508,10 @@ imapx_register_capability (const gchar *capability)
 	capa_id = (guint32) check_id;
 
 	/* insert */
-	g_hash_table_insert (capa_htable,
-			     g_strdup (capability),
-			     GUINT_TO_POINTER (capa_id));
+	g_hash_table_insert (
+		capa_htable,
+		g_strdup (capability),
+		GUINT_TO_POINTER (capa_id));
 
  exit:
 	g_mutex_unlock (&capa_htable_lock);
@@ -2223,9 +2227,10 @@ imapx_get_temp_uid (void)
 	G_LOCK_DEFINE_STATIC (lock);
 
 	G_LOCK (lock);
-	res = g_strdup_printf ("tempuid-%lx-%d",
-			       (gulong) time (NULL),
-			       counter++);
+	res = g_strdup_printf (
+		"tempuid-%lx-%d",
+		(gulong) time (NULL),
+		counter++);
 	G_UNLOCK (lock);
 
 	return res;
