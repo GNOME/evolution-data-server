@@ -1,8 +1,116 @@
-Evolution-Data-Server 3.7.1 2012-10-15
+Evolution-Data-Server 3.7.1 2012-10-22
 --------------------------------------
 
 Dependency Changes:
 	* Replaced gnome-keyring-1 with libsecret-1
+
+Bug Fixes:
+	Bug 201807 - Cannot specify sendmail parameters (Milan Crha)
+	Bug 268618 - Add: Save replies in the folder of the message being
+	             replied to (Milan Crha)
+	Bug 310978 - USENET always requires authentication (Milan Crha)
+	Bug 549819 - Cannot specify a custom sendmail program (Milan Crha)
+	Bug 641825 - Crash in poll_ldap() when finalizing the backend
+	             (Milan Crha)
+	Bug 679914 - Replace libgnomekeyring with libsecret (Stef Walter)
+	Bug 681314 - Add address dialog should follow composer's view settings
+	             (Milan Crha)
+	Bug 684655 - Files in data/sources are not getting translated
+	             (Gert Kulyk)
+	Bug 685588 - Remove useless LIBICAL_CFLAGS and LIBICAL_LIBS
+	             (Peter Hurley)
+	Bug 685713 - ESourceRegistry's manager thread aborts on error
+	             (Matthew Barnes)
+	Bug 685725 - Handle "muser" attributes in %gconf.xml files
+	             (Bastien Nocera)
+	Bug 686421 - Restore libebook tests to minimum working condition
+	             (Tristan Van Berkom)
+
+Other Changes:
+	* Remove e_data_book_view_ref/unref(). (Matthew Barnes)
+	* EBook: Reimplement "remove" functions. (Matthew Barnes)
+	* EGdbusBook: Remove the remove() method. (Matthew Barnes)
+	* Rename e_book_backend_start_book_view(). (Matthew Barnes)
+	* Rename e_book_backend_stop_book_view(). (Matthew Barnes)
+	* Rename e_book_backend_add_book_view(). (Matthew Barnes)
+	* Rename e_book_backend_remove_book_view(). (Matthew Barnes)
+	* Add e_book_backend_list_views(). (Matthew Barnes)
+	* Deprecate e_book_backend_foreach_view(). (Matthew Barnes)
+	* Remove e_data_book_register_gdbus_object(). (Matthew Barnes)
+	* Remove e_data_book_view_register_gdbus_object(). (Matthew Barnes)
+	* libedata-cal: Purge deprecated APIs. (Matthew Barnes)
+	* ECal: Reimplement "remove" functions. (Matthew Barnes)
+	* EGdbusCal: Remove the remove() method. (Matthew Barnes)
+	* ECalBackend: Prefer GList over GSList. (Matthew Barnes)
+	* Add e_cal_backend_list_views(). (Matthew Barnes)
+	* Deprecate e_cal_backend_foreach_view(). (Matthew Barnes)
+	* Remove e_data_cal_register_gdbus_object(). (Matthew Barnes)
+	* Remove e_data_cal_view_register_gdbus_object(). (Matthew Barnes)
+	* Don't migrate sources with empty attributes (Dan Vrátil)
+	* EGDataGoaAuthorizer: Use GHmac to sign the OAuth parameters.
+	  (Matthew Barnes)
+	* Drop oauth package requirement for GOA support. (Matthew Barnes)
+	* EGDataGoaAuthorizer: Prototype OAuth 2.0 support. (Matthew Barnes)
+	* online-accounts: Refresh mail account settings on startup.
+	  (Matthew Barnes)
+	* Add e_book_backend_sexp_text(). (Matthew Barnes)
+	* Deprecate e_source_extension_get_source(). (Matthew Barnes)
+	* Silence libsecret unstable API warnings. (Matthew Barnes)
+	* ESourceRegistryServer: File monitor should set flags on new sources.
+	  (Matthew Barnes)
+	* Rename 'online-accounts' module to 'gnome-online-accounts'.
+	  (Matthew Barnes)
+	* Change camel_junk_filter_classify() signature. (Matthew Barnes)
+	* evolution-source-viewer: Select next source after deleting.
+	  (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Alexander Shopov (bg)
+	Runa Bhattacharjee (bn_IN)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Jiri Eischmann (cs)
+	Marek Černocký (cs)
+	Flemming Christensen (da)
+	Tom Tryfonidis (el)
+	Daniel Mustieles (es)
+	Timo Jyrinki (fi)
+	Alexandre Franke (fr)
+	Fran Diéguez (gl)
+	Rajesh Ranjan (hi)
+	Gabor Kelemen (hu)
+	Andika Triwidada (id)
+	Luca Ferretti (it)
+	Žygimantas Beručka (lt)
+	Rūdolfs Mazurs (lv)
+	A S Alam (pa)
+	Piotr Drąg (pl)
+	Rafael Ferreira (pt_BR)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+	Matej Urbančič (sl)
+	Krishnababu Krothapalli (te)
+	Chao-Hsiung Liao (zh_HK)
+
+
+Evolution-Data-Server 3.6.0 2012-09-24
+--------------------------------------
+
+Translations:
+	Runa Bhattacharjee (bn_IN)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Rajesh Ranjan (hi)
+	Gabor Kelemen (hu)
+	Shankar Prasad (kn)
+	Rūdolfs Mazurs (lv)
+	Ani Peter (ml)
+	A S Alam (pa)
+	Djavan Fagundes (pt_BR)
+	Rafael Ferreira (pt_BR)
+	Matej Urbančič (sl)
+	Krishnababu Krothapalli (te)
 
 
 Evolution-Data-Server 3.5.92 2012-09-17
