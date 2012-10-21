@@ -278,7 +278,8 @@ gdbus_book_factory_activate (GError **error)
 	}
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy));
-	book_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
+	book_connection_closed_id = g_dbus_connection_signal_subscribe (
+		connection,
 		NULL,						/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -506,12 +507,13 @@ e_book_client_new (ESource *source,
 		return NULL;
 	}
 
-	client->priv->gdbus_book = G_DBUS_PROXY (e_gdbus_book_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
-						      G_DBUS_PROXY_FLAGS_NONE,
-						      ADDRESS_BOOK_DBUS_SERVICE_NAME,
-						      path,
-						      NULL,
-						      &err));
+	client->priv->gdbus_book = G_DBUS_PROXY (
+		e_gdbus_book_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
+		G_DBUS_PROXY_FLAGS_NONE,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		path,
+		NULL,
+		&err));
 
 	if (!client->priv->gdbus_book) {
 		g_free (path);
@@ -528,7 +530,8 @@ e_book_client_new (ESource *source,
 	g_free (path);
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (client->priv->gdbus_book));
-	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (
+		connection,
 		"org.freedesktop.DBus",				/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -571,12 +574,13 @@ make_me_card (void)
 		g_string_append_printf (vcard, "FN:%s\n", s);
 
 		western = e_name_western_parse (s);
-		g_string_append_printf (vcard, "N:%s;%s;%s;%s;%s\n",
-					western->last ? western->last : "",
-					western->first ? western->first : "",
-					western->middle ? western->middle : "",
-					western->prefix ? western->prefix : "",
-					western->suffix ? western->suffix : "");
+		g_string_append_printf (
+			vcard, "N:%s;%s;%s;%s;%s\n",
+			western->last ? western->last : "",
+			western->first ? western->first : "",
+			western->middle ? western->middle : "",
+			western->prefix ? western->prefix : "",
+			western->suffix ? western->suffix : "");
 		e_name_western_free (western);
 	}
 	g_string_append (vcard, "END:VCARD");
@@ -769,7 +773,8 @@ book_client_get_backend_property (EClient *client,
 	if (prop_value) {
 		e_client_finish_async_without_dbus (client, cancellable, callback, user_data, book_client_get_backend_property_from_cache_finish, prop_value, g_free);
 	} else {
-		e_client_proxy_call_string_with_res_op_data (client, prop_name, cancellable, callback, user_data, book_client_get_backend_property, prop_name,
+		e_client_proxy_call_string_with_res_op_data (
+			client, prop_name, cancellable, callback, user_data, book_client_get_backend_property, prop_name,
 			e_gdbus_book_call_get_backend_property,
 			NULL, NULL, e_gdbus_book_call_get_backend_property_finish, NULL, NULL);
 	}
@@ -852,9 +857,10 @@ book_client_set_backend_property (EClient *client,
 
 	prop_name_value = e_gdbus_book_encode_set_backend_property (prop_name, prop_value);
 
-	e_client_proxy_call_strv (client, (const gchar * const *) prop_name_value, cancellable, callback, user_data, book_client_set_backend_property,
-			e_gdbus_book_call_set_backend_property,
-			e_gdbus_book_call_set_backend_property_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		client, (const gchar * const *) prop_name_value, cancellable, callback, user_data, book_client_set_backend_property,
+		e_gdbus_book_call_set_backend_property,
+		e_gdbus_book_call_set_backend_property_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (prop_name_value);
 }
@@ -901,9 +907,10 @@ book_client_open (EClient *client,
                   GAsyncReadyCallback callback,
                   gpointer user_data)
 {
-	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, book_client_open,
-			e_gdbus_book_call_open,
-			e_gdbus_book_call_open_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_boolean (
+		client, only_if_exists, cancellable, callback, user_data, book_client_open,
+		e_gdbus_book_call_open,
+		e_gdbus_book_call_open_finish, NULL, NULL, NULL, NULL);
 }
 
 static gboolean
@@ -940,9 +947,10 @@ book_client_refresh (EClient *client,
                      GAsyncReadyCallback callback,
                      gpointer user_data)
 {
-	e_client_proxy_call_void (client, cancellable, callback, user_data, book_client_refresh,
-			e_gdbus_book_call_refresh,
-			e_gdbus_book_call_refresh_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_void (
+		client, cancellable, callback, user_data, book_client_refresh,
+		e_gdbus_book_call_refresh,
+		e_gdbus_book_call_refresh_finish, NULL, NULL, NULL, NULL);
 }
 
 static gboolean
@@ -1005,9 +1013,10 @@ e_book_client_add_contact (EBookClient *client,
 
 	g_return_if_fail (strv[0] != NULL);
 
-	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_add_contact,
-			e_gdbus_book_call_add_contacts,
-			NULL, NULL, NULL, e_gdbus_book_call_add_contacts_finish, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_add_contact,
+		e_gdbus_book_call_add_contacts,
+		NULL, NULL, NULL, e_gdbus_book_call_add_contacts_finish, NULL);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -1138,9 +1147,10 @@ e_book_client_add_contacts (EBookClient *client,
 
 	array = contact_slist_to_utf8_vcard_array (contacts);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_add_contacts,
-			e_gdbus_book_call_add_contacts,
-			NULL, NULL, NULL, e_gdbus_book_call_add_contacts_finish, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_add_contacts,
+		e_gdbus_book_call_add_contacts,
+		NULL, NULL, NULL, e_gdbus_book_call_add_contacts_finish, NULL);
 
 	g_strfreev (array);
 }
@@ -1279,9 +1289,10 @@ e_book_client_modify_contact (EBookClient *client,
 
 	g_return_if_fail (strv[0] != NULL);
 
-	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_modify_contact,
-			e_gdbus_book_call_modify_contacts,
-			e_gdbus_book_call_modify_contacts_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_modify_contact,
+		e_gdbus_book_call_modify_contacts,
+		e_gdbus_book_call_modify_contacts_finish, NULL, NULL, NULL, NULL);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -1378,9 +1389,10 @@ e_book_client_modify_contacts (EBookClient *client,
 
 	array = contact_slist_to_utf8_vcard_array (contacts);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_modify_contacts,
-			e_gdbus_book_call_modify_contacts,
-			e_gdbus_book_call_modify_contacts_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_modify_contacts,
+		e_gdbus_book_call_modify_contacts,
+		e_gdbus_book_call_modify_contacts_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (array);
 }
@@ -1481,9 +1493,10 @@ e_book_client_remove_contact (EBookClient *client,
 	strv[0] = safe_uid;
 	strv[1] = NULL;
 
-	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_remove_contact,
-			e_gdbus_book_call_remove_contacts,
-			e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_remove_contact,
+		e_gdbus_book_call_remove_contacts,
+		e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
 
 	g_free (gdbus_uid);
 }
@@ -1589,9 +1602,10 @@ e_book_client_remove_contact_by_uid (EBookClient *client,
 	strv[0] = safe_uid;
 	strv[1] = NULL;
 
-	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_remove_contact_by_uid,
-			e_gdbus_book_call_remove_contacts,
-			e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_remove_contact_by_uid,
+		e_gdbus_book_call_remove_contacts,
+		e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
 
 	g_free (gdbus_uid);
 }
@@ -1692,9 +1706,10 @@ e_book_client_remove_contacts (EBookClient *client,
 	strv = e_client_util_slist_to_strv (uids);
 	g_return_if_fail (strv != NULL);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_book_client_remove_contacts,
-			e_gdbus_book_call_remove_contacts,
-			e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_book_client_remove_contacts,
+		e_gdbus_book_call_remove_contacts,
+		e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -1791,9 +1806,10 @@ e_book_client_get_contact (EBookClient *client,
 	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
 	g_return_if_fail (safe_uid != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), safe_uid, cancellable, callback, user_data, e_book_client_get_contact,
-			e_gdbus_book_call_get_contact,
-			NULL, NULL, e_gdbus_book_call_get_contact_finish, NULL, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), safe_uid, cancellable, callback, user_data, e_book_client_get_contact,
+		e_gdbus_book_call_get_contact,
+		NULL, NULL, e_gdbus_book_call_get_contact_finish, NULL, NULL);
 
 	g_free (gdbus_uid);
 }
@@ -1916,9 +1932,10 @@ e_book_client_get_contacts (EBookClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts,
-			e_gdbus_book_call_get_contact_list,
-			NULL, NULL, NULL, e_gdbus_book_call_get_contact_list_finish, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts,
+		e_gdbus_book_call_get_contact_list,
+		NULL, NULL, NULL, e_gdbus_book_call_get_contact_list_finish, NULL);
 
 	g_free (gdbus_sexp);
 }
@@ -2057,9 +2074,10 @@ e_book_client_get_contacts_uids (EBookClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts_uids,
-			e_gdbus_book_call_get_contact_list_uids,
-			NULL, NULL, NULL, e_gdbus_book_call_get_contact_list_uids_finish, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts_uids,
+		e_gdbus_book_call_get_contact_list_uids,
+		NULL, NULL, NULL, e_gdbus_book_call_get_contact_list_uids_finish, NULL);
 
 	g_free (gdbus_sexp);
 }
@@ -2198,9 +2216,10 @@ e_book_client_get_view (EBookClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_view,
-			e_gdbus_book_call_get_view,
-			NULL, NULL, e_gdbus_book_call_get_view_finish, NULL, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_view,
+		e_gdbus_book_call_get_view,
+		NULL, NULL, e_gdbus_book_call_get_view_finish, NULL, NULL);
 
 	g_free (gdbus_sexp);
 }
@@ -2218,12 +2237,13 @@ complete_get_view (EBookClient *client,
 		GError *local_error = NULL;
 		EGdbusBookView *gdbus_bookview;
 
-		gdbus_bookview = e_gdbus_book_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
-								G_DBUS_PROXY_FLAGS_NONE,
-								ADDRESS_BOOK_DBUS_SERVICE_NAME,
-								view_path,
-								NULL,
-								&local_error);
+		gdbus_bookview = e_gdbus_book_view_proxy_new_sync (
+			g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory_proxy)),
+			G_DBUS_PROXY_FLAGS_NONE,
+			ADDRESS_BOOK_DBUS_SERVICE_NAME,
+			view_path,
+			NULL,
+			&local_error);
 
 		if (gdbus_bookview) {
 			*view = _e_book_client_view_new (client, gdbus_bookview);

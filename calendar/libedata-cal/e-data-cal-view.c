@@ -96,15 +96,27 @@ e_data_cal_view_class_init (EDataCalViewClass *class)
 	object_class->dispose = e_data_cal_view_dispose;
 	object_class->finalize = e_data_cal_view_finalize;
 
-	g_object_class_install_property (object_class, PROP_BACKEND,
+	g_object_class_install_property (
+		object_class,
+		PROP_BACKEND,
 		g_param_spec_object (
-			"backend", NULL, NULL, E_TYPE_CAL_BACKEND,
-			G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			"backend",
+			NULL,
+			NULL,
+			E_TYPE_CAL_BACKEND,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (object_class, PROP_SEXP,
+	g_object_class_install_property (
+		object_class,
+		PROP_SEXP,
 		g_param_spec_object (
-			"sexp", NULL, NULL, E_TYPE_CAL_BACKEND_SEXP,
-			G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+			"sexp",
+			NULL,
+			NULL,
+			E_TYPE_CAL_BACKEND_SEXP,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static guint
@@ -296,9 +308,10 @@ notify_add (EDataCalView *view,
 	}
 
 	comp = e_cal_component_new_from_string (obj);
-	g_hash_table_insert (priv->ids,
-			     e_cal_component_get_id (comp),
-			     GUINT_TO_POINTER (1));
+	g_hash_table_insert (
+		priv->ids,
+		e_cal_component_get_id (comp),
+		GUINT_TO_POINTER (1));
 	g_object_unref (comp);
 }
 
@@ -326,9 +339,10 @@ notify_add_component (EDataCalView *view,
 		ensure_pending_flush_timeout (view);
 	}
 
-	g_hash_table_insert (priv->ids,
-			     e_cal_component_get_id (comp),
-			     GUINT_TO_POINTER (1));
+	g_hash_table_insert (
+		priv->ids,
+		e_cal_component_get_id (comp),
+		GUINT_TO_POINTER (1));
 }
 
 static void

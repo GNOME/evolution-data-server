@@ -314,49 +314,60 @@ e_book_view_class_init (EBookViewClass *class)
 
 	g_type_class_add_private (class, sizeof (EBookViewPrivate));
 
-	signals[CONTACTS_CHANGED] = g_signal_new ("contacts_changed",
-						   G_OBJECT_CLASS_TYPE (object_class),
-						   G_SIGNAL_RUN_LAST,
-						   G_STRUCT_OFFSET (EBookViewClass, contacts_changed),
-						   NULL, NULL,
-						   e_book_marshal_NONE__POINTER,
-						   G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[CONTACTS_REMOVED] = g_signal_new ("contacts_removed",
-						   G_OBJECT_CLASS_TYPE (object_class),
-						   G_SIGNAL_RUN_LAST,
-						   G_STRUCT_OFFSET (EBookViewClass, contacts_removed),
-						   NULL, NULL,
-						   e_book_marshal_NONE__POINTER,
-						   G_TYPE_NONE, 1, G_TYPE_POINTER);
-	signals[CONTACTS_ADDED] = g_signal_new ("contacts_added",
-						 G_OBJECT_CLASS_TYPE (object_class),
-						 G_SIGNAL_RUN_LAST,
-						 G_STRUCT_OFFSET (EBookViewClass, contacts_added),
-						 NULL, NULL,
-						 e_book_marshal_NONE__POINTER,
-						 G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[CONTACTS_CHANGED] = g_signal_new (
+		"contacts_changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookViewClass, contacts_changed),
+		NULL, NULL,
+		e_book_marshal_NONE__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[CONTACTS_REMOVED] = g_signal_new (
+		"contacts_removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookViewClass, contacts_removed),
+		NULL, NULL,
+		e_book_marshal_NONE__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[CONTACTS_ADDED] = g_signal_new (
+		"contacts_added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookViewClass, contacts_added),
+		NULL, NULL,
+		e_book_marshal_NONE__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
 	/* XXX The "sequence-complete" signal is deprecated. */
-	signals[SEQUENCE_COMPLETE] = g_signal_new ("sequence_complete",
-						    G_OBJECT_CLASS_TYPE (object_class),
-						    G_SIGNAL_RUN_LAST,
-						    G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
-						    NULL, NULL,
-						    e_book_marshal_NONE__INT,
-						    G_TYPE_NONE, 1, G_TYPE_UINT);
-	signals[VIEW_COMPLETE] = g_signal_new ("view_complete",
-						    G_OBJECT_CLASS_TYPE (object_class),
-						    G_SIGNAL_RUN_LAST,
-						    G_STRUCT_OFFSET (EBookViewClass, view_complete),
-						    NULL, NULL,
-						    e_book_marshal_NONE__UINT_STRING,
-						    G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
-	signals[STATUS_MESSAGE] = g_signal_new ("status_message",
-						 G_OBJECT_CLASS_TYPE (object_class),
-						 G_SIGNAL_RUN_LAST,
-						 G_STRUCT_OFFSET (EBookViewClass, status_message),
-						 NULL, NULL,
-						 e_book_marshal_NONE__STRING,
-						 G_TYPE_NONE, 1, G_TYPE_STRING);
+	signals[SEQUENCE_COMPLETE] = g_signal_new (
+		"sequence_complete",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
+		NULL, NULL,
+		e_book_marshal_NONE__INT,
+		G_TYPE_NONE, 1, G_TYPE_UINT);
+
+	signals[VIEW_COMPLETE] = g_signal_new (
+		"view_complete",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookViewClass, view_complete),
+		NULL, NULL,
+		e_book_marshal_NONE__UINT_STRING,
+		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+
+	signals[STATUS_MESSAGE] = g_signal_new (
+		"status_message",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookViewClass, status_message),
+		NULL, NULL,
+		e_book_marshal_NONE__STRING,
+		G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	object_class->dispose = e_book_view_dispose;
 }

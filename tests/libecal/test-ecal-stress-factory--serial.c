@@ -20,8 +20,8 @@ main (gint argc,
 	for (i = 0; i < NUM_CALS; i++) {
 		ECal *cal;
 
-		cal = ecal_test_utils_cal_new_temp (&uri,
-				E_CAL_SOURCE_TYPE_EVENT);
+		cal = ecal_test_utils_cal_new_temp (
+			&uri, E_CAL_SOURCE_TYPE_EVENT);
 		ecal_test_utils_cal_open (cal, FALSE);
 
 		g_free (uri);

@@ -406,13 +406,14 @@ e_cal_component_gen_uid (void)
 	}
 
 	iso = isodate_from_time_t (t);
-	ret = g_strdup_printf ("%s-%d-%d-%d-%d@%s",
-			       iso,
-			       getpid (),
-			       getgid (),
-			       getppid (),
-			       serial++,
-			       hostname);
+	ret = g_strdup_printf (
+		"%s-%d-%d-%d-%d@%s",
+		iso,
+		getpid (),
+		getgid (),
+		getppid (),
+		serial++,
+		hostname);
 	g_free (iso);
 
 	return ret;
@@ -2371,10 +2372,11 @@ e_cal_component_set_completed (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_icaltimetype (comp, &priv->completed,
-			  icalproperty_new_completed,
-			  icalproperty_set_completed,
-			  t);
+	set_icaltimetype (
+		comp, &priv->completed,
+		icalproperty_new_completed,
+		icalproperty_set_completed,
+		t);
 }
 
 /**
@@ -2423,10 +2425,11 @@ e_cal_component_set_created (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_icaltimetype (comp, &priv->created,
-			  icalproperty_new_created,
-			  icalproperty_set_created,
-			  t);
+	set_icaltimetype (
+		comp, &priv->created,
+		icalproperty_new_created,
+		icalproperty_set_created,
+		t);
 }
 
 /**
@@ -2606,8 +2609,9 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp,
 	}
 
 	/* Add on the DURATION. */
-	icaltime_adjust (dt->value, duration.days, duration.hours,
-			 duration.minutes, duration.seconds);
+	icaltime_adjust (
+		dt->value, duration.days, duration.hours,
+		duration.minutes, duration.seconds);
 }
 
 /**
@@ -2662,10 +2666,11 @@ e_cal_component_set_dtend (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_datetime (comp, &priv->dtend,
-		      icalproperty_new_dtend,
-		      icalproperty_set_dtend,
-		      dt);
+	set_datetime (
+		comp, &priv->dtend,
+		icalproperty_new_dtend,
+		icalproperty_set_dtend,
+		dt);
 
 	/* Make sure we remove any existing DURATION property, as it can't be
 	 * used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
@@ -2781,10 +2786,11 @@ e_cal_component_set_dtstart (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_datetime (comp, &priv->dtstart,
-		      icalproperty_new_dtstart,
-		      icalproperty_set_dtstart,
-		      dt);
+	set_datetime (
+		comp, &priv->dtstart,
+		icalproperty_new_dtstart,
+		icalproperty_set_dtstart,
+		dt);
 
 	priv->need_sequence_inc = TRUE;
 }
@@ -2841,10 +2847,11 @@ e_cal_component_set_due (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_datetime (comp, &priv->due,
-		      icalproperty_new_due,
-		      icalproperty_set_due,
-		      dt);
+	set_datetime (
+		comp, &priv->due,
+		icalproperty_new_due,
+		icalproperty_set_due,
+		dt);
 
 	/* Make sure we remove any existing DURATION property, as it can't be
 	 * used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
@@ -2900,8 +2907,9 @@ get_period_list (GSList *period_list,
 				else
 					p->type = E_CAL_COMPONENT_PERIOD_DURATION;
 			} else {
-				g_message ("get_period_list(): Unknown value for period %d; "
-					   "using DATETIME", value_type);
+				g_message (
+					"get_period_list(): Unknown value for period %d; "
+					"using DATETIME", value_type);
 				p->type = E_CAL_COMPONENT_PERIOD_DATETIME;
 			}
 		} else
@@ -3421,10 +3429,11 @@ e_cal_component_set_last_modified (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_icaltimetype (comp, &priv->last_modified,
-			  icalproperty_new_lastmodified,
-			  icalproperty_set_lastmodified,
-			  t);
+	set_icaltimetype (
+		comp, &priv->last_modified,
+		icalproperty_new_lastmodified,
+		icalproperty_set_lastmodified,
+		t);
 }
 
 /**
@@ -3515,13 +3524,15 @@ e_cal_component_set_organizer (ECalComponent *comp,
 		g_return_if_fail (priv->organizer.prop != NULL);
 
 		if (priv->organizer.sentby_param)
-			icalparameter_set_sentby (priv->organizer.sentby_param,
-						  (gchar *) organizer->sentby);
+			icalparameter_set_sentby (
+				priv->organizer.sentby_param,
+				(gchar *) organizer->sentby);
 		else {
 			priv->organizer.sentby_param = icalparameter_new_sentby (
 				(gchar *) organizer->sentby);
-			icalproperty_add_parameter (priv->organizer.prop,
-						    priv->organizer.sentby_param);
+			icalproperty_add_parameter (
+				priv->organizer.prop,
+				priv->organizer.sentby_param);
 		}
 	} else if (priv->organizer.sentby_param) {
 		icalproperty_remove_parameter (priv->organizer.prop, ICAL_SENTBY_PARAMETER);
@@ -3532,13 +3543,15 @@ e_cal_component_set_organizer (ECalComponent *comp,
 		g_return_if_fail (priv->organizer.prop != NULL);
 
 		if (priv->organizer.cn_param)
-			icalparameter_set_cn (priv->organizer.cn_param,
-						  (gchar *) organizer->cn);
+			icalparameter_set_cn (
+				priv->organizer.cn_param,
+				(gchar *) organizer->cn);
 		else {
 			priv->organizer.cn_param = icalparameter_new_cn (
 				(gchar *) organizer->cn);
-			icalproperty_add_parameter (priv->organizer.prop,
-						    priv->organizer.cn_param);
+			icalproperty_add_parameter (
+				priv->organizer.prop,
+				priv->organizer.cn_param);
 		}
 	} else if (priv->organizer.cn_param) {
 		icalproperty_remove_parameter (priv->organizer.prop, ICAL_CN_PARAMETER);
@@ -3549,13 +3562,15 @@ e_cal_component_set_organizer (ECalComponent *comp,
 		g_return_if_fail (priv->organizer.prop != NULL);
 
 		if (priv->organizer.language_param)
-			icalparameter_set_language (priv->organizer.language_param,
-						  (gchar *) organizer->language);
+			icalparameter_set_language (
+				priv->organizer.language_param,
+				(gchar *) organizer->language);
 		else {
 			priv->organizer.language_param = icalparameter_new_language (
 				(gchar *) organizer->language);
-			icalproperty_add_parameter (priv->organizer.prop,
-						    priv->organizer.language_param);
+			icalproperty_add_parameter (
+				priv->organizer.prop,
+				priv->organizer.language_param);
 		}
 	} else if (priv->organizer.language_param) {
 		icalproperty_remove_parameter (priv->organizer.prop, ICAL_LANGUAGE_PARAMETER);
@@ -3799,9 +3814,10 @@ e_cal_component_get_recurid (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	get_datetime (&priv->recur_id.recur_time,
-		      icalproperty_get_recurrenceid,
-		      &recur_id->datetime);
+	get_datetime (
+		&priv->recur_id.recur_time,
+		icalproperty_get_recurrenceid,
+		&recur_id->datetime);
 }
 
 /**
@@ -3853,10 +3869,11 @@ e_cal_component_set_recurid (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	set_datetime (comp, &priv->recur_id.recur_time,
-		      icalproperty_new_recurrenceid,
-		      icalproperty_set_recurrenceid,
-		      recur_id ? &recur_id->datetime : NULL);
+	set_datetime (
+		comp, &priv->recur_id.recur_time,
+		icalproperty_new_recurrenceid,
+		icalproperty_set_recurrenceid,
+		recur_id ? &recur_id->datetime : NULL);
 }
 
 /**
@@ -4519,13 +4536,15 @@ e_cal_component_set_summary (ECalComponent *comp,
 		g_return_if_fail (priv->summary.prop != NULL);
 
 		if (priv->summary.altrep_param)
-			icalparameter_set_altrep (priv->summary.altrep_param,
-						  (gchar *) summary->altrep);
+			icalparameter_set_altrep (
+				priv->summary.altrep_param,
+				(gchar *) summary->altrep);
 		else {
 			priv->summary.altrep_param = icalparameter_new_altrep (
 				(gchar *) summary->altrep);
-			icalproperty_add_parameter (priv->summary.prop,
-						    priv->summary.altrep_param);
+			icalproperty_add_parameter (
+				priv->summary.prop,
+				priv->summary.altrep_param);
 		}
 	} else if (priv->summary.altrep_param) {
 		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
@@ -5850,8 +5869,9 @@ e_cal_component_alarm_set_description (ECalComponentAlarm *alarm,
 	if (description->altrep) {
 		alarm->description.altrep_param = icalparameter_new_altrep (
 			(gchar *) description->altrep);
-		icalproperty_add_parameter (alarm->description.prop,
-					    alarm->description.altrep_param);
+		icalproperty_add_parameter (
+			alarm->description.prop,
+			alarm->description.altrep_param);
 	}
 }
 
@@ -5964,8 +5984,10 @@ e_cal_component_alarm_get_trigger (ECalComponentAlarm *alarm,
 			break;
 
 		default:
-			g_message ("e_cal_component_alarm_get_trigger(): Unknown value for trigger "
-				   "value %d; using RELATIVE", value);
+			g_message (
+				"e_cal_component_alarm_get_trigger(): "
+				"Unknown value for trigger "
+				"value %d; using RELATIVE", value);
 
 			relative = TRUE;
 			break;

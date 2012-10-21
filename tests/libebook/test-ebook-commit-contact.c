@@ -84,8 +84,8 @@ main (gint argc,
 	verify_precommit_and_prepare_contact (contact);
 
 	loop = g_main_loop_new (NULL, TRUE);
-	ebook_test_utils_book_async_commit_contact (book, contact,
-			(GSourceFunc) commit_verify_cb, loop);
+	ebook_test_utils_book_async_commit_contact (
+		book, contact, (GSourceFunc) commit_verify_cb, loop);
 
 	g_main_loop_run (loop);
 

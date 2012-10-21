@@ -23,7 +23,9 @@ main (gint argc,
 	zone = ecal_test_utils_cal_get_timezone (cal, "UTC");
 	utc_zone = icaltimezone_get_utc_timezone ();
 
-	g_assert (!g_strcmp0 (icaltimezone_get_tzid (zone),
+	g_assert (
+		!g_strcmp0 (
+			icaltimezone_get_tzid (zone),
 			icaltimezone_get_tzid (utc_zone)));
 
 	return 0;

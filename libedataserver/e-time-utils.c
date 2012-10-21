@@ -1064,13 +1064,11 @@ __strptime_internal (rp,
 			return NULL;
 		    }
 
-		  num_eras = _NL_CURRENT_WORD (LC_TIME,
-					       _NL_TIME_ERA_NUM_ENTRIES);
+		  num_eras = _NL_CURRENT_WORD (LC_TIME, _NL_TIME_ERA_NUM_ENTRIES);
 		  for (era_cnt = 0; era_cnt < (gint) num_eras;
 		       ++era_cnt, rp = rp_backup)
 		    {
-		      era = _nl_select_era_entry (era_cnt
-						  HELPER_LOCALE_ARG);
+			era = _nl_select_era_entry (era_cnt HELPER_LOCALE_ARG);
 		      if (era != NULL && match_string (era->era_name, rp))
 			{
 			  *decided = loc;
@@ -1119,12 +1117,10 @@ __strptime_internal (rp,
 		      break;
 		    }
 
-		  num_eras = _NL_CURRENT_WORD (LC_TIME,
-					       _NL_TIME_ERA_NUM_ENTRIES);
+		  num_eras = _NL_CURRENT_WORD (LC_TIME, _NL_TIME_ERA_NUM_ENTRIES);
 		  for (era_cnt = 0; era_cnt < (gint) num_eras; ++era_cnt)
 		    {
-		      era = _nl_select_era_entry (era_cnt
-						  HELPER_LOCALE_ARG);
+		      era = _nl_select_era_entry (era_cnt HELPER_LOCALE_ARG);
 		      if (era != NULL)
 			{
 			  gint delta = ((tm->tm_year - era->offset)
@@ -1153,8 +1149,9 @@ __strptime_internal (rp,
 	    case 'Y':
 	      if (*decided != raw)
 		{
-		  num_eras = _NL_CURRENT_WORD (LC_TIME,
-					       _NL_TIME_ERA_NUM_ENTRIES);
+			num_eras = _NL_CURRENT_WORD (
+			LC_TIME,
+			_NL_TIME_ERA_NUM_ENTRIES);
 		  for (era_cnt = 0; era_cnt < (gint) num_eras;
 		       ++era_cnt, rp = rp_backup)
 		    {

@@ -612,11 +612,11 @@ e_intervaltree_node_dump (EIntervalTree *tree,
 	g_print ("%*s[%s - %s]\n", indent, "", start_time, end_time);
 	*/
 	EIntervalTreePrivate *priv = tree->priv;
-	if (node != priv->nil)
-		g_print ("%*s[%ld - %ld] [%ld - %ld] red %d\n", indent, "", node->start,
-				node->end, node->min, node->max, node->red);
-	else
-	{
+	if (node != priv->nil) {
+		g_print (
+			"%*s[%ld - %ld] [%ld - %ld] red %d\n", indent, "", node->start,
+			node->end, node->min, node->max, node->red);
+	} else {
 		g_print ("%*s[ - ]\n", indent, "");
 		return;
 	}
@@ -652,8 +652,9 @@ e_intervaltree_search_component (EIntervalTree *tree,
 	priv = tree->priv;
 	if (!searched_uid)
 	{
-		g_warning ("Searching the interval tree, the component "
-			   " does not have a valid UID skipping it\n");
+		g_warning (
+			"Searching the interval tree, the component "
+			" does not have a valid UID skipping it\n");
 
 		return NULL;
 	}

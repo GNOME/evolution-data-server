@@ -338,70 +338,86 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 
 	g_type_class_add_private (class, sizeof (ECalClientViewPrivate));
 
-	g_object_class_install_property (object_class, PROP_VIEW,
-		g_param_spec_pointer ("view", "The GDBus view proxy", NULL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (
+		object_class,
+		PROP_VIEW,
+		g_param_spec_pointer (
+			"view",
+			"The GDBus view proxy",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 
-	g_object_class_install_property (object_class, PROP_CLIENT,
-		g_param_spec_object ("client", "The e-cal-client for the view", NULL, E_TYPE_CAL_CLIENT,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
-        /**
-         * ECalClientView::objects-added:
-         * @view:: self
-         * @objects: (type GSList) (transfer none) (element-type long):
-         */
-	signals[OBJECTS_ADDED] =
-		g_signal_new ("objects-added",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClientViewClass, objects_added),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
-        /**
-         * ECalClientView::objects-modified:
-         * @view:: self
-         * @objects: (type GSList) (transfer none) (element-type long):
-         */
-	signals[OBJECTS_MODIFIED] =
-		g_signal_new ("objects-modified",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClientViewClass, objects_modified),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
-        /**
-         * ECalClientView::objects-removed:
-         * @view:: self
-         * @objects: (type GSList) (transfer none) (element-type ECalComponentId):
-         */
-	signals[OBJECTS_REMOVED] =
-		g_signal_new ("objects-removed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClientViewClass, objects_removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	g_object_class_install_property (
+		object_class,
+		PROP_CLIENT,
+		g_param_spec_object (
+			"client",
+			"The e-cal-client for the view",
+			NULL,
+			E_TYPE_CAL_CLIENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 
-	signals[PROGRESS] =
-		g_signal_new ("progress",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClientViewClass, progress),
-			      NULL, NULL,
-			      e_gdbus_marshallers_VOID__UINT_STRING,
-			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+	/**
+	 * ECalClientView::objects-added:
+	 * @view:: self
+	 * @objects: (type GSList) (transfer none) (element-type long):
+	 */
+	signals[OBJECTS_ADDED] = g_signal_new (
+		"objects-added",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClientViewClass, objects_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals[COMPLETE] =
-		g_signal_new ("complete",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClientViewClass, complete),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__BOXED,
-			      G_TYPE_NONE, 1, G_TYPE_ERROR);
+	/**
+	 * ECalClientView::objects-modified:
+	 * @view:: self
+	 * @objects: (type GSList) (transfer none) (element-type long):
+	 */
+	signals[OBJECTS_MODIFIED] = g_signal_new (
+		"objects-modified",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClientViewClass, objects_modified),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	/**
+	 * ECalClientView::objects-removed:
+	 * @view:: self
+	 * @objects: (type GSList) (transfer none) (element-type ECalComponentId):
+	 */
+	signals[OBJECTS_REMOVED] = g_signal_new (
+		"objects-removed",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClientViewClass, objects_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[PROGRESS] = g_signal_new (
+		"progress",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClientViewClass, progress),
+		NULL, NULL,
+		e_gdbus_marshallers_VOID__UINT_STRING,
+		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+
+	signals[COMPLETE] = g_signal_new (
+		"complete",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClientViewClass, complete),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_ERROR);
 }
 
 /**
@@ -420,7 +436,8 @@ _e_cal_client_view_new (ECalClient *client,
 {
 	ECalClientView *view;
 
-	view = g_object_new (E_TYPE_CAL_CLIENT_VIEW,
+	view = g_object_new (
+		E_TYPE_CAL_CLIENT_VIEW,
 		"client", client,
 		"view", gdbus_calview,
 		NULL);

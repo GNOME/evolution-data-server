@@ -546,8 +546,9 @@ read_attribute (gchar **p)
 		}
 		else if (*lp == '.') {
 			if (attr_group) {
-				g_warning ("extra `.' in attribute specification.  ignoring extra group `%s'",
-					   str->str);
+				g_warning (
+					"extra `.' in attribute specification.  ignoring extra group `%s'",
+					str->str);
 				g_string_free (str, TRUE);
 				str = g_string_new ("");
 			}
@@ -1394,9 +1395,10 @@ e_vcard_attribute_get_type (void)
 	if (g_once_init_enter (&type_id__volatile)) {
 		GType type_id;
 
-		type_id = g_boxed_type_register_static ("EVCardAttribute",
-							(GBoxedCopyFunc) e_vcard_attribute_copy,
-							(GBoxedFreeFunc) e_vcard_attribute_free);
+		type_id = g_boxed_type_register_static (
+			"EVCardAttribute",
+			(GBoxedCopyFunc) e_vcard_attribute_copy,
+			(GBoxedFreeFunc) e_vcard_attribute_free);
 
 		g_once_init_leave (&type_id__volatile, type_id);
 	}
@@ -1814,12 +1816,10 @@ e_vcard_attribute_param_get_type (void)
 	if (g_once_init_enter (&type_id__volatile)) {
 		GType type_id;
 
-		type_id =
-			g_boxed_type_register_static ("EVCardAttributeParam",
-						      (GBoxedCopyFunc)
-						      e_vcard_attribute_param_copy,
-						      (GBoxedFreeFunc)
-						      e_vcard_attribute_param_free);
+		type_id = g_boxed_type_register_static (
+			"EVCardAttributeParam",
+			(GBoxedCopyFunc) e_vcard_attribute_param_copy,
+			(GBoxedFreeFunc) e_vcard_attribute_param_free);
 
 		g_once_init_leave (&type_id__volatile, type_id);
 	}
@@ -1971,8 +1971,9 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 			else if (!g_ascii_strcasecmp ((gchar *) param->values->data, EVC_QUOTEDPRINTABLE))
 				attr->encoding = EVC_ENCODING_QP;
 			else {
-				g_warning ("Unknown value `%s' for ENCODING parameter.  values will be treated as raw",
-					   (gchar *) param->values->data);
+				g_warning (
+					"Unknown value `%s' for ENCODING parameter.  values will be treated as raw",
+					(gchar *) param->values->data);
 			}
 
 			attr->encoding_set = TRUE;

@@ -160,8 +160,9 @@ objects_added (EBookClientView *view,
 #endif
 
 		if (uids_only && e_contact_get_const (contact, E_CONTACT_FULL_NAME) != NULL)
-			g_error ("received contact name `%s' when only the uid was requested",
-				 (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+			g_error (
+				"received contact name `%s' when only the uid was requested",
+				(gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
 		else if (!uids_only && e_contact_get_const (contact, E_CONTACT_FULL_NAME) == NULL)
 			g_error ("expected contact name missing");
 	}

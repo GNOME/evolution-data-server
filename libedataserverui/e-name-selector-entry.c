@@ -2171,7 +2171,7 @@ ensure_type_ahead_complete_on_timeout (ENameSelectorEntry *name_selector_entry)
 
 static gboolean
 is_source_enabled_with_parents (ESourceRegistry *registry,
-				ESource *source)
+                                ESource *source)
 {
 	ESource *parent;
 	const gchar *parent_uid;

@@ -145,8 +145,8 @@ system_timezone_read_key_file (const gchar *filename,
 					if (retval)
 						g_free (retval);
 
-					retval = g_strndup (value + 1,
-							    len - 2);
+					retval = g_strndup (
+						value + 1, len - 2);
 				}
 			} else {
 				if (retval)
@@ -171,40 +171,40 @@ system_timezone_read_key_file (const gchar *filename,
 static gchar *
 system_timezone_read_etc_sysconfig_clock (GHashTable *ical_zones)
 {
-	return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
-					      "ZONE");
+	return system_timezone_read_key_file (
+		ETC_SYSCONFIG_CLOCK, "ZONE");
 }
 
 /* This works for openSUSE */
 static gchar *
 system_timezone_read_etc_sysconfig_clock_alt (GHashTable *ical_zones)
 {
-	return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
-					      "TIMEZONE");
+	return system_timezone_read_key_file (
+		ETC_SYSCONFIG_CLOCK, "TIMEZONE");
 }
 
 /* This works for Solaris/OpenSolaris */
 static gchar *
 system_timezone_read_etc_TIMEZONE (GHashTable *ical_zones)
 {
-	return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
-					      "TZ");
+	return system_timezone_read_key_file (
+		ETC_TIMEZONE_MAJ, "TZ");
 }
 
 /* This works for Arch Linux */
 static gchar *
 system_timezone_read_etc_rc_conf (GHashTable *ical_zones)
 {
-	return system_timezone_read_key_file (ETC_RC_CONF,
-					      "TIMEZONE");
+	return system_timezone_read_key_file (
+		ETC_RC_CONF, "TIMEZONE");
 }
 
 /* This works for old Gentoo */
 static gchar *
 system_timezone_read_etc_conf_d_clock (GHashTable *ical_zones)
 {
-	return system_timezone_read_key_file (ETC_CONF_D_CLOCK,
-					      "TIMEZONE");
+	return system_timezone_read_key_file (
+		ETC_CONF_D_CLOCK, "TIMEZONE");
 }
 
 static void
@@ -294,14 +294,15 @@ recursive_compare (struct stat *localtime_stat,
 		while ((subfile = g_dir_read_name (dir)) != NULL) {
 			subpath = g_build_filename (file, subfile, NULL);
 
-			ret = recursive_compare (localtime_stat,
-						 localtime_content,
-						 localtime_content_len,
-						 subpath,
-						 compare_func,
-						 ical_zones,
-						 deep_level + 1,
-						 fallback);
+			ret = recursive_compare (
+				localtime_stat,
+				localtime_content,
+				localtime_content_len,
+				subpath,
+				compare_func,
+				ical_zones,
+				deep_level + 1,
+				fallback);
 
 			g_free (subpath);
 
@@ -357,14 +358,15 @@ system_timezone_read_etc_localtime_hardlink (GHashTable *ical_zones)
 	if (!S_ISREG (stat_localtime.st_mode))
 		return NULL;
 
-	retval = recursive_compare (&stat_localtime,
-				  NULL,
-				  0,
-				  SYSTEM_ZONEINFODIR,
-				  files_are_identical_inode,
-				  ical_zones,
-				  0,
-				  &fallback);
+	retval = recursive_compare (
+		&stat_localtime,
+		NULL,
+		0,
+		SYSTEM_ZONEINFODIR,
+		files_are_identical_inode,
+		ical_zones,
+		0,
+		&fallback);
 
 	if (retval)
 		g_free (fallback);
@@ -448,14 +450,15 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 		}
 	}
 
-	retval = recursive_compare (&stat_localtime,
-				   localtime_content,
-				   localtime_content_len,
-				   SYSTEM_ZONEINFODIR,
-				   files_are_identical_content,
-				   ical_zones,
-				   0,
-				   &fallback);
+	retval = recursive_compare (
+		&stat_localtime,
+		localtime_content,
+		localtime_content_len,
+		SYSTEM_ZONEINFODIR,
+		files_are_identical_content,
+		ical_zones,
+		0,
+		&fallback);
 
 	if (retval)
 		g_free (fallback);
@@ -832,7 +835,8 @@ system_timezone_win32_query_registry (void)
 	gchar timeZoneStd[MAX_VALUE_NAME] = "";
 	gchar subKey[MAX_VALUE_NAME] = "";
 
-	res = RegOpenKeyExA (HKEY_LOCAL_MACHINE,
+	res = RegOpenKeyExA (
+		HKEY_LOCAL_MACHINE,
 		"SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", 0, KEY_READ, &reg_key);
 	if (res != ERROR_SUCCESS) {
 		g_debug ("Could not find system timezone! (1)\n");
@@ -863,7 +867,8 @@ system_timezone_win32_query_registry (void)
 	RegCloseKey (reg_key);
 
 	/* Windows NT and its family */
-	res = RegOpenKeyExA (HKEY_LOCAL_MACHINE,
+	res = RegOpenKeyExA (
+		HKEY_LOCAL_MACHINE,
 		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones",
 		0, KEY_READ, &reg_key);
 	if (res != ERROR_SUCCESS) {
@@ -879,7 +884,8 @@ system_timezone_win32_query_registry (void)
 			if (res != ERROR_SUCCESS)
 				continue;
 			size = MAX_VALUE_NAME;
-			res = RegQueryValueExA (reg_subkey, "Std", 0, &type,
+			res = RegQueryValueExA (
+				reg_subkey, "Std", 0, &type,
 				(LPBYTE) timeZoneStd, &size);
 			RegCloseKey (reg_subkey);
 			if (type != REG_SZ || res != ERROR_SUCCESS) {

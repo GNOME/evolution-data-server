@@ -74,8 +74,9 @@ e_cal_backend_sexp_func_time_now (ESExp *esexp,
 	ESExpResult *result;
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
-				    "time-now");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
+			"time-now");
 		return NULL;
 	}
 
@@ -110,31 +111,35 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp,
 	ESExpResult *result;
 
 	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects one argument"),
-				    "make-time");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects one argument"),
+			"make-time");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_STRING) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a string"),
-				    "make-time");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a string"),
+			"make-time");
 		return NULL;
 	}
 	str = argv[0]->value.string;
 	if (!str || !*str) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a string"),
-				    "make-time");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a string"),
+			"make-time");
 		return NULL;
 	}
 
 	t = time_from_isodate (str);
 	if (t == -1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be an ISO 8601 "
-					     "date/time string"),
-				    "make-time");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be an ISO 8601 "
+			"date/time string"),
+			"make-time");
 		return NULL;
 	}
 
@@ -173,23 +178,26 @@ e_cal_backend_sexp_func_time_add_day (ESExp *esexp,
 	gint n;
 
 	if (argc != 2) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects two arguments"),
-				    "time-add-day");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects two arguments"),
+			"time-add-day");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a time_t"),
-				    "time-add-day");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"time-add-day");
 		return NULL;
 	}
 	t = argv[0]->value.time;
 
 	if (argv[1]->type != ESEXP_RES_INT) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the second "
-					     "argument to be an integer"),
-				    "time-add-day");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the second "
+			"argument to be an integer"),
+			"time-add-day");
 		return NULL;
 	}
 	n = argv[1]->value.number;
@@ -226,15 +234,17 @@ e_cal_backend_sexp_func_time_day_begin (ESExp *esexp,
 	ESExpResult *result;
 
 	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects one argument"),
-				    "time-day-begin");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects one argument"),
+			"time-day-begin");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a time_t"),
-				    "time-day-begin");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"time-day-begin");
 		return NULL;
 	}
 	t = argv[0]->value.time;
@@ -271,15 +281,17 @@ e_cal_backend_sexp_func_time_day_end (ESExp *esexp,
 	ESExpResult *result;
 
 	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects one argument"),
-				    "time-day-end");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects one argument"),
+			"time-day-end");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a time_t"),
-				    "time-day-end");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"time-day-end");
 		return NULL;
 	}
 	t = argv[0]->value.time;
@@ -310,15 +322,17 @@ func_uid (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects one argument"),
-				    "uid");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects one argument"),
+			"uid");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_STRING) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a string"),
-				    "uid");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a string"),
+			"uid");
 		return NULL;
 	}
 
@@ -392,32 +406,36 @@ func_occur_in_time_range (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 2 && argc != 3) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects two or three arguments"),
-				    "occur-in-time-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects two or three arguments"),
+			"occur-in-time-range");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a time_t"),
-				    "occur-in-time-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"occur-in-time-range");
 		return NULL;
 	}
 	start = argv[0]->value.time;
 
 	if (argv[1]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the second "
-					     "argument to be a time_t"),
-				    "occur-in-time-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the second "
+			"argument to be a time_t"),
+			"occur-in-time-range");
 		return NULL;
 	}
 	end = argv[1]->value.time;
 
 	if (argc == 3) {
 		if (argv[2]->type != ESEXP_RES_STRING) {
-			e_sexp_fatal_error (esexp, _("\"%s\" expects the third "
-						     "argument to be a string"),
-					    "occur-in-time-range");
+			e_sexp_fatal_error (
+				esexp, _("\"%s\" expects the third "
+				"argument to be a string"),
+				"occur-in-time-range");
 			return NULL;
 		}
 
@@ -429,10 +447,11 @@ func_occur_in_time_range (ESExp *esexp,
 
 	/* See if the object occurs in the specified time range */
 	ctx->occurs = FALSE;
-	e_cal_recur_generate_instances (ctx->comp, start, end,
-					(ECalRecurInstanceFn) check_instance_time_range_cb,
-					ctx, resolve_tzid, ctx,
-					default_zone);
+	e_cal_recur_generate_instances (
+		ctx->comp, start, end,
+		(ECalRecurInstanceFn) check_instance_time_range_cb,
+		ctx, resolve_tzid, ctx,
+		default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.boolean = ctx->occurs;
@@ -475,19 +494,25 @@ func_occurrences_count (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 2 && argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects none or two arguments"), "occurrences-count");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects none or two arguments"),
+			"occurrences-count");
 		return NULL;
 	}
 
 	if (argc == 2) {
 		if (argv[0]->type != ESEXP_RES_TIME) {
-			e_sexp_fatal_error (esexp, _("\"%s\" expects the first argument to be a time_t"), "occurrences-count");
+			e_sexp_fatal_error (
+				esexp, _("\"%s\" expects the first argument to be a time_t"),
+				"occurrences-count");
 			return NULL;
 		}
 		start = argv[0]->value.time;
 
 		if (argv[1]->type != ESEXP_RES_TIME) {
-			e_sexp_fatal_error (esexp, _("\"%s\" expects the second argument to be a time_t"), "occurrences-count");
+			e_sexp_fatal_error (
+				esexp, _("\"%s\" expects the second argument to be a time_t"),
+				"occurrences-count");
 			return NULL;
 		}
 		end = argv[1]->value.time;
@@ -504,7 +529,8 @@ func_occurrences_count (ESExp *esexp,
 	default_zone = icaltimezone_get_utc_timezone ();
 
 	ctx->occurrences_count = 0;
-	e_cal_recur_generate_instances (ctx->comp, start, end,
+	e_cal_recur_generate_instances (
+		ctx->comp, start, end,
 					count_instances_time_range_cb, ctx,
 					resolve_tzid, ctx,
 					default_zone);
@@ -532,24 +558,27 @@ func_due_in_time_range (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 2) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects two arguments"),
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects two arguments"),
 				"due-in-time-range");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					"argument to be a time_t"),
-				"due-in-time-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"due-in-time-range");
 		return NULL;
 	}
 
 	start = argv[0]->value.time;
 
 	if (argv[1]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the second "
-					"argument to be a time_t"),
-				"due-in-time-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the second "
+			"argument to be a time_t"),
+			"due-in-time-range");
 		return NULL;
 	}
 
@@ -814,7 +843,8 @@ func_has_attachment (ESExp *esexp,
 	ESExpResult *result;
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
 				"has-attachments?");
 		return NULL;
 	}
@@ -836,7 +866,8 @@ func_percent_complete (ESExp *esexp,
 	gint *percent;
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
 				"percent-completed");
 		return NULL;
 	}
@@ -875,23 +906,26 @@ func_contains (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 2) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects two arguments"),
-				    "contains");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects two arguments"),
+			"contains");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_STRING) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a string"),
-				    "contains");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a string"),
+			"contains");
 		return NULL;
 	}
 	field = argv[0]->value.string;
 
 	if (argv[1]->type != ESEXP_RES_STRING) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the second "
-					     "argument to be a string"),
-				    "contains");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the second "
+			"argument to be a string"),
+			"contains");
 		return NULL;
 	}
 	str = argv[1]->value.string;
@@ -919,10 +953,11 @@ func_contains (ESExp *esexp,
 	else if (strcmp (field, "priority") == 0)
 		matches = matches_priority (ctx->comp, str);
 	else {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be either \"any\", "
-					"\"summary\", or \"description\", or \"location\", or \"attendee\", or \"organizer\", or \"classification\""),
-				    "contains");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be either \"any\", "
+			"\"summary\", or \"description\", or \"location\", or \"attendee\", or \"organizer\", or \"classification\""),
+			"contains");
 		return NULL;
 	}
 
@@ -951,8 +986,9 @@ func_has_start (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
-				    "has-start");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
+			"has-start");
 		return NULL;
 	}
 
@@ -982,8 +1018,9 @@ func_has_alarms (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
-				    "has-alarms");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
+			"has-alarms");
 		return NULL;
 	}
 
@@ -1017,23 +1054,26 @@ func_has_alarms_in_range (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 2) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects two arguments"),
-				    "has-alarms-in-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects two arguments"),
+			"has-alarms-in-range");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a time_t"),
-				    "has-alarms-in-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"has-alarms-in-range");
 		return NULL;
 	}
 	start = argv[0]->value.time;
 
 	if (argv[1]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the second "
-					     "argument to be a time_t"),
-				    "has-alarms-in-range");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the second "
+			"argument to be a time_t"),
+			"has-alarms-in-range");
 		return NULL;
 	}
 	end = argv[1]->value.time;
@@ -1041,9 +1081,10 @@ func_has_alarms_in_range (ESExp *esexp,
 	/* See if the object has alarms in the given time range */
 	default_zone = icaltimezone_get_utc_timezone ();
 
-	alarms = e_cal_util_generate_alarms_for_comp (ctx->comp, start, end,
-						      omit, resolve_tzid,
-						      ctx, default_zone);
+	alarms = e_cal_util_generate_alarms_for_comp (
+		ctx->comp, start, end,
+		omit, resolve_tzid,
+		ctx, default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	if (alarms) {
@@ -1081,9 +1122,10 @@ func_has_categories (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc < 1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects at least one "
-					     "argument"),
-				    "has-categories");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects at least one "
+			"argument"),
+			"has-categories");
 		return NULL;
 	}
 
@@ -1095,14 +1137,15 @@ func_has_categories (ESExp *esexp,
 	if (!unfiled)
 		for (i = 0; i < argc; i++)
 			if (argv[i]->type != ESEXP_RES_STRING) {
-				e_sexp_fatal_error (esexp, _("\"%s\" expects "
-							     "all arguments to "
-							     "be strings or "
-							     "one and only one "
-							     "argument to be a "
-							     "boolean false "
-							     "(#f)"),
-						    "has-categories");
+				e_sexp_fatal_error (
+					esexp, _("\"%s\" expects "
+					"all arguments to "
+					"be strings or "
+					"one and only one "
+					"argument to be a "
+					"boolean false "
+					"(#f)"),
+					"has-categories");
 				return NULL;
 			}
 
@@ -1182,8 +1225,9 @@ func_has_recurrences (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
-				    "has-recurrences");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
+			"has-recurrences");
 		return NULL;
 	}
 
@@ -1212,8 +1256,9 @@ func_is_completed (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 0) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects no arguments"),
-				    "is-completed");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects no arguments"),
+			"is-completed");
 		return NULL;
 	}
 
@@ -1253,15 +1298,17 @@ func_completed_before (ESExp *esexp,
 	/* Check argument types */
 
 	if (argc != 1) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects one argument"),
-				    "completed-before");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects one argument"),
+			"completed-before");
 		return NULL;
 	}
 
 	if (argv[0]->type != ESEXP_RES_TIME) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "
-					     "argument to be a time_t"),
-				    "completed-before");
+		e_sexp_fatal_error (
+			esexp, _("\"%s\" expects the first "
+			"argument to be a time_t"),
+			"completed-before");
 		return NULL;
 	}
 	before_time = argv[0]->value.time;
@@ -1569,8 +1616,9 @@ e_cal_backend_sexp_new (const gchar *text)
 			e_sexp_add_ifunction (sexp->priv->search_sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, sexp->priv->search_context);
 		} else {
-			e_sexp_add_function (sexp->priv->search_sexp, 0, symbols[i].name,
-					    symbols[i].func, sexp->priv->search_context);
+			e_sexp_add_function (
+				sexp->priv->search_sexp, 0, symbols[i].name,
+				symbols[i].func, sexp->priv->search_context);
 		}
 	}
 

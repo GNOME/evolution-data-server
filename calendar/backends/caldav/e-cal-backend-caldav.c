@@ -167,9 +167,10 @@ add_debug_key (const gchar *start,
 		return;
 	}
 
-	g_hash_table_insert (caldav_debug_table,
-			     debug_key,
-			     debug_value);
+	g_hash_table_insert (
+		caldav_debug_table,
+		debug_key,
+		debug_value);
 
 	d (g_debug ("Adding %s to enabled debugging keys", debug_key));
 }
@@ -186,8 +187,9 @@ caldav_debug_init_once (gpointer data)
 
 		d (g_debug ("Got debug env variable: [%s]", dbg));
 
-		caldav_debug_table = g_hash_table_new (g_str_hash,
-						       g_str_equal);
+		caldav_debug_table = g_hash_table_new (
+			g_str_hash,
+			g_str_equal);
 
 		ptr = dbg;
 
@@ -223,7 +225,8 @@ caldav_debug_init (void)
 {
 	static GOnce debug_once = G_ONCE_INIT;
 
-	g_once (&debug_once,
+	g_once (
+		&debug_once,
 		caldav_debug_init_once,
 		NULL);
 }
@@ -562,7 +565,8 @@ status_code_to_result (SoupMessage *message,
 	switch (message->status_code) {
 	case SOUP_STATUS_CANT_CONNECT:
 	case SOUP_STATUS_CANT_CONNECT_PROXY:
-		g_propagate_error (perror,
+		g_propagate_error (
+			perror,
 			e_data_cal_create_error_fmt (
 				OtherError,
 				_("Server is unreachable (%s)"),
@@ -593,13 +597,15 @@ status_code_to_result (SoupMessage *message,
 
 	case SOUP_STATUS_SSL_FAILED:
 		if (ignore_invalid_cert) {
-			g_propagate_error (perror,
+			g_propagate_error (
+				perror,
 				e_data_cal_create_error_fmt ( OtherError,
 				_("Failed to connect to a server using SSL: %s"),
 				message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
 				(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
 		} else {
-			g_propagate_error (perror, EDC_ERROR_EX (OtherError,
+			g_propagate_error (
+				perror, EDC_ERROR_EX (OtherError,
 				_("Failed to connect to a server using SSL. "
 				"One possible reason is an invalid certificate being used by the server. "
 				"If this is expected, like self-signed certificate being used on the server, "
@@ -610,7 +616,8 @@ status_code_to_result (SoupMessage *message,
 
 	default:
 		d (g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
-		g_propagate_error (perror,
+		g_propagate_error (
+			perror,
 			e_data_cal_create_error_fmt (
 				OtherError,
 				_("Unexpected HTTP status code %d returned (%s)"),
@@ -696,10 +703,11 @@ parse_status_node (xmlNodePtr node,
 
 	content = xmlNodeGetContent (node);
 
-	res = soup_headers_parse_status_line ((gchar *) content,
-					      NULL,
-					      status_code,
-					      NULL);
+	res = soup_headers_parse_status_line (
+		(gchar *) content,
+		NULL,
+		status_code,
+		NULL);
 	xmlFree (content);
 
 	return res;
@@ -752,10 +760,11 @@ xp_object_get_status (xmlXPathObjectPtr result)
 		return ret;
 
 	if (result->type == XPATH_STRING) {
-		res = soup_headers_parse_status_line ((gchar *) result->stringval,
-							NULL,
-							&ret,
-							NULL);
+		res = soup_headers_parse_status_line (
+			(gchar *) result->stringval,
+			NULL,
+			&ret,
+			NULL);
 
 		if (!res) {
 			ret = 0;
@@ -837,11 +846,12 @@ parse_report_response (SoupMessage *soup_message,
 	g_return_val_if_fail (objs != NULL || len != NULL, FALSE);
 
 	res = TRUE;
-	doc = xmlReadMemory (soup_message->response_body->data,
-			     soup_message->response_body->length,
-			     "response.xml",
-			     NULL,
-			     0);
+	doc = xmlReadMemory (
+		soup_message->response_body->data,
+		soup_message->response_body->length,
+		"response.xml",
+		NULL,
+		0);
 
 	if (doc == NULL) {
 		return FALSE;
@@ -849,11 +859,13 @@ parse_report_response (SoupMessage *soup_message,
 
 	xpctx = xmlXPathNewContext (doc);
 
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "D",
-			    (xmlChar *) "DAV:");
+	xmlXPathRegisterNs (
+		xpctx, (xmlChar *) "D",
+		(xmlChar *) "DAV:");
 
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "C",
-			    (xmlChar *) "urn:ietf:params:xml:ns:caldav");
+	xmlXPathRegisterNs (
+		xpctx, (xmlChar *) "C",
+		(xmlChar *) "urn:ietf:params:xml:ns:caldav");
 
 	result = xpath_eval (xpctx, "/D:multistatus/D:response");
 
@@ -922,11 +934,12 @@ parse_propfind_response (SoupMessage *message,
 	g_return_val_if_fail (message != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	doc = xmlReadMemory (message->response_body->data,
-			     message->response_body->length,
-			     "response.xml",
-			     NULL,
-			     0);
+	doc = xmlReadMemory (
+		message->response_body->data,
+		message->response_body->length,
+		"response.xml",
+		NULL,
+		0);
 
 	if (doc == NULL) {
 		return FALSE;
@@ -1012,9 +1025,10 @@ redirect_handler (SoupMessage *msg,
 
 		new_uri = soup_uri_new_with_base (soup_message_get_uri (msg), new_loc);
 		if (!new_uri) {
-			soup_message_set_status_full (msg,
-						      SOUP_STATUS_MALFORMED,
-						      _("Invalid Redirect URL"));
+			soup_message_set_status_full (
+				msg,
+				SOUP_STATUS_MALFORMED,
+				_("Invalid Redirect URL"));
 			return;
 		}
 
@@ -1098,8 +1112,9 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
 		return FALSE;
 	}
-	soup_message_headers_append (message->request_headers,
-				     "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
 
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
@@ -1241,16 +1256,19 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 	xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
 	xmlOutputBufferFlush (buf);
 
-	soup_message_headers_append (message->request_headers,
-				     "User-Agent", "Evolution/" VERSION);
-	soup_message_headers_append (message->request_headers,
-				     "Depth", "0");
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"Depth", "0");
 
 	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
-	soup_message_set_request (message,
-				  "application/xml",
-				  SOUP_MEMORY_COPY,
-				  buf_content, buf_size);
+	soup_message_set_request (
+		message,
+		"application/xml",
+		SOUP_MEMORY_COPY,
+		buf_content, buf_size);
 
 	/* Send the request now */
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
@@ -1391,16 +1409,19 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 	xmlOutputBufferFlush (buf);
 
 	/* Prepare the soup message */
-	soup_message_headers_append (message->request_headers,
-				     "User-Agent", "Evolution/" VERSION);
-	soup_message_headers_append (message->request_headers,
-				     "Depth", "1");
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"Depth", "1");
 
 	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
-	soup_message_set_request (message,
-				  "application/xml",
-				  SOUP_MEMORY_COPY,
-				  buf_content, buf_size);
+	soup_message_set_request (
+		message,
+		"application/xml",
+		SOUP_MEMORY_COPY,
+		buf_content, buf_size);
 
 	/* Send the request now */
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
@@ -1499,8 +1520,9 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	soup_message_headers_append (message->request_headers,
-				     "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
 
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
@@ -1564,10 +1586,11 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 	}
 
 	soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
-	soup_message_set_request (message,
-				  "text/calendar; charset=utf-8",
-				  SOUP_MEMORY_COPY,
-				  *post_fb, strlen (*post_fb));
+	soup_message_set_request (
+		message,
+		"text/calendar; charset=utf-8",
+		SOUP_MEMORY_COPY,
+		*post_fb, strlen (*post_fb));
 
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
@@ -1646,8 +1669,9 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	soup_message_headers_append (message->request_headers,
-				     "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
 
 	/* For new items we use the If-None-Match so we don't
 	 * acidently override resources, for item updates we
@@ -1656,15 +1680,17 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 	if (object->etag == NULL) {
 		soup_message_headers_append (message->request_headers, "If-None-Match", "*");
 	} else {
-		soup_message_headers_append (message->request_headers,
-					     "If-Match", object->etag);
+		soup_message_headers_append (
+			message->request_headers,
+			"If-Match", object->etag);
 	}
 
-	soup_message_set_request (message,
-				  "text/calendar; charset=utf-8",
-				  SOUP_MEMORY_COPY,
-				  object->cdata,
-				  strlen (object->cdata));
+	soup_message_set_request (
+		message,
+		"text/calendar; charset=utf-8",
+		SOUP_MEMORY_COPY,
+		object->cdata,
+		strlen (object->cdata));
 
 	uri = NULL;
 	send_and_handle_redirection (cbdav->priv->session, message, &uri);
@@ -1787,12 +1813,14 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 		return;
 	}
 
-	soup_message_headers_append (message->request_headers,
-				     "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
 
 	if (object->etag != NULL) {
-		soup_message_headers_append (message->request_headers,
-					     "If-Match", object->etag);
+		soup_message_headers_append (
+			message->request_headers,
+			"If-Match", object->etag);
 	}
 
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
@@ -1841,10 +1869,11 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 	soup_message_headers_append (message->request_headers, "Depth", "0");
 
 	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
-	soup_message_set_request (message,
-				  "application/xml",
-				  SOUP_MEMORY_COPY,
-				  buf_content, buf_size);
+	soup_message_set_request (
+		message,
+		"application/xml",
+		SOUP_MEMORY_COPY,
+		buf_content, buf_size);
 
 	/* Send the request now */
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
@@ -1891,10 +1920,11 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 		soup_message_headers_append (message->request_headers, "Depth", "0");
 
 		buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
-		soup_message_set_request (message,
-					  "application/xml",
-					  SOUP_MEMORY_COPY,
-					  buf_content, buf_size);
+		soup_message_set_request (
+			message,
+			"application/xml",
+			SOUP_MEMORY_COPY,
+			buf_content, buf_size);
 
 		/* Send the request now */
 		send_and_handle_redirection (cbdav->priv->session, message, NULL);
@@ -2489,9 +2519,10 @@ caldav_get_backend_property (ECalBackendSync *backend,
 		gchar *usermail;
 		const gchar *extension_name;
 
-		caps = g_string_new (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-				     CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-				     CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+		caps = g_string_new (
+			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
 
 		usermail = get_usermail (E_CAL_BACKEND (backend));
 		if (!usermail || !*usermail)
@@ -2504,8 +2535,10 @@ caldav_get_backend_property (ECalBackendSync *backend,
 		extension = e_source_get_extension (source, extension_name);
 
 		if (e_source_webdav_get_calendar_auto_schedule (extension)) {
-			g_string_append (caps, "," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
-					       "," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
+			g_string_append (
+				caps,
+				"," CAL_STATIC_CAPABILITY_CREATE_MESSAGES
+				"," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 		}
 
 		*prop_value = g_string_free (caps, FALSE);
@@ -3373,8 +3406,9 @@ add_timezone_cb (icalparameter *param,
 	if (!vtz_comp)
 		return;
 
-	icalcomponent_add_component (f_data->vcal_comp,
-				     icalcomponent_new_clone (vtz_comp));
+	icalcomponent_add_component (
+		f_data->vcal_comp,
+		icalcomponent_new_clone (vtz_comp));
 }
 
 static void
@@ -4055,8 +4089,7 @@ extract_objects (icalcomponent *icomp,
 	}
 
 	*objects = NULL;
-	scomp = icalcomponent_get_first_component (icomp,
-						   ekind);
+	scomp = icalcomponent_get_first_component (icomp, ekind);
 
 	while (scomp) {
 		/* Remove components from toplevel here */
@@ -4543,9 +4576,10 @@ caldav_start_view (ECalBackend *backend,
 	} else {
 		do_search = TRUE;
 	}
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
-									    &occur_start,
-									    &occur_end);
+	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (
+		sexp,
+		&occur_start,
+		&occur_end);
 
 	bkend = E_CAL_BACKEND (backend);
 
@@ -5045,8 +5079,9 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 	cbdav->priv->slave_busy = FALSE;
 
-	g_signal_connect (cbdav->priv->session, "authenticate",
-			  G_CALLBACK (soup_authenticate), cbdav);
+	g_signal_connect (
+		cbdav->priv->session, "authenticate",
+		G_CALLBACK (soup_authenticate), cbdav);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbdav), FALSE);
 

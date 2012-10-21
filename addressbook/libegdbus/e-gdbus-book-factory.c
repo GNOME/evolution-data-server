@@ -220,16 +220,16 @@ emit_notifications_in_idle (gpointer user_data)
 	}
 
 	if (has_changes) {
-		g_dbus_connection_emit_signal (connection,
-						NULL,
-						path,
-						"org.freedesktop.DBus.Properties",
-						"PropertiesChanged",
-						g_variant_new ("(sa{sv}as)",
-							GDBUS_BOOK_FACTORY_INTERFACE_NAME,
-							builder,
-							invalidated_builder),
-						NULL);
+		g_dbus_connection_emit_signal (
+			connection, NULL, path,
+			"org.freedesktop.DBus.Properties",
+			"PropertiesChanged",
+			g_variant_new (
+				"(sa{sv}as)",
+				GDBUS_BOOK_FACTORY_INTERFACE_NAME,
+				builder,
+				invalidated_builder),
+			NULL);
 	} else {
 		g_variant_builder_unref (builder);
 		g_variant_builder_unref (invalidated_builder);
@@ -299,13 +299,14 @@ e_gdbus_book_factory_register_object (EGdbusBookFactory *object,
 	g_object_set_data (G_OBJECT (object), "gdbus-codegen-connection", (gpointer) connection);
 	g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
 
-	return g_dbus_connection_register_object (connection,
-			object_path,
-			(GDBusInterfaceInfo *) &_e_gdbus_book_factory_interface_info,
-			&e_gdbus_book_factory_interface_vtable,
-			object,
-			(GDestroyNotify) on_object_unregistered,
-			error);
+	return g_dbus_connection_register_object (
+		connection,
+		object_path,
+		(GDBusInterfaceInfo *) &_e_gdbus_book_factory_interface_info,
+		&e_gdbus_book_factory_interface_vtable,
+		object,
+		(GDestroyNotify) on_object_unregistered,
+		error);
 }
 
 /**
@@ -390,17 +391,18 @@ e_gdbus_book_factory_proxy_new (GDBusConnection *connection,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
-	g_async_initable_new_async (E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
-				G_PRIORITY_DEFAULT,
-				cancellable,
-				callback,
-				user_data,
-				"g-flags", flags,
-				"g-name", name,
-				"g-connection", connection,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_FACTORY_INTERFACE_NAME,
-				NULL);
+	g_async_initable_new_async (
+		E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
+		G_PRIORITY_DEFAULT,
+		cancellable,
+		callback,
+		user_data,
+		"g-flags", flags,
+		"g-name", name,
+		"g-connection", connection,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_FACTORY_INTERFACE_NAME,
+		NULL);
 }
 
 /**
@@ -452,15 +454,16 @@ e_gdbus_book_factory_proxy_new_sync (GDBusConnection *connection,
                                      GError **error)
 {
 	GInitable *initable;
-	initable = g_initable_new (E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
-				cancellable,
-				error,
-				"g-flags", flags,
-				"g-name", name,
-				"g-connection", connection,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_FACTORY_INTERFACE_NAME,
-				NULL);
+	initable = g_initable_new (
+		E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
+		cancellable,
+		error,
+		"g-flags", flags,
+		"g-name", name,
+		"g-connection", connection,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_FACTORY_INTERFACE_NAME,
+		NULL);
 	if (initable != NULL)
 		return E_GDBUS_BOOK_FACTORY (initable);
 	else
@@ -490,17 +493,18 @@ e_gdbus_book_factory_proxy_new_for_bus (GBusType bus_type,
                                         GAsyncReadyCallback callback,
                                         gpointer user_data)
 {
-	g_async_initable_new_async (E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
-				G_PRIORITY_DEFAULT,
-				cancellable,
-				callback,
-				user_data,
-				"g-flags", flags,
-				"g-name", name,
-				"g-bus-type", bus_type,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_BOOK_FACTORY_INTERFACE_NAME,
-				NULL);
+	g_async_initable_new_async (
+		E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
+		G_PRIORITY_DEFAULT,
+		cancellable,
+		callback,
+		user_data,
+		"g-flags", flags,
+		"g-name", name,
+		"g-bus-type", bus_type,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_BOOK_FACTORY_INTERFACE_NAME,
+		NULL);
 }
 
 /**
@@ -552,7 +556,8 @@ e_gdbus_book_factory_proxy_new_for_bus_sync (GBusType bus_type,
                                              GError **error)
 {
 	GInitable *initable;
-	initable = g_initable_new (E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
+	initable = g_initable_new (
+		E_TYPE_GDBUS_BOOK_FACTORY_PROXY,
 				cancellable,
 				error,
 				"g-flags", flags,

@@ -542,11 +542,12 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 	if (mp->headers) {
 		struct _camel_header_raw *h = mp->headers;
 		gchar *val;
-		gssize (*writefn)	(CamelStream *stream,
-					 const gchar *name,
-					 const gchar *value,
-					 GCancellable *cancellable,
-					 GError **error);
+		gssize (*writefn) (
+			CamelStream *stream,
+			const gchar *name,
+			const gchar *value,
+			GCancellable *cancellable,
+			GError **error);
 
 		/* fold/write the headers.   But dont fold headers that are already formatted
 		 * (e.g. ones with parameter-lists, that we know about, and have created) */

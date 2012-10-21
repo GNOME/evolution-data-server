@@ -20,8 +20,8 @@ main (gint argc,
 	/* Create and open many calendars; then remove each of them */
 
 	for (i = 0; i < NUM_CALS; i++) {
-		cals[i] = ecal_test_utils_cal_new_temp (&uri,
-				E_CAL_SOURCE_TYPE_EVENT);
+		cals[i] = ecal_test_utils_cal_new_temp (
+			&uri, E_CAL_SOURCE_TYPE_EVENT);
 		ecal_test_utils_cal_open (cals[i], FALSE);
 
 		g_free (uri);

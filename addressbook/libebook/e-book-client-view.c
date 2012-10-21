@@ -295,8 +295,9 @@ e_book_client_view_set_flags (EBookClientView *view,
 
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
-				     "Cannot set flags on view, D-Bus proxy gone");
+		g_set_error_literal (
+			error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
+			"Cannot set flags on view, D-Bus proxy gone");
 	}
 }
 
@@ -391,48 +392,48 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_view_dispose;
 
-	signals[OBJECTS_ADDED] =
-		g_signal_new ("objects-added",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClientViewClass, objects_added),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[OBJECTS_ADDED] = g_signal_new (
+		"objects-added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, objects_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals[OBJECTS_MODIFIED] =
-		g_signal_new ("objects-modified",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClientViewClass, objects_modified),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[OBJECTS_MODIFIED] = g_signal_new (
+		"objects-modified",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, objects_modified),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals[OBJECTS_REMOVED] =
-		g_signal_new ("objects-removed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClientViewClass, objects_removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[OBJECTS_REMOVED] = g_signal_new (
+		"objects-removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, objects_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals[PROGRESS] =
-		g_signal_new ("progress",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClientViewClass, progress),
-			      NULL, NULL,
-			      e_gdbus_marshallers_VOID__UINT_STRING,
-			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+	signals[PROGRESS] = g_signal_new (
+		"progress",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, progress),
+		NULL, NULL,
+		e_gdbus_marshallers_VOID__UINT_STRING,
+		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
-	signals[COMPLETE] =
-		g_signal_new ("complete",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookClientViewClass, complete),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__BOXED,
-			      G_TYPE_NONE, 1, G_TYPE_ERROR);
+	signals[COMPLETE] = g_signal_new (
+		"complete",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, complete),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_ERROR);
 }

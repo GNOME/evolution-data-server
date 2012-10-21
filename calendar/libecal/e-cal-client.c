@@ -322,7 +322,8 @@ gdbus_cal_factory_activate (GError **error)
 	}
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
-	cal_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
+	cal_connection_closed_id = g_dbus_connection_signal_subscribe (
+		connection,
 		NULL,						/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -638,12 +639,13 @@ e_cal_client_new (ESource *source,
 
 	g_strfreev (strv);
 
-	client->priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
-						      G_DBUS_PROXY_FLAGS_NONE,
-						      CALENDAR_DBUS_SERVICE_NAME,
-						      path,
-						      NULL,
-						      &err));
+	client->priv->gdbus_cal = G_DBUS_PROXY (
+		e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		path,
+		NULL,
+		&err));
 
 	if (!client->priv->gdbus_cal) {
 		g_free (path);
@@ -660,7 +662,8 @@ e_cal_client_new (ESource *source,
 	g_free (path);
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (client->priv->gdbus_cal));
-	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (
+		connection,
 		"org.freedesktop.DBus",				/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -1141,22 +1144,24 @@ process_detached_instances (GSList *instances,
 						 * recurrency ids. Real problem might be elsewhere,
 						 * but anything is better than crashing...
 						 */
-						g_log (G_LOG_DOMAIN,
-						       G_LOG_LEVEL_CRITICAL,
-						       "UID %s: instance RECURRENCE-ID %s + detached instance RECURRENCE-ID %s: cannot compare",
-						       uid,
-						       i_rid,
-						       d_rid);
+						g_log (
+							G_LOG_DOMAIN,
+							G_LOG_LEVEL_CRITICAL,
+							"UID %s: instance RECURRENCE-ID %s + detached instance RECURRENCE-ID %s: cannot compare",
+							uid,
+							i_rid,
+							d_rid);
 
 						e_cal_component_free_datetime (&instance_recur_id.datetime);
 						g_free (i_rid);
 						g_free (d_rid);
 						continue;
 					}
-					cmp = icaltime_compare (*instance_recur_id.datetime.value,
+					cmp = icaltime_compare (
+						*instance_recur_id.datetime.value,
 								*recur_id.datetime.value);
 					if ((recur_id.type == E_CAL_COMPONENT_RANGE_THISPRIOR && cmp <= 0) ||
-					    (recur_id.type == E_CAL_COMPONENT_RANGE_THISFUTURE && cmp >= 0)) {
+						(recur_id.type == E_CAL_COMPONENT_RANGE_THISFUTURE && cmp >= 0)) {
 						ECalComponent *comp;
 
 						comp = e_cal_component_new ();
@@ -1302,9 +1307,10 @@ generate_instances (ECalClient *client,
 			instances_hold->start_zone = start_zone;
 			instances_hold->end_zone = end_zone;
 
-			e_cal_recur_generate_instances (comp, start, end, add_instance, instances_hold,
-							e_cal_client_resolve_tzid_cb, client,
-							default_zone);
+			e_cal_recur_generate_instances (
+				comp, start, end, add_instance, instances_hold,
+				e_cal_client_resolve_tzid_cb, client,
+				default_zone);
 
 			g_free (instances_hold);
 		}
@@ -1397,8 +1403,9 @@ get_objects_sync (ECalClient *client,
 			return NULL;
 		}
 
-		query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
-					 iso_start, iso_end);
+		query = g_strdup_printf (
+			"(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
+			iso_start, iso_end);
 		g_free (iso_start);
 		g_free (iso_end);
 		if (!e_cal_client_get_object_list_as_comps_sync (client, query, &objects, NULL, NULL)) {
@@ -2080,11 +2087,12 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	/* Create the start of a VCALENDAR, to add the VTIMEZONES to,
 	 * and remember its length so we know if any VTIMEZONEs get added. */
 	vcal_string = g_string_new (NULL);
-	g_string_append (vcal_string,
-			 "BEGIN:VCALENDAR\n"
-			 "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
-			 "VERSION:2.0\n"
-			 "METHOD:PUBLISH\n");
+	g_string_append (
+		vcal_string,
+		"BEGIN:VCALENDAR\n"
+		"PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+		"VERSION:2.0\n"
+		"METHOD:PUBLISH\n");
 
 	/* Now concatenate all the timezone strings. This also frees the
 	 * timezone strings as it goes. */
@@ -2145,7 +2153,8 @@ cal_client_get_backend_property (EClient *client,
 	if (prop_value) {
 		e_client_finish_async_without_dbus (client, cancellable, callback, user_data, cal_client_get_backend_property_from_cache_finish, prop_value, g_free);
 	} else {
-		e_client_proxy_call_string_with_res_op_data (client, prop_name, cancellable, callback, user_data, cal_client_get_backend_property, prop_name,
+		e_client_proxy_call_string_with_res_op_data (
+			client, prop_name, cancellable, callback, user_data, cal_client_get_backend_property, prop_name,
 			e_gdbus_cal_call_get_backend_property,
 			NULL, NULL, e_gdbus_cal_call_get_backend_property_finish, NULL, NULL);
 	}
@@ -2228,9 +2237,10 @@ cal_client_set_backend_property (EClient *client,
 
 	prop_name_value = e_gdbus_cal_encode_set_backend_property (prop_name, prop_value);
 
-	e_client_proxy_call_strv (client, (const gchar * const *) prop_name_value, cancellable, callback, user_data, cal_client_set_backend_property,
-			e_gdbus_cal_call_set_backend_property,
-			e_gdbus_cal_call_set_backend_property_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		client, (const gchar * const *) prop_name_value, cancellable, callback, user_data, cal_client_set_backend_property,
+		e_gdbus_cal_call_set_backend_property,
+		e_gdbus_cal_call_set_backend_property_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (prop_name_value);
 }
@@ -2277,9 +2287,10 @@ cal_client_open (EClient *client,
                  GAsyncReadyCallback callback,
                  gpointer user_data)
 {
-	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, cal_client_open,
-			e_gdbus_cal_call_open,
-			e_gdbus_cal_call_open_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_boolean (
+		client, only_if_exists, cancellable, callback, user_data, cal_client_open,
+		e_gdbus_cal_call_open,
+		e_gdbus_cal_call_open_finish, NULL, NULL, NULL, NULL);
 }
 
 static gboolean
@@ -2316,9 +2327,10 @@ cal_client_refresh (EClient *client,
                     GAsyncReadyCallback callback,
                     gpointer user_data)
 {
-	e_client_proxy_call_void (client, cancellable, callback, user_data, cal_client_refresh,
-			e_gdbus_cal_call_refresh,
-			e_gdbus_cal_call_refresh_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_void (
+		client, cancellable, callback, user_data, cal_client_refresh,
+		e_gdbus_cal_call_refresh,
+		e_gdbus_cal_call_refresh_finish, NULL, NULL, NULL, NULL);
 }
 
 static gboolean
@@ -2451,7 +2463,8 @@ e_cal_client_get_default_object (ECalClient *client,
 	if (prop_value) {
 		e_client_finish_async_without_dbus (base_client, cancellable, callback, user_data, cal_client_get_default_object_from_cache_finish, prop_value, g_free);
 	} else {
-		e_client_proxy_call_string (base_client, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, cancellable, callback, user_data, e_cal_client_get_default_object,
+		e_client_proxy_call_string (
+			base_client, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, cancellable, callback, user_data, e_cal_client_get_default_object,
 			e_gdbus_cal_call_get_backend_property,
 			NULL, NULL, e_gdbus_cal_call_get_backend_property_finish, NULL, NULL);
 	}
@@ -2669,9 +2682,10 @@ e_cal_client_get_object (ECalClient *client,
 
 	strv = e_gdbus_cal_encode_get_object (uid, rid);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_object,
-			e_gdbus_cal_call_get_object,
-			NULL, NULL, e_gdbus_cal_call_get_object_finish, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_object,
+		e_gdbus_cal_call_get_object,
+		NULL, NULL, e_gdbus_cal_call_get_object_finish, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -2790,9 +2804,10 @@ e_cal_client_get_objects_for_uid (ECalClient *client,
 
 	strv = e_gdbus_cal_encode_get_object (uid, "");
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_objects_for_uid,
-			e_gdbus_cal_call_get_object,
-			NULL, NULL, e_gdbus_cal_call_get_object_finish, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_objects_for_uid,
+		e_gdbus_cal_call_get_object,
+		NULL, NULL, e_gdbus_cal_call_get_object_finish, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -2956,9 +2971,10 @@ e_cal_client_get_object_list (ECalClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_cal_client_get_object_list,
-			e_gdbus_cal_call_get_object_list,
-			NULL, NULL, NULL, e_gdbus_cal_call_get_object_list_finish, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_cal_client_get_object_list,
+		e_gdbus_cal_call_get_object_list,
+		NULL, NULL, NULL, e_gdbus_cal_call_get_object_list_finish, NULL);
 
 	g_free (gdbus_sexp);
 }
@@ -3097,9 +3113,10 @@ e_cal_client_get_object_list_as_comps (ECalClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_cal_client_get_object_list_as_comps,
-			e_gdbus_cal_call_get_object_list,
-			NULL, NULL, NULL, e_gdbus_cal_call_get_object_list_finish, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_cal_client_get_object_list_as_comps,
+		e_gdbus_cal_call_get_object_list,
+		NULL, NULL, NULL, e_gdbus_cal_call_get_object_list_finish, NULL);
 
 	g_free (gdbus_sexp);
 }
@@ -3251,9 +3268,10 @@ e_cal_client_get_free_busy (ECalClient *client,
 
 	strv = e_gdbus_cal_encode_get_free_busy (start, end, users);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_free_busy,
-			e_gdbus_cal_call_get_free_busy,
-			e_gdbus_cal_call_get_free_busy_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_free_busy,
+		e_gdbus_cal_call_get_free_busy,
+		e_gdbus_cal_call_get_free_busy_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -3354,9 +3372,10 @@ e_cal_client_create_object (ECalClient *client,
 
 	g_return_if_fail (strv[0] != NULL);
 
-	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_cal_client_create_object,
-			e_gdbus_cal_call_create_objects,
-			NULL, NULL, NULL, e_gdbus_cal_call_create_objects_finish, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), strv, cancellable, callback, user_data, e_cal_client_create_object,
+		e_gdbus_cal_call_create_objects,
+		NULL, NULL, NULL, e_gdbus_cal_call_create_objects_finish, NULL);
 
 	g_free (comp_str);
 	g_free (gdbus_comp);
@@ -3488,9 +3507,10 @@ e_cal_client_create_objects (ECalClient *client,
 
 	array = icalcomponent_slist_to_utf8_icomp_array (icalcomps);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_cal_client_create_objects,
-			e_gdbus_cal_call_create_objects,
-			NULL, NULL, NULL, e_gdbus_cal_call_create_objects_finish, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_cal_client_create_objects,
+		e_gdbus_cal_call_create_objects,
+		NULL, NULL, NULL, e_gdbus_cal_call_create_objects_finish, NULL);
 
 	g_strfreev (array);
 }
@@ -3612,9 +3632,10 @@ e_cal_client_modify_object (ECalClient *client,
 	comp_strings.data = comp_str;
 	strv = e_gdbus_cal_encode_modify_objects (&comp_strings, mod);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_object,
-			e_gdbus_cal_call_modify_objects,
-			e_gdbus_cal_call_modify_objects_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_object,
+		e_gdbus_cal_call_modify_objects,
+		e_gdbus_cal_call_modify_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 	g_free (comp_str);
@@ -3730,9 +3751,10 @@ e_cal_client_modify_objects (ECalClient *client,
 	comp_strings = icalcomponent_slist_to_string_slist (comps);
 	strv = e_gdbus_cal_encode_modify_objects (comp_strings, mod);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_objects,
-			e_gdbus_cal_call_modify_objects,
-			e_gdbus_cal_call_modify_objects_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_objects,
+		e_gdbus_cal_call_modify_objects,
+		e_gdbus_cal_call_modify_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 	e_client_util_free_string_slist (comp_strings);
@@ -3851,9 +3873,10 @@ e_cal_client_remove_object (ECalClient *client,
 	ids.data = &id;
 	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_remove_object,
-			e_gdbus_cal_call_remove_objects,
-			e_gdbus_cal_call_remove_objects_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_remove_object,
+		e_gdbus_cal_call_remove_objects,
+		e_gdbus_cal_call_remove_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -3964,9 +3987,10 @@ e_cal_client_remove_objects (ECalClient *client,
 
 	strv = e_gdbus_cal_encode_remove_objects (ids, mod);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_remove_objects,
-			e_gdbus_cal_call_remove_objects,
-			e_gdbus_cal_call_remove_objects_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_remove_objects,
+		e_gdbus_cal_call_remove_objects,
+		e_gdbus_cal_call_remove_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -4066,9 +4090,10 @@ e_cal_client_receive_objects (ECalClient *client,
 
 	comp_str = icalcomponent_as_ical_string_r (icalcomp);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (comp_str, &gdbus_comp), cancellable, callback, user_data, e_cal_client_receive_objects,
-			e_gdbus_cal_call_receive_objects,
-			e_gdbus_cal_call_receive_objects_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (comp_str, &gdbus_comp), cancellable, callback, user_data, e_cal_client_receive_objects,
+		e_gdbus_cal_call_receive_objects,
+		e_gdbus_cal_call_receive_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_free (comp_str);
 	g_free (gdbus_comp);
@@ -4163,9 +4188,10 @@ e_cal_client_send_objects (ECalClient *client,
 
 	comp_str = icalcomponent_as_ical_string_r (icalcomp);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (comp_str, &gdbus_comp), cancellable, callback, user_data, e_cal_client_send_objects,
-			e_gdbus_cal_call_send_objects,
-			NULL, NULL, NULL, e_gdbus_cal_call_send_objects_finish, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (comp_str, &gdbus_comp), cancellable, callback, user_data, e_cal_client_send_objects,
+		e_gdbus_cal_call_send_objects,
+		NULL, NULL, NULL, e_gdbus_cal_call_send_objects_finish, NULL);
 
 	g_free (comp_str);
 	g_free (gdbus_comp);
@@ -4327,9 +4353,10 @@ e_cal_client_get_attachment_uris (ECalClient *client,
 
 	strv = e_gdbus_cal_encode_get_attachment_uris (uid, rid);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_attachment_uris,
-			e_gdbus_cal_call_get_attachment_uris,
-			NULL, NULL, NULL, e_gdbus_cal_call_get_attachment_uris_finish, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_get_attachment_uris,
+		e_gdbus_cal_call_get_attachment_uris,
+		NULL, NULL, NULL, e_gdbus_cal_call_get_attachment_uris_finish, NULL);
 
 	g_strfreev (strv);
 }
@@ -4460,9 +4487,10 @@ e_cal_client_discard_alarm (ECalClient *client,
 
 	strv = e_gdbus_cal_encode_discard_alarm (uid, rid, auid);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_discard_alarm,
-			e_gdbus_cal_call_discard_alarm,
-			e_gdbus_cal_call_discard_alarm_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (
+		E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_discard_alarm,
+		e_gdbus_cal_call_discard_alarm,
+		e_gdbus_cal_call_discard_alarm_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -4556,9 +4584,10 @@ e_cal_client_get_view (ECalClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_cal_client_get_view,
-			e_gdbus_cal_call_get_view,
-			NULL, NULL, e_gdbus_cal_call_get_view_finish, NULL, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_cal_client_get_view,
+		e_gdbus_cal_call_get_view,
+		NULL, NULL, e_gdbus_cal_call_get_view_finish, NULL, NULL);
 
 	g_free (gdbus_sexp);
 }
@@ -4576,12 +4605,13 @@ complete_get_view (ECalClient *client,
 		EGdbusCalView *gdbus_calview;
 		GError *local_error = NULL;
 
-		gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
-								G_DBUS_PROXY_FLAGS_NONE,
-								CALENDAR_DBUS_SERVICE_NAME,
-								view_path,
-								NULL,
-								&local_error);
+		gdbus_calview = e_gdbus_cal_view_proxy_new_sync (
+			g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+			G_DBUS_PROXY_FLAGS_NONE,
+			CALENDAR_DBUS_SERVICE_NAME,
+			view_path,
+			NULL,
+			&local_error);
 
 		if (gdbus_calview) {
 			*view = _e_cal_client_view_new (client, gdbus_calview);
@@ -4812,9 +4842,10 @@ e_cal_client_get_timezone (ECalClient *client,
 	if (zone) {
 		e_client_finish_async_without_dbus (E_CLIENT (client), cancellable, callback, user_data, cal_client_get_timezone_from_cache, zone, NULL);
 	} else {
-		e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (tzid, &gdbus_tzid), cancellable, callback, user_data, e_cal_client_get_timezone,
-				e_gdbus_cal_call_get_timezone,
-				NULL, NULL, e_gdbus_cal_call_get_timezone_finish, NULL, NULL);
+		e_client_proxy_call_string (
+			E_CLIENT (client), e_util_ensure_gdbus_string (tzid, &gdbus_tzid), cancellable, callback, user_data, e_cal_client_get_timezone,
+			e_gdbus_cal_call_get_timezone,
+			NULL, NULL, e_gdbus_cal_call_get_timezone_finish, NULL, NULL);
 
 		g_free (gdbus_tzid);
 	}
@@ -4975,9 +5006,10 @@ e_cal_client_add_timezone (ECalClient *client,
 
 	zone_str = icalcomponent_as_ical_string_r (icalcomp);
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (zone_str, &gdbus_zone), cancellable, callback, user_data, e_cal_client_add_timezone,
-			e_gdbus_cal_call_add_timezone,
-			e_gdbus_cal_call_add_timezone_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_string (
+		E_CLIENT (client), e_util_ensure_gdbus_string (zone_str, &gdbus_zone), cancellable, callback, user_data, e_cal_client_add_timezone,
+		e_gdbus_cal_call_add_timezone,
+		e_gdbus_cal_call_add_timezone_finish, NULL, NULL, NULL, NULL);
 
 	g_free (zone_str);
 	g_free (gdbus_zone);

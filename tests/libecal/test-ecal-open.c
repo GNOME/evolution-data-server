@@ -43,12 +43,12 @@ main (gint argc,
 
 	/* Async version */
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
-	open_timeout_id = g_timeout_add_seconds (OPEN_ASYNC_TIMEOUT,
-			(GSourceFunc) open_timeout_cb, cal);
+	open_timeout_id = g_timeout_add_seconds (
+		OPEN_ASYNC_TIMEOUT, (GSourceFunc) open_timeout_cb, cal);
 
 	loop = g_main_loop_new (NULL, TRUE);
-	ecal_test_utils_cal_async_open (cal, FALSE,
-			(GSourceFunc) open_complete_cb, loop);
+	ecal_test_utils_cal_async_open (
+		cal, FALSE, (GSourceFunc) open_complete_cb, loop);
 	g_main_loop_run (loop);
 
 	return 0;

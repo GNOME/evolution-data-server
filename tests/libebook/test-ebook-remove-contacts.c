@@ -57,7 +57,8 @@ main (gint argc,
 	uids = g_list_prepend (uids, uid_2);
 
 	loop = g_main_loop_new (NULL, TRUE);
-	ebook_test_utils_book_async_remove_contacts (book, uids,
+	ebook_test_utils_book_async_remove_contacts (
+		book, uids,
 			ebook_test_utils_callback_quit, loop);
 
 	g_main_loop_run (loop);

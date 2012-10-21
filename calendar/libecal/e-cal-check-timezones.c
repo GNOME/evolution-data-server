@@ -673,9 +673,10 @@ e_cal_client_check_timezones (icalcomponent *comp,
 							 */
 							tzidprop = strstr (buffer, fulltzid);
 							if (tzidprop) {
-								memmove (tzidprop + baselen,
-									 tzidprop + fulllen,
-									 strlen (tzidprop + fulllen) + 1);
+								memmove (
+									tzidprop + baselen,
+									tzidprop + fulllen,
+									strlen (tzidprop + fulllen) + 1);
 							}
 							g_free (fulltzid);
 						}

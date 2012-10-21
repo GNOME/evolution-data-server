@@ -311,8 +311,9 @@ notify_add (EDataBookView *view,
 		ensure_pending_flush_timeout (view);
 	}
 
-	g_hash_table_insert (priv->ids, utf8_id,
-			     GUINT_TO_POINTER (1));
+	g_hash_table_insert (
+		priv->ids, utf8_id,
+		GUINT_TO_POINTER (1));
 }
 
 static gboolean
@@ -414,8 +415,9 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 		e_book_backend_sexp_match_contact (priv->card_sexp, (EContact *) contact);
 
 	if (want_in_view) {
-		vcard = e_vcard_to_string (E_VCARD (contact),
-					   EVC_FORMAT_VCARD_30);
+		vcard = e_vcard_to_string (
+			E_VCARD (contact),
+			EVC_FORMAT_VCARD_30);
 
 		if (currently_in_view)
 			notify_change (book_view, id, vcard);

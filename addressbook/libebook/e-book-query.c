@@ -658,8 +658,9 @@ e_book_query_from_string (const gchar *query_string)
 			e_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, &list);
 		} else {
-			e_sexp_add_function (sexp, 0, symbols[i].name,
-					    symbols[i].func, &list);
+			e_sexp_add_function (
+				sexp, 0, symbols[i].name,
+				symbols[i].func, &list);
 		}
 	}
 
@@ -752,10 +753,11 @@ e_book_query_to_string (EBookQuery *q)
 
 		e_sexp_encode_string (encoded, q->query.field_test.value);
 
-		g_string_append_printf (str, "%s \"%s\" %s",
-					cs,
-					q->query.field_test.field_name,
-					encoded->str);
+		g_string_append_printf (
+			str, "%s \"%s\" %s",
+			cs,
+			q->query.field_test.field_name,
+			encoded->str);
 		break;
 	case E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS:
 		g_string_append_printf (str, "contains \"x-evolution-any-field\"");
@@ -778,9 +780,10 @@ e_book_query_get_type (void)
 	if (g_once_init_enter (&type_id__volatile)) {
 		GType type_id;
 
-		type_id = g_boxed_type_register_static ("EBookQuery",
-							(GBoxedCopyFunc) e_book_query_copy,
-							(GBoxedFreeFunc) e_book_query_unref);
+		type_id = g_boxed_type_register_static (
+			"EBookQuery",
+			(GBoxedCopyFunc) e_book_query_copy,
+			(GBoxedFreeFunc) e_book_query_unref);
 
 		g_once_init_leave (&type_id__volatile, type_id);
 	}

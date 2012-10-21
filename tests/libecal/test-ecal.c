@@ -335,9 +335,10 @@ static const gchar *
 test_cal_loaded (ECal *client)
 {
 	/* Test one loaded calendar and another that is not loaded. */
-	mu_assert ("Test get_cal_load_state : Failed \n",
-			(E_CAL_LOAD_LOADED == e_cal_get_load_state (client)) &&
-			(E_CAL_LOAD_NOT_LOADED == e_cal_get_load_state (NULL)));
+	mu_assert (
+		"Test get_cal_load_state : Failed \n",
+		(E_CAL_LOAD_LOADED == e_cal_get_load_state (client)) &&
+		(E_CAL_LOAD_NOT_LOADED == e_cal_get_load_state (NULL)));
 
 	return NULL;
 }
@@ -705,14 +706,18 @@ create_client (ECal **client,
 		exit (1);
 	}
 
-	g_signal_connect (G_OBJECT (query), "objects_added",
-			  G_CALLBACK (objects_added_cb), client);
-	g_signal_connect (G_OBJECT (query), "objects_modified",
-			  G_CALLBACK (objects_modified_cb), client);
-	g_signal_connect (G_OBJECT (query), "objects_removed",
-			  G_CALLBACK (objects_removed_cb), client);
-	g_signal_connect (G_OBJECT (query), "view_complete",
-			  G_CALLBACK (view_complete_cb), client);
+	g_signal_connect (
+		G_OBJECT (query), "objects_added",
+		G_CALLBACK (objects_added_cb), client);
+	g_signal_connect (
+		G_OBJECT (query), "objects_modified",
+		G_CALLBACK (objects_modified_cb), client);
+	g_signal_connect (
+		G_OBJECT (query), "objects_removed",
+		G_CALLBACK (objects_removed_cb), client);
+	g_signal_connect (
+		G_OBJECT (query), "view_complete",
+		G_CALLBACK (view_complete_cb), client);
 
 	e_cal_view_start (query);
 

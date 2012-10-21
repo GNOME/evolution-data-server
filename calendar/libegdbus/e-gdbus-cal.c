@@ -374,7 +374,8 @@ e_gdbus_cal_call_open_sync (GDBusProxy *proxy,
                             GCancellable *cancellable,
                             GError **error)
 {
-	return e_gdbus_proxy_call_sync_boolean__void (proxy, in_only_if_exists, cancellable, error,
+	return e_gdbus_proxy_call_sync_boolean__void (
+		proxy, in_only_if_exists, cancellable, error,
 		e_gdbus_cal_call_open,
 		e_gdbus_cal_call_open_finish);
 }
@@ -401,7 +402,8 @@ e_gdbus_cal_call_remove_sync (GDBusProxy *proxy,
                               GCancellable *cancellable,
                               GError **error)
 {
-	return e_gdbus_proxy_call_sync_void__void (proxy, cancellable, error,
+	return e_gdbus_proxy_call_sync_void__void (
+		proxy, cancellable, error,
 		e_gdbus_cal_call_remove,
 		e_gdbus_cal_call_remove_finish);
 }
@@ -428,7 +430,8 @@ e_gdbus_cal_call_refresh_sync (GDBusProxy *proxy,
                                GCancellable *cancellable,
                                GError **error)
 {
-	return e_gdbus_proxy_call_sync_void__void (proxy, cancellable, error,
+	return e_gdbus_proxy_call_sync_void__void (
+		proxy, cancellable, error,
 		e_gdbus_cal_call_refresh,
 		e_gdbus_cal_call_refresh_finish);
 }
@@ -459,7 +462,8 @@ e_gdbus_cal_call_get_backend_property_sync (GDBusProxy *proxy,
                                             GCancellable *cancellable,
                                             GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__string (proxy, in_prop_name, out_prop_value, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__string (
+		proxy, in_prop_name, out_prop_value, cancellable, error,
 		e_gdbus_cal_call_get_backend_property,
 		e_gdbus_cal_call_get_backend_property_finish);
 }
@@ -505,7 +509,8 @@ e_gdbus_cal_call_set_backend_property_sync (GDBusProxy *proxy,
                                             GCancellable *cancellable,
                                             GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_prop_name_value, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_prop_name_value, cancellable, error,
 		e_gdbus_cal_call_set_backend_property,
 		e_gdbus_cal_call_set_backend_property_finish);
 }
@@ -553,7 +558,8 @@ e_gdbus_cal_call_get_object_sync (GDBusProxy *proxy,
                                   GCancellable *cancellable,
                                   GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__string (proxy, in_uid_rid, out_object, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__string (
+		proxy, in_uid_rid, out_object, cancellable, error,
 		e_gdbus_cal_call_get_object,
 		e_gdbus_cal_call_get_object_finish);
 }
@@ -584,7 +590,8 @@ e_gdbus_cal_call_get_object_list_sync (GDBusProxy *proxy,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__strv (proxy, in_sexp, out_objects, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__strv (
+		proxy, in_sexp, out_objects, cancellable, error,
 		e_gdbus_cal_call_get_object_list,
 		e_gdbus_cal_call_get_object_list_finish);
 }
@@ -664,7 +671,8 @@ e_gdbus_cal_call_get_free_busy_sync (GDBusProxy *proxy,
                                      GCancellable *cancellable,
                                      GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_start_end_userlist, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_start_end_userlist, cancellable, error,
 		e_gdbus_cal_call_get_free_busy,
 		e_gdbus_cal_call_get_free_busy_finish);
 }
@@ -695,7 +703,8 @@ e_gdbus_cal_call_create_objects_sync (GDBusProxy *proxy,
                                       GCancellable *cancellable,
                                       GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__strv (proxy, in_calobjs, out_uids, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__strv (
+		proxy, in_calobjs, out_uids, cancellable, error,
 		e_gdbus_cal_call_create_objects,
 		e_gdbus_cal_call_create_objects_finish);
 }
@@ -773,7 +782,8 @@ e_gdbus_cal_call_modify_objects_sync (GDBusProxy *proxy,
                                       GCancellable *cancellable,
                                       GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_mod_calobjs, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_mod_calobjs, cancellable, error,
 		e_gdbus_cal_call_modify_objects,
 		e_gdbus_cal_call_modify_objects_finish);
 }
@@ -860,7 +870,8 @@ e_gdbus_cal_call_remove_objects_sync (GDBusProxy *proxy,
                                       GCancellable *cancellable,
                                       GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_mod_ids, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_mod_ids, cancellable, error,
 		e_gdbus_cal_call_remove_objects,
 		e_gdbus_cal_call_remove_objects_finish);
 }
@@ -889,7 +900,8 @@ e_gdbus_cal_call_receive_objects_sync (GDBusProxy *proxy,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__void (proxy, in_calobj, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__void (
+		proxy, in_calobj, cancellable, error,
 		e_gdbus_cal_call_receive_objects,
 		e_gdbus_cal_call_receive_objects_finish);
 }
@@ -965,7 +977,8 @@ e_gdbus_cal_call_send_objects_sync (GDBusProxy *proxy,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__strv (proxy, in_calobj, out_calobj_users, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__strv (
+		proxy, in_calobj, out_calobj_users, cancellable, error,
 		e_gdbus_cal_call_send_objects,
 		e_gdbus_cal_call_send_objects_finish);
 }
@@ -1013,7 +1026,8 @@ e_gdbus_cal_call_get_attachment_uris_sync (GDBusProxy *proxy,
                                            GCancellable *cancellable,
                                            GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__strv (proxy, in_uid_rid, out_attachments, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__strv (
+		proxy, in_uid_rid, out_attachments, cancellable, error,
 		e_gdbus_cal_call_get_attachment_uris,
 		e_gdbus_cal_call_get_attachment_uris_finish);
 }
@@ -1082,7 +1096,8 @@ e_gdbus_cal_call_discard_alarm_sync (GDBusProxy *proxy,
                                      GCancellable *cancellable,
                                      GError **error)
 {
-	return e_gdbus_proxy_call_sync_strv__void (proxy, in_uid_rid_auid, cancellable, error,
+	return e_gdbus_proxy_call_sync_strv__void (
+		proxy, in_uid_rid_auid, cancellable, error,
 		e_gdbus_cal_call_discard_alarm,
 		e_gdbus_cal_call_discard_alarm_finish);
 }
@@ -1113,7 +1128,8 @@ e_gdbus_cal_call_get_view_sync (GDBusProxy *proxy,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__string (proxy, in_sexp, out_view_path, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__string (
+		proxy, in_sexp, out_view_path, cancellable, error,
 		e_gdbus_cal_call_get_view,
 		e_gdbus_cal_call_get_view_finish);
 }
@@ -1144,7 +1160,8 @@ e_gdbus_cal_call_get_timezone_sync (GDBusProxy *proxy,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__string (proxy, in_tzid, out_tzobject, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__string (
+		proxy, in_tzid, out_tzobject, cancellable, error,
 		e_gdbus_cal_call_get_timezone,
 		e_gdbus_cal_call_get_timezone_finish);
 }
@@ -1173,7 +1190,8 @@ e_gdbus_cal_call_add_timezone_sync (GDBusProxy *proxy,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__void (proxy, in_tzobject, cancellable, error,
+	return e_gdbus_proxy_call_sync_string__void (
+		proxy, in_tzobject, cancellable, error,
 		e_gdbus_cal_call_add_timezone,
 		e_gdbus_cal_call_add_timezone_finish);
 }
@@ -1634,16 +1652,18 @@ emit_notifications_in_idle (gpointer user_data)
 	}
 
 	if (has_changes) {
-		g_dbus_connection_emit_signal (connection,
-					NULL,
-					path,
-					"org.freedesktop.DBus.Properties",
-					"PropertiesChanged",
-					g_variant_new ("(sa{sv}as)",
-							GDBUS_CAL_INTERFACE_NAME,
-							builder,
-							invalidated_builder),
-					NULL);
+		g_dbus_connection_emit_signal (
+			connection,
+			NULL,
+			path,
+			"org.freedesktop.DBus.Properties",
+			"PropertiesChanged",
+			g_variant_new (
+				"(sa{sv}as)",
+				GDBUS_CAL_INTERFACE_NAME,
+				builder,
+				invalidated_builder),
+				NULL);
 	} else {
 		g_variant_builder_unref (builder);
 		g_variant_builder_unref (invalidated_builder);
@@ -1713,13 +1733,14 @@ e_gdbus_cal_register_object (EGdbusCal *object,
 	g_object_set_data (G_OBJECT (object), "gdbus-codegen-connection", (gpointer) connection);
 	g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
 
-	return g_dbus_connection_register_object (connection,
-			object_path,
-			(GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info,
-			&e_gdbus_cal_interface_vtable,
-			object,
-			(GDestroyNotify) on_object_unregistered,
-			error);
+	return g_dbus_connection_register_object (
+		connection,
+		object_path,
+		(GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info,
+		&e_gdbus_cal_interface_vtable,
+		object,
+		(GDestroyNotify) on_object_unregistered,
+		error);
 }
 
 /**
@@ -1875,17 +1896,18 @@ e_gdbus_cal_proxy_new (GDBusConnection *connection,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
-	g_async_initable_new_async (E_TYPE_GDBUS_CAL_PROXY,
-				G_PRIORITY_DEFAULT,
-				cancellable,
-				callback,
-				user_data,
-				"g-flags", flags,
-				"g-name", name,
-				"g-connection", connection,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
-				NULL);
+	g_async_initable_new_async (
+		E_TYPE_GDBUS_CAL_PROXY,
+		G_PRIORITY_DEFAULT,
+		cancellable,
+		callback,
+		user_data,
+		"g-flags", flags,
+		"g-name", name,
+		"g-connection", connection,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
+		NULL);
 }
 
 /**
@@ -1937,15 +1959,16 @@ e_gdbus_cal_proxy_new_sync (GDBusConnection *connection,
                             GError **error)
 {
 	GInitable *initable;
-	initable = g_initable_new (E_TYPE_GDBUS_CAL_PROXY,
-				cancellable,
-				error,
-				"g-flags", flags,
-				"g-name", name,
-				"g-connection", connection,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
-				NULL);
+	initable = g_initable_new (
+		E_TYPE_GDBUS_CAL_PROXY,
+		cancellable,
+		error,
+		"g-flags", flags,
+		"g-name", name,
+		"g-connection", connection,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
+		NULL);
 	if (initable != NULL)
 		return E_GDBUS_CAL (initable);
 	else
@@ -1975,17 +1998,18 @@ e_gdbus_cal_proxy_new_for_bus (GBusType bus_type,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	g_async_initable_new_async (E_TYPE_GDBUS_CAL_PROXY,
-				G_PRIORITY_DEFAULT,
-				cancellable,
-				callback,
-				user_data,
-				"g-flags", flags,
-				"g-name", name,
-				"g-bus-type", bus_type,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
-				NULL);
+	g_async_initable_new_async (
+		E_TYPE_GDBUS_CAL_PROXY,
+		G_PRIORITY_DEFAULT,
+		cancellable,
+		callback,
+		user_data,
+		"g-flags", flags,
+		"g-name", name,
+		"g-bus-type", bus_type,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
+		NULL);
 }
 
 /**
@@ -2037,15 +2061,16 @@ e_gdbus_cal_proxy_new_for_bus_sync (GBusType bus_type,
                                     GError **error)
 {
 	GInitable *initable;
-	initable = g_initable_new (E_TYPE_GDBUS_CAL_PROXY,
-				cancellable,
-				error,
-				"g-flags", flags,
-				"g-name", name,
-				"g-bus-type", bus_type,
-				"g-object-path", object_path,
-				"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
-				NULL);
+	initable = g_initable_new (
+		E_TYPE_GDBUS_CAL_PROXY,
+		cancellable,
+		error,
+		"g-flags", flags,
+		"g-name", name,
+		"g-bus-type", bus_type,
+		"g-object-path", object_path,
+		"g-interface-name", GDBUS_CAL_INTERFACE_NAME,
+		NULL);
 	if (initable != NULL)
 		return E_GDBUS_CAL (initable);
 	else

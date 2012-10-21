@@ -364,35 +364,43 @@ e_contact_class_init (EContactClass *class)
 		g_assert (i == field_info[i].field_id);
 
 		if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRING)
-			pspec = g_param_spec_string (field_info[i].field_name,
-						     _(field_info[i].pretty_name),
-						    field_info[i].pretty_name,
-						     NULL,
-						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
-						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+			pspec = g_param_spec_string (
+				field_info[i].field_name,
+				_(field_info[i].pretty_name),
+				field_info[i].pretty_name,
+				NULL,
+				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
+				G_PARAM_STATIC_NICK |
+				G_PARAM_STATIC_BLURB);
 		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_BOOLEAN)
-			pspec = g_param_spec_boolean (field_info[i].field_name,
-						      _(field_info[i].pretty_name),
-						    field_info[i].pretty_name,
-						      FALSE,
-						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
-						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+			pspec = g_param_spec_boolean (
+				field_info[i].field_name,
+				_(field_info[i].pretty_name),
+				field_info[i].pretty_name,
+				FALSE,
+				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
+				G_PARAM_STATIC_NICK |
+				G_PARAM_STATIC_BLURB);
 		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRUCT)
-			pspec = g_param_spec_boxed (field_info[i].field_name,
-						    _(field_info[i].pretty_name),
-						    field_info[i].pretty_name,
-						    field_info[i].boxed_type_getter (),
-						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
-						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+			pspec = g_param_spec_boxed (
+				field_info[i].field_name,
+				_(field_info[i].pretty_name),
+				field_info[i].pretty_name,
+				field_info[i].boxed_type_getter (),
+				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
+				G_PARAM_STATIC_NICK |
+				G_PARAM_STATIC_BLURB);
 		else
-			pspec = g_param_spec_pointer (field_info[i].field_name,
-						      _(field_info[i].pretty_name),
-						    field_info[i].pretty_name,
-						     (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
-						     | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+			pspec = g_param_spec_pointer (
+				field_info[i].field_name,
+				_(field_info[i].pretty_name),
+				field_info[i].pretty_name,
+				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
+				G_PARAM_STATIC_NICK |
+				G_PARAM_STATIC_BLURB);
 
-		g_object_class_install_property (object_class, field_info[i].field_id,
-						 pspec);
+		g_object_class_install_property (
+			object_class, field_info[i].field_id, pspec);
 	}
 }
 
@@ -491,24 +499,27 @@ photo_setter (EContact *contact,
 	case E_CONTACT_PHOTO_TYPE_INLINED:
 		g_return_if_fail (photo->data.inlined.length > 0);
 
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_ENCODING),
-							"b");
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_ENCODING),
+			"b");
 		if (photo->data.inlined.mime_type && (p = strchr (photo->data.inlined.mime_type, '/'))) {
 			image_type = p + 1;
 		} else {
 			image_type = "X-EVOLUTION-UNKNOWN";
 		}
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_TYPE),
-							image_type);
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_TYPE),
+			image_type);
 
 		e_vcard_attribute_add_value_decoded (attr, (gchar *) photo->data.inlined.data, photo->data.inlined.length);
 		break;
 	case E_CONTACT_PHOTO_TYPE_URI:
-		e_vcard_attribute_add_param_with_value (attr,
-							e_vcard_attribute_param_new (EVC_VALUE),
-							"uri");
+		e_vcard_attribute_add_param_with_value (
+			attr,
+			e_vcard_attribute_param_new (EVC_VALUE),
+			"uri");
 		e_vcard_attribute_add_value (attr, photo->data.uri);
 		break;
 	default:
@@ -818,9 +829,10 @@ cert_setter (EContact *contact,
 {
 	EContactCert *cert = data;
 
-	e_vcard_attribute_add_param_with_value (attr,
-						e_vcard_attribute_param_new (EVC_ENCODING),
-						"b");
+	e_vcard_attribute_add_param_with_value (
+		attr,
+		e_vcard_attribute_param_new (EVC_ENCODING),
+		"b");
 
 	e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
 }
@@ -854,9 +866,10 @@ e_contact_set_property (GObject *object,
 		e_vcard_remove_attributes (E_VCARD (contact), NULL, info->vcard_field_name);
 
 		for (l = new_values; l; l = l->next)
-			e_vcard_append_attribute_with_value (E_VCARD (contact),
-							  e_vcard_attribute_new (NULL, info->vcard_field_name),
-							  (gchar *) l->data);
+			e_vcard_append_attribute_with_value (
+				E_VCARD (contact),
+				e_vcard_attribute_new (NULL, info->vcard_field_name),
+				(gchar *) l->data);
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
 		if (info->t & E_CONTACT_FIELD_TYPE_MULTI_ELEM) {
@@ -900,9 +913,10 @@ e_contact_set_property (GObject *object,
 					    !info->attr_type1 &&
 					    !info->attr_type2) {
 						/* Add default type */
-						e_vcard_attribute_add_param_with_value ( attr,
-								e_vcard_attribute_param_new (EVC_TYPE),
-								"OTHER");
+						e_vcard_attribute_add_param_with_value (
+							attr,
+							e_vcard_attribute_param_new (EVC_TYPE),
+							"OTHER");
 					}
 					e_vcard_append_attribute (E_VCARD (contact), attr);
 				}
@@ -994,11 +1008,13 @@ e_contact_set_property (GObject *object,
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 				e_vcard_append_attribute (E_VCARD (contact), attr);
 				if (info->attr_type1)
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE),
-										info->attr_type1);
+					e_vcard_attribute_add_param_with_value (
+						attr, e_vcard_attribute_param_new (EVC_TYPE),
+						info->attr_type1);
 				if (info->attr_type2)
-					e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE),
-										info->attr_type2);
+					e_vcard_attribute_add_param_with_value (
+						attr, e_vcard_attribute_param_new (EVC_TYPE),
+						info->attr_type2);
 			}
 
 			if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
@@ -1134,9 +1150,10 @@ e_contact_set_property (GObject *object,
 		}
 		else {
 			/* and if we don't find one we create a new attribute */
-			e_vcard_append_attribute_with_value (E_VCARD (contact),
-							  e_vcard_attribute_new (NULL, info->vcard_field_name),
-							  g_value_get_boolean (value) ? "TRUE" : "FALSE");
+			e_vcard_append_attribute_with_value (
+				E_VCARD (contact),
+				e_vcard_attribute_new (NULL, info->vcard_field_name),
+				g_value_get_boolean (value) ? "TRUE" : "FALSE");
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
@@ -1169,9 +1186,10 @@ e_contact_set_property (GObject *object,
 		}
 		else if (sval) {
 			/* and if we don't find one we create a new attribute */
-			e_vcard_append_attribute_with_value (E_VCARD (contact),
-							  e_vcard_attribute_new (NULL, info->vcard_field_name),
-							  sval);
+			e_vcard_append_attribute_with_value (
+				E_VCARD (contact),
+				e_vcard_attribute_new (NULL, info->vcard_field_name),
+				sval);
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
@@ -1748,9 +1766,10 @@ e_contact_set (EContact *contact,
 	g_free (contact->priv->cached_strings[field_id]);
 	contact->priv->cached_strings[field_id] = NULL;
 
-	g_object_set (contact,
-		      e_contact_field_name (field_id), value,
-		      NULL);
+	g_object_set (
+		contact,
+		e_contact_field_name (field_id), value,
+		NULL);
 }
 
 /**
@@ -1817,8 +1836,9 @@ e_contact_set_attributes (EContact *contact,
 	e_vcard_remove_attributes (E_VCARD (contact), NULL, info->vcard_field_name);
 
 	for (l = attributes; l; l = l->next)
-		e_vcard_append_attribute (E_VCARD (contact),
-				       e_vcard_attribute_copy ((EVCardAttribute *) l->data));
+		e_vcard_append_attribute (
+			E_VCARD (contact),
+			e_vcard_attribute_copy ((EVCardAttribute *) l->data));
 }
 
 /**
@@ -2011,10 +2031,11 @@ gchar *
 e_contact_date_to_string (EContactDate *dt)
 {
 	if (dt)
-		return g_strdup_printf ("%04d-%02d-%02d",
-					CLAMP (dt->year, 1000, 9999),
-					CLAMP (dt->month, 1, 12),
-					CLAMP (dt->day, 1, 31));
+		return g_strdup_printf (
+			"%04d-%02d-%02d",
+			CLAMP (dt->year, 1000, 9999),
+			CLAMP (dt->month, 1, 12),
+			CLAMP (dt->day, 1, 31));
 	else
 		return NULL;
 }

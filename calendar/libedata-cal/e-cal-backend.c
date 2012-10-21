@@ -638,8 +638,9 @@ static void
 cal_destroy_cb (gpointer data,
                 GObject *where_cal_was)
 {
-	e_cal_backend_remove_client_private (E_CAL_BACKEND (data),
-					     (EDataCal *) where_cal_was, FALSE);
+	e_cal_backend_remove_client_private (
+		E_CAL_BACKEND (data),
+		(EDataCal *) where_cal_was, FALSE);
 }
 
 /**

@@ -336,7 +336,8 @@ get_folder_offline (CamelStore *store,
 		 * But for the on-disk cache we do always capitalize the Inbox no matter what the
 		 * server provided.
 		 */
-		folder_dir = imapx_path_to_physical (storage_path,
+		folder_dir = imapx_path_to_physical (
+			storage_path,
 			g_ascii_strcasecmp (folder_name, "INBOX") == 0 ? "INBOX" : folder_name);
 		g_free (storage_path);
 
@@ -1568,8 +1569,9 @@ imapx_store_rename_folder_sync (CamelStore *store,
 
 	/* So do we care if this didn't work?  Its just a cache? */
 	if (g_rename (oldpath, newpath) == -1) {
-		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
-			   oldpath, newpath, g_strerror (errno));
+		g_warning (
+			"Could not rename message cache '%s' to '%s': %s: cache reset",
+			oldpath, newpath, g_strerror (errno));
 	}
 
 	g_free (oldpath);

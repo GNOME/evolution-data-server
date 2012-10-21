@@ -342,7 +342,8 @@ new_vcard_from_test_case (const gchar *case_name)
 	filename = g_build_filename (SRCDIR, "..", "data", "vcards", case_filename, NULL);
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
-		g_warning ("failed to read test contact file '%s': %s",
+		g_warning (
+			"failed to read test contact file '%s': %s",
 				filename, error->message);
 		exit (1);
 	}

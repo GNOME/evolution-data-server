@@ -598,56 +598,58 @@ e_cal_class_init (ECalClass *class)
 	object_class = (GObjectClass *) class;
 
 	/* XXX The "cal-opened" signal is deprecated. */
-	e_cal_signals[CAL_OPENED] =
-		g_signal_new ("cal_opened",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, cal_opened),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__INT,
-			      G_TYPE_NONE, 1, G_TYPE_INT);
+	e_cal_signals[CAL_OPENED] = g_signal_new (
+		"cal_opened",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClass, cal_opened),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__INT,
+		G_TYPE_NONE, 1, G_TYPE_INT);
 
-        /**
-         * ECal::cal-opened-ex:
-         * @ecal:: self
-         * @error: (type glong):
-         */
-	e_cal_signals[CAL_OPENED_EX] =
-		g_signal_new ("cal_opened_ex",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, cal_opened_ex),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
+	/**
+	 * ECal::cal-opened-ex:
+	 * @ecal:: self
+	 * @error: (type glong):
+	 */
+	e_cal_signals[CAL_OPENED_EX] = g_signal_new (
+		"cal_opened_ex",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClass, cal_opened_ex),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	e_cal_signals[CAL_SET_MODE] =
-		g_signal_new ("cal_set_mode",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, cal_set_mode),
-			      NULL, NULL,
-			      e_cal_marshal_VOID__ENUM_ENUM,
-			      G_TYPE_NONE, 2,
-			      E_CAL_SET_MODE_STATUS_ENUM_TYPE,
-			      CAL_MODE_ENUM_TYPE);
-	e_cal_signals[BACKEND_ERROR] =
-		g_signal_new ("backend_error",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, backend_error),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_STRING);
-	e_cal_signals[BACKEND_DIED] =
-		g_signal_new ("backend_died",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (ECalClass, backend_died),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	e_cal_signals[CAL_SET_MODE] = g_signal_new (
+		"cal_set_mode",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClass, cal_set_mode),
+		NULL, NULL,
+		e_cal_marshal_VOID__ENUM_ENUM,
+		G_TYPE_NONE, 2,
+		E_CAL_SET_MODE_STATUS_ENUM_TYPE,
+		CAL_MODE_ENUM_TYPE);
+
+	e_cal_signals[BACKEND_ERROR] = g_signal_new (
+		"backend_error",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClass, backend_error),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__STRING,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRING);
+
+	e_cal_signals[BACKEND_DIED] = g_signal_new (
+		"backend_died",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClass, backend_died),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 
 	class->cal_opened = NULL;
 	class->cal_opened_ex = NULL;
@@ -735,7 +737,8 @@ e_cal_activate (GError **error)
 	}
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
-	cal_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
+	cal_connection_closed_id = g_dbus_connection_signal_subscribe (
+		connection,
 		NULL,					/* sender */
 		"org.freedesktop.DBus",			/* interface */
 		"NameOwnerChanged",			/* member */
@@ -858,8 +861,9 @@ online_cb (EGdbusCal *gdbus_cal,
 {
 	g_return_if_fail (E_IS_CAL (cal));
 
-	g_signal_emit (G_OBJECT (cal), e_cal_signals[CAL_SET_MODE],
-		       0, E_CALENDAR_STATUS_OK, is_online ? Remote : Local);
+	g_signal_emit (
+		G_OBJECT (cal), e_cal_signals[CAL_SET_MODE],
+		0, E_CALENDAR_STATUS_OK, is_online ? Remote : Local);
 }
 
 /*
@@ -949,12 +953,13 @@ e_cal_new (ESource *source,
 	}
 	g_strfreev (strv);
 
-	priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
-						      G_DBUS_PROXY_FLAGS_NONE,
-						      CALENDAR_DBUS_SERVICE_NAME,
-						      path,
-						      NULL,
-						      &error));
+	priv->gdbus_cal = G_DBUS_PROXY (
+		e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		path,
+		NULL,
+		&error));
 
 	if (!priv->gdbus_cal) {
 		g_free (path);
@@ -967,7 +972,8 @@ e_cal_new (ESource *source,
 	}
 
 	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->gdbus_cal));
-	priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+	priv->gone_signal_id = g_dbus_connection_signal_subscribe (
+		connection,
 		"org.freedesktop.DBus",			/* sender */
 		"org.freedesktop.DBus",			/* interface */
 		"NameOwnerChanged",			/* member */
@@ -2522,22 +2528,24 @@ process_detached_instances (GList *instances,
 						 * recurrency ids. Real problem might be elsewhere,
 						 * but anything is better than crashing...
 						 */
-						g_log (G_LOG_DOMAIN,
-						       G_LOG_LEVEL_CRITICAL,
-						       "UID %s: instance RECURRENCE-ID %s + detached instance RECURRENCE-ID %s: cannot compare",
-						       uid,
-						       i_rid,
-						       d_rid);
+						g_log (
+							G_LOG_DOMAIN,
+							G_LOG_LEVEL_CRITICAL,
+							"UID %s: instance RECURRENCE-ID %s + detached instance RECURRENCE-ID %s: cannot compare",
+							uid,
+							i_rid,
+							d_rid);
 
 						e_cal_component_free_datetime (&instance_recur_id.datetime);
 						g_free (i_rid);
 						g_free (d_rid);
 						continue;
 					}
-					cmp = icaltime_compare (*instance_recur_id.datetime.value,
-								*recur_id.datetime.value);
+					cmp = icaltime_compare (
+						*instance_recur_id.datetime.value,
+						*recur_id.datetime.value);
 					if ((recur_id.type == E_CAL_COMPONENT_RANGE_THISPRIOR && cmp <= 0) ||
-					    (recur_id.type == E_CAL_COMPONENT_RANGE_THISFUTURE && cmp >= 0)) {
+						(recur_id.type == E_CAL_COMPONENT_RANGE_THISFUTURE && cmp >= 0)) {
 						ECalComponent *comp;
 
 						comp = e_cal_component_new ();
@@ -2627,8 +2635,9 @@ try_again:
 			return;
 		}
 
-		query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
-					 iso_start, iso_end);
+		query = g_strdup_printf (
+			"(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
+			iso_start, iso_end);
 		g_free (iso_start);
 		g_free (iso_end);
 		if (!e_cal_get_object_list_as_comp (ecal, query, &objects, NULL)) {
@@ -2719,9 +2728,10 @@ try_again:
 			instances_hold->instances = &instances;
 			instances_hold->start_zone = start_zone;
 
-			e_cal_recur_generate_instances (comp, start, end, add_instance, instances_hold,
-							e_cal_resolve_tzid_cb, ecal,
-							default_zone);
+			e_cal_recur_generate_instances (
+				comp, start, end, add_instance, instances_hold,
+				e_cal_resolve_tzid_cb, ecal,
+				default_zone);
 
 			g_free (instances_hold);
 			g_object_unref (comp);
@@ -2942,8 +2952,9 @@ build_component_alarms_list (ECal *ecal,
 			continue;
 		}
 
-		alarms = e_cal_util_generate_alarms_for_comp (comp, start, end, omit, e_cal_resolve_tzid_cb,
-							      ecal, ecal->priv->default_zone);
+		alarms = e_cal_util_generate_alarms_for_comp (
+			comp, start, end, omit, e_cal_resolve_tzid_cb,
+			ecal, ecal->priv->default_zone);
 		if (alarms)
 			comp_alarms = g_slist_prepend (comp_alarms, alarms);
 	}
@@ -2997,8 +3008,9 @@ e_cal_get_alarms_in_range (ECal *ecal,
 	}
 
 	/* build the query string */
-	sexp = g_strdup_printf ("(has-alarms-in-range? (make-time \"%s\") (make-time \"%s\"))",
-				iso_start, iso_end);
+	sexp = g_strdup_printf (
+		"(has-alarms-in-range? (make-time \"%s\") (make-time \"%s\"))",
+		iso_start, iso_end);
 	g_free (iso_start);
 	g_free (iso_end);
 
@@ -3201,8 +3213,9 @@ foreach_tzid_callback (icalparameter *param,
 
 	vtimezone_as_string = icalcomponent_as_ical_string_r (vtimezone_comp);
 
-	g_hash_table_insert (data->timezone_hash, (gchar *) tzid,
-			     vtimezone_as_string);
+	g_hash_table_insert (
+		data->timezone_hash, (gchar *) tzid,
+		vtimezone_as_string);
 }
 
 /* This appends the value string to the GString given in data. */
@@ -3266,11 +3279,12 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 	/* Create the start of a VCALENDAR, to add the VTIMEZONES to,
 	 * and remember its length so we know if any VTIMEZONEs get added. */
 	vcal_string = g_string_new (NULL);
-	g_string_append (vcal_string,
-			 "BEGIN:VCALENDAR\n"
-			 "PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
-			 "VERSION:2.0\n"
-			 "METHOD:PUBLISH\n");
+	g_string_append (
+		vcal_string,
+		"BEGIN:VCALENDAR\n"
+		"PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
+		"VERSION:2.0\n"
+		"METHOD:PUBLISH\n");
 	initial_vcal_string_len = vcal_string->len;
 
 	/* Now concatenate all the timezone strings. This also frees the
@@ -3784,15 +3798,15 @@ e_cal_get_timezone (ECal *ecal,
 			icalproperty *prop;
 
 			icalcomp = icalcomponent_new_clone (icaltimezone_get_component (syszone));
-			prop = icalcomponent_get_first_property (icalcomp,
-								ICAL_ANY_PROPERTY);
+			prop = icalcomponent_get_first_property (
+				icalcomp, ICAL_ANY_PROPERTY);
 			while (!found && prop) {
 				if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
 					icalproperty_set_value_from_string (prop, tzid, "NO");
 					found = TRUE;
 				}
-				prop = icalcomponent_get_next_property (icalcomp,
-								       ICAL_ANY_PROPERTY);
+				prop = icalcomponent_get_next_property (
+					icalcomp, ICAL_ANY_PROPERTY);
 			}
 		} else {
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
@@ -3922,12 +3936,13 @@ e_cal_get_query (ECal *ecal,
 
 	status = E_CALENDAR_STATUS_OK;
 
-	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
-							G_DBUS_PROXY_FLAGS_NONE,
-							CALENDAR_DBUS_SERVICE_NAME,
-							query_path,
-							NULL,
-							error);
+	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (
+		g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		query_path,
+		NULL,
+		error);
 
 	g_free (query_path);
 
