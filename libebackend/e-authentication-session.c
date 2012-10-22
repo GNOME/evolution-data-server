@@ -570,16 +570,30 @@ try_again:
 
 	if (auth_result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
 		gboolean permanently;
+		gchar *password_copy;
 
 		permanently = gcr_prompt_get_choice_chosen (prompt);
 		session_result = E_AUTHENTICATION_SESSION_SUCCESS;
+
+		/* Close our prompt before storing the password in
+		 * the keyring.  If the keyring is locked, it will
+		 * need to prompt the user for a keyring password,
+		 * but it can't do that if our password prompt is
+		 * still open since both prompts are system-modal.
+		 * Not sure what would happen next; probably the
+		 * store operation would either fail or deadlock. */
+
+		/* XXX Not sure if it's safe to use the prompt's
+		 *     password string after closing the prompt,
+		 *     so make a copy here just to be safe. */
+		password_copy = gcr_secure_memory_strdup (prompt_password);
 
 		/* Failure here does not affect the outcome of this
 		 * operation, but leave a breadcrumb as evidence that
 		 * something went wrong. */
 
-		e_authentication_session_store_password_sync (
-			session, prompt_password, permanently,
+		gcr_system_prompt_close (
+			GCR_SYSTEM_PROMPT (prompt),
 			cancellable, &local_error);
 
 		if (local_error != NULL) {
@@ -587,7 +601,20 @@ try_again:
 			g_clear_error (&local_error);
 		}
 
-		goto close_prompt;
+		g_object_unref (prompt);
+
+		e_authentication_session_store_password_sync (
+			session, password_copy, permanently,
+			cancellable, &local_error);
+
+		if (local_error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_clear_error (&local_error);
+		}
+
+		gcr_secure_memory_strfree (password_copy);
+
+		goto exit;
 	}
 
 	g_warn_if_fail (auth_result == E_SOURCE_AUTHENTICATION_REJECTED);
