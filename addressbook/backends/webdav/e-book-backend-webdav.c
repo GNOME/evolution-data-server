@@ -241,10 +241,6 @@ upload_contact (EBookBackendWebdav *webdav,
 		}
 	}
 
-	/* don't upload the UID and REV fields, they're only interesting inside
-	 * evolution and not on the webdav server */
-	e_contact_set (contact, E_CONTACT_UID, NULL);
-	e_contact_set (contact, E_CONTACT_REV, NULL);
 	request = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 	soup_message_set_request (
 		message, "text/vcard", SOUP_MEMORY_TEMPORARY,
