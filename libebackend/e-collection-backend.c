@@ -349,19 +349,6 @@ collection_backend_child_is_mail (ESource *child_source)
 	return FALSE;
 }
 
-static gboolean
-include_master_source_enabled_transform (GBinding *binding,
-					 const GValue *source_value,
-					 GValue *target_value,
-					 gpointer backend)
-{
-	g_value_set_boolean (target_value,
-		g_value_get_boolean (source_value) &&
-		e_source_get_enabled (e_backend_get_source (backend)));
-
-	return TRUE;
-}
-
 static void
 collection_backend_bind_child_enabled (ECollectionBackend *backend,
                                        ESource *child_source)
@@ -378,38 +365,26 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	extension = e_source_get_extension (collection_source, extension_name);
 
 	if (collection_backend_child_is_calendar (child_source)) {
-		g_object_bind_property_full (
+		g_object_bind_property (
 			extension, "calendar-enabled",
 			child_source, "enabled",
-			G_BINDING_SYNC_CREATE,
-			include_master_source_enabled_transform,
-			include_master_source_enabled_transform,
-			backend,
-			NULL);
+			G_BINDING_SYNC_CREATE);
 		return;
 	}
 
 	if (collection_backend_child_is_contacts (child_source)) {
-		g_object_bind_property_full (
+		g_object_bind_property (
 			extension, "contacts-enabled",
 			child_source, "enabled",
-			G_BINDING_SYNC_CREATE,
-			include_master_source_enabled_transform,
-			include_master_source_enabled_transform,
-			backend,
-			NULL);
+			G_BINDING_SYNC_CREATE);
 		return;
 	}
 
 	if (collection_backend_child_is_mail (child_source)) {
-		g_object_bind_property_full (
+		g_object_bind_property (
 			extension, "mail-enabled",
 			child_source, "enabled",
-			G_BINDING_SYNC_CREATE,
-			include_master_source_enabled_transform,
-			include_master_source_enabled_transform,
-			backend,
-			NULL);
+			G_BINDING_SYNC_CREATE);
 		return;
 	}
 }
