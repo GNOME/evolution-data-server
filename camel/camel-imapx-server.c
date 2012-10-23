@@ -325,6 +325,8 @@ static gint	imapx_uidset_add		(struct _uidset_state *ss,
 						 const gchar *uid);
 
 static gboolean	imapx_command_idle_stop		(CamelIMAPXServer *is,
+						 CamelIMAPXStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_continuation		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
@@ -447,12 +449,21 @@ struct _CamelIMAPXIdle {
 	gboolean idle_exit;
 };
 
+typedef enum {
+	IMAPX_IDLE_STOP_NOOP,
+	IMAPX_IDLE_STOP_SUCCESS,
+	IMAPX_IDLE_STOP_ERROR
+} CamelIMAPXIdleStopResult;
+
 static gboolean	imapx_in_idle			(CamelIMAPXServer *is);
 static gboolean	imapx_idle_supported		(CamelIMAPXServer *is);
 static void	imapx_start_idle		(CamelIMAPXServer *is);
 static void	imapx_exit_idle			(CamelIMAPXServer *is);
 static void	imapx_init_idle			(CamelIMAPXServer *is);
-static gboolean	imapx_stop_idle			(CamelIMAPXServer *is,
+static CamelIMAPXIdleStopResult
+		imapx_stop_idle			(CamelIMAPXServer *is,
+						 CamelIMAPXStream *stream,
+						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	camel_imapx_server_idle		(CamelIMAPXServer *is,
 						 CamelFolder *folder,
@@ -936,15 +947,33 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		gboolean empty = imapx_is_command_queue_empty (is);
 
 		if (imapx_in_idle (is) && !camel_imapx_command_queue_is_empty (is->queue)) {
-			/* if imapx_stop_idle() returns FALSE, it was only
-			 * pending and we can go ahead and send a new command
-			 * immediately. If it returns TRUE, either it sent the
-			 * DONE to exit IDLE mode, or there was an error.
-			 * Either way, we do nothing more right now. */
-			if (imapx_stop_idle (is, error)) {
-				c (is->tagprefix, "waiting for idle to stop \n");
-				return;
+			CamelIMAPXIdleStopResult stop_result;
+			CamelIMAPXStream *stream;
+
+			stop_result = IMAPX_IDLE_STOP_NOOP;
+			stream = camel_imapx_server_ref_stream (is);
+
+			if (stream != NULL) {
+				stop_result = imapx_stop_idle (
+					is, stream, cancellable, error);
+				g_object_unref (stream);
 			}
+
+			switch (stop_result) {
+				/* Proceed with the next queued command. */
+				case IMAPX_IDLE_STOP_NOOP:
+					break;
+
+				case IMAPX_IDLE_STOP_SUCCESS:
+					c (
+						is->tagprefix,
+						"waiting for idle to stop \n");
+					/* fall through */
+
+				case IMAPX_IDLE_STOP_ERROR:
+					return;
+			}
+
 		} else if (empty && !imapx_in_idle (is)) {
 			imapx_start_idle (is);
 			c (is->tagprefix, "starting idle \n");
@@ -1504,9 +1533,9 @@ imapx_untagged_exists (CamelIMAPXServer *is,
                        GCancellable *cancellable,
                        GError **error)
 {
+	gboolean success = TRUE;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	c (is->tagprefix, "exists: %d\n", is->priv->context->id);
 	is->exists = is->priv->context->id;
@@ -1515,11 +1544,16 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 		((CamelIMAPXFolder *) is->select_folder)->exists_on_server = is->priv->context->id;
 
 	if (imapx_idle_supported (is) && imapx_in_idle (is)) {
-		if (camel_folder_summary_count (is->select_folder->summary) < is->priv->context->id)
-			imapx_stop_idle (is, error);
+		if (camel_folder_summary_count (is->select_folder->summary) < is->priv->context->id) {
+			CamelIMAPXIdleStopResult stop_result;
+
+			stop_result = imapx_stop_idle (
+				is, stream, cancellable, error);
+			success = (stop_result != IMAPX_IDLE_STOP_ERROR);
+		}
 	}
 
-	return TRUE;
+	return success;
 }
 
 static gboolean
@@ -2149,6 +2183,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
 	GList *link;
+	gboolean success;
 
 	/* The 'literal' pointer is like a write-lock, nothing else
 	 * can write while we have it ... so we dont need any
@@ -2166,7 +2201,9 @@ imapx_continuation (CamelIMAPXServer *is,
 			/* IDLE got cancelled after we sent the command, while
 			 * we were waiting for this continuation. Send DONE
 			 * immediately. */
-			if (!imapx_command_idle_stop (is, error)) {
+			success = imapx_command_idle_stop (
+				is, stream, cancellable, error);
+			if (!success) {
 				IDLE_UNLOCK (is->idle);
 				return FALSE;
 			}
@@ -2569,24 +2606,21 @@ imapx_submit_job (CamelIMAPXServer *is,
 /*TODO handle negative cases sanely */
 static gboolean
 imapx_command_idle_stop (CamelIMAPXServer *is,
+                         CamelIMAPXStream *stream,
+                         GCancellable *cancellable,
                          GError **error)
 {
-	CamelIMAPXStream *stream;
-	gboolean success = FALSE;
+	gboolean success;
 
-	stream = camel_imapx_server_ref_stream (is);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (stream), FALSE);
 
-	if (stream != NULL) {
-		success = (camel_stream_write_string (
-			CAMEL_STREAM (stream),
-			"DONE\r\n", NULL, NULL) != -1);
-		g_object_unref (stream);
-	}
+	success = (camel_stream_write_string (
+		CAMEL_STREAM (stream),
+		"DONE\r\n", cancellable, error) != -1);
 
 	if (!success) {
-		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
-			"Unable to issue DONE");
+		g_prefix_error (error, "Unable to issue DONE: ");
 		c (is->tagprefix, "Failed to issue DONE to terminate IDLE\n");
 		is->state = IMAPX_SHUTDOWN;
 		is->parser_quit = TRUE;
@@ -2778,43 +2812,57 @@ imapx_idle_thread (gpointer data)
 	return NULL;
 }
 
-static gboolean
+static CamelIMAPXIdleStopResult
 imapx_stop_idle (CamelIMAPXServer *is,
+                 CamelIMAPXStream *stream,
+                 GCancellable *cancellable,
                  GError **error)
 {
-	CamelIMAPXIdle *idle = is->idle;
-	gint stopped = FALSE;
+	CamelIMAPXIdleStopResult result = IMAPX_IDLE_STOP_NOOP;
+	gboolean success;
 	time_t now;
 
 	time (&now);
-	IDLE_LOCK (idle);
 
-	switch (idle->state) {
-	case IMAPX_IDLE_ISSUED:
-		idle->state = IMAPX_IDLE_CANCEL;
-	case IMAPX_IDLE_CANCEL:
-		stopped = TRUE;
-		break;
+	IDLE_LOCK (is->idle);
 
-	case IMAPX_IDLE_STARTED:
-		/* We set 'stopped' even if sending DONE fails, to ensure that
-		 * our caller doesn't try to submit its own command. */
-		stopped = TRUE;
-		if (!imapx_command_idle_stop (is, error))
+	switch (is->idle->state) {
+		case IMAPX_IDLE_ISSUED:
+			is->idle->state = IMAPX_IDLE_CANCEL;
+			/* fall through */
+
+		case IMAPX_IDLE_CANCEL:
+			result = IMAPX_IDLE_STOP_SUCCESS;
 			break;
 
-		idle->state = IMAPX_IDLE_OFF;
-		c (
-			is->tagprefix, "Stopping idle after %ld seconds\n",
-			(long)(now - idle->started));
-	case IMAPX_IDLE_PENDING:
-		idle->state = IMAPX_IDLE_OFF;
-	case IMAPX_IDLE_OFF:
-		break;
-	}
-	IDLE_UNLOCK (idle);
+		case IMAPX_IDLE_STARTED:
+			success = imapx_command_idle_stop (
+				is, stream, cancellable, error);
+			if (success) {
+				result = IMAPX_IDLE_STOP_SUCCESS;
+			} else {
+				result = IMAPX_IDLE_STOP_ERROR;
+				goto exit;
+			}
 
-	return stopped;
+			c (
+				is->tagprefix,
+				"Stopping idle after %ld seconds\n",
+				(glong) (now - is->idle->started));
+			/* fall through */
+
+		case IMAPX_IDLE_PENDING:
+			is->idle->state = IMAPX_IDLE_OFF;
+			/* fall through */
+
+		case IMAPX_IDLE_OFF:
+			break;
+	}
+
+exit:
+	IDLE_UNLOCK (is->idle);
+
+	return result;
 }
 
 static void
