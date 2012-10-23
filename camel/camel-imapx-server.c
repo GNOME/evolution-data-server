@@ -315,12 +315,12 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-void		imapx_uidset_init		(struct _uidset_state *ss,
+static void	imapx_uidset_init		(struct _uidset_state *ss,
 						 gint total,
 						 gint limit);
-gint		imapx_uidset_done		(struct _uidset_state *ss,
+static gint	imapx_uidset_done		(struct _uidset_state *ss,
 						 CamelIMAPXCommand *ic);
-gint		imapx_uidset_add		(struct _uidset_state *ss,
+static gint	imapx_uidset_add		(struct _uidset_state *ss,
 						 CamelIMAPXCommand *ic,
 						 const gchar *uid);
 
