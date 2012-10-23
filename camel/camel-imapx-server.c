@@ -3014,7 +3014,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *) cfolder->summary)->validity)
 			invalidate_local_cache (ifolder, is->uidvalidity);
 
-#if 0
+#if 0  /* see comment for disabled bits in imapx_job_refresh_info_start() */
 		/* This should trigger a new messages scan */
 		if (is->exists != is->select_folder->summary->root_view->total_count)
 			g_warning (
@@ -4988,8 +4988,8 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		job->cancellable, &job->error))
 		goto done;
 
-#if 0 /* There are issues with this still; continue with the buggy behaviour
-	 where we issue STATUS on the current folder, for now...*/
+#if 0	/* There are issues with this still; continue with the buggy
+	 * behaviour where we issue STATUS on the current folder, for now. */
 	if (is->select_folder == folder)
 		is_selected = TRUE;
 #endif
@@ -5020,7 +5020,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 	if (!need_rescan) {
 		CamelIMAPXCommand *ic;
 
-		#if 0
+		#if 0  /* see comment for disabled bits above */
 		if (is_selected) {
 			/* We may not issue STATUS on the current folder. Use SELECT or NOOP instead. */
 			if (0 /* server needs SELECT not just NOOP */) {
