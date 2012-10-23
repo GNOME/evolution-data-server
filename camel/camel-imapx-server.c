@@ -315,9 +315,14 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-void imapx_uidset_init (struct _uidset_state *ss, gint total, gint limit);
-gint imapx_uidset_done (struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
-gint imapx_uidset_add (struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
+void		imapx_uidset_init		(struct _uidset_state *ss,
+						 gint total,
+						 gint limit);
+gint		imapx_uidset_done		(struct _uidset_state *ss,
+						 CamelIMAPXCommand *ic);
+gint		imapx_uidset_add		(struct _uidset_state *ss,
+						 CamelIMAPXCommand *ic,
+						 const gchar *uid);
 
 static gboolean	imapx_command_idle_stop		(CamelIMAPXServer *is,
 						 GError **error);
@@ -392,12 +397,24 @@ struct _imapx_flag_change {
 	gchar *name;
 };
 
-static CamelIMAPXJob *imapx_match_active_job (CamelIMAPXServer *is, guint32 type, const gchar *uid);
-static void imapx_job_fetch_new_messages_start (CamelIMAPXJob *job, CamelIMAPXServer *is);
-static gint imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp, gboolean ascending);
-static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
-static gboolean imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, gint pri, GCancellable *cancellable, GError **error);
-static void imapx_sync_free_user (GArray *user_set);
+static CamelIMAPXJob *
+		imapx_match_active_job		(CamelIMAPXServer *is,
+						 guint32 type,
+						 const gchar *uid);
+static void	imapx_job_fetch_new_messages_start
+						(CamelIMAPXJob *job,
+						 CamelIMAPXServer *is);
+static gint	imapx_refresh_info_uid_cmp	(gconstpointer ap,
+						 gconstpointer bp,
+						 gboolean ascending);
+static gint	imapx_uids_array_cmp		(gconstpointer ap,
+						 gconstpointer bp);
+static gboolean	imapx_server_sync_changes	(CamelIMAPXServer *is,
+						 CamelFolder *folder,
+						 gint pri,
+						 GCancellable *cancellable,
+						 GError **error);
+static void	imapx_sync_free_user		(GArray *user_set);
 
 static void	imapx_command_copy_messages_step_start
 						(CamelIMAPXServer *is,
@@ -430,13 +447,17 @@ struct _CamelIMAPXIdle {
 	gboolean idle_exit;
 };
 
-static gboolean imapx_in_idle (CamelIMAPXServer *is);
-static gboolean imapx_idle_supported (CamelIMAPXServer *is);
-static void imapx_start_idle (CamelIMAPXServer *is);
-static void imapx_exit_idle (CamelIMAPXServer *is);
-static void imapx_init_idle (CamelIMAPXServer *is);
-static gboolean imapx_stop_idle (CamelIMAPXServer *is, GError **error);
-static gboolean camel_imapx_server_idle (CamelIMAPXServer *is, CamelFolder *folder, GCancellable *cancellable, GError **error);
+static gboolean	imapx_in_idle			(CamelIMAPXServer *is);
+static gboolean	imapx_idle_supported		(CamelIMAPXServer *is);
+static void	imapx_start_idle		(CamelIMAPXServer *is);
+static void	imapx_exit_idle			(CamelIMAPXServer *is);
+static void	imapx_init_idle			(CamelIMAPXServer *is);
+static gboolean	imapx_stop_idle			(CamelIMAPXServer *is,
+						 GError **error);
+static gboolean	camel_imapx_server_idle		(CamelIMAPXServer *is,
+						 CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
 
 enum {
 	USE_SSL_NEVER,
@@ -447,7 +468,11 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
-static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GCancellable *cancellable, GError **error);
+static gboolean	imapx_select			(CamelIMAPXServer *is,
+						 CamelFolder *folder,
+						 gboolean force,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
 
