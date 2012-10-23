@@ -884,18 +884,19 @@ duplicate_fetch_or_refresh (CamelIMAPXServer *is,
  *
  * must have QUEUE lock */
 
-static void
+static gboolean
 imapx_command_start_next (CamelIMAPXServer *is,
                           GCancellable *cancellable,
                           GError **error)
 {
 	CamelIMAPXCommand *first_ic;
 	gint min_pri = -128;
+	gboolean success = TRUE;
 
 	c (is->tagprefix, "** Starting next command\n");
 	if (is->literal) {
 		c (is->tagprefix, "* no; waiting for literal '%s'\n", is->literal->name);
-		return;
+		return success;
 	}
 
 	if (is->select_pending) {
@@ -934,13 +935,22 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		 * to avoid accidentally finalizing it. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic;
+
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
-			imapx_command_start (is, ic, cancellable, error);
+
+			success = imapx_command_start (
+				is, ic, cancellable, error);
+
 			camel_imapx_command_unref (ic);
+
+			if (!success) {
+				g_queue_clear (&start);
+				return FALSE;
+			}
 		}
 
-		return;
+		return TRUE;
 	}
 
 	if (imapx_idle_supported (is) && is->state == IMAPX_SELECTED) {
@@ -968,22 +978,22 @@ imapx_command_start_next (CamelIMAPXServer *is,
 					c (
 						is->tagprefix,
 						"waiting for idle to stop \n");
-					/* fall through */
+					return TRUE;
 
 				case IMAPX_IDLE_STOP_ERROR:
-					return;
+					return FALSE;
 			}
 
 		} else if (empty && !imapx_in_idle (is)) {
 			imapx_start_idle (is);
 			c (is->tagprefix, "starting idle \n");
-			return;
+			return TRUE;
 		}
 	}
 
 	if (camel_imapx_command_queue_is_empty (is->queue)) {
 		c (is->tagprefix, "* no, no jobs\n");
-		return;
+		return TRUE;
 	}
 
 	/* See if any queued jobs on this select first */
@@ -1008,7 +1018,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 
 		if (camel_imapx_command_queue_get_length (is->active) >= MAX_COMMANDS) {
 			c (is->tagprefix, "** too many jobs busy, waiting for results for now\n");
-			return;
+			return TRUE;
 		}
 
 		c (is->tagprefix, "-- Checking job queue\n");
@@ -1049,15 +1059,26 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		 * to avoid accidentally finalizing it. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic;
+			gboolean success;
+
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
-			imapx_command_start (is, ic, cancellable, error);
+
+			success = imapx_command_start (
+				is, ic, cancellable, error);
+
 			camel_imapx_command_unref (ic);
+
+			if (!success) {
+				g_queue_clear (&start);
+				return FALSE;
+			}
+
 			commands_started = TRUE;
 		}
 
 		if (commands_started)
-			return;
+			return TRUE;
 	}
 
 	/* This won't be NULL because we checked for an empty queue above. */
@@ -1107,12 +1128,24 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		 * to avoid accidentally finalizing it. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic;
+			gboolean success;
+
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
-			imapx_command_start (is, ic, cancellable, error);
+
+			success = imapx_command_start (
+				is, ic, cancellable, error);
+
 			camel_imapx_command_unref (ic);
+
+			if (!success) {
+				g_queue_clear (&start);
+				return FALSE;
+			}
 		}
 	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -1163,6 +1196,7 @@ imapx_command_queue (CamelIMAPXServer *is,
 
 	camel_imapx_command_queue_insert_sorted (is->queue, ic);
 
+	/* XXX No error checking.  We don't care if this fails? */
 	imapx_command_start_next (is, job->cancellable, NULL);
 
 	QUEUE_UNLOCK (is);
@@ -2183,7 +2217,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
 	GList *link;
-	gboolean success;
+	gboolean success = TRUE;
 
 	/* The 'literal' pointer is like a write-lock, nothing else
 	 * can write while we have it ... so we dont need any
@@ -2217,10 +2251,10 @@ imapx_continuation (CamelIMAPXServer *is,
 
 		QUEUE_LOCK (is);
 		is->literal = NULL;
-		imapx_command_start_next (is, cancellable, error);
+		success = imapx_command_start_next (is, cancellable, error);
 		QUEUE_UNLOCK (is);
 
-		return TRUE;
+		return success;
 	}
 
 	ic = is->literal;
@@ -2322,10 +2356,10 @@ noskip:
 	is->literal = newliteral;
 
 	if (!litplus)
-		imapx_command_start_next (is, cancellable, error);
+		success = imapx_command_start_next (is, cancellable, error);
 	QUEUE_UNLOCK (is);
 
-	return TRUE;
+	return success;
 }
 
 /* handle a completion line */
@@ -2338,6 +2372,7 @@ imapx_completion (CamelIMAPXServer *is,
                   GError **error)
 {
 	CamelIMAPXCommand *ic;
+	gboolean success;
 	guint tag;
 
 	/* Given "A0001 ...", 'A' = tag prefix, '0001' = tag. */
@@ -2403,10 +2438,10 @@ imapx_completion (CamelIMAPXServer *is,
 			return FALSE;
 
 	QUEUE_LOCK (is);
-	imapx_command_start_next (is, cancellable, error);
+	success = imapx_command_start_next (is, cancellable, error);
 	QUEUE_UNLOCK (is);
 
-	return TRUE;
+	return success;
 }
 
 static gboolean
