@@ -2217,6 +2217,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
 	GList *link;
+	gssize n_bytes_written;
 	gboolean success = TRUE;
 
 	/* The 'literal' pointer is like a write-lock, nothing else
@@ -2276,11 +2277,21 @@ imapx_continuation (CamelIMAPXServer *is,
 	switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
 		c (is->tagprefix, "writing data wrapper to literal\n");
-		camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *) cp->ob, (CamelStream *) stream, cancellable, NULL);
+		n_bytes_written = camel_data_wrapper_write_to_stream_sync (
+			CAMEL_DATA_WRAPPER (cp->ob),
+			CAMEL_STREAM (stream),
+			cancellable, error);
+		if (n_bytes_written < 0)
+			return FALSE;
 		break;
 	case CAMEL_IMAPX_COMMAND_STREAM:
 		c (is->tagprefix, "writing stream to literal\n");
-		camel_stream_write_to_stream ((CamelStream *) cp->ob, (CamelStream *) stream, cancellable, NULL);
+		n_bytes_written = camel_stream_write_to_stream (
+			CAMEL_STREAM (cp->ob),
+			CAMEL_STREAM (stream),
+			cancellable, error);
+		if (n_bytes_written < 0)
+			return FALSE;
 		break;
 	case CAMEL_IMAPX_COMMAND_AUTH: {
 		gchar *resp;
@@ -2297,8 +2308,15 @@ imapx_continuation (CamelIMAPXServer *is,
 			return FALSE;
 		c (is->tagprefix, "got auth continuation, feeding token '%s' back to auth mech\n", resp);
 
-		camel_stream_write ((CamelStream *) stream, resp, strlen (resp), cancellable, NULL);
+		n_bytes_written = camel_stream_write (
+			CAMEL_STREAM (stream),
+			resp, strlen (resp),
+			cancellable, error);
 		g_free (resp);
+
+		if (n_bytes_written < 0)
+			return FALSE;
+
 		/* we want to keep getting called until we get a status reponse from the server
 		 * ignore what sasl tells us */
 		newliteral = ic;
@@ -2312,14 +2330,24 @@ imapx_continuation (CamelIMAPXServer *is,
 
 		// FIXME: errors
 		if (cp->ob && (file = camel_stream_fs_new_with_name (cp->ob, O_RDONLY, 0, NULL))) {
-			camel_stream_write_to_stream (file, (CamelStream *) stream, cancellable, NULL);
+			n_bytes_written = camel_stream_write_to_stream (
+				file, CAMEL_STREAM (stream),
+				cancellable, error);
 			g_object_unref (file);
+
+			if (n_bytes_written < 0)
+				return FALSE;
 		} else if (cp->ob_size > 0) {
 			// Server is expecting data ... ummm, send it zeros?  abort?
 		}
 		break; }
 	case CAMEL_IMAPX_COMMAND_STRING:
-		camel_stream_write ((CamelStream *) stream, cp->ob, cp->ob_size, cancellable, NULL);
+		n_bytes_written = camel_stream_write (
+			CAMEL_STREAM (stream),
+			cp->ob, cp->ob_size,
+			cancellable, error);
+		if (n_bytes_written < 0)
+			return FALSE;
 		break;
 	default:
 		/* should we just ignore? */
@@ -2330,8 +2358,10 @@ imapx_continuation (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
-	if (!litplus)
-		camel_imapx_stream_skip (stream, cancellable, error);
+	if (!litplus) {
+		if (camel_imapx_stream_skip (stream, cancellable, error) == -1)
+			return FALSE;
+	}
 
 noskip:
 	link = g_list_next (link);
@@ -2340,8 +2370,12 @@ noskip:
 		cp = (CamelIMAPXCommandPart *) link->data;
 
 		c (is->tagprefix, "next part of command \"%c%05u: %s\"\n", is->tagprefix, ic->tag, cp->data);
-		camel_stream_write_string ((CamelStream *) stream, cp->data, cancellable, NULL);
-		camel_stream_write_string ((CamelStream *) stream, "\r\n", cancellable, NULL);
+
+		n_bytes_written = camel_stream_write_string (
+			CAMEL_STREAM (stream), cp->data, cancellable, error);
+		if (n_bytes_written < 0)
+			return FALSE;
+
 		if (cp->type & (CAMEL_IMAPX_COMMAND_CONTINUATION | CAMEL_IMAPX_COMMAND_LITERAL_PLUS)) {
 			newliteral = ic;
 		} else {
@@ -2349,8 +2383,12 @@ noskip:
 		}
 	} else {
 		c (is->tagprefix, "%p: queueing continuation\n", ic);
-		camel_stream_write_string ((CamelStream *) stream, "\r\n", cancellable, NULL);
 	}
+
+	n_bytes_written = camel_stream_write_string (
+		CAMEL_STREAM (stream), "\r\n", cancellable, error);
+	if (n_bytes_written < 0)
+		return FALSE;
 
 	QUEUE_LOCK (is);
 	is->literal = newliteral;
