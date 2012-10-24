@@ -330,7 +330,7 @@ exit:
 }
 
 static void
-pop3_store_finalize (GObject *object)
+pop3_store_dispose (GObject *object)
 {
 	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
 
@@ -338,6 +338,15 @@ pop3_store_finalize (GObject *object)
 	 * later, after we've cleaned up some stuff. */
 	camel_service_disconnect_sync (
 		CAMEL_SERVICE (pop3_store), TRUE, NULL, NULL);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_pop3_store_parent_class)->dispose (object);
+}
+
+static void
+pop3_store_finalize (GObject *object)
+{
+	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
 
 	if (pop3_store->engine)
 		g_object_unref (pop3_store->engine);
@@ -775,6 +784,7 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = pop3_store_dispose;
 	object_class->finalize = pop3_store_finalize;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
