@@ -817,6 +817,7 @@ camel_imapx_job_new
 camel_imapx_job_ref
 camel_imapx_job_unref
 camel_imapx_job_check
+camel_imapx_job_cancel
 camel_imapx_job_wait
 camel_imapx_job_done
 camel_imapx_job_run

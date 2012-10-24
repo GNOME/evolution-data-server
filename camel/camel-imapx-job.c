@@ -28,6 +28,8 @@ struct _CamelIMAPXRealJob {
 
 	volatile gint ref_count;
 
+	GCancellable *cancellable;
+
 	/* Used for running some jobs synchronously. */
 	GCond *done_cond;
 	GMutex *done_mutex;
@@ -55,9 +57,6 @@ camel_imapx_job_new (GCancellable *cancellable)
 {
 	CamelIMAPXRealJob *real_job;
 
-	if (cancellable != NULL)
-		g_object_ref (cancellable);
-
 	real_job = g_slice_new0 (CamelIMAPXRealJob);
 
 	/* Initialize private bits. */
@@ -65,8 +64,9 @@ camel_imapx_job_new (GCancellable *cancellable)
 	real_job->done_cond = g_cond_new ();
 	real_job->done_mutex = g_mutex_new ();
 
-	/* Initialize public bits. */
-	real_job->public.cancellable = cancellable;
+	if (cancellable != NULL)
+		g_object_ref (cancellable);
+	real_job->cancellable = cancellable;
 
 	return (CamelIMAPXJob *) real_job;
 }
@@ -98,14 +98,11 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 
 		/* Free the public stuff. */
 
-		g_clear_error (&real_job->public.error);
-
 		if (real_job->public.pop_operation_msg)
-			camel_operation_pop_message (
-				real_job->public.cancellable);
+			camel_operation_pop_message (real_job->cancellable);
 
-		if (real_job->public.cancellable != NULL)
-			g_object_unref (real_job->public.cancellable);
+		if (real_job->cancellable != NULL)
+			g_object_unref (real_job->cancellable);
 
 		/* Free the private stuff. */
 
@@ -136,6 +133,18 @@ camel_imapx_job_check (CamelIMAPXJob *job)
 	real_job = (CamelIMAPXRealJob *) job;
 
 	return (real_job != NULL && real_job->ref_count > 0);
+}
+
+void
+camel_imapx_job_cancel (CamelIMAPXJob *job)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	g_cancellable_cancel (real_job->cancellable);
 }
 
 void
@@ -175,40 +184,35 @@ camel_imapx_job_run (CamelIMAPXJob *job,
                      CamelIMAPXServer *is,
                      GError **error)
 {
+	GCancellable *cancellable;
 	gulong cancel_id = 0;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (job->start != NULL, FALSE);
 
-	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
+	cancellable = ((CamelIMAPXRealJob *) job)->cancellable;
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
 
-	if (G_IS_CANCELLABLE (job->cancellable))
+	if (G_IS_CANCELLABLE (cancellable))
 		cancel_id = g_cancellable_connect (
-			job->cancellable,
+			cancellable,
 			G_CALLBACK (imapx_job_cancelled_cb),
 			camel_imapx_job_ref (job),
 			(GDestroyNotify) camel_imapx_job_unref);
 
-	job->start (job, is);
+	success = job->start (job, is, cancellable, error);
 
-	if (!job->noreply)
+	if (success && !job->noreply)
 		camel_imapx_job_wait (job);
 
 	if (cancel_id > 0)
-		g_cancellable_disconnect (job->cancellable, cancel_id);
+		g_cancellable_disconnect (cancellable, cancel_id);
 
-	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
-		return FALSE;
-
-	if (job->error != NULL) {
-		g_propagate_error (error, job->error);
-		job->error = NULL;
-		return FALSE;
-	}
-
-	return TRUE;
+	return success;
 }
 
 gboolean

@@ -40,15 +40,14 @@ struct _uidset_state {
 };
 
 struct _CamelIMAPXJob {
-	GCancellable *cancellable;
-	GError *error;
-
 	/* Whether to pop a status message off the
 	 * GCancellable when the job is finalized. */
 	gboolean pop_operation_msg;
 
-	void		(*start)		(CamelIMAPXJob *job,
-						 CamelIMAPXServer *is);
+	gboolean	(*start)		(CamelIMAPXJob *job,
+						 CamelIMAPXServer *is,
+						 GCancellable *cancellable,
+						 GError **error);
 	gboolean	(*matches)		(CamelIMAPXJob *job,
 						 CamelFolder *folder,
 						 const gchar *uid);
@@ -65,6 +64,7 @@ CamelIMAPXJob *	camel_imapx_job_new		(GCancellable *cancellable);
 CamelIMAPXJob *	camel_imapx_job_ref		(CamelIMAPXJob *job);
 void		camel_imapx_job_unref		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_check		(CamelIMAPXJob *job);
+void		camel_imapx_job_cancel		(CamelIMAPXJob *job);
 void		camel_imapx_job_wait		(CamelIMAPXJob *job);
 void		camel_imapx_job_done		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
