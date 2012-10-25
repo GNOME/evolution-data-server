@@ -2918,7 +2918,7 @@ source_registry_ref_any_mail_identity (ESourceRegistry *registry)
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ESource *candidate = E_SOURCE (link->data);
 
-		if (e_source_get_enabled (candidate)) {
+		if (e_source_registry_check_enabled (registry, candidate)) {
 			source = g_object_ref (candidate);
 			break;
 		}

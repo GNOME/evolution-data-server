@@ -102,7 +102,7 @@ e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
 		gboolean match = FALSE;
 		gchar *address;
 
-		if (!e_source_get_enabled (source))
+		if (!e_source_registry_check_enabled (registry, source))
 			continue;
 
 		extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
@@ -227,7 +227,7 @@ e_cal_backend_user_declined (ESourceRegistry *registry,
 		ESourceMailIdentity *extension;
 		const gchar *address;
 
-		if (!e_source_get_enabled (source))
+		if (!e_source_registry_check_enabled (registry, source))
 			continue;
 
 		extension = e_source_get_extension (source, extension_name);
