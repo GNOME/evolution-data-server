@@ -1879,6 +1879,14 @@ e_source_set_parent (ESource *source,
  * even if it does not provide a way to change the setting through its
  * user interface.  Disabled data sources should generally be hidden.
  *
+ * <note><para>
+ *   This function does not take into account @source's ancestors in the
+ *   #ESource hierarchy, each of which have their own enabled state.  If
+ *   any of @source's ancestors are disabled, then @source itself should
+ *   be treated as disabled.  Use e_source_registry_check_enabled() to
+ *   easily check for this.
+ * </para></note>
+ *
  * Returns: whether @source is enabled
  *
  * Since: 3.6

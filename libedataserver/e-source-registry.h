@@ -143,6 +143,8 @@ ESource *	e_source_registry_find_extension
 						(ESourceRegistry *registry,
 						 ESource *source,
 						 const gchar *extension_name);
+gboolean	e_source_registry_check_enabled	(ESourceRegistry *registry,
+						 ESource *source);
 GNode *		e_source_registry_build_display_tree
 						(ESourceRegistry *registry,
 						 const gchar *extension_name);
