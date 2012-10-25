@@ -63,6 +63,7 @@ static void
 cmd_uidl (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
           GCancellable *cancellable,
+	  GError **error,
           gpointer data)
 {
 	gint ret;
@@ -74,7 +75,7 @@ cmd_uidl (CamelPOP3Engine *pe,
 	CamelPOP3Folder *folder = data;
 
 	do {
-		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
+		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, error);
 		if (ret >= 0) {
 			if (strlen ((gchar *) line) > 1024)
 				line[1024] = 0;
@@ -97,6 +98,7 @@ static void
 cmd_builduid (CamelPOP3Engine *pe,
               CamelPOP3Stream *stream,
               GCancellable *cancellable,
+	      GError **error,
               gpointer data)
 {
 	GChecksum *checksum;
@@ -145,6 +147,7 @@ static void
 cmd_list (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
           GCancellable *cancellable,
+	  GError **error,
           gpointer data)
 {
 	gint ret;
@@ -173,7 +176,7 @@ cmd_list (CamelPOP3Engine *pe,
 	g_object_unref (settings);
 
 	do {
-		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
+		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, error);
 		if (ret >= 0) {
 			if (sscanf ((gchar *) line, "%u %u", &id, &size) == 2) {
 				fi = g_malloc0 (sizeof (*fi));
@@ -185,7 +188,7 @@ cmd_list (CamelPOP3Engine *pe,
 						pe,
 						CAMEL_POP3_COMMAND_MULTI,
 						cmd_builduid, fi,
-						cancellable, NULL,
+						cancellable, error,
 						"TOP %u 0\r\n", id);
 				g_ptr_array_add (pop3_folder->uids, fi);
 				g_hash_table_insert (
@@ -319,22 +322,23 @@ static void
 cmd_tocache (CamelPOP3Engine *pe,
              CamelPOP3Stream *stream,
              GCancellable *cancellable,
+	     GError **error,
              gpointer data)
 {
 	CamelPOP3FolderInfo *fi = data;
 	gchar buffer[2048];
 	gint w = 0, n;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	/* What if it fails? */
 
 	/* We write an '*' to the start of the stream to say its not complete yet */
 	/* This should probably be part of the cache code */
-	if ((n = camel_stream_write (fi->stream, "*", 1, cancellable, &error)) == -1)
+	if ((n = camel_stream_write (fi->stream, "*", 1, cancellable, &local_error)) == -1)
 		goto done;
 
-	while ((n = camel_stream_read ((CamelStream *) stream, buffer, sizeof (buffer), cancellable, &error)) > 0) {
-		n = camel_stream_write (fi->stream, buffer, n, cancellable, &error);
+	while ((n = camel_stream_read ((CamelStream *) stream, buffer, sizeof (buffer), cancellable, &local_error)) > 0) {
+		n = camel_stream_write (fi->stream, buffer, n, cancellable, &local_error);
 		if (n == -1)
 			break;
 
@@ -346,17 +350,16 @@ cmd_tocache (CamelPOP3Engine *pe,
 	}
 
 	/* it all worked, output a '#' to say we're a-ok */
-	if (error == NULL) {
+	if (local_error == NULL) {
 		g_seekable_seek (
 			G_SEEKABLE (fi->stream),
 			0, G_SEEK_SET, cancellable, NULL);
-		camel_stream_write (fi->stream, "#", 1, cancellable, &error);
+		camel_stream_write (fi->stream, "#", 1, cancellable, &local_error);
 	}
 
 done:
-	if (error != NULL) {
-		g_warning ("POP3 retrieval failed: %s", error->message);
-		g_error_free (error);
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
 	}
 
 	g_object_unref (fi->stream);
@@ -574,7 +577,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 			pop3_store->engine,
 			CAMEL_POP3_COMMAND_MULTI,
 			cmd_tocache, fi,
-			cancellable, NULL,
+			cancellable, error,
 			"RETR %u\r\n", fi->id);
 
 		/* Also initiate retrieval of some of the following
@@ -597,7 +600,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 							pop3_store->engine,
 							CAMEL_POP3_COMMAND_MULTI,
 							cmd_tocache, pfi,
-							cancellable, NULL,
+							cancellable, error,
 							"RETR %u\r\n", pfi->id);
 					}
 				}
@@ -730,28 +733,57 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 			cmd_uidl, folder,
 			cancellable, &local_error,
 			"UIDL\r\n");
-	while ((i = camel_pop3_engine_iterate (pop3_store->engine, NULL, cancellable, error)) > 0)
+	while ((i = camel_pop3_engine_iterate (pop3_store->engine, NULL, cancellable, &local_error)) > 0)
 		;
 
 	if (local_error) {
 		g_propagate_error (error, local_error);
+		g_prefix_error (error, _("Cannot get POP summary: "));
 		success = FALSE;
 	} else if (i == -1) {
-		g_prefix_error (error, _("Cannot get POP summary: "));
+		g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Cannot get POP summary: "));
 		success = FALSE;
 	}
 
 	/* TODO: check every id has a uid & commands returned OK too? */
 
-	if (pcl)
+	if (pcl) {
+		if (success && pcl->state == CAMEL_POP3_COMMAND_ERR) {
+			success = FALSE;
+
+			if (pcl->error_str)
+				g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, pcl->error_str);
+			else
+				g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Cannot get POP summary: "));
+		}
+
 		camel_pop3_engine_command_free (pop3_store->engine, pcl);
+	}
 
 	if (pcu) {
+		if (success && pcu->state == CAMEL_POP3_COMMAND_ERR) {
+			success = FALSE;
+
+			if (pcu->error_str)
+				g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, pcu->error_str);
+			else
+				g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Cannot get POP summary: "));
+		}
+
 		camel_pop3_engine_command_free (pop3_store->engine, pcu);
 	} else {
 		for (i = 0; i < pop3_folder->uids->len; i++) {
 			CamelPOP3FolderInfo *fi = pop3_folder->uids->pdata[i];
 			if (fi->cmd) {
+				if (success && fi->cmd->state == CAMEL_POP3_COMMAND_ERR) {
+					success = FALSE;
+
+					if (fi->cmd->error_str)
+						g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, fi->cmd->error_str);
+					else
+						g_set_error_literal (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Cannot get POP summary: "));
+				}
+
 				camel_pop3_engine_command_free (pop3_store->engine, fi->cmd);
 				fi->cmd = NULL;
 			}
