@@ -94,11 +94,13 @@ enum {
 typedef void	(*CamelPOP3CommandFunc)		(CamelPOP3Engine *pe,
 						 CamelPOP3Stream *stream,
 						 GCancellable *cancellable,
+						 GError **error,
 						 gpointer data);
 
 struct _CamelPOP3Command {
 	guint32 flags;
 	camel_pop3_command_t state;
+	gchar *error_str;
 
 	CamelPOP3CommandFunc func;
 	gpointer func_data;
@@ -141,10 +143,12 @@ GType		camel_pop3_engine_get_type	(void);
 CamelPOP3Engine *
 		camel_pop3_engine_new		(CamelStream *source,
 						 guint32 flags,
-						 GCancellable *cancellable);
-void		camel_pop3_engine_reget_capabilities
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_pop3_engine_reget_capabilities
 						(CamelPOP3Engine *engine,
-						 GCancellable *cancellable);
+						 GCancellable *cancellable,
+						 GError **error);
 void		camel_pop3_engine_command_free	(CamelPOP3Engine *pe,
 						 CamelPOP3Command *pc);
 gint		camel_pop3_engine_iterate	(CamelPOP3Engine *pe,

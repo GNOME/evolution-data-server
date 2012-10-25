@@ -102,6 +102,7 @@ connect_to_server (CamelService *service,
 	gchar *host;
 	guint32 flags = 0;
 	gint ret;
+	GError *local_error = NULL;
 
 	settings = camel_service_ref_settings (service);
 
@@ -133,11 +134,15 @@ connect_to_server (CamelService *service,
 	if (disable_extensions)
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 
-	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags, cancellable))) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Failed to read a valid greeting from POP server %s"),
-			host);
+	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags, cancellable, &local_error)) ||
+	    local_error != NULL) {
+		if (local_error)
+			g_propagate_error (error, local_error);
+		else
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Failed to read a valid greeting from POP server %s"),
+				host);
 		g_object_unref (tcp_stream);
 		success = FALSE;
 		goto exit;
@@ -195,7 +200,8 @@ connect_to_server (CamelService *service,
 
 	/* rfc2595, section 4 states that after a successful STLS
 	 * command, the client MUST discard prior CAPA responses */
-	camel_pop3_engine_reget_capabilities (store->engine, cancellable);
+	if (!camel_pop3_engine_reget_capabilities (store->engine, cancellable, error))
+		goto exception;
 
 	goto exit;
 
@@ -212,6 +218,7 @@ stls_exception:
 		camel_pop3_engine_command_free (store->engine, pc);
 	}*/
 
+ exception:
 	g_object_unref (store->engine);
 	g_object_unref (tcp_stream);
 	store->engine = NULL;
@@ -446,7 +453,8 @@ pop3_store_connect_sync (CamelService *service,
 	/* Now that we are in the TRANSACTION state,
 	 * try regetting the capabilities */
 	store->engine->state = CAMEL_POP3_ENGINE_TRANSACTION;
-	camel_pop3_engine_reget_capabilities (store->engine, cancellable);
+	if (!camel_pop3_engine_reget_capabilities (store->engine, cancellable, error))
+		success = FALSE;
 
 exit:
 	g_free (mechanism);
