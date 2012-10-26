@@ -10,7 +10,8 @@ MESSAGE_TESTS_CPPFLAGS= \
 MESSAGE_TESTS_LDADD= \
 	$(top_builddir)/camel/tests/lib/libcameltest.a		\
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
-	$(INTLLIBS)
+	$(INTLLIBS)						\
+	$(CAMEL_LIBS)
 
 check_PROGRAMS = \
 	test1		\

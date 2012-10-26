@@ -11,7 +11,8 @@ MIMEFILTER_TESTS_CPPFLAGS= \
 MIMEFILTER_TESTS_LDADD= \
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
 	$(top_builddir)/camel/tests/lib/libcameltest.a		\
-	$(INTLLIBS)
+	$(INTLLIBS)						\
+	$(CAMEL_LIBS)
 
 EXTRA_DIST =				\
 	crlf-1.in			\
