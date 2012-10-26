@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <libebook/libebook.h>
+#include <libedata-book/libedata-book.h>
 
 #include "client-test-utils.h"
 
@@ -21,30 +22,32 @@ typedef struct {
 	GMainLoop     *loop;
 } ThreadData;
 
+/* Special attention needed for this array:
+ *
+ * Some contact fields cannot be used together, for instance
+ * E_CONTACT_PHONE_OTHER will conflict with E_CONTACT_PHONE_HOME and others,
+ * E_CONTACT_EMAIL_[1-4] can get mixed up if not set in proper sequence.
+ *
+ * For this test case to work properly, all fields must not conflict with eachother.
+ */
 static const TestData field_tests[] = {
 	{ E_CONTACT_GIVEN_NAME,          "Elvis" },
 	{ E_CONTACT_FAMILY_NAME,         "Presley" },
 	{ E_CONTACT_NICKNAME,            "The King" },
 	{ E_CONTACT_EMAIL_1,             "elvis@presley.com" },
-	{ E_CONTACT_EMAIL_2,             "theking@elvispresley.com" },
-	{ E_CONTACT_EMAIL_3,             "elvispresley@theking.com" },
-	{ E_CONTACT_EMAIL_4,             "another@email.com" },
 	{ E_CONTACT_ADDRESS_LABEL_HOME,  "3764 Elvis Presley Boulevard, Graceland" },
 	{ E_CONTACT_ADDRESS_LABEL_WORK,  "Workin on the road again..." },
 	{ E_CONTACT_ADDRESS_LABEL_OTHER, "Another address to reach the king" },
 	{ E_CONTACT_PHONE_ASSISTANT,     "+1234567890" },
 	{ E_CONTACT_PHONE_BUSINESS,      "+99-123-4352-9943" },
-	{ E_CONTACT_PHONE_BUSINESS_2,    "+99-123-4352-9943" },
 	{ E_CONTACT_PHONE_BUSINESS_FAX,  "+44-123456789" },
 	{ E_CONTACT_PHONE_CALLBACK,      "+11-222-3333-4444" },
 	{ E_CONTACT_PHONE_CAR,           "555-123-4567" },
 	{ E_CONTACT_PHONE_COMPANY,       "666-666-6666" },
 	{ E_CONTACT_PHONE_HOME,          "333-4444-5678" },
-	{ E_CONTACT_PHONE_HOME_2,        "444-555-66666" },
 	{ E_CONTACT_PHONE_HOME_FAX,      "+993355556666" },
 	{ E_CONTACT_PHONE_ISDN,          "+88-777-6666-5555" },
-	{ E_CONTACT_PHONE_MOBILE,        "333-3333" },
-	{ E_CONTACT_PHONE_OTHER,         "0987654321" }
+	{ E_CONTACT_PHONE_MOBILE,        "333-3333" }
 };
 
 static gboolean try_write_field_thread_idle (ThreadData *data);
@@ -56,14 +59,29 @@ test_write_thread_contact_modified (GObject *source_object,
 				    ThreadData *data)
 {
 	GError   *error = NULL;
+	gboolean  retry = FALSE;
 
 	if (!e_book_client_modify_contact_finish (E_BOOK_CLIENT (source_object), res, &error)) {
-		g_error_free (error);
 
-		try_write_field_thread_idle (data);
-	} else {
-		g_main_loop_quit (data->loop);
+		/* For bad revision errors, retry the transaction after fetching the
+		 * contact again first: The backend is telling us that this commit would have
+		 * caused some data loss since we dont have the right contact in the first place.
+		 */
+		if (error->domain == E_DATA_BOOK_ERROR &&
+		    error->code == E_DATA_BOOK_STATUS_BAD_REVISION)
+			retry = TRUE;
+		else 
+			g_error ("Error updating '%s' field: %s\n",
+				 e_contact_field_name (data->field),
+				 error->message);
+
+		g_error_free (error);
 	}
+
+	if (retry)
+		try_write_field_thread_idle (data);
+	else
+		g_main_loop_quit (data->loop);
 }
 
 static void
@@ -249,15 +267,19 @@ main (gint argc,
 	for (i = 0; i < G_N_ELEMENTS (field_tests); i++) {
 		gchar *value = e_contact_get (contact, field_tests[i].field);
 
-		if (g_strcmp0 (field_tests[i].value, value) != 0)
-			g_error ("Lost data in concurrent writes, expected value for field '%s' was '%s', actual value is '%s'",
-				 e_contact_field_name (field_tests[i].field), field_tests[i].value, value);
+		if (g_strcmp0 (field_tests[i].value, value) != 0) {
+			gchar *vcard;
+
+			vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+			g_error ("Lost data in concurrent writes, expected value for field '%s' was '%s', "
+				 "actual value is '%s', vcard:\n%s\n",
+				 e_contact_field_name (field_tests[i].field), field_tests[i].value, value, vcard);
+		}
 
 		g_free (value);
 	}
 	g_object_unref (contact);
-
-	g_object_unref (main_client);
 
 	g_free (book_uid);
 	g_free (contact_uid);
@@ -268,6 +290,8 @@ main (gint argc,
 		g_object_unref (main_client);
 		return 1;
 	}
+
+	g_object_unref (main_client);
 
 	return 0;
 }
