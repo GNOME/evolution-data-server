@@ -33,7 +33,7 @@ dnl Automake 1.11 - Silent Build Rules
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl Required Package Versions
-m4_define([glib_minimum_version], [2.32])
+m4_define([glib_minimum_version], [2.34])
 m4_define([gtk_minimum_version], [3.2])
 m4_define([gcr_minimum_version], [3.4])
 m4_define([libsecret_minimum_version], [0.5])
