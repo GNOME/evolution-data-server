@@ -11,7 +11,8 @@ FOLDER_TESTS_LDADD= \
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
 	$(top_builddir)/camel/tests/lib/libcameltest-provider.a	\
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
-	$(INTLLIBS)
+	$(INTLLIBS)						\
+	$(CAMEL_LIBS)
 
 check_PROGRAMS =  	\
 	test1	test2	test3	\

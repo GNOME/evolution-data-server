@@ -10,7 +10,8 @@ MISC_TESTS_CPPFLAGS= \
 MISC_TESTS_LDADD= \
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
 	$(top_builddir)/camel/tests/lib/libcameltest.a		\
-	$(INTLLIBS)
+	$(INTLLIBS)						\
+	$(CAMEL_LIBS)
 
 check_PROGRAMS =  	\
 	test1		\
