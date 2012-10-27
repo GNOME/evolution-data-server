@@ -1,5 +1,7 @@
 SUBDIRS = client
 
+@GNOME_CODE_COVERAGE_RULES@
+
 if !HAVE_E_CAL_DISABLE_DEPRECATED
 
 noinst_LTLIBRARIES = libecal-test-utils.la

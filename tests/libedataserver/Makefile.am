@@ -1,5 +1,7 @@
 NULL =
 
+@GNOME_CODE_COVERAGE_RULES@
+
 TESTS = \
 	e-source-test \
 	e-source-registry-test \

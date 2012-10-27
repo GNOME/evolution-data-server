@@ -1,3 +1,5 @@
 SUBDIRS = libedataserver libedataserverui libebook libecal libedata-cal
 
+@GNOME_CODE_COVERAGE_RULES@
+
 -include $(top_srcdir)/git.mk

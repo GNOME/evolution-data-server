@@ -10,6 +10,8 @@ SUBDIRS += vala
 endif
 endif
 
+@GNOME_CODE_COVERAGE_RULES@
+
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
