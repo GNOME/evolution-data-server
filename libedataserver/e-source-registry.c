@@ -95,6 +95,7 @@
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _AuthContext AuthContext;
+typedef struct _CreateContext CreateContext;
 typedef struct _SourceClosure SourceClosure;
 typedef struct _ThreadClosure ThreadClosure;
 
@@ -133,6 +134,13 @@ struct _AuthContext {
 	gboolean authenticating;
 	gboolean success;
 	GError **error;
+};
+
+/* Used in e_source_registry_create_sources_sync() */
+struct _CreateContext {
+	GHashTable *pending_uids;
+	GMainContext *main_context;
+	GMainLoop *main_loop;
 };
 
 struct _SourceClosure {
@@ -221,6 +229,37 @@ auth_context_free (AuthContext *auth_context)
 		g_object_unref (auth_context->secret_exchange);
 
 	g_slice_free (AuthContext, auth_context);
+}
+
+static CreateContext *
+create_context_new (void)
+{
+	CreateContext *create_context;
+
+	create_context = g_slice_new0 (CreateContext);
+
+	create_context->pending_uids = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
+
+	create_context->main_context = g_main_context_new ();
+
+	create_context->main_loop = g_main_loop_new (
+		create_context->main_context, FALSE);
+
+	return create_context;
+}
+
+static void
+create_context_free (CreateContext *create_context)
+{
+	g_main_loop_unref (create_context->main_loop);
+	g_main_context_unref (create_context->main_context);
+	g_hash_table_unref (create_context->pending_uids);
+
+	g_slice_free (CreateContext, create_context);
 }
 
 static void
@@ -569,6 +608,9 @@ source_registry_add_source (ESourceRegistry *registry,
 {
 	const gchar *uid;
 
+	/* This is called in the manager thread during initialization
+	 * and in response to "object-added" signals from the manager. */
+
 	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
@@ -593,28 +635,16 @@ source_registry_add_source (ESourceRegistry *registry,
 	g_mutex_unlock (registry->priv->sources_lock);
 
 	source_registry_sources_insert (registry, source);
-
-	g_signal_emit (registry, signals[SOURCE_ADDED], 0, source);
-}
-
-static void
-source_registry_remove_source (ESourceRegistry *registry,
-                               ESource *source)
-{
-	g_object_ref (source);
-
-	if (source_registry_sources_remove (registry, source))
-		g_signal_emit (registry, signals[SOURCE_REMOVED], 0, source);
-
-	g_object_unref (source);
 }
 
 static gboolean
 source_registry_object_added_idle_cb (gpointer user_data)
 {
 	SourceClosure *closure = user_data;
+	ESourceRegistry *registry = closure->registry;
+	ESource *source = closure->source;
 
-	source_registry_add_source (closure->registry, closure->source);
+	g_signal_emit (registry, signals[SOURCE_ADDED], 0, source);
 
 	return FALSE;
 }
@@ -632,6 +662,10 @@ source_registry_object_added_cb (GDBusObjectManager *object_manager,
 
 	source = source_registry_new_source (registry, dbus_object);
 	g_return_if_fail (source != NULL);
+
+	/* Add the new ESource to our internal hash table so it can be
+	 * obtained through e_source_registry_ref_source() immediately. */
+	source_registry_add_source (registry, source);
 
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 
@@ -654,8 +688,13 @@ static gboolean
 source_registry_object_removed_idle_cb (gpointer user_data)
 {
 	SourceClosure *closure = user_data;
+	ESourceRegistry *registry = closure->registry;
+	ESource *source = closure->source;
 
-	source_registry_remove_source (closure->registry, closure->source);
+	/* Removing the ESource won't finalize it because the
+	 * SourceClosure itself still holds a reference on it. */
+	if (source_registry_sources_remove (registry, source))
+		g_signal_emit (registry, signals[SOURCE_REMOVED], 0, source);
 
 	return FALSE;
 }
@@ -2002,6 +2041,49 @@ source_registry_create_sources_thread (GSimpleAsyncResult *simple,
 		g_simple_async_result_take_error (simple, error);
 }
 
+/* Helper for e_source_registry_create_sources_sync() */
+static gboolean
+source_registry_create_sources_main_loop_quit_cb (gpointer user_data)
+{
+	GMainLoop *main_loop = user_data;
+
+	g_main_loop_quit (main_loop);
+
+	return FALSE;
+}
+
+/* Helper for e_source_registry_create_sources_sync() */
+static void
+source_registry_create_sources_object_added_cb (GDBusObjectManager *object_manager,
+                                                GDBusObject *dbus_object,
+                                                CreateContext *create_context)
+{
+	EDBusObject *e_dbus_object;
+	EDBusSource *e_dbus_source;
+	const gchar *uid;
+
+	e_dbus_object = E_DBUS_OBJECT (dbus_object);
+	e_dbus_source = e_dbus_object_get_source (e_dbus_object);
+	uid = e_dbus_source_get_uid (e_dbus_source);
+
+	g_hash_table_remove (create_context->pending_uids, uid);
+
+	/* The hash table will be empty when all of the expected
+	 * GDBusObjects have been added to the GDBusObjectManager. */
+	if (g_hash_table_size (create_context->pending_uids) == 0) {
+		GSource *idle_source;
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			source_registry_create_sources_main_loop_quit_cb,
+			g_main_loop_ref (create_context->main_loop),
+			(GDestroyNotify) g_main_loop_unref);
+		g_source_attach (idle_source, create_context->main_context);
+		g_source_unref (idle_source);
+	}
+}
+
 /**
  * e_source_registry_create_sources_sync:
  * @registry: an #ESourceRegistry
@@ -2026,9 +2108,11 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
                                        GCancellable *cancellable,
                                        GError **error)
 {
+	CreateContext *create_context;
 	GVariantBuilder builder;
 	GVariant *variant;
 	GList *link;
+	gulong object_added_id;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
@@ -2037,15 +2121,21 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 	for (link = list_of_sources; link != NULL; link = g_list_next (link))
 		g_return_val_if_fail (E_IS_SOURCE (link->data), FALSE);
 
+	create_context = create_context_new ();
+	g_main_context_push_thread_default (create_context->main_context);
+
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
 
 	for (link = list_of_sources; link != NULL; link = g_list_next (link)) {
 		ESource *source;
-		const gchar *uid;
 		gchar *source_data;
+		gchar *uid;
 
 		source = E_SOURCE (link->data);
-		uid = e_source_get_uid (source);
+		uid = e_source_dup_uid (source);
+
+		/* Takes ownership of the UID string. */
+		g_hash_table_add (create_context->pending_uids, uid);
 
 		source_data = e_source_to_string (source, NULL);
 		g_variant_builder_add (&builder, "{ss}", uid, source_data);
@@ -2054,12 +2144,45 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 
 	variant = g_variant_builder_end (&builder);
 
+	/* Use G_CONNECT_AFTER so source_registry_object_added_cb()
+	 * runs first and actually adds the ESource to the internal
+	 * hash table before we go quitting our main loop. */
+	object_added_id = g_signal_connect_after (
+		registry->priv->dbus_object_manager, "object-added",
+		G_CALLBACK (source_registry_create_sources_object_added_cb),
+		create_context);
+
 	/* This function sinks the floating GVariant reference. */
 	success = e_dbus_source_manager_call_create_sources_sync (
 		registry->priv->dbus_source_manager,
 		variant, cancellable, error);
 
 	g_variant_builder_clear (&builder);
+
+	/* Wait for an "object-added" signal for each created ESource.
+	 * But also set a short timeout to avoid getting stuck here in
+	 * case the registry service adds sources to its orphan table,
+	 * which prevents them from being exported over D-Bus. */
+	if (success) {
+		GSource *timeout_source;
+
+		timeout_source = g_timeout_source_new_seconds (2);
+		g_source_set_callback (
+			timeout_source,
+			source_registry_create_sources_main_loop_quit_cb,
+			g_main_loop_ref (create_context->main_loop),
+			(GDestroyNotify) g_main_loop_unref);
+		g_source_attach (timeout_source, create_context->main_context);
+		g_source_unref (timeout_source);
+
+		g_main_loop_run (create_context->main_loop);
+	}
+
+	g_signal_handler_disconnect (
+		registry->priv->dbus_object_manager, object_added_id);
+
+	g_main_context_pop_thread_default (create_context->main_context);
+	create_context_free (create_context);
 
 	return success;
 }
