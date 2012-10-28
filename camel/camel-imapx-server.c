@@ -804,15 +804,11 @@ imapx_command_start (CamelIMAPXServer *is,
 	string = g_strdup_printf (
 		"%c%05u %s\r\n", is->tagprefix, ic->tag, cp->data);
 	retval = camel_stream_write_string (
-		CAMEL_STREAM (stream), string, cancellable, NULL);
+		CAMEL_STREAM (stream), string, cancellable, error);
 	g_free (string);
 
-	if (retval == -1) {
-		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
-			"Failed to issue the command");
+	if (retval == -1)
 		goto err;
-	}
 
 	while (is->literal == ic && cp_literal_plus) {
 		/* Sent LITERAL+ continuation immediately */
