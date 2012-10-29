@@ -166,6 +166,17 @@ gboolean	e_book_backend_sqlitedb_set_is_populated
 							 const gchar *folderid,
 							 gboolean populated,
 							 GError **error);
+
+gboolean        e_book_backend_sqlitedb_get_revision    (EBookBackendSqliteDB *ebsdb,
+							 const gchar *folderid,
+							 gchar **revision_out,
+							 GError **error);
+
+gboolean	e_book_backend_sqlitedb_set_revision    (EBookBackendSqliteDB *ebsdb,
+							 const gchar *folderid,
+							 const gchar *revision,
+							 GError **error);
+
 gchar *		e_book_backend_sqlitedb_get_sync_data
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,

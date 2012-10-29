@@ -39,8 +39,18 @@
 
 #define d(x)
 
+/* DEBUGGING QUERY PLANS */
+
+/* #define DEBUG_QUERIES */
+
+#ifdef DEBUG_QUERIES
+#  define book_backend_sql_exec   book_backend_sql_exec_wrap
+#else
+#  define book_backend_sql_exec   book_backend_sql_exec_real
+#endif
+
 #define DB_FILENAME "contacts.db"
-#define FOLDER_VERSION 1
+#define FOLDER_VERSION 2
 
 #define READER_LOCK(ebsdb) g_rw_lock_reader_lock (&ebsdb->priv->rwlock)
 #define READER_UNLOCK(ebsdb) g_rw_lock_reader_unlock (&ebsdb->priv->rwlock)
@@ -228,6 +238,7 @@ e_book_sqlitedb_match_func (sqlite3_context *ctx,
 	sqlite3_result_int (ctx, matches ? 1 : 0);
 }
 
+
 /**
  * e_book_sql_exec
  * @db:
@@ -240,11 +251,11 @@ e_book_sqlitedb_match_func (sqlite3_context *ctx,
  * Returns:
  **/
 static gboolean
-book_backend_sql_exec (sqlite3 *db,
-                       const gchar *stmt,
-                       gint (*callback)(gpointer ,gint,gchar **,gchar **),
-                       gpointer data,
-                       GError **error)
+book_backend_sql_exec_real (sqlite3 *db,
+			    const gchar *stmt,
+			    gint (*callback)(gpointer ,gint,gchar **,gchar **),
+			    gpointer data,
+			    GError **error)
 {
 	gchar *errmsg = NULL;
 	gint   ret = -1;
@@ -275,6 +286,44 @@ book_backend_sql_exec (sqlite3 *db,
 
 	return TRUE;
 }
+
+#ifdef DEBUG_QUERIES
+static gint
+print_debug_cb (gpointer ref,
+		gint col,
+		gchar **cols,
+		gchar **name)
+{
+	gint i;
+
+	g_print ("DEBUG BEGIN: %d results\n", col);
+
+	for (i = 0; i < col; i++)
+		g_print ("NAME: '%s' COL: %s\n", name[i], cols[i]);
+
+	g_print ("DEBUG END\n");
+
+	return 0;
+}
+
+static gboolean
+book_backend_sql_exec_wrap (sqlite3 *db,
+			    const gchar *stmt,
+			    gint (*callback)(gpointer ,gint,gchar **,gchar **),
+			    gpointer data,
+			    GError **error)
+{
+	gchar *debug;
+	debug = g_strconcat ("EXPLAIN QUERY PLAN ", stmt, NULL);
+
+	g_print ("DEBUG STATEMENT: %s\n", stmt);
+	book_backend_sql_exec_real (db, debug, print_debug_cb, NULL, NULL);
+	g_print ("DEBUG STATEMENT END\n");
+	g_free (debug);
+
+	return book_backend_sql_exec_real (db, stmt, callback, data, error);
+}
+#endif
 
 /* the first caller holds the writer lock too */
 static gboolean
@@ -341,11 +390,27 @@ book_backend_sqlitedb_end_transaction (EBookBackendSqliteDB *ebsdb,
 	return res;
 }
 
+static gint
+collect_versions_cb (gpointer ref,
+		     gint col,
+		     gchar **cols,
+		     gchar **name)
+{
+	gint *ret = ref;
+
+	/* Just collect the first result, all folders should always have the same DB version */
+	*ret = cols [0] ? strtoul (cols [0], NULL, 10) : 0;
+
+	return 0;
+}
+
 static void
 create_folders_table (EBookBackendSqliteDB *ebsdb,
                       GError **error)
 {
 	GError *err = NULL;
+	gint    version = 0;
+
 	/* sync_data points to syncronization data, it could be last_modified time
 	 * or a sequence number or some text depending on the backend.
 	 *
@@ -361,7 +426,8 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 			     "  sync_data TEXT,"
 			     " is_populated INTEGER,"
 			     "  partial_content INTEGER,"
-			     " version INTEGER)";
+			     " version INTEGER,"
+		             "  revision TEXT)";
 
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
@@ -381,10 +447,32 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 	}
 
+	/* Fetch the version, it should be the same for all folders (hence the LIMIT) */
+	if (!err) {
+		stmt = "SELECT version FROM folders LIMIT 1";
+		book_backend_sql_exec (ebsdb->priv->db, stmt, collect_versions_cb, &version, &err);
+	}
+
+	/* Upgrade DB to version 2, add the 'revision' column
+	 *
+	 * (version = 0 indicates that it did not exist and we just created the table)
+	 */
+	if (!err && version >= 1 && version < 2) {
+		stmt = "ALTER TABLE folders ADD COLUMN revision TEXT";
+		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
+	}
+
+	if (!err && version >= 1 && version < 2) {
+		stmt = "UPDATE folders SET version = 2";
+		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
+	}
+
 	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
-	if (err)
+	if (err) {
+		g_warning ("Error creating folders table: %s", err->message);
 		g_propagate_error (error, err);
+	}
 
 	return;
 }
@@ -402,8 +490,8 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 
 	if (!err) {
 		stmt = sqlite3_mprintf (
-			"INSERT OR IGNORE INTO folders VALUES ( %Q, %Q, %Q, %d, %d, %d ) ",
-			folderid, folder_name, NULL, 0, 0, FOLDER_VERSION);
+			"INSERT OR IGNORE INTO folders VALUES ( %Q, %Q, %Q, %d, %d, %d, %Q ) ",
+			folderid, folder_name, NULL, 0, 0, FOLDER_VERSION, NULL);
 
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 
@@ -1983,6 +2071,106 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
+static gint
+get_string_cb (gpointer ref,
+	       gint col,
+	       gchar **cols,
+	       gchar **name)
+{
+	gchar **ret = ref;
+
+	*ret = g_strdup (cols [0]);
+
+	return 0;
+}
+
+/**
+ * e_book_backend_sqlitedb_get_revision:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @revision_out: (out) (transfer full): The location to return the current revision
+ * @error: A location to store any error that may have occurred
+ *
+ * Fetches the current revision for the address-book indicated by @folderid.
+ *
+ * Upon success, @revision_out will hold the returned revision, otherwise
+ * %FALSE will be returned and @error will be updated accordingly.
+ *
+ * Returns: Whether the revision was successfully fetched.
+ *
+ * Since: 3.8
+ */
+gboolean
+e_book_backend_sqlitedb_get_revision (EBookBackendSqliteDB *ebsdb,
+				      const gchar *folderid,
+				      gchar **revision_out,
+				      GError **error)
+{
+	gchar *stmt;
+	GError *err = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid && folderid[0], FALSE);
+	g_return_val_if_fail (revision_out != NULL && *revision_out == NULL, FALSE);
+
+	READER_LOCK (ebsdb);
+
+	stmt = sqlite3_mprintf ("SELECT revision FROM folders WHERE folder_id = %Q", folderid);
+	book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &revision_out, &err);
+	sqlite3_free (stmt);
+
+	READER_UNLOCK (ebsdb);
+
+	if (err)
+		g_propagate_error (error, err);
+
+	return !err;
+}
+
+/**
+ * e_book_backend_sqlitedb_set_revision:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @revision: The new revision
+ * @error: A location to store any error that may have occurred
+ *
+ * Sets the current revision for the address-book indicated by @folderid to be @revision.
+ *
+ * Returns: Whether the revision was successfully set.
+ *
+ * Since: 3.8
+ */
+gboolean
+e_book_backend_sqlitedb_set_revision (EBookBackendSqliteDB *ebsdb,
+				      const gchar *folderid,
+				      const gchar *revision,
+				      GError **error)
+{
+	gchar *stmt = NULL;
+	GError *err = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid && folderid[0], FALSE);
+
+	book_backend_sqlitedb_start_transaction (ebsdb, &err);
+
+	if (!err) {
+		stmt = sqlite3_mprintf ("UPDATE folders SET revision = %Q WHERE folder_id = %Q",
+					revision, folderid);
+		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
+		sqlite3_free (stmt);
+	}
+
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
+
+	if (err)
+		g_propagate_error (error, err);
+
+	return !err;
+
+}
+
+
 /**
  * e_book_backend_sqlitedb_get_has_partial_content 
  * @ebsdb: 
@@ -2052,19 +2240,6 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
 		g_propagate_error (error, err);
 
 	return !err;
-}
-
-static gint
-get_string_cb (gpointer ref,
-               gint col,
-               gchar **cols,
-               gchar **name)
-{
-	gchar **ret = ref;
-
-	*ret = g_strdup (cols [0]);
-
-	return 0;
 }
 
 /**
