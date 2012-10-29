@@ -16,6 +16,8 @@ libebookbackendfile_la_CPPFLAGS = \
 libebookbackendfile_la_SOURCES =			\
 	e-book-backend-file.c				\
 	e-book-backend-file.h				\
+	e-book-backend-file-migrate-bdb.c		\
+	e-book-backend-file-migrate-bdb.h		\
 	e-book-backend-file-factory.c
 
 libebookbackendfile_la_LIBADD =						\
