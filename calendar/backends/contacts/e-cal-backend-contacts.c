@@ -1323,6 +1323,18 @@ e_cal_backend_contacts_finalize (GObject *object)
 }
 
 static void
+e_cal_backend_contacts_dispose (GObject *object)
+{
+	ESourceRegistry *registry;
+
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (object));
+	g_signal_handlers_disconnect_by_data (registry, object);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->dispose (object);
+}
+
+static void
 e_cal_backend_contacts_constructed (GObject *object)
 {
 	/* Load address book sources from an idle callback
@@ -1405,6 +1417,7 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	sync_class = (ECalBackendSyncClass *) class;
 
 	object_class->finalize = e_cal_backend_contacts_finalize;
+	object_class->dispose = e_cal_backend_contacts_dispose;
 	object_class->constructed = e_cal_backend_contacts_constructed;
 
 	sync_class->get_backend_property_sync	= e_cal_backend_contacts_get_backend_property;
