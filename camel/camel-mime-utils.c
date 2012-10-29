@@ -2050,17 +2050,61 @@ header_decode_atom (const gchar **in)
 		return NULL;
 }
 
+static gboolean
+extract_rfc2047_encoded_word (const gchar **in,
+			      gchar **word)
+{
+	const gchar *inptr = *in, *start;
+
+	header_decode_lwsp (&inptr);
+	start = inptr;
+
+	if (!strncmp (inptr, "=?", 2)) {
+		inptr += 2;
+
+		/* skip past the charset (if one is even declared, sigh) */
+		while (*inptr && *inptr != '?') {
+			inptr++;
+		}
+
+		/* sanity check encoding type */
+		if (inptr[0] != '?' || !strchr ("BbQq", inptr[1]) || !inptr[1] || inptr[2] != '?')
+			return FALSE;
+
+		inptr += 3;
+
+		/* find the end of the rfc2047 encoded word token */
+		while (*inptr && strncmp (inptr, "?=", 2) != 0) {
+			inptr++;
+		}
+
+		if (!strncmp (inptr, "?=", 2)) {
+			inptr += 2;
+
+			*in = inptr;
+			*word = g_strndup (start, inptr - start);
+
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 static gchar *
 header_decode_word (const gchar **in)
 {
 	const gchar *inptr = *in;
+	gchar *word = NULL;
 
 	header_decode_lwsp (&inptr);
+	*in = inptr;
+
 	if (*inptr == '"') {
-		*in = inptr;
 		return header_decode_quoted_string (in);
+	} else if (*inptr == '=' && inptr[1] == '?' && extract_rfc2047_encoded_word (in, &word) && word) {
+		return word;
 	} else {
-		*in = inptr;
 		return header_decode_atom (in);
 	}
 }
