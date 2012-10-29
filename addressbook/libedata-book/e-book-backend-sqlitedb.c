@@ -1420,6 +1420,8 @@ convert_match_exp (struct _ESExp *f,
 
 				str = emails->str;
 				g_string_free (emails, FALSE);
+			} else if (!strcmp (field, "id")) {
+				str = g_strdup_printf ("(uid IS NOT NULL AND uid LIKE %s)", value);
 			} else
 				str = g_strdup_printf ("(%s IS NOT NULL AND %s LIKE %s)", field, field, value);
 			g_free (value);
