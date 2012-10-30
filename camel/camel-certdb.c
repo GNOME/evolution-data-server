@@ -63,14 +63,73 @@ static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, 
 
 G_DEFINE_TYPE (CamelCertDB, camel_certdb, CAMEL_TYPE_OBJECT)
 
-static gboolean
-certdb_str_equal_casecmp (gconstpointer str1,
-                          gconstpointer str2)
-{
-	if (!str1 || !str2)
-		return str1 == str2;
+typedef struct {
+	gchar *hostname;
+	gchar *fingerprint;
+} CamelCertDBKey;
 
-	return g_ascii_strcasecmp (str1, str2) == 0;
+static CamelCertDBKey *
+certdb_key_new (const gchar *hostname,
+		const gchar *fingerprint)
+{
+	CamelCertDBKey *key;
+
+	key = g_new0 (CamelCertDBKey, 1);
+	key->hostname = g_strdup (hostname);
+	key->fingerprint = g_strdup (fingerprint);
+
+	return key;
+}
+
+static void
+certdb_key_free (gpointer ptr)
+{
+	CamelCertDBKey *key = ptr;
+
+	if (!key)
+		return;
+
+	g_free (key->hostname);
+	g_free (key->fingerprint);
+	g_free (key);
+}
+
+static guint
+certdb_key_hash (gconstpointer ptr)
+{
+	const CamelCertDBKey *key = ptr;
+
+	if (!key)
+		return 0;
+
+	/* hash by fingerprint only, but compare by both hostname and fingerprint */
+	return g_str_hash (key->fingerprint);
+}
+
+static gboolean
+certdb_key_equal (gconstpointer ptr1,
+		  gconstpointer ptr2)
+{
+	const CamelCertDBKey *key1 = ptr1, *key2 = ptr2;
+	gboolean same_hostname;
+
+	if (!key1 || !key2)
+		return key1 == key2;
+
+	if (!key1->hostname || !key2->hostname)
+		same_hostname = key1->hostname == key2->hostname;
+	else
+		same_hostname = g_ascii_strcasecmp (key1->hostname, key2->hostname) == 0;
+
+	if (same_hostname) {
+		if (!key1->fingerprint || !key2->fingerprint)
+			return key1->fingerprint == key2->fingerprint;
+
+		return g_ascii_strcasecmp (key1->fingerprint, key2->fingerprint) == 0;
+	}
+
+	
+	return same_hostname;
 }
 
 static void
@@ -137,7 +196,7 @@ camel_certdb_init (CamelCertDB *certdb)
 	certdb->cert_chunks = NULL;
 
 	certdb->certs = g_ptr_array_new ();
-	certdb->cert_hash = g_hash_table_new (g_str_hash, certdb_str_equal_casecmp);
+	certdb->cert_hash = g_hash_table_new_full (certdb_key_hash, certdb_key_equal, certdb_key_free, NULL);
 
 	certdb->priv->db_lock = g_mutex_new ();
 	certdb->priv->io_lock = g_mutex_new ();
@@ -451,17 +510,23 @@ camel_certdb_touch (CamelCertDB *certdb)
  **/
 CamelCert *
 camel_certdb_get_host (CamelCertDB *certdb,
-                       const gchar *hostname)
+                       const gchar *hostname,
+		       const gchar *fingerprint)
 {
 	CamelCert *cert;
+	CamelCertDBKey *key;
 
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
 
 	camel_certdb_lock (certdb, CAMEL_CERTDB_DB_LOCK);
 
-	cert = g_hash_table_lookup (certdb->cert_hash, hostname);
+	key = certdb_key_new (hostname, fingerprint);
+
+	cert = g_hash_table_lookup (certdb->cert_hash, key);
 	if (cert)
 		camel_certdb_cert_ref (certdb, cert);
+
+	certdb_key_free (key);
 
 	camel_certdb_unlock (certdb, CAMEL_CERTDB_DB_LOCK);
 
@@ -480,22 +545,26 @@ camel_certdb_put (CamelCertDB *certdb,
                   CamelCert *cert)
 {
 	CamelCert *old_cert;
+	CamelCertDBKey *key;
 
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
 	camel_certdb_lock (certdb, CAMEL_CERTDB_DB_LOCK);
 
+	key = certdb_key_new (cert->hostname, cert->fingerprint);
+
 	/* Replace an existing entry with the same hostname. */
-	old_cert = g_hash_table_lookup (certdb->cert_hash, cert->hostname);
+	old_cert = g_hash_table_lookup (certdb->cert_hash, key);
 	if (old_cert) {
-		g_hash_table_remove (certdb->cert_hash, cert->hostname);
+		g_hash_table_remove (certdb->cert_hash, key);
 		g_ptr_array_remove (certdb->certs, old_cert);
 		camel_certdb_cert_unref (certdb, old_cert);
 	}
 
 	camel_certdb_cert_ref (certdb, cert);
 	g_ptr_array_add (certdb->certs, cert);
-	g_hash_table_insert (certdb->cert_hash, cert->hostname, cert);
+	/* takes ownership of 'key' */
+	g_hash_table_insert (certdb->cert_hash, key, cert);
 
 	certdb->flags |= CAMEL_CERTDB_DIRTY;
 
@@ -511,22 +580,27 @@ camel_certdb_put (CamelCertDB *certdb,
  **/
 void
 camel_certdb_remove_host (CamelCertDB *certdb,
-                          const gchar *hostname)
+                          const gchar *hostname,
+			  const gchar *fingerprint)
 {
 	CamelCert *cert;
+	CamelCertDBKey *key;
 
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
 	camel_certdb_lock (certdb, CAMEL_CERTDB_DB_LOCK);
 
-	cert = g_hash_table_lookup (certdb->cert_hash, hostname);
+	key = certdb_key_new (hostname, fingerprint);
+	cert = g_hash_table_lookup (certdb->cert_hash, key);
 	if (cert) {
-		g_hash_table_remove (certdb->cert_hash, hostname);
+		g_hash_table_remove (certdb->cert_hash, key);
 		g_ptr_array_remove (certdb->certs, cert);
 		camel_certdb_cert_unref (certdb, cert);
 
 		certdb->flags |= CAMEL_CERTDB_DIRTY;
 	}
+
+	certdb_key_free (key);
 
 	camel_certdb_unlock (certdb, CAMEL_CERTDB_DB_LOCK);
 }

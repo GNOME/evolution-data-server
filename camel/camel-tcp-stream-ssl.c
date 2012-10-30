@@ -306,13 +306,10 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 	gchar *fingerprint;
 	CamelCert *ccert;
 
-	ccert = camel_certdb_get_host (certdb, hostname);
-	if (ccert == NULL)
-		return NULL;
-
 	fingerprint = cert_fingerprint (cert);
-	if (strcmp (fingerprint, ccert->fingerprint) != 0) {
-		/* The saved certificate is not the one we wanted. */
+
+	ccert = camel_certdb_get_host (certdb, hostname, fingerprint);
+	if (ccert == NULL) {
 		g_free (fingerprint);
 		return NULL;
 	}
@@ -336,7 +333,7 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 
 			/* failed to load the certificate, thus remove it from
 			 * the CertDB, thus it can be re-added and properly saved */
-			camel_certdb_remove_host (certdb, hostname);
+			camel_certdb_remove_host (certdb, hostname, fingerprint);
 			camel_certdb_touch (certdb);
 			g_free (fingerprint);
 			g_free (filename);
