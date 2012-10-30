@@ -150,14 +150,14 @@ void camel_certdb_touch (CamelCertDB *certdb);
 /* The lookup key was changed from fingerprint to hostname to fix bug 606181. */
 
 /* Get the certificate for the given hostname, if any. */
-CamelCert *camel_certdb_get_host (CamelCertDB *certdb, const gchar *hostname);
+CamelCert *camel_certdb_get_host (CamelCertDB *certdb, const gchar *hostname, const gchar *fingerprint);
 
 /* Store cert for cert->hostname, replacing any existing certificate for the
  * same hostname. */
 void camel_certdb_put (CamelCertDB *certdb, CamelCert *cert);
 
 /* Remove any user-accepted certificate for the given hostname. */
-void camel_certdb_remove_host (CamelCertDB *certdb, const gchar *hostname);
+void camel_certdb_remove_host (CamelCertDB *certdb, const gchar *hostname, const gchar *fingerprint);
 
 CamelCert *camel_certdb_cert_new (CamelCertDB *certdb);
 void camel_certdb_cert_ref (CamelCertDB *certdb, CamelCert *cert);
