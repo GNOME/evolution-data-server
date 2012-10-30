@@ -34,9 +34,14 @@ G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 	((obj), E_TYPE_BOOK_VIEW, EBookViewPrivate))
 
 struct _EBookViewPrivate {
-	EGdbusBookView *gdbus_bookview;
 	EBook *book;
-	gboolean running;
+	EBookClientView *client_view;
+
+	gulong objects_added_handler_id;
+	gulong objects_modified_handler_id;
+	gulong objects_removed_handler_id;
+	gulong progress_handler_id;
+	gulong complete_handler_id;
 };
 
 enum {
@@ -52,255 +57,132 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static void
-objects_added_cb (EGdbusBookView *object,
-                  const gchar * const *vcards,
-                  EBookView *book_view)
+book_view_objects_added_cb (EBookClientView *client_view,
+                            const GSList *slist,
+                            EBookView *book_view)
 {
-	const gchar * const *p;
-	GList *contacts = NULL;
-
-	if (!book_view->priv->running)
-		return;
-
-	/* array contains both UID and vcard */
-	for (p = vcards; *p; p += 2) {
-		contacts = g_list_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
-	}
-
-	contacts = g_list_reverse (contacts);
-
-	g_signal_emit (book_view, signals[CONTACTS_ADDED], 0, contacts);
-
-	g_list_foreach (contacts, (GFunc) g_object_unref, NULL);
-	g_list_free (contacts);
-}
-
-static void
-objects_modified_cb (EGdbusBookView *object,
-                     const gchar * const *vcards,
-                     EBookView *book_view)
-{
-	const gchar * const *p;
-	GList *contacts = NULL;
-
-	if (!book_view->priv->running)
-		return;
-
-	/* array contains both UID and vcard */
-	for (p = vcards; *p; p += 2) {
-		contacts = g_list_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
-	}
-	contacts = g_list_reverse (contacts);
-
-	g_signal_emit (book_view, signals[CONTACTS_CHANGED], 0, contacts);
-
-	g_list_foreach (contacts, (GFunc) g_object_unref, NULL);
-	g_list_free (contacts);
-}
-
-static void
-objects_removed_cb (EGdbusBookView *object,
-                    const gchar * const *ids,
-                    EBookView *book_view)
-{
-	const gchar * const *p;
 	GList *list = NULL;
 
-	if (!book_view->priv->running)
-		return;
-
-	for (p = ids; *p; p++) {
-		list = g_list_prepend (list, (gchar *) * p);
-	}
+	/* XXX Never use GSList in a public API. */
+	for (; slist != NULL; slist = g_slist_next (slist))
+		list = g_list_prepend (list, slist->data);
 	list = g_list_reverse (list);
 
-	g_signal_emit (book_view, signals[CONTACTS_REMOVED], 0, list);
+	g_signal_emit (book_view, signals[CONTACTS_ADDED], 0, list);
 
-	/* No need to free the values, our caller will */
 	g_list_free (list);
 }
 
 static void
-progress_cb (EGdbusBookView *object,
-             guint percent,
-             const gchar *message,
-             EBookView *book_view)
+book_view_objects_modified_cb (EBookClientView *client_view,
+                               const GSList *slist,
+                               EBookView *book_view)
 {
-	if (!book_view->priv->running)
-		return;
+	GList *list = NULL;
 
+	/* XXX Never use GSList in a public API. */
+	for (; slist != NULL; slist = g_slist_next (slist))
+		list = g_list_prepend (list, slist->data);
+	list = g_list_reverse (list);
+
+	g_signal_emit (book_view, signals[CONTACTS_CHANGED], 0, list);
+
+	g_list_free (list);
+}
+
+static void
+book_view_objects_removed_cb (EBookClientView *client_view,
+                              const GSList *slist,
+                              EBookView *book_view)
+{
+	GList *list = NULL;
+
+	/* XXX Never use GSList in a public API. */
+	for (; slist != NULL; slist = g_slist_next (slist))
+		list = g_list_prepend (list, slist->data);
+	list = g_list_reverse (list);
+
+	g_signal_emit (book_view, signals[CONTACTS_REMOVED], 0, list);
+
+	g_list_free (list);
+}
+
+static void
+book_view_progress_cb (EBookClientView *client_view,
+                       guint percent,
+                       const gchar *message,
+                       EBookView *book_view)
+{
 	g_signal_emit (book_view, signals[STATUS_MESSAGE], 0, message);
 }
 
 static void
-complete_cb (EGdbusBookView *object,
-             const gchar * const *in_error_strv,
-             EBookView *book_view)
+book_view_complete_cb (EBookClientView *client_view,
+                       const GError *error,
+                       EBookView *book_view)
 {
-	GError *error = NULL;
-	EBookViewStatus bv_status = E_BOOK_VIEW_ERROR_OTHER_ERROR;
+	EBookViewStatus status;
+	const gchar *message;
 
-	if (!book_view->priv->running)
-		return;
-
-	g_return_if_fail (e_gdbus_templates_decode_error (in_error_strv, &error));
-
-	switch (error ? error->code : E_DATA_BOOK_STATUS_SUCCESS) {
-	case E_DATA_BOOK_STATUS_SUCCESS:
-		bv_status = E_BOOK_VIEW_STATUS_OK;
-		break;
-	case E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED:
-		bv_status = E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED;
-		break;
-	case E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED:
-		bv_status = E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED;
-		break;
-	case E_DATA_BOOK_STATUS_INVALID_QUERY:
-		bv_status = E_BOOK_VIEW_ERROR_INVALID_QUERY;
-		break;
-	case E_DATA_BOOK_STATUS_QUERY_REFUSED:
-		bv_status = E_BOOK_VIEW_ERROR_QUERY_REFUSED;
-		break;
-	default:
-		break;
+	if (error == NULL) {
+		status = E_BOOK_VIEW_STATUS_OK;
+	} else switch (error->code) {
+		case E_DATA_BOOK_STATUS_SUCCESS:
+			status = E_BOOK_VIEW_STATUS_OK;
+			break;
+		case E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED:
+			status = E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED;
+			break;
+		case E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED:
+			status = E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED;
+			break;
+		case E_DATA_BOOK_STATUS_INVALID_QUERY:
+			status = E_BOOK_VIEW_ERROR_INVALID_QUERY;
+			break;
+		case E_DATA_BOOK_STATUS_QUERY_REFUSED:
+			status = E_BOOK_VIEW_ERROR_QUERY_REFUSED;
+			break;
+		default:
+			status = E_BOOK_VIEW_ERROR_OTHER_ERROR;
+			break;
 	}
 
-	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, bv_status);
-	g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, bv_status, error ? error->message : "");
+	message = (error != NULL) ? error->message : "";
 
-	if (error)
-		g_error_free (error);
+	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, status);
+	g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, status, message);
 }
 
-EBookView *
-_e_book_view_new (EBook *book,
-                  EGdbusBookView *gdbus_bookview)
+static void
+book_view_dispose (GObject *object)
 {
-	EBookView *view;
 	EBookViewPrivate *priv;
 
-	view = g_object_new (E_TYPE_BOOK_VIEW, NULL);
-	priv = view->priv;
+	priv = E_BOOK_VIEW_GET_PRIVATE (object);
 
-	priv->book = g_object_ref (book);
-
-	/* Take ownership of the gdbus_bookview object */
-	priv->gdbus_bookview = gdbus_bookview;
-
-	g_object_add_weak_pointer (G_OBJECT (gdbus_bookview), (gpointer) &priv->gdbus_bookview);
-	g_signal_connect (priv->gdbus_bookview, "objects-added", G_CALLBACK (objects_added_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "objects-modified", G_CALLBACK (objects_modified_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "objects-removed", G_CALLBACK (objects_removed_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "progress", G_CALLBACK (progress_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "complete", G_CALLBACK (complete_cb), view);
-
-	return view;
-}
-
-/**
- * e_book_view_get_book:
- * @book_view: an #EBookView
- *
- * Returns the #EBook that this book view is monitoring.
- *
- * Returns: (transfer none): an #EBook.
- *
- * Since: 2.22
- **/
-EBook *
-e_book_view_get_book (EBookView *book_view)
-{
-	g_return_val_if_fail (E_IS_BOOK_VIEW (book_view), NULL);
-
-	return book_view->priv->book;
-}
-
-/**
- * e_book_view_start:
- * @book_view: an #EBookView
- *
- * Tells @book_view to start processing events.
- */
-void
-e_book_view_start (EBookView *book_view)
-{
-	GError *error = NULL;
-
-	g_return_if_fail (E_IS_BOOK_VIEW (book_view));
-
-	book_view->priv->running = TRUE;
-
-	if (book_view->priv->gdbus_bookview) {
-		e_gdbus_book_view_call_start_sync (G_DBUS_PROXY (book_view->priv->gdbus_bookview), NULL, &error);
-		if (error) {
-			g_warning ("Cannot start book view: %s\n", error->message);
-
-			/* Fake a sequence-complete so that the application knows this failed */
-			/* TODO: use get_status_from_error */
-			g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, E_BOOK_VIEW_ERROR_OTHER_ERROR);
-			g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, E_BOOK_VIEW_ERROR_OTHER_ERROR, error->message);
-
-			g_error_free (error);
-		}
-	}
-}
-
-/**
- * e_book_view_stop:
- * @book_view: an #EBookView
- *
- * Tells @book_view to stop processing events.
- **/
-void
-e_book_view_stop (EBookView *book_view)
-{
-	GError *error = NULL;
-
-	g_return_if_fail (E_IS_BOOK_VIEW (book_view));
-
-	book_view->priv->running = FALSE;
-
-	if (book_view->priv->gdbus_bookview) {
-		e_gdbus_book_view_call_stop_sync (G_DBUS_PROXY (book_view->priv->gdbus_bookview), NULL, &error);
-		if (error) {
-			g_warning ("Cannot stop book view: %s\n", error->message);
-			g_error_free (error);
-		}
-	}
-}
-
-static void
-e_book_view_init (EBookView *book_view)
-{
-	book_view->priv = E_BOOK_VIEW_GET_PRIVATE (book_view);
-	book_view->priv->gdbus_bookview = NULL;
-
-	book_view->priv->book = NULL;
-	book_view->priv->running = FALSE;
-}
-
-static void
-e_book_view_dispose (GObject *object)
-{
-	EBookView *book_view = E_BOOK_VIEW (object);
-
-	if (book_view->priv->gdbus_bookview) {
-		GError *error = NULL;
-
-		g_signal_handlers_disconnect_matched (book_view->priv->gdbus_bookview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, book_view);
-		e_gdbus_book_view_call_dispose_sync (G_DBUS_PROXY (book_view->priv->gdbus_bookview), NULL, &error);
-		g_object_unref (book_view->priv->gdbus_bookview);
-		book_view->priv->gdbus_bookview = NULL;
-
-		if (error) {
-			g_warning ("Failed to dispose book view: %s", error->message);
-			g_error_free (error);
-		}
+	if (priv->book != NULL) {
+		g_object_unref (priv->book);
+		priv->book = NULL;
 	}
 
-	if (book_view->priv->book) {
-		g_object_unref (book_view->priv->book);
-		book_view->priv->book = NULL;
+	if (priv->client_view != NULL) {
+		g_signal_handler_disconnect (
+			priv->client_view,
+			priv->objects_added_handler_id);
+		g_signal_handler_disconnect (
+			priv->client_view,
+			priv->objects_modified_handler_id);
+		g_signal_handler_disconnect (
+			priv->client_view,
+			priv->objects_removed_handler_id);
+		g_signal_handler_disconnect (
+			priv->client_view,
+			priv->progress_handler_id);
+		g_signal_handler_disconnect (
+			priv->client_view,
+			priv->complete_handler_id);
+		g_object_unref (priv->client_view);
+		priv->client_view = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -310,9 +192,12 @@ e_book_view_dispose (GObject *object)
 static void
 e_book_view_class_init (EBookViewClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	GObjectClass *object_class;
 
 	g_type_class_add_private (class, sizeof (EBookViewPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = book_view_dispose;
 
 	signals[CONTACTS_CHANGED] = g_signal_new (
 		"contacts_changed",
@@ -368,7 +253,124 @@ e_book_view_class_init (EBookViewClass *class)
 		NULL, NULL,
 		e_book_marshal_NONE__STRING,
 		G_TYPE_NONE, 1, G_TYPE_STRING);
+}
 
-	object_class->dispose = e_book_view_dispose;
+static void
+e_book_view_init (EBookView *book_view)
+{
+	book_view->priv = E_BOOK_VIEW_GET_PRIVATE (book_view);
+}
+
+EBookView *
+_e_book_view_new (EBook *book,
+                  EBookClientView *client_view)
+{
+	EBookView *book_view;
+	gulong handler_id;
+
+	g_return_val_if_fail (E_IS_BOOK (book), NULL);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view), NULL);
+
+	book_view = g_object_new (E_TYPE_BOOK_VIEW, NULL);
+
+	book_view->priv->book = g_object_ref (book);
+	book_view->priv->client_view = g_object_ref (client_view);
+
+	handler_id = g_signal_connect (
+		client_view, "objects-added",
+		G_CALLBACK (book_view_objects_added_cb), book_view);
+	book_view->priv->objects_added_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		client_view, "objects-modified",
+		G_CALLBACK (book_view_objects_modified_cb), book_view);
+	book_view->priv->objects_modified_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		client_view, "objects-removed",
+		G_CALLBACK (book_view_objects_removed_cb), book_view);
+	book_view->priv->objects_removed_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		client_view, "progress",
+		G_CALLBACK (book_view_progress_cb), book_view);
+	book_view->priv->progress_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		client_view, "complete",
+		G_CALLBACK (book_view_complete_cb), book_view);
+	book_view->priv->complete_handler_id = handler_id;
+
+	return book_view;
+}
+
+/**
+ * e_book_view_get_book:
+ * @book_view: an #EBookView
+ *
+ * Returns the #EBook that this book view is monitoring.
+ *
+ * Returns: (transfer none): an #EBook.
+ *
+ * Since: 2.22
+ **/
+EBook *
+e_book_view_get_book (EBookView *book_view)
+{
+	g_return_val_if_fail (E_IS_BOOK_VIEW (book_view), NULL);
+
+	return book_view->priv->book;
+}
+
+/**
+ * e_book_view_start:
+ * @book_view: an #EBookView
+ *
+ * Tells @book_view to start processing events.
+ */
+void
+e_book_view_start (EBookView *book_view)
+{
+	GError *error = NULL;
+
+	g_return_if_fail (E_IS_BOOK_VIEW (book_view));
+
+	e_book_client_view_start (book_view->priv->client_view, &error);
+
+	if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+
+		/* Fake a sequence-complete so the
+		 * application knows this failed. */
+		g_signal_emit (
+			book_view, signals[SEQUENCE_COMPLETE], 0,
+			E_BOOK_VIEW_ERROR_OTHER_ERROR);
+		g_signal_emit (
+			book_view, signals[VIEW_COMPLETE], 0,
+			E_BOOK_VIEW_ERROR_OTHER_ERROR, error->message);
+
+		g_error_free (error);
+	}
+}
+
+/**
+ * e_book_view_stop:
+ * @book_view: an #EBookView
+ *
+ * Tells @book_view to stop processing events.
+ **/
+void
+e_book_view_stop (EBookView *book_view)
+{
+	GError *error = NULL;
+
+	g_return_if_fail (E_IS_BOOK_VIEW (book_view));
+
+	e_book_client_view_stop (book_view->priv->client_view, &error);
+
+	if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+	}
 }
 

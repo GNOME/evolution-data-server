@@ -19,22 +19,24 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
-#ifndef __E_BOOK_VIEW_PRIVATE_H__
-#define __E_BOOK_VIEW_PRIVATE_H__
+#ifndef E_BOOK_DISABLE_DEPRECATED
+
+#ifndef E_BOOK_VIEW_PRIVATE_H
+#define E_BOOK_VIEW_PRIVATE_H
 
 #include "e-book.h"
 #include "e-book-client.h"
+#include "e-book-client-view.h"
 #include "e-book-view.h"
 
 G_BEGIN_DECLS
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
-struct _EGdbusBookView;
-
-EBookView *_e_book_view_new (EBook *book, struct _EGdbusBookView *gdbus_bookview);
-
-#endif /* E_BOOK_DISABLE_DEPRECATED */
+EBookView *	_e_book_view_new		(EBook *book,
+						 EBookClientView *client_view);
 
 G_END_DECLS
 
-#endif /* __E_BOOK_VIEW_PRIVATE_H__ */
+#endif /* E_BOOK_VIEW_PRIVATE_H */
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */
+
