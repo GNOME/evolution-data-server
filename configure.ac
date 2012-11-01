@@ -1439,7 +1439,7 @@ dnl etc)
 privdatadir='${datadir}'/evolution-data-server
 AC_SUBST(privdatadir)
 
-privincludedir='${includedir}'/evolution-data-server-$BASE_VERSION
+privincludedir='${includedir}'/evolution-data-server
 AC_SUBST(privincludedir)
 
 privlibdir='${libdir}'/evolution-data-server
