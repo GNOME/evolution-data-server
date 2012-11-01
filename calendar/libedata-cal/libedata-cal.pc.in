@@ -3,11 +3,13 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 libexecdir=@libexecdir@
 includedir=@includedir@
-backenddir=@ecal_backenddir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 
+privlibdir=@privlibdir@
 privincludedir=@privincludedir@
+
+backenddir=@ecal_backenddir@
 
 Name: libedata-cal
 Description: Backend library for evolution calendars

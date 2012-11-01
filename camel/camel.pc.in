@@ -3,9 +3,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-camel_providerdir=@camel_providerdir@
 privlibdir=@privlibdir@
 privincludedir=@privincludedir@
+
+camel_providerdir=@camel_providerdir@
 
 Name: camel
 Description: the Evolution MIME message handling library

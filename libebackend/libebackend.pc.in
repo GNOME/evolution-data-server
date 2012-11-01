@@ -5,7 +5,9 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 
+privlibdir=@privlibdir@
 privincludedir=@privincludedir@
+
 moduledir=@moduledir@
 
 Name: libebackend

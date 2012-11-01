@@ -1442,19 +1442,19 @@ AC_SUBST(privdatadir)
 privincludedir='${includedir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privincludedir)
 
-privlibdir='${libdir}'/evolution-data-server-$BASE_VERSION
+privlibdir='${libdir}'/evolution-data-server
 AC_SUBST(privlibdir)
 
 imagesdir='${datadir}'/pixmaps/evolution-data-server
 AC_SUBST(imagesdir)
 
-moduledir='${libdir}'/evolution-data-server/registry-modules
+moduledir='${privlibdir}'/registry-modules
 AC_SUBST(moduledir)
 
-ebook_backenddir='${libdir}'/evolution-data-server/addressbook-backends
+ebook_backenddir='${privlibdir}'/addressbook-backends
 AC_SUBST(ebook_backenddir)
 
-ecal_backenddir='${libdir}'/evolution-data-server/calendar-backends
+ecal_backenddir='${privlibdir}'/calendar-backends
 AC_SUBST(ecal_backenddir)
 
 ro_sourcesdir='${privdatadir}'/ro-sources
@@ -1469,7 +1469,7 @@ if test "x$use_gweather" = "xyes"; then
 fi
 
 dnl separate camel from e-d-s? or should it be under the same spot? same for now.
-camel_providerdir='${libdir}'/evolution-data-server/camel-providers
+camel_providerdir='${privlibdir}'/camel-providers
 AC_SUBST(camel_providerdir)
 
 dnl *******************
