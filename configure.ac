@@ -1436,7 +1436,7 @@ dnl If you add something here, consider whether or not you also
 dnl need to add it to one or more .pc.in files (for Connector,
 dnl etc)
 
-privdatadir='${datadir}'/evolution-data-server-$BASE_VERSION
+privdatadir='${datadir}'/evolution-data-server
 AC_SUBST(privdatadir)
 
 privincludedir='${includedir}'/evolution-data-server-$BASE_VERSION
@@ -1457,10 +1457,10 @@ AC_SUBST(ebook_backenddir)
 ecal_backenddir='${libdir}'/evolution-data-server/calendar-backends
 AC_SUBST(ecal_backenddir)
 
-ro_sourcesdir='${datadir}'/evolution-data-server-$BASE_VERSION/ro-sources
+ro_sourcesdir='${privdatadir}'/ro-sources
 AC_SUBST(ro_sourcesdir)
 
-rw_sourcesdir='${datadir}'/evolution-data-server-$BASE_VERSION/rw-sources
+rw_sourcesdir='${privdatadir}'/rw-sources
 AC_SUBST(rw_sourcesdir)
 
 if test "x$use_gweather" = "xyes"; then
