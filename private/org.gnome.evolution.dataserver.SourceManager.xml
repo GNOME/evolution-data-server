@@ -11,6 +11,15 @@
 -->
 <interface name="org.gnome.evolution.dataserver.SourceManager">
   <!--
+      AllowAuthPromptAll:
+      @since: 3.8
+
+      This method is equivalent to calling AllowAuthPrompt() on each
+      managed object, but does so in a single method invocation.
+  -->
+  <method name="AllowAuthPromptAll"/>
+
+  <!--
       Authenticate:
       @uid: Unique identifier for the authenticating source
       @prompt_title: The title of the prompt

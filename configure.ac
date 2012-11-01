@@ -63,7 +63,7 @@ dnl D-Bus versioning
 dnl ******************************
 ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook4"
 CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar3"
-SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources0"
+SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources1"
 
 AC_DEFINE_UNQUOTED(
        ADDRESS_BOOK_DBUS_SERVICE_NAME,

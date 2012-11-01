@@ -643,6 +643,27 @@ source_registry_server_wait_for_client_cb (GObject *source_object,
 }
 
 static gboolean
+source_registry_server_allow_auth_prompt_all_cb (EDBusSourceManager *interface,
+                                                 GDBusMethodInvocation *invocation,
+                                                 ESourceRegistryServer *server)
+{
+	GList *list, *link;
+
+	list = e_source_registry_server_list_sources (server, NULL);
+
+	for (link = list; link != NULL; link = g_list_next (link))
+		e_server_side_source_set_allow_auth_prompt (
+			E_SERVER_SIDE_SOURCE (link->data), TRUE);
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+
+	e_dbus_source_manager_complete_allow_auth_prompt_all (
+		interface, invocation);
+
+	return TRUE;
+}
+
+static gboolean
 source_registry_server_authenticate_cb (EDBusSourceManager *interface,
                                         GDBusMethodInvocation *invocation,
                                         const gchar *source_uid,
@@ -1372,6 +1393,11 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	server->priv->auth_lock = g_mutex_new ();
 	server->priv->waiting_auths = waiting_auths;
 	server->priv->running_auths = running_auths;
+
+	g_signal_connect (
+		source_manager, "handle-allow-auth-prompt-all",
+		G_CALLBACK (source_registry_server_allow_auth_prompt_all_cb),
+		server);
 
 	g_signal_connect (
 		source_manager, "handle-authenticate",

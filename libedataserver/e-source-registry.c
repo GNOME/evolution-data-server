@@ -1078,6 +1078,14 @@ source_registry_initable_init (GInitable *initable,
 	if (registry->priv->dbus_source_manager == NULL)
 		return FALSE;
 
+	/* Allow authentication prompts for all exported data sources
+	 * when a new EDBusSourceManagerProxy is created.  The thought
+	 * being, if you cancel an authentication prompt you will not
+	 * be bothered again until you start (or restart) a new E-D-S
+	 * client app.  Failure here is non-fatal, ignore errors. */
+	e_dbus_source_manager_call_allow_auth_prompt_all_sync (
+		registry->priv->dbus_source_manager, cancellable, NULL);
+
 	return TRUE;
 }
 

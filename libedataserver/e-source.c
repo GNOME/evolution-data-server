@@ -1306,21 +1306,6 @@ source_initable_init (GInitable *initable,
 		dbus_source = e_dbus_object_get_source (dbus_object);
 		g_return_val_if_fail (E_DBUS_IS_SOURCE (dbus_source), FALSE);
 
-		/* Allow authentication prompts for a data source
-		 * when a new client-side proxy object is created.
-		 * The thought being if you cancel an authentication
-		 * prompt you won't be bothered again until you start
-		 * (or restart) a new E-D-S client app.
-		 *
-		 * Failure here is non-fatal, ignore errors.
-		 *
-		 * XXX Only GDBusProxy objects may call this.  Sources
-		 *     created server-side can't invoke remote methods.
-		 */
-		if (G_IS_DBUS_PROXY (dbus_source))
-			e_dbus_source_call_allow_auth_prompt_sync (
-				dbus_source, cancellable, NULL);
-
 		/* The UID never changes, so we can cache a copy.
 		 *
 		 * XXX Note, EServerSideSource may have already set this
