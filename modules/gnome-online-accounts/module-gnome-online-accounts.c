@@ -22,6 +22,7 @@
 #include <config.h>
 #include <goa/goa.h>
 #include <libsecret/secret.h>
+#include <libsoup/soup.h>
 
 #include <libebackend/libebackend.h>
 
@@ -172,12 +173,33 @@ gnome_online_accounts_new_source (EGnomeOnlineAccounts *extension)
 	return source;
 }
 
+#ifdef HAVE_GOA_PASSWORD_BASED
+static void
+replace_host (gchar **url,
+	      const gchar *host)
+{
+	SoupURI *uri;
+
+	uri = soup_uri_new (*url);
+	if (!uri)
+		return;
+
+	soup_uri_set_host (uri, host);
+
+	g_free (*url);
+	*url = soup_uri_to_string (uri, FALSE);
+
+	soup_uri_free (uri);
+}
+#endif /* HAVE_GOA_PASSWORD_BASED */
+
 static void
 gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
                                        ESource *source,
                                        GoaObject *goa_object)
 {
 #ifdef HAVE_GOA_PASSWORD_BASED
+	GoaExchange *goa_exchange;
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
 	gchar *as_url = NULL;
@@ -185,7 +207,8 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 	gpointer class;
 	GError *error = NULL;
 
-	if (goa_object_peek_exchange (goa_object) == NULL)
+	goa_exchange = goa_object_peek_exchange (goa_object);
+	if (goa_exchange == NULL)
 		return;
 
 	/* This should force the ESourceCamelEws type to be registered.
@@ -234,11 +257,35 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 
 	/* This will be NULL if Evolution-EWS is not installed. */
 	if (source_extension != NULL) {
+		GoaAccount *goa_account;
+		gchar *host, *user, *email;
+
+		goa_account = goa_object_peek_account (goa_object);
+		host = goa_exchange_dup_host (goa_exchange);
+		user = goa_account_dup_identity (goa_account);
+		email = goa_account_dup_presentation_identity (goa_account);
+
+		if (host && *host) {
+			replace_host (&as_url, host);
+			replace_host (&oab_url, host);
+		}
+
 		g_object_set (
 			source_extension,
 			"hosturl", as_url,
 			"oaburl", oab_url,
+			"email", email,
 			NULL);
+
+		g_object_set (e_source_camel_get_settings (E_SOURCE_CAMEL (source_extension)),
+			"host", host,
+			"user", user,
+			"email", email,
+			NULL);
+
+		g_free (host);
+		g_free (user);
+		g_free (email);
 	} else {
 		g_critical (
 			"%s: Failed to create [%s] extension",
