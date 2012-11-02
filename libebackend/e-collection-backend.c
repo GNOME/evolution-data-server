@@ -412,6 +412,11 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 			NULL);
 		return;
 	}
+
+	g_object_bind_property (
+		collection_source, "enabled",
+		child_source, "enabled",
+		G_BINDING_SYNC_CREATE);
 }
 
 static void
