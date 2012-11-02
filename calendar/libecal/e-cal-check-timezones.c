@@ -238,7 +238,7 @@ addsystemtz (gpointer key,
  * Some programs generate broken meeting invitations with TZID, but
  * without including the corresponding VTIMEZONE. Importing such
  * invitations unchanged causes problems later on (meeting displayed
- * incorrectly, #e_cal_get_component_as_string fails). The situation
+ * incorrectly, e_cal_get_component_as_string() fails). The situation
  * where this occurred in the past (found by a SyncEvolution user) is
  * now handled via the location based mapping.
  *

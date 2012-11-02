@@ -1637,7 +1637,7 @@ object_created_cb (EDataCalView *view,
  *
  * Notifies each of the backend's listeners about a new object.
  *
- * #e_data_cal_notify_object_created() calls this for you. You only need to
+ * e_data_cal_notify_object_created() calls this for you. You only need to
  * call e_cal_backend_notify_object_created() yourself to report objects
  * created by non-EDS clients.
  *
@@ -1731,7 +1731,7 @@ call_match_and_notify_object (EDataCalView *view,
  *
  * Notifies each of the backend's listeners about a modified object.
  *
- * #e_data_cal_notify_object_modified() calls this for you. You only need to
+ * e_data_cal_notify_object_modified() calls this for you. You only need to
  * call e_cal_backend_notify_object_modified() yourself to report objects
  * modified by non-EDS clients.
  *

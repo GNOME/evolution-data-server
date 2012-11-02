@@ -444,7 +444,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
  * whether the change causes the contact to start matching,
  * no longer match, or stay matching the query specified
  * by @book_view.  This method should be preferred over
- * #e_data_book_view_notify_update when the native
+ * e_data_book_view_notify_update() when the native
  * representation of a contact is a vCard.
  **/
 void
@@ -493,11 +493,12 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view,
  * whether the change causes the contact to start matching,
  * no longer match, or stay matching the query specified
  * by @book_view.  This method should be preferred over
- * #e_data_book_view_notify_update when the native
+ * e_data_book_view_notify_update() when the native
  * representation of a contact is a vCard.
  *
  * The important difference between this method and
- * #e_data_book_view_notify_update and #e_data_book_view_notify_update_vcard is
+ * e_data_book_view_notify_update() and
+ * e_data_book_view_notify_update_vcard() is
  * that it doesn't match the contact against the book view query to see if it
  * should be included, it assumes that this has been done and the contact is
  * known to exist in the view.

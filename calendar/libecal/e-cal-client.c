@@ -1622,8 +1622,8 @@ generate_instances_got_objects_cb (struct get_objects_async_data *goad,
  * @cb_data: Closure data for the callback.
  * @destroy_cb_data: Function to call when the processing is done, to free @cb_data; can be %NULL.
  *
- * Does a combination of #e_cal_client_get_object_list () and
- * #e_cal_client_recur_generate_instances(). Unlike #e_cal_client_generate_instances_sync (),
+ * Does a combination of e_cal_client_get_object_list () and
+ * e_cal_client_recur_generate_instances(). Unlike e_cal_client_generate_instances_sync (),
  * this returns immediately and the @cb callback is called asynchronously.
  *
  * The callback function should do a g_object_ref() of the calendar component
@@ -1794,9 +1794,9 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
  * @cb_data: Closure data for the callback.
  * @destroy_cb_data: Function to call when the processing is done, to free @cb_data; can be %NULL.
  *
- * Does a combination of #e_cal_client_get_object_list () and
- * #e_cal_client_recur_generate_instances(), like #e_cal_client_generate_instances(), but
- * for a single object. Unlike #e_cal_client_generate_instances_for_object_sync (),
+ * Does a combination of e_cal_client_get_object_list() and
+ * e_cal_client_recur_generate_instances(), like e_cal_client_generate_instances(), but
+ * for a single object. Unlike e_cal_client_generate_instances_for_object_sync (),
  * this returns immediately and the @cb callback is called asynchronously.
  *
  * The callback function should do a g_object_ref() of the calendar component
@@ -1899,8 +1899,8 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
  * @cb: (closure cb_data) (scope call): Callback for each generated instance
  * @cb_data: (closure): Closure data for the callback
  *
- * Does a combination of #e_cal_client_get_object_list () and
- * #e_cal_client_recur_generate_instances(), like #e_cal_client_generate_instances_sync(), but
+ * Does a combination of e_cal_client_get_object_list() and
+ * e_cal_client_recur_generate_instances(), like e_cal_client_generate_instances_sync(), but
  * for a single object.
  *
  * The callback function should do a g_object_ref() of the calendar component
@@ -3022,7 +3022,7 @@ complete_get_object_list (gboolean res,
  *
  * Finishes previous call of e_cal_client_get_object_list() and
  * sets @icalcomps to a matching list of #icalcomponent-s.
- * This list should be freed with #e_cal_client_free_icalcomp_slist().
+ * This list should be freed with e_cal_client_free_icalcomp_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -3056,7 +3056,7 @@ e_cal_client_get_object_list_finish (ECalClient *client,
  * Gets a list of objects from the calendar that match the query specified
  * by the @sexp argument. The objects will be returned in the @icalcomps
  * argument, which is a list of #icalcomponent.
- * This list should be freed with #e_cal_client_free_icalcomp_slist().
+ * This list should be freed with e_cal_client_free_icalcomp_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -3169,7 +3169,7 @@ complete_get_object_list_as_comps (gboolean res,
  *
  * Finishes previous call of e_cal_client_get_object_list_as_comps() and
  * sets @ecalcomps to a matching list of #ECalComponent-s.
- * This list should be freed with #e_cal_client_free_ecalcomp_slist().
+ * This list should be freed with e_cal_client_free_ecalcomp_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -3203,7 +3203,7 @@ e_cal_client_get_object_list_as_comps_finish (ECalClient *client,
  * Gets a list of objects from the calendar that match the query specified
  * by the @sexp argument. The objects will be returned in the @ecalcomps
  * argument, which is a list of #ECalComponent.
- * This list should be freed with #e_cal_client_free_ecalcomp_slist().
+ * This list should be freed with e_cal_client_free_ecalcomp_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
