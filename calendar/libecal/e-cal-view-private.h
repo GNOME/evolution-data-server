@@ -18,22 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #ifndef E_CAL_VIEW_PRIVATE_H
 #define E_CAL_VIEW_PRIVATE_H
 
-#include <libecal/e-cal-types.h>
-#include <libecal/e-cal-view.h>
+#include <libecal/e-cal.h>
+#include <libecal/e-cal-client-view.h>
 
 G_BEGIN_DECLS
 
-#ifndef E_CAL_DISABLE_DEPRECATED
-
-struct _EGdbusCalView;
-
-ECalView *_e_cal_view_new (struct _ECal *client,  struct _EGdbusCalView *gdbus_calview);
-
-#endif /* E_CAL_DISABLE_DEPRECATED */
+ECalView *	_e_cal_view_new			(ECal *cal,
+						 ECalClientView *client_view);
 
 G_END_DECLS
 
-#endif
+#endif /* E_CAL_VIEW_PRIVATE_H */
+
+#endif /* E_CAL_DISABLE_DEPRECATED */

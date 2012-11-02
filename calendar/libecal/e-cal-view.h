@@ -66,26 +66,26 @@ struct _ECalViewClass {
 	GObjectClass parent_class;
 
 	/* Signals */
-	void		(*objects_added)	(ECalView *view,
+	void	(*objects_added)		(ECalView *cal_view,
 						 GList *objects);
-	void		(*objects_modified)	(ECalView *view,
+	void	(*objects_modified)		(ECalView *cal_view,
 						 GList *objects);
-	void		(*objects_removed)	(ECalView *view,
+	void	(*objects_removed)		(ECalView *cal_view,
 						 GList *uids);
-	void		(*view_progress)	(ECalView *view,
+	void	(*view_progress)		(ECalView *cal_view,
 						 gchar *message,
 						 gint percent);
-	void		(*view_done)		(ECalView *view,
+	void	(*view_done)			(ECalView *cal_view,
 						 ECalendarStatus status);
-	void		(*view_complete)	(ECalView *view,
+	void	(*view_complete)		(ECalView *cal_view,
 						 ECalendarStatus status,
 						 const gchar *error_msg);
 };
 
 GType		e_cal_view_get_type		(void);
-struct _ECal *	e_cal_view_get_client		(ECalView *view);
-void		e_cal_view_start		(ECalView *view);
-void		e_cal_view_stop			(ECalView *view);
+struct _ECal *	e_cal_view_get_client		(ECalView *cal_view);
+void		e_cal_view_start		(ECalView *cal_view);
+void		e_cal_view_stop			(ECalView *cal_view);
 
 G_END_DECLS
 
