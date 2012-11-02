@@ -1754,6 +1754,32 @@ e_name_selector_dialog_set_scrolling_policy (ENameSelectorDialog *name_selector_
 }
 
 /**
+ * e_name_selector_dialog_get_section_visible:
+ * @name_selector_dialog: an #ENameSelectorDialog
+ * @name: name of the section
+ *
+ * Returns: whether section named @name is visible in the dialog.
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_name_selector_dialog_get_section_visible (ENameSelectorDialog *name_selector_dialog,
+                                            const gchar *name)
+{
+	Section *section;
+	gint index;
+
+	g_return_val_if_fail (E_IS_NAME_SELECTOR_DIALOG (name_selector_dialog), FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	index = find_section_by_name (name_selector_dialog, name);
+	g_return_val_if_fail (index != -1, FALSE);
+
+	section = &g_array_index (name_selector_dialog->priv->sections, Section, index);
+	return gtk_widget_get_visible (GTK_WIDGET (section->section_box));
+}
+
+/**
  * e_name_selector_dialog_set_section_visible:
  * @name_selector_dialog: an #ENameSelectorDialog
  * @name: name of the section
@@ -1785,28 +1811,3 @@ e_name_selector_dialog_set_section_visible (ENameSelectorDialog *name_selector_d
 		gtk_widget_hide (GTK_WIDGET (section->section_box));
 }
 
-/**
- * e_name_selector_dialog_get_section_visible:
- * @name_selector_dialog: an #ENameSelectorDialog
- * @name: name of the section
- *
- * Returns: whether section named @name is visible in the dialog.
- *
- * Since: 3.8
- **/
-gboolean
-e_name_selector_dialog_get_section_visible (ENameSelectorDialog *name_selector_dialog,
-                                            const gchar *name)
-{
-	Section *section;
-	gint index;
-
-	g_return_val_if_fail (E_IS_NAME_SELECTOR_DIALOG (name_selector_dialog), FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
-
-	index = find_section_by_name (name_selector_dialog, name);
-	g_return_val_if_fail (index != -1, FALSE);
-
-	section = &g_array_index (name_selector_dialog->priv->sections, Section, index);
-	return gtk_widget_get_visible (GTK_WIDGET (section->section_box));
-}
