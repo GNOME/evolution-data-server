@@ -204,6 +204,7 @@ INTROSPECTION_SCANNER_ARGS = \
 	--identifier-prefix E \
 	--pkg-export libedataserver-1.2 \
 	--c-include="libedataserver/libedataserver.h" \
+	-D EDS_DISABLE_DEPRECATED \
 	$(NULL)
 INTROSPECTION_COMPILER_ARGS =
 

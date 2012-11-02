@@ -102,6 +102,7 @@ INTROSPECTION_SCANNER_ARGS = \
 	--identifier-prefix=E \
 	--pkg-export libebook-1.2 \
 	--c-include="libebook/libebook.h" \
+	-D EDS_DISABLE_DEPRECATED \
 	$(NULL)
 INTROSPECTION_COMPILER_ARGS = \
 	--includedir=$(top_builddir)/libedataserver \

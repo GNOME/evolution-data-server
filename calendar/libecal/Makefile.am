@@ -96,6 +96,7 @@ INTROSPECTION_SCANNER_ARGS = \
 	--identifier-prefix E \
 	--pkg-export libecal-1.2 \
 	--c-include="libecal/libecal.h" \
+	-D EDS_DISABLE_DEPRECATED \
 	$(NULL)
 INTROSPECTION_COMPILER_ARGS = \
 	--includedir=$(top_builddir)/libedataserver \
