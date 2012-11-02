@@ -669,6 +669,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 	book_backend_sql_exec (priv->db, "ATTACH DATABASE ':memory:' AS mem", NULL, NULL, NULL);
 	book_backend_sql_exec (priv->db, "PRAGMA foreign_keys = ON", NULL, NULL, NULL);
 	book_backend_sql_exec (priv->db, "PRAGMA case_sensitive_like = ON", NULL, NULL, NULL);
+	book_backend_sql_exec (priv->db, "PRAGMA journal_mode = WAL", NULL, NULL, NULL);
 
 	WRITER_UNLOCK (ebsdb);
 
