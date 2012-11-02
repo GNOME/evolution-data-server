@@ -47,6 +47,7 @@ struct _EDataBookPrivate
 
 	GStaticRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
+	GHashTable *direct_ops; /* opid to DirectOperationData for still running operations */
 };
 
 enum {
@@ -110,6 +111,101 @@ typedef struct {
 		/* OP_CLOSE */
 	} d;
 } OperationData;
+
+
+typedef struct {
+	GAsyncReadyCallback callback;
+	gpointer            user_data;
+	GCancellable       *cancellable;
+	GSimpleAsyncResult *result;
+
+	gboolean            is_sync_call;
+	gboolean            sync_call_complete;
+	GMutex              sync_result_mutex;
+	GCond               sync_result_condition;
+} DirectOperationData;
+
+static DirectOperationData *
+direct_operation_data_push (EDataBook          *book,
+			    OperationID         opid,
+			    GAsyncReadyCallback callback,
+			    gpointer            user_data,
+			    GCancellable       *cancellable,
+			    gpointer            source_tag,
+			    gboolean            sync_call)
+{
+	DirectOperationData *data;
+
+	data = g_slice_new (DirectOperationData);
+	data->callback = callback;
+	data->user_data = user_data;
+	data->cancellable = g_object_ref (cancellable);
+	data->result = g_simple_async_result_new (G_OBJECT (book),
+						  data->callback,
+						  data->user_data,
+						  source_tag);
+	data->is_sync_call = sync_call;
+	data->sync_call_complete = FALSE;
+
+	if (data->is_sync_call) {
+		g_mutex_init (&data->sync_result_mutex);
+		g_cond_init (&data->sync_result_condition);
+	}
+
+	g_hash_table_insert (book->priv->direct_ops, GUINT_TO_POINTER (opid), data);
+
+	return data;
+}
+
+static void
+direct_operation_data_free (DirectOperationData *data)
+{
+	if (data) {
+		if (data->is_sync_call) {
+			g_mutex_clear (&data->sync_result_mutex);
+			g_cond_clear (&data->sync_result_condition);
+		}
+
+		g_object_unref (data->result);
+		g_object_unref (data->cancellable);
+		g_slice_free (DirectOperationData, data);
+	}
+}
+
+static void
+direct_operation_complete (DirectOperationData *data)
+{
+	/* If it was a sync call, we have the calling thread
+	 * waiting on the sync call condition, it's up to
+	 * the sync call to free the data with direct_operation_data_free().
+	 *
+	 * Otherwise for async calls we need to complete
+	 * in the calling thread.
+	 */
+	if (data->is_sync_call) {
+		g_mutex_lock (&data->sync_result_mutex);
+		data->sync_call_complete = TRUE;
+		g_cond_signal (&data->sync_result_condition);
+		g_mutex_unlock (&data->sync_result_mutex);
+	} else {
+		g_simple_async_result_complete_in_idle (data->result);
+		direct_operation_data_free (data);
+	}
+}
+
+static void
+direct_operation_wait (DirectOperationData *data)
+{
+	g_mutex_lock (&data->sync_result_mutex);
+	while (data->sync_call_complete == FALSE)
+		g_cond_wait (&data->sync_result_condition, &data->sync_result_mutex);
+	g_mutex_unlock (&data->sync_result_mutex);
+}
+
+static void e_data_book_respond_close (EDataBook *book,
+				       guint opid,
+				       GError *error);
+
 
 G_DEFINE_TYPE (EDataBook, e_data_book, G_TYPE_OBJECT)
 
@@ -242,6 +338,10 @@ operation_thread (gpointer data,
 	case OP_CLOSE:
 		/* close just cancels all pending ops and frees data book */
 		e_book_backend_remove_client (backend, op->book);
+
+		/* Let direct calls return, notify the direct callers that it's closed */
+		e_data_book_respond_close (op->book, op->id, NULL);
+
 	case OP_CANCEL_ALL:
 		g_static_rec_mutex_lock (&op->book->priv->pending_ops_lock);
 		g_hash_table_foreach (op->book->priv->pending_ops, cancel_ops_cb, NULL);
@@ -273,17 +373,59 @@ op_new (OperationID op,
 	return data;
 }
 
-static void
+static OperationData *
+op_direct_new (OperationID op,
+	       EDataBook *book,
+	       GCancellable *cancellable,
+	       GAsyncReadyCallback callback,
+	       gpointer user_data,
+	       gpointer source_tag,
+	       gboolean sync_call,
+	       DirectOperationData **ret_data)
+{
+	OperationData *data;
+	DirectOperationData *direct_data;
+
+	data = g_slice_new0 (OperationData);
+	data->op = op;
+	data->book = g_object_ref (book);
+	data->id = e_operation_pool_reserve_opid (ops_pool);
+
+	if (cancellable)
+		data->cancellable = g_object_ref (cancellable);
+	else
+		data->cancellable = g_cancellable_new ();
+
+	g_static_rec_mutex_lock (&book->priv->pending_ops_lock);
+	g_hash_table_insert (book->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
+	direct_data = direct_operation_data_push (book, data->id, callback, user_data, data->cancellable, source_tag, sync_call);
+	g_static_rec_mutex_unlock (&book->priv->pending_ops_lock);
+
+	if (ret_data)
+		*ret_data = direct_data;
+
+	return data;
+}
+
+
+static DirectOperationData *
 op_complete (EDataBook *book,
              guint32 opid)
 {
-	g_return_if_fail (book != NULL);
+	DirectOperationData *direct_data;
+
+	g_return_val_if_fail (book != NULL, NULL);
 
 	e_operation_pool_release_opid (ops_pool, opid);
 
 	g_static_rec_mutex_lock (&book->priv->pending_ops_lock);
 	g_hash_table_remove (book->priv->pending_ops, GUINT_TO_POINTER (opid));
+	direct_data = g_hash_table_lookup (book->priv->direct_ops, GUINT_TO_POINTER (opid));
+	if (direct_data)
+		g_hash_table_steal (book->priv->direct_ops, GUINT_TO_POINTER (opid));
 	g_static_rec_mutex_unlock (&book->priv->pending_ops_lock);
+
+	return direct_data;
 }
 
 /**
@@ -790,12 +932,36 @@ e_data_book_respond_open (EDataBook *book,
                           guint opid,
                           GError *error)
 {
-	op_complete (book, opid);
+	DirectOperationData *data;
+
+	data = op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open book: "));
 
-	e_gdbus_book_emit_open_done (book->priv->gdbus_object, opid, error);
+	if (data) {
+		gboolean result = FALSE;
+
+		if (error)
+			g_simple_async_result_set_error (data->result,
+							 error->domain,
+							 error->code,
+							 "%s", error->message);
+
+		else {
+			g_simple_async_result_set_check_cancellable (data->result,
+								     data->cancellable);
+
+			if (!g_cancellable_is_cancelled (data->cancellable))
+				result = TRUE;
+		}
+
+		g_simple_async_result_set_op_res_gboolean (data->result, result);
+
+		/* Deliver the result to the caller */
+		direct_operation_complete (data);
+	} else
+		e_gdbus_book_emit_open_done (book->priv->gdbus_object, opid, error);
 
 	if (error)
 		g_error_free (error);
@@ -901,19 +1067,48 @@ e_data_book_respond_get_contact (EDataBook *book,
                                  GError *error,
                                  const gchar *vcard)
 {
-	gchar *gdbus_vcard = NULL;
+	DirectOperationData *data;
 
-	op_complete (book, opid);
+	data = op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot get contact: "));
 
-	e_gdbus_book_emit_get_contact_done (book->priv->gdbus_object, opid, error, e_util_ensure_gdbus_string (vcard, &gdbus_vcard));
+	if (data) {
+
+		if (error) {
+			g_simple_async_result_set_error (data->result,
+							 error->domain,
+							 error->code,
+							 "%s", error->message);
+		} else {
+			g_simple_async_result_set_check_cancellable (data->result,
+								     data->cancellable);
+
+			if (!g_cancellable_is_cancelled (data->cancellable)) {
+				EContact *contact;
+
+				contact = e_contact_new_from_vcard (vcard);
+
+				/* Give it an EContact for the return value */
+				g_simple_async_result_set_op_res_gpointer (data->result, contact, g_object_unref);
+			}
+		}
+
+		/* Deliver the result to the caller */
+		direct_operation_complete (data);
+
+	} else {
+		gchar *gdbus_vcard = NULL;
+
+		e_gdbus_book_emit_get_contact_done (book->priv->gdbus_object, opid, error,
+						    e_util_ensure_gdbus_string (vcard, &gdbus_vcard));
+
+		g_free (gdbus_vcard);	
+	}
 
 	if (error)
 		g_error_free (error);
-
-	g_free (gdbus_vcard);
 }
 
 void
@@ -922,11 +1117,51 @@ e_data_book_respond_get_contact_list (EDataBook *book,
                                       GError *error,
                                       const GSList *cards)
 {
-	if (error) {
-		/* Translators: This is prefix to a detailed error message */
+	DirectOperationData *data;
+
+	/* Translators: This is prefix to a detailed error message */
+	if (error)
 		g_prefix_error (&error, "%s", _("Cannot get contact list: "));
+
+	data = op_complete (book, opid);
+
+	if (data) {
+
+		if (error) {
+			g_simple_async_result_set_error (data->result,
+							 error->domain,
+							 error->code,
+							 "%s", error->message);
+		} else {
+			g_simple_async_result_set_check_cancellable (data->result,
+								     data->cancellable);
+
+			if (!g_cancellable_is_cancelled (data->cancellable)) {
+				EContact *contact;
+				const GSList *l;
+				GSList *contacts = NULL;
+
+				for (l = cards; l; l = l->next) {
+					const gchar *vcard = l->data;
+
+					contact = e_contact_new_from_vcard (vcard);
+					contacts = g_slist_prepend (contacts, contact);
+				}
+
+				contacts = g_slist_reverse (contacts);
+
+				/* Give it an EContact for the return value */
+				g_simple_async_result_set_op_res_gpointer (data->result, contacts,
+									   (GDestroyNotify)e_util_free_object_slist);
+			}
+		}
+
+		/* Deliver the result to the caller */
+		direct_operation_complete (data);
+
+	} else if (error) {
+
 		e_gdbus_book_emit_get_contact_list_done (book->priv->gdbus_object, opid, error, NULL);
-		g_error_free (error);
 	} else {
 		gchar **array;
 		const GSList *l;
@@ -941,6 +1176,9 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 
 		g_strfreev (array);
 	}
+
+	if (error)
+		g_error_free (error);
 }
 
 /**
@@ -956,11 +1194,41 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
                                            GError *error,
                                            const GSList *uids)
 {
-	if (error) {
-		/* Translators: This is prefix to a detailed error message */
+	DirectOperationData *data;
+
+	/* Translators: This is prefix to a detailed error message */
+	if (error)
 		g_prefix_error (&error, "%s", _("Cannot get contact list uids: "));
+
+	data = op_complete (book, opid);
+
+	if (data) {
+
+		if (error) {
+			g_simple_async_result_set_error (data->result,
+							 error->domain,
+							 error->code,
+							 "%s", error->message);
+		} else {
+			g_simple_async_result_set_check_cancellable (data->result,
+								     data->cancellable);
+
+			if (!g_cancellable_is_cancelled (data->cancellable)) {
+				GSList *ret_uids = NULL;
+
+				ret_uids = e_util_copy_string_slist (NULL, uids);
+
+				g_simple_async_result_set_op_res_gpointer (data->result, ret_uids,
+									   (GDestroyNotify)e_util_free_string_slist);
+			}
+		}
+
+		/* Deliver the result to the caller */
+		direct_operation_complete (data);
+
+	} else if (error) {
+
 		e_gdbus_book_emit_get_contact_list_uids_done (book->priv->gdbus_object, opid, error, NULL);
-		g_error_free (error);
 	} else {
 		gchar **array;
 		const GSList *l;
@@ -975,6 +1243,10 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 
 		g_strfreev (array);
 	}
+
+	if (error)
+		g_error_free (error);
+
 }
 
 /**
@@ -1275,6 +1547,11 @@ data_book_finalize (GObject *object)
 		priv->pending_ops = NULL;
 	}
 
+	if (priv->direct_ops) {
+		g_hash_table_destroy (priv->direct_ops);
+		priv->direct_ops = NULL;
+	}
+
 	g_static_rec_mutex_free (&priv->pending_ops_lock);
 
 	if (priv->gdbus_object) {
@@ -1325,6 +1602,8 @@ e_data_book_init (EDataBook *ebook)
 	ebook->priv->gdbus_object = e_gdbus_book_stub_new ();
 	ebook->priv->pending_ops = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	ebook->priv->direct_ops = g_hash_table_new_full (
+	        g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)direct_operation_data_free);
 	g_static_rec_mutex_init (&ebook->priv->pending_ops_lock);
 
 	gdbus_object = ebook->priv->gdbus_object;
@@ -1389,5 +1668,360 @@ e_data_book_get_backend (EDataBook *book)
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 
 	return book->priv->backend;
+}
+
+/*************************************************************************
+ *                        Direct Read Access APIs                        *
+ *************************************************************************/
+void
+e_data_book_open (EDataBook *book,
+		  gboolean only_if_exists,
+		  GCancellable *cancellable,
+		  GAsyncReadyCallback callback,
+		  gpointer user_data)
+{
+	OperationData *op;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	op = op_direct_new (OP_OPEN, book, cancellable, callback, user_data, e_data_book_open, FALSE, NULL);
+	op->d.only_if_exists = only_if_exists;
+
+	e_operation_pool_push (ops_pool, op);
+}
+
+gboolean
+e_data_book_open_finish (EDataBook *book,
+			 GAsyncResult *result,
+			 GError **error)
+{
+	gboolean res;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	res = g_simple_async_result_get_op_res_gboolean (G_SIMPLE_ASYNC_RESULT (result));
+	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
+
+	return res;
+}
+
+gboolean
+e_data_book_open_sync (EDataBook *book,
+		       gboolean only_if_exists,
+		       GCancellable *cancellable,
+		       GError **error)
+{
+	DirectOperationData *data = NULL;
+	OperationData *op;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+
+	op = op_direct_new (OP_OPEN, book, cancellable, NULL, NULL, e_data_book_open_sync, TRUE, &data);
+	op->d.only_if_exists = only_if_exists;
+
+	e_operation_pool_push (ops_pool, op);
+
+	direct_operation_wait (data);
+	result = e_data_book_open_finish (book, G_ASYNC_RESULT (data->result), error);
+	direct_operation_data_free (data);
+
+	return result;
+}
+
+static void
+e_data_book_respond_close (EDataBook *book,
+			   guint opid,
+			   GError *error)
+{
+	DirectOperationData *data;
+
+	data = op_complete (book, opid);
+
+	if (data) {
+		gboolean result = FALSE;
+
+		if (error)
+			g_simple_async_result_set_error (data->result,
+							 error->domain,
+							 error->code,
+							 "%s", error->message);
+
+		else {
+			if (!g_cancellable_is_cancelled (data->cancellable))
+				result = TRUE;
+
+			g_simple_async_result_set_check_cancellable (data->result,
+								     data->cancellable);
+		}
+
+		g_simple_async_result_set_op_res_gboolean (data->result, result);
+
+		/* Deliver the result to the caller */
+		direct_operation_complete (data);
+	}
+
+	if (error)
+		g_error_free (error);
+}
+
+void
+e_data_book_close (EDataBook *book,
+		   GCancellable *cancellable,
+		   GAsyncReadyCallback callback,
+		   gpointer user_data)
+{
+	OperationData *op;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	op = op_direct_new (OP_CLOSE, book, cancellable, callback, user_data, e_data_book_close, FALSE, NULL);
+	e_operation_pool_push (ops_pool, op);
+}
+
+gboolean
+e_data_book_close_finish (EDataBook *book,
+			  GAsyncResult *result,
+			  GError **error)
+{
+	gboolean res;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	res = g_simple_async_result_get_op_res_gboolean (G_SIMPLE_ASYNC_RESULT (result));
+	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
+
+	g_print ("Closed the book: %s\n", res ? "success" : "failed");
+
+	return res;
+}
+
+gboolean
+e_data_book_close_sync (EDataBook *book,
+			GCancellable *cancellable,
+			GError **error)
+{
+	DirectOperationData *data = NULL;
+	OperationData *op;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+
+	op = op_direct_new (OP_CLOSE, book, cancellable, NULL, NULL, e_data_book_close_sync, TRUE, &data);
+	e_operation_pool_push (ops_pool, op);
+
+	direct_operation_wait (data);
+	result = e_data_book_close_finish (book, G_ASYNC_RESULT (data->result), error);
+	direct_operation_data_free (data);
+
+	return result;
+}
+
+void
+e_data_book_get_contact (EDataBook *book,
+			 const gchar *uid,
+			 GCancellable *cancellable,
+			 GAsyncReadyCallback callback,
+			 gpointer user_data)
+{
+	OperationData *op;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (uid && uid[0]);
+
+	op = op_direct_new (OP_GET_CONTACT, book, cancellable, callback, user_data, e_data_book_get_contact, FALSE, NULL);
+	op->d.uid = g_strdup (uid);
+
+	e_operation_pool_push (ops_pool, op);
+}
+
+gboolean
+e_data_book_get_contact_finish (EDataBook *book,
+				GAsyncResult *result,
+				EContact **contact,
+				GError **error)
+{
+	EContact *ret_contact;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	ret_contact = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
+
+	if (contact) {
+		if (ret_contact)
+			*contact = g_object_ref (ret_contact);
+		else
+			*contact = NULL;
+	}
+
+	return ret_contact != NULL;
+}
+
+gboolean
+e_data_book_get_contact_sync (EDataBook *book,
+			      const gchar *uid,
+			      EContact **contact,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	DirectOperationData *data = NULL;
+	OperationData *op;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (uid && uid[0], FALSE);
+
+	op = op_direct_new (OP_GET_CONTACT, book, cancellable, NULL, NULL, e_data_book_open_sync, TRUE, &data);
+	op->d.uid = g_strdup (uid);
+
+	e_operation_pool_push (ops_pool, op);
+
+	direct_operation_wait (data);
+	result = e_data_book_get_contact_finish (book, G_ASYNC_RESULT (data->result), contact, error);
+	direct_operation_data_free (data);
+
+	return result;
+}
+
+void
+e_data_book_get_contacts (EDataBook *book,
+			  const gchar *sexp,
+			  GCancellable *cancellable,
+			  GAsyncReadyCallback callback,
+			  gpointer user_data)
+{
+	OperationData *op;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	op = op_direct_new (OP_GET_CONTACTS, book, cancellable, callback, user_data, e_data_book_get_contact, FALSE, NULL);
+	op->d.query = g_strdup (sexp);
+
+	e_operation_pool_push (ops_pool, op);
+}
+
+gboolean
+e_data_book_get_contacts_finish (EDataBook *book,
+				 GAsyncResult *result,
+				 GSList **contacts,
+				 GError **error)
+{
+	GSList *ret_contacts;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	ret_contacts = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
+
+	if (contacts) {
+		if (ret_contacts)
+			*contacts = e_util_copy_object_slist (NULL, ret_contacts);
+		else
+			*contacts = NULL;
+	}
+
+	/* How can we tell if it failed ? ... we need to check the error but
+	 * GSimpleAsyncResult doesnt tell us if there was an error, only propagates it
+	 */
+	return TRUE;
+}
+
+gboolean
+e_data_book_get_contacts_sync (EDataBook *book,
+			       const gchar *sexp,
+			       GSList **contacts,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	DirectOperationData *data = NULL;
+	OperationData *op;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+
+	op = op_direct_new (OP_GET_CONTACTS, book, cancellable, NULL, NULL, e_data_book_open_sync, TRUE, &data);
+	op->d.query = g_strdup (sexp);
+
+	e_operation_pool_push (ops_pool, op);
+
+	direct_operation_wait (data);
+	result = e_data_book_get_contacts_finish (book, G_ASYNC_RESULT (data->result), contacts, error);
+	direct_operation_data_free (data);
+
+	return result;
+}
+
+void
+e_data_book_get_contacts_uids (EDataBook *book,
+			       const gchar *sexp,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
+{
+	OperationData *op;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	op = op_direct_new (OP_GET_CONTACTS_UIDS, book, cancellable, callback, user_data, e_data_book_get_contact, FALSE, NULL);
+	op->d.query = g_strdup (sexp);
+
+	e_operation_pool_push (ops_pool, op);
+}
+
+gboolean
+e_data_book_get_contacts_uids_finish (EDataBook *book,
+				      GAsyncResult *result,
+				      GSList **contacts_uids,
+				      GError **error)
+{
+	GSList *ret_uids;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	ret_uids = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
+
+	if (contacts_uids) {
+		if (ret_uids)
+			*contacts_uids = e_util_copy_string_slist (NULL, ret_uids);
+		else
+			*contacts_uids = NULL;
+	}
+
+	/* How can we tell if it failed ? ... we need to check the error but
+	 * GSimpleAsyncResult doesnt tell us if there was an error, only propagates it
+	 */
+	return TRUE;
+}
+
+gboolean
+e_data_book_get_contacts_uids_sync (EDataBook *book,
+				    const gchar *sexp,
+				    GSList **contacts_uids,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	DirectOperationData *data = NULL;
+	OperationData *op;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+
+	op = op_direct_new (OP_GET_CONTACTS_UIDS, book, cancellable, NULL, NULL, e_data_book_open_sync, TRUE, &data);
+	op->d.query = g_strdup (sexp);
+
+	e_operation_pool_push (ops_pool, op);
+
+	direct_operation_wait (data);
+	result = e_data_book_get_contacts_uids_finish (book, G_ASYNC_RESULT (data->result), contacts_uids, error);
+	direct_operation_data_free (data);
+
+	return result;
 }
 
