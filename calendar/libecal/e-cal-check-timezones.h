@@ -50,7 +50,7 @@ icaltimezone *	e_cal_client_tzlookup_icomp
 
 const gchar *	e_cal_match_tzid		(const gchar *tzid);
 
-#ifndef E_CAL_DISABLE_DEPRECATED
+#ifndef EDS_DISABLE_DEPRECATED
 
 gboolean	e_cal_check_timezones		(icalcomponent *comp,
 						 GList *comps,
@@ -66,7 +66,7 @@ icaltimezone *	e_cal_tzlookup_icomp		(const gchar *tzid,
 						 gconstpointer custom,
 						 GError **error);
 
-#endif /* E_CAL_DISABLE_DEPRECATED */
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

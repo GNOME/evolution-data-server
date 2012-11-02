@@ -32,13 +32,10 @@
 #ifndef __E_DESTINATION_H__
 #define __E_DESTINATION_H__
 
+#include <libebook/e-book.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-book-client.h>
 #include <libxml/tree.h>
-
-#ifndef E_BOOK_DISABLE_DEPRECATED
-#include <libebook/e-book.h>
-#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 /* Standard GObject macros */
 #define E_TYPE_DESTINATION \
@@ -146,9 +143,9 @@ void          e_destination_export_to_vcard_attribute   (EDestination *dest, EVC
 
 void           e_destination_freev              (EDestination **destv);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
+#ifndef EDS_DISABLE_DEPRECATED
 void           e_destination_set_book           (EDestination *dest, EBook *book);
-#endif
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

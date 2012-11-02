@@ -24,10 +24,10 @@
 #error "Only <libedataserverui/libedataserverui.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_BOOK_AUTH_UTIL_H
 #define E_BOOK_AUTH_UTIL_H
-
-#ifndef E_BOOK_DISABLE_DEPRECATED
 
 #include <gtk/gtk.h>
 #include <libebook/libebook.h>
@@ -44,6 +44,6 @@ EBook *		e_load_book_source_finish	(ESource *source,
 						 GError **error);
 G_END_DECLS
 
-#endif /* E_BOOK_DISABLE_DEPRECATED */
-
 #endif /* E_BOOK_AUTH_UTIL_H */
+
+#endif /* EDS_DISABLE_DEPRECATED */

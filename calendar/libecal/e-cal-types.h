@@ -30,9 +30,7 @@
 
 G_BEGIN_DECLS
 
-
-
-#ifndef E_CAL_DISABLE_DEPRECATED
+#ifndef EDS_DISABLE_DEPRECATED
 
 #define E_CALENDAR_ERROR e_calendar_error_quark()
 
@@ -81,7 +79,8 @@ typedef enum {
 } ECalendarStatus;
 
 #define E_CALENDAR_STATUS_CORBA_EXCEPTION E_CALENDAR_STATUS_DBUS_EXCEPTION
-#endif
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 /**
  * ECalClientSourceType:

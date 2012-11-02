@@ -12,11 +12,10 @@
 #error "Only <libebook/libebook.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef __E_BOOK_H__
 #define __E_BOOK_H__
-
-/* e-book deprecated since 3.2, use e-book-client instead */
-#ifndef E_BOOK_DISABLE_DEPRECATED
 
 #include <libedataserver/libedataserver.h>
 
@@ -38,9 +37,7 @@ typedef struct _EBook        EBook;
 typedef struct _EBookClass   EBookClass;
 typedef struct _EBookPrivate EBookPrivate;
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 typedef void (*EBookCallback) (EBook *book, EBookStatus status, gpointer closure);
-#endif
 
 /**
  * EBookAsyncCallback:
@@ -58,13 +55,11 @@ typedef void (*EBookOpenProgressCallback)     (EBook          *book,
 					       const gchar     *status_message,
 					       gshort           percent,
 					       gpointer        closure);
-#ifndef E_BOOK_DISABLE_DEPRECATED
 typedef void (*EBookIdCallback)       (EBook *book, EBookStatus status, const gchar *id, gpointer closure);
 typedef void (*EBookContactCallback)  (EBook *book, EBookStatus status, EContact *contact, gpointer closure);
 typedef void (*EBookListCallback)     (EBook *book, EBookStatus status, GList *list, gpointer closure);
 typedef void (*EBookBookViewCallback) (EBook *book, EBookStatus status, EBookView *book_view, gpointer closure);
 typedef void (*EBookEListCallback)   (EBook *book, EBookStatus status, EList *list, gpointer closure);
-#endif
 
 /**
  * EBookIdAsyncCallback:
@@ -133,12 +128,10 @@ gboolean e_book_open                       (EBook       *book,
 					    gboolean     only_if_exists,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_open                 (EBook         *book,
 					    gboolean       only_if_exists,
 					    EBookCallback  open_response,
 					    gpointer       closure);
-#endif
 
 gboolean e_book_open_async                 (EBook              *book,
 					    gboolean            only_if_exists,
@@ -147,11 +140,9 @@ gboolean e_book_open_async                 (EBook              *book,
 
 gboolean e_book_remove                     (EBook       *book,
 					    GError     **error);
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_remove               (EBook   *book,
 					    EBookCallback cb,
 					    gpointer closure);
-#endif
 
 gboolean e_book_remove_async               (EBook             *book,
 					    EBookAsyncCallback cb,
@@ -161,11 +152,9 @@ gboolean e_book_get_required_fields       (EBook       *book,
 					    GList      **fields,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean e_book_async_get_required_fields (EBook              *book,
 					    EBookEListCallback  cb,
 					    gpointer            closure);
-#endif
 
 gboolean e_book_get_required_fields_async (EBook                  *book,
 					   EBookEListAsyncCallback cb,
@@ -175,11 +164,9 @@ gboolean e_book_get_supported_fields       (EBook       *book,
 					    GList      **fields,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_get_supported_fields (EBook              *book,
 					    EBookEListCallback  cb,
 					    gpointer            closure);
-#endif
 
 gboolean e_book_get_supported_fields_async (EBook                  *book,
 					    EBookEListAsyncCallback cb,
@@ -189,11 +176,9 @@ gboolean e_book_get_supported_auth_methods       (EBook       *book,
 						  GList      **auth_methods,
 						  GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_get_supported_auth_methods (EBook              *book,
 						  EBookEListCallback  cb,
 						  gpointer            closure);
-#endif
 
 gboolean e_book_get_supported_auth_methods_async (EBook                  *book,
 						  EBookEListAsyncCallback cb,
@@ -205,12 +190,10 @@ gboolean e_book_get_contact                (EBook       *book,
 					    EContact   **contact,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean     e_book_async_get_contact         (EBook                 *book,
 					    const gchar            *id,
 					    EBookContactCallback   cb,
 					    gpointer               closure);
-#endif
 
 gboolean  e_book_get_contact_async      (EBook                    *book,
 					 const gchar              *id,
@@ -222,7 +205,6 @@ gboolean e_book_remove_contact             (EBook       *book,
 					    const gchar  *id,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_remove_contact       (EBook                 *book,
 					    EContact              *contact,
 					    EBookCallback          cb,
@@ -231,7 +213,6 @@ gboolean    e_book_async_remove_contact_by_id (EBook                 *book,
 					    const gchar           *id,
 					    EBookCallback          cb,
 					    gpointer               closure);
-#endif
 
 gboolean e_book_remove_contact_async        (EBook                *book,
 					    EContact              *contact,
@@ -246,12 +227,10 @@ gboolean e_book_remove_contacts            (EBook       *book,
 					    GList       *ids,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_remove_contacts      (EBook                 *book,
 					    GList                 *ids,
 					    EBookCallback          cb,
 					    gpointer               closure);
-#endif
 
 gboolean e_book_remove_contacts_async   (EBook                 *book,
 					 GList                 *ids,
@@ -263,12 +242,10 @@ gboolean e_book_add_contact                (EBook           *book,
 					    EContact        *contact,
 					    GError         **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean e_book_async_add_contact          (EBook           *book,
 					    EContact        *contact,
 					    EBookIdCallback  cb,
 					    gpointer         closure);
-#endif
 
 gboolean e_book_add_contact_async       (EBook                 *book,
 					 EContact              *contact,
@@ -280,12 +257,10 @@ gboolean e_book_commit_contact             (EBook       *book,
 					    EContact    *contact,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean e_book_async_commit_contact          (EBook                 *book,
 					    EContact              *contact,
 					    EBookCallback          cb,
 					    gpointer               closure);
-#endif
 
 gboolean e_book_commit_contact_async    (EBook                 *book,
 					 EContact              *contact,
@@ -300,14 +275,12 @@ gboolean e_book_get_book_view              (EBook       *book,
 					    EBookView  **book_view,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean e_book_async_get_book_view           (EBook                 *book,
 					    EBookQuery            *query,
 					    GList                 *requested_fields,
 					    gint                    max_results,
 					    EBookBookViewCallback  cb,
 					    gpointer               closure);
-#endif
 
 gboolean e_book_get_book_view_async     (EBook                     *book,
 					 EBookQuery                *query,
@@ -322,12 +295,10 @@ gboolean e_book_get_contacts               (EBook       *book,
 					    GList      **contacts,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean     e_book_async_get_contacts        (EBook             *book,
 					    EBookQuery        *query,
 					    EBookListCallback  cb,
 					    gpointer           closure);
-#endif
 
 gboolean  e_book_get_contacts_async     (EBook                 *book,
 					 EBookQuery            *query,
@@ -340,12 +311,10 @@ gboolean e_book_get_changes                (EBook       *book,
 					    GList      **changes,
 					    GError     **error);
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 gboolean    e_book_async_get_changes          (EBook             *book,
 					    const gchar       *changeid,
 					    EBookListCallback  cb,
 					    gpointer           closure);
-#endif
 
 gboolean e_book_get_changes_async       (EBook                 *book,
 					 const gchar           *changeid,
@@ -381,6 +350,6 @@ GType        e_book_get_type                  (void);
 
 G_END_DECLS
 
-#endif /* E_BOOK_DISABLE_DEPRECATED */
-
 #endif /* __E_BOOK_H__ */
+
+#endif /* EDS_DISABLE_DEPRECATED */

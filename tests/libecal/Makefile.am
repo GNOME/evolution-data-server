@@ -2,8 +2,6 @@ SUBDIRS = client
 
 @GNOME_CODE_COVERAGE_RULES@
 
-if !HAVE_E_CAL_DISABLE_DEPRECATED
-
 noinst_LTLIBRARIES = libecal-test-utils.la
 libecal_test_utils_la_SOURCES = ecal-test-utils.c ecal-test-utils.h
 
@@ -144,8 +142,6 @@ test_search_LDADD =							\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)
-
-endif
 
 EXTRA_DIST =			\
 	$(test_scripts)		\

@@ -2,32 +2,11 @@ SUBDIRS = vcard client
 
 @GNOME_CODE_COVERAGE_RULES@
 
-if HAVE_E_BOOK_DISABLE_DEPRECATED
-
-TEST_CPPFLAGS =					\
-	$(AM_CPPFLAGS)				\
-	-I$(top_srcdir)				\
-	-I$(top_builddir)			\
-	-I$(top_srcdir)/addressbook		\
-	-I$(top_builddir)/addressbook		\
-	-DSRCDIR=\""$(srcdir)"\"		\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)		\
-	$(CAMEL_CFLAGS)				\
-	$(NULL)
-
-TEST_LIBS =					\
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
-	$(NULL)
-
-DEPRECATED_TESTS = $(NULL)
-
-else
+### EBook Tests (deprecated) ###
 
 noinst_LTLIBRARIES = libebook-test-utils.la
 libebook_test_utils_la_SOURCES = ebook-test-utils.c ebook-test-utils.h
 
-# FIXME: reduct redundancy
 libebook_test_utils_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)                  \
 	-I$(top_srcdir)                 \
@@ -63,7 +42,7 @@ DEPRECATED_TESTS =				\
 	test-self				\
 	test-stress-bookviews
 
-endif
+### EBookClient Tests ###
 
 # Should be kept ordered approximately from least to most difficult/complex
 TESTS = \
@@ -123,8 +102,6 @@ test_vcard_parsing_CPPFLAGS=$(TEST_CPPFLAGS)
 test_bulk_methods_LDADD=$(TEST_LIBS)
 test_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
 
-if !HAVE_E_BOOK_DISABLE_DEPRECATED
-
 test_search_LDADD=$(TEST_LIBS)
 test_search_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_LDADD=$(TEST_LIBS)
@@ -169,7 +146,5 @@ test_self_LDADD=$(TEST_LIBS)
 test_self_CPPFLAGS=$(TEST_CPPFLAGS)
 test_stress_bookviews_LDADD=$(TEST_LIBS)
 test_stress_bookviews_CPPFLAGS=$(TEST_CPPFLAGS)
-
-endif
 
 -include $(top_srcdir)/git.mk

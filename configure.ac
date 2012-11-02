@@ -169,10 +169,6 @@ AS_COMPILER_FLAGS(WARNING_FLAGS,
 	-Wredundant-decls -Wundef -Wwrite-strings")
 AC_SUBST(WARNING_FLAGS)
 
-dnl	More depracation from EBook/ECal:
-dnl	-DE_BOOK_DISABLE_DEPRECATED
-dnl	-DE_CAL_DISABLE_DEPRECATED
-dnl
 dnl Other useful compiler warnings for test builds only.
 dnl These may produce warnings we have no control over,
 dnl or false positives we don't always want to see.
@@ -184,26 +180,6 @@ dnl	-Wstrict-aliasing=2
 
 AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 AC_SUBST(AM_CPPFLAGS)
-
-
-dnl define disable deprecated for EBook and ECal .am files
-case "$WARNING_FLAGS" in
-*E_BOOK_DISABLE_DEPRECATED*)
-	AM_CONDITIONAL(HAVE_E_BOOK_DISABLE_DEPRECATED, [ test 1 == 1 ])
-	;;
-*)
-	AM_CONDITIONAL(HAVE_E_BOOK_DISABLE_DEPRECATED, [ test 0 == 1 ])
-	;;
-esac
-
-case "$WARNING_FLAGS" in
-*E_CAL_DISABLE_DEPRECATED*)
-	AM_CONDITIONAL(HAVE_E_CAL_DISABLE_DEPRECATED, [ test 1 == 1 ])
-	;;
-*)
-	AM_CONDITIONAL(HAVE_E_CAL_DISABLE_DEPRECATED, [ test 0 == 1 ])
-	;;
-esac
 
 dnl ******************************
 dnl Initialize maintainer mode

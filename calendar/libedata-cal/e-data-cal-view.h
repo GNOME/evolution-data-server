@@ -107,7 +107,7 @@ void		e_data_cal_view_notify_components_modified_1
 						(EDataCalView *view,
 						 ECalComponent *component);
 
-#ifndef E_CAL_DISABLE_DEPRECATED
+#ifndef EDS_DISABLE_DEPRECATED
 void		e_data_cal_view_notify_objects_added
 						(EDataCalView *view,
 						 const GSList *objects);
@@ -120,7 +120,7 @@ void		e_data_cal_view_notify_objects_modified
 void		e_data_cal_view_notify_objects_modified_1
 						(EDataCalView *view,
 						 const gchar *object);
-#endif
+#endif /* EDS_DISABLE_DEPRECATED */
 
 void		e_data_cal_view_notify_objects_removed
 						(EDataCalView *view,

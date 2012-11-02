@@ -12,7 +12,7 @@
 #error "Only <libebook/libebook.h> should be included directly."
 #endif
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
+#ifndef EDS_DISABLE_DEPRECATED
 
 #ifndef E_BOOK_VIEW_H
 #define E_BOOK_VIEW_H
@@ -87,4 +87,4 @@ G_END_DECLS
 
 #endif /* E_BOOK_VIEW_H */
 
-#endif /* E_BOOK_DISABLE_DEPRECATED */
+#endif /* EDS_DISABLE_DEPRECATED */

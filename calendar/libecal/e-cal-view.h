@@ -22,7 +22,7 @@
 #error "Only <libecal/libecal.h> should be included directly."
 #endif
 
-#ifndef E_CAL_DISABLE_DEPRECATED
+#ifndef EDS_DISABLE_DEPRECATED
 
 #ifndef E_CAL_VIEW_H
 #define E_CAL_VIEW_H
@@ -91,4 +91,4 @@ G_END_DECLS
 
 #endif /* E_CAL_VIEW_H */
 
-#endif /* E_CAL_DISABLE_DEPRECATED */
+#endif /* EDS_DISABLE_DEPRECATED */

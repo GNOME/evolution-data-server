@@ -23,10 +23,10 @@
 #error "Only <libecal/libecal.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_CAL_H
 #define E_CAL_H
-
-#ifndef E_CAL_DISABLE_DEPRECATED
 
 #include <libedataserver/libedataserver.h>
 
@@ -99,7 +99,7 @@ struct _ECalClass {
 
 	/* Notification signals */
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
+	#ifndef EDS_DISABLE_DEPRECATED
 	void (* cal_opened) (ECal *ecal, ECalendarStatus status);
 	#endif
 	void (* cal_opened_ex) (ECal *ecal, const GError *error);
@@ -218,6 +218,7 @@ gboolean e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gch
 
 G_END_DECLS
 
-#endif /* E_CAL_DISABLE_DEPRECATED */
+#endif /* E_CAL_H */
 
-#endif
+#endif /* EDS_DISABLE_DEPRECATED */
+
