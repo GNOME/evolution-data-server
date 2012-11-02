@@ -96,36 +96,48 @@ pkgconfig_DATA = libebook-$(API_VERSION).pc
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver \
-	--add-include-path=$(srcdir) --identifier-prefix=E --pkg-export \
-	libebook-1.2 --c-include="libebook/libebook.h"
-INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver \
-	--includedir=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(top_builddir)/libedataserver \
+	--add-include-path=$(srcdir) \
+	--identifier-prefix=E \
+	--pkg-export libebook-1.2 \
+	--c-include="libebook/libebook.h" \
+	$(NULL)
+INTROSPECTION_COMPILER_ARGS = \
+	--includedir=$(top_builddir)/libedataserver \
+	--includedir=$(srcdir) \
+	$(NULL)
 
 if HAVE_INTROSPECTION
 introspection_sources = $(libebook_1_2_la_SOURCES)
 EBook-1.2.gir: libebook-1.2.la
 
-EBook_1_2_gir_INCLUDES = GObject-2.0 GLib-2.0 libxml2-2.0 \
-	Gio-2.0 \
-	$(NULL)
+EBook_1_2_gir_INCLUDES = GObject-2.0 GLib-2.0 libxml2-2.0 Gio-2.0
 libxml_include = `$(PKG_CONFIG) --cflags libxml-2.0`
-EBook_1_2_gir_CFLAGS = $(INCLUDES) \
-		       $(libxml_include) \
-		       -I$(top_srcdir) \
-		       -I$(top_builddir) \
-		       -I$(top_srcdir)/addressbook/ \
-		       -I$(top_builddir)/addressbook/ \
-		       -I$(top_srcdir)/addressbook/libebook \
-		       -I$(top_builddir)/addressbook/libebook \
-		       -DLIBEBOOK_COMPILATION \
-		       $(EVOLUTION_ADDRESSBOOK_CFLAGS) \
-		       $(CAMEL_CFLAGS) \
-			$(NULL)
-EBook_1_2_gir_SCANNERFLAGS = --include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir
+EBook_1_2_gir_CFLAGS = \
+	$(INCLUDES) \
+	$(libxml_include) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir)/addressbook/ \
+	-I$(top_builddir)/addressbook/ \
+	-I$(top_srcdir)/addressbook/libebook \
+	-I$(top_builddir)/addressbook/libebook \
+	-DLIBEBOOK_COMPILATION \
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(NULL)
+EBook_1_2_gir_SCANNERFLAGS = \
+	--include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir \
+	$(NULL)
 EBook_1_2_gir_LIBS = \
-	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
-EBook_1_2_gir_FILES = $(libebook_1_2_la_SOURCES) $(libebookinclude_HEADERS)
+	libebook-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(NULL)
+EBook_1_2_gir_FILES = \
+	$(libebook_1_2_la_SOURCES) \
+	$(libebookinclude_HEADERS) \
+	$(NULL)
 
 INTROSPECTION_GIRS += EBook-1.2.gir
 
