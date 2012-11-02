@@ -1418,9 +1418,10 @@ e_cal_component_commit_sequence (ECalComponent *comp)
  * e_cal_component_abort_sequence:
  * @comp: A calendar component object.
  *
- * Aborts the sequence change needed in the given calendar component, which
- * means it will not require a sequence commit (via #e_cal_component_commit_sequence)
- * even if the changes done require a sequence increment.
+ * Aborts the sequence change needed in the given calendar component,
+ * which means it will not require a sequence commit (via
+ * e_cal_component_commit_sequence()) even if the changes done require a
+ * sequence increment.
  */
 void
 e_cal_component_abort_sequence (ECalComponent *comp)

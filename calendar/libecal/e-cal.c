@@ -569,7 +569,7 @@ static void async_open_report_result (ECal *ecal, const GError *error);
  * @type: Type of the client.
  *
  * Creates a new calendar client. This does not open the calendar itself,
- * for that, #e_cal_open or #e_cal_open_async needs to be called.
+ * for that, e_cal_open() or e_cal_open_async() needs to be called.
  *
  * Returns: A newly-created calendar client, or NULL if the client could
  * not be constructed because it could not contact the calendar server.
@@ -898,7 +898,7 @@ e_cal_get_source_type (ECal *ecal)
  * Queries the state of loading of a calendar client.
  *
  * Returns: A #ECalLoadState value indicating whether the client has
- * not been loaded with #e_cal_open yet, whether it is being
+ * not been loaded with e_cal_open() yet, whether it is being
  * loaded, or whether it is already loaded.
  *
  * Deprecated: 3.2: Use e_client_is_opened() on an #ECalClient instead.
@@ -1475,7 +1475,7 @@ e_cal_free_change_list (GList *list)
  * Gets a list of objects from the calendar that match the query specified
  * by the @query argument. The objects will be returned in the @objects
  * argument, which is a list of #icalcomponent. When done, this list
- * should be freed by using the #e_cal_free_object_list function.
+ * should be freed by using the e_cal_free_object_list() function.
  *
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  *
@@ -1564,7 +1564,7 @@ e_cal_get_object_list_as_comp (ECal *ecal,
  * e_cal_free_object_list: (skip)
  * @objects: List of objects to be freed.
  *
- * Frees a list of objects as returned by #e_cal_get_object_list.
+ * Frees a list of objects as returned by e_cal_get_object_list().
  *
  * Deprecated: 3.2: Use e_cal_client_free_icalcomp_slist() instead.
  */
@@ -1632,8 +1632,8 @@ e_cal_get_free_busy (ECal *ecal,
  * @cb: Callback for each generated instance.
  * @cb_data: Closure data for the callback.
  *
- * Does a combination of #e_cal_get_object_list () and
- * #e_cal_recur_generate_instances().
+ * Does a combination of e_cal_get_object_list() and
+ * e_cal_recur_generate_instances().
  *
  * The callback function should do a g_object_ref() of the calendar component
  * it gets passed if it intends to keep it around, since it will be unref'ed
@@ -1663,8 +1663,8 @@ e_cal_generate_instances (ECal *ecal,
  * @cb: Callback for each generated instance.
  * @cb_data: Closure data for the callback.
  *
- * Does a combination of #e_cal_get_object_list () and
- * #e_cal_recur_generate_instances(), like #e_cal_generate_instances(), but
+ * Does a combination of e_cal_get_object_list() and
+ * e_cal_recur_generate_instances(), like e_cal_generate_instances(), but
  * for a single object.
  *
  * The callback function should do a g_object_ref() of the calendar component
@@ -1734,9 +1734,9 @@ build_component_alarms_list (ECal *ecal,
  * time.
  *
  * Returns: A list of #ECalComponentAlarms structures.  This should be freed
- * using the #e_cal_free_alarms() function, or by freeing each element
- * separately with #e_cal_component_alarms_free() and then freeing the list with
- * #g_slist_free().
+ * using the e_cal_free_alarms() function, or by freeing each element
+ * separately with e_cal_component_alarms_free() and then freeing the list with
+ * g_slist_free().
  *
  * Deprecated: 3.2: This function has been dropped completely.
  **/
