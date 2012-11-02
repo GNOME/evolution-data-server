@@ -49,10 +49,6 @@
 #include "e-cal-view-private.h"
 #include "e-cal.h"
 
-#include "e-gdbus-cal.h"
-#include "e-gdbus-cal-view.h"
-#include "e-gdbus-cal-factory.h"
-
 #define E_CAL_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CAL, ECalPrivate))
