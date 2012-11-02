@@ -22,21 +22,34 @@
 #error "Only <libecal/libecal.h> should be included directly."
 #endif
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #ifndef E_CAL_VIEW_H
 #define E_CAL_VIEW_H
-
-#ifndef E_CAL_DISABLE_DEPRECATED
 
 #include <glib-object.h>
 #include <libecal/e-cal-types.h>
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_CAL_VIEW \
+	(e_cal_view_get_type ())
+#define E_CAL_VIEW(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_VIEW, ECalView))
+#define E_CAL_VIEW_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_VIEW, ECalViewClass))
+#define E_IS_CAL_VIEW(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_VIEW))
+#define E_IS_CAL_VIEW_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_VIEW))
+#define E_CAL_VIEW_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_VIEW, ECalViewClass))
 
-#define E_TYPE_CAL_VIEW            (e_cal_view_get_type ())
-#define E_CAL_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_VIEW, ECalView))
-#define E_CAL_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_VIEW, ECalViewClass))
-#define E_IS_CAL_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_VIEW))
-#define E_IS_CAL_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_VIEW))
+G_BEGIN_DECLS
 
 typedef struct _ECalView ECalView;
 typedef struct _ECalViewClass ECalViewClass;
@@ -46,34 +59,36 @@ struct _ECal;
 
 struct _ECalView {
 	GObject object;
-
-	/*< private >*/
 	ECalViewPrivate *priv;
 };
 
 struct _ECalViewClass {
 	GObjectClass parent_class;
 
-	/* Notification signals */
-	void (* objects_added) (ECalView *view, GList *objects);
-	void (* objects_modified) (ECalView *view, GList *objects);
-	void (* objects_removed) (ECalView *view, GList *uids);
-	void (* view_progress) (ECalView *view, gchar *message, gint percent);
-	#ifndef E_CAL_DISABLE_DEPRECATED
-	void (* view_done) (ECalView *view, ECalendarStatus status);
-	#endif
-	void (* view_complete) (ECalView *view, ECalendarStatus status, const gchar *error_msg);
+	/* Signals */
+	void		(*objects_added)	(ECalView *view,
+						 GList *objects);
+	void		(*objects_modified)	(ECalView *view,
+						 GList *objects);
+	void		(*objects_removed)	(ECalView *view,
+						 GList *uids);
+	void		(*view_progress)	(ECalView *view,
+						 gchar *message,
+						 gint percent);
+	void		(*view_done)		(ECalView *view,
+						 ECalendarStatus status);
+	void		(*view_complete)	(ECalView *view,
+						 ECalendarStatus status,
+						 const gchar *error_msg);
 };
 
-GType      e_cal_view_get_type (void);
-
-struct _ECal *e_cal_view_get_client (ECalView *view);
-
-void e_cal_view_start (ECalView *view);
-void e_cal_view_stop (ECalView *view);
+GType		e_cal_view_get_type		(void);
+struct _ECal *	e_cal_view_get_client		(ECalView *view);
+void		e_cal_view_start		(ECalView *view);
+void		e_cal_view_stop			(ECalView *view);
 
 G_END_DECLS
 
-#endif /* E_CAL_DISABLE_DEPRECATED */
+#endif /* E_CAL_VIEW_H */
 
-#endif
+#endif /* E_CAL_DISABLE_DEPRECATED */

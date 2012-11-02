@@ -509,11 +509,12 @@ e_cal_view_get_client
 e_cal_view_start
 e_cal_view_stop
 <SUBSECTION Standard>
-E_TYPE_CAL_VIEW
 E_CAL_VIEW
-E_CAL_VIEW_CLASS
 E_IS_CAL_VIEW
+E_TYPE_CAL_VIEW
+E_CAL_VIEW_CLASS
 E_IS_CAL_VIEW_CLASS
+E_CAL_VIEW_GET_CLASS
 ECalViewClass
 <SUBSECTION Private>
 ECalViewPrivate
