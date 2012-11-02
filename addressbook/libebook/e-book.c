@@ -45,10 +45,6 @@
 #include "e-book-view-private.h"
 #include "e-book-marshal.h"
 
-#include "e-gdbus-book.h"
-#include "e-gdbus-book-factory.h"
-#include "e-gdbus-book-view.h"
-
 #define E_BOOK_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK, EBookPrivate))
