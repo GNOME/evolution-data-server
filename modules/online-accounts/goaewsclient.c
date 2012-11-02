@@ -115,6 +115,30 @@ ews_autodiscover_cancelled_cb (GCancellable *cancellable,
 }
 
 static gboolean
+has_suffix_icmp (const gchar *text,
+		 const gchar *suffix)
+{
+	gint ii, tlen, slen;
+
+	g_return_val_if_fail (text != NULL, FALSE);
+	g_return_val_if_fail (suffix != NULL, FALSE);
+
+	tlen = strlen (text);
+	slen = strlen (suffix);
+
+	if (!*text || !*suffix || tlen < slen)
+		return FALSE;
+
+	for (ii = 0; ii < slen; ii++) {
+		if (g_ascii_tolower (text[tlen - ii - 1]) != 
+		    g_ascii_tolower (suffix[slen - ii - 1]))
+			break;
+	}
+
+	return ii == slen;
+}
+
+static gboolean
 ews_autodiscover_parse_protocol (xmlNode *node,
                                  AutodiscoverData *data)
 {
@@ -131,8 +155,23 @@ ews_autodiscover_parse_protocol (xmlNode *node,
 			got_as_url = TRUE;
 
 		} else if (ews_check_node (node, "OABUrl")) {
+			const gchar *oab_url;
+
 			content = xmlNodeGetContent (node);
-			data->oab_url = g_strdup ((gchar *) content);
+			oab_url = (const char *) content;
+
+			if (!has_suffix_icmp (oab_url, "oab.xml")) {
+				gchar *tmp;
+
+				if (g_str_has_suffix (oab_url, "/"))
+					tmp = g_strconcat (oab_url, "oab.xml", NULL);
+				else
+					tmp = g_strconcat (oab_url, "/", "oab.xml", NULL);
+
+				data->oab_url = tmp; /* takes ownership */
+			} else {
+				data->oab_url = g_strdup (oab_url);
+			}
 			xmlFree (content);
 			got_oab_url = TRUE;
 		}
