@@ -30,7 +30,6 @@
 #include "e-cal.h"
 #include "e-cal-view.h"
 #include "e-cal-view-private.h"
-#include "e-gdbus-cal-view.h"
 
 #define E_CAL_VIEW_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
