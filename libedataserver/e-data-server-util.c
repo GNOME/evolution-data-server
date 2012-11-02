@@ -1369,7 +1369,7 @@ e_async_closure_free (EAsyncClosure *closure)
 
 /**
  * e_async_closure_callback:
- * @object: a #GObject
+ * @object: a #GObject or %NULL, it is not used by the function at all
  * @result: a #GAsyncResult
  * @closure: an #EAsyncClosure
  *
@@ -1387,7 +1387,6 @@ e_async_closure_callback (GObject *object,
 {
 	EAsyncClosure *real_closure;
 
-	g_return_if_fail (G_IS_OBJECT (object));
 	g_return_if_fail (G_IS_ASYNC_RESULT (result));
 	g_return_if_fail (closure != NULL);
 
