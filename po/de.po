@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-10-23 20:35+0000\n"
+"POT-Creation-Date: 2012-10-24 22:08+0000\n"
 "PO-Revision-Date: 2012-10-19 08:02+0200\n"
 "Last-Translator: Hendrik Knackstedt <kn.hendrik@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
@@ -1868,8 +1868,8 @@ msgstr "Den Ordnerinhalt lokal zum Arbeiten im _Offline-Modus kopieren"
 #: ../camel/providers/pop3/camel-pop3-folder.c:674
 #: ../camel/providers/pop3/camel-pop3-folder.c:874
 #: ../camel/providers/pop3/camel-pop3-folder.c:1074
-#: ../camel/providers/pop3/camel-pop3-store.c:408
-#: ../camel/providers/pop3/camel-pop3-store.c:831
+#: ../camel/providers/pop3/camel-pop3-store.c:417
+#: ../camel/providers/pop3/camel-pop3-store.c:841
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen"
@@ -2219,120 +2219,122 @@ msgstr "Zwischenspeicher konnte nicht für »%s« angelegt werden:"
 msgid "Apply message _filters to this folder"
 msgstr "Nachrichten_filter auf diesen Ordner anwenden"
 
-#: ../camel/camel-imapx-server.c:1186
+#: ../camel/camel-imapx-server.c:1192
 msgid "Server disconnected"
 msgstr "Serververbindung wurde getrennt"
 
-#: ../camel/camel-imapx-server.c:1649
-msgid "Error writing to cache stream: "
+#: ../camel/camel-imapx-server.c:1657
+#, fuzzy
+#| msgid "Error writing to cache stream: "
+msgid "Error writing to cache stream"
 msgstr "Fehler beim Schreiben in den Zwischenspeicher-Datenstrom:"
 
-#: ../camel/camel-imapx-server.c:2645
+#: ../camel/camel-imapx-server.c:2655
 #, c-format
 msgid "Not authenticated"
 msgstr "Nicht legitimiert"
 
-#: ../camel/camel-imapx-server.c:2722
+#: ../camel/camel-imapx-server.c:2733
 msgid "Error performing IDLE"
 msgstr "Fehler beim Ausführen von IDLE"
 
-#: ../camel/camel-imapx-server.c:3623
+#: ../camel/camel-imapx-server.c:3632
 #: ../camel/providers/imap/camel-imap-store.c:414
 #: ../camel/providers/imap/camel-imap-store.c:468
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert: %s"
 
-#: ../camel/camel-imapx-server.c:3624
+#: ../camel/camel-imapx-server.c:3633
 #: ../camel/providers/imap/camel-imap-store.c:415
 #: ../camel/providers/smtp/camel-smtp-transport.c:202
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nicht unterstützt"
 
-#: ../camel/camel-imapx-server.c:3663
+#: ../camel/camel-imapx-server.c:3672
 #: ../camel/providers/imap/camel-imap-store.c:440
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert:"
 
-#: ../camel/camel-imapx-server.c:3743
+#: ../camel/camel-imapx-server.c:3752
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-Server %s unterstützt den Legitimierungstyp %s nicht"
 
-#: ../camel/camel-imapx-server.c:3754 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3763 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:259
-#: ../camel/providers/pop3/camel-pop3-store.c:587
+#: ../camel/providers/pop3/camel-pop3-store.c:596
 #: ../camel/providers/smtp/camel-smtp-transport.c:467
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Keine Unterstützung für Legitimierungstyp %s"
 
-#: ../camel/camel-imapx-server.c:3773
+#: ../camel/camel-imapx-server.c:3782
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:314
 #: ../camel/providers/nntp/camel-nntp-store.c:512
 msgid "Cannot authenticate without a username"
 msgstr "Legitimierung ohne Benutzername ist nicht möglich"
 
-#: ../camel/camel-imapx-server.c:3782
+#: ../camel/camel-imapx-server.c:3791
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:521
-#: ../camel/providers/pop3/camel-pop3-store.c:512
-#: ../camel/providers/pop3/camel-pop3-store.c:532
+#: ../camel/providers/pop3/camel-pop3-store.c:521
+#: ../camel/providers/pop3/camel-pop3-store.c:541
 msgid "Authentication password not available"
 msgstr "Legitimierungspasswort ist nicht verfügbar"
 
-#: ../camel/camel-imapx-server.c:3984
+#: ../camel/camel-imapx-server.c:3994
 msgid "Error fetching message"
 msgstr "Fehler beim Abrufen der Nachricht"
 
-#: ../camel/camel-imapx-server.c:4066
+#: ../camel/camel-imapx-server.c:4079
 msgid "Failed to copy the tmp file"
 msgstr "Temporäre Datei konnte nicht kopiert werden"
 
-#: ../camel/camel-imapx-server.c:4080
+#: ../camel/camel-imapx-server.c:4093
 msgid "Failed to close the tmp stream"
 msgstr "Temporärer Datenstrom konnte nicht geschlossen werden"
 
-#: ../camel/camel-imapx-server.c:4178
+#: ../camel/camel-imapx-server.c:4202
 msgid "Error copying messages"
 msgstr "Fehler beim Kopieren von Nachrichten"
 
-#: ../camel/camel-imapx-server.c:4313
+#: ../camel/camel-imapx-server.c:4348
 msgid "Error appending message"
 msgstr "Fehler beim Anhängen der Nachricht"
 
-#: ../camel/camel-imapx-server.c:4496
+#: ../camel/camel-imapx-server.c:4535
 msgid "Error fetching message headers"
 msgstr "Fehler beim Holen der Nachrichtenkopfzeilen"
 
-#: ../camel/camel-imapx-server.c:4633
+#: ../camel/camel-imapx-server.c:4672
 msgid "Error retrieving message"
 msgstr "Fehler beim Abrufen der Nachricht"
 
-#: ../camel/camel-imapx-server.c:4755 ../camel/camel-imapx-server.c:4951
+#: ../camel/camel-imapx-server.c:4794 ../camel/camel-imapx-server.c:5000
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr ""
 "Zusammenfassende Informationen für neue Nachrichten in »%s« werden abgerufen"
 
-#: ../camel/camel-imapx-server.c:4806
+#: ../camel/camel-imapx-server.c:4849
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Geänderte Nachrichten werden in »%s« gesucht"
 
-#: ../camel/camel-imapx-server.c:4850
+#: ../camel/camel-imapx-server.c:4896
 msgid "Error fetching new messages"
 msgstr "Fehler beim Abrufen neuer Nachrichten"
 
-#: ../camel/camel-imapx-server.c:5042
+#: ../camel/camel-imapx-server.c:5097
 msgid "Error while fetching messages"
 msgstr "Fehler beim Abholen von Nachrichten"
 
-#: ../camel/camel-imapx-server.c:5050 ../camel/camel-imapx-server.c:5086
+#: ../camel/camel-imapx-server.c:5104 ../camel/camel-imapx-server.c:5137
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2341,54 +2343,54 @@ msgstr[0] ""
 msgstr[1] ""
 "Zusammenfassende Informationen für %d Nachrichten in »%s« werden abgerufen"
 
-#: ../camel/camel-imapx-server.c:5212 ../camel/camel-imapx-server.c:5248
+#: ../camel/camel-imapx-server.c:5265 ../camel/camel-imapx-server.c:5295
 msgid "Error refreshing folder"
 msgstr "Fehler beim Aktualisieren des Ordners"
 
-#: ../camel/camel-imapx-server.c:5344
+#: ../camel/camel-imapx-server.c:5391
 msgid "Error expunging message"
 msgstr "Fehler beim Löschen der Nachricht"
 
-#: ../camel/camel-imapx-server.c:5441
+#: ../camel/camel-imapx-server.c:5495
 msgid "Error fetching folders"
 msgstr "Fehler beim Abrufen der Ordner"
 
-#: ../camel/camel-imapx-server.c:5520
+#: ../camel/camel-imapx-server.c:5577
 msgid "Error subscribing to folder"
 msgstr "Fehler beim Abonnieren des Ordners"
 
-#: ../camel/camel-imapx-server.c:5581
+#: ../camel/camel-imapx-server.c:5642
 msgid "Error creating folder"
 msgstr "Fehler beim Anlegen des Ordners"
 
-#: ../camel/camel-imapx-server.c:5630
+#: ../camel/camel-imapx-server.c:5696
 msgid "Error deleting folder"
 msgstr "Fehler beim Löschen des Ordners"
 
-#: ../camel/camel-imapx-server.c:5691
+#: ../camel/camel-imapx-server.c:5765
 msgid "Error renaming folder"
 msgstr "Fehler beim Umbenennen des Ordners"
 
-#: ../camel/camel-imapx-server.c:5752
+#: ../camel/camel-imapx-server.c:5834
 msgid "Error performing NOOP"
 msgstr "Fehler beim Ausführen von NOOP"
 
-#: ../camel/camel-imapx-server.c:5848
+#: ../camel/camel-imapx-server.c:5934
 msgid "Error syncing changes"
 msgstr "Fehler beim Abgleichen der Änderungen"
 
-#: ../camel/camel-imapx-server.c:6619
+#: ../camel/camel-imapx-server.c:6713
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nachricht mit Kennung %s konnte nicht abgerufen werden: %s"
 
-#: ../camel/camel-imapx-server.c:6620
+#: ../camel/camel-imapx-server.c:6714
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Nachricht nicht verfügbar."
 
-#: ../camel/camel-imapx-server.c:6775 ../camel/camel-imapx-server.c:6790
+#: ../camel/camel-imapx-server.c:6869 ../camel/camel-imapx-server.c:6884
 msgid "Cannot create spool file: "
 msgstr "Spool-Datei konnte nicht angelegt werden:"
 
@@ -3673,7 +3675,7 @@ msgstr "Server-Verbindung wurde unerwartet getrennt"
 
 #: ../camel/providers/imap/camel-imap-store.c:3338
 msgid "Server unexpectedly disconnected: "
-msgstr "Server-Verbindung unerwartet getrennt:"
+msgstr "Server-Verbindung unerwartet getrennt: "
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use _Quick Resync if the server supports it"
@@ -4565,17 +4567,17 @@ msgstr "Anmeldung an POP-Server %s gescheitert: SASL-Protokollfehler"
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Legitimierung am POP-Server %s gescheitert:"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:371
+#: ../camel/providers/pop3/camel-pop3-store.c:380
 #, c-format
 msgid "POP3 server %s"
 msgstr "POP3-Server %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:374
+#: ../camel/providers/pop3/camel-pop3-store.c:383
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "POP3-Dienst für %s auf %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:546
+#: ../camel/providers/pop3/camel-pop3-store.c:555
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4585,7 +4587,7 @@ msgstr ""
 "Kennung erhalten. Es könnte sich um einen sogenannten »Man in the Middle«-"
 "Angriff handeln. Bitte kontaktieren Sie Ihren System-Administrator."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:598
+#: ../camel/providers/pop3/camel-pop3-store.c:607
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4596,7 +4598,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:613
+#: ../camel/providers/pop3/camel-pop3-store.c:622
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4605,17 +4607,17 @@ msgstr ""
 "Verbindung mit POP-Server %s konnte nicht hergestellt werden.\n"
 "Fehler beim Übermitteln des Benutzernamens %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:673
+#: ../camel/providers/pop3/camel-pop3-store.c:682
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "Verbindung mit POP-Server %s konnte nicht hergestellt werden"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:701
+#: ../camel/providers/pop3/camel-pop3-store.c:710
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Ordner »%s« existiert nicht."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:718
+#: ../camel/providers/pop3/camel-pop3-store.c:727
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3-Postfächer haben keine Ordnerstruktur"
