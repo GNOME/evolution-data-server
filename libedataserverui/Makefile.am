@@ -76,6 +76,7 @@ libedataserverui_3_0_la_SOURCES =	\
 	e-cell-renderer-color.c
 
 libedataserverui_3_0_la_LIBADD = 				\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\

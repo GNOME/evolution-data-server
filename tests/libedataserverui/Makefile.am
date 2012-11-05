@@ -20,6 +20,7 @@ TEST_EDATASERVERUI_CPPFLAGS=						\
 TEST_EDATASERVERUI_LDFLAGS =						\
 	$(top_builddir)/camel/libcamel-1.2.la				\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
