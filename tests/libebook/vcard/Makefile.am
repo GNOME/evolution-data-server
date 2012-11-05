@@ -9,6 +9,7 @@ dump_vcard_CPPFLAGS = \
 	$(CAMEL_CFLAGS)
 
 dump_vcard_LDADD = 						\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\

@@ -22,6 +22,7 @@
 #define __LIBEBOOK_H_INSIDE__
 
 #include <libedataserver/libedataserver.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-book-client.h>

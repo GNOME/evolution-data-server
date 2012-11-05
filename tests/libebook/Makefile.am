@@ -14,6 +14,7 @@ TEST_CPPFLAGS =					\
 	$(NULL)
 
 TEST_LIBS =					\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(NULL)

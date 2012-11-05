@@ -30,6 +30,7 @@ GTKDOC_CFLAGS  =					\
 GTKDOC_LIBS = 								\
 	$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\

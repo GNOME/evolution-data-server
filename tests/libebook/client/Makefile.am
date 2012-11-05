@@ -14,6 +14,7 @@ libclient_test_utils_la_CPPFLAGS =				\
 	$(NULL)
 
 libclient_test_utils_la_LIBADD = 				\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)						\
