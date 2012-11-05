@@ -510,7 +510,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
 	if (SOUP_STATUS_IS_REDIRECTION (status_code)) {
 		gboolean success;
 
-		newuri = soup_message_headers_get_one (
+		newuri = soup_message_headers_get_list (
 			soup_message->response_headers, "Location");
 
 		d (g_message ("Redirected from %s to %s\n", async_context->uri, newuri));

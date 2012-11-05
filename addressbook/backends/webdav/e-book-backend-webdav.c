@@ -170,7 +170,7 @@ download_contact (EBookBackendWebdav *webdav,
 		return NULL;
 	}
 
-	etag = soup_message_headers_get_one (message->response_headers, "ETag");
+	etag = soup_message_headers_get_list (message->response_headers, "ETag");
 
 	/* we use our URI as UID */
 	contact = e_contact_new_from_vcard_with_uid (message->response_body->data, uri);
@@ -249,9 +249,9 @@ upload_contact (EBookBackendWebdav *webdav,
 		request, strlen (request));
 
 	status   = soup_session_send_message (webdav->priv->session, message);
-	new_etag = soup_message_headers_get_one (message->response_headers, "ETag");
+	new_etag = soup_message_headers_get_list (message->response_headers, "ETag");
 
-	redir_uri = soup_message_headers_get_one (message->response_headers, "Location");
+	redir_uri = soup_message_headers_get_list (message->response_headers, "Location");
 
 	/* set UID and REV fields */
 	e_contact_set (contact, E_CONTACT_REV, (gconstpointer) new_etag);

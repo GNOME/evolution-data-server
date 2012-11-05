@@ -1019,7 +1019,7 @@ redirect_handler (SoupMessage *msg,
 		SoupURI *new_uri;
 		const gchar *new_loc;
 
-		new_loc = soup_message_headers_get_one (msg->response_headers, "Location");
+		new_loc = soup_message_headers_get_list (msg->response_headers, "Location");
 		if (!new_loc)
 			return;
 
@@ -1134,7 +1134,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 
 	/* parse the dav header, we are intreseted in the
 	 * calendar-access bit only at the moment */
-	header = soup_message_headers_get_one (message->response_headers, "DAV");
+	header = soup_message_headers_get_list (message->response_headers, "DAV");
 	if (header) {
 		calendar_access = soup_header_contains (header, "calendar-access");
 		cbdav->priv->calendar_schedule = soup_header_contains (header, "calendar-schedule");
@@ -1145,7 +1145,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 
 	/* parse the Allow header and look for PUT, DELETE at the
 	 * moment (maybe we should check more here, for REPORT eg) */
-	header = soup_message_headers_get_one (message->response_headers, "Allow");
+	header = soup_message_headers_get_list (message->response_headers, "Allow");
 	if (header) {
 		put_allowed = soup_header_contains (header, "PUT");
 		delete_allowed = soup_header_contains (header, "DELETE");
@@ -1538,7 +1538,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	hdr = soup_message_headers_get_one (message->response_headers, "Content-Type");
+	hdr = soup_message_headers_get_list (message->response_headers, "Content-Type");
 
 	if (hdr == NULL || g_ascii_strncasecmp (hdr, "text/calendar", 13)) {
 		g_propagate_error (perror, EDC_ERROR (InvalidObject));
@@ -1548,7 +1548,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	hdr = soup_message_headers_get_one (message->response_headers, "ETag");
+	hdr = soup_message_headers_get_list (message->response_headers, "ETag");
 
 	if (hdr != NULL) {
 		g_free (object->etag);
@@ -1716,13 +1716,13 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 	if (status_code_to_result (message, cbdav, FALSE, perror)) {
 		GError *local_error = NULL;
 
-		hdr = soup_message_headers_get_one (message->response_headers, "ETag");
+		hdr = soup_message_headers_get_list (message->response_headers, "ETag");
 		if (hdr != NULL) {
 			g_free (object->etag);
 			object->etag = quote_etag (hdr);
 		} else {
 			/* no ETag header returned, check for it with a GET */
-			hdr = soup_message_headers_get_one (message->response_headers, "Location");
+			hdr = soup_message_headers_get_list (message->response_headers, "Location");
 			if (hdr) {
 				/* reflect possible href change first */
 				gchar *file = strrchr (hdr, '/');
