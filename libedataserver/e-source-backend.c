@@ -35,7 +35,7 @@
 	((obj), E_TYPE_SOURCE_BACKEND, ESourceBackendPrivate))
 
 struct _ESourceBackendPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *backend_name;
 };
 
@@ -91,7 +91,7 @@ source_backend_finalize (GObject *object)
 
 	priv = E_SOURCE_BACKEND_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->backend_name);
 
@@ -132,7 +132,7 @@ static void
 e_source_backend_init (ESourceBackend *extension)
 {
 	extension->priv = E_SOURCE_BACKEND_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -174,12 +174,12 @@ e_source_backend_dup_backend_name (ESourceBackend *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_BACKEND (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_backend_get_backend_name (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -203,17 +203,17 @@ e_source_backend_set_backend_name (ESourceBackend *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_BACKEND (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->backend_name, backend_name) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->backend_name);
 	extension->priv->backend_name = e_util_strdup_strip (backend_name);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "backend-name");
 }

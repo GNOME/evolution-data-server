@@ -39,7 +39,7 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelTransportPrivate {
-	GMutex *send_lock;   /* for locking send operations */
+	GMutex send_lock;   /* for locking send operations */
 };
 
 struct _AsyncContext {
@@ -73,7 +73,7 @@ transport_finalize (GObject *object)
 
 	priv = CAMEL_TRANSPORT_GET_PRIVATE (object);
 
-	g_mutex_free (priv->send_lock);
+	g_mutex_clear (&priv->send_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_transport_parent_class)->finalize (object);
@@ -166,7 +166,7 @@ camel_transport_init (CamelTransport *transport)
 {
 	transport->priv = CAMEL_TRANSPORT_GET_PRIVATE (transport);
 
-	transport->priv->send_lock = g_mutex_new ();
+	g_mutex_init (&transport->priv->send_lock);
 }
 
 /**
@@ -186,7 +186,7 @@ camel_transport_lock (CamelTransport *transport,
 
 	switch (lock) {
 		case CAMEL_TRANSPORT_SEND_LOCK:
-			g_mutex_lock (transport->priv->send_lock);
+			g_mutex_lock (&transport->priv->send_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -210,7 +210,7 @@ camel_transport_unlock (CamelTransport *transport,
 
 	switch (lock) {
 		case CAMEL_TRANSPORT_SEND_LOCK:
-			g_mutex_unlock (transport->priv->send_lock);
+			g_mutex_unlock (&transport->priv->send_lock);
 			break;
 		default:
 			g_return_if_reached ();

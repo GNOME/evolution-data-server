@@ -54,8 +54,8 @@ typedef struct _SignalData SignalData;
 typedef struct _FolderFilterData FolderFilterData;
 
 struct _CamelFolderPrivate {
-	GStaticRecMutex lock;
-	GStaticMutex change_lock;
+	GRecMutex lock;
+	GMutex change_lock;
 	/* must require the 'change_lock' to access this */
 	gint frozen;
 	CamelFolderChangeInfo *changed_frozen; /* queues changed events */
@@ -579,8 +579,8 @@ folder_finalize (GObject *object)
 	if (priv->pending_changes != NULL)
 		camel_folder_change_info_free (priv->pending_changes);
 
-	g_static_rec_mutex_free (&priv->lock);
-	g_static_mutex_free (&priv->change_lock);
+	g_rec_mutex_clear (&priv->lock);
+	g_mutex_clear (&priv->change_lock);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_folder_parent_class)->finalize (object);
@@ -1913,8 +1913,8 @@ camel_folder_init (CamelFolder *folder)
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new ();
 
-	g_static_rec_mutex_init (&folder->priv->lock);
-	g_static_mutex_init (&folder->priv->change_lock);
+	g_rec_mutex_init (&folder->priv->lock);
+	g_mutex_init (&folder->priv->change_lock);
 }
 
 GQuark
@@ -3169,11 +3169,11 @@ camel_folder_lock (CamelFolder *folder,
 
 	switch (lock) {
 		case CAMEL_FOLDER_CHANGE_LOCK:
-			g_static_mutex_lock (&folder->priv->change_lock);
+			g_mutex_lock (&folder->priv->change_lock);
 			break;
 		case CAMEL_FOLDER_REC_LOCK:
 			if (folder->priv->skip_folder_lock == FALSE)
-				g_static_rec_mutex_lock (&folder->priv->lock);
+				g_rec_mutex_lock (&folder->priv->lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -3197,11 +3197,11 @@ camel_folder_unlock (CamelFolder *folder,
 
 	switch (lock) {
 		case CAMEL_FOLDER_CHANGE_LOCK:
-			g_static_mutex_unlock (&folder->priv->change_lock);
+			g_mutex_unlock (&folder->priv->change_lock);
 			break;
 		case CAMEL_FOLDER_REC_LOCK:
 			if (folder->priv->skip_folder_lock == FALSE)
-				g_static_rec_mutex_unlock (&folder->priv->lock);
+				g_rec_mutex_unlock (&folder->priv->lock);
 			break;
 		default:
 			g_return_if_reached ();

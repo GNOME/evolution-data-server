@@ -50,7 +50,7 @@ struct _EDataCalPrivate {
 	ECalBackend *backend;
 	gchar *object_path;
 
-	GStaticRecMutex pending_ops_lock;
+	GRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
 };
 
@@ -309,7 +309,7 @@ operation_thread (gpointer data,
 		g_free (op->d.tzobject);
 		break;
 	case OP_CANCEL_OPERATION:
-		g_static_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
+		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 
 		if (g_hash_table_lookup (op->cal->priv->pending_ops, GUINT_TO_POINTER (op->d.opid))) {
 			GCancellable *cancellable = g_hash_table_lookup (op->cal->priv->pending_ops, GUINT_TO_POINTER (op->d.opid));
@@ -317,15 +317,15 @@ operation_thread (gpointer data,
 			g_cancellable_cancel (cancellable);
 		}
 
-		g_static_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
+		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
 		break;
 	case OP_CLOSE:
 		/* close just cancels all pending ops and frees data cal */
 		e_cal_backend_remove_client (backend, op->cal);
 	case OP_CANCEL_ALL:
-		g_static_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
+		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 		g_hash_table_foreach (op->cal->priv->pending_ops, cancel_ops_cb, NULL);
-		g_static_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
+		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
 		break;
 	}
 
@@ -346,9 +346,9 @@ op_new (OperationID op,
 	data->id = e_operation_pool_reserve_opid (ops_pool);
 	data->cancellable = g_cancellable_new ();
 
-	g_static_rec_mutex_lock (&cal->priv->pending_ops_lock);
+	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
 	g_hash_table_insert (cal->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
-	g_static_rec_mutex_unlock (&cal->priv->pending_ops_lock);
+	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
 
 	return data;
 }
@@ -361,9 +361,9 @@ op_complete (EDataCal *cal,
 
 	e_operation_pool_release_opid (ops_pool, opid);
 
-	g_static_rec_mutex_lock (&cal->priv->pending_ops_lock);
+	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
 	g_hash_table_remove (cal->priv->pending_ops, GUINT_TO_POINTER (opid));
-	g_static_rec_mutex_unlock (&cal->priv->pending_ops_lock);
+	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
 }
 
 /* Create the EDataCal error quark */
@@ -1641,7 +1641,7 @@ data_cal_finalize (GObject *object)
 		priv->pending_ops = NULL;
 	}
 
-	g_static_rec_mutex_free (&priv->pending_ops_lock);
+	g_rec_mutex_clear (&priv->pending_ops_lock);
 
 	if (priv->dbus_interface) {
 		g_object_unref (priv->dbus_interface);
@@ -1739,7 +1739,7 @@ e_data_cal_init (EDataCal *ecal)
 	ecal->priv->dbus_interface = e_gdbus_cal_stub_new ();
 	ecal->priv->pending_ops = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal, NULL, g_object_unref);
-	g_static_rec_mutex_init (&ecal->priv->pending_ops_lock);
+	g_rec_mutex_init (&ecal->priv->pending_ops_lock);
 
 	dbus_interface = ecal->priv->dbus_interface;
 	g_signal_connect (

@@ -1500,6 +1500,8 @@ closure_destroy (FileBackendSearchClosure *closure)
 {
 	d (printf ("destroying search closure\n"));
 	e_flag_free (closure->running);
+	if (closure->thread)
+		g_thread_unref (closure->thread);
 	g_free (closure);
 }
 
@@ -1697,7 +1699,7 @@ e_book_backend_file_start_view (EBookBackend *backend,
 	FileBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
 
 	d (printf ("starting book view thread\n"));
-	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
+	closure->thread = g_thread_new (NULL, book_view_thread, book_view);
 
 	e_flag_wait (closure->running);
 
@@ -1719,8 +1721,10 @@ e_book_backend_file_stop_view (EBookBackend *backend,
 	need_join = e_flag_is_set (closure->running);
 	e_flag_clear (closure->running);
 
-	if (need_join)
+	if (need_join) {
 		g_thread_join (closure->thread);
+		closure->thread = NULL;
+	}
 }
 
 /*

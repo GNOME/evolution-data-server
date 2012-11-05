@@ -270,8 +270,8 @@ imap_folder_finalize (GObject *object)
 
 	imap_folder = CAMEL_IMAP_FOLDER (object);
 
-	g_static_mutex_free (&imap_folder->priv->search_lock);
-	g_static_rec_mutex_free (&imap_folder->priv->cache_lock);
+	g_mutex_clear (&imap_folder->priv->search_lock);
+	g_rec_mutex_clear (&imap_folder->priv->cache_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_folder_parent_class)->finalize (object);
@@ -382,8 +382,8 @@ camel_imap_folder_init (CamelImapFolder *imap_folder)
 
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
-	g_static_mutex_init (&imap_folder->priv->search_lock);
-	g_static_rec_mutex_init (&imap_folder->priv->cache_lock);
+	g_mutex_init (&imap_folder->priv->search_lock);
+	g_rec_mutex_init (&imap_folder->priv->cache_lock);
 	imap_folder->priv->ignore_recent = NULL;
 
 	imap_folder->journal = NULL;

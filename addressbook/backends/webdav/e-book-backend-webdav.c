@@ -111,6 +111,8 @@ static void
 closure_destroy (WebdavBackendSearchClosure *closure)
 {
 	e_flag_free (closure->running);
+	if (closure->thread)
+		g_thread_unref (closure->thread);
 	g_free (closure);
 }
 
@@ -1115,7 +1117,7 @@ e_book_backend_webdav_start_view (EBookBackend *backend,
 			= init_closure (book_view, E_BOOK_BACKEND_WEBDAV (backend));
 
 		closure->thread
-			= g_thread_create (book_view_thread, book_view, TRUE, NULL);
+			= g_thread_new (NULL, book_view_thread, book_view);
 
 		e_flag_wait (closure->running);
 	}
@@ -1140,6 +1142,7 @@ e_book_backend_webdav_stop_view (EBookBackend *backend,
 
 	if (need_join) {
 		g_thread_join (closure->thread);
+		closure->thread = NULL;
 	}
 }
 

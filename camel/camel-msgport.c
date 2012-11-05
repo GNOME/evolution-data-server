@@ -432,15 +432,15 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
 }
 
 /**
- * camel_msgport_timed_pop:
+ * camel_msgport_timeout_pop:
  * @msgport: a #CamelMsgPort
- * @end_time: a #GTimeVal
+ * @timeout: number of microseconds to wait
  *
- * Since: 2.30
+ * Since: 3.8
  **/
 CamelMsg *
-camel_msgport_timed_pop (CamelMsgPort *msgport,
-                         GTimeVal *end_time)
+camel_msgport_timeout_pop (CamelMsgPort *msgport,
+                           guint64 timeout)
 {
 	CamelMsg *msg;
 
@@ -448,7 +448,7 @@ camel_msgport_timed_pop (CamelMsgPort *msgport,
 
 	g_async_queue_lock (msgport->queue);
 
-	msg = g_async_queue_timed_pop_unlocked (msgport->queue, end_time);
+	msg = g_async_queue_timeout_pop_unlocked (msgport->queue, timeout);
 
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);

@@ -35,7 +35,7 @@
 #define KEY_FILE_DOMAINS_KEY	"enable domains"
 #define KEY_FILE_MAX_LINES_KEY	"max lines"
 
-static GStaticMutex log_mutex = G_STATIC_MUTEX_INIT;
+static GMutex log_mutex;
 
 static GHashTable *domains_hash;
 static gchar **ring_buffer;
@@ -49,13 +49,13 @@ static GSList *milestones_tail;
 static void
 lock (void)
 {
-	g_static_mutex_lock (&log_mutex);
+	g_mutex_lock (&log_mutex);
 }
 
 static void
 unlock (void)
 {
-	g_static_mutex_unlock (&log_mutex);
+	g_mutex_unlock (&log_mutex);
 }
 
 /**

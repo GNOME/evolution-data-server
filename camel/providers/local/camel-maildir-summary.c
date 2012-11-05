@@ -68,7 +68,7 @@ struct _CamelMaildirSummaryPrivate {
 	gchar *hostname;
 
 	GHashTable *load_map;
-	GMutex *summary_lock;
+	GMutex summary_lock;
 };
 
 G_DEFINE_TYPE (CamelMaildirSummary, camel_maildir_summary, CAMEL_TYPE_LOCAL_SUMMARY)
@@ -81,7 +81,7 @@ maildir_summary_finalize (GObject *object)
 	priv = CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (object);
 
 	g_free (priv->hostname);
-	g_mutex_free (priv->summary_lock);
+	g_mutex_clear (&priv->summary_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_maildir_summary_parent_class)->finalize (object);
@@ -135,7 +135,7 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 	} else {
 		maildir_summary->priv->hostname = g_strdup ("localhost");
 	}
-	maildir_summary->priv->summary_lock = g_mutex_new ();
+	g_mutex_init (&maildir_summary->priv->summary_lock);
 }
 
 /**
@@ -547,7 +547,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	struct _remove_data rd = { cls, changes };
 	GPtrArray *known_uids;
 
-	g_mutex_lock (((CamelMaildirSummary *) cls)->priv->summary_lock);
+	g_mutex_lock (&((CamelMaildirSummary *) cls)->priv->summary_lock);
 
 	new = g_strdup_printf ("%s/new", cls->folder_path);
 	cur = g_strdup_printf ("%s/cur", cls->folder_path);
@@ -569,7 +569,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 		g_free (cur);
 		g_free (new);
 		camel_operation_pop_message (cancellable);
-		g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
+		g_mutex_unlock (&((CamelMaildirSummary *) cls)->priv->summary_lock);
 		return -1;
 	}
 
@@ -717,7 +717,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	g_free (cur);
 
 	camel_folder_summary_free_array (known_uids);
-	g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
+	g_mutex_unlock (&((CamelMaildirSummary *) cls)->priv->summary_lock);
 
 	return 0;
 }

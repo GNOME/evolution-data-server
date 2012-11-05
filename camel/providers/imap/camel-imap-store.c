@@ -797,7 +797,7 @@ imap_store_finalize (GObject *object)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
 
-	g_static_rec_mutex_free (&imap_store->command_and_response_lock);
+	g_rec_mutex_clear (&imap_store->command_and_response_lock);
 	g_hash_table_destroy (imap_store->known_alerts);
 
 	/* Chain up to parent's finalize() method. */
@@ -1567,7 +1567,7 @@ camel_subscribable_init (CamelSubscribableInterface *interface)
 static void
 camel_imap_store_init (CamelImapStore *imap_store)
 {
-	g_static_rec_mutex_init (&imap_store->command_and_response_lock);
+	g_rec_mutex_init (&imap_store->command_and_response_lock);
 
 	imap_store->istream = NULL;
 	imap_store->ostream = NULL;

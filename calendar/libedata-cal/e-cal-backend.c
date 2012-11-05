@@ -48,10 +48,10 @@ struct _ECalBackendPrivate {
 	gchar *cache_dir;
 
 	/* List of Cal objects */
-	GMutex *clients_mutex;
+	GMutex clients_mutex;
 	GList *clients;
 
-	GMutex *views_mutex;
+	GMutex views_mutex;
 	GList *views;
 
 	/* ECalBackend to pass notifications on to */
@@ -256,8 +256,8 @@ cal_backend_finalize (GObject *object)
 	/* should be NULL, anyway */
 	g_list_free (priv->clients);
 
-	g_mutex_free (priv->clients_mutex);
-	g_mutex_free (priv->views_mutex);
+	g_mutex_clear (&priv->clients_mutex);
+	g_mutex_clear (&priv->views_mutex);
 
 	g_free (priv->cache_dir);
 
@@ -357,10 +357,10 @@ e_cal_backend_init (ECalBackend *backend)
 	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 
 	backend->priv->clients = NULL;
-	backend->priv->clients_mutex = g_mutex_new ();
+	g_mutex_init (&backend->priv->clients_mutex);
 
 	backend->priv->views = NULL;
-	backend->priv->views_mutex = g_mutex_new ();
+	g_mutex_init (&backend->priv->views_mutex);
 
 	backend->priv->readonly = TRUE;
 }
@@ -666,9 +666,9 @@ e_cal_backend_add_client (ECalBackend *backend,
 
 	g_object_weak_ref (G_OBJECT (cal), cal_destroy_cb, backend);
 
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 	priv->clients = g_list_append (priv->clients, cal);
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 static void
@@ -686,13 +686,13 @@ e_cal_backend_remove_client_private (ECalBackend *backend,
 	g_object_ref (backend);
 
 	/* Disconnect */
-	g_mutex_lock (backend->priv->clients_mutex);
+	g_mutex_lock (&backend->priv->clients_mutex);
 	backend->priv->clients = g_list_remove (backend->priv->clients, cal);
 
 	if (backend->priv->clients == NULL)
 		backend->priv->opening = FALSE;
 
-	g_mutex_unlock (backend->priv->clients_mutex);
+	g_mutex_unlock (&backend->priv->clients_mutex);
 
 	g_object_unref (backend);
 }
@@ -729,11 +729,11 @@ e_cal_backend_add_view (ECalBackend *backend,
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	g_mutex_lock (backend->priv->views_mutex);
+	g_mutex_lock (&backend->priv->views_mutex);
 
 	backend->priv->views = g_list_append (backend->priv->views, view);
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_mutex_unlock (&backend->priv->views_mutex);
 }
 
 /**
@@ -752,11 +752,11 @@ e_cal_backend_remove_view (ECalBackend *backend,
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	g_mutex_lock (backend->priv->views_mutex);
+	g_mutex_lock (&backend->priv->views_mutex);
 
 	backend->priv->views = g_list_remove (backend->priv->views, view);
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_mutex_unlock (&backend->priv->views_mutex);
 }
 
 /**
@@ -787,13 +787,13 @@ e_cal_backend_list_views (ECalBackend *backend)
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
-	g_mutex_lock (backend->priv->views_mutex);
+	g_mutex_lock (&backend->priv->views_mutex);
 
 	/* XXX Use g_list_copy_deep() once we require GLib >= 2.34. */
 	list = g_list_copy (backend->priv->views);
 	g_list_foreach (list, (GFunc) g_object_ref, NULL);
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_mutex_unlock (&backend->priv->views_mutex);
 
 	return list;
 }
@@ -917,12 +917,12 @@ e_cal_backend_open (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->open != NULL);
 
-	g_mutex_lock (backend->priv->clients_mutex);
+	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_cal_backend_is_opened (backend)) {
 		gboolean online;
 
-		g_mutex_unlock (backend->priv->clients_mutex);
+		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		e_data_cal_report_readonly (cal, backend->priv->readonly);
 
@@ -931,12 +931,12 @@ e_cal_backend_open (ECalBackend *backend,
 
 		e_cal_backend_respond_opened (backend, cal, opid, NULL);
 	} else if (e_cal_backend_is_opening (backend)) {
-		g_mutex_unlock (backend->priv->clients_mutex);
+		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		e_data_cal_respond_open (cal, opid, EDC_OPENING_ERROR);
 	} else {
 		backend->priv->opening = TRUE;
-		g_mutex_unlock (backend->priv->clients_mutex);
+		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		(* E_CAL_BACKEND_GET_CLASS (backend)->open) (backend, cal, opid, cancellable, only_if_exists);
 	}
@@ -1634,12 +1634,12 @@ e_cal_backend_notify_error (ECalBackend *backend,
 		return;
 	}
 
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (l = priv->clients; l; l = l->next)
 		e_data_cal_report_error (l->data, message);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1665,12 +1665,12 @@ e_cal_backend_notify_readonly (ECalBackend *backend,
 		return;
 	}
 
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (l = priv->clients; l; l = l->next)
 		e_data_cal_report_readonly (l->data, is_readonly);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1697,12 +1697,12 @@ e_cal_backend_notify_online (ECalBackend *backend,
 		return;
 	}
 
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_cal_report_online (E_DATA_CAL (clients->data), is_online);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1734,7 +1734,7 @@ e_cal_backend_notify_opened (ECalBackend *backend,
 	GList *clients;
 
 	priv = backend->priv;
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	priv->opening = FALSE;
 	priv->opened = error == NULL;
@@ -1742,7 +1742,7 @@ e_cal_backend_notify_opened (ECalBackend *backend,
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_cal_report_opened (E_DATA_CAL (clients->data), error);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 
 	if (error)
 		g_error_free (error);
@@ -1772,12 +1772,12 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
 	g_return_if_fail (prop_value != NULL);
 
 	priv = backend->priv;
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_cal_report_backend_property_changed (E_DATA_CAL (clients->data), prop_name, prop_value);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**

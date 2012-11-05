@@ -47,7 +47,7 @@ struct _ESourceRefreshPrivate {
 	gboolean enabled;
 	guint interval_minutes;
 
-	GMutex *timeout_lock;
+	GMutex timeout_lock;
 	GHashTable *timeout_table;
 	guint next_timeout_id;
 };
@@ -172,7 +172,7 @@ source_refresh_update_timeouts (ESourceRefresh *extension,
 {
 	GList *list, *link;
 
-	g_mutex_lock (extension->priv->timeout_lock);
+	g_mutex_lock (&extension->priv->timeout_lock);
 
 	list = g_hash_table_get_values (extension->priv->timeout_table);
 
@@ -190,7 +190,7 @@ source_refresh_update_timeouts (ESourceRefresh *extension,
 
 	g_list_free (list);
 
-	g_mutex_unlock (extension->priv->timeout_lock);
+	g_mutex_unlock (&extension->priv->timeout_lock);
 }
 
 static gboolean
@@ -294,7 +294,7 @@ source_refresh_finalize (GObject *object)
 
 	priv = E_SOURCE_REFRESH_GET_PRIVATE (object);
 
-	g_mutex_free (priv->timeout_lock);
+	g_mutex_clear (&priv->timeout_lock);
 	g_hash_table_destroy (priv->timeout_table);
 
 	/* Chain up to parent's finalize() method. */
@@ -380,7 +380,7 @@ e_source_refresh_init (ESourceRefresh *extension)
 		(GDestroyNotify) timeout_node_free);
 
 	extension->priv = E_SOURCE_REFRESH_GET_PRIVATE (extension);
-	extension->priv->timeout_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->timeout_lock);
 	extension->priv->timeout_table = timeout_table;
 	extension->priv->next_timeout_id = 1;
 }
@@ -525,7 +525,7 @@ e_source_refresh_add_timeout (ESource *source,
 	extension_name = E_SOURCE_EXTENSION_REFRESH;
 	extension = e_source_get_extension (source, extension_name);
 
-	g_mutex_lock (extension->priv->timeout_lock);
+	g_mutex_lock (&extension->priv->timeout_lock);
 
 	timeout_id = extension->priv->next_timeout_id++;
 
@@ -537,7 +537,7 @@ e_source_refresh_add_timeout (ESource *source,
 	if (e_source_refresh_get_enabled (extension))
 		timeout_node_attach (node);
 
-	g_mutex_unlock (extension->priv->timeout_lock);
+	g_mutex_unlock (&extension->priv->timeout_lock);
 
 	return timeout_id;
 }
@@ -596,12 +596,12 @@ e_source_refresh_remove_timeout (ESource *source,
 	extension_name = E_SOURCE_EXTENSION_REFRESH;
 	extension = e_source_get_extension (source, extension_name);
 
-	g_mutex_lock (extension->priv->timeout_lock);
+	g_mutex_lock (&extension->priv->timeout_lock);
 
 	key = GUINT_TO_POINTER (refresh_timeout_id);
 	removed = g_hash_table_remove (extension->priv->timeout_table, key);
 
-	g_mutex_unlock (extension->priv->timeout_lock);
+	g_mutex_unlock (&extension->priv->timeout_lock);
 
 	return removed;
 }
@@ -634,7 +634,7 @@ e_source_refresh_remove_timeouts_by_data (ESource *source,
 	extension_name = E_SOURCE_EXTENSION_REFRESH;
 	extension = e_source_get_extension (source, extension_name);
 
-	g_mutex_lock (extension->priv->timeout_lock);
+	g_mutex_lock (&extension->priv->timeout_lock);
 
 	g_hash_table_iter_init (&iter, extension->priv->timeout_table);
 
@@ -649,7 +649,7 @@ e_source_refresh_remove_timeouts_by_data (ESource *source,
 		if (g_hash_table_remove (extension->priv->timeout_table, key))
 			n_removed++;
 
-	g_mutex_unlock (extension->priv->timeout_lock);
+	g_mutex_unlock (&extension->priv->timeout_lock);
 
 	return n_removed;
 }

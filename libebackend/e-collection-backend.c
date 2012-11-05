@@ -58,13 +58,13 @@ struct _ECollectionBackendPrivate {
 
 	/* Set of ESources */
 	GHashTable *children;
-	GMutex *children_lock;
+	GMutex children_lock;
 
 	gchar *cache_dir;
 
 	/* Resource ID -> ESource */
 	GHashTable *unclaimed_resources;
-	GMutex *unclaimed_resources_lock;
+	GMutex unclaimed_resources_lock;
 
 	gulong source_added_handler_id;
 	gulong source_removed_handler_id;
@@ -92,11 +92,11 @@ static void
 collection_backend_children_insert (ECollectionBackend *backend,
                                     ESource *source)
 {
-	g_mutex_lock (backend->priv->children_lock);
+	g_mutex_lock (&backend->priv->children_lock);
 
 	g_hash_table_add (backend->priv->children, g_object_ref (source));
 
-	g_mutex_unlock (backend->priv->children_lock);
+	g_mutex_unlock (&backend->priv->children_lock);
 }
 
 static gboolean
@@ -105,11 +105,11 @@ collection_backend_children_remove (ECollectionBackend *backend,
 {
 	gboolean removed;
 
-	g_mutex_lock (backend->priv->children_lock);
+	g_mutex_lock (&backend->priv->children_lock);
 
 	removed = g_hash_table_remove (backend->priv->children, source);
 
-	g_mutex_unlock (backend->priv->children_lock);
+	g_mutex_unlock (&backend->priv->children_lock);
 
 	return removed;
 }
@@ -119,14 +119,14 @@ collection_backend_children_list (ECollectionBackend *backend)
 {
 	GList *list, *link;
 
-	g_mutex_lock (backend->priv->children_lock);
+	g_mutex_lock (&backend->priv->children_lock);
 
 	list = g_hash_table_get_keys (backend->priv->children);
 
 	for (link = list; link != NULL; link = g_list_next (link))
 		g_object_ref (link->data);
 
-	g_mutex_unlock (backend->priv->children_lock);
+	g_mutex_unlock (&backend->priv->children_lock);
 
 	return list;
 }
@@ -229,7 +229,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 	file = g_file_new_for_path (cache_dir);
 	server = e_collection_backend_ref_server (backend);
 
-	g_mutex_lock (backend->priv->unclaimed_resources_lock);
+	g_mutex_lock (&backend->priv->unclaimed_resources_lock);
 
 	while ((name = g_dir_read_name (dir)) != NULL) {
 		GFile *child;
@@ -264,7 +264,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 		g_object_unref (source);
 	}
 
-	g_mutex_unlock (backend->priv->unclaimed_resources_lock);
+	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
 
 	g_object_unref (file);
 	g_object_unref (server);
@@ -278,7 +278,7 @@ collection_backend_claim_resource (ECollectionBackend *backend,
 	GHashTable *unclaimed_resources;
 	ESource *source;
 
-	g_mutex_lock (backend->priv->unclaimed_resources_lock);
+	g_mutex_lock (&backend->priv->unclaimed_resources_lock);
 
 	unclaimed_resources = backend->priv->unclaimed_resources;
 	source = g_hash_table_lookup (unclaimed_resources, resource_id);
@@ -292,7 +292,7 @@ collection_backend_claim_resource (ECollectionBackend *backend,
 		g_object_unref (file);
 	}
 
-	g_mutex_unlock (backend->priv->unclaimed_resources_lock);
+	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
 
 	return source;
 }
@@ -550,13 +550,13 @@ collection_backend_dispose (GObject *object)
 		g_object_unref (server);
 	}
 
-	g_mutex_lock (priv->children_lock);
+	g_mutex_lock (&priv->children_lock);
 	g_hash_table_remove_all (priv->children);
-	g_mutex_unlock (priv->children_lock);
+	g_mutex_unlock (&priv->children_lock);
 
-	g_mutex_lock (priv->unclaimed_resources_lock);
+	g_mutex_lock (&priv->unclaimed_resources_lock);
 	g_hash_table_remove_all (priv->unclaimed_resources);
-	g_mutex_unlock (priv->unclaimed_resources_lock);
+	g_mutex_unlock (&priv->unclaimed_resources_lock);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->dispose (object);
@@ -570,10 +570,10 @@ collection_backend_finalize (GObject *object)
 	priv = E_COLLECTION_BACKEND_GET_PRIVATE (object);
 
 	g_hash_table_destroy (priv->children);
-	g_mutex_free (priv->children_lock);
+	g_mutex_clear (&priv->children_lock);
 
 	g_hash_table_destroy (priv->unclaimed_resources);
-	g_mutex_free (priv->unclaimed_resources_lock);
+	g_mutex_clear (&priv->unclaimed_resources_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->finalize (object);
@@ -949,9 +949,9 @@ e_collection_backend_init (ECollectionBackend *backend)
 
 	backend->priv = E_COLLECTION_BACKEND_GET_PRIVATE (backend);
 	backend->priv->children = children;
-	backend->priv->children_lock = g_mutex_new ();
+	g_mutex_init (&backend->priv->children_lock);
 	backend->priv->unclaimed_resources = unclaimed_resources;
-	backend->priv->unclaimed_resources_lock = g_mutex_new ();
+	g_mutex_init (&backend->priv->unclaimed_resources_lock);
 }
 
 /**
@@ -1138,14 +1138,14 @@ e_collection_backend_claim_all_resources (ECollectionBackend *backend)
 
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
 
-	g_mutex_lock (backend->priv->unclaimed_resources_lock);
+	g_mutex_lock (&backend->priv->unclaimed_resources_lock);
 
 	unclaimed_resources = backend->priv->unclaimed_resources;
 	resources = g_hash_table_get_values (unclaimed_resources);
 	g_list_foreach (resources, (GFunc) g_object_ref, NULL);
 	g_hash_table_remove_all (unclaimed_resources);
 
-	g_mutex_unlock (backend->priv->unclaimed_resources_lock);
+	g_mutex_unlock (&backend->priv->unclaimed_resources_lock);
 
 	return resources;
 }

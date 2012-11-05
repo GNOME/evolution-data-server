@@ -56,9 +56,9 @@ enum {
 	LAST_SIGNAL
 };
 
-static GStaticRecMutex operation_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK() g_static_rec_mutex_lock (&operation_lock)
-#define UNLOCK() g_static_rec_mutex_unlock (&operation_lock)
+static GRecMutex operation_lock;
+#define LOCK() g_rec_mutex_lock (&operation_lock)
+#define UNLOCK() g_rec_mutex_unlock (&operation_lock)
 
 static GQueue operation_list = G_QUEUE_INIT;
 

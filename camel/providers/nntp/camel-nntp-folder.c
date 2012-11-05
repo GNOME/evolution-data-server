@@ -133,8 +133,8 @@ nntp_folder_finalize (GObject *object)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
 
-	g_mutex_free (nntp_folder->priv->search_lock);
-	g_mutex_free (nntp_folder->priv->cache_lock);
+	g_mutex_clear (&nntp_folder->priv->search_lock);
+	g_mutex_clear (&nntp_folder->priv->cache_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_nntp_folder_parent_class)->finalize (object);
@@ -747,8 +747,8 @@ camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 	nntp_folder->priv = CAMEL_NNTP_FOLDER_GET_PRIVATE (nntp_folder);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
-	nntp_folder->priv->search_lock = g_mutex_new ();
-	nntp_folder->priv->cache_lock = g_mutex_new ();
+	g_mutex_init (&nntp_folder->priv->search_lock);
+	g_mutex_init (&nntp_folder->priv->cache_lock);
 }
 
 CamelFolder *

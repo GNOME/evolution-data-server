@@ -36,13 +36,13 @@
 	((obj), CAMEL_TYPE_IMAP_WRAPPER, CamelImapWrapperPrivate))
 
 struct _CamelImapWrapperPrivate {
-	GMutex *lock;
+	GMutex lock;
 };
 
 #define CAMEL_IMAP_WRAPPER_LOCK(f, l) \
-	(g_mutex_lock (((CamelImapWrapper *) f)->priv->l))
+	(g_mutex_lock (&((CamelImapWrapper *) f)->priv->l))
 #define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) \
-	(g_mutex_unlock (((CamelImapWrapper *) f)->priv->l))
+	(g_mutex_unlock (&((CamelImapWrapper *) f)->priv->l))
 
 G_DEFINE_TYPE (CamelImapWrapper, camel_imap_wrapper, CAMEL_TYPE_DATA_WRAPPER)
 
@@ -94,7 +94,7 @@ imap_wrapper_finalize (GObject *object)
 	g_free (imap_wrapper->uid);
 	g_free (imap_wrapper->part_spec);
 
-	g_mutex_free (imap_wrapper->priv->lock);
+	g_mutex_clear (&imap_wrapper->priv->lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_wrapper_parent_class)->finalize (object);
@@ -156,7 +156,7 @@ static void
 camel_imap_wrapper_init (CamelImapWrapper *imap_wrapper)
 {
 	imap_wrapper->priv = CAMEL_IMAP_WRAPPER_GET_PRIVATE (imap_wrapper);
-	imap_wrapper->priv->lock = g_mutex_new ();
+	g_mutex_init (&imap_wrapper->priv->lock);
 }
 
 CamelDataWrapper *

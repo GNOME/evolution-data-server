@@ -24,7 +24,7 @@
 struct _EOperationPool {
 	GThreadPool *pool;
 
-	GMutex *ops_lock;
+	GMutex ops_lock;
 	GHashTable *ops;
 	guint32 last_opid;
 };
@@ -59,7 +59,7 @@ e_operation_pool_new (guint max_threads,
 
 	pool = g_new0 (EOperationPool, 1);
 	pool->pool = thread_pool;
-	pool->ops_lock = g_mutex_new ();
+	g_mutex_init (&pool->ops_lock);
 	pool->ops = g_hash_table_new (g_direct_hash, g_direct_equal);
 	pool->last_opid = 0;
 
@@ -82,7 +82,7 @@ e_operation_pool_free (EOperationPool *pool)
 	g_return_if_fail (pool != NULL);
 
 	g_thread_pool_free (pool->pool, FALSE, FALSE);
-	g_mutex_free (pool->ops_lock);
+	g_mutex_clear (&pool->ops_lock);
 	g_hash_table_destroy (pool->ops);
 	g_free (pool);
 }
@@ -106,9 +106,8 @@ e_operation_pool_reserve_opid (EOperationPool *pool)
 
 	g_return_val_if_fail (pool != NULL, 0);
 	g_return_val_if_fail (pool->ops != NULL, 0);
-	g_return_val_if_fail (pool->ops_lock != NULL, 0);
 
-	g_mutex_lock (pool->ops_lock);
+	g_mutex_lock (&pool->ops_lock);
 
 	pool->last_opid++;
 	if (!pool->last_opid)
@@ -121,7 +120,7 @@ e_operation_pool_reserve_opid (EOperationPool *pool)
 	if (opid)
 		g_hash_table_insert (pool->ops, GUINT_TO_POINTER (opid), GUINT_TO_POINTER (1));
 
-	g_mutex_unlock (pool->ops_lock);
+	g_mutex_unlock (&pool->ops_lock);
 
 	g_return_val_if_fail (opid != 0, 0);
 
@@ -143,11 +142,10 @@ e_operation_pool_release_opid (EOperationPool *pool,
 {
 	g_return_if_fail (pool != NULL);
 	g_return_if_fail (pool->ops != NULL);
-	g_return_if_fail (pool->ops_lock != NULL);
 
-	g_mutex_lock (pool->ops_lock);
+	g_mutex_lock (&pool->ops_lock);
 	g_hash_table_remove (pool->ops, GUINT_TO_POINTER (opid));
-	g_mutex_unlock (pool->ops_lock);
+	g_mutex_unlock (&pool->ops_lock);
 }
 
 /**

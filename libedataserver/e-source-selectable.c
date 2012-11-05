@@ -35,7 +35,7 @@
 	((obj), E_TYPE_SOURCE_SELECTABLE, ESourceSelectablePrivate))
 
 struct _ESourceSelectablePrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *color;
 	gboolean selected;
 };
@@ -106,7 +106,7 @@ source_selectable_finalize (GObject *object)
 
 	priv = E_SOURCE_SELECTABLE_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->color);
 
@@ -160,7 +160,7 @@ static void
 e_source_selectable_init (ESourceSelectable *extension)
 {
 	extension->priv = E_SOURCE_SELECTABLE_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -204,12 +204,12 @@ e_source_selectable_dup_color (ESourceSelectable *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_SELECTABLE (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_selectable_get_color (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -235,17 +235,17 @@ e_source_selectable_set_color (ESourceSelectable *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_SELECTABLE (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->color, color) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->color);
 	extension->priv->color = e_util_strdup_strip (color);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "color");
 }

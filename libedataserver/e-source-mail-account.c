@@ -46,7 +46,7 @@
 	((obj), E_TYPE_SOURCE_MAIL_ACCOUNT, ESourceMailAccountPrivate))
 
 struct _ESourceMailAccountPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *identity_uid;
 };
 
@@ -102,7 +102,7 @@ source_mail_account_finalize (GObject *object)
 
 	priv = E_SOURCE_MAIL_ACCOUNT_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->identity_uid);
 
@@ -144,7 +144,7 @@ static void
 e_source_mail_account_init (ESourceMailAccount *extension)
 {
 	extension->priv = E_SOURCE_MAIL_ACCOUNT_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -187,12 +187,12 @@ e_source_mail_account_dup_identity_uid (ESourceMailAccount *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_mail_account_get_identity_uid (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -213,17 +213,17 @@ e_source_mail_account_set_identity_uid (ESourceMailAccount *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->identity_uid, identity_uid) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->identity_uid);
 	extension->priv->identity_uid = g_strdup (identity_uid);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "identity-uid");
 }

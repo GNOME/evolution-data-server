@@ -109,10 +109,10 @@ struct _ESourceRegistryPrivate {
 	EDBusSourceManager *dbus_source_manager;
 
 	GHashTable *object_path_table;
-	GMutex *object_path_table_lock;
+	GMutex object_path_table_lock;
 
 	GHashTable *sources;
-	GMutex *sources_lock;
+	GMutex sources_lock;
 
 	GSettings *settings;
 };
@@ -152,8 +152,8 @@ struct _ThreadClosure {
 	ESourceRegistry *registry;
 	GMainContext *main_context;
 	GMainLoop *main_loop;
-	GCond *main_loop_cond;
-	GMutex *main_loop_mutex;
+	GCond main_loop_cond;
+	GMutex main_loop_mutex;
 	GError *error;
 };
 
@@ -278,8 +278,8 @@ thread_closure_free (ThreadClosure *closure)
 
 	g_main_context_unref (closure->main_context);
 	g_main_loop_unref (closure->main_loop);
-	g_cond_free (closure->main_loop_cond);
-	g_mutex_free (closure->main_loop_mutex);
+	g_cond_clear (&closure->main_loop_cond);
+	g_mutex_clear (&closure->main_loop_mutex);
 
 	/* The GError should be NULL at this point,
 	 * regardless of whether an error occurred. */
@@ -296,14 +296,14 @@ source_registry_object_path_table_insert (ESourceRegistry *registry,
 	g_return_if_fail (object_path != NULL);
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	g_mutex_lock (registry->priv->object_path_table_lock);
+	g_mutex_lock (&registry->priv->object_path_table_lock);
 
 	g_hash_table_insert (
 		registry->priv->object_path_table,
 		g_strdup (object_path),
 		g_object_ref (source));
 
-	g_mutex_unlock (registry->priv->object_path_table_lock);
+	g_mutex_unlock (&registry->priv->object_path_table_lock);
 }
 
 static ESource *
@@ -314,14 +314,14 @@ source_registry_object_path_table_lookup (ESourceRegistry *registry,
 
 	g_return_val_if_fail (object_path != NULL, NULL);
 
-	g_mutex_lock (registry->priv->object_path_table_lock);
+	g_mutex_lock (&registry->priv->object_path_table_lock);
 
 	source = g_hash_table_lookup (
 		registry->priv->object_path_table, object_path);
 	if (source != NULL)
 		g_object_ref (source);
 
-	g_mutex_unlock (registry->priv->object_path_table_lock);
+	g_mutex_unlock (&registry->priv->object_path_table_lock);
 
 	return source;
 }
@@ -334,12 +334,12 @@ source_registry_object_path_table_remove (ESourceRegistry *registry,
 
 	g_return_val_if_fail (object_path != NULL, FALSE);
 
-	g_mutex_lock (registry->priv->object_path_table_lock);
+	g_mutex_lock (&registry->priv->object_path_table_lock);
 
 	removed = g_hash_table_remove (
 		registry->priv->object_path_table, object_path);
 
-	g_mutex_unlock (registry->priv->object_path_table_lock);
+	g_mutex_unlock (&registry->priv->object_path_table_lock);
 
 	return removed;
 }
@@ -353,13 +353,13 @@ source_registry_sources_insert (ESourceRegistry *registry,
 	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
-	g_mutex_lock (registry->priv->sources_lock);
+	g_mutex_lock (&registry->priv->sources_lock);
 
 	g_hash_table_insert (
 		registry->priv->sources,
 		g_strdup (uid), g_object_ref (source));
 
-	g_mutex_unlock (registry->priv->sources_lock);
+	g_mutex_unlock (&registry->priv->sources_lock);
 }
 
 static gboolean
@@ -372,11 +372,11 @@ source_registry_sources_remove (ESourceRegistry *registry,
 	uid = e_source_get_uid (source);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	g_mutex_lock (registry->priv->sources_lock);
+	g_mutex_lock (&registry->priv->sources_lock);
 
 	removed = g_hash_table_remove (registry->priv->sources, uid);
 
-	g_mutex_unlock (registry->priv->sources_lock);
+	g_mutex_unlock (&registry->priv->sources_lock);
 
 	return removed;
 }
@@ -389,14 +389,14 @@ source_registry_sources_lookup (ESourceRegistry *registry,
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	g_mutex_lock (registry->priv->sources_lock);
+	g_mutex_lock (&registry->priv->sources_lock);
 
 	source = g_hash_table_lookup (registry->priv->sources, uid);
 
 	if (source != NULL)
 		g_object_ref (source);
 
-	g_mutex_unlock (registry->priv->sources_lock);
+	g_mutex_unlock (&registry->priv->sources_lock);
 
 	return source;
 }
@@ -406,13 +406,13 @@ source_registry_sources_get_values (ESourceRegistry *registry)
 {
 	GList *values;
 
-	g_mutex_lock (registry->priv->sources_lock);
+	g_mutex_lock (&registry->priv->sources_lock);
 
 	values = g_hash_table_get_values (registry->priv->sources);
 
 	g_list_foreach (values, (GFunc) g_object_ref, NULL);
 
-	g_mutex_unlock (registry->priv->sources_lock);
+	g_mutex_unlock (&registry->priv->sources_lock);
 
 	return values;
 }
@@ -425,7 +425,7 @@ source_registry_sources_build_tree (ESourceRegistry *registry)
 	GHashTableIter iter;
 	gpointer key, value;
 
-	g_mutex_lock (registry->priv->sources_lock);
+	g_mutex_lock (&registry->priv->sources_lock);
 
 	root = g_node_new (NULL);
 	index = g_hash_table_new (g_str_hash, g_str_equal);
@@ -463,7 +463,7 @@ source_registry_sources_build_tree (ESourceRegistry *registry)
 
 	g_hash_table_destroy (index);
 
-	g_mutex_unlock (registry->priv->sources_lock);
+	g_mutex_unlock (&registry->priv->sources_lock);
 
 	return root;
 }
@@ -614,11 +614,11 @@ source_registry_add_source (ESourceRegistry *registry,
 	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
-	g_mutex_lock (registry->priv->sources_lock);
+	g_mutex_lock (&registry->priv->sources_lock);
 
 	/* Check if we already have this source in the registry. */
 	if (g_hash_table_lookup (registry->priv->sources, uid) != NULL) {
-		g_mutex_unlock (registry->priv->sources_lock);
+		g_mutex_unlock (&registry->priv->sources_lock);
 		return;
 	}
 
@@ -632,7 +632,7 @@ source_registry_add_source (ESourceRegistry *registry,
 		G_CALLBACK (source_registry_source_notify_enabled_cb),
 		registry);
 
-	g_mutex_unlock (registry->priv->sources_lock);
+	g_mutex_unlock (&registry->priv->sources_lock);
 
 	source_registry_sources_insert (registry, source);
 }
@@ -741,9 +741,9 @@ source_registry_object_manager_running (gpointer data)
 {
 	ThreadClosure *closure = data;
 
-	g_mutex_lock (closure->main_loop_mutex);
-	g_cond_broadcast (closure->main_loop_cond);
-	g_mutex_unlock (closure->main_loop_mutex);
+	g_mutex_lock (&closure->main_loop_mutex);
+	g_cond_broadcast (&closure->main_loop_cond);
+	g_mutex_unlock (&closure->main_loop_mutex);
 
 	return FALSE;
 }
@@ -1007,10 +1007,10 @@ source_registry_finalize (GObject *object)
 	priv = E_SOURCE_REGISTRY_GET_PRIVATE (object);
 
 	g_hash_table_destroy (priv->object_path_table);
-	g_mutex_free (priv->object_path_table_lock);
+	g_mutex_clear (&priv->object_path_table_lock);
 
 	g_hash_table_destroy (priv->sources);
-	g_mutex_free (priv->sources_lock);
+	g_mutex_clear (&priv->sources_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_parent_class)->finalize (object);
@@ -1033,26 +1033,26 @@ source_registry_initable_init (GInitable *initable,
 	 * we wait for the main loop to start running as a way of
 	 * synchronizing with the manager thread. */
 	closure->main_loop = g_main_loop_new (closure->main_context, FALSE);
-	closure->main_loop_cond = g_cond_new ();
-	closure->main_loop_mutex = g_mutex_new ();
+	g_cond_init (&closure->main_loop_cond);
+	g_mutex_init (&closure->main_loop_mutex);
 
 	registry->priv->thread_closure = closure;
 
-	registry->priv->manager_thread = g_thread_create (
+	registry->priv->manager_thread = g_thread_new (NULL,
 		source_registry_object_manager_thread,
-		closure, TRUE /* joinable */, error);
+		closure);
 
 	if (registry->priv->manager_thread == NULL)
 		return FALSE;
 
 	/* Wait for notification that the manager
 	 * thread's main loop has been started. */
-	g_mutex_lock (closure->main_loop_mutex);
+	g_mutex_lock (&closure->main_loop_mutex);
 	while (!g_main_loop_is_running (closure->main_loop))
 		g_cond_wait (
-			closure->main_loop_cond,
-			closure->main_loop_mutex);
-	g_mutex_unlock (closure->main_loop_mutex);
+			&closure->main_loop_cond,
+			&closure->main_loop_mutex);
+	g_mutex_unlock (&closure->main_loop_mutex);
 
 	/* Check for error in the manager thread. */
 	if (closure->error != NULL) {
@@ -1311,7 +1311,7 @@ e_source_registry_init (ESourceRegistry *registry)
 			(GDestroyNotify) g_free,
 			(GDestroyNotify) g_object_unref);
 
-	registry->priv->object_path_table_lock = g_mutex_new ();
+	g_mutex_init (&registry->priv->object_path_table_lock);
 
 	/* UID string -> ESource */
 	registry->priv->sources = g_hash_table_new_full (
@@ -1320,7 +1320,7 @@ e_source_registry_init (ESourceRegistry *registry)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) source_registry_unref_source);
 
-	registry->priv->sources_lock = g_mutex_new ();
+	g_mutex_init (&registry->priv->sources_lock);
 
 	registry->priv->settings = g_settings_new (GSETTINGS_SCHEMA);
 

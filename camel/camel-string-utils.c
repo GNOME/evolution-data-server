@@ -141,7 +141,7 @@ gchar camel_toupper (gchar c)
 }
 
 /* working stuff for pstrings */
-static GStaticMutex string_pool_lock = G_STATIC_MUTEX_INIT;
+static GMutex string_pool_lock;
 static GHashTable *string_pool = NULL;
 
 typedef struct _StringPoolNode StringPoolNode;
@@ -226,7 +226,7 @@ camel_pstring_add (gchar *string,
 		return "";
 	}
 
-	g_static_mutex_lock (&string_pool_lock);
+	g_mutex_lock (&string_pool_lock);
 
 	string_pool_init ();
 
@@ -245,7 +245,7 @@ camel_pstring_add (gchar *string,
 
 	interned = node->string;
 
-	g_static_mutex_unlock (&string_pool_lock);
+	g_mutex_unlock (&string_pool_lock);
 
 	return interned;
 }
@@ -277,7 +277,7 @@ camel_pstring_peek (const gchar *string)
 	if (*string == '\0')
 		return "";
 
-	g_static_mutex_lock (&string_pool_lock);
+	g_mutex_lock (&string_pool_lock);
 
 	string_pool_init ();
 
@@ -290,7 +290,7 @@ camel_pstring_peek (const gchar *string)
 
 	interned = node->string;
 
-	g_static_mutex_unlock (&string_pool_lock);
+	g_mutex_unlock (&string_pool_lock);
 
 	return interned;
 }
@@ -334,7 +334,7 @@ camel_pstring_free (const gchar *string)
 	if (string == NULL || *string == '\0')
 		return;
 
-	g_static_mutex_lock (&string_pool_lock);
+	g_mutex_lock (&string_pool_lock);
 
 	node = g_hash_table_lookup (string_pool, &static_node);
 
@@ -350,7 +350,7 @@ camel_pstring_free (const gchar *string)
 			g_hash_table_remove (string_pool, node);
 	}
 
-	g_static_mutex_unlock (&string_pool_lock);
+	g_mutex_unlock (&string_pool_lock);
 }
 
 /**
@@ -363,7 +363,7 @@ camel_pstring_free (const gchar *string)
 void
 camel_pstring_dump_stat (void)
 {
-	g_static_mutex_lock (&string_pool_lock);
+	g_mutex_lock (&string_pool_lock);
 
 	g_print ("   String Pool Statistics: ");
 
@@ -391,5 +391,5 @@ camel_pstring_dump_stat (void)
 		g_free (format_size);
 	}
 
-	g_static_mutex_unlock (&string_pool_lock);
+	g_mutex_unlock (&string_pool_lock);
 }

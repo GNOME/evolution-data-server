@@ -80,11 +80,11 @@ struct _CamelFolderSummaryPrivate {
 
 	struct _CamelIndex *index;
 
-	GStaticRecMutex summary_lock;	/* for the summary hashtable/array */
-	GStaticRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
-	GStaticRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
-	GStaticRecMutex alloc_lock;	/* for setting up and using allocators */
-	GStaticRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
+	GRecMutex summary_lock;	/* for the summary hashtable/array */
+	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
+	GRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
+	GRecMutex alloc_lock;	/* for setting up and using allocators */
+	GRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 
 	gboolean need_preview;
 	GHashTable *preview_updates;
@@ -107,11 +107,11 @@ struct _CamelFolderSummaryPrivate {
 	guint timeout_handle;
 };
 
-static GStaticMutex info_lock = G_STATIC_MUTEX_INIT;
+static GMutex info_lock;
 
 /* this lock is ONLY for the standalone messageinfo stuff */
-#define GLOBAL_INFO_LOCK(i) g_static_mutex_lock(&info_lock)
-#define GLOBAL_INFO_UNLOCK(i) g_static_mutex_unlock(&info_lock)
+#define GLOBAL_INFO_LOCK(i) g_mutex_lock(&info_lock)
+#define GLOBAL_INFO_UNLOCK(i) g_mutex_unlock(&info_lock)
 
 /* this should probably be conditional on it existing */
 #define USE_BSEARCH
@@ -285,11 +285,11 @@ folder_summary_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->preview_updates);
 
-	g_static_rec_mutex_free (&priv->summary_lock);
-	g_static_rec_mutex_free (&priv->io_lock);
-	g_static_rec_mutex_free (&priv->filter_lock);
-	g_static_rec_mutex_free (&priv->alloc_lock);
-	g_static_rec_mutex_free (&priv->ref_lock);
+	g_rec_mutex_clear (&priv->summary_lock);
+	g_rec_mutex_clear (&priv->io_lock);
+	g_rec_mutex_clear (&priv->filter_lock);
+	g_rec_mutex_clear (&priv->alloc_lock);
+	g_rec_mutex_clear (&priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->finalize (object);
@@ -1379,11 +1379,11 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 	summary->priv->uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 	summary->priv->loaded_infos = g_hash_table_new (g_str_hash, g_str_equal);
 
-	g_static_rec_mutex_init (&summary->priv->summary_lock);
-	g_static_rec_mutex_init (&summary->priv->io_lock);
-	g_static_rec_mutex_init (&summary->priv->filter_lock);
-	g_static_rec_mutex_init (&summary->priv->alloc_lock);
-	g_static_rec_mutex_init (&summary->priv->ref_lock);
+	g_rec_mutex_init (&summary->priv->summary_lock);
+	g_rec_mutex_init (&summary->priv->io_lock);
+	g_rec_mutex_init (&summary->priv->filter_lock);
+	g_rec_mutex_init (&summary->priv->alloc_lock);
+	g_rec_mutex_init (&summary->priv->ref_lock);
 
 	summary->priv->cache_load_time = 0;
 	summary->priv->timeout_handle = 0;
@@ -4946,19 +4946,19 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
 
 	switch (lock) {
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->summary_lock);
+			g_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_IO_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->io_lock);
+			g_rec_mutex_lock (&summary->priv->io_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_FILTER_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->filter_lock);
+			g_rec_mutex_lock (&summary->priv->filter_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->alloc_lock);
+			g_rec_mutex_lock (&summary->priv->alloc_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_REF_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->ref_lock);
+			g_rec_mutex_lock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -4982,19 +4982,19 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 
 	switch (lock) {
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->summary_lock);
+			g_rec_mutex_unlock (&summary->priv->summary_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_IO_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->io_lock);
+			g_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_FILTER_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->filter_lock);
+			g_rec_mutex_unlock (&summary->priv->filter_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->alloc_lock);
+			g_rec_mutex_unlock (&summary->priv->alloc_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_REF_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->ref_lock);
+			g_rec_mutex_unlock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();

@@ -12,9 +12,9 @@
 /* well i dunno, doesn't seem to be in the headers but hte manpage mentions it */
 /* a nonportable checking mutex for glibc, not really needed, just validates
  * the test harness really */
-static GStaticMutex lock = G_STATIC_MUTEX_INIT;
-#define CAMEL_TEST_LOCK g_static_mutex_lock(&lock)
-#define CAMEL_TEST_UNLOCK g_static_mutex_unlock(&lock)
+static GMutex lock;
+#define CAMEL_TEST_LOCK g_mutex_lock(&lock)
+#define CAMEL_TEST_UNLOCK g_mutex_unlock(&lock)
 #define CAMEL_TEST_ID (g_thread_self())
 
 static gint setup;

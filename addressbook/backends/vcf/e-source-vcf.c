@@ -23,7 +23,7 @@
 	((obj), E_TYPE_SOURCE_VCF, ESourceVCFPrivate))
 
 struct _ESourceVCFPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *path;
 };
 
@@ -79,7 +79,7 @@ source_vcf_finalize (GObject *object)
 
 	priv = E_SOURCE_VCF_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->path);
 
@@ -125,7 +125,7 @@ static void
 e_source_vcf_init (ESourceVCF *extension)
 {
 	extension->priv = E_SOURCE_VCF_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 void
@@ -153,12 +153,12 @@ e_source_vcf_dup_path (ESourceVCF *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_VCF (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_vcf_get_path (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -169,17 +169,17 @@ e_source_vcf_set_path (ESourceVCF *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_VCF (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->path, path) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->path);
 	extension->priv->path = e_util_strdup_strip (path);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "path");
 }

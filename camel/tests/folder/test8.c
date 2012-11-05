@@ -179,11 +179,7 @@ gint main (gint argc, gchar **argv)
 				info->id = i * MAX_MESSAGES;
 				info->folder = folder;
 
-				threads[i] = g_thread_create (worker, info, TRUE, &error);
-				if (error) {
-					fprintf (stderr, "%s: Failed to create a thread: %s\n", G_STRFUNC, error->message);
-					g_error_free (error);
-				}
+				threads[i] = g_thread_new (NULL, worker, info);
 			}
 
 			for (i = 0; i < MAX_THREADS; i++) {

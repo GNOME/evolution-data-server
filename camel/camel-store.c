@@ -55,7 +55,7 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalData SignalData;
 
 struct _CamelStorePrivate {
-	GStaticRecMutex folder_lock;	/* for locking folder operations */
+	GRecMutex folder_lock;	/* for locking folder operations */
 };
 
 struct _AsyncContext {
@@ -261,7 +261,7 @@ store_finalize (GObject *object)
 	if (store->folders != NULL)
 		camel_object_bag_destroy (store->folders);
 
-	g_static_rec_mutex_free (&store->priv->folder_lock);
+	g_rec_mutex_clear (&store->priv->folder_lock);
 
 	if (store->cdb_r != NULL) {
 		camel_db_close (store->cdb_r);
@@ -1241,7 +1241,7 @@ camel_store_init (CamelStore *store)
 
 	store->mode = CAMEL_STORE_READ | CAMEL_STORE_WRITE;
 
-	g_static_rec_mutex_init (&store->priv->folder_lock);
+	g_rec_mutex_init (&store->priv->folder_lock);
 }
 
 GQuark
@@ -1765,7 +1765,7 @@ camel_store_lock (CamelStore *store,
 
 	switch (lock) {
 		case CAMEL_STORE_FOLDER_LOCK:
-			g_static_rec_mutex_lock (&store->priv->folder_lock);
+			g_rec_mutex_lock (&store->priv->folder_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -1789,7 +1789,7 @@ camel_store_unlock (CamelStore *store,
 
 	switch (lock) {
 		case CAMEL_STORE_FOLDER_LOCK:
-			g_static_rec_mutex_unlock (&store->priv->folder_lock);
+			g_rec_mutex_unlock (&store->priv->folder_lock);
 			break;
 		default:
 			g_return_if_reached ();

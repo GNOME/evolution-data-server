@@ -43,21 +43,21 @@
 struct _CamelBlockFilePrivate {
 	struct _CamelBlockFile *base;
 
-	GStaticMutex root_lock; /* for modifying the root block */
-	GStaticMutex cache_lock; /* for refcounting, flag manip, cache manip */
-	GStaticMutex io_lock; /* for all io ops */
+	GMutex root_lock; /* for modifying the root block */
+	GMutex cache_lock; /* for refcounting, flag manip, cache manip */
+	GMutex io_lock; /* for all io ops */
 
 	guint deleted : 1;
 };
 
-#define CAMEL_BLOCK_FILE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
-#define CAMEL_BLOCK_FILE_TRYLOCK(kf, lock) (g_static_mutex_trylock(&(kf)->priv->lock))
-#define CAMEL_BLOCK_FILE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
+#define CAMEL_BLOCK_FILE_LOCK(kf, lock) (g_mutex_lock(&(kf)->priv->lock))
+#define CAMEL_BLOCK_FILE_TRYLOCK(kf, lock) (g_mutex_trylock(&(kf)->priv->lock))
+#define CAMEL_BLOCK_FILE_UNLOCK(kf, lock) (g_mutex_unlock(&(kf)->priv->lock))
 
-#define LOCK(x) g_static_mutex_lock(&x)
-#define UNLOCK(x) g_static_mutex_unlock(&x)
+#define LOCK(x) g_mutex_lock(&x)
+#define UNLOCK(x) g_mutex_unlock(&x)
 
-static GStaticMutex block_file_lock = G_STATIC_MUTEX_INIT;
+static GMutex block_file_lock;
 
 /* lru cache of block files */
 static GQueue block_file_list = G_QUEUE_INIT;
@@ -173,9 +173,9 @@ block_file_finalize (GObject *object)
 	if (bs->fd != -1)
 		close (bs->fd);
 
-	g_static_mutex_free (&bs->priv->io_lock);
-	g_static_mutex_free (&bs->priv->cache_lock);
-	g_static_mutex_free (&bs->priv->root_lock);
+	g_mutex_clear (&bs->priv->io_lock);
+	g_mutex_clear (&bs->priv->cache_lock);
+	g_mutex_clear (&bs->priv->root_lock);
 
 	g_free (bs->priv);
 
@@ -215,9 +215,9 @@ camel_block_file_init (CamelBlockFile *bs)
 	bs->priv = g_malloc0 (sizeof (*bs->priv));
 	bs->priv->base = bs;
 
-	g_static_mutex_init (&bs->priv->root_lock);
-	g_static_mutex_init (&bs->priv->cache_lock);
-	g_static_mutex_init (&bs->priv->io_lock);
+	g_mutex_init (&bs->priv->root_lock);
+	g_mutex_init (&bs->priv->cache_lock);
+	g_mutex_init (&bs->priv->io_lock);
 
 	/* link into lru list */
 	LOCK (block_file_lock);
@@ -840,15 +840,15 @@ camel_block_file_sync (CamelBlockFile *bs)
 
 struct _CamelKeyFilePrivate {
 	struct _CamelKeyFile *base;
-	GStaticMutex lock;
+	GMutex lock;
 	guint deleted : 1;
 };
 
-#define CAMEL_KEY_FILE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
-#define CAMEL_KEY_FILE_TRYLOCK(kf, lock) (g_static_mutex_trylock(&(kf)->priv->lock))
-#define CAMEL_KEY_FILE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
+#define CAMEL_KEY_FILE_LOCK(kf, lock) (g_mutex_lock(&(kf)->priv->lock))
+#define CAMEL_KEY_FILE_TRYLOCK(kf, lock) (g_mutex_trylock(&(kf)->priv->lock))
+#define CAMEL_KEY_FILE_UNLOCK(kf, lock) (g_mutex_unlock(&(kf)->priv->lock))
 
-static GStaticMutex key_file_lock = G_STATIC_MUTEX_INIT;
+static GMutex key_file_lock;
 
 /* lru cache of block files */
 static GQueue key_file_list = G_QUEUE_INIT;
@@ -880,7 +880,7 @@ key_file_finalize (GObject *object)
 
 	g_free (bs->path);
 
-	g_static_mutex_free (&bs->priv->lock);
+	g_mutex_clear (&bs->priv->lock);
 
 	g_free (bs->priv);
 
@@ -903,7 +903,7 @@ camel_key_file_init (CamelKeyFile *bs)
 	bs->priv = g_malloc0 (sizeof (*bs->priv));
 	bs->priv->base = bs;
 
-	g_static_mutex_init (&bs->priv->lock);
+	g_mutex_init (&bs->priv->lock);
 
 	LOCK (key_file_lock);
 	g_queue_push_head (&key_file_list, bs->priv);

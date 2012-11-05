@@ -78,13 +78,13 @@ struct _ECalBackendCalDAVPrivate {
 	gboolean opened;
 
 	/* lock to indicate a busy state */
-	GMutex *busy_lock;
+	GMutex busy_lock;
 
 	/* cond to synch threads */
-	GCond *cond;
+	GCond cond;
 
 	/* cond to know the slave gone */
-	GCond *slave_gone_cond;
+	GCond slave_gone_cond;
 
 	/* BG synch thread */
 	const GThread *synch_slave; /* just for a reference, whether thread exists */
@@ -1761,7 +1761,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 							/* not sure what can happen, but do not need to guess for ever,
 							 * thus report success and update the calendar to get fresh info */
 							update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
-							g_cond_signal (cbdav->priv->cond);
+							g_cond_signal (&cbdav->priv->cond);
 						}
 					}
 				}
@@ -2333,7 +2333,7 @@ time_to_refresh_caldav_calendar_cb (ESource *source,
 
 	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
-	g_cond_signal (cbdav->priv->cond);
+	g_cond_signal (&cbdav->priv->cond);
 }
 
 /* ************************************************************************* */
@@ -2348,14 +2348,14 @@ caldav_synch_slave_loop (gpointer data)
 
 	cbdav = E_CAL_BACKEND_CALDAV (data);
 
-	g_mutex_lock (cbdav->priv->busy_lock);
+	g_mutex_lock (&cbdav->priv->busy_lock);
 
 	know_unreachable = !cbdav->priv->opened;
 
 	while (cbdav->priv->slave_cmd != SLAVE_SHOULD_DIE) {
 		if (cbdav->priv->slave_cmd == SLAVE_SHOULD_SLEEP) {
 			/* just sleep until we get woken up again */
-			g_cond_wait (cbdav->priv->cond, cbdav->priv->busy_lock);
+			g_cond_wait (&cbdav->priv->cond, &cbdav->priv->busy_lock);
 
 			/* check if we should die, work or sleep again */
 			continue;
@@ -2374,7 +2374,7 @@ caldav_synch_slave_loop (gpointer data)
 			if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
 				cbdav->priv->opened = TRUE;
 				update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
-				g_cond_signal (cbdav->priv->cond);
+				g_cond_signal (&cbdav->priv->cond);
 
 				cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 				know_unreachable = FALSE;
@@ -2431,16 +2431,16 @@ caldav_synch_slave_loop (gpointer data)
 		cbdav->priv->slave_busy = FALSE;
 
 		/* puhh that was hard, get some rest :) */
-		g_cond_wait (cbdav->priv->cond, cbdav->priv->busy_lock);
+		g_cond_wait (&cbdav->priv->cond, &cbdav->priv->busy_lock);
 	}
 
 	/* signal we are done */
-	g_cond_signal (cbdav->priv->slave_gone_cond);
+	g_cond_signal (&cbdav->priv->slave_gone_cond);
 
 	cbdav->priv->synch_slave = NULL;
 
 	/* we got killed ... */
-	g_mutex_unlock (cbdav->priv->busy_lock);
+	g_mutex_unlock (&cbdav->priv->busy_lock);
 	return NULL;
 }
 
@@ -2710,13 +2710,10 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		GThread *slave;
 
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
-		slave = g_thread_create (caldav_synch_slave_loop, cbdav, FALSE, NULL);
-
-		if (slave == NULL) {
-			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create synch slave thread")));
-		}
+		slave = g_thread_new (NULL, caldav_synch_slave_loop, cbdav);
 
 		cbdav->priv->synch_slave = slave;
+		g_thread_unref (slave);
 	}
 
 	if (cbdav->priv->refresh_id == 0) {
@@ -2745,7 +2742,7 @@ open_calendar (ECalBackendCalDAV *cbdav,
 
 	if (success) {
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
-		g_cond_signal (cbdav->priv->cond);
+		g_cond_signal (&cbdav->priv->cond);
 
 		cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 	} else if (server_unreachable) {
@@ -2779,20 +2776,20 @@ caldav_do_open (ECalBackendSync *backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
-	g_mutex_lock (cbdav->priv->busy_lock);
+	g_mutex_lock (&cbdav->priv->busy_lock);
 
 	/* let it decide the 'getctag' extension availability again */
 	cbdav->priv->ctag_supported = TRUE;
 
 	if (!cbdav->priv->loaded && !initialize_backend (cbdav, perror)) {
-		g_mutex_unlock (cbdav->priv->busy_lock);
+		g_mutex_unlock (&cbdav->priv->busy_lock);
 		return;
 	}
 
 	online = e_backend_get_online (E_BACKEND (backend));
 
 	if (!cbdav->priv->do_offline && !online) {
-		g_mutex_unlock (cbdav->priv->busy_lock);
+		g_mutex_unlock (&cbdav->priv->busy_lock);
 		g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
 		return;
 	}
@@ -2826,7 +2823,7 @@ caldav_do_open (ECalBackendSync *backend,
 		E_CAL_BACKEND (backend), cbdav->priv->read_only);
 	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
-	g_mutex_unlock (cbdav->priv->busy_lock);
+	g_mutex_unlock (&cbdav->priv->busy_lock);
 }
 
 static void
@@ -2840,21 +2837,21 @@ caldav_refresh (ECalBackendSync *backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
-	g_mutex_lock (cbdav->priv->busy_lock);
+	g_mutex_lock (&cbdav->priv->busy_lock);
 
 	if (!cbdav->priv->loaded
 	    || cbdav->priv->slave_cmd == SLAVE_SHOULD_DIE
 	    || !check_state (cbdav, &online, NULL)
 	    || !online) {
-		g_mutex_unlock (cbdav->priv->busy_lock);
+		g_mutex_unlock (&cbdav->priv->busy_lock);
 		return;
 	}
 
 	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 
 	/* wake it up */
-	g_cond_signal (cbdav->priv->cond);
-	g_mutex_unlock (cbdav->priv->busy_lock);
+	g_cond_signal (&cbdav->priv->cond);
+	g_mutex_unlock (&cbdav->priv->busy_lock);
 }
 
 static void
@@ -4344,16 +4341,16 @@ _func_name _params							\
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);	\
 	}								\
 									\
-	g_mutex_lock (cbdav->priv->busy_lock);				\
+	g_mutex_lock (&cbdav->priv->busy_lock);				\
 	_call_func _call_params;					\
 									\
 	/* this is done before unlocking */				\
 	if (was_slave_busy) {						\
 		update_slave_cmd (cbdav->priv, old_slave_cmd);		\
-		g_cond_signal (cbdav->priv->cond);			\
+		g_cond_signal (&cbdav->priv->cond);			\
 	}								\
 									\
-	g_mutex_unlock (cbdav->priv->busy_lock);			\
+	g_mutex_unlock (&cbdav->priv->busy_lock);			\
 }
 
 caldav_busy_stub (
@@ -4803,20 +4800,20 @@ caldav_notify_online_cb (ECalBackend *backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
-	/*g_mutex_lock (cbdav->priv->busy_lock);*/
+	/*g_mutex_lock (&cbdav->priv->busy_lock);*/
 
 	online = e_backend_get_online (E_BACKEND (backend));
 
 	if (!cbdav->priv->loaded) {
 		e_cal_backend_notify_online (backend, online);
-		/*g_mutex_unlock (cbdav->priv->busy_lock);*/
+		/*g_mutex_unlock (&cbdav->priv->busy_lock);*/
 		return;
 	}
 
 	if (online) {
 		/* Wake up the slave thread */
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
-		g_cond_signal (cbdav->priv->cond);
+		g_cond_signal (&cbdav->priv->cond);
 	} else {
 		soup_session_abort (cbdav->priv->session);
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
@@ -4824,7 +4821,7 @@ caldav_notify_online_cb (ECalBackend *backend,
 
 	e_cal_backend_notify_online (backend, online);
 
-	/*g_mutex_unlock (cbdav->priv->busy_lock);*/
+	/*g_mutex_unlock (&cbdav->priv->busy_lock);*/
 }
 
 static icaltimezone *
@@ -4859,17 +4856,17 @@ caldav_source_changed_thread (gpointer data)
 	old_slave_busy = cbdav->priv->slave_busy;
 	if (old_slave_busy) {
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
-		g_mutex_lock (cbdav->priv->busy_lock);
+		g_mutex_lock (&cbdav->priv->busy_lock);
 	}
 
 	initialize_backend (cbdav, NULL);
 
 	/* always wakeup thread, even when it was sleeping */
-	g_cond_signal (cbdav->priv->cond);
+	g_cond_signal (&cbdav->priv->cond);
 
 	if (old_slave_busy) {
 		update_slave_cmd (cbdav->priv, old_slave_cmd);
-		g_mutex_unlock (cbdav->priv->busy_lock);
+		g_mutex_unlock (&cbdav->priv->busy_lock);
 	}
 
 	cbdav->priv->updating_source = FALSE;
@@ -4958,10 +4955,10 @@ e_cal_backend_caldav_dispose (GObject *object)
 	 * as it can work at the moment, and lock can be locked */
 	update_slave_cmd (priv, SLAVE_SHOULD_DIE);
 
-	g_mutex_lock (priv->busy_lock);
+	g_mutex_lock (&priv->busy_lock);
 
 	if (priv->disposed) {
-		g_mutex_unlock (priv->busy_lock);
+		g_mutex_unlock (&priv->busy_lock);
 		return;
 	}
 
@@ -4977,10 +4974,10 @@ e_cal_backend_caldav_dispose (GObject *object)
 
 	/* stop the slave  */
 	if (priv->synch_slave) {
-		g_cond_signal (priv->cond);
+		g_cond_signal (&priv->cond);
 
 		/* wait until the slave died */
-		g_cond_wait (priv->slave_gone_cond, priv->busy_lock);
+		g_cond_wait (&priv->slave_gone_cond, &priv->busy_lock);
 	}
 
 	g_object_unref (priv->session);
@@ -4994,7 +4991,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 	}
 
 	priv->disposed = TRUE;
-	g_mutex_unlock (priv->busy_lock);
+	g_mutex_unlock (&priv->busy_lock);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -5007,9 +5004,9 @@ e_cal_backend_caldav_finalize (GObject *object)
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (object);
 
-	g_mutex_free (priv->busy_lock);
-	g_cond_free (priv->cond);
-	g_cond_free (priv->slave_gone_cond);
+	g_mutex_clear (&priv->busy_lock);
+	g_cond_clear (&priv->cond);
+	g_cond_clear (&priv->slave_gone_cond);
 
 	g_free (priv->password);
 
@@ -5068,9 +5065,9 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	cbdav->priv->is_google = FALSE;
 
-	cbdav->priv->busy_lock = g_mutex_new ();
-	cbdav->priv->cond = g_cond_new ();
-	cbdav->priv->slave_gone_cond = g_cond_new ();
+	g_mutex_init (&cbdav->priv->busy_lock);
+	g_cond_init (&cbdav->priv->cond);
+	g_cond_init (&cbdav->priv->slave_gone_cond);
 
 	/* Slave control ... */
 	cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;

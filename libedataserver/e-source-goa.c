@@ -45,7 +45,7 @@
 	((obj), E_TYPE_SOURCE_GOA, ESourceGoaPrivate))
 
 struct _ESourceGoaPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *account_id;
 };
 
@@ -101,7 +101,7 @@ source_goa_finalize (GObject *object)
 
 	priv = E_SOURCE_GOA_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->account_id);
 
@@ -143,7 +143,7 @@ static void
 e_source_goa_init (ESourceGoa *extension)
 {
 	extension->priv = E_SOURCE_GOA_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -186,12 +186,12 @@ e_source_goa_dup_account_id (ESourceGoa *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_goa_get_account_id (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -216,17 +216,17 @@ e_source_goa_set_account_id (ESourceGoa *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_GOA (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->account_id, account_id) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->account_id);
 	extension->priv->account_id = e_util_strdup_strip (account_id);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "account-id");
 }

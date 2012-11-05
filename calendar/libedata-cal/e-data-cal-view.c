@@ -62,7 +62,7 @@ struct _EDataCalViewPrivate {
 
 	GHashTable *ids;
 
-	GMutex *pending_mutex;
+	GMutex pending_mutex;
 	guint flush_id;
 
 	/* view flags */
@@ -437,14 +437,14 @@ data_cal_view_dispose (GObject *object)
 		priv->sexp = NULL;
 	}
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	if (priv->flush_id > 0) {
 		g_source_remove (priv->flush_id);
 		priv->flush_id = 0;
 	}
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_cal_view_parent_class)->dispose (object);
@@ -472,7 +472,7 @@ data_cal_view_finalize (GObject *object)
 	if (priv->fields_of_interest != NULL)
 		g_hash_table_destroy (priv->fields_of_interest);
 
-	g_mutex_free (priv->pending_mutex);
+	g_mutex_clear (&priv->pending_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_view_parent_class)->finalize (object);
@@ -608,7 +608,7 @@ e_data_cal_view_init (EDataCalView *view)
 		(GDestroyNotify) e_cal_component_free_id,
 		(GDestroyNotify) NULL);
 
-	view->priv->pending_mutex = g_mutex_new ();
+	g_mutex_init (&view->priv->pending_mutex);
 	view->priv->flush_id = 0;
 }
 
@@ -675,7 +675,7 @@ pending_flush_timeout_cb (gpointer data)
 {
 	EDataCalView *view = data;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	view->priv->flush_id = 0;
 
@@ -683,7 +683,7 @@ pending_flush_timeout_cb (gpointer data)
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 
 	return FALSE;
 }
@@ -1183,7 +1183,7 @@ e_data_cal_view_notify_components_added (EDataCalView *view,
 	if (ecalcomponents == NULL)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	for (l = ecalcomponents; l; l = l->next) {
 		ECalComponent *comp = l->data;
@@ -1193,7 +1193,7 @@ e_data_cal_view_notify_components_added (EDataCalView *view,
 		notify_add_component (view, comp);
 	}
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1248,7 +1248,7 @@ e_data_cal_view_notify_components_modified (EDataCalView *view,
 	if (ecalcomponents == NULL)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	for (l = ecalcomponents; l; l = l->next) {
 		ECalComponent *comp = l->data;
@@ -1258,7 +1258,7 @@ e_data_cal_view_notify_components_modified (EDataCalView *view,
 		notify_change_component (view, comp);
 	}
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1309,13 +1309,13 @@ e_data_cal_view_notify_objects_added (EDataCalView *view,
 	if (objects == NULL)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	for (l = objects; l; l = l->next) {
 		notify_add (view, e_util_utf8_make_valid (l->data));
 	}
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1362,14 +1362,14 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view,
 	if (objects == NULL)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	for (l = objects; l; l = l->next) {
 		/* TODO: send add/remove/change as relevant, based on ->ids */
 		notify_change (view, e_util_utf8_make_valid (l->data));
 	}
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1413,7 +1413,7 @@ e_data_cal_view_notify_objects_removed (EDataCalView *view,
 	if (ids == NULL)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	for (l = ids; l; l = l->next) {
 		ECalComponentId *id = l->data;
@@ -1421,7 +1421,7 @@ e_data_cal_view_notify_objects_removed (EDataCalView *view,
 		    notify_remove (view, id);
 	}
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1492,7 +1492,7 @@ e_data_cal_view_notify_complete (EDataCalView *view,
 	if (!view->priv->started || view->priv->stopped)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	view->priv->complete = TRUE;
 
@@ -1508,6 +1508,6 @@ e_data_cal_view_notify_complete (EDataCalView *view,
 
 	g_strfreev (error_strv);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 

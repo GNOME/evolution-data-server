@@ -74,7 +74,7 @@ struct _ECalBackendFilePrivate {
 	 * may call other high-level functions the mutex must allow
 	 * recursive locking
 	 */
-	GStaticRecMutex idle_save_rmutex;
+	GRecMutex idle_save_rmutex;
 
 	/* Toplevel VCALENDAR component */
 	icalcomponent *icalcomp;
@@ -91,7 +91,7 @@ struct _ECalBackendFilePrivate {
 	GList *comp;
 
 	/* guards refresh members */
-	GMutex *refresh_lock;
+	GMutex refresh_lock;
 	/* set to TRUE to indicate thread should stop */
 	gboolean refresh_thread_stop;
 	/* condition for refreshing, not NULL when thread exists */
@@ -152,11 +152,11 @@ save_file_when_idle (gpointer user_data)
 	g_assert (priv->path != NULL);
 	g_assert (priv->icalcomp != NULL);
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 	if (!priv->is_dirty || priv->read_only) {
 		priv->dirty_idle_id = 0;
 		priv->is_dirty = FALSE;
-		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return FALSE;
 	}
 
@@ -225,18 +225,18 @@ save_file_when_idle (gpointer user_data)
 	priv->is_dirty = FALSE;
 	priv->dirty_idle_id = 0;
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	return FALSE;
 
  error_malformed_uri:
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 	e_cal_backend_notify_error (E_CAL_BACKEND (cbfile),
 				  _("Cannot save calendar data: Malformed URI."));
 	return FALSE;
 
  error:
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	if (e) {
 		gchar *msg = g_strdup_printf ("%s: %s", _("Cannot save calendar data"), e->message);
@@ -261,13 +261,13 @@ save (ECalBackendFile *cbfile,
 
 	priv = cbfile->priv;
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 	priv->is_dirty = TRUE;
 
 	if (!priv->dirty_idle_id)
 		priv->dirty_idle_id = g_idle_add ((GSourceFunc) save_file_when_idle, cbfile);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 static void
@@ -339,10 +339,9 @@ e_cal_backend_file_finalize (GObject *object)
 
 	free_refresh_data (E_CAL_BACKEND_FILE (object));
 
-	if (priv->refresh_lock)
-		g_mutex_free (priv->refresh_lock);
+	g_mutex_clear (&priv->refresh_lock);
 
-	g_static_rec_mutex_free (&priv->idle_save_rmutex);
+	g_rec_mutex_clear (&priv->idle_save_rmutex);
 
 	g_free (priv->path);
 	g_free (priv->file_name);
@@ -917,15 +916,15 @@ refresh_thread_func (gpointer data)
 	last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 	g_object_unref (info);
 
-	g_mutex_lock (priv->refresh_lock);
+	g_mutex_lock (&priv->refresh_lock);
 	while (!priv->refresh_thread_stop) {
-		g_cond_wait (priv->refresh_cond, priv->refresh_lock);
+		g_cond_wait (priv->refresh_cond, &priv->refresh_lock);
 
-		g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+		g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 		if (priv->refresh_skip > 0) {
 			priv->refresh_skip--;
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			continue;
 		}
 
@@ -939,7 +938,7 @@ refresh_thread_func (gpointer data)
 			priv->refresh_skip = 0;
 		}
 
-		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 		info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
 		if (!info)
@@ -956,7 +955,7 @@ refresh_thread_func (gpointer data)
 
 	g_object_unref (file);
 	g_cond_signal (priv->refresh_gone_cond);
-	g_mutex_unlock (priv->refresh_lock);
+	g_mutex_unlock (&priv->refresh_lock);
 
 	return NULL;
 }
@@ -985,7 +984,7 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 
 	priv = cbfile->priv;
 
-	g_mutex_lock (priv->refresh_lock);
+	g_mutex_lock (&priv->refresh_lock);
 
 	priv->refresh_thread_stop = FALSE;
 	priv->refresh_skip = 0;
@@ -1016,13 +1015,16 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 	}
 
 	if (priv->refresh_monitor) {
-		priv->refresh_cond = g_cond_new ();
-		priv->refresh_gone_cond = g_cond_new ();
+		GThread *thread;
 
-		g_thread_create (refresh_thread_func, cbfile, FALSE, NULL);
+		priv->refresh_cond = g_new0 (GCond, 1);
+		priv->refresh_gone_cond = g_new0 (GCond, 1);
+
+		thread = g_thread_new (NULL, refresh_thread_func, cbfile);
+		g_thread_unref (thread);
 	}
 
-	g_mutex_unlock (priv->refresh_lock);
+	g_mutex_unlock (&priv->refresh_lock);
 }
 
 static void
@@ -1034,7 +1036,7 @@ free_refresh_data (ECalBackendFile *cbfile)
 
 	priv = cbfile->priv;
 
-	g_mutex_lock (priv->refresh_lock);
+	g_mutex_lock (&priv->refresh_lock);
 
 	if (priv->refresh_monitor)
 		g_object_unref (priv->refresh_monitor);
@@ -1043,17 +1045,17 @@ free_refresh_data (ECalBackendFile *cbfile)
 	if (priv->refresh_cond) {
 		priv->refresh_thread_stop = TRUE;
 		g_cond_signal (priv->refresh_cond);
-		g_cond_wait (priv->refresh_gone_cond, priv->refresh_lock);
+		g_cond_wait (priv->refresh_gone_cond, &priv->refresh_lock);
 
-		g_cond_free (priv->refresh_cond);
+		g_cond_clear (priv->refresh_cond);
 		priv->refresh_cond = NULL;
-		g_cond_free (priv->refresh_gone_cond);
+		g_cond_clear (priv->refresh_gone_cond);
 		priv->refresh_gone_cond = NULL;
 	}
 
 	priv->refresh_skip = 0;
 
-	g_mutex_unlock (priv->refresh_lock);
+	g_mutex_unlock (&priv->refresh_lock);
 }
 
 /* Parses an open iCalendar file and loads it into the backend */
@@ -1341,7 +1343,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* Claim a succesful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
@@ -1385,7 +1387,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	g_free (str_uri);
 
   done:
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), priv->read_only);
 	e_cal_backend_notify_online (E_CAL_BACKEND (backend), TRUE);
 
@@ -1429,11 +1431,11 @@ e_cal_backend_file_get_object (ECalBackendSync *backend,
 	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
 	g_assert (priv->comp_uid_hash != NULL);
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data) {
-		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 		return;
 	}
@@ -1449,7 +1451,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend,
 			struct icaltimetype itt;
 
 			if (!obj_data->full_object) {
-				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+				g_rec_mutex_unlock (&priv->idle_save_rmutex);
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 				return;
 			}
@@ -1459,7 +1461,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend,
 				e_cal_component_get_icalcomponent (obj_data->full_object),
 				itt);
 			if (!icalcomp) {
-				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+				g_rec_mutex_unlock (&priv->idle_save_rmutex);
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 				return;
 			}
@@ -1491,7 +1493,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend,
 			*object = e_cal_component_get_as_string (obj_data->full_object);
 	}
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 /* Add_timezone handler for the file backend */
@@ -1525,14 +1527,14 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend,
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
 
-		g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+		g_rec_mutex_lock (&priv->idle_save_rmutex);
 		if (!icalcomponent_get_timezone (priv->icalcomp,
 						 icaltimezone_get_tzid (zone))) {
 			icalcomponent_add_component (priv->icalcomp, tz_comp);
 
 			save (cbfile, TRUE);
 		}
-		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 		icaltimezone_free (zone, 1);
 	}
@@ -1649,7 +1651,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 		return;
 	}
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (
 		match_data.obj_sexp,
@@ -1670,7 +1672,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 			       &match_data);
 	}
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	*objects = g_slist_reverse (match_data.comps_list);
 
@@ -1750,11 +1752,11 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
 	e_return_data_cal_error_if_fail (attachment_uris != NULL, InvalidArg);
 	g_assert (priv->comp_uid_hash != NULL);
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 	if (!obj_data) {
-		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+		g_rec_mutex_unlock (&priv->idle_save_rmutex);
 		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 		return;
 	}
@@ -1770,7 +1772,7 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
 			struct icaltimetype itt;
 
 			if (!obj_data->full_object) {
-				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+				g_rec_mutex_unlock (&priv->idle_save_rmutex);
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 				return;
 			}
@@ -1780,7 +1782,7 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
 				e_cal_component_get_icalcomponent (obj_data->full_object),
 				itt);
 			if (!icalcomp) {
-				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+				g_rec_mutex_unlock (&priv->idle_save_rmutex);
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 				return;
 			}
@@ -1803,7 +1805,7 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
 
 	*attachment_uris = g_slist_reverse (*attachment_uris);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 /* get_query handler for the file backend */
@@ -1850,7 +1852,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 
 	objs_occuring_in_tw = NULL;
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	if (!prunning_by_time) {
 		/* full scan */
@@ -1875,7 +1877,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 			g_list_length (objs_occuring_in_tw));
 	}
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	/* notify listeners of all objects */
 	if (match_data.comps_list) {
@@ -2036,7 +2038,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
 	e_return_data_cal_error_if_fail (start != -1 && end != -1, InvalidRange);
 	e_return_data_cal_error_if_fail (start <= end, InvalidRange);
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	*freebusy = NULL;
 
@@ -2064,7 +2066,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
 		}
 	}
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 static icaltimezone *
@@ -2080,7 +2082,7 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend,
 
 	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	if (!strcmp (tzid, "UTC"))
 		zone = icaltimezone_get_utc_timezone ();
@@ -2091,7 +2093,7 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend,
 			zone = E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->internal_get_timezone (backend, tzid);
 	}
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return zone;
 }
 
@@ -2165,7 +2167,7 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 	if (uids)
 		*uids = NULL;
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* First step, parse input strings and do uid verification: may fail */
 	for (l = in_calobjs; l; l = l->next) {
@@ -2176,7 +2178,7 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 		icalcomp = icalparser_parse_string ((gchar *) l->data);
 		if (!icalcomp) {
 			g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (InvalidObject));
 			return;
 		}
@@ -2187,7 +2189,7 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 		/* Check kind with the parent */
 		if (icalcomponent_isa (icalcomp) != e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 			g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (InvalidObject));
 			return;
 		}
@@ -2200,7 +2202,7 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 			new_uid = e_cal_component_gen_uid ();
 			if (!new_uid) {
 				g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+				g_rec_mutex_unlock (&priv->idle_save_rmutex);
 				g_propagate_error (error, EDC_ERROR (InvalidObject));
 				return;
 			}
@@ -2214,7 +2216,7 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 		/* check that the object is not in our cache */
 		if (uid_in_use (cbfile, comp_uid)) {
 			g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectIdAlreadyExists));
 			return;
 		}
@@ -2255,7 +2257,7 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 	/* Save the file */
 	save (cbfile, TRUE);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	if (uids)
 		*uids = g_slist_reverse (*uids);
@@ -2336,7 +2338,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 	if (new_components)
 		*new_components = NULL;
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* First step, parse input strings and do uid verification: may fail */
 	for (l = calobjs; l; l = l->next) {
@@ -2347,7 +2349,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 		icalcomp = icalparser_parse_string (l->data);
 		if (!icalcomp) {
 			g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (InvalidObject));
 			return;
 		}
@@ -2357,7 +2359,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 		/* Check kind with the parent */
 		if (icalcomponent_isa (icalcomp) != e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 			g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (InvalidObject));
 			return;
 		}
@@ -2368,7 +2370,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 		/* Get the object from our cache */
 		if (!g_hash_table_lookup (priv->comp_uid_hash, comp_uid)) {
 			g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
 		}
@@ -2579,7 +2581,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 	/* All the components were updated, now we save the file */
 	save (cbfile, TRUE);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	if (old_components)
 		*old_components = g_slist_reverse (*old_components);
@@ -2822,14 +2824,14 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 
 	*old_components = *new_components = NULL;
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	/* First step, validate the input */
 	for (l = ids; l; l = l->next) {
 		ECalComponentId *id = l->data;
 				/* Make the ID contains a uid */
 		if (!id || !id->uid) {
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
 		}
@@ -2837,13 +2839,13 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 					 or CALOBJ_MOD_THISANDFUTURE */
 		if ((mod == CALOBJ_MOD_THISANDPRIOR || mod == CALOBJ_MOD_THISANDFUTURE) &&
 			(!id->rid || !*(id->rid))) {
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
 		}
 				/* Make sure the uid exists in the local hash table */
 		if (!g_hash_table_lookup (priv->comp_uid_hash, id->uid)) {
-			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
 		}
@@ -2928,7 +2930,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 
 	save (cbfile, TRUE);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	*old_components = g_slist_reverse (*old_components);
 	*new_components = g_slist_reverse (*new_components);
@@ -3093,7 +3095,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		return;
 	}
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
 
@@ -3337,7 +3339,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 
  error:
 	g_hash_table_destroy (tzdata.zones);
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -3364,9 +3366,9 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 
 	cbfile->priv->file_name = g_strdup ("calendar.ics");
 
-	g_static_rec_mutex_init (&cbfile->priv->idle_save_rmutex);
+	g_rec_mutex_init (&cbfile->priv->idle_save_rmutex);
 
-	cbfile->priv->refresh_lock = g_mutex_new ();
+	g_mutex_init (&cbfile->priv->refresh_lock);
 
 	/*
 	 * data access is serialized via idle_save_rmutex, so locking at the
@@ -3488,14 +3490,14 @@ e_cal_backend_file_set_file_name (ECalBackendFile *cbfile,
 	g_return_if_fail (file_name != NULL);
 
 	priv = cbfile->priv;
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	if (priv->file_name)
 		g_free (priv->file_name);
 
 	priv->file_name = g_strdup (file_name);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 const gchar *
@@ -3520,7 +3522,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 	GError *err = NULL;
 
 	priv = cbfile->priv;
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	str_uri = get_uri_string (E_CAL_BACKEND (cbfile));
 	if (!str_uri) {
@@ -3547,7 +3549,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 			priv->read_only = TRUE;
 	}
   done:
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 	e_cal_backend_notify_readonly (E_CAL_BACKEND (cbfile), cbfile->priv->read_only);
 
 	if (err)
@@ -3579,7 +3581,7 @@ test_query_by_scanning_all_objects (ECalBackendFile *cbfile,
 	if (!match_data.obj_sexp)
 		return;
 
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	if (!match_data.obj_sexp)
 	{
@@ -3590,7 +3592,7 @@ test_query_by_scanning_all_objects (ECalBackendFile *cbfile,
 	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp,
 			&match_data);
 
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	*objects = g_slist_reverse (match_data.comps_list);
 

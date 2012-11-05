@@ -23,7 +23,7 @@
 	((obj), CAMEL_TYPE_IMAP_SETTINGS, CamelImapSettingsPrivate))
 
 struct _CamelImapSettingsPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *namespace;
 	gchar *shell_command;
 	gchar *real_junk_path;
@@ -378,7 +378,7 @@ imap_settings_finalize (GObject *object)
 
 	priv = CAMEL_IMAP_SETTINGS_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->namespace);
 	g_free (priv->shell_command);
@@ -631,7 +631,7 @@ static void
 camel_imap_settings_init (CamelImapSettings *settings)
 {
 	settings->priv = CAMEL_IMAP_SETTINGS_GET_PRIVATE (settings);
-	settings->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&settings->priv->property_lock);
 
 	/* The default namespace is an empty string. */
 	settings->priv->namespace = g_strdup ("");
@@ -811,12 +811,12 @@ camel_imap_settings_dup_fetch_headers_extra (CamelImapSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imap_settings_get_fetch_headers_extra (settings);
 	duplicate = g_strdupv ((gchar **) protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -857,12 +857,12 @@ camel_imap_settings_set_fetch_headers_extra (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (fetch_headers_equal (
 		(const gchar * const *) settings->priv->fetch_headers_extra,
 		fetch_headers_extra)) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
@@ -870,7 +870,7 @@ camel_imap_settings_set_fetch_headers_extra (CamelImapSettings *settings,
 	settings->priv->fetch_headers_extra =
 		g_strdupv ((gchar **) fetch_headers_extra);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "fetch-headers-extra");
 }
@@ -1041,12 +1041,12 @@ camel_imap_settings_dup_namespace (CamelImapSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imap_settings_get_namespace (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -1071,17 +1071,17 @@ camel_imap_settings_set_namespace (CamelImapSettings *settings,
 	if (namespace == NULL)
 		namespace = "";
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->namespace, namespace) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->namespace);
 	settings->priv->namespace = g_strdup (namespace);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "namespace");
 }
@@ -1126,12 +1126,12 @@ camel_imap_settings_dup_real_junk_path (CamelImapSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imap_settings_get_real_junk_path (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -1156,17 +1156,17 @@ camel_imap_settings_set_real_junk_path (CamelImapSettings *settings,
 	if (real_junk_path != NULL && *real_junk_path == '\0')
 		real_junk_path = NULL;
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->real_junk_path, real_junk_path) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->real_junk_path);
 	settings->priv->real_junk_path = g_strdup (real_junk_path);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "real-junk-path");
 }
@@ -1211,12 +1211,12 @@ camel_imap_settings_dup_real_trash_path (CamelImapSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imap_settings_get_real_trash_path (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -1241,17 +1241,17 @@ camel_imap_settings_set_real_trash_path (CamelImapSettings *settings,
 	if (real_trash_path != NULL && *real_trash_path == '\0')
 		real_trash_path = NULL;
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->real_trash_path, real_trash_path) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->real_trash_path);
 	settings->priv->real_trash_path = g_strdup (real_trash_path);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "real-trash-path");
 }
@@ -1302,12 +1302,12 @@ camel_imap_settings_dup_shell_command (CamelImapSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imap_settings_get_shell_command (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -1338,17 +1338,17 @@ camel_imap_settings_set_shell_command (CamelImapSettings *settings,
 	if (shell_command != NULL && *shell_command == '\0')
 		shell_command = NULL;
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->shell_command, shell_command) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->shell_command);
 	settings->priv->shell_command = g_strdup (shell_command);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "shell-command");
 }

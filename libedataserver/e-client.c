@@ -38,7 +38,7 @@
 	((obj), E_TYPE_CLIENT, EClientPrivate))
 
 struct _EClientPrivate {
-	GStaticRecMutex prop_mutex;
+	GRecMutex prop_mutex;
 
 	ESource *source;
 	gchar *uri;
@@ -50,7 +50,7 @@ struct _EClientPrivate {
 
 	GHashTable *backend_property_cache;
 
-	GStaticRecMutex ops_mutex;
+	GRecMutex ops_mutex;
 	guint32 last_opid;
 	GHashTable *ops; /* opid to GCancellable */
 };
@@ -195,10 +195,10 @@ e_client_init (EClient *client)
 
 	client->priv->readonly = TRUE;
 
-	g_static_rec_mutex_init (&client->priv->prop_mutex);
+	g_rec_mutex_init (&client->priv->prop_mutex);
 	client->priv->backend_property_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	g_static_rec_mutex_init (&client->priv->ops_mutex);
+	g_rec_mutex_init (&client->priv->ops_mutex);
 	client->priv->last_opid = 0;
 	client->priv->ops = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 }
@@ -226,7 +226,7 @@ client_finalize (GObject *object)
 
 	priv = client->priv;
 
-	g_static_rec_mutex_lock (&priv->prop_mutex);
+	g_rec_mutex_lock (&priv->prop_mutex);
 
 	if (priv->source) {
 		g_object_unref (priv->source);
@@ -254,9 +254,9 @@ client_finalize (GObject *object)
 		priv->ops = NULL;
 	}
 
-	g_static_rec_mutex_unlock (&priv->prop_mutex);
-	g_static_rec_mutex_free (&priv->prop_mutex);
-	g_static_rec_mutex_free (&priv->ops_mutex);
+	g_rec_mutex_unlock (&priv->prop_mutex);
+	g_rec_mutex_clear (&priv->prop_mutex);
+	g_rec_mutex_clear (&priv->ops_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_client_parent_class)->finalize (object);
@@ -522,7 +522,7 @@ client_ensure_capabilities (EClient *client)
 	if (client->priv->capabilities_retrieved || client->priv->capabilities)
 		return;
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 
 	capabilities = NULL;
 	e_client_retrieve_capabilities_sync (client, &capabilities, NULL, NULL);
@@ -531,7 +531,7 @@ client_ensure_capabilities (EClient *client)
 
 	client->priv->capabilities_retrieved = TRUE;
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 }
 
 /**
@@ -578,7 +578,7 @@ e_client_check_capability (EClient *client,
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (capability, FALSE);
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 
 	client_ensure_capabilities (client);
 
@@ -586,12 +586,12 @@ e_client_check_capability (EClient *client,
 		const gchar *cap = iter->data;
 
 		if (cap && g_ascii_strcasecmp (cap, capability) == 0) {
-			g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+			g_rec_mutex_unlock (&client->priv->prop_mutex);
 			return TRUE;
 		}
 	}
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
 	return FALSE;
 }
@@ -622,7 +622,7 @@ e_client_set_capabilities (EClient *client,
 {
 	g_return_if_fail (E_IS_CLIENT (client));
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 
 	if (!capabilities)
 		client->priv->capabilities_retrieved = FALSE;
@@ -631,7 +631,7 @@ e_client_set_capabilities (EClient *client,
 	g_slist_free (client->priv->capabilities);
 	client->priv->capabilities = e_client_util_parse_comma_strings (capabilities);
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
 	g_object_notify (G_OBJECT (client), "capabilities");
 }
@@ -660,15 +660,15 @@ e_client_set_readonly (EClient *client,
 {
 	g_return_if_fail (E_IS_CLIENT (client));
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 	if ((readonly ? 1 : 0) == (client->priv->readonly ? 1 : 0)) {
-		g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+		g_rec_mutex_unlock (&client->priv->prop_mutex);
 		return;
 	}
 
 	client->priv->readonly = readonly;
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
 	g_object_notify (G_OBJECT (client), "readonly");
 }
@@ -700,15 +700,15 @@ e_client_set_online (EClient *client,
 	/* newly connected/disconnected => make sure capabilities will be correct */
 	e_client_set_capabilities (client, NULL);
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 	if ((is_online ? 1: 0) == (client->priv->online ? 1 : 0)) {
-		g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+		g_rec_mutex_unlock (&client->priv->prop_mutex);
 		return;
 	}
 
 	client->priv->online = is_online;
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
 	g_object_notify (G_OBJECT (client), "online");
 }
@@ -755,13 +755,13 @@ client_cancel_op (EClient *client,
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv->ops != NULL);
 
-	g_static_rec_mutex_lock (&client->priv->ops_mutex);
+	g_rec_mutex_lock (&client->priv->ops_mutex);
 
 	cancellable = g_hash_table_lookup (client->priv->ops, GINT_TO_POINTER (opid));
 	if (cancellable)
 		g_cancellable_cancel (cancellable);
 
-	g_static_rec_mutex_unlock (&client->priv->ops_mutex);
+	g_rec_mutex_unlock (&client->priv->ops_mutex);
 }
 
 static void
@@ -799,14 +799,14 @@ e_client_cancel_all (EClient *client)
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv->ops != NULL);
 
-	g_static_rec_mutex_lock (&client->priv->ops_mutex);
+	g_rec_mutex_lock (&client->priv->ops_mutex);
 
 	g_hash_table_foreach (client->priv->ops, gather_opids_cb, &opids);
 
 	g_slist_foreach (opids, cancel_op_cb, client);
 	g_slist_free (opids);
 
-	g_static_rec_mutex_unlock (&client->priv->ops_mutex);
+	g_rec_mutex_unlock (&client->priv->ops_mutex);
 }
 
 guint32
@@ -819,7 +819,7 @@ e_client_register_op (EClient *client,
 	g_return_val_if_fail (client->priv->ops != NULL, 0);
 	g_return_val_if_fail (cancellable != NULL, 0);
 
-	g_static_rec_mutex_lock (&client->priv->ops_mutex);
+	g_rec_mutex_lock (&client->priv->ops_mutex);
 
 	client->priv->last_opid++;
 	if (!client->priv->last_opid)
@@ -833,7 +833,7 @@ e_client_register_op (EClient *client,
 	opid = client->priv->last_opid;
 	g_hash_table_insert (client->priv->ops, GINT_TO_POINTER (opid), g_object_ref (cancellable));
 
-	g_static_rec_mutex_unlock (&client->priv->ops_mutex);
+	g_rec_mutex_unlock (&client->priv->ops_mutex);
 
 	return opid;
 }
@@ -845,9 +845,9 @@ e_client_unregister_op (EClient *client,
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv->ops != NULL);
 
-	g_static_rec_mutex_lock (&client->priv->ops_mutex);
+	g_rec_mutex_lock (&client->priv->ops_mutex);
 	g_hash_table_remove (client->priv->ops, GINT_TO_POINTER (opid));
-	g_static_rec_mutex_unlock (&client->priv->ops_mutex);
+	g_rec_mutex_unlock (&client->priv->ops_mutex);
 }
 
 void
@@ -915,12 +915,12 @@ e_client_update_backend_property_cache (EClient *client,
 	g_return_if_fail (*prop_name);
 	g_return_if_fail (prop_value != NULL);
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 
 	if (client->priv->backend_property_cache)
 		g_hash_table_insert (client->priv->backend_property_cache, g_strdup (prop_name), g_strdup (prop_value));
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 }
 
 gchar *
@@ -933,12 +933,12 @@ e_client_get_backend_property_from_cache (EClient *client,
 	g_return_val_if_fail (prop_name != NULL, NULL);
 	g_return_val_if_fail (*prop_name, NULL);
 
-	g_static_rec_mutex_lock (&client->priv->prop_mutex);
+	g_rec_mutex_lock (&client->priv->prop_mutex);
 
 	if (client->priv->backend_property_cache)
 		prop_value = g_strdup (g_hash_table_lookup (client->priv->backend_property_cache, prop_name));
 
-	g_static_rec_mutex_unlock (&client->priv->prop_mutex);
+	g_rec_mutex_unlock (&client->priv->prop_mutex);
 
 	return prop_value;
 }

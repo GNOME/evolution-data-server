@@ -95,7 +95,7 @@ camel_imap_command (CamelImapStore *store,
 	va_list ap;
 	gchar *cmd;
 
-	g_static_rec_mutex_lock (&store->command_and_response_lock);
+	g_rec_mutex_lock (&store->command_and_response_lock);
 
 	if (fmt) {
 		va_start (ap, fmt);
@@ -115,7 +115,7 @@ camel_imap_command (CamelImapStore *store,
 
 	if (!imap_command_start (store, folder, cmd, cancellable, error)) {
 		g_free (cmd);
-		g_static_rec_mutex_unlock (&store->command_and_response_lock);
+		g_rec_mutex_unlock (&store->command_and_response_lock);
 		return NULL;
 	}
 	g_free (cmd);
@@ -173,12 +173,12 @@ camel_imap_command_start (CamelImapStore *store,
 	cmd = imap_command_strdup_vprintf (store, fmt, ap);
 	va_end (ap);
 
-	g_static_rec_mutex_lock (&store->command_and_response_lock);
+	g_rec_mutex_lock (&store->command_and_response_lock);
 	ok = imap_command_start (store, folder, cmd, cancellable, error);
 	g_free (cmd);
 
 	if (!ok)
-		g_static_rec_mutex_unlock (&store->command_and_response_lock);
+		g_rec_mutex_unlock (&store->command_and_response_lock);
 
 	return ok;
 }
@@ -314,7 +314,7 @@ camel_imap_command_continuation (CamelImapStore *store,
 		 * the cancellable cancelled, thus there will be no I/O */
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (store), FALSE, NULL, NULL);
-		g_static_rec_mutex_unlock (&store->command_and_response_lock);
+		g_rec_mutex_unlock (&store->command_and_response_lock);
 		return NULL;
 	}
 
@@ -366,7 +366,7 @@ camel_imap_command_response (CamelImapStore *store,
 	g_object_unref (settings);
 
 	if (camel_imap_store_readline (store, &respbuf, cancellable, error) < 0) {
-		g_static_rec_mutex_unlock (&store->command_and_response_lock);
+		g_rec_mutex_unlock (&store->command_and_response_lock);
 		type = CAMEL_IMAP_RESPONSE_ERROR;
 		goto exit;
 	}
@@ -447,7 +447,7 @@ camel_imap_command_response (CamelImapStore *store,
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR ||
 	    type == CAMEL_IMAP_RESPONSE_TAGGED)
-		g_static_rec_mutex_unlock (&store->command_and_response_lock);
+		g_rec_mutex_unlock (&store->command_and_response_lock);
 
 exit:
 	g_free (host);
@@ -471,7 +471,7 @@ imap_read_response (CamelImapStore *store,
 	 * we're still locked. This lock is owned by response
 	 * and gets unlocked when response is freed.
 	 */
-	g_static_rec_mutex_lock (&store->command_and_response_lock);
+	g_rec_mutex_lock (&store->command_and_response_lock);
 
 	response = g_new0 (CamelImapResponse, 1);
 /*FIXME	if (store->current_folder && camel_disco_store_status (CAMEL_DISCO_STORE (store)) != CAMEL_DISCO_STORE_RESYNCING) {
@@ -749,7 +749,7 @@ camel_imap_response_free (CamelImapStore *store,
 	}
 
 	g_free (response);
-	g_static_rec_mutex_unlock (&store->command_and_response_lock);
+	g_rec_mutex_unlock (&store->command_and_response_lock);
 }
 
 /**

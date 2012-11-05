@@ -81,7 +81,7 @@ struct _CamelImapStore {
 	CamelImapStorePrivate *priv;
 
 	/* For processing IMAP commands and responses. */
-	GStaticRecMutex command_and_response_lock;
+	GRecMutex command_and_response_lock;
 
 	CamelStream *istream;
 	CamelStream *ostream;

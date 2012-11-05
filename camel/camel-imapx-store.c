@@ -128,7 +128,7 @@ imapx_store_finalize (GObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
-	g_mutex_free (imapx_store->get_finfo_lock);
+	g_mutex_clear (&imapx_store->get_finfo_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
@@ -1237,12 +1237,12 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	if (top == NULL)
 		top = "";
 
-	g_mutex_lock (istore->get_finfo_lock);
+	g_mutex_lock (&istore->get_finfo_lock);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		fi = get_folder_info_offline (store, top, flags, error);
 
-		g_mutex_unlock (istore->get_finfo_lock);
+		g_mutex_unlock (&istore->get_finfo_lock);
 		return fi;
 	}
 
@@ -1263,19 +1263,19 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		}
 
 		fi = get_folder_info_offline (store, top, flags, error);
-		g_mutex_unlock (istore->get_finfo_lock);
+		g_mutex_unlock (&istore->get_finfo_lock);
 		return fi;
 	}
 
 	if (!camel_service_connect_sync (
 		CAMEL_SERVICE (store), cancellable, error)) {
-		g_mutex_unlock (istore->get_finfo_lock);
+		g_mutex_unlock (&istore->get_finfo_lock);
 		return NULL;
 	}
 
 	if (*top && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) {
 		fi = get_folder_info_offline (store, top, flags, error);
-		g_mutex_unlock (istore->get_finfo_lock);
+		g_mutex_unlock (&istore->get_finfo_lock);
 		return fi;
 	}
 
@@ -1297,7 +1297,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	}
 
 	if (!sync_folders (istore, pattern, TRUE, cancellable, error)) {
-		g_mutex_unlock (istore->get_finfo_lock);
+		g_mutex_unlock (&istore->get_finfo_lock);
 		return NULL;
 	}
 
@@ -1308,7 +1308,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		discover_inbox (store, cancellable);
 
 	fi = get_folder_info_offline (store, top, flags, error);
-	g_mutex_unlock (istore->get_finfo_lock);
+	g_mutex_unlock (&istore->get_finfo_lock);
 	return fi;
 }
 
@@ -1812,7 +1812,7 @@ camel_subscribable_init (CamelSubscribableInterface *interface)
 static void
 camel_imapx_store_init (CamelIMAPXStore *istore)
 {
-	istore->get_finfo_lock = g_mutex_new ();
+	g_mutex_init (&istore->get_finfo_lock);
 	istore->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
 	istore->dir_sep = '/';
 	istore->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (istore));

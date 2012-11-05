@@ -45,7 +45,7 @@ struct _EDataBookPrivate {
 	EBookBackend *backend;
 	gchar *object_path;
 
-	GStaticRecMutex pending_ops_lock;
+	GRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
 };
 
@@ -244,7 +244,7 @@ operation_thread (gpointer data,
 		g_free (op->d.query);
 		break;
 	case OP_CANCEL_OPERATION:
-		g_static_rec_mutex_lock (&op->book->priv->pending_ops_lock);
+		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
 
 		if (g_hash_table_lookup (op->book->priv->pending_ops, GUINT_TO_POINTER (op->d.opid))) {
 			GCancellable *cancellable = g_hash_table_lookup (op->book->priv->pending_ops, GUINT_TO_POINTER (op->d.opid));
@@ -252,15 +252,15 @@ operation_thread (gpointer data,
 			g_cancellable_cancel (cancellable);
 		}
 
-		g_static_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
+		g_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
 		break;
 	case OP_CLOSE:
 		/* close just cancels all pending ops and frees data book */
 		e_book_backend_remove_client (backend, op->book);
 	case OP_CANCEL_ALL:
-		g_static_rec_mutex_lock (&op->book->priv->pending_ops_lock);
+		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
 		g_hash_table_foreach (op->book->priv->pending_ops, cancel_ops_cb, NULL);
-		g_static_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
+		g_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
 		break;
 	}
 
@@ -281,9 +281,9 @@ op_new (OperationID op,
 	data->id = e_operation_pool_reserve_opid (ops_pool);
 	data->cancellable = g_cancellable_new ();
 
-	g_static_rec_mutex_lock (&book->priv->pending_ops_lock);
+	g_rec_mutex_lock (&book->priv->pending_ops_lock);
 	g_hash_table_insert (book->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
-	g_static_rec_mutex_unlock (&book->priv->pending_ops_lock);
+	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
 
 	return data;
 }
@@ -296,9 +296,9 @@ op_complete (EDataBook *book,
 
 	e_operation_pool_release_opid (ops_pool, opid);
 
-	g_static_rec_mutex_lock (&book->priv->pending_ops_lock);
+	g_rec_mutex_lock (&book->priv->pending_ops_lock);
 	g_hash_table_remove (book->priv->pending_ops, GUINT_TO_POINTER (opid));
-	g_static_rec_mutex_unlock (&book->priv->pending_ops_lock);
+	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
 }
 
 /**
@@ -1289,7 +1289,7 @@ data_book_finalize (GObject *object)
 		priv->pending_ops = NULL;
 	}
 
-	g_static_rec_mutex_free (&priv->pending_ops_lock);
+	g_rec_mutex_clear (&priv->pending_ops_lock);
 
 	if (priv->dbus_interface) {
 		g_object_unref (priv->dbus_interface);
@@ -1387,7 +1387,7 @@ e_data_book_init (EDataBook *ebook)
 	ebook->priv->dbus_interface = e_gdbus_book_stub_new ();
 	ebook->priv->pending_ops = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal, NULL, g_object_unref);
-	g_static_rec_mutex_init (&ebook->priv->pending_ops_lock);
+	g_rec_mutex_init (&ebook->priv->pending_ops_lock);
 
 	dbus_interface = ebook->priv->dbus_interface;
 	g_signal_connect (

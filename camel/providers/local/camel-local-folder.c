@@ -145,7 +145,7 @@ local_folder_finalize (GObject *object)
 
 	camel_folder_change_info_free (local_folder->changes);
 
-	g_mutex_free (local_folder->priv->search_lock);
+	g_mutex_clear (&local_folder->priv->search_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_local_folder_parent_class)->finalize (object);
@@ -508,7 +508,7 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 	CamelFolder *folder = CAMEL_FOLDER (local_folder);
 
 	local_folder->priv = CAMEL_LOCAL_FOLDER_GET_PRIVATE (local_folder);
-	local_folder->priv->search_lock = g_mutex_new ();
+	g_mutex_init (&local_folder->priv->search_lock);
 
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 

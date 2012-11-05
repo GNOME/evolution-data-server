@@ -55,7 +55,8 @@ void		camel_msgport_push		(CamelMsgPort *msgport,
 						 CamelMsg *msg);
 CamelMsg *	camel_msgport_pop		(CamelMsgPort *msgport);
 CamelMsg *	camel_msgport_try_pop		(CamelMsgPort *msgport);
-CamelMsg *	camel_msgport_timed_pop		(CamelMsgPort *msgport, GTimeVal *end_time);
+CamelMsg *	camel_msgport_timeout_pop	(CamelMsgPort *msgport,
+						 guint64 timeout);
 void		camel_msgport_reply		(CamelMsg *msg);
 
 struct PRFileDesc * camel_msgport_prfd		(CamelMsgPort *msgport);

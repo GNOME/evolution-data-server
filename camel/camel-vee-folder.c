@@ -62,9 +62,9 @@ struct _CamelVeeFolderPrivate {
 	GAsyncQueue *change_queue;
 	gboolean change_queue_busy;
 
-	GStaticRecMutex summary_lock;	/* for locking vfolder summary */
-	GStaticRecMutex subfolder_lock;	/* for locking the subfolder list */
-	GStaticRecMutex changed_lock;	/* for locking the folders-changed list */
+	GRecMutex summary_lock;	/* for locking vfolder summary */
+	GRecMutex subfolder_lock;	/* for locking the subfolder list */
+	GRecMutex changed_lock;	/* for locking the folders-changed list */
 
 	gchar *expression;	/* query expression */
 
@@ -593,9 +593,9 @@ vee_folder_finalize (GObject *object)
 
 	g_hash_table_foreach (vf->priv->skipped_changes, free_change_info_cb, NULL);
 
-	g_static_rec_mutex_free (&vf->priv->summary_lock);
-	g_static_rec_mutex_free (&vf->priv->subfolder_lock);
-	g_static_rec_mutex_free (&vf->priv->changed_lock);
+	g_rec_mutex_clear (&vf->priv->summary_lock);
+	g_rec_mutex_clear (&vf->priv->subfolder_lock);
+	g_rec_mutex_clear (&vf->priv->changed_lock);
 	g_hash_table_destroy (vf->priv->ignore_changed);
 	g_hash_table_destroy (vf->priv->skipped_changes);
 	g_hash_table_destroy (vf->priv->unmatched_add_changed);
@@ -1188,9 +1188,9 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 		CAMEL_MESSAGE_FLAGGED |
 		CAMEL_MESSAGE_SEEN;
 
-	g_static_rec_mutex_init (&vee_folder->priv->summary_lock);
-	g_static_rec_mutex_init (&vee_folder->priv->subfolder_lock);
-	g_static_rec_mutex_init (&vee_folder->priv->changed_lock);
+	g_rec_mutex_init (&vee_folder->priv->summary_lock);
+	g_rec_mutex_init (&vee_folder->priv->subfolder_lock);
+	g_rec_mutex_init (&vee_folder->priv->changed_lock);
 
 	vee_folder->priv->auto_update = TRUE;
 	vee_folder->priv->ignore_changed = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -1722,13 +1722,13 @@ camel_vee_folder_lock (CamelVeeFolder *folder,
 
 	switch (lock) {
 		case CAMEL_VEE_FOLDER_SUMMARY_LOCK:
-			g_static_rec_mutex_lock (&folder->priv->summary_lock);
+			g_rec_mutex_lock (&folder->priv->summary_lock);
 			break;
 		case CAMEL_VEE_FOLDER_SUBFOLDER_LOCK:
-			g_static_rec_mutex_lock (&folder->priv->subfolder_lock);
+			g_rec_mutex_lock (&folder->priv->subfolder_lock);
 			break;
 		case CAMEL_VEE_FOLDER_CHANGED_LOCK:
-			g_static_rec_mutex_lock (&folder->priv->changed_lock);
+			g_rec_mutex_lock (&folder->priv->changed_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -1752,13 +1752,13 @@ camel_vee_folder_unlock (CamelVeeFolder *folder,
 
 	switch (lock) {
 		case CAMEL_VEE_FOLDER_SUMMARY_LOCK:
-			g_static_rec_mutex_unlock (&folder->priv->summary_lock);
+			g_rec_mutex_unlock (&folder->priv->summary_lock);
 			break;
 		case CAMEL_VEE_FOLDER_SUBFOLDER_LOCK:
-			g_static_rec_mutex_unlock (&folder->priv->subfolder_lock);
+			g_rec_mutex_unlock (&folder->priv->subfolder_lock);
 			break;
 		case CAMEL_VEE_FOLDER_CHANGED_LOCK:
-			g_static_rec_mutex_unlock (&folder->priv->changed_lock);
+			g_rec_mutex_unlock (&folder->priv->changed_lock);
 			break;
 		default:
 			g_return_if_reached ();

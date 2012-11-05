@@ -42,10 +42,10 @@
 #define DB_FILENAME "contacts.db"
 #define FOLDER_VERSION 1
 
-#define READER_LOCK(ebsdb) g_static_rw_lock_reader_lock (&ebsdb->priv->rwlock)
-#define READER_UNLOCK(ebsdb) g_static_rw_lock_reader_unlock (&ebsdb->priv->rwlock)
-#define WRITER_LOCK(ebssdb) g_static_rw_lock_writer_lock (&ebsdb->priv->rwlock)
-#define WRITER_UNLOCK(ebssdb) g_static_rw_lock_writer_unlock (&ebsdb->priv->rwlock)
+#define READER_LOCK(ebsdb) g_rw_lock_reader_lock (&ebsdb->priv->rwlock)
+#define READER_UNLOCK(ebsdb) g_rw_lock_reader_unlock (&ebsdb->priv->rwlock)
+#define WRITER_LOCK(ebssdb) g_rw_lock_writer_lock (&ebsdb->priv->rwlock)
+#define WRITER_UNLOCK(ebssdb) g_rw_lock_writer_unlock (&ebsdb->priv->rwlock)
 
 struct _EBookBackendSqliteDBPrivate {
 	sqlite3 *db;
@@ -53,9 +53,9 @@ struct _EBookBackendSqliteDBPrivate {
 	gchar *hash_key;
 
 	gboolean store_vcard;
-	GStaticRWLock rwlock;
+	GRWLock rwlock;
 
-	GMutex *in_transaction_lock;
+	GMutex in_transaction_lock;
 	guint32 in_transaction;
 };
 
@@ -65,7 +65,7 @@ G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
 	(e_book_backend_sqlitedb_error_quark ())
 
 static GHashTable *db_connections = NULL;
-static GStaticMutex dbcon_lock = G_STATIC_MUTEX_INIT;
+static GMutex dbcon_lock;
 
 typedef struct {
 	EContactField field;            /* The EContact field */
@@ -125,7 +125,7 @@ e_book_backend_sqlitedb_dispose (GObject *object)
 
 	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
 
-	g_static_mutex_lock (&dbcon_lock);
+	g_mutex_lock (&dbcon_lock);
 	if (db_connections != NULL) {
 		if (priv->hash_key != NULL) {
 			g_hash_table_remove (db_connections, priv->hash_key);
@@ -139,7 +139,7 @@ e_book_backend_sqlitedb_dispose (GObject *object)
 			priv->hash_key = NULL;
 		}
 	}
-	g_static_mutex_unlock (&dbcon_lock);
+	g_mutex_unlock (&dbcon_lock);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_backend_sqlitedb_parent_class)->dispose (object);
@@ -152,13 +152,13 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 
 	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
 
-	g_static_rw_lock_free (&priv->rwlock);
+	g_rw_lock_clear (&priv->rwlock);
 
 	sqlite3_close (priv->db);
 
 	g_free (priv->path);
 
-	g_mutex_free (priv->in_transaction_lock);
+	g_mutex_clear (&priv->in_transaction_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_sqlitedb_parent_class)->finalize (object);
@@ -182,10 +182,10 @@ e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 	ebsdb->priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (ebsdb);
 
 	ebsdb->priv->store_vcard = TRUE;
-	g_static_rw_lock_init (&ebsdb->priv->rwlock);
+	g_rw_lock_init (&ebsdb->priv->rwlock);
 
 	ebsdb->priv->in_transaction = 0;
-	ebsdb->priv->in_transaction_lock = g_mutex_new ();
+	g_mutex_init (&ebsdb->priv->in_transaction_lock);
 }
 
 static void
@@ -287,11 +287,11 @@ book_backend_sqlitedb_start_transaction (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
 
-	g_mutex_lock (ebsdb->priv->in_transaction_lock);
+	g_mutex_lock (&ebsdb->priv->in_transaction_lock);
 
 	ebsdb->priv->in_transaction++;
 	if (ebsdb->priv->in_transaction == 0) {
-		g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+		g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
 
 		g_return_val_if_fail (ebsdb->priv->in_transaction != 0, FALSE);
 		return FALSE;
@@ -303,7 +303,7 @@ book_backend_sqlitedb_start_transaction (EBookBackendSqliteDB *ebsdb,
 		res = book_backend_sql_exec (ebsdb->priv->db, "BEGIN", NULL, NULL, error);
 	}
 
-	g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+	g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
 
 	return res;
 }
@@ -320,9 +320,9 @@ book_backend_sqlitedb_end_transaction (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
 
-	g_mutex_lock (ebsdb->priv->in_transaction_lock);
+	g_mutex_lock (&ebsdb->priv->in_transaction_lock);
 	if (ebsdb->priv->in_transaction == 0) {
-		g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+		g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
 
 		g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
 		return FALSE;
@@ -336,7 +336,7 @@ book_backend_sqlitedb_end_transaction (EBookBackendSqliteDB *ebsdb,
 		WRITER_UNLOCK (ebsdb);
 	}
 
-	g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+	g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
 
 	return res;
 }
@@ -558,7 +558,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	g_return_val_if_fail (folderid != NULL, NULL);
 	g_return_val_if_fail (folder_name != NULL, NULL);
 
-	g_static_mutex_lock (&dbcon_lock);
+	g_mutex_lock (&dbcon_lock);
 
 	hash_key = g_strdup_printf ("%s@%s", emailid, path);
 	if (db_connections != NULL) {
@@ -566,7 +566,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 
 		if (ebsdb) {
 			g_object_ref (ebsdb);
-			g_static_mutex_unlock (&dbcon_lock);
+			g_mutex_unlock (&dbcon_lock);
 			g_free (hash_key);
 			goto exit;
 		}
@@ -576,7 +576,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	ebsdb->priv->path = g_strdup (path);
 	ebsdb->priv->store_vcard = store_vcard;
 	if (g_mkdir_with_parents (path, 0777) < 0) {
-		g_static_mutex_unlock (&dbcon_lock);
+		g_mutex_unlock (&dbcon_lock);
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, 0,
 			"Can not make parent directory: errno %d", errno);
@@ -585,7 +585,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	filename = g_build_filename (path, DB_FILENAME, NULL);
 
 	if (!book_backend_sqlitedb_load (ebsdb, filename, &err)) {
-		g_static_mutex_unlock (&dbcon_lock);
+		g_mutex_unlock (&dbcon_lock);
 		g_propagate_error (error, err);
 		g_object_unref (ebsdb);
 		g_free (filename);
@@ -598,7 +598,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	g_hash_table_insert (db_connections, hash_key, ebsdb);
 	ebsdb->priv->hash_key = g_strdup (hash_key);
 
-	g_static_mutex_unlock (&dbcon_lock);
+	g_mutex_unlock (&dbcon_lock);
 
 exit:
 	if (!err)

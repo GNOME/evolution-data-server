@@ -87,7 +87,7 @@ AC_SUBST(SOURCES_DBUS_SERVICE_NAME)
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=17
+LIBEDATASERVER_CURRENT=18
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
@@ -111,7 +111,7 @@ LIBEBOOK_CURRENT=17
 LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=3
 
-LIBCAMEL_CURRENT=41
+LIBCAMEL_CURRENT=42
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 
@@ -179,6 +179,12 @@ dnl	-Wshadow
 dnl	-Wstrict-aliasing=2
 
 AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
+
+dnl Be strict when compiling with .git subdirectory
+if test -d .git ; then
+	AM_CPPFLAGS="$AM_CPPFLAGS -DG_DISABLE_DEPRECATED"
+fi
+
 AC_SUBST(AM_CPPFLAGS)
 
 dnl ******************************

@@ -44,7 +44,7 @@
 	((obj), E_TYPE_SOURCE_MAIL_SUBMISSION, ESourceMailSubmissionPrivate))
 
 struct _ESourceMailSubmissionPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *sent_folder;
 	gchar *transport_uid;
 	gboolean replies_to_origin_folder;
@@ -130,7 +130,7 @@ source_mail_submission_finalize (GObject *object)
 
 	priv = E_SOURCE_MAIL_SUBMISSION_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->sent_folder);
 	g_free (priv->transport_uid);
@@ -201,7 +201,7 @@ static void
 e_source_mail_submission_init (ESourceMailSubmission *extension)
 {
 	extension->priv = E_SOURCE_MAIL_SUBMISSION_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -244,12 +244,12 @@ e_source_mail_submission_dup_sent_folder (ESourceMailSubmission *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_mail_submission_get_sent_folder (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -275,17 +275,17 @@ e_source_mail_submission_set_sent_folder (ESourceMailSubmission *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->sent_folder, sent_folder) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->sent_folder);
 	extension->priv->sent_folder = e_util_strdup_strip (sent_folder);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "sent-folder");
 }
@@ -330,12 +330,12 @@ e_source_mail_submission_dup_transport_uid (ESourceMailSubmission *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_mail_submission_get_transport_uid (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -356,17 +356,17 @@ e_source_mail_submission_set_transport_uid (ESourceMailSubmission *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->transport_uid, transport_uid) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->transport_uid);
 	extension->priv->transport_uid = g_strdup (transport_uid);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "transport-uid");
 }

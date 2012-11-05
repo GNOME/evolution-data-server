@@ -57,9 +57,9 @@ static GHashTable *poplast;
 /* use 1 hour as our pop timeout */
 #define POPB4SMTP_TIMEOUT (60*60)
 
-static GStaticMutex lock = G_STATIC_MUTEX_INIT;
-#define POPB4SMTP_LOCK(l) g_static_mutex_lock(&l)
-#define POPB4SMTP_UNLOCK(l) g_static_mutex_unlock(&l)
+static GMutex lock;
+#define POPB4SMTP_LOCK(l) g_mutex_lock(&l)
+#define POPB4SMTP_UNLOCK(l) g_mutex_unlock(&l)
 
 G_DEFINE_TYPE (CamelSaslPOPB4SMTP, camel_sasl_popb4smtp, CAMEL_TYPE_SASL)
 

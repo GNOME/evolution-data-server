@@ -4669,9 +4669,9 @@ camel_header_raw_clear (struct _camel_header_raw **list)
 gchar *
 camel_header_msgid_generate (void)
 {
-	static GStaticMutex count_lock = G_STATIC_MUTEX_INIT;
-#define COUNT_LOCK() g_static_mutex_lock (&count_lock)
-#define COUNT_UNLOCK() g_static_mutex_unlock (&count_lock)
+	static GMutex count_lock;
+#define COUNT_LOCK() g_mutex_lock (&count_lock)
+#define COUNT_UNLOCK() g_mutex_unlock (&count_lock)
 	gchar host[MAXHOSTNAMELEN];
 	const gchar *name;
 	static gint count = 0;

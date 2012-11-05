@@ -65,7 +65,7 @@ struct _CamelSessionPrivate {
 	gchar *user_cache_dir;
 
 	GHashTable *services;
-	GMutex *services_lock;
+	GMutex services_lock;
 
 	GHashTable *junk_headers;
 	CamelJunkFilter *junk_filter;
@@ -365,7 +365,7 @@ session_finalize (GObject *object)
 	if (priv->main_context != NULL)
 		g_main_context_unref (priv->main_context);
 
-	g_mutex_free (priv->services_lock);
+	g_mutex_clear (&priv->services_lock);
 
 	if (priv->junk_headers) {
 		g_hash_table_remove_all (priv->junk_headers);
@@ -423,14 +423,14 @@ session_add_service (CamelSession *session,
 		session, "uid", uid, NULL);
 
 	if (service != NULL) {
-		g_mutex_lock (session->priv->services_lock);
+		g_mutex_lock (&session->priv->services_lock);
 
 		g_hash_table_insert (
 			session->priv->services,
 			g_strdup (uid),
 			g_object_ref (service));
 
-		g_mutex_unlock (session->priv->services_lock);
+		g_mutex_unlock (&session->priv->services_lock);
 	}
 
 	return service;
@@ -442,12 +442,12 @@ session_remove_service (CamelSession *session,
 {
 	const gchar *uid;
 
-	g_mutex_lock (session->priv->services_lock);
+	g_mutex_lock (&session->priv->services_lock);
 
 	uid = camel_service_get_uid (service);
 	g_hash_table_remove (session->priv->services, uid);
 
-	g_mutex_unlock (session->priv->services_lock);
+	g_mutex_unlock (&session->priv->services_lock);
 }
 
 static void
@@ -860,7 +860,7 @@ camel_session_init (CamelSession *session)
 	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
 
 	session->priv->services = services;
-	session->priv->services_lock = g_mutex_new ();
+	g_mutex_init (&session->priv->services_lock);
 	session->priv->junk_headers = NULL;
 
 	session->priv->main_context = g_main_context_ref_thread_default ();
@@ -1024,14 +1024,14 @@ camel_session_ref_service (CamelSession *session,
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	g_mutex_lock (session->priv->services_lock);
+	g_mutex_lock (&session->priv->services_lock);
 
 	service = g_hash_table_lookup (session->priv->services, uid);
 
 	if (service != NULL)
 		g_object_ref (service);
 
-	g_mutex_unlock (session->priv->services_lock);
+	g_mutex_unlock (&session->priv->services_lock);
 
 	return service;
 }
@@ -1142,13 +1142,13 @@ camel_session_list_services (CamelSession *session)
 
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
-	g_mutex_lock (session->priv->services_lock);
+	g_mutex_lock (&session->priv->services_lock);
 
 	list = g_hash_table_get_values (session->priv->services);
 
 	g_list_foreach (list, (GFunc) g_object_ref, NULL);
 
-	g_mutex_unlock (session->priv->services_lock);
+	g_mutex_unlock (&session->priv->services_lock);
 
 	return list;
 }
@@ -1170,11 +1170,11 @@ camel_session_remove_services (CamelSession *session)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
-	g_mutex_lock (session->priv->services_lock);
+	g_mutex_lock (&session->priv->services_lock);
 
 	g_hash_table_remove_all (session->priv->services);
 
-	g_mutex_unlock (session->priv->services_lock);
+	g_mutex_unlock (&session->priv->services_lock);
 }
 
 /**

@@ -24,12 +24,12 @@
 struct _EBookBackendPrivate {
 	ESourceRegistry *registry;
 
-	GMutex *clients_mutex;
+	GMutex clients_mutex;
 	GList *clients;
 
 	gboolean opening, opened, readonly, removed, online;
 
-	GMutex *views_mutex;
+	GMutex views_mutex;
 	GList *views;
 
 	gchar *cache_dir;
@@ -193,8 +193,8 @@ book_backend_finalize (GObject *object)
 
 	g_list_free (priv->clients);
 
-	g_mutex_free (priv->clients_mutex);
-	g_mutex_free (priv->views_mutex);
+	g_mutex_clear (&priv->clients_mutex);
+	g_mutex_clear (&priv->views_mutex);
 
 	g_free (priv->cache_dir);
 
@@ -287,10 +287,10 @@ e_book_backend_init (EBookBackend *backend)
 	backend->priv = E_BOOK_BACKEND_GET_PRIVATE (backend);
 
 	backend->priv->clients = NULL;
-	backend->priv->clients_mutex = g_mutex_new ();
+	g_mutex_init (&backend->priv->clients_mutex);
 
 	backend->priv->views = NULL;
-	backend->priv->views_mutex = g_mutex_new ();
+	g_mutex_init (&backend->priv->views_mutex);
 }
 
 /**
@@ -423,22 +423,22 @@ e_book_backend_open (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	g_mutex_lock (backend->priv->clients_mutex);
+	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_book_backend_is_opened (backend)) {
-		g_mutex_unlock (backend->priv->clients_mutex);
+		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		e_data_book_report_readonly (book, backend->priv->readonly);
 		e_data_book_report_online (book, backend->priv->online);
 
 		e_book_backend_respond_opened (backend, book, opid, NULL);
 	} else if (e_book_backend_is_opening (backend)) {
-		g_mutex_unlock (backend->priv->clients_mutex);
+		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		e_data_book_respond_open (book, opid, EDB_OPENING_ERROR);
 	} else {
 		backend->priv->opening = TRUE;
-		g_mutex_unlock (backend->priv->clients_mutex);
+		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		/* Subclasses may need to call e_book_backend_get_cache_dir() in
 		 * their open() methods, so get the "cache-dir" property
@@ -742,12 +742,12 @@ e_book_backend_add_view (EBookBackend *backend,
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	g_mutex_lock (backend->priv->views_mutex);
+	g_mutex_lock (&backend->priv->views_mutex);
 
 	g_object_ref (view);
 	backend->priv->views = g_list_append (backend->priv->views, view);
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_mutex_unlock (&backend->priv->views_mutex);
 }
 
 /**
@@ -763,12 +763,12 @@ e_book_backend_remove_view (EBookBackend *backend,
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	g_mutex_lock (backend->priv->views_mutex);
+	g_mutex_lock (&backend->priv->views_mutex);
 
 	backend->priv->views = g_list_remove (backend->priv->views, view);
 	g_object_unref (view);
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_mutex_unlock (&backend->priv->views_mutex);
 }
 
 /**
@@ -787,9 +787,9 @@ e_book_backend_add_client (EBookBackend *backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	g_mutex_lock (backend->priv->clients_mutex);
+	g_mutex_lock (&backend->priv->clients_mutex);
 	backend->priv->clients = g_list_prepend (backend->priv->clients, book);
-	g_mutex_unlock (backend->priv->clients_mutex);
+	g_mutex_unlock (&backend->priv->clients_mutex);
 
 	return TRUE;
 }
@@ -812,13 +812,13 @@ e_book_backend_remove_client (EBookBackend *backend,
 	g_object_ref (backend);
 
 	/* Disconnect */
-	g_mutex_lock (backend->priv->clients_mutex);
+	g_mutex_lock (&backend->priv->clients_mutex);
 	backend->priv->clients = g_list_remove (backend->priv->clients, book);
 
 	if (backend->priv->clients == NULL)
 		backend->priv->opening = FALSE;
 
-	g_mutex_unlock (backend->priv->clients_mutex);
+	g_mutex_unlock (&backend->priv->clients_mutex);
 
 	g_object_unref (backend);
 }
@@ -851,13 +851,13 @@ e_book_backend_list_views (EBookBackend *backend)
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
-	g_mutex_lock (backend->priv->views_mutex);
+	g_mutex_lock (&backend->priv->views_mutex);
 
 	/* XXX Use g_list_copy_deep() once we require GLib >= 2.34. */
 	list = g_list_copy (backend->priv->views);
 	g_list_foreach (list, (GFunc) g_object_ref, NULL);
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_mutex_unlock (&backend->priv->views_mutex);
 
 	return list;
 }
@@ -1181,12 +1181,12 @@ e_book_backend_notify_error (EBookBackend *backend,
 
 	priv = backend->priv;
 
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_error (E_DATA_BOOK (clients->data), message);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1207,12 +1207,12 @@ e_book_backend_notify_readonly (EBookBackend *backend,
 
 	priv = backend->priv;
 	priv->readonly = is_readonly;
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_readonly (E_DATA_BOOK (clients->data), is_readonly);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 
 }
 
@@ -1235,12 +1235,12 @@ e_book_backend_notify_online (EBookBackend *backend,
 
 	priv = backend->priv;
 	priv->online = is_online;
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_online (E_DATA_BOOK (clients->data), is_online);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1272,7 +1272,7 @@ e_book_backend_notify_opened (EBookBackend *backend,
 	GList *clients;
 
 	priv = backend->priv;
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	priv->opening = FALSE;
 	priv->opened = error == NULL;
@@ -1280,7 +1280,7 @@ e_book_backend_notify_opened (EBookBackend *backend,
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_opened (E_DATA_BOOK (clients->data), error);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 
 	if (error)
 		g_error_free (error);
@@ -1310,12 +1310,12 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
 	g_return_if_fail (prop_value != NULL);
 
 	priv = backend->priv;
-	g_mutex_lock (priv->clients_mutex);
+	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
 		e_data_book_report_backend_property_changed (E_DATA_BOOK (clients->data), prop_name, prop_value);
 
-	g_mutex_unlock (priv->clients_mutex);
+	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**

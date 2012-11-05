@@ -51,7 +51,7 @@ struct _ECalClientPrivate {
 	icaltimezone *default_zone;
 	gchar *cache_dir;
 
-	GMutex *zone_cache_lock;
+	GMutex zone_cache_lock;
 	GHashTable *zone_cache;
 };
 
@@ -205,9 +205,9 @@ set_proxy_gone_error (GError **error)
 
 static guint active_cal_clients = 0, cal_connection_closed_id = 0;
 static EGdbusCalFactory *cal_factory = NULL;
-static GStaticRecMutex cal_factory_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK_FACTORY()   g_static_rec_mutex_lock (&cal_factory_lock)
-#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_lock)
+static GRecMutex cal_factory_lock;
+#define LOCK_FACTORY()   g_rec_mutex_lock (&cal_factory_lock)
+#define UNLOCK_FACTORY() g_rec_mutex_unlock (&cal_factory_lock)
 
 static void gdbus_cal_factory_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
 
@@ -606,12 +606,11 @@ cal_client_finalize (GObject *object)
 		icaltimezone_free (priv->default_zone, 1);
 	priv->default_zone = NULL;
 
-	g_mutex_lock (priv->zone_cache_lock);
+	g_mutex_lock (&priv->zone_cache_lock);
 	g_hash_table_destroy (priv->zone_cache);
 	priv->zone_cache = NULL;
-	g_mutex_unlock (priv->zone_cache_lock);
-	g_mutex_free (priv->zone_cache_lock);
-	priv->zone_cache_lock = NULL;
+	g_mutex_unlock (&priv->zone_cache_lock);
+	g_mutex_clear (&priv->zone_cache_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
@@ -947,7 +946,7 @@ e_cal_client_init (ECalClient *client)
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
 	client->priv->default_zone = icaltimezone_get_utc_timezone ();
 	client->priv->cache_dir = NULL;
-	client->priv->zone_cache_lock = g_mutex_new ();
+	g_mutex_init (&client->priv->zone_cache_lock);
 	client->priv->zone_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone_cb);
 }
 
@@ -4883,12 +4882,11 @@ cal_client_get_timezone_from_cache (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
 	g_return_val_if_fail (client->priv->zone_cache != NULL, NULL);
-	g_return_val_if_fail (client->priv->zone_cache_lock != NULL, NULL);
 
 	if (!*tzid)
 		return NULL;
 
-	g_mutex_lock (client->priv->zone_cache_lock);
+	g_mutex_lock (&client->priv->zone_cache_lock);
 	if (g_str_equal (tzid, "UTC")) {
 		zone = icaltimezone_get_utc_timezone ();
 	} else {
@@ -4945,7 +4943,7 @@ cal_client_get_timezone_from_cache (ECalClient *client,
 		}
 	}
 
-	g_mutex_unlock (client->priv->zone_cache_lock);
+	g_mutex_unlock (&client->priv->zone_cache_lock);
 
 	return zone;
 }
@@ -5038,9 +5036,9 @@ complete_get_timezone (ECalClient *client,
 				res = FALSE;
 				g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			} else {
-				g_mutex_lock (client->priv->zone_cache_lock);
+				g_mutex_lock (&client->priv->zone_cache_lock);
 				g_hash_table_insert (client->priv->zone_cache, g_strdup (icaltimezone_get_tzid (*zone)), *zone);
-				g_mutex_unlock (client->priv->zone_cache_lock);
+				g_mutex_unlock (&client->priv->zone_cache_lock);
 			}
 		} else {
 			res = FALSE;

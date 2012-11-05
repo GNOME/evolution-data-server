@@ -22,7 +22,7 @@
 G_DEFINE_TYPE (ECalBackendSync, e_cal_backend_sync, E_TYPE_CAL_BACKEND)
 
 struct _ECalBackendSyncPrivate {
-	GMutex *sync_mutex;
+	GMutex sync_mutex;
 
 	gboolean mutex_lock;
 };
@@ -31,20 +31,20 @@ struct _ECalBackendSyncPrivate {
 	gboolean locked = backend->priv->mutex_lock;								\
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func, NotSupported);		\
 	if (locked)												\
-		g_mutex_lock (backend->priv->sync_mutex);							\
+		g_mutex_lock (&backend->priv->sync_mutex);							\
 	(* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func) args;							\
 	if (locked)												\
-		g_mutex_unlock (backend->priv->sync_mutex);							\
+		g_mutex_unlock (&backend->priv->sync_mutex);							\
 	} G_STMT_END
 
 #define LOCK_WRAPPER_RET_VAL(func, args) G_STMT_START {								\
 	gboolean locked = backend->priv->mutex_lock;								\
 	e_return_data_cal_error_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func, NotSupported);	\
 	if (locked)												\
-		g_mutex_lock (backend->priv->sync_mutex);							\
+		g_mutex_lock (&backend->priv->sync_mutex);							\
 	res = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func) args;						\
 	if (locked)												\
-		g_mutex_unlock (backend->priv->sync_mutex);							\
+		g_mutex_unlock (&backend->priv->sync_mutex);							\
 	} G_STMT_END
 
 /**
@@ -503,10 +503,10 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 		icaltimezone *zone = NULL;
 
 		if (backend->priv->mutex_lock)
-			g_mutex_lock (backend->priv->sync_mutex);
+			g_mutex_lock (&backend->priv->sync_mutex);
 		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
 		if (backend->priv->mutex_lock)
-			g_mutex_unlock (backend->priv->sync_mutex);
+			g_mutex_unlock (&backend->priv->sync_mutex);
 
 		if (!zone) {
 			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
@@ -960,7 +960,7 @@ e_cal_backend_sync_finalize (GObject *object)
 
 	priv = E_CAL_BACKEND_SYNC_GET_PRIVATE (object);
 
-	g_mutex_free (priv->sync_mutex);
+	g_mutex_clear (&priv->sync_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_sync_parent_class)->finalize (object);
@@ -1004,6 +1004,6 @@ static void
 e_cal_backend_sync_init (ECalBackendSync *backend)
 {
 	backend->priv = E_CAL_BACKEND_SYNC_GET_PRIVATE (backend);
-	backend->priv->sync_mutex = g_mutex_new ();
+	g_mutex_init (&backend->priv->sync_mutex);
 }
 

@@ -59,11 +59,11 @@
 
 #define CIF(x) ((CamelIMAPXFolder *)x)
 
-#define QUEUE_LOCK(x) (g_static_rec_mutex_lock(&(x)->queue_lock))
-#define QUEUE_UNLOCK(x) (g_static_rec_mutex_unlock(&(x)->queue_lock))
+#define QUEUE_LOCK(x) (g_rec_mutex_lock(&(x)->queue_lock))
+#define QUEUE_UNLOCK(x) (g_rec_mutex_unlock(&(x)->queue_lock))
 
-#define IDLE_LOCK(x) (g_mutex_lock((x)->idle_lock))
-#define IDLE_UNLOCK(x) (g_mutex_unlock((x)->idle_lock))
+#define IDLE_LOCK(x) (g_mutex_lock(&(x)->idle_lock))
+#define IDLE_UNLOCK(x) (g_mutex_unlock(&(x)->idle_lock))
 
 /* Try pipelining fetch requests, 'in bits' */
 #define MULTI_SIZE (20480)
@@ -441,11 +441,11 @@ enum _idle_state {
 				     queued, before actually sending IDLE */
 
 struct _CamelIMAPXIdle {
-	GMutex *idle_lock;
+	GMutex idle_lock;
 	GThread *idle_thread;
 
-	GCond *start_watch_cond;
-	GMutex *start_watch_mutex;
+	GCond start_watch_cond;
+	GMutex start_watch_mutex;
 	gboolean start_watch_is_set;
 
 	time_t started;
@@ -2850,9 +2850,9 @@ imapx_idle_thread (gpointer data)
 	while (TRUE) {
 		CamelIMAPXFolder *ifolder;
 
-		g_mutex_lock (is->idle->start_watch_mutex);
+		g_mutex_lock (&is->idle->start_watch_mutex);
 		is->idle->start_watch_is_set = FALSE;
-		g_mutex_unlock (is->idle->start_watch_mutex);
+		g_mutex_unlock (&is->idle->start_watch_mutex);
 
 		IDLE_LOCK (is->idle);
 		while ((ifolder = (CamelIMAPXFolder *) is->select_folder) &&
@@ -2883,12 +2883,12 @@ imapx_idle_thread (gpointer data)
 		}
 		IDLE_UNLOCK (is->idle);
 
-		g_mutex_lock (is->idle->start_watch_mutex);
+		g_mutex_lock (&is->idle->start_watch_mutex);
 		while (!is->idle->start_watch_is_set)
 			g_cond_wait (
-				is->idle->start_watch_cond,
-				is->idle->start_watch_mutex);
-		g_mutex_unlock (is->idle->start_watch_mutex);
+				&is->idle->start_watch_cond,
+				&is->idle->start_watch_mutex);
+		g_mutex_unlock (&is->idle->start_watch_mutex);
 
 		if (is->idle->idle_exit)
 			break;
@@ -2956,7 +2956,7 @@ static void
 imapx_init_idle (CamelIMAPXServer *is)
 {
 	is->idle = g_new0 (CamelIMAPXIdle, 1);
-	is->idle->idle_lock = g_mutex_new ();
+	g_mutex_init (&is->idle->idle_lock);
 }
 
 static void
@@ -2973,13 +2973,13 @@ imapx_exit_idle (CamelIMAPXServer *is)
 	if (idle->idle_thread) {
 		idle->idle_exit = TRUE;
 
-		g_mutex_lock (idle->start_watch_mutex);
+		g_mutex_lock (&idle->start_watch_mutex);
 		idle->start_watch_is_set = TRUE;
-		g_cond_broadcast (idle->start_watch_cond);
-		g_mutex_unlock (idle->start_watch_mutex);
+		g_cond_broadcast (&idle->start_watch_cond);
+		g_mutex_unlock (&idle->start_watch_mutex);
 
 		thread = idle->idle_thread;
-		idle->idle_thread = 0;
+		idle->idle_thread = NULL;
 	}
 
 	idle->idle_thread = NULL;
@@ -2988,13 +2988,9 @@ imapx_exit_idle (CamelIMAPXServer *is)
 	if (thread)
 		g_thread_join (thread);
 
-	g_mutex_free (idle->idle_lock);
-
-	if (idle->start_watch_cond != NULL)
-		g_cond_free (idle->start_watch_cond);
-
-	if (idle->start_watch_mutex != NULL)
-		g_mutex_free (idle->start_watch_mutex);
+	g_mutex_clear (&idle->idle_lock);
+	g_cond_clear (&idle->start_watch_cond);
+	g_mutex_clear (&idle->start_watch_mutex);
 
 	g_free (is->idle);
 	is->idle = NULL;
@@ -3015,17 +3011,17 @@ imapx_start_idle (CamelIMAPXServer *is)
 	idle->state = IMAPX_IDLE_PENDING;
 
 	if (!idle->idle_thread) {
-		idle->start_watch_cond = g_cond_new ();
-		idle->start_watch_mutex = g_mutex_new ();
+		g_cond_init (&idle->start_watch_cond);
+		g_mutex_init (&idle->start_watch_mutex);
 		idle->start_watch_is_set = FALSE;
 
-		idle->idle_thread = g_thread_create (
-			(GThreadFunc) imapx_idle_thread, is, TRUE, NULL);
+		idle->idle_thread = g_thread_new (NULL,
+			(GThreadFunc) imapx_idle_thread, is);
 	} else {
-		g_mutex_lock (idle->start_watch_mutex);
+		g_mutex_lock (&idle->start_watch_mutex);
 		idle->start_watch_is_set = TRUE;
-		g_cond_broadcast (idle->start_watch_cond);
-		g_mutex_unlock (idle->start_watch_mutex);
+		g_cond_broadcast (&idle->start_watch_cond);
+		g_mutex_unlock (&idle->start_watch_mutex);
 	}
 
 	IDLE_UNLOCK (idle);
@@ -6409,9 +6405,9 @@ imapx_server_finalize (GObject *object)
 	is->active = NULL;
 	is->done = NULL;
 
-	g_static_rec_mutex_free (&is->queue_lock);
-	g_mutex_free (is->fetch_mutex);
-	g_cond_free (is->fetch_cond);
+	g_rec_mutex_clear (&is->queue_lock);
+	g_mutex_clear (&is->fetch_mutex);
+	g_cond_clear (&is->fetch_cond);
 
 	camel_folder_change_info_free (is->changes);
 
@@ -6524,7 +6520,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	/* not used at the moment. Use it in future */
 	is->job_timeout = 29 * 60 * 1000 * 1000;
 
-	g_static_rec_mutex_init (&is->queue_lock);
+	g_rec_mutex_init (&is->queue_lock);
 
 	is->state = IMAPX_DISCONNECTED;
 
@@ -6532,8 +6528,8 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->changes = camel_folder_change_info_new ();
 	is->parser_quit = FALSE;
 
-	is->fetch_mutex = g_mutex_new ();
-	is->fetch_cond = g_cond_new ();
+	g_mutex_init (&is->fetch_mutex);
+	g_cond_init (&is->fetch_cond);
 }
 
 CamelIMAPXServer *
@@ -6645,7 +6641,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
 
-	is->parser_thread = g_thread_create ((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
+	is->parser_thread = g_thread_new (NULL, (GThreadFunc) imapx_parser_thread, is);
 
 	return TRUE;
 }
@@ -6678,15 +6674,15 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		do {
 			gint this;
 
-			g_mutex_lock (is->fetch_mutex);
+			g_mutex_lock (&is->fetch_mutex);
 			this = is->fetch_count;
 
 			QUEUE_UNLOCK (is);
 
 			while (is->fetch_count == this)
-				g_cond_wait (is->fetch_cond, is->fetch_mutex);
+				g_cond_wait (&is->fetch_cond, &is->fetch_mutex);
 
-			g_mutex_unlock (is->fetch_mutex);
+			g_mutex_unlock (&is->fetch_mutex);
 
 			QUEUE_LOCK (is);
 
@@ -6743,10 +6739,10 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	camel_imapx_job_unref (job);
 
-	g_mutex_lock (is->fetch_mutex);
+	g_mutex_lock (&is->fetch_mutex);
 	is->fetch_count++;
-	g_cond_broadcast (is->fetch_cond);
-	g_mutex_unlock (is->fetch_mutex);
+	g_cond_broadcast (&is->fetch_cond);
+	g_mutex_unlock (&is->fetch_mutex);
 
 	return stream;
 }

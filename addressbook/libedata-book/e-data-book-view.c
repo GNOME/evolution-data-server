@@ -56,7 +56,7 @@ struct _EDataBookViewPrivate {
 
 	gboolean running;
 	gboolean complete;
-	GMutex *pending_mutex;
+	GMutex pending_mutex;
 
 	GArray *adds;
 	GArray *changes;
@@ -184,7 +184,7 @@ pending_flush_timeout_cb (gpointer data)
 {
 	EDataBookView *view = data;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	view->priv->flush_id = 0;
 
@@ -192,7 +192,7 @@ pending_flush_timeout_cb (gpointer data)
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 
 	return FALSE;
 }
@@ -500,14 +500,14 @@ data_book_view_dispose (GObject *object)
 		priv->sexp = NULL;
 	}
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	if (priv->flush_id > 0) {
 		g_source_remove (priv->flush_id);
 		priv->flush_id = 0;
 	}
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_book_view_parent_class)->dispose (object);
@@ -532,7 +532,7 @@ data_book_view_finalize (GObject *object)
 	if (priv->fields_of_interest)
 		g_hash_table_destroy (priv->fields_of_interest);
 
-	g_mutex_free (priv->pending_mutex);
+	g_mutex_clear (&priv->pending_mutex);
 
 	g_hash_table_destroy (priv->ids);
 
@@ -653,7 +653,7 @@ e_data_book_view_init (EDataBookView *view)
 	view->priv->fields_of_interest = NULL;
 	view->priv->running = FALSE;
 	view->priv->complete = FALSE;
-	view->priv->pending_mutex = g_mutex_new ();
+	g_mutex_init (&view->priv->pending_mutex);
 
 	/* THRESHOLD_ITEMS * 2 because we store UID and vcard */
 	view->priv->adds = g_array_sized_new (
@@ -932,7 +932,7 @@ e_data_book_view_notify_update (EDataBookView *view,
 	if (!view->priv->running)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	id = e_contact_get_const ((EContact *) contact, E_CONTACT_UID);
 
@@ -957,7 +957,7 @@ e_data_book_view_notify_update (EDataBookView *view,
 		/* else nothing; we're removing a card that wasn't there */
 	}
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -988,7 +988,7 @@ e_data_book_view_notify_update_vcard (EDataBookView *view,
 	if (!view->priv->running)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	contact = e_contact_new_from_vcard_with_uid (vcard, id);
 	currently_in_view = id_is_in_view (view, id);
@@ -1008,7 +1008,7 @@ e_data_book_view_notify_update_vcard (EDataBookView *view,
 	/* Do this last so that id is still valid when notify_ is called */
 	g_object_unref (contact);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1046,7 +1046,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *view,
 	if (!view->priv->running)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	currently_in_view = id_is_in_view (view, id);
 
@@ -1055,7 +1055,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *view,
 	else
 		notify_add (view, id, vcard);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1076,12 +1076,12 @@ e_data_book_view_notify_remove (EDataBookView *view,
 	if (!view->priv->running)
 		return;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	if (id_is_in_view (view, id))
 		notify_remove (view, id);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 }
 
 /**
@@ -1107,13 +1107,13 @@ e_data_book_view_notify_complete (EDataBookView *view,
 	/* View is complete */
 	view->priv->complete = TRUE;
 
-	g_mutex_lock (view->priv->pending_mutex);
+	g_mutex_lock (&view->priv->pending_mutex);
 
 	send_pending_adds (view);
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	g_mutex_unlock (view->priv->pending_mutex);
+	g_mutex_unlock (&view->priv->pending_mutex);
 
 	strv_error = e_gdbus_templates_encode_error (error);
 	e_gdbus_book_view_emit_complete (

@@ -20,8 +20,8 @@
 #include "e-flag.h"
 
 struct _EFlag {
-	GCond *cond;
-	GMutex *mutex;
+	GCond cond;
+	GMutex mutex;
 	gboolean is_set;
 };
 
@@ -40,8 +40,8 @@ e_flag_new (void)
 	EFlag *flag;
 
 	flag = g_slice_new (EFlag);
-	flag->cond = g_cond_new ();
-	flag->mutex = g_mutex_new ();
+	g_cond_init (&flag->cond);
+	g_mutex_init (&flag->mutex);
 	flag->is_set = FALSE;
 
 	return flag;
@@ -64,9 +64,9 @@ e_flag_is_set (EFlag *flag)
 
 	g_return_val_if_fail (flag != NULL, FALSE);
 
-	g_mutex_lock (flag->mutex);
+	g_mutex_lock (&flag->mutex);
 	is_set = flag->is_set;
-	g_mutex_unlock (flag->mutex);
+	g_mutex_unlock (&flag->mutex);
 
 	return is_set;
 }
@@ -76,7 +76,7 @@ e_flag_is_set (EFlag *flag)
  * @flag: an #EFlag
  *
  * Sets @flag.  All threads waiting on @flag are woken up.  Threads that
- * call e_flag_wait() or e_flag_timed_wait() once @flag is set will not
+ * call e_flag_wait() or e_flag_wait_until() once @flag is set will not
  * block at all.
  *
  * Since: 1.12
@@ -86,17 +86,17 @@ e_flag_set (EFlag *flag)
 {
 	g_return_if_fail (flag != NULL);
 
-	g_mutex_lock (flag->mutex);
+	g_mutex_lock (&flag->mutex);
 	flag->is_set = TRUE;
-	g_cond_broadcast (flag->cond);
-	g_mutex_unlock (flag->mutex);
+	g_cond_broadcast (&flag->cond);
+	g_mutex_unlock (&flag->mutex);
 }
 
 /**
  * e_flag_clear:
  * @flag: an #EFlag
  *
- * Unsets @flag.  Subsequent calls to e_flag_wait() or e_flag_timed_wait()
+ * Unsets @flag.  Subsequent calls to e_flag_wait() or e_flag_wait_until()
  * will block until @flag is set.
  *
  * Since: 1.12
@@ -106,9 +106,9 @@ e_flag_clear (EFlag *flag)
 {
 	g_return_if_fail (flag != NULL);
 
-	g_mutex_lock (flag->mutex);
+	g_mutex_lock (&flag->mutex);
 	flag->is_set = FALSE;
-	g_mutex_unlock (flag->mutex);
+	g_mutex_unlock (&flag->mutex);
 }
 
 /**
@@ -125,44 +125,42 @@ e_flag_wait (EFlag *flag)
 {
 	g_return_if_fail (flag != NULL);
 
-	g_mutex_lock (flag->mutex);
+	g_mutex_lock (&flag->mutex);
 	while (!flag->is_set)
-		g_cond_wait (flag->cond, flag->mutex);
-	g_mutex_unlock (flag->mutex);
+		g_cond_wait (&flag->cond, &flag->mutex);
+	g_mutex_unlock (&flag->mutex);
 }
 
 /**
- * e_flag_timed_wait:
+ * e_flag_wait_until:
  * @flag: an #EFlag
- * @abs_time: a #GTimeVal, determining the final time
+ * @end_time: the monotonic time to wait until
  *
- * Blocks until @flag is set, or until the time specified by @abs_time.
+ * Blocks until @flag is set, or until the time specified by @end_time.
  * If @flag is already set, the function returns immediately.  The return
  * value indicates the state of @flag after waiting.
  *
- * If @abs_time is %NULL, e_flag_timed_wait() acts like e_flag_wait().
- *
- * To easily calculate @abs_time, a combination of g_get_current_time() and
- * g_time_val_add() can be used.
+ * To easily calculate @end_time, a combination of g_get_monotonic_time() and
+ * G_TIME_SPAN_SECOND macro.
  *
  * Returns: %TRUE if @flag is now set
  *
- * Since: 1.12
+ * Since: 3.8
  **/
 gboolean
-e_flag_timed_wait (EFlag *flag,
-                   GTimeVal *abs_time)
+e_flag_wait_until (EFlag *flag,
+                   gint64 end_time)
 {
 	gboolean is_set;
 
 	g_return_val_if_fail (flag != NULL, FALSE);
 
-	g_mutex_lock (flag->mutex);
+	g_mutex_lock (&flag->mutex);
 	while (!flag->is_set)
-		if (!g_cond_timed_wait (flag->cond, flag->mutex, abs_time))
+		if (!g_cond_wait_until (&flag->cond, &flag->mutex, end_time))
 			break;
 	is_set = flag->is_set;
-	g_mutex_unlock (flag->mutex);
+	g_mutex_unlock (&flag->mutex);
 
 	return is_set;
 }
@@ -180,7 +178,7 @@ e_flag_free (EFlag *flag)
 {
 	g_return_if_fail (flag != NULL);
 
-	g_cond_free (flag->cond);
-	g_mutex_free (flag->mutex);
+	g_cond_clear (&flag->cond);
+	g_mutex_clear (&flag->mutex);
 	g_slice_free (EFlag, flag);
 }

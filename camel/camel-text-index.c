@@ -51,9 +51,9 @@
 #define CAMEL_TEXT_INDEX_MAX_WORDLEN  (36)
 
 #define CAMEL_TEXT_INDEX_LOCK(kf, lock) \
-	(g_static_rec_mutex_lock (&((CamelTextIndex *) kf)->priv->lock))
+	(g_rec_mutex_lock (&((CamelTextIndex *) kf)->priv->lock))
 #define CAMEL_TEXT_INDEX_UNLOCK(kf, lock) \
-	(g_static_rec_mutex_unlock (&((CamelTextIndex *) kf)->priv->lock))
+	(g_rec_mutex_unlock (&((CamelTextIndex *) kf)->priv->lock))
 
 static gint text_index_compress_nosync (CamelIndex *idx);
 
@@ -131,7 +131,7 @@ struct _CamelTextIndexPrivate {
 	guint word_cache_limit;
 	GQueue word_cache;
 	GHashTable *words;
-	GStaticRecMutex lock;
+	GRecMutex lock;
 };
 
 /* Root block of text index */
@@ -222,7 +222,7 @@ text_index_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->words);
 
-	g_static_rec_mutex_free (&priv->lock);
+	g_rec_mutex_clear (&priv->lock);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_text_index_parent_class)->finalize (object);
@@ -859,7 +859,7 @@ camel_text_index_init (CamelTextIndex *text_index)
 	 * usage barely affects performance. */
 	text_index->priv->word_cache_limit = 4096; /* 1024 = 128K */
 
-	g_static_rec_mutex_init (&text_index->priv->lock);
+	g_rec_mutex_init (&text_index->priv->lock);
 }
 
 static gchar *

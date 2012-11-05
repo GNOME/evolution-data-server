@@ -44,7 +44,7 @@
 	((obj), E_TYPE_SOURCE_AUTHENTICATION, ESourceAuthenticationPrivate))
 
 struct _ESourceAuthenticationPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *host;
 	gchar *method;
 	guint16 port;
@@ -145,7 +145,7 @@ source_authentication_finalize (GObject *object)
 
 	priv = E_SOURCE_AUTHENTICATION_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->host);
 	g_free (priv->method);
@@ -228,7 +228,7 @@ static void
 e_source_authentication_init (ESourceAuthentication *extension)
 {
 	extension->priv = E_SOURCE_AUTHENTICATION_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -296,12 +296,12 @@ e_source_authentication_dup_host (ESourceAuthentication *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_authentication_get_host (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -325,17 +325,17 @@ e_source_authentication_set_host (ESourceAuthentication *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->host, host) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->host);
 	extension->priv->host = e_util_strdup_strip (host);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "host");
 }
@@ -382,12 +382,12 @@ e_source_authentication_dup_method (ESourceAuthentication *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_authentication_get_method (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -412,10 +412,10 @@ e_source_authentication_set_method (ESourceAuthentication *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->method, method) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
@@ -425,7 +425,7 @@ e_source_authentication_set_method (ESourceAuthentication *extension,
 	if (extension->priv->method == NULL)
 		extension->priv->method = g_strdup ("none");
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "method");
 }
@@ -510,12 +510,12 @@ e_source_authentication_dup_user (ESourceAuthentication *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_authentication_get_user (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -539,17 +539,17 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->user, user) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->user);
 	extension->priv->user = e_util_strdup_strip (user);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "user");
 }

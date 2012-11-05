@@ -27,7 +27,7 @@ struct _KeyReservation {
 	gpointer key;
 	gint waiters;
 	GThread *owner;
-	GCond *cond;
+	GCond cond;
 };
 
 struct _CamelObjectBag {
@@ -37,7 +37,7 @@ struct _CamelObjectBag {
 	CamelCopyFunc key_copy_func;
 	GFreeFunc key_free_func;
 	GList *reserved;  /* list of KeyReservations */
-	GMutex *mutex;
+	GMutex mutex;
 };
 
 static KeyReservation *
@@ -49,7 +49,7 @@ key_reservation_new (CamelObjectBag *bag,
 	reservation = g_slice_new0 (KeyReservation);
 	reservation->key = bag->key_copy_func (key);
 	reservation->owner = g_thread_self ();
-	reservation->cond = g_cond_new ();
+	g_cond_init (&reservation->cond);
 
 	bag->reserved = g_list_prepend (bag->reserved, reservation);
 
@@ -82,7 +82,7 @@ key_reservation_free (CamelObjectBag *bag,
 	bag->reserved = g_list_remove (bag->reserved, reservation);
 
 	bag->key_free_func (reservation->key);
-	g_cond_free (reservation->cond);
+	g_cond_clear (&reservation->cond);
 	g_slice_free (KeyReservation, reservation);
 }
 
@@ -95,7 +95,7 @@ object_bag_toggle_notify (gpointer user_data,
 	gpointer key;
 
 	if (is_last_ref) {
-		g_mutex_lock (bag->mutex);
+		g_mutex_lock (&bag->mutex);
 
 		/* first remove from bag */
 		key = g_hash_table_lookup (bag->key_table, object);
@@ -104,7 +104,7 @@ object_bag_toggle_notify (gpointer user_data,
 			g_hash_table_remove (bag->object_table, key);
 		}
 
-		g_mutex_unlock (bag->mutex);
+		g_mutex_unlock (&bag->mutex);
 
 		/* then free the object */
 		g_object_remove_toggle_ref (object, object_bag_toggle_notify, bag);
@@ -131,7 +131,7 @@ object_bag_unreserve (CamelObjectBag *bag,
 
 	if (reservation->waiters > 0) {
 		reservation->owner = NULL;
-		g_cond_signal (reservation->cond);
+		g_cond_signal (&reservation->cond);
 	} else
 		key_reservation_free (bag, reservation);
 }
@@ -180,7 +180,7 @@ camel_object_bag_new (GHashFunc key_hash_func,
 	bag->key_equal_func = key_equal_func;
 	bag->key_copy_func = key_copy_func;
 	bag->key_free_func = key_free_func;
-	bag->mutex = g_mutex_new ();
+	g_mutex_init (&bag->mutex);
 
 	return bag;
 }
@@ -207,13 +207,13 @@ camel_object_bag_get (CamelObjectBag *bag,
 	g_return_val_if_fail (bag != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	/* Look for the key in the bag. */
 	object = g_hash_table_lookup (bag->object_table, key);
 	if (object != NULL) {
 		g_object_ref (object);
-		g_mutex_unlock (bag->mutex);
+		g_mutex_unlock (&bag->mutex);
 		return object;
 	}
 
@@ -221,14 +221,14 @@ camel_object_bag_get (CamelObjectBag *bag,
 	reservation = key_reservation_lookup (bag, key);
 	if (reservation == NULL) {
 		/* No such key, so return NULL. */
-		g_mutex_unlock (bag->mutex);
+		g_mutex_unlock (&bag->mutex);
 		return NULL;
 	}
 
 	/* Wait for the key to be unreserved. */
 	reservation->waiters++;
 	while (reservation->owner != NULL)
-		g_cond_wait (reservation->cond, bag->mutex);
+		g_cond_wait (&reservation->cond, &bag->mutex);
 	reservation->waiters--;
 
 	/* Check if an object was added by another thread. */
@@ -240,7 +240,7 @@ camel_object_bag_get (CamelObjectBag *bag,
 	reservation->owner = g_thread_self ();
 	object_bag_unreserve (bag, key);
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 
 	return object;
 }
@@ -268,13 +268,13 @@ camel_object_bag_peek (CamelObjectBag *bag,
 	g_return_val_if_fail (bag != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	object = g_hash_table_lookup (bag->object_table, key);
 	if (object != NULL)
 		g_object_ref (object);
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 
 	return object;
 }
@@ -304,13 +304,13 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 	g_return_val_if_fail (bag != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	/* If object for key already exists, return it immediately. */
 	object = g_hash_table_lookup (bag->object_table, key);
 	if (object != NULL) {
 		g_object_ref (object);
-		g_mutex_unlock (bag->mutex);
+		g_mutex_unlock (&bag->mutex);
 		return object;
 	}
 
@@ -318,14 +318,14 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 	reservation = key_reservation_lookup (bag, key);
 	if (reservation == NULL) {
 		key_reservation_new (bag, key);
-		g_mutex_unlock (bag->mutex);
+		g_mutex_unlock (&bag->mutex);
 		return NULL;
 	}
 
 	/* Wait for the reservation to be committed or aborted. */
 	reservation->waiters++;
 	while (reservation->owner != NULL)
-		g_cond_wait (reservation->cond, bag->mutex);
+		g_cond_wait (&reservation->cond, &bag->mutex);
 	reservation->owner = g_thread_self ();
 	reservation->waiters--;
 
@@ -337,7 +337,7 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 		g_object_ref (object);
 	}
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 
 	return object;
 }
@@ -360,7 +360,7 @@ camel_object_bag_add (CamelObjectBag *bag,
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (G_IS_OBJECT (object));
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	if (g_hash_table_lookup (bag->key_table, object) == NULL) {
 		gpointer copied_key;
@@ -375,7 +375,7 @@ camel_object_bag_add (CamelObjectBag *bag,
 			object_bag_toggle_notify, bag);
 	}
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 }
 
 /**
@@ -392,11 +392,11 @@ camel_object_bag_abort (CamelObjectBag *bag,
 	g_return_if_fail (bag != NULL);
 	g_return_if_fail (key != NULL);
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	object_bag_unreserve (bag, key);
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 }
 
 /**
@@ -421,7 +421,7 @@ camel_object_bag_rekey (CamelObjectBag *bag,
 	g_return_if_fail (G_IS_OBJECT (object));
 	g_return_if_fail (new_key != NULL);
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	key = g_hash_table_lookup (bag->key_table, object);
 	if (key != NULL) {
@@ -436,7 +436,7 @@ camel_object_bag_rekey (CamelObjectBag *bag,
 	} else
 		g_warn_if_reached ();
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 }
 
 /**
@@ -467,7 +467,7 @@ camel_object_bag_list (CamelObjectBag *bag)
 
 	array = g_ptr_array_new ();
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	values = g_hash_table_get_values (bag->object_table);
 	while (values != NULL) {
@@ -475,7 +475,7 @@ camel_object_bag_list (CamelObjectBag *bag)
 		values = g_list_delete_link (values, values);
 	}
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 
 	return array;
 }
@@ -496,7 +496,7 @@ camel_object_bag_remove (CamelObjectBag *bag,
 	g_return_if_fail (bag != NULL);
 	g_return_if_fail (G_IS_OBJECT (object));
 
-	g_mutex_lock (bag->mutex);
+	g_mutex_lock (&bag->mutex);
 
 	key = g_hash_table_lookup (bag->key_table, object);
 	if (key != NULL) {
@@ -505,7 +505,7 @@ camel_object_bag_remove (CamelObjectBag *bag,
 		g_hash_table_remove (bag->object_table, key);
 	}
 
-	g_mutex_unlock (bag->mutex);
+	g_mutex_unlock (&bag->mutex);
 }
 
 /**
@@ -528,6 +528,6 @@ camel_object_bag_destroy (CamelObjectBag *bag)
 
 	g_hash_table_destroy (bag->key_table);
 	g_hash_table_destroy (bag->object_table);
-	g_mutex_free (bag->mutex);
+	g_mutex_clear (&bag->mutex);
 	g_slice_free (CamelObjectBag, bag);
 }

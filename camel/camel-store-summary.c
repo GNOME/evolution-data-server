@@ -55,9 +55,9 @@
 	((obj), CAMEL_TYPE_STORE_SUMMARY, CamelStoreSummaryPrivate))
 
 struct _CamelStoreSummaryPrivate {
-	GStaticRecMutex summary_lock;	/* for the summary hashtable/array */
-	GStaticRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
-	GStaticRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CAMEL_STORE_SUMMARY_SUMMARY_LOCK */
+	GRecMutex summary_lock;	/* for the summary hashtable/array */
+	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
+	GRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CAMEL_STORE_SUMMARY_SUMMARY_LOCK */
 
 	GHashTable *folder_summaries; /* CamelFolderSummary->path; doesn't add reference to CamelFolderSummary */
 
@@ -81,9 +81,9 @@ store_summary_finalize (GObject *object)
 	if (summary->store_info_chunks != NULL)
 		camel_memchunk_destroy (summary->store_info_chunks);
 
-	g_static_rec_mutex_free (&summary->priv->summary_lock);
-	g_static_rec_mutex_free (&summary->priv->io_lock);
-	g_static_rec_mutex_free (&summary->priv->ref_lock);
+	g_rec_mutex_clear (&summary->priv->summary_lock);
+	g_rec_mutex_clear (&summary->priv->io_lock);
+	g_rec_mutex_clear (&summary->priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_summary_parent_class)->finalize (object);
@@ -346,9 +346,9 @@ camel_store_summary_init (CamelStoreSummary *summary)
 	summary->priv->folder_summaries = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
 	summary->priv->scheduled_save_id = 0;
 
-	g_static_rec_mutex_init (&summary->priv->summary_lock);
-	g_static_rec_mutex_init (&summary->priv->io_lock);
-	g_static_rec_mutex_init (&summary->priv->ref_lock);
+	g_rec_mutex_init (&summary->priv->summary_lock);
+	g_rec_mutex_init (&summary->priv->io_lock);
+	g_rec_mutex_init (&summary->priv->ref_lock);
 }
 
 /**
@@ -1087,13 +1087,13 @@ camel_store_summary_lock (CamelStoreSummary *summary,
 
 	switch (lock) {
 		case CAMEL_STORE_SUMMARY_SUMMARY_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->summary_lock);
+			g_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_IO_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->io_lock);
+			g_rec_mutex_lock (&summary->priv->io_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_REF_LOCK:
-			g_static_rec_mutex_lock (&summary->priv->ref_lock);
+			g_rec_mutex_lock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -1117,13 +1117,13 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 
 	switch (lock) {
 		case CAMEL_STORE_SUMMARY_SUMMARY_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->summary_lock);
+			g_rec_mutex_unlock (&summary->priv->summary_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_IO_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->io_lock);
+			g_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_REF_LOCK:
-			g_static_rec_mutex_unlock (&summary->priv->ref_lock);
+			g_rec_mutex_unlock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();

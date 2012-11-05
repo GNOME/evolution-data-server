@@ -61,7 +61,7 @@ typedef struct _EBookBackendVCFSearchContext EBookBackendVCFSearchContext;
 
 struct _EBookBackendVCFPrivate {
 	gchar       *filename;
-	GMutex     *mutex;
+	GMutex     mutex;
 	GHashTable *contacts;
 	GList      *contact_list;
 	gboolean    dirty;
@@ -146,7 +146,7 @@ save_file (EBookBackendVCF *vcf)
 
 	g_warning ("EBookBackendVCF flushing file to disk");
 
-	g_mutex_lock (vcf->priv->mutex);
+	g_mutex_lock (&vcf->priv->mutex);
 
 	new_path = g_strdup_printf ("%s.new", vcf->priv->filename);
 
@@ -190,7 +190,7 @@ out:
 		close (fd);
 	g_free (new_path);
 	vcf->priv->dirty = !retv;
-	g_mutex_unlock (vcf->priv->mutex);
+	g_mutex_unlock (&vcf->priv->mutex);
 
 	return retv;
 }
@@ -241,7 +241,7 @@ do_create (EBookBackendVCF *bvcf,
 	/* at the very least we need the unique_id generation to be
 	 * protected by the lock, even if the actual vcard parsing
 	 * isn't. */
-	g_mutex_lock (bvcf->priv->mutex);
+	g_mutex_lock (&bvcf->priv->mutex);
 	id = e_book_backend_vcf_create_unique_id ();
 
 	contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
@@ -264,7 +264,7 @@ do_create (EBookBackendVCF *bvcf,
 				vcf_flush_file, bvcf);
 	}
 
-	g_mutex_unlock (bvcf->priv->mutex);
+	g_mutex_unlock (&bvcf->priv->mutex);
 
 	return contact;
 }
@@ -324,16 +324,16 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 		return;
 	}
 
-	g_mutex_lock (bvcf->priv->mutex);
+	g_mutex_lock (&bvcf->priv->mutex);
 	elem = g_hash_table_lookup (bvcf->priv->contacts, id);
 	if (!elem) {
-		g_mutex_unlock (bvcf->priv->mutex);
+		g_mutex_unlock (&bvcf->priv->mutex);
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 		return;
 	}
 
 	if (!g_hash_table_remove (bvcf->priv->contacts, id)) {
-		g_mutex_unlock (bvcf->priv->mutex);
+		g_mutex_unlock (&bvcf->priv->mutex);
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 		return;
 	}
@@ -346,7 +346,7 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 		bvcf->priv->flush_timeout_tag = g_timeout_add (
 			FILE_FLUSH_TIMEOUT,
 			vcf_flush_file, bvcf);
-	g_mutex_unlock (bvcf->priv->mutex);
+	g_mutex_unlock (&bvcf->priv->mutex);
 
 	*ids = g_slist_append (*ids, g_strdup (id));
 }
@@ -378,10 +378,10 @@ e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
 	contact = e_contact_new_from_vcard (vcards->data);
 	id = e_contact_get_const (contact, E_CONTACT_UID);
 
-	g_mutex_lock (bvcf->priv->mutex);
+	g_mutex_lock (&bvcf->priv->mutex);
 	elem = g_hash_table_lookup (bvcf->priv->contacts, id);
 	if (!elem) {
-		g_mutex_unlock (bvcf->priv->mutex);
+		g_mutex_unlock (&bvcf->priv->mutex);
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 		return;
 	}
@@ -393,7 +393,7 @@ e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
 		bvcf->priv->flush_timeout_tag = g_timeout_add (
 			FILE_FLUSH_TIMEOUT,
 			vcf_flush_file, bvcf);
-	g_mutex_unlock (bvcf->priv->mutex);
+	g_mutex_unlock (&bvcf->priv->mutex);
 
 	*modified_contacts = g_slist_append (*modified_contacts, contact);
 }
@@ -471,6 +471,8 @@ closure_destroy (VCFBackendSearchClosure *closure)
 {
 	d (printf ("destroying search closure\n"));
 	e_flag_free (closure->running);
+	if (closure->thread)
+		g_thread_unref (closure->thread);
 	g_free (closure);
 }
 
@@ -553,7 +555,7 @@ e_book_backend_vcf_start_view (EBookBackend *backend,
 	VCFBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_VCF (backend));
 
 	d (printf ("starting book view thread\n"));
-	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
+	closure->thread = g_thread_new (NULL, book_view_thread, book_view);
 
 	e_flag_wait (closure->running);
 
@@ -573,8 +575,10 @@ e_book_backend_vcf_stop_view (EBookBackend *backend,
 	need_join = e_flag_is_set (closure->running);
 	e_flag_clear (closure->running);
 
-	if (need_join)
+	if (need_join) {
 		g_thread_join (closure->thread);
+		closure->thread = NULL;
+	}
 }
 
 #ifdef CREATE_DEFAULT_VCARD
@@ -722,7 +726,7 @@ e_book_backend_vcf_finalize (GObject *object)
 
 	priv = E_BOOK_BACKEND_VCF_GET_PRIVATE (object);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	if (priv->flush_timeout_tag)
 		g_source_remove (priv->flush_timeout_tag);
@@ -735,9 +739,9 @@ e_book_backend_vcf_finalize (GObject *object)
 
 	g_free (priv->filename);
 
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
-	g_mutex_free (priv->mutex);
+	g_mutex_clear (&priv->mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_vcf_parent_class)->finalize (object);
@@ -777,7 +781,7 @@ static void
 e_book_backend_vcf_init (EBookBackendVCF *backend)
 {
 	backend->priv = E_BOOK_BACKEND_VCF_GET_PRIVATE (backend);
-	backend->priv->mutex = g_mutex_new ();
+	g_mutex_init (&backend->priv->mutex);
 
 	g_signal_connect (
 		backend, "notify::online",

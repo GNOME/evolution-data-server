@@ -31,8 +31,8 @@ struct _CamelIMAPXRealJob {
 	GCancellable *cancellable;
 
 	/* Used for running some jobs synchronously. */
-	GCond *done_cond;
-	GMutex *done_mutex;
+	GCond done_cond;
+	GMutex done_mutex;
 	gboolean done_flag;
 
 	/* Extra job-specific data. */
@@ -61,8 +61,8 @@ camel_imapx_job_new (GCancellable *cancellable)
 
 	/* Initialize private bits. */
 	real_job->ref_count = 1;
-	real_job->done_cond = g_cond_new ();
-	real_job->done_mutex = g_mutex_new ();
+	g_cond_init (&real_job->done_cond);
+	g_mutex_init (&real_job->done_mutex);
 
 	if (cancellable != NULL)
 		g_object_ref (cancellable);
@@ -106,8 +106,8 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 
 		/* Free the private stuff. */
 
-		g_cond_free (real_job->done_cond);
-		g_mutex_free (real_job->done_mutex);
+		g_cond_clear (&real_job->done_cond);
+		g_mutex_clear (&real_job->done_mutex);
 
 		if (real_job->destroy_data != NULL)
 			real_job->destroy_data (real_job->data);
@@ -156,12 +156,12 @@ camel_imapx_job_wait (CamelIMAPXJob *job)
 
 	real_job = (CamelIMAPXRealJob *) job;
 
-	g_mutex_lock (real_job->done_mutex);
+	g_mutex_lock (&real_job->done_mutex);
 	while (!real_job->done_flag)
 		g_cond_wait (
-			real_job->done_cond,
-			real_job->done_mutex);
-	g_mutex_unlock (real_job->done_mutex);
+			&real_job->done_cond,
+			&real_job->done_mutex);
+	g_mutex_unlock (&real_job->done_mutex);
 }
 
 void
@@ -173,10 +173,10 @@ camel_imapx_job_done (CamelIMAPXJob *job)
 
 	real_job = (CamelIMAPXRealJob *) job;
 
-	g_mutex_lock (real_job->done_mutex);
+	g_mutex_lock (&real_job->done_mutex);
 	real_job->done_flag = TRUE;
-	g_cond_broadcast (real_job->done_cond);
-	g_mutex_unlock (real_job->done_mutex);
+	g_cond_broadcast (&real_job->done_cond);
+	g_mutex_unlock (&real_job->done_mutex);
 }
 
 gboolean

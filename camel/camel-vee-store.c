@@ -62,10 +62,10 @@ struct _CamelVeeStorePrivate
 	CamelVeeFolder *unmatched_folder;
 	gboolean unmatched_enabled;
 
-	GMutex *sf_counts_mutex;
+	GMutex sf_counts_mutex;
 	GHashTable *subfolder_usage_counts; /* CamelFolder * (subfolder) => gint of usages, for unmatched_folder */
 
-	GMutex *vu_counts_mutex;
+	GMutex vu_counts_mutex;
 	GHashTable *vuid_usage_counts; /* gchar * (vuid) => gint of usages, those with 0 comes to unmatched_folder */
 };
 
@@ -121,8 +121,8 @@ vee_store_finalize (GObject *object)
 	g_object_unref (vee_store->priv->vee_data_cache);
 	g_hash_table_destroy (vee_store->priv->subfolder_usage_counts);
 	g_hash_table_destroy (vee_store->priv->vuid_usage_counts);
-	g_mutex_free (vee_store->priv->sf_counts_mutex);
-	g_mutex_free (vee_store->priv->vu_counts_mutex);
+	g_mutex_clear (&vee_store->priv->sf_counts_mutex);
+	g_mutex_clear (&vee_store->priv->vu_counts_mutex);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_vee_store_parent_class)->finalize (object);
@@ -148,8 +148,8 @@ vee_store_constructed (GObject *object)
 		vee_store->priv->unmatched_folder, CAMEL_STORE_FOLDER_PRIVATE);
 	vee_store->priv->subfolder_usage_counts = g_hash_table_new (g_direct_hash, g_direct_equal);
 	vee_store->priv->vuid_usage_counts = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
-	vee_store->priv->sf_counts_mutex = g_mutex_new ();
-	vee_store->priv->vu_counts_mutex = g_mutex_new ();
+	g_mutex_init (&vee_store->priv->sf_counts_mutex);
+	g_mutex_init (&vee_store->priv->vu_counts_mutex);
 }
 
 static void
@@ -691,7 +691,7 @@ camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
 	    used_by == vstore->priv->unmatched_folder)
 		return;
 
-	g_mutex_lock (vstore->priv->sf_counts_mutex);
+	g_mutex_lock (&vstore->priv->sf_counts_mutex);
 
 	counts = GPOINTER_TO_INT (g_hash_table_lookup (vstore->priv->subfolder_usage_counts, subfolder));
 	counts++;
@@ -705,7 +705,7 @@ camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
 
 		camel_vee_data_cache_add_subfolder (vstore->priv->vee_data_cache, subfolder);
 
-		g_mutex_lock (vstore->priv->vu_counts_mutex);
+		g_mutex_lock (&vstore->priv->vu_counts_mutex);
 
 		/* all messages from the folder are unmatched at the beginning */
 		atud.unmatched_folder = vstore->priv->unmatched_folder;
@@ -724,14 +724,14 @@ camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
 			add_to_unmatched_folder_cb, &atud);
 
 		camel_folder_thaw (unmatched_folder);
-		g_mutex_unlock (vstore->priv->vu_counts_mutex);
+		g_mutex_unlock (&vstore->priv->vu_counts_mutex);
 
 		if (camel_folder_change_info_changed (atud.changes))
 			camel_folder_changed (unmatched_folder, atud.changes);
 		camel_folder_change_info_free (atud.changes);
 	}
 
-	g_mutex_unlock (vstore->priv->sf_counts_mutex);
+	g_mutex_unlock (&vstore->priv->sf_counts_mutex);
 }
 
 static void
@@ -770,7 +770,7 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 	    unused_by == vstore->priv->unmatched_folder)
 		return;
 
-	g_mutex_lock (vstore->priv->sf_counts_mutex);
+	g_mutex_lock (&vstore->priv->sf_counts_mutex);
 
 	counts = GPOINTER_TO_INT (g_hash_table_lookup (vstore->priv->subfolder_usage_counts, subfolder));
 	g_return_if_fail (counts > 0);
@@ -781,10 +781,10 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 		if (camel_vee_store_get_unmatched_enabled (vstore))
 			camel_vee_folder_remove_folder (vstore->priv->unmatched_folder, subfolder, NULL);
 
-		g_mutex_lock (vstore->priv->vu_counts_mutex);
+		g_mutex_lock (&vstore->priv->vu_counts_mutex);
 		camel_vee_data_cache_foreach_message_info_data (vstore->priv->vee_data_cache, subfolder,
 			remove_vuid_count_record_cb, vstore->priv->vuid_usage_counts);
-		g_mutex_unlock (vstore->priv->vu_counts_mutex);
+		g_mutex_unlock (&vstore->priv->vu_counts_mutex);
 
 		camel_vee_data_cache_remove_subfolder (vstore->priv->vee_data_cache, subfolder);
 	} else {
@@ -793,7 +793,7 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 			subfolder, GINT_TO_POINTER (counts));
 	}
 
-	g_mutex_unlock (vstore->priv->sf_counts_mutex);
+	g_mutex_unlock (&vstore->priv->sf_counts_mutex);
 }
 
 /**
@@ -827,7 +827,7 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 	if (CAMEL_IS_VEE_FOLDER (subfolder))
 		return;
 
-	g_mutex_lock (vstore->priv->vu_counts_mutex);
+	g_mutex_lock (&vstore->priv->vu_counts_mutex);
 
 	vuid = camel_vee_message_info_data_get_vee_message_uid (mi_data);
 
@@ -850,7 +850,7 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 		camel_folder_change_info_free (changes);
 	}
 
-	g_mutex_unlock (vstore->priv->vu_counts_mutex);
+	g_mutex_unlock (&vstore->priv->vu_counts_mutex);
 }
 
 /**
@@ -884,14 +884,14 @@ camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
 	if (CAMEL_IS_VEE_FOLDER (subfolder))
 		return;
 
-	g_mutex_lock (vstore->priv->vu_counts_mutex);
+	g_mutex_lock (&vstore->priv->vu_counts_mutex);
 
 	vuid = camel_vee_message_info_data_get_vee_message_uid (mi_data);
 
 	counts = GPOINTER_TO_INT (g_hash_table_lookup (vstore->priv->vuid_usage_counts, vuid));
 	counts--;
 	if (counts < 0) {
-		g_mutex_unlock (vstore->priv->vu_counts_mutex);
+		g_mutex_unlock (&vstore->priv->vu_counts_mutex);
 		g_return_if_fail (counts >= 0);
 		return;
 	}
@@ -913,7 +913,7 @@ camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
 		camel_folder_change_info_free (changes);
 	}
 
-	g_mutex_unlock (vstore->priv->vu_counts_mutex);
+	g_mutex_unlock (&vstore->priv->vu_counts_mutex);
 }
 
 struct RebuildUnmatchedData {

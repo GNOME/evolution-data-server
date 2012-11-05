@@ -73,8 +73,8 @@ struct _CamelIMAPXFolder {
 	/* hash table of UIDs to ignore as recent when updating folder */
 	GHashTable *ignore_recent;
 
-	GMutex *search_lock;
-	GMutex *stream_lock;
+	GMutex search_lock;
+	GMutex stream_lock;
 
 	gboolean apply_filters;		/* persistent property */
 };

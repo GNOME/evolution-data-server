@@ -27,13 +27,13 @@
 #define c(...) camel_imapx_debug(conman, __VA_ARGS__)
 
 #define CON_READ_LOCK(x) \
-	(g_static_rw_lock_reader_lock (&(x)->priv->rw_lock))
+	(g_rw_lock_reader_lock (&(x)->priv->rw_lock))
 #define CON_READ_UNLOCK(x) \
-	(g_static_rw_lock_reader_unlock (&(x)->priv->rw_lock))
+	(g_rw_lock_reader_unlock (&(x)->priv->rw_lock))
 #define CON_WRITE_LOCK(x) \
-	(g_static_rw_lock_writer_lock (&(x)->priv->rw_lock))
+	(g_rw_lock_writer_lock (&(x)->priv->rw_lock))
 #define CON_WRITE_UNLOCK(x) \
-	(g_static_rw_lock_writer_unlock (&(x)->priv->rw_lock))
+	(g_rw_lock_writer_unlock (&(x)->priv->rw_lock))
 
 #define CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -46,11 +46,11 @@ struct _CamelIMAPXConnManagerPrivate {
 	 *     with CamelIMAPXServer pointers as the keys. */
 	GList *connections;
 	gpointer store;  /* weak pointer */
-	GStaticRWLock rw_lock;
+	GRWLock rw_lock;
 };
 
 struct _ConnectionInfo {
-	GMutex *lock;
+	GMutex lock;
 	CamelIMAPXServer *is;
 	GHashTable *folder_names;
 	gchar *selected_folder;
@@ -88,7 +88,7 @@ connection_info_new (CamelIMAPXServer *is)
 		(GDestroyNotify) NULL);
 
 	cinfo = g_slice_new0 (ConnectionInfo);
-	cinfo->lock = g_mutex_new ();
+	g_mutex_init (&cinfo->lock);
 	cinfo->is = g_object_ref (is);
 	cinfo->folder_names = folder_names;
 	cinfo->ref_count = 1;
@@ -115,7 +115,7 @@ connection_info_unref (ConnectionInfo *cinfo)
 
 	if (g_atomic_int_dec_and_test (&cinfo->ref_count)) {
 		camel_imapx_server_connect (cinfo->is, NULL, NULL);
-		g_mutex_free (cinfo->lock);
+		g_mutex_clear (&cinfo->lock);
 		g_object_unref (cinfo->is);
 		g_hash_table_destroy (cinfo->folder_names);
 		g_free (cinfo->selected_folder);
@@ -143,12 +143,12 @@ connection_info_is_available (ConnectionInfo *cinfo)
 
 	g_return_val_if_fail (cinfo != NULL, FALSE);
 
-	g_mutex_lock (cinfo->lock);
+	g_mutex_lock (&cinfo->lock);
 
 	/* Available means it's not tracking any folder names. */
 	available = (g_hash_table_size (cinfo->folder_names) == 0);
 
-	g_mutex_unlock (cinfo->lock);
+	g_mutex_unlock (&cinfo->lock);
 
 	return available;
 }
@@ -164,11 +164,11 @@ connection_info_has_folder_name (ConnectionInfo *cinfo,
 	if (folder_name == NULL)
 		return FALSE;
 
-	g_mutex_lock (cinfo->lock);
+	g_mutex_lock (&cinfo->lock);
 
 	value = g_hash_table_lookup (cinfo->folder_names, folder_name);
 
-	g_mutex_unlock (cinfo->lock);
+	g_mutex_unlock (&cinfo->lock);
 
 	return (value != NULL);
 }
@@ -180,14 +180,14 @@ connection_info_insert_folder_name (ConnectionInfo *cinfo,
 	g_return_if_fail (cinfo != NULL);
 	g_return_if_fail (folder_name != NULL);
 
-	g_mutex_lock (cinfo->lock);
+	g_mutex_lock (&cinfo->lock);
 
 	g_hash_table_insert (
 		cinfo->folder_names,
 		g_strdup (folder_name),
 		GINT_TO_POINTER (1));
 
-	g_mutex_unlock (cinfo->lock);
+	g_mutex_unlock (&cinfo->lock);
 }
 
 static void
@@ -197,11 +197,11 @@ connection_info_remove_folder_name (ConnectionInfo *cinfo,
 	g_return_if_fail (cinfo != NULL);
 	g_return_if_fail (folder_name != NULL);
 
-	g_mutex_lock (cinfo->lock);
+	g_mutex_lock (&cinfo->lock);
 
 	g_hash_table_remove (cinfo->folder_names, folder_name);
 
-	g_mutex_unlock (cinfo->lock);
+	g_mutex_unlock (&cinfo->lock);
 }
 
 static gchar *
@@ -211,11 +211,11 @@ connection_info_dup_selected_folder (ConnectionInfo *cinfo)
 
 	g_return_val_if_fail (cinfo != NULL, NULL);
 
-	g_mutex_lock (cinfo->lock);
+	g_mutex_lock (&cinfo->lock);
 
 	selected_folder = g_strdup (cinfo->selected_folder);
 
-	g_mutex_unlock (cinfo->lock);
+	g_mutex_unlock (&cinfo->lock);
 
 	return selected_folder;
 }
@@ -226,12 +226,12 @@ connection_info_set_selected_folder (ConnectionInfo *cinfo,
 {
 	g_return_if_fail (cinfo != NULL);
 
-	g_mutex_lock (cinfo->lock);
+	g_mutex_lock (&cinfo->lock);
 
 	g_free (cinfo->selected_folder);
 	cinfo->selected_folder = g_strdup (selected_folder);
 
-	g_mutex_unlock (cinfo->lock);
+	g_mutex_unlock (&cinfo->lock);
 }
 
 static GList *
@@ -384,7 +384,7 @@ imapx_conn_manager_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
 
-	g_static_rw_lock_free (&priv->rw_lock);
+	g_rw_lock_clear (&priv->rw_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->finalize (object);
@@ -421,7 +421,7 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 {
 	con_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (con_man);
 
-	g_static_rw_lock_init (&con_man->priv->rw_lock);
+	g_rw_lock_init (&con_man->priv->rw_lock);
 }
 
 /* Static functions go here */

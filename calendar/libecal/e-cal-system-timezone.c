@@ -412,7 +412,7 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 	static gchar *last_localtime_content = NULL;
 	static gsize last_localtime_content_len = -1;
 	static gchar *last_timezone = NULL;
-	static GStaticRecMutex mutex = G_STATIC_REC_MUTEX_INIT;
+	static GRecMutex mutex;
 
 	struct stat stat_localtime;
 	gchar *localtime_content = NULL;
@@ -431,7 +431,7 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 				  NULL))
 		return NULL;
 
-	g_static_rec_mutex_lock (&mutex);
+	g_rec_mutex_lock (&mutex);
 
 	if (last_localtime_content) {
 		if (localtime_content_len != last_localtime_content_len
@@ -443,7 +443,7 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 			last_timezone = NULL;
 		} else {
 			retval = g_strdup (last_timezone);
-			g_static_rec_mutex_unlock (&mutex);
+			g_rec_mutex_unlock (&mutex);
 
 			g_free (localtime_content);
 			return retval;
@@ -473,7 +473,7 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 		g_free (localtime_content);
 	}
 
-	g_static_rec_mutex_unlock (&mutex);
+	g_rec_mutex_unlock (&mutex);
 
 	return retval;
 }

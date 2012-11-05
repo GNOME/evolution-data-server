@@ -116,9 +116,9 @@ struct _ESourcePrivate {
 	GMainContext *main_context;
 
 	GSource *changed;
-	GMutex *changed_lock;
+	GMutex changed_lock;
 
-	GMutex *property_lock;
+	GMutex property_lock;
 
 	gchar *display_name;
 	gchar *collate_key;
@@ -128,7 +128,7 @@ struct _ESourcePrivate {
 	/* The lock guards the key file and hash table. */
 
 	GKeyFile *key_file;
-	GStaticRecMutex lock;
+	GRecMutex lock;
 	GHashTable *extensions;
 
 	gboolean enabled;
@@ -647,7 +647,7 @@ source_notify_dbus_data_cb (EDBusSource *dbus_source,
 {
 	GError *error = NULL;
 
-	g_static_rec_mutex_lock (&source->priv->lock);
+	g_rec_mutex_lock (&source->priv->lock);
 
 	/* Since the source data came from a GKeyFile structure on the
 	 * server-side, this should never fail.  But we'll print error
@@ -658,7 +658,7 @@ source_notify_dbus_data_cb (EDBusSource *dbus_source,
 		g_error_free (error);
 	}
 
-	g_static_rec_mutex_unlock (&source->priv->lock);
+	g_rec_mutex_unlock (&source->priv->lock);
 }
 
 static gboolean
@@ -673,12 +673,12 @@ source_idle_changed_cb (gpointer user_data)
 	if (!source->priv->initialized)
 		return TRUE;
 
-	g_mutex_lock (source->priv->changed_lock);
+	g_mutex_lock (&source->priv->changed_lock);
 	if (source->priv->changed != NULL) {
 		g_source_unref (source->priv->changed);
 		source->priv->changed = NULL;
 	}
-	g_mutex_unlock (source->priv->changed_lock);
+	g_mutex_unlock (&source->priv->changed_lock);
 
 	g_signal_emit (source, signals[CHANGED], 0);
 
@@ -873,13 +873,13 @@ source_dispose (GObject *object)
 	}
 
 	/* XXX Maybe not necessary to acquire the lock? */
-	g_mutex_lock (priv->changed_lock);
+	g_mutex_lock (&priv->changed_lock);
 	if (priv->changed != NULL) {
 		g_source_destroy (priv->changed);
 		g_source_unref (priv->changed);
 		priv->changed = NULL;
 	}
-	g_mutex_unlock (priv->changed_lock);
+	g_mutex_unlock (&priv->changed_lock);
 
 	g_hash_table_remove_all (priv->extensions);
 
@@ -894,8 +894,8 @@ source_finalize (GObject *object)
 
 	priv = E_SOURCE_GET_PRIVATE (object);
 
-	g_mutex_free (priv->changed_lock);
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->changed_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->display_name);
 	g_free (priv->collate_key);
@@ -903,7 +903,7 @@ source_finalize (GObject *object)
 	g_free (priv->uid);
 
 	g_key_file_free (priv->key_file);
-	g_static_rec_mutex_free (&priv->lock);
+	g_rec_mutex_clear (&priv->lock);
 	g_hash_table_destroy (priv->extensions);
 
 	/* Chain up to parent's finalize() method. */
@@ -1331,13 +1331,13 @@ source_initable_init (GInitable *initable,
 	}
 
 	/* Try to avoid a spurious "changed" emission. */
-	g_mutex_lock (source->priv->changed_lock);
+	g_mutex_lock (&source->priv->changed_lock);
 	if (source->priv->changed != NULL) {
 		g_source_destroy (source->priv->changed);
 		g_source_unref (source->priv->changed);
 		source->priv->changed = NULL;
 	}
-	g_mutex_unlock (source->priv->changed_lock);
+	g_mutex_unlock (&source->priv->changed_lock);
 
 	source->priv->initialized = TRUE;
 
@@ -1559,12 +1559,12 @@ e_source_init (ESource *source)
 		(GDestroyNotify) g_object_unref);
 
 	source->priv = E_SOURCE_GET_PRIVATE (source);
-	source->priv->changed_lock = g_mutex_new ();
-	source->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&source->priv->changed_lock);
+	g_mutex_init (&source->priv->property_lock);
 	source->priv->key_file = g_key_file_new ();
 	source->priv->extensions = extensions;
 
-	g_static_rec_mutex_init (&source->priv->lock);
+	g_rec_mutex_init (&source->priv->lock);
 }
 
 /**
@@ -1704,7 +1704,7 @@ e_source_changed (ESource *source)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	g_mutex_lock (source->priv->changed_lock);
+	g_mutex_lock (&source->priv->changed_lock);
 	if (source->priv->changed == NULL) {
 		source->priv->changed = g_idle_source_new ();
 		g_source_set_callback (
@@ -1715,7 +1715,7 @@ e_source_changed (ESource *source)
 			source->priv->changed,
 			source->priv->main_context);
 	}
-	g_mutex_unlock (source->priv->changed_lock);
+	g_mutex_unlock (&source->priv->changed_lock);
 }
 
 /**
@@ -1760,12 +1760,12 @@ e_source_dup_uid (ESource *source)
 	/* Perhaps we don't need to lock the mutex since
 	 * this is a read-only property but it can't hurt. */
 
-	g_mutex_lock (source->priv->property_lock);
+	g_mutex_lock (&source->priv->property_lock);
 
 	protected = e_source_get_uid (source);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (source->priv->property_lock);
+	g_mutex_unlock (&source->priv->property_lock);
 
 	return duplicate;
 }
@@ -1809,12 +1809,12 @@ e_source_dup_parent (ESource *source)
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	g_mutex_lock (source->priv->property_lock);
+	g_mutex_lock (&source->priv->property_lock);
 
 	protected = e_source_get_parent (source);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (source->priv->property_lock);
+	g_mutex_unlock (&source->priv->property_lock);
 
 	return duplicate;
 }
@@ -1839,17 +1839,17 @@ e_source_set_parent (ESource *source,
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	g_mutex_lock (source->priv->property_lock);
+	g_mutex_lock (&source->priv->property_lock);
 
 	if (g_strcmp0 (source->priv->parent, parent) == 0) {
-		g_mutex_unlock (source->priv->property_lock);
+		g_mutex_unlock (&source->priv->property_lock);
 		return;
 	}
 
 	g_free (source->priv->parent);
 	source->priv->parent = e_util_strdup_strip (parent);
 
-	g_mutex_unlock (source->priv->property_lock);
+	g_mutex_unlock (&source->priv->property_lock);
 
 	g_object_notify (G_OBJECT (source), "parent");
 }
@@ -2055,7 +2055,7 @@ e_source_get_extension (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (extension_name != NULL, NULL);
 
-	g_static_rec_mutex_lock (&source->priv->lock);
+	g_rec_mutex_lock (&source->priv->lock);
 
 	/* Check if we already have the extension. */
 	extension = g_hash_table_lookup (
@@ -2091,7 +2091,7 @@ e_source_get_extension (ESource *source,
 	g_hash_table_destroy (hash_table);
 
 exit:
-	g_static_rec_mutex_unlock (&source->priv->lock);
+	g_rec_mutex_unlock (&source->priv->lock);
 
 	return extension;
 }
@@ -2116,7 +2116,7 @@ e_source_has_extension (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (extension_name != NULL, FALSE);
 
-	g_static_rec_mutex_lock (&source->priv->lock);
+	g_rec_mutex_lock (&source->priv->lock);
 
 	/* Two cases to check for, either one is good enough:
 	 * 1) Our internal GKeyFile has a group named 'extension_name'.
@@ -2139,7 +2139,7 @@ e_source_has_extension (ESource *source,
 		extension = g_hash_table_lookup (hash_table, extension_name);
 	}
 
-	g_static_rec_mutex_unlock (&source->priv->lock);
+	g_rec_mutex_unlock (&source->priv->lock);
 
 	return (extension != NULL);
 }
@@ -2230,12 +2230,12 @@ e_source_dup_display_name (ESource *source)
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	g_mutex_lock (source->priv->property_lock);
+	g_mutex_lock (&source->priv->property_lock);
 
 	protected = e_source_get_display_name (source);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (source->priv->property_lock);
+	g_mutex_unlock (&source->priv->property_lock);
 
 	return duplicate;
 }
@@ -2262,10 +2262,10 @@ e_source_set_display_name (ESource *source,
 	g_return_if_fail (display_name != NULL);
 	g_return_if_fail (g_utf8_validate (display_name, -1, NULL));
 
-	g_mutex_lock (source->priv->property_lock);
+	g_mutex_lock (&source->priv->property_lock);
 
 	if (g_strcmp0 (source->priv->display_name, display_name) == 0) {
-		g_mutex_unlock (source->priv->property_lock);
+		g_mutex_unlock (&source->priv->property_lock);
 		return;
 	}
 
@@ -2279,7 +2279,7 @@ e_source_set_display_name (ESource *source,
 	g_free (source->priv->collate_key);
 	source->priv->collate_key = g_utf8_collate_key (display_name, -1);
 
-	g_mutex_unlock (source->priv->property_lock);
+	g_mutex_unlock (&source->priv->property_lock);
 
 	g_object_notify (G_OBJECT (source), "display-name");
 }
@@ -2332,7 +2332,7 @@ e_source_to_string (ESource *source,
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	g_static_rec_mutex_lock (&source->priv->lock);
+	g_rec_mutex_lock (&source->priv->lock);
 
 	key_file = source->priv->key_file;
 
@@ -2345,7 +2345,7 @@ e_source_to_string (ESource *source,
 
 	data = g_key_file_to_data (key_file, length, NULL);
 
-	g_static_rec_mutex_unlock (&source->priv->lock);
+	g_rec_mutex_unlock (&source->priv->lock);
 
 	return data;
 }

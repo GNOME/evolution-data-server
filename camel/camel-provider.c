@@ -47,10 +47,10 @@
 static GHashTable *module_table;
 /* table of CamelProvider's */
 static GHashTable *provider_table;
-static GStaticRecMutex provider_lock = G_STATIC_REC_MUTEX_INIT;
+static GRecMutex provider_lock;
 
-#define LOCK()		(g_static_rec_mutex_lock(&provider_lock))
-#define UNLOCK()	(g_static_rec_mutex_unlock(&provider_lock))
+#define LOCK()		(g_rec_mutex_lock(&provider_lock))
+#define UNLOCK()	(g_rec_mutex_unlock(&provider_lock))
 
 /* The vfolder provider is always available */
 static CamelProvider vee_provider = {

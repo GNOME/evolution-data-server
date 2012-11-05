@@ -44,7 +44,7 @@
 	((obj), E_TYPE_SOURCE_OPENPGP, ESourceOpenPGPPrivate))
 
 struct _ESourceOpenPGPPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *key_id;
 	gchar *signing_algorithm;
 
@@ -161,7 +161,7 @@ source_openpgp_finalize (GObject *object)
 
 	priv = E_SOURCE_OPENPGP_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->key_id);
 	g_free (priv->signing_algorithm);
@@ -256,7 +256,7 @@ static void
 e_source_openpgp_init (ESourceOpenPGP *extension)
 {
 	extension->priv = E_SOURCE_OPENPGP_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -382,12 +382,12 @@ e_source_openpgp_dup_key_id (ESourceOpenPGP *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_OPENPGP (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_openpgp_get_key_id (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -411,17 +411,17 @@ e_source_openpgp_set_key_id (ESourceOpenPGP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->key_id, key_id) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->key_id);
 	extension->priv->key_id = e_util_strdup_strip (key_id);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "key-id");
 }
@@ -466,12 +466,12 @@ e_source_openpgp_dup_signing_algorithm (ESourceOpenPGP *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_OPENPGP (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_openpgp_get_signing_algorithm (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -496,10 +496,10 @@ e_source_openpgp_set_signing_algorithm (ESourceOpenPGP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->signing_algorithm, signing_algorithm) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
@@ -507,7 +507,7 @@ e_source_openpgp_set_signing_algorithm (ESourceOpenPGP *extension,
 	extension->priv->signing_algorithm =
 		e_util_strdup_strip (signing_algorithm);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "signing-algorithm");
 }

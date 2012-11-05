@@ -472,7 +472,7 @@ cs_waitinfo (gpointer (worker)(gpointer),
 
 	reply_port = msg->msg.reply_port = camel_msgport_new ();
 	fd = camel_msgport_fd (msg->msg.reply_port);
-	if ((thread = g_thread_create (worker, msg, TRUE, error)) != NULL) {
+	if ((thread = g_thread_new (NULL, worker, msg)) != NULL) {
 		gint status;
 #ifndef G_OS_WIN32
 		GPollFD polls[2];

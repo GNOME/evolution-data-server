@@ -41,7 +41,7 @@
 	((obj), E_TYPE_SOURCE_ALARMS, ESourceAlarmsPrivate))
 
 struct _ESourceAlarmsPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gboolean include_me;
 	gchar *last_notified;
 };
@@ -112,7 +112,7 @@ source_alarms_finalize (GObject *object)
 
 	priv = E_SOURCE_ALARMS_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->last_notified);
 
@@ -167,7 +167,7 @@ static void
 e_source_alarms_init (ESourceAlarms *extension)
 {
 	extension->priv = E_SOURCE_ALARMS_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -261,12 +261,12 @@ e_source_alarms_dup_last_notified (ESourceAlarms *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_ALARMS (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_alarms_get_last_notified (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -307,17 +307,17 @@ e_source_alarms_set_last_notified (ESourceAlarms *extension,
 		}
 	}
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->last_notified, last_notified) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->last_notified);
 	extension->priv->last_notified = g_strdup (last_notified);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "last-notified");
 }

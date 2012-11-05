@@ -25,7 +25,7 @@
 	((obj), CAMEL_TYPE_LOCAL_SETTINGS, CamelLocalSettingsPrivate))
 
 struct _CamelLocalSettingsPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *path;
 };
 
@@ -81,7 +81,7 @@ local_settings_finalize (GObject *object)
 
 	priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->path);
 
@@ -118,7 +118,7 @@ static void
 camel_local_settings_init (CamelLocalSettings *settings)
 {
 	settings->priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (settings);
-	settings->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&settings->priv->property_lock);
 }
 
 /**
@@ -160,12 +160,12 @@ camel_local_settings_dup_path (CamelLocalSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_local_settings_get_path (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -201,12 +201,12 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
 		}
 	}
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	new_path = g_strndup (path, length);
 
 	if (g_strcmp0 (settings->priv->path, new_path) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		g_free (new_path);
 		return;
 	}
@@ -214,7 +214,7 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
 	g_free (settings->priv->path);
 	settings->priv->path = new_path;
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "path");
 }

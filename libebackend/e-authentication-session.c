@@ -81,7 +81,7 @@ struct _EAuthenticationSessionPrivate {
 	gchar *source_uid;
 
 	/* These are for configuring system prompts. */
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *prompt_title;
 	gchar *prompt_message;
 	gchar *prompt_description;
@@ -313,7 +313,7 @@ authentication_session_finalize (GObject *object)
 
 	priv = E_AUTHENTICATION_SESSION_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->source_uid);
 	g_free (priv->prompt_title);
@@ -812,7 +812,7 @@ static void
 e_authentication_session_init (EAuthenticationSession *session)
 {
 	session->priv = E_AUTHENTICATION_SESSION_GET_PRIVATE (session);
-	session->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&session->priv->property_lock);
 }
 
 GQuark
@@ -959,12 +959,12 @@ e_authentication_session_dup_prompt_title (EAuthenticationSession *session)
 
 	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), NULL);
 
-	g_mutex_lock (session->priv->property_lock);
+	g_mutex_lock (&session->priv->property_lock);
 
 	protected = e_authentication_session_get_prompt_title (session);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (session->priv->property_lock);
+	g_mutex_unlock (&session->priv->property_lock);
 
 	return duplicate;
 }
@@ -985,17 +985,17 @@ e_authentication_session_set_prompt_title (EAuthenticationSession *session,
 {
 	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
 
-	g_mutex_lock (session->priv->property_lock);
+	g_mutex_lock (&session->priv->property_lock);
 
 	if (g_strcmp0 (session->priv->prompt_title, prompt_title) == 0) {
-		g_mutex_unlock (session->priv->property_lock);
+		g_mutex_unlock (&session->priv->property_lock);
 		return;
 	}
 
 	g_free (session->priv->prompt_title);
 	session->priv->prompt_title = g_strdup (prompt_title);
 
-	g_mutex_unlock (session->priv->property_lock);
+	g_mutex_unlock (&session->priv->property_lock);
 
 	g_object_notify (G_OBJECT (session), "prompt-title");
 }
@@ -1040,12 +1040,12 @@ e_authentication_session_dup_prompt_message (EAuthenticationSession *session)
 
 	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), NULL);
 
-	g_mutex_lock (session->priv->property_lock);
+	g_mutex_lock (&session->priv->property_lock);
 
 	protected = e_authentication_session_get_prompt_message (session);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (session->priv->property_lock);
+	g_mutex_unlock (&session->priv->property_lock);
 
 	return duplicate;
 }
@@ -1066,17 +1066,17 @@ e_authentication_session_set_prompt_message (EAuthenticationSession *session,
 {
 	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
 
-	g_mutex_lock (session->priv->property_lock);
+	g_mutex_lock (&session->priv->property_lock);
 
 	if (g_strcmp0 (session->priv->prompt_message, prompt_message) == 0) {
-		g_mutex_unlock (session->priv->property_lock);
+		g_mutex_unlock (&session->priv->property_lock);
 		return;
 	}
 
 	g_free (session->priv->prompt_message);
 	session->priv->prompt_message = g_strdup (prompt_message);
 
-	g_mutex_unlock (session->priv->property_lock);
+	g_mutex_unlock (&session->priv->property_lock);
 
 	g_object_notify (G_OBJECT (session), "prompt-message");
 }
@@ -1122,12 +1122,12 @@ e_authentication_session_dup_prompt_description (EAuthenticationSession *session
 
 	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), NULL);
 
-	g_mutex_lock (session->priv->property_lock);
+	g_mutex_lock (&session->priv->property_lock);
 
 	protected = e_authentication_session_get_prompt_description (session);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (session->priv->property_lock);
+	g_mutex_unlock (&session->priv->property_lock);
 
 	return duplicate;
 }
@@ -1148,17 +1148,17 @@ e_authentication_session_set_prompt_description (EAuthenticationSession *session
 {
 	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
 
-	g_mutex_lock (session->priv->property_lock);
+	g_mutex_lock (&session->priv->property_lock);
 
 	if (g_strcmp0 (session->priv->prompt_description, prompt_description) == 0) {
-		g_mutex_unlock (session->priv->property_lock);
+		g_mutex_unlock (&session->priv->property_lock);
 		return;
 	}
 
 	g_free (session->priv->prompt_description);
 	session->priv->prompt_description = g_strdup (prompt_description);
 
-	g_mutex_unlock (session->priv->property_lock);
+	g_mutex_unlock (&session->priv->property_lock);
 
 	g_object_notify (G_OBJECT (session), "prompt-description");
 }

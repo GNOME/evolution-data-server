@@ -50,7 +50,7 @@
 	((obj), E_TYPE_SOURCE_COLLECTION, ESourceCollectionPrivate))
 
 struct _ESourceCollectionPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *identity;
 	gboolean calendar_enabled;
 	gboolean contacts_enabled;
@@ -151,7 +151,7 @@ source_collection_finalize (GObject *object)
 
 	priv = E_SOURCE_COLLECTION_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->identity);
 
@@ -233,7 +233,7 @@ static void
 e_source_collection_init (ESourceCollection *extension)
 {
 	extension->priv = E_SOURCE_COLLECTION_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -276,12 +276,12 @@ e_source_collection_dup_identity (ESourceCollection *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_COLLECTION (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_collection_get_identity (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -306,17 +306,17 @@ e_source_collection_set_identity (ESourceCollection *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->identity, identity) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->identity);
 	extension->priv->identity = e_util_strdup_strip (identity);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "identity");
 }

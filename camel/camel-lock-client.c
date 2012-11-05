@@ -43,9 +43,9 @@
 /* see also camel-lock.c */
 #define _(x) (x)
 
-static GStaticMutex lock_lock = G_STATIC_MUTEX_INIT;
-#define LOCK() g_static_mutex_lock(&lock_lock)
-#define UNLOCK() g_static_mutex_unlock(&lock_lock)
+static GMutex lock_lock;
+#define LOCK() g_mutex_lock(&lock_lock)
+#define UNLOCK() g_mutex_unlock(&lock_lock)
 
 static gint lock_sequence;
 static gint lock_helper_pid = -1;

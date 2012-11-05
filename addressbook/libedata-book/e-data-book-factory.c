@@ -48,11 +48,11 @@ struct _EDataBookFactoryPrivate {
 	ESourceRegistry *registry;
 	EGdbusBookFactory *gdbus_object;
 
-	GMutex *books_lock;
+	GMutex books_lock;
 	/* A hash of object paths for book URIs to EDataBooks */
 	GHashTable *books;
 
-	GMutex *connections_lock;
+	GMutex connections_lock;
 	/* This is a hash of client addresses to GList* of EDataBooks */
 	GHashTable *connections;
 
@@ -150,8 +150,8 @@ book_freed_cb (EDataBookFactory *factory,
 
 	d (g_debug ("in factory %p (%p) is dead", factory, dead));
 
-	g_mutex_lock (priv->books_lock);
-	g_mutex_lock (priv->connections_lock);
+	g_mutex_lock (&priv->books_lock);
+	g_mutex_lock (&priv->connections_lock);
 
 	g_hash_table_foreach_remove (
 		priv->books, remove_dead_pointer_cb, dead);
@@ -173,8 +173,8 @@ book_freed_cb (EDataBookFactory *factory,
 		}
 	}
 
-	g_mutex_unlock (priv->connections_lock);
-	g_mutex_unlock (priv->books_lock);
+	g_mutex_unlock (&priv->connections_lock);
+	g_mutex_unlock (&priv->books_lock);
 
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
@@ -364,10 +364,10 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 		connection, object_path, &error);
 
 	if (book != NULL) {
-		g_mutex_lock (priv->books_lock);
+		g_mutex_lock (&priv->books_lock);
 		g_hash_table_insert (
 			priv->books, g_strdup (object_path), book);
-		g_mutex_unlock (priv->books_lock);
+		g_mutex_unlock (&priv->books_lock);
 
 		e_book_backend_add_client (E_BOOK_BACKEND (backend), book);
 
@@ -376,12 +376,12 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 			book_freed_cb, factory);
 
 		/* Update the hash of open connections. */
-		g_mutex_lock (priv->connections_lock);
+		g_mutex_lock (&priv->connections_lock);
 		list = g_hash_table_lookup (priv->connections, sender);
 		list = g_list_prepend (list, book);
 		g_hash_table_insert (
 			priv->connections, g_strdup (sender), list);
-		g_mutex_unlock (priv->connections_lock);
+		g_mutex_unlock (&priv->connections_lock);
 	}
 
 	g_object_unref (backend);
@@ -468,8 +468,8 @@ data_book_factory_finalize (GObject *object)
 	g_hash_table_destroy (priv->books);
 	g_hash_table_destroy (priv->connections);
 
-	g_mutex_free (priv->books_lock);
-	g_mutex_free (priv->connections_lock);
+	g_mutex_clear (&priv->books_lock);
+	g_mutex_clear (&priv->connections_lock);
 
 #ifdef HAVE_GOA
 	g_hash_table_destroy (priv->goa_accounts);
@@ -519,7 +519,7 @@ data_book_factory_bus_name_lost (EDBusServer *server,
 
 	priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (server);
 
-	g_mutex_lock (priv->connections_lock);
+	g_mutex_lock (&priv->connections_lock);
 
 	while (g_hash_table_lookup_extended (
 		priv->connections,
@@ -536,7 +536,7 @@ data_book_factory_bus_name_lost (EDBusServer *server,
 		g_list_free (copy);
 	}
 
-	g_mutex_unlock (priv->connections_lock);
+	g_mutex_unlock (&priv->connections_lock);
 
 	/* Chain up to parent's bus_name_lost() method. */
 	E_DBUS_SERVER_CLASS (e_data_book_factory_parent_class)->
@@ -629,13 +629,13 @@ e_data_book_factory_init (EDataBookFactory *factory)
 		factory->priv->gdbus_object, "handle-get-book",
 		G_CALLBACK (impl_BookFactory_get_book), factory);
 
-	factory->priv->books_lock = g_mutex_new ();
+	g_mutex_init (&factory->priv->books_lock);
 	factory->priv->books = g_hash_table_new_full (
 		g_str_hash, g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
 
-	factory->priv->connections_lock = g_mutex_new ();
+	g_mutex_init (&factory->priv->connections_lock);
 	factory->priv->connections = g_hash_table_new_full (
 		g_str_hash, g_str_equal,
 		(GDestroyNotify) g_free,

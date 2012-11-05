@@ -287,7 +287,7 @@ stripped_char (gunichar ch)
 	case G_UNICODE_CONTROL:
 	case G_UNICODE_FORMAT:
 	case G_UNICODE_UNASSIGNED:
-	case G_UNICODE_COMBINING_MARK:
+	case G_UNICODE_SPACING_MARK:
 		/* Ignore those */
 		return 0;
 	default:

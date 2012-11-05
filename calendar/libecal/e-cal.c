@@ -75,7 +75,7 @@ struct _ECalPrivate {
 	ECalSourceType type;
 
 	GList **free_busy_data;
-	GMutex *free_busy_data_lock;
+	GMutex free_busy_data_lock;
 };
 
 enum {
@@ -393,15 +393,15 @@ cal_finalize (GObject *object)
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 
 	if (priv->free_busy_data) {
-		g_mutex_lock (priv->free_busy_data_lock);
+		g_mutex_lock (&priv->free_busy_data_lock);
 		g_list_foreach (*priv->free_busy_data, (GFunc) g_object_unref, NULL);
 		g_list_free (*priv->free_busy_data);
 		*priv->free_busy_data = NULL;
 		priv->free_busy_data = NULL;
-		g_mutex_unlock (priv->free_busy_data_lock);
+		g_mutex_unlock (&priv->free_busy_data_lock);
 	}
 
-	g_mutex_free (priv->free_busy_data_lock);
+	g_mutex_clear (&priv->free_busy_data_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_parent_class)->finalize (object);
@@ -554,7 +554,7 @@ e_cal_init (ECal *ecal)
 
 	ecal->priv->load_state = E_CAL_LOAD_NOT_LOADED;
 
-	ecal->priv->free_busy_data_lock = g_mutex_new ();
+	g_mutex_init (&ecal->priv->free_busy_data_lock);
 }
 
 static void async_open_report_result (ECal *ecal, const GError *error);

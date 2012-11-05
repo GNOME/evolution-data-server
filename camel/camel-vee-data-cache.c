@@ -293,10 +293,10 @@ camel_vee_message_info_data_get_vee_message_uid (CamelVeeMessageInfoData *data)
 /* ----------------------------------------------------------------------- */
 
 struct _CamelVeeDataCachePrivate {
-	GMutex *sf_mutex; /* guards subfolder_hash */
+	GMutex sf_mutex; /* guards subfolder_hash */
 	GHashTable *subfolder_hash; /* CamelFolder * => CamelVeeSubfolderData * */
 
-	GMutex *mi_mutex; /* guards message_info_hash */
+	GMutex mi_mutex; /* guards message_info_hash */
 	GHashTable *orig_message_uid_hash; /* VeeData * => CamelVeeMessageInfoData * */
 	GHashTable *vee_message_uid_hash; /* const gchar *vee_uid => CamelVeeMessageInfoData * */
 };
@@ -353,18 +353,25 @@ camel_vee_data_cache_dispose (GObject *object)
 		if (data_cache->priv->vee_message_uid_hash)
 			g_hash_table_destroy (data_cache->priv->vee_message_uid_hash);
 		data_cache->priv->vee_message_uid_hash = NULL;
-
-		if (data_cache->priv->sf_mutex)
-			g_mutex_free (data_cache->priv->sf_mutex);
-		data_cache->priv->sf_mutex = NULL;
-
-		if (data_cache->priv->mi_mutex)
-			g_mutex_free (data_cache->priv->mi_mutex);
-		data_cache->priv->mi_mutex = NULL;
 	}
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_vee_data_cache_parent_class)->dispose (object);
+}
+
+static void
+camel_vee_data_cache_finalize (GObject *object)
+{
+	CamelVeeDataCache *data_cache;
+
+	data_cache = CAMEL_VEE_DATA_CACHE (object);
+	if (data_cache->priv) {
+		g_mutex_clear (&data_cache->priv->sf_mutex);
+		g_mutex_clear (&data_cache->priv->mi_mutex);
+	}
+
+	/* Chain up to parent's finalize () method. */
+	G_OBJECT_CLASS (camel_vee_data_cache_parent_class)->finalize (object);
 }
 
 static void
@@ -376,6 +383,7 @@ camel_vee_data_cache_class_init (CamelVeeDataCacheClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = camel_vee_data_cache_dispose;
+	object_class->finalize = camel_vee_data_cache_finalize;
 }
 
 static void
@@ -383,10 +391,10 @@ camel_vee_data_cache_init (CamelVeeDataCache *data_cache)
 {
 	data_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (data_cache, CAMEL_TYPE_VEE_DATA_CACHE, CamelVeeDataCachePrivate);
 
-	data_cache->priv->sf_mutex = g_mutex_new ();
+	g_mutex_init (&data_cache->priv->sf_mutex);
 	data_cache->priv->subfolder_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 
-	data_cache->priv->mi_mutex = g_mutex_new ();
+	g_mutex_init (&data_cache->priv->mi_mutex);
 	data_cache->priv->orig_message_uid_hash = g_hash_table_new_full (vee_data_hash, vee_data_equal, g_free, g_object_unref);
 	data_cache->priv->vee_message_uid_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 }
@@ -420,8 +428,8 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 	g_return_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache));
 	g_return_if_fail (CAMEL_IS_FOLDER (subfolder));
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
-	g_mutex_lock (data_cache->priv->sf_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->sf_mutex);
 
 	sf_data = g_hash_table_lookup (data_cache->priv->subfolder_hash, subfolder);
 	if (!sf_data) {
@@ -469,8 +477,8 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 		}
 	}
 
-	g_mutex_unlock (data_cache->priv->sf_mutex);
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->sf_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 }
 
 static gboolean
@@ -514,15 +522,15 @@ camel_vee_data_cache_remove_subfolder (CamelVeeDataCache *data_cache,
 	g_return_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache));
 	g_return_if_fail (CAMEL_IS_FOLDER (subfolder));
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
-	g_mutex_lock (data_cache->priv->sf_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->sf_mutex);
 
 	g_hash_table_foreach_remove (data_cache->priv->vee_message_uid_hash, remove_vee_by_folder_cb, subfolder);
 	g_hash_table_foreach_remove (data_cache->priv->orig_message_uid_hash, remove_orig_by_folder_cb, subfolder);
 	g_hash_table_remove (data_cache->priv->subfolder_hash, subfolder);
 
-	g_mutex_unlock (data_cache->priv->sf_mutex);
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->sf_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 }
 
 /**
@@ -541,7 +549,7 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 	g_return_val_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache), NULL);
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	g_mutex_lock (data_cache->priv->sf_mutex);
+	g_mutex_lock (&data_cache->priv->sf_mutex);
 
 	res = g_hash_table_lookup (data_cache->priv->subfolder_hash, folder);
 	if (!res) {
@@ -551,7 +559,7 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 
 	g_object_ref (res);
 
-	g_mutex_unlock (data_cache->priv->sf_mutex);
+	g_mutex_unlock (&data_cache->priv->sf_mutex);
 
 	return res;
 }
@@ -578,7 +586,7 @@ camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 	g_return_val_if_fail (orig_message_uid != NULL, FALSE);
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
 
 	/* make sure the orig_message_uid comes from the string pool */
 	vdata.folder = folder;
@@ -588,7 +596,7 @@ camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
 
 	camel_pstring_free (vdata.orig_message_uid);
 
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 
 	return res;
 }
@@ -612,7 +620,7 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (orig_message_uid != NULL, NULL);
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
 
 	/* make sure the orig_message_uid comes from the string pool */
 	vdata.folder = folder;
@@ -627,7 +635,7 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 		sf_data = camel_vee_data_cache_get_subfolder_data (data_cache, folder);
 		if (!sf_data) {
 			camel_pstring_free (vdata.orig_message_uid);
-			g_mutex_unlock (data_cache->priv->mi_mutex);
+			g_mutex_unlock (&data_cache->priv->mi_mutex);
 			g_return_val_if_fail (sf_data != NULL, NULL);
 		}
 
@@ -650,7 +658,7 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 	camel_pstring_free (vdata.orig_message_uid);
 	g_object_ref (res);
 
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 
 	return res;
 }
@@ -672,7 +680,7 @@ camel_vee_data_cache_get_message_info_data_by_vuid (CamelVeeDataCache *data_cach
 	g_return_val_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache), NULL);
 	g_return_val_if_fail (vee_message_uid != NULL, NULL);
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
 
 	/* make sure vee_message_uid comes from the string pool */
 	vuid = camel_pstring_strdup (vee_message_uid);
@@ -681,7 +689,7 @@ camel_vee_data_cache_get_message_info_data_by_vuid (CamelVeeDataCache *data_cach
 	if (res)
 		g_object_ref (res);
 
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 
 	camel_pstring_free (vuid);
 
@@ -733,7 +741,7 @@ camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
 	g_return_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache));
 	g_return_if_fail (func != NULL);
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
 
 	fmd.fromfolder = fromfolder;
 	fmd.func = func;
@@ -741,7 +749,7 @@ camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
 
 	g_hash_table_foreach (data_cache->priv->orig_message_uid_hash, cvdc_foreach_mi_data_cb, &fmd);
 
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 }
 
 /**
@@ -762,7 +770,7 @@ camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
 	g_return_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache));
 	g_return_if_fail (CAMEL_IS_VEE_MESSAGE_INFO_DATA (mi_data));
 
-	g_mutex_lock (data_cache->priv->mi_mutex);
+	g_mutex_lock (&data_cache->priv->mi_mutex);
 
 	g_object_ref (mi_data);
 
@@ -777,5 +785,5 @@ camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
 
 	g_object_unref (mi_data);
 
-	g_mutex_unlock (data_cache->priv->mi_mutex);
+	g_mutex_unlock (&data_cache->priv->mi_mutex);
 }

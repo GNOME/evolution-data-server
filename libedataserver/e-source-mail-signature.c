@@ -50,7 +50,7 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _ESourceMailSignaturePrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	GFile *file;
 	gchar *mime_type;
 };
@@ -147,7 +147,7 @@ source_mail_signature_finalize (GObject *object)
 
 	priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->mime_type);
 
@@ -236,7 +236,7 @@ static void
 e_source_mail_signature_init (ESourceMailSignature *extension)
 {
 	extension->priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (extension);
-	extension->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -305,12 +305,12 @@ e_source_mail_signature_dup_mime_type (ESourceMailSignature *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_SIGNATURE (extension), NULL);
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	protected = e_source_mail_signature_get_mime_type (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	return duplicate;
 }
@@ -337,17 +337,17 @@ e_source_mail_signature_set_mime_type (ESourceMailSignature *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_SIGNATURE (extension));
 
-	g_mutex_lock (extension->priv->property_lock);
+	g_mutex_lock (&extension->priv->property_lock);
 
 	if (g_strcmp0 (extension->priv->mime_type, mime_type) == 0) {
-		g_mutex_unlock (extension->priv->property_lock);
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
 
 	g_free (extension->priv->mime_type);
 	extension->priv->mime_type = e_util_strdup_strip (mime_type);
 
-	g_mutex_unlock (extension->priv->property_lock);
+	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "mime-type");
 }

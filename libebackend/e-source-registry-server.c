@@ -69,8 +69,8 @@ struct _ESourceRegistryServerPrivate {
 	GHashTable *orphans;  /* sources waiting for parent */
 	GHashTable *monitors;
 
-	GMutex *sources_lock;
-	GMutex *orphans_lock;
+	GMutex sources_lock;
+	GMutex orphans_lock;
 
 	/* In pseudo-Python notation:
 	 *
@@ -85,7 +85,7 @@ struct _ESourceRegistryServerPrivate {
 	 * the user decides not to cache the secret at all, in which case
 	 * he gets what he asked for: lots of annoying prompts.
 	 */
-	GMutex *auth_lock;
+	GMutex auth_lock;
 	GHashTable *running_auths;
 	GHashTable *waiting_auths;
 
@@ -208,13 +208,13 @@ source_registry_server_sources_insert (ESourceRegistryServer *server,
 	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
-	g_mutex_lock (server->priv->sources_lock);
+	g_mutex_lock (&server->priv->sources_lock);
 
 	g_hash_table_insert (
 		server->priv->sources,
 		g_strdup (uid), g_object_ref (source));
 
-	g_mutex_unlock (server->priv->sources_lock);
+	g_mutex_unlock (&server->priv->sources_lock);
 }
 
 static gboolean
@@ -227,11 +227,11 @@ source_registry_server_sources_remove (ESourceRegistryServer *server,
 	uid = e_source_get_uid (source);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	g_mutex_lock (server->priv->sources_lock);
+	g_mutex_lock (&server->priv->sources_lock);
 
 	removed = g_hash_table_remove (server->priv->sources, uid);
 
-	g_mutex_unlock (server->priv->sources_lock);
+	g_mutex_unlock (&server->priv->sources_lock);
 
 	return removed;
 }
@@ -244,14 +244,14 @@ source_registry_server_sources_lookup (ESourceRegistryServer *server,
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	g_mutex_lock (server->priv->sources_lock);
+	g_mutex_lock (&server->priv->sources_lock);
 
 	source = g_hash_table_lookup (server->priv->sources, uid);
 
 	if (source != NULL)
 		g_object_ref (source);
 
-	g_mutex_unlock (server->priv->sources_lock);
+	g_mutex_unlock (&server->priv->sources_lock);
 
 	return source;
 }
@@ -261,13 +261,13 @@ source_registry_server_sources_get_values (ESourceRegistryServer *server)
 {
 	GList *values;
 
-	g_mutex_lock (server->priv->sources_lock);
+	g_mutex_lock (&server->priv->sources_lock);
 
 	values = g_hash_table_get_values (server->priv->sources);
 
 	g_list_foreach (values, (GFunc) g_object_ref, NULL);
 
-	g_mutex_unlock (server->priv->sources_lock);
+	g_mutex_unlock (&server->priv->sources_lock);
 
 	return values;
 }
@@ -280,7 +280,7 @@ source_registry_server_orphans_insert (ESourceRegistryServer *server,
 	GPtrArray *array;
 	gchar *parent_uid;
 
-	g_mutex_lock (server->priv->orphans_lock);
+	g_mutex_lock (&server->priv->orphans_lock);
 
 	orphans = server->priv->orphans;
 
@@ -305,7 +305,7 @@ source_registry_server_orphans_insert (ESourceRegistryServer *server,
 
 	g_free (parent_uid);
 
-	g_mutex_unlock (server->priv->orphans_lock);
+	g_mutex_unlock (&server->priv->orphans_lock);
 }
 
 static gboolean
@@ -317,7 +317,7 @@ source_registry_server_orphans_remove (ESourceRegistryServer *server,
 	gchar *parent_uid;
 	gboolean removed = FALSE;
 
-	g_mutex_lock (server->priv->orphans_lock);
+	g_mutex_lock (&server->priv->orphans_lock);
 
 	orphans = server->priv->orphans;
 
@@ -337,7 +337,7 @@ source_registry_server_orphans_remove (ESourceRegistryServer *server,
 
 	g_free (parent_uid);
 
-	g_mutex_unlock (server->priv->orphans_lock);
+	g_mutex_unlock (&server->priv->orphans_lock);
 
 	return removed;
 }
@@ -353,7 +353,7 @@ source_registry_server_orphans_steal (ESourceRegistryServer *server,
 	parent_uid = e_source_get_uid (parent_source);
 	g_return_val_if_fail (parent_uid != NULL, NULL);
 
-	g_mutex_lock (server->priv->orphans_lock);
+	g_mutex_lock (&server->priv->orphans_lock);
 
 	orphans = server->priv->orphans;
 
@@ -366,7 +366,7 @@ source_registry_server_orphans_steal (ESourceRegistryServer *server,
 		g_hash_table_remove (orphans, parent_uid);
 	}
 
-	g_mutex_unlock (server->priv->orphans_lock);
+	g_mutex_unlock (&server->priv->orphans_lock);
 
 	return array;
 }
@@ -377,7 +377,7 @@ source_request_server_auth_request_cancel_all (ESourceRegistryServer *server)
 	GHashTableIter iter;
 	gpointer value;
 
-	g_mutex_lock (server->priv->auth_lock);
+	g_mutex_lock (&server->priv->auth_lock);
 
 	g_hash_table_iter_init (&iter, server->priv->waiting_auths);
 
@@ -400,7 +400,7 @@ source_request_server_auth_request_cancel_all (ESourceRegistryServer *server)
 		g_cancellable_cancel (request->cancellable);
 	}
 
-	g_mutex_unlock (server->priv->auth_lock);
+	g_mutex_unlock (&server->priv->auth_lock);
 }
 
 static void
@@ -412,7 +412,7 @@ source_registry_server_auth_request_push (ESourceRegistryServer *server,
 
 	g_return_if_fail (uid != NULL);
 
-	g_mutex_lock (server->priv->auth_lock);
+	g_mutex_lock (&server->priv->auth_lock);
 
 	queue = g_hash_table_lookup (server->priv->waiting_auths, uid);
 
@@ -425,7 +425,7 @@ source_registry_server_auth_request_push (ESourceRegistryServer *server,
 
 	g_queue_push_tail (queue, auth_request_ref (request));
 
-	g_mutex_unlock (server->priv->auth_lock);
+	g_mutex_unlock (&server->priv->auth_lock);
 }
 
 static AuthRequest *
@@ -436,7 +436,7 @@ source_registry_server_auth_request_next (ESourceRegistryServer *server,
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	g_mutex_lock (server->priv->auth_lock);
+	g_mutex_lock (&server->priv->auth_lock);
 
 	/* If we're already busy processing an authentication request
 	 * for this UID, the next request will have to wait in line. */
@@ -456,7 +456,7 @@ source_registry_server_auth_request_next (ESourceRegistryServer *server,
 				auth_request_ref (request));
 	}
 
-	g_mutex_unlock (server->priv->auth_lock);
+	g_mutex_unlock (&server->priv->auth_lock);
 
 	return request;
 }
@@ -467,11 +467,11 @@ source_registry_server_auth_request_done (ESourceRegistryServer *server,
 {
 	g_return_if_fail (uid != NULL);
 
-	g_mutex_lock (server->priv->auth_lock);
+	g_mutex_lock (&server->priv->auth_lock);
 
 	g_hash_table_remove (server->priv->running_auths, uid);
 
-	g_mutex_unlock (server->priv->auth_lock);
+	g_mutex_unlock (&server->priv->auth_lock);
 }
 
 static void
@@ -1080,10 +1080,10 @@ source_registry_server_finalize (GObject *object)
 	g_hash_table_destroy (priv->orphans);
 	g_hash_table_destroy (priv->monitors);
 
-	g_mutex_free (priv->sources_lock);
-	g_mutex_free (priv->orphans_lock);
+	g_mutex_clear (&priv->sources_lock);
+	g_mutex_clear (&priv->orphans_lock);
 
-	g_mutex_free (priv->auth_lock);
+	g_mutex_clear (&priv->auth_lock);
 	g_hash_table_destroy (priv->running_auths);
 	g_hash_table_destroy (priv->waiting_auths);
 
@@ -1388,9 +1388,9 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	server->priv->sources = sources;
 	server->priv->orphans = orphans;
 	server->priv->monitors = monitors;
-	server->priv->sources_lock = g_mutex_new ();
-	server->priv->orphans_lock = g_mutex_new ();
-	server->priv->auth_lock = g_mutex_new ();
+	g_mutex_init (&server->priv->sources_lock);
+	g_mutex_init (&server->priv->orphans_lock);
+	g_mutex_init (&server->priv->auth_lock);
 	server->priv->waiting_auths = waiting_auths;
 	server->priv->running_auths = running_auths;
 
@@ -1455,21 +1455,21 @@ e_source_registry_server_add_source (ESourceRegistryServer *server,
 	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
-	g_mutex_lock (server->priv->sources_lock);
+	g_mutex_lock (&server->priv->sources_lock);
 
 	/* Check if we already have this object in the hierarchy. */
 	if (g_hash_table_lookup (server->priv->sources, uid) != NULL) {
-		g_mutex_unlock (server->priv->sources_lock);
+		g_mutex_unlock (&server->priv->sources_lock);
 		return;
 	}
 
 	/* Make sure the parent object (if any) is in the hierarchy. */
 	if (!source_registry_server_find_parent (server, source)) {
-		g_mutex_unlock (server->priv->sources_lock);
+		g_mutex_unlock (&server->priv->sources_lock);
 		return;
 	}
 
-	g_mutex_unlock (server->priv->sources_lock);
+	g_mutex_unlock (&server->priv->sources_lock);
 
 	/* Before we emit, make sure the EDBusSource's "data" property
 	 * is up-to-date.  ESource changes get propagated to the "data"

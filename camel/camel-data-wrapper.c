@@ -43,7 +43,7 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelDataWrapperPrivate {
-	GStaticMutex stream_lock;
+	GMutex stream_lock;
 	GByteArray *byte_array;
 };
 
@@ -87,7 +87,7 @@ data_wrapper_finalize (GObject *object)
 
 	priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (object);
 
-	g_static_mutex_free (&priv->stream_lock);
+	g_mutex_clear (&priv->stream_lock);
 	g_byte_array_free (priv->byte_array, TRUE);
 
 	/* Chain up to parent's finalize() method. */
@@ -510,7 +510,7 @@ camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 {
 	data_wrapper->priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (data_wrapper);
 
-	g_static_mutex_init (&data_wrapper->priv->stream_lock);
+	g_mutex_init (&data_wrapper->priv->stream_lock);
 	data_wrapper->priv->byte_array = g_byte_array_new ();
 
 	data_wrapper->mime_type = camel_content_type_new (
@@ -679,7 +679,7 @@ camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
 
 	switch (lock) {
 	case CAMEL_DATA_WRAPPER_STREAM_LOCK:
-		g_static_mutex_lock (&data_wrapper->priv->stream_lock);
+		g_mutex_lock (&data_wrapper->priv->stream_lock);
 		break;
 	default:
 		g_return_if_reached ();
@@ -704,7 +704,7 @@ camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper,
 
 	switch (lock) {
 	case CAMEL_DATA_WRAPPER_STREAM_LOCK:
-		g_static_mutex_unlock (&data_wrapper->priv->stream_lock);
+		g_mutex_unlock (&data_wrapper->priv->stream_lock);
 		break;
 	default:
 		g_return_if_reached ();

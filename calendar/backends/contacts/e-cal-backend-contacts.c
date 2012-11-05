@@ -79,7 +79,7 @@ struct _ECalBackendContactsPrivate {
 typedef struct _BookRecord {
 	volatile gint ref_count;
 
-	GMutex *lock;
+	GMutex lock;
 	ECalBackendContacts *cbc;
 	EBookClient *book_client;
 	EBookClientView *book_view;
@@ -139,7 +139,7 @@ book_record_new (ECalBackendContacts *cbc,
 
 	br = g_slice_new0 (BookRecord);
 	br->ref_count = 1;
-	br->lock = g_mutex_new ();
+	g_mutex_init (&br->lock);
 	br->cbc = g_object_ref (cbc);
 	br->book_client = book_client;  /* takes ownership */
 
@@ -175,7 +175,7 @@ book_record_unref (BookRecord *br)
 			br->cbc->priv->tracked_contacts,
 			remove_by_book, br->book_client);
 
-		g_mutex_free (br->lock);
+		g_mutex_clear (&br->lock);
 		g_object_unref (br->cbc);
 		g_object_unref (br->book_client);
 
@@ -192,7 +192,7 @@ book_record_set_book_view (BookRecord *br,
 {
 	g_return_if_fail (br != NULL);
 
-	g_mutex_lock (br->lock);
+	g_mutex_lock (&br->lock);
 
 	if (book_view != NULL)
 		g_object_ref (book_view);
@@ -202,7 +202,7 @@ book_record_set_book_view (BookRecord *br,
 
 	br->book_view = book_view;
 
-	g_mutex_unlock (br->lock);
+	g_mutex_unlock (&br->lock);
 }
 
 static void
@@ -269,27 +269,21 @@ cbc_reopen_book_client_thread (gpointer user_data)
 static void
 cbc_reopen_book_client (BookRecord *br)
 {
-	GError *error = NULL;
+	GThread *thread;
 
-	g_mutex_lock (br->lock);
+	g_mutex_lock (&br->lock);
 
 	g_warn_if_fail (br->book_client_opened_id == 0);
 	br->book_client_opened_id = g_signal_connect (
 		br->book_client, "opened",
 		G_CALLBACK (book_client_opened_cb), br);
 
-	g_thread_create (
+	thread = g_thread_new (NULL,
 		cbc_reopen_book_client_thread,
-		br->book_client, FALSE, &error);
+		br->book_client);
+	g_thread_unref (thread);
 
-	if (error != NULL) {
-		g_warning (
-			"%s: Cannot create thread to reload source! (%s)",
-			G_STRFUNC, error->message);
-		g_error_free (error);
-	}
-
-	g_mutex_unlock (br->lock);
+	g_mutex_unlock (&br->lock);
 }
 
 static void
@@ -303,12 +297,12 @@ book_client_opened_cb (EBookClient *book_client,
 	g_return_if_fail (book_client != NULL);
 	g_return_if_fail (br != NULL);
 
-	g_mutex_lock (br->lock);
+	g_mutex_lock (&br->lock);
 	g_signal_handler_disconnect (
 		br->book_client,
 		br->book_client_opened_id);
 	br->book_client_opened_id = 0;
-	g_mutex_unlock (br->lock);
+	g_mutex_unlock (&br->lock);
 
 	source = e_client_get_source (E_CLIENT (book_client));
 	source_uid = e_source_get_uid (source);
@@ -372,12 +366,12 @@ client_open_cb (GObject *source_object,
 	if (error != NULL) {
 		ESource *source;
 
-		g_mutex_lock (br->lock);
+		g_mutex_lock (&br->lock);
 		g_signal_handler_disconnect (
 			br->book_client,
 			br->book_client_opened_id);
 		br->book_client_opened_id = 0;
-		g_mutex_unlock (br->lock);
+		g_mutex_unlock (&br->lock);
 
 		g_warning (
 			"%s: Failed to open book: %s",

@@ -471,7 +471,7 @@ initialize_categories (void)
 
 	listeners = g_object_new (e_changed_listener_get_type (), NULL);
 
-	g_atexit (finalize_categories);
+	atexit (finalize_categories);
 
 	n_added = load_categories ();
 	if (n_added > 0) {

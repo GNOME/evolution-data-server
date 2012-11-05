@@ -125,7 +125,7 @@ struct _CamelIMAPXServer {
 
 	/* Current command/work queue.  All commands are stored in one list,
 	 * all the time, so they can be cleaned up in exception cases */
-	GStaticRecMutex queue_lock;
+	GRecMutex queue_lock;
 	CamelIMAPXCommand *literal;
 	CamelIMAPXCommandQueue *queue;
 	CamelIMAPXCommandQueue *active;
@@ -160,8 +160,8 @@ struct _CamelIMAPXServer {
 	gboolean use_qresync;
 
 	/* used to synchronize duplicate get_message requests */
-	GCond *fetch_cond;
-	GMutex *fetch_mutex;
+	GCond fetch_cond;
+	GMutex fetch_mutex;
 	gint fetch_count;
 };
 

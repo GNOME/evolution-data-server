@@ -122,7 +122,7 @@ gboolean camel_debug (const gchar *mode)
 	return FALSE;
 }
 
-static GStaticMutex debug_lock = G_STATIC_MUTEX_INIT;
+static GMutex debug_lock;
 /**
  * camel_debug_start:
  * @mode:
@@ -137,7 +137,7 @@ gboolean
 camel_debug_start (const gchar *mode)
 {
 	if (camel_debug (mode)) {
-		g_static_mutex_lock (&debug_lock);
+		g_mutex_lock (&debug_lock);
 		printf ("Thread %p >\n", g_thread_self ());
 		return TRUE;
 	}
@@ -155,7 +155,7 @@ void
 camel_debug_end (void)
 {
 	printf ("< %p >\n", g_thread_self ());
-	g_static_mutex_unlock (&debug_lock);
+	g_mutex_unlock (&debug_lock);
 }
 
 #if 0
@@ -409,18 +409,18 @@ dwfl_get (gboolean reload)
 	static gchar *debuginfo_path = NULL;
 	static Dwfl *dwfl = NULL;
 	static gboolean checked_for_dwfl = FALSE;
-	static GStaticMutex dwfl_mutex = G_STATIC_MUTEX_INIT;
+	static GMutex dwfl_mutex;
 	static const Dwfl_Callbacks proc_callbacks = {
 		.find_debuginfo = dwfl_standard_find_debuginfo,
 		.debuginfo_path = &debuginfo_path,
 		.find_elf = dwfl_linux_proc_find_elf
 	};
 
-	g_static_mutex_lock (&dwfl_mutex);
+	g_mutex_lock (&dwfl_mutex);
 
 	if (checked_for_dwfl) {
 		if (!reload) {
-			g_static_mutex_unlock (&dwfl_mutex);
+			g_mutex_unlock (&dwfl_mutex);
 			return dwfl;
 		}
 
@@ -432,7 +432,7 @@ dwfl_get (gboolean reload)
 
 	dwfl = dwfl_begin (&proc_callbacks);
 	if (!dwfl) {
-		g_static_mutex_unlock (&dwfl_mutex);
+		g_mutex_unlock (&dwfl_mutex);
 		return NULL;
 	}
 
@@ -442,7 +442,7 @@ dwfl_get (gboolean reload)
 		dwfl = NULL;
 	}
 
-	g_static_mutex_unlock (&dwfl_mutex);
+	g_mutex_unlock (&dwfl_mutex);
 
 	return dwfl;
 }
@@ -612,7 +612,7 @@ camel_pointer_tracker_track_with_info (gpointer ptr,
 	G_LOCK (ptr_tracker);
 	if (!ptr_tracker) {
 		ptr_tracker = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_pt_data);
-		g_atexit (dump_left_at_exit_cb);
+		atexit (dump_left_at_exit_cb);
 	}
 
 	ptd = g_new0 (struct pt_data, 1);

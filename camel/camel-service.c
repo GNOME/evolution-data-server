@@ -58,7 +58,7 @@ struct _CamelServicePrivate {
 	gpointer session;  /* weak pointer */
 
 	CamelSettings *settings;
-	GMutex *settings_lock;
+	GMutex settings_lock;
 
 	CamelProvider *provider;
 
@@ -68,7 +68,7 @@ struct _CamelServicePrivate {
 	gchar *uid;
 	gchar *password;
 
-	GMutex *connection_lock;
+	GMutex connection_lock;
 	ConnectionOp *connection_op;
 	CamelServiceConnectionStatus status;
 };
@@ -437,7 +437,7 @@ service_shared_connect_cb (GObject *source_object,
 	success = class->connect_finish (service, result, &error);
 	CAMEL_CHECK_GERROR (service, connect_sync, success, p_error);
 
-	g_mutex_lock (service->priv->connection_lock);
+	g_mutex_lock (&service->priv->connection_lock);
 
 	if (service->priv->connection_op == op) {
 		connection_op_unref (service->priv->connection_op);
@@ -452,7 +452,7 @@ service_shared_connect_cb (GObject *source_object,
 	connection_op_complete (op, error);
 	connection_op_complete_pending (op, error);
 
-	g_mutex_unlock (service->priv->connection_lock);
+	g_mutex_unlock (&service->priv->connection_lock);
 
 	connection_op_unref (op);
 	g_clear_error (&error);
@@ -480,7 +480,7 @@ service_shared_disconnect_cb (GObject *source_object,
 	success = class->disconnect_finish (service, result, &error);
 	CAMEL_CHECK_GERROR (service, disconnect_sync, success, p_error);
 
-	g_mutex_lock (service->priv->connection_lock);
+	g_mutex_lock (&service->priv->connection_lock);
 
 	if (service->priv->connection_op == op) {
 		connection_op_unref (service->priv->connection_op);
@@ -495,7 +495,7 @@ service_shared_disconnect_cb (GObject *source_object,
 	connection_op_complete (op, error);
 	connection_op_complete_pending (op, error);
 
-	g_mutex_unlock (service->priv->connection_lock);
+	g_mutex_unlock (&service->priv->connection_lock);
 
 	connection_op_unref (op);
 	g_clear_error (&error);
@@ -667,7 +667,7 @@ service_finalize (GObject *object)
 		CAMEL_SERVICE_GET_CLASS (object)->disconnect_sync (
 			CAMEL_SERVICE (object), TRUE, NULL, NULL);
 
-	g_mutex_free (priv->settings_lock);
+	g_mutex_clear (&priv->settings_lock);
 
 	g_free (priv->display_name);
 	g_free (priv->user_data_dir);
@@ -677,7 +677,7 @@ service_finalize (GObject *object)
 
 	/* There should be no outstanding connection operations. */
 	g_warn_if_fail (priv->connection_op == NULL);
-	g_mutex_free (priv->connection_lock);
+	g_mutex_clear (&priv->connection_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_service_parent_class)->finalize (object);
@@ -1137,8 +1137,8 @@ camel_service_init (CamelService *service)
 {
 	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
 
-	service->priv->settings_lock = g_mutex_new ();
-	service->priv->connection_lock = g_mutex_new ();
+	g_mutex_init (&service->priv->settings_lock);
+	g_mutex_init (&service->priv->connection_lock);
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 }
 
@@ -1490,11 +1490,11 @@ camel_service_ref_settings (CamelService *service)
 	/* Every service should have a settings object. */
 	g_return_val_if_fail (service->priv->settings != NULL, NULL);
 
-	g_mutex_lock (service->priv->settings_lock);
+	g_mutex_lock (&service->priv->settings_lock);
 
 	settings = g_object_ref (service->priv->settings);
 
-	g_mutex_unlock (service->priv->settings_lock);
+	g_mutex_unlock (&service->priv->settings_lock);
 
 	return settings;
 }
@@ -1537,14 +1537,14 @@ camel_service_set_settings (CamelService *service,
 		settings = g_object_new (class->settings_type, NULL);
 	}
 
-	g_mutex_lock (service->priv->settings_lock);
+	g_mutex_lock (&service->priv->settings_lock);
 
 	if (service->priv->settings != NULL)
 		g_object_unref (service->priv->settings);
 
 	service->priv->settings = settings;  /* takes ownership */
 
-	g_mutex_unlock (service->priv->settings_lock);
+	g_mutex_unlock (&service->priv->settings_lock);
 
 	g_object_notify (G_OBJECT (service), "settings");
 }
@@ -1654,7 +1654,7 @@ camel_service_connect (CamelService *service,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	g_mutex_lock (service->priv->connection_lock);
+	g_mutex_lock (&service->priv->connection_lock);
 
 	switch (service->priv->status) {
 
@@ -1708,7 +1708,7 @@ camel_service_connect (CamelService *service,
 			g_warn_if_reached ();
 	}
 
-	g_mutex_unlock (service->priv->connection_lock);
+	g_mutex_unlock (&service->priv->connection_lock);
 
 	g_object_unref (simple);
 }
@@ -1833,7 +1833,7 @@ camel_service_disconnect (CamelService *service,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	g_mutex_lock (service->priv->connection_lock);
+	g_mutex_lock (&service->priv->connection_lock);
 
 	switch (service->priv->status) {
 
@@ -1887,7 +1887,7 @@ camel_service_disconnect (CamelService *service,
 			g_warn_if_reached ();
 	}
 
-	g_mutex_unlock (service->priv->connection_lock);
+	g_mutex_unlock (&service->priv->connection_lock);
 
 	g_object_unref (simple);
 }

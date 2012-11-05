@@ -184,9 +184,9 @@ set_proxy_gone_error (GError **error)
 
 static guint active_book_clients = 0, book_connection_closed_id = 0;
 static EGdbusBookFactory *book_factory = NULL;
-static GStaticRecMutex book_factory_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK_FACTORY()   g_static_rec_mutex_lock (&book_factory_lock)
-#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&book_factory_lock)
+static GRecMutex book_factory_lock;
+#define LOCK_FACTORY()   g_rec_mutex_lock (&book_factory_lock)
+#define UNLOCK_FACTORY() g_rec_mutex_unlock (&book_factory_lock)
 
 static void gdbus_book_factory_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
 

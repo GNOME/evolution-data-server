@@ -75,7 +75,7 @@ struct _EIntervalTreePrivate
 	EIntervalNode *root;
 	EIntervalNode *nil;
 	GHashTable *id_node_hash;
-	GStaticRecMutex mutex;
+	GRecMutex mutex;
 };
 
 static inline gint
@@ -303,7 +303,7 @@ e_intervaltree_insert (EIntervalTree *tree,
 
 	priv = tree->priv;
 
-	g_static_rec_mutex_lock (&priv->mutex);
+	g_rec_mutex_lock (&priv->mutex);
 
 	e_cal_component_get_uid (comp, &uid);
 	rid = e_cal_component_get_recurid_as_string (comp);
@@ -375,7 +375,7 @@ e_intervaltree_insert (EIntervalTree *tree,
 	g_hash_table_insert (priv->id_node_hash, component_key (uid, rid), newNode);
 	g_free (rid);
 
-	g_static_rec_mutex_unlock (&priv->mutex);
+	g_rec_mutex_unlock (&priv->mutex);
 
 	return TRUE;
 }
@@ -562,7 +562,7 @@ e_intervaltree_search (EIntervalTree *tree,
 	g_return_val_if_fail (tree != NULL, NULL);
 
 	priv = tree->priv;
-	g_static_rec_mutex_lock (&priv->mutex);
+	g_rec_mutex_lock (&priv->mutex);
 
 	stack_start = pos = g_list_insert (stack_start, priv->root->left, -1);
 
@@ -590,7 +590,7 @@ e_intervaltree_search (EIntervalTree *tree,
 
 	g_list_free (stack_start);
 
-	g_static_rec_mutex_unlock (&priv->mutex);
+	g_rec_mutex_unlock (&priv->mutex);
 
 	return list;
 }
@@ -689,12 +689,12 @@ e_intervaltree_remove (EIntervalTree *tree,
 	priv = tree->priv;
 	nil = priv->nil;
 	root = priv->root;
-	g_static_rec_mutex_lock (&priv->mutex);
+	g_rec_mutex_lock (&priv->mutex);
 
 	z = e_intervaltree_search_component (tree, uid, rid);
 
 	if (!z || z == nil) {
-		g_static_rec_mutex_unlock (&priv->mutex);
+		g_rec_mutex_unlock (&priv->mutex);
 		return FALSE;
 	}
 
@@ -757,7 +757,7 @@ e_intervaltree_remove (EIntervalTree *tree,
 
 	g_object_unref (z->comp);
 	g_free (z);
-	g_static_rec_mutex_unlock (&priv->mutex);
+	g_rec_mutex_unlock (&priv->mutex);
 
 	return TRUE;
 }
@@ -782,7 +782,7 @@ intervaltree_finalize (GObject *object)
 		priv->id_node_hash = NULL;
 	}
 
-	g_static_rec_mutex_free (&priv->mutex);
+	g_rec_mutex_clear (&priv->mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_intervaltree_parent_class)->finalize (object);
@@ -820,7 +820,7 @@ e_intervaltree_init (EIntervalTree *tree)
 	root->max = _TIME_MAX;
 	root->min = _TIME_MIN;
 
-	g_static_rec_mutex_init (&tree->priv->mutex);
+	g_rec_mutex_init (&tree->priv->mutex);
 
 	tree->priv->id_node_hash = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,

@@ -35,13 +35,13 @@
 G_BEGIN_DECLS
 
 struct _CamelLocalFolderPrivate {
-	GMutex *search_lock;	/* for locking the search object */
+	GMutex search_lock;	/* for locking the search object */
 };
 
 #define CAMEL_LOCAL_FOLDER_LOCK(f, l) \
-	(g_mutex_lock (((CamelLocalFolder *) f)->priv->l))
+	(g_mutex_lock (&((CamelLocalFolder *) f)->priv->l))
 #define CAMEL_LOCAL_FOLDER_UNLOCK(f, l) \
-	(g_mutex_unlock (((CamelLocalFolder *) f)->priv->l))
+	(g_mutex_unlock (&((CamelLocalFolder *) f)->priv->l))
 
 gint		camel_local_frompos_sort	(gpointer enc,
 						 gint len1,

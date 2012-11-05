@@ -38,7 +38,7 @@ struct _EDataFactoryPrivate {
 	 * 'backend_factories' hash table doesn't really need
 	 * guarding since it gets populated during construction
 	 * and is read-only thereafter. */
-	GMutex *mutex;
+	GMutex mutex;
 
 	/* ESource UID -> GWeakRef (EBackend) */
 	GHashTable *backends;
@@ -104,7 +104,7 @@ data_factory_finalize (GObject *object)
 
 	priv = E_DATA_FACTORY_GET_PRIVATE (object);
 
-	g_mutex_free (priv->mutex);
+	g_mutex_clear (&priv->mutex);
 
 	g_hash_table_destroy (priv->backends);
 	g_hash_table_destroy (priv->backend_factories);
@@ -173,7 +173,7 @@ e_data_factory_init (EDataFactory *data_factory)
 {
 	data_factory->priv = E_DATA_FACTORY_GET_PRIVATE (data_factory);
 
-	data_factory->priv->mutex = g_mutex_new ();
+	g_mutex_init (&data_factory->priv->mutex);
 
 	data_factory->priv->backends = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -227,7 +227,7 @@ e_data_factory_ref_backend (EDataFactory *data_factory,
 	uid = e_source_get_uid (source);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	g_mutex_lock (data_factory->priv->mutex);
+	g_mutex_lock (&data_factory->priv->mutex);
 
 	/* The weak ref is already inserted in the hash table. */
 	weak_ref = data_factory_backends_lookup (data_factory, uid);
@@ -254,7 +254,7 @@ e_data_factory_ref_backend (EDataFactory *data_factory,
 	g_object_unref (backend_factory);
 
 exit:
-	g_mutex_unlock (data_factory->priv->mutex);
+	g_mutex_unlock (&data_factory->priv->mutex);
 
 	return backend;
 }

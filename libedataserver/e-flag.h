@@ -46,8 +46,8 @@ gboolean	e_flag_is_set			(EFlag *flag);
 void		e_flag_set			(EFlag *flag);
 void		e_flag_clear			(EFlag *flag);
 void		e_flag_wait			(EFlag *flag);
-gboolean	e_flag_timed_wait		(EFlag *flag,
-						 GTimeVal *abs_time);
+gboolean	e_flag_wait_until		(EFlag *flag,
+						 gint64 end_time);
 void		e_flag_free			(EFlag *flag);
 
 G_END_DECLS

@@ -41,10 +41,10 @@
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5
 
-#define READER_LOCK(cdb) g_static_rw_lock_reader_lock (&cdb->priv->rwlock)
-#define READER_UNLOCK(cdb) g_static_rw_lock_reader_unlock (&cdb->priv->rwlock)
-#define WRITER_LOCK(cdb) g_static_rw_lock_writer_lock (&cdb->priv->rwlock)
-#define WRITER_UNLOCK(cdb) g_static_rw_lock_writer_unlock (&cdb->priv->rwlock)
+#define READER_LOCK(cdb) g_rw_lock_reader_lock (&cdb->priv->rwlock)
+#define READER_UNLOCK(cdb) g_rw_lock_reader_unlock (&cdb->priv->rwlock)
+#define WRITER_LOCK(cdb) g_rw_lock_writer_lock (&cdb->priv->rwlock)
+#define WRITER_UNLOCK(cdb) g_rw_lock_writer_unlock (&cdb->priv->rwlock)
 
 static sqlite3_vfs *old_vfs = NULL;
 static GThreadPool *sync_pool = NULL;
@@ -52,7 +52,7 @@ static GThreadPool *sync_pool = NULL;
 typedef struct {
 	sqlite3_file parent;
 	sqlite3_file *old_vfs_file; /* pointer to old_vfs' file */
-	GStaticRecMutex sync_mutex;
+	GRecMutex sync_mutex;
 	guint timeout_id;
 	gint flags;
 } CamelSqlite3File;
@@ -69,8 +69,8 @@ call_old_file_Sync (CamelSqlite3File *cFile,
 }
 
 typedef struct {
-	GCond *cond;
-	GMutex *mutex;
+	GCond cond;
+	GMutex mutex;
 	gboolean is_set;
 } SyncDone;
 
@@ -97,10 +97,10 @@ sync_request_thread_cb (gpointer task_data,
 	g_free (sync_data);
 
 	if (done != NULL) {
-		g_mutex_lock (done->mutex);
+		g_mutex_lock (&done->mutex);
 		done->is_set = TRUE;
-		g_cond_broadcast (done->cond);
-		g_mutex_unlock (done->mutex);
+		g_cond_broadcast (&done->cond);
+		g_mutex_unlock (&done->mutex);
 	}
 }
 
@@ -115,12 +115,12 @@ sync_push_request (CamelSqlite3File *cFile,
 	g_return_if_fail (cFile != NULL);
 	g_return_if_fail (sync_pool != NULL);
 
-	g_static_rec_mutex_lock (&cFile->sync_mutex);
+	g_rec_mutex_lock (&cFile->sync_mutex);
 
 	if (wait_for_finish) {
 		done = g_slice_new (SyncDone);
-		done->cond = g_cond_new ();
-		done->mutex = g_mutex_new ();
+		g_cond_init (&done->cond);
+		g_mutex_init (&done->mutex);
 		done->is_set = FALSE;
 	}
 
@@ -131,7 +131,7 @@ sync_push_request (CamelSqlite3File *cFile,
 
 	cFile->flags = 0;
 
-	g_static_rec_mutex_unlock (&cFile->sync_mutex);
+	g_rec_mutex_unlock (&cFile->sync_mutex);
 
 	g_thread_pool_push (sync_pool, data, &error);
 
@@ -140,8 +140,8 @@ sync_push_request (CamelSqlite3File *cFile,
 		g_error_free (error);
 
 		if (done != NULL) {
-			g_cond_free (done->cond);
-			g_mutex_free (done->mutex);
+			g_cond_clear (&done->cond);
+			g_mutex_clear (&done->mutex);
 			g_slice_free (SyncDone, done);
 		}
 
@@ -149,13 +149,13 @@ sync_push_request (CamelSqlite3File *cFile,
 	}
 
 	if (done != NULL) {
-		g_mutex_lock (done->mutex);
+		g_mutex_lock (&done->mutex);
 		while (!done->is_set)
-			g_cond_wait (done->cond, done->mutex);
-		g_mutex_unlock (done->mutex);
+			g_cond_wait (&done->cond, &done->mutex);
+		g_mutex_unlock (&done->mutex);
 
-		g_cond_free (done->cond);
-		g_mutex_free (done->mutex);
+		g_cond_clear (&done->cond);
+		g_mutex_clear (&done->mutex);
 		g_slice_free (SyncDone, done);
 	}
 }
@@ -163,14 +163,14 @@ sync_push_request (CamelSqlite3File *cFile,
 static gboolean
 sync_push_request_timeout (CamelSqlite3File *cFile)
 {
-	g_static_rec_mutex_lock (&cFile->sync_mutex);
+	g_rec_mutex_lock (&cFile->sync_mutex);
 
 	if (cFile->timeout_id != 0) {
 		sync_push_request (cFile, FALSE);
 		cFile->timeout_id = 0;
 	}
 
-	g_static_rec_mutex_unlock (&cFile->sync_mutex);
+	g_rec_mutex_unlock (&cFile->sync_mutex);
 
 	return FALSE;
 }
@@ -231,7 +231,7 @@ camel_sqlite3_file_xClose (sqlite3_file *pFile)
 
 	cFile = (CamelSqlite3File *) pFile;
 
-	g_static_rec_mutex_lock (&cFile->sync_mutex);
+	g_rec_mutex_lock (&cFile->sync_mutex);
 
 	/* Cancel any pending sync requests. */
 	if (cFile->timeout_id > 0) {
@@ -239,7 +239,7 @@ camel_sqlite3_file_xClose (sqlite3_file *pFile)
 		cFile->timeout_id = 0;
 	}
 
-	g_static_rec_mutex_unlock (&cFile->sync_mutex);
+	g_rec_mutex_unlock (&cFile->sync_mutex);
 
 	/* Make the last sync. */
 	sync_push_request (cFile, TRUE);
@@ -252,7 +252,7 @@ camel_sqlite3_file_xClose (sqlite3_file *pFile)
 	g_free (cFile->old_vfs_file);
 	cFile->old_vfs_file = NULL;
 
-	g_static_rec_mutex_free (&cFile->sync_mutex);
+	g_rec_mutex_clear (&cFile->sync_mutex);
 
 	return res;
 }
@@ -268,7 +268,7 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile,
 
 	cFile = (CamelSqlite3File *) pFile;
 
-	g_static_rec_mutex_lock (&cFile->sync_mutex);
+	g_rec_mutex_lock (&cFile->sync_mutex);
 
 	/* If a sync request is already scheduled, accumulate flags. */
 	cFile->flags |= flags;
@@ -282,7 +282,7 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile,
 		SYNC_TIMEOUT_SECONDS, (GSourceFunc)
 		sync_push_request_timeout, cFile);
 
-	g_static_rec_mutex_unlock (&cFile->sync_mutex);
+	g_rec_mutex_unlock (&cFile->sync_mutex);
 
 	return SQLITE_OK;
 }
@@ -294,7 +294,7 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs,
                          gint flags,
                          gint *pOutFlags)
 {
-	static GStaticRecMutex only_once_lock = G_STATIC_REC_MUTEX_INIT;
+	static GRecMutex only_once_lock;
 	static sqlite3_io_methods io_methods = {0};
 	CamelSqlite3File *cFile;
 	gint res;
@@ -311,9 +311,9 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs,
 		return res;
 	}
 
-	g_static_rec_mutex_init (&cFile->sync_mutex);
+	g_rec_mutex_init (&cFile->sync_mutex);
 
-	g_static_rec_mutex_lock (&only_once_lock);
+	g_rec_mutex_lock (&only_once_lock);
 
 	if (!sync_pool)
 		sync_pool = g_thread_pool_new (sync_request_thread_cb, NULL, 2, FALSE, NULL);
@@ -346,7 +346,7 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs,
 		#undef use_subclassed
 	}
 
-	g_static_rec_mutex_unlock (&only_once_lock);
+	g_rec_mutex_unlock (&only_once_lock);
 
 	cFile->parent.pMethods = &io_methods;
 
@@ -380,7 +380,7 @@ init_sqlite_vfs (void)
 
 struct _CamelDBPrivate {
 	GTimer *timer;
-	GStaticRWLock rwlock;
+	GRWLock rwlock;
 	gchar *file_name;
 	gboolean transaction_is_on;
 };
@@ -517,7 +517,7 @@ camel_db_open (const gchar *path,
 	cdb->db = db;
 	cdb->priv = g_new (CamelDBPrivate, 1);
 	cdb->priv->file_name = g_strdup (path);
-	g_static_rw_lock_init (&cdb->priv->rwlock);
+	g_rw_lock_init (&cdb->priv->rwlock);
 	cdb->priv->timer = NULL;
 	d (g_print ("\nDatabase succesfully opened  \n"));
 
@@ -567,7 +567,7 @@ camel_db_close (CamelDB *cdb)
 {
 	if (cdb) {
 		sqlite3_close (cdb->db);
-		g_static_rw_lock_free (&cdb->priv->rwlock);
+		g_rw_lock_clear (&cdb->priv->rwlock);
 		g_free (cdb->priv->file_name);
 		g_free (cdb->priv);
 		g_free (cdb);

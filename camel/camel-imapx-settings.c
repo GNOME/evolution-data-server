@@ -26,7 +26,7 @@
 	((obj), CAMEL_TYPE_IMAPX_SETTINGS, CamelIMAPXSettingsPrivate))
 
 struct _CamelIMAPXSettingsPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *namespace;
 	gchar *shell_command;
 
@@ -382,7 +382,7 @@ imapx_settings_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->namespace);
 	g_free (priv->shell_command);
@@ -636,7 +636,7 @@ static void
 camel_imapx_settings_init (CamelIMAPXSettings *settings)
 {
 	settings->priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (settings);
-	settings->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&settings->priv->property_lock);
 }
 
 /**
@@ -1072,12 +1072,12 @@ camel_imapx_settings_dup_namespace (CamelIMAPXSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imapx_settings_get_namespace (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -1102,17 +1102,17 @@ camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
 	if (namespace_ == NULL)
 		namespace_ = "";
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->namespace, namespace_) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->namespace);
 	settings->priv->namespace = g_strdup (namespace_);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "namespace");
 }
@@ -1163,12 +1163,12 @@ camel_imapx_settings_dup_shell_command (CamelIMAPXSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_imapx_settings_get_shell_command (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -1199,17 +1199,17 @@ camel_imapx_settings_set_shell_command (CamelIMAPXSettings *settings,
 	if (shell_command != NULL && *shell_command == '\0')
 		shell_command = NULL;
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->shell_command, shell_command) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->shell_command);
 	settings->priv->shell_command = g_strdup (shell_command);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "shell-command");
 }

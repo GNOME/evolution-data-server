@@ -87,11 +87,7 @@ main (gint argc,
 			for (i = 0; i < MAX_THREADS; i++) {
 				GError *error = NULL;
 
-				threads[i] = g_thread_create (worker, NULL, TRUE, &error);
-				if (error) {
-					fprintf (stderr, "%s: Failed to create a thread: %s\n", G_STRFUNC, error->message);
-					g_error_free (error);
-				}
+				threads[i] = g_thread_new (NULL, worker, NULL);
 			}
 
 			for (i = 0; i < MAX_THREADS; i++) {

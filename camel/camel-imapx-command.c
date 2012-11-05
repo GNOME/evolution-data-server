@@ -43,8 +43,8 @@ struct _CamelIMAPXRealCommand {
 	GString *buffer;
 
 	/* Used for running some commands synchronously. */
-	GCond *done_sync_cond;
-	GMutex *done_sync_mutex;
+	GCond done_sync_cond;
+	GMutex done_sync_mutex;
 	gboolean done_sync_flag;
 };
 
@@ -69,8 +69,8 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	/* Initialize private bits. */
 	real_ic->ref_count = 1;
 	real_ic->buffer = g_string_sized_new (512);
-	real_ic->done_sync_cond = g_cond_new ();
-	real_ic->done_sync_mutex = g_mutex_new ();
+	g_cond_init (&real_ic->done_sync_cond);
+	g_mutex_init (&real_ic->done_sync_mutex);
 
 	/* Initialize public bits. */
 	real_ic->public.is = is;
@@ -141,8 +141,8 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 
 		g_string_free (real_ic->buffer, TRUE);
 
-		g_cond_free (real_ic->done_sync_cond);
-		g_mutex_free (real_ic->done_sync_mutex);
+		g_cond_clear (&real_ic->done_sync_cond);
+		g_mutex_clear (&real_ic->done_sync_mutex);
 
 		/* Do NOT try to free the GError.  If set it should have been
 		 * propagated to the CamelIMAPXJob, so it's either NULL or the
@@ -554,12 +554,12 @@ camel_imapx_command_wait (CamelIMAPXCommand *ic)
 
 	real_ic = (CamelIMAPXRealCommand *) ic;
 
-	g_mutex_lock (real_ic->done_sync_mutex);
+	g_mutex_lock (&real_ic->done_sync_mutex);
 	while (!real_ic->done_sync_flag)
 		g_cond_wait (
-			real_ic->done_sync_cond,
-			real_ic->done_sync_mutex);
-	g_mutex_unlock (real_ic->done_sync_mutex);
+			&real_ic->done_sync_cond,
+			&real_ic->done_sync_mutex);
+	g_mutex_unlock (&real_ic->done_sync_mutex);
 }
 
 void
@@ -571,10 +571,10 @@ camel_imapx_command_done (CamelIMAPXCommand *ic)
 
 	real_ic = (CamelIMAPXRealCommand *) ic;
 
-	g_mutex_lock (real_ic->done_sync_mutex);
+	g_mutex_lock (&real_ic->done_sync_mutex);
 	real_ic->done_sync_flag = TRUE;
-	g_cond_broadcast (real_ic->done_sync_cond);
-	g_mutex_unlock (real_ic->done_sync_mutex);
+	g_cond_broadcast (&real_ic->done_sync_cond);
+	g_mutex_unlock (&real_ic->done_sync_mutex);
 }
 
 gboolean

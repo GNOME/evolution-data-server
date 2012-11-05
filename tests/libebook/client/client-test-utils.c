@@ -95,14 +95,10 @@ idle_cb (gpointer data)
 	g_return_val_if_fail (idle->func != NULL, FALSE);
 
 	if (idle->run_in_thread) {
-		GError *error = NULL;
+		GThread *thread;
 
-		g_thread_create (idle->func, idle->data, FALSE, &error);
-
-		if (error) {
-			report_error ("create thread", &error);
-			stop_main_loop (1);
-		}
+		thread = g_thread_new (NULL, idle->func, idle->data);
+		g_thread_unref (thread);
 	} else {
 		idle->func (idle->data);
 	}

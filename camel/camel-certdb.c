@@ -45,10 +45,10 @@
 	((obj), CAMEL_TYPE_CERTDB, CamelCertDBPrivate))
 
 struct _CamelCertDBPrivate {
-	GMutex *db_lock;	/* for the db hashtable/array */
-	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
-	GMutex *alloc_lock;	/* for setting up and using allocators */
-	GMutex *ref_lock;	/* for reffing/unreffing certs */
+	GMutex db_lock;		/* for the db hashtable/array */
+	GMutex io_lock;		/* load/save lock, for access to saved_count, etc */
+	GMutex alloc_lock;	/* for setting up and using allocators */
+	GMutex ref_lock;	/* for reffing/unreffing certs */
 };
 
 static gint certdb_header_load (CamelCertDB *certdb, FILE *istream);
@@ -152,10 +152,10 @@ certdb_finalize (GObject *object)
 	if (certdb->cert_chunks)
 		camel_memchunk_destroy (certdb->cert_chunks);
 
-	g_mutex_free (priv->db_lock);
-	g_mutex_free (priv->io_lock);
-	g_mutex_free (priv->alloc_lock);
-	g_mutex_free (priv->ref_lock);
+	g_mutex_clear (&priv->db_lock);
+	g_mutex_clear (&priv->io_lock);
+	g_mutex_clear (&priv->alloc_lock);
+	g_mutex_clear (&priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_certdb_parent_class)->finalize (object);
@@ -198,10 +198,10 @@ camel_certdb_init (CamelCertDB *certdb)
 	certdb->certs = g_ptr_array_new ();
 	certdb->cert_hash = g_hash_table_new_full (certdb_key_hash, certdb_key_equal, certdb_key_free, NULL);
 
-	certdb->priv->db_lock = g_mutex_new ();
-	certdb->priv->io_lock = g_mutex_new ();
-	certdb->priv->alloc_lock = g_mutex_new ();
-	certdb->priv->ref_lock = g_mutex_new ();
+	g_mutex_init (&certdb->priv->db_lock);
+	g_mutex_init (&certdb->priv->io_lock);
+	g_mutex_init (&certdb->priv->alloc_lock);
+	g_mutex_init (&certdb->priv->ref_lock);
 }
 
 CamelCertDB *
@@ -211,12 +211,12 @@ camel_certdb_new (void)
 }
 
 static CamelCertDB *default_certdb = NULL;
-static GStaticMutex default_certdb_lock = G_STATIC_MUTEX_INIT;
+static GMutex default_certdb_lock;
 
 void
 camel_certdb_set_default (CamelCertDB *certdb)
 {
-	g_static_mutex_lock (&default_certdb_lock);
+	g_mutex_lock (&default_certdb_lock);
 
 	if (default_certdb)
 		g_object_unref (default_certdb);
@@ -226,7 +226,7 @@ camel_certdb_set_default (CamelCertDB *certdb)
 
 	default_certdb = certdb;
 
-	g_static_mutex_unlock (&default_certdb_lock);
+	g_mutex_unlock (&default_certdb_lock);
 }
 
 CamelCertDB *
@@ -234,14 +234,14 @@ camel_certdb_get_default (void)
 {
 	CamelCertDB *certdb;
 
-	g_static_mutex_lock (&default_certdb_lock);
+	g_mutex_lock (&default_certdb_lock);
 
 	if (default_certdb)
 		g_object_ref (default_certdb);
 
 	certdb = default_certdb;
 
-	g_static_mutex_unlock (&default_certdb_lock);
+	g_mutex_unlock (&default_certdb_lock);
 
 	return certdb;
 }
@@ -844,16 +844,16 @@ camel_certdb_lock (CamelCertDB *certdb,
 
 	switch (lock) {
 	case CAMEL_CERTDB_DB_LOCK:
-		g_mutex_lock (certdb->priv->db_lock);
+		g_mutex_lock (&certdb->priv->db_lock);
 		break;
 	case CAMEL_CERTDB_IO_LOCK:
-		g_mutex_lock (certdb->priv->io_lock);
+		g_mutex_lock (&certdb->priv->io_lock);
 		break;
 	case CAMEL_CERTDB_ALLOC_LOCK:
-		g_mutex_lock (certdb->priv->alloc_lock);
+		g_mutex_lock (&certdb->priv->alloc_lock);
 		break;
 	case CAMEL_CERTDB_REF_LOCK:
-		g_mutex_lock (certdb->priv->ref_lock);
+		g_mutex_lock (&certdb->priv->ref_lock);
 		break;
 	default:
 		g_return_if_reached ();
@@ -877,16 +877,16 @@ camel_certdb_unlock (CamelCertDB *certdb,
 
 	switch (lock) {
 	case CAMEL_CERTDB_DB_LOCK:
-		g_mutex_unlock (certdb->priv->db_lock);
+		g_mutex_unlock (&certdb->priv->db_lock);
 		break;
 	case CAMEL_CERTDB_IO_LOCK:
-		g_mutex_unlock (certdb->priv->io_lock);
+		g_mutex_unlock (&certdb->priv->io_lock);
 		break;
 	case CAMEL_CERTDB_ALLOC_LOCK:
-		g_mutex_unlock (certdb->priv->alloc_lock);
+		g_mutex_unlock (&certdb->priv->alloc_lock);
 		break;
 	case CAMEL_CERTDB_REF_LOCK:
-		g_mutex_unlock (certdb->priv->ref_lock);
+		g_mutex_unlock (&certdb->priv->ref_lock);
 		break;
 	default:
 		g_return_if_reached ();

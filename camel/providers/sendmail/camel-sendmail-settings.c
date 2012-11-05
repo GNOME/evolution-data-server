@@ -23,7 +23,7 @@
 	((obj), CAMEL_TYPE_SENDMAIL_SETTINGS, CamelSendmailSettingsPrivate))
 
 struct _CamelSendmailSettingsPrivate {
-	GMutex *property_lock;
+	GMutex property_lock;
 	gchar *custom_binary;
 	gchar *custom_args;
 
@@ -122,7 +122,7 @@ sendmail_settings_finalize (GObject *object)
 
 	priv = CAMEL_SENDMAIL_SETTINGS_GET_PRIVATE (object);
 
-	g_mutex_free (priv->property_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->custom_binary);
 	g_free (priv->custom_args);
@@ -196,7 +196,7 @@ static void
 camel_sendmail_settings_init (CamelSendmailSettings *settings)
 {
 	settings->priv = CAMEL_SENDMAIL_SETTINGS_GET_PRIVATE (settings);
-	settings->priv->property_lock = g_mutex_new ();
+	g_mutex_init (&settings->priv->property_lock);
 }
 
 /**
@@ -320,12 +320,12 @@ camel_sendmail_settings_dup_custom_binary (CamelSendmailSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_sendmail_settings_get_custom_binary (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -349,17 +349,17 @@ camel_sendmail_settings_set_custom_binary (CamelSendmailSettings *settings,
 	if (custom_binary && !*custom_binary)
 		custom_binary = NULL;
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->custom_binary, custom_binary) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->custom_binary);
 	settings->priv->custom_binary = g_strdup (custom_binary);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "custom-binary");
 }
@@ -403,12 +403,12 @@ camel_sendmail_settings_dup_custom_args (CamelSendmailSettings *settings)
 
 	g_return_val_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings), NULL);
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	protected = camel_sendmail_settings_get_custom_args (settings);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	return duplicate;
 }
@@ -432,17 +432,17 @@ camel_sendmail_settings_set_custom_args (CamelSendmailSettings *settings,
 	if (custom_args && !*custom_args)
 		custom_args = NULL;
 
-	g_mutex_lock (settings->priv->property_lock);
+	g_mutex_lock (&settings->priv->property_lock);
 
 	if (g_strcmp0 (settings->priv->custom_args, custom_args) == 0) {
-		g_mutex_unlock (settings->priv->property_lock);
+		g_mutex_unlock (&settings->priv->property_lock);
 		return;
 	}
 
 	g_free (settings->priv->custom_args);
 	settings->priv->custom_args = g_strdup (custom_args);
 
-	g_mutex_unlock (settings->priv->property_lock);
+	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "custom-args");
 }

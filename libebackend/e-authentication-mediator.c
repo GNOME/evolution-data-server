@@ -61,7 +61,7 @@ struct _EAuthenticationMediatorPrivate {
 
 	ThreadClosure *thread_closure;
 
-	GMutex *shared_data_lock;
+	GMutex shared_data_lock;
 
 	GQueue try_password_queue;
 	GQueue wait_for_client_queue;
@@ -89,8 +89,8 @@ struct _ThreadClosure {
 	GWeakRef mediator;
 	GMainContext *main_context;
 	GMainLoop *main_loop;
-	GCond *main_loop_cond;
-	GMutex *main_loop_mutex;
+	GCond main_loop_cond;
+	GMutex main_loop_mutex;
 	GError *export_error;
 };
 
@@ -147,8 +147,8 @@ thread_closure_new (EAuthenticationMediator *mediator)
 	 * we wait for the main loop to start running as a way of
 	 * synchronizing with the manager thread. */
 	closure->main_loop = g_main_loop_new (closure->main_context, FALSE);
-	closure->main_loop_cond = g_cond_new ();
-	closure->main_loop_mutex = g_mutex_new ();
+	g_cond_init (&closure->main_loop_cond);
+	g_mutex_init (&closure->main_loop_mutex);
 
 	return closure;
 }
@@ -174,8 +174,8 @@ thread_closure_unref (ThreadClosure *closure)
 		g_weak_ref_set (&closure->mediator, NULL);
 		g_main_context_unref (closure->main_context);
 		g_main_loop_unref (closure->main_loop);
-		g_cond_free (closure->main_loop_cond);
-		g_mutex_free (closure->main_loop_mutex);
+		g_cond_clear (&closure->main_loop_cond);
+		g_mutex_clear (&closure->main_loop_mutex);
 
 		g_slice_free (ThreadClosure, closure);
 	}
@@ -192,7 +192,7 @@ authentication_mediator_name_vanished_cb (GDBusConnection *connection,
 
 	mediator = E_AUTHENTICATION_MEDIATOR (user_data);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	mediator->priv->client_vanished = TRUE;
 
@@ -221,7 +221,7 @@ authentication_mediator_name_vanished_cb (GDBusConnection *connection,
 	g_bus_unwatch_name (mediator->priv->watcher_id);
 	mediator->priv->watcher_id = 0;
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 }
 
 static void
@@ -285,7 +285,7 @@ authentication_mediator_handle_ready (EDBusAuthenticator *interface,
 	mediator = g_weak_ref_get (&closure->mediator);
 	g_return_val_if_fail (mediator != NULL, FALSE);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	mediator->priv->client_is_ready = TRUE;
 
@@ -300,7 +300,7 @@ authentication_mediator_handle_ready (EDBusAuthenticator *interface,
 		g_object_unref (simple);
 	}
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
 	e_dbus_authenticator_complete_ready (interface, invocation);
 
@@ -321,7 +321,7 @@ authentication_mediator_handle_cancel (EDBusAuthenticator *interface,
 	mediator = g_weak_ref_get (&closure->mediator);
 	g_return_val_if_fail (mediator != NULL, FALSE);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	mediator->priv->client_cancelled = TRUE;
 
@@ -347,7 +347,7 @@ authentication_mediator_handle_cancel (EDBusAuthenticator *interface,
 		g_object_unref (simple);
 	}
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
 	e_dbus_authenticator_complete_cancel (interface, invocation);
 
@@ -368,7 +368,7 @@ authentication_mediator_handle_accepted (EDBusAuthenticator *interface,
 	mediator = g_weak_ref_get (&closure->mediator);
 	g_return_val_if_fail (mediator != NULL, FALSE);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	queue = &mediator->priv->try_password_queue;
 
@@ -381,7 +381,7 @@ authentication_mediator_handle_accepted (EDBusAuthenticator *interface,
 		g_object_unref (simple);
 	}
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
 	e_dbus_authenticator_complete_accepted (interface, invocation);
 
@@ -402,7 +402,7 @@ authentication_mediator_handle_rejected (EDBusAuthenticator *interface,
 	mediator = g_weak_ref_get (&closure->mediator);
 	g_return_val_if_fail (mediator != NULL, FALSE);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	queue = &mediator->priv->try_password_queue;
 
@@ -418,7 +418,7 @@ authentication_mediator_handle_rejected (EDBusAuthenticator *interface,
 		g_object_unref (simple);
 	}
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
 	e_dbus_authenticator_complete_rejected (interface, invocation);
 
@@ -432,9 +432,9 @@ authentication_mediator_authenticator_running (gpointer data)
 {
 	ThreadClosure *closure = data;
 
-	g_mutex_lock (closure->main_loop_mutex);
-	g_cond_broadcast (closure->main_loop_cond);
-	g_mutex_unlock (closure->main_loop_mutex);
+	g_mutex_lock (&closure->main_loop_mutex);
+	g_cond_broadcast (&closure->main_loop_cond);
+	g_mutex_unlock (&closure->main_loop_mutex);
 
 	return FALSE;
 }
@@ -688,7 +688,7 @@ authentication_mediator_finalize (GObject *object)
 
 	priv = E_AUTHENTICATION_MEDIATOR_GET_PRIVATE (object);
 
-	g_mutex_free (priv->shared_data_lock);
+	g_mutex_clear (&priv->shared_data_lock);
 
 	g_free (priv->object_path);
 	g_free (priv->sender);
@@ -743,23 +743,25 @@ authentication_mediator_initable_init (GInitable *initable,
 	 * main loop will signal the thread itself to terminate. */
 	mediator->priv->thread_closure = thread_closure_ref (closure);
 
-	thread = g_thread_create (
+	thread = g_thread_new (NULL,
 		authentication_mediator_authenticator_thread,
-		closure, FALSE /* joinable */, error);
+		closure);
 
 	if (thread == NULL) {
 		thread_closure_unref (closure);
 		return FALSE;
 	}
 
+	g_thread_unref (thread);
+
 	/* Wait for notification that the Authenticator interface
 	 * has been exported and the thread's main loop started. */
-	g_mutex_lock (closure->main_loop_mutex);
+	g_mutex_lock (&closure->main_loop_mutex);
 	while (!g_main_loop_is_running (closure->main_loop))
 		g_cond_wait (
-			closure->main_loop_cond,
-			closure->main_loop_mutex);
-	g_mutex_unlock (closure->main_loop_mutex);
+			&closure->main_loop_cond,
+			&closure->main_loop_mutex);
+	g_mutex_unlock (&closure->main_loop_mutex);
 
 	/* Check whether the interface failed to export. */
 	if (closure->export_error != NULL) {
@@ -811,7 +813,7 @@ authentication_mediator_try_password (ESourceAuthenticator *auth,
 	mediator = E_AUTHENTICATION_MEDIATOR (auth);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->shared_data_lock = mediator->priv->shared_data_lock;
+	async_context->shared_data_lock = &mediator->priv->shared_data_lock;
 	async_context->operation_queue = &mediator->priv->try_password_queue;
 
 	simple = g_simple_async_result_new (
@@ -835,7 +837,7 @@ authentication_mediator_try_password (ESourceAuthenticator *auth,
 		INACTIVITY_TIMEOUT,
 		authentication_mediator_timeout_cb, simple);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	if (mediator->priv->client_cancelled) {
 		g_simple_async_result_set_error (
@@ -865,7 +867,7 @@ authentication_mediator_try_password (ESourceAuthenticator *auth,
 		g_free (encrypted_secret);
 	}
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
 	g_object_unref (simple);
 }
@@ -969,7 +971,7 @@ e_authentication_mediator_init (EAuthenticationMediator *mediator)
 	mediator->priv->interface = e_dbus_authenticator_skeleton_new ();
 	mediator->priv->secret_exchange = gcr_secret_exchange_new (NULL);
 
-	mediator->priv->shared_data_lock = g_mutex_new ();
+	g_mutex_init (&mediator->priv->shared_data_lock);
 }
 
 /**
@@ -1139,7 +1141,7 @@ e_authentication_mediator_wait_for_client (EAuthenticationMediator *mediator,
 	g_return_if_fail (E_IS_AUTHENTICATION_MEDIATOR (mediator));
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->shared_data_lock = mediator->priv->shared_data_lock;
+	async_context->shared_data_lock = &mediator->priv->shared_data_lock;
 	async_context->operation_queue = &mediator->priv->wait_for_client_queue;
 
 	simple = g_simple_async_result_new (
@@ -1162,7 +1164,7 @@ e_authentication_mediator_wait_for_client (EAuthenticationMediator *mediator,
 	async_context->timeout_id = g_timeout_add_seconds (
 		INACTIVITY_TIMEOUT, authentication_mediator_timeout_cb, simple);
 
-	g_mutex_lock (mediator->priv->shared_data_lock);
+	g_mutex_lock (&mediator->priv->shared_data_lock);
 
 	if (mediator->priv->client_is_ready) {
 		g_simple_async_result_complete_in_idle (simple);
@@ -1185,7 +1187,7 @@ e_authentication_mediator_wait_for_client (EAuthenticationMediator *mediator,
 			g_object_ref (simple));
 	}
 
-	g_mutex_unlock (mediator->priv->shared_data_lock);
+	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
 	g_object_unref (simple);
 }
