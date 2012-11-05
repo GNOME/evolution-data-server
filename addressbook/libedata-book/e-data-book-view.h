@@ -28,7 +28,7 @@
 #ifndef __E_DATA_BOOK_VIEW_H__
 #define __E_DATA_BOOK_VIEW_H__
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 #include <libedata-book/e-book-backend-sexp.h>
 
