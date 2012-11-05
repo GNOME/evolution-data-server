@@ -20,6 +20,25 @@
 
 G_BEGIN_DECLS
 
+
+/**
+ * EBookClientViewFlags:
+ * @E_BOOK_CLIENT_VIEW_FLAGS_NONE:
+ *   Symbolic value for no flags
+ * @E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL:
+ *   If this flag is set then all contacts matching the view's query will
+ *   be sent as notifications when starting the view, otherwise only future
+ *   changes will be reported.  The default for a #EBookClientView is %TRUE.
+ *
+ * Flags that control the behaviour of an #EBookClientView.
+ *
+ * Since: 3.4
+ */
+typedef enum {
+	E_BOOK_CLIENT_VIEW_FLAGS_NONE           = 0,
+	E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0),
+} EBookClientViewFlags;
+
 /**
  * EDataBookStatus:
  *
@@ -75,6 +94,19 @@ typedef struct {
 	EBookChangeType  change_type;
 	EContact        *contact;
 } EBookChange;
+
+
+/**
+ * EBookIndexType:
+ * @E_BOOK_INDEX_PREFIX: An index suitable for searching contacts with a prefix pattern
+ * @E_BOOK_INDEX_SUFFIX: An index suitable for searching contacts with a suffix pattern
+ *
+ * The type of index defined by e_source_address_book_config_set_indexed_fields()
+ */
+typedef enum {
+	E_BOOK_INDEX_PREFIX = 0,
+	E_BOOK_INDEX_SUFFIX
+} EBookIndexType;
 
 G_END_DECLS
 

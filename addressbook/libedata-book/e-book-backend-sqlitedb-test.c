@@ -20,7 +20,7 @@
  */
 
 #include <config.h>
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include "e-book-backend-sqlitedb.h"
 
 static GMainLoop *main_loop;

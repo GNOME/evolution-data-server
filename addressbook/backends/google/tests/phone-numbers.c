@@ -19,7 +19,7 @@
  * Author: Philip Withnall <philip@tecnocode.co.uk>
  */
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <gdata/gdata.h>
 
 #include "e-book-google-utils.h"

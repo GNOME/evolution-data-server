@@ -25,7 +25,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 #include "e-data-book-factory.h"
 #include "e-data-book.h"

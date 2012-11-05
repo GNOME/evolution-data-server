@@ -27,6 +27,7 @@
 #define E_BOOK_BACKEND_FILE_H
 
 #include <libedata-book/libedata-book.h>
+#include <libebook/libebook.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND_FILE \

@@ -114,6 +114,7 @@ EBook_1_2_gir_CFLAGS = $(INCLUDES) \
 			$(NULL)
 EBook_1_2_gir_SCANNERFLAGS = --include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir
 EBook_1_2_gir_LIBS = \
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
 	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
 EBook_1_2_gir_FILES = $(libebook_1_2_la_SOURCES) $(libebookinclude_HEADERS)
 
