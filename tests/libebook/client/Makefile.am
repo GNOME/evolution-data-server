@@ -8,6 +8,7 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/addressbook				\
 	-I$(top_builddir)/addressbook				\
+	-DBACKENDDIR=\"$(ebook_backenddir)\" 			\
 	-DSRCDIR=\""$(srcdir)"\"				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
