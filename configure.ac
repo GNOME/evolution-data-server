@@ -180,8 +180,26 @@ dnl	-Wstrict-aliasing=2
 
 AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 
-dnl Be strict when compiling with .git subdirectory
-if test -d .git ; then
+dnl *******************************
+dnl Check for --enable-strict
+dnl *******************************
+AC_ARG_ENABLE([strict],
+	[AS_HELP_STRING([--enable-strict],
+	[enable strict building, like without deprecated symbols (default=auto); auto enables strict building only if .git subdirectory exists])],
+	[enable_strict=$enableval], [enable_strict=auto])
+
+AC_MSG_CHECKING([if strict building is enabled])
+if test "x$enable_strict" = xauto; then
+	dnl Be strict when compiling with .git subdirectory
+	if test -d .git ; then
+		enable_strict=yes
+	else
+		enable_strict=no
+	fi
+fi
+AC_MSG_RESULT([$enable_strict])
+
+if test "x$enable_strict" = xyes; then
 	AM_CPPFLAGS="$AM_CPPFLAGS -DG_DISABLE_DEPRECATED"
 fi
 
@@ -1631,4 +1649,5 @@ echo "
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
 	Code coverage (gcov):	$enable_code_coverage
+	Strict building:	$enable_strict
 "
