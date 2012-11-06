@@ -61,6 +61,7 @@ libebookcontactsincludedir = $(privincludedir)/libebook-contacts
 libebookcontactsinclude_HEADERS =			\
 	libebook-contacts.h				\
 	e-book-contacts-enumtypes.h			\
+	e-book-contacts-types.h				\
 	e-book-query.h					\
 	e-address-western.h				\
 	e-name-western.h				\
