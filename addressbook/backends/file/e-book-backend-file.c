@@ -737,11 +737,11 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 		return FALSE;
 	}
 
-	if (!e_book_backend_sqlitedb_add_contacts (bfpriv->sqlitedb,
+	if (contacts && !e_book_backend_sqlitedb_add_contacts (bfpriv->sqlitedb,
 						   SQLITEDB_FOLDER_ID,
 						   contacts, FALSE, &error)) {
-		g_warning ("Failed to build contact summary: %s", error->message);
-		g_error_free (error);
+		g_warning ("Failed to build contact summary: %s", error ? error->message : "Unknown error");
+		g_clear_error (&error);
 		e_util_free_object_slist (contacts);
 		return FALSE;
 	}
