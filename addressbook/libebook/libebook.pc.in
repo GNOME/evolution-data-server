@@ -10,7 +10,7 @@ privincludedir=@privincludedir@
 Name: libebook
 Description: Client library for evolution address books
 Version: @VERSION@
-Requires: libedataserver-1.2
+Requires: libedataserver-1.2 libebook-contacts-1.2
 Requires.private: camel-1.2
 Libs: -L${libdir} -lebook-1.2
 Cflags: -I${privincludedir}
