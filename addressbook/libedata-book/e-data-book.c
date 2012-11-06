@@ -114,7 +114,6 @@ typedef struct {
 	} d;
 } OperationData;
 
-
 typedef struct {
 	GAsyncReadyCallback callback;
 	gpointer            user_data;
@@ -126,6 +125,55 @@ typedef struct {
 	GMutex              sync_result_mutex;
 	GCond               sync_result_condition;
 } DirectOperationData;
+
+static DirectOperationData *direct_operation_data_push (EDataBook          *book,
+							OperationID         opid,
+							GAsyncReadyCallback callback,
+							gpointer            user_data,
+							GCancellable       *cancellable,
+							gpointer            source_tag,
+							gboolean            sync_call);
+static void                 direct_operation_data_free (DirectOperationData *data);
+static void                 direct_operation_complete  (DirectOperationData *data);
+static void                 direct_operation_wait      (DirectOperationData *data);
+static void                 e_data_book_respond_close  (EDataBook *book,
+							guint opid,
+							GError *error);
+
+/* EModule's can never be free'd, however the use count can change
+ * Here we ensure that there is only one ever created by way of
+ * static variables and locks
+ */
+static GHashTable *modules_table = NULL;
+G_LOCK_DEFINE (modules_table);
+
+G_DEFINE_TYPE (EDataBook, e_data_book, G_TYPE_OBJECT)
+
+static EModule *
+load_module (const gchar *module_path)
+{
+	EModule *module = NULL;
+
+	G_LOCK (modules_table);
+
+	if (!modules_table)
+		modules_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	module = g_hash_table_lookup (modules_table, module_path);
+
+	if (!module) {
+		module = e_module_new (module_path);
+		if (!module)
+			g_warning ("Failed to open EModule at path: %s", module_path);
+		else
+			g_hash_table_insert (modules_table, g_strdup (module_path), module);
+	}
+
+	G_UNLOCK (modules_table);
+
+	return module;
+}
+
 
 static DirectOperationData *
 direct_operation_data_push (EDataBook          *book,
@@ -203,13 +251,6 @@ direct_operation_wait (DirectOperationData *data)
 		g_cond_wait (&data->sync_result_condition, &data->sync_result_mutex);
 	g_mutex_unlock (&data->sync_result_mutex);
 }
-
-static void e_data_book_respond_close (EDataBook *book,
-				       guint opid,
-				       GError *error);
-
-
-G_DEFINE_TYPE (EDataBook, e_data_book, G_TYPE_OBJECT)
 
 static gchar *
 construct_bookview_path (void)
@@ -1535,7 +1576,6 @@ data_book_dispose (GObject *object)
 
 	if (priv->direct_module) {
 		g_type_module_unuse (G_TYPE_MODULE (priv->direct_module));
-		g_object_unref (priv->direct_module);
 		priv->direct_module = NULL;
 	}
 
@@ -1688,15 +1728,12 @@ e_data_book_new_direct (ESourceRegistry *registry,
 	g_return_val_if_fail (backend_path && backend_path[0], NULL);
 	g_return_val_if_fail (backend_factory_name && backend_factory_name[0], NULL);
 
-	module = e_module_new (backend_path);
-	if (!module) {
-		g_warning ("Failed to open EModule at path: %s", backend_path);
+	module = load_module (backend_path);
+	if (!module)
 		return NULL;
-	}
 
 	if (!g_type_module_use (G_TYPE_MODULE (module))) {
 		g_warning ("Failed to load EModule at path: %s", backend_path);
-		g_object_unref (module);
 		return NULL;
 	}
 
@@ -1705,7 +1742,6 @@ e_data_book_new_direct (ESourceRegistry *registry,
 		g_warning ("Failed to get backend factory '%s' from EModule at path: %s",
 			   backend_factory_name, backend_path);
 		g_type_module_unuse (G_TYPE_MODULE (module));
-		g_object_unref (module);
 		return NULL;
 	}
 
@@ -1854,8 +1890,6 @@ e_data_book_close_finish (EDataBook *book,
 
 	res = g_simple_async_result_get_op_res_gboolean (G_SIMPLE_ASYNC_RESULT (result));
 	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
-
-	g_print ("Closed the book: %s\n", res ? "success" : "failed");
 
 	return res;
 }
