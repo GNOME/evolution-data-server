@@ -2434,10 +2434,10 @@ caldav_synch_slave_loop (gpointer data)
 		g_cond_wait (cbdav->priv->cond, cbdav->priv->busy_lock);
 	}
 
+	cbdav->priv->synch_slave = NULL;
+
 	/* signal we are done */
 	g_cond_signal (cbdav->priv->slave_gone_cond);
-
-	cbdav->priv->synch_slave = NULL;
 
 	/* we got killed ... */
 	g_mutex_unlock (cbdav->priv->busy_lock);
@@ -4979,7 +4979,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 	}
 
 	/* stop the slave  */
-	if (priv->synch_slave) {
+	while (priv->synch_slave) {
 		g_cond_signal (priv->cond);
 
 		/* wait until the slave died */
