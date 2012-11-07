@@ -46,7 +46,7 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_BACKEND_FILE, EBookBackendFilePrivate))
 
-#define d(x)  x
+#define d(x)
 
 #define E_BOOK_BACKEND_FILE_VERSION_NAME "PAS-DB-VERSION"
 #define E_BOOK_BACKEND_FILE_VERSION "0.2"
@@ -63,6 +63,12 @@
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 #define EDB_NOT_OPENED_ERROR      EDB_ERROR(NOT_OPENED)
 
+
+/* This forces the GType to be registered in a way that
+ * avoids a "statement with no effect" compiler warning.
+ * FIXME Use g_type_ensure() once we require GLib 2.34. */
+#define REGISTER_TYPE(type) \
+	(g_type_class_unref (g_type_class_ref (type)))
 
 G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 
@@ -1235,6 +1241,12 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	ESource          *source;
 	GError           *local_error = NULL;
 	gboolean          populated;
+	ESourceAddressBookConfig *config;
+	EContactField    *summary_fields = NULL;
+	gint              n_summary_fields = 0;
+	EContactField    *indexed_fields = NULL;
+	EBookIndexType   *index_types = NULL;
+	gint              n_indexed_fields = 0;
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
@@ -1243,15 +1255,26 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 	backup   = g_build_filename (dirname, "addressbook.db.old", NULL);
 
+	REGISTER_TYPE (E_TYPE_SOURCE_ADDRESS_BOOK_CONFIG);
+
+	config         = e_source_get_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
+	summary_fields = e_source_address_book_config_get_summary_fields  (config, &n_summary_fields);
+	indexed_fields = e_source_address_book_config_get_indexed_fields  (config, &index_types, &n_indexed_fields);
+ 
 	/* The old BDB exists, lets migrate that to sqlite right away
 	 */
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (dirname,
-								  SQLITEDB_EMAIL_ID,
-								  SQLITEDB_FOLDER_ID,
-								  SQLITEDB_FOLDER_NAME,
-								  TRUE,
-								  &local_error);
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (dirname,
+								       SQLITEDB_EMAIL_ID,
+								       SQLITEDB_FOLDER_ID,
+								       SQLITEDB_FOLDER_NAME,
+								       TRUE,
+								       summary_fields,
+								       n_summary_fields,
+								       indexed_fields,
+								       index_types,
+								       n_indexed_fields,
+								       &local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
@@ -1259,6 +1282,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
+			g_free (summary_fields);
+			g_free (index_types);
+			g_free (indexed_fields);
 			return;
 		}
 
@@ -1272,6 +1298,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
+			g_free (summary_fields);
+			g_free (index_types);
+			g_free (indexed_fields);
  
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
@@ -1292,6 +1321,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
+			g_free (summary_fields);
+			g_free (index_types);
+			g_free (indexed_fields);
 			bf->priv->sqlitedb = NULL;
 			return;
  		}
@@ -1311,15 +1343,24 @@ e_book_backend_file_open (EBookBackendSync *backend,
  			g_free (dirname);
  			g_free (filename);
 			g_free (backup);
+			g_free (summary_fields);
+			g_free (index_types);
+			g_free (indexed_fields);
  			return;
  		}
 
 		/* Create the sqlitedb */
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (dirname,
-								  SQLITEDB_EMAIL_ID,
-								  SQLITEDB_FOLDER_ID,
-								  SQLITEDB_FOLDER_NAME,
-								  TRUE, &local_error);
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (dirname,
+								       SQLITEDB_EMAIL_ID,
+								       SQLITEDB_FOLDER_ID,
+								       SQLITEDB_FOLDER_NAME,
+								       TRUE,
+								       summary_fields,
+								       n_summary_fields,
+								       indexed_fields,
+								       index_types,
+								       n_indexed_fields,
+								       &local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
@@ -1327,6 +1368,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
  			g_free (dirname);
  			g_free (filename);
 			g_free (backup);
+			g_free (summary_fields);
+			g_free (index_types);
+			g_free (indexed_fields);
  			return;
  		}
 
@@ -1342,6 +1386,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
  			g_free (dirname);
  			g_free (filename);
 			g_free (backup);
+			g_free (summary_fields);
+			g_free (index_types);
+			g_free (indexed_fields);
 
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
@@ -1354,6 +1401,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
  				g_free (dirname);
  				g_free (filename);
 				g_free (backup);
+				g_free (summary_fields);
+				g_free (index_types);
+				g_free (indexed_fields);
 				g_object_unref (bf->priv->sqlitedb);
 				bf->priv->sqlitedb = NULL;
 				g_propagate_error (perror, EDB_ERROR (NO_SUCH_BOOK));
@@ -1382,6 +1432,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 				g_free (dirname);
 				g_free (filename);
 				g_free (backup);
+				g_free (summary_fields);
+				g_free (index_types);
+				g_free (indexed_fields);
 				g_object_unref (bf->priv->sqlitedb);
 				bf->priv->sqlitedb = NULL;
 				return;
@@ -1392,6 +1445,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	g_free (dirname);
 	g_free (filename);
 	g_free (backup);
+	g_free (summary_fields);
+	g_free (index_types);
+	g_free (indexed_fields);
 
 	/* Resolve the photo directory here */
 	dirname = e_book_backend_file_extract_path_from_source (
