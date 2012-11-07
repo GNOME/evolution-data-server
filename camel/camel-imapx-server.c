@@ -1511,9 +1511,10 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 		c (is->tagprefix, "vanished: %s\n", uid);
 
-		uid_list = g_list_append (uid_list, uid);
+		uid_list = g_list_prepend (uid_list, uid);
 		camel_folder_change_info_remove_uid (is->changes, uid);
 	}
+	uid_list = g_list_reverse (uid_list);
 	camel_folder_summary_remove_uids (is->select_folder->summary, uid_list);
 	is->expunged = g_list_concat (is->expunged, uid_list);
 	g_ptr_array_free (uids, FALSE);
