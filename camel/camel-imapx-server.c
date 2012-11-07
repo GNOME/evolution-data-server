@@ -4186,7 +4186,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	}
 
 	/* TODO copy the summary and cached messages to the new folder. We might need a sorted insert to avoid refreshing the dest folder */
-	if (ic->status->condition == IMAPX_COPYUID) {
+	if (ic->status && ic->status->condition == IMAPX_COPYUID) {
 		gint i;
 
 		for (i = 0; i < ic->status->u.copyuid.copied_uids->len; i++) {
