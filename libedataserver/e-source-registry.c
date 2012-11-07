@@ -1022,8 +1022,24 @@ source_registry_initable_init (GInitable *initable,
 		return FALSE;
 	}
 
-	/* The registry should now be populated with sources. */
-	g_warn_if_fail (g_hash_table_size (registry->priv->sources) > 0);
+	/* The registry should now be populated with sources.
+	 *
+	 * XXX Actually, not necessarily if the registry service was
+	 *     just now activated.  There may yet be a small window
+	 *     while the registry service starts up before it exports
+	 *     any sources, even built-in sources.  This COULD create
+	 *     problems if any logic that depends on those built-in
+	 *     sources executes during this time window, but so far
+	 *     we haven't seen any cases of that.
+	 *
+	 *     Attempts in the past to stop and wait for sources to
+	 *     show up have proven problematic.  See for example:
+	 *     https://bugzilla.gnome.org/678378
+	 *
+	 *     Leave the runtime check disabled for the moment.
+	 *     I have a feeling I'll be revisiting this again.
+	 */
+	/*g_warn_if_fail (g_hash_table_size (registry->priv->sources) > 0);*/
 
 	/* The EDBusSourceManagerProxy is just another D-Bus interface
 	 * that resides at the same object path.  It's unrelated to the
