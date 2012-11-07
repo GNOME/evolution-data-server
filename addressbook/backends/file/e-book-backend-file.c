@@ -1240,6 +1240,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	ESource          *source;
 	GError           *local_error = NULL;
 	gboolean          populated;
+	ESourceBackendSummarySetup *setup;
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
@@ -1248,15 +1249,18 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 	backup   = g_build_filename (dirname, "addressbook.db.old", NULL);
 
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	setup = e_source_get_extension (source, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
+ 
 	/* The old BDB exists, lets migrate that to sqlite right away
 	 */
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (
-			dirname,
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (
+                        dirname,
 			SQLITEDB_EMAIL_ID,
 			SQLITEDB_FOLDER_ID,
 			SQLITEDB_FOLDER_NAME,
-			TRUE,
+			TRUE, setup,
 			&local_error);
 
 		if (!bf->priv->sqlitedb) {
@@ -1280,7 +1284,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
-
+ 
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
 			return;
@@ -1321,16 +1325,17 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
-			return;
-		}
+ 			return;
+ 		}
 
 		/* Create the sqlitedb */
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (
-			dirname,
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (
+                        dirname,
 			SQLITEDB_EMAIL_ID,
 			SQLITEDB_FOLDER_ID,
 			SQLITEDB_FOLDER_NAME,
-			TRUE, &local_error);
+			TRUE, setup,
+			&local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
@@ -1338,8 +1343,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
-			return;
-		}
+ 			return;
+ 		}
 
 		/* An sqlite DB only 'exists' if the populated flag is set */
 		populated = e_book_backend_sqlitedb_get_is_populated (
