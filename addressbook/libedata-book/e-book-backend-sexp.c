@@ -61,8 +61,7 @@ compare_im (EContact *contact,
 		}
 	}
 
-	g_list_foreach (aims, (GFunc) g_free, NULL);
-	g_list_free (aims);
+	e_contact_attr_list_free (aims);
 
 	return found_it;
 }
@@ -154,16 +153,23 @@ compare_email (EContact *contact,
                gchar * (*compare) (const gchar *,
                                    const gchar *))
 {
-	gint i;
+	gboolean rv = FALSE;
+	GList *list, *l;
 
-	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_4; i++) {
-		const gchar *email = e_contact_get_const (contact, i);
+	list = e_contact_get (contact, E_CONTACT_EMAIL);
 
-		if (email && compare (email, str))
-			return TRUE;
+	for (l = list; l; l = l->next) {
+		const gchar *email = l->data;
+
+		rv = email && compare (email, str);
+
+		if (rv)
+			break;
 	}
 
-	return FALSE;
+	e_contact_attr_list_free (list);
+
+	return rv;
 }
 
 static gboolean
@@ -172,18 +178,21 @@ compare_phone (EContact *contact,
                gchar * (*compare) (const gchar *,
                                    const gchar *))
 {
-	gint i;
+	GList *list, *l;
 	gboolean rv = FALSE;
 
-	for (i = E_CONTACT_FIRST_PHONE_ID; i <= E_CONTACT_LAST_PHONE_ID; i++) {
-		gchar *phone = e_contact_get (contact, i);
+	list = e_contact_get (contact, E_CONTACT_TEL);
+
+	for (l = list; l; l = l->next) {
+		const gchar *phone = l->data;
 
 		rv = phone && compare (phone, str);
-		g_free (phone);
 
 		if (rv)
 			break;
 	}
+
+	e_contact_attr_list_free (list);
 
 	return rv;
 }
