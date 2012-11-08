@@ -128,8 +128,9 @@ e_flag_is_set
 e_flag_set
 e_flag_clear
 e_flag_wait
-e_flag_timed_wait
+e_flag_wait_until
 e_flag_free
+e_flag_timed_wait
 </SECTION>
 
 <SECTION>

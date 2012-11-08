@@ -87,7 +87,7 @@ AC_SUBST(SOURCES_DBUS_SERVICE_NAME)
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=18
+LIBEDATASERVER_CURRENT=17
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 

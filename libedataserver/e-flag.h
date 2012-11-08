@@ -50,6 +50,11 @@ gboolean	e_flag_wait_until		(EFlag *flag,
 						 gint64 end_time);
 void		e_flag_free			(EFlag *flag);
 
+#ifndef EDS_DISABLE_DEPRECATED
+gboolean	e_flag_timed_wait		(EFlag *flag,
+						 GTimeVal *abs_time);
+#endif /* EDS_DISABLE_DEPRECATED */
+
 G_END_DECLS
 
 #endif /* E_FLAG_H */

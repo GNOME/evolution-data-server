@@ -132,6 +132,44 @@ e_flag_wait (EFlag *flag)
 }
 
 /**
+ * e_flag_timed_wait:
+ * @flag: an #EFlag
+ * @abs_time: a #GTimeVal, determining the final time
+ *
+ * Blocks until @flag is set, or until the time specified by @abs_time.
+ * If @flag is already set, the function returns immediately.  The return
+ * value indicates the state of @flag after waiting.
+ *
+ * If @abs_time is %NULL, e_flag_timed_wait() acts like e_flag_wait().
+ *
+ * To easily calculate @abs_time, a combination of g_get_current_time() and
+ * g_time_val_add() can be used.
+ *
+ * Returns: %TRUE if @flag is now set
+ *
+ * Since: 1.12
+ *
+ * Deprecated: 3.8: Use e_flag_wait_until() instead.
+ **/
+gboolean
+e_flag_timed_wait (EFlag *flag,
+                   GTimeVal *abs_time)
+{
+	gboolean is_set;
+
+	g_return_val_if_fail (flag != NULL, FALSE);
+
+	g_mutex_lock (&flag->mutex);
+	while (!flag->is_set)
+		if (!g_cond_timed_wait (&flag->cond, &flag->mutex, abs_time))
+			break;
+	is_set = flag->is_set;
+	g_mutex_unlock (&flag->mutex);
+
+	return is_set;
+}
+
+/**
  * e_flag_wait_until:
  * @flag: an #EFlag
  * @end_time: the monotonic time to wait until
