@@ -46,7 +46,7 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_BACKEND_FILE, EBookBackendFilePrivate))
 
-#define d(x)  x
+#define d(x)
 
 #define E_BOOK_BACKEND_FILE_VERSION_NAME "PAS-DB-VERSION"
 #define E_BOOK_BACKEND_FILE_VERSION "0.2"
