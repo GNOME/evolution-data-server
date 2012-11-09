@@ -112,9 +112,79 @@ print_email_cb (GObject *source_object,
 }
 
 static void
-print_one_email (EBookClient *book_client)
+print_one_email (EBookClient *book_client, GSList *uids)
 {
-	e_book_client_get_contact (book_client, "pas-id-0002023", NULL, print_email_cb, NULL);
+	const gchar *uid = uids->data;
+
+	e_book_client_get_contact (book_client, uid, NULL, print_email_cb, NULL);
+
+	e_util_free_string_slist (uids);
+}
+
+static void
+contacts_added_cb (GObject *source_object,
+		   GAsyncResult *result,
+		   gpointer user_data)
+{
+	EBookClient *book_client;
+	GError *error = NULL;
+	GSList *uids = NULL, *l;
+
+	book_client = E_BOOK_CLIENT (source_object);
+
+	if (!e_book_client_add_contacts_finish (book_client, result, &uids, &error)) {
+		report_error ("client open finish", &error);
+		stop_main_loop (1);
+		return;
+	}
+
+	printf ("Added contacts uids are:\n");
+	for (l = uids; l; l = l->next) {
+		const gchar *uid = l->data;
+
+		printf ("\t%s\n", uid);
+	}
+	printf ("\n");
+
+	printf ("printing one contact\n");
+	print_one_email (book_client, uids);
+}
+
+static void
+add_contacts (EBookClient *book_client)
+{
+	GSList *contacts = NULL;
+	EContact *contact;
+	gchar *vcard;
+
+	vcard = new_vcard_from_test_case ("custom-1");
+	contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+	contacts = g_slist_prepend (contacts, contact);
+
+	vcard = new_vcard_from_test_case ("custom-2");
+	contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+	contacts = g_slist_prepend (contacts, contact);
+
+	vcard = new_vcard_from_test_case ("custom-3");
+	contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+	contacts = g_slist_prepend (contacts, contact);
+
+	vcard = new_vcard_from_test_case ("custom-4");
+	contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+	contacts = g_slist_prepend (contacts, contact);
+
+	vcard = new_vcard_from_test_case ("custom-5");
+	contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+	contacts = g_slist_prepend (contacts, contact);
+
+	e_book_client_add_contacts (book_client, contacts, NULL, contacts_added_cb, NULL);
+
+	e_util_free_object_slist (contacts);
 }
 
 static void
@@ -134,25 +204,19 @@ client_loaded_cb (GObject *source_object,
 		return;
 	}
 
-	printf ("printing one contact\n");
-	print_one_email (book_client);
+	printf ("Adding contacts\n");
+	add_contacts (book_client);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-#if 0  /* ACCOUNT_MGMT */
 	EBookClient *book_client;
-	GError *error = NULL;
 
 	main_initialize ();
 
-	book_client = e_book_client_new_system (&error);
-	if (error) {
-		report_error ("create system addressbook", &error);
-		return 1;
-	}
+	book_client = new_temp_client (NULL);
 
 	printf ("loading addressbook\n");
 
@@ -163,7 +227,4 @@ main (gint argc,
 	g_object_unref (book_client);
 
 	return get_main_loop_stop_result ();
-#endif /* ACCOUNT_MGMT */
-
-	return 0;
 }
