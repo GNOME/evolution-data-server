@@ -2958,6 +2958,9 @@ imapx_init_idle (CamelIMAPXServer *is)
 {
 	is->idle = g_new0 (CamelIMAPXIdle, 1);
 	g_mutex_init (&is->idle->idle_lock);
+
+	g_cond_init (&is->idle->start_watch_cond);
+	g_mutex_init (&is->idle->start_watch_mutex);
 }
 
 static void
@@ -3012,8 +3015,6 @@ imapx_start_idle (CamelIMAPXServer *is)
 	idle->state = IMAPX_IDLE_PENDING;
 
 	if (!idle->idle_thread) {
-		g_cond_init (&idle->start_watch_cond);
-		g_mutex_init (&idle->start_watch_mutex);
 		idle->start_watch_is_set = FALSE;
 
 		idle->idle_thread = g_thread_new (NULL,
