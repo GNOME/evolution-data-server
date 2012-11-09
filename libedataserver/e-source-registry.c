@@ -87,12 +87,6 @@
 #define E_SETTINGS_DEFAULT_MEMO_LIST_KEY	"default-memo-list"
 #define E_SETTINGS_DEFAULT_TASK_LIST_KEY	"default-task-list"
 
-/* This forces the GType to be registered in a way that
- * avoids a "statement with no effect" compiler warning.
- * FIXME Use g_type_ensure() once we require GLib 2.34. */
-#define REGISTER_TYPE(type) \
-	(g_type_class_unref (g_type_class_ref (type)))
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _AuthContext AuthContext;
 typedef struct _CreateContext CreateContext;
@@ -1365,7 +1359,7 @@ e_source_registry_new_sync (GCancellable *cancellable,
 	/* XXX Work around http://bugzilla.gnome.org/show_bug.cgi?id=683519
 	 *     until GObject's type initialization deadlock issue is fixed.
 	 *     Apparently only the synchronous instantiation is affected. */
-	REGISTER_TYPE (G_TYPE_DBUS_CONNECTION);
+	g_type_ensure (G_TYPE_DBUS_CONNECTION);
 
 	return g_initable_new (
 		E_TYPE_SOURCE_REGISTRY,
