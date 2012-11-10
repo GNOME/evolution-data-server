@@ -63,7 +63,6 @@
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 #define EDB_NOT_OPENED_ERROR      EDB_ERROR(NOT_OPENED)
 
-
 G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 
 struct _EBookBackendFilePrivate {
@@ -73,7 +72,6 @@ struct _EBookBackendFilePrivate {
 
 	EBookBackendSqliteDB *sqlitedb;
 };
-
 
 /****************************************************************
  *                   File Management helper APIs                *
@@ -580,7 +578,6 @@ maybe_transform_vcard_for_photo (EBookBackendFile *bf,
 	return status;
 }
 
-
 /****************************************************************
  *                     Global Revisioning Tools                 *
  ****************************************************************/
@@ -626,8 +623,9 @@ e_book_backend_file_bump_revision (EBookBackendFile *bf)
 						   SQLITEDB_FOLDER_ID,
 						   bf->priv->revision,
 						   &error)) {
-		g_warning (G_STRLOC ": Error setting database revision: %s",
-			   error->message);
+		g_warning (
+			G_STRLOC ": Error setting database revision: %s",
+			error->message);
 		g_error_free (error);
 	}
 
@@ -645,8 +643,9 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 						   SQLITEDB_FOLDER_ID,
 						   &bf->priv->revision,
 						   &error)) {
-		g_warning (G_STRLOC ": Error loading database revision: %s",
-			   error->message);
+		g_warning (
+			G_STRLOC ": Error loading database revision: %s",
+			error->message);
 		g_error_free (error);
 	} else if (bf->priv->revision == NULL) {
 		e_book_backend_file_bump_revision (bf);
@@ -668,7 +667,6 @@ set_revision (EContact *contact)
 
 }
 
-
 /****************************************************************
  *                   Main Backend Implementation                *
  ****************************************************************/
@@ -681,9 +679,9 @@ set_revision (EContact *contact)
  */
 static gboolean
 do_create (EBookBackendFile *bf,
-	   const GSList *vcards_req,
-	   GSList **contacts,
-	   GError **perror)
+           const GSList *vcards_req,
+           GSList **contacts,
+           GError **perror)
 {
 	GSList *slist = NULL;
 	const GSList *l;
@@ -723,7 +721,8 @@ do_create (EBookBackendFile *bf,
 			slist = g_slist_prepend (slist, contact);
 		} else {
 			/* Contact could not be transformed */
-			g_warning (G_STRLOC ": Error transforming vcard with image data %s",
+			g_warning (
+				G_STRLOC ": Error transforming vcard with image data %s",
 				(perror && *perror) ? (*perror)->message :
 				"Unknown error transforming vcard");
 			g_object_unref (contact);
@@ -739,7 +738,7 @@ do_create (EBookBackendFile *bf,
 							   SQLITEDB_FOLDER_ID,
 							   slist, FALSE,
 							   &local_error)) {
-			
+
 			g_warning ("Failed to add contacts: %s", local_error->message);
 			g_propagate_error (perror, local_error);
 
@@ -802,9 +801,10 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		 * single query to fetch a list of contacts for a list of ids, the
 		 * current method makes a query for each UID.
 		 */
-		contact = e_book_backend_sqlitedb_get_contact (bf->priv->sqlitedb,
-							       SQLITEDB_FOLDER_ID, id,
-							       NULL, NULL, &local_error);
+		contact = e_book_backend_sqlitedb_get_contact (
+			bf->priv->sqlitedb,
+			SQLITEDB_FOLDER_ID, id,
+			NULL, NULL, &local_error);
 
 		if (contact) {
 			removed_ids      = g_slist_prepend (removed_ids, g_strdup (id));
@@ -879,9 +879,10 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			break;
 		}
 
-		old_contact = e_book_backend_sqlitedb_get_contact (bf->priv->sqlitedb,
-								   SQLITEDB_FOLDER_ID, id,
-								   NULL, NULL, &local_error);
+		old_contact = e_book_backend_sqlitedb_get_contact (
+			bf->priv->sqlitedb,
+			SQLITEDB_FOLDER_ID, id,
+			NULL, NULL, &local_error);
 		if (!old_contact) {
 			g_warning (G_STRLOC ": Failed to load contact %s: %s", id, local_error->message);
 			g_propagate_error (perror, local_error);
@@ -1169,11 +1170,11 @@ book_view_thread (gpointer data)
 
 		vcard = data->vcard;
 		data->vcard = NULL;
- 
+
 		notify_update_vcard (book_view, TRUE, data->uid, vcard);
 		g_free (vcard);
- 	}
- 
+	}
+
 	g_slist_foreach (summary_list, (GFunc) e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (summary_list);
 
@@ -1222,7 +1223,6 @@ e_book_backend_file_stop_view (EBookBackend *backend,
 	}
 }
 
-
 #ifdef CREATE_DEFAULT_VCARD
 # include <libedata-book/ximian-vcard.h>
 #endif
@@ -1251,12 +1251,13 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	/* The old BDB exists, lets migrate that to sqlite right away
 	 */
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (dirname,
-								  SQLITEDB_EMAIL_ID,
-								  SQLITEDB_FOLDER_ID,
-								  SQLITEDB_FOLDER_NAME,
-								  TRUE,
-								  &local_error);
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (
+			dirname,
+			SQLITEDB_EMAIL_ID,
+			SQLITEDB_FOLDER_ID,
+			SQLITEDB_FOLDER_NAME,
+			TRUE,
+			&local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
@@ -1272,12 +1273,14 @@ e_book_backend_file_open (EBookBackendSync *backend,
 						      dirname, filename, &local_error)) {
 
 			/* Perhaps this error should not be fatal */
-			g_warning (G_STRLOC ": Failed to migrate old BDB to sqlitedb: %s", local_error->message);
+			g_warning (
+				G_STRLOC ": Failed to migrate old BDB to sqlitedb: %s",
+				local_error->message);
 			g_propagate_error (perror, local_error);
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
- 
+
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
 			return;
@@ -1286,20 +1289,22 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		/* Now we've migrated the database, lets rename it instead of unlinking it */
 		if (g_rename (filename, backup) < 0) {
 
-			g_warning (G_STRLOC ": Failed to rename old database from '%s' to '%s': %s",
-				   filename, backup, g_strerror (errno));
+			g_warning (
+				G_STRLOC ": Failed to rename old database from '%s' to '%s': %s",
+				filename, backup, g_strerror (errno));
 
-			g_propagate_error (perror, e_data_book_create_error_fmt
-					   (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					    _("Failed to rename old database from '%s' to '%s': %s"),
-					    filename, backup, g_strerror (errno)));
+			g_propagate_error (
+				perror, e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Failed to rename old database from '%s' to '%s': %s"),
+				filename, backup, g_strerror (errno)));
 
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
 			bf->priv->sqlitedb = NULL;
 			return;
- 		}
+		}
 	}
 
 	/* If we already have a handle on this, it means there was an old BDB migrated
@@ -1313,57 +1318,59 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_warning (G_STRLOC ": Failed to create directory for sqlite db: %s", local_error->message);
 			g_propagate_error (perror, local_error);
 
- 			g_free (dirname);
- 			g_free (filename);
+			g_free (dirname);
+			g_free (filename);
 			g_free (backup);
- 			return;
- 		}
+			return;
+		}
 
 		/* Create the sqlitedb */
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (dirname,
-								  SQLITEDB_EMAIL_ID,
-								  SQLITEDB_FOLDER_ID,
-								  SQLITEDB_FOLDER_NAME,
-								  TRUE, &local_error);
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new (
+			dirname,
+			SQLITEDB_EMAIL_ID,
+			SQLITEDB_FOLDER_ID,
+			SQLITEDB_FOLDER_NAME,
+			TRUE, &local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
 			g_propagate_error (perror, local_error);
- 			g_free (dirname);
- 			g_free (filename);
+			g_free (dirname);
+			g_free (filename);
 			g_free (backup);
- 			return;
- 		}
+			return;
+		}
 
 		/* An sqlite DB only 'exists' if the populated flag is set */
-		populated = e_book_backend_sqlitedb_get_is_populated (bf->priv->sqlitedb,
-								      SQLITEDB_FOLDER_ID,
-								      &local_error);
+		populated = e_book_backend_sqlitedb_get_is_populated (
+			bf->priv->sqlitedb,
+			SQLITEDB_FOLDER_ID,
+			&local_error);
 
 		if (local_error != NULL) {
 			/* Perhaps this error should not be fatal */
 			g_warning (G_STRLOC ": Failed to check populated flag in sqlite db: %s", local_error->message);
 			g_propagate_error (perror, local_error);
- 			g_free (dirname);
- 			g_free (filename);
+			g_free (dirname);
+			g_free (filename);
 			g_free (backup);
 
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
 			return;
- 		}
+		}
 
 		if (!populated) {
 			/* Shutdown, no such book ! */
 			if (only_if_exists) {
- 				g_free (dirname);
- 				g_free (filename);
+				g_free (dirname);
+				g_free (filename);
 				g_free (backup);
 				g_object_unref (bf->priv->sqlitedb);
 				bf->priv->sqlitedb = NULL;
 				g_propagate_error (perror, EDB_ERROR (NO_SUCH_BOOK));
 				return;
- 			}
+			}
 
 #ifdef CREATE_DEFAULT_VCARD
 			{
@@ -1381,8 +1388,9 @@ e_book_backend_file_open (EBookBackendSync *backend,
 								       SQLITEDB_FOLDER_ID,
 								       TRUE,
 								       &local_error)) {
-				g_warning (G_STRLOC ": Failed to set populated flag in sqlite db: %s",
-					   local_error->message);
+				g_warning (
+					G_STRLOC ": Failed to set populated flag in sqlite db: %s",
+					local_error->message);
 				g_propagate_error (perror, local_error);
 				g_free (dirname);
 				g_free (filename);
@@ -1391,8 +1399,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 				bf->priv->sqlitedb = NULL;
 				return;
 			}
- 		}
- 	}
+		}
+	}
 
 	g_free (dirname);
 	g_free (filename);

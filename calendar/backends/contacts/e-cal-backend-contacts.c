@@ -278,7 +278,8 @@ cbc_reopen_book_client (BookRecord *br)
 		br->book_client, "opened",
 		G_CALLBACK (book_client_opened_cb), br);
 
-	thread = g_thread_new (NULL,
+	thread = g_thread_new (
+		NULL,
 		cbc_reopen_book_client_thread,
 		br->book_client);
 	g_thread_unref (thread);

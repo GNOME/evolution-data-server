@@ -63,7 +63,7 @@ static void
 cmd_uidl (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
           GCancellable *cancellable,
-	  GError **error,
+          GError **error,
           gpointer data)
 {
 	gint ret;
@@ -98,7 +98,7 @@ static void
 cmd_builduid (CamelPOP3Engine *pe,
               CamelPOP3Stream *stream,
               GCancellable *cancellable,
-	      GError **error,
+              GError **error,
               gpointer data)
 {
 	GChecksum *checksum;
@@ -147,7 +147,7 @@ static void
 cmd_list (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
           GCancellable *cancellable,
-	  GError **error,
+          GError **error,
           gpointer data)
 {
 	gint ret;
@@ -322,7 +322,7 @@ static void
 cmd_tocache (CamelPOP3Engine *pe,
              CamelPOP3Stream *stream,
              GCancellable *cancellable,
-	     GError **error,
+             GError **error,
              gpointer data)
 {
 	CamelPOP3FolderInfo *fi = data;

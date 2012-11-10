@@ -116,7 +116,7 @@ ews_autodiscover_cancelled_cb (GCancellable *cancellable,
 
 static gboolean
 has_suffix_icmp (const gchar *text,
-		 const gchar *suffix)
+                 const gchar *suffix)
 {
 	gint ii, tlen, slen;
 
@@ -130,7 +130,7 @@ has_suffix_icmp (const gchar *text,
 		return FALSE;
 
 	for (ii = 0; ii < slen; ii++) {
-		if (g_ascii_tolower (text[tlen - ii - 1]) != 
+		if (g_ascii_tolower (text[tlen - ii - 1]) !=
 		    g_ascii_tolower (suffix[slen - ii - 1]))
 			break;
 	}
@@ -158,7 +158,7 @@ ews_autodiscover_parse_protocol (xmlNode *node,
 			const gchar *oab_url;
 
 			content = xmlNodeGetContent (node);
-			oab_url = (const char *) content;
+			oab_url = (const gchar *) content;
 
 			if (!has_suffix_icmp (oab_url, "oab.xml")) {
 				gchar *tmp;

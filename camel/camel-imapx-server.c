@@ -979,7 +979,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 						is->tagprefix,
 						"waiting for idle to stop \n");
 					/* if there are more pending commands,
-					   then they should be processed too */
+					 * then they should be processed too */
 					break;
 
 				case IMAPX_IDLE_STOP_ERROR:
@@ -3017,8 +3017,8 @@ imapx_start_idle (CamelIMAPXServer *is)
 	if (!idle->idle_thread) {
 		idle->start_watch_is_set = FALSE;
 
-		idle->idle_thread = g_thread_new (NULL,
-			(GThreadFunc) imapx_idle_thread, is);
+		idle->idle_thread = g_thread_new (
+			NULL, (GThreadFunc) imapx_idle_thread, is);
 	} else {
 		g_mutex_lock (&idle->start_watch_mutex);
 		idle->start_watch_is_set = TRUE;

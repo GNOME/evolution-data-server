@@ -233,9 +233,9 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		    0 == g_ascii_strcasecmp (name, EVC_NOTE) ||
 		    0 == g_ascii_strcasecmp (name, EVC_CATEGORIES) ||
 		    0 == g_ascii_strcasecmp (name, EVC_PHOTO) ||
-                    0 == g_ascii_strcasecmp (name, GOOGLE_SYSTEM_GROUP_ATTR)) {
+		    0 == g_ascii_strcasecmp (name, GOOGLE_SYSTEM_GROUP_ATTR)) {
 			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE, NOTE, CATEGORIES, PHOTO,
-                                  X-GOOGLE-SYSTEM-GROUP-IDS */
+ *                                X-GOOGLE-SYSTEM-GROUP-IDS */
 		} else if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
 			/* EMAIL */
 			GDataGDEmailAddress *email;
@@ -390,36 +390,36 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		e_contact_date_free (bdate);
 	}
 
-        /* Map X-GOOGLE-SYSTEM-GROUP-IDS from outside to CATEGORIES.
-           They will be mapped again to system group ids below; this is done
-           so e-d-s/evolution (which use CATEGORIES), folks/gnome-contacts (which
-           use X-GOOGLE-SYSTEM-GROUP-IDS) and google contacts (which uses the
-           GData group IDs) all stay in sync */
-        {
-                EVCardAttribute *system_group_attr;
-                EVCardAttribute *categories_attr;
+	/* Map X-GOOGLE-SYSTEM-GROUP-IDS from outside to CATEGORIES.
+	 * They will be mapped again to system group ids below; this is done
+	 * so e-d-s / evolution (which use CATEGORIES), folks / gnome-contacts
+	 * (which use X-GOOGLE-SYSTEM-GROUP-IDS) and google contacts (which
+	 * uses the GData group IDs) all stay in sync */
+	{
+		EVCardAttribute *system_group_attr;
+		EVCardAttribute *categories_attr;
 
-                system_group_attr = e_vcard_get_attribute (E_VCARD (contact), GOOGLE_SYSTEM_GROUP_ATTR);
-                categories_attr = e_vcard_get_attribute (E_VCARD (contact), EVC_CATEGORIES);
+		system_group_attr = e_vcard_get_attribute (E_VCARD (contact), GOOGLE_SYSTEM_GROUP_ATTR);
+		categories_attr = e_vcard_get_attribute (E_VCARD (contact), EVC_CATEGORIES);
 
-                if (system_group_attr) {
-                        GList *system_groups = e_vcard_attribute_get_values (system_group_attr);
-                        GList *sys_group;
+		if (system_group_attr) {
+			GList *system_groups = e_vcard_attribute_get_values (system_group_attr);
+			GList *sys_group;
 
-                        for (sys_group = system_groups; sys_group; sys_group = sys_group->next) {
-                                const char *category_name;
+			for (sys_group = system_groups; sys_group; sys_group = sys_group->next) {
+				const gchar *category_name;
 
-                                category_name = e_contact_map_google_with_evo_group (sys_group->data, TRUE);
+				category_name = e_contact_map_google_with_evo_group (sys_group->data, TRUE);
 
-                                if (!categories_attr) {
-                                        categories_attr = e_vcard_attribute_new (NULL, EVC_CATEGORIES);
-                                        e_vcard_append_attribute (E_VCARD (contact), categories_attr);
-                                }
+				if (!categories_attr) {
+					categories_attr = e_vcard_attribute_new (NULL, EVC_CATEGORIES);
+					e_vcard_append_attribute (E_VCARD (contact), categories_attr);
+				}
 
-                                e_vcard_attribute_add_value (categories_attr, category_name);
-                        }
-                }
-        }
+				e_vcard_attribute_add_value (categories_attr, category_name);
+			}
+		}
+	}
 
 	/* CATEGORIES */
 	for (category_names = e_contact_get (contact, E_CONTACT_CATEGORY_LIST); category_names != NULL; category_names = category_names->next) {

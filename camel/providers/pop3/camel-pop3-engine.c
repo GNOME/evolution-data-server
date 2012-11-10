@@ -135,7 +135,7 @@ CamelPOP3Engine *
 camel_pop3_engine_new (CamelStream *source,
                        guint32 flags,
                        GCancellable *cancellable,
-		       GError **error)
+                       GError **error)
 {
 	CamelPOP3Engine *pe;
 
@@ -165,7 +165,7 @@ camel_pop3_engine_new (CamelStream *source,
 gboolean
 camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine,
                                       GCancellable *cancellable,
-				      GError **error)
+                                      GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_POP3_ENGINE (engine), FALSE);
 
@@ -189,7 +189,7 @@ static void
 cmd_capa (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
           GCancellable *cancellable,
-	  GError **error,
+          GError **error,
           gpointer data)
 {
 	guchar *line, *tok, *next;
@@ -234,7 +234,7 @@ cmd_capa (CamelPOP3Engine *pe,
 static gboolean
 get_capabilities (CamelPOP3Engine *pe,
                   GCancellable *cancellable,
-		  GError **error)
+                  GError **error)
 {
 	CamelPOP3Command *pc;
 	GError *local_error = NULL;

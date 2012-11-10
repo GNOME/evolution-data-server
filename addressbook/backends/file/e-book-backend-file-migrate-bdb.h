@@ -34,10 +34,6 @@ gboolean e_book_backend_file_migrate_bdb (EBookBackendSqliteDB  *sqlitedb,
 					  const gchar           *filename,
 					  GError               **error);
 
-
-
 G_END_DECLS
-
-
 
 #endif /* E_BOOK_BACKEND_MIGRATE_BDB_H */

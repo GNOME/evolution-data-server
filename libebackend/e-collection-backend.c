@@ -351,11 +351,12 @@ collection_backend_child_is_mail (ESource *child_source)
 
 static gboolean
 include_master_source_enabled_transform (GBinding *binding,
-					 const GValue *source_value,
-					 GValue *target_value,
-					 gpointer backend)
+                                         const GValue *source_value,
+                                         GValue *target_value,
+                                         gpointer backend)
 {
-	g_value_set_boolean (target_value,
+	g_value_set_boolean (
+		target_value,
 		g_value_get_boolean (source_value) &&
 		e_source_get_enabled (e_backend_get_source (backend)));
 

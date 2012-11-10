@@ -70,7 +70,7 @@ typedef struct {
 
 static CamelCertDBKey *
 certdb_key_new (const gchar *hostname,
-		const gchar *fingerprint)
+                const gchar *fingerprint)
 {
 	CamelCertDBKey *key;
 
@@ -108,7 +108,7 @@ certdb_key_hash (gconstpointer ptr)
 
 static gboolean
 certdb_key_equal (gconstpointer ptr1,
-		  gconstpointer ptr2)
+                  gconstpointer ptr2)
 {
 	const CamelCertDBKey *key1 = ptr1, *key2 = ptr2;
 	gboolean same_hostname;
@@ -128,7 +128,6 @@ certdb_key_equal (gconstpointer ptr1,
 		return g_ascii_strcasecmp (key1->fingerprint, key2->fingerprint) == 0;
 	}
 
-	
 	return same_hostname;
 }
 
@@ -511,7 +510,7 @@ camel_certdb_touch (CamelCertDB *certdb)
 CamelCert *
 camel_certdb_get_host (CamelCertDB *certdb,
                        const gchar *hostname,
-		       const gchar *fingerprint)
+                       const gchar *fingerprint)
 {
 	CamelCert *cert;
 	CamelCertDBKey *key;
@@ -581,7 +580,7 @@ camel_certdb_put (CamelCertDB *certdb,
 void
 camel_certdb_remove_host (CamelCertDB *certdb,
                           const gchar *hostname,
-			  const gchar *fingerprint)
+                          const gchar *fingerprint)
 {
 	CamelCert *cert;
 	CamelCertDBKey *key;

@@ -1032,7 +1032,8 @@ source_registry_initable_init (GInitable *initable,
 
 	registry->priv->thread_closure = closure;
 
-	registry->priv->manager_thread = g_thread_new (NULL,
+	registry->priv->manager_thread = g_thread_new (
+		NULL,
 		source_registry_object_manager_thread,
 		closure);
 

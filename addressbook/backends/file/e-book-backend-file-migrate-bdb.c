@@ -43,14 +43,12 @@
 
 #include "e-book-backend-file-migrate-bdb.h"
 
-
 #define E_BOOK_BACKEND_FILE_REVISION_NAME         "PAS-DB-REVISION"
 #define E_BOOK_BACKEND_FILE_VERSION_NAME          "PAS-DB-VERSION"
 #define E_BOOK_BACKEND_FILE_LAST_BDB_VERSION      "0.2"
 
 #define EDB_ERROR(_code)          e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
-
 
 G_LOCK_DEFINE_STATIC (db_env);
 static DB_ENV *db_env = NULL;
@@ -172,7 +170,7 @@ string_to_dbt (const gchar *str,
 **     came about.
 */
 static gboolean
-e_book_backend_file_upgrade_db (DB    *db,
+e_book_backend_file_upgrade_db (DB *db,
                                 gchar *old_version)
 {
 	gint db_error;
@@ -185,8 +183,9 @@ e_book_backend_file_upgrade_db (DB    *db,
 
 	if (strcmp (old_version, "0.0")
 	    && strcmp (old_version, "0.1")) {
-		g_warning ("unsupported version '%s' found in PAS backend file\n",
-			   old_version);
+		g_warning (
+			"unsupported version '%s' found in PAS backend file\n",
+			old_version);
 		return FALSE;
 	}
 
@@ -299,12 +298,11 @@ e_book_backend_file_maybe_upgrade_db (DB *db)
 	return ret_val;
 }
 
-
 static gboolean
-migrate_bdb_to_sqlitedb (EBookBackendSqliteDB   *sqlitedb,
-			 const gchar            *sqlite_folder_id,
-			 DB                     *db,
-			 GError                **error)
+migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
+                         const gchar *sqlite_folder_id,
+                         DB *db,
+                         GError **error)
 {
 	DBC            *dbc;
 	DBT             id_dbt, vcard_dbt;
@@ -386,16 +384,15 @@ migrate_bdb_to_sqlitedb (EBookBackendSqliteDB   *sqlitedb,
 }
 
 gboolean
-e_book_backend_file_migrate_bdb (EBookBackendSqliteDB  *sqlitedb,
-				 const gchar           *sqlite_folder_id,
-				 const gchar           *dirname,
-				 const gchar           *filename,
-				 GError               **error)
+e_book_backend_file_migrate_bdb (EBookBackendSqliteDB *sqlitedb,
+                                 const gchar *sqlite_folder_id,
+                                 const gchar *dirname,
+                                 const gchar *filename,
+                                 GError **error)
 {
 	DB        *db = NULL;
 	gint       db_error;
 	gboolean   status = FALSE;
-
 
 	G_LOCK (db_env);
 

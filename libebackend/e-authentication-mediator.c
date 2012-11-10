@@ -743,7 +743,8 @@ authentication_mediator_initable_init (GInitable *initable,
 	 * main loop will signal the thread itself to terminate. */
 	mediator->priv->thread_closure = thread_closure_ref (closure);
 
-	thread = g_thread_new (NULL,
+	thread = g_thread_new (
+		NULL,
 		authentication_mediator_authenticator_thread,
 		closure);
 
