@@ -2052,7 +2052,7 @@ header_decode_atom (const gchar **in)
 
 static gboolean
 extract_rfc2047_encoded_word (const gchar **in,
-			      gchar **word)
+                              gchar **word)
 {
 	const gchar *inptr = *in, *start;
 

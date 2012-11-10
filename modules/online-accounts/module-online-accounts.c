@@ -172,7 +172,7 @@ online_accounts_new_source (EOnlineAccounts *extension)
 #ifdef HAVE_GOA_PASSWORD_BASED
 static void
 replace_host (gchar **url,
-	      const gchar *host)
+              const gchar *host)
 {
 	SoupURI *uri;
 
@@ -254,6 +254,7 @@ online_accounts_config_exchange (EOnlineAccounts *extension,
 	/* This will be NULL if Evolution-EWS is not installed. */
 	if (source_extension != NULL) {
 		GoaAccount *goa_account;
+		CamelSettings *settings;
 		gchar *host, *user, *email;
 
 		goa_account = goa_object_peek_account (goa_object);
@@ -273,7 +274,11 @@ online_accounts_config_exchange (EOnlineAccounts *extension,
 			"email", email,
 			NULL);
 
-		g_object_set (e_source_camel_get_settings (E_SOURCE_CAMEL (source_extension)),
+		settings = e_source_camel_get_settings (
+			E_SOURCE_CAMEL (source_extension));
+
+		g_object_set (
+			settings,
 			"host", host,
 			"user", user,
 			"email", email,

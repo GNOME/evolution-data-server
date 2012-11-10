@@ -975,7 +975,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 						is->tagprefix,
 						"waiting for idle to stop \n");
 					/* if there are more pending commands,
-					   then they should be processed too */
+					 * then they should be processed too */
 					break;
 
 				case IMAPX_IDLE_STOP_ERROR:
