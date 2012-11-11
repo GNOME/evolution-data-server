@@ -1,3 +1,63 @@
+Evolution-Data-Server 3.6.2 2012-11-12
+--------------------------------------
+
+Bug Fixes:
+	Bug 640594 - Save also UID/REV in WebDAV backend (for CardDAV)
+	             (Milan Crha)
+	Bug 641825 - Crash in poll_ldap() when finalizing the backend
+	             (Milan Crha)
+	Bug 669082 - Workaround crash in
+	             imapx_command_copy_messages_step_done() (Andreas Kohn)
+	Bug 678400 - ECollectionBackend populates disabled accounts
+	             (Milan Crha)
+	Bug 680497 - POP3 re-adds messages to local Inbox (Milan Crha)
+	Bug 681962 - Identify server certificates by hostname and fingerprint
+	             (Milan Crha)
+	Bug 684655 - Files in data/sources are not getting translated
+	             (Gert Kulyk)
+	Bug 685034 - [imapx] Read status of email is not persisted correctly
+	             (Milan Crha)
+	Bug 685090 - GOA EWS module doesn't save all required values
+	             (Milan Crha)
+	Bug 686719 - Missing linker flags in Camel tests (JB Lallement)
+	Bug 686727 - POP3 provider deadlocks on finalize (Milan Crha)
+	Bug 686924 - Doesn't parse Gerrit encoded From address correctly
+	             (Milan Crha)
+	Bug 687100 - Crash under cal_backend_contacts_remove_book_record()
+	             (Milan Crha)
+	Bug 687642 - Crash under caldav_synch_slave_loop() (Milan Crha)
+	Bug 687694 - imapx_untagged_vanished() is inefficient (Dan Williams)
+	Bug 687776 - E-D-S crash in local address book (Milan Crha)
+
+Other Changes:
+	* EAuthenticationSession: Close prompt before storing password.
+	  (Matthew Barnes)
+	* IMAPX error handling improvements. (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Gil Forcada (ca)
+	Marek Černocký (cs)
+	Hendrik Knackstedt (de)
+	Tom Tryfonidis (el)
+	Daniel Mustieles (es)
+	Alexandre Franke (fr)
+	Fran Diéguez (gl)
+	Sweta Kothari (gu)
+	Gabor Kelemen (hu)
+	Andika Triwidada (id)
+	Aurimas Černius (lt)
+	Rūdolfs Mazurs (lv)
+	Sandeep Sheshrao Shedmake (mr)
+	Kjartan Maraas (nb)
+	A S Alam (pa)
+	Piotr Drąg (pl)
+	Yuri Myasoedov (ru)
+	Martin Srebotnjak (sl)
+	Мирослав Николић (sr)
+
+
 Evolution-Data-Server 3.6.1 2012-10-15
 --------------------------------------
 
