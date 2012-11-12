@@ -32,7 +32,7 @@
 #ifndef __E_DESTINATION_H__
 #define __E_DESTINATION_H__
 
-#include <libebook/e-contact.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <libebook/e-book-client.h>
 #include <libxml/tree.h>
 

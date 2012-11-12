@@ -29,7 +29,7 @@
 #define E_SOURCE_ADDRESS_BOOK_CONFIG_H
 
 #include <libedataserver/libedataserver.h>
-#include <libebook/e-contact.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <libebook/e-book-types.h>
 
 /* Standard GObject macros */

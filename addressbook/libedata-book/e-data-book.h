@@ -129,6 +129,7 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
 
 GType		e_data_book_get_type				(void);
 EDataBook *	e_data_book_new					(struct _EBookBackend *backend);
+EDataBook *	e_data_book_new_direct				(ESourceRegistry *registry, ESource *source, const gchar *backend_path, const gchar *backend_factory_name);
 struct _EBookBackend *
 		e_data_book_get_backend				(EDataBook *book);
 

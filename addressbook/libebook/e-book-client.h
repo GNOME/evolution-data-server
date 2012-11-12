@@ -27,9 +27,9 @@
 #define E_BOOK_CLIENT_H
 
 #include <libedataserver/libedataserver.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 #include <libebook/e-book-client-view.h>
-#include <libebook/e-contact.h>
 
 G_BEGIN_DECLS
 
