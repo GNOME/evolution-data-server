@@ -124,6 +124,8 @@ GType		e_book_client_get_type				(void);
 /* Creating a new addressbook */
 EBookClient *	e_book_client_new				(ESource *source, GError **error);
 
+EBookClient *   e_book_client_new_direct                        (ESourceRegistry *registry, ESource *source, GError **error);
+
 /* Identity */
 gboolean	e_book_client_get_self				(ESourceRegistry *registry, EContact **contact, EBookClient **client, GError **error);
 gboolean	e_book_client_set_self				(EBookClient *client, EContact *contact, GError **error);
