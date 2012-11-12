@@ -194,6 +194,73 @@ static GStaticRecMutex book_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 
 static void gdbus_book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
 
+
+typedef struct {
+	EBookClient         *client;
+	GAsyncReadyCallback  callback;
+	gpointer             user_data;
+	gpointer             source_tag;
+	GCancellable        *cancellable;    /* Cancellable and only-if-exists only used */
+	gboolean             only_if_exists; /* for chaining the async open call into 2 calls */
+} PropagateReadyData;
+
+static PropagateReadyData *
+propagate_ready_data_new (EBookClient         *client,
+			  GAsyncReadyCallback  callback,
+			  gpointer             user_data,
+			  gpointer             source_tag,
+			  GCancellable        *cancellable)
+{
+	PropagateReadyData *data = g_slice_new0 (PropagateReadyData);
+
+	data->client = g_object_ref (client);
+	data->callback = callback;
+	data->user_data = user_data;
+	data->source_tag = source_tag;
+
+	if (cancellable)
+		data->cancellable = g_object_ref (cancellable);
+
+	return data;
+}
+
+static void
+propagate_ready_data_free (PropagateReadyData *data)
+{
+	if (data) {
+		g_object_unref (data->client);
+
+		if (data->cancellable)
+			g_object_unref (data->cancellable);
+
+		g_slice_free (PropagateReadyData, data);
+	}
+}
+
+static void
+propagate_direct_book_async_ready (GObject *source_object,
+				   GAsyncResult *res,
+				   gpointer user_data)
+{
+  GSimpleAsyncResult *result;
+  PropagateReadyData *data = (PropagateReadyData *)user_data;
+
+  result = g_simple_async_result_new (G_OBJECT (data->client),
+				      data->callback,
+				      data->user_data,
+				      data->source_tag);
+
+  g_object_ref (res);
+  g_simple_async_result_set_op_res_gpointer (result, res, g_object_unref);
+
+  g_simple_async_result_complete (result);
+  g_object_unref (result);
+
+  propagate_ready_data_free (data);
+}
+
+
+
 static void
 gdbus_book_factory_proxy_disconnect (GDBusConnection *connection)
 {
@@ -938,6 +1005,42 @@ book_client_set_backend_property_sync (EClient *client,
 	return res;
 }
 
+static void book_client_open (EClient *client,
+			      gboolean only_if_exists,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data);
+
+static void
+direct_book_async_opened (GObject *source_object,
+			  GAsyncResult *res,
+			  gpointer user_data)
+{
+	PropagateReadyData *data = (PropagateReadyData *)user_data;
+	GError *error = NULL;
+
+	if (e_data_book_open_finish (E_DATA_BOOK (source_object), res, &error)) {
+
+		/* Open direct book succeeded, now proceed to open the real book over D-Bus */
+		e_client_proxy_call_boolean (E_CLIENT (data->client), data->only_if_exists,
+					     data->cancellable, data->callback, data->user_data, book_client_open,
+					     e_gdbus_book_call_open, e_gdbus_book_call_open_finish,
+					     NULL, NULL, NULL, NULL);
+	} else {
+		/* Open failed, report error right away */
+		GSimpleAsyncResult *result;
+
+		result = g_simple_async_result_new_take_error (G_OBJECT (data->client),
+							       data->callback,
+							       data->user_data,
+							       error);
+		g_simple_async_result_complete (result);
+		g_object_unref (result);
+	}
+
+	propagate_ready_data_free (data);
+}
+
 static void
 book_client_open (EClient *client,
                   gboolean only_if_exists,
@@ -945,10 +1048,31 @@ book_client_open (EClient *client,
                   GAsyncReadyCallback callback,
                   gpointer user_data)
 {
-	e_client_proxy_call_boolean (
-		client, only_if_exists, cancellable, callback, user_data, book_client_open,
-		e_gdbus_book_call_open,
-		e_gdbus_book_call_open_finish, NULL, NULL, NULL, NULL);
+	EBookClient *book_client;
+	PropagateReadyData *data;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+
+	book_client = E_BOOK_CLIENT (client);
+
+	if (book_client->priv->direct_book) {
+		data = propagate_ready_data_new (book_client,
+						 callback,
+						 user_data,
+						 book_client_open,
+						 cancellable);
+		data->only_if_exists = only_if_exists;
+
+		e_data_book_open (book_client->priv->direct_book,
+				  only_if_exists,
+				  cancellable,
+				  direct_book_async_opened,
+				  data);
+	} else {
+		e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, book_client_open,
+					     e_gdbus_book_call_open,
+					     e_gdbus_book_call_open_finish, NULL, NULL, NULL, NULL);
+	}
 }
 
 static gboolean
@@ -1820,63 +1944,6 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 	return res;
 }
 
-
-typedef struct {
-  EBookClient         *client;
-  GAsyncReadyCallback  callback;
-  gpointer             user_data;
-  gpointer             source_tag;
-} PropagateReadyData;
-
-static PropagateReadyData *
-propagate_ready_data_new (EBookClient         *client,
-			  GAsyncReadyCallback  callback,
-			  gpointer             user_data,
-			  gpointer             source_tag)
-{
-	PropagateReadyData *data = g_slice_new (PropagateReadyData);
-
-	data->client = g_object_ref (client);
-	data->callback = callback;
-	data->user_data = user_data;
-	data->source_tag = source_tag;
-
-	return data;
-}
-
-static void
-propagate_ready_data_free (PropagateReadyData *data)
-{
-	if (data) {
-		g_object_unref (data->client);
-		g_slice_free (PropagateReadyData, data);
-	}
-
-}
-
-static void
-propagate_direct_book_async_ready (GObject *source_object,
-				   GAsyncResult *res,
-				   gpointer user_data)
-{
-  GSimpleAsyncResult *result;
-  PropagateReadyData *data = (PropagateReadyData *)user_data;
-
-  result = g_simple_async_result_new (G_OBJECT (data->client),
-				      data->callback,
-				      data->user_data,
-				      data->source_tag);
-
-  g_object_ref (res);
-  g_simple_async_result_set_op_res_gpointer (result, res, g_object_unref);
-
-  g_simple_async_result_complete (result);
-  g_object_unref (result);
-
-  propagate_ready_data_free (data);
-}
-
-
 /**
  * e_book_client_get_contact:
  * @client: an #EBookClient
@@ -1904,7 +1971,8 @@ e_book_client_get_contact (EBookClient *client,
 	g_return_if_fail (uid != NULL);
 
 	if (client->priv->direct_book) {
-		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data, e_book_client_get_contact);
+		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
+								     e_book_client_get_contact, NULL);
 
 		e_data_book_get_contact (client->priv->direct_book, uid, cancellable,
 					 propagate_direct_book_async_ready, data);
@@ -2050,7 +2118,8 @@ e_book_client_get_contacts (EBookClient *client,
 	g_return_if_fail (sexp != NULL);
 
 	if (client->priv->direct_book) {
-		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data, e_book_client_get_contacts);
+		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
+								     e_book_client_get_contacts, NULL);
 
 		e_data_book_get_contacts (client->priv->direct_book, sexp, cancellable, 
 					  propagate_direct_book_async_ready, data);
@@ -2209,7 +2278,8 @@ e_book_client_get_contacts_uids (EBookClient *client,
 	g_return_if_fail (sexp != NULL);
 
 	if (client->priv->direct_book) {
-		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data, e_book_client_get_contacts_uids);
+		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
+								     e_book_client_get_contacts_uids, NULL);
 
 		e_data_book_get_contacts_uids (client->priv->direct_book, sexp, cancellable, 
 					       propagate_direct_book_async_ready, data);
