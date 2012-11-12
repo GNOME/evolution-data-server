@@ -19,7 +19,6 @@ libebookbackendgoogle_la_CPPFLAGS = \
 	$(SOUP_CFLAGS) \
 	$(GDATA_CFLAGS) \
 	$(GOA_CFLAGS) \
-	$(OAUTH_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
@@ -41,7 +40,6 @@ libebookbackendgoogle_la_LIBADD = \
 	$(SOUP_LIBS) \
 	$(GDATA_LIBS) \
 	$(GOA_LIBS) \
-	$(OAUTH_LIBS) \
 	$(CAMEL_LIBS)
 
 libebookbackendgoogle_la_LDFLAGS = \
