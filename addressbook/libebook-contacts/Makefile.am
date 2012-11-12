@@ -40,7 +40,10 @@ libebook_contacts_1_2_la_SOURCES =				\
 	e-name-western-tables.h                         \
 	e-book-query.c					\
 	e-contact.c					\
-	e-vcard.c
+	e-vcard.c					\
+	e-source-address-book-config.c			\
+	e-source-direct-access.c
+
 
 libebook_contacts_1_2_la_LIBADD =					\
 	$(top_builddir)/camel/libcamel-1.2.la			\
@@ -62,7 +65,10 @@ libebookcontactsinclude_HEADERS =			\
 	e-address-western.h				\
 	e-name-western.h				\
 	e-contact.h					\
-	e-vcard.h
+	e-vcard.h					\
+	e-source-address-book-config.h			\
+	e-source-direct-access.h
+
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

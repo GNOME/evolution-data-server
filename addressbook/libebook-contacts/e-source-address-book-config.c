@@ -23,7 +23,7 @@
 
 /**
  * SECTION: e-source-address-book-config
- * @include: libebook/libebook.h
+ * @include: libebook-contacts/libebook-contacts.h
  * @short_description: #ESource extension for an address book configuration
  *
  * The #ESourceAddressBookConfig extension adds configuration data to
@@ -32,7 +32,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libebook/libebook.h>
+ *   #include <libebook-contacts/libebook-contacts.h>
  *
  *   ESourceAddressBookConfig *extension;
  *
@@ -41,7 +41,7 @@
  **/
 
 #include "e-source-address-book-config.h"
-#include "e-book-enumtypes.h"
+#include "e-book-contacts-enumtypes.h"
 
 #define E_SOURCE_ABC_GET_PRIVATE(obj)			\
 	(G_TYPE_INSTANCE_GET_PRIVATE			\
@@ -155,8 +155,7 @@ source_address_book_config_set_property (GObject *object,
 	switch (property_id) {
 	case PROP_SUMMARY_FIELDS:
 	case PROP_INDEXED_FIELDS:
-		source_address_book_config_set_litteral_fields
-			(extension, g_value_get_string (value), property_id);
+		source_address_book_config_set_litteral_fields (extension, g_value_get_string (value), property_id);
 		return;
 	case PROP_REVISION_GUARDS:
 		e_source_address_book_config_set_revision_guards_enabled (extension, g_value_get_boolean (value));
@@ -178,9 +177,8 @@ source_address_book_config_get_property (GObject *object,
 	case PROP_SUMMARY_FIELDS:
 	case PROP_INDEXED_FIELDS:
 		g_value_take_string (value,
-				     source_address_book_config_dup_litteral_fields
-				     (extension, property_id));
-			return;
+				     source_address_book_config_dup_litteral_fields (extension, property_id));
+		return;
 	case PROP_REVISION_GUARDS:
 		g_value_set_boolean (value, e_source_address_book_config_get_revision_guards_enabled (extension));
 		return;
