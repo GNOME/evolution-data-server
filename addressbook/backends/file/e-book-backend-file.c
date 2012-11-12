@@ -76,6 +76,7 @@ struct _EBookBackendFilePrivate {
 	gchar     *photo_dirname;
 	gchar     *revision;
 	gint       rev_counter;
+	gboolean   revision_guards;
 	GRWLock    lock;
 
 	EBookBackendSqliteDB *sqlitedb;
@@ -916,19 +917,21 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			break;
 		}
 
-		contact_rev = e_contact_get_const (contact, E_CONTACT_REV);
-		old_contact_rev = e_contact_get_const (old_contact, E_CONTACT_REV);
+		if (bf->priv->revision_guards) {
+			contact_rev = e_contact_get_const (contact, E_CONTACT_REV);
+			old_contact_rev = e_contact_get_const (old_contact, E_CONTACT_REV);
 
-		if (!contact_rev || !old_contact_rev ||
-		    strcmp (contact_rev, old_contact_rev) != 0) {
-			g_propagate_error (perror, EDB_ERROR_EX (BAD_REVISION, _("Out of sync revision")));
+			if (!contact_rev || !old_contact_rev ||
+			    strcmp (contact_rev, old_contact_rev) != 0) {
+				g_propagate_error (perror, EDB_ERROR_EX (BAD_REVISION, _("Out of sync revision")));
 
-			status = STATUS_ERROR;
+				status = STATUS_ERROR;
 
-			g_free (id);
-			g_object_unref (contact);
-			g_object_unref (old_contact);
-			break;
+				g_free (id);
+				g_object_unref (contact);
+				g_object_unref (old_contact);
+				break;
+			}
 		}
 
 		/* Transform incomming photo blobs to uris before storing this to the DB */
@@ -1304,6 +1307,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	config         = e_source_get_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
 	summary_fields = e_source_address_book_config_get_summary_fields  (config, &n_summary_fields);
 	indexed_fields = e_source_address_book_config_get_indexed_fields  (config, &index_types, &n_indexed_fields);
+
+	bf->priv->revision_guards = e_source_address_book_config_get_revision_guards_enabled (config);
  
 	/* The old BDB exists, lets migrate that to sqlite right away
 	 */
