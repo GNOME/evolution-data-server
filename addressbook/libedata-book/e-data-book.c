@@ -31,6 +31,7 @@
 #include "e-data-book.h"
 #include "e-data-book-view.h"
 #include "e-book-backend.h"
+#include "e-book-backend-factory.h"
 #include "e-book-backend-sexp.h"
 
 #include "e-gdbus-book.h"
@@ -42,6 +43,7 @@
 struct _EDataBookPrivate
 {
 	EGdbusBook *gdbus_object;
+	EModule *direct_module;
 
 	EBookBackend *backend;
 
@@ -1531,6 +1533,12 @@ data_book_dispose (GObject *object)
 		priv->backend = NULL;
 	}
 
+	if (priv->direct_module) {
+		g_type_module_unuse (G_TYPE_MODULE (priv->direct_module));
+		g_object_unref (priv->direct_module);
+		priv->direct_module = NULL;
+	}
+
 	/* Chain up to parent's dispose() metnod. */
 	G_OBJECT_CLASS (e_data_book_parent_class)->dispose (object);
 }
@@ -1660,6 +1668,60 @@ e_data_book_new (EBookBackend *backend)
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
 	return g_object_new (E_TYPE_DATA_BOOK, "backend", backend, NULL);
+}
+
+EDataBook *
+e_data_book_new_direct (ESourceRegistry *registry,
+			ESource         *source,
+			const gchar     *backend_path,
+			const gchar     *backend_factory_name)
+{
+	EDataBook    *book;
+	EModule      *module;
+	EBookBackend *backend;
+	GType         backend_type;
+	GType         factory_type;
+	GTypeClass   *factory_class;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	g_return_val_if_fail (backend_path && backend_path[0], NULL);
+	g_return_val_if_fail (backend_factory_name && backend_factory_name[0], NULL);
+
+	module = e_module_new (backend_path);
+	if (!module) {
+		g_warning ("Failed to open EModule at path: %s", backend_path);
+		return NULL;
+	}
+
+	if (!g_type_module_use (G_TYPE_MODULE (module))) {
+		g_warning ("Failed to load EModule at path: %s", backend_path);
+		g_object_unref (module);
+		return NULL;
+	}
+
+	factory_type = g_type_from_name (backend_factory_name);
+	if (factory_type == 0) {
+		g_warning ("Failed to get backend factory '%s' from EModule at path: %s",
+			   backend_factory_name, backend_path);
+		g_type_module_unuse (G_TYPE_MODULE (module));
+		g_object_unref (module);
+		return NULL;
+	}
+
+	factory_class = g_type_class_ref (factory_type);
+	backend_type  = E_BOOK_BACKEND_FACTORY_CLASS (factory_class)->backend_type;
+	g_type_class_unref (factory_class);
+
+	backend = g_object_new (backend_type,
+				"registry", registry,
+				"source", source, NULL);
+
+
+	book = e_data_book_new (backend);
+	book->priv->direct_module = module;
+
+	return book;
 }
 
 EBookBackend *

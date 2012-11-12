@@ -40,8 +40,6 @@
 #include <glib/gi18n-lib.h>
 #include "e-book.h"
 #include "e-error.h"
-#include "e-contact.h"
-#include "e-name-western.h"
 #include "e-book-view-private.h"
 #include "e-book-marshal.h"
 

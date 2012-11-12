@@ -23,19 +23,14 @@
 
 #include <libedataserver/libedataserver.h>
 
-#include <libebook/e-address-western.h>
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-book-client.h>
 #include <libebook/e-book-enumtypes.h>
-#include <libebook/e-book-query.h>
 #include <libebook/e-book-types.h>
 #include <libebook/e-book-view.h>
 #include <libebook/e-book.h>
-#include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
-#include <libebook/e-name-western.h>
 #include <libebook/e-source-address-book-config.h>
-#include <libebook/e-vcard.h>
 
 #undef __LIBEBOOK_H_INSIDE__
 

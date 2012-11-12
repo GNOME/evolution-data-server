@@ -34,7 +34,7 @@ libedata_book_1_2_la_SOURCES = \
 	ximian-vcard.h
 
 libedata_book_1_2_la_LIBADD = \
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
 	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \

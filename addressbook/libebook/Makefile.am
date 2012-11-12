@@ -38,23 +38,19 @@ libebook_1_2_la_CPPFLAGS = \
 libebook_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
 	$(MARSHAL_GENERATED)				\
-	e-address-western.c				\
 	e-book-client.c					\
 	e-book-client-view.c				\
 	e-book-client-view-private.h			\
-	e-book-query.c					\
 	e-book-view-private.h				\
 	e-book-view.c					\
 	e-book.c					\
-	e-contact.c					\
 	e-destination.c					\
-	e-name-western.c				\
-	e-name-western-tables.h                         \
 	e-source-address-book-config.c			\
-	e-vcard.c					\
 	e-error.h
 
 libebook_1_2_la_LIBADD =					\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
 	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la	\
 	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
@@ -72,27 +68,17 @@ libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
 	libebook.h					\
-	e-address-western.h				\
 	e-book-client.h					\
 	e-book-client-view.h				\
 	e-book-enumtypes.h				\
-	e-book-query.h					\
 	e-book-view.h					\
 	e-book-types.h					\
 	e-book.h					\
-	e-contact.h					\
 	e-destination.h					\
-	e-name-western.h				\
-	e-source-address-book-config.h			\
-	e-vcard.h
+	e-source-address-book-config.h
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
-
-e-name-western-tables.h: e-name-western-tables.h.in
-	$(AM_V_GEN) ($(PYTHON) ${srcdir}/gen-western-table.py < $< > $@.tmp && mv $@.tmp $@) || rm -f $@.tmp
-
-BUILT_SOURCES += e-name-western-tables.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
