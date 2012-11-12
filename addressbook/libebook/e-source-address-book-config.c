@@ -52,12 +52,14 @@ struct _ESourceAddressBookConfigPrivate {
 	GMutex *property_lock;
 	gchar  *summary_fields;
 	gchar  *indexed_fields;
+	gboolean revision_guards;
 };
 
 enum {
 	PROP_0,
 	PROP_SUMMARY_FIELDS,
-	PROP_INDEXED_FIELDS
+	PROP_INDEXED_FIELDS,
+	PROP_REVISION_GUARDS
 };
 
 G_DEFINE_TYPE (
@@ -148,12 +150,17 @@ source_address_book_config_set_property (GObject *object,
 					 const GValue *value,
 					 GParamSpec *pspec)
 {
+	ESourceAddressBookConfig *extension = E_SOURCE_ADDRESS_BOOK_CONFIG (object);
+
 	switch (property_id) {
 	case PROP_SUMMARY_FIELDS:
 	case PROP_INDEXED_FIELDS:
 		source_address_book_config_set_litteral_fields
-			(E_SOURCE_ADDRESS_BOOK_CONFIG (object), g_value_get_string (value), property_id);
-			return;
+			(extension, g_value_get_string (value), property_id);
+		return;
+	case PROP_REVISION_GUARDS:
+		e_source_address_book_config_set_revision_guards_enabled (extension, g_value_get_boolean (value));
+		return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -165,13 +172,18 @@ source_address_book_config_get_property (GObject *object,
 					 GValue *value,
 					 GParamSpec *pspec)
 {
+	ESourceAddressBookConfig *extension = E_SOURCE_ADDRESS_BOOK_CONFIG (object);
+
 	switch (property_id) {
 	case PROP_SUMMARY_FIELDS:
 	case PROP_INDEXED_FIELDS:
 		g_value_take_string (value,
 				     source_address_book_config_dup_litteral_fields
-				     (E_SOURCE_ADDRESS_BOOK_CONFIG (object), property_id));
+				     (extension, property_id));
 			return;
+	case PROP_REVISION_GUARDS:
+		g_value_set_boolean (value, e_source_address_book_config_get_revision_guards_enabled (extension));
+		return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -217,6 +229,18 @@ e_source_address_book_config_class_init (ESourceAddressBookConfigClass *class)
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
 
+	g_object_class_install_property (
+		object_class,
+		PROP_REVISION_GUARDS,
+		g_param_spec_boolean (
+			"revision-guards",
+			"Revision Guards",
+			"Whether to enable or disable the revision guards",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			E_SOURCE_PARAM_SETTING));
+
 	g_type_class_add_private (class, sizeof (ESourceAddressBookConfigPrivate));
 }
 
@@ -225,6 +249,7 @@ e_source_address_book_config_init (ESourceAddressBookConfig *extension)
 {
 	extension->priv = E_SOURCE_ABC_GET_PRIVATE (extension);
 	extension->priv->property_lock = g_mutex_new ();
+	extension->priv->revision_guards = TRUE;
 }
 
 static EContactField *
@@ -654,4 +679,65 @@ e_source_address_book_config_set_indexed_fields (ESourceAddressBookConfig  *exte
 		source_address_book_config_set_litteral_fields (extension, string->str, PROP_INDEXED_FIELDS);
 
 	g_string_free (string, TRUE);
+}
+
+/**
+ * e_source_address_book_config_set_revision_guards_enabled:
+ * @extension: An #ESourceAddressBookConfig
+ * @enabled: Whether to enable or disable the revision guards.
+ *
+ * Enables or disables the revision guards in the address book backend. If revision
+ * guards are enabled, then contact modifications will be refused with the
+ * error %E_DATA_BOOK_STATUS_BAD_REVISION if the modified contact revision is out of date.
+ *
+ * This avoids data loss when multiple processes write to the addressbook by forcing
+ * the calling process to get an updated contact before committing it to the addressbook.
+ *
+ * Revision guards are enabled by default.
+ *
+ * Since: 3.8
+ */
+void
+e_source_address_book_config_set_revision_guards_enabled (ESourceAddressBookConfig  *extension,
+							  gboolean                   enabled)
+{
+	g_return_if_fail (E_IS_SOURCE_ADDRESS_BOOK_CONFIG (extension));
+
+	g_mutex_lock (extension->priv->property_lock);
+
+	if (extension->priv->revision_guards == enabled) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
+	extension->priv->revision_guards = enabled;
+
+	g_mutex_unlock (extension->priv->property_lock);
+
+	g_object_notify (G_OBJECT (extension), "revision-guards");
+}
+
+
+/**
+ * e_source_address_book_config_get_revision_guards_enabled:
+ * @extension: An #ESourceAddressBookConfig
+ *
+ * Checks whether revision guards in the address book backend are enabled.
+ *
+ * Returns: %TRUE if the revision guards are enabled.
+ *
+ * Since: 3.8
+ */
+gboolean
+e_source_address_book_config_get_revision_guards_enabled (ESourceAddressBookConfig *extension)
+{
+	gboolean enabled;
+
+	g_return_val_if_fail (E_IS_SOURCE_ADDRESS_BOOK_CONFIG (extension), FALSE);
+
+	g_mutex_lock (extension->priv->property_lock);
+	enabled = extension->priv->revision_guards;
+	g_mutex_unlock (extension->priv->property_lock);
+
+	return enabled;
 }

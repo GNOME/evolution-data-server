@@ -104,6 +104,11 @@ void            e_source_address_book_config_set_indexed_fieldsv (ESourceAddress
 void            e_source_address_book_config_set_indexed_fields  (ESourceAddressBookConfig  *extension,
 								  ...);
 
+void            e_source_address_book_config_set_revision_guards_enabled  (ESourceAddressBookConfig  *extension,
+									   gboolean                   enabled);
+gboolean        e_source_address_book_config_get_revision_guards_enabled  (ESourceAddressBookConfig  *extension);
+
+
 G_END_DECLS
 
 #endif /* E_SOURCE_ADDRESS_BOOK_CONFIG_H */
