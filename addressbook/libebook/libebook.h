@@ -31,7 +31,6 @@
 #include <libebook/e-book-view.h>
 #include <libebook/e-book.h>
 #include <libebook/e-destination.h>
-#include <libebook/e-source-address-book-config.h>
 
 #undef __LIBEBOOK_H_INSIDE__
 

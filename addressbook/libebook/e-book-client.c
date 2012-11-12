@@ -576,21 +576,15 @@ e_book_client_new_direct (ESourceRegistry *registry,
 			  GError         **error)
 {
   EBookClient *client;
-  const gchar *backend_path;
-  const gchar *backend_name;
 
   client = e_book_client_new (source, error);
 
   if (!client)
 	  return NULL;
 
-  /* Load the module for the given backend, need the path to the module and the name of the backend factory type */
-  backend_path = "/opt/devel/lib64/evolution-data-server/addressbook-backends/libebookbackendfile.so";
-  backend_name = "EBookBackendFileFactory";
-
-  client->priv->direct_book = 
-	  e_data_book_new_direct (registry, source,
-				  backend_path, backend_name);
+  client->priv->direct_book = e_data_book_new_direct (registry, source);
+  if (!client->priv->direct_book)
+    g_warning ("Direct access to address book is not available");
 
   return client;
 }

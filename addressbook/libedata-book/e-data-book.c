@@ -40,6 +40,12 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_BOOK, EDataBookPrivate))
 
+/* This forces the GType to be registered in a way that
+ * avoids a "statement with no effect" compiler warning.
+ * FIXME Use g_type_ensure() once we require GLib 2.34. */
+#define REGISTER_TYPE(type) \
+	(g_type_class_unref (g_type_class_ref (type)))
+
 struct _EDataBookPrivate
 {
 	EGdbusBook *gdbus_object;
@@ -1712,37 +1718,46 @@ e_data_book_new (EBookBackend *backend)
 
 EDataBook *
 e_data_book_new_direct (ESourceRegistry *registry,
-			ESource         *source,
-			const gchar     *backend_path,
-			const gchar     *backend_factory_name)
+			ESource         *source)
 {
-	EDataBook    *book;
+	EDataBook    *book = NULL;
 	EModule      *module;
 	EBookBackend *backend;
 	GType         backend_type;
 	GType         factory_type;
 	GTypeClass   *factory_class;
+	gchar        *backend_path;
+	gchar        *backend_name;
+	ESourceDirectAccess *direct;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-	g_return_val_if_fail (backend_path && backend_path[0], NULL);
-	g_return_val_if_fail (backend_factory_name && backend_factory_name[0], NULL);
+
+	REGISTER_TYPE (E_TYPE_SOURCE_DIRECT_ACCESS);
+	direct = e_source_get_extension (source, E_SOURCE_EXTENSION_DIRECT_ACCESS);
+	backend_path = e_source_direct_access_dup_backend_path (direct);
+	backend_name = e_source_direct_access_dup_backend_name (direct);
+
+	if (!backend_path || !backend_name) {
+		g_warning ("ESource is not configured for direct access");
+		goto new_direct_finish;
+	}
 
 	module = load_module (backend_path);
 	if (!module)
-		return NULL;
+		goto new_direct_finish;
 
 	if (!g_type_module_use (G_TYPE_MODULE (module))) {
 		g_warning ("Failed to load EModule at path: %s", backend_path);
-		return NULL;
+		goto new_direct_finish;
 	}
 
-	factory_type = g_type_from_name (backend_factory_name);
+	factory_type = g_type_from_name (backend_name);
 	if (factory_type == 0) {
 		g_warning ("Failed to get backend factory '%s' from EModule at path: %s",
-			   backend_factory_name, backend_path);
+			   backend_name, backend_path);
 		g_type_module_unuse (G_TYPE_MODULE (module));
-		return NULL;
+		goto new_direct_finish;
 	}
 
 	factory_class = g_type_class_ref (factory_type);
@@ -1753,9 +1768,12 @@ e_data_book_new_direct (ESourceRegistry *registry,
 				"registry", registry,
 				"source", source, NULL);
 
-
 	book = e_data_book_new (backend);
 	book->priv->direct_module = module;
+
+ new_direct_finish:
+	g_free (backend_path);
+	g_free (backend_name);
 
 	return book;
 }

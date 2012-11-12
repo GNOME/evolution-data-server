@@ -45,7 +45,6 @@ libebook_1_2_la_SOURCES =				\
 	e-book-view.c					\
 	e-book.c					\
 	e-destination.c					\
-	e-source-address-book-config.c			\
 	e-error.h
 
 libebook_1_2_la_LIBADD =					\
@@ -74,8 +73,7 @@ libebookinclude_HEADERS =				\
 	e-book-view.h					\
 	e-book-types.h					\
 	e-book.h					\
-	e-destination.h					\
-	e-source-address-book-config.h
+	e-destination.h
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
