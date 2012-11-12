@@ -47,6 +47,13 @@ struct _EDataFactoryPrivate {
 	GHashTable *backend_factories;
 };
 
+enum {
+	BACKEND_CREATED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_ABSTRACT_TYPE (
 	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER)
 
@@ -166,6 +173,27 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	object_class->constructed = data_factory_constructed;
 
 	class->backend_factory_type = E_TYPE_BACKEND_FACTORY;
+
+	/**
+	 * EDataFactory::backend-created:
+	 * @data_factory: the #EDataFactory which emitted the signal
+	 * @backend: the newly-created #EBackend
+	 *
+	 * Emitted when a new #EBackend is instantiated by way of
+	 * e_data_factory_ref_backend().  Extensions can connect to this
+	 * signal to perform additional initialization on the #EBackend.
+	 *
+	 * Since: 3.8
+	 **/
+	signals[BACKEND_CREATED] = g_signal_new (
+		"backend-created",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDataFactoryClass, backend_created),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		E_TYPE_BACKEND);
 }
 
 static void
@@ -252,6 +280,10 @@ e_data_factory_ref_backend (EDataFactory *data_factory,
 	g_weak_ref_set (weak_ref, backend);
 
 	g_object_unref (backend_factory);
+
+	if (backend != NULL)
+		g_signal_emit (
+			data_factory, signals[BACKEND_CREATED], 0, backend);
 
 exit:
 	g_mutex_unlock (&data_factory->priv->mutex);

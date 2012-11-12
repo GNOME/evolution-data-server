@@ -69,7 +69,11 @@ struct _EDataFactoryClass {
 
 	GType backend_factory_type;
 
-	gpointer reserved[16];
+	/* Signals */
+	void		(*backend_created)	(EDataFactory *data_factory,
+						 EBackend *backend);
+
+	gpointer reserved[15];
 };
 
 GType		e_data_factory_get_type		(void) G_GNUC_CONST;
