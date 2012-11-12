@@ -26,11 +26,6 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
-#ifdef HAVE_GOA
-#define GOA_API_IS_SUBJECT_TO_CHANGE
-#include <goa/goa.h>
-#endif
-
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
 #include "e-data-book.h"
@@ -55,11 +50,6 @@ struct _EDataBookFactoryPrivate {
 	GMutex connections_lock;
 	/* This is a hash of client addresses to GList* of EDataBooks */
 	GHashTable *connections;
-
-#ifdef HAVE_GOA
-	GoaClient *goa_client;
-	GHashTable *goa_accounts;
-#endif
 };
 
 enum {
@@ -179,117 +169,6 @@ book_freed_cb (EDataBookFactory *factory,
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
 
-#ifdef HAVE_GOA
-static void
-data_book_factory_collect_goa_accounts (EDataBookFactory *factory)
-{
-	GList *list, *iter;
-
-	g_hash_table_remove_all (factory->priv->goa_accounts);
-
-	list = goa_client_get_accounts (factory->priv->goa_client);
-
-	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-		GoaObject *goa_object;
-		GoaAccount *goa_account;
-		const gchar *goa_account_id;
-
-		goa_object = GOA_OBJECT (iter->data);
-
-		goa_account = goa_object_peek_account (goa_object);
-		goa_account_id = goa_account_get_id (goa_account);
-		g_return_if_fail (goa_account_id != NULL);
-
-		/* Takes ownership of the GoaObject. */
-		g_hash_table_insert (
-			factory->priv->goa_accounts,
-			g_strdup (goa_account_id), goa_object);
-	}
-
-	g_list_free (list);
-}
-
-static void
-data_book_factory_goa_account_added_cb (GoaClient *goa_client,
-                                        GoaObject *goa_object,
-                                        EDataBookFactory *factory)
-{
-	GoaAccount *goa_account;
-	const gchar *goa_account_id;
-
-	goa_account = goa_object_peek_account (goa_object);
-	goa_account_id = goa_account_get_id (goa_account);
-	g_return_if_fail (goa_account_id != NULL);
-
-	g_hash_table_insert (
-		factory->priv->goa_accounts,
-		g_strdup (goa_account_id),
-		g_object_ref (goa_object));
-}
-
-static void
-data_book_factory_goa_account_removed_cb (GoaClient *goa_client,
-                                          GoaObject *goa_object,
-                                          EDataBookFactory *factory)
-{
-	GoaAccount *goa_account;
-	const gchar *goa_account_id;
-
-	goa_account = goa_object_peek_account (goa_object);
-	goa_account_id = goa_account_get_id (goa_account);
-	g_return_if_fail (goa_account_id != NULL);
-
-	g_hash_table_remove (factory->priv->goa_accounts, goa_account_id);
-}
-
-static void
-book_backend_factory_match_goa_object (EDataBookFactory *factory,
-                                       EBackend *backend)
-{
-	ESource *source;
-	ESourceRegistry *registry;
-	GoaObject *goa_object = NULL;
-	gchar *goa_account_id = NULL;
-	const gchar *extension_name;
-
-	/* Embed the corresponding GoaObject in the EBookBackend
-	 * so the backend can retrieve it.  We're not ready to add
-	 * formal API for this to EBookBackend just yet. */
-
-	registry = e_data_book_factory_get_registry (factory);
-
-	source = e_backend_get_source (backend);
-	extension_name = E_SOURCE_EXTENSION_GOA;
-
-	/* Check source and its ancestors for a
-	 * [GNOME Online Accounts] extension. */
-	source = e_source_registry_find_extension (
-		registry, source, extension_name);
-
-	if (source != NULL) {
-		ESourceGoa *extension;
-
-		extension = e_source_get_extension (source, extension_name);
-		goa_account_id = e_source_goa_dup_account_id (extension);
-		g_object_unref (source);
-	}
-
-	if (goa_account_id != NULL) {
-		goa_object = g_hash_table_lookup (
-			factory->priv->goa_accounts, goa_account_id);
-		g_free (goa_account_id);
-	}
-
-	if (goa_object != NULL) {
-		g_object_set_data_full (
-			G_OBJECT (backend),
-			"GNOME Online Account",
-			g_object_ref (goa_object),
-			(GDestroyNotify) g_object_unref);
-	}
-}
-#endif /* HAVE_GOA */
-
 static gboolean
 impl_BookFactory_get_book (EGdbusBookFactory *object,
                            GDBusMethodInvocation *invocation,
@@ -351,11 +230,6 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
 
 	e_dbus_server_hold (E_DBUS_SERVER (factory));
-
-#ifdef HAVE_GOA
-	/* See if there's a matching GoaObject for this backend. */
-	book_backend_factory_match_goa_object (factory, backend);
-#endif
 
 	object_path = construct_book_factory_path ();
 
@@ -445,15 +319,6 @@ data_book_factory_dispose (GObject *object)
 		priv->gdbus_object = NULL;
 	}
 
-#ifdef HAVE_GOA
-	if (priv->goa_client != NULL) {
-		g_object_unref (priv->goa_client);
-		priv->goa_client = NULL;
-	}
-
-	g_hash_table_remove_all (priv->goa_accounts);
-#endif
-
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose (object);
 }
@@ -470,10 +335,6 @@ data_book_factory_finalize (GObject *object)
 
 	g_mutex_clear (&priv->books_lock);
 	g_mutex_clear (&priv->connections_lock);
-
-#ifdef HAVE_GOA
-	g_hash_table_destroy (priv->goa_accounts);
-#endif
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
@@ -618,10 +479,6 @@ e_data_book_factory_initable_init (GInitableIface *interface)
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {
-#ifdef HAVE_GOA
-	GError *error = NULL;
-#endif
-
 	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
 	factory->priv->gdbus_object = e_gdbus_book_factory_stub_new ();
@@ -640,35 +497,6 @@ e_data_book_factory_init (EDataBookFactory *factory)
 		g_str_hash, g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
-
-#ifdef HAVE_GOA
-	factory->priv->goa_accounts = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) g_object_unref);
-
-	/* Failure here is non-fatal, just emit a terminal warning. */
-	factory->priv->goa_client = goa_client_new_sync (NULL, &error);
-
-	if (factory->priv->goa_client != NULL) {
-		data_book_factory_collect_goa_accounts (factory);
-
-		g_signal_connect (
-			factory->priv->goa_client, "account_added",
-			G_CALLBACK (data_book_factory_goa_account_added_cb),
-			factory);
-		g_signal_connect (
-			factory->priv->goa_client, "account_removed",
-			G_CALLBACK (data_book_factory_goa_account_removed_cb),
-			factory);
-	} else if (error != NULL) {
-		g_warning (
-			"Failed to connect to gnome-online-accounts: %s",
-			error->message);
-		g_error_free (error);
-	}
-#endif
 }
 
 EDBusServer *

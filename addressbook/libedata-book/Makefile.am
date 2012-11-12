@@ -14,7 +14,6 @@ libedata_book_1_2_la_CPPFLAGS = \
 	$(DB_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
-	$(GOA_CFLAGS) \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
@@ -41,7 +40,6 @@ libedata_book_1_2_la_LIBADD = \
 	$(DB_LIBS) \
 	$(CAMEL_LIBS) \
 	$(SQLITE3_LIBS) \
-	$(GOA_LIBS) \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libedata_book_1_2_la_LDFLAGS = \
