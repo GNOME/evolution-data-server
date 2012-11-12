@@ -29,6 +29,9 @@
 #include <libedataserver/libedataserver.h>
 #include <libedataserver/e-client-private.h>
 
+#include <libebackend/libebackend.h>
+#include <libedata-book/libedata-book.h>
+
 #include "e-book-client.h"
 #include "e-contact.h"
 #include "e-name-western.h"
@@ -46,6 +49,10 @@ struct _EBookClientPrivate {
 	/* GDBus data */
 	GDBusProxy *gdbus_book;
 	guint gone_signal_id;
+
+	EModule      *direct_module;
+	EDataBook    *direct_book;
+	EBookBackend *direct_backend;
 };
 
 G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
@@ -354,6 +361,9 @@ gdbus_book_client_disconnect (EBookClient *client)
 		g_dbus_connection_signal_unsubscribe (connection, client->priv->gone_signal_id);
 		client->priv->gone_signal_id = 0;
 
+		if (client->priv->direct_book)
+			e_data_book_close_sync (client->priv->direct_book, NULL, NULL);
+
 		e_gdbus_book_call_close_sync (client->priv->gdbus_book, NULL, NULL);
 		g_object_unref (client->priv->gdbus_book);
 		client->priv->gdbus_book = NULL;
@@ -549,6 +559,62 @@ e_book_client_new (ESource *source,
 	g_signal_connect (client->priv->gdbus_book, "backend-property-changed", G_CALLBACK (backend_property_changed_cb), client);
 
 	return client;
+}
+
+
+/**
+ * e_book_client_new:
+ * @source: An #ESource pointer
+ * @error: A #GError pointer
+ *
+ * Like e_book_client_new(), except creates the book client for
+ * direct read access to the underlying addressbook.
+ *
+ * Returns: a new but unopened #EBookClient.
+ *
+ * Since: 3.8
+ **/
+EBookClient *
+e_book_client_new_direct (ESourceRegistry *registry,
+			  ESource         *source,
+			  GError         **error)
+{
+  EBookClient *client;
+  GType        factory_type;
+  GType        backend_type;
+  GTypeClass  *factory_class;
+  const gchar *backend_path;
+  const gchar *backend_name;
+
+  client = e_book_client_new (source, error);
+
+  if (!client)
+	  return NULL;
+
+  /* Load the module for the given backend, need the path to the module and the name of the backend factory type */
+  backend_path = "/opt/devel/lib64/evolution-data-server/addressbook-backends/libebookbackendfile.so";
+  backend_name = "EBookBackendFileFactory";
+
+  client->priv->direct_module = e_module_new (backend_path);
+  g_type_module_use (G_TYPE_MODULE (client->priv->direct_module));
+
+  factory_type = g_type_from_name (backend_name);
+
+  factory_class = g_type_class_ref (factory_type);
+  backend_type  = E_BOOK_BACKEND_FACTORY_CLASS (factory_class)->backend_type;
+
+  g_print ("Direct backend type name: %s\n", g_type_name (backend_type));
+
+  g_type_class_unref (factory_class);
+
+  client->priv->direct_backend =
+	  g_object_new (backend_type,
+			"registry", registry,
+			"source", source, NULL);
+
+  client->priv->direct_book = e_data_book_new (client->priv->direct_backend);
+
+  return client;
 }
 
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
@@ -937,6 +1003,11 @@ book_client_open_sync (EClient *client,
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
+
+	if (book_client->priv->direct_book &&
+	    !e_data_book_open_sync (book_client->priv->direct_book,
+				    only_if_exists, cancellable, error))
+		return FALSE;
 
 	return e_client_proxy_call_sync_boolean__void (client, only_if_exists, cancellable, error, e_gdbus_book_call_open_sync);
 }
@@ -1803,6 +1874,12 @@ e_book_client_get_contact (EBookClient *client,
 
 	g_return_if_fail (uid != NULL);
 
+	if (client->priv->direct_book) {
+		e_data_book_get_contact (client->priv->direct_book,
+					 uid, cancellable, callback, user_data);
+		return;
+	}
+
 	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
 	g_return_if_fail (safe_uid != NULL);
 
@@ -1839,6 +1916,9 @@ e_book_client_get_contact_finish (EBookClient *client,
 	gchar *vcard = NULL;
 
 	g_return_val_if_fail (contact != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contact_finish (client->priv->direct_book, result, contact, error);
 
 	res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &vcard, error, e_book_client_get_contact);
 
@@ -1882,6 +1962,9 @@ e_book_client_get_contact_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (contact != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contact_sync (client->priv->direct_book, uid, contact, cancellable, error);
 
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1932,6 +2015,12 @@ e_book_client_get_contacts (EBookClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
+	if (client->priv->direct_book) {
+		e_data_book_get_contacts (client->priv->direct_book,
+					  sexp, cancellable, callback, user_data);
+		return;
+	}
+
 	e_client_proxy_call_string (
 		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts,
 		e_gdbus_book_call_get_contact_list,
@@ -1965,6 +2054,9 @@ e_book_client_get_contacts_finish (EBookClient *client,
 	gchar **vcards = NULL;
 
 	g_return_val_if_fail (contacts != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contacts_finish (client->priv->direct_book, result, contacts, error);
 
 	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &vcards, error, e_book_client_get_contacts);
 
@@ -2020,6 +2112,9 @@ e_book_client_get_contacts_sync (EBookClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
 
+	if (client->priv->direct_book)
+		return e_data_book_get_contacts_sync (client->priv->direct_book, sexp, contacts, cancellable, error);
+
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
 		return FALSE;
@@ -2074,6 +2169,12 @@ e_book_client_get_contacts_uids (EBookClient *client,
 
 	g_return_if_fail (sexp != NULL);
 
+	if (client->priv->direct_book) {
+		e_data_book_get_contacts_uids (client->priv->direct_book,
+					       sexp, cancellable, callback, user_data);
+		return;
+	}
+
 	e_client_proxy_call_string (
 		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts_uids,
 		e_gdbus_book_call_get_contact_list_uids,
@@ -2107,6 +2208,9 @@ e_book_client_get_contacts_uids_finish (EBookClient *client,
 	gchar **uids = NULL;
 
 	g_return_val_if_fail (contacts_uids != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contacts_uids_finish (client->priv->direct_book, result, contacts_uids, error);
 
 	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &uids, error, e_book_client_get_contacts_uids);
 
@@ -2161,6 +2265,9 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (contacts_uids != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contacts_uids_sync (client->priv->direct_book, sexp, contacts_uids, cancellable, error);
 
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
