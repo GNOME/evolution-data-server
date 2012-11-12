@@ -76,6 +76,7 @@ struct _EBookBackendFilePrivate {
 	gchar     *photo_dirname;
 	gchar     *revision;
 	gint       rev_counter;
+	GRWLock    lock;
 
 	EBookBackendSqliteDB *sqlitedb;
 };
@@ -621,7 +622,7 @@ e_book_backend_file_new_revision (EBookBackendFile *bf)
  * every DB modification is going to really be an overhead.
  */
 static void
-e_book_backend_file_bump_revision (EBookBackendFile *bf)
+e_book_backend_file_bump_revision_locked (EBookBackendFile *bf)
 {
 	GError *error = NULL;
 
@@ -643,6 +644,14 @@ e_book_backend_file_bump_revision (EBookBackendFile *bf)
 }
 
 static void
+e_book_backend_file_bump_revision (EBookBackendFile *bf)
+{
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+	e_book_backend_file_bump_revision_locked (bf);
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+}
+
+static void
 e_book_backend_file_load_revision (EBookBackendFile *bf)
 {
 	GError *error = NULL;
@@ -660,18 +669,14 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 }
 
 static void
-set_revision (EContact *contact)
+set_revision (EBookBackendFile *bf,
+	      EContact *contact)
 {
-	gchar time_string[100] = {0};
-	const struct tm *tm = NULL;
-	time_t t;
+	gchar *rev;
 
-	t = time (NULL);
-	tm = gmtime (&t);
-	if (tm)
-		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
-	e_contact_set (contact, E_CONTACT_REV, time_string);
-
+	rev = e_book_backend_file_new_revision (bf);
+	e_contact_set (contact, E_CONTACT_REV, rev);
+	g_free (rev);
 }
 
 
@@ -717,7 +722,7 @@ do_create (EBookBackendFile *bf,
 
 		rev = e_contact_get_const (contact, E_CONTACT_REV);
 		if (!(rev && *rev))
-			set_revision (contact);
+			set_revision (bf, contact);
 
 		status = maybe_transform_vcard_for_photo (bf, NULL, contact, perror);
 
@@ -776,9 +781,13 @@ e_book_backend_file_create_contacts (EBookBackendSync *backend,
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
 	if (do_create (bf, vcards, added_contacts, perror)) {
-		e_book_backend_file_bump_revision (bf);
+		e_book_backend_file_bump_revision_locked (bf);
 	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 }
 
 static void
@@ -794,6 +803,8 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	GError           *local_error = NULL;
 	gboolean          delete_failed = FALSE;
 	const GSList     *l;
+
+	g_rw_lock_writer_lock (&(bf->priv->lock));
 
 	for (l = id_list; l != NULL; l = l->next) {
 		const gchar *id;
@@ -840,13 +851,16 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			g_propagate_error (perror, local_error);
 		}
 
+		e_book_backend_file_bump_revision_locked (bf);
+
 		*ids = removed_ids;
 	} else {
 		*ids = NULL;
 		e_util_free_string_slist (removed_ids);
 	}
 
-	e_book_backend_file_bump_revision (bf);
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
 	e_util_free_object_slist (removed_contacts);
 }
 
@@ -870,9 +884,12 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		return;
 	}
 
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
 	for (l = vcards; l != NULL; l = l->next) {
 		gchar *id;
 		EContact *contact, *old_contact;
+		const gchar *contact_rev, *old_contact_rev;
 
 		contact = e_contact_new_from_vcard (l->data);
 		id = e_contact_get (contact, E_CONTACT_UID);
@@ -898,7 +915,21 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			g_object_unref (contact);
 			break;
 		}
-		old_contacts = g_slist_prepend (old_contacts, old_contact);
+
+		contact_rev = e_contact_get_const (contact, E_CONTACT_REV);
+		old_contact_rev = e_contact_get_const (old_contact, E_CONTACT_REV);
+
+		if (!contact_rev || !old_contact_rev ||
+		    strcmp (contact_rev, old_contact_rev) != 0) {
+			g_propagate_error (perror, EDB_ERROR_EX (BAD_REVISION, _("Out of sync revision")));
+
+			status = STATUS_ERROR;
+
+			g_free (id);
+			g_object_unref (contact);
+			g_object_unref (old_contact);
+			break;
+		}
 
 		/* Transform incomming photo blobs to uris before storing this to the DB */
 		status = maybe_transform_vcard_for_photo (bf, old_contact, contact, &local_error);
@@ -913,8 +944,9 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		}
 
 		/* update the revision (modified time of contact) */
-		set_revision (contact);
+		set_revision (bf, contact);
 
+		old_contacts      = g_slist_prepend (old_contacts, old_contact);
 		modified_contacts = g_slist_prepend (modified_contacts, contact);
 		ids               = g_slist_prepend (ids, id);
 	}
@@ -942,6 +974,11 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		}
 	}
 
+	if (status != STATUS_ERROR)
+		e_book_backend_file_bump_revision_locked (bf);
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
 	if (status != STATUS_ERROR) {
 		*contacts = g_slist_reverse (modified_contacts);
 	} else {
@@ -951,8 +988,6 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 
 	e_util_free_string_slist (ids);
 	g_slist_free_full (old_contacts, g_object_unref);
-
-	e_book_backend_file_bump_revision (bf);
 }
 
 static void
@@ -970,9 +1005,12 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 		return;
 	}
 
+	g_rw_lock_reader_lock (&(bf->priv->lock));
+
 	*vcard = e_book_backend_sqlitedb_get_vcard_string (bf->priv->sqlitedb,
 							   SQLITEDB_FOLDER_ID, id,
 							   NULL, NULL, perror);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
 }
 
 static void
@@ -995,10 +1033,12 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		return;
 	}
 
+	g_rw_lock_reader_lock (&(bf->priv->lock));
 	summary_list = e_book_backend_sqlitedb_search (
 		bf->priv->sqlitedb, SQLITEDB_FOLDER_ID,
 		query, NULL,
 		NULL, NULL, &local_error);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
 
 	if (summary_list) {
 
@@ -1040,10 +1080,12 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 		return;
 	}
 
+	g_rw_lock_reader_lock (&(bf->priv->lock));
 	uids = e_book_backend_sqlitedb_search_uids (
 		bf->priv->sqlitedb,
 		SQLITEDB_FOLDER_ID,
 		query, NULL, &local_error);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
 
 	if (uids == NULL && local_error != NULL) {
 		g_warning ("Failed to fetch contact ids: %s", local_error->message);
@@ -1152,11 +1194,13 @@ book_view_thread (gpointer data)
 	d (printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
 
+	g_rw_lock_reader_lock (&(bf->priv->lock));
 	summary_list = e_book_backend_sqlitedb_search (
 		bf->priv->sqlitedb,
 		SQLITEDB_FOLDER_ID,
 		query, fields_of_interest,
 		NULL, NULL, &local_error);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
 
 	if (!summary_list && local_error != NULL) {
 		g_warning (G_STRLOC ": Failed to query initial contacts: %s", local_error->message);
@@ -1598,6 +1642,7 @@ e_book_backend_file_finalize (GObject *object)
 
 	g_free (priv->photo_dirname);
 	g_free (priv->revision);
+	g_rw_lock_clear (&(priv->lock));
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->finalize (object);
@@ -1638,6 +1683,8 @@ static void
 e_book_backend_file_init (EBookBackendFile *backend)
 {
 	backend->priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
+
+	g_rw_lock_init (&(backend->priv->lock));
 
 	g_signal_connect (
 		backend, "notify::online",
