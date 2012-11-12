@@ -1177,9 +1177,7 @@ book_view_thread (gpointer data)
 	 * when/if it's stopped */
 	e_data_book_view_ref (book_view);
 
-	sexp = e_data_book_view_get_sexp (book_view);
-	query = e_book_backend_sexp_text (sexp);
-
+	query = e_data_book_view_get_card_query (book_view);
 	fields_of_interest = e_data_book_view_get_fields_of_interest (book_view);
 
 	if (!bf->priv->sqlitedb) {
