@@ -203,6 +203,18 @@ yahoo_backend_add_calendar (ECollectionBackend *backend)
 	extension = e_source_get_extension (source, extension_name);
 	e_source_backend_set_backend_name (extension, backend_name);
 
+	extension_name = E_SOURCE_EXTENSION_ALARMS;
+	extension = e_source_get_extension (source, extension_name);
+	if (!e_source_alarms_get_last_notified (E_SOURCE_ALARMS (extension))) {
+		GTimeVal today_tv;
+		gchar *today;
+
+		g_get_current_time (&today_tv);
+		today = g_time_val_to_iso8601 (&today_tv);
+		e_source_alarms_set_last_notified (E_SOURCE_ALARMS (extension), today);
+		g_free (today);
+	}
+
 	yahoo_backend_config_calendar_child (backend, source);
 	e_source_registry_server_add_source (server, source);
 

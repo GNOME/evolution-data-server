@@ -148,6 +148,18 @@ google_backend_add_calendar (ECollectionBackend *backend)
 	e_source_security_set_secure (
 		E_SOURCE_SECURITY (extension), TRUE);
 
+	extension_name = E_SOURCE_EXTENSION_ALARMS;
+	extension = e_source_get_extension (source, extension_name);
+	if (!e_source_alarms_get_last_notified (E_SOURCE_ALARMS (extension))) {
+		GTimeVal today_tv;
+		gchar *today;
+
+		g_get_current_time (&today_tv);
+		today = g_time_val_to_iso8601 (&today_tv);
+		e_source_alarms_set_last_notified (E_SOURCE_ALARMS (extension), today);
+		g_free (today);
+	}
+
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	extension = e_source_get_extension (source, extension_name);
 
