@@ -170,7 +170,7 @@ writeln (CamelMimeFilter *mime_filter,
 		u = camel_utf8_getc_limit (&inptr, inend);
 		switch (u) {
 		case 0xffff:
-			g_warning ("Truncated utf8 buffer");
+			g_warning ("Truncated UTF-8 buffer (The cause might be missing character encoding information in the message header. Try a different character encoding.)");
 			return outptr;
 		case '<':
 			outptr = g_stpcpy (outptr, "&lt;");
