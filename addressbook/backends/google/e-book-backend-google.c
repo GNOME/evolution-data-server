@@ -74,7 +74,7 @@ struct _EBookBackendGooglePrivate {
 	/* Time when the groups were last queried */
 	GTimeVal last_groups_update;
 
-	GDataAuthorizer *goa_authorizer;
+	GDataAuthorizer *authorizer;
 	GDataService *service;
 	EProxy *proxy;
 
@@ -266,7 +266,7 @@ backend_is_authorized (EBookBackend *backend)
 	 * is concerned it's always authorized.  The GDataAuthorizer
 	 * will take care of everything in the background without
 	 * bothering clients with "auth-required" signals. */
-	if (E_IS_GDATA_GOA_AUTHORIZER (priv->goa_authorizer))
+	if (E_IS_GDATA_GOA_AUTHORIZER (priv->authorizer))
 		return TRUE;
 #endif
 
@@ -963,7 +963,7 @@ request_authorization (EBookBackend *backend,
 #ifdef HAVE_GOA
 	/* If this is associated with a GNOME Online Account,
 	 * use OAuth authentication instead of ClientLogin. */
-	if (priv->goa_authorizer == NULL) {
+	if (priv->authorizer == NULL) {
 		EGDataGoaAuthorizer *authorizer;
 		GoaObject *goa_object;
 
@@ -971,24 +971,24 @@ request_authorization (EBookBackend *backend,
 			G_OBJECT (backend), "GNOME Online Account");
 		if (GOA_IS_OBJECT (goa_object)) {
 			authorizer = e_gdata_goa_authorizer_new (goa_object);
-			priv->goa_authorizer = GDATA_AUTHORIZER (authorizer);
+			priv->authorizer = GDATA_AUTHORIZER (authorizer);
 		}
 	}
 #endif
 
-	if (priv->goa_authorizer == NULL) {
+	if (priv->authorizer == NULL) {
 		GDataClientLoginAuthorizer *authorizer;
 
 		authorizer = gdata_client_login_authorizer_new (
 			CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
-		priv->goa_authorizer = GDATA_AUTHORIZER (authorizer);
+		priv->authorizer = GDATA_AUTHORIZER (authorizer);
 	}
 
 	if (priv->service == NULL) {
 		GDataContactsService *contacts_service;
 
 		contacts_service =
-			gdata_contacts_service_new (priv->goa_authorizer);
+			gdata_contacts_service_new (priv->authorizer);
 		priv->service = GDATA_SERVICE (contacts_service);
 		proxy_settings_changed (priv->proxy, backend);
 	}
@@ -997,7 +997,7 @@ request_authorization (EBookBackend *backend,
 	/* If we're using OAuth tokens, then as far as the backend
 	 * is concerned it's always authorized.  The GDataAuthorizer
 	 * will take care of everything in the background. */
-	if (E_IS_GDATA_GOA_AUTHORIZER (priv->goa_authorizer))
+	if (E_IS_GDATA_GOA_AUTHORIZER (priv->authorizer))
 		return TRUE;
 #endif
 
@@ -1900,7 +1900,7 @@ e_book_backend_google_open (EBookBackend *backend,
 		if (request_authorization (backend, cancellable, &error)) {
 			/* Refresh the authorizer.  This may block. */
 			gdata_authorizer_refresh_authorization (
-				priv->goa_authorizer, cancellable, &error);
+				priv->authorizer, cancellable, &error);
 		}
 	}
 
@@ -2162,9 +2162,9 @@ e_book_backend_google_dispose (GObject *object)
 		g_object_unref (priv->service);
 	priv->service = NULL;
 
-	if (priv->goa_authorizer != NULL)
-		g_object_unref (priv->goa_authorizer);
-	priv->goa_authorizer = NULL;
+	if (priv->authorizer != NULL)
+		g_object_unref (priv->authorizer);
+	priv->authorizer = NULL;
 
 	if (priv->proxy)
 		g_object_unref (priv->proxy);
@@ -2229,7 +2229,7 @@ book_backend_google_try_password_sync (ESourceAuthenticator *authenticator,
 	user = e_source_authentication_dup_user (auth_extension);
 
 	gdata_client_login_authorizer_authenticate (
-		GDATA_CLIENT_LOGIN_AUTHORIZER (priv->goa_authorizer),
+		GDATA_CLIENT_LOGIN_AUTHORIZER (priv->authorizer),
 		user, password->str, cancellable, &local_error);
 
 	g_free (user);
