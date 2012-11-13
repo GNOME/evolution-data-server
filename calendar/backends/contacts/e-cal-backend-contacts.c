@@ -168,9 +168,10 @@ book_record_unref (BookRecord *br)
 	g_return_if_fail (br->ref_count > 0);
 
 	if (g_atomic_int_dec_and_test (&br->ref_count)) {
-		g_signal_handler_disconnect (
-			br->book_client,
-			br->book_client_opened_id);
+		if (br->book_client_opened_id)
+			g_signal_handler_disconnect (
+				br->book_client,
+				br->book_client_opened_id);
 		g_hash_table_foreach_remove (
 			br->cbc->priv->tracked_contacts,
 			remove_by_book, br->book_client);
@@ -292,6 +293,57 @@ cbc_reopen_book_client (BookRecord *br)
 	g_mutex_unlock (br->lock);
 }
 
+static gpointer
+book_record_get_view_thread (gpointer user_data)
+{
+	BookRecord *br;
+	EBookQuery *query;
+	EBookClientView *book_view;
+	gchar *query_sexp;
+	GError *error = NULL;
+
+	br = user_data;
+	g_return_val_if_fail (br != NULL, NULL);
+
+	book_record_set_book_view (br, NULL);
+
+	query = e_book_query_andv (
+		e_book_query_orv (
+			e_book_query_field_exists (E_CONTACT_FILE_AS),
+			e_book_query_field_exists (E_CONTACT_FULL_NAME),
+			e_book_query_field_exists (E_CONTACT_GIVEN_NAME),
+			e_book_query_field_exists (E_CONTACT_NICKNAME),
+			NULL),
+		e_book_query_orv (
+			e_book_query_field_exists (E_CONTACT_BIRTH_DATE),
+			e_book_query_field_exists (E_CONTACT_ANNIVERSARY),
+			NULL),
+		NULL);
+	query_sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+
+	if (!e_book_client_get_view_sync (br->book_client, query_sexp, &book_view, NULL, &error)) {
+		ESource *source = e_client_get_source (E_CLIENT (br->book_client));
+
+		g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_get_display_name (source), error ? error->message : "Unknown error");
+	}
+	g_free (query_sexp);
+	g_clear_error (&error);
+
+	g_signal_connect (book_view, "objects-added", G_CALLBACK (contacts_added_cb), br->cbc);
+	g_signal_connect (book_view, "objects-removed", G_CALLBACK (contacts_removed_cb), br->cbc);
+	g_signal_connect (book_view, "objects-modified", G_CALLBACK (contacts_modified_cb), br->cbc);
+
+	e_book_client_view_start (book_view, NULL);
+
+	book_record_set_book_view (br, book_view);
+
+	g_object_unref (book_view);
+	book_record_unref (br);
+
+	return NULL;
+}
+
 static void
 book_client_opened_cb (EBookClient *book_client,
                        const GError *error,
@@ -317,42 +369,10 @@ book_client_opened_cb (EBookClient *book_client,
 	if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED)) {
 		cbc_reopen_book_client (br);
 	} else if (!error) {
-		EBookQuery *query;
-		EBookClientView *book_view;
-		gchar *query_sexp;
-		GError *error = NULL;
+		GThread *thread;
 
-		book_record_set_book_view (br, NULL);
-
-		query = e_book_query_andv (
-			e_book_query_orv (
-				e_book_query_field_exists (E_CONTACT_FILE_AS),
-				e_book_query_field_exists (E_CONTACT_FULL_NAME),
-				e_book_query_field_exists (E_CONTACT_GIVEN_NAME),
-				e_book_query_field_exists (E_CONTACT_NICKNAME),
-				NULL),
-			e_book_query_orv (
-				e_book_query_field_exists (E_CONTACT_BIRTH_DATE),
-				e_book_query_field_exists (E_CONTACT_ANNIVERSARY),
-				NULL),
-			NULL);
-		query_sexp = e_book_query_to_string (query);
-		e_book_query_unref (query);
-
-		if (!e_book_client_get_view_sync (book_client, query_sexp, &book_view, NULL, &error))
-			g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_get_display_name (source), error ? error->message : "Unknown error");
-		g_free (query_sexp);
-		g_clear_error (&error);
-
-		g_signal_connect (book_view, "objects-added", G_CALLBACK (contacts_added_cb), br->cbc);
-		g_signal_connect (book_view, "objects-removed", G_CALLBACK (contacts_removed_cb), br->cbc);
-		g_signal_connect (book_view, "objects-modified", G_CALLBACK (contacts_modified_cb), br->cbc);
-
-		e_book_client_view_start (book_view, NULL);
-
-		book_record_set_book_view (br, book_view);
-
-		g_object_unref (book_view);
+		thread = g_thread_new (NULL, book_record_get_view_thread, book_record_ref (br));
+		g_thread_unref (thread);
 	}
 }
 
@@ -373,10 +393,12 @@ client_open_cb (GObject *source_object,
 		ESource *source;
 
 		g_mutex_lock (br->lock);
-		g_signal_handler_disconnect (
-			br->book_client,
-			br->book_client_opened_id);
-		br->book_client_opened_id = 0;
+		if (br->book_client_opened_id) {
+			g_signal_handler_disconnect (
+				br->book_client,
+				br->book_client_opened_id);
+			br->book_client_opened_id = 0;
+		}
 		g_mutex_unlock (br->lock);
 
 		g_warning (
