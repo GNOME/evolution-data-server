@@ -205,7 +205,7 @@ static void
 source_selector_dialog_constructed (GObject *object)
 {
 	ESourceSelectorDialog *dialog;
-	GtkWidget *label, *hbox;
+	GtkWidget *label, *hgrid;
 	GtkWidget *container;
 	GtkWidget *widget;
 	gchar *label_text;
@@ -214,7 +214,11 @@ source_selector_dialog_constructed (GObject *object)
 
 	container = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
-	widget = gtk_vbox_new (FALSE, 12);
+	widget = g_object_new (GTK_TYPE_GRID,
+		"orientation", GTK_ORIENTATION_VERTICAL,
+		"column-homogeneous", FALSE,
+		"row-spacing", 12,
+		NULL);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 12);
 	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
 	gtk_widget_show (widget);
@@ -225,16 +229,22 @@ source_selector_dialog_constructed (GObject *object)
 	label = gtk_label_new_with_mnemonic (label_text);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-	gtk_box_pack_start (GTK_BOX (container), label, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (container), label);
 	gtk_widget_show (label);
 	g_free (label_text);
 
-	hbox = gtk_hbox_new (FALSE, 12);
-	gtk_box_pack_start (GTK_BOX (container), hbox, TRUE, TRUE, 0);
-	gtk_widget_show (hbox);
+	hgrid = g_object_new (GTK_TYPE_GRID,
+		"orientation", GTK_ORIENTATION_HORIZONTAL,
+		"row-homogeneous", FALSE,
+		"column-spacing", 12,
+		"vexpand", TRUE,
+		"valign", GTK_ALIGN_FILL,
+		NULL);
+	gtk_container_add (GTK_CONTAINER (container), hgrid);
+	gtk_widget_show (hgrid);
 
 	widget = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (hgrid), widget);
 	gtk_widget_show (widget);
 
 	widget = gtk_scrolled_window_new (NULL, NULL);
@@ -243,7 +253,11 @@ source_selector_dialog_constructed (GObject *object)
 		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (
 		GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_IN);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	gtk_widget_set_hexpand (widget, TRUE);
+	gtk_widget_set_halign (widget, GTK_ALIGN_FILL);
+	gtk_widget_set_vexpand (widget, TRUE);
+	gtk_widget_set_valign (widget, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (hgrid), widget);
 	gtk_widget_show (widget);
 
 	container = widget;

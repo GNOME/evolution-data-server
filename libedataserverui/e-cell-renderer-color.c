@@ -106,6 +106,7 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	ECellRendererColorPrivate *priv;
 	GdkRectangle pix_rect;
 	GdkRectangle draw_rect;
+	GdkRGBA rgba;
 	guint xpad;
 	guint ypad;
 
@@ -129,7 +130,12 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	if (!gdk_rectangle_intersect (cell_area, &pix_rect, &draw_rect))
 		return;
 
-	gdk_cairo_set_source_color (cr, priv->color);
+	rgba.red = priv->color->red / 65535.0;
+	rgba.green = priv->color->green / 65535.0;
+	rgba.blue = priv->color->blue / 65535.0;
+	rgba.alpha = 1.0;
+
+	gdk_cairo_set_source_rgba (cr, &rgba);
 	cairo_rectangle (cr, pix_rect.x, pix_rect.y, draw_rect.width, draw_rect.height);
 
 	cairo_fill (cr);

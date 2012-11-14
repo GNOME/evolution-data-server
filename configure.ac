@@ -91,7 +91,7 @@ LIBEDATASERVER_CURRENT=17
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
-LIBEDATASERVERUI_CURRENT=4
+LIBEDATASERVERUI_CURRENT=5
 LIBEDATASERVERUI_REVISION=0
 LIBEDATASERVERUI_AGE=0
 
@@ -160,7 +160,6 @@ AS_COMPILER_FLAGS(WARNING_FLAGS,
 	-Wno-missing-field-initializers
 	-Wno-sign-compare
 	-Wno-unused-parameter
-	-Wno-deprecated-declarations
 	-Wdeclaration-after-statement
 	-Werror-implicit-function-declaration
 	-Wformat-security -Winit-self
@@ -200,7 +199,9 @@ fi
 AC_MSG_RESULT([$enable_strict])
 
 if test "x$enable_strict" = xyes; then
-	AM_CPPFLAGS="$AM_CPPFLAGS -DG_DISABLE_DEPRECATED"
+	AM_CPPFLAGS="$AM_CPPFLAGS -Wdeprecated-declarations -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DLIBSOUP_DISABLE_DEPRECATED"
+else
+	AM_CPPFLAGS="$AM_CPPFLAGS -Wno-deprecated-declarations"
 fi
 
 AC_SUBST(AM_CPPFLAGS)

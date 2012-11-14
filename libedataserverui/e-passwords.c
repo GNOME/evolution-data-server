@@ -450,9 +450,13 @@ update_capslock_state (GtkDialog *dialog,
 	GdkModifierType mask = 0;
 	GdkWindow *window;
 	gchar *markup = NULL;
+	GdkDeviceManager *device_manager;
+	GdkDevice *device;
 
+	device_manager = gdk_display_get_device_manager (gtk_widget_get_display (label));
+	device = gdk_device_manager_get_client_pointer (device_manager);
 	window = gtk_widget_get_window (GTK_WIDGET (dialog));
-	gdk_window_get_pointer (window, NULL, NULL, &mask);
+	gdk_window_get_device_position (window, device, NULL, NULL, &mask);
 
 	/* The space acts as a vertical placeholder. */
 	markup = g_markup_printf_escaped (
@@ -500,12 +504,10 @@ ep_ask_password (EPassMsg *msg)
 	gtk_box_set_spacing (GTK_BOX (content_area), 12);
 	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 
-	/* Table */
-	container = gtk_table_new (2, 3, FALSE);
-	gtk_table_set_col_spacings (GTK_TABLE (container), 12);
-	gtk_table_set_row_spacings (GTK_TABLE (container), 6);
-	gtk_table_set_row_spacing (GTK_TABLE (container), 0, 12);
-	gtk_table_set_row_spacing (GTK_TABLE (container), 1, 0);
+	/* Grid */
+	container = gtk_grid_new ();
+	gtk_grid_set_column_spacing (GTK_GRID (container), 12);
+	gtk_grid_set_row_spacing (GTK_GRID (container), 6);
 	gtk_widget_show (container);
 
 	gtk_box_pack_start (
@@ -515,22 +517,27 @@ ep_ask_password (EPassMsg *msg)
 	widget = gtk_image_new_from_icon_name (
 		"dialog-password", GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.0);
+	g_object_set (G_OBJECT (widget),
+		"halign", GTK_ALIGN_FILL,
+		"vexpand", TRUE,
+		"valign", GTK_ALIGN_FILL,
+		NULL);
 	gtk_widget_show (widget);
 
-	gtk_table_attach (
-		GTK_TABLE (container), widget,
-		0, 1, 0, 3, GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_grid_attach (GTK_GRID (container), widget, 0, 0, 1, 3);
 
 	/* Password Label */
 	widget = gtk_label_new (NULL);
 	gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 	gtk_label_set_markup (GTK_LABEL (widget), msg->prompt);
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.5);
+	g_object_set (G_OBJECT (widget),
+		"hexpand", TRUE,
+		"halign", GTK_ALIGN_FILL,
+		NULL);
 	gtk_widget_show (widget);
 
-	gtk_table_attach (
-		GTK_TABLE (container), widget,
-		1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach (GTK_GRID (container), widget, 1, 0, 1, 1);
 
 	/* Password Entry */
 	widget = gtk_entry_new ();
@@ -540,6 +547,10 @@ ep_ask_password (EPassMsg *msg)
 	gtk_entry_set_visibility (GTK_ENTRY (widget), visible);
 	gtk_entry_set_activates_default (GTK_ENTRY (widget), TRUE);
 	gtk_widget_grab_focus (widget);
+	g_object_set (G_OBJECT (widget),
+		"hexpand", TRUE,
+		"halign", GTK_ALIGN_FILL,
+		NULL);
 	gtk_widget_show (widget);
 	msg->entry = widget;
 
@@ -552,17 +563,17 @@ ep_ask_password (EPassMsg *msg)
 		}
 	}
 
-	gtk_table_attach (
-		GTK_TABLE (container), widget,
-		1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach (GTK_GRID (container), widget, 1, 1, 1, 1);
 
 	/* Caps Lock Label */
 	widget = gtk_label_new (NULL);
+	g_object_set (G_OBJECT (widget),
+		"hexpand", TRUE,
+		"halign", GTK_ALIGN_FILL,
+		NULL);
 	gtk_widget_show (widget);
 
-	gtk_table_attach (
-		GTK_TABLE (container), widget,
-		1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach (GTK_GRID (container), widget, 1, 2, 1, 1);
 
 	g_signal_connect (
 		password_dialog, "key-release-event",
@@ -592,12 +603,15 @@ ep_ask_password (EPassMsg *msg)
 			GTK_TOGGLE_BUTTON (widget), *msg->remember);
 		if (msg->flags & E_PASSWORDS_DISABLE_REMEMBER)
 			gtk_widget_set_sensitive (widget, FALSE);
+		g_object_set (G_OBJECT (widget),
+			"hexpand", TRUE,
+			"halign", GTK_ALIGN_FILL,
+			"valign", GTK_ALIGN_FILL,
+			NULL);
 		gtk_widget_show (widget);
 		msg->check = widget;
 
-		gtk_table_attach (
-			GTK_TABLE (container), widget,
-			1, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+		gtk_grid_attach (GTK_GRID (container), widget, 1, 3, 1, 1);
 	}
 
 	msg->noreply = noreply;

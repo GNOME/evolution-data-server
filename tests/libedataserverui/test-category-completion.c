@@ -22,7 +22,7 @@ static gboolean
 on_idle_create_widget (void)
 {
 	GtkWidget *window;
-	GtkWidget *vbox;
+	GtkWidget *vgrid;
 	GtkWidget *entry;
 	GtkEntryCompletion *completion;
 
@@ -33,13 +33,20 @@ on_idle_create_widget (void)
 		window, "delete-event",
 		G_CALLBACK (gtk_main_quit), NULL);
 
-	vbox = gtk_vbox_new (FALSE, 3);
-	gtk_container_add (GTK_CONTAINER (window), vbox);
+	vgrid = g_object_new (GTK_TYPE_GRID,
+		"orientation", GTK_ORIENTATION_VERTICAL,
+		"column-homogeneous", FALSE,
+		"row-spacing", 3,
+		NULL);
+	gtk_container_add (GTK_CONTAINER (window), vgrid);
 
 	entry = gtk_entry_new ();
 	completion = e_category_completion_new ();
 	gtk_entry_set_completion (GTK_ENTRY (entry), completion);
-	gtk_box_pack_start (GTK_BOX (vbox), entry, TRUE, TRUE, 0);
+	gtk_widget_set_vexpand (entry, TRUE);
+	gtk_widget_set_hexpand (entry, TRUE);
+	gtk_widget_set_halign (entry, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (vgrid), entry);
 
 	gtk_widget_show_all (window);
 

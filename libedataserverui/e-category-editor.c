@@ -122,7 +122,7 @@ e_category_editor_init (ECategoryEditor *editor)
 {
 	GtkWidget *dialog_content;
 	GtkWidget *dialog_action_area;
-	GtkWidget *table_category_properties;
+	GtkGrid *grid_category_properties;
 	GtkWidget *label_name;
 	GtkWidget *label_icon;
 	GtkWidget *category_name;
@@ -166,48 +166,38 @@ e_category_editor_init (ECategoryEditor *editor)
 
 	dialog_content = gtk_dialog_get_content_area (GTK_DIALOG (editor));
 
-	table_category_properties = gtk_table_new (3, 2, FALSE);
+	grid_category_properties = GTK_GRID (gtk_grid_new ());
 	gtk_box_pack_start (
 		GTK_BOX (dialog_content),
-		table_category_properties, TRUE, TRUE, 0);
+		GTK_WIDGET (grid_category_properties), TRUE, TRUE, 0);
 	gtk_container_set_border_width (
-		GTK_CONTAINER (table_category_properties), 12);
-	gtk_table_set_row_spacings (GTK_TABLE (table_category_properties), 6);
-	gtk_table_set_col_spacings (GTK_TABLE (table_category_properties), 6);
+		GTK_CONTAINER (grid_category_properties), 12);
+	gtk_grid_set_row_spacing (grid_category_properties, 6);
+	gtk_grid_set_column_spacing (grid_category_properties, 6);
 
 	label_name = gtk_label_new_with_mnemonic (_("Category _Name"));
+	gtk_widget_set_halign (label_name, GTK_ALIGN_FILL);
 	gtk_misc_set_alignment (GTK_MISC (label_name), 0, 0.5);
-	gtk_table_attach (
-		GTK_TABLE (table_category_properties),
-		label_name, 0, 1, 0, 1,
-		(GtkAttachOptions) GTK_FILL,
-		(GtkAttachOptions) 0, 0, 0);
-
-	label_icon = gtk_label_new_with_mnemonic (_("Category _Icon"));
-	gtk_misc_set_alignment (GTK_MISC (label_icon), 0, 0.5);
-	gtk_table_attach (
-		GTK_TABLE (table_category_properties),
-		label_icon, 0, 1, 2, 3,
-		(GtkAttachOptions) GTK_FILL,
-		(GtkAttachOptions) 0, 0, 0);
+	gtk_grid_attach (grid_category_properties, label_name, 0, 0, 1, 1);
 
 	category_name = gtk_entry_new ();
+	gtk_widget_set_hexpand (category_name, TRUE);
+	gtk_widget_set_halign (category_name, GTK_ALIGN_FILL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label_name), category_name);
-	gtk_table_attach (
-		GTK_TABLE (table_category_properties),
-		category_name, 1, 2, 0, 1,
-		(GtkAttachOptions) GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-		(GtkAttachOptions) 0, 0, 0);
+	gtk_grid_attach (grid_category_properties, category_name, 1, 0, 1, 1);
 	editor->priv->category_name = category_name;
+
+	label_icon = gtk_label_new_with_mnemonic (_("Category _Icon"));
+	gtk_widget_set_halign (label_icon, GTK_ALIGN_FILL);
+	gtk_misc_set_alignment (GTK_MISC (label_icon), 0, 0.5);
+	gtk_grid_attach (grid_category_properties, label_icon, 0, 1, 1, 1);
 
 	chooser_button = GTK_WIDGET (
 		gtk_file_chooser_button_new_with_dialog (chooser_dialog));
+	gtk_widget_set_hexpand (chooser_button, TRUE);
+	gtk_widget_set_halign (chooser_button, GTK_ALIGN_FILL);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label_icon), chooser_button);
-	gtk_table_attach (
-		GTK_TABLE (table_category_properties),
-		chooser_button, 1, 2, 2, 3,
-		(GtkAttachOptions) GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-		(GtkAttachOptions) 0, 0, 0);
+	gtk_grid_attach (grid_category_properties, chooser_button, 1, 1, 1, 1);
 	editor->priv->category_icon = chooser_button;
 
 	g_signal_connect (

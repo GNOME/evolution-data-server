@@ -60,12 +60,12 @@ typedef struct _ECategoriesEditorPrivate ECategoriesEditorPrivate;
  * Since: 3.2
  **/
 struct _ECategoriesEditor {
-	GtkTable parent;
+	GtkGrid parent;
 	ECategoriesEditorPrivate *priv;
 };
 
 struct _ECategoriesEditorClass {
-	GtkTableClass parent_class;
+	GtkGridClass parent_class;
 
 	void		(*entry_changed)	(GtkEntry *entry);
 };

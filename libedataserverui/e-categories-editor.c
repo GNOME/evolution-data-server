@@ -65,7 +65,7 @@ enum {
 
 static gint signals[LAST_SIGNAL] = {0};
 
-G_DEFINE_TYPE (ECategoriesEditor, e_categories_editor, GTK_TYPE_TABLE)
+G_DEFINE_TYPE (ECategoriesEditor, e_categories_editor, GTK_TYPE_GRID)
 
 static void
 entry_changed_cb (GtkEntry *entry,
@@ -203,6 +203,7 @@ static void
 e_categories_editor_init (ECategoriesEditor *editor)
 {
 	GtkEntryCompletion *completion;
+	GtkGrid *grid;
 	GtkWidget *entry_categories;
 	GtkWidget *label_header;
 	GtkWidget *label2;
@@ -215,42 +216,37 @@ e_categories_editor_init (ECategoriesEditor *editor)
 
 	gtk_widget_set_size_request (GTK_WIDGET (editor), -1, 400);
 
-	gtk_table_resize (GTK_TABLE (editor), 3, 2);
-	gtk_table_set_row_spacings (GTK_TABLE (editor), 6);
-	gtk_table_set_col_spacings (GTK_TABLE (editor), 6);
+	grid = GTK_GRID (editor);
 
-	entry_categories = gtk_entry_new ();
-	gtk_table_attach (
-		GTK_TABLE (editor),
-		entry_categories, 0, 1, 1, 2,
-		(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		(GtkAttachOptions) (0), 0, 0);
+	gtk_grid_set_row_spacing (grid, 6);
+	gtk_grid_set_column_spacing (grid, 6);
 
 	label_header = gtk_label_new_with_mnemonic (
 		_("Currently _used categories:"));
-	gtk_table_attach (
-		GTK_TABLE (editor),
-		label_header, 0, 1, 0, 1,
-		(GtkAttachOptions) (GTK_FILL),
-		(GtkAttachOptions) (0), 0, 0);
+	gtk_widget_set_halign (label_header, GTK_ALIGN_FILL);
+	gtk_grid_attach (grid, label_header, 0, 0, 1, 1);
 	gtk_label_set_justify (GTK_LABEL (label_header), GTK_JUSTIFY_CENTER);
 	gtk_misc_set_alignment (GTK_MISC (label_header), 0, 0.5);
 
+	entry_categories = gtk_entry_new ();
+	gtk_widget_set_hexpand (entry_categories, TRUE);
+	gtk_widget_set_halign (entry_categories, GTK_ALIGN_FILL);
+	gtk_grid_attach (grid, entry_categories, 0, 1, 1, 1);
+
 	label2 = gtk_label_new_with_mnemonic (_("_Available Categories:"));
-	gtk_table_attach (
-		GTK_TABLE (editor),
-		label2, 0, 1, 2, 3,
-		(GtkAttachOptions) (GTK_FILL),
-		(GtkAttachOptions) (0), 0, 0);
+	gtk_widget_set_halign (label2, GTK_ALIGN_FILL);
+	gtk_grid_attach (grid, label2, 0, 2, 1, 1);
 	gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_CENTER);
 	gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
 
 	scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-	gtk_table_attach (
-		GTK_TABLE (editor),
-		scrolledwindow1, 0, 1, 3, 4,
-		(GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
-		(GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
+	g_object_set (G_OBJECT (scrolledwindow1),
+		"hexpand", TRUE,
+		"halign", GTK_ALIGN_FILL,
+		"vexpand", TRUE,
+		"valign", GTK_ALIGN_FILL,
+		NULL);
+	gtk_grid_attach (grid, scrolledwindow1, 0, 3, 1, 1);
 	gtk_scrolled_window_set_policy (
 		GTK_SCROLLED_WINDOW (scrolledwindow1),
 		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -267,12 +263,12 @@ e_categories_editor_init (ECategoriesEditor *editor)
 		G_OBJECT (categories_list), "category-checked",
 		G_CALLBACK (category_checked_cb), editor);
 
-	hbuttonbox1 = gtk_hbutton_box_new ();
-	gtk_table_attach (
-		GTK_TABLE (editor),
-		hbuttonbox1, 0, 1, 4, 5,
-		(GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
-		(GtkAttachOptions) (GTK_SHRINK), 0, 0);
+	hbuttonbox1 = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	g_object_set (G_OBJECT (hbuttonbox1),
+		"hexpand", TRUE,
+		"halign", GTK_ALIGN_FILL,
+		NULL);
+	gtk_grid_attach (grid, hbuttonbox1, 0, 4, 1, 1);
 	gtk_box_set_spacing (GTK_BOX (hbuttonbox1), 6);
 
 	button_new = gtk_button_new_from_stock (GTK_STOCK_NEW);

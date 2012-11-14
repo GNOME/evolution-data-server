@@ -62,7 +62,7 @@ start_test (const gchar *param)
 	GtkWidget *scrolled_window;
 	GtkWidget *window;
 	GtkWidget *tree_view;
-	GtkWidget *box;
+	GtkWidget *vgrid;
 	GtkWidget *entry;
 	GtkTreeViewColumn *column;
 	EBookClient *book_client;
@@ -70,14 +70,23 @@ start_test (const gchar *param)
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-	box = gtk_vbox_new (FALSE, 2);
-	gtk_container_add (GTK_CONTAINER (window), box);
+	vgrid = g_object_new (GTK_TYPE_GRID,
+		"orientation", GTK_ORIENTATION_VERTICAL,
+		"column-homogeneous", FALSE,
+		"row-spacing", 2,
+		NULL);
+	gtk_container_add (GTK_CONTAINER (window), vgrid);
 
 	entry = gtk_entry_new ();
-	gtk_box_pack_start (GTK_BOX (box), entry, FALSE, TRUE, 0);
+	gtk_widget_set_halign (entry, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (vgrid), entry);
 
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_box_pack_start (GTK_BOX (box), scrolled_window, TRUE, TRUE, 0);
+	gtk_widget_set_hexpand (scrolled_window, TRUE);
+	gtk_widget_set_halign (scrolled_window, GTK_ALIGN_FILL);
+	gtk_widget_set_vexpand (scrolled_window, TRUE);
+	gtk_widget_set_valign (scrolled_window, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (vgrid), scrolled_window);
 
 	contact_store = e_contact_store_new ();
 	model_sort = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (contact_store));

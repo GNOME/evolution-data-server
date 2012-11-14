@@ -64,7 +64,7 @@ static gint
 on_idle_create_widget (ESourceRegistry *registry)
 {
 	GtkWidget *window;
-	GtkWidget *vbox;
+	GtkWidget *vgrid;
 	GtkWidget *selector;
 	GtkWidget *scrolled_window;
 	GtkWidget *check;
@@ -76,8 +76,12 @@ on_idle_create_widget (ESourceRegistry *registry)
 		window, "delete-event",
 		G_CALLBACK (gtk_main_quit), NULL);
 
-	vbox = gtk_vbox_new (FALSE, 6);
-	gtk_container_add (GTK_CONTAINER (window), vbox);
+	vgrid = g_object_new (GTK_TYPE_GRID,
+		"orientation", GTK_ORIENTATION_VERTICAL,
+		"column-homogeneous", FALSE,
+		"row-spacing", 6,
+		NULL);
+	gtk_container_add (GTK_CONTAINER (window), vgrid);
 
 	selector = e_source_selector_new (registry, extension_name);
 	g_signal_connect (
@@ -91,10 +95,15 @@ on_idle_create_widget (ESourceRegistry *registry)
 	gtk_scrolled_window_set_shadow_type (
 		GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), selector);
-	gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 0);
+	gtk_widget_set_hexpand (scrolled_window, TRUE);
+	gtk_widget_set_halign (scrolled_window, GTK_ALIGN_FILL);
+	gtk_widget_set_vexpand (scrolled_window, TRUE);
+	gtk_widget_set_valign (scrolled_window, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (vgrid), scrolled_window);
 
 	check = gtk_check_button_new_with_label ("Show colors");
-	gtk_box_pack_start (GTK_BOX (vbox), check, FALSE, TRUE, 0);
+	gtk_widget_set_halign (check, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (vgrid), check);
 
 	g_object_bind_property (
 		selector, "show-colors",
@@ -103,7 +112,8 @@ on_idle_create_widget (ESourceRegistry *registry)
 		G_BINDING_SYNC_CREATE);
 
 	check = gtk_check_button_new_with_label ("Show toggles");
-	gtk_box_pack_start (GTK_BOX (vbox), check, FALSE, TRUE, 0);
+	gtk_widget_set_halign (check, GTK_ALIGN_FILL);
+	gtk_container_add (GTK_CONTAINER (vgrid), check);
 
 	g_object_bind_property (
 		selector, "show-toggles",

@@ -45,6 +45,8 @@ struct _ENameSelectorListPrivate {
 	GtkWidget *tree_view;
 	GtkWidget *menu;
 	gint rows;
+	GdkDevice *grab_keyboard;
+	GdkDevice *grab_pointer;
 };
 
 G_DEFINE_TYPE (ENameSelectorList, e_name_selector_list, E_TYPE_NAME_SELECTOR_ENTRY)
@@ -90,26 +92,70 @@ enl_popup_position (ENameSelectorList *list)
 	gtk_window_move (list->priv->popup, x, y);
 }
 
+static gboolean
+popup_grab_on_window (GdkWindow *window,
+                      GdkDevice *keyboard,
+                      GdkDevice *pointer,
+                      guint32    activate_time)
+{
+	if (keyboard && gdk_device_grab (keyboard, window,
+			GDK_OWNERSHIP_WINDOW, TRUE,
+			GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK,
+			NULL, activate_time) != GDK_GRAB_SUCCESS)
+		return FALSE;
+
+	if (pointer && gdk_device_grab (pointer, window,
+			GDK_OWNERSHIP_WINDOW, TRUE,
+			GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+			GDK_POINTER_MOTION_MASK,
+			NULL, activate_time) != GDK_GRAB_SUCCESS) {
+		if (keyboard)
+			gdk_device_ungrab (keyboard, activate_time);
+
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static void
-enl_popup_grab (ENameSelectorList *list)
+enl_popup_grab (ENameSelectorList *list,
+		const GdkEvent *event)
 {
 	EDestinationStore *store;
 	ENameSelectorEntry *entry;
 	GdkWindow *window;
+	GdkDevice *device = NULL;
+	GdkDevice *keyboard, *pointer;
 	gint len;
+
+	if (list->priv->grab_pointer && list->priv->grab_keyboard)
+		return;
 
 	window = gtk_widget_get_window (GTK_WIDGET (list->priv->popup));
 
-	gtk_grab_add (GTK_WIDGET (list->priv->popup));
+	if (event)
+		device = gdk_event_get_device (event);
+	if (!device)
+		device = gtk_get_current_event_device ();
+	if (!device) {
+		GdkDeviceManager *device_manager;
 
-	gdk_pointer_grab (
-		window, TRUE,
-		GDK_BUTTON_PRESS_MASK |
-		GDK_BUTTON_RELEASE_MASK |
-		GDK_POINTER_MOTION_MASK,
-		NULL, NULL, GDK_CURRENT_TIME);
+		device_manager = gdk_display_get_device_manager (gtk_widget_get_display (GTK_WIDGET (list)));
+		device = gdk_device_manager_get_client_pointer (device_manager);
+	}
 
-	gdk_keyboard_grab (window, TRUE, GDK_CURRENT_TIME);
+	if (gdk_device_get_source (device) == GDK_SOURCE_KEYBOARD) {
+		keyboard = device;
+		pointer = gdk_device_get_associated_device (device);
+	} else {
+		pointer = device;
+		keyboard = gdk_device_get_associated_device (device);
+	}
+
+	if (!popup_grab_on_window (window, keyboard, pointer, gtk_get_current_event_time ()))
+		return;
+
 	gtk_widget_grab_focus ((GtkWidget *) list);
 
 	/* Build the listview from the model */
@@ -122,17 +168,25 @@ enl_popup_grab (ENameSelectorList *list)
 	/* If any selection of text is present, unselect it */
 	len = strlen (gtk_entry_get_text (GTK_ENTRY (list)));
 	gtk_editable_select_region (GTK_EDITABLE (list), len, -1);
+
+	gtk_device_grab_add (GTK_WIDGET (list->priv->popup), pointer, TRUE);
+	list->priv->grab_keyboard = keyboard;
+	list->priv->grab_pointer = pointer;
 }
 
 static void
 enl_popup_ungrab (ENameSelectorList *list)
 {
-	if (!gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
+	if (!list->priv->grab_pointer ||
+	    !list->priv->grab_keyboard ||
+	    !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
 		return;
 
-	gdk_pointer_ungrab (GDK_CURRENT_TIME);
-	gtk_grab_remove (GTK_WIDGET (list->priv->popup));
-	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
+	gtk_device_grab_remove (GTK_WIDGET (list->priv->popup), list->priv->grab_pointer);
+	gtk_device_grab_remove (GTK_WIDGET (list->priv->popup), list->priv->grab_keyboard);
+
+	list->priv->grab_pointer = NULL;
+	list->priv->grab_keyboard = NULL;
 }
 
 static gboolean
@@ -195,10 +249,10 @@ enl_popup_enter_notify (GtkWidget *widget,
                         GdkEventCrossing *event,
                         ENameSelectorList *list)
 {
-  if (event->type == GDK_ENTER_NOTIFY && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
-	enl_popup_grab (list);
+	if (event->type == GDK_ENTER_NOTIFY && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
+		enl_popup_grab (list, (GdkEvent *) event);
 
-  return TRUE;
+	return TRUE;
 }
 
 static void
@@ -247,7 +301,7 @@ enl_entry_key_press_event (ENameSelectorList *list,
 	if ( (event->state & GDK_CONTROL_MASK)  && (event->keyval == GDK_KEY_Down)) {
 		enl_popup_position (list);
 		gtk_widget_show_all (GTK_WIDGET (list->priv->popup));
-		enl_popup_grab (list);
+		enl_popup_grab (list, (GdkEvent *) event);
 		list->priv->rows = e_destination_store_get_destination_count (store);
 		enl_popup_size (list);
 		enl_tree_select_node (list, 1);
@@ -380,7 +434,7 @@ static void
 menu_deactivate (GtkMenuShell *junk,
                  ENameSelectorList *list)
 {
-	enl_popup_grab (list);
+	enl_popup_grab (list, NULL);
 }
 
 static gboolean
@@ -412,7 +466,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 	store = e_name_selector_entry_peek_destination_store (entry);
 
 	if (!gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
-		enl_popup_grab (list);
+		enl_popup_grab (list, (GdkEvent *) event);
 
 	gtk_tree_view_get_dest_row_at_pos (
 		tree_view, event->x, event->y, &path, NULL);
@@ -591,7 +645,7 @@ e_name_selector_list_expand_clicked (ENameSelectorList *list)
 	if (!gtk_widget_get_visible (GTK_WIDGET (list->priv->popup))) {
 		enl_popup_position (list);
 		gtk_widget_show_all (GTK_WIDGET (list->priv->popup));
-		enl_popup_grab (list);
+		enl_popup_grab (list, NULL);
 		list->priv->rows = e_destination_store_get_destination_count (store);
 		enl_popup_size (list);
 		enl_tree_select_node (list, 1);
@@ -637,7 +691,7 @@ static void
 e_name_selector_list_init (ENameSelectorList *list)
 {
 	GtkCellRenderer *renderer;
-	GtkWidget *scroll, *popup_frame, *vbox;
+	GtkWidget *scroll, *popup_frame, *vgrid;
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 	ENameSelectorEntry *entry;
@@ -677,6 +731,8 @@ e_name_selector_list_init (ENameSelectorList *list)
 	gtk_widget_set_size_request (
 		gtk_scrolled_window_get_vscrollbar (
 		GTK_SCROLLED_WINDOW (scroll)), -1, 0);
+	gtk_widget_set_vexpand (scroll, TRUE);
+	gtk_widget_set_valign (scroll, GTK_ALIGN_FILL);
 
 	list->priv->popup =  GTK_WINDOW (gtk_window_new (GTK_WINDOW_POPUP));
 	gtk_window_set_resizable (GTK_WINDOW (list->priv->popup), FALSE);
@@ -687,11 +743,15 @@ e_name_selector_list_init (ENameSelectorList *list)
 
 	gtk_container_add (GTK_CONTAINER (list->priv->popup), popup_frame);
 
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (popup_frame), vbox);
+	vgrid = g_object_new (GTK_TYPE_GRID,
+		"orientation", GTK_ORIENTATION_VERTICAL,
+		"column-homogeneous", FALSE,
+		"row-spacing", 0,
+		NULL);
+	gtk_container_add (GTK_CONTAINER (popup_frame), vgrid);
 
 	gtk_container_add (GTK_CONTAINER (scroll), list->priv->tree_view);
-	gtk_box_pack_start (GTK_BOX (vbox), scroll, TRUE, TRUE, 0);
+	gtk_container_add (GTK_CONTAINER (vgrid), scroll);
 
 	g_signal_connect_after (
 		GTK_WIDGET (list), "focus-in-event",
