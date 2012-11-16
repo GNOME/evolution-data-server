@@ -54,6 +54,8 @@ struct _EDataBookClass {
 	GObjectClass parent;
 };
 
+struct _EDataBookView;
+
 GQuark e_data_book_error_quark (void);
 
 /**
@@ -175,6 +177,10 @@ gboolean	e_data_book_get_contacts_sync			(EDataBook *book, const gchar *sexp, GS
 void		e_data_book_get_contacts_uids			(EDataBook *book, const gchar *sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_data_book_get_contacts_uids_finish		(EDataBook *book, GAsyncResult *result, GSList **contacts_uids, GError **error);
 gboolean	e_data_book_get_contacts_uids_sync		(EDataBook *book, const gchar *sexp, GSList **contacts_uids, GCancellable *cancellable, GError **error);
+
+void		e_data_book_get_view			        (EDataBook *book, const gchar *sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_data_book_get_view_finish		        (EDataBook *book, GAsyncResult *result, struct _EDataBookView **view, GError **error);
+gboolean	e_data_book_get_view_sync		        (EDataBook *book, const gchar *sexp, struct _EDataBookView **view, GCancellable *cancellable, GError **error);
 
 
 G_END_DECLS

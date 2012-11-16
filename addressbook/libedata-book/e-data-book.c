@@ -60,7 +60,8 @@ struct _EDataBookPrivate
 
 enum {
 	PROP_0,
-	PROP_BACKEND
+	PROP_BACKEND,
+	PROP_GDBUS_OBJECT
 };
 
 static EOperationPool *ops_pool = NULL;
@@ -145,6 +146,11 @@ static void                 direct_operation_wait      (DirectOperationData *dat
 static void                 e_data_book_respond_close  (EDataBook *book,
 							guint opid,
 							GError *error);
+static void                 e_data_book_respond_get_view (EDataBook *book,
+							  guint opid,
+							  const gchar *path,
+							  EDataBookView *view,
+							  GError *error);
 
 /* EModule's can never be free'd, however the use count can change
  * Here we ensure that there is only one ever created by way of
@@ -344,7 +350,7 @@ operation_thread (gpointer data,
 				error = e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, NULL);
 				/* Translators: This is prefix to a detailed error message */
 				g_prefix_error (&error, "%s", _("Invalid query: "));
-				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
+				e_data_book_respond_get_view (op->book, op->id, NULL, NULL, error);
 				g_error_free (error);
 				break;
 			}
@@ -352,12 +358,17 @@ operation_thread (gpointer data,
 			path = construct_bookview_path ();
 
 			book_view = e_data_book_view_new (op->book, op->d.query, card_sexp);
-			e_data_book_view_register_gdbus_object (book_view, e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object), path, &error);
+
+			if (op->book->priv->gdbus_object)
+				e_data_book_view_register_gdbus_object (
+				        book_view,
+					e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object),
+					path, &error);
 
 			if (error) {
 				/* Translators: This is prefix to a detailed error message */
 				g_prefix_error (&error, "%s", _("Invalid query: "));
-				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
+				e_data_book_respond_get_view (op->book, op->id, NULL, NULL, error);
 				g_error_free (error);
 				g_object_unref (book_view);
 				g_free (path);
@@ -367,7 +378,7 @@ operation_thread (gpointer data,
 
 			e_book_backend_add_book_view (backend, book_view);
 
-			e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, NULL, path);
+			e_data_book_respond_get_view (op->book, op->id, path, book_view, NULL);
 
 			g_free (path);
 		}
@@ -1534,6 +1545,64 @@ data_book_set_backend (EDataBook *book,
 }
 
 static void
+data_book_set_gdbus_object (EDataBook *ebook,
+			    EGdbusBook *gdbus_object)
+{
+	g_return_if_fail (gdbus_object == NULL || E_IS_GDBUS_BOOK_STUB (gdbus_object));
+	g_return_if_fail (ebook->priv->gdbus_object == NULL);
+
+	if (!gdbus_object)
+		return;
+
+	ebook->priv->gdbus_object = g_object_ref (gdbus_object);
+	g_signal_connect (
+		gdbus_object, "handle-open",
+		G_CALLBACK (impl_Book_open), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-remove",
+		G_CALLBACK (impl_Book_remove), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-refresh",
+		G_CALLBACK (impl_Book_refresh), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-contact",
+		G_CALLBACK (impl_Book_get_contact), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-contact-list",
+		G_CALLBACK (impl_Book_get_contact_list), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-contact-list-uids",
+		G_CALLBACK (impl_Book_get_contact_list_uids), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-add-contacts",
+		G_CALLBACK (impl_Book_add_contacts), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-remove-contacts",
+		G_CALLBACK (impl_Book_remove_contacts), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-modify-contacts",
+		G_CALLBACK (impl_Book_modify_contacts), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-backend-property",
+		G_CALLBACK (impl_Book_get_backend_property), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-set-backend-property",
+		G_CALLBACK (impl_Book_set_backend_property), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-view",
+		G_CALLBACK (impl_Book_get_view), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-cancel-operation",
+		G_CALLBACK (impl_Book_cancel_operation), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-cancel-all",
+		G_CALLBACK (impl_Book_cancel_all), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-close",
+		G_CALLBACK (impl_Book_close), ebook);
+}
+
+static void
 data_book_set_property (GObject *object,
                         guint property_id,
                         const GValue *value,
@@ -1542,6 +1611,11 @@ data_book_set_property (GObject *object,
 	switch (property_id) {
 		case PROP_BACKEND:
 			data_book_set_backend (
+				E_DATA_BOOK (object),
+				g_value_get_object (value));
+			return;
+		case PROP_GDBUS_OBJECT:
+			data_book_set_gdbus_object (
 				E_DATA_BOOK (object),
 				g_value_get_object (value));
 			return;
@@ -1642,6 +1716,18 @@ e_data_book_class_init (EDataBookClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	g_object_class_install_property (
+		object_class,
+		PROP_GDBUS_OBJECT,
+		g_param_spec_object (
+			"gdbus-object",
+			"GDBus Object",
+			"The GDBus stub",
+			E_TYPE_GDBUS_BOOK_STUB,
+			G_PARAM_WRITABLE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
 	if (!ops_pool)
 		ops_pool = e_operation_pool_new (10, operation_thread, NULL);
 }
@@ -1649,71 +1735,33 @@ e_data_book_class_init (EDataBookClass *class)
 static void
 e_data_book_init (EDataBook *ebook)
 {
-	EGdbusBook *gdbus_object;
-
 	ebook->priv = E_DATA_BOOK_GET_PRIVATE (ebook);
 
-	ebook->priv->gdbus_object = e_gdbus_book_stub_new ();
 	ebook->priv->pending_ops = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	ebook->priv->direct_ops = g_hash_table_new_full (
 	        g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)direct_operation_data_free);
 	g_static_rec_mutex_init (&ebook->priv->pending_ops_lock);
-
-	gdbus_object = ebook->priv->gdbus_object;
-	g_signal_connect (
-		gdbus_object, "handle-open",
-		G_CALLBACK (impl_Book_open), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-remove",
-		G_CALLBACK (impl_Book_remove), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-refresh",
-		G_CALLBACK (impl_Book_refresh), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-get-contact",
-		G_CALLBACK (impl_Book_get_contact), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-get-contact-list",
-		G_CALLBACK (impl_Book_get_contact_list), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-get-contact-list-uids",
-		G_CALLBACK (impl_Book_get_contact_list_uids), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-add-contacts",
-		G_CALLBACK (impl_Book_add_contacts), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-remove-contacts",
-		G_CALLBACK (impl_Book_remove_contacts), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-modify-contacts",
-		G_CALLBACK (impl_Book_modify_contacts), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-get-backend-property",
-		G_CALLBACK (impl_Book_get_backend_property), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-set-backend-property",
-		G_CALLBACK (impl_Book_set_backend_property), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-get-view",
-		G_CALLBACK (impl_Book_get_view), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-cancel-operation",
-		G_CALLBACK (impl_Book_cancel_operation), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-cancel-all",
-		G_CALLBACK (impl_Book_cancel_all), ebook);
-	g_signal_connect (
-		gdbus_object, "handle-close",
-		G_CALLBACK (impl_Book_close), ebook);
 }
 
 EDataBook *
 e_data_book_new (EBookBackend *backend)
 {
+	EGdbusBook *gdbus_object;
+	EDataBook *book;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
-	return g_object_new (E_TYPE_DATA_BOOK, "backend", backend, NULL);
+	gdbus_object = e_gdbus_book_stub_new ();
+
+	book = g_object_new (E_TYPE_DATA_BOOK,
+			     "backend", backend,
+			     "gdbus-object", gdbus_object,
+			     NULL);
+
+	g_object_unref (gdbus_object);
+
+	return book;
 }
 
 EDataBook *
@@ -1768,7 +1816,7 @@ e_data_book_new_direct (ESourceRegistry *registry,
 				"registry", registry,
 				"source", source, NULL);
 
-	book = e_data_book_new (backend);
+	book = g_object_new (E_TYPE_DATA_BOOK, "backend", backend, NULL);
 	book->priv->direct_module = module;
 
  new_direct_finish:
@@ -2139,3 +2187,115 @@ e_data_book_get_contacts_uids_sync (EDataBook *book,
 	return result;
 }
 
+static void
+e_data_book_respond_get_view (EDataBook *book,
+			      guint opid,
+			      const gchar *path,
+			      EDataBookView *view,
+			      GError *error)
+{
+	DirectOperationData *data;
+
+	data = op_complete (book, opid);
+
+	if (book->priv->gdbus_object) {
+		e_gdbus_book_emit_get_view_done (book->priv->gdbus_object, opid, error, path);
+	}
+
+	if (data) {
+
+		if (error)
+			g_simple_async_result_set_error (data->result,
+							 error->domain,
+							 error->code,
+							 "%s", error->message);
+
+		else {
+			g_simple_async_result_set_check_cancellable (data->result,
+								     data->cancellable);
+
+			if (!g_cancellable_is_cancelled (data->cancellable)) {
+
+				/* Note on ref-counting, The passed view belongs to the backend,
+				 * here we give a reference to the async result for the lifetime
+				 * of the async result, when the async result is 'finished', an
+				 * additional ref to the view is passed to the caller.
+				 */
+				g_simple_async_result_set_op_res_gpointer (data->result,
+									   g_object_ref (view),
+									   (GDestroyNotify)g_object_unref);
+			}
+		}
+
+		/* Deliver the result to the caller */
+		direct_operation_complete (data);
+	}
+}
+
+void
+e_data_book_get_view (EDataBook *book,
+		      const gchar *sexp,
+		      GCancellable *cancellable,
+		      GAsyncReadyCallback callback,
+		      gpointer user_data)
+{
+	OperationData *op;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (sexp && sexp[0]);
+
+	op = op_direct_new (OP_GET_VIEW, book, cancellable, callback, user_data, e_data_book_get_view, FALSE, NULL);
+	op->d.query = g_strdup (sexp);
+
+	e_operation_pool_push (ops_pool, op);
+}
+
+gboolean
+e_data_book_get_view_finish (EDataBook *book,
+			     GAsyncResult *result,
+			     struct _EDataBookView **view,
+			     GError **error)
+{
+	EDataBookView *ret_view;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	ret_view = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
+
+	if (view) {
+		if (ret_view)
+			*view = g_object_ref (ret_view);
+		else
+			*view = NULL;
+	}
+
+	return ret_view != NULL;
+}
+
+gboolean
+e_data_book_get_view_sync (EDataBook *book,
+			   const gchar *sexp,
+			   struct _EDataBookView **view,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	DirectOperationData *data = NULL;
+	OperationData *op;
+	gboolean result = FALSE;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+	g_return_val_if_fail (sexp && sexp[0], FALSE);
+
+	op = op_direct_new (OP_GET_VIEW, book, cancellable, NULL, NULL, e_data_book_get_view_sync, TRUE, &data);
+	op->d.query = g_strdup (sexp);
+
+	e_operation_pool_push (ops_pool, op);
+
+	direct_operation_wait (data);
+	result = e_data_book_get_view_finish (book, G_ASYNC_RESULT (data->result), view, error);
+	direct_operation_data_free (data);
+
+	return result;
+}
