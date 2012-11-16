@@ -52,7 +52,6 @@
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
 #define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
 struct _EBookPrivate {
 	EBookClient *client;
@@ -959,100 +958,19 @@ e_book_get_supported_fields_async (EBook *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Deprecated: 3.2: Use e_client_get_backend_property_sync() on
- * an #EBookClient object with #BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS instead.
+ * Deprecated: 3.2: The property is no longer supported.
  **/
 gboolean
 e_book_get_supported_auth_methods (EBook *book,
                                    GList **auth_methods,
                                    GError **error)
 {
-	gchar *prop_value = NULL;
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
 	if (auth_methods != NULL)
 		*auth_methods = NULL;
 
-	success = e_client_get_backend_property_sync (
-		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS,
-		&prop_value, NULL, error);
-
-	if (success && auth_methods != NULL) {
-		GQueue queue = G_QUEUE_INIT;
-		gchar **strv;
-		gint ii;
-
-		strv = g_strsplit (prop_value, ",", -1);
-
-		for (ii = 0; strv != NULL && strv[ii] != NULL; ii++)
-			g_queue_push_tail (&queue, strv[ii]);
-
-		/* The GQueue now owns the strings in the string array,
-		 * so use g_free() instead of g_strfreev() to free just
-		 * the array itself. */
-		g_free (strv);
-
-		/* Transfer ownership of the GQueue content. */
-		*auth_methods = g_queue_peek_head_link (&queue);
-	}
-
-	g_free (prop_value);
-
-	return success;
-}
-
-static void
-get_supported_auth_methods_reply (GObject *source_object,
-                                  GAsyncResult *result,
-                                  gpointer user_data)
-{
-	AsyncData *data = user_data;
-	EBookEListCallback cb = data->callback;
-	EBookEListAsyncCallback excb = data->excallback;
-	EList *elist;
-	gchar *prop_value = NULL;
-	GError *error = NULL;
-
-	e_client_get_backend_property_finish (
-		E_CLIENT (source_object), result, &prop_value, &error);
-
-	/* Sanity check. */
-	g_return_if_fail (
-		((prop_value != NULL) && (error == NULL)) ||
-		((prop_value == NULL) && (error != NULL)));
-
-	/* In the event of an error, we pass an empty EList. */
-	elist = e_list_new (NULL, (EListFreeFunc) g_free, NULL);
-
-	if (prop_value != NULL) {
-		gchar **strv;
-		gint ii;
-
-		strv = g_strsplit (prop_value, ",", -1);
-		for (ii = 0; strv != NULL && strv[ii] != NULL; ii++) {
-			gchar *utf8 = e_util_utf8_make_valid (strv[ii]);
-			e_list_append (elist, utf8);
-		}
-		g_strfreev (strv);
-	}
-
-	if (cb != NULL && error == NULL)
-		cb (data->book, E_BOOK_ERROR_OK, elist, data->closure);
-	if (cb != NULL && error != NULL)
-		cb (data->book, error->code, elist, data->closure);
-	if (excb != NULL)
-		excb (data->book, error, elist, data->closure);
-
-	g_object_unref (elist);
-
-	if (error != NULL)
-		g_error_free (error);
-
-	g_object_unref (data->book);
-	g_slice_free (AsyncData, data);
+	return TRUE;
 }
 
 /**
@@ -1066,26 +984,21 @@ get_supported_auth_methods_reply (GObject *source_object,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Deprecated: 3.0: Use e_book_get_supported_auth_methods_async() instead.
+ * Deprecated: 3.0: The property is no longer supported.
  **/
 gboolean
 e_book_async_get_supported_auth_methods (EBook *book,
                                          EBookEListCallback cb,
                                          gpointer closure)
 {
-	AsyncData *data;
-
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
-	data = g_slice_new0 (AsyncData);
-	data->book = g_object_ref (book);
-	data->callback = cb;
-	data->closure = closure;
-
-	e_client_get_backend_property (
-		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS,
-		NULL, get_supported_auth_methods_reply, data);
+	if (cb != NULL) {
+		/* Pass the callback an empty list. */
+		EList *elist = e_list_new (NULL, NULL, NULL);
+		cb (book, E_BOOK_ERROR_OK, elist, closure);
+		g_object_unref (elist);
+	}
 
 	return TRUE;
 }
@@ -1103,27 +1016,21 @@ e_book_async_get_supported_auth_methods (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_client_get_backend_property() and e_client_get_backend_property_finish()
- * on an #EBookClient object with #BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS instead.
+ * Deprecated: 3.2: The property is no longer supported.
  **/
 gboolean
 e_book_get_supported_auth_methods_async (EBook *book,
                                          EBookEListAsyncCallback cb,
                                          gpointer closure)
 {
-	AsyncData *data;
-
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
-	data = g_slice_new0 (AsyncData);
-	data->book = g_object_ref (book);
-	data->excallback = cb;
-	data->closure = closure;
-
-	e_client_get_backend_property (
-		E_CLIENT (book->priv->client),
-		BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS,
-		NULL, get_supported_auth_methods_reply, data);
+	if (cb != NULL) {
+		/* Pass the callback an empty list. */
+		EList *elist = e_list_new (NULL, NULL, NULL);
+		cb (book, NULL, elist, closure);
+		g_object_unref (elist);
+	}
 
 	return TRUE;
 }

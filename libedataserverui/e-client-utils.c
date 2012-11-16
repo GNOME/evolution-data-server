@@ -227,7 +227,6 @@ client_utils_capabilities_retrieved_cb (GObject *source_object,
 
 			e_client_get_backend_property (async_data->client, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
 			e_client_get_backend_property (async_data->client, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
-			e_client_get_backend_property (async_data->client, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
 		} else {
 			g_warn_if_reached ();
 			client_utils_get_backend_property_cb (source_object, NULL, async_data);

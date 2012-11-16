@@ -69,15 +69,6 @@
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
 
 /**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
-
-/**
  * E_BOOK_CLIENT_ERROR:
  *
  * FIXME: Document me.
@@ -301,6 +292,17 @@ gboolean	e_book_client_get_view_sync	(EBookClient *client,
 						 EBookClientView **view,
 						 GCancellable *cancellable,
 						 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
+ *
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: The property is no longer supported.
+ **/
+#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

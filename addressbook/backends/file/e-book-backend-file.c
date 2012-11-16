@@ -1453,8 +1453,6 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 
 		*prop_value = e_data_book_string_slist_to_comma_string (fields);
 		g_slist_free (fields);
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
-		*prop_value = NULL;
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REVISION)) {
 		*prop_value = g_strdup (bf->priv->revision);
 	} else {

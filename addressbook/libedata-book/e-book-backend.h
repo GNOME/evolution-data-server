@@ -124,15 +124,6 @@
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
 
 /**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
-
-/**
  * BOOK_BACKEND_PROPERTY_REVISION:
  *
  * The current overall revision string, this can be used as
@@ -338,6 +329,15 @@ void		e_book_backend_respond_opened	(EBookBackend *backend,
 						 GError *error);
 
 #ifndef EDS_DISABLE_DEPRECATED
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
+ *
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: The property is no longer supported.
+ **/
+#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
+
 void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
 								       gpointer user_data),

@@ -59,10 +59,6 @@ G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
  *   of supported fields by the backend. Use e_client_util_parse_comma_strings()
  *   to parse returned string value into a #GSList. These fields can be
  *   stored for contacts.
- * @BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS: Retrieves comma-separated list
- *   of supported authentication methods by the backend.
- *   Use e_client_util_parse_comma_strings() to parse returned string value
- *   into a #GSList.
  *
  * See also: @CLIENT_BACKEND_PROPERTY_OPENED, @CLIENT_BACKEND_PROPERTY_OPENING,
  *   @CLIENT_BACKEND_PROPERTY_ONLINE, @CLIENT_BACKEND_PROPERTY_READONLY

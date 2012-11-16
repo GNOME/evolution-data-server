@@ -113,7 +113,6 @@ EBookPrivate
 <TITLE>EBookClient</TITLE>
 BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS
 BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS
-BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 E_BOOK_CLIENT_ERROR
 EBookClientError
 e_book_client_error_to_string
@@ -156,6 +155,7 @@ e_book_client_get_contacts_uids_sync
 e_book_client_get_view
 e_book_client_get_view_finish
 e_book_client_get_view_sync
+BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 <SUBSECTION Standard>
 E_BOOK_CLIENT
 E_IS_BOOK_CLIENT

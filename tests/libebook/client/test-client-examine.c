@@ -21,7 +21,6 @@ get_known_prop_names (void)
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_CAPABILITIES);
 	prop_names = g_slist_append (prop_names, (gpointer) BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS);
 	prop_names = g_slist_append (prop_names, (gpointer) BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS);
-	prop_names = g_slist_append (prop_names, (gpointer) BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS);
 
 	return prop_names;
 }
@@ -60,8 +59,7 @@ print_each_property (gpointer prop_name,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES) ||
 	    g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS) ||
-	    g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS) ||
-	    g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
+	    g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		GSList *values = e_client_util_parse_comma_strings (prop_value), *v;
 
 		for (v = values; v; v = v->next) {

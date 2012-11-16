@@ -10,7 +10,6 @@ CLIENT_BACKEND_PROPERTY_CACHE_DIR
 CLIENT_BACKEND_PROPERTY_CAPABILITIES
 BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS
 BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS
-BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 BOOK_BACKEND_PROPERTY_REVISION
 e_book_backend_get_cache_dir
 e_book_backend_set_cache_dir
@@ -47,6 +46,7 @@ e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
 e_book_backend_respond_opened
+BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 e_book_backend_foreach_view
 <SUBSECTION Standard>
 E_BOOK_BACKEND

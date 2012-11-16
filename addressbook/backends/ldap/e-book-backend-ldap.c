@@ -712,7 +712,6 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 	attrs[i++] = "supportedControl";
 	attrs[i++] = "supportedExtension";
 	attrs[i++] = "supportedFeatures";
-	attrs[i++] = "supportedSASLMechanisms";
 	attrs[i++] = "supportedLDAPVersion";
 	attrs[i++] = "subschemaSubentry"; /* OpenLDAP's dn for schema information */
 	attrs[i++] = "schemaNamingContext"; /* Active directory's dn for schema information */
@@ -755,32 +754,6 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 					g_message ("server reports LDAP_EXOP_START_TLS");
 				}
 			}
-		}
-		ldap_value_free (values);
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	values = ldap_get_values (bl->priv->ldap, resp, "supportedSASLMechanisms");
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-	if (values) {
-		gchar *auth_method;
-		if (bl->priv->supported_auth_methods) {
-			g_slist_foreach (bl->priv->supported_auth_methods, (GFunc) g_free, NULL);
-			g_slist_free (bl->priv->supported_auth_methods);
-		}
-		bl->priv->supported_auth_methods = NULL;
-
-		auth_method = g_strdup_printf ("ldap/simple-binddn|%s", _("Using Distinguished Name (DN)"));
-		bl->priv->supported_auth_methods = g_slist_append (bl->priv->supported_auth_methods, auth_method);
-
-		auth_method = g_strdup_printf ("ldap/simple-email|%s", _("Using Email Address"));
-		bl->priv->supported_auth_methods = g_slist_append (bl->priv->supported_auth_methods, auth_method);
-
-		for (i = 0; values[i]; i++) {
-			auth_method = g_strdup_printf ("sasl/%s|%s", values[i], values[i]);
-			bl->priv->supported_auth_methods = g_slist_append (bl->priv->supported_auth_methods, auth_method);
-			if (enable_debug)
-				g_message ("supported SASL mechanism: %s", values[i]);
 		}
 		ldap_value_free (values);
 	}
@@ -5362,15 +5335,6 @@ e_book_backend_ldap_get_backend_property (EBookBackend *backend,
 		gchar *str;
 
 		str = e_data_book_string_slist_to_comma_string (bl->priv->supported_fields);
-
-		e_data_book_respond_get_backend_property (book, opid, NULL, str);
-
-		g_free (str);
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
-		EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-		gchar *str;
-
-		str = e_data_book_string_slist_to_comma_string (bl->priv->supported_auth_methods);
 
 		e_data_book_respond_get_backend_property (book, opid, NULL, str);
 
