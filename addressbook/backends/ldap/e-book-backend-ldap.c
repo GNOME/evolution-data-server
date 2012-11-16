@@ -5625,6 +5625,9 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 	method = e_source_authentication_dup_method (auth_extension);
 	user = e_source_authentication_dup_user (auth_extension);
 
+	if (!method)
+		method = g_strdup ("none");
+
 	if (!g_ascii_strncasecmp (method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
 
 		if (bl->priv->ldap && !strcmp (method, "ldap/simple-email")) {
