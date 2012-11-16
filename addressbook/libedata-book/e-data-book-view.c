@@ -38,6 +38,7 @@
 	((obj), E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate))
 
 static void reset_array (GArray *array);
+static gchar **steal_array_data (GArray **array);
 static void ensure_pending_flush_timeout (EDataBookView *view);
 
 G_DEFINE_TYPE (EDataBookView, e_data_book_view, G_TYPE_OBJECT);
@@ -56,7 +57,7 @@ struct _EDataBookViewPrivate {
 
 	gboolean running;
 	gboolean complete;
-	GMutex *pending_mutex;
+	GMutex pending_mutex;
 
 	GArray *adds;
 	GArray *changes;
@@ -68,10 +69,177 @@ struct _EDataBookViewPrivate {
 
 	/* which fields is listener interested in */
 	GHashTable *fields_of_interest;
+
+	GMutex        context_mutex;
+	GMainContext *context;
+	GSource      *idle_source;
+
+	GAsyncQueue  *signal_queue;
 };
 
+enum {
+	VCARDS_ADDED,
+	VCARDS_MODIFIED,
+	UIDS_REMOVED,
+	PROGRESS,
+	COMPLETE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
+/* GObjectClass */
 static void e_data_book_view_dispose (GObject *object);
 static void e_data_book_view_finalize (GObject *object);
+
+/* EDataBookViewClass */
+static void e_data_book_view_vcards_added (EDataBookView *view, const gchar * const *vcards);
+static void e_data_book_view_vcards_modified (EDataBookView *view, const gchar * const *vcards);
+static void e_data_book_view_uids_removed (EDataBookView *view, const gchar * const *uids);
+static void e_data_book_view_progress (EDataBookView *view, guint percent, const gchar *message);
+static void e_data_book_view_complete (EDataBookView *view, const GError *error);
+
+
+/* Signal Data helpers */
+typedef struct {
+	guint   signum;
+
+	gchar **strv;
+	guint   percent;
+	gchar  *message;
+	GError *error;
+} SignalData;
+
+static void
+signal_data_free (SignalData *data)
+{
+	if (data->strv)
+		g_strfreev (data->strv);
+
+	if (data->message)
+		g_free (data->message);
+
+	if (data->error)
+		g_error_free (data->error);
+
+	g_slice_free (SignalData, data);
+}
+
+static void
+signal_data_emit (EDataBookView *view,
+		  SignalData    *data)
+{
+	switch (data->signum) {
+	case VCARDS_ADDED:
+	case VCARDS_MODIFIED:
+	case UIDS_REMOVED:
+		g_signal_emit (view, signals[data->signum], 0, data->strv);
+		break;
+	case PROGRESS:
+		g_signal_emit (view, signals[PROGRESS], 0, data->percent, data->message);
+		break;
+	case COMPLETE:
+		g_signal_emit (view, signals[COMPLETE], 0, data->error);
+		break;
+	default:
+		g_warn_if_reached ();
+		break;
+	}
+}
+
+static gboolean
+signal_in_idle (EDataBookView *view)
+{
+	EDataBookViewPrivate *priv = view->priv;
+	SignalData *data;
+
+	/* First safely remove the idle source from the calling context */
+	g_mutex_lock (&priv->context_mutex);
+
+	g_source_destroy (priv->idle_source);
+	priv->idle_source = NULL;
+
+	g_mutex_unlock (&priv->context_mutex);
+
+	/* Now asynchronously emit the signals, it's possible that additional
+	 * signals are accumulated while emitting these, in which case an
+	 * additional idle will be queued. If we catch the additional signals
+	 * in this round then the next idle might be a no-op
+	 */
+	while ((data = g_async_queue_try_pop (priv->signal_queue)) != NULL) {
+
+		signal_data_emit (view, data);
+		signal_data_free (data);
+	}
+
+	return FALSE;
+}
+
+static void
+push_signal_data (EDataBookView *view,
+		  SignalData    *data)
+{
+	EDataBookViewPrivate *priv = view->priv;
+
+	/* First push the data on the queue */
+	g_async_queue_push (priv->signal_queue, data);
+
+	/* Then ensure the idle source is up */
+	g_mutex_lock (&priv->context_mutex);
+
+	if (priv->idle_source == NULL) {
+		priv->idle_source = g_idle_source_new ();
+
+		g_source_set_callback (priv->idle_source,
+				       (GSourceFunc)signal_in_idle,
+				       view, NULL);
+
+		g_source_attach (priv->idle_source, priv->context);
+		g_source_unref (priv->idle_source);
+	}
+
+	g_mutex_unlock (&priv->context_mutex);
+}
+
+static void
+push_strv_signal_data (EDataBookView *view,
+		       guint          signum,
+		       gchar        **strv)
+{
+	SignalData *data = g_slice_new0 (SignalData);
+
+	data->signum = signum;
+	data->strv = strv;
+
+	push_signal_data (view, data);
+}
+
+static void
+push_progress_signal_data (EDataBookView *view,
+			   guint          percent,
+			   const gchar   *message)
+{
+	SignalData *data = g_slice_new0 (SignalData);
+
+	data->signum = PROGRESS;
+	data->percent = percent;
+	data->message = g_strdup (message);
+
+	push_signal_data (view, data);
+}
+
+static void
+push_complete_signal_data (EDataBookView *view,
+			   const GError  *error)
+{
+	SignalData *data = g_slice_new0 (SignalData);
+	
+	data->signum = COMPLETE;
+	data->error = error ? g_error_copy (error) : NULL;
+
+	push_signal_data (view, data);
+}
+
 
 static void
 e_data_book_view_class_init (EDataBookViewClass *class)
@@ -82,6 +250,57 @@ e_data_book_view_class_init (EDataBookViewClass *class)
 
 	object_class->dispose = e_data_book_view_dispose;
 	object_class->finalize = e_data_book_view_finalize;
+
+	class->vcards_added = e_data_book_view_vcards_added;
+	class->vcards_modified = e_data_book_view_vcards_modified;
+	class->uids_removed = e_data_book_view_uids_removed;
+	class->progress = e_data_book_view_progress;
+	class->complete = e_data_book_view_complete;
+
+	signals[VCARDS_ADDED] = g_signal_new (
+		"vcards-added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDataBookViewClass, vcards_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_STRV | G_SIGNAL_TYPE_STATIC_SCOPE);
+
+	signals[VCARDS_MODIFIED] = g_signal_new (
+		"vcards-modified",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDataBookViewClass, vcards_modified),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_STRV | G_SIGNAL_TYPE_STATIC_SCOPE);
+
+	signals[UIDS_REMOVED] = g_signal_new (
+		"uids-removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDataBookViewClass, uids_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_STRV | G_SIGNAL_TYPE_STATIC_SCOPE);
+
+	signals[PROGRESS] = g_signal_new (
+		"progress",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDataBookViewClass, progress),
+		NULL, NULL,
+		e_gdbus_marshallers_VOID__UINT_STRING,
+		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
+
+	signals[COMPLETE] = g_signal_new (
+		"complete",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDataBookViewClass, complete),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_ERROR | G_SIGNAL_TYPE_STATIC_SCOPE);
 }
 
 static guint
@@ -161,38 +380,96 @@ book_destroyed_cb (gpointer data,
 }
 
 static void
+e_data_book_view_vcards_added (EDataBookView *view,
+			       const gchar * const *vcards)
+{
+	if (view->priv->gdbus_object)
+		e_gdbus_book_view_emit_objects_added (view->priv->gdbus_object, vcards);
+}
+
+static void
+e_data_book_view_vcards_modified (EDataBookView *view,
+				  const gchar * const *vcards)
+{
+	if (view->priv->gdbus_object)
+		e_gdbus_book_view_emit_objects_modified (view->priv->gdbus_object, vcards);
+}
+
+static void
+e_data_book_view_uids_removed (EDataBookView *view,
+			       const gchar * const *uids)
+{
+	if (view->priv->gdbus_object)
+		e_gdbus_book_view_emit_objects_removed (view->priv->gdbus_object, uids);
+}
+
+static void
+e_data_book_view_progress (EDataBookView *view,
+			   guint percent,
+			   const gchar *message)
+{
+	if (view->priv->gdbus_object) {
+		gchar *gdbus_message = NULL;
+
+	        e_gdbus_book_view_emit_progress (
+		        view->priv->gdbus_object, percent,
+			e_util_ensure_gdbus_string (message, &gdbus_message));
+
+		g_free (gdbus_message);
+	}
+}
+
+static void
+e_data_book_view_complete (EDataBookView *view,
+			   const GError *error)
+{
+	gchar **strv_error;
+
+	if (view->priv->gdbus_object) {
+		strv_error = e_gdbus_templates_encode_error (error);
+		e_gdbus_book_view_emit_complete (view->priv->gdbus_object, (const gchar * const *) strv_error);
+		g_strfreev (strv_error);
+	}
+}
+
+static void
 send_pending_adds (EDataBookView *view)
 {
 	EDataBookViewPrivate *priv = view->priv;
+	gchar **strv;
 
 	if (priv->adds->len == 0)
 		return;
 
-	e_gdbus_book_view_emit_objects_added (view->priv->gdbus_object, (const gchar * const *) priv->adds->data);
-	reset_array (priv->adds);
+	strv = steal_array_data (&priv->adds);
+	push_strv_signal_data (view, VCARDS_ADDED, strv);
 }
 
 static void
 send_pending_changes (EDataBookView *view)
 {
 	EDataBookViewPrivate *priv = view->priv;
+	gchar **strv;
 
 	if (priv->changes->len == 0)
 		return;
 
-	e_gdbus_book_view_emit_objects_modified (view->priv->gdbus_object, (const gchar * const *) priv->changes->data);
-	reset_array (priv->changes);
+	strv = steal_array_data (&priv->changes);
+	push_strv_signal_data (view, VCARDS_MODIFIED, strv);
 }
 
 static void
 send_pending_removes (EDataBookView *view)
 {
 	EDataBookViewPrivate *priv = view->priv;
+	gchar **strv;
 
 	if (priv->removes->len == 0)
 		return;
 
-	e_gdbus_book_view_emit_objects_removed (view->priv->gdbus_object, (const gchar * const *) priv->removes->data);
+	strv = steal_array_data (&priv->removes);
+	push_strv_signal_data (view, UIDS_REMOVED, strv);
+
 	reset_array (priv->removes);
 }
 
@@ -202,7 +479,7 @@ pending_flush_timeout_cb (gpointer data)
 	EDataBookView *view = data;
 	EDataBookViewPrivate *priv = view->priv;
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	priv->flush_id = 0;
 
@@ -210,7 +487,7 @@ pending_flush_timeout_cb (gpointer data)
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 
 	return FALSE;
 }
@@ -322,29 +599,9 @@ impl_DataBookView_set_fields_of_interest (EGdbusBookView *object,
                                           const gchar * const *in_fields_of_interest,
                                           EDataBookView *view)
 {
-	EDataBookViewPrivate *priv;
-	gint ii;
-
 	g_return_val_if_fail (in_fields_of_interest != NULL, TRUE);
 
-	priv = view->priv;
-
-	if (priv->fields_of_interest)
-		g_hash_table_destroy (priv->fields_of_interest);
-	priv->fields_of_interest = NULL;
-
-	for (ii = 0; in_fields_of_interest[ii]; ii++) {
-		const gchar *field = in_fields_of_interest[ii];
-
-		if (!*field)
-			continue;
-
-		if (!priv->fields_of_interest)
-			priv->fields_of_interest = g_hash_table_new_full (str_ic_hash, str_ic_equal, g_free, NULL);
-
-		g_hash_table_insert (priv->fields_of_interest, g_strdup (field), GINT_TO_POINTER (1));
-	}
-
+	e_data_book_view_set_fields_of_interest (view, in_fields_of_interest);
 	e_gdbus_book_view_complete_set_fields_of_interest (object, invocation, NULL);
 
 	return TRUE;
@@ -364,6 +621,16 @@ reset_array (GArray *array)
 
 	/* Force the array size to 0 */
 	g_array_set_size (array, 0);
+}
+
+static gchar **
+steal_array_data (GArray **array)
+{
+	gchar **data = (gchar **)g_array_free (*array, FALSE);
+
+	*array = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
+
+	return data;
 }
 
 static gboolean
@@ -406,7 +673,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 	if (!priv->running)
 		return;
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	id = e_contact_get_const ((EContact *) contact, E_CONTACT_UID);
 
@@ -431,7 +698,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 		/* else nothing; we're removing a card that wasn't there */
 	}
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 }
 
 /**
@@ -459,7 +726,7 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view,
 	if (!priv->running)
 		return;
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	contact = e_contact_new_from_vcard_with_uid (vcard, id);
 	currently_in_view = id_is_in_view (book_view, id);
@@ -479,7 +746,7 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view,
 	/* Do this last so that id is still valid when notify_ is called */
 	g_object_unref (contact);
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 }
 
 /**
@@ -514,7 +781,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view,
 	if (!priv->running)
 		return;
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	currently_in_view = id_is_in_view (book_view, id);
 
@@ -523,7 +790,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view,
 	else
 		notify_add (book_view, id, vcard);
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 }
 
 /**
@@ -541,12 +808,12 @@ e_data_book_view_notify_remove (EDataBookView *book_view,
 	if (!book_view->priv->running)
 		return;
 
-	g_mutex_lock (book_view->priv->pending_mutex);
+	g_mutex_lock (&book_view->priv->pending_mutex);
 
 	if (id_is_in_view (book_view, id))
 		notify_remove (book_view, id);
 
-	g_mutex_unlock (book_view->priv->pending_mutex);
+	g_mutex_unlock (&book_view->priv->pending_mutex);
 }
 
 /**
@@ -563,24 +830,21 @@ e_data_book_view_notify_complete (EDataBookView *book_view,
                                   const GError *error)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
-	gchar **strv_error;
 
 	if (!priv->running)
 		return;
 	/* View is complete */
 	priv->complete = TRUE;
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (&priv->pending_mutex);
 
 	send_pending_adds (book_view);
 	send_pending_changes (book_view);
 	send_pending_removes (book_view);
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (&priv->pending_mutex);
 
-	strv_error = e_gdbus_templates_encode_error (error);
-	e_gdbus_book_view_emit_complete (priv->gdbus_object, (const gchar * const *) strv_error);
-	g_strfreev (strv_error);
+	push_complete_signal_data (book_view, error);
 }
 
 /**
@@ -600,16 +864,11 @@ e_data_book_view_notify_progress (EDataBookView *book_view,
                                   guint percent,
                                   const gchar *message)
 {
-	gchar *gdbus_message = NULL;
 
 	if (!book_view->priv->running)
 		return;
 
-	e_gdbus_book_view_emit_progress (
-		book_view->priv->gdbus_object, percent,
-		e_util_ensure_gdbus_string (message, &gdbus_message));
-
-	g_free (gdbus_message);
+	push_progress_signal_data (book_view, percent, message);
 }
 
 /**
@@ -638,20 +897,10 @@ e_data_book_view_new (EDataBook *book,
 	priv->backend = g_object_ref (e_data_book_get_backend (book));
 	priv->card_query = e_util_utf8_make_valid (card_query);
 	priv->card_sexp = card_sexp;
+	priv->context = g_main_context_ref_thread_default ();
+	g_mutex_init (&priv->context_mutex);
 
 	return view;
-}
-
-static gpointer
-bookview_start_thread (gpointer data)
-{
-	EDataBookView *book_view = data;
-
-	if (book_view->priv->running)
-		e_book_backend_start_book_view (book_view->priv->backend, book_view);
-	g_object_unref (book_view);
-
-	return NULL;
 }
 
 static gboolean
@@ -659,29 +908,11 @@ impl_DataBookView_start (EGdbusBookView *object,
                          GDBusMethodInvocation *invocation,
                          EDataBookView *book_view)
 {
-	GThread *thread;
-
-	book_view->priv->running = TRUE;
-	book_view->priv->complete = FALSE;
-
-	thread = g_thread_new (NULL, bookview_start_thread, g_object_ref (book_view));
-	g_thread_unref (thread);
+	e_data_book_view_start (book_view);
 
 	e_gdbus_book_view_complete_start (object, invocation, NULL);
 
 	return TRUE;
-}
-
-static gpointer
-bookview_stop_thread (gpointer data)
-{
-	EDataBookView *book_view = data;
-
-	if (!book_view->priv->running)
-		e_book_backend_stop_book_view (book_view->priv->backend, book_view);
-	g_object_unref (book_view);
-
-	return NULL;
 }
 
 static gboolean
@@ -689,13 +920,7 @@ impl_DataBookView_stop (EGdbusBookView *object,
                         GDBusMethodInvocation *invocation,
                         EDataBookView *book_view)
 {
-	GThread *thread;
-
-	book_view->priv->running = FALSE;
-	book_view->priv->complete = FALSE;
-
-	thread = g_thread_new (NULL, bookview_stop_thread, g_object_ref (book_view));
-	g_thread_unref (thread);
+	e_data_book_view_stop (book_view);
 
 	e_gdbus_book_view_complete_stop (object, invocation, NULL);
 
@@ -708,7 +933,7 @@ impl_DataBookView_setFlags (EGdbusBookView *object,
                             EBookClientViewFlags flags,
                             EDataBookView *book_view)
 {
-	book_view->priv->flags = flags;
+	e_data_book_view_set_flags (book_view, flags);
 
 	e_gdbus_book_view_complete_set_flags (object, invocation, NULL);
 
@@ -722,9 +947,7 @@ impl_DataBookView_dispose (EGdbusBookView *object,
 {
 	e_gdbus_book_view_complete_dispose (object, invocation, NULL);
 
-	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
-	book_view->priv->running = FALSE;
-	e_book_backend_remove_book_view (book_view->priv->backend, book_view);
+	e_data_book_view_delete (book_view);
 
 	g_object_unref (book_view);
 
@@ -758,7 +981,8 @@ e_data_book_view_init (EDataBookView *book_view)
 	book_view->priv->fields_of_interest = NULL;
 	book_view->priv->running = FALSE;
 	book_view->priv->complete = FALSE;
-	book_view->priv->pending_mutex = g_mutex_new ();
+
+	g_mutex_init (&book_view->priv->pending_mutex);
 
 	/* THRESHOLD_ITEMS * 2 because we store UID and vcard */
 	book_view->priv->adds = g_array_sized_new (
@@ -775,6 +999,8 @@ e_data_book_view_init (EDataBookView *book_view)
 		(GDestroyNotify) NULL);
 
 	book_view->priv->flush_id = 0;
+
+	book_view->priv->signal_queue = g_async_queue_new ();
 }
 
 static void
@@ -782,6 +1008,7 @@ e_data_book_view_dispose (GObject *object)
 {
 	EDataBookView *book_view = E_DATA_BOOK_VIEW (object);
 	EDataBookViewPrivate *priv = book_view->priv;
+	SignalData *data;
 
 	if (priv->book) {
 		/* Remove the weak reference */
@@ -799,14 +1026,27 @@ e_data_book_view_dispose (GObject *object)
 		priv->card_sexp = NULL;
 	}
 
-	g_mutex_lock (priv->pending_mutex);
-
+	g_mutex_lock (&priv->pending_mutex);
 	if (priv->flush_id) {
 		g_source_remove (priv->flush_id);
 		priv->flush_id = 0;
 	}
+	g_mutex_unlock (&priv->pending_mutex);
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_lock (&priv->context_mutex);
+	if (priv->idle_source) {
+		g_source_destroy (priv->idle_source);
+		priv->idle_source = NULL;
+	}
+	g_mutex_unlock (&priv->context_mutex);
+
+	if (priv->context) {
+		g_main_context_unref (priv->context);
+		priv->context = NULL;
+	}
+
+	while ((data = g_async_queue_try_pop (priv->signal_queue)) != NULL)
+		signal_data_free (data);
 
 	G_OBJECT_CLASS (e_data_book_view_parent_class)->dispose (object);
 }
@@ -828,9 +1068,12 @@ e_data_book_view_finalize (GObject *object)
 	if (priv->fields_of_interest)
 		g_hash_table_destroy (priv->fields_of_interest);
 
-	g_mutex_free (priv->pending_mutex);
+	g_mutex_clear (&priv->context_mutex);
+	g_mutex_clear (&priv->pending_mutex);
 
 	g_hash_table_destroy (priv->ids);
+
+	g_async_queue_unref (priv->signal_queue);
 
 	G_OBJECT_CLASS (e_data_book_view_parent_class)->finalize (object);
 }
@@ -951,4 +1194,147 @@ void
 e_data_book_view_unref (EDataBookView *book_view)
 {
 	g_object_unref (book_view);
+}
+
+/**
+ * e_data_book_view_set_fields_of_interest:
+ * @book_view: an #EDataBookView
+ * @fields_of_interest: A %NULL terminated array of contact field names
+ *
+ * Set's the fields of interest for @book_view
+ *
+ * Since: 3.8
+ */
+void
+e_data_book_view_set_fields_of_interest (EDataBookView *book_view,
+					 const gchar * const *fields_of_interest)
+{
+	EDataBookViewPrivate *priv;
+	gint ii;
+
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+	g_return_if_fail (fields_of_interest != NULL);
+
+	priv = book_view->priv;
+
+	if (priv->fields_of_interest)
+		g_hash_table_destroy (priv->fields_of_interest);
+	priv->fields_of_interest = NULL;
+
+	for (ii = 0; fields_of_interest[ii]; ii++) {
+		const gchar *field = fields_of_interest[ii];
+
+		if (!*field)
+			continue;
+
+		if (!priv->fields_of_interest)
+			priv->fields_of_interest = g_hash_table_new_full (str_ic_hash, str_ic_equal, g_free, NULL);
+
+		g_hash_table_insert (priv->fields_of_interest, g_strdup (field), GINT_TO_POINTER (1));
+	}
+}
+
+/**
+ * e_data_book_view_set_flags:
+ * @book_view: an #EDataBookView
+ * @flags: the #EBookClientViewFlags to set
+ *
+ * Set's the @flags on @book_view
+ *
+ * Since: 3.8
+ */
+void
+e_data_book_view_set_flags (EDataBookView *book_view,
+			    EBookClientViewFlags flags)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+
+	book_view->priv->flags = flags;
+}
+
+static gpointer
+bookview_start_thread (gpointer data)
+{
+	EDataBookView *book_view = data;
+
+	if (book_view->priv->running)
+		e_book_backend_start_book_view (book_view->priv->backend, book_view);
+	g_object_unref (book_view);
+
+	return NULL;
+}
+
+/**
+ * e_data_book_view_start:
+ * @book_view: an #EDataBookView
+ *
+ * Starts the @book_view thread.
+ *
+ * Since: 3.8
+ */
+void
+e_data_book_view_start (EDataBookView *book_view)
+{
+	GThread *thread;
+
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+
+	book_view->priv->running = TRUE;
+	book_view->priv->complete = FALSE;
+
+	thread = g_thread_new (NULL, bookview_start_thread, g_object_ref (book_view));
+	g_thread_unref (thread);
+}
+
+static gpointer
+bookview_stop_thread (gpointer data)
+{
+	EDataBookView *book_view = data;
+
+	if (!book_view->priv->running)
+		e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+	g_object_unref (book_view);
+
+	return NULL;
+}
+
+/**
+ * e_data_book_view_stop:
+ * @book_view: an #EDataBookView
+ *
+ * Stops the @book_view thread.
+ *
+ * Since: 3.8
+ */
+void
+e_data_book_view_stop (EDataBookView *book_view)
+{
+	GThread *thread;
+
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+
+	book_view->priv->running = FALSE;
+	book_view->priv->complete = FALSE;
+
+	thread = g_thread_new (NULL, bookview_stop_thread, g_object_ref (book_view));
+	g_thread_unref (thread);
+}
+
+/**
+ * e_data_book_view_delete:
+ * @book_view: an #EDataBookView
+ *
+ * Delete's the book view, this causes the view to stop
+ * and for it to be removed from it's owning backend.
+ *
+ * Since: 3.8
+ */
+void
+e_data_book_view_delete (EDataBookView *book_view)
+{
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+
+	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+	book_view->priv->running = FALSE;
+	e_book_backend_remove_book_view (book_view->priv->backend, book_view);
 }
