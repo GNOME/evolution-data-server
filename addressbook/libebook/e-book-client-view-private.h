@@ -23,10 +23,12 @@
 #define E_BOOK_CLIENT_VIEW_PRIVATE_H
 
 #include <libebook/libebook.h>
+#include <libedata-book/libedata-book.h>
 
 struct _EGdbusBookView;
 
 EBookClientView *_e_book_client_view_new (EBookClient *book_client, struct _EGdbusBookView *gdbus_bookview);
+EBookClientView *_e_book_client_view_new_direct (EBookClient *book_client, EDataBookView *direct_view);
 
 G_END_DECLS
 
