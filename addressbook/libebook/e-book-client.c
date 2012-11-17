@@ -32,11 +32,9 @@
 #include "e-book-client.h"
 #include "e-contact.h"
 #include "e-name-western.h"
-#include "e-book-client-view-private.h"
 
 #include "e-gdbus-book.h"
 #include "e-gdbus-book-factory.h"
-#include "e-gdbus-book-view.h"
 
 #define E_BOOK_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -2501,27 +2499,24 @@ complete_get_view (EBookClient *client,
 	g_return_val_if_fail (view != NULL, FALSE);
 
 	if (view_path && res && book_factory) {
+		GDBusConnection *connection;
 		GError *local_error = NULL;
-		EGdbusBookView *gdbus_bookview;
 
-		gdbus_bookview = e_gdbus_book_view_proxy_new_sync (
-			g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory)),
-			G_DBUS_PROXY_FLAGS_NONE,
-			ADDRESS_BOOK_DBUS_SERVICE_NAME,
-			view_path,
-			NULL,
-			&local_error);
+		connection = g_dbus_proxy_get_connection (
+			G_DBUS_PROXY (book_factory));
 
-		if (gdbus_bookview) {
-			*view = _e_book_client_view_new (client, gdbus_bookview);
-			g_object_unref (gdbus_bookview);
-		} else {
-			*view = NULL;
+		*view = g_initable_new (
+			E_TYPE_BOOK_CLIENT_VIEW,
+			NULL, &local_error,
+			"client", client,
+			"connection", connection,
+			"object-path", view_path,
+			NULL);
+
+		if (local_error != NULL) {
+			unwrap_dbus_error (local_error, error);
 			res = FALSE;
 		}
-
-		if (local_error)
-			unwrap_dbus_error (local_error, error);
 	} else {
 		*view = NULL;
 		res = FALSE;

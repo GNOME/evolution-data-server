@@ -30,7 +30,6 @@
 
 #include "e-book-client.h"
 #include "e-book-client-view.h"
-#include "e-book-client-view-private.h"
 #include "e-book-marshal.h"
 #include "e-gdbus-book-view.h"
 
@@ -38,12 +37,25 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewPrivate))
 
-G_DEFINE_TYPE (EBookClientView, e_book_client_view, G_TYPE_OBJECT);
-
 struct _EBookClientViewPrivate {
-	GDBusProxy *gdbus_bookview;
 	EBookClient *client;
+	GDBusProxy *dbus_proxy;
+	GDBusConnection *connection;
+	gchar *object_path;
 	gboolean running;
+
+	gulong objects_added_handler_id;
+	gulong objects_modified_handler_id;
+	gulong objects_removed_handler_id;
+	gulong progress_handler_id;
+	gulong complete_handler_id;
+};
+
+enum {
+	PROP_0,
+	PROP_CLIENT,
+	PROP_CONNECTION,
+	PROP_OBJECT_PATH
 };
 
 enum {
@@ -55,57 +67,24 @@ enum {
 	LAST_SIGNAL
 };
 
+/* Forward Declarations */
+static void	e_book_client_view_initable_init
+						(GInitableIface *interface);
+
 static guint signals[LAST_SIGNAL];
 
-static void
-objects_added_cb (EGdbusBookView *object,
-                  const gchar * const *vcards,
-                  EBookClientView *view)
-{
-	const gchar * const *p;
-	GSList *contacts = NULL;
-
-	if (!view->priv->running)
-		return;
-
-	/* array contains both UID and vcard */
-	for (p = vcards; p[0] && p[1]; p += 2) {
-		contacts = g_slist_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
-	}
-
-	contacts = g_slist_reverse (contacts);
-
-	g_signal_emit (view, signals[OBJECTS_ADDED], 0, contacts);
-
-	e_util_free_object_slist (contacts);
-}
+G_DEFINE_TYPE_WITH_CODE (
+	EBookClientView,
+	e_book_client_view,
+	G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_book_client_view_initable_init))
 
 static void
-objects_modified_cb (EGdbusBookView *object,
-                     const gchar * const *vcards,
-                     EBookClientView *view)
-{
-	const gchar * const *p;
-	GSList *contacts = NULL;
-
-	if (!view->priv->running)
-		return;
-
-	/* array contains both UID and vcard */
-	for (p = vcards; p[0] && p[1]; p += 2) {
-		contacts = g_slist_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
-	}
-	contacts = g_slist_reverse (contacts);
-
-	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, contacts);
-
-	e_util_free_object_slist (contacts);
-}
-
-static void
-objects_removed_cb (EGdbusBookView *object,
-                    const gchar * const *ids,
-                    EBookClientView *view)
+book_client_view_objects_added_cb (EGdbusBookView *object,
+                                   const gchar * const *vcards,
+                                   EBookClientView *view)
 {
 	const gchar * const *p;
 	GSList *list = NULL;
@@ -113,9 +92,65 @@ objects_removed_cb (EGdbusBookView *object,
 	if (!view->priv->running)
 		return;
 
-	for (p = ids; *p; p++) {
-		list = g_slist_prepend (list, (gchar *) *p);
+	/* array contains both UID and vcard */
+	for (p = vcards; p[0] && p[1]; p += 2) {
+		EContact *contact;
+		const gchar *vcard = p[0];
+		const gchar *uid = p[1];
+
+		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
+		list = g_slist_prepend (list, contact);
 	}
+
+	list = g_slist_reverse (list);
+
+	g_signal_emit (view, signals[OBJECTS_ADDED], 0, list);
+
+	g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+}
+
+static void
+book_client_view_objects_modified_cb (EGdbusBookView *object,
+                                      const gchar * const *vcards,
+                                      EBookClientView *view)
+{
+	const gchar * const *p;
+	GSList *list = NULL;
+
+	if (!view->priv->running)
+		return;
+
+	/* array contains both UID and vcard */
+	for (p = vcards; p[0] && p[1]; p += 2) {
+		EContact *contact;
+		const gchar *vcard = p[0];
+		const gchar *uid = p[1];
+
+		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
+		list = g_slist_prepend (list, contact);
+	}
+
+	list = g_slist_reverse (list);
+
+	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, list);
+
+	g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+}
+
+static void
+book_client_view_objects_removed_cb (EGdbusBookView *object,
+                                     const gchar * const *ids,
+                                     EBookClientView *view)
+{
+	const gchar * const *p;
+	GSList *list = NULL;
+
+	if (!view->priv->running)
+		return;
+
+	for (p = ids; *p; p++)
+		list = g_slist_prepend (list, (gchar *) *p);
+
 	list = g_slist_reverse (list);
 
 	g_signal_emit (view, signals[OBJECTS_REMOVED], 0, list);
@@ -125,10 +160,10 @@ objects_removed_cb (EGdbusBookView *object,
 }
 
 static void
-progress_cb (EGdbusBookView *object,
-             guint percent,
-             const gchar *message,
-             EBookClientView *view)
+book_client_view_progress_cb (EGdbusBookView *object,
+                              guint percent,
+                              const gchar *message,
+                              EBookClientView *view)
 {
 	if (!view->priv->running)
 		return;
@@ -137,9 +172,9 @@ progress_cb (EGdbusBookView *object,
 }
 
 static void
-complete_cb (EGdbusBookView *object,
-             const gchar * const *in_error_strv,
-             EBookClientView *view)
+book_client_view_complete_cb (EGdbusBookView *object,
+                              const gchar * const *in_error_strv,
+                              EBookClientView *view)
 {
 	GError *error = NULL;
 
@@ -150,53 +185,342 @@ complete_cb (EGdbusBookView *object,
 
 	g_signal_emit (view, signals[COMPLETE], 0, error);
 
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 }
 
-/*
- * _e_book_client_view_new:
- * @book_client: an #EBookClient
- * @gdbus_bookview: The #EGdbusBookView to get signals from
- *
- * Creates a new #EBookClientView based on #EBookClient and listening to @gdbus_bookview.
- * This is a private function, applications should call e_book_client_get_view() or
- * e_book_client_get_view_sync().
- *
- * Returns: A new #EBookClientView.
- **/
-EBookClientView *
-_e_book_client_view_new (EBookClient *book_client,
-                         EGdbusBookView *gdbus_bookview)
+static void
+book_client_view_set_client (EBookClientView *view,
+                             EBookClient *client)
 {
-	EBookClientView *view;
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (view->priv->client == NULL);
+
+	view->priv->client = g_object_ref (client);
+}
+
+static void
+book_client_view_set_connection (EBookClientView *view,
+                                 GDBusConnection *connection)
+{
+	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
+	g_return_if_fail (view->priv->connection == NULL);
+
+	view->priv->connection = g_object_ref (connection);
+}
+
+static void
+book_client_view_set_object_path (EBookClientView *view,
+                                  const gchar *object_path)
+{
+	g_return_if_fail (object_path != NULL);
+	g_return_if_fail (view->priv->object_path == NULL);
+
+	view->priv->object_path = g_strdup (object_path);
+}
+
+static void
+book_client_view_set_property (GObject *object,
+                               guint property_id,
+                               const GValue *value,
+                               GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CLIENT:
+			book_client_view_set_client (
+				E_BOOK_CLIENT_VIEW (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_CONNECTION:
+			book_client_view_set_connection (
+				E_BOOK_CLIENT_VIEW (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			book_client_view_set_object_path (
+				E_BOOK_CLIENT_VIEW (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+book_client_view_get_property (GObject *object,
+                               guint property_id,
+                               GValue *value,
+                               GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CLIENT:
+			g_value_set_object (
+				value,
+				e_book_client_view_get_client (
+				E_BOOK_CLIENT_VIEW (object)));
+			return;
+
+		case PROP_CONNECTION:
+			g_value_set_object (
+				value,
+				e_book_client_view_get_connection (
+				E_BOOK_CLIENT_VIEW (object)));
+			return;
+
+		case PROP_OBJECT_PATH:
+			g_value_set_string (
+				value,
+				e_book_client_view_get_object_path (
+				E_BOOK_CLIENT_VIEW (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+book_client_view_dispose (GObject *object)
+{
 	EBookClientViewPrivate *priv;
 
-	view = g_object_new (E_TYPE_BOOK_CLIENT_VIEW, NULL);
-	priv = view->priv;
+	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
 
-	priv->client = g_object_ref (book_client);
+	if (priv->client != NULL) {
+		g_object_unref (priv->client);
+		priv->client = NULL;
+	}
 
-	/* Take ownership of the gdbus_bookview object */
-	priv->gdbus_bookview = g_object_ref (G_DBUS_PROXY (gdbus_bookview));
+	if (priv->connection != NULL) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
+	}
 
-	g_object_add_weak_pointer (G_OBJECT (gdbus_bookview), (gpointer) &priv->gdbus_bookview);
-	g_signal_connect (priv->gdbus_bookview, "objects-added", G_CALLBACK (objects_added_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "objects-modified", G_CALLBACK (objects_modified_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "objects-removed", G_CALLBACK (objects_removed_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "progress", G_CALLBACK (progress_cb), view);
-	g_signal_connect (priv->gdbus_bookview, "complete", G_CALLBACK (complete_cb), view);
+	if (priv->dbus_proxy != NULL) {
+		GError *error = NULL;
 
-	return view;
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->objects_added_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->objects_modified_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->objects_removed_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->progress_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->complete_handler_id);
+
+		e_gdbus_book_view_call_dispose_sync (
+			priv->dbus_proxy, NULL, &error);
+
+		if (error != NULL) {
+			g_dbus_error_strip_remote_error (error);
+			g_warning (
+				"Failed to dispose book view: %s",
+				error->message);
+			g_error_free (error);
+		}
+
+		g_object_unref (priv->dbus_proxy);
+		priv->dbus_proxy = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_book_client_view_parent_class)->dispose (object);
+}
+
+static void
+book_client_view_finalize (GObject *object)
+{
+	EBookClientViewPrivate *priv;
+
+	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
+
+	g_free (priv->object_path);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_client_view_parent_class)->finalize (object);
+}
+
+static gboolean
+book_client_view_initable_init (GInitable *initable,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	EBookClientViewPrivate *priv;
+	EGdbusBookView *gdbus_bookview;
+	gulong handler_id;
+
+	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (initable);
+
+	gdbus_bookview = e_gdbus_book_view_proxy_new_sync (
+		priv->connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		priv->object_path,
+		cancellable, error);
+
+	if (gdbus_bookview == NULL)
+		return FALSE;
+
+	priv->dbus_proxy = G_DBUS_PROXY (gdbus_bookview);
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "objects-added",
+		G_CALLBACK (book_client_view_objects_added_cb), initable);
+	priv->objects_added_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "objects-modified",
+		G_CALLBACK (book_client_view_objects_modified_cb), initable);
+	priv->objects_modified_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "objects-removed",
+		G_CALLBACK (book_client_view_objects_removed_cb), initable);
+	priv->objects_removed_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "progress",
+		G_CALLBACK (book_client_view_progress_cb), initable);
+	priv->progress_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "complete",
+		G_CALLBACK (book_client_view_complete_cb), initable);
+	priv->complete_handler_id = handler_id;
+
+	return TRUE;
+}
+
+static void
+e_book_client_view_class_init (EBookClientViewClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (EBookClientViewPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = book_client_view_set_property;
+	object_class->get_property = book_client_view_get_property;
+	object_class->dispose = book_client_view_dispose;
+	object_class->finalize = book_client_view_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CLIENT,
+		g_param_spec_object (
+			"client",
+			"The EBookClient for the view",
+			NULL,
+			E_TYPE_BOOK_CLIENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTION,
+		g_param_spec_object (
+			"connection",
+			"Connection",
+			"The GDBusConnection used "
+			"to create the D-Bus proxy",
+			G_TYPE_DBUS_CONNECTION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path used "
+			"to create the D-Bus proxy",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	signals[OBJECTS_ADDED] = g_signal_new (
+		"objects-added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, objects_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+
+	signals[OBJECTS_MODIFIED] = g_signal_new (
+		"objects-modified",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, objects_modified),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+
+	signals[OBJECTS_REMOVED] = g_signal_new (
+		"objects-removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, objects_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+
+	signals[PROGRESS] = g_signal_new (
+		"progress",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, progress),
+		NULL, NULL,
+		e_gdbus_marshallers_VOID__UINT_STRING,
+		G_TYPE_NONE, 2,
+		G_TYPE_UINT,
+		G_TYPE_STRING);
+
+	signals[COMPLETE] = g_signal_new (
+		"complete",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookClientViewClass, complete),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1,
+		G_TYPE_ERROR);
+}
+
+static void
+e_book_client_view_initable_init (GInitableIface *interface)
+{
+	interface->init = book_client_view_initable_init;
+}
+
+static void
+e_book_client_view_init (EBookClientView *view)
+{
+	view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (view);
 }
 
 /**
  * e_book_client_view_get_client:
  * @view: an #EBookClientView
  *
- * Returns the #EBookClient that this book view is monitoring.
+ * Returns the #EBookClient associated with @view.
  *
- * Returns: (transfer none): an #EBookClient.
+ * Returns: (transfer none): an #EBookClient
  **/
 EBookClient *
 e_book_client_view_get_client (EBookClientView *view)
@@ -207,9 +531,45 @@ e_book_client_view_get_client (EBookClientView *view)
 }
 
 /**
- * e_book_client_view_start:
- * @error: A #GError
+ * e_book_client_view_get_connection:
  * @view: an #EBookClientView
+ *
+ * Returns the #GDBusConnection used to create the D-Bus proxy.
+ *
+ * Returns: (transfer none): the #GDBusConnection
+ *
+ * Since: 3.8
+ **/
+GDBusConnection *
+e_book_client_view_get_connection (EBookClientView *view)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+
+	return view->priv->connection;
+}
+
+/**
+ * e_book_client_view_get_object_path:
+ * @view: an #EBookClientView
+ *
+ * Returns the object path used to create the D-Bus proxy.
+ *
+ * Returns: the object path
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_book_client_view_get_object_path (EBookClientView *view)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+
+	return view->priv->object_path;
+}
+
+/**
+ * e_book_client_view_start:
+ * @view: an #EBookClientView
+ * @error: return location for a #GError, or %NULL
  *
  * Tells @view to start processing events.
  */
@@ -217,30 +577,26 @@ void
 e_book_client_view_start (EBookClientView *view,
                           GError **error)
 {
-	EBookClientViewPrivate *priv;
+	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
-	priv = view->priv;
+	view->priv->running = TRUE;
 
-	if (priv->gdbus_bookview) {
-		GError *local_error = NULL;
+	success = e_gdbus_book_view_call_start_sync (
+		view->priv->dbus_proxy, NULL, &local_error);
+	if (!success)
+		view->priv->running = FALSE;
 
-		priv->running = TRUE;
-		if (!e_gdbus_book_view_call_start_sync (priv->gdbus_bookview, NULL, &local_error))
-			priv->running = FALSE;
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot start view, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
 /**
  * e_book_client_view_stop:
  * @view: an #EBookClientView
- * @error: A #GError
+ * @error: return location for a #GError, or %NULL
  *
  * Tells @view to stop processing events.
  **/
@@ -248,30 +604,24 @@ void
 e_book_client_view_stop (EBookClientView *view,
                          GError **error)
 {
-	EBookClientViewPrivate *priv;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
-	priv = view->priv;
-	priv->running = FALSE;
+	view->priv->running = FALSE;
 
-	if (priv->gdbus_bookview) {
-		GError *local_error = NULL;
+	e_gdbus_book_view_call_stop_sync (
+		view->priv->dbus_proxy, NULL, &local_error);
 
-		e_gdbus_book_view_call_stop_sync (priv->gdbus_bookview, NULL, &local_error);
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot stop view, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
 /**
  * e_book_client_view_set_flags:
  * @view: an #EBookClientView
- * @flags: the #EBookClientViewFlags for @view.
- * @error: a return location for a #GError, or %NULL.
+ * @flags: the #EBookClientViewFlags for @view
+ * @error: return location for a #GError, or %NULL
  *
  * Sets the @flags which control the behaviour of @view.
  *
@@ -282,30 +632,23 @@ e_book_client_view_set_flags (EBookClientView *view,
                               EBookClientViewFlags flags,
                               GError **error)
 {
-	EBookClientViewPrivate *priv;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
-	priv = view->priv;
+	e_gdbus_book_view_call_set_flags_sync (
+		view->priv->dbus_proxy, flags, NULL, &local_error);
 
-	if (priv->gdbus_bookview) {
-		GError *local_error = NULL;
-
-		e_gdbus_book_view_call_set_flags_sync (priv->gdbus_bookview, flags, NULL, &local_error);
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		g_set_error_literal (
-			error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
-			"Cannot set flags on view, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
 /**
  * e_book_client_view_set_fields_of_interest:
  * @view: An #EBookClientView object
- * @fields_of_interest: (element-type utf8): List of field names in which the client is interested
- * @error: A #GError
+ * @fields_of_interest: (element-type utf8): List of field names in which
+ *                      the client is interested
+ * @error: return location for a #GError, or %NULL
  *
  * Client can instruct server to which fields it is interested in only, thus
  * the server can return less data over the wire. The server can still return
@@ -323,117 +666,19 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
                                            const GSList *fields_of_interest,
                                            GError **error)
 {
-	EBookClientViewPrivate *priv;
+	gchar **strv;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
-	priv = view->priv;
+	strv = e_client_util_slist_to_strv (fields_of_interest);
+	e_gdbus_book_view_call_set_fields_of_interest_sync (
+		view->priv->dbus_proxy,
+		(const gchar * const *) strv,
+		NULL, &local_error);
+	g_strfreev (strv);
 
-	if (priv->gdbus_bookview) {
-		GError *local_error = NULL;
-		gchar **strv;
-
-		strv = e_client_util_slist_to_strv (fields_of_interest);
-		e_gdbus_book_view_call_set_fields_of_interest_sync (priv->gdbus_bookview, (const gchar * const *) strv, NULL, &local_error);
-		g_strfreev (strv);
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
-static void
-e_book_client_view_init (EBookClientView *view)
-{
-	view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (view);
-	view->priv->gdbus_bookview = NULL;
-
-	view->priv->client = NULL;
-	view->priv->running = FALSE;
-}
-
-static void
-book_client_view_dispose (GObject *object)
-{
-	EBookClientView *view = E_BOOK_CLIENT_VIEW (object);
-
-	if (view->priv->gdbus_bookview) {
-		GError *error = NULL;
-
-		g_signal_handlers_disconnect_matched (view->priv->gdbus_bookview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
-		e_gdbus_book_view_call_dispose_sync (G_DBUS_PROXY (view->priv->gdbus_bookview), NULL, &error);
-		g_object_unref (view->priv->gdbus_bookview);
-		view->priv->gdbus_bookview = NULL;
-
-		if (error) {
-			g_warning ("Failed to dispose book view: %s", error->message);
-			g_error_free (error);
-		}
-	}
-
-	if (view->priv->client) {
-		g_object_unref (view->priv->client);
-		view->priv->client = NULL;
-	}
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_book_client_view_parent_class)->dispose (object);
-}
-
-static void
-e_book_client_view_class_init (EBookClientViewClass *class)
-{
-	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (EBookClientViewPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = book_client_view_dispose;
-
-	signals[OBJECTS_ADDED] = g_signal_new (
-		"objects-added",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EBookClientViewClass, objects_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
-
-	signals[OBJECTS_MODIFIED] = g_signal_new (
-		"objects-modified",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EBookClientViewClass, objects_modified),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
-
-	signals[OBJECTS_REMOVED] = g_signal_new (
-		"objects-removed",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EBookClientViewClass, objects_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
-
-	signals[PROGRESS] = g_signal_new (
-		"progress",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EBookClientViewClass, progress),
-		NULL, NULL,
-		e_gdbus_marshallers_VOID__UINT_STRING,
-		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
-
-	signals[COMPLETE] = g_signal_new (
-		"complete",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EBookClientViewClass, complete),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__BOXED,
-		G_TYPE_NONE, 1, G_TYPE_ERROR);
-}

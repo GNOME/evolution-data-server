@@ -175,6 +175,8 @@ e_book_client_error_quark
 <TITLE>EBookClientView</TITLE>
 EBookClientView
 e_book_client_view_get_client
+e_book_client_view_get_connection
+e_book_client_view_get_object_path
 e_book_client_view_is_running
 e_book_client_view_set_fields_of_interest
 e_book_client_view_start

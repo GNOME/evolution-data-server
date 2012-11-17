@@ -41,7 +41,6 @@ libebook_1_2_la_SOURCES =				\
 	e-address-western.c				\
 	e-book-client.c					\
 	e-book-client-view.c				\
-	e-book-client-view-private.h			\
 	e-book-query.c					\
 	e-book-view-private.h				\
 	e-book-view.c					\

@@ -27,20 +27,32 @@
 
 #include <glib-object.h>
 
-#define E_TYPE_BOOK_CLIENT_VIEW           (e_book_client_view_get_type ())
-#define E_BOOK_CLIENT_VIEW(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_CLIENT_VIEW, EBookClientView))
-#define E_BOOK_CLIENT_VIEW_CLASS(k)       (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewClass))
-#define E_IS_BOOK_CLIENT_VIEW(o)          (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_CLIENT_VIEW))
-#define E_IS_BOOK_CLIENT_VIEW_CLASS(k)    (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_CLIENT_VIEW))
-#define E_BOOK_CLIENT_VIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewClass))
+/* Standard GObject macros */
+#define E_TYPE_BOOK_CLIENT_VIEW \
+	(e_book_client_view_get_type ())
+#define E_BOOK_CLIENT_VIEW(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientView))
+#define E_BOOK_CLIENT_VIEW_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewClass))
+#define E_IS_BOOK_CLIENT_VIEW(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_BOOK_CLIENT_VIEW))
+#define E_IS_BOOK_CLIENT_VIEW_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_BOOK_CLIENT_VIEW))
+#define E_BOOK_CLIENT_VIEW_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewClass))
 
 G_BEGIN_DECLS
 
-typedef struct _EBookClientView        EBookClientView;
-typedef struct _EBookClientViewClass   EBookClientViewClass;
+typedef struct _EBookClientView EBookClientView;
+typedef struct _EBookClientViewClass EBookClientViewClass;
 typedef struct _EBookClientViewPrivate EBookClientViewPrivate;
 
-struct _EBookClient;  /* Forward reference */
+struct _EBookClient;
 
 /**
  * EBookClientViewFlags:
@@ -60,33 +72,56 @@ typedef enum {
 	E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0),
 } EBookClientViewFlags;
 
+/**
+ * EBookClientView:
+ *
+ * Contains only private data the should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _EBookClientView {
-	GObject     parent;
-	/*< private >*/
+	GObject parent;
 	EBookClientViewPrivate *priv;
 };
 
 struct _EBookClientViewClass {
-	GObjectClass parent;
+	GObjectClass parent_class;
 
-	/*
-	 * Signals.
-	 */
-	void (* objects_added)		(EBookClientView *view, const GSList *objects);
-	void (* objects_modified)	(EBookClientView *view, const GSList *objects);
-	void (* objects_removed)	(EBookClientView *view, const GSList *uids);
-
-	void (* progress)		(EBookClientView *view, guint percent, const gchar *message);
-	void (* complete)		(EBookClientView *view, const GError *error);
+	/* Signals */
+	void		(*objects_added)	(EBookClientView *view,
+						 const GSList *objects);
+	void		(*objects_modified)	(EBookClientView *view,
+						 const GSList *objects);
+	void		(*objects_removed)	(EBookClientView *view,
+						 const GSList *uids);
+	void		(*progress)		(EBookClientView *view,
+						 guint percent,
+						 const gchar *message);
+	void		(*complete)		(EBookClientView *view,
+						 const GError *error);
 };
 
-GType			e_book_client_view_get_type		(void);
-struct _EBookClient *	e_book_client_view_get_client		(EBookClientView *view);
-gboolean		e_book_client_view_is_running		(EBookClientView *view);
-void			e_book_client_view_set_fields_of_interest (EBookClientView *view, const GSList *fields_of_interest, GError **error);
-void			e_book_client_view_start		(EBookClientView *view, GError **error);
-void			e_book_client_view_stop			(EBookClientView *view, GError **error);
-void                    e_book_client_view_set_flags            (EBookClientView *view, EBookClientViewFlags  flags, GError **error);
+GType		e_book_client_view_get_type	(void) G_GNUC_CONST;
+struct _EBookClient *
+		e_book_client_view_get_client	(EBookClientView *view);
+GDBusConnection *
+		e_book_client_view_get_connection
+						(EBookClientView *view);
+const gchar *	e_book_client_view_get_object_path
+						(EBookClientView *view);
+gboolean	e_book_client_view_is_running	(EBookClientView *view);
+void		e_book_client_view_set_fields_of_interest
+						(EBookClientView *view,
+						 const GSList *fields_of_interest,
+						 GError **error);
+void		e_book_client_view_start	(EBookClientView *view,
+						 GError **error);
+void		e_book_client_view_stop		(EBookClientView *view,
+						 GError **error);
+void		e_book_client_view_set_flags	(EBookClientView *view,
+						 EBookClientViewFlags flags,
+						 GError **error);
 
 G_END_DECLS
 
