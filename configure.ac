@@ -1552,7 +1552,6 @@ addressbook/libedata-book/libedata-book.pc
 addressbook/libegdbus/Makefile
 addressbook/backends/Makefile
 addressbook/backends/file/Makefile
-addressbook/backends/vcf/Makefile
 addressbook/backends/ldap/Makefile
 addressbook/backends/google/Makefile
 addressbook/backends/google/tests/Makefile
