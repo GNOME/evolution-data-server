@@ -4,6 +4,6 @@ else
 LDAP_SUBDIR =
 endif
 
-SUBDIRS = file vcf $(LDAP_SUBDIR) google webdav
+SUBDIRS = file $(LDAP_SUBDIR) google webdav
 
 -include $(top_srcdir)/git.mk
