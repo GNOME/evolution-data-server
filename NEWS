@@ -1,3 +1,65 @@
+Evolution-Data-Server 3.7.2 2012-11-17
+--------------------------------------
+
+Bug Fixes:
+	Bug 640594 - Save also UID/REV in WebDAV backend (for CardDAV)
+	             (Milan Crha)
+	Bug 674454 - Crash in e_book_backend_ldap_authenticate_user()
+	             (Milan Crha)
+	Bug 686727 - POP3 provider deadlocks on finalize (Milan Crha)
+	Bug 680497 - POP3 re-adds messages to local Inbox (Milan Crha)
+	Bug 686719 - Missing linker flags in Camel tests (JB Lallement)
+	Bug 685986 - ESourceRegistry: Wait for signals after creating sources
+	             (Matthew Barnes)
+	Bug 686924 - Doesn't parse Gerrit encoded From address correctly
+	             (Milan Crha)
+	Bug 687100 - Crash under cal_backend_contacts_remove_book_record()
+	             (Milan Crha)
+	Bug 685034 - [imapx] Read status of email is not persisted correctly
+	             (Milan Crha)
+	Bug 681962 - Identify server certificates by hostname and fingerprint
+	             (Milan Crha)
+	Bug 685090 - GOA EWS module doesn't save all required values
+	             (Milan Crha)
+	Bug 687776 - E-D-S crash in local address book (Milan Crha)
+	Bug 669082 - Workaround crash in
+	             imapx_command_copy_messages_step_done() (Andreas Kohn)
+	Bug 687642 - Crash under caldav_synch_slave_loop() (Milan Crha)
+	Bug 687694 - imapx_untagged_vanished() is inefficient (Dan Williams)
+	Bug 687865 - Shows old reminders for GOA accounts (Milan Crha)
+	Bug 687634 - Improve camel console warning text (Paul Menzel)
+	Bug 688146 - Crash in Contacts calendar backend (Milan Crha)
+
+Other Changes:
+	* EAuthenticationSession: Close prompt before storing password.
+	  (Matthew Barnes)
+	* IMAPX error handling improvements. (Matthew Barnes)
+	* Bump minimum GLib requirement to 2.34. (Matthew Barnes)
+	* Use code coverage macros from gnome-common. (Matthew Barnes)
+	* Remove version number from ${privdatadir}. (Matthew Barnes)
+	* Remove erroneous version number from ${privlibdir}. (Matthew Barnes)
+	* Remove version number from ${privincludedir}. (Matthew Barnes)
+	* Add AllowAuthPromptAll() method to SourceManager interface.
+	  (Matthew Barnes)
+	* Reimplement EBook, ECal, et. al. using their EClient counterparts.
+          (Matthew Barnes)
+	* Google: allow writing X-GOOGLE-SYSTEM-GROUP-IDS (Giovanni Campagna)
+	* Local file backend modified to use sqlite db exclusively
+	  (Tristan Van Berkom)
+	* gnome-online-accounts: Add an EDataFactory extension (Matthew Barnes)
+	* Remove EBookBackendVCF. (Matthew Barnes)
+
+Translations:
+	Christian Kirbach (de)
+	Hendrik Knackstedt (de)
+	Paul Menzel (de)
+	Gabor Kelemen (hu)
+	Andika Triwidada (id)
+	Kjartan Maraas (nb)
+	Yuri Myasoedov (ru)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.7.1 2012-10-22
 --------------------------------------
 
