@@ -40,7 +40,6 @@ libecal_1_2_la_SOURCES =			\
 	e-cal.c					\
 	e-cal-client.c				\
 	e-cal-client-view.c			\
-	e-cal-client-view-private.h		\
 	e-cal-component.c			\
 	e-cal-recur.c				\
 	e-cal-time-util.c			\

@@ -29,7 +29,6 @@
 #include <libedataserver/e-client-private.h>
 
 #include "e-cal-client.h"
-#include "e-cal-client-view-private.h"
 #include "e-cal-component.h"
 #include "e-cal-check-timezones.h"
 #include "e-cal-time-util.h"
@@ -37,7 +36,6 @@
 
 #include "e-gdbus-cal.h"
 #include "e-gdbus-cal-factory.h"
-#include "e-gdbus-cal-view.h"
 
 #define E_CAL_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -4765,27 +4763,24 @@ complete_get_view (ECalClient *client,
 	g_return_val_if_fail (view != NULL, FALSE);
 
 	if (view_path && res && cal_factory) {
-		EGdbusCalView *gdbus_calview;
+		GDBusConnection *connection;
 		GError *local_error = NULL;
 
-		gdbus_calview = e_gdbus_cal_view_proxy_new_sync (
-			g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory)),
-			G_DBUS_PROXY_FLAGS_NONE,
-			CALENDAR_DBUS_SERVICE_NAME,
-			view_path,
-			NULL,
-			&local_error);
+		connection = g_dbus_proxy_get_connection (
+			G_DBUS_PROXY (cal_factory));
 
-		if (gdbus_calview) {
-			*view = _e_cal_client_view_new (client, gdbus_calview);
-			g_object_unref (gdbus_calview);
-		} else {
-			*view = NULL;
+		*view = g_initable_new (
+			E_TYPE_CAL_CLIENT_VIEW,
+			NULL, &local_error,
+			"client", client,
+			"connection", connection,
+			"object-path", view_path,
+			NULL);
+
+		if (local_error != NULL) {
+			unwrap_dbus_error (local_error, error);
 			res = FALSE;
 		}
-
-		if (local_error)
-			unwrap_dbus_error (local_error, error);
 	} else {
 		*view = NULL;
 		res = FALSE;

@@ -194,6 +194,8 @@ e_cal_client_error_quark
 <TITLE>ECalClientView</TITLE>
 ECalClientView
 e_cal_client_view_get_client
+e_cal_client_view_get_connection
+e_cal_client_view_get_object_path
 e_cal_client_view_is_running
 e_cal_client_view_set_fields_of_interest
 e_cal_client_view_start

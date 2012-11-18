@@ -27,17 +27,30 @@
 
 #include <glib-object.h>
 
+/* Standard GObject macros */
+#define E_TYPE_CAL_CLIENT_VIEW \
+	(e_cal_client_view_get_type ())
+#define E_CAL_CLIENT_VIEW(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientView))
+#define E_CAL_CLIENT_VIEW_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewClass))
+#define E_IS_CAL_CLIENT_VIEW(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_CLIENT_VIEW))
+#define E_IS_CAL_CLIENT_VIEW_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_CLIENT_VIEW))
+#define E_CAL_CLIENT_VIEW_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_CAL_CLIENT_VIEW            (e_cal_client_view_get_type ())
-#define E_CAL_CLIENT_VIEW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientView))
-#define E_CAL_CLIENT_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewClass))
-#define E_IS_CAL_CLIENT_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_CLIENT_VIEW))
-#define E_IS_CAL_CLIENT_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_CLIENT_VIEW))
-
-typedef struct _ECalClientView		ECalClientView;
-typedef struct _ECalClientViewClass	ECalClientViewClass;
-typedef struct _ECalClientViewPrivate	ECalClientViewPrivate;
+typedef struct _ECalClientView ECalClientView;
+typedef struct _ECalClientViewClass ECalClientViewClass;
+typedef struct _ECalClientViewPrivate ECalClientViewPrivate;
 
 struct _ECalClient;
 
@@ -69,30 +82,46 @@ typedef enum {
  **/
 struct _ECalClientView {
 	GObject object;
-
-	/*< private >*/
 	ECalClientViewPrivate *priv;
 };
 
 struct _ECalClientViewClass {
 	GObjectClass parent_class;
 
-	/* Notification signals */
-	void (* objects_added)		(ECalClientView *view, const GSList *objects);
-	void (* objects_modified)	(ECalClientView *view, const GSList *objects);
-	void (* objects_removed)	(ECalClientView *view, const GSList *uids);
-
-	void (* progress)		(ECalClientView *view, guint percent, const gchar *message);
-	void (* complete)		(ECalClientView *view, const GError *error);
+	/* Signals */
+	void		(*objects_added)	(ECalClientView *view,
+						 const GSList *objects);
+	void		(*objects_modified)	(ECalClientView *view,
+						 const GSList *objects);
+	void		(*objects_removed)	(ECalClientView *view,
+						 const GSList *uids);
+	void		(*progress)		(ECalClientView *view,
+						 guint percent,
+						 const gchar *message);
+	void		(*complete)		(ECalClientView *view,
+						 const GError *error);
 };
 
-GType			e_cal_client_view_get_type		(void);
-struct _ECalClient *	e_cal_client_view_get_client		(ECalClientView *view);
-gboolean		e_cal_client_view_is_running		(ECalClientView *view);
-void			e_cal_client_view_set_fields_of_interest (ECalClientView *view, const GSList *fields_of_interest, GError **error);
-void			e_cal_client_view_start			(ECalClientView *view, GError **error);
-void			e_cal_client_view_stop			(ECalClientView *view, GError **error);
-void			e_cal_client_view_set_flags		(ECalClientView *view, ECalClientViewFlags flags, GError **error);
+GType		e_cal_client_view_get_type	(void) G_GNUC_CONST;
+struct _ECalClient *
+		e_cal_client_view_get_client	(ECalClientView *view);
+GDBusConnection *
+		e_cal_client_view_get_connection
+						(ECalClientView *view);
+const gchar *	e_cal_client_view_get_object_path
+						(ECalClientView *view);
+gboolean	e_cal_client_view_is_running	(ECalClientView *view);
+void		e_cal_client_view_set_fields_of_interest
+						(ECalClientView *view,
+						 const GSList *fields_of_interest,
+						 GError **error);
+void		e_cal_client_view_start		(ECalClientView *view,
+						 GError **error);
+void		e_cal_client_view_stop		(ECalClientView *view,
+						 GError **error);
+void		e_cal_client_view_set_flags	(ECalClientView *view,
+						 ECalClientViewFlags flags,
+						 GError **error);
 
 G_END_DECLS
 

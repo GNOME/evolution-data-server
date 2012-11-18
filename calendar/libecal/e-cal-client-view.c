@@ -30,7 +30,6 @@
 #include <string.h>
 #include "e-cal-client.h"
 #include "e-cal-client-view.h"
-#include "e-cal-client-view-private.h"
 
 #include "libedataserver/e-gdbus-marshallers.h"
 
@@ -40,23 +39,27 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewPrivate))
 
-G_DEFINE_TYPE (ECalClientView, e_cal_client_view, G_TYPE_OBJECT);
-
-/* Private part of the ECalClientView structure */
 struct _ECalClientViewPrivate {
-	GDBusProxy *gdbus_calview;
 	ECalClient *client;
+	GDBusProxy *dbus_proxy;
+	GDBusConnection *connection;
+	gchar *object_path;
 	gboolean running;
+
+	gulong objects_added_handler_id;
+	gulong objects_modified_handler_id;
+	gulong objects_removed_handler_id;
+	gulong progress_handler_id;
+	gulong complete_handler_id;
 };
 
-/* Property IDs */
-enum props {
+enum {
 	PROP_0,
-	PROP_VIEW,
-	PROP_CLIENT
+	PROP_CLIENT,
+	PROP_CONNECTION,
+	PROP_OBJECT_PATH
 };
 
-/* Signal IDs */
 enum {
 	OBJECTS_ADDED,
 	OBJECTS_MODIFIED,
@@ -66,7 +69,18 @@ enum {
 	LAST_SIGNAL
 };
 
+/* Forward Declarations */
+static void	e_cal_client_view_initable_init	(GInitableIface *interface);
+
 static guint signals[LAST_SIGNAL];
+
+G_DEFINE_TYPE_WITH_CODE (
+	ECalClientView,
+	e_cal_client_view,
+	G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_cal_client_view_initable_init))
 
 static GSList *
 build_object_list (const gchar * const *seq)
@@ -100,7 +114,8 @@ build_id_list (const gchar * const *seq)
 		ECalComponentId *id;
 		id = g_new (ECalComponentId, 1);
 
-		/* match encoding as in notify_remove() in e-data-cal-view.c: <uid>[\n<rid>] */
+		/* match encoding as in notify_remove()
+		 * in e-data-cal-view.c: <uid>[\n<rid>] */
 		eol = strchr (seq[i], '\n');
 		if (eol) {
 			id->uid = g_strndup (seq[i], eol - seq[i]);
@@ -117,13 +132,11 @@ build_id_list (const gchar * const *seq)
 }
 
 static void
-objects_added_cb (EGdbusCalView *gdbus_calview,
-                  const gchar * const *objects,
-                  ECalClientView *view)
+cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
+                                  const gchar * const *objects,
+                                  ECalClientView *view)
 {
 	GSList *list;
-
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	if (!view->priv->running)
 		return;
@@ -132,22 +145,19 @@ objects_added_cb (EGdbusCalView *gdbus_calview,
 
 	list = build_object_list (objects);
 
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_ADDED], 0, list);
+	g_signal_emit (view, signals[OBJECTS_ADDED], 0, list);
 
-	g_slist_foreach (list, (GFunc) icalcomponent_free, NULL);
-	g_slist_free (list);
+	g_slist_free_full (list, (GDestroyNotify) icalcomponent_free);
 
 	g_object_unref (view);
 }
 
 static void
-objects_modified_cb (EGdbusCalView *gdbus_calview,
-                     const gchar * const *objects,
-                     ECalClientView *view)
+cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
+                                     const gchar * const *objects,
+                                     ECalClientView *view)
 {
 	GSList *list;
-
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	if (!view->priv->running)
 		return;
@@ -156,22 +166,19 @@ objects_modified_cb (EGdbusCalView *gdbus_calview,
 
 	list = build_object_list (objects);
 
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_MODIFIED], 0, list);
+	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, list);
 
-	g_slist_foreach (list, (GFunc) icalcomponent_free, NULL);
-	g_slist_free (list);
+	g_slist_free_full (list, (GDestroyNotify) icalcomponent_free);
 
 	g_object_unref (view);
 }
 
 static void
-objects_removed_cb (EGdbusCalView *gdbus_calview,
-                    const gchar * const *uids,
-                    ECalClientView *view)
+cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
+                                    const gchar * const *uids,
+                                    ECalClientView *view)
 {
 	GSList *list;
-
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	if (!view->priv->running)
 		return;
@@ -180,22 +187,19 @@ objects_removed_cb (EGdbusCalView *gdbus_calview,
 
 	list = build_id_list (uids);
 
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, list);
+	g_signal_emit (view, signals[OBJECTS_REMOVED], 0, list);
 
-	g_slist_foreach (list, (GFunc) e_cal_component_free_id, NULL);
-	g_slist_free (list);
+	g_slist_free_full (list, (GDestroyNotify) e_cal_component_free_id);
 
 	g_object_unref (view);
 }
 
 static void
-progress_cb (EGdbusCalView *gdbus_calview,
-             guint percent,
-             const gchar *message,
-             ECalClientView *view)
+cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
+                             guint percent,
+                             const gchar *message,
+                             ECalClientView *view)
 {
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
-
 	if (!view->priv->running)
 		return;
 
@@ -203,13 +207,11 @@ progress_cb (EGdbusCalView *gdbus_calview,
 }
 
 static void
-complete_cb (EGdbusCalView *gdbus_calview,
-             const gchar * const *arg_error,
-             ECalClientView *view)
+cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
+                             const gchar * const *arg_error,
+                             ECalClientView *view)
 {
 	GError *error = NULL;
-
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	if (!view->priv->running)
 		return;
@@ -218,16 +220,38 @@ complete_cb (EGdbusCalView *gdbus_calview,
 
 	g_signal_emit (G_OBJECT (view), signals[COMPLETE], 0, error);
 
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 }
 
-/* Object initialization function for the calendar view */
 static void
-e_cal_client_view_init (ECalClientView *view)
+cal_client_view_set_client (ECalClientView *view,
+                            ECalClient *client)
 {
-	view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (view);
-	view->priv->running = FALSE;
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (view->priv->client == NULL);
+
+	view->priv->client = g_object_ref (client);
+}
+
+static void
+cal_client_view_set_connection (ECalClientView *view,
+                                GDBusConnection *connection)
+{
+	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
+	g_return_if_fail (view->priv->connection == NULL);
+
+	view->priv->connection = g_object_ref (connection);
+}
+
+static void
+cal_client_view_set_object_path (ECalClientView *view,
+                                 const gchar *object_path)
+{
+	g_return_if_fail (object_path != NULL);
+	g_return_if_fail (view->priv->object_path == NULL);
+
+	view->priv->object_path = g_strdup (object_path);
 }
 
 static void
@@ -236,31 +260,27 @@ cal_client_view_set_property (GObject *object,
                               const GValue *value,
                               GParamSpec *pspec)
 {
-	ECalClientView *view;
-	ECalClientViewPrivate *priv;
-
-	view = E_CAL_CLIENT_VIEW (object);
-	priv = view->priv;
-
 	switch (property_id) {
-	case PROP_VIEW:
-		/* gdbus_calview can be set only once */
-		g_return_if_fail (priv->gdbus_calview == NULL);
+		case PROP_CLIENT:
+			cal_client_view_set_client (
+				E_CAL_CLIENT_VIEW (object),
+				g_value_get_object (value));
+			return;
 
-		priv->gdbus_calview = g_object_ref (g_value_get_pointer (value));
-		g_signal_connect (priv->gdbus_calview, "objects-added", G_CALLBACK (objects_added_cb), view);
-		g_signal_connect (priv->gdbus_calview, "objects-modified", G_CALLBACK (objects_modified_cb), view);
-		g_signal_connect (priv->gdbus_calview, "objects-removed", G_CALLBACK (objects_removed_cb), view);
-		g_signal_connect (priv->gdbus_calview, "progress", G_CALLBACK (progress_cb), view);
-		g_signal_connect (priv->gdbus_calview, "complete", G_CALLBACK (complete_cb), view);
-		break;
-	case PROP_CLIENT:
-		priv->client = E_CAL_CLIENT (g_value_dup_object (value));
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
+		case PROP_CONNECTION:
+			cal_client_view_set_connection (
+				E_CAL_CLIENT_VIEW (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			cal_client_view_set_object_path (
+				E_CAL_CLIENT_VIEW (object),
+				g_value_get_string (value));
+			return;
 	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -269,99 +289,205 @@ cal_client_view_get_property (GObject *object,
                               GValue *value,
                               GParamSpec *pspec)
 {
-	ECalClientView *view;
-	ECalClientViewPrivate *priv;
-
-	view = E_CAL_CLIENT_VIEW (object);
-	priv = view->priv;
-
 	switch (property_id) {
-	case PROP_VIEW:
-		g_value_set_pointer (value, priv->gdbus_calview);
-		break;
-	case PROP_CLIENT:
-		g_value_set_object (value, priv->client);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
+		case PROP_CLIENT:
+			g_value_set_object (
+				value,
+				e_cal_client_view_get_client (
+				E_CAL_CLIENT_VIEW (object)));
+			return;
+
+		case PROP_CONNECTION:
+			g_value_set_object (
+				value,
+				e_cal_client_view_get_connection (
+				E_CAL_CLIENT_VIEW (object)));
+			return;
+
+		case PROP_OBJECT_PATH:
+			g_value_set_string (
+				value,
+				e_cal_client_view_get_object_path (
+				E_CAL_CLIENT_VIEW (object)));
+			return;
 	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
-/* Finalize handler for the calendar view */
 static void
-cal_client_view_finalize (GObject *object)
+cal_client_view_dispose (GObject *object)
 {
-	ECalClientView *view;
 	ECalClientViewPrivate *priv;
 
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (object));
+	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (object);
 
-	view = E_CAL_CLIENT_VIEW (object);
-	priv = view->priv;
-
-	if (priv->gdbus_calview != NULL) {
-		GError *error = NULL;
-
-		g_signal_handlers_disconnect_matched (priv->gdbus_calview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
-		e_gdbus_cal_view_call_dispose_sync (priv->gdbus_calview, NULL, &error);
-		g_object_unref (priv->gdbus_calview);
-		priv->gdbus_calview = NULL;
-
-		if (error) {
-			g_dbus_error_strip_remote_error (error);
-			g_warning ("Failed to dispose cal view: %s", error->message);
-			g_error_free (error);
-		}
-	}
-
-	if (priv->client) {
+	if (priv->client != NULL) {
 		g_object_unref (priv->client);
 		priv->client = NULL;
 	}
+
+	if (priv->connection != NULL) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
+	}
+
+	if (priv->dbus_proxy != NULL) {
+		GError *error = NULL;
+
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->objects_added_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->objects_modified_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->objects_removed_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->progress_handler_id);
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->complete_handler_id);
+
+		e_gdbus_cal_view_call_dispose_sync (
+			priv->dbus_proxy, NULL, &error);
+
+		if (error != NULL) {
+			g_dbus_error_strip_remote_error (error);
+			g_warning (
+				"Failed to dispose cal view: %s",
+				error->message);
+			g_error_free (error);
+		}
+
+		g_object_unref (priv->dbus_proxy);
+		priv->dbus_proxy = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_cal_client_view_parent_class)->dispose (object);
+}
+
+static void
+cal_client_view_finalize (GObject *object)
+{
+	ECalClientViewPrivate *priv;
+
+	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (object);
+
+	g_free (priv->object_path);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_view_parent_class)->finalize (object);
 }
 
-/* Class initialization function for the calendar view */
+static gboolean
+cal_client_view_initable_init (GInitable *initable,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	ECalClientViewPrivate *priv;
+	EGdbusCalView *gdbus_calview;
+	gulong handler_id;
+
+	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (initable);
+
+	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (
+		priv->connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		priv->object_path,
+		cancellable, error);
+
+	if (gdbus_calview == NULL)
+		return FALSE;
+
+	priv->dbus_proxy = G_DBUS_PROXY (gdbus_calview);
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "objects-added",
+		G_CALLBACK (cal_client_view_objects_added_cb), initable);
+	priv->objects_added_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "objects-modified",
+		G_CALLBACK (cal_client_view_objects_modified_cb), initable);
+	priv->objects_modified_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "objects-removed",
+		G_CALLBACK (cal_client_view_objects_removed_cb), initable);
+	priv->objects_removed_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "progress",
+		G_CALLBACK (cal_client_view_progress_cb), initable);
+	priv->progress_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "complete",
+		G_CALLBACK (cal_client_view_complete_cb), initable);
+	priv->complete_handler_id = handler_id;
+
+	return TRUE;
+}
+
 static void
 e_cal_client_view_class_init (ECalClientViewClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = (GObjectClass *) class;
-
-	object_class->set_property = cal_client_view_set_property;
-	object_class->get_property = cal_client_view_get_property;
-	object_class->finalize = cal_client_view_finalize;
-
 	g_type_class_add_private (class, sizeof (ECalClientViewPrivate));
 
-	g_object_class_install_property (
-		object_class,
-		PROP_VIEW,
-		g_param_spec_pointer (
-			"view",
-			"The GDBus view proxy",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = cal_client_view_set_property;
+	object_class->get_property = cal_client_view_get_property;
+	object_class->dispose = cal_client_view_dispose;
+	object_class->finalize = cal_client_view_finalize;
 
 	g_object_class_install_property (
 		object_class,
 		PROP_CLIENT,
 		g_param_spec_object (
 			"client",
-			"The e-cal-client for the view",
+			"The ECalClient for the view",
 			NULL,
 			E_TYPE_CAL_CLIENT,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTION,
+		g_param_spec_object (
+			"connection",
+			"Connection",
+			"The GDBusConnection used "
+			"to create the D-Bus proxy",
+			G_TYPE_DBUS_CONNECTION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path used "
+			"to create the D-Bus proxy",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * ECalClientView::objects-added:
-	 * @view:: self
+	 * @view: the #ECalClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type long):
 	 */
 	signals[OBJECTS_ADDED] = g_signal_new (
@@ -371,11 +497,12 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_STRUCT_OFFSET (ECalClientViewClass, objects_added),
 		NULL, NULL,
 		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	/**
 	 * ECalClientView::objects-modified:
-	 * @view:: self
+	 * @view: the #ECalClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type long):
 	 */
 	signals[OBJECTS_MODIFIED] = g_signal_new (
@@ -385,11 +512,12 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_STRUCT_OFFSET (ECalClientViewClass, objects_modified),
 		NULL, NULL,
 		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	/**
 	 * ECalClientView::objects-removed:
-	 * @view:: self
+	 * @view: the #ECalClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type ECalComponentId):
 	 */
 	signals[OBJECTS_REMOVED] = g_signal_new (
@@ -399,7 +527,8 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_STRUCT_OFFSET (ECalClientViewClass, objects_removed),
 		NULL, NULL,
 		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	signals[PROGRESS] = g_signal_new (
 		"progress",
@@ -408,7 +537,9 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_STRUCT_OFFSET (ECalClientViewClass, progress),
 		NULL, NULL,
 		e_gdbus_marshallers_VOID__UINT_STRING,
-		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+		G_TYPE_NONE, 2,
+		G_TYPE_UINT,
+		G_TYPE_STRING);
 
 	signals[COMPLETE] = g_signal_new (
 		"complete",
@@ -417,39 +548,27 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_STRUCT_OFFSET (ECalClientViewClass, complete),
 		NULL, NULL,
 		g_cclosure_marshal_VOID__BOXED,
-		G_TYPE_NONE, 1, G_TYPE_ERROR);
+		G_TYPE_NONE, 1,
+		G_TYPE_ERROR);
 }
 
-/**
- * _e_cal_client_view_new:
- * @client: An #ECalClient object.
- * @gdbuc_calview: The GDBus object for the view.
- *
- * Creates a new view object by issuing the view creation request to the
- * calendar server.
- *
- * Returns: A newly-created view object, or NULL if the request failed.
- **/
-ECalClientView *
-_e_cal_client_view_new (ECalClient *client,
-                        EGdbusCalView *gdbus_calview)
+static void
+e_cal_client_view_initable_init (GInitableIface *interface)
 {
-	ECalClientView *view;
+	interface->init = cal_client_view_initable_init;
+}
 
-	view = g_object_new (
-		E_TYPE_CAL_CLIENT_VIEW,
-		"client", client,
-		"view", gdbus_calview,
-		NULL);
-
-	return view;
+static void
+e_cal_client_view_init (ECalClientView *view)
+{
+	view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (view);
 }
 
 /**
  * e_cal_client_view_get_client:
- * @view: A #ECalClientView object.
+ * @view: an #ECalClientView
  *
- * Get the #ECalClient associated with this view.
+ * Returns the #ECalClient associated with @view.
  *
  * Returns: (transfer none): the associated client.
  *
@@ -461,6 +580,42 @@ e_cal_client_view_get_client (ECalClientView *view)
 	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
 
 	return view->priv->client;
+}
+
+/**
+ * e_cal_client_view_get_connection:
+ * @view: an #ECalClientView
+ *
+ * Returns the #GDBusConnection used to create the D-Bus proxy.
+ *
+ * Returns: (transfer none): the #GDBusConnection
+ *
+ * Since: 3.8
+ **/
+GDBusConnection *
+e_cal_client_view_get_connection (ECalClientView *view)
+{
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+
+	return view->priv->connection;
+}
+
+/**
+ * e_cal_client_view_get_object_path:
+ * @view: an #ECalClientView
+ *
+ * Returns the object path used to create the D-Bus proxy.
+ *
+ * Returns: the object path
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_cal_client_view_get_object_path (ECalClientView *view)
+{
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+
+	return view->priv->object_path;
 }
 
 /**
@@ -482,10 +637,10 @@ e_cal_client_view_is_running (ECalClientView *view)
 
 /**
  * e_cal_client_view_start:
- * @view: An #ECalClientView object.
- * @error: A #Gerror
+ * @view: an #ECalClientView
+ * @error: return location for a #GError, or %NULL
  *
- * Starts a live query to the calendar/tasks backend.
+ * Tells @view to start processing events.
  *
  * Since: 3.2
  **/
@@ -493,32 +648,28 @@ void
 e_cal_client_view_start (ECalClientView *view,
                          GError **error)
 {
-	ECalClientViewPrivate *priv;
+	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
-	priv = view->priv;
+	view->priv->running = TRUE;
 
-	if (priv->gdbus_calview) {
-		GError *local_error = NULL;
+	success = e_gdbus_cal_view_call_start_sync (
+		view->priv->dbus_proxy, NULL, &local_error);
+	if (!success)
+		view->priv->running = FALSE;
 
-		priv->running = TRUE;
-		if (!e_gdbus_cal_view_call_start_sync (priv->gdbus_calview, NULL, &local_error))
-			priv->running = FALSE;
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot start view, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
 /**
  * e_cal_client_view_stop:
- * @view: An #ECalClientView object.
- * @error: A #GError
+ * @view: an #ECalClientView
+ * @error: return location for a #GError, or %NULL
  *
- * Stops a live query to the calendar/tasks backend.
+ * Tells @view to stop processing events.
  *
  * Since: 3.2
  */
@@ -526,38 +677,33 @@ void
 e_cal_client_view_stop (ECalClientView *view,
                         GError **error)
 {
-	ECalClientViewPrivate *priv;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
-	priv = view->priv;
-	priv->running = FALSE;
+	view->priv->running = FALSE;
 
-	if (priv->gdbus_calview) {
-		GError *local_error = NULL;
+	e_gdbus_cal_view_call_stop_sync (
+		view->priv->dbus_proxy, NULL, &local_error);
 
-		e_gdbus_cal_view_call_stop_sync (priv->gdbus_calview, NULL, &local_error);
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot stop view, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
 /**
  * e_cal_client_view_set_fields_of_interest:
- * @view: An #ECalClientView object
- * @fields_of_interest: (element-type utf8) (allow-none): List of field names in
- * which the client is interested, or %NULL to reset the fields of interest
- * @error: A #GError
+ * @view: an #ECalClientView
+ * @fields_of_interest: (element-type utf8) (allow-none): List of field names
+ *                      in which the client is interested, or %NULL to reset
+ *                      the fields of interest
+ * @error: return location for a #GError, or %NULL
  *
  * Client can instruct server to which fields it is interested in only, thus
  * the server can return less data over the wire. The server can still return
  * complete objects, this is just a hint to it that the listed fields will
- * be used only. The UID/RID fields are returned always. Initial views has no fields
- * of interest and using %NULL for @fields_of_interest will unset any previous
- * changes.
+ * be used only. The UID/RID fields are returned always. Initial views has no
+ * fields of interest and using %NULL for @fields_of_interest will unset any
+ * previous changes.
  *
  * Some backends can use summary information of its cache to create artifical
  * objects, which will omit stored object parsing. If this cannot be done then
@@ -568,32 +714,27 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
                                           const GSList *fields_of_interest,
                                           GError **error)
 {
-	ECalClientViewPrivate *priv;
+	gchar **strv;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
-	priv = view->priv;
+	strv = e_client_util_slist_to_strv (fields_of_interest);
+	e_gdbus_cal_view_call_set_fields_of_interest_sync (
+		view->priv->dbus_proxy,
+		(const gchar * const *) strv,
+		NULL, &local_error);
+	g_strfreev (strv);
 
-	if (priv->gdbus_calview) {
-		GError *local_error = NULL;
-		gchar **strv;
-
-		strv = e_client_util_slist_to_strv (fields_of_interest);
-		e_gdbus_cal_view_call_set_fields_of_interest_sync (priv->gdbus_calview, (const gchar * const *) strv, NULL, &local_error);
-		g_strfreev (strv);
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
 
 /**
  * e_cal_client_view_set_flags:
  * @view: an #ECalClientView
- * @flags: the #ECalClientViewFlags for @view.
- * @error: a return location for a #GError, or %NULL.
+ * @flags: the #ECalClientViewFlags for @view
+ * @error: return location for a #GError, or %NULL
  *
  * Sets the @flags which control the behaviour of @view.
  *
@@ -604,20 +745,13 @@ e_cal_client_view_set_flags (ECalClientView *view,
                              ECalClientViewFlags flags,
                              GError **error)
 {
-	ECalClientViewPrivate *priv;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
-	priv = view->priv;
+	e_gdbus_cal_view_call_set_flags_sync (
+		view->priv->dbus_proxy, flags, NULL, &local_error);
 
-	if (priv->gdbus_calview) {
-		GError *local_error = NULL;
-
-		e_gdbus_cal_view_call_set_flags_sync (priv->gdbus_calview, flags, NULL, &local_error);
-
-		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
-	} else {
-		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
-	}
+	e_client_unwrap_dbus_error (
+		E_CLIENT (view->priv->client), local_error, error);
 }
