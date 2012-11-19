@@ -526,6 +526,40 @@ e_util_utf8_data_make_valid (const gchar *data,
 }
 
 /**
+ * e_util_utf8_normalize:
+ * @str: a UTF-8 string
+ *
+ * Normalizes @str by making it all lower case and removing any accents from it.
+ *
+ * Returns: The normalized version of @str, or %NULL if @str was not valid UTF-8
+ *
+ * Since: 3.8
+ */
+gchar *
+e_util_utf8_normalize (const gchar *str)
+{
+	gchar *valid = NULL;
+	gchar *normal, *casefolded = NULL;
+
+	if (str == NULL)
+		return NULL;
+
+	if (!g_utf8_validate (str, -1, NULL)) {
+		valid = e_util_utf8_make_valid (str);
+		str = valid;
+	}
+
+	normal = e_util_utf8_remove_accents (str);
+	if (normal)
+		casefolded = g_utf8_casefold (normal, -1);
+
+	g_free (valid);
+	g_free (normal);
+
+	return casefolded;
+}
+
+/**
  * e_util_ensure_gdbus_string:
  * @str: a possibly invalid UTF-8 string, or %NULL
  * @gdbus_str: return location for the corrected string
