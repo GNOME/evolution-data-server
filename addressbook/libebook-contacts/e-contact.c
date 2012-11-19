@@ -1425,6 +1425,8 @@ e_contact_duplicate (EContact *contact)
  * what kind of value can be passed to e_contact_set().
  *
  * Returns: The #GType used for @field_id, or %G_TYPE_INVALID if it doesn't exist.
+ *
+ * Since: 3.8
  **/
 GType
 e_contact_field_type (EContactField field_id)
@@ -2588,6 +2590,19 @@ e_contact_cert_copy (EContactCert *cert)
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")
 
+
+/**
+ * e_contact_attr_list_copy:
+ * @list: A #GList of strings
+ *
+ * Copies a list of allocated strings, specifically
+ * for the #EContactAttrList boxed type used for multi valued
+ * contact fields.
+ *
+ * Returns: (transfer full): A copy of @list
+ *
+ * Since: 3.8
+ */
 GList *
 e_contact_attr_list_copy (GList *list)
 {
@@ -2602,6 +2617,16 @@ e_contact_attr_list_copy (GList *list)
 	return g_list_reverse (dup_list);
 }
 
+/**
+ * e_contact_attr_list_free:
+ * @list: A #GList of strings
+ *
+ * Frees a list of allocated strings, specifically
+ * for the #EContactAttrList boxed type used for multi valued
+ * contact fields.
+ *
+ * Since: 3.8
+ */
 void
 e_contact_attr_list_free (GList *list)
 {
