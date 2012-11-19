@@ -571,8 +571,8 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			g_free (tmp);
 		}
 
-		if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX &&
-		     ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) != 0) {
+		if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0 &&
+		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
 			/* Derive index name from field & folder */
 			tmp = g_strdup_printf ("RINDEX_%s_%s",
 					       summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
@@ -1487,7 +1487,9 @@ e_book_backend_sqlitedb_get_contact (EBookBackendSqliteDB *ebsdb,
  * This only checks if all the fields are part of the default summary fields,
  * not part of the configured summary fields.
  *
- * Deprecated: 3.6: Use e_book_backend_sqlitedb_check_summary_fields() instead.
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_backend_sqlitedb_check_summary_fields() instead.
  **/
 gboolean
 e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
@@ -1806,7 +1808,9 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
  *
  * Checks whether the query contains only checks for the default summary fields
  *
- * Deprecated: 3.6: Use e_book_backend_sqlitedb_check_summary_query() instead
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_backend_sqlitedb_check_summary_query() instead
  **/
 gboolean
 e_book_backend_sqlitedb_is_summary_query (const gchar *query)
