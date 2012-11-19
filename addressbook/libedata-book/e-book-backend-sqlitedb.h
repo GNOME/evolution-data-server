@@ -244,16 +244,21 @@ gboolean	e_book_backend_sqlitedb_delete_addressbook
 gboolean	e_book_backend_sqlitedb_remove		(EBookBackendSqliteDB *ebsdb,
 							 GError **error);
 void		e_book_backend_sqlitedb_search_data_free
-							(EbSdbSearchData *s_data);
+						(EbSdbSearchData *s_data);
+gboolean        e_book_backend_sqlitedb_check_summary_query
+                                                (EBookBackendSqliteDB *ebsdb,
+						 const gchar *query,
+						 gboolean *with_list_attrs);
+gboolean        e_book_backend_sqlitedb_check_summary_fields
+                                                (EBookBackendSqliteDB *ebsdb,
+						 GHashTable *fields_of_interest);
 
-gboolean        e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
-							     const gchar *query,
-							     gboolean *with_list_attrs);
-gboolean        e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
-							      GHashTable *fields_of_interest);
-
-gboolean        e_book_backend_sqlitedb_is_summary_query (const gchar *query);
-gboolean        e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest);
+#ifndef EDS_DISABLE_DEPRECATED
+gboolean	e_book_backend_sqlitedb_is_summary_query
+						(const gchar *query);
+gboolean	e_book_backend_sqlitedb_is_summary_fields
+						(GHashTable *fields_of_interest);
+#endif
 
 G_END_DECLS
 
