@@ -772,7 +772,7 @@ append_summary_field (GArray         *array,
 
 	if (field < 1 || field >= E_CONTACT_FIELD_LAST) {
 		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, "Invalid contact field '%d' specified in summary", field);
+			     0, _("Invalid contact field '%d' specified in summary"), field);
 		return FALSE;
 	}
 
@@ -804,9 +804,9 @@ append_summary_field (GArray         *array,
 	if (type != G_TYPE_STRING &&
 	    type != G_TYPE_BOOLEAN &&
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
-		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, "Contact field '%s' of type '%s' specified in summary, "
-			     "but only boolean, string and string list field types are supported",
+		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+			     _("Contact field '%s' of type '%s' specified in summary, "
+				  "but only boolean, string and string list field types are supported"),
 			     e_contact_pretty_name (field), g_type_name (type));
 		return FALSE;
 	}
@@ -1054,7 +1054,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 			/* Special exception, never normalize the UID string */
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID)
-				normal = val ? g_utf8_casefold (val, -1) : NULL;
+				normal = e_util_utf8_normalize (val);
 			else
 				normal = g_strdup (val);
 
@@ -1069,6 +1069,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 				g_string_append (string, ", ");
 				g_string_append (string, str);
 				sqlite3_free (str);
+				g_free (reverse);
 			}
 
 			g_free (normal);
@@ -1137,7 +1138,7 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 
 			for (l = values; (!error || (*error == NULL)) && l != NULL; l = l->next) {
 				gchar *value = (gchar *)l->data;
-				gchar *normal = value ? g_utf8_casefold (value, -1) : NULL;
+				gchar *normal = e_util_utf8_normalize (value);
 
 				if (priv->have_attr_list_suffix) {
 					gchar *reverse = normal ? g_utf8_strreverse (normal, -1) : NULL;
@@ -1599,7 +1600,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 	if (!ebsdb->priv->store_vcard) {
 
  		g_set_error (error, E_BOOK_SDB_ERROR,
- 			     0, "Full search_contacts are not stored in cache. vcards cannot be returned.");
+ 			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
 
 	} else {
 		stmt = sqlite3_mprintf ("SELECT vcard FROM %Q WHERE uid = %Q", folderid, uid);
@@ -1908,7 +1909,7 @@ convert_string_value (const gchar *value,
 	g_return_val_if_fail (value != NULL, NULL);
 
 	if (normalize)
-		normal = g_utf8_casefold (value, -1);
+		normal = e_util_utf8_normalize (value);
 	else
 		normal = g_strdup (value);
 
@@ -2322,7 +2323,7 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 	if (!ebsdb->priv->store_vcard) {
 
 		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, "Full search_contacts are not stored in cache. vcards cannot be returned.");
+			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
 
 	} else {
 		if (sql && sql[0]) {
@@ -2476,8 +2477,8 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	} else {
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, 0,
-			"Full search_contacts are not stored in cache. "
-			"Hence only summary query is supported.");
+			_("Full search_contacts are not stored in cache. "
+			  "Hence only summary query is supported."));
 	}
 
 	if (searched)
@@ -2553,8 +2554,8 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 	} else {
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, 0,
-			"Full vcards are not stored in cache. "
-			"Hence only summary query is supported.");
+			_("Full vcards are not stored in cache. "
+			  "Hence only summary query is supported."));
 	}
 
 	if (searched)
