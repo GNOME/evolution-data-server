@@ -30,6 +30,7 @@
 #include <libebook-contacts/e-contact.h>
 #include <libebook-contacts/e-vcard.h>
 #include <libebook-contacts/e-book-contacts-enumtypes.h>
+#include <libebook-contacts/e-source-backend-summary-setup.h>
 #include <libebook-contacts/e-source-address-book-config.h>
 #include <libebook-contacts/e-source-direct-access.h>
 
