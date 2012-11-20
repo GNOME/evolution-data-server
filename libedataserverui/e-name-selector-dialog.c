@@ -493,6 +493,8 @@ name_selector_dialog_constructed (GObject *object)
 		source_combo, "changed",
 		G_CALLBACK (source_changed), object);
 
+	source_changed (E_NAME_SELECTOR_DIALOG (object), E_SOURCE_COMBO_BOX (source_combo));
+
 	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_combo);
 	gtk_widget_show (source_combo);
 	gtk_box_pack_start (GTK_BOX (source_menu_box), source_combo, TRUE, TRUE, 0);
