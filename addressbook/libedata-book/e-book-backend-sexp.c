@@ -183,7 +183,7 @@ compare_phone (EContact *contact,
 	list = e_contact_get (contact, E_CONTACT_TEL);
 
 	for (l = list; l; l = l->next) {
-		gchar *phone = l->data;
+		const gchar *phone = l->data;
 
 		rv = phone && compare (phone, str);
 
