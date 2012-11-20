@@ -564,11 +564,10 @@ smtp_transport_authenticate_sync (CamelService *service,
 	 * password so that the user gets prompted to try again. */
 	if (strncmp (respbuf, "535", 3) == 0)
 		result = CAMEL_AUTHENTICATION_REJECTED;
-	else
+	else if (strncmp (respbuf, "235", 3) == 0)
 		result = CAMEL_AUTHENTICATION_ACCEPTED;
-
 	/* Catch any other errors. */
-	if (strncmp (respbuf, "235", 3) != 0) {
+	else {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
