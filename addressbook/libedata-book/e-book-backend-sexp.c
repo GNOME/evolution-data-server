@@ -565,41 +565,6 @@ try_contains_word (const gchar *s1,
 	return NULL;
 }
 
-/* converts str into utf8 GString in lowercase;
- * returns NULL if str is invalid utf8 string otherwise
- * returns newly allocated GString
-*/
-static GString *
-chars_to_unistring_lowercase (const gchar *pstr)
-{
-	GString *res;
-	gunichar unich;
-	gchar *p, *str;
-
-	if (pstr == NULL)
-		return NULL;
-
-	str = e_util_utf8_remove_accents (pstr);
-	if (!str)
-		return NULL;
-
-	res = g_string_new ("");
-
-	for (p = e_util_unicode_get_utf8 (str, &unich); p && unich; p = e_util_unicode_get_utf8 (p, &unich)) {
-		g_string_append_unichar (res, g_unichar_tolower (unich));
-	}
-
-	g_free (str);
-
-	/* it was invalid unichar string */
-	if (p == NULL) {
-		g_string_free (res, TRUE);
-		return NULL;
-	}
-
-	return res;
-}
-
 /* first space between words is treated as wildcard character;
  * we are looking for s2 in s1, so s2 will be breaked into words
 */
@@ -607,8 +572,8 @@ static gchar *
 contains_helper (const gchar *s1,
                  const gchar *s2)
 {
-	GString *s1uni;
-	GString *s2uni;
+	gchar *s1uni;
+	gchar *s2uni;
 	GSList *words;
 	gchar *next;
 	gboolean have_nonspace;
@@ -625,21 +590,21 @@ contains_helper (const gchar *s1,
 	if (!*s2)
 		return (gchar *) s1;
 
-	s1uni = chars_to_unistring_lowercase (s1);
+	s1uni = e_util_utf8_normalize (s1);
 	if (s1uni == NULL)
 		return NULL;
 
-	s2uni = chars_to_unistring_lowercase (s2);
+	s2uni = e_util_utf8_normalize (s2);
 	if (s2uni == NULL) {
-		g_string_free (s1uni, TRUE);
+		g_free (s1uni);
 		return NULL;
 	}
 
-	len1 = g_utf8_strlen (s1uni->str, -1);
-	len2 = g_utf8_strlen (s2uni->str, -1);
+	len1 = g_utf8_strlen (s1uni, -1);
+	len2 = g_utf8_strlen (s2uni, -1);
 	if (len1 == 0 || len2 == 0) {
-		g_string_free (s1uni, TRUE);
-		g_string_free (s2uni, TRUE);
+		g_free (s1uni);
+		g_free (s2uni);
 
 		/* both are empty strings */
 		if (len1 == len2)
@@ -654,7 +619,7 @@ contains_helper (const gchar *s1,
 	have_space = FALSE;
 	last_word = NULL;
 	w = g_string_new ("");
-	for (next = e_util_unicode_get_utf8 (s2uni->str, &unich); next && unich; next = e_util_unicode_get_utf8 (next, &unich)) {
+	for (next = e_util_unicode_get_utf8 (s2uni, &unich); next && unich; next = e_util_unicode_get_utf8 (next, &unich)) {
 		if (unich == ' ') {
 			if (have_nonspace && !have_space) {
 				/* treat only first space after nonspace character as wildcard,
@@ -685,10 +650,10 @@ contains_helper (const gchar *s1,
 		words = g_slist_append (words, w);
 	}
 
-	res = try_contains_word (s1uni->str, words);
+	res = try_contains_word (s1uni, words);
 
-	g_string_free (s1uni, TRUE);
-	g_string_free (s2uni, TRUE);
+	g_free (s1uni);
+	g_free (s2uni);
 	g_slist_foreach (words, contains_helper_free_word, NULL);
 	g_slist_free (words);
 
