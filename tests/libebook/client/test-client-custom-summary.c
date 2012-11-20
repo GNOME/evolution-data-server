@@ -48,7 +48,7 @@ register_source_idle (CreateBookData *data)
 {
 	GError *error = NULL;
 	ESourceBackend  *backend;
-	ESourceAddressBookConfig *config;
+	ESourceBackendSummarySetup *setup;
 
 	data->registry = e_source_registry_new_sync (NULL, &error);
 	if (!data->registry)
@@ -61,22 +61,22 @@ register_source_idle (CreateBookData *data)
 	backend = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
 	e_source_backend_set_backend_name (backend, "local");
 
-	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_ADDRESS_BOOK_CONFIG));
-	config   = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
-	e_source_address_book_config_set_summary_fields  (config,
-							  E_CONTACT_FULL_NAME,
-							  E_CONTACT_FAMILY_NAME,
-							  E_CONTACT_EMAIL_1,
-							  E_CONTACT_TEL,
-							  E_CONTACT_EMAIL,
-							  0);
-	e_source_address_book_config_set_indexed_fields (config,
-							 E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
-							 E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
-							 E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
-							 E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
-							 E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_SUFFIX,
-							 0);
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	setup = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
+	e_source_backend_summary_setup_set_summary_fields (setup,
+							   E_CONTACT_FULL_NAME,
+							   E_CONTACT_FAMILY_NAME,
+							   E_CONTACT_EMAIL_1,
+							   E_CONTACT_TEL,
+							   E_CONTACT_EMAIL,
+							   0);
+	e_source_backend_summary_setup_set_indexed_fields (setup,
+							   E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
+							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
+							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
+							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
+							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_SUFFIX,
+							   0);
 
 
 	if (!e_source_registry_commit_source_sync (data->registry, data->scratch, NULL, &error))
