@@ -85,24 +85,6 @@ struct _ESourceAddressBookConfigClass {
 
 GType           e_source_address_book_config_get_type            (void) G_GNUC_CONST;
 
-EContactField  *e_source_address_book_config_get_summary_fields  (ESourceAddressBookConfig  *extension,
-								  gint                       *n_fields);
-void            e_source_address_book_config_set_summary_fieldsv (ESourceAddressBookConfig  *extension,
-								  EContactField             *fields,
-								  gint                       n_fields);
-void            e_source_address_book_config_set_summary_fields  (ESourceAddressBookConfig  *extension,
-								  ...);
-
-EContactField  *e_source_address_book_config_get_indexed_fields  (ESourceAddressBookConfig  *extension,
-								  EBookIndexType           **types,
-								  gint                      *n_fields);
-void            e_source_address_book_config_set_indexed_fieldsv (ESourceAddressBookConfig  *extension,
-								  EContactField             *fields,
-								  EBookIndexType            *types,
-								  gint                       n_fields);
-void            e_source_address_book_config_set_indexed_fields  (ESourceAddressBookConfig  *extension,
-								  ...);
-
 void            e_source_address_book_config_set_revision_guards_enabled  (ESourceAddressBookConfig  *extension,
 									   gboolean                   enabled);
 gboolean        e_source_address_book_config_get_revision_guards_enabled  (ESourceAddressBookConfig  *extension);
