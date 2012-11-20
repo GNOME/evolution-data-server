@@ -101,11 +101,7 @@ EBookBackendSqliteDB *
 							 const gchar *folderid,
 							 const gchar *folder_name,
 							 gboolean store_vcard,
-							 EContactField *fields,
-							 gint n_fields,
-							 EContactField *indexed_fields,
-							 EBookIndexType *index_types,
-							 gint n_indexed_fields,
+							 ESourceBackendSummarySetup *setup,
 							 GError **error);
 
 gboolean	e_book_backend_sqlitedb_lock_updates	(EBookBackendSqliteDB *ebsdb,
