@@ -1286,12 +1286,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	ESource          *source;
 	GError           *local_error = NULL;
 	gboolean          populated;
+	ESourceBackendSummarySetup *setup;
 	ESourceAddressBookConfig *config;
-	EContactField    *summary_fields = NULL;
-	gint              n_summary_fields = 0;
-	EContactField    *indexed_fields = NULL;
-	EBookIndexType   *index_types = NULL;
-	gint              n_indexed_fields = 0;
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
@@ -1301,27 +1297,23 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	backup   = g_build_filename (dirname, "addressbook.db.old", NULL);
 
 	REGISTER_TYPE (E_TYPE_SOURCE_ADDRESS_BOOK_CONFIG);
+	REGISTER_TYPE (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
 
 	config         = e_source_get_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
-	summary_fields = e_source_address_book_config_get_summary_fields  (config, &n_summary_fields);
-	indexed_fields = e_source_address_book_config_get_indexed_fields  (config, &index_types, &n_indexed_fields);
-
 	bf->priv->revision_guards = e_source_address_book_config_get_revision_guards_enabled (config);
+
+	setup = e_source_get_extension (source, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
  
 	/* The old BDB exists, lets migrate that to sqlite right away
 	 */
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (dirname,
-								       SQLITEDB_EMAIL_ID,
-								       SQLITEDB_FOLDER_ID,
-								       SQLITEDB_FOLDER_NAME,
-								       TRUE,
-								       summary_fields,
-								       n_summary_fields,
-								       indexed_fields,
-								       index_types,
-								       n_indexed_fields,
-								       &local_error);
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (
+                        dirname,
+			SQLITEDB_EMAIL_ID,
+			SQLITEDB_FOLDER_ID,
+			SQLITEDB_FOLDER_NAME,
+			TRUE, setup,
+			&local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
@@ -1329,9 +1321,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
-			g_free (summary_fields);
-			g_free (index_types);
-			g_free (indexed_fields);
 			return;
 		}
 
@@ -1345,9 +1334,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
-			g_free (summary_fields);
-			g_free (index_types);
-			g_free (indexed_fields);
  
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
@@ -1368,9 +1354,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			g_free (dirname);
 			g_free (filename);
 			g_free (backup);
-			g_free (summary_fields);
-			g_free (index_types);
-			g_free (indexed_fields);
 			bf->priv->sqlitedb = NULL;
 			return;
  		}
@@ -1390,24 +1373,17 @@ e_book_backend_file_open (EBookBackendSync *backend,
  			g_free (dirname);
  			g_free (filename);
 			g_free (backup);
-			g_free (summary_fields);
-			g_free (index_types);
-			g_free (indexed_fields);
  			return;
  		}
 
 		/* Create the sqlitedb */
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (dirname,
-								       SQLITEDB_EMAIL_ID,
-								       SQLITEDB_FOLDER_ID,
-								       SQLITEDB_FOLDER_NAME,
-								       TRUE,
-								       summary_fields,
-								       n_summary_fields,
-								       indexed_fields,
-								       index_types,
-								       n_indexed_fields,
-								       &local_error);
+		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (
+                        dirname,
+			SQLITEDB_EMAIL_ID,
+			SQLITEDB_FOLDER_ID,
+			SQLITEDB_FOLDER_NAME,
+			TRUE, setup,
+			&local_error);
 
 		if (!bf->priv->sqlitedb) {
 			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
@@ -1415,9 +1391,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
  			g_free (dirname);
  			g_free (filename);
 			g_free (backup);
-			g_free (summary_fields);
-			g_free (index_types);
-			g_free (indexed_fields);
  			return;
  		}
 
@@ -1433,9 +1406,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
  			g_free (dirname);
  			g_free (filename);
 			g_free (backup);
-			g_free (summary_fields);
-			g_free (index_types);
-			g_free (indexed_fields);
 
 			g_object_unref (bf->priv->sqlitedb);
 			bf->priv->sqlitedb = NULL;
@@ -1448,9 +1418,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
  				g_free (dirname);
  				g_free (filename);
 				g_free (backup);
-				g_free (summary_fields);
-				g_free (index_types);
-				g_free (indexed_fields);
 				g_object_unref (bf->priv->sqlitedb);
 				bf->priv->sqlitedb = NULL;
 				g_propagate_error (perror, EDB_ERROR (NO_SUCH_BOOK));
@@ -1479,9 +1446,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 				g_free (dirname);
 				g_free (filename);
 				g_free (backup);
-				g_free (summary_fields);
-				g_free (index_types);
-				g_free (indexed_fields);
 				g_object_unref (bf->priv->sqlitedb);
 				bf->priv->sqlitedb = NULL;
 				return;
@@ -1492,9 +1456,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	g_free (dirname);
 	g_free (filename);
 	g_free (backup);
-	g_free (summary_fields);
-	g_free (index_types);
-	g_free (indexed_fields);
 
 	/* Resolve the photo directory here */
 	dirname = e_book_backend_file_extract_path_from_source (
