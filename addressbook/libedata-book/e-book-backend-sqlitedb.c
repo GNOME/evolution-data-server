@@ -893,24 +893,33 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 				  const gchar *folderid,
 				  const gchar *folder_name,
 				  gboolean store_vcard,
-				  EContactField *fields,
-				  gint n_fields,
-				  EContactField *indexed_fields,
-				  EBookIndexType *index_types,
-				  gint n_indexed_fields,
+				  ESourceBackendSummarySetup *setup,
 				  GError **error)
 {
 	EBookBackendSqliteDB *ebsdb = NULL;
+	EContactField *fields;
+	EContactField *indexed_fields;
+	EBookIndexType *index_types;
 	gboolean have_attr_list = FALSE;
 	gboolean have_attr_list_prefix = FALSE;
 	gboolean have_attr_list_suffix = FALSE;
 	gboolean had_error = FALSE;
 	GArray *summary_fields;
-	gint i;
+	gint n_fields, n_indexed_fields, i;
+
+	fields         = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
+	indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);
 
 	/* No specified summary fields indicates the default summary configuration should be used */
-	if (n_fields <= 0)
-		return e_book_backend_sqlitedb_new (path, emailid, folderid, folder_name, store_vcard, error);
+	if (n_fields <= 0) {
+
+		ebsdb = e_book_backend_sqlitedb_new (path, emailid, folderid, folder_name, store_vcard, error);
+		g_free (fields);
+		g_free (index_types);
+		g_free (indexed_fields);
+		
+		return ebsdb;
+	}
 
 	summary_fields = g_array_new (FALSE, FALSE, sizeof (SummaryField));
 
@@ -927,6 +936,9 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 
 	if (had_error) {
 		g_array_free (summary_fields, TRUE);
+		g_free (fields);
+		g_free (index_types);
+		g_free (indexed_fields);
 		return NULL;
 	}
 
@@ -943,6 +955,9 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 						      have_attr_list_suffix,
 						      error);
 
+	g_free (fields);
+	g_free (index_types);
+	g_free (indexed_fields);
 	g_array_free (summary_fields, FALSE);
 
 	return ebsdb;
