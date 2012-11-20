@@ -73,6 +73,8 @@ struct _EBookBackendWebdavPrivate {
 	gchar              *password;
 	gboolean supports_getctag;
 
+	GMutex cache_lock;
+	GMutex update_lock;
 	EBookBackendCache *cache;
 };
 
@@ -386,7 +388,9 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 		contact = new_contact;
 	}
 
+	g_mutex_lock (&priv->cache_lock);
 	e_book_backend_cache_add_contact (priv->cache, contact);
+	g_mutex_unlock (&priv->cache_lock);
 
 	added_contacts.data = contact;
 	e_data_book_respond_create_contacts (book, opid, EDB_ERROR (SUCCESS), &added_contacts);
@@ -460,7 +464,9 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 		return;
 	}
 
+	g_mutex_lock (&priv->cache_lock);
 	e_book_backend_cache_remove_contact (priv->cache, uid);
+	g_mutex_unlock (&priv->cache_lock);
 
 	deleted_ids.data = uid;
 	e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (SUCCESS), &deleted_ids);
@@ -537,6 +543,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 	g_free (status_reason);
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
+	g_mutex_lock (&priv->cache_lock);
 	e_book_backend_cache_remove_contact (priv->cache, uid);
 
 	etag = e_contact_get_const (contact, E_CONTACT_REV);
@@ -552,6 +559,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 		}
 	}
 	e_book_backend_cache_add_contact (priv->cache, contact);
+	g_mutex_unlock (&priv->cache_lock);
 
 	modified_contacts.data = contact;
 	e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (SUCCESS), &modified_contacts);
@@ -572,13 +580,17 @@ e_book_backend_webdav_get_contact (EBookBackend *backend,
 	gchar                      *vcard;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
+		g_mutex_lock (&priv->cache_lock);
 		contact = e_book_backend_cache_get_contact (priv->cache, uid);
+		g_mutex_unlock (&priv->cache_lock);
 	} else {
 		contact = download_contact (webdav, uid);
 		/* update cache as we possibly have changes */
 		if (contact != NULL) {
+			g_mutex_lock (&priv->cache_lock);
 			e_book_backend_cache_remove_contact (priv->cache, uid);
 			e_book_backend_cache_add_contact (priv->cache, contact);
+			g_mutex_unlock (&priv->cache_lock);
 		}
 	}
 
@@ -881,9 +893,11 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 					if (*new_ctag) {
 						const gchar *my_ctag;
 
+						g_mutex_lock (&priv->cache_lock);
 						my_ctag = e_file_cache_get_object (E_FILE_CACHE (priv->cache), WEBDAV_CTAG_KEY);
 						res = !my_ctag || !g_str_equal (my_ctag, *new_ctag);
 						priv->supports_getctag = TRUE;
+						g_mutex_unlock (&priv->cache_lock);
 					}
 				}
 
@@ -917,8 +931,11 @@ download_contacts (EBookBackendWebdav *webdav,
 	gint                        i;
 	gchar                     *new_ctag = NULL;
 
+	g_mutex_lock (&priv->update_lock);
+
 	if (!check_addressbook_changed (webdav, &new_ctag)) {
 		g_free (new_ctag);
+		g_mutex_unlock (&priv->update_lock);
 		return EDB_ERROR (SUCCESS);
 	}
 
@@ -937,6 +954,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		g_free (new_ctag);
 		if (book_view)
 			e_data_book_view_notify_progress (book_view, -1, NULL);
+		g_mutex_unlock (&priv->update_lock);
 		return webdav_handle_auth_request (webdav);
 	}
 	if (status != 207) {
@@ -955,6 +973,8 @@ download_contacts (EBookBackendWebdav *webdav,
 		if (book_view)
 			e_data_book_view_notify_progress (book_view, -1, NULL);
 
+		g_mutex_unlock (&priv->update_lock);
+
 		return error;
 	}
 	if (message->response_body == NULL) {
@@ -964,6 +984,8 @@ download_contacts (EBookBackendWebdav *webdav,
 
 		if (book_view)
 			e_data_book_view_notify_progress (book_view, -1, NULL);
+
+		g_mutex_unlock (&priv->update_lock);
 
 		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("No response body in webdav PROPFIND result"));
 	}
@@ -1019,15 +1041,20 @@ download_contacts (EBookBackendWebdav *webdav,
 
 		etag = (const gchar *) element->etag;
 
+		g_mutex_lock (&priv->cache_lock);
 		contact = e_book_backend_cache_get_contact (priv->cache, complete_uri);
+		g_mutex_unlock (&priv->cache_lock);
+
 		/* download contact if it is not cached or its ETag changed */
 		if (contact == NULL || etag == NULL ||
 		    strcmp (e_contact_get_const (contact, E_CONTACT_REV), etag) != 0) {
 			contact = download_contact (webdav, complete_uri);
 			if (contact != NULL) {
+				g_mutex_lock (&priv->cache_lock);
 				if (e_book_backend_cache_remove_contact (priv->cache, complete_uri))
 					e_book_backend_notify_remove (book_backend, complete_uri);
 				e_book_backend_cache_add_contact (priv->cache, contact);
+				g_mutex_unlock (&priv->cache_lock);
 				e_book_backend_notify_update (book_backend, contact);
 			}
 		}
@@ -1048,13 +1075,17 @@ download_contacts (EBookBackendWebdav *webdav,
 	g_object_unref (message);
 
 	if (new_ctag) {
+		g_mutex_lock (&priv->cache_lock);
 		if (!e_file_cache_replace_object (E_FILE_CACHE (priv->cache), WEBDAV_CTAG_KEY, new_ctag))
 			e_file_cache_add_object (E_FILE_CACHE (priv->cache), WEBDAV_CTAG_KEY, new_ctag);
+		g_mutex_unlock (&priv->cache_lock);
 	}
 	g_free (new_ctag);
 
 	if (book_view)
 		e_data_book_view_notify_progress (book_view, -1, NULL);
+
+	g_mutex_unlock (&priv->update_lock);
 
 	return EDB_ERROR (SUCCESS);
 }
@@ -1090,8 +1121,12 @@ e_book_backend_webdav_start_book_view (EBookBackend *backend,
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	const gchar *query = e_data_book_view_get_card_query (book_view);
-	GList *contacts = e_book_backend_cache_get_contacts (priv->cache, query);
+	GList *contacts;
 	GList *l;
+
+	g_mutex_lock (&priv->cache_lock);
+	contacts = e_book_backend_cache_get_contacts (priv->cache, query);
+	g_mutex_unlock (&priv->cache_lock);
 
 	for (l = contacts; l != NULL; l = g_list_next (l)) {
 		EContact *contact = l->data;
@@ -1161,7 +1196,10 @@ e_book_backend_webdav_get_contact_list (EBookBackend *backend,
 	}
 
 	/* answer query from cache */
+	g_mutex_lock (&priv->cache_lock);
 	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
+	g_mutex_unlock (&priv->cache_lock);
+
 	vcard_list   = NULL;
 	for (c = contact_list; c != NULL; c = g_list_next (c)) {
 		EContact *contact = c->data;
@@ -1202,7 +1240,10 @@ e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend,
 	}
 
 	/* answer query from cache */
+	g_mutex_lock (&priv->cache_lock);
 	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
+	g_mutex_unlock (&priv->cache_lock);
+
 	uids_list   = NULL;
 	for (c = contact_list; c != NULL; c = g_list_next (c)) {
 		EContact *contact = c->data;
@@ -1308,9 +1349,13 @@ e_book_backend_webdav_open (EBookBackend *backend,
 		return;
 	}
 
-	filename = g_build_filename (cache_dir, "cache.xml", NULL);
-	priv->cache = e_book_backend_cache_new (filename);
-	g_free (filename);
+	g_mutex_lock (&priv->cache_lock);
+	if (!priv->cache) {
+		filename = g_build_filename (cache_dir, "cache.xml", NULL);
+		priv->cache = e_book_backend_cache_new (filename);
+		g_free (filename);
+	}
+	g_mutex_unlock (&priv->cache_lock);
 
 	session = soup_session_sync_new ();
 	g_object_set (session, SOUP_SESSION_TIMEOUT, 90, NULL);
@@ -1423,6 +1468,18 @@ e_book_backend_webdav_dispose (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->dispose (object);
 }
 
+static void
+e_book_backend_webdav_finalize (GObject *object)
+{
+	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (object);
+	EBookBackendWebdavPrivate *priv = webdav->priv;
+
+	g_mutex_clear (&priv->cache_lock);
+	g_mutex_clear (&priv->update_lock);
+
+	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->finalize (object);
+}
+
 static ESourceAuthenticationResult
 book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
                                        const GString *password,
@@ -1500,6 +1557,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	backend_class->stop_book_view		= e_book_backend_webdav_stop_book_view;
 
 	object_class->dispose			= e_book_backend_webdav_dispose;
+	object_class->finalize			= e_book_backend_webdav_finalize;
 }
 
 static void
@@ -1512,6 +1570,9 @@ static void
 e_book_backend_webdav_init (EBookBackendWebdav *backend)
 {
 	backend->priv = E_BOOK_BACKEND_WEBDAV_GET_PRIVATE (backend);
+
+	g_mutex_init (&backend->priv->cache_lock);
+	g_mutex_init (&backend->priv->update_lock);
 
 	g_signal_connect (
 		backend, "notify::online",
