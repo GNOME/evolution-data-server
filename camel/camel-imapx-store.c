@@ -296,7 +296,7 @@ imapx_query_auth_types_sync (CamelService *service,
 		authtype = t->data;
 		next = t->next;
 
-		if (!g_hash_table_lookup (server->cinfo->auth_types, authtype->authproto)) {
+		if (!server->cinfo || !g_hash_table_lookup (server->cinfo->auth_types, authtype->authproto)) {
 			sasl_types = g_list_remove_link (sasl_types, t);
 			g_list_free_1 (t);
 		}
@@ -852,7 +852,7 @@ add_folders_to_summary (CamelIMAPXStore *istore,
 		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) |
 						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 
-		if (!(server->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE))
+		if (server->cinfo && !(server->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE))
 			istore->dir_sep = li->separator;
 
 		if (si->info.flags != new_flags) {
@@ -979,7 +979,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore,
 			if (sync)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 
-			if (server->cinfo->capa & IMAPX_CAPABILITY_LIST_EXTENDED)
+			if (server->cinfo && (server->cinfo->capa & IMAPX_CAPABILITY_LIST_EXTENDED) != 0)
 				list_ext = "RETURN (SUBSCRIBED)";
 
 			flags |= CAMEL_STORE_FOLDER_INFO_RECURSIVE;

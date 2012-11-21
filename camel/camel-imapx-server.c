@@ -2093,7 +2093,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			is->priv->context->sinfo->u.cinfo = NULL;
 			if (cinfo)
 				imapx_free_capability (cinfo);
-			c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
+			c (is->tagprefix, "got capability flags %08x\n", is->cinfo ? is->cinfo->capa : 0xFFFFFFFF);
 		}
 		break;
 	default:
@@ -3621,7 +3621,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 
-		if (!(is->cinfo->capa & IMAPX_CAPABILITY_STARTTLS)) {
+		if (is->cinfo && !(is->cinfo->capa & IMAPX_CAPABILITY_STARTTLS)) {
 			g_set_error (
 				&local_error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
@@ -3655,7 +3655,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		if (ic->status->condition == IMAPX_CAPABILITY) {
 			is->cinfo = ic->status->u.cinfo;
 			ic->status->u.cinfo = NULL;
-			c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
+			c (is->tagprefix, "got capability flags %08x\n", is->cinfo ? is->cinfo->capa : 0xFFFFFFFF);
 		}
 
 		camel_imapx_command_unref (ic);
@@ -3741,7 +3741,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 	g_object_unref (settings);
 
 	if (mechanism != NULL) {
-		if (!g_hash_table_lookup (is->cinfo->auth_types, mechanism)) {
+		if (is->cinfo && !g_hash_table_lookup (is->cinfo->auth_types, mechanism)) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -3810,7 +3810,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 		if (ic->status->condition == IMAPX_CAPABILITY) {
 			is->cinfo = ic->status->u.cinfo;
 			ic->status->u.cinfo = NULL;
-			c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
+			c (is->tagprefix, "got capability flags %08x\n", is->cinfo ? is->cinfo->capa : 0xFFFFFFFF);
 		}
 	}
 
@@ -3892,7 +3892,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		imapx_init_idle (is);
 
 	/* Fetch namespaces */
-	if (is->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE) {
+	if (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE) != 0) {
 		ic = camel_imapx_command_new (
 			is, "NAMESPACE", NULL, "NAMESPACE");
 		if (!imapx_command_run (is, ic, cancellable, error)) {
@@ -3903,7 +3903,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		camel_imapx_command_unref (ic);
 	}
 
-	if (use_qresync && is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
+	if (use_qresync && is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) != 0) {
 		ic = camel_imapx_command_new (
 			is, "ENABLE", NULL, "ENABLE CONDSTORE QRESYNC");
 		if (!imapx_command_run (is, ic, cancellable, error)) {
@@ -5238,7 +5238,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		} else
 		#endif
 		{
-			if (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE)
+			if (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE) != 0)
 				ic = camel_imapx_command_new (
 					is, "STATUS", NULL,
 					"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT HIGHESTMODSEQ)", folder);
