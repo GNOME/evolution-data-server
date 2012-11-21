@@ -87,7 +87,21 @@ reload:
 	g_object_unref (server);
 
 	if (exit_code == E_DBUS_SERVER_EXIT_RELOAD) {
+		const gchar *config_dir;
+		gchar *dirname;
+
 		g_print ("Reloading...\n");
+
+		/* It's possible the Reload is called after restore, where
+		   the ~/.config/evolution/sources directory can be missing,
+		   thus create it, because e_server_side_source_get_user_dir()
+		   may have its static variable already set to non-NULL value.
+		*/
+		config_dir = e_get_user_config_dir ();
+		dirname = g_build_filename (config_dir, "sources", NULL);
+		g_mkdir_with_parents (dirname, 0700);
+		g_free (dirname);
+
 		goto reload;
 	}
 
