@@ -37,6 +37,8 @@
 #include "camel-mime-utils.h"
 #include "camel-medium.h"
 #include "camel-multipart.h"
+#include "camel-multipart-encrypted.h"
+#include "camel-multipart-signed.h"
 #include "camel-mime-message.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-stream-filter.h"
@@ -1812,6 +1814,10 @@ cc_prepare_sign (CamelMimePart *part)
 
 	dw = camel_medium_get_content ((CamelMedium *) part);
 	if (!dw)
+		return;
+
+	/* should not change encoding for these, they have the right encoding set already */
+	if (CAMEL_IS_MULTIPART_SIGNED (dw) || CAMEL_IS_MULTIPART_ENCRYPTED (dw))
 		return;
 
 	if (CAMEL_IS_MULTIPART (dw)) {

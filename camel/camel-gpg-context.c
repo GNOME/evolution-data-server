@@ -1409,6 +1409,7 @@ swrite (CamelMimePart *sigpart,
         GError **error)
 {
 	CamelStream *ostream;
+	CamelDataWrapper *wrapper;
 	gchar *template;
 	gint fd, ret;
 
@@ -1418,11 +1419,13 @@ swrite (CamelMimePart *sigpart,
 		return NULL;
 	}
 
-	/* TODO: This should probably just write the decoded message content out, not the part + headers */
-
 	ostream = camel_stream_fs_new_with_fd (fd);
-	ret = camel_data_wrapper_write_to_stream_sync (
-		CAMEL_DATA_WRAPPER (sigpart), ostream, cancellable, error);
+	wrapper = camel_medium_get_content (CAMEL_MEDIUM (sigpart));
+	if (!wrapper)
+		wrapper = CAMEL_DATA_WRAPPER (sigpart);
+
+	ret = camel_data_wrapper_decode_to_stream_sync (
+		wrapper, ostream, cancellable, error);
 	if (ret != -1) {
 		ret = camel_stream_flush (ostream, cancellable, error);
 		if (ret != -1)
