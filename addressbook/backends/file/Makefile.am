@@ -11,6 +11,7 @@ libebookbackendfile_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
 	$(CODE_COVERAGE_CFLAGS)				\
+	-DBACKENDDIR="\"$(ebook_backenddir)\""		\
 	$(NULL)
 
 libebookbackendfile_la_SOURCES =			\
