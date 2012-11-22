@@ -58,12 +58,13 @@ typedef enum
 /* Private part of the ECalBackendContacts structure */
 struct _ECalBackendContactsPrivate {
 
-	GRecMutex rec_mutex;			/* guards 'addressbooks' */
+	GRecMutex rec_mutex;		/* guards 'addressbooks' */
 	GHashTable   *addressbooks;	/* UID -> BookRecord */
 	gboolean      addressbook_loaded;
 
 	EBookClientView *book_view;
-	GHashTable   *tracked_contacts;   /* UID -> ContactRecord */
+	GHashTable *tracked_contacts;	/* UID -> ContactRecord */
+	GRecMutex tracked_contacts_lock;
 
 	GHashTable *zones;
 
@@ -172,9 +173,11 @@ book_record_unref (BookRecord *br)
 			g_signal_handler_disconnect (
 				br->book_client,
 				br->book_client_opened_id);
+		g_rec_mutex_lock (&br->cbc->priv->tracked_contacts_lock);
 		g_hash_table_foreach_remove (
 			br->cbc->priv->tracked_contacts,
 			remove_by_book, br->book_client);
+		g_rec_mutex_unlock (&br->cbc->priv->tracked_contacts_lock);
 
 		g_mutex_free (br->lock);
 		g_object_unref (br->cbc);
@@ -511,11 +514,14 @@ contact_record_cb_new (ECalBackendContacts *cbc,
 }
 
 static void
-contact_record_cb_free (ContactRecordCB *cb_data)
+contact_record_cb_free (ContactRecordCB *cb_data,
+			gboolean can_free_result)
 {
-	if (cb_data->as_string)
-		g_slist_foreach (cb_data->result, (GFunc) g_free, NULL);
-	g_slist_free (cb_data->result);
+	if (can_free_result) {
+		if (cb_data->as_string)
+			g_slist_foreach (cb_data->result, (GFunc) g_free, NULL);
+		g_slist_free (cb_data->result);
+	}
 
 	g_free (cb_data);
 }
@@ -622,6 +628,8 @@ contacts_modified_cb (EBookClientView *book_view,
 	EBookClient *book_client = e_book_client_view_get_client (book_view);
 	const GSList *ii;
 
+	g_rec_mutex_lock (&cbc->priv->tracked_contacts_lock);
+
 	for (ii = contacts; ii; ii = ii->next) {
 		EContact *contact = E_CONTACT (ii->data);
 		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
@@ -643,6 +651,8 @@ contacts_modified_cb (EBookClientView *book_view,
 		e_contact_date_free (birthday);
 		e_contact_date_free (anniversary);
 	}
+
+	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
 }
 
 static void
@@ -653,6 +663,8 @@ contacts_added_cb (EBookClientView *book_view,
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	EBookClient *book_client = e_book_client_view_get_client (book_view);
 	const GSList *ii;
+
+	g_rec_mutex_lock (&cbc->priv->tracked_contacts_lock);
 
 	/* See if any new contacts have BIRTHDAY or ANNIVERSARY fields */
 	for (ii = contacts; ii; ii = ii->next) {
@@ -672,6 +684,8 @@ contacts_added_cb (EBookClientView *book_view,
 		e_contact_date_free (birthday);
 		e_contact_date_free (anniversary);
 	}
+
+	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
 }
 
 static void
@@ -682,9 +696,13 @@ contacts_removed_cb (EBookClientView *book_view,
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	const GSList *ii;
 
+	g_rec_mutex_lock (&cbc->priv->tracked_contacts_lock);
+
 	/* Stop tracking these */
 	for (ii = contact_ids; ii; ii = ii->next)
 		g_hash_table_remove (cbc->priv->tracked_contacts, ii->data);
+
+	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
 }
 
 /************************************************************************************/
@@ -756,7 +774,10 @@ update_tracked_alarms_cb (gpointer user_data)
 
 	g_return_val_if_fail (cbc != NULL, FALSE);
 
+	g_rec_mutex_lock (&cbc->priv->tracked_contacts_lock);
 	g_hash_table_foreach (cbc->priv->tracked_contacts, update_alarm_cb, cbc);
+	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
+
 	cbc->priv->update_alarms_id = 0;
 
 	return FALSE;
@@ -1079,16 +1100,19 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend,
 		return;
 	}
 
+	g_rec_mutex_lock (&priv->tracked_contacts_lock);
 	record = g_hash_table_lookup (priv->tracked_contacts, real_uid);
 	g_free (real_uid);
 
 	if (!record) {
+		g_rec_mutex_unlock (&priv->tracked_contacts_lock);
 		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
 		return;
 	}
 
 	if (record->comp_birthday && g_str_has_suffix (uid, BIRTHDAY_UID_EXT)) {
 		*object = e_cal_component_get_as_string (record->comp_birthday);
+		g_rec_mutex_unlock (&priv->tracked_contacts_lock);
 
 		d (g_message ("Return birthday: %s", *object));
 		return;
@@ -1096,10 +1120,13 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend,
 
 	if (record->comp_anniversary && g_str_has_suffix (uid, ANNIVERSARY_UID_EXT)) {
 		*object = e_cal_component_get_as_string (record->comp_anniversary);
+		g_rec_mutex_unlock (&priv->tracked_contacts_lock);
 
 		d (g_message ("Return anniversary: %s", *object));
 		return;
 	}
+
+	g_rec_mutex_unlock (&priv->tracked_contacts_lock);
 
 	d (g_message ("Returning nothing for uid: %s", uid));
 
@@ -1265,12 +1292,14 @@ e_cal_backend_contacts_get_object_list (ECalBackendSync *backend,
 	}
 
 	cb_data = contact_record_cb_new (cbc, sexp, TRUE);
+
+	g_rec_mutex_lock (&priv->tracked_contacts_lock);
 	g_hash_table_foreach (priv->tracked_contacts, contact_record_cb, cb_data);
+	g_rec_mutex_unlock (&priv->tracked_contacts_lock);
+
 	*objects = cb_data->result;
 
-	/* Don't call cb_data_free as that would destroy the results
-	 * in *objects */
-	g_free (cb_data);
+	contact_record_cb_free (cb_data, FALSE);
 }
 
 static void
@@ -1292,10 +1321,12 @@ e_cal_backend_contacts_start_view (ECalBackend *backend,
 
 	cb_data = contact_record_cb_new (cbc, sexp, FALSE);
 
+	g_rec_mutex_lock (&priv->tracked_contacts_lock);
 	g_hash_table_foreach (priv->tracked_contacts, contact_record_cb, cb_data);
 	e_data_cal_view_notify_components_added (query, cb_data->result);
+	g_rec_mutex_unlock (&priv->tracked_contacts_lock);
 
-	contact_record_cb_free (cb_data);
+	contact_record_cb_free (cb_data, TRUE);
 
 	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }
@@ -1339,6 +1370,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 
 	g_object_unref (priv->settings);
 	g_rec_mutex_clear (&priv->rec_mutex);
+	g_rec_mutex_clear (&priv->tracked_contacts_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->finalize (object);
@@ -1379,6 +1411,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	cbc->priv = E_CAL_BACKEND_CONTACTS_GET_PRIVATE (cbc);
 
 	g_rec_mutex_init (&cbc->priv->rec_mutex);
+	g_rec_mutex_init (&cbc->priv->tracked_contacts_lock);
 
 	cbc->priv->addressbooks = g_hash_table_new_full (
 		(GHashFunc) e_source_hash,
