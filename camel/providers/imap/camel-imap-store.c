@@ -2775,10 +2775,15 @@ get_folders_sync (CamelImapStore *imap_store,
 	CamelStoreInfo *si;
 	const gchar *pattern = ppattern;
 	CamelImapStoreNamespace *ns;
-	gboolean success = TRUE, first_namespace = TRUE;
+	CamelSettings *settings;
+	gboolean success = TRUE, first_namespace = TRUE, notify_all;
 
 	if (g_cancellable_is_cancelled (cancellable))
 		return FALSE;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (imap_store));
+	notify_all = !camel_imap_settings_get_use_subscriptions (CAMEL_IMAP_SETTINGS (settings));
+	g_object_unref (settings);
 
 	/* We do a LIST followed by LSUB, and merge the results.  LSUB may not be a strict
 	 * subset of LIST for some servers, so we can't use either or separately */
@@ -2878,10 +2883,15 @@ get_folders_sync (CamelImapStore *imap_store,
 
 		if (!ppattern || imap_match_pattern (camel_imap_store_summary_namespace_find_full (imap_store->summary, full_name), pattern, full_name)) {
 			if ((fi = g_hash_table_lookup (present, camel_store_info_path (imap_store->summary, si))) != NULL) {
+				gboolean do_notify = notify_all;
+
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
 					camel_store_summary_touch ((CamelStoreSummary *) imap_store->summary);
+					do_notify = TRUE;
+				}
 
+				if (do_notify) {
 					camel_store_folder_created (CAMEL_STORE (imap_store), fi);
 					camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imap_store), fi);
 				}
