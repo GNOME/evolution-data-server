@@ -32,7 +32,6 @@
 #include <libebook-contacts/e-book-contacts-enumtypes.h>
 #include <libebook-contacts/e-source-backend-summary-setup.h>
 #include <libebook-contacts/e-source-address-book-config.h>
-#include <libebook-contacts/e-source-direct-access.h>
 
 #undef __LIBEBOOK_CONTACTS_H_INSIDE__
 
