@@ -6,6 +6,12 @@
 #include "client-test-utils.h"
 
 
+/* This forces the GType to be registered in a way that
+ * avoids a "statement with no effect" compiler warning.
+ * FIXME Use g_type_ensure() once we require GLib 2.34. */
+#define REGISTER_TYPE(type) \
+	(g_type_class_unref (g_type_class_ref (type)))
+
 /****************************** Custom Book Creation *****************************/
 
 
@@ -61,7 +67,7 @@ register_source_idle (CreateBookData *data)
 	backend = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
 	e_source_backend_set_backend_name (backend, "local");
 
-	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	REGISTER_TYPE (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
 	setup = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
 	e_source_backend_summary_setup_set_summary_fields (setup,
 							   E_CONTACT_FULL_NAME,
