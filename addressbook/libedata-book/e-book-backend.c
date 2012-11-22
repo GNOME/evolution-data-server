@@ -1036,6 +1036,54 @@ e_book_backend_set_is_removed (EBookBackend *backend,
 }
 
 /**
+ * e_book_backend_get_direct_book:
+ * @backend: an #EBookBackend
+ *
+ * Tries to create an #EDataBookDirect for @backend if
+ * backend supports direct read access.
+ *
+ * Returns: (transfer full): A new #EDataBookDirect object, or %NULL if @backend does not support direct access
+ *
+ * Since: 3.8
+ */
+EDataBookDirect *
+e_book_backend_get_direct_book (EBookBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->get_direct_book)
+		return E_BOOK_BACKEND_GET_CLASS (backend)->get_direct_book (backend);
+
+	return NULL;
+}
+
+/**
+ * e_book_backend_configure_direct:
+ * @backend: an #EBookBackend
+ * @config: The configuration string for the given backend
+ *
+ * This method is called on @backend in direct read access mode.
+ * The @config argument is the same configuration string which
+ * the same backend reported in the #EDataBookDirect returned
+ * by e_book_backend_get_direct_book().
+ *
+ * The configuration string is optional and is used to ensure
+ * that direct access backends are properly configured to
+ * interface with the same data as the running server side backend.
+ *
+ * Since: 3.8
+ */
+void
+e_book_backend_configure_direct (EBookBackend *backend,
+				 const gchar *config)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->configure_direct)
+		E_BOOK_BACKEND_GET_CLASS (backend)->configure_direct (backend, config);
+}
+
+/**
  * e_book_backend_sync:
  * @backend: an #EBookbackend
  *

@@ -31,6 +31,7 @@ libedata_book_1_2_la_SOURCES = \
 	e-data-book.c \
 	e-data-book-factory.c \
 	e-data-book-view.c \
+	e-data-book-direct.c \
 	ximian-vcard.h
 
 libedata_book_1_2_la_LIBADD = \
@@ -60,6 +61,7 @@ libedata_bookinclude_HEADERS = \
 	e-book-backend.h \
 	e-data-book-factory.h \
 	e-data-book-view.h \
+	e-data-book-direct.h \
 	e-data-book.h \
 	e-book-backend-cache.h \
 	e-book-backend-sqlitedb.h \

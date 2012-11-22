@@ -50,6 +50,7 @@ struct _EDataBookPrivate
 {
 	EGdbusBook *gdbus_object;
 	EModule *direct_module;
+	EDataBookDirect *direct_book;
 
 	EBookBackend *backend;
 
@@ -1531,6 +1532,12 @@ e_data_book_register_gdbus_object (EDataBook *book,
 	g_return_val_if_fail (connection != NULL, 0);
 	g_return_val_if_fail (object_path != NULL, 0);
 
+	if (book->priv->direct_book &&
+	    !e_data_book_direct_register_gdbus_object (book->priv->direct_book,
+						       connection, object_path,
+						       error))
+		return 0;
+
 	return e_gdbus_book_register_object (book->priv->gdbus_object, connection, object_path, error);
 }
 
@@ -1654,6 +1661,11 @@ data_book_dispose (GObject *object)
 		priv->backend = NULL;
 	}
 
+	if (priv->direct_book) {
+		g_object_unref (priv->direct_book);
+		priv->direct_book = NULL;
+	}
+
 	if (priv->direct_module) {
 		g_type_module_unuse (G_TYPE_MODULE (priv->direct_module));
 		priv->direct_module = NULL;
@@ -1761,12 +1773,18 @@ e_data_book_new (EBookBackend *backend)
 
 	g_object_unref (gdbus_object);
 
+	/* This will be NULL for a backend that does not support direct read access */
+	book->priv->direct_book = e_book_backend_get_direct_book (backend);
+
 	return book;
 }
 
 EDataBook *
 e_data_book_new_direct (ESourceRegistry *registry,
-			ESource         *source)
+			ESource *source,
+			const gchar *backend_path,
+			const gchar *backend_name,
+			const gchar *config)
 {
 	EDataBook    *book = NULL;
 	EModule      *module;
@@ -1774,22 +1792,11 @@ e_data_book_new_direct (ESourceRegistry *registry,
 	GType         backend_type;
 	GType         factory_type;
 	GTypeClass   *factory_class;
-	gchar        *backend_path;
-	gchar        *backend_name;
-	ESourceDirectAccess *direct;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-
-	REGISTER_TYPE (E_TYPE_SOURCE_DIRECT_ACCESS);
-	direct = e_source_get_extension (source, E_SOURCE_EXTENSION_DIRECT_ACCESS);
-	backend_path = e_source_direct_access_dup_backend_path (direct);
-	backend_name = e_source_direct_access_dup_backend_name (direct);
-
-	if (!backend_path || !backend_name) {
-		g_warning ("ESource is not configured for direct access");
-		goto new_direct_finish;
-	}
+	g_return_val_if_fail (backend_path && backend_path[0], NULL);
+	g_return_val_if_fail (backend_name && backend_name[0], NULL);
 
 	module = load_module (backend_path);
 	if (!module)
@@ -1816,12 +1823,13 @@ e_data_book_new_direct (ESourceRegistry *registry,
 				"registry", registry,
 				"source", source, NULL);
 
+	e_book_backend_configure_direct (backend, config);
+
 	book = g_object_new (E_TYPE_DATA_BOOK, "backend", backend, NULL);
 	book->priv->direct_module = module;
+	g_object_unref (backend);
 
  new_direct_finish:
-	g_free (backend_path);
-	g_free (backend_name);
 
 	return book;
 }
