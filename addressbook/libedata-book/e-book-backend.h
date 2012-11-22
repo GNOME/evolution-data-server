@@ -31,6 +31,7 @@
 
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
+#include <libedata-book/e-data-book-direct.h>
 
 G_BEGIN_DECLS
 
@@ -165,6 +166,11 @@ struct _EBookBackendClass {
 
 	void    (* notify_update)               (EBookBackend *backend, const EContact *contact);
 
+
+	EDataBookDirect *
+	        (* get_direct_book)             (EBookBackend *backend);
+	void    (* configure_direct)            (EBookBackend *backend, const gchar *config);
+
 	/* Notification signals */
 	void	(* sync)			(EBookBackend *backend);
 };
@@ -212,6 +218,10 @@ void		e_book_backend_notify_readonly	(EBookBackend *backend, gboolean is_readonl
 void		e_book_backend_notify_online	(EBookBackend *backend, gboolean is_online);
 void		e_book_backend_notify_opened	(EBookBackend *backend, GError *error);
 void		e_book_backend_notify_property_changed (EBookBackend *backend, const gchar *prop_name, const gchar *prop_value);
+
+EDataBookDirect *
+                e_book_backend_get_direct_book  (EBookBackend *backend);
+void            e_book_backend_configure_direct (EBookBackend *backend, const gchar *config);
 
 void		e_book_backend_sync		(EBookBackend *backend);
 
