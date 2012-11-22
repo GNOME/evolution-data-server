@@ -7,12 +7,15 @@ libegdbus_book_la_CPPFLAGS =			\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
 	$(E_DATA_SERVER_CFLAGS)			\
+	$(GIO_UNIX_CFLAGS)			\
 	$(CODE_COVERAGE_CFLAGS)			\
 	$(NULL)
 
 libegdbus_book_la_SOURCES =			\
 	e-gdbus-book.h				\
 	e-gdbus-book.c				\
+	e-gdbus-book-direct.h			\
+	e-gdbus-book-direct.c			\
 	e-gdbus-book-factory.h			\
 	e-gdbus-book-factory.c			\
 	e-gdbus-book-view.h			\
@@ -20,7 +23,9 @@ libegdbus_book_la_SOURCES =			\
 
 libegdbus_book_la_LIBADD =			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_LIBS)
+	$(E_DATA_SERVER_LIBS)	\
+	$(GIO_UNIX_LIBS)
+
 
 libegdbus_book_la_LDFLAGS = $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \
