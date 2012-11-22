@@ -1027,13 +1027,19 @@ sync_folders (CamelIMAPXStore *istore,
               GCancellable *cancellable,
               GError **error)
 {
+	CamelSettings *settings;
 	GHashTable *folders_from_server;
+	gboolean notify_all;
 	gint i, total;
 
 	folders_from_server = fetch_folders_for_namespaces (
 		istore, pattern, sync, cancellable, error);
 	if (folders_from_server == NULL)
 		return FALSE;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (istore));
+	notify_all = !camel_imapx_settings_get_use_subscriptions (CAMEL_IMAPX_SETTINGS (settings));
+	g_object_unref (settings);
 
 	total = camel_store_summary_count ((CamelStoreSummary *) istore->summary);
 	for (i = 0; i < total; i++) {
@@ -1053,10 +1059,15 @@ sync_folders (CamelIMAPXStore *istore,
 
 		if (!pattern || !*pattern || imapx_match_pattern (camel_imapx_store_summary_namespace_find_full (istore->summary, full_name), pattern, full_name)) {
 			if ((fi = g_hash_table_lookup (folders_from_server, camel_store_info_path (istore->summary, si))) != NULL) {
+				gboolean do_notify = notify_all;
+
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
 					camel_store_summary_touch ((CamelStoreSummary *) istore->summary);
+					do_notify = TRUE;
+				}
 
+				if (do_notify) {
 					camel_store_folder_created (CAMEL_STORE (istore), fi);
 					camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (istore), fi);
 				}
