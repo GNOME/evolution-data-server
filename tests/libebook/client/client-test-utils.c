@@ -335,8 +335,6 @@ register_source_idle (CreateBookData *data)
 {
 	GError *error = NULL;
 	ESourceBackend  *backend;
-	ESourceDirectAccess *direct;
-	gchar *backend_path;
 
 	data->registry = e_source_registry_new_sync (NULL, &error);
 	if (!data->registry)
@@ -348,14 +346,6 @@ register_source_idle (CreateBookData *data)
 
 	backend = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
 	e_source_backend_set_backend_name (backend, "local");
-
-	/* Configure for direct access */
-	REGISTER_TYPE (E_TYPE_SOURCE_DIRECT_ACCESS);
-	direct = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_DIRECT_ACCESS);
-	backend_path = g_build_filename (BACKENDDIR, "libebookbackendfile.so", NULL);
-	e_source_direct_access_set_backend_path (direct, backend_path);
-	e_source_direct_access_set_backend_name (direct, "EBookBackendFileFactory");
-	g_free (backend_path);
 
 	if (!e_source_registry_commit_source_sync (data->registry, data->scratch, NULL, &error))
 		g_error ("Unable to add new source to the registry for uid %s: %s", data->uid, error->message);
