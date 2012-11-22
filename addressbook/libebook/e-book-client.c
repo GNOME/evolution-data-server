@@ -38,6 +38,7 @@
 #include "e-gdbus-book.h"
 #include "e-gdbus-book-factory.h"
 #include "e-gdbus-book-view.h"
+#include "e-gdbus-book-direct.h"
 
 #define E_BOOK_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -626,7 +627,7 @@ e_book_client_new (ESource *source,
 
 
 /**
- * e_book_client_new:
+ * e_book_client_new_direct:
  * @source: An #ESource pointer
  * @error: A #GError pointer
  *
@@ -642,18 +643,42 @@ e_book_client_new_direct (ESourceRegistry *registry,
 			  ESource         *source,
 			  GError         **error)
 {
-  EBookClient *client;
+	EBookClient *client;
+	EGdbusBookDirect *direct_config;
 
-  client = e_book_client_new (source, error);
+	client = e_book_client_new (source, error);
 
-  if (!client)
-	  return NULL;
+	if (!client)
+		return NULL;
 
-  client->priv->direct_book = e_data_book_new_direct (registry, source);
-  if (!client->priv->direct_book)
-    g_warning ("Direct access to address book is not available");
+	direct_config = 
+	        e_gdbus_book_direct_proxy_new_sync (
+		        g_dbus_proxy_get_connection (client->priv->gdbus_book),
+			G_DBUS_PROXY_FLAGS_NONE,
+			ADDRESS_BOOK_DBUS_SERVICE_NAME,
+			g_dbus_proxy_get_object_path (client->priv->gdbus_book),
+			NULL, NULL);
 
-  return client;
+	if (!direct_config) {
+		g_warning ("Direct read access to address book is not available, falling back to normal read access mode");
+	} else {
+		const gchar *backend_name, *backend_path, *config;
+
+		backend_path = e_gdbus_book_direct_get_backend_path (direct_config);
+		backend_name = e_gdbus_book_direct_get_backend_name (direct_config);
+		config = e_gdbus_book_direct_get_backend_config (direct_config);
+
+		client->priv->direct_book = e_data_book_new_direct (registry, source,
+								    backend_path,
+								    backend_name,
+								    config);
+		if (!client->priv->direct_book)
+			g_warning ("Failed to open addressbook in direct read access mode, falling back to normal read access mode");
+
+		g_object_unref (direct_config);
+	}
+
+	return client;
 }
 
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
