@@ -117,6 +117,13 @@ sync_push_request (CamelSqlite3File *cFile,
 
 	g_static_rec_mutex_lock (&cFile->sync_mutex);
 
+	if (!cFile->flags) {
+		/* nothing to sync, might be when xClose is called
+		   without any pending xSync request */
+		g_static_rec_mutex_unlock (&cFile->sync_mutex);
+		return;
+	}
+
 	if (wait_for_finish) {
 		done = g_slice_new (SyncDone);
 		done->cond = g_cond_new ();
