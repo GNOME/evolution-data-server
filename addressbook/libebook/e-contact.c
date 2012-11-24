@@ -2607,15 +2607,7 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")
 GList *
 e_contact_attr_list_copy (GList *list)
 {
-	GList *dup_list = NULL, *l;
-
-	for (l = list; l; l = l->next) {
-		gchar *str = g_strdup ((gchar *)l->data);
-
-		dup_list = g_list_prepend (dup_list, str);
-	}
-
-	return g_list_reverse (dup_list);
+	return g_list_copy_deep (list, (GCopyFunc) g_strdup, NULL);
 }
 
 /**
