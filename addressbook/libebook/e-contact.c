@@ -2623,8 +2623,7 @@ e_contact_attr_list_copy (GList *list)
 void
 e_contact_attr_list_free (GList *list)
 {
-	g_list_foreach (list, (GFunc)g_free, NULL);
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) g_free);
 }
 
 typedef GList EContactAttrList;
