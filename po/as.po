@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-11-22 04:00+0000\n"
-"PO-Revision-Date: 2012-11-22 19:47+0530\n"
+"POT-Creation-Date: 2012-11-24 02:14+0000\n"
+"PO-Revision-Date: 2012-11-26 15:44+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "Language: as_IN\n"
@@ -52,7 +52,6 @@ msgstr "সন্ধান কৰা হৈছে..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1303
 #, c-format
-#| msgid "Could not rename folder %s to %s: %s"
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "পুৰনি ডাটাবেইচক '%s' ৰ পৰা '%s' লে পুনৰ নামাকৰণ কৰিবলে ব্যৰ্থ: %s"
 
@@ -753,7 +752,7 @@ msgid "Birth Date"
 msgstr "জন্ম তাৰিখ"
 
 #: ../addressbook/libebook/e-contact.c:284
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:936
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:957
 msgid "Anniversary"
 msgstr "বাৰ্ষিকী"
 
@@ -882,40 +881,46 @@ msgstr "‍অজ্ঞাত কিতাপ বৈশিষ্ট '%s'"
 msgid "Cannot change value of book property '%s'"
 msgstr "কিতাপ বৈশিষ্ট '%s' ৰ মান সলনি কৰিব নোৱাৰি "
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:693
-#: ../camel/camel-db.c:503
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:742
+#, c-format
+msgid "Error introspecting unknown summary field '%s'"
+msgstr "অজ্ঞাত সাৰাংশ ফিল্ড '%s' নীৰিক্ষণ কৰোতে ত্ৰুটি"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:963
+#: ../camel/camel-db.c:510
 #, c-format
 msgid "Insufficient memory"
 msgstr "অপৰ্যাপ্ত মেমৰি"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:823
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1093
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "সাৰাংশত অবৈধ পৰিচয় ফিল্ড '%d' ধাৰ্য্য কৰা হৈছে"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:856
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1126
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
 "সাৰাংশত ধৰণ '%s' ৰ পৰিচয় ফিল্ড '%s' ধাৰ্য্য কৰা হৈছে, কিন্তু কেৱল boolean, "
-"string আৰু string list ফিল্ড ধৰণসমূহ সমৰ্থিত"
+"string "
+"আৰু string list ফিল্ড ধৰণসমূহ সমৰ্থিত"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1673
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2405
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1943
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2668
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 "সম্পূৰ্ণ search_contacts ক্যাশত সংৰক্ষণ কৰা নহয়। vcards ঘুৰাই দিব নোৱাৰি।"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1694
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1965
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "পৰিচয় '%s' পোৱা নগল"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2578
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2840
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -924,16 +929,15 @@ msgstr ""
 "ক্যাশত সম্পূৰ্ণ search_contacts সংৰক্ষণ কৰা নহয়। সেয়েহে কেৱল সাৰাংশ প্ৰশ্ন "
 "সমৰ্থিত।"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2658
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2918
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 "সম্পূৰ্ণ vcards ক্যাশত সংৰক্ষণ কৰা নহয়। সেয়েহে কেৱল সাৰাংশ প্ৰশ্ন সমৰ্থিত।"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3356
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3590
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Unable to remove the db file: errno %d"
 msgstr "db ফাইল আতৰাবলে অক্ষম: errno %d"
 
@@ -1226,16 +1230,16 @@ msgstr "সূচী আউটবক্স url পোৱা নগল"
 msgid "Unexpected result in schedule-response"
 msgstr "schedule-response ত অপ্ৰত্যাশীত ফলাফল"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:938
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:959
 msgid "Birthday"
 msgstr "জন্মদিন"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:974
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:995
 #, c-format
 msgid "Birthday: %s"
 msgstr "জন্মদিন: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1005
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1026
 #, c-format
 msgid "Anniversary: %s"
 msgstr "বাৎসৰিক: %s"
@@ -1868,12 +1872,12 @@ msgstr "অফ-লাইন কৰ্মৰ বাবে ফোল্ডাৰ�
 #: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:615
 #: ../camel/camel-imapx-folder.c:649 ../camel/camel-imapx-folder.c:689
 #: ../camel/camel-imapx-folder.c:725 ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1399 ../camel/camel-imapx-store.c:1488
-#: ../camel/camel-imapx-store.c:1537
+#: ../camel/camel-imapx-store.c:1410 ../camel/camel-imapx-store.c:1499
+#: ../camel/camel-imapx-store.c:1548
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
-#: ../camel/providers/imap/camel-imap-store.c:3289
+#: ../camel/providers/imap/camel-imap-store.c:3299
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #: ../camel/providers/pop3/camel-pop3-folder.c:677
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
@@ -2224,7 +2228,6 @@ msgid "Server disconnected"
 msgstr "চাৰ্ভাৰ বিচ্ছিন্নিত"
 
 #: ../camel/camel-imapx-server.c:1656
-#| msgid "Error writing to cache stream: "
 msgid "Error writing to cache stream"
 msgstr "ক্যাশ স্ট্ৰিমলে লিখোতে ত্ৰুটি"
 
@@ -2437,18 +2440,18 @@ msgstr "%s ৰ অনুৰূপ কোনো ফোল্ডাৰ উপস�
 msgid "Inbox"
 msgstr "ইনবক্স"
 
-#: ../camel/camel-imapx-store.c:1100
+#: ../camel/camel-imapx-store.c:1111
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "%s ৰ বাবে ফোল্ডাৰ তালিকা উদ্ধাৰ কৰা"
 
-#: ../camel/camel-imapx-store.c:1204
+#: ../camel/camel-imapx-store.c:1215
 #: ../camel/providers/nntp/camel-nntp-store.c:1786
 #, c-format
 msgid "No such folder: %s"
 msgstr "এই ধৰণৰ ফোল্ডাৰ উপস্থিত নাই: %s"
 
-#: ../camel/camel-imapx-store.c:1421
+#: ../camel/camel-imapx-store.c:1432
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
@@ -2457,13 +2460,13 @@ msgid ""
 msgstr ""
 "\"%s\" ফোল্ডাৰৰ নামৰ মাজত অবৈধ আখৰ \"%c\" উপস্থিত থকাৰ ফলস্বৰূপ ই বৈধ নহয়"
 
-#: ../camel/camel-imapx-store.c:1432
+#: ../camel/camel-imapx-store.c:1443
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "উপধায়ক ফোল্ডাৰ ‍অজ্ঞাত: %s"
 
-#: ../camel/camel-imapx-store.c:1442
+#: ../camel/camel-imapx-store.c:1453
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -3635,17 +3638,17 @@ msgstr "IMAP চাৰ্ভাৰৰ মেইল পঢ়া আৰু সংৰ
 msgid "Cannot create folder '%s': folder exists."
 msgstr "`%s' ফোল্ডাৰ সৃষ্টি কৰোঁতে ব্যৰ্থ: ফোল্ডাৰ বৰ্তমানে উপস্থিত।"
 
-#: ../camel/providers/imap/camel-imap-store.c:2984
+#: ../camel/providers/imap/camel-imap-store.c:2994
 #, c-format
 msgid "Retrieving list of folders at '%s'"
 msgstr "'%s' ত ফোল্ডাৰসমূহৰ তালিকা উদ্ধাৰ কৰা হৈছে"
 
-#: ../camel/providers/imap/camel-imap-store.c:3334
+#: ../camel/providers/imap/camel-imap-store.c:3344
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "চাৰ্ভাৰৰ সৈতে অপ্ৰত্যাশিত ভাবে সংযোগ বিচ্ছিন্ন কৰা হৈছে"
 
-#: ../camel/providers/imap/camel-imap-store.c:3338
+#: ../camel/providers/imap/camel-imap-store.c:3348
 msgid "Server unexpectedly disconnected: "
 msgstr "চাৰ্ভাৰ অপ্ৰত্যাশিতভাৱে বিচ্ছিন্ন হল: "
 
@@ -4288,8 +4291,6 @@ msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "USENET বাতৰিদলে বাৰ্তা পাঠ আৰু পোস্ট কৰোঁতে ব্যৱহৃত উপলব্ধ ব্যৱস্থা।"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:87
-#| msgid ""
-#| "This option will connect to the server using Kerberos 5 authentication."
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
@@ -4616,7 +4617,6 @@ msgstr "গ্ৰাহকসমূহৰ তালিকা বিশ্লে�
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:182
 #, c-format
-#| msgid "Could not parse recipient list"
 msgid "Could not parse arguments"
 msgstr "তৰ্কসমূহ বিশ্লেষণ কৰিব পৰা নগল"
 
@@ -4919,7 +4919,6 @@ msgstr ""
 "\"দিনবোৰ\""
 
 #: ../data/sources/birthdays.source.in.h:1
-#| msgid "Birthday and anniversary reminder"
 msgid "Birthdays & Anniversaries"
 msgstr "জন্মদিন আৰু বাৰ্ষিকীসমূহ"
 
@@ -4938,7 +4937,6 @@ msgid "Google"
 msgstr "Google"
 
 #: ../data/sources/ldap-stub.source.in.h:1
-#| msgid "IMAP server %s"
 msgid "On LDAP Servers"
 msgstr "LDAP চাৰ্ভাৰসমূহত"
 
@@ -4948,12 +4946,10 @@ msgid "On This Computer"
 msgstr "এই কমপিউটাৰত"
 
 #: ../data/sources/vfolder.source.in.h:1
-#| msgid "Folders"
 msgid "Search Folders"
 msgstr "ফোল্ডাৰসমূহ সন্ধান কৰক"
 
 #: ../data/sources/weather-stub.source.in.h:1
-#| msgid "Weather: Fog"
 msgid "Weather"
 msgstr "বতৰ"
 
