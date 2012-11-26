@@ -1759,6 +1759,35 @@ e_book_backend_sqlitedb_get_contact (EBookBackendSqliteDB *ebsdb,
 	return contact;
 }
 
+static gboolean
+uid_rev_fields (GHashTable *fields_of_interest)
+{
+	gboolean uid_rev = TRUE;
+	GHashTableIter iter;
+	gpointer key, value;
+
+	if (!fields_of_interest)
+		return FALSE;
+
+	g_hash_table_iter_init (&iter, fields_of_interest);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		const gchar  *field_name = key;
+		EContactField field      = e_contact_field_id (field_name);
+		gboolean      found      = FALSE;
+
+		if (field == E_CONTACT_UID ||
+		    field == E_CONTACT_REV)
+			found = TRUE;
+
+		if (!found) {
+			uid_rev = FALSE;
+			break;
+		}
+	}
+
+	return uid_rev;
+}
+
 /**
  * e_book_backend_sqlitedb_is_summary_fields:
  * @fields_of_interest: A hash table containing the fields of interest
@@ -1838,6 +1867,62 @@ e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
 	return summary_fields;
 }
 
+/* free return value with g_free */
+static gchar *
+summary_select_stmt (GHashTable *fields_of_interest,
+		     gboolean distinct)
+{
+	GString   *string;
+
+	if (distinct)
+		string = g_string_new ("SELECT DISTINCT summary.uid");
+	else
+		string = g_string_new ("SELECT summary.uid");
+
+	/* Add the E_CONTACT_REV field if they are both requested */
+	if (g_hash_table_size (fields_of_interest) == 2)
+		g_string_append (string, ", Rev");
+
+	return g_string_free (string, FALSE);
+}
+
+static gint
+store_data_to_vcard (gpointer ref,
+                     gint ncol,
+                     gchar **cols,
+                     gchar **name)
+{
+	GSList **vcard_data = ref;
+	EbSdbSearchData *search_data = g_new0 (EbSdbSearchData, 1);
+	EContact *contact = e_contact_new ();
+	gchar *vcard;
+	gint i;
+
+	/* parse through cols, this will be useful if the api starts supporting field restrictions */
+	for (i = 0; i < ncol; i++)
+	{
+		if (!name[i] || !cols[i])
+			continue;
+
+		/* Only UID & REV can be used to create contacts from the summary columns */
+		if (!strcmp (name[i], "uid")) {
+			e_contact_set (contact, E_CONTACT_UID, cols[i]);
+
+			search_data->uid = g_strdup (cols[i]);
+		} else if (!strcmp (name[i], "Rev")) {
+			e_contact_set (contact, E_CONTACT_REV, cols[i]);
+		} else if (!strcmp (name[i], "bdata"))
+			search_data->bdata = g_strdup (cols[i]);
+	}
+
+	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	search_data->vcard = vcard;
+	*vcard_data = g_slist_prepend (*vcard_data, search_data);
+
+	g_object_unref (contact);
+	return 0;
+}
+
 /**
  * e_book_backend_sqlitedb_get_vcard_string:
  * @ebsdb: An #EBookBackendSqliteDB
@@ -1878,17 +1963,49 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 
 	READER_LOCK (ebsdb);
 
-	if (!ebsdb->priv->store_vcard) {
+	/* Try constructing contacts from only UID/REV first if that's requested */
+	if (uid_rev_fields (fields_of_interest)) {
+		GSList *vcards = NULL;
+		gchar *select_portion;
 
- 		g_set_error (error, E_BOOK_SDB_ERROR,
- 			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+		select_portion = summary_select_stmt (fields_of_interest, FALSE);
 
-	} else {
-		stmt = sqlite3_mprintf ("SELECT vcard FROM %Q WHERE uid = %Q", folderid, uid);
-		book_backend_sql_exec (ebsdb->priv->db, stmt, get_vcard_cb , &vcard_str, error);
+		stmt = sqlite3_mprintf ("%s FROM %Q AS summary WHERE uid = %Q",
+					select_portion, folderid, uid);
+		book_backend_sql_exec (ebsdb->priv->db, stmt,
+				       store_data_to_vcard,
+				       &vcards, error);
+		sqlite3_free (stmt);
+		g_free (select_portion);
+
+		if (vcards) {
+			EbSdbSearchData *s_data = (EbSdbSearchData *) vcards->data;
+
+			vcard_str     = s_data->vcard;
+			s_data->vcard = NULL;
+
+			e_book_backend_sqlitedb_search_data_free (s_data);
+
+			g_slist_free (vcards);
+			vcards = NULL;
+		}
+
+		local_with_all_required_fields = TRUE;
+
+	} else if (ebsdb->priv->store_vcard) {
+
+		stmt = sqlite3_mprintf (
+			"SELECT vcard FROM %Q WHERE uid = %Q", folderid, uid);
+		book_backend_sql_exec (
+			ebsdb->priv->db, stmt,
+			get_vcard_cb , &vcard_str, error);
 		sqlite3_free (stmt);
 
 		local_with_all_required_fields = TRUE;
+	} else {
+ 		g_set_error (error, E_BOOK_SDB_ERROR,
+ 			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+
 	}
 
 	READER_UNLOCK (ebsdb);
@@ -2598,12 +2715,44 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 
 	READER_LOCK (ebsdb);
 
-	if (!ebsdb->priv->store_vcard) {
+	/* Try constructing contacts from only UID/REV first if that's requested */
+	if (uid_rev_fields (fields_of_interest)) {
+		gchar *select_portion;
 
-		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+		select_portion = summary_select_stmt (fields_of_interest,
+						      query_with_list_attrs);
 
-	} else {
+		if (sql && sql[0]) {
+
+			if (query_with_list_attrs) {
+				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
+
+				stmt = sqlite3_mprintf ("%s FROM %Q AS summary, %Q AS multi WHERE %s",
+							select_portion, folderid, list_table, sql);
+				g_free (list_table);
+			} else {
+				stmt = sqlite3_mprintf ("%s FROM %Q AS summary WHERE %s",
+							select_portion, folderid, sql);
+			}
+
+			success = book_backend_sql_exec (
+                                ebsdb->priv->db, stmt,
+				store_data_to_vcard, &vcard_data, error);
+
+			sqlite3_free (stmt);
+		} else {
+			stmt = sqlite3_mprintf ("%s FROM %Q AS summary", select_portion, folderid);
+			success = book_backend_sql_exec (
+				ebsdb->priv->db, stmt,
+				store_data_to_vcard, &vcard_data, error);
+			sqlite3_free (stmt);
+		}
+
+		local_with_all_required_fields = TRUE;
+		g_free (select_portion);
+
+	} else if (ebsdb->priv->store_vcard) {
+
 		if (sql && sql[0]) {
 
 			if (query_with_list_attrs) {
@@ -2625,6 +2774,9 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 			sqlite3_free (stmt);
 		}
 		local_with_all_required_fields = TRUE;
+	} else {
+		g_set_error (error, E_BOOK_SDB_ERROR,
+			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
 	}
 
 	READER_UNLOCK (ebsdb);
