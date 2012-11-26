@@ -2735,16 +2735,16 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 							select_portion, folderid, sql);
 			}
 
-			success = book_backend_sql_exec (
+			book_backend_sql_exec (
                                 ebsdb->priv->db, stmt,
-				store_data_to_vcard, &vcard_data, error);
+				store_data_to_vcard, &vcard_data, &err);
 
 			sqlite3_free (stmt);
 		} else {
 			stmt = sqlite3_mprintf ("%s FROM %Q AS summary", select_portion, folderid);
-			success = book_backend_sql_exec (
+			book_backend_sql_exec (
 				ebsdb->priv->db, stmt,
-				store_data_to_vcard, &vcard_data, error);
+				store_data_to_vcard, &vcard_data, &err);
 			sqlite3_free (stmt);
 		}
 
