@@ -22,8 +22,8 @@ eds_init_settings () {
 # so we don't need to use a .service file to make sure that it will be 
 # activated instead. 
 eds_start() {
-   #$(top_builddir)/addressbook/libedata-book/e-addressbook-factory -r
-   $cur_dir"/../../addressbook/libedata-book/e-addressbook-factory" -r&
+   #$(top_builddir)/services/evolution-addressbook-factory/evolution-addressbook-factory -r
+   $cur_dir"/../../services/evolution-addressbook-factory/evolution-addressbook-factory" -r&
    eds_pid=$!
 }
 
