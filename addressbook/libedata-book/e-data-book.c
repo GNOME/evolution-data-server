@@ -147,11 +147,6 @@ static void                 direct_operation_wait      (DirectOperationData *dat
 static void                 e_data_book_respond_close  (EDataBook *book,
 							guint opid,
 							GError *error);
-static void                 e_data_book_respond_get_view (EDataBook *book,
-							  guint opid,
-							  const gchar *path,
-							  EDataBookView *view,
-							  GError *error);
 
 /* EModule's can never be free'd, however the use count can change
  * Here we ensure that there is only one ever created by way of
@@ -351,7 +346,7 @@ operation_thread (gpointer data,
 				error = e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, NULL);
 				/* Translators: This is prefix to a detailed error message */
 				g_prefix_error (&error, "%s", _("Invalid query: "));
-				e_data_book_respond_get_view (op->book, op->id, NULL, NULL, error);
+				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
 				g_error_free (error);
 				break;
 			}
@@ -359,17 +354,12 @@ operation_thread (gpointer data,
 			path = construct_bookview_path ();
 
 			book_view = e_data_book_view_new (op->book, op->d.query, card_sexp);
-
-			if (op->book->priv->gdbus_object)
-				e_data_book_view_register_gdbus_object (
-				        book_view,
-					e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object),
-					path, &error);
+			e_data_book_view_register_gdbus_object (book_view, e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object), path, &error);
 
 			if (error) {
 				/* Translators: This is prefix to a detailed error message */
 				g_prefix_error (&error, "%s", _("Invalid query: "));
-				e_data_book_respond_get_view (op->book, op->id, NULL, NULL, error);
+				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
 				g_error_free (error);
 				g_object_unref (book_view);
 				g_free (path);
@@ -379,7 +369,7 @@ operation_thread (gpointer data,
 
 			e_book_backend_add_book_view (backend, book_view);
 
-			e_data_book_respond_get_view (op->book, op->id, path, book_view, NULL);
+			e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, NULL, path);
 
 			g_free (path);
 		}
@@ -2195,115 +2185,3 @@ e_data_book_get_contacts_uids_sync (EDataBook *book,
 	return result;
 }
 
-static void
-e_data_book_respond_get_view (EDataBook *book,
-			      guint opid,
-			      const gchar *path,
-			      EDataBookView *view,
-			      GError *error)
-{
-	DirectOperationData *data;
-
-	data = op_complete (book, opid);
-
-	if (book->priv->gdbus_object) {
-		e_gdbus_book_emit_get_view_done (book->priv->gdbus_object, opid, error, path);
-	}
-
-	if (data) {
-
-		if (error)
-			g_simple_async_result_set_error (data->result,
-							 error->domain,
-							 error->code,
-							 "%s", error->message);
-
-		else {
-			g_simple_async_result_set_check_cancellable (data->result,
-								     data->cancellable);
-
-			if (!g_cancellable_is_cancelled (data->cancellable)) {
-
-				/* Note on ref-counting, The passed view belongs to the backend,
-				 * here we give a reference to the async result for the lifetime
-				 * of the async result, when the async result is 'finished', an
-				 * additional ref to the view is passed to the caller.
-				 */
-				g_simple_async_result_set_op_res_gpointer (data->result,
-									   g_object_ref (view),
-									   (GDestroyNotify)g_object_unref);
-			}
-		}
-
-		/* Deliver the result to the caller */
-		direct_operation_complete (data);
-	}
-}
-
-void
-e_data_book_get_view (EDataBook *book,
-		      const gchar *sexp,
-		      GCancellable *cancellable,
-		      GAsyncReadyCallback callback,
-		      gpointer user_data)
-{
-	OperationData *op;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (sexp && sexp[0]);
-
-	op = op_direct_new (OP_GET_VIEW, book, cancellable, callback, user_data, e_data_book_get_view, FALSE, NULL);
-	op->d.query = g_strdup (sexp);
-
-	e_operation_pool_push (ops_pool, op);
-}
-
-gboolean
-e_data_book_get_view_finish (EDataBook *book,
-			     GAsyncResult *result,
-			     struct _EDataBookView **view,
-			     GError **error)
-{
-	EDataBookView *ret_view;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	ret_view = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
-
-	if (view) {
-		if (ret_view)
-			*view = g_object_ref (ret_view);
-		else
-			*view = NULL;
-	}
-
-	return ret_view != NULL;
-}
-
-gboolean
-e_data_book_get_view_sync (EDataBook *book,
-			   const gchar *sexp,
-			   struct _EDataBookView **view,
-			   GCancellable *cancellable,
-			   GError **error)
-{
-	DirectOperationData *data = NULL;
-	OperationData *op;
-	gboolean result = FALSE;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-	g_return_val_if_fail (sexp && sexp[0], FALSE);
-
-	op = op_direct_new (OP_GET_VIEW, book, cancellable, NULL, NULL, e_data_book_get_view_sync, TRUE, &data);
-	op->d.query = g_strdup (sexp);
-
-	e_operation_pool_push (ops_pool, op);
-
-	direct_operation_wait (data);
-	result = e_data_book_get_view_finish (book, G_ASYNC_RESULT (data->result), view, error);
-	direct_operation_data_free (data);
-
-	return result;
-}
