@@ -42,7 +42,6 @@ G_DEFINE_TYPE (EBookClientView, e_book_client_view, G_TYPE_OBJECT);
 
 struct _EBookClientViewPrivate {
 	GDBusProxy *gdbus_bookview;
-	EDataBookView *direct_view;
 	EBookClient *client;
 	gboolean running;
 };
@@ -59,7 +58,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static void
-objects_added_cb (GObject *object,
+objects_added_cb (EGdbusBookView *object,
                   const gchar * const *vcards,
                   EBookClientView *view)
 {
@@ -82,7 +81,7 @@ objects_added_cb (GObject *object,
 }
 
 static void
-objects_modified_cb (GObject *object,
+objects_modified_cb (EGdbusBookView *object,
                      const gchar * const *vcards,
                      EBookClientView *view)
 {
@@ -104,7 +103,7 @@ objects_modified_cb (GObject *object,
 }
 
 static void
-objects_removed_cb (GObject *object,
+objects_removed_cb (EGdbusBookView *object,
                     const gchar * const *ids,
                     EBookClientView *view)
 {
@@ -155,17 +154,6 @@ complete_cb (EGdbusBookView *object,
 		g_error_free (error);
 }
 
-static void
-complete_direct_cb (EDataBookView *object,
-		    GError *error,
-		    EBookClientView *view)
-{
-	if (!view->priv->running)
-		return;
-
-	g_signal_emit (view, signals[COMPLETE], 0, error);
-}
-
 /*
  * _e_book_client_view_new:
  * @book_client: an #EBookClient
@@ -202,31 +190,6 @@ _e_book_client_view_new (EBookClient *book_client,
 	return view;
 }
 
-EBookClientView *
-_e_book_client_view_new_direct (EBookClient *book_client,
-				EDataBookView *direct_view)
-{
-	EBookClientView *view;
-	EBookClientViewPrivate *priv;
-
-	view = g_object_new (E_TYPE_BOOK_CLIENT_VIEW, NULL);
-	priv = view->priv;
-
-	priv->client = g_object_ref (book_client);
-
-	/* Reference the EDataBookView (it's technically owned by it's backend) */
-	priv->direct_view = g_object_ref (direct_view);
-
-	g_signal_connect (priv->direct_view, "vcards-added", G_CALLBACK (objects_added_cb), view);
-	g_signal_connect (priv->direct_view, "vcards-modified", G_CALLBACK (objects_modified_cb), view);
-	g_signal_connect (priv->direct_view, "uids-removed", G_CALLBACK (objects_removed_cb), view);
-	g_signal_connect (priv->direct_view, "progress", G_CALLBACK (progress_cb), view);
-	g_signal_connect (priv->direct_view, "complete", G_CALLBACK (complete_direct_cb), view);
-
-	return view;
-}
-
-
 /**
  * e_book_client_view_get_client:
  * @view: an #EBookClientView
@@ -260,12 +223,7 @@ e_book_client_view_start (EBookClientView *view,
 
 	priv = view->priv;
 
-	if (priv->direct_view) {
-		
-		priv->running = TRUE;
-		e_data_book_view_start (priv->direct_view);
-
-	} else if (priv->gdbus_bookview) {
+	if (priv->gdbus_bookview) {
 		GError *local_error = NULL;
 
 		priv->running = TRUE;
@@ -275,8 +233,7 @@ e_book_client_view_start (EBookClientView *view,
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
 		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
-				     "Cannot start view, Not a direct access view and no D-Bus proxy present");
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot start view, D-Bus proxy gone");
 	}
 }
 
@@ -298,11 +255,7 @@ e_book_client_view_stop (EBookClientView *view,
 	priv = view->priv;
 	priv->running = FALSE;
 
-	if (priv->direct_view) {
-		
-		e_data_book_view_stop (priv->direct_view);
-
-	} else if (priv->gdbus_bookview) {
+	if (priv->gdbus_bookview) {
 		GError *local_error = NULL;
 
 		e_gdbus_book_view_call_stop_sync (priv->gdbus_bookview, NULL, &local_error);
@@ -310,8 +263,7 @@ e_book_client_view_stop (EBookClientView *view,
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
 		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
-				     "Cannot stop view, Not a direct access view and no D-Bus proxy present");
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot stop view, D-Bus proxy gone");
 	}
 }
 
@@ -336,11 +288,7 @@ e_book_client_view_set_flags (EBookClientView *view,
 
 	priv = view->priv;
 
-	if (priv->direct_view) {
-		
-		e_data_book_view_set_flags (priv->direct_view, flags);
-
-	} else if (priv->gdbus_bookview) {
+	if (priv->gdbus_bookview) {
 		GError *local_error = NULL;
 
 		e_gdbus_book_view_call_set_flags_sync (priv->gdbus_bookview, flags, NULL, &local_error);
@@ -349,7 +297,7 @@ e_book_client_view_set_flags (EBookClientView *view,
 	} else {
 		g_set_error_literal (
 			error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
-			"Cannot set flags on view, Not a direct access view and no D-Bus proxy present");
+			"Cannot set flags on view, D-Bus proxy gone");
 	}
 }
 
@@ -376,29 +324,24 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
                                            GError **error)
 {
 	EBookClientViewPrivate *priv;
-	gchar **strv;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
 	priv = view->priv;
-	strv = e_client_util_slist_to_strv (fields_of_interest);
 
-	if (priv->direct_view) {
-		
-		e_data_book_view_set_fields_of_interest (priv->direct_view, (const gchar * const *) strv);
-
-	} else if (priv->gdbus_bookview) {
+	if (priv->gdbus_bookview) {
 		GError *local_error = NULL;
+		gchar **strv;
 
+		strv = e_client_util_slist_to_strv (fields_of_interest);
 		e_gdbus_book_view_call_set_fields_of_interest_sync (priv->gdbus_bookview, (const gchar * const *) strv, NULL, &local_error);
+		g_strfreev (strv);
+
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
 		/* do not translate this string, it should ideally never happen */
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
-				     "Cannot set fields of interest, Not a direct access view and no D-Bus proxy present");
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
 	}
-
-	g_strfreev (strv);
 }
 
 static void
@@ -406,7 +349,6 @@ e_book_client_view_init (EBookClientView *view)
 {
 	view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (view);
 	view->priv->gdbus_bookview = NULL;
-	view->priv->direct_view = NULL;
 
 	view->priv->client = NULL;
 	view->priv->running = FALSE;
@@ -429,14 +371,6 @@ book_client_view_dispose (GObject *object)
 			g_warning ("Failed to dispose book view: %s", error->message);
 			g_error_free (error);
 		}
-	}
-
-	if (view->priv->direct_view) {
-		g_signal_handlers_disconnect_matched (view->priv->direct_view, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
-
-		e_data_book_view_delete (view->priv->direct_view);
-		g_object_unref (view->priv->direct_view);
-		view->priv->direct_view = NULL;
 	}
 
 	if (view->priv->client) {
