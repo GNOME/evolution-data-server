@@ -2460,17 +2460,7 @@ e_book_client_get_view (EBookClient *client,
 {
 	gchar *gdbus_sexp = NULL;
 
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
-
-	if (client->priv->direct_book) {
-		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
-								     e_book_client_get_view, NULL);
-
-		e_data_book_get_view (client->priv->direct_book, sexp, cancellable, 
-				      propagate_direct_book_async_ready, data);
-		return;
-	}
 
 	e_client_proxy_call_string (
 		E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_view,
@@ -2545,31 +2535,14 @@ e_book_client_get_view_finish (EBookClient *client,
                                EBookClientView **view,
                                GError **error)
 {
-	gboolean ret;
+	gboolean res;
 	gchar *view_path = NULL;
 
 	g_return_val_if_fail (view != NULL, FALSE);
 
-	if (client->priv->direct_book) {
-		GAsyncResult *res = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-		EDataBookView *direct_view = NULL;
+	res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &view_path, error, e_book_client_get_view);
 
-		if (e_data_book_get_view_finish (client->priv->direct_book, res, &direct_view, error)) {
-
-			*view = _e_book_client_view_new_direct (client, direct_view);
-
-			/* Pass ownership to the EBookClientView */
-			g_object_unref (direct_view);
-
-			return TRUE;
-		}
-
-		return FALSE;
-	}
-
-	ret = e_client_proxy_call_finish_string (E_CLIENT (client), result, &view_path, error, e_book_client_get_view);
-
-	return complete_get_view (client, ret, view_path, view, error);
+	return complete_get_view (client, res, view_path, view, error);
 }
 
 /**
@@ -2605,22 +2578,6 @@ e_book_client_get_view_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (view != NULL, FALSE);
-
-	if (client->priv->direct_book) {
-		EDataBookView *direct_view = NULL;
-
-		if (e_data_book_get_view_sync (client->priv->direct_book, sexp, &direct_view, cancellable, error)) {
-
-			*view = _e_book_client_view_new_direct (client, direct_view);
-
-			/* Pass ownership to the EBookClientView */
-			g_object_unref (direct_view);
-
-			return TRUE;
-		}
-
-		return FALSE;
-	}
 
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
