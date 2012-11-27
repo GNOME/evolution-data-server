@@ -55,16 +55,6 @@ struct _EDataBookView {
 
 struct _EDataBookViewClass {
 	GObjectClass parent;
-
-	/*
-	 * Signals.
-	 */
-	void (* vcards_added)		(EDataBookView *view, const gchar * const *vcards);
-	void (* vcards_modified)	(EDataBookView *view, const gchar * const *vcards);
-	void (* uids_removed)		(EDataBookView *view, const gchar * const *uids);
-
-	void (* progress)		(EDataBookView *view, guint percent, const gchar *message);
-	void (* complete)		(EDataBookView *view, const GError *error);
 };
 
 GType			e_data_book_view_get_type		(void);
@@ -85,14 +75,6 @@ void			e_data_book_view_notify_complete	(EDataBookView *book_view, const GError 
 void			e_data_book_view_notify_progress        (EDataBookView *book_view, guint percent, const gchar *message);
 void			e_data_book_view_ref			(EDataBookView *book_view);
 void			e_data_book_view_unref			(EDataBookView *book_view);
-
-void                    e_data_book_view_set_fields_of_interest (EDataBookView *book_view,
-								 const gchar * const *fields_of_interest);
-void                    e_data_book_view_set_flags              (EDataBookView *book_view,
-								 EBookClientViewFlags flags);
-void                    e_data_book_view_start                  (EDataBookView *book_view);
-void                    e_data_book_view_stop                   (EDataBookView *book_view);
-void                    e_data_book_view_delete                 (EDataBookView *book_view);
 
 /* const */ GHashTable *e_data_book_view_get_fields_of_interest	(EDataBookView *view);
 
