@@ -468,13 +468,13 @@ e_destination_set_contact (EDestination *dest,
 
 						raw = e_vcard_attribute_get_value (attr->data);
 						addr = camel_internet_address_new ();
-						camel_address_unformat (CAMEL_ADDRESS (addr), raw);
-						camel_internet_address_get (addr, 0, &name, &email);
+						if (camel_address_unformat (CAMEL_ADDRESS (addr), raw) > 0 &&
+						    camel_internet_address_get (addr, 0, &name, &email)) {
+							e_destination_set_name (s_dest, name);
+							e_destination_set_email (s_dest, email);
 
-						e_destination_set_name (s_dest, name);
-						e_destination_set_email (s_dest, email);
-
-						dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, s_dest);
+							dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, s_dest);
+						}
 
 						g_object_unref (addr);
 						g_free (raw);
