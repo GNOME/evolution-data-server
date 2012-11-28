@@ -321,7 +321,11 @@ create_book_idle (CreateBookData *data)
 	if (!data->source)
 		g_error ("Unable to fetch newly created source uid '%s' from the registry", data->uid);
 
-	data->book = e_book_client_new_direct (data->registry, data->source, &error);
+	if (g_getenv ("DEBUG_DIRECT") != NULL)
+		data->book = e_book_client_new_direct (data->registry, data->source, &error);
+	else
+		data->book = e_book_client_new (data->source, &error);
+
 	if (!data->book)
 		g_error ("Unable to create the book: %s", error->message);
 
