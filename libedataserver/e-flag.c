@@ -149,6 +149,7 @@ e_flag_wait (EFlag *flag)
  *
  * Since: 1.12
  **/
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 gboolean
 e_flag_timed_wait (EFlag *flag,
                    GTimeVal *abs_time)
@@ -166,6 +167,7 @@ e_flag_timed_wait (EFlag *flag,
 
 	return is_set;
 }
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * e_flag_free:
