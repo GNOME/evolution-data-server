@@ -43,7 +43,10 @@ G_DEFINE_TYPE (EBookClientView, e_book_client_view, G_TYPE_OBJECT);
 struct _EBookClientViewPrivate {
 	GDBusProxy *gdbus_bookview;
 	EBookClient *client;
-	gboolean running;
+	EDataBook *direct_book;
+	guint running : 1;
+	guint complete : 1;
+
 };
 
 enum {
@@ -57,6 +60,97 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+typedef struct {
+	EBookClientView *view;
+	guint signum;
+} NotificationData;
+
+static gchar *
+direct_contacts_query (const gchar * const *uids)
+{
+	EBookQuery *query, **qs;
+	gchar *sexp;
+	gint i, len;
+
+	len = g_strv_length ((gchar **)uids);
+	qs = g_new0 (EBookQuery *, len);
+
+	for (i = 0; uids[i] != NULL; i++) {
+		const gchar *uid = uids[i];
+
+		qs[i] = e_book_query_field_test (E_CONTACT_UID, E_BOOK_QUERY_IS, uid);
+	}
+
+	query = e_book_query_or (len, qs, TRUE);
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+
+	return sexp;
+}
+
+static void
+direct_contacts_ready (GObject *source_object,
+		       GAsyncResult *res,
+		       gpointer user_data)
+{
+	NotificationData *data = (NotificationData *)user_data;
+	GSList *contacts = NULL;
+	GError *error = NULL;
+
+	if (!e_data_book_get_contacts_finish (E_DATA_BOOK (source_object),
+					      res, &contacts, &error)) {
+		g_warning ("Error fetching contacts directly: %s\n", error->message);
+		g_error_free (error);
+	} else {
+		g_signal_emit (data->view, data->signum, 0, contacts);
+	}
+
+	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
+	g_slist_free (contacts);
+	g_object_unref (data->view);
+	g_slice_free (NotificationData, data);
+}
+
+static void
+direct_contacts_fetch (EBookClientView *view,
+		       const gchar * const *uids,
+		       guint signum)
+{
+	NotificationData *data;
+	gchar *sexp = direct_contacts_query (uids);
+
+	/* Until the view has completely loaded, we need to make
+	 * sync calls to the backend
+	 */
+	if (!view->priv->complete) {
+		GSList *contacts = NULL;
+		GError *error = NULL;
+
+		if (!e_data_book_get_contacts_sync (view->priv->direct_book,
+						    sexp, &contacts, NULL, &error)) {
+			g_warning ("Error fetching contacts directly: %s\n", error->message);
+			g_error_free (error);
+		} else {
+			g_signal_emit (view, signum, 0, contacts);
+			g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
+			g_slist_free (contacts);
+		}
+
+	} else {
+		/* Make async calls, avoid blocking the thread owning the view
+		 * as much as possible
+		 */
+		data = g_slice_new (NotificationData);
+		data->view = g_object_ref (view);
+		data->signum = signum;
+
+		e_data_book_get_contacts (view->priv->direct_book,
+					  sexp, NULL, direct_contacts_ready, data);
+	}
+
+	g_free (sexp);
+}
+
 static void
 objects_added_cb (EGdbusBookView *object,
                   const gchar * const *vcards,
@@ -67,6 +161,12 @@ objects_added_cb (EGdbusBookView *object,
 
 	if (!view->priv->running)
 		return;
+
+	/* array contains UIDs only */
+	if (view->priv->direct_book) {
+		direct_contacts_fetch (view, vcards, signals[OBJECTS_ADDED]);
+		return;
+	}
 
 	/* array contains both UID and vcard */
 	for (p = vcards; p[0] && p[1]; p += 2) {
@@ -90,6 +190,12 @@ objects_modified_cb (EGdbusBookView *object,
 
 	if (!view->priv->running)
 		return;
+
+	/* array contains UIDs only */
+	if (view->priv->direct_book) {
+		direct_contacts_fetch (view, vcards, signals[OBJECTS_MODIFIED]);
+		return;
+	}
 
 	/* array contains both UID and vcard */
 	for (p = vcards; p[0] && p[1]; p += 2) {
@@ -146,6 +252,8 @@ complete_cb (EGdbusBookView *object,
 	if (!view->priv->running)
 		return;
 
+	view->priv->complete = TRUE;
+
 	g_return_if_fail (e_gdbus_templates_decode_error (in_error_strv, &error));
 
 	g_signal_emit (view, signals[COMPLETE], 0, error);
@@ -167,7 +275,8 @@ complete_cb (EGdbusBookView *object,
  **/
 EBookClientView *
 _e_book_client_view_new (EBookClient *book_client,
-                         EGdbusBookView *gdbus_bookview)
+                         EGdbusBookView *gdbus_bookview,
+			 EDataBook *direct_book)
 {
 	EBookClientView *view;
 	EBookClientViewPrivate *priv;
@@ -186,6 +295,11 @@ _e_book_client_view_new (EBookClient *book_client,
 	g_signal_connect (priv->gdbus_bookview, "objects-removed", G_CALLBACK (objects_removed_cb), view);
 	g_signal_connect (priv->gdbus_bookview, "progress", G_CALLBACK (progress_cb), view);
 	g_signal_connect (priv->gdbus_bookview, "complete", G_CALLBACK (complete_cb), view);
+
+	if (direct_book) {
+		view->priv->direct_book = g_object_ref (direct_book);
+		e_book_client_view_set_fields_of_interest (view, NULL, NULL);
+	}
 
 	return view;
 }
@@ -333,8 +447,22 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 		GError *local_error = NULL;
 		gchar **strv;
 
-		strv = e_client_util_slist_to_strv (fields_of_interest);
-		e_gdbus_book_view_call_set_fields_of_interest_sync (priv->gdbus_bookview, (const gchar * const *) strv, NULL, &local_error);
+		/* When in direct read access mode, ensure that the
+		 * backend is configured to only send us UIDs for everything,
+		 *
+		 * Just ignore the fields_of_interest and use them locally
+		 * when filtering cards to be returned in direct reads.
+		 */
+		if (view->priv->direct_book) {
+			GSList uid_field = { 0, };
+
+			uid_field.data = (gpointer)"x-evolution-uids-only";
+			strv = e_client_util_slist_to_strv (&uid_field);
+		} else
+			strv = e_client_util_slist_to_strv (fields_of_interest);
+
+		e_gdbus_book_view_call_set_fields_of_interest_sync (priv->gdbus_bookview,
+								    (const gchar * const *) strv, NULL, &local_error);
 		g_strfreev (strv);
 
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
@@ -352,6 +480,7 @@ e_book_client_view_init (EBookClientView *view)
 
 	view->priv->client = NULL;
 	view->priv->running = FALSE;
+	view->priv->complete = FALSE;
 }
 
 static void
@@ -376,6 +505,11 @@ book_client_view_dispose (GObject *object)
 	if (view->priv->client) {
 		g_object_unref (view->priv->client);
 		view->priv->client = NULL;
+	}
+
+	if (view->priv->direct_book != NULL) {
+		g_object_unref (view->priv->direct_book);
+		view->priv->direct_book = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */

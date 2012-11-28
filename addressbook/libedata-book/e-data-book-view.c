@@ -68,6 +68,7 @@ struct _EDataBookViewPrivate {
 
 	/* which fields is listener interested in */
 	GHashTable *fields_of_interest;
+	gboolean send_uids_only;
 };
 
 static void e_data_book_view_dispose (GObject *object);
@@ -244,10 +245,12 @@ notify_change (EDataBookView *view,
 		send_pending_changes (view);
 	}
 
-	utf8_vcard = e_util_utf8_make_valid (vcard);
-	utf8_id = e_util_utf8_make_valid (id);
+	if (view->priv->send_uids_only == FALSE) {
+		utf8_vcard = e_util_utf8_make_valid (vcard);
+		g_array_append_val (priv->changes, utf8_vcard);
+	}
 
-	g_array_append_val (priv->changes, utf8_vcard);
+	utf8_id = e_util_utf8_make_valid (id);
 	g_array_append_val (priv->changes, utf8_id);
 
 	ensure_pending_flush_timeout (view);
@@ -303,9 +306,11 @@ notify_add (EDataBookView *view,
 			send_pending_adds (view);
 		}
 
-		utf8_vcard = e_util_utf8_make_valid (vcard);
+		if (view->priv->send_uids_only == FALSE) {
+			utf8_vcard = e_util_utf8_make_valid (vcard);
+			g_array_append_val (view->priv->adds, utf8_vcard);
+		}
 
-		g_array_append_val (priv->adds, utf8_vcard);
 		g_array_append_val (priv->adds, utf8_id_copy);
 
 		ensure_pending_flush_timeout (view);
@@ -333,11 +338,18 @@ impl_DataBookView_set_fields_of_interest (EGdbusBookView *object,
 		g_hash_table_destroy (priv->fields_of_interest);
 	priv->fields_of_interest = NULL;
 
+	view->priv->send_uids_only = FALSE;
+
 	for (ii = 0; in_fields_of_interest[ii]; ii++) {
 		const gchar *field = in_fields_of_interest[ii];
 
 		if (!*field)
 			continue;
+
+		if (strcmp (field, "x-evolution-uids-only") == 0) {
+			view->priv->send_uids_only = TRUE;
+			continue;
+		}
 
 		if (!priv->fields_of_interest)
 			priv->fields_of_interest = g_hash_table_new_full (str_ic_hash, str_ic_equal, g_free, NULL);
