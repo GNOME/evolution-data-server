@@ -2492,7 +2492,8 @@ complete_get_view (EBookClient *client,
 			&local_error);
 
 		if (gdbus_bookview) {
-			*view = _e_book_client_view_new (client, gdbus_bookview);
+			*view = _e_book_client_view_new (client, gdbus_bookview,
+							 client->priv->direct_book);
 			g_object_unref (gdbus_bookview);
 		} else {
 			*view = NULL;
