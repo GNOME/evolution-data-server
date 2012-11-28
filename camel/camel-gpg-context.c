@@ -112,7 +112,7 @@ struct _GpgCtx {
 	GHashTable *userid_hint;
 	pid_t pid;
 
-	gchar *userid;
+	GSList *userids;
 	gchar *sigfile;
 	GPtrArray *recipients;
 	CamelCipherHash hash;
@@ -190,7 +190,7 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->exit_status = 0;
 	gpg->exited = FALSE;
 
-	gpg->userid = NULL;
+	gpg->userids = NULL;
 	gpg->sigfile = NULL;
 	gpg->recipients = NULL;
 	gpg->hash = CAMEL_CIPHER_HASH_DEFAULT;
@@ -283,8 +283,28 @@ static void
 gpg_ctx_set_userid (struct _GpgCtx *gpg,
                     const gchar *userid)
 {
-	g_free (gpg->userid);
-	gpg->userid = g_strdup (userid);
+	g_slist_free_full (gpg->userids, g_free);
+	gpg->userids = NULL;
+
+	if (userid && *userid) {
+		gchar **uids = g_strsplit (userid, " ", -1);
+
+		if (!uids) {
+			gpg->userids = g_slist_append (gpg->userids, g_strdup (userid));
+		} else {
+			gint ii;
+
+			for (ii = 0; uids[ii]; ii++) {
+				const gchar *uid = uids[ii];
+
+				if (*uid) {
+					gpg->userids = g_slist_append (gpg->userids, g_strdup (uid));
+				}
+			}
+
+			g_strfreev (uids);
+		}
+	}
 }
 
 static void
@@ -374,7 +394,7 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	g_hash_table_foreach (gpg->userid_hint, userid_hint_free, NULL);
 	g_hash_table_destroy (gpg->userid_hint);
 
-	g_free (gpg->userid);
+	g_slist_free_full (gpg->userids, g_free);
 
 	g_free (gpg->sigfile);
 
@@ -488,9 +508,13 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 		hash_str = gpg_hash_str (gpg->hash);
 		if (hash_str)
 			g_ptr_array_add (argv, (guint8 *) hash_str);
-		if (gpg->userid) {
-			g_ptr_array_add (argv, (guint8 *) "-u");
-			g_ptr_array_add (argv, (guint8 *) gpg->userid);
+		if (gpg->userids) {
+			GSList *uiter;
+
+			for (uiter = gpg->userids; uiter; uiter = uiter->next) {
+				g_ptr_array_add (argv, (guint8 *) "-u");
+				g_ptr_array_add (argv, (guint8 *) uiter->data);
+			}
 		}
 		g_ptr_array_add (argv, (guint8 *) "--output");
 		g_ptr_array_add (argv, (guint8 *) "-");
@@ -513,9 +537,13 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 			g_ptr_array_add (argv, (guint8 *) "--armor");
 		if (gpg->always_trust)
 			g_ptr_array_add (argv, (guint8 *) "--always-trust");
-		if (gpg->userid) {
-			g_ptr_array_add (argv, (guint8 *) "-u");
-			g_ptr_array_add (argv, (guint8 *) gpg->userid);
+		if (gpg->userids) {
+			GSList *uiter;
+
+			for (uiter = gpg->userids; uiter; uiter = uiter->next) {
+				g_ptr_array_add (argv, (guint8 *) "-u");
+				g_ptr_array_add (argv, (guint8 *) uiter->data);
+			}
 		}
 		if (gpg->recipients) {
 			for (i = 0; i < gpg->recipients->len; i++) {
