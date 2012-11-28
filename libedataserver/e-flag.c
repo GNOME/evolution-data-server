@@ -151,6 +151,7 @@ e_flag_wait (EFlag *flag)
  *
  * Deprecated: 3.8: Use e_flag_wait_until() instead.
  **/
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 gboolean
 e_flag_timed_wait (EFlag *flag,
                    GTimeVal *abs_time)
@@ -168,6 +169,7 @@ e_flag_timed_wait (EFlag *flag,
 
 	return is_set;
 }
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * e_flag_wait_until:
