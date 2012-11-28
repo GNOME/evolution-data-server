@@ -633,7 +633,7 @@ parse_response_tag (const parser_strings_t *strings,
 	gint                 depth = xmlTextReaderDepth (reader);
 	response_element_t *element;
 
-	while (xmlTextReaderRead (reader) && xmlTextReaderDepth (reader) > depth) {
+	while (xmlTextReaderRead (reader) == 1 && xmlTextReaderDepth (reader) > depth) {
 		const xmlChar *tag_name;
 		if (xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT)
 			continue;
@@ -651,8 +651,7 @@ parse_response_tag (const parser_strings_t *strings,
 		} else if (tag_name == strings->propstat) {
 			/* find <propstat><prop><getetag> hierarchy */
 			gint depth2 = xmlTextReaderDepth (reader);
-			while (xmlTextReaderRead (reader)
-					&& xmlTextReaderDepth (reader) > depth2) {
+			while (xmlTextReaderRead (reader) == 1 && xmlTextReaderDepth (reader) > depth2) {
 				gint depth3;
 				if (xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT)
 					continue;
@@ -662,8 +661,7 @@ parse_response_tag (const parser_strings_t *strings,
 					continue;
 
 				depth3 = xmlTextReaderDepth (reader);
-				while (xmlTextReaderRead (reader)
-						&& xmlTextReaderDepth (reader) > depth3) {
+				while (xmlTextReaderRead (reader) == 1 && xmlTextReaderDepth (reader) > depth3) {
 					if (xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT)
 						continue;
 
@@ -711,8 +709,7 @@ parse_propfind_response (xmlTextReaderPtr reader)
 	strings.prop        = xmlTextReaderConstString (reader, BAD_CAST "prop");
 	strings.getetag     = xmlTextReaderConstString (reader, BAD_CAST "getetag");
 
-	while (xmlTextReaderRead (reader)
-			&& xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT) {
+	while (xmlTextReaderRead (reader) == 1 && xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT) {
 	}
 
 	if (xmlTextReaderConstLocalName (reader) != strings.multistatus
@@ -724,7 +721,7 @@ parse_propfind_response (xmlTextReaderPtr reader)
 	elements = NULL;
 
 	/* parse all DAV:response tags */
-	while (xmlTextReaderRead (reader) && xmlTextReaderDepth (reader) > 0) {
+	while (xmlTextReaderRead (reader) == 1 && xmlTextReaderDepth (reader) > 0) {
 		response_element_t *element;
 
 		if (xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT)
@@ -1350,13 +1347,23 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	suri = e_source_webdav_dup_soup_uri (webdav_extension);
 
 	priv->uri = soup_uri_to_string (suri, FALSE);
-	if (!priv->uri) {
+	if (!priv->uri || !*priv->uri) {
+		g_free (priv->uri);
+		priv->uri = NULL;
 		soup_uri_free (suri);
 		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, _("Cannot transform SoupURI to string")));
 		return;
 	}
 
 	g_mutex_lock (&priv->cache_lock);
+
+	/* make sure the priv->uri ends with a forward slash */
+	if (priv->uri[strlen(priv->uri) - 1] != '/') {
+		gchar *tmp = priv->uri;
+		priv->uri = g_strconcat (tmp, "/", NULL);
+		g_free (tmp);
+	}
+
 	if (!priv->cache) {
 		filename = g_build_filename (cache_dir, "cache.xml", NULL);
 		priv->cache = e_book_backend_cache_new (filename);
