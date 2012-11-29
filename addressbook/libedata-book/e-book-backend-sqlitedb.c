@@ -2959,7 +2959,7 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 
 				g_free (list_table);
 			} else
-				stmt = sqlite3_mprintf ("SELECT uid FROM %Q WHERE %s", folderid, sql_query);
+				stmt = sqlite3_mprintf ("SELECT summary.uid FROM %Q AS summary WHERE %s", folderid, sql_query);
 
 			book_backend_sql_exec (ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 			sqlite3_free (stmt);
