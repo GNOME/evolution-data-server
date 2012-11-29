@@ -2954,7 +2954,7 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 			if (query_with_list_attrs) {
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
-				stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi %s",
+				stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi WHERE %s",
 							folderid, list_table, sql_query);
 
 				g_free (list_table);
