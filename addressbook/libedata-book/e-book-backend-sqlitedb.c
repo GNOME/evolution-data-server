@@ -3025,12 +3025,12 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 			if (query_with_list_attrs) {
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
-				stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi %s",
+				stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi WHERE %s",
 							folderid, list_table, sql_query);
 
 				g_free (list_table);
 			} else
-				stmt = sqlite3_mprintf ("SELECT uid FROM %Q WHERE %s", folderid, sql_query);
+				stmt = sqlite3_mprintf ("SELECT summary.uid FROM %Q AS summary WHERE %s", folderid, sql_query);
 
 			book_backend_sql_exec (ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 			sqlite3_free (stmt);
