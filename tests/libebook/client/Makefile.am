@@ -28,6 +28,7 @@ TESTS =								\
 	test-client-refresh					\
 	test-client-add-contact					\
 	test-client-get-contact					\
+	test-client-get-contact-uids				\
 	test-client-custom-summary				\
 	test-client-get-revision				\
 	test-client-get-view					\
@@ -77,6 +78,8 @@ test_client_examine_LDADD=$(TEST_LIBS)
 test_client_examine_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_contact_LDADD=$(TEST_LIBS)
 test_client_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_get_contact_uids_LDADD=$(TEST_LIBS)
+test_client_get_contact_uids_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_custom_summary_LDADD=$(TEST_LIBS)
 test_client_custom_summary_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_revision_LDADD=$(TEST_LIBS)
