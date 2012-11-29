@@ -952,6 +952,7 @@ source_registry_dispose (GObject *object)
 	g_hash_table_remove_all (priv->sources);
 
 	if (priv->settings != NULL) {
+		g_signal_handlers_disconnect_by_data (priv->settings, object);
 		g_object_unref (priv->settings);
 		priv->settings = NULL;
 	}
