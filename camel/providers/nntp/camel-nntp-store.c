@@ -1566,7 +1566,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
 	stream = CAMEL_STREAM (store->mem);
 
 	while ((c = *p++)) {
-		gchar *strval;
+		gchar *strval = NULL;
 
 		switch (c) {
 		case '%':

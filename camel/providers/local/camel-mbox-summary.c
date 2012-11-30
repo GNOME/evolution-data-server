@@ -697,6 +697,8 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 		goto error;
 	}
 
+	fd = -1;
+
 	if (close (fdout) == -1) {
 		g_warning ("Cannot close temporary folder: %s", g_strerror (errno));
 		g_set_error (
@@ -707,6 +709,8 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 		fdout = -1;
 		goto error;
 	}
+
+	fdout = -1;
 
 	/* this should probably either use unlink/link/unlink, or recopy over
 	 * the original mailbox, for various locking reasons/etc */

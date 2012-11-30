@@ -2547,7 +2547,7 @@ find_client_by_contact (GSList *clients,
 {
 	GSList *l;
 
-	if (source_uid && source_uid) {
+	if (source_uid && *source_uid) {
 		/* this is much quicket than asking each client for an existence */
 		for (l = clients; l; l = g_slist_next (l)) {
 			EBookClient *client = l->data;

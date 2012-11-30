@@ -1193,7 +1193,7 @@ imap_rescan (CamelFolder *folder,
 		g_datalist_clear (&data);
 	}
 
-	if (summary_got == 0 && summary_len == 0) {
+	if (summary_got == 0) {
 		camel_operation_pop_message (cancellable);
 		g_free (new);
 		g_free (resp);
