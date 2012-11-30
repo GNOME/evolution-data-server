@@ -1513,7 +1513,7 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 		camel_stream_write_string (sout, string, NULL, NULL);
 		g_free (string);
 	}
-	if (finfo->date) {
+	if (finfo->uid) {
 		string = g_strdup_printf ("UID: '%s'\n", finfo->uid);
 		camel_stream_write_string (sout, string, NULL, NULL);
 		g_free (string);
