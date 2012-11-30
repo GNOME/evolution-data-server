@@ -162,8 +162,6 @@ load_module (const gchar *module_path)
 {
 	EModule *module = NULL;
 
-	G_LOCK (modules_table);
-
 	if (!modules_table)
 		modules_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
@@ -176,8 +174,6 @@ load_module (const gchar *module_path)
 		else
 			g_hash_table_insert (modules_table, g_strdup (module_path), module);
 	}
-
-	G_UNLOCK (modules_table);
 
 	return module;
 }
@@ -1788,6 +1784,8 @@ e_data_book_new_direct (ESourceRegistry *registry,
 	g_return_val_if_fail (backend_path && backend_path[0], NULL);
 	g_return_val_if_fail (backend_name && backend_name[0], NULL);
 
+	G_LOCK (modules_table);
+
 	module = load_module (backend_path);
 	if (!module)
 		goto new_direct_finish;
@@ -1820,6 +1818,8 @@ e_data_book_new_direct (ESourceRegistry *registry,
 	g_object_unref (backend);
 
  new_direct_finish:
+
+	G_UNLOCK (modules_table);
 
 	return book;
 }
