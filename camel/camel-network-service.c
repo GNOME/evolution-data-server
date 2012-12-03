@@ -110,8 +110,9 @@ network_service_connect_sync (CamelNetworkService *service,
 		service_name, default_port, cancellable, error);
 
 	if (status == -1) {
+		/* Translators: The first '%s' is replaced with a host name, the second '%s' with service name or port number */
 		g_prefix_error (
-			error, _("Could not connect to %s: "), host);
+			error, _("Could not connect to '%s:%s': "), host, service_name ? service_name : "???");
 		g_object_unref (stream);
 		stream = NULL;
 	}

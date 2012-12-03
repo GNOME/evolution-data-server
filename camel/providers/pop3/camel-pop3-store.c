@@ -657,10 +657,7 @@ pop3_store_query_auth_types_sync (CamelService *service,
 {
 	CamelServiceClass *service_class;
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
-	CamelNetworkSettings *network_settings;
-	CamelSettings *settings;
 	GList *types = NULL;
-	gchar *host;
 	GError *local_error = NULL;
 
 	/* Chain up to parent's query_auth_types() method. */
@@ -673,24 +670,10 @@ pop3_store_query_auth_types_sync (CamelService *service,
 		return NULL;
 	}
 
-	settings = camel_service_ref_settings (service);
-
-	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_dup_host (network_settings);
-
-	g_object_unref (settings);
-
-	if (connect_to_server (service, cancellable, NULL)) {
+	if (connect_to_server (service, cancellable, error)) {
 		types = g_list_concat (types, g_list_copy (store->engine->auth));
 		pop3_store_disconnect_sync (service, TRUE, cancellable, NULL);
-	} else {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("Could not connect to POP server %s"), host);
 	}
-
-	g_free (host);
 
 	return types;
 }
