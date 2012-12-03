@@ -171,15 +171,39 @@ check_header_in_message_info (CamelMessageInfo *info,
 	name = argv[0]->value.string;
 	g_return_val_if_fail (name != NULL, FALSE);
 
+	/* test against any header */
+	if (!*name) {
+		gint jj;
+
+		for (jj = 0; jj < G_N_ELEMENTS (known_headers); jj++) {
+			value = camel_message_info_ptr (info, known_headers[jj].info_key);
+			if (!value)
+				continue;
+
+			if (known_headers[jj].info_key == CAMEL_MESSAGE_INFO_SUBJECT)
+				type = CAMEL_SEARCH_TYPE_ENCODED;
+			else
+				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
+
+			for (ii = 1; ii < argc && !*matched; ii++) {
+				if (argv[ii]->type == CAMEL_SEXP_RES_STRING)
+					*matched = camel_search_header_match (value, argv[ii]->value.string, how, type, NULL);
+			}
+
+			if (*matched)
+				return TRUE;
+		}
+
+		return FALSE;
+	}
+
 	value = NULL;
 
 	for (ii = 0; ii < G_N_ELEMENTS (known_headers); ii++) {
 		found = g_ascii_strcasecmp (name, known_headers[ii].header_name) == 0;
 		if (found) {
 			value = camel_message_info_ptr (info, known_headers[ii].info_key);
-			if (known_headers[ii].info_key == CAMEL_MESSAGE_INFO_FROM ||
-			    known_headers[ii].info_key == CAMEL_MESSAGE_INFO_TO ||
-			    known_headers[ii].info_key == CAMEL_MESSAGE_INFO_CC)
+			if (known_headers[ii].info_key != CAMEL_MESSAGE_INFO_SUBJECT)
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
 			break;
 		}
@@ -246,7 +270,8 @@ check_header (struct _CamelSExp *f,
 			}
 
 			for (header = mime_part->headers; header && !matched; header = header->next) {
-				if (!g_ascii_strcasecmp (header->name, name)) {
+				/* empty name means any header */
+				if (!name || !*name || !g_ascii_strcasecmp (header->name, name)) {
 					for (i = 1; i < argc && !matched; i++) {
 						if (argv[i]->type == CAMEL_SEXP_RES_STRING)
 							matched = camel_search_header_match (header->value, argv[i]->value.string, how, type, charset);

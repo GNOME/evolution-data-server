@@ -1119,9 +1119,10 @@ check_header (struct _CamelSExp *f,
 					for (j = 0; j < words->len && truth; j++) {
 						if (message) {
 							for (raw_header = ((CamelMimePart *) message)->headers; raw_header; raw_header = raw_header->next) {
-								if (!g_ascii_strcasecmp (raw_header->name, headername)) {
+								/* empty name means any header */
+								if (!headername || !*headername || !g_ascii_strcasecmp (raw_header->name, headername)) {
 									if (camel_search_header_match (raw_header->value, words->words[j]->word, how, type, charset))
-										break;;
+										break;
 								}
 							}
 
@@ -1133,7 +1134,8 @@ check_header (struct _CamelSExp *f,
 				} else {
 					if (message) {
 						for (raw_header = ((CamelMimePart *) message)->headers; raw_header && !truth; raw_header = raw_header->next) {
-							if (!g_ascii_strcasecmp (raw_header->name, headername)) {
+							/* empty name means any header */
+							if (!headername || !*headername || !g_ascii_strcasecmp (raw_header->name, headername)) {
 								truth = camel_search_header_match (raw_header->value, argv[i]->value.string, how, type, charset);
 							}
 						}
