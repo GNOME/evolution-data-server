@@ -726,10 +726,14 @@ camel_getaddrinfo (const gchar *name,
 		cs_getaddrinfo, msg, _("Host lookup failed"),
 		cancellable, error) == 0) {
 
-		if (msg->result != 0) {
+		if (msg->result == EAI_NONAME || msg->result == EAI_FAIL) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Host lookup failed: %s: %s"),
+				_("Host lookup '%s' failed. Check your host name for spelling errors."), name);
+		} else if (msg->result != 0) {
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Host lookup '%s' failed: %s"),
 				name, gai_strerror (msg->result));
 		}
 	} else
@@ -874,11 +878,16 @@ camel_getnameinfo (const struct sockaddr *sa,
 		cs_getnameinfo, msg, _("Name lookup failed"),
 		cancellable, error);
 
-	if ((result = msg->result) != 0)
+	result = msg->result;
+	if (result == EAI_NONAME || result == EAI_FAIL) {
+		g_set_error_literal (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Name lookup failed. Check your host name for spelling errors."));
+	} else if (result) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Name lookup failed: %s"), gai_strerror (result));
-	else {
+	} else {
 		if (host)
 			*host = g_strdup(msg->host);
 		if (serv)
