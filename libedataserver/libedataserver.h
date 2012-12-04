@@ -34,6 +34,7 @@
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-memory.h>
 #include <libedataserver/e-operation-pool.h>
+#include <libedataserver/e-phone-utils.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-source-address-book.h>
