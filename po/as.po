@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-11-24 02:14+0000\n"
-"PO-Revision-Date: 2012-11-26 15:44+0530\n"
+"POT-Creation-Date: 2012-12-03 17:56+0000\n"
+"PO-Revision-Date: 2012-12-04 14:52+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "Language: as_IN\n"
@@ -59,7 +59,7 @@ msgstr "পুৰনি ডাটাবেইচক '%s' ৰ পৰা '%s' ল�
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1190
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4809
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:282
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:970
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:967
 #: ../addressbook/libebook/e-book-client.c:99
 #: ../addressbook/libedata-book/e-data-book.c:447
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
@@ -231,25 +231,25 @@ msgstr "চাৰ্ভাৰ পৰিবৰ্তনত যোগাযোগ 
 msgid "Modify contact failed with HTTP status: %d (%s)"
 msgstr "HTTP অৱস্থা: %d (%s) ৰ সৈতে পৰিচয় পৰিৱৰ্তন ব্যৰ্থ হল"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:948
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:945
 msgid "Loading Addressbook summary..."
 msgstr "ঠিকনাবহি সাৰাংশ ল'ড কৰা হৈছে..."
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:967
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:964
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "HTTP অৱস্থা %d (%s) ৰ সৈতে webdav ত PROPFIND ব্যৰ্থ হল"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:992
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:989
 msgid "No response body in webdav PROPFIND result"
 msgstr "webdav PROPFIND ফলাফলত কোনো প্ৰতিক্ৰিয়া শৰীৰ নাই"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1024
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1021
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "পৰিচয়সমূহ (%d%%) ল'ড কৰা হৈছে"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1355
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1354
 msgid "Cannot transform SoupURI to string"
 msgstr "SoupURI ক স্ট্ৰিংলে পৰিবৰ্তন কৰিব নোৱাৰি"
 
@@ -907,20 +907,20 @@ msgstr ""
 "string "
 "আৰু string list ফিল্ড ধৰণসমূহ সমৰ্থিত"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1943
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2668
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2058
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2839
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 "সম্পূৰ্ণ search_contacts ক্যাশত সংৰক্ষণ কৰা নহয়। vcards ঘুৰাই দিব নোৱাৰি।"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1965
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2071
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "পৰিচয় '%s' পোৱা নগল"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2840
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2981
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -929,14 +929,14 @@ msgstr ""
 "ক্যাশত সম্পূৰ্ণ search_contacts সংৰক্ষণ কৰা নহয়। সেয়েহে কেৱল সাৰাংশ প্ৰশ্ন "
 "সমৰ্থিত।"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2918
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3059
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 "সম্পূৰ্ণ vcards ক্যাশত সংৰক্ষণ কৰা নহয়। সেয়েহে কেৱল সাৰাংশ প্ৰশ্ন সমৰ্থিত।"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3590
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3731
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "db ফাইল আতৰাবলে অক্ষম: errno %d"
@@ -1883,7 +1883,7 @@ msgstr "অফ-লাইন কৰ্মৰ বাবে ফোল্ডাৰ�
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
 #: ../camel/providers/pop3/camel-pop3-folder.c:1106
 #: ../camel/providers/pop3/camel-pop3-store.c:424
-#: ../camel/providers/pop3/camel-pop3-store.c:849
+#: ../camel/providers/pop3/camel-pop3-store.c:832
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "এই কৰ্ম সমাপ্ত কৰাৰ বাবে অন-লাইন অৱস্থাত থকা আবশ্যক"
@@ -1893,7 +1893,7 @@ msgstr "এই কৰ্ম সমাপ্ত কৰাৰ বাবে অন-
 msgid "Canceled"
 msgstr "বাতিল কৰা হৈছে"
 
-#: ../camel/camel-filter-driver.c:916 ../camel/camel-filter-search.c:772
+#: ../camel/camel-filter-driver.c:916 ../camel/camel-filter-search.c:797
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "চাইল্ড প্ৰক্ৰিয়া '%s' সৃষ্টি কৰোঁতে ব্যৰ্থ: %s"
@@ -1959,15 +1959,15 @@ msgstr "%d ৰ %d বাৰ্তাত ব্যৰ্থ"
 msgid "Failed to retrieve message"
 msgstr "বাৰ্তা উদ্ধাৰ কৰোঁতে ব্যৰ্থ"
 
-#: ../camel/camel-filter-search.c:512
+#: ../camel/camel-filter-search.c:537
 msgid "Invalid arguments to (system-flag)"
 msgstr "(system-flag) লে অবৈধ তৰ্কসমূহ"
 
-#: ../camel/camel-filter-search.c:530
+#: ../camel/camel-filter-search.c:555
 msgid "Invalid arguments to (user-tag)"
 msgstr "(user-tag) লে অবৈধ তৰ্কসমূহ"
 
-#: ../camel/camel-filter-search.c:1021 ../camel/camel-filter-search.c:1030
+#: ../camel/camel-filter-search.c:1046 ../camel/camel-filter-search.c:1055
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "পৰিস্ৰাৱক সহযোগে সন্ধান কৰোঁতে ব্যৰ্থ: %s: %s"
@@ -2075,18 +2075,18 @@ msgstr "(%s) এ এটা অ্যাৰে ফলাফল প্ৰত্য
 msgid "(%s) requires the folder set"
 msgstr "(%s) ৰ ফোল্ডাৰ সংহতিৰ প্ৰয়োজন"
 
-#: ../camel/camel-gpg-context.c:663 ../camel/camel-gpg-context.c:668
-#: ../camel/camel-gpg-context.c:1331
+#: ../camel/camel-gpg-context.c:691 ../camel/camel-gpg-context.c:696
+#: ../camel/camel-gpg-context.c:1359
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg সঞ্চালন কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/camel-gpg-context.c:668
+#: ../camel/camel-gpg-context.c:696
 #: ../camel/providers/smtp/camel-smtp-transport.c:859
 msgid "Unknown"
 msgstr "‍অজ্ঞাত"
 
-#: ../camel/camel-gpg-context.c:733
+#: ../camel/camel-gpg-context.c:761
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2097,17 +2097,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:769
+#: ../camel/camel-gpg-context.c:797
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg userid ৰ সংকেত বিশ্লেষণ কৰোঁতে ব্যৰ্থ।"
 
-#: ../camel/camel-gpg-context.c:794 ../camel/camel-gpg-context.c:809
+#: ../camel/camel-gpg-context.c:822 ../camel/camel-gpg-context.c:837
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg পাচফ্ৰেইছৰ অনুৰোধ বিশ্লেষণ কৰোঁতে ব্যৰ্থ"
 
-#: ../camel/camel-gpg-context.c:830
+#: ../camel/camel-gpg-context.c:858
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2116,7 +2116,7 @@ msgstr ""
 "আপোনাৰ স্মাৰ্ট-কাৰ্ড আনলক কৰাৰ বাবে এটা PIN\n"
 "আবশ্যক: \"%s\""
 
-#: ../camel/camel-gpg-context.c:834
+#: ../camel/camel-gpg-context.c:862
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2125,12 +2125,12 @@ msgstr ""
 "চিহ্নিত ব্যৱহাৰকাৰীৰ কি আনলক কৰাৰ বাবে পাচফ্ৰেইছ\n"
 "প্ৰয়োগ কৰা আবশ্যক: \"%s\""
 
-#: ../camel/camel-gpg-context.c:840
+#: ../camel/camel-gpg-context.c:868
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "'%s ৰ বাবে GnuPG পৰা অপ্ৰত্যাশিত অনুৰোধ"
 
-#: ../camel/camel-gpg-context.c:852
+#: ../camel/camel-gpg-context.c:880
 msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2139,7 +2139,7 @@ msgstr ""
 "প্ৰতিটো "
 "সংৰক্ষিত ব্যক্তিগত কিৰ বাবে এটা পাছৱাৰ্ড প্ৰমপ্ট হব।"
 
-#: ../camel/camel-gpg-context.c:883 ../camel/camel-net-utils.c:523
+#: ../camel/camel-gpg-context.c:911 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:388
 #: ../libedataserver/e-client.c:140
@@ -2147,63 +2147,63 @@ msgstr ""
 msgid "Cancelled"
 msgstr "বাতিল কৰা হৈছে"
 
-#: ../camel/camel-gpg-context.c:904
+#: ../camel/camel-gpg-context.c:932
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "গোপন-কি আনলক কৰোঁতে ব্যৰ্থ: ৩-বাৰ ভুল পাছৱাৰ্ড লিখা হৈছে।"
 
-#: ../camel/camel-gpg-context.c:917
+#: ../camel/camel-gpg-context.c:945
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG ৰ পৰা অপ্ৰত্যাশিত প্ৰতিক্ৰিয়া: %s"
 
-#: ../camel/camel-gpg-context.c:1048
+#: ../camel/camel-gpg-context.c:1076
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "এনক্ৰিপ্ট কৰোঁতে ব্যৰ্থ: বৈধ গ্ৰাহক উল্লেখ কৰা হোৱা নাই।"
 
-#: ../camel/camel-gpg-context.c:1598 ../camel/camel-smime-context.c:832
+#: ../camel/camel-gpg-context.c:1626 ../camel/camel-smime-context.c:832
 msgid "Could not generate signing data: "
 msgstr "স্বাক্ষৰণ তথ্য সৃজন কৰিব নোৱাৰি: "
 
-#: ../camel/camel-gpg-context.c:1647 ../camel/camel-gpg-context.c:1851
-#: ../camel/camel-gpg-context.c:1961 ../camel/camel-gpg-context.c:2108
-#: ../camel/camel-gpg-context.c:2208 ../camel/camel-gpg-context.c:2256
+#: ../camel/camel-gpg-context.c:1675 ../camel/camel-gpg-context.c:1879
+#: ../camel/camel-gpg-context.c:1989 ../camel/camel-gpg-context.c:2136
+#: ../camel/camel-gpg-context.c:2236 ../camel/camel-gpg-context.c:2284
 msgid "Failed to execute gpg."
 msgstr "gpg সঞ্চালন কৰোঁতে ব্যৰ্থ।"
 
-#: ../camel/camel-gpg-context.c:1726 ../camel/camel-gpg-context.c:1734
-#: ../camel/camel-gpg-context.c:1742 ../camel/camel-gpg-context.c:1762
+#: ../camel/camel-gpg-context.c:1754 ../camel/camel-gpg-context.c:1762
+#: ../camel/camel-gpg-context.c:1770 ../camel/camel-gpg-context.c:1790
 #: ../camel/camel-smime-context.c:959 ../camel/camel-smime-context.c:973
 #: ../camel/camel-smime-context.c:982
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "বাৰ্তাৰ স্বাক্ষৰ পৰীক্ষা কৰোঁতে ব্যৰ্থ: বাৰ্তাৰ বিন্যাস সঠিক নহয়"
 
-#: ../camel/camel-gpg-context.c:1804
+#: ../camel/camel-gpg-context.c:1832
 msgid "Cannot verify message signature: "
 msgstr "বাৰ্তা স্বাক্ষৰ সতা সত্য নিৰূপণ কৰিব নোৱাৰি: "
 
-#: ../camel/camel-gpg-context.c:1927
+#: ../camel/camel-gpg-context.c:1955
 msgid "Could not generate encrypting data: "
 msgstr "ইনক্ৰিপ্টিং তথ্য সৃজন কৰিব নোৱাৰি: "
 
-#: ../camel/camel-gpg-context.c:1980
+#: ../camel/camel-gpg-context.c:2008
 msgid "This is a digitally encrypted message part"
 msgstr "ইয়াক অঙ্কীয় ৰূপে এনক্ৰিপ্ট কৰা বাৰ্তাৰ অংশ"
 
-#: ../camel/camel-gpg-context.c:2038 ../camel/camel-gpg-context.c:2047
-#: ../camel/camel-gpg-context.c:2070
+#: ../camel/camel-gpg-context.c:2066 ../camel/camel-gpg-context.c:2075
+#: ../camel/camel-gpg-context.c:2098
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "বাৰ্তা ডিক্ৰিপ্ট কৰোঁতে ব্যৰ্থ: বাৰ্তাৰ বিন্যাস সঠিক নহয়"
 
-#: ../camel/camel-gpg-context.c:2058
+#: ../camel/camel-gpg-context.c:2086
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME ৰ অংশ ডিক্ৰিপ্ট কৰোঁতে ব্যৰ্থ: প্ৰটোকল জড়িত ত্ৰুটি"
 
-#: ../camel/camel-gpg-context.c:2149 ../camel/camel-smime-context.c:1273
+#: ../camel/camel-gpg-context.c:2177 ../camel/camel-smime-context.c:1273
 msgid "Encrypted content"
 msgstr "এনক্ৰিপ্ট কৰা সমল"
 
@@ -2603,26 +2603,40 @@ msgstr "হস্ট সন্ধান ব্যৰ্থ"
 
 #: ../camel/camel-net-utils.c:732
 #, c-format
-msgid "Host lookup failed: %s: %s"
-msgstr "হস্ট সন্ধান ব্যৰ্থ: %s: %s"
+msgid "Host lookup '%s' failed. Check your host name for spelling errors."
+msgstr ""
+"হস্ট লুকৱাপ '%s' ব্যৰ্থ হল। বানানৰ ত্ৰুটিবোৰৰ বাবে আপোনাৰ হস্ট নাম নীৰিক্ষণ "
+"কৰক।"
 
-#: ../camel/camel-net-utils.c:853
+#: ../camel/camel-net-utils.c:736
+#, c-format
+#| msgid "Host lookup failed: %s: %s"
+msgid "Host lookup '%s' failed: %s"
+msgstr "হস্ট লুকৱাপ '%s' ব্যৰ্থ হল: %s"
+
+#: ../camel/camel-net-utils.c:857
 msgid "Resolving address"
 msgstr "ঠিকনা সমাধান কৰা হৈছে"
 
-#: ../camel/camel-net-utils.c:874
+#: ../camel/camel-net-utils.c:878
 msgid "Name lookup failed"
 msgstr "নাম সন্ধান কৰোঁতে ব্যৰ্থ"
 
-#: ../camel/camel-net-utils.c:880
+#: ../camel/camel-net-utils.c:885
+msgid "Name lookup failed. Check your host name for spelling errors."
+msgstr ""
+"নামৰ লুকৱাপ ব্যৰ্থ হল। বানানৰ ত্ৰুটিবোৰৰ বাবে আপোনাৰ হস্ট নাম নীৰিক্ষণ কৰক।"
+
+#: ../camel/camel-net-utils.c:889
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "নাম সন্ধান কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/camel-network-service.c:114
+#: ../camel/camel-network-service.c:115
 #, c-format
-msgid "Could not connect to %s: "
-msgstr "%s লে সংযোগ কৰিব নোৱাৰি: "
+#| msgid "Could not connect to %s: %s"
+msgid "Could not connect to '%s:%s': "
+msgstr "'%s:%s' লে সংযোগ কৰিব পৰা নগল:"
 
 #: ../camel/camel-offline-folder.c:210
 #, c-format
@@ -3927,7 +3941,7 @@ msgstr "নতুন বাৰ্তাৰ উপস্থিতি পৰীক
 #: ../camel/providers/local/camel-maildir-summary.c:746
 #: ../camel/providers/local/camel-mbox-summary.c:418
 #: ../camel/providers/local/camel-mbox-summary.c:650
-#: ../camel/providers/local/camel-mbox-summary.c:794
+#: ../camel/providers/local/camel-mbox-summary.c:798
 #: ../camel/providers/local/camel-spool-summary.c:132
 msgid "Storing folder"
 msgstr "ফোল্ডাৰ সংৰক্ষণ কৰা হৈছে"
@@ -4035,7 +4049,7 @@ msgid "Cannot check folder: %s: %s"
 msgstr "ফোল্ডাৰ পৰীক্ষা কৰা নাযায়: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:663
-#: ../camel/providers/local/camel-mbox-summary.c:803
+#: ../camel/providers/local/camel-mbox-summary.c:807
 #: ../camel/providers/local/camel-spool-summary.c:139
 #, c-format
 msgid "Could not open file: %s: %s"
@@ -4048,29 +4062,29 @@ msgid "Cannot open temporary mailbox: %s"
 msgstr "অস্থায়ী মেইলবাকচ খোলোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:694
-#: ../camel/providers/local/camel-mbox-summary.c:920
+#: ../camel/providers/local/camel-mbox-summary.c:924
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "উৎস ফোল্ডাৰ %s বন্ধ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:705
+#: ../camel/providers/local/camel-mbox-summary.c:707
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "অস্থায়ী ফোল্ডাৰ বন্ধ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:722
+#: ../camel/providers/local/camel-mbox-summary.c:726
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "ফোল্ডাৰৰ পুনৰনামৰৰণ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:817
-#: ../camel/providers/local/camel-mbox-summary.c:1086
+#: ../camel/providers/local/camel-mbox-summary.c:821
+#: ../camel/providers/local/camel-mbox-summary.c:1090
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "ফোল্ডাৰ সংৰক্ষণ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:856
-#: ../camel/providers/local/camel-mbox-summary.c:1123
+#: ../camel/providers/local/camel-mbox-summary.c:860
+#: ../camel/providers/local/camel-mbox-summary.c:1127
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
@@ -4079,25 +4093,25 @@ msgstr ""
 "MBOX ফাইল ক্ষতিগ্ৰস্থ, অনুগ্ৰহ কৰি ইয়াক ঠিক কৰক। (এটা পৰা শাৰী আশা কৰা হৈছিল, "
 "কিন্তু পোৱা নগল।)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:866
-#: ../camel/providers/local/camel-mbox-summary.c:1136
+#: ../camel/providers/local/camel-mbox-summary.c:870
+#: ../camel/providers/local/camel-mbox-summary.c:1140
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "সংক্ষিপ্ত তথ্য আৰু ফোল্ডাৰ অমিল, সুসংগতিৰ (sync) পিছতও"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1031
+#: ../camel/providers/local/camel-mbox-summary.c:1035
 #: ../camel/providers/local/camel-spool-summary.c:347
 #, c-format
 msgid "Unknown error: %s"
 msgstr "‍অজ্ঞাত ত্ৰুটি: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1194
-#: ../camel/providers/local/camel-mbox-summary.c:1224
+#: ../camel/providers/local/camel-mbox-summary.c:1198
+#: ../camel/providers/local/camel-mbox-summary.c:1228
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "অস্থায়ী মেইলবাকচলে লিখোতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1213
+#: ../camel/providers/local/camel-mbox-summary.c:1217
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "অস্থায়ী মেইলবাকচলে লিখোতে ব্যৰ্থ: %s: %s"
@@ -4575,17 +4589,12 @@ msgstr ""
 "POP চাৰ্ভাৰ %s লে সংযোগ কৰিবলে অক্ষম।\n"
 "ব্যৱহাৰকাৰীনাম%s পঠাওতে ত্ৰুটি"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:690
-#, c-format
-msgid "Could not connect to POP server %s"
-msgstr "POP চাৰ্ভাৰ %s ৰ সৈতে সংযোগ কৰোঁতে ব্যৰ্থ"
-
-#: ../camel/providers/pop3/camel-pop3-store.c:718
+#: ../camel/providers/pop3/camel-pop3-store.c:701
 #, c-format
 msgid "No such folder '%s'."
 msgstr "'%s ৰ অনুৰূপ ফোল্ডাৰ উপস্থিত নাই।"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:735
+#: ../camel/providers/pop3/camel-pop3-store.c:718
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3 সংৰক্ষণসমূহৰ কোনো ফোল্ডাৰ অধিক্ৰম নাই"
@@ -5039,7 +5048,7 @@ msgid "File must have a '.source' extension"
 msgstr "ফাইলৰ এটা '.source' সম্প্ৰসাৰন থাকিব লাগিব"
 
 #: ../libebackend/e-source-registry-server.c:522
-#: ../libedataserver/e-source-registry.c:1593
+#: ../libedataserver/e-source-registry.c:1594
 msgid "The user declined to authenticate"
 msgstr "ব্যৱহাৰকাৰীজনে প্ৰমাণীকৰণ কৰিবলে মান্তি নহল"
 
@@ -5730,6 +5739,12 @@ msgstr "ফ্লেগসমূহ"
 msgid "Identity"
 msgstr "পৰিচয়"
 
+#~ msgid "Could not connect to %s: "
+#~ msgstr "%s লে সংযোগ কৰিব নোৱাৰি: "
+
+#~ msgid "Could not connect to POP server %s"
+#~ msgstr "POP চাৰ্ভাৰ %s ৰ সৈতে সংযোগ কৰোঁতে ব্যৰ্থ"
+
 #~ msgid "Failed to build summary for an address book %s"
 #~ msgstr "এটা ঠিকনা বহি %s ৰ বাবে সাৰাংশ সৃষ্টি কৰিবলে ব্যৰ্থ"
 
@@ -5866,9 +5881,6 @@ msgstr "পৰিচয়"
 
 #~ msgid "Could not instantiate backend"
 #~ msgstr "বেকএণ্ড আৰম্ভ কৰিব নোৱাৰি"
-
-#~ msgid "Could not connect to %s: %s"
-#~ msgstr "%s ৰ সৈতে সংযোগ কৰোঁতে ব্যৰ্থ: %s"
 
 #~ msgid "SSL unavailable"
 #~ msgstr "SSL উপলব্ধ নহয়"
