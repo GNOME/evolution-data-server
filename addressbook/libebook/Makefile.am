@@ -48,8 +48,10 @@ libebook_1_2_la_SOURCES =				\
 	e-contact.c					\
 	e-destination.c					\
 	e-name-western.c				\
-	e-name-western-tables.h                         \
-	e-source-backend-summary-setup.c			\
+	e-name-western-tables.h				\
+	e-phone-number.c				\
+	e-phone-number-private.h			\
+	e-source-backend-summary-setup.c		\
 	e-vcard.c					\
 	e-error.h
 
@@ -64,6 +66,12 @@ libebook_1_2_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE) $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
+
+if ENABLE_PHONENUMBER
+libebook_1_2_la_SOURCES += e-phone-number-private.cpp
+libebook_1_2_la_CPPFLAGS += $(PHONENUMBER_INCLUDES)
+libebook_1_2_la_LIBADD += $(PHONENUMBER_LIBS)
+endif # ENABLE_PHONENUMBER
 
 libebookincludedir = $(privincludedir)/libebook
 
@@ -80,6 +88,7 @@ libebookinclude_HEADERS =				\
 	e-contact.h					\
 	e-destination.h					\
 	e-name-western.h				\
+	e-phone-number.h				\
 	e-source-backend-summary-setup.h		\
 	e-vcard.h
 

@@ -51,6 +51,7 @@ DEPRECATED_TESTS =				\
 
 # Should be kept ordered approximately from least to most difficult/complex
 TESTS = \
+	test-ebook-phone-number \
 	test-ebook-add-contact \
 	test-ebook-get-contact \
 	test-ebook-commit-contact \
@@ -134,6 +135,8 @@ test_ebook_remove_contact_by_id_LDADD=$(TEST_LIBS)
 test_ebook_remove_contact_by_id_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
 test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_phone_number_LDADD=$(TEST_LIBS)
+test_ebook_phone_number_CPPFLAGS=$(TEST_CPPFLAGS)
 #test_ebook_stress_factory__fifo_LDADD=$(TEST_LIBS)
 test_ebook_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
 #test_ebook_stress_factory__serial_LDADD=$(TEST_LIBS)
