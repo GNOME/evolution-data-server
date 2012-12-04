@@ -4,6 +4,11 @@ DOC_MODULE = libebook
 # The top-level SGML file.
 DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 
+# Extra options to supply to gtkdoc-mkdb
+# We must enable the SGML mode so that we can have HTML tables
+# in the documentation (e.g. to illustrate phone number matching).
+MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=e
+
 # Extra options to supply to gtkdoc-scan
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 

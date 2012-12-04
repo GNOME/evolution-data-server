@@ -272,6 +272,18 @@ localedir='$(prefix)/$(DATADIRNAME)/locale'
 AC_SUBST(localedir)
 
 dnl ******************************
+dnl libphonenumber support
+dnl ******************************
+
+dnl The EVO_PHONENUMBER_SUPPORT macro calls AC_PROG_CXX if libphonenumber
+dnl support got requested. Therefore this macro must be expanded before
+dnl the libtool macros. Feel free to move back to the other optional
+dnl dependencies if you know how to fix the autoconf issue, or if you
+dnl concluded that C++ actually is pretty awesome and should be a hard
+dnl dependency.
+EVO_PHONENUMBER_SUPPORT
+
+dnl ******************************
 dnl Initialize libtool
 dnl ******************************
 LT_PREREQ(2.2)
@@ -1672,6 +1684,7 @@ echo "
 	Kerberos 5:		$msg_krb5
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
+	Phone number support:	$msg_phonenumber
 	Dot Locking:		$msg_dot
 	File Locking:		$msg_file
 	Large files:		$enable_largefile
