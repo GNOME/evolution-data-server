@@ -595,18 +595,11 @@ if test "x$enable_backtraces" = xyes; then
 	fi
 fi
 
-dnl **********************************
-dnl Check for nl_langinfo and CODESET
-dnl **********************************
-AC_MSG_CHECKING([for nl_langinfo (CODESET)])
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
-	[[#include <langinfo.h>]],
-	[[char *codeset = nl_langinfo (CODESET);]]
-	)],[ac_cv_langinfo_codeset=yes],[ac_cv_langinfo_codeset=no])
-if test "x$ac_cv_langinfo_codeset" = "xyes"; then
-	AC_DEFINE(HAVE_CODESET, 1, [Have nl_langinfo (CODESET)])
-fi
-AC_MSG_RESULT([$ac_cv_langinfo_codeset])
+dnl ******************************
+dnl Check for nl_langinfo features
+dnl ******************************
+EVO_CHECK_LANGINFO([CODESET])
+EVO_CHECK_LANGINFO([_NL_ADDRESS_COUNTRY_AB2])
 
 dnl *******************************************************
 dnl Check to see if strftime supports the use of %l and %k
