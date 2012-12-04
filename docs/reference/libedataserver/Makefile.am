@@ -4,6 +4,8 @@ DOC_MODULE = libedataserver
 # The top-level SGML file.
 DOC_MAIN_SGML_FILE = libedataserver-docs.sgml
 
+MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=e
+
 # Extra options to supply to gtkdoc-scan
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 

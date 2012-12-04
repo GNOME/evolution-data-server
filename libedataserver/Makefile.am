@@ -57,6 +57,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-list-iterator.c		\
 	e-memory.c			\
 	e-operation-pool.c		\
+	e-phone-utils.cpp		\
 	e-proxy.c			\
 	e-sexp.c			\
 	e-source.c			\
@@ -112,6 +113,11 @@ libedataserver_1_2_la_LDFLAGS = \
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
+if ENABLE_PHONENUMBER
+libedataserver_1_2_la_CPPFLAGS += $(PHONENUMBER_INCLUDES)
+libedataserver_1_2_la_LIBADD += $(PHONENUMBER_LIBS)
+endif ENABLE_PHONENUMBER
+
 libedataserverincludedir = $(privincludedir)/libedataserver
 
 libedataserverinclude_HEADERS =		\
@@ -127,6 +133,7 @@ libedataserverinclude_HEADERS =		\
 	e-list-iterator.h		\
 	e-memory.h			\
 	e-operation-pool.h		\
+	e-phone-utils.h			\
 	e-proxy.h			\
 	e-sexp.h			\
 	e-source.h			\

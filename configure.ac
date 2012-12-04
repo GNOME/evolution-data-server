@@ -216,6 +216,7 @@ fi
 
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_CXX
 AC_C_INLINE
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
@@ -1232,6 +1233,11 @@ else
 fi
 
 dnl ******************************
+dnl libphonenumber support
+dnl ******************************
+EVO_PHONENUMBER_SUPPORT
+
+dnl ******************************
 dnl GObject marshalling
 dnl ******************************
 AM_PATH_GLIB_2_0
@@ -1647,6 +1653,7 @@ echo "
 	Kerberos 5:		$msg_krb5
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
+	Phone number support:	$msg_phonenumber
 	Dot Locking:		$msg_dot
 	File Locking:		$msg_file
 	Large files:		$enable_largefile

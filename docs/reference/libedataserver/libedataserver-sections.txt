@@ -215,6 +215,26 @@ e_operation_pool_push
 </SECTION>
 
 <SECTION>
+<FILE>e-phone-utils</FILE>
+EPhoneNumber
+EPhoneNumberError
+EPhoneNumberFormat
+EPhoneNumberMatch
+e_phone_number_is_supported
+e_phone_number_from_string
+e_phone_number_to_string
+e_phone_number_compare
+e_phone_number_compare_strings
+e_phone_number_copy
+e_phone_number_free
+<SUBSECTION Standard>
+E_PHONE_NUMBER_ERROR
+E_TYPE_PHONE_NUMBER
+e_phone_number_error_quark
+e_phone_number_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-proxy</FILE>
 <TITLE>EProxy</TITLE>
 EProxy
