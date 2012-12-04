@@ -71,10 +71,11 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--vapidir=. \
 		--vapidir=$(srcdir) \
 		--girdir=$(top_builddir)/libedataserver \
+		--girdir=$(top_builddir)/addressbook/libebook-contacts \
 		--pkg libedataserver-1.2 \
+		--pkg libebook-contacts-1.2 \
 		--pkg gio-2.0 \
 		--pkg libxml-2.0 \
-		--pkg libebook-contacts-1.2 \
 		--library libebook-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
