@@ -131,7 +131,7 @@ e_source_address_book_config_class_init (ESourceAddressBookConfigClass *class)
 			"revision-guards",
 			"Revision Guards",
 			"Whether to enable or disable the revision guards",
-			TRUE,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			E_SOURCE_PARAM_SETTING));
@@ -144,7 +144,7 @@ e_source_address_book_config_init (ESourceAddressBookConfig *extension)
 {
 	extension->priv = E_SOURCE_ABC_GET_PRIVATE (extension);
 	extension->priv->property_lock = g_mutex_new ();
-	extension->priv->revision_guards = TRUE;
+	extension->priv->revision_guards = FALSE;
 }
 
 /**
