@@ -32,6 +32,7 @@ TESTS =								\
 	test-client-custom-summary				\
 	test-client-get-revision				\
 	test-client-get-view					\
+	test-client-view-operations				\
 	test-client-uid-only-view				\
 	test-client-revision-view				\
 	test-client-suppress-notifications			\
@@ -86,6 +87,8 @@ test_client_get_revision_LDADD=$(TEST_LIBS)
 test_client_get_revision_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_view_LDADD=$(TEST_LIBS)
 test_client_get_view_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_view_operations_LDADD=$(TEST_LIBS)
+test_client_view_operations_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_uid_only_view_LDADD=$(TEST_LIBS)
 test_client_uid_only_view_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_revision_view_LDADD=$(TEST_LIBS)
