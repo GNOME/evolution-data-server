@@ -237,6 +237,21 @@ main (gint argc,
 	e_book_query_unref (query);
 	g_free (sexp);
 
+	/* Query name component */
+	query = e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet");
+	sexp = e_book_query_to_string (query);
+
+	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
+		report_error ("get contacts", &error);
+		g_object_unref (book_client);
+		return 1;
+	}
+	g_assert_cmpint (g_slist_length (results), ==, 1);
+	e_util_free_object_slist (results);
+	e_book_query_unref (query);
+	g_free (sexp);
+
+
 	/* Query email suffix... fetching uids */
 	query = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com");
 	sexp = e_book_query_to_string (query);
