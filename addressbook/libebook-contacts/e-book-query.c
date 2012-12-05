@@ -366,11 +366,16 @@ e_book_query_ref (EBookQuery *q)
 	return q;
 }
 
+typedef EBookQuery * (* EBookQueryNAry) (gint nqs,
+                                         EBookQuery **qs,
+                                         gboolean unref);
+
 static ESExpResult *
-func_and (struct _ESExp *f,
-          gint argc,
-          struct _ESExpResult **argv,
-          gpointer data)
+func_n_ary (EBookQueryNAry make_query,
+            struct _ESExp *f,
+            gint argc,
+            struct _ESExpResult **argv,
+            gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -389,8 +394,7 @@ func_and (struct _ESExp *f,
 			*list = g_list_delete_link(*list, list_head);
 		}
 
-		*list = g_list_prepend(*list,
-				       e_book_query_and (argc, qs, TRUE));
+		*list = g_list_prepend(*list, make_query (argc, qs, TRUE));
 
 		g_free (qs);
 	}
@@ -402,38 +406,21 @@ func_and (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_and (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          gpointer data)
+{
+	return func_n_ary (e_book_query_and, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_or (struct _ESExp *f,
          gint argc,
          struct _ESExpResult **argv,
          gpointer data)
 {
-	GList **list = data;
-	ESExpResult *r;
-	EBookQuery **qs;
-
-	if (argc > 0) {
-		gint i;
-
-		qs = g_new0 (EBookQuery *, argc);
-
-		for (i = 0; i < argc; i++) {
-			GList *list_head = *list;
-			if (!list_head)
-				break;
-			qs[i] = list_head->data;
-			*list = g_list_delete_link(*list, list_head);
-		}
-
-		*list = g_list_prepend(*list,
-				       e_book_query_or (argc, qs, TRUE));
-
-		g_free (qs);
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
+	return func_n_ary (e_book_query_or, f, argc, argv, data);
 }
 
 static ESExpResult *
@@ -458,77 +445,8 @@ func_not (struct _ESExp *f,
 }
 
 static ESExpResult *
-func_contains (struct _ESExp *f,
-               gint argc,
-               struct _ESExpResult **argv,
-               gpointer data)
-{
-	GList **list = data;
-	ESExpResult *r;
-
-	if (argc == 2
-	    && argv[0]->type == ESEXP_RES_STRING
-	    && argv[1]->type == ESEXP_RES_STRING) {
-		gchar *propname = argv[0]->value.string;
-		gchar *str = argv[1]->value.string;
-
-		if (!strcmp (propname, "x-evolution-any-field")) {
-			*list = g_list_prepend (*list, e_book_query_any_field_contains (str));
-		}
-		else {
-			EContactField field = e_contact_field_id (propname);
-
-			if (field)
-				*list = g_list_prepend (*list, e_book_query_field_test (field,
-											E_BOOK_QUERY_CONTAINS,
-											str));
-			else
-				*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
-											E_BOOK_QUERY_CONTAINS,
-											str));
-		}
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
-}
-
-static ESExpResult *
-func_is (struct _ESExp *f,
-         gint argc,
-         struct _ESExpResult **argv,
-         gpointer data)
-{
-	GList **list = data;
-	ESExpResult *r;
-
-	if (argc == 2
-	    && argv[0]->type == ESEXP_RES_STRING
-	    && argv[1]->type == ESEXP_RES_STRING) {
-		gchar *propname = argv[0]->value.string;
-		gchar *str = argv[1]->value.string;
-		EContactField field = e_contact_field_id (propname);
-
-		if (field)
-			*list = g_list_prepend (*list, e_book_query_field_test (field,
-										E_BOOK_QUERY_IS,
-										str));
-		else
-			*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
-										E_BOOK_QUERY_IS,
-										str));
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
-}
-
-static ESExpResult *
-func_beginswith (struct _ESExp *f,
+func_field_test (EBookQueryTest op,
+                 struct _ESExp *f,
                  gint argc,
                  struct _ESExpResult **argv,
                  gpointer data)
@@ -541,16 +459,21 @@ func_beginswith (struct _ESExp *f,
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = argv[1]->value.string;
-		EContactField field = e_contact_field_id (propname);
+		EBookQuery *q;
 
-		if (field)
-			*list = g_list_prepend (*list, e_book_query_field_test (field,
-										E_BOOK_QUERY_BEGINS_WITH,
-										str));
-		else
-			*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
-										E_BOOK_QUERY_BEGINS_WITH,
-										str));
+		if (op == E_BOOK_QUERY_CONTAINS
+		    && strcmp (propname, "x-evolution-any-field") == 0) {
+			q = e_book_query_any_field_contains (str);
+		} else {
+			EContactField field = e_contact_field_id (propname);
+
+			if (field)
+				q = e_book_query_field_test (field, op, str);
+			else
+				q = e_book_query_vcard_field_test (propname, op, str);
+		}
+
+		*list = g_list_prepend (*list, q);
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
@@ -560,35 +483,39 @@ func_beginswith (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_contains (struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_CONTAINS, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_is (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_IS, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_beginswith (struct _ESExp *f,
+                 gint argc,
+                 struct _ESExpResult **argv,
+                 gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_BEGINS_WITH, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_endswith (struct _ESExp *f,
                gint argc,
                struct _ESExpResult **argv,
                gpointer data)
 {
-	GList **list = data;
-	ESExpResult *r;
-
-	if (argc == 2
-	    && argv[0]->type == ESEXP_RES_STRING
-	    && argv[1]->type == ESEXP_RES_STRING) {
-		gchar *propname = argv[0]->value.string;
-		gchar *str = argv[1]->value.string;
-		EContactField field = e_contact_field_id (propname);
-
-		if (field)
-			*list = g_list_prepend (*list, e_book_query_field_test (field,
-										E_BOOK_QUERY_ENDS_WITH,
-										str));
-		else
-			*list = g_list_prepend (*list, e_book_query_vcard_field_test (propname,
-										E_BOOK_QUERY_ENDS_WITH,
-										str));
-	}
-
-	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = FALSE;
-
-	return r;
+	return func_field_test (E_BOOK_QUERY_ENDS_WITH, f, argc, argv, data);
 }
 
 static ESExpResult *
@@ -672,17 +599,10 @@ e_book_query_from_string (const gchar *query_string)
 	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);
 
-	if (list) {
-		if (list->next) {
-			g_warning ("conversion to EBookQuery");
-			retval = NULL;
-			g_list_foreach (list, (GFunc) e_book_query_unref, NULL);
-		}
-		else {
-			retval = list->data;
-		}
-	}
-	else {
+	if (list && list->next == NULL) {
+		retval = list->data;
+	} else {
+		g_list_foreach (list, (GFunc) e_book_query_unref, NULL);
 		g_warning ("conversion to EBookQuery failed");
 		retval = NULL;
 	}
