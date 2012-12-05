@@ -34,7 +34,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl Required Package Versions
 m4_define([glib_minimum_version], [2.32])
-m4_define([gtk_minimum_version], [3.2])
 m4_define([gcr_minimum_version], [3.4])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
@@ -338,10 +337,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	gmodule-2.0 >= glib_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version])
-
-
-#	libgdata >= libgdata_minimum_version
-#	gtk+-3.0 >= gtk_minimum_version
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
