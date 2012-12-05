@@ -44,10 +44,12 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#ifdef ENABLE_AUTHENTICATION
 /* XXX Yeah, yeah... */
 #define GCR_API_SUBJECT_TO_CHANGE
 
 #include <gcr/gcr-base.h>
+#endif
 
 /* Private D-Bus classes. */
 #include <e-dbus-source.h>
@@ -129,7 +131,9 @@ struct _AuthContext {
 	GCancellable *cancellable;
 	GMainLoop *main_loop;
 	ESourceAuthenticationResult auth_result;
+#ifdef ENABLE_AUTHENTICATION
 	GcrSecretExchange *secret_exchange;
+#endif
 	gboolean authenticating;
 	gboolean success;
 	GError **error;
@@ -202,6 +206,7 @@ async_context_free (AsyncContext *async_context)
 	g_slice_free (AsyncContext, async_context);
 }
 
+#ifdef ENABLE_AUTHENTICATION
 static void
 auth_context_free (AuthContext *auth_context)
 {
@@ -222,6 +227,7 @@ auth_context_free (AuthContext *auth_context)
 
 	g_slice_free (AuthContext, auth_context);
 }
+#endif
 
 static void
 source_closure_free (SourceClosure *closure)
@@ -1405,6 +1411,7 @@ source_registry_authenticate_thread (GSimpleAsyncResult *simple,
 		g_simple_async_result_take_error (simple, error);
 }
 
+#ifdef ENABLE_AUTHENTICATION
 /* Helper for e_source_registry_authenticate_sync() */
 static gboolean
 source_registry_authenticate_respond_cb (AuthContext *auth_context)
@@ -1609,6 +1616,7 @@ source_registry_call_authenticate_for_source (ESourceRegistry *registry,
 
 	return success;
 }
+#endif /* ENABLE_AUTHENTICATION */
 
 /**
  * e_source_registry_authenticate_sync:
@@ -1641,6 +1649,7 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
                                      GCancellable *cancellable,
                                      GError **error)
 {
+#ifdef ENABLE_AUTHENTICATION
 	AuthContext *auth_context;
 	GMainContext *main_context;
 	EDBusAuthenticator *dbus_auth;
@@ -1732,6 +1741,13 @@ exit:
 	g_main_context_unref (main_context);
 
 	return success;
+#else
+	g_set_error_literal (error,
+			     G_IO_ERROR, G_IO_ERROR_CANCELLED,
+			     _("Authentication support not enabled in EDS"));
+	return FALSE;
+
+#endif /* ENABLE_AUTHENTICATION */
 }
 
 /**

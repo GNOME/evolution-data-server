@@ -92,10 +92,6 @@ LIBEDATASERVER_CURRENT=17
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
-LIBEDATASERVERUI_CURRENT=4
-LIBEDATASERVERUI_REVISION=0
-LIBEDATASERVERUI_AGE=0
-
 LIBECAL_CURRENT=15
 LIBECAL_REVISION=0
 LIBECAL_AGE=0
@@ -130,9 +126,6 @@ AC_SUBST(EDS_MICRO_VERSION)
 AC_SUBST(LIBEDATASERVER_CURRENT)
 AC_SUBST(LIBEDATASERVER_REVISION)
 AC_SUBST(LIBEDATASERVER_AGE)
-AC_SUBST(LIBEDATASERVERUI_CURRENT)
-AC_SUBST(LIBEDATASERVERUI_REVISION)
-AC_SUBST(LIBEDATASERVERUI_AGE)
 AC_SUBST(LIBECAL_CURRENT)
 AC_SUBST(LIBECAL_REVISION)
 AC_SUBST(LIBECAL_AGE)
@@ -343,10 +336,12 @@ dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[gio-2.0 >= glib_minimum_version
 	gmodule-2.0 >= glib_minimum_version
-	gtk+-3.0 >= gtk_minimum_version
 	libxml-2.0 >= libxml_minimum_version
-	libsoup-2.4 >= libsoup_minimum_version
-	libgdata >= libgdata_minimum_version])
+	libsoup-2.4 >= libsoup_minimum_version])
+
+
+#	libgdata >= libgdata_minimum_version
+#	gtk+-3.0 >= gtk_minimum_version
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
@@ -1300,26 +1295,10 @@ AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
 dnl ******************************
-dnl libedataserverui
-dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 libsoup-2.4"
-
-EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
-AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
-AC_SUBST(E_DATA_SERVER_UI_LIBS)
-
-if test "x$enable_maintainer_mode" = "xyes" ; then
-	FACTORY_GTK_CFLAGS=$E_DATA_SERVER_UI_CFLAGS
-	FACTORY_GTK_LIBS=$E_DATA_SERVER_UI_LIBS
-	AC_SUBST(FACTORY_GTK_CFLAGS)
-	AC_SUBST(FACTORY_GTK_LIBS)
-fi
-
-E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libsoup-2.4 libxml-2.0"
-
-dnl ******************************
 dnl libebackend flags
 dnl ******************************
+E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libsoup-2.4 libxml-2.0"
+
 EVO_SET_COMPILE_FLAGS(E_BACKEND, $E_BACKEND_DEPS)
 AC_SUBST(E_BACKEND_CFLAGS)
 AC_SUBST(E_BACKEND_LIBS)
@@ -1373,10 +1352,20 @@ dnl Google flags
 dnl ******************************
 LIBGDATA_REQUIRED=libgdata_minimum_version
 AC_SUBST(LIBGDATA_REQUIRED)
+AC_ARG_ENABLE([google],
+	[AS_HELP_STRING([--enable-google],
+	[enable Google Contacts support (default=yes)])],
+	[enable_google=$enableval], [enable_google=yes])
+AC_MSG_CHECKING([if Google Contacts support is enabled])
+AC_MSG_RESULT([$enable_google])
+if test "x$enable_google" = xyes; then
+	EVO_SET_COMPILE_FLAGS(GDATA, libgdata)
+	AC_SUBST(GDATA_CFLAGS)
+	AC_SUBST(GDATA_LIBS)
 
-EVO_SET_COMPILE_FLAGS(GDATA, libgdata)
-AC_SUBST(GDATA_CFLAGS)
-AC_SUBST(GDATA_LIBS)
+	AC_DEFINE(HAVE_GOOGLE, 1, [Define to 1 if you have the google-1.0 package.])
+fi
+AM_CONDITIONAL(HAVE_GOOGLE, [test x$enable_google = xyes])
 
 dnl ******************************
 dnl Groupwise flags
@@ -1626,8 +1615,6 @@ libebackend/libebackend.pc
 libedataserver/Makefile
 libedataserver/eds-version.h
 libedataserver/libedataserver.pc
-libedataserverui/Makefile
-libedataserverui/libedataserverui.pc
 modules/Makefile
 modules/cache-reaper/Makefile
 modules/google-backend/Makefile
@@ -1646,7 +1633,6 @@ tests/libecal/Makefile
 tests/libecal/client/Makefile
 tests/libedata-cal/Makefile
 tests/libedataserver/Makefile
-tests/libedataserverui/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
@@ -1657,7 +1643,6 @@ docs/reference/calendar/libecal/Makefile
 docs/reference/calendar/libedata-cal/Makefile
 docs/reference/camel/Makefile
 docs/reference/libedataserver/Makefile
-docs/reference/libedataserverui/Makefile
 docs/reference/libebackend/Makefile
 docs/reference/private/Makefile
 po/Makefile.in
@@ -1681,5 +1666,6 @@ echo "
 	Introspection:		$enable_introspection
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
+	Google Contacts		$enable_google
 	Code coverage (gcov):	$enable_code_coverage
 "

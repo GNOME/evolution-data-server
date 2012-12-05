@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <glib/gi18n.h>
 
-#ifdef ENABLE_MAINTAINER_MODE
+#if defined(ENABLE_MAINTAINER_MODE) && defined(HAVE_EDATASERVERUI)
 #include <gtk/gtk.h>
 #endif
 
@@ -43,7 +43,7 @@ main (gint argc,
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
-#ifdef ENABLE_MAINTAINER_MODE
+#if defined(ENABLE_MAINTAINER_MODE) && defined(HAVE_EDATASERVERUI)
 	/* This is only to load gtk-modules, like
 	 * bug-buddy's gnomesegvhandler, if possible */
 	gtk_init_check (&argc, &argv);
