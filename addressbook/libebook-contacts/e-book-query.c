@@ -382,15 +382,15 @@ func_n_ary (EBookQueryNAry make_query,
 	EBookQuery **qs;
 
 	if (argc > 0) {
-		gint i;
+		gint i, j;
 
 		qs = g_new0 (EBookQuery *, argc);
 
-		for (i = 0; i < argc; i++) {
+		for (i = 0, j = argc - 1; i < argc; i++, j--) {
 			GList *list_head = *list;
 			if (!list_head)
 				break;
-			qs[i] = list_head->data;
+			qs[j] = list_head->data;
 			*list = g_list_delete_link(*list, list_head);
 		}
 
@@ -519,6 +519,33 @@ func_endswith (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_eqphone (struct _ESExp *f,
+              gint argc,
+              struct _ESExpResult **argv,
+              gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_EQUALS_PHONE_NUMBER, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_eqphone_national (struct _ESExp *f,
+                       gint argc,
+                       struct _ESExpResult **argv,
+                       gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_eqphone_short (struct _ESExp *f,
+                    gint argc,
+                    struct _ESExpResult **argv,
+                    gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_exists (struct _ESExp *f,
              gint argc,
              struct _ESExpResult **argv,
@@ -558,6 +585,9 @@ static const struct {
 	{ "is", func_is, 0 },
 	{ "beginswith", func_beginswith, 0 },
 	{ "endswith", func_endswith, 0 },
+	{ "eqphone", func_eqphone, 0 },
+	{ "eqphone_national", func_eqphone_national, 0 },
+	{ "eqphone_short", func_eqphone_short, 0 },
 	{ "exists", func_exists, 0 },
 };
 
@@ -611,6 +641,29 @@ e_book_query_from_string (const gchar *query_string)
 	return retval;
 }
 
+static const char *
+field_test_name (EBookQueryTest field_test)
+{
+	switch (field_test) {
+	case E_BOOK_QUERY_IS:
+		return "is";
+	case E_BOOK_QUERY_CONTAINS:
+		return "contains";
+	case E_BOOK_QUERY_BEGINS_WITH:
+		return "beginswith";
+	case E_BOOK_QUERY_ENDS_WITH:
+		return "endswith";
+	case E_BOOK_QUERY_EQUALS_PHONE_NUMBER:
+		return "eqphone";
+	case E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER:
+		return "eqphone_national";
+	case E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER:
+		return "eqphone_short";
+	}
+
+	g_assert_not_reached ();
+}
+
 /**
  * e_book_query_to_string:
  * @q: an #EBookQuery
@@ -627,7 +680,6 @@ e_book_query_to_string (EBookQuery *q)
 	GString *encoded = g_string_new ("");
 	gint i;
 	gchar *s = NULL;
-	const gchar *cs;
 
 	switch (q->type) {
 	case E_BOOK_QUERY_TYPE_AND:
@@ -661,21 +713,11 @@ e_book_query_to_string (EBookQuery *q)
 		}
 		break;
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
-		switch (q->query.field_test.test) {
-		case E_BOOK_QUERY_IS: cs = "is"; break;
-		case E_BOOK_QUERY_CONTAINS: cs = "contains"; break;
-		case E_BOOK_QUERY_BEGINS_WITH: cs = "beginswith"; break;
-		case E_BOOK_QUERY_ENDS_WITH: cs = "endswith"; break;
-		default:
-			g_assert_not_reached ();
-			break;
-		}
-
 		e_sexp_encode_string (encoded, q->query.field_test.value);
 
 		g_string_append_printf (
 			str, "%s \"%s\" %s",
-			cs,
+			field_test_name (q->query.field_test.test),
 			q->query.field_test.field_name,
 			encoded->str);
 		break;
