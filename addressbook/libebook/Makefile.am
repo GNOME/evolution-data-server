@@ -138,9 +138,7 @@ EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	e-book-enumtypes.h.template			\
 	e-book-enumtypes.c.template			\
-	e-book-marshal.list				\
-	e-name-western-tables.h.in                      \
-	gen-western-table.py
+	e-book-marshal.list
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
