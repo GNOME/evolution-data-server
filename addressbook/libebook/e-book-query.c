@@ -792,7 +792,7 @@ e_book_query_get_type (void)
 }
 
 /**
- * e_book_query_oopy:
+ * e_book_query_copy:
  * @q: an #EBookQuery
  *
  * Creates a copy of @q.

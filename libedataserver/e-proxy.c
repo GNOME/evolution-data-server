@@ -982,7 +982,7 @@ e_proxy_new (void)
 }
 
 /**
- * e_proxxy_setup_proxy:
+ * e_proxy_setup_proxy:
  *
  * Since: 2.24
  **/
