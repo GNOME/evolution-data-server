@@ -12,4 +12,7 @@ endif
 
 SUBDIRS = file vcf $(LDAP_SUBDIR) $(GOOGLE_SUBDIR) webdav
 
+# All subdirs go into dist tarballs regardless of configure options
+DIST_SUBDIRS = file vcf ldap google webdav
+
 -include $(top_srcdir)/git.mk
