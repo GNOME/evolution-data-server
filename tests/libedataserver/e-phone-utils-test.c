@@ -19,6 +19,10 @@
  * Author: Mathias Hasselmann <mathias@openismus.com>
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <libedataserver/libedataserver.h>
 
 static void
@@ -26,27 +30,47 @@ test_parse_and_format (gconstpointer data)
 {
 	GError *error = NULL;
 	EPhoneNumber *parsed;
-	gchar **test_numbers;
 	gchar **params;
-	gchar *formatted;
-	gint i;
 
 	params = g_strsplit (data, "/", G_MAXINT);
 	g_assert_cmpint (g_strv_length (params), ==, 6);
-	test_numbers = params + 2;
 
 	parsed = e_phone_number_from_string (params[0], params[1], &error);
-	g_assert (parsed != NULL);
-	g_assert (error == NULL);
 
-	for (i = 0; test_numbers[i]; ++i) {
-		formatted = e_phone_number_to_string (parsed, i);
-		g_assert (formatted != NULL);
-		g_assert_cmpstr (formatted, ==, test_numbers[i]);
-		g_free (formatted);
+#ifdef ENABLE_PHONENUMBER
+
+	{
+		gchar **test_numbers;
+		gint i;
+
+		test_numbers = params + 2;
+
+		g_assert (parsed != NULL);
+		g_assert (error == NULL);
+
+		for (i = 0; test_numbers[i]; ++i) {
+			gchar *formatted;
+
+			formatted = e_phone_number_to_string (parsed, i);
+			g_assert (formatted != NULL);
+			g_assert_cmpstr (formatted, ==, test_numbers[i]);
+			g_free (formatted);
+		}
+
+		e_phone_number_free (parsed);
 	}
 
-	e_phone_number_free (parsed);
+#else /* ENABLE_PHONENUMBER */
+
+	g_assert (parsed == NULL);
+	g_assert (error != NULL);
+	g_assert (error->domain == E_PHONE_NUMBER_ERROR);
+	g_assert (error->code == E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+	g_assert (error->message != NULL);
+
+#endif /* ENABLE_PHONENUMBER */
+
+	g_clear_error (&error);
 	g_strfreev (params);
 }
 
@@ -61,10 +85,14 @@ test_parse_bad_number (void)
 	g_assert (parsed == NULL);
 	g_assert (error != NULL);
 	g_assert (error->domain == E_PHONE_NUMBER_ERROR);
+#ifdef ENABLE_PHONENUMBER
 	g_assert (error->code == E_PHONE_NUMBER_ERROR_NOT_A_NUMBER);
+#else /* ENABLE_PHONENUMBER */
+	g_assert (error->code == E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+#endif /* ENABLE_PHONENUMBER */
 	g_assert (error->message != NULL);
 
-	g_error_free (error);
+	g_clear_error (&error);
 }
 
 gint

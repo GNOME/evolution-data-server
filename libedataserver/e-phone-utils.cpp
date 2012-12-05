@@ -42,11 +42,13 @@
 
 using i18n::phonenumbers::PhoneNumberUtil;
 
-struct _EPhoneNumber {
-	i18n::phonenumbers::PhoneNumber number;
-};
-
 #endif /* ENABLE_PHONENUMBER */
+
+struct _EPhoneNumber {
+#ifdef ENABLE_PHONENUMBER
+	i18n::phonenumbers::PhoneNumber number;
+#endif /* ENABLE_PHONENUMBER */
+};
 
 G_DEFINE_BOXED_TYPE (EPhoneNumber,
                      e_phone_number,
@@ -62,25 +64,6 @@ e_phone_number_error_quark (void)
 		q = g_quark_from_static_string ("e-phone-number-error-quark");
 
 	return q;
-}
-
-static const gchar *
-e_phone_number_error_to_string (EPhoneNumberError code)
-{
-	switch (code) {
-	case E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE:
-		return _("Invalid country code");
-	case E_PHONE_NUMBER_ERROR_NOT_A_NUMBER:
-		return _("Not a phone number");
-	case E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD:
-		return _("Remaining text after the country code is to short for a phone number");
-	case E_PHONE_NUMBER_ERROR_TOO_SHORT:
-		return _("Text is too short for a phone number");
-	case E_PHONE_NUMBER_ERROR_TOO_LONG:
-		return _("Text is too long for a phone number");
-	}
-
-	return _("Unknown error");
 }
 
 #ifdef ENABLE_PHONENUMBER
@@ -104,7 +87,70 @@ e_phone_number_util_get_instance (void)
 	return instance;
 }
 
+static EPhoneNumberError
+e_phone_number_error_code (PhoneNumberUtil::ErrorType error)
+{
+	switch (error) {
+	case PhoneNumberUtil::NO_PARSING_ERROR:
+		g_return_val_if_reached (E_PHONE_NUMBER_ERROR_UNKNOWN);
+	case PhoneNumberUtil::INVALID_COUNTRY_CODE_ERROR:
+		return E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE;
+	case PhoneNumberUtil::NOT_A_NUMBER:
+		return E_PHONE_NUMBER_ERROR_NOT_A_NUMBER;
+	case PhoneNumberUtil::TOO_SHORT_AFTER_IDD:
+		return E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD;
+	case PhoneNumberUtil::TOO_SHORT_NSN:
+		return E_PHONE_NUMBER_ERROR_TOO_SHORT;
+	case PhoneNumberUtil::TOO_LONG_NSN:
+		return E_PHONE_NUMBER_ERROR_TOO_LONG;
+	}
+
+	/* Please file a bug that we can add a proper error code. */
+	g_return_val_if_reached (E_PHONE_NUMBER_ERROR_UNKNOWN);
+}
+
 #endif /* ENABLE_PHONENUMBER */
+
+static const gchar *
+e_phone_number_error_to_string (EPhoneNumberError code)
+{
+	switch (code) {
+	case E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED:
+		return _("The library was built without phone number support.");
+	case E_PHONE_NUMBER_ERROR_UNKNOWN:
+		return _("The phone number parser reported an yet unkown error code.");
+	case E_PHONE_NUMBER_ERROR_NOT_A_NUMBER:
+		return _("Not a phone number");
+	case E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE:
+		return _("Invalid country code");
+	case E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD:
+		return _("Remaining text after the country code is to short for a phone number");
+	case E_PHONE_NUMBER_ERROR_TOO_SHORT:
+		return _("Text is too short for a phone number");
+	case E_PHONE_NUMBER_ERROR_TOO_LONG:
+		return _("Text is too long for a phone number");
+	}
+
+	return _("Unknown error");
+}
+
+static void
+e_phone_number_set_error (GError **error,
+                          EPhoneNumberError code)
+{
+	const gchar *message = e_phone_number_error_to_string (code);
+	g_set_error_literal (error, E_PHONE_NUMBER_ERROR, code, message);
+}
+
+gboolean
+e_phone_number_is_supported (void)
+{
+#ifdef ENABLE_PHONENUMBER
+	return TRUE;
+#else /* ENABLE_PHONENUMBER */
+	return FALSE;
+#endif /* ENABLE_PHONENUMBER */
+}
 
 EPhoneNumber *
 e_phone_number_from_string (const gchar *phone_number,
@@ -132,10 +178,7 @@ e_phone_number_from_string (const gchar *phone_number,
 		                                            &parsed_number->number);
 
 	if (err != PhoneNumberUtil::NO_PARSING_ERROR) {
-		const EPhoneNumberError code = static_cast<EPhoneNumberError> (err);
-
-		g_set_error_literal (error, E_PHONE_NUMBER_ERROR, err,
-		                     e_phone_number_error_to_string (code));
+		e_phone_number_set_error (error, e_phone_number_error_code (err));
 
 		delete parsed_number;
 		parsed_number = NULL;
@@ -143,8 +186,7 @@ e_phone_number_from_string (const gchar *phone_number,
 
 #else /* ENABLE_PHONENUMBER */
 
-	g_critical ("%s: This function is not available because phone number "
-	            "support was disabled when building %s.", G_STRFUNC, PACKAGE);
+	e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
 
 #endif /* ENABLE_PHONENUMBER */
 
@@ -171,8 +213,7 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 
 #else /* ENABLE_PHONENUMBER */
 
-	g_critical ("%s: This function is not available because phone number "
-	            "support was disabled when building %s.", G_STRFUNC, PACKAGE);
+	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
 
 #endif /* ENABLE_PHONENUMBER */
 
@@ -182,10 +223,8 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 EPhoneNumber *
 e_phone_number_copy (const EPhoneNumber *phone_number)
 {
-#ifdef ENABLE_PHONENUMBER
 	if (phone_number)
 		return new EPhoneNumber (*phone_number);
-#endif /* ENABLE_PHONENUMBER */
 
 	return NULL;
 }
@@ -193,7 +232,5 @@ e_phone_number_copy (const EPhoneNumber *phone_number)
 void
 e_phone_number_free (EPhoneNumber *phone_number)
 {
-#ifdef ENABLE_PHONENUMBER
 	delete phone_number;
-#endif /* ENABLE_PHONENUMBER */
 }

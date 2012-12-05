@@ -66,6 +66,10 @@ typedef enum {
 
 /**
  * EPhoneNumberError:
+ * @E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED: the library was built without phone
+ * number support
+ * @E_PHONE_NUMBER_ERROR_UNKNOWN: the phone number parser reported an yet
+ * unkown error code.
  * @E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE: the supplied phone number has an
  * invalid country code.
  * @E_PHONE_NUMBER_ERROR_NOT_A_NUMBER: the supplied text is not a phone number.
@@ -77,8 +81,10 @@ typedef enum {
  * Numeric description of a phone number related error.
  **/
 typedef enum {
-	E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE = 1,
+	E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED,
+	E_PHONE_NUMBER_ERROR_UNKNOWN,
 	E_PHONE_NUMBER_ERROR_NOT_A_NUMBER,
+	E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE,
 	E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD,
 	E_PHONE_NUMBER_ERROR_TOO_SHORT,
 	E_PHONE_NUMBER_ERROR_TOO_LONG,
@@ -93,6 +99,18 @@ typedef struct _EPhoneNumber EPhoneNumber;
 
 GType			e_phone_number_get_type		(void) G_GNUC_CONST;
 GQuark			e_phone_number_error_quark	(void) G_GNUC_CONST;
+
+/**
+ * e_phone_number_is_supported:
+ *
+ * Checks if phone number support is available. It is recommended to call this
+ * function before using any of the phone-utils functions to ensure that the
+ * required functionality is available, and to pick alternative mechnisms if
+ * needed.
+ *
+ * Returns: %TRUE if phone number support is available.
+ */
+gboolean		e_phone_number_is_supported	(void) G_GNUC_CONST;
 
 /**
  * e_phone_number_from_string:
