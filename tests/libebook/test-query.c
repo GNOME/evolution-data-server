@@ -4,35 +4,34 @@
 #define QUERY_STRING1
 #define QUERY_STRING2
 
-static const gchar * queries[] = {
-	"(exists \"full_name\")",
-	"(contains \"full_name\" \"Miguel\")"
+static void
+test_sexp (gconstpointer data)
+{
+	EBookQuery *query = e_book_query_from_string (data);
+	char *sexp = e_book_query_to_string (query);
 
-	/* XXX come on, add more here */
-};
+	g_assert_cmpstr (data, ==, sexp);
+
+	g_free (sexp);
+	e_book_query_unref (query);
+}
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	gint i;
-	gboolean failure = FALSE;
+	g_type_init ();
 
-	for (i = 0; i < G_N_ELEMENTS (queries); i++) {
-		EBookQuery *query = e_book_query_from_string (queries[i]);
-		gchar *str;
+	g_test_init (&argc, &argv, NULL);
 
-		str = e_book_query_to_string (query);
+	g_test_add_data_func ("/libebook/test-query/sexp/exists",
+	                      "(exists \"full_name\")",
+	                      test_sexp);
+	g_test_add_data_func ("/libebook/test-query/sexp/contains",
+	                      "(contains \"full_name\" \"Miguel\")",
+	                      test_sexp);
 
-		if (strcmp (str, queries[i])) {
-			g_warning ("failed on query: %s", queries[i]);
+	/* XXX come on, add more here */
 
-			failure = TRUE;
-		}
-	}
-
-	if (!failure)
-	  g_message ("all tests passed");
-
-	return 0;
+	return g_test_run ();
 }
