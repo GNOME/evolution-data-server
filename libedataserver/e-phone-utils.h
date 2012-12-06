@@ -65,6 +65,22 @@ typedef enum {
 } EPhoneNumberFormat;
 
 /**
+ * EPhoneNumberMatch:
+ * @E_PHONE_NUMBER_MATCH_NONE: The phone numbers did not match.
+ * @E_PHONE_NUMBER_MATCH_EXACT: The phone numbers matched exactly.
+ * @E_PHONE_NUMBER_MATCH_NATIONAL: There was no country code for at least
+ * one of the numbers, but the national parts matched.
+ * @E_PHONE_NUMBER_MATCH_SHORT: There was no country code for at least
+ * one of the numbers, but one number might be part (suffix) of the other.
+ */
+typedef enum {
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_EXACT,
+	E_PHONE_NUMBER_MATCH_NATIONAL = 1024,
+	E_PHONE_NUMBER_MATCH_SHORT = 2048
+} EPhoneNumberMatch;
+
+/**
  * EPhoneNumberError:
  * @E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED: the library was built without phone
  * number support
@@ -149,6 +165,36 @@ EPhoneNumber *		e_phone_number_from_string	(const gchar *phone_number,
  **/
 gchar *			e_phone_number_to_string	(const EPhoneNumber *phone_number,
 							 EPhoneNumberFormat format);
+
+/**
+ * e_phone_number_compare:
+ * @first_number: the first EPhoneNumber to compare
+ * @second_number: the second EPhoneNumber to compare
+ *
+ * Compares two phone numbers.
+ *
+ * Returns: The quality of matching for the two phone numbers.
+ *
+ * Since: 3.8
+ */
+EPhoneNumberMatch	e_phone_number_compare		(const EPhoneNumber *first_number,
+							 const EPhoneNumber *second_number);
+
+/**
+ * e_phone_number_compare_strings:
+ * @first_number: the first EPhoneNumber to compare
+ * @second_number: the second EPhoneNumber to compare
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Compares two phone numbers.
+ *
+ * Returns: The quality of matching for the two phone numbers.
+ *
+ * Since: 3.8
+ */
+EPhoneNumberMatch	e_phone_number_compare_strings	(const gchar *first_number,
+							 const gchar *second_number,
+							 GError **error);
 
 /**
  * e_phone_number_copy:

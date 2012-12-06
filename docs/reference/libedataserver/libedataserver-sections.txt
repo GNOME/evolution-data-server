@@ -221,6 +221,8 @@ EPhoneNumberError
 EPhoneNumberFormat
 e_phone_number_from_string
 e_phone_number_to_string
+e_phone_number_compare
+e_phone_number_compare_strings
 e_phone_number_copy
 e_phone_number_free
 <SUBSECTION Standard>

@@ -46,7 +46,7 @@ using i18n::phonenumbers::PhoneNumberUtil;
 
 struct _EPhoneNumber {
 #ifdef ENABLE_PHONENUMBER
-	i18n::phonenumbers::PhoneNumber number;
+	i18n::phonenumbers::PhoneNumber phone_number;
 #endif /* ENABLE_PHONENUMBER */
 };
 
@@ -175,7 +175,7 @@ e_phone_number_from_string (const gchar *phone_number,
 
 	const PhoneNumberUtil::ErrorType err =
 		e_phone_number_util_get_instance ()->Parse (phone_number, country_code,
-		                                            &parsed_number->number);
+		                                            &parsed_number->phone_number);
 
 	if (err != PhoneNumberUtil::NO_PARSING_ERROR) {
 		e_phone_number_set_error (error, e_phone_number_error_code (err));
@@ -204,7 +204,7 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 	std::string formatted_number;
 
 	e_phone_number_util_get_instance ()->Format
-		(phone_number->number,
+		(phone_number->phone_number,
 		 static_cast<PhoneNumberUtil::PhoneNumberFormat> (format),
 		 &formatted_number);
 
@@ -218,6 +218,83 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 #endif /* ENABLE_PHONENUMBER */
 
 	return NULL;
+}
+
+static EPhoneNumberMatch
+e_phone_number_match (PhoneNumberUtil::MatchType match_type)
+{
+	switch (match_type) {
+	case PhoneNumberUtil::NO_MATCH:
+	case PhoneNumberUtil::INVALID_NUMBER:
+		return E_PHONE_NUMBER_MATCH_NONE;
+	case PhoneNumberUtil::SHORT_NSN_MATCH:
+		return E_PHONE_NUMBER_MATCH_SHORT;
+	case PhoneNumberUtil::NSN_MATCH:
+		return E_PHONE_NUMBER_MATCH_NATIONAL;
+	case PhoneNumberUtil::EXACT_MATCH:
+		return E_PHONE_NUMBER_MATCH_EXACT;
+	}
+
+	g_return_val_if_reached (E_PHONE_NUMBER_MATCH_NONE);
+}
+
+EPhoneNumberMatch
+e_phone_number_compare	(const EPhoneNumber *first_number,
+			 const EPhoneNumber *second_number)
+{
+	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
+	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
+
+	EPhoneNumberMatch result = E_PHONE_NUMBER_MATCH_NONE;
+
+#ifdef ENABLE_PHONENUMBER
+
+	const PhoneNumberUtil::MatchType match_type =
+		e_phone_number_util_get_instance ()->
+		IsNumberMatch (first_number->phone_number,
+		               second_number->phone_number);
+
+	g_warn_if_fail (match_type != PhoneNumberUtil::INVALID_NUMBER);
+	result = e_phone_number_match (match_type);
+
+#else /* ENABLE_PHONENUMBER */
+
+	e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+
+#endif /* ENABLE_PHONENUMBER */
+
+	return result;
+}
+
+EPhoneNumberMatch
+e_phone_number_compare_strings	(const gchar *first_number,
+				 const gchar *second_number,
+				 GError **error)
+{
+	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
+	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
+
+	EPhoneNumberMatch result = E_PHONE_NUMBER_MATCH_NONE;
+
+#ifdef ENABLE_PHONENUMBER
+
+	const PhoneNumberUtil::MatchType match_type =
+		e_phone_number_util_get_instance ()->
+		IsNumberMatchWithTwoStrings (first_number, second_number);
+
+	if (match_type == PhoneNumberUtil::INVALID_NUMBER) {
+		e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_A_NUMBER);
+	} else {
+		result = e_phone_number_match (match_type);
+	}
+
+#else /* ENABLE_PHONENUMBER */
+
+	e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+
+#endif /* ENABLE_PHONENUMBER */
+
+	return result;
 }
 
 EPhoneNumber *
