@@ -133,6 +133,92 @@ new_custom_temp_client (gchar **uri)
 	return book;
 }
 
+typedef struct {
+	EBookClient *client;
+	EBookQuery *query;
+	gint num_contacts;
+} ClientTestData;
+
+static void
+client_test_data_free (gpointer p)
+{
+	ClientTestData *const data = p;
+	g_object_unref (data->client);
+	e_book_query_unref (data->query);
+	g_slice_free (ClientTestData, data);
+}
+
+static void
+search_test (gconstpointer p)
+{
+	const ClientTestData *const data = p;
+	GSList *results = NULL;
+	GError *error = NULL;
+	gchar *sexp;
+
+	sexp = e_book_query_to_string (data->query);
+
+	if (!e_book_client_get_contacts_sync (data->client, sexp, &results, NULL, &error)) {
+		report_error ("get contacts", &error);
+		g_test_fail ();
+		return;
+	}
+
+	g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
+	e_util_free_object_slist (results);
+	g_free (sexp);
+}
+
+static void
+uid_test (gconstpointer p)
+{
+	const ClientTestData *const data = p;
+	GSList *results = NULL;
+	GError *error = NULL;
+	gchar *sexp;
+
+	sexp = e_book_query_to_string (data->query);
+
+	if (!e_book_client_get_contacts_uids_sync (data->client, sexp, &results, NULL, &error)) {
+		report_error ("get contact uids", &error);
+		g_test_fail ();
+		return;
+	}
+
+	g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
+	e_util_free_string_slist (results);
+	g_free (sexp);
+}
+
+static void
+remove_test (gconstpointer p)
+{
+	const ClientTestData *const data = p;
+	GError *error = NULL;
+
+	if (!e_client_remove_sync (E_CLIENT (data->client), NULL, &error)) {
+		report_error ("client remove sync", &error);
+		g_test_fail ();
+		return;
+	}
+}
+
+static void
+add_client_test (const gchar *path,
+                 GTestDataFunc func,
+                 EBookClient *client,
+                 EBookQuery *query,
+                 gint num_contacts)
+{
+	ClientTestData *data = g_slice_new (ClientTestData);
+
+	data->client = g_object_ref (client);
+	data->query = query;
+	data->num_contacts = num_contacts;
+
+	g_test_add_data_func_full (path, data, func, client_test_data_free);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -140,15 +226,11 @@ main (gint argc,
 	EBookClient *book_client;
 	EContact *contact_final;
 	GError *error = NULL;
-	EBookQuery *query;
-	gchar *sexp;
-	GSList *results = NULL;
 
+	g_test_init (&argc, &argv, NULL);
 	main_initialize ();
 
-	/*
-	 * Setup
-	 */
+	/* Setup */
 	book_client = new_custom_temp_client (NULL);
 	g_return_val_if_fail (book_client != NULL, 1);
 
@@ -180,99 +262,33 @@ main (gint argc,
 		return 1;
 	}
 
-	/* Query exact */
-	query = e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown");
-	sexp = e_book_query_to_string (query);
+	/* Add search tests that fetch contacts */
+	add_client_test ("/client/search/exact/fn", search_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
+	                 1);
+	add_client_test ("/client/search/prefix/fn", search_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
+	                 2);
+	add_client_test ("/client/search/suffix/phone", search_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
+	                 2);
+	add_client_test ("/client/search/suffix/email", search_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
+	                 2);
+	add_client_test ("/client/search/exact/name", search_test, book_client,
+	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
+	                 1);
 
-	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
+	/* Add search tests that fetch uids */
+	add_client_test ("/client/search-uid/exact/name", uid_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
+	                 2);
 
-	g_assert_cmpint (g_slist_length (results), ==, 1);
-	e_util_free_object_slist (results);
-	e_book_query_unref (query);
-	g_free (sexp);
+	/* Test remove operation */
+	add_client_test ("/client/remove", remove_test, book_client, NULL, 0);
 
-	/* Query prefix */
-	query = e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_assert_cmpint (g_slist_length (results), ==, 2);
-	e_util_free_object_slist (results);
-	e_book_query_unref (query);
-	g_free (sexp);
-
-	/* Query phone number suffix */
-	query = e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-	e_util_free_object_slist (results);
-	e_book_query_unref (query);
-	g_free (sexp);
-
-	/* Query email suffix */
-	query = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-	g_assert_cmpint (g_slist_length (results), ==, 2);
-	e_util_free_object_slist (results);
-	e_book_query_unref (query);
-	g_free (sexp);
-
-	/* Query name component */
-	query = e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-	g_assert_cmpint (g_slist_length (results), ==, 1);
-	e_util_free_object_slist (results);
-	e_book_query_unref (query);
-	g_free (sexp);
-
-
-	/* Query email suffix... fetching uids */
-	query = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_contacts_uids_sync (book_client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-	g_assert_cmpint (g_slist_length (results), ==, 2);
-	e_util_free_string_slist (results);
-	e_book_query_unref (query);
-	g_free (sexp);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
+	/* Roll dices */
 	g_object_unref (book_client);
 
-	return 0;
+	return g_test_run ();
 }
