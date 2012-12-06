@@ -77,7 +77,10 @@ GSList *	e_util_copy_string_slist	(GSList *copy_to, const GSList *strings);
 GSList *	e_util_copy_object_slist	(GSList *copy_to, const GSList *objects);
 void		e_util_free_string_slist	(GSList *strings);
 void		e_util_free_object_slist	(GSList *objects);
-void		e_util_free_nullable_object_slist	(GSList *objects);
+void		e_util_free_nullable_object_slist
+						(GSList *objects);
+void		e_queue_transfer		(GQueue *src_queue,
+						 GQueue *dst_queue);
 
 gboolean	e_file_recursive_delete_sync	(GFile *file,
 						 GCancellable *cancellable,

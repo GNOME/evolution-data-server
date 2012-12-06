@@ -1143,6 +1143,7 @@ e_util_copy_object_slist
 e_util_free_string_slist
 e_util_free_object_slist
 e_util_free_nullable_object_slist
+e_queue_transfer
 e_file_recursive_delete_sync
 e_file_recursive_delete
 e_file_recursive_delete_finish

@@ -1044,6 +1044,32 @@ e_util_free_nullable_object_slist (GSList *objects)
 	g_slist_free (objects);
 }
 
+/**
+ * e_queue_transfer:
+ * @src_queue: a source #GQueue
+ * @dst_queue: a destination #GQueue
+ *
+ * Transfers the contents of @src_queue to the tail of @dst_queue.
+ * When the operation is complete, @src_queue will be empty.
+ *
+ * Since: 3.8
+ **/
+void
+e_queue_transfer (GQueue *src_queue,
+                  GQueue *dst_queue)
+{
+	g_return_if_fail (src_queue != NULL);
+	g_return_if_fail (dst_queue != NULL);
+
+	dst_queue->head = g_list_concat (dst_queue->head, src_queue->head);
+	dst_queue->tail = g_list_last (dst_queue->head);
+	dst_queue->length += src_queue->length;
+
+	src_queue->head = NULL;
+	src_queue->tail = NULL;
+	src_queue->length = 0;
+}
+
 /* Helper for e_file_recursive_delete() */
 static void
 file_recursive_delete_thread (GSimpleAsyncResult *simple,
