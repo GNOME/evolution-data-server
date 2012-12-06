@@ -622,7 +622,11 @@ e_book_query_from_string (const gchar *query_string)
 	}
 
 	e_sexp_input_text (sexp, query_string, strlen (query_string));
-	e_sexp_parse (sexp);
+
+	if (e_sexp_parse (sexp)) {
+		g_warning ("%s: Error in parsing: %s", G_STRFUNC, sexp->error);
+		return NULL;
+	}
 
 	r = e_sexp_eval (sexp);
 
