@@ -1,6 +1,11 @@
 noinst_LTLIBRARIES = libclient-test-utils.la
 
-libclient_test_utils_la_SOURCES = client-test-utils.c client-test-utils.h
+libclient_test_utils_la_SOURCES =				\
+	client-test-utils.c					\
+	client-test-utils.h					\
+	$(top_srcdir)/tests/libedataserver/e-test-dbus-utils.c	\
+	$(top_srcdir)/tests/libedataserver/e-test-dbus-utils.h	\
+	$(NULL)
 
 libclient_test_utils_la_CPPFLAGS =				\
 	$(AM_CPPFLAGS)						\
@@ -8,7 +13,9 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/addressbook				\
 	-I$(top_builddir)/addressbook				\
-	-DBACKENDDIR=\"$(ebook_backenddir)\" 			\
+	-I$(top_srcdir)/tests/libedataserver			\
+	-DBACKENDDIR=\"$(ebook_backenddir)\"			\
+	-DDATADIR=\"$(datadir)\"				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
