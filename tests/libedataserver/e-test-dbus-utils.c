@@ -147,6 +147,20 @@ e_test_clean_base_directories (GError **error)
 	return success;
 }
 
+static void
+register_dbus_service_dir (GTestDBus *test_dbus,
+                           const gchar *data_dir)
+{
+	gchar *service_dir;
+
+	service_dir = g_build_filename (data_dir, "dbus-1", "services", NULL);
+
+	g_print ("Adding service dir: %s\n", service_dir);
+	g_test_dbus_add_service_dir (test_dbus, service_dir);
+
+	g_free (service_dir);
+}
+
 GTestDBus *
 e_test_setup_dbus_session (void)
 {
@@ -160,15 +174,10 @@ e_test_setup_dbus_session (void)
 	g_assert (system_data_dirs != NULL);
 
 	test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+	register_dbus_service_dir (test_dbus, DATADIR);
 
 	for (ii = 0; system_data_dirs[ii] != NULL; ii++) {
-		gchar *service_dir;
-
-		service_dir = g_build_filename (
-			system_data_dirs[ii], "dbus-1", "services", NULL);
-		g_print ("Adding service dir: %s\n", service_dir);
-		g_test_dbus_add_service_dir (test_dbus, service_dir);
-		g_free (service_dir);
+		register_dbus_service_dir (test_dbus, system_data_dirs[ii]);
 	}
 
 	return test_dbus;

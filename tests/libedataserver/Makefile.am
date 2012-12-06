@@ -13,6 +13,7 @@ test_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-I$(top_srcdir) \
 	-DG_LOG_DOMAIN=\"e-data-server\" \
+	-DDATADIR=\"$(datadir)\" \
 	$(E_DATA_SERVER_CFLAGS) \
 	$(GIO_UNIX_CFLAGS) \
 	$(NULL)
