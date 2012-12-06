@@ -87,7 +87,9 @@ INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver \
 	--add-include-path=$(srcdir) --identifier-prefix=E --pkg-export \
 	libebook-1.2 --c-include="libebook/libebook.h"
-INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver \
+INTROSPECTION_COMPILER_ARGS = \
+	--includedir=$(top_builddir)/addressbook/libebook-contacts \
+	--includedir=$(top_builddir)/libedataserver \
 	--includedir=$(srcdir)
 
 if HAVE_INTROSPECTION
