@@ -8,7 +8,7 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/calendar				\
 	-I$(top_builddir)/calendar				\
-	-DSRCDIR=\""$(srcdir)"\"				\
+	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_CALENDAR_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
 	$(NULL)
