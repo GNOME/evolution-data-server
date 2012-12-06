@@ -28,6 +28,7 @@
 #include <libedataserver/libedataserver.h>
 
 #include "client-test-utils.h"
+#include "e-test-dbus-utils.h"
 
 /* This forces the GType to be registered in a way that
  * avoids a "statement with no effect" compiler warning.
@@ -98,12 +99,21 @@ void
 main_initialize (void)
 {
 	static gboolean initialized = FALSE;
+	GTestDBus *test_dbus = NULL;
 
 	if (initialized)
 		return;
 
 	g_type_init ();
 	e_gdbus_templates_init_main_thread ();
+
+	e_test_setup_base_directories ();
+	test_dbus = e_test_setup_dbus_session ();
+
+	g_test_dbus_up (test_dbus);
+
+	g_print ("Using private D-Bus session for testing: \"%s\"\n",
+                 g_test_dbus_get_bus_address (test_dbus));
 
 	initialized = TRUE;
 }
