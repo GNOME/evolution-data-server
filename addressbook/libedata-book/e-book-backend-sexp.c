@@ -29,6 +29,7 @@
 G_DEFINE_TYPE (EBookBackendSExp, e_book_backend_sexp, G_TYPE_OBJECT)
 
 typedef struct _SearchContext SearchContext;
+typedef gboolean (*CompareFunc) (const gchar *, const gchar *);
 
 struct _EBookBackendSExpPrivate {
 	ESExp *search_sexp;
@@ -43,8 +44,7 @@ struct _SearchContext {
 static gboolean
 compare_im (EContact *contact,
             const gchar *str,
-            gchar * (*compare) (const gchar *,
-                                const gchar *),
+            CompareFunc compare,
             EContactField im_field)
 {
 	GList    *aims, *l;
@@ -69,8 +69,7 @@ compare_im (EContact *contact,
 static gboolean
 compare_im_aim (EContact *contact,
                 const gchar *str,
-                gchar * (*compare) (const gchar *,
-                                    const gchar *))
+                CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_AIM);
 }
@@ -78,8 +77,7 @@ compare_im_aim (EContact *contact,
 static gboolean
 compare_im_msn (EContact *contact,
                 const gchar *str,
-                gchar * (*compare) (const gchar *,
-                                    const gchar *))
+                CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_MSN);
 }
@@ -87,8 +85,7 @@ compare_im_msn (EContact *contact,
 static gboolean
 compare_im_skype (EContact *contact,
                   const gchar *str,
-                  gchar * (*compare) (const gchar *,
-                                      const gchar *))
+                  CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_SKYPE);
 }
@@ -96,8 +93,7 @@ compare_im_skype (EContact *contact,
 static gboolean
 compare_im_google_talk (EContact *contact,
                         const gchar *str,
-                        gchar * (*compare) (const gchar *,
-                                            const gchar *))
+                        CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_GOOGLE_TALK);
 }
@@ -105,8 +101,7 @@ compare_im_google_talk (EContact *contact,
 static gboolean
 compare_im_icq (EContact *contact,
                 const gchar *str,
-                gchar * (*compare) (const gchar *,
-                                    const gchar *))
+                CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_ICQ);
 }
@@ -114,8 +109,7 @@ compare_im_icq (EContact *contact,
 static gboolean
 compare_im_yahoo (EContact *contact,
                   const gchar *str,
-                  gchar *(*compare) (const gchar *,
-                                     const gchar *))
+                  CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_YAHOO);
 }
@@ -123,8 +117,7 @@ compare_im_yahoo (EContact *contact,
 static gboolean
 compare_im_gadugadu (EContact *contact,
                      const gchar *str,
-                     gchar * (*compare) (const gchar *,
-                                         const gchar *))
+                     CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_GADUGADU);
 }
@@ -132,8 +125,7 @@ compare_im_gadugadu (EContact *contact,
 static gboolean
 compare_im_jabber (EContact *contact,
                    const gchar *str,
-                   gchar * (*compare) (const gchar *,
-                                       const gchar *))
+                   CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_JABBER);
 }
@@ -141,8 +133,7 @@ compare_im_jabber (EContact *contact,
 static gboolean
 compare_im_groupwise (EContact *contact,
                       const gchar *str,
-                      gchar * (*compare) (const gchar *,
-                                          const gchar *))
+                      CompareFunc compare)
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_GROUPWISE);
 }
@@ -150,8 +141,7 @@ compare_im_groupwise (EContact *contact,
 static gboolean
 compare_email (EContact *contact,
                const gchar *str,
-               gchar * (*compare) (const gchar *,
-                                   const gchar *))
+               CompareFunc compare)
 {
 	gboolean rv = FALSE;
 	GList *list, *l;
@@ -175,8 +165,7 @@ compare_email (EContact *contact,
 static gboolean
 compare_phone (EContact *contact,
                const gchar *str,
-               gchar * (*compare) (const gchar *,
-                                   const gchar *))
+               CompareFunc compare)
 {
 	GList *list, *l;
 	gboolean rv = FALSE;
@@ -200,8 +189,7 @@ compare_phone (EContact *contact,
 static gboolean
 compare_name (EContact *contact,
               const gchar *str,
-              gchar * (*compare) (const gchar *,
-                                  const gchar *))
+              CompareFunc compare)
 {
 	const gchar *name;
 
@@ -227,8 +215,7 @@ compare_name (EContact *contact,
 static gboolean
 compare_photo_uri (EContact *contact,
                    const gchar *str,
-                   gchar * (*compare) (const gchar *,
-                                       const gchar *))
+                   CompareFunc compare)
 {
 	EContactPhoto *photo;
 	gboolean ret_val = FALSE;
@@ -249,8 +236,7 @@ compare_photo_uri (EContact *contact,
 static gboolean
 compare_address (EContact *contact,
                  const gchar *str,
-                 gchar * (*compare) (const gchar *,
-                                     const gchar *))
+                 CompareFunc compare)
 {
 
 	gint i;
@@ -281,8 +267,7 @@ compare_address (EContact *contact,
 static gboolean
 compare_category (EContact *contact,
                   const gchar *str,
-                  gchar * (*compare) (const gchar *,
-                                      const gchar *))
+                  CompareFunc compare)
 {
 	GList *categories;
 	GList *iterator;
@@ -308,8 +293,7 @@ compare_category (EContact *contact,
 static gboolean
 compare_date (EContactDate *date,
               const gchar *str,
-              gchar * (*compare) (const gchar *,
-                                  const gchar *))
+              CompareFunc compare)
 {
 	gchar *date_str = e_contact_date_to_string (date);
 	gboolean ret_val = FALSE;
@@ -335,8 +319,7 @@ static struct prop_info {
 	enum prop_type prop_type;
 	gboolean (*list_compare) (EContact *contact,
 				  const gchar *str,
-				  gchar * (*compare) (const gchar *,
-						      const gchar *));
+				  CompareFunc compare);
 
 } prop_info_table[] = {
 #define NORMAL_PROP(f,q) {f, q, PROP_TYPE_NORMAL, NULL}
@@ -390,8 +373,7 @@ entry_compare (SearchContext *ctx,
                struct _ESExp *f,
                gint argc,
                struct _ESExpResult **argv,
-               gchar * (*compare) (const gchar *,
-                                   const gchar *))
+               CompareFunc compare)
 {
 	ESExpResult *r;
 	gint truth = FALSE;
@@ -518,7 +500,7 @@ contains_helper_free_word (gpointer data,
 	}
 }
 
-static gchar *
+static gboolean
 try_contains_word (const gchar *s1,
                    GSList *word)
 {
@@ -527,11 +509,11 @@ try_contains_word (const gchar *s1,
 	GString *w;
 
 	if (s1 == NULL)
-		return NULL;
+		return FALSE;
 	if (word == NULL)
-		return (gchar *) s1; /* previous was last word */
+		return TRUE; /* previous was last word */
 	if (word->data == NULL)
-		return NULL; /* illegal structure */
+		return FALSE; /* illegal structure */
 
 	w = word->data;
 	first_w_char = g_utf8_get_char (w->str);
@@ -556,20 +538,20 @@ try_contains_word (const gchar *s1,
 				/* we read whole word and no illegal character has been found */
 				if (word->next == NULL ||
 				    try_contains_word (e_util_unicode_get_utf8 (o, &unival), word->next)) {
-					return (gchar *) o;
+					return TRUE;
 				}
 			}
 		}
 		o = p;
 	}
 
-	return NULL;
+	return FALSE;
 }
 
 /* first space between words is treated as wildcard character;
  * we are looking for s2 in s1, so s2 will be breaked into words
 */
-static gchar *
+static gboolean
 contains_helper (const gchar *s1,
                  const gchar *s2)
 {
@@ -580,25 +562,25 @@ contains_helper (const gchar *s1,
 	gboolean have_nonspace;
 	gboolean have_space;
 	GString *last_word, *w;
-	gchar *res = NULL;
+	gboolean res;
 	gunichar unich;
 	glong len1, len2;
 
 	if (!s2)
-		return NULL;
+		return FALSE;
 
 	/* the initial word contains an empty string for sure */
 	if (!*s2)
-		return (gchar *) s1;
+		return TRUE;
 
 	s1uni = e_util_utf8_normalize (s1);
 	if (s1uni == NULL)
-		return NULL;
+		return FALSE;
 
 	s2uni = e_util_utf8_normalize (s2);
 	if (s2uni == NULL) {
 		g_free (s1uni);
-		return NULL;
+		return FALSE;
 	}
 
 	len1 = g_utf8_strlen (s1uni, -1);
@@ -609,9 +591,9 @@ contains_helper (const gchar *s1,
 
 		/* both are empty strings */
 		if (len1 == len2)
-			return (gchar *) s1;
+			return TRUE;
 
-		return NULL;
+		return FALSE;
 	}
 
 	/* breaking s2 into words */
@@ -672,19 +654,18 @@ func_contains (struct _ESExp *f,
 	return entry_compare (ctx, f, argc, argv, contains_helper);
 }
 
-static gchar *
+static gboolean
 is_helper (const gchar *ps1,
            const gchar *ps2)
 {
-	gchar *s1, *s2, *res;
+	gchar *s1, *s2;
+	gboolean res = FALSE;
 
 	s1 = e_util_utf8_remove_accents (ps1);
 	s2 = e_util_utf8_remove_accents (ps2);
 
 	if (!e_util_utf8_strcasecmp (s1, s2))
-		res = (gchar *) ps1;
-	else
-		res = NULL;
+		res = TRUE;
 
 	g_free (s1);
 	g_free (s2);
@@ -703,20 +684,18 @@ func_is (struct _ESExp *f,
 	return entry_compare (ctx, f, argc, argv, is_helper);
 }
 
-static gchar *
+static gboolean
 endswith_helper (const gchar *ps1,
                  const gchar *ps2)
 {
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
-	gchar *res;
+	gboolean res = FALSE;
 	glong s1len = g_utf8_strlen (s1, -1);
 	glong s2len = g_utf8_strlen (s2, -1);
 
-	if (s1len < s2len)
-		res = NULL;
-	else
-		res = (gchar *) e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+	if (s1len >= s2len)
+		res = TRUE;
 
 	g_free (s1);
 	g_free (s2);
@@ -735,19 +714,18 @@ func_endswith (struct _ESExp *f,
 	return entry_compare (ctx, f, argc, argv, endswith_helper);
 }
 
-static gchar *
+static gboolean
 beginswith_helper (const gchar *ps1,
                    const gchar *ps2)
 {
-	gchar *p, *res;
+	gchar *p;
+	gboolean res = FALSE;
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
 	if ((p = (gchar *) e_util_utf8_strstrcase (s1, s2))
 	    && (p == s1))
-		res = (gchar *) ps1;
-	else
-		res = NULL;
+		res = TRUE;
 
 	g_free (s1);
 	g_free (s2);
@@ -766,15 +744,16 @@ func_beginswith (struct _ESExp *f,
 	return entry_compare (ctx, f, argc, argv, beginswith_helper);
 }
 
-static gchar *
+static gboolean
 exists_helper (const gchar *ps1,
                const gchar *ps2)
 {
-	gchar *res;
+	gboolean res = FALSE;
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	res = (gchar *) e_util_utf8_strstrcase (s1, s2);
+	if (e_util_utf8_strstrcase (s1, s2))
+		res = TRUE;
 
 	g_free (s1);
 	g_free (s2);
