@@ -14,6 +14,15 @@ G_BEGIN_DECLS
 
 typedef struct EBookQuery EBookQuery;
 
+/**
+ * EBookQueryTest:
+ * @E_BOOK_QUERY_IS: look for exact match of the supplied test value
+ * @E_BOOK_QUERY_CONTAINS: check if a field contains the test value
+ * @E_BOOK_QUERY_BEGINS_WITH: check if a field starts with the test value
+ * @E_BOOK_QUERY_ENDS_WITH: check if a field ends with the test value
+ *
+ * The kind of test a query created by e_book_query_field_test() shall perform.
+ **/
 typedef enum {
   E_BOOK_QUERY_IS,
   E_BOOK_QUERY_CONTAINS,
