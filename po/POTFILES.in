@@ -205,6 +205,7 @@ libebackend/e-backend.c
 libebackend/e-collection-backend.c
 libebackend/e-server-side-source.c
 libebackend/e-source-registry-server.c
+libebackend/e-user-prompter-server.c
 libedataserver/e-categories.c
 libedataserver/e-client.c
 libedataserver/e-source-authenticator.c
@@ -229,7 +230,9 @@ libedataserverui/e-passwords-win32.c
 libedataserverui/e-source-selector-dialog.c
 modules/gnome-online-accounts/goaewsclient.c
 modules/google-backend/module-google-backend.c
+modules/trust-prompt/module-trust-prompt.c
 modules/yahoo-backend/module-yahoo-backend.c
 services/evolution-addressbook-factory/evolution-addressbook-factory.c
 services/evolution-calendar-factory/evolution-calendar-factory.c
+services/evolution-user-prompter/evolution-user-prompter.c
 tests/libedataserverui/evolution-source-viewer.c

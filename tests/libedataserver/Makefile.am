@@ -5,6 +5,7 @@ NULL =
 TESTS = \
 	e-source-test \
 	e-source-registry-test \
+	e-user-prompter-test \
 	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)
@@ -34,10 +35,17 @@ e_source_registry_test_SOURCES = \
 	e-test-dbus-utils.h \
 	$(NULL)
 
+e_user_prompter_test_SOURCES = \
+	e-user-prompter-test.c \
+	$(NULL)
+
 e_source_test_CPPFLAGS = $(test_CPPFLAGS)
 e_source_test_LDADD = $(test_LDADD)
 
 e_source_registry_test_CPPFLAGS = $(test_CPPFLAGS)
 e_source_registry_test_LDADD = $(test_LDADD)
+
+e_user_prompter_test_CPPFLAGS = $(test_CPPFLAGS)
+e_user_prompter_test_LDADD = $(top_builddir)/libebackend/libebackend-1.2.la $(test_LDADD)
 
 -include $(top_srcdir)/git.mk

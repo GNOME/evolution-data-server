@@ -1704,3 +1704,252 @@ e_data_server_util_get_dbus_call_timeout (void)
 {
 	return default_dbus_timeout;
 }
+
+/**
+ * e_named_parameters_new:
+ *
+ * Creates a new instance of an #ENamedParameters. This should be freed
+ * with e_named_parameters_free(), when no longer needed. Names are
+ * compared case insensitively.
+ *
+ * The structure is not thread safe, if the caller requires thread safety,
+ * then it should provide it on its own.
+ *
+ * Returns: newly allocated #ENamedParameters
+ *
+ * Since: 3.8
+ **/
+ENamedParameters *
+e_named_parameters_new (void)
+{
+	return g_ptr_array_new_with_free_func (g_free);
+}
+
+/**
+ * e_named_parameters_new_strv:
+ * @strv: NULL-terminated string array to be used as a content of a newly
+ *     created #ENamedParameters
+ *
+ * Creates a new instance of an #ENamedParameters, with initial content
+ * being taken from @strv. This should be freed with e_named_parameters_free(),
+ * when no longer needed. Names are compared case insensitively.
+ *
+ * The structure is not thread safe, if the caller requires thread safety,
+ * then it should provide it on its own.
+ *
+ * Returns: newly allocated #ENamedParameters
+ *
+ * Since: 3.8
+ **/
+ENamedParameters *
+e_named_parameters_new_strv (const gchar * const *strv)
+{
+	ENamedParameters *parameters;
+	gint ii;
+
+	g_return_val_if_fail (strv != NULL, NULL);
+
+	parameters = e_named_parameters_new ();
+	for (ii = 0; strv[ii]; ii++) {
+		g_ptr_array_add (parameters, g_strdup (strv[ii]));
+	}
+
+	return parameters;
+}
+
+/**
+ * e_named_parameters_free:
+ * @parameters: an #ENamedParameters
+ *
+ * Frees an instance of #ENamedParameters, previously allocated
+ * with e_named_parameters_new(). Function does nothing, if
+ * @parameters is %NULL.
+ *
+ * Since: 3.8
+ **/
+void
+e_named_parameters_free (ENamedParameters *parameters)
+{
+	if (!parameters)
+		return;
+
+	g_ptr_array_free (parameters, TRUE);
+}
+
+/**
+ * e_named_parameters_clear:
+ * @parameters: an #ENamedParameters
+ *
+ * Removes all stored parameters from @parameters.
+ *
+ * Since: 3.8
+ **/
+void
+e_named_parameters_clear (ENamedParameters *parameters)
+{
+	g_return_if_fail (parameters != NULL);
+
+	if (parameters->len)
+		g_ptr_array_remove_range (parameters, 0, parameters->len);
+}
+
+/**
+ * e_named_parameters_assign:
+ * @parameters: an #ENamedParameters to assign values to
+ * @from: (allow-none): an #ENamedParameters to get values from, or %NULL
+ *
+ * Makes content of the @parameters the same as @from.
+ * Functions clears content of @parameters if @from is %NULL.
+ *
+ * Since: 3.8
+ **/
+void
+e_named_parameters_assign (ENamedParameters *parameters,
+			   const ENamedParameters *from)
+{
+	g_return_if_fail (parameters != NULL);
+
+	e_named_parameters_clear (parameters);
+
+	if (from) {
+		gint ii;
+
+		for (ii = 0; ii < from->len; ii++) {
+			g_ptr_array_add (parameters, g_strdup (from->pdata[ii]));
+		}
+	}
+}
+
+static gint
+get_parameter_index (const ENamedParameters *parameters,
+		     const gchar *name)
+{
+	gint ii, name_len;
+
+	g_return_val_if_fail (parameters != NULL, -1);
+	g_return_val_if_fail (name != NULL, -1);
+
+	name_len = strlen (name);
+
+	for (ii = 0; ii < parameters->len; ii++) {
+		const gchar *name_and_value = g_ptr_array_index (parameters, ii);
+
+		if (name_and_value && g_ascii_strncasecmp (name_and_value, name, name_len) == 0 &&
+		    name_and_value[name_len] == ':')
+			return ii;
+	}
+
+	return -1;
+}
+
+/**
+ * e_named_parameters_set:
+ * @parameters: an #ENamedParameters
+ * @name: name of a parameter to set
+ * @value: (allow-none): value to set, or %NULL to unset
+ *
+ * Sets parameter named @name to value @value. If @value is NULL,
+ * then the parameter is removed. @value can be an empty string.
+ *
+ * Note: There is a restriction on parameter names, it cannot be empty or
+ * contain a colon character (':'), otherwise it can be pretty much anything.
+ *
+ * Since: 3.8
+ **/
+void
+e_named_parameters_set (ENamedParameters *parameters,
+			const gchar *name,
+			const gchar *value)
+{
+	gint index;
+	gchar *name_and_value;
+
+	g_return_if_fail (parameters != NULL);
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (strchr (name, ':') == NULL);
+	g_return_if_fail (*name != '\0');
+
+	index = get_parameter_index (parameters, name);
+	if (!value) {
+		if (index != -1)
+			g_ptr_array_remove_index (parameters, index);
+		return;
+	}
+
+	name_and_value = g_strconcat (name, ":", value, NULL);
+	if (index != -1) {
+		g_free (parameters->pdata[index]);
+		parameters->pdata[index] = name_and_value;
+	} else {
+		g_ptr_array_add (parameters, name_and_value);
+	}
+}
+
+/**
+ * e_named_parameters_get:
+ * @parameters: an #ENamedParameters
+ * @name: name of a parameter to get
+ *
+ * Returns current value of a parameter with name @name. If not such
+ * exists, then returns %NULL.
+ *
+ * Returns: value of a parameter named @name, or %NULL.
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_named_parameters_get (const ENamedParameters *parameters,
+			const gchar *name)
+{
+	gint index;
+	const gchar *name_and_value;
+
+	g_return_val_if_fail (parameters != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	index = get_parameter_index (parameters, name);
+	if (index == -1)
+		return NULL;
+
+	name_and_value = g_ptr_array_index (parameters, index);
+
+	return name_and_value + strlen (name) + 1;
+}
+
+/**
+ * e_named_parameters_test:
+ * @parameters: an #ENamedParameters
+ * @name: name of a parameter to test
+ * @value: value to test
+ * @case_sensitively: whether to compare case sensitively
+ *
+ * Compares current value of parameter named @name with given @value
+ * and returns whether they are equal, either case sensitively or
+ * insensitively, based on @case_sensitively argument. Function
+ * returns %FALSE, if no such parameter exists.
+ *
+ * Returns: Whether parameter of given name has stored value of given value.
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_named_parameters_test (const ENamedParameters *parameters,
+			 const gchar *name,
+			 const gchar *value,
+			 gboolean case_sensitively)
+{
+	const gchar *stored_value;
+
+	g_return_val_if_fail (parameters != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	stored_value = e_named_parameters_get (parameters, name);
+	if (!stored_value)
+		return FALSE;
+
+	if (case_sensitively)
+		return strcmp (stored_value, value) == 0;
+
+	return g_ascii_strcasecmp (stored_value, value) == 0;
+}

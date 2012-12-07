@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=@USER_PROMPTER_DBUS_SERVICE_NAME@
+Exec=@libexecdir@/evolution-user-prompter

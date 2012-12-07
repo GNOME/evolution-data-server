@@ -1,0 +1,89 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.UserPrompter:
+    @short_description: UserPrompter interface
+
+    Interface for user prompts.
+-->
+<interface name="org.gnome.evolution.dataserver.UserPrompter">
+  <!--
+      Prompt:
+      @type: Type of the prompt, can be one of GtkMessageType enum values
+      @title: Window title
+      @primary_text: The primary text of the prompt
+      @secondary_text: The secondary text of the prompt
+      @use_markup: whether the text uses markup - this applies to both texts
+      @button_captions: Array of button captions, choices for a user
+      @id: Prompt identificator, used in 'Response' signal
+
+      Shows a prompt (#GtkMessageDialog) to a user of given @type with @primary_text
+      and @secondary_text, either as plain text or with markup, according to @use_markup.
+      The @button_captions can be an empty array, in which case only
+      one button will be shown, with "Dismiss" caption.
+  -->
+  <method name="Prompt">
+    <arg name="type" direction="in" type="s"/>
+    <arg name="title" direction="in" type="s"/>
+    <arg name="primary_text" direction="in" type="s"/>
+    <arg name="secondary_text" direction="in" type="s"/>
+    <arg name="use_markup" direction="in" type="b"/>
+    <arg name="button_captions" direction="in" type="as"/>
+    <arg name="id" direction="out" type="i"/>
+  </method>
+
+  <!--
+      Response:
+
+      Emitted when user responded to a Prompt.
+
+      @id: An identificator of the prompt, as returned by Prompt method
+      @response_button: Which button index was used to close the prompt
+
+      Index in the @response_button corresponds to 'button_captions' index
+      from the 'Prompt' call. If none button caption was gived, then 0 is returned.
+  -->
+  <signal name="Response">
+    <arg name="id" type="i"/>
+    <arg name="response_button" type="i"/>
+  </signal>
+
+  <!--
+      ExtensionPrompt:
+      @dialog_name: Dialog name, as defined by an extension, to show
+      @parameter: Optional parameters for the extension
+      @id: Prompt identificator, used in 'ExtensionResponse' signal
+
+      Shows a dialog provided by an extension to a user. Dialog names are
+      case sesitive. Extension can define some parameters, which are passed
+      to it within @parameters. Parameters content is not checked or otherwise
+      interpretted by the UserPrompter, all this is left to the extension itself.
+  -->
+  <method name="ExtensionPrompt">
+    <arg name="dialog_name" direction="in" type="s"/>
+    <arg name="parameters" direction="in" type="as"/>
+    <arg name="id" direction="out" type="i"/>
+  </method>
+
+  <!--
+      ExtensionResponse:
+
+      Emitted when user responded to an ExtensionPrompt.
+
+      @id: An identificator of the prompt, as returned by ExtensionPrompt method
+      @response: Generic response, as defined by the extension
+      @values: Additional values returned by the extension
+
+      Extension can return additional @values, which are not interpretted or
+      otherwise checked by the UserPrompter, all this is left to the extension
+      and its caller.
+  -->
+  <signal name="ExtensionResponse">
+    <arg name="id" type="i"/>
+    <arg name="response" type="i"/>
+    <arg name="values" type="as"/>
+  </signal>
+</interface>

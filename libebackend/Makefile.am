@@ -52,6 +52,9 @@ libebackend_1_2_la_SOURCES =		\
 	e-server-side-source.c		\
 	e-source-registry-server.c	\
 	e-sqlite3-vfs.c			\
+	e-user-prompter.c		\
+	e-user-prompter-server.c	\
+	e-user-prompter-server-extension.c \
 	e-file-cache.c
 
 libebackend_1_2_la_LIBADD = 				\
@@ -92,6 +95,9 @@ libebackendinclude_HEADERS =		\
 	e-server-side-source.h		\
 	e-source-registry-server.h	\
 	e-sqlite3-vfs.h			\
+	e-user-prompter.h		\
+	e-user-prompter-server.h	\
+	e-user-prompter-server-extension.h \
 	e-file-cache.h
 
 %-$(API_VERSION).pc: %.pc

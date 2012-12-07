@@ -30,7 +30,7 @@
  *
  * <informalexample>
  * <programlisting>
- * #include <libebackend/e-extensible.h>
+ * #include <libebackend/libebackend.h>
  *
  * G_DEFINE_TYPE_WITH_CODE (
  *         ECustomWidget, e_custom_widget, GTK_TYPE_WIDGET,
@@ -46,9 +46,9 @@
  * <informalexample>
  * <programlisting>
  * static void
- * e_custom_widget_init (ECustomWidget *widget)
+ * e_custom_widget_constructed (ECustomWidget *widget)
  * {
- *         Initialization code goes here...
+ *         Construction code goes here, same as call to parent's 'constructed'...
  *
  *         e_extensible_load_extensions (E_EXTENSIBLE (widget));
  * }

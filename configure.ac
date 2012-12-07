@@ -71,6 +71,7 @@ dnl ******************************
 ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook4"
 CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar3"
 SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources1"
+USER_PROMPTER_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.UserPrompter0"
 
 AC_DEFINE_UNQUOTED(
        ADDRESS_BOOK_DBUS_SERVICE_NAME,
@@ -87,9 +88,15 @@ AC_DEFINE_UNQUOTED(
 	["$SOURCES_DBUS_SERVICE_NAME"],
 	[D-Bus service name for the source registry])
 
+AC_DEFINE_UNQUOTED(
+	USER_PROMPTER_DBUS_SERVICE_NAME,
+	["$USER_PROMPTER_DBUS_SERVICE_NAME"],
+	[D-Bus service name for the user prompter])
+
 AC_SUBST(ADDRESS_BOOK_DBUS_SERVICE_NAME)
 AC_SUBST(CALENDAR_DBUS_SERVICE_NAME)
 AC_SUBST(SOURCES_DBUS_SERVICE_NAME)
+AC_SUBST(USER_PROMPTER_DBUS_SERVICE_NAME)
 
 dnl ******************************
 dnl Libtool versioning
@@ -1494,7 +1501,7 @@ dnl *******************
 dnl D-BUS service stuff
 dnl *******************
 m4_pattern_allow([AM_V_GEN])
-EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" $< > $@'
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" -e "s|\@USER_PROMPTER_DBUS_SERVICE_NAME\@|$(USER_PROMPTER_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************
@@ -1616,12 +1623,14 @@ modules/Makefile
 modules/cache-reaper/Makefile
 modules/gnome-online-accounts/Makefile
 modules/google-backend/Makefile
+modules/trust-prompt/Makefile
 modules/yahoo-backend/Makefile
 private/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
 services/evolution-calendar-factory/Makefile
 services/evolution-source-registry/Makefile
+services/evolution-user-prompter/Makefile
 tests/Makefile
 tests/libebook/Makefile
 tests/libebook/client/Makefile

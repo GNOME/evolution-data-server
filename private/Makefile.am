@@ -28,6 +28,15 @@ $(GENERATED_DBUS_AUTHENTICATOR) : Makefile.am org.gnome.evolution.dataserver.Aut
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.Authenticator.xml \
 	$(NULL)
 
+$(GENERATED_DBUS_USER_PROMPTER) : Makefile.am org.gnome.evolution.dataserver.UserPrompter.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver. \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-user-prompter \
+	--generate-docbook e-dbus-user-prompter \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.UserPrompter.xml \
+	$(NULL)
+
 GENERATED_DBUS_SOURCE = \
 	e-dbus-source.c \
 	e-dbus-source.h \
@@ -43,10 +52,16 @@ GENERATED_DBUS_AUTHENTICATOR = \
 	e-dbus-authenticator.h \
 	$(NULL)
 
+GENERATED_DBUS_USER_PROMPTER = \
+	e-dbus-user-prompter.c \
+	e-dbus-user-prompter.h \
+	$(NULL)
+
 BUILT_SOURCES = \
 	$(GENERATED_DBUS_SOURCE) \
 	$(GENERATED_DBUS_SOURCE_MANAGER) \
 	$(GENERATED_DBUS_AUTHENTICATOR) \
+	$(GENERATED_DBUS_USER_PROMPTER) \
 	$(NULL)
 
 noinst_LTLIBRARIES = libedbus-private.la
@@ -78,6 +93,7 @@ EXTRA_DIST = \
 	org.gnome.evolution.dataserver.Source.xml \
 	org.gnome.evolution.dataserver.SourceManager.xml \
 	org.gnome.evolution.dataserver.Authenticator.xml \
+	org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
 CLEANFILES = \

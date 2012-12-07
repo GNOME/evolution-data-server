@@ -43,6 +43,9 @@
 #include <libebackend/e-server-side-source.h>
 #include <libebackend/e-source-registry-server.h>
 #include <libebackend/e-sqlite3-vfs.h>
+#include <libebackend/e-user-prompter.h>
+#include <libebackend/e-user-prompter-server.h>
+#include <libebackend/e-user-prompter-server-extension.h>
 
 #undef __LIBEBACKEND_H_INSIDE__
 

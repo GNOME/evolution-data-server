@@ -7,6 +7,7 @@ endif
 SUBDIRS = \
 	cache-reaper \
 	google-backend \
+	trust-prompt \
 	yahoo-backend \
 	$(GNOME_ONLINE_ACCOUNTS_DIR) \
 	$(NULL)
