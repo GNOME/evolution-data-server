@@ -28,11 +28,13 @@
 static const char *match_candidates[] = {
 	"not-a-number",
 	"+1-617-4663489", "617-4663489", "4663489",
-	"+1.408.845.5246", "4088455246", "8455246"
+	"+1.408.845.5246", "4088455246", "8455246",
+	"+1-857-4663489"
 };
 
 static const EPhoneNumberMatch expected_matches[] = {
 	/* not a number */
+	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
@@ -49,7 +51,9 @@ static const EPhoneNumberMatch expected_matches[] = {
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_NONE,
 
+	/* 617-4663489 */
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NATIONAL,
 	E_PHONE_NUMBER_MATCH_NATIONAL,
@@ -57,14 +61,17 @@ static const EPhoneNumberMatch expected_matches[] = {
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_NONE,
 
+	/* 4663489 */
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_SHORT,
 	E_PHONE_NUMBER_MATCH_SHORT,
-	E_PHONE_NUMBER_MATCH_NATIONAL, /* XXX - Google, sure? */
+	E_PHONE_NUMBER_MATCH_NATIONAL, /* XXX - Google, really? I'd expect a full match here. */
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_SHORT,
 
 	/* +1.408.845.5246 */
 	E_PHONE_NUMBER_MATCH_NONE,
@@ -74,7 +81,9 @@ static const EPhoneNumberMatch expected_matches[] = {
 	E_PHONE_NUMBER_MATCH_EXACT,
 	E_PHONE_NUMBER_MATCH_NATIONAL,
 	E_PHONE_NUMBER_MATCH_SHORT,
+	E_PHONE_NUMBER_MATCH_NONE,
 
+	/* 4088455246 */
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
@@ -82,14 +91,27 @@ static const EPhoneNumberMatch expected_matches[] = {
 	E_PHONE_NUMBER_MATCH_NATIONAL,
 	E_PHONE_NUMBER_MATCH_NATIONAL,
 	E_PHONE_NUMBER_MATCH_SHORT,
+	E_PHONE_NUMBER_MATCH_NONE,
 
+	/* 8455246 */
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_SHORT,
 	E_PHONE_NUMBER_MATCH_SHORT,
-	E_PHONE_NUMBER_MATCH_NATIONAL /* XXX - Google, sure? */
+	E_PHONE_NUMBER_MATCH_NATIONAL, /* XXX - Google, really?  I'd expect a full match here. */
+	E_PHONE_NUMBER_MATCH_NONE,
+
+	/* +1-857-4663489 */
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_SHORT,
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_NONE,
+	E_PHONE_NUMBER_MATCH_EXACT
 };
 
 static void
@@ -236,10 +258,9 @@ main (gint argc,
 
 	for (i = 0; i < G_N_ELEMENTS (match_candidates); ++i) {
 		for (j = 0; j < G_N_ELEMENTS (match_candidates); ++j) {
-			const size_t n = j * G_N_ELEMENTS (match_candidates) + i;
+			const size_t n = j + i * G_N_ELEMENTS (match_candidates);
 			char *path = g_strdup_printf ("/e-phone-utils-test/compare/%s/%s",
-			                              match_candidates[i],
-			                              match_candidates[j]);
+			                              match_candidates[i], match_candidates[j]);
 
 			g_test_add_data_func (path, GUINT_TO_POINTER (n), test_compare_numbers);
 			g_free (path);
