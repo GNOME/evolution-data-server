@@ -67,8 +67,8 @@ test_write_thread_contact_modified (GObject *source_object,
 		 * contact again first: The backend is telling us that this commit would have
 		 * caused some data loss since we dont have the right contact in the first place.
 		 */
-		if (error->domain == E_DATA_BOOK_ERROR &&
-		    error->code == E_DATA_BOOK_STATUS_BAD_REVISION)
+		if (g_error_matches (error, E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_OUT_OF_SYNC))
 			retry = TRUE;
 		else 
 			g_error ("Error updating '%s' field: %s\n",
