@@ -138,7 +138,9 @@ client_test_data_free (gpointer p)
 {
 	ClientTestData *const data = p;
 	g_object_unref (data->client);
-	e_book_query_unref (data->query);
+
+	if (data->query)
+		e_book_query_unref (data->query);
 	g_slice_free (ClientTestData, data);
 }
 
@@ -235,23 +237,12 @@ main (gint argc,
 	}
 
 	/* Add contacts */
-	if (!add_contact_from_test_case_verify (book_client, "custom-1", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-2", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-3", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-4", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-5", &contact_final)) {
+	if (!add_contact_from_test_case_verify (book_client, "custom-1", &contact_final) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-2", &contact_final) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-3", &contact_final) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-4", &contact_final) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-5", &contact_final) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-6", &contact_final)) {
 		g_object_unref (book_client);
 		return 1;
 	}
@@ -260,21 +251,39 @@ main (gint argc,
 	add_client_test ("/client/search/exact/fn", search_test, book_client,
 	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
 	                 1);
+	add_client_test ("/client/search/exact/name", search_test, book_client,
+	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
+	                 1);
 	add_client_test ("/client/search/prefix/fn", search_test, book_client,
 	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
 	                 2);
+	add_client_test ("/client/search/prefix/fn/percent", search_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
+	                 1);
 	add_client_test ("/client/search/suffix/phone", search_test, book_client,
 	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
 	                 2);
 	add_client_test ("/client/search/suffix/email", search_test, book_client,
 	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
 	                 2);
-	add_client_test ("/client/search/exact/name", search_test, book_client,
-	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
-	                 1);
 
 	/* Add search tests that fetch uids */
+	add_client_test ("/client/search-uid/exact/fn", uid_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
+	                 1);
 	add_client_test ("/client/search-uid/exact/name", uid_test, book_client,
+	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
+	                 1);
+	add_client_test ("/client/search-uid/prefix/fn", uid_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
+	                 2);
+	add_client_test ("/client/search-uid/prefix/fn/percent", uid_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
+	                 1);
+	add_client_test ("/client/search-uid/suffix/phone", uid_test, book_client,
+	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
+	                 2);
+	add_client_test ("/client/search-uid/suffix/email", uid_test, book_client,
 	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
 	                 2);
 
