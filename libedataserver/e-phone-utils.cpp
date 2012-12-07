@@ -220,6 +220,8 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 	return NULL;
 }
 
+#ifdef ENABLE_PHONENUMBER
+
 static EPhoneNumberMatch
 e_phone_number_match (PhoneNumberUtil::MatchType match_type)
 {
@@ -238,14 +240,14 @@ e_phone_number_match (PhoneNumberUtil::MatchType match_type)
 	g_return_val_if_reached (E_PHONE_NUMBER_MATCH_NONE);
 }
 
+#endif /* ENABLE_PHONENUMBER */
+
 EPhoneNumberMatch
 e_phone_number_compare	(const EPhoneNumber *first_number,
 			 const EPhoneNumber *second_number)
 {
 	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
 	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
-
-	EPhoneNumberMatch result = E_PHONE_NUMBER_MATCH_NONE;
 
 #ifdef ENABLE_PHONENUMBER
 
@@ -255,15 +257,14 @@ e_phone_number_compare	(const EPhoneNumber *first_number,
 		               second_number->phone_number);
 
 	g_warn_if_fail (match_type != PhoneNumberUtil::INVALID_NUMBER);
-	result = e_phone_number_match (match_type);
+	return e_phone_number_match (match_type);
 
 #else /* ENABLE_PHONENUMBER */
 
-	e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+	g_warn_if_reached ();
+	return E_PHONE_NUMBER_MATCH_NONE;
 
 #endif /* ENABLE_PHONENUMBER */
-
-	return result;
 }
 
 EPhoneNumberMatch
