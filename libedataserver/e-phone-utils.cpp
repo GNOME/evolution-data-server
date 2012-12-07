@@ -243,8 +243,8 @@ e_phone_number_match (PhoneNumberUtil::MatchType match_type)
 #endif /* ENABLE_PHONENUMBER */
 
 EPhoneNumberMatch
-e_phone_number_compare	(const EPhoneNumber *first_number,
-			 const EPhoneNumber *second_number)
+e_phone_number_compare (const EPhoneNumber *first_number,
+                        const EPhoneNumber *second_number)
 {
 	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
 	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
@@ -261,6 +261,9 @@ e_phone_number_compare	(const EPhoneNumber *first_number,
 
 #else /* ENABLE_PHONENUMBER */
 
+	/* NOTE: This calls for a dedicated return value, but I sense broken
+	 * client code that only checks for E_PHONE_NUMBER_MATCH_NONE and then
+	 * treats the "not-implemented" return value as a match */
 	g_warn_if_reached ();
 	return E_PHONE_NUMBER_MATCH_NONE;
 
@@ -268,9 +271,9 @@ e_phone_number_compare	(const EPhoneNumber *first_number,
 }
 
 EPhoneNumberMatch
-e_phone_number_compare_strings	(const gchar *first_number,
-				 const gchar *second_number,
-				 GError **error)
+e_phone_number_compare_strings (const gchar *first_number,
+                                const gchar *second_number,
+                                GError **error)
 {
 	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
 	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
