@@ -339,6 +339,7 @@ register_source_idle (CreateBookData *data)
 {
 	GError *error = NULL;
 	ESourceBackend  *backend;
+	ESourceAddressBookConfig *config;
 
 	data->registry = e_source_registry_new_sync (NULL, &error);
 	if (!data->registry)
@@ -350,6 +351,10 @@ register_source_idle (CreateBookData *data)
 
 	backend = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
 	e_source_backend_set_backend_name (backend, "local");
+
+	REGISTER_TYPE (E_TYPE_SOURCE_ADDRESS_BOOK_CONFIG);
+	config = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
+	e_source_address_book_config_set_revision_guards_enabled (config, TRUE);
 
 	if (!e_source_registry_commit_source_sync (data->registry, data->scratch, NULL, &error))
 		g_error ("Unable to add new source to the registry for uid %s: %s", data->uid, error->message);
