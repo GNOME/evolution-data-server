@@ -72,6 +72,59 @@ typedef enum {
  * one of the numbers, but the national parts matched.
  * @E_PHONE_NUMBER_MATCH_SHORT: There was no country code for at least
  * one of the numbers, but one number might be part (suffix) of the other.
+ *
+ * The quality of a phone number match.
+
+ * Let's consider the phone number "+1-221-5423789", then comparing with
+ * "+1.221.542.3789" we have get E_PHONE_NUMBER_MATCH_EXACT because country
+ * code, region code and local number are matching. Comparing with "2215423789"
+ * will result in E_PHONE_NUMBER_MATCH_NATIONAL because the country code is
+ * missing, but the national portion is matching. Finally comparing with
+ * "5423789" gives E_PHONE_NUMBER_MATCH_SHORT. For more detail have a look at
+ * the following table:
+ *
+ * <informaltable border="1" align="center">
+ *  <colgroup>
+ *   <col width="20%" />
+ *   <col width="20%" />
+ *   <col width="20%" />
+ *   <col width="20%" />
+ *   <col width="20%" />
+ *  </colgroup>
+ *  <tbody>
+ *   <tr>
+ *    <th></th>
+ *    <th align="center">+1-617-5423789</th>
+ *    <th align="center">+1-221-5423789</th>
+ *    <th align="center">221-5423789</th>
+ *    <th align="center">5423789</th>
+ *   </tr><tr>
+ *    <th align="right">+1-617-5423789</th>
+ *    <td align="center">exact</td>
+ *    <td align="center">none</td>
+ *    <td align="center">none</td>
+ *    <td align="center">short</td>
+ *   </tr><tr>
+ *    <th align="right">+1-221-5423789</th>
+ *    <td align="center">none</td>
+ *    <td align="center">exact</td>
+ *    <td align="center">national</td>
+ *    <td align="center">short</td>
+ *   </tr><tr>
+ *    <th align="right">221-5423789</th>
+ *    <td align="center">none</td>
+ *    <td align="center">national</td>
+ *    <td align="center">national</td>
+ *    <td align="center">short</td>
+ *   </tr><tr>
+ *    <th align="right">5423789</th>
+ *    <td align="center">short</td>
+ *    <td align="center">short</td>
+ *    <td align="center">short</td>
+ *    <td align="center">short</td>
+ *   </tr>
+ *  </tbody>
+ * </informaltable>
  */
 typedef enum {
 	E_PHONE_NUMBER_MATCH_NONE,
@@ -139,9 +192,10 @@ gboolean		e_phone_number_is_supported	(void) G_GNUC_CONST;
  * region.
  *
  * The 2-letter country code passed in @country_code only is used if the
- * @phone_number is not written in international format. If the number is
- * guaranteed to start with a '+' followed by the country calling code,
- * then "ZZ" can be passed here.
+ * @phone_number is not written in international format. The applications's
+ * currently locale is consulted if %NULL gets passed for @country_code.
+ * If the number is guaranteed to start with a '+' followed by the country
+ * calling code, then "ZZ" can be passed here.
  *
  * Returns: (transfer full): a new EPhoneNumber instance on success,
  * or %NULL on error. Call e_phone_number_free() to release this instance.

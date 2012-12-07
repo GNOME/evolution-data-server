@@ -219,6 +219,8 @@ e_operation_pool_push
 EPhoneNumber
 EPhoneNumberError
 EPhoneNumberFormat
+EPhoneNumberMatch
+e_phone_number_is_supported
 e_phone_number_from_string
 e_phone_number_to_string
 e_phone_number_compare
