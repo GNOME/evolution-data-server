@@ -134,6 +134,7 @@ new_custom_temp_client (gchar **uri)
 }
 
 typedef struct {
+	GTestDataFunc func;
 	EBookClient *client;
 	EBookQuery *query;
 	gint num_contacts;
@@ -144,7 +145,9 @@ client_test_data_free (gpointer p)
 {
 	ClientTestData *const data = p;
 	g_object_unref (data->client);
-	e_book_query_unref (data->query);
+
+	if (data->query)
+		e_book_query_unref (data->query);
 	g_slice_free (ClientTestData, data);
 }
 
@@ -203,6 +206,20 @@ remove_test (gconstpointer p)
 	}
 }
 
+/* Temporary hack not in master, we need to support
+ * earlier versions of GLib (< 2.34) without g_test_add_data_func_full()
+ *
+ *
+ */
+static void
+test_and_free (gconstpointer p)
+{
+	ClientTestData *data = (ClientTestData *)p;
+
+	data->func (p);
+	client_test_data_free (data);
+}
+
 static void
 add_client_test (const gchar *path,
                  GTestDataFunc func,
@@ -212,11 +229,12 @@ add_client_test (const gchar *path,
 {
 	ClientTestData *data = g_slice_new (ClientTestData);
 
+	data->func = func;
 	data->client = g_object_ref (client);
 	data->query = query;
 	data->num_contacts = num_contacts;
 
-	g_test_add_data_func_full (path, data, func, client_test_data_free);
+	g_test_add_data_func (path, data, test_and_free);
 }
 
 gint
