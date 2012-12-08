@@ -88,51 +88,6 @@ BUILT_SOURCES = $(ENUM_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
--include $(INTROSPECTION_MAKEFILE)
-INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = \
-	--warn-all \
-	--add-include-path=$(top_builddir)/libedataserver \
-	--identifier-prefix E \
-	--pkg-export libecal-1.2 \
-	--c-include="libecal/libecal.h" \
-	-D EDS_DISABLE_DEPRECATED \
-	$(NULL)
-INTROSPECTION_COMPILER_ARGS = \
-	--includedir=$(top_builddir)/libedataserver \
-	$(NULL)
-
-if HAVE_INTROSPECTION
-
-introspection_sources = \
-	$(filter-out %-private.h, $(libecalinclude_HEADERS) $(libecal_1_2_la_SOURCES))
-
-ECalendar-1.2.gir: libecal-1.2.la
-ECalendar_1_2_gir_INCLUDES = GObject-2.0 EDataServer-1.2 GLib-2.0
-ECalendar_1_2_gir_CFLAGS = \
-	$(libecal_INCLUDES) \
-	-DLIBECAL_COMPILATION \
-	$(EVOLUTION_CALENDAR_CFLAGS) \
-	$(CAMEL_CFLAGS) \
-	$(NULL)
-ECalendar_1_2_gir_LIBS = \
-	libecal-1.2.la \
-	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la \
-	$(top_builddir)/libedataserver/libedataserver-1.2.la \
-	$(top_builddir)/camel/libcamel-1.2.la \
-	$(NULL)
-ECalendar_1_2_gir_FILES = $(introspection_sources)
-INTROSPECTION_GIRS += ECalendar-1.2.gir
-
-girdir = $(datadir)/gir-1.0
-gir_DATA = $(INTROSPECTION_GIRS)
-
-typelibdir = $(libdir)/girepository-1.0
-typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
-
-CLEANFILES += $(gir_DATA) $(typelib_DATA)
-endif
-
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	e-cal-enumtypes.h.template			\

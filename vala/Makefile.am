@@ -2,17 +2,14 @@ vapidir = $(datarootdir)/vala/vapi
 vapi_DATA = \
 	libedataserver-1.2.vapi \
 	libebook-1.2.vapi \
-	libecalendar-1.2.vapi \
 	$(NULL)
 dist_vapi_DATA = \
 	libebook-1.2.deps \
-	libecalendar-1.2.deps \
 	$(NULL)
 
 EXTRA_DIST = \
 	EBook-1.2.metadata \
 	libebook-1.2-custom.vala \
-	ECalendar-1.2.metadata \
 	EDataServer-1.2.metadata \
 	$(NULL)
 
@@ -36,18 +33,6 @@ libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
 		'-e s/xml\.Doc /Xml\.Doc /' \
 		< libedataserver-1.2.vapi.tmp > $@
 	@rm  libedataserver-1.2.vapi.tmp
-
-libecalendar-1.2.vapi: $(top_builddir)/calendar/libecal/ECalendar-1.2.gir libedataserver-1.2.vapi
-	$(VAPIGEN_V)$(VAPIGEN) \
-		--vapidir=. \
-		--girdir=$(top_builddir)/libedataserver \
-		--pkg libedataserver-1.2 \
-		--pkg gio-2.0 \
-		--pkg libxml-2.0 \
-		--library libecalendar-1.2 \
-		--metadatadir=$(srcdir) \
-		$< \
-		$(NULL)
 
 libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-1.2-custom.vala
 	$(VAPIGEN_V)$(VAPIGEN) \
