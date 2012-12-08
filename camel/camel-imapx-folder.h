@@ -56,9 +56,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXFolder CamelIMAPXFolder;
 typedef struct _CamelIMAPXFolderClass CamelIMAPXFolderClass;
+typedef struct _CamelIMAPXFolderPrivate CamelIMAPXFolderPrivate;
 
 struct _CamelIMAPXFolder {
 	CamelOfflineFolder parent;
+	CamelIMAPXFolderPrivate *priv;
 
 	gchar *raw_name;
 	CamelDataCache *cache;
@@ -91,6 +93,11 @@ CamelFolder *	camel_imapx_folder_new		(CamelStore *parent,
 gchar *		imapx_get_filename		(CamelFolder *folder,
 						 const gchar *uid,
 						 GError **error);
+gchar **	camel_imapx_folder_dup_quota_root_names
+						(CamelIMAPXFolder *folder);
+void		camel_imapx_folder_set_quota_root_names
+						(CamelIMAPXFolder *folder,
+						 const gchar **quota_root_names);
 
 G_END_DECLS
 

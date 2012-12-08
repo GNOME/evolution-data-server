@@ -52,6 +52,15 @@
 
 #define FINFO_REFRESH_INTERVAL 60
 
+#define CAMEL_IMAPX_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStorePrivate))
+
+struct _CamelIMAPXStorePrivate {
+	GHashTable *quota_info;
+	GMutex quota_info_lock;
+};
+
 static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
@@ -129,6 +138,9 @@ imapx_store_finalize (GObject *object)
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
 	g_mutex_clear (&imapx_store->get_finfo_lock);
+
+	g_hash_table_destroy (imapx_store->priv->quota_info);
+	g_mutex_clear (&imapx_store->priv->quota_info_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
@@ -1770,6 +1782,8 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
+	g_type_class_add_private (class, sizeof (CamelIMAPXStorePrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = imapx_store_dispose;
 	object_class->finalize = imapx_store_finalize;
@@ -1821,13 +1835,63 @@ camel_subscribable_init (CamelSubscribableInterface *interface)
 }
 
 static void
-camel_imapx_store_init (CamelIMAPXStore *istore)
+camel_imapx_store_init (CamelIMAPXStore *store)
 {
-	g_mutex_init (&istore->get_finfo_lock);
-	istore->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
-	istore->dir_sep = '/';
-	istore->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (istore));
+	store->priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
+
+	g_mutex_init (&store->get_finfo_lock);
+	store->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
+	store->dir_sep = '/';
+	store->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
+
+	store->priv->quota_info = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) camel_folder_quota_info_free);
+	g_mutex_init (&store->priv->quota_info_lock);
 
 	imapx_utils_init ();
+}
+
+CamelFolderQuotaInfo *
+camel_imapx_store_dup_quota_info (CamelIMAPXStore *store,
+                                  const gchar *quota_root_name)
+{
+	CamelFolderQuotaInfo *info;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), NULL);
+	g_return_val_if_fail (quota_root_name != NULL, NULL);
+
+	g_mutex_lock (&store->priv->quota_info_lock);
+
+	info = g_hash_table_lookup (
+		store->priv->quota_info, quota_root_name);
+
+	/* camel_folder_quota_info_clone() handles NULL gracefully. */
+	info = camel_folder_quota_info_clone (info);
+
+	g_mutex_unlock (&store->priv->quota_info_lock);
+
+	return info;
+}
+
+void
+camel_imapx_store_set_quota_info (CamelIMAPXStore *store,
+                                  const gchar *quota_root_name,
+                                  const CamelFolderQuotaInfo *info)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
+	g_return_if_fail (quota_root_name != NULL);
+
+	g_mutex_lock (&store->priv->quota_info_lock);
+
+	/* camel_folder_quota_info_clone() handles NULL gracefully. */
+	g_hash_table_insert (
+		store->priv->quota_info,
+		g_strdup (quota_root_name),
+		camel_folder_quota_info_clone (info));
+
+	g_mutex_unlock (&store->priv->quota_info_lock);
 }
 

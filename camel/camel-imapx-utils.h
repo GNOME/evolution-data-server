@@ -90,6 +90,8 @@ typedef enum _camel_imapx_id_t {
 #define CAMEL_IMAPX_UNTAGGED_NO         "NO"
 #define CAMEL_IMAPX_UNTAGGED_OK         "OK"
 #define CAMEL_IMAPX_UNTAGGED_PREAUTH    "PREAUTH"
+#define CAMEL_IMAPX_UNTAGGED_QUOTA      "QUOTA"
+#define CAMEL_IMAPX_UNTAGGED_QUOTAROOT  "QUOTAROOT"
 #define CAMEL_IMAPX_UNTAGGED_RECENT     "RECENT"
 #define CAMEL_IMAPX_UNTAGGED_STATUS     "STATUS"
 #define CAMEL_IMAPX_UNTAGGED_VANISHED   "VANISHED"
@@ -144,6 +146,7 @@ enum {
 	IMAPX_CAPABILITY_QRESYNC		= (1 << 9),
 	IMAPX_CAPABILITY_LIST_STATUS		= (1 << 10),
 	IMAPX_CAPABILITY_LIST_EXTENDED		= (1 << 11),
+	IMAPX_CAPABILITY_QUOTA			= (1 << 12)
 };
 
 struct _capability_info {
@@ -301,6 +304,19 @@ struct _list_info *
 						 GError **error);
 gchar *		imapx_list_get_path		(struct _list_info *linfo);
 void		imapx_free_list			(struct _list_info *linfo);
+
+/* ********************************************************************** */
+
+gboolean	camel_imapx_parse_quota		(struct _CamelIMAPXStream *is,
+						 GCancellable *cancellable,
+						 gchar **out_quota_root_name,
+						 CamelFolderQuotaInfo **out_quota_info,
+						 GError **error);
+gboolean	camel_imapx_parse_quotaroot	(struct _CamelIMAPXStream *is,
+						 GCancellable *cancellable,
+						 gchar **out_mailbox_name,
+						 gchar ***out_quota_root_names,
+						 GError **error);
 
 /* ********************************************************************** */
 typedef struct _IMAPXJobQueueInfo {

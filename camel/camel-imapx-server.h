@@ -272,6 +272,11 @@ gboolean	camel_imapx_server_rename_folder
 						 const gchar *new_name,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	camel_imapx_server_update_quota_info
+						(CamelIMAPXServer *is,
+						 const gchar *folder_name,
+						 GCancellable *cancellable,
+						 GError **error);
 struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);

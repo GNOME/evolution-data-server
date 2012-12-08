@@ -371,6 +371,7 @@ struct {
 	{ "QRESYNC", IMAPX_CAPABILITY_QRESYNC },
 	{ "LIST-EXTENDED", IMAPX_CAPABILITY_LIST_EXTENDED },
 	{ "LIST-STATUS", IMAPX_CAPABILITY_LIST_STATUS },
+	{ "QUOTA", IMAPX_CAPABILITY_QUOTA }
 };
 
 static GMutex capa_htable_lock;         /* capabilities lookup table lock */
@@ -1989,6 +1990,187 @@ imapx_free_list (struct _list_info *linfo)
 		g_free (linfo->name);
 		g_free (linfo);
 	}
+}
+
+gboolean
+camel_imapx_parse_quota (CamelIMAPXStream *is,
+                         GCancellable *cancellable,
+                         gchar **out_quota_root_name,
+                         CamelFolderQuotaInfo **out_quota_info,
+                         GError **error)
+{
+	GQueue queue = G_QUEUE_INIT;
+	CamelFolderQuotaInfo *info;
+	CamelFolderQuotaInfo *next;
+	gint tok;
+	guint len;
+	guchar *token;
+	gchar *quota_root_name = NULL;
+	gchar *resource_name = NULL;
+	guint64 resource_usage;
+	guint64 resource_limit;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), FALSE);
+	g_return_val_if_fail (out_quota_root_name != NULL, FALSE);
+	g_return_val_if_fail (out_quota_info != NULL, FALSE);
+
+	/* quota_response  ::= "QUOTA" SP astring SP quota_list
+	 * quota_list      ::= "(" #quota_resource ")"
+	 * quota_resource  ::= atom SP number SP number */
+
+	tok = camel_imapx_stream_astring (is, &token, cancellable, error);
+	if (tok != 0)
+		goto fail;
+	quota_root_name = g_strdup ((gchar *) token);
+
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
+	switch (tok) {
+		case IMAPX_TOK_ERROR:
+		case IMAPX_TOK_PROTOCOL:
+			goto fail;
+		case '(':
+			break;
+		default:
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"quota_response: expecting '('");
+			goto fail;
+	}
+
+quota_resource:
+
+	tok = camel_imapx_stream_atom (is, &token, &len, cancellable, error);
+	if (tok != 0)
+		goto fail;
+	resource_name = g_strdup ((gchar *) token);
+
+	resource_usage = camel_imapx_stream_number (
+		is, cancellable, &local_error);
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		goto fail;
+	}
+
+	resource_limit = camel_imapx_stream_number (
+		is, cancellable, &local_error);
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		goto fail;
+	}
+
+	info = camel_folder_quota_info_new (
+		resource_name, resource_usage, resource_limit);
+	g_queue_push_tail (&queue, info);
+
+	g_free (resource_name);
+	resource_name = NULL;
+
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
+	switch (tok) {
+		case IMAPX_TOK_ERROR:
+		case IMAPX_TOK_PROTOCOL:
+			goto fail;
+		case ')':
+			break;
+		default:
+			camel_imapx_stream_ungettoken (is, tok, token, len);
+			goto quota_resource;
+	}
+
+	/* Eat the newline. */
+	if (camel_imapx_stream_skip (is, cancellable, error) != 0)
+		goto fail;
+
+	/* String together all the CamelFolderQuotaInfo structs. */
+
+	info = next = NULL;
+
+	while (!g_queue_is_empty (&queue)) {
+		info = g_queue_pop_tail (&queue);
+		info->next = next;
+		next = info;
+	}
+
+	*out_quota_root_name = quota_root_name;
+	*out_quota_info = info;
+
+	return TRUE;
+
+fail:
+	g_free (quota_root_name);
+	g_free (resource_name);
+
+	while (!g_queue_is_empty (&queue)) {
+		info = g_queue_pop_head (&queue);
+		camel_folder_quota_info_free (info);
+	}
+
+	return FALSE;
+}
+
+gboolean
+camel_imapx_parse_quotaroot (CamelIMAPXStream *is,
+                             GCancellable *cancellable,
+                             gchar **out_mailbox_name,
+                             gchar ***out_quota_root_names,
+                             GError **error)
+{
+	GQueue queue = G_QUEUE_INIT;
+	gint tok;
+	guint len;
+	guchar *token;
+	gchar *mailbox_name = NULL;
+	gchar **quota_root_names = NULL;
+	gint ii = 0;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), FALSE);
+	g_return_val_if_fail (out_mailbox_name != NULL, FALSE);
+	g_return_val_if_fail (out_quota_root_names != NULL, FALSE);
+
+	/* quotaroot_response ::= "QUOTAROOT" SP astring *(SP astring) */
+
+	tok = camel_imapx_stream_astring (is, &token, cancellable, error);
+	if (tok != 0)
+		goto fail;
+	mailbox_name = camel_utf7_utf8 ((gchar *) token);
+
+	while (TRUE) {
+		/* Peek at the next token, and break
+		 * out of the loop if we get a newline. */
+		tok = camel_imapx_stream_token (
+			is, &token, &len, cancellable, error);
+		if (tok == '\n')
+			break;
+		if (tok == IMAPX_TOK_ERROR || tok == IMAPX_TOK_PROTOCOL)
+			goto fail;
+		camel_imapx_stream_ungettoken (is, tok, token, len);
+
+		tok = camel_imapx_stream_astring (
+			is, &token, cancellable, error);
+		if (tok == 0)
+			g_queue_push_tail (
+				&queue, g_strdup ((gchar *) token));
+		else
+			goto fail;
+	}
+
+	quota_root_names = g_new0 (gchar *, queue.length + 1);
+	while (!g_queue_is_empty (&queue))
+		quota_root_names[ii++] = g_queue_pop_head (&queue);
+
+	*out_mailbox_name = mailbox_name;
+	*out_quota_root_names = quota_root_names;
+
+	return TRUE;
+
+fail:
+	g_free (mailbox_name);
+
+	while (!g_queue_is_empty (&queue))
+		g_free (g_queue_pop_head (&queue));
+
+	return FALSE;
 }
 
 /* ********************************************************************** */

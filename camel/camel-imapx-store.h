@@ -92,12 +92,20 @@ struct _CamelIMAPXStoreClass {
 GType		camel_imapx_store_get_type	(void);
 CamelIMAPXServer *
 		camel_imapx_store_get_server	(CamelIMAPXStore *store,
-						const gchar *folder_name,
-						GCancellable *cancellable,
-						GError **error);
+						 const gchar *folder_name,
+						 GCancellable *cancellable,
+						 GError **error);
 void		camel_imapx_store_op_done	(CamelIMAPXStore *istore,
-						CamelIMAPXServer *server,
-						const gchar *folder_name);
+						 CamelIMAPXServer *server,
+						 const gchar *folder_name);
+CamelFolderQuotaInfo *
+		camel_imapx_store_dup_quota_info
+						(CamelIMAPXStore *store,
+						 const gchar *quota_root_name);
+void		camel_imapx_store_set_quota_info
+						(CamelIMAPXStore *store,
+						 const gchar *quota_root_name,
+						 const CamelFolderQuotaInfo *info);
 
 G_END_DECLS
 

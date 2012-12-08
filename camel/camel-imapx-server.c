@@ -86,6 +86,7 @@ typedef struct _ManageSubscriptionsData ManageSubscriptionsData;
 typedef struct _RenameFolderData RenameFolderData;
 typedef struct _CreateFolderData CreateFolderData;
 typedef struct _DeleteFolderData DeleteFolderData;
+typedef struct _QuotaData QuotaData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -165,6 +166,10 @@ struct _DeleteFolderData {
 	gchar *folder_name;
 };
 
+struct _QuotaData {
+	gchar *folder_name;
+};
+
 /* untagged response handling */
 
 /* May need to turn this into separate,
@@ -239,6 +244,14 @@ static gboolean	imapx_untagged_preauth		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
+static gboolean	imapx_untagged_quota		(CamelIMAPXServer *is,
+						 CamelIMAPXStream *stream,
+						 GCancellable *cancellable,
+						 GError **error);
+static gboolean	imapx_untagged_quotaroot	(CamelIMAPXServer *is,
+						 CamelIMAPXStream *stream,
+						 GCancellable *cancellable,
+						 GError **error);
 static gboolean	imapx_untagged_recent		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
 						 GCancellable *cancellable,
@@ -266,6 +279,8 @@ enum {
 	IMAPX_UNTAGGED_ID_NO,
 	IMAPX_UNTAGGED_ID_OK,
 	IMAPX_UNTAGGED_ID_PREAUTH,
+	IMAPX_UNTAGGED_ID_QUOTA,
+	IMAPX_UNTAGGED_ID_QUOTAROOT,
 	IMAPX_UNTAGGED_ID_RECENT,
 	IMAPX_UNTAGGED_ID_STATUS,
 	IMAPX_UNTAGGED_ID_VANISHED,
@@ -286,6 +301,8 @@ static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
 	{CAMEL_IMAPX_UNTAGGED_NO, imapx_untagged_ok_no_bad, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_OK, imapx_untagged_ok_no_bad, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_PREAUTH, imapx_untagged_preauth, CAMEL_IMAPX_UNTAGGED_OK, TRUE /*overridden */ },
+	{CAMEL_IMAPX_UNTAGGED_QUOTA, imapx_untagged_quota, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_QUOTAROOT, imapx_untagged_quotaroot, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_RECENT, imapx_untagged_recent, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_STATUS, imapx_untagged_status, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_VANISHED, imapx_untagged_vanished, NULL, TRUE},
@@ -372,6 +389,7 @@ enum {
 	IMAPX_JOB_DELETE_FOLDER = 1 << 12,
 	IMAPX_JOB_RENAME_FOLDER = 1 << 13,
 	IMAPX_JOB_FETCH_MESSAGES = 1 << 14,
+	IMAPX_JOB_UPDATE_QUOTA_INFO = 1 << 15
 };
 
 /* Operations on the store (folder_tree) will have highest priority as we know for sure they are sync
@@ -391,7 +409,8 @@ enum {
 	IMAPX_PRIIORITY_COPY_MESSAGE = -60,
 	IMAPX_PRIORITY_LIST = -80,
 	IMAPX_PRIORITY_IDLE = -100,
-	IMAPX_PRIORITY_SYNC_MESSAGE = -120
+	IMAPX_PRIORITY_SYNC_MESSAGE = -120,
+	IMAPX_PRIORITY_UPDATE_QUOTA_INFO = -80
 };
 
 struct _imapx_flag_change {
@@ -668,6 +687,14 @@ delete_folder_data_free (DeleteFolderData *data)
 	g_free (data->folder_name);
 
 	g_slice_free (DeleteFolderData, data);
+}
+
+static void
+quota_data_free (QuotaData *data)
+{
+	g_free (data->folder_name);
+
+	g_slice_free (QuotaData, data);
 }
 
 /*
@@ -1910,6 +1937,101 @@ imapx_untagged_list (CamelIMAPXServer *is,
 		g_warning ("got list response but no current listing job happening?\n");
 		imapx_free_list (linfo);
 	}
+
+	return TRUE;
+}
+
+static gboolean
+imapx_untagged_quota (CamelIMAPXServer *is,
+                      CamelIMAPXStream *stream,
+                      GCancellable *cancellable,
+                      GError **error)
+{
+	gchar *quota_root_name = NULL;
+	CamelFolderQuotaInfo *quota_info = NULL;
+	gboolean success;
+
+	success = camel_imapx_parse_quota (
+		stream, cancellable, &quota_root_name, &quota_info, error);
+
+	/* Sanity check */
+	g_return_val_if_fail (
+		(success && (quota_root_name != NULL)) ||
+		(!success && (quota_root_name == NULL)), FALSE);
+
+	if (success) {
+		CamelIMAPXStore *store;
+
+		store = camel_imapx_server_ref_store (is);
+		camel_imapx_store_set_quota_info (
+			store, quota_root_name, quota_info);
+		g_object_unref (store);
+
+		g_free (quota_root_name);
+		camel_folder_quota_info_free (quota_info);
+	}
+
+	return success;
+}
+
+static gboolean
+imapx_untagged_quotaroot (CamelIMAPXServer *is,
+                          CamelIMAPXStream *stream,
+                          GCancellable *cancellable,
+                          GError **error)
+{
+	CamelIMAPXStore *store;
+	CamelIMAPXStoreNamespace *ns;
+	CamelFolder *folder = NULL;
+	gchar *mailbox_name = NULL;
+	gchar **quota_root_names = NULL;
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = camel_imapx_parse_quotaroot (
+		stream, cancellable, &mailbox_name, &quota_root_names, error);
+
+	/* Sanity check */
+	g_return_val_if_fail (
+		(success && (mailbox_name != NULL)) ||
+		(!success && (mailbox_name == NULL)), FALSE);
+
+	if (!success)
+		return FALSE;
+
+	store = camel_imapx_server_ref_store (is);
+
+	ns = camel_imapx_store_summary_namespace_find_full (
+		store->summary, mailbox_name);
+	if (ns != NULL) {
+		gchar *folder_path;
+
+		folder_path = camel_imapx_store_summary_full_to_path (
+			store->summary, mailbox_name, ns->sep);
+		if (folder_path != NULL) {
+			folder = camel_store_get_folder_sync (
+				CAMEL_STORE (store), folder_path, 0,
+				cancellable, &local_error);
+			g_free (folder_path);
+		}
+	}
+
+	if (folder != NULL) {
+		camel_imapx_folder_set_quota_root_names (
+			CAMEL_IMAPX_FOLDER (folder),
+			(const gchar **) quota_root_names);
+		g_object_unref (folder);
+	}
+
+	if (local_error != NULL) {
+		g_warning (
+			"%s: Failed to get folder '%s': %s",
+			G_STRFUNC, mailbox_name, local_error->message);
+		g_error_free (local_error);
+	}
+
+	g_free (mailbox_name);
+	g_strfreev (quota_root_names);
 
 	return TRUE;
 }
@@ -5813,6 +5935,69 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
 /* ********************************************************************** */
 
 static gboolean
+imapx_command_update_quota_info_done (CamelIMAPXServer *is,
+                                      CamelIMAPXCommand *ic,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	CamelIMAPXJob *job;
+	gboolean success = TRUE;
+
+	job = camel_imapx_command_get_job (ic);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+
+	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+		g_prefix_error (
+			error, "%s: ",
+			_("Error retrieving quota information"));
+		success = FALSE;
+	}
+
+	imapx_unregister_job (is, job);
+	camel_imapx_command_unref (ic);
+
+	return success;
+}
+
+static gboolean
+imapx_job_update_quota_info_start (CamelIMAPXJob *job,
+                                   CamelIMAPXServer *is,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	CamelIMAPXCommand *ic;
+	CamelIMAPXStore *store;
+	QuotaData *data;
+	gchar *encoded_folder_name;
+	gboolean success;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	store = camel_imapx_server_ref_store (is);
+
+	encoded_folder_name =
+		imapx_encode_folder_name (store, data->folder_name);
+
+	ic = camel_imapx_command_new (
+		is, "GETQUOTAROOT", NULL,
+		"GETQUOTAROOT %s", encoded_folder_name);
+	ic->pri = job->pri;
+	camel_imapx_command_set_job (ic, job);
+	ic->complete = imapx_command_update_quota_info_done;
+
+	success = imapx_command_queue (is, ic, cancellable, error);
+
+	g_free (encoded_folder_name);
+
+	g_object_unref (store);
+
+	return success;
+}
+
+/* ********************************************************************** */
+
+static gboolean
 imapx_command_noop_done (CamelIMAPXServer *is,
                          CamelIMAPXCommand *ic,
                          GCancellable *cancellable,
@@ -7544,6 +7729,44 @@ camel_imapx_server_rename_folder (CamelIMAPXServer *is,
 
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) rename_folder_data_free);
+
+	success = imapx_submit_job (is, job, error);
+
+	camel_imapx_job_unref (job);
+
+	return success;
+}
+
+gboolean
+camel_imapx_server_update_quota_info (CamelIMAPXServer *is,
+                                      const gchar *folder_name,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	CamelIMAPXJob *job;
+	QuotaData *data;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (folder_name != NULL, FALSE);
+
+	if (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_QUOTA) == 0) {
+		g_set_error_literal (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("IMAP server does not support quotas"));
+		return FALSE;
+	}
+
+	data = g_slice_new0 (QuotaData);
+	data->folder_name = g_strdup (folder_name);
+
+	job = camel_imapx_job_new (cancellable);
+	job->type = IMAPX_JOB_UPDATE_QUOTA_INFO;
+	job->start = imapx_job_update_quota_info_start;
+	job->pri = IMAPX_PRIORITY_UPDATE_QUOTA_INFO;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) quota_data_free);
 
 	success = imapx_submit_job (is, job, error);
 

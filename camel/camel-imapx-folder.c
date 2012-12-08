@@ -38,115 +38,26 @@
 
 #define d(...) camel_imapx_debug(debug, '?', __VA_ARGS__)
 
+#define CAMEL_IMAPX_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAPX_FOLDER, CamelIMAPXFolderPrivate))
+
+struct _CamelIMAPXFolderPrivate {
+	GMutex property_lock;
+	gchar **quota_root_names;
+};
+
 /* The custom property ID is a CamelArg artifact.
  * It still identifies the property in state files. */
 enum {
 	PROP_0,
+	PROP_QUOTA_ROOT_NAMES,
 	PROP_APPLY_FILTERS = 0x2501
 };
 
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 static gboolean imapx_folder_get_apply_filters (CamelIMAPXFolder *folder);
-
-CamelFolder *
-camel_imapx_folder_new (CamelStore *store,
-                        const gchar *folder_dir,
-                        const gchar *folder_name,
-                        GError **error)
-{
-	CamelFolder *folder;
-	CamelService *service;
-	CamelSettings *settings;
-	CamelIMAPXFolder *ifolder;
-	const gchar *short_name;
-	gchar *state_file;
-	gboolean filter_all;
-	gboolean filter_inbox;
-	gboolean filter_junk;
-	gboolean filter_junk_inbox;
-
-	d ("opening imap folder '%s'\n", folder_dir);
-
-	service = CAMEL_SERVICE (store);
-
-	settings = camel_service_ref_settings (service);
-
-	g_object_get (
-		settings,
-		"filter-all", &filter_all,
-		"filter-inbox", &filter_inbox,
-		"filter-junk", &filter_junk,
-		"filter-junk-inbox", &filter_junk_inbox,
-		NULL);
-
-	g_object_unref (settings);
-
-	short_name = strrchr (folder_name, '/');
-	if (short_name)
-		short_name++;
-	else
-		short_name = folder_name;
-
-	folder = g_object_new (
-		CAMEL_TYPE_IMAPX_FOLDER,
-		"display-name", short_name,
-		"full_name", folder_name,
-		"parent-store", store, NULL);
-	ifolder = (CamelIMAPXFolder *) folder;
-
-	((CamelIMAPXFolder *) folder)->raw_name = g_strdup (folder_name);
-
-	folder->summary = camel_imapx_summary_new (folder);
-	if (!folder->summary) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Could not create folder summary for %s"),
-			short_name);
-		return NULL;
-	}
-
-	ifolder->cache = camel_data_cache_new (folder_dir, error);
-	if (!ifolder->cache) {
-		g_prefix_error (
-			error, _("Could not create cache for %s: "),
-			short_name);
-		return NULL;
-	}
-
-	state_file = g_build_filename (folder_dir, "cmeta", NULL);
-	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
-	g_free (state_file);
-	camel_object_state_read (CAMEL_OBJECT (folder));
-
-	ifolder->search = camel_folder_search_new ();
-	g_mutex_init (&ifolder->search_lock);
-	g_mutex_init (&ifolder->stream_lock);
-	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
-	ifolder->exists_on_server = 0;
-	ifolder->unread_on_server = 0;
-	ifolder->modseq_on_server = 0;
-	ifolder->uidnext_on_server = 0;
-
-	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
-		if (filter_inbox || filter_all)
-			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-		if (filter_junk)
-			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-	} else {
-		if (filter_junk && !filter_junk_inbox)
-			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-
-		if (filter_all || imapx_folder_get_apply_filters (ifolder))
-			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-	}
-
-	camel_store_summary_connect_folder_summary (
-		(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
-		folder_name, folder->summary);
-
-	return folder;
-}
 
 static gboolean
 imapx_folder_get_apply_filters (CamelIMAPXFolder *folder)
@@ -184,6 +95,12 @@ imapx_folder_set_property (GObject *object,
 				CAMEL_IMAPX_FOLDER (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_QUOTA_ROOT_NAMES:
+			camel_imapx_folder_set_quota_root_names (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_boxed (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -198,7 +115,15 @@ imapx_folder_get_property (GObject *object,
 	switch (property_id) {
 		case PROP_APPLY_FILTERS:
 			g_value_set_boolean (
-				value, imapx_folder_get_apply_filters (
+				value,
+				imapx_folder_get_apply_filters (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+
+		case PROP_QUOTA_ROOT_NAMES:
+			g_value_take_boxed (
+				value,
+				camel_imapx_folder_dup_quota_root_names (
 				CAMEL_IMAPX_FOLDER (object)));
 			return;
 	}
@@ -243,6 +168,8 @@ imapx_folder_finalize (GObject *object)
 
 	g_mutex_clear (&folder->search_lock);
 	g_mutex_clear (&folder->stream_lock);
+
+	g_mutex_clear (&folder->priv->property_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
@@ -582,6 +509,54 @@ imapx_get_message_sync (CamelFolder *folder,
 	return msg;
 }
 
+static CamelFolderQuotaInfo *
+imapx_get_quota_info_sync (CamelFolder *folder,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXServer *server;
+	CamelFolderQuotaInfo *quota_info = NULL;
+	const gchar *folder_name;
+	gchar **quota_root_names;
+	gboolean success = FALSE;
+
+	folder_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	server = camel_imapx_store_get_server (
+		CAMEL_IMAPX_STORE (parent_store),
+		folder_name, cancellable, error);
+
+	if (server != NULL) {
+		success = camel_imapx_server_update_quota_info (
+			server, folder_name, cancellable, error);
+		g_object_unref (server);
+	}
+
+	if (!success)
+		return NULL;
+
+	quota_root_names = camel_imapx_folder_dup_quota_root_names (
+		CAMEL_IMAPX_FOLDER (folder));
+
+	/* XXX Just return info for the first quota root name, I guess. */
+	if (quota_root_names != NULL && quota_root_names[0] != NULL)
+		quota_info = camel_imapx_store_dup_quota_info (
+			CAMEL_IMAPX_STORE (parent_store),
+			quota_root_names[0]);
+
+	g_strfreev (quota_root_names);
+
+	if (quota_info == NULL)
+		g_set_error (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("No quota information available for folder '%s'"),
+			folder_name);
+
+	return quota_info;
+}
+
 static gboolean
 imapx_purge_message_cache_sync (CamelFolder *folder,
                                 gchar *start_uid,
@@ -763,6 +738,8 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
 
+	g_type_class_add_private (class, sizeof (CamelIMAPXFolderPrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = imapx_folder_set_property;
 	object_class->get_property = imapx_folder_get_property;
@@ -780,6 +757,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->expunge_sync = imapx_expunge_sync;
 	folder_class->fetch_messages_sync = imapx_fetch_messages_sync;
 	folder_class->get_message_sync = imapx_get_message_sync;
+	folder_class->get_quota_info_sync = imapx_get_quota_info_sync;
 	folder_class->purge_message_cache_sync = imapx_purge_message_cache_sync;
 	folder_class->refresh_info_sync = imapx_refresh_info_sync;
 	folder_class->synchronize_sync = imapx_synchronize_sync;
@@ -796,12 +774,25 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			CAMEL_PARAM_PERSISTENT));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_QUOTA_ROOT_NAMES,
+		g_param_spec_boxed (
+			"quota-root-names",
+			"Quota Root Names",
+			"Quota root names for this folder",
+			G_TYPE_STRV,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (imapx_folder);
+
+	imapx_folder->priv = CAMEL_IMAPX_FOLDER_GET_PRIVATE (imapx_folder);
 
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
@@ -810,5 +801,139 @@ camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 		CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_USER;
 
 	camel_folder_set_lock_async (folder, TRUE);
+
+	g_mutex_init (&imapx_folder->priv->property_lock);
+}
+
+CamelFolder *
+camel_imapx_folder_new (CamelStore *store,
+                        const gchar *folder_dir,
+                        const gchar *folder_name,
+                        GError **error)
+{
+	CamelFolder *folder;
+	CamelService *service;
+	CamelSettings *settings;
+	CamelIMAPXFolder *ifolder;
+	const gchar *short_name;
+	gchar *state_file;
+	gboolean filter_all;
+	gboolean filter_inbox;
+	gboolean filter_junk;
+	gboolean filter_junk_inbox;
+
+	d ("opening imap folder '%s'\n", folder_dir);
+
+	service = CAMEL_SERVICE (store);
+
+	settings = camel_service_ref_settings (service);
+
+	g_object_get (
+		settings,
+		"filter-all", &filter_all,
+		"filter-inbox", &filter_inbox,
+		"filter-junk", &filter_junk,
+		"filter-junk-inbox", &filter_junk_inbox,
+		NULL);
+
+	g_object_unref (settings);
+
+	short_name = strrchr (folder_name, '/');
+	if (short_name)
+		short_name++;
+	else
+		short_name = folder_name;
+
+	folder = g_object_new (
+		CAMEL_TYPE_IMAPX_FOLDER,
+		"display-name", short_name,
+		"full_name", folder_name,
+		"parent-store", store, NULL);
+	ifolder = (CamelIMAPXFolder *) folder;
+
+	((CamelIMAPXFolder *) folder)->raw_name = g_strdup (folder_name);
+
+	folder->summary = camel_imapx_summary_new (folder);
+	if (!folder->summary) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Could not create folder summary for %s"),
+			short_name);
+		return NULL;
+	}
+
+	ifolder->cache = camel_data_cache_new (folder_dir, error);
+	if (!ifolder->cache) {
+		g_prefix_error (
+			error, _("Could not create cache for %s: "),
+			short_name);
+		return NULL;
+	}
+
+	state_file = g_build_filename (folder_dir, "cmeta", NULL);
+	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
+	g_free (state_file);
+	camel_object_state_read (CAMEL_OBJECT (folder));
+
+	ifolder->search = camel_folder_search_new ();
+	g_mutex_init (&ifolder->search_lock);
+	g_mutex_init (&ifolder->stream_lock);
+	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+	ifolder->exists_on_server = 0;
+	ifolder->unread_on_server = 0;
+	ifolder->modseq_on_server = 0;
+	ifolder->uidnext_on_server = 0;
+
+	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
+		if (filter_inbox || filter_all)
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+		if (filter_junk)
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+	} else {
+		if (filter_junk && !filter_junk_inbox)
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+
+		if (filter_all || imapx_folder_get_apply_filters (ifolder))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+	}
+
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
+		folder_name, folder->summary);
+
+	return folder;
+}
+
+gchar **
+camel_imapx_folder_dup_quota_root_names (CamelIMAPXFolder *folder)
+{
+	gchar **duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
+
+	g_mutex_lock (&folder->priv->property_lock);
+
+	duplicate = g_strdupv (folder->priv->quota_root_names);
+
+	g_mutex_unlock (&folder->priv->property_lock);
+
+	return duplicate;
+}
+
+void
+camel_imapx_folder_set_quota_root_names (CamelIMAPXFolder *folder,
+                                         const gchar **quota_root_names)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	g_mutex_lock (&folder->priv->property_lock);
+
+	g_strfreev (folder->priv->quota_root_names);
+	folder->priv->quota_root_names =
+		g_strdupv ((gchar **) quota_root_names);
+
+	g_mutex_unlock (&folder->priv->property_lock);
+
+	g_object_notify (G_OBJECT (folder), "quota-root-names");
 }
 
