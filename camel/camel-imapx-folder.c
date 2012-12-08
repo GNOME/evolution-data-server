@@ -170,6 +170,7 @@ imapx_folder_finalize (GObject *object)
 	g_mutex_clear (&folder->stream_lock);
 
 	g_mutex_clear (&folder->priv->property_lock);
+	g_strfreev (folder->priv->quota_root_names);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
