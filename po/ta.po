@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-02 14:25+0530\n"
-"PO-Revision-Date: 2012-12-02 15:08+0530\n"
+"POT-Creation-Date: 2012-12-09 19:18+0530\n"
+"PO-Revision-Date: 2012-12-09 19:26+0530\n"
 "Last-Translator: Dr.T.Vasudevan <drtvasudevan@gmail.com>\n"
 "Language-Team: Tamil <gnome-tamil-translation@googlegroups.com>\n"
 "Language: ta\n"
@@ -909,7 +909,8 @@ msgid ""
 "string and string list field types are supported"
 msgstr ""
 " சுருக்கத்தில் புலம் '%s' இல் '%s' வகை குறிக்கப்பட்டுள்ளது. ஆனால் பூலியன், "
-"சரம், சரப்பட்டியல் புல வகைகள் மட்டுமே ஆதரிக்கப்படுகிறது."
+"சரம், "
+"சரப்பட்டியல் புல வகைகள் மட்டுமே ஆதரிக்கப்படுகிறது."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2058
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2839
@@ -1874,13 +1875,13 @@ msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "_o இணையத்தின் இணையாமல் வேலை செய்ய அடைவின் உள்ளடக்கத்தை கணினியில் நகலெடுக்கவும்"
 
-#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:413
-#: ../camel/camel-imapx-folder.c:446 ../camel/camel-imapx-folder.c:482
-#: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:615
-#: ../camel/camel-imapx-folder.c:649 ../camel/camel-imapx-folder.c:689
-#: ../camel/camel-imapx-folder.c:725 ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1410 ../camel/camel-imapx-store.c:1499
-#: ../camel/camel-imapx-store.c:1548
+#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:341
+#: ../camel/camel-imapx-folder.c:374 ../camel/camel-imapx-folder.c:410
+#: ../camel/camel-imapx-folder.c:466 ../camel/camel-imapx-folder.c:591
+#: ../camel/camel-imapx-folder.c:625 ../camel/camel-imapx-folder.c:665
+#: ../camel/camel-imapx-folder.c:701 ../camel/camel-imapx-store.c:288
+#: ../camel/camel-imapx-store.c:1422 ../camel/camel-imapx-store.c:1511
+#: ../camel/camel-imapx-store.c:1560
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
@@ -1890,7 +1891,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
 #: ../camel/providers/pop3/camel-pop3-folder.c:1106
 #: ../camel/providers/pop3/camel-pop3-store.c:424
-#: ../camel/providers/pop3/camel-pop3-store.c:849
+#: ../camel/providers/pop3/camel-pop3-store.c:832
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "இந்த செயலை முடிக்க இணையதொடர்பு தேவை"
@@ -1900,7 +1901,7 @@ msgstr "இந்த செயலை முடிக்க இணையதொட
 msgid "Canceled"
 msgstr "நீக்கப்பட்டுள்ளது"
 
-#: ../camel/camel-filter-driver.c:916 ../camel/camel-filter-search.c:772
+#: ../camel/camel-filter-driver.c:916 ../camel/camel-filter-search.c:797
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "துணை செயலை உருவாக்குவதில் தோல்வி '%s': %s"
@@ -1966,15 +1967,15 @@ msgstr "%d யில் %d செய்தியை பெறும்போத�
 msgid "Failed to retrieve message"
 msgstr "செய்தியை பெறும்போது பிழை"
 
-#: ../camel/camel-filter-search.c:512
+#: ../camel/camel-filter-search.c:537
 msgid "Invalid arguments to (system-flag)"
 msgstr "செல்லாத பயனிலை (system-flag)"
 
-#: ../camel/camel-filter-search.c:530
+#: ../camel/camel-filter-search.c:555
 msgid "Invalid arguments to (user-tag)"
 msgstr "செல்லாத பயனிலை (user-tag)"
 
-#: ../camel/camel-filter-search.c:1021 ../camel/camel-filter-search.c:1030
+#: ../camel/camel-filter-search.c:1046 ../camel/camel-filter-search.c:1055
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "வடிகட்டி தேடலை இயக்கும் போது பிழை : %s: %s"
@@ -2215,65 +2216,70 @@ msgstr "MIME பகுதியை மறைநீக்கம் செய்�
 msgid "Encrypted content"
 msgstr "குறியாக்கம் செய்யப்பட்ட தகவல்"
 
-#: ../camel/camel-imapx-folder.c:104
+#: ../camel/camel-imapx-folder.c:555
 #, c-format
-msgid "Could not create folder summary for %s"
-msgstr "%s க்கான அடைவு சுருக்கத்தை உருவாக்க முடியவில்லை"
+msgid "No quota information available for folder '%s'"
+msgstr "கோப்புறை '%s' க்கான ஒதுக்கீடு தகவல் கிடைக்கவில்லை"
 
-#: ../camel/camel-imapx-folder.c:112
-#, c-format
-msgid "Could not create cache for %s: "
-msgstr "%s க்கான தற்காலிக நினைவிடத்தை உருவாக்க முடியவில்லை"
-
-#: ../camel/camel-imapx-folder.c:795
+#: ../camel/camel-imapx-folder.c:774
 #: ../camel/providers/imap/camel-imap-folder.c:367
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "_f இந்த அடைவுக்கு செய்தி வடிப்பிகளை பொருத்துக"
 
-#: ../camel/camel-imapx-server.c:1190
+#: ../camel/camel-imapx-folder.c:861
+#, c-format
+msgid "Could not create folder summary for %s"
+msgstr "%s க்கான அடைவு சுருக்கத்தை உருவாக்க முடியவில்லை"
+
+#: ../camel/camel-imapx-folder.c:869
+#, c-format
+msgid "Could not create cache for %s: "
+msgstr "%s க்கான தற்காலிக நினைவிடத்தை உருவாக்க முடியவில்லை"
+
+#: ../camel/camel-imapx-server.c:1217
 msgid "Server disconnected"
 msgstr "சேவையகம் துண்டிக்கப்பட்டது"
 
-#: ../camel/camel-imapx-server.c:1656
+#: ../camel/camel-imapx-server.c:1683
 msgid "Error writing to cache stream"
 msgstr "தற்காலிக ஓடைக்கு எழுதும்போது பிழை: "
 
-#: ../camel/camel-imapx-server.c:2654
+#: ../camel/camel-imapx-server.c:2776
 #, c-format
 msgid "Not authenticated"
 msgstr " அங்கீகாரம் உறுதிசெய்யப்படவில்லை"
 
-#: ../camel/camel-imapx-server.c:2732
+#: ../camel/camel-imapx-server.c:2854
 msgid "Error performing IDLE"
 msgstr "IDLE ஐ செய்வதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:3628
+#: ../camel/camel-imapx-server.c:3750
 #: ../camel/providers/imap/camel-imap-store.c:414
 #: ../camel/providers/imap/camel-imap-store.c:468
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "IMAP சேவகன் %s உடன் பாதுக்காப்பாக %s ஐ இணைப்பதில் தோல்வி"
 
-#: ../camel/camel-imapx-server.c:3629
+#: ../camel/camel-imapx-server.c:3751
 #: ../camel/providers/imap/camel-imap-store.c:415
 #: ../camel/providers/smtp/camel-smtp-transport.c:202
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ஆதரவு இல்லை"
 
-#: ../camel/camel-imapx-server.c:3668
+#: ../camel/camel-imapx-server.c:3790
 #: ../camel/providers/imap/camel-imap-store.c:440
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "IMAP சேவகயக %s க்கு பாதுகாப்பு முறையில் இணைக்க முடியவில்லை:"
 
-#: ../camel/camel-imapx-server.c:3748
+#: ../camel/camel-imapx-server.c:3870
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP சேவையகம் %s,  %s வகை உறுதிப்படுத்துதலுக்கு ஆதரவு தராது"
 
-#: ../camel/camel-imapx-server.c:3759 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3881 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:266
 #: ../camel/providers/pop3/camel-pop3-store.c:604
@@ -2282,14 +2288,14 @@ msgstr "IMAP சேவையகம் %s,  %s வகை உறுதிப்ப
 msgid "No support for %s authentication"
 msgstr "%s வகை உறுதிப்படுத்துதலுக்கு ஆதரவு இல்லை"
 
-#: ../camel/camel-imapx-server.c:3778
+#: ../camel/camel-imapx-server.c:3900
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:314
 #: ../camel/providers/nntp/camel-nntp-store.c:512
 msgid "Cannot authenticate without a username"
 msgstr "பயனர்பெயர் இல்லாமல்  உறுதிப்படுத்துத முடியாது"
 
-#: ../camel/camel-imapx-server.c:3787
+#: ../camel/camel-imapx-server.c:3909
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:521
 #: ../camel/providers/pop3/camel-pop3-store.c:529
@@ -2297,135 +2303,143 @@ msgstr "பயனர்பெயர் இல்லாமல்  உறுதி
 msgid "Authentication password not available"
 msgstr "அனுமதி உறுதிபடுத்த கடவுச்சொல் கிடைக்கவில்லை"
 
-#: ../camel/camel-imapx-server.c:3990
+#: ../camel/camel-imapx-server.c:4112
 msgid "Error fetching message"
 msgstr "செய்தியை கொண்டு வருவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:4075
+#: ../camel/camel-imapx-server.c:4197
 msgid "Failed to copy the tmp file"
 msgstr "tmp கோப்பை பிரதி எடுப்பதில் தோல்வி"
 
-#: ../camel/camel-imapx-server.c:4089
+#: ../camel/camel-imapx-server.c:4211
 msgid "Failed to close the tmp stream"
 msgstr "டிஎம்பி ஓடையை மூடுவதில் தோல்வி"
 
-#: ../camel/camel-imapx-server.c:4198
+#: ../camel/camel-imapx-server.c:4320
 msgid "Error copying messages"
 msgstr "செய்திகளை படியெடுப்பதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:4344
+#: ../camel/camel-imapx-server.c:4466
 msgid "Error appending message"
 msgstr "செய்தி சேர்ப்பதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:4531
+#: ../camel/camel-imapx-server.c:4653
 msgid "Error fetching message headers"
 msgstr "செய்திகளின் மேற்குறிப்புகளைப் பெறுவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:4668
+#: ../camel/camel-imapx-server.c:4790
 msgid "Error retrieving message"
 msgstr "செய்தியை மீட்டு எடுப்பதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:4790 ../camel/camel-imapx-server.c:4996
+#: ../camel/camel-imapx-server.c:4912 ../camel/camel-imapx-server.c:5118
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "சுருக்க தகவலுக்கான புதிய செய்திகளை '%s' உள்ளே ஏற்றவும்"
 
-#: ../camel/camel-imapx-server.c:4845
+#: ../camel/camel-imapx-server.c:4967
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "'%s' இல் மாற்றப்பட்ட செய்திகளுக்கு ஆராய்வு"
 
-#: ../camel/camel-imapx-server.c:4892
+#: ../camel/camel-imapx-server.c:5014
 msgid "Error fetching new messages"
 msgstr "புதிய செய்தியை கொண்டுவருவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5093
+#: ../camel/camel-imapx-server.c:5215
 msgid "Error while fetching messages"
 msgstr "செய்திகளை கொண்டுவருவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5100 ../camel/camel-imapx-server.c:5133
+#: ../camel/camel-imapx-server.c:5222 ../camel/camel-imapx-server.c:5255
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "  %d  செய்திக்கு '%s' இல் சுருக்க தகவலை கொண்டு வருகிறது."
 msgstr[1] "  %d  செய்திகளுக்கு '%s' இல் சுருக்க தகவலை கொண்டு வருகிறது."
 
-#: ../camel/camel-imapx-server.c:5261 ../camel/camel-imapx-server.c:5291
+#: ../camel/camel-imapx-server.c:5383 ../camel/camel-imapx-server.c:5413
 msgid "Error refreshing folder"
 msgstr " அடைவை புதுப்பிப்பதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5387
+#: ../camel/camel-imapx-server.c:5509
 msgid "Error expunging message"
 msgstr "செய்தியை நீக்குவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5491
+#: ../camel/camel-imapx-server.c:5613
 msgid "Error fetching folders"
 msgstr "அடைவுகளை கொண்டு வருவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5573
+#: ../camel/camel-imapx-server.c:5695
 msgid "Error subscribing to folder"
 msgstr " அடைவுக்கு சந்தா செலுத்துவதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5638
+#: ../camel/camel-imapx-server.c:5760
 msgid "Error creating folder"
 msgstr "அடைவை உருவாக்கும் போது பிழை "
 
-#: ../camel/camel-imapx-server.c:5692
+#: ../camel/camel-imapx-server.c:5814
 msgid "Error deleting folder"
 msgstr "அடைவை அழித்தலில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5761
+#: ../camel/camel-imapx-server.c:5883
 msgid "Error renaming folder"
 msgstr "அடைவை மறுபெயரிடும் போது பிழை "
 
-#: ../camel/camel-imapx-server.c:5830
+#: ../camel/camel-imapx-server.c:5952
+msgid "Error retrieving quota information"
+msgstr "ஒதுக்கீடு தகவலை மீட்டெடுக்கும் போது பிழை"
+
+#: ../camel/camel-imapx-server.c:6015
 msgid "Error performing NOOP"
 msgstr "NOOP ஐ செய்வதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:5930
+#: ../camel/camel-imapx-server.c:6115
 msgid "Error syncing changes"
 msgstr "மாற்றங்களை ஒத்திசைப்பதில் பிழை"
 
-#: ../camel/camel-imapx-server.c:6709
+#: ../camel/camel-imapx-server.c:6894
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "செய்திகள் அடையாளம் ID %s உடன் ஒரு செய்தியையும் பெறமுடியவில்லை: %s"
 
-#: ../camel/camel-imapx-server.c:6710
+#: ../camel/camel-imapx-server.c:6895
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "அப்படிப்பட்ட செய்தி ஏதும். இல்லை "
 
-#: ../camel/camel-imapx-server.c:6865 ../camel/camel-imapx-server.c:6880
+#: ../camel/camel-imapx-server.c:7050 ../camel/camel-imapx-server.c:7065
 msgid "Cannot create spool file: "
 msgstr "சுருள் கோப்பை  உருவாக்க முடியவில்லை:"
 
-#: ../camel/camel-imapx-store.c:157
+#: ../camel/camel-imapx-server.c:7756
+msgid "IMAP server does not support quotas"
+msgstr "IMAP சேவையகம் ஒதுக்கீட்டுகளுக்கு ஆதரவு தராது"
+
+#: ../camel/camel-imapx-store.c:169
 #: ../camel/providers/imap/camel-imap-store.c:827
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP சேவையகம் %s"
 
-#: ../camel/camel-imapx-store.c:160
+#: ../camel/camel-imapx-store.c:172
 #: ../camel/providers/imap/camel-imap-store.c:830
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%s இல் %s க்கான IMAP சேவை"
 
-#: ../camel/camel-imapx-store.c:251
+#: ../camel/camel-imapx-store.c:263
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/nntp/camel-nntp-provider.c:95
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid "Password"
 msgstr "கடவுச்சொல்"
 
-#: ../camel/camel-imapx-store.c:253
+#: ../camel/camel-imapx-store.c:265
 #: ../camel/providers/imap/camel-imap-provider.c:100
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "இந்த தேர்வு IMAP சேவகனை சாதாரண உரை கடவுச்சொல்லை பயன்படுத்தி இணைக்கம்வு"
 
-#: ../camel/camel-imapx-store.c:352
+#: ../camel/camel-imapx-store.c:364
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
@@ -2433,7 +2447,7 @@ msgid "No such folder %s"
 msgstr "இப்படி ஒரு அடைவு இல்லை %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:377 ../camel/camel-imapx-store.c:867
+#: ../camel/camel-imapx-store.c:389 ../camel/camel-imapx-store.c:879
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2445,18 +2459,18 @@ msgstr "இப்படி ஒரு அடைவு இல்லை %s"
 msgid "Inbox"
 msgstr "உள்பெட்டி"
 
-#: ../camel/camel-imapx-store.c:1111
+#: ../camel/camel-imapx-store.c:1123
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "'%s' க்காக அடைவை மீட்டெடுக்கிறது."
 
-#: ../camel/camel-imapx-store.c:1215
+#: ../camel/camel-imapx-store.c:1227
 #: ../camel/providers/nntp/camel-nntp-store.c:1786
 #, c-format
 msgid "No such folder: %s"
 msgstr "அடைவி இல்லை : %s"
 
-#: ../camel/camel-imapx-store.c:1432
+#: ../camel/camel-imapx-store.c:1444
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
@@ -2464,13 +2478,13 @@ msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "அடைவின் பெயர் \"%s\" செல்லாது காரணம் எழுத்து \"%c\" உள்ளது"
 
-#: ../camel/camel-imapx-store.c:1443
+#: ../camel/camel-imapx-store.c:1455
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "தெரியாத முதன்மை அடைவு: %s"
 
-#: ../camel/camel-imapx-store.c:1453
+#: ../camel/camel-imapx-store.c:1465
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -2607,26 +2621,38 @@ msgstr "புரவலனை தேட முடியவில்லை''"
 
 #: ../camel/camel-net-utils.c:732
 #, c-format
-msgid "Host lookup failed: %s: %s"
-msgstr "புரவலனை தேட முடியவில்லை (: %s: %s)''"
+msgid "Host lookup '%s' failed. Check your host name for spelling errors."
+msgstr ""
+"'%s' புரவலன் சோதித்தல் தோல்வி. உங்கள் புரவலன் பெயரை எழுத்துப்பிழைகளுக்கு "
+"சோதிக்கவும்."
 
-#: ../camel/camel-net-utils.c:853
+#: ../camel/camel-net-utils.c:736
+#, c-format
+msgid "Host lookup '%s' failed: %s"
+msgstr "புரவலனை தேடல் '%s' தோல்வி: %s"
+
+#: ../camel/camel-net-utils.c:857
 msgid "Resolving address"
 msgstr "முகவரியை பெயருடன் பொருத்துகிறது"
 
-#: ../camel/camel-net-utils.c:874
+#: ../camel/camel-net-utils.c:878
 msgid "Name lookup failed"
 msgstr "பெயர் தேட முடியவில்லை"
 
-#: ../camel/camel-net-utils.c:880
+#: ../camel/camel-net-utils.c:885
+msgid "Name lookup failed. Check your host name for spelling errors."
+msgstr ""
+"பெயர் சோதித்தல் தோல்வி. உங்கள் புரவலன் பெயரை எழுத்துப்பிழைகளுக்கு சோதிக்கவும்."
+
+#: ../camel/camel-net-utils.c:889
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "''பெயரை தேட முடியவில்லை (: %s)''"
 
-#: ../camel/camel-network-service.c:114
+#: ../camel/camel-network-service.c:115
 #, c-format
-msgid "Could not connect to %s: "
-msgstr "%s க்கு இணைக்க முடியவில்லை: "
+msgid "Could not connect to '%s:%s': "
+msgstr "இதற்கு இணைக்க முடியவில்லை '%s:%s':"
 
 #: ../camel/camel-offline-folder.c:210
 #, c-format
@@ -3311,14 +3337,17 @@ msgstr ""
 "%s"
 
 #: ../camel/camel-tcp-stream-ssl.c:520
+#: ../modules/trust-prompt/module-trust-prompt.c:336
 msgid "_Reject"
 msgstr "நிராகரி (_R)"
 
 #: ../camel/camel-tcp-stream-ssl.c:521
+#: ../modules/trust-prompt/module-trust-prompt.c:337
 msgid "Accept _Temporarily"
 msgstr "தற்காலிகமாக ஏற்றுக்கொள் (_T)"
 
 #: ../camel/camel-tcp-stream-ssl.c:522
+#: ../modules/trust-prompt/module-trust-prompt.c:338
 msgid "_Accept Permanently"
 msgstr "நிரந்தரமாக ஏற்றுக்கொள் (_A)"
 
@@ -4583,17 +4612,12 @@ msgstr ""
 "பாப் சேவகனுடன் இணைக்க முடியவில்லை %s.\n"
 "பயனீட்டாளர் பெயரை அனுப்புவதில் பிழை  %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:690
-#, c-format
-msgid "Could not connect to POP server %s"
-msgstr "பாப் சேவகனுடன் இணைக்க முடியவில்லை %s"
-
-#: ../camel/providers/pop3/camel-pop3-store.c:718
+#: ../camel/providers/pop3/camel-pop3-store.c:701
 #, c-format
 msgid "No such folder '%s'."
 msgstr "'%s'. என்ற அடைவு ஏதும் இல்லை "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:735
+#: ../camel/providers/pop3/camel-pop3-store.c:718
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "பாப்3 சேமிப்பு கிடங்குகளில் அடைவு அடுக்கமைப்பு இல்லை"
@@ -5066,6 +5090,11 @@ msgstr "பயனர் உறுதிபடுத்த இசையவில�
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "UID '%s' ஏற்கனவே பயன்பாட்டிலுள்ளது"
+
+#: ../libebackend/e-user-prompter-server.c:278
+#, c-format
+msgid "Extension dialog '%s' not found."
+msgstr "நீட்சி உரையாடல் '%s'  ஐ காணவில்லை"
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -5720,6 +5749,73 @@ msgstr ""
 msgid "Calendar"
 msgstr "நாள்காட்டி"
 
+#: ../modules/trust-prompt/module-trust-prompt.c:193
+msgid "The signing certificate authority is not known."
+msgstr "சான்றிதழ் ஆணையரை தெரியவில்லை"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:195
+msgid ""
+"The certificate does not match the expected identity of the site that it was "
+"retrieved from."
+msgstr ""
+"சான்றிதழ் மீட்டெடுக்கப்பட்ட தளத்தின்  எதிர்பார்த்த அடையாளத்துடன் "
+"பொருந்தவில்லை."
+
+#: ../modules/trust-prompt/module-trust-prompt.c:197
+msgid "The certificate's activation time is still in the future."
+msgstr "சான்றிதழ் செயலாக்க நேரம் எதிர்காலத்தில் உள்ளது."
+
+#: ../modules/trust-prompt/module-trust-prompt.c:199
+msgid "The certificate has expired."
+msgstr "சான்றிதழ் காலாவதியானது"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:201
+msgid ""
+"The certificate has been revoked according to the connection's certificate "
+"revocation list."
+msgstr ""
+"இணைப்பின் சான்றிதழ் திருப்பிப்பெற்ற பட்டியல் படி இந்த சான்றிதழ் "
+"திருப்பிப்பெறப்பட்டது"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:203
+msgid "The certificate's algorithm is considered insecure."
+msgstr "சான்றிதழ் கையொப்ப படிமுறை பாதுகாப்பானது இல்லை"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:334
+msgid "Certificate trust..."
+msgstr "சான்றிதழ் நம்பகம்..."
+
+#: ../modules/trust-prompt/module-trust-prompt.c:335
+msgid "_View Certificate"
+msgstr "சான்றிதழை பார்க்கவும் (_V)"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:370
+#, c-format
+msgid ""
+"SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+"\n"
+"Detailed information about the certificate:"
+msgstr ""
+"'%s' க்கான SSL சான்றிதழ் நம்பகமாக இல்லை. அதை ஏற்றுக்கொள்ள விரும்புகிறீர்களா?\n"
+"\n"
+"சான்றிதழைப் பற்றிய விரிவான தகவல்:"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:386
+msgid "Issuer:"
+msgstr "வழங்கியவர்:"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:387
+msgid "Subject:"
+msgstr "பொருள்:"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:388
+msgid "Fingerprint:"
+msgstr "கைரேகை:"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:389
+msgid "Reason:"
+msgstr "காரணம்:"
+
 #: ../modules/yahoo-backend/module-yahoo-backend.c:227
 msgid "Tasks"
 msgstr "பணிகள்"
@@ -5733,6 +5829,10 @@ msgstr "கடைசி கிளையன்ட் மூடிய பிறக
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
 msgid "Wait running until at least one client is connected"
 msgstr "குறைந்தது ஒரு கிளையன்ட்டாவது இணைக்கப்படும் வரை இயக்காமல் காத்திரு"
+
+#: ../services/evolution-user-prompter/evolution-user-prompter.c:104
+msgid "_Dismiss"
+msgstr "பணிநீக்கு (_D)"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:635
 msgid "Evolution Source Viewer"
@@ -5750,6 +5850,12 @@ msgstr "கொடிகள்"
 #: ../tests/libedataserverui/evolution-source-viewer.c:726
 msgid "Identity"
 msgstr "அடையாளம்"
+
+#~ msgid "Could not connect to %s: "
+#~ msgstr "%s க்கு இணைக்க முடியவில்லை: "
+
+#~ msgid "Could not connect to POP server %s"
+#~ msgstr "பாப் சேவகனுடன் இணைக்க முடியவில்லை %s"
 
 #~ msgid "Using Distinguished Name (DN)"
 #~ msgstr "புகழ்பெற்ற பெயர் பயன்படுத்துகிறது (DN)"
@@ -5811,9 +5917,6 @@ msgstr "அடையாளம்"
 
 #~ msgid "Could not instantiate backend"
 #~ msgstr "பின்  இயக்கியை துவக்க முடியவில்லை"
-
-#~ msgid "Could not connect to %s: %s"
-#~ msgstr "இணைக்க முடியவில்லை ( %s: %s)"
 
 #~ msgid "SSL unavailable"
 #~ msgstr "SSL கிடைக்கவில்லை"
