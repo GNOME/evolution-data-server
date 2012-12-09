@@ -10,21 +10,31 @@
 #error "Only <libebook/libebook.h> should be included directly."
 #endif
 
-#ifndef __E_CONTACT_H__
-#define __E_CONTACT_H__
+#ifndef E_CONTACT_H
+#define E_CONTACT_H
 
 #include <time.h>
 #include <stdio.h>
 #include <libebook/e-vcard.h>
 
-G_BEGIN_DECLS
-
-#define E_TYPE_CONTACT            (e_contact_get_type ())
-#define E_CONTACT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CONTACT, EContact))
-#define E_CONTACT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CONTACT, EContactClass))
-#define E_IS_CONTACT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CONTACT))
-#define E_IS_CONTACT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CONTACT))
-#define E_CONTACT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CONTACT, EContactClass))
+/* Standard GObject macros */
+#define E_TYPE_CONTACT \
+	(e_contact_get_type ())
+#define E_CONTACT(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CONTACT, EContact))
+#define E_CONTACT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CONTACT, EContactClass))
+#define E_IS_CONTACT(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CONTACT))
+#define E_IS_CONTACT_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CONTACT))
+#define E_CONTACT_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CONTACT, EContactClass))
 
 #define E_TYPE_CONTACT_DATE       (e_contact_date_get_type ())
 #define E_TYPE_CONTACT_NAME       (e_contact_name_get_type ())
@@ -32,6 +42,8 @@ G_BEGIN_DECLS
 #define E_TYPE_CONTACT_CERT       (e_contact_cert_get_type ())
 #define E_TYPE_CONTACT_ADDRESS    (e_contact_address_get_type ())
 #define E_TYPE_CONTACT_ATTR_LIST  (e_contact_attr_list_get_type ())
+
+G_BEGIN_DECLS
 
 typedef struct _EContact EContact;
 typedef struct _EContactClass EContactClass;
@@ -314,72 +326,85 @@ struct _EContactClass {
 	void (*_ebook_reserved4) (void);
 };
 
-GType                   e_contact_get_type (void);
-
-EContact *               e_contact_new              (void);
-EContact *               e_contact_new_from_vcard   (const gchar *vcard);
-EContact *               e_contact_new_from_vcard_with_uid (const gchar *vcard, const gchar *uid);
-
-EContact *               e_contact_duplicate        (EContact *contact);
-
-gpointer                e_contact_get              (EContact *contact, EContactField field_id);
-gconstpointer		e_contact_get_const        (EContact *contact, EContactField field_id);
-void                    e_contact_set              (EContact *contact, EContactField field_id, gconstpointer value);
+GType		e_contact_get_type		(void) G_GNUC_CONST;
+EContact *	e_contact_new			(void);
+EContact *	e_contact_new_from_vcard	(const gchar *vcard);
+EContact *	e_contact_new_from_vcard_with_uid
+						(const gchar *vcard,
+						 const gchar *uid);
+EContact *	e_contact_duplicate		(EContact *contact);
+gpointer	e_contact_get			(EContact *contact,
+						 EContactField field_id);
+gconstpointer	e_contact_get_const		(EContact *contact,
+						 EContactField field_id);
+void		e_contact_set			(EContact *contact,
+						 EContactField field_id,
+						 gconstpointer value);
 
 /* the following two calls return and take a GList of
  * EVCardAttribute*'s. */
-GList *                  e_contact_get_attributes   (EContact *contact, EContactField field_id);
-void                    e_contact_set_attributes   (EContact *contact, EContactField field_id, GList *attributes);
+GList *		e_contact_get_attributes	(EContact *contact,
+						 EContactField field_id);
+void		e_contact_set_attributes	(EContact *contact,
+						 EContactField field_id,
+						 GList *attributes);
 
 /* misc functions for structured values */
-GType                   e_contact_date_get_type    (void);
-EContactDate           *e_contact_date_new         (void);
-EContactDate           *e_contact_date_from_string (const gchar *str);
-gchar                   *e_contact_date_to_string   (EContactDate *dt);
-gboolean                e_contact_date_equal       (EContactDate *dt1,
-						    EContactDate *dt2);
-void                    e_contact_date_free        (EContactDate *date);
+GType		e_contact_date_get_type		(void);
+EContactDate *	e_contact_date_new		(void);
+EContactDate *	e_contact_date_from_string	(const gchar *str);
+gchar *		e_contact_date_to_string	(EContactDate *dt);
+gboolean	e_contact_date_equal		(EContactDate *dt1,
+						 EContactDate *dt2);
+void		e_contact_date_free		(EContactDate *date);
 
-GType                   e_contact_name_get_type    (void);
-EContactName           *e_contact_name_new         (void);
-gchar                   *e_contact_name_to_string   (const EContactName *name);
-EContactName           *e_contact_name_from_string (const gchar *name_str);
-EContactName           *e_contact_name_copy        (EContactName *n);
-void                    e_contact_name_free        (EContactName *name);
+GType		e_contact_name_get_type		(void);
+EContactName *	e_contact_name_new		(void);
+gchar *		e_contact_name_to_string	(const EContactName *name);
+EContactName *	e_contact_name_from_string	(const gchar *name_str);
+EContactName *	e_contact_name_copy		(EContactName *n);
+void		e_contact_name_free		(EContactName *name);
 
-EContactPhoto *          e_contact_photo_new           (void);
-GType                   e_contact_photo_get_type      (void);
-void                    e_contact_photo_free          (EContactPhoto *photo);
-const guchar *          e_contact_photo_get_inlined   (EContactPhoto *photo, gsize *len);
-void                    e_contact_photo_set_inlined   (EContactPhoto *photo, const guchar *data, gsize len);
-const gchar *           e_contact_photo_get_mime_type (EContactPhoto *photo);
-void                    e_contact_photo_set_mime_type (EContactPhoto *photo, const gchar *mime_type);
-const gchar *           e_contact_photo_get_uri       (EContactPhoto *photo);
-void                    e_contact_photo_set_uri       (EContactPhoto *photo, const gchar *uri);
-gboolean                e_contact_inline_local_photos (EContact      *contact,
-						       GError       **error);
+GType		e_contact_photo_get_type	(void);
+EContactPhoto *	e_contact_photo_new		(void);
+void		e_contact_photo_free		(EContactPhoto *photo);
+const guchar *	e_contact_photo_get_inlined	(EContactPhoto *photo,
+						 gsize *len);
+void		e_contact_photo_set_inlined	(EContactPhoto *photo,
+						 const guchar *data,
+						 gsize len);
+const gchar *	e_contact_photo_get_mime_type	(EContactPhoto *photo);
+void		e_contact_photo_set_mime_type	(EContactPhoto *photo,
+						 const gchar *mime_type);
+const gchar *	e_contact_photo_get_uri		(EContactPhoto *photo);
+void		e_contact_photo_set_uri		(EContactPhoto *photo,
+						 const gchar *uri);
+gboolean	e_contact_inline_local_photos	(EContact *contact,
+						 GError **error);
 
-GType			e_contact_geo_get_type	   (void);
-void			e_contact_geo_free	   (EContactGeo *geo);
+GType		e_contact_geo_get_type		(void);
+void		e_contact_geo_free		(EContactGeo *geo);
 
-GType                   e_contact_cert_get_type    (void);
-void                    e_contact_cert_free        (EContactCert *cert);
+GType		e_contact_cert_get_type		(void);
+void		e_contact_cert_free		(EContactCert *cert);
 
-EContactAddress *        e_contact_address_new      (void);
-GType                   e_contact_address_get_type (void);
-void                    e_contact_address_free     (EContactAddress *address);
+GType		e_contact_address_get_type	(void);
+EContactAddress *
+		e_contact_address_new		(void);
+void		e_contact_address_free		(EContactAddress *address);
 
-GList                  *e_contact_attr_list_copy     (GList *list);
-void                    e_contact_attr_list_free     (GList *list);
-GType                   e_contact_attr_list_get_type (void);
+GType		e_contact_attr_list_get_type	(void);
+GList *		e_contact_attr_list_copy	(GList *list);
+void		e_contact_attr_list_free	(GList *list);
 
-GType                     e_contact_field_type       (EContactField field_id);
-const gchar *             e_contact_field_name       (EContactField field_id);
-const gchar *             e_contact_pretty_name      (EContactField field_id);
-const gchar *             e_contact_vcard_attribute  (EContactField field_id);
-EContactField           e_contact_field_id         (const gchar *field_name);
-EContactField           e_contact_field_id_from_vcard (const gchar *vcard_field);
+GType		e_contact_field_type		(EContactField field_id);
+const gchar *	e_contact_field_name		(EContactField field_id);
+const gchar *	e_contact_pretty_name		(EContactField field_id);
+const gchar *	e_contact_vcard_attribute	(EContactField field_id);
+EContactField	e_contact_field_id		(const gchar *field_name);
+EContactField	e_contact_field_id_from_vcard	(const gchar *vcard_field);
 
 G_END_DECLS
 
-#endif /* __E_CONTACT_H__ */
+#endif /* E_CONTACT_H */
+
