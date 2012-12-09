@@ -740,6 +740,8 @@ e_data_book_view_get_backend (EDataBookView *view)
  * Gets the s-expression used for matching contacts to @view.
  *
  * Returns: The #EBookBackendSExp used.
+ *
+ * Since: 3.8
  **/
 EBookBackendSExp *
 e_data_book_view_get_sexp (EDataBookView *view)

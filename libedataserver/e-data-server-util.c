@@ -1327,7 +1327,7 @@ e_binding_transform_enum_nick_to_value (GBinding *binding,
 
 /**
  * e_enum_from_string:
- * @type: The enum type
+ * @enum_type: The enum type
  * @string: The string containing the enum value or nick
  * @enum_value: A return location to store the result
  *
@@ -1340,17 +1340,17 @@ e_binding_transform_enum_nick_to_value (GBinding *binding,
  * Since: 3.8
  */
 gboolean
-e_enum_from_string (GType type,
+e_enum_from_string (GType enum_type,
 		    const gchar *string,
 		    gint *enum_value)
 {
-	GEnumClass *eclass;
+	GEnumClass *enum_class;
 	GEnumValue *ev;
 	gchar *endptr;
 	gint value;
 	gboolean retval = TRUE;
 
-	g_return_val_if_fail (G_TYPE_IS_ENUM (type), FALSE);
+	g_return_val_if_fail (G_TYPE_IS_ENUM (enum_type), FALSE);
 	g_return_val_if_fail (string != NULL, FALSE);
 
 	value = g_ascii_strtoull (string, &endptr, 0);
@@ -1358,17 +1358,17 @@ e_enum_from_string (GType type,
 		/* parsed a number */
 		*enum_value = value;
 	else {
-		eclass = g_type_class_ref (type);
-		ev = g_enum_get_value_by_name (eclass, string);
+		enum_class = g_type_class_ref (enum_type);
+		ev = g_enum_get_value_by_name (enum_class, string);
 		if (!ev)
-			ev = g_enum_get_value_by_nick (eclass, string);
+			ev = g_enum_get_value_by_nick (enum_class, string);
 
 		if (ev)
 			*enum_value = ev->value;
 		else
 			retval = FALSE;
 
-		g_type_class_unref (eclass);
+		g_type_class_unref (enum_class);
 	}
 
 	return retval;
@@ -1376,8 +1376,8 @@ e_enum_from_string (GType type,
 
 /**
  * e_enum_to_string:
- * @etype: An enum type
- * @eval: The enum value to convert
+ * @enum_type: An enum type
+ * @enum_value: The enum value to convert
  *
  * Converts an enum value to a string using strings from the GType system.
  *
@@ -1386,25 +1386,26 @@ e_enum_from_string (GType type,
  * Since: 3.8
  */
 const gchar *
-e_enum_to_string (GType etype,
-		  gint  eval)
+e_enum_to_string (GType enum_type,
+		  gint enum_value)
 {
-	GEnumClass  *eclass;
+	GEnumClass *enum_class;
 	const gchar *string = NULL;
-	guint       i;
+	guint i;
   
-	eclass = g_type_class_ref (etype);
+	enum_class = g_type_class_ref (enum_type);
 
-	g_return_val_if_fail (eclass != NULL, NULL);
+	g_return_val_if_fail (enum_class != NULL, NULL);
 
-	for (i = 0; i < eclass->n_values; i++) {
-		if (eval == eclass->values[i].value) {
-			string = eclass->values[i].value_nick;
+	for (i = 0; i < enum_class->n_values; i++) {
+		if (enum_value == enum_class->values[i].value) {
+			string = enum_class->values[i].value_nick;
 			break;
 		}
 	}
 
-	g_type_class_unref (eclass);
+	g_type_class_unref (enum_class);
+
 	return string;
 }
 

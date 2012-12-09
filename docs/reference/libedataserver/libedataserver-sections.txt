@@ -658,6 +658,8 @@ e_source_mail_submission_set_sent_folder
 e_source_mail_submission_get_transport_uid
 e_source_mail_submission_dup_transport_uid
 e_source_mail_submission_set_transport_uid
+e_source_mail_submission_get_replies_to_origin_folder
+e_source_mail_submission_set_replies_to_origin_folder
 <SUBSECTION Standard>
 E_SOURCE_MAIL_SUBMISSION
 E_IS_SOURCE_MAIL_SUBMISSION
@@ -1130,6 +1132,7 @@ e_util_utf8_strcasecmp
 e_util_utf8_remove_accents
 e_util_utf8_make_valid
 e_util_utf8_data_make_valid
+e_util_utf8_normalize
 e_util_ensure_gdbus_string
 e_util_gthread_id
 e_filename_make_safe
@@ -1149,6 +1152,8 @@ e_file_recursive_delete
 e_file_recursive_delete_finish
 e_binding_transform_enum_value_to_nick
 e_binding_transform_enum_nick_to_value
+e_enum_from_string
+e_enum_to_string
 EAsyncClosure
 e_async_closure_new
 e_async_closure_wait
@@ -1160,6 +1165,15 @@ e_util_get_localedir
 e_util_replace_prefix
 e_data_server_util_get_dbus_call_timeout
 e_data_server_util_set_dbus_call_timeout
+ENamedParameters
+e_named_parameters_new
+e_named_parameters_new_strv
+e_named_parameters_free
+e_named_parameters_clear
+e_named_parameters_assign
+e_named_parameters_set
+e_named_parameters_get
+e_named_parameters_test
 </SECTION>
 
 <SECTION>

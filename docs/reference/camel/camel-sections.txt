@@ -794,6 +794,8 @@ camel_imapx_conn_manager_get_type
 <TITLE>CamelIMAPXFolder</TITLE>
 CamelIMAPXFolder
 camel_imapx_folder_new
+camel_imapx_folder_dup_quota_root_names
+camel_imapx_folder_set_quota_root_names
 <SUBSECTION Standard>
 CAMEL_IMAPX_FOLDER
 CAMEL_IS_IMAPX_FOLDER
@@ -803,7 +805,7 @@ CAMEL_IS_IMAPX_FOLDER_CLASS
 CAMEL_IMAPX_FOLDER_GET_CLASS
 CamelIMAPXFolderClass
 <SUBSECTION Private>
-CamelIMAPXFolder
+CamelIMAPXFolderPrivate
 camel_imapx_folder_get_type
 imapx_get_filename
 </SECTION>
@@ -852,8 +854,8 @@ camel_imapx_server_manage_subscription
 camel_imapx_server_create_folder
 camel_imapx_server_delete_folder
 camel_imapx_server_rename_folder
+camel_imapx_server_update_quota_info
 camel_imapx_server_get_job_queue_info
-CamelIMAPXUntaggedRespHandler
 CamelIMAPXUntaggedRespHandlerDesc
 camel_imapx_server_register_untagged_handler
 camel_imapx_server_command_run
@@ -931,6 +933,8 @@ camel_imapx_settings_get_type
 CamelIMAPXStore
 camel_imapx_store_get_server
 camel_imapx_store_op_done
+camel_imapx_store_dup_quota_info
+camel_imapx_store_set_quota_info
 <SUBSECTION Standard>
 CAMEL_IMAPX_STORE
 CAMEL_IS_IMAPX_STORE
@@ -1704,7 +1708,7 @@ camel_msgport_fd
 camel_msgport_push
 camel_msgport_pop
 camel_msgport_try_pop
-camel_msgport_timed_pop
+camel_msgport_timeout_pop
 camel_msgport_reply
 camel_msgport_prfd
 </SECTION>

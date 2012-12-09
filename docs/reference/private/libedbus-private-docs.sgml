@@ -35,6 +35,9 @@
     <xi:include href="xml/e-dbus-authenticator.xml"/>
     <xi:include href="xml/e-dbus-authenticator-proxy.xml"/>
     <xi:include href="xml/e-dbus-authenticator-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-user-prompter.xml"/>
+    <xi:include href="xml/e-dbus-user-prompter-proxy.xml"/>
+    <xi:include href="xml/e-dbus-user-prompter-skeleton.xml"/>
   </chapter>
 
   <chapter>
@@ -46,6 +49,7 @@
     <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteDeletable.xml"/>
     <xi:include href="../../../private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
     <xi:include href="../../../private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
+    <xi:include href="../../../private/e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml"/>
   </chapter>
 
   <index id="api-index-full">

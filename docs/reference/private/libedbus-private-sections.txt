@@ -456,12 +456,12 @@ e_dbus_source_removable_get_type
 <FILE>e-dbus-source-removable-proxy</FILE>
 <TITLE>EDBusSourceRemovableProxy</TITLE>
 EDBusSourceRemovableProxy
+e_dbus_source_removable_proxy_new_sync
 e_dbus_source_removable_proxy_new
 e_dbus_source_removable_proxy_new_finish
+e_dbus_source_removable_proxy_new_for_bus_sync
 e_dbus_source_removable_proxy_new_for_bus
 e_dbus_source_removable_proxy_new_for_bus_finish
-e_dbus_source_removable_proxy_new_for_bus_sync
-e_dbus_source_removable_proxy_new_sync
 <SUBSECTION Standard>
 E_DBUS_SOURCE_REMOVABLE_PROXY
 E_DBUS_IS_SOURCE_REMOVABLE_PROXY
@@ -517,12 +517,12 @@ e_dbus_source_writable_get_type
 <FILE>e-dbus-source-writable-proxy</FILE>
 <TITLE>EDBusSourceWritableProxy</TITLE>
 EDBusSourceWritableProxy
+e_dbus_source_writable_proxy_new_sync
 e_dbus_source_writable_proxy_new
 e_dbus_source_writable_proxy_new_finish
+e_dbus_source_writable_proxy_new_for_bus_sync
 e_dbus_source_writable_proxy_new_for_bus
 e_dbus_source_writable_proxy_new_for_bus_finish
-e_dbus_source_writable_proxy_new_for_bus_sync
-e_dbus_source_writable_proxy_new_sync
 <SUBSECTION Standard>
 E_DBUS_SOURCE_WRITABLE_PROXY
 E_DBUS_IS_SOURCE_WRITABLE_PROXY
@@ -552,5 +552,72 @@ EDBusSourceWritableSkeletonClass
 <SUBSECTION Private>
 EDBusSourceWritableSkeletonPrivate
 e_dbus_source_writable_skeleton_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-dbus-user-prompter</FILE>
+<TITLE>EDBusUserPrompter</TITLE>
+EDBusUserPrompter
+e_dbus_user_prompter_call_extension_prompt_sync
+e_dbus_user_prompter_call_extension_prompt
+e_dbus_user_prompter_call_extension_prompt_finish
+e_dbus_user_prompter_complete_extension_prompt
+e_dbus_user_prompter_call_prompt_sync
+e_dbus_user_prompter_call_prompt
+e_dbus_user_prompter_call_prompt_finish
+e_dbus_user_prompter_complete_prompt
+e_dbus_user_prompter_emit_extension_response
+e_dbus_user_prompter_emit_response
+e_dbus_user_prompter_interface_info
+e_dbus_user_prompter_override_properties
+<SUBSECTION Standard>
+E_DBUS_USER_PROMPTER
+E_DBUS_IS_USER_PROMPTER
+E_DBUS_TYPE_USER_PROMPTER
+E_DBUS_USER_PROMPTER_GET_IFACE
+EDBusUserPrompterIface
+<SUBSECTION Private>
+e_dbus_user_prompter_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-dbus-user-prompter-proxy</FILE>
+<TITLE>EDBusUserPrompterProxy</TITLE>
+EDBusUserPrompterProxy
+e_dbus_user_prompter_proxy_new_sync
+e_dbus_user_prompter_proxy_new
+e_dbus_user_prompter_proxy_new_finish
+e_dbus_user_prompter_proxy_new_for_bus_sync
+e_dbus_user_prompter_proxy_new_for_bus
+e_dbus_user_prompter_proxy_new_for_bus_finish
+<SUBSECTION Standard>
+E_DBUS_USER_PROMPTER_PROXY
+E_DBUS_IS_USER_PROMPTER_PROXY
+E_DBUS_TYPE_USER_PROMPTER_PROXY
+E_DBUS_USER_PROMPTER_PROXY_CLASS
+E_DBUS_IS_USER_PROMPTER_PROXY_CLASS
+E_DBUS_USER_PROMPTER_PROXY_GET_CLASS
+EDBusUserPrompterProxyClass
+<SUBSECTION Private>
+EDBusUserPrompterProxyPrivate
+e_dbus_user_prompter_proxy_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-dbus-user-prompter-skeleton</FILE>
+<TITLE>EDBusUserPrompterSkeleton</TITLE>
+EDBusUserPrompterSkeleton
+e_dbus_user_prompter_skeleton_new
+<SUBSECTION Standard>
+E_DBUS_USER_PROMPTER_SKELETON
+E_DBUS_IS_USER_PROMPTER_SKELETON
+E_DBUS_TYPE_USER_PROMPTER_SKELETON
+E_DBUS_USER_PROMPTER_SKELETON_CLASS
+E_DBUS_IS_USER_PROMPTER_SKELETON_CLASS
+E_DBUS_USER_PROMPTER_SKELETON_GET_CLASS
+EDBusUserPrompterSkeletonClass
+<SUBSECTION Private>
+EDBusUserPrompterSkeletonPrivate
+e_dbus_user_prompter_skeleton_get_type
 </SECTION>
 

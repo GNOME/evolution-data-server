@@ -105,11 +105,12 @@ gboolean	e_binding_transform_enum_nick_to_value
 						 const GValue *source_value,
 						 GValue *target_value,
 						 gpointer not_used);
-gboolean        e_enum_from_string              (GType type,
+
+gboolean	e_enum_from_string		(GType enum_type,
 						 const gchar *string,
 						 gint *enum_value);
-const gchar    *e_enum_to_string                (GType etype,
-						 gint eval);
+const gchar *	e_enum_to_string		(GType enum_type,
+						 gint enum_value);
 
 typedef struct _EAsyncClosure EAsyncClosure;
 
@@ -135,23 +136,31 @@ void		e_data_server_util_set_dbus_call_timeout
 						(gint timeout_msec);
 
 /* utility functions for easier processing of named parameters */
+
+/**
+ * ENamedParameters:
+ *
+ * Since: 3.8
+ **/
 typedef GPtrArray ENamedParameters;
 
-ENamedParameters *	e_named_parameters_new		(void);
-ENamedParameters *	e_named_parameters_new_strv	(const gchar * const *strv);
-void			e_named_parameters_free		(ENamedParameters *parameters);
-void			e_named_parameters_clear	(ENamedParameters *parameters);
-void			e_named_parameters_assign	(ENamedParameters *parameters,
-							 const ENamedParameters *from);
-void			e_named_parameters_set		(ENamedParameters *parameters,
-							 const gchar *name,
-							 const gchar *value);
-const gchar *		e_named_parameters_get		(const ENamedParameters *parameters,
-							 const gchar *name);
-gboolean		e_named_parameters_test		(const ENamedParameters *parameters,
-							 const gchar *name,
-							 const gchar *value,
-							 gboolean case_sensitively);
+ENamedParameters *
+		e_named_parameters_new		(void);
+ENamedParameters *
+		e_named_parameters_new_strv	(const gchar * const *strv);
+void		e_named_parameters_free		(ENamedParameters *parameters);
+void		e_named_parameters_clear	(ENamedParameters *parameters);
+void		e_named_parameters_assign	(ENamedParameters *parameters,
+						 const ENamedParameters *from);
+void		e_named_parameters_set		(ENamedParameters *parameters,
+						 const gchar *name,
+						 const gchar *value);
+const gchar *	e_named_parameters_get		(const ENamedParameters *parameters,
+						 const gchar *name);
+gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
+						 const gchar *name,
+						 const gchar *value,
+						 gboolean case_sensitively);
 
 G_END_DECLS
 

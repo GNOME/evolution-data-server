@@ -236,6 +236,9 @@ e_contact_photo_free
 e_contact_geo_free
 e_contact_address_new
 e_contact_address_free
+e_contact_attr_list_copy
+e_contact_attr_list_free
+e_contact_field_type
 e_contact_field_name
 e_contact_pretty_name
 e_contact_field_id
@@ -257,12 +260,14 @@ E_TYPE_CONTACT_CERT
 E_TYPE_CONTACT_DATE
 E_TYPE_CONTACT_NAME
 E_TYPE_CONTACT_PHOTO
+E_TYPE_CONTACT_ATTR_LIST
 e_contact_get_type
 e_contact_address_get_type
 e_contact_cert_get_type
 e_contact_photo_get_type
 e_contact_name_get_type
 e_contact_date_get_type
+e_contact_attr_list_get_type
 EContactPhotoType
 <SUBSECTION Private>
 EContactPrivate
@@ -449,6 +454,7 @@ E_BOOK_ERROR_CORBA_EXCEPTION
 EBookViewStatus
 EBookChangeType
 EBookChange
+EBookIndexType
 </SECTION>
 
 <SECTION>
@@ -518,4 +524,28 @@ EDestinationClass
 e_destination_get_type
 <SUBSECTION Private>
 EDestinationPrivate
+</SECTION>
+
+<SECTION>
+<FILE>e-source-backend-summary-setup</FILE>
+<TITLE>ESourceBackendSummarySetup</TITLE>
+E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP
+ESourceBackendSummarySetup
+e_source_backend_summary_setup_get_summary_fields
+e_source_backend_summary_setup_set_summary_fieldsv
+e_source_backend_summary_setup_set_summary_fields
+e_source_backend_summary_setup_get_indexed_fields
+e_source_backend_summary_setup_set_indexed_fieldsv
+e_source_backend_summary_setup_set_indexed_fields
+<SUBSECTION Standard>
+E_SOURCE_BACKEND_SUMMARY_SETUP
+E_IS_SOURCE_BACKEND_SUMMARY_SETUP
+E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP
+E_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
+E_IS_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
+E_SOURCE_BACKEND_SUMMARY_SETUP_GET_CLASS
+ESourceBackendSummarySetupClass
+<SUBSECTION Private>
+ESourceBackendSummarySetupPrivate
+e_source_backend_summary_setup_get_type
 </SECTION>

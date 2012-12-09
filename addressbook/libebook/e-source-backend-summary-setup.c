@@ -439,6 +439,8 @@ e_source_backend_summary_setup_set_summary_fields (ESourceBackendSummarySetup *e
  * Fetches the #EContactFields configured to be indexed, with thier respective #EBookIndexTypes.
  *
  * Returns: (transfer full): The array of indexed #EContactFields.
+ *
+ * Since: 3.8
  */
 EContactField  *
 e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup  *extension,

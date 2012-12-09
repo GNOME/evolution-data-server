@@ -577,7 +577,7 @@ e_user_prompter_extension_prompt_finish (EUserPrompter *prompter,
 }
 
 /**
- * e_user_prompter_extension_prompt:
+ * e_user_prompter_extension_prompt_sync:
  * @prompter: an #EUserPrompter
  * @dialog_name: name of a dialog to invoke
  * @in_parameters: (allow-none): optional parameters to pass to extension; can be %NULL

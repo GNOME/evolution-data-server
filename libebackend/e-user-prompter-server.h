@@ -88,7 +88,7 @@ GType		e_user_prompter_server_get_type	(void);
 EDBusServer *	e_user_prompter_server_new	(void);
 void		e_user_prompter_server_response	(EUserPrompterServer *server,
 						 gint prompt_id,
-						 gint button_index,
+						 gint response,
 						 const ENamedParameters *extension_values);
 
 gboolean	e_user_prompter_server_register	(EUserPrompterServer *server,

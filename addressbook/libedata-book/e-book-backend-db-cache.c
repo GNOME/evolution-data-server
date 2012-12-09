@@ -396,7 +396,7 @@ e_book_backend_db_cache_set_populated (DB *db)
 }
 
 /**
- * e_book_backend_cache_is_populated:
+ * e_book_backend_db_cache_is_populated:
  * @db: DB Handle
  *
  * Checks if @cache is populated.

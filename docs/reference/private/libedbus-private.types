@@ -1,6 +1,7 @@
 #include <private/e-dbus-source.h>
 #include <private/e-dbus-source-manager.h>
 #include <private/e-dbus-authenticator.h>
+#include <private/e-dbus-user-prompter.h>
 
 e_dbus_object_get_type
 e_dbus_object_proxy_get_type
@@ -27,3 +28,6 @@ e_dbus_source_remote_deletable_skeleton_get_type
 e_dbus_authenticator_get_type
 e_dbus_authenticator_proxy_get_type
 e_dbus_authenticator_skeleton_get_type
+e_dbus_user_prompter_get_type
+e_dbus_user_prompter_proxy_get_type
+e_dbus_user_prompter_skeleton_get_type
