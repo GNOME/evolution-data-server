@@ -535,9 +535,11 @@ e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup *e
  * Defines indexes for quick reference for the given given #EContactFields in the addressbook.
  *
  * The same #EContactField may be specified multiple times to create multiple indexes
- * with different charachteristics. If an #E_BOOK_INDEX_PREFIX index is created it will
- * be used for #E_BOOK_QUERY_BEGINS_WITH queries; A #E_BOOK_INDEX_SUFFIX index will be
- * constructed efficiently for suffix matching and will be used for #E_BOOK_QUERY_ENDS_WITH queries.
+ * with different characteristics. If an #E_BOOK_INDEX_PREFIX index is created it will
+ * be used for #E_BOOK_QUERY_BEGINS_WITH queries. A #E_BOOK_INDEX_SUFFIX index
+ * will be constructed efficiently for suffix matching and will be used for
+ * #E_BOOK_QUERY_ENDS_WITH queries. Similar a #E_BOOK_INDEX_E164 index will optimize
+ * #E_BOOK_QUERY_EQUALS_PHONE_NUMBER searches.
  *
  * <note><para>The specified indexed fields must also be a part of the summary, any indexed fields
  * specified that are not already a part of the summary will be ignored.</para></note>

@@ -19,10 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include "e-book-backend-sqlitedb.h"
+
 #include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
 #include <errno.h>
+#include <langinfo.h>
 
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -31,7 +32,6 @@
 #include <libebackend/libebackend.h>
 
 #include "e-book-backend-sexp.h"
-#include "e-book-backend-sqlitedb.h"
 
 #define E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -40,7 +40,7 @@
 #define d(x)
 
 #define DB_FILENAME "contacts.db"
-#define FOLDER_VERSION 3
+#define FOLDER_VERSION 4
 
 #define READER_LOCK(ebsdb) g_rw_lock_reader_lock (&ebsdb->priv->rwlock)
 #define READER_UNLOCK(ebsdb) g_rw_lock_reader_unlock (&ebsdb->priv->rwlock)
@@ -49,7 +49,8 @@
 
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
-	INDEX_SUFFIX = (1 << 1)
+	INDEX_SUFFIX = (1 << 1),
+	INDEX_PHONE  = (1 << 2),
 } IndexFlags;
 
 typedef struct {
@@ -73,8 +74,9 @@ struct _EBookBackendSqliteDBPrivate {
 	SummaryField   *summary_fields;
 	gint            n_summary_fields;
 	guint           have_attr_list : 1;
-	guint           have_attr_list_prefix : 1;
-	guint           have_attr_list_suffix : 1;
+	IndexFlags      attr_list_indexes;
+
+	gchar          *country_code;
 };
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
@@ -114,6 +116,10 @@ static gboolean append_summary_field (GArray         *array,
 				      EContactField   field,
 				      gboolean       *have_attr_list,
 				      GError        **error);
+
+static gboolean validate_county_code (EBookBackendSqliteDB  *ebsdb,
+                                      const gchar           *folderid,
+                                      GError               **error);
 
 static const gchar *
 summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
@@ -204,6 +210,7 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 
 	g_free (priv->path);
 	g_free (priv->summary_fields);
+	g_free (priv->country_code);
 
 	g_mutex_clear (&priv->in_transaction_lock);
 
@@ -510,7 +517,8 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 		" version INTEGER,"
 		"  revision TEXT,"
 		" multivalues TEXT,"
-		"  reverse_multivalues INTEGER )";
+		"  reverse_multivalues INTEGER,"
+		" countrycode VARCHAR(2) )";
 
 	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
 		return FALSE;
@@ -555,7 +563,6 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	/* Upgrade DB to version 3, add multivalues introspection columns
 	 */
 	if (version >= 1 && version < 3) {
-
 		stmt = "ALTER TABLE folders ADD COLUMN multivalues TEXT";
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, stmt, NULL, NULL, error);
@@ -564,6 +571,17 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 			goto rollback;
 
 		stmt = "ALTER TABLE folders ADD COLUMN reverse_multivalues INTEGER";
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+
+		if (!success)
+			goto rollback;
+	}
+
+	/* Upgrade DB to version 4, add country-code column
+	 */
+	if (version >= 1 && version < 4) {
+		stmt = "ALTER TABLE folders ADD COLUMN countrycode VARCHAR(2)";
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, stmt, NULL, NULL, error);
 
@@ -595,12 +613,12 @@ rollback:
 
 static gchar *
 format_multivalues (EBookBackendSqliteDB *ebsdb,
-                    gboolean *reverse_multivalues)
+		    IndexFlags           *computed_multivalues)
 {
 	gint i;
 	GString *string;
 	gboolean first = TRUE;
-	gboolean has_reverse = FALSE;
+	IndexFlags computed = 0;
 
 	string = g_string_new (NULL);
 
@@ -613,13 +631,17 @@ format_multivalues (EBookBackendSqliteDB *ebsdb,
 
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_PREFIX) != 0)
+				computed |= INDEX_PREFIX;
 			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0)
-				has_reverse = TRUE;
+				computed |= INDEX_SUFFIX;
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0)
+				computed |= INDEX_PHONE;
 		}
 	}
 
-	if (reverse_multivalues)
-		*reverse_multivalues = has_reverse;
+	if (computed_multivalues)
+		*computed_multivalues = computed;
 
 	return g_string_free (string, FALSE);
 }
@@ -632,19 +654,19 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 {
 	gchar *stmt;
 	gboolean success;
-	gboolean has_reverse = FALSE;
+	IndexFlags computed = 0;
 	gchar *multivalues;
 
 	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
 		return FALSE;
 
-	multivalues = format_multivalues (ebsdb, &has_reverse);
+	multivalues = format_multivalues (ebsdb, &computed);
 
 	stmt = sqlite3_mprintf (
 		"INSERT OR IGNORE INTO folders VALUES "
-		"( %Q, %Q, %Q, %d, %d, %d, %Q, %Q, %d ) ",
+		"( %Q, %Q, %Q, %d, %d, %d, %Q, %Q, %d, %Q ) ",
 		folderid, folder_name, NULL, 0, 0, FOLDER_VERSION,
-		NULL, multivalues, has_reverse);
+		NULL, multivalues, computed, NULL);
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
@@ -699,7 +721,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 	GList *summary_columns = NULL, *l;
 	GArray *summary_fields = NULL;
 	gchar *multivalues = NULL;
-	gboolean reverse_multivalues = FALSE;
+	IndexFlags computed_multivalues = 0;
 	gchar **split;
 	gint i;
 
@@ -719,13 +741,15 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		EContactField field;
 		gchar *col = l->data;
 		gchar *p;
-		gboolean reverse = FALSE;
+		IndexFlags computed = 0;
 
 		/* Check if we're parsing a reverse field */
-		p = strstr (col, "_reverse");
-		if (p) {
+		if ((p = strstr (col, "_reverse")) != NULL) {
+			computed = INDEX_SUFFIX;
 			*p = '\0';
-			reverse = TRUE;
+		} else  if ((p = strstr (col, "_phone")) != NULL) {
+			computed = INDEX_PHONE;
+			*p = '\0';
 		}
 
 		/* First check exception fields */
@@ -745,16 +769,16 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 			break;
 		}
 
-		/* Reverse columns are always declared after the normal columns,
+		/* Computed columns are always declared after the normal columns,
 		 * if a reverse field is encountered we need to set the suffix
 		 * index on the coresponding summary field
 		 */
-		if (reverse) {
+		if (computed) {
 			for (i = 0; i < summary_fields->len; i++) {
 				SummaryField *iter = &g_array_index (summary_fields, SummaryField, i);
 
 				if (iter->field == field) {
-					iter->index |= INDEX_SUFFIX;
+					iter->index |= computed;
 					break;
 				}
 			}
@@ -779,7 +803,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 	stmt = sqlite3_mprintf (
 		"SELECT reverse_multivalues FROM folders WHERE folder_id = %Q", folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, get_bool_cb, &reverse_multivalues, error);
+		ebsdb->priv->db, stmt, get_bool_cb, &computed_multivalues, error);
 	sqlite3_free (stmt);
 
 	if (!success)
@@ -797,16 +821,29 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		g_strfreev (split);
 	}
 
-	/* If there is a reverse multivalue column, enable lookups for every multivalue field in reverse */
-	if (reverse_multivalues) {
+	/* With at least one reverse index the multi-value table has a reverse multivalue
+	 * column. Therefore it's safe to enable reverse lookups for every multivalue field.
+	 */
+	computed_multivalues &= (INDEX_SUFFIX | INDEX_PHONE);
 
+	if (computed_multivalues) {
 		for (i = 0; i < summary_fields->len; i++) {
 			SummaryField *iter = &g_array_index (summary_fields, SummaryField, i);
 
 			if (iter->type == E_TYPE_CONTACT_ATTR_LIST)
-				iter->index |= INDEX_SUFFIX;
+				iter->index |= computed_multivalues;
 		}
 	}
+
+	/* Retreive the country code used for guessing phone numbers */
+	stmt = sqlite3_mprintf (
+		"SELECT countrycode FROM folders WHERE folder_id = %Q", folderid);
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, get_string_cb, &ebsdb->priv->country_code, error);
+	sqlite3_free (stmt);
+
+	if (!success)
+		goto introspect_summary_finish;
 
  introspect_summary_finish:
 
@@ -851,10 +888,16 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			g_warn_if_reached ();
 
 		/* Additional columns holding normalized reverse values for suffix matching */
-		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING &&
-		    (ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
-			g_string_append  (string, ebsdb->priv->summary_fields[i].dbname);
-			g_string_append  (string, "_reverse TEXT, ");
+		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
+			if (ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) {
+				g_string_append  (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append  (string, "_reverse TEXT, ");
+			}
+
+			if (ebsdb->priv->summary_fields[i].index & INDEX_PHONE) {
+				g_string_append  (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append  (string, "_phone TEXT, ");
+			}
 		}
 	}
 	g_string_append (string, "vcard TEXT, bdata TEXT)");
@@ -901,6 +944,19 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			sqlite3_free (stmt);
 			g_free (tmp);
 		}
+
+		if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0 &&
+		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+			/* Derive index name from field & folder */
+			tmp = g_strdup_printf ("PINDEX_%s_%s",
+					       summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+					       folderid);
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_phone)", tmp, folderid,
+						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+			g_free (tmp);
+		}
 	}
 
 	/* Construct the create statement from the attribute list summary table */
@@ -908,8 +964,10 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		string = g_string_new ("CREATE TABLE IF NOT EXISTS %Q ( uid TEXT NOT NULL REFERENCES %Q(uid), "
 			"field TEXT, value TEXT");
 
-		if (ebsdb->priv->have_attr_list_suffix)
+		if ((ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0)
 			g_string_append (string, ", value_reverse TEXT");
+		if ((ebsdb->priv->attr_list_indexes & INDEX_PHONE) != 0)
+			g_string_append (string, ", value_phone TEXT");
 
 		g_string_append_c (string, ')');
 
@@ -926,28 +984,80 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 
 		/* Create indexes if specified */
-		if (success && ebsdb->priv->have_attr_list_prefix) {
+		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PREFIX) != 0) {
 			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS VALINDEX ON %Q (value)", tmp);
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 		}
 
-		if (success && ebsdb->priv->have_attr_list_suffix) {
+		if (success && (ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0) {
 			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS RVALINDEX ON %Q (value_reverse)", tmp);
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 		}
 
+		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PHONE) != 0) {
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS PVALINDEX ON %Q (value_phone)", tmp);
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+		}
 		g_free (tmp);
-
 	}
 
 	WRITER_UNLOCK (ebsdb);
 
 	if (success)
 		success = introspect_summary (ebsdb, folderid, error);
+	if (success)
+		success = validate_county_code (ebsdb, folderid, error);
 
 	return success;
+}
+
+static void
+eqphone_func (sqlite3_context    *ctxt,
+              int                 argc,
+              sqlite3_value     **argv,
+              EPhoneNumberMatch   required_match)
+{
+	EPhoneNumberMatch actual_match;
+	GError *error;
+
+	if (argc != 2) {
+		sqlite3_result_error (ctxt, "Function requires exactly two arguments", -1);
+		return;
+	}
+
+	actual_match = e_phone_number_compare_strings (
+			(const char *) sqlite3_value_text (argv[0]),
+			(const char *) sqlite3_value_text (argv[1]),
+			&error);
+
+	if (error) {
+		sqlite3_result_error (ctxt, error->message, -1);
+		g_error_free (error);
+		return;
+	}
+
+	sqlite3_result_int
+		(ctxt, actual_match >= E_PHONE_NUMBER_MATCH_EXACT
+		 && actual_match <= required_match);
+}
+
+static void
+eqphone_national_func (sqlite3_context *ctxt,
+                       int              argc,
+                       sqlite3_value  **argv)
+{
+	eqphone_func (ctxt, argc, argv, E_PHONE_NUMBER_MATCH_NATIONAL);
+}
+
+static void
+eqphone_short_func (sqlite3_context *ctxt,
+                    int              argc,
+                    sqlite3_value  **argv)
+{
+	eqphone_func (ctxt, argc, argv, E_PHONE_NUMBER_MATCH_SHORT);
 }
 
 static gboolean
@@ -974,6 +1084,30 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 				error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER, errmsg);
 			sqlite3_close (ebsdb->priv->db);
 		}
+		return FALSE;
+	}
+
+	ret = sqlite3_create_function (ebsdb->priv->db, "eqphone_national",
+	                               2, SQLITE_UTF8, ebsdb,
+	                               eqphone_national_func,
+	                               NULL, NULL);
+
+	if (ret) {
+		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		             "%s", sqlite3_errmsg (ebsdb->priv->db));
+		sqlite3_close (ebsdb->priv->db);
+		return FALSE;
+	}
+
+	ret = sqlite3_create_function (ebsdb->priv->db, "eqphone_short",
+	                               2, SQLITE_UTF8, ebsdb,
+	                               eqphone_short_func,
+	                               NULL, NULL);
+
+	if (ret) {
+		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		             "%s", sqlite3_errmsg (ebsdb->priv->db));
+		sqlite3_close (ebsdb->priv->db);
 		return FALSE;
 	}
 
@@ -1006,8 +1140,7 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
                                       SummaryField *fields,
                                       gint n_fields,
                                       gboolean have_attr_list,
-                                      gboolean have_attr_list_prefix,
-                                      gboolean have_attr_list_suffix,
+                                      IndexFlags attr_list_indexes,
                                       GError **error)
 {
 	EBookBackendSqliteDB *ebsdb;
@@ -1037,8 +1170,7 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	ebsdb->priv->summary_fields = fields;
 	ebsdb->priv->n_summary_fields = n_fields;
 	ebsdb->priv->have_attr_list = have_attr_list;
-	ebsdb->priv->have_attr_list_prefix = have_attr_list_prefix;
-	ebsdb->priv->have_attr_list_suffix = have_attr_list_suffix;
+	ebsdb->priv->attr_list_indexes = attr_list_indexes;
 	ebsdb->priv->store_vcard = store_vcard;
 	if (g_mkdir_with_parents (path, 0777) < 0) {
 		g_mutex_unlock (&dbcon_lock);
@@ -1148,12 +1280,11 @@ append_summary_field (GArray *array,
 }
 
 static void
-summary_fields_add_indexes (GArray *array,
-                            EContactField *indexes,
+summary_fields_add_indexes (GArray         *array,
+                            EContactField  *indexes,
                             EBookIndexType *index_types,
-                            gint n_indexes,
-                            gboolean *have_attr_list_prefix,
-                            gboolean *have_attr_list_suffix)
+                            gint            n_indexes,
+                            IndexFlags     *attr_list_indexes)
 {
 	gint i, j;
 
@@ -1167,13 +1298,19 @@ summary_fields_add_indexes (GArray *array,
 					sfield->index |= INDEX_PREFIX;
 
 					if (sfield->type == E_TYPE_CONTACT_ATTR_LIST)
-						*have_attr_list_prefix = TRUE;
+						*attr_list_indexes |= INDEX_PREFIX;
 					break;
 				case E_BOOK_INDEX_SUFFIX:
 					sfield->index |= INDEX_SUFFIX;
 
 					if (sfield->type == E_TYPE_CONTACT_ATTR_LIST)
-						*have_attr_list_suffix = TRUE;
+						*attr_list_indexes |= INDEX_SUFFIX;
+					break;
+				case E_BOOK_INDEX_PHONE:
+					sfield->index |= INDEX_PHONE;
+
+					if (sfield->type == E_TYPE_CONTACT_ATTR_LIST)
+						*attr_list_indexes |= INDEX_PHONE;
 					break;
 				default:
 					g_warn_if_reached ();
@@ -1223,8 +1360,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 	EContactField *indexed_fields;
 	EBookIndexType *index_types = NULL;
 	gboolean have_attr_list = FALSE;
-	gboolean have_attr_list_prefix = FALSE;
-	gboolean have_attr_list_suffix = FALSE;
+	IndexFlags attr_list_indexes = 0;
 	gboolean had_error = FALSE;
 	GArray *summary_fields;
 	gint n_fields = 0, n_indexed_fields = 0, i;
@@ -1266,7 +1402,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 	/* Add the 'indexed' flag to the SummaryField structs */
 	summary_fields_add_indexes (
 		summary_fields, indexed_fields, index_types, n_indexed_fields,
-		&have_attr_list_prefix, &have_attr_list_suffix);
+		&attr_list_indexes);
 
 	ebsdb = e_book_backend_sqlitedb_new_internal (
 		path, emailid, folderid, folder_name,
@@ -1274,8 +1410,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 		(SummaryField *) summary_fields->data,
 		summary_fields->len,
 		have_attr_list,
-		have_attr_list_prefix,
-		have_attr_list_suffix,
+		attr_list_indexes,
 		error);
 
 	g_free (fields);
@@ -1313,8 +1448,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	EBookBackendSqliteDB *ebsdb;
 	GArray *summary_fields;
 	gboolean have_attr_list = FALSE;
-	gboolean have_attr_list_prefix = FALSE;
-	gboolean have_attr_list_suffix = FALSE;
+	IndexFlags attr_list_indexes = 0;
 	gint i;
 
 	/* Create the default summary structs */
@@ -1328,7 +1462,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 		default_indexed_fields,
 		default_index_types,
 		G_N_ELEMENTS (default_indexed_fields),
-		&have_attr_list_prefix, &have_attr_list_suffix);
+		&attr_list_indexes);
 
 	ebsdb = e_book_backend_sqlitedb_new_internal (
 		path, emailid, folderid, folder_name,
@@ -1336,9 +1470,9 @@ e_book_backend_sqlitedb_new (const gchar *path,
 		(SummaryField *) summary_fields->data,
 		summary_fields->len,
 		have_attr_list,
-		have_attr_list_prefix,
-		have_attr_list_suffix,
+		attr_list_indexes,
 		error);
+
 	g_array_free (summary_fields, FALSE);
 
 	return ebsdb;
@@ -1363,6 +1497,55 @@ e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
 	return do_commit ?
 		book_backend_sqlitedb_commit_transaction (ebsdb, error) :
 		book_backend_sqlitedb_rollback_transaction (ebsdb, error);
+}
+
+static gchar *
+mprintf_suffix (const gchar *normal)
+{
+	gchar *reverse = normal ? g_utf8_strreverse (normal, -1) : NULL;
+	gchar *stmt = sqlite3_mprintf ("%Q", reverse);
+
+	g_free (reverse);
+	return stmt;
+}
+
+static gchar *
+convert_phone (const gchar *normal,
+               const gchar *country_code)
+{
+	EPhoneNumber *number = NULL;
+	gchar *phone_number = NULL;
+	GError *error = NULL;
+
+	if (normal)
+		number = e_phone_number_from_string (normal, country_code, &error);
+
+	if (error) {
+		g_error ("%s:%d (%s): %s", __FILE__, __LINE__, __func__, error->message);
+		g_clear_error (&error);
+	}
+
+	if (number) {
+		phone_number = e_phone_number_to_string (number, E_PHONE_NUMBER_FORMAT_E164);
+		e_phone_number_free (number);
+	}
+
+	return phone_number;
+}
+
+static gchar *
+mprintf_phone (const gchar *normal,
+               const gchar *country_code)
+{
+	gchar *phone = convert_phone (normal, country_code);
+	gchar *stmt = NULL;
+
+	if (phone) {
+		stmt = sqlite3_mprintf ("%Q", phone);
+		g_free (phone);
+	}
+
+	return stmt;
 }
 
 /* Add Contact (free the result with g_free() ) */
@@ -1405,13 +1588,17 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			sqlite3_free (str);
 
 			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
-				gchar *reverse = normal ? g_utf8_strreverse (normal, -1) : NULL;
-
-				str = sqlite3_mprintf ("%Q", reverse);
+				str = mprintf_suffix (normal);
 				g_string_append (string, ", ");
 				g_string_append (string, str);
 				sqlite3_free (str);
-				g_free (reverse);
+			}
+
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0) {
+				str = mprintf_phone (normal, ebsdb->priv->country_code);
+				g_string_append (string, ", ");
+				g_string_append (string, str);
+				sqlite3_free (str);
 			}
 
 			g_free (normal);
@@ -1473,7 +1660,6 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 
 		for (i = 0; success && i < priv->n_summary_fields; i++) {
-
 			if (priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST)
 				continue;
 
@@ -1482,24 +1668,29 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 			for (l = values; success && l != NULL; l = l->next) {
 				gchar *value = (gchar *) l->data;
 				gchar *normal = e_util_utf8_normalize (value);
+				gchar *stmt_suffix = NULL;
+				gchar *stmt_phone = NULL;
 
-				if (priv->have_attr_list_suffix) {
-					gchar *reverse = normal ? g_utf8_strreverse (normal, -1) : NULL;
+				if ((priv->attr_list_indexes & INDEX_SUFFIX) != 0)
+					stmt_suffix = mprintf_suffix (normal);
+				if ((priv->attr_list_indexes & INDEX_PHONE) != 0)
+					stmt_phone = mprintf_phone (normal, ebsdb->priv->country_code);
 
-					stmt = sqlite3_mprintf ("INSERT INTO %Q (uid, field, value, value_reverse) "
-								"VALUES (%Q, %Q, %Q, %Q)",
-								list_folder, uid,
-								priv->summary_fields[i].dbname,
-								normal, reverse);
+				stmt = sqlite3_mprintf ("INSERT INTO %Q (uid, field, value%s%s) "
+							"VALUES (%Q, %Q, %Q%s%s%s%s)",
+							list_folder,
+							stmt_suffix ? ", value_reverse" : "",
+							stmt_phone ? ", value_phone" : "",
+							uid, priv->summary_fields[i].dbname, normal,
+							stmt_suffix ? ", " : "",
+							stmt_suffix ? stmt_suffix : "",
+							stmt_phone ? ", " : "",
+							stmt_phone ? stmt_phone : "");
 
-					g_free (reverse);
-				} else {
-					stmt = sqlite3_mprintf ("INSERT INTO %Q (uid, field, value) "
-								"VALUES (%Q, %Q, %Q)",
-								list_folder, uid,
-								priv->summary_fields[i].dbname,
-								normal);
-				}
+				if (stmt_suffix)
+					sqlite3_free (stmt_suffix);
+				if (stmt_phone)
+					sqlite3_free (stmt_phone);
 
 				success = book_backend_sql_exec (priv->db, stmt, NULL, NULL, error);
 				sqlite3_free (stmt);
@@ -2024,7 +2215,6 @@ store_data_to_vcard (gpointer ref,
 		/* Only UID & REV can be used to create contacts from the summary columns */
 		if (!g_ascii_strcasecmp (name[i], "uid")) {
 			e_contact_set (contact, E_CONTACT_UID, cols[i]);
-
 			search_data->uid = g_strdup (cols[i]);
 		} else if (!g_ascii_strcasecmp (name[i], "Rev")) {
 			e_contact_set (contact, E_CONTACT_REV, cols[i]);
@@ -2215,25 +2405,58 @@ func_check (struct _ESExp *f,
 
 					if (ebsdb->priv->summary_fields[i].type == E_TYPE_CONTACT_ATTR_LIST)
 						ret_val |= CHECK_IS_LIST_ATTR;
+
+					break;
 				}
 			}
 		} else {
 			for (i = 0; i < G_N_ELEMENTS (default_summary_fields); i++) {
-
 				if (!g_ascii_strcasecmp (e_contact_field_name (default_summary_fields[i]), query_name)) {
 					ret_val |= CHECK_IS_SUMMARY;
 
 					if (e_contact_field_type (default_summary_fields[i]) == E_TYPE_CONTACT_ATTR_LIST)
 						ret_val |= CHECK_IS_LIST_ATTR;
+
+					break;
 				}
 			}
 		}
 	}
 
  check_finish:
-
 	r = e_sexp_result_new (f, ESEXP_RES_INT);
 	r->value.number = ret_val;
+
+	return r;
+}
+
+static ESExpResult *
+func_check_phone (struct _ESExp         *f,
+                  gint                  argc,
+                  struct _ESExpResult **argv,
+                  gpointer              data)
+{
+	EBookBackendSqliteDB *ebsdb = data;
+	ESExpResult *const r = func_check (f, argc, argv, data);
+
+	if (r && r->value.number) {
+		GError *error = NULL;
+		const gchar *const query_value = argv[1]->value.string;
+		EPhoneNumber *const number = e_phone_number_from_string (
+				query_value, ebsdb->priv->country_code, &error);
+
+		if (number == NULL) {
+			if (error) {
+				g_warning ("Bad value \"%s\" in phone number query: %s.",
+					   query_value, error->message);
+				g_clear_error (&error);
+			}
+
+			r->value.number = 0;
+		} else {
+			e_phone_number_free (number);
+		}
+	}
 
 	return r;
 }
@@ -2252,7 +2475,10 @@ static const struct {
 	{ "is", func_check, 0 },
 	{ "beginswith", func_check, 0 },
 	{ "endswith", func_check, 0 },
-	{ "exists", func_check, 0 }
+	{ "exists", func_check, 0 },
+	{ "eqphone", func_check_phone, 0 },
+	{ "eqphone_national", func_check_phone, 0 },
+	{ "eqphone_short", func_check_phone, 0 }
 };
 
 /**
@@ -2404,27 +2630,61 @@ typedef enum {
 	MATCH_CONTAINS,
 	MATCH_IS,
 	MATCH_BEGINS_WITH,
-	MATCH_ENDS_WITH
-} match_type;
+	MATCH_ENDS_WITH,
+	MATCH_PHONE_NUMBER,
+	MATCH_NATIONAL_PHONE_NUMBER,
+	MATCH_SHORT_PHONE_NUMBER
+} MatchType;
+
+typedef enum {
+	CONVERT_NOTHING   =  0,
+	CONVERT_NORMALIZE = (1 << 0),
+	CONVERT_REVERSE   = (1 << 1),
+	CONVERT_PHONE     = (1 << 2),
+} ConvertFlags;
 
 static gchar *
-convert_string_value (const gchar *value,
-                      gboolean normalize,
-                      gboolean reverse,
-                      match_type match)
+extract_digits (const gchar *normal)
+{
+	gchar *digits = g_new (char, strlen (normal) + 1);
+	const gchar *src = normal;
+	gchar *dst = digits;
+
+	/* extract digits also considering eastern arabic numerals */
+	for (src = normal; *src; src = g_utf8_next_char (src)) {
+		const gunichar uc = g_utf8_get_char_validated (src, -1);
+		const gint value = g_unichar_digit_value (uc);
+
+		if (uc == -1)
+			break;
+
+		if (value != -1)
+			*dst++ = '0' + value;
+	}
+
+	*dst = '\0';
+
+	return digits;
+}
+
+static gchar *
+convert_string_value (EBookBackendSqliteDB *ebsdb,
+                      const gchar          *value,
+                      ConvertFlags          flags,
+                      MatchType             match)
 {
 	GString *str;
 	size_t len;
 	gchar c;
 	gboolean escape_modifier_needed = FALSE;
 	const gchar *escape_modifier = " ESCAPE '^'";
-	gchar *reverse_val = NULL;
+	gchar *computed = NULL;
 	gchar *normal;
 	const gchar *ptr;
 
 	g_return_val_if_fail (value != NULL, NULL);
 
-	if (normalize)
+	if (flags & CONVERT_NORMALIZE)
 		normal = e_util_utf8_normalize (value);
 	else
 		normal = g_strdup (value);
@@ -2440,17 +2700,23 @@ convert_string_value (const gchar *value,
 	switch (match) {
 	case MATCH_CONTAINS:
 	case MATCH_ENDS_WITH:
+	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_SHORT_PHONE_NUMBER:
 		g_string_append_c (str, '%');
 		break;
 
 	case MATCH_BEGINS_WITH:
 	case MATCH_IS:
+	case MATCH_PHONE_NUMBER:
 		break;
 	}
 
-	if (reverse) {
-		reverse_val = g_utf8_strreverse (normal, -1);
-		ptr = reverse_val;
+	if (flags & CONVERT_REVERSE) {
+		computed = g_utf8_strreverse (normal, -1);
+		ptr = computed;
+	} else if (flags & CONVERT_PHONE) {
+		computed = convert_phone (normal, ebsdb->priv->country_code);
+		ptr = computed;
 	} else {
 		ptr = normal;
 	}
@@ -2474,6 +2740,9 @@ convert_string_value (const gchar *value,
 
 	case MATCH_ENDS_WITH:
 	case MATCH_IS:
+	case MATCH_PHONE_NUMBER:
+	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_SHORT_PHONE_NUMBER:
 		break;
 	}
 
@@ -2482,7 +2751,7 @@ convert_string_value (const gchar *value,
 	if (escape_modifier_needed)
 		g_string_append (str, escape_modifier);
 
-	g_free (reverse_val);
+	g_free (computed);
 	g_free (normal);
 
 	return g_string_free (str, FALSE);
@@ -2490,16 +2759,18 @@ convert_string_value (const gchar *value,
 
 static gchar *
 field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
-                           const gchar *folderid,
-                           const gchar *field_name_input,
-                           const gchar *query_term_input,
-                           match_type match,
-                           gboolean *is_list_attr,
-                           gchar **query_term)
+			   const gchar          *folderid,
+			   const gchar          *field_name_input,
+			   const gchar          *query_term_input,
+			   MatchType             match,
+			   gboolean             *is_list_attr,
+			   gchar               **query_term,
+			   gchar               **extra_term)
 {
 	gint summary_index;
 	gchar *field_name = NULL;
 	gchar *value = NULL;
+	gchar *extra = NULL;
 	gboolean list_attr = FALSE;
 
 	summary_index = summary_index_from_field_name (ebsdb, field_name_input);
@@ -2507,14 +2778,22 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 	if (summary_index < 0) {
 		g_critical ("Only summary field matches should be converted to sql queries");
 		field_name = g_strconcat (folderid, ".", field_name_input, NULL);
-		value = convert_string_value (query_term_input, TRUE, FALSE, match);
+		value = convert_string_value (ebsdb, query_term_input, CONVERT_NORMALIZE, match);
 	} else {
 		gboolean suffix_search = FALSE;
+		gboolean phone_search = FALSE;
 
 		/* If its a suffix search and we have reverse data to search... */
 		if (match == MATCH_ENDS_WITH &&
 		    (ebsdb->priv->summary_fields[summary_index].index & INDEX_SUFFIX) != 0)
 			suffix_search = TRUE;
+
+		/* If its a phone-number search and we have E.164 data to search... */
+		else if ((match == MATCH_PHONE_NUMBER ||
+				match == MATCH_NATIONAL_PHONE_NUMBER ||
+				match == MATCH_SHORT_PHONE_NUMBER) &&
+		    (ebsdb->priv->summary_fields[summary_index].index & INDEX_PHONE) != 0)
+			phone_search = TRUE;
 
 		/* Or also if its an exact match, and we *only* have reverse data which is indexed,
 		 * then prefer the indexed reverse search. */
@@ -2541,14 +2820,46 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
 			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
 				value = convert_string_value (
-					query_term_input, FALSE, TRUE,
+					ebsdb, query_term_input, CONVERT_REVERSE,
 					(match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
 			else
 				value = convert_string_value (
-					query_term_input, TRUE, TRUE,
+					ebsdb, query_term_input, CONVERT_REVERSE | CONVERT_NORMALIZE,
 					(match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
-		} else {
+		} else if (phone_search) {
+			/* Special case for E.164 matching:
+			 *  o Normalize the string
+			 *  o Check the E.164 column instead
+			 */
+			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
+				field_name = g_strdup ("multi.value_phone");
+				list_attr = TRUE;
+			} else
+				field_name = g_strconcat (
+					"summary.",
+					ebsdb->priv->summary_fields[summary_index].dbname,
+					"_phone", NULL);
 
+			if (match == MATCH_PHONE_NUMBER) {
+				value = convert_string_value (
+					ebsdb, query_term_input,
+					CONVERT_NORMALIZE | CONVERT_PHONE, match);
+			} else {
+				gchar *digits = extract_digits (query_term_input);
+
+				value = convert_string_value (ebsdb, digits, CONVERT_NOTHING, MATCH_ENDS_WITH);
+
+				if (match == MATCH_NATIONAL_PHONE_NUMBER) {
+					extra = sqlite3_mprintf (" AND eqphone_national(%q, %Q)", field_name, digits);
+				} else if (match == MATCH_SHORT_PHONE_NUMBER) {
+					extra = sqlite3_mprintf (" AND eqphone_short(%q, %Q)", field_name, digits);
+				} else {
+					g_assert_not_reached ();
+				}
+
+				g_free (digits);
+			}
+		} else {
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
 				field_name = g_strdup ("multi.value");
 				list_attr = TRUE;
@@ -2559,9 +2870,9 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 
 			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
 			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
-				value = convert_string_value (query_term_input, FALSE, FALSE, match);
+				value = convert_string_value (ebsdb, query_term_input, CONVERT_NOTHING, match);
 			else
-				value = convert_string_value (query_term_input, TRUE, FALSE, match);
+				value = convert_string_value (ebsdb, query_term_input, CONVERT_NORMALIZE, match);
 		}
 	}
 
@@ -2569,6 +2880,9 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 		*is_list_attr = list_attr;
 
 	*query_term = value;
+
+	if (extra_term)
+		*extra_term = extra;
 
 	return field_name;
 }
@@ -2578,12 +2892,31 @@ typedef struct {
 	const gchar          *folderid;
 } BuildQueryData;
 
+static const gchar *
+field_oper (MatchType match)
+{
+	switch (match) {
+	case MATCH_IS:
+	case MATCH_PHONE_NUMBER:
+		return "=";
+
+	case MATCH_CONTAINS:
+	case MATCH_BEGINS_WITH:
+	case MATCH_ENDS_WITH:
+	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_SHORT_PHONE_NUMBER:
+		break;
+	}
+
+	return "LIKE";
+}
+
 static ESExpResult *
 convert_match_exp (struct _ESExp *f,
                    gint argc,
                    struct _ESExpResult **argv,
                    gpointer data,
-                   match_type match)
+                   MatchType match)
 {
 	BuildQueryData *qdata = (BuildQueryData *) data;
 	EBookBackendSqliteDB *ebsdb = qdata->ebsdb;
@@ -2598,11 +2931,8 @@ convert_match_exp (struct _ESExp *f,
 		field = argv[0]->value.string;
 
 		if (argv[1]->type == ESEXP_RES_STRING && argv[1]->value.string[0] != 0) {
-			const gchar *oper = "LIKE";
-			gchar *field_name, *query_term;
-
-			if (match == MATCH_IS)
-				oper = "=";
+			const gchar *const oper = field_oper (match);
+			gchar *field_name, *query_term, *extra_term;
 
 			if (!g_ascii_strcasecmp (field, "full_name")) {
 				GString *names = g_string_new (NULL);
@@ -2610,7 +2940,7 @@ convert_match_exp (struct _ESExp *f,
 				field_name = field_name_and_query_term (
 					ebsdb, qdata->folderid, "full_name",
 					argv[1]->value.string,
-					match, NULL, &query_term);
+					match, NULL, &query_term, NULL);
 				g_string_append_printf (
 					names, "(%s IS NOT NULL AND %s %s %s)",
 					field_name, field_name, oper, query_term);
@@ -2618,11 +2948,10 @@ convert_match_exp (struct _ESExp *f,
 				g_free (query_term);
 
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_FAMILY_NAME)) {
-
 					field_name = field_name_and_query_term (
 						ebsdb, qdata->folderid, "family_name",
 						argv[1]->value.string,
-						match, NULL, &query_term);
+						match, NULL, &query_term, NULL);
 					g_string_append_printf (
 						names, " OR (%s IS NOT NULL AND %s %s %s)",
 						field_name, field_name, oper, query_term);
@@ -2631,11 +2960,10 @@ convert_match_exp (struct _ESExp *f,
 				}
 
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_GIVEN_NAME)) {
-
 					field_name = field_name_and_query_term (
 						ebsdb, qdata->folderid, "given_name",
 						argv[1]->value.string,
-						match, NULL, &query_term);
+						match, NULL, &query_term, NULL);
 					g_string_append_printf (
 						names, " OR (%s IS NOT NULL AND %s %s %s)",
 						field_name, field_name, oper, query_term);
@@ -2644,11 +2972,10 @@ convert_match_exp (struct _ESExp *f,
 				}
 
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_NICKNAME)) {
-
 					field_name = field_name_and_query_term (
 						ebsdb, qdata->folderid, "nickname",
 						argv[1]->value.string,
-						match, NULL, &query_term);
+						match, NULL, &query_term, NULL);
 					g_string_append_printf (
 						names, " OR (%s IS NOT NULL AND %s %s %s)",
 						field_name, field_name, oper, query_term);
@@ -2666,20 +2993,26 @@ convert_match_exp (struct _ESExp *f,
 				field_name = field_name_and_query_term (
 					ebsdb, qdata->folderid, field,
 					argv[1]->value.string,
-					match, &is_list, &query_term);
+					match, &is_list, &query_term, &extra_term);
 
+				/* User functions like eqphone_national() cannot utilize indexes. Therefore we
+				 * should reduce the result set first before applying any user functions. This
+				 * is done by applying a seemingly redundant suffix match first.
+				 */
 				if (is_list) {
 					gchar *tmp;
 
 					tmp = sqlite3_mprintf ("summary.uid = multi.uid AND multi.field = %Q", field);
 					str = g_strdup_printf (
-						"(%s AND %s %s %s)",
-						tmp, field_name, oper, query_term);
+						"(%s AND %s %s %s%s)",
+						tmp, field_name, oper, query_term,
+						extra_term ? extra_term : "");
 					sqlite3_free (tmp);
 				} else
 					str = g_strdup_printf (
-						"(%s IS NOT NULL AND %s %s %s)",
-						field_name, field_name, oper, query_term);
+						"(%s IS NOT NULL AND %s %s %s%s)",
+						field_name, field_name, oper, query_term,
+						extra_term ? extra_term : "");
 
 				g_free (field_name);
 				g_free (query_term);
@@ -2729,6 +3062,33 @@ func_endswith (struct _ESExp *f,
 	return convert_match_exp (f, argc, argv, data, MATCH_ENDS_WITH);
 }
 
+static ESExpResult *
+func_eqphone (struct _ESExp *f,
+              gint argc,
+              struct _ESExpResult **argv,
+              gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_PHONE_NUMBER);
+}
+
+static ESExpResult *
+func_eqphone_national (struct _ESExp *f,
+                       gint argc,
+                       struct _ESExpResult **argv,
+                       gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_NATIONAL_PHONE_NUMBER);
+}
+
+static ESExpResult *
+func_eqphone_short (struct _ESExp *f,
+                    gint argc,
+                    struct _ESExpResult **argv,
+                    gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_SHORT_PHONE_NUMBER);
+}
+
 /* 'builtin' functions */
 static struct {
 	const gchar *name;
@@ -2742,6 +3102,9 @@ static struct {
 	{ "is", func_is, 0 },
 	{ "beginswith", func_beginswith, 0 },
 	{ "endswith", func_endswith, 0 },
+	{ "eqphone", func_eqphone, 0 },
+	{ "eqphone_national", func_eqphone_national, 0 },
+	{ "eqphone_short", func_eqphone_short, 0 }
 };
 
 static gchar *
@@ -3816,4 +4179,75 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 	}
 
 	return TRUE;
+}
+
+static void
+destroy_search_data (gpointer data)
+{
+	e_book_backend_sqlitedb_search_data_free (data);
+}
+
+static gboolean
+validate_county_code (EBookBackendSqliteDB  *ebsdb,
+                      const gchar           *folderid,
+                      GError               **error)
+{
+	gchar *stmt;
+	gboolean success = FALSE;
+	GSList *vcard_data = NULL;
+	GSList *l;
+
+#if HAVE__NL_ADDRESS_COUNTRY_AB2
+	const gchar *country_code = nl_langinfo (_NL_ADDRESS_COUNTRY_AB2);
+#else /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
+#error Cannot resolve default 2-letter country code. Find a replacement for _NL_ADDRESS_COUNTRY_AB2 or implement code to parse the locale name.
+#endif /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
+
+	if (country_code == NULL || strlen (country_code) != 2) {
+		g_warning ("Cannot derive 2-letter country code from current locale.");
+		country_code = "ZZ";
+	}
+
+	/* Nothing has changed. We can stop here. */
+	if (g_strcmp0 (country_code, ebsdb->priv->country_code) == 0)
+		return TRUE;
+
+	g_free (ebsdb->priv->country_code);
+	ebsdb->priv->country_code = g_strdup (country_code);
+
+	stmt = sqlite3_mprintf ("SELECT uid, vcard, NULL FROM %Q", folderid);
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, addto_vcard_list_cb, &vcard_data, error);
+	sqlite3_free (stmt);
+
+	if (vcard_data) {
+		g_print ("The country code has changed to \"%s\". "
+		         "Must rebuild phone number indexes for stored vCards.\n",
+		         ebsdb->priv->country_code);
+	}
+
+	for (l = vcard_data; success && l; l = l->next) {
+		EbSdbSearchData *const s_data = l->data;
+		EContact *contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
+
+		if (contact == NULL)
+			continue;
+
+		success = insert_contact (ebsdb, contact, folderid, error);
+
+		g_object_unref (contact);
+	}
+
+	g_slist_free_full (vcard_data, destroy_search_data);
+
+	if (success) {
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET countrycode = %Q WHERE folder_id = %Q",
+			country_code, folderid);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, get_string_cb, &ebsdb->priv->country_code, error);
+		sqlite3_free (stmt);
+	}
+
+	return success;
 }
