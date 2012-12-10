@@ -1723,7 +1723,7 @@ e_data_server_util_get_dbus_call_timeout (void)
 ENamedParameters *
 e_named_parameters_new (void)
 {
-	return g_ptr_array_new_with_free_func (g_free);
+	return (ENamedParameters*) g_ptr_array_new_with_free_func (g_free);
 }
 
 /**
@@ -1752,7 +1752,7 @@ e_named_parameters_new_strv (const gchar * const *strv)
 
 	parameters = e_named_parameters_new ();
 	for (ii = 0; strv[ii]; ii++) {
-		g_ptr_array_add (parameters, g_strdup (strv[ii]));
+		g_ptr_array_add ((GPtrArray *) parameters, g_strdup (strv[ii]));
 	}
 
 	return parameters;
@@ -1774,7 +1774,7 @@ e_named_parameters_free (ENamedParameters *parameters)
 	if (!parameters)
 		return;
 
-	g_ptr_array_free (parameters, TRUE);
+	g_ptr_array_unref ((GPtrArray *) parameters);
 }
 
 /**
@@ -1788,10 +1788,13 @@ e_named_parameters_free (ENamedParameters *parameters)
 void
 e_named_parameters_clear (ENamedParameters *parameters)
 {
+	GPtrArray *array;
 	g_return_if_fail (parameters != NULL);
 
-	if (parameters->len)
-		g_ptr_array_remove_range (parameters, 0, parameters->len);
+	array = (GPtrArray *) parameters;
+
+	if (array->len)
+		g_ptr_array_remove_range (array, 0, array->len);
 }
 
 /**
@@ -1814,9 +1817,10 @@ e_named_parameters_assign (ENamedParameters *parameters,
 
 	if (from) {
 		gint ii;
+		GPtrArray *from_array = (GPtrArray *) from;
 
-		for (ii = 0; ii < from->len; ii++) {
-			g_ptr_array_add (parameters, g_strdup (from->pdata[ii]));
+		for (ii = 0; ii < from_array->len; ii++) {
+			g_ptr_array_add ((GPtrArray *) parameters, g_strdup (from_array->pdata[ii]));
 		}
 	}
 }
@@ -1825,6 +1829,7 @@ static gint
 get_parameter_index (const ENamedParameters *parameters,
 		     const gchar *name)
 {
+	GPtrArray *array;
 	gint ii, name_len;
 
 	g_return_val_if_fail (parameters != NULL, -1);
@@ -1832,8 +1837,10 @@ get_parameter_index (const ENamedParameters *parameters,
 
 	name_len = strlen (name);
 
-	for (ii = 0; ii < parameters->len; ii++) {
-		const gchar *name_and_value = g_ptr_array_index (parameters, ii);
+	array = (GPtrArray *) parameters;
+
+	for (ii = 0; ii < array->len; ii++) {
+		const gchar *name_and_value = g_ptr_array_index (array, ii);
 
 		if (name_and_value && g_ascii_strncasecmp (name_and_value, name, name_len) == 0 &&
 		    name_and_value[name_len] == ':')
@@ -1862,6 +1869,7 @@ e_named_parameters_set (ENamedParameters *parameters,
 			const gchar *name,
 			const gchar *value)
 {
+	GPtrArray *array;
 	gint index;
 	gchar *name_and_value;
 
@@ -1870,19 +1878,21 @@ e_named_parameters_set (ENamedParameters *parameters,
 	g_return_if_fail (strchr (name, ':') == NULL);
 	g_return_if_fail (*name != '\0');
 
+	array = (GPtrArray *) parameters;
+
 	index = get_parameter_index (parameters, name);
 	if (!value) {
 		if (index != -1)
-			g_ptr_array_remove_index (parameters, index);
+			g_ptr_array_remove_index (array, index);
 		return;
 	}
 
 	name_and_value = g_strconcat (name, ":", value, NULL);
 	if (index != -1) {
-		g_free (parameters->pdata[index]);
-		parameters->pdata[index] = name_and_value;
+		g_free (array->pdata[index]);
+		array->pdata[index] = name_and_value;
 	} else {
-		g_ptr_array_add (parameters, name_and_value);
+		g_ptr_array_add (array, name_and_value);
 	}
 }
 
@@ -1912,7 +1922,7 @@ e_named_parameters_get (const ENamedParameters *parameters,
 	if (index == -1)
 		return NULL;
 
-	name_and_value = g_ptr_array_index (parameters, index);
+	name_and_value = g_ptr_array_index ((GPtrArray *) parameters, index);
 
 	return name_and_value + strlen (name) + 1;
 }
@@ -1954,3 +1964,43 @@ e_named_parameters_test (const ENamedParameters *parameters,
 
 	return g_ascii_strcasecmp (stored_value, value) == 0;
 }
+
+/**
+ * e_named_parameters_to_strv:
+ * @parameters: an #ENamedParameters
+ *
+ * Returns: (transfer full): Contents of @parameters as a null-terminated strv
+ *
+ * Since: 3.8
+ */
+gchar **
+e_named_parameters_to_strv (const ENamedParameters *parameters)
+{
+	GPtrArray *array = (GPtrArray *) parameters;
+	GPtrArray *ret = g_ptr_array_new ();
+
+	if (array) {
+		guint i;
+		for (i = 0; i < array->len; i++) {
+			g_ptr_array_add (ret, g_strdup (array->pdata[i]));
+		}
+	}
+
+	g_ptr_array_add (ret, NULL);
+
+	return (gchar **) g_ptr_array_free (ret, FALSE);
+}
+
+static ENamedParameters *
+e_named_parameters_ref (ENamedParameters *params)
+{
+	return (ENamedParameters *) g_ptr_array_ref ((GPtrArray *) params);
+}
+
+static void
+e_named_parameters_unref (ENamedParameters *params)
+{
+	g_ptr_array_unref ((GPtrArray *) params);
+}
+
+G_DEFINE_BOXED_TYPE (ENamedParameters, e_named_parameters, e_named_parameters_ref, e_named_parameters_unref);

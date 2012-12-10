@@ -470,25 +470,15 @@ e_user_prompter_server_response (EUserPrompterServer *server,
 
 	if (remove_prompt (server, prompt_id, &is_extension_prompt)) {
 		if (is_extension_prompt) {
-			GPtrArray *values = NULL;
+			gchar **values;
 
-			if (!extension_values || !extension_values->len ||
-			    extension_values->pdata[extension_values->len - 1] != NULL) {
-				gint ii;
-
-				values = g_ptr_array_new ();
-				for (ii = 0; extension_values && ii < extension_values->len; ii++) {
-					g_ptr_array_add (values, extension_values->pdata[ii]);
-				}
-				g_ptr_array_add (values, NULL);
-				extension_values = values;
-			}
+			values = e_named_parameters_to_strv (extension_values);
 
 			e_dbus_user_prompter_emit_extension_response (server->priv->dbus_prompter, prompt_id, response,
-				(const gchar * const *) extension_values->pdata);
+				(const gchar * const *) values);
 
 			if (values)
-				g_ptr_array_free (values, TRUE);
+				g_strfreev (values);
 		} else {
 			e_dbus_user_prompter_emit_response (server->priv->dbus_prompter, prompt_id, response);
 		}

@@ -142,8 +142,10 @@ void		e_data_server_util_set_dbus_call_timeout
  *
  * Since: 3.8
  **/
-typedef GPtrArray ENamedParameters;
+struct _ENamedParameters;
+typedef struct _ENamedParameters ENamedParameters;
 
+GType           e_named_parameters_get_type     (void) G_GNUC_CONST;
 ENamedParameters *
 		e_named_parameters_new		(void);
 ENamedParameters *
@@ -157,6 +159,7 @@ void		e_named_parameters_set		(ENamedParameters *parameters,
 						 const gchar *value);
 const gchar *	e_named_parameters_get		(const ENamedParameters *parameters,
 						 const gchar *name);
+gchar **        e_named_parameters_to_strv	(const ENamedParameters *parameters);
 gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
 						 const gchar *name,
 						 const gchar *value,

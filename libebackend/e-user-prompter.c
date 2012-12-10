@@ -198,31 +198,20 @@ user_prompter_extension_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 				       GError **error)
 {
 	gboolean success;
-	GPtrArray *params;
-	gint ii;
+	gchar **params;
 
 	g_return_val_if_fail (dbus_prompter != NULL, FALSE);
 	g_return_val_if_fail (async_data != NULL, FALSE);
-
-	params = g_ptr_array_new ();
-	for (ii = 0; async_data->in_parameters && ii < async_data->in_parameters->len; ii++) {
-		gchar *param = async_data->in_parameters->pdata[ii];
-
-		if (param)
-			g_ptr_array_add (params, param);
-	}
-
-	/* NULL-terminated array */
-	g_ptr_array_add (params, NULL);
-
+	
+	params = e_named_parameters_to_strv (async_data->in_parameters);
 	success = e_dbus_user_prompter_call_extension_prompt_sync (dbus_prompter,
 		async_data->dialog_name,
-		(const gchar *const *) params->pdata,
+		(const gchar *const *) params,
 		&async_data->prompt_id,
 		cancellable,
 		error);
 
-	g_ptr_array_free (params, TRUE);
+	g_strfreev (params);
 
 	return success;
 }
