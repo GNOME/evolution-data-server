@@ -244,6 +244,22 @@ stop_main_loop (gint stop_result)
 	g_main_loop_quit (loop);
 }
 
+static gboolean
+sleep_in_main_loop_cb (gpointer data)
+{
+	g_main_loop_quit (data);
+	return FALSE;
+}
+
+void
+sleep_in_main_loop (guint msec)
+{
+	GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+	g_timeout_add (msec, sleep_in_main_loop_cb, loop);
+	g_main_loop_run (loop);
+	g_main_loop_unref (loop);
+}
+
 /* returns value used in stop_main_loop() */
 gint
 get_main_loop_stop_result (void)

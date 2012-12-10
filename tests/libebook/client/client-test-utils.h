@@ -37,6 +37,7 @@ void main_initialize (void);
 void start_main_loop (GThreadFunc func, gpointer data);
 void start_in_thread_with_main_loop (GThreadFunc func, gpointer data);
 void start_in_idle_with_main_loop (GThreadFunc func, gpointer data);
+void sleep_in_main_loop (guint msec);
 void stop_main_loop (gint stop_result);
 gint get_main_loop_stop_result (void);
 
