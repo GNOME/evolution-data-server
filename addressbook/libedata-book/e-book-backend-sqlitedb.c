@@ -1481,6 +1481,77 @@ mprintf_phone (const gchar *normal,
 	return stmt;
 }
 
+static EVCardAttributeParam *
+find_param (EVCardAttribute *attr,
+            const gchar     *name)
+{
+	GList *l;
+
+	for (l = e_vcard_attribute_get_params (attr); l; l = l->next) {
+		EVCardAttributeParam *const param = l->data;
+
+		if (strcmp (e_vcard_attribute_param_get_name (param), name) == 0)
+			return param;
+	}
+
+	return NULL;
+}
+
+static gboolean
+update_e164_params (EVCard *vcard,
+                    const gchar *country_code)
+{
+	const GList *attr_list = e_vcard_get_attributes (vcard);
+	gboolean modified = FALSE;
+
+	if (!e_phone_number_is_supported ())
+		return FALSE;
+
+	for (; attr_list; attr_list = attr_list->next) {
+		EVCardAttribute *const attr = attr_list->data;
+		char *normalized_number = NULL;
+		char *formatted_number = NULL;
+		EVCardAttributeParam *param = NULL;
+
+		/* Skip all attributes but phone numbers. */
+		if (strcmp (e_vcard_attribute_get_name (attr), EVC_TEL) != 0)
+			continue;
+
+		/* Compute normalized phone number. */
+		param = find_param (attr, EVC_X_E164);
+		formatted_number = e_vcard_attribute_get_value (attr);
+
+		if (formatted_number)
+			normalized_number = convert_phone (formatted_number, country_code);
+
+		/* Update the phone number attribute. */
+		if (normalized_number) {
+			if (param == NULL) {
+				param = e_vcard_attribute_param_new (EVC_X_E164);
+				e_vcard_attribute_add_param_with_value (attr, param, normalized_number);
+				modified = TRUE;
+			} else {
+				GList *values = e_vcard_attribute_param_get_values (param);
+
+				if (values == NULL
+					|| g_strcmp0 (values->data, normalized_number)
+					|| values->next) {
+					e_vcard_attribute_param_remove_values (param);
+					e_vcard_attribute_param_add_value (param, normalized_number);
+					modified = TRUE;
+				}
+			}
+
+			g_free (normalized_number);
+		} else if (param) {
+			e_vcard_attribute_remove_param (attr, EVC_X_E164);
+			modified = TRUE;
+		}
+	}
+
+	return modified;
+}
+
 /* Add Contact (free the result with g_free() ) */
 static gchar *
 insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
@@ -1548,8 +1619,14 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			g_warn_if_reached ();
 	}
 
-	vcard_str = store_vcard ? e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30) : NULL;
-	str       = sqlite3_mprintf (", %Q, %Q)", vcard_str, NULL);
+	if (store_vcard) {
+		update_e164_params (E_VCARD (contact), ebsdb->priv->country_code);
+		vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	} else {
+		vcard_str = NULL;
+	}
+
+	str = sqlite3_mprintf (", %Q, %Q)", vcard_str, NULL);
 
 	g_string_append (string, str);
 
@@ -4012,8 +4089,8 @@ validate_county_code (EBookBackendSqliteDB  *ebsdb,
 
 	if (vcard_data) {
 		g_print ("The country code has changed to \"%s\". "
-		         "Must rebuild phone number indexes for stored vCards.\n",
-		         ebsdb->priv->country_code);
+		         "Must rebuild %s parameters and indexes for stored vCards.\n",
+		         ebsdb->priv->country_code, EVC_X_E164);
 	}
 
 	for (l = vcard_data; success && l; l = l->next) {
@@ -4023,7 +4100,8 @@ validate_county_code (EBookBackendSqliteDB  *ebsdb,
 		if (contact == NULL)
 			continue;
 
-		success = insert_contact (ebsdb, contact, folderid, error);
+		if (update_e164_params (E_VCARD (contact), ebsdb->priv->country_code))
+			success = insert_contact (ebsdb, contact, folderid, error);
 
 		g_object_unref (contact);
 	}
