@@ -13,6 +13,7 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_srcdir)/tests/test-server-utils     		\
 	-I$(top_builddir)/tests/test-server-utils   		\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
+	-DBUILDDIR=\""$(abs_topbuilddir)"\"			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
 	$(NULL)
@@ -42,6 +43,7 @@ TESTS =								\
 	test-client-remove-contact-by-uid			\
 	test-client-remove-contacts				\
 	test-client-photo-is-uri				\
+	test-client-change-country-code				\
 	$(NULL)
 
 # The noinst tests are functional tests, not unit tests.
@@ -112,6 +114,8 @@ test_client_remove_contacts_LDADD=$(TEST_LIBS)
 test_client_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_photo_is_uri_LDADD=$(TEST_LIBS)
 test_client_photo_is_uri_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_change_country_code_LDADD=$(TEST_LIBS)
+test_client_change_country_code_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_stress_factory__fifo_LDADD=$(TEST_LIBS)
 test_client_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_stress_factory__serial_LDADD=$(TEST_LIBS)

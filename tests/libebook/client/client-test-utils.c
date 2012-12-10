@@ -22,6 +22,7 @@
  *          Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -95,6 +96,12 @@ main_initialize (void)
 
 	if (initialized)
 		return;
+
+	/* hasselmm: The locale doesn't only affect obvious settings like
+	 * program messages, or date formats. It also changes more subtile
+	 * aspects like the sorting order. Therefore (IMHO) it's generally
+	 * a good idea to use a fixed locale for regression tests. */
+	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_type_init ();
 	e_gdbus_templates_init_main_thread ();
@@ -222,6 +229,22 @@ stop_main_loop (gint stop_result)
 
 	main_stop_result = stop_result;
 	g_main_loop_quit (loop);
+}
+
+static gboolean
+sleep_in_main_loop_cb (gpointer data)
+{
+	g_main_loop_quit (data);
+	return FALSE;
+}
+
+void
+sleep_in_main_loop (guint msec)
+{
+	GMainLoop *loop = g_main_loop_new (NULL, FALSE);
+	g_timeout_add (msec, sleep_in_main_loop_cb, loop);
+	g_main_loop_run (loop);
+	g_main_loop_unref (loop);
 }
 
 /* returns value used in stop_main_loop() */
