@@ -1736,6 +1736,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:
+			g_prefix_error (&driver->priv->error,
+				_("Execution of filter '%s' failed: "),
+				rule->name);
 			goto error;
 		case CAMEL_SEARCH_MATCHED:
 			filtered = TRUE;
@@ -1758,20 +1761,26 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				g_set_error (
 					error, CAMEL_ERROR,
 					CAMEL_ERROR_GENERIC,
-					_("Error parsing filter: %s: %s"),
+					_("Error parsing filter '%s': %s: %s"),
+					rule->name,
 					camel_sexp_error (driver->priv->eval),
 					rule->action);
 				goto error;
 			}
 			r = camel_sexp_eval (driver->priv->eval);
-			if (driver->priv->error != NULL)
+			if (driver->priv->error != NULL) {
+				g_prefix_error (&driver->priv->error,
+					_("Execution of filter '%s' failed: "),
+					rule->name);
 				goto error;
+			}
 
 			if (r == NULL) {
 				g_set_error (
 					error, CAMEL_ERROR,
 					CAMEL_ERROR_GENERIC,
-					_("Error executing filter: %s: %s"),
+					_("Error executing filter '%s': %s: %s"),
+					rule->name,
 					camel_sexp_error (driver->priv->eval),
 					rule->action);
 				goto error;
