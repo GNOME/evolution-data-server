@@ -471,7 +471,6 @@ e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup  *
 	ret_types  = g_new0 (EBookIndexType, ret_n_fields);
 
 	for (i = 0; i < ret_n_fields && malformed == FALSE; i++) {
-
 		index_split = g_strsplit (split[i], ",", 2);
 
 		if (index_split[0] && index_split[1]) {
@@ -527,9 +526,11 @@ e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup  *
  * Defines indexes for quick reference for the given given #EContactFields in the addressbook.
  *
  * The same #EContactField may be specified multiple times to create multiple indexes
- * with different charachteristics. If an #E_BOOK_INDEX_PREFIX index is created it will
- * be used for #E_BOOK_QUERY_BEGINS_WITH queries; A #E_BOOK_INDEX_SUFFIX index will be
- * constructed efficiently for suffix matching and will be used for #E_BOOK_QUERY_ENDS_WITH queries.
+ * with different characteristics. If an #E_BOOK_INDEX_PREFIX index is created it will
+ * be used for #E_BOOK_QUERY_BEGINS_WITH queries. A #E_BOOK_INDEX_SUFFIX index
+ * will be constructed efficiently for suffix matching and will be used for
+ * #E_BOOK_QUERY_ENDS_WITH queries. Similar a #E_BOOK_INDEX_E164 index will optimize
+ * #E_BOOK_QUERY_EQUALS_PHONE_NUMBER searches.
  *
  * Since: 3.8
  */
@@ -644,7 +645,7 @@ e_source_backend_summary_setup_set_indexed_fields (ESourceBackendSummarySetup  *
 		}
 
 		if (!first)
-			g_string_append_c (string, ':'); 
+			g_string_append_c (string, ':');
 		else
 			first = FALSE;
 
