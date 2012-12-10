@@ -78,6 +78,7 @@ register_source_idle (CreateBookData *data)
 							   0);
 	e_source_backend_summary_setup_set_indexed_fields (setup,
 							   E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
+							   E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
 							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
 							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
 							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
@@ -297,12 +298,21 @@ main (gint argc,
 	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
 	                 1);
 	add_client_test ("/client/search/eqphone/exact/phone", search_test, book_client,
+	                 e_book_query_field_test(E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
+	                 1);
+	add_client_test ("/client/search/eqphone/national/phone", search_test, book_client,
+	                 e_book_query_field_test(E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
+	                 1);
+	add_client_test ("/client/search/eqphone/national/phone", search_test, book_client,
+	                 e_book_query_field_test(E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
+	                 1);
+	add_client_test ("/client/search/eqphone/exact/tel", search_test, book_client,
 	                 e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
 	                 1);
-	add_client_test ("/client/search/eqphone/national/phone", search_test, book_client,
+	add_client_test ("/client/search/eqphone/national/tel", search_test, book_client,
 	                 e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
 	                 1);
-	add_client_test ("/client/search/eqphone/national/phone", search_test, book_client,
+	add_client_test ("/client/search/eqphone/national/tel", search_test, book_client,
 	                 e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
 	                 1);
 
