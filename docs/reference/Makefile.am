@@ -9,7 +9,6 @@ SUBDIRS = \
 	calendar \
 	camel \
 	libedataserver \
-	libedataserverui \
 	libebackend \
 	$(PRIVATE_DIR) \
 	$(NULL)

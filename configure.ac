@@ -1284,6 +1284,12 @@ dnl sqlite3 flags
 dnl ******************************
 PKG_CHECK_MODULES(SQLITE3, [sqlite3 >= sqlite_minimum_version])
 
+if test "x$enable_maintainer_mode" = "xyes" ; then
+	EVO_SET_COMPILE_FLAGS(FACTORY_GTK, "gtk+-3.0")
+	AC_SUBST(FACTORY_GTK_CFLAGS)
+	AC_SUBST(FACTORY_GTK_LIBS)
+fi
+
 dnl ******************************
 dnl libedataserver flags
 dnl ******************************
@@ -1294,26 +1300,10 @@ AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
 dnl ******************************
-dnl libedataserverui
-dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 libsoup-2.4"
-
-EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
-AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
-AC_SUBST(E_DATA_SERVER_UI_LIBS)
-
-if test "x$enable_maintainer_mode" = "xyes" ; then
-	FACTORY_GTK_CFLAGS=$E_DATA_SERVER_UI_CFLAGS
-	FACTORY_GTK_LIBS=$E_DATA_SERVER_UI_LIBS
-	AC_SUBST(FACTORY_GTK_CFLAGS)
-	AC_SUBST(FACTORY_GTK_LIBS)
-fi
-
-E_BACKEND_DEPS="gio-2.0 gmodule-2.0 libsecret-1 libsoup-2.4 libxml-2.0"
-
-dnl ******************************
 dnl libebackend flags
 dnl ******************************
+E_BACKEND_DEPS="gio-2.0 gmodule-2.0 libsecret-1 libsoup-2.4 libxml-2.0"
+
 EVO_SET_COMPILE_FLAGS(E_BACKEND, $E_BACKEND_DEPS)
 AC_SUBST(E_BACKEND_CFLAGS)
 AC_SUBST(E_BACKEND_LIBS)
@@ -1617,8 +1607,6 @@ libebackend/libebackend.pc
 libedataserver/Makefile
 libedataserver/eds-version.h
 libedataserver/libedataserver.pc
-libedataserverui/Makefile
-libedataserverui/libedataserverui.pc
 modules/Makefile
 modules/cache-reaper/Makefile
 modules/gnome-online-accounts/Makefile
@@ -1639,7 +1627,6 @@ tests/libecal/Makefile
 tests/libecal/client/Makefile
 tests/libedata-cal/Makefile
 tests/libedataserver/Makefile
-tests/libedataserverui/Makefile
 tests/tools/Makefile
 docs/Makefile
 docs/reference/Makefile
@@ -1651,7 +1638,6 @@ docs/reference/calendar/libecal/Makefile
 docs/reference/calendar/libedata-cal/Makefile
 docs/reference/camel/Makefile
 docs/reference/libedataserver/Makefile
-docs/reference/libedataserverui/Makefile
 docs/reference/libebackend/Makefile
 docs/reference/private/Makefile
 po/Makefile.in
