@@ -1973,7 +1973,7 @@ store_data_to_vcard (gpointer ref,
                      gchar **name)
 {
 	GSList **vcard_data = ref;
-	EbSdbSearchData *search_data = g_new0 (EbSdbSearchData, 1);
+	EbSdbSearchData *search_data = g_slice_new0 (EbSdbSearchData);
 	EContact *contact = e_contact_new ();
 	gchar *vcard;
 	gint i;
@@ -2843,7 +2843,7 @@ addto_vcard_list_cb (gpointer ref,
                      gchar **name)
 {
 	GSList **vcard_data = ref;
-	EbSdbSearchData *s_data = g_new0 (EbSdbSearchData, 1);
+	EbSdbSearchData *s_data = g_slice_new0 (EbSdbSearchData);
 
 	if (cols[0])
 		s_data->uid = g_strdup (cols[0]);
@@ -3741,7 +3741,7 @@ e_book_backend_sqlitedb_search_data_free (EbSdbSearchData *s_data)
 		g_free (s_data->uid);
 		g_free (s_data->vcard);
 		g_free (s_data->bdata);
-		g_free (s_data);
+		g_slice_free (EbSdbSearchData, s_data);
 	}
 }
 
