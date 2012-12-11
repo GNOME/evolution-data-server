@@ -1627,6 +1627,11 @@ tests/libecal/Makefile
 tests/libecal/client/Makefile
 tests/libedata-cal/Makefile
 tests/libedataserver/Makefile
+tests/test-server-utils/Makefile
+tests/test-server-utils/services/Makefile
+tests/test-server-utils/services/org.gnome.evolution.dataserver.AddressBook.service
+tests/test-server-utils/services/org.gnome.evolution.dataserver.Calendar.service
+tests/test-server-utils/services/org.gnome.evolution.dataserver.Sources.service
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
