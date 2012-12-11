@@ -18,9 +18,11 @@
  * 02110-1301, USA.
  */
 
-#include <string.h>
-
 #include "e-book-backend-sexp.h"
+
+#include <libedataserver/libedataserver.h>
+
+#include <string.h>
 
 #define E_BOOK_BACKEND_SEXP_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -744,6 +746,72 @@ func_beginswith (struct _ESExp *f,
 }
 
 static gboolean
+eqphone_helper (const gchar *ps1,
+                const gchar *ps2,
+                EPhoneNumberMatch required_match)
+{
+	const EPhoneNumberMatch actual_match =
+		e_phone_number_compare_strings (ps1, ps2, NULL);
+
+	return actual_match >= E_PHONE_NUMBER_MATCH_EXACT
+		&& actual_match <= required_match;
+}
+
+static gboolean
+eqphone_exact_helper (const gchar *ps1,
+                      const gchar *ps2)
+{
+	return eqphone_helper (ps1, ps2, E_PHONE_NUMBER_MATCH_EXACT);
+}
+
+static gboolean
+eqphone_national_helper (const gchar *ps1,
+                         const gchar *ps2)
+{
+	return eqphone_helper (ps1, ps2, E_PHONE_NUMBER_MATCH_NATIONAL);
+}
+
+static gboolean
+eqphone_short_helper (const gchar *ps1,
+                      const gchar *ps2)
+{
+	return eqphone_helper (ps1, ps2, E_PHONE_NUMBER_MATCH_SHORT);
+}
+
+static ESExpResult *
+func_eqphone (struct _ESExp *f,
+              gint argc,
+              struct _ESExpResult **argv,
+              gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, eqphone_exact_helper);
+}
+
+static ESExpResult *
+func_eqphone_national (struct _ESExp *f,
+                       gint argc,
+                       struct _ESExpResult **argv,
+                       gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, eqphone_national_helper);
+}
+
+static ESExpResult *
+func_eqphone_short (struct _ESExp *f,
+                    gint argc,
+                    struct _ESExpResult **argv,
+                    gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, eqphone_short_helper);
+}
+
+static gboolean
 exists_helper (const gchar *ps1,
                const gchar *ps2)
 {
@@ -894,6 +962,9 @@ static struct {
 	{ "is", func_is, 0 },
 	{ "beginswith", func_beginswith, 0 },
 	{ "endswith", func_endswith, 0 },
+	{ "eqphone", func_eqphone, 0 },
+	{ "eqphone_national", func_eqphone_national, 0 },
+	{ "eqphone_short", func_eqphone_short, 0 },
 	{ "exists", func_exists, 0 },
 	{ "exists_vcard", func_exists_vcard, 0 },
 };
