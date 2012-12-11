@@ -231,7 +231,7 @@ get_main_loop_stop_result (void)
 
 void
 foreach_configured_source (ESourceRegistry *registry,
-                           void (*func) (ESource *source))
+                           SourceFunc func)
 {
 	gpointer foreach_async_data;
 	ESource *source = NULL;
@@ -313,6 +313,7 @@ typedef struct {
 	ESource         *scratch;
 	ESource         *source;
 	EBookClient     *book;
+	SourceFunc       on_setup;
 } CreateBookData;
 
 static gboolean
@@ -366,6 +367,9 @@ register_source_idle (CreateBookData *data)
 	config = e_source_get_extension (data->scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
 	e_source_address_book_config_set_revision_guards_enabled (config, TRUE);
 
+	if (data->on_setup)
+		data->on_setup (data->scratch);
+
 	if (!e_source_registry_commit_source_sync (data->registry, data->scratch, NULL, &error))
 		g_error ("Unable to add new source to the registry for uid %s: %s", data->uid, error->message);
 
@@ -378,13 +382,15 @@ register_source_idle (CreateBookData *data)
 }
 
 static EBookClient *
-ebook_test_utils_book_with_uid (const gchar *uid)
+ebook_test_utils_book_with_uid (const gchar *uid,
+                                SourceFunc   on_setup)
 {
 	CreateBookData data = { 0, };
 
 	data.uid = uid;
 
 	data.loop = g_main_loop_new (NULL, FALSE);
+	data.on_setup = on_setup;
 	g_idle_add ((GSourceFunc)register_source_idle, &data);
 	g_main_loop_run (data.loop);
 	g_main_loop_unref (data.loop);
@@ -399,12 +405,19 @@ ebook_test_utils_book_with_uid (const gchar *uid)
 EBookClient *
 new_temp_client (gchar **uri)
 {
+	return new_custom_temp_client (uri, NULL);
+}
+
+EBookClient *
+new_custom_temp_client (gchar      **uri,
+                        SourceFunc   on_setup)
+{
 	EBookClient     *book;
 	gchar           *uid;
 	guint64          real_time = g_get_real_time ();
 
 	uid  = g_strdup_printf ("test-book-%" G_GINT64_FORMAT, real_time);
-	book = ebook_test_utils_book_with_uid (uid);
+	book = ebook_test_utils_book_with_uid (uid, on_setup);
 
 	if (uri)
 		*uri = g_strdup (uid);
