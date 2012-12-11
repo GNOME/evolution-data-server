@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=@SOURCES_DBUS_SERVICE_NAME@
+Exec=@abs_top_builddir@/services/evolution-source-registry/evolution-source-registry

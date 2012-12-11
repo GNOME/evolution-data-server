@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=@ADDRESS_BOOK_DBUS_SERVICE_NAME@
+Exec=@abs_top_builddir@/services/evolution-addressbook-factory/evolution-addressbook-factory
