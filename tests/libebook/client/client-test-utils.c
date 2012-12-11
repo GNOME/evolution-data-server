@@ -22,6 +22,7 @@
  *          Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -103,6 +104,8 @@ main_initialize (void)
 
 	if (initialized)
 		return;
+
+	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_type_init ();
 	e_gdbus_templates_init_main_thread ();

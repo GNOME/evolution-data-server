@@ -138,15 +138,14 @@ main (gint argc,
 
 	/*** Setup ****/
 
-	/* Setting with U.S. locale for addresses */
-	g_setenv ("LC_ADDRESS", "en_US.UTF-8", TRUE);
-	setlocale (LC_ADDRESS, "");
-
-	g_assert_cmpstr (nl_langinfo (_NL_ADDRESS_COUNTRY_AB2), ==, "US");
-
 	/* Initializing fake D-Bus and event loop machinery */
 	main_initialize ();
 	sleep_in_main_loop (500);
+
+	/* Setting with U.S. locale for addresses */
+	g_setenv ("LC_ADDRESS", "en_US.UTF-8", TRUE);
+	setlocale (LC_ADDRESS, "");
+	g_assert_cmpstr (nl_langinfo (_NL_ADDRESS_COUNTRY_AB2), ==, "US");
 
 	/* Launching addressbook factory on fake-dbus */
 	success = spawn_addressbook_factory (&factory_pid, &error);
