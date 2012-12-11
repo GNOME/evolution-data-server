@@ -186,6 +186,18 @@ main (gint argc,
 		"/client/search/suffix/email", search_test,
 		e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
 		2);
+	add_client_test (
+		"/client/search/eqphone/exact/phone", search_test,
+		e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
+		1);
+	add_client_test (
+		"/client/search/eqphone/national/phone", search_test,
+		e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
+		1);
+	add_client_test (
+		"/client/search/eqphone/short/phone", search_test,
+		e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
+		1);
 
 	/* Add search tests that fetch uids */
 	add_client_test (
