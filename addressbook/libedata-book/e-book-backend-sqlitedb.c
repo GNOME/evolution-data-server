@@ -956,6 +956,52 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	return ret;
 }
 
+static void
+eqphone_func (sqlite3_context    *ctxt,
+              int                 argc,
+              sqlite3_value     **argv,
+              EPhoneNumberMatch   required_match)
+{
+	EPhoneNumberMatch actual_match;
+	GError *error;
+
+	if (argc != 2) {
+		sqlite3_result_error (ctxt, "Function requires exactly two arguments", -1);
+		return;
+	}
+
+	actual_match = e_phone_number_compare_strings (
+			(const char *) sqlite3_value_text (argv[0]),
+			(const char *) sqlite3_value_text (argv[1]),
+			&error);
+
+	if (error) {
+		sqlite3_result_error (ctxt, error->message, -1);
+		g_error_free (error);
+		return;
+	}
+
+	sqlite3_result_int
+		(ctxt, actual_match >= E_PHONE_NUMBER_MATCH_EXACT
+		 && actual_match <= required_match);
+}
+
+static void
+eqphone_national_func (sqlite3_context *ctxt,
+                       int              argc,
+                       sqlite3_value  **argv)
+{
+	eqphone_func (ctxt, argc, argv, E_PHONE_NUMBER_MATCH_NATIONAL);
+}
+
+static void
+eqphone_short_func (sqlite3_context *ctxt,
+                    int              argc,
+                    sqlite3_value  **argv)
+{
+	eqphone_func (ctxt, argc, argv, E_PHONE_NUMBER_MATCH_SHORT);
+}
+
 static gboolean
 book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
                             const gchar *filename,
@@ -984,6 +1030,30 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 				0, "%s", errmsg);
 			sqlite3_close (priv->db);
 		}
+		return FALSE;
+	}
+
+	ret = sqlite3_create_function (priv->db, "eqphone_national",
+	                               2, SQLITE_UTF8, ebsdb,
+	                               eqphone_national_func,
+	                               NULL, NULL);
+
+	if (ret) {
+		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		             "%s", sqlite3_errmsg (priv->db));
+		sqlite3_close (priv->db);
+		return FALSE;
+	}
+
+	ret = sqlite3_create_function (priv->db, "eqphone_short",
+	                               2, SQLITE_UTF8, ebsdb,
+	                               eqphone_short_func,
+	                               NULL, NULL);
+
+	if (ret) {
+		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		             "%s", sqlite3_errmsg (priv->db));
+		sqlite3_close (priv->db);
 		return FALSE;
 	}
 
@@ -1378,9 +1448,15 @@ convert_phone (const gchar *normal,
 {
 	EPhoneNumber *number = NULL;
 	gchar *phone_number = NULL;
+	GError *error = NULL;
 
 	if (normal)
-		number = e_phone_number_from_string (normal, country_code, NULL);
+		number = e_phone_number_from_string (normal, country_code, &error);
+
+	if (error) {
+		g_error ("%s:%d (%s): %s", __FILE__, __LINE__, __func__, error->message);
+		g_clear_error (&error);
+	}
 
 	if (number) {
 		phone_number = e_phone_number_to_string (number, E_PHONE_NUMBER_FORMAT_E164);
@@ -2359,7 +2435,9 @@ static const struct {
 	{ "beginswith", func_check, 0 },
 	{ "endswith", func_check, 0 },
 	{ "exists", func_check, 0 },
-	{ "eqphone", func_check_phone, 0 }
+	{ "eqphone", func_check_phone, 0 },
+	{ "eqphone_national", func_check_phone, 0 },
+	{ "eqphone_short", func_check_phone, 0 }
 };
 
 /**
@@ -2513,6 +2591,8 @@ typedef enum {
 	MATCH_BEGINS_WITH,
 	MATCH_ENDS_WITH,
 	MATCH_PHONE_NUMBER,
+	MATCH_NATIONAL_PHONE_NUMBER,
+	MATCH_SHORT_PHONE_NUMBER
 } MatchType;
 
 typedef enum {
@@ -2521,6 +2601,30 @@ typedef enum {
 	CONVERT_REVERSE   = (1 << 1),
 	CONVERT_PHONE     = (1 << 2),
 } ConvertFlags;
+
+static gchar *
+extract_digits (const gchar *normal)
+{
+	gchar *digits = g_new (char, strlen (normal) + 1);
+	const gchar *src = normal;
+	gchar *dst = digits;
+
+	/* extract digits also considering eastern arabic numerals */
+	for (src = normal; *src; src = g_utf8_next_char (src)) {
+		const gunichar uc = g_utf8_get_char_validated (src, -1);
+		const gint value = g_unichar_digit_value (uc);
+
+		if (uc == -1)
+			break;
+
+		if (value != -1)
+			*dst++ = '0' + value;
+	}
+
+	*dst = '\0';
+
+	return digits;
+}
 
 static gchar *
 convert_string_value (EBookBackendSqliteDB *ebsdb,
@@ -2555,6 +2659,8 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	switch (match) {
 	case MATCH_CONTAINS:
 	case MATCH_ENDS_WITH:
+	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_SHORT_PHONE_NUMBER:
 		g_string_append_c (str, '%');
 		break;
 
@@ -2594,6 +2700,8 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	case MATCH_ENDS_WITH:
 	case MATCH_IS:
 	case MATCH_PHONE_NUMBER:
+	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_SHORT_PHONE_NUMBER:
 		break;
 	}
 
@@ -2615,11 +2723,13 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			   const gchar          *query_term_input,
 			   MatchType             match,
 			   gboolean             *is_list_attr,
-			   gchar               **query_term)
+			   gchar               **query_term,
+			   gchar               **extra_term)
 {
 	gint summary_index;
 	gchar *field_name = NULL;
 	gchar *value = NULL;
+	gchar *extra = NULL;
 	gboolean list_attr = FALSE;
 
 	summary_index = summary_index_from_field_name (ebsdb, field_name_input);
@@ -2638,7 +2748,9 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			suffix_search = TRUE;
 
 		/* If its a phone-number search and we have E.164 data to search... */
-		else if (match == MATCH_PHONE_NUMBER &&
+		else if ((match == MATCH_PHONE_NUMBER ||
+				match == MATCH_NATIONAL_PHONE_NUMBER ||
+				match == MATCH_SHORT_PHONE_NUMBER) &&
 		    (ebsdb->priv->summary_fields[summary_index].index & INDEX_PHONE) != 0)
 			phone_search = TRUE;
 
@@ -2683,13 +2795,24 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 							  ebsdb->priv->summary_fields[summary_index].dbname,
 							  "_phone", NULL);
 
-			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
-			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
-				value = convert_string_value (ebsdb, query_term_input, CONVERT_PHONE,
-							      (match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
-			else
-				value = convert_string_value (ebsdb, query_term_input, CONVERT_PHONE | CONVERT_NORMALIZE,
-							      (match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
+			if (match == MATCH_PHONE_NUMBER) {
+				value = convert_string_value (ebsdb, query_term_input,
+							      CONVERT_NORMALIZE | CONVERT_PHONE, match);
+			} else {
+				gchar *digits = extract_digits (query_term_input);
+
+				value = convert_string_value (ebsdb, digits, CONVERT_NOTHING, MATCH_ENDS_WITH);
+
+				if (match == MATCH_NATIONAL_PHONE_NUMBER) {
+					extra = sqlite3_mprintf (" AND eqphone_national(%q, %Q)", field_name, digits);
+				} else if (match == MATCH_SHORT_PHONE_NUMBER) {
+					extra = sqlite3_mprintf (" AND eqphone_short(%q, %Q)", field_name, digits);
+				} else {
+					g_assert_not_reached ();
+				}
+
+				g_free (digits);
+			}
 		} else {
 
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
@@ -2712,6 +2835,9 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 
 	*query_term = value;
 
+	if (extra_term)
+		*extra_term = extra;
+
 	return field_name;
 }
 
@@ -2731,6 +2857,8 @@ field_oper (MatchType match)
 	case MATCH_CONTAINS:
 	case MATCH_BEGINS_WITH:
 	case MATCH_ENDS_WITH:
+	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_SHORT_PHONE_NUMBER:
 		break;
 	}
 
@@ -2758,14 +2886,14 @@ convert_match_exp (struct _ESExp *f,
 
 		if (argv[1]->type == ESEXP_RES_STRING && argv[1]->value.string[0] != 0) {
 			const gchar *const oper = field_oper (match);
-			gchar *field_name, *query_term;
+			gchar *field_name, *query_term, *extra_term;
 
 			if (!strcmp (field, "full_name")) {
 				GString *names = g_string_new (NULL);
 
 				field_name = field_name_and_query_term (ebsdb, qdata->folderid, "full_name",
 									argv[1]->value.string,
-									match, NULL, &query_term);
+									match, NULL, &query_term, NULL);
 				g_string_append_printf (names, "(%s IS NOT NULL AND %s %s %s)",
 							field_name, field_name, oper, query_term);
 				g_free (field_name);
@@ -2775,7 +2903,7 @@ convert_match_exp (struct _ESExp *f,
 
 					field_name = field_name_and_query_term (ebsdb, qdata->folderid, "family_name",
 										argv[1]->value.string,
-										match, NULL, &query_term);
+										match, NULL, &query_term, NULL);
 					g_string_append_printf
 						(names, " OR (%s IS NOT NULL AND %s %s %s)",
 						 field_name, field_name, oper, query_term);
@@ -2787,7 +2915,7 @@ convert_match_exp (struct _ESExp *f,
 
 					field_name = field_name_and_query_term (ebsdb, qdata->folderid, "given_name",
 										argv[1]->value.string,
-										match, NULL, &query_term);
+										match, NULL, &query_term, NULL);
 					g_string_append_printf
 						(names, " OR (%s IS NOT NULL AND %s %s %s)",
 						 field_name, field_name, oper, query_term);
@@ -2799,7 +2927,7 @@ convert_match_exp (struct _ESExp *f,
 
 					field_name = field_name_and_query_term (ebsdb, qdata->folderid, "nickname",
 										argv[1]->value.string,
-										match, NULL, &query_term);
+										match, NULL, &query_term, NULL);
 					g_string_append_printf
 						(names, " OR (%s IS NOT NULL AND %s %s %s)",
 						 field_name, field_name, oper, query_term);
@@ -2816,18 +2944,24 @@ convert_match_exp (struct _ESExp *f,
 				/* This should ideally be the only valid case from all the above special casing, but oh well... */
 				field_name = field_name_and_query_term (ebsdb, qdata->folderid, field,
 									argv[1]->value.string,
-									match, &is_list, &query_term);
+									match, &is_list, &query_term, &extra_term);
 
+				/* User functions like eqphone_national() cannot utilize indexes. Therefore we
+				 * should reduce the result set first before applying any user functions. This
+				 * is done by applying a seemingly redundant suffix match first.
+				 */
 				if (is_list) {
 					gchar *tmp;
 
 					tmp = sqlite3_mprintf ("summary.uid = multi.uid AND multi.field = %Q", field);
-					str = g_strdup_printf ("(%s AND %s %s %s)",
-							       tmp, field_name, oper, query_term);
+					str = g_strdup_printf ("(%s AND %s %s %s%s)",
+							       tmp, field_name, oper, query_term,
+							       extra_term ? extra_term : "");
 					sqlite3_free (tmp);
 				} else
-					str = g_strdup_printf ("(%s IS NOT NULL AND %s %s %s)",
-							       field_name, field_name, oper, query_term);
+					str = g_strdup_printf ("(%s IS NOT NULL AND %s %s %s%s)",
+							       field_name, field_name, oper, query_term,
+							       extra_term ? extra_term : "");
 
 				g_free (field_name);
 				g_free (query_term);
@@ -2886,6 +3020,24 @@ func_eqphone (struct _ESExp *f,
 	return convert_match_exp (f, argc, argv, data, MATCH_PHONE_NUMBER);
 }
 
+static ESExpResult *
+func_eqphone_national (struct _ESExp *f,
+                       gint argc,
+                       struct _ESExpResult **argv,
+                       gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_NATIONAL_PHONE_NUMBER);
+}
+
+static ESExpResult *
+func_eqphone_short (struct _ESExp *f,
+                    gint argc,
+                    struct _ESExpResult **argv,
+                    gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_SHORT_PHONE_NUMBER);
+}
+
 /* 'builtin' functions */
 static struct {
 	const gchar *name;
@@ -2900,6 +3052,8 @@ static struct {
 	{ "beginswith", func_beginswith, 0 },
 	{ "endswith", func_endswith, 0 },
 	{ "eqphone", func_eqphone, 0 },
+	{ "eqphone_national", func_eqphone_national, 0 },
+	{ "eqphone_short", func_eqphone_short, 0 }
 };
 
 static gchar *
