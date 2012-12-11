@@ -27,6 +27,8 @@
 
 #include <libebackend/libebackend.h>
 
+#include "certificate-viewer.h"
+
 /* Standard GObject macros */
 #define E_TYPE_TRUST_PROMPT (e_trust_prompt_get_type ())
 #define E_TRUST_PROMPT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_TRUST_PROMPT, ETrustPrompt))
@@ -141,6 +143,12 @@ e_module_unload (GTypeModule *type_module)
       "host" - host from which the certificate is received
       "certificate" - a base64-encoded DER certificate, for which ask on trust
       "certificate-errors" - a hexa-decimal integer (as string) corresponding to GTlsCertificateFlags
+
+   It can contain, optionally, chain of issuers:
+      "issuer"   - a base64-encoded DER certificate, issuer of "certificate"
+      "issuer-1" - a base64-encoded DER certificate, issuer of "issuer"
+      "issuer-2" - a base64-encoded DER certificate, issuer of "issuer-1"
+      and so on
 
    Result of the dialog is:
       0 - reject
@@ -264,7 +272,27 @@ trust_prompt_add_info_line (GtkGrid *grid,
 	pango_attr_list_unref (bold);
 }
 
-#define TRUST_PROMP_ID_KEY "ETrustPrompt::prompt-id-key"
+#define TRUST_PROMP_ID_KEY	"ETrustPrompt::prompt-id-key"
+#define TRUST_PROMP_CERT_KEY	"ETrustPrompt::cert-key"
+#define TRUST_PROMP_ISSUERS_KEY	"ETrustPrompt::issuers-key"
+
+static void
+trust_prompt_free_certificate (gpointer cert)
+{
+	if (!cert)
+		return;
+
+	CERT_DestroyCertificate (cert);
+}
+
+static void
+trust_prompt_free_issuers (gpointer issuers)
+{
+	if (!issuers)
+		return;
+
+	g_slist_free_full (issuers, trust_prompt_free_certificate);
+}
 
 static void
 trust_prompt_response_cb (GtkWidget *dialog,
@@ -274,7 +302,15 @@ trust_prompt_response_cb (GtkWidget *dialog,
 	gint prompt_id;
 
 	if (response == GTK_RESPONSE_HELP) {
-		/* view certificate */
+		GtkWidget *viewer;
+
+		viewer = certificate_viewer_new (GTK_WINDOW (dialog),
+			g_object_get_data (G_OBJECT (dialog), TRUST_PROMP_CERT_KEY),
+			g_object_get_data (G_OBJECT (dialog), TRUST_PROMP_ISSUERS_KEY));
+
+		gtk_dialog_run (GTK_DIALOG (viewer));
+		gtk_widget_destroy (viewer);
+
 		return;
 	}
 
@@ -293,6 +329,54 @@ trust_prompt_response_cb (GtkWidget *dialog,
 	e_user_prompter_server_extension_response (extension, prompt_id, response, NULL);
 }
 
+static GSList *
+trust_prompt_get_issuers (CERTCertDBHandle *certdb,
+			  const ENamedParameters *parameters)
+{
+	GSList *issuers = NULL;
+	CERTCertificate *cert;
+	SECItem derCert;
+	gsize derCert_len = 0;
+	gint ii;
+
+	g_return_val_if_fail (certdb != NULL, NULL);
+	g_return_val_if_fail (parameters != NULL, NULL);
+
+	for (ii = 0; ii >= 0; ii++) {
+		const gchar *base64_cert;
+
+		if (ii == 0) {
+			base64_cert = e_named_parameters_get (parameters, "issuer");
+		} else {
+			gchar *key;
+
+			key = g_strdup_printf ("issuer-%d", ii);
+			base64_cert = e_named_parameters_get (parameters, key);
+			g_free (key);
+		}
+
+		if (!base64_cert)
+			break;
+
+		derCert.type = siDERCertBuffer;
+		derCert.data = g_base64_decode (base64_cert, &derCert_len);
+		if (!derCert.data)
+			break;
+
+		derCert.len = derCert_len;
+
+		cert = CERT_NewTempCertificate (certdb, &derCert, NULL, PR_FALSE, PR_TRUE);
+		g_free (derCert.data);
+
+		if (!cert)
+			break;
+
+		issuers = g_slist_prepend (issuers, cert);
+	}
+
+	return g_slist_reverse (issuers);
+}
+
 static gboolean
 trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 				gint prompt_id,
@@ -306,6 +390,7 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	GtkGrid *grid;
 	CERTCertDBHandle *certdb;
 	CERTCertificate *cert;
+	GSList *issuers;
 	SECItem derCert;
 	gsize derCert_len = 0;
 
@@ -329,6 +414,8 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	cert = CERT_NewTempCertificate (certdb, &derCert, NULL, PR_FALSE, PR_TRUE);
 	g_return_val_if_fail (cert != NULL, FALSE);
 
+	issuers = trust_prompt_get_issuers (certdb, parameters);
+
 	cert_errs = g_ascii_strtoll (cert_errs_str, NULL, 16);
 
 	dialog = gtk_dialog_new_with_buttons (_("Certificate trust..."), NULL, 0,
@@ -339,7 +426,6 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 		NULL);
 
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "evolution");
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_HELP, FALSE);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 
 	grid = g_object_new (GTK_TYPE_GRID,
@@ -394,12 +480,14 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	g_free (tmp);
 
 	g_object_set_data (G_OBJECT (dialog), TRUST_PROMP_ID_KEY, GINT_TO_POINTER (prompt_id));
+	g_object_set_data_full (G_OBJECT (dialog), TRUST_PROMP_CERT_KEY, cert, trust_prompt_free_certificate);
+	g_object_set_data_full (G_OBJECT (dialog), TRUST_PROMP_ISSUERS_KEY, issuers, trust_prompt_free_issuers);
+
 	g_signal_connect (dialog, "response", G_CALLBACK (trust_prompt_response_cb), extension);
 
 	gtk_widget_show_all (GTK_WIDGET (grid));
 	gtk_widget_show (dialog);
 
-	CERT_DestroyCertificate (cert);
 	g_free (derCert.data);
 
 	return TRUE;

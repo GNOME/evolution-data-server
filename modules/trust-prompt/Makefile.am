@@ -13,6 +13,10 @@ module_trust_prompt_la_CPPFLAGS = \
 	$(NULL)
 
 module_trust_prompt_la_SOURCES = \
+	e-asn1-object.c \
+	e-asn1-object.h \
+	certificate-viewer.c \
+	certificate-viewer.h \
 	module-trust-prompt.c \
 	$(NULL)
 

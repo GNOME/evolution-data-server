@@ -22,9 +22,11 @@ typedef struct _TestClosure TestClosure;
 typedef struct _TestFixture TestFixture;
 
 struct _TestClosure {
+	gboolean only_certificate;
 };
 
 struct _TestFixture {
+	gboolean only_certificate;
 	EUserPrompter *prompter;
 	GMainLoop *main_loop;
 };
@@ -93,6 +95,34 @@ test_trust_prompt (EUserPrompter *prompter)
 		"3zOMCaTr7Cq6SJqnlrYUYbdBkobjadcfG2eAKfbhOiVGVEOee4O6JJ+nCrqXpqj42EGuQ8mKvl7Kao+"
 		"xerxctag0jzlLRFWJ69l7DZZyyFzY+/I9IWSVj8i0VCz0FkulK9adKeYD4E4BAOQvDFY4ED2FckW3AZ"
 		"zVueeiqTSIKwkDFhSDwTJsIfsOaEQ==";
+	const gchar *der_certificate_issuer =
+		"MIIGNDCCBBygAwIBAgIBGjANBgkqhkiG9w0BAQUFADB9MQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3Rh"
+		"cnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzEpMCcG"
+		"A1UEAxMgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcxMDI0MjA1NzA5WhcNMTcx"
+		"MDI0MjA1NzA5WjCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsT"
+		"IlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNz"
+		"IDIgUHJpbWFyeSBJbnRlcm1lZGlhdGUgU2VydmVyIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB"
+		"CgKCAQEA4k85L6GMmoWtCA4IPlfyiAEhG5SpbOK426oZGEY6UqH1D/RujOqWjJaHeRNAUS8i8gyLhw9l"
+		"33F0NENVsTUJm9m8H/rrQtCXQHK3Q5Y9upadXVACHJuRjZzArNe7LxfXyz6CnXPrB0KSss1ks3RVG7RL"
+		"hiEs93iHMuAW5Nq9TJXqpAp+tgoNLorPVavD5d1Bik7mb2VsskDPF125w2oLJxGEd2H2wnztwI14FBiZ"
+		"gZl1Y7foU9O6YekO+qIw80aiuckfbIBaQKwn7UhHM7BUxkYa8zVhwQIpkFR+ZE3EMFICgtffziFuGJHX"
+		"uKuMJxe18KMBL47SLoc6PbQpZ4rEAwIDAQABo4IBrTCCAakwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8B"
+		"Af8EBAMCAQYwHQYDVR0OBBYEFBHbI0X9VMxqcW+EigPXvvcBLyaGMB8GA1UdIwQYMBaAFE4L7xqkQFul"
+		"F2mHMMo0aEPQQa7yMGYGCCsGAQUFBwEBBFowWDAnBggrBgEFBQcwAYYbaHR0cDovL29jc3Auc3RhcnRz"
+		"c2wuY29tL2NhMC0GCCsGAQUFBzAChiFodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9zZnNjYS5jcnQwWwYD"
+		"VR0fBFQwUjAnoCWgI4YhaHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3JsMCegJaAjhiFodHRw"
+		"Oi8vY3JsLnN0YXJ0c3NsLmNvbS9zZnNjYS5jcmwwgYAGA1UdIAR5MHcwdQYLKwYBBAGBtTcBAgEwZjAu"
+		"BggrBgEFBQcCARYiaHR0cDovL3d3dy5zdGFydHNzbC5jb20vcG9saWN5LnBkZjA0BggrBgEFBQcCARYo"
+		"aHR0cDovL3d3dy5zdGFydHNzbC5jb20vaW50ZXJtZWRpYXRlLnBkZjANBgkqhkiG9w0BAQUFAAOCAgEA"
+		"nQfh7pB2MWcWRXCMy4SLS1doRKWJwfJ+yyiL9edwd9W29AshYKWhdHMkIoDW2LqNomJdCTVCKfs5Y0UL"
+		"pLA4Gmj0lRPM4EOU7Os5GuxXKdmZbfWEzY5zrsncavqenRZkkwjHHMKJVJ53gJD2uSl26xNnSFn4Ljox"
+		"uMnTiOVfTtIZPUOO15L/zzi24VuKUx3OrLR2L9j3QGPV7mnzRX2gYsFhw3XtsntNrCEnME5ZRmqTF8rI"
+		"OS0Bc2Vb6UGbERecyMhK76F2YC2uk/8M1TMTn08Tzt2G8fz4NVQVqFvnhX76Nwn/i7gxSZ4Nbt600hIt"
+		"uO3Iw/G2QqBMl3nf/sOjn6H0bSyEd6SiBeEX/zHdmvO4esNSwhERt1Axin/M51qJzPeGmmGSTy+UtpjH"
+		"eOBiS0N9PN7WmrQQoUCcSyrcuNDUnv3xhHgbDlePaVRCaHvqoO91DweijHOZq1X1BwnSrzgDapADDC+P"
+		"4uhDwjHpb62H5Y29TiyJS1HmnExUdsASgVOb7KD8LJzaGJVuHjgmQid4YAjff20y6NjAbx/rJnWfk/x7"
+		"G/41kNxTowemP4NVCitOYoIlzmYwXSzg+RkbdbmdmFamgyd60Y+NWZP8P3PXLrQsldiL98l+x/ydrHIE"
+		"H9LMF/TtNGCbnkqXBP7dcg5XVFEGcE3vqhykguAzx/Q=";
 	ENamedParameters *parameters;
 	GError *error = NULL;
 	gint result;
@@ -101,9 +131,10 @@ test_trust_prompt (EUserPrompter *prompter)
 
 	parameters = e_named_parameters_new ();
 
-	e_named_parameters_set (parameters, "host", "https://bugzilla.gnome.org/");
+	e_named_parameters_set (parameters, "host", "bugzilla.gnome.org");
 	e_named_parameters_set (parameters, "certificate", der_certificate);
 	e_named_parameters_set (parameters, "certificate-errors", "007f");
+	e_named_parameters_set (parameters, "issuer", der_certificate_issuer);
 
 	result = e_user_prompter_extension_prompt_sync (prompter, "ETrustPrompt::trust-prompt", parameters, NULL, NULL, &error);
 
@@ -186,7 +217,7 @@ test_user_prompts_idle_cb (gpointer user_data)
 	   in the right order and only one at a time, and then run
 	   the last synchronously, to wait for the result */
 	sz = G_N_ELEMENTS (prompts);
-	for (ii = 0; ii < sz && !error; ii++) {
+	for (ii = 0; !fixture->only_certificate && ii < sz && !error; ii++) {
 		gchar *title, *primary, *secondary, **buttons = NULL;
 		GSList *captions = NULL;
 
@@ -244,6 +275,10 @@ static void
 test_user_prompts (TestFixture *fixture,
 		   gconstpointer user_data)
 {
+	const TestClosure *closure = user_data;
+
+	fixture->only_certificate = closure->only_certificate;
+
 	g_idle_add (test_user_prompts_idle_cb, fixture);
 	g_main_loop_run (fixture->main_loop);
 }
@@ -259,6 +294,8 @@ main (gint argc,
 
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/");
+
+	closure.only_certificate = argc > 1 && g_ascii_strcasecmp (argv[1], "cert-only") == 0;
 
 	g_test_add (
 		"/e-user-prompter-test/UserPrompts",
