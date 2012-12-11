@@ -3916,7 +3916,7 @@ validate_county_code (EBookBackendSqliteDB  *ebsdb,
 #error Cannot resolve default 2-letter country code. Find a replacement for _NL_ADDRESS_COUNTRY_AB2 or implement code to parse the locale name.
 #endif /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
 
-	if (country_code == NULL) {
+	if (country_code == NULL || strlen (country_code) != 2) {
 		g_warning ("Cannot derive 2-letter country code from current locale.");
 		country_code = "ZZ";
 	}
@@ -3928,14 +3928,16 @@ validate_county_code (EBookBackendSqliteDB  *ebsdb,
 	g_free (ebsdb->priv->country_code);
 	ebsdb->priv->country_code = g_strdup (country_code);
 
-	g_print ("The country code has changed %s. "
-		 "Must rebuilding %s parameters and indexes for stored vCards.\n",
-	         ebsdb->priv->country_code, EVC_X_E164);
-
 	stmt = sqlite3_mprintf ("SELECT uid, vcard, NULL FROM %Q", folderid);
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, addto_vcard_list_cb, &vcard_data, error);
 	sqlite3_free (stmt);
+
+	if (vcard_data) {
+		g_print ("The country code has changed to \"%s\". "
+		         "Must rebuild %s parameters and indexes for stored vCards.\n",
+		         ebsdb->priv->country_code, EVC_X_E164);
+	}
 
 	for (l = vcard_data; success && l; l = l->next) {
 		EbSdbSearchData *const s_data = l->data;
