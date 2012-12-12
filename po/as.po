@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-12-09 17:11+0000\n"
-"PO-Revision-Date: 2012-12-10 17:10+0530\n"
+"POT-Creation-Date: 2012-12-11 17:40+0000\n"
+"PO-Revision-Date: 2012-12-12 14:53+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: Assamese <kde-i18n-doc@kde.org>\n"
 "Language: as_IN\n"
@@ -1907,15 +1907,15 @@ msgstr "%s ৰ পৰা অবৈধ বাৰ্তা স্ৰোত প্�
 msgid "Syncing folders"
 msgstr "ফোল্ডাৰ পুনৰ সংমিহলি কৰা হৈছে"
 
-#: ../camel/camel-filter-driver.c:1276 ../camel/camel-filter-driver.c:1761
+#: ../camel/camel-filter-driver.c:1276
 #, c-format
 msgid "Error parsing filter: %s: %s"
-msgstr "পৰিস্ৰাৱক বিশ্লেষণ কৰোঁতে ত্ৰুটি: %s: %s"
+msgstr "ফিল্টাৰ বিশ্লেষণ কৰোঁতে ত্ৰুটি: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1287 ../camel/camel-filter-driver.c:1774
+#: ../camel/camel-filter-driver.c:1287
 #, c-format
 msgid "Error executing filter: %s: %s"
-msgstr "পৰিস্ৰাৱক সঞ্চালন কৰোঁতে ব্যৰ্থ: %s: %s"
+msgstr "ফিল্টাৰ সঞ্চালন কৰোঁতে ব্যৰ্থ: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1383
 #, c-format
@@ -1955,6 +1955,24 @@ msgstr " %d ৰ %d বাৰ্তা প্ৰাপ্ত কৰা হৈছ�
 msgid "Failed at message %d of %d"
 msgstr "%d ৰ %d বাৰ্তাত ব্যৰ্থ"
 
+#: ../camel/camel-filter-driver.c:1740 ../camel/camel-filter-driver.c:1773
+#, c-format
+#| msgid "Error executing filter: %s: %s"
+msgid "Execution of filter '%s' failed: "
+msgstr "ফিল্টাৰ '%s' ৰ এক্সিকিউষণ ব্যৰ্থ হল:"
+
+#: ../camel/camel-filter-driver.c:1764
+#, c-format
+#| msgid "Error parsing filter: %s: %s"
+msgid "Error parsing filter '%s': %s: %s"
+msgstr "ফিল্টাৰ '%s' বিশ্লেষণ কৰোতে ত্ৰুটি: %s: %s"
+
+#: ../camel/camel-filter-driver.c:1782
+#, c-format
+#| msgid "Error executing filter: %s: %s"
+msgid "Error executing filter '%s': %s: %s"
+msgstr "ফিল্টাৰ '%s' এক্সিকিউট কৰোতে ত্ৰুটি: %s: %s"
+
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
 msgstr "বাৰ্তা উদ্ধাৰ কৰোঁতে ব্যৰ্থ"
@@ -1970,7 +1988,7 @@ msgstr "(user-tag) লে অবৈধ তৰ্কসমূহ"
 #: ../camel/camel-filter-search.c:1046 ../camel/camel-filter-search.c:1055
 #, c-format
 msgid "Error executing filter search: %s: %s"
-msgstr "পৰিস্ৰাৱক সহযোগে সন্ধান কৰোঁতে ব্যৰ্থ: %s: %s"
+msgstr "ফিল্টাৰ সহযোগে সন্ধান কৰোঁতে ব্যৰ্থ: %s: %s"
 
 #: ../camel/camel-folder.c:270
 #, c-format
@@ -1990,8 +2008,8 @@ msgstr[1] "'%s' ত নতুন হাম বাৰ্তাসমূহ শি
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "'%s' ' ত নতুন বাৰ্তা পৰিস্ৰাৱন কৰা হৈছে"
-msgstr[1] "'%s' ত নতুন বাৰ্তাসমূহ পৰিস্ৰাৱন কৰা হৈছে"
+msgstr[0] "'%s' ' ত নতুন বাৰ্তা ফিল্টাৰ কৰা হৈছে"
+msgstr[1] "'%s' ত নতুন বাৰ্তাসমূহ ফিল্টাৰ কৰা হৈছে"
 
 #: ../camel/camel-folder.c:930
 #: ../camel/providers/local/camel-maildir-folder.c:321
@@ -2209,7 +2227,6 @@ msgstr "এনক্ৰিপ্ট কৰা সমল"
 
 #: ../camel/camel-imapx-folder.c:555
 #, c-format
-#| msgid "Quota information not supported for folder '%s'"
 msgid "No quota information available for folder '%s'"
 msgstr "ফোল্ডাৰ '%s' ৰ বাবে কোনো কুটা তথ্য উপলব্ধ নাই"
 
@@ -2217,7 +2234,7 @@ msgstr "ফোল্ডাৰ '%s' ৰ বাবে কোনো কুটা �
 #: ../camel/providers/imap/camel-imap-folder.c:367
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
-msgstr "এই ফোল্ডাৰত বাৰ্তা পৰিস্ৰাৱকসমূহ প্ৰয়োগ কৰক (_f)"
+msgstr "এই ফোল্ডাৰত বাৰ্তা ফিল্টাৰসমূহ প্ৰয়োগ কৰক (_f)"
 
 #: ../camel/camel-imapx-folder.c:861
 #, c-format
@@ -2377,7 +2394,6 @@ msgid "Error renaming folder"
 msgstr "ফোল্ডাৰ পুনৰনামৰৰণ কৰোতে ত্ৰুটি"
 
 #: ../camel/camel-imapx-server.c:5952
-#| msgid "Retrieving quota information for '%s'"
 msgid "Error retrieving quota information"
 msgstr "কুটা তথ্য উদ্ধাৰ কৰোতে ত্ৰুটি"
 
@@ -2405,7 +2421,6 @@ msgid "Cannot create spool file: "
 msgstr "স্পুল ফাইল সৃষ্টি কৰিব নোৱাৰি: "
 
 #: ../camel/camel-imapx-server.c:7756
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "IMAP server does not support quotas"
 msgstr "IMAP চাৰ্ভাৰ এ কুটা সমৰ্থন নকৰে"
 
@@ -3332,17 +3347,17 @@ msgstr ""
 "%s"
 
 #: ../camel/camel-tcp-stream-ssl.c:520
-#: ../modules/trust-prompt/module-trust-prompt.c:336
+#: ../modules/trust-prompt/module-trust-prompt.c:423
 msgid "_Reject"
 msgstr "নাকচ কৰক (_R)"
 
 #: ../camel/camel-tcp-stream-ssl.c:521
-#: ../modules/trust-prompt/module-trust-prompt.c:337
+#: ../modules/trust-prompt/module-trust-prompt.c:424
 msgid "Accept _Temporarily"
 msgstr "অস্থায়ীভাৱে গ্ৰহণ কৰক (_T)"
 
 #: ../camel/camel-tcp-stream-ssl.c:522
-#: ../modules/trust-prompt/module-trust-prompt.c:338
+#: ../modules/trust-prompt/module-trust-prompt.c:425
 msgid "_Accept Permanently"
 msgstr "স্থায়ীভাৱে গ্ৰহণ কৰক (_A)"
 
@@ -3618,13 +3633,13 @@ msgstr "বিকল্পসমূহ"
 #: ../camel/providers/imapx/camel-imapx-provider.c:61
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Apply _filters to new messages in all folders"
-msgstr "সকলো ফোল্ডাৰসমূহত নতুন বাৰ্তাসমূহত পৰিস্ৰাৱকসমূহ প্ৰয়োগ কৰক (_f)"
+msgstr "সকলো ফোল্ডাৰসমূহত নতুন বাৰ্তাসমূহত ফিল্টাৰসমূহ প্ৰয়োগ কৰক (_f)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:59
 #: ../camel/providers/imapx/camel-imapx-provider.c:63
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr ""
-"চিহ্নিত চাৰ্ভাৰৰ ইনবক্সৰ মাজত আগত নতুন বাৰ্তাৰ ক্ষেত্ৰত পৰিস্ৰাৱক প্ৰয়োগ কৰা "
+"চিহ্নিত চাৰ্ভাৰৰ ইনবক্সৰ মাজত আগত নতুন বাৰ্তাৰ ক্ষেত্ৰত ফিল্টাৰ প্ৰয়োগ কৰা "
 "হ'ব (_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:61
@@ -3760,7 +3775,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:79
 #: ../camel/providers/local/camel-local-provider.c:99
 msgid "_Apply filters to new messages in Inbox"
-msgstr "ইনবক্সত নতুন বাৰ্তাসমূহৰ বাবে পৰিস্ৰাৱকসমূহ প্ৰয়োগ কৰক (_A) "
+msgstr "ইনবক্সত নতুন বাৰ্তাসমূহৰ বাবে ফিল্টাৰসমূহ প্ৰয়োগ কৰক (_A) "
 
 #: ../camel/providers/local/camel-local-provider.c:86
 msgid "Maildir-format mail directories"
@@ -5076,7 +5091,6 @@ msgstr "UID '%s' ইতিমধ্যে ব্যৱহৃত"
 
 #: ../libebackend/e-user-prompter-server.c:278
 #, c-format
-#| msgid "Contact '%s' not found"
 msgid "Extension dialog '%s' not found."
 msgstr "সম্প্ৰসাৰণ ডাইলগ '%s' পোৱা নগল।"
 
@@ -5731,27 +5745,340 @@ msgstr "স্বখোজ প্ৰতিক্ৰিয়াত ASUrl আৰু 
 msgid "Calendar"
 msgstr "কেলেন্ডাৰ"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:193
-#| msgid "Signing certificate not found"
+#: ../modules/trust-prompt/certificate-viewer.c:287
+#| msgid "Cannot add encryption certificate"
+msgid "Not part of certificate"
+msgstr "প্ৰমাণপত্ৰৰ অংশ নহয়"
+
+#: ../modules/trust-prompt/certificate-viewer.c:592
+msgid "This certificate has been verified for the following uses:"
+msgstr "এই প্ৰমাণপত্ৰক নিম্নলিখিত ব্যৱহাৰৰ বাবে সতা সত্য নিৰূপন কৰা হৈছে:"
+
+#: ../modules/trust-prompt/certificate-viewer.c:596
+#: ../modules/trust-prompt/e-asn1-object.c:387
+#| msgid "_View Certificate"
+msgid "SSL Client Certificate"
+msgstr "SSL ক্লাএন্ট প্ৰমাণপত্ৰ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:601
+#: ../modules/trust-prompt/e-asn1-object.c:391
+#| msgid "_View Certificate"
+msgid "SSL Server Certificate"
+msgstr "SSL চাৰ্ভাৰ প্ৰমাণপত্ৰ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:606
+#| msgid "_View Certificate"
+msgid "Email Signer Certificate"
+msgstr "ইমেইল স্বাক্ষৰকাৰী প্ৰমাণপত্ৰ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:611
+#| msgid "_View Certificate"
+msgid "Email Recipient Certificate"
+msgstr "ইমেইল গ্ৰাহক প্ৰমাণপত্ৰ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:625
+#| msgid "Issuer:"
+msgid "Issued To"
+msgstr "উল্লেখিত ব্যক্তিলৈ প্ৰেৰণ কৰা হৈছে"
+
+#: ../modules/trust-prompt/certificate-viewer.c:626
+#: ../modules/trust-prompt/certificate-viewer.c:632
+msgid "Common Name (CN)"
+msgstr "সাধাৰণ নাম (CN)"
+
+#: ../modules/trust-prompt/certificate-viewer.c:627
+#: ../modules/trust-prompt/certificate-viewer.c:633
+#| msgid "Organization"
+msgid "Organization (O)"
+msgstr "সংঘঠন (O)"
+
+#: ../modules/trust-prompt/certificate-viewer.c:628
+#: ../modules/trust-prompt/certificate-viewer.c:634
+#| msgid "Organizational Unit"
+msgid "Organizational Unit (OU)"
+msgstr "সংঘঠনৰ একক (OU)"
+
+#: ../modules/trust-prompt/certificate-viewer.c:629
+#: ../modules/trust-prompt/e-asn1-object.c:134
+msgid "Serial Number"
+msgstr "ক্ৰমিক সংখ্যা"
+
+#: ../modules/trust-prompt/certificate-viewer.c:631
+#| msgid "Issuer:"
+msgid "Issued By"
+msgstr "উল্লেখিত ব্যক্তি দ্বাৰা প্ৰেৰণ কৰা হৈছে"
+
+#: ../modules/trust-prompt/certificate-viewer.c:636
+msgid "Validity"
+msgstr "বৈধতা"
+
+#: ../modules/trust-prompt/certificate-viewer.c:637
+#| msgid "Issuer:"
+msgid "Issued On"
+msgstr "প্ৰেৰণ কৰাৰ তাৰিখ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:638
+msgid "Expires On"
+msgstr "অৱসান ঘটাৰ তাৰিখ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:640
+#| msgid "Fingerprint:"
+msgid "Fingerprints"
+msgstr "ফিংগাৰপ্ৰিন্টসমূহ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:641
+#| msgid "Fingerprint:"
+msgid "SHA1 Fingerprint"
+msgstr "SHA1 ফিংগাৰপ্ৰিন্ট"
+
+#: ../modules/trust-prompt/certificate-viewer.c:642
+#| msgid "Fingerprint:"
+msgid "MD5 Fingerprint"
+msgstr "MD5 ফিংগাৰপ্ৰিন্ট"
+
+#: ../modules/trust-prompt/certificate-viewer.c:644
+msgid "General"
+msgstr "সাধাৰণ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:661
+#| msgid "Certificate import failed"
+msgid "Certificate Hierarchy"
+msgstr "প্ৰমাণপত্ৰৰ অধিক্ৰম"
+
+#: ../modules/trust-prompt/certificate-viewer.c:664
+#| msgid "Certificate import failed"
+msgid "Certificate Fields"
+msgstr "প্ৰমাণপত্ৰৰ ক্ষেত্ৰসমূহ"
+
+#: ../modules/trust-prompt/certificate-viewer.c:667
+msgid "Field Value"
+msgstr "ক্ষেত্ৰৰ মান"
+
+#: ../modules/trust-prompt/certificate-viewer.c:669
+msgid "Details"
+msgstr "বিৱৰণ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:95
+msgid "Version"
+msgstr "সংস্কৰণ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:110
+msgid "Version 1"
+msgstr "সংস্কৰণ 1"
+
+#: ../modules/trust-prompt/e-asn1-object.c:113
+msgid "Version 2"
+msgstr "সংস্কৰণ 2"
+
+#: ../modules/trust-prompt/e-asn1-object.c:116
+msgid "Version 3"
+msgstr "সংস্কৰণ 3"
+
+#: ../modules/trust-prompt/e-asn1-object.c:192
+msgid "PKCS #1 MD2 With RSA Encryption"
+msgstr "RSA ইনক্ৰিপষণৰ সৈতে PKCS #1 MD2"
+
+#: ../modules/trust-prompt/e-asn1-object.c:195
+msgid "PKCS #1 MD5 With RSA Encryption"
+msgstr "RSA ইনক্ৰিপষণৰ সৈতে PKCS #1 MD5"
+
+#: ../modules/trust-prompt/e-asn1-object.c:198
+msgid "PKCS #1 SHA-1 With RSA Encryption"
+msgstr "RSA ইনক্ৰিপষণৰ সৈতে PKCS #1 SHA-1"
+
+#: ../modules/trust-prompt/e-asn1-object.c:201
+msgid "PKCS #1 SHA-256 With RSA Encryption"
+msgstr "RSA ইনক্ৰিপষণৰ সৈতে PKCS #1 SHA-256"
+
+#: ../modules/trust-prompt/e-asn1-object.c:204
+msgid "PKCS #1 SHA-384 With RSA Encryption"
+msgstr "RSA ইনক্ৰিপষণৰ সৈতে PKCS #1 SHA-384"
+
+#: ../modules/trust-prompt/e-asn1-object.c:207
+msgid "PKCS #1 SHA-512 With RSA Encryption"
+msgstr "RSA ইনক্ৰিপষণৰ সৈতে PKCS #1 SHA-512"
+
+#: ../modules/trust-prompt/e-asn1-object.c:234
+msgid "PKCS #1 RSA Encryption"
+msgstr "PKCS #1 RSA ইনক্ৰিপষণ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:237
+#| msgid "Certificate import failed"
+msgid "Certificate Key Usage"
+msgstr "প্ৰমাণপত্ৰ কি'ৰ ব্যৱহাৰ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:240
+#| msgid "_View Certificate"
+msgid "Netscape Certificate Type"
+msgstr "নেটস্কেইপ প্ৰমাণপত্ৰৰ ধৰণ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:243
+#| msgid "Certificate import failed"
+msgid "Certificate Authority Key Identifier"
+msgstr "প্ৰমাণপত্ৰ কতৃপক্ষ কি' চিনাক্তক"
+
+#: ../modules/trust-prompt/e-asn1-object.c:255
+#, c-format
+msgid "Object Identifier (%s)"
+msgstr "অবজেক্ট চিনাক্তক (%s)"
+
+#: ../modules/trust-prompt/e-asn1-object.c:306
+msgid "Algorithm Identifier"
+msgstr "এলগৰিথম চিনাক্তক"
+
+#: ../modules/trust-prompt/e-asn1-object.c:314
+msgid "Algorithm Parameters"
+msgstr "এলগৰিথমৰ প্ৰাচলসমূহ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:336
+msgid "Subject Public Key Info"
+msgstr "বিষয় ৰাজহুৱা কি' তথ্য"
+
+#: ../modules/trust-prompt/e-asn1-object.c:341
+msgid "Subject Public Key Algorithm"
+msgstr "বিষয় ৰাজহুৱা কি' এলগৰিথম"
+
+#: ../modules/trust-prompt/e-asn1-object.c:356
+msgid "Subject's Public Key"
+msgstr "বিষয়ৰ ৰাজহুৱা কি'"
+
+#: ../modules/trust-prompt/e-asn1-object.c:378
+#: ../modules/trust-prompt/e-asn1-object.c:428
+#| msgid "Unable to process spool folder"
+msgid "Error: Unable to process extension"
+msgstr "ত্ৰুটি: সম্প্ৰসাৰন প্ৰক্ৰিয়া কৰিবলে অক্ষম"
+
+#: ../modules/trust-prompt/e-asn1-object.c:395
+#| msgid "Email 1"
+msgid "Email"
+msgstr "ই-মেইল"
+
+#: ../modules/trust-prompt/e-asn1-object.c:399
+#: ../modules/trust-prompt/e-asn1-object.c:411
+msgid "Object Signer"
+msgstr "অবজেক্ট স্বাক্ষৰকাৰী"
+
+#: ../modules/trust-prompt/e-asn1-object.c:403
+#| msgid "Certificate trust..."
+msgid "SSL Certificate Authority"
+msgstr "SSL প্ৰমাণপত্ৰ কতৃপক্ষ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:407
+#| msgid "Certificate trust..."
+msgid "Email Certificate Authority"
+msgstr "ইমেইল প্ৰমাণপত্ৰৰ কতৃপক্ষ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:436
+#| msgid "Signing message"
+msgid "Signing"
+msgstr "স্বাক্ষৰ কৰা"
+
+#: ../modules/trust-prompt/e-asn1-object.c:440
+msgid "Non-repudiation"
+msgstr "নন-ৰেপুডিয়েষণ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:444
+msgid "Key Encipherment"
+msgstr "কি' ইনচিফাৰমেন্ট"
+
+#: ../modules/trust-prompt/e-asn1-object.c:448
+msgid "Data Encipherment"
+msgstr "তথ্যৰ ইনচিফাৰমেন্ট"
+
+#: ../modules/trust-prompt/e-asn1-object.c:452
+msgid "Key Agreement"
+msgstr "কি'ৰ চুক্তি"
+
+#: ../modules/trust-prompt/e-asn1-object.c:456
+#| msgid "Certificate trust..."
+msgid "Certificate Signer"
+msgstr "প্ৰমাণপত্ৰ স্বাক্ষৰকাৰী"
+
+#: ../modules/trust-prompt/e-asn1-object.c:460
+msgid "CRL Signer"
+msgstr "CRL স্বাক্ষৰকাৰী"
+
+#: ../modules/trust-prompt/e-asn1-object.c:509
+msgid "Critical"
+msgstr "মাৰাত্মক"
+
+#: ../modules/trust-prompt/e-asn1-object.c:511
+#: ../modules/trust-prompt/e-asn1-object.c:514
+msgid "Not Critical"
+msgstr "মাৰাত্মক নহয়"
+
+#: ../modules/trust-prompt/e-asn1-object.c:535
+msgid "Extensions"
+msgstr "সম্প্ৰসাৰনসমূহ"
+
+#. Translators: This string is used in Certificate
+#. * details for fields like Issuer or Subject, which
+#. * shows the field name on the left and its respective
+#. * value on the right, both as stored in the
+#. * certificate itself.  You probably do not need to
+#. * change this string, unless changing the order of
+#. * name and value.  As a result example:
+#. * "OU = VeriSign Trust Network"
+#: ../modules/trust-prompt/e-asn1-object.c:615
+#, c-format
+msgid "%s = %s"
+msgstr "%s = %s"
+
+#: ../modules/trust-prompt/e-asn1-object.c:658
+#| msgid "X.509 Certificate"
+msgid "Certificate"
+msgstr "প্ৰমাণপত্ৰ"
+
+#: ../modules/trust-prompt/e-asn1-object.c:672
+#: ../modules/trust-prompt/e-asn1-object.c:807
+#| msgid "Signature algorithm unknown"
+msgid "Certificate Signature Algorithm"
+msgstr "প্ৰমাণপত্ৰৰ স্বাক্ষৰ এলগৰিথম"
+
+#: ../modules/trust-prompt/e-asn1-object.c:681
+#| msgid "Issuer:"
+msgid "Issuer"
+msgstr "প্ৰেৰক"
+
+#: ../modules/trust-prompt/e-asn1-object.c:712
+#| msgid "Subject:"
+msgid "Subject"
+msgstr "বিষয়"
+
+#: ../modules/trust-prompt/e-asn1-object.c:735
+#| msgid "Unique ID"
+msgid "Issuer Unique ID"
+msgstr "প্ৰেৰকৰ অবিকল্প ID"
+
+#: ../modules/trust-prompt/e-asn1-object.c:754
+#| msgid "Unique ID"
+msgid "Subject Unique ID"
+msgstr "বিষয়ৰ অবিকল্প ID"
+
+#: ../modules/trust-prompt/e-asn1-object.c:813
+#| msgid "Certificate import failed"
+msgid "Certificate Signature Value"
+msgstr "প্ৰমাণপত্ৰৰ স্বাক্ষৰ মান"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:201
 msgid "The signing certificate authority is not known."
 msgstr "স্বাক্ষৰ কৰা প্ৰমাণপত্ৰ কতৃপক্ষ অজ্ঞাত।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:195
+#: ../modules/trust-prompt/module-trust-prompt.c:203
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr "প্ৰমাণপত্ৰ উদ্ধাৰ কৰা ছাইটৰ প্ৰত্যাশিত পৰিচয়ৰ সৈতে মিল নাখায়।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:197
+#: ../modules/trust-prompt/module-trust-prompt.c:205
 msgid "The certificate's activation time is still in the future."
 msgstr "প্ৰমাণপত্ৰ সক্ৰিয়কৰণ সময় এতিয়াও ভৱিষ্যতত আছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:199
-#| msgid "The referenced credentials have expired."
+#: ../modules/trust-prompt/module-trust-prompt.c:207
 msgid "The certificate has expired."
 msgstr "প্ৰমাণপত্ৰৰ অৱসান ঘটিছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:201
+#: ../modules/trust-prompt/module-trust-prompt.c:209
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
@@ -5759,27 +6086,20 @@ msgstr ""
 "সংযোগৰ প্ৰমাণপত্ৰ প্ৰত্যাহাৰ তালিকাৰ ওপৰত ভিত্তি কৰি প্ৰমাণপত্ৰ প্ৰত্যাহাৰ "
 "কৰা হৈছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:203
+#: ../modules/trust-prompt/module-trust-prompt.c:211
 msgid "The certificate's algorithm is considered insecure."
 msgstr "প্ৰমাণপত্ৰৰ এলগৰিথমক অসুৰক্ষিত ধৰা হৈছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:334
-#| msgid "Signing certificate not trusted"
+#: ../modules/trust-prompt/module-trust-prompt.c:421
 msgid "Certificate trust..."
 msgstr "প্ৰমাণপত্ৰ ভৰসা..."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:335
-#| msgid "X.509 Certificate"
+#: ../modules/trust-prompt/module-trust-prompt.c:422
 msgid "_View Certificate"
 msgstr "প্ৰমাণপত্ৰ দৰ্শন কৰক (_V)"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:370
+#: ../modules/trust-prompt/module-trust-prompt.c:456
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
 msgid ""
 "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
 "\n"
@@ -5790,19 +6110,19 @@ msgstr ""
 "\n"
 "প্ৰমাণপত্ৰৰ বিষয়ে বিৱৰিত তথ্য:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:386
+#: ../modules/trust-prompt/module-trust-prompt.c:472
 msgid "Issuer:"
 msgstr "প্ৰেৰক:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:387
+#: ../modules/trust-prompt/module-trust-prompt.c:473
 msgid "Subject:"
 msgstr "বিষয়:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:388
+#: ../modules/trust-prompt/module-trust-prompt.c:474
 msgid "Fingerprint:"
 msgstr "ফিংগাৰপ্ৰিন্ট:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:389
+#: ../modules/trust-prompt/module-trust-prompt.c:475
 msgid "Reason:"
 msgstr "কাৰণ:"
 
