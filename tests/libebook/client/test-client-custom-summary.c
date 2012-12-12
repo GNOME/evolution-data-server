@@ -24,20 +24,35 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
 
 
-/* This forces the GType to be registered in a way that
- * avoids a "statement with no effect" compiler warning.
- * FIXME Use g_type_ensure() once we require GLib 2.34. */
-#define REGISTER_TYPE(type) \
-	(g_type_class_unref (g_type_class_ref (type)))
+typedef struct {
+	ETestServerClosure closure;
+	EBookQuery *query;
+	gint num_contacts;
+} ClientTestData;
+
+/* Cleanup the closures, just for the hell of it... */
+static GList *closures = NULL;
 
 static void
-setup_custom_summary (ESource *scratch)
+client_test_data_free (gpointer p)
+{
+	ClientTestData *data = (ClientTestData *)p;
+
+	if (data->query)
+		e_book_query_unref (data->query);
+	g_slice_free (ClientTestData, data);
+}
+
+static void
+setup_custom_book (ESource            *scratch,
+		   ETestServerClosure *closure)
 {
 	ESourceBackendSummarySetup *setup;
 
-	REGISTER_TYPE (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
 	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
 	e_source_backend_summary_setup_set_summary_fields (setup,
 							   E_CONTACT_FULL_NAME,
@@ -48,7 +63,6 @@ setup_custom_summary (ESource *scratch)
 							   0);
 	e_source_backend_summary_setup_set_indexed_fields (setup,
 							   E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
-							   E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
 							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
 							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
 							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
@@ -56,38 +70,54 @@ setup_custom_summary (ESource *scratch)
 							   0);
 }
 
-typedef struct {
-	GTestDataFunc func;
-	EBookClient *client;
-	EBookQuery *query;
-	gint num_contacts;
-} ClientTestData;
-
 static void
-client_test_data_free (gpointer p)
+add_client_test (const gchar *path,
+                 gpointer func,
+                 EBookQuery *query,
+                 gint num_contacts)
 {
-	ClientTestData *const data = p;
-	g_object_unref (data->client);
+	ClientTestData *data = g_slice_new0 (ClientTestData);
 
-	if (data->query)
-		e_book_query_unref (data->query);
-	g_slice_free (ClientTestData, data);
+	data->closure.type = E_TEST_SERVER_ADDRESS_BOOK;
+	data->closure.customize = setup_custom_book;
+	data->query = query;
+	data->num_contacts = num_contacts;
+
+	g_test_add (path, ETestServerFixture, data, e_test_server_utils_setup, func, e_test_server_utils_teardown);
+	closures = g_list_prepend (closures, data);
 }
 
 static void
-search_test (gconstpointer p)
+setup_book (EBookClient *book_client)
 {
-	const ClientTestData *const data = p;
+	/* Add contacts */
+	if (!add_contact_from_test_case_verify (book_client, "custom-1", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-2", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-3", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-4", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-5", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-6", NULL)) {
+		g_error ("Failed to add contacts");
+	}
+}
+
+static void
+search_test (ETestServerFixture *fixture,
+	     gconstpointer       user_data)
+{
+	EBookClient *book_client;
 	GSList *results = NULL;
 	GError *error = NULL;
 	gchar *sexp;
+	const ClientTestData *const data = user_data;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+	setup_book (book_client);
 
 	sexp = e_book_query_to_string (data->query);
 
-	if (!e_book_client_get_contacts_sync (data->client, sexp, &results, NULL, &error)) {
-		report_error ("get contacts", &error);
-		g_test_fail ();
-		return;
+	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
+		g_error ("get contacts: %s", error->message);
 	}
 
 	g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
@@ -96,19 +126,22 @@ search_test (gconstpointer p)
 }
 
 static void
-uid_test (gconstpointer p)
+uid_test (ETestServerFixture *fixture,
+	  gconstpointer       user_data)
 {
-	const ClientTestData *const data = p;
+	EBookClient *book_client;
 	GSList *results = NULL;
 	GError *error = NULL;
 	gchar *sexp;
+	const ClientTestData *const data = user_data;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+	setup_book (book_client);
 
 	sexp = e_book_query_to_string (data->query);
 
-	if (!e_book_client_get_contacts_uids_sync (data->client, sexp, &results, NULL, &error)) {
-		report_error ("get contact uids", &error);
-		g_test_fail ();
-		return;
+	if (!e_book_client_get_contacts_uids_sync (book_client, sexp, &results, NULL, &error)) {
+		g_error ("get contact uids: %s", error->message);
 	}
 
 	g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
@@ -116,138 +149,61 @@ uid_test (gconstpointer p)
 	g_free (sexp);
 }
 
-static void
-remove_test (gconstpointer p)
-{
-	const ClientTestData *const data = p;
-	GError *error = NULL;
-
-	if (!e_client_remove_sync (E_CLIENT (data->client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_test_fail ();
-		return;
-	}
-}
-
-/* Temporary hack not in master, we need to support
- * earlier versions of GLib (< 2.34) without g_test_add_data_func_full()
- *
- *
- */
-static void
-test_and_free (gconstpointer p)
-{
-	ClientTestData *data = (ClientTestData *)p;
-
-	data->func (p);
-	client_test_data_free (data);
-}
-
-static void
-add_client_test (const gchar *path,
-                 GTestDataFunc func,
-                 EBookClient *client,
-                 EBookQuery *query,
-                 gint num_contacts)
-{
-	ClientTestData *data = g_slice_new (ClientTestData);
-
-	data->func = func;
-	data->client = g_object_ref (client);
-	data->query = query;
-	data->num_contacts = num_contacts;
-
-	g_test_add_data_func (path, data, test_and_free);
-}
-
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book_client;
-	EContact *contact_final;
-	GError *error = NULL;
+	gint ret;
 
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
 	g_test_init (&argc, &argv, NULL);
-	main_initialize ();
 
-	/* Setup */
-	book_client = new_custom_temp_client (NULL, setup_custom_summary);
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	/* Add contacts */
-	if (!add_contact_from_test_case_verify (book_client, "custom-1", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-2", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-3", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-4", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	if (!add_contact_from_test_case_verify (book_client, "custom-5", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
 
 	/* Add search tests that fetch contacts */
-	add_client_test ("/client/search/exact/fn", search_test, book_client,
+	add_client_test ("/client/search/exact/fn", search_test,
 	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
 	                 1);
-	add_client_test ("/client/search/prefix/fn", search_test, book_client,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
-	                 2);
-	add_client_test ("/client/search/suffix/phone", search_test, book_client,
-	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
-	                 2);
-	add_client_test ("/client/search/suffix/email", search_test, book_client,
-	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
-	                 2);
-	add_client_test ("/client/search/exact/name", search_test, book_client,
+	add_client_test ("/client/search/exact/name", search_test,
 	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
 	                 1);
-	add_client_test ("/client/search/eqphone/exact/phone", search_test, book_client,
-	                 e_book_query_field_test(E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
+	add_client_test ("/client/search/prefix/fn", search_test,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
+	                 2);
+	add_client_test ("/client/search/prefix/fn/percent", search_test,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
 	                 1);
-	add_client_test ("/client/search/eqphone/national/phone", search_test, book_client,
-	                 e_book_query_field_test(E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
-	                 1);
-	add_client_test ("/client/search/eqphone/short/phone", search_test, book_client,
-	                 e_book_query_field_test(E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
-	                 1);
-	add_client_test ("/client/search/eqphone/exact/tel", search_test, book_client,
-	                 e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
-	                 1);
-	add_client_test ("/client/search/eqphone/national/tel", search_test, book_client,
-	                 e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
-	                 1);
-	add_client_test ("/client/search/eqphone/short/tel", search_test, book_client,
-	                 e_book_query_vcard_field_test(EVC_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
-	                 1);
-
-	/* Add search tests that fetch uids */
-	add_client_test ("/client/search-uid/exact/name", uid_test, book_client,
+	add_client_test ("/client/search/suffix/phone", search_test,
+	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
+	                 2);
+	add_client_test ("/client/search/suffix/email", search_test,
 	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
 	                 2);
 
-	/* Test remove operation */
-	add_client_test ("/client/remove", remove_test, book_client, NULL, 0);
+	/* Add search tests that fetch uids */
+	add_client_test ("/client/search-uid/exact/fn", uid_test,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
+	                 1);
+	add_client_test ("/client/search-uid/exact/name", uid_test,
+	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
+	                 1);
+	add_client_test ("/client/search-uid/prefix/fn", uid_test,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
+	                 2);
+	add_client_test ("/client/search-uid/prefix/fn/percent", uid_test,
+	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
+	                 1);
+	add_client_test ("/client/search-uid/suffix/phone", uid_test,
+	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
+	                 2);
+	add_client_test ("/client/search-uid/suffix/email", uid_test,
+	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
+	                 2);
 
-	/* Roll dices */
-	g_object_unref (book_client);
+	ret = e_test_server_utils_run ();
 
-	return g_test_run ();
+	g_list_free_full (closures, client_test_data_free);
+
+	return ret;
 }

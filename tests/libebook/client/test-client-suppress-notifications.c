@@ -4,6 +4,9 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 #define NOTIFICATION_WAIT 2000
 
@@ -15,45 +18,31 @@ add_contact (EBookClient *book_client)
 	g_return_if_fail (add_contact_from_test_case_verify (book_client, "name-only", NULL));
 }
 
-static gboolean
-setup_book (EBookClient **book_client)
+static void
+setup_book (EBookClient *book_client)
 {
-	GError *error = NULL;
-
-	g_return_val_if_fail (book_client != NULL, FALSE);
-
-	*book_client = new_temp_client (NULL);
-	g_return_val_if_fail (*book_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (*book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (*book_client);
-		return FALSE;
-	}
-
-	if (!add_contact_from_test_case_verify (*book_client, "simple-1", NULL) ||
-	    !add_contact_from_test_case_verify (*book_client, "simple-2", NULL)) {
-		g_object_unref (*book_client);
-		return FALSE;
-	}
-
-	return TRUE;
+	if (!add_contact_from_test_case_verify (book_client, "simple-1", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "simple-2", NULL))
+		g_error ("Failed to add contacts");
 }
 
 static void
-finish_test (EBookClientView *view)
+finish_test (EBookClientView *view,
+	     GMainLoop *loop)
 {
 	e_book_client_view_stop (view, NULL);
 	g_object_unref (view);
 
-	stop_main_loop (0);
+	g_main_loop_quit (loop);
 }
 
 static void
 objects_added (EBookClientView *view,
-               const GSList *contacts)
+               const GSList *contacts,
+	       gpointer user_data)
 {
 	const GSList *l;
+	GMainLoop *loop = (GMainLoop *)user_data;
 
 	/* We quit the mainloop and the test succeeds if we get the notification
 	 * for the contact we add after loading the view completes */
@@ -64,7 +53,7 @@ objects_added (EBookClientView *view,
 	if (loading_view)
 		g_error ("Expected no contact additions while loading the view");
 	else {
-		finish_test (view);
+		finish_test (view, loop);
 	}
 
 }
@@ -93,27 +82,28 @@ complete (EBookClientView *view,
 }
 
 static void
-setup_and_start_view (EBookClientView *view)
+setup_and_start_view (EBookClientView *view,
+		      GMainLoop *loop)
 {
 	GError *error = NULL;
 
-	g_signal_connect (view, "objects-added", G_CALLBACK (objects_added), NULL);
-	g_signal_connect (view, "objects-removed", G_CALLBACK (objects_removed), NULL);
-	g_signal_connect (view, "complete", G_CALLBACK (complete), NULL);
+	g_signal_connect (view, "objects-added", G_CALLBACK (objects_added), loop);
+	g_signal_connect (view, "objects-removed", G_CALLBACK (objects_removed), loop);
+	g_signal_connect (view, "complete", G_CALLBACK (complete), loop);
 
 	e_book_client_view_set_fields_of_interest (view, NULL, &error);
 	if (error)
-		report_error ("set fields of interest", &error);
+		g_error ("set fields of interest: %s", error->message);
 
 	/* Set flags to 0, i.e. unflag E_BOOK_VIEW_NOTIFY_INITIAL */
 	e_book_client_view_set_flags (view, 0, &error);
 	if (error)
-		report_error ("set view flags", &error);
+		g_error ("set view flags: %s", error->message);
 	loading_view = TRUE;
 
 	e_book_client_view_start (view, &error);
 	if (error)
-		report_error ("start view", &error);
+		g_error ("start view: %s", error->message);
 
 }
 
@@ -122,43 +112,20 @@ get_view_cb (GObject *source_object,
              GAsyncResult *result,
              gpointer user_data)
 {
+	GMainLoop *loop = (GMainLoop *)user_data;
 	EBookClientView *view;
 	GError *error = NULL;
 
 	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), result, &view, &error)) {
-		report_error ("get view finish", &error);
-		stop_main_loop (1);
-
-		return;
+		g_error ("get view finish: %s", error->message);
 	}
 
-	setup_and_start_view (view);
+	setup_and_start_view (view, loop);
 }
 
-static gpointer
-call_get_view (gpointer user_data)
-{
-	EBookQuery *query;
-	EBookClient *book_client = user_data;
-	gchar *sexp;
-
-	g_return_val_if_fail (book_client != NULL, NULL);
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (book_client), NULL);
-
-	query = e_book_query_any_field_contains ("");
-	sexp = e_book_query_to_string (query);
-	e_book_query_unref (query);
-
-	e_book_client_get_view (book_client, sexp, NULL, get_view_cb, NULL);
-
-	g_free (sexp);
-
-	return NULL;
-}
-
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_suppress_notifications_sync (ETestServerFixture *fixture,
+				  gconstpointer       user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -166,56 +133,59 @@ main (gint argc,
 	gchar *sexp;
 	GError *error = NULL;
 
-	main_initialize ();
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	/*
-	 * Sync version
-	 */
-	if (!setup_book (&book_client))
-		return 1;
+	setup_book (book_client);
 
 	query = e_book_query_any_field_contains ("");
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 	if (!e_book_client_get_view_sync (book_client, sexp, &view, NULL, &error)) {
-		report_error ("get book view sync", &error);
+		g_error ("get book view sync: %s", error->message);
 		g_free (sexp);
 		g_object_unref (book_client);
-
-		return 1;
 	}
 
 	g_free (sexp);
 
-	setup_and_start_view (view);
+	setup_and_start_view (view, fixture->loop);
+	g_main_loop_run (fixture->loop);
+}
 
-	start_main_loop (NULL, NULL);
+static void
+test_suppress_notifications_async (ETestServerFixture *fixture,
+				   gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	EBookQuery *query;
+	gchar *sexp;
 
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-		return 1;
-	}
+	setup_book (book_client);
+	query = e_book_query_any_field_contains ("");
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
 
-	g_object_unref (book_client);
+	e_book_client_get_view (book_client, sexp, NULL, get_view_cb, fixture->loop);
 
-	/*
-	 * Async version
-	 */
-	if (!setup_book (&book_client))
-		return 1;
+	g_free (sexp);
+	g_main_loop_run (fixture->loop);
+}
 
-	start_in_idle_with_main_loop (call_get_view, book_client);
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
+	g_test_add ("/EBookClient/SuppressNotifications/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_suppress_notifications_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBookClient/SuppressNotifications/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_suppress_notifications_async, e_test_server_utils_teardown);
 
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

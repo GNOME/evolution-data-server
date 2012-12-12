@@ -5,21 +5,9 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
 
-static gboolean
-test_sync (EBookClient *book_client)
-{
-	GError *error = NULL;
-
-	g_print ("Refresh supported: %s\n", e_client_check_refresh_supported (E_CLIENT (book_client)) ? "yes" : "no");
-
-	if (!e_client_refresh_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("refresh sync", &error);
-		return FALSE;
-	}
-
-	return TRUE;
-}
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 /* asynchronous callback with a main-loop running */
 static void
@@ -29,89 +17,73 @@ async_refresh_result_ready (GObject *source_object,
 {
 	EBookClient *book_client;
 	GError *error = NULL;
+	GMainLoop *loop = (GMainLoop *)user_data;
 
 	book_client = E_BOOK_CLIENT (source_object);
 
 	if (!e_client_refresh_finish (E_CLIENT (book_client), result, &error)) {
-		report_error ("refresh finish", &error);
-		stop_main_loop (1);
+		g_error ("refresh finish: %s", error->message);
 		return;
 	}
 
-	stop_main_loop (0);
+	g_main_loop_quit (loop);	
 }
 
-/* synchronously in idle with main-loop running */
-static gboolean
-test_sync_in_idle (gpointer user_data)
+static void
+test_refresh_sync (ETestServerFixture *fixture,
+		   gconstpointer       user_data)
 {
-	EBookClient *book_client = user_data;
+	EBookClient *book_client;
+	GError *error = NULL;
 
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (book_client), FALSE);
-
-	if (!test_sync (book_client)) {
-		stop_main_loop (1);
-		return FALSE;
-	}
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
 	g_print ("Refresh supported: %s\n", e_client_check_refresh_supported (E_CLIENT (book_client)) ? "yes" : "no");
+	if (!e_client_check_refresh_supported (E_CLIENT (book_client)))
+		return;
 
-	e_client_refresh (E_CLIENT (book_client), NULL, async_refresh_result_ready, NULL);
+	if (!e_client_refresh_sync (E_CLIENT (book_client), NULL, &error)) {
+		g_error ("Error in refresh: %s", error->message);
+	}
+}
 
+static gboolean
+main_loop_fail_timeout (gpointer unused)
+{
+	g_error ("Failed to refresh, async call timed out");
 	return FALSE;
 }
 
-/* synchronously in a dedicated thread with main-loop running */
-static gpointer
-test_sync_in_thread (gpointer user_data)
+static void
+test_refresh_async (ETestServerFixture *fixture,
+		    gconstpointer       user_data)
 {
-	if (!test_sync (user_data)) {
-		stop_main_loop (1);
-		return NULL;
-	}
+	EBookClient *book_client;
 
-	g_idle_add (test_sync_in_idle, user_data);
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	return NULL;
+	g_print ("Refresh supported: %s\n", e_client_check_refresh_supported (E_CLIENT (book_client)) ? "yes" : "no");
+	if (!e_client_check_refresh_supported (E_CLIENT (book_client)))
+		return;
+
+	e_client_refresh (E_CLIENT (book_client), NULL, async_refresh_result_ready, fixture->loop);
+	g_timeout_add (5 * 1000, (GSourceFunc)main_loop_fail_timeout, NULL);
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book_client;
-	GError *error = NULL;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/EBookClient/Refresh/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_refresh_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBookClient/Refresh/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_refresh_async, e_test_server_utils_teardown);
 
-	book_client = new_temp_client (NULL);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	/* synchronously without main-loop */
-	if (!test_sync (book_client)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	start_in_thread_with_main_loop (test_sync_in_thread, book_client);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

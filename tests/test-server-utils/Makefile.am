@@ -1,7 +1,5 @@
 NULL =
 
-@GNOME_CODE_COVERAGE_RULES@
-
 common_cflags = \
 	$(AM_CPPFLAGS) \
 	-I$(top_srcdir) \

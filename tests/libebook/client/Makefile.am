@@ -3,8 +3,6 @@ noinst_LTLIBRARIES = libclient-test-utils.la
 libclient_test_utils_la_SOURCES =				\
 	client-test-utils.c					\
 	client-test-utils.h					\
-	$(top_srcdir)/tests/libedataserver/e-test-dbus-utils.c	\
-	$(top_srcdir)/tests/libedataserver/e-test-dbus-utils.h	\
 	$(NULL)
 
 libclient_test_utils_la_CPPFLAGS =				\
@@ -30,14 +28,13 @@ libclient_test_utils_la_CPPFLAGS =				\
 libclient_test_utils_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
 
 # Should be kept ordered approximately from least to most difficult/complex
 TESTS =								\
-	test-client-remove					\
-	test-client-examine					\
 	test-client-refresh					\
 	test-client-add-contact					\
 	test-client-get-contact					\
@@ -56,20 +53,25 @@ TESTS =								\
 	test-client-photo-is-uri				\
 	test-client-change-country-code				\
 	test-client-upgrade-addressbook				\
-	test-client-write-write					\
-	test-client-stress-factory--serial			\
-	test-client-stress-factory--fifo			\
-	test-client-stress-factory--single-book			\
+	test-client-async					\
 	$(NULL)
 
+# The noinst tests are functional tests, not unit tests.
+#
+# Either they were designed as functional tests or have
+# not been ported to use ETestServerFixture yet.
 noinst_PROGRAMS =						\
 	$(TESTS)						\
+	test-client-write-write					\
+	test-client-examine					\
 	test-client						\
-	test-client-async					\
 	test-client-nonexistent-id				\
 	test-client-search					\
 	test-client-self					\
 	test-client-stress-views				\
+	test-client-stress-factory--serial			\
+	test-client-stress-factory--fifo			\
+	test-client-stress-factory--single-book			\
 	$(NULL)
 
 TEST_CPPFLAGS =							\
@@ -78,7 +80,7 @@ TEST_CPPFLAGS =							\
 	$(NULL)
 
 TEST_LIBS =							\
-	$(libclient_test_utils_la_LIBS)				\
+	$(libclient_test_utils_la_LIBADD)			\
 	libclient-test-utils.la					\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
@@ -114,8 +116,6 @@ test_client_modify_contact_LDADD=$(TEST_LIBS)
 test_client_modify_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_refresh_LDADD=$(TEST_LIBS)
 test_client_refresh_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_remove_LDADD=$(TEST_LIBS)
-test_client_remove_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_remove_contact_LDADD=$(TEST_LIBS)
 test_client_remove_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_remove_contact_by_uid_LDADD=$(TEST_LIBS)

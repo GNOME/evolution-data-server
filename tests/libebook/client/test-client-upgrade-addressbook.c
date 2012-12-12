@@ -29,7 +29,7 @@
 #include <libebook/libebook.h>
 #include <glib/gstdio.h>
 
-#include "client-test-utils.h"
+#include "e-test-server-utils.h"
 
 typedef struct _TestFixture TestFixture;
 typedef struct _TestParams TestParams;
@@ -43,29 +43,95 @@ typedef void (* TestFunc)(TestFixture   *fixture,
                           gconstpointer  params);
 
 struct _TestFixture {
-	GMainLoop *loop;
-	ESourceRegistry *registry;
-	EBookClient *client;
+	ETestServerFixture base_fixture;
 	GSList *contacts;
 };
 
 struct _TestParams {
-	gchar      *db_version;
-	AccessMode  access_mode;
+	ETestServerClosure base_closure;
+	gchar             *db_version;
+	AccessMode         access_mode;
 };
+
+static void setup_book_directory (ESource            *scratch,
+				  ETestServerClosure *closure);
+
+
+/****************************************************************
+ *                       Fixture handling                       *
+ ****************************************************************/
+static TestParams *
+create_params (const gchar *db_version,
+	       AccessMode   access_mode)
+{
+	TestParams *params = g_slice_new0 (TestParams);
+
+	params->base_closure.type      = E_TEST_SERVER_ADDRESS_BOOK;
+	params->base_closure.customize = setup_book_directory;
+
+	params->access_mode = access_mode;
+	params->db_version  = g_strdup (db_version);
+
+	return params;
+}
+
+static void
+free_params (TestParams *params)
+{
+	g_free (params->db_version);
+	g_slice_free (TestParams, params);
+}
+
+static void
+setup (TestFixture    *fixture,
+       gconstpointer   data)
+{
+	e_test_server_utils_setup ((ETestServerFixture *)fixture, data);
+}
+
+static void
+teardown (TestFixture   *fixture,
+          gconstpointer  data)
+{
+	TestParams *params = (TestParams *)data;
+
+	e_test_server_utils_teardown ((ETestServerFixture *)fixture, data);
+
+	g_slist_free_full (fixture->contacts, g_object_unref);
+	fixture->contacts = NULL;
+	free_params (params);
+}
+
+static void
+add_test (const gchar *path,
+          const gchar *db_version,
+          AccessMode   access_mode,
+          TestFunc     test_func)
+{
+	TestParams *params;
+
+	params = create_params (db_version, access_mode);
+	g_test_add (path, TestFixture, params, setup, test_func, teardown);
+}
 
 /****************************************************************
  *                      Addressbook mocking                     *
  ****************************************************************/
-
 static void
-create_bookdir (const gchar *const uid,
-                const gchar *const db_version)
+setup_book_directory (ESource            *scratch,
+		      ETestServerClosure *closure)
 {
-	gchar *const bookdir = g_build_filename (g_get_user_data_dir (), "evolution", "addressbook", uid, NULL);
+	TestParams *params = (TestParams *)closure;
+
+	if (params->access_mode == DIRECT_ACCESS)
+		g_setenv ("DEBUG_DIRECT", "1", TRUE);
+	else
+		g_unsetenv ("DEBUG_DIRECT");
+
+	gchar *const bookdir = g_build_filename (g_get_user_data_dir (), "evolution", "addressbook", "test-address-book", NULL);
 	gchar *const photodir = g_build_filename (bookdir, "photos", NULL);
 
-	gchar *const datadir = g_build_filename (SRCDIR, "../data/dumps", db_version, NULL);
+	gchar *const datadir = g_build_filename (SRCDIR, "../data/dumps", params->db_version, NULL);
 	gchar *const bdb_filename = g_build_filename (datadir, "addressbook.db_dump", NULL);
 	gchar *const sqlite_filename = g_build_filename (datadir, "contacts.sql", NULL);
 
@@ -114,117 +180,7 @@ create_bookdir (const gchar *const uid,
 
 	g_free (photodir);
 	g_free (bookdir);
-}
 
-static gboolean
-wait_cb (gpointer data)
-{
-	TestFixture *fixture = data;
-	g_main_loop_quit (fixture->loop);
-	return FALSE;
-}
-
-static void
-create_source (TestFixture *fixture,
-               const gchar *uid)
-{
-	GError *error = NULL;
-	ESourceBackend  *backend;
-	ESource *scratch;
-
-	fixture->registry = e_source_registry_new_sync (NULL, &error);
-
-	if (!fixture->registry)
-		g_error ("Unable to create the registry: %s", error->message);
-
-	scratch = e_source_new_with_uid (uid, NULL, &error);
-
-	if (!scratch)
-		g_error ("Failed to create source with uid \"%s\": %s", uid, error->message);
-
-	e_source_set_display_name (scratch, "Mock Addressbook");
-
-	backend = e_source_get_extension (scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
-	e_source_backend_set_backend_name (backend, "local");
-
-	if (!e_source_registry_commit_source_sync (fixture->registry, scratch, NULL, &error))
-		g_error ("Unable to add new source to the registry for uid \"%s\": %s", uid, error->message);
-
-	g_object_unref (scratch);
-
-	/* Give the backend a chance to see the source */
-	g_timeout_add (250, wait_cb, fixture);
-	g_main_loop_run (fixture->loop);
-}
-
-/****************************************************************
- *                       Fixture handling                       *
- ****************************************************************/
-
-static void
-setup (TestFixture    *fixture,
-       gconstpointer   data)
-{
-	const TestParams *params = data;
-
-	guint64 now = g_get_real_time ();
-	gchar *const uid = g_strdup_printf ("mock-book-%" G_GINT64_FORMAT, now);
-	GError *error = NULL;
-	ESource *source;
-
-	fixture->loop = g_main_loop_new (NULL, FALSE);
-
-	create_bookdir (uid, params->db_version);
-	create_source (fixture, uid);
-
-	source = e_source_new_with_uid (uid, NULL, &error);
-
-	if (!source)
-		g_error ("Failed to create source with uid \"%s\": %s", uid, error->message);
-
-	if (params->access_mode == DIRECT_ACCESS) {
-		fixture->client = e_book_client_new_direct (fixture->registry, source, &error);
-	} else {
-		fixture->client = e_book_client_new (source, &error);
-	}
-
-	if (!fixture->client)
-		g_error ("Failed to create addressbook client: %s", error->message);
-	if (!e_client_open_sync (E_CLIENT (fixture->client), TRUE, NULL, &error))
-		g_error ("Failed to open addressbook client: %s", error->message);
-
-	g_object_unref (source);
-	g_free (uid);
-}
-
-static void
-teardown (TestFixture   *fixture,
-          gconstpointer  data)
-{
-	const TestParams *const params = data;
-
-	if (fixture->client)
-		g_object_unref (fixture->client);
-	if (fixture->registry)
-		g_object_unref (fixture->registry);
-
-	g_slist_free_full (fixture->contacts, g_object_unref);
-	g_main_loop_unref (fixture->loop);
-
-	g_free (params->db_version);
-	g_slice_free (TestParams, (TestParams *) params);
-}
-
-static void
-add_test (const gchar *path,
-          const gchar *db_version,
-          AccessMode   access_mode,
-          TestFunc     test_func)
-{
-	TestParams *params = g_slice_new0 (TestParams);
-	params->db_version = g_strdup (db_version);
-	params->access_mode = access_mode;
-	g_test_add (path, TestFixture, params, setup, test_func, teardown);
 }
 
 /****************************************************************
@@ -259,13 +215,14 @@ contacts_added_cb (EBookClientView *view,
                    GSList          *contacts,
                    TestFixture     *fixture)
 {
+	ETestServerFixture *base = (ETestServerFixture *)fixture;
 	GSList *l;
 
 	for (l = contacts; l; l = l->next)
 		fixture->contacts = g_slist_prepend (fixture->contacts, g_object_ref (l->data));
 
 	if (g_slist_length (fixture->contacts) >= 5)
-		g_main_loop_quit (fixture->loop);
+		g_main_loop_quit (base->loop);
 }
 
 static void
@@ -273,16 +230,18 @@ view_complete_cb (EBookClientView *view,
                   const GError    *error,
                   TestFixture     *fixture)
 {
+	ETestServerFixture *base = (ETestServerFixture *)fixture;
+
 	if (error)
 		g_error ("View failed: %s", error->message);
 
-	g_main_loop_quit (fixture->loop);
+	g_main_loop_quit (base->loop);
 }
 
 static gboolean
 timeout_cb (gpointer data)
 {
-	TestFixture *fixture = data;
+	ETestServerFixture *fixture = data;
 
 	g_assert_not_reached ();
 	g_main_loop_quit (fixture->loop);
@@ -296,10 +255,14 @@ test_book_client_view (TestFixture   *fixture,
 {
 	GError *error = NULL;
 	EBookClientView *view;
+	EBookClient *client;
 	guint timeout_id;
 	GSList *fields;
+	ETestServerFixture *base = (ETestServerFixture *)fixture;
 
-	if (!e_book_client_get_view_sync (fixture->client,
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!e_book_client_get_view_sync (client,
 	                                  "(contains \"x-evolution-any-field\" \"\")",
 	                                  &view, NULL, &error))
 		g_error ("Failed to create the view: %s", error->message);
@@ -322,7 +285,7 @@ test_book_client_view (TestFixture   *fixture,
 	if (error)
 		g_error ("Failed to start view: %s", error->message);
 
-	g_main_loop_run (fixture->loop);
+	g_main_loop_run (base->loop);
 	g_source_remove (timeout_id);
 
 	g_signal_handlers_disconnect_by_data (view, fixture);
@@ -341,8 +304,11 @@ test_book_client (TestFixture   *fixture,
                   gconstpointer  params)
 {
 	GError *error = NULL;
+	EBookClient *client;
 
-	if (!e_book_client_get_contacts_sync (fixture->client,
+	client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!e_book_client_get_contacts_sync (client,
 	                                      "(contains \"x-evolution-any-field\" \"\")",
 	                                      &fixture->contacts, NULL, &error))
 		g_error ("Failed to read contacts: %s", error->message);
@@ -350,19 +316,21 @@ test_book_client (TestFixture   *fixture,
 	verify_contacts (fixture->contacts);
 }
 
+
 gint
-main (gint    argc,
+main (gint argc,
       gchar **argv)
 {
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
 	g_test_init (&argc, &argv, NULL);
-
-	main_initialize ();
 
 	add_test ("/upgrade/0.2/dbus/book-client", "0.2", INDIRECT_ACCESS, test_book_client);
 	add_test ("/upgrade/0.2/dbus/book-client-view", "0.2", INDIRECT_ACCESS, test_book_client_view);
 	add_test ("/upgrade/0.2/direct/book-client", "0.2", DIRECT_ACCESS, test_book_client);
 	add_test ("/upgrade/0.2/direct/book-client-view", "0.2", DIRECT_ACCESS, test_book_client_view);
 
-	return g_test_run ();
+	return e_test_server_utils_run ();
 }
 

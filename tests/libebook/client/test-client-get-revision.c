@@ -5,6 +5,9 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 #define CYCLES 10
 
@@ -42,40 +45,31 @@ get_revision_compare_cycle (EBookClient *client)
        g_free (revision_after);
 }
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_get_revision (ETestServerFixture *fixture,
+		   gconstpointer       user_data)
 {
 	EBookClient *book_client;
-	GError      *error = NULL;
-	gint         i;
+	gint i;
 
-	g_type_init ();
-
-	/*
-	 * Setup
-	 */
-	book_client = new_temp_client (NULL);
-
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
 	/* Test that modifications make the revisions increment */
 	for (i = 0; i < CYCLES; i++)
 		get_revision_compare_cycle (book_client);
+}
 
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	g_object_unref (book_client);
+	g_test_add ("/EBookClient/GetRevision", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_revision, e_test_server_utils_teardown);
 
-	return 0;
+	return e_test_server_utils_run ();
 }

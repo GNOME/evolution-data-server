@@ -4,95 +4,77 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+
+static void
+test_add_contact_sync (ETestServerFixture *fixture,
+		       gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	EContact *contact;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!add_contact_from_test_case_verify (book_client, "simple-1", &contact)) {
+		g_error ("Failed to add contact sync");
+	}
+	g_object_unref (contact);
+}
 
 static void
 add_contact_cb (GObject *source_object,
                 GAsyncResult *result,
                 gpointer user_data)
 {
+	GMainLoop *loop = (GMainLoop *)user_data;
 	GError *error = NULL;
 	gchar *uid;
 
 	if (!e_book_client_add_contact_finish (E_BOOK_CLIENT (source_object), result, &uid, &error)) {
-		report_error ("add contact finish", &error);
-		stop_main_loop (1);
-		return;
+		g_error ("add contact finish: %s", error->message);
 	}
 
 	printf ("Contact added as '%s'\n", uid);
 	g_free (uid);
-	stop_main_loop (0);
+	g_main_loop_quit (loop);
+}
+
+static void
+test_add_contact_async (ETestServerFixture *fixture,
+			gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	EContact *contact;
+	gchar *vcard;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+
+	vcard = new_vcard_from_test_case ("simple-1");
+	contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+
+	e_book_client_add_contact (book_client, contact, NULL, add_contact_cb, fixture->loop);
+	g_object_unref (contact);
+
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book_client;
-	GError *error = NULL;
-	EContact *contact;
-	gchar *vcard;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/EBookClient/AddContact/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_add_contact_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBookClient/AddContact/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_add_contact_async, e_test_server_utils_teardown);
 
-	/*
-	 * Setup
-	 */
-	book_client = new_temp_client (NULL);
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	/*
-	 * Sync version
-	 */
-	if (!add_contact_from_test_case_verify (book_client, "simple-1", &contact)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (contact);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-	/*
-	 * Async version
-	 */
-	book_client = new_temp_client (NULL);
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	vcard = new_vcard_from_test_case ("simple-1");
-	contact = e_contact_new_from_vcard (vcard);
-	g_free (vcard);
-
-	e_book_client_add_contact (book_client, contact, NULL, add_contact_cb, NULL);
-	g_object_unref (contact);
-
-	start_main_loop (NULL, NULL);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

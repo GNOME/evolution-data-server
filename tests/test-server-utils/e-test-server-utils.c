@@ -86,7 +86,13 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 		if (!source)
 			g_error ("Unable to fetch newly created addressbook source from the registry");
 
-		pair->fixture->service.book_client = e_book_client_new (source, &error);
+		if (g_getenv ("DEBUG_DIRECT") != NULL)
+			pair->fixture->service.book_client =
+				e_book_client_new_direct (pair->fixture->registry, source, &error);
+		else
+			pair->fixture->service.book_client =
+				e_book_client_new (source, &error);
+
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 

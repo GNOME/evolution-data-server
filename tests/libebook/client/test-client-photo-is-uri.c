@@ -3,6 +3,9 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 static const gchar *photo_data =
 "/9j / 4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q / 9sAQwAIBgYHB\
@@ -238,11 +241,11 @@ setup_and_start_view (EBookClientView *view)
 
 	e_book_client_view_set_fields_of_interest (view, NULL, &error);
 	if (error)
-		report_error ("set fields of interest", &error);
+		g_error ("set fields of interest: %s", error->message);
 
 	e_book_client_view_start (view, &error);
 	if (error)
-		report_error ("start view", &error);
+		g_error ("start view: %s", error->message);
 }
 
 static void
@@ -296,64 +299,45 @@ add_contact_uri (EBookClient *book)
 }
 
 static void
-setup_book (EBookClient **book_out)
+test_photo_is_uri (ETestServerFixture *fixture,
+		   gconstpointer       user_data)
 {
-	EBookClient *book;
-	GError      *error = NULL;
+	EBookClient *book_client;
+	EBookClientView *view;
+	EBookQuery *query;
+	GError     *error = NULL;
+	gchar      *sexp;
 
-	book = new_temp_client (NULL);
-	g_assert (book != NULL);
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	if (!e_client_open_sync (E_CLIENT (book), FALSE, NULL, &error)) {
-		g_error ("failed to open client: %s", error->message);
-	}
+	add_contact_inline (book_client);
+	add_contact_uri (book_client);
 
-	add_contact_inline (book);
-	add_contact_uri (book);
+	query = e_book_query_any_field_contains ("");
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+	if (!e_book_client_get_view_sync (book_client, sexp, &view, NULL, &error))
+		g_error ("get book view sync: %s", error->message);
 
-	*book_out = book;
+	g_free (sexp);
+
+	setup_and_start_view (view);
+
+	loop = fixture->loop;
+	g_main_loop_run (loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book;
-	EBookClientView *view;
-	EBookQuery *query;
-	GError     *error = NULL;
-	gchar      *sexp;
-
+#if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	setup_book (&book);
+	g_test_add ("/EBookClient/PhotoIsUri", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_photo_is_uri, e_test_server_utils_teardown);
 
-	query = e_book_query_any_field_contains ("");
-	sexp = e_book_query_to_string (query);
-	e_book_query_unref (query);
-	if (!e_book_client_get_view_sync (book, sexp, &view, NULL, &error)) {
-		report_error ("get book view sync", &error);
-		g_free (sexp);
-		g_object_unref (book);
-
-		return 1;
-	}
-
-	g_free (sexp);
-
-	setup_and_start_view (view);
-
-	loop = g_main_loop_new (NULL, TRUE);
-	g_main_loop_run (loop);
-
-	if (!e_client_remove_sync (E_CLIENT (book), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book);
-
-		return 1;
-	}
-
-	g_object_unref (book);
-
-	return 0;
+	return e_test_server_utils_run ();
 }
