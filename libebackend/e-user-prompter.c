@@ -250,7 +250,14 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 
 	if (!dbus_prompter) {
 		g_main_context_pop_thread_default (main_context);
+
+		/* Make sure the main_context doesn't have pending operations;
+		   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+		while (g_main_context_pending (main_context))
+			g_main_context_iteration (main_context, FALSE);
+
 		g_main_context_unref (main_context);
+
 		g_dbus_error_strip_remote_error (local_error);
 		g_simple_async_result_take_error (simple, local_error);
 		return;
@@ -260,12 +267,20 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 		async_data->response_callback, async_data);
 
 	if (!async_data->invoke (dbus_prompter, async_data, cancellable, &local_error)) {
-		g_main_context_pop_thread_default (main_context);
-		g_main_context_unref (main_context);
-		g_dbus_error_strip_remote_error (local_error);
-		g_simple_async_result_take_error (simple, local_error);
 		g_signal_handler_disconnect (dbus_prompter, handler_id);
 		g_object_unref (dbus_prompter);
+
+		g_main_context_pop_thread_default (main_context);
+
+		/* Make sure the main_context doesn't have pending operations;
+		   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+		while (g_main_context_pending (main_context))
+			g_main_context_iteration (main_context, FALSE);
+
+		g_main_context_unref (main_context);
+
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		return;
 	}
 
@@ -280,6 +295,12 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 	g_object_unref (dbus_prompter);
 
 	g_main_context_pop_thread_default (main_context);
+
+	/* Make sure the main_context doesn't have pending operations;
+	   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+	while (g_main_context_pending (main_context))
+		g_main_context_iteration (main_context, FALSE);
+
 	g_main_context_unref (main_context);
 }
 
