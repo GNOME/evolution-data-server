@@ -4,8 +4,10 @@
 #include <libebook/libebook.h>
 
 #include "ebook-test-utils.h"
+#include "e-test-server-utils.h"
 
-static GMainLoop *loop;
+static ETestServerClosure book_closure =
+	{ E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
 
 static void
 print_contact (EContact *contact)
@@ -51,7 +53,8 @@ contacts_removed (EBookView *book_view,
 static void
 view_complete (EBookView *book_view,
                EBookViewStatus status,
-               const gchar *error_msg)
+               const gchar *error_msg,
+	       GMainLoop *loop)
 {
 	e_book_view_stop (book_view);
 	g_object_unref (book_view);
@@ -59,11 +62,12 @@ view_complete (EBookView *book_view,
 }
 
 static void
-setup_and_start_view (EBookView *view)
+setup_and_start_view (EBookView *view,
+		      GMainLoop *loop)
 {
 	g_signal_connect (view, "contacts_added", G_CALLBACK (contacts_added), NULL);
 	g_signal_connect (view, "contacts_removed", G_CALLBACK (contacts_removed), NULL);
-	g_signal_connect (view, "view_complete", G_CALLBACK (view_complete), NULL);
+	g_signal_connect (view, "view_complete", G_CALLBACK (view_complete), loop);
 
 	e_book_view_start (view);
 }
@@ -71,65 +75,83 @@ setup_and_start_view (EBookView *view)
 static void
 get_book_view_cb (EBookTestClosure *closure)
 {
+	GMainLoop *loop = closure->user_data;
 	g_assert (closure->view);
 
-	setup_and_start_view (closure->view);
+	setup_and_start_view (closure->view, loop);
 }
 
 static void
-setup_book (EBook **book_out)
+setup_book (EBook *book)
 {
-	EBook *book;
-
-	book = ebook_test_utils_book_new_temp (NULL);
-	ebook_test_utils_book_open (book, FALSE);
-
 	ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", NULL);
 	ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-2", NULL);
 	ebook_test_utils_book_add_contact_from_test_case_verify (book, "name-only", NULL);
+}
 
-	*book_out = book;
+static void
+test_get_book_view_sync (ETestServerFixture *fixture,
+			 gconstpointer       user_data)
+{
+	EBook *book;
+	EBookQuery *query;
+	EBookView *view;
+
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
+	setup_book (book);
+
+	query = e_book_query_any_field_contains ("");
+	ebook_test_utils_book_get_book_view (book, query, &view);
+	setup_and_start_view (view, fixture->loop);
+
+	test_print ("successfully set up the book view\n");
+
+	g_main_loop_run (fixture->loop);
+
+	e_book_query_unref (query);
+}
+
+static gboolean
+main_loop_fail_timeout (gpointer unused)
+{
+	g_error ("Failed to get book view, async call timed out");
+	return FALSE;
+}
+
+static void
+test_get_book_view_async (ETestServerFixture *fixture,
+			  gconstpointer       user_data)
+{
+	EBook *book;
+	EBookQuery *query;
+
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
+	setup_book (book);
+
+	query = e_book_query_any_field_contains ("");
+
+	ebook_test_utils_book_async_get_book_view (
+		book, query,
+			(GSourceFunc) get_book_view_cb, fixture->loop);
+
+	g_timeout_add (5 * 1000, (GSourceFunc)main_loop_fail_timeout, NULL);
+	g_main_loop_run (fixture->loop);
+	e_book_query_unref (query);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBook *book;
-	EBookQuery *query;
-	EBookView *view;
-
+#if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	/*
-	 * Sync version
-	 */
-	setup_book (&book);
-	query = e_book_query_any_field_contains ("");
-	ebook_test_utils_book_get_book_view (book, query, &view);
-	setup_and_start_view (view);
+	g_test_add ("/EBook/GetBookView/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_book_view_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBook/GetBookView/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_book_view_async, e_test_server_utils_teardown);
 
-	test_print ("successfully set up the book view\n");
-
-	loop = g_main_loop_new (NULL, TRUE);
-	g_main_loop_run (loop);
-
-	e_book_query_unref (query);
-
-	/*
-	 * Async version
-	 */
-	setup_book (&book);
-	query = e_book_query_any_field_contains ("");
-
-	loop = g_main_loop_new (NULL, TRUE);
-	ebook_test_utils_book_async_get_book_view (
-		book, query,
-			(GSourceFunc) get_book_view_cb, loop);
-
-	g_main_loop_run (loop);
-
-	e_book_query_unref (query);
-
-	return 0;
+	return e_test_server_utils_run ();
 }

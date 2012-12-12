@@ -4,11 +4,17 @@
 #include <libebook/libebook.h>
 
 #include "ebook-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure =
+	{ E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
 
 #define EMAIL_ADD "foo@bar.com"
 
-static EBook *book;
-static gchar *uid;
+
+/* Global data */
+static EBook *book = NULL;
+static gchar *uid  = NULL;
 
 static void
 verify_precommit_and_prepare_contact (EContact *contact)
@@ -46,50 +52,62 @@ commit_verify_cb (EBookTestClosure *closure)
 	return FALSE;
 }
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_commit_contact_sync (ETestServerFixture *fixture,
+			  gconstpointer       user_data)
 {
-	GMainLoop *loop;
 	EContact *contact;
 
-	g_type_init ();
-
-	/*
-	 * Setup
-	 */
-	book = ebook_test_utils_book_new_temp (NULL);
-	ebook_test_utils_book_open (book, FALSE);
-
-	/*
-	 * Sync version
-	 */
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
 	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "name-only", &contact);
+
 	verify_precommit_and_prepare_contact (contact);
 	ebook_test_utils_book_commit_contact (book, contact);
-
 	verify_commit (contact);
 
 	test_print ("successfully committed changes to contact contact '%s'\n", uid);
 	g_object_unref (contact);
 	g_free (uid);
 
-	/*
-	 * Async version
-	 */
-	book = ebook_test_utils_book_new_temp (NULL);
-	ebook_test_utils_book_open (book, FALSE);
+	contact = NULL;
+	uid = NULL;
+}
+
+static void
+test_commit_contact_async (ETestServerFixture *fixture,
+			   gconstpointer       user_data)
+{
+	EContact *contact;
+
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
 	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "name-only", &contact);
 
 	verify_precommit_and_prepare_contact (contact);
 
-	loop = g_main_loop_new (NULL, TRUE);
 	ebook_test_utils_book_async_commit_contact (
-		book, contact, (GSourceFunc) commit_verify_cb, loop);
+		book, contact, (GSourceFunc) commit_verify_cb, fixture->loop);
 
-	g_main_loop_run (loop);
+	g_main_loop_run (fixture->loop);
 
+	g_object_unref (contact);
 	g_free (uid);
+	contact = NULL;
+	uid = NULL;
+}
 
-	return 0;
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/EBook/CommitContact/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_commit_contact_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBook/CommitContact/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_commit_contact_async, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }
