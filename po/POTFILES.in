@@ -214,20 +214,6 @@ libedataserver/e-source-mail-signature.c
 libedataserver/e-source-registry.c
 libedataserver/e-time-utils.c
 libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in
-libedataserverui/e-book-auth-util.c
-libedataserverui/e-categories-dialog.c
-libedataserverui/e-categories-editor.c
-libedataserverui/e-categories-selector.c
-libedataserverui/e-category-completion.c
-libedataserverui/e-category-editor.c
-libedataserverui/e-cell-renderer-color.c
-libedataserverui/e-client-utils.c
-libedataserverui/e-name-selector-dialog.c
-libedataserverui/e-name-selector-entry.c
-libedataserverui/e-name-selector-list.c
-libedataserverui/e-passwords.c
-libedataserverui/e-passwords-win32.c
-libedataserverui/e-source-selector-dialog.c
 modules/gnome-online-accounts/goaewsclient.c
 modules/google-backend/module-google-backend.c
 modules/trust-prompt/certificate-viewer.c
@@ -237,4 +223,3 @@ modules/yahoo-backend/module-yahoo-backend.c
 services/evolution-addressbook-factory/evolution-addressbook-factory.c
 services/evolution-calendar-factory/evolution-calendar-factory.c
 services/evolution-user-prompter/evolution-user-prompter.c
-tests/libedataserverui/evolution-source-viewer.c
