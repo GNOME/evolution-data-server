@@ -3,13 +3,16 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
 
-static gboolean
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+
+static void
 check_removed (EBookClient *book_client,
                const GSList *uids)
 {
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (uids != NULL, FALSE);
+	g_return_if_fail (book_client != NULL);
+	g_return_if_fail (uids != NULL);
 
 	while (uids) {
 		GError *error = NULL;
@@ -18,17 +21,11 @@ check_removed (EBookClient *book_client,
 		if (!e_book_client_get_contact_sync (book_client, uids->data, &contact, NULL, &error) &&
 		    g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND)) {
 			g_clear_error (&error);
-		} else {
-			report_error ("fail with get contact on removed contact", &error);
-			if (contact)
-				g_object_unref (contact);
-			return FALSE;
-		}
+		} else
+			g_error ("fail with get contact on removed contact: %s", error->message);
 
 		uids = uids->next;
 	}
-
-	return TRUE;
 }
 
 static gboolean
@@ -58,108 +55,83 @@ fill_book_client (EBookClient *book_client,
 }
 
 static void
+test_remove_contacts_sync (ETestServerFixture *fixture,
+			   gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	GError *error = NULL;
+	GSList *uids = NULL;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!fill_book_client (book_client, &uids))
+		g_error ("Failed to add contacts");
+
+	if (!e_book_client_remove_contacts_sync (book_client, uids, NULL, &error))
+		g_error ("remove contact sync: %s", error->message);
+
+	/* This will assert they are actually removed */
+	check_removed (book_client, uids);
+	g_slist_foreach (uids, (GFunc) g_free, NULL);
+	g_slist_free (uids);
+}
+
+typedef struct {
+	GSList *uids;
+	GMainLoop *loop;
+} RemoveData;
+
+static void
 remove_contacts_cb (GObject *source_object,
                     GAsyncResult *result,
-                    gpointer uids)
+                    gpointer user_data)
 {
 	GError *error = NULL;
+	RemoveData *data = (RemoveData *)user_data;
 
-	if (!e_book_client_remove_contacts_finish (E_BOOK_CLIENT (source_object), result, &error)) {
-		report_error ("remove contacts finish", &error);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_book_client_remove_contacts_finish (E_BOOK_CLIENT (source_object), result, &error))
+		g_error ("remove contacts finish: %s", error->message);
 
-	stop_main_loop (check_removed (E_BOOK_CLIENT (source_object), uids) ? 0 : 1);
+	check_removed (E_BOOK_CLIENT (source_object), data->uids);
+	g_main_loop_quit (data->loop);
+}
+
+static void
+test_remove_contacts_async (ETestServerFixture *fixture,
+			    gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	GSList *uids = NULL;
+	RemoveData data;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!fill_book_client (book_client, &uids))
+		g_error ("Failed to add contacts");
+
+	data.uids = uids;
+	data.loop = fixture->loop;
+	e_book_client_remove_contacts (book_client, uids, NULL, remove_contacts_cb, &data);
+
+	g_main_loop_run (fixture->loop);
+
+	g_slist_foreach (uids, (GFunc) g_free, NULL);
+	g_slist_free (uids);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book_client;
-	GError *error = NULL;
-	GSList *uids;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/EBookClient/RemoveContacts/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_remove_contacts_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBookClient/RemoveContacts/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_remove_contacts_async, e_test_server_utils_teardown);
 
-        /*
-         * Setup
-         */
-	book_client = new_temp_client (NULL);
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-        /*
-         * Sync version
-         */
-	if (!fill_book_client (book_client, &uids)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	if (!e_book_client_remove_contacts_sync (book_client, uids, NULL, &error)) {
-		report_error ("remove contact sync", &error);
-		g_object_unref (book_client);
-		g_slist_foreach (uids, (GFunc) g_free, NULL);
-		g_slist_free (uids);
-		return 1;
-	}
-
-	if (!check_removed (book_client, uids)) {
-		g_object_unref (book_client);
-		g_slist_foreach (uids, (GFunc) g_free, NULL);
-		g_slist_free (uids);
-		return 1;
-	}
-
-	g_slist_foreach (uids, (GFunc) g_free, NULL);
-	g_slist_free (uids);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-        /*
-         * Async version
-         */
-	book_client = new_temp_client (NULL);
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	if (!fill_book_client (book_client, &uids)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	e_book_client_remove_contacts (book_client, uids, NULL, remove_contacts_cb, uids);
-
-	start_main_loop (NULL, NULL);
-
-	g_slist_foreach (uids, (GFunc) g_free, NULL);
-	g_slist_free (uids);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

@@ -4,6 +4,9 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 static void
 print_all_uids (EBookClient *book)
@@ -75,51 +78,43 @@ print_all_emails (EBookClient *book)
 }
 
 static void
-print_one_email (EBookClient *book_client)
-{
-	EContact *contact;
-	GError *error = NULL;
-
-	if (!e_book_client_get_contact_sync (book_client, "pas-id-0002023", &contact, NULL, &error)) {
-		report_error ("get_contact_sync", &error);
-		return;
-	}
-
-	print_email (contact);
-
-	g_object_unref (contact);
-}
-
-gint
-main (gint argc,
-      gchar **argv)
+test_client (ETestServerFixture *fixture,
+	     gconstpointer       user_data)
 {
 	EBookClient *book_client;
-	ESourceRegistry *registry;
-	GError *error = NULL;
 
-	main_initialize ();
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	registry = e_source_registry_new_sync (NULL, &error);
-	if (error != NULL)
-		g_error ("%s", error->message);
-
-	printf ("loading addressbook\n");
-
-	book_client = open_system_book (registry, FALSE);
-	if (!book_client)
-		return 1;
-
-	printf ("printing one contact\n");
-	print_one_email (book_client);
+	/* Add some contacts */
+	if (!add_contact_from_test_case_verify (book_client, "custom-1", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-2", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-3", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-4", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-5", NULL) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-6", NULL)) {
+		g_object_unref (book_client);
+		g_error ("Failed to add contacts");
+	}
 
 	printf ("printing all contacts\n");
 	print_all_emails (book_client);
 
 	printf ("printing all uids\n");
 	print_all_uids (book_client);
+}
 
-	g_object_unref (book_client);
 
-	return 0;
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/EBookClient/BasicTest", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_client, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }

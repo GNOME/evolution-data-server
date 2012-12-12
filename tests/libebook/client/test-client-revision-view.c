@@ -4,6 +4,9 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 #define N_TEST_CONTACTS 4
 
@@ -25,22 +28,10 @@ add_contact (EBookClient *client)
 	g_object_unref (contact);
 }
 
-static gboolean
-setup_book (EBookClient **book_out)
+static void
+setup_book (EBookClient *book_client)
 {
-	GError *error = NULL;
 	gint    i;
-
-	g_return_val_if_fail (book_out != NULL, FALSE);
-
-	*book_out = new_temp_client (NULL);
-	g_return_val_if_fail (*book_out != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (*book_out), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (*book_out);
-		return FALSE;
-	}
 
 	for (i = 0; i < N_TEST_CONTACTS; i++)
 	{
@@ -51,18 +42,16 @@ setup_book (EBookClient **book_out)
 		e_contact_set (contact, E_CONTACT_NICKNAME, name);
 
 		/* verify the contact was added "successfully" (not thorough) */
-		if (!add_contact_verify (*book_out, contact))
+		if (!add_contact_verify (book_client, contact))
 			g_error ("Failed to add contact");
 
 		g_free (name);
 		g_object_unref (contact);
 	}
-
-	return TRUE;
 }
 
 /****************************************************************
- *                 Handle EClientBookView notifications               *
+ *                 Handle EClientBookView notifications         *
  ****************************************************************/
 static void
 print_contact (EContact *contact)
@@ -74,18 +63,21 @@ print_contact (EContact *contact)
 }
 
 static void
-finish_test (EBookClientView *view)
+finish_test (EBookClientView *view,
+	     GMainLoop *loop)
 {
 	e_book_client_view_stop (view, NULL);
 	g_object_unref (view);
 
-	stop_main_loop (0);
+	g_main_loop_quit (loop);
 }
 
 static void
 objects_added (EBookClientView *view,
-               const GSList *contacts)
+               const GSList *contacts,
+	       gpointer user_data)
 {
+	GMainLoop *loop = (GMainLoop *)user_data;
 	const GSList *l;
 
 	for (l = contacts; l; l = l->next) {
@@ -100,7 +92,7 @@ objects_added (EBookClientView *view,
 	}
 
 	if (!loading_view)
-		finish_test (view);
+		finish_test (view, loop);
 
 }
 
@@ -125,14 +117,15 @@ complete (EBookClientView *view,
 }
 
 static void
-setup_and_start_view (EBookClientView *view)
+setup_and_start_view (EBookClientView *view,
+		      GMainLoop *loop)
 {
 	GError *error = NULL;
 	GSList *field_list;
 
-	g_signal_connect (view, "objects-added", G_CALLBACK (objects_added), NULL);
-	g_signal_connect (view, "objects-removed", G_CALLBACK (objects_removed), NULL);
-	g_signal_connect (view, "complete", G_CALLBACK (complete), NULL);
+	g_signal_connect (view, "objects-added", G_CALLBACK (objects_added), loop);
+	g_signal_connect (view, "objects-removed", G_CALLBACK (objects_removed), loop);
+	g_signal_connect (view, "complete", G_CALLBACK (complete), loop);
 
 	field_list = g_slist_prepend (NULL, (gpointer) e_contact_field_name (E_CONTACT_UID));
 	field_list = g_slist_prepend (field_list, (gpointer) e_contact_field_name (E_CONTACT_REV));
@@ -141,13 +134,13 @@ setup_and_start_view (EBookClientView *view)
 	g_slist_free (field_list);
 
 	if (error)
-		report_error ("set fields of interest", &error);
+		g_error ("set fields of interest: %s", error->message);
 
 	loading_view = TRUE;
 
 	e_book_client_view_start (view, &error);
 	if (error)
-		report_error ("start view", &error);
+		g_error ("start view: %s", error->message);
 
 }
 
@@ -158,41 +151,17 @@ get_view_cb (GObject *source_object,
 {
 	EBookClientView *view;
 	GError *error = NULL;
+	GMainLoop *loop = (GMainLoop *)user_data;
 
-	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), result, &view, &error)) {
-		report_error ("get view finish", &error);
-		stop_main_loop (1);
+	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), result, &view, &error))
+		g_error ("get view finish: %s", error->message);
 
-		return;
-	}
-
-	setup_and_start_view (view);
+	setup_and_start_view (view, loop);
 }
 
-static gpointer
-call_get_view (gpointer user_data)
-{
-	EBookQuery *query;
-	EBookClient *book_client = user_data;
-	gchar *sexp;
-
-	g_return_val_if_fail (book_client != NULL, NULL);
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (book_client), NULL);
-
-	query = e_book_query_any_field_contains ("");
-	sexp = e_book_query_to_string (query);
-	e_book_query_unref (query);
-
-	e_book_client_get_view (book_client, sexp, NULL, get_view_cb, NULL);
-
-	g_free (sexp);
-
-	return NULL;
-}
-
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_revision_view_sync (ETestServerFixture *fixture,
+			 gconstpointer       user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -200,54 +169,59 @@ main (gint argc,
 	gchar *sexp;
 	GError *error = NULL;
 
-	main_initialize ();
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	/*
-	 * Sync version
-	 */
-	if (!setup_book (&book_client))
-		return 1;
+	setup_book (book_client);
 
 	query = e_book_query_any_field_contains ("");
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 	if (!e_book_client_get_view_sync (book_client, sexp, &view, NULL, &error)) {
-		report_error ("get book view sync", &error);
+		g_error ("get book view sync: %s", error->message);
 		g_free (sexp);
 		g_object_unref (book_client);
-
-		return 1;
 	}
 
 	g_free (sexp);
 
-	setup_and_start_view (view);
-	start_main_loop (NULL, NULL);
+	setup_and_start_view (view, fixture->loop);
+	g_main_loop_run (fixture->loop);
+}
 
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
+static void
+test_revision_view_async (ETestServerFixture *fixture,
+			  gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	EBookQuery *query;
+	gchar *sexp;
 
-		return 1;
-	}
-	g_object_unref (book_client);
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	/*
-	 * Async version uids only
-	 */
-	if (!setup_book (&book_client))
-		return 1;
+	setup_book (book_client);
+	query = e_book_query_any_field_contains ("");
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
 
-	start_in_idle_with_main_loop (call_get_view, book_client);
+	e_book_client_get_view (book_client, sexp, NULL, get_view_cb, fixture->loop);
 
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
+	g_free (sexp);
+	g_main_loop_run (fixture->loop);
+}
 
-		return 1;
-	}
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	g_object_unref (book_client);
+	g_test_add ("/EBookClient/RevisionView/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_revision_view_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBookClient/RevisionView/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_revision_view_async, e_test_server_utils_teardown);
 
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

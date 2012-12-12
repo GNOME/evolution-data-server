@@ -8,6 +8,10 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/addressbook				\
 	-I$(top_builddir)/addressbook				\
+	-I$(top_srcdir)/calendar     				\
+	-I$(top_builddir)/calendar   				\
+	-I$(top_srcdir)/tests/test-server-utils     		\
+	-I$(top_builddir)/tests/test-server-utils   		\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
@@ -15,14 +19,13 @@ libclient_test_utils_la_CPPFLAGS =				\
 
 libclient_test_utils_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
 
 # Should be kept ordered approximately from least to most difficult/complex
 TESTS =								\
-	test-client-remove					\
-	test-client-examine					\
 	test-client-refresh					\
 	test-client-add-contact					\
 	test-client-get-contact					\
@@ -38,19 +41,24 @@ TESTS =								\
 	test-client-remove-contact-by-uid			\
 	test-client-remove-contacts				\
 	test-client-photo-is-uri				\
-	test-client-stress-factory--serial			\
-	test-client-stress-factory--fifo			\
-	test-client-stress-factory--single-book			\
 	$(NULL)
 
+# The noinst tests are functional tests, not unit tests.
+#
+# Either they were designed as functional tests or have
+# not been ported to use ETestServerFixture yet.
 noinst_PROGRAMS =						\
 	$(TESTS)						\
-	test-client						\
 	test-client-async					\
+	test-client-examine					\
+	test-client						\
 	test-client-nonexistent-id				\
 	test-client-search					\
 	test-client-self					\
 	test-client-stress-views				\
+	test-client-stress-factory--serial			\
+	test-client-stress-factory--fifo			\
+	test-client-stress-factory--single-book			\
 	$(NULL)
 
 TEST_CPPFLAGS =							\
@@ -59,18 +67,11 @@ TEST_CPPFLAGS =							\
 	$(NULL)
 
 TEST_LIBS =							\
-	$(libclient_test_utils_la_LIBS)				\
+	$(libclient_test_utils_la_LIBADD)			\
 	libclient-test-utils.la					\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(NULL)
-	
-RUN_WITH_PRIVATE_BUS = $(top_srcdir)/tests/tools/with-session-bus-eds.sh
-
-TESTS_ENVIRONMENT = \
-	$(RUN_WITH_PRIVATE_BUS) \
-	--session \
-	--
 
 test_client_LDADD=$(TEST_LIBS)
 test_client_CPPFLAGS=$(TEST_CPPFLAGS)
@@ -100,8 +101,6 @@ test_client_modify_contact_LDADD=$(TEST_LIBS)
 test_client_modify_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_refresh_LDADD=$(TEST_LIBS)
 test_client_refresh_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_remove_LDADD=$(TEST_LIBS)
-test_client_remove_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_remove_contact_LDADD=$(TEST_LIBS)
 test_client_remove_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_remove_contact_by_uid_LDADD=$(TEST_LIBS)

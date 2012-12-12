@@ -4,91 +4,105 @@
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+
+
+static void
+test_get_contact_uids_sync (ETestServerFixture *fixture,
+			    gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	EContact *contact = NULL;
+	EBookQuery *query;
+	gchar *sexp;
+	GSList *contacts = NULL;
+	GError *error = NULL;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!add_contact_from_test_case_verify (book_client, "simple-1", &contact)) {
+		g_error ("Failed to add contact");
+	}
+	g_object_unref (contact);
+
+	query = e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "Foo Bar");
+	sexp = e_book_query_to_string (query);
+
+	if (!e_book_client_get_contacts_uids_sync (book_client, sexp, &contacts, NULL, &error)) {
+		g_error ("get contacts uids: %s", error->message);
+	}
+
+	g_assert_cmpint (g_slist_length (contacts), ==, 1);
+	e_util_free_string_slist (contacts);
+
+	e_book_query_unref (query);
+	g_free (sexp);
+
+}
 
 static void
 contacts_ready_cb (GObject *source_object,
 		   GAsyncResult *result,
 		   gpointer user_data)
 {
+	GMainLoop *loop = (GMainLoop *)user_data;
 	GError *error = NULL;
 	GSList *contacts = NULL;
 
 	if (!e_book_client_get_contacts_uids_finish (E_BOOK_CLIENT (source_object), result, &contacts, &error)) {
-		report_error ("get contact finish", &error);
+		g_error ("get contact finish: %s", error->message);
 		stop_main_loop (1);
 	} else {
 
-		g_assert (g_slist_length (contacts) == 1);
+		g_assert_cmpint (g_slist_length (contacts), ==, 1);
 		e_util_free_string_slist (contacts);
-
-		stop_main_loop (0);
 	}
+
+	g_main_loop_quit (loop);
+}
+
+static void
+test_get_contact_uids_async (ETestServerFixture *fixture,
+			     gconstpointer       user_data)
+{
+	EBookClient *book_client;
+	EContact *contact = NULL;
+	EBookQuery *query;
+	gchar *sexp;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!add_contact_from_test_case_verify (book_client, "simple-1", &contact)) {
+		g_error ("Failed to add contact");
+	}
+	g_object_unref (contact);
+
+	query = e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "Foo Bar");
+	sexp = e_book_query_to_string (query);
+
+	e_book_client_get_contacts_uids (book_client, sexp, NULL, contacts_ready_cb, fixture->loop);
+
+	e_book_query_unref (query);
+	g_free (sexp);
+
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book_client;
-	EContact *contact_final;
-	GError *error = NULL;
-	EBookQuery *query;
-	gchar *sexp;
-	GSList *contacts = NULL;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/EBookClient/GetContactUids/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_contact_uids_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBookClient/GetContactUids/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_contact_uids_async, e_test_server_utils_teardown);
 
-	/*
-	 * Setup
-	 */
-	book_client = new_temp_client (NULL);
-	g_return_val_if_fail (book_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (book_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	/* Add contact */
-	if (!add_contact_from_test_case_verify (book_client, "simple-1", &contact_final)) {
-		g_object_unref (book_client);
-		return 1;
-	}
-	g_object_unref (contact_final);
-
-	/*
-	 * Sync version
-	 */
-	query = e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "Foo Bar");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_contacts_uids_sync (book_client, sexp, &contacts, NULL, &error)) {
-		report_error ("get contacts uids", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_assert (g_slist_length (contacts) == 1);
-	e_util_free_string_slist (contacts);
-
-	/*
-	 * Async version
-	 */
-	e_book_client_get_contacts_uids (book_client, sexp, NULL, contacts_ready_cb, NULL);
-
-	e_book_query_unref (query);
-	g_free (sexp);
-
-	start_main_loop (NULL, NULL);
-
-	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (book_client);
-		return 1;
-	}
-
-	g_object_unref (book_client);
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }
