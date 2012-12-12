@@ -3,56 +3,66 @@
 #include <libebook/libebook.h>
 
 #include "ebook-test-utils.h"
+#include "e-test-server-utils.h"
 
-gint
-main (gint argc,
-      gchar **argv)
+static ETestServerClosure book_closure =
+	{ E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
+
+static void
+test_remove_contact_sync (ETestServerFixture *fixture,
+			  gconstpointer       user_data)
 {
 	EBook *book;
-	GMainLoop *loop;
-	EContact *contact_final;
+	EContact *contact_final = NULL;
 	gchar *uid;
 
-	g_type_init ();
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
 
-	/*
-	 * Setup
-	 */
-	book = ebook_test_utils_book_new_temp (NULL);
-	ebook_test_utils_book_open (book, FALSE);
-
-	/*
-	 * Sync version
-	 */
 	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", NULL);
 	ebook_test_utils_book_remove_contact (book, uid);
-	contact_final = NULL;
 	e_book_get_contact (book, uid, &contact_final, NULL);
 
 	g_assert (contact_final == NULL);
 	test_print ("successfully added and removed contact '%s'\n", uid);
 
 	g_free (uid);
+}
 
-	/*
-	 * Async version
-	 */
-	book = ebook_test_utils_book_new_temp (NULL);
-	ebook_test_utils_book_open (book, FALSE);
+static void
+test_remove_contact_async (ETestServerFixture *fixture,
+			   gconstpointer       user_data)
+{
+	EBook *book;
+	EContact *contact_final = NULL;
+	gchar *uid;
 
-	contact_final = NULL;
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
+
 	/* contact_final has 2 refs by the end of this */
 	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", &contact_final);
 
-	loop = g_main_loop_new (NULL, TRUE);
 	/* contact_final is unref'd by e_book_remove_contact() here */
 	ebook_test_utils_book_async_remove_contact (
-		book, contact_final, ebook_test_utils_callback_quit, loop);
+		book, contact_final, ebook_test_utils_callback_quit, fixture->loop);
 
-	g_main_loop_run (loop);
-
+	g_main_loop_run (fixture->loop);
 	g_object_unref (contact_final);
 	g_free (uid);
+}
 
-	return 0;
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/EBook/RemoveContact/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_remove_contact_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBook/RemoveContact/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_remove_contact_async, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }

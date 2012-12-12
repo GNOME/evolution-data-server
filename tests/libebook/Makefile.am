@@ -33,6 +33,10 @@ libebook_test_utils_la_CPPFLAGS = \
 	-I$(top_builddir)               \
 	-I$(top_srcdir)/addressbook     \
 	-I$(top_builddir)/addressbook   \
+	-I$(top_srcdir)/calendar     \
+	-I$(top_builddir)/calendar   \
+	-I$(top_srcdir)/tests/test-server-utils     \
+	-I$(top_builddir)/tests/test-server-utils   \
 	-DSRCDIR=\""$(abs_srcdir)"\"    \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(CAMEL_CFLAGS) \
@@ -40,6 +44,7 @@ libebook_test_utils_la_CPPFLAGS = \
 
 libebook_test_utils_la_LIBADD = \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)                           \
 	$(CAMEL_LIBS) \
 	$(NULL)
@@ -76,8 +81,7 @@ TESTS = \
 	test-ebook-get-supported-auth-methods \
 	test-ebook-remove-contact-by-id \
 	test-ebook-remove-contacts \
-	test-ebook-get-book-view \
-	test-ebook-remove
+	test-ebook-get-book-view
 
 #	test-ebook-stress-factory--serial \
 #	test-ebook-stress-factory--fifo \
@@ -146,8 +150,6 @@ test_ebook_get_supported_fields_LDADD=$(TEST_LIBS)
 test_ebook_get_supported_fields_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_add_contact_LDADD=$(TEST_LIBS)
 test_ebook_add_contact_CPPFLAGS=$(TEST_CPPFLAGS)
-test_ebook_remove_LDADD=$(TEST_LIBS)
-test_ebook_remove_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contact_LDADD=$(TEST_LIBS)
 test_ebook_remove_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contact_by_id_LDADD=$(TEST_LIBS)

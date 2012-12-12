@@ -4,6 +4,10 @@
 #include <libebook/libebook.h>
 
 #include "ebook-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure =
+	{ E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
 
 static void
 list_member_print_and_free (gchar *member,
@@ -36,40 +40,49 @@ get_supported_fields_cb (EBookTestClosure *closure)
 	g_main_loop_quit ((GMainLoop *) (closure->user_data));
 }
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_get_supported_fields_sync (ETestServerFixture *fixture,
+				gconstpointer       user_data)
 {
 	EBook *book;
-	GMainLoop *loop;
 	GList *fields;
 
-	g_type_init ();
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
 
-	/*
-	 * Setup
-	 */
-	book = ebook_test_utils_book_new_temp (NULL);
-	ebook_test_utils_book_open (book, FALSE);
-
-	/*
-	 * Sync version
-	 */
 	fields = ebook_test_utils_book_get_supported_fields (book);
 
 	test_print ("successfully retrieved supported fields:\n");
 	g_list_foreach (fields, (GFunc) list_member_print_and_free, NULL);
 	test_print ("----------------\n");
 	g_list_free (fields);
+}
 
-	/*
-	 * Async version
-	 */
-	loop = g_main_loop_new (NULL, TRUE);
+static void
+test_get_supported_fields_async (ETestServerFixture *fixture,
+				 gconstpointer       user_data)
+{
+	EBook *book;
+
+	book = E_TEST_SERVER_UTILS_SERVICE (fixture, EBook);
+
 	ebook_test_utils_book_async_get_supported_fields (
-		book, (GSourceFunc) get_supported_fields_cb, loop);
+		book, (GSourceFunc) get_supported_fields_cb, fixture->loop);
+	g_main_loop_run (fixture->loop);
+}
 
-	g_main_loop_run (loop);
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	return 0;
+	g_test_add ("/EBook/GetSupportedFields/Sync", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_supported_fields_sync, e_test_server_utils_teardown);
+	g_test_add ("/EBook/GetSupportedFields/Async", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_get_supported_fields_async, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }
