@@ -124,7 +124,9 @@ static void
 test_fixture_teardown_key_file (TestFixture *fixture,
                                 gconstpointer test_data)
 {
+#if 0  /* ACCOUNT_MGMT */
 	teardown_test_source (&fixture->test);
+#endif
 }
 
 static void
