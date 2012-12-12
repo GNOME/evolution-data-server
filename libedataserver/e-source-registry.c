@@ -1730,6 +1730,12 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 
 exit:
 	g_main_context_pop_thread_default (main_context);
+
+	/* Make sure the main_context doesn't have pending operations;
+	   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+	while (g_main_context_pending (main_context))
+		g_main_context_iteration (main_context, FALSE);
+
 	g_main_context_unref (main_context);
 
 	return success;
