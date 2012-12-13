@@ -752,6 +752,7 @@ e_book_client_get_self (ESourceRegistry *registry,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	source = e_source_registry_ref_builtin_address_book (registry);
+	g_return_val_if_fail (source != NULL, FALSE);
 	*client = e_book_client_new (source, &local_error);
 	g_object_unref (source);
 

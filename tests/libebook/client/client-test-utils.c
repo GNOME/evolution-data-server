@@ -79,6 +79,7 @@ open_system_book (ESourceRegistry *registry,
 	main_initialize ();
 
 	source = e_source_registry_ref_builtin_address_book (registry);
+	g_return_val_if_fail (source != NULL, NULL);
 	book_client = e_book_client_new (source, &error);
 	g_object_unref (source);
 
