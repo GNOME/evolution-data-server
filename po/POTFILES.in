@@ -219,7 +219,8 @@ modules/google-backend/module-google-backend.c
 modules/trust-prompt/certificate-viewer.c
 modules/trust-prompt/e-asn1-object.c
 modules/trust-prompt/module-trust-prompt.c
+modules/trust-prompt/trust-prompt-gtk.c
 modules/yahoo-backend/module-yahoo-backend.c
 services/evolution-addressbook-factory/evolution-addressbook-factory.c
 services/evolution-calendar-factory/evolution-calendar-factory.c
-services/evolution-user-prompter/evolution-user-prompter.c
+services/evolution-user-prompter/prompt-user-gtk.c

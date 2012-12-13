@@ -8,6 +8,16 @@ service_DATA = $(service_in_files:.service.in=.service)
 CLEANFILES = $(service_DATA)
 EXTRA_DIST = $(service_in_files)
 
+#if USE_GTK
+   PROMPT_USER_SOURCES = prompt-user-gtk.c
+   PROMPT_USER_CFLAGS = $(GNOME_PLATFORM_CFLAGS)
+   PROMPT_USER_LIBS = $(GNOME_PLATFORM_LIBS)
+#else
+#   PROMPT_USER_SOURCES = prompt-user-.c
+#   PROMPT_USER_CFLAGS = $()
+#   PROMPT_USER_LIBS = $()
+#endif
+
 libexec_PROGRAMS = evolution-user-prompter
 
 evolution_user_prompter_CPPFLAGS = \
@@ -18,19 +28,21 @@ evolution_user_prompter_CPPFLAGS = \
 	-I$(top_builddir)/private \
 	-DG_LOG_DOMAIN=\"evolution-user-prompter\" \
 	-DLOCALEDIR=\"$(localedir)\" \
-	$(GNOME_PLATFORM_CFLAGS) \
 	$(E_DATA_SERVER_CFLAGS) \
+	$(PROMPT_USER_CFLAGS) \
 	$(NULL)
 
 evolution_user_prompter_SOURCES = \
 	evolution-user-prompter.c \
+	prompt-user.h \
+	$(PROMPT_USER_SOURCES) \
 	$(NULL)
 
 evolution_user_prompter_LDADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
-	$(GNOME_PLATFORM_LIBS) \
 	$(E_DATA_SERVER_LIBS) \
+	$(PROMPT_USER_LIBS) \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk

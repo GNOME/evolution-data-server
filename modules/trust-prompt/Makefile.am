@@ -1,5 +1,17 @@
 NULL =
 
+#if USE_GTK
+   TRUST_PROMPT_SOURCES = trust-prompt-gtk.c \
+			  certificate-viewer.c \
+			  certificate-viewer.h
+   TRUST_PROMPT_CFLAGS = $(GNOME_PLATFORM_CFLAGS)
+   TRUST_PROMPT_LIBS = $(GNOME_PLATFORM_LIBS)
+#else
+#   TRUST_PROMPT_SOURCES = trust-prompt-.c
+#   TRUST_PROMPT_CFLAGS = $()
+#   TRUST_PROMPT_LIBS = $()
+#endif
+
 module_LTLIBRARIES = module-trust-prompt.la
 
 module_trust_prompt_la_CPPFLAGS = \
@@ -9,15 +21,15 @@ module_trust_prompt_la_CPPFLAGS = \
 	$(E_BACKEND_CFLAGS) \
 	$(E_DATA_SERVER_CFLAGS) \
 	$(CAMEL_CFLAGS) \
-	$(GNOME_PLATFORM_CFLAGS) \
+	$(TRUST_PROMPT_CFLAGS) \
 	$(NULL)
 
 module_trust_prompt_la_SOURCES = \
 	e-asn1-object.c \
 	e-asn1-object.h \
-	certificate-viewer.c \
-	certificate-viewer.h \
 	module-trust-prompt.c \
+	trust-prompt.h \
+	$(TRUST_PROMPT_SOURCES) \
 	$(NULL)
 
 module_trust_prompt_la_LIBADD = \
@@ -27,7 +39,7 @@ module_trust_prompt_la_LIBADD = \
 	$(E_BACKEND_LIBS) \
 	$(E_DATA_SERVER_LIBS) \
 	$(CAMEL_LIBS) \
-	$(GNOME_PLATFORM_LIBS) \
+	$(TRUST_PROMPT_LIBS) \
 	$(NULL)
 
 module_trust_prompt_la_LDFLAGS = \
