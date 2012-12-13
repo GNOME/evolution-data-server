@@ -4,7 +4,11 @@
 #include <libecal/libecal.h>
 #include <libical/ical.h>
 
-#include "client-test-utils.h"
+#include "e-test-server-utils.h"
+#include "client-test-utils.h" /* For print_icomp() */
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
 static icalcomponent *
 create_object (void)
@@ -21,7 +25,7 @@ create_object (void)
 	return icalcomp;
 }
 
-static gboolean
+static void
 manage_result (GSList *users,
                icalcomponent *modified_icalcomp)
 {
@@ -44,31 +48,27 @@ manage_result (GSList *users,
 	e_client_util_free_string_slist (users);
 	if (modified_icalcomp)
 		icalcomponent_free (modified_icalcomp);
-
-	return TRUE;
 }
 
-static gboolean
-test_sync (ECalClient *cal_client)
+static void
+test_send_objects_sync (ETestServerFixture *fixture,
+			gconstpointer       user_data)
 {
+	ECalClient *cal_client;
 	GError *error = NULL;
 	icalcomponent *icalcomp, *modified_icalcomp = NULL;
 	GSList *users = NULL;
 
-	icalcomp = create_object ();
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	if (!e_cal_client_send_objects_sync (cal_client, icalcomp, &users, &modified_icalcomp, NULL, &error)) {
-		report_error ("send objects sync", &error);
-		icalcomponent_free (icalcomp);
-		return FALSE;
-	}
+	icalcomp = create_object ();
+	if (!e_cal_client_send_objects_sync (cal_client, icalcomp, &users, &modified_icalcomp, NULL, &error))
+		g_error ("send objects sync: %s", error->message);
 
 	icalcomponent_free (icalcomp);
-
-	return manage_result (users, modified_icalcomp);
+	manage_result (users, modified_icalcomp);
 }
 
-/* asynchronous callback with a main-loop running */
 static void
 async_send_result_ready (GObject *source_object,
                          GAsyncResult *result,
@@ -78,96 +78,48 @@ async_send_result_ready (GObject *source_object,
 	GError *error = NULL;
 	GSList *users = NULL;
 	icalcomponent *modified_icalcomp = NULL;
+	GMainLoop *loop = (GMainLoop *)user_data;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_send_objects_finish (cal_client, result, &users, &modified_icalcomp, &error)) {
-		report_error ("send objects finish", &error);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_cal_client_send_objects_finish (cal_client, result, &users, &modified_icalcomp, &error))
+		g_error ("send objects finish: %s", error->message);
 
-	stop_main_loop (manage_result (users, modified_icalcomp) ? 0 : 1);
+	manage_result (users, modified_icalcomp);
+	g_main_loop_quit (loop);
 }
 
-/* synchronously in idle with main-loop running */
-static gboolean
-test_sync_in_idle (gpointer user_data)
+static void
+test_send_objects_async (ETestServerFixture *fixture,
+			gconstpointer       user_data)
 {
-	ECalClient *cal_client = user_data;
+	ECalClient *cal_client;
 	icalcomponent *icalcomp;
 
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
-
-	if (!test_sync (cal_client)) {
-		stop_main_loop (1);
-		return FALSE;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	icalcomp = create_object ();
-	if (!icalcomp) {
-		stop_main_loop (1);
-		return FALSE;
-	}
+	g_assert (icalcomp);
 
-	e_cal_client_send_objects (cal_client, icalcomp, NULL, async_send_result_ready, NULL);
-
+	e_cal_client_send_objects (cal_client, icalcomp, NULL, async_send_result_ready, fixture->loop);
 	icalcomponent_free (icalcomp);
 
-	return FALSE;
-}
-
-/* synchronously in a dedicated thread with main-loop running */
-static gpointer
-test_sync_in_thread (gpointer user_data)
-{
-	if (!test_sync (user_data)) {
-		stop_main_loop (1);
-		return NULL;
-	}
-
-	g_idle_add (test_sync_in_idle, user_data);
-
-	return NULL;
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	ECalClient *cal_client;
-	GError *error = NULL;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/ECalClient/SendObjects/Sync", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_send_objects_sync, e_test_server_utils_teardown);
+	g_test_add ("/ECalClient/SendObjects/Async", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_send_objects_async, e_test_server_utils_teardown);
 
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	/* synchronously without main-loop */
-	if (!test_sync (cal_client)) {
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	start_in_thread_with_main_loop (test_sync_in_thread, cal_client);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	g_object_unref (cal_client);
-
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

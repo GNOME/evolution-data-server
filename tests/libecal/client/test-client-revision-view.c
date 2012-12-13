@@ -4,7 +4,10 @@
 #include <libecal/libecal.h>
 #include <libical/ical.h>
 
-#include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
 typedef enum {
 	SUBTEST_OBJECTS_ADDED,
@@ -16,7 +19,8 @@ typedef enum {
 } SubTestId;
 
 static void
-subtest_passed (SubTestId id)
+subtest_passed (SubTestId id,
+		GMainLoop *loop)
 {
 	static guint subtests_complete = 0;
 
@@ -28,22 +32,22 @@ subtest_passed (SubTestId id)
 	subtests_complete |= (1 << id);
 
 	if (subtests_complete == ((1 << NUM_SUBTESTS) - 1))
-		stop_main_loop (0);
+		g_main_loop_quit (loop);
 }
 
 static struct icaltimetype
 get_last_modified (icalcomponent *component)
 {
-    icalcomponent *inner = icalcomponent_get_inner (component);
-    icalproperty  *prop;
+	icalcomponent *inner = icalcomponent_get_inner (component);
+	icalproperty  *prop;
 
-    prop = icalcomponent_get_first_property (inner, ICAL_LASTMODIFIED_PROPERTY);
+	prop = icalcomponent_get_first_property (inner, ICAL_LASTMODIFIED_PROPERTY);
 
-    if (prop == 0) {
-	return icaltime_null_time ();
-    }
+	if (prop == 0) {
+		return icaltime_null_time ();
+	}
 
-    return icalproperty_get_lastmodified (prop);
+	return icalproperty_get_lastmodified (prop);
 }
 
 static void
@@ -52,6 +56,7 @@ objects_added_cb (GObject *object,
                   gpointer data)
 {
 	const GSList *l;
+	GMainLoop *loop = (GMainLoop *)data;
 
 	for (l = objects; l; l = l->next) {
 		icalcomponent      *component     = l->data;
@@ -67,7 +72,7 @@ objects_added_cb (GObject *object,
 		g_assert (icalcomponent_get_summary (component) == NULL);
 	}
 
-	subtest_passed (SUBTEST_OBJECTS_ADDED);
+	subtest_passed (SUBTEST_OBJECTS_ADDED, loop);
 }
 
 static void
@@ -76,6 +81,7 @@ objects_modified_cb (GObject *object,
                      gpointer data)
 {
 	const GSList *l;
+	GMainLoop *loop = (GMainLoop *)data;
 
 	for (l = objects; l; l = l->next) {
 		icalcomponent      *component     = l->data;
@@ -91,7 +97,7 @@ objects_modified_cb (GObject *object,
 		g_assert (icalcomponent_get_summary (component) == NULL);
 	}
 
-	subtest_passed (SUBTEST_OBJECTS_MODIFIED);
+	subtest_passed (SUBTEST_OBJECTS_MODIFIED, loop);
 }
 
 static void
@@ -99,6 +105,7 @@ objects_removed_cb (GObject *object,
                     const GSList *objects,
                     gpointer data)
 {
+	GMainLoop *loop = (GMainLoop *)data;
 	const GSList *l;
 
 	for (l = objects; l; l = l->next) {
@@ -107,7 +114,7 @@ objects_removed_cb (GObject *object,
 		g_print ("Object removed: uid: %s, rid: %s\n", id->uid, id->rid);
 	}
 
-	subtest_passed (SUBTEST_OBJECTS_REMOVED);
+	subtest_passed (SUBTEST_OBJECTS_REMOVED, loop);
 }
 
 static void
@@ -115,9 +122,11 @@ complete_cb (GObject *object,
              const GError *error,
              gpointer data)
 {
+	GMainLoop *loop = (GMainLoop *)data;
+
 	g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
 
-	subtest_passed (SUBTEST_VIEW_DONE);
+	subtest_passed (SUBTEST_VIEW_DONE, loop);
 }
 
 static gpointer
@@ -137,39 +146,22 @@ alter_cal_client (gpointer user_data)
 	icalcomponent_set_dtstart (icalcomp, now);
 	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error)) {
-		report_error ("create object sync", &error);
-		icalcomponent_free (icalcomp);
-		stop_main_loop (1);
-		return NULL;
-	}
+	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+		g_error ("create object sync: %s", error->message);
 
 	icalcomponent_set_uid (icalcomp, uid);
-	icalcomponent_set_recurrenceid (
-		icalcomp,
-					icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
 	icalcomponent_set_summary (icalcomp, "Modified event summary");
 
-	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, CALOBJ_MOD_ALL, NULL, &error)) {
-		report_error ("modify object sync", &error);
-		icalcomponent_free (icalcomp);
-		g_free (uid);
-		stop_main_loop (1);
-		return NULL;
-	}
+	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, CALOBJ_MOD_ALL, NULL, &error))
+		g_error ("modify object sync: %s", error->message);
 
-	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, &error)) {
-		report_error ("remove object sync", &error);
-		icalcomponent_free (icalcomp);
-		g_free (uid);
-		stop_main_loop (1);
-		return NULL;
-	}
+	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, &error))
+		g_error ("remove object sync: %s", error->message);
 
 	g_free (uid);
 	icalcomponent_free (icalcomp);
 
-	return NULL;
+	return FALSE;
 }
 
 static void
@@ -180,23 +172,21 @@ async_get_view_ready (GObject *source_object,
 	ECalClient *cal_client = E_CAL_CLIENT (source_object);
 	ECalClientView *view = NULL;
 	GError *error = NULL;
+	GMainLoop *loop = (GMainLoop *)user_data;
 	GSList *field_list = NULL;
 
 	g_return_if_fail (cal_client != NULL);
 
-	if (!e_cal_client_get_view_finish (cal_client, result, &view, &error)) {
-		report_error ("get view finish", &error);
-		stop_main_loop (1);
-		return;
-	}
-
-	subtest_passed (SUBTEST_RESET);
-	g_signal_connect (view, "objects_added", G_CALLBACK (objects_added_cb), cal_client);
-	g_signal_connect (view, "objects_modified", G_CALLBACK (objects_modified_cb), cal_client);
-	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), cal_client);
-	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), cal_client);
+	if (!e_cal_client_get_view_finish (cal_client, result, &view, &error))
+		g_error ("get view finish: %s", error->message);
 
 	g_object_set_data_full (G_OBJECT (cal_client), "cal-view", view, g_object_unref);
+
+	subtest_passed (SUBTEST_RESET, loop);
+	g_signal_connect (view, "objects_added", G_CALLBACK (objects_added_cb), loop);
+	g_signal_connect (view, "objects_modified", G_CALLBACK (objects_modified_cb), loop);
+	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), loop);
+	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), loop);
 
 	field_list = g_slist_prepend (NULL, (gpointer) "UID");
 	field_list = g_slist_prepend (field_list, (gpointer) "RECURRENCE-ID");
@@ -204,92 +194,75 @@ async_get_view_ready (GObject *source_object,
 
 	e_cal_client_view_set_fields_of_interest (view, field_list, &error);
 	if (error)
-		report_error ("set fields of interest", &error);
+		g_error ("set fields of interest: %s", error->message);
+	g_slist_free (field_list);
+
+	e_cal_client_view_start (view, NULL);
+	alter_cal_client (cal_client);
+}
+
+static void
+test_get_revision_view_async (ETestServerFixture *fixture,
+			      gconstpointer       user_data)
+{
+	ECalClient *cal_client;
+
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	e_cal_client_get_view (cal_client, "(contains? \"any\" \"event\")", NULL, async_get_view_ready, fixture->loop);
+	g_main_loop_run (fixture->loop);
+}
+
+static void
+test_get_revision_view_sync (ETestServerFixture *fixture,
+			     gconstpointer       user_data)
+{
+	ECalClient *cal_client;
+	GError *error = NULL;
+	ECalClientView *view = NULL;
+	GSList *field_list = NULL;
+
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	if (!e_cal_client_get_view_sync (cal_client, "(contains? \"any\" \"event\")", &view, NULL, &error))
+		g_error ("get view sync: %s", error->message);
+
+	subtest_passed (SUBTEST_RESET, fixture->loop);
+	g_signal_connect (view, "objects_added", G_CALLBACK (objects_added_cb), fixture->loop);
+	g_signal_connect (view, "objects_modified", G_CALLBACK (objects_modified_cb), fixture->loop);
+	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), fixture->loop);
+	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), NULL);
+
+	field_list = g_slist_prepend (NULL, (gpointer) "UID");
+	field_list = g_slist_prepend (field_list, (gpointer) "RECURRENCE-ID");
+	field_list = g_slist_prepend (field_list, (gpointer) "LAST-MODIFIED");
+
+	e_cal_client_view_set_fields_of_interest (view, field_list, &error);
+	if (error)
+		g_error ("set fields of interest: %s", error->message);
 	g_slist_free (field_list);
 
 	e_cal_client_view_start (view, NULL);
 
-	alter_cal_client (cal_client);
-}
+	g_idle_add ((GSourceFunc)alter_cal_client, cal_client);
+	g_main_loop_run (fixture->loop);
 
-static gpointer
-get_view_async (gpointer user_data)
-{
-	ECalClient *cal_client = user_data;
-
-	g_return_val_if_fail (user_data != NULL, NULL);
-
-	e_cal_client_get_view (cal_client, "(contains? \"any\" \"event\")", NULL, async_get_view_ready, NULL);
-
-	return NULL;
+	g_object_unref (view);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	ECalClientView *view = NULL;
-	ECalClient *cal_client;
-	GError *error = NULL;
-	GSList *field_list = NULL;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/ECalClient/GetRevisionView/Sync", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_revision_view_sync, e_test_server_utils_teardown);
+	g_test_add ("/ECalClient/GetRevisionView/Async", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_revision_view_async, e_test_server_utils_teardown);
 
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	if (!e_cal_client_get_view_sync (cal_client, "(contains? \"any\" \"event\")", &view, NULL, &error)) {
-		report_error ("get view sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	subtest_passed (SUBTEST_RESET);
-	g_signal_connect (view, "objects_added", G_CALLBACK (objects_added_cb), cal_client);
-	g_signal_connect (view, "objects_modified", G_CALLBACK (objects_modified_cb), cal_client);
-	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), cal_client);
-	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), cal_client);
-
-	field_list = g_slist_prepend (NULL, (gpointer) "UID");
-	field_list = g_slist_prepend (field_list, (gpointer) "RECURRENCE-ID");
-	field_list = g_slist_prepend (field_list, (gpointer) "LAST-MODIFIED");
-
-	e_cal_client_view_set_fields_of_interest (view, field_list, &error);
-	if (error)
-		report_error ("set fields of interest", &error);
-	g_slist_free (field_list);
-
-	e_cal_client_view_start (view, NULL);
-
-	start_in_thread_with_main_loop (alter_cal_client, cal_client);
-
-	g_object_unref (view);
-
-	if (get_main_loop_stop_result () != 0) {
-		g_object_unref (cal_client);
-		return get_main_loop_stop_result ();
-	}
-
-	start_in_idle_with_main_loop (get_view_async, cal_client);
-
-	g_object_set_data (G_OBJECT (cal_client), "cal-view", NULL);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	g_object_unref (cal_client);
-
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

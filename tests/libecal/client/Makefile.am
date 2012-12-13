@@ -6,8 +6,12 @@ libclient_test_utils_la_CPPFLAGS =				\
 	$(AM_CPPFLAGS)						\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
+	-I$(top_srcdir)/addressbook     			\
+	-I$(top_builddir)/addressbook   			\
 	-I$(top_srcdir)/calendar				\
 	-I$(top_builddir)/calendar				\
+	-I$(top_srcdir)/tests/test-server-utils     		\
+	-I$(top_builddir)/tests/test-server-utils   		\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_CALENDAR_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
@@ -15,17 +19,16 @@ libclient_test_utils_la_CPPFLAGS =				\
 
 libclient_test_utils_la_LIBADD = 				\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
 
 # ordered by relative complexity
 TESTS = 					\
-	test-client-open			\
 	test-client-refresh			\
 	test-client-get-free-busy		\
 	test-client-add-timezone		\
-	test-client-examine			\
 	test-client-create-object		\
 	test-client-remove-object		\
 	test-client-get-object-list		\
@@ -37,21 +40,24 @@ TESTS = 					\
 	test-client-get-attachment-uris		\
 	test-client-get-view			\
 	test-client-revision-view		\
+	$(NULL)
+
+# The test program
+noinst_PROGRAMS = $(TESTS)	\
+	test-client-open	\
+	test-client-examine			\
 	test-client-stress-views		\
 	test-client-stress-factory--serial	\
 	test-client-stress-factory--fifo	\
 	test-client-stress-factory--single-cal	\
 	$(NULL)
 
-# The test program
-noinst_PROGRAMS = $(TESTS)
-
 TEST_CPPFLAGS=					\
 	$(libclient_test_utils_la_CPPFLAGS)	\
 	$(NULL)
 
 TEST_LIBS =					\
-	$(libclient_test_utils_la_LIBS)		\
+	$(libclient_test_utils_la_LIBADD)	\
 	libclient-test-utils.la			\
 	$(NULL)
 
