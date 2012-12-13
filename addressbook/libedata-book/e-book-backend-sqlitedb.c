@@ -4082,7 +4082,9 @@ validate_county_code (EBookBackendSqliteDB  *ebsdb,
 	g_free (ebsdb->priv->country_code);
 	ebsdb->priv->country_code = g_strdup (country_code);
 
-	stmt = sqlite3_mprintf ("SELECT uid, vcard, NULL FROM %Q", folderid);
+	/* Filter out NULL vcards to avoid warnings when upgrading from old Berkeley DB format */
+	stmt = sqlite3_mprintf ("SELECT uid, vcard, NULL FROM %Q "
+	                        "WHERE NOT vcard IS NULL", folderid);
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, addto_vcard_list_cb, &vcard_data, error);
 	sqlite3_free (stmt);
