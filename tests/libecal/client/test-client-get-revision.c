@@ -4,7 +4,10 @@
 #include <string.h>
 #include <libecal/libecal.h>
 
-#include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
 #define CYCLES 10
 
@@ -48,40 +51,31 @@ get_revision_compare_cycle (ECalClient *client)
        icalcomponent_free (icalcomp);
 }
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_get_revision (ETestServerFixture *fixture,
+		   gconstpointer       user_data)
 {
 	ECalClient *cal_client;
-	GError      *error = NULL;
-	gint         i;
+	gint i;
 
-	main_initialize ();
-
-	/*
-	 * Setup
-	 */
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-
-	g_return_val_if_fail (cal_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	/* Test that modifications make the revisions increment */
 	for (i = 0; i < CYCLES; i++)
 		get_revision_compare_cycle (cal_client);
+}
 
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	g_object_unref (cal_client);
+	g_test_add ("/ECalClient/GetRevision", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_revision, e_test_server_utils_teardown);
 
-	return 0;
+	return e_test_server_utils_run ();
 }

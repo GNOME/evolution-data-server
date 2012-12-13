@@ -5,6 +5,10 @@
 #include <libical/ical.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
 #define USER_EMAIL "user@example.com"
 
@@ -16,8 +20,9 @@ free_busy_data_cb (ECalClient *client,
 	g_print ("   Received %d Free/Busy components from %s\n", g_slist_length ((GSList *) free_busy), func_name);
 }
 
-static gboolean
-test_sync (void)
+static void
+test_get_free_busy_sync (ETestServerFixture *fixture,
+			 gconstpointer       user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -26,14 +31,7 @@ test_sync (void)
 	time_t start, end;
 	gulong sig_id;
 
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return FALSE;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	utc = icaltimezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
@@ -42,30 +40,14 @@ test_sync (void)
 
 	sig_id = g_signal_connect (cal_client, "free-busy-data", G_CALLBACK (free_busy_data_cb), (gpointer) G_STRFUNC);
 
-	if (!e_cal_client_get_free_busy_sync (cal_client, start, end, users, NULL, &error)) {
-		report_error ("get free busy sync", &error);
-		g_signal_handler_disconnect (cal_client, sig_id);
-		g_object_unref (cal_client);
-		g_slist_free (users);
-		return FALSE;
-	}
+	if (!e_cal_client_get_free_busy_sync (cal_client, start, end, users, NULL, &error))
+		g_error ("get free busy sync: %s", error->message);
 
 	g_signal_handler_disconnect (cal_client, sig_id);
 
 	g_slist_free (users);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return FALSE;
-	}
-
-	g_object_unref (cal_client);
-
-	return TRUE;
 }
 
-/* asynchronous get_free_busy callback with a main-loop running */
 static void
 async_get_free_busy_result_ready (GObject *source_object,
                                   GAsyncResult *result,
@@ -73,52 +55,29 @@ async_get_free_busy_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
+	GMainLoop *loop = (GMainLoop *)user_data;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_get_free_busy_finish (cal_client, result, &error)) {
-		report_error ("create object finish", &error);
-		g_object_unref (cal_client);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_cal_client_get_free_busy_finish (cal_client, result, &error))
+		g_error ("create object finish: %s", error->message);
 
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error))
+		g_error ("client remove sync: %s", error->message);
 
-	g_object_unref (cal_client);
-
-	stop_main_loop (0);
+	g_main_loop_quit (loop);
 }
 
-/* synchronously in idle with main-loop running */
-static gboolean
-test_async_in_idle (gpointer user_data)
+static void
+test_get_free_busy_async (ETestServerFixture *fixture,
+			  gconstpointer       user_data)
 {
 	ECalClient *cal_client;
-	GError *error = NULL;
 	icaltimezone *utc;
 	GSList *users = NULL;
 	time_t start, end;
 
-	if (!test_sync ()) {
-		stop_main_loop (1);
-		return FALSE;
-	}
-
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		stop_main_loop (1);
-		return FALSE;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	utc = icaltimezone_get_utc_timezone ();
 	start = time_from_isodate ("20040212T000000Z");
@@ -128,41 +87,25 @@ test_async_in_idle (gpointer user_data)
 	/* here is all Free/Busy information received */
 	g_signal_connect (cal_client, "free-busy-data", G_CALLBACK (free_busy_data_cb), (gpointer) G_STRFUNC);
 
-	e_cal_client_get_free_busy (cal_client, start, end, users, NULL, async_get_free_busy_result_ready, NULL);
-
+	e_cal_client_get_free_busy (cal_client, start, end, users, NULL, async_get_free_busy_result_ready, fixture->loop);
 	g_slist_free (users);
 
-	return FALSE;
-}
-
-/* synchronously in a dedicated thread with main-loop running */
-static gpointer
-test_sync_in_thread (gpointer user_data)
-{
-	if (!test_sync ()) {
-		stop_main_loop (1);
-		return NULL;
-	}
-
-	g_idle_add (test_async_in_idle, NULL);
-
-	return NULL;
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	main_initialize ();
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	/* synchronously without main-loop */
-	if (!test_sync ())
-		return 1;
+	g_test_add ("/ECalClient/GetFreeBusy/Sync", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_free_busy_sync, e_test_server_utils_teardown);
+	g_test_add ("/ECalClient/GetFreeBusy/Async", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_free_busy_async, e_test_server_utils_teardown);
 
-	start_in_thread_with_main_loop (test_sync_in_thread, NULL);
-
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

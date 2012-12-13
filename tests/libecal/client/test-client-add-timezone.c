@@ -5,189 +5,24 @@
 #include <libical/ical.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
 
 #define TZID_NEW "XYZ"
 #define TZNAME_NEW "Ex Wye Zee"
 
-static gboolean
-test_zones (icaltimezone *zone1,
-            icaltimezone *zone2)
-{
-	if (!zone2) {
-		g_printerr ("Failure: get timezone returned NULL\n");
-		return FALSE;
-	}
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
-	if (g_strcmp0 (icaltimezone_get_tzid (zone1), icaltimezone_get_tzid (zone2)) != 0) {
-		g_printerr ("Failure: tzid doesn't match, expected '%s', got '%s'\n", icaltimezone_get_tzid (zone1), icaltimezone_get_tzid (zone2));
-		return FALSE;
-	}
-
-	if (g_strcmp0 (icaltimezone_get_tznames (zone1), icaltimezone_get_tznames (zone2)) != 0) {
-		g_printerr ("Failure: tznames doesn't match, expected '%s', got '%s'\n", icaltimezone_get_tznames (zone1), icaltimezone_get_tznames (zone2));
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
-test_sync (icaltimezone *zone)
-{
-	ECalClient *cal_client;
-	icaltimezone *zone2 = NULL;
-	GError *error = NULL;
-	gboolean res;
-
-	g_return_val_if_fail (zone != NULL, FALSE);
-
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return FALSE;
-	}
-
-	if (!e_cal_client_add_timezone_sync (cal_client, zone, NULL, &error)) {
-		report_error ("add timezone sync", &error);
-		g_object_unref (cal_client);
-		return FALSE;
-	}
-
-	if (!e_cal_client_get_timezone_sync (cal_client, TZID_NEW, &zone2, NULL, &error)) {
-		report_error ("get timezone sync", &error);
-		g_object_unref (cal_client);
-		return FALSE;
-	}
-
-	res = test_zones (zone, zone2);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return FALSE;
-	}
-
-	g_object_unref (cal_client);
-
-	return res;
-}
-
-/* asynchronous read callback with a main-loop running */
 static void
-async_read_result_ready (GObject *source_object,
-                         GAsyncResult *result,
-                         gpointer user_data)
+test_add_timezone_sync (ETestServerFixture *fixture,
+			gconstpointer       user_data)
 {
 	ECalClient *cal_client;
-	GError *error = NULL;
-	icaltimezone *zone1 = user_data, *zone2 = NULL;
-	gboolean res;
-
-	g_return_if_fail (zone1 != NULL);
-
-	cal_client = E_CAL_CLIENT (source_object);
-
-	if (!e_cal_client_get_timezone_finish (cal_client, result, &zone2, &error)) {
-		report_error ("get timezone finish", &error);
-		g_object_unref (cal_client);
-		stop_main_loop (1);
-		return;
-	}
-
-	res = test_zones (zone1, zone2);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-	}
-
-	g_object_unref (cal_client);
-
-	stop_main_loop (res ? 0 : 1);
-}
-
-/* asynchronous write callback with a main-loop running */
-static void
-async_write_result_ready (GObject *source_object,
-                          GAsyncResult *result,
-                          gpointer user_data)
-{
-	ECalClient *cal_client;
-	GError *error = NULL;
-
-	g_return_if_fail (user_data != NULL);
-
-	cal_client = E_CAL_CLIENT (source_object);
-
-	if (!e_cal_client_add_timezone_finish (cal_client, result, &error)) {
-		report_error ("add timezone finish", &error);
-		g_object_unref (cal_client);
-		stop_main_loop (1);
-		return;
-	}
-
-	e_cal_client_get_timezone (cal_client, TZID_NEW, NULL, async_read_result_ready, user_data);
-}
-
-/* synchronously in idle with main-loop running */
-static gboolean
-test_sync_in_idle (gpointer user_data)
-{
-	ECalClient *cal_client;
-	GError *error = NULL;
-	icaltimezone *zone = user_data;
-
-	g_return_val_if_fail (zone != NULL, FALSE);
-
-	if (!test_sync (zone)) {
-		stop_main_loop (1);
-		return FALSE;
-	}
-
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		stop_main_loop (1);
-		return FALSE;
-	}
-
-	e_cal_client_add_timezone (cal_client, zone, NULL, async_write_result_ready, zone);
-
-	return FALSE;
-}
-
-/* synchronously in a dedicated thread with main-loop running */
-static gpointer
-test_sync_in_thread (gpointer user_data)
-{
-	icaltimezone *zone = user_data;
-
-	g_return_val_if_fail (zone != NULL, NULL);
-
-	if (!test_sync (zone)) {
-		stop_main_loop (1);
-		return NULL;
-	}
-
-	g_idle_add (test_sync_in_idle, zone);
-
-	return NULL;
-}
-
-gint
-main (gint argc,
-      gchar **argv)
-{
 	icalproperty *property;
 	icalcomponent *component;
 	icaltimezone *zone;
-
-	main_initialize ();
+	icaltimezone *zone2 = NULL;
+	GError *error = NULL;
 
 	/* Build up new timezone */
 	component = icalcomponent_new_vtimezone ();
@@ -198,18 +33,111 @@ main (gint argc,
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, component);
 
-	/* synchronously without main-loop */
-	if (!test_sync (zone)) {
-		icaltimezone_free (zone, TRUE);
-		return 1;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	start_in_thread_with_main_loop (test_sync_in_thread, zone);
+	if (!e_cal_client_add_timezone_sync (cal_client, zone, NULL, &error))
+		g_error ("add timezone sync: %s", error->message);
+
+	if (!e_cal_client_get_timezone_sync (cal_client, TZID_NEW, &zone2, NULL, &error))
+		g_error ("get timezone sync: %s", error->message);
+
+	if (!zone2)
+		g_error ("Failure: get timezone returned NULL");
+
+	g_assert_cmpstr (icaltimezone_get_tzid (zone), ==, icaltimezone_get_tzid (zone2));
+	g_assert_cmpstr (icaltimezone_get_tznames (zone), ==, icaltimezone_get_tznames (zone2));
 
 	icaltimezone_free (zone, TRUE);
+}
 
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
+typedef struct {
+	icaltimezone *zone;
+	GMainLoop *loop;
+} AsyncData;
 
-	return get_main_loop_stop_result ();
+static void
+async_read_result_ready (GObject *source_object,
+                         GAsyncResult *result,
+                         gpointer user_data)
+{
+	ECalClient *cal_client;
+	GError *error = NULL;
+	AsyncData *data = (AsyncData *)user_data;
+	icaltimezone *zone1 = data->zone, *zone2 = NULL;
+
+	cal_client = E_CAL_CLIENT (source_object);
+
+	if (!e_cal_client_get_timezone_finish (cal_client, result, &zone2, &error))
+		g_error ("get timezone finish: %s", error->message);
+
+	if (!zone2)
+		g_error ("Failure: get timezone returned NULL");
+
+	g_assert_cmpstr (icaltimezone_get_tzid (zone1), ==, icaltimezone_get_tzid (zone2));
+	g_assert_cmpstr (icaltimezone_get_tznames (zone1), ==, icaltimezone_get_tznames (zone2));
+
+	g_main_loop_quit (data->loop);
+}
+
+static void
+async_write_result_ready (GObject *source_object,
+                          GAsyncResult *result,
+                          gpointer user_data)
+{
+	ECalClient *cal_client;
+	GError *error = NULL;
+
+	g_return_if_fail (user_data != NULL);
+	cal_client = E_CAL_CLIENT (source_object);
+
+	if (!e_cal_client_add_timezone_finish (cal_client, result, &error))
+		g_error ("add timezone finish: %s", error->message);
+
+	e_cal_client_get_timezone (cal_client, TZID_NEW, NULL, async_read_result_ready, user_data);
+}
+
+static void
+test_add_timezone_async (ETestServerFixture *fixture,
+			 gconstpointer       user_data)
+{
+	ECalClient *cal_client;
+	icalproperty *property;
+	icalcomponent *component;
+	icaltimezone *zone;
+	AsyncData data;
+
+	/* Build up new timezone */
+	component = icalcomponent_new_vtimezone ();
+	property = icalproperty_new_tzid (TZID_NEW);
+	icalcomponent_add_property (component, property);
+	property = icalproperty_new_tzname (TZNAME_NEW);
+	icalcomponent_add_property (component, property);
+	zone = icaltimezone_new ();
+	icaltimezone_set_component (zone, component);
+
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	data.zone = zone;
+	data.loop = fixture->loop;
+	e_cal_client_add_timezone (cal_client, zone, NULL, async_write_result_ready, &data);
+	g_main_loop_run (fixture->loop);
+
+	icaltimezone_free (zone, TRUE);
+}
+
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/ECalClient/AddTimezone/Sync", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_add_timezone_sync, e_test_server_utils_teardown);
+	g_test_add ("/ECalClient/AddTimezone/Async", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_add_timezone_async, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }

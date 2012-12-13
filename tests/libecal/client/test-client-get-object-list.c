@@ -4,89 +4,93 @@
 #include <libecal/libecal.h>
 #include <libical/ical.h>
 
-#include "client-test-utils.h"
+#include "e-test-server-utils.h"
 
 #define EVENT_SUMMARY "Creation of new test event"
 #define EVENT_QUERY "(contains? \"summary\" \"" EVENT_SUMMARY "\")"
 
-static gboolean
-test_result (icalcomponent *icalcomp)
-{
-	g_return_val_if_fail (icalcomp != NULL, FALSE);
-	g_return_val_if_fail (g_strcmp0 (icalcomponent_get_summary (icalcomp), EVENT_SUMMARY) == 0, FALSE);
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
-	return TRUE;
+
+static void
+setup_cal (ECalClient *cal_client)
+{
+	struct icaltimetype now;
+	icalcomponent *icalcomp;
+	gchar *uid = NULL;
+	GError *error = NULL;
+
+	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
+	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
+	icalcomponent_set_dtstart (icalcomp, now);
+	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
+
+	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+		g_error ("create object sync: %s", error->message);
+
+	icalcomponent_free (icalcomp);
+	g_free (uid);
 }
 
-static gboolean
-test_sync (ECalClient *cal_client)
+static void
+test_result (icalcomponent *icalcomp)
 {
-	GError *error = NULL;
+	g_assert (icalcomp != NULL);
+	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, EVENT_SUMMARY);
+}
+
+static void
+test_get_object_list_sync (ETestServerFixture *fixture,
+			   gconstpointer       user_data)
+{
+	ECalClient *cal_client;
 	GSList *icalcomps = NULL, *ecalcomps = NULL;
-	gboolean res = TRUE;
+	GError *error = NULL;
 
-	if (!e_cal_client_get_object_list_sync (cal_client, EVENT_QUERY, &icalcomps, NULL, &error)) {
-		report_error ("get object list sync", &error);
-		return FALSE;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+	setup_cal (cal_client);
 
-	if (g_slist_length (icalcomps) != 1) {
-		g_printerr ("Failure: expected 1 item returned in icalcomps, got %d\n", g_slist_length (icalcomps));
-		res = FALSE;
-	} else {
-		res = res && test_result (icalcomps->data);
-	}
+	if (!e_cal_client_get_object_list_sync (cal_client, EVENT_QUERY, &icalcomps, NULL, &error))
+		g_error ("get object list sync: %s", error->message);
+
+	g_assert_cmpint (g_slist_length (icalcomps), ==, 1);
+	test_result (icalcomps->data);
 
 	e_cal_client_free_icalcomp_slist (icalcomps);
 
-	if (!e_cal_client_get_object_list_as_comps_sync (cal_client, EVENT_QUERY, &ecalcomps, NULL, &error)) {
-		report_error ("get object list as comps sync", &error);
-		return FALSE;
-	}
+	if (!e_cal_client_get_object_list_as_comps_sync (cal_client, EVENT_QUERY, &ecalcomps, NULL, &error))
+		g_error ("get object list as comps sync: %s", error->message);
 
-	if (g_slist_length (ecalcomps) != 1) {
-		g_printerr ("Failure: expected 1 item returned in ecalcomps, got %d\n", g_slist_length (ecalcomps));
-		res = FALSE;
-	} else {
-		res = res && test_result (e_cal_component_get_icalcomponent (ecalcomps->data));
-	}
+	g_assert_cmpint (g_slist_length (ecalcomps), ==, 1);
+	test_result (e_cal_component_get_icalcomponent (ecalcomps->data));
 
 	e_cal_client_free_ecalcomp_slist (ecalcomps);
-
-	return res;
 }
 
-/* asynchronous callback with a main-loop running */
 static void
 async_get_object_list_as_comps_result_ready (GObject *source_object,
                                              GAsyncResult *result,
                                              gpointer user_data)
 {
 	ECalClient *cal_client;
+	GMainLoop *loop = (GMainLoop *)user_data;
 	GError *error = NULL;
 	GSList *ecalcomps = NULL;
-	gboolean res = TRUE;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_get_object_list_as_comps_finish (cal_client, result, &ecalcomps, &error)) {
-		report_error ("get object list as comps finish", &error);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_cal_client_get_object_list_as_comps_finish (cal_client, result, &ecalcomps, &error))
+		g_error ("get object list as comps finish: %s", error->message);
 
-	if (g_slist_length (ecalcomps) != 1) {
-		g_printerr ("Failure: expected 1 item returned in ecalcomps, got %d\n", g_slist_length (ecalcomps));
-		res = FALSE;
-	} else {
-		res = res && test_result (e_cal_component_get_icalcomponent (ecalcomps->data));
-	}
+	g_assert_cmpint (g_slist_length (ecalcomps), ==, 1);
+	test_result (e_cal_component_get_icalcomponent (ecalcomps->data));
 
 	e_cal_client_free_ecalcomp_slist (ecalcomps);
-	stop_main_loop (res ? 0 : 1);
+	g_main_loop_quit (loop);
 }
 
-/* asynchronous callback with a main-loop running */
 static void
 async_get_object_list_result_ready (GObject *source_object,
                                     GAsyncResult *result,
@@ -98,111 +102,43 @@ async_get_object_list_result_ready (GObject *source_object,
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_get_object_list_finish (cal_client, result, &icalcomps, &error)) {
-		report_error ("get object list finish", &error);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_cal_client_get_object_list_finish (cal_client, result, &icalcomps, &error))
+		g_error ("get object list finish: %s", error->message);
 
-	if (g_slist_length (icalcomps) != 1) {
-		g_printerr ("Failure: expected 1 item returned in icalcomps, got %d\n", g_slist_length (icalcomps));
-	} else {
-		test_result (icalcomps->data);
-	}
-
+	g_assert_cmpint (g_slist_length (icalcomps), ==, 1);
+	test_result (icalcomps->data);
 	e_cal_client_free_icalcomp_slist (icalcomps);
 
-	e_cal_client_get_object_list_as_comps (cal_client, EVENT_QUERY, NULL, async_get_object_list_as_comps_result_ready, NULL);
+	e_cal_client_get_object_list_as_comps (cal_client, EVENT_QUERY, NULL,
+					       async_get_object_list_as_comps_result_ready, user_data);
 }
 
-/* synchronously in idle with main-loop running */
-static gboolean
-test_sync_in_idle (gpointer user_data)
+static void
+test_get_object_list_async (ETestServerFixture *fixture,
+			    gconstpointer       user_data)
 {
-	ECalClient *cal_client = user_data;
+	ECalClient *cal_client;
 
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+	setup_cal (cal_client);
 
-	if (!test_sync (cal_client)) {
-		stop_main_loop (1);
-		return FALSE;
-	}
-
-	e_cal_client_get_object_list (cal_client, EVENT_QUERY, NULL, async_get_object_list_result_ready, NULL);
-
-	return FALSE;
-}
-
-/* synchronously in a dedicated thread with main-loop running */
-static gpointer
-test_sync_in_thread (gpointer user_data)
-{
-	if (!test_sync (user_data)) {
-		stop_main_loop (1);
-		return NULL;
-	}
-
-	g_idle_add (test_sync_in_idle, user_data);
-
-	return NULL;
+	e_cal_client_get_object_list (cal_client, EVENT_QUERY, NULL, async_get_object_list_result_ready, fixture->loop);
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	ECalClient *cal_client;
-	GError *error = NULL;
-	icalcomponent *icalcomp;
-	struct icaltimetype now;
-	gchar *uid = NULL;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/ECalClient/GetObjectList/Sync", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_object_list_sync, e_test_server_utils_teardown);
+	g_test_add ("/ECalClient/GetObjectList/Async", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_object_list_async, e_test_server_utils_teardown);
 
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
-	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
-	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
-	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
-
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error)) {
-		report_error ("create object sync", &error);
-		g_object_unref (cal_client);
-		icalcomponent_free (icalcomp);
-		return 1;
-	}
-
-	icalcomponent_free (icalcomp);
-	g_free (uid);
-
-	/* synchronously without main-loop */
-	if (!test_sync (cal_client)) {
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	start_in_thread_with_main_loop (test_sync_in_thread, cal_client);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	g_object_unref (cal_client);
-
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }

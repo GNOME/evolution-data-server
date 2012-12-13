@@ -4,7 +4,10 @@
 #include <libecal/libecal.h>
 #include <libical/ical.h>
 
-#include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
 static gchar *
 create_object (ECalClient *cal_client)
@@ -22,138 +25,80 @@ create_object (ECalClient *cal_client)
 	icalcomponent_set_dtstart (icalcomp, now);
 	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
 
-	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error)) {
-		report_error ("create object sync", &error);
-		icalcomponent_free (icalcomp);
-		return NULL;
-	}
+	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
+		g_error ("create object sync: %s", error->message);
 
 	icalcomponent_free (icalcomp);
-
-	g_return_val_if_fail (uid != NULL, NULL);
 
 	return uid;
 }
 
-static gboolean
-test_sync (ECalClient *cal_client)
+static void
+test_remove_object_sync (ETestServerFixture *fixture,
+			 gconstpointer       user_data)
 {
+	ECalClient *cal_client;
 	GError *error = NULL;
 	gchar *uid;
 
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
 	uid = create_object (cal_client);
+	g_assert (uid != NULL);
 
-	g_return_val_if_fail (uid != NULL, FALSE);
-
-	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, &error)) {
-		report_error ("remove object sync", &error);
-		g_free (uid);
-		return FALSE;
-	}
+	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, &error))
+		g_error ("remove object sync: %s", error->message);
 
 	g_free (uid);
-
-	return TRUE;
 }
 
-/* asynchronous callback with a main-loop running */
 static void
 async_remove_result_ready (GObject *source_object,
                            GAsyncResult *result,
                            gpointer user_data)
 {
 	ECalClient *cal_client;
+	GMainLoop *loop = (GMainLoop *)user_data;
 	GError *error = NULL;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_remove_object_finish (cal_client, result, &error)) {
-		report_error ("remove object finish", &error);
-		stop_main_loop (1);
-		return;
-	}
+	if (!e_cal_client_remove_object_finish (cal_client, result, &error))
+		g_error ("remove object finish: %s", error->message);
 
-	stop_main_loop (0);
+	g_main_loop_quit (loop);
 }
 
-/* synchronously in idle with main-loop running */
-static gboolean
-test_sync_in_idle (gpointer user_data)
+static void
+test_remove_object_async (ETestServerFixture *fixture,
+			  gconstpointer       user_data)
 {
-	ECalClient *cal_client = user_data;
+	ECalClient *cal_client;
 	gchar *uid;
 
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
-
-	if (!test_sync (cal_client)) {
-		stop_main_loop (1);
-		return FALSE;
-	}
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
 	uid = create_object (cal_client);
-	if (!uid) {
-		stop_main_loop (1);
-		return FALSE;
-	}
+	g_assert (uid != NULL);
 
-	e_cal_client_remove_object (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, async_remove_result_ready, NULL);
-
+	e_cal_client_remove_object (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, async_remove_result_ready, fixture->loop);
 	g_free (uid);
-
-	return FALSE;
-}
-
-/* synchronously in a dedicated thread with main-loop running */
-static gpointer
-test_sync_in_thread (gpointer user_data)
-{
-	if (!test_sync (user_data)) {
-		stop_main_loop (1);
-		return NULL;
-	}
-
-	g_idle_add (test_sync_in_idle, user_data);
-
-	return NULL;
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	ECalClient *cal_client;
-	GError *error = NULL;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add ("/ECalClient/RemoveObject/Sync", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_remove_object_sync, e_test_server_utils_teardown);
+	g_test_add ("/ECalClient/RemoveObject/Async", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_remove_object_async, e_test_server_utils_teardown);
 
-	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-
-	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	/* synchronously without main-loop */
-	if (!test_sync (cal_client)) {
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	start_in_thread_with_main_loop (test_sync_in_thread, cal_client);
-
-	if (!e_client_remove_sync (E_CLIENT (cal_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (cal_client);
-		return 1;
-	}
-
-	g_object_unref (cal_client);
-
-	if (get_main_loop_stop_result () == 0)
-		g_print ("Test finished successfully.\n");
-
-	return get_main_loop_stop_result ();
+	return e_test_server_utils_run ();
 }
