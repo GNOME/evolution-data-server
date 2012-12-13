@@ -46,6 +46,15 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryClass))
 
+
+/**
+ * EDS_ADDRESS_BOOK_MODULES:
+ *
+ * This environment variable configures where the address book
+ * factory loads it's backend modules from.
+ */
+#define EDS_ADDRESS_BOOK_MODULES    "EDS_ADDRESS_BOOK_MODULES"
+
 G_BEGIN_DECLS
 
 typedef struct _EDataBookFactory EDataBookFactory;
