@@ -47,6 +47,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryClass))
 
+/**
+ * EDS_CALENDAR_MODULES:
+ *
+ * This environment variable configures where the calendar
+ * factory loads it's backend modules from.
+ */
+#define EDS_CALENDAR_MODULES    "EDS_CALENDAR_MODULES"
+
 G_BEGIN_DECLS
 
 typedef struct _EDataCalFactory EDataCalFactory;

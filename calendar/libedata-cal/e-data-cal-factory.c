@@ -468,6 +468,13 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	GObjectClass *object_class;
 	EDBusServerClass *dbus_server_class;
 	EDataFactoryClass *data_factory_class;
+	const gchar *modules_directory = BACKENDDIR;
+	const gchar *modules_directory_env;
+
+	modules_directory_env = g_getenv (EDS_CALENDAR_MODULES);
+	if (modules_directory_env &&
+	    g_file_test (modules_directory_env, G_FILE_TEST_IS_DIR))
+		modules_directory = g_strdup (modules_directory_env);
 
 	g_type_class_add_private (class, sizeof (EDataCalFactoryPrivate));
 
@@ -478,7 +485,7 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->bus_name = CALENDAR_DBUS_SERVICE_NAME;
-	dbus_server_class->module_directory = BACKENDDIR;
+	dbus_server_class->module_directory = modules_directory;
 	dbus_server_class->bus_acquired = data_cal_factory_bus_acquired;
 	dbus_server_class->bus_name_lost = data_cal_factory_bus_name_lost;
 	dbus_server_class->quit_server = data_cal_factory_quit_server;
