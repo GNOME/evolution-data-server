@@ -1,0 +1,15 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE folders( folder_id  TEXT PRIMARY KEY, folder_name TEXT,  sync_data TEXT, is_populated INTEGER,  partial_content INTEGER, version INTEGER);
+INSERT INTO "folders" VALUES('folder_id','folder',NULL,1,0,1);
+CREATE TABLE keys( key TEXT PRIMARY KEY, value TEXT, folder_id TEXT REFERENCES folders);
+CREATE TABLE 'folder_id' ( uid TEXT PRIMARY KEY, rev TEXT, file_as TEXT, nickname TEXT, full_name TEXT, given_name TEXT, family_name TEXT, email_1 TEXT, email_2 TEXT, email_3 TEXT, email_4 TEXT, is_list INTEGER, list_show_addresses INTEGER, wants_html INTEGER, vcard TEXT, bdata TEXT);
+INSERT INTO "folder_id" VALUES('pas-id-50C9E02500000057','2012-12-13T14:03:17Z',NULL,NULL,'Upgrade Issue #1',NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL);
+INSERT INTO "folder_id" VALUES('pas-id-50C9E02500000058','2012-12-13T14:03:17Z',NULL,NULL,'Upgrade Issue #2',NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL);
+INSERT INTO "folder_id" VALUES('pas-id-50C9E02500000059','2012-12-13T14:03:17Z',NULL,NULL,'Upgrade Issue #3',NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL);
+INSERT INTO "folder_id" VALUES('pas-id-50C9E0250000005A','2012-12-13T14:03:17Z',NULL,NULL,'Upgrade Issue #4',NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL);
+INSERT INTO "folder_id" VALUES('pas-id-50C9E0250000005B','2012-12-13T14:03:17Z',NULL,NULL,'Upgrade Issue #5',NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL);
+CREATE INDEX keysindex ON keys(folder_id);
+CREATE INDEX 'FNINDEX-folder_id' ON 'folder_id' (full_name);
+CREATE INDEX 'EMINDEX-folder_id' ON 'folder_id' (email_1);
+COMMIT;
