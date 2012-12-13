@@ -10,14 +10,19 @@ libecal_test_utils_la_CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
+	-I$(top_srcdir)/addressbook     		\
+	-I$(top_builddir)/addressbook   		\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
+	-I$(top_srcdir)/tests/test-server-utils     	\
+	-I$(top_builddir)/tests/test-server-utils   	\
 	$(EVOLUTION_CALENDAR_CFLAGS)                    \
 	$(CAMEL_CFLAGS)					\
 	$(NULL)
 
 libecal_test_utils_la_LIBADD = \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
@@ -29,7 +34,6 @@ TEST_ECAL_LIBS = \
 
 # ordered by relative complexity
 TESTS = \
-	test-ecal-open				\
 	test-ecal-get-free-busy			\
 	test-ecal-get-timezone			\
 	test-ecal-add-timezone			\
@@ -39,7 +43,6 @@ TESTS = \
 	test-ecal-get-ldap-attribute		\
 	test-ecal-get-capabilities		\
 	test-ecal-get-default-object		\
-	test-ecal-set-mode			\
 	test-ecal-create-object			\
 	test-ecal-create-object--2		\
 	test-ecal-get-objects-for-uid		\
@@ -49,14 +52,21 @@ TESTS = \
 	test-ecal-send-objects			\
 	test-ecal-receive-objects		\
 	test-ecal-get-query			\
+	$(NULL)
+
+# The test program
+noinst_PROGRAMS = 		\
+	$(TESTS) 		\
+	test-ecal 		\
+	test-recur 		\
+	test-search		\
+	test-ecal-set-mode	\
 	test-ecal-stress-factory--serial	\
 	test-ecal-stress-factory--fifo		\
 	test-ecal-stress-factory--single-cal	\
 	test-ecal-stress-factory--open-async	\
 	$(NULL)
 
-# The test program
-noinst_PROGRAMS = $(TESTS) test-ecal test-recur test-search
 
 TEST_ECAL_CPPFLAGS= \
 	$(libecal_test_utils_la_CPPFLAGS) \
@@ -91,8 +101,6 @@ test_ecal_get_timezone_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_modify_object_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_modify_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
-test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_receive_objects_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_receive_objects_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_object_LDADD=$(TEST_ECAL_LIBS)

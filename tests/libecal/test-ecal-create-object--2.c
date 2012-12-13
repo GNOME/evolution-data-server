@@ -5,23 +5,24 @@
 #include <libical/ical.h>
 
 #include "ecal-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
 #define EVENT_SUMMARY "Creation of new test event"
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_create_object_2 (ETestServerFixture *fixture,
+		      gconstpointer       user_data)
 {
 	ECal *cal;
-	gchar *uri = NULL;
 	ECalComponent *e_component, *e_component_final;
 	icalcomponent *icalcomponent_final;
 	gchar *uid;
 
-	g_type_init ();
+	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECal);
 
-	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
-	ecal_test_utils_cal_open (cal, FALSE);
 	ecal_test_utils_create_component (
 		cal,
 		"20040109T090000Z", "UTC",
@@ -38,6 +39,19 @@ main (gint argc,
 	g_object_unref (e_component_final);
 	g_object_unref (e_component);
 	g_free (uid);
+}
 
-	return 0;
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/ECal/CreateObject2", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_create_object_2, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }

@@ -5,25 +5,25 @@
 #include <libical/ical.h>
 
 #include "ecal-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
 #define TZID_NEW "XYZ"
 #define TZNAME_NEW "Ex Wye Zee"
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_add_timezone (ETestServerFixture *fixture,
+		   gconstpointer       user_data)
 {
 	ECal *cal;
-	gchar *uri = NULL;
 	icalproperty *property;
 	icalcomponent *component;
 	icaltimezone *zone;
 	icaltimezone *zone_final;
 
-	g_type_init ();
-
-	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
-	ecal_test_utils_cal_open (cal, FALSE);
+	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECal);
 
 	/* Build up new timezone */
 	component = icalcomponent_new_vtimezone ();
@@ -39,16 +39,23 @@ main (gint argc,
 
 	/* verify */
 	zone_final = ecal_test_utils_cal_get_timezone (cal, TZID_NEW);
-	g_assert (
-		!g_strcmp0 (
-			icaltimezone_get_tzid (zone),
-			icaltimezone_get_tzid (zone_final)));
-	g_assert (
-		!g_strcmp0 (
-			icaltimezone_get_tznames (zone),
-			icaltimezone_get_tznames (zone_final)));
+	g_assert_cmpstr (icaltimezone_get_tzid (zone), ==, icaltimezone_get_tzid (zone_final));
+	g_assert_cmpstr (icaltimezone_get_tznames (zone), ==,icaltimezone_get_tznames (zone_final));
 
 	icaltimezone_free (zone, TRUE);
+}
 
-	return 0;
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/ECal/AddTimezone", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_add_timezone, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }

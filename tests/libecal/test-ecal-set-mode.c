@@ -4,19 +4,17 @@
 #include <libecal/libecal.h>
 
 #include "ecal-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
 #define SET_MODE_TIMEOUT 30
 #define MODE_FINAL CAL_MODE_LOCAL
 
-static void cal_set_mode_timeout_cb (gpointer user_data) __attribute__ ((noreturn));
-
-static guint cal_set_mode_timeout_id = 0;
-
 static void
 cal_set_mode_cb (ECalTestClosure *closure)
 {
-	g_source_remove (cal_set_mode_timeout_id);
-
 	if (closure->mode != MODE_FINAL) {
 		g_warning (
 			"set mode to %d, but we expected %d",
@@ -26,36 +24,41 @@ cal_set_mode_cb (ECalTestClosure *closure)
 	g_main_loop_quit ((GMainLoop *) closure->user_data);
 }
 
-static void
+static gboolean
 cal_set_mode_timeout_cb (gpointer user_data)
 {
-	g_warning (
+	g_error (
 		"failed to get a confirmation for the new calendar mode we "
 		"set (within a reasonable time frame)");
-	exit (1);
+	return FALSE;
+}
+
+static void
+test_set_mode (ETestServerFixture *fixture,
+	       gconstpointer       user_data)
+{
+	ECal *cal;
+
+	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECal);
+
+	g_timeout_add_seconds (SET_MODE_TIMEOUT, (GSourceFunc) cal_set_mode_timeout_cb, cal);
+
+	ecal_test_utils_cal_set_mode (
+		cal, MODE_FINAL, (GSourceFunc) cal_set_mode_cb, fixture->loop);
+	g_main_loop_run (fixture->loop);
 }
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	ECal *cal;
-	gchar *uri = NULL;
-	GMainLoop *loop;
-
+#if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
-	ecal_test_utils_cal_open (cal, FALSE);
+	g_test_add ("/ECal/SetMode", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_set_mode, e_test_server_utils_teardown);
 
-	cal_set_mode_timeout_id = g_timeout_add_seconds (
-		SET_MODE_TIMEOUT, (GSourceFunc) cal_set_mode_timeout_cb, cal);
-
-	loop = g_main_loop_new (NULL, TRUE);
-	ecal_test_utils_cal_set_mode (
-		cal, MODE_FINAL, (GSourceFunc) cal_set_mode_cb, loop);
-
-	g_main_loop_run (loop);
-
-	return 0;
+	return e_test_server_utils_run ();
 }

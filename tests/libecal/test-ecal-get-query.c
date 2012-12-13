@@ -5,6 +5,8 @@
 #include <libical/ical.h>
 
 #include "ecal-test-utils.h"
+#include "e-test-server-utils.h"
+
 
 #define COMPLETE_TIMEOUT 30
 
@@ -16,11 +18,8 @@
 #define FINAL_BEGIN_TIME       "20091221T090000Z"
 #define FINAL_BEGIN_TIMEZONE   "UTC"
 
-static void complete_timeout_cb (gpointer user_data) __attribute__ ((noreturn));
-
-static GMainLoop *loop;
-static guint complete_timeout_id;
-static guint alter_cal_id;
+static ETestServerClosure cal_closure =
+	{ E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
 typedef enum {
 	SUBTEST_OBJECTS_ADDED,
@@ -31,7 +30,8 @@ typedef enum {
 } SubTestId;
 
 static void
-subtest_passed (SubTestId id)
+subtest_passed (SubTestId id,
+		GMainLoop *loop)
 {
 	static guint subtests_complete = 0;
 
@@ -44,33 +44,33 @@ subtest_passed (SubTestId id)
 static void
 objects_added_cb (GObject *object,
                   GList *objects,
-                  gpointer data)
+                  GMainLoop *loop)
 {
 	GList *l;
 
 	for (l = objects; l; l = l->next)
 		test_print ("Object added %s\n", icalcomponent_get_uid (l->data));
 
-	subtest_passed (SUBTEST_OBJECTS_ADDED);
+	subtest_passed (SUBTEST_OBJECTS_ADDED, loop);
 }
 
 static void
 objects_modified_cb (GObject *object,
                      GList *objects,
-                     gpointer data)
+                     GMainLoop *loop)
 {
 	GList *l;
 
 	for (l = objects; l; l = l->next)
 		test_print ("Object modified %s\n", icalcomponent_get_uid (l->data));
 
-	subtest_passed (SUBTEST_OBJECTS_MODIFIED);
+	subtest_passed (SUBTEST_OBJECTS_MODIFIED, loop);
 }
 
 static void
 objects_removed_cb (GObject *object,
                     GList *objects,
-                    gpointer data)
+                    GMainLoop *loop)
 {
 	GList *l;
 
@@ -82,26 +82,25 @@ objects_removed_cb (GObject *object,
 			id->uid, id->rid);
 	}
 
-	subtest_passed (SUBTEST_OBJECTS_REMOVED);
+	subtest_passed (SUBTEST_OBJECTS_REMOVED, loop);
 }
 
 static void
 view_complete_cb (GObject *object,
                   ECalendarStatus status,
                   const gchar *error_msg,
-                  gpointer data)
+                  GMainLoop *loop)
 {
 	test_print ("View complete (status: %d, error_msg:%s\n", status, error_msg ? error_msg : "NULL");
 
-	g_source_remove (complete_timeout_id);
-
-	subtest_passed (SUBTEST_VIEW_DONE);
+	subtest_passed (SUBTEST_VIEW_DONE, loop);
 }
 
-static void
+static gboolean
 complete_timeout_cb (gpointer user_data)
 {
 	g_error ("failed to complete all the pieces of the test in time");
+	return FALSE;
 }
 
 static gboolean
@@ -153,45 +152,52 @@ alter_cal_cb (ECal *cal)
 	return FALSE;
 }
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_get_query (ETestServerFixture *fixture,
+		gconstpointer       user_data)
 {
 	ECal *cal;
-	gchar *uri = NULL;
 	ECalView *view = NULL;
 
-	g_type_init ();
-
-	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
-	ecal_test_utils_cal_open (cal, FALSE);
+	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECal);
 
 	view = ecal_test_utils_get_query (cal, "(contains? \"any\" \"event\")");
 
 	/* monitor changes to the calendar */
 	g_signal_connect (
 		view, "objects_added",
-		G_CALLBACK (objects_added_cb), cal);
+		G_CALLBACK (objects_added_cb), fixture->loop);
 	g_signal_connect (
 		view, "objects_modified",
-		G_CALLBACK (objects_modified_cb), cal);
+		G_CALLBACK (objects_modified_cb), fixture->loop);
 	g_signal_connect (
 		view, "objects_removed",
-		G_CALLBACK (objects_removed_cb), cal);
+		G_CALLBACK (objects_removed_cb), fixture->loop);
 	g_signal_connect (
 		view, "view_complete",
-		G_CALLBACK (view_complete_cb), cal);
+		G_CALLBACK (view_complete_cb), fixture->loop);
 
 	e_cal_view_start (view);
 
-	loop = g_main_loop_new (NULL, TRUE);
-	alter_cal_id = g_idle_add ((GSourceFunc) alter_cal_cb, cal);
-	complete_timeout_id = g_timeout_add_seconds (
-		COMPLETE_TIMEOUT, (GSourceFunc) complete_timeout_cb, cal);
+	g_idle_add ((GSourceFunc) alter_cal_cb, cal);
+	g_timeout_add_seconds (COMPLETE_TIMEOUT, (GSourceFunc) complete_timeout_cb, cal);
 
-	g_main_loop_run (loop);
+	g_main_loop_run (fixture->loop);
 
 	g_object_unref (view);
+}
 
-	return 0;
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+
+	g_test_add ("/ECal/GetQuery", ETestServerFixture, &cal_closure,
+		    e_test_server_utils_setup, test_get_query, e_test_server_utils_teardown);
+
+	return e_test_server_utils_run ();
 }
