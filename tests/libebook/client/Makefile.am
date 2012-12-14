@@ -13,7 +13,12 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/addressbook				\
 	-I$(top_builddir)/addressbook				\
-	-I$(top_srcdir)/tests/libedataserver			\
+	-I$(top_srcdir)/calendar     				\
+	-I$(top_builddir)/calendar   				\
+	-I$(top_srcdir)/tests/libedataserver     		\
+	-I$(top_builddir)/tests/libedataserver   		\
+	-I$(top_srcdir)/tests/test-server-utils     		\
+	-I$(top_builddir)/tests/test-server-utils   		\
 	-DBACKENDDIR=\"$(ebook_backenddir)\"			\
 	-DDATADIR=\"$(datadir)\"				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
