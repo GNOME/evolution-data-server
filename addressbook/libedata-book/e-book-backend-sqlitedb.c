@@ -2139,13 +2139,13 @@ summary_select_stmt (GHashTable *fields_of_interest,
 	GString   *string;
 
 	if (distinct)
-		string = g_string_new ("SELECT DISTINCT summary.uid");
+		string = g_string_new ("SELECT DISTINCT summary.uid AS uid");
 	else
-		string = g_string_new ("SELECT summary.uid");
+		string = g_string_new ("SELECT summary.uid AS uid");
 
 	/* Add the E_CONTACT_REV field if they are both requested */
 	if (g_hash_table_size (fields_of_interest) == 2)
-		g_string_append (string, ", Rev");
+		g_string_append (string, ", summary.rev AS rev");
 
 	return g_string_free (string, FALSE);
 }
@@ -2173,7 +2173,7 @@ store_data_to_vcard (gpointer ref,
 			e_contact_set (contact, E_CONTACT_UID, cols[i]);
 
 			search_data->uid = g_strdup (cols[i]);
-		} else if (!strcmp (name[i], "Rev")) {
+		} else if (!strcmp (name[i], "rev")) {
 			e_contact_set (contact, E_CONTACT_REV, cols[i]);
 		} else if (!strcmp (name[i], "bdata"))
 			search_data->bdata = g_strdup (cols[i]);
