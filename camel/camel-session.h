@@ -36,6 +36,7 @@
 #include <camel/camel-msgport.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-service.h>
+#include <camel/camel-certdb.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_SESSION \
@@ -115,7 +116,14 @@ struct _CamelSessionClass {
 	gint		(*alert_user)		(CamelSession *session,
 						 CamelSessionAlertType type,
 						 const gchar *prompt,
-						 GSList *button_captions);
+						 GSList *button_captions,
+						 GCancellable *cancellable);
+	CamelCertTrust	(*trust_prompt)		(CamelSession *session,
+						 const gchar *host,
+						 const gchar *certificate,
+						 guint32 certificate_errors,
+						 const GSList *issuers,
+						 GCancellable *cancellable);
 	CamelFilterDriver *
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
@@ -208,7 +216,14 @@ gboolean	camel_session_forget_password	(CamelSession *session,
 gint		camel_session_alert_user	(CamelSession *session,
 						 CamelSessionAlertType type,
 						 const gchar *prompt,
-						 GSList *button_captions);
+						 GSList *button_captions,
+						 GCancellable *cancellable);
+CamelCertTrust	camel_session_trust_prompt	(CamelSession *session,
+						 const gchar *host,
+						 const gchar *certificate,
+						 guint32 certificate_errors,
+						 const GSList *issuers,
+						 GCancellable *cancellable);
 gchar *		camel_session_build_password_prompt
 						(const gchar *type,
 						 const gchar *user,

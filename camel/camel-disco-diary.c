@@ -210,7 +210,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 			"reconnect to the network."),
 			g_strerror (errno));
 		camel_session_alert_user (
-			session, CAMEL_SESSION_ALERT_ERROR, msg, NULL);
+			session, CAMEL_SESSION_ALERT_ERROR, msg, NULL, NULL);
 		g_free (msg);
 
 		fclose (diary->file);
@@ -276,7 +276,7 @@ diary_decode_folder (CamelDiscoDiary *diary,
 			camel_session_alert_user (
 				camel_service_get_session (CAMEL_SERVICE (diary->store)),
 				CAMEL_SESSION_ALERT_WARNING,
-				msg, NULL);
+				msg, NULL, cancellable);
 			g_free (msg);
 			g_free (name);
 		}

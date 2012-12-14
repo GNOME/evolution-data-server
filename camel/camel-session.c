@@ -1278,6 +1278,7 @@ camel_session_forget_password (CamelSession *session,
  * @type: the type of alert (info, warning, or error)
  * @prompt: the message for the user
  * @button_captions: List of button captions to use. If NULL, only "Dismiss" button is shown.
+ * @cancellable: (allow-non): optional #GCancellable object, or %NULL
  *
  * Presents the given @prompt to the user, in the style indicated by
  * @type. If @cancel is %TRUE, the user will be able to accept or
@@ -1289,7 +1290,8 @@ gint
 camel_session_alert_user (CamelSession *session,
                           CamelSessionAlertType type,
                           const gchar *prompt,
-                          GSList *button_captions)
+                          GSList *button_captions,
+			  GCancellable *cancellable)
 {
 	CamelSessionClass *class;
 
@@ -1299,7 +1301,46 @@ camel_session_alert_user (CamelSession *session,
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->alert_user != NULL, -1);
 
-	return class->alert_user (session, type, prompt, button_captions);
+	return class->alert_user (session, type, prompt, button_captions, cancellable);
+}
+
+/**
+ * camel_session_trust_prompt:
+ * @session: a #CamelSession
+ * @host: host name, to which the @certificate belongs
+ * @certificate: base64-encoded DER certificate on which to ask
+ * @certificate_errors: errors found with the certificate; a bit-OR of a #GTlsCertificateFlags
+ * @issuers: (allow-none): chain of issuers, or %NULL
+ * @cancellable: (allow-non): optional #GCancellable object, or %NULL
+ *
+ * Prompts user about trust of a certificate. The @certificate is not
+ * considered trusted, due to reasons set in @certificate_errors.
+ * There can be passed a list of @issuers, which has as items also base64-encoded
+ * DER certificates. The first item in the list is an issuer of the @certificate,
+ * the second item is an issuer of the first item, and so on.
+ *
+ * Returns: What trust level should be used for this certificate. It returns
+ *   #CAMEL_CERT_TRUST_UNKNOWN on error or if user cancelled the dialog prompt.
+ *
+ * Since: 3.8
+ **/
+CamelCertTrust
+camel_session_trust_prompt (CamelSession *session,
+			    const gchar *host,
+			    const gchar *certificate,
+			    guint32 certificate_errors,
+			    const GSList *issuers,
+			    GCancellable *cancellable)
+{
+	CamelSessionClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (certificate != NULL, CAMEL_CERT_TRUST_UNKNOWN);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
+
+	return class->trust_prompt (session, host, certificate, certificate_errors, issuers, cancellable);
 }
 
 /**

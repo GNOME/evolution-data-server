@@ -318,7 +318,7 @@ journal_decode_folder (CamelIMAPJournal *journal,
 				camel_service_get_session (
 				CAMEL_SERVICE (parent_store)),
 				CAMEL_SESSION_ALERT_WARNING,
-				msg, NULL);
+				msg, NULL, cancellable);
 			g_free (msg);
 		}
 	}

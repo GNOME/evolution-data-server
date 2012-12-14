@@ -430,7 +430,7 @@ camel_imap_command_response (CamelImapStore *store,
 						user, host, alert);
 				camel_session_alert_user (
 					session, CAMEL_SESSION_ALERT_WARNING,
-					msg, NULL);
+					msg, NULL, cancellable);
 				g_free (msg);
 			}
 		}

@@ -425,33 +425,6 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb,
 	g_free (filename);
 }
 
-#if 0
-/* used by the mozilla-like code below */
-static gchar *
-get_nickname (CERTCertificate *cert)
-{
-	gchar *server, *nick = NULL;
-	gint i;
-	PRBool status = PR_TRUE;
-
-	server = CERT_GetCommonName (&cert->subject);
-	if (server == NULL)
-		return NULL;
-
-	for (i = 1; status == PR_TRUE; i++) {
-		if (nick) {
-			g_free (nick);
-			nick = g_strdup_printf ("%s #%d", server, i);
-		} else {
-			nick = g_strdup (server);
-		}
-		status = SEC_CertNicknameConflict (server, &cert->derSubject, cert->dbhandle);
-	}
-
-	return nick;
-}
-#endif
-
 static void
 tcp_stream_cancelled (GCancellable *cancellable,
                       PRThread *thread)
@@ -467,10 +440,8 @@ ssl_bad_cert (gpointer data,
 	CamelCertDB *certdb = NULL;
 	CamelCert *ccert = NULL;
 	gboolean ccert_is_new = FALSE;
-	gchar *prompt, *cert_str, *fingerprint;
 	CamelTcpStreamSSL *ssl;
 	CERTCertificate *cert;
-	SECStatus status = SECFailure;
 
 	g_return_val_if_fail (data != NULL, SECFailure);
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM_SSL (data), SECFailure);
@@ -493,59 +464,66 @@ ssl_bad_cert (gpointer data,
 	}
 
 	if (ccert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
-		GSList *button_captions = NULL;
-		gint button_id;
+		CERTCertificate *issuer;
+		CamelCertTrust trust_response;
+		gchar *base64;
+		guint32 certificate_errors = 0;
+		GSList *issuers = NULL;
 
-		status = CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
-		fingerprint = cert_fingerprint (cert);
-		cert_str = g_strdup_printf (_(
-			"   Issuer:       %s\n"
-			"   Subject:      %s\n"
-			"   Fingerprint:  %s\n"
-			"   Signature:    %s"),
-			CERT_NameToAscii (&cert->issuer),
-			CERT_NameToAscii (&cert->subject),
-			fingerprint,
-			status == SECSuccess ? _("GOOD") : _("BAD"));
-		g_free (fingerprint);
+		if (CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL) != SECSuccess) {
+			gint pr_error;
 
-		/* construct our user prompt */
-		prompt = g_strdup_printf (
-			_("SSL Certificate for '%s' is not trusted. "
-			"Do you wish to accept it?\n\n"
-			"Detailed information about the certificate:\n%s"),
-			ssl->priv->expected_host, cert_str);
-		g_free (cert_str);
+			pr_error = PR_GetError ();
 
-		button_captions = g_slist_append (button_captions, _("_Reject"));
-		button_captions = g_slist_append (button_captions, _("Accept _Temporarily"));
-		button_captions = g_slist_append (button_captions, _("_Accept Permanently"));
+			switch (pr_error) {
+			case SEC_ERROR_UNKNOWN_ISSUER:
+				certificate_errors |= G_TLS_CERTIFICATE_UNKNOWN_CA;
+				break;
+			case SSL_ERROR_BAD_CERT_DOMAIN:
+				certificate_errors |= G_TLS_CERTIFICATE_BAD_IDENTITY;
+				break;
+			case SEC_ERROR_EXPIRED_CERTIFICATE:
+			case SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE:
+				certificate_errors |= G_TLS_CERTIFICATE_EXPIRED;
+				break;
+			}
+		}
+
+		issuer = cert;
+		while (issuer) {
+			if (SECITEM_CompareItem (&issuer->derIssuer, &issuer->derSubject) == SECEqual)
+				break;
+
+			issuer = CERT_FindCertIssuer (issuer, PR_Now (), certUsageSSLClient);
+			if (!issuer)
+				break;
+
+			base64 = g_base64_encode (issuer->derIssuer.data, issuer->derIssuer.len);
+			if (!base64)
+				break;
+
+			issuers = g_slist_append (issuers, base64);
+		}
+
+		base64 = g_base64_encode (cert->derCert.data, cert->derCert.len);
 
 		/* query the user to find out if we want to accept this certificate */
-		button_id = camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, button_captions);
-		g_slist_free (button_captions);
-		g_free (prompt);
+		trust_response = camel_session_trust_prompt (ssl->priv->session, ssl->priv->expected_host, base64, certificate_errors, issuers, NULL);
 
-		accept = button_id != 0;
+		g_free (base64);
+		g_slist_free_full (issuers, g_free);
+
+		accept = trust_response != CAMEL_CERT_TRUST_UNKNOWN &&
+			 trust_response != CAMEL_CERT_TRUST_NEVER;
+
 		if (ccert_is_new) {
 			camel_certdb_nss_cert_set (certdb, ccert, cert);
 			camel_certdb_put (certdb, ccert);
 		}
 
-		switch (button_id) {
-		case 0: /* Reject */
-			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_NEVER);
-			break;
-		case 1: /* Accept temporarily */
-			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_TEMPORARY);
-			break;
-		case 2: /* Accept permanently */
-			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_FULLY);
-			break;
-		default: /* anything else means failure and will ask again */
-			accept = FALSE;
-			break;
-		}
+		if (trust_response != CAMEL_CERT_TRUST_UNKNOWN)
+			camel_cert_set_trust (certdb, ccert, trust_response);
+
 		camel_certdb_touch (certdb);
 	} else {
 		accept = ccert->trust != CAMEL_CERT_TRUST_NEVER;
@@ -556,140 +534,6 @@ ssl_bad_cert (gpointer data,
 	g_object_unref (certdb);
 
 	return accept ? SECSuccess : SECFailure;
-
-#if 0
-	gint i, error;
-	CERTCertTrust trust;
-	SECItem *certs[1];
-	gint go = 1;
-	gchar *host, *nick;
-
-	error = PR_GetError ();
-
-	/* This code is basically what mozilla does - however it doesn't seem to work here
-	 * very reliably :-/ */
-	while (go && status != SECSuccess) {
-		gchar *prompt = NULL;
-
-		printf ("looping, error '%d'\n", error);
-
-		switch (error) {
-		case SEC_ERROR_UNKNOWN_ISSUER:
-		case SEC_ERROR_CA_CERT_INVALID:
-		case SEC_ERROR_UNTRUSTED_ISSUER:
-		case SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE:
-			/* add certificate */
-			printf ("unknown issuer, adding ... \n");
-			prompt = g_strdup_printf (_("Certificate problem: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
-
-			if (camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
-
-				nick = get_nickname (cert);
-				if (NULL == nick) {
-					g_free (prompt);
-					status = SECFailure;
-					break;
-				}
-
-				printf ("adding cert '%s'\n", nick);
-
-				if (!cert->trust) {
-					cert->trust = (CERTCertTrust *) PORT_ArenaZAlloc (cert->arena, sizeof (CERTCertTrust));
-					CERT_DecodeTrustString (cert->trust, "P");
-				}
-
-				certs[0] = &cert->derCert;
-				/*CERT_ImportCerts (cert->dbhandle, certUsageSSLServer, 1, certs, NULL, TRUE, FALSE, nick);*/
-				CERT_ImportCerts (cert->dbhandle, certUsageUserCertImport, 1, certs, NULL, TRUE, FALSE, nick);
-				g_free (nick);
-
-				printf (" cert type %08x\n", cert->nsCertType);
-
-				memset ((gpointer) &trust, 0, sizeof (trust));
-				if (CERT_GetCertTrust (cert, &trust) != SECSuccess) {
-					CERT_DecodeTrustString (&trust, "P");
-				}
-				trust.sslFlags |= CERTDB_VALID_PEER | CERTDB_TRUSTED;
-				if (CERT_ChangeCertTrust (cert->dbhandle, cert, &trust) != SECSuccess) {
-					printf ("couldn't change cert trust?\n");
-				}
-
-				/*status = SECSuccess;*/
-#if 1
-				/* re-verify? */
-				status = CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLServer, NULL);
-				error = PR_GetError ();
-				printf ("re-verify status %d, error %d\n", status, error);
-#endif
-
-				printf (" cert type %08x\n", cert->nsCertType);
-			} else {
-				printf ("failed/cancelled\n");
-				go = 0;
-			}
-
-			break;
-		case SSL_ERROR_BAD_CERT_DOMAIN:
-			printf ("bad domain\n");
-
-			prompt = g_strdup_printf (_("Bad certificate domain: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
-
-			if (camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
-				host = SSL_RevealURL (sockfd);
-				status = CERT_AddOKDomainName (cert, host);
-				printf ("add ok domain name : %s\n", status == SECFailure?"fail":"ok");
-				error = PR_GetError ();
-				if (status == SECFailure)
-					go = 0;
-			} else {
-				go = 0;
-			}
-
-			break;
-
-		case SEC_ERROR_EXPIRED_CERTIFICATE:
-			printf ("expired\n");
-
-			prompt = g_strdup_printf (_("Certificate expired: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
-
-			if (camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
-				cert->timeOK = PR_TRUE;
-				status = CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
-				error = PR_GetError ();
-				if (status == SECFailure)
-					go = 0;
-			} else {
-				go = 0;
-			}
-
-			break;
-
-		case SEC_ERROR_CRL_EXPIRED:
-			printf ("crl expired\n");
-
-			prompt = g_strdup_printf (_("Certificate revocation list expired: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
-
-			if (camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
-				host = SSL_RevealURL (sockfd);
-				status = CERT_AddOKDomainName (cert, host);
-			}
-
-			go = 0;
-			break;
-
-		default:
-			printf ("generic error\n");
-			go = 0;
-			break;
-		}
-
-		g_free (prompt);
-	}
-
-	CERT_DestroyCertificate (cert);
-
-	return status;
-#endif
 }
 
 static PRFileDesc *
