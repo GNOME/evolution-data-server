@@ -326,6 +326,10 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
+	/* Setting with U.S. locale for addresses */
+	g_setenv ("LC_ADDRESS", "en_US.UTF-8", TRUE);
+	setlocale (LC_ADDRESS, "");
+
 	add_test ("/upgrade/0.2/dbus/book-client", "0.2", INDIRECT_ACCESS, test_book_client);
 	add_test ("/upgrade/0.2/dbus/book-client-view", "0.2", INDIRECT_ACCESS, test_book_client_view);
 	add_test ("/upgrade/0.2/direct/book-client", "0.2", DIRECT_ACCESS, test_book_client);
