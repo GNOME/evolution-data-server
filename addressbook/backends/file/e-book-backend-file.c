@@ -1634,13 +1634,20 @@ e_book_backend_file_get_direct_book (EBookBackend *backend)
 	ESource *source;
 	gchar *backend_path;
 	gchar *dirname;
+	const gchar *modules_env = NULL;
 	
+	modules_env = g_getenv (EDS_ADDRESS_BOOK_MODULES);
+
 	source = e_backend_get_source (E_BACKEND (backend));
 	registry = e_book_backend_get_registry (backend);
 	dirname = e_book_backend_file_extract_path_from_source (
 		registry, source, GET_PATH_DB_DIR);
 
-	backend_path = g_build_filename (BACKENDDIR, "libebookbackendfile.so", NULL);
+	/* Support in-tree testing / relocated modules */
+	if (modules_env)
+		backend_path = g_build_filename (modules_env, "libebookbackendfile.so", NULL);
+	else
+		backend_path = g_build_filename (BACKENDDIR, "libebookbackendfile.so", NULL);
 	direct = e_data_book_direct_new (backend_path, "EBookBackendFileFactory", dirname);
 
 	g_free (backend_path);
