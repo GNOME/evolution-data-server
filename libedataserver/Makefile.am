@@ -46,6 +46,7 @@ libedataserver_1_2_la_CPPFLAGS = \
 
 libedataserver_1_2_la_SOURCES =		\
 	$(BUILT_SOURCES)		\
+	e-cancellable-locks.c		\
 	e-categories.c			\
 	e-client.c			\
 	e-client-private.h		\
@@ -116,6 +117,7 @@ libedataserverincludedir = $(privincludedir)/libedataserver
 
 libedataserverinclude_HEADERS =		\
 	libedataserver.h		\
+	e-cancellable-locks.h		\
 	e-categories.h			\
 	e-client.h			\
 	e-credentials.h			\

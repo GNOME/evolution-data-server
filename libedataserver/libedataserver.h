@@ -21,6 +21,7 @@
 
 #define __LIBEDATASERVER_H_INSIDE__
 
+#include <libedataserver/e-cancellable-locks.h>
 #include <libedataserver/e-categories.h>
 #include <libedataserver/e-client.h>
 #include <libedataserver/e-credentials.h>
