@@ -1,5 +1,7 @@
 NULL =
 
+SUBDIRS = services
+
 @GNOME_CODE_COVERAGE_RULES@
 
 common_cflags = \
