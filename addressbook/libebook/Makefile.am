@@ -98,7 +98,6 @@ pkgconfig_DATA = libebook-$(API_VERSION).pc
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = \
-	--warn-all \
 	--add-include-path=$(top_builddir)/libedataserver \
 	--add-include-path=$(srcdir) \
 	--identifier-prefix=E \
