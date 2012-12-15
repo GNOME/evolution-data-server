@@ -25,7 +25,6 @@ e_authentication_mediator_get_type
 <SECTION>
 <FILE>e-authentication-session</FILE>
 <TITLE>EAuthenticationSession</TITLE>
-E_AUTHENTICATION_SESSION_KEYRING_ERROR
 EAuthenticationSession
 EAuthenticationSessionResult
 e_authentication_session_new
@@ -53,6 +52,7 @@ e_authentication_session_lookup_password_finish
 e_authentication_session_delete_password_sync
 e_authentication_session_delete_password
 e_authentication_session_delete_password_finish
+E_AUTHENTICATION_SESSION_KEYRING_ERROR
 <SUBSECTION Standard>
 E_AUTHENTICATION_SESSION
 E_IS_AUTHENTICATION_SESSION

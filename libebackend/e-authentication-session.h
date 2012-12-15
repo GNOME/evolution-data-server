@@ -48,18 +48,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_AUTHENTICATION_SESSION, EAuthenticationSessionClass))
 
-/**
- * E_AUTHENTICATION_SESSION_KEYRING_ERROR:
- *
- * Error domain for password storage and retrieval.
- *
- * No longer used.
- *
- * Since: 3.6
- **/
-#define E_AUTHENTICATION_SESSION_KEYRING_ERROR \
-	(e_authentication_session_error_quark ())
-
 G_BEGIN_DECLS
 
 struct _ESourceRegistryServer;
@@ -206,6 +194,22 @@ gboolean	e_authentication_session_delete_password_finish
 					(EAuthenticationSession *session,
 					 GAsyncResult *result,
 					 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+/**
+ * E_AUTHENTICATION_SESSION_KEYRING_ERROR:
+ *
+ * Error domain for password storage and retrieval.
+ *
+ * No longer used.
+ *
+ * Since: 3.6
+ *
+ * Deprecated: 3.8: The #SECRET_ERROR domain is now used instead.
+ **/
+#define E_AUTHENTICATION_SESSION_KEYRING_ERROR \
+	(e_authentication_session_error_quark ())
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 
