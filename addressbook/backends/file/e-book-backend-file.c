@@ -241,7 +241,7 @@ e_book_backend_file_extract_path_from_source (ESourceRegistry *registry,
 	 * "system-$COMPONENT" but since the data directories are already
 	 * split out by component, we'll continue to use the old "system"
 	 * directories for these particular data sources. */
-	if (builtin_source != NULL && e_source_equal (source, builtin_source))
+	if (e_source_equal (source, builtin_source))
 		uid = "system";
 
 	switch (path_type) {
@@ -257,8 +257,7 @@ e_book_backend_file_extract_path_from_source (ESourceRegistry *registry,
 			g_warn_if_reached ();
 	}
 
-	if (builtin_source)
-		g_object_unref (builtin_source);
+	g_object_unref (builtin_source);
 
 	return filename;
 }

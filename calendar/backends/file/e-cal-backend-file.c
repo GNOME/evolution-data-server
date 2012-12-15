@@ -3431,15 +3431,14 @@ cal_backend_file_constructed (GObject *object)
 	 * "system-$COMPONENT" but since the data directories are already
 	 * split out by component, we'll continue to use the old "system"
 	 * directories for these particular data sources. */
-	if (builtin_source != NULL && e_source_equal (source, builtin_source))
+	if (e_source_equal (source, builtin_source))
 		uid = "system";
 
 	filename = g_build_filename (user_data_dir, component_type, uid, NULL);
 	e_cal_backend_set_cache_dir (backend, filename);
 	g_free (filename);
 
-	if (builtin_source)
-		g_object_unref (builtin_source);
+	g_object_unref (builtin_source);
 }
 
 /* Class initialization function for the file backend */

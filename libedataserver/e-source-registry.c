@@ -2743,6 +2743,7 @@ e_source_registry_ref_builtin_address_book (ESourceRegistry *registry)
 
 	uid = E_SOURCE_BUILTIN_ADDRESS_BOOK_UID;
 	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
 
 	return source;
 }
@@ -2776,9 +2777,11 @@ e_source_registry_ref_default_address_book (ESourceRegistry *registry)
 	source = e_source_registry_ref_source (registry, uid);
 	g_free (uid);
 
-	/* The built-in source is present in normal EDS installations. */
+	/* The built-in source is always present. */
 	if (source == NULL)
 		source = e_source_registry_ref_builtin_address_book (registry);
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	return source;
 }
@@ -2842,6 +2845,7 @@ e_source_registry_ref_builtin_calendar (ESourceRegistry *registry)
 
 	uid = E_SOURCE_BUILTIN_CALENDAR_UID;
 	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
 
 	return source;
 }
@@ -2875,9 +2879,11 @@ e_source_registry_ref_default_calendar (ESourceRegistry *registry)
 	source = e_source_registry_ref_source (registry, uid);
 	g_free (uid);
 
-	/* The built-in source is present in normal EDS installations. */
+	/* The built-in source is always present. */
 	if (source == NULL)
 		source = e_source_registry_ref_builtin_calendar (registry);
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	return source;
 }
