@@ -1,3 +1,59 @@
+Evolution-Data-Server 3.7.3 2012-12-16
+--------------------------------------
+
+* libedataserverui has been removed from Evolution-Data-Server and
+  merged back into Evolution, since Evolution is its only consumer
+  nowadays.
+
+* The E-D-S unit test suite is functional again!  Many thanks to Tristan
+  Van Berkom, Murray Cumming and Mathias Hasselmann for their hard work.
+
+Bug Fixes:
+	Bug 202576 - A way to refresh IMAP folder list (Milan Crha)
+	Bug 371469 - Add port to connection refused error messages
+	             (Milan Crha)
+	Bug 512714 - Error string "Host lookup failed: Name or Service not
+	             known" (Milan Crha)
+	Bug 529743 - Add "Any header" filter and search folder condition
+	             (Milan Crha)
+	Bug 579315 - Identify filter names in filtering errors (Milan Crha)
+	Bug 671620 - Support signing with multiple OpenPGP keys (Milan Crha)
+	Bug 677378 - Crash in imapx_query_auth_types_sync() (Milan Crha)
+	Bug 680201 - Backup restore doesn't migrate accounts from GConf
+	             (Milan Crha)
+	Bug 684175 - Check email value in e_destination_set_contact()
+	             (Paul Menzel)
+	Bug 687670 - Signing with both pgp and S/MIME causes a broken
+	             signature (Milan Crha)
+	Bug 688366 - WebDAV book can cause high CPU usage (Milan Crha)
+	Bug 688479 - Empty name selector dialog on open (Milan Crha)
+	Bug 688639 - SMTP: Correctly deal with 535 authentication error
+	             (Paul Menzel)
+	Bug 688660 - Crash on webdav contact cache update (Milan Crha)
+	Bug 688795 - Crash under e_cal_backend_contacts_start_view()
+	             (Milan Crha)
+	Bug 688926 - SIGABRT on call_old_file_Sync (Daniele Rondina)
+
+Other Changes
+	* Added ESourceBackendSummarySetup extension (Tristan Van Berkom)
+	* EBookBackendFile: Use the new ESourceBackendSummarySetup to
+	  configure the summary (Tristan Van Berkom)
+	* Use version-based GLib/GDK/GTK+ warnings. (Matthew Barnes)
+	* Coverity scan cleanups. (Milan Crha)
+	* Do not generate a ChangeLog file from 'git log' (Milan Crha)
+	* Introduce evolution-user-prompter service (Milan Crha)
+	* IMAPX: Support the QUOTA extension (RFC 2087). (Matthew Barnes)
+	* Remove introspection of libecal. (Matthew Barnes)
+	* Workaround file description leak from
+	  e_source_registry_authenticate_sync() (Milan Crha)
+
+Translations
+	Nilamdyuti Goswami (as)
+	Daniel Mustieles (es)
+	Dr.T.Vasudevan (ta)
+	Krishnababu Krothapalli (te)
+
+
 Evolution-Data-Server 3.7.2 2012-11-17
 --------------------------------------
 
