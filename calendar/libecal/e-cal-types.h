@@ -97,49 +97,6 @@ typedef enum {
 } ECalClientSourceType;
 
 /**
- * EDataCalCallStatus:
- *
- * FIXME Document me!
- *
- * Since: 3.6
- **/
-typedef enum {
-	Success,
-	Busy,
-	RepositoryOffline,
-	PermissionDenied,
-	InvalidRange,
-	ObjectNotFound,
-	InvalidObject,
-	ObjectIdAlreadyExists,
-	AuthenticationFailed,
-	AuthenticationRequired,
-	UnsupportedField,
-	UnsupportedMethod,
-	UnsupportedAuthenticationMethod,
-	TLSNotAvailable,
-	NoSuchCal,
-	UnknownUser,
-	OfflineUnavailable,
-
-	/* These can be returned for successful searches, but
-		indicate the result set was truncated */
-	SearchSizeLimitExceeded,
-	SearchTimeLimitExceeded,
-
-	InvalidQuery,
-	QueryRefused,
-
-	CouldNotCancel,
-
-	OtherError,
-	InvalidServerVersion,
-	InvalidArg,
-	NotSupported,
-	NotOpened
-} EDataCalCallStatus;
-
-/**
  * EDataCalObjType:
  *
  * FIXME Document me!

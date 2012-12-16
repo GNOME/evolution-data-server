@@ -254,6 +254,7 @@ e_cal_backend_user_declined
 <TITLE>EDataCal</TITLE>
 E_DATA_CAL_ERROR
 EDataCal
+EDataCalCallStatus
 e_data_cal_create_error
 e_data_cal_create_error_fmt
 e_data_cal_status_to_string

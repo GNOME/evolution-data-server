@@ -154,7 +154,7 @@ get_status_from_error (const GError *error)
 	#undef err
 
 	if G_LIKELY (error == NULL)
-		return Success;
+		return E_CALENDAR_STATUS_OK;
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
 		gchar *name;

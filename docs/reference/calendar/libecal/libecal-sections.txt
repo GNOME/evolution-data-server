@@ -435,7 +435,6 @@ e_calendar_error_quark
 ECalChangeType
 ECalChange
 ECalendarStatus
-EDataCalCallStatus
 EDataCalObjType
 EDataCalObjModType
 E_CALENDAR_STATUS_CORBA_EXCEPTION
