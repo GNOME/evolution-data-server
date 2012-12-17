@@ -105,6 +105,38 @@ imapx_name_equal (gconstpointer a,
 }
 
 static void
+imapx_store_update_store_flags (CamelStore *store)
+{
+	CamelService *service;
+	CamelSettings *settings;
+	CamelIMAPXSettings *imapx_settings;
+
+	/* XXX This only responds to the service's entire settings object
+	 *     being replaced, not when individual settings change.  When
+	 *     individual settings change, a restart is required for them
+	 *     to take effect. */
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_ref_settings (service);
+	imapx_settings = CAMEL_IMAPX_SETTINGS (settings);
+
+	if (camel_imapx_settings_get_use_real_junk_path (imapx_settings)) {
+		store->flags &= ~CAMEL_STORE_VJUNK;
+		store->flags |= CAMEL_STORE_REAL_JUNK_FOLDER;
+	} else {
+		store->flags |= CAMEL_STORE_VJUNK;
+		store->flags &= ~CAMEL_STORE_REAL_JUNK_FOLDER;
+	}
+
+	if (camel_imapx_settings_get_use_real_trash_path (imapx_settings))
+		store->flags &= ~CAMEL_STORE_VTRASH;
+	else
+		store->flags |= CAMEL_STORE_VTRASH;
+
+	g_object_unref (settings);
+}
+
+static void
 imapx_store_dispose (GObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
@@ -1852,6 +1884,10 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 	g_mutex_init (&store->priv->quota_info_lock);
 
 	imapx_utils_init ();
+
+	g_signal_connect (
+		store, "notify::settings",
+		G_CALLBACK (imapx_store_update_store_flags), NULL);
 }
 
 CamelFolderQuotaInfo *

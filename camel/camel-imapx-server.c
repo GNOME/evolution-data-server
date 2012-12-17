@@ -7238,11 +7238,15 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
                            GError **error)
 {
 	guint i, on_orset, off_orset;
-	GPtrArray *uids;
+	GPtrArray *changed_uids;
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelIMAPXMessageInfo *info;
 	CamelIMAPXJob *job;
+	CamelIMAPXSettings *settings;
 	SyncChangesData *data;
+	gboolean use_real_junk_path;
+	gboolean use_real_trash_path;
+	gboolean nothing_to_do;
 	gboolean registered;
 	gboolean success = TRUE;
 
@@ -7250,28 +7254,41 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	 * turned off and a mask of all flags which have been turned
 	 * on. If either of these aren't 0, then we have work to do,
 	 * and we fire off a job to do it.
- *
+	 *
 	 * User flags are a bit more tricky, we rely on the user
 	 * flags being sorted, and then we create a bunch of lists;
 	 * one for each flag being turned off, including each
 	 * info being turned off, and one for each flag being turned on.
-	*/
-	uids = camel_folder_summary_get_changed (folder->summary);
+	 */
+	changed_uids = camel_folder_summary_get_changed (folder->summary);
 
-	if (uids->len == 0) {
-		camel_folder_free_uids (folder, uids);
+	if (changed_uids->len == 0) {
+		camel_folder_free_uids (folder, changed_uids);
 		return TRUE;
 	}
 
+	settings = camel_imapx_server_ref_settings (is);
+	use_real_junk_path =
+		camel_imapx_settings_get_use_real_junk_path (settings);
+	use_real_trash_path =
+		camel_imapx_settings_get_use_real_trash_path (settings);
+	g_object_unref (settings);
+
 	off_orset = on_orset = 0;
-	for (i = 0; i < uids->len; i++) {
+	for (i = 0; i < changed_uids->len; i++) {
 		guint32 flags, sflags;
 		CamelFlag *uflags, *suflags;
+		const gchar *uid;
+		gboolean move_to_real_junk;
+		gboolean move_to_real_trash;
 		guint j = 0;
 
-		info = (CamelIMAPXMessageInfo *) camel_folder_summary_get (folder->summary, uids->pdata[i]);
+		uid = g_ptr_array_index (changed_uids, i);
 
-		if (!info)
+		info = (CamelIMAPXMessageInfo *)
+			camel_folder_summary_get (folder->summary, uid);
+
+		if (info == NULL)
 			continue;
 
 		if (!(info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
@@ -7279,14 +7296,35 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 			continue;
 		}
 
-		flags = ((CamelMessageInfoBase *) info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
+		flags = info->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
 		sflags = info->server_flags & CAMEL_IMAPX_SERVER_FLAGS;
+
+		move_to_real_junk =
+			use_real_junk_path &&
+			(flags & CAMEL_MESSAGE_JUNK);
+
+		move_to_real_trash =
+			use_real_trash_path &&
+			(flags & CAMEL_MESSAGE_DELETED);
+
+		if (move_to_real_junk)
+			camel_imapx_folder_maybe_move_to_real_junk (
+				CAMEL_IMAPX_FOLDER (folder), uid);
+
+		if (move_to_real_trash) {
+			/* Remove the DELETED flag so the message
+			 * appears normally in the Trash folder. */
+			flags &= ~CAMEL_MESSAGE_DELETED;
+			camel_imapx_folder_maybe_move_to_real_trash (
+				CAMEL_IMAPX_FOLDER (folder), uid);
+		}
+
 		if (flags != sflags) {
-			off_orset |= ( flags ^ sflags ) & ~flags;
+			off_orset |= (flags ^ sflags) & ~flags;
 			on_orset |= (flags ^ sflags) & flags;
 		}
 
-		uflags = ((CamelMessageInfoBase *) info)->user_flags;
+		uflags = info->info.user_flags;
 		suflags = info->server_user_flags;
 		while (uflags || suflags) {
 			gint res;
@@ -7344,11 +7382,16 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 		camel_message_info_free (info);
 	}
 
-	if ((on_orset | off_orset) == 0 && on_user == NULL && off_user == NULL) {
+	nothing_to_do =
+		(on_orset == 0) &&
+		(off_orset == 0) &&
+		(on_user == NULL) &&
+		(off_user == NULL);
+
+	if (nothing_to_do) {
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
-		camel_folder_free_uids (folder, uids);
-
+		camel_folder_free_uids (folder, changed_uids);
 		return TRUE;
 	}
 
@@ -7364,14 +7407,13 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
-		camel_folder_free_uids (folder, uids);
-
+		camel_folder_free_uids (folder, changed_uids);
 		return TRUE;
 	}
 
 	data = g_slice_new0 (SyncChangesData);
 	data->folder = g_object_ref (folder);
-	data->changed_uids = uids;  /* takes ownership */
+	data->changed_uids = changed_uids;  /* takes ownership */
 	data->on_set = on_orset;
 	data->off_set = off_orset;
 	data->on_user = on_user;  /* takes ownership */

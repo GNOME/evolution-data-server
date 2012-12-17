@@ -112,6 +112,20 @@ gchar *		camel_imapx_settings_dup_namespace
 void		camel_imapx_settings_set_namespace
 						(CamelIMAPXSettings *settings,
 						 const gchar *namespace_);
+const gchar *	camel_imapx_settings_get_real_junk_path
+						(CamelIMAPXSettings *settings);
+gchar *		camel_imapx_settings_dup_real_junk_path
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_real_junk_path
+						(CamelIMAPXSettings *settings,
+						 const gchar *real_junk_path);
+const gchar *	camel_imapx_settings_get_real_trash_path
+						(CamelIMAPXSettings *settings);
+gchar *		camel_imapx_settings_dup_real_trash_path
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_real_trash_path
+						(CamelIMAPXSettings *settings,
+						 const gchar *real_trash_path);
 const gchar *	camel_imapx_settings_get_shell_command
 						(CamelIMAPXSettings *settings);
 gchar *		camel_imapx_settings_dup_shell_command
@@ -134,6 +148,16 @@ gboolean	camel_imapx_settings_get_use_qresync
 void		camel_imapx_settings_set_use_qresync
 						(CamelIMAPXSettings *settings,
 						 gboolean use_qresync);
+gboolean	camel_imapx_settings_get_use_real_junk_path
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_use_real_junk_path
+						(CamelIMAPXSettings *settings,
+						 gboolean use_real_junk_path);
+gboolean	camel_imapx_settings_get_use_real_trash_path
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_use_real_trash_path
+						(CamelIMAPXSettings *settings,
+						 gboolean use_real_trash_path);
 gboolean	camel_imapx_settings_get_use_shell_command
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_use_shell_command

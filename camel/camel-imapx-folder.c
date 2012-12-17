@@ -45,6 +45,10 @@
 struct _CamelIMAPXFolderPrivate {
 	GMutex property_lock;
 	gchar **quota_root_names;
+
+	GMutex move_to_hash_table_lock;
+	GHashTable *move_to_real_junk_uids;
+	GHashTable *move_to_real_trash_uids;
 };
 
 /* The custom property ID is a CamelArg artifact.
@@ -58,6 +62,86 @@ enum {
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 static gboolean imapx_folder_get_apply_filters (CamelIMAPXFolder *folder);
+
+static void
+imapx_folder_claim_move_to_real_junk_uids (CamelIMAPXFolder *folder,
+                                           GPtrArray *out_uids_to_copy)
+{
+	CamelFolderSummary *summary;
+	GList *keys;
+
+	summary = CAMEL_FOLDER (folder)->summary;
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	keys = g_hash_table_get_keys (folder->priv->move_to_real_junk_uids);
+	g_list_foreach (keys, (GFunc) camel_pstring_strdup, NULL);
+	g_hash_table_remove_all (folder->priv->move_to_real_junk_uids);
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+
+	while (keys != NULL) {
+		CamelMessageInfo *info;
+		CamelMessageFlags flags = 0;
+		const gchar *uid = keys->data;
+
+		/* Recheck the message flags before adding to the array.
+		 * Skip the UID if it's not still flagged as junk. */
+
+		info = camel_folder_summary_get (summary, uid);
+		if (info != NULL) {
+			flags = camel_message_info_flags (info);
+			camel_message_info_free (info);
+		}
+
+		if (flags & CAMEL_MESSAGE_JUNK)
+			g_ptr_array_add (out_uids_to_copy, (gpointer) uid);
+		else
+			camel_pstring_free (uid);
+
+		keys = g_list_delete_link (keys, keys);
+	}
+}
+
+static void
+imapx_folder_claim_move_to_real_trash_uids (CamelIMAPXFolder *folder,
+                                            GPtrArray *out_uids_to_copy)
+{
+	CamelFolderSummary *summary;
+	GList *keys;
+
+	summary = CAMEL_FOLDER (folder)->summary;
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	keys = g_hash_table_get_keys (folder->priv->move_to_real_trash_uids);
+	g_list_foreach (keys, (GFunc) camel_pstring_strdup, NULL);
+	g_hash_table_remove_all (folder->priv->move_to_real_trash_uids);
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+
+	while (keys != NULL) {
+		CamelMessageInfo *info;
+		CamelMessageFlags flags = 0;
+		const gchar *uid = keys->data;
+
+		/* Recheck the message flags before adding to the array.
+		 * Skip the UID if it's not still flagged as deleted. */
+
+		info = camel_folder_summary_get (summary, uid);
+		if (info != NULL) {
+			flags = camel_message_info_flags (info);
+			camel_message_info_free (info);
+		}
+
+		if (flags & CAMEL_MESSAGE_DELETED)
+			g_ptr_array_add (out_uids_to_copy, (gpointer) uid);
+		else
+			camel_pstring_free (uid);
+
+		keys = g_list_delete_link (keys, keys);
+	}
+}
 
 static gboolean
 imapx_folder_get_apply_filters (CamelIMAPXFolder *folder)
@@ -171,6 +255,10 @@ imapx_folder_finalize (GObject *object)
 
 	g_mutex_clear (&folder->priv->property_lock);
 	g_strfreev (folder->priv->quota_root_names);
+
+	g_mutex_clear (&folder->priv->move_to_hash_table_lock);
+	g_hash_table_destroy (folder->priv->move_to_real_junk_uids);
+	g_hash_table_destroy (folder->priv->move_to_real_trash_uids);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
@@ -627,6 +715,148 @@ imapx_refresh_info_sync (CamelFolder *folder,
 	return success;
 }
 
+/* Helper for imapx_synchronize_sync() */
+static gboolean
+imapx_move_to_real_junk (CamelIMAPXServer *server,
+                         CamelFolder *folder,
+                         GCancellable *cancellable,
+                         gboolean *out_need_to_expunge,
+                         GError **error)
+{
+	CamelIMAPXSettings *settings;
+	GPtrArray *uids_to_copy;
+	gchar *real_junk_path = NULL;
+	gboolean success = TRUE;
+
+	*out_need_to_expunge = FALSE;
+
+	uids_to_copy = g_ptr_array_new_with_free_func (
+		(GDestroyNotify) camel_pstring_free);
+
+	settings = camel_imapx_server_ref_settings (server);
+	if (camel_imapx_settings_get_use_real_junk_path (settings)) {
+		real_junk_path =
+			camel_imapx_settings_dup_real_junk_path (settings);
+		imapx_folder_claim_move_to_real_junk_uids (
+			CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+	}
+	g_object_unref (settings);
+
+	if (uids_to_copy->len > 0) {
+		CamelFolder *destination = NULL;
+		CamelIMAPXStore *store;
+
+		store = camel_imapx_server_ref_store (server);
+
+		if (real_junk_path != NULL) {
+			destination = camel_store_get_folder_sync (
+				CAMEL_STORE (store),
+				real_junk_path, 0,
+				cancellable, error);
+		} else {
+			g_set_error (
+				error, CAMEL_FOLDER_ERROR,
+				CAMEL_FOLDER_ERROR_INVALID_PATH,
+				_("No destination folder specified"));
+		}
+
+		if (destination != NULL) {
+			success = camel_imapx_server_copy_message (
+				server, folder, destination,
+				uids_to_copy, TRUE,
+				cancellable, error);
+		} else {
+			success = FALSE;
+		}
+
+		*out_need_to_expunge = success;
+
+		if (!success) {
+			g_prefix_error (
+				error, "%s: ",
+				_("Unable to move junk messages"));
+		}
+
+		g_object_unref (store);
+	}
+
+	g_ptr_array_unref (uids_to_copy);
+	g_free (real_junk_path);
+
+	return success;
+}
+
+/* Helper for imapx_synchronize_sync() */
+static gboolean
+imapx_move_to_real_trash (CamelIMAPXServer *server,
+                          CamelFolder *folder,
+                          GCancellable *cancellable,
+                          gboolean *out_need_to_expunge,
+                          GError **error)
+{
+	CamelIMAPXSettings *settings;
+	GPtrArray *uids_to_copy;
+	gchar *real_trash_path = NULL;
+	gboolean success = TRUE;
+
+	*out_need_to_expunge = FALSE;
+
+	uids_to_copy = g_ptr_array_new_with_free_func (
+		(GDestroyNotify) camel_pstring_free);
+
+	settings = camel_imapx_server_ref_settings (server);
+	if (camel_imapx_settings_get_use_real_trash_path (settings)) {
+		real_trash_path =
+			camel_imapx_settings_dup_real_trash_path (settings);
+		imapx_folder_claim_move_to_real_trash_uids (
+			CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+	}
+	g_object_unref (settings);
+
+	if (uids_to_copy->len > 0) {
+		CamelFolder *destination = NULL;
+		CamelIMAPXStore *store;
+
+		store = camel_imapx_server_ref_store (server);
+
+		if (real_trash_path != NULL) {
+			destination = camel_store_get_folder_sync (
+				CAMEL_STORE (store),
+				real_trash_path, 0,
+				cancellable, error);
+		} else {
+			g_set_error (
+				error, CAMEL_FOLDER_ERROR,
+				CAMEL_FOLDER_ERROR_INVALID_PATH,
+				_("No destination folder specified"));
+		}
+
+		if (destination != NULL) {
+			success = camel_imapx_server_copy_message (
+				server, folder, destination,
+				uids_to_copy, TRUE,
+				cancellable, error);
+		} else {
+			success = FALSE;
+		}
+
+		*out_need_to_expunge = success;
+
+		if (!success) {
+			g_prefix_error (
+				error, "%s: ",
+				_("Unable to move deleted messages"));
+		}
+
+		g_object_unref (store);
+	}
+
+	g_ptr_array_unref (uids_to_copy);
+	g_free (real_trash_path);
+
+	return success;
+}
+
 static gboolean
 imapx_synchronize_sync (CamelFolder *folder,
                         gboolean expunge,
@@ -654,8 +884,24 @@ imapx_synchronize_sync (CamelFolder *folder,
 	server = camel_imapx_store_get_server (
 		istore, folder_name, cancellable, error);
 	if (server != NULL) {
+		gboolean need_to_expunge;
+
 		success = camel_imapx_server_sync_changes (
 			server, folder, cancellable, error);
+
+		if (success) {
+			success = imapx_move_to_real_junk (
+				server, folder, cancellable,
+				&need_to_expunge, error);
+			expunge |= need_to_expunge;
+		}
+
+		if (success) {
+			success = imapx_move_to_real_trash (
+				server, folder, cancellable,
+				&need_to_expunge, error);
+			expunge |= need_to_expunge;
+		}
 
 		/* Sync twice - make sure deleted flags are written out,
 		 * then sync again incase expunge changed anything */
@@ -834,18 +1080,40 @@ static void
 camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (imapx_folder);
+	GHashTable *move_to_real_junk_uids;
+	GHashTable *move_to_real_trash_uids;
+
+	move_to_real_junk_uids = g_hash_table_new_full (
+		(GHashFunc) g_direct_hash,
+		(GEqualFunc) g_direct_equal,
+		(GDestroyNotify) camel_pstring_free,
+		(GDestroyNotify) NULL);
+
+	move_to_real_trash_uids = g_hash_table_new_full (
+		(GHashFunc) g_direct_hash,
+		(GEqualFunc) g_direct_equal,
+		(GDestroyNotify) camel_pstring_free,
+		(GDestroyNotify) NULL);
 
 	imapx_folder->priv = CAMEL_IMAPX_FOLDER_GET_PRIVATE (imapx_folder);
 
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
-	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
-		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
-		CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_USER;
+	folder->permanent_flags =
+		CAMEL_MESSAGE_ANSWERED |
+		CAMEL_MESSAGE_DELETED |
+		CAMEL_MESSAGE_DRAFT |
+		CAMEL_MESSAGE_FLAGGED |
+		CAMEL_MESSAGE_SEEN |
+		CAMEL_MESSAGE_USER;
 
 	camel_folder_set_lock_async (folder, TRUE);
 
 	g_mutex_init (&imapx_folder->priv->property_lock);
+
+	g_mutex_init (&imapx_folder->priv->move_to_hash_table_lock);
+	imapx_folder->priv->move_to_real_junk_uids = move_to_real_junk_uids;
+	imapx_folder->priv->move_to_real_trash_uids = move_to_real_trash_uids;
 }
 
 CamelFolder *
@@ -978,5 +1246,73 @@ camel_imapx_folder_set_quota_root_names (CamelIMAPXFolder *folder,
 	g_mutex_unlock (&folder->priv->property_lock);
 
 	g_object_notify (G_OBJECT (folder), "quota-root-names");
+}
+
+/**
+ * camel_imapx_folder_maybe_move_to_real_junk:
+ * @folder: a #CamelIMAPXFolder
+ * @message_uid: a message UID
+ *
+ * Adds @message_uid to a pool of messages that may need to be moved to a
+ * real junk folder the next time @folder is explicitly synchronized by way
+ * of camel_folder_synchronize() or camel_folder_synchronize_sync().
+ *
+ * The message flags for @message_uid are double checked before moving the
+ * message to make sure it's still flagged as junk; hence the "maybe" part
+ * of the function name.
+ *
+ * This only applies when using a real folder to track junk messages,
+ * as specified by the #CamelIMAPXSettings:use-real-junk-path setting.
+ *
+ * Since: 3.8
+ **/
+void
+camel_imapx_folder_maybe_move_to_real_junk (CamelIMAPXFolder *folder,
+                                            const gchar *message_uid)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+	g_return_if_fail (message_uid != NULL);
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	g_hash_table_add (
+		folder->priv->move_to_real_junk_uids,
+		(gpointer) camel_pstring_strdup (message_uid));
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
+}
+
+/**
+ * camel_imapx_folder_maybe_move_to_real_trash:
+ * @folder: a #CamelIMAPXFolder
+ * @message_uid: a message UID
+ *
+ * Adds @message_uid to a pool of messages that may need to be moved to a
+ * real trash folder the next time @folder is explicitly synchronized by way
+ * of camel_folder_synchronize() or camel_folder_synchronize_sync().
+ *
+ * The message flags for @message_uid are double checked before moving the
+ * message to make sure it's still flagged as deleted; hence the "maybe" part
+ * of the function name.
+ *
+ * This only applies when using a real folder to track deleted messages,
+ * as specified by the #CamelIMAPXSettings:use-real-trash-path setting.
+ *
+ * Since: 3.8
+ **/
+void
+camel_imapx_folder_maybe_move_to_real_trash (CamelIMAPXFolder *folder,
+                                             const gchar *message_uid)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+	g_return_if_fail (message_uid != NULL);
+
+	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
+
+	g_hash_table_add (
+		folder->priv->move_to_real_trash_uids,
+		(gpointer) camel_pstring_strdup (message_uid));
+
+	g_mutex_unlock (&folder->priv->move_to_hash_table_lock);
 }
 
