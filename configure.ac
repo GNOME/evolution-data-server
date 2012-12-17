@@ -364,8 +364,7 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	gmodule-2.0 >= glib_minimum_version
 	gtk+-3.0 >= gdk_minimum_version
 	libxml-2.0 >= libxml_minimum_version
-	libsoup-2.4 >= soup_minimum_version
-	libgdata >= libgdata_minimum_version])
+	libsoup-2.4 >= soup_minimum_version])
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
@@ -1348,10 +1347,20 @@ dnl Google flags
 dnl ******************************
 LIBGDATA_REQUIRED=libgdata_minimum_version
 AC_SUBST(LIBGDATA_REQUIRED)
+AC_ARG_ENABLE([google],
+	[AS_HELP_STRING([--enable-google],
+	[enable Google Contacts support (default=yes)])],
+	[enable_google=$enableval], [enable_google=yes])
+AC_MSG_CHECKING([if Google Contacts support is enabled])
+AC_MSG_RESULT([$enable_google])
+if test "x$enable_google" = xyes; then
+	EVO_SET_COMPILE_FLAGS(GDATA, libgdata >= libgdata_minimum_version)
+	AC_SUBST(GDATA_CFLAGS)
+	AC_SUBST(GDATA_LIBS)
 
-EVO_SET_COMPILE_FLAGS(GDATA, libgdata)
-AC_SUBST(GDATA_CFLAGS)
-AC_SUBST(GDATA_LIBS)
+	AC_DEFINE(HAVE_GOOGLE, 1, [Define to 1 if you have the google-1.0 package.])
+fi
+AM_CONDITIONAL(HAVE_GOOGLE, [test x$enable_google = xyes])
 
 EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
@@ -1649,6 +1658,7 @@ echo "
 	Introspection:		$enable_introspection
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
+	Google Contacts		$enable_google
 	Code coverage (gcov):	$enable_code_coverage
 	Strict building:	$enable_strict
 "
