@@ -34,6 +34,8 @@ noinst_LTLIBRARIES = libetestserverutils.la
 libetestserverutils_la_CPPFLAGS = $(common_cflags)
 libetestserverutils_la_LIBADD = $(common_libs)
 libetestserverutils_la_SOURCES = \
+	e-test-dbus.c \
+	e-test-dbus.h \
 	e-test-server-utils.c \
 	e-test-server-utils.h \
 	$(NULL)

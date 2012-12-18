@@ -38,7 +38,7 @@
 #define GLOBAL_DBUS_DAEMON 1
 
 #if GLOBAL_DBUS_DAEMON
-static GTestDBus *global_test_dbus = NULL;
+static ETestDBus *global_test_dbus = NULL;
 #endif
 
 typedef struct {
@@ -240,13 +240,13 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 #if !GLOBAL_DBUS_DAEMON
 	/* Create the global dbus-daemon for this test suite */
-	fixture->dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+	fixture->dbus = e_test_dbus_new (E_TEST_DBUS_NONE);
 
 	/* Add the private directory with our in-tree service files */
-	g_test_dbus_add_service_dir (fixture->dbus, EDS_TEST_DBUS_SERVICE_DIR);
+	e_test_dbus_add_service_dir (fixture->dbus, EDS_TEST_DBUS_SERVICE_DIR);
 
 	/* Start the private D-Bus daemon */
-	g_test_dbus_up (fixture->dbus);
+	e_test_dbus_up (fixture->dbus);
 #else
 	fixture->dbus = global_test_dbus;
 #endif
@@ -323,7 +323,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	 * in this case, presumably this is due to some leaked
 	 * GDBusConnection reference counting
 	 */
-	g_test_dbus_down (fixture->dbus);
+	e_test_dbus_down (fixture->dbus);
 	g_object_unref (fixture->dbus);
 	fixture->dbus = NULL;
 #else
@@ -347,13 +347,13 @@ e_test_server_utils_run (void)
 #if GLOBAL_DBUS_DAEMON
 
 	/* Create the global dbus-daemon for this test suite */
-	global_test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+	global_test_dbus = e_test_dbus_new (E_TEST_DBUS_NONE);
 
 	/* Add the private directory with our in-tree service files */
-	g_test_dbus_add_service_dir (global_test_dbus, EDS_TEST_DBUS_SERVICE_DIR);
+	e_test_dbus_add_service_dir (global_test_dbus, EDS_TEST_DBUS_SERVICE_DIR);
 
 	/* Start the private D-Bus daemon */
-	g_test_dbus_up (global_test_dbus);
+	e_test_dbus_up (global_test_dbus);
 #endif
 
 	/* Run the GTest suite */
@@ -366,7 +366,7 @@ e_test_server_utils_run (void)
 	 * in this case, presumably this is due to some leaked
 	 * GDBusConnection reference counting
 	 */
-	g_test_dbus_stop (global_test_dbus);
+	e_test_dbus_stop (global_test_dbus);
 	/* g_object_unref (global_test_dbus); */
 	global_test_dbus = NULL;
 #endif

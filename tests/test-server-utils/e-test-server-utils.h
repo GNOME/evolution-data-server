@@ -27,6 +27,8 @@
 #include <libebook/libebook.h>
 #include <libecal/libecal.h>
 
+#include "e-test-dbus.h"
+
 typedef struct _ETestServerFixture ETestServerFixture;
 typedef struct _ETestServerClosure ETestServerClosure;
 
@@ -121,7 +123,7 @@ typedef union {
  */
 struct _ETestServerFixture {
 	GMainLoop       *loop;
-	GTestDBus       *dbus;
+	ETestDBus       *dbus;
 	ESourceRegistry *registry;
 	ETestService     service;
 };
