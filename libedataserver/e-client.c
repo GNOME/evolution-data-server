@@ -160,6 +160,8 @@ e_client_error_to_string (EClientError code)
 		return _("Other error");
 	case E_CLIENT_ERROR_NOT_OPENED:
 		return _("Backend is not opened yet");
+	case E_CLIENT_ERROR_OUT_OF_SYNC:
+		return _("Object is out sync");
 	}
 
 	return _("Unknown error");
