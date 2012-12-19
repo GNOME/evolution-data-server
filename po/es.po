@@ -17,15 +17,15 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-12-03 17:56+0000\n"
-"PO-Revision-Date: 2012-12-05 19:05+0100\n"
+"POT-Creation-Date: 2012-12-18 19:58+0000\n"
+"PO-Revision-Date: 2012-12-19 11:12+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Gtranslator 2.91.5\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:101
@@ -482,7 +482,6 @@ msgstr "URL de weblog"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:188
-#: ../libedataserverui/e-categories-dialog.c:90
 msgid "Categories"
 msgstr "Categorías"
 
@@ -1604,8 +1603,7 @@ msgstr "«%s» espera que el primer argumento sea una cadena"
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/"
-"hora"
+"«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/hora"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:182
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:562
@@ -1681,8 +1679,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"«%s» espera que todos los argumentos sean cadenas o que uno y sólo uno de "
-"los argumentos sea un booleano falso (#f)"
+"«%s» espera que todos los argumentos sean cadenas o que uno y sólo uno de los "
+"argumentos sea un booleano falso (#f)"
 
 #: ../calendar/libedata-cal/e-data-cal.c:438
 msgid "Unsupported method"
@@ -1874,13 +1872,13 @@ msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "Copiar el contenido de la carpeta localmente para _operación desconectada"
 
-#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:413
-#: ../camel/camel-imapx-folder.c:446 ../camel/camel-imapx-folder.c:482
-#: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:615
-#: ../camel/camel-imapx-folder.c:649 ../camel/camel-imapx-folder.c:689
-#: ../camel/camel-imapx-folder.c:725 ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1410 ../camel/camel-imapx-store.c:1499
-#: ../camel/camel-imapx-store.c:1548
+#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:429
+#: ../camel/camel-imapx-folder.c:465 ../camel/camel-imapx-folder.c:504
+#: ../camel/camel-imapx-folder.c:564 ../camel/camel-imapx-folder.c:699
+#: ../camel/camel-imapx-folder.c:880 ../camel/camel-imapx-folder.c:940
+#: ../camel/camel-imapx-folder.c:979 ../camel/camel-imapx-store.c:320
+#: ../camel/camel-imapx-store.c:1454 ../camel/camel-imapx-store.c:1543
+#: ../camel/camel-imapx-store.c:1592
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
@@ -1914,12 +1912,12 @@ msgstr "Flujo de mensaje no válido recibido desde %s: %s"
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
-#: ../camel/camel-filter-driver.c:1276 ../camel/camel-filter-driver.c:1761
+#: ../camel/camel-filter-driver.c:1276
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Error analizando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1287 ../camel/camel-filter-driver.c:1774
+#: ../camel/camel-filter-driver.c:1287
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Error ejecutando filtro: %s: %s"
@@ -1961,6 +1959,24 @@ msgstr "Obteniendo mensaje %d de %d"
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falló en el mensaje %d de %d"
+
+#: ../camel/camel-filter-driver.c:1740 ../camel/camel-filter-driver.c:1773
+#, c-format
+#| msgid "Error executing filter: %s: %s"
+msgid "Execution of filter '%s' failed: "
+msgstr "Falló la ejecución del filtro «%s»: "
+
+#: ../camel/camel-filter-driver.c:1764
+#, c-format
+#| msgid "Error parsing filter: %s: %s"
+msgid "Error parsing filter '%s': %s: %s"
+msgstr "Error al analizar el filtro «%s»: %s: %s"
+
+#: ../camel/camel-filter-driver.c:1782
+#, c-format
+#| msgid "Error executing filter: %s: %s"
+msgid "Error executing filter '%s': %s: %s"
+msgstr "Error al ejecutar el filtro «%s»: %s: %s"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
@@ -2215,65 +2231,86 @@ msgstr "Falló al descifrar la parte MIME: error del protocolo"
 msgid "Encrypted content"
 msgstr "Contenido cifrado"
 
-#: ../camel/camel-imapx-folder.c:104
-#, c-format
-msgid "Could not create folder summary for %s"
-msgstr "No se pudo crear el resumen de carpetas para %s"
+#: ../camel/camel-imapx-folder.c:661
+#, fuzzy, c-format
+#| msgid "Quota information not supported for folder '%s'"
+msgid "No quota information available for folder '%s'"
+msgstr "Información de cuota no soportada para la carpeta «%s»"
 
-#: ../camel/camel-imapx-folder.c:112
+#: ../camel/camel-imapx-folder.c:760 ../camel/camel-imapx-folder.c:831
 #, c-format
-msgid "Could not create cache for %s: "
-msgstr "No se pudo crear la caché para %s: "
+msgid "No destination folder specified"
+msgstr ""
 
-#: ../camel/camel-imapx-folder.c:795
+#: ../camel/camel-imapx-folder.c:777
+#| msgid "Unable to retrieve message: "
+msgid "Unable to move junk messages"
+msgstr "No se pudieron mover los mensajes de spam"
+
+#: ../camel/camel-imapx-folder.c:848
+#| msgid "Unable to retrieve message: "
+msgid "Unable to move deleted messages"
+msgstr "No se pudieron mover los mensajes eliminados"
+
+#: ../camel/camel-imapx-folder.c:1062
 #: ../camel/providers/imap/camel-imap-folder.c:367
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "Aplicar _filtros de mensajes a esta carpeta"
 
-#: ../camel/camel-imapx-server.c:1190
+#: ../camel/camel-imapx-folder.c:1171
+#, c-format
+msgid "Could not create folder summary for %s"
+msgstr "No se pudo crear el resumen de carpetas para %s"
+
+#: ../camel/camel-imapx-folder.c:1179
+#, c-format
+msgid "Could not create cache for %s: "
+msgstr "No se pudo crear la caché para %s: "
+
+#: ../camel/camel-imapx-server.c:1217
 msgid "Server disconnected"
 msgstr "Servidor desconectado"
 
-#: ../camel/camel-imapx-server.c:1656
+#: ../camel/camel-imapx-server.c:1683
 msgid "Error writing to cache stream"
 msgstr "Error al escribir al flujo de caché"
 
-#: ../camel/camel-imapx-server.c:2654
+#: ../camel/camel-imapx-server.c:2776
 #, c-format
 msgid "Not authenticated"
 msgstr "No está autenticado"
 
-#: ../camel/camel-imapx-server.c:2732
+#: ../camel/camel-imapx-server.c:2854
 msgid "Error performing IDLE"
 msgstr "Error al estar inactivo"
 
-#: ../camel/camel-imapx-server.c:3628
+#: ../camel/camel-imapx-server.c:3750
 #: ../camel/providers/imap/camel-imap-store.c:414
 #: ../camel/providers/imap/camel-imap-store.c:468
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: %s"
 
-#: ../camel/camel-imapx-server.c:3629
+#: ../camel/camel-imapx-server.c:3751
 #: ../camel/providers/imap/camel-imap-store.c:415
 #: ../camel/providers/smtp/camel-smtp-transport.c:202
 msgid "STARTTLS not supported"
 msgstr "No se soporta STARTTLS"
 
-#: ../camel/camel-imapx-server.c:3668
+#: ../camel/camel-imapx-server.c:3790
 #: ../camel/providers/imap/camel-imap-store.c:440
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: "
 
-#: ../camel/camel-imapx-server.c:3748
+#: ../camel/camel-imapx-server.c:3870
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "El servidor IMAP %s no soporta la autenticación %s"
 
-#: ../camel/camel-imapx-server.c:3759 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3881 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:266
 #: ../camel/providers/pop3/camel-pop3-store.c:604
@@ -2282,14 +2319,14 @@ msgstr "El servidor IMAP %s no soporta la autenticación %s"
 msgid "No support for %s authentication"
 msgstr "No hay soporte para la autenticación %s"
 
-#: ../camel/camel-imapx-server.c:3778
+#: ../camel/camel-imapx-server.c:3900
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:314
 #: ../camel/providers/nntp/camel-nntp-store.c:512
 msgid "Cannot authenticate without a username"
 msgstr "No se pudo autenticar sin un nombre de usuario"
 
-#: ../camel/camel-imapx-server.c:3787
+#: ../camel/camel-imapx-server.c:3909
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:521
 #: ../camel/providers/pop3/camel-pop3-store.c:529
@@ -2297,138 +2334,149 @@ msgstr "No se pudo autenticar sin un nombre de usuario"
 msgid "Authentication password not available"
 msgstr "La contraseña de la autenticación no está disponible"
 
-#: ../camel/camel-imapx-server.c:3990
+#: ../camel/camel-imapx-server.c:4112
 msgid "Error fetching message"
 msgstr "Error al obtener el mensaje"
 
-#: ../camel/camel-imapx-server.c:4075
+#: ../camel/camel-imapx-server.c:4197
 msgid "Failed to copy the tmp file"
 msgstr "Falló al copiar el archivo temporal"
 
-#: ../camel/camel-imapx-server.c:4089
+#: ../camel/camel-imapx-server.c:4211
 msgid "Failed to close the tmp stream"
 msgstr "Falló al cerrar el flujo temporal"
 
-#: ../camel/camel-imapx-server.c:4198
+#: ../camel/camel-imapx-server.c:4320
 msgid "Error copying messages"
 msgstr "Error al copiar los mensajes"
 
-#: ../camel/camel-imapx-server.c:4344
+#: ../camel/camel-imapx-server.c:4466
 msgid "Error appending message"
 msgstr "Error al añadir el mensaje"
 
-#: ../camel/camel-imapx-server.c:4531
+#: ../camel/camel-imapx-server.c:4653
 msgid "Error fetching message headers"
 msgstr "Error al obtener las cabeceras de los mensajes"
 
-#: ../camel/camel-imapx-server.c:4668
+#: ../camel/camel-imapx-server.c:4790
 msgid "Error retrieving message"
 msgstr "Error al obtener el mensaje"
 
-#: ../camel/camel-imapx-server.c:4790 ../camel/camel-imapx-server.c:4996
+#: ../camel/camel-imapx-server.c:4912 ../camel/camel-imapx-server.c:5118
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr ""
 "Obteniendo recopilación de información sobre los mensajes nuevos en «%s»"
 
-#: ../camel/camel-imapx-server.c:4845
+#: ../camel/camel-imapx-server.c:4967
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Buscando mensajes modificados en «%s»"
 
-#: ../camel/camel-imapx-server.c:4892
+#: ../camel/camel-imapx-server.c:5014
 msgid "Error fetching new messages"
 msgstr "Error al obtener mensajes nuevos"
 
-#: ../camel/camel-imapx-server.c:5093
+#: ../camel/camel-imapx-server.c:5215
 msgid "Error while fetching messages"
 msgstr "Error al obtener los mensajes"
 
-#: ../camel/camel-imapx-server.c:5100 ../camel/camel-imapx-server.c:5133
+#: ../camel/camel-imapx-server.c:5222 ../camel/camel-imapx-server.c:5255
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Obteniendo recopilación de información sobre %d mensaje en «%s»"
 msgstr[1] "Obteniendo recopilación de información sobre %d mensajes en «%s»"
 
-#: ../camel/camel-imapx-server.c:5261 ../camel/camel-imapx-server.c:5291
+#: ../camel/camel-imapx-server.c:5383 ../camel/camel-imapx-server.c:5413
 msgid "Error refreshing folder"
 msgstr "Error al actualizar la carpeta"
 
-#: ../camel/camel-imapx-server.c:5387
+#: ../camel/camel-imapx-server.c:5509
 msgid "Error expunging message"
 msgstr "Error al compactar el mensaje"
 
-#: ../camel/camel-imapx-server.c:5491
+#: ../camel/camel-imapx-server.c:5613
 msgid "Error fetching folders"
 msgstr "Error al obtener las carpetas"
 
-#: ../camel/camel-imapx-server.c:5573
+#: ../camel/camel-imapx-server.c:5695
 msgid "Error subscribing to folder"
 msgstr "Error al suscribirse a las carpeta"
 
-#: ../camel/camel-imapx-server.c:5638
+#: ../camel/camel-imapx-server.c:5760
 msgid "Error creating folder"
 msgstr "Error al crear la carpeta"
 
-#: ../camel/camel-imapx-server.c:5692
+#: ../camel/camel-imapx-server.c:5814
 msgid "Error deleting folder"
 msgstr "Error al eliminar la carpeta"
 
-#: ../camel/camel-imapx-server.c:5761
+#: ../camel/camel-imapx-server.c:5883
 msgid "Error renaming folder"
 msgstr "Error al renombrar la carpeta"
 
-#: ../camel/camel-imapx-server.c:5830
+#: ../camel/camel-imapx-server.c:5952
+#| msgid "Retrieving quota information for '%s'"
+msgid "Error retrieving quota information"
+msgstr "Error al obtener la información de la cuota"
+
+#: ../camel/camel-imapx-server.c:6015
 msgid "Error performing NOOP"
 msgstr "Error realizar la no operación"
 
-#: ../camel/camel-imapx-server.c:5930
+#: ../camel/camel-imapx-server.c:6115
 msgid "Error syncing changes"
 msgstr "Error al sincronizar los cambios"
 
-#: ../camel/camel-imapx-server.c:6709
+#: ../camel/camel-imapx-server.c:6894
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
-#: ../camel/camel-imapx-server.c:6710
+#: ../camel/camel-imapx-server.c:6895
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
-#: ../camel/camel-imapx-server.c:6865 ../camel/camel-imapx-server.c:6880
+#: ../camel/camel-imapx-server.c:7050 ../camel/camel-imapx-server.c:7065
 msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
-#: ../camel/camel-imapx-store.c:157
+#: ../camel/camel-imapx-server.c:7798
+#, fuzzy
+#| msgid "IMAP server %s does not support %s authentication"
+msgid "IMAP server does not support quotas"
+msgstr "El servidor IMAP %s no soporta la autenticación %s"
+
+#: ../camel/camel-imapx-store.c:201
 #: ../camel/providers/imap/camel-imap-store.c:827
 #, c-format
 msgid "IMAP server %s"
 msgstr "Servidor IMAP %s"
 
-#: ../camel/camel-imapx-store.c:160
+#: ../camel/camel-imapx-store.c:204
 #: ../camel/providers/imap/camel-imap-store.c:830
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Servicio IMAP para %s en %s"
 
-#: ../camel/camel-imapx-store.c:251
+#: ../camel/camel-imapx-store.c:295
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/nntp/camel-nntp-provider.c:95
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid "Password"
 msgstr "Contraseña"
 
-#: ../camel/camel-imapx-store.c:253
+#: ../camel/camel-imapx-store.c:297
 #: ../camel/providers/imap/camel-imap-provider.c:100
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Esta opción conectará con el servidor IMAP usando una contraseña de texto "
 "plano."
 
-#: ../camel/camel-imapx-store.c:352
+#: ../camel/camel-imapx-store.c:396
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
@@ -2436,7 +2484,7 @@ msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:377 ../camel/camel-imapx-store.c:867
+#: ../camel/camel-imapx-store.c:421 ../camel/camel-imapx-store.c:911
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2448,18 +2496,18 @@ msgstr "No existe la carpeta %s"
 msgid "Inbox"
 msgstr "Bandeja de entrada"
 
-#: ../camel/camel-imapx-store.c:1111
+#: ../camel/camel-imapx-store.c:1155
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Obteniendo la lista de carpetas para %s"
 
-#: ../camel/camel-imapx-store.c:1215
+#: ../camel/camel-imapx-store.c:1259
 #: ../camel/providers/nntp/camel-nntp-store.c:1786
 #, c-format
 msgid "No such folder: %s"
 msgstr "No existe la carpeta: %s"
 
-#: ../camel/camel-imapx-store.c:1432
+#: ../camel/camel-imapx-store.c:1476
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
@@ -2468,13 +2516,13 @@ msgid ""
 msgstr ""
 "El nombre de la carpeta «%s» es no válido porque contiene el carácter «%c»"
 
-#: ../camel/camel-imapx-store.c:1443
+#: ../camel/camel-imapx-store.c:1487
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Carpeta raíz desconocida: %s"
 
-#: ../camel/camel-imapx-store.c:1453
+#: ../camel/camel-imapx-store.c:1497
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -2620,7 +2668,6 @@ msgstr ""
 
 #: ../camel/camel-net-utils.c:736
 #, c-format
-#| msgid "Host lookup failed: %s: %s"
 msgid "Host lookup '%s' failed: %s"
 msgstr "Falló al resolver el servidor %s: %s"
 
@@ -2645,7 +2692,6 @@ msgstr "No se pudo resolver el nombre: %s"
 
 #: ../camel/camel-network-service.c:115
 #, c-format
-#| msgid "Could not connect to %s: %s"
 msgid "Could not connect to '%s:%s': "
 msgstr "No se pudo conectar a «%s:%s»: "
 
@@ -2937,7 +2983,7 @@ msgstr "Falló la autenticación %s"
 msgid "Forwarding messages is not supported"
 msgstr "El reenvío de mensajes no está soportado"
 
-#: ../camel/camel-session.c:1362
+#: ../camel/camel-session.c:1403
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Escriba la contraseña %s para %s en el servidor %s."
@@ -3295,88 +3341,6 @@ msgstr ""
 msgid "Invalid reply from proxy server"
 msgstr "Respuesta no válida del servidor proxy"
 
-#: ../camel/camel-tcp-stream-ssl.c:502
-#, c-format
-msgid ""
-"   Issuer:       %s\n"
-"   Subject:      %s\n"
-"   Fingerprint:  %s\n"
-"   Signature:    %s"
-msgstr ""
-"   Emisor:       %s\n"
-"   Asunto:      %s\n"
-"   Huella:  %s\n"
-"   Firma:    %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:509
-msgid "GOOD"
-msgstr "CORRECTO"
-
-#: ../camel/camel-tcp-stream-ssl.c:509
-msgid "BAD"
-msgstr "ERRÓNEO"
-
-#: ../camel/camel-tcp-stream-ssl.c:514
-#, c-format
-msgid ""
-"SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-"\n"
-"Detailed information about the certificate:\n"
-"%s"
-msgstr ""
-"El certificado SSL para «%s» no es de confianza. ¿Quiere aceptarlo?\n"
-"\n"
-"Información detallada sobre el certificado:\n"
-"%s"
-
-#: ../camel/camel-tcp-stream-ssl.c:520
-msgid "_Reject"
-msgstr "_Rechazar"
-
-#: ../camel/camel-tcp-stream-ssl.c:521
-msgid "Accept _Temporarily"
-msgstr "Aceptar _temporalmente"
-
-#: ../camel/camel-tcp-stream-ssl.c:522
-msgid "_Accept Permanently"
-msgstr "_Aceptar permanentemente"
-
-#: ../camel/camel-tcp-stream-ssl.c:583
-#, c-format
-msgid ""
-"Certificate problem: %s\n"
-"Issuer: %s"
-msgstr ""
-"Problema del certificado: %s\n"
-"Emisor: %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:635
-#, c-format
-msgid ""
-"Bad certificate domain: %s\n"
-"Issuer: %s"
-msgstr ""
-"Dominio del certificado erróneo: %s\n"
-"Emisor: %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:653
-#, c-format
-msgid ""
-"Certificate expired: %s\n"
-"Issuer: %s"
-msgstr ""
-"Certificado caducado: %s\n"
-"Emisor: %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:670
-#, c-format
-msgid ""
-"Certificate revocation list expired: %s\n"
-"Issuer: %s"
-msgstr ""
-"Lista de Revocación de Certificados caducada: %s\n"
-"Emisor: %s"
-
 #: ../camel/camel-url.c:331
 #, c-format
 msgid "Could not parse URL '%s'"
@@ -3541,8 +3505,8 @@ msgstr ""
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
-"Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje "
-"%d"
+"Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje %"
+"d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4549
 #, c-format
@@ -4942,8 +4906,8 @@ msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
-"Unidades para el recordatorio de cumpleaños o aniversarios, «minutes», "
-"«hours» o «days»"
+"Unidades para el recordatorio de cumpleaños o aniversarios, «minutes», «hours» "
+"o «days»"
 
 #: ../data/sources/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -4954,7 +4918,6 @@ msgid "CalDAV"
 msgstr "CalDAV"
 
 #: ../data/sources/contacts-stub.source.in.h:1
-#: ../libedataserverui/e-name-selector-dialog.c:446
 #: ../modules/google-backend/module-google-backend.c:195
 msgid "Contacts"
 msgstr "Contactos"
@@ -5079,6 +5042,12 @@ msgstr "El usuario ha rechazado autenticarse"
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "el UID «%s» ya está en uso"
+
+#: ../libebackend/e-user-prompter-server.c:278
+#, fuzzy, c-format
+#| msgid "Contact '%s' not found"
+msgid "Extension dialog '%s' not found."
+msgstr "Contacto «%s» no encontrado"
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -5424,8 +5393,8 @@ msgid ""
 "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 "means manual proxy."
 msgstr ""
-"El tipo de proxy que usar. «0» indica el proxy del sistema, «1» significa "
-"sin proxy y «2» significa proxy manual."
+"El tipo de proxy que usar. «0» indica el proxy del sistema, «1» significa sin "
+"proxy y «2» significa proxy manual."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
@@ -5524,173 +5493,6 @@ msgstr "URL para la configuración automática del proxy"
 msgid "Where to read automatic proxy configuration from."
 msgstr "De dónde leer la configuración automática del proxy."
 
-#: ../libedataserverui/e-categories-editor.c:225
-msgid "Currently _used categories:"
-msgstr "Categorías _usadas actualmente:"
-
-#: ../libedataserverui/e-categories-editor.c:236
-msgid "_Available Categories:"
-msgstr "Categorías _disponibles:"
-
-#: ../libedataserverui/e-categories-selector.c:325
-msgid "Icon"
-msgstr "Icono"
-
-#: ../libedataserverui/e-categories-selector.c:330
-msgid "Category"
-msgstr "Categoría"
-
-#: ../libedataserverui/e-category-completion.c:300
-#, c-format
-msgid "Create category \"%s\""
-msgstr "Crear categoría «%s»"
-
-#: ../libedataserverui/e-category-editor.c:137
-msgid "Category Icon"
-msgstr "Icono de categoría"
-
-#: ../libedataserverui/e-category-editor.c:141
-msgid "_No Image"
-msgstr "_Sin imagen"
-
-#: ../libedataserverui/e-category-editor.c:178
-msgid "Category _Name"
-msgstr "_Nombre de la categoría"
-
-#: ../libedataserverui/e-category-editor.c:190
-msgid "Category _Icon"
-msgstr "_Icono de categoría"
-
-#: ../libedataserverui/e-category-editor.c:216
-msgid "Category Properties"
-msgstr "Propiedades de la categoría"
-
-#: ../libedataserverui/e-category-editor.c:277
-#, c-format
-msgid ""
-"There is already a category '%s' in the configuration. Please use another "
-"name"
-msgstr ""
-"Ya hay una categoría «%s» en la configuración. Por favor, use otro nombre"
-
-#: ../libedataserverui/e-name-selector-dialog.c:279
-msgid "Show Contacts"
-msgstr "Mostrar contactos"
-
-#: ../libedataserverui/e-name-selector-dialog.c:309
-msgid "Address B_ook:"
-msgstr "_Libreta de direcciones:"
-
-#: ../libedataserverui/e-name-selector-dialog.c:316
-msgid "Cat_egory:"
-msgstr "Cat_egoría:"
-
-#: ../libedataserverui/e-name-selector-dialog.c:339
-msgid "_Search:"
-msgstr "_Buscar:"
-
-#: ../libedataserverui/e-name-selector-dialog.c:363
-#: ../libedataserverui/e-name-selector-dialog.c:1232
-msgid "Any Category"
-msgstr "Cualquier categoría"
-
-#: ../libedataserverui/e-name-selector-dialog.c:365
-msgid "Co_ntacts"
-msgstr "Co_ntactos"
-
-#: ../libedataserverui/e-name-selector-dialog.c:440
-msgid "Search"
-msgstr "Buscar"
-
-#: ../libedataserverui/e-name-selector-dialog.c:443
-msgid "Address Book"
-msgstr "Libreta de direcciones"
-
-#: ../libedataserverui/e-name-selector-dialog.c:568
-msgid "Select Contacts from Address Book"
-msgstr "Selecciona contactos de la libreta de direcciones"
-
-#: ../libedataserverui/e-name-selector-dialog.c:955
-msgid "_Add"
-msgstr "_Añadir"
-
-#: ../libedataserverui/e-name-selector-dialog.c:959
-msgid "_Remove"
-msgstr "_Quitar"
-
-#: ../libedataserverui/e-name-selector-dialog.c:1147
-#, c-format
-msgid "Error loading address book: %s"
-msgstr "Error al cargar la libreta de direcciones: %s"
-
-#. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:3008
-#, c-format
-msgid "E_xpand %s Inline"
-msgstr "E_xpandir %s en línea"
-
-#. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:3024
-#, c-format
-msgid "Cop_y %s"
-msgstr "_Copiar %s"
-
-#. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:3035
-#, c-format
-msgid "C_ut %s"
-msgstr "Cor_tar %s"
-
-#. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:3053
-#, c-format
-msgid "_Edit %s"
-msgstr "_Editar %s"
-
-#: ../libedataserverui/e-name-selector-list.c:586
-#, c-format
-msgid "_Delete %s"
-msgstr "_Eliminar %s"
-
-#: ../libedataserverui/e-passwords.c:127
-msgid "Keyring key is unusable: no user or host name"
-msgstr ""
-"La clave del depósito de claves no es usable: no existe el usuario o el "
-"nombre del servidor"
-
-#: ../libedataserverui/e-passwords.c:464
-#: ../libedataserverui/e-passwords-win32.c:618
-msgid "You have the Caps Lock key on."
-msgstr "Tiene activada la tecla Bloq. Mayús."
-
-#: ../libedataserverui/e-passwords.c:591
-#: ../libedataserverui/e-passwords-win32.c:748
-msgid "_Remember this passphrase"
-msgstr "_Recordar esta frase de paso"
-
-#: ../libedataserverui/e-passwords.c:592
-#: ../libedataserverui/e-passwords-win32.c:749
-msgid "_Remember this passphrase for the remainder of this session"
-msgstr "_Recordar esta frase de paso durante el resto de esta sesión"
-
-#: ../libedataserverui/e-passwords.c:597
-#: ../libedataserverui/e-passwords-win32.c:754
-msgid "_Remember this password"
-msgstr "_Recordar esta contraseña"
-
-#: ../libedataserverui/e-passwords.c:598
-#: ../libedataserverui/e-passwords-win32.c:755
-msgid "_Remember this password for the remainder of this session"
-msgstr "_Recordar esta contraseña durante el resto de esta sesión"
-
-#: ../libedataserverui/e-source-selector-dialog.c:228
-msgid "_Destination"
-msgstr "_Destino"
-
-#: ../libedataserverui/e-source-selector-dialog.c:340
-msgid "Select destination"
-msgstr "Seleccione destino"
-
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:223
 #, c-format
@@ -5732,6 +5534,399 @@ msgstr "Falló al buscar ASUrl y OABUrl en la respuesta de la autodetección"
 msgid "Calendar"
 msgstr "Calendario"
 
+#: ../modules/trust-prompt/certificate-viewer.c:287
+#| msgid "Cannot add encryption certificate"
+msgid "Not part of certificate"
+msgstr "No es parte del certificado"
+
+#: ../modules/trust-prompt/certificate-viewer.c:592
+msgid "This certificate has been verified for the following uses:"
+msgstr "Este certificado se ha verificado para los siguientes usos:"
+
+#: ../modules/trust-prompt/certificate-viewer.c:596
+#: ../modules/trust-prompt/e-asn1-object.c:387
+#| msgid "X.509 Certificate"
+msgid "SSL Client Certificate"
+msgstr "Certificado de cliente SSL"
+
+#: ../modules/trust-prompt/certificate-viewer.c:601
+#: ../modules/trust-prompt/e-asn1-object.c:391
+#| msgid "X.509 Certificate"
+msgid "SSL Server Certificate"
+msgstr "Certificado de servidor SSL"
+
+#: ../modules/trust-prompt/certificate-viewer.c:606
+msgid "Email Signer Certificate"
+msgstr "Certificado del firmante del correo-e"
+
+#: ../modules/trust-prompt/certificate-viewer.c:611
+#| msgid "Cannot add encryption certificate"
+msgid "Email Recipient Certificate"
+msgstr "Certificado del destinatario del correo-e"
+
+#: ../modules/trust-prompt/certificate-viewer.c:625
+msgid "Issued To"
+msgstr "Emitido a"
+
+#: ../modules/trust-prompt/certificate-viewer.c:626
+#: ../modules/trust-prompt/certificate-viewer.c:632
+msgid "Common Name (CN)"
+msgstr "Nombre común (CN)"
+
+#: ../modules/trust-prompt/certificate-viewer.c:627
+#: ../modules/trust-prompt/certificate-viewer.c:633
+#| msgid "Organization"
+msgid "Organization (O)"
+msgstr "Organización (O)"
+
+#: ../modules/trust-prompt/certificate-viewer.c:628
+#: ../modules/trust-prompt/certificate-viewer.c:634
+#| msgid "Organizational Unit"
+msgid "Organizational Unit (OU)"
+msgstr "Unidad organizativa (OU)"
+
+#: ../modules/trust-prompt/certificate-viewer.c:629
+#: ../modules/trust-prompt/e-asn1-object.c:134
+msgid "Serial Number"
+msgstr "Número de serie"
+
+#: ../modules/trust-prompt/certificate-viewer.c:631
+msgid "Issued By"
+msgstr "Emitido por"
+
+#: ../modules/trust-prompt/certificate-viewer.c:636
+msgid "Validity"
+msgstr "Validez"
+
+#: ../modules/trust-prompt/certificate-viewer.c:637
+msgid "Issued On"
+msgstr "Emitido el"
+
+#: ../modules/trust-prompt/certificate-viewer.c:638
+msgid "Expires On"
+msgstr "Caduca el"
+
+#: ../modules/trust-prompt/certificate-viewer.c:640
+msgid "Fingerprints"
+msgstr "Huellas"
+
+#: ../modules/trust-prompt/certificate-viewer.c:641
+msgid "SHA1 Fingerprint"
+msgstr "Huella SHA1"
+
+#: ../modules/trust-prompt/certificate-viewer.c:642
+msgid "MD5 Fingerprint"
+msgstr "Huella MD5"
+
+#: ../modules/trust-prompt/certificate-viewer.c:644
+msgid "General"
+msgstr "General"
+
+#: ../modules/trust-prompt/certificate-viewer.c:661
+#| msgid "Certificate rejected"
+msgid "Certificate Hierarchy"
+msgstr "Jerarquía del certificado"
+
+#: ../modules/trust-prompt/certificate-viewer.c:664
+#| msgid "Certificate Revoked"
+msgid "Certificate Fields"
+msgstr "Campos del certificado"
+
+#: ../modules/trust-prompt/certificate-viewer.c:667
+msgid "Field Value"
+msgstr "Valor del campo"
+
+#: ../modules/trust-prompt/certificate-viewer.c:669
+msgid "Details"
+msgstr "Detalles"
+
+#: ../modules/trust-prompt/e-asn1-object.c:95
+msgid "Version"
+msgstr "Version"
+
+#: ../modules/trust-prompt/e-asn1-object.c:110
+msgid "Version 1"
+msgstr "Versión 1"
+
+#: ../modules/trust-prompt/e-asn1-object.c:113
+msgid "Version 2"
+msgstr "Versión 2"
+
+#: ../modules/trust-prompt/e-asn1-object.c:116
+msgid "Version 3"
+msgstr "Versión 3"
+
+#: ../modules/trust-prompt/e-asn1-object.c:192
+msgid "PKCS #1 MD2 With RSA Encryption"
+msgstr "PKCS #1 MD2 con cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:195
+msgid "PKCS #1 MD5 With RSA Encryption"
+msgstr "PKCS #1 MD5 con cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:198
+msgid "PKCS #1 SHA-1 With RSA Encryption"
+msgstr "PKCS #1 SHA-1 con cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:201
+msgid "PKCS #1 SHA-256 With RSA Encryption"
+msgstr "PKCS #1 SHA-256 con cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:204
+msgid "PKCS #1 SHA-384 With RSA Encryption"
+msgstr "PKCS #1 SHA-384 con cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:207
+msgid "PKCS #1 SHA-512 With RSA Encryption"
+msgstr "PKCS #1 SHA-512 con cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:234
+msgid "PKCS #1 RSA Encryption"
+msgstr "PKCS #1 cifrado RSA"
+
+#: ../modules/trust-prompt/e-asn1-object.c:237
+#| msgid "Certificate Revoked"
+msgid "Certificate Key Usage"
+msgstr "Uso de la clave del certificado"
+
+#: ../modules/trust-prompt/e-asn1-object.c:240
+msgid "Netscape Certificate Type"
+msgstr "Tipo de certificado Netscape"
+
+#: ../modules/trust-prompt/e-asn1-object.c:243
+#| msgid "Certificate untrusted"
+msgid "Certificate Authority Key Identifier"
+msgstr "Identificador de la clave de la autoridad del certificado"
+
+#: ../modules/trust-prompt/e-asn1-object.c:255
+#, c-format
+msgid "Object Identifier (%s)"
+msgstr "Identificador del objeto (%s)"
+
+#: ../modules/trust-prompt/e-asn1-object.c:306
+msgid "Algorithm Identifier"
+msgstr "Identificador del algoritmo"
+
+#: ../modules/trust-prompt/e-asn1-object.c:314
+msgid "Algorithm Parameters"
+msgstr "Parámetros del algoritmo"
+
+#: ../modules/trust-prompt/e-asn1-object.c:336
+msgid "Subject Public Key Info"
+msgstr "Información del asunto de la clave pública"
+
+#: ../modules/trust-prompt/e-asn1-object.c:341
+msgid "Subject Public Key Algorithm"
+msgstr "Asunto del algoritmo de clave pública"
+
+#: ../modules/trust-prompt/e-asn1-object.c:356
+msgid "Subject's Public Key"
+msgstr "Clave pública del asunto"
+
+#: ../modules/trust-prompt/e-asn1-object.c:378
+#: ../modules/trust-prompt/e-asn1-object.c:428
+#| msgid "Unable to process spool folder"
+msgid "Error: Unable to process extension"
+msgstr "Error: No es posible procesar la extensión"
+
+#: ../modules/trust-prompt/e-asn1-object.c:395
+#| msgid "Email 1"
+msgid "Email"
+msgstr "Correo-e"
+
+#: ../modules/trust-prompt/e-asn1-object.c:399
+#: ../modules/trust-prompt/e-asn1-object.c:411
+msgid "Object Signer"
+msgstr "Firmante del objeto"
+
+#: ../modules/trust-prompt/e-asn1-object.c:403
+#| msgid "Invalid Certificate Authority (CA)"
+msgid "SSL Certificate Authority"
+msgstr "Autoridad certificadora SSL"
+
+#: ../modules/trust-prompt/e-asn1-object.c:407
+#| msgid "Invalid Certificate Authority (CA)"
+msgid "Email Certificate Authority"
+msgstr "Autoridad certificadora de correo"
+
+#: ../modules/trust-prompt/e-asn1-object.c:436
+#| msgid "Signing message"
+msgid "Signing"
+msgstr "Firma"
+
+#: ../modules/trust-prompt/e-asn1-object.c:440
+#| msgid "Non-editing Author"
+msgid "Non-repudiation"
+msgstr "No repudio"
+
+#: ../modules/trust-prompt/e-asn1-object.c:444
+msgid "Key Encipherment"
+msgstr "Cifrado de la clave"
+
+#: ../modules/trust-prompt/e-asn1-object.c:448
+msgid "Data Encipherment"
+msgstr "Cifrado de datos"
+
+#: ../modules/trust-prompt/e-asn1-object.c:452
+msgid "Key Agreement"
+msgstr "Acuerdo de claves"
+
+#: ../modules/trust-prompt/e-asn1-object.c:456
+#| msgid "Certificate signature failure"
+msgid "Certificate Signer"
+msgstr "Firmante del certificado"
+
+#: ../modules/trust-prompt/e-asn1-object.c:460
+msgid "CRL Signer"
+msgstr "Firmante de la LRC"
+
+#: ../modules/trust-prompt/e-asn1-object.c:509
+msgid "Critical"
+msgstr "Crítico"
+
+#: ../modules/trust-prompt/e-asn1-object.c:511
+#: ../modules/trust-prompt/e-asn1-object.c:514
+msgid "Not Critical"
+msgstr "No crítico"
+
+#: ../modules/trust-prompt/e-asn1-object.c:535
+msgid "Extensions"
+msgstr "Extensiones"
+
+#. Translators: This string is used in Certificate
+#. * details for fields like Issuer or Subject, which
+#. * shows the field name on the left and its respective
+#. * value on the right, both as stored in the
+#. * certificate itself.  You probably do not need to
+#. * change this string, unless changing the order of
+#. * name and value.  As a result example:
+#. * "OU = VeriSign Trust Network"
+#: ../modules/trust-prompt/e-asn1-object.c:615
+#, c-format
+msgid "%s = %s"
+msgstr "%s = %s"
+
+#: ../modules/trust-prompt/e-asn1-object.c:658
+#| msgid "X.509 Certificate"
+msgid "Certificate"
+msgstr "Certificado"
+
+#: ../modules/trust-prompt/e-asn1-object.c:672
+#: ../modules/trust-prompt/e-asn1-object.c:807
+#| msgid "Certificate signature failure"
+msgid "Certificate Signature Algorithm"
+msgstr "Algoritmo de firma del certificado"
+
+#: ../modules/trust-prompt/e-asn1-object.c:681
+msgid "Issuer"
+msgstr "Emisor"
+
+#: ../modules/trust-prompt/e-asn1-object.c:712
+msgid "Subject"
+msgstr "Asunto"
+
+#: ../modules/trust-prompt/e-asn1-object.c:735
+#| msgid "Unique ID"
+msgid "Issuer Unique ID"
+msgstr "ID único del emisor"
+
+#: ../modules/trust-prompt/e-asn1-object.c:754
+#| msgid "Unique ID"
+msgid "Subject Unique ID"
+msgstr "ID único del asunto"
+
+#: ../modules/trust-prompt/e-asn1-object.c:813
+#| msgid "Certificate signature failure"
+msgid "Certificate Signature Value"
+msgstr "Valor de la firma del certificado"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:200
+#| msgid "Signing certificate not found"
+msgid "The signing certificate authority is not known."
+msgstr "La autoridad de firma del certificado es desconocida."
+
+#: ../modules/trust-prompt/module-trust-prompt.c:202
+msgid ""
+"The certificate does not match the expected identity of the site that it was "
+"retrieved from."
+msgstr ""
+
+#: ../modules/trust-prompt/module-trust-prompt.c:204
+#, fuzzy
+#| msgid "Certificate Revocation List signature failure"
+msgid "The certificate's activation time is still in the future."
+msgstr "Fallo en la firma de la Lista de Revocación de Certificados"
+
+#: ../modules/trust-prompt/module-trust-prompt.c:206
+#| msgid "Certificate has expired"
+msgid "The certificate has expired."
+msgstr "El certificado ha caducado."
+
+#: ../modules/trust-prompt/module-trust-prompt.c:208
+msgid ""
+"The certificate has been revoked according to the connection's certificate "
+"revocation list."
+msgstr ""
+
+#: ../modules/trust-prompt/module-trust-prompt.c:210
+msgid "The certificate's algorithm is considered insecure."
+msgstr ""
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:158
+#, fuzzy
+#| msgid "Certificate untrusted"
+msgid "Certificate trust..."
+msgstr "Certificado sin confianza"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:159
+#| msgid "X.509 Certificate"
+msgid "_View Certificate"
+msgstr "_Ver certificado"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:160
+msgid "_Reject"
+msgstr "_Rechazar"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:161
+msgid "Accept _Temporarily"
+msgstr "Aceptar _temporalmente"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:162
+msgid "_Accept Permanently"
+msgstr "_Aceptar permanentemente"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:193
+#, c-format
+#| msgid ""
+#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#| "\n"
+#| "Detailed information about the certificate:\n"
+#| "%s"
+msgid ""
+"SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+"\n"
+"Detailed information about the certificate:"
+msgstr ""
+"El certificado SSL para «%s» no es de confianza. ¿Quiere aceptarlo?\n"
+"\n"
+"Información detallada sobre el certificado:"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:207
+msgid "Issuer:"
+msgstr "Emisor"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:208
+msgid "Subject:"
+msgstr "Asunto:"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:209
+msgid "Fingerprint:"
+msgstr "Huella:"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:210
+msgid "Reason:"
+msgstr "Razón:"
+
 #: ../modules/yahoo-backend/module-yahoo-backend.c:227
 msgid "Tasks"
 msgstr "Tareas"
@@ -5746,22 +5941,179 @@ msgstr "Mantener en ejecución después de cerrar el último cliente"
 msgid "Wait running until at least one client is connected"
 msgstr "Mantener en ejecución hasta que haya al menos un cliente conectado"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:635
-msgid "Evolution Source Viewer"
-msgstr "Visor de fuentes de Evolution"
+#: ../services/evolution-user-prompter/prompt-user-gtk.c:111
+msgid "_Dismiss"
+msgstr "_Descartar"
 
-#. Translators: The name that is displayed in the user interface
-#: ../tests/libedataserverui/evolution-source-viewer.c:665
-msgid "Display Name"
-msgstr "Mostrar nombre"
+#~ msgid ""
+#~ "   Issuer:       %s\n"
+#~ "   Subject:      %s\n"
+#~ "   Fingerprint:  %s\n"
+#~ "   Signature:    %s"
+#~ msgstr ""
+#~ "   Emisor:       %s\n"
+#~ "   Asunto:      %s\n"
+#~ "   Huella:  %s\n"
+#~ "   Firma:    %s"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:674
-msgid "Flags"
-msgstr "Opciones"
+#~ msgid "GOOD"
+#~ msgstr "CORRECTO"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:726
-msgid "Identity"
-msgstr "Identidad"
+#~ msgid "BAD"
+#~ msgstr "ERRÓNEO"
+
+#~ msgid ""
+#~ "Certificate problem: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "Problema del certificado: %s\n"
+#~ "Emisor: %s"
+
+#~ msgid ""
+#~ "Bad certificate domain: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "Dominio del certificado erróneo: %s\n"
+#~ "Emisor: %s"
+
+#~ msgid ""
+#~ "Certificate expired: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "Certificado caducado: %s\n"
+#~ "Emisor: %s"
+
+#~ msgid ""
+#~ "Certificate revocation list expired: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "Lista de Revocación de Certificados caducada: %s\n"
+#~ "Emisor: %s"
+
+#~ msgid "Currently _used categories:"
+#~ msgstr "Categorías _usadas actualmente:"
+
+#~ msgid "_Available Categories:"
+#~ msgstr "Categorías _disponibles:"
+
+#~ msgid "Icon"
+#~ msgstr "Icono"
+
+#~ msgid "Category"
+#~ msgstr "Categoría"
+
+#~ msgid "Create category \"%s\""
+#~ msgstr "Crear categoría «%s»"
+
+#~ msgid "Category Icon"
+#~ msgstr "Icono de categoría"
+
+#~ msgid "_No Image"
+#~ msgstr "_Sin imagen"
+
+#~ msgid "Category _Name"
+#~ msgstr "_Nombre de la categoría"
+
+#~ msgid "Category _Icon"
+#~ msgstr "_Icono de categoría"
+
+#~ msgid "Category Properties"
+#~ msgstr "Propiedades de la categoría"
+
+#~ msgid ""
+#~ "There is already a category '%s' in the configuration. Please use another "
+#~ "name"
+#~ msgstr ""
+#~ "Ya hay una categoría «%s» en la configuración. Por favor, use otro nombre"
+
+#~ msgid "Show Contacts"
+#~ msgstr "Mostrar contactos"
+
+#~ msgid "Address B_ook:"
+#~ msgstr "_Libreta de direcciones:"
+
+#~ msgid "Cat_egory:"
+#~ msgstr "Cat_egoría:"
+
+#~ msgid "_Search:"
+#~ msgstr "_Buscar:"
+
+#~ msgid "Any Category"
+#~ msgstr "Cualquier categoría"
+
+#~ msgid "Co_ntacts"
+#~ msgstr "Co_ntactos"
+
+#~ msgid "Search"
+#~ msgstr "Buscar"
+
+#~ msgid "Address Book"
+#~ msgstr "Libreta de direcciones"
+
+#~ msgid "Select Contacts from Address Book"
+#~ msgstr "Selecciona contactos de la libreta de direcciones"
+
+#~ msgid "_Add"
+#~ msgstr "_Añadir"
+
+#~ msgid "_Remove"
+#~ msgstr "_Quitar"
+
+#~ msgid "Error loading address book: %s"
+#~ msgstr "Error al cargar la libreta de direcciones: %s"
+
+#~ msgid "E_xpand %s Inline"
+#~ msgstr "E_xpandir %s en línea"
+
+#~ msgid "Cop_y %s"
+#~ msgstr "_Copiar %s"
+
+#~ msgid "C_ut %s"
+#~ msgstr "Cor_tar %s"
+
+#~ msgid "_Edit %s"
+#~ msgstr "_Editar %s"
+
+#~ msgid "_Delete %s"
+#~ msgstr "_Eliminar %s"
+
+#~ msgid "Keyring key is unusable: no user or host name"
+#~ msgstr ""
+#~ "La clave del depósito de claves no es usable: no existe el usuario o el "
+#~ "nombre del servidor"
+
+#~ msgid "You have the Caps Lock key on."
+#~ msgstr "Tiene activada la tecla Bloq. Mayús."
+
+#~ msgid "_Remember this passphrase"
+#~ msgstr "_Recordar esta frase de paso"
+
+#~ msgid "_Remember this passphrase for the remainder of this session"
+#~ msgstr "_Recordar esta frase de paso durante el resto de esta sesión"
+
+#~ msgid "_Remember this password"
+#~ msgstr "_Recordar esta contraseña"
+
+#~ msgid "_Remember this password for the remainder of this session"
+#~ msgstr "_Recordar esta contraseña durante el resto de esta sesión"
+
+#~ msgid "_Destination"
+#~ msgstr "_Destino"
+
+#~ msgid "Select destination"
+#~ msgstr "Seleccione destino"
+
+#~ msgid "Evolution Source Viewer"
+#~ msgstr "Visor de fuentes de Evolution"
+
+#~ msgid "Display Name"
+#~ msgstr "Mostrar nombre"
+
+#~ msgid "Flags"
+#~ msgstr "Opciones"
+
+#~ msgid "Identity"
+#~ msgstr "Identidad"
 
 #~ msgid "Could not connect to %s: "
 #~ msgstr "No se pudo conectar con %s: "
@@ -6544,8 +6896,8 @@ msgstr "Identidad"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: "
-#~ "Error desconocido"
+#~ "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: Error "
+#~ "desconocido"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
@@ -6605,8 +6957,8 @@ msgstr "Identidad"
 
 #~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 #~ msgstr ""
-#~ "No se puede obtener la información LIST para «%s» en el servidor IMAP %s: "
-#~ "%s"
+#~ "No se puede obtener la información LIST para «%s» en el servidor IMAP %s: %"
+#~ "s"
 
 #~ msgid "Bad command"
 #~ msgstr "Comando erróneo"
@@ -6772,17 +7124,8 @@ msgstr "Identidad"
 #~ msgid "Unable to decode issuer's public key"
 #~ msgstr "No se pudo decodificar la clave pública del emisor"
 
-#~ msgid "Certificate signature failure"
-#~ msgstr "Falló la firma del certificado"
-
-#~ msgid "Certificate Revocation List signature failure"
-#~ msgstr "Fallo en la firma de la Lista de Revocación de Certificados"
-
 #~ msgid "Certificate not yet valid"
 #~ msgstr "Certificado aún no válido"
-
-#~ msgid "Certificate has expired"
-#~ msgstr "El certificado ha caducado"
 
 #~ msgid "Certificate Revocation List (CRL) not yet valid"
 #~ msgstr "La Lista de Revocación de Certificados (CRL) aún no es válida"
@@ -6811,23 +7154,11 @@ msgstr "Identidad"
 #~ msgid "Certificate chain too long"
 #~ msgstr "Cadena de certificados demasiado larga"
 
-#~ msgid "Certificate Revoked"
-#~ msgstr "Certificado revocado"
-
-#~ msgid "Invalid Certificate Authority (CA)"
-#~ msgstr "Autoridad certificadora inválida (CA)"
-
 #~ msgid "Path length exceeded"
 #~ msgstr "Longitud de ruta excedida"
 
 #~ msgid "Invalid purpose"
 #~ msgstr "Propósito inválido"
-
-#~ msgid "Certificate untrusted"
-#~ msgstr "Certificado sin confianza"
-
-#~ msgid "Certificate rejected"
-#~ msgstr "Certificado rechazado"
 
 #~ msgid "Subject/Issuer mismatch"
 #~ msgstr "No coincide Asunto/Emisor"
@@ -6887,9 +7218,6 @@ msgstr "Identidad"
 
 #~ msgid "Author"
 #~ msgstr "Autor"
-
-#~ msgid "Non-editing Author"
-#~ msgstr "Autor no editor"
 
 #~ msgid "Reviewer"
 #~ msgstr "Revisor"
