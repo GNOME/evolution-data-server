@@ -124,6 +124,11 @@ struct _SyncChangesData {
 	GArray *on_user; /* imapx_flag_change */
 	GArray *off_user;
 	gint unread_change;
+
+	/* Remove recently set DELETED flags before synchronizing.
+	 * This is only set when using a real Trash folder and NOT
+	 * about to expunge the folder. */
+	gboolean remove_deleted_flags;
 };
 
 struct _AppendMessageData {
@@ -434,6 +439,7 @@ static gint	imapx_uids_array_cmp		(gconstpointer ap,
 						 gconstpointer bp);
 static gboolean	imapx_server_sync_changes	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
+						 guint32 job_type,
 						 gint pri,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -4417,7 +4423,7 @@ imapx_job_copy_messages_start (CamelIMAPXJob *job,
 	g_return_val_if_fail (data != NULL, FALSE);
 
 	success = imapx_server_sync_changes (
-		is, job->folder, job->pri, cancellable, error);
+		is, job->folder, job->type, job->pri, cancellable, error);
 	if (!success)
 		imapx_unregister_job (is, job);
 
@@ -5303,7 +5309,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 	/* Sync changes first, else unread count will not
 	 * match. Need to think about better ways for this */
 	success = imapx_server_sync_changes (
-		is, folder, job->pri, cancellable, error);
+		is, folder, job->type, job->pri, cancellable, error);
 	if (!success)
 		goto done;
 
@@ -5569,7 +5575,7 @@ imapx_job_expunge_start (CamelIMAPXJob *job,
 	gboolean success;
 
 	success = imapx_server_sync_changes (
-		is, job->folder, job->pri, cancellable, error);
+		is, job->folder, job->type, job->pri, cancellable, error);
 
 	if (success) {
 		/* TODO handle UIDPLUS capability */
@@ -6126,7 +6132,9 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 			if (!xinfo)
 				continue;
 
-			xinfo->server_flags = ((CamelMessageInfoBase *) xinfo)->flags & CAMEL_IMAPX_SERVER_FLAGS;
+			if (data->remove_deleted_flags)
+				xinfo->info.flags &= ~CAMEL_MESSAGE_DELETED;
+			xinfo->server_flags = xinfo->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
 			xinfo->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 			xinfo->info.dirty = TRUE;
 			camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
@@ -6200,18 +6208,34 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 			c (is->tagprefix, "checking/storing %s flags '%s'\n", on?"on":"off", flags_table[j].name);
 			imapx_uidset_init (&ss, 0, 100);
 			for (i = 0; i < uids->len; i++) {
-				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *) camel_folder_summary_get
-										(job->folder->summary, uids->pdata[i]);
+				CamelIMAPXMessageInfo *info;
+				gboolean remove_deleted_flag;
 				guint32 flags;
 				guint32 sflags;
 				gint send;
 
-				if (!info)
+				info = (CamelIMAPXMessageInfo *)
+					camel_folder_summary_get (
+						job->folder->summary,
+						uids->pdata[i]);
+
+				if (info == NULL)
 					continue;
 
-				flags = ((CamelMessageInfoBase *) info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
+				flags = info->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
 				sflags = info->server_flags & CAMEL_IMAPX_SERVER_FLAGS;
 				send = 0;
+
+				remove_deleted_flag =
+					data->remove_deleted_flags &&
+					(flags & CAMEL_MESSAGE_DELETED);
+
+				if (remove_deleted_flag) {
+					/* Remove the DELETED flag so the
+					 * message appears normally in the
+					 * real Trash folder when copied. */
+					flags &= ~CAMEL_MESSAGE_DELETED;
+				}
 
 				if ( (on && (((flags ^ sflags) & flags) & flag))
 				     || (!on && (((flags ^ sflags) & ~flags) & flag))) {
@@ -7233,6 +7257,7 @@ imapx_sync_free_user (GArray *user_set)
 static gboolean
 imapx_server_sync_changes (CamelIMAPXServer *is,
                            CamelFolder *folder,
+                           guint32 job_type,
                            gint pri,
                            GCancellable *cancellable,
                            GError **error)
@@ -7311,13 +7336,9 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 			camel_imapx_folder_maybe_move_to_real_junk (
 				CAMEL_IMAPX_FOLDER (folder), uid);
 
-		if (move_to_real_trash) {
-			/* Remove the DELETED flag so the message
-			 * appears normally in the Trash folder. */
-			flags &= ~CAMEL_MESSAGE_DELETED;
+		if (move_to_real_trash)
 			camel_imapx_folder_maybe_move_to_real_trash (
 				CAMEL_IMAPX_FOLDER (folder), uid);
-		}
 
 		if (flags != sflags) {
 			off_orset |= (flags ^ sflags) & ~flags;
@@ -7419,6 +7440,10 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	data->on_user = on_user;  /* takes ownership */
 	data->off_user = off_user;  /* takes ownership */
 
+	data->remove_deleted_flags =
+		use_real_trash_path &&
+		(job_type != IMAPX_JOB_EXPUNGE);
+
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_SYNC_CHANGES;
 	job->start = imapx_job_sync_changes_start;
@@ -7447,7 +7472,9 @@ camel_imapx_server_sync_changes (CamelIMAPXServer *is,
                                  GError **error)
 {
 	return imapx_server_sync_changes (
-		is, folder, IMAPX_PRIORITY_SYNC_CHANGES,
+		is, folder,
+		IMAPX_JOB_SYNC_CHANGES,
+		IMAPX_PRIORITY_SYNC_CHANGES,
 		cancellable, error);
 }
 
