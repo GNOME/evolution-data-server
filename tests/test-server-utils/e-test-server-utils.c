@@ -60,8 +60,6 @@ setup_environment (void)
 static void
 delete_work_directory (void)
 {
-	gchar *command_line;
-
 	/* XXX Instead of complex error checking here, we should ideally use
 	 * a recursive GDir / g_unlink() function.
 	 *
@@ -69,9 +67,16 @@ delete_work_directory (void)
 	 * corrupting our contained D-Bus environment with service files
 	 * from the OS.
 	 */
-	command_line = g_strdup_printf ("/bin/rm -rf %s", EDS_TEST_WORK_DIR);
-	g_spawn_command_line_sync (command_line, NULL, NULL, NULL, NULL);
-	g_free (command_line);
+	const gchar *argv[] = { "/bin/rm", "-rf", EDS_TEST_WORK_DIR, NULL };
+	gboolean spawn_succeeded;
+	gint exit_status;
+
+	spawn_succeeded = g_spawn_sync (NULL, (char **) argv, NULL, 0, NULL, NULL,
+	                                NULL, NULL, &exit_status, NULL);
+
+	g_assert (spawn_succeeded);
+	g_assert (WIFEXITED (exit_status));
+	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
 }
 
 static gboolean
