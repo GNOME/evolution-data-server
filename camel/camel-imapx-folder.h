@@ -90,9 +90,6 @@ CamelFolder *	camel_imapx_folder_new		(CamelStore *parent,
 						 const gchar *path,
 						 const gchar *raw,
 						 GError **error);
-gchar *		imapx_get_filename		(CamelFolder *folder,
-						 const gchar *uid,
-						 GError **error);
 gchar **	camel_imapx_folder_dup_quota_root_names
 						(CamelIMAPXFolder *folder);
 void		camel_imapx_folder_set_quota_root_names

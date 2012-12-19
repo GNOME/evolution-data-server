@@ -809,7 +809,6 @@ CamelIMAPXFolderClass
 <SUBSECTION Private>
 CamelIMAPXFolderPrivate
 camel_imapx_folder_get_type
-imapx_get_filename
 </SECTION>
 
 <SECTION>

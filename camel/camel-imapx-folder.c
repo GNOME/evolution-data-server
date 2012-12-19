@@ -222,16 +222,6 @@ imapx_folder_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
 }
 
-gchar *
-imapx_get_filename (CamelFolder *folder,
-                    const gchar *uid,
-                    GError **error)
-{
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-
-	return camel_data_cache_get_filename (ifolder->cache, "cache", uid);
-}
-
 /* Algorithm for selecting a folder:
  *
  *  - If uidvalidity == old uidvalidity
@@ -362,6 +352,16 @@ imapx_search_by_expression (CamelFolder *folder,
 	g_mutex_unlock (&ifolder->search_lock);
 
 	return matches;
+}
+
+static gchar *
+imapx_get_filename (CamelFolder *folder,
+                    const gchar *uid,
+                    GError **error)
+{
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+
+	return camel_data_cache_get_filename (ifolder->cache, "cache", uid);
 }
 
 static gboolean
