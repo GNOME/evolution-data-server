@@ -67,10 +67,7 @@ static void
 imapx_folder_claim_move_to_real_junk_uids (CamelIMAPXFolder *folder,
                                            GPtrArray *out_uids_to_copy)
 {
-	CamelFolderSummary *summary;
 	GList *keys;
-
-	summary = CAMEL_FOLDER (folder)->summary;
 
 	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
 
@@ -89,10 +86,7 @@ static void
 imapx_folder_claim_move_to_real_trash_uids (CamelIMAPXFolder *folder,
                                             GPtrArray *out_uids_to_copy)
 {
-	CamelFolderSummary *summary;
 	GList *keys;
-
-	summary = CAMEL_FOLDER (folder)->summary;
 
 	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
 
