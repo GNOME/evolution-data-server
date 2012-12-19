@@ -44,11 +44,12 @@ typedef void (* TestFunc)(TestFixture   *fixture,
 
 struct _TestFixture {
 	ETestServerFixture base_fixture;
-	GSList *contacts;
+	GSList            *contacts;
 };
 
 struct _TestParams {
 	ETestServerClosure base_closure;
+
 	gchar             *db_version;
 	AccessMode         access_mode;
 };
@@ -61,13 +62,14 @@ static void setup_book_directory (ESource            *scratch,
  *                       Fixture handling                       *
  ****************************************************************/
 static TestParams *
-create_params (const gchar *db_version,
-	       AccessMode   access_mode)
+create_params (const gchar              *db_version,
+               AccessMode                access_mode,
+               ETestSourceCustomizeFunc  setup_source)
 {
 	TestParams *params = g_slice_new0 (TestParams);
 
 	params->base_closure.type      = E_TEST_SERVER_ADDRESS_BOOK;
-	params->base_closure.customize = setup_book_directory;
+	params->base_closure.customize = setup_source;
 
 	params->access_mode = access_mode;
 	params->db_version  = g_strdup (db_version);
@@ -79,6 +81,7 @@ static void
 free_params (TestParams *params)
 {
 	g_free (params->db_version);
+
 	g_slice_free (TestParams, params);
 }
 
@@ -86,32 +89,46 @@ static void
 setup (TestFixture    *fixture,
        gconstpointer   data)
 {
-	e_test_server_utils_setup ((ETestServerFixture *)fixture, data);
+	e_test_server_utils_setup (&fixture->base_fixture, data);
 }
 
 static void
 teardown (TestFixture   *fixture,
           gconstpointer  data)
 {
-	TestParams *params = (TestParams *)data;
+	const TestParams *const params = data;
 
-	e_test_server_utils_teardown ((ETestServerFixture *)fixture, data);
+	e_test_server_utils_teardown (&fixture->base_fixture, data);
 
 	g_slist_free_full (fixture->contacts, g_object_unref);
 	fixture->contacts = NULL;
-	free_params (params);
+
+	free_params ((TestParams *) params);
 }
 
 static void
-add_test (const gchar *path,
-          const gchar *db_version,
-          AccessMode   access_mode,
-          TestFunc     test_func)
+add_test (const gchar             *path,
+          const gchar             *db_version,
+          AccessMode               access_mode,
+          ETestSourceCustomizeFunc setup_source,
+          TestFunc                 test_func)
 {
 	TestParams *params;
 
-	params = create_params (db_version, access_mode);
+	params = create_params (db_version, access_mode, setup_source);
 	g_test_add (path, TestFixture, params, setup, test_func, teardown);
+}
+
+static gchar *
+get_bookdir (void)
+{
+	return g_build_filename (g_get_user_data_dir (), "evolution", "addressbook", "test-address-book", NULL);
+}
+
+static gchar *
+get_datadir (const TestParams *params)
+{
+	return g_build_filename (SRCDIR, "../data/dumps", params->db_version, NULL);
 }
 
 /****************************************************************
@@ -121,21 +138,21 @@ static void
 setup_book_directory (ESource            *scratch,
 		      ETestServerClosure *closure)
 {
-	TestParams *params = (TestParams *)closure;
+	const TestParams *const params = (const TestParams *) closure;
+
+	gchar *const bookdir = get_bookdir ();
+	gchar *const photodir = g_build_filename (bookdir, "photos", NULL);
+
+	gchar *const datadir = get_datadir (params);
+	gchar *const bdb_filename = g_build_filename (datadir, "addressbook.db_dump", NULL);
+	gchar *const sqlite_filename = g_build_filename (datadir, "contacts.sql", NULL);
+
+	GError *error = NULL;
 
 	if (params->access_mode == DIRECT_ACCESS)
 		g_setenv ("DEBUG_DIRECT", "1", TRUE);
 	else
 		g_unsetenv ("DEBUG_DIRECT");
-
-	gchar *const bookdir = g_build_filename (g_get_user_data_dir (), "evolution", "addressbook", "test-address-book", NULL);
-	gchar *const photodir = g_build_filename (bookdir, "photos", NULL);
-
-	gchar *const datadir = g_build_filename (SRCDIR, "../data/dumps", params->db_version, NULL);
-	gchar *const bdb_filename = g_build_filename (datadir, "addressbook.db_dump", NULL);
-	gchar *const sqlite_filename = g_build_filename (datadir, "contacts.sql", NULL);
-
-	GError *error = NULL;
 
 	if (g_test_verbose ())
 		g_print ("Creating mock addressbook at \"%s\".\n", bookdir);
@@ -180,7 +197,6 @@ setup_book_directory (ESource            *scratch,
 
 	g_free (photodir);
 	g_free (bookdir);
-
 }
 
 /****************************************************************
@@ -316,6 +332,110 @@ test_book_client (TestFixture   *fixture,
 	verify_contacts (fixture->contacts);
 }
 
+static void
+setup_old_default_summary (ESource            *scratch,
+                           ETestServerClosure *closure)
+{
+	ESourceBackendSummarySetup *setup;
+
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
+	e_source_backend_summary_setup_set_summary_fields (setup,
+	                                                   E_CONTACT_UID,
+	                                                   E_CONTACT_REV,
+	                                                   E_CONTACT_FILE_AS,
+	                                                   E_CONTACT_NICKNAME,
+	                                                   E_CONTACT_FULL_NAME,
+	                                                   E_CONTACT_GIVEN_NAME,
+	                                                   E_CONTACT_FAMILY_NAME,
+	                                                   E_CONTACT_EMAIL_1,
+	                                                   E_CONTACT_EMAIL_2,
+	                                                   E_CONTACT_EMAIL_3,
+	                                                   E_CONTACT_EMAIL_4,
+	                                                   E_CONTACT_IS_LIST,
+	                                                   E_CONTACT_LIST_SHOW_ADDRESSES,
+	                                                   E_CONTACT_WANTS_HTML,
+	                                                   0);
+}
+
+static void
+test_column_names (TestFixture   *fixture,
+                   gconstpointer  data)
+{
+	const TestParams *const params = data;
+
+	gchar *const bookdir = get_bookdir ();
+	gchar *const datadir = get_datadir (params);
+	gchar *const script_filename = g_build_filename (datadir, "contacts.sql", NULL);
+	const gchar *argv[] = { "sqlite3", "-batch", "contacts.db", "pragma table_info(folder_id)", NULL };
+
+	gint exit_status;
+	GError *error = NULL;
+	gchar *table_info = NULL;
+	gchar *script = NULL, *stmt;
+	GMatchInfo *match = NULL;
+	GRegex *regex = NULL;
+	gint start, end;
+
+	if (!g_spawn_sync (bookdir, (gchar **) argv, NULL, G_SPAWN_SEARCH_PATH,
+		           NULL, NULL, &table_info, NULL, &exit_status, &error))
+		g_error ("Cannot run SQLite: %s", error->message);
+
+	g_assert (WIFEXITED (exit_status));
+	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
+
+	if (g_test_verbose ())
+		g_print ("%s", table_info);
+
+	if (!g_file_get_contents (script_filename, &script, NULL, &error))
+		g_error ("Cannot SQLite database script: %s.", error->message);
+
+	g_assert (script != NULL);
+
+	regex = g_regex_new ("^CREATE\\s+TABLE\\s+([\"']?)folder_id\\1([^;]*);",
+	                     G_REGEX_CASELESS | G_REGEX_MULTILINE, 0, NULL);
+
+	if (!g_regex_match (regex, script, 0, &match)
+		|| !g_match_info_fetch_pos (match, 2, &start, &end))
+		g_error ("Cannot find \"CREATE TABLE\" statement for for folder_id table.");
+
+	g_regex_unref (regex);
+	stmt = script + start;
+	script[end] = '\0';
+
+	regex = g_regex_new ("[(,]\\s+(\\w+)\\s+(\\w+)\\b", 0, 0, NULL);
+
+	while (g_regex_match (regex, stmt, 0, &match)) {
+		const gchar *colname, *coltype;
+		gchar *pattern;
+
+		if (!g_match_info_fetch_pos (match, 1, &start, &end))
+			break;
+
+		colname = stmt + start;
+		stmt[end] = '\0';
+
+		if (!g_match_info_fetch_pos (match, 2, &start, &end))
+			break;
+
+		coltype = stmt + start;
+		stmt[end] = '\0';
+		stmt += end + 1;
+
+		pattern = g_strdup_printf ("|%s|%s|", colname, coltype);
+
+		if (!strstr (table_info, pattern))
+			g_error ("Cannot find \"%s\" column.", colname);
+
+		g_free (pattern);
+	}
+
+	g_regex_unref (regex);
+	g_free (table_info);
+	g_free (script_filename);
+	g_free (datadir);
+	g_free (bookdir);
+}
 
 gint
 main (gint argc,
@@ -330,10 +450,11 @@ main (gint argc,
 	g_setenv ("LC_ADDRESS", "en_US.UTF-8", TRUE);
 	setlocale (LC_ADDRESS, "");
 
-	add_test ("/upgrade/0.2/dbus/book-client", "0.2", INDIRECT_ACCESS, test_book_client);
-	add_test ("/upgrade/0.2/dbus/book-client-view", "0.2", INDIRECT_ACCESS, test_book_client_view);
-	add_test ("/upgrade/0.2/direct/book-client", "0.2", DIRECT_ACCESS, test_book_client);
-	add_test ("/upgrade/0.2/direct/book-client-view", "0.2", DIRECT_ACCESS, test_book_client_view);
+	add_test ("/upgrade/0.2/dbus/book-client", "0.2", INDIRECT_ACCESS, setup_book_directory, test_book_client);
+	add_test ("/upgrade/0.2/dbus/book-client-view", "0.2", INDIRECT_ACCESS, setup_book_directory, test_book_client_view);
+	add_test ("/upgrade/0.2/direct/book-client", "0.2", DIRECT_ACCESS, setup_book_directory, test_book_client);
+	add_test ("/upgrade/0.2/direct/book-client-view", "0.2", DIRECT_ACCESS, setup_book_directory, test_book_client_view);
+	add_test ("/upgrade/0.2/column-names", "0.2", INDIRECT_ACCESS, setup_old_default_summary, test_column_names);
 
 	return e_test_server_utils_run ();
 }
