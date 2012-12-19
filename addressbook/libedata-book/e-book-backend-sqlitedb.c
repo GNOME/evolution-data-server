@@ -1185,6 +1185,9 @@ append_summary_field (GArray         *array,
 	case E_CONTACT_IS_LIST:
 		dbname = "is_list";
 		break;
+	case E_CONTACT_REV:
+		dbname = "rev";
+		break;
 	default:
 		dbname = e_contact_field_name (field);
 		break;
