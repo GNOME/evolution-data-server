@@ -7333,11 +7333,11 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 			(flags & CAMEL_MESSAGE_DELETED);
 
 		if (move_to_real_junk)
-			camel_imapx_folder_maybe_move_to_real_junk (
+			camel_imapx_folder_add_move_to_real_junk (
 				CAMEL_IMAPX_FOLDER (folder), uid);
 
 		if (move_to_real_trash)
-			camel_imapx_folder_maybe_move_to_real_trash (
+			camel_imapx_folder_add_move_to_real_trash (
 				CAMEL_IMAPX_FOLDER (folder), uid);
 
 		if (flags != sflags) {

@@ -98,10 +98,10 @@ gchar **	camel_imapx_folder_dup_quota_root_names
 void		camel_imapx_folder_set_quota_root_names
 						(CamelIMAPXFolder *folder,
 						 const gchar **quota_root_names);
-void		camel_imapx_folder_maybe_move_to_real_junk
+void		camel_imapx_folder_add_move_to_real_junk
 						(CamelIMAPXFolder *folder,
 						 const gchar *message_uid);
-void		camel_imapx_folder_maybe_move_to_real_trash
+void		camel_imapx_folder_add_move_to_real_trash
 						(CamelIMAPXFolder *folder,
 						 const gchar *message_uid);
 
