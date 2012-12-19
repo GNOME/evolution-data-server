@@ -74,97 +74,230 @@ struct _CamelFolderSearch {
 struct _CamelFolderSearchClass {
 	CamelObjectClass parent_class;
 
-	/* general bool/comparison options, usually these wont need to be set, unless it is compiling into another language */
-	CamelSExpResult * (*and_)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*or_)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*not_)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*lt)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*gt)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*eq)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	/* General bool/comparison options.  Usually these won't need
+	 * to be set, unless it is compiling into another language. */
+	CamelSExpResult *	(*and_)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
+	CamelSExpResult *	(*or_)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
+	CamelSExpResult *	(*not_)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
+	CamelSExpResult *	(*lt)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
+	CamelSExpResult *	(*gt)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
+	CamelSExpResult *	(*eq)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
 
-	/* search options */
-	/* (match-all [boolean expression]) Apply match to all messages */
-	CamelSExpResult * (*match_all)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	/* Search Options */
 
-	/* (match-threads "type" [array expression]) add all related threads */
-	CamelSExpResult * (*match_threads)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	/* (match-all [boolean expression])
+	 * Apply match to all messages. */
+	CamelSExpResult *	(*match_all)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
 
-	/* (body-contains "string1" "string2" ...) Returns a list of matches, or true if in single-message mode */
-	CamelSExpResult * (*body_contains)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (match-threads "type" [array expression])
+	 * Add all related threads. */
+	CamelSExpResult *	(*match_threads)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpTerm **argv,
+						 CamelFolderSearch *search);
 
-	/* (body-regex "regex") Returns a list of matches, or true if in single-message mode */
-	CamelSExpResult * (*body_regex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (body-contains "string1" "string2" ...)
+	 * Returns a list of matches, or true if in single-message mode. */
+	CamelSExpResult *	(*body_contains)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (header-contains "headername" "string1" ...) List of matches, or true if in single-message mode */
-	CamelSExpResult * (*header_contains)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (body-regex "regex")
+	 * Returns a list of matches, or true if in single-message mode. */
+	CamelSExpResult *	(*body_regex)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
+
+	/* (header-contains "headername" "string1" ...)
+	 * List of matches, or true if in single-message mode. */
+	CamelSExpResult *	(*header_contains)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-matches "headername" "string") */
-	CamelSExpResult * (*header_matches)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_matches)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-starts-with "headername" "string") */
-	CamelSExpResult * (*header_starts_with)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_starts_with)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-ends-with "headername" "string") */
-	CamelSExpResult * (*header_ends_with)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_ends_with)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-exists "headername") */
-	CamelSExpResult * (*header_exists)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_exists)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-soundex "headername" "string") */
-	CamelSExpResult * (*header_soundex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_soundex)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-regex "headername" "regex_string") */
-	CamelSExpResult * (*header_regex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_regex)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
 	/* (header-full-regex "regex") */
-	CamelSExpResult * (*header_full_regex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult *	(*header_full_regex)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (user-flag "flagname" "flagname" ...) If one of user-flag set */
-	CamelSExpResult * (*user_flag)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (user-flag "flagname" "flagname" ...)
+	 * If one of user-flag set. */
+	CamelSExpResult *	(*user_flag)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (user-tag "flagname") Returns the value of a user tag.  Can only be used in match-all */
-	CamelSExpResult * (*user_tag)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (user-tag "flagname")
+	 * Returns the value of a user tag.  Can only be used in match-all. */
+	CamelSExpResult *	(*user_tag)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (system-flag "flagname") Returns the value of a system flag.  Can only be used in match-all */
-	CamelSExpResult * (*system_flag)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (system-flag "flagname")
+	 * Returns the value of a system flag.
+	 * Can only be used in match-all. */
+	CamelSExpResult *	(*system_flag)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (get-sent-date) Retrieve the date that the message was sent on as a time_t */
-	CamelSExpResult * (*get_sent_date)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (get-sent-date)
+	 * Retrieve the date that the message was sent on as a time_t. */
+	CamelSExpResult *	(*get_sent_date)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (get-received-date) Retrieve the date that the message was received on as a time_t */
-	CamelSExpResult * (*get_received_date)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (get-received-date)
+	 * Retrieve the date that the message was received on as a time_t. */
+	CamelSExpResult *	(*get_received_date)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (get-current-date) Retrieve 'now' as a time_t */
-	CamelSExpResult * (*get_current_date)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (get-current-date)
+	 * Retrieve 'now' as a time_t. */
+	CamelSExpResult *	(*get_current_date)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (get-relative-months) Retrieve relative seconds from 'now' and specified number of months as a time_t */
-	CamelSExpResult * (*get_relative_months)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (get-relative-months)
+	 * Retrieve relative seconds from 'now' and
+	 * specified number of months as a time_t. */
+	CamelSExpResult *	(*get_relative_months)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (get-size) Retrieve message size as an gint (in kilobytes) */
-	CamelSExpResult * (*get_size)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (get-size)
+	 * Retrieve message size as an gint (in kilobytes). */
+	CamelSExpResult *	(*get_size)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (uid "uid" ...) True if the uid is in the list */
-	CamelSExpResult * (*uid)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	/* (uid "uid" ...)
+	 * True if the uid is in the list. */
+	CamelSExpResult *	(*uid)		(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 
-	/* (message-location "folder_string") True if the message is in the folder's full name "folder_string" */
-	CamelSExpResult * (*message_location)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
-
+	/* (message-location "folder_string")
+	 * True if the message is in the folder's full name "folder_string". */
+	CamelSExpResult *	(*message_location)
+						(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
 };
 
-GType		camel_folder_search_get_type	(void);
-CamelFolderSearch      *camel_folder_search_new	(void);
-void camel_folder_search_construct (CamelFolderSearch *search);
+GType		camel_folder_search_get_type	(void) G_GNUC_CONST;
+CamelFolderSearch *
+		camel_folder_search_new		(void);
+void		camel_folder_search_construct	(CamelFolderSearch *search);
 
-/* This stuff currently gets cleared when you run a search ... what on earth was i thinking ... */
-void camel_folder_search_set_folder (CamelFolderSearch *search, CamelFolder *folder);
-void camel_folder_search_set_summary (CamelFolderSearch *search, GPtrArray *summary);
-void camel_folder_search_set_body_index (CamelFolderSearch *search, CamelIndex *body_index);
+/* XXX This stuff currently gets cleared when you run a search.
+ *     What on earth was i thinking ... */
+void		camel_folder_search_set_folder	(CamelFolderSearch *search,
+						 CamelFolder *folder);
+void		camel_folder_search_set_summary	(CamelFolderSearch *search,
+						 GPtrArray *summary);
+void		camel_folder_search_set_body_index
+						(CamelFolderSearch *search,
+						 CamelIndex *body_index);
 
-GPtrArray *camel_folder_search_search (CamelFolderSearch *search, const gchar *expr, GPtrArray *uids, GCancellable *cancellable, GError **error);
-guint32 camel_folder_search_count (CamelFolderSearch *search, const gchar *expr, GCancellable *cancellable, GError **error);
-void camel_folder_search_free_result (CamelFolderSearch *search, GPtrArray *);
+GPtrArray *	camel_folder_search_search	(CamelFolderSearch *search,
+						 const gchar *expr,
+						 GPtrArray *uids,
+						 GCancellable *cancellable,
+						 GError **error);
+guint32		camel_folder_search_count	(CamelFolderSearch *search,
+						 const gchar *expr,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_folder_search_free_result	(CamelFolderSearch *search,
+						 GPtrArray *);
 
-time_t camel_folder_search_util_add_months (time_t t, gint months);
+/* XXX This belongs in a general utility file. */
+time_t		camel_folder_search_util_add_months
+						(time_t t,
+						 gint months);
 
 G_END_DECLS
 
