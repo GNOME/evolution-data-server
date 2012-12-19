@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-12-11 17:40+0000\n"
-"PO-Revision-Date: 2012-12-12 14:53+0530\n"
+"POT-Creation-Date: 2012-12-18 19:58+0000\n"
+"PO-Revision-Date: 2012-12-19 13:03+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: Assamese <kde-i18n-doc@kde.org>\n"
 "Language: as_IN\n"
@@ -475,7 +475,6 @@ msgstr "ৱেবলগৰ URL"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:188
-#: ../libedataserverui/e-categories-dialog.c:90
 msgid "Categories"
 msgstr "বিভাগসমূহ"
 
@@ -1867,13 +1866,13 @@ msgstr "অফ-লাইন ব্যৱহাৰৰ বাবে '%s' ফোল
 msgid "Copy folder content locally for _offline operation"
 msgstr "অফ-লাইন কৰ্মৰ বাবে ফোল্ডাৰৰ সমল স্থানীয়ৰূপে কপি কৰক (_o)"
 
-#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:341
-#: ../camel/camel-imapx-folder.c:374 ../camel/camel-imapx-folder.c:410
-#: ../camel/camel-imapx-folder.c:466 ../camel/camel-imapx-folder.c:591
-#: ../camel/camel-imapx-folder.c:625 ../camel/camel-imapx-folder.c:665
-#: ../camel/camel-imapx-folder.c:701 ../camel/camel-imapx-store.c:288
-#: ../camel/camel-imapx-store.c:1422 ../camel/camel-imapx-store.c:1511
-#: ../camel/camel-imapx-store.c:1560
+#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:429
+#: ../camel/camel-imapx-folder.c:465 ../camel/camel-imapx-folder.c:504
+#: ../camel/camel-imapx-folder.c:564 ../camel/camel-imapx-folder.c:699
+#: ../camel/camel-imapx-folder.c:880 ../camel/camel-imapx-folder.c:940
+#: ../camel/camel-imapx-folder.c:979 ../camel/camel-imapx-store.c:320
+#: ../camel/camel-imapx-store.c:1454 ../camel/camel-imapx-store.c:1543
+#: ../camel/camel-imapx-store.c:1592
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
@@ -1957,19 +1956,16 @@ msgstr "%d ৰ %d বাৰ্তাত ব্যৰ্থ"
 
 #: ../camel/camel-filter-driver.c:1740 ../camel/camel-filter-driver.c:1773
 #, c-format
-#| msgid "Error executing filter: %s: %s"
 msgid "Execution of filter '%s' failed: "
 msgstr "ফিল্টাৰ '%s' ৰ এক্সিকিউষণ ব্যৰ্থ হল:"
 
 #: ../camel/camel-filter-driver.c:1764
 #, c-format
-#| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "ফিল্টাৰ '%s' বিশ্লেষণ কৰোতে ত্ৰুটি: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1782
 #, c-format
-#| msgid "Error executing filter: %s: %s"
 msgid "Error executing filter '%s': %s: %s"
 msgstr "ফিল্টাৰ '%s' এক্সিকিউট কৰোতে ত্ৰুটি: %s: %s"
 
@@ -2225,23 +2221,38 @@ msgstr "MIME ৰ অংশ ডিক্ৰিপ্ট কৰোঁতে ব্
 msgid "Encrypted content"
 msgstr "এনক্ৰিপ্ট কৰা সমল"
 
-#: ../camel/camel-imapx-folder.c:555
+#: ../camel/camel-imapx-folder.c:661
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "ফোল্ডাৰ '%s' ৰ বাবে কোনো কুটা তথ্য উপলব্ধ নাই"
 
-#: ../camel/camel-imapx-folder.c:774
+#: ../camel/camel-imapx-folder.c:760 ../camel/camel-imapx-folder.c:831
+#, c-format
+msgid "No destination folder specified"
+msgstr "কোনো গন্তব্য ফোল্ডাৰ ধাৰ্য্য কৰা হোৱা নাই"
+
+#: ../camel/camel-imapx-folder.c:777
+#| msgid "Unable to retrieve message: "
+msgid "Unable to move junk messages"
+msgstr "আবৰ্জনা বাৰ্তাসমূহ স্থানান্তৰ কৰিবলে অক্ষম"
+
+#: ../camel/camel-imapx-folder.c:848
+#| msgid "Unable to retrieve message: "
+msgid "Unable to move deleted messages"
+msgstr "মচি পেলোৱা বাৰ্তাসমূহ স্থানান্তৰ কৰিবলে অক্ষম"
+
+#: ../camel/camel-imapx-folder.c:1062
 #: ../camel/providers/imap/camel-imap-folder.c:367
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "এই ফোল্ডাৰত বাৰ্তা ফিল্টাৰসমূহ প্ৰয়োগ কৰক (_f)"
 
-#: ../camel/camel-imapx-folder.c:861
+#: ../camel/camel-imapx-folder.c:1171
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s ৰ বাবে ফোল্ডাৰ সাৰাংশ সৃষ্টি কৰিব নোৱাৰি"
 
-#: ../camel/camel-imapx-folder.c:869
+#: ../camel/camel-imapx-folder.c:1179
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s ৰ বাবে ক্যাশ সৃষ্টি কৰিব নোৱাৰি: "
@@ -2420,30 +2431,30 @@ msgstr "এই ধৰণৰ কোনো বাৰ্তা উপস্থি�
 msgid "Cannot create spool file: "
 msgstr "স্পুল ফাইল সৃষ্টি কৰিব নোৱাৰি: "
 
-#: ../camel/camel-imapx-server.c:7756
+#: ../camel/camel-imapx-server.c:7798
 msgid "IMAP server does not support quotas"
 msgstr "IMAP চাৰ্ভাৰ এ কুটা সমৰ্থন নকৰে"
 
-#: ../camel/camel-imapx-store.c:169
+#: ../camel/camel-imapx-store.c:201
 #: ../camel/providers/imap/camel-imap-store.c:827
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP চাৰ্ভাৰ %s"
 
-#: ../camel/camel-imapx-store.c:172
+#: ../camel/camel-imapx-store.c:204
 #: ../camel/providers/imap/camel-imap-store.c:830
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%s ৰ বাবে IMAP সেৱা, %s ৰ উপৰ"
 
-#: ../camel/camel-imapx-store.c:263
+#: ../camel/camel-imapx-store.c:295
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/nntp/camel-nntp-provider.c:95
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid "Password"
 msgstr "পাছৱাৰ্ড"
 
-#: ../camel/camel-imapx-store.c:265
+#: ../camel/camel-imapx-store.c:297
 #: ../camel/providers/imap/camel-imap-provider.c:100
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
@@ -2451,7 +2462,7 @@ msgstr ""
 "কৰা "
 "হ'ব।"
 
-#: ../camel/camel-imapx-store.c:364
+#: ../camel/camel-imapx-store.c:396
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
@@ -2459,7 +2470,7 @@ msgid "No such folder %s"
 msgstr "%s ৰ অনুৰূপ কোনো ফোল্ডাৰ উপস্থিত নাই"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:389 ../camel/camel-imapx-store.c:879
+#: ../camel/camel-imapx-store.c:421 ../camel/camel-imapx-store.c:911
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2471,18 +2482,18 @@ msgstr "%s ৰ অনুৰূপ কোনো ফোল্ডাৰ উপস�
 msgid "Inbox"
 msgstr "ইনবক্স"
 
-#: ../camel/camel-imapx-store.c:1123
+#: ../camel/camel-imapx-store.c:1155
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "%s ৰ বাবে ফোল্ডাৰ তালিকা উদ্ধাৰ কৰা"
 
-#: ../camel/camel-imapx-store.c:1227
+#: ../camel/camel-imapx-store.c:1259
 #: ../camel/providers/nntp/camel-nntp-store.c:1786
 #, c-format
 msgid "No such folder: %s"
 msgstr "এই ধৰণৰ ফোল্ডাৰ উপস্থিত নাই: %s"
 
-#: ../camel/camel-imapx-store.c:1444
+#: ../camel/camel-imapx-store.c:1476
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
@@ -2491,13 +2502,13 @@ msgid ""
 msgstr ""
 "\"%s\" ফোল্ডাৰৰ নামৰ মাজত অবৈধ আখৰ \"%c\" উপস্থিত থকাৰ ফলস্বৰূপ ই বৈধ নহয়"
 
-#: ../camel/camel-imapx-store.c:1455
+#: ../camel/camel-imapx-store.c:1487
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "উপধায়ক ফোল্ডাৰ ‍অজ্ঞাত: %s"
 
-#: ../camel/camel-imapx-store.c:1465
+#: ../camel/camel-imapx-store.c:1497
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -2956,7 +2967,7 @@ msgstr "%s প্ৰমাণীকৰণ ব্যৰ্থ হল"
 msgid "Forwarding messages is not supported"
 msgstr "বাৰ্তাসমূহ আগবঢ়োৱা সমৰ্থিত নহয়"
 
-#: ../camel/camel-session.c:1362
+#: ../camel/camel-session.c:1403
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "অনুগ্ৰহ কৰি %s ৰ বাবে %s হস্টৰ উপৰ %s পাছৱাৰ্ড লিখক।"
@@ -3310,92 +3321,6 @@ msgstr "হস্টনাম অতি দীঘল (সৰ্বাধিক �
 #, c-format
 msgid "Invalid reply from proxy server"
 msgstr "প্ৰক্সি চাৰ্ভাৰৰ পৰা অবৈধ উত্তৰ"
-
-#: ../camel/camel-tcp-stream-ssl.c:502
-#, c-format
-msgid ""
-"   Issuer:       %s\n"
-"   Subject:      %s\n"
-"   Fingerprint:  %s\n"
-"   Signature:    %s"
-msgstr ""
-"   প্ৰেৰক:    %s\n"
-"   বিষয়:      %s\n"
-"   আঙুলিৰ ছাপ:  %s\n"
-"   স্বাক্ষৰ:       %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:509
-msgid "GOOD"
-msgstr "GOOD"
-
-#: ../camel/camel-tcp-stream-ssl.c:509
-msgid "BAD"
-msgstr "BAD"
-
-#: ../camel/camel-tcp-stream-ssl.c:514
-#, c-format
-msgid ""
-"SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-"\n"
-"Detailed information about the certificate:\n"
-"%s"
-msgstr ""
-"'%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰষা কৰিব নোৱাৰি। আপুনি ইয়াক গ্ৰহণ কৰিব বিচাৰে "
-"নে?\n"
-"\n"
-"প্ৰমাণপত্ৰৰ বিষয়ে বিৱৰিত তথ্য:\n"
-"%s"
-
-#: ../camel/camel-tcp-stream-ssl.c:520
-#: ../modules/trust-prompt/module-trust-prompt.c:423
-msgid "_Reject"
-msgstr "নাকচ কৰক (_R)"
-
-#: ../camel/camel-tcp-stream-ssl.c:521
-#: ../modules/trust-prompt/module-trust-prompt.c:424
-msgid "Accept _Temporarily"
-msgstr "অস্থায়ীভাৱে গ্ৰহণ কৰক (_T)"
-
-#: ../camel/camel-tcp-stream-ssl.c:522
-#: ../modules/trust-prompt/module-trust-prompt.c:425
-msgid "_Accept Permanently"
-msgstr "স্থায়ীভাৱে গ্ৰহণ কৰক (_A)"
-
-#: ../camel/camel-tcp-stream-ssl.c:583
-#, c-format
-msgid ""
-"Certificate problem: %s\n"
-"Issuer: %s"
-msgstr ""
-"প্ৰমাণপত্ৰ ত্ৰুটি: %s\n"
-"প্ৰকাশক: %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:635
-#, c-format
-msgid ""
-"Bad certificate domain: %s\n"
-"Issuer: %s"
-msgstr ""
-"প্ৰমাণপত্ৰ ডোমেইন সঠিক নহয়: %s\n"
-"প্ৰকাশক: %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:653
-#, c-format
-msgid ""
-"Certificate expired: %s\n"
-"Issuer: %s"
-msgstr ""
-"প্ৰমাণপত্ৰৰ মেয়াদ উত্তীৰ্ণ হৈছে: %s\n"
-"প্ৰকাশক: %s"
-
-#: ../camel/camel-tcp-stream-ssl.c:670
-#, c-format
-msgid ""
-"Certificate revocation list expired: %s\n"
-"Issuer: %s"
-msgstr ""
-"প্ৰমাণপত্ৰ প্ৰত্যাখ্যান তালিকাৰ মেয়াদ উত্তীৰ্ণ হৈছে: %s\n"
-"প্ৰকাশক: %s"
 
 #: ../camel/camel-url.c:331
 #, c-format
@@ -4968,7 +4893,6 @@ msgid "CalDAV"
 msgstr "CalDAV"
 
 #: ../data/sources/contacts-stub.source.in.h:1
-#: ../libedataserverui/e-name-selector-dialog.c:446
 #: ../modules/google-backend/module-google-backend.c:195
 msgid "Contacts"
 msgstr "পৰিচয়সমূহ"
@@ -5538,172 +5462,6 @@ msgstr "স্বচালিত প্ৰক্সি সংৰূপ URL"
 msgid "Where to read automatic proxy configuration from."
 msgstr "স্বচালিত প্ৰক্সি সংৰূপ কৰ পৰা পঢ়া হব।"
 
-#: ../libedataserverui/e-categories-editor.c:225
-msgid "Currently _used categories:"
-msgstr "বৰ্তমানে ব্যৱহৃত বিভাগসমূহ (_u):"
-
-#: ../libedataserverui/e-categories-editor.c:236
-msgid "_Available Categories:"
-msgstr "উপলব্ধ বিভাগসমূহ: (_A)"
-
-#: ../libedataserverui/e-categories-selector.c:325
-msgid "Icon"
-msgstr "আইকন"
-
-#: ../libedataserverui/e-categories-selector.c:330
-msgid "Category"
-msgstr "বিভাগ"
-
-#: ../libedataserverui/e-category-completion.c:300
-#, c-format
-msgid "Create category \"%s\""
-msgstr "\"%s\" বিভাগ সৃষ্টি কৰা হ'ব"
-
-#: ../libedataserverui/e-category-editor.c:137
-msgid "Category Icon"
-msgstr "বিভাগৰ আইকন"
-
-#: ../libedataserverui/e-category-editor.c:141
-msgid "_No Image"
-msgstr "কোনো ছবি নাই (_N)"
-
-#: ../libedataserverui/e-category-editor.c:178
-msgid "Category _Name"
-msgstr "বিভাগৰ নাম (_N)"
-
-#: ../libedataserverui/e-category-editor.c:190
-msgid "Category _Icon"
-msgstr "বিভাগৰ আইকন (_I)"
-
-#: ../libedataserverui/e-category-editor.c:216
-msgid "Category Properties"
-msgstr "বিভাগৰ বৈশিষ্ট্য"
-
-#: ../libedataserverui/e-category-editor.c:277
-#, c-format
-msgid ""
-"There is already a category '%s' in the configuration. Please use another "
-"name"
-msgstr ""
-"বৰ্তমান সংৰূপত '%s' নামৰ এটা বিভাগ উপস্থিত আছে। অনুগ্ৰহ কৰি এটা পৃথক নাম "
-"ব্যৱহাৰ কৰক"
-
-#: ../libedataserverui/e-name-selector-dialog.c:279
-msgid "Show Contacts"
-msgstr "পৰিচয়সমূহ দেখুৱাওক"
-
-#: ../libedataserverui/e-name-selector-dialog.c:309
-msgid "Address B_ook:"
-msgstr "ঠিকনা বহি (_o):"
-
-#: ../libedataserverui/e-name-selector-dialog.c:316
-msgid "Cat_egory:"
-msgstr "বিভাগ (_e):"
-
-#: ../libedataserverui/e-name-selector-dialog.c:339
-msgid "_Search:"
-msgstr "সন্ধান (_S):"
-
-#: ../libedataserverui/e-name-selector-dialog.c:363
-#: ../libedataserverui/e-name-selector-dialog.c:1232
-msgid "Any Category"
-msgstr "যিকোনো বিভাগ"
-
-#: ../libedataserverui/e-name-selector-dialog.c:365
-msgid "Co_ntacts"
-msgstr "পৰিচয়সমূহ (_n)"
-
-#: ../libedataserverui/e-name-selector-dialog.c:440
-msgid "Search"
-msgstr "সন্ধান"
-
-#: ../libedataserverui/e-name-selector-dialog.c:443
-msgid "Address Book"
-msgstr "ঠিকনা বহি"
-
-#: ../libedataserverui/e-name-selector-dialog.c:568
-msgid "Select Contacts from Address Book"
-msgstr "ঠিকনা বহিৰ পৰা পৰিচয় নিৰ্বাচন কৰক"
-
-#: ../libedataserverui/e-name-selector-dialog.c:955
-msgid "_Add"
-msgstr "যোগ কৰক (_A)"
-
-#: ../libedataserverui/e-name-selector-dialog.c:959
-msgid "_Remove"
-msgstr "আতৰাওক (_R)"
-
-#: ../libedataserverui/e-name-selector-dialog.c:1147
-#, c-format
-msgid "Error loading address book: %s"
-msgstr "ঠিকনা বহি ল'ড কৰোতে ত্ৰুটি: %s"
-
-#. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:3008
-#, c-format
-msgid "E_xpand %s Inline"
-msgstr "ইন-লাইন অৱস্থাত %s প্ৰসাৰণ কৰা হ'ব (_x)"
-
-#. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:3024
-#, c-format
-msgid "Cop_y %s"
-msgstr "%s কপি কৰক (_y)"
-
-#. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:3035
-#, c-format
-msgid "C_ut %s"
-msgstr "%s কাট কৰক (_u)"
-
-#. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:3053
-#, c-format
-msgid "_Edit %s"
-msgstr "%s সম্পাদনা কৰক (_E)"
-
-#: ../libedataserverui/e-name-selector-list.c:586
-#, c-format
-msgid "_Delete %s"
-msgstr "%s মচি পেলাওক (_D)"
-
-#: ../libedataserverui/e-passwords.c:127
-msgid "Keyring key is unusable: no user or host name"
-msgstr "কি-ৰিংৰ কি ব্যবহাৰযোগ্য নহয়: ব্যবহাৰকাৰী অথবা হস্ট নাম অনুপস্থিত"
-
-#: ../libedataserverui/e-passwords.c:464
-#: ../libedataserverui/e-passwords-win32.c:618
-msgid "You have the Caps Lock key on."
-msgstr "আপোনাৰ Caps Lock কি অন আছে।"
-
-#: ../libedataserverui/e-passwords.c:591
-#: ../libedataserverui/e-passwords-win32.c:748
-msgid "_Remember this passphrase"
-msgstr "পাচফ্ৰেইছ মনত ৰাখক (_R)"
-
-#: ../libedataserverui/e-passwords.c:592
-#: ../libedataserverui/e-passwords-win32.c:749
-msgid "_Remember this passphrase for the remainder of this session"
-msgstr "বৰ্তমানে অধিবেশনৰ অবশিষ্ট সময়ৰ বাবে পাচফ্ৰেইছ মনত ৰাখক (_R)"
-
-#: ../libedataserverui/e-passwords.c:597
-#: ../libedataserverui/e-passwords-win32.c:754
-msgid "_Remember this password"
-msgstr "পাছৱাৰ্ড মনত ৰাখক (_R)"
-
-#: ../libedataserverui/e-passwords.c:598
-#: ../libedataserverui/e-passwords-win32.c:755
-msgid "_Remember this password for the remainder of this session"
-msgstr "বৰ্তমানে অধিবেশনৰ অবশিষ্ট সময়ৰ বাবে পাছৱাৰ্ড মনত ৰাখক (_R)"
-
-#: ../libedataserverui/e-source-selector-dialog.c:228
-msgid "_Destination"
-msgstr "গন্তব্যস্থল (_D)"
-
-#: ../libedataserverui/e-source-selector-dialog.c:340
-msgid "Select destination"
-msgstr "গন্তব্যস্থল নিৰ্বাচন কৰক"
-
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:223
 #, c-format
@@ -5746,7 +5504,6 @@ msgid "Calendar"
 msgstr "কেলেন্ডাৰ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:287
-#| msgid "Cannot add encryption certificate"
 msgid "Not part of certificate"
 msgstr "প্ৰমাণপত্ৰৰ অংশ নহয়"
 
@@ -5756,28 +5513,23 @@ msgstr "এই প্ৰমাণপত্ৰক নিম্নলিখিত 
 
 #: ../modules/trust-prompt/certificate-viewer.c:596
 #: ../modules/trust-prompt/e-asn1-object.c:387
-#| msgid "_View Certificate"
 msgid "SSL Client Certificate"
 msgstr "SSL ক্লাএন্ট প্ৰমাণপত্ৰ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:601
 #: ../modules/trust-prompt/e-asn1-object.c:391
-#| msgid "_View Certificate"
 msgid "SSL Server Certificate"
 msgstr "SSL চাৰ্ভাৰ প্ৰমাণপত্ৰ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:606
-#| msgid "_View Certificate"
 msgid "Email Signer Certificate"
 msgstr "ইমেইল স্বাক্ষৰকাৰী প্ৰমাণপত্ৰ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:611
-#| msgid "_View Certificate"
 msgid "Email Recipient Certificate"
 msgstr "ইমেইল গ্ৰাহক প্ৰমাণপত্ৰ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:625
-#| msgid "Issuer:"
 msgid "Issued To"
 msgstr "উল্লেখিত ব্যক্তিলৈ প্ৰেৰণ কৰা হৈছে"
 
@@ -5788,13 +5540,11 @@ msgstr "সাধাৰণ নাম (CN)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:627
 #: ../modules/trust-prompt/certificate-viewer.c:633
-#| msgid "Organization"
 msgid "Organization (O)"
 msgstr "সংঘঠন (O)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:628
 #: ../modules/trust-prompt/certificate-viewer.c:634
-#| msgid "Organizational Unit"
 msgid "Organizational Unit (OU)"
 msgstr "সংঘঠনৰ একক (OU)"
 
@@ -5804,7 +5554,6 @@ msgid "Serial Number"
 msgstr "ক্ৰমিক সংখ্যা"
 
 #: ../modules/trust-prompt/certificate-viewer.c:631
-#| msgid "Issuer:"
 msgid "Issued By"
 msgstr "উল্লেখিত ব্যক্তি দ্বাৰা প্ৰেৰণ কৰা হৈছে"
 
@@ -5813,7 +5562,6 @@ msgid "Validity"
 msgstr "বৈধতা"
 
 #: ../modules/trust-prompt/certificate-viewer.c:637
-#| msgid "Issuer:"
 msgid "Issued On"
 msgstr "প্ৰেৰণ কৰাৰ তাৰিখ"
 
@@ -5822,17 +5570,14 @@ msgid "Expires On"
 msgstr "অৱসান ঘটাৰ তাৰিখ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:640
-#| msgid "Fingerprint:"
 msgid "Fingerprints"
 msgstr "ফিংগাৰপ্ৰিন্টসমূহ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:641
-#| msgid "Fingerprint:"
 msgid "SHA1 Fingerprint"
 msgstr "SHA1 ফিংগাৰপ্ৰিন্ট"
 
 #: ../modules/trust-prompt/certificate-viewer.c:642
-#| msgid "Fingerprint:"
 msgid "MD5 Fingerprint"
 msgstr "MD5 ফিংগাৰপ্ৰিন্ট"
 
@@ -5841,12 +5586,10 @@ msgid "General"
 msgstr "সাধাৰণ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:661
-#| msgid "Certificate import failed"
 msgid "Certificate Hierarchy"
 msgstr "প্ৰমাণপত্ৰৰ অধিক্ৰম"
 
 #: ../modules/trust-prompt/certificate-viewer.c:664
-#| msgid "Certificate import failed"
 msgid "Certificate Fields"
 msgstr "প্ৰমাণপত্ৰৰ ক্ষেত্ৰসমূহ"
 
@@ -5903,17 +5646,14 @@ msgid "PKCS #1 RSA Encryption"
 msgstr "PKCS #1 RSA ইনক্ৰিপষণ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:237
-#| msgid "Certificate import failed"
 msgid "Certificate Key Usage"
 msgstr "প্ৰমাণপত্ৰ কি'ৰ ব্যৱহাৰ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:240
-#| msgid "_View Certificate"
 msgid "Netscape Certificate Type"
 msgstr "নেটস্কেইপ প্ৰমাণপত্ৰৰ ধৰণ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:243
-#| msgid "Certificate import failed"
 msgid "Certificate Authority Key Identifier"
 msgstr "প্ৰমাণপত্ৰ কতৃপক্ষ কি' চিনাক্তক"
 
@@ -5944,12 +5684,10 @@ msgstr "বিষয়ৰ ৰাজহুৱা কি'"
 
 #: ../modules/trust-prompt/e-asn1-object.c:378
 #: ../modules/trust-prompt/e-asn1-object.c:428
-#| msgid "Unable to process spool folder"
 msgid "Error: Unable to process extension"
 msgstr "ত্ৰুটি: সম্প্ৰসাৰন প্ৰক্ৰিয়া কৰিবলে অক্ষম"
 
 #: ../modules/trust-prompt/e-asn1-object.c:395
-#| msgid "Email 1"
 msgid "Email"
 msgstr "ই-মেইল"
 
@@ -5959,17 +5697,14 @@ msgid "Object Signer"
 msgstr "অবজেক্ট স্বাক্ষৰকাৰী"
 
 #: ../modules/trust-prompt/e-asn1-object.c:403
-#| msgid "Certificate trust..."
 msgid "SSL Certificate Authority"
 msgstr "SSL প্ৰমাণপত্ৰ কতৃপক্ষ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:407
-#| msgid "Certificate trust..."
 msgid "Email Certificate Authority"
 msgstr "ইমেইল প্ৰমাণপত্ৰৰ কতৃপক্ষ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:436
-#| msgid "Signing message"
 msgid "Signing"
 msgstr "স্বাক্ষৰ কৰা"
 
@@ -5990,7 +5725,6 @@ msgid "Key Agreement"
 msgstr "কি'ৰ চুক্তি"
 
 #: ../modules/trust-prompt/e-asn1-object.c:456
-#| msgid "Certificate trust..."
 msgid "Certificate Signer"
 msgstr "প্ৰমাণপত্ৰ স্বাক্ষৰকাৰী"
 
@@ -6025,60 +5759,53 @@ msgid "%s = %s"
 msgstr "%s = %s"
 
 #: ../modules/trust-prompt/e-asn1-object.c:658
-#| msgid "X.509 Certificate"
 msgid "Certificate"
 msgstr "প্ৰমাণপত্ৰ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:672
 #: ../modules/trust-prompt/e-asn1-object.c:807
-#| msgid "Signature algorithm unknown"
 msgid "Certificate Signature Algorithm"
 msgstr "প্ৰমাণপত্ৰৰ স্বাক্ষৰ এলগৰিথম"
 
 #: ../modules/trust-prompt/e-asn1-object.c:681
-#| msgid "Issuer:"
 msgid "Issuer"
 msgstr "প্ৰেৰক"
 
 #: ../modules/trust-prompt/e-asn1-object.c:712
-#| msgid "Subject:"
 msgid "Subject"
 msgstr "বিষয়"
 
 #: ../modules/trust-prompt/e-asn1-object.c:735
-#| msgid "Unique ID"
 msgid "Issuer Unique ID"
 msgstr "প্ৰেৰকৰ অবিকল্প ID"
 
 #: ../modules/trust-prompt/e-asn1-object.c:754
-#| msgid "Unique ID"
 msgid "Subject Unique ID"
 msgstr "বিষয়ৰ অবিকল্প ID"
 
 #: ../modules/trust-prompt/e-asn1-object.c:813
-#| msgid "Certificate import failed"
 msgid "Certificate Signature Value"
 msgstr "প্ৰমাণপত্ৰৰ স্বাক্ষৰ মান"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:201
+#: ../modules/trust-prompt/module-trust-prompt.c:200
 msgid "The signing certificate authority is not known."
 msgstr "স্বাক্ষৰ কৰা প্ৰমাণপত্ৰ কতৃপক্ষ অজ্ঞাত।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:203
+#: ../modules/trust-prompt/module-trust-prompt.c:202
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr "প্ৰমাণপত্ৰ উদ্ধাৰ কৰা ছাইটৰ প্ৰত্যাশিত পৰিচয়ৰ সৈতে মিল নাখায়।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:205
+#: ../modules/trust-prompt/module-trust-prompt.c:204
 msgid "The certificate's activation time is still in the future."
 msgstr "প্ৰমাণপত্ৰ সক্ৰিয়কৰণ সময় এতিয়াও ভৱিষ্যতত আছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:207
+#: ../modules/trust-prompt/module-trust-prompt.c:206
 msgid "The certificate has expired."
 msgstr "প্ৰমাণপত্ৰৰ অৱসান ঘটিছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:209
+#: ../modules/trust-prompt/module-trust-prompt.c:208
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
@@ -6086,19 +5813,31 @@ msgstr ""
 "সংযোগৰ প্ৰমাণপত্ৰ প্ৰত্যাহাৰ তালিকাৰ ওপৰত ভিত্তি কৰি প্ৰমাণপত্ৰ প্ৰত্যাহাৰ "
 "কৰা হৈছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:211
+#: ../modules/trust-prompt/module-trust-prompt.c:210
 msgid "The certificate's algorithm is considered insecure."
 msgstr "প্ৰমাণপত্ৰৰ এলগৰিথমক অসুৰক্ষিত ধৰা হৈছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:421
+#: ../modules/trust-prompt/trust-prompt-gtk.c:158
 msgid "Certificate trust..."
 msgstr "প্ৰমাণপত্ৰ ভৰসা..."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:422
+#: ../modules/trust-prompt/trust-prompt-gtk.c:159
 msgid "_View Certificate"
 msgstr "প্ৰমাণপত্ৰ দৰ্শন কৰক (_V)"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:456
+#: ../modules/trust-prompt/trust-prompt-gtk.c:160
+msgid "_Reject"
+msgstr "নাকচ কৰক (_R)"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:161
+msgid "Accept _Temporarily"
+msgstr "অস্থায়ীভাৱে গ্ৰহণ কৰক (_T)"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:162
+msgid "_Accept Permanently"
+msgstr "স্থায়ীভাৱে গ্ৰহণ কৰক (_A)"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:193
 #, c-format
 msgid ""
 "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
@@ -6110,19 +5849,19 @@ msgstr ""
 "\n"
 "প্ৰমাণপত্ৰৰ বিষয়ে বিৱৰিত তথ্য:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:472
+#: ../modules/trust-prompt/trust-prompt-gtk.c:207
 msgid "Issuer:"
 msgstr "প্ৰেৰক:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:473
+#: ../modules/trust-prompt/trust-prompt-gtk.c:208
 msgid "Subject:"
 msgstr "বিষয়:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:474
+#: ../modules/trust-prompt/trust-prompt-gtk.c:209
 msgid "Fingerprint:"
 msgstr "ফিংগাৰপ্ৰিন্ট:"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:475
+#: ../modules/trust-prompt/trust-prompt-gtk.c:210
 msgid "Reason:"
 msgstr "কাৰণ:"
 
@@ -6140,26 +5879,190 @@ msgstr "অন্তিম ক্লাএন্ট বন্ধ হোৱাৰ
 msgid "Wait running until at least one client is connected"
 msgstr "অন্তত এটা ক্লাএন্ট সংযুক্ত হোৱা লৈকে অপেক্ষা কৰক"
 
-#: ../services/evolution-user-prompter/evolution-user-prompter.c:104
+#: ../services/evolution-user-prompter/prompt-user-gtk.c:111
 msgid "_Dismiss"
 msgstr "বাতিল কৰক (_D)"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:635
-msgid "Evolution Source Viewer"
-msgstr "Evolution উৎস দৰ্শক"
+#~ msgid ""
+#~ "   Issuer:       %s\n"
+#~ "   Subject:      %s\n"
+#~ "   Fingerprint:  %s\n"
+#~ "   Signature:    %s"
+#~ msgstr ""
+#~ "   প্ৰেৰক:    %s\n"
+#~ "   বিষয়:      %s\n"
+#~ "   আঙুলিৰ ছাপ:  %s\n"
+#~ "   স্বাক্ষৰ:       %s"
 
-#. Translators: The name that is displayed in the user interface
-#: ../tests/libedataserverui/evolution-source-viewer.c:665
-msgid "Display Name"
-msgstr "নাম প্ৰদৰ্শন কৰক"
+#~ msgid "GOOD"
+#~ msgstr "GOOD"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:674
-msgid "Flags"
-msgstr "ফ্লেগসমূহ"
+#~ msgid "BAD"
+#~ msgstr "BAD"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:726
-msgid "Identity"
-msgstr "পৰিচয়"
+#~ msgid ""
+#~ "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#~ "\n"
+#~ "Detailed information about the certificate:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "'%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰষা কৰিব নোৱাৰি। আপুনি ইয়াক গ্ৰহণ কৰিব বিচাৰে "
+#~ "নে?\n"
+#~ "\n"
+#~ "প্ৰমাণপত্ৰৰ বিষয়ে বিৱৰিত তথ্য:\n"
+#~ "%s"
+
+#~ msgid ""
+#~ "Certificate problem: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "প্ৰমাণপত্ৰ ত্ৰুটি: %s\n"
+#~ "প্ৰকাশক: %s"
+
+#~ msgid ""
+#~ "Bad certificate domain: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "প্ৰমাণপত্ৰ ডোমেইন সঠিক নহয়: %s\n"
+#~ "প্ৰকাশক: %s"
+
+#~ msgid ""
+#~ "Certificate expired: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "প্ৰমাণপত্ৰৰ মেয়াদ উত্তীৰ্ণ হৈছে: %s\n"
+#~ "প্ৰকাশক: %s"
+
+#~ msgid ""
+#~ "Certificate revocation list expired: %s\n"
+#~ "Issuer: %s"
+#~ msgstr ""
+#~ "প্ৰমাণপত্ৰ প্ৰত্যাখ্যান তালিকাৰ মেয়াদ উত্তীৰ্ণ হৈছে: %s\n"
+#~ "প্ৰকাশক: %s"
+
+#~ msgid "Currently _used categories:"
+#~ msgstr "বৰ্তমানে ব্যৱহৃত বিভাগসমূহ (_u):"
+
+#~ msgid "_Available Categories:"
+#~ msgstr "উপলব্ধ বিভাগসমূহ: (_A)"
+
+#~ msgid "Icon"
+#~ msgstr "আইকন"
+
+#~ msgid "Category"
+#~ msgstr "বিভাগ"
+
+#~ msgid "Create category \"%s\""
+#~ msgstr "\"%s\" বিভাগ সৃষ্টি কৰা হ'ব"
+
+#~ msgid "Category Icon"
+#~ msgstr "বিভাগৰ আইকন"
+
+#~ msgid "_No Image"
+#~ msgstr "কোনো ছবি নাই (_N)"
+
+#~ msgid "Category _Name"
+#~ msgstr "বিভাগৰ নাম (_N)"
+
+#~ msgid "Category _Icon"
+#~ msgstr "বিভাগৰ আইকন (_I)"
+
+#~ msgid "Category Properties"
+#~ msgstr "বিভাগৰ বৈশিষ্ট্য"
+
+#~ msgid ""
+#~ "There is already a category '%s' in the configuration. Please use another "
+#~ "name"
+#~ msgstr ""
+#~ "বৰ্তমান সংৰূপত '%s' নামৰ এটা বিভাগ উপস্থিত আছে। অনুগ্ৰহ কৰি এটা পৃথক নাম ব্যৱহাৰ "
+#~ "কৰক"
+
+#~ msgid "Show Contacts"
+#~ msgstr "পৰিচয়সমূহ দেখুৱাওক"
+
+#~ msgid "Address B_ook:"
+#~ msgstr "ঠিকনা বহি (_o):"
+
+#~ msgid "Cat_egory:"
+#~ msgstr "বিভাগ (_e):"
+
+#~ msgid "_Search:"
+#~ msgstr "সন্ধান (_S):"
+
+#~ msgid "Any Category"
+#~ msgstr "যিকোনো বিভাগ"
+
+#~ msgid "Co_ntacts"
+#~ msgstr "পৰিচয়সমূহ (_n)"
+
+#~ msgid "Search"
+#~ msgstr "সন্ধান"
+
+#~ msgid "Address Book"
+#~ msgstr "ঠিকনা বহি"
+
+#~ msgid "Select Contacts from Address Book"
+#~ msgstr "ঠিকনা বহিৰ পৰা পৰিচয় নিৰ্বাচন কৰক"
+
+#~ msgid "_Add"
+#~ msgstr "যোগ কৰক (_A)"
+
+#~ msgid "_Remove"
+#~ msgstr "আতৰাওক (_R)"
+
+#~ msgid "Error loading address book: %s"
+#~ msgstr "ঠিকনা বহি ল'ড কৰোতে ত্ৰুটি: %s"
+
+#~ msgid "E_xpand %s Inline"
+#~ msgstr "ইন-লাইন অৱস্থাত %s প্ৰসাৰণ কৰা হ'ব (_x)"
+
+#~ msgid "Cop_y %s"
+#~ msgstr "%s কপি কৰক (_y)"
+
+#~ msgid "C_ut %s"
+#~ msgstr "%s কাট কৰক (_u)"
+
+#~ msgid "_Edit %s"
+#~ msgstr "%s সম্পাদনা কৰক (_E)"
+
+#~ msgid "_Delete %s"
+#~ msgstr "%s মচি পেলাওক (_D)"
+
+#~ msgid "Keyring key is unusable: no user or host name"
+#~ msgstr "কি-ৰিংৰ কি ব্যবহাৰযোগ্য নহয়: ব্যবহাৰকাৰী অথবা হস্ট নাম অনুপস্থিত"
+
+#~ msgid "You have the Caps Lock key on."
+#~ msgstr "আপোনাৰ Caps Lock কি অন আছে।"
+
+#~ msgid "_Remember this passphrase"
+#~ msgstr "পাচফ্ৰেইছ মনত ৰাখক (_R)"
+
+#~ msgid "_Remember this passphrase for the remainder of this session"
+#~ msgstr "বৰ্তমানে অধিবেশনৰ অবশিষ্ট সময়ৰ বাবে পাচফ্ৰেইছ মনত ৰাখক (_R)"
+
+#~ msgid "_Remember this password"
+#~ msgstr "পাছৱাৰ্ড মনত ৰাখক (_R)"
+
+#~ msgid "_Remember this password for the remainder of this session"
+#~ msgstr "বৰ্তমানে অধিবেশনৰ অবশিষ্ট সময়ৰ বাবে পাছৱাৰ্ড মনত ৰাখক (_R)"
+
+#~ msgid "_Destination"
+#~ msgstr "গন্তব্যস্থল (_D)"
+
+#~ msgid "Select destination"
+#~ msgstr "গন্তব্যস্থল নিৰ্বাচন কৰক"
+
+#~ msgid "Evolution Source Viewer"
+#~ msgstr "Evolution উৎস দৰ্শক"
+
+#~ msgid "Display Name"
+#~ msgstr "নাম প্ৰদৰ্শন কৰক"
+
+#~ msgid "Flags"
+#~ msgstr "ফ্লেগসমূহ"
+
+#~ msgid "Identity"
+#~ msgstr "পৰিচয়"
 
 #~ msgid "Could not connect to %s: "
 #~ msgstr "%s লে সংযোগ কৰিব নোৱাৰি: "
