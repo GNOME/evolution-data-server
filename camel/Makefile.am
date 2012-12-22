@@ -175,11 +175,12 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-vee-summary.c			\
 	camel-vtrash-folder.c			\
 	camel-imapx-command.c			\
-	camel-imapx-job.c			\
-	camel-imapx-settings.c			\
-	camel-imapx-server.c			\
 	camel-imapx-conn-manager.c		\
 	camel-imapx-folder.c			\
+	camel-imapx-job.c			\
+	camel-imapx-search.c			\
+	camel-imapx-server.c			\
+	camel-imapx-settings.c			\
 	camel-imapx-store-summary.c		\
 	camel-imapx-store.c			\
 	camel-imapx-stream.c			\
@@ -312,8 +313,9 @@ libcamelinclude_HEADERS =			\
 	camel-imapx-conn-manager.h		\
 	camel-imapx-folder.h			\
 	camel-imapx-job.h			\
-	camel-imapx-settings.h			\
+	camel-imapx-search.h			\
 	camel-imapx-server.h			\
+	camel-imapx-settings.h			\
 	camel-imapx-store-summary.h		\
 	camel-imapx-store.h			\
 	camel-imapx-stream.h			\

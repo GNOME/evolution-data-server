@@ -146,6 +146,7 @@
 #include <camel/camel-imapx-job.h>
 #include <camel/camel-imapx-conn-manager.h>
 #include <camel/camel-imapx-folder.h>
+#include <camel/camel-imapx-search.h>
 #include <camel/camel-imapx-server.h>
 #include <camel/camel-imapx-store-summary.h>
 #include <camel/camel-imapx-store.h>

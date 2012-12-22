@@ -27,11 +27,12 @@
 #include <errno.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel-imapx-utils.h"
-#include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
-#include "camel-imapx-summary.h"
+#include "camel-imapx-search.h"
 #include "camel-imapx-server.h"
+#include "camel-imapx-store.h"
+#include "camel-imapx-summary.h"
+#include "camel-imapx-utils.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -300,18 +301,48 @@ imapx_search_by_uids (CamelFolder *folder,
                       GCancellable *cancellable,
                       GError **error)
 {
-	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
+	CamelIMAPXFolder *ifolder;
+	CamelIMAPXSearch *isearch;
+	CamelIMAPXServer *server = NULL;
+	CamelStore *parent_store;
 	GPtrArray *matches;
+	const gchar *folder_name;
+	gboolean online;
 
 	if (uids->len == 0)
 		return g_ptr_array_new ();
 
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+	folder_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	online = camel_offline_store_get_online (
+		CAMEL_OFFLINE_STORE (parent_store));
+
+	if (online) {
+		server = camel_imapx_store_get_server (
+			CAMEL_IMAPX_STORE (parent_store),
+			folder_name, cancellable, error);
+		if (server == NULL)
+			return NULL;
+	}
+
 	g_mutex_lock (&ifolder->search_lock);
 
+	isearch = CAMEL_IMAPX_SEARCH (ifolder->search);
+	camel_imapx_search_set_server (isearch, server);
+
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_search (ifolder->search, expression, uids, cancellable, error);
+
+	matches = camel_folder_search_search (
+		ifolder->search, expression, uids, cancellable, error);
+
+	camel_imapx_search_set_server (isearch, NULL);
 
 	g_mutex_unlock (&ifolder->search_lock);
+
+	if (server != NULL)
+		g_object_unref (server);
 
 	return matches;
 }
@@ -322,15 +353,45 @@ imapx_count_by_expression (CamelFolder *folder,
                            GCancellable *cancellable,
                            GError **error)
 {
-	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
+	CamelIMAPXFolder *ifolder;
+	CamelIMAPXSearch *isearch;
+	CamelIMAPXServer *server = NULL;
+	CamelStore *parent_store;
+	const gchar *folder_name;
+	gboolean online;
 	guint32 matches;
+
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+	folder_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	online = camel_offline_store_get_online (
+		CAMEL_OFFLINE_STORE (parent_store));
+
+	if (online) {
+		server = camel_imapx_store_get_server (
+			CAMEL_IMAPX_STORE (parent_store),
+			folder_name, cancellable, error);
+		if (server == NULL)
+			return 0;
+	}
 
 	g_mutex_lock (&ifolder->search_lock);
 
+	isearch = CAMEL_IMAPX_SEARCH (ifolder->search);
+	camel_imapx_search_set_server (isearch, server);
+
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_count (ifolder->search, expression, cancellable, error);
+
+	matches = camel_folder_search_count (
+		ifolder->search, expression, cancellable, error);
+
+	camel_imapx_search_set_server (isearch, NULL);
 
 	g_mutex_unlock (&ifolder->search_lock);
+
+	if (server != NULL)
+		g_object_unref (server);
 
 	return matches;
 }
@@ -341,15 +402,45 @@ imapx_search_by_expression (CamelFolder *folder,
                             GCancellable *cancellable,
                             GError **error)
 {
-	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
+	CamelIMAPXFolder *ifolder;
+	CamelIMAPXSearch *isearch;
+	CamelIMAPXServer *server = NULL;
+	CamelStore *parent_store;
 	GPtrArray *matches;
+	const gchar *folder_name;
+	gboolean online;
+
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+	folder_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
+
+	online = camel_offline_store_get_online (
+		CAMEL_OFFLINE_STORE (parent_store));
+
+	if (online) {
+		server = camel_imapx_store_get_server (
+			CAMEL_IMAPX_STORE (parent_store),
+			folder_name, cancellable, error);
+		if (server == NULL)
+			return NULL;
+	}
 
 	g_mutex_lock (&ifolder->search_lock);
 
+	isearch = CAMEL_IMAPX_SEARCH (ifolder->search);
+	camel_imapx_search_set_server (isearch, server);
+
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_search (ifolder->search, expression, NULL, cancellable, error);
+
+	matches = camel_folder_search_search (
+		ifolder->search, expression, NULL, cancellable, error);
+
+	camel_imapx_search_set_server (isearch, NULL);
 
 	g_mutex_unlock (&ifolder->search_lock);
+
+	if (server != NULL)
+		g_object_unref (server);
 
 	return matches;
 }
@@ -1144,7 +1235,7 @@ camel_imapx_folder_new (CamelStore *store,
 	g_free (state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
 
-	ifolder->search = camel_folder_search_new ();
+	ifolder->search = camel_imapx_search_new ();
 	g_mutex_init (&ifolder->search_lock);
 	g_mutex_init (&ifolder->stream_lock);
 	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);

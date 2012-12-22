@@ -87,6 +87,7 @@ typedef struct _RenameFolderData RenameFolderData;
 typedef struct _CreateFolderData CreateFolderData;
 typedef struct _DeleteFolderData DeleteFolderData;
 typedef struct _QuotaData QuotaData;
+typedef struct _SearchData SearchData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -169,6 +170,11 @@ struct _CreateFolderData {
 
 struct _DeleteFolderData {
 	gchar *folder_name;
+};
+
+struct _SearchData {
+	gchar *criteria;
+	GArray *results;
 };
 
 struct _QuotaData {
@@ -261,6 +267,10 @@ static gboolean	imapx_untagged_recent		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
+static gboolean	imapx_untagged_search		(CamelIMAPXServer *is,
+						 CamelIMAPXStream *stream,
+						 GCancellable *cancellable,
+						 GError **error);
 static gboolean	imapx_untagged_status		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
 						 GCancellable *cancellable,
@@ -287,6 +297,7 @@ enum {
 	IMAPX_UNTAGGED_ID_QUOTA,
 	IMAPX_UNTAGGED_ID_QUOTAROOT,
 	IMAPX_UNTAGGED_ID_RECENT,
+	IMAPX_UNTAGGED_ID_SEARCH,
 	IMAPX_UNTAGGED_ID_STATUS,
 	IMAPX_UNTAGGED_ID_VANISHED,
 	IMAPX_UNTAGGED_LAST_ID
@@ -309,6 +320,7 @@ static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
 	{CAMEL_IMAPX_UNTAGGED_QUOTA, imapx_untagged_quota, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_QUOTAROOT, imapx_untagged_quotaroot, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_RECENT, imapx_untagged_recent, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_SEARCH, imapx_untagged_search, NULL, FALSE},
 	{CAMEL_IMAPX_UNTAGGED_STATUS, imapx_untagged_status, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_VANISHED, imapx_untagged_vanished, NULL, TRUE},
 };
@@ -321,6 +333,12 @@ struct _CamelIMAPXServerPrivate {
 
 	CamelIMAPXStream *stream;
 	GMutex stream_lock;
+
+	/* Untagged SEARCH data gets deposited here.
+	 * The search command should claim the results
+	 * when finished and reset the pointer to NULL. */
+	GArray *search_results;
+	GMutex search_results_lock;
 };
 
 enum {
@@ -394,7 +412,8 @@ enum {
 	IMAPX_JOB_DELETE_FOLDER = 1 << 12,
 	IMAPX_JOB_RENAME_FOLDER = 1 << 13,
 	IMAPX_JOB_FETCH_MESSAGES = 1 << 14,
-	IMAPX_JOB_UPDATE_QUOTA_INFO = 1 << 15
+	IMAPX_JOB_UPDATE_QUOTA_INFO = 1 << 15,
+	IMAPX_JOB_UID_SEARCH = 1 << 16
 };
 
 /* Operations on the store (folder_tree) will have highest priority as we know for sure they are sync
@@ -406,6 +425,7 @@ enum {
 	IMAPX_PRIORITY_MANAGE_SUBSCRIPTION = 200,
 	IMAPX_PRIORITY_SYNC_CHANGES = 150,
 	IMAPX_PRIORITY_EXPUNGE = 150,
+	IMAPX_PRIORITY_SEARCH = 150,
 	IMAPX_PRIORITY_GET_MESSAGE = 100,
 	IMAPX_PRIORITY_REFRESH_INFO = 0,
 	IMAPX_PRIORITY_NOOP = 0,
@@ -693,6 +713,17 @@ delete_folder_data_free (DeleteFolderData *data)
 	g_free (data->folder_name);
 
 	g_slice_free (DeleteFolderData, data);
+}
+
+static void
+search_data_free (SearchData *data)
+{
+	g_free (data->criteria);
+
+	if (data->results != NULL)
+		g_array_unref (data->results);
+
+	g_slice_free (SearchData, data);
 }
 
 static void
@@ -2079,6 +2110,63 @@ imapx_untagged_recent (CamelIMAPXServer *is,
 	is->recent = is->priv->context->id;
 
 	return TRUE;
+}
+
+static gboolean
+imapx_untagged_search (CamelIMAPXServer *is,
+                       CamelIMAPXStream *stream,
+                       GCancellable *cancellable,
+                       GError **error)
+{
+	GArray *search_results;
+	gint tok;
+	guint len;
+	guchar *token;
+	guint64 number;
+	gboolean success = FALSE;
+	GError *local_error = NULL;
+
+	search_results = g_array_new (FALSE, FALSE, sizeof (guint64));
+
+	while (TRUE) {
+		/* Peek at the next token, and break
+		 * out of the loop if we get a newline. */
+		tok = camel_imapx_stream_token (
+			stream, &token, &len, cancellable, error);
+		if (tok == '\n')
+			break;
+		if (tok == IMAPX_TOK_ERROR || tok == IMAPX_TOK_PROTOCOL)
+			goto exit;
+		camel_imapx_stream_ungettoken (stream, tok, token, len);
+
+		/* XXX camel_imapx_stream_number() should return the
+		 *     number as an out parameter, so we can more easily
+		 *     distinguish between a real '0' and an error. */
+		number = camel_imapx_stream_number (
+			stream, cancellable, &local_error);
+		if (local_error == NULL) {
+			g_array_append_val (search_results, number);
+		} else {
+			g_propagate_error (error, local_error);
+			goto exit;
+		}
+	}
+
+	g_mutex_lock (&is->priv->search_results_lock);
+
+	if (is->priv->search_results == NULL)
+		is->priv->search_results = g_array_ref (search_results);
+	else
+		g_warning ("%s: Conflicting search results", G_STRFUNC);
+
+	g_mutex_unlock (&is->priv->search_results_lock);
+
+	success = TRUE;
+
+exit:
+	g_array_unref (search_results);
+
+	return success;
 }
 
 static gboolean
@@ -6154,6 +6242,71 @@ imapx_job_update_quota_info_start (CamelIMAPXJob *job,
 /* ********************************************************************** */
 
 static gboolean
+imapx_command_uid_search_done (CamelIMAPXServer *is,
+                               CamelIMAPXCommand *ic,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelIMAPXJob *job;
+	SearchData *data;
+	gboolean success = TRUE;
+
+	job = camel_imapx_command_get_job (ic);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+		g_prefix_error (error, "%s: ", _("Search failed"));
+		success = FALSE;
+	}
+
+	/* Don't worry about the success state and presence of search
+	 * results not agreeing here.  camel_imapx_server_uid_search()
+	 * will disregard the search results if an error occurred. */
+	g_mutex_lock (&is->priv->search_results_lock);
+	data->results = is->priv->search_results;
+	is->priv->search_results = NULL;
+	g_mutex_unlock (&is->priv->search_results_lock);
+
+	imapx_unregister_job (is, job);
+	camel_imapx_command_unref (ic);
+
+	return success;
+}
+
+static gboolean
+imapx_job_uid_search_start (CamelIMAPXJob *job,
+                            CamelIMAPXServer *is,
+                            GCancellable *cancellable,
+                            GError **error)
+{
+	CamelFolder *folder;
+	CamelIMAPXCommand *ic;
+	SearchData *data;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
+	ic = camel_imapx_command_new (
+		is, "UID SEARCH", folder,
+		"UID SEARCH %t", data->criteria);
+	ic->pri = job->pri;
+	camel_imapx_command_set_job (ic, job);
+	ic->complete = imapx_command_uid_search_done;
+
+	g_object_unref (folder);
+
+	return imapx_command_queue (is, ic, cancellable, error);
+}
+
+/* ********************************************************************** */
+
+static gboolean
 imapx_command_noop_done (CamelIMAPXServer *is,
                          CamelIMAPXCommand *ic,
                          GCancellable *cancellable,
@@ -6791,6 +6944,10 @@ imapx_server_finalize (GObject *object)
 	g_free (is->priv->context);
 	g_hash_table_destroy (is->priv->untagged_handlers);
 
+	if (is->priv->search_results != NULL)
+		g_array_unref (is->priv->search_results);
+	g_mutex_clear (&is->priv->search_results_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
 }
@@ -6887,6 +7044,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->priv->untagged_handlers = create_initial_untagged_handler_table ();
 
 	g_mutex_init (&is->priv->stream_lock);
+	g_mutex_init (&is->priv->search_results_lock);
 
 	is->queue = camel_imapx_command_queue_new ();
 	is->active = camel_imapx_command_queue_new ();
@@ -8017,6 +8175,64 @@ camel_imapx_server_update_quota_info (CamelIMAPXServer *is,
 	camel_imapx_job_unref (job);
 
 	return success;
+}
+
+GPtrArray *
+camel_imapx_server_uid_search (CamelIMAPXServer *is,
+                               CamelFolder *folder,
+                               const gchar *criteria,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelIMAPXJob *job;
+	SearchData *data;
+	GPtrArray *results = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	g_return_val_if_fail (criteria != NULL, NULL);
+
+	data = g_slice_new0 (SearchData);
+	data->criteria = g_strdup (criteria);
+
+	job = camel_imapx_job_new (cancellable);
+	job->type = IMAPX_JOB_UID_SEARCH;
+	job->start = imapx_job_uid_search_start;
+	job->pri = IMAPX_PRIORITY_SEARCH;
+
+	camel_imapx_job_set_folder (job, folder);
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) search_data_free);
+
+	if (imapx_submit_job (is, job, error)) {
+		guint ii;
+
+		/* Convert the numeric UIDs to strings. */
+
+		g_return_val_if_fail (data->results != NULL, NULL);
+
+		results = g_ptr_array_new_full (
+			data->results->len,
+			(GDestroyNotify) camel_pstring_free);
+
+		for (ii = 0; ii < data->results->len; ii++) {
+			const gchar *pooled_uid;
+			guint64 numeric_uid;
+			gchar *alloced_uid;
+
+			numeric_uid = g_array_index (
+				data->results, guint64, ii);
+			alloced_uid = g_strdup_printf (
+				"%" G_GUINT64_FORMAT, numeric_uid);
+			pooled_uid = camel_pstring_add (alloced_uid, TRUE);
+			g_ptr_array_add (results, (gpointer) pooled_uid);
+		}
+	}
+
+	camel_imapx_job_unref (job);
+
+	return results;
 }
 
 IMAPXJobQueueInfo *

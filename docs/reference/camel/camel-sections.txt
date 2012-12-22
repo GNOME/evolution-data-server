@@ -838,6 +838,26 @@ uidset_state
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-search</FILE>
+<TITLE>CamelIMAPXSearch</TITLE>
+CamelIMAPXSearch
+camel_imapx_search_new
+camel_imapx_search_ref_server
+camel_imapx_search_set_server
+<SUBSECTION Standard>
+CAMEL_IMAPX_SEARCH
+CAMEL_IS_IMAPX_SEARCH
+CAMEL_TYPE_IMAPX_SEARCH
+CAMEL_IMAPX_SEARCH_CLASS
+CAMEL_IS_IMAPX_SEARCH_CLASS
+CAMEL_IMAPX_SEARCH_GET_CLASS
+CamelIMAPXSearchClass
+camel_imapx_search_get_type
+<SUBSECTION Private>
+CamelIMAPXSearchPrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-server</FILE>
 <TITLE>CamelIMAPXServer</TITLE>
 CamelIMAPXServer
@@ -862,6 +882,7 @@ camel_imapx_server_create_folder
 camel_imapx_server_delete_folder
 camel_imapx_server_rename_folder
 camel_imapx_server_update_quota_info
+camel_imapx_server_uid_search
 camel_imapx_server_get_job_queue_info
 CamelIMAPXUntaggedRespHandlerDesc
 camel_imapx_server_register_untagged_handler
