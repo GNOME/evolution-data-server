@@ -68,6 +68,138 @@ struct _CamelFolderSearchPrivate {
 	GHashTable *threads_hash;
 };
 
+typedef enum {
+	CAMEL_FOLDER_SEARCH_NONE         = 0,
+	CAMEL_FOLDER_SEARCH_ALWAYS_ENTER = 1 << 1,
+	CAMEL_FOLDER_SEARCH_IMMEDIATE    = 1 << 2
+} CamelFolderSearchFlags;
+
+static struct {
+	const gchar *name;
+	goffset offset;
+	CamelFolderSearchFlags flags;
+} builtins[] = {
+	/* these have default implementations in CamelSExp */
+
+	{ "and",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, and_),
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	{ "or",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, or_),
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	/* we need to override this one though to implement an 'array not' */
+	{ "not",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, not_),
+	  CAMEL_FOLDER_SEARCH_NONE },
+
+	{ "<",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, lt),
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	{ ">",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, gt),
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	{ "=",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, eq),
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	/* these we have to use our own default if there is none */
+	/* they should all be defined in the language? so it parses, or should they not?? */
+
+	{ "match-all",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, match_all),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER |
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	{ "match-threads",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, match_threads),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER |
+	  CAMEL_FOLDER_SEARCH_IMMEDIATE },
+
+	{ "body-contains",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, body_contains),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "body-regex",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, body_regex),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-contains",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_contains),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-matches",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_matches),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-starts-with",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_starts_with),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-ends-with",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_ends_with),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-exists",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_exists),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-soundex",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_soundex),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-regex",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_regex),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "header-full-regex",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, header_full_regex),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "user-tag",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, user_tag),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "user-flag",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, user_flag),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "system-flag",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, system_flag),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "get-sent-date",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, get_sent_date),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "get-received-date",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, get_received_date),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "get-current-date",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, get_current_date),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "get-relative-months",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, get_relative_months),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "get-size",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, get_size),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "uid",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, uid),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "message-location",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, message_location),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+};
+
 G_DEFINE_TYPE (CamelFolderSearch, camel_folder_search, CAMEL_TYPE_OBJECT)
 
 /* this is just to OR results together */
@@ -498,6 +630,26 @@ read_uid_callback (gpointer ref,
 	return 0;
 }
 
+/* dummy function, returns false always, or an empty match array */
+static CamelSExpResult *
+folder_search_dummy (CamelSExp *sexp,
+                     gint argc,
+                     CamelSExpResult **argv,
+                     CamelFolderSearch *search)
+{
+	CamelSExpResult *r;
+
+	if (search->current == NULL) {
+		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+	} else {
+		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
+		r->value.ptrarray = g_ptr_array_new ();
+	}
+
+	return r;
+}
+
 static void
 folder_search_dispose (GObject *object)
 {
@@ -521,6 +673,54 @@ folder_search_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_search_parent_class)->finalize (object);
+}
+
+static void
+folder_search_constructed (GObject *object)
+{
+	CamelFolderSearch *search;
+	CamelFolderSearchClass *class;
+	gint ii;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_folder_search_parent_class)->
+		constructed (object);
+
+	search = CAMEL_FOLDER_SEARCH (object);
+	class = CAMEL_FOLDER_SEARCH_GET_CLASS (search);
+
+	/* Register class methods with the CamelSExp. */
+	for (ii = 0; ii < G_N_ELEMENTS (builtins); ii++) {
+		CamelFolderSearchFlags flags;
+		const gchar *name;
+		goffset offset;
+		gpointer func;
+
+		name = builtins[ii].name;
+		flags = builtins[ii].flags;
+		offset = builtins[ii].offset;
+
+		/* c is sure messy sometimes */
+		func = *((gpointer *)(((gchar *) class) + offset));
+
+		if (func == NULL && flags & CAMEL_FOLDER_SEARCH_ALWAYS_ENTER) {
+			g_warning (
+				"%s doesn't implement '%s' method",
+				G_OBJECT_TYPE_NAME (search), name);
+			func = (gpointer) folder_search_dummy;
+		}
+		if (func != NULL) {
+			if (flags & CAMEL_FOLDER_SEARCH_IMMEDIATE) {
+				camel_sexp_add_ifunction (
+					search->sexp, 0, name,
+					(CamelSExpIFunc) func, search);
+			} else {
+				camel_sexp_add_function (
+					search->sexp, 0, name,
+					(CamelSExpFunc) func, search);
+			}
+		}
+	}
 }
 
 /* implement an 'array not', i.e. everything in the summary, not in the supplied array */
@@ -1358,6 +1558,7 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = folder_search_dispose;
 	object_class->finalize = folder_search_finalize;
+	object_class->constructed = folder_search_constructed;
 
 	class->not_ = folder_search_not;
 	class->match_all = folder_search_match_all;
@@ -1391,90 +1592,19 @@ camel_folder_search_init (CamelFolderSearch *search)
 	search->sexp = camel_sexp_new ();
 }
 
-static struct {
-	const gchar *name;
-	gint offset;
-	gint flags;		/* 0x02 = immediate, 0x01 = always enter */
-} builtins[] = {
-	/* these have default implementations in e-sexp */
-	{ "and", G_STRUCT_OFFSET (CamelFolderSearchClass, and_), 2 },
-	{ "or", G_STRUCT_OFFSET (CamelFolderSearchClass, or_), 2 },
-	/* we need to override this one though to implement an 'array not' */
-	{ "not", G_STRUCT_OFFSET (CamelFolderSearchClass, not_), 0 },
-	{ "<", G_STRUCT_OFFSET (CamelFolderSearchClass, lt), 2 },
-	{ ">", G_STRUCT_OFFSET (CamelFolderSearchClass, gt), 2 },
-	{ "=", G_STRUCT_OFFSET (CamelFolderSearchClass, eq), 2 },
-
-	/* these we have to use our own default if there is none */
-	/* they should all be defined in the language? so it parses, or should they not?? */
-	{ "match-all", G_STRUCT_OFFSET (CamelFolderSearchClass, match_all), 3 },
-	{ "match-threads", G_STRUCT_OFFSET (CamelFolderSearchClass, match_threads), 3 },
-	{ "body-contains", G_STRUCT_OFFSET (CamelFolderSearchClass, body_contains), 1 },
-	{ "body-regex",  G_STRUCT_OFFSET (CamelFolderSearchClass, body_regex), 1  },
-	{ "header-contains", G_STRUCT_OFFSET (CamelFolderSearchClass, header_contains), 1 },
-	{ "header-matches", G_STRUCT_OFFSET (CamelFolderSearchClass, header_matches), 1 },
-	{ "header-starts-with", G_STRUCT_OFFSET (CamelFolderSearchClass, header_starts_with), 1 },
-	{ "header-ends-with", G_STRUCT_OFFSET (CamelFolderSearchClass, header_ends_with), 1 },
-	{ "header-exists", G_STRUCT_OFFSET (CamelFolderSearchClass, header_exists), 1 },
-	{ "header-soundex", G_STRUCT_OFFSET (CamelFolderSearchClass, header_soundex), 1 },
-	{ "header-regex", G_STRUCT_OFFSET (CamelFolderSearchClass, header_regex), 1 },
-	{ "header-full-regex", G_STRUCT_OFFSET (CamelFolderSearchClass, header_full_regex), 1 },
-	{ "user-tag", G_STRUCT_OFFSET (CamelFolderSearchClass, user_tag), 1 },
-	{ "user-flag", G_STRUCT_OFFSET (CamelFolderSearchClass, user_flag), 1 },
-	{ "system-flag", G_STRUCT_OFFSET (CamelFolderSearchClass, system_flag), 1 },
-	{ "get-sent-date", G_STRUCT_OFFSET (CamelFolderSearchClass, get_sent_date), 1 },
-	{ "get-received-date", G_STRUCT_OFFSET (CamelFolderSearchClass, get_received_date), 1 },
-	{ "get-current-date", G_STRUCT_OFFSET (CamelFolderSearchClass, get_current_date), 1 },
-	{ "get-relative-months", G_STRUCT_OFFSET (CamelFolderSearchClass, get_relative_months), 1 },
-	{ "get-size", G_STRUCT_OFFSET (CamelFolderSearchClass, get_size), 1 },
-	{ "uid", G_STRUCT_OFFSET (CamelFolderSearchClass, uid), 1 },
-	{ "message-location", G_STRUCT_OFFSET (CamelFolderSearchClass, message_location), 1 },
-};
-
-/* dummy function, returns false always, or an empty match array */
-static CamelSExpResult *
-folder_search_dummy (CamelSExp *sexp,
-                     gint argc,
-                     CamelSExpResult **argv,
-                     CamelFolderSearch *search)
-{
-	CamelSExpResult *r;
-
-	if (search->current == NULL) {
-		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
-		r->value.boolean = FALSE;
-	} else {
-		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new ();
-	}
-
-	return r;
-}
-
+/**
+ * camel_folder_search_construct:
+ * @search: a #CamelFolderSearch
+ *
+ * This function used to register callbacks with @search's internal
+ * #CamelSExp, but this now happens during instance initialization.
+ *
+ * Deprecated: 3.8: The function no longer does anything.
+ **/
 void
 camel_folder_search_construct (CamelFolderSearch *search)
 {
-	gint i;
-	CamelFolderSearchClass *class;
-
-	class = CAMEL_FOLDER_SEARCH_GET_CLASS (search);
-
-	for (i = 0; i < G_N_ELEMENTS (builtins); i++) {
-		gpointer func;
-		/* c is sure messy sometimes */
-		func = *((gpointer *)(((gchar *) class) + builtins[i].offset));
-		if (func == NULL && builtins[i].flags&1) {
-			g_warning ("Search class doesn't implement '%s' method: %s", builtins[i].name, G_OBJECT_TYPE_NAME (search));
-			func = (gpointer) folder_search_dummy;
-		}
-		if (func != NULL) {
-			if (builtins[i].flags&2) {
-				camel_sexp_add_ifunction (search->sexp, 0, builtins[i].name, (CamelSExpIFunc) func, search);
-			} else {
-				camel_sexp_add_function (search->sexp, 0, builtins[i].name, (CamelSExpFunc) func, search);
-			}
-		}
-	}
+	/* XXX constructed() method handles what used to be here. */
 }
 
 /**
@@ -1492,12 +1622,7 @@ camel_folder_search_construct (CamelFolderSearch *search)
 CamelFolderSearch *
 camel_folder_search_new (void)
 {
-	CamelFolderSearch *new;
-
-	new = g_object_new (CAMEL_TYPE_FOLDER_SEARCH, NULL);
-	camel_folder_search_construct (new);
-
-	return new;
+	return g_object_new (CAMEL_TYPE_FOLDER_SEARCH, NULL);
 }
 
 /**

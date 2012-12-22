@@ -170,8 +170,6 @@ camel_imap_search_new (const gchar *cachedir)
 	CamelFolderSearch *new = g_object_new (CAMEL_TYPE_IMAP_SEARCH, NULL);
 	CamelImapSearch *is = (CamelImapSearch *) new;
 
-	camel_folder_search_construct (new);
-
 	is->cache = camel_data_cache_new (cachedir, NULL);
 	if (is->cache) {
 		/* Expire entries after 14 days of inactivity */

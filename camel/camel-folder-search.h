@@ -270,7 +270,6 @@ struct _CamelFolderSearchClass {
 GType		camel_folder_search_get_type	(void) G_GNUC_CONST;
 CamelFolderSearch *
 		camel_folder_search_new		(void);
-void		camel_folder_search_construct	(CamelFolderSearch *search);
 
 /* XXX This stuff currently gets cleared when you run a search.
  *     What on earth was i thinking ... */
@@ -298,6 +297,10 @@ void		camel_folder_search_free_result	(CamelFolderSearch *search,
 time_t		camel_folder_search_util_add_months
 						(time_t t,
 						 gint months);
+
+#ifndef CAMEL_DISABLE_DEPRECATED
+void		camel_folder_search_construct	(CamelFolderSearch *search);
+#endif /* CAMEL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

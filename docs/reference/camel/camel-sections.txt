@@ -539,7 +539,6 @@ camel_folder_error_quark
 <TITLE>CamelFolderSearch</TITLE>
 CamelFolderSearch
 camel_folder_search_new
-camel_folder_search_construct
 camel_folder_search_set_folder
 camel_folder_search_set_summary
 camel_folder_search_set_body_index
@@ -547,6 +546,7 @@ camel_folder_search_search
 camel_folder_search_count
 camel_folder_search_free_result
 camel_folder_search_util_add_months
+camel_folder_search_construct
 <SUBSECTION Standard>
 CAMEL_FOLDER_SEARCH
 CAMEL_IS_FOLDER_SEARCH
