@@ -70,8 +70,8 @@ struct _CamelFolderSearchPrivate {
 
 typedef enum {
 	CAMEL_FOLDER_SEARCH_NONE         = 0,
-	CAMEL_FOLDER_SEARCH_ALWAYS_ENTER = 1 << 1,
-	CAMEL_FOLDER_SEARCH_IMMEDIATE    = 1 << 2
+	CAMEL_FOLDER_SEARCH_ALWAYS_ENTER = 1 << 0,
+	CAMEL_FOLDER_SEARCH_IMMEDIATE    = 1 << 1
 } CamelFolderSearchFlags;
 
 static struct {
