@@ -53,7 +53,7 @@
 
 #define d(x)
 
-#define IO_TIMEOUT (PR_TicksPerSecond() * 1 * 60)
+#define IO_TIMEOUT (PR_TicksPerSecond() * 4 * 60)
 #define CONNECT_TIMEOUT (PR_TicksPerSecond () * 1 * 60)
 
 typedef struct _CamelTcpStreamRawPrivate {
