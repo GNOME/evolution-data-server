@@ -830,6 +830,9 @@ camel_imapx_job_run
 camel_imapx_job_matches
 camel_imapx_job_get_data
 camel_imapx_job_set_data
+camel_imapx_job_has_folder
+camel_imapx_job_ref_folder
+camel_imapx_job_set_folder
 <SUBSECTION Private>
 uidset_state
 </SECTION>

@@ -38,6 +38,9 @@ struct _CamelIMAPXRealJob {
 	/* Extra job-specific data. */
 	gpointer data;
 	GDestroyNotify destroy_data;
+
+	CamelFolder *folder;
+	GMutex folder_lock;
 };
 
 static void
@@ -67,6 +70,8 @@ camel_imapx_job_new (GCancellable *cancellable)
 	if (cancellable != NULL)
 		g_object_ref (cancellable);
 	real_job->cancellable = cancellable;
+
+	g_mutex_init (&real_job->folder_lock);
 
 	return (CamelIMAPXJob *) real_job;
 }
@@ -101,16 +106,20 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 		if (real_job->public.pop_operation_msg)
 			camel_operation_pop_message (real_job->cancellable);
 
+		/* Free the private stuff. */
+
 		if (real_job->cancellable != NULL)
 			g_object_unref (real_job->cancellable);
-
-		/* Free the private stuff. */
 
 		g_cond_clear (&real_job->done_cond);
 		g_mutex_clear (&real_job->done_mutex);
 
 		if (real_job->destroy_data != NULL)
 			real_job->destroy_data (real_job->data);
+
+		if (real_job->folder != NULL)
+			g_object_unref (real_job->folder);
+		g_mutex_clear (&real_job->folder_lock);
 
 		/* Fill the memory with a bit pattern before releasing
 		 * it back to the slab allocator, so we can more easily
@@ -262,5 +271,69 @@ camel_imapx_job_set_data (CamelIMAPXJob *job,
 
 	real_job->data = data;
 	real_job->destroy_data = destroy_data;
+}
+
+gboolean
+camel_imapx_job_has_folder (CamelIMAPXJob *job,
+                            CamelFolder *folder)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+
+	if (folder != NULL)
+		g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	/* Not necessary to lock the mutex since
+	 * we're just comparing memory addresses. */
+
+	return (folder == real_job->folder);
+}
+
+CamelFolder *
+camel_imapx_job_ref_folder (CamelIMAPXJob *job)
+{
+	CamelIMAPXRealJob *real_job;
+	CamelFolder *folder = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	g_mutex_lock (&real_job->folder_lock);
+
+	if (real_job->folder != NULL)
+		folder = g_object_ref (real_job->folder);
+
+	g_mutex_unlock (&real_job->folder_lock);
+
+	return folder;
+}
+
+void
+camel_imapx_job_set_folder (CamelIMAPXJob *job,
+                            CamelFolder *folder)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	if (folder != NULL) {
+		g_return_if_fail (CAMEL_IS_FOLDER (folder));
+		g_object_ref (folder);
+	}
+
+	g_mutex_lock (&real_job->folder_lock);
+
+	if (real_job->folder != NULL)
+		g_object_unref (real_job->folder);
+
+	real_job->folder = folder;
+
+	g_mutex_unlock (&real_job->folder_lock);
 }
 

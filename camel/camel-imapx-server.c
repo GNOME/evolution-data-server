@@ -1666,19 +1666,26 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	}
 
 	if ((finfo->got & (FETCH_BODY | FETCH_UID)) == (FETCH_BODY | FETCH_UID)) {
-		CamelIMAPXJob *job = imapx_match_active_job (is, IMAPX_JOB_GET_MESSAGE, finfo->uid);
+		CamelIMAPXJob *job;
 		GetMessageData *data;
+
+		job = imapx_match_active_job (
+			is, IMAPX_JOB_GET_MESSAGE, finfo->uid);
+		g_return_val_if_fail (job != NULL, FALSE);
 
 		data = camel_imapx_job_get_data (job);
 		g_return_val_if_fail (data != NULL, FALSE);
 
-		/* This must've been a get-message request, fill out the body stream,
-		 * in the right spot */
+		/* This must've been a get-message request,
+		 * fill out the body stream, in the right spot. */
 
 		if (job != NULL) {
 			if (data->use_multi_fetch) {
 				data->body_offset = finfo->offset;
-				g_seekable_seek (G_SEEKABLE (data->stream), finfo->offset, G_SEEK_SET, NULL, NULL);
+				g_seekable_seek (
+					G_SEEKABLE (data->stream),
+					finfo->offset, G_SEEK_SET,
+					NULL, NULL);
 			}
 
 			data->body_len = camel_stream_write_to_stream (
@@ -1693,17 +1700,22 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	}
 
 	if ((finfo->got & FETCH_FLAGS) && !(finfo->got & FETCH_HEADER)) {
-		CamelIMAPXJob *job = imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL);
+		CamelIMAPXJob *job;
 		RefreshInfoData *data = NULL;
 
-		if (job) {
+		job = imapx_match_active_job (
+			is, IMAPX_JOB_FETCH_NEW_MESSAGES |
+			IMAPX_JOB_REFRESH_INFO |
+			IMAPX_JOB_FETCH_MESSAGES, NULL);
+
+		if (job != NULL) {
 			data = camel_imapx_job_get_data (job);
 			g_return_val_if_fail (data != NULL, FALSE);
 		}
 
-		/* This is either a refresh_info job, check to see if it is and update
-		 * if so, otherwise it must've been an unsolicited response, so update
-		 * the summary to match */
+		/* This is either a refresh_info job, check to see if it is
+		 * and update if so, otherwise it must've been an unsolicited
+		 * response, so update the summary to match. */
 		if (data && (finfo->got & FETCH_UID) && data->scan_changes) {
 			struct _refresh_info r;
 
@@ -1768,23 +1780,32 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	}
 
 	if ((finfo->got & (FETCH_HEADER | FETCH_UID)) == (FETCH_HEADER | FETCH_UID)) {
-		CamelIMAPXJob *job = imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL);
+		CamelIMAPXJob *job;
 
-		/* This must be a refresh info job as well, but it has asked for
-		 * new messages to be added to the index */
+		/* This must be a refresh info job as well, but it has
+		 * asked for new messages to be added to the index. */
 
-		if (job) {
+		job = imapx_match_active_job (
+			is, IMAPX_JOB_FETCH_NEW_MESSAGES |
+			IMAPX_JOB_REFRESH_INFO |
+			IMAPX_JOB_FETCH_MESSAGES, NULL);
+
+		if (job != NULL) {
+			CamelFolder *folder;
 			CamelMimeParser *mp;
 			CamelMessageInfo *mi;
+
+			folder = camel_imapx_job_ref_folder (job);
+			g_return_val_if_fail (folder != NULL, FALSE);
 
 			/* Do we want to save these headers for later too?  Do we care? */
 
 			mp = camel_mime_parser_new ();
 			camel_mime_parser_init_with_stream (mp, finfo->header, NULL);
-			mi = camel_folder_summary_info_new_from_parser (job->folder->summary, mp);
+			mi = camel_folder_summary_info_new_from_parser (folder->summary, mp);
 			g_object_unref (mp);
 
-			if (mi) {
+			if (mi != NULL) {
 				guint32 server_flags;
 				CamelFlag *server_user_flags;
 				CamelMessageInfoBase *binfo;
@@ -1840,12 +1861,12 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				 * command completion, but update UNREAD count now according to the
 				 * message SEEN flag */
 				if (!(server_flags & CAMEL_MESSAGE_SEEN)) {
-					CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
+					CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 					guint64 uidl = strtoull (mi->uid, NULL, 10);
 
 					if (uidl >= ifolder->uidnext_on_server) {
 						c (is->tagprefix, "Updating unread count for new message %s\n", mi->uid);
-						((CamelIMAPXFolder *) job->folder)->unread_on_server++;
+						((CamelIMAPXFolder *) folder)->unread_on_server++;
 					} else {
 						c (is->tagprefix, "Not updating unread count for new message %s\n", mi->uid);
 					}
@@ -1854,16 +1875,16 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				binfo = (CamelMessageInfoBase *) mi;
 				binfo->size = finfo->size;
 
-				if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
+				if (!camel_folder_summary_check_uid (folder->summary, mi->uid)) {
 					RefreshInfoData *data;
-					CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
+					CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 					gint cnt;
 
 					data = camel_imapx_job_get_data (job);
 					g_return_val_if_fail (data != NULL, FALSE);
 
-					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, job->folder);
-					camel_folder_summary_add (job->folder->summary, mi);
+					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, folder);
+					camel_folder_summary_add (folder->summary, mi);
 					camel_folder_change_info_add_uid (data->changes, mi->uid);
 
 					if (!g_hash_table_lookup (ifolder->ignore_recent, mi->uid)) {
@@ -1871,7 +1892,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 						g_hash_table_remove (ifolder->ignore_recent, mi->uid);
 					}
 
-					cnt = (camel_folder_summary_count (job->folder->summary) * 100 ) / ifolder->exists_on_server;
+					cnt = (camel_folder_summary_count (folder->summary) * 100 ) / ifolder->exists_on_server;
 					camel_operation_progress (cancellable, cnt ? cnt : 1);
 				} else {
 					camel_message_info_free (mi);
@@ -1881,6 +1902,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					camel_flag_list_free (&server_user_flags);
 
 			}
+
+			g_object_unref (folder);
 		}
 	}
 
@@ -2877,12 +2900,16 @@ imapx_job_idle_start (CamelIMAPXJob *job,
                       GCancellable *cancellable,
                       GError **error)
 {
+	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	CamelIMAPXCommandPart *cp;
 	gboolean success = TRUE;
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	ic = camel_imapx_command_new (
-		is, "IDLE", job->folder, "IDLE");
+		is, "IDLE", folder, "IDLE");
 	camel_imapx_command_set_job (ic, job);
 	ic->pri = job->pri;
 	ic->complete = imapx_command_idle_done;
@@ -2904,6 +2931,8 @@ imapx_job_idle_start (CamelIMAPXJob *job,
 	IDLE_UNLOCK (is->idle);
 	QUEUE_UNLOCK (is);
 
+	g_object_unref (folder);
+
 	return success;
 }
 
@@ -2919,7 +2948,8 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_IDLE;
 	job->start = imapx_job_idle_start;
-	job->folder = folder;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	success = imapx_submit_job (is, job, error);
 
@@ -2933,7 +2963,7 @@ imapx_job_fetch_new_messages_matches (CamelIMAPXJob *job,
                                       CamelFolder *folder,
                                       const gchar *uid)
 {
-	return (folder == job->folder);
+	return camel_imapx_job_has_folder (job, folder);
 }
 
 static gboolean
@@ -2957,8 +2987,9 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
 	job->type = IMAPX_JOB_FETCH_NEW_MESSAGES;
 	job->start = imapx_job_fetch_new_messages_start;
 	job->matches = imapx_job_fetch_new_messages_matches;
-	job->folder = folder;
 	job->noreply = async;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) refresh_info_data_free);
@@ -4095,6 +4126,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
                                   GError **error)
 {
 	CamelIMAPXJob *job;
+	CamelFolder *folder;
 	GetMessageData *data;
 	CamelIMAPXFolder *ifolder;
 	gboolean success = TRUE;
@@ -4105,6 +4137,9 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
 	/* We either have more to fetch (partial mode?), we are complete,
 	 * or we failed.  Failure is handled in the fetch code, so
@@ -4127,14 +4162,13 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		if (data->fetch_offset < data->size ||
 		    data->fetch_offset == really_fetched) {
 			CamelIMAPXCommand *new_ic;
-			gboolean success;
 
 			camel_operation_progress (
 				cancellable,
 				(data->fetch_offset *100) / data->size);
 
 			new_ic = camel_imapx_command_new (
-				is, "FETCH", job->folder,
+				is, "FETCH", folder,
 				"UID FETCH %t (BODY.PEEK[]",
 				data->uid);
 			camel_imapx_command_add (new_ic, "<%u.%u>", data->fetch_offset, MULTI_SIZE);
@@ -4148,9 +4182,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			success = imapx_command_queue (
 				is, new_ic, cancellable, error);
 
-			camel_imapx_command_unref (ic);
-
-			return success;
+			goto exit;
 		}
 	}
 
@@ -4160,7 +4192,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	/* No more messages to fetch, let's wrap things up. */
 
-	ifolder = CAMEL_IMAPX_FOLDER (job->folder);
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
 
 	/* return the exception from last command */
 	if (local_error != NULL) {
@@ -4222,6 +4254,8 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 	imapx_unregister_job (is, job);
 
 exit:
+	g_object_unref (folder);
+
 	camel_imapx_command_unref (ic);
 
 	g_clear_error (&local_error);
@@ -4235,6 +4269,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
                              GCancellable *cancellable,
                              GError **error)
 {
+	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	GetMessageData *data;
 	gint i;
@@ -4243,10 +4278,13 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	if (data->use_multi_fetch) {
 		for (i = 0; i < 3 && data->fetch_offset < data->size; i++) {
 			ic = camel_imapx_command_new (
-				is, "FETCH", job->folder,
+				is, "FETCH", folder,
 				"UID FETCH %t (BODY.PEEK[]",
 				data->uid);
 			camel_imapx_command_add (ic, "<%u.%u>", data->fetch_offset, MULTI_SIZE);
@@ -4264,7 +4302,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 		}
 	} else {
 		ic = camel_imapx_command_new (
-			is, "FETCH", job->folder,
+			is, "FETCH", folder,
 			"UID FETCH %t (BODY.PEEK[])",
 			data->uid);
 		ic->complete = imapx_command_fetch_message_done;
@@ -4274,6 +4312,8 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 
 		success = imapx_command_queue (is, ic, cancellable, error);
 	}
+
+	g_object_unref (folder);
 
 	return success;
 }
@@ -4288,7 +4328,7 @@ imapx_job_get_message_matches (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	if (folder != job->folder)
+	if (!camel_imapx_job_has_folder (job, folder))
 		return FALSE;
 
 	if (g_strcmp0 (uid, data->uid) != 0)
@@ -4306,6 +4346,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
                                        GError **error)
 {
 	CamelIMAPXJob *job;
+	CamelFolder *folder;
 	CopyMessagesData *data;
 	GPtrArray *uids;
 	gint i;
@@ -4317,6 +4358,9 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	uids = data->uids;
 	i = data->index;
 
@@ -4325,17 +4369,19 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 			error, "%s: ",
 			_("Error copying messages"));
 		success = FALSE;
-		goto cleanup;
+		goto exit;
 	}
 
 	if (data->delete_originals) {
 		gint j;
 
 		for (j = data->last_index; j < i; j++)
-			camel_folder_delete_message (job->folder, uids->pdata[j]);
+			camel_folder_delete_message (folder, uids->pdata[j]);
 	}
 
-	/* TODO copy the summary and cached messages to the new folder. We might need a sorted insert to avoid refreshing the dest folder */
+	/* TODO Copy the summary and cached messages to the new folder.
+	 *      We might need a sorted insert to avoid refreshing the dest
+	 *      folder. */
 	if (ic->status && ic->status->condition == IMAPX_COPYUID) {
 		gint i;
 
@@ -4350,14 +4396,16 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	}
 
 	if (i < uids->len) {
+		g_object_unref (folder);
+
 		camel_imapx_command_unref (ic);
 
 		return imapx_command_copy_messages_step_start (
 			is, job, i, cancellable, error);
 	}
 
-cleanup:
-	g_object_unref (job->folder);
+exit:
+	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
@@ -4372,6 +4420,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
                                         GCancellable *cancellable,
                                         GError **error)
 {
+	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	CopyMessagesData *data;
 	GPtrArray *uids;
@@ -4380,14 +4429,18 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	uids = data->uids;
 
-	ic = camel_imapx_command_new (
-		is, "COPY", job->folder, "UID COPY ");
+	ic = camel_imapx_command_new (is, "COPY", folder, "UID COPY ");
 	ic->complete = imapx_command_copy_messages_step_done;
 	camel_imapx_command_set_job (ic, job);
 	ic->pri = job->pri;
 	data->last_index = i;
+
+	g_object_unref (folder);
 
 	for (; i < uids->len; i++) {
 		gint res;
@@ -4416,20 +4469,26 @@ imapx_job_copy_messages_start (CamelIMAPXJob *job,
                                GCancellable *cancellable,
                                GError **error)
 {
+	CamelFolder *folder;
 	CopyMessagesData *data;
 	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	success = imapx_server_sync_changes (
-		is, job->folder, job->type, job->pri, cancellable, error);
+		is, folder, job->type, job->pri, cancellable, error);
 	if (!success)
 		imapx_unregister_job (is, job);
 
 	/* XXX Should we still do this even if a failure occurred? */
 	g_ptr_array_sort (data->uids, (GCompareFunc) imapx_uids_array_cmp);
 	imapx_uidset_init (&data->uidset, 0, MAX_COMMAND_LEN);
+
+	g_object_unref (folder);
 
 	return imapx_command_copy_messages_step_start (
 		is, job, 0, cancellable, error);
@@ -4445,6 +4504,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 {
 	CamelIMAPXJob *job;
 	CamelIMAPXFolder *ifolder;
+	CamelFolder *folder;
 	CamelMessageInfo *mi;
 	AppendMessageData *data;
 	gchar *cur, *old_uid;
@@ -4456,12 +4516,16 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	ifolder = (CamelIMAPXFolder *) job->folder;
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
-	/* Append done.  If we the server supports UIDPLUS we will get an APPENDUID response
-	 * with the new uid.  This lets us move the message we have directly to the cache
-	 * and also create a correctly numbered MessageInfo, without losing any information.
-	 * Otherwise we have to wait for the server to less us know it was appended. */
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+
+	/* Append done.  If we the server supports UIDPLUS we will get
+	 * an APPENDUID response with the new uid.  This lets us move the
+	 * message we have directly to the cache and also create a correctly
+	 * numbered MessageInfo, without losing any information.  Otherwise
+	 * we have to wait for the server to let us know it was appended. */
 
 	mi = camel_message_info_clone (data->info);
 	old_uid = g_strdup (data->info->uid);
@@ -4484,14 +4548,15 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			g_rename (data->path, cur);
 
 			/* should we update the message count ? */
-			imapx_set_message_info_flags_for_new_message (mi,
-								      ((CamelMessageInfoBase *) data->info)->flags,
-								      ((CamelMessageInfoBase *) data->info)->user_flags,
-								      job->folder);
-			camel_folder_summary_add (job->folder->summary, mi);
+			imapx_set_message_info_flags_for_new_message (
+				mi,
+				((CamelMessageInfoBase *) data->info)->flags,
+				((CamelMessageInfoBase *) data->info)->user_flags,
+				folder);
+			camel_folder_summary_add (folder->summary, mi);
 			changes = camel_folder_change_info_new ();
 			camel_folder_change_info_add_uid (changes, mi->uid);
-			camel_folder_changed (job->folder, changes);
+			camel_folder_changed (folder, changes);
 			camel_folder_change_info_free (changes);
 
 			g_free (cur);
@@ -4502,7 +4567,8 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 
 	camel_data_cache_remove (ifolder->cache, "new", old_uid, NULL);
 	g_free (old_uid);
-	g_object_unref (job->folder);
+
+	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
@@ -4516,16 +4582,20 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
                                 GCancellable *cancellable,
                                 GError **error)
 {
+	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	AppendMessageData *data;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	/* TODO: we could supply the original append date from the file timestamp */
 	ic = camel_imapx_command_new (
 		is, "APPEND", NULL,
-		"APPEND %f %F %P", job->folder,
+		"APPEND %f %F %P", folder,
 		((CamelMessageInfoBase *) data->info)->flags,
 		((CamelMessageInfoBase *) data->info)->user_flags,
 		data->path);
@@ -4533,6 +4603,8 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
 	camel_imapx_command_set_job (ic, job);
 	ic->pri = job->pri;
 	job->commands++;
+
+	g_object_unref (folder);
 
 	return imapx_command_queue (is, ic, cancellable, error);
 }
@@ -4627,6 +4699,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	CamelIMAPXFolder *ifolder;
 	CamelIMAPXSummary *isum;
 	CamelIMAPXJob *job;
+	CamelFolder *folder;
 	RefreshInfoData *data;
 	gint i;
 	gboolean success = TRUE;
@@ -4640,10 +4713,13 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	data->scan_changes = FALSE;
 
-	ifolder = (CamelIMAPXFolder *) job->folder;
-	isum = (CamelIMAPXSummary *) job->folder->summary;
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+	isum = CAMEL_IMAPX_SUMMARY (folder->summary);
 
 	settings = camel_imapx_server_ref_settings (is);
 	batch_count = camel_imapx_settings_get_batch_fetch_count (settings);
@@ -4652,31 +4728,31 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 	i = data->index;
 
-	//printf ("%s: Mobile mode: %d Fetch Count %d\n", camel_folder_get_display_name (job->folder), mobile_mode, batch_count);
+	//printf ("%s: Mobile mode: %d Fetch Count %d\n", camel_folder_get_display_name (folder), mobile_mode, batch_count);
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
 			error, "%s: ",
 			_("Error fetching message headers"));
 		success = FALSE;
-		goto cleanup;
+		goto exit;
 	}
 
 	if (camel_folder_change_info_changed (data->changes)) {
-		imapx_update_store_summary (job->folder);
-		camel_folder_summary_save_to_db (job->folder->summary, NULL);
-		camel_folder_changed (job->folder, data->changes);
+		imapx_update_store_summary (folder);
+		camel_folder_summary_save_to_db (folder->summary, NULL);
+		camel_folder_changed (folder, data->changes);
 	}
 
 	camel_folder_change_info_clear (data->changes);
 
 	if (i < data->infos->len) {
-		gint total = camel_folder_summary_count (job->folder->summary);
+		gint total = camel_folder_summary_count (folder->summary);
 		gint fetch_limit = data->fetch_msg_limit;
 
 		camel_imapx_command_unref (ic);
 
 		ic = camel_imapx_command_new (
-			is, "FETCH", job->folder, "UID FETCH ");
+			is, "FETCH", folder, "UID FETCH ");
 		ic->complete = imapx_command_step_fetch_done;
 		camel_imapx_command_set_job (ic, job);
 		ic->pri = job->pri - 1;
@@ -4698,24 +4774,28 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
 					data->index = i + 1;
 
+					g_object_unref (folder);
+
 					return imapx_command_queue (is, ic, cancellable, error);
 				}
 			}
 		}
 
-		//printf ("Existing : %d Gonna fetch in %s for %d/%d\n", total, camel_folder_get_full_name (job->folder), i, data->infos->len);
+		//printf ("Existing : %d Gonna fetch in %s for %d/%d\n", total, camel_folder_get_full_name (folder), i, data->infos->len);
 		data->index = data->infos->len;
 		if (imapx_uidset_done (&data->uidset, ic)) {
 			camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
+
+			g_object_unref (folder);
 
 			return imapx_command_queue (is, ic, cancellable, error);
 		}
 	}
 
-	if (camel_folder_summary_count (job->folder->summary)) {
+	if (camel_folder_summary_count (folder->summary)) {
 		gchar *uid = imapx_get_uid_from_index (
-			job->folder->summary,
-			camel_folder_summary_count (job->folder->summary) - 1);
+			folder->summary,
+			camel_folder_summary_count (folder->summary) - 1);
 		guint64 uidl = strtoull (uid, NULL, 10);
 		g_free (uid);
 
@@ -4724,14 +4804,16 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		if (uidl > ifolder->uidnext_on_server) {
 			c (
 				is->tagprefix, "Updating uidnext_on_server for '%s' to %" G_GUINT64_FORMAT "\n",
-				camel_folder_get_full_name (job->folder), uidl);
+				camel_folder_get_full_name (folder), uidl);
 			ifolder->uidnext_on_server = uidl;
 		}
 	}
 	isum->uidnext = ifolder->uidnext_on_server;
 
- cleanup:
+exit:
 	refresh_info_data_infos_free (data);
+
+	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
@@ -4772,6 +4854,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 {
 	CamelIMAPXJob *job;
 	CamelIMAPXSettings *settings;
+	CamelFolder *folder;
 	RefreshInfoData *data;
 	guint uidset_size;
 	gboolean success = TRUE;
@@ -4782,6 +4865,9 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
 	data->scan_changes = FALSE;
 
@@ -4800,13 +4886,15 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		GCompareDataFunc uid_cmp = imapx_uid_cmp;
 		CamelMessageInfo *s_minfo = NULL;
 		CamelIMAPXMessageInfo *info;
-		CamelFolderSummary *s = job->folder->summary;
-		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
+		CamelFolderSummary *s = folder->summary;
+		CamelIMAPXFolder *ifolder;
 		GList *removed = NULL, *l;
 		gboolean fetch_new = FALSE;
 		gint i;
 		guint j = 0;
 		GPtrArray *uids;
+
+		ifolder = CAMEL_IMAPX_FOLDER (folder);
 
 		/* Actually we wanted to do this after the SELECT but before the
 		 * FETCH command was issued. But this should suffice. */
@@ -4851,7 +4939,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			if (s_minfo && uid_cmp (s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *) s_minfo;
 
-				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, is->permanentflags, job->folder, FALSE))
+				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, is->permanentflags, folder, FALSE))
 					camel_folder_change_info_change_uid (data->changes, camel_message_info_uid (s_minfo));
 				r->exists = TRUE;
 			} else
@@ -4901,10 +4989,10 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		}
 
 		camel_folder_summary_save_to_db (s, NULL);
-		imapx_update_store_summary (job->folder);
+		imapx_update_store_summary (folder);
 
 		if (camel_folder_change_info_changed (data->changes))
-			camel_folder_changed (job->folder, data->changes);
+			camel_folder_changed (folder, data->changes);
 		camel_folder_change_info_clear (data->changes);
 
 		camel_folder_summary_free_array (uids);
@@ -4916,12 +5004,14 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			camel_operation_push_message (
 				cancellable,
 				_("Fetching summary information for new messages in '%s'"),
-				camel_folder_get_display_name (job->folder));
+				camel_folder_get_display_name (folder));
 
 			imapx_uidset_init (&data->uidset, uidset_size, 0);
 			/* These are new messages which arrived since we last knew the unseen count;
 			 * update it as they arrive. */
 			data->update_unseen = TRUE;
+
+			g_object_unref (folder);
 
 			return imapx_command_step_fetch_done (
 				is, ic, cancellable, error);
@@ -4936,7 +5026,10 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	 * with a STATUS command.
 	 **/
 	if (!mobile_mode)
-		((CamelIMAPXFolder *) job->folder)->unread_on_server = camel_folder_summary_get_unread_count (job->folder->summary);
+		((CamelIMAPXFolder *) folder)->unread_on_server =
+			camel_folder_summary_get_unread_count (folder->summary);
+
+	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
@@ -4950,35 +5043,39 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
                               GCancellable *cancellable,
                               GError **error)
 {
+	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	RefreshInfoData *data;
 	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
 	gchar *uid = NULL;
 
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	settings = camel_imapx_server_ref_settings (is);
 	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
 
 	if (mobile_mode)
-		uid = imapx_get_uid_from_index (job->folder->summary, 0);
-
-	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+		uid = imapx_get_uid_from_index (folder->summary, 0);
 
 	job->pop_operation_msg = TRUE;
 
 	camel_operation_push_message (
 		cancellable,
 		_("Scanning for changed messages in '%s'"),
-		camel_folder_get_display_name (job->folder));
+		camel_folder_get_display_name (folder));
 
 	e (
 		'E', "Scanning from %s in %s\n", uid ? uid : "start",
-		camel_folder_get_full_name (job->folder));
+		camel_folder_get_full_name (folder));
 
 	ic = camel_imapx_command_new (
-		is, "FETCH", job->folder,
+		is, "FETCH", folder,
 		"UID FETCH %s:* (UID FLAGS)", uid ? uid : "1");
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_job_scan_changes_done;
@@ -4989,6 +5086,8 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 
 	g_free (uid);
+
+	g_object_unref (folder);
 
 	return imapx_command_queue (is, ic, cancellable, error);
 }
@@ -5002,6 +5101,7 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 	CamelIMAPXJob *job;
 	CamelIMAPXSummary *isum;
 	CamelIMAPXFolder *ifolder;
+	CamelFolder *folder;
 	RefreshInfoData *data;
 	gboolean success = TRUE;
 
@@ -5011,28 +5111,31 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	ifolder = (CamelIMAPXFolder *) job->folder;
-	isum = (CamelIMAPXSummary *) job->folder->summary;
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+	isum = CAMEL_IMAPX_SUMMARY (folder->summary);
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
 			error, "%s: ",
 			_("Error fetching new messages"));
 		success = FALSE;
-		goto exception;
+		goto exit;
 	}
 
 	if (camel_folder_change_info_changed (data->changes)) {
-		camel_folder_summary_save_to_db (job->folder->summary, NULL);
-		imapx_update_store_summary (job->folder);
-		camel_folder_changed (job->folder, data->changes);
+		camel_folder_summary_save_to_db (folder->summary, NULL);
+		imapx_update_store_summary (folder);
+		camel_folder_changed (folder, data->changes);
 		camel_folder_change_info_clear (data->changes);
 	}
 
-	if (camel_folder_summary_count (job->folder->summary)) {
+	if (camel_folder_summary_count (folder->summary)) {
 		gchar *uid = imapx_get_uid_from_index (
-			job->folder->summary,
-			camel_folder_summary_count (job->folder->summary) - 1);
+			folder->summary,
+			camel_folder_summary_count (folder->summary) - 1);
 		guint64 uidl = strtoull (uid, NULL, 10);
 		g_free (uid);
 
@@ -5041,14 +5144,16 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 		if (uidl > ifolder->uidnext_on_server) {
 			c (
 				is->tagprefix, "Updating uidnext_on_server for '%s' to %" G_GUINT64_FORMAT "\n",
-				camel_folder_get_full_name (job->folder), uidl);
+				camel_folder_get_full_name (folder), uidl);
 			ifolder->uidnext_on_server = uidl;
 		}
 	}
 
 	isum->uidnext = ifolder->uidnext_on_server;
 
-exception:
+exit:
+	g_object_unref (folder);
+
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
 
@@ -5088,8 +5193,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
                                     GError **error)
 {
 	CamelIMAPXCommand *ic;
-	CamelFolder *folder = job->folder;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+	CamelFolder *folder;
+	CamelIMAPXFolder *ifolder;
 	CamelIMAPXSettings *settings;
 	CamelSortType fetch_order;
 	RefreshInfoData *data;
@@ -5100,10 +5205,15 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	settings = camel_imapx_server_ref_settings (is);
 	fetch_order = camel_imapx_settings_get_fetch_order (settings);
 	uidset_size = camel_imapx_settings_get_batch_fetch_count (settings);
 	g_object_unref (settings);
+
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
 
 	total = camel_folder_summary_count (folder->summary);
 	diff = ifolder->exists_on_server - total;
@@ -5127,7 +5237,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	//printf ("Fetch order: %d/%d\n", fetch_order, CAMEL_SORT_DESCENDING);
 	if (diff > uidset_size || fetch_order == CAMEL_SORT_DESCENDING) {
 		ic = camel_imapx_command_new (
-			is, "FETCH", job->folder,
+			is, "FETCH", folder,
 			"UID FETCH %s:* (UID FLAGS)", uid);
 		imapx_uidset_init (&data->uidset, uidset_size, 0);
 		refresh_info_data_infos_free (data);
@@ -5142,7 +5252,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 			ic->complete = imapx_command_step_fetch_done;
 	} else {
 		ic = camel_imapx_command_new (
-			is, "FETCH", job->folder,
+			is, "FETCH", folder,
 			"UID FETCH %s:* (RFC822.SIZE RFC822.HEADER FLAGS)", uid);
 		ic->pri = job->pri;
 		ic->complete = imapx_command_fetch_new_messages_done;
@@ -5151,6 +5261,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	g_free (uid);
 
 	camel_imapx_command_set_job (ic, job);
+
+	g_object_unref (folder);
 
 	return imapx_command_queue (is, ic, cancellable, error);
 }
@@ -5162,7 +5274,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
                                 GError **error)
 {
 	CamelIMAPXCommand *ic;
-	CamelFolder *folder = job->folder;
+	CamelFolder *folder;
 	guint32 total;
 	gchar *start_uid = NULL, *end_uid = NULL;
 	CamelFetchType ftype;
@@ -5174,6 +5286,9 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
 	settings = camel_imapx_server_ref_settings (is);
 	fetch_order = camel_imapx_settings_get_fetch_order (settings);
@@ -5219,6 +5334,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 				g_prefix_error (
 					error, "%s: ",
 					_("Error while fetching messages"));
+				g_object_unref (folder);
 				return FALSE;
 			}
 		}
@@ -5233,7 +5349,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 
 		/* New account and fetching old messages, we would return just the limited number of newest messages */
 		ic = camel_imapx_command_new (
-			is, "FETCH", job->folder,
+			is, "FETCH", folder,
 			"UID FETCH %s:* (UID FLAGS)", uid);
 
 		imapx_uidset_init (&data->uidset, uidset_size, 0);
@@ -5265,7 +5381,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 			camel_folder_get_display_name (folder));
 
 		ic = camel_imapx_command_new (
-			is, "FETCH", job->folder,
+			is, "FETCH", folder,
 			"UID FETCH %s:%s (RFC822.SIZE RFC822.HEADER FLAGS)", start_uid, end_uid);
 		ic->pri = job->pri;
 		ic->complete = imapx_command_fetch_new_messages_done;
@@ -5279,6 +5395,8 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 
 	camel_imapx_command_set_job (ic, job);
 
+	g_object_unref (folder);
+
 	return imapx_command_queue (is, ic, cancellable, error);
 }
 
@@ -5288,21 +5406,27 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
                               GCancellable *cancellable,
                               GError **error)
 {
-	guint32 total;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
-	CamelIMAPXSummary *isum = (CamelIMAPXSummary *) job->folder->summary;
-	CamelFolder *folder = job->folder;
+	CamelIMAPXFolder *ifolder;
+	CamelIMAPXSettings *settings;
+	CamelIMAPXSummary *isum;
+	CamelFolder *folder;
 	const gchar *full_name;
 	gboolean need_rescan = FALSE;
 	gboolean is_selected = FALSE;
 	gboolean can_qresync = FALSE;
-	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
 	gboolean success;
+	guint32 total;
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
 	settings = camel_imapx_server_ref_settings (is);
 	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
+
+	ifolder = CAMEL_IMAPX_FOLDER (folder);
+	isum = CAMEL_IMAPX_SUMMARY (folder->summary);
 
 	full_name = camel_folder_get_full_name (folder);
 
@@ -5460,7 +5584,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 			goto done;
 	qresync_done:
 		isum->modseq = ifolder->modseq_on_server;
-		total = camel_folder_summary_count (job->folder->summary);
+		total = camel_folder_summary_count (folder->summary);
 		if (total != ifolder->exists_on_server ||
 		    camel_folder_summary_get_unread_count (folder->summary) != ifolder->unread_on_server ||
 		    (isum->modseq != ifolder->modseq_on_server)) {
@@ -5479,9 +5603,13 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		}
 	}
 
+	g_object_unref (folder);
+
 	return imapx_job_scan_changes_start (job, is, cancellable, error);
 
 done:
+	g_object_unref (folder);
+
 	imapx_unregister_job (is, job);
 
 	return success;
@@ -5492,7 +5620,7 @@ imapx_job_refresh_info_matches (CamelIMAPXJob *job,
                                 CamelFolder *folder,
                                 const gchar *uid)
 {
-	return (folder == job->folder);
+	return camel_imapx_job_has_folder (job, folder);
 }
 
 /* ********************************************************************** */
@@ -5504,10 +5632,14 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
                             GError **error)
 {
 	CamelIMAPXJob *job;
+	CamelFolder *folder;
 	gboolean success = TRUE;
 
 	job = camel_imapx_command_get_job (ic);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
@@ -5517,7 +5649,6 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 
 	} else {
 		GPtrArray *uids;
-		CamelFolder *folder = job->folder;
 		CamelStore *parent_store;
 		const gchar *full_name;
 
@@ -5559,6 +5690,8 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 		}
 	}
 
+	g_object_unref (folder);
+
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
 
@@ -5572,21 +5705,27 @@ imapx_job_expunge_start (CamelIMAPXJob *job,
                          GError **error)
 {
 	CamelIMAPXCommand *ic;
+	CamelFolder *folder;
 	gboolean success;
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	success = imapx_server_sync_changes (
-		is, job->folder, job->type, job->pri, cancellable, error);
+		is, folder, job->type, job->pri, cancellable, error);
 
 	if (success) {
 		/* TODO handle UIDPLUS capability */
 		ic = camel_imapx_command_new (
-			is, "EXPUNGE", job->folder, "EXPUNGE");
+			is, "EXPUNGE", folder, "EXPUNGE");
 		camel_imapx_command_set_job (ic, job);
 		ic->pri = job->pri;
 		ic->complete = imapx_command_expunge_done;
 
 		success = imapx_command_queue (is, ic, cancellable, error);
 	}
+
+	g_object_unref (folder);
 
 	return success;
 }
@@ -5596,7 +5735,7 @@ imapx_job_expunge_matches (CamelIMAPXJob *job,
                            CamelFolder *folder,
                            const gchar *uid)
 {
-	return (folder == job->folder);
+	return camel_imapx_job_has_folder (job, folder);
 }
 
 /* ********************************************************************** */
@@ -5835,6 +5974,7 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
 {
 	CamelIMAPXCommand *ic;
 	CamelIMAPXStore *store;
+	CamelFolder *folder;
 	DeleteFolderData *data;
 	gchar *encoded_fname = NULL;
 	gboolean success = FALSE;
@@ -5846,20 +5986,24 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
 
 	encoded_fname = imapx_encode_folder_name (store, data->folder_name);
 
-	job->folder = camel_store_get_folder_sync (
+	folder = camel_store_get_folder_sync (
 		CAMEL_STORE (store), "INBOX", 0, cancellable, error);
 
-	if (job->folder != NULL) {
+	if (folder != NULL) {
+		camel_imapx_job_set_folder (job, folder);
+
 		/* Make sure the to-be-deleted folder is not
 		 * selected by selecting INBOX for this operation. */
 		ic = camel_imapx_command_new (
-			is, "DELETE", job->folder,
+			is, "DELETE", folder,
 			"DELETE %s", encoded_fname);
 		ic->pri = job->pri;
 		camel_imapx_command_set_job (ic, job);
 		ic->complete = imapx_command_delete_folder_done;
 
 		success = imapx_command_queue (is, ic, cancellable, error);
+
+		g_object_unref (folder);
 	}
 
 	g_free (encoded_fname);
@@ -5905,7 +6049,9 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
 	CamelIMAPXCommand *ic;
 	CamelIMAPXStore *store;
 	RenameFolderData *data;
-	gchar *en_ofname = NULL, *en_nfname = NULL;
+	CamelFolder *folder;
+	gchar *en_ofname = NULL;
+	gchar *en_nfname = NULL;
 	gboolean success = FALSE;
 
 	data = camel_imapx_job_get_data (job);
@@ -5916,18 +6062,22 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
 	en_ofname = imapx_encode_folder_name (store, data->old_folder_name);
 	en_nfname = imapx_encode_folder_name (store, data->new_folder_name);
 
-	job->folder = camel_store_get_folder_sync (
+	folder = camel_store_get_folder_sync (
 		CAMEL_STORE (store), "INBOX", 0, cancellable, error);
 
-	if (job->folder != NULL) {
+	if (folder != NULL) {
+		camel_imapx_job_set_folder (job, folder);
+
 		ic = camel_imapx_command_new (
-			is, "RENAME", job->folder,
+			is, "RENAME", folder,
 			"RENAME %s %s", en_ofname, en_nfname);
 		ic->pri = job->pri;
 		camel_imapx_command_set_job (ic, job);
 		ic->complete = imapx_command_rename_folder_done;
 
 		success = imapx_command_queue (is, ic, cancellable, error);
+
+		g_object_unref (folder);
 	}
 
 	g_free (en_ofname);
@@ -6035,16 +6185,21 @@ imapx_job_noop_start (CamelIMAPXJob *job,
                       GError **error)
 {
 	CamelIMAPXCommand *ic;
+	CamelFolder *folder;
+
+	folder = camel_imapx_job_ref_folder (job);
 
 	ic = camel_imapx_command_new (
-		is, "NOOP", job->folder, "NOOP");
+		is, "NOOP", folder, "NOOP");
 
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_command_noop_done;
-	if (job->folder)
+	if (folder != NULL) {
 		ic->pri = IMAPX_PRIORITY_REFRESH_INFO;
-	else
+		g_object_unref (folder);
+	} else {
 		ic->pri = IMAPX_PRIORITY_NOOP;
+	}
 
 	return imapx_command_queue (is, ic, cancellable, error);
 }
@@ -6083,6 +6238,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
                                  GError **error)
 {
 	CamelIMAPXJob *job;
+	CamelFolder *folder;
 	CamelStore *parent_store;
 	SyncChangesData *data;
 	const gchar *full_name;
@@ -6096,14 +6252,17 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
+
 	settings = camel_imapx_server_ref_settings (is);
 	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
 
 	job->commands--;
 
-	full_name = camel_folder_get_full_name (job->folder);
-	parent_store = camel_folder_get_parent_store (job->folder);
+	full_name = camel_folder_get_full_name (folder);
+	parent_store = camel_folder_get_parent_store (folder);
 
 	/* If this worked, we should really just update the changes that we
 	 * sucessfully stored, so we dont have to worry about sending them
@@ -6126,7 +6285,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 		gint i;
 
 		for (i = 0; i < data->changed_uids->len; i++) {
-			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_get (job->folder->summary,
+			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_get (folder->summary,
 					data->changed_uids->pdata[i]);
 
 			if (!xinfo)
@@ -6139,26 +6298,26 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 			xinfo->info.dirty = TRUE;
 			camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
 
-			camel_folder_summary_touch (job->folder->summary);
+			camel_folder_summary_touch (folder->summary);
 			camel_message_info_free (xinfo);
 		}
 		/* Apply the changes to server-side unread count; it won't tell
 		 * us of these changes, of course. */
-		((CamelIMAPXFolder *) job->folder)->unread_on_server += data->unread_change;
+		((CamelIMAPXFolder *) folder)->unread_on_server += data->unread_change;
 	}
 
 	if (job->commands == 0) {
-		if (job->folder->summary && (job->folder->summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
+		if (folder->summary && (folder->summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
 			CamelStoreInfo *si;
 
 			/* ... and store's summary when folder's summary is dirty */
 			si = camel_store_summary_path ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary, full_name);
 			if (si) {
-				if (si->total != camel_folder_summary_get_saved_count (job->folder->summary) ||
-				    si->unread != camel_folder_summary_get_unread_count (job->folder->summary)) {
-					si->total = camel_folder_summary_get_saved_count (job->folder->summary);
+				if (si->total != camel_folder_summary_get_saved_count (folder->summary) ||
+				    si->unread != camel_folder_summary_get_unread_count (folder->summary)) {
+					si->total = camel_folder_summary_get_saved_count (folder->summary);
 					if (!mobile_mode) /* Don't mess with server's unread count in mobile mode, as what we have downloaded is little */
-						si->unread = camel_folder_summary_get_unread_count (job->folder->summary);
+						si->unread = camel_folder_summary_get_unread_count (folder->summary);
 					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 				}
 
@@ -6166,11 +6325,13 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 			}
 		}
 
-		camel_folder_summary_save_to_db (job->folder->summary, error);
+		camel_folder_summary_save_to_db (folder->summary, error);
 		camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 
 		imapx_unregister_job (is, job);
 	}
+
+	g_object_unref (folder);
 
 	camel_imapx_command_unref (ic);
 
@@ -6184,6 +6345,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
                               GError **error)
 {
 	SyncChangesData *data;
+	CamelFolder *folder;
 	guint32 i, j;
 	struct _uidset_state ss;
 	GPtrArray *uids;
@@ -6191,6 +6353,9 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
+
+	folder = camel_imapx_job_ref_folder (job);
+	g_return_val_if_fail (folder != NULL, FALSE);
 
 	uids = data->changed_uids;
 
@@ -6216,7 +6381,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 
 				info = (CamelIMAPXMessageInfo *)
 					camel_folder_summary_get (
-						job->folder->summary,
+						folder->summary,
 						uids->pdata[i]);
 
 				if (info == NULL)
@@ -6241,7 +6406,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 				     || (!on && (((flags ^ sflags) & ~flags) & flag))) {
 					if (ic == NULL) {
 						ic = camel_imapx_command_new (
-							is, "STORE", job->folder,
+							is, "STORE", folder,
 							"UID STORE ");
 						ic->complete = imapx_command_sync_changes_done;
 						camel_imapx_command_set_job (ic, job);
@@ -6282,7 +6447,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 
 					if (ic == NULL) {
 						ic = camel_imapx_command_new (
-							is, "STORE", job->folder,
+							is, "STORE", folder,
 							"UID STORE ");
 						ic->complete = imapx_command_sync_changes_done;
 						camel_imapx_command_set_job (ic, job);
@@ -6303,12 +6468,13 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 	}
 
 exit:
+	g_object_unref (folder);
+
 	/* Since this may start in another thread ... we need to
 	 * lock the commands count, ho hum */
 
-	if (job->commands == 0) {
+	if (job->commands == 0)
 		imapx_unregister_job (is, job);
-	}
 
 	return TRUE;
 }
@@ -6318,7 +6484,7 @@ imapx_job_sync_changes_matches (CamelIMAPXJob *job,
                                 CamelFolder *folder,
                                 const gchar *uid)
 {
-	return (folder == job->folder);
+	return camel_imapx_job_has_folder (job, folder);
 }
 
 /* we cancel all the commands and their jobs, so associated jobs will be notified */
@@ -6933,7 +7099,8 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	job->type = IMAPX_JOB_GET_MESSAGE;
 	job->start = imapx_job_get_message_start;
 	job->matches = imapx_job_get_message_matches;
-	job->folder = folder;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) get_message_data_free);
@@ -7035,7 +7202,8 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_COPY_MESSAGE;
 	job->start = imapx_job_copy_messages_start;
-	job->folder = g_object_ref (source);
+
+	camel_imapx_job_set_folder (job, source);
 
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) copy_messages_data_free);
@@ -7062,10 +7230,11 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	gint res;
 	gboolean success;
 
-	/* Append just assumes we have no/a dodgy connection.  We dump stuff into the 'new'
-	 * directory, and let the summary know it's there.  Then we fire off a no-reply
-	 * job which will asynchronously upload the message at some point in the future,
-	 * and fix up the summary to match */
+	/* Append just assumes we have no/a dodgy connection.  We dump
+	 * stuff into the 'new' directory, and let the summary know it's
+	 * there.  Then we fire off a no-reply job which will asynchronously
+	 * upload the message at some point in the future, and fix up the
+	 * summary to match */
 
 	/* chen cleanup this later */
 	uid = imapx_get_temp_uid ();
@@ -7137,15 +7306,16 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_APPEND_MESSAGE;
 	job->start = imapx_job_append_message_start;
-	job->folder = g_object_ref (folder);
 	job->noreply = FALSE;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) append_message_data_free);
 
 	success = imapx_submit_job (is, job, error);
 
-	if (appended_uid) {
+	if (appended_uid != NULL) {
 		*appended_uid = data->appended_uid;
 		data->appended_uid = NULL;
 	}
@@ -7167,8 +7337,9 @@ camel_imapx_server_noop (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_NOOP;
 	job->start = imapx_job_noop_start;
-	job->folder = folder;
 	job->pri = IMAPX_PRIORITY_NOOP;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	success = imapx_submit_job (is, job, error);
 
@@ -7207,8 +7378,9 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	job->type = IMAPX_JOB_REFRESH_INFO;
 	job->start = imapx_job_refresh_info_start;
 	job->matches = imapx_job_refresh_info_matches;
-	job->folder = folder;
 	job->pri = IMAPX_PRIORITY_REFRESH_INFO;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	if (g_ascii_strcasecmp (full_name, "INBOX") == 0)
 		job->pri += 10;
@@ -7449,7 +7621,8 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	job->start = imapx_job_sync_changes_start;
 	job->matches = imapx_job_sync_changes_matches;
 	job->pri = pri;
-	job->folder = folder;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) sync_changes_data_free);
@@ -7502,7 +7675,8 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	job->start = imapx_job_expunge_start;
 	job->matches = imapx_job_expunge_matches;
 	job->pri = IMAPX_PRIORITY_EXPUNGE;
-	job->folder = folder;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	registered = imapx_register_job (is, job, error);
 
@@ -7695,10 +7869,10 @@ camel_imapx_server_delete_folder (CamelIMAPXServer *is,
 
 static gboolean
 imapx_job_fetch_messages_matches (CamelIMAPXJob *job,
-                                      CamelFolder *folder,
-                                      const gchar *uid)
+                                  CamelFolder *folder,
+                                  const gchar *uid)
 {
-	return (folder == job->folder);
+	return camel_imapx_job_has_folder (job, folder);
 }
 
 gboolean
@@ -7741,8 +7915,9 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 	job->type = IMAPX_JOB_FETCH_MESSAGES;
 	job->start = imapx_job_fetch_messages_start;
 	job->matches = imapx_job_fetch_messages_matches;
-	job->folder = folder;
 	job->pri = IMAPX_PRIORITY_NEW_MESSAGES;
+
+	camel_imapx_job_set_folder (job, folder);
 
 	full_name = camel_folder_get_full_name (folder);
 
@@ -7854,21 +8029,36 @@ camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 	QUEUE_LOCK (is);
 
 	jinfo->queue_len = g_queue_get_length (&is->jobs);
-	jinfo->folders = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+	jinfo->folders = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
 
 	head = g_queue_peek_head_link (&is->jobs);
 
 	for (link = head; link != NULL; link = g_list_next (link)) {
-		job = (CamelIMAPXJob *) link->data;
+		CamelFolder *folder;
 
-		if (job->folder) {
-			const gchar *full_name = camel_folder_get_full_name (job->folder);
-			g_hash_table_insert (jinfo->folders, g_strdup (full_name), GINT_TO_POINTER (1));
+		job = (CamelIMAPXJob *) link->data;
+		folder = camel_imapx_job_ref_folder (job);
+
+		if (folder != NULL) {
+			gchar *folder_name;
+
+			folder_name = camel_folder_dup_full_name (folder);
+			g_hash_table_add (jinfo->folders, folder_name);
+
+			g_object_unref (folder);
 		}
 	}
 
-	if (is->select_folder)
-		g_hash_table_insert (jinfo->folders, g_strdup (camel_folder_get_full_name (is->select_folder)), GINT_TO_POINTER (1));
+	if (is->select_folder != NULL) {
+		gchar *folder_name;
+
+		folder_name = camel_folder_dup_full_name (is->select_folder);
+		g_hash_table_add (jinfo->folders, folder_name);
+	}
 
 	QUEUE_UNLOCK (is);
 

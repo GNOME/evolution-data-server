@@ -56,8 +56,6 @@ struct _CamelIMAPXJob {
 	guint32 type;		/* operation type */
 	gint pri;		/* the command priority */
 	gshort commands;	/* counts how many commands are outstanding */
-
-	CamelFolder *folder;
 };
 
 CamelIMAPXJob *	camel_imapx_job_new		(GCancellable *cancellable);
@@ -77,6 +75,11 @@ gpointer	camel_imapx_job_get_data	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_data	(CamelIMAPXJob *job,
 						 gpointer data,
 						 GDestroyNotify destroy_data);
+gboolean	camel_imapx_job_has_folder	(CamelIMAPXJob *job,
+						 CamelFolder *folder);
+CamelFolder *	camel_imapx_job_ref_folder	(CamelIMAPXJob *job);
+void		camel_imapx_job_set_folder	(CamelIMAPXJob *job,
+						 CamelFolder *folder);
 
 G_END_DECLS
 
