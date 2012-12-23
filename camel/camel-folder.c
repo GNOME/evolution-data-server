@@ -66,6 +66,8 @@ struct _CamelFolderPrivate {
 
 	gpointer parent_store;  /* weak pointer */
 
+	GMutex property_lock;
+
 	gchar *full_name;
 	gchar *display_name;
 	gchar *description;
@@ -513,20 +515,20 @@ folder_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_DESCRIPTION:
-			g_value_set_string (
-				value, camel_folder_get_description (
+			g_value_take_string (
+				value, camel_folder_dup_description (
 				CAMEL_FOLDER (object)));
 			return;
 
 		case PROP_DISPLAY_NAME:
-			g_value_set_string (
-				value, camel_folder_get_display_name (
+			g_value_take_string (
+				value, camel_folder_dup_display_name (
 				CAMEL_FOLDER (object)));
 			return;
 
 		case PROP_FULL_NAME:
-			g_value_set_string (
-				value, camel_folder_get_full_name (
+			g_value_take_string (
+				value, camel_folder_dup_full_name (
 				CAMEL_FOLDER (object)));
 			return;
 
@@ -569,6 +571,8 @@ folder_finalize (GObject *object)
 	CamelFolderPrivate *priv;
 
 	priv = CAMEL_FOLDER_GET_PRIVATE (object);
+
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->full_name);
 	g_free (priv->display_name);
@@ -1915,6 +1919,7 @@ camel_folder_init (CamelFolder *folder)
 
 	g_rec_mutex_init (&folder->priv->lock);
 	g_mutex_init (&folder->priv->change_lock);
+	g_mutex_init (&folder->priv->property_lock);
 }
 
 GQuark
@@ -1990,6 +1995,37 @@ camel_folder_get_full_name (CamelFolder *folder)
 }
 
 /**
+ * camel_folder_dup_full_name:
+ * @folder: a #CamelFolder
+ *
+ * Thread-safe variation of camel_folder_get_full_name().
+ * Use this function when accessing @folder from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelFolder:full-name
+ *
+ * Since: 3.8
+ **/
+gchar *
+camel_folder_dup_full_name (CamelFolder *folder)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	g_mutex_lock (&folder->priv->property_lock);
+
+	protected = camel_folder_get_full_name (folder);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&folder->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_folder_set_full_name:
  * @folder: a #CamelFolder
  * @full_name: a fully qualified name for the folder
@@ -2004,11 +2040,17 @@ camel_folder_set_full_name (CamelFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	if (g_strcmp0 (folder->priv->full_name, full_name) == 0)
+	g_mutex_lock (&folder->priv->property_lock);
+
+	if (g_strcmp0 (folder->priv->full_name, full_name) == 0) {
+		g_mutex_unlock (&folder->priv->property_lock);
 		return;
+	}
 
 	g_free (folder->priv->full_name);
 	folder->priv->full_name = g_strdup (full_name);
+
+	g_mutex_unlock (&folder->priv->property_lock);
 
 	g_object_notify (G_OBJECT (folder), "full-name");
 }
@@ -2033,6 +2075,37 @@ camel_folder_get_display_name (CamelFolder *folder)
 }
 
 /**
+ * camel_folder_dup_display_name:
+ * @folder: a #CamelFolder
+ *
+ * Thread-safe variation of camel_folder_get_display_name().
+ * Use this function when accessing @folder from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelFolder:display-name
+ *
+ * Since: 3.8
+ **/
+gchar *
+camel_folder_dup_display_name (CamelFolder *folder)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	g_mutex_lock (&folder->priv->property_lock);
+
+	protected = camel_folder_get_display_name (folder);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&folder->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_folder_set_display_name:
  * @folder: a #CamelFolder
  * @display_name: a display name for the folder
@@ -2047,11 +2120,17 @@ camel_folder_set_display_name (CamelFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	if (g_strcmp0 (folder->priv->display_name, display_name) == 0)
+	g_mutex_lock (&folder->priv->property_lock);
+
+	if (g_strcmp0 (folder->priv->display_name, display_name) == 0) {
+		g_mutex_unlock (&folder->priv->property_lock);
 		return;
+	}
 
 	g_free (folder->priv->display_name);
 	folder->priv->display_name = g_strdup (display_name);
+
+	g_mutex_unlock (&folder->priv->property_lock);
 
 	g_object_notify (G_OBJECT (folder), "display-name");
 }
@@ -2079,6 +2158,37 @@ camel_folder_get_description (CamelFolder *folder)
 }
 
 /**
+ * camel_folder_dup_description:
+ * @folder: a #CamelFolder
+ *
+ * Thread-safe variation of camel_folder_get_description().
+ * Use this function when accessing @folder from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelFolder:description
+ *
+ * Since: 3.8
+ **/
+gchar *
+camel_folder_dup_description (CamelFolder *folder)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	g_mutex_lock (&folder->priv->property_lock);
+
+	protected = camel_folder_get_description (folder);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&folder->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_folder_set_description:
  * @folder: a #CamelFolder
  * @description: a description of the folder
@@ -2093,11 +2203,17 @@ camel_folder_set_description (CamelFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	if (g_strcmp0 (folder->priv->description, description) == 0)
+	g_mutex_lock (&folder->priv->property_lock);
+
+	if (g_strcmp0 (folder->priv->description, description) == 0) {
+		g_mutex_unlock (&folder->priv->property_lock);
 		return;
+	}
 
 	g_free (folder->priv->description);
 	folder->priv->description = g_strdup (description);
+
+	g_mutex_unlock (&folder->priv->property_lock);
 
 	g_object_notify (G_OBJECT (folder), "description");
 }

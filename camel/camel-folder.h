@@ -393,12 +393,15 @@ void		camel_folder_set_lock_async	(CamelFolder *folder,
 struct _CamelStore *
 		camel_folder_get_parent_store	(CamelFolder *folder);
 const gchar *	camel_folder_get_full_name	(CamelFolder *folder);
+gchar *		camel_folder_dup_full_name	(CamelFolder *folder);
 void		camel_folder_set_full_name	(CamelFolder *folder,
 						 const gchar *full_name);
 const gchar *	camel_folder_get_display_name	(CamelFolder *folder);
+gchar *		camel_folder_dup_display_name	(CamelFolder *folder);
 void		camel_folder_set_display_name	(CamelFolder *folder,
 						 const gchar *display_name);
 const gchar *	camel_folder_get_description	(CamelFolder *folder);
+gchar *		camel_folder_dup_description	(CamelFolder *folder);
 void		camel_folder_set_description	(CamelFolder *folder,
 						 const gchar *description);
 CamelMessageFlags
