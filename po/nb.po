@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.7.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-19 14:15+0100\n"
-"PO-Revision-Date: 2012-12-19 14:25+0100\n"
+"POT-Creation-Date: 2012-12-23 12:15+0100\n"
+"PO-Revision-Date: 2012-12-23 12:19+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -1851,11 +1851,11 @@ msgstr "Forbereder mappe «%s» på frakobling"
 msgid "Copy folder content locally for _offline operation"
 msgstr "Kopier mappeinnhold lokalt for å jobbe frak_oblet"
 
-#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:429
-#: ../camel/camel-imapx-folder.c:465 ../camel/camel-imapx-folder.c:504
-#: ../camel/camel-imapx-folder.c:564 ../camel/camel-imapx-folder.c:699
-#: ../camel/camel-imapx-folder.c:880 ../camel/camel-imapx-folder.c:940
-#: ../camel/camel-imapx-folder.c:979 ../camel/camel-imapx-store.c:320
+#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:387
+#: ../camel/camel-imapx-folder.c:423 ../camel/camel-imapx-folder.c:462
+#: ../camel/camel-imapx-folder.c:522 ../camel/camel-imapx-folder.c:657
+#: ../camel/camel-imapx-folder.c:838 ../camel/camel-imapx-folder.c:898
+#: ../camel/camel-imapx-folder.c:937 ../camel/camel-imapx-store.c:320
 #: ../camel/camel-imapx-store.c:1454 ../camel/camel-imapx-store.c:1543
 #: ../camel/camel-imapx-store.c:1592
 #: ../camel/providers/imap/camel-imap-store.c:1270
@@ -2026,7 +2026,37 @@ msgstr "Henter kvoteinformasjon for «%s»"
 msgid "Refreshing folder '%s'"
 msgstr "Oppdaterer mappe «%s»"
 
-#: ../camel/camel-folder-search.c:420 ../camel/camel-folder-search.c:587
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../camel/camel-folder-search.c:824 ../camel/camel-folder-search.c:867
+#, c-format
+msgid "(%s) requires a single bool result"
+msgstr "(%s) krever et enkelt bolsk resultat"
+
+#. Translators: Each '%s' is an element type name, part of an expressing language
+#: ../camel/camel-folder-search.c:902
+#, c-format
+msgid "(%s) not allowed inside %s"
+msgstr "(%s) tillates ikke inne i %s"
+
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../camel/camel-folder-search.c:909 ../camel/camel-folder-search.c:917
+#, c-format
+msgid "(%s) requires a match type string"
+msgstr "(%s) krever en streng for trefftype"
+
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../camel/camel-folder-search.c:945
+#, c-format
+msgid "(%s) expects an array result"
+msgstr "(%s) forventer resultat på tabellform"
+
+#. Translators: The '%s' is an element type name, part of an expressing language
+#: ../camel/camel-folder-search.c:955
+#, c-format
+msgid "(%s) requires the folder set"
+msgstr "(%s) krever et mappesett"
+
+#: ../camel/camel-folder-search.c:1789 ../camel/camel-folder-search.c:1956
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2035,7 +2065,7 @@ msgstr ""
 "Kan ikke tolke uttrykket: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:432 ../camel/camel-folder-search.c:599
+#: ../camel/camel-folder-search.c:1801 ../camel/camel-folder-search.c:1968
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2043,36 +2073,6 @@ msgid ""
 msgstr ""
 "Feil under kjøring av søkeuttrykket %s:\n"
 "%s"
-
-#. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:822 ../camel/camel-folder-search.c:865
-#, c-format
-msgid "(%s) requires a single bool result"
-msgstr "(%s) krever et enkelt bolsk resultat"
-
-#. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:932
-#, c-format
-msgid "(%s) not allowed inside %s"
-msgstr "(%s) tillates ikke inne i %s"
-
-#. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:939 ../camel/camel-folder-search.c:947
-#, c-format
-msgid "(%s) requires a match type string"
-msgstr "(%s) krever en streng for trefftype"
-
-#. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:975
-#, c-format
-msgid "(%s) expects an array result"
-msgstr "(%s) forventer resultat på tabellform"
-
-#. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:985
-#, c-format
-msgid "(%s) requires the folder set"
-msgstr "(%s) krever et mappesett"
 
 #: ../camel/camel-gpg-context.c:691 ../camel/camel-gpg-context.c:696
 #: ../camel/camel-gpg-context.c:1359
@@ -2205,83 +2205,83 @@ msgstr "Feil under dekryptering av MIME-del: protokollfeil"
 msgid "Encrypted content"
 msgstr "Kryptert innhold"
 
-#: ../camel/camel-imapx-folder.c:661
+#: ../camel/camel-imapx-folder.c:619
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "Kvoteinformasjon er ikke tilgjengelig for mappe «%s»"
 
-#: ../camel/camel-imapx-folder.c:760 ../camel/camel-imapx-folder.c:831
+#: ../camel/camel-imapx-folder.c:718 ../camel/camel-imapx-folder.c:789
 #, c-format
 msgid "No destination folder specified"
 msgstr "Ingen målmappe oppgitt"
 
-#: ../camel/camel-imapx-folder.c:777
+#: ../camel/camel-imapx-folder.c:735
 msgid "Unable to move junk messages"
 msgstr "Kan ikke flytte uønskede meldinger"
 
-#: ../camel/camel-imapx-folder.c:848
+#: ../camel/camel-imapx-folder.c:806
 msgid "Unable to move deleted messages"
 msgstr "Kan ikke flytte slettede meldinger"
 
-#: ../camel/camel-imapx-folder.c:1062
+#: ../camel/camel-imapx-folder.c:1020
 #: ../camel/providers/imap/camel-imap-folder.c:367
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "Bruk mappe_filter på denne mappen"
 
-#: ../camel/camel-imapx-folder.c:1171
+#: ../camel/camel-imapx-folder.c:1129
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Kunne ikke lage sammendrag for mappe %s"
 
-#: ../camel/camel-imapx-folder.c:1179
+#: ../camel/camel-imapx-folder.c:1137
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Kunne ikke lage mellomlager for %s: "
 
-#: ../camel/camel-imapx-server.c:1217
+#: ../camel/camel-imapx-server.c:1223
 msgid "Server disconnected"
 msgstr "Tjener frakoblet"
 
-#: ../camel/camel-imapx-server.c:1683
+#: ../camel/camel-imapx-server.c:1689
 msgid "Error writing to cache stream"
 msgstr "Feil ved skriving til mellomlagerstrøm"
 
-#: ../camel/camel-imapx-server.c:2776
+#: ../camel/camel-imapx-server.c:2782
 #, c-format
 msgid "Not authenticated"
 msgstr "Ikke autentisert"
 
-#: ../camel/camel-imapx-server.c:2854
+#: ../camel/camel-imapx-server.c:2860
 msgid "Error performing IDLE"
 msgstr "Feil ved utføring av IDLE"
 
-#: ../camel/camel-imapx-server.c:3750
+#: ../camel/camel-imapx-server.c:3756
 #: ../camel/providers/imap/camel-imap-store.c:414
 #: ../camel/providers/imap/camel-imap-store.c:468
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
-#: ../camel/camel-imapx-server.c:3751
+#: ../camel/camel-imapx-server.c:3757
 #: ../camel/providers/imap/camel-imap-store.c:415
 #: ../camel/providers/smtp/camel-smtp-transport.c:202
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
-#: ../camel/camel-imapx-server.c:3790
+#: ../camel/camel-imapx-server.c:3796
 #: ../camel/providers/imap/camel-imap-store.c:440
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Klarte ikke å koble til IMAP-tjener %s i sikker modus: "
 
-#: ../camel/camel-imapx-server.c:3870
+#: ../camel/camel-imapx-server.c:3876
 #: ../camel/providers/imap/camel-imap-store.c:749
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
 
-#: ../camel/camel-imapx-server.c:3881 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:3887 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
 #: ../camel/providers/pop3/camel-pop3-store.c:266
 #: ../camel/providers/pop3/camel-pop3-store.c:604
@@ -2290,14 +2290,14 @@ msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
 msgid "No support for %s authentication"
 msgstr "Ingen støtte for autentiseringstype %s"
 
-#: ../camel/camel-imapx-server.c:3900
+#: ../camel/camel-imapx-server.c:3906
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:314
 #: ../camel/providers/nntp/camel-nntp-store.c:512
 msgid "Cannot authenticate without a username"
 msgstr "Kan ikke autentisere uten brukernavn"
 
-#: ../camel/camel-imapx-server.c:3909
+#: ../camel/camel-imapx-server.c:3915
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:521
 #: ../camel/providers/pop3/camel-pop3-store.c:529
@@ -2305,115 +2305,115 @@ msgstr "Kan ikke autentisere uten brukernavn"
 msgid "Authentication password not available"
 msgstr "Passord for autentisering er ikke tilgjengelig"
 
-#: ../camel/camel-imapx-server.c:4112
+#: ../camel/camel-imapx-server.c:4118
 msgid "Error fetching message"
 msgstr "Feil ved henting av melding"
 
-#: ../camel/camel-imapx-server.c:4197
+#: ../camel/camel-imapx-server.c:4203
 msgid "Failed to copy the tmp file"
 msgstr "Klarte ikke å kopiere midlertidig fil"
 
-#: ../camel/camel-imapx-server.c:4211
+#: ../camel/camel-imapx-server.c:4217
 msgid "Failed to close the tmp stream"
 msgstr "Klarte ikke å lukke midlertidig strøm"
 
-#: ../camel/camel-imapx-server.c:4320
+#: ../camel/camel-imapx-server.c:4326
 msgid "Error copying messages"
 msgstr "Feil ved kopiering av meldinger"
 
-#: ../camel/camel-imapx-server.c:4466
+#: ../camel/camel-imapx-server.c:4472
 msgid "Error appending message"
 msgstr "Feil ved forsøk på å legge til en melding"
 
-#: ../camel/camel-imapx-server.c:4653
+#: ../camel/camel-imapx-server.c:4659
 msgid "Error fetching message headers"
 msgstr "Feil ved henting av meldingshoder"
 
-#: ../camel/camel-imapx-server.c:4790
+#: ../camel/camel-imapx-server.c:4796
 msgid "Error retrieving message"
 msgstr "Feil ved henting av melding"
 
-#: ../camel/camel-imapx-server.c:4912 ../camel/camel-imapx-server.c:5118
+#: ../camel/camel-imapx-server.c:4918 ../camel/camel-imapx-server.c:5124
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Henter sammendragsinformasjon for nye meldinger i «%s»"
 
-#: ../camel/camel-imapx-server.c:4967
+#: ../camel/camel-imapx-server.c:4973
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Søker etter endrede meldinger i «%s»"
 
-#: ../camel/camel-imapx-server.c:5014
+#: ../camel/camel-imapx-server.c:5020
 msgid "Error fetching new messages"
 msgstr "Feil ved henting av nye meldinger"
 
-#: ../camel/camel-imapx-server.c:5215
+#: ../camel/camel-imapx-server.c:5221
 msgid "Error while fetching messages"
 msgstr "Feil ved henting av meldinger"
 
-#: ../camel/camel-imapx-server.c:5222 ../camel/camel-imapx-server.c:5255
+#: ../camel/camel-imapx-server.c:5228 ../camel/camel-imapx-server.c:5261
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Henter sammendragsinformasjon for %d melding i «%s»"
 msgstr[1] "Henter sammendragsinformasjon for %d meldinger i «%s»"
 
-#: ../camel/camel-imapx-server.c:5383 ../camel/camel-imapx-server.c:5413
+#: ../camel/camel-imapx-server.c:5389 ../camel/camel-imapx-server.c:5419
 msgid "Error refreshing folder"
 msgstr "Feil ved oppdatering av mappe"
 
-#: ../camel/camel-imapx-server.c:5509
+#: ../camel/camel-imapx-server.c:5515
 msgid "Error expunging message"
 msgstr "Feil ved tømming av melding"
 
-#: ../camel/camel-imapx-server.c:5613
+#: ../camel/camel-imapx-server.c:5619
 msgid "Error fetching folders"
 msgstr "Feil ved henting av mapper"
 
-#: ../camel/camel-imapx-server.c:5695
+#: ../camel/camel-imapx-server.c:5701
 msgid "Error subscribing to folder"
 msgstr "Feil ved abonnering på mappe"
 
-#: ../camel/camel-imapx-server.c:5760
+#: ../camel/camel-imapx-server.c:5766
 msgid "Error creating folder"
 msgstr "Feil ved oppretting av mappe"
 
-#: ../camel/camel-imapx-server.c:5814
+#: ../camel/camel-imapx-server.c:5820
 msgid "Error deleting folder"
 msgstr "Feil ved sletting av mappe"
 
-#: ../camel/camel-imapx-server.c:5883
+#: ../camel/camel-imapx-server.c:5889
 msgid "Error renaming folder"
 msgstr "Feil ved endring av navn på mappe"
 
-#: ../camel/camel-imapx-server.c:5952
+#: ../camel/camel-imapx-server.c:5958
 msgid "Error retrieving quota information"
 msgstr "Feil ved henting av kvoteinformasjon"
 
-#: ../camel/camel-imapx-server.c:6015
+#: ../camel/camel-imapx-server.c:6021
 msgid "Error performing NOOP"
 msgstr "Feil ved utføring av NOOP"
 
-#: ../camel/camel-imapx-server.c:6115
+#: ../camel/camel-imapx-server.c:6121
 msgid "Error syncing changes"
 msgstr "Feil ved synkronisering av endringer"
 
-#: ../camel/camel-imapx-server.c:6894
+#: ../camel/camel-imapx-server.c:6918
 #: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente melding med meldings-ID %s: %s"
 
-#: ../camel/camel-imapx-server.c:6895
+#: ../camel/camel-imapx-server.c:6919
 #: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
-#: ../camel/camel-imapx-server.c:7050 ../camel/camel-imapx-server.c:7065
+#: ../camel/camel-imapx-server.c:7074 ../camel/camel-imapx-server.c:7089
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
-#: ../camel/camel-imapx-server.c:7798
+#: ../camel/camel-imapx-server.c:7825
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-tjener støtter ikke kvoter"
 
@@ -2921,7 +2921,7 @@ msgstr "POP før SMTP autentisering via en ukjent transport"
 msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr "POP før SMTP autentisering forsøkt med en %s-tjeneste"
 
-#: ../camel/camel-search-private.c:112
+#: ../camel/camel-search-private.c:116
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Kompilering av regulært uttrykk feilet: %s: %s"
@@ -5647,9 +5647,8 @@ msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:378
 #: ../modules/trust-prompt/e-asn1-object.c:428
-#, fuzzy
 msgid "Error: Unable to process extension"
-msgstr "Kan ikke prosessere spool-mappen"
+msgstr "Feil: Kan ikke prosessere utvidelse"
 
 #: ../modules/trust-prompt/e-asn1-object.c:395
 msgid "Email"
@@ -5666,7 +5665,7 @@ msgstr "SSL-sertifikatmyndighet"
 
 #: ../modules/trust-prompt/e-asn1-object.c:407
 msgid "Email Certificate Authority"
-msgstr ""
+msgstr "E-post sertifikatautoritet"
 
 #: ../modules/trust-prompt/e-asn1-object.c:436
 msgid "Signing"
@@ -5689,13 +5688,12 @@ msgid "Key Agreement"
 msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:456
-#, fuzzy
 msgid "Certificate Signer"
-msgstr "Import av sertifikat feilet"
+msgstr "Signerer av sertifikat"
 
 #: ../modules/trust-prompt/e-asn1-object.c:460
 msgid "CRL Signer"
-msgstr ""
+msgstr "Signerer av CRL"
 
 #: ../modules/trust-prompt/e-asn1-object.c:509
 msgid "Critical"
@@ -5729,9 +5727,8 @@ msgstr "Sertifikat"
 
 #: ../modules/trust-prompt/e-asn1-object.c:672
 #: ../modules/trust-prompt/e-asn1-object.c:807
-#, fuzzy
 msgid "Certificate Signature Algorithm"
-msgstr "Ukjent signeringsalgoritme"
+msgstr "Signeringsalgoritme for sertifikat"
 
 #: ../modules/trust-prompt/e-asn1-object.c:681
 msgid "Issuer"
@@ -5742,9 +5739,8 @@ msgid "Subject"
 msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:735
-#, fuzzy
 msgid "Issuer Unique ID"
-msgstr "Unik ID"
+msgstr "Unik ID for utsteder"
 
 #: ../modules/trust-prompt/e-asn1-object.c:754
 #, fuzzy
@@ -5752,14 +5748,12 @@ msgid "Subject Unique ID"
 msgstr "Unik ID"
 
 #: ../modules/trust-prompt/e-asn1-object.c:813
-#, fuzzy
 msgid "Certificate Signature Value"
-msgstr "Import av sertifikat feilet"
+msgstr "Signaturverdi for sertifikat"
 
 #: ../modules/trust-prompt/module-trust-prompt.c:200
-#, fuzzy
 msgid "The signing certificate authority is not known."
-msgstr "Sertifikat for signering ble ikke funnet"
+msgstr "Signerende sertifikatautoritet er ikke kjent."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:202
 msgid ""
@@ -5786,9 +5780,8 @@ msgid "The certificate's algorithm is considered insecure."
 msgstr ""
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:158
-#, fuzzy
 msgid "Certificate trust..."
-msgstr "Stoler ikke på sertifikat for signering"
+msgstr "Tillit til sertifikat …"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:159
 msgid "_View Certificate"
