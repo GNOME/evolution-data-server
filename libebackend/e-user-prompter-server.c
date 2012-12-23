@@ -386,7 +386,7 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 	object_class->finalize = user_prompter_server_finalize;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
-	dbus_server_class->bus_name = E_USER_PROMPTER_SERVER_OBJECT_PATH;
+	dbus_server_class->bus_name = USER_PROMPTER_DBUS_SERVICE_NAME;
 	dbus_server_class->module_directory = MODULE_DIRECTORY;
 	dbus_server_class->bus_acquired = user_prompter_server_bus_acquired;
 	dbus_server_class->quit_server = user_prompter_server_quit_server;

@@ -243,7 +243,7 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 	dbus_prompter = e_dbus_user_prompter_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
-		E_USER_PROMPTER_SERVER_OBJECT_PATH,
+		USER_PROMPTER_DBUS_SERVICE_NAME,
 		"/org/gnome/evolution/dataserver/UserPrompter",
 		cancellable,
 		&local_error);
