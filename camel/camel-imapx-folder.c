@@ -809,16 +809,18 @@ imapx_move_to_real_junk (CamelIMAPXServer *server,
 				_("No destination folder specified"));
 		}
 
-		if (destination != NULL) {
+		/* Avoid duplicating messages in the Junk folder. */
+		if (destination == folder) {
+			success = TRUE;
+		} else if (destination != NULL) {
 			success = camel_imapx_server_copy_message (
 				server, folder, destination,
 				uids_to_copy, TRUE,
 				cancellable, error);
+			*out_need_to_expunge = success;
 		} else {
 			success = FALSE;
 		}
-
-		*out_need_to_expunge = success;
 
 		if (!success) {
 			g_prefix_error (
@@ -880,16 +882,18 @@ imapx_move_to_real_trash (CamelIMAPXServer *server,
 				_("No destination folder specified"));
 		}
 
-		if (destination != NULL) {
+		/* Avoid duplicating messages in the Trash folder. */
+		if (destination == folder) {
+			success = TRUE;
+		} else if (destination != NULL) {
 			success = camel_imapx_server_copy_message (
 				server, folder, destination,
 				uids_to_copy, TRUE,
 				cancellable, error);
+			*out_need_to_expunge = success;
 		} else {
 			success = FALSE;
 		}
-
-		*out_need_to_expunge = success;
 
 		if (!success) {
 			g_prefix_error (
