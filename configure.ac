@@ -1578,7 +1578,6 @@ calendar/backends/contacts/Makefile
 calendar/backends/weather/Makefile
 camel/Makefile
 camel/providers/Makefile
-camel/providers/imap/Makefile
 camel/providers/imapx/Makefile
 camel/providers/local/Makefile
 camel/providers/nntp/Makefile

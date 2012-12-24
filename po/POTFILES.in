@@ -138,17 +138,6 @@ camel/camel-vee-folder.c
 camel/camel-vee-store.c
 camel/camel-vee-summary.c
 camel/camel-vtrash-folder.c
-camel/providers/imap/camel-imap-command.c
-camel/providers/imap/camel-imap-folder.c
-camel/providers/imap/camel-imap-journal.c
-camel/providers/imap/camel-imap-message-cache.c
-camel/providers/imap/camel-imap-provider.c
-camel/providers/imap/camel-imap-search.c
-camel/providers/imap/camel-imap-store.c
-camel/providers/imap/camel-imap-store-summary.c
-camel/providers/imap/camel-imap-summary.c
-camel/providers/imap/camel-imap-utils.c
-camel/providers/imap/camel-imap-wrapper.c
 camel/providers/imapx/camel-imapx-provider.c
 camel/providers/local/camel-local-folder.c
 camel/providers/local/camel-local-provider.c
