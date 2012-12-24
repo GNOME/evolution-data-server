@@ -27,6 +27,7 @@ evolution_source_registry_SOURCES = \
 	evolution-source-registry.c \
 	evolution-source-registry-migrate-basedir.c \
 	evolution-source-registry-migrate-sources.c \
+	evolution-source-registry-migrate-imap-to-imapx.c \
 	$(NULL)
 
 evolution_source_registry_LDADD = \

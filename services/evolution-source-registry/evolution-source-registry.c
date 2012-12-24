@@ -31,6 +31,11 @@
 void evolution_source_registry_migrate_basedir (void);
 void evolution_source_registry_migrate_sources (void);
 
+gboolean	evolution_source_registry_migrate_imap_to_imapx
+						(ESourceRegistryServer *server,
+						 GKeyFile *key_file,
+						 const gchar *uid);
+
 gint
 main (gint argc,
       gchar **argv)
@@ -63,6 +68,12 @@ reload:
 	evolution_source_registry_migrate_sources ();
 
 	server = e_source_registry_server_new ();
+
+	/* Convert "imap" mail accounts to "imapx". */
+	g_signal_connect (
+		server, "tweak-key-file", G_CALLBACK (
+		evolution_source_registry_migrate_imap_to_imapx),
+		NULL);
 
 	/* Failure here is fatal.  Don't even try to keep going. */
 	e_source_registry_server_load_all (
