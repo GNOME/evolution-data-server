@@ -945,7 +945,7 @@ msgstr ""
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3731
 #, c-format
 msgid "Unable to remove the db file: errno %d"
-msgstr "Produciuse un erro ao eliminar o ficheiro da base de datos: errno d"
+msgstr "Produciuse un erro ao eliminar o ficheiro da base de datos: errno %d"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:208
