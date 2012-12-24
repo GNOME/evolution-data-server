@@ -105,6 +105,7 @@ enum {
 	FILES_LOADED,
 	SOURCE_ADDED,
 	SOURCE_REMOVED,
+	TWEAK_KEY_FILE,
 	LAST_SIGNAL
 };
 
@@ -1233,6 +1234,18 @@ source_registry_server_source_removed (ESourceRegistryServer *server,
 	g_object_unref (dbus_object);
 }
 
+static gboolean
+source_registry_server_any_true (GSignalInvocationHint *ihint,
+                                 GValue *return_accu,
+                                 const GValue *handler_return,
+                                 gpointer unused)
+{
+	if (g_value_get_boolean (handler_return))
+		g_value_set_boolean (return_accu, TRUE);
+
+	return TRUE;
+}
+
 static void
 e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 {
@@ -1316,7 +1329,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 
 	/**
 	 * ESourceRegistryServer::source-removed:
-	 * @server: the #ESourceRegistryServer when emitted the signal
+	 * @server: the #ESourceRegistryServer which emitted the signal
 	 * @source: the #EServerSideSource that got removed
 	 *
 	 * Emitted when an #EServerSideSource is removed from @server.
@@ -1330,6 +1343,39 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		g_cclosure_marshal_VOID__OBJECT,
 		G_TYPE_NONE, 1,
 		E_TYPE_SERVER_SIDE_SOURCE);
+
+	/**
+	 * ESourceRegistryServer::tweak-key-file:
+	 * @server: the #ESourceRegistryServer which emitted the signal
+	 * @key_file: a #GKeyFile
+	 * @uid: a unique identifier string for @key_file
+	 *
+	 * Emitted from e_source_registry_server_load_file() just prior
+	 * to instantiating an #EServerSideSource.  Signal handlers can
+	 * tweak the @key_file content as necessary and return %TRUE to
+	 * write the modified content back to disk.
+	 *
+	 * For the purposes of tweaking, it's easier to deal with a plain
+	 * #GKeyFile than an #ESource instance.  An #ESource, for example,
+	 * does not allow key file groups to be removed.
+	 *
+	 * The return value is cumulative.  If any signal handler returns
+	 * %TRUE, the @key_file content is written back to disk.
+	 *
+	 * Returns: %TRUE if @key_file was modified, %FALSE otherwise
+	 *
+	 * Since: 3.8
+	 **/
+	signals[TWEAK_KEY_FILE] = g_signal_new (
+		"tweak-key-file",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceRegistryServerClass, tweak_key_file),
+		source_registry_server_any_true, NULL,
+		NULL,
+		G_TYPE_BOOLEAN, 2,
+		G_TYPE_KEY_FILE,
+		G_TYPE_STRING);
 }
 
 static void
@@ -1749,6 +1795,57 @@ e_source_registry_server_load_directory (ESourceRegistryServer *server,
 	return TRUE;
 }
 
+/* Helper for e_source_registry_server_load_file() */
+static gboolean
+source_registry_server_tweak_key_file (ESourceRegistryServer *server,
+                                       GFile *file,
+                                       const gchar *uid,
+                                       GError **error)
+{
+	GKeyFile *key_file;
+	gchar *contents = NULL;
+	gsize length;
+	gboolean handler_pending;
+	gboolean success = FALSE;
+	gboolean tweaked = FALSE;
+
+	/* Skip this if no one's listening. */
+	handler_pending = g_signal_has_handler_pending (
+		server, signals[TWEAK_KEY_FILE], 0, FALSE);
+	if (!handler_pending)
+		return TRUE;
+
+	key_file = g_key_file_new ();
+
+	g_file_load_contents (file, NULL, &contents, &length, NULL, error);
+
+	if (contents != NULL) {
+		success = g_key_file_load_from_data (
+			key_file, contents, length,
+			G_KEY_FILE_KEEP_COMMENTS |
+			G_KEY_FILE_KEEP_TRANSLATIONS,
+			error);
+		g_free (contents);
+	}
+
+	if (success)
+		g_signal_emit (
+			server, signals[TWEAK_KEY_FILE], 0,
+			key_file, uid, &tweaked);
+
+	if (tweaked) {
+		contents = g_key_file_to_data (key_file, &length, NULL);
+		success = g_file_replace_contents (
+			file, contents, length, NULL, FALSE,
+			G_FILE_CREATE_NONE, NULL, NULL, error);
+		g_free (contents);
+	}
+
+	g_key_file_free (key_file);
+
+	return success;
+}
+
 /**
  * e_source_registry_server_load_file:
  * @server: an #ESourceRegistryServer
@@ -1775,6 +1872,7 @@ e_source_registry_server_load_file (ESourceRegistryServer *server,
 	ESource *source;
 	gboolean writable;
 	gboolean removable;
+	gboolean success = TRUE;
 	gchar *uid;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
@@ -1791,10 +1889,16 @@ e_source_registry_server_load_file (ESourceRegistryServer *server,
 	/* Check if we already have this file loaded. */
 	source = e_source_registry_server_ref_source (server, uid);
 
-	g_free (uid);
+	/* If the source is to be removable then the key file can
+	 * be written back to disk, and can therefore be tweaked. */
+	if (source == NULL && removable)
+		success = source_registry_server_tweak_key_file (
+			server, file, uid, error);
 
-	if (source == NULL)
+	if (source == NULL && success)
 		source = e_server_side_source_new (server, file, error);
+
+	g_free (uid);
 
 	if (source == NULL)
 		return NULL;

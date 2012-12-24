@@ -91,6 +91,12 @@ struct _ESourceRegistryServerClass {
 						 ESource *source);
 	void		(*source_removed)	(ESourceRegistryServer *server,
 						 ESource *source);
+	gboolean	(*tweak_key_file)	(ESourceRegistryServer *server,
+						 GKeyFile *key_file,
+						 const gchar *uid);
+
+	/* Reserved slots. */
+	gpointer reserved[16];
 };
 
 GType		e_source_registry_server_get_type
