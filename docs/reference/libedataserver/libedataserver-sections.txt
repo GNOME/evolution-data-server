@@ -18,6 +18,24 @@ e_debug_log_clear
 </SECTION>
 
 <SECTION>
+<FILE>e-cancellable-locks</FILE>
+<TITLE>Cancellable Locks</TITLE>
+ECancellableMutex
+e_cancellable_mutex_init
+e_cancellable_mutex_clear
+e_cancellable_mutex_lock
+e_cancellable_mutex_unlock
+e_cancellable_mutex_get_internal_mutex
+ECancellableRecMutex
+e_cancellable_rec_mutex_init
+e_cancellable_rec_mutex_clear
+e_cancellable_rec_mutex_lock
+e_cancellable_rec_mutex_unlock
+<SECTION Private>
+ECancellableLocksBase
+</SECTION>
+
+<SECTION>
 <FILE>e-client</FILE>
 <TITLE>EClient</TITLE>
 E_CLIENT_ERROR
@@ -155,7 +173,6 @@ E_ITERATOR_CLASS
 E_IS_ITERATOR_CLASS
 E_ITERATOR_GET_CLASS
 EIteratorClass
-<SUBSECTION Private>
 e_iterator_get_type
 </SECTION>
 
@@ -183,7 +200,6 @@ E_LIST_CLASS
 E_IS_LIST_CLASS
 E_LIST_GET_CLASS
 EListClass
-<SUBSECTION Private>
 e_list_get_type
 </SECTION>
 
@@ -200,7 +216,6 @@ E_LIST_ITERATOR_CLASS
 E_IS_LIST_ITERATOR_CLASS
 E_LIST_ITERATOR_GET_CLASS
 EListIteratorClass
-<SUBSECTION Private>
 e_list_iterator_get_type
 </SECTION>
 
@@ -231,9 +246,9 @@ E_IS_PROXY
 E_IS_PROXY_CLASS
 E_PROXY_GET_CLASS
 EProxyClass
+e_proxy_get_type
 <SUBSECTION Private>
 EProxyPrivate
-e_proxy_get_type
 </SECTION>
 
 <SECTION>
@@ -286,9 +301,9 @@ E_SOURCE_CLASS
 E_IS_SOURCE_CLASS
 E_SOURCE_GET_CLASS
 ESourceClass
+e_source_get_type
 <SUBSECTION Private>
 ESourcePrivate
-e_source_get_type
 </SECTION>
 
 <SECTION>
@@ -304,9 +319,9 @@ E_SOURCE_ADDRESS_BOOK_CLASS
 E_IS_SOURCE_ADDRESS_BOOK_CLASS
 E_SOURCE_ADDRESS_BOOK_GET_CLASS
 ESourceAddressBookClass
+e_source_address_book_get_type
 <SUBSECTION Private>
 ESourceAddressBookPrivate
-e_source_address_book_get_type
 </SECTION>
 
 <SECTION>
@@ -327,9 +342,9 @@ E_SOURCE_ALARMS_CLASS
 E_IS_SOURCE_ALARMS_CLASS
 E_SOURCE_ALARMS_GET_CLASS
 ESourceAlarmsClass
+e_source_alarms_get_type
 <SUBSECTION Private>
 ESourceAlarmsPrivate
-e_source_alarms_get_type
 </SECTION>
 
 <SECTION>
@@ -357,9 +372,9 @@ E_SOURCE_AUTHENTICATION_CLASS
 E_IS_SOURCE_AUTHENTICATION_CLASS
 E_SOURCE_AUTHENTICATION_GET_CLASS
 ESourceAuthenticationClass
+e_source_authentication_get_type
 <SUBSECTION Private>
 ESourceAuthenticationPrivate
-e_source_authentication_get_type
 </SECTION>
 
 <SECTION>
@@ -377,7 +392,6 @@ E_SOURCE_AUTHENTICATOR
 E_IS_SOURCE_AUTHENTICATOR
 E_TYPE_SOURCE_AUTHENTICATOR
 E_SOURCE_AUTHENTICATOR_GET_INTERFACE
-<SUBSECTION Private>
 e_source_authenticator_get_type
 </SECTION>
 
@@ -396,9 +410,9 @@ E_SOURCE_AUTOCOMPLETE_CLASS
 E_IS_SOURCE_AUTOCOMPLETE_CLASS
 E_SOURCE_AUTOCOMPLETE_GET_CLASS
 ESourceAutocompleteClass
+e_source_autocomplete_get_type
 <SUBSECTION Private>
 ESourceAutocompletePrivate
-e_source_autocomplete_get_type
 </SECTION>
 
 <SECTION>
@@ -416,9 +430,9 @@ E_SOURCE_BACKEND_CLASS
 E_IS_SOURCE_BACKEND_CLASS
 E_SOURCE_BACKEND_GET_CLASS
 ESourceBackendClass
+e_source_backend_get_type
 <SUBSECTION Private>
 ESourceBackendPrivate
-e_source_backend_get_type
 </SECTION>
 
 <SECTION>
@@ -434,9 +448,9 @@ E_SOURCE_CALENDAR_CLASS
 E_IS_SOURCE_CALENDAR_CLASS
 E_SOURCE_CALENDAR_GET_CLASS
 ESourceCalendarClass
+e_source_calendar_get_type
 <SUBSECTION Private>
 ESourceCalendarPrivate
-e_source_calendar_get_type
 </SECTION>
 
 <SECTION>
@@ -457,9 +471,9 @@ E_SOURCE_CAMEL_CLASS
 E_IS_SOURCE_CAMEL_CLASS
 E_SOURCE_CAMEL_GET_CLASS
 ESourceCamelClass
+e_source_camel_get_type
 <SUBSECTION Private>
 ESourceCamelPrivate
-e_source_camel_get_type
 </SECTION>
 
 <SECTION>
@@ -484,9 +498,9 @@ E_SOURCE_COLLECTION_CLASS
 E_IS_SOURCE_COLLECTION_CLASS
 E_SOURCE_COLLECTION_GET_CLASS
 ESourceCollectionClass
+e_source_collection_get_type
 <SUBSECTION Private>
 ESourceCollectionPrivate
-e_source_collection_get_type
 </SECTION>
 
 <SECTION>
@@ -504,9 +518,9 @@ E_SOURCE_EXTENSION_CLASS
 E_IS_SOURCE_EXTENSION_CLASS
 E_SOURCE_EXTENSION_GET_CLASS
 ESourceExtensionClass
+e_source_extension_get_type
 <SUBSECTION Private>
 ESourceExtensionPrivate
-e_source_extension_get_type
 </SECTION>
 
 <SECTION>
@@ -525,9 +539,9 @@ E_SOURCE_GOA_CLASS
 E_IS_SOURCE_GOA_CLASS
 E_SOURCE_GOA_GET_CLASS
 ESourceGoaClass
+e_source_goa_get_type
 <SUBSECTION Private>
 ESourceGoaPrivate
-e_source_goa_get_type
 </SECTION>
 
 <SECTION>
@@ -546,9 +560,9 @@ E_SOURCE_MAIL_ACCOUNT_CLASS
 E_IS_SOURCE_MAIL_ACCOUNT_CLASS
 E_SOURCE_MAIL_ACCOUNT_GET_CLASS
 ESourceMailAccountClass
+e_source_mail_account_get_type
 <SUBSECTION Private>
 ESourceMailAccountPrivate
-e_source_mail_account_get_type
 </SECTION>
 
 <SECTION>
@@ -578,9 +592,9 @@ E_SOURCE_MAIL_COMPOSITION_CLASS
 E_IS_SOURCE_MAIL_COMPOSITION_CLASS
 E_SOURCE_MAIL_COMPOSITION_GET_CLASS
 ESourceMailCompositionClass
+e_source_mail_composition_get_type
 <SUBSECTION Private>
 ESourceMailCompositionPrivate
-e_source_mail_composition_get_type
 </SECTION>
 
 <SECTION>
@@ -611,9 +625,9 @@ E_SOURCE_MAIL_IDENTITY_CLASS
 E_IS_SOURCE_MAIL_IDENTITY_CLASS
 E_SOURCE_MAIL_IDENTITY_GET_CLASS
 ESourceMailIdentityClass
+e_source_mail_identity_get_type
 <SUBSECTION Private>
 ESourceMailIdentityPrivate
-e_source_mail_identity_get_type
 </SECTION>
 
 <SECTION>
@@ -642,9 +656,9 @@ E_SOURCE_MAIL_SIGNATURE_CLASS
 E_IS_SOURCE_MAIL_SIGNATURE_CLASS
 E_SOURCE_MAIL_SIGNATURE_GET_CLASS
 ESourceMailSignatureClass
+e_source_mail_signature_get_type
 <SUBSECTION Private>
 ESourceMailSignaturePrivate
-e_source_mail_signature_get_type
 </SECTION>
 
 <SECTION>
@@ -668,9 +682,9 @@ E_SOURCE_MAIL_SUBMISSION_CLASS
 E_IS_SOURCE_MAIL_SUBMISSION_CLASS
 E_SOURCE_MAIL_SUBMISSION_GET_CLASS
 ESourceMailSubmissionClass
+e_source_mail_submission_get_type
 <SUBSECTION Private>
 ESourceMailSubmissionPrivate
-e_source_mail_submission_get_type
 </SECTION>
 
 <SECTION>
@@ -686,9 +700,9 @@ E_SOURCE_MAIL_TRANSPORT_CLASS
 E_IS_SOURCE_MAIL_TRANSPORT_CLASS
 E_SOURCE_MAIL_TRANSPORT_GET_CLASS
 ESourceMailSubmissionClass
+e_source_mail_transport_get_type
 <SUBSECTION Private>
 ESourceMailTransportPrivate
-e_source_mail_transport_get_type
 </SECTION>
 
 <SECTION>
@@ -707,9 +721,9 @@ E_SOURCE_MDN_CLASS
 E_IS_SOURCE_MDN_CLASS
 E_SOURCE_MDN_GET_CLASS
 ESourceMDNClass
+e_source_mdn_get_type
 <SUBSECTION Private>
 ESourceMDNPrivate
-e_source_mdn_get_type
 </SECTION>
 
 <SECTION>
@@ -725,9 +739,9 @@ E_SOURCE_MEMO_LIST_CLASS
 E_IS_SOURCE_MEMO_LIST_CLASS
 E_SOURCE_MEMO_LIST_GET_CLASS
 ESourceMemoListClass
+e_source_memo_list_get_type
 <SUBSECTION Private>
 ESourceMemoListPrivate
-e_source_memo_list_get_type
 </SECTION>
 
 <SECTION>
@@ -745,9 +759,9 @@ E_SOURCE_OFFLINE_CLASS
 E_IS_SOURCE_OFFLINE_CLASS
 E_SOURCE_OFFLINE_GET_CLASS
 ESourceOfflineClass
+e_source_offline_get_type
 <SUBSECTION Private>
 ESourceOfflinePrivate
-e_source_offline_get_type
 </SECTION>
 
 <SECTION>
@@ -775,9 +789,9 @@ E_SOURCE_OPENPGP_CLASS
 E_IS_SOURCE_OPENPGP_CLASS
 E_SOURCE_OPENPGP_GET_CLASS
 ESourceOpenPGPClass
+e_source_openpgp_get_type
 <SUBSECTION Private>
 ESourceOpenPGPPrivate
-e_source_openpgp_get_type
 </SECTION>
 
 <SECTION>
@@ -802,9 +816,9 @@ E_SOURCE_REFRESH_CLASS
 E_IS_SOURCE_REFRESH_CLASS
 E_SOURCE_REFRESH_GET_CLASS
 ESourceRefreshClass
+e_source_refresh_get_type
 <SUBSECTION Private>
 ESourceRefreshPrivate
-e_source_refresh_get_type
 </SECTION>
 
 <SECTION>
@@ -857,9 +871,9 @@ E_SOURCE_REGISTRY_CLASS
 E_IS_SOURCE_REGISTRY_CLASS
 E_SOURCE_REGISTRY_GET_CLASS
 ESourceRegistryClass
+e_source_registry_get_type
 <SUBSECTION Private>
 ESourceRegistryPrivate
-e_source_registry_get_type
 </SECTION>
 
 <SECTION>
@@ -878,9 +892,9 @@ E_SOURCE_RESOURCE_CLASS
 E_IS_SOURCE_RESOURCE_CLASS
 E_SOURCE_RESOURCE_GET_CLASS
 ESourceResourceClass
+e_source_resource_get_type
 <SUBSECTION Private>
 ESourceResourcePrivate
-e_source_resource_get_type
 </SECTION>
 
 <SECTION>
@@ -901,9 +915,9 @@ E_SOURCE_SECURITY_CLASS
 E_IS_SOURCE_SECURITY_CLASS
 E_SOURCE_SECURITY_GET_CLASS
 ESourceSecurityClass
+e_source_security_get_type
 <SUBSECTION Private>
 ESourceSecurityPrivate
-e_source_security_get_type
 </SECTION>
 
 <SECTION>
@@ -923,9 +937,9 @@ E_SOURCE_SELECTABLE_CLASS
 E_IS_SOURCE_SELECTABLE_CLASS
 E_SOURCE_SELECTABLE_GET_CLASS
 ESourceSelectableClass
+e_source_selectable_get_type
 <SUBSECTION Private>
 ESourceSelectablePrivate
-e_source_selectable_get_type
 </SECTION>
 
 <SECTION>
@@ -956,9 +970,9 @@ E_SOURCE_SMIME_CLASS
 E_IS_SOURCE_SMIME_CLASS
 E_SOURCE_SMIME_GET_CLASS
 ESourceSMIMEClass
+e_source_smime_get_type
 <SUBSECTION Private>
 ESourceSMIMEPrivate
-e_source_smime_get_type
 </SECTION>
 
 <SECTION>
@@ -974,9 +988,9 @@ E_SOURCE_TASK_LIST_CLASS
 E_IS_SOURCE_TASK_LIST_CLASS
 E_SOURCE_TASK_LIST_GET_CLASS
 ESourceTaskListClass
+e_source_task_list_get_type
 <SUBSECTION Private>
 ESourceTaskListPrivate
-e_source_task_list_get_type
 </SECTION>
 
 <SECTION>
@@ -1012,9 +1026,9 @@ E_SOURCE_WEBDAV_CLASS
 E_IS_SOURCE_WEBDAV_CLASS
 E_SOURCE_WEBDAV_GET_CLASS
 ESourceWebdavClass
+e_source_webdav_get_type
 <SUBSECTION Private>
 ESourceWebdavPrivate
-e_source_webdav_get_type
 </SECTION>
 
 <SECTION>
@@ -1081,7 +1095,6 @@ IS_E_SEXP
 IS_E_SEXP_CLASS
 E_SEXP_GET_CLASS
 ESExpClass
-<SUBSECTION Private>
 e_sexp_get_type
 </SECTION>
 
@@ -1173,7 +1186,10 @@ e_named_parameters_clear
 e_named_parameters_assign
 e_named_parameters_set
 e_named_parameters_get
+e_named_parameters_to_strv
 e_named_parameters_test
+<SUBSECTION Standard>
+e_named_parameters_get_type
 </SECTION>
 
 <SECTION>

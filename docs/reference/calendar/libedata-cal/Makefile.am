@@ -2,11 +2,8 @@
 # The name of the module.
 DOC_MODULE = libedata-cal
 
-content_files=
-HTML_IMAGES=
-
 # The top-level SGML file.
-DOC_MAIN_SGML_FILE = libedata-cal-docs.sgml
+DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 
 # Extra options to supply to gtkdoc-scan
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"

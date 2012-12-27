@@ -17,9 +17,9 @@ E_TYPE_AUTHENTICATION_MEDIATOR
 E_AUTHENTICATION_MEDIATOR_CLASS
 E_IS_AUTHENTICATION_MEDIATOR_CLASS
 E_AUTHENTICATION_MEDIATOR_GET_CLASS
+e_authentication_mediator_get_type
 <SUBSECTION Private>
 EAuthenticationMediatorPrivate
-e_authentication_mediator_get_type
 </SECTION>
 
 <SECTION>
@@ -62,11 +62,11 @@ E_IS_AUTHENTICATION_SESSION_CLASS
 E_AUTHENTICATION_SESSION_GET_CLASS
 E_TYPE_AUTHENTICATION_SESSION_RESULT
 EAuthenticationSessionClass
+e_authentication_session_get_type
+e_authentication_session_result_get_type
 <SUBSECTION Private>
 EAuthenticationSessionPrivate
 e_authentication_session_error_quark
-e_authentication_session_get_type
-e_authentication_session_result_get_type
 </SECTION>
 
 <SECTION>
@@ -87,9 +87,9 @@ E_BACKEND_CLASS
 E_IS_BACKEND_CLASS
 E_BACKEND_GET_CLASS
 EBackendClass
+e_backend_get_type
 <SUBSECTION Private>
 EBackendPrivate
-e_backend_get_type
 </SECTION>
 
 <SECTION>
@@ -106,9 +106,9 @@ E_BACKEND_FACTORY_CLASS
 E_IS_BACKEND_FACTORY_CLASS
 E_BACKEND_FACTORY_GET_CLASS
 EBackendFactoryClass
+e_backend_factory_get_type
 <SUBSECTION Private>
 EBackendFactoryPrivate
-e_backend_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -137,9 +137,9 @@ E_COLLECTION_BACKEND_CLASS
 E_IS_COLLECTION_BACKEND_CLASS
 E_COLLECTION_BACKEND_GET_CLASS
 ECollectionBackendClass
+e_collection_backend_get_type
 <SUBSECTION Private>
 ECollectionBackendPrivate
-e_collection_backend_get_type
 </SECTION>
 
 <SECTION>
@@ -155,9 +155,9 @@ E_COLLECTION_BACKEND_FACTORY_CLASS
 E_IS_COLLECTION_BACKEND_FACTORY_CLASS
 E_COLLECTION_BACKEND_FACTORY_GET_CLASS
 ECollectionBackendFactoryClass
+e_collection_backend_factory_get_type
 <SUBSECTION Private>
 ECollectionBackendFactoryPrivate
-e_collection_backend_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -173,9 +173,9 @@ E_TYPE_DATA_FACTORY
 E_DATA_FACTORY_CLASS
 E_IS_DATA_FACTORY_CLASS
 E_DATA_FACTORY_GET_CLASS
+e_data_factory_get_type
 <SUBSECTION Private>
 EDataFactoryPrivate
-e_data_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -197,10 +197,10 @@ E_IS_DBUS_SERVER_CLASS
 E_DBUS_SERVER_GET_CLASS
 E_TYPE_DBUS_SERVER_EXIT_CODE
 EDBusServerClass
-<SUBSECTION Private>
-EDBusServerPrivate
 e_dbus_server_get_type
 e_dbus_server_exit_code_get_type
+<SUBSECTION Private>
+EDBusServerPrivate
 </SECTION>
 
 <SECTION>
@@ -223,11 +223,11 @@ e_file_cache_get_filename
 E_FILE_CACHE
 E_IS_FILE_CACHE
 E_TYPE_FILE_CACHE
-e_file_cache_get_type
 E_FILE_CACHE_CLASS
 E_IS_FILE_CACHE_CLASS
 E_FILE_CACHE_GET_CLASS
 EFileCacheClass
+e_file_cache_get_type
 <SUBSECTION Private>
 EFileCachePrivate
 </SECTION>
@@ -268,7 +268,6 @@ E_EXTENSIBLE_INTERFACE
 E_IS_EXTENSIBLE_INTERFACE
 E_EXTENSIBLE_GET_INTERFACE
 EExtensibleInterface
-<SUBSECTION Private>
 e_extensible_get_type
 </SECTION>
 
@@ -284,9 +283,9 @@ E_TYPE_EXTENSION
 E_EXTENSION_CLASS
 E_IS_EXTENSION_CLASS
 E_EXTENSION_GET_CLASS
+e_extension_get_type
 <SUBSECTION Private>
 EExtensionPrivate
-e_extension_get_type
 </SECTION>
 
 <SECTION>
@@ -306,9 +305,9 @@ E_MODULE_CLASS
 E_IS_MODULE_CLASS
 E_MODULE_GET_CLASS
 EModuleClass
+e_module_get_type
 <SUBSECTION Private>
 EModulePrivate
-e_module_get_type
 </SECTION>
 
 <SECTION>
@@ -326,9 +325,9 @@ E_OFFLINE_LISTENER_CLASS
 E_IS_OFFLINE_LISTENER_CLASS
 E_OFFLINE_LISTENER_GET_CLASS
 EOfflineListenerClass
+e_offline_listener_get_type
 <SUBSECTION Private>
 EOfflineListenerPrivate
-e_offline_listener_get_type
 </SECTION>
 
 <SECTION>
@@ -361,9 +360,9 @@ E_SERVER_SIDE_SOURCE_CLASS
 E_IS_SERVER_SIDE_SOURCE_CLASS
 E_SERVER_SIDE_SOURCE_GET_CLASS
 EServerSideSourceClass
+e_server_side_source_get_type
 <SUBSECTION Private>
 EServerSideSourcePrivate
-e_server_side_source_get_type
 </SECTION>
 
 <SECTION>
@@ -396,10 +395,10 @@ E_SOURCE_REGISTRY_SERVER_GET_CLASS
 E_TYPE_SOURCE_PERMISSION_FLAGS
 E_TYPE_PASSWORD_REMEMBER_TYPE
 ESourceRegistryServerClass
-<SUBSECTION Private>
-ESourceRegistryServerPrivate
 e_source_registry_server_get_type
 e_source_permission_flags_get_type
+<SUBSECTION Private>
+ESourceRegistryServerPrivate
 </SECTION>
 
 <SECTION>
@@ -426,9 +425,9 @@ E_USER_PROMPTER_CLASS
 E_IS_USER_PROMPTER_CLASS
 E_USER_PROMPTER_GET_CLASS
 EUserPrompterClass
+e_user_prompter_get_type
 <SUBECTION Private>
 EUserPrompterPrivate
-e_user_prompter_get_type
 </SECTION>
 
 <SECTION>
@@ -447,9 +446,9 @@ E_USER_PROMPTER_SERVER_CLASS
 E_IS_USER_PROMPTER_SERVER_CLASS
 E_USER_PROMPTER_SERVER_GET_CLASS
 EUserPrompterServerClass
+e_user_prompter_server_get_type
 <SUBSECTION Private>
 EUserPrompterServerPrivate
-e_user_prompter_server_get_type
 </SECTION>
 
 <SECTION>
@@ -466,8 +465,8 @@ E_USER_PROMPTER_SERVER_EXTENSION_CLASS
 E_IS_USER_PROMPTER_SERVER_EXTENSION_CLASS
 E_USER_PROMPTER_SERVER_EXTENSION_GET_CLASS
 EUserPrompterServerExtensionClass
+e_user_prompter_server_extension_get_type
 <SUBSECTION Private>
 EUserPrompterServerExtensionPrivate
-e_user_prompter_server_extension_get_type
 </SECTION>
 

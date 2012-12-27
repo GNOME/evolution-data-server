@@ -66,9 +66,9 @@ E_CAL_BACKEND_CLASS
 E_IS_CAL_BACKEND_CLASS
 E_CAL_BACKEND_GET_CLASS
 ECalBackendClass
+e_cal_backend_get_type
 <SUBSECTION Private>
 ECalBackendPrivate
-e_cal_backend_get_type
 </SECTION>
 
 <SECTION>
@@ -102,9 +102,9 @@ E_CAL_BACKEND_CACHE_CLASS
 E_IS_CAL_BACKEND_CACHE_CLASS
 E_CAL_BACKEND_CACHE_GET_CLASS
 ECalBackendCacheClass
+e_cal_backend_cache_get_type
 <SUBSECTION Private>
 ECalBackendCachePrivate
-e_cal_backend_cache_get_type
 </SECTION>
 
 <SECTION>
@@ -119,9 +119,9 @@ E_CAL_BACKEND_FACTORY_CLASS
 E_IS_CAL_BACKEND_FACTORY_CLASS
 E_CAL_BACKEND_FACTORY_GET_CLASS
 ECalBackendFactoryClass
+e_cal_backend_factory_get_type
 <SUBSECTION Private>
 ECalBackendFactoryPrivate
-e_cal_backend_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -137,9 +137,9 @@ E_CAL_BACKEND_FILE_STORE_CLASS
 E_IS_CAL_BACKEND_FILE_STORE_CLASS
 E_CAL_BACKEND_FILE_STORE_GET_CLASS
 ECalBackendFileStoreClass
+e_cal_backend_file_store_get_type
 <SUBSECTION Private>
 ECalBackendFileStorePrivate
-e_cal_backend_file_store_get_type
 </SECTION>
 
 <SECTION>
@@ -178,9 +178,9 @@ E_CAL_BACKEND_STORE_CLASS
 E_IS_CAL_BACKEND_STORE_CLASS
 E_CAL_BACKEND_STORE_GET_CLASS
 ECalBackendStoreClass
+e_cal_backend_store_get_type
 <SUBSECTION Private>
 ECalBackendStorePrivate
-e_cal_backend_store_get_type
 </SECTION>
 
 <SECTION>
@@ -203,9 +203,9 @@ E_TYPE_CAL_BACKEND_SEXP
 E_CAL_BACKEND_SEXP_CLASS
 E_IS_CAL_BACKEND_SEXP_CLASS
 E_CAL_BACKEND_SEXP_GET_CLASS
+e_cal_backend_sexp_get_type
 <SUBSECTION Private>
 ECalBackendSExpPrivate
-e_cal_backend_sexp_get_type
 </SECTION>
 
 <SECTION>
@@ -237,9 +237,9 @@ E_CAL_BACKEND_SYNC_CLASS
 E_IS_CAL_BACKEND_SYNC_CLASS
 E_CAL_BACKEND_SYNC_GET_CLASS
 ECalBackendSyncClass
+e_cal_backend_sync_get_type
 <SUBSECTION Private>
 ECalBackendSyncPrivate
-e_cal_backend_sync_get_type
 </SECTION>
 
 <SECTION>
@@ -300,15 +300,15 @@ E_TYPE_DATA_CAL_OBJ_MOD_TYPE
 E_TYPE_DATA_CAL_OBJ_TYPE
 E_TYPE_DATA_CAL_VIEW_LISTENER_SET_MODE_STATUS
 EDataCalClass
-<SUBSECTION Private>
-EDataCalPrivate
 e_data_cal_get_type
-e_data_cal_error_quark
 e_data_cal_call_status_get_type
 e_data_cal_mode_get_type
 e_data_cal_obj_mod_type_get_type
 e_data_cal_obj_type_get_type
 e_data_cal_view_listener_set_mode_status_get_type
+<SUBSECTION Private>
+EDataCalPrivate
+e_data_cal_error_quark
 </SECTION>
 
 <SECTION>
@@ -320,6 +320,7 @@ ECalBackendSExpClass
 <SECTION>
 <FILE>e-data-cal-factory</FILE>
 <TITLE>EDataCalFactory</TITLE>
+EDS_CALENDAR_MODULES
 EDataCalFactory
 e_data_cal_factory_new
 e_data_cal_factory_get_registry
@@ -331,9 +332,9 @@ E_DATA_CAL_FACTORY_CLASS
 E_IS_DATA_CAL_FACTORY_CLASS
 E_DATA_CAL_FACTORY_GET_CLASS
 EDataCalFactoryClass
+e_data_cal_factory_get_type
 <SUBSECTION Private>
 EDataCalFactoryPrivate
-e_data_cal_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -371,9 +372,9 @@ E_TYPE_DATA_CAL_VIEW
 E_DATA_CAL_VIEW_CLASS
 E_IS_DATA_CAL_VIEW_CLASS
 E_DATA_CAL_VIEW_GET_CLASS
+e_data_cal_view_get_type
 <SUBSECTION Private>
 EDataCalViewPrivate
-e_data_cal_view_get_type
 </SECTION>
 
 <SECTION>
@@ -393,10 +394,10 @@ E_INTERVALTREE_CLASS
 E_IS_INTERVALTREE_CLASS
 E_INTERVALTREE_GET_CLASS
 EIntervalTreeClass
+e_intervaltree_get_type
 <SUBSECTION Private>
 E_INTERVALTREE_DEBUG
 EIntervalTreePrivate
-e_intervaltree_get_type
 e_intervaltree_dump
 </SECTION>
 

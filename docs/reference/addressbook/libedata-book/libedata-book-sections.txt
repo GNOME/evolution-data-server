@@ -56,9 +56,9 @@ E_BOOK_BACKEND_CLASS
 E_IS_BOOK_BACKEND_CLASS
 E_BOOK_BACKEND_GET_CLASS
 EBookBackendClass
+e_book_backend_get_type
 <SUBSECTION Private>
 EBookBackendPrivate
-e_book_backend_get_type
 </SECTION>
 
 <SECTION>
@@ -84,9 +84,9 @@ E_BOOK_BACKEND_CACHE_CLASS
 E_IS_BOOK_BACKEND_CACHE_CLASS
 E_BOOK_BACKEND_CACHE_GET_CLASS
 EBookBackendCacheClass
+e_book_backend_cache_get_type
 <SUBSECTION Private>
 EBookBackendCachePrivate
-e_book_backend_cache_get_type
 </SECTION>
 
 <SECTION>
@@ -118,9 +118,9 @@ E_BOOK_BACKEND_FACTORY_CLASS
 E_IS_BOOK_BACKEND_FACTORY_CLASS
 E_BOOK_BACKEND_FACTORY_GET_CLASS
 EBookBackendFactoryClass
+e_book_backend_factory_get_type
 <SUBSECTION Private>
 EBookBackendFactoryPrivate
-e_book_backend_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -133,22 +133,15 @@ e_book_backend_sexp_match_vcard
 e_book_backend_sexp_match_contact
 <SUBSECTION Standard>
 E_BOOK_BACKEND_SEXP
-E_IS_BACKEND_SEXP
-E_TYPE_BACKEND_SEXP
-E_BOOK_BACKEND_SEXP_CLASS
-E_IS_BACKEND_SEXP_CLASS
-E_BOOK_BACKEND_SEXP_GET_CLASS
-EBookBackendSExpClass
-<SUBSECTION Standard>
-E_BOOK_BACKEND_SEXP
 E_IS_BOOK_BACKEND_SEXP
 E_TYPE_BOOK_BACKEND_SEXP
 E_BOOK_BACKEND_SEXP_CLASS
 E_IS_BOOK_BACKEND_SEXP_CLASS
 E_BOOK_BACKEND_SEXP_GET_CLASS
+EBookBackendSExpClass
+e_book_backend_sexp_get_type
 <SUBSECTION Private>
 EBookBackendSExpPrivate
-e_book_backend_sexp_get_type
 </SECTION>
 
 <SECTION>
@@ -226,9 +219,9 @@ E_BOOK_BACKEND_SUMMARY_CLASS
 E_IS_BOOK_BACKEND_SUMMARY_CLASS
 E_BOOK_BACKEND_SUMMARY_GET_CLASS
 EBookBackendSummaryClass
+e_book_backend_summary_get_type
 <SUBSECTION Private>
 EBookBackendSummaryPrivate
-e_book_backend_summary_get_type
 </SECTION>
 
 <SECTION>
@@ -254,9 +247,9 @@ E_BOOK_BACKEND_SYNC_CLASS
 E_IS_BOOK_BACKEND_SYNC_CLASS
 E_BOOK_BACKEND_SYNC_GET_CLASS
 EBookBackendSyncClass
+e_book_backend_sync_get_type
 <SUBSECTION Private>
 EBookBackendSyncPrivate
-e_book_backend_sync_get_type
 </SECTION>
 
 <SECTION>
@@ -300,18 +293,19 @@ E_TYPE_DATA_BOOK_CHANGE_TYPE
 E_TYPE_DATA_BOOK_MODE
 E_TYPE_DATA_BOOK_STATUS
 EDataBookClass
-<SUBSECTION Private>
-EDataBookPrivate
 e_data_book_get_type
-e_data_book_error_quark
 e_data_book_change_type_get_type
 e_data_book_mode_get_type
 e_data_book_status_get_type
+<SUBSECTION Private>
+EDataBookPrivate
+e_data_book_error_quark
 </SECTION>
 
 <SECTION>
 <FILE>e-data-book-factory</FILE>
 <TITLE>EDataBookFactory</TITLE>
+EDS_ADDRESS_BOOK_MODULES
 EDataBookFactory
 e_data_book_factory_new
 e_data_book_factory_get_registry
@@ -323,9 +317,9 @@ E_DATA_BOOK_FACTORY_CLASS
 E_IS_DATA_BOOK_FACTORY_CLASS
 E_DATA_BOOK_FACTORY_GET_CLASS
 EDataBookFactoryClass
+e_data_book_factory_get_type
 <SUBSECTION Private>
 EDataBookFactoryPrivate
-e_data_book_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -353,9 +347,9 @@ E_DATA_BOOK_VIEW_CLASS
 E_IS_DATA_BOOK_VIEW_CLASS
 E_DATA_BOOK_VIEW_GET_CLASS
 EDataBookViewClass
+e_data_book_view_get_type
 <SUBSECTION Private>
 EDataBookViewPrivate
-e_data_book_view_get_type
 </SECTION>
 
 <SECTION>
