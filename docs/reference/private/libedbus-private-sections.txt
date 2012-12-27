@@ -22,19 +22,7 @@ e_dbus_authenticator_emit_authenticate
 e_dbus_authenticator_emit_dismissed
 e_dbus_authenticator_interface_info
 e_dbus_authenticator_override_properties
-<SUBSECTION Standard>
-E_DBUS_AUTHENTICATOR
-E_DBUS_IS_AUTHENTICATOR
-E_DBUS_TYPE_AUTHENTICATOR
-E_DBUS_AUTHENTICATOR_GET_IFACE
-EDBusAuthenticatorIface
-<SUBSECTION Private>
-e_dbus_authenticator_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-authenticator-proxy</FILE>
-<TITLE>EDBusAuthenticatorProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusAuthenticatorProxy
 e_dbus_authenticator_proxy_new_sync
 e_dbus_authenticator_proxy_new
@@ -42,35 +30,35 @@ e_dbus_authenticator_proxy_new_finish
 e_dbus_authenticator_proxy_new_for_bus_sync
 e_dbus_authenticator_proxy_new_for_bus
 e_dbus_authenticator_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusAuthenticatorSkeleton
+e_dbus_authenticator_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_AUTHENTICATOR
+E_DBUS_IS_AUTHENTICATOR
+E_DBUS_TYPE_AUTHENTICATOR
+E_DBUS_AUTHENTICATOR_GET_IFACE
 E_DBUS_AUTHENTICATOR_PROXY
 E_DBUS_IS_AUTHENTICATOR_PROXY
 E_DBUS_TYPE_AUTHENTICATOR_PROXY
 E_DBUS_AUTHENTICATOR_PROXY_CLASS
 E_DBUS_IS_AUTHENTICATOR_PROXY_CLASS
 E_DBUS_AUTHENTICATOR_PROXY_GET_CLASS
-EDBusAuthenticatorProxyClass
-<SUBSECTION Private>
-EDBusAuthenticatorProxyPrivate
-e_dbus_authenticator_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-authenticator-skeleton</FILE>
-<TITLE>EDBusAuthenticatorSkeleton</TITLE>
-EDBusAuthenticatorSkeleton
-e_dbus_authenticator_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_AUTHENTICATOR_SKELETON
 E_DBUS_IS_AUTHENTICATOR_SKELETON
 E_DBUS_TYPE_AUTHENTICATOR_SKELETON
 E_DBUS_AUTHENTICATOR_SKELETON_CLASS
 E_DBUS_IS_AUTHENTICATOR_SKELETON_CLASS
 E_DBUS_AUTHENTICATOR_SKELETON_GET_CLASS
+EDBusAuthenticatorIface
+EDBusAuthenticatorProxyClass
 EDBusAuthenticatorSkeletonClass
-<SUBSECTION Private>
-EDBusAuthenticatorSkeletonPrivate
+e_dbus_authenticator_get_type
+e_dbus_authenticator_proxy_get_type
 e_dbus_authenticator_skeleton_get_type
+<SUBSECTION Private>
+EDBusAuthenticatorProxyPrivate
+EDBusAuthenticatorSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -87,14 +75,43 @@ e_dbus_object_get_source_remote_creatable
 e_dbus_object_peek_source_remote_creatable
 e_dbus_object_get_source_remote_deletable
 e_dbus_object_peek_source_remote_deletable
+<SUBSECTION Proxy>
+EDBusObjectProxy
+e_dbus_object_proxy_new
+<SUBSECTION Skeleton>
+EDBusObjectSkeleton
+e_dbus_object_skeleton_new
+e_dbus_object_skeleton_set_source
+e_dbus_object_skeleton_set_source_writable
+e_dbus_object_skeleton_set_source_removable
+e_dbus_object_skeleton_set_source_remote_creatable
+e_dbus_object_skeleton_set_source_remote_deletable
 <SUBSECTION Standard>
 E_DBUS_OBJECT
 E_DBUS_IS_OBJECT
 E_DBUS_TYPE_OBJECT
 E_DBUS_OBJECT_GET_IFACE
+E_DBUS_OBJECT_PROXY
+E_DBUS_IS_OBJECT_PROXY
+E_DBUS_TYPE_OBJECT_PROXY
+E_DBUS_OBJECT_PROXY_CLASS
+E_DBUS_IS_OBJECT_PROXY_CLASS
+E_DBUS_OBJECT_PROXY_GET_CLASS
+E_DBUS_OBJECT_SKELETON
+E_DBUS_IS_OBJECT_SKELETON
+E_DBUS_TYPE_OBJECT_SKELETON
+E_DBUS_OBJECT_SKELETON_CLASS
+E_DBUS_IS_OBJECT_SKELETON_CLASS
+E_DBUS_OBJECT_SKELETON_GET_CLASS
 EDBusObjectIface
-<SUBSECTION Private>
+EDBusObjectProxyClass
+EDBusObjectSkeletonClass
 e_dbus_object_get_type
+e_dbus_object_proxy_get_type
+e_dbus_object_skeleton_get_type
+<SUBSECTION Private>
+EDBusObjectProxyPrivate
+EDBusObjectSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -116,50 +133,9 @@ E_DBUS_OBJECT_MANAGER_CLIENT_CLASS
 E_DBUS_IS_OBJECT_MANAGER_CLIENT_CLASS
 E_DBUS_OBJECT_MANAGER_CLIENT_GET_CLASS
 EDBusObjectManagerClientClass
+e_dbus_object_manager_client_get_type
 <SUBSECTION Private>
 EDBusObjectManagerClientPrivate
-e_dbus_object_manager_client_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-object-proxy</FILE>
-<TITLE>EDBusObjectProxy</TITLE>
-EDBusObjectProxy
-e_dbus_object_proxy_new
-<SUBSECTION Standard>
-E_DBUS_OBJECT_PROXY
-E_DBUS_IS_OBJECT_PROXY
-E_DBUS_TYPE_OBJECT_PROXY
-E_DBUS_OBJECT_PROXY_CLASS
-E_DBUS_IS_OBJECT_PROXY_CLASS
-E_DBUS_OBJECT_PROXY_GET_CLASS
-EDBusObjectProxyClass
-<SUBSECTION Private>
-EDBusObjectProxyPrivate
-e_dbus_object_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-object-skeleton</FILE>
-<TITLE>EDBusObjectSkeleton</TITLE>
-EDBusObjectSkeleton
-e_dbus_object_skeleton_new
-e_dbus_object_skeleton_set_source
-e_dbus_object_skeleton_set_source_writable
-e_dbus_object_skeleton_set_source_removable
-e_dbus_object_skeleton_set_source_remote_creatable
-e_dbus_object_skeleton_set_source_remote_deletable
-<SUBSECTION Standard>
-E_DBUS_OBJECT_SKELETON
-E_DBUS_IS_OBJECT_SKELETON
-E_DBUS_TYPE_OBJECT_SKELETON
-E_DBUS_OBJECT_SKELETON_CLASS
-E_DBUS_IS_OBJECT_SKELETON_CLASS
-E_DBUS_OBJECT_SKELETON_GET_CLASS
-EDBusObjectSkeletonClass
-<SUBSECTION Private>
-EDBusObjectSkeletonPrivate
-e_dbus_object_skeleton_get_type
 </SECTION>
 
 <SECTION>
@@ -178,27 +154,7 @@ e_dbus_source_call_allow_auth_prompt_finish
 e_dbus_source_complete_allow_auth_prompt
 e_dbus_source_interface_info
 e_dbus_source_override_properties
-<SUBSECTION Standard>
-E_DBUS_SOURCE
-E_DBUS_IS_SOURCE
-E_DBUS_TYPE_SOURCE
-E_DBUS_SOURCE_CLASS
-E_DBUS_SOURCE_GET_IFACE
-E_DBUS_SOURCE_SKELETON
-E_DBUS_IS_SOURCE_SKELETON
-E_DBUS_TYPE_SOURCE_SKELETON
-E_DBUS_SOURCE_SKELETON_CLASS
-E_DBUS_IS_SOURCE_SKELETON_CLASS
-E_DBUS_SOURCE_SKELETON_GET_CLASS
-EDBusSourceIface
-<SUBSECTION Private>
-e_dbus_source_get_type
-e_dbus_source_skeleton_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-proxy</FILE>
-<TITLE>EDBusSourceProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusSourceProxy
 e_dbus_source_proxy_new_sync
 e_dbus_source_proxy_new
@@ -206,35 +162,36 @@ e_dbus_source_proxy_new_finish
 e_dbus_source_proxy_new_for_bus_sync
 e_dbus_source_proxy_new_for_bus
 e_dbus_source_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusSourceSkeleton
+e_dbus_source_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_SOURCE
+E_DBUS_IS_SOURCE
+E_DBUS_TYPE_SOURCE
+E_DBUS_SOURCE_CLASS
+E_DBUS_SOURCE_GET_IFACE
 E_DBUS_SOURCE_PROXY
 E_DBUS_IS_SOURCE_PROXY
 E_DBUS_TYPE_SOURCE_PROXY
 E_DBUS_SOURCE_PROXY_CLASS
 E_DBUS_IS_SOURCE_PROXY_CLASS
 E_DBUS_SOURCE_PROXY_GET_CLASS
-EDBusSourceProxyClass
-<SUBSECTION Private>
-EDBusSourceProxyPrivate
-e_dbus_source_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-skeleton</FILE>
-<TITLE>EDBusSourceSkeleton</TITLE>
-EDBusSourceSkeleton
-e_dbus_source_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_SOURCE_SKELETON
 E_DBUS_IS_SOURCE_SKELETON
 E_DBUS_TYPE_SOURCE_SKELETON
 E_DBUS_SOURCE_SKELETON_CLASS
 E_DBUS_IS_SOURCE_SKELETON_CLASS
 E_DBUS_SOURCE_SKELETON_GET_CLASS
+EDBusSourceIface
+EDBusSourceProxyClass
 EDBusSourceSkeletonClass
-<SUBSECTION Private>
-EDBusSourceSkeletonPrivate
+e_dbus_source_get_type
+e_dbus_source_proxy_get_type
 e_dbus_source_skeleton_get_type
+<SUBSECTION Private>
+EDBusSourceProxyPrivate
+EDBusSourceSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -259,19 +216,7 @@ e_dbus_source_manager_call_reload_finish
 e_dbus_source_manager_complete_reload
 e_dbus_source_manager_interface_info
 e_dbus_source_manager_override_properties
-<SUBSECTION Standard>
-E_DBUS_SOURCE_MANAGER
-E_DBUS_IS_SOURCE_MANAGER
-E_DBUS_TYPE_SOURCE_MANAGER
-E_DBUS_SOURCE_MANAGER_GET_IFACE
-EDBusSourceManagerIface
-<SUBSECTION Private>
-e_dbus_source_manager_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-manager-proxy</FILE>
-<TITLE>EDBusSourceManagerProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusSourceManagerProxy
 e_dbus_source_manager_proxy_new_sync
 e_dbus_source_manager_proxy_new
@@ -279,35 +224,35 @@ e_dbus_source_manager_proxy_new_finish
 e_dbus_source_manager_proxy_new_for_bus_sync
 e_dbus_source_manager_proxy_new_for_bus
 e_dbus_source_manager_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusSourceManagerSkeleton
+e_dbus_source_manager_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_SOURCE_MANAGER
+E_DBUS_IS_SOURCE_MANAGER
+E_DBUS_TYPE_SOURCE_MANAGER
+E_DBUS_SOURCE_MANAGER_GET_IFACE
 E_DBUS_SOURCE_MANAGER_PROXY
 E_DBUS_IS_SOURCE_MANAGER_PROXY
 E_DBUS_TYPE_SOURCE_MANAGER_PROXY
 E_DBUS_SOURCE_MANAGER_PROXY_CLASS
 E_DBUS_IS_SOURCE_MANAGER_PROXY_CLASS
 E_DBUS_SOURCE_MANAGER_PROXY_GET_CLASS
-EDBusSourceManagerProxyClass
-<SUBSECTION Private>
-EDBusSourceManagerProxyPrivate
-e_dbus_source_manager_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-manager-skeleton</FILE>
-<TITLE>EDBusSourceManagerSkeleton</TITLE>
-EDBusSourceManagerSkeleton
-e_dbus_source_manager_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_SOURCE_MANAGER_SKELETON
 E_DBUS_IS_SOURCE_MANAGER_SKELETON
 E_DBUS_TYPE_SOURCE_MANAGER_SKELETON
 E_DBUS_SOURCE_MANAGER_SKELETON_CLASS
 E_DBUS_IS_SOURCE_MANAGER_SKELETON_CLASS
 E_DBUS_SOURCE_MANAGER_SKELETON_GET_CLASS
+EDBusSourceManagerIface
+EDBusSourceManagerProxyClass
 EDBusSourceManagerSkeletonClass
-<SUBSECTION Private>
-EDBusSourceManagerSkeletonPrivate
+e_dbus_source_manager_get_type
+e_dbus_source_manager_proxy_get_type
 e_dbus_source_manager_skeleton_get_type
+<SUBSECTION Private>
+EDBusSourceManagerProxyPrivate
+EDBusSourceManagerSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -320,19 +265,7 @@ e_dbus_source_remote_creatable_call_create_finish
 e_dbus_source_remote_creatable_complete_create
 e_dbus_source_remote_creatable_interface_info
 e_dbus_source_remote_creatable_override_properties
-<SUBSECTION Standard>
-E_DBUS_SOURCE_REMOTE_CREATABLE
-E_DBUS_IS_SOURCE_REMOTE_CREATABLE
-E_DBUS_TYPE_SOURCE_REMOTE_CREATABLE
-E_DBUS_SOURCE_REMOTE_CREATABLE_GET_IFACE
-EDBusSourceRemoteCreatableIface
-<SUBSECTION Private>
-e_dbus_source_remote_creatable_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-remote-creatable-proxy</FILE>
-<TITLE>EDBusSourceRemoteCreatableProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusSourceRemoteCreatableProxy
 e_dbus_source_remote_creatable_proxy_new_sync
 e_dbus_source_remote_creatable_proxy_new
@@ -340,35 +273,35 @@ e_dbus_source_remote_creatable_proxy_new_finish
 e_dbus_source_remote_creatable_proxy_new_for_bus_sync
 e_dbus_source_remote_creatable_proxy_new_for_bus
 e_dbus_source_remote_creatable_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusSourceRemoteCreatableSkeleton
+e_dbus_source_remote_creatable_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_SOURCE_REMOTE_CREATABLE
+E_DBUS_IS_SOURCE_REMOTE_CREATABLE
+E_DBUS_TYPE_SOURCE_REMOTE_CREATABLE
+E_DBUS_SOURCE_REMOTE_CREATABLE_GET_IFACE
 E_DBUS_SOURCE_REMOTE_CREATABLE_PROXY
 E_DBUS_IS_SOURCE_REMOTE_CREATABLE_PROXY
 E_DBUS_TYPE_SOURCE_REMOTE_CREATABLE_PROXY
 E_DBUS_SOURCE_REMOTE_CREATABLE_PROXY_CLASS
 E_DBUS_IS_SOURCE_REMOTE_CREATABLE_PROXY_CLASS
 E_DBUS_SOURCE_REMOTE_CREATABLE_PROXY_GET_CLASS
-EDBusSourceRemoteCreatableProxyClass
-<SUBSECTION Private>
-EDBusSourceRemoteCreatableProxyPrivate
-e_dbus_source_remote_creatable_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-remote-creatable-skeleton</FILE>
-<TITLE>EDBusSourceRemoteCreatableSkeleton</TITLE>
-EDBusSourceRemoteCreatableSkeleton
-e_dbus_source_remote_creatable_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_SOURCE_REMOTE_CREATABLE_SKELETON
 E_DBUS_IS_SOURCE_REMOTE_CREATABLE_SKELETON
 E_DBUS_TYPE_SOURCE_REMOTE_CREATABLE_SKELETON
 E_DBUS_SOURCE_REMOTE_CREATABLE_SKELETON_CLASS
 E_DBUS_IS_SOURCE_REMOTE_CREATABLE_SKELETON_CLASS
 E_DBUS_SOURCE_REMOTE_CREATABLE_SKELETON_GET_CLASS
+EDBusSourceRemoteCreatableIface
+EDBusSourceRemoteCreatableProxyClass
 EDBusSourceRemoteCreatableSkeletonClass
-<SUBSECTION Private>
-EDBusSourceRemoteCreatableSkeletonPrivate
+e_dbus_source_remote_creatable_get_type
+e_dbus_source_remote_creatable_proxy_get_type
 e_dbus_source_remote_creatable_skeleton_get_type
+<SUBSECTION Private>
+EDBusSourceRemoteCreatableProxyPrivate
+EDBusSourceRemoteCreatableSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -381,19 +314,7 @@ e_dbus_source_remote_deletable_call_delete_finish
 e_dbus_source_remote_deletable_complete_delete
 e_dbus_source_remote_deletable_interface_info
 e_dbus_source_remote_deletable_override_properties
-<SUBSECTION Standard>
-E_DBUS_SOURCE_REMOTE_DELETABLE
-E_DBUS_IS_SOURCE_REMOTE_DELETABLE
-E_DBUS_TYPE_SOURCE_REMOTE_DELETABLE
-E_DBUS_SOURCE_REMOTE_DELETABLE_GET_IFACE
-EDBussourceRemoteDeletableIface
-<SUBSECTION Private>
-e_dbus_source_remote_deletable_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-remote-deletable-proxy</FILE>
-<TITLE>EDBusSourceRemoteDeletableProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusSourceRemoteDeletableProxy
 e_dbus_source_remote_deletable_proxy_new_sync
 e_dbus_source_remote_deletable_proxy_new
@@ -401,35 +322,35 @@ e_dbus_source_remote_deletable_proxy_new_finish
 e_dbus_source_remote_deletable_proxy_new_for_bus_sync
 e_dbus_source_remote_deletable_proxy_new_for_bus
 e_dbus_source_remote_deletable_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusSourceRemoteDeletableSkeleton
+e_dbus_source_remote_deletable_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_SOURCE_REMOTE_DELETABLE
+E_DBUS_IS_SOURCE_REMOTE_DELETABLE
+E_DBUS_TYPE_SOURCE_REMOTE_DELETABLE
+E_DBUS_SOURCE_REMOTE_DELETABLE_GET_IFACE
 E_DBUS_SOURCE_REMOTE_DELETABLE_PROXY
 E_DBUS_IS_SOURCE_REMOTE_DELETABLE_PROXY
 E_DBUS_TYPE_SOURCE_REMOTE_DELETABLE_PROXY
 E_DBUS_SOURCE_REMOTE_DELETABLE_PROXY_CLASS
 E_DBUS_IS_SOURCE_REMOTE_DELETABLE_PROXY_CLASS
 E_DBUS_SOURCE_REMOTE_DELETABLE_PROXY_GET_CLASS
-EDbusSourceRemoteDeletableProxyClass
-<SUBSECTION Private>
-EDBusSourceRemoteDeletableProxyPrivate
-e_dbus_source_remote_deletable_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-remote-deletable-skeleton</FILE>
-<TITLE>EDBusSourceRemoteDeletableSkeleton</TITLE>
-EDBusSourceRemoteDeletableSkeleton
-e_dbus_source_remote_deletable_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_SOURCE_REMOTE_DELETABLE_SKELETON
 E_DBUS_IS_SOURCE_REMOTE_DELETABLE_SKELETON
 E_DBUS_TYPE_SOURCE_REMOTE_DELETABLE_SKELETON
 E_DBUS_SOURCE_REMOTE_DELETABLE_SKELETON_CLASS
 E_DBUS_IS_SOURCE_REMOTE_DELETABLE_SKELETON_CLASS
 E_DBUS_SOURCE_REMOTE_DELETABLE_SKELETON_GET_CLASS
+EDBussourceRemoteDeletableIface
+EDBusSourceRemoteDeletableProxyClass
 EDBusSourceRemoteDeletableSkeletonClass
-<SUBSECTION Private>
-EDBusSourceRemoteDeletableSkeletonPrivate
+e_dbus_source_remote_deletable_get_type
+e_dbus_source_remote_deletable_proxy_get_type
 e_dbus_source_remote_deletable_skeleton_get_type
+<SUBSECTION Private>
+EDBusSourceRemoteDeletableProxyPrivate
+EDBusSourceRemoteDeletableSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -442,19 +363,7 @@ e_dbus_source_removable_call_remove_finish
 e_dbus_source_removable_complete_remove
 e_dbus_source_removable_interface_info
 e_dbus_source_removable_override_properties
-<SUBSECTION Standard>
-E_DBUS_SOURCE_REMOVABLE
-E_DBUS_IS_SOURCE_REMOVABLE
-E_DBUS_TYPE_SOURCE_REMOVABLE
-E_DBUS_SOURCE_REMOVABLE_GET_IFACE
-EDBusSourceRemovableIface
-<SUBSECTION Private>
-e_dbus_source_removable_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-removable-proxy</FILE>
-<TITLE>EDBusSourceRemovableProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusSourceRemovableProxy
 e_dbus_source_removable_proxy_new_sync
 e_dbus_source_removable_proxy_new
@@ -462,35 +371,35 @@ e_dbus_source_removable_proxy_new_finish
 e_dbus_source_removable_proxy_new_for_bus_sync
 e_dbus_source_removable_proxy_new_for_bus
 e_dbus_source_removable_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusSourceRemovableSkeleton
+e_dbus_source_removable_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_SOURCE_REMOVABLE
+E_DBUS_IS_SOURCE_REMOVABLE
+E_DBUS_TYPE_SOURCE_REMOVABLE
+E_DBUS_SOURCE_REMOVABLE_GET_IFACE
 E_DBUS_SOURCE_REMOVABLE_PROXY
 E_DBUS_IS_SOURCE_REMOVABLE_PROXY
 E_DBUS_TYPE_SOURCE_REMOVABLE_PROXY
 E_DBUS_SOURCE_REMOVABLE_PROXY_CLASS
 E_DBUS_IS_SOURCE_REMOVABLE_PROXY_CLASS
 E_DBUS_SOURCE_REMOVABLE_PROXY_GET_CLASS
-EDBusSourceRemovableProxyClass
-<SUBSECTION Private>
-EDBusSourceRemovableProxyPrivate
-e_dbus_source_removable_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-removable-skeleton</FILE>
-<TITLE>EDBusSourceRemovableSkeleton</TITLE>
-EDBusSourceRemovableSkeleton
-e_dbus_source_removable_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_SOURCE_REMOVABLE_SKELETON
 E_DBUS_IS_SOURCE_REMOVABLE_SKELETON
 E_DBUS_TYPE_SOURCE_REMOVABLE_SKELETON
 E_DBUS_SOURCE_REMOVABLE_SKELETON_CLASS
 E_DBUS_IS_SOURCE_REMOVABLE_SKELETON_CLASS
 E_DBUS_SOURCE_REMOVABLE_SKELETON_GET_CLASS
+EDBusSourceRemovableIface
+EDBusSourceRemovableProxyClass
 EDBusSourceRemovableSkeletonClass
-<SUBSECTION Private>
-EDBusSourceRemovableSkeletonPrivate
+e_dbus_source_removable_get_type
+e_dbus_source_removable_proxy_get_type
 e_dbus_source_removable_skeleton_get_type
+<SUBSECTION Private>
+EDBusSourceRemovableProxyPrivate
+EDBusSourceRemovableSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -503,19 +412,7 @@ e_dbus_source_writable_call_write_finish
 e_dbus_source_writable_complete_write
 e_dbus_source_writable_interface_info
 e_dbus_source_writable_override_properties
-<SUBSECTION Standard>
-E_DBUS_SOURCE_WRITABLE
-E_DBUS_IS_SOURCE_WRITABLE
-E_DBUS_TYPE_SOURCE_WRITABLE
-E_DBUS_SOURCE_WRITABLE_GET_IFACE
-EDBusSourceWritableIface
-<SUBSECTION Private>
-e_dbus_source_writable_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-writable-proxy</FILE>
-<TITLE>EDBusSourceWritableProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusSourceWritableProxy
 e_dbus_source_writable_proxy_new_sync
 e_dbus_source_writable_proxy_new
@@ -523,35 +420,35 @@ e_dbus_source_writable_proxy_new_finish
 e_dbus_source_writable_proxy_new_for_bus_sync
 e_dbus_source_writable_proxy_new_for_bus
 e_dbus_source_writable_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusSourceWritableSkeleton
+e_dbus_source_writable_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_SOURCE_WRITABLE
+E_DBUS_IS_SOURCE_WRITABLE
+E_DBUS_TYPE_SOURCE_WRITABLE
+E_DBUS_SOURCE_WRITABLE_GET_IFACE
 E_DBUS_SOURCE_WRITABLE_PROXY
 E_DBUS_IS_SOURCE_WRITABLE_PROXY
 E_DBUS_TYPE_SOURCE_WRITABLE_PROXY
 E_DBUS_SOURCE_WRITABLE_PROXY_CLASS
 E_DBUS_IS_SOURCE_WRITABLE_PROXY_CLASS
 E_DBUS_SOURCE_WRITABLE_PROXY_GET_CLASS
-EDBusSourceWritableProxyClass
-<SUBSECTION Private>
-EDBusSourceWritableProxyPrivate
-e_dbus_source_writable_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-source-writable-skeleton</FILE>
-<TITLE>EDBusSourceWritableSkeleton</TITLE>
-EDBusSourceWritableSkeleton
-e_dbus_source_writable_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_SOURCE_WRITABLE_SKELETON
 E_DBUS_IS_SOURCE_WRITABLE_SKELETON
 E_DBUS_TYPE_SOURCE_WRITABLE_SKELETON
 E_DBUS_SOURCE_WRITABLE_SKELETON_CLASS
 E_DBUS_IS_SOURCE_WRITABLE_SKELETON_CLASS
 E_DBUS_SOURCE_WRITABLE_SKELETON_GET_CLASS
+EDBusSourceWritableIface
+EDBusSourceWritableProxyClass
 EDBusSourceWritableSkeletonClass
-<SUBSECTION Private>
-EDBusSourceWritableSkeletonPrivate
+e_dbus_source_writable_get_type
+e_dbus_source_writable_proxy_get_type
 e_dbus_source_writable_skeleton_get_type
+<SUBSECTION Private>
+EDBusSourceWritableProxyPrivate
+EDBusSourceWritableSkeletonPrivate
 </SECTION>
 
 <SECTION>
@@ -570,19 +467,7 @@ e_dbus_user_prompter_emit_extension_response
 e_dbus_user_prompter_emit_response
 e_dbus_user_prompter_interface_info
 e_dbus_user_prompter_override_properties
-<SUBSECTION Standard>
-E_DBUS_USER_PROMPTER
-E_DBUS_IS_USER_PROMPTER
-E_DBUS_TYPE_USER_PROMPTER
-E_DBUS_USER_PROMPTER_GET_IFACE
-EDBusUserPrompterIface
-<SUBSECTION Private>
-e_dbus_user_prompter_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-user-prompter-proxy</FILE>
-<TITLE>EDBusUserPrompterProxy</TITLE>
+<SUBSECTION Proxy>
 EDBusUserPrompterProxy
 e_dbus_user_prompter_proxy_new_sync
 e_dbus_user_prompter_proxy_new
@@ -590,34 +475,34 @@ e_dbus_user_prompter_proxy_new_finish
 e_dbus_user_prompter_proxy_new_for_bus_sync
 e_dbus_user_prompter_proxy_new_for_bus
 e_dbus_user_prompter_proxy_new_for_bus_finish
+<SUBSECTION Skeleton>
+EDBusUserPrompterSkeleton
+e_dbus_user_prompter_skeleton_new
 <SUBSECTION Standard>
+E_DBUS_USER_PROMPTER
+E_DBUS_IS_USER_PROMPTER
+E_DBUS_TYPE_USER_PROMPTER
+E_DBUS_USER_PROMPTER_GET_IFACE
 E_DBUS_USER_PROMPTER_PROXY
 E_DBUS_IS_USER_PROMPTER_PROXY
 E_DBUS_TYPE_USER_PROMPTER_PROXY
 E_DBUS_USER_PROMPTER_PROXY_CLASS
 E_DBUS_IS_USER_PROMPTER_PROXY_CLASS
 E_DBUS_USER_PROMPTER_PROXY_GET_CLASS
-EDBusUserPrompterProxyClass
-<SUBSECTION Private>
-EDBusUserPrompterProxyPrivate
-e_dbus_user_prompter_proxy_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-dbus-user-prompter-skeleton</FILE>
-<TITLE>EDBusUserPrompterSkeleton</TITLE>
-EDBusUserPrompterSkeleton
-e_dbus_user_prompter_skeleton_new
-<SUBSECTION Standard>
 E_DBUS_USER_PROMPTER_SKELETON
 E_DBUS_IS_USER_PROMPTER_SKELETON
 E_DBUS_TYPE_USER_PROMPTER_SKELETON
 E_DBUS_USER_PROMPTER_SKELETON_CLASS
 E_DBUS_IS_USER_PROMPTER_SKELETON_CLASS
 E_DBUS_USER_PROMPTER_SKELETON_GET_CLASS
+EDBusUserPrompterIface
+EDBusUserPrompterProxyClass
 EDBusUserPrompterSkeletonClass
-<SUBSECTION Private>
-EDBusUserPrompterSkeletonPrivate
+e_dbus_user_prompter_get_type
+e_dbus_user_prompter_proxy_get_type
 e_dbus_user_prompter_skeleton_get_type
+<SUBSECTION Private>
+EDBusUserPrompterProxyPrivate
+EDBusUserPrompterSkeletonPrivate
 </SECTION>
 
