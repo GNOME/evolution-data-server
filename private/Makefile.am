@@ -40,21 +40,29 @@ $(GENERATED_DBUS_USER_PROMPTER) : Makefile.am org.gnome.evolution.dataserver.Use
 GENERATED_DBUS_SOURCE = \
 	e-dbus-source.c \
 	e-dbus-source.h \
+	e-dbus-source-org.gnome.evolution.dataserver.Source.xml \
+	e-dbus-source-org.gnome.evolution.dataserver.Source.Removable.xml \
+	e-dbus-source-org.gnome.evolution.dataserver.Source.Writable.xml \
+	e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteCreatable.xml \
+	e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteDeletable.xml \
 	$(NULL)
 
 GENERATED_DBUS_SOURCE_MANAGER = \
 	e-dbus-source-manager.c \
 	e-dbus-source-manager.h \
+	e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml \
 	$(NULL)
 
 GENERATED_DBUS_AUTHENTICATOR = \
 	e-dbus-authenticator.c \
 	e-dbus-authenticator.h \
+	e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml \
 	$(NULL)
 
 GENERATED_DBUS_USER_PROMPTER = \
 	e-dbus-user-prompter.c \
 	e-dbus-user-prompter.h \
+	e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
 BUILT_SOURCES = \
@@ -98,7 +106,6 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
-	e-dbus-*-org.gnome.evolution.dataserver.*.xml \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
