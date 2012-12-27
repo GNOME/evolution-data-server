@@ -2,7 +2,7 @@
 DOC_MODULE = libedataserverui
 
 # The top-level SGML file.
-DOC_MAIN_SGML_FILE = libedataserverui-docs.sgml
+DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"

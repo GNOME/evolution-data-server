@@ -19,9 +19,9 @@ E_CATEGORIES_DIALOG_CLASS
 E_IS_CATEGORIES_DIALOG_CLASS
 E_CATEGORIES_DIALOG_GET_CLASS
 ECategoriesDialogClass
+e_categories_dialog_get_type
 <SUBSECTION Private>
 ECategoriesDialogPrivate
-e_categories_dialog_get_type
 </SECTION>
 
 <SECTION>
@@ -41,9 +41,9 @@ E_CATEGORIES_EDITOR_CLASS
 E_IS_CATEGORIES_EDITOR_CLASS
 E_CATEGORIES_EDITOR_GET_CLASS
 ECategoriesEditorClass
+e_categories_editor_get_type
 <SUBSECTION Private>
 ECategoriesEditorPrivate
-e_categories_editor_get_type
 </SECTION>
 
 <SECTION>
@@ -65,9 +65,9 @@ E_CATEGORIES_SELECTOR_CLASS
 E_IS_CATEGORIES_SELECTOR_CLASS
 E_CATEGORIES_SELECTOR_GET_CLASS
 ECategoriesSelectorClass
+e_categories_selector_get_type
 <SUBSECTION Private>
 ECategoriesSelectorPrivate
-e_categories_selector_get_type
 </SECTION>
 
 <SECTION>
@@ -83,9 +83,9 @@ E_IS_CATEGORY_COMPLETION
 E_IS_CATEGORY_COMPLETION_CLASS
 E_CATEGORY_COMPLETION_GET_CLASS
 ECategoryCompletionClass
+e_category_completion_get_type
 <SUBSECTION Private>
 ECategoryCompletionPrivate
-e_category_completion_get_type
 </SECTION>
 
 <SECTION>
@@ -103,9 +103,9 @@ E_CATEGORY_EDITOR_CLASS
 E_IS_CATEGORY_EDITOR_CLASS
 E_CATEGORY_EDITOR_GET_CLASS
 ECategoryEditorClass
+e_category_editor_get_type
 <SUBSECTION Private>
 ECategoryEditorPrivate
-e_category_editor_get_type
 </SECTION>
 
 <SECTION>
@@ -121,9 +121,9 @@ E_IS_CELL_RENDERER_COLOR
 E_IS_CELL_RENDERER_COLOR_CLASS
 E_CELL_RENDERER_COLOR_GET_CLASS
 ECellRendererColorClass
+e_cell_renderer_color_get_type
 <SUBSECTION Private>
 ECellRendererColorPrivate
-e_cell_renderer_color_get_type
 </SECTION>
 
 <SECTION>
@@ -156,9 +156,9 @@ E_CONTACT_STORE_CLASS
 E_IS_CONTACT_STORE_CLASS
 E_CONTACT_STORE_GET_CLASS
 EContactStoreClass
+e_contact_store_get_type
 <SUBSECTION Private>
 EContactStorePrivate
-e_contact_store_get_type
 </SECTION>
 
 <SECTION>
@@ -184,9 +184,9 @@ E_DESTINATION_STORE_CLASS
 E_IS_DESTINATION_STORE_CLASS
 E_DESTINATION_STORE_GET_CLASS
 EDestinationStoreClass
+e_destination_store_get_type
 <SUBSECTION Private>
 EDestinationStorePrivate
-e_destination_store_get_type
 </SECTION>
 
 <SECTION>
@@ -210,9 +210,9 @@ E_NAME_SELECTOR_CLASS
 E_IS_NAME_SELECTOR_CLASS
 E_NAME_SELECTOR_GET_CLASS
 ENameSelectorClass
+e_name_selector_get_type
 <SUBSECTION Private>
 ENameSelectorPrivate
-e_name_selector_get_type
 </SECTION>
 
 <SECTION>
@@ -233,9 +233,9 @@ E_NAME_SELECTOR_DIALOG_CLASS
 E_IS_NAME_SELECTOR_DIALOG_CLASS
 E_NAME_SELECTOR_DIALOG_GET_CLASS
 ENameSelectorDialogClass
+e_name_selector_dialog_get_type
 <SUBSECTION Private>
 ENameSelectorDialogPrivate
-e_name_selector_dialog_get_type
 </SECTION>
 
 <SECTION>
@@ -265,9 +265,9 @@ E_NAME_SELECTOR_ENTRY_CLASS
 E_IS_NAME_SELECTOR_ENTRY_CLASS
 E_NAME_SELECTOR_ENTRY_GET_CLASS
 ENameSelectorEntryClass
+e_name_selector_entry_get_type
 <SUBSECTION Private>
 ENameSelectorEntryPrivate
-e_name_selector_entry_get_type
 </SECTION>
 
 <SECTION>
@@ -284,9 +284,9 @@ E_NAME_SELECTOR_LIST_CLASS
 E_IS_NAME_SELECTOR_LIST_CLASS
 E_NAME_SELECTOR_LIST_GET_CLASS
 ENameSelectorListClass
+e_name_selector_list_get_type
 <SUBSECTION Private>
 ENameSelectorListPrivate
-e_name_selector_list_get_type
 </SECTION>
 
 <SECTION>
@@ -310,9 +310,9 @@ E_NAME_SELECTOR_MODEL_CLASS
 E_IS_NAME_SELECTOR_MODEL_CLASS
 E_NAME_SELECTOR_MODEL_GET_CLASS
 ENameSelectorModelClass
+e_name_selector_model_get_type
 <SUBSECTION Private>
 ENameSelectorModelPrivate
-e_name_selector_model_get_type
 </SECTION>
 
 <SECTION>
@@ -352,9 +352,9 @@ E_SOURCE_COMBO_BOX_CLASS
 E_IS_SOURCE_COMBO_BOX_CLASS
 E_SOURCE_COMBO_BOX_GET_CLASS
 ESourceComboBoxClass
+e_source_combo_box_get_type
 <SUBSECTION Private>
 ESourceComboBoxPrivate
-e_source_combo_box_get_type
 </SECTION>
 
 <SECTION>
@@ -379,9 +379,9 @@ E_TREE_MODEL_GENERATOR_CLASS
 E_IS_TREE_MODEL_GENERATOR_CLASS
 E_TREE_MODEL_GENERATOR_GET_CLASS
 ETreeModelGeneratorClass
+e_tree_model_generator_get_type
 <SUBSECTION Private>
 ETreeModelGeneratorPrivate
-e_tree_model_generator_get_type
 </SECTION>
 
 <SECTION>
@@ -415,9 +415,9 @@ E_SOURCE_SELECTOR_CLASS
 E_IS_SOURCE_SELECTOR_CLASS
 E_SOURCE_SELECTOR_GET_CLASS
 ESourceSelectorClass
+e_source_selector_get_type
 <SUBSECTION Private>
 ESourceSelectorPrivate
-e_source_selector_get_type
 </SECTION>
 
 <SECTION>
@@ -437,8 +437,8 @@ E_SOURCE_SELECTOR_DIALOG_CLASS
 E_IS_SOURCE_SELECTOR_DIALOG_CLASS
 E_SOURCE_SELECTOR_DIALOG_GET_CLASS
 ESourceSelectorDialogClass
+e_source_selector_dialog_get_type
 <SUBSECTION Private>
 ESourceSelectorDialogPrivate
-e_source_selector_dialog_get_type
 </SECTION>
 

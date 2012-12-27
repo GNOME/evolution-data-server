@@ -67,12 +67,12 @@ E_TYPE_CAL_SOURCE_TYPE
 E_CAL_SET_MODE_STATUS_ENUM_TYPE
 CAL_MODE_ENUM_TYPE
 ECalClass
-<SUBSECTION Private>
-ECalPrivate
 e_cal_get_type
 e_cal_set_mode_status_enum_get_type
 e_cal_source_type_enum_get_type
 cal_mode_enum_get_type
+<SUBSECTION Private>
+ECalPrivate
 </SECTION>
 
 <SECTION>
@@ -378,9 +378,9 @@ E_TYPE_CAL_COMPONENT
 E_CAL_COMPONENT_CLASS
 E_IS_CAL_COMPONENT_CLASS
 ECalComponentClass
+e_cal_component_get_type
 <SUBSECTION Private>
 ECalComponentPrivate
-e_cal_component_get_type
 </SECTION>
 
 <SECTION>
@@ -515,9 +515,9 @@ E_CAL_VIEW_CLASS
 E_IS_CAL_VIEW
 E_IS_CAL_VIEW_CLASS
 ECalViewClass
+e_cal_view_get_type
 <SUBSECTION Private>
 ECalViewPrivate
-e_cal_view_get_type
 e_cal_view_new
 </SECTION>
 
