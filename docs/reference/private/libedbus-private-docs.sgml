@@ -16,6 +16,7 @@
     <xi:include href="xml/e-dbus-source-writable.xml"/>
     <xi:include href="xml/e-dbus-source-remote-creatable.xml"/>
     <xi:include href="xml/e-dbus-source-remote-deletable.xml"/>
+    <xi:include href="xml/e-dbus-source-oauth2-support.xml"/>
     <xi:include href="xml/e-dbus-source-manager.xml"/>
     <xi:include href="xml/e-dbus-object-manager-client.xml"/>
     <xi:include href="xml/e-dbus-authenticator.xml"/>
@@ -29,6 +30,7 @@
     <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.Writable.xml"/>
     <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteCreatable.xml"/>
     <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteDeletable.xml"/>
+    <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.OAuth2Support.xml"/>
     <xi:include href="../../../private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
     <xi:include href="../../../private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
     <xi:include href="../../../private/e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml"/>

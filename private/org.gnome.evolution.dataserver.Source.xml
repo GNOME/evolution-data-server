@@ -95,3 +95,28 @@
   <method name="Delete"/>
 </interface>
 
+<!--
+    org.gnome.evolution.dataserver.Source.OAuth2Support:
+    @short_description: Supports OAuth 2.0 authentication
+
+    This interface is used by data sources that support
+    <ulink url="http://oauth.net/2/">OAuth 2.0</ulink> authentication,
+    usually backed by a desktop-wide authentication service such as
+    <ulink url="http://live.gnome.org/GnomeOnlineAccounts">GNOME Online
+    Accounts</ulink>.
+-->
+<interface name="org.gnome.evolution.dataserver.Source.OAuth2Support">
+  <!--
+      GetAccessToken:
+      @access_token: The access token
+      @expires_in: The duration in seconds that the returned token is
+                   valid for, or 0 if unknown
+
+      Obtains an access token that can be used to access OAuth2-based
+      services for the data source.
+  -->
+  <method name="GetAccessToken">
+    <arg name="access_token" type="s" direction="out"/>
+    <arg name="expires_in" type="i" direction="out"/>
+  </method>
+</interface>

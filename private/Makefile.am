@@ -45,6 +45,7 @@ GENERATED_DBUS_SOURCE = \
 	e-dbus-source-org.gnome.evolution.dataserver.Source.Writable.xml \
 	e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteCreatable.xml \
 	e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteDeletable.xml \
+	e-dbus-source-org.gnome.evolution.dataserver.Source.OAuth2Support.xml \
 	$(NULL)
 
 GENERATED_DBUS_SOURCE_MANAGER = \
