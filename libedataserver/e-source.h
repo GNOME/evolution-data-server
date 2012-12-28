@@ -123,9 +123,26 @@ struct _ESourceClass {
 	gboolean	(*remote_delete_finish)	(ESource *source,
 						 GAsyncResult *result,
 						 GError **error);
+	gboolean	(*get_oauth2_access_token_sync)
+						(ESource *source,
+						 GCancellable *cancellable,
+						 gchar **out_access_token,
+						 gint *out_expires_in,
+						 GError **error);
+	void		(*get_oauth2_access_token)
+						(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*get_oauth2_access_token_finish)
+						(ESource *source,
+						 GAsyncResult *result,
+						 gchar **out_access_token,
+						 gint *out_expires_in,
+						 GError **error);
 
 	/* Reserved slots. */
-	gpointer reserved[10];
+	gpointer reserved[7];
 };
 
 GType		e_source_get_type		(void) G_GNUC_CONST;
@@ -209,6 +226,23 @@ void		e_source_remote_delete		(ESource *source,
 						 gpointer user_data);
 gboolean	e_source_remote_delete_finish	(ESource *source,
 						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_get_oauth2_access_token_sync
+						(ESource *source,
+						 GCancellable *cancellable,
+						 gchar **out_access_token,
+						 gint *out_expires_in,
+						 GError **error);
+void		e_source_get_oauth2_access_token
+						(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_get_oauth2_access_token_finish
+						(ESource *source,
+						 GAsyncResult *result,
+						 gchar **out_access_token,
+						 gint *out_expires_in,
 						 GError **error);
 
 G_END_DECLS

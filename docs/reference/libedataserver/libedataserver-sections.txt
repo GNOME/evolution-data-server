@@ -293,6 +293,9 @@ e_source_remote_create_finish
 e_source_remote_delete_sync
 e_source_remote_delete
 e_source_remote_delete_finish
+e_source_get_oauth2_access_token_sync
+e_source_get_oauth2_access_token
+e_source_get_oauth2_access_token_finish
 <SUBSECTION Standard>
 E_SOURCE
 E_IS_SOURCE

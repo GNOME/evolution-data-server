@@ -132,6 +132,8 @@ struct _ESourcePrivate {
 
 struct _AsyncContext {
 	ESource *scratch_source;
+	gchar *access_token;
+	gint expires_in;
 };
 
 enum {
@@ -171,6 +173,8 @@ async_context_free (AsyncContext *async_context)
 {
 	if (async_context->scratch_source != NULL)
 		g_object_unref (async_context->scratch_source);
+
+	g_free (async_context->access_token);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -1198,8 +1202,6 @@ source_remote_delete_sync (ESource *source,
 	GDBusObject *dbus_object;
 	gboolean success;
 
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
 		dbus_interface =
@@ -1277,6 +1279,126 @@ source_remote_delete_finish (ESource *source,
 
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static gboolean
+source_get_oauth2_access_token_sync (ESource *source,
+                                     GCancellable *cancellable,
+                                     gchar **out_access_token,
+                                     gint *out_expires_in,
+                                     GError **error)
+{
+	EDBusSourceOAuth2Support *dbus_interface = NULL;
+	GDBusObject *dbus_object;
+	gboolean success;
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_interface =
+			e_dbus_object_get_source_oauth2_support (
+			E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (dbus_interface == NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' does not "
+			"support OAuth 2.0 authentication"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	success = e_dbus_source_oauth2_support_call_get_access_token_sync (
+		dbus_interface, out_access_token,
+		out_expires_in, cancellable, error);
+
+	g_object_unref (dbus_interface);
+
+	return success;
+}
+
+/* Helper for source_get_oauth2_access_token() */
+static void
+source_get_oauth2_access_token_thread (GSimpleAsyncResult *simple,
+                                       GObject *object,
+                                       GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_source_get_oauth2_access_token_sync (
+		E_SOURCE (object), cancellable,
+		&async_context->access_token,
+		&async_context->expires_in,
+		&error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+source_get_oauth2_access_token (ESource *source,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (source), callback, user_data,
+		source_get_oauth2_access_token);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, source_get_oauth2_access_token_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+source_get_oauth2_access_token_finish (ESource *source,
+                                       GAsyncResult *result,
+                                       gchar **out_access_token,
+                                       gint *out_expires_in,
+                                       GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (source),
+		source_get_oauth2_access_token), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->access_token != NULL, FALSE);
+
+	if (out_access_token != NULL) {
+		*out_access_token = async_context->access_token;
+		async_context->access_token = NULL;
+	}
+
+	if (out_expires_in != NULL)
+		*out_expires_in = async_context->expires_in;
+
+	return TRUE;
 }
 
 static gboolean
@@ -1365,6 +1487,9 @@ e_source_class_init (ESourceClass *class)
 	class->remote_delete_sync = source_remote_delete_sync;
 	class->remote_delete = source_remote_delete;
 	class->remote_delete_finish = source_remote_delete_finish;
+	class->get_oauth2_access_token_sync = source_get_oauth2_access_token_sync;
+	class->get_oauth2_access_token = source_get_oauth2_access_token;
+	class->get_oauth2_access_token_finish = source_get_oauth2_access_token_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -2770,5 +2895,119 @@ e_source_remote_delete_finish (ESource *source,
 	g_return_val_if_fail (class->remote_delete_finish != NULL, FALSE);
 
 	return class->remote_delete_finish (source, result, error);
+}
+
+/**
+ * e_source_get_oauth2_access_token_sync:
+ * @source: an #ESource
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @out_access_token: (allow-none): return location for the access token,
+ *                    or %NULL
+ * @out_expires_in: (allow-none): return location for the token expiry,
+ *                  or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains the OAuth 2.0 access token for @source along with its expiry
+ * in seconds from the current time (or 0 if unknown).  The @source must
+ * have #ESource:supports-oauth2 set for this to work.
+ *
+ * Free the returned access token with g_free() when finished with it.
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_source_get_oauth2_access_token_sync (ESource *source,
+                                       GCancellable *cancellable,
+                                       gchar **out_access_token,
+                                       gint *out_expires_in,
+                                       GError **error)
+{
+	ESourceClass *class;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (
+		class->get_oauth2_access_token_sync != NULL, FALSE);
+
+	return class->get_oauth2_access_token_sync (
+		source, cancellable, out_access_token, out_expires_in, error);
+}
+
+/**
+ * e_source_get_oauth2_access_token:
+ * @source: an #ESource
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * Asynchronously obtains the OAuth 2.0 access token for @source along
+ * with its expiry in seconds from the current time (or 0 if unknown).
+ * The @source must have #ESource:supports-oauth2 set for this to work.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_source_get_oauth2_access_token_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.8
+ **/
+void
+e_source_get_oauth2_access_token (ESource *source,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
+{
+	ESourceClass *class;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class->get_oauth2_access_token != NULL);
+
+	return class->get_oauth2_access_token (
+		source, cancellable, callback, user_data);
+}
+
+/**
+ * e_source_get_oauth2_access_token_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @out_access_token: (allow-none): return location for the access token,
+ *                    or %NULL
+ * @out_expires_in: (allow-none): return location for the token expiry,
+ *                  or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_get_oauth2_access_token().
+ *
+ * Free the returned access token with g_free() when finished with it.
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_source_get_oauth2_access_token_finish (ESource *source,
+                                         GAsyncResult *result,
+                                         gchar **out_access_token,
+                                         gint *out_expires_in,
+                                         GError **error)
+{
+	ESourceClass *class;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (
+		class->get_oauth2_access_token_finish != NULL, FALSE);
+
+	return class->get_oauth2_access_token_finish (
+		source, result, out_access_token, out_expires_in, error);
 }
 
