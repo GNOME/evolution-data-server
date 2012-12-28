@@ -311,6 +311,22 @@ EModulePrivate
 </SECTION>
 
 <SECTION>
+<FILE>e-oauth2-support</FILE>
+<TITLE>EOAuth2Support</TITLE>
+EOAuth2Support
+EOAuth2SupportInterface
+e_oauth2_support_get_access_token_sync
+e_oauth2_support_get_access_token
+e_oauth2_support_get_access_token_finish
+<SUBSECTION Standard>
+E_OAUTH2_SUPPORT
+E_IS_OAUTH2_SUPPORT
+E_TYPE_OAUTH2_SUPPORT
+E_OAUTH2_SUPPORT_GET_INTERFACE
+e_oauth2_support_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-offline-listener</FILE>
 <TITLE>EOfflineListener</TITLE>
 EOfflineListenerState

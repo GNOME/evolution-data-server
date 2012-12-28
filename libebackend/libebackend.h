@@ -39,6 +39,7 @@
 #include <libebackend/e-extension.h>
 #include <libebackend/e-file-cache.h>
 #include <libebackend/e-module.h>
+#include <libebackend/e-oauth2-support.h>
 #include <libebackend/e-offline-listener.h>
 #include <libebackend/e-server-side-source.h>
 #include <libebackend/e-source-registry-server.h>

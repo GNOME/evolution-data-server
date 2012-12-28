@@ -12,6 +12,7 @@ e_extensible_get_type
 e_extension_get_type
 e_file_cache_get_type
 e_module_get_type
+e_oauth2_support_get_type
 e_offline_listener_get_type
 e_server_side_source_get_type
 e_source_registry_server_get_type

@@ -45,6 +45,7 @@ libebackend_1_2_la_SOURCES =		\
 	e-dbus-server.c			\
 	e-extensible.c			\
 	e-extension.c			\
+	e-oauth2-support.c		\
 	e-offline-listener.c		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
@@ -88,6 +89,7 @@ libebackendinclude_HEADERS =		\
 	e-dbus-server.h			\
 	e-extensible.h			\
 	e-extension.h			\
+	e-oauth2-support.h		\
 	e-offline-listener.h		\
 	e-db3-utils.h			\
 	e-dbhash.h			\

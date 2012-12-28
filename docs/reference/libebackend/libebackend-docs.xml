@@ -25,6 +25,7 @@
     <xi:include href="xml/e-authentication-session.xml"/>
     <xi:include href="xml/e-collection-backend.xml"/>
     <xi:include href="xml/e-collection-backend-factory.xml"/>
+    <xi:include href="xml/e-oauth2-support.xml"/>
     <xi:include href="xml/e-server-side-source.xml"/>
     <xi:include href="xml/e-source-registry-server.xml"/>
   </chapter>
