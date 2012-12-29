@@ -21,6 +21,7 @@
 
 #include <config.h>
 #include <goa/goa.h>
+#include <glib/gi18n-lib.h>
 #include <libsecret/secret.h>
 #include <libsoup/soup.h>
 
@@ -80,11 +81,17 @@ void e_module_unload (GTypeModule *type_module);
 
 /* Forward Declarations */
 GType e_gnome_online_accounts_get_type (void);
+static void e_gnome_online_accounts_oauth2_support_init
+					(EOAuth2SupportInterface *interface);
 
-G_DEFINE_DYNAMIC_TYPE (
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (
 	EGnomeOnlineAccounts,
 	e_gnome_online_accounts,
-	E_TYPE_EXTENSION)
+	E_TYPE_EXTENSION,
+	0,
+	G_IMPLEMENT_INTERFACE_DYNAMIC (
+		E_TYPE_OAUTH2_SUPPORT,
+		e_gnome_online_accounts_oauth2_support_init))
 
 static const gchar *
 gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
@@ -147,6 +154,63 @@ gnome_online_accounts_object_is_non_null (GBinding *binding,
 	g_value_set_boolean (target_value, v_object != NULL);
 
 	return TRUE;
+}
+
+static GoaObject *
+gnome_online_accounts_ref_account (EGnomeOnlineAccounts *extension,
+                                   ESource *source)
+{
+	ESourceRegistryServer *server;
+	GoaObject *match = NULL;
+	GList *list, *iter;
+	const gchar *extension_name;
+	gchar *account_id = NULL;
+
+	extension_name = E_SOURCE_EXTENSION_GOA;
+	server = gnome_online_accounts_get_server (extension);
+
+	source = e_source_registry_server_find_extension (
+		server, source, extension_name);
+
+	if (source != NULL) {
+		ESourceGoa *goa_ext;
+
+		goa_ext = e_source_get_extension (source, extension_name);
+		account_id = e_source_goa_dup_account_id (goa_ext);
+
+		g_object_unref (source);
+	}
+
+	if (account_id == NULL)
+		return NULL;
+
+	/* FIXME Use goa_client_lookup_by_id() once we require GOA 3.6. */
+
+	list = goa_client_get_accounts (extension->goa_client);
+
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		GoaObject *goa_object;
+		GoaAccount *goa_account;
+		const gchar *candidate_id;
+
+		goa_object = GOA_OBJECT (iter->data);
+		goa_account = goa_object_get_account (goa_object);
+		candidate_id = goa_account_get_id (goa_account);
+
+		if (g_strcmp0 (account_id, candidate_id) == 0)
+			match = g_object_ref (goa_object);
+
+		g_object_unref (goa_account);
+
+		if (match != NULL)
+			break;
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+
+	g_free (account_id);
+
+	return match;
 }
 
 static ESource *
@@ -496,6 +560,16 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	/* The data source should not be removable by clients. */
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (source), FALSE);
+
+	if (goa_object_peek_oauth2_based (goa_object) != NULL) {
+		/* This module provides OAuth 2.0 support to the collection.
+		 * Note, children of the collection source will automatically
+		 * inherit our EOAuth2Support through the property binding in
+		 * collection_backend_child_added(). */
+		e_server_side_source_set_oauth2_support (
+			E_SERVER_SIDE_SOURCE (source),
+			E_OAUTH2_SUPPORT (extension));
+	}
 }
 
 static void
@@ -998,6 +1072,58 @@ gnome_online_accounts_constructed (GObject *object)
 		constructed (object);
 }
 
+static gboolean
+gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
+                                             ESource *source,
+                                             GCancellable *cancellable,
+                                             gchar **out_access_token,
+                                             gint *out_expires_in,
+                                             GError **error)
+{
+	GoaObject *goa_object;
+	GoaAccount *goa_account;
+	GoaOAuth2Based *goa_oauth2_based;
+	gboolean success;
+
+	goa_object = gnome_online_accounts_ref_account (
+		E_GNOME_ONLINE_ACCOUNTS (support), source);
+
+	if (goa_object == NULL) {
+		g_set_error (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Cannot find a corresponding account in "
+			"the org.gnome.OnlineAccounts service from "
+			"which to obtain an access token for '%s'"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	goa_account = goa_object_get_account (goa_object);
+	g_return_val_if_fail (goa_account != NULL, FALSE);
+
+	goa_oauth2_based = goa_object_get_oauth2_based (goa_object);
+	g_return_val_if_fail (goa_oauth2_based != NULL, FALSE);
+
+	success = goa_account_call_ensure_credentials_sync (
+		goa_account, NULL, cancellable, error);
+
+	if (success)
+		success = goa_oauth2_based_call_get_access_token_sync (
+			goa_oauth2_based, out_access_token,
+			out_expires_in, cancellable, error);
+
+	g_object_unref (goa_oauth2_based);
+	g_object_unref (goa_account);
+	g_object_unref (goa_object);
+
+	g_prefix_error (
+		error,
+		_("Failed to obtain an access token for '%s': "),
+		e_source_get_display_name (source));
+
+	return success;
+}
+
 static void
 e_gnome_online_accounts_class_init (EGnomeOnlineAccountsClass *class)
 {
@@ -1016,6 +1142,12 @@ e_gnome_online_accounts_class_init (EGnomeOnlineAccountsClass *class)
 static void
 e_gnome_online_accounts_class_finalize (EGnomeOnlineAccountsClass *class)
 {
+}
+
+static void
+e_gnome_online_accounts_oauth2_support_init (EOAuth2SupportInterface *interface)
+{
+	interface->get_access_token_sync = gnome_online_accounts_get_access_token_sync;
 }
 
 static void
