@@ -709,12 +709,22 @@ static void
 collection_backend_child_added (ECollectionBackend *backend,
                                 ESource *child_source)
 {
+	ESource *collection_source;
+
 	collection_backend_children_insert (backend, child_source);
 	collection_backend_bind_child_enabled (backend, child_source);
+
+	collection_source = e_backend_get_source (E_BACKEND (backend));
 
 	/* Collection children are not removable. */
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (child_source), FALSE);
+
+	/* Collection children inherit OAuth 2.0 support if available. */
+	g_object_bind_property (
+		collection_source, "oauth2-support",
+		child_source, "oauth2-support",
+		G_BINDING_SYNC_CREATE);
 }
 
 static void
