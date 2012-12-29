@@ -51,6 +51,7 @@
 
 /* Contacts Configuration Details */
 #define GOOGLE_CONTACTS_BACKEND_NAME	"google"
+#define GOOGLE_CONTACTS_HOST		"www.google.com"
 #define GOOGLE_CONTACTS_RESOURCE_ID	"Contacts"
 
 typedef struct _EGoogleBackend EGoogleBackend;
@@ -92,6 +93,27 @@ G_DEFINE_DYNAMIC_TYPE (
 	EGoogleBackendFactory,
 	e_google_backend_factory,
 	E_TYPE_COLLECTION_BACKEND_FACTORY)
+
+static void
+google_backend_contacts_update_auth_method (ESource *source)
+{
+	EOAuth2Support *oauth2_support;
+	ESourceAuthentication *extension;
+	const gchar *extension_name;
+
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	extension = e_source_get_extension (source, extension_name);
+
+	oauth2_support = e_server_side_source_ref_oauth2_support (
+		E_SERVER_SIDE_SOURCE (source));
+	if (oauth2_support != NULL) {
+		e_source_authentication_set_method (extension, "OAuth2");
+		g_object_unref (oauth2_support);
+		return;
+	}
+
+	e_source_authentication_set_method (extension, "ClientLogin");
+}
 
 static void
 google_backend_add_calendar (ECollectionBackend *backend)
@@ -211,6 +233,10 @@ google_backend_add_contacts (ECollectionBackend *backend)
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	extension = e_source_get_extension (source, extension_name);
 
+	e_source_authentication_set_host (
+		E_SOURCE_AUTHENTICATION (extension),
+		GOOGLE_CONTACTS_HOST);
+
 	g_object_bind_property (
 		collection_extension, "identity",
 		extension, "user",
@@ -307,6 +333,20 @@ google_backend_child_added (ECollectionBackend *backend,
 			collection_extension, "identity",
 			auth_child_extension, "user",
 			G_BINDING_SYNC_CREATE);
+	}
+
+	/* Keep the contacts authentication method up-to-date.
+	 *
+	 * XXX Not using a property binding here in case I end up adding
+	 *     other "support" interfaces which influence authentication.
+	 *     Many-to-one property bindings tend not to work so well. */
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	if (e_source_has_extension (child_source, extension_name)) {
+		google_backend_contacts_update_auth_method (child_source);
+		g_signal_connect (
+			child_source, "notify::oauth2-support",
+			G_CALLBACK (google_backend_contacts_update_auth_method),
+			NULL);
 	}
 
 	/* Chain up to parent's child_added() method. */
