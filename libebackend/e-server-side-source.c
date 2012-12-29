@@ -45,6 +45,7 @@ typedef struct _AsyncContext AsyncContext;
 
 struct _EServerSideSourcePrivate {
 	gpointer server;  /* weak pointer */
+	GWeakRef oauth2_support;
 
 	GNode node;
 	GFile *file;
@@ -59,6 +60,7 @@ struct _EServerSideSourcePrivate {
 struct _AsyncContext {
 	EDBusSourceRemoteCreatable *remote_creatable;
 	EDBusSourceRemoteDeletable *remote_deletable;
+	EDBusSourceOAuth2Support *oauth2_support;
 	GDBusMethodInvocation *invocation;
 };
 
@@ -67,6 +69,7 @@ enum {
 	PROP_ALLOW_AUTH_PROMPT,
 	PROP_EXPORTED,
 	PROP_FILE,
+	PROP_OAUTH2_SUPPORT,
 	PROP_REMOTE_CREATABLE,
 	PROP_REMOTE_DELETABLE,
 	PROP_REMOVABLE,
@@ -97,6 +100,9 @@ async_context_free (AsyncContext *async_context)
 
 	if (async_context->remote_deletable != NULL)
 		g_object_unref (async_context->remote_deletable);
+
+	if (async_context->oauth2_support != NULL)
+		g_object_unref (async_context->oauth2_support);
 
 	if (async_context->invocation != NULL)
 		g_object_unref (async_context->invocation);
@@ -410,6 +416,62 @@ server_side_source_remote_delete_cb (EDBusSourceRemoteDeletable *interface,
 	return TRUE;
 }
 
+/* Helper for server_side_source_get_access_token_cb() */
+static void
+server_side_source_get_access_token_done_cb (GObject *source_object,
+                                             GAsyncResult *result,
+                                             gpointer user_data)
+{
+	ESource *source;
+	AsyncContext *async_context;
+	gchar *access_token = NULL;
+	gint expires_in = 0;
+	GError *error = NULL;
+
+	source = E_SOURCE (source_object);
+	async_context = (AsyncContext *) user_data;
+
+	e_source_get_oauth2_access_token_finish (
+		source, result, &access_token, &expires_in, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((access_token != NULL) && (error == NULL)) ||
+		((access_token == NULL) && (error != NULL)));
+
+	if (error != NULL)
+		g_dbus_method_invocation_take_error (
+			async_context->invocation, error);
+	else
+		e_dbus_source_oauth2_support_complete_get_access_token (
+			async_context->oauth2_support,
+			async_context->invocation,
+			access_token, expires_in);
+
+	g_free (access_token);
+
+	async_context_free (async_context);
+}
+
+static gboolean
+server_side_source_get_access_token_cb (EDBusSourceOAuth2Support *interface,
+                                        GDBusMethodInvocation *invocation,
+                                        ESource *source)
+{
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->oauth2_support = g_object_ref (interface);
+	async_context->invocation = g_object_ref (invocation);
+
+	e_source_get_oauth2_access_token (
+		source, NULL,
+		server_side_source_get_access_token_done_cb,
+		async_context);
+
+	return TRUE;
+}
+
 static void
 server_side_source_set_file (EServerSideSource *source,
                              GFile *file)
@@ -449,6 +511,12 @@ server_side_source_set_property (GObject *object,
 
 		case PROP_FILE:
 			server_side_source_set_file (
+				E_SERVER_SIDE_SOURCE (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OAUTH2_SUPPORT:
+			e_server_side_source_set_oauth2_support (
 				E_SERVER_SIDE_SOURCE (object),
 				g_value_get_object (value));
 			return;
@@ -521,6 +589,13 @@ server_side_source_get_property (GObject *object,
 				E_SERVER_SIDE_SOURCE (object)));
 			return;
 
+		case PROP_OAUTH2_SUPPORT:
+			g_value_take_object (
+				value,
+				e_server_side_source_ref_oauth2_support (
+				E_SERVER_SIDE_SOURCE (object)));
+			return;
+
 		case PROP_REMOTE_CREATABLE:
 			g_value_set_boolean (
 				value,
@@ -579,6 +654,8 @@ server_side_source_dispose (GObject *object)
 			G_OBJECT (priv->server), &priv->server);
 		priv->server = NULL;
 	}
+
+	g_weak_ref_set (&priv->oauth2_support, NULL);
 
 	if (priv->file != NULL) {
 		g_object_unref (priv->file);
@@ -984,6 +1061,38 @@ server_side_source_remote_delete_sync (ESource *source,
 }
 
 static gboolean
+server_side_source_get_oauth2_access_token_sync (ESource *source,
+                                                 GCancellable *cancellable,
+                                                 gchar **out_access_token,
+                                                 gint *out_expires_in,
+                                                 GError **error)
+{
+	EOAuth2Support *oauth2_support;
+	gboolean success;
+
+	oauth2_support = e_server_side_source_ref_oauth2_support (
+		E_SERVER_SIDE_SOURCE (source));
+
+	if (oauth2_support == NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' does not "
+			"support OAuth 2.0 authentication"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	success = e_oauth2_support_get_access_token_sync (
+		oauth2_support, source, cancellable,
+		out_access_token, out_expires_in, error);
+
+	g_object_unref (oauth2_support);
+
+	return success;
+}
+
+static gboolean
 server_side_source_initable_init (GInitable *initable,
                                   GCancellable *cancellable,
                                   GError **error)
@@ -1045,6 +1154,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	source_class->write_finish = server_side_source_write_finish;
 	source_class->remote_create_sync = server_side_source_remote_create_sync;
 	source_class->remote_delete_sync = server_side_source_remote_delete_sync;
+	source_class->get_oauth2_access_token_sync = server_side_source_get_oauth2_access_token_sync;
 
 	g_object_class_install_property (
 		object_class,
@@ -1080,6 +1190,17 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			G_TYPE_FILE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OAUTH2_SUPPORT,
+		g_param_spec_object (
+			"oauth2-support",
+			"OAuth2 Support",
+			"The object providing OAuth 2.0 support",
+			E_TYPE_OAUTH2_SUPPORT,
+			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This overrides the "remote-creatable" property
@@ -1895,5 +2016,79 @@ e_server_side_source_set_remote_deletable (EServerSideSource *source,
 		g_object_unref (dbus_interface);
 
 	g_object_notify (G_OBJECT (source), "remote-deletable");
+}
+
+/**
+ * e_server_side_source_ref_oauth2_support:
+ * @source: an #EServerSideSource
+ *
+ * Returns the object implementing the #EOAuth2SupportInterface,
+ * or %NULL if @source does not support OAuth 2.0 authentication.
+ *
+ * The returned #EOAuth2Support object is referenced for thread-safety.
+ * Unreference the object with g_object_unref() when finished with it.
+ *
+ * Returns: an #EOAuth2Support object, or %NULL
+ *
+ * Since: 3.8
+ **/
+EOAuth2Support *
+e_server_side_source_ref_oauth2_support (EServerSideSource *source)
+{
+	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), NULL);
+
+	return g_weak_ref_get (&source->priv->oauth2_support);
+}
+
+/**
+ * e_server_side_source_set_oauth2_support:
+ * @source: an #EServerSideSource
+ * @oauth2_support: an #EOAuth2Support object, or %NULL
+ *
+ * Indicates whether @source supports OAuth 2.0 authentication.
+ *
+ * If @oauth2_support is non-%NULL, the OAuth2Support D-Bus interface is
+ * exported at the object path for @source.  If @oauth2_support is %NULL,
+ * the OAuth2Support D-Bus interface is unexported at the object path for
+ * @source, and any attempt by clients to call
+ * e_source_get_oauth2_access_token() will fail.
+ *
+ * Requests for OAuth 2.0 access tokens are forwarded to @oauth2_support,
+ * which implements the #EOAuth2SupportInterface.
+ *
+ * Since: 3.8
+ **/
+void
+e_server_side_source_set_oauth2_support (EServerSideSource *source,
+                                         EOAuth2Support *oauth2_support)
+{
+	EDBusSourceOAuth2Support *dbus_interface = NULL;
+	GDBusObject *dbus_object;
+
+	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+
+	if (oauth2_support != NULL) {
+		g_return_if_fail (E_IS_OAUTH2_SUPPORT (oauth2_support));
+
+		dbus_interface =
+			e_dbus_source_oauth2_support_skeleton_new ();
+
+		g_signal_connect (
+			dbus_interface, "handle-get-access-token",
+			G_CALLBACK (server_side_source_get_access_token_cb),
+			source);
+	}
+
+	g_weak_ref_set (&source->priv->oauth2_support, oauth2_support);
+
+	dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
+	e_dbus_object_skeleton_set_source_oauth2_support (
+		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_interface);
+	g_object_unref (dbus_object);
+
+	if (dbus_interface != NULL)
+		g_object_unref (dbus_interface);
+
+	g_object_notify (G_OBJECT (source), "oauth2-support");
 }
 

@@ -25,6 +25,7 @@
 
 #include <libedataserver/libedataserver.h>
 
+#include <libebackend/e-oauth2-support.h>
 #include <libebackend/e-source-registry-server.h>
 
 /* Standard GObject macros */
@@ -115,6 +116,12 @@ void		e_server_side_source_set_remote_creatable
 void		e_server_side_source_set_remote_deletable
 						(EServerSideSource *source,
 						 gboolean remote_deletable);
+EOAuth2Support *
+		e_server_side_source_ref_oauth2_support
+						(EServerSideSource *source);
+void		e_server_side_source_set_oauth2_support
+						(EServerSideSource *source,
+						 EOAuth2Support *oauth2_support);
 
 G_END_DECLS
 
