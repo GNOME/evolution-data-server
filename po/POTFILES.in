@@ -204,6 +204,7 @@ libedataserver/e-source-registry.c
 libedataserver/e-time-utils.c
 libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in
 modules/gnome-online-accounts/goaewsclient.c
+modules/gnome-online-accounts/module-gnome-online-accounts.c
 modules/google-backend/module-google-backend.c
 modules/trust-prompt/certificate-viewer.c
 modules/trust-prompt/e-asn1-object.c
