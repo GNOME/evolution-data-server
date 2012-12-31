@@ -2385,58 +2385,6 @@ e_source_registry_list_sources (ESourceRegistry *registry,
 }
 
 /**
- * e_source_registry_check_enabled:
- * @registry: an #ESourceRegistry
- * @source: an #ESource
- *
- * Determines whether @source is "effectively" enabled by examining its
- * own #ESource:enabled property as well as those of its ancestors in the
- * #ESource hierarchy.  If all examined #ESource:enabled properties are
- * %TRUE, then the function returns %TRUE.  If any are %FALSE, then the
- * function returns %FALSE.
- *
- * Use this function instead of e_source_get_enabled() to determine
- * things like whether to display an #ESource in a user interface or
- * whether to act on the data set described by the #ESource.
- *
- * Returns: whether @source is "effectively" enabled
- *
- * Since: 3.8
- **/
-gboolean
-e_source_registry_check_enabled (ESourceRegistry *registry,
-                                 ESource *source)
-{
-	gboolean enabled;
-	gchar *parent_uid;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	enabled = e_source_get_enabled (source);
-	parent_uid = e_source_dup_parent (source);
-
-	while (enabled && parent_uid != NULL) {
-		ESource *parent;
-
-		parent = e_source_registry_ref_source (registry, parent_uid);
-
-		g_free (parent_uid);
-		parent_uid = NULL;
-
-		if (parent != NULL) {
-			enabled = e_source_get_enabled (parent);
-			parent_uid = e_source_dup_parent (parent);
-			g_object_unref (parent);
-		}
-	}
-
-	g_free (parent_uid);
-
-	return enabled;
-}
-
-/**
  * e_source_registry_find_extension:
  * @registry: an #ESourceRegistry
  * @source: an #ESource
@@ -2495,6 +2443,58 @@ e_source_registry_find_extension (ESourceRegistry *registry,
 	}
 
 	return source;
+}
+
+/**
+ * e_source_registry_check_enabled:
+ * @registry: an #ESourceRegistry
+ * @source: an #ESource
+ *
+ * Determines whether @source is "effectively" enabled by examining its
+ * own #ESource:enabled property as well as those of its ancestors in the
+ * #ESource hierarchy.  If all examined #ESource:enabled properties are
+ * %TRUE, then the function returns %TRUE.  If any are %FALSE, then the
+ * function returns %FALSE.
+ *
+ * Use this function instead of e_source_get_enabled() to determine
+ * things like whether to display an #ESource in a user interface or
+ * whether to act on the data set described by the #ESource.
+ *
+ * Returns: whether @source is "effectively" enabled
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_source_registry_check_enabled (ESourceRegistry *registry,
+                                 ESource *source)
+{
+	gboolean enabled;
+	gchar *parent_uid;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	enabled = e_source_get_enabled (source);
+	parent_uid = e_source_dup_parent (source);
+
+	while (enabled && parent_uid != NULL) {
+		ESource *parent;
+
+		parent = e_source_registry_ref_source (registry, parent_uid);
+
+		g_free (parent_uid);
+		parent_uid = NULL;
+
+		if (parent != NULL) {
+			enabled = e_source_get_enabled (parent);
+			parent_uid = e_source_dup_parent (parent);
+			g_object_unref (parent);
+		}
+	}
+
+	g_free (parent_uid);
+
+	return enabled;
 }
 
 /* Helper for e_source_registry_build_display_tree() */
