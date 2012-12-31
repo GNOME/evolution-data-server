@@ -29,6 +29,8 @@ libebookbackendgoogle_la_SOURCES = \
 	e-book-backend-google.h \
 	e-book-google-utils.c \
 	e-book-google-utils.h \
+	e-gdata-oauth2-authorizer.c \
+	e-gdata-oauth2-authorizer.h \
 	$(GOA_SOURCES)
 
 libebookbackendgoogle_la_LIBADD = \
