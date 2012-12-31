@@ -2054,6 +2054,68 @@ e_source_registry_server_list_sources (ESourceRegistryServer *server,
 }
 
 /**
+ * e_source_registry_server_find_extension:
+ * @server: an #ESourceRegistryServer
+ * @source: an #ESource
+ * @extension_name: the extension name to find
+ *
+ * Examines @source and its ancestors and returns the "deepest" #ESource
+ * having an #ESourceExtension with the given @extension_name.  If neither
+ * @source nor any of its ancestors have such an extension, the function
+ * returns %NULL.
+ *
+ * This function is useful in cases when an #ESourceExtension is meant to
+ * apply to both the #ESource it belongs to and the #ESource's descendants.
+ *
+ * A common example is the #ESourceCollection extension, where descendants
+ * of an #ESource having an #ESourceCollection extension are implied to be
+ * members of that collection.  In that example, this function can be used
+ * to test whether @source is a member of a collection.
+ *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Note the function returns the #ESource containing the #ESourceExtension
+ * instead of the #ESourceExtension itself because extension instances are
+ * not to be referenced directly (see e_source_get_extension()).
+ *
+ * Returns: an #ESource, or %NULL if no match was found
+ *
+ * Since: 3.8
+ **/
+ESource *
+e_source_registry_server_find_extension (ESourceRegistryServer *server,
+                                         ESource *source,
+                                         const gchar *extension_name)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	g_return_val_if_fail (extension_name != NULL, NULL);
+
+	g_object_ref (source);
+
+	while (!e_source_has_extension (source, extension_name)) {
+		gchar *uid;
+
+		uid = e_source_dup_parent (source);
+
+		g_object_unref (source);
+		source = NULL;
+
+		if (uid != NULL) {
+			source = e_source_registry_server_ref_source (
+				server, uid);
+			g_free (uid);
+		}
+
+		if (source == NULL)
+			break;
+	}
+
+	return source;
+}
+
+/**
  * e_source_registry_server_ref_backend:
  * @server: an #ESourceRegistryServer
  * @source: an #ESource
@@ -2078,37 +2140,12 @@ e_source_registry_server_ref_backend (ESourceRegistryServer *server,
                                       ESource *source)
 {
 	ECollectionBackend *backend = NULL;
-	const gchar *extension_name;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	/* XXX If ESourceRegistryServer ever grows a function similar to
-	 *     e_source_registry_find_extension() then we could just use
-	 *     that, but despite this use case I think the need for such
-	 *     a function is not sufficiently strong yet. */
-
-	extension_name = E_SOURCE_EXTENSION_COLLECTION;
-
-	g_object_ref (source);
-
-	while (!e_source_has_extension (source, extension_name)) {
-		gchar *uid;
-
-		uid = e_source_dup_parent (source);
-
-		g_object_unref (source);
-		source = NULL;
-
-		if (uid != NULL) {
-			source = e_source_registry_server_ref_source (
-				server, uid);
-			g_free (uid);
-		}
-
-		if (source == NULL)
-			break;
-	}
+	source = e_source_registry_server_find_extension (
+		server, source, E_SOURCE_EXTENSION_COLLECTION);
 
 	if (source != NULL) {
 		backend = g_object_get_data (

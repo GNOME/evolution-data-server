@@ -131,6 +131,10 @@ ESource *	e_source_registry_server_ref_source
 GList *		e_source_registry_server_list_sources
 						(ESourceRegistryServer *server,
 						 const gchar *extension_name);
+ESource *	e_source_registry_server_find_extension
+						(ESourceRegistryServer *server,
+						 ESource *source,
+						 const gchar *extension_name);
 ECollectionBackend *
 		e_source_registry_server_ref_backend
 						(ESourceRegistryServer *server,
