@@ -26,7 +26,6 @@
 
 #include <libedata-cal/e-cal-backend-cache.h>
 #include <libedata-cal/e-cal-backend-factory.h>
-#include <libedata-cal/e-cal-backend-file-store.h>
 #include <libedata-cal/e-cal-backend.h>
 #include <libedata-cal/e-cal-backend-intervaltree.h>
 #include <libedata-cal/e-cal-backend-sexp.h>

@@ -25,7 +25,6 @@ libedata_cal_1_2_la_SOURCES =		\
 	e-cal-backend-sync.c		\
 	e-cal-backend-util.c		\
 	e-cal-backend-store.c		\
-	e-cal-backend-file-store.c	\
 	e-data-cal.c			\
 	e-data-cal-factory.c		\
 	e-data-cal-view.c
@@ -57,7 +56,6 @@ libedata_calinclude_HEADERS = 		\
 	e-data-cal.h			\
 	e-data-cal-factory.h		\
 	e-cal-backend-store.h		\
-	e-cal-backend-file-store.h	\
 	e-data-cal-view.h
 
 %-$(API_VERSION).pc: %.pc

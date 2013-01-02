@@ -2690,7 +2690,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	if (cbdav->priv->store == NULL) {
 		/* remove the old cache while migrating to ECalBackendStore */
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
-		cbdav->priv->store = e_cal_backend_file_store_new (cache_dir);
+		cbdav->priv->store = e_cal_backend_store_new (cache_dir);
 
 		if (cbdav->priv->store == NULL) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Cannot create local store")));

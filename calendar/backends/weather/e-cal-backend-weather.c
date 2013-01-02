@@ -506,7 +506,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 
 	if (!priv->store) {
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
-		priv->store = e_cal_backend_file_store_new (cache_dir);
+		priv->store = e_cal_backend_store_new (cache_dir);
 
 		if (!priv->store) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));

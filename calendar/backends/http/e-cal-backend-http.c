@@ -879,7 +879,7 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	if (priv->store == NULL) {
 		/* remove the old cache while migrating to ECalBackendStore */
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
-		priv->store = e_cal_backend_file_store_new (cache_dir);
+		priv->store = e_cal_backend_store_new (cache_dir);
 		e_cal_backend_store_load (priv->store);
 
 		if (!priv->store) {

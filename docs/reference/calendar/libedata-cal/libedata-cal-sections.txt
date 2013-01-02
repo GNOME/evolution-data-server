@@ -125,27 +125,10 @@ ECalBackendFactoryPrivate
 </SECTION>
 
 <SECTION>
-<FILE>e-cal-backend-file-store</FILE>
-<TITLE>ECalBackendFileStore</TITLE>
-ECalBackendFileStore
-e_cal_backend_file_store_new
-<SUBSECTION Standard>
-E_CAL_BACKEND_FILE_STORE
-E_IS_CAL_BACKEND_FILE_STORE
-E_TYPE_CAL_BACKEND_FILE_STORE
-E_CAL_BACKEND_FILE_STORE_CLASS
-E_IS_CAL_BACKEND_FILE_STORE_CLASS
-E_CAL_BACKEND_FILE_STORE_GET_CLASS
-ECalBackendFileStoreClass
-e_cal_backend_file_store_get_type
-<SUBSECTION Private>
-ECalBackendFileStorePrivate
-</SECTION>
-
-<SECTION>
 <FILE>e-cal-backend-store</FILE>
 <TITLE>ECalBackendStore</TITLE>
 ECalBackendStore
+e_cal_backend_store_new
 e_cal_backend_store_get_path
 e_cal_backend_store_load
 e_cal_backend_store_is_loaded
