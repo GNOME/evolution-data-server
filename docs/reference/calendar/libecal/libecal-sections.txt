@@ -523,3 +523,19 @@ ECalViewPrivate
 e_cal_view_new
 </SECTION>
 
+<SECTION>
+<FILE>e-timezone-cache</FILE>
+<TITLE>ETimezoneCache</TITLE>
+ETimezoneCache
+ETimezoneCacheInterface
+e_timezone_cache_add_timezone
+e_timezone_cache_get_timezone
+e_timezone_cache_list_timezones
+<SUBSECTION Standard>
+E_TIMEZONE_CACHE
+E_IS_TIMEZONE_CACHE
+E_TYPE_TIMEZONE_CACHE
+E_TIMEZONE_CACHE_GET_INTERFACE
+e_timezone_cache_get_type
+</SECTION>
+

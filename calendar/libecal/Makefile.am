@@ -48,7 +48,9 @@ libecal_1_2_la_SOURCES =			\
 	e-cal-system-timezone.h			\
 	e-cal-util.c				\
 	e-cal-view.c				\
-	e-cal-view-private.h
+	e-cal-view-private.h			\
+	e-timezone-cache.c			\
+	$(NULL)
 
 libecal_1_2_la_LIBADD = 					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
@@ -76,7 +78,9 @@ libecalinclude_HEADERS =	\
 	e-cal-system-timezone.h	\
 	e-cal-types.h		\
 	e-cal-util.h		\
-	e-cal-view.h
+	e-cal-view.h		\
+	e-timezone-cache.h	\
+	$(NULL)
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
