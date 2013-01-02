@@ -33,6 +33,7 @@
 #include "e-cal-check-timezones.h"
 #include "e-cal-time-util.h"
 #include "e-cal-types.h"
+#include "e-timezone-cache.h"
 
 #include "e-gdbus-cal.h"
 #include "e-gdbus-cal-factory.h"
@@ -58,9 +59,19 @@ enum {
 	LAST_SIGNAL
 };
 
+/* Forward Declarations */
+static void	e_cal_client_timezone_cache_init
+					(ETimezoneCacheInterface *interface);
+
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (ECalClient, e_cal_client, E_TYPE_CLIENT)
+G_DEFINE_TYPE_WITH_CODE (
+	ECalClient,
+	e_cal_client,
+	E_TYPE_CLIENT,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_TIMEZONE_CACHE,
+		e_cal_client_timezone_cache_init))
 
 static void
 free_zone_cb (gpointer zone)
@@ -892,6 +903,142 @@ cal_client_refresh_sync (EClient *client,
 }
 
 static void
+cal_client_add_cached_timezone (ETimezoneCache *cache,
+                                icaltimezone *zone)
+{
+	ECalClientPrivate *priv;
+	const gchar *tzid;
+
+	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
+
+	g_mutex_lock (&priv->zone_cache_lock);
+
+	tzid = icaltimezone_get_tzid (zone);
+
+	/* Avoid replacing an existing cache entry.  We don't want to
+	 * invalidate any icaltimezone pointers that may have already
+	 * been returned through e_timezone_cache_get_timezone(). */
+	if (!g_hash_table_contains (priv->zone_cache, tzid)) {
+		icalcomponent *icalcomp;
+		icaltimezone *cached_zone;
+
+		cached_zone = icaltimezone_new ();
+		icalcomp = icaltimezone_get_component (zone);
+		icalcomp = icalcomponent_new_clone (icalcomp);
+		icaltimezone_set_component (cached_zone, icalcomp);
+
+		g_hash_table_insert (
+			priv->zone_cache,
+			g_strdup (tzid), cached_zone);
+
+		/* FIXME Should emit this from an idle GSource on
+		 *       a stored GMainContext, but we don't have
+		 *       a stored GMainContext.  Check back after
+		 *       the D-Bus API rewrite. */
+		g_signal_emit_by_name (cache, "timezone-added", zone);
+	}
+
+	g_mutex_unlock (&priv->zone_cache_lock);
+}
+
+static icaltimezone *
+cal_client_get_cached_timezone (ETimezoneCache *cache,
+                                const gchar *tzid)
+{
+	ECalClientPrivate *priv;
+	icaltimezone *zone = NULL;
+	icaltimezone *builtin_zone = NULL;
+	icalcomponent *icalcomp;
+	icalproperty *prop;
+	const gchar *builtin_tzid;
+
+	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
+
+	if (g_str_equal (tzid, "UTC"))
+		return icaltimezone_get_utc_timezone ();
+
+	g_mutex_lock (&priv->zone_cache_lock);
+
+	/* See if we already have it in the cache. */
+	zone = g_hash_table_lookup (priv->zone_cache, tzid);
+
+	if (zone != NULL)
+		goto exit;
+
+	/* Try to replace the original time zone with a more complete
+	 * and/or potentially updated built-in time zone.  Note this also
+	 * applies to TZIDs which match built-in time zones exactly: they
+	 * are extracted via icaltimezone_get_builtin_timezone_from_tzid()
+	 * below without a roundtrip to the backend. */
+
+	builtin_tzid = e_cal_match_tzid (tzid);
+
+	if (builtin_tzid != NULL)
+		builtin_zone = icaltimezone_get_builtin_timezone_from_tzid (
+			builtin_tzid);
+
+	if (builtin_zone == NULL)
+		goto exit;
+
+	/* Use the built-in time zone *and* rename it.  Likely the caller
+	 * is asking for a specific TZID because it has an event with such
+	 * a TZID.  Returning an icaltimezone with a different TZID would
+	 * lead to broken VCALENDARs in the caller. */
+
+	icalcomp = icaltimezone_get_component (builtin_zone);
+	icalcomp = icalcomponent_new_clone (icalcomp);
+
+	prop = icalcomponent_get_first_property (
+		icalcomp, ICAL_ANY_PROPERTY);
+
+	while (prop != NULL) {
+		if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
+			icalproperty_set_value_from_string (prop, tzid, "NO");
+			break;
+		}
+
+		prop = icalcomponent_get_next_property (
+			icalcomp, ICAL_ANY_PROPERTY);
+	}
+
+	if (icalcomp != NULL) {
+		zone = icaltimezone_new ();
+		if (icaltimezone_set_component (zone, icalcomp)) {
+			tzid = icaltimezone_get_tzid (zone);
+			g_hash_table_insert (
+				priv->zone_cache,
+				g_strdup (tzid), zone);
+		} else {
+			icalcomponent_free (icalcomp);
+			icaltimezone_free (zone, 1);
+			zone = NULL;
+		}
+	}
+
+exit:
+	g_mutex_unlock (&priv->zone_cache_lock);
+
+	return zone;
+}
+
+static GList *
+cal_client_list_cached_timezones (ETimezoneCache *cache)
+{
+	ECalClientPrivate *priv;
+	GList *list;
+
+	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
+
+	g_mutex_lock (&priv->zone_cache_lock);
+
+	list = g_hash_table_get_values (priv->zone_cache);
+
+	g_mutex_unlock (&priv->zone_cache_lock);
+
+	return list;
+}
+
+static void
 e_cal_client_class_init (ECalClientClass *class)
 {
 	GObjectClass *object_class;
@@ -934,8 +1081,24 @@ e_cal_client_class_init (ECalClientClass *class)
 }
 
 static void
+e_cal_client_timezone_cache_init (ETimezoneCacheInterface *interface)
+{
+	interface->add_timezone = cal_client_add_cached_timezone;
+	interface->get_timezone = cal_client_get_cached_timezone;
+	interface->list_timezones = cal_client_list_cached_timezones;
+}
+
+static void
 e_cal_client_init (ECalClient *client)
 {
+	GHashTable *zone_cache;
+
+	zone_cache = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) free_zone_cb);
+
 	LOCK_FACTORY ();
 	active_cal_clients++;
 	UNLOCK_FACTORY ();
@@ -943,9 +1106,8 @@ e_cal_client_init (ECalClient *client)
 	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
 	client->priv->default_zone = icaltimezone_get_utc_timezone ();
-	client->priv->cache_dir = NULL;
 	g_mutex_init (&client->priv->zone_cache_lock);
-	client->priv->zone_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone_cb);
+	client->priv->zone_cache = zone_cache;
 }
 
 /**
@@ -4868,81 +5030,6 @@ e_cal_client_get_view_sync (ECalClient *client,
 	return complete_get_view (client, res, view_path, view, error);
 }
 
-static icaltimezone *
-cal_client_get_timezone_from_cache (ECalClient *client,
-                                    const gchar *tzid)
-{
-	icaltimezone *zone = NULL;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
-	g_return_val_if_fail (tzid != NULL, NULL);
-	g_return_val_if_fail (client->priv->zone_cache != NULL, NULL);
-
-	if (!*tzid)
-		return NULL;
-
-	g_mutex_lock (&client->priv->zone_cache_lock);
-	if (g_str_equal (tzid, "UTC")) {
-		zone = icaltimezone_get_utc_timezone ();
-	} else {
-		/* See if we already have it in the cache. */
-		zone = g_hash_table_lookup (client->priv->zone_cache, tzid);
-	}
-
-	if (!zone) {
-		/*
-		 * Try to replace the original time zone with a more complete
-		 * and/or potentially updated system time zone. Note that this
-		 * also applies to TZIDs which match system time zones exactly:
-		 * they are extracted via icaltimezone_get_builtin_timezone_from_tzid()
-		 * below without a roundtrip to the backend.
-		 */
-		const gchar *systzid = e_cal_match_tzid (tzid);
-		if (systzid) {
-			/*
-			 * Use built-in time zone *and* rename it:
-			 * if the caller is asking for a TZID=FOO,
-			 * then likely because it has an event with
-			 * such a TZID. Returning a different TZID
-			 * would lead to broken VCALENDARs in the
-			 * caller.
-			 */
-			icaltimezone *syszone = icaltimezone_get_builtin_timezone_from_tzid (systzid);
-			if (syszone) {
-				gboolean found = FALSE;
-				icalcomponent *icalcomp = NULL;
-				icalproperty *prop;
-
-				icalcomp = icalcomponent_new_clone (icaltimezone_get_component (syszone));
-				prop = icalcomponent_get_first_property (icalcomp, ICAL_ANY_PROPERTY);
-				while (!found && prop) {
-					if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
-						icalproperty_set_value_from_string (prop, tzid, "NO");
-						found = TRUE;
-					}
-
-					prop = icalcomponent_get_next_property (icalcomp, ICAL_ANY_PROPERTY);
-				}
-
-				if (icalcomp) {
-					zone = icaltimezone_new ();
-					if (!icaltimezone_set_component (zone, icalcomp)) {
-						icalcomponent_free (icalcomp);
-						icaltimezone_free (zone, 1);
-						zone = NULL;
-					} else {
-						g_hash_table_insert (client->priv->zone_cache, g_strdup (icaltimezone_get_tzid (zone)), zone);
-					}
-				}
-			}
-		}
-	}
-
-	g_mutex_unlock (&client->priv->zone_cache_lock);
-
-	return zone;
-}
-
 static gboolean
 cal_client_get_timezone_from_cache_finish (ECalClient *client,
                                            GAsyncResult *result,
@@ -4955,7 +5042,7 @@ cal_client_get_timezone_from_cache_finish (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), cal_client_get_timezone_from_cache), FALSE);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), e_timezone_cache_get_timezone), FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 
@@ -4995,9 +5082,10 @@ e_cal_client_get_timezone (ECalClient *client,
 
 	g_return_if_fail (tzid != NULL);
 
-	zone = cal_client_get_timezone_from_cache (client, tzid);
+	zone = e_timezone_cache_get_timezone (
+		E_TIMEZONE_CACHE (client), tzid);
 	if (zone) {
-		e_client_finish_async_without_dbus (E_CLIENT (client), cancellable, callback, user_data, cal_client_get_timezone_from_cache, zone, NULL);
+		e_client_finish_async_without_dbus (E_CLIENT (client), cancellable, callback, user_data, e_timezone_cache_get_timezone, zone, NULL);
 	} else {
 		e_client_proxy_call_string (
 			E_CLIENT (client), e_util_ensure_gdbus_string (tzid, &gdbus_tzid), cancellable, callback, user_data, e_cal_client_get_timezone,
@@ -5031,8 +5119,17 @@ complete_get_timezone (ECalClient *client,
 				res = FALSE;
 				g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			} else {
+				const gchar *tzid;
+
+				tzid = icaltimezone_get_tzid (*zone);
+
+				/* Add the timezone to the cache directly,
+				 * otherwise we'd have to free this struct
+				 * and fetch the cached copy. */
 				g_mutex_lock (&client->priv->zone_cache_lock);
-				g_hash_table_insert (client->priv->zone_cache, g_strdup (icaltimezone_get_tzid (*zone)), *zone);
+				g_hash_table_insert (
+					client->priv->zone_cache,
+					g_strdup (tzid), *zone);
 				g_mutex_unlock (&client->priv->zone_cache_lock);
 			}
 		} else {
@@ -5074,7 +5171,7 @@ e_cal_client_get_timezone_finish (ECalClient *client,
 
 	g_return_val_if_fail (zone != NULL, FALSE);
 
-	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == cal_client_get_timezone_from_cache) {
+	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == e_timezone_cache_get_timezone) {
 		res = cal_client_get_timezone_from_cache_finish (client, result, zone, error);
 	} else {
 		res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_string, error, e_cal_client_get_timezone);
@@ -5118,7 +5215,8 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 		return FALSE;
 	}
 
-	*zone = cal_client_get_timezone_from_cache (client, tzid);
+	*zone = e_timezone_cache_get_timezone (
+		E_TIMEZONE_CACHE (client), tzid);
 	if (*zone)
 		return TRUE;
 
