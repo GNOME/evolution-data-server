@@ -4,14 +4,14 @@
 #
 # Amitakhya Phukan <amitakhya@svn.gnome.org>, 2007.
 # Amitakhya Phukan <aphukan@fedoraproject.org>, 2009.
-# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011, 2012.
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-12-24 14:19+0000\n"
-"PO-Revision-Date: 2012-12-27 21:00+0530\n"
+"POT-Creation-Date: 2012-12-31 19:54+0000\n"
+"PO-Revision-Date: 2013-01-02 17:20+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: Assamese <kde-i18n-doc@kde.org>\n"
 "Language: as_IN\n"
@@ -71,47 +71,47 @@ msgid "Unknown error"
 msgstr "‍অজ্ঞাত ত্ৰুটি"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:648
+#: ../addressbook/backends/google/e-book-backend-google.c:649
 msgid "Querying for updated contacts…"
 msgstr "আপডেইটেড পৰিচয়সমূহৰ বাবে প্ৰশ্ন কৰা হৈছে..."
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:785
+#: ../addressbook/backends/google/e-book-backend-google.c:786
 msgid "Querying for updated groups…"
 msgstr "আপডেইটেড দলসমূহৰ বাবে প্ৰশ্ন কৰা হৈছে..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1211
+#: ../addressbook/backends/google/e-book-backend-google.c:1235
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1621
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:331
 msgid "The backend does not support bulk additions"
 msgstr "বেকএণ্ডে বৃহত সংযোজন সমৰ্থন নকৰে"
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1243
+#: ../addressbook/backends/google/e-book-backend-google.c:1267
 msgid "Creating new contact…"
 msgstr "নতুন পৰিচয় সৃষ্টি কৰা হৈছে…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1334
+#: ../addressbook/backends/google/e-book-backend-google.c:1358
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
 msgid "The backend does not support bulk removals"
 msgstr "বেকএণ্ডে বৃহত আতৰোৱা সমৰ্থন নকৰে"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1362
+#: ../addressbook/backends/google/e-book-backend-google.c:1386
 msgid "Deleting contact…"
 msgstr "পৰিচয় মচি পেলোৱা হৈছে…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1616
+#: ../addressbook/backends/google/e-book-backend-google.c:1640
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2284
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
 msgid "The backend does not support bulk modifications"
 msgstr "বেকএণ্ডে বৃহত পৰিবৰ্তন সমৰ্থন নকৰে"
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1654
+#: ../addressbook/backends/google/e-book-backend-google.c:1678
 msgid "Modifying contact…"
 msgstr "পৰিচয় সলনি কৰা হৈছে…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1825
+#: ../addressbook/backends/google/e-book-backend-google.c:1849
 msgid "Loading…"
 msgstr "ল'ড কৰা হৈছে…"
 
@@ -2390,7 +2390,6 @@ msgid "Error retrieving quota information"
 msgstr "কুটা তথ্য উদ্ধাৰ কৰোতে ত্ৰুটি"
 
 #: ../camel/camel-imapx-server.c:6261
-#| msgid "Decoder failed"
 msgid "Search failed"
 msgstr "সন্ধান ব্যৰ্থ হল"
 
@@ -4697,7 +4696,7 @@ msgid "CalDAV"
 msgstr "CalDAV"
 
 #: ../data/sources/contacts-stub.source.in.h:1
-#: ../modules/google-backend/module-google-backend.c:195
+#: ../modules/google-backend/module-google-backend.c:217
 msgid "Contacts"
 msgstr "পৰিচয়সমূহ"
 
@@ -4765,44 +4764,52 @@ msgstr "পাছৱাৰ্ড ভুল আছিল"
 msgid "%s does not support authentication"
 msgstr "%s এ প্ৰমাণীকৰণ সমৰ্থন নকৰে"
 
-#: ../libebackend/e-collection-backend.c:765
+#: ../libebackend/e-collection-backend.c:775
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s এ দূৰৱৰ্তী সম্পদসমূহ সৃষ্টি কৰাটো সমৰ্থন নকৰে"
 
-#: ../libebackend/e-collection-backend.c:824
+#: ../libebackend/e-collection-backend.c:834
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s এ দূৰৱৰ্তী সম্পদসমূহ মচি পেলোৱাটো সমৰ্থন নকৰে"
 
-#: ../libebackend/e-server-side-source.c:126
+#: ../libebackend/e-server-side-source.c:132
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "তথ্যৰ উৎসত এটা [%s] দল সন্ধানহিন"
 
-#: ../libebackend/e-server-side-source.c:916 ../libedataserver/e-source.c:1106
+#: ../libebackend/e-server-side-source.c:993 ../libedataserver/e-source.c:1110
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "তথ্য উৎস '%s' এ দূৰৱৰ্তী সম্পদসমূহ সৃষ্টি কৰাটো সমৰ্থন নকৰে"
 
-#: ../libebackend/e-server-side-source.c:930
+#: ../libebackend/e-server-side-source.c:1007
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
 msgstr "তথ্য উৎস '%s' ৰ দূৰৱৰ্তী সম্পদ সৃষ্টি কৰিবলে কোনো সংগ্ৰহ বেকএন্ড নাই"
 
-#: ../libebackend/e-server-side-source.c:958 ../libedataserver/e-source.c:1215
+#: ../libebackend/e-server-side-source.c:1035
+#: ../libedataserver/e-source.c:1217
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "তথ্য উৎস '%s' এ দূৰৱৰ্তী সম্পদসমূহ মচি পেলোৱাটো সমৰ্থন নকৰে"
 
-#: ../libebackend/e-server-side-source.c:972
+#: ../libebackend/e-server-side-source.c:1049
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr "তথ্য উৎস '%s' ৰ দূৰৱৰ্তী সম্পদ মচি পেলাবলে কোনো সংগ্ৰহ বেকএন্ড নাই"
 
-#: ../libebackend/e-server-side-source.c:1285
+#: ../libebackend/e-server-side-source.c:1080
+#: ../libedataserver/e-source.c:1307
+#, c-format
+#| msgid "IMAP server %s does not support %s authentication"
+msgid "Data source '%s' does not support OAuth 2.0 authentication"
+msgstr "তথ্য উৎস '%s' এ OAuth 2.0 প্ৰমাণীকৰণ সমৰ্থন নকৰে"
+
+#: ../libebackend/e-server-side-source.c:1406
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "ফাইলৰ এটা '.source' সম্প্ৰসাৰন থাকিব লাগিব"
@@ -5004,22 +5011,22 @@ msgstr "অনুগ্ৰহ কৰি কাৰ্য্য তালিকা
 msgid "Please enter the password for account \"%s\"."
 msgstr "অনুগ্ৰহ কৰি একাওন্ট \"%s\" ৰ বাবে পাছৱাৰ্ড সুমুৱাওক।"
 
-#: ../libedataserver/e-source.c:616
+#: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "উৎস ফাইলত এটা [%s] দল সন্ধানহিন"
 
-#: ../libedataserver/e-source.c:933
+#: ../libedataserver/e-source.c:937
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "তথ্য উৎস '%s' আতৰাব নোৱাৰি"
 
-#: ../libedataserver/e-source.c:1015
+#: ../libedataserver/e-source.c:1019
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "তথ্য উৎস '%s' লিখিব পৰা নহয়"
 
-#: ../libedataserver/e-source.c:1388
+#: ../libedataserver/e-source.c:1513
 msgid "Unnamed"
 msgstr "নাম নহোৱা"
 
@@ -5302,7 +5309,22 @@ msgstr "একাওন্ট উপাদান সন্ধান কৰিব
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "স্বখোজ প্ৰতিক্ৰিয়াত ASUrl আৰু OABUrl সন্ধান কৰিবলে ব্যৰ্থ"
 
-#: ../modules/google-backend/module-google-backend.c:118
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1094
+#, c-format
+msgid ""
+"Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
+"from which to obtain an access token for '%s'"
+msgstr ""
+"'%s' ৰ বাবে এটা প্ৰমাণীকৰণ টকেন প্ৰাপ্ত কৰিবলে org.gnome.OnlineAccounts সেৱাত "
+"এটা প্ৰাসংগিক একাওন্ট বিচাৰি পোৱা নাযায়"
+
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1121
+#, c-format
+#| msgid "Failed to open addressbook at '%s': %s"
+msgid "Failed to obtain an access token for '%s': "
+msgstr "'%s' ৰ বাবে এটা অভিগম টকেন প্ৰাপ্ত কৰিবলে ব্যৰ্থ:"
+
+#: ../modules/google-backend/module-google-backend.c:140
 #: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
 msgstr "কেলেন্ডাৰ"
@@ -5977,9 +5999,6 @@ msgstr "বাতিল কৰক (_D)"
 
 #~ msgid "Using Email Address"
 #~ msgstr "ই-মেইল ঠিকনা ব্যৱহাৰ কৰা হৈছে"
-
-#~ msgid "Failed to open addressbook at '%s': %s"
-#~ msgstr "%s' ত ঠিকনাবহি খোলিবলে ব্যৰ্থ: %s"
 
 #~ msgid "Cannot remove book: "
 #~ msgstr "কিতাপ আতৰাব নোৱাৰি: "
