@@ -68,7 +68,6 @@ struct _ECalBackendStoreClass {
 
 	/* virtual methods */
 	gboolean	(*load)			(ECalBackendStore *store);
-	gboolean	(*remove)		(ECalBackendStore *store);
 	gboolean	(*clean)		(ECalBackendStore *store);
 	ECalComponent *	(*get_component)	(ECalBackendStore *store,
 						 const gchar *uid,
@@ -112,7 +111,6 @@ ECalBackendStore *
 const gchar *	e_cal_backend_store_get_path	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_load	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_is_loaded	(ECalBackendStore *store);
-gboolean	e_cal_backend_store_remove	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_clean	(ECalBackendStore *store);
 ECalComponent *	e_cal_backend_store_get_component
 						(ECalBackendStore *store,

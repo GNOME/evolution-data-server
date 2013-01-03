@@ -511,21 +511,6 @@ cal_backend_store_load (ECalBackendStore *store)
 }
 
 static gboolean
-cal_backend_store_remove (ECalBackendStore *store)
-{
-	/* This will remove all the contents in the directory */
-	e_file_cache_remove (store->priv->keys_cache);
-
-	g_hash_table_destroy (store->priv->timezones);
-	store->priv->timezones = NULL;
-
-	g_hash_table_destroy (store->priv->comp_uid_hash);
-	store->priv->comp_uid_hash = NULL;
-
-	return TRUE;
-}
-
-static gboolean
 cal_backend_store_clean (ECalBackendStore *store)
 {
 	g_rw_lock_writer_lock (&store->priv->lock);
@@ -904,7 +889,6 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 	object_class->constructed = cal_backend_store_constructed;
 
 	class->load = cal_backend_store_load;
-	class->remove = cal_backend_store_remove;
 	class->clean = cal_backend_store_clean;
 	class->get_component = cal_backend_store_get_component;
 	class->put_component = cal_backend_store_put_component;
@@ -1015,28 +999,6 @@ e_cal_backend_store_load (ECalBackendStore *store)
 	store->priv->loaded = class->load (store);
 
 	return store->priv->loaded;
-}
-
-/**
- * e_cal_backend_store_remove:
- *
- * Since: 2.28
- **/
-gboolean
-e_cal_backend_store_remove (ECalBackendStore *store)
-{
-	ECalBackendStoreClass *class;
-
-	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
-
-	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->remove != NULL, FALSE);
-
-	/* remove interval tree */
-	e_intervaltree_destroy (store->priv->intervaltree);
-	store->priv->intervaltree = NULL;
-
-	return class->remove (store);
 }
 
 /**
