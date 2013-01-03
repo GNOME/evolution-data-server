@@ -105,8 +105,12 @@ struct _ECalBackendStoreClass {
 
 GType		e_cal_backend_store_get_type	(void);
 ECalBackendStore *
-		e_cal_backend_store_new		(const gchar *path);
+		e_cal_backend_store_new		(const gchar *path,
+						 ETimezoneCache *cache);
 const gchar *	e_cal_backend_store_get_path	(ECalBackendStore *store);
+ETimezoneCache *
+		e_cal_backend_store_ref_timezone_cache
+						(ECalBackendStore *store);
 gboolean	e_cal_backend_store_load	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_is_loaded	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_clean	(ECalBackendStore *store);

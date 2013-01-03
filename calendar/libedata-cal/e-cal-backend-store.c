@@ -46,7 +46,9 @@ struct _ECalBackendStorePrivate {
 	EIntervalTree *intervaltree;
 	gboolean loaded;
 
-	GHashTable *timezones;
+	GWeakRef timezone_cache;
+	gulong timezone_added_handler_id;
+
 	GHashTable *comp_uid_hash;
 	EFileCache *keys_cache;
 
@@ -59,20 +61,16 @@ struct _ECalBackendStorePrivate {
 	gboolean freeze_changes;
 
 	guint save_timeout_id;
+	GMutex save_timeout_lock;
 };
 
 enum {
 	PROP_0,
-	PROP_PATH
+	PROP_PATH,
+	PROP_TIMEZONE_CACHE,
 };
 
 G_DEFINE_TYPE (ECalBackendStore, e_cal_backend_store, G_TYPE_OBJECT)
-
-static void
-free_timezone (icaltimezone *zone)
-{
-	icaltimezone_free (zone, 1);
-}
 
 static FullCompObject *
 create_new_full_object (void)
@@ -103,59 +101,55 @@ destroy_full_object (FullCompObject *obj)
 	g_free (obj);
 }
 
-static icaltimezone *
-copy_timezone (icaltimezone *zone)
-{
-	icaltimezone *copy;
-	icalcomponent *icalcomp;
-
-	copy = icaltimezone_new ();
-	icalcomp = icaltimezone_get_component (zone);
-	icalcomp = icalcomponent_new_clone (icalcomp);
-	icaltimezone_set_component (copy, icalcomp);
-
-	return copy;
-}
-
 static void
 cal_backend_store_add_timezone (ECalBackendStore *store,
                                 icalcomponent *vtzcomp)
 {
+	ETimezoneCache *timezone_cache;
 	icalproperty *prop;
 	icaltimezone *zone;
 	const gchar *tzid;
 
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+
 	prop = icalcomponent_get_first_property (vtzcomp, ICAL_TZID_PROPERTY);
-	if (!prop)
-		return;
+	if (prop == NULL)
+		goto exit;
 
 	tzid = icalproperty_get_tzid (prop);
-	if (g_hash_table_lookup (store->priv->timezones, tzid))
-		return;
+	if (e_timezone_cache_get_timezone (timezone_cache, tzid) != NULL)
+		goto exit;
 
 	zone = icaltimezone_new ();
-	if (!icaltimezone_set_component (zone, icalcomponent_new_clone (vtzcomp))) {
+
+	vtzcomp = icalcomponent_new_clone (vtzcomp);
+	if (!icaltimezone_set_component (zone, vtzcomp)) {
 		icaltimezone_free (zone, TRUE);
-		return;
+		icalcomponent_free (vtzcomp);
+		goto exit;
 	}
 
-	g_rw_lock_writer_lock (&store->priv->lock);
-	g_hash_table_insert (store->priv->timezones, g_strdup (tzid), zone);
-	g_rw_lock_writer_unlock (&store->priv->lock);
+	e_timezone_cache_add_timezone (timezone_cache, zone);
+
+	icaltimezone_free (zone, TRUE);
+
+exit:
+	g_object_unref (timezone_cache);
 }
 
 static icaltimezone *
 resolve_tzid (const gchar *tzid,
               gpointer user_data)
 {
+	ECalBackendStore *store;
+	ETimezoneCache *timezone_cache;
 	icaltimezone *zone;
 
-	zone = (!strcmp (tzid, "UTC"))
-		? icaltimezone_get_utc_timezone ()
-		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	store = E_CAL_BACKEND_STORE (user_data);
 
-	if (!zone)
-		zone = (icaltimezone *) e_cal_backend_store_get_timezone (E_CAL_BACKEND_STORE (user_data), tzid);
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+	zone = e_timezone_cache_get_timezone (timezone_cache, tzid);
+	g_object_unref (timezone_cache);
 
 	return zone;
 }
@@ -285,33 +279,40 @@ cal_backend_store_scan_vcalendar (ECalBackendStore *store,
 	}
 }
 
-static gboolean
-cal_backend_store_save_cache_timeout_cb (gpointer user_data)
+static void
+cal_backend_store_save_cache_now (ECalBackendStore *store)
 {
-	ECalBackendStore *store = user_data;
+	ETimezoneCache *timezone_cache;
 	GHashTableIter iter;
+	GList *list, *link;
 	icalcomponent *vcalcomp;
 	gchar *data = NULL, *tmpfile;
 	gsize len, nwrote;
 	gpointer value;
 	FILE *f;
 
-	g_rw_lock_reader_lock (&store->priv->lock);
+	/* Since we only hold a weak reference on the ETimezoneCache,
+	 * make sure we still have it before proceeding.  If we lost
+	 * the ETimezoneCache, abort the save with a console warning
+	 * to avoid wiping out saved time zone data. */
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+	g_return_if_fail (timezone_cache != NULL);
 
-	store->priv->save_timeout_id = 0;
+	g_rw_lock_reader_lock (&store->priv->lock);
 
 	vcalcomp = e_cal_util_new_top_level ();
 
 	/* Add all timezone components. */
-	g_hash_table_iter_init (&iter, store->priv->timezones);
-	while (g_hash_table_iter_next (&iter, NULL, &value)) {
-		icaltimezone *tz = value;
+	list = e_timezone_cache_list_timezones (timezone_cache);
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		icaltimezone *tz = link->data;
 		icalcomponent *tzcomp;
 
 		tzcomp = icaltimezone_get_component (tz);
 		tzcomp = icalcomponent_new_clone (tzcomp);
 		icalcomponent_add_component (vcalcomp, tzcomp);
 	}
+	g_list_free (list);
 
 	/* Add all non-timezone components. */
 	g_hash_table_iter_init (&iter, store->priv->comp_uid_hash);
@@ -357,8 +358,23 @@ cal_backend_store_save_cache_timeout_cb (gpointer user_data)
 
 error:
 	g_rw_lock_reader_unlock (&store->priv->lock);
+	g_object_unref (timezone_cache);
 	g_free (tmpfile);
 	g_free (data);
+}
+
+static gboolean
+cal_backend_store_save_cache_timeout_cb (gpointer user_data)
+{
+	ECalBackendStore *store;
+
+	store = E_CAL_BACKEND_STORE (user_data);
+
+	g_mutex_lock (&store->priv->save_timeout_lock);
+	store->priv->save_timeout_id = 0;
+	g_mutex_unlock (&store->priv->save_timeout_lock);
+
+	cal_backend_store_save_cache_now (store);
 
 	return FALSE;
 }
@@ -366,13 +382,27 @@ error:
 static void
 cal_backend_store_save_cache (ECalBackendStore *store)
 {
-	if (store->priv->save_timeout_id) {
+	g_mutex_lock (&store->priv->save_timeout_lock);
+
+	if (store->priv->save_timeout_id > 0)
 		g_source_remove (store->priv->save_timeout_id);
-	}
 
 	store->priv->save_timeout_id = g_timeout_add_seconds (
 		IDLE_SAVE_TIMEOUT_SECONDS,
 		cal_backend_store_save_cache_timeout_cb, store);
+
+	g_mutex_unlock (&store->priv->save_timeout_lock);
+}
+
+static void
+cal_backend_store_timezone_added_cb (ETimezoneCache *timezone_cache,
+                                     icaltimezone *zone,
+                                     ECalBackendStore *store)
+{
+	store->priv->dirty = TRUE;
+
+	if (!store->priv->freeze_changes)
+		cal_backend_store_save_cache (store);
 }
 
 static void
@@ -386,6 +416,15 @@ cal_backend_store_set_path (ECalBackendStore *store,
 }
 
 static void
+cal_backend_store_set_timezone_cache (ECalBackendStore *store,
+                                      ETimezoneCache *timezone_cache)
+{
+	g_return_if_fail (E_IS_TIMEZONE_CACHE (timezone_cache));
+
+	g_weak_ref_set (&store->priv->timezone_cache, timezone_cache);
+}
+
+static void
 cal_backend_store_set_property (GObject *object,
                                 guint property_id,
                                 const GValue *value,
@@ -396,6 +435,12 @@ cal_backend_store_set_property (GObject *object,
 			cal_backend_store_set_path (
 				E_CAL_BACKEND_STORE (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_TIMEZONE_CACHE:
+			cal_backend_store_set_timezone_cache (
+				E_CAL_BACKEND_STORE (object),
+				g_value_get_object (value));
 			return;
 	}
 
@@ -411,7 +456,15 @@ cal_backend_store_get_property (GObject *object,
 	switch (property_id) {
 		case PROP_PATH:
 			g_value_set_string (
-				value, e_cal_backend_store_get_path (
+				value,
+				e_cal_backend_store_get_path (
+				E_CAL_BACKEND_STORE (object)));
+			return;
+
+		case PROP_TIMEZONE_CACHE:
+			g_value_take_object (
+				value,
+				e_cal_backend_store_ref_timezone_cache (
 				E_CAL_BACKEND_STORE (object)));
 			return;
 	}
@@ -423,8 +476,33 @@ static void
 cal_backend_store_dispose (GObject *object)
 {
 	ECalBackendStorePrivate *priv;
+	ETimezoneCache *timezone_cache;
+	gboolean save_needed = FALSE;
 
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
+
+	/* If a save is scheduled, cancel it and save now. */
+	g_mutex_lock (&priv->save_timeout_lock);
+	if (priv->save_timeout_id > 0) {
+		g_source_remove (priv->save_timeout_id);
+		priv->save_timeout_id = 0;
+		save_needed = TRUE;
+	}
+	g_mutex_unlock (&priv->save_timeout_lock);
+	if (save_needed)
+		cal_backend_store_save_cache_now (
+			E_CAL_BACKEND_STORE (object));
+
+	timezone_cache = g_weak_ref_get (&priv->timezone_cache);
+	if (timezone_cache != NULL) {
+		g_signal_handler_disconnect (
+			timezone_cache,
+			priv->timezone_added_handler_id);
+		g_object_unref (timezone_cache);
+
+		g_weak_ref_set (&priv->timezone_cache, NULL);
+		priv->timezone_added_handler_id = 0;
+	}
 
 	g_hash_table_remove_all (priv->comp_uid_hash);
 
@@ -457,6 +535,8 @@ cal_backend_store_finalize (GObject *object)
 	g_free (priv->cache_file_name);
 	g_free (priv->key_file_name);
 
+	g_mutex_clear (&priv->save_timeout_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->finalize (object);
 }
@@ -465,7 +545,9 @@ static void
 cal_backend_store_constructed (GObject *object)
 {
 	ECalBackendStore *store;
+	ETimezoneCache *timezone_cache;
 	const gchar *path;
+	gulong handler_id;
 
 	store = E_CAL_BACKEND_STORE (object);
 	path = e_cal_backend_store_get_path (store);
@@ -473,6 +555,16 @@ cal_backend_store_constructed (GObject *object)
 		g_build_filename (path, CACHE_FILE_NAME, NULL);
 	store->priv->key_file_name =
 		g_build_filename (path, KEY_FILE_NAME, NULL);
+
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+
+	handler_id = g_signal_connect (
+		timezone_cache, "timezone-added",
+		G_CALLBACK (cal_backend_store_timezone_added_cb), store);
+
+	store->priv->timezone_added_handler_id = handler_id;
+
+	g_object_unref (timezone_cache);
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->
@@ -517,7 +609,6 @@ cal_backend_store_clean (ECalBackendStore *store)
 
 	e_file_cache_clean (store->priv->keys_cache);
 	g_hash_table_remove_all (store->priv->comp_uid_hash);
-	g_hash_table_remove_all (store->priv->timezones);
 
 	g_rw_lock_writer_unlock (&store->priv->lock);
 
@@ -624,11 +715,12 @@ static const icaltimezone *
 cal_backend_store_get_timezone (ECalBackendStore *store,
                                 const gchar *tzid)
 {
+	ETimezoneCache *timezone_cache;
 	const icaltimezone *zone = NULL;
 
-	g_rw_lock_reader_lock (&store->priv->lock);
-	zone = g_hash_table_lookup (store->priv->timezones, tzid);
-	g_rw_lock_reader_unlock (&store->priv->lock);
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+	zone = e_timezone_cache_get_timezone (timezone_cache, tzid);
+	g_object_unref (timezone_cache);
 
 	return zone;
 }
@@ -637,18 +729,11 @@ static gboolean
 cal_backend_store_put_timezone (ECalBackendStore *store,
                                 icaltimezone *zone)
 {
-	icaltimezone *copy;
+	ETimezoneCache *timezone_cache;
 
-	g_return_val_if_fail (store != NULL, FALSE);
-	g_return_val_if_fail (zone != NULL, FALSE);
-
-	g_rw_lock_writer_lock (&store->priv->lock);
-	copy = copy_timezone ((icaltimezone *) zone);
-	g_hash_table_insert (
-		store->priv->timezones,
-		g_strdup (icaltimezone_get_tzid ((icaltimezone *) zone)),
-		copy);
-	g_rw_lock_writer_unlock (&store->priv->lock);
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+	e_timezone_cache_add_timezone (timezone_cache, zone);
+	g_object_unref (timezone_cache);
 
 	store->priv->dirty = TRUE;
 
@@ -661,17 +746,22 @@ cal_backend_store_put_timezone (ECalBackendStore *store,
 static const icaltimezone *
 cal_backend_store_get_default_timezone (ECalBackendStore *store)
 {
-	const gchar *tzid;
+	ETimezoneCache *timezone_cache;
 	const icaltimezone *zone = NULL;
+	const gchar *tzid;
+
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
 
 	g_rw_lock_reader_lock (&store->priv->lock);
 
 	tzid = e_file_cache_get_object (
 		store->priv->keys_cache, "default-zone");
-	if (tzid)
-		zone = g_hash_table_lookup (store->priv->timezones, tzid);
+	if (tzid != NULL)
+		zone = e_timezone_cache_get_timezone (timezone_cache, tzid);
 
 	g_rw_lock_reader_unlock (&store->priv->lock);
+
+	g_object_unref (timezone_cache);
 
 	return zone;
 }
@@ -680,15 +770,17 @@ static gboolean
 cal_backend_store_set_default_timezone (ECalBackendStore *store,
                                         icaltimezone *zone)
 {
-	const gchar *tzid;
-	icaltimezone *copy;
+	ETimezoneCache *timezone_cache;
 	const gchar *key = "default-zone";
+	const gchar *tzid;
+
+	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
+	e_timezone_cache_add_timezone (timezone_cache, zone);
+	g_object_unref (timezone_cache);
 
 	g_rw_lock_writer_lock (&store->priv->lock);
 
 	tzid = icaltimezone_get_tzid (zone);
-	copy = copy_timezone (zone);
-	g_hash_table_insert (store->priv->timezones, g_strdup (tzid), copy);
 
 	if (e_file_cache_get_object (store->priv->keys_cache, key))
 		e_file_cache_replace_object (
@@ -895,20 +987,27 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 			NULL,
 			NULL,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_TIMEZONE_CACHE,
+		g_param_spec_object (
+			"timezone-cache",
+			"Timezone Cache",
+			"An object implementing the "
+			"ETimezoneCache interface",
+			E_TYPE_TIMEZONE_CACHE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 e_cal_backend_store_init (ECalBackendStore *store)
 {
-	GHashTable *timezones;
 	GHashTable *comp_uid_hash;
-
-	timezones = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) free_timezone);
 
 	comp_uid_hash = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -919,29 +1018,32 @@ e_cal_backend_store_init (ECalBackendStore *store)
 	store->priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 
 	store->priv->intervaltree = e_intervaltree_new ();
-	store->priv->timezones = timezones;
 	store->priv->comp_uid_hash = comp_uid_hash;
 	g_rw_lock_init (&store->priv->lock);
+	g_mutex_init (&store->priv->save_timeout_lock);
 }
 
 /**
  * e_cal_backend_store_new:
  * @path: the directory for the store file
+ * @cache: an #ETimezoneCache
  *
- * Creates a new #ECalBackendStore.
+ * Creates a new #ECalBackendStore from @path and @cache.
  *
  * Returns: a new #ECalBackendStore
  *
  * Since: 3.8
  **/
 ECalBackendStore *
-e_cal_backend_store_new (const gchar *path)
+e_cal_backend_store_new (const gchar *path,
+                         ETimezoneCache *cache)
 {
 	g_return_val_if_fail (path != NULL, NULL);
+	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), NULL);
 
 	return g_object_new (
 		E_TYPE_CAL_BACKEND_STORE,
-		"path", path, NULL);
+		"path", path, "timezone-cache", cache, NULL);
 }
 
 /**
@@ -955,6 +1057,27 @@ e_cal_backend_store_get_path (ECalBackendStore *store)
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
 	return store->priv->path;
+}
+
+/**
+ * e_cal_backend_store_ref_timezone_cache:
+ * @store: an #ECalBackendStore
+ *
+ * Returns the #ETimezoneCache passed to e_cal_backend_store_new().
+ *
+ * The returned #ETimezoneCache is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: an #ETimezoneCache
+ *
+ * Since: 3.8
+ **/
+ETimezoneCache *
+e_cal_backend_store_ref_timezone_cache (ECalBackendStore *store)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
+
+	return g_weak_ref_get (&store->priv->timezone_cache);
 }
 
 /**
