@@ -255,11 +255,6 @@ struct _ECalBackendClass {
 						 EDataCalView *view);
 	void		(*stop_view)		(ECalBackend *backend,
 						 EDataCalView *view);
-
-	/* Internal methods for use only in the pcs */
-	icaltimezone *	(*internal_get_timezone)
-						(ECalBackend *backend,
-						 const gchar *tzid);
 };
 
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;
@@ -388,9 +383,6 @@ void		e_cal_backend_add_timezone	(ECalBackend *backend,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *tzobject);
-icaltimezone *	e_cal_backend_internal_get_timezone
-						(ECalBackend *backend,
-						 const gchar *tzid);
 void		e_cal_backend_start_view	(ECalBackend *backend,
 						 EDataCalView *view);
 void		e_cal_backend_stop_view		(ECalBackend *backend,

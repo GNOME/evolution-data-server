@@ -1562,24 +1562,6 @@ e_cal_backend_add_timezone (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_internal_get_timezone:
- * @backend: an #ECalBackend
- * @tzid: ID of the timezone to get.
- *
- * Calls the internal_get_timezone method on the given backend.
- */
-icaltimezone *
-e_cal_backend_internal_get_timezone (ECalBackend *backend,
-                                     const gchar *tzid)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
-	g_return_val_if_fail (tzid != NULL, NULL);
-	g_return_val_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->internal_get_timezone != NULL, NULL);
-
-	return (* E_CAL_BACKEND_GET_CLASS (backend)->internal_get_timezone) (backend, tzid);
-}
-
-/**
  * e_cal_backend_start_view:
  * @backend: an #ECalBackend
  * @view: The view to be started.

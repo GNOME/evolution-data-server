@@ -269,16 +269,11 @@ static icaltimezone *
 resolve_tzid (const gchar *tzid,
               gpointer user_data)
 {
-	icaltimezone *zone;
+	ETimezoneCache *timezone_cache;
 
-	zone = (!strcmp (tzid, "UTC"))
-		? icaltimezone_get_utc_timezone ()
-		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	timezone_cache = E_TIMEZONE_CACHE (user_data);
 
-	if (!zone)
-		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
-
-	return zone;
+	return e_timezone_cache_get_timezone (timezone_cache, tzid);
 }
 
 static gboolean
@@ -298,7 +293,6 @@ put_component_to_store (ECalBackendCalDAV *cbdav,
 
 static ECalBackendSyncClass *parent_class = NULL;
 
-static icaltimezone *caldav_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
 static void caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav);
 
 static gboolean remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid);
@@ -3474,7 +3468,8 @@ sanitize_component (ECalBackend *cb,
 	 * list */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = caldav_internal_get_timezone (cb, dt.tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (cb), dt.tzid);
 		if (!zone) {
 			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup ("UTC");
@@ -3485,7 +3480,8 @@ sanitize_component (ECalBackend *cb,
 
 	e_cal_component_get_dtend (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = caldav_internal_get_timezone (cb, dt.tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (cb), dt.tzid);
 		if (!zone) {
 			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup ("UTC");
@@ -3496,7 +3492,8 @@ sanitize_component (ECalBackend *cb,
 
 	e_cal_component_get_due (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = caldav_internal_get_timezone (cb, dt.tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (cb), dt.tzid);
 		if (!zone) {
 			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup ("UTC");
@@ -4819,25 +4816,6 @@ caldav_notify_online_cb (ECalBackend *backend,
 	/*g_mutex_unlock (&cbdav->priv->busy_lock);*/
 }
 
-static icaltimezone *
-caldav_internal_get_timezone (ECalBackend *backend,
-                              const gchar *tzid)
-{
-	icaltimezone *zone;
-	ECalBackendCalDAV *cbdav;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	zone = NULL;
-
-	if (cbdav->priv->store)
-		zone = (icaltimezone *) e_cal_backend_store_get_timezone (cbdav->priv->store, tzid);
-
-	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
-		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
-
-	return zone;
-}
-
 static gpointer
 caldav_source_changed_thread (gpointer data)
 {
@@ -5116,6 +5094,4 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	sync_class->get_free_busy_sync		= caldav_get_free_busy;
 
 	backend_class->start_view		= caldav_start_view;
-
-	backend_class->internal_get_timezone	= caldav_internal_get_timezone;
 }

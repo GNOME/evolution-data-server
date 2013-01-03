@@ -504,7 +504,8 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 
 		if (backend->priv->mutex_lock)
 			g_mutex_lock (&backend->priv->sync_mutex);
-		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (backend), tzid);
 		if (backend->priv->mutex_lock)
 			g_mutex_unlock (&backend->priv->sync_mutex);
 
@@ -888,47 +889,6 @@ cal_backend_add_timezone (ECalBackend *backend,
 	e_data_cal_respond_add_timezone (cal, opid, error);
 }
 
-/* The default implementation is looking for timezone in the ical's builtin timezones,
- * and if that fails, then it tries to extract the location from the tzid and get the
- * timezone based on it. If even that fails, then it's returning UTC timezone.
- * That means, that any object deriving from ECalBackendSync is supposed to implement
- * this function for checking for a timezone in its own timezone cache, and if that
- * fails, then call parent's object internal_get_timezone, and that's all.
- */
-static icaltimezone *
-cal_backend_internal_get_timezone (ECalBackend *backend,
-                                   const gchar *tzid)
-{
-	icaltimezone *zone = NULL;
-
-	if (!tzid || !*tzid)
-		return NULL;
-
-	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-
-	if (!zone) {
-		const gchar *s, *slash1 = NULL, *slash2 = NULL;
-
-		/* get builtin by a location, if any */
-		for (s = tzid; *s; s++) {
-			if (*s == '/') {
-				slash1 = slash2;
-				slash2 = s;
-			}
-		}
-
-		if (slash1)
-			zone = icaltimezone_get_builtin_timezone (slash1 + 1);
-		else if (slash2)
-			zone = icaltimezone_get_builtin_timezone (tzid);
-	}
-
-	if (!zone)
-		zone = icaltimezone_get_utc_timezone ();
-
-	return zone;
-}
-
 static gboolean
 cal_backend_sync_get_backend_property (ECalBackendSync *backend,
                                        EDataCal *cal,
@@ -994,7 +954,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 	backend_class->discard_alarm		= cal_backend_discard_alarm;
 	backend_class->get_timezone		= cal_backend_get_timezone;
 	backend_class->add_timezone		= cal_backend_add_timezone;
-	backend_class->internal_get_timezone	= cal_backend_internal_get_timezone;
 
 	class->get_backend_property_sync	= cal_backend_sync_get_backend_property;
 	class->set_backend_property_sync	= cal_backend_sync_set_backend_property;

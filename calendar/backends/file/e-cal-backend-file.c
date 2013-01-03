@@ -116,9 +116,6 @@ static void e_cal_backend_file_finalize (GObject *object);
 
 static void free_refresh_data (ECalBackendFile *cbfile);
 
-static icaltimezone *
-e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
-
 static void bump_revision (ECalBackendFile *cbfile);
 
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
@@ -2080,34 +2077,6 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
 	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
-static icaltimezone *
-e_cal_backend_file_internal_get_timezone (ECalBackend *backend,
-                                          const gchar *tzid)
-{
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
-	icaltimezone *zone;
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
-	priv = cbfile->priv;
-
-	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
-
-	g_rec_mutex_lock (&priv->idle_save_rmutex);
-
-	if (!strcmp (tzid, "UTC"))
-		zone = icaltimezone_get_utc_timezone ();
-	else {
-		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
-
-		if (!zone && E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->internal_get_timezone)
-			zone = E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->internal_get_timezone (backend, tzid);
-	}
-
-	g_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return zone;
-}
-
 static void
 sanitize_component (ECalBackendFile *cbfile,
                     ECalComponent *comp)
@@ -2120,7 +2089,8 @@ sanitize_component (ECalBackendFile *cbfile,
 	 * list */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *) cbfile, dt.tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (cbfile), dt.tzid);
 		if (!zone) {
 			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup ("UTC");
@@ -2131,7 +2101,8 @@ sanitize_component (ECalBackendFile *cbfile,
 
 	e_cal_component_get_dtend (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *) cbfile, dt.tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (cbfile), dt.tzid);
 		if (!zone) {
 			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup ("UTC");
@@ -2142,7 +2113,8 @@ sanitize_component (ECalBackendFile *cbfile,
 
 	e_cal_component_get_due (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_cal_backend_file_internal_get_timezone ((ECalBackend *) cbfile, dt.tzid);
+		zone = e_timezone_cache_get_timezone (
+			E_TIMEZONE_CACHE (cbfile), dt.tzid);
 		if (!zone) {
 			g_free ((gchar *) dt.tzid);
 			dt.tzid = g_strdup ("UTC");
@@ -3484,7 +3456,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_file_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_file_start_view;
-	backend_class->internal_get_timezone	= e_cal_backend_file_internal_get_timezone;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LOCAL;

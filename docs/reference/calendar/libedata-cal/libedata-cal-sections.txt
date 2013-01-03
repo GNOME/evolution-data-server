@@ -43,7 +43,6 @@ e_cal_backend_get_attachment_uris
 e_cal_backend_discard_alarm
 e_cal_backend_get_timezone
 e_cal_backend_add_timezone
-e_cal_backend_internal_get_timezone
 e_cal_backend_start_view
 e_cal_backend_stop_view
 e_cal_backend_notify_component_created

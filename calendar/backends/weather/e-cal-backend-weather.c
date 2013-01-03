@@ -54,8 +54,6 @@ struct _ECalBackendWeatherPrivate {
 	/* The file cache */
 	ECalBackendStore *store;
 
-	GHashTable *zones;
-
 	/* Reload */
 	guint reload_timeout_id;
 	guint is_loading : 1;
@@ -129,16 +127,11 @@ static icaltimezone *
 resolve_tzid (const gchar *tzid,
               gpointer user_data)
 {
-	icaltimezone *zone;
+	ETimezoneCache *timezone_cache;
 
-	zone = (!strcmp (tzid, "UTC"))
-		? icaltimezone_get_utc_timezone ()
-		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	timezone_cache = E_TIMEZONE_CACHE (user_data);
 
-	if (!zone)
-		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
-
-	return zone;
+	return e_timezone_cache_get_timezone (timezone_cache, tzid);
 }
 
 static void
@@ -661,13 +654,8 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend,
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
-	tzid = icaltimezone_get_tzid (zone);
-
-	if (g_hash_table_lookup (priv->zones, tzid)) {
-		icaltimezone_free (zone, TRUE);
-	} else {
-		g_hash_table_insert (priv->zones, g_strdup (tzid), zone);
-	}
+	e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (backend), zone);
+	icaltimezone_free (zone, TRUE);
 }
 
 static void
@@ -773,36 +761,6 @@ e_cal_backend_weather_notify_online_cb (ECalBackend *backend,
 	}
 }
 
-static icaltimezone *
-e_cal_backend_weather_internal_get_timezone (ECalBackend *backend,
-                                             const gchar *tzid)
-{
-	icaltimezone *zone;
-
-	g_return_val_if_fail (tzid != NULL, NULL);
-
-	if (!strcmp (tzid, "UTC")) {
-		zone = icaltimezone_get_utc_timezone ();
-	} else {
-		ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
-
-		g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
-
-		zone = g_hash_table_lookup (cbw->priv->zones, tzid);
-
-		if (!zone && E_CAL_BACKEND_CLASS (e_cal_backend_weather_parent_class)->internal_get_timezone)
-			zone = E_CAL_BACKEND_CLASS (e_cal_backend_weather_parent_class)->internal_get_timezone (backend, tzid);
-	}
-
-	return zone;
-}
-
-static void
-free_zone (gpointer data)
-{
-	icaltimezone_free (data, TRUE);
-}
-
 /* Finalize handler for the weather backend */
 static void
 e_cal_backend_weather_finalize (GObject *object)
@@ -822,8 +780,6 @@ e_cal_backend_weather_finalize (GObject *object)
 		priv->store = NULL;
 	}
 
-	g_hash_table_destroy (priv->zones);
-
 	g_free (priv->city);
 
 	/* Chain up to parent's finalize() method. */
@@ -835,12 +791,6 @@ static void
 e_cal_backend_weather_init (ECalBackendWeather *cbw)
 {
 	cbw->priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (cbw);
-
-	cbw->priv->zones = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) free_zone);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbw), TRUE);
 
@@ -875,7 +825,6 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_weather_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_weather_start_view;
-	backend_class->internal_get_timezone	= e_cal_backend_weather_internal_get_timezone;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_WEATHER;

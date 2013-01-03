@@ -66,8 +66,6 @@ struct _ECalBackendContactsPrivate {
 	GHashTable *tracked_contacts;	/* UID -> ContactRecord */
 	GRecMutex tracked_contacts_lock;
 
-	GHashTable *zones;
-
 	/* properties related to track alarm settings for this backend */
 	GSettings *settings;
 	guint notifyid;
@@ -1237,17 +1235,13 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend,
                                      GError **error)
 {
 	ECalBackendContacts *cbcontacts;
-	ECalBackendContactsPrivate *priv;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
-	const gchar *tzid;
 
 	cbcontacts = (ECalBackendContacts *) backend;
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbcontacts->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -1262,13 +1256,8 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend,
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
-	tzid = icaltimezone_get_tzid (zone);
-
-	if (g_hash_table_lookup (priv->zones, tzid)) {
-		icaltimezone_free (zone, TRUE);
-	} else {
-		g_hash_table_insert (priv->zones, g_strdup (tzid), zone);
-	}
+	e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (backend), zone);
+	icaltimezone_free (zone, TRUE);
 }
 
 static void
@@ -1329,23 +1318,8 @@ e_cal_backend_contacts_start_view (ECalBackend *backend,
 	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }
 
-static icaltimezone *
-e_cal_backend_contacts_internal_get_timezone (ECalBackend *backend,
-                                              const gchar *tzid)
-{
-	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
-
-	return g_hash_table_lookup (cbc->priv->zones, tzid ? tzid : "");
-}
-
 /***********************************************************************************
  */
-
-static void
-free_zone (gpointer data)
-{
-	icaltimezone_free (data, TRUE);
-}
 
 /* Finalize handler for the contacts backend */
 static void
@@ -1362,7 +1336,6 @@ e_cal_backend_contacts_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->addressbooks);
 	g_hash_table_destroy (priv->tracked_contacts);
-	g_hash_table_destroy (priv->zones);
 	if (priv->notifyid)
 		g_signal_handler_disconnect (priv->settings, priv->notifyid);
 
@@ -1423,12 +1396,6 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) contact_record_free);
 
-	cbc->priv->zones = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) free_zone);
-
 	cbc->priv->settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
 	cbc->priv->notifyid = 0;
 	cbc->priv->update_alarms_id = 0;
@@ -1484,7 +1451,6 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_contacts_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_contacts_start_view;
-	backend_class->internal_get_timezone	= e_cal_backend_contacts_internal_get_timezone;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_CONTACTS;

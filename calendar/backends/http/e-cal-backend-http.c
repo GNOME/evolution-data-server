@@ -310,16 +310,11 @@ static icaltimezone *
 resolve_tzid (const gchar *tzid,
               gpointer user_data)
 {
-	icaltimezone *zone;
+	ETimezoneCache *timezone_cache;
 
-	zone = (!strcmp (tzid, "UTC"))
-		? icaltimezone_get_utc_timezone ()
-		: icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	timezone_cache = E_TIMEZONE_CACHE (user_data);
 
-	if (!zone)
-		zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (user_data), tzid);
-
-	return zone;
+	return e_timezone_cache_get_timezone (timezone_cache, tzid);
 }
 
 static gboolean
@@ -1417,32 +1412,6 @@ e_cal_backend_http_send_objects (ECalBackendSync *backend,
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
-static icaltimezone *
-e_cal_backend_http_internal_get_timezone (ECalBackend *backend,
-                                          const gchar *tzid)
-{
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-	icaltimezone *zone;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
-	g_return_val_if_fail (tzid != NULL, NULL);
-
-	if (!strcmp (tzid, "UTC"))
-		zone = icaltimezone_get_utc_timezone ();
-	else {
-		/* first try to get the timezone from the cache */
-		zone = (icaltimezone *) e_cal_backend_store_get_timezone (priv->store, tzid);
-
-		if (!zone && E_CAL_BACKEND_CLASS (e_cal_backend_http_parent_class)->internal_get_timezone)
-			zone = E_CAL_BACKEND_CLASS (e_cal_backend_http_parent_class)->internal_get_timezone (backend, tzid);
-	}
-
-	return zone;
-}
-
 static ESourceAuthenticationResult
 cal_backend_http_try_password_sync (ESourceAuthenticator *authenticator,
                                     const GString *password,
@@ -1520,7 +1489,6 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_http_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_http_start_view;
-	backend_class->internal_get_timezone	= e_cal_backend_http_internal_get_timezone;
 }
 
 static void
