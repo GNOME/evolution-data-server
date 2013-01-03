@@ -4498,7 +4498,7 @@ caldav_get_object_list (ECalBackendSync *backend,
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendSExp	 *sexp;
-	ECalBackend *bkend;
+	ETimezoneCache *cache;
 	gboolean                  do_search;
 	GSList			 *list, *iter;
 	time_t occur_start = -1, occur_end = -1;
@@ -4523,17 +4523,17 @@ caldav_get_object_list (ECalBackendSync *backend,
 
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
 
+	cache = E_TIMEZONE_CACHE (backend);
+
 	list = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (cbdav->priv->store, occur_start, occur_end)
 		: e_cal_backend_store_get_components (cbdav->priv->store);
-
-	bkend = E_CAL_BACKEND (backend);
 
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
 
 		if (!do_search ||
-		    e_cal_backend_sexp_match_comp (sexp, comp, bkend)) {
+		    e_cal_backend_sexp_match_comp (sexp, comp, cache)) {
 			*objects = g_slist_prepend (*objects, e_cal_component_get_as_string (comp));
 		}
 
@@ -4550,7 +4550,7 @@ caldav_start_view (ECalBackend *backend,
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendSExp	 *sexp;
-	ECalBackend              *bkend;
+	ETimezoneCache *cache;
 	gboolean                  do_search;
 	GSList			 *list, *iter;
 	const gchar               *sexp_string;
@@ -4571,7 +4571,7 @@ caldav_start_view (ECalBackend *backend,
 		&occur_start,
 		&occur_end);
 
-	bkend = E_CAL_BACKEND (backend);
+	cache = E_TIMEZONE_CACHE (backend);
 
 	list = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (cbdav->priv->store, occur_start, occur_end)
@@ -4581,7 +4581,7 @@ caldav_start_view (ECalBackend *backend,
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
 
 		if (!do_search ||
-		    e_cal_backend_sexp_match_comp (sexp, comp, bkend)) {
+		    e_cal_backend_sexp_match_comp (sexp, comp, cache)) {
 			e_data_cal_view_notify_components_added_1 (query, comp);
 		}
 

@@ -30,8 +30,6 @@
 
 #include <libecal/libecal.h>
 
-#include <libedata-cal/e-cal-backend.h>
-
 /* Standard GObject macros */
 #define E_TYPE_CAL_BACKEND_SEXP \
 	(e_cal_backend_sexp_get_type ())
@@ -53,8 +51,6 @@
 
 G_BEGIN_DECLS
 
-struct _ECalBackend;
-
 typedef struct _ECalBackendSExp ECalBackendSExp;
 typedef struct _ECalBackendSExpClass ECalBackendSExpClass;
 typedef struct _ECalBackendSExpPrivate ECalBackendSExpPrivate;
@@ -75,10 +71,10 @@ const gchar *	e_cal_backend_sexp_text		(ECalBackendSExp *sexp);
 
 gboolean	e_cal_backend_sexp_match_object	(ECalBackendSExp *sexp,
 						 const gchar *object,
-						 struct _ECalBackend *backend);
+						 ETimezoneCache *cache);
 gboolean	e_cal_backend_sexp_match_comp	(ECalBackendSExp *sexp,
 						 ECalComponent *comp,
-						 struct _ECalBackend *backend);
+						 ETimezoneCache *cache);
 
 /* Default implementations of time functions for use by subclasses */
 

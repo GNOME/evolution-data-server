@@ -526,11 +526,14 @@ contact_record_cb (gpointer key,
                    gpointer value,
                    gpointer user_data)
 {
+	ETimezoneCache *timezone_cache;
 	ContactRecordCB *cb_data = user_data;
 	ContactRecord   *record = value;
 	gpointer data;
 
-	if (record->comp_birthday && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_birthday, E_CAL_BACKEND (cb_data->cbc))) {
+	timezone_cache = E_TIMEZONE_CACHE (cb_data->cbc);
+
+	if (record->comp_birthday && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_birthday, timezone_cache)) {
 		if (cb_data->as_string)
 			data = e_cal_component_get_as_string (record->comp_birthday);
 		else
@@ -539,7 +542,7 @@ contact_record_cb (gpointer key,
 		cb_data->result = g_slist_prepend (cb_data->result, data);
 	}
 
-	if (record->comp_anniversary && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_anniversary, E_CAL_BACKEND (cb_data->cbc))) {
+	if (record->comp_anniversary && e_cal_backend_sexp_match_comp (cb_data->sexp, record->comp_anniversary, timezone_cache)) {
 		if (cb_data->as_string)
 			data = e_cal_component_get_as_string (record->comp_anniversary);
 		else

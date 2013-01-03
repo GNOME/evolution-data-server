@@ -43,7 +43,7 @@ struct _ECalBackendSExpPrivate {
 
 struct _SearchContext {
 	ECalComponent *comp;
-	ECalBackend *backend;
+	ETimezoneCache *cache;
 	gboolean occurs;
 	gint occurrences_count;
 
@@ -374,12 +374,10 @@ resolve_tzid (const gchar *tzid,
 {
 	SearchContext *ctx = user_data;
 
-	if (!tzid || !tzid[0])
+	if (tzid == NULL || *tzid == '\0')
 		return NULL;
-	else if (!strcmp (tzid, "UTC"))
-		return icaltimezone_get_utc_timezone ();
 
-	return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
+	return e_timezone_cache_get_timezone (ctx->cache, tzid);
 }
 
 /* (occur-in-time-range? START END TZLOC)
@@ -531,9 +529,8 @@ func_occurrences_count (ESExp *esexp,
 	ctx->occurrences_count = 0;
 	e_cal_recur_generate_instances (
 		ctx->comp, start, end,
-					count_instances_time_range_cb, ctx,
-					resolve_tzid, ctx,
-					default_zone);
+		count_instances_time_range_cb, ctx,
+		resolve_tzid, ctx, default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 	result->value.number = ctx->occurrences_count;
@@ -1520,7 +1517,7 @@ e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp,
  * e_cal_backend_sexp_match_comp:
  * @sexp: An #ESExp object.
  * @comp: Component to match against the expression.
- * @backend: Backend.
+ * @cache: an #ETimezoneCache
  *
  * Matches the given ECalComponent against the expression.
  *
@@ -1529,29 +1526,24 @@ e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp,
 gboolean
 e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
                                ECalComponent *comp,
-                               ECalBackend *backend)
+                               ETimezoneCache *cache)
 {
 	ESExpResult *r;
 	gboolean retval;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_SEXP (sexp), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), FALSE);
 
 	sexp->priv->search_context->comp = g_object_ref (comp);
-	sexp->priv->search_context->backend = g_object_ref (backend);
+	sexp->priv->search_context->cache = g_object_ref (cache);
 
-	/* if it's not a valid vcard why is it in our db? :) */
-	if (!sexp->priv->search_context->comp)  {
-		g_object_unref (sexp->priv->search_context->backend);
-		return FALSE;
-	}
 	r = e_sexp_eval (sexp->priv->search_sexp);
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
 	g_object_unref (sexp->priv->search_context->comp);
-	g_object_unref (sexp->priv->search_context->backend);
+	g_object_unref (sexp->priv->search_context->cache);
 
 	e_sexp_result_free (sexp->priv->search_sexp, r);
 
@@ -1562,7 +1554,7 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
  * e_cal_backend_sexp_match_object:
  * @sexp: An #ESExp object.
  * @object: An iCalendar string.
- * @backend: A backend.
+ * @cache: an #ETimezoneCache
  *
  * Match an iCalendar expression against the expression.
  *
@@ -1571,7 +1563,7 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
 gboolean
 e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
                                  const gchar *object,
-                                 ECalBackend *backend)
+                                 ETimezoneCache *cache)
 {
 	ECalComponent *comp;
 	icalcomponent *icalcomp;
@@ -1584,7 +1576,7 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomp);
 
-	retval = e_cal_backend_sexp_match_comp (sexp, comp, backend);
+	retval = e_cal_backend_sexp_match_comp (sexp, comp, cache);
 
 	g_object_unref (comp);
 

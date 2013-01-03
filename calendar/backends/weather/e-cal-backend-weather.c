@@ -597,15 +597,19 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend,
 {
 	ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
 	ECalBackendWeatherPrivate *priv = cbw->priv;
-	ECalBackendSExp *sexp = e_cal_backend_sexp_new (sexp_string);
+	ECalBackendSExp *sexp;
+	ETimezoneCache *timezone_cache;
 	GSList *components, *l;
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
 
-	if (!sexp) {
+	sexp = e_cal_backend_sexp_new (sexp_string);
+	if (sexp == NULL) {
 		g_propagate_error (perror, EDC_ERROR (InvalidQuery));
 		return;
 	}
+
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	*objects = NULL;
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (
@@ -618,7 +622,7 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend,
 		: e_cal_backend_store_get_components (priv->store);
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
-		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend)))
+		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), timezone_cache))
 			*objects = g_slist_append (*objects, e_cal_component_get_as_string (l->data));
 	}
 
@@ -696,6 +700,7 @@ e_cal_backend_weather_start_view (ECalBackend *backend,
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
 	ECalBackendSExp *sexp;
+	ETimezoneCache *timezone_cache;
 	GSList *components, *l;
 	GSList *objects;
 	GError *error;
@@ -720,6 +725,8 @@ e_cal_backend_weather_start_view (ECalBackend *backend,
 		return;
 	}
 
+	timezone_cache = E_TIMEZONE_CACHE (backend);
+
 	objects = NULL;
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
 	components = prunning_by_time ?
@@ -727,7 +734,7 @@ e_cal_backend_weather_start_view (ECalBackend *backend,
 		: e_cal_backend_store_get_components (priv->store);
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
-		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
+		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), timezone_cache))
 			objects = g_slist_prepend (objects, l->data);
 	}
 

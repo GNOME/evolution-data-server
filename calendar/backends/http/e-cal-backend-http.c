@@ -1064,11 +1064,14 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend,
 	ECalBackendHttpPrivate *priv;
 	GSList *components, *l;
 	ECalBackendSExp *cbsexp;
+	ETimezoneCache *timezone_cache;
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
+
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	if (!priv->store) {
 		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
@@ -1089,7 +1092,7 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend,
 		: e_cal_backend_store_get_components (priv->store);
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
-		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
+		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), timezone_cache)) {
 			*objects = g_slist_append (*objects, e_cal_component_get_as_string (l->data));
 		}
 	}
@@ -1108,11 +1111,14 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 	GSList *components, *l;
 	GSList *objects = NULL;
 	ECalBackendSExp *cbsexp;
+	ETimezoneCache *timezone_cache;
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
+
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	cbsexp = e_data_cal_view_get_sexp (query);
 
@@ -1139,7 +1145,7 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		ECalComponent *comp = l->data;
 
-		if (e_cal_backend_sexp_match_comp (cbsexp, comp, E_CAL_BACKEND (backend))) {
+		if (e_cal_backend_sexp_match_comp (cbsexp, comp, timezone_cache)) {
 			objects = g_slist_append (objects, comp);
 		}
 	}
@@ -1268,7 +1274,9 @@ create_user_free_busy (ECalBackendHttp *cbhttp,
 				continue;
 		}
 
-		if (!e_cal_backend_sexp_match_comp (obj_sexp, l->data, E_CAL_BACKEND (cbhttp)))
+		if (!e_cal_backend_sexp_match_comp (
+			obj_sexp, l->data,
+			E_TIMEZONE_CACHE (cbhttp)))
 			continue;
 
 		vcalendar_comp = icalcomponent_get_parent (icalcomp);

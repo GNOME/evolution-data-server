@@ -1556,6 +1556,7 @@ match_object_sexp_to_component (gpointer value,
 {
 	ECalComponent * comp = value;
 	MatchObjectData *match_data = data;
+	ETimezoneCache *timezone_cache;
 	const gchar *uid;
 
 	e_cal_component_get_uid (comp, &uid);
@@ -1564,8 +1565,10 @@ match_object_sexp_to_component (gpointer value,
 
 	g_return_if_fail (match_data->backend != NULL);
 
+	timezone_cache = E_TIMEZONE_CACHE (match_data->backend);
+
 	if ((!match_data->search_needed) ||
-	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
+	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, timezone_cache))) {
 		if (match_data->as_string)
 			match_data->comps_list = g_slist_prepend (match_data->comps_list, e_cal_component_get_as_string (comp));
 		else
@@ -1580,9 +1583,12 @@ match_recurrence_sexp (gpointer key,
 {
 	ECalComponent *comp = value;
 	MatchObjectData *match_data = data;
+	ETimezoneCache *timezone_cache;
+
+	timezone_cache = E_TIMEZONE_CACHE (match_data->backend);
 
 	if ((!match_data->search_needed) ||
-	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
+	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, timezone_cache))) {
 		if (match_data->as_string)
 			match_data->comps_list = g_slist_prepend (match_data->comps_list, e_cal_component_get_as_string (comp));
 		else
@@ -1597,12 +1603,15 @@ match_object_sexp (gpointer key,
 {
 	ECalBackendFileObject *obj_data = value;
 	MatchObjectData *match_data = data;
+	ETimezoneCache *timezone_cache;
+
+	timezone_cache = E_TIMEZONE_CACHE (match_data->backend);
 
 	if (obj_data->full_object) {
 		if ((!match_data->search_needed) ||
 		    (e_cal_backend_sexp_match_comp (match_data->obj_sexp,
 						    obj_data->full_object,
-						    match_data->backend))) {
+						    timezone_cache))) {
 			if (match_data->as_string)
 				match_data->comps_list = g_slist_prepend (match_data->comps_list, e_cal_component_get_as_string (obj_data->full_object));
 			else
@@ -1995,7 +2004,9 @@ create_user_free_busy (ECalBackendFile *cbfile,
 				continue;
 		}
 
-		if (!e_cal_backend_sexp_match_comp (obj_sexp, l->data, E_CAL_BACKEND (cbfile)))
+		if (!e_cal_backend_sexp_match_comp (
+			obj_sexp, l->data,
+			E_TIMEZONE_CACHE (cbfile)))
 			continue;
 
 		vcalendar_comp = icalcomponent_get_parent (icalcomp);

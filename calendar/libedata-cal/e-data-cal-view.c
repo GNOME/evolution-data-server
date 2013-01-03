@@ -27,6 +27,7 @@
 
 #include <string.h>
 
+#include "e-cal-backend.h"
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
 #include "e-gdbus-cal-view.h"
@@ -924,11 +925,17 @@ gboolean
 e_data_cal_view_object_matches (EDataCalView *view,
                                 const gchar *object)
 {
+	ECalBackend *backend;
+	ECalBackendSExp *sexp;
+
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
+	sexp = e_data_cal_view_get_sexp (view);
+	backend = e_data_cal_view_get_backend (view);
+
 	return e_cal_backend_sexp_match_object (
-		view->priv->sexp, object, view->priv->backend);
+		sexp, object, E_TIMEZONE_CACHE (backend));
 }
 
 /**
@@ -947,11 +954,17 @@ gboolean
 e_data_cal_view_component_matches (EDataCalView *view,
                                    ECalComponent *component)
 {
+	ECalBackend *backend;
+	ECalBackendSExp *sexp;
+
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), FALSE);
 
+	sexp = e_data_cal_view_get_sexp (view);
+	backend = e_data_cal_view_get_backend (view);
+
 	return e_cal_backend_sexp_match_comp (
-		view->priv->sexp, component, view->priv->backend);
+		sexp, component, E_TIMEZONE_CACHE (backend));
 }
 
 /**
