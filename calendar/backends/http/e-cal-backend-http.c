@@ -658,7 +658,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
 
 			zone = icaltimezone_new ();
 			icaltimezone_set_component (zone, icalcomponent_new_clone (subcomp));
-			e_cal_backend_store_put_timezone (priv->store, (const icaltimezone *) zone);
+			e_cal_backend_store_put_timezone (priv->store, zone);
 
 			icaltimezone_free (zone, 1);
 		}

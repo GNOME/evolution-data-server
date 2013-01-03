@@ -635,7 +635,7 @@ cal_backend_store_get_timezone (ECalBackendStore *store,
 
 static gboolean
 cal_backend_store_put_timezone (ECalBackendStore *store,
-                                const icaltimezone *zone)
+                                icaltimezone *zone)
 {
 	icaltimezone *copy;
 
@@ -1148,7 +1148,7 @@ e_cal_backend_store_get_timezone (ECalBackendStore *store,
  **/
 gboolean
 e_cal_backend_store_put_timezone (ECalBackendStore *store,
-                                  const icaltimezone *zone)
+                                  icaltimezone *zone)
 {
 	ECalBackendStoreClass *class;
 
