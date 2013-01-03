@@ -678,7 +678,7 @@ cal_backend_store_get_default_timezone (ECalBackendStore *store)
 
 static gboolean
 cal_backend_store_set_default_timezone (ECalBackendStore *store,
-                                        const icaltimezone *zone)
+                                        icaltimezone *zone)
 {
 	const gchar *tzid;
 	icaltimezone *copy;
@@ -686,8 +686,8 @@ cal_backend_store_set_default_timezone (ECalBackendStore *store,
 
 	g_rw_lock_writer_lock (&store->priv->lock);
 
-	tzid = icaltimezone_get_tzid ((icaltimezone *) zone);
-	copy = copy_timezone ((icaltimezone *) zone);
+	tzid = icaltimezone_get_tzid (zone);
+	copy = copy_timezone (zone);
 	g_hash_table_insert (store->priv->timezones, g_strdup (tzid), copy);
 
 	if (e_file_cache_get_object (store->priv->keys_cache, key))
@@ -1186,7 +1186,7 @@ e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
  **/
 gboolean
 e_cal_backend_store_set_default_timezone (ECalBackendStore *store,
-                                          const icaltimezone *zone)
+                                          icaltimezone *zone)
 {
 	ECalBackendStoreClass *class;
 

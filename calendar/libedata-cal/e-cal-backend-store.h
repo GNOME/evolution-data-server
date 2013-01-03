@@ -93,7 +93,7 @@ struct _ECalBackendStoreClass {
 	const icaltimezone *
 			(*get_default_timezone)	(ECalBackendStore *store);
 	gboolean	(*set_default_timezone)	(ECalBackendStore *store,
-						 const icaltimezone *zone);
+						 icaltimezone *zone);
 	void		(*thaw_changes)		(ECalBackendStore *store);
 	void		(*freeze_changes)	(ECalBackendStore *store);
 	const gchar *	(*get_key_value)	(ECalBackendStore *store,
@@ -140,7 +140,7 @@ const icaltimezone *
 						(ECalBackendStore *store);
 gboolean	e_cal_backend_store_set_default_timezone
 						(ECalBackendStore *store,
-						 const icaltimezone *zone);
+						 icaltimezone *zone);
 GSList *	e_cal_backend_store_get_components_by_uid
 						(ECalBackendStore *store,
 						 const gchar *uid);
