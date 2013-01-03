@@ -90,8 +90,6 @@ struct _ECalBackendStoreClass {
 						 const gchar *tzid);
 	gboolean	(*put_timezone)		(ECalBackendStore *store,
 						 const icaltimezone *zone);
-	gboolean	(*remove_timezone)	(ECalBackendStore *store,
-						 const gchar *tzid);
 	const icaltimezone *
 			(*get_default_timezone)	(ECalBackendStore *store);
 	gboolean	(*set_default_timezone)	(ECalBackendStore *store,
@@ -137,9 +135,6 @@ const icaltimezone *
 						 const gchar *tzid);
 gboolean	e_cal_backend_store_put_timezone (ECalBackendStore *store,
 						 const icaltimezone *zone);
-gboolean	e_cal_backend_store_remove_timezone
-						(ECalBackendStore *store,
-						 const gchar *tzid);
 const icaltimezone *
 		e_cal_backend_store_get_default_timezone
 						(ECalBackendStore *store);
