@@ -54,6 +54,9 @@ struct _ECalBackendPrivate {
 	GMutex views_mutex;
 	GList *views;
 
+	GHashTable *zone_cache;
+	GMutex zone_cache_lock;
+
 	/* ECalBackend to pass notifications on to */
 	ECalBackend *notification_proxy;
 
@@ -67,9 +70,27 @@ enum {
 	PROP_REGISTRY
 };
 
-static void e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref);
+/* Forward Declarations */
+static void	e_cal_backend_remove_client_private
+					(ECalBackend *backend,
+					 EDataCal *cal,
+					 gboolean weak_unref);
+static void	e_cal_backend_timezone_cache_init
+					(ETimezoneCacheInterface *interface);
 
-G_DEFINE_TYPE (ECalBackend, e_cal_backend, E_TYPE_BACKEND);
+G_DEFINE_TYPE_WITH_CODE (
+	ECalBackend,
+	e_cal_backend,
+	E_TYPE_BACKEND,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_TIMEZONE_CACHE,
+		e_cal_backend_timezone_cache_init))
+
+static void
+cal_backend_free_zone (icaltimezone *zone)
+{
+	icaltimezone_free (zone, 1);
+}
 
 static void
 cal_backend_set_default_cache_dir (ECalBackend *backend)
@@ -252,12 +273,15 @@ cal_backend_finalize (GObject *object)
 
 	g_assert (priv->clients == NULL);
 
-	g_list_free (priv->views);
 	/* should be NULL, anyway */
 	g_list_free (priv->clients);
-
 	g_mutex_clear (&priv->clients_mutex);
+
+	g_list_free (priv->views);
 	g_mutex_clear (&priv->views_mutex);
+
+	g_hash_table_destroy (priv->zone_cache);
+	g_mutex_clear (&priv->zone_cache_lock);
 
 	g_free (priv->cache_dir);
 
@@ -289,6 +313,141 @@ cal_backend_authenticate_sync (EBackend *backend,
 
 	return e_source_registry_authenticate_sync (
 		registry, source, auth, cancellable, error);
+}
+
+static void
+cal_backend_add_cached_timezone (ETimezoneCache *cache,
+                                 icaltimezone *zone)
+{
+	ECalBackendPrivate *priv;
+	const gchar *tzid;
+
+	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
+
+	g_mutex_lock (&priv->zone_cache_lock);
+
+	tzid = icaltimezone_get_tzid (zone);
+
+	/* Avoid replacing an existing cache entry.  We don't want to
+	 * invalidate any icaltimezone pointers that may have already
+	 * been returned through e_timezone_cache_get_timezone(). */
+	if (!g_hash_table_contains (priv->zone_cache, tzid)) {
+		icalcomponent *icalcomp;
+		icaltimezone *cached_zone;
+
+		cached_zone = icaltimezone_new ();
+		icalcomp = icaltimezone_get_component (zone);
+		icalcomp = icalcomponent_new_clone (icalcomp);
+		icaltimezone_set_component (cached_zone, icalcomp);
+
+		g_hash_table_insert (
+			priv->zone_cache,
+			g_strdup (tzid), cached_zone);
+
+		/* FIXME Should emit this from an idle GSource on
+		 *       a stored GMainContext, but we don't have
+		 *       a stored GMainContext.  Check back after
+		 *       the D-Bus API rewrite. */
+		g_signal_emit_by_name (cache, "timezone-added", zone);
+	}
+
+	g_mutex_unlock (&priv->zone_cache_lock);
+}
+
+static icaltimezone *
+cal_backend_get_cached_timezone (ETimezoneCache *cache,
+                                 const gchar *tzid)
+{
+	ECalBackendPrivate *priv;
+	icaltimezone *zone = NULL;
+	icaltimezone *builtin_zone = NULL;
+	icalcomponent *icalcomp;
+	icalproperty *prop;
+	const gchar *builtin_tzid;
+
+	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
+
+	if (g_str_equal (tzid, "UTC"))
+		return icaltimezone_get_utc_timezone ();
+
+	g_mutex_lock (&priv->zone_cache_lock);
+
+	/* See if we already have it in the cache. */
+	zone = g_hash_table_lookup (priv->zone_cache, tzid);
+
+	if (zone != NULL)
+		goto exit;
+
+	/* Try to replace the original time zone with a more complete
+	 * and/or potentially updated built-in time zone.  Note this also
+	 * applies to TZIDs which match built-in time zones exactly: they
+	 * are extracted via icaltimezone_get_builtin_timezone_from_tzid(). */
+
+	builtin_tzid = e_cal_match_tzid (tzid);
+
+	if (builtin_tzid != NULL)
+		builtin_zone = icaltimezone_get_builtin_timezone_from_tzid (
+			builtin_tzid);
+
+	if (builtin_zone == NULL)
+		goto exit;
+
+	/* Use the built-in time zone *and* rename it.  Likely the caller
+	 * is asking for a specific TZID because it has an event with such
+	 * a TZID.  Returning an icaltimezone with a different TZID would
+	 * lead to broken VCALENDARs in the caller. */
+
+	icalcomp = icaltimezone_get_component (builtin_zone);
+	icalcomp = icalcomponent_new_clone (icalcomp);
+
+	prop = icalcomponent_get_first_property (
+		icalcomp, ICAL_ANY_PROPERTY);
+
+	while (prop != NULL) {
+		if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
+			icalproperty_set_value_from_string (prop, tzid, "NO");
+			break;
+		}
+
+		prop = icalcomponent_get_next_property (
+			icalcomp, ICAL_ANY_PROPERTY);
+	}
+
+	if (icalcomp != NULL) {
+		zone = icaltimezone_new ();
+		if (icaltimezone_set_component (zone, icalcomp)) {
+			tzid = icaltimezone_get_tzid (zone);
+			g_hash_table_insert (
+				priv->zone_cache,
+				g_strdup (tzid), zone);
+		} else {
+			icalcomponent_free (icalcomp);
+			icaltimezone_free (zone, 1);
+			zone = NULL;
+		}
+	}
+
+exit:
+	g_mutex_unlock (&priv->zone_cache_lock);
+
+	return zone;
+}
+
+static GList *
+cal_backend_list_cached_timezones (ETimezoneCache *cache)
+{
+	ECalBackendPrivate *priv;
+	GList *list;
+
+	priv = E_CAL_BACKEND_GET_PRIVATE (cache);
+
+	g_mutex_lock (&priv->zone_cache_lock);
+
+	list = g_hash_table_get_values (priv->zone_cache);
+
+	g_mutex_unlock (&priv->zone_cache_lock);
+
+	return list;
 }
 
 static void
@@ -352,8 +511,24 @@ e_cal_backend_class_init (ECalBackendClass *class)
 }
 
 static void
+e_cal_backend_timezone_cache_init (ETimezoneCacheInterface *interface)
+{
+	interface->add_timezone = cal_backend_add_cached_timezone;
+	interface->get_timezone = cal_backend_get_cached_timezone;
+	interface->list_timezones = cal_backend_list_cached_timezones;
+}
+
+static void
 e_cal_backend_init (ECalBackend *backend)
 {
+	GHashTable *zone_cache;
+
+	zone_cache = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) cal_backend_free_zone);
+
 	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 
 	backend->priv->clients = NULL;
@@ -361,6 +536,9 @@ e_cal_backend_init (ECalBackend *backend)
 
 	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);
+
+	backend->priv->zone_cache = zone_cache;
+	g_mutex_init (&backend->priv->zone_cache_lock);
 
 	backend->priv->readonly = TRUE;
 }
