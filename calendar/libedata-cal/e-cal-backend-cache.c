@@ -523,31 +523,6 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
 }
 
 /**
- * e_cal_backend_cache_remove_timezone:
- * @cache: An #ECalBackendCache object.
- * @tzid: ID of the timezone to remove.
- *
- * Removes a timezone component from the cache.
- *
- * Returns: TRUE if the timezone was removed, FALSE otherwise.
- */
-gboolean
-e_cal_backend_cache_remove_timezone (ECalBackendCache *cache,
-                                     const gchar *tzid)
-{
-	ECalBackendCachePrivate *priv;
-
-	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
-	g_return_val_if_fail (tzid != NULL, FALSE);
-
-	priv = cache->priv;
-
-	g_hash_table_remove (priv->timezones, tzid);
-
-	return e_file_cache_remove_object (E_FILE_CACHE (cache), tzid);
-}
-
-/**
  * e_cal_backend_cache_get_keys:
  * @cache: An #ECalBackendCache object.
  *

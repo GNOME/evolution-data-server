@@ -87,9 +87,6 @@ const icaltimezone *
 						 const gchar *tzid);
 gboolean	e_cal_backend_cache_put_timezone (ECalBackendCache *cache,
 						 const icaltimezone *zone);
-gboolean	e_cal_backend_cache_remove_timezone
-						(ECalBackendCache *cache,
-						 const gchar *tzid);
 gboolean	e_cal_backend_cache_put_default_timezone
 						(ECalBackendCache *cache,
 						 icaltimezone *default_zone);
