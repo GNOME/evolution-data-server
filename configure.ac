@@ -42,10 +42,13 @@ dnl Keep these two definitions in agreement.
 m4_define([gdk_minimum_version], [3.2])
 m4_define([gdk_encoded_version], [GDK_VERSION_3_2])
 
+dnl Keep these two definitions in agreement.
+m4_define([soup_minimum_version], [2.38.1])
+m4_define([soup_encoded_version], [SOUP_VERSION_2_38])
+
 m4_define([gcr_minimum_version], [3.4])
 m4_define([libsecret_minimum_version], [0.5])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
-m4_define([libsoup_minimum_version], [2.38.1])
 m4_define([libgdata_minimum_version], [0.10])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
@@ -210,9 +213,10 @@ if test "x$enable_strict" = xyes; then
 	AM_CPPFLAGS="$AM_CPPFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
 fi
 
-dnl Warn about GLib/GTK+ API usage that violates our minimum requirements.
+dnl Warn about API usage that violates our minimum requirements.
 AM_CPPFLAGS="$AM_CPPFLAGS -DGLIB_VERSION_MAX_ALLOWED=glib_encoded_version"
 AM_CPPFLAGS="$AM_CPPFLAGS -DGDK_VERSION_MAX_ALLOWED=gdk_encoded_version"
+AM_CPPFLAGS="$AM_CPPFLAGS -DSOUP_VERSION_MAX_ALLOWED=soup_encoded_version"
 
 dnl These will suppress warnings about newly-deprecated symbols.  Ideally
 dnl these settings should match our minimum requirements and we will clean
@@ -220,6 +224,7 @@ dnl up any new deprecation warnings after bumping our minimum requirements.
 dnl But if the warnings get to be overwhelming, use fixed versions instead.
 AM_CPPFLAGS="$AM_CPPFLAGS -DGLIB_VERSION_MIN_REQUIRED=glib_encoded_version"
 AM_CPPFLAGS="$AM_CPPFLAGS -DGDK_VERSION_MIN_REQUIRED=gdk_encoded_version"
+AM_CPPFLAGS="$AM_CPPFLAGS -DSOUP_VERSION_MIN_REQUIRED=soup_encoded_version"
 
 AC_SUBST(AM_CPPFLAGS)
 
@@ -359,7 +364,7 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	gmodule-2.0 >= glib_minimum_version
 	gtk+-3.0 >= gdk_minimum_version
 	libxml-2.0 >= libxml_minimum_version
-	libsoup-2.4 >= libsoup_minimum_version
+	libsoup-2.4 >= soup_minimum_version
 	libgdata >= libgdata_minimum_version])
 
 if test x$os_win32 = xno; then
@@ -1358,7 +1363,7 @@ AC_SUBST(GDATA_LIBS)
 dnl ******************************
 dnl Groupwise flags
 dnl ******************************
-LIBSOUP_REQUIRED=libsoup_minimum_version
+LIBSOUP_REQUIRED=soup_minimum_version
 AC_SUBST(LIBSOUP_REQUIRED)
 
 EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
