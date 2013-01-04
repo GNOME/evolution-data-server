@@ -4094,12 +4094,15 @@ static gboolean
 extract_timezones (ECalBackendCalDAV *cbdav,
                    icalcomponent *icomp)
 {
+	ETimezoneCache *timezone_cache;
 	GSList *timezones = NULL, *iter;
 	icaltimezone *zone;
 	GError *err = NULL;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (icomp != NULL, FALSE);
+
+	timezone_cache = E_TIMEZONE_CACHE (cbdav);
 
 	extract_objects (icomp, ICAL_VTIMEZONE_COMPONENT, &timezones, &err);
 	if (err) {
@@ -4110,7 +4113,7 @@ extract_timezones (ECalBackendCalDAV *cbdav,
 	zone = icaltimezone_new ();
 	for (iter = timezones; iter; iter = iter->next) {
 		if (icaltimezone_set_component (zone, iter->data)) {
-			e_cal_backend_store_put_timezone (cbdav->priv->store, zone);
+			e_timezone_cache_add_timezone (timezone_cache, zone);
 		} else {
 			icalcomponent_free (iter->data);
 		}
@@ -4458,10 +4461,12 @@ caldav_add_timezone (ECalBackendSync *backend,
                      const gchar *tzobj,
                      GError **error)
 {
-	icalcomponent *tz_comp;
+	ETimezoneCache *timezone_cache;
 	ECalBackendCalDAV *cbdav;
+	icalcomponent *tz_comp;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
@@ -4478,7 +4483,7 @@ caldav_add_timezone (ECalBackendSync *backend,
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
 
-		e_cal_backend_store_put_timezone (cbdav->priv->store, zone);
+		e_timezone_cache_add_timezone (timezone_cache, zone);
 
 		icaltimezone_free (zone, TRUE);
 	} else {

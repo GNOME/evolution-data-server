@@ -85,8 +85,6 @@ struct _ECalBackendStoreClass {
 	GSList *	(*get_components)	(ECalBackendStore *store);
 
 	GSList *	(*get_component_ids)	(ECalBackendStore *store);
-	gboolean	(*put_timezone)		(ECalBackendStore *store,
-						 icaltimezone *zone);
 	const icaltimezone *
 			(*get_default_timezone)	(ECalBackendStore *store);
 	gboolean	(*set_default_timezone)	(ECalBackendStore *store,
@@ -131,8 +129,6 @@ gboolean	e_cal_backend_store_has_component
 						(ECalBackendStore *store,
 						 const gchar *uid,
 						 const gchar *rid);
-gboolean	e_cal_backend_store_put_timezone (ECalBackendStore *store,
-						  icaltimezone *zone);
 const icaltimezone *
 		e_cal_backend_store_get_default_timezone
 						(ECalBackendStore *store);

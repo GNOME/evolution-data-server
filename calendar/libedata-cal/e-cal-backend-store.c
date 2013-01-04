@@ -711,24 +711,6 @@ end:
 	return ret_val;
 }
 
-static gboolean
-cal_backend_store_put_timezone (ECalBackendStore *store,
-                                icaltimezone *zone)
-{
-	ETimezoneCache *timezone_cache;
-
-	timezone_cache = e_cal_backend_store_ref_timezone_cache (store);
-	e_timezone_cache_add_timezone (timezone_cache, zone);
-	g_object_unref (timezone_cache);
-
-	store->priv->dirty = TRUE;
-
-	if (!store->priv->freeze_changes)
-		cal_backend_store_save_cache (store);
-
-	return TRUE;
-}
-
 static const icaltimezone *
 cal_backend_store_get_default_timezone (ECalBackendStore *store)
 {
@@ -952,7 +934,6 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 	class->put_component = cal_backend_store_put_component;
 	class->remove_component = cal_backend_store_remove_component;
 	class->has_component = cal_backend_store_has_component;
-	class->put_timezone = cal_backend_store_put_timezone;
 	class->get_default_timezone = cal_backend_store_get_default_timezone;
 	class->set_default_timezone = cal_backend_store_set_default_timezone;
 	class->get_components_by_uid = cal_backend_store_get_components_by_uid;
@@ -1227,26 +1208,6 @@ e_cal_backend_store_remove_component (ECalBackendStore *store,
 	}
 
 	return FALSE;
-}
-
-/**
- * e_cal_backend_store_put_timezone:
- *
- * Since: 2.28
- **/
-gboolean
-e_cal_backend_store_put_timezone (ECalBackendStore *store,
-                                  icaltimezone *zone)
-{
-	ECalBackendStoreClass *class;
-
-	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
-	g_return_val_if_fail (zone != NULL, FALSE);
-
-	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->put_timezone != NULL, FALSE);
-
-	return class->put_timezone (store, zone);
 }
 
 /**

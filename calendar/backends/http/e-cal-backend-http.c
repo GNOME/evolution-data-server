@@ -452,6 +452,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
                        GError **error)
 {
 	ECalBackendHttpPrivate *priv = backend->priv;
+	ETimezoneCache *timezone_cache;
 	SoupMessage *soup_message;
 	SoupSession *soup_session;
 	icalcomponent *icalcomp, *subcomp;
@@ -467,6 +468,8 @@ cal_backend_http_load (ECalBackendHttp *backend,
 		SoupSession *soup_session;
 		SoupMessage *soup_message;
 	} cancel_data;
+
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	soup_session = backend->priv->soup_session;
 	soup_message = cal_backend_http_new_message (backend, uri);
@@ -653,7 +656,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
 
 			zone = icaltimezone_new ();
 			icaltimezone_set_component (zone, icalcomponent_new_clone (subcomp));
-			e_cal_backend_store_put_timezone (priv->store, zone);
+			e_timezone_cache_add_timezone (timezone_cache, zone);
 
 			icaltimezone_free (zone, 1);
 		}
@@ -1018,16 +1021,15 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend,
                                  GError **error)
 {
 	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
+	ETimezoneCache *timezone_cache;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
 
 	cbhttp = (ECalBackendHttp *) backend;
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbhttp->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -1043,7 +1045,7 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend,
 
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
-	e_cal_backend_store_put_timezone (priv->store, zone);
+	e_timezone_cache_add_timezone (timezone_cache, zone);
 }
 
 /* Get_objects_in_range handler for the file backend */
