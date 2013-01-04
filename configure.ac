@@ -1360,12 +1360,6 @@ EVO_SET_COMPILE_FLAGS(GDATA, libgdata)
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
-dnl ******************************
-dnl Groupwise flags
-dnl ******************************
-LIBSOUP_REQUIRED=soup_minimum_version
-AC_SUBST(LIBSOUP_REQUIRED)
-
 EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
