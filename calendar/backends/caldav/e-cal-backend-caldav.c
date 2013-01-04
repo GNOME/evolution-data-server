@@ -3370,6 +3370,7 @@ add_timezone_cb (icalparameter *param,
 	const gchar *tzid;
 	icalcomponent *vtz_comp;
 	ForeachTzidData *f_data = (ForeachTzidData *) data;
+	ETimezoneCache *cache;
 
 	tzid = icalparameter_get_tzid (param);
 	if (!tzid)
@@ -3379,22 +3380,22 @@ add_timezone_cb (icalparameter *param,
 	if (tz)
 		return;
 
+	cache = e_cal_backend_store_ref_timezone_cache (f_data->store);
+
 	tz = icalcomponent_get_timezone (f_data->icalcomp, tzid);
-	if (!tz) {
+	if (tz == NULL)
 		tz = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-		if (!tz)
-			tz = (icaltimezone *) e_cal_backend_store_get_timezone (f_data->store, tzid);
-		if (!tz)
-			return;
-	}
+	if (tz == NULL)
+		tz = e_timezone_cache_get_timezone (cache, tzid);
 
 	vtz_comp = icaltimezone_get_component (tz);
-	if (!vtz_comp)
-		return;
 
-	icalcomponent_add_component (
-		f_data->vcal_comp,
-		icalcomponent_new_clone (vtz_comp));
+	if (tz != NULL && vtz_comp != NULL)
+		icalcomponent_add_component (
+			f_data->vcal_comp,
+			icalcomponent_new_clone (vtz_comp));
+
+	g_object_unref (cache);
 }
 
 static void
