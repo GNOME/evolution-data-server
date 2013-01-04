@@ -49,8 +49,6 @@
 
 #define ECAL_REVISION_X_PROP  "X-EVOLUTION-DATA-REVISION"
 
-G_DEFINE_TYPE (ECalBackendFile, e_cal_backend_file, E_TYPE_CAL_BACKEND_SYNC)
-
 /* Placeholder for each component and its recurrences */
 typedef struct {
 	ECalComponent *full_object;
@@ -117,6 +115,19 @@ static void e_cal_backend_file_finalize (GObject *object);
 static void free_refresh_data (ECalBackendFile *cbfile);
 
 static void bump_revision (ECalBackendFile *cbfile);
+
+static void	e_cal_backend_file_timezone_cache_init
+					(ETimezoneCacheInterface *interface);
+
+static ETimezoneCacheInterface *parent_timezone_cache_interface;
+
+G_DEFINE_TYPE_WITH_CODE (
+	ECalBackendFile,
+	e_cal_backend_file,
+	E_TYPE_CAL_BACKEND_SYNC,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_TIMEZONE_CACHE,
+		e_cal_backend_file_timezone_cache_init))
 
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
@@ -1501,16 +1512,15 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend,
                                  const gchar *tzobj,
                                  GError **error)
 {
+	ETimezoneCache *timezone_cache;
 	icalcomponent *tz_comp;
 	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
 
 	cbfile = (ECalBackendFile *) backend;
+	timezone_cache = E_TIMEZONE_CACHE (backend);
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbfile->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -1523,16 +1533,7 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend,
 
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
-
-		g_rec_mutex_lock (&priv->idle_save_rmutex);
-		if (!icalcomponent_get_timezone (priv->icalcomp,
-						 icaltimezone_get_tzid (zone))) {
-			icalcomponent_add_component (priv->icalcomp, tz_comp);
-
-			save (cbfile, TRUE);
-		}
-		g_rec_mutex_unlock (&priv->idle_save_rmutex);
-
+		e_timezone_cache_add_timezone (timezone_cache, zone);
 		icaltimezone_free (zone, 1);
 	}
 }
@@ -3341,25 +3342,6 @@ e_cal_backend_file_send_objects (ECalBackendSync *backend,
 	*modified_calobj = g_strdup (calobj);
 }
 
-/* Object initialization function for the file backend */
-static void
-e_cal_backend_file_init (ECalBackendFile *cbfile)
-{
-	cbfile->priv = E_CAL_BACKEND_FILE_GET_PRIVATE (cbfile);
-
-	cbfile->priv->file_name = g_strdup ("calendar.ics");
-
-	g_rec_mutex_init (&cbfile->priv->idle_save_rmutex);
-
-	g_mutex_init (&cbfile->priv->refresh_lock);
-
-	/*
-	 * data access is serialized via idle_save_rmutex, so locking at the
-	 * backend method level is not needed
-	 */
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), FALSE);
-}
-
 static void
 cal_backend_file_constructed (GObject *object)
 {
@@ -3424,7 +3406,69 @@ cal_backend_file_constructed (GObject *object)
 	g_object_unref (builtin_source);
 }
 
-/* Class initialization function for the file backend */
+static void
+cal_backend_file_add_cached_timezone (ETimezoneCache *cache,
+                                      icaltimezone *zone)
+{
+	ECalBackendFilePrivate *priv;
+	const gchar *tzid;
+	gboolean timezone_added = FALSE;
+
+	priv = E_CAL_BACKEND_FILE_GET_PRIVATE (cache);
+
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+
+	tzid = icaltimezone_get_tzid (zone);
+	if (icalcomponent_get_timezone (priv->icalcomp, tzid) == NULL) {
+		icalcomponent *tz_comp;
+
+		tz_comp = icaltimezone_get_component (zone);
+		tz_comp = icalcomponent_new_clone (tz_comp);
+		icalcomponent_add_component (priv->icalcomp, tz_comp);
+
+		timezone_added = TRUE;
+		save (E_CAL_BACKEND_FILE (cache), TRUE);
+	}
+
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
+
+	/* Emit the signal outside of the mutex. */
+	if (timezone_added)
+		g_signal_emit_by_name (cache, "timezone-added", zone);
+}
+
+static icaltimezone *
+cal_backend_file_get_cached_timezone (ETimezoneCache *cache,
+                                      const gchar *tzid)
+{
+	ECalBackendFilePrivate *priv;
+	icaltimezone *zone;
+
+	priv = E_CAL_BACKEND_FILE_GET_PRIVATE (cache);
+
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+	zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
+
+	if (zone != NULL)
+		return zone;
+
+	/* Chain up and let ECalBackend try to match
+	 * the TZID against a built-in icaltimezone. */
+	return parent_timezone_cache_interface->get_timezone (cache, tzid);
+}
+
+static GList *
+cal_backend_file_list_cached_timezones (ETimezoneCache *cache)
+{
+	/* XXX As of 3.7, the only e_timezone_cache_list_timezones()
+	 *     call comes from ECalBackendStore, which this backend
+	 *     does not use.  So we should never get here.  Emit a
+	 *     runtime warning so we know if this changes. */
+
+	g_return_val_if_reached (NULL);
+}
+
 static void
 e_cal_backend_file_class_init (ECalBackendFileClass *class)
 {
@@ -3459,6 +3503,35 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LOCAL;
+}
+
+static void
+e_cal_backend_file_timezone_cache_init (ETimezoneCacheInterface *interface)
+{
+	parent_timezone_cache_interface =
+		g_type_interface_peek_parent (interface);
+
+	interface->add_timezone = cal_backend_file_add_cached_timezone;
+	interface->get_timezone = cal_backend_file_get_cached_timezone;
+	interface->list_timezones = cal_backend_file_list_cached_timezones;
+}
+
+static void
+e_cal_backend_file_init (ECalBackendFile *cbfile)
+{
+	cbfile->priv = E_CAL_BACKEND_FILE_GET_PRIVATE (cbfile);
+
+	cbfile->priv->file_name = g_strdup ("calendar.ics");
+
+	g_rec_mutex_init (&cbfile->priv->idle_save_rmutex);
+
+	g_mutex_init (&cbfile->priv->refresh_lock);
+
+	/*
+	 * data access is serialized via idle_save_rmutex, so locking at the
+	 * backend method level is not needed
+	 */
+	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), FALSE);
 }
 
 void
