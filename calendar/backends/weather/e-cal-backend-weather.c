@@ -499,7 +499,8 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 
 	if (!priv->store) {
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
-		priv->store = e_cal_backend_store_new (cache_dir);
+		priv->store = e_cal_backend_store_new (
+			cache_dir, E_TIMEZONE_CACHE (backend));
 
 		if (!priv->store) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
@@ -632,17 +633,13 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend,
                                     GError **error)
 {
 	ECalBackendWeather *cbw;
-	ECalBackendWeatherPrivate *priv;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
-	const gchar *tzid;
 
 	cbw = (ECalBackendWeather *) backend;
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbw->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
 	e_return_data_cal_error_if_fail (tz_comp != NULL, InvalidObject);
