@@ -238,6 +238,13 @@ object_state_read (CamelObject *object,
 			break;
 		}
 
+		/* XXX This tag was used by the old IMAP backend.
+		 *     It may still show up in accounts that were
+		 *     migrated from IMAP to IMAPX.  Silence the
+		 *     warning. */
+		if (tag == 0x2500)
+			property_set = TRUE;
+
 		if (!property_set)
 			g_warning (
 				"Could not find a corresponding %s "
