@@ -4,6 +4,7 @@ vapi_DATA = \
 	libebook-1.2.vapi \
 	$(NULL)
 dist_vapi_DATA = \
+	libedataserver-1.2.deps \
 	libebook-1.2.deps \
 	$(NULL)
 
@@ -19,22 +20,19 @@ BUILT_SOURCES = \
 
 pkgconfigdir = ${libdir}/pkgconfig
 
-libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
+libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir  libedataserver-1.2.deps
 	$(VAPIGEN_V)$(VAPIGEN) \
+		--vapidir=. \
+		--vapidir=$(srcdir) \
+		--girdir=$(top_builddir)/libedataserver \
 		--pkg gio-2.0 \
+		--pkg libxml-2.0 \
 		--library libedataserver-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
 		$(NULL)
-	@mv $@ libedataserver-1.2.vapi.tmp
-	$(AM_V_GEN)sed \
-		'-e s/xml\.NodePtr/Xml\.Node/' \
-		'-e s/xml\.DocPtr/Xml\.Doc/' \
-		'-e s/xml\.Doc /Xml\.Doc /' \
-		< libedataserver-1.2.vapi.tmp > $@
-	@rm  libedataserver-1.2.vapi.tmp
 
-libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-1.2-custom.vala
+libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-1.2-custom.vala libebook-1.2.deps
 	$(VAPIGEN_V)$(VAPIGEN) \
 		--vapidir=. \
 		--vapidir=$(srcdir) \

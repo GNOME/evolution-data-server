@@ -1,0 +1,3 @@
+NamedParameters type="GLib.PtrArray"
+// libxml2: replace xml.NodePtr by xml.Node* used by Vala bindings
+xml_save_file.doc type="Xml.Doc*"
