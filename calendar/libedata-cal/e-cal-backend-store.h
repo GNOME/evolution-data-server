@@ -107,6 +107,7 @@ ETimezoneCache *
 		e_cal_backend_store_ref_timezone_cache
 						(ECalBackendStore *store);
 gboolean	e_cal_backend_store_load	(ECalBackendStore *store);
+void		e_cal_backend_store_save	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_is_loaded	(ECalBackendStore *store);
 gboolean	e_cal_backend_store_clean	(ECalBackendStore *store);
 ECalComponent *	e_cal_backend_store_get_component
