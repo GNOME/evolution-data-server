@@ -477,17 +477,21 @@ cal_backend_store_dispose (GObject *object)
 {
 	ECalBackendStorePrivate *priv;
 	ETimezoneCache *timezone_cache;
+	gboolean save_needed = FALSE;
 
 	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
 
-	/* Too late to save, we probably already
-	 * lost our weak ETimezoneCache reference. */
+	/* If a save is scheduled, cancel it and save now. */
 	g_mutex_lock (&priv->save_timeout_lock);
 	if (priv->save_timeout_id > 0) {
 		g_source_remove (priv->save_timeout_id);
 		priv->save_timeout_id = 0;
+		save_needed = TRUE;
 	}
 	g_mutex_unlock (&priv->save_timeout_lock);
+	if (save_needed)
+		cal_backend_store_save_cache_now (
+			E_CAL_BACKEND_STORE (object));
 
 	timezone_cache = g_weak_ref_get (&priv->timezone_cache);
 	if (timezone_cache != NULL) {
@@ -1063,40 +1067,6 @@ e_cal_backend_store_load (ECalBackendStore *store)
 	store->priv->loaded = class->load (store);
 
 	return store->priv->loaded;
-}
-
-/**
- * e_cal_backend_store_save:
- * @store: an #ECalBackendStore
- *
- * Changes to @store are normally saved to disk automatically after a
- * short delay.  However when @store is about to be finalized, changes
- * should be saved to disk immediately so they are not lost.
- *
- * This function cancels the automatic save delay and saves changes to
- * disk immediately.  If no changes have been made since the last save,
- * the function does nothing.
- *
- * Since: 3.8
- **/
-void
-e_cal_backend_store_save (ECalBackendStore *store)
-{
-	gboolean save_needed = FALSE;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
-
-	/* If a save is scheduled, cancel it and save now. */
-	g_mutex_lock (&store->priv->save_timeout_lock);
-	if (store->priv->save_timeout_id > 0) {
-		g_source_remove (store->priv->save_timeout_id);
-		store->priv->save_timeout_id = 0;
-		save_needed = TRUE;
-	}
-	g_mutex_unlock (&store->priv->save_timeout_lock);
-
-	if (save_needed)
-		cal_backend_store_save_cache_now (store);
 }
 
 /**

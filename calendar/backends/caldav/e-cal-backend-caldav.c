@@ -4966,7 +4966,6 @@ e_cal_backend_caldav_dispose (GObject *object)
 	g_free (priv->schedule_outbox_url);
 
 	if (priv->store != NULL) {
-		e_cal_backend_store_save (priv->store);
 		g_object_unref (priv->store);
 	}
 

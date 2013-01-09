@@ -130,7 +130,6 @@ e_cal_backend_store_new
 e_cal_backend_store_get_path
 e_cal_backend_store_ref_timezone_cache
 e_cal_backend_store_load
-e_cal_backend_store_save
 e_cal_backend_store_is_loaded
 e_cal_backend_store_clean
 e_cal_backend_store_get_component
