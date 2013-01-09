@@ -31,12 +31,15 @@
  * All #EBackend instances are created by an #EBackendFactory.
  **/
 
-#include "e-backend.h"
-
 #include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include <gio/gio.h>
+
+#include <libedataserver/libedataserver.h>
+
+#include "e-backend.h"
+#include "e-user-prompter.h"
 
 #define E_BACKEND_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -46,6 +49,7 @@ typedef struct _AsyncContext AsyncContext;
 
 struct _EBackendPrivate {
 	ESource *source;
+	EUserPrompter *prompter;
 	gboolean online;
 };
 
@@ -56,7 +60,8 @@ struct _AsyncContext {
 enum {
 	PROP_0,
 	PROP_ONLINE,
-	PROP_SOURCE
+	PROP_SOURCE,
+	PROP_USER_PROMPTER
 };
 
 G_DEFINE_ABSTRACT_TYPE (EBackend, e_backend, G_TYPE_OBJECT)
@@ -121,6 +126,12 @@ backend_get_property (GObject *object,
 				value, e_backend_get_source (
 				E_BACKEND (object)));
 			return;
+
+		case PROP_USER_PROMPTER:
+			g_value_set_object (
+				value, e_backend_get_user_prompter (
+				E_BACKEND (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -136,6 +147,11 @@ backend_dispose (GObject *object)
 	if (priv->source != NULL) {
 		g_object_unref (priv->source);
 		priv->source = NULL;
+	}
+
+	if (priv->prompter) {
+		g_object_unref (priv->prompter);
+		priv->prompter = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -280,12 +296,24 @@ e_backend_class_init (EBackendClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USER_PROMPTER,
+		g_param_spec_object (
+			"user-prompter",
+			"User Prompter",
+			"User prompter instance",
+			E_TYPE_USER_PROMPTER,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 e_backend_init (EBackend *backend)
 {
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
+	backend->priv->prompter = e_user_prompter_new ();
 }
 
 /**
@@ -461,3 +489,185 @@ e_backend_authenticate_finish (EBackend *backend,
 	return class->authenticate_finish (backend, result, error);
 }
 
+/**
+ * e_backend_get_user_prompter:
+ * @backend: an #EBackend
+ *
+ * Gets an instance of #EUserPrompter, associated with this @backend.
+ * The instance is owned by the @backend.
+ *
+ * Returns: (transfer-none): an #EUserPrompter instance
+ *
+ * Since: 3.8
+ **/
+EUserPrompter *
+e_backend_get_user_prompter (EBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
+
+	return backend->priv->prompter;
+}
+
+/**
+ * e_backend_trust_prompt_sync:
+ * @backend: an #EBackend
+ * @parameters: an #ENamedParameters with values for the trust prompt
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Asks a user a trust prompt with given @parameters, and returns what
+ * user responded. This blocks until the response is delivered.
+ *
+ * Returns: an #ETrustPromptResponse what user responded
+ *
+ * Note: The function can return also %E_TRUST_PROMPT_RESPONSE_UNKNOWN,
+ *    it's on error or if user closes the trust prompt dialog with other
+ *    than the offered buttons. Usual behaviour in such case is to treat
+ *    it as a temporary reject.
+ *
+ * Since: 3.8
+ **/
+ETrustPromptResponse
+e_backend_trust_prompt_sync (EBackend *backend,
+			     const ENamedParameters *parameters,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	EUserPrompter *prompter;
+	gint response;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+
+	prompter = e_backend_get_user_prompter (backend);
+	g_return_val_if_fail (prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+
+	/* Just a workaround for libsoup bug about not providing connection certificate
+	   on failed requests. This is fixed in libsoup since 2.41.3, but let's have this
+	   for now. I wrote it here to avoid code duplication, and once the libsoup 2.42.0
+	   will be out all this code, together with other SOUP_CHECK_VERSION usages also
+	   in evolution, will be removed.
+	*/
+	if (!e_named_parameters_get (parameters, "cert")) {
+		GSList *button_captions = NULL;
+		const gchar *markup;
+		gchar *tmp = NULL;
+
+		button_captions = g_slist_append (button_captions, _("_Reject"));
+		button_captions = g_slist_append (button_captions, _("Accept _Temporarily"));
+		button_captions = g_slist_append (button_captions, _("_Accept Permanently"));
+
+		markup = e_named_parameters_get (parameters, "markup");
+		if (!markup) {
+			gchar *bhost;
+
+			bhost = g_strconcat ("<b>", e_named_parameters_get (parameters, "host"), "</b>", NULL);
+			tmp = g_strdup_printf (_("SSL certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
+			g_free (bhost);
+
+			markup = tmp;
+		}
+
+		response = e_user_prompter_prompt_sync (prompter, "question", _("Certificate trust..."),
+			markup, NULL, TRUE, button_captions, cancellable, NULL);
+
+		if (response == 1)
+			response = 2;
+		else if (response == 2)
+			response = 1;
+
+		g_slist_free (button_captions);
+		g_free (tmp);
+	} else {
+		response = e_user_prompter_extension_prompt_sync (prompter, "ETrustPrompt::trust-prompt", parameters, NULL, cancellable, error);
+	}
+
+	if (response == 0)
+		return E_TRUST_PROMPT_RESPONSE_REJECT;
+	if (response == 1)
+		return E_TRUST_PROMPT_RESPONSE_ACCEPT;
+	if (response == 2)
+		return E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY;
+	if (response == -1)
+		return E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
+
+	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
+}
+
+/**
+ * e_backend_trust_prompt:
+ * @backend: an #EBackend
+ * @parameters: an #ENamedParameters with values for the trust prompt
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Initiates a user trust prompt with given @parameters.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_backend_trust_prompt_finish() to get the result of the operation.
+ *
+ * Since: 3.8
+ **/
+void
+e_backend_trust_prompt (EBackend *backend,
+			const ENamedParameters *parameters,
+			GCancellable *cancellable,
+			GAsyncReadyCallback callback,
+			gpointer user_data)
+{
+	EUserPrompter *prompter;
+
+	g_return_if_fail (E_IS_BACKEND (backend));
+	g_return_if_fail (parameters != NULL);
+
+	prompter = e_backend_get_user_prompter (backend);
+	g_return_if_fail (prompter != NULL);
+
+	e_user_prompter_extension_prompt (prompter, "ETrustPrompt::trust-prompt", parameters, cancellable, callback, user_data);
+}
+
+/**
+ * e_backend_trust_prompt_finish:
+ * @backend: an #EBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_backend_trust_prompt().  If
+ * an error occurred, the function will set @error and return %E_TRUST_PROMPT_RESPONSE_UNKNOWN.
+ *
+ * Returns: an #ETrustPromptResponse what user responded
+ *
+ * Note: The function can return also %E_TRUST_PROMPT_RESPONSE_UNKNOWN,
+ *    it's on error or if user closes the trust prompt dialog with other
+ *    than the offered buttons. Usual behaviour in such case is to treat
+ *    it as a temporary reject.
+ *
+ * Since: 3.8
+ **/
+ETrustPromptResponse
+e_backend_trust_prompt_finish (EBackend *backend,
+			       GAsyncResult *result,
+			       GError **error)
+{
+	EUserPrompter *prompter;
+	gint response;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+
+	prompter = e_backend_get_user_prompter (backend);
+	g_return_val_if_fail (prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+
+	response = e_user_prompter_extension_prompt_finish (prompter, result, NULL, error);
+
+	if (response == 0)
+		return E_TRUST_PROMPT_RESPONSE_REJECT;
+	if (response == 1)
+		return E_TRUST_PROMPT_RESPONSE_ACCEPT;
+	if (response == 2)
+		return E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY;
+	if (response == -1)
+		return E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
+
+	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
+}

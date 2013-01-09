@@ -141,9 +141,52 @@ get_closure (EDataBookView *book_view)
 	return g_object_get_data (G_OBJECT (book_view), WEBDAV_CLOSURE_NAME);
 }
 
+static guint
+send_and_handle_ssl (EBookBackendWebdav *webdav,
+		     SoupMessage *message,
+		     GCancellable *cancellable)
+{
+	guint status_code;
+
+	status_code = soup_session_send_message (webdav->priv->session, message);
+	if (status_code == SOUP_STATUS_SSL_FAILED) {
+		ESource *source;
+		ESourceWebdav *extension;
+		ESourceRegistry *registry;
+		EBackend *backend;
+		ETrustPromptResponse response;
+		ENamedParameters *parameters;
+
+		backend = E_BACKEND (webdav);
+		source = e_backend_get_source (backend);
+		registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+		parameters = e_named_parameters_new ();
+
+		response = e_source_webdav_prepare_ssl_trust_prompt (extension, message, registry, parameters);
+		if (response == E_TRUST_PROMPT_RESPONSE_UNKNOWN) {
+			response = e_backend_trust_prompt_sync (backend, parameters, cancellable, NULL);
+			if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN)
+				e_source_webdav_store_ssl_trust_prompt (extension, message, response);
+		}
+
+		e_named_parameters_free (parameters);
+
+		if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT ||
+		    response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
+			g_object_set (webdav->priv->session, SOUP_SESSION_SSL_STRICT, FALSE, NULL);
+			status_code = soup_session_send_message (webdav->priv->session, message);
+		}
+	}
+
+	return status_code;
+}
+
 static EContact *
 download_contact (EBookBackendWebdav *webdav,
-                  const gchar *uri)
+                  const gchar *uri,
+		  GCancellable *cancellable)
 {
 	SoupMessage *message;
 	const gchar  *etag;
@@ -154,7 +197,7 @@ download_contact (EBookBackendWebdav *webdav,
 	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
 	soup_message_headers_append (message->request_headers, "Connection", "close");
 
-	status = soup_session_send_message (webdav->priv->session, message);
+	status = send_and_handle_ssl (webdav, message, cancellable);
 	if (status != 200) {
 		g_warning ("Couldn't load '%s' (http status %d)", uri, status);
 		g_object_unref (message);
@@ -194,7 +237,8 @@ download_contact (EBookBackendWebdav *webdav,
 static guint
 upload_contact (EBookBackendWebdav *webdav,
                 EContact *contact,
-                gchar **reason)
+                gchar **reason,
+		GCancellable *cancellable)
 {
 	ESource     *source;
 	ESourceWebdav *webdav_extension;
@@ -250,7 +294,7 @@ upload_contact (EBookBackendWebdav *webdav,
 		message, "text/vcard", SOUP_MEMORY_TEMPORARY,
 		request, strlen (request));
 
-	status   = soup_session_send_message (webdav->priv->session, message);
+	status   = send_and_handle_ssl (webdav, message, cancellable);
 	new_etag = soup_message_headers_get_list (message->response_headers, "ETag");
 
 	redir_uri = soup_message_headers_get_list (message->response_headers, "Location");
@@ -349,7 +393,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 	/* kill revision field (might have been set by some other backend) */
 	e_contact_set (contact, E_CONTACT_REV, NULL);
 
-	status = upload_contact (webdav, contact, &status_reason);
+	status = upload_contact (webdav, contact, &status_reason, cancellable);
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
@@ -377,7 +421,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 
 		g_warning ("Server didn't return etag for new address resource");
 		new_uid = e_contact_get_const (contact, E_CONTACT_UID);
-		new_contact = download_contact (webdav, new_uid);
+		new_contact = download_contact (webdav, new_uid, cancellable);
 		g_object_unref (contact);
 
 		if (new_contact == NULL) {
@@ -403,7 +447,8 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 
 static guint
 delete_contact (EBookBackendWebdav *webdav,
-                const gchar *uri)
+                const gchar *uri,
+		GCancellable *cancellable)
 {
 	SoupMessage *message;
 	guint        status;
@@ -412,7 +457,7 @@ delete_contact (EBookBackendWebdav *webdav,
 	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
 	soup_message_headers_append (message->request_headers, "Connection", "close");
 
-	status = soup_session_send_message (webdav->priv->session, message);
+	status = send_and_handle_ssl (webdav, message, cancellable);
 	g_object_unref (message);
 
 	return status;
@@ -449,7 +494,7 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 		return;
 	}
 
-	status = delete_contact (webdav, uid);
+	status = delete_contact (webdav, uid, cancellable);
 	if (status != 204) {
 		if (status == 401 || status == 407) {
 			e_data_book_respond_remove_contacts (
@@ -512,7 +557,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 
 	/* modify contact */
 	contact = e_contact_new_from_vcard (vcard);
-	status = upload_contact (webdav, contact, &status_reason);
+	status = upload_contact (webdav, contact, &status_reason, cancellable);
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
@@ -555,7 +600,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 		EContact *new_contact;
 
 		g_warning ("Server didn't return etag for modified address resource");
-		new_contact = download_contact (webdav, uid);
+		new_contact = download_contact (webdav, uid, cancellable);
 		if (new_contact != NULL) {
 			contact = new_contact;
 		}
@@ -586,7 +631,7 @@ e_book_backend_webdav_get_contact (EBookBackend *backend,
 		contact = e_book_backend_cache_get_contact (priv->cache, uid);
 		g_mutex_unlock (&priv->cache_lock);
 	} else {
-		contact = download_contact (webdav, uid);
+		contact = download_contact (webdav, uid, cancellable);
 		/* update cache as we possibly have changes */
 		if (contact != NULL) {
 			g_mutex_lock (&priv->cache_lock);
@@ -743,7 +788,8 @@ parse_propfind_response (xmlTextReaderPtr reader)
 }
 
 static SoupMessage *
-send_propfind (EBookBackendWebdav *webdav)
+send_propfind (EBookBackendWebdav *webdav,
+	       GCancellable *cancellable)
 {
 	SoupMessage               *message;
 	EBookBackendWebdavPrivate *priv    = webdav->priv;
@@ -759,7 +805,7 @@ send_propfind (EBookBackendWebdav *webdav)
 		message, "text/xml", SOUP_MEMORY_TEMPORARY,
 		(gchar *) request, strlen (request));
 
-	soup_session_send_message (priv->session, message);
+	send_and_handle_ssl (webdav, message, cancellable);
 
 	return message;
 }
@@ -835,7 +881,8 @@ xp_object_get_status (xmlXPathObjectPtr result)
 
 static gboolean
 check_addressbook_changed (EBookBackendWebdav *webdav,
-                           gchar **new_ctag)
+                           gchar **new_ctag,
+			   GCancellable *cancellable)
 {
 	gboolean res = TRUE;
 	const gchar *request = "<?xml version=\"1.0\" encoding=\"utf-8\"?><propfind xmlns=\"DAV:\"><prop><getctag/></prop></propfind>";
@@ -861,7 +908,7 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 	soup_message_headers_append (message->request_headers, "Connection", "close");
 	soup_message_headers_append (message->request_headers, "Depth", "0");
 	soup_message_set_request (message, "text/xml", SOUP_MEMORY_TEMPORARY, (gchar *) request, strlen (request));
-	soup_session_send_message (priv->session, message);
+	send_and_handle_ssl (webdav, message, cancellable);
 
 	if (message->status_code == 207 && message->response_body) {
 		xmlDocPtr xml;
@@ -916,7 +963,8 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 static GError *
 download_contacts (EBookBackendWebdav *webdav,
                    EFlag *running,
-                  EDataBookView *book_view)
+		   EDataBookView *book_view,
+		   GCancellable *cancellable)
 {
 	EBookBackendWebdavPrivate *priv = webdav->priv;
 	EBookBackend		  *book_backend;
@@ -932,7 +980,7 @@ download_contacts (EBookBackendWebdav *webdav,
 
 	g_mutex_lock (&priv->update_lock);
 
-	if (!check_addressbook_changed (webdav, &new_ctag)) {
+	if (!check_addressbook_changed (webdav, &new_ctag, cancellable)) {
 		g_free (new_ctag);
 		g_mutex_unlock (&priv->update_lock);
 		return EDB_ERROR (SUCCESS);
@@ -945,7 +993,7 @@ download_contacts (EBookBackendWebdav *webdav,
 				_("Loading Addressbook summary..."));
 	}
 
-	message = send_propfind (webdav);
+	message = send_propfind (webdav, cancellable);
 	status  = message->status_code;
 
 	if (status == 401 || status == 407) {
@@ -1047,7 +1095,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		/* download contact if it is not cached or its ETag changed */
 		if (contact == NULL || etag == NULL ||
 		    strcmp (e_contact_get_const (contact, E_CONTACT_REV), etag) != 0) {
-			contact = download_contact (webdav, complete_uri);
+			contact = download_contact (webdav, complete_uri, cancellable);
 			if (contact != NULL) {
 				g_mutex_lock (&priv->cache_lock);
 				if (e_book_backend_cache_remove_contact (priv->cache, complete_uri))
@@ -1103,7 +1151,7 @@ book_view_thread (gpointer data)
 	 * it's stopped */
 	g_object_ref (book_view);
 
-	error = download_contacts (webdav, closure->running, book_view);
+	error = download_contacts (webdav, closure->running, book_view, NULL);
 
 	g_object_unref (book_view);
 
@@ -1191,7 +1239,7 @@ e_book_backend_webdav_get_contact_list (EBookBackend *backend,
 
 	if (e_backend_get_online (E_BACKEND (backend))) {
 		/* make sure the cache is up to date */
-		GError *error = download_contacts (webdav, NULL, NULL);
+		GError *error = download_contacts (webdav, NULL, NULL, cancellable);
 
 		if (error) {
 			e_data_book_respond_get_contact_list (book, opid, error, NULL);
@@ -1235,7 +1283,7 @@ e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend,
 
 	if (e_backend_get_online (E_BACKEND (backend))) {
 		/* make sure the cache is up to date */
-		GError *error = download_contacts (webdav, NULL, NULL);
+		GError *error = download_contacts (webdav, NULL, NULL, cancellable);
 
 		if (error) {
 			e_data_book_respond_get_contact_list_uids (book, opid, error, NULL);
@@ -1372,13 +1420,13 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	g_mutex_unlock (&priv->cache_lock);
 
 	session = soup_session_sync_new ();
-	g_object_set (session, SOUP_SESSION_TIMEOUT, 90, NULL);
+	g_object_set (session,
+		SOUP_SESSION_TIMEOUT, 90,
+		SOUP_SESSION_SSL_STRICT, TRUE,
+		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
+		NULL);
 
-	g_object_bind_property (
-		webdav_extension, "ignore-invalid-cert",
-		session, SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
-		G_BINDING_SYNC_CREATE |
-		G_BINDING_INVERT_BOOLEAN);
+	e_source_webdav_unset_temporary_ssl_trust (webdav_extension);
 
 	g_signal_connect (
 		session, "authenticate",
@@ -1514,7 +1562,7 @@ book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
 	webdav->priv->password = g_strdup (password->str);
 
 	/* Send a PROPFIND to test whether user/password is correct. */
-	message = send_propfind (webdav);
+	message = send_propfind (webdav, cancellable);
 
 	switch (message->status_code) {
 		case SOUP_STATUS_OK:

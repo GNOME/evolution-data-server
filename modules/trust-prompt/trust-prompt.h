@@ -36,6 +36,7 @@ gboolean
 trust_prompt_show (EUserPrompterServerExtension *extension,
 		   gint prompt_id,
 		   const gchar *host,
+		   const gchar *markup,
 		   const CERTCertificate *pcert,
 		   const gchar *cert_fingerprint,
 		   const gchar *reason,

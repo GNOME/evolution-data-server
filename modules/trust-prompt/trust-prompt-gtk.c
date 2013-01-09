@@ -136,6 +136,7 @@ gboolean
 trust_prompt_show (EUserPrompterServerExtension *extension,
 		   gint prompt_id,
 		   const gchar *host,
+		   const gchar *markup,
 		   const CERTCertificate *pcert,
 		   const gchar *cert_fingerprint,
 		   const gchar *reason,
@@ -143,7 +144,7 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 {
 	GtkWidget *dialog, *widget;
 	GtkGrid *grid;
-	gchar *tmp, *info, *issuer, *subject;
+	gchar *tmp, *issuer, *subject, *head;
 	GSList *issuers, *iter;
 	CERTCertificate *cert;
 	gint row = 0;
@@ -189,13 +190,23 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 		NULL);
 	gtk_grid_attach (grid, widget, 0, row, 1, 3);
 
-	info = g_strconcat ("<b>", host, "</b>", NULL);
-	tmp = g_strdup_printf (_("SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n\n"
-				    "Detailed information about the certificate:"), info);
-	g_free (info);
+	tmp = NULL;
+	if (!markup || !*markup) {
+		gchar *bhost;
+
+		bhost = g_strconcat ("<b>", host, "</b>", NULL);
+		tmp = g_strdup_printf (_("SSL certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
+		g_free (bhost);
+
+		markup = tmp;
+	}
+
+	head = g_strdup_printf ("%s\n\n%s", markup, _("Detailed information about the certificate:"));
+
 	widget = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (widget), tmp);
+	gtk_label_set_markup (GTK_LABEL (widget), head);
 	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.0);
+	g_free (head);
 	g_free (tmp);
 
 	gtk_grid_attach (grid, widget, 1, row, 2, 1);

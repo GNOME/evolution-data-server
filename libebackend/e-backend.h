@@ -46,6 +46,9 @@
 
 G_BEGIN_DECLS
 
+/* forward declaration */
+struct _EUserPrompter;
+
 typedef struct _EBackend EBackend;
 typedef struct _EBackendClass EBackendClass;
 typedef struct _EBackendPrivate EBackendPrivate;
@@ -98,6 +101,22 @@ void		e_backend_authenticate		(EBackend *backend,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 gboolean	e_backend_authenticate_finish	(EBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+struct _EUserPrompter *
+		e_backend_get_user_prompter	(EBackend *backend);
+ETrustPromptResponse
+		e_backend_trust_prompt_sync	(EBackend *backend,
+						 const ENamedParameters *parameters,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_backend_trust_prompt		(EBackend *backend,
+						 const ENamedParameters *parameters,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+ETrustPromptResponse
+		e_backend_trust_prompt_finish	(EBackend *backend,
 						 GAsyncResult *result,
 						 GError **error);
 

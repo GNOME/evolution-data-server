@@ -80,10 +80,10 @@ prompt_user_show (EUserPrompterServer *server,
 			ntype = GTK_MESSAGE_ERROR;
 	}
 
-	if (use_markup)
-		message = gtk_message_dialog_new_with_markup (NULL, 0, ntype, GTK_BUTTONS_NONE,
-			"%s", primary_text ? primary_text : "");
-	else
+	if (use_markup) {
+		message = gtk_message_dialog_new_with_markup (NULL, 0, ntype, GTK_BUTTONS_NONE, "%s", "");
+		gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (message), primary_text ? primary_text : "");
+	} else
 		message = gtk_message_dialog_new (NULL, 0, ntype, GTK_BUTTONS_NONE,
 			"%s", primary_text ? primary_text : "");
 

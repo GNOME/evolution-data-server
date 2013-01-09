@@ -140,6 +140,7 @@ e_module_unload (GTypeModule *type_module)
 /* ETrustPrompt::trust-prompt
    The dialog expects these parameters:
       "host" - host from which the certificate is received
+      "markup" - markup for the trust prompt, if not set, then "SSL certificate for '<b>host</b>' is not trusted. Do you wish to accept it?" is used
       "certificate" - a base64-encoded DER certificate, for which ask on trust
       "certificate-errors" - a hexa-decimal integer (as string) corresponding to GTlsCertificateFlags
 
@@ -287,7 +288,7 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 				gint prompt_id,
 				const ENamedParameters *parameters)
 {
-	const gchar *host, *base64_cert, *cert_errs_str;
+	const gchar *host, *markup, *base64_cert, *cert_errs_str;
 	gchar *fingerprint, *reason;
 	gint64 cert_errs;
 	CERTCertDBHandle *certdb;
@@ -301,6 +302,7 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	g_return_val_if_fail (parameters != NULL, FALSE);
 
 	host = e_named_parameters_get (parameters, "host");
+	markup = e_named_parameters_get (parameters, "markup");
 	base64_cert = e_named_parameters_get (parameters, "certificate");
 	cert_errs_str = e_named_parameters_get (parameters, "certificate-errors");
 
@@ -323,7 +325,7 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	reason = cert_errors_to_reason (cert_errs);
 	fingerprint = cert_fingerprint (cert);
 
-	success = trust_prompt_show (extension, prompt_id, host, cert, fingerprint, reason, issuers);
+	success = trust_prompt_show (extension, prompt_id, host, markup, cert, fingerprint, reason, issuers);
 
 	trust_prompt_free_certificate (cert);
 	g_slist_free_full (issuers, trust_prompt_free_certificate);

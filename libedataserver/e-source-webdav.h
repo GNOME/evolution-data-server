@@ -57,6 +57,10 @@
 
 G_BEGIN_DECLS
 
+/* forward declaration */
+struct _ENamedParameters;
+struct _ESourceRegistry;
+
 typedef struct _ESourceWebdav ESourceWebdav;
 typedef struct _ESourceWebdavClass ESourceWebdavClass;
 typedef struct _ESourceWebdavPrivate ESourceWebdavPrivate;
@@ -77,6 +81,14 @@ struct _ESourceWebdav {
 struct _ESourceWebdavClass {
 	ESourceExtensionClass parent_class;
 };
+
+typedef enum {
+	E_TRUST_PROMPT_RESPONSE_UNKNOWN			= -1,
+	E_TRUST_PROMPT_RESPONSE_REJECT			=  0,
+	E_TRUST_PROMPT_RESPONSE_ACCEPT			=  1,
+	E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY	=  2,
+	E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY	=  3
+} ETrustPromptResponse;
 
 GType		e_source_webdav_get_type	(void) G_GNUC_CONST;
 gboolean	e_source_webdav_get_avoid_ifmatch
@@ -103,11 +115,6 @@ gchar *		e_source_webdav_dup_email_address
 void		e_source_webdav_set_email_address
 						(ESourceWebdav *extension,
 						 const gchar *email_address);
-gboolean	e_source_webdav_get_ignore_invalid_cert
-						(ESourceWebdav *extension);
-void		e_source_webdav_set_ignore_invalid_cert
-						(ESourceWebdav *extension,
-						 gboolean ignore_invalid_cert);
 const gchar *	e_source_webdav_get_resource_path
 						(ESourceWebdav *extension);
 gchar *		e_source_webdav_dup_resource_path
@@ -122,9 +129,25 @@ gchar *		e_source_webdav_dup_resource_query
 void		e_source_webdav_set_resource_query
 						(ESourceWebdav *extension,
 						 const gchar *resource_query);
+const gchar *	e_source_webdav_get_ssl_trust	(ESourceWebdav *extension);
+gchar *		e_source_webdav_dup_ssl_trust	(ESourceWebdav *extension);
+void		e_source_webdav_set_ssl_trust	(ESourceWebdav *extension,
+						 const gchar *ssl_trust);
 SoupURI *	e_source_webdav_dup_soup_uri	(ESourceWebdav *extension);
 void		e_source_webdav_set_soup_uri	(ESourceWebdav *extension,
 						 SoupURI *soup_uri);
+ETrustPromptResponse
+		e_source_webdav_prepare_ssl_trust_prompt
+						(ESourceWebdav *extension,
+						 SoupMessage *message,
+						 struct _ESourceRegistry *registry,
+						 struct _ENamedParameters *parameters);
+void		e_source_webdav_store_ssl_trust_prompt
+						(ESourceWebdav *extension,
+						 SoupMessage *message,
+						 ETrustPromptResponse response);
+void		e_source_webdav_unset_temporary_ssl_trust
+						(ESourceWebdav *extension);
 
 G_END_DECLS
 
