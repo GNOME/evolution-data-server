@@ -119,6 +119,12 @@ e_cal_backend_http_dispose (GObject *object)
 		priv->reload_timeout_id = 0;
 	}
 
+	if (priv->store) {
+		e_cal_backend_store_save (priv->store);
+		g_object_unref (priv->store);
+		priv->store = NULL;
+	}
+
 	if (priv->soup_session) {
 		soup_session_abort (priv->soup_session);
 		g_object_unref (priv->soup_session);
@@ -142,13 +148,6 @@ e_cal_backend_http_finalize (GObject *object)
 	ECalBackendHttpPrivate *priv;
 
 	priv = E_CAL_BACKEND_HTTP_GET_PRIVATE (object);
-
-	/* Clean up */
-
-	if (priv->store) {
-		g_object_unref (priv->store);
-		priv->store = NULL;
-	}
 
 	g_free (priv->uri);
 	g_free (priv->password);

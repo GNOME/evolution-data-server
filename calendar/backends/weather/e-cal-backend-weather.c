@@ -758,7 +758,34 @@ e_cal_backend_weather_notify_online_cb (ECalBackend *backend,
 	}
 }
 
-/* Finalize handler for the weather backend */
+static void
+e_cal_backend_weather_dispose (GObject *object)
+{
+	ECalBackendWeatherPrivate *priv;
+
+	priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (object);
+
+	if (priv->reload_timeout_id > 0) {
+		g_source_remove (priv->reload_timeout_id);
+		priv->reload_timeout_id = 0;
+	}
+
+	if (priv->begin_retrival_id > 0) {
+		g_source_remove (priv->begin_retrival_id);
+		priv->begin_retrival = 0;
+	}
+
+	if (priv->store != NULL) {
+		e_cal_backend_store_save (priv->store);
+		g_object_unref (priv->store);
+		priv->store = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->
+		dispose (object);
+}
+
 static void
 e_cal_backend_weather_finalize (GObject *object)
 {
@@ -766,21 +793,11 @@ e_cal_backend_weather_finalize (GObject *object)
 
 	priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (object);
 
-	if (priv->reload_timeout_id)
-		g_source_remove (priv->reload_timeout_id);
-
-	if (priv->begin_retrival_id)
-		g_source_remove (priv->begin_retrival_id);
-
-	if (priv->store) {
-		g_object_unref (priv->store);
-		priv->store = NULL;
-	}
-
 	g_free (priv->city);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->
+		finalize (object);
 }
 
 /* Object initialization function for the weather backend */
@@ -810,6 +827,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
 
+	object_class->dispose = e_cal_backend_weather_dispose;
 	object_class->finalize = e_cal_backend_weather_finalize;
 
 	sync_class->get_backend_property_sync	= e_cal_backend_weather_get_backend_property;
