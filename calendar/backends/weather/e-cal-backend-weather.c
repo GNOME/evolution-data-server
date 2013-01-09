@@ -772,7 +772,7 @@ e_cal_backend_weather_dispose (GObject *object)
 
 	if (priv->begin_retrival_id > 0) {
 		g_source_remove (priv->begin_retrival_id);
-		priv->begin_retrival = 0;
+		priv->begin_retrival_id = 0;
 	}
 
 	if (priv->store != NULL) {
