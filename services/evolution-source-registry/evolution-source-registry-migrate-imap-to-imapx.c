@@ -35,6 +35,7 @@ evolution_source_registry_migrate_imap_to_imapx (ESourceRegistryServer *server,
 	GHashTable *settings;
 	const gchar *group_name;
 	gboolean backend_is_imap;
+	gchar *trash_name;
 	gchar *cache_dir;
 	gchar *trash_dir;
 	gchar *value;
@@ -127,8 +128,13 @@ evolution_source_registry_migrate_imap_to_imapx (ESourceRegistryServer *server,
 
 	cache_dir = g_build_filename (
 		e_get_user_cache_dir (), "mail", uid, NULL);
+
+	/* Alter the name of the target directory so
+	 * the cache reaper module does not restore it. */
+	trash_name = g_strdup_printf ("%s_old_imap", uid);
 	trash_dir = g_build_filename (
-		e_get_user_cache_dir (), "mail", "trash", uid, NULL);
+		e_get_user_cache_dir (), "mail", "trash", trash_name, NULL);
+	g_free (trash_name);
 
 	if (g_rename (cache_dir, trash_dir) == -1) {
 		g_warning (
