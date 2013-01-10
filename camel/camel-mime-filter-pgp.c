@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "camel-mime-filter-pgp.h"
+#include "camel-mime-utils.h"
 
 #define CAMEL_MIME_FILTER_PGP_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -101,6 +102,9 @@ mime_filter_pgp_run (CamelMimeFilter *mime_filter,
 
 		len = inptr - start;
 		if (len > 0 && inptr[-1] == '\r')
+			len--;
+
+		while (len > 0 && camel_mime_is_lwsp (start[len - 1]))
 			len--;
 
 		inptr++;
