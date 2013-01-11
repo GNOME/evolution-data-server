@@ -69,6 +69,7 @@ struct _EBookBackendFilePrivate {
 	gchar     *photo_dirname;
 	gchar     *revision;
 	gint       rev_counter;
+	GRecMutex  revision_mutex;
 
 	EBookBackendSqliteDB *sqlitedb;
 };
@@ -616,6 +617,8 @@ e_book_backend_file_bump_revision (EBookBackendFile *bf)
 {
 	GError *error = NULL;
 
+	g_rec_mutex_lock (&bf->priv->revision_mutex);
+
 	g_free (bf->priv->revision);
 	bf->priv->revision = e_book_backend_file_new_revision (bf);
 
@@ -632,12 +635,16 @@ e_book_backend_file_bump_revision (EBookBackendFile *bf)
 	e_book_backend_notify_property_changed (E_BOOK_BACKEND (bf),
 						BOOK_BACKEND_PROPERTY_REVISION,
 						bf->priv->revision);
+
+	g_rec_mutex_unlock (&bf->priv->revision_mutex);
 }
 
 static void
 e_book_backend_file_load_revision (EBookBackendFile *bf)
 {
 	GError *error = NULL;
+
+	g_rec_mutex_lock (&bf->priv->revision_mutex);
 
 	if (!e_book_backend_sqlitedb_get_revision (bf->priv->sqlitedb,
 						   SQLITEDB_FOLDER_ID,
@@ -650,6 +657,8 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 	} else if (bf->priv->revision == NULL) {
 		e_book_backend_file_bump_revision (bf);
 	}
+
+	g_rec_mutex_unlock (&bf->priv->revision_mutex);
 }
 
 static void
@@ -1424,9 +1433,11 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), FALSE);
 	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL /* Success */);
 
+	g_rec_mutex_lock (&bf->priv->revision_mutex);
 	e_book_backend_notify_property_changed (E_BOOK_BACKEND (backend),
 						BOOK_BACKEND_PROPERTY_REVISION,
 						bf->priv->revision);
+	g_rec_mutex_unlock (&bf->priv->revision_mutex);
 }
 
 static gboolean
@@ -1459,7 +1470,9 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 		*prop_value = e_data_book_string_slist_to_comma_string (fields);
 		g_slist_free (fields);
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REVISION)) {
+		g_rec_mutex_lock (&bf->priv->revision_mutex);
 		*prop_value = g_strdup (bf->priv->revision);
+		g_rec_mutex_unlock (&bf->priv->revision_mutex);
 	} else {
 		processed = FALSE;
 	}
@@ -1564,6 +1577,7 @@ e_book_backend_file_finalize (GObject *object)
 
 	g_free (priv->photo_dirname);
 	g_free (priv->revision);
+	g_rec_mutex_clear (&priv->revision_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->finalize (object);
@@ -1604,6 +1618,8 @@ static void
 e_book_backend_file_init (EBookBackendFile *backend)
 {
 	backend->priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
+
+	g_rec_mutex_init (&backend->priv->revision_mutex);
 
 	g_signal_connect (
 		backend, "notify::online",
