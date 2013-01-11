@@ -776,7 +776,7 @@ e_cal_backend_foreach_view (ECalBackend *backend,
                                                   gpointer user_data),
                             gpointer user_data)
 {
-	const GSList *views;
+	GSList *views_list, *viter;
 	EDataCalView *view;
 	gboolean stop = FALSE;
 
@@ -784,16 +784,16 @@ e_cal_backend_foreach_view (ECalBackend *backend,
 	g_return_if_fail (callback != NULL);
 
 	g_mutex_lock (backend->priv->views_mutex);
+	views_list = g_slist_copy (backend->priv->views);
+	g_slist_foreach (views_list, (GFunc) g_object_ref, NULL);
+	g_mutex_unlock (backend->priv->views_mutex);
 
-	for (views = backend->priv->views; views && !stop; views = views->next) {
-		view = E_DATA_CAL_VIEW (views->data);
-
-		g_object_ref (view);
+	for (viter = views_list; viter && !stop; viter = viter->next) {
+		view = E_DATA_CAL_VIEW (viter->data);
 		stop = !callback (view, user_data);
-		g_object_unref (view);
 	}
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_slist_free_full (views_list, g_object_unref);
 }
 
 /**
