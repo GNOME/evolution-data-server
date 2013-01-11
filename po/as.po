@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-12-31 19:54+0000\n"
-"PO-Revision-Date: 2013-01-02 17:20+0530\n"
+"POT-Creation-Date: 2013-01-11 12:19+0000\n"
+"PO-Revision-Date: 2013-01-11 21:14+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: Assamese <kde-i18n-doc@kde.org>\n"
 "Language: as_IN\n"
@@ -21,36 +21,36 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n!=1)\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:101
+#: ../addressbook/backends/file/e-book-backend-file.c:102
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "ফাইল '%s' আতৰাওতে ত্ৰুটি: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:125
+#: ../addressbook/backends/file/e-book-backend-file.c:126
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "ডাইৰেকটৰি %s সৃষ্টি কৰিবলে ব্যৰ্থ: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:372
+#: ../addressbook/backends/file/e-book-backend-file.c:373
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "সম্পদ '%s' ৰ বাবে হাৰ্ডলিঙ্ক সৃষ্টি কৰিবলে ব্যৰ্থ: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:474
-#: ../addressbook/backends/file/e-book-backend-file.c:877
+#: ../addressbook/backends/file/e-book-backend-file.c:475
+#: ../addressbook/backends/file/e-book-backend-file.c:886
 msgid "No UID in the contact"
 msgstr "পৰিচয়ত কোনো UID নাই"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1145
+#: ../addressbook/backends/file/e-book-backend-file.c:1154
 msgid "Loading..."
 msgstr "ল'ড কৰা হৈছে…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1147
+#: ../addressbook/backends/file/e-book-backend-file.c:1156
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4914
 msgid "Searching..."
 msgstr "সন্ধান কৰা হৈছে..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1303
+#: ../addressbook/backends/file/e-book-backend-file.c:1312
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "পুৰনি ডাটাবেইচক '%s' ৰ পৰা '%s' লে পুনৰ নামাকৰণ কৰিবলে ব্যৰ্থ: %s"
@@ -58,14 +58,14 @@ msgstr "পুৰনি ডাটাবেইচক '%s' ৰ পৰা '%s' ল�
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1190
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4809
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:282
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:967
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1015
 #: ../addressbook/libebook/e-book-client.c:99
 #: ../addressbook/libedata-book/e-data-book.c:447
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:605
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:626
-#: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:122
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:561
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:591
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
+#: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:133
 #: ../camel/camel-imapx-command.c:594 ../libedataserver/e-client.c:165
 msgid "Unknown error"
 msgstr "‍অজ্ঞাত ত্ৰুটি"
@@ -82,7 +82,7 @@ msgstr "আপডেইটেড দলসমূহৰ বাবে প্ৰশ
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1235
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1621
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:331
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:375
 msgid "The backend does not support bulk additions"
 msgstr "বেকএণ্ডে বৃহত সংযোজন সমৰ্থন নকৰে"
 
@@ -92,7 +92,7 @@ msgid "Creating new contact…"
 msgstr "নতুন পৰিচয় সৃষ্টি কৰা হৈছে…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1358
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:492
 msgid "The backend does not support bulk removals"
 msgstr "বেকএণ্ডে বৃহত আতৰোৱা সমৰ্থন নকৰে"
 
@@ -102,7 +102,7 @@ msgstr "পৰিচয় মচি পেলোৱা হৈছে…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1640
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2284
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:553
 msgid "The backend does not support bulk modifications"
 msgstr "বেকএণ্ডে বৃহত পৰিবৰ্তন সমৰ্থন নকৰে"
 
@@ -209,44 +209,44 @@ msgstr "পৰিচয়সমূহ ডাউনল'ড কৰা হৈছে (
 msgid "Failed to get the DN for user '%s'"
 msgstr "ব্যৱহাৰকাৰী '%s' ৰ বাবে DN প্ৰাপ্ত কৰিবলে ব্যৰ্থ"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:362
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:406
 #, c-format
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "সম্পদ '%s' ৰ সৃষ্টি HTTP অৱস্থা: %d (%s) ৰ সৈতে ব্যৰ্থ হল"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:463
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "HTTP অৱস্থা %d ৰ সৈতে DELETE ব্যৰ্থ হল"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:529
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:574
 msgid "Contact on server changed -> not modifying"
 msgstr "চাৰ্ভাৰ পৰিবৰ্তনত যোগাযোগ কৰক -> পৰিৱৰ্তন কৰা হোৱা নাই"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:538
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:583
 #, c-format
 msgid "Modify contact failed with HTTP status: %d (%s)"
 msgstr "HTTP অৱস্থা: %d (%s) ৰ সৈতে পৰিচয় পৰিৱৰ্তন ব্যৰ্থ হল"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:945
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:993
 msgid "Loading Addressbook summary..."
 msgstr "ঠিকনাবহি সাৰাংশ ল'ড কৰা হৈছে..."
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:964
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1012
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "HTTP অৱস্থা %d (%s) ৰ সৈতে webdav ত PROPFIND ব্যৰ্থ হল"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:989
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1037
 msgid "No response body in webdav PROPFIND result"
 msgstr "webdav PROPFIND ফলাফলত কোনো প্ৰতিক্ৰিয়া শৰীৰ নাই"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1021
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1069
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "পৰিচয়সমূহ (%d%%) ল'ড কৰা হৈছে"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1354
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
 msgid "Cannot transform SoupURI to string"
 msgstr "SoupURI ক স্ট্ৰিংলে পৰিবৰ্তন কৰিব নোৱাৰি"
 
@@ -278,7 +278,7 @@ msgid "Failed to run book factory"
 msgstr "কিতাপ কলঘৰ চলাবলে ব্যৰ্থ"
 
 #: ../addressbook/libebook/e-book-client.c:2526
-#: ../calendar/libecal/e-cal-client.c:4790
+#: ../calendar/libecal/e-cal-client.c:4956
 msgid "Cannot get connection to view"
 msgstr "দৰ্শনৰ বাবে সংযোগ পোৱা নাযায়"
 
@@ -748,7 +748,7 @@ msgid "Birth Date"
 msgstr "জন্ম তাৰিখ"
 
 #: ../addressbook/libebook/e-contact.c:284
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:957
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:958
 msgid "Anniversary"
 msgstr "বাৰ্ষিকী"
 
@@ -1057,7 +1057,7 @@ msgid "Backend is not opened yet"
 msgstr "ব্যাকএণ্ড এতিয়াও খোলা নাই"
 
 #: ../addressbook/libedata-book/e-data-book.c:350
-#: ../calendar/libecal/e-cal-client.c:1002
+#: ../calendar/libecal/e-cal-client.c:1168
 #: ../calendar/libedata-cal/e-data-cal.c:462 ../libedataserver/e-client.c:160
 msgid "Other error"
 msgstr "অন্য ত্ৰুটি"
@@ -1145,46 +1145,31 @@ msgstr "সন্ধানহিন উৎস UID"
 msgid "No such source for UID '%s'"
 msgstr "UID '%s' ৰ বাবে এনেধৰণৰ কোনো উৎস নাই"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:572
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:559
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "চাৰ্ভাৰ প্ৰাপ্ত কৰিব নোৱাৰি (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:589
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "SSL ব্যৱহাৰ কৰি এটা চাৰ্ভাৰৰ সৈতে সংযোগ কৰিবলে ব্যৰ্থ: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:609
-msgid ""
-"Failed to connect to a server using SSL. One possible reason is an invalid "
-"certificate being used by the server. If this is expected, like self-signed "
-"certificate being used on the server, then disable certificate validity "
-"tests by selecting 'Ignore invalid SSL certificate' option in Properties"
-msgstr ""
-"SSL ব্যৱহাৰ কৰি এটা চাৰ্ভাৰৰ সৈতে সংযোগ কৰিবলে ব্যৰ্থ। এটা সম্ভাব্য কাৰণ হল "
-"চাৰ্ভাৰ "
-"দ্বাৰা ব্যৱহাৰ কৰা এটা অবৈধ প্ৰমাণপত্ৰ। যদি এনে হোৱাটো প্ৰত্যাশা কৰা হয়, যেনে "
-"স্ব-"
-"স্বাক্ষৰিত প্ৰমাণপত্ৰ চাৰ্ভাৰত ব্যৱহৃত, তেন্তে বৈশিষ্টসমূহত 'অবৈধ SSL "
-"প্ৰমাণপত্ৰ উপেক্ষা "
-"কৰক' বিকল্প নিৰ্বাচন কৰি প্ৰমাণপত্ৰ বৈধতা পৰিক্ষাসমূহ অসামৰ্থবান কৰক"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:623
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "অপ্ৰত্যাশীত HTTP অৱস্থা ক'ড %d ঘুৰাই দিয়া হৈছে (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:642
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV বেকএণ্ড এতিয়াও ল'ড কৰা হোৱা নাই"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1031
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1008
 msgid "Invalid Redirect URL"
 msgstr "অবৈধ পুনৰনিৰ্দেশ URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2390
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2752
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2415
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2773
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1193,129 +1178,125 @@ msgstr ""
 "চাৰ্ভাৰ প্ৰাপ্ত কৰিব নোৱাৰি, কেলেন্ডাৰ কেৱল-পঢ়িব পৰা অৱস্থাত খোলা আছে।\n"
 "ত্ৰুটি বাৰ্তা: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2696
-msgid "Cannot create local store"
-msgstr "স্থানীয় সংৰক্ষণ সৃষ্টি কৰিব নোৱাৰি"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2705
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2725
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "স্থানীয় ক্যাশ ফোল্ডাৰ '%s' সৃষ্টি কৰিব নোৱাৰি"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3708
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3734
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV এ বৃহত সংযোজন সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3810
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3837
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV এ বৃহত পৰিবৰ্তন সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3978
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4006
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV এ বৃহত আতৰোৱা সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4634
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4671
 msgid "Calendar doesn't support Free/Busy"
 msgstr "কেলেন্ডাৰ মুক্ত/ব্যস্ত সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4642
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4680
 msgid "Schedule outbox url not found"
 msgstr "সূচী আউটবক্স url পোৱা নগল"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4741
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4779
 msgid "Unexpected result in schedule-response"
 msgstr "schedule-response ত অপ্ৰত্যাশীত ফলাফল"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:959
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:960
 msgid "Birthday"
 msgstr "জন্মদিন"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:995
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:996
 #, c-format
 msgid "Birthday: %s"
 msgstr "জন্মদিন: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1026
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1027
 #, c-format
 msgid "Anniversary: %s"
 msgstr "বাৎসৰিক: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:235
+#: ../calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "কেলেন্ডাৰৰ তথ্য সংৰক্ষণ কৰোঁতে ব্যৰ্থ: URI সঠিক বিন্যাসত নাই।"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:242
-#: ../calendar/backends/file/e-cal-backend-file.c:248
+#: ../calendar/backends/file/e-cal-backend-file.c:250
+#: ../calendar/backends/file/e-cal-backend-file.c:256
 msgid "Cannot save calendar data"
 msgstr "কেলেন্ডাৰৰ তথ্য সংৰক্ষণ কৰোতে ব্যৰ্থ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:483
+#: ../calendar/backends/http/e-cal-backend-http.c:472
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "ক্ষতিগ্ৰস্থ URI: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:544
+#: ../calendar/backends/http/e-cal-backend-http.c:563
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "অবৈধ URI লৈ নিৰ্দেশ কৰা হৈছে"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:581
+#: ../calendar/backends/http/e-cal-backend-http.c:600
 #, c-format
 msgid "Bad file format."
 msgstr "ফাইলৰ বিন্যাস সঠিক নহয়।"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:591
+#: ../calendar/backends/http/e-cal-backend-http.c:610
 #, c-format
 msgid "Not a calendar."
 msgstr "কেলেন্ডাৰ নহয়।"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:888
-#: ../calendar/backends/http/e-cal-backend-http.c:893
-#: ../calendar/backends/weather/e-cal-backend-weather.c:512
+#: ../calendar/backends/http/e-cal-backend-http.c:919
+#: ../calendar/backends/http/e-cal-backend-http.c:924
+#: ../calendar/backends/weather/e-cal-backend-weather.c:506
 msgid "Could not create cache file"
 msgstr "ক্যাশ ফাইল সৃষ্টি কৰোঁতে ব্যৰ্থ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:172
+#: ../calendar/backends/weather/e-cal-backend-weather.c:165
 msgid "Could not retrieve weather data"
 msgstr "বতৰ সম্পৰ্কে তথ্য প্ৰাপ্ত কৰোঁতে ব্যৰ্থ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:277
+#: ../calendar/backends/weather/e-cal-backend-weather.c:270
 msgid "Weather: Fog"
 msgstr "বতৰ: কুঁৱলী"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:278
+#: ../calendar/backends/weather/e-cal-backend-weather.c:271
 msgid "Weather: Cloudy Night"
 msgstr "বতৰ: মেঘাচ্ছন্ন ৰাতি"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:279
+#: ../calendar/backends/weather/e-cal-backend-weather.c:272
 msgid "Weather: Cloudy"
 msgstr "বতৰ: মেঘাচ্ছন্ন"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:280
+#: ../calendar/backends/weather/e-cal-backend-weather.c:273
 msgid "Weather: Overcast"
 msgstr "বতৰ: মেঘাচ্ছন্ন"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:281
+#: ../calendar/backends/weather/e-cal-backend-weather.c:274
 msgid "Weather: Showers"
 msgstr "বতৰ: বৃষ্টি"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:282
+#: ../calendar/backends/weather/e-cal-backend-weather.c:275
 msgid "Weather: Snow"
 msgstr "বতৰ: বৰফ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:283
+#: ../calendar/backends/weather/e-cal-backend-weather.c:276
 msgid "Weather: Clear Night"
 msgstr "বতৰ: পৰিষ্কাৰ ৰাতি"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:284
+#: ../calendar/backends/weather/e-cal-backend-weather.c:277
 msgid "Weather: Sunny"
 msgstr "বতৰ: ৰ'দালিভৰা"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:285
+#: ../calendar/backends/weather/e-cal-backend-weather.c:278
 msgid "Weather: Thunderstorms"
 msgstr "বতৰ: বাত বিদ্যুৎ"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:409
+#: ../calendar/backends/weather/e-cal-backend-weather.c:402
 msgid "Forecast"
 msgstr "পূৰ্বাভাস"
 
@@ -1323,16 +1304,16 @@ msgstr "পূৰ্বাভাস"
 msgid "Repository is offline"
 msgstr "ভঁৰাল বৰ্তমানে অন-লাইন অৱস্থাত নাই"
 
-#: ../calendar/libecal/e-cal.c:2308 ../calendar/libecal/e-cal-client.c:109
+#: ../calendar/libecal/e-cal.c:2308 ../calendar/libecal/e-cal-client.c:120
 msgid "No such calendar"
 msgstr "এই ধৰণৰ কেলেন্ডাৰ উপস্থিত নাই"
 
-#: ../calendar/libecal/e-cal.c:2310 ../calendar/libecal/e-cal-client.c:111
+#: ../calendar/libecal/e-cal.c:2310 ../calendar/libecal/e-cal-client.c:122
 #: ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Object not found"
 msgstr "বস্তু পোৱা নাযায়"
 
-#: ../calendar/libecal/e-cal.c:2312 ../calendar/libecal/e-cal-client.c:113
+#: ../calendar/libecal/e-cal.c:2312 ../calendar/libecal/e-cal-client.c:124
 #: ../calendar/libedata-cal/e-data-cal.c:433
 msgid "Invalid object"
 msgstr "অবৈধ বস্তু"
@@ -1349,7 +1330,7 @@ msgstr "URI পূৰ্বে ল'ড কৰা হৈছে"
 msgid "Unknown User"
 msgstr "‍অজ্ঞাত ব্যৱহাৰকাৰী"
 
-#: ../calendar/libecal/e-cal.c:2322 ../calendar/libecal/e-cal-client.c:117
+#: ../calendar/libecal/e-cal.c:2322 ../calendar/libecal/e-cal-client.c:128
 #: ../calendar/libedata-cal/e-data-cal.c:434
 msgid "Object ID already exists"
 msgstr "বস্তু ID বৰ্তমানে উপস্থিত"
@@ -1384,17 +1365,17 @@ msgstr "এটা D-Bus ব্যতিক্ৰম দেখা দিছে"
 msgid "No error"
 msgstr "কোনো ত্ৰুটি হোৱা নাই"
 
-#: ../calendar/libecal/e-cal-client.c:115
+#: ../calendar/libecal/e-cal-client.c:126
 #: ../calendar/libedata-cal/e-data-cal.c:442
 msgid "Unknown user"
 msgstr "‍অজ্ঞাত ব্যৱহাৰকাৰী"
 
-#: ../calendar/libecal/e-cal-client.c:119
+#: ../calendar/libecal/e-cal-client.c:130
 #: ../calendar/libedata-cal/e-data-cal.c:431
 msgid "Invalid range"
 msgstr "অবৈধ সীমা"
 
-#: ../calendar/libecal/e-cal-client.c:993
+#: ../calendar/libecal/e-cal-client.c:1159
 msgid "Failed to run calendar factory"
 msgstr "কেলেন্ডাৰ কলঘৰ চলাবলে ব্যৰ্থ"
 
@@ -1551,23 +1532,23 @@ msgstr "অবিৱৰিত"
 msgid "Cannot process, calendar backend is opening"
 msgstr "প্ৰক্ৰিয়া কৰিব নোৱাৰি, কেলেন্ডাৰ বেকএণ্ড খোল খাই আছে"
 
-#: ../calendar/libedata-cal/e-cal-backend.c:135
+#: ../calendar/libedata-cal/e-cal-backend.c:156
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "‍অজ্ঞাত কেলেন্ডাৰ বৈশিষ্ট '%s'"
 
-#: ../calendar/libedata-cal/e-cal-backend.c:152
+#: ../calendar/libedata-cal/e-cal-backend.c:173
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "কেলেন্ডাৰ বৈশিষ্ট '%s' ৰ মান সলনি কৰিব নোৱাৰি"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:78
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:847
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:870
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:990
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1022
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1229
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1260
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:844
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:867
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:987
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1019
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1226
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1257
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\"এ কোনো তৰ্ক প্ৰত্যাশা নকৰে"
@@ -1576,7 +1557,7 @@ msgstr "\"%s\"এ কোনো তৰ্ক প্ৰত্যাশা নক�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:238
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:285
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:326
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1302
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1299
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" এ এটা তৰ্ক প্ৰত্যাশা কৰে"
@@ -1584,7 +1565,7 @@ msgstr "\"%s\" এ এটা তৰ্ক প্ৰত্যাশা কৰে"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:122
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:130
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:917
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:914
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" ৰ প্ৰথম তৰ্ক স্ট্ৰিং ৰূপে প্ৰত্যাশিত"
@@ -1595,9 +1576,9 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "\"%s\" ৰ প্ৰথম তৰ্ক এটা ISO 8601 তাৰিখ/সময় স্ট্ৰিং ৰূপে প্ৰত্যাশিত"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:182
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:562
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:910
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1058
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:559
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:907
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1055
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" এ দুটা তৰ্ক প্ৰত্যাশা কৰে"
@@ -1605,11 +1586,11 @@ msgstr "\"%s\" এ দুটা তৰ্ক প্ৰত্যাশা কৰ�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:189
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:245
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:417
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:506
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:569
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1065
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1309
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:415
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:504
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:566
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1062
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1306
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" ৰ প্ৰথম তৰ্ক time_t ৰূপে প্ৰত্যাশিত"
@@ -1619,35 +1600,35 @@ msgstr "\"%s\" ৰ প্ৰথম তৰ্ক time_t ৰূপে প্ৰত
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" ৰ দ্বিতীয় তৰ্ক পূৰ্ণসংখ্যা ৰূপে প্ৰত্যাশিত"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:410
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:408
 #, c-format
 msgid "\"%s\" expects two or three arguments"
 msgstr "\"%s\" এ দুটা বা তিনিটা তৰ্ক প্ৰত্যাশা কৰে"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:426
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1074
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:424
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:512
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1071
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" ৰ দ্বিতীয় তৰ্ক time_t ৰূপে প্ৰত্যাশিত"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:436
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:434
 #, c-format
 msgid "\"%s\" expects the third argument to be a string"
 msgstr "\"%s\" এ তৃতিয় তৰ্কক এটা স্ট্ৰিং হিচাপে প্ৰত্যাশা কৰে"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:498
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:496
 #, c-format
 msgid "\"%s\" expects none or two arguments"
 msgstr "\"%s\" এ এটাও নহয় বা দুটা তৰ্ক প্ৰত্যাশা কৰে"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:926
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:923
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" ৰ দ্বিতীয় তৰ্ক স্ট্ৰিং ৰূপে প্ৰত্যাশিত"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:957
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:954
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1659,12 +1640,12 @@ msgstr ""
 "\"description\" অথবা \"location\" অথবা \"attendee\" অথবা \"organizer\" অথবা "
 "\"classification\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1126
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1123
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\"এ অন্তত এটা তৰ্ক প্ৰত্যাশা কৰে"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1141
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1138
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -4759,10 +4740,41 @@ msgstr "এই পাছৱাৰ্ডক আপোনাৰ কি'ৰিং�
 msgid "Password was incorrect"
 msgstr "পাছৱাৰ্ড ভুল আছিল"
 
-#: ../libebackend/e-backend.c:190
+#: ../libebackend/e-backend.c:206
 #, c-format
 msgid "%s does not support authentication"
 msgstr "%s এ প্ৰমাণীকৰণ সমৰ্থন নকৰে"
+
+#: ../libebackend/e-backend.c:556
+#: ../modules/trust-prompt/trust-prompt-gtk.c:161
+msgid "_Reject"
+msgstr "নাকচ কৰক (_R)"
+
+#: ../libebackend/e-backend.c:557
+#: ../modules/trust-prompt/trust-prompt-gtk.c:162
+msgid "Accept _Temporarily"
+msgstr "অস্থায়ীভাৱে গ্ৰহণ কৰক (_T)"
+
+#: ../libebackend/e-backend.c:558
+#: ../modules/trust-prompt/trust-prompt-gtk.c:163
+msgid "_Accept Permanently"
+msgstr "স্থায়ীভাৱে গ্ৰহণ কৰক (_A)"
+
+#: ../libebackend/e-backend.c:565
+#: ../modules/trust-prompt/trust-prompt-gtk.c:198
+#, c-format
+#| msgid ""
+#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#| "\n"
+#| "Detailed information about the certificate:"
+msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
+msgstr ""
+"'%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰসা কৰিব নোৱাৰি। আপুনি ইয়াক গ্ৰহণ কৰিব বিচাৰে নে?"
+
+#: ../libebackend/e-backend.c:571
+#: ../modules/trust-prompt/trust-prompt-gtk.c:159
+msgid "Certificate trust..."
+msgstr "প্ৰমাণপত্ৰ ভৰসা..."
 
 #: ../libebackend/e-collection-backend.c:775
 #, c-format
@@ -4805,7 +4817,6 @@ msgstr "তথ্য উৎস '%s' ৰ দূৰৱৰ্তী সম্পদ
 #: ../libebackend/e-server-side-source.c:1080
 #: ../libedataserver/e-source.c:1307
 #, c-format
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "তথ্য উৎস '%s' এ OAuth 2.0 প্ৰমাণীকৰণ সমৰ্থন নকৰে"
 
@@ -5034,6 +5045,74 @@ msgstr "নাম নহোৱা"
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "স্বাক্ষৰ লিপি এটা স্থানীয় ফাইল হব লাগিব"
+
+#. Translators: The first %s is replaced with a host name, like "www.example.com";
+#. the second %s is replaced with actual source name, like "On The Web: My Work"
+#.
+#: ../libedataserver/e-source-webdav.c:1385
+#, c-format
+#| msgid ""
+#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#| "\n"
+#| "Detailed information about the certificate:"
+msgid ""
+"SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
+"you wish to accept it?"
+msgstr ""
+"ঠিকনা বহী '%s' দ্বাৰা ব্যৱহাৰ কৰা, হস্ট '%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰসা কৰিব "
+"নোৱাৰি। আপুনি "
+"ইয়াক গ্ৰহণ কৰিব বিচাৰে নে?"
+
+#. Translators: The first %s is replaced with a host name, like "www.example.com";
+#. the second %s is replaced with actual source name, like "On The Web: My Work"
+#.
+#: ../libedataserver/e-source-webdav.c:1391
+#, c-format
+#| msgid ""
+#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#| "\n"
+#| "Detailed information about the certificate:"
+msgid ""
+"SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
+"wish to accept it?"
+msgstr ""
+"কেলেন্ডাৰ '%s' দ্বাৰা ব্যৱহাৰ কৰা, হস্ট '%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰসা কৰিব "
+"নোৱাৰি। আপুনি"
+"ইয়াক গ্ৰহণ কৰিব বিচাৰে নে?"
+
+#. Translators: The first %s is replaced with a host name, like "www.example.com";
+#. the second %s is replaced with actual source name, like "On The Web: My Work"
+#.
+#: ../libedataserver/e-source-webdav.c:1397
+#, c-format
+#| msgid ""
+#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#| "\n"
+#| "Detailed information about the certificate:"
+msgid ""
+"SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
+"you wish to accept it?"
+msgstr ""
+"মেমো তালিকা '%s' দ্বাৰা ব্যৱহাৰ কৰা, হস্ট '%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰসা "
+"কৰিব নোৱাৰি। আপুনি "
+"ইয়াক গ্ৰহণ কৰিব বিচাৰে নে?"
+
+#. Translators: The first %s is replaced with a host name, like "www.example.com";
+#. the second %s is replaced with actual source name, like "On The Web: My Work"
+#.
+#: ../libedataserver/e-source-webdav.c:1403
+#, c-format
+#| msgid ""
+#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
+#| "\n"
+#| "Detailed information about the certificate:"
+msgid ""
+"SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
+"you wish to accept it?"
+msgstr ""
+"কাৰ্য্য তালিকা '%s' দ্বাৰা ব্যৱহাৰ কৰা, হস্ট '%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰসা "
+"কৰিব নোৱাৰি। আপুনি "
+"ইয়াক গ্ৰহণ কৰিব বিচাৰে নে?"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5320,7 +5399,6 @@ msgstr ""
 
 #: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1121
 #, c-format
-#| msgid "Failed to open addressbook at '%s': %s"
 msgid "Failed to obtain an access token for '%s': "
 msgstr "'%s' ৰ বাবে এটা অভিগম টকেন প্ৰাপ্ত কৰিবলে ব্যৰ্থ:"
 
@@ -5613,25 +5691,25 @@ msgstr "বিষয়ৰ অবিকল্প ID"
 msgid "Certificate Signature Value"
 msgstr "প্ৰমাণপত্ৰৰ স্বাক্ষৰ মান"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:200
+#: ../modules/trust-prompt/module-trust-prompt.c:201
 msgid "The signing certificate authority is not known."
 msgstr "স্বাক্ষৰ কৰা প্ৰমাণপত্ৰ কতৃপক্ষ অজ্ঞাত।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:202
+#: ../modules/trust-prompt/module-trust-prompt.c:203
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr "প্ৰমাণপত্ৰ উদ্ধাৰ কৰা ছাইটৰ প্ৰত্যাশিত পৰিচয়ৰ সৈতে মিল নাখায়।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:204
+#: ../modules/trust-prompt/module-trust-prompt.c:205
 msgid "The certificate's activation time is still in the future."
 msgstr "প্ৰমাণপত্ৰ সক্ৰিয়কৰণ সময় এতিয়াও ভৱিষ্যতত আছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:206
+#: ../modules/trust-prompt/module-trust-prompt.c:207
 msgid "The certificate has expired."
 msgstr "প্ৰমাণপত্ৰৰ অৱসান ঘটিছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:208
+#: ../modules/trust-prompt/module-trust-prompt.c:209
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
@@ -5639,55 +5717,31 @@ msgstr ""
 "সংযোগৰ প্ৰমাণপত্ৰ প্ৰত্যাহাৰ তালিকাৰ ওপৰত ভিত্তি কৰি প্ৰমাণপত্ৰ প্ৰত্যাহাৰ "
 "কৰা হৈছে।"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:210
+#: ../modules/trust-prompt/module-trust-prompt.c:211
 msgid "The certificate's algorithm is considered insecure."
 msgstr "প্ৰমাণপত্ৰৰ এলগৰিথমক অসুৰক্ষিত ধৰা হৈছে।"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:158
-msgid "Certificate trust..."
-msgstr "প্ৰমাণপত্ৰ ভৰসা..."
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:159
+#: ../modules/trust-prompt/trust-prompt-gtk.c:160
 msgid "_View Certificate"
 msgstr "প্ৰমাণপত্ৰ দৰ্শন কৰক (_V)"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:160
-msgid "_Reject"
-msgstr "নাকচ কৰক (_R)"
+#: ../modules/trust-prompt/trust-prompt-gtk.c:204
+msgid "Detailed information about the certificate:"
+msgstr "প্ৰমাণপত্ৰৰ বিষয়ে বিৱৰিত তথ্য:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:161
-msgid "Accept _Temporarily"
-msgstr "অস্থায়ীভাৱে গ্ৰহণ কৰক (_T)"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:162
-msgid "_Accept Permanently"
-msgstr "স্থায়ীভাৱে গ্ৰহণ কৰক (_A)"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:193
-#, c-format
-msgid ""
-"SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-"\n"
-"Detailed information about the certificate:"
-msgstr ""
-"'%s' ৰ বাবে SSL প্ৰমাণপত্ৰ ভৰসা কৰিব নোৱাৰি। আপুনি ইয়াক গ্ৰহণ কৰিব বিচাৰে "
-"নে?\n"
-"\n"
-"প্ৰমাণপত্ৰৰ বিষয়ে বিৱৰিত তথ্য:"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:207
+#: ../modules/trust-prompt/trust-prompt-gtk.c:218
 msgid "Issuer:"
 msgstr "প্ৰেৰক:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:208
+#: ../modules/trust-prompt/trust-prompt-gtk.c:219
 msgid "Subject:"
 msgstr "বিষয়:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:209
+#: ../modules/trust-prompt/trust-prompt-gtk.c:220
 msgid "Fingerprint:"
 msgstr "ফিংগাৰপ্ৰিন্ট:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:210
+#: ../modules/trust-prompt/trust-prompt-gtk.c:221
 msgid "Reason:"
 msgstr "কাৰণ:"
 
@@ -5708,6 +5762,22 @@ msgstr "অন্তত এটা ক্লাএন্ট সংযুক্ত
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:111
 msgid "_Dismiss"
 msgstr "বাতিল কৰক (_D)"
+
+#~ msgid ""
+#~ "Failed to connect to a server using SSL. One possible reason is an "
+#~ "invalid certificate being used by the server. If this is expected, like "
+#~ "self-signed certificate being used on the server, then disable "
+#~ "certificate validity tests by selecting 'Ignore invalid SSL certificate' "
+#~ "option in Properties"
+#~ msgstr ""
+#~ "SSL ব্যৱহাৰ কৰি এটা চাৰ্ভাৰৰ সৈতে সংযোগ কৰিবলে ব্যৰ্থ। এটা সম্ভাব্য কাৰণ হল "
+#~ "চাৰ্ভাৰ দ্বাৰা ব্যৱহাৰ কৰা এটা অবৈধ প্ৰমাণপত্ৰ। যদি এনে হোৱাটো প্ৰত্যাশা কৰা হয়, "
+#~ "যেনে স্ব-স্বাক্ষৰিত প্ৰমাণপত্ৰ চাৰ্ভাৰত ব্যৱহৃত, তেন্তে বৈশিষ্টসমূহত 'অবৈধ SSL "
+#~ "প্ৰমাণপত্ৰ উপেক্ষা কৰক' বিকল্প নিৰ্বাচন কৰি প্ৰমাণপত্ৰ বৈধতা পৰিক্ষাসমূহ অসামৰ্থবান "
+#~ "কৰক"
+
+#~ msgid "Cannot create local store"
+#~ msgstr "স্থানীয় সংৰক্ষণ সৃষ্টি কৰিব নোৱাৰি"
 
 #~ msgid "No output stream"
 #~ msgstr "আউটপুট স্ৰোত অনুপস্থিত"
