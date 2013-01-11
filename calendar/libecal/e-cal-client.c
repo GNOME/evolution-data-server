@@ -908,6 +908,7 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 {
 	ECalClientPrivate *priv;
 	const gchar *tzid;
+	gboolean timezone_added = FALSE;
 
 	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
 
@@ -931,14 +932,17 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 			priv->zone_cache,
 			g_strdup (tzid), cached_zone);
 
-		/* FIXME Should emit this from an idle GSource on
-		 *       a stored GMainContext, but we don't have
-		 *       a stored GMainContext.  Check back after
-		 *       the D-Bus API rewrite. */
-		g_signal_emit_by_name (cache, "timezone-added", zone);
+		timezone_added = TRUE;
 	}
 
 	g_mutex_unlock (&priv->zone_cache_lock);
+
+	/* FIXME Should emit this from an idle GSource on
+	 *       a stored GMainContext, but we don't have
+	 *       a stored GMainContext.  Check back after
+	 *       the D-Bus API rewrite. */
+	if (timezone_added)
+		g_signal_emit_by_name (cache, "timezone-added", zone);
 }
 
 static icaltimezone *
