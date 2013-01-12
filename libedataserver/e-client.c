@@ -1667,6 +1667,8 @@ e_client_util_copy_string_slist (GSList *copy_to,
  * The returned pointer can be freed with e_client_util_free_object_slist().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_util_copy_object_slist() instead.
  **/
 GSList *
 e_client_util_copy_object_slist (GSList *copy_to,
