@@ -387,8 +387,6 @@ gboolean	e_client_retrieve_capabilities_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
-/* utility functions */
-gchar **	e_client_util_slist_to_strv	(const GSList *strings);
 GSList *	e_client_util_strv_to_slist	(const gchar * const *strv);
 GSList *	e_client_util_copy_string_slist	(GSList *copy_to,
 						 const GSList *strings);
@@ -429,6 +427,7 @@ gboolean	e_client_remove_finish		(EClient *client,
 gboolean	e_client_remove_sync		(EClient *client,
 						 GCancellable *cancellable,
 						 GError **error);
+gchar **	e_client_util_slist_to_strv	(const GSList *strings);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
