@@ -1170,7 +1170,6 @@ e_util_slist_to_strv
 e_util_strv_to_slist
 e_util_copy_string_slist
 e_util_copy_object_slist
-e_util_free_string_slist
 e_util_free_object_slist
 e_util_free_nullable_object_slist
 e_queue_transfer
@@ -1202,6 +1201,8 @@ e_named_parameters_set
 e_named_parameters_get
 e_named_parameters_to_strv
 e_named_parameters_test
+<SUBSECTION Deprecated>
+e_util_free_string_slist
 <SUBSECTION Standard>
 e_named_parameters_get_type
 </SECTION>
