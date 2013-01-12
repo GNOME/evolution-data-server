@@ -24,6 +24,7 @@
 #define E_SOURCE_WEBDAV_H
 
 #include <libsoup/soup.h>
+#include <libedataserver/e-source-enums.h>
 #include <libedataserver/e-source-extension.h>
 
 /* Standard GObject macros */
@@ -81,14 +82,6 @@ struct _ESourceWebdav {
 struct _ESourceWebdavClass {
 	ESourceExtensionClass parent_class;
 };
-
-typedef enum {
-	E_TRUST_PROMPT_RESPONSE_UNKNOWN			= -1,
-	E_TRUST_PROMPT_RESPONSE_REJECT			=  0,
-	E_TRUST_PROMPT_RESPONSE_ACCEPT			=  1,
-	E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY	=  2,
-	E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY	=  3
-} ETrustPromptResponse;
 
 GType		e_source_webdav_get_type	(void) G_GNUC_CONST;
 gboolean	e_source_webdav_get_avoid_ifmatch

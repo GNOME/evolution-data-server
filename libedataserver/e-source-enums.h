@@ -63,4 +63,19 @@ typedef enum {
 	E_SOURCE_AUTHENTICATION_REJECTED
 } ESourceAuthenticationResult;
 
+/**
+ * ETrustPromptResponse:
+ *
+ * XXX Document me!
+ *
+ * Since: 3.8
+ **/
+typedef enum {
+	E_TRUST_PROMPT_RESPONSE_UNKNOWN			= -1,
+	E_TRUST_PROMPT_RESPONSE_REJECT			=  0,
+	E_TRUST_PROMPT_RESPONSE_ACCEPT			=  1,
+	E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY	=  2,
+	E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY	=  3
+} ETrustPromptResponse;
+
 #endif /* E_SOURCE_ENUMS_H */
