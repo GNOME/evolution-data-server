@@ -73,7 +73,6 @@ gsize		e_strftime			(gchar *string,
 
 gchar **	e_util_slist_to_strv		(const GSList *strings);
 GSList *	e_util_strv_to_slist		(const gchar * const *strv);
-GSList *	e_util_copy_string_slist	(GSList *copy_to, const GSList *strings);
 GSList *	e_util_copy_object_slist	(GSList *copy_to, const GSList *objects);
 void		e_util_free_nullable_object_slist
 						(GSList *objects);
@@ -166,6 +165,8 @@ gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
 #ifndef EDS_DISABLE_DEPRECATED
 void		e_util_free_string_slist	(GSList *strings);
 void		e_util_free_object_slist	(GSList *objects);
+GSList *	e_util_copy_string_slist	(GSList *copy_to,
+						 const GSList *strings);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

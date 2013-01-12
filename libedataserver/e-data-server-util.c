@@ -944,6 +944,10 @@ e_util_strv_to_slist (const gchar * const *strv)
  * Returned pointer can be freed with e_util_free_string_slist().
  *
  * Since: 3.4
+ *
+ * Deprecated: 3.8: Use g_slist_copy_deep() instead, and optionally
+ *                  g_slist_concat() to concatenate the copied list
+ *                  to another #GSList.
  **/
 GSList *
 e_util_copy_string_slist (GSList *copy_to,
