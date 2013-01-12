@@ -972,6 +972,10 @@ e_util_copy_string_slist (GSList *copy_to,
  * Returned pointer can be freed with e_util_free_object_slist().
  *
  * Since: 3.4
+ *
+ * Deprecated: 3.8: Use g_slist_copy_deep() instead, and optionally
+ *                  g_slist_concat() to concatenate the copied list
+ *                  to another #GSList.
  **/
 GSList *
 e_util_copy_object_slist (GSList *copy_to,
