@@ -93,9 +93,9 @@ reload:
 		g_print ("Reloading...\n");
 
 		/* It's possible the Reload is called after restore, where
-		   the ~/.config/evolution/sources directory can be missing,
-		   thus create it, because e_server_side_source_get_user_dir()
-		   may have its static variable already set to non-NULL value.
+		 * the ~/.config/evolution/sources directory can be missing,
+		 * thus create it, because e_server_side_source_get_user_dir()
+		 * may have its static variable already set to non-NULL value.
 		*/
 		config_dir = e_get_user_config_dir ();
 		dirname = g_build_filename (config_dir, "sources", NULL);

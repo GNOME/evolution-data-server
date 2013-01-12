@@ -3100,7 +3100,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry,
 
 static gint
 compare_gint_ptr_cb (gconstpointer a,
-		     gconstpointer b)
+                     gconstpointer b)
 {
 	return GPOINTER_TO_INT (a) - GPOINTER_TO_INT (b);
 }

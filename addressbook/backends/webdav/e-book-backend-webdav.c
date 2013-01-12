@@ -1351,7 +1351,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	g_mutex_lock (&priv->cache_lock);
 
 	/* make sure the priv->uri ends with a forward slash */
-	if (priv->uri[strlen(priv->uri) - 1] != '/') {
+	if (priv->uri[strlen (priv->uri) - 1] != '/') {
 		gchar *tmp = priv->uri;
 		priv->uri = g_strconcat (tmp, "/", NULL);
 		g_free (tmp);

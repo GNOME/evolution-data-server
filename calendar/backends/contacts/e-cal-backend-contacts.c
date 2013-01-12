@@ -515,7 +515,7 @@ contact_record_cb_new (ECalBackendContacts *cbc,
 
 static void
 contact_record_cb_free (ContactRecordCB *cb_data,
-			gboolean can_free_result)
+                        gboolean can_free_result)
 {
 	if (can_free_result) {
 		if (cb_data->as_string)

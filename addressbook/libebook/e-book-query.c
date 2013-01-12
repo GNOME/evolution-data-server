@@ -619,9 +619,9 @@ func_exists (struct _ESExp *f,
 
 static ESExpResult *
 func_exists_vcard (struct _ESExp *f,
-		   gint argc,
-		   struct _ESExpResult **argv,
-		   gpointer data)
+                   gint argc,
+                   struct _ESExpResult **argv,
+                   gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
