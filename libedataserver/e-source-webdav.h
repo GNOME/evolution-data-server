@@ -142,6 +142,14 @@ void		e_source_webdav_store_ssl_trust_prompt
 void		e_source_webdav_unset_temporary_ssl_trust
 						(ESourceWebdav *extension);
 
+#ifndef EDS_DISABLE_DEPRECATED
+gboolean	e_source_webdav_get_ignore_invalid_cert
+						(ESourceWebdav *extension);
+void		e_source_webdav_set_ignore_invalid_cert
+						(ESourceWebdav *extension,
+						 gboolean ignore_invalid_cert);
+#endif /* EDS_DISABLE_DEPRECATED */
+
 G_END_DECLS
 
 #endif /* E_SOURCE_WEBDAV_H */

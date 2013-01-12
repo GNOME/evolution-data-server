@@ -72,6 +72,7 @@ struct _ESourceWebdavPrivate {
 	gchar *ssl_trust;
 	gboolean avoid_ifmatch;
 	gboolean calendar_auto_schedule;
+	gboolean ignore_invalid_cert;
 	SoupURI *soup_uri;
 };
 
@@ -81,6 +82,7 @@ enum {
 	PROP_CALENDAR_AUTO_SCHEDULE,
 	PROP_DISPLAY_NAME,
 	PROP_EMAIL_ADDRESS,
+	PROP_IGNORE_INVALID_CERT,
 	PROP_RESOURCE_PATH,
 	PROP_RESOURCE_QUERY,
 	PROP_SOUP_URI,
@@ -265,6 +267,12 @@ source_webdav_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
+		case PROP_IGNORE_INVALID_CERT:
+			e_source_webdav_set_ignore_invalid_cert (
+				E_SOURCE_WEBDAV (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_RESOURCE_PATH:
 			e_source_webdav_set_resource_path (
 				E_SOURCE_WEBDAV (object),
@@ -325,6 +333,13 @@ source_webdav_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_webdav_dup_email_address (
+				E_SOURCE_WEBDAV (object)));
+			return;
+
+		case PROP_IGNORE_INVALID_CERT:
+			g_value_set_boolean (
+				value,
+				e_source_webdav_get_ignore_invalid_cert (
 				E_SOURCE_WEBDAV (object)));
 			return;
 
@@ -504,6 +519,18 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"Email Address",
 			"The user's email address",
 			"",
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_IGNORE_INVALID_CERT,
+		g_param_spec_boolean (
+			"ignore-invalid-cert",
+			"Ignore Invalid Cert",
+			"Ignore invalid SSL certificates",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			E_SOURCE_PARAM_SETTING));
@@ -840,6 +867,57 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
 	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "email-address");
+}
+
+/**
+ * e_source_webdav_get_ignore_invalid_cert:
+ * @extension: an #ESourceWebdav
+ *
+ * Returns %TRUE if invalid SSL certificates should be ignored.
+ *
+ * This option allows SSL certificates to be accepted even if they have
+ * signed by an unrecognized Certificate Authority.
+ *
+ * Returns: whether invalid SSL certificates should be ignored
+ *
+ * Since: 3.6
+ *
+ * Deprecated: 3.8: The trust prompt APIs replace this.
+ **/
+gboolean
+e_source_webdav_get_ignore_invalid_cert (ESourceWebdav *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), FALSE);
+
+	return extension->priv->ignore_invalid_cert;
+}
+
+/**
+ * e_source_webdav_set_ignore_invalid_cert:
+ * @extension: an #ESourceWebdav
+ * @ignore_invalid_cert: whether invalid SSL certificates should be ignored
+ *
+ * Sets whether invalid SSL certificates should be ignored.
+ *
+ * This option allows SSL certificates to be accepted even if they have
+ * signed by an unrecognized Certificate Authority.
+ *
+ * Since: 3.6
+ *
+ * Deprecated: 3.8: The trust prompt APIs replace this.
+ **/
+void
+e_source_webdav_set_ignore_invalid_cert (ESourceWebdav *extension,
+                                         gboolean ignore_invalid_cert)
+{
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if (extension->priv->ignore_invalid_cert == ignore_invalid_cert)
+		return;
+
+	extension->priv->ignore_invalid_cert = ignore_invalid_cert;
+
+	g_object_notify (G_OBJECT (extension), "ignore-invalid-cert");
 }
 
 /**
