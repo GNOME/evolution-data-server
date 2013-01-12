@@ -1626,6 +1626,8 @@ e_client_util_slist_to_strv (const GSList *strings)
  * Note: Paired function for this is e_client_util_slist_to_strv().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_util_strv_to_slist() instead.
  **/
 GSList *
 e_client_util_strv_to_slist (const gchar * const *strv)
