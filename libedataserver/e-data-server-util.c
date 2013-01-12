@@ -949,18 +949,12 @@ GSList *
 e_util_copy_string_slist (GSList *copy_to,
                           const GSList *strings)
 {
-	if (strings != NULL) {
-		const GSList *iter;
-		GSList *strings_copy = NULL;
-		/* Make deep copy of strings */
-		for (iter = strings; iter; iter = iter->next)
-			strings_copy = g_slist_prepend (strings_copy, g_strdup (iter->data));
+	GSList *copied_list;
 
-		/* Concatenate the two lists */
-		return g_slist_concat (copy_to, g_slist_reverse (strings_copy));
-	}
+	copied_list = g_slist_copy_deep (
+		(GSList *) copy_to, (GCopyFunc) g_strdup, NULL);
 
-	return copy_to;
+	return g_slist_concat (copy_to, copied_list);
 }
 
 /**
