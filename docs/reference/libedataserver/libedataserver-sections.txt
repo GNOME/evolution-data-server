@@ -74,7 +74,6 @@ e_client_refresh_sync
 e_client_retrieve_capabilities
 e_client_retrieve_capabilities_finish
 e_client_retrieve_capabilities_sync
-e_client_util_free_object_slist
 e_client_util_parse_comma_strings
 EClientErrorsList
 e_client_util_unwrap_dbus_error
@@ -87,6 +86,7 @@ e_client_util_strv_to_slist
 e_client_util_copy_string_slist
 e_client_util_copy_object_slist
 e_client_util_free_string_slist
+e_client_util_free_object_slist
 <SUBSECTION Standard>
 E_CLIENT
 E_IS_CLIENT

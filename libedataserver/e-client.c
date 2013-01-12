@@ -1701,6 +1701,8 @@ e_client_util_free_string_slist (GSList *strings)
  * itself.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use g_slist_free_full() instead.
  **/
 void
 e_client_util_free_object_slist (GSList *objects)
