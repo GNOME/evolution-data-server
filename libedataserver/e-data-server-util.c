@@ -973,20 +973,12 @@ GSList *
 e_util_copy_object_slist (GSList *copy_to,
                           const GSList *objects)
 {
-	if (objects != NULL) {
-		const GSList *iter;
-		GSList *objects_copy = NULL;
-		/* Make deep copy of objects */
-		for (iter = objects; iter; iter = iter->next)
-			objects_copy = g_slist_prepend (
-				objects_copy, g_object_ref (iter->data));
+	GSList *copied_list;
 
-		/* Concatenate the two lists */
-		return g_slist_concat (
-			copy_to, g_slist_reverse (objects_copy));
-	}
+	copied_list = g_slist_copy_deep (
+		(GSList *) copy_to, (GCopyFunc) g_object_ref, NULL);
 
-	return copy_to;
+	return g_slist_concat (copy_to, copied_list);
 }
 
 /**
