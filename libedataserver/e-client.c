@@ -1684,6 +1684,8 @@ e_client_util_copy_object_slist (GSList *copy_to,
  * Frees memory previously allocated by e_client_util_strv_to_slist().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use g_slist_free_full() instead.
  **/
 void
 e_client_util_free_string_slist (GSList *strings)

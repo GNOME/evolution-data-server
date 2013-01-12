@@ -387,7 +387,6 @@ gboolean	e_client_retrieve_capabilities_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
-void		e_client_util_free_string_slist	(GSList *strings);
 void		e_client_util_free_object_slist	(GSList *objects);
 GSList *	e_client_util_parse_comma_strings
 						(const gchar *strings);
@@ -428,6 +427,7 @@ GSList *	e_client_util_copy_string_slist	(GSList *copy_to,
 						 const GSList *strings);
 GSList *	e_client_util_copy_object_slist	(GSList *copy_to,
 						 const GSList *objects);
+void		e_client_util_free_string_slist	(GSList *strings);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
