@@ -77,7 +77,7 @@ typedef struct _PrompterAsyncData {
 	gchar *primary_text;
 	gchar *secondary_text;
 	gboolean use_markup;
-	GSList *button_captions;
+	GList *button_captions;
 
 	/* ExtensionPrompt data */
 	gchar *dialog_name;
@@ -110,7 +110,7 @@ prompter_async_data_free (PrompterAsyncData *async_data)
 	g_free (async_data->title);
 	g_free (async_data->primary_text);
 	g_free (async_data->secondary_text);
-	g_slist_free_full (async_data->button_captions, g_free);
+	g_list_free_full (async_data->button_captions, g_free);
 
 	g_free (async_data->dialog_name);
 	e_named_parameters_free (async_data->in_parameters);
@@ -142,15 +142,18 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
                              GError **error)
 {
 	GPtrArray *captions;
-	GSList *iter;
+	GList *list, *link;
 	gboolean success;
 
 	g_return_val_if_fail (dbus_prompter != NULL, FALSE);
 	g_return_val_if_fail (async_data != NULL, FALSE);
 
+	list = async_data->button_captions;
+
 	captions = g_ptr_array_new ();
-	for (iter = async_data->button_captions; iter; iter = g_slist_next (iter)) {
-		gchar *caption = iter->data;
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		gchar *caption = link->data;
 
 		g_ptr_array_add (captions, caption ? caption : (gchar *) "");
 	}
@@ -341,14 +344,13 @@ e_user_prompter_prompt (EUserPrompter *prompter,
                         const gchar *primary_text,
                         const gchar *secondary_text,
                         gboolean use_markup,
-                        const GSList *button_captions,
+                        GList *button_captions,
                         GCancellable *cancellable,
                         GAsyncReadyCallback callback,
                         gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	PrompterAsyncData *async_data;
-	GSList *iter;
 
 	g_return_if_fail (E_IS_USER_PROMPTER (prompter));
 	g_return_if_fail (callback != NULL);
@@ -363,17 +365,14 @@ e_user_prompter_prompt (EUserPrompter *prompter,
 	async_data->primary_text = g_strdup (primary_text);
 	async_data->secondary_text = g_strdup (secondary_text);
 	async_data->use_markup = use_markup;
-	async_data->button_captions = g_slist_copy ((GSList *) button_captions);
+	async_data->button_captions = g_list_copy_deep (
+		button_captions, (GCopyFunc) g_strdup, NULL);
 	async_data->prompt_id = -1;
 	async_data->response_button = -1;
 
 	async_data->response_signal_name = g_strdup ("response");
 	async_data->response_callback = G_CALLBACK (user_prompter_response_cb);
 	async_data->invoke = user_prompter_prompt_invoke;
-
-	for (iter = async_data->button_captions; iter; iter = g_slist_next (iter)) {
-		iter->data = g_strdup (iter->data);
-	}
 
 	g_simple_async_result_set_op_res_gpointer (simple, async_data, (GDestroyNotify) prompter_async_data_free);
 	g_simple_async_result_run_in_thread (simple, user_prompter_prompt_thread, G_PRIORITY_DEFAULT, cancellable);
@@ -452,7 +451,7 @@ e_user_prompter_prompt_sync (EUserPrompter *prompter,
                              const gchar *primary_text,
                              const gchar *secondary_text,
                              gboolean use_markup,
-                             const GSList *button_captions,
+                             GList *button_captions,
                              GCancellable *cancellable,
                              GError **error)
 {

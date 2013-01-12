@@ -74,7 +74,7 @@ void		e_user_prompter_prompt		(EUserPrompter *prompter,
 						 const gchar *primary_text,
 						 const gchar *secondary_text,
 						 gboolean use_markup,
-						 const GSList *button_captions,
+						 GList *button_captions,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -87,7 +87,7 @@ gint		e_user_prompter_prompt_sync	(EUserPrompter *prompter,
 						 const gchar *primary_text,
 						 const gchar *secondary_text,
 						 gboolean use_markup,
-						 const GSList *button_captions,
+						 GList *button_captions,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_user_prompter_extension_prompt

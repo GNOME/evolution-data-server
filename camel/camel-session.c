@@ -1290,7 +1290,7 @@ gint
 camel_session_alert_user (CamelSession *session,
                           CamelSessionAlertType type,
                           const gchar *prompt,
-                          GSList *button_captions,
+                          GList *button_captions,
                           GCancellable *cancellable)
 {
 	CamelSessionClass *class;
@@ -1301,7 +1301,8 @@ camel_session_alert_user (CamelSession *session,
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->alert_user != NULL, -1);
 
-	return class->alert_user (session, type, prompt, button_captions, cancellable);
+	return class->alert_user (
+		session, type, prompt, button_captions, cancellable);
 }
 
 /**
@@ -1329,7 +1330,7 @@ camel_session_trust_prompt (CamelSession *session,
                             const gchar *host,
                             const gchar *certificate,
                             guint32 certificate_errors,
-                            const GSList *issuers,
+                            GList *issuers,
                             GCancellable *cancellable)
 {
 	CamelSessionClass *class;

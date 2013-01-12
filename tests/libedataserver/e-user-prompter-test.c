@@ -220,7 +220,7 @@ test_user_prompts_idle_cb (gpointer user_data)
 	sz = G_N_ELEMENTS (prompts);
 	for (ii = 0; !fixture->only_certificate && ii < sz && !error; ii++) {
 		gchar *title, *primary, *secondary, **buttons = NULL;
-		GSList *captions = NULL;
+		GList *captions = NULL;
 
 		title = g_strdup_printf ("Prompt %d...", ii);
 		primary = g_strdup_printf (prompts[ii].primary, ii);
@@ -230,7 +230,7 @@ test_user_prompts_idle_cb (gpointer user_data)
 
 			buttons = g_strsplit (prompts[ii].buttons, ":", -1);
 			for (jj = 0; buttons[jj]; jj++) {
-				captions = g_slist_append (captions, buttons[jj]);
+				captions = g_list_append (captions, buttons[jj]);
 			}
 		}
 
@@ -260,7 +260,7 @@ test_user_prompts_idle_cb (gpointer user_data)
 		g_free (primary);
 		g_free (secondary);
 		g_strfreev (buttons);
-		g_slist_free (captions);
+		g_list_free (captions);
 	}
 
 	g_assert_no_error (error);

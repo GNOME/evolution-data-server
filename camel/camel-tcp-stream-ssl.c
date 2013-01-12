@@ -468,7 +468,7 @@ ssl_bad_cert (gpointer data,
 		CamelCertTrust trust_response;
 		gchar *base64;
 		guint32 certificate_errors = 0;
-		GSList *issuers = NULL;
+		GList *issuers = NULL;
 
 		if (CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL) != SECSuccess) {
 			gint pr_error;
@@ -502,16 +502,19 @@ ssl_bad_cert (gpointer data,
 			if (!base64)
 				break;
 
-			issuers = g_slist_append (issuers, base64);
+			issuers = g_list_append (issuers, base64);
 		}
 
 		base64 = g_base64_encode (cert->derCert.data, cert->derCert.len);
 
 		/* query the user to find out if we want to accept this certificate */
-		trust_response = camel_session_trust_prompt (ssl->priv->session, ssl->priv->expected_host, base64, certificate_errors, issuers, NULL);
+		trust_response = camel_session_trust_prompt (
+			ssl->priv->session,
+			ssl->priv->expected_host,
+			base64, certificate_errors, issuers, NULL);
 
 		g_free (base64);
-		g_slist_free_full (issuers, g_free);
+		g_list_free_full (issuers, g_free);
 
 		accept = trust_response != CAMEL_CERT_TRUST_UNKNOWN &&
 			 trust_response != CAMEL_CERT_TRUST_NEVER;
