@@ -27,7 +27,7 @@ prompt_user_init (gint *argc,
 		  gchar ***argv);
 
 /* This is called when a request is initiated. The callback should not block,
-   and when a user responds, the e_user_prompter_server_response() should be called.
+ * and when a user responds, the e_user_prompter_server_response() should be called.
  */
 
 void

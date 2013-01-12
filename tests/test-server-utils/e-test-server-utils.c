@@ -71,8 +71,9 @@ delete_work_directory (void)
 	gboolean spawn_succeeded;
 	gint exit_status;
 
-	spawn_succeeded = g_spawn_sync (NULL, (char **) argv, NULL, 0, NULL, NULL,
-	                                NULL, NULL, &exit_status, NULL);
+	spawn_succeeded = g_spawn_sync (
+		NULL, (gchar **) argv, NULL, 0, NULL, NULL,
+					NULL, NULL, &exit_status, NULL);
 
 	g_assert (spawn_succeeded);
 	g_assert (WIFEXITED (exit_status));
@@ -119,9 +120,9 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 		if (!source)
 			g_error ("Unable to fetch newly created addressbook source from the registry");
 
-		pair->fixture->service.calendar_client = e_cal_client_new (source, 
-									   pair->closure->calendar_source_type,
-									   &error);
+		pair->fixture->service.calendar_client = e_cal_client_new (source,
+			pair->closure->calendar_source_type,
+			&error);
 		if (!pair->fixture->service.calendar_client)
 			g_error ("Unable to create the test calendar: %s", error->message);
 
@@ -206,12 +207,11 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 		if (!e_source_registry_commit_source_sync (pair->fixture->registry, scratch, NULL, &error))
 			g_error ("Unable to add new addressbook source to the registry: %s", error->message);
 
-
 		g_object_unref (scratch);
 	}
 
 	if (pair->closure->type != E_TEST_SERVER_NONE)
-		g_timeout_add (20, (GSourceFunc)e_test_server_utils_bootstrap_timeout, pair);
+		g_timeout_add (20, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
 	else
 		g_main_loop_quit (pair->fixture->loop);
 
@@ -227,9 +227,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
  */
 void
 e_test_server_utils_setup (ETestServerFixture *fixture,
-			   gconstpointer       user_data)
+                           gconstpointer user_data)
 {
-	ETestServerClosure *closure = (ETestServerClosure *)user_data;
+	ETestServerClosure *closure = (ETestServerClosure *) user_data;
 	FixturePair         pair    = { fixture, closure };
 
 	/* Create work directory */
@@ -250,7 +250,7 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	fixture->dbus = global_test_dbus;
 #endif
 
-	g_idle_add ((GSourceFunc)e_test_server_utils_bootstrap_idle, &pair);
+	g_idle_add ((GSourceFunc) e_test_server_utils_bootstrap_idle, &pair);
 	g_main_loop_run (fixture->loop);
 }
 
@@ -263,9 +263,9 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
  */
 void
 e_test_server_utils_teardown (ETestServerFixture *fixture,
-			      gconstpointer       user_data)
+                              gconstpointer user_data)
 {
-	ETestServerClosure *closure = (ETestServerClosure *)user_data;
+	ETestServerClosure *closure = (ETestServerClosure *) user_data;
 	GError             *error = NULL;
 
 	switch (closure->type) {
@@ -369,6 +369,6 @@ e_test_server_utils_run (void)
 	/* g_object_unref (global_test_dbus); */
 	global_test_dbus = NULL;
 #endif
-  
+
   return tests_ret;
 }

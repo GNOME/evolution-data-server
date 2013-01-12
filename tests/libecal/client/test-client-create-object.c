@@ -25,20 +25,22 @@ test_icalcomps (icalcomponent *icalcomp1,
 	t2 = icalcomponent_get_dtstart (icalcomp2);
 
 	if (icaltime_compare (t1, t2) != 0)
-		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			 icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+		g_error (
+			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
+			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
 
 	t1 = icalcomponent_get_dtend (icalcomp1);
 	t2 = icalcomponent_get_dtend (icalcomp2);
 
 	if (icaltime_compare (t1, t2) != 0)
-		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			 icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+		g_error (
+			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
+			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
 }
 
 static void
 test_create_object_sync (ETestServerFixture *fixture,
-			 gconstpointer       user_data)
+                         gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	icalcomponent *icalcomp;
@@ -87,7 +89,6 @@ test_create_object_sync (ETestServerFixture *fixture,
 	icalcomponent_free (icalcomp);
 }
 
-
 typedef struct {
 	icalcomponent *icalcomp;
 	icalcomponent *clone;
@@ -101,7 +102,7 @@ async_read2_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	AsyncData *data = (AsyncData *)user_data;
+	AsyncData *data = (AsyncData *) user_data;
 	icalcomponent *icalcomp1 = data->clone;
 	GSList *ecalcomps = NULL;
 
@@ -125,7 +126,6 @@ async_read2_result_ready (GObject *source_object,
 	g_main_loop_quit (data->loop);
 }
 
-
 static void
 async_read_result_ready (GObject *source_object,
                          GAsyncResult *result,
@@ -133,7 +133,7 @@ async_read_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	AsyncData *data = (AsyncData *)user_data;
+	AsyncData *data = (AsyncData *) user_data;
 	icalcomponent *icalcomp1 = data->clone, *icalcomp2 = NULL;
 
 	g_return_if_fail (icalcomp1 != NULL);
@@ -158,7 +158,7 @@ async_write_result_ready (GObject *source_object,
 	ECalClient *cal_client;
 	GError *error = NULL;
 	gchar *uid = NULL;
-	AsyncData *data = (AsyncData *)user_data;
+	AsyncData *data = (AsyncData *) user_data;
 	icalcomponent *clone, *icalcomp = data->icalcomp;
 
 	g_return_if_fail (icalcomp != NULL);
@@ -178,7 +178,7 @@ async_write_result_ready (GObject *source_object,
 
 static void
 test_create_object_async (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	icalcomponent *icalcomp;
@@ -211,10 +211,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/CreateObject/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_create_object_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/CreateObject/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_create_object_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/CreateObject/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_create_object_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/CreateObject/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_create_object_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -354,7 +354,7 @@ e_backend_set_online (EBackend *backend,
 	g_return_if_fail (E_IS_BACKEND (backend));
 
 	/* Avoid unnecessary "notify" signals. */
-	if ((online ? 1 : 0) == (backend->priv->online ? 1 : 0))
+	if (backend->priv->online == online)
 		return;
 
 	backend->priv->online = online;
@@ -529,46 +529,57 @@ e_backend_get_user_prompter (EBackend *backend)
  **/
 ETrustPromptResponse
 e_backend_trust_prompt_sync (EBackend *backend,
-			     const ENamedParameters *parameters,
-			     GCancellable *cancellable,
-			     GError **error)
+                             const ENamedParameters *parameters,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	EUserPrompter *prompter;
 	gint response;
 
-	g_return_val_if_fail (E_IS_BACKEND (backend), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
-	g_return_val_if_fail (parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		E_IS_BACKEND (backend), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
 	prompter = e_backend_get_user_prompter (backend);
-	g_return_val_if_fail (prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
-	/* Just a workaround for libsoup bug about not providing connection certificate
-	   on failed requests. This is fixed in libsoup since 2.41.3, but let's have this
-	   for now. I wrote it here to avoid code duplication, and once the libsoup 2.42.0
-	   will be out all this code, together with other SOUP_CHECK_VERSION usages also
-	   in evolution, will be removed.
-	*/
+	/* Just a workaround for libsoup bug about not providing connection
+	 * certificate on failed requests. This is fixed in libsoup since
+	 * 2.41.3, but let's have this for now. I wrote it here to avoid
+	 * code duplication, and once the libsoup 2.42.0 will be out all
+	 * this code, together with other SOUP_CHECK_VERSION usages also
+	 * in evolution, will be removed. */
 	if (!e_named_parameters_get (parameters, "cert")) {
 		GSList *button_captions = NULL;
 		const gchar *markup;
 		gchar *tmp = NULL;
 
-		button_captions = g_slist_append (button_captions, _("_Reject"));
-		button_captions = g_slist_append (button_captions, _("Accept _Temporarily"));
-		button_captions = g_slist_append (button_captions, _("_Accept Permanently"));
+		button_captions = g_slist_append (
+			button_captions, _("_Reject"));
+		button_captions = g_slist_append (
+			button_captions, _("Accept _Temporarily"));
+		button_captions = g_slist_append (
+			button_captions, _("_Accept Permanently"));
 
 		markup = e_named_parameters_get (parameters, "markup");
 		if (!markup) {
+			const gchar *host;
 			gchar *bhost;
 
-			bhost = g_strconcat ("<b>", e_named_parameters_get (parameters, "host"), "</b>", NULL);
-			tmp = g_strdup_printf (_("SSL certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
+			host = e_named_parameters_get (parameters, "host");
+			bhost = g_strconcat ("<b>", host, "</b>", NULL);
+			tmp = g_strdup_printf (
+				_("SSL certificate for '%s' is not trusted. "
+				"Do you wish to accept it?"), bhost);
 			g_free (bhost);
 
 			markup = tmp;
 		}
 
-		response = e_user_prompter_prompt_sync (prompter, "question", _("Certificate trust..."),
+		response = e_user_prompter_prompt_sync (
+			prompter, "question", _("Certificate trust..."),
 			markup, NULL, TRUE, button_captions, cancellable, NULL);
 
 		if (response == 1)
@@ -579,7 +590,9 @@ e_backend_trust_prompt_sync (EBackend *backend,
 		g_slist_free (button_captions);
 		g_free (tmp);
 	} else {
-		response = e_user_prompter_extension_prompt_sync (prompter, "ETrustPrompt::trust-prompt", parameters, NULL, cancellable, error);
+		response = e_user_prompter_extension_prompt_sync (
+			prompter, "ETrustPrompt::trust-prompt",
+			parameters, NULL, cancellable, error);
 	}
 
 	if (response == 0)
@@ -611,10 +624,10 @@ e_backend_trust_prompt_sync (EBackend *backend,
  **/
 void
 e_backend_trust_prompt (EBackend *backend,
-			const ENamedParameters *parameters,
-			GCancellable *cancellable,
-			GAsyncReadyCallback callback,
-			gpointer user_data)
+                        const ENamedParameters *parameters,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
 {
 	EUserPrompter *prompter;
 
@@ -624,7 +637,9 @@ e_backend_trust_prompt (EBackend *backend,
 	prompter = e_backend_get_user_prompter (backend);
 	g_return_if_fail (prompter != NULL);
 
-	e_user_prompter_extension_prompt (prompter, "ETrustPrompt::trust-prompt", parameters, cancellable, callback, user_data);
+	e_user_prompter_extension_prompt (
+		prompter, "ETrustPrompt::trust-prompt",
+		parameters, cancellable, callback, user_data);
 }
 
 /**
@@ -633,8 +648,9 @@ e_backend_trust_prompt (EBackend *backend,
  * @result: a #GAsyncResult
  * @error: return location for a #GError, or %NULL
  *
- * Finishes the operation started with e_backend_trust_prompt().  If
- * an error occurred, the function will set @error and return %E_TRUST_PROMPT_RESPONSE_UNKNOWN.
+ * Finishes the operation started with e_backend_trust_prompt().
+ * If an error occurred, the function will set @error and return
+ * %E_TRUST_PROMPT_RESPONSE_UNKNOWN.
  *
  * Returns: an #ETrustPromptResponse what user responded
  *
@@ -647,18 +663,21 @@ e_backend_trust_prompt (EBackend *backend,
  **/
 ETrustPromptResponse
 e_backend_trust_prompt_finish (EBackend *backend,
-			       GAsyncResult *result,
-			       GError **error)
+                               GAsyncResult *result,
+                               GError **error)
 {
 	EUserPrompter *prompter;
 	gint response;
 
-	g_return_val_if_fail (E_IS_BACKEND (backend), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		E_IS_BACKEND (backend), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
 	prompter = e_backend_get_user_prompter (backend);
-	g_return_val_if_fail (prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
-	response = e_user_prompter_extension_prompt_finish (prompter, result, NULL, error);
+	response = e_user_prompter_extension_prompt_finish (
+		prompter, result, NULL, error);
 
 	if (response == 0)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;

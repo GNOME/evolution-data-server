@@ -647,8 +647,8 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 	**        }
 	**
 	** This is the ASN1 structure we should be dealing with at this point.
-	** The code in this method will assert this is the structure we're dealing
-	** and then add more user friendly text for that field.
+	** The code in this method will assert this is the structure we're
+	** dealing and then add more user friendly text for that field.
 	*/
 	EASN1Object *sequence = e_asn1_object_new ();
 	gchar *text;
@@ -669,7 +669,9 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 
 	if (!process_sec_algorithm_id (&cert->signature, &subitem))
 		return FALSE;
-	e_asn1_object_set_display_name (subitem, _("Certificate Signature Algorithm"));
+
+	e_asn1_object_set_display_name (
+		subitem, _("Certificate Signature Algorithm"));
 	e_asn1_object_append_child (sequence, subitem);
 	g_object_unref (subitem);
 
@@ -684,12 +686,12 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 
 #ifdef notyet
 	nsCOMPtr < nsIASN1Sequence> validitySequence = new nsNSSASN1Sequence ();
-	nssComponent->GetPIPNSSBundleString (NS_LITERAL_STRING ("CertDumpValidity").get (),
-					    text);
+	nssComponent->GetPIPNSSBundleString (
+		NS_LITERAL_STRING ("CertDumpValidity").get (), text);
 	validitySequence->SetDisplayName (text);
 	asn1Objects->AppendElement (validitySequence, PR_FALSE);
-	nssComponent->GetPIPNSSBundleString (NS_LITERAL_STRING ("CertDumpNotBefore").get (),
-					    text);
+	nssComponent->GetPIPNSSBundleString (
+		NS_LITERAL_STRING ("CertDumpNotBefore").get (), text);
 	nsCOMPtr < nsIX509CertValidity> validityData;
 	GetValidity (getter_AddRefs (validityData));
 	PRTime notBefore, notAfter;
@@ -701,8 +703,8 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 	if (NS_FAILED (rv))
 		return rv;
 
-	nssComponent->GetPIPNSSBundleString (NS_LITERAL_STRING ("CertDumpNotAfter").get (),
-					    text);
+	nssComponent->GetPIPNSSBundleString (
+		NS_LITERAL_STRING ("CertDumpNotAfter").get (), text);
 	rv = ProcessTime (notAfter, text.get (), validitySequence);
 	if (NS_FAILED (rv))
 		return rv;
@@ -717,7 +719,8 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 	e_asn1_object_append_child (sequence, subitem);
 	g_object_unref (subitem);
 
-	if (!process_subject_public_key_info (&cert->subjectPublicKeyInfo, sequence))
+	if (!process_subject_public_key_info (
+		&cert->subjectPublicKeyInfo, sequence))
 		return FALSE;
 
 	/* Is there an issuerUniqueID? */
@@ -770,7 +773,7 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 
 static gboolean
 fill_asn1_from_cert (EASN1Object *asn1,
-		     CERTCertificate *cert)
+                     CERTCertificate *cert)
 {
 	EASN1Object *sequence;
 	SECItem temp;
@@ -801,8 +804,10 @@ fill_asn1_from_cert (EASN1Object *asn1,
 	e_asn1_object_append_child (asn1, sequence);
 	g_object_unref (sequence);
 
-	if (!process_sec_algorithm_id (&cert->signatureWrap.signatureAlgorithm, &sequence))
+	if (!process_sec_algorithm_id (
+		&cert->signatureWrap.signatureAlgorithm, &sequence))
 		return FALSE;
+
 	e_asn1_object_set_display_name (
 		sequence, _("Certificate Signature Algorithm"));
 	e_asn1_object_append_child (asn1, sequence);

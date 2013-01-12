@@ -139,11 +139,11 @@ test_trust_prompt (EUserPrompter *prompter)
 	result = e_user_prompter_extension_prompt_sync (prompter, "ETrustPrompt::trust-prompt", parameters, NULL, NULL, &error);
 
 	g_print ("Trust prompt result: %s (%d)%s%s\n", result == 0 ? "Reject" :
-						   result == 1 ? "Accept permanently" :
-						   result == 2 ? "Accept temporarily" : "Unknown",
-						   result,
-						   error ? ", error: " : "",
-						   error ? error->message : "");
+		result == 1 ? "Accept permanently" :
+		result == 2 ? "Accept temporarily" : "Unknown",
+		result,
+		error ? ", error: " : "",
+		error ? error->message : "");
 	g_assert_no_error (error);
 
 	e_named_parameters_free (parameters);
@@ -172,26 +172,27 @@ struct _Prompts {
 	{ "error",    "%d) error primary text", "error <i>secondary</i> text\nmarkup", TRUE, NULL },
 	{ "other",    "%d) other primary text", "other <i>secondary</i> text\nmarkup", TRUE, NULL },
 	{ "#$%@$#%",  "%d) totally unknown type primary text", "totally unknown type secondary text\nmarkup without markup texts", TRUE, NULL },
-	{ "",  	      NULL, "%d) a very long secondary text, with no primary text and no icon,"
+	{ "",	      NULL, "%d) a very long secondary text, with no primary text and no icon,"
 			    " which should wrap ideally, and be on multiple lines, like one may"
 			    " expect for such long messages, even without markup", FALSE, NULL },
-	{ "",  	      "%d) a very long primary text, with no secondary text and no icon,"
+	{ "",	      "%d) a very long primary text, with no secondary text and no icon,"
 			" which should wrap ideally, and be on multiple lines, like one may"
 			" expect for such long messages, even without markup", NULL, FALSE, NULL },
-	{ "",  	      "%d) This one has primary text...", "...and secondary text, and 5 buttons", FALSE, "1st button:2nd button:3rd button:4th button:5th button" }
+	{ "",	      "%d) This one has primary text...", "...and secondary text, and 5 buttons", FALSE, "1st button:2nd button:3rd button:4th button:5th button" }
 };
 
 static void
 user_prompt_respond_cb (GObject *source,
-			GAsyncResult *result,
-			gpointer user_data)
+                        GAsyncResult *result,
+                        gpointer user_data)
 {
 	gint result_button;
 	GError *error = NULL;
 
 	result_button = e_user_prompter_prompt_finish (E_USER_PROMPTER (source), result, &error);
 
-	g_print ("   Prompt [%d] returned %d%s%s\n", GPOINTER_TO_INT (user_data), result_button,
+	g_print (
+		"   Prompt [%d] returned %d%s%s\n", GPOINTER_TO_INT (user_data), result_button,
 		error ? ", error: " : "", error ? error->message : "");
 
 	g_assert_no_error (error);
@@ -214,8 +215,8 @@ test_user_prompts_idle_cb (gpointer user_data)
 	GError *error = NULL;
 
 	/* all but the last run asynchronously, to test they will come
-	   in the right order and only one at a time, and then run
-	   the last synchronously, to wait for the result */
+	 * in the right order and only one at a time, and then run
+	 * the last synchronously, to wait for the result */
 	sz = G_N_ELEMENTS (prompts);
 	for (ii = 0; !fixture->only_certificate && ii < sz && !error; ii++) {
 		gchar *title, *primary, *secondary, **buttons = NULL;
@@ -230,19 +231,22 @@ test_user_prompts_idle_cb (gpointer user_data)
 			buttons = g_strsplit (prompts[ii].buttons, ":", -1);
 			for (jj = 0; buttons[jj]; jj++) {
 				captions = g_slist_append (captions, buttons[jj]);
-			}							
+			}
 		}
 
 		if (ii + 1 == sz) {
 			gint result_button;
 
-			result_button = e_user_prompter_prompt_sync (fixture->prompter,
+			result_button = e_user_prompter_prompt_sync (
+				fixture->prompter,
 				prompts[ii].type, title, primary, secondary, prompts[ii].use_markup, captions,
 				NULL, &error);
-			g_print ("   Prompt [%d] (sync) returned %d%s%s\n", ii, result_button,
+			g_print (
+				"   Prompt [%d] (sync) returned %d%s%s\n", ii, result_button,
 				error ? ", error: " : "", error ? error->message : "");
 		} else {
-			e_user_prompter_prompt (fixture->prompter,
+			e_user_prompter_prompt (
+				fixture->prompter,
 				prompts[ii].type, title, primary, secondary, prompts[ii].use_markup, captions,
 				NULL, user_prompt_respond_cb, GINT_TO_POINTER (ii));
 
@@ -273,7 +277,7 @@ test_user_prompts_idle_cb (gpointer user_data)
 
 static void
 test_user_prompts (TestFixture *fixture,
-		   gconstpointer user_data)
+                   gconstpointer user_data)
 {
 	const TestClosure *closure = user_data;
 

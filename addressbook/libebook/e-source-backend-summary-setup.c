@@ -70,39 +70,24 @@ G_DEFINE_TYPE (
 	e_source_backend_summary_setup,
 	E_TYPE_SOURCE_EXTENSION)
 
-
-static void
-source_backend_summary_setup_finalize (GObject *object)
-{
-	ESourceBackendSummarySetupPrivate *priv;
-
-	priv = E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE (object);
-
-	g_mutex_clear (&priv->property_lock);
-	g_free (priv->summary_fields);
-	g_free (priv->indexed_fields);
-
-	G_OBJECT_CLASS (e_source_backend_summary_setup_parent_class)->finalize (object);
-}
-
 static gchar *
 source_backend_summary_setup_dup_literal_fields (ESourceBackendSummarySetup *extension,
-						gint                      which)
+                                                 gint which)
 {
 	gchar *duplicate = NULL;
 
 	g_mutex_lock (&extension->priv->property_lock);
 
 	switch (which) {
-	case PROP_SUMMARY_FIELDS:
-		duplicate = g_strdup (extension->priv->summary_fields);
-		break;
-	case PROP_INDEXED_FIELDS:
-		duplicate = g_strdup (extension->priv->indexed_fields);
-		break;
-	default:
-		g_assert_not_reached();
-		break;
+		case PROP_SUMMARY_FIELDS:
+			duplicate = g_strdup (extension->priv->summary_fields);
+			break;
+		case PROP_INDEXED_FIELDS:
+			duplicate = g_strdup (extension->priv->indexed_fields);
+			break;
+		default:
+			g_assert_not_reached ();
+			break;
 	}
 
 	g_mutex_unlock (&extension->priv->property_lock);
@@ -112,24 +97,24 @@ source_backend_summary_setup_dup_literal_fields (ESourceBackendSummarySetup *ext
 
 static void
 source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *extension,
-						const gchar              *literal_fields,
-						gint                      which)
+                                                 const gchar *literal_fields,
+                                                 gint which)
 {
 	const gchar *property_name;
 	gchar **target;
 
 	switch (which) {
-	case PROP_SUMMARY_FIELDS:
-		target = &(extension->priv->summary_fields);
-		property_name = "summary-fields";
-		break;
-	case PROP_INDEXED_FIELDS:
-		target = &(extension->priv->indexed_fields);
-		property_name = "indexed-fields";
-		break;
-	default:
-		g_assert_not_reached();
-		break;
+		case PROP_SUMMARY_FIELDS:
+			target = &(extension->priv->summary_fields);
+			property_name = "summary-fields";
+			break;
+		case PROP_INDEXED_FIELDS:
+			target = &(extension->priv->indexed_fields);
+			property_name = "indexed-fields";
+			break;
+		default:
+			g_assert_not_reached ();
+			break;
 	}
 
 	g_mutex_lock (&extension->priv->property_lock);
@@ -149,15 +134,16 @@ source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *ext
 
 static void
 source_backend_summary_setup_set_property (GObject *object,
-					 guint property_id,
-					 const GValue *value,
-					 GParamSpec *pspec)
+                                         guint property_id,
+                                         const GValue *value,
+                                         GParamSpec *pspec)
 {
 	switch (property_id) {
-	case PROP_SUMMARY_FIELDS:
-	case PROP_INDEXED_FIELDS:
-		source_backend_summary_setup_set_literal_fields
-			(E_SOURCE_BACKEND_SUMMARY_SETUP (object), g_value_get_string (value), property_id);
+		case PROP_SUMMARY_FIELDS:
+		case PROP_INDEXED_FIELDS:
+			source_backend_summary_setup_set_literal_fields (
+				E_SOURCE_BACKEND_SUMMARY_SETUP (object),
+				g_value_get_string (value), property_id);
 			return;
 	}
 
@@ -166,16 +152,18 @@ source_backend_summary_setup_set_property (GObject *object,
 
 static void
 source_backend_summary_setup_get_property (GObject *object,
-					 guint property_id,
-					 GValue *value,
-					 GParamSpec *pspec)
+                                         guint property_id,
+                                         GValue *value,
+                                         GParamSpec *pspec)
 {
 	switch (property_id) {
-	case PROP_SUMMARY_FIELDS:
-	case PROP_INDEXED_FIELDS:
-		g_value_take_string (value,
-				     source_backend_summary_setup_dup_literal_fields
-				     (E_SOURCE_BACKEND_SUMMARY_SETUP (object), property_id));
+		case PROP_SUMMARY_FIELDS:
+		case PROP_INDEXED_FIELDS:
+			g_value_take_string (
+				value,
+				source_backend_summary_setup_dup_literal_fields (
+				E_SOURCE_BACKEND_SUMMARY_SETUP (object),
+				property_id));
 			return;
 	}
 
@@ -183,18 +171,37 @@ source_backend_summary_setup_get_property (GObject *object,
 }
 
 static void
+source_backend_summary_setup_finalize (GObject *object)
+{
+	ESourceBackendSummarySetupPrivate *priv;
+
+	priv = E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE (object);
+
+	g_mutex_clear (&priv->property_lock);
+	g_free (priv->summary_fields);
+	g_free (priv->indexed_fields);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_backend_summary_setup_parent_class)->
+		finalize (object);
+}
+
+static void
 e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *class)
 {
-	GObjectClass          *object_class;
+	GObjectClass *object_class;
 	ESourceExtensionClass *extension_class;
 
-	extension_class       = E_SOURCE_EXTENSION_CLASS (class);
-	extension_class->name = E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP;
+	g_type_class_add_private (
+		class, sizeof (ESourceBackendSummarySetupPrivate));
 
-	object_class               = G_OBJECT_CLASS (class);
-	object_class->finalize     = source_backend_summary_setup_finalize;
+	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = source_backend_summary_setup_get_property;
 	object_class->set_property = source_backend_summary_setup_set_property;
+	object_class->finalize = source_backend_summary_setup_finalize;
+
+	extension_class = E_SOURCE_EXTENSION_CLASS (class);
+	extension_class->name = E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP;
 
 	g_object_class_install_property (
 		object_class,
@@ -215,14 +222,13 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 		g_param_spec_string (
 			"indexed-fields",
 			"Indexed Fields",
-			"The list of summary fields which are to be given indexes in the underlying database",
+			"The list of summary fields which are to be "
+			"given indexes in the underlying database",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
-
-	g_type_class_add_private (class, sizeof (ESourceBackendSummarySetupPrivate));
 }
 
 static void
@@ -233,9 +239,9 @@ e_source_backend_summary_setup_init (ESourceBackendSummarySetup *extension)
 }
 
 static EContactField *
-source_backend_summary_setup_get_fields_array (ESourceBackendSummarySetup  *extension,
-					       gint                        *n_fields,
-					       gint                         which)
+source_backend_summary_setup_get_fields_array (ESourceBackendSummarySetup *extension,
+                                               gint *n_fields,
+                                               gint which)
 {
 	EContactField field;
 	EContactField *fields = NULL;
@@ -273,9 +279,9 @@ source_backend_summary_setup_get_fields_array (ESourceBackendSummarySetup  *exte
 
 static void
 e_source_backend_summary_setup_set_fields_array (ESourceBackendSummarySetup *extension,
-						 EContactField              *fields,
-						 gint                        n_fields,
-						 gint                        which)
+                                                 EContactField *fields,
+                                                 gint n_fields,
+                                                 gint which)
 {
 	gint i;
 	GString *string;
@@ -306,8 +312,8 @@ e_source_backend_summary_setup_set_fields_array (ESourceBackendSummarySetup *ext
 
 static void
 e_source_backend_summary_setup_set_fields_va_list (ESourceBackendSummarySetup *extension,
-						   va_list                     var_args,
-						   gint                        which)
+                                                   va_list var_args,
+                                                   gint which)
 {
 	GString *string;
 	gboolean malformed = FALSE, first_field = TRUE;
@@ -355,8 +361,8 @@ e_source_backend_summary_setup_set_fields_va_list (ESourceBackendSummarySetup *e
  * Since: 3.8
  */
 EContactField *
-e_source_backend_summary_setup_get_summary_fields (ESourceBackendSummarySetup  *extension,
-						   gint                        *n_fields)
+e_source_backend_summary_setup_get_summary_fields (ESourceBackendSummarySetup *extension,
+                                                   gint *n_fields)
 {
 	g_return_val_if_fail (E_IS_SOURCE_BACKEND_SUMMARY_SETUP (extension), NULL);
 	g_return_val_if_fail (n_fields != NULL, NULL);
@@ -385,8 +391,8 @@ e_source_backend_summary_setup_get_summary_fields (ESourceBackendSummarySetup  *
  */
 void
 e_source_backend_summary_setup_set_summary_fieldsv (ESourceBackendSummarySetup *extension,
-						    EContactField              *fields,
-						    gint                        n_fields)
+                                                    EContactField *fields,
+                                                    gint n_fields)
 {
 	g_return_if_fail (E_IS_SOURCE_BACKEND_SUMMARY_SETUP (extension));
 	g_return_if_fail (n_fields >= 0);
@@ -418,7 +424,7 @@ e_source_backend_summary_setup_set_summary_fieldsv (ESourceBackendSummarySetup *
  */
 void
 e_source_backend_summary_setup_set_summary_fields (ESourceBackendSummarySetup *extension,
-						   ...)
+                                                   ...)
 {
 	va_list var_args;
 
@@ -443,9 +449,9 @@ e_source_backend_summary_setup_set_summary_fields (ESourceBackendSummarySetup *e
  * Since: 3.8
  */
 EContactField  *
-e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup  *extension,
-						   EBookIndexType             **types,
-						   gint                        *n_fields)
+e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup *extension,
+                                                   EBookIndexType **types,
+                                                   gint *n_fields)
 {
 	EContactField *ret_fields;
 	EBookIndexType *ret_types;
@@ -539,10 +545,10 @@ e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup  *
  * Since: 3.8
  */
 void
-e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup  *extension,
-						    EContactField               *fields,
-						    EBookIndexType              *types,
-						    gint                         n_fields)
+e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup *extension,
+                                                    EContactField *fields,
+                                                    EBookIndexType *types,
+                                                    gint n_fields)
 {
 	GString *string;
 	gboolean malformed = FALSE;
@@ -562,7 +568,7 @@ e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup  
 	for (i = 0; i < n_fields && malformed == FALSE; i++) {
 		const gchar *field;
 		const gchar *type;
-						   
+
 		field = e_contact_field_name (fields[i]);
 		type  = e_enum_to_string (E_TYPE_BOOK_INDEX_TYPE, types[i]);
 
@@ -574,7 +580,7 @@ e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup  
 			malformed = TRUE;
 		} else {
 			if (i > 0)
-				g_string_append_c (string, ':'); 
+				g_string_append_c (string, ':');
 			g_string_append_printf (string, "%s,%s", field, type);
 		}
 	}
@@ -611,8 +617,8 @@ e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup  
  * Since: 3.8
  */
 void
-e_source_backend_summary_setup_set_indexed_fields (ESourceBackendSummarySetup  *extension,
-						   ...)
+e_source_backend_summary_setup_set_indexed_fields (ESourceBackendSummarySetup *extension,
+                                                   ...)
 {
 	GString *string;
 	gboolean malformed = FALSE, first = TRUE;
@@ -634,7 +640,7 @@ e_source_backend_summary_setup_set_indexed_fields (ESourceBackendSummarySetup  *
 		field = e_contact_field_name (field_in);
 		if (field == NULL) {
 			g_warning ("Invalid contact field specified in "
-				   "e_source_backend_summary_setup_set_indexed_fields()");
+				"e_source_backend_summary_setup_set_indexed_fields()");
 			malformed = TRUE;
 			break;
 		}
@@ -643,13 +649,13 @@ e_source_backend_summary_setup_set_indexed_fields (ESourceBackendSummarySetup  *
 		type = e_enum_to_string (E_TYPE_BOOK_INDEX_TYPE, type_in);
 		if (type == NULL) {
 			g_warning ("Invalid index type "
-				   "e_source_backend_summary_setup_set_indexed_fields()");
+				"e_source_backend_summary_setup_set_indexed_fields()");
 			malformed = TRUE;
 			break;
 		}
 
 		if (!first)
-			g_string_append_c (string, ':'); 
+			g_string_append_c (string, ':');
 		else
 			first = FALSE;
 

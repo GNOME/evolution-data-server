@@ -1341,8 +1341,8 @@ e_binding_transform_enum_nick_to_value (GBinding *binding,
  */
 gboolean
 e_enum_from_string (GType enum_type,
-		    const gchar *string,
-		    gint *enum_value)
+                    const gchar *string,
+                    gint *enum_value)
 {
 	GEnumClass *enum_class;
 	GEnumValue *ev;
@@ -1387,12 +1387,12 @@ e_enum_from_string (GType enum_type,
  */
 const gchar *
 e_enum_to_string (GType enum_type,
-		  gint enum_value)
+                  gint enum_value)
 {
 	GEnumClass *enum_class;
 	const gchar *string = NULL;
 	guint i;
-  
+
 	enum_class = g_type_class_ref (enum_type);
 
 	g_return_val_if_fail (enum_class != NULL, NULL);
@@ -1723,7 +1723,7 @@ e_data_server_util_get_dbus_call_timeout (void)
 ENamedParameters *
 e_named_parameters_new (void)
 {
-	return (ENamedParameters*) g_ptr_array_new_with_free_func (g_free);
+	return (ENamedParameters *) g_ptr_array_new_with_free_func (g_free);
 }
 
 /**
@@ -1809,7 +1809,7 @@ e_named_parameters_clear (ENamedParameters *parameters)
  **/
 void
 e_named_parameters_assign (ENamedParameters *parameters,
-			   const ENamedParameters *from)
+                           const ENamedParameters *from)
 {
 	g_return_if_fail (parameters != NULL);
 
@@ -1820,14 +1820,16 @@ e_named_parameters_assign (ENamedParameters *parameters,
 		GPtrArray *from_array = (GPtrArray *) from;
 
 		for (ii = 0; ii < from_array->len; ii++) {
-			g_ptr_array_add ((GPtrArray *) parameters, g_strdup (from_array->pdata[ii]));
+			g_ptr_array_add (
+				(GPtrArray *) parameters,
+				g_strdup (from_array->pdata[ii]));
 		}
 	}
 }
 
 static gint
 get_parameter_index (const ENamedParameters *parameters,
-		     const gchar *name)
+                     const gchar *name)
 {
 	GPtrArray *array;
 	gint ii, name_len;
@@ -1842,8 +1844,13 @@ get_parameter_index (const ENamedParameters *parameters,
 	for (ii = 0; ii < array->len; ii++) {
 		const gchar *name_and_value = g_ptr_array_index (array, ii);
 
-		if (name_and_value && g_ascii_strncasecmp (name_and_value, name, name_len) == 0 &&
-		    name_and_value[name_len] == ':')
+		if (name_and_value == NULL)
+			continue;
+
+		if (name_and_value[name_len] != ':')
+			continue;
+
+		if (g_ascii_strncasecmp (name_and_value, name, name_len) == 0)
 			return ii;
 	}
 
@@ -1866,8 +1873,8 @@ get_parameter_index (const ENamedParameters *parameters,
  **/
 void
 e_named_parameters_set (ENamedParameters *parameters,
-			const gchar *name,
-			const gchar *value)
+                        const gchar *name,
+                        const gchar *value)
 {
 	GPtrArray *array;
 	gint index;
@@ -1910,7 +1917,7 @@ e_named_parameters_set (ENamedParameters *parameters,
  **/
 const gchar *
 e_named_parameters_get (const ENamedParameters *parameters,
-			const gchar *name)
+                        const gchar *name)
 {
 	gint index;
 	const gchar *name_and_value;
@@ -1945,9 +1952,9 @@ e_named_parameters_get (const ENamedParameters *parameters,
  **/
 gboolean
 e_named_parameters_test (const ENamedParameters *parameters,
-			 const gchar *name,
-			 const gchar *value,
-			 gboolean case_sensitively)
+                         const gchar *name,
+                         const gchar *value,
+                         gboolean case_sensitively)
 {
 	const gchar *stored_value;
 
@@ -2003,4 +2010,8 @@ e_named_parameters_unref (ENamedParameters *params)
 	g_ptr_array_unref ((GPtrArray *) params);
 }
 
-G_DEFINE_BOXED_TYPE (ENamedParameters, e_named_parameters, e_named_parameters_ref, e_named_parameters_unref);
+G_DEFINE_BOXED_TYPE (
+	ENamedParameters,
+	e_named_parameters,
+	e_named_parameters_ref,
+	e_named_parameters_unref);

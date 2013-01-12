@@ -41,7 +41,7 @@ test_result (icalcomponent *icalcomp)
 
 static void
 test_modify_object_sync (ETestServerFixture *fixture,
-			 gconstpointer       user_data)
+                         gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -80,7 +80,7 @@ async_modify_result_ready (GObject *source_object,
 	GError *error = NULL;
 	icalcomponent *icalcomp = NULL;
 	const gchar *uid;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	cal_client = E_CAL_CLIENT (source_object);
 	uid = g_object_get_data (G_OBJECT (cal_client), "use-uid");
@@ -99,7 +99,7 @@ async_modify_result_ready (GObject *source_object,
 
 static void
 test_modify_object_async (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -132,10 +132,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/ModifyObject/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_modify_object_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/ModifyObject/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_modify_object_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/ModifyObject/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_modify_object_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/ModifyObject/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_modify_object_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

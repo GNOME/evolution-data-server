@@ -74,17 +74,17 @@ struct _EUserPrompterServerClass {
 	EDBusServerClass parent_class;
 
 	/* signals */
-	void (* prompt) (EUserPrompterServer *server,
-			 gint id,
-			 const gchar *type,
-			 const gchar *title,
-			 const gchar *primary_text,
-			 const gchar *secondary_text,
-			 gboolean use_markup,
-			 const GSList *button_captions);
+	void		(*prompt)		(EUserPrompterServer *server,
+						 gint id,
+						 const gchar *type,
+						 const gchar *title,
+						 const gchar *primary_text,
+						 const gchar *secondary_text,
+						 gboolean use_markup,
+						 const GSList *button_captions);
 };
 
-GType		e_user_prompter_server_get_type	(void);
+GType		e_user_prompter_server_get_type	(void) G_GNUC_CONST;
 EDBusServer *	e_user_prompter_server_new	(void);
 void		e_user_prompter_server_response	(EUserPrompterServer *server,
 						 gint prompt_id,

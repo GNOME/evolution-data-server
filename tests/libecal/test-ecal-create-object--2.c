@@ -14,7 +14,7 @@ static ETestServerClosure cal_closure =
 
 static void
 test_create_object_2 (ETestServerFixture *fixture,
-		      gconstpointer       user_data)
+                      gconstpointer user_data)
 {
 	ECal *cal;
 	ECalComponent *e_component, *e_component_final;
@@ -50,8 +50,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECal/CreateObject2", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_create_object_2, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECal/CreateObject2", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_create_object_2, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

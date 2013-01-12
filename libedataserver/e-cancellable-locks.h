@@ -47,7 +47,7 @@ gboolean	e_cancellable_rec_mutex_lock	(ECancellableRecMutex *rec_mutex,
 void		e_cancellable_rec_mutex_unlock	(ECancellableRecMutex *rec_mutex);
 
 /* private structures, members should not be accessed
-   otherwise than with above functions */
+ * otherwise than with above functions */
 
 struct _ECancellableLocksBase {
 	GMutex cond_mutex;

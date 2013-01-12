@@ -143,8 +143,8 @@ get_closure (EDataBookView *book_view)
 
 static guint
 send_and_handle_ssl (EBookBackendWebdav *webdav,
-		     SoupMessage *message,
-		     GCancellable *cancellable)
+                     SoupMessage *message,
+                     GCancellable *cancellable)
 {
 	guint status_code;
 
@@ -186,7 +186,7 @@ send_and_handle_ssl (EBookBackendWebdav *webdav,
 static EContact *
 download_contact (EBookBackendWebdav *webdav,
                   const gchar *uri,
-		  GCancellable *cancellable)
+                  GCancellable *cancellable)
 {
 	SoupMessage *message;
 	const gchar  *etag;
@@ -238,7 +238,7 @@ static guint
 upload_contact (EBookBackendWebdav *webdav,
                 EContact *contact,
                 gchar **reason,
-		GCancellable *cancellable)
+                GCancellable *cancellable)
 {
 	ESource     *source;
 	ESourceWebdav *webdav_extension;
@@ -448,7 +448,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 static guint
 delete_contact (EBookBackendWebdav *webdav,
                 const gchar *uri,
-		GCancellable *cancellable)
+                GCancellable *cancellable)
 {
 	SoupMessage *message;
 	guint        status;
@@ -789,7 +789,7 @@ parse_propfind_response (xmlTextReaderPtr reader)
 
 static SoupMessage *
 send_propfind (EBookBackendWebdav *webdav,
-	       GCancellable *cancellable)
+               GCancellable *cancellable)
 {
 	SoupMessage               *message;
 	EBookBackendWebdavPrivate *priv    = webdav->priv;
@@ -882,7 +882,7 @@ xp_object_get_status (xmlXPathObjectPtr result)
 static gboolean
 check_addressbook_changed (EBookBackendWebdav *webdav,
                            gchar **new_ctag,
-			   GCancellable *cancellable)
+                           GCancellable *cancellable)
 {
 	gboolean res = TRUE;
 	const gchar *request = "<?xml version=\"1.0\" encoding=\"utf-8\"?><propfind xmlns=\"DAV:\"><prop><getctag/></prop></propfind>";
@@ -963,8 +963,8 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 static GError *
 download_contacts (EBookBackendWebdav *webdav,
                    EFlag *running,
-		   EDataBookView *book_view,
-		   GCancellable *cancellable)
+                   EDataBookView *book_view,
+                   GCancellable *cancellable)
 {
 	EBookBackendWebdavPrivate *priv = webdav->priv;
 	EBookBackend		  *book_backend;
@@ -1406,7 +1406,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	g_mutex_lock (&priv->cache_lock);
 
 	/* make sure the priv->uri ends with a forward slash */
-	if (priv->uri[strlen(priv->uri) - 1] != '/') {
+	if (priv->uri[strlen (priv->uri) - 1] != '/') {
 		gchar *tmp = priv->uri;
 		priv->uri = g_strconcat (tmp, "/", NULL);
 		g_free (tmp);
@@ -1420,7 +1420,8 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	g_mutex_unlock (&priv->cache_lock);
 
 	session = soup_session_sync_new ();
-	g_object_set (session,
+	g_object_set (
+		session,
 		SOUP_SESSION_TIMEOUT, 90,
 		SOUP_SESSION_SSL_STRICT, TRUE,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,

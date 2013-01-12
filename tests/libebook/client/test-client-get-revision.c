@@ -47,7 +47,7 @@ get_revision_compare_cycle (EBookClient *client)
 
 static void
 test_get_revision (ETestServerFixture *fixture,
-		   gconstpointer       user_data)
+                   gconstpointer user_data)
 {
 	EBookClient *book_client;
 	gint i;
@@ -68,8 +68,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/GetRevision", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_revision, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/GetRevision", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_revision, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

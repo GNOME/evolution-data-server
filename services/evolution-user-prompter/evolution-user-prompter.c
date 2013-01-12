@@ -40,7 +40,9 @@ main (gint argc,
 	e_gdbus_templates_init_main_thread ();
 
 	server = e_user_prompter_server_new ();
-	g_signal_connect (server, "prompt", G_CALLBACK (prompt_user_show), NULL);
+	g_signal_connect (
+		server, "prompt",
+		G_CALLBACK (prompt_user_show), NULL);
 
 	g_print ("Prompter is up and running...\n");
 

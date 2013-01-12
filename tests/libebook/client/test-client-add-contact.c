@@ -10,7 +10,7 @@ static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 }
 
 static void
 test_add_contact_sync (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact;
@@ -28,7 +28,7 @@ add_contact_cb (GObject *source_object,
                 GAsyncResult *result,
                 gpointer user_data)
 {
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 	GError *error = NULL;
 	gchar *uid;
 
@@ -43,14 +43,13 @@ add_contact_cb (GObject *source_object,
 
 static void
 test_add_contact_async (ETestServerFixture *fixture,
-			gconstpointer       user_data)
+                        gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact;
 	gchar *vcard;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-
 
 	vcard = new_vcard_from_test_case ("simple-1");
 	contact = e_contact_new_from_vcard (vcard);
@@ -71,10 +70,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/AddContact/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_add_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/AddContact/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_add_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/AddContact/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_add_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/AddContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_add_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -23,8 +23,8 @@
 #include <libebackend/libebackend.h>
 
 /* This shows a trust-prompt. The function may not block and returns whether
-   showed a dialog or not. It calls e_user_prompter_server_extension_response()
-   when a user responded to the dialog with one of the TRUST_PROMPT_RESPONSE values.
+ * showed a dialog or not. It calls e_user_prompter_server_extension_response()
+ * when a user responded to the dialog with one of the TRUST_PROMPT_RESPONSE values.
 */
 
 #define TRUST_PROMPT_RESPONSE_UNKNOWN			-1

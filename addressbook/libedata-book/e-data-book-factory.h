@@ -46,7 +46,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryClass))
 
-
 /**
  * EDS_ADDRESS_BOOK_MODULES:
  *

@@ -94,7 +94,7 @@ typedef struct _PrompterAsyncData {
 			     struct _PrompterAsyncData *async_data,
 			     GCancellable *cancellable,
 			     GError **error);
-	
+
 	/* Internal data */
 	gint prompt_id;
 	GMainLoop *main_loop; /* not owned by the structure */
@@ -123,9 +123,9 @@ prompter_async_data_free (PrompterAsyncData *async_data)
 
 static void
 user_prompter_response_cb (EDBusUserPrompter *dbus_prompter,
-			   gint prompt_id,
-			   gint response_button,
-			   PrompterAsyncData *async_data)
+                           gint prompt_id,
+                           gint response_button,
+                           PrompterAsyncData *async_data)
 {
 	g_return_if_fail (async_data != NULL);
 
@@ -137,9 +137,9 @@ user_prompter_response_cb (EDBusUserPrompter *dbus_prompter,
 
 static gboolean
 user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
-			     struct _PrompterAsyncData *async_data,
-			     GCancellable *cancellable,
-			     GError **error)
+                             struct _PrompterAsyncData *async_data,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	GPtrArray *captions;
 	GSList *iter;
@@ -158,7 +158,8 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 	/* NULL-terminated array */
 	g_ptr_array_add (captions, NULL);
 
-	success = e_dbus_user_prompter_call_prompt_sync (dbus_prompter,
+	success = e_dbus_user_prompter_call_prompt_sync (
+		dbus_prompter,
 		async_data->type ? async_data->type : "",
 		async_data->title ? async_data->title : "",
 		async_data->primary_text ? async_data->primary_text : "",
@@ -176,10 +177,10 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 
 static void
 user_prompter_extension_response_cb (EDBusUserPrompter *dbus_prompter,
-				     gint prompt_id,
-				     gint response_button,
-				     const gchar * const *arg_values,
-				     PrompterAsyncData *async_data)
+                                     gint prompt_id,
+                                     gint response_button,
+                                     const gchar * const *arg_values,
+                                     PrompterAsyncData *async_data)
 {
 	g_return_if_fail (async_data != NULL);
 
@@ -193,18 +194,19 @@ user_prompter_extension_response_cb (EDBusUserPrompter *dbus_prompter,
 
 static gboolean
 user_prompter_extension_prompt_invoke (EDBusUserPrompter *dbus_prompter,
-				       struct _PrompterAsyncData *async_data,
-				       GCancellable *cancellable,
-				       GError **error)
+                                       struct _PrompterAsyncData *async_data,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	gboolean success;
 	gchar **params;
 
 	g_return_val_if_fail (dbus_prompter != NULL, FALSE);
 	g_return_val_if_fail (async_data != NULL, FALSE);
-	
+
 	params = e_named_parameters_to_strv (async_data->in_parameters);
-	success = e_dbus_user_prompter_call_extension_prompt_sync (dbus_prompter,
+	success = e_dbus_user_prompter_call_extension_prompt_sync (
+		dbus_prompter,
 		async_data->dialog_name,
 		(const gchar *const *) params,
 		&async_data->prompt_id,
@@ -218,8 +220,8 @@ user_prompter_extension_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 
 static void
 user_prompter_prompt_thread (GSimpleAsyncResult *simple,
-			     GObject *object,
-			     GCancellable *cancellable)
+                             GObject *object,
+                             GCancellable *cancellable)
 {
 	EDBusUserPrompter *dbus_prompter;
 	PrompterAsyncData *async_data;
@@ -237,7 +239,7 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 
 	main_context = g_main_context_new ();
 	/* this way the Response signal is delivered here, not to the main thread's context,
-	   which can be blocked by the e_user_prompter_prompt_sync() call anyway */
+	 * which can be blocked by the e_user_prompter_prompt_sync() call anyway */
 	g_main_context_push_thread_default (main_context);
 
 	dbus_prompter = e_dbus_user_prompter_proxy_new_for_bus_sync (
@@ -252,7 +254,7 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 		g_main_context_pop_thread_default (main_context);
 
 		/* Make sure the main_context doesn't have pending operations;
-		   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+		 * workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
 		while (g_main_context_pending (main_context))
 			g_main_context_iteration (main_context, FALSE);
 
@@ -263,7 +265,8 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 		return;
 	}
 
-	handler_id = g_signal_connect (dbus_prompter, async_data->response_signal_name,
+	handler_id = g_signal_connect (
+		dbus_prompter, async_data->response_signal_name,
 		async_data->response_callback, async_data);
 
 	if (!async_data->invoke (dbus_prompter, async_data, cancellable, &local_error)) {
@@ -273,7 +276,7 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 		g_main_context_pop_thread_default (main_context);
 
 		/* Make sure the main_context doesn't have pending operations;
-		   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+		 * workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
 		while (g_main_context_pending (main_context))
 			g_main_context_iteration (main_context, FALSE);
 
@@ -297,7 +300,7 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
 	g_main_context_pop_thread_default (main_context);
 
 	/* Make sure the main_context doesn't have pending operations;
-	   workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
+	 * workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
 	while (g_main_context_pending (main_context))
 		g_main_context_iteration (main_context, FALSE);
 
@@ -333,15 +336,15 @@ user_prompter_prompt_thread (GSimpleAsyncResult *simple,
  **/
 void
 e_user_prompter_prompt (EUserPrompter *prompter,
-			const gchar *type,
-			const gchar *title,
-			const gchar *primary_text,
-			const gchar *secondary_text,
-			gboolean use_markup,
-			const GSList *button_captions,
-			GCancellable *cancellable,
-			GAsyncReadyCallback callback,
-			gpointer user_data)
+                        const gchar *type,
+                        const gchar *title,
+                        const gchar *primary_text,
+                        const gchar *secondary_text,
+                        gboolean use_markup,
+                        const GSList *button_captions,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	PrompterAsyncData *async_data;
@@ -395,8 +398,8 @@ e_user_prompter_prompt (EUserPrompter *prompter,
  **/
 gint
 e_user_prompter_prompt_finish (EUserPrompter *prompter,
-			       GAsyncResult *result,
-			       GError **error)
+                               GAsyncResult *result,
+                               GError **error)
 {
 	GSimpleAsyncResult *simple;
 	PrompterAsyncData *async_data;
@@ -444,14 +447,14 @@ e_user_prompter_prompt_finish (EUserPrompter *prompter,
  **/
 gint
 e_user_prompter_prompt_sync (EUserPrompter *prompter,
-			     const gchar *type,
-			     const gchar *title,
-			     const gchar *primary_text,
-			     const gchar *secondary_text,
-			     gboolean use_markup,
-			     const GSList *button_captions,
-			     GCancellable *cancellable,
-			     GError **error)
+                             const gchar *type,
+                             const gchar *title,
+                             const gchar *primary_text,
+                             const gchar *secondary_text,
+                             gboolean use_markup,
+                             const GSList *button_captions,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	EAsyncClosure *closure;
 	GAsyncResult *result;
@@ -461,12 +464,15 @@ e_user_prompter_prompt_sync (EUserPrompter *prompter,
 
 	closure = e_async_closure_new ();
 
-	e_user_prompter_prompt (prompter, type, title, primary_text, secondary_text, use_markup, button_captions,
-		cancellable, e_async_closure_callback, closure);
+	e_user_prompter_prompt (
+		prompter, type, title, primary_text, secondary_text,
+		use_markup, button_captions, cancellable,
+		e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);
 
-	response_button = e_user_prompter_prompt_finish (prompter, result, error);
+	response_button = e_user_prompter_prompt_finish (
+		prompter, result, error);
 
 	e_async_closure_free (closure);
 
@@ -498,11 +504,11 @@ e_user_prompter_prompt_sync (EUserPrompter *prompter,
  **/
 void
 e_user_prompter_extension_prompt (EUserPrompter *prompter,
-				  const gchar *dialog_name,
-				  const ENamedParameters *in_parameters,
-				  GCancellable *cancellable,
-				  GAsyncReadyCallback callback,
-				  gpointer user_data)
+                                  const gchar *dialog_name,
+                                  const ENamedParameters *in_parameters,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	PrompterAsyncData *async_data;
@@ -562,9 +568,9 @@ e_user_prompter_extension_prompt (EUserPrompter *prompter,
  **/
 gint
 e_user_prompter_extension_prompt_finish (EUserPrompter *prompter,
-					 GAsyncResult *result,
-					 ENamedParameters *out_values,
-					 GError **error)
+                                         GAsyncResult *result,
+                                         ENamedParameters *out_values,
+                                         GError **error)
 {
 	GSimpleAsyncResult *simple;
 	PrompterAsyncData *async_data;
@@ -617,11 +623,11 @@ e_user_prompter_extension_prompt_finish (EUserPrompter *prompter,
  **/
 gint
 e_user_prompter_extension_prompt_sync (EUserPrompter *prompter,
-				       const gchar *dialog_name,
-				       const ENamedParameters *in_parameters,
-				       ENamedParameters *out_values,
-				       GCancellable *cancellable,
-				       GError **error)
+                                       const gchar *dialog_name,
+                                       const ENamedParameters *in_parameters,
+                                       ENamedParameters *out_values,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	EAsyncClosure *closure;
 	GAsyncResult *result;
@@ -632,7 +638,8 @@ e_user_prompter_extension_prompt_sync (EUserPrompter *prompter,
 
 	closure = e_async_closure_new ();
 
-	e_user_prompter_extension_prompt (prompter, dialog_name, in_parameters,
+	e_user_prompter_extension_prompt (
+		prompter, dialog_name, in_parameters,
 		cancellable, e_async_closure_callback, closure);
 
 	result = e_async_closure_wait (closure);

@@ -33,9 +33,9 @@ objects_removed (EBookClientView *view,
 static void
 complete (EBookClientView *view,
           const GError *error,
-	  gpointer user_data)
+          gpointer user_data)
 {
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	e_book_client_view_stop (view, NULL);
 	g_object_unref (view);
@@ -45,7 +45,7 @@ complete (EBookClientView *view,
 
 static void
 setup_and_start_view (EBookClientView *view,
-		      GMainLoop       *loop)
+                      GMainLoop *loop)
 {
 	GError *error = NULL;
 
@@ -67,7 +67,7 @@ get_view_cb (GObject *source_object,
              GAsyncResult *result,
              gpointer user_data)
 {
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 	EBookClientView *view;
 	GError *error = NULL;
 
@@ -90,7 +90,7 @@ setup_book (EBookClient *book_client)
 
 static void
 test_get_view_sync (ETestServerFixture *fixture,
-		    gconstpointer       user_data)
+                    gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -119,7 +119,7 @@ test_get_view_sync (ETestServerFixture *fixture,
 
 static void
 test_get_view_async (ETestServerFixture *fixture,
-		     gconstpointer       user_data)
+                     gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -147,10 +147,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/GetBookClientView/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_view_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/GetBookClientView/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_view_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/GetBookClientView/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_view_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/GetBookClientView/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_view_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

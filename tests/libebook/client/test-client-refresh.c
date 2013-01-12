@@ -17,7 +17,7 @@ async_refresh_result_ready (GObject *source_object,
 {
 	EBookClient *book_client;
 	GError *error = NULL;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	book_client = E_BOOK_CLIENT (source_object);
 
@@ -26,12 +26,12 @@ async_refresh_result_ready (GObject *source_object,
 		return;
 	}
 
-	g_main_loop_quit (loop);	
+	g_main_loop_quit (loop);
 }
 
 static void
 test_refresh_sync (ETestServerFixture *fixture,
-		   gconstpointer       user_data)
+                   gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -56,7 +56,7 @@ main_loop_fail_timeout (gpointer unused)
 
 static void
 test_refresh_async (ETestServerFixture *fixture,
-		    gconstpointer       user_data)
+                    gconstpointer user_data)
 {
 	EBookClient *book_client;
 
@@ -67,7 +67,7 @@ test_refresh_async (ETestServerFixture *fixture,
 		return;
 
 	e_client_refresh (E_CLIENT (book_client), NULL, async_refresh_result_ready, fixture->loop);
-	g_timeout_add (5 * 1000, (GSourceFunc)main_loop_fail_timeout, NULL);
+	g_timeout_add (5 * 1000, (GSourceFunc) main_loop_fail_timeout, NULL);
 	g_main_loop_run (fixture->loop);
 }
 
@@ -80,10 +80,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/Refresh/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_refresh_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/Refresh/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_refresh_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/Refresh/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_refresh_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/Refresh/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_refresh_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

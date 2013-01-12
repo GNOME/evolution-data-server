@@ -66,46 +66,49 @@ struct _EUserPrompterClass {
 	GObjectClass parent;
 };
 
-GType		e_user_prompter_get_type		(void);
-EUserPrompter *	e_user_prompter_new			(void);
-void		e_user_prompter_prompt			(EUserPrompter *prompter,
-							 const gchar *type,
-							 const gchar *title,
-							 const gchar *primary_text,
-							 const gchar *secondary_text,
-							 gboolean use_markup,
-							 const GSList *button_captions,
-							 GCancellable *cancellable,
-							 GAsyncReadyCallback callback,
-							 gpointer user_data);
-gint		e_user_prompter_prompt_finish		(EUserPrompter *prompter,
-							 GAsyncResult *result,
-							 GError **error);
-gint		e_user_prompter_prompt_sync		(EUserPrompter *prompter,
-							 const gchar *type,
-							 const gchar *title,
-							 const gchar *primary_text,
-							 const gchar *secondary_text,
-							 gboolean use_markup,
-							 const GSList *button_captions,
-							 GCancellable *cancellable,
-							 GError **error);
-void		e_user_prompter_extension_prompt	(EUserPrompter *prompter,
-							 const gchar *dialog_name,
-							 const ENamedParameters *in_parameters,
-							 GCancellable *cancellable,
-							 GAsyncReadyCallback callback,
-							 gpointer user_data);
-gint		e_user_prompter_extension_prompt_finish	(EUserPrompter *prompter,
-							 GAsyncResult *result,
-							 ENamedParameters *out_values,
-							 GError **error);
-gint		e_user_prompter_extension_prompt_sync	(EUserPrompter *prompter,
-							 const gchar *dialog_name,
-							 const ENamedParameters *in_parameters,
-							 ENamedParameters *out_values,
-							 GCancellable *cancellable,
-							 GError **error);
+GType		e_user_prompter_get_type	(void) G_GNUC_CONST;
+EUserPrompter *	e_user_prompter_new		(void);
+void		e_user_prompter_prompt		(EUserPrompter *prompter,
+						 const gchar *type,
+						 const gchar *title,
+						 const gchar *primary_text,
+						 const gchar *secondary_text,
+						 gboolean use_markup,
+						 const GSList *button_captions,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gint		e_user_prompter_prompt_finish	(EUserPrompter *prompter,
+						 GAsyncResult *result,
+						 GError **error);
+gint		e_user_prompter_prompt_sync	(EUserPrompter *prompter,
+						 const gchar *type,
+						 const gchar *title,
+						 const gchar *primary_text,
+						 const gchar *secondary_text,
+						 gboolean use_markup,
+						 const GSList *button_captions,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_user_prompter_extension_prompt
+						(EUserPrompter *prompter,
+						 const gchar *dialog_name,
+						 const ENamedParameters *in_parameters,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gint		e_user_prompter_extension_prompt_finish
+						(EUserPrompter *prompter,
+						 GAsyncResult *result,
+						 ENamedParameters *out_values,
+						 GError **error);
+gint		e_user_prompter_extension_prompt_sync
+						(EUserPrompter *prompter,
+						 const gchar *dialog_name,
+						 const ENamedParameters *in_parameters,
+						 ENamedParameters *out_values,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

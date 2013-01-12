@@ -9,7 +9,7 @@ static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 }
 
 static void
 test_remove_contact_by_uid_sync (ETestServerFixture *fixture,
-				 gconstpointer       user_data)
+                                 gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -45,7 +45,7 @@ remove_contact_by_uid_cb (GObject *source_object,
                           GAsyncResult *result,
                           gpointer user_data)
 {
-	RemoveData *data = (RemoveData *)user_data;
+	RemoveData *data = (RemoveData *) user_data;
 	GError *error = NULL;
 	EContact *contact = NULL;
 
@@ -63,7 +63,7 @@ remove_contact_by_uid_cb (GObject *source_object,
 
 static void
 test_remove_contact_by_uid_async (ETestServerFixture *fixture,
-				  gconstpointer       user_data)
+                                  gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -96,10 +96,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/RemoveContactByUid/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_remove_contact_by_uid_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/RemoveContactByUid/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_remove_contact_by_uid_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/RemoveContactByUid/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_remove_contact_by_uid_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/RemoveContactByUid/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_remove_contact_by_uid_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

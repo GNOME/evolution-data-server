@@ -333,12 +333,12 @@ static void
 e_contact_finalize (GObject *object)
 {
 	EContactPrivate *priv;
-	gint i;
+	gint ii;
 
 	priv = E_CONTACT_GET_PRIVATE (object);
 
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++)
-		g_free (priv->cached_strings[i]);
+	for (ii = E_CONTACT_FIELD_FIRST; ii < E_CONTACT_FIELD_LAST; ii++)
+		g_free (priv->cached_strings[ii]);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_contact_parent_class)->finalize (object);
@@ -348,7 +348,7 @@ static void
 e_contact_class_init (EContactClass *class)
 {
 	GObjectClass *object_class;
-	gint i;
+	gint ii;
 
 	g_type_class_add_private (class, sizeof (EContactPrivate));
 
@@ -357,57 +357,57 @@ e_contact_class_init (EContactClass *class)
 	object_class->get_property = e_contact_get_property;
 	object_class->finalize = e_contact_finalize;
 
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
+	for (ii = E_CONTACT_FIELD_FIRST; ii < E_CONTACT_FIELD_LAST; ii++) {
 		GParamSpec *pspec = NULL;
+		GParamFlags flags;
 
 		/* Verify the table is correctly ordered */
-		g_assert (i == field_info[i].field_id);
+		g_assert (ii == field_info[ii].field_id);
 
-		if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRING)
+		flags = G_PARAM_READABLE |
+			G_PARAM_STATIC_NICK |
+			G_PARAM_STATIC_BLURB;
+
+		if (!field_info[ii].read_only)
+			flags |= G_PARAM_WRITABLE;
+
+		if (field_info[ii].t & E_CONTACT_FIELD_TYPE_STRING)
 			pspec = g_param_spec_string (
-				field_info[i].field_name,
-				_(field_info[i].pretty_name),
-				field_info[i].pretty_name,
+				field_info[ii].field_name,
+				_(field_info[ii].pretty_name),
+				field_info[ii].pretty_name,
 				NULL,
-				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
-				G_PARAM_STATIC_NICK |
-				G_PARAM_STATIC_BLURB);
-		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_BOOLEAN)
+				flags);
+		else if (field_info[ii].t & E_CONTACT_FIELD_TYPE_BOOLEAN)
 			pspec = g_param_spec_boolean (
-				field_info[i].field_name,
-				_(field_info[i].pretty_name),
-				field_info[i].pretty_name,
+				field_info[ii].field_name,
+				_(field_info[ii].pretty_name),
+				field_info[ii].pretty_name,
 				FALSE,
-				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
-				G_PARAM_STATIC_NICK |
-				G_PARAM_STATIC_BLURB);
-		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_STRUCT)
+				flags);
+		else if (field_info[ii].t & E_CONTACT_FIELD_TYPE_STRUCT)
 			pspec = g_param_spec_boxed (
-				field_info[i].field_name,
-				_(field_info[i].pretty_name),
-				field_info[i].pretty_name,
-				field_info[i].boxed_type_getter (),
-				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
-				G_PARAM_STATIC_NICK |
-				G_PARAM_STATIC_BLURB);
-		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_MULTI)
-			pspec = g_param_spec_boxed (field_info[i].field_name,
-						    _(field_info[i].pretty_name),
-						    field_info[i].pretty_name,
-						    E_TYPE_CONTACT_ATTR_LIST,
-						    (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
-						    | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+				field_info[ii].field_name,
+				_(field_info[ii].pretty_name),
+				field_info[ii].pretty_name,
+				field_info[ii].boxed_type_getter (),
+				flags);
+		else if (field_info[ii].t & E_CONTACT_FIELD_TYPE_MULTI)
+			pspec = g_param_spec_boxed (
+				field_info[ii].field_name,
+				_(field_info[ii].pretty_name),
+				field_info[ii].pretty_name,
+				E_TYPE_CONTACT_ATTR_LIST,
+				flags);
 		else
 			pspec = g_param_spec_pointer (
-				field_info[i].field_name,
-				_(field_info[i].pretty_name),
-				field_info[i].pretty_name,
-				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
-				G_PARAM_STATIC_NICK |
-				G_PARAM_STATIC_BLURB);
+				field_info[ii].field_name,
+				_(field_info[ii].pretty_name),
+				field_info[ii].pretty_name,
+				flags);
 
 		g_object_class_install_property (
-			object_class, field_info[i].field_id, pspec);
+			object_class, field_info[ii].field_id, pspec);
 	}
 }
 
@@ -1516,10 +1516,11 @@ e_contact_vcard_attribute (EContactField field_id)
 EContactField
 e_contact_field_id (const gchar *field_name)
 {
-	gint i;
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
-		if (!g_ascii_strcasecmp (field_info[i].field_name, field_name))
-			return field_info[i].field_id;
+	gint ii;
+
+	for (ii = E_CONTACT_FIELD_FIRST; ii < E_CONTACT_FIELD_LAST; ii++) {
+		if (!g_ascii_strcasecmp (field_info[ii].field_name, field_name))
+			return field_info[ii].field_id;
 	}
 
 	return 0;
@@ -1538,15 +1539,15 @@ e_contact_field_id (const gchar *field_name)
 EContactField
 e_contact_field_id_from_vcard (const gchar *vcard_field)
 {
-	gint i;
+	gint ii;
 
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
-		if (field_info[i].vcard_field_name == NULL)
+	for (ii = E_CONTACT_FIELD_FIRST; ii < E_CONTACT_FIELD_LAST; ii++) {
+		if (field_info[ii].vcard_field_name == NULL)
 			continue;
-		if (field_info[i].t & E_CONTACT_FIELD_TYPE_SYNTHETIC)
+		if (field_info[ii].t & E_CONTACT_FIELD_TYPE_SYNTHETIC)
 			continue;
-		if (!strcmp (field_info[i].vcard_field_name, vcard_field))
-			return field_info[i].field_id;
+		if (!strcmp (field_info[ii].vcard_field_name, vcard_field))
+			return field_info[ii].field_id;
 	}
 
 	g_warning ("unknown vCard field `%s'", vcard_field);
@@ -2590,7 +2591,6 @@ e_contact_cert_copy (EContactCert *cert)
 }
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")
-
 
 /**
  * e_contact_attr_list_copy:

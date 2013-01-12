@@ -26,7 +26,6 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-
 typedef struct {
 	ETestServerClosure closure;
 	EBookQuery *query;
@@ -39,7 +38,7 @@ static GList *closures = NULL;
 static void
 client_test_data_free (gpointer p)
 {
-	ClientTestData *data = (ClientTestData *)p;
+	ClientTestData *data = (ClientTestData *) p;
 
 	if (data->query)
 		e_book_query_unref (data->query);
@@ -47,27 +46,29 @@ client_test_data_free (gpointer p)
 }
 
 static void
-setup_custom_book (ESource            *scratch,
-		   ETestServerClosure *closure)
+setup_custom_book (ESource *scratch,
+                   ETestServerClosure *closure)
 {
 	ESourceBackendSummarySetup *setup;
 
 	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
 	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
-	e_source_backend_summary_setup_set_summary_fields (setup,
-							   E_CONTACT_FULL_NAME,
-							   E_CONTACT_FAMILY_NAME,
-							   E_CONTACT_EMAIL_1,
-							   E_CONTACT_TEL,
-							   E_CONTACT_EMAIL,
-							   0);
-	e_source_backend_summary_setup_set_indexed_fields (setup,
-							   E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
-							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
-							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_SUFFIX,
-							   0);
+	e_source_backend_summary_setup_set_summary_fields (
+		setup,
+		E_CONTACT_FULL_NAME,
+		E_CONTACT_FAMILY_NAME,
+		E_CONTACT_EMAIL_1,
+		E_CONTACT_TEL,
+		E_CONTACT_EMAIL,
+		0);
+	e_source_backend_summary_setup_set_indexed_fields (
+		setup,
+		E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
+		E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
+		E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
+		E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
+		E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_SUFFIX,
+		0);
 }
 
 static void
@@ -103,7 +104,7 @@ setup_book (EBookClient *book_client)
 
 static void
 search_test (ETestServerFixture *fixture,
-	     gconstpointer       user_data)
+             gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *results = NULL;
@@ -127,7 +128,7 @@ search_test (ETestServerFixture *fixture,
 
 static void
 uid_test (ETestServerFixture *fixture,
-	  gconstpointer       user_data)
+          gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *results = NULL;
@@ -160,46 +161,57 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-
 	/* Add search tests that fetch contacts */
-	add_client_test ("/client/search/exact/fn", search_test,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
-	                 1);
-	add_client_test ("/client/search/exact/name", search_test,
-	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
-	                 1);
-	add_client_test ("/client/search/prefix/fn", search_test,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
-	                 2);
-	add_client_test ("/client/search/prefix/fn/percent", search_test,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
-	                 1);
-	add_client_test ("/client/search/suffix/phone", search_test,
-	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
-	                 2);
-	add_client_test ("/client/search/suffix/email", search_test,
-	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
-	                 2);
+	add_client_test (
+		"/client/search/exact/fn", search_test,
+		e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
+		1);
+	add_client_test (
+		"/client/search/exact/name", search_test,
+		e_book_query_vcard_field_test (EVC_N, E_BOOK_QUERY_IS, "Janet"),
+		1);
+	add_client_test (
+		"/client/search/prefix/fn", search_test,
+		e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
+		2);
+	add_client_test (
+		"/client/search/prefix/fn/percent", search_test,
+		e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
+		1);
+	add_client_test (
+		"/client/search/suffix/phone", search_test,
+		e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
+		2);
+	add_client_test (
+		"/client/search/suffix/email", search_test,
+		e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
+		2);
 
 	/* Add search tests that fetch uids */
-	add_client_test ("/client/search-uid/exact/fn", uid_test,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
-	                 1);
-	add_client_test ("/client/search-uid/exact/name", uid_test,
-	                 e_book_query_vcard_field_test(EVC_N, E_BOOK_QUERY_IS, "Janet"),
-	                 1);
-	add_client_test ("/client/search-uid/prefix/fn", uid_test,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
-	                 2);
-	add_client_test ("/client/search-uid/prefix/fn/percent", uid_test,
-	                 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
-	                 1);
-	add_client_test ("/client/search-uid/suffix/phone", uid_test,
-	                 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
-	                 2);
-	add_client_test ("/client/search-uid/suffix/email", uid_test,
-	                 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
-	                 2);
+	add_client_test (
+		"/client/search-uid/exact/fn", uid_test,
+		e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
+		1);
+	add_client_test (
+		"/client/search-uid/exact/name", uid_test,
+		e_book_query_vcard_field_test (EVC_N, E_BOOK_QUERY_IS, "Janet"),
+		1);
+	add_client_test (
+		"/client/search-uid/prefix/fn", uid_test,
+		e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
+		2);
+	add_client_test (
+		"/client/search-uid/prefix/fn/percent", uid_test,
+		e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
+		1);
+	add_client_test (
+		"/client/search-uid/suffix/phone", uid_test,
+		e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
+		2);
+	add_client_test (
+		"/client/search-uid/suffix/email", uid_test,
+		e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
+		2);
 
 	ret = e_test_server_utils_run ();
 

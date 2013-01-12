@@ -35,7 +35,7 @@ create_object (ECalClient *cal_client)
 
 static void
 test_remove_object_sync (ETestServerFixture *fixture,
-			 gconstpointer       user_data)
+                         gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -58,7 +58,7 @@ async_remove_result_ready (GObject *source_object,
                            gpointer user_data)
 {
 	ECalClient *cal_client;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 	GError *error = NULL;
 
 	cal_client = E_CAL_CLIENT (source_object);
@@ -71,7 +71,7 @@ async_remove_result_ready (GObject *source_object,
 
 static void
 test_remove_object_async (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	gchar *uid;
@@ -95,10 +95,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/RemoveObject/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_remove_object_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/RemoveObject/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_remove_object_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/RemoveObject/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_remove_object_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/RemoveObject/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_remove_object_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

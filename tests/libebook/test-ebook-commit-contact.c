@@ -11,7 +11,6 @@ static ETestServerClosure book_closure =
 
 #define EMAIL_ADD "foo@bar.com"
 
-
 /* Global data */
 static EBook *book = NULL;
 static gchar *uid  = NULL;
@@ -54,7 +53,7 @@ commit_verify_cb (EBookTestClosure *closure)
 
 static void
 test_commit_contact_sync (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	EContact *contact;
 
@@ -75,7 +74,7 @@ test_commit_contact_sync (ETestServerFixture *fixture,
 
 static void
 test_commit_contact_async (ETestServerFixture *fixture,
-			   gconstpointer       user_data)
+                           gconstpointer user_data)
 {
 	EContact *contact;
 
@@ -104,10 +103,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBook/CommitContact/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_commit_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBook/CommitContact/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_commit_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/CommitContact/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_commit_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/CommitContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_commit_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

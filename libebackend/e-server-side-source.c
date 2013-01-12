@@ -1703,7 +1703,7 @@ e_server_side_source_set_allow_auth_prompt (EServerSideSource *source,
 {
 	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
 
-	if ((source->priv->allow_auth_prompt ? 1 : 0) == (allow_auth_prompt ? 1 : 0))
+	if (source->priv->allow_auth_prompt == allow_auth_prompt)
 		return;
 
 	source->priv->allow_auth_prompt = allow_auth_prompt;

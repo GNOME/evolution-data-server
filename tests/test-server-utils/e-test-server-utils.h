@@ -30,7 +30,6 @@
 typedef struct _ETestServerFixture ETestServerFixture;
 typedef struct _ETestServerClosure ETestServerClosure;
 
-
 /**
  * E_TEST_SERVER_UTILS_SERVICE:
  * @fixture: An #ETestServerFixture
@@ -44,7 +43,7 @@ typedef struct _ETestServerClosure ETestServerClosure;
  *
  */
 #define E_TEST_SERVER_UTILS_SERVICE(fixture, service_type) \
-	((service_type *)((ETestServerFixture *)fixture)->service.generic)
+	((service_type *)((ETestServerFixture *) fixture)->service.generic)
 
 /**
  * ETestSourceCustomizeFunc:
@@ -126,7 +125,6 @@ struct _ETestServerFixture {
 	ETestService     service;
 };
 
-
 void e_test_server_utils_setup    (ETestServerFixture *fixture,
 				   gconstpointer       user_data);
 
@@ -134,6 +132,5 @@ void e_test_server_utils_teardown (ETestServerFixture *fixture,
 				   gconstpointer       user_data);
 
 gint e_test_server_utils_run      (void);
-
 
 #endif /* E_TEST_UTILS_H */

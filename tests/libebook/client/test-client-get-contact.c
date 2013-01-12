@@ -8,10 +8,9 @@
 
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
-
 static void
 test_get_contact_sync (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -31,13 +30,13 @@ contact_ready_cb (GObject *source_object,
                   GAsyncResult *result,
                   gpointer user_data)
 {
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 	EContact *contact;
 	GError *error = NULL;
 
 	if (!e_book_client_get_contact_finish (E_BOOK_CLIENT (source_object), result, &contact, &error)) {
 		g_error ("get contact finish: %s", error->message);
-	} 
+	}
 
 	g_object_unref (contact);
 	g_main_loop_quit (loop);
@@ -45,7 +44,7 @@ contact_ready_cb (GObject *source_object,
 
 static void
 test_get_contact_async (ETestServerFixture *fixture,
-			gconstpointer       user_data)
+                        gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -56,13 +55,13 @@ test_get_contact_async (ETestServerFixture *fixture,
 		g_error ("Failed to get contact");
 	}
 
-	e_book_client_get_contact (book_client,
-				   e_contact_get_const (contact, E_CONTACT_UID),
-				   NULL, contact_ready_cb, fixture->loop);
+	e_book_client_get_contact (
+		book_client,
+		e_contact_get_const (contact, E_CONTACT_UID),
+		NULL, contact_ready_cb, fixture->loop);
 	g_object_unref (contact);
 	g_main_loop_run (fixture->loop);
 }
-
 
 gint
 main (gint argc,
@@ -73,10 +72,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/GetContact/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/GetContact/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/GetContact/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/GetContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

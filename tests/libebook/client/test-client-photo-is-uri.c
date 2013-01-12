@@ -300,7 +300,7 @@ add_contact_uri (EBookClient *book)
 
 static void
 test_photo_is_uri (ETestServerFixture *fixture,
-		   gconstpointer       user_data)
+                   gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EBookClientView *view;
@@ -336,8 +336,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/PhotoIsUri", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_photo_is_uri, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/PhotoIsUri", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_photo_is_uri, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

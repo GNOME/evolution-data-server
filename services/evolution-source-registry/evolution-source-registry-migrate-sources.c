@@ -1049,13 +1049,15 @@ migrate_parse_url_rename_params (CamelURL *url)
 		g_datalist_set_data_full (&url->params, key, value, g_free);
 	}
 
-	/* missing "security-method" means STARTTLS, as it was the default value in 3.4- */
+	/* Missing "security-method" means STARTTLS,
+	 * as it was the default value prior to 3.6. */
 	if (!g_datalist_get_data (&url->params, "security-method")) {
 		GEnumClass *enum_class;
 		GEnumValue *enum_value;
 		gchar *value = NULL;
 
-		enum_class = g_type_class_ref (CAMEL_TYPE_NETWORK_SECURITY_METHOD);
+		enum_class = g_type_class_ref (
+			CAMEL_TYPE_NETWORK_SECURITY_METHOD);
 		enum_value = g_enum_get_value (
 			enum_class,
 			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
@@ -1065,7 +1067,8 @@ migrate_parse_url_rename_params (CamelURL *url)
 			g_warn_if_reached ();
 		g_type_class_unref (enum_class);
 
-		g_datalist_set_data_full (&url->params, "security-method", value, g_free);
+		g_datalist_set_data_full (
+			&url->params, "security-method", value, g_free);
 	}
 
 	/* A few more adjustments...

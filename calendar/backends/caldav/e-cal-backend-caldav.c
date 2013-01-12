@@ -1026,8 +1026,8 @@ static void
 send_and_handle_redirection (ECalBackendCalDAV *cbdav,
                              SoupMessage *msg,
                              gchar **new_location,
-			     GCancellable *cancellable,
-			     GError **error)
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	gchar *old_uri = NULL;
 
@@ -1105,7 +1105,7 @@ caldav_generate_uri (ECalBackendCalDAV *cbdav,
 static gboolean
 caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
                              gboolean *server_unreachable,
-			     GCancellable *cancellable,
+                             GCancellable *cancellable,
                              GError **perror)
 {
 	SoupMessage *message;
@@ -1523,7 +1523,7 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
 static gboolean
 caldav_server_get_object (ECalBackendCalDAV *cbdav,
                           CalDAVObject *object,
-			  GCancellable *cancellable,
+                          GCancellable *cancellable,
                           GError **perror)
 {
 	SoupMessage              *message;
@@ -1590,7 +1590,7 @@ static void
 caldav_post_freebusy (ECalBackendCalDAV *cbdav,
                       const gchar *url,
                       gchar **post_fb,
-		      GCancellable *cancellable,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	SoupMessage *message;
@@ -1672,7 +1672,7 @@ static gboolean
 caldav_server_put_object (ECalBackendCalDAV *cbdav,
                           CalDAVObject *object,
                           icalcomponent *icalcomp,
-			  GCancellable *cancellable,
+                          GCancellable *cancellable,
                           GError **perror)
 {
 	SoupMessage              *message;
@@ -1820,7 +1820,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 static void
 caldav_server_delete_object (ECalBackendCalDAV *cbdav,
                              CalDAVObject *object,
-			     GCancellable *cancellable,
+                             GCancellable *cancellable,
                              GError **perror)
 {
 	SoupMessage              *message;
@@ -1858,8 +1858,8 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 
 static gboolean
 caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav,
-				    GCancellable *cancellable,
-				    GError **error)
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	SoupMessage *message;
 	xmlOutputBufferPtr buf;
@@ -2746,7 +2746,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 static gboolean
 open_calendar (ECalBackendCalDAV *cbdav,
-	       GCancellable *cancellable,
+               GCancellable *cancellable,
                GError **error)
 {
 	gboolean server_unreachable = FALSE;
@@ -3715,7 +3715,7 @@ do_create_objects (ECalBackendCalDAV *cbdav,
                    const GSList *in_calobjs,
                    GSList **uids,
                    GSList **new_components,
-		   GCancellable *cancellable,
+                   GCancellable *cancellable,
                    GError **perror)
 {
 	ECalComponent            *comp;
@@ -3814,7 +3814,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
                    CalObjModType mod,
                    GSList **old_components,
                    GSList **new_components,
-		   GCancellable *cancellable,
+                   GCancellable *cancellable,
                    GError **error)
 {
 	ECalComponent            *comp;
@@ -3985,7 +3985,7 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
                    CalObjModType mod,
                    GSList **old_components,
                    GSList **new_components,
-		   GCancellable *cancellable,
+                   GCancellable *cancellable,
                    GError **perror)
 {
 	icalcomponent            *cache_comp;
@@ -4165,7 +4165,7 @@ process_object (ECalBackendCalDAV *cbdav,
                 ECalComponent *ecomp,
                 gboolean online,
                 icalproperty_method method,
-		GCancellable *cancellable,
+                GCancellable *cancellable,
                 GError **error)
 {
 	ESourceRegistry *registry;
@@ -4399,7 +4399,7 @@ caldav_busy_stub (
                   in_calobjs,
                   uids,
                   new_components,
-		  cancellable,
+                  cancellable,
                   perror))
 
 caldav_busy_stub (
@@ -4418,7 +4418,7 @@ caldav_busy_stub (
                   mod,
                   old_components,
                   new_components,
-		  cancellable,
+                  cancellable,
                   perror))
 
 caldav_busy_stub (
@@ -4437,7 +4437,7 @@ caldav_busy_stub (
                   mod,
                   old_components,
                   new_components,
-		  cancellable,
+                  cancellable,
                   perror))
 
 caldav_busy_stub (
@@ -5046,7 +5046,8 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
 	cbdav->priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	cbdav->priv->session = soup_session_sync_new ();
-	g_object_set (cbdav->priv->session,
+	g_object_set (
+		cbdav->priv->session,
 		SOUP_SESSION_TIMEOUT, 90,
 		SOUP_SESSION_SSL_STRICT, TRUE,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,

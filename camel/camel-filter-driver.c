@@ -1736,7 +1736,8 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:
-			g_prefix_error (&driver->priv->error,
+			g_prefix_error (
+				&driver->priv->error,
 				_("Execution of filter '%s' failed: "),
 				rule->name);
 			goto error;
@@ -1769,7 +1770,8 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			}
 			r = camel_sexp_eval (driver->priv->eval);
 			if (driver->priv->error != NULL) {
-				g_prefix_error (&driver->priv->error,
+				g_prefix_error (
+					&driver->priv->error,
 					_("Execution of filter '%s' failed: "),
 					rule->name);
 				goto error;

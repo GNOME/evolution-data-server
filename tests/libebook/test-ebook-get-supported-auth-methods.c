@@ -40,10 +40,9 @@ get_supported_auth_methods_cb (EBookTestClosure *closure)
 	g_main_loop_quit ((GMainLoop *) (closure->user_data));
 }
 
-
 static void
 test_get_supported_auth_methods_sync (ETestServerFixture *fixture,
-				      gconstpointer       user_data)
+                                      gconstpointer user_data)
 {
 	EBook *book;
 	GList *auth_methods;
@@ -67,7 +66,7 @@ main_loop_fail_timeout (gpointer unused)
 
 static void
 test_get_supported_auth_methods_async (ETestServerFixture *fixture,
-				       gconstpointer       user_data)
+                                       gconstpointer user_data)
 {
 	EBook *book;
 
@@ -76,7 +75,7 @@ test_get_supported_auth_methods_async (ETestServerFixture *fixture,
 	ebook_test_utils_book_async_get_supported_auth_methods (
 		book, (GSourceFunc) get_supported_auth_methods_cb, fixture->loop);
 
-	g_timeout_add (5 * 1000, (GSourceFunc)main_loop_fail_timeout, NULL);
+	g_timeout_add (5 * 1000, (GSourceFunc) main_loop_fail_timeout, NULL);
 	g_main_loop_run (fixture->loop);
 }
 
@@ -89,10 +88,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBook/GetSupportedAuthMethods/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_supported_auth_methods_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBook/GetSupportedAuthMethods/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_supported_auth_methods_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetSupportedAuthMethods/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_supported_auth_methods_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetSupportedAuthMethods/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_supported_auth_methods_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -12,7 +12,7 @@ static ETestServerClosure cal_closure =
 
 static void
 test_get_objects_for_uid (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	ECal *cal;
 	icalcomponent *component;
@@ -56,8 +56,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECal/GetObjectsForUid", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_objects_for_uid, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECal/GetObjectsForUid", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_objects_for_uid, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -56,7 +56,7 @@ fill_book_client (EBookClient *book_client,
 
 static void
 test_remove_contacts_sync (ETestServerFixture *fixture,
-			   gconstpointer       user_data)
+                           gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -87,7 +87,7 @@ remove_contacts_cb (GObject *source_object,
                     gpointer user_data)
 {
 	GError *error = NULL;
-	RemoveData *data = (RemoveData *)user_data;
+	RemoveData *data = (RemoveData *) user_data;
 
 	if (!e_book_client_remove_contacts_finish (E_BOOK_CLIENT (source_object), result, &error))
 		g_error ("remove contacts finish: %s", error->message);
@@ -98,7 +98,7 @@ remove_contacts_cb (GObject *source_object,
 
 static void
 test_remove_contacts_async (ETestServerFixture *fixture,
-			    gconstpointer       user_data)
+                            gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *uids = NULL;
@@ -128,10 +128,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/RemoveContacts/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_remove_contacts_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/RemoveContacts/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_remove_contacts_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/RemoveContacts/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_remove_contacts_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/RemoveContacts/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_remove_contacts_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

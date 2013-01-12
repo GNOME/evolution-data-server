@@ -36,7 +36,7 @@ verify_modify (EContact *contact)
 
 static void
 test_modify_contact_sync (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -61,12 +61,10 @@ test_modify_contact_sync (ETestServerFixture *fixture,
 	g_object_unref (contact);
 }
 
-
 typedef struct {
 	EContact *contact;
 	GMainLoop *loop;
 } ModifyData;
-
 
 static void
 contact_ready_cb (GObject *source_object,
@@ -75,7 +73,7 @@ contact_ready_cb (GObject *source_object,
 {
 	EContact *contact;
 	GError *error = NULL;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	if (!e_book_client_get_contact_finish (E_BOOK_CLIENT (source_object), result, &contact, &error))
 		g_error ("get contact finish: %s", error->message);
@@ -91,20 +89,21 @@ contact_modified_cb (GObject *source_object,
                      GAsyncResult *result,
                      gpointer user_data)
 {
-	ModifyData *data = (ModifyData *)user_data;
+	ModifyData *data = (ModifyData *) user_data;
 	GError *error = NULL;
 
 	if (!e_book_client_modify_contact_finish (E_BOOK_CLIENT (source_object), result, &error))
 		g_error ("modify contact finish: %s", error->message);
 
-	e_book_client_get_contact (E_BOOK_CLIENT (source_object),
-				   e_contact_get_const (data->contact, E_CONTACT_UID),
-				   NULL, contact_ready_cb, data->loop);
+	e_book_client_get_contact (
+		E_BOOK_CLIENT (source_object),
+		e_contact_get_const (data->contact, E_CONTACT_UID),
+		NULL, contact_ready_cb, data->loop);
 }
 
 static void
 test_modify_contact_async (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact;
@@ -135,10 +134,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/ModifyContact/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_modify_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/ModifyContact/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_modify_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/ModifyContact/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_modify_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/ModifyContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_modify_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

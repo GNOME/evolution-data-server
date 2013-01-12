@@ -36,7 +36,7 @@
 
 static void
 cancellable_locks_cancelled_cb (GCancellable *cancellable,
-				struct _ECancellableLocksBase *base)
+                                struct _ECancellableLocksBase *base)
 {
 	g_return_if_fail (base != NULL);
 
@@ -98,7 +98,7 @@ e_cancellable_mutex_clear (ECancellableMutex *mutex)
  **/
 gboolean
 e_cancellable_mutex_lock (ECancellableMutex *mutex,
-			  GCancellable *cancellable)
+                          GCancellable *cancellable)
 {
 	gulong handler_id;
 	gboolean res = TRUE;
@@ -117,12 +117,14 @@ e_cancellable_mutex_lock (ECancellableMutex *mutex,
 		return FALSE;
 	}
 
-	handler_id = g_signal_connect (cancellable, "cancelled",
+	handler_id = g_signal_connect (
+		cancellable, "cancelled",
 		G_CALLBACK (cancellable_locks_cancelled_cb), &mutex->base);
 
 	while (!g_mutex_trylock (&mutex->mutex)) {
 		/* recheck once per 10 seconds, just in case */
-		g_cond_wait_until (&mutex->base.cond, &mutex->base.cond_mutex,
+		g_cond_wait_until (
+			&mutex->base.cond, &mutex->base.cond_mutex,
 			g_get_monotonic_time () + (10 * G_TIME_SPAN_SECOND));
 
 		if (g_cancellable_is_cancelled (cancellable)) {
@@ -233,7 +235,7 @@ e_cancellable_rec_mutex_clear (ECancellableRecMutex *rec_mutex)
  **/
 gboolean
 e_cancellable_rec_mutex_lock (ECancellableRecMutex *rec_mutex,
-			      GCancellable *cancellable)
+                              GCancellable *cancellable)
 {
 	gulong handler_id;
 	gboolean res = TRUE;
@@ -252,12 +254,14 @@ e_cancellable_rec_mutex_lock (ECancellableRecMutex *rec_mutex,
 		return FALSE;
 	}
 
-	handler_id = g_signal_connect (cancellable, "cancelled",
+	handler_id = g_signal_connect (
+		cancellable, "cancelled",
 		G_CALLBACK (cancellable_locks_cancelled_cb), &rec_mutex->base);
 
 	while (!g_rec_mutex_trylock (&rec_mutex->rec_mutex)) {
 		/* recheck once per 10 seconds, just in case */
-		g_cond_wait_until (&rec_mutex->base.cond, &rec_mutex->base.cond_mutex,
+		g_cond_wait_until (
+			&rec_mutex->base.cond, &rec_mutex->base.cond_mutex,
 			g_get_monotonic_time () + (10 * G_TIME_SPAN_SECOND));
 
 		if (g_cancellable_is_cancelled (cancellable)) {

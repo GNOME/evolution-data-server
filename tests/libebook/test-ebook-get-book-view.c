@@ -54,7 +54,7 @@ static void
 view_complete (EBookView *book_view,
                EBookViewStatus status,
                const gchar *error_msg,
-	       GMainLoop *loop)
+               GMainLoop *loop)
 {
 	e_book_view_stop (book_view);
 	g_object_unref (book_view);
@@ -63,7 +63,7 @@ view_complete (EBookView *book_view,
 
 static void
 setup_and_start_view (EBookView *view,
-		      GMainLoop *loop)
+                      GMainLoop *loop)
 {
 	g_signal_connect (view, "contacts_added", G_CALLBACK (contacts_added), NULL);
 	g_signal_connect (view, "contacts_removed", G_CALLBACK (contacts_removed), NULL);
@@ -91,7 +91,7 @@ setup_book (EBook *book)
 
 static void
 test_get_book_view_sync (ETestServerFixture *fixture,
-			 gconstpointer       user_data)
+                         gconstpointer user_data)
 {
 	EBook *book;
 	EBookQuery *query;
@@ -120,7 +120,7 @@ main_loop_fail_timeout (gpointer unused)
 
 static void
 test_get_book_view_async (ETestServerFixture *fixture,
-			  gconstpointer       user_data)
+                          gconstpointer user_data)
 {
 	EBook *book;
 	EBookQuery *query;
@@ -134,7 +134,7 @@ test_get_book_view_async (ETestServerFixture *fixture,
 		book, query,
 			(GSourceFunc) get_book_view_cb, fixture->loop);
 
-	g_timeout_add (5 * 1000, (GSourceFunc)main_loop_fail_timeout, NULL);
+	g_timeout_add (5 * 1000, (GSourceFunc) main_loop_fail_timeout, NULL);
 	g_main_loop_run (fixture->loop);
 	e_book_query_unref (query);
 }
@@ -148,10 +148,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBook/GetBookView/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_book_view_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBook/GetBookView/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_book_view_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetBookView/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_book_view_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetBookView/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_book_view_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

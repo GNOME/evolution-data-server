@@ -136,7 +136,7 @@ print_contact (EContact *contact)
 
 static void
 finish_test (EBookClientView *view,
-	     GMainLoop *loop)
+             GMainLoop *loop)
 {
 	e_book_client_view_stop (view, NULL);
 	g_object_unref (view);
@@ -147,10 +147,10 @@ finish_test (EBookClientView *view,
 static void
 objects_added (EBookClientView *view,
                const GSList *contacts,
-	       gpointer user_data)
+               gpointer user_data)
 {
 	const GSList *l;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	for (l = contacts; l; l = l->next) {
 		EContact *contact = l->data;
@@ -194,7 +194,7 @@ complete (EBookClientView *view,
 
 static void
 setup_and_start_view (EBookClientView *view,
-		      GMainLoop *loop)
+                      GMainLoop *loop)
 {
 	GError *error = NULL;
 	GSList  uid_field_list = { 0, };
@@ -228,7 +228,7 @@ get_view_cb (GObject *source_object,
 {
 	EBookClientView *view;
 	GError *error = NULL;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), result, &view, &error)) {
 		g_error ("get view finish: %s", error->message);
@@ -239,14 +239,14 @@ get_view_cb (GObject *source_object,
 
 static void
 test_get_view_sync (ETestServerFixture *fixture,
-		    gconstpointer       user_data)
+                    gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
 	EBookClientView *view;
 	gchar *sexp;
 	GError *error = NULL;
-	UIDOnlyClosure *closure = (UIDOnlyClosure *)user_data;
+	UIDOnlyClosure *closure = (UIDOnlyClosure *) user_data;
 
 	uids_only = closure->uids_only;
 
@@ -271,12 +271,12 @@ test_get_view_sync (ETestServerFixture *fixture,
 
 static void
 test_get_view_async (ETestServerFixture *fixture,
-		     gconstpointer       user_data)
+                     gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
 	gchar *sexp;
-	UIDOnlyClosure *closure = (UIDOnlyClosure *)user_data;
+	UIDOnlyClosure *closure = (UIDOnlyClosure *) user_data;
 
 	uids_only = closure->uids_only;
 
@@ -293,7 +293,6 @@ test_get_view_async (ETestServerFixture *fixture,
 	g_main_loop_run (fixture->loop);
 }
 
-
 gint
 main (gint argc,
       gchar **argv)
@@ -303,15 +302,19 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/UidOnlyView/Sync/AllData", ETestServerFixture, &book_closure_all_data,
-		    e_test_server_utils_setup, test_get_view_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/UidOnlyView/Sync/UidsOnly", ETestServerFixture, &book_closure_uids_only,
-		    e_test_server_utils_setup, test_get_view_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/UidOnlyView/Sync/AllData", ETestServerFixture, &book_closure_all_data,
+		e_test_server_utils_setup, test_get_view_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/UidOnlyView/Sync/UidsOnly", ETestServerFixture, &book_closure_uids_only,
+		e_test_server_utils_setup, test_get_view_sync, e_test_server_utils_teardown);
 
-	g_test_add ("/EBookClient/UidOnlyView/Async/AllData", ETestServerFixture, &book_closure_all_data,
-		    e_test_server_utils_setup, test_get_view_async, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/UidOnlyView/Async/UidsOnly", ETestServerFixture, &book_closure_uids_only,
-		    e_test_server_utils_setup, test_get_view_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/UidOnlyView/Async/AllData", ETestServerFixture, &book_closure_all_data,
+		e_test_server_utils_setup, test_get_view_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/UidOnlyView/Async/UidsOnly", ETestServerFixture, &book_closure_uids_only,
+		e_test_server_utils_setup, test_get_view_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -42,7 +42,7 @@ get_supported_fields_cb (EBookTestClosure *closure)
 
 static void
 test_get_supported_fields_sync (ETestServerFixture *fixture,
-				gconstpointer       user_data)
+                                gconstpointer user_data)
 {
 	EBook *book;
 	GList *fields;
@@ -59,7 +59,7 @@ test_get_supported_fields_sync (ETestServerFixture *fixture,
 
 static void
 test_get_supported_fields_async (ETestServerFixture *fixture,
-				 gconstpointer       user_data)
+                                 gconstpointer user_data)
 {
 	EBook *book;
 
@@ -79,10 +79,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBook/GetSupportedFields/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_supported_fields_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBook/GetSupportedFields/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_supported_fields_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetSupportedFields/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_supported_fields_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetSupportedFields/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_supported_fields_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

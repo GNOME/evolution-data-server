@@ -66,23 +66,27 @@ struct _EUserPrompterServerExtensionClass {
 	EExtensionClass parent_class;
 
 	/* virtual methods */
-	void		(*register_dialogs)	(EExtension *extension,
-						 struct _EUserPrompterServer *server); 
-	gboolean	(*prompt)		(EUserPrompterServerExtension *extension,
-						 gint prompt_id,
-						 const gchar *dialog_name,
-						 const ENamedParameters *parameters);
+	void		(*register_dialogs)
+					(EExtension *extension,
+					 struct _EUserPrompterServer *server);
+	gboolean	(*prompt)	(EUserPrompterServerExtension *extension,
+					 gint prompt_id,
+					 const gchar *dialog_name,
+					 const ENamedParameters *parameters);
 };
 
-GType		e_user_prompter_server_extension_get_type	(void);
-gboolean	e_user_prompter_server_extension_prompt		(EUserPrompterServerExtension *extension,
-								 gint prompt_id,
-								 const gchar *dialog_name,
-								 const ENamedParameters *parameters);
-void		e_user_prompter_server_extension_response	(EUserPrompterServerExtension *extension,
-								 gint prompt_id,
-								 gint response,
-								 const ENamedParameters *values);
+GType		e_user_prompter_server_extension_get_type
+					(void) G_GNUC_CONST;
+gboolean	e_user_prompter_server_extension_prompt
+					(EUserPrompterServerExtension *extension,
+					 gint prompt_id,
+					 const gchar *dialog_name,
+					 const ENamedParameters *parameters);
+void		e_user_prompter_server_extension_response
+					(EUserPrompterServerExtension *extension,
+					 gint prompt_id,
+					 gint response,
+					 const ENamedParameters *values);
 
 G_END_DECLS
 

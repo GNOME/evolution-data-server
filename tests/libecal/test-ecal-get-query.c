@@ -7,7 +7,6 @@
 #include "ecal-test-utils.h"
 #include "e-test-server-utils.h"
 
-
 #define COMPLETE_TIMEOUT 30
 
 #define EVENT_SUMMARY "Creation of the initial test event"
@@ -31,7 +30,7 @@ typedef enum {
 
 static void
 subtest_passed (SubTestId id,
-		GMainLoop *loop)
+                GMainLoop *loop)
 {
 	static guint subtests_complete = 0;
 
@@ -154,7 +153,7 @@ alter_cal_cb (ECal *cal)
 
 static void
 test_get_query (ETestServerFixture *fixture,
-		gconstpointer       user_data)
+                gconstpointer user_data)
 {
 	ECal *cal;
 	ECalView *view = NULL;
@@ -196,8 +195,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECal/GetQuery", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_query, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECal/GetQuery", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_query, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

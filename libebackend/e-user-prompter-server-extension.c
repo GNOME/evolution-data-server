@@ -132,9 +132,9 @@ e_user_prompter_server_extension_init (EUserPrompterServerExtension *extension)
  **/
 gboolean
 e_user_prompter_server_extension_prompt (EUserPrompterServerExtension *extension,
-					 gint prompt_id,
-					 const gchar *dialog_name,
-					 const ENamedParameters *parameters)
+                                         gint prompt_id,
+                                         const gchar *dialog_name,
+                                         const ENamedParameters *parameters)
 {
 	EUserPrompterServerExtensionClass *klass;
 
@@ -163,9 +163,9 @@ e_user_prompter_server_extension_prompt (EUserPrompterServerExtension *extension
  **/
 void
 e_user_prompter_server_extension_response (EUserPrompterServerExtension *extension,
-					   gint prompt_id,
-					   gint response,
-					   const ENamedParameters *values)
+                                           gint prompt_id,
+                                           gint response,
+                                           const ENamedParameters *values)
 {
 	EExtensible *extensible;
 	EUserPrompterServer *server;

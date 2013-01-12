@@ -189,7 +189,8 @@ e_source_mail_submission_class_init (ESourceMailSubmissionClass *class)
 		g_param_spec_boolean (
 			"replies-to-origin-folder",
 			"Replies to origin folder",
-			"Whether to save replies to folder of the message being replied to, instead of the Sent folder",
+			"Whether to save replies to folder of the message "
+			"being replied to, instead of the Sent folder",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -406,7 +407,7 @@ e_source_mail_submission_set_replies_to_origin_folder (ESourceMailSubmission *ex
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
 
-	if ((extension->priv->replies_to_origin_folder ? 1 : 0) == (replies_to_origin_folder ? 1 : 0))
+	if (extension->priv->replies_to_origin_folder == replies_to_origin_folder)
 		return;
 
 	extension->priv->replies_to_origin_folder = replies_to_origin_folder;

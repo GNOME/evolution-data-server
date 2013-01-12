@@ -35,7 +35,7 @@ cal_set_mode_timeout_cb (gpointer user_data)
 
 static void
 test_set_mode (ETestServerFixture *fixture,
-	       gconstpointer       user_data)
+               gconstpointer user_data)
 {
 	ECal *cal;
 
@@ -57,8 +57,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECal/SetMode", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_set_mode, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECal/SetMode", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_set_mode, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

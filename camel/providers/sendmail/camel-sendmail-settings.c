@@ -232,7 +232,7 @@ camel_sendmail_settings_set_use_custom_binary (CamelSendmailSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
 
-	if ((settings->priv->use_custom_binary ? 1 : 0) == (use_custom_binary ? 1 : 0))
+	if (settings->priv->use_custom_binary == use_custom_binary)
 		return;
 
 	settings->priv->use_custom_binary = use_custom_binary;
@@ -273,7 +273,7 @@ camel_sendmail_settings_set_use_custom_args (CamelSendmailSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
 
-	if ((settings->priv->use_custom_args ? 1 : 0) == (use_custom_args ? 1 : 0))
+	if (settings->priv->use_custom_args == use_custom_args)
 		return;
 
 	settings->priv->use_custom_args = use_custom_args;

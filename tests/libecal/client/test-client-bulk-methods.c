@@ -13,13 +13,13 @@ static ETestServerClosure cal_closure =
 
 static void
 test_icalcomps (icalcomponent *icalcomp1,
-		icalcomponent *icalcomp2)
+                icalcomponent *icalcomp2)
 {
 	struct icaltimetype t1, t2;
 
 	if (!icalcomp2)
 		g_error ("Failure: get object returned NULL");
-	
+
 	g_assert_cmpstr (icalcomponent_get_uid (icalcomp1), ==, icalcomponent_get_uid (icalcomp2));
 	g_assert_cmpstr (icalcomponent_get_summary (icalcomp1), ==, icalcomponent_get_summary (icalcomp2));
 
@@ -27,20 +27,22 @@ test_icalcomps (icalcomponent *icalcomp1,
 	t2 = icalcomponent_get_dtstart (icalcomp2);
 
 	if (icaltime_compare (t1, t2) != 0)
-		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			 icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+		g_error (
+			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
+			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
 
 	t1 = icalcomponent_get_dtend (icalcomp1);
 	t2 = icalcomponent_get_dtend (icalcomp2);
 
 	if (icaltime_compare (t1, t2) != 0)
-		g_error ("Failure: dtend doesn't match, expected '%s', got '%s'\n",
-			 icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
+		g_error (
+			"Failure: dtend doesn't match, expected '%s', got '%s'\n",
+			icaltime_as_ical_string (t1), icaltime_as_ical_string (t2));
 }
 
 static void
 check_removed (ECalClient *cal_client,
-	       const GSList *uids)
+               const GSList *uids)
 {
 	g_assert (cal_client != NULL);
 	g_assert (uids != NULL);
@@ -76,7 +78,7 @@ uid_slist_to_ecalcomponentid_slist (GSList *uids)
 
 static void
 check_icalcomps_exist (ECalClient *cal_client,
-		       GSList *icalcomps)
+                       GSList *icalcomps)
 {
 	const GSList *l;
 
@@ -98,7 +100,7 @@ check_icalcomps_exist (ECalClient *cal_client,
 
 static void
 test_bulk_methods (ECalClient *cal_client,
-		   GSList *icalcomps)
+                   GSList *icalcomps)
 {
 	GError *error = NULL;
 	GSList *uids = NULL, *ids = NULL;
@@ -161,7 +163,7 @@ test_bulk_methods (ECalClient *cal_client,
 
 static void
 run_test_bulk_methods (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GSList *icalcomps = NULL;
@@ -202,8 +204,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/BulkMethods", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, run_test_bulk_methods, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/BulkMethods", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, run_test_bulk_methods, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

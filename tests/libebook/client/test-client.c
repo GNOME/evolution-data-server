@@ -79,7 +79,7 @@ print_all_emails (EBookClient *book)
 
 static void
 test_client (ETestServerFixture *fixture,
-	     gconstpointer       user_data)
+             gconstpointer user_data)
 {
 	EBookClient *book_client;
 
@@ -103,7 +103,6 @@ test_client (ETestServerFixture *fixture,
 	print_all_uids (book_client);
 }
 
-
 gint
 main (gint argc,
       gchar **argv)
@@ -113,8 +112,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/BasicTest", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_client, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/BasicTest", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_client, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

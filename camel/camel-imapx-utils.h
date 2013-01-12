@@ -344,18 +344,18 @@ extern guchar imapx_specials[256];
 guchar imapx_is_mask (const gchar *p);
 
 #define imapx_is_text_char(c) \
-	((imapx_specials[((guchar)(c))&0xff] & IMAPX_TYPE_TEXT_CHAR) != 0)
+	((imapx_specials[((guchar)(c)) & 0xff] & IMAPX_TYPE_TEXT_CHAR) != 0)
 #define imapx_is_quoted_char(c) \
-	((imapx_specials[((guchar)(c))&0xff] & IMAPX_TYPE_QUOTED_CHAR) != 0)
+	((imapx_specials[((guchar)(c)) & 0xff] & IMAPX_TYPE_QUOTED_CHAR) != 0)
 #define imapx_is_atom_char(c) \
-	((imapx_specials[((guchar)(c))&0xff] & IMAPX_TYPE_ATOM_CHAR) != 0)
+	((imapx_specials[((guchar)(c)) & 0xff] & IMAPX_TYPE_ATOM_CHAR) != 0)
 #define imapx_is_token_char(c) \
-	((imapx_specials[((guchar)(c))&0xff] & IMAPX_TYPE_TOKEN_CHAR) != 0)
+	((imapx_specials[((guchar)(c)) & 0xff] & IMAPX_TYPE_TOKEN_CHAR) != 0)
 #define imapx_is_notid_char(c) \
-	((imapx_specials[((guchar)(c))&0xff] & IMAPX_TYPE_NOTID_CHAR) != 0)
+	((imapx_specials[((guchar)(c)) & 0xff] & IMAPX_TYPE_NOTID_CHAR) != 0)
 
 #define imapx_is_atom(s) \
-	(imapx_is_mask(s) & IMAPX_TYPE_ATOM_CHAR)
+	(imapx_is_mask (s) & IMAPX_TYPE_ATOM_CHAR)
 
 extern gint camel_imapx_debug_flags;
 #define CAMEL_IMAPX_DEBUG_command	(1 << 0)

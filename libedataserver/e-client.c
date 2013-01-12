@@ -661,7 +661,7 @@ e_client_set_readonly (EClient *client,
 	g_return_if_fail (E_IS_CLIENT (client));
 
 	g_rec_mutex_lock (&client->priv->prop_mutex);
-	if ((readonly ? 1 : 0) == (client->priv->readonly ? 1 : 0)) {
+	if (client->priv->readonly == readonly) {
 		g_rec_mutex_unlock (&client->priv->prop_mutex);
 		return;
 	}
@@ -701,7 +701,7 @@ e_client_set_online (EClient *client,
 	e_client_set_capabilities (client, NULL);
 
 	g_rec_mutex_lock (&client->priv->prop_mutex);
-	if ((is_online ? 1: 0) == (client->priv->online ? 1 : 0)) {
+	if (client->priv->online == is_online) {
 		g_rec_mutex_unlock (&client->priv->prop_mutex);
 		return;
 	}

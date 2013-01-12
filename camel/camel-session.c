@@ -1291,7 +1291,7 @@ camel_session_alert_user (CamelSession *session,
                           CamelSessionAlertType type,
                           const gchar *prompt,
                           GSList *button_captions,
-			  GCancellable *cancellable)
+                          GCancellable *cancellable)
 {
 	CamelSessionClass *class;
 
@@ -1326,11 +1326,11 @@ camel_session_alert_user (CamelSession *session,
  **/
 CamelCertTrust
 camel_session_trust_prompt (CamelSession *session,
-			    const gchar *host,
-			    const gchar *certificate,
-			    guint32 certificate_errors,
-			    const GSList *issuers,
-			    GCancellable *cancellable)
+                            const gchar *host,
+                            const gchar *certificate,
+                            guint32 certificate_errors,
+                            const GSList *issuers,
+                            GCancellable *cancellable)
 {
 	CamelSessionClass *class;
 

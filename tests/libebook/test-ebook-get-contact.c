@@ -11,7 +11,7 @@ static ETestServerClosure book_closure =
 
 static void
 test_get_contact_sync (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	EBook *book;
 	gchar *uid;
@@ -26,7 +26,7 @@ test_get_contact_sync (ETestServerFixture *fixture,
 
 static void
 test_get_contact_async (ETestServerFixture *fixture,
-			gconstpointer       user_data)
+                        gconstpointer user_data)
 {
 	EBook *book;
 	gchar *uid;
@@ -42,7 +42,6 @@ test_get_contact_async (ETestServerFixture *fixture,
 	g_main_loop_run (fixture->loop);
 }
 
-
 gint
 main (gint argc,
       gchar **argv)
@@ -52,10 +51,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBook/GetContact/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBook/GetContact/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_get_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetContact/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/GetContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

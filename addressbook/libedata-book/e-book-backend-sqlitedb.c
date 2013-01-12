@@ -119,7 +119,7 @@ static gboolean append_summary_field (GArray         *array,
 
 static const gchar *
 summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
-			   EContactField         field)
+                           EContactField field)
 {
 	gint i;
 
@@ -133,7 +133,7 @@ summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
 
 static gint
 summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
-			       const gchar          *field_name)
+                               const gchar *field_name)
 {
 	gint i;
 	EContactField field;
@@ -330,10 +330,10 @@ print_debug_cb (gpointer ref,
 
 static void
 book_backend_sql_debug (sqlite3 *db,
-			const gchar *stmt,
-			gint (*callback)(gpointer ,gint,gchar **,gchar **),
-			gpointer data,
-			GError **error)
+                        const gchar *stmt,
+                        gint (*callback)(gpointer ,gint,gchar **,gchar **),
+                        gpointer data,
+                        GError **error)
 {
 	gchar *debug;
 	GError *local_error = NULL;
@@ -591,10 +591,9 @@ rollback:
 	return FALSE;
 }
 
-
 static gchar *
 format_multivalues (EBookBackendSqliteDB *ebsdb,
-		    gboolean             *reverse_multivalues)
+                    gboolean *reverse_multivalues)
 {
 	gint i;
 	GString *string;
@@ -662,11 +661,11 @@ rollback:
 
 static gint
 collect_columns_cb (gpointer ref,
-		    gint col,
-		    gchar **cols,
-		    gchar **name)
+                    gint col,
+                    gchar **cols,
+                    gchar **name)
 {
-	GList **columns = (GList **)ref;
+	GList **columns = (GList **) ref;
 	gint i;
 
 	for (i = 0; i < col; i++) {
@@ -690,8 +689,8 @@ collect_columns_cb (gpointer ref,
 
 static gboolean
 introspect_summary (EBookBackendSqliteDB *ebsdb,
-		    const gchar *folderid,
-		    GError **error)
+                    const gchar *folderid,
+                    GError **error)
 {
 	gboolean success;
 	gchar *stmt;
@@ -809,21 +808,20 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 
  introspect_summary_finish:
 
-	g_list_free_full (summary_columns, (GDestroyNotify)g_free);
+	g_list_free_full (summary_columns, (GDestroyNotify) g_free);
 	g_free (multivalues);
 
 	/* Apply the introspected summary fields */
 	if (success) {
 		g_free (ebsdb->priv->summary_fields);
 		ebsdb->priv->n_summary_fields = summary_fields->len;
-		ebsdb->priv->summary_fields = (SummaryField *)g_array_free (summary_fields, FALSE);
+		ebsdb->priv->summary_fields = (SummaryField *) g_array_free (summary_fields, FALSE);
 	} else if (summary_fields) {
 		g_array_free (summary_fields, TRUE);
 	}
 
 	return success;
 }
-
 
 /* The column names match the fields used in book-backend-sexp */
 static gboolean
@@ -874,10 +872,12 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		if ((ebsdb->priv->summary_fields[i].index & INDEX_PREFIX) != 0 &&
 		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
 			/* Derive index name from field & folder */
-			tmp = g_strdup_printf ("INDEX_%s_%s",
-					       summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
-					       folderid);
-			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)", tmp, folderid,
+			tmp = g_strdup_printf (
+				"INDEX_%s_%s",
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+				folderid);
+			stmt = sqlite3_mprintf (
+				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)", tmp, folderid,
 						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
@@ -888,10 +888,12 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		    (ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0 &&
 		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
 			/* Derive index name from field & folder */
-			tmp = g_strdup_printf ("RINDEX_%s_%s",
-					       summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
-					       folderid);
-			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_reverse)", tmp, folderid,
+			tmp = g_strdup_printf (
+				"RINDEX_%s_%s",
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+				folderid);
+			stmt = sqlite3_mprintf (
+				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_reverse)", tmp, folderid,
 						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
@@ -902,7 +904,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	/* Construct the create statement from the attribute list summary table */
 	if (success && ebsdb->priv->have_attr_list) {
 		string = g_string_new ("CREATE TABLE IF NOT EXISTS %Q ( uid TEXT NOT NULL REFERENCES %Q(uid), "
-				       "field TEXT, value TEXT");
+			"field TEXT, value TEXT");
 
 		if (ebsdb->priv->have_attr_list_suffix)
 			g_string_append (string, ", value_reverse TEXT");
@@ -994,16 +996,16 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 
 static EBookBackendSqliteDB *
 e_book_backend_sqlitedb_new_internal (const gchar *path,
-				      const gchar *emailid,
-				      const gchar *folderid,
-				      const gchar *folder_name,
-				      gboolean store_vcard,
-				      SummaryField *fields,
-				      gint n_fields,
-				      gboolean have_attr_list,
-				      gboolean have_attr_list_prefix,
-				      gboolean have_attr_list_suffix,
-				      GError **error)
+                                      const gchar *emailid,
+                                      const gchar *folderid,
+                                      const gchar *folder_name,
+                                      gboolean store_vcard,
+                                      SummaryField *fields,
+                                      gint n_fields,
+                                      gboolean have_attr_list,
+                                      gboolean have_attr_list_prefix,
+                                      gboolean have_attr_list_suffix,
+                                      GError **error)
 {
 	EBookBackendSqliteDB *ebsdb;
 	gchar *hash_key, *filename;
@@ -1078,10 +1080,10 @@ exit:
 }
 
 static gboolean
-append_summary_field (GArray         *array,
-		      EContactField   field,
-		      gboolean       *have_attr_list,
-		      GError        **error)
+append_summary_field (GArray *array,
+                      EContactField field,
+                      gboolean *have_attr_list,
+                      GError **error)
 {
 	const gchar *dbname = NULL;
 	GType        type = G_TYPE_INVALID;
@@ -1089,8 +1091,9 @@ append_summary_field (GArray         *array,
 	SummaryField new_field = { 0, };
 
 	if (field < 1 || field >= E_CONTACT_FIELD_LAST) {
-		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, _("Invalid contact field '%d' specified in summary"), field);
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			_("Invalid contact field '%d' specified in summary"), field);
 		return FALSE;
 	}
 
@@ -1122,10 +1125,11 @@ append_summary_field (GArray         *array,
 	if (type != G_TYPE_STRING &&
 	    type != G_TYPE_BOOLEAN &&
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
-		g_set_error (error, E_BOOK_SDB_ERROR, 0,
-			     _("Contact field '%s' of type '%s' specified in summary, "
-				  "but only boolean, string and string list field types are supported"),
-			     e_contact_pretty_name (field), g_type_name (type));
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			_("Contact field '%s' of type '%s' specified in summary, "
+			"but only boolean, string and string list field types are supported"),
+			e_contact_pretty_name (field), g_type_name (type));
 		return FALSE;
 	}
 
@@ -1141,12 +1145,12 @@ append_summary_field (GArray         *array,
 }
 
 static void
-summary_fields_add_indexes (GArray         *array,
-			    EContactField  *indexes,
-			    EBookIndexType *index_types,
-			    gint            n_indexes,
-			    gboolean       *have_attr_list_prefix,
-			    gboolean       *have_attr_list_suffix)
+summary_fields_add_indexes (GArray *array,
+                            EContactField *indexes,
+                            EBookIndexType *index_types,
+                            gint n_indexes,
+                            gboolean *have_attr_list_prefix,
+                            gboolean *have_attr_list_suffix)
 {
 	gint i, j;
 
@@ -1177,7 +1181,6 @@ summary_fields_add_indexes (GArray         *array,
 	}
 }
 
-
 /**
  * e_book_backend_sqlitedb_new_full:
  * @path: location where the db would be created
@@ -1205,12 +1208,12 @@ summary_fields_add_indexes (GArray         *array,
  **/
 EBookBackendSqliteDB *
 e_book_backend_sqlitedb_new_full (const gchar *path,
-				  const gchar *emailid,
-				  const gchar *folderid,
-				  const gchar *folder_name,
-				  gboolean store_vcard,
-				  ESourceBackendSummarySetup *setup,
-				  GError **error)
+                                  const gchar *emailid,
+                                  const gchar *folderid,
+                                  const gchar *folder_name,
+                                  gboolean store_vcard,
+                                  ESourceBackendSummarySetup *setup,
+                                  GError **error)
 {
 	EBookBackendSqliteDB *ebsdb = NULL;
 	EContactField *fields;
@@ -1232,7 +1235,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 		g_free (fields);
 		g_free (index_types);
 		g_free (indexed_fields);
-		
+
 		return ebsdb;
 	}
 
@@ -1258,17 +1261,19 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 	}
 
 	/* Add the 'indexed' flag to the SummaryField structs */
-	summary_fields_add_indexes (summary_fields, indexed_fields, index_types, n_indexed_fields,
-				    &have_attr_list_prefix, &have_attr_list_suffix);
+	summary_fields_add_indexes (
+		summary_fields, indexed_fields, index_types, n_indexed_fields,
+		&have_attr_list_prefix, &have_attr_list_suffix);
 
-	ebsdb = e_book_backend_sqlitedb_new_internal (path, emailid, folderid, folder_name,
-						      store_vcard,
-						      (SummaryField *) summary_fields->data,
-						      summary_fields->len,
-						      have_attr_list,
-						      have_attr_list_prefix,
-						      have_attr_list_suffix,
-						      error);
+	ebsdb = e_book_backend_sqlitedb_new_internal (
+		path, emailid, folderid, folder_name,
+		store_vcard,
+		(SummaryField *) summary_fields->data,
+		summary_fields->len,
+		have_attr_list,
+		have_attr_list_prefix,
+		have_attr_list_suffix,
+		error);
 
 	g_free (fields);
 	g_free (index_types);
@@ -1277,8 +1282,6 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 
 	return ebsdb;
 }
-
-
 
 /**
  * e_book_backend_sqlitedb_new
@@ -1317,20 +1320,22 @@ e_book_backend_sqlitedb_new (const gchar *path,
 		append_summary_field (summary_fields, default_summary_fields[i], &have_attr_list, NULL);
 
 	/* Add the default index flags */
-	summary_fields_add_indexes (summary_fields,
-				    default_indexed_fields,
-				    default_index_types,
-				    G_N_ELEMENTS (default_indexed_fields),
-				    &have_attr_list_prefix, &have_attr_list_suffix);
+	summary_fields_add_indexes (
+		summary_fields,
+		default_indexed_fields,
+		default_index_types,
+		G_N_ELEMENTS (default_indexed_fields),
+		&have_attr_list_prefix, &have_attr_list_suffix);
 
-	ebsdb = e_book_backend_sqlitedb_new_internal (path, emailid, folderid, folder_name,
-						      store_vcard,
-						      (SummaryField *) summary_fields->data,
-						      summary_fields->len,
-						      have_attr_list,
-						      have_attr_list_prefix,
-						      have_attr_list_suffix,
-						      error);
+	ebsdb = e_book_backend_sqlitedb_new_internal (
+		path, emailid, folderid, folder_name,
+		store_vcard,
+		(SummaryField *) summary_fields->data,
+		summary_fields->len,
+		have_attr_list,
+		have_attr_list_prefix,
+		have_attr_list_suffix,
+		error);
 	g_array_free (summary_fields, FALSE);
 
 	return ebsdb;
@@ -1360,7 +1365,7 @@ e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
 /* Add Contact (free the result with g_free() ) */
 static gchar *
 insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
-			  EContact *contact,
+                          EContact *contact,
                           gboolean partial_content,
                           const gchar *folderid,
                           gboolean store_vcard)
@@ -1434,10 +1439,10 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 static gboolean
 insert_contact (EBookBackendSqliteDB *ebsdb,
-		EContact *contact,
-		gboolean partial_content,
-		const gchar *folderid,
-		GError **error)
+                EContact *contact,
+                gboolean partial_content,
+                const gchar *folderid,
+                GError **error)
 {
 	EBookBackendSqliteDBPrivate *priv;
 	gboolean success;
@@ -1471,7 +1476,7 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 			values = e_contact_get (contact, priv->summary_fields[i].field);
 
 			for (l = values; success && l != NULL; l = l->next) {
-				gchar *value = (gchar *)l->data;
+				gchar *value = (gchar *) l->data;
 				gchar *normal = e_util_utf8_normalize (value);
 
 				if (priv->have_attr_list_suffix) {
@@ -1507,7 +1512,6 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 
 	return success;
 }
-
 
 /**
  * e_book_backend_sqlitedb_add_contact
@@ -1643,7 +1647,8 @@ generate_uid_list_for_stmt (GSList *uids)
 }
 
 static gchar *
-generate_delete_stmt (const gchar *table, GSList *uids)
+generate_delete_stmt (const gchar *table,
+                      GSList *uids)
 {
 	GString *str = g_string_new (NULL);
 	gchar *tmp;
@@ -1657,7 +1662,7 @@ generate_delete_stmt (const gchar *table, GSList *uids)
 	g_free (tmp);
 	g_string_append_c (str, ')');
 
-	return g_string_free (str, FALSE);	
+	return g_string_free (str, FALSE);
 }
 
 /**
@@ -1680,18 +1685,18 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
- 	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
+	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
 
 	/* Delete the auxillary contact infos first */
- 	if (success && ebsdb->priv->have_attr_list) {
- 		gchar *lists_folder = g_strdup_printf ("%s_lists", folderid);
+	if (success && ebsdb->priv->have_attr_list) {
+		gchar *lists_folder = g_strdup_printf ("%s_lists", folderid);
 
- 		stmt = generate_delete_stmt (lists_folder, uids);
- 		g_free (lists_folder);
+		stmt = generate_delete_stmt (lists_folder, uids);
+		g_free (lists_folder);
 
- 		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
- 		g_free (stmt);
- 	}
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+		g_free (stmt);
+	}
 
 	if (success) {
 		stmt = generate_delete_stmt (folderid, uids);
@@ -1897,7 +1902,7 @@ e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
  **/
 gboolean
 e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
-					      GHashTable *fields_of_interest)
+                                              GHashTable *fields_of_interest)
 {
 	gboolean summary_fields = TRUE;
 	GHashTableIter iter;
@@ -1923,7 +1928,7 @@ e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
 /* free return value with g_free */
 static gchar *
 summary_select_stmt (GHashTable *fields_of_interest,
-		     gboolean distinct)
+                     gboolean distinct)
 {
 	GString *string;
 
@@ -2023,8 +2028,9 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 
 		select_portion = summary_select_stmt (fields_of_interest, FALSE);
 
-		stmt = sqlite3_mprintf ("%s FROM %Q AS summary WHERE summary.uid = %Q",
-					select_portion, folderid, uid);
+		stmt = sqlite3_mprintf (
+			"%s FROM %Q AS summary WHERE summary.uid = %Q",
+			select_portion, folderid, uid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, store_data_to_vcard, &vcards, error);
 		sqlite3_free (stmt);
 		g_free (select_portion);
@@ -2054,8 +2060,9 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 
 		local_with_all_required_fields = TRUE;
 	} else {
- 		g_set_error (error, E_BOOK_SDB_ERROR,
- 			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			_("Full search_contacts are not stored in cache. vcards cannot be returned."));
 
 	}
 
@@ -2073,7 +2080,6 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 	return vcard_str;
 }
 
-
 enum {
 	CHECK_IS_SUMMARY   = (1 << 0),
 	CHECK_IS_LIST_ATTR = (1 << 1),
@@ -2081,9 +2087,9 @@ enum {
 
 static ESExpResult *
 func_check_subset (ESExp *f,
-		   gint argc,
-		   struct _ESExpTerm **argv,
-		   gpointer data)
+                   gint argc,
+                   struct _ESExpTerm **argv,
+                   gpointer data)
 {
 	ESExpResult *r, *r1;
 	gboolean one_non_summary_query = FALSE;
@@ -2204,8 +2210,8 @@ static const struct {
  **/
 gboolean
 e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
-					     const gchar *query,
-					     gboolean *with_list_attrs)
+                                             const gchar *query,
+                                             gboolean *with_list_attrs)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -2221,7 +2227,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 	for (i = 0; i < G_N_ELEMENTS (check_symbols); i++) {
 		if (check_symbols[i].type == 1) {
 			e_sexp_add_ifunction (
-			        sexp, 0, check_symbols[i].name,
+				sexp, 0, check_symbols[i].name,
 				(ESExpIFunc *) check_symbols[i].func, ebsdb);
 		} else {
 			e_sexp_add_function (
@@ -2250,7 +2256,6 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 
 	return retval;
 }
-
 
 /**
  * e_book_backend_sqlitedb_is_summary_query:
@@ -2346,8 +2351,8 @@ typedef enum {
 
 static gchar *
 convert_string_value (const gchar *value,
-		      gboolean normalize,
-		      gboolean reverse,
+                      gboolean normalize,
+                      gboolean reverse,
                       match_type match)
 {
 	GString *str;
@@ -2427,12 +2432,12 @@ convert_string_value (const gchar *value,
 
 static gchar *
 field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
-			   const gchar          *folderid,
-			   const gchar          *field_name_input,
-			   const gchar          *query_term_input,
-			   match_type            match,
-			   gboolean             *is_list_attr,
-			   gchar               **query_term)
+                           const gchar *folderid,
+                           const gchar *field_name_input,
+                           const gchar *query_term_input,
+                           match_type match,
+                           gboolean *is_list_attr,
+                           gchar **query_term)
 {
 	gint summary_index;
 	gchar *field_name = NULL;
@@ -2455,7 +2460,7 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 
 		/* Or also if its an exact match, and we *only* have reverse data which is indexed,
 		 * then prefer the indexed reverse search. */
-		else if (match == MATCH_IS && 
+		else if (match == MATCH_IS &&
 			 (ebsdb->priv->summary_fields[summary_index].index & INDEX_SUFFIX) != 0 &&
 			 (ebsdb->priv->summary_fields[summary_index].index & INDEX_PREFIX) == 0)
 			suffix_search = TRUE;
@@ -2470,25 +2475,29 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 				field_name = g_strdup ("multi.value_reverse");
 				list_attr = TRUE;
 			} else
-				field_name = g_strconcat ("summary.", 
-							  ebsdb->priv->summary_fields[summary_index].dbname,
-							  "_reverse", NULL);
+				field_name = g_strconcat (
+					"summary.",
+					ebsdb->priv->summary_fields[summary_index].dbname,
+					"_reverse", NULL);
 
 			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
 			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
-				value = convert_string_value (query_term_input, FALSE, TRUE,
-							      (match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
+				value = convert_string_value (
+					query_term_input, FALSE, TRUE,
+					(match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
 			else
-				value = convert_string_value (query_term_input, TRUE, TRUE,
-							      (match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
+				value = convert_string_value (
+					query_term_input, TRUE, TRUE,
+					(match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
 		} else {
 
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
 				field_name = g_strdup ("multi.value");
 				list_attr = TRUE;
 			} else
-				field_name = g_strconcat ("summary.",
-							  ebsdb->priv->summary_fields[summary_index].dbname, NULL);
+				field_name = g_strconcat (
+					"summary.",
+					ebsdb->priv->summary_fields[summary_index].dbname, NULL);
 
 			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
 			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
@@ -2518,7 +2527,7 @@ convert_match_exp (struct _ESExp *f,
                    gpointer data,
                    match_type match)
 {
-	BuildQueryData *qdata = (BuildQueryData *)data;
+	BuildQueryData *qdata = (BuildQueryData *) data;
 	EBookBackendSqliteDB *ebsdb = qdata->ebsdb;
 	ESExpResult *r;
 	gchar *str = NULL;
@@ -2540,46 +2549,51 @@ convert_match_exp (struct _ESExp *f,
 			if (!g_ascii_strcasecmp (field, "full_name")) {
 				GString *names = g_string_new (NULL);
 
-				field_name = field_name_and_query_term (ebsdb, qdata->folderid, "full_name",
-									argv[1]->value.string,
-									match, NULL, &query_term);
-				g_string_append_printf (names, "(%s IS NOT NULL AND %s %s %s)",
-							field_name, field_name, oper, query_term);
+				field_name = field_name_and_query_term (
+					ebsdb, qdata->folderid, "full_name",
+					argv[1]->value.string,
+					match, NULL, &query_term);
+				g_string_append_printf (
+					names, "(%s IS NOT NULL AND %s %s %s)",
+					field_name, field_name, oper, query_term);
 				g_free (field_name);
 				g_free (query_term);
 
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_FAMILY_NAME)) {
 
-					field_name = field_name_and_query_term (ebsdb, qdata->folderid, "family_name",
-										argv[1]->value.string,
-										match, NULL, &query_term);
-					g_string_append_printf
-						(names, " OR (%s IS NOT NULL AND %s %s %s)",
-						 field_name, field_name, oper, query_term);
+					field_name = field_name_and_query_term (
+						ebsdb, qdata->folderid, "family_name",
+						argv[1]->value.string,
+						match, NULL, &query_term);
+					g_string_append_printf (
+						names, " OR (%s IS NOT NULL AND %s %s %s)",
+						field_name, field_name, oper, query_term);
 					g_free (field_name);
 					g_free (query_term);
 				}
 
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_GIVEN_NAME)) {
 
-					field_name = field_name_and_query_term (ebsdb, qdata->folderid, "given_name",
-										argv[1]->value.string,
-										match, NULL, &query_term);
-					g_string_append_printf
-						(names, " OR (%s IS NOT NULL AND %s %s %s)",
-						 field_name, field_name, oper, query_term);
+					field_name = field_name_and_query_term (
+						ebsdb, qdata->folderid, "given_name",
+						argv[1]->value.string,
+						match, NULL, &query_term);
+					g_string_append_printf (
+						names, " OR (%s IS NOT NULL AND %s %s %s)",
+						field_name, field_name, oper, query_term);
 					g_free (field_name);
 					g_free (query_term);
 				}
 
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_NICKNAME)) {
 
-					field_name = field_name_and_query_term (ebsdb, qdata->folderid, "nickname",
-										argv[1]->value.string,
-										match, NULL, &query_term);
-					g_string_append_printf
-						(names, " OR (%s IS NOT NULL AND %s %s %s)",
-						 field_name, field_name, oper, query_term);
+					field_name = field_name_and_query_term (
+						ebsdb, qdata->folderid, "nickname",
+						argv[1]->value.string,
+						match, NULL, &query_term);
+					g_string_append_printf (
+						names, " OR (%s IS NOT NULL AND %s %s %s)",
+						field_name, field_name, oper, query_term);
 					g_free (field_name);
 					g_free (query_term);
 				}
@@ -2591,20 +2605,23 @@ convert_match_exp (struct _ESExp *f,
 				gboolean is_list = FALSE;
 
 				/* This should ideally be the only valid case from all the above special casing, but oh well... */
-				field_name = field_name_and_query_term (ebsdb, qdata->folderid, field,
-									argv[1]->value.string,
-									match, &is_list, &query_term);
+				field_name = field_name_and_query_term (
+					ebsdb, qdata->folderid, field,
+					argv[1]->value.string,
+					match, &is_list, &query_term);
 
 				if (is_list) {
 					gchar *tmp;
 
 					tmp = sqlite3_mprintf ("summary.uid = multi.uid AND multi.field = %Q", field);
-					str = g_strdup_printf ("(%s AND %s %s %s)",
-							       tmp, field_name, oper, query_term);
+					str = g_strdup_printf (
+						"(%s AND %s %s %s)",
+						tmp, field_name, oper, query_term);
 					sqlite3_free (tmp);
 				} else
-					str = g_strdup_printf ("(%s IS NOT NULL AND %s %s %s)",
-							       field_name, field_name, oper, query_term);
+					str = g_strdup_printf (
+						"(%s IS NOT NULL AND %s %s %s)",
+						field_name, field_name, oper, query_term);
 
 				g_free (field_name);
 				g_free (query_term);
@@ -2671,8 +2688,8 @@ static struct {
 
 static gchar *
 sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
-		   const gchar          *folderid,
-		   const gchar          *query)
+                   const gchar *folderid,
+                   const gchar *query)
 {
 	BuildQueryData data = { ebsdb, folderid };
 	ESExp *sexp;
@@ -2685,7 +2702,7 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].immediate)
 			e_sexp_add_ifunction (
-                                sexp, 0, symbols[i].name,
+				sexp, 0, symbols[i].name,
 				(ESExpIFunc *) symbols[i].func, &data);
 		else
 			e_sexp_add_function (
@@ -2758,7 +2775,7 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
                                     const gchar *folderid,
                                     GHashTable *fields_of_interest,
                                     gboolean *with_all_required_fields,
-				    gboolean query_with_list_attrs,
+                                    gboolean query_with_list_attrs,
                                     GError **error)
 {
 	GSList *vcard_data = NULL;
@@ -2772,24 +2789,26 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 	if (uid_rev_fields (fields_of_interest)) {
 		gchar *select_portion;
 
-		select_portion = summary_select_stmt (fields_of_interest,
-						      query_with_list_attrs);
+		select_portion = summary_select_stmt (
+			fields_of_interest, query_with_list_attrs);
 
 		if (sql && sql[0]) {
 
 			if (query_with_list_attrs) {
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
-				stmt = sqlite3_mprintf ("%s FROM %Q AS summary, %Q AS multi WHERE %s",
-							select_portion, folderid, list_table, sql);
+				stmt = sqlite3_mprintf (
+					"%s FROM %Q AS summary, %Q AS multi WHERE %s",
+					select_portion, folderid, list_table, sql);
 				g_free (list_table);
 			} else {
-				stmt = sqlite3_mprintf ("%s FROM %Q AS summary WHERE %s",
-							select_portion, folderid, sql);
+				stmt = sqlite3_mprintf (
+					"%s FROM %Q AS summary WHERE %s",
+					select_portion, folderid, sql);
 			}
 
 			success = book_backend_sql_exec (
-                                ebsdb->priv->db, stmt,
+				ebsdb->priv->db, stmt,
 				store_data_to_vcard, &vcard_data, error);
 
 			sqlite3_free (stmt);
@@ -2811,16 +2830,18 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 			if (query_with_list_attrs) {
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
-				stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid, vcard, bdata "
-							"FROM %Q AS summary, %Q AS multi WHERE %s",
-							folderid, list_table, sql);
+				stmt = sqlite3_mprintf (
+					"SELECT DISTINCT summary.uid, vcard, bdata "
+					"FROM %Q AS summary, %Q AS multi WHERE %s",
+					folderid, list_table, sql);
 				g_free (list_table);
 			} else {
-				stmt = sqlite3_mprintf ("SELECT uid, vcard, bdata FROM %Q as summary WHERE %s", folderid, sql);
+				stmt = sqlite3_mprintf (
+					"SELECT uid, vcard, bdata FROM %Q as summary WHERE %s", folderid, sql);
 			}
 
 			success = book_backend_sql_exec (
-                                ebsdb->priv->db, stmt,
+				ebsdb->priv->db, stmt,
 				addto_vcard_list_cb , &vcard_data, error);
 
 			sqlite3_free (stmt);
@@ -2835,8 +2856,9 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 
 		local_with_all_required_fields = TRUE;
 	} else {
-		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, 0,
+			_("Full search_contacts are not stored in cache. vcards cannot be returned."));
 	}
 
 	READER_UNLOCK (ebsdb);
@@ -2979,7 +3001,7 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, 0,
 			_("Full search_contacts are not stored in cache. "
-			  "Hence only summary query is supported."));
+			"Hence only summary query is supported."));
 	}
 
 	if (searched)
@@ -3025,12 +3047,15 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 			if (query_with_list_attrs) {
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
-				stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi WHERE %s",
-							folderid, list_table, sql_query);
+				stmt = sqlite3_mprintf (
+					"SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi WHERE %s",
+					folderid, list_table, sql_query);
 
 				g_free (list_table);
 			} else
-				stmt = sqlite3_mprintf ("SELECT summary.uid FROM %Q AS summary WHERE %s", folderid, sql_query);
+				stmt = sqlite3_mprintf (
+					"SELECT summary.uid FROM %Q AS summary WHERE %s",
+					folderid, sql_query);
 
 			book_backend_sql_exec (ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 			sqlite3_free (stmt);
@@ -3057,7 +3082,7 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, 0,
 			_("Full vcards are not stored in cache. "
-			  "Hence only summary query is supported."));
+			"Hence only summary query is supported."));
 	}
 
 	if (searched)

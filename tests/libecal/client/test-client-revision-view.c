@@ -20,7 +20,7 @@ typedef enum {
 
 static void
 subtest_passed (SubTestId id,
-		GMainLoop *loop)
+                GMainLoop *loop)
 {
 	static guint subtests_complete = 0;
 
@@ -56,7 +56,7 @@ objects_added_cb (GObject *object,
                   gpointer data)
 {
 	const GSList *l;
-	GMainLoop *loop = (GMainLoop *)data;
+	GMainLoop *loop = (GMainLoop *) data;
 
 	for (l = objects; l; l = l->next) {
 		icalcomponent      *component     = l->data;
@@ -81,7 +81,7 @@ objects_modified_cb (GObject *object,
                      gpointer data)
 {
 	const GSList *l;
-	GMainLoop *loop = (GMainLoop *)data;
+	GMainLoop *loop = (GMainLoop *) data;
 
 	for (l = objects; l; l = l->next) {
 		icalcomponent      *component     = l->data;
@@ -105,7 +105,7 @@ objects_removed_cb (GObject *object,
                     const GSList *objects,
                     gpointer data)
 {
-	GMainLoop *loop = (GMainLoop *)data;
+	GMainLoop *loop = (GMainLoop *) data;
 	const GSList *l;
 
 	for (l = objects; l; l = l->next) {
@@ -122,7 +122,7 @@ complete_cb (GObject *object,
              const GError *error,
              gpointer data)
 {
-	GMainLoop *loop = (GMainLoop *)data;
+	GMainLoop *loop = (GMainLoop *) data;
 
 	g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
 
@@ -172,7 +172,7 @@ async_get_view_ready (GObject *source_object,
 	ECalClient *cal_client = E_CAL_CLIENT (source_object);
 	ECalClientView *view = NULL;
 	GError *error = NULL;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 	GSList *field_list = NULL;
 
 	g_return_if_fail (cal_client != NULL);
@@ -203,7 +203,7 @@ async_get_view_ready (GObject *source_object,
 
 static void
 test_get_revision_view_async (ETestServerFixture *fixture,
-			      gconstpointer       user_data)
+                              gconstpointer user_data)
 {
 	ECalClient *cal_client;
 
@@ -215,7 +215,7 @@ test_get_revision_view_async (ETestServerFixture *fixture,
 
 static void
 test_get_revision_view_sync (ETestServerFixture *fixture,
-			     gconstpointer       user_data)
+                             gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -244,7 +244,7 @@ test_get_revision_view_sync (ETestServerFixture *fixture,
 
 	e_cal_client_view_start (view, NULL);
 
-	g_idle_add ((GSourceFunc)alter_cal_client, cal_client);
+	g_idle_add ((GSourceFunc) alter_cal_client, cal_client);
 	g_main_loop_run (fixture->loop);
 
 	g_object_unref (view);
@@ -259,10 +259,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/GetRevisionView/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_revision_view_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/GetRevisionView/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_revision_view_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/GetRevisionView/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_revision_view_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/GetRevisionView/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_revision_view_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -12,7 +12,6 @@
 static ETestServerClosure cal_closure =
 	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
-
 static void
 setup_cal (ECalClient *cal_client)
 {
@@ -43,7 +42,7 @@ test_result (icalcomponent *icalcomp)
 
 static void
 test_get_object_list_sync (ETestServerFixture *fixture,
-			   gconstpointer       user_data)
+                           gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GSList *icalcomps = NULL, *ecalcomps = NULL;
@@ -75,7 +74,7 @@ async_get_object_list_as_comps_result_ready (GObject *source_object,
                                              gpointer user_data)
 {
 	ECalClient *cal_client;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 	GError *error = NULL;
 	GSList *ecalcomps = NULL;
 
@@ -109,13 +108,14 @@ async_get_object_list_result_ready (GObject *source_object,
 	test_result (icalcomps->data);
 	e_cal_client_free_icalcomp_slist (icalcomps);
 
-	e_cal_client_get_object_list_as_comps (cal_client, EVENT_QUERY, NULL,
-					       async_get_object_list_as_comps_result_ready, user_data);
+	e_cal_client_get_object_list_as_comps (
+		cal_client, EVENT_QUERY, NULL,
+		async_get_object_list_as_comps_result_ready, user_data);
 }
 
 static void
 test_get_object_list_async (ETestServerFixture *fixture,
-			    gconstpointer       user_data)
+                            gconstpointer user_data)
 {
 	ECalClient *cal_client;
 
@@ -135,10 +135,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/GetObjectList/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_object_list_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/GetObjectList/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_object_list_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/GetObjectList/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_object_list_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/GetObjectList/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_object_list_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

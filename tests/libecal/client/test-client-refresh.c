@@ -11,7 +11,6 @@
 static ETestServerClosure cal_closure =
 	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
 
-
 static void
 setup_cal (ECalClient *cal_client)
 {
@@ -35,7 +34,7 @@ setup_cal (ECalClient *cal_client)
 
 static void
 test_refresh_sync (ETestServerFixture *fixture,
-		   gconstpointer       user_data)
+                   gconstpointer user_data)
 {
 	ECalClient *cal;
 	GError *error = NULL;
@@ -57,7 +56,7 @@ async_refresh_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
@@ -69,7 +68,7 @@ async_refresh_result_ready (GObject *source_object,
 
 static void
 test_refresh_async (ETestServerFixture *fixture,
-		    gconstpointer       user_data)
+                    gconstpointer user_data)
 {
 	ECalClient *cal;
 
@@ -90,10 +89,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/Refresh/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_refresh_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/Refresh/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_refresh_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/Refresh/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_refresh_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/Refresh/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_refresh_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

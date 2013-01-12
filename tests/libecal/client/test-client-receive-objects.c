@@ -26,7 +26,7 @@ create_object (void)
 
 static void
 test_receive_objects_sync (ETestServerFixture *fixture,
-			   gconstpointer       user_data)
+                           gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -50,7 +50,7 @@ async_receive_result_ready (GObject *source_object,
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
-	GMainLoop *loop = (GMainLoop *)user_data;
+	GMainLoop *loop = (GMainLoop *) user_data;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
@@ -62,7 +62,7 @@ async_receive_result_ready (GObject *source_object,
 
 static void
 test_receive_objects_async (ETestServerFixture *fixture,
-			    gconstpointer       user_data)
+                            gconstpointer user_data)
 {
 	ECalClient *cal_client;
 	icalcomponent *icalcomp;
@@ -87,10 +87,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECalClient/ReceiveObjects/Sync", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_receive_objects_sync, e_test_server_utils_teardown);
-	g_test_add ("/ECalClient/ReceiveObjects/Async", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_receive_objects_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/ReceiveObjects/Sync", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_receive_objects_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/ReceiveObjects/Async", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_receive_objects_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

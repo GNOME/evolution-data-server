@@ -61,7 +61,7 @@ static gboolean trust_prompt_show_trust_prompt (EUserPrompterServerExtension *ex
 
 static void
 trust_prompt_register_dialogs (EExtension *extension,
-			       EUserPrompterServer *server)
+                               EUserPrompterServer *server)
 {
 	ETrustPrompt *trust_prompt = E_TRUST_PROMPT (extension);
 
@@ -77,9 +77,9 @@ trust_prompt_register_dialogs (EExtension *extension,
 
 static gboolean
 trust_prompt_prompt (EUserPrompterServerExtension *extension,
-		     gint prompt_id,
-		     const gchar *dialog_name,
-		     const ENamedParameters *parameters)
+                     gint prompt_id,
+                     const gchar *dialog_name,
+                     const ENamedParameters *parameters)
 {
 	if (g_strcmp0 (dialog_name, TRUST_PROMPT_DIALOG) == 0)
 		return trust_prompt_show_trust_prompt (extension, prompt_id, parameters);
@@ -138,25 +138,25 @@ e_module_unload (GTypeModule *type_module)
 /* dialog definitions */
 
 /* ETrustPrompt::trust-prompt
-   The dialog expects these parameters:
-      "host" - host from which the certificate is received
-      "markup" - markup for the trust prompt, if not set, then "SSL certificate for '<b>host</b>' is not trusted. Do you wish to accept it?" is used
-      "certificate" - a base64-encoded DER certificate, for which ask on trust
-      "certificate-errors" - a hexa-decimal integer (as string) corresponding to GTlsCertificateFlags
-
-   It can contain, optionally, chain of issuers:
-      "issuer"   - a base64-encoded DER certificate, issuer of "certificate"
-      "issuer-1" - a base64-encoded DER certificate, issuer of "issuer"
-      "issuer-2" - a base64-encoded DER certificate, issuer of "issuer-1"
-      and so on
-
-   Result of the dialog is:
-      0 - reject
-      1 - accept permanently
-      2 - accept temporarily
-     -1 - user didn't choose any of the above
-
-   The dialog doesn't provide any additional values in the response.
+ * The dialog expects these parameters:
+ *    "host" - host from which the certificate is received
+ *    "markup" - markup for the trust prompt, if not set, then "SSL certificate for '<b>host</b>' is not trusted. Do you wish to accept it?" is used
+ *    "certificate" - a base64-encoded DER certificate, for which ask on trust
+ *    "certificate-errors" - a hexa-decimal integer (as string) corresponding to GTlsCertificateFlags
+ *
+ * It can contain, optionally, chain of issuers:
+ *    "issuer"   - a base64-encoded DER certificate, issuer of "certificate"
+ *    "issuer-1" - a base64-encoded DER certificate, issuer of "issuer"
+ *    "issuer-2" - a base64-encoded DER certificate, issuer of "issuer-1"
+ *    and so on
+ *
+ * Result of the dialog is:
+ *    0 - reject
+ *    1 - accept permanently
+ *    2 - accept temporarily
+ *   -1 - user didn't choose any of the above
+ *
+ * The dialog doesn't provide any additional values in the response.
  */
 
 static gchar *
@@ -237,7 +237,7 @@ trust_prompt_free_certificate (gpointer cert)
 
 static GSList *
 trust_prompt_get_issuers (CERTCertDBHandle *certdb,
-			  const ENamedParameters *parameters)
+                          const ENamedParameters *parameters)
 {
 	GSList *issuers = NULL;
 	CERTCertificate *cert;
@@ -285,8 +285,8 @@ trust_prompt_get_issuers (CERTCertDBHandle *certdb,
 
 static gboolean
 trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
-				gint prompt_id,
-				const ENamedParameters *parameters)
+                                gint prompt_id,
+                                const ENamedParameters *parameters)
 {
 	const gchar *host, *markup, *base64_cert, *cert_errs_str;
 	gchar *fingerprint, *reason;

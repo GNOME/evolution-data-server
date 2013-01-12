@@ -103,15 +103,15 @@ prompt_request_free (gpointer data)
 
 static gint
 add_prompt (EUserPrompterServer *server,
-	    gboolean is_extension_prompt,
-	    const gchar *type,
-	    const gchar *title,
-	    const gchar *primary_text,
-	    const gchar *secondary_text,
-	    gboolean use_markup,
-	    const gchar *const *button_captions,
-	    const gchar *dialog_name,
-	    const gchar *const *parameters)
+            gboolean is_extension_prompt,
+            const gchar *type,
+            const gchar *title,
+            const gchar *primary_text,
+            const gchar *secondary_text,
+            gboolean use_markup,
+            const gchar *const *button_captions,
+            const gchar *dialog_name,
+            const gchar *const *parameters)
 {
 	PromptRequest *pr;
 	gint id;
@@ -147,8 +147,8 @@ add_prompt (EUserPrompterServer *server,
 
 static gboolean
 remove_prompt (EUserPrompterServer *server,
-	       gint prompt_id,
-	       gboolean *is_extension_prompt)
+               gint prompt_id,
+               gboolean *is_extension_prompt)
 {
 	GSList *iter;
 
@@ -236,14 +236,14 @@ maybe_schedule_prompt (EUserPrompterServer *server)
 
 static gboolean
 user_prompter_server_prompt_cb (EDBusUserPrompter *dbus_prompter,
-				GDBusMethodInvocation *invocation,
-				const gchar *type,
-				const gchar *title,
-				const gchar *primary_text,
-				const gchar *secondary_text,
-				gboolean use_markup,
-				const gchar *const *button_captions,
-				EUserPrompterServer *server)
+                                GDBusMethodInvocation *invocation,
+                                const gchar *type,
+                                const gchar *title,
+                                const gchar *primary_text,
+                                const gchar *secondary_text,
+                                gboolean use_markup,
+                                const gchar *const *button_captions,
+                                EUserPrompterServer *server)
 {
 	gint id;
 
@@ -262,10 +262,10 @@ user_prompter_server_prompt_cb (EDBusUserPrompter *dbus_prompter,
 
 static gboolean
 user_prompter_server_extension_prompt_cb (EDBusUserPrompter *dbus_prompter,
-					  GDBusMethodInvocation *invocation,
-					  const gchar *dialog_name,
-					  const gchar *const *parameters,
-					  EUserPrompterServer *server)
+                                          GDBusMethodInvocation *invocation,
+                                          const gchar *dialog_name,
+                                          const gchar *const *parameters,
+                                          EUserPrompterServer *server)
 {
 	gint id;
 
@@ -274,7 +274,8 @@ user_prompter_server_extension_prompt_cb (EDBusUserPrompter *dbus_prompter,
 	if (!dialog_name || !g_hash_table_lookup (server->priv->extensions, dialog_name)) {
 		g_rec_mutex_unlock (&server->priv->lock);
 
-		g_dbus_method_invocation_return_error (invocation, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+		g_dbus_method_invocation_return_error (
+			invocation, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
 			_("Extension dialog '%s' not found."), dialog_name ? dialog_name : "[null]");
 
 		return TRUE;
@@ -360,7 +361,7 @@ user_prompter_server_bus_acquired (EDBusServer *server,
 
 static void
 user_prompter_server_quit_server (EDBusServer *server,
-				  EDBusServerExitCode code)
+                                  EDBusServerExitCode code)
 {
 	EUserPrompterServerPrivate *priv;
 
@@ -412,10 +413,12 @@ e_user_prompter_server_init (EUserPrompterServer *server)
 
 	g_rec_mutex_init (&server->priv->lock);
 
-	g_signal_connect (server->priv->dbus_prompter, "handle-prompt",
+	g_signal_connect (
+		server->priv->dbus_prompter, "handle-prompt",
 		G_CALLBACK (user_prompter_server_prompt_cb), server);
 
-	g_signal_connect (server->priv->dbus_prompter, "handle-extension-prompt",
+	g_signal_connect (
+		server->priv->dbus_prompter, "handle-extension-prompt",
 		G_CALLBACK (user_prompter_server_extension_prompt_cb), server);
 }
 
@@ -451,9 +454,9 @@ e_user_prompter_server_new (void)
  **/
 void
 e_user_prompter_server_response (EUserPrompterServer *server,
-				 gint prompt_id,
-				 gint response,
-				 const ENamedParameters *extension_values)
+                                 gint prompt_id,
+                                 gint response,
+                                 const ENamedParameters *extension_values)
 {
 	gboolean is_extension_prompt = FALSE;
 
@@ -474,7 +477,8 @@ e_user_prompter_server_response (EUserPrompterServer *server,
 
 			values = e_named_parameters_to_strv (extension_values);
 
-			e_dbus_user_prompter_emit_extension_response (server->priv->dbus_prompter, prompt_id, response,
+			e_dbus_user_prompter_emit_extension_response (
+				server->priv->dbus_prompter, prompt_id, response,
 				(const gchar * const *) values);
 
 			if (values)
@@ -513,8 +517,8 @@ e_user_prompter_server_response (EUserPrompterServer *server,
  **/
 gboolean
 e_user_prompter_server_register (EUserPrompterServer *server,
-				 EExtension *extension,
-				 const gchar *dialog_name)
+                                 EExtension *extension,
+                                 const gchar *dialog_name)
 {
 	g_return_val_if_fail (E_IS_USER_PROMPTER_SERVER (server), FALSE);
 	g_return_val_if_fail (E_IS_USER_PROMPTER_SERVER_EXTENSION (extension), FALSE);

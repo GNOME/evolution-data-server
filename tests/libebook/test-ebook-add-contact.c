@@ -10,7 +10,7 @@ static ETestServerClosure book_closure =
 
 static void
 test_add_contact_sync (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	EBook *book;
 	EContact *contact;
@@ -26,7 +26,7 @@ test_add_contact_sync (ETestServerFixture *fixture,
 
 static void
 test_add_contact_async (ETestServerFixture *fixture,
-			gconstpointer       user_data)
+                        gconstpointer user_data)
 {
 	EBook *book;
 	gchar *vcard;
@@ -53,10 +53,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBook/AddContact/Sync", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_add_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBook/AddContact/Async", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_add_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/AddContact/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_add_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBook/AddContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_add_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

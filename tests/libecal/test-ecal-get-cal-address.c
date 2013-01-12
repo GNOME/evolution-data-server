@@ -11,7 +11,7 @@ static ETestServerClosure cal_closure =
 
 static void
 test_get_cal_address (ETestServerFixture *fixture,
-		      gconstpointer       user_data)
+                      gconstpointer user_data)
 {
 	ECal *cal;
 	gchar *address;
@@ -32,8 +32,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECal/GetCalAddress", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_cal_address, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECal/GetCalAddress", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_cal_address, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

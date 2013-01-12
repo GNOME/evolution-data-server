@@ -10,10 +10,9 @@
 static ETestServerClosure cal_closure =
 	{ E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
-
 static void
 test_get_free_busy (ETestServerFixture *fixture,
-		    gconstpointer       user_data)
+                    gconstpointer user_data)
 {
 	ECal *cal;
 	GList *users = NULL;
@@ -43,8 +42,9 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/ECal/GetFreeBusy", ETestServerFixture, &cal_closure,
-		    e_test_server_utils_setup, test_get_free_busy, e_test_server_utils_teardown);
+	g_test_add (
+		"/ECal/GetFreeBusy", ETestServerFixture, &cal_closure,
+		e_test_server_utils_setup, test_get_free_busy, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }
