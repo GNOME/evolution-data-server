@@ -81,6 +81,7 @@ e_cal_client_check_timezones
 e_cal_client_tzlookup
 e_cal_client_tzlookup_icomp
 e_cal_match_tzid
+<SUBSECTION Deprecated>
 e_cal_check_timezones
 e_cal_tzlookup_ecal
 e_cal_tzlookup_icomp
@@ -430,13 +431,14 @@ tm_to_icaltimetype
 
 <SECTION>
 <FILE>e-cal-types</FILE>
+EDataCalObjType
+EDataCalObjModType
+<SUBSECTION Deprecated>
 E_CALENDAR_ERROR
 e_calendar_error_quark
 ECalChangeType
 ECalChange
 ECalendarStatus
-EDataCalObjType
-EDataCalObjModType
 E_CALENDAR_STATUS_CORBA_EXCEPTION
 </SECTION>
 

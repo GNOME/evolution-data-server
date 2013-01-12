@@ -83,6 +83,7 @@ e_client_util_free_object_slist
 e_client_util_parse_comma_strings
 EClientErrorsList
 e_client_util_unwrap_dbus_error
+<SUBSECTION Deprecated>
 e_client_remove
 e_client_remove_finish
 e_client_remove_sync
@@ -148,6 +149,7 @@ e_flag_clear
 e_flag_wait
 e_flag_wait_until
 e_flag_free
+<SUBSECTION Deprecated>
 e_flag_timed_wait
 </SECTION>
 
@@ -512,6 +514,7 @@ ESourceCollectionPrivate
 ESourceExtension
 E_SOURCE_PARAM_SETTING
 e_source_extension_ref_source
+<SUBSECTION Deprecated>
 e_source_extension_get_source
 <SUBSECTION Standard>
 E_SOURCE_EXTENSION
@@ -1001,6 +1004,8 @@ ESourceTaskListPrivate
 <TITLE>ESourceWebdav</TITLE>
 ESourceWebdav
 E_SOURCE_EXTENSION_WEBDAV_BACKEND
+e_source_webdav_get_avoid_ifmatch
+e_source_webdav_set_avoid_ifmatch
 e_source_webdav_get_calendar_auto_schedule
 e_source_webdav_set_calendar_auto_schedule
 e_source_webdav_get_display_name
@@ -1015,10 +1020,16 @@ e_source_webdav_set_resource_path
 e_source_webdav_get_resource_query
 e_source_webdav_dup_resource_query
 e_source_webdav_set_resource_query
+e_source_webdav_get_ssl_trust
+e_source_webdav_dup_ssl_trust
+e_source_webdav_set_ssl_trust
 e_source_webdav_dup_soup_uri
 e_source_webdav_set_soup_uri
-e_source_webdav_get_avoid_ifmatch
-e_source_webdav_set_avoid_ifmatch
+ETrustPromptResponse
+e_source_webdav_prepare_ssl_trust_prompt
+e_source_webdav_store_ssl_trust_prompt
+e_source_webdav_unset_temporary_ssl_trust
+<SUBSECTION Deprecated>
 e_source_webdav_get_ignore_invalid_cert
 e_source_webdav_set_ignore_invalid_cert
 <SUBSECTION Standard>

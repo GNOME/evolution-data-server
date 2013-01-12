@@ -107,6 +107,18 @@ void		e_data_cal_view_notify_components_modified_1
 						(EDataCalView *view,
 						 ECalComponent *component);
 
+void		e_data_cal_view_notify_objects_removed
+						(EDataCalView *view,
+						 const GSList *ids);
+void		e_data_cal_view_notify_objects_removed_1
+						(EDataCalView *view,
+						 const ECalComponentId *id);
+void		e_data_cal_view_notify_progress	(EDataCalView *view,
+						 gint percent,
+						 const gchar *message);
+void		e_data_cal_view_notify_complete	(EDataCalView *view,
+						 const GError *error);
+
 #ifndef EDS_DISABLE_DEPRECATED
 void		e_data_cal_view_notify_objects_added
 						(EDataCalView *view,
@@ -121,18 +133,6 @@ void		e_data_cal_view_notify_objects_modified_1
 						(EDataCalView *view,
 						 const gchar *object);
 #endif /* EDS_DISABLE_DEPRECATED */
-
-void		e_data_cal_view_notify_objects_removed
-						(EDataCalView *view,
-						 const GSList *ids);
-void		e_data_cal_view_notify_objects_removed_1
-						(EDataCalView *view,
-						 const ECalComponentId *id);
-void		e_data_cal_view_notify_progress	(EDataCalView *view,
-						 gint percent,
-						 const gchar *message);
-void		e_data_cal_view_notify_complete	(EDataCalView *view,
-						 const GError *error);
 
 G_END_DECLS
 

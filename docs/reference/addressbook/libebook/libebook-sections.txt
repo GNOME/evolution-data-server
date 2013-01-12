@@ -155,6 +155,7 @@ e_book_client_get_contacts_uids_sync
 e_book_client_get_view
 e_book_client_get_view_finish
 e_book_client_get_view_sync
+<SUBSECTION Deprecated>
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 <SUBSECTION Standard>
 E_BOOK_CLIENT
@@ -399,10 +400,11 @@ EVC_X_BOOK_UID
 EVC_CONTACT_LIST
 EVC_PARENT_CL
 EVC_CL_UID
-EVC_X_DEST_EMAIL
-EVC_X_DEST_NAME
 E_VCARD_21_VALID_PROPERTIES
 E_VCARD_21_VALID_PARAMETERS
+<SUBSECTION Deprecated>
+EVC_X_DEST_EMAIL
+EVC_X_DEST_NAME
 <SUBSECTION Standard>
 E_VCARD
 E_IS_VCARD
@@ -450,11 +452,12 @@ E_BOOK_ERROR
 e_book_error_quark
 EBookStatus
 EDataBookStatus
-E_BOOK_ERROR_CORBA_EXCEPTION
 EBookViewStatus
 EBookChangeType
 EBookChange
 EBookIndexType
+<SUBSECTION Deprecated>
+E_BOOK_ERROR_CORBA_EXCEPTION
 </SECTION>
 
 <SECTION>
@@ -512,6 +515,7 @@ e_destination_import
 e_destination_importv
 e_destination_export_to_vcard_attribute
 e_destination_freev
+<SUBSECTION Deprecated>
 e_destination_set_book
 <SUBSECTION Standard>
 E_DESTINATION

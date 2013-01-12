@@ -46,6 +46,7 @@ e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
 e_book_backend_respond_opened
+<SUBSECTION Deprecated>
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 e_book_backend_foreach_view
 <SUBSECTION Standard>
@@ -181,6 +182,7 @@ e_book_backend_sqlitedb_remove
 e_book_backend_sqlitedb_search_data_free
 e_book_backend_sqlitedb_check_summary_query
 e_book_backend_sqlitedb_check_summary_fields
+<SUBSECTION Deprecated>
 e_book_backend_sqlitedb_is_summary_query
 e_book_backend_sqlitedb_is_summary_fields
 <SUBSECTION Standard>
