@@ -956,7 +956,7 @@ e_util_copy_string_slist (GSList *copy_to,
 	GSList *copied_list;
 
 	copied_list = g_slist_copy_deep (
-		(GSList *) copy_to, (GCopyFunc) g_strdup, NULL);
+		(GSList *) strings, (GCopyFunc) g_strdup, NULL);
 
 	return g_slist_concat (copy_to, copied_list);
 }
@@ -984,7 +984,7 @@ e_util_copy_object_slist (GSList *copy_to,
 	GSList *copied_list;
 
 	copied_list = g_slist_copy_deep (
-		(GSList *) copy_to, (GCopyFunc) g_object_ref, NULL);
+		(GSList *) objects, (GCopyFunc) g_object_ref, NULL);
 
 	return g_slist_concat (copy_to, copied_list);
 }
