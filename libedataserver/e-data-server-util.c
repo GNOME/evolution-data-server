@@ -1005,6 +1005,8 @@ e_util_free_string_slist (GSList *strings)
  * also @objects itself.
  *
  * Since: 3.4
+ *
+ * Deprecated: 3.8: Use g_slist_free_full() instead.
  **/
 void
 e_util_free_object_slist (GSList *objects)
