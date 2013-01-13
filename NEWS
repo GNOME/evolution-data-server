@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.7.4 2013-01-14
+--------------------------------------
+
+* The legacy IMAP backend has been retired.  Legacy IMAP accounts will
+  be converted to the newer "IMAP+" backend and their data caches reset.
+
+Bug Fixes:
+	Bug 665371 - Decommission legacy IMAP backend (Matthew Barnes)
+	Bug 689124 - Increase Camel's TCP read/write timeout (Matthew Barnes)
+	Bug 690151 - Crash in e_book_backend_file_bump_revision()
+	             (Milan Crha)
+	Bug 690158 - libedataserver: Vala binding updates (Alban Browaeys)
+	Bug 690177 - Use trust-prompt for certificate verification in WebDAV
+	             backends (Milan Crha)
+	Bug 691033 - Avoid using LIBSOUP_DISABLE_DEPRECATED (Hashem Nasarat)
+	Bug 691466 - Cache reaper restores old IMAP cache directories
+	             (Matthew Barnes)
+	Bug 691477 - exists_vcard is not supported when parsing a query from
+	             string (Milan Crha)
+
+Other Changes:
+	* IMAPX: Support non-virtual Junk/Trash folders. (Matthew Barnes)
+	* IMAPX: Ask server to handle "body-contains" searches.
+	  (Matthew Barnes)
+	* ESourceRegistryServer: Add a "tweak-key-file" signal.
+	  (Matthew Barnes)
+	* Add automatic IMAP to IMAPX account migration. (Matthew Barnes)
+	* Add OAuth2Support D-Bus interface. (Matthew Barnes)
+	* Merge ECalBackendFileStore into ECalBackendStore. (Matthew Barnes)
+	* Add ETimezoneCache interface. (Matthew Barnes)
+	* ECalBackend: Remove internal_get_timezone() method.
+	  (Matthew Barnes)
+	* CamelMimeFilterPgp: Ignore right side white spaces (Milan Crha)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Christian Kirbach (de)
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+	Rafael Ferreira (pt_BR)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.7.3 2012-12-16
 --------------------------------------
 
