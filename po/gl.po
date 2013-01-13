@@ -12,13 +12,13 @@
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
-# Fran Dieguez <frandieguez@gnome.org>, 2012.
+# Fran Dieguez <frandieguez@gnome.org>, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-24 23:36+0100\n"
-"PO-Revision-Date: 2012-12-24 23:59+0200\n"
+"POT-Creation-Date: 2013-01-13 17:31+0100\n"
+"PO-Revision-Date: 2013-01-13 17:35+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
@@ -29,36 +29,36 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 "X-Poedit-Language: Galician\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:101
+#: ../addressbook/backends/file/e-book-backend-file.c:102
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Produciuse un erro ao retirar o ficheiro «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:125
+#: ../addressbook/backends/file/e-book-backend-file.c:126
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Produciuse un erro ao crear o cartafol %s: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:372
+#: ../addressbook/backends/file/e-book-backend-file.c:373
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Produciuse un erro ao crear unha ligazón dura para o recurso «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:474
-#: ../addressbook/backends/file/e-book-backend-file.c:877
+#: ../addressbook/backends/file/e-book-backend-file.c:475
+#: ../addressbook/backends/file/e-book-backend-file.c:886
 msgid "No UID in the contact"
 msgstr "O contacto non ten ningún UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1145
+#: ../addressbook/backends/file/e-book-backend-file.c:1154
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1147
+#: ../addressbook/backends/file/e-book-backend-file.c:1156
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4914
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1303
+#: ../addressbook/backends/file/e-book-backend-file.c:1312
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Non foi posíbel renomear a base de datos antiga de %s a %s: %s"
@@ -66,60 +66,60 @@ msgstr "Non foi posíbel renomear a base de datos antiga de %s a %s: %s"
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1190
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4809
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:282
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:967
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1015
 #: ../addressbook/libebook/e-book-client.c:99
 #: ../addressbook/libedata-book/e-data-book.c:447
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:605
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:626
-#: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:122
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:561
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:591
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
+#: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:133
 #: ../camel/camel-imapx-command.c:594 ../libedataserver/e-client.c:165
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:648
+#: ../addressbook/backends/google/e-book-backend-google.c:649
 msgid "Querying for updated contacts…"
 msgstr "Solicitando actualizacións de contactos…"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:785
+#: ../addressbook/backends/google/e-book-backend-google.c:786
 msgid "Querying for updated groups…"
 msgstr "Solicitando actualización de grupos…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1211
+#: ../addressbook/backends/google/e-book-backend-google.c:1235
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1621
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:331
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:375
 msgid "The backend does not support bulk additions"
 msgstr "A infraestrutura non permite adicións en lote"
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1243
+#: ../addressbook/backends/google/e-book-backend-google.c:1267
 msgid "Creating new contact…"
 msgstr "Creando un contacto novo…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1334
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
+#: ../addressbook/backends/google/e-book-backend-google.c:1358
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:492
 msgid "The backend does not support bulk removals"
 msgstr "A infraestrutura non permite retiradas en lote"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1362
+#: ../addressbook/backends/google/e-book-backend-google.c:1386
 msgid "Deleting contact…"
 msgstr "Eliminando contacto…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1616
+#: ../addressbook/backends/google/e-book-backend-google.c:1640
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2284
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:553
 msgid "The backend does not support bulk modifications"
 msgstr "A infraestrutura non permite modificacións en lote"
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1654
+#: ../addressbook/backends/google/e-book-backend-google.c:1678
 msgid "Modifying contact…"
 msgstr "Modificando contacto…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1825
+#: ../addressbook/backends/google/e-book-backend-google.c:1849
 msgid "Loading…"
 msgstr "Cargando…"
 
@@ -217,44 +217,44 @@ msgstr "Descargando os contactos (%d)… "
 msgid "Failed to get the DN for user '%s'"
 msgstr "Produciuse un erro ao obter o DN para o usuario «%s»"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:362
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:406
 #, c-format
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "A creación do recurso «%s» fallou con estado HTTP: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:463
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE co estado HTTP %d"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:529
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:574
 msgid "Contact on server changed -> not modifying"
 msgstr "Contacto modificado no servidor -> non se modifica"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:538
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:583
 #, c-format
 msgid "Modify contact failed with HTTP status: %d (%s)"
 msgstr "Produciuse un fallo ao modificar o contacto co estado HTTP> %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:945
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:993
 msgid "Loading Addressbook summary..."
 msgstr "Cargando resumo da axenda de enderezos …"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:964
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1012
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "Produciuse un fallo PROPFIND en WebDav co estado HTTP: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:989
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1037
 msgid "No response body in webdav PROPFIND result"
 msgstr "Non hai corpo da resposta no resultado PROPFIND de WebDav"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1021
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1069
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Cargando contactos (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1354
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
 msgid "Cannot transform SoupURI to string"
 msgstr "Non foi posíbel transformar SoupURI a unha cadea"
 
@@ -286,7 +286,7 @@ msgid "Failed to run book factory"
 msgstr "Produciuse un erro ao executar a fábrica do caderno"
 
 #: ../addressbook/libebook/e-book-client.c:2526
-#: ../calendar/libecal/e-cal-client.c:4790
+#: ../calendar/libecal/e-cal-client.c:4956
 msgid "Cannot get connection to view"
 msgstr "Non é posíbel obter unha conexión para visualizar"
 
@@ -756,7 +756,7 @@ msgid "Birth Date"
 msgstr "Data de nacemento"
 
 #: ../addressbook/libebook/e-contact.c:284
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:957
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:958
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -866,7 +866,7 @@ msgstr "Lista de nomes de Google Talk"
 msgid "Twitter Name List"
 msgstr "Lista de nomes de Twitter"
 
-#: ../addressbook/libebook/e-contact.c:1683
+#: ../addressbook/libebook/e-contact.c:1684
 #: ../addressbook/libebook/e-destination.c:884
 msgid "Unnamed List"
 msgstr "Lista sen nome"
@@ -885,24 +885,24 @@ msgstr "A propiedade «%s» do caderno é descoñecida"
 msgid "Cannot change value of book property '%s'"
 msgstr "Non é posíbel cambiar o valor da propiedade «%s» do caderno"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:742
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:741
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr ""
 "Produciuse un erro ao instrospeccionar o campo de resumo non coñecido «%s»"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:963
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:965
 #: ../camel/camel-db.c:510
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1093
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1096
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo de contacto «%d» non válido especificado no resumo"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1126
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1130
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -911,8 +911,8 @@ msgstr ""
 "Campo de contacto «%s» do tipo «%s» especificado no resumo, pero só se "
 "admiten os tipos de campo booleanos, cadeas ou lista de cadeas "
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2058
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2839
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2065
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2861
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -920,12 +920,12 @@ msgstr ""
 "Os search_contacts completos non están almacenados na caché. As vcards non "
 "se devolven."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2071
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2078
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Contacto «%s» non atopado"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2981
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3003
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -934,7 +934,7 @@ msgstr ""
 "Os search_contacts completos non están almacenados na caché. Polo tanto só "
 "admite a consulta do resumo."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3059
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3084
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -942,7 +942,7 @@ msgstr ""
 "As vcards completas non están almacenadas na caché. Polo tanto só admite a "
 "consulta do resumo."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3731
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3756
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Produciuse un erro ao eliminar o ficheiro da base de datos: errno %d"
@@ -1067,7 +1067,7 @@ msgid "Backend is not opened yet"
 msgstr "A infraestrutura aínda non está aberta"
 
 #: ../addressbook/libedata-book/e-data-book.c:350
-#: ../calendar/libecal/e-cal-client.c:1002
+#: ../calendar/libecal/e-cal-client.c:1168
 #: ../calendar/libedata-cal/e-data-cal.c:462 ../libedataserver/e-client.c:160
 msgid "Other error"
 msgstr "Outro erro"
@@ -1155,44 +1155,31 @@ msgstr "Falta o UID da fonte"
 msgid "No such source for UID '%s'"
 msgstr "Non existe a orixe para o UID «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:572
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:559
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Non é posíbel chegar ao servidor (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:589
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Produciuse un erro ao conectar co servidor SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:609
-msgid ""
-"Failed to connect to a server using SSL. One possible reason is an invalid "
-"certificate being used by the server. If this is expected, like self-signed "
-"certificate being used on the server, then disable certificate validity "
-"tests by selecting 'Ignore invalid SSL certificate' option in Properties"
-msgstr ""
-"Produciuse un erro ao conectar ao servidor usando SSL. Unha das posíbeis "
-"razóns é o servidor estea usando un certificado non válido. Se isto é o que "
-"se agardaba, como o uso no servidor dun certificado autoasinado, desactive a "
-"comprobación da validez do certificado seleccionando a opción «Ignorar "
-"certificado SSL non válido» en Propiedades."
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:623
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Devolveuse un código de estado HTTP %d non agardado (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:642
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
 msgid "CalDAV backend is not loaded yet"
 msgstr "Non é posíbel cargar a infraestrutura de CalDAV"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1031
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1008
 msgid "Invalid Redirect URL"
 msgstr "URL de redirección non válido"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2390
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2752
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2415
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2773
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1202,130 +1189,126 @@ msgstr ""
 "lectura.\n"
 "Mensaxe de erro: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2696
-msgid "Cannot create local store"
-msgstr "Non é posíbel crear o almacén local"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2705
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2725
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Non é posíbel crear o cartafol de caché local: «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3708
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3734
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV non permite adicións en lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3810
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3837
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV non permite modificacións en lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3978
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4006
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV non permite retiradas en lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4634
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4671
 msgid "Calendar doesn't support Free/Busy"
 msgstr "O calendario non admite Libre/Ocupado"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4642
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4680
 msgid "Schedule outbox url not found"
 msgstr "URL da bandexa de saída programada non atopada"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4741
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4779
 msgid "Unexpected result in schedule-response"
 msgstr "Resultado non agardado na resposta programada"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:959
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:960
 msgid "Birthday"
 msgstr "Aniversario"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:995
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:996
 #, c-format
 msgid "Birthday: %s"
 msgstr "Aniversario: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1026
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1027
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Datas especiais: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:235
+#: ../calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
 msgstr ""
 "Non é posíbel gardar os datos do calendario: o URI está mal construído."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:242
-#: ../calendar/backends/file/e-cal-backend-file.c:248
+#: ../calendar/backends/file/e-cal-backend-file.c:250
+#: ../calendar/backends/file/e-cal-backend-file.c:256
 msgid "Cannot save calendar data"
 msgstr "Non é posíbel gardar os datos do calendario"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:483
+#: ../calendar/backends/http/e-cal-backend-http.c:473
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "URI mal formada: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:544
+#: ../calendar/backends/http/e-cal-backend-http.c:564
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Redireccionado a un URI que non é válido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:581
+#: ../calendar/backends/http/e-cal-backend-http.c:601
 #, c-format
 msgid "Bad file format."
 msgstr "O formato de ficheiro non é válido."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:591
+#: ../calendar/backends/http/e-cal-backend-http.c:611
 #, c-format
 msgid "Not a calendar."
 msgstr "Non é un calendario."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:888
-#: ../calendar/backends/http/e-cal-backend-http.c:893
-#: ../calendar/backends/weather/e-cal-backend-weather.c:512
+#: ../calendar/backends/http/e-cal-backend-http.c:920
+#: ../calendar/backends/http/e-cal-backend-http.c:925
+#: ../calendar/backends/weather/e-cal-backend-weather.c:506
 msgid "Could not create cache file"
 msgstr "Non foi posíbel crear o ficheiro da caché"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:172
+#: ../calendar/backends/weather/e-cal-backend-weather.c:165
 msgid "Could not retrieve weather data"
 msgstr "Non foi posíbel obter os datos meteorolóxicos"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:277
+#: ../calendar/backends/weather/e-cal-backend-weather.c:270
 msgid "Weather: Fog"
 msgstr "Tempo: néboa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:278
+#: ../calendar/backends/weather/e-cal-backend-weather.c:271
 msgid "Weather: Cloudy Night"
 msgstr "Tempo: noite anubrada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:279
+#: ../calendar/backends/weather/e-cal-backend-weather.c:272
 msgid "Weather: Cloudy"
 msgstr "Tempo: anubrado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:280
+#: ../calendar/backends/weather/e-cal-backend-weather.c:273
 msgid "Weather: Overcast"
 msgstr "Tempo: moi anubrado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:281
+#: ../calendar/backends/weather/e-cal-backend-weather.c:274
 msgid "Weather: Showers"
 msgstr "Tempo: chuvias fortes"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:282
+#: ../calendar/backends/weather/e-cal-backend-weather.c:275
 msgid "Weather: Snow"
 msgstr "Tempo: neve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:283
+#: ../calendar/backends/weather/e-cal-backend-weather.c:276
 msgid "Weather: Clear Night"
 msgstr "Tempo: noite despexada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:284
+#: ../calendar/backends/weather/e-cal-backend-weather.c:277
 msgid "Weather: Sunny"
 msgstr "Tempo: sol"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:285
+#: ../calendar/backends/weather/e-cal-backend-weather.c:278
 msgid "Weather: Thunderstorms"
 msgstr "Tempo: treboada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:409
+#: ../calendar/backends/weather/e-cal-backend-weather.c:402
 msgid "Forecast"
 msgstr "Prognóstico"
 
@@ -1333,16 +1316,16 @@ msgstr "Prognóstico"
 msgid "Repository is offline"
 msgstr "O repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:2308 ../calendar/libecal/e-cal-client.c:109
+#: ../calendar/libecal/e-cal.c:2308 ../calendar/libecal/e-cal-client.c:120
 msgid "No such calendar"
 msgstr "Non existe o calendario"
 
-#: ../calendar/libecal/e-cal.c:2310 ../calendar/libecal/e-cal-client.c:111
+#: ../calendar/libecal/e-cal.c:2310 ../calendar/libecal/e-cal-client.c:122
 #: ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Object not found"
 msgstr "O obxecto non se atopou"
 
-#: ../calendar/libecal/e-cal.c:2312 ../calendar/libecal/e-cal-client.c:113
+#: ../calendar/libecal/e-cal.c:2312 ../calendar/libecal/e-cal-client.c:124
 #: ../calendar/libedata-cal/e-data-cal.c:433
 msgid "Invalid object"
 msgstr "O obxecto non é válido"
@@ -1359,7 +1342,7 @@ msgstr "O URI xa se cargou"
 msgid "Unknown User"
 msgstr "Usuario descoñecido"
 
-#: ../calendar/libecal/e-cal.c:2322 ../calendar/libecal/e-cal-client.c:117
+#: ../calendar/libecal/e-cal.c:2322 ../calendar/libecal/e-cal-client.c:128
 #: ../calendar/libedata-cal/e-data-cal.c:434
 msgid "Object ID already exists"
 msgstr "O ID do obxecto xa existe"
@@ -1394,17 +1377,17 @@ msgstr "Produciuse unha excepción de D-Bus"
 msgid "No error"
 msgstr "Sen erros"
 
-#: ../calendar/libecal/e-cal-client.c:115
+#: ../calendar/libecal/e-cal-client.c:126
 #: ../calendar/libedata-cal/e-data-cal.c:442
 msgid "Unknown user"
 msgstr "Usuario descoñecido"
 
-#: ../calendar/libecal/e-cal-client.c:119
+#: ../calendar/libecal/e-cal-client.c:130
 #: ../calendar/libedata-cal/e-data-cal.c:431
 msgid "Invalid range"
 msgstr "O intervalo non é válido"
 
-#: ../calendar/libecal/e-cal-client.c:993
+#: ../calendar/libecal/e-cal-client.c:1159
 msgid "Failed to run calendar factory"
 msgstr "Produciuse un erro ao executar a fábrica da axenda"
 
@@ -1561,23 +1544,23 @@ msgstr "Sen definir"
 msgid "Cannot process, calendar backend is opening"
 msgstr "Non é posíbel procesar, estase abrindo a infraestrutura da axenda"
 
-#: ../calendar/libedata-cal/e-cal-backend.c:135
+#: ../calendar/libedata-cal/e-cal-backend.c:156
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Propiedade «%s» do calendario descoñecida"
 
-#: ../calendar/libedata-cal/e-cal-backend.c:152
+#: ../calendar/libedata-cal/e-cal-backend.c:173
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Non é posíbel cambiar o valor da propiedade «%s» do calendario"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:78
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:847
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:870
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:990
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1022
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1229
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1260
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:844
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:867
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:987
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1019
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1226
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1257
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "«%s» non espera argumentos"
@@ -1586,7 +1569,7 @@ msgstr "«%s» non espera argumentos"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:238
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:285
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:326
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1302
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1299
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "«%s» agarda un argumento"
@@ -1594,7 +1577,7 @@ msgstr "«%s» agarda un argumento"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:122
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:130
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:917
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:914
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "«%s» agarda que o primeiro argumento sexa unha cadea"
@@ -1606,9 +1589,9 @@ msgstr ""
 "«%s» agarda que o primeiro argumento sexa unha cadea de data e hora ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:182
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:562
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:910
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1058
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:559
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:907
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1055
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "«%s» agarda 2 argumentos"
@@ -1616,11 +1599,11 @@ msgstr "«%s» agarda 2 argumentos"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:189
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:245
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:292
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:417
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:506
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:569
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1065
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1309
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:415
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:504
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:566
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1062
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1306
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "«%s» agarda que o primeiro argumento sexa un time_t"
@@ -1630,35 +1613,35 @@ msgstr "«%s» agarda que o primeiro argumento sexa un time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "«%s» agarda que o segundo argumento sexa un enteiro"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:410
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:408
 #, c-format
 msgid "\"%s\" expects two or three arguments"
 msgstr "«%s» agarda dous ou tres argumentos"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:426
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:514
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:579
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1074
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:424
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:512
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:576
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1071
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» agarda que o segundo argumento sexa un time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:436
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:434
 #, c-format
 msgid "\"%s\" expects the third argument to be a string"
 msgstr "«%s» agarda que o terceiro argumento sexa unha cadea"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:498
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:496
 #, c-format
 msgid "\"%s\" expects none or two arguments"
 msgstr "«%s» agarda ningún ou dous argumentos"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:926
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:923
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "«%s» agarda que o segundo argumento sexa unha cadea"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:957
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:954
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1669,12 +1652,12 @@ msgstr ""
 "\"description\", ou \"location\", ou \"attendee\", ou \"organizer\", ou "
 "\"classification\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1126
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1123
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "«%s» agarda polo menos un argumento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1141
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1138
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1957,17 +1940,17 @@ msgstr "Recibindo a mensaxe %d de %d"
 msgid "Failed at message %d of %d"
 msgstr "Fallou na mensaxe %d de %d"
 
-#: ../camel/camel-filter-driver.c:1740 ../camel/camel-filter-driver.c:1773
+#: ../camel/camel-filter-driver.c:1741 ../camel/camel-filter-driver.c:1775
 #, c-format
 msgid "Execution of filter '%s' failed: "
 msgstr "Produciuse un erro ao executar o filtro %s:"
 
-#: ../camel/camel-filter-driver.c:1764
+#: ../camel/camel-filter-driver.c:1765
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "Produciuse un erro ao analizar o filtro «%s»: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1782
+#: ../camel/camel-filter-driver.c:1784
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
 msgstr "Produciuse un erro ao executar o filtro «%s»: %s: %s"
@@ -2960,7 +2943,7 @@ msgstr "A autenticación %s fallou"
 msgid "Forwarding messages is not supported"
 msgstr "Non se permite o reenvío de mensaxes"
 
-#: ../camel/camel-session.c:1403
+#: ../camel/camel-session.c:1404
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Introduza o contrasinal de %s para %s no servidor %s."
@@ -4096,8 +4079,7 @@ msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
 msgstr ""
-"Esta opción conectarase co servidor NNTP de forma anónima, sen "
-"autenticación."
+"Esta opción conectarase co servidor NNTP de forma anónima, sen autenticación."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
@@ -4734,7 +4716,7 @@ msgid "CalDAV"
 msgstr "CalDAV"
 
 #: ../data/sources/contacts-stub.source.in.h:1
-#: ../modules/google-backend/module-google-backend.c:195
+#: ../modules/google-backend/module-google-backend.c:217
 msgid "Contacts"
 msgstr "Contactos"
 
@@ -4797,32 +4779,58 @@ msgstr "Engadir este contrasinal ao seu anel de chaves"
 msgid "Password was incorrect"
 msgstr "O contrasinal non foi correcto"
 
-#: ../libebackend/e-backend.c:190
+#: ../libebackend/e-backend.c:206
 #, c-format
 msgid "%s does not support authentication"
 msgstr "%s non permite a autenticación"
 
-#: ../libebackend/e-collection-backend.c:765
+#: ../libebackend/e-backend.c:560
+#: ../modules/trust-prompt/trust-prompt-gtk.c:164
+msgid "_Reject"
+msgstr "_Rexeitar"
+
+#: ../libebackend/e-backend.c:562
+#: ../modules/trust-prompt/trust-prompt-gtk.c:165
+msgid "Accept _Temporarily"
+msgstr "Aceptar _temporalmente"
+
+#: ../libebackend/e-backend.c:564
+#: ../modules/trust-prompt/trust-prompt-gtk.c:166
+msgid "_Accept Permanently"
+msgstr "_Aceptar permanentemente"
+
+#: ../libebackend/e-backend.c:574
+#: ../modules/trust-prompt/trust-prompt-gtk.c:203
+#, c-format
+msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
+msgstr "O certificado SSL para «%s» non é de confianza. Desexa aceptalo?"
+
+#: ../libebackend/e-backend.c:582
+#: ../modules/trust-prompt/trust-prompt-gtk.c:162
+msgid "Certificate trust..."
+msgstr "Confianza do certificado…"
+
+#: ../libebackend/e-collection-backend.c:775
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s non permite a creación de recursos remotos"
 
-#: ../libebackend/e-collection-backend.c:824
+#: ../libebackend/e-collection-backend.c:834
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s non permite a eliminación de recursos remotos"
 
-#: ../libebackend/e-server-side-source.c:126
+#: ../libebackend/e-server-side-source.c:132
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Falta [%s] grupo na orixe de datos"
 
-#: ../libebackend/e-server-side-source.c:916 ../libedataserver/e-source.c:1106
+#: ../libebackend/e-server-side-source.c:993 ../libedataserver/e-source.c:1110
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "A orixe de datos «%s» non permite a creación de recursos remotos"
 
-#: ../libebackend/e-server-side-source.c:930
+#: ../libebackend/e-server-side-source.c:1007
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
@@ -4830,12 +4838,13 @@ msgstr ""
 "A orixe de datos «%s» non ten infraestrutura de colección para crear o "
 "recurso remoto"
 
-#: ../libebackend/e-server-side-source.c:958 ../libedataserver/e-source.c:1215
+#: ../libebackend/e-server-side-source.c:1035
+#: ../libedataserver/e-source.c:1217
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "A orixe de datos «%s» non permite a eliminación de recursos remotos"
 
-#: ../libebackend/e-server-side-source.c:972
+#: ../libebackend/e-server-side-source.c:1049
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
@@ -4843,7 +4852,13 @@ msgstr ""
 "A orixe de datos «%s» non ten infraestrutura de colección para eliminar o "
 "recurso remoto"
 
-#: ../libebackend/e-server-side-source.c:1285
+#: ../libebackend/e-server-side-source.c:1080
+#: ../libedataserver/e-source.c:1307
+#, c-format
+msgid "Data source '%s' does not support OAuth 2.0 authentication"
+msgstr "O servidor de datos «%s» non permite a autenticación OAuth 2.0 "
+
+#: ../libebackend/e-server-side-source.c:1406
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "O ficheiro debe ter unha extensión «.source»"
@@ -4858,7 +4873,7 @@ msgstr "O usuario rexeitou autenticarse"
 msgid "UID '%s' is already in use"
 msgstr "o UID «%s» xa está en uso"
 
-#: ../libebackend/e-user-prompter-server.c:278
+#: ../libebackend/e-user-prompter-server.c:279
 #, c-format
 msgid "Extension dialog '%s' not found."
 msgstr "Non foi posíbel atopar o diálogo da extensión «%s»."
@@ -5045,22 +5060,22 @@ msgstr "Escriba o contrasinal para a lista de tarefas «%s»."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Escriba o contrasinal para a conta «%s»."
 
-#: ../libedataserver/e-source.c:616
+#: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Falta [%s] grupo no ficheiro de orixe"
 
-#: ../libedataserver/e-source.c:933
+#: ../libedataserver/e-source.c:937
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "A orixe de datos «%s» non se pode retirar"
 
-#: ../libedataserver/e-source.c:1015
+#: ../libedataserver/e-source.c:1019
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "A orixe de datos «%s» non é escribíbel:"
 
-#: ../libedataserver/e-source.c:1388
+#: ../libedataserver/e-source.c:1513
 msgid "Unnamed"
 msgstr "Sen nome"
 
@@ -5068,6 +5083,42 @@ msgstr "Sen nome"
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "O script de sinatura debe ser un ficheiro local"
+
+#: ../libedataserver/e-source-webdav.c:1494
+#, c-format
+msgid ""
+"SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
+"you wish to accept it?"
+msgstr ""
+"O certificado SSL para «%s», usado pola axenda de enderezos «%s», non é de "
+"confianza. Desexa aceptalo?"
+
+#: ../libedataserver/e-source-webdav.c:1503
+#, c-format
+msgid ""
+"SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
+"wish to accept it?"
+msgstr ""
+"O certificado SSL para «%s», usado polo calendario «%s», non é de confianza. "
+"Desexa aceptalo?"
+
+#: ../libedataserver/e-source-webdav.c:1512
+#, c-format
+msgid ""
+"SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
+"you wish to accept it?"
+msgstr ""
+"O certificado SSL para «%s», usado pola lista de recordatorios «%s», non é "
+"de confianza. Desexa aceptalo?"
+
+#: ../libedataserver/e-source-webdav.c:1521
+#, c-format
+msgid ""
+"SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
+"you wish to accept it?"
+msgstr ""
+"O certificado SSL para «%s», usado pola lista de tarefas «%s», non é de "
+"confianza. Desexa aceptalo?"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5344,106 +5395,120 @@ msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
 "Produciuse un erro ao buscar «ASUrl» e «AOBUrl» na resposta da autodetección"
 
-#: ../modules/google-backend/module-google-backend.c:118
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1094
+#, c-format
+msgid ""
+"Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
+"from which to obtain an access token for '%s'"
+msgstr ""
+"Non foi posíbel atopar unha conta correspondente no servizo "
+"org.gnome.OnlineAccounts desde a que obter un token de acceso para «%s»"
+
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1121
+#, c-format
+msgid "Failed to obtain an access token for '%s': "
+msgstr "Produciuse un erro ao obter un token de acceso para «%s»:"
+
+#: ../modules/google-backend/module-google-backend.c:140
 #: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../modules/trust-prompt/certificate-viewer.c:287
+#: ../modules/trust-prompt/certificate-viewer.c:292
 msgid "Not part of certificate"
 msgstr "Non é parte do certificado"
 
-#: ../modules/trust-prompt/certificate-viewer.c:592
+#: ../modules/trust-prompt/certificate-viewer.c:600
 msgid "This certificate has been verified for the following uses:"
 msgstr "Este certificado comprobouse para os seguintes usos:"
 
-#: ../modules/trust-prompt/certificate-viewer.c:596
+#: ../modules/trust-prompt/certificate-viewer.c:604
 #: ../modules/trust-prompt/e-asn1-object.c:387
 msgid "SSL Client Certificate"
 msgstr "Certificado cliente X.509"
 
-#: ../modules/trust-prompt/certificate-viewer.c:601
+#: ../modules/trust-prompt/certificate-viewer.c:609
 #: ../modules/trust-prompt/e-asn1-object.c:391
 msgid "SSL Server Certificate"
 msgstr "Certificado de servidor X.509"
 
-#: ../modules/trust-prompt/certificate-viewer.c:606
+#: ../modules/trust-prompt/certificate-viewer.c:614
 msgid "Email Signer Certificate"
 msgstr "Certificado do asinante do correo"
 
-#: ../modules/trust-prompt/certificate-viewer.c:611
+#: ../modules/trust-prompt/certificate-viewer.c:619
 msgid "Email Recipient Certificate"
 msgstr "Certificado do destinatario do correo"
 
-#: ../modules/trust-prompt/certificate-viewer.c:625
+#: ../modules/trust-prompt/certificate-viewer.c:634
 msgid "Issued To"
 msgstr "Emitido a"
 
-#: ../modules/trust-prompt/certificate-viewer.c:626
-#: ../modules/trust-prompt/certificate-viewer.c:632
+#: ../modules/trust-prompt/certificate-viewer.c:635
+#: ../modules/trust-prompt/certificate-viewer.c:641
 msgid "Common Name (CN)"
 msgstr "Nome común (NC)"
 
-#: ../modules/trust-prompt/certificate-viewer.c:627
-#: ../modules/trust-prompt/certificate-viewer.c:633
+#: ../modules/trust-prompt/certificate-viewer.c:636
+#: ../modules/trust-prompt/certificate-viewer.c:642
 msgid "Organization (O)"
 msgstr "Organización (O)"
 
-#: ../modules/trust-prompt/certificate-viewer.c:628
-#: ../modules/trust-prompt/certificate-viewer.c:634
+#: ../modules/trust-prompt/certificate-viewer.c:637
+#: ../modules/trust-prompt/certificate-viewer.c:643
 msgid "Organizational Unit (OU)"
 msgstr "Unidade organizativa (UO)"
 
-#: ../modules/trust-prompt/certificate-viewer.c:629
+#: ../modules/trust-prompt/certificate-viewer.c:638
 #: ../modules/trust-prompt/e-asn1-object.c:134
 msgid "Serial Number"
 msgstr "Número de serie"
 
-#: ../modules/trust-prompt/certificate-viewer.c:631
+#: ../modules/trust-prompt/certificate-viewer.c:640
 msgid "Issued By"
 msgstr "Emitido a"
 
-#: ../modules/trust-prompt/certificate-viewer.c:636
+#: ../modules/trust-prompt/certificate-viewer.c:645
 msgid "Validity"
 msgstr "Validez"
 
-#: ../modules/trust-prompt/certificate-viewer.c:637
+#: ../modules/trust-prompt/certificate-viewer.c:646
 msgid "Issued On"
 msgstr "Emitido a"
 
-#: ../modules/trust-prompt/certificate-viewer.c:638
+#: ../modules/trust-prompt/certificate-viewer.c:647
 msgid "Expires On"
 msgstr "Caduca o"
 
-#: ../modules/trust-prompt/certificate-viewer.c:640
+#: ../modules/trust-prompt/certificate-viewer.c:649
 msgid "Fingerprints"
 msgstr "Pegadas dactilares"
 
-#: ../modules/trust-prompt/certificate-viewer.c:641
+#: ../modules/trust-prompt/certificate-viewer.c:650
 msgid "SHA1 Fingerprint"
 msgstr "Pegada dixital SHA1"
 
-#: ../modules/trust-prompt/certificate-viewer.c:642
+#: ../modules/trust-prompt/certificate-viewer.c:651
 msgid "MD5 Fingerprint"
 msgstr "Pegada dixital MD5"
 
-#: ../modules/trust-prompt/certificate-viewer.c:644
+#: ../modules/trust-prompt/certificate-viewer.c:653
 msgid "General"
 msgstr "Xeral"
 
-#: ../modules/trust-prompt/certificate-viewer.c:661
+#: ../modules/trust-prompt/certificate-viewer.c:672
 msgid "Certificate Hierarchy"
 msgstr "Xerarquía do certificado"
 
-#: ../modules/trust-prompt/certificate-viewer.c:664
+#: ../modules/trust-prompt/certificate-viewer.c:676
 msgid "Certificate Fields"
 msgstr "Campos do certificado"
 
-#: ../modules/trust-prompt/certificate-viewer.c:667
+#: ../modules/trust-prompt/certificate-viewer.c:680
 msgid "Field Value"
 msgstr "Valor do campo"
 
-#: ../modules/trust-prompt/certificate-viewer.c:669
+#: ../modules/trust-prompt/certificate-viewer.c:682
 msgid "Details"
 msgstr "Detalles"
 
@@ -5608,52 +5673,51 @@ msgstr "%s = %s"
 msgid "Certificate"
 msgstr "Certificado"
 
-#: ../modules/trust-prompt/e-asn1-object.c:672
-#: ../modules/trust-prompt/e-asn1-object.c:807
+#: ../modules/trust-prompt/e-asn1-object.c:674
+#: ../modules/trust-prompt/e-asn1-object.c:812
 msgid "Certificate Signature Algorithm"
 msgstr "Algoritmo de sinatura do certificado"
 
-#: ../modules/trust-prompt/e-asn1-object.c:681
+#: ../modules/trust-prompt/e-asn1-object.c:683
 msgid "Issuer"
 msgstr "Emisor"
 
-#: ../modules/trust-prompt/e-asn1-object.c:712
+#: ../modules/trust-prompt/e-asn1-object.c:714
 msgid "Subject"
 msgstr "Asunto"
 
-#: ../modules/trust-prompt/e-asn1-object.c:735
+#: ../modules/trust-prompt/e-asn1-object.c:738
 msgid "Issuer Unique ID"
 msgstr "ID único do emisor"
 
-#: ../modules/trust-prompt/e-asn1-object.c:754
+#: ../modules/trust-prompt/e-asn1-object.c:757
 msgid "Subject Unique ID"
 msgstr "ID único do titular"
 
-#: ../modules/trust-prompt/e-asn1-object.c:813
+#: ../modules/trust-prompt/e-asn1-object.c:818
 msgid "Certificate Signature Value"
 msgstr "Algoritmo de sinatura do certificado"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:200
+#: ../modules/trust-prompt/module-trust-prompt.c:201
 msgid "The signing certificate authority is not known."
 msgstr "O asinado da autoridade certificadora non se recoñece"
 
-#: ../modules/trust-prompt/module-trust-prompt.c:202
+#: ../modules/trust-prompt/module-trust-prompt.c:203
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr ""
-"O certificado non coincide coa identidade agardada do sitio da que se "
-"obtivo."
+"O certificado non coincide coa identidade agardada do sitio da que se obtivo."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:204
+#: ../modules/trust-prompt/module-trust-prompt.c:205
 msgid "The certificate's activation time is still in the future."
 msgstr "A data de activación do certificado está aínda no futuro."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:206
+#: ../modules/trust-prompt/module-trust-prompt.c:207
 msgid "The certificate has expired."
 msgstr "O certificado caducou."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:208
+#: ../modules/trust-prompt/module-trust-prompt.c:209
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
@@ -5661,54 +5725,31 @@ msgstr ""
 "O certificado foi revogado de acordo ao lista de revogación do certificado "
 "da conexión."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:210
+#: ../modules/trust-prompt/module-trust-prompt.c:211
 msgid "The certificate's algorithm is considered insecure."
 msgstr "O algoritmo do certificado considérase inseguro."
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:158
-msgid "Certificate trust..."
-msgstr "Confianza do certificado…"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:159
+#: ../modules/trust-prompt/trust-prompt-gtk.c:163
 msgid "_View Certificate"
 msgstr "_Ver certificado"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:160
-msgid "_Reject"
-msgstr "_Rexeitar"
+#: ../modules/trust-prompt/trust-prompt-gtk.c:209
+msgid "Detailed information about the certificate:"
+msgstr "Información detallada sobre o certificado:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:161
-msgid "Accept _Temporarily"
-msgstr "Aceptar _temporalmente"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:162
-msgid "_Accept Permanently"
-msgstr "_Aceptar permanentemente"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:193
-#, c-format
-msgid ""
-"SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-"\n"
-"Detailed information about the certificate:"
-msgstr ""
-"O certificado SSL para «%s» non é de confianza. Desexa aceptalo?\n"
-"\n"
-"Información detallada sobre o certificado:"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:207
+#: ../modules/trust-prompt/trust-prompt-gtk.c:223
 msgid "Issuer:"
 msgstr "Emisor:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:208
+#: ../modules/trust-prompt/trust-prompt-gtk.c:224
 msgid "Subject:"
 msgstr "Asunto:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:209
+#: ../modules/trust-prompt/trust-prompt-gtk.c:225
 msgid "Fingerprint:"
 msgstr "Pegada dixital:"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:210
+#: ../modules/trust-prompt/trust-prompt-gtk.c:226
 msgid "Reason:"
 msgstr "Razón:"
 
@@ -5726,9 +5767,25 @@ msgstr "Manter en execución despois de pechar o último cliente"
 msgid "Wait running until at least one client is connected"
 msgstr "Manter en execución até que haxa cando menos un cliente conectado"
 
-#: ../services/evolution-user-prompter/prompt-user-gtk.c:111
+#: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
 msgstr "_Ignorar"
+
+#~ msgid ""
+#~ "Failed to connect to a server using SSL. One possible reason is an "
+#~ "invalid certificate being used by the server. If this is expected, like "
+#~ "self-signed certificate being used on the server, then disable "
+#~ "certificate validity tests by selecting 'Ignore invalid SSL certificate' "
+#~ "option in Properties"
+#~ msgstr ""
+#~ "Produciuse un erro ao conectar ao servidor usando SSL. Unha das posíbeis "
+#~ "razóns é o servidor estea usando un certificado non válido. Se isto é o "
+#~ "que se agardaba, como o uso no servidor dun certificado autoasinado, "
+#~ "desactive a comprobación da validez do certificado seleccionando a opción "
+#~ "«Ignorar certificado SSL non válido» en Propiedades."
+
+#~ msgid "Cannot create local store"
+#~ msgstr "Non é posíbel crear o almacén local"
 
 #~ msgid "Failed to build summary for an address book %s"
 #~ msgstr ""
@@ -5739,9 +5796,6 @@ msgstr "_Ignorar"
 
 #~ msgid "Using Email Address"
 #~ msgstr "Usando o enderezo de correo electrónico"
-
-#~ msgid "Failed to open addressbook at '%s': %s"
-#~ msgstr "Produciuse un erro ao abrir a axenda de enderezos en «%s»: %s"
 
 #~ msgid "Could not create synch slave thread"
 #~ msgstr "Non é posíbel crear o fluxo escravo de sincronización"
