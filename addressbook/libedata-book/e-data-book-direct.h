@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2012 Openismus GmbH (www.openismus.com)
+ * Copyright (C) 2012 Intel Corporation
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of version 2.1 of the GNU Lesser General Public License as

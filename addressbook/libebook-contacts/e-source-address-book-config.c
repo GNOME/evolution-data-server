@@ -2,7 +2,7 @@
 
 /* e-source-address-book-config.c - Address Book Configuration.
  *
- * Copyright (C) 2012 Openismus GmbH
+ * Copyright (C) 2012 Intel Corporation
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
