@@ -330,7 +330,8 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 #endif
 
 	/* Cleanup work directory */
-	delete_work_directory ();
+	if (!closure->keep_work_directory)
+		delete_work_directory ();
 }
 
 gint
