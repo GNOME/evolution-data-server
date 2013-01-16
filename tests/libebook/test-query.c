@@ -137,23 +137,5 @@ main (gint argc,
 	                                         "5423789"),
 	                "(endswith \"phone\" \"5423789\")");
 
-	add_query_test ("/libebook/test-query/sexp/eqphone",
-
-	                e_book_query_orv (e_book_query_field_test (E_CONTACT_TEL,
-	                                                           E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
-	                                                           "+1-2215423789"),
-	                                  e_book_query_field_test (E_CONTACT_TEL,
-	                                                           E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
-	                                                           "2215423789"),
-	                                  e_book_query_field_test (E_CONTACT_TEL,
-	                                                           E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
-	                                                           "5423789"),
-	                                  NULL),
-
-	                "(or (eqphone \"phone\" \"+1-2215423789\")"
-	                   " (eqphone_national \"phone\" \"2215423789\")"
-	                   " (eqphone_short \"phone\" \"5423789\")"
-	                   " )");
-
 	return g_test_run ();
 }
