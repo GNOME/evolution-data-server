@@ -4,7 +4,6 @@ NULL =
 
 TESTS = \
 	e-source-test \
-	e-user-prompter-test \
 	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)
@@ -28,14 +27,16 @@ e_source_test_SOURCES = \
 	e-source-test.c \
 	$(NULL)
 
-e_user_prompter_test_SOURCES = \
-	e-user-prompter-test.c \
-	$(NULL)
-
 e_source_test_CPPFLAGS = $(test_CPPFLAGS)
 e_source_test_LDADD = $(test_LDADD)
 
-e_user_prompter_test_CPPFLAGS = $(test_CPPFLAGS)
-e_user_prompter_test_LDADD = $(top_builddir)/libebackend/libebackend-1.2.la $(test_LDADD)
+
+if HAVE_GTK
+TESTS += e-user-prompter-test
+
+e_user_prompter_test_SOURCES = e-user-prompter-test.c
+e_user_prompter_test_CPPFLAGS = $(test_CPPFLAGS) $(GTK_CFLAGS)
+e_user_prompter_test_LDADD = $(top_builddir)/libebackend/libebackend-1.2.la $(test_LDADD) $(GTK_LIBS)
+endif
 
 -include $(top_srcdir)/git.mk

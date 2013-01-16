@@ -362,13 +362,35 @@ dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[gio-2.0 >= glib_minimum_version
 	gmodule-2.0 >= glib_minimum_version
-	gtk+-3.0 >= gdk_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= soup_minimum_version])
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
 fi
+
+dnl *************************
+dnl Check for GTK+
+dnl *************************
+AC_ARG_ENABLE([gtk],
+	[AS_HELP_STRING([--enable-gtk],
+	[enable GTK+ (default=yes)])],
+	[enable_gtk=$enableval], [enable_gtk=yes])
+AC_MSG_CHECKING([if GTK+ support is enabled])
+AC_MSG_RESULT([$enable_gtk])
+if test "x$enable_gtk" = xyes; then
+	PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= gdk_minimum_version],,
+	[AC_MSG_ERROR([
+
+	gtk+-3.0 not found (or version < gdk_minimum_version)
+
+	If you want to disable GTK+ support,
+	please append --disable-gtk to configure.
+	])])
+
+	AC_DEFINE(HAVE_GTK, 1, [Define to 1 if you have the gtk+-3.0 package.])
+fi
+AM_CONDITIONAL(HAVE_GTK, [test x$enable_gtk = xyes])
 
 dnl *******************************
 dnl Check for GNOME Online Accounts
@@ -1659,6 +1681,7 @@ echo "
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
 	Google Contacts		$enable_google
+	GTK+:  			$enable_gtk
 	Code coverage (gcov):	$enable_code_coverage
 	Strict building:	$enable_strict
 "

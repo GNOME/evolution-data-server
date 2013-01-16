@@ -8,15 +8,9 @@ service_DATA = $(service_in_files:.service.in=.service)
 CLEANFILES = $(service_DATA)
 EXTRA_DIST = $(service_in_files)
 
-#if USE_GTK
-   PROMPT_USER_SOURCES = prompt-user-gtk.c
-   PROMPT_USER_CFLAGS = $(GNOME_PLATFORM_CFLAGS)
-   PROMPT_USER_LIBS = $(GNOME_PLATFORM_LIBS)
-#else
-#   PROMPT_USER_SOURCES = prompt-user-.c
-#   PROMPT_USER_CFLAGS = $()
-#   PROMPT_USER_LIBS = $()
-#endif
+PROMPT_USER_SOURCES = prompt-user-gtk.c
+PROMPT_USER_CFLAGS = $(GNOME_PLATFORM_CFLAGS) $(GTK_CFLAGS)
+PROMPT_USER_LIBS = $(GNOME_PLATFORM_LIBS) $(GTK_LIBS)
 
 libexec_PROGRAMS = evolution-user-prompter
 

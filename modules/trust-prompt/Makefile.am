@@ -1,16 +1,10 @@
 NULL =
 
-#if USE_GTK
-   TRUST_PROMPT_SOURCES = trust-prompt-gtk.c \
+TRUST_PROMPT_SOURCES = trust-prompt-gtk.c \
 			  certificate-viewer.c \
 			  certificate-viewer.h
-   TRUST_PROMPT_CFLAGS = $(GNOME_PLATFORM_CFLAGS)
-   TRUST_PROMPT_LIBS = $(GNOME_PLATFORM_LIBS)
-#else
-#   TRUST_PROMPT_SOURCES = trust-prompt-.c
-#   TRUST_PROMPT_CFLAGS = $()
-#   TRUST_PROMPT_LIBS = $()
-#endif
+TRUST_PROMPT_CFLAGS = $(GNOME_PLATFORM_CFLAGS) $(GTK_CFLAGS)
+TRUST_PROMPT_LIBS = $(GNOME_PLATFORM_LIBS) $(GTK_LIBS)
 
 module_LTLIBRARIES = module-trust-prompt.la
 
