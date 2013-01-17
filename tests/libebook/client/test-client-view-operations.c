@@ -6,7 +6,8 @@
 
 #include "client-test-utils.h"
 
-#define N_THREADS 10
+#define N_THREADS  20
+#define N_CONTACTS 5
 
 typedef struct {
 	GThread         *thread;
@@ -19,7 +20,7 @@ typedef struct {
 	GMutex           complete_mutex;
 	GCond            complete_cond;
 	gboolean         complete;
-	gboolean         open;
+	gint             n_contacts;
 } ThreadData;
 
 static void
@@ -30,7 +31,9 @@ objects_added (EBookClientView *view,
 	const GSList *l;
 
 	for (l = contacts; l; l = l->next) {
-		print_email (l->data);
+		/* print_email (l->data); */
+
+		data->n_contacts++;
 	}
 }
 
@@ -42,7 +45,7 @@ objects_modified (EBookClientView *view,
 	const GSList *l;
 
 	for (l = contacts; l; l = l->next) {
-		print_email (l->data);
+		/* print_email (l->data); */
 	}
 }
 
@@ -54,7 +57,9 @@ objects_removed (EBookClientView *view,
 	const GSList *l;
 
 	for (l = ids; l; l = l->next) {
-		printf ("   Removed contact: %s\n", (gchar *) l->data);
+		/* printf ("   Removed contact: %s\n", (gchar *) l->data); */
+
+		data->n_contacts--;
 	}
 }
 
@@ -63,7 +68,7 @@ complete (EBookClientView *view,
           const GError *error,
 	  ThreadData *data)
 {
-	g_print ("Thread complete !\n");
+	g_print ("Thread complete with %d contacts\n", data->n_contacts);
 
 	g_mutex_lock (&data->complete_mutex);
 	data->complete = TRUE;
@@ -113,6 +118,31 @@ start_view (ThreadData *data)
 }
 
 static void
+start_thread_test (ThreadData *data)
+{
+	GMainContext *context;
+	GSource      *source;
+
+	context = g_main_loop_get_context (data->loop);
+	source  = g_idle_source_new ();
+
+	g_source_set_callback (source, (GSourceFunc)start_view, data, NULL);
+	g_source_attach (source, context);
+}
+
+static void
+finish_thread_test (ThreadData *data)
+{
+	g_assert_cmpint (data->n_contacts, ==, N_CONTACTS);
+
+	g_main_loop_quit (data->loop);
+	g_thread_join (data->thread);
+	g_mutex_clear (&data->complete_mutex);
+	g_cond_clear (&data->complete_cond);
+	g_slice_free (ThreadData, data);
+}
+
+static void
 client_ready (GObject *source_object,
 	      GAsyncResult *res,
 	      ThreadData *data)
@@ -123,10 +153,7 @@ client_ready (GObject *source_object,
 		g_error ("Error opening client: %s",
 			 error->message);
 
-	g_mutex_lock (&data->complete_mutex);
-	data->open = TRUE;
-	g_cond_signal (&data->complete_cond);
-	g_mutex_unlock (&data->complete_mutex);
+	start_thread_test (data);
 }
 
 static gpointer
@@ -159,6 +186,7 @@ test_view_thread (ThreadData *data)
 		g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
 
 	e_client_open (E_CLIENT (data->client), TRUE, NULL, (GAsyncReadyCallback)client_ready, data);
+
 	g_main_loop_run (data->loop);
 
 	g_object_unref (source);
@@ -185,29 +213,6 @@ create_test_thread (const gchar   *book_uid)
 	data->thread = g_thread_new ("test-thread", (GThreadFunc)test_view_thread, data);
 
 	return data;
-}
-
-static void
-start_thread_test (ThreadData *data)
-{
-	GMainContext *context;
-	GSource      *source;
-
-	context = g_main_loop_get_context (data->loop);
-	source  = g_idle_source_new ();
-
-	g_source_set_callback (source, (GSourceFunc)start_view, data, NULL);
-	g_source_attach (source, context);
-}
-
-static void
-finish_thread_test (ThreadData *data)
-{
-	g_main_loop_quit (data->loop);
-	g_thread_join (data->thread);
-	g_mutex_clear (&data->complete_mutex);
-	g_cond_clear (&data->complete_cond);
-	g_slice_free (ThreadData, data);
 }
 
 gint
@@ -248,19 +253,6 @@ main (gint argc,
 		tests[i] = create_test_thread (book_uid);
 
 
-	/* Wait for all threads to have thier own open clients */
-	for (i = 0; i < N_THREADS; i++) {
-		g_mutex_lock (&(tests[i]->complete_mutex));
-		while (!tests[i]->open)
-			g_cond_wait (&(tests[i]->complete_cond),
-				     &(tests[i]->complete_mutex));
-		g_mutex_unlock (&(tests[i]->complete_mutex));
-	}
-
-	/* Get views and start views after */
-	for (i = 0; i < N_THREADS; i++)
-		start_thread_test (tests[i]);
-
 	/* Wait for all threads to receive the complete signal */
 	for (i = 0; i < N_THREADS; i++) {
 		g_mutex_lock (&(tests[i]->complete_mutex));
@@ -269,8 +261,6 @@ main (gint argc,
 				     &(tests[i]->complete_mutex));
 		g_mutex_unlock (&(tests[i]->complete_mutex));
 	}
-
-	g_print ("All views complete\n");
 
 	/* Finish all tests */
 	for (i = 0; i < N_THREADS; i++)
