@@ -299,7 +299,8 @@ book_backend_sql_exec_real (sqlite3 *db,
 			sqlite3_free (errmsg);
 			errmsg = NULL;
 		}
-		ret = sqlite3_exec (db, stmt, NULL, NULL, &errmsg);
+		g_thread_yield ();
+		ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	}
 
 	if (ret != SQLITE_OK) {
