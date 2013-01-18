@@ -231,21 +231,34 @@ set_revision (EContact *contact)
 static EContact *
 do_create (EBookBackendVCF *bvcf,
            const gchar *vcard_req,
-           gboolean dirty_the_file)
+           gboolean dirty_the_file,
+	   GError **error)
 {
-	gchar           *id;
 	EContact       *contact;
 	gchar           *vcard;
-	const gchar     *rev;
+	const gchar     *rev, *id;
 
 	/* at the very least we need the unique_id generation to be
 	 * protected by the lock, even if the actual vcard parsing
 	 * isn't. */
 	g_mutex_lock (bvcf->priv->mutex);
-	id = e_book_backend_vcf_create_unique_id ();
 
-	contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
-	g_free (id);
+	contact = e_contact_new_from_vcard (vcard_req);
+	id = e_contact_get_const (contact, E_CONTACT_UID);
+
+	if (id == NULL) {
+		/* Create a unique UID if there is none provided */
+		gchar *new_id = e_book_backend_vcf_create_unique_id ();
+		e_contact_set (contact, E_CONTACT_UID, new_id);
+		g_free (new_id);
+	} else if (g_hash_table_lookup (bvcf->priv->contacts, id) != NULL) {
+		/* Report error if the new UID conflicts with another UID */
+		g_mutex_unlock (bvcf->priv->mutex);
+		g_set_error (error, E_CLIENT_ERROR,
+			     E_CLIENT_ERROR_QUERY_REFUSED,
+			     _("Conflicting UIDs found in added contacts"));
+		return NULL;
+	}
 
 	rev = e_contact_get_const (contact,  E_CONTACT_REV);
 	if (!(rev && *rev))
@@ -291,7 +304,10 @@ e_book_backend_vcf_create_contacts (EBookBackendSync *backend,
 		return;
 	}
 
-	contact = do_create (bvcf, vcard, TRUE);
+	contact = do_create (bvcf, vcard, TRUE, perror);
+	if (!contact)
+		return;
+
 	if (added_contacts) {
 		*added_contacts = g_slist_append (*added_contacts, contact);
 	} else {
@@ -635,7 +651,7 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 #ifdef CREATE_DEFAULT_VCARD
 				EContact *contact;
 
-				contact = do_create (bvcf, XIMIAN_VCARD, FALSE);
+				contact = do_create (bvcf, XIMIAN_VCARD, FALSE, NULL);
 				save_file (bvcf);
 
 				/* XXX check errors here */
