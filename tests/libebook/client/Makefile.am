@@ -28,6 +28,7 @@ libclient_test_utils_la_LIBADD = 				\
 TESTS =								\
 	test-client-refresh					\
 	test-client-add-contact					\
+	test-client-preserve-uid				\
 	test-client-get-contact					\
 	test-client-get-contact-uids				\
 	test-client-custom-summary				\
@@ -79,6 +80,8 @@ test_client_async_LDADD=$(TEST_LIBS)
 test_client_async_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_add_contact_LDADD=$(TEST_LIBS)
 test_client_add_contact_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_preserve_uid_LDADD=$(TEST_LIBS)
+test_client_preserve_uid_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_examine_LDADD=$(TEST_LIBS)
 test_client_examine_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_contact_LDADD=$(TEST_LIBS)
