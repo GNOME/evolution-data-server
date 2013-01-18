@@ -6036,7 +6036,7 @@ imapx_command_delete_folder_done (CamelIMAPXServer *is,
                                   GError **error)
 {
 	CamelIMAPXJob *job;
-	gboolean success;
+	gboolean success = TRUE;
 
 	job = camel_imapx_command_get_job (ic);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);

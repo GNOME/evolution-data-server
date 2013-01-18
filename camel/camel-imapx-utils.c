@@ -132,7 +132,6 @@ imapx_parse_flags (CamelIMAPXStream *stream,
 
 				}
 			found:
-				tok = tok; /* fixes stupid warning */
 				g_free (upper);
 			} else if (tok != ')') {
 				g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting flag");

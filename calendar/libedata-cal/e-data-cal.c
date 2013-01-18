@@ -125,12 +125,12 @@ typedef struct {
 		/* OP_MODIFY_OBJECTS */
 		struct _mo {
 			GSList *calobjs;
-			EDataCalObjModType mod;
+			CalObjModType mod; /* corresponds to EDataCalObjModType */
 		} mo;
 		/* OP_REMOVE_OBJECTS */
 		struct _ro {
 			GSList *ids;
-			EDataCalObjModType mod;
+			CalObjModType mod; /* corresponds to EDataCalObjModType */
 		} ro;
 		/* OP_GET_TIMEZONE */
 		gchar *tzid;
