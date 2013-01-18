@@ -34,7 +34,7 @@
 #define dd(x) (camel_debug ("pop3")?(x):0)
 
 #define CAMEL_POP3_STREAM_SIZE (4096)
-#define CAMEL_POP3_STREAM_LINE (1024) /* maximum line size */
+#define CAMEL_POP3_STREAM_LINE_SIZE (1024) /* maximum line size */
 
 G_DEFINE_TYPE (CamelPOP3Stream, camel_pop3_stream, CAMEL_TYPE_STREAM)
 
@@ -235,8 +235,8 @@ camel_pop3_stream_init (CamelPOP3Stream *is)
 {
 	/* +1 is room for appending a 0 if we need to for a line */
 	is->ptr = is->end = is->buf = g_malloc (CAMEL_POP3_STREAM_SIZE + 1);
-	is->lineptr = is->linebuf = g_malloc (CAMEL_POP3_STREAM_LINE + 1);
-	is->lineend = is->linebuf + CAMEL_POP3_STREAM_LINE;
+	is->lineptr = is->linebuf = g_malloc (CAMEL_POP3_STREAM_LINE_SIZE + 1);
+	is->lineend = is->linebuf + CAMEL_POP3_STREAM_LINE_SIZE;
 
 	/* init sentinal */
 	is->ptr[0] = '\n';
