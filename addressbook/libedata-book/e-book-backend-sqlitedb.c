@@ -82,8 +82,6 @@ struct _EBookBackendSqliteDBPrivate {
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
 
-#define E_BOOK_SDB_ERROR \
-	(e_book_backend_sqlitedb_error_quark ())
 
 static GHashTable *db_connections = NULL;
 static GStaticMutex dbcon_lock = G_STATIC_MUTEX_INIT;
@@ -161,7 +159,7 @@ typedef struct {
 	GSList *list;
 } StoreVCardData;
 
-static GQuark
+GQuark
 e_book_backend_sqlitedb_error_quark (void)
 {
 	static GQuark quark = 0;
@@ -304,7 +302,7 @@ book_backend_sql_exec_real (sqlite3 *db,
 	}
 
 	if (ret != SQLITE_OK) {
-		d (g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
+		d(g_print ("Error in SQL EXEC statement: %s [%s] RETURN CODE: %d.\n", stmt, errmsg, ret));
 		g_set_error (
 			error, E_BOOK_SDB_ERROR,
 			0, "%s", errmsg);
@@ -1561,13 +1559,15 @@ static gchar *
 insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
                           EContact *contact,
                           const gchar *folderid,
-                          gboolean store_vcard)
+                          gboolean store_vcard,
+			  gboolean replace_existing)
 {
 	GString *string;
 	gchar   *str, *vcard_str;
 	gint     i;
 
-	str    = sqlite3_mprintf ("INSERT or REPLACE INTO %Q VALUES (", folderid);
+	str    = sqlite3_mprintf ("INSERT or %s INTO %Q VALUES (",
+				  replace_existing ? "REPLACE" : "FAIL", folderid);
 	string = g_string_new (str);
 	sqlite3_free (str);
 
@@ -1644,6 +1644,7 @@ static gboolean
 insert_contact (EBookBackendSqliteDB *ebsdb,
 		EContact *contact,
 		const gchar *folderid,
+		gboolean replace_existing,
 		GError **error)
 {
 	EBookBackendSqliteDBPrivate *priv;
@@ -1653,7 +1654,7 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 	priv = ebsdb->priv;
 
 	/* Update main summary table */
-	stmt = insert_stmt_from_contact (ebsdb, contact, folderid, priv->store_vcard);
+	stmt = insert_stmt_from_contact (ebsdb, contact, folderid, priv->store_vcard, replace_existing);
 	success = book_backend_sql_exec (priv->db, stmt, NULL, NULL, error);
 	g_free (stmt);
 
@@ -1719,6 +1720,87 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 	return success;
 }
 
+/**
+ * e_book_backend_sqlitedb_new_contact
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id
+ * @contact: EContact to be added
+ * @replace_existing: Whether this contact should replace another contact with the same UID.
+ * @error: A location to store any error that may have occurred.
+ *
+ * This is a convenience wrapper for e_book_backend_sqlitedb_new_contacts,
+ * which is the preferred means to add or modify multiple contacts when possible.
+ *
+ * Returns: TRUE on success.
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_book_backend_sqlitedb_new_contact (EBookBackendSqliteDB *ebsdb,
+                                     const gchar *folderid,
+                                     EContact *contact,
+                                     gboolean replace_existing,
+                                     GError **error)
+{
+	GSList l;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	l.data = contact;
+	l.next = NULL;
+
+	return e_book_backend_sqlitedb_new_contacts (
+		ebsdb, folderid, &l,
+		replace_existing, error);
+}
+
+/**
+ * e_book_backend_sqlitedb_new_contacts
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id
+ * @contacts: list of EContacts
+ * @replace_existing: Whether this contact should replace another contact with the same UID.
+ * @error: A location to store any error that may have occurred.
+ *
+ * Adds or replaces contacts in @ebsdb. If @replace_existing is specified then existing
+ * contacts with the same UID will be replaced, otherwise adding an existing contact
+ * will return an error.
+ *
+ * Returns: TRUE on success.
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_book_backend_sqlitedb_new_contacts (EBookBackendSqliteDB *ebsdb,
+                                      const gchar *folderid,
+                                      GSList *contacts,
+                                      gboolean replace_existing,
+                                      GError **error)
+{
+	GSList *l;
+	GError *err = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid != NULL, FALSE);
+	g_return_val_if_fail (contacts != NULL, FALSE);
+
+	book_backend_sqlitedb_start_transaction (ebsdb, &err);
+
+	for (l = contacts; !err && l != NULL; l = g_slist_next (l)) {
+		EContact *contact = (EContact *) l->data;
+
+		insert_contact (ebsdb, contact, folderid, replace_existing, &err);
+	}
+
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
+
+	if (err)
+		g_propagate_error (error, err);
+
+	return err == NULL;
+}
 
 /**
  * e_book_backend_sqlitedb_add_contact
@@ -1735,6 +1817,8 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
  * Returns: TRUE on success.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_backend_sqlitedb_new_contact() instead.
  **/
 gboolean
 e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
@@ -1743,18 +1827,7 @@ e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
                                      gboolean partial_content,
                                      GError **error)
 {
-	GSList l;
-
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
-	g_return_val_if_fail (folderid != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
-
-	l.data = contact;
-	l.next = NULL;
-
-	return e_book_backend_sqlitedb_add_contacts (
-		ebsdb, folderid, &l,
-		partial_content, error);
+	return e_book_backend_sqlitedb_new_contact (ebsdb, folderid, contact, TRUE, error);
 }
 
 /**
@@ -1770,6 +1843,8 @@ e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
  * Returns: TRUE on success.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_backend_sqlitedb_new_contacts() instead.
  **/
 gboolean
 e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
@@ -1778,28 +1853,7 @@ e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
                                       gboolean partial_content,
                                       GError **error)
 {
-	GSList *l;
-	GError *err = NULL;
-	gboolean ret = TRUE;
-
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
-	g_return_val_if_fail (folderid != NULL, FALSE);
-	g_return_val_if_fail (contacts != NULL, FALSE);
-
-	book_backend_sqlitedb_start_transaction (ebsdb, &err);
-
-	for (l = contacts; !err && l != NULL; l = g_slist_next (l)) {
-		EContact *contact = (EContact *) l->data;
-
-		insert_contact (ebsdb, contact, folderid, &err);
-	}
-
-	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
-
-	if (err)
-		g_propagate_error (error, err);
-
-	return ret && !err;
+	return e_book_backend_sqlitedb_new_contacts (ebsdb, folderid, contacts, TRUE, error);
 }
 
 /**
@@ -4107,7 +4161,7 @@ validate_county_code (EBookBackendSqliteDB  *ebsdb,
 			continue;
 
 		if (update_e164_params (E_VCARD (contact), ebsdb->priv->country_code))
-			success = insert_contact (ebsdb, contact, folderid, error);
+			success = insert_contact (ebsdb, contact, folderid, TRUE, error);
 
 		g_object_unref (contact);
 	}

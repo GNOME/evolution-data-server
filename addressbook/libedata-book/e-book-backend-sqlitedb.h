@@ -47,11 +47,32 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_BOOK_BACKEND_SQLITEDB, EBookBackendSqliteDBClass))
 
+/**
+ * E_BOOK_SDB_ERROR:
+ *
+ * Error domain for #EBookBackendSqliteDB operations.
+ *
+ * Since: 3.8
+ **/
+#define E_BOOK_SDB_ERROR (e_book_backend_sqlitedb_error_quark ())
+
 G_BEGIN_DECLS
 
 typedef struct _EBookBackendSqliteDB EBookBackendSqliteDB;
 typedef struct _EBookBackendSqliteDBClass EBookBackendSqliteDBClass;
 typedef struct _EBookBackendSqliteDBPrivate EBookBackendSqliteDBPrivate;
+
+/**
+ * EBookSDBError:
+ * @E_BOOK_SDB_ERROR_CONSTRAINT: The error occurred due to an explicit constraint
+ * @E_BOOK_SDB_ERROR_OTHER: Another error occurred
+ *
+ * Defines the types of possible errors reported by the #EBookBackendSqliteDB
+ */
+typedef enum {
+	E_BOOK_SDB_ERROR_CONSTRAINT,
+	E_BOOK_SDB_ERROR_OTHER
+} EBookSDBError;
 
 /**
  * EBookBackendSqliteDB:
@@ -86,6 +107,7 @@ typedef struct {
 } EbSdbSearchData;
 
 GType		e_book_backend_sqlitedb_get_type	(void);
+GQuark          e_book_backend_sqlitedb_error_quark     (void);
 
 EBookBackendSqliteDB *
 		e_book_backend_sqlitedb_new		(const gchar *path,
@@ -109,16 +131,15 @@ gboolean	e_book_backend_sqlitedb_lock_updates	(EBookBackendSqliteDB *ebsdb,
 gboolean	e_book_backend_sqlitedb_unlock_updates	(EBookBackendSqliteDB *ebsdb,
 							 gboolean do_commit,
 							 GError **error);
-
-gboolean	e_book_backend_sqlitedb_add_contact	(EBookBackendSqliteDB *ebsdb,
+gboolean	e_book_backend_sqlitedb_new_contact	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 EContact *contact,
-							 gboolean partial_content,
+							 gboolean replace_existing,
 							 GError **error);
-gboolean	e_book_backend_sqlitedb_add_contacts	(EBookBackendSqliteDB *ebsdb,
+gboolean	e_book_backend_sqlitedb_new_contacts	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 GSList *contacts,
-							 gboolean partial_content,
+							 gboolean replace_existing,
 							 GError **error);
 gboolean	e_book_backend_sqlitedb_remove_contact	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
@@ -254,6 +275,17 @@ gboolean	e_book_backend_sqlitedb_is_summary_query
 						(const gchar *query);
 gboolean	e_book_backend_sqlitedb_is_summary_fields
 						(GHashTable *fields_of_interest);
+
+gboolean	e_book_backend_sqlitedb_add_contact	(EBookBackendSqliteDB *ebsdb,
+							 const gchar *folderid,
+							 EContact *contact,
+							 gboolean partial_content,
+							 GError **error);
+gboolean	e_book_backend_sqlitedb_add_contacts	(EBookBackendSqliteDB *ebsdb,
+							 const gchar *folderid,
+							 GSList *contacts,
+							 gboolean partial_content,
+							 GError **error);
 #endif
 
 G_END_DECLS
