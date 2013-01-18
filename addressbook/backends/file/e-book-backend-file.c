@@ -712,17 +712,20 @@ do_create (EBookBackendFile *bf,
 		EContact        *contact;
 
 		vcard_req = (const gchar *) l->data;
+		contact = e_contact_new_from_vcard (vcard_req);
 
-		id      = e_book_backend_file_create_unique_id ();
-		contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
+		/* Preserve original UID, create a unique UID if needed */
+		if (e_contact_get_const (contact, E_CONTACT_UID) == NULL) {
+			id = e_book_backend_file_create_unique_id ();
+			e_contact_set (contact, E_CONTACT_UID, id);
+			g_free (id);
+		}
 
 		rev = e_contact_get_const (contact, E_CONTACT_REV);
 		if (!(rev && *rev))
 			set_revision (contact);
 
 		status = maybe_transform_vcard_for_photo (bf, NULL, contact, perror);
-
-		g_free (id);
 
 		if (status != STATUS_ERROR) {
 
@@ -743,14 +746,23 @@ do_create (EBookBackendFile *bf,
 
 	if (status != STATUS_ERROR) {
 
-		if (!e_book_backend_sqlitedb_add_contacts (bf->priv->sqlitedb,
+		if (!e_book_backend_sqlitedb_new_contacts (bf->priv->sqlitedb,
 							   SQLITEDB_FOLDER_ID,
 							   slist, FALSE,
 							   &local_error)) {
 
 			g_warning ("Failed to add contacts: %s", local_error->message);
-			g_propagate_error (perror, local_error);
 
+			if (g_error_matches (local_error,
+					     E_BOOK_SDB_ERROR,
+					     E_BOOK_SDB_ERROR_CONSTRAINT)) {
+				g_set_error (perror, E_DATA_BOOK_ERROR,
+					     E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,
+					     _("Conflicting UIDs found in added contacts"));
+				g_clear_error (&local_error);
+			} else
+				g_propagate_error (perror, local_error);
+ 
 			status = STATUS_ERROR;
 		}
 	}
@@ -936,9 +948,10 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		}
 
 		/* Update summary as well */
-		if (!e_book_backend_sqlitedb_add_contacts (bf->priv->sqlitedb,
+		if (!e_book_backend_sqlitedb_new_contacts (bf->priv->sqlitedb,
 							   SQLITEDB_FOLDER_ID,
-							   modified_contacts, FALSE, &local_error)) {
+							   modified_contacts, TRUE,
+							   &local_error)) {
 			g_warning ("Failed to modify contacts: %s", local_error->message);
 			g_propagate_error (perror, local_error);
 
