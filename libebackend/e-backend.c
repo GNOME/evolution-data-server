@@ -545,55 +545,9 @@ e_backend_trust_prompt_sync (EBackend *backend,
 	g_return_val_if_fail (
 		prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
-	/* Just a workaround for libsoup bug about not providing connection
-	 * certificate on failed requests. This is fixed in libsoup since
-	 * 2.41.3, but let's have this for now. I wrote it here to avoid
-	 * code duplication, and once the libsoup 2.42.0 will be out all
-	 * this code, together with other SOUP_CHECK_VERSION usages also
-	 * in evolution, will be removed. */
-	if (!e_named_parameters_get (parameters, "cert")) {
-		GList *button_captions = NULL;
-		const gchar *markup;
-		gchar *tmp = NULL;
-
-		button_captions = g_list_append (
-			button_captions, _("_Reject"));
-		button_captions = g_list_append (
-			button_captions, _("Accept _Temporarily"));
-		button_captions = g_list_append (
-			button_captions, _("_Accept Permanently"));
-
-		markup = e_named_parameters_get (parameters, "markup");
-		if (!markup) {
-			const gchar *host;
-			gchar *bhost;
-
-			host = e_named_parameters_get (parameters, "host");
-			bhost = g_strconcat ("<b>", host, "</b>", NULL);
-			tmp = g_strdup_printf (
-				_("SSL certificate for '%s' is not trusted. "
-				"Do you wish to accept it?"), bhost);
-			g_free (bhost);
-
-			markup = tmp;
-		}
-
-		response = e_user_prompter_prompt_sync (
-			prompter, "question", _("Certificate trust..."),
-			markup, NULL, TRUE, button_captions, cancellable, NULL);
-
-		if (response == 1)
-			response = 2;
-		else if (response == 2)
-			response = 1;
-
-		g_list_free (button_captions);
-		g_free (tmp);
-	} else {
-		response = e_user_prompter_extension_prompt_sync (
-			prompter, "ETrustPrompt::trust-prompt",
-			parameters, NULL, cancellable, error);
-	}
+	response = e_user_prompter_extension_prompt_sync (
+		prompter, "ETrustPrompt::trust-prompt",
+		parameters, NULL, cancellable, error);
 
 	if (response == 0)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;

@@ -1395,16 +1395,8 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 	if (message->status_code != SOUP_STATUS_SSL_FAILED)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
 
-	if (!soup_message_get_https_status (message, &cert, &cert_errors) || !cert) {
-		/* Before libsoup 2.41.3 the certificate was not set on
-		 * failed requests, thus workaround this and do a simple
-		 * prompt later. */
-#ifdef SOUP_CHECK_VERSION
-#if SOUP_CHECK_VERSION(2, 41, 3)
+	if (!soup_message_get_https_status (message, &cert, &cert_errors) || !cert)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
-#endif
-#endif
-	}
 
 	soup_uri = soup_message_get_uri (message);
 
@@ -1414,18 +1406,8 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 	if (soup_uri_get_host (soup_uri) == NULL)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
 
-#ifdef SOUP_CHECK_VERSION
-#if SOUP_CHECK_VERSION(2, 41, 3)
 	g_return_val_if_fail (cert != NULL, E_TRUST_PROMPT_RESPONSE_REJECT);
 	g_object_get (cert, "certificate", &bytes, NULL);
-#else
-	bytes = g_byte_array_new ();
-	g_byte_array_append (bytes, (guint8 *) "1", 1);
-#endif
-#else
-	bytes = g_byte_array_new ();
-	g_byte_array_append (bytes, (guint8 *) "1", 1);
-#endif
 
 	if (bytes == NULL)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
@@ -1621,33 +1603,15 @@ e_source_webdav_store_ssl_trust_prompt (ESourceWebdav *extension,
 	if (message->status_code != SOUP_STATUS_SSL_FAILED)
 		return;
 
-	if (!soup_message_get_https_status (message, &cert, NULL) || !cert) {
-		/* before libsoup 2.41.3 the certificate was not set on failed requests,
-		 * thus workaround this and store only simple value
-		*/
-		#ifdef SOUP_CHECK_VERSION
-		#if SOUP_CHECK_VERSION(2, 41, 3)
+	if (!soup_message_get_https_status (message, &cert, NULL) || !cert)
 		return;
-		#endif
-		#endif
-	}
 
 	soup_uri = soup_message_get_uri (message);
 	if (!soup_uri || !soup_uri_get_host (soup_uri))
 		return;
 
-	#ifdef SOUP_CHECK_VERSION
-	#if SOUP_CHECK_VERSION(2, 41, 3)
 	g_return_if_fail (cert != NULL);
 	g_object_get (cert, "certificate", &bytes, NULL);
-	#else
-	bytes = g_byte_array_new ();
-	g_byte_array_append (bytes, (guint8 *) "1", 1);
-	#endif
-	#else
-	bytes = g_byte_array_new ();
-	g_byte_array_append (bytes, (guint8 *) "1", 1);
-	#endif
 
 	if (!bytes)
 		return;
