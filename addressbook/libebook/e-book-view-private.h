@@ -21,6 +21,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_BOOK_VIEW_PRIVATE_H
 #define E_BOOK_VIEW_PRIVATE_H
 
@@ -37,6 +40,8 @@ EBookView *	_e_book_view_new		(EBook *book,
 G_END_DECLS
 
 #endif /* E_BOOK_VIEW_PRIVATE_H */
+
+#endif /* __GI_SCANNER__ */
 
 #endif /* EDS_DISABLE_DEPRECATED */
 

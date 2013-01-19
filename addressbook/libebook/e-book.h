@@ -14,6 +14,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef __E_BOOK_H__
 #define __E_BOOK_H__
 
@@ -351,5 +354,7 @@ GType        e_book_get_type                  (void);
 G_END_DECLS
 
 #endif /* __E_BOOK_H__ */
+
+#endif /* __GI_SCANNER__ */
 
 #endif /* EDS_DISABLE_DEPRECATED */

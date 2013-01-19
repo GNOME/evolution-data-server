@@ -144,7 +144,9 @@ void          e_destination_export_to_vcard_attribute   (EDestination *dest, EVC
 void           e_destination_freev              (EDestination **destv);
 
 #ifndef EDS_DISABLE_DEPRECATED
+#ifndef __GI_SCANNER__
 void           e_destination_set_book           (EDestination *dest, EBook *book);
+#endif /* __GI_SCANNER__ */
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

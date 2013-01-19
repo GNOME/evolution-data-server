@@ -14,6 +14,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_BOOK_VIEW_H
 #define E_BOOK_VIEW_H
 
@@ -86,5 +89,7 @@ void		e_book_view_stop		(EBookView *book_view);
 G_END_DECLS
 
 #endif /* E_BOOK_VIEW_H */
+
+#endif /* __GI_SCANNER__ */
 
 #endif /* EDS_DISABLE_DEPRECATED */
