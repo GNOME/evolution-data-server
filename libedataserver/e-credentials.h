@@ -25,6 +25,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_CREDENTIALS_H
 #define E_CREDENTIALS_H
 
@@ -174,5 +177,7 @@ guint		e_credentials_util_string_to_prompt_flags (const gchar *prompt_flags_stri
 G_END_DECLS
 
 #endif /* E_CREDENTIALS_H */
+
+#endif /* __GI_SCANNER__ */
 
 #endif /* EDS_DISABLE_DEPRECATED */

@@ -12,6 +12,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_ITERATOR_H
 #define E_ITERATOR_H
 
@@ -92,6 +95,8 @@ void		e_iterator_invalidate		(EIterator *iterator);
 G_END_DECLS
 
 #endif /* E_ITERATOR_H */
+
+#endif /* __GI_SCANNER__ */
 
 #endif /* EDS_DISABLE_DEPRECATED */
 

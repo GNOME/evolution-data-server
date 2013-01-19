@@ -12,6 +12,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_LIST_H
 #define E_LIST_H
 
@@ -89,6 +92,8 @@ void		e_list_invalidate_iterators	(EList *list,
 G_END_DECLS
 
 #endif /* E_LIST_H */
+
+#endif /* __GI_SCANNER__ */
 
 #endif /* EDS_DISABLE_DEPRECATED */
 
