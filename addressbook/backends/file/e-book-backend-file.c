@@ -767,7 +767,7 @@ do_create (EBookBackendFile *bf,
 					     _("Conflicting UIDs found in added contacts"));
 				g_clear_error (&local_error);
 			} else
-				g_propagate_error (perror, &local_error);
+				g_propagate_error (perror, local_error);
  
 			status = STATUS_ERROR;
 		}
