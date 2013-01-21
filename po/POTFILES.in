@@ -172,22 +172,6 @@ camel/providers/smtp/camel-smtp-provider.c
 camel/providers/smtp/camel-smtp-transport.c
 data/org.gnome.evolution-data-server.addressbook.gschema.xml.in
 data/org.gnome.evolution-data-server.calendar.gschema.xml.in
-[type: gettext/ini]data/sources/birthdays.source.in
-[type: gettext/ini]data/sources/caldav-stub.source.in
-[type: gettext/ini]data/sources/contacts-stub.source.in
-[type: gettext/ini]data/sources/google-stub.source.in
-[type: gettext/ini]data/sources/ldap-stub.source.in
-[type: gettext/ini]data/sources/local.source.in
-[type: gettext/ini]data/sources/local-stub.source.in
-[type: gettext/ini]data/sources/sendmail.source.in
-[type: gettext/ini]data/sources/system-address-book.source.in
-[type: gettext/ini]data/sources/system-calendar.source.in
-[type: gettext/ini]data/sources/system-memo-list.source.in
-[type: gettext/ini]data/sources/system-task-list.source.in
-[type: gettext/ini]data/sources/vfolder.source.in
-[type: gettext/ini]data/sources/weather-stub.source.in
-[type: gettext/ini]data/sources/webcal-stub.source.in
-[type: gettext/ini]data/sources/webdav-stub.source.in
 libebackend/e-authentication-mediator.c
 libebackend/e-authentication-session.c
 libebackend/e-backend.c
@@ -214,4 +198,20 @@ modules/trust-prompt/trust-prompt-gtk.c
 modules/yahoo-backend/module-yahoo-backend.c
 services/evolution-addressbook-factory/evolution-addressbook-factory.c
 services/evolution-calendar-factory/evolution-calendar-factory.c
+[type: gettext/ini]services/evolution-source-registry/builtin/birthdays.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/caldav-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/contacts-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/google-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/ldap-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/local.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/local-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/sendmail.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/system-address-book.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/system-calendar.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/system-memo-list.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/system-task-list.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/vfolder.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/weather-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/webcal-stub.source.in
+[type: gettext/ini]services/evolution-source-registry/builtin/webdav-stub.source.in
 services/evolution-user-prompter/prompt-user-gtk.c

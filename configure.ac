@@ -1616,7 +1616,6 @@ camel/tests/misc/Makefile
 camel/tests/smime/Makefile
 camel/camel.pc
 data/Makefile
-data/sources/Makefile
 libebackend/Makefile
 libebackend/libebackend.pc
 libedataserver/Makefile

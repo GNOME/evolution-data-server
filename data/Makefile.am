@@ -1,5 +1,3 @@
-SUBDIRS = sources
-
 gsettings_SCHEMAS =						\
 	org.gnome.Evolution.DefaultSources.gschema.xml		\
 	org.gnome.evolution-data-server.calendar.gschema.xml	\

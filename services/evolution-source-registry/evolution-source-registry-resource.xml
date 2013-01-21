@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/evolution-data-server/ro-sources">
+    <file>caldav-stub.source</file>
+    <file>contacts-stub.source</file>
+    <file>google-stub.source</file>
+    <file>ldap-stub.source</file>
+    <file>local-stub.source</file>
+    <file>weather-stub.source</file>
+    <file>webcal-stub.source</file>
+    <file>webdav-stub.source</file>
+  </gresource>
+  <gresource prefix="/org/gnome/evolution-data-server/rw-sources">
+    <file>birthdays.source</file>
+    <file>local.source</file>
+    <file>sendmail.source</file>
+    <file>system-address-book.source</file>
+    <file>system-calendar.source</file>
+    <file>system-memo-list.source</file>
+    <file>system-task-list.source</file>
+    <file>vfolder.source</file>
+  </gresource>
+</gresources>

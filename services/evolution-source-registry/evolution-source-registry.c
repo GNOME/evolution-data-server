@@ -27,6 +27,11 @@
 
 #include <libebackend/libebackend.h>
 
+#include "evolution-source-registry-resource.h"
+
+#define RESOURCE_PATH_RO_SOURCES "/org/gnome/evolution-data-server/ro-sources"
+#define RESOURCE_PATH_RW_SOURCES "/org/gnome/evolution-data-server/rw-sources"
+
 /* Forward Declarations */
 void evolution_source_registry_migrate_basedir (void);
 void evolution_source_registry_migrate_sources (void);
@@ -35,6 +40,73 @@ gboolean	evolution_source_registry_migrate_imap_to_imapx
 						(ESourceRegistryServer *server,
 						 GKeyFile *key_file,
 						 const gchar *uid);
+
+static void
+evolution_source_registry_load_error (ESourceRegistryServer *server,
+                                      GFile *file,
+                                      const GError *error)
+{
+	gchar *uri = g_file_get_uri (file);
+
+	g_printerr (
+		"** Failed to load key file at '%s': %s\n",
+		uri, error->message);
+
+	g_free (uri);
+}
+
+static gboolean
+evolution_source_registry_load_all (ESourceRegistryServer *server,
+                                    GError **error)
+{
+	ESourcePermissionFlags flags;
+	GResource *resource;
+	const gchar *path;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), FALSE);
+
+	/* Load the user's sources directory first so that user-specific
+	 * data sources overshadow predefined data sources with identical
+	 * UIDs.  The 'local' data source is one such example. */
+
+	path = e_server_side_source_get_user_dir ();
+	flags = E_SOURCE_PERMISSION_REMOVABLE |
+		E_SOURCE_PERMISSION_WRITABLE;
+	success = e_source_registry_server_load_directory (
+		server, path, flags, error);
+	g_prefix_error (error, "%s: ", path);
+
+	if (!success)
+		return FALSE;
+
+	resource = evolution_source_registry_get_resource ();
+
+	path = RESOURCE_PATH_RO_SOURCES;
+	flags = E_SOURCE_PERMISSION_NONE;
+	success = e_source_registry_server_load_resource (
+		server, resource, path, flags, error);
+	g_prefix_error (error, "%s: ", path);
+
+	if (!success)
+		return FALSE;
+
+	path = RESOURCE_PATH_RW_SOURCES;
+	flags = E_SOURCE_PERMISSION_WRITABLE;
+	success = e_source_registry_server_load_resource (
+		server, resource, path, flags, error);
+	g_prefix_error (error, "%s: ", path);
+
+	if (!success)
+		return FALSE;
+
+	/* Signal that all files are now loaded.  One thing this
+	 * does is tell the cache-reaper module to start scanning
+	 * for orphaned cache directories. */
+	g_signal_emit_by_name (server, "files-loaded");
+
+	return TRUE;
+}
 
 gint
 main (gint argc,
@@ -69,6 +141,11 @@ reload:
 
 	server = e_source_registry_server_new ();
 
+	g_signal_connect (
+		server, "load-error", G_CALLBACK (
+		evolution_source_registry_load_error),
+		NULL);
+
 	/* Convert "imap" mail accounts to "imapx". */
 	g_signal_connect (
 		server, "tweak-key-file", G_CALLBACK (
@@ -76,7 +153,7 @@ reload:
 		NULL);
 
 	/* Failure here is fatal.  Don't even try to keep going. */
-	e_source_registry_server_load_all (
+	evolution_source_registry_load_all (
 		E_SOURCE_REGISTRY_SERVER (server), &error);
 
 	if (error != NULL) {
