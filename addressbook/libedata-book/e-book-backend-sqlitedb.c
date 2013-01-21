@@ -2336,10 +2336,9 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 	if (with_all_required_fields)
 		*with_all_required_fields = local_with_all_required_fields;
 
-	/* Is is an error to not find a contact ?? */
 	if (!vcard_str && error && !*error)
 		g_set_error (
-			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND,
 			_("Contact '%s' not found"), uid ? uid : "NULL");
 
 	return vcard_str;
