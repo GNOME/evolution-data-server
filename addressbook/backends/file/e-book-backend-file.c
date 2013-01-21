@@ -981,6 +981,7 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
                                  GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	GError *local_error = NULL;
 
 	if (!bf || !bf->priv || !bf->priv->sqlitedb) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
@@ -989,7 +990,21 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 	*vcard = e_book_backend_sqlitedb_get_vcard_string (bf->priv->sqlitedb,
 							   SQLITEDB_FOLDER_ID, id,
-							   NULL, NULL, perror);
+							   NULL, NULL, &local_error);
+
+	if (local_error) {
+
+		if (g_error_matches (local_error,
+				     E_BOOK_SDB_ERROR,
+				     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
+			g_set_error (perror, E_DATA_BOOK_ERROR,
+				     E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
+				     _("Contact '%s' not found"), id);
+			g_error_free (local_error);
+		} else
+			g_propagate_error (perror, local_error);
+
+	}
 }
 
 static void
