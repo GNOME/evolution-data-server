@@ -305,7 +305,7 @@ book_backend_sql_exec_real (sqlite3 *db,
 		d(g_print ("Error in SQL EXEC statement: %s [%s] RETURN CODE: %d.\n", stmt, errmsg, ret));
 		g_set_error (
 			error, E_BOOK_SDB_ERROR,
-			0, "%s", errmsg);
+			E_BOOK_SDB_ERROR_OTHER, "%s", errmsg);
 		sqlite3_free (errmsg);
 		errmsg = NULL;
 		return FALSE;
@@ -707,7 +707,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		/* Check for parse error */
 		if (field == 0) {
 			g_set_error (
-				error, E_BOOK_SDB_ERROR, 0,
+				error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 				_("Error introspecting unknown summary field '%s'"), col);
 			success = FALSE;
 			break;
@@ -1018,7 +1018,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 		if (!priv->db) {
 			g_set_error (
 				error, E_BOOK_SDB_ERROR,
-				0,
+				E_BOOK_SDB_ERROR_OTHER,
 				_("Insufficient memory"));
 		} else {
 			const gchar *errmsg;
@@ -1026,7 +1026,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 			d (g_print ("Can't open database %s: %s\n", path, errmsg));
 			g_set_error (
 				error, E_BOOK_SDB_ERROR,
-				0, "%s", errmsg);
+				E_BOOK_SDB_ERROR_OTHER, "%s", errmsg);
 			sqlite3_close (priv->db);
 		}
 		return FALSE;
@@ -1038,7 +1038,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 	                               NULL, NULL);
 
 	if (ret) {
-		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 		             "%s", sqlite3_errmsg (priv->db));
 		sqlite3_close (priv->db);
 		return FALSE;
@@ -1050,7 +1050,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 	                               NULL, NULL);
 
 	if (ret) {
-		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 		             "%s", sqlite3_errmsg (priv->db));
 		sqlite3_close (priv->db);
 		return FALSE;
@@ -1115,7 +1115,7 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	if (g_mkdir_with_parents (path, 0777) < 0) {
 		g_static_mutex_unlock (&dbcon_lock);
 		g_set_error (
-			error, E_BOOK_SDB_ERROR, 0,
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			"Can not make parent directory: errno %d", errno);
 		return NULL;
 	}
@@ -1162,7 +1162,7 @@ append_summary_field (GArray         *array,
 
 	if (field < 1 || field >= E_CONTACT_FIELD_LAST) {
 		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, _("Invalid contact field '%d' specified in summary"), field);
+			     E_BOOK_SDB_ERROR_OTHER, _("Invalid contact field '%d' specified in summary"), field);
 		return FALSE;
 	}
 
@@ -1197,7 +1197,7 @@ append_summary_field (GArray         *array,
 	if (type != G_TYPE_STRING &&
 	    type != G_TYPE_BOOLEAN &&
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
-		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			     _("Contact field '%s' of type '%s' specified in summary, "
 				  "but only boolean, string and string list field types are supported"),
 			     e_contact_pretty_name (field), g_type_name (type));
@@ -2326,7 +2326,8 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 		local_with_all_required_fields = TRUE;
 	} else {
  		g_set_error (error, E_BOOK_SDB_ERROR,
- 			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+ 			     E_BOOK_SDB_ERROR_OTHER,
+			     _("Full search_contacts are not stored in cache. vcards cannot be returned."));
 
 	}
 
@@ -2338,7 +2339,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 	/* Is is an error to not find a contact ?? */
 	if (!vcard_str && error && !*error)
 		g_set_error (
-			error, E_BOOK_SDB_ERROR, 0,
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			_("Contact '%s' not found"), uid ? uid : "NULL");
 
 	return vcard_str;
@@ -3273,7 +3274,8 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 		local_with_all_required_fields = TRUE;
 	} else {
 		g_set_error (error, E_BOOK_SDB_ERROR,
-			     0, _("Full search_contacts are not stored in cache. vcards cannot be returned."));
+			     E_BOOK_SDB_ERROR_OTHER,
+			     _("Full search_contacts are not stored in cache. vcards cannot be returned."));
 	}
 
 	READER_UNLOCK (ebsdb);
@@ -3403,7 +3405,7 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 		local_with_all_required_fields = TRUE;
 	} else {
 		g_set_error (
-			error, E_BOOK_SDB_ERROR, 0,
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			_("Full search_contacts are not stored in cache. "
 			  "Hence only summary query is supported."));
 	}
@@ -3478,7 +3480,7 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 		local_searched = TRUE;
 	} else {
 		g_set_error (
-			error, E_BOOK_SDB_ERROR, 0,
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			_("Full vcards are not stored in cache. "
 			  "Hence only summary query is supported."));
 	}
@@ -4099,7 +4101,7 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 	if (ret == -1) {
 		g_set_error (
 			error, E_BOOK_SDB_ERROR,
-				0, "Unable to remove the db file: errno %d", errno);
+			E_BOOK_SDB_ERROR_OTHER, "Unable to remove the db file: errno %d", errno);
 		return FALSE;
 	}
 
