@@ -65,12 +65,15 @@ typedef struct _EBookBackendSqliteDBPrivate EBookBackendSqliteDBPrivate;
 /**
  * EBookSDBError:
  * @E_BOOK_SDB_ERROR_CONSTRAINT: The error occurred due to an explicit constraint
+ * @E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND: A contact was not found by UID (this is different
+ *                                      from a query that returns no results, which is not an error).
  * @E_BOOK_SDB_ERROR_OTHER: Another error occurred
  *
  * Defines the types of possible errors reported by the #EBookBackendSqliteDB
  */
 typedef enum {
 	E_BOOK_SDB_ERROR_CONSTRAINT,
+	E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND,
 	E_BOOK_SDB_ERROR_OTHER
 } EBookSDBError;
 
