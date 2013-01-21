@@ -303,9 +303,12 @@ book_backend_sql_exec_real (sqlite3 *db,
 
 	if (ret != SQLITE_OK) {
 		d(g_print ("Error in SQL EXEC statement: %s [%s] RETURN CODE: %d.\n", stmt, errmsg, ret));
+
 		g_set_error (
 			error, E_BOOK_SDB_ERROR,
-			E_BOOK_SDB_ERROR_OTHER, "%s", errmsg);
+			ret == SQLITE_CONSTRAINT ?
+			E_BOOK_SDB_ERROR_CONSTRAINT : E_BOOK_SDB_ERROR_OTHER,
+			"%s", errmsg);
 		sqlite3_free (errmsg);
 		errmsg = NULL;
 		return FALSE;
