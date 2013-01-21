@@ -116,6 +116,12 @@ gboolean	e_source_registry_server_load_directory
 						 const gchar *path,
 						 ESourcePermissionFlags flags,
 						 GError **error);
+gboolean	e_source_registry_server_load_resource
+						(ESourceRegistryServer *server,
+						 GResource *resource,
+						 const gchar *path,
+						 ESourcePermissionFlags flags,
+						 GError **error);
 ESource *	e_source_registry_server_load_file
 						(ESourceRegistryServer *server,
 						 GFile *file,

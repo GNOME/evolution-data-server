@@ -1795,6 +1795,79 @@ e_source_registry_server_load_directory (ESourceRegistryServer *server,
 	return TRUE;
 }
 
+/**
+ * e_source_registry_server_load_resource:
+ * @server: an #ESourceRegistryServer
+ * @resource: a #GResource containing data source key files
+ * @path: the path to the data source key files inside @resource
+ * @flags: permission flags for files loaded from @path
+ * @error: return location for a #GError, or %NULL
+ *
+ * Loads data source key files from @resource by enumerating the children
+ * at @path and calling e_source_registry_server_load_file() on each child.
+ * Because multiple errors can occur when loading multiple files, @error is
+ * only set if @path is invalid.  If a key file fails to load, the error is
+ * broadcast through the #ESourceRegistryServer::load-error signal.
+ *
+ * Returns: %TRUE if @path was successfully located, but this does not
+ *          imply the key files were successfully loaded
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_source_registry_server_load_resource (ESourceRegistryServer *server,
+                                        GResource *resource,
+                                        const gchar *path,
+                                        ESourcePermissionFlags flags,
+                                        GError **error)
+{
+	gchar **children;
+	gint ii;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), FALSE);
+	g_return_val_if_fail (resource != NULL, FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+
+	children = g_resource_enumerate_children (
+		resource, path, G_RESOURCE_LOOKUP_FLAGS_NONE, error);
+
+	if (children == NULL)
+		return FALSE;
+
+	for (ii = 0; children[ii] != NULL; ii++) {
+		ESource *source;
+		GFile *file;
+		gchar *child_path;
+		gchar *resource_uri;
+		GError *local_error = NULL;
+
+		child_path = g_build_path ("/", path, children[ii], NULL);
+		resource_uri = g_strconcat ("resource://", child_path, NULL);
+		file = g_file_new_for_uri (resource_uri);
+		g_free (resource_uri);
+		g_free (child_path);
+
+		source = e_source_registry_server_load_file (
+			server, file, flags, &local_error);
+
+		/* We don't need the returned reference. */
+		if (source != NULL)
+			g_object_unref (source);
+
+		if (local_error != NULL) {
+			e_source_registry_server_load_error (
+				server, file, local_error);
+			g_error_free (local_error);
+		}
+
+		g_object_unref (file);
+	}
+
+	g_strfreev (children);
+
+	return TRUE;
+}
+
 /* Helper for e_source_registry_server_load_file() */
 static gboolean
 source_registry_server_tweak_key_file (ESourceRegistryServer *server,
