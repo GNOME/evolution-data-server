@@ -787,7 +787,7 @@ e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
 	ForeachTzidData f_data;
 
 	g_return_if_fail (vcal_comp != NULL);
-	g_return_if_fail (icalcomp != NULL);;
+	g_return_if_fail (icalcomp != NULL);
 
 	f_data.vcal_comp = vcal_comp;
 	f_data.icalcomp = icalcomp;
