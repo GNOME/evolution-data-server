@@ -1,10 +1,14 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdlib.h>
+#include <locale.h>
 #include <libebook/libebook.h>
 #include <libedata-book/libedata-book.h>
 
 #include "client-test-utils.h"
+#include "e-test-server-utils.h"
+
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
 #define N_THREADS  20
 #define N_CONTACTS 5
@@ -68,8 +72,6 @@ complete (EBookClientView *view,
           const GError *error,
 	  ThreadData *data)
 {
-	g_print ("Thread complete with %d contacts\n", data->n_contacts);
-
 	g_mutex_lock (&data->complete_mutex);
 	data->complete = TRUE;
 	g_cond_signal (&data->complete_cond);
@@ -215,36 +217,28 @@ create_test_thread (const gchar   *book_uid)
 	return data;
 }
 
-gint
-main (gint argc,
-      gchar **argv)
+static void
+test_concurrent_views (ETestServerFixture *fixture,
+		       gconstpointer       user_data)
 {
 	EBookClient *main_client;
-	GError *error = NULL;
-	gchar *book_uid = NULL;
+	ESource *source;
+	const gchar *book_uid = NULL;
 	ThreadData **tests;
 	gint i;
 
-	main_initialize ();
+	main_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+	source = e_client_get_source (E_CLIENT (main_client));
+	book_uid = e_source_get_uid (source);
 
-	/* Open the book */
-	main_client = new_temp_client (&book_uid);
-	g_return_val_if_fail (main_client != NULL, 1);
-
-	if (!e_client_open_sync (E_CLIENT (main_client), FALSE, NULL, &error)) {
-		report_error ("client open sync", &error);
-		g_object_unref (main_client);
-		return 1;
-	}
-
-	/* Create out test contact */
+	/* Create out test contacts */
 	if (!add_contact_from_test_case_verify (main_client, "custom-1", NULL) ||
 	    !add_contact_from_test_case_verify (main_client, "custom-2", NULL) ||
 	    !add_contact_from_test_case_verify (main_client, "custom-3", NULL) ||
 	    !add_contact_from_test_case_verify (main_client, "custom-4", NULL) ||
 	    !add_contact_from_test_case_verify (main_client, "custom-5", NULL)) {
 		g_object_unref (main_client);
-		return 1;
+		g_error ("Failed to create contacts for testing");
 	}
 
 	/* Create all concurrent threads accessing the same addressbook */
@@ -268,16 +262,20 @@ main (gint argc,
 
 	/* Cleanup */
 	g_free (tests);
-	g_free (book_uid);
+}
 
-	/* Remove the book, test complete */
-	if (!e_client_remove_sync (E_CLIENT (main_client), NULL, &error)) {
-		report_error ("client remove sync", &error);
-		g_object_unref (main_client);
-		return 1;
-	}
+gint
+main (gint argc,
+      gchar **argv)
+{
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
+	setlocale (LC_ALL, "en_US.UTF-8");
 
-	g_object_unref (main_client);
+	g_test_add ("/EBookClient/ConcurrentViews", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
 
-	return 0;
+	return e_test_server_utils_run ();
 }
