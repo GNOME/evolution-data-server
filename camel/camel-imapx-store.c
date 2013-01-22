@@ -1258,7 +1258,76 @@ imapx_store_get_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	return get_folder_offline (store, folder_name, flags, error);
+	CamelFolder *folder;
+	CamelSettings *settings;
+	gboolean use_real_junk_path = FALSE;
+	gboolean use_real_trash_path = FALSE;
+
+	folder = get_folder_offline (store, folder_name, flags, error);
+
+	/* Configure the folder flags according to IMAPX settings.
+	 *
+	 * XXX Since this is only done when the folder is first created,
+	 *     a restart is required to pick up changes to real Junk/Trash
+	 *     folder settings.  Need to think of a better way.
+	 *
+	 *     Perhaps have CamelStoreSettings grow junk and trash path
+	 *     string properties, and eliminate the CAMEL_FOLDER_IS_JUNK
+	 *     and CAMEL_FOLDER_IS_TRASH flags.  Then add functions like
+	 *     camel_folder_is_junk() and camel_folder_is_trash(), which
+	 *     compare their own full name against CamelStoreSettings.
+	 *
+	 *     Something to think about...
+	 */
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+
+	if (folder != NULL) {
+		use_real_junk_path =
+			camel_imapx_settings_get_use_real_junk_path (
+			CAMEL_IMAPX_SETTINGS (settings));
+		use_real_trash_path =
+			camel_imapx_settings_get_use_real_trash_path (
+			CAMEL_IMAPX_SETTINGS (settings));
+	}
+
+	if (use_real_junk_path) {
+		gchar *real_junk_path;
+
+		real_junk_path =
+			camel_imapx_settings_dup_real_junk_path (
+			CAMEL_IMAPX_SETTINGS (settings));
+
+		/* So we can safely compare strings. */
+		if (real_junk_path == NULL)
+			real_junk_path = g_strdup ("");
+
+		if (g_ascii_strcasecmp (real_junk_path, folder_name) == 0)
+			folder->folder_flags |= CAMEL_FOLDER_IS_JUNK;
+
+		g_free (real_junk_path);
+	}
+
+	if (use_real_trash_path) {
+		gchar *real_trash_path;
+
+		real_trash_path =
+			camel_imapx_settings_dup_real_trash_path (
+			CAMEL_IMAPX_SETTINGS (settings));
+
+		/* So we can safely compare strings. */
+		if (real_trash_path == NULL)
+			real_trash_path = g_strdup ("");
+
+		if (g_ascii_strcasecmp (real_trash_path, folder_name) == 0)
+			folder->folder_flags |= CAMEL_FOLDER_IS_TRASH;
+
+		g_free (real_trash_path);
+	}
+
+	g_object_unref (settings);
+
+	return folder;
 }
 
 static CamelFolderInfo *
