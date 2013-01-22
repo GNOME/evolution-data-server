@@ -1258,18 +1258,7 @@ imapx_store_get_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	CamelFolder *folder;
-
-	folder = get_folder_offline (store, folder_name, flags, NULL);
-	if (folder == NULL) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("No such folder: %s"), folder_name);
-		return NULL;
-	}
-
-	return folder;
+	return get_folder_offline (store, folder_name, flags, error);
 }
 
 static CamelFolderInfo *
