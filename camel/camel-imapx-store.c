@@ -361,34 +361,43 @@ get_folder_offline (CamelStore *store,
 	CamelFolder *new_folder = NULL;
 	CamelStoreInfo *si;
 	CamelService *service;
+	CamelStoreSummary *summary;
 	const gchar *user_cache_dir;
+	gboolean is_inbox;
 
 	service = CAMEL_SERVICE (store);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
-	si = camel_store_summary_path ((CamelStoreSummary *) imapx_store->summary, folder_name);
-	if (!si && g_ascii_strcasecmp (folder_name, "INBOX") == 0)
-		si = (CamelStoreInfo *) camel_imapx_store_summary_full_name (imapx_store->summary, folder_name);
-	if (si) {
-		gchar *folder_dir, *storage_path;
+	summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
+	si = camel_store_summary_path (summary, folder_name);
+	is_inbox = (g_ascii_strcasecmp (folder_name, "INBOX") == 0);
 
-		storage_path = g_build_filename (user_cache_dir, "folders", NULL);
-		/* Note: Although the INBOX is defined to be case-insensitive in the IMAP RFC
-		 * it is still up to the server how to acutally name it in a LIST response. Since
-		 * we stored the name as the server provided it us in the summary we take that name
-		 * to look up the folder.
-		 * But for the on-disk cache we do always capitalize the Inbox no matter what the
-		 * server provided.
+	if (si == NULL && is_inbox)
+		si = (CamelStoreInfo *) camel_imapx_store_summary_full_name (
+			imapx_store->summary, folder_name);
+
+	if (si != NULL) {
+		gchar *base_dir;
+		gchar *folder_dir;
+
+		/* Note: Although the INBOX is defined to be case-insensitive
+		 *       in the IMAP RFC, it is still up to the server how to
+		 *       acutally name it in a LIST response. Since we stored
+		 *       the name as the server provided it us in the summary
+		 *       we take that name to look up the folder.
+		 *
+		 *       But for the on-disk cache we always capitalize the
+		 *       Inbox no matter what the server provided.
 		 */
+		base_dir = g_build_filename (user_cache_dir, "folders", NULL);
 		folder_dir = imapx_path_to_physical (
-			storage_path,
-			g_ascii_strcasecmp (folder_name, "INBOX") == 0 ? "INBOX" : folder_name);
-		g_free (storage_path);
-
-		new_folder = camel_imapx_folder_new (store, folder_dir, folder_name, error);
-
+			base_dir, is_inbox ? "INBOX" : folder_name);
+		new_folder = camel_imapx_folder_new (
+			store, folder_dir, folder_name, error);
 		g_free (folder_dir);
-		camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
+		g_free (base_dir);
+
+		camel_store_summary_info_free (summary, si);
 	} else {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
