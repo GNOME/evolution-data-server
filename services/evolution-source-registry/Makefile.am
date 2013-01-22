@@ -73,7 +73,7 @@ evolution_source_registry_LDADD = \
 	$(SOUP_LIBS) \
 	$(NULL)
 
-evolution-source-registry-resource.h: evolution-source-registry-resource.xml
+evolution-source-registry-resource.h: evolution-source-registry-resource.xml $(builtin_sources)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) \
 	$(srcdir)/evolution-source-registry-resource.xml \
 	--target=$@ \
