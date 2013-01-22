@@ -6,6 +6,12 @@
 #include "ebook-test-utils.h"
 #include "e-test-server-utils.h"
 
+/* NOTE: This is an old test case testing unsupported old code paths.
+ *
+ * All this test case really does is ensure the callbacks are indeed
+ * called (with empty lists).
+ */
+
 static ETestServerClosure book_closure =
 	{ E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
 
@@ -64,9 +70,8 @@ main_loop_fail_timeout (gpointer unused)
 	return FALSE;
 }
 
-static void
-test_get_supported_auth_methods_async (ETestServerFixture *fixture,
-                                       gconstpointer user_data)
+static gboolean
+get_supported_auth_methods_async_in_idle (ETestServerFixture *fixture)
 {
 	EBook *book;
 
@@ -75,6 +80,14 @@ test_get_supported_auth_methods_async (ETestServerFixture *fixture,
 	ebook_test_utils_book_async_get_supported_auth_methods (
 		book, (GSourceFunc) get_supported_auth_methods_cb, fixture->loop);
 
+	return FALSE;
+}
+
+static void
+test_get_supported_auth_methods_async (ETestServerFixture *fixture,
+                                       gconstpointer user_data)
+{
+	g_idle_add ((GSourceFunc)get_supported_auth_methods_async_in_idle, fixture);
 	g_timeout_add (5 * 1000, (GSourceFunc) main_loop_fail_timeout, NULL);
 	g_main_loop_run (fixture->loop);
 }
