@@ -202,6 +202,16 @@ book_backend_finalize (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_parent_class)->finalize (object);
 }
 
+static void
+book_backend_constructed (GObject *object)
+{
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_book_backend_parent_class)->constructed (object);
+
+	/* Initialize the "cache-dir" property. */
+	book_backend_set_default_cache_dir (E_BOOK_BACKEND (object));
+}
+
 static gboolean
 book_backend_authenticate_sync (EBackend *backend,
                                 ESourceAuthenticator *auth,
@@ -249,6 +259,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 	object_class->get_property = book_backend_get_property;
 	object_class->dispose = book_backend_dispose;
 	object_class->finalize = book_backend_finalize;
+	object_class->constructed = book_backend_constructed;
 
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->authenticate_sync = book_backend_authenticate_sync;
@@ -439,11 +450,6 @@ e_book_backend_open (EBookBackend *backend,
 	} else {
 		backend->priv->opening = TRUE;
 		g_mutex_unlock (&backend->priv->clients_mutex);
-
-		/* Subclasses may need to call e_book_backend_get_cache_dir() in
-		 * their open() methods, so get the "cache-dir" property
-		 * initialized before we call the method. */
-		book_backend_set_default_cache_dir (backend);
 
 		g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->open != NULL);
 

@@ -292,9 +292,11 @@ cal_backend_finalize (GObject *object)
 static void
 cal_backend_constructed (GObject *object)
 {
-	cal_backend_set_default_cache_dir (E_CAL_BACKEND (object));
-
+	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->constructed (object);
+
+	/* Initialize the "cache-dir" property. */
+	cal_backend_set_default_cache_dir (E_CAL_BACKEND (object));
 }
 
 static gboolean
