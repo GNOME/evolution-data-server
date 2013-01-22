@@ -80,6 +80,12 @@ GType		e_data_factory_get_type		(void) G_GNUC_CONST;
 EBackend *	e_data_factory_ref_backend	(EDataFactory *data_factory,
 						 const gchar *hash_key,
 						 ESource *source);
+EBackend *	e_data_factory_ref_initable_backend
+						(EDataFactory *data_factory,
+						 const gchar *hash_key,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
 EBackendFactory *
 		e_data_factory_ref_backend_factory
 						(EDataFactory *data_factory,

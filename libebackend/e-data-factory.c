@@ -25,6 +25,7 @@
 #include "e-data-factory.h"
 
 #include <config.h>
+#include <glib/gi18n-lib.h>
 
 #include <libebackend/e-extensible.h>
 #include <libebackend/e-backend-factory.h>
@@ -243,6 +244,49 @@ e_data_factory_ref_backend (EDataFactory *data_factory,
                             const gchar *hash_key,
                             ESource *source)
 {
+	return e_data_factory_ref_initable_backend (
+		data_factory, hash_key, source, NULL, NULL);
+}
+
+/**
+ * e_data_factory_ref_initable_backend:
+ * @data_factory: an #EDataFactory
+ * @hash_key: hash key for an #EBackendFactory
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Similar to e_data_factory_ref_backend(), but allows for backends that
+ * implement the #GInitable interface so they can fail gracefully if they
+ * are unable to initialize critical resources, such as a cache database.
+ *
+ * Returns either a newly-created or existing #EBackend for #ESource.
+ * The returned #EBackend is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * If the newly-created backend implements the #GInitable interface, then
+ * g_initable_init() is also called on it using @cancellable and @error.
+ *
+ * The @data_factory retains a weak reference to @backend so it can return
+ * the same instance while @backend is in use.  When the last strong reference
+ * to @backend is dropped, @data_factory will lose its weak reference and will
+ * have to create a new #EBackend instance the next time the same @hash_key
+ * and @source are requested.
+ *
+ * If no suitable #EBackendFactory exists, or if the #EBackend fails to
+ * initialize, the function sets @error and returns %NULL.
+ *
+ * Returns: an #EBackend for @source, or %NULL
+ *
+ * Since: 3.8
+ **/
+EBackend *
+e_data_factory_ref_initable_backend (EDataFactory *data_factory,
+                                     const gchar *hash_key,
+                                     ESource *source,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
 	EBackendFactory *backend_factory;
 	GWeakRef *weak_ref;
 	EBackend *backend;
@@ -270,11 +314,25 @@ e_data_factory_ref_backend (EDataFactory *data_factory,
 	backend_factory =
 		e_data_factory_ref_backend_factory (data_factory, hash_key);
 
-	if (backend_factory == NULL)
+	if (backend_factory == NULL) {
+		g_set_error (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("No backend factory for hash key '%s'"),
+			hash_key);
 		goto exit;
+	}
 
 	/* Create a new backend for the given source and store it. */
 	backend = e_backend_factory_new_backend (backend_factory, source);
+
+	if (G_IS_INITABLE (backend)) {
+		GInitable *initable = G_INITABLE (backend);
+
+		if (!g_initable_init (initable, cancellable, error)) {
+			g_object_unref (backend);
+			backend = NULL;
+		}
+	}
 
 	/* This still does the right thing if backend is NULL. */
 	g_weak_ref_set (weak_ref, backend);

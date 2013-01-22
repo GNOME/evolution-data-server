@@ -97,14 +97,8 @@ data_book_factory_ref_backend (EDataFactory *factory,
 		return NULL;
 	}
 
-	backend = e_data_factory_ref_backend (factory, backend_name, source);
-
-	if (backend == NULL)
-		g_set_error (
-			error, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
-			_("Invalid backend name '%s' in source '%s'"),
-			backend_name, e_source_get_display_name (source));
+	backend = e_data_factory_ref_initable_backend (
+		factory, backend_name, source, NULL, error);
 
 	g_free (backend_name);
 

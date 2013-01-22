@@ -101,14 +101,9 @@ data_cal_factory_ref_backend (EDataFactory *factory,
 	}
 
 	hash_key = g_strdup_printf ("%s:%s", backend_name, type_string);
-	backend = e_data_factory_ref_backend (factory, hash_key, source);
+	backend = e_data_factory_ref_initable_backend (
+		factory, hash_key, source, NULL, error);
 	g_free (hash_key);
-
-	if (backend == NULL)
-		g_set_error (
-			error, E_DATA_CAL_ERROR, NoSuchCal,
-			_("Invalid backend name '%s' in source '%s'"),
-			backend_name, e_source_get_display_name (source));
 
 	g_free (backend_name);
 
