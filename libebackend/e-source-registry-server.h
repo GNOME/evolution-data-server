@@ -108,9 +108,6 @@ void		e_source_registry_server_add_source
 void		e_source_registry_server_remove_source
 						(ESourceRegistryServer *server,
 						 ESource *source);
-gboolean	e_source_registry_server_load_all
-						(ESourceRegistryServer *server,
-						 GError **error);
 gboolean	e_source_registry_server_load_directory
 						(ESourceRegistryServer *server,
 						 const gchar *path,
@@ -164,6 +161,12 @@ gboolean	e_source_registry_server_authenticate_finish
 						(ESourceRegistryServer *server,
 						 GAsyncResult *result,
 						 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+gboolean	e_source_registry_server_load_all
+						(ESourceRegistryServer *server,
+						 GError **error);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

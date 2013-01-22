@@ -1643,6 +1643,10 @@ e_source_registry_server_remove_source (ESourceRegistryServer *server,
  *          but this does not imply the key files were successfully loaded
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.8: Instead, implement an equivalent function yourself.
+ *                  It was a mistake to encode this much file location
+ *                  policy directly into the library API.
  **/
 gboolean
 e_source_registry_server_load_all (ESourceRegistryServer *server,
