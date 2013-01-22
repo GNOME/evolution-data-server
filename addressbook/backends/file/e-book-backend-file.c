@@ -762,8 +762,8 @@ do_create (EBookBackendFile *bf,
 			if (g_error_matches (local_error,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONSTRAINT)) {
-				g_set_error (perror, E_CLIENT_ERROR,
-					     E_CLIENT_ERROR_QUERY_REFUSED,
+				g_set_error (perror, E_DATA_BOOK_ERROR,
+					     E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,
 					     _("Conflicting UIDs found in added contacts"));
 				g_clear_error (&local_error);
 			} else
