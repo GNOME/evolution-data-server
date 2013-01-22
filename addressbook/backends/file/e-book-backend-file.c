@@ -1038,8 +1038,8 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 		if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
-			g_set_error (perror, E_BOOK_CLIENT_ERROR,
-				     E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
+			g_set_error (perror, E_DATA_BOOK_ERROR,
+				     E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
 				     _("Conflicting UIDs found in added contacts"));
 			g_error_free (local_error);
 		} else
