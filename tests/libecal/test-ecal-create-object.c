@@ -21,15 +21,15 @@ test_create_object (ETestServerFixture *fixture,
 
 	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECal);
 
-	/* XXX This test is flawed, the component we create has
-	 * no UID, but the created component has one in fact,
-	 * need to adjust the test to expect the right thing.
-	 */
 	component = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 	uid = ecal_test_utils_cal_create_object (cal, component);
 
+	/* Assert that we can fetch the newly created component
+	 * and that it's valid
+	 */
 	component_final = ecal_test_utils_cal_get_object (cal, uid);
-	ecal_test_utils_cal_assert_objects_equal_shallow (component, component_final);
+	g_assert (component_final);
+	g_assert (icalcomponent_is_valid (component_final));
 
 	g_free (uid);
 	icalcomponent_free (component);
