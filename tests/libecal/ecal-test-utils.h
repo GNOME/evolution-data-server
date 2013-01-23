@@ -55,9 +55,6 @@ ecal_test_utils_cal_get_alarm_email_address (ECal *cal);
 gchar *
 ecal_test_utils_cal_get_cal_address (ECal *cal);
 
-gchar *
-ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
-
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal);
 
