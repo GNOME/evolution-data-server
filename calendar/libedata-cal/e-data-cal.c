@@ -52,6 +52,12 @@ struct _EDataCalPrivate {
 
 	GRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
+
+	/* Operations are queued while an
+	 * open operation is in progress. */
+	GMutex open_lock;
+	guint32 open_opid;
+	GQueue open_queue;
 };
 
 enum {
@@ -354,6 +360,25 @@ op_new (OperationID op,
 }
 
 static void
+op_dispatch (EDataCal *cal,
+             OperationData *data)
+{
+	g_mutex_lock (&cal->priv->open_lock);
+
+	/* If an open operation is currently in progress, queue this
+	 * operation to be dispatched when the open operation finishes. */
+	if (cal->priv->open_opid > 0) {
+		g_queue_push_tail (&cal->priv->open_queue, data);
+	} else {
+		if (data->op == OP_OPEN)
+			cal->priv->open_opid = data->id;
+		e_operation_pool_push (ops_pool, data);
+	}
+
+	g_mutex_unlock (&cal->priv->open_lock);
+}
+
+static void
 op_complete (EDataCal *cal,
              guint32 opid)
 {
@@ -528,7 +553,7 @@ impl_Cal_open (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_open (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -544,7 +569,7 @@ impl_Cal_refresh (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_refresh (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -562,6 +587,7 @@ impl_Cal_get_backend_property (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_backend_property (interface, invocation, op->id);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -580,6 +606,7 @@ impl_Cal_set_backend_property (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_set_backend_property (interface, invocation, op->id);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -598,7 +625,7 @@ impl_Cal_get_object (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_object (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -616,7 +643,7 @@ impl_Cal_get_object_list (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_object_list (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -638,7 +665,7 @@ impl_Cal_get_free_busy (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_free_busy (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -656,7 +683,7 @@ impl_Cal_create_objects (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_create_objects (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -676,7 +703,7 @@ impl_Cal_modify_objects (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_modify_objects (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -696,7 +723,7 @@ impl_Cal_remove_objects (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_remove_objects (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -714,7 +741,7 @@ impl_Cal_receive_objects (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_receive_objects (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -732,7 +759,7 @@ impl_Cal_send_objects (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_send_objects (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -750,7 +777,7 @@ impl_Cal_get_attachment_uris (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_attachment_uris (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -768,7 +795,7 @@ impl_Cal_discard_alarm (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_discard_alarm (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -786,6 +813,7 @@ impl_Cal_get_view (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_view (interface, invocation, op->id);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -804,7 +832,7 @@ impl_Cal_get_timezone (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_get_timezone (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -822,7 +850,7 @@ impl_Cal_add_timezone (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_add_timezone (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (cal, op);
 
 	return TRUE;
 }
@@ -840,6 +868,7 @@ impl_Cal_cancel_operation (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_cancel_operation (interface, invocation, NULL);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -856,6 +885,7 @@ impl_Cal_cancel_all (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_cancel_all (interface, invocation, NULL);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -874,6 +904,7 @@ impl_Cal_close (EGdbusCal *interface,
 
 	e_gdbus_cal_complete_close (interface, invocation, NULL);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -918,6 +949,23 @@ e_data_cal_respond_open (EDataCal *cal,
 
 	if (error != NULL)
 		g_error_free (error);
+
+	/* Dispatch any pending operations. */
+
+	g_mutex_lock (&cal->priv->open_lock);
+
+	if (opid == cal->priv->open_opid) {
+		OperationData *op;
+
+		cal->priv->open_opid = 0;
+
+		while (!g_queue_is_empty (&cal->priv->open_queue)) {
+			op = g_queue_pop_head (&cal->priv->open_queue);
+			e_operation_pool_push (ops_pool, op);
+		}
+	}
+
+	g_mutex_unlock (&cal->priv->open_lock);
 }
 
 /**
@@ -1668,6 +1716,11 @@ data_cal_finalize (GObject *object)
 		priv->dbus_interface = NULL;
 	}
 
+	g_mutex_clear (&priv->open_lock);
+
+	/* This should be empty now, else we leak memory. */
+	g_warn_if_fail (g_queue_is_empty (&priv->open_queue));
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_parent_class)->finalize (object);
 }
@@ -1760,6 +1813,8 @@ e_data_cal_init (EDataCal *ecal)
 	ecal->priv->pending_ops = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	g_rec_mutex_init (&ecal->priv->pending_ops_lock);
+
+	g_mutex_init (&ecal->priv->open_lock);
 
 	dbus_interface = ecal->priv->dbus_interface;
 	g_signal_connect (
