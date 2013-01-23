@@ -17,6 +17,7 @@ test_get_objects_for_uid (ETestServerFixture *fixture,
 	ECal *cal;
 	icalcomponent *component;
 	icalcomponent *component_final;
+	icalcomponent *component_fetched;
 	ECalComponent *e_component_final;
 	gchar *uid;
 	GList *components;
@@ -26,12 +27,12 @@ test_get_objects_for_uid (ETestServerFixture *fixture,
 	component = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 	uid = ecal_test_utils_cal_create_object (cal, component);
 
-	/* FIXME: In the same way test-ecal-create-object.c,
-	 * this part of the test is broken, need to fix this.
+	/* Assert that we can fetch the newly created component
+	 * and that it's valid
 	 */
-	component_final = ecal_test_utils_cal_get_object (cal, uid);
-	ecal_test_utils_cal_assert_objects_equal_shallow (component, component_final);
-	icalcomponent_free (component_final);
+	component_fetched = ecal_test_utils_cal_get_object (cal, uid);
+	g_assert (component_fetched);
+	g_assert (icalcomponent_is_valid (component_fetched));
 
 	/* The list of component and all subcomponents should just contain the
 	 * component itself (wrapped in an ECalComponent) */
@@ -39,12 +40,13 @@ test_get_objects_for_uid (ETestServerFixture *fixture,
 	g_assert (g_list_length (components) == 1);
 	e_component_final = components->data;
 	component_final = e_cal_component_get_icalcomponent (e_component_final);
-	ecal_test_utils_cal_assert_objects_equal_shallow (component, component_final);
+	ecal_test_utils_cal_assert_objects_equal_shallow (component_fetched, component_final);
 
 	g_list_foreach (components, (GFunc) g_object_unref, NULL);
 	g_list_free (components);
 	g_free (uid);
 	icalcomponent_free (component);
+	icalcomponent_free (component_fetched);
 }
 
 gint
