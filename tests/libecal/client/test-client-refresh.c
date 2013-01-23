@@ -5,7 +5,6 @@
 #include <libecal/libecal.h>
 #include <libical/ical.h>
 
-#include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
 static ETestServerClosure cal_closure =
@@ -39,13 +38,17 @@ test_refresh_sync (ETestServerFixture *fixture,
 {
 	ECalClient *cal;
 	GError *error = NULL;
+	gboolean supported;
 
 	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
+	supported = e_client_check_refresh_supported (E_CLIENT (cal));
+
+	g_print ("Refresh supported: %s\n", supported ? "yes" : "no");
+	if (!supported)
+		return;
+
 	setup_cal (cal);
-
-	g_print ("Refresh supported: %s\n", e_client_check_refresh_supported (E_CLIENT (cal)) ? "yes" : "no");
-
 	if (!e_client_refresh_sync (E_CLIENT (cal), NULL, &error))
 		g_error ("refresh sync: %s", error->message);
 }
@@ -72,11 +75,15 @@ test_refresh_async (ETestServerFixture *fixture,
 		    gconstpointer       user_data)
 {
 	ECalClient *cal;
+	gboolean supported;
 
 	cal = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
-	setup_cal (cal);
+	supported = e_client_check_refresh_supported (E_CLIENT (cal));
+	if (!supported)
+		return;
 
+	setup_cal (cal);
 	e_client_refresh (E_CLIENT (cal), NULL, async_refresh_result_ready, fixture->loop);
 	g_main_loop_run (fixture->loop);
 }
