@@ -526,7 +526,8 @@ impl_Cal_open (EGdbusCal *interface,
 	op = op_new (OP_OPEN, cal);
 	op->d.only_if_exists = in_only_if_exists;
 
-	e_gdbus_cal_complete_open (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_open (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -541,7 +542,8 @@ impl_Cal_refresh (EGdbusCal *interface,
 
 	op = op_new (OP_REFRESH, cal);
 
-	e_gdbus_cal_complete_refresh (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_refresh (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -558,7 +560,8 @@ impl_Cal_get_backend_property (EGdbusCal *interface,
 	op = op_new (OP_GET_BACKEND_PROPERTY, cal);
 	op->d.prop_name = g_strdup (in_prop_name);
 
-	e_gdbus_cal_complete_get_backend_property (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_backend_property (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -575,7 +578,8 @@ impl_Cal_set_backend_property (EGdbusCal *interface,
 	op = op_new (OP_SET_BACKEND_PROPERTY, cal);
 	g_return_val_if_fail (e_gdbus_cal_decode_set_backend_property (in_prop_name_value, &op->d.sbp.prop_name, &op->d.sbp.prop_value), FALSE);
 
-	e_gdbus_cal_complete_set_backend_property (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_set_backend_property (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -592,7 +596,8 @@ impl_Cal_get_object (EGdbusCal *interface,
 	op = op_new (OP_GET_OBJECT, cal);
 	g_return_val_if_fail (e_gdbus_cal_decode_get_object (in_uid_rid, &op->d.ur.uid, &op->d.ur.rid), FALSE);
 
-	e_gdbus_cal_complete_get_object (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_object (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -609,7 +614,8 @@ impl_Cal_get_object_list (EGdbusCal *interface,
 	op = op_new (OP_GET_OBJECT_LIST, cal);
 	op->d.sexp = g_strdup (in_sexp);
 
-	e_gdbus_cal_complete_get_object_list (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_object_list (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -630,7 +636,8 @@ impl_Cal_get_free_busy (EGdbusCal *interface,
 	op->d.fb.start = (time_t) start;
 	op->d.fb.end = (time_t) end;
 
-	e_gdbus_cal_complete_get_free_busy (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_free_busy (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -647,7 +654,8 @@ impl_Cal_create_objects (EGdbusCal *interface,
 	op = op_new (OP_CREATE_OBJECTS, cal);
 	op->d.calobjs = e_util_strv_to_slist (in_calobjs);
 
-	e_gdbus_cal_complete_create_objects (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_create_objects (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -666,7 +674,8 @@ impl_Cal_modify_objects (EGdbusCal *interface,
 	g_return_val_if_fail (e_gdbus_cal_decode_modify_objects (in_mod_calobjs, &op->d.mo.calobjs, &mod), FALSE);
 	op->d.mo.mod = mod;
 
-	e_gdbus_cal_complete_modify_objects (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_modify_objects (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -685,7 +694,8 @@ impl_Cal_remove_objects (EGdbusCal *interface,
 	g_return_val_if_fail (e_gdbus_cal_decode_remove_objects (in_mod_ids, &op->d.ro.ids, &mod), FALSE);
 	op->d.ro.mod = mod;
 
-	e_gdbus_cal_complete_remove_objects (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_remove_objects (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -702,7 +712,8 @@ impl_Cal_receive_objects (EGdbusCal *interface,
 	op = op_new (OP_RECEIVE_OBJECTS, cal);
 	op->d.co.calobj = g_strdup (in_calobj);
 
-	e_gdbus_cal_complete_receive_objects (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_receive_objects (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -719,7 +730,8 @@ impl_Cal_send_objects (EGdbusCal *interface,
 	op = op_new (OP_SEND_OBJECTS, cal);
 	op->d.co.calobj = g_strdup (in_calobj);
 
-	e_gdbus_cal_complete_send_objects (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_send_objects (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -736,7 +748,8 @@ impl_Cal_get_attachment_uris (EGdbusCal *interface,
 	op = op_new (OP_GET_ATTACHMENT_URIS, cal);
 	g_return_val_if_fail (e_gdbus_cal_decode_get_attachment_uris (in_uid_rid, &op->d.ur.uid, &op->d.ur.rid), FALSE);
 
-	e_gdbus_cal_complete_get_attachment_uris (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_attachment_uris (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -753,7 +766,8 @@ impl_Cal_discard_alarm (EGdbusCal *interface,
 	op = op_new (OP_DISCARD_ALARM, cal);
 	g_return_val_if_fail (e_gdbus_cal_decode_discard_alarm (in_uid_rid_auid, &op->d.ura.uid, &op->d.ura.rid, &op->d.ura.auid), FALSE);
 
-	e_gdbus_cal_complete_discard_alarm (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_discard_alarm (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -770,7 +784,8 @@ impl_Cal_get_view (EGdbusCal *interface,
 	op = op_new (OP_GET_VIEW, cal);
 	op->d.sexp = g_strdup (in_sexp);
 
-	e_gdbus_cal_complete_get_view (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_view (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -787,7 +802,8 @@ impl_Cal_get_timezone (EGdbusCal *interface,
 	op = op_new (OP_GET_TIMEZONE, cal);
 	op->d.tzid = g_strdup (in_tzid);
 
-	e_gdbus_cal_complete_get_timezone (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_get_timezone (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -804,7 +820,8 @@ impl_Cal_add_timezone (EGdbusCal *interface,
 	op = op_new (OP_ADD_TIMEZONE, cal);
 	op->d.tzobject = g_strdup (in_tzobject);
 
-	e_gdbus_cal_complete_add_timezone (cal->priv->dbus_interface, invocation, op->id);
+	e_gdbus_cal_complete_add_timezone (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -821,7 +838,8 @@ impl_Cal_cancel_operation (EGdbusCal *interface,
 	op = op_new (OP_CANCEL_OPERATION, cal);
 	op->d.opid = in_opid;
 
-	e_gdbus_cal_complete_cancel_operation (cal->priv->dbus_interface, invocation, NULL);
+	e_gdbus_cal_complete_cancel_operation (interface, invocation, NULL);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -836,7 +854,8 @@ impl_Cal_cancel_all (EGdbusCal *interface,
 
 	op = op_new (OP_CANCEL_ALL, cal);
 
-	e_gdbus_cal_complete_cancel_all (cal->priv->dbus_interface, invocation, NULL);
+	e_gdbus_cal_complete_cancel_all (interface, invocation, NULL);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -853,7 +872,8 @@ impl_Cal_close (EGdbusCal *interface,
 	/* unref here makes sure the cal is freed in a separate thread */
 	g_object_unref (cal);
 
-	e_gdbus_cal_complete_close (cal->priv->dbus_interface, invocation, NULL);
+	e_gdbus_cal_complete_close (interface, invocation, NULL);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -896,7 +916,7 @@ e_data_cal_respond_open (EDataCal *cal,
 
 	e_gdbus_cal_emit_open_done (cal->priv->dbus_interface, opid, error);
 
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 }
 

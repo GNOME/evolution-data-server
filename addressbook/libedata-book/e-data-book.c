@@ -505,7 +505,8 @@ impl_Book_open (EGdbusBook *interface,
 	op = op_new (OP_OPEN, book);
 	op->d.only_if_exists = only_if_exists;
 
-	e_gdbus_book_complete_open (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_open (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -520,7 +521,8 @@ impl_Book_refresh (EGdbusBook *interface,
 
 	op = op_new (OP_REFRESH, book);
 
-	e_gdbus_book_complete_refresh (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_refresh (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -547,7 +549,8 @@ impl_Book_get_contact (EGdbusBook *interface,
 	op = op_new (OP_GET_CONTACT, book);
 	op->d.uid = g_strdup (in_uid);
 
-	e_gdbus_book_complete_get_contact (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_get_contact (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -572,7 +575,8 @@ impl_Book_get_contact_list (EGdbusBook *interface,
 	op = op_new (OP_GET_CONTACTS, book);
 	op->d.query = g_strdup (in_query);
 
-	e_gdbus_book_complete_get_contact_list (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_get_contact_list (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -597,7 +601,8 @@ impl_Book_get_contact_list_uids (EGdbusBook *interface,
 	op = op_new (OP_GET_CONTACTS_UIDS, book);
 	op->d.query = g_strdup (in_query);
 
-	e_gdbus_book_complete_get_contact_list_uids (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_get_contact_list_uids (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -622,7 +627,8 @@ impl_Book_add_contacts (EGdbusBook *interface,
 	op = op_new (OP_ADD_CONTACTS, book);
 	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
-	e_gdbus_book_complete_add_contacts (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_add_contacts (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -647,7 +653,8 @@ impl_Book_modify_contacts (EGdbusBook *interface,
 	op = op_new (OP_MODIFY_CONTACTS, book);
 	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
-	e_gdbus_book_complete_modify_contacts (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_modify_contacts (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -668,7 +675,8 @@ impl_Book_remove_contacts (EGdbusBook *interface,
 		op->d.ids = g_slist_prepend (op->d.ids, g_strdup (*in_uids));
 	}
 
-	e_gdbus_book_complete_remove_contacts (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_remove_contacts (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -685,7 +693,8 @@ impl_Book_get_backend_property (EGdbusBook *interface,
 	op = op_new (OP_GET_BACKEND_PROPERTY, book);
 	op->d.prop_name = g_strdup (in_prop_name);
 
-	e_gdbus_book_complete_get_backend_property (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_get_backend_property (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -702,7 +711,8 @@ impl_Book_set_backend_property (EGdbusBook *interface,
 	op = op_new (OP_SET_BACKEND_PROPERTY, book);
 	g_return_val_if_fail (e_gdbus_book_decode_set_backend_property (in_prop_name_value, &op->d.sbp.prop_name, &op->d.sbp.prop_value), FALSE);
 
-	e_gdbus_book_complete_set_backend_property (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_set_backend_property (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -730,7 +740,8 @@ impl_Book_get_view (EGdbusBook *interface,
 	op = op_new (OP_GET_VIEW, book);
 	op->d.query = g_strdup (in_query);
 
-	e_gdbus_book_complete_get_view (book->priv->dbus_interface, invocation, op->id);
+	e_gdbus_book_complete_get_view (interface, invocation, op->id);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -747,7 +758,8 @@ impl_Book_cancel_operation (EGdbusBook *interface,
 	op = op_new (OP_CANCEL_OPERATION, book);
 	op->d.opid = in_opid;
 
-	e_gdbus_book_complete_cancel_operation (book->priv->dbus_interface, invocation, NULL);
+	e_gdbus_book_complete_cancel_operation (interface, invocation, NULL);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -762,7 +774,8 @@ impl_Book_cancel_all (EGdbusBook *interface,
 
 	op = op_new (OP_CANCEL_ALL, book);
 
-	e_gdbus_book_complete_cancel_all (book->priv->dbus_interface, invocation, NULL);
+	e_gdbus_book_complete_cancel_all (interface, invocation, NULL);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -779,7 +792,8 @@ impl_Book_close (EGdbusBook *interface,
 	/* unref here makes sure the book is freed in a separate thread */
 	g_object_unref (book);
 
-	e_gdbus_book_complete_close (book->priv->dbus_interface, invocation, NULL);
+	e_gdbus_book_complete_close (interface, invocation, NULL);
+
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -797,7 +811,7 @@ e_data_book_respond_open (EDataBook *book,
 
 	e_gdbus_book_emit_open_done (book->priv->dbus_interface, opid, error);
 
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 }
 
