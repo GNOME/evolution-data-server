@@ -1244,18 +1244,7 @@ camel_store_init (CamelStore *store)
 	g_rec_mutex_init (&store->priv->folder_lock);
 }
 
-GQuark
-camel_store_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "camel-store-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (camel-store-error-quark, camel_store_error)
 
 /**
  * camel_store_folder_created:

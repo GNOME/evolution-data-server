@@ -815,19 +815,9 @@ e_authentication_session_init (EAuthenticationSession *session)
 	g_mutex_init (&session->priv->property_lock);
 }
 
-GQuark
-e_authentication_session_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string;
-		string = "e-authentication-session-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (
+	e-authentication-session-error-quark,
+	e_authentication_session_error);
 
 /**
  * e_authentication_session_new:

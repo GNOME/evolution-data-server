@@ -340,18 +340,7 @@ camel_imapx_stream_grow (CamelIMAPXStream *is,
 		*bufptr = is->priv->buf + (*bufptr - oldbuf);
 }
 
-GQuark
-camel_imapx_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "camel-imapx-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (camel-imapx-error-quark, camel_imapx_error)
 
 /**
  * camel_imapx_stream_new:

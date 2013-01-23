@@ -101,16 +101,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	ECal, e_cal, G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_cal_initable_init))
 
-/* Error quark */
-GQuark
-e_calendar_error_quark (void)
-{
-	static GQuark q = 0;
-	if (q == 0)
-		q = g_quark_from_static_string ("e-calendar-error-quark");
-
-	return q;
-}
+G_DEFINE_QUARK (e-calendar-error-quark, e_calendar_error)
 
 /*
  * If the GError is a remote error, extract the EBookStatus embedded inside.

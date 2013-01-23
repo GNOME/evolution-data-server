@@ -1922,18 +1922,7 @@ camel_folder_init (CamelFolder *folder)
 	g_mutex_init (&folder->priv->property_lock);
 }
 
-GQuark
-camel_folder_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "camel-folder-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (camel-folder-error-quark, camel_folder_error)
 
 /**
  * camel_folder_set_lock_async:

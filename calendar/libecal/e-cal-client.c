@@ -95,15 +95,7 @@ free_zone_cb (gpointer zone)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-GQuark
-e_cal_client_error_quark (void)
-{
-	static GQuark q = 0;
-	if (q == 0)
-		q = g_quark_from_static_string ("e-cal-client-error-quark");
-
-	return q;
-}
+G_DEFINE_QUARK (e-cal-client-error-quark, e_cal_client_error)
 
 /**
  * e_cal_client_error_to_string:

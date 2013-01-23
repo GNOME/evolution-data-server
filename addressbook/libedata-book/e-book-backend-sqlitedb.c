@@ -151,18 +151,9 @@ typedef struct {
 	GSList *list;
 } StoreVCardData;
 
-GQuark
-e_book_backend_sqlitedb_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "e-book-backend-sqlitedb-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (
+	e-book-backend-sqlitedb-error-quark,
+	e_book_backend_sqlitedb_error)
 
 static void
 e_book_backend_sqlitedb_dispose (GObject *object)

@@ -372,18 +372,7 @@ camel_object_init (CamelObject *object)
 	object->priv = CAMEL_OBJECT_GET_PRIVATE (object);
 }
 
-GQuark
-camel_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "camel-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (camel-error-quark, camel_error)
 
 /**
  * camel_object_state_read:

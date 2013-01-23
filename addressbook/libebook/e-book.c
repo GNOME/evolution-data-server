@@ -92,15 +92,7 @@ G_DEFINE_TYPE_WITH_CODE (
 	EBook, e_book, G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_book_initable_init))
 
-GQuark
-e_book_error_quark (void)
-{
-	static GQuark q = 0;
-	if (q == 0)
-		q = g_quark_from_static_string ("e-book-error-quark");
-
-	return q;
-}
+G_DEFINE_QUARK (e-book-error-quark, e_book_error)
 
 static void
 book_backend_died_cb (EClient *client,

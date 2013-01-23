@@ -40,16 +40,7 @@ G_DEFINE_BOXED_TYPE (EPhoneNumber,
 
 #endif /* ENABLE_PHONENUMBER */
 
-GQuark
-e_phone_number_error_quark (void)
-{
-	static GQuark q = 0;
-
-	if (q == 0)
-		q = g_quark_from_static_string ("e-phone-number-error-quark");
-
-	return q;
-}
+G_DEFINE_QUARK (e-phone-number-error-quark, e_phone_number_error)
 
 static const gchar *
 e_phone_number_error_to_string (EPhoneNumberError code)

@@ -1230,18 +1230,7 @@ camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
 	stream->priv = CAMEL_TCP_STREAM_RAW_GET_PRIVATE (stream);
 }
 
-GQuark
-camel_proxy_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "camel-proxy-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (camel-proxy-error-quark, camel_proxy_error)
 
 /**
  * camel_tcp_stream_raw_new:

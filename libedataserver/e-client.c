@@ -94,16 +94,7 @@ G_DEFINE_ABSTRACT_TYPE (EClient, e_client, G_TYPE_OBJECT)
  *   e_client_check_capability().
  */
 
-GQuark
-e_client_error_quark (void)
-{
-	static GQuark q = 0;
-
-	if (q == 0)
-		q = g_quark_from_static_string ("e-client-error-quark");
-
-	return q;
-}
+G_DEFINE_QUARK (e-client-error-quark, e_client_error)
 
 /**
  * e_client_error_to_string:

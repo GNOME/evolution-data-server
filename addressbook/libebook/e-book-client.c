@@ -63,15 +63,7 @@ G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-GQuark
-e_book_client_error_quark (void)
-{
-	static GQuark q = 0;
-	if (q == 0)
-		q = g_quark_from_static_string ("e-book-client-error-quark");
-
-	return q;
-}
+G_DEFINE_QUARK (e-book-client-error-quark, e_book_client_error)
 
 /**
  * e_book_client_error_to_string:

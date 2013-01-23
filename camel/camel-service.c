@@ -1142,18 +1142,7 @@ camel_service_init (CamelService *service)
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 }
 
-GQuark
-camel_service_error_quark (void)
-{
-	static GQuark quark = 0;
-
-	if (G_UNLIKELY (quark == 0)) {
-		const gchar *string = "camel-service-error-quark";
-		quark = g_quark_from_static_string (string);
-	}
-
-	return quark;
-}
+G_DEFINE_QUARK (camel-service-error-quark, camel_service_error)
 
 /**
  * camel_service_migrate_files:
