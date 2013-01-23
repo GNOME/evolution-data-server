@@ -1647,9 +1647,6 @@ get_book_view_reply (GObject *source_object,
 	if (excb != NULL)
 		excb (data->book, error, view, data->closure);
 
-	if (view != NULL)
-		g_object_unref (view);
-
 	if (error != NULL)
 		g_error_free (error);
 
@@ -1663,7 +1660,7 @@ get_book_view_reply (GObject *source_object,
  * @query: an #EBookQuery
  * @requested_fields: (element-type utf8): a #GList containing the names of fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
- * @cb: (scope call): a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Query @book with @query, creating a #EBookView with the fields
@@ -1710,7 +1707,7 @@ e_book_async_get_book_view (EBook *book,
  * @requested_fields: (allow-none) (element-type utf8): a #GList containing the names of fields to
  * return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
- * @cb: (scope call): a function to call when the operation finishes
+ * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
  * Query @book with @query, creating a #EBookView with the fields
