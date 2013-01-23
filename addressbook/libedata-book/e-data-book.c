@@ -47,6 +47,12 @@ struct _EDataBookPrivate {
 
 	GRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
+
+	/* Operations are queued while an
+	 * open operation is in progress. */
+	GMutex open_lock;
+	guint32 open_opid;
+	GQueue open_queue;
 };
 
 enum {
@@ -289,6 +295,25 @@ op_new (OperationID op,
 }
 
 static void
+op_dispatch (EDataBook *book,
+             OperationData *data)
+{
+	g_mutex_lock (&book->priv->open_lock);
+
+	/* If an open operation is currently in progress, queue this
+	 * operation to be dispatched when the open operation finishes. */
+	if (book->priv->open_opid > 0) {
+		g_queue_push_tail (&book->priv->open_queue, data);
+	} else {
+		if (data->op == OP_OPEN)
+			book->priv->open_opid = data->id;
+		e_operation_pool_push (ops_pool, data);
+	}
+
+	g_mutex_unlock (&book->priv->open_lock);
+}
+
+static void
 op_complete (EDataBook *book,
              guint32 opid)
 {
@@ -507,7 +532,7 @@ impl_Book_open (EGdbusBook *interface,
 
 	e_gdbus_book_complete_open (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -523,7 +548,7 @@ impl_Book_refresh (EGdbusBook *interface,
 
 	e_gdbus_book_complete_refresh (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -551,7 +576,7 @@ impl_Book_get_contact (EGdbusBook *interface,
 
 	e_gdbus_book_complete_get_contact (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -577,7 +602,7 @@ impl_Book_get_contact_list (EGdbusBook *interface,
 
 	e_gdbus_book_complete_get_contact_list (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -603,7 +628,7 @@ impl_Book_get_contact_list_uids (EGdbusBook *interface,
 
 	e_gdbus_book_complete_get_contact_list_uids (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -629,7 +654,7 @@ impl_Book_add_contacts (EGdbusBook *interface,
 
 	e_gdbus_book_complete_add_contacts (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -655,7 +680,7 @@ impl_Book_modify_contacts (EGdbusBook *interface,
 
 	e_gdbus_book_complete_modify_contacts (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -677,7 +702,7 @@ impl_Book_remove_contacts (EGdbusBook *interface,
 
 	e_gdbus_book_complete_remove_contacts (interface, invocation, op->id);
 
-	e_operation_pool_push (ops_pool, op);
+	op_dispatch (book, op);
 
 	return TRUE;
 }
@@ -695,6 +720,7 @@ impl_Book_get_backend_property (EGdbusBook *interface,
 
 	e_gdbus_book_complete_get_backend_property (interface, invocation, op->id);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -713,6 +739,7 @@ impl_Book_set_backend_property (EGdbusBook *interface,
 
 	e_gdbus_book_complete_set_backend_property (interface, invocation, op->id);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -742,6 +769,7 @@ impl_Book_get_view (EGdbusBook *interface,
 
 	e_gdbus_book_complete_get_view (interface, invocation, op->id);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -760,6 +788,7 @@ impl_Book_cancel_operation (EGdbusBook *interface,
 
 	e_gdbus_book_complete_cancel_operation (interface, invocation, NULL);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -776,6 +805,7 @@ impl_Book_cancel_all (EGdbusBook *interface,
 
 	e_gdbus_book_complete_cancel_all (interface, invocation, NULL);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -794,6 +824,7 @@ impl_Book_close (EGdbusBook *interface,
 
 	e_gdbus_book_complete_close (interface, invocation, NULL);
 
+	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -813,6 +844,23 @@ e_data_book_respond_open (EDataBook *book,
 
 	if (error != NULL)
 		g_error_free (error);
+
+	/* Dispatch any pending operations. */
+
+	g_mutex_lock (&book->priv->open_lock);
+
+	if (opid == book->priv->open_opid) {
+		OperationData *op;
+
+		book->priv->open_opid = 0;
+
+		while (!g_queue_is_empty (&book->priv->open_queue)) {
+			op = g_queue_pop_head (&book->priv->open_queue);
+			e_operation_pool_push (ops_pool, op);
+		}
+	}
+
+	g_mutex_unlock (&book->priv->open_lock);
 }
 
 /**
@@ -1310,6 +1358,11 @@ data_book_finalize (GObject *object)
 		priv->dbus_interface = NULL;
 	}
 
+	g_mutex_clear (&priv->open_lock);
+
+	/* This should be empty now, else we leak memory. */
+	g_warn_if_fail (g_queue_is_empty (&priv->open_queue));
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_parent_class)->finalize (object);
 }
@@ -1402,6 +1455,8 @@ e_data_book_init (EDataBook *ebook)
 	ebook->priv->pending_ops = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	g_rec_mutex_init (&ebook->priv->pending_ops_lock);
+
+	g_mutex_init (&ebook->priv->open_lock);
 
 	dbus_interface = ebook->priv->dbus_interface;
 	g_signal_connect (

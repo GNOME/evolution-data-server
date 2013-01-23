@@ -14,7 +14,6 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#define EDB_OPENING_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_BUSY, _("Cannot process, book backend is opening"))
 #define EDB_NOT_OPENED_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_OPENED, NULL)
 
 #define E_BOOK_BACKEND_GET_PRIVATE(obj) \
@@ -434,6 +433,9 @@ e_book_backend_open (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_book_backend_is_opened (backend)) {
@@ -443,10 +445,6 @@ e_book_backend_open (EBookBackend *backend,
 		e_data_book_report_online (book, backend->priv->online);
 
 		e_book_backend_respond_opened (backend, book, opid, NULL);
-	} else if (e_book_backend_is_opening (backend)) {
-		g_mutex_unlock (&backend->priv->clients_mutex);
-
-		e_data_book_respond_open (book, opid, EDB_OPENING_ERROR);
 	} else {
 		backend->priv->opening = TRUE;
 		g_mutex_unlock (&backend->priv->clients_mutex);
@@ -482,9 +480,10 @@ e_book_backend_refresh (EBookBackend *backend,
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_refresh (book, opid, EDB_OPENING_ERROR);
-	else if (!E_BOOK_BACKEND_GET_CLASS (backend)->refresh)
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!E_BOOK_BACKEND_GET_CLASS (backend)->refresh)
 		e_data_book_respond_refresh (book, opid, e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_SUPPORTED, NULL));
 	else if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_refresh (book, opid, EDB_NOT_OPENED_ERROR);
@@ -518,9 +517,10 @@ e_book_backend_create_contacts (EBookBackend *backend,
 	g_return_if_fail (vcards);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts);
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_create_contacts (book, opid, EDB_OPENING_ERROR, NULL);
-	else if (!e_book_backend_is_opened (backend))
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_create_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts) (backend, book, opid, cancellable, vcards);
@@ -550,9 +550,10 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 	g_return_if_fail (id_list);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts);
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_remove_contacts (book, opid, EDB_OPENING_ERROR, NULL);
-	else if (!e_book_backend_is_opened (backend))
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_remove_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, opid, cancellable, id_list);
@@ -584,9 +585,10 @@ e_book_backend_modify_contacts (EBookBackend *backend,
 	g_return_if_fail (vcards);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts);
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_modify_contacts (book, opid, EDB_OPENING_ERROR, NULL);
-	else if (!e_book_backend_is_opened (backend))
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_modify_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts) (backend, book, opid, cancellable, vcards);
@@ -616,9 +618,10 @@ e_book_backend_get_contact (EBookBackend *backend,
 	g_return_if_fail (id);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact);
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_get_contact (book, opid, EDB_OPENING_ERROR, NULL);
-	else if (!e_book_backend_is_opened (backend))
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_get_contact (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, opid, cancellable, id);
@@ -648,9 +651,10 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 	g_return_if_fail (query);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list);
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_get_contact_list (book, opid, EDB_OPENING_ERROR, NULL);
-	else if (!e_book_backend_is_opened (backend))
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_get_contact_list (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, opid, cancellable, query);
@@ -682,9 +686,10 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_return_if_fail (query);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids);
 
-	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_get_contact_list_uids (book, opid, EDB_OPENING_ERROR, NULL);
-	else if (!e_book_backend_is_opened (backend))
+	/* This should never be called while we're opening. */
+	g_return_if_fail (!e_book_backend_is_opening (backend));
+
+	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_get_contact_list_uids (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids) (backend, book, opid, cancellable, query);
