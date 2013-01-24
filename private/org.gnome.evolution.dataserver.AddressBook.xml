@@ -1,0 +1,69 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.AddressBook:
+    @short_description: Address book objects
+    @since: 3.8
+
+    This interface allows for interaction with an address book backend.
+-->
+<interface name="org.gnome.evolution.dataserver.AddressBook">
+
+  <property name="Online" type="b" access="read"/>
+  <property name="Revision" type="s" access="read"/>
+  <property name="Writable" type="b" access="read"/>
+
+  <!-- These properties are static. -->
+
+  <property name="CacheDir" type="s" access="read"/>
+  <property name="Capabilities" type="as" access="read"/>
+  <property name="RequiredFields" type="as" access="read"/>
+  <property name="SupportedFields" type="as" access="read"/>
+
+  <signal name="Error">
+    <arg name="error_message" type="s"/>
+  </signal>
+
+  <method name="Open"/>
+
+  <method name="Close"/>
+
+  <method name="Refresh"/>
+
+  <method name="CreateContacts">
+    <arg name="vcards" direction="in" type="as"/>
+    <arg name="uids" direction="out" type="as"/>
+  </method>
+
+  <method name="ModifyContacts">
+    <arg name="vcards" direction="in" type="as"/>
+  </method>
+
+  <method name="RemoveContacts">
+    <arg name="uids" direction="in" type="as"/>
+  </method>
+
+  <method name="GetContact">
+    <arg name="uid" direction="in" type="s"/>
+    <arg name="vcard" direction="out" type="s"/>
+  </method>
+
+  <method name="GetContactList">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="vcards" direction="out" type="as"/>
+  </method>
+
+  <method name="GetContactListUids">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="uids" direction="out" type="as"/>
+  </method>
+
+  <method name="GetView">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="o"/>
+  </method>
+
+</interface>
