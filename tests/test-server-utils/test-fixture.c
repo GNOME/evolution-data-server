@@ -22,6 +22,8 @@
 
 #include "e-test-server-utils.h"
 
+#define N_CYCLES 10
+
 static ETestServerClosure registry_closure = { E_TEST_SERVER_NONE, NULL, 0 };
 static ETestServerClosure book_closure     = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure calendar_closure = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
@@ -39,56 +41,70 @@ gint
 main (gint argc,
       gchar *argv[])
 {
+	gchar **registry_keys;
+	gchar **book_keys;
+	gchar **calendar_keys;
+	gchar **deprecated_book_keys;
+	gchar **deprecated_calendar_keys;
+	gint i;
+	gint ret;
+
 #if !GLIB_CHECK_VERSION (2, 35, 1)
-  g_type_init ();
+	g_type_init ();
 #endif
-  g_test_init (&argc, &argv, NULL);
+	g_test_init (&argc, &argv, NULL);
 
-  /* Test that internal implementations can return all kinds of type through its api */
-  g_test_add ("/Fixture/Registry1", ETestServerFixture, &registry_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Registry2", ETestServerFixture, &registry_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Registry3", ETestServerFixture, &registry_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Registry4", ETestServerFixture, &registry_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	registry_keys = g_new0 (gchar *, N_CYCLES);
+	book_keys = g_new0 (gchar *, N_CYCLES);
+	calendar_keys = g_new0 (gchar *, N_CYCLES);
+	deprecated_book_keys = g_new0 (gchar *, N_CYCLES);
+	deprecated_calendar_keys = g_new0 (gchar *, N_CYCLES);
 
-  g_test_add ("/Fixture/Book1", ETestServerFixture, &book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Book2", ETestServerFixture, &book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Book3", ETestServerFixture, &book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Book4", ETestServerFixture, &book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	for (i = 0; i < N_CYCLES; i++) {
+		registry_keys[i] = g_strdup_printf ("/Fixture/Registry%d", i);
+		g_test_add (registry_keys[i], ETestServerFixture, &registry_closure,
+			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	}
 
-  g_test_add ("/Fixture/Calendar1", ETestServerFixture, &calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Calendar2", ETestServerFixture, &calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Calendar3", ETestServerFixture, &calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Calendar4", ETestServerFixture, &calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	for (i = 0; i < N_CYCLES; i++) {
+		book_keys[i] = g_strdup_printf ("/Fixture/Book%d", i);
+		g_test_add (book_keys[i], ETestServerFixture, &book_closure,
+			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	}
 
-  g_test_add ("/Fixture/Deprecated/Book1", ETestServerFixture, &deprecated_book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Deprecated/Book2", ETestServerFixture, &deprecated_book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Deprecated/Book3", ETestServerFixture, &deprecated_book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Deprecated/Book4", ETestServerFixture, &deprecated_book_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	for (i = 0; i < N_CYCLES; i++) {
+		calendar_keys[i] = g_strdup_printf ("/Fixture/Calendar%d", i);
+		g_test_add (calendar_keys[i], ETestServerFixture, &calendar_closure,
+			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	}
 
-  g_test_add ("/Fixture/Deprecated/Calendar1", ETestServerFixture, &deprecated_calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Deprecated/Calendar2", ETestServerFixture, &deprecated_calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Deprecated/Calendar3", ETestServerFixture, &deprecated_calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
-  g_test_add ("/Fixture/Deprecated/Calendar4", ETestServerFixture, &deprecated_calendar_closure,
-	      e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	for (i = 0; i < N_CYCLES; i++) {
+		deprecated_book_keys[i] = g_strdup_printf ("/Fixture/Deprecated/Book%d", i);
+		g_test_add (deprecated_book_keys[i], ETestServerFixture, &deprecated_book_closure,
+			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	}
 
-  return e_test_server_utils_run ();
+	for (i = 0; i < N_CYCLES; i++) {
+		deprecated_calendar_keys[i] = g_strdup_printf ("/Fixture/Deprecated/Calendar%d", i);
+		g_test_add (deprecated_calendar_keys[i], ETestServerFixture, &deprecated_calendar_closure,
+			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+	}
+
+	ret = e_test_server_utils_run ();
+
+	for (i = 0; i < N_CYCLES; i++) {
+		g_free (registry_keys[i]);
+		g_free (book_keys[i]);
+		g_free (calendar_keys[i]);
+		g_free (deprecated_book_keys[i]);
+		g_free (deprecated_calendar_keys[i]);
+	}
+
+	g_free (registry_keys);
+	g_free (book_keys);
+	g_free (calendar_keys);
+	g_free (deprecated_book_keys);
+	g_free (deprecated_calendar_keys);
+
+	return ret;
 }

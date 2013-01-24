@@ -83,14 +83,21 @@ delete_work_directory (void)
 static gboolean
 e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 {
-	ESource *source = NULL;
+	g_error ("Timed out while waiting for ESource creation from the registry");
+	return FALSE;
+}
+
+static void
+e_test_server_utils_source_added (ESourceRegistry *registry,
+				  ESource         *source,
+				  FixturePair     *pair)
+{
 	GError  *error = NULL;
 
 	switch (pair->closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
-		source = e_source_registry_ref_source (pair->fixture->registry, ADDRESS_BOOK_SOURCE_UID);
-		if (!source)
-			g_error ("Unable to fetch newly created addressbook source from the registry");
+		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
+			return;
 
 		pair->fixture->service.book_client = e_book_client_new (source, &error);
 		if (!pair->fixture->service.book_client)
@@ -102,9 +109,8 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-		source = e_source_registry_ref_source (pair->fixture->registry, ADDRESS_BOOK_SOURCE_UID);
-		if (!source)
-			g_error ("Unable to fetch newly created addressbook source from the registry");
+		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
+			return;
 
 		pair->fixture->service.book = e_book_new (source, &error);
 		if (!pair->fixture->service.book)
@@ -116,9 +122,8 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 		break;
 
 	case E_TEST_SERVER_CALENDAR:
-		source = e_source_registry_ref_source (pair->fixture->registry, CALENDAR_SOURCE_UID);
-		if (!source)
-			g_error ("Unable to fetch newly created addressbook source from the registry");
+		if (g_strcmp0 (e_source_get_uid (source), CALENDAR_SOURCE_UID) != 0)
+			return;
 
 		pair->fixture->service.calendar_client = e_cal_client_new (source,
 			pair->closure->calendar_source_type,
@@ -132,9 +137,8 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		source = e_source_registry_ref_source (pair->fixture->registry, CALENDAR_SOURCE_UID);
-		if (!source)
-			g_error ("Unable to fetch newly created addressbook source from the registry");
+		if (g_strcmp0 (e_source_get_uid (source), CALENDAR_SOURCE_UID) != 0)
+			return;
 
 		pair->fixture->service.calendar = e_cal_new (source, pair->closure->calendar_source_type);
 		if (!pair->fixture->service.calendar)
@@ -146,15 +150,10 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 		break;
 
 	case E_TEST_SERVER_NONE:
-		break;
+		return;
 	}
 
-	if (source)
-		g_object_unref (source);
-
 	g_main_loop_quit (pair->fixture->loop);
-
-	return FALSE;
 }
 
 static gboolean
@@ -168,6 +167,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 
 	if (!pair->fixture->registry)
 		g_error ("Unable to create the test registry: %s", error->message);
+
+	g_signal_connect (pair->fixture->registry, "source-added",
+			  G_CALLBACK (e_test_server_utils_source_added), pair);
 
 	/* Create an address book */
 	switch (pair->closure->type) {
@@ -211,7 +213,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	}
 
 	if (pair->closure->type != E_TEST_SERVER_NONE)
-		g_timeout_add (20, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
+		g_timeout_add (20 * 1000, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
 	else
 		g_main_loop_quit (pair->fixture->loop);
 
@@ -252,6 +254,7 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 	g_idle_add ((GSourceFunc) e_test_server_utils_bootstrap_idle, &pair);
 	g_main_loop_run (fixture->loop);
+	g_signal_handlers_disconnect_by_func (fixture->registry, e_test_server_utils_source_added, &pair);
 }
 
 /**
