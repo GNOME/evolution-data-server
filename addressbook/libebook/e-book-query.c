@@ -666,7 +666,7 @@ e_book_query_from_string (const gchar *query_string)
 	return retval;
 }
 
-static const char *
+static const gchar *
 field_test_name (EBookQueryTest field_test)
 {
 	switch (field_test) {
@@ -705,6 +705,7 @@ e_book_query_to_string (EBookQuery *q)
 	GString *encoded = g_string_new ("");
 	gint i;
 	gchar *s = NULL;
+	const gchar *fn;
 
 	switch (q->type) {
 	case E_BOOK_QUERY_TYPE_AND:
@@ -738,9 +739,9 @@ e_book_query_to_string (EBookQuery *q)
 		}
 		break;
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
-		s = field_test_name (q->query.field_test.test);
+		fn = field_test_name (q->query.field_test.test);
 
-		if (s == NULL) {
+		if (fn == NULL) {
 			g_string_free (str, TRUE);
 			g_warn_if_reached ();
 			return NULL;
@@ -749,7 +750,7 @@ e_book_query_to_string (EBookQuery *q)
 		e_sexp_encode_string (encoded, q->query.field_test.value);
 
 		g_string_append_printf (
-			str, "%s \"%s\" %s", s,
+			str, "%s \"%s\" %s", fn,
 			q->query.field_test.field_name,
 			encoded->str);
 		break;
