@@ -46,6 +46,7 @@ TESTS =								\
 	test-client-get-revision				\
 	test-client-get-view					\
 	test-client-view-operations				\
+	test-client-write-write					\
 	test-client-uid-only-view				\
 	test-client-revision-view				\
 	test-client-suppress-notifications			\
