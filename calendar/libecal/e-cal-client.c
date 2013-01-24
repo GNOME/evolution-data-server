@@ -1937,18 +1937,8 @@ get_objects_sync (ECalClient *client,
 	/* Generate objects */
 	if (uid && *uid) {
 		GError *error = NULL;
-		gint tries = 0;
 
- try_again:
 		if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, NULL, &error)) {
-			if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && tries <= 10) {
-				tries++;
-				g_usleep (500);
-				g_clear_error (&error);
-
-				goto try_again;
-			}
-
 			unwrap_dbus_error (error, &error);
 			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
 			g_clear_error (&error);
@@ -2020,8 +2010,6 @@ free_get_objects_async_data (struct get_objects_async_data *goad)
 	g_free (goad);
 }
 
-static gboolean repeat_get_objects_for_uid_timeout_cb (gpointer user_data);
-
 static void
 got_objects_for_uid_cb (GObject *source_object,
                         GAsyncResult *result,
@@ -2044,13 +2032,6 @@ got_objects_for_uid_cb (GObject *source_object,
 			return;
 		}
 
-		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && goad->tries < 10) {
-			goad->tries++;
-			g_timeout_add (250, repeat_get_objects_for_uid_timeout_cb, goad);
-			g_clear_error (&error);
-			return;
-		}
-
 		g_clear_error (&error);
 		objects = NULL;
 	}
@@ -2060,20 +2041,6 @@ got_objects_for_uid_cb (GObject *source_object,
 	/* takes care of the objects and goad */
 	goad->ready_cb (goad, objects);
 }
-
-static gboolean
-repeat_get_objects_for_uid_timeout_cb (gpointer user_data)
-{
-	struct get_objects_async_data *goad = user_data;
-
-	g_return_val_if_fail (goad != NULL, FALSE);
-
-	e_cal_client_get_objects_for_uid (goad->client, goad->uid, goad->cancellable, got_objects_for_uid_cb, goad);
-
-	return FALSE;
-}
-
-static gboolean repeat_get_object_list_as_comps_timeout_cb (gpointer user_data);
 
 static void
 got_object_list_as_comps_cb (GObject *source_object,
@@ -2097,13 +2064,6 @@ got_object_list_as_comps_cb (GObject *source_object,
 			return;
 		}
 
-		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && goad->tries < 10) {
-			goad->tries++;
-			g_timeout_add (250, repeat_get_object_list_as_comps_timeout_cb, goad);
-			g_clear_error (&error);
-			return;
-		}
-
 		g_clear_error (&error);
 		objects = NULL;
 	}
@@ -2112,18 +2072,6 @@ got_object_list_as_comps_cb (GObject *source_object,
 
 	/* takes care of the objects and goad */
 	goad->ready_cb (goad, objects);
-}
-
-static gboolean
-repeat_get_object_list_as_comps_timeout_cb (gpointer user_data)
-{
-	struct get_objects_async_data *goad = user_data;
-
-	g_return_val_if_fail (goad != NULL, FALSE);
-
-	e_cal_client_get_object_list_as_comps (goad->client, goad->query, goad->cancellable, got_object_list_as_comps_cb, goad);
-
-	return FALSE;
 }
 
 /* ready_cb may take care of both arguments, goad and objects; objects can be also NULL */

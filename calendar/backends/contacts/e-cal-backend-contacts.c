@@ -252,11 +252,7 @@ cbc_reopen_book_client_thread (gpointer user_data)
 			GError *error = NULL;
 
 			if (!e_client_open_sync (E_CLIENT (book_client), TRUE, NULL, &error) || error) {
-				if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY)) {
-					done = FALSE;
-					g_usleep (500000);
-				} else
-					g_warning ("%s: Failed to open book: %s", G_STRFUNC, error ? error->message : "Unknown error");
+				g_warning ("%s: Failed to open book: %s", G_STRFUNC, error ? error->message : "Unknown error");
 			}
 
 			g_clear_error (&error);
