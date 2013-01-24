@@ -13,8 +13,6 @@ libegdbus_cal_la_CPPFLAGS =			\
 libegdbus_cal_la_SOURCES =			\
 	e-gdbus-cal.h				\
 	e-gdbus-cal.c				\
-	e-gdbus-cal-factory.h			\
-	e-gdbus-cal-factory.c			\
 	e-gdbus-cal-view.h			\
 	e-gdbus-cal-view.c
 

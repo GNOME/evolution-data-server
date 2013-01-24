@@ -26,6 +26,9 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
+/* Private D-Bus classes. */
+#include <e-dbus-calendar-factory.h>
+
 #include <libedataserver/e-client-private.h>
 
 #include "e-cal-client.h"
@@ -36,7 +39,6 @@
 #include "e-timezone-cache.h"
 
 #include "e-gdbus-cal.h"
-#include "e-gdbus-cal-factory.h"
 
 #define E_CAL_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -205,7 +207,7 @@ set_proxy_gone_error (GError **error)
 }
 
 static guint active_cal_clients = 0, cal_connection_closed_id = 0;
-static EGdbusCalFactory *cal_factory = NULL;
+static EDBusCalendarFactory *cal_factory = NULL;
 static GRecMutex cal_factory_lock;
 #define LOCK_FACTORY()   g_rec_mutex_lock (&cal_factory_lock)
 #define UNLOCK_FACTORY() g_rec_mutex_unlock (&cal_factory_lock)
@@ -286,7 +288,7 @@ gdbus_cal_factory_activate (GCancellable *cancellable,
 		return TRUE;
 	}
 
-	cal_factory = e_gdbus_cal_factory_proxy_new_for_bus_sync (
+	cal_factory = e_dbus_calendar_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
 		CALENDAR_DBUS_SERVICE_NAME,
@@ -493,23 +495,6 @@ backend_property_changed_cb (EGdbusCal *object,
 
 	g_free (prop_name);
 	g_free (prop_value);
-}
-
-static EDataCalObjType
-convert_type (ECalClientSourceType type)
-{
-	switch (type) {
-	case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
-		return Event;
-	case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
-		return Todo;
-	case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
-		return Journal;
-	default:
-		return AnyType;
-	}
-
-	return AnyType;
 }
 
 /*
@@ -1129,7 +1114,6 @@ e_cal_client_new (ESource *source,
 	GError *err = NULL;
 	GDBusConnection *connection;
 	const gchar *uid;
-	gchar **strv;
 	gchar *object_path = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -1155,23 +1139,28 @@ e_cal_client_new (ESource *source,
 	}
 
 	uid = e_source_get_uid (source);
-	strv = e_gdbus_cal_factory_encode_get_cal (uid, convert_type (source_type));
-	if (!strv) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR, _("Other error"));
-		return NULL;
-	}
 
 	client = g_object_new (E_TYPE_CAL_CLIENT, "source", source, NULL);
 	client->priv->source_type = source_type;
 
 	UNLOCK_FACTORY ();
 
-	e_gdbus_cal_factory_call_get_cal_sync (
-		G_DBUS_PROXY (cal_factory),
-		(const gchar * const *) strv,
-		&object_path, NULL, &err);
-
-	g_strfreev (strv);
+	switch (source_type) {
+		case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
+			e_dbus_calendar_factory_call_open_calendar_sync (
+				cal_factory, uid, &object_path, NULL, &err);
+			break;
+		case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
+			e_dbus_calendar_factory_call_open_task_list_sync (
+				cal_factory, uid, &object_path, NULL, &err);
+			break;
+		case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
+			e_dbus_calendar_factory_call_open_memo_list_sync (
+				cal_factory, uid, &object_path, NULL, &err);
+			break;
+		default:
+			g_return_val_if_reached (NULL);
+	}
 
 	/* Sanity check. */
 	g_return_val_if_fail (

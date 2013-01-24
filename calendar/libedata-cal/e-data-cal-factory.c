@@ -30,12 +30,13 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
+/* Private D-Bus classes. */
+#include <e-dbus-calendar-factory.h>
+
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
 #include "e-data-cal.h"
 #include "e-data-cal-factory.h"
-
-#include "e-gdbus-cal-factory.h"
 
 #include <libical/ical.h>
 
@@ -47,7 +48,7 @@
 
 struct _EDataCalFactoryPrivate {
 	ESourceRegistry *registry;
-	EGdbusCalFactory *gdbus_object;
+	EDBusCalendarFactory *dbus_factory;
 
 	GMutex calendars_lock;
 	/* A hash of object paths for calendar URIs to EDataCals */
@@ -78,32 +79,14 @@ G_DEFINE_TYPE_WITH_CODE (
 static EBackend *
 data_cal_factory_ref_backend (EDataFactory *factory,
                               ESource *source,
-                              EDataCalObjType type,
+                              const gchar *extension_name,
+                              const gchar *type_string,
                               GError **error)
 {
 	EBackend *backend;
 	ESourceBackend *extension;
-	const gchar *extension_name;
-	const gchar *type_string;
 	gchar *backend_name;
 	gchar *hash_key;
-
-	switch (type) {
-		case Event:
-			extension_name = E_SOURCE_EXTENSION_CALENDAR;
-			type_string = "VEVENT";
-			break;
-		case Todo:
-			extension_name = E_SOURCE_EXTENSION_TASK_LIST;
-			type_string = "VTODO";
-			break;
-		case Journal:
-			extension_name = E_SOURCE_EXTENSION_MEMO_LIST;
-			type_string = "VJOURNAL";
-			break;
-		default:
-			g_return_val_if_reached (NULL);
-	}
 
 	extension = e_source_get_extension (source, extension_name);
 	backend_name = e_source_backend_dup_backend_name (extension);
@@ -191,76 +174,47 @@ calendar_freed_cb (EDataCalFactory *factory,
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
 
-static gboolean
-impl_CalFactory_get_cal (EGdbusCalFactory *object,
-                         GDBusMethodInvocation *invocation,
-                         const gchar * const *in_source_type,
-                         EDataCalFactory *factory)
+static gchar *
+data_cal_factory_open (EDataCalFactory *factory,
+                       GDBusConnection *connection,
+                       const gchar *sender,
+                       const gchar *uid,
+                       const gchar *extension_name,
+                       const gchar *type_string,
+                       GError **error)
 {
 	EDataCal *calendar;
 	EBackend *backend;
-	EDataCalFactoryPrivate *priv = factory->priv;
-	GDBusConnection *connection;
 	ESourceRegistry *registry;
 	ESource *source;
 	gchar *object_path;
-	const gchar *sender;
 	GList *list;
-	GError *error = NULL;
-	gchar *uid = NULL;
-	guint type = 0;
-
-	sender = g_dbus_method_invocation_get_sender (invocation);
-	connection = g_dbus_method_invocation_get_connection (invocation);
-
-	registry = e_data_cal_factory_get_registry (factory);
-
-	if (!e_gdbus_cal_factory_decode_get_cal (in_source_type, &uid, &type)) {
-		error = g_error_new (
-			E_DATA_CAL_ERROR, NoSuchCal, _("Invalid call"));
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
-	}
 
 	if (uid == NULL || *uid == '\0') {
-		error = g_error_new_literal (
-			E_DATA_CAL_ERROR, NoSuchCal,
+		g_set_error (
+			error, E_DATA_CAL_ERROR, NoSuchCal,
 			_("Missing source UID"));
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-		g_free (uid);
-
-		return TRUE;
+		return NULL;
 	}
 
+	registry = e_data_cal_factory_get_registry (factory);
 	source = e_source_registry_ref_source (registry, uid);
 
 	if (source == NULL) {
-		error = g_error_new (
-			E_DATA_CAL_ERROR, NoSuchCal,
+		g_set_error (
+			error, E_DATA_CAL_ERROR, NoSuchCal,
 			_("No such source for UID '%s'"), uid);
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-		g_free (uid);
-
-		return TRUE;
+		return NULL;
 	}
 
 	backend = data_cal_factory_ref_backend (
-		E_DATA_FACTORY (factory), source, type, &error);
+		E_DATA_FACTORY (factory), source,
+		extension_name, type_string, error);
 
 	g_object_unref (source);
 
-	if (error != NULL) {
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
-	}
-
-	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
+	if (backend == NULL)
+		return NULL;
 
 	e_dbus_server_hold (E_DBUS_SERVER (factory));
 
@@ -268,13 +222,14 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 
 	calendar = e_data_cal_new (
 		E_CAL_BACKEND (backend),
-		connection, object_path, &error);
+		connection, object_path, error);
 
 	if (calendar != NULL) {
-		g_mutex_lock (&priv->calendars_lock);
+		g_mutex_lock (&factory->priv->calendars_lock);
 		g_hash_table_insert (
-			priv->calendars, g_strdup (object_path), calendar);
-		g_mutex_unlock (&priv->calendars_lock);
+			factory->priv->calendars,
+			g_strdup (object_path), calendar);
+		g_mutex_unlock (&factory->priv->calendars_lock);
 
 		e_cal_backend_add_client (E_CAL_BACKEND (backend), calendar);
 
@@ -283,24 +238,111 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 			calendar_freed_cb, factory);
 
 		/* Update the hash of open connections. */
-		g_mutex_lock (&priv->connections_lock);
-		list = g_hash_table_lookup (priv->connections, sender);
+		g_mutex_lock (&factory->priv->connections_lock);
+		list = g_hash_table_lookup (
+			factory->priv->connections, sender);
 		list = g_list_prepend (list, calendar);
 		g_hash_table_insert (
-			priv->connections, g_strdup (sender), list);
-		g_mutex_unlock (&priv->connections_lock);
+			factory->priv->connections,
+			g_strdup (sender), list);
+		g_mutex_unlock (&factory->priv->connections_lock);
+
+	} else {
+		g_free (object_path);
+		object_path = NULL;
 	}
 
 	g_object_unref (backend);
 
-	e_gdbus_cal_factory_complete_get_cal (
-		object, invocation, object_path, error);
+	return object_path;
+}
 
-	if (error != NULL)
-		g_error_free (error);
+static gboolean
+data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *interface,
+                                          GDBusMethodInvocation *invocation,
+                                          const gchar *uid,
+                                          EDataCalFactory *factory)
+{
+	GDBusConnection *connection;
+	const gchar *sender;
+	gchar *object_path;
+	GError *error = NULL;
 
-	g_free (object_path);
-	g_free (uid);
+	connection = g_dbus_method_invocation_get_connection (invocation);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+
+	object_path = data_cal_factory_open (
+		factory, connection, sender, uid,
+		E_SOURCE_EXTENSION_CALENDAR, "VEVENT", &error);
+
+	if (object_path != NULL) {
+		e_dbus_calendar_factory_complete_open_calendar (
+			interface, invocation, object_path);
+		g_free (object_path);
+	} else {
+		g_return_val_if_fail (error != NULL, FALSE);
+		g_dbus_method_invocation_take_error (invocation, error);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *interface,
+                                           GDBusMethodInvocation *invocation,
+                                           const gchar *uid,
+                                           EDataCalFactory *factory)
+{
+	GDBusConnection *connection;
+	const gchar *sender;
+	gchar *object_path;
+	GError *error = NULL;
+
+	connection = g_dbus_method_invocation_get_connection (invocation);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+
+	object_path = data_cal_factory_open (
+		factory, connection, sender, uid,
+		E_SOURCE_EXTENSION_TASK_LIST, "VTODO", &error);
+
+	if (object_path != NULL) {
+		e_dbus_calendar_factory_complete_open_task_list (
+			interface, invocation, object_path);
+		g_free (object_path);
+	} else {
+		g_return_val_if_fail (error != NULL, FALSE);
+		g_dbus_method_invocation_take_error (invocation, error);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *interface,
+                                           GDBusMethodInvocation *invocation,
+                                           const gchar *uid,
+                                           EDataCalFactory *factory)
+{
+	GDBusConnection *connection;
+	const gchar *sender;
+	gchar *object_path;
+	GError *error = NULL;
+
+	connection = g_dbus_method_invocation_get_connection (invocation);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+
+	object_path = data_cal_factory_open (
+		factory, connection, sender, uid,
+		E_SOURCE_EXTENSION_MEMO_LIST, "VJOURNAL", &error);
+
+	if (object_path != NULL) {
+		e_dbus_calendar_factory_complete_open_memo_list (
+			interface, invocation, object_path);
+		g_free (object_path);
+	} else {
+		g_return_val_if_fail (error != NULL, FALSE);
+		g_dbus_method_invocation_take_error (invocation, error);
+	}
 
 	return TRUE;
 }
@@ -348,9 +390,9 @@ data_cal_factory_dispose (GObject *object)
 		priv->registry = NULL;
 	}
 
-	if (priv->gdbus_object != NULL) {
-		g_object_unref (priv->gdbus_object);
-		priv->gdbus_object = NULL;
+	if (priv->dbus_factory != NULL) {
+		g_object_unref (priv->dbus_factory);
+		priv->dbus_factory = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -379,25 +421,22 @@ data_cal_factory_bus_acquired (EDBusServer *server,
                                GDBusConnection *connection)
 {
 	EDataCalFactoryPrivate *priv;
-	guint registration_id;
 	GError *error = NULL;
 
 	priv = E_DATA_CAL_FACTORY_GET_PRIVATE (server);
 
-	registration_id = e_gdbus_cal_factory_register_object (
-		priv->gdbus_object,
+	g_dbus_interface_skeleton_export (
+		G_DBUS_INTERFACE_SKELETON (priv->dbus_factory),
 		connection,
 		"/org/gnome/evolution/dataserver/CalendarFactory",
 		&error);
 
 	if (error != NULL) {
 		g_error (
-			"Failed to register a CalendarFactory object: %s",
+			"Failed to export CalendarFactory interface: %s",
 			error->message);
 		g_assert_not_reached ();
 	}
-
-	g_assert (registration_id > 0);
 
 	/* Chain up to parent's bus_acquired() method. */
 	E_DBUS_SERVER_CLASS (e_data_cal_factory_parent_class)->
@@ -522,10 +561,23 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 {
 	factory->priv = E_DATA_CAL_FACTORY_GET_PRIVATE (factory);
 
-	factory->priv->gdbus_object = e_gdbus_cal_factory_stub_new ();
+	factory->priv->dbus_factory =
+		e_dbus_calendar_factory_skeleton_new ();
+
 	g_signal_connect (
-		factory->priv->gdbus_object, "handle-get-cal",
-		G_CALLBACK (impl_CalFactory_get_cal), factory);
+		factory->priv->dbus_factory, "handle-open-calendar",
+		G_CALLBACK (data_cal_factory_handle_open_calendar_cb),
+		factory);
+
+	g_signal_connect (
+		factory->priv->dbus_factory, "handle-open-task-list",
+		G_CALLBACK (data_cal_factory_handle_open_task_list_cb),
+		factory);
+
+	g_signal_connect (
+		factory->priv->dbus_factory, "handle-open-memo-list",
+		G_CALLBACK (data_cal_factory_handle_open_memo_list_cb),
+		factory);
 
 	g_mutex_init (&factory->priv->calendars_lock);
 	factory->priv->calendars = g_hash_table_new_full (

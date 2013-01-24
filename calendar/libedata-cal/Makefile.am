@@ -9,8 +9,10 @@ libedata_cal_1_2_la_CPPFLAGS = 			\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_srcdir)/calendar/libegdbus	\
+	-I$(top_srcdir)/private			\
 	-I$(top_builddir)			\
 	-I$(top_builddir)/calendar		\
+	-I$(top_builddir)/private		\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
 	$(CAMEL_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)			\
