@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-01-12 19:14+0000\n"
-"PO-Revision-Date: 2013-01-15 16:58+0100\n"
+"POT-Creation-Date: 2013-01-23 04:38+0000\n"
+"PO-Revision-Date: 2013-01-24 16:35+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -44,27 +44,38 @@ msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Falló al crear el enlace duro para el recurso «%s»: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:475
-#: ../addressbook/backends/file/e-book-backend-file.c:886
+#: ../addressbook/backends/file/e-book-backend-file.c:898
 msgid "No UID in the contact"
 msgstr "El contacto no tiene ningún UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1154
+#: ../addressbook/backends/file/e-book-backend-file.c:761
+#, c-format
+msgid "Conflicting UIDs found in added contacts"
+msgstr "Encontrados UID en conflicto en los contactos añadidos"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1002
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2136
+#, c-format
+msgid "Contact '%s' not found"
+msgstr "Contacto «%s» no encontrado"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1182
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1156
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4914
+#: ../addressbook/backends/file/e-book-backend-file.c:1184
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4918
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1312
+#: ../addressbook/backends/file/e-book-backend-file.c:1340
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1190
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4809
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1194
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4813
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1015
 #: ../addressbook/libebook/e-book-client.c:99
@@ -88,7 +99,7 @@ msgid "Querying for updated groups…"
 msgstr "Solicitando actualizaciones de grupos…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1235
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1621
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1625
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:375
 msgid "The backend does not support bulk additions"
 msgstr "El «backend» no soporta adiciones"
@@ -108,7 +119,7 @@ msgid "Deleting contact…"
 msgstr "Eliminando contacto…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1640
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2284
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2288
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:553
 msgid "The backend does not support bulk modifications"
 msgstr "El «backend» no soporta modificaciones"
@@ -123,10 +134,10 @@ msgid "Loading…"
 msgstr "Cargando…"
 
 #: ../addressbook/backends/google/e-book-google-utils.c:1601
-#: ../data/sources/system-address-book.source.in.h:1
-#: ../data/sources/system-calendar.source.in.h:1
-#: ../data/sources/system-memo-list.source.in.h:1
-#: ../data/sources/system-task-list.source.in.h:1
+#: ../services/evolution-source-registry/builtin/system-address-book.source.in.h:1
+#: ../services/evolution-source-registry/builtin/system-calendar.source.in.h:1
+#: ../services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
+#: ../services/evolution-source-registry/builtin/system-task-list.source.in.h:1
 msgid "Personal"
 msgstr "Personal"
 
@@ -158,60 +169,60 @@ msgstr "Falló al asociar si usar vinculaciones v3 o v2"
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1171
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1175
 msgid "Invalid DN syntax"
 msgstr "Sintáxis de ND no válida"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1187
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4808
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1191
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4812
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Error de LDAP 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1705
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1709
 msgid "Adding contact to LDAP server..."
 msgstr "Añadiendo contacto al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1843
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1847
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1985
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2380
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1989
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2384
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: ldap_first_entry devolvió NULL"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2237
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2437
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2241
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2441
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: devuelto tipo de resultado %d no manejado"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2306
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2310
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2666
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2670
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2890
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: devuelto tipo de resultado de búsqueda %d no manejado"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4757
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4761
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4936
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4940
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5059
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5063
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5516
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5526
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Falló al crear el DN para el usuario «%s»"
@@ -884,23 +895,23 @@ msgstr "Propiedad «%s» de la libreta desconocida"
 msgid "Cannot change value of book property '%s'"
 msgstr "No se puede cambiar el valor de la propiedad «%s» de la libreta"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:741
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:743
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Error al hacer la introspección del campo de resumen «%s» no válido"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:965
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:968
 #: ../camel/camel-db.c:510
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1096
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1099
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo de contacto «%d» no válido especificado en el resumen"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1130
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1133
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -909,8 +920,8 @@ msgstr ""
 "Campo de contacto «%s» de tipo «%s» especificado en el resumen, pero sólo se "
 "permiten campos de tipo booleano, cadena y lista de cadenas"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2065
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2861
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2124
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2919
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -918,12 +929,7 @@ msgstr ""
 "La búsqueda completa de contactos no se almacena en la caché. No se pueden "
 "devolver las «vcards»"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2078
-#, c-format
-msgid "Contact '%s' not found"
-msgstr "Contacto «%s» no encontrado"
-
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3003
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3061
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -932,7 +938,7 @@ msgstr ""
 "La búsqueda completa de contactos no se almacena en la caché. Por lo tanto, "
 "sólo se soporta la consulta del resumen."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3084
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3142
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -940,7 +946,7 @@ msgstr ""
 "Las «vcards» completas no se almacenan en la caché. Por lo tanto, sólo se "
 "soporta la consulta del resumen."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3756
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3814
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "No se pudo quitar el archivo db: número de error %d"
@@ -1856,8 +1862,8 @@ msgstr ""
 #: ../camel/camel-imapx-folder.c:613 ../camel/camel-imapx-folder.c:748
 #: ../camel/camel-imapx-folder.c:933 ../camel/camel-imapx-folder.c:993
 #: ../camel/camel-imapx-folder.c:1032 ../camel/camel-imapx-store.c:320
-#: ../camel/camel-imapx-store.c:1454 ../camel/camel-imapx-store.c:1543
-#: ../camel/camel-imapx-store.c:1592
+#: ../camel/camel-imapx-store.c:1521 ../camel/camel-imapx-store.c:1610
+#: ../camel/camel-imapx-store.c:1659
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #: ../camel/providers/pop3/camel-pop3-folder.c:677
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
@@ -2205,7 +2211,6 @@ msgstr "Contenido cifrado"
 
 #: ../camel/camel-imapx-folder.c:710
 #, c-format
-#| msgid "Quota information not supported for folder '%s'"
 msgid "No quota information available for folder '%s'"
 msgstr "Información de cuota no disponible para la carpeta «%s»"
 
@@ -2382,7 +2387,6 @@ msgid "Error retrieving quota information"
 msgstr "Error al obtener la información de la cuota"
 
 #: ../camel/camel-imapx-server.c:6261
-#| msgid "Decoder failed"
 msgid "Search failed"
 msgstr "Falló al buscar"
 
@@ -2408,7 +2412,6 @@ msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
 #: ../camel/camel-imapx-server.c:8158
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "IMAP server does not support quotas"
 msgstr "El servidor IMAP no soporta cuotas"
 
@@ -2434,13 +2437,13 @@ msgstr ""
 "Esta opción conectará con el servidor IMAP usando una contraseña de texto "
 "plano."
 
-#: ../camel/camel-imapx-store.c:396
+#: ../camel/camel-imapx-store.c:405
 #, c-format
 msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:421 ../camel/camel-imapx-store.c:911
+#: ../camel/camel-imapx-store.c:430 ../camel/camel-imapx-store.c:920
 #: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:307
 #: ../camel/providers/local/camel-maildir-store.c:699
@@ -2450,30 +2453,24 @@ msgstr "No existe la carpeta %s"
 msgid "Inbox"
 msgstr "Bandeja de entrada"
 
-#: ../camel/camel-imapx-store.c:1155
+#: ../camel/camel-imapx-store.c:1164
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Obteniendo la lista de carpetas para %s"
 
-#: ../camel/camel-imapx-store.c:1259
-#: ../camel/providers/nntp/camel-nntp-store.c:1786
-#, c-format
-msgid "No such folder: %s"
-msgstr "No existe la carpeta: %s"
-
-#: ../camel/camel-imapx-store.c:1476
+#: ../camel/camel-imapx-store.c:1543
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "El nombre de la carpeta «%s» es no válido porque contiene el carácter «%c»"
 
-#: ../camel/camel-imapx-store.c:1487
+#: ../camel/camel-imapx-store.c:1554
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Carpeta raíz desconocida: %s"
 
-#: ../camel/camel-imapx-store.c:1497
+#: ../camel/camel-imapx-store.c:1564
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "No está permitido que la carpeta raíz contenga subcarpetas"
@@ -4153,6 +4150,11 @@ msgstr "El comando NNTP ha fallado: "
 msgid "Not connected."
 msgstr "No conectado."
 
+#: ../camel/providers/nntp/camel-nntp-store.c:1786
+#, c-format
+msgid "No such folder: %s"
+msgstr "No existe la carpeta: %s"
+
 #: ../camel/providers/nntp/camel-nntp-summary.c:198
 #: ../camel/providers/nntp/camel-nntp-summary.c:328
 #, c-format
@@ -4358,7 +4360,7 @@ msgid "POP3 stores have no folder hierarchy"
 msgstr "Los almacenamientos POP3 no tienen jerarquía de carpetas"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
-#: ../data/sources/sendmail.source.in.h:1
+#: ../services/evolution-source-registry/builtin/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
@@ -4687,48 +4689,6 @@ msgstr ""
 "Unidades para el recordatorio de cumpleaños o aniversarios, «minutes», «hours» "
 "o «days»"
 
-#: ../data/sources/birthdays.source.in.h:1
-msgid "Birthdays & Anniversaries"
-msgstr "Cumpleaños y aniversarios"
-
-#: ../data/sources/caldav-stub.source.in.h:1
-msgid "CalDAV"
-msgstr "CalDAV"
-
-#: ../data/sources/contacts-stub.source.in.h:1
-#: ../modules/google-backend/module-google-backend.c:217
-msgid "Contacts"
-msgstr "Contactos"
-
-#: ../data/sources/google-stub.source.in.h:1
-msgid "Google"
-msgstr "Google"
-
-#: ../data/sources/ldap-stub.source.in.h:1
-msgid "On LDAP Servers"
-msgstr "El servidores LDAP"
-
-#: ../data/sources/local.source.in.h:1
-#: ../data/sources/local-stub.source.in.h:1
-msgid "On This Computer"
-msgstr "En este equipo"
-
-#: ../data/sources/vfolder.source.in.h:1
-msgid "Search Folders"
-msgstr "Carpetas de búsqueda"
-
-#: ../data/sources/weather-stub.source.in.h:1
-msgid "Weather"
-msgstr "Meteorología"
-
-#: ../data/sources/webcal-stub.source.in.h:1
-msgid "On The Web"
-msgstr "En la web"
-
-#: ../data/sources/webdav-stub.source.in.h:1
-msgid "WebDAV"
-msgstr "WebDAV"
-
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
 #: ../libebackend/e-authentication-mediator.c:852
@@ -4764,37 +4724,6 @@ msgstr "La contraseña era incorrecta"
 #, c-format
 msgid "%s does not support authentication"
 msgstr "%s no soporta la autenticación"
-
-#: ../libebackend/e-backend.c:560
-#: ../modules/trust-prompt/trust-prompt-gtk.c:164
-msgid "_Reject"
-msgstr "_Rechazar"
-
-#: ../libebackend/e-backend.c:562
-#: ../modules/trust-prompt/trust-prompt-gtk.c:165
-msgid "Accept _Temporarily"
-msgstr "Aceptar _temporalmente"
-
-#: ../libebackend/e-backend.c:564
-#: ../modules/trust-prompt/trust-prompt-gtk.c:166
-msgid "_Accept Permanently"
-msgstr "_Aceptar permanentemente"
-
-#: ../libebackend/e-backend.c:574
-#: ../modules/trust-prompt/trust-prompt-gtk.c:203
-#, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:"
-msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
-msgstr "El certificado SSL para «%s» no es de confianza. ¿Quiere aceptarlo?"
-
-#: ../libebackend/e-backend.c:582
-#: ../modules/trust-prompt/trust-prompt-gtk.c:162
-#| msgid "Certificate untrusted"
-msgid "Certificate trust..."
-msgstr "Certificado de confianza…"
 
 #: ../libebackend/e-collection-backend.c:775
 #, c-format
@@ -4841,7 +4770,6 @@ msgstr ""
 #: ../libebackend/e-server-side-source.c:1080
 #: ../libedataserver/e-source.c:1307
 #, c-format
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "El origen de datos %s no soporta la autenticación OAuth 2.0"
 
@@ -4862,7 +4790,6 @@ msgstr "el UID «%s» ya está en uso"
 
 #: ../libebackend/e-user-prompter-server.c:279
 #, c-format
-#| msgid "Contact '%s' not found"
 msgid "Extension dialog '%s' not found."
 msgstr "Diálogo de extensión «%s» no encontrado."
 
@@ -5072,12 +4999,8 @@ msgstr "Sin nombre"
 msgid "Signature script must be a local file"
 msgstr "La firma debe ser un archivo local"
 
-#: ../libedataserver/e-source-webdav.c:1494
+#: ../libedataserver/e-source-webdav.c:1476
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:"
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
 "you wish to accept it?"
@@ -5085,12 +5008,8 @@ msgstr ""
 "El certificado SSL para «%s», usado por la libreta de direcciones «%s» no es "
 "de confianza. ¿Quiere aceptarlo?"
 
-#: ../libedataserver/e-source-webdav.c:1503
+#: ../libedataserver/e-source-webdav.c:1485
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:"
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
 "wish to accept it?"
@@ -5098,12 +5017,8 @@ msgstr ""
 "El certificado SSL para «%s», usado por el calendario «%s» no es de confianza. "
 "¿Quiere aceptarlo?"
 
-#: ../libedataserver/e-source-webdav.c:1512
+#: ../libedataserver/e-source-webdav.c:1494
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:"
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
 "you wish to accept it?"
@@ -5111,12 +5026,8 @@ msgstr ""
 "El certificado SSL para «%s», usado por la lista de notas «%s» no es de "
 "confianza. ¿Quiere aceptarlo?"
 
-#: ../libedataserver/e-source-webdav.c:1521
+#: ../libedataserver/e-source-webdav.c:1503
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:"
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
 "you wish to accept it?"
@@ -5409,7 +5320,6 @@ msgstr ""
 
 #: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1121
 #, c-format
-#| msgid "Failed to open addressbook at '%s': %s"
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Falló al obtener el token de acceso para «%s»: "
 
@@ -5417,6 +5327,11 @@ msgstr "Falló al obtener el token de acceso para «%s»: "
 #: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
 msgstr "Calendario"
+
+#: ../modules/google-backend/module-google-backend.c:217
+#: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
+msgid "Contacts"
+msgstr "Contactos"
 
 #: ../modules/trust-prompt/certificate-viewer.c:292
 msgid "Not part of certificate"
@@ -5715,7 +5630,6 @@ msgstr ""
 "obtuvo."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:205
-#| msgid "Certificate Revocation List signature failure"
 msgid "The certificate's activation time is still in the future."
 msgstr "La fecha de activación del certificado todavía está en el futuro."
 
@@ -5735,9 +5649,30 @@ msgstr ""
 msgid "The certificate's algorithm is considered insecure."
 msgstr "El algoritmo del certificado se considera no seguro."
 
+#: ../modules/trust-prompt/trust-prompt-gtk.c:162
+msgid "Certificate trust..."
+msgstr "Certificado de confianza…"
+
 #: ../modules/trust-prompt/trust-prompt-gtk.c:163
 msgid "_View Certificate"
 msgstr "_Ver certificado"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:164
+msgid "_Reject"
+msgstr "_Rechazar"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:165
+msgid "Accept _Temporarily"
+msgstr "Aceptar _temporalmente"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:166
+msgid "_Accept Permanently"
+msgstr "_Aceptar permanentemente"
+
+#: ../modules/trust-prompt/trust-prompt-gtk.c:203
+#, c-format
+msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
+msgstr "El certificado SSL para «%s» no es de confianza. ¿Quiere aceptarlo?"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:209
 msgid "Detailed information about the certificate:"
@@ -5772,6 +5707,43 @@ msgstr "Mantener en ejecución después de cerrar el último cliente"
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
 msgid "Wait running until at least one client is connected"
 msgstr "Mantener en ejecución hasta que haya al menos un cliente conectado"
+
+#: ../services/evolution-source-registry/builtin/birthdays.source.in.h:1
+msgid "Birthdays & Anniversaries"
+msgstr "Cumpleaños y aniversarios"
+
+#: ../services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
+msgid "CalDAV"
+msgstr "CalDAV"
+
+#: ../services/evolution-source-registry/builtin/google-stub.source.in.h:1
+msgid "Google"
+msgstr "Google"
+
+#: ../services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
+msgid "On LDAP Servers"
+msgstr "El servidores LDAP"
+
+#: ../services/evolution-source-registry/builtin/local.source.in.h:1
+#: ../services/evolution-source-registry/builtin/local-stub.source.in.h:1
+msgid "On This Computer"
+msgstr "En este equipo"
+
+#: ../services/evolution-source-registry/builtin/vfolder.source.in.h:1
+msgid "Search Folders"
+msgstr "Carpetas de búsqueda"
+
+#: ../services/evolution-source-registry/builtin/weather-stub.source.in.h:1
+msgid "Weather"
+msgstr "Meteorología"
+
+#: ../services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
+msgid "On The Web"
+msgstr "En la web"
+
+#: ../services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
+msgid "WebDAV"
+msgstr "WebDAV"
 
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
