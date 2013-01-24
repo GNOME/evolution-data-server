@@ -26,12 +26,13 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
+/* Private D-Bus classes. */
+#include <e-dbus-address-book-factory.h>
+
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
 #include "e-data-book.h"
 #include "e-data-book-factory.h"
-
-#include "e-gdbus-book-factory.h"
 
 #define d(x)
 
@@ -41,7 +42,7 @@
 
 struct _EDataBookFactoryPrivate {
 	ESourceRegistry *registry;
-	EGdbusBookFactory *gdbus_object;
+	EDBusAddressBookFactory *dbus_factory;
 
 	GMutex books_lock;
 	/* A hash of object paths for book URIs to EDataBooks */
@@ -169,65 +170,46 @@ book_freed_cb (EDataBookFactory *factory,
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
 
-static gboolean
-impl_BookFactory_get_book (EGdbusBookFactory *object,
-                           GDBusMethodInvocation *invocation,
-                           const gchar *uid,
-                           EDataBookFactory *factory)
+static gchar *
+data_book_factory_open (EDataBookFactory *factory,
+                        GDBusConnection *connection,
+                        const gchar *sender,
+                        const gchar *uid,
+                        GError **error)
 {
 	EDataBook *book;
 	EBackend *backend;
-	EDataBookFactoryPrivate *priv = factory->priv;
-	GDBusConnection *connection;
 	ESourceRegistry *registry;
 	ESource *source;
 	gchar *object_path;
-	const gchar *sender;
 	GList *list;
-	GError *error = NULL;
-
-	sender = g_dbus_method_invocation_get_sender (invocation);
-	connection = g_dbus_method_invocation_get_connection (invocation);
-
-	registry = e_data_book_factory_get_registry (factory);
 
 	if (uid == NULL || *uid == '\0') {
-		error = g_error_new_literal (
-			E_DATA_BOOK_ERROR,
+		g_set_error (
+			error, E_DATA_BOOK_ERROR,
 			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
 			_("Missing source UID"));
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
+		return NULL;
 	}
 
+	registry = e_data_book_factory_get_registry (factory);
 	source = e_source_registry_ref_source (registry, uid);
 
 	if (source == NULL) {
-		error = g_error_new (
-			E_DATA_BOOK_ERROR,
+		g_set_error (
+			error, E_DATA_BOOK_ERROR,
 			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
 			_("No such source for UID '%s'"), uid);
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
+		return NULL;
 	}
 
 	backend = data_book_factory_ref_backend (
-		E_DATA_FACTORY (factory), source, &error);
+		E_DATA_FACTORY (factory), source, error);
 
 	g_object_unref (source);
 
-	if (error != NULL) {
-		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
-
-		return TRUE;
-	}
-
-	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
+	if (backend == NULL)
+		return NULL;
 
 	e_dbus_server_hold (E_DBUS_SERVER (factory));
 
@@ -235,13 +217,14 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 
 	book = e_data_book_new (
 		E_BOOK_BACKEND (backend),
-		connection, object_path, &error);
+		connection, object_path, error);
 
 	if (book != NULL) {
-		g_mutex_lock (&priv->books_lock);
+		g_mutex_lock (&factory->priv->books_lock);
 		g_hash_table_insert (
-			priv->books, g_strdup (object_path), book);
-		g_mutex_unlock (&priv->books_lock);
+			factory->priv->books,
+			g_strdup (object_path), book);
+		g_mutex_unlock (&factory->priv->books_lock);
 
 		e_book_backend_add_client (E_BOOK_BACKEND (backend), book);
 
@@ -250,23 +233,50 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 			book_freed_cb, factory);
 
 		/* Update the hash of open connections. */
-		g_mutex_lock (&priv->connections_lock);
-		list = g_hash_table_lookup (priv->connections, sender);
+		g_mutex_lock (&factory->priv->connections_lock);
+		list = g_hash_table_lookup (
+			factory->priv->connections, sender);
 		list = g_list_prepend (list, book);
 		g_hash_table_insert (
-			priv->connections, g_strdup (sender), list);
-		g_mutex_unlock (&priv->connections_lock);
+			factory->priv->connections,
+			g_strdup (sender), list);
+		g_mutex_unlock (&factory->priv->connections_lock);
+
+	} else {
+		g_free (object_path);
+		object_path = NULL;
 	}
 
 	g_object_unref (backend);
 
-	e_gdbus_book_factory_complete_get_book (
-		object, invocation, object_path, error);
+	return object_path;
+}
 
-	if (error != NULL)
-		g_error_free (error);
+static gboolean
+data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *interface,
+                                               GDBusMethodInvocation *invocation,
+                                               const gchar *uid,
+                                               EDataBookFactory *factory)
+{
+	GDBusConnection *connection;
+	const gchar *sender;
+	gchar *object_path;
+	GError *error = NULL;
 
-	g_free (object_path);
+	connection = g_dbus_method_invocation_get_connection (invocation);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+
+	object_path = data_book_factory_open (
+		factory, connection, sender, uid, &error);
+
+	if (object_path != NULL) {
+		e_dbus_address_book_factory_complete_open_address_book (
+			interface, invocation, object_path);
+		g_free (object_path);
+	} else {
+		g_return_val_if_fail (error != NULL, FALSE);
+		g_dbus_method_invocation_take_error (invocation, error);
+	}
 
 	return TRUE;
 }
@@ -314,9 +324,9 @@ data_book_factory_dispose (GObject *object)
 		priv->registry = NULL;
 	}
 
-	if (priv->gdbus_object != NULL) {
-		g_object_unref (priv->gdbus_object);
-		priv->gdbus_object = NULL;
+	if (priv->dbus_factory != NULL) {
+		g_object_unref (priv->dbus_factory);
+		priv->dbus_factory = NULL;
 	}
 
 	/* Chain up to parent's finalize() method. */
@@ -345,25 +355,22 @@ data_book_factory_bus_acquired (EDBusServer *server,
                                 GDBusConnection *connection)
 {
 	EDataBookFactoryPrivate *priv;
-	guint registration_id;
 	GError *error = NULL;
 
 	priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (server);
 
-	registration_id = e_gdbus_book_factory_register_object (
-		priv->gdbus_object,
+	g_dbus_interface_skeleton_export (
+		G_DBUS_INTERFACE_SKELETON (priv->dbus_factory),
 		connection,
 		"/org/gnome/evolution/dataserver/AddressBookFactory",
 		&error);
 
 	if (error != NULL) {
 		g_error (
-			"Failed to register a BookFactory object: %s",
+			"Failed to export AddressBookFactory interface: %s",
 			error->message);
 		g_assert_not_reached ();
 	}
-
-	g_assert (registration_id > 0);
 
 	/* Chain up to parent's bus_acquired() method. */
 	E_DBUS_SERVER_CLASS (e_data_book_factory_parent_class)->
@@ -488,10 +495,13 @@ e_data_book_factory_init (EDataBookFactory *factory)
 {
 	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
-	factory->priv->gdbus_object = e_gdbus_book_factory_stub_new ();
+	factory->priv->dbus_factory =
+		e_dbus_address_book_factory_skeleton_new ();
+
 	g_signal_connect (
-		factory->priv->gdbus_object, "handle-get-book",
-		G_CALLBACK (impl_BookFactory_get_book), factory);
+		factory->priv->dbus_factory, "handle-open-address-book",
+		G_CALLBACK (data_book_factory_handle_open_address_book_cb),
+		factory);
 
 	g_mutex_init (&factory->priv->books_lock);
 	factory->priv->books = g_hash_table_new_full (

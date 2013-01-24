@@ -26,6 +26,9 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
+/* Private D-Bus classes. */
+#include <e-dbus-address-book-factory.h>
+
 #include <libedataserver/libedataserver.h>
 #include <libedataserver/e-client-private.h>
 
@@ -34,7 +37,6 @@
 #include "e-name-western.h"
 
 #include "e-gdbus-book.h"
-#include "e-gdbus-book-factory.h"
 
 #define E_BOOK_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -169,7 +171,7 @@ set_proxy_gone_error (GError **error)
 }
 
 static guint active_book_clients = 0, book_connection_closed_id = 0;
-static EGdbusBookFactory *book_factory = NULL;
+static EDBusAddressBookFactory *book_factory = NULL;
 static GRecMutex book_factory_lock;
 #define LOCK_FACTORY()   g_rec_mutex_lock (&book_factory_lock)
 #define UNLOCK_FACTORY() g_rec_mutex_unlock (&book_factory_lock)
@@ -250,7 +252,7 @@ gdbus_book_factory_activate (GCancellable *cancellable,
 		return TRUE;
 	}
 
-	book_factory = e_gdbus_book_factory_proxy_new_for_bus_sync (
+	book_factory = e_dbus_address_book_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
 		ADDRESS_BOOK_DBUS_SERVICE_NAME,
@@ -884,8 +886,8 @@ e_book_client_new (ESource *source,
 	client = g_object_new (E_TYPE_BOOK_CLIENT, "source", source, NULL);
 	UNLOCK_FACTORY ();
 
-	e_gdbus_book_factory_call_get_book_sync (
-		G_DBUS_PROXY (book_factory), uid, &object_path, NULL, &err);
+	e_dbus_address_book_factory_call_open_address_book_sync (
+		book_factory, uid, &object_path, NULL, &err);
 
 	/* Sanity check. */
 	g_return_val_if_fail (

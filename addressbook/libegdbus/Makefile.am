@@ -13,8 +13,6 @@ libegdbus_book_la_CPPFLAGS =			\
 libegdbus_book_la_SOURCES =			\
 	e-gdbus-book.h				\
 	e-gdbus-book.c				\
-	e-gdbus-book-factory.h			\
-	e-gdbus-book-factory.c			\
 	e-gdbus-book-view.h			\
 	e-gdbus-book-view.c
 

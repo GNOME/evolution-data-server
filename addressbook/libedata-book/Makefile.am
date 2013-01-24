@@ -9,8 +9,10 @@ libedata_book_1_2_la_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/addressbook \
 	-I$(top_srcdir)/addressbook/libegdbus \
+	-I$(top_srcdir)/private \
 	-I$(top_builddir) \
 	-I$(top_builddir)/addressbook \
+	-I$(top_builddir)/private \
 	$(DB_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
