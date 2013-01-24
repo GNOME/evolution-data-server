@@ -61,6 +61,7 @@
 #include <libedataserver/e-source-refresh.h>
 #include <libedataserver/e-source-registry.h>
 #include <libedataserver/e-source-resource.h>
+#include <libedataserver/e-source-revision-guards.h>
 #include <libedataserver/e-source-security.h>
 #include <libedataserver/e-source-selectable.h>
 #include <libedataserver/e-source-smime.h>
