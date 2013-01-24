@@ -937,10 +937,10 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 
 			if (!contact_rev || !old_contact_rev ||
 			    strcmp (contact_rev, old_contact_rev) != 0) {
-				g_set_error (perror, E_CLIENT_ERROR,
-					     E_CLIENT_ERROR_OUT_OF_SYNC,
+				g_set_error (perror, E_DATA_BOOK_ERROR,
+					     E_DATA_BOOK_STATUS_OUT_OF_SYNC,
 					     _("Tried to modify contact '%s' with out of sync revision"),
-					     e_contact_get_const (contact, E_CONTACT_UID));
+					     (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
 
 				status = STATUS_ERROR;
 
