@@ -167,6 +167,7 @@ unwrap_dbus_error (GError *error,
 		{ err ("NotOpened",				E_CLIENT_ERROR_NOT_OPENED) },
 		{ err ("UnsupportedField",			E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("InvalidServerVersion",			E_CLIENT_ERROR_OTHER_ERROR) },
+		{ err ("OutOfSync",			        E_CLIENT_ERROR_OUT_OF_SYNC) },
 		{ err ("OtherError",				E_CLIENT_ERROR_OTHER_ERROR) }
 	};
 	#undef err
