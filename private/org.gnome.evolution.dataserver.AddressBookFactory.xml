@@ -1,0 +1,27 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.AddressBookFactory:
+    @short_description: Factory for address book objects
+    @since: 3.8
+
+    This interface provides access to AddressBook interfaces.
+-->
+<interface name="org.gnome.evolution.dataserver.AddressBookFactory">
+  <!--
+      OpenAddressBook:
+      @source_uid: Unique identifier for a data source
+      @object_path: Object path of the address book backend
+      @since: 3.8
+
+      Returns the object path of the address book backend for @uid.
+  -->
+  <method name="OpenAddressBook">
+    <arg name="source_uid" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="s"/>
+  </method>
+</interface>
+

@@ -20,6 +20,8 @@
     <xi:include href="xml/e-dbus-source-manager.xml"/>
     <xi:include href="xml/e-dbus-object-manager-client.xml"/>
     <xi:include href="xml/e-dbus-authenticator.xml"/>
+    <xi:include href="xml/e-dbus-address-book-factory.xml"/>
+    <xi:include href="xml/e-dbus-calendar-factory.xml"/>
     <xi:include href="xml/e-dbus-user-prompter.xml"/>
   </chapter>
 
@@ -33,6 +35,8 @@
     <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.OAuth2Support.xml"/>
     <xi:include href="../../../private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
     <xi:include href="../../../private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
+    <xi:include href="../../../private/e-dbus-address-book-factory-org.gnome.evolution.dataserver.AddressBookFactory.xml"/>
+    <xi:include href="../../../private/e-dbus-calendar-factory-org.gnome.evolution.dataserver.CalendarFactory.xml"/>
     <xi:include href="../../../private/e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml"/>
   </chapter>
 

@@ -1,0 +1,54 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.CalendarFactory:
+    @short_description: Factory for calendar objects
+    @since: 3.8
+
+    This interface provides access to Calendar interfaces.
+-->
+<interface name="org.gnome.evolution.dataserver.CalendarFactory">
+  <!--
+      OpenCalendar:
+      @source_uid: Unique identifier for a data source
+      @object_path: Object path of the calendar backend
+      @since: 3.8
+
+      Returns the object path of the calendar backend for @uid.
+  -->
+  <method name="OpenCalendar">
+    <arg name="source_uid" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="s"/>
+  </method>
+
+  <!--
+      OpenTaskList:
+      @source_uid: Unique identifier for a data source
+      @object_path: Object path of the task list backend
+      @since: 3.8
+
+      Returns the object path of the task list backend for @uid.
+
+  -->
+  <method name="OpenTaskList">
+    <arg name="source_uid" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="s"/>
+  </method>
+
+  <!--
+      OpenMemoList:
+      @source_uid: Unique identifier for a data source
+      @object_path: Object path of the memo list backend
+      @since: 3.8
+
+      Returns the object path of the memo list backend for @uid.
+  -->
+  <method name="OpenMemoList">
+    <arg name="source_uid" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="s"/>
+  </method>
+</interface>
+

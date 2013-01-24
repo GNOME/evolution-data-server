@@ -28,6 +28,24 @@ $(GENERATED_DBUS_AUTHENTICATOR) : Makefile.am org.gnome.evolution.dataserver.Aut
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.Authenticator.xml \
 	$(NULL)
 
+$(GENERATED_DBUS_ADDRESS_BOOK_FACTORY) : Makefile.am org.gnome.evolution.dataserver.AddressBookFactory.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-address-book-factory \
+	--generate-docbook e-dbus-address-book-factory \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.AddressBookFactory.xml \
+	$(NULL)
+
+$(GENERATED_DBUS_CALENDAR_FACTORY) : Makefile.am org.gnome.evolution.dataserver.CalendarFactory.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-calendar-factory \
+	--generate-docbook e-dbus-calendar-factory \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.CalendarFactory.xml \
+	$(NULL)
+
 $(GENERATED_DBUS_USER_PROMPTER) : Makefile.am org.gnome.evolution.dataserver.UserPrompter.xml
 	$(AM_V_GEN) gdbus-codegen \
 	--interface-prefix org.gnome.evolution.dataserver. \
@@ -66,10 +84,24 @@ GENERATED_DBUS_USER_PROMPTER = \
 	e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
+GENERATED_DBUS_ADDRESS_BOOK_FACTORY = \
+	e-dbus-address-book-factory.c \
+	e-dbus-address-book-factory.h \
+	e-dbus-address-book-factory-org.gnome.evolution.dataserver.AddressBookFactory.xml \
+	$(NULL)
+
+GENERATED_DBUS_CALENDAR_FACTORY = \
+	e-dbus-calendar-factory.c \
+	e-dbus-calendar-factory.h \
+	e-dbus-calendar-factory-org.gnome.evolution.dataserver.CalendarFactory.xml \
+	$(NULL)
+
 BUILT_SOURCES = \
 	$(GENERATED_DBUS_SOURCE) \
 	$(GENERATED_DBUS_SOURCE_MANAGER) \
 	$(GENERATED_DBUS_AUTHENTICATOR) \
+	$(GENERATED_DBUS_ADDRESS_BOOK_FACTORY) \
+	$(GENERATED_DBUS_CALENDAR_FACTORY) \
 	$(GENERATED_DBUS_USER_PROMPTER) \
 	$(NULL)
 
@@ -102,6 +134,8 @@ EXTRA_DIST = \
 	org.gnome.evolution.dataserver.Source.xml \
 	org.gnome.evolution.dataserver.SourceManager.xml \
 	org.gnome.evolution.dataserver.Authenticator.xml \
+	org.gnome.evolution.dataserver.AddressBookFactory.xml \
+	org.gnome.evolution.dataserver.CalendarFactory.xml \
 	org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
