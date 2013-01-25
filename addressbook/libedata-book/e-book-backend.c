@@ -81,6 +81,8 @@ book_backend_get_backend_property (EBookBackend *backend,
 		e_data_book_respond_get_backend_property (book, opid, NULL, "TRUE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
 		e_data_book_respond_get_backend_property (book, opid, NULL, "FALSE");
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
+		e_data_book_respond_get_backend_property (book, opid, NULL, "0");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
 		e_data_book_respond_get_backend_property (book, opid, NULL, e_backend_get_online (E_BACKEND (backend)) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
@@ -497,16 +499,7 @@ e_book_backend_open (EBookBackend *backend,
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_book_backend_is_opened (backend)) {
-		gboolean online;
-		gboolean writable;
-
 		g_mutex_unlock (&backend->priv->clients_mutex);
-
-		online = e_backend_get_online (E_BACKEND (backend));
-		writable = e_book_backend_get_writable (backend);
-
-		e_data_book_report_online (book, online);
-		e_data_book_report_readonly (book, !writable);
 
 		e_data_book_respond_open (book, opid, NULL);
 	} else {
@@ -1246,23 +1239,16 @@ e_book_backend_notify_error (EBookBackend *backend,
  * Notifies all backend's clients about the current readonly state.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_backend_set_writable() instead.
  **/
 void
 e_book_backend_notify_readonly (EBookBackend *backend,
                                 gboolean is_readonly)
 {
-	EBookBackendPrivate *priv;
-	GList *clients;
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	priv = backend->priv;
 	e_book_backend_set_writable (backend, !is_readonly);
-	g_mutex_lock (&priv->clients_mutex);
-
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_book_report_readonly (E_DATA_BOOK (clients->data), is_readonly);
-
-	g_mutex_unlock (&priv->clients_mutex);
-
 }
 
 /**
@@ -1274,25 +1260,16 @@ e_book_backend_notify_readonly (EBookBackend *backend,
  * Meant to be used by backend implementations.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_backend_set_online() instead.
  **/
 void
 e_book_backend_notify_online (EBookBackend *backend,
                               gboolean is_online)
 {
-	EBookBackendPrivate *priv;
-	GList *clients;
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	/* XXX Disregard the argument.
-	 *     EBackend determines this for itself. */
-	is_online = e_backend_get_online (E_BACKEND (backend));
-
-	priv = backend->priv;
-	g_mutex_lock (&priv->clients_mutex);
-
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_book_report_online (E_DATA_BOOK (clients->data), is_online);
-
-	g_mutex_unlock (&priv->clients_mutex);
+	e_backend_set_online (E_BACKEND (backend), is_online);
 }
 
 /**

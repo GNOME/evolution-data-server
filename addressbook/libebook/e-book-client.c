@@ -27,6 +27,7 @@
 #include <gio/gio.h>
 
 /* Private D-Bus classes. */
+#include <e-dbus-address-book.h>
 #include <e-dbus-address-book-factory.h>
 
 #include <libedataserver/libedataserver.h>
@@ -36,18 +37,110 @@
 #include "e-contact.h"
 #include "e-name-western.h"
 
-#include "e-gdbus-book.h"
-
 #define E_BOOK_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_CLIENT, EBookClientPrivate))
 
+/* Set this to a sufficiently large value
+ * to cover most long-running operations. */
+#define DBUS_PROXY_TIMEOUT_MS (3 * 60 * 1000)  /* 3 minutes */
+
+typedef struct _AsyncContext AsyncContext;
+typedef struct _SignalClosure SignalClosure;
+typedef struct _RunInThreadClosure RunInThreadClosure;
+
 struct _EBookClientPrivate {
-	GDBusProxy *dbus_proxy;
+	EDBusAddressBook *dbus_proxy;
+	GMainContext *main_context;
 	guint gone_signal_id;
+
+	gulong dbus_proxy_error_handler_id;
+	gulong dbus_proxy_notify_handler_id;
 };
 
-G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
+struct _AsyncContext {
+	EContact *contact;
+	EBookClientView *client_view;
+	GSList *object_list;
+	GSList *string_list;
+	gchar *sexp;
+	gchar *uid;
+};
+
+struct _SignalClosure {
+	EClient *client;
+	gchar *property_name;
+	gchar *error_message;
+};
+
+struct _RunInThreadClosure {
+	GSimpleAsyncThreadFunc func;
+	GSimpleAsyncResult *simple;
+	GCancellable *cancellable;
+};
+
+/* Forward Declarations */
+static void	e_book_client_initable_init
+					(GInitableIface *interface);
+static void	e_book_client_async_initable_init
+					(GAsyncInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EBookClient,
+	e_book_client,
+	E_TYPE_CLIENT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_book_client_initable_init)
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_ASYNC_INITABLE,
+		e_book_client_async_initable_init))
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->contact != NULL)
+		g_object_unref (async_context->contact);
+
+	if (async_context->client_view != NULL)
+		g_object_unref (async_context->client_view);
+
+	g_slist_free_full (
+		async_context->object_list,
+		(GDestroyNotify) g_object_unref);
+
+	g_slist_free_full (
+		async_context->string_list,
+		(GDestroyNotify) g_free);
+
+	g_free (async_context->sexp);
+	g_free (async_context->uid);
+
+	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+signal_closure_free (SignalClosure *signal_closure)
+{
+	g_object_unref (signal_closure->client);
+
+	g_free (signal_closure->property_name);
+	g_free (signal_closure->error_message);
+
+	g_slice_free (SignalClosure, signal_closure);
+}
+
+static void
+run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
+{
+	if (run_in_thread_closure->simple != NULL)
+		g_object_unref (run_in_thread_closure->simple);
+
+	if (run_in_thread_closure->cancellable != NULL)
+		g_object_unref (run_in_thread_closure->cancellable);
+
+	g_slice_free (RunInThreadClosure, run_in_thread_closure);
+}
 
 /*
  * Well-known book backend properties:
@@ -285,6 +378,107 @@ gdbus_book_factory_activate (GCancellable *cancellable,
 	return TRUE;
 }
 
+static gpointer
+book_client_dbus_thread (gpointer user_data)
+{
+	GMainContext *main_context = user_data;
+	GMainLoop *main_loop;
+
+	g_main_context_push_thread_default (main_context);
+
+	main_loop = g_main_loop_new (main_context, FALSE);
+	g_main_loop_run (main_loop);
+	g_main_loop_unref (main_loop);
+
+	g_main_context_pop_thread_default (main_context);
+
+	g_main_context_unref (main_context);
+
+	return NULL;
+}
+
+static gpointer
+book_client_dbus_thread_init (gpointer unused)
+{
+	GMainContext *main_context;
+
+	main_context = g_main_context_new ();
+
+	/* This thread terminates when the process itself terminates, so
+	 * no need to worry about unreferencing the returned GThread. */
+	g_thread_new (
+		"book-client-dbus-thread",
+		book_client_dbus_thread,
+		g_main_context_ref (main_context));
+
+	return main_context;
+}
+
+static GMainContext *
+book_client_ref_dbus_main_context (void)
+{
+	static GOnce book_client_dbus_thread_once = G_ONCE_INIT;
+
+	g_once (
+		&book_client_dbus_thread_once,
+		book_client_dbus_thread_init, NULL);
+
+	return g_main_context_ref (book_client_dbus_thread_once.retval);
+}
+
+static gboolean
+book_client_run_in_dbus_thread_idle_cb (gpointer user_data)
+{
+	RunInThreadClosure *closure = user_data;
+	GObject *source_object;
+	GAsyncResult *result;
+
+	result = G_ASYNC_RESULT (closure->simple);
+	source_object = g_async_result_get_source_object (result);
+
+	closure->func (
+		closure->simple,
+		source_object,
+		closure->cancellable);
+
+	if (source_object != NULL)
+		g_object_unref (source_object);
+
+	g_simple_async_result_complete_in_idle (closure->simple);
+
+	return FALSE;
+}
+
+static void
+book_client_run_in_dbus_thread (GSimpleAsyncResult *simple,
+                                GSimpleAsyncThreadFunc func,
+                                gint io_priority,
+                                GCancellable *cancellable)
+{
+	RunInThreadClosure *closure;
+	GMainContext *main_context;
+	GSource *idle_source;
+
+	main_context = book_client_ref_dbus_main_context ();
+
+	closure = g_slice_new0 (RunInThreadClosure);
+	closure->func = func;
+	closure->simple = g_object_ref (simple);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		closure->cancellable = g_object_ref (cancellable);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_priority (idle_source, io_priority);
+	g_source_set_callback (
+		idle_source, book_client_run_in_dbus_thread_idle_cb,
+		closure, (GDestroyNotify) run_in_thread_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
+}
+
 static void gdbus_book_client_disconnect (EBookClient *client);
 
 /*
@@ -344,7 +538,7 @@ gdbus_book_client_disconnect (EBookClient *client)
 		g_dbus_connection_signal_unsubscribe (connection, client->priv->gone_signal_id);
 		client->priv->gone_signal_id = 0;
 
-		e_gdbus_book_call_close_sync (
+		e_dbus_address_book_call_close_sync (
 			client->priv->dbus_proxy, NULL, NULL);
 		g_object_unref (client->priv->dbus_proxy);
 		client->priv->dbus_proxy = NULL;
@@ -353,131 +547,167 @@ gdbus_book_client_disconnect (EBookClient *client)
 	UNLOCK_FACTORY ();
 }
 
-static void
-backend_error_cb (EGdbusBook *dbus_proxy,
-                  const gchar *message,
-                  EBookClient *client)
+static gboolean
+book_client_emit_backend_error_idle_cb (gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-	g_return_if_fail (message != NULL);
+	SignalClosure *signal_closure = user_data;
 
-	e_client_emit_backend_error (E_CLIENT (client), message);
-}
+	g_signal_emit_by_name (
+		signal_closure->client,
+		"backend-error",
+		signal_closure->error_message);
 
-static void
-readonly_cb (EGdbusBook *dbus_proxy,
-             gboolean readonly,
-             EBookClient *client)
-{
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-
-	e_client_set_readonly (E_CLIENT (client), readonly);
-}
-
-static void
-online_cb (EGdbusBook *dbus_proxy,
-           gboolean is_online,
-           EBookClient *client)
-{
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-
-	e_client_set_online (E_CLIENT (client), is_online);
-}
-
-static void
-opened_cb (EGdbusBook *dbus_proxy,
-           const gchar * const *error_strv,
-           EBookClient *client)
-{
-	GError *error = NULL;
-
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-	g_return_if_fail (error_strv != NULL);
-	g_return_if_fail (e_gdbus_templates_decode_error (error_strv, &error));
-
-	e_client_emit_opened (E_CLIENT (client), error);
-
-	if (error)
-		g_error_free (error);
-}
-
-static void
-backend_property_changed_cb (EGdbusBook *dbus_proxy,
-                             const gchar * const *name_value_strv,
-                             EBookClient *client)
-{
-	gchar *prop_name = NULL, *prop_value = NULL;
-
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-	g_return_if_fail (name_value_strv != NULL);
-	g_return_if_fail (e_gdbus_templates_decode_two_strings (name_value_strv, &prop_name, &prop_value));
-	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (*prop_name);
-	g_return_if_fail (prop_value != NULL);
-
-	e_client_emit_backend_property_changed (E_CLIENT (client), prop_name, prop_value);
-
-	g_free (prop_name);
-	g_free (prop_value);
-}
-
-/*
- * Converts a GSList of EContact objects into a NULL-terminated array of
- * valid UTF-8 vcard strings, suitable for sending over DBus.
- */
-static gchar **
-contact_slist_to_utf8_vcard_array (GSList *contacts)
-{
-	gchar **array;
-	const GSList *l;
-	gint i = 0;
-
-	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
-	for (l = contacts; l != NULL; l = l->next) {
-		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
-		array[i++] = e_util_utf8_make_valid (vcard);
-		g_free (vcard);
-	}
-
-	return array;
+	return FALSE;
 }
 
 static gboolean
-book_client_get_backend_property_from_cache_finish (EClient *client,
-                                                    GAsyncResult *result,
-                                                    gchar **prop_value,
-                                                    GError **error)
+book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	GError *local_error = NULL;
+	SignalClosure *signal_closure = user_data;
+	gchar *prop_value = NULL;
 
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (result != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), book_client_get_backend_property_from_cache_finish), FALSE);
+	/* XXX Despite appearances, this function does not block. */
+	e_client_get_backend_property_sync (
+		signal_closure->client,
+		signal_closure->property_name,
+		&prop_value, NULL, NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, &local_error)) {
-		e_client_unwrap_dbus_error (client, local_error, error);
-		return FALSE;
+	if (prop_value != NULL) {
+		g_signal_emit_by_name (
+			signal_closure->client,
+			"backend-property-changed",
+			signal_closure->property_name,
+			prop_value);
+		g_free (prop_value);
 	}
 
-	*prop_value = g_strdup (g_simple_async_result_get_op_res_gpointer (simple));
+	return FALSE;
+}
 
-	return *prop_value != NULL;
+static void
+book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
+                                 const gchar *error_message,
+                                 EBookClient *book_client)
+{
+	GSource *idle_source;
+	SignalClosure *signal_closure;
+
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client = g_object_ref (book_client);
+	signal_closure->error_message = g_strdup (error_message);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		book_client_emit_backend_error_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, book_client->priv->main_context);
+	g_source_unref (idle_source);
+}
+
+static void
+book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
+                                  GParamSpec *pspec,
+                                  EBookClient *book_client)
+{
+	const gchar *backend_prop_name = NULL;
+
+	if (g_str_equal (pspec->name, "cache-dir")) {
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
+	}
+
+	if (g_str_equal (pspec->name, "capabilities")) {
+		gchar **strv;
+		gchar *csv;
+
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
+
+		strv = e_dbus_address_book_dup_capabilities (dbus_proxy);
+		csv = g_strjoinv (",", strv);
+		e_client_set_capabilities (E_CLIENT (book_client), csv);
+		g_free (csv);
+		g_free (strv);
+	}
+
+	if (g_str_equal (pspec->name, "online")) {
+		gboolean online;
+
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
+
+		online = e_dbus_address_book_get_online (dbus_proxy);
+		e_client_set_online (E_CLIENT (book_client), online);
+	}
+
+	if (g_str_equal (pspec->name, "required-fields")) {
+		backend_prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
+	}
+
+	if (g_str_equal (pspec->name, "revision")) {
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
+	}
+
+	if (g_str_equal (pspec->name, "supported-fields")) {
+		backend_prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
+	}
+
+	if (g_str_equal (pspec->name, "writable")) {
+		gboolean writable;
+
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
+
+		writable = e_dbus_address_book_get_writable (dbus_proxy);
+		e_client_set_readonly (E_CLIENT (book_client), !writable);
+	}
+
+	if (backend_prop_name != NULL) {
+		GSource *idle_source;
+		SignalClosure *signal_closure;
+
+		signal_closure = g_slice_new0 (SignalClosure);
+		signal_closure->client = g_object_ref (book_client);
+		signal_closure->property_name = g_strdup (backend_prop_name);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			book_client_emit_backend_property_changed_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, book_client->priv->main_context);
+		g_source_unref (idle_source);
+	}
 }
 
 static void
 book_client_dispose (GObject *object)
 {
-	EClient *client;
+	EBookClientPrivate *priv;
 
-	client = E_CLIENT (object);
+	priv = E_BOOK_CLIENT_GET_PRIVATE (object);
 
-	e_client_cancel_all (client);
+	e_client_cancel_all (E_CLIENT (object));
 
-	gdbus_book_client_disconnect (E_BOOK_CLIENT (client));
+	if (priv->dbus_proxy_error_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->dbus_proxy_error_handler_id);
+		priv->dbus_proxy_error_handler_id = 0;
+	}
+
+	if (priv->dbus_proxy_notify_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->dbus_proxy,
+			priv->dbus_proxy_notify_handler_id);
+		priv->dbus_proxy_notify_handler_id = 0;
+	}
+
+	gdbus_book_client_disconnect (E_BOOK_CLIENT (object));
+
+	if (priv->main_context != NULL) {
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
+	}
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->dispose (object);
@@ -514,94 +744,15 @@ book_client_unwrap_dbus_error (EClient *client,
 	unwrap_dbus_error (dbus_error, out_error);
 }
 
-static void
-book_client_retrieve_capabilities (EClient *client,
-                                   GCancellable *cancellable,
-                                   GAsyncReadyCallback callback,
-                                   gpointer user_data)
-{
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-
-	e_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
-}
-
-static gboolean
-book_client_retrieve_capabilities_finish (EClient *client,
-                                          GAsyncResult *result,
-                                          gchar **capabilities,
-                                          GError **error)
-{
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-
-	return e_client_get_backend_property_finish (client, result, capabilities, error);
-}
-
 static gboolean
 book_client_retrieve_capabilities_sync (EClient *client,
                                         gchar **capabilities,
                                         GCancellable *cancellable,
                                         GError **error)
 {
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-
-	return e_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
-}
-
-static void
-book_client_get_backend_property (EClient *client,
-                                  const gchar *prop_name,
-                                  GCancellable *cancellable,
-                                  GAsyncReadyCallback callback,
-                                  gpointer user_data)
-{
-	gchar *prop_value;
-
-	prop_value = e_client_get_backend_property_from_cache (client, prop_name);
-	if (prop_value) {
-		e_client_finish_async_without_dbus (
-			client, cancellable, callback, user_data,
-			book_client_get_backend_property_from_cache_finish,
-			prop_value, g_free);
-	} else {
-		e_client_proxy_call_string_with_res_op_data (
-			client, prop_name,
-			cancellable, callback, user_data,
-			book_client_get_backend_property, prop_name,
-			e_gdbus_book_call_get_backend_property,
-			NULL, NULL,
-			e_gdbus_book_call_get_backend_property_finish,
-			NULL, NULL);
-	}
-}
-
-static gboolean
-book_client_get_backend_property_finish (EClient *client,
-                                         GAsyncResult *result,
-                                         gchar **prop_value,
-                                         GError **error)
-{
-	gchar *str = NULL;
-	gboolean res;
-
-	g_return_val_if_fail (prop_value != NULL, FALSE);
-
-	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == book_client_get_backend_property_from_cache_finish) {
-		res = book_client_get_backend_property_from_cache_finish (client, result, &str, error);
-	} else {
-		res = e_client_proxy_call_finish_string (
-			client, result, &str, error,
-			book_client_get_backend_property);
-		if (res && str) {
-			const gchar *prop_name = g_object_get_data (G_OBJECT (result), "res-op-data");
-
-			if (prop_name && *prop_name)
-				e_client_update_backend_property_cache (client, prop_name, str);
-		}
-	}
-
-	*prop_value = str;
-
-	return res;
+	return e_client_get_backend_property_sync (
+		client, CLIENT_BACKEND_PROPERTY_CAPABILITIES,
+		capabilities, cancellable, error);
 }
 
 static gboolean
@@ -612,36 +763,74 @@ book_client_get_backend_property_sync (EClient *client,
                                        GError **error)
 {
 	EBookClient *book_client;
-	gchar *prop_val;
-	gboolean res;
-
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	EDBusAddressBook *dbus_proxy;
+	gchar **strv;
 
 	book_client = E_BOOK_CLIENT (client);
+	dbus_proxy = book_client->priv->dbus_proxy;
 
-	if (book_client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	prop_val = e_client_get_backend_property_from_cache (client, prop_name);
-	if (prop_val) {
-		g_return_val_if_fail (prop_value != NULL, FALSE);
-
-		*prop_value = prop_val;
-
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
+		*prop_value = g_strdup ("TRUE");
 		return TRUE;
 	}
 
-	res = e_client_proxy_call_sync_string__string (
-		client, prop_name, prop_value, cancellable, error,
-		e_gdbus_book_call_get_backend_property_sync);
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
+		*prop_value = g_strdup ("FALSE");
+		return TRUE;
+	}
 
-	if (res && prop_value)
-		e_client_update_backend_property_cache (
-			client, prop_name, *prop_value);
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
+		if (e_dbus_address_book_get_online (dbus_proxy))
+			*prop_value = g_strdup ("TRUE");
+		else
+			*prop_value = g_strdup ("FALSE");
+		return TRUE;
+	}
 
-	return res;
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
+		if (e_dbus_address_book_get_writable (dbus_proxy))
+			*prop_value = g_strdup ("FALSE");
+		else
+			*prop_value = g_strdup ("TRUE");
+		return TRUE;
+	}
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
+		*prop_value = e_dbus_address_book_dup_cache_dir (dbus_proxy);
+		return TRUE;
+	}
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
+		*prop_value = e_dbus_address_book_dup_revision (dbus_proxy);
+		return TRUE;
+	}
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		strv = e_dbus_address_book_dup_capabilities (dbus_proxy);
+		*prop_value = g_strjoinv (",", strv);
+		g_strfreev (strv);
+		return TRUE;
+	}
+
+	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		strv = e_dbus_address_book_dup_required_fields (dbus_proxy);
+		*prop_value = g_strjoinv (",", strv);
+		g_strfreev (strv);
+		return TRUE;
+	}
+
+	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		strv = e_dbus_address_book_dup_supported_fields (dbus_proxy);
+		*prop_value = g_strjoinv (",", strv);
+		g_strfreev (strv);
+		return TRUE;
+	}
+
+	g_set_error (
+		error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
+		_("Unknown book property '%s'"), prop_name);
+
+	return TRUE;
 }
 
 static gboolean
@@ -658,31 +847,6 @@ book_client_set_backend_property_sync (EClient *client,
 		prop_name);
 
 	return FALSE;
-}
-
-static void
-book_client_open (EClient *client,
-                  gboolean only_if_exists,
-                  GCancellable *cancellable,
-                  GAsyncReadyCallback callback,
-                  gpointer user_data)
-{
-	e_client_proxy_call_boolean (
-		client, only_if_exists,
-		cancellable, callback, user_data,
-		book_client_open,
-		e_gdbus_book_call_open,
-		e_gdbus_book_call_open_finish,
-		NULL, NULL, NULL, NULL);
-}
-
-static gboolean
-book_client_open_finish (EClient *client,
-                         GAsyncResult *result,
-                         GError **error)
-{
-	return e_client_proxy_call_finish_void (
-		client, result, error, book_client_open);
 }
 
 static gboolean
@@ -702,32 +866,8 @@ book_client_open_sync (EClient *client,
 		return FALSE;
 	}
 
-	return e_client_proxy_call_sync_boolean__void (
-		client, only_if_exists, cancellable, error,
-		e_gdbus_book_call_open_sync);
-}
-
-static void
-book_client_refresh (EClient *client,
-                     GCancellable *cancellable,
-                     GAsyncReadyCallback callback,
-                     gpointer user_data)
-{
-	e_client_proxy_call_void (
-		client, cancellable, callback, user_data,
-		book_client_refresh,
-		e_gdbus_book_call_refresh,
-		e_gdbus_book_call_refresh_finish,
-		NULL, NULL, NULL, NULL);
-}
-
-static gboolean
-book_client_refresh_finish (EClient *client,
-                            GAsyncResult *result,
-                            GError **error)
-{
-	return e_client_proxy_call_finish_void (
-		client, result, error, book_client_refresh);
+	return e_dbus_address_book_call_open_sync (
+		book_client->priv->dbus_proxy, cancellable, error);
 }
 
 static gboolean
@@ -746,9 +886,168 @@ book_client_refresh_sync (EClient *client,
 		return FALSE;
 	}
 
-	return e_client_proxy_call_sync_void__void (
-		client, cancellable, error,
-		e_gdbus_book_call_refresh_sync);
+	return e_dbus_address_book_call_refresh_sync (
+		book_client->priv->dbus_proxy, cancellable, error);
+}
+
+static void
+book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	EBookClientPrivate *priv;
+	EClient *client;
+	ESource *source;
+	GDBusConnection *connection;
+	const gchar *uid;
+	gchar *object_path = NULL;
+	gulong handler_id;
+	GError *error = NULL;
+
+	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
+
+	client = E_CLIENT (source_object);
+	source = e_client_get_source (client);
+	uid = e_source_get_uid (source);
+
+	LOCK_FACTORY ();
+	gdbus_book_factory_activate (cancellable, &error);
+	UNLOCK_FACTORY ();
+
+	if (error != NULL) {
+		unwrap_dbus_error (error, &error);
+		g_simple_async_result_take_error (simple, error);
+		return;
+	}
+
+	e_dbus_address_book_factory_call_open_address_book_sync (
+		book_factory, uid, &object_path, cancellable, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((object_path != NULL) && (error == NULL)) ||
+		((object_path == NULL) && (error != NULL)));
+
+	if (object_path == NULL) {
+		unwrap_dbus_error (error, &error);
+		g_simple_async_result_take_error (simple, error);
+		return;
+	}
+
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory));
+
+	priv->dbus_proxy = e_dbus_address_book_proxy_new_sync (
+		connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		object_path,
+		cancellable, &error);
+
+	g_free (object_path);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((priv->dbus_proxy != NULL) && (error == NULL)) ||
+		((priv->dbus_proxy == NULL) && (error != NULL)));
+
+	if (error != NULL) {
+		unwrap_dbus_error (error, &error);
+		g_simple_async_result_take_error (simple, error);
+		return;
+	}
+
+	g_dbus_proxy_set_default_timeout (
+		G_DBUS_PROXY (priv->dbus_proxy), DBUS_PROXY_TIMEOUT_MS);
+
+	priv->gone_signal_id = g_dbus_connection_signal_subscribe (
+		connection,
+		"org.freedesktop.DBus",				/* sender */
+		"org.freedesktop.DBus",				/* interface */
+		"NameOwnerChanged",				/* member */
+		"/org/freedesktop/DBus",			/* object_path */
+		"org.gnome.evolution.dataserver.AddressBook",	/* arg0 */
+		G_DBUS_SIGNAL_FLAGS_NONE,
+		gdbus_book_client_connection_gone_cb, client, NULL);
+
+	g_signal_connect (
+		connection, "closed",
+		G_CALLBACK (gdbus_book_client_closed_cb), client);
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "error",
+		G_CALLBACK (book_client_dbus_proxy_error_cb), client);
+	priv->dbus_proxy_error_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		priv->dbus_proxy, "notify",
+		G_CALLBACK (book_client_dbus_proxy_notify_cb), client);
+	priv->dbus_proxy_notify_handler_id = handler_id;
+}
+
+static gboolean
+book_client_initable_init (GInitable *initable,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	closure = e_async_closure_new ();
+
+	g_async_initable_init_async (
+		G_ASYNC_INITABLE (initable),
+		G_PRIORITY_DEFAULT, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = g_async_initable_init_finish (
+		G_ASYNC_INITABLE (initable), result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+static void
+book_client_initable_init_async (GAsyncInitable *initable,
+                                 gint io_priority,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (initable), callback, user_data,
+		book_client_initable_init_async);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	book_client_run_in_dbus_thread (
+		simple, book_client_init_in_dbus_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+book_client_initable_init_finish (GAsyncInitable *initable,
+                                  GAsyncResult *result,
+                                  GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (initable),
+		book_client_initable_init_async), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 static void
@@ -764,21 +1063,26 @@ e_book_client_class_init (EBookClientClass *class)
 	object_class->finalize = book_client_finalize;
 
 	client_class = E_CLIENT_CLASS (class);
-	client_class->get_dbus_proxy			= book_client_get_dbus_proxy;
-	client_class->unwrap_dbus_error			= book_client_unwrap_dbus_error;
-	client_class->retrieve_capabilities		= book_client_retrieve_capabilities;
-	client_class->retrieve_capabilities_finish	= book_client_retrieve_capabilities_finish;
-	client_class->retrieve_capabilities_sync	= book_client_retrieve_capabilities_sync;
-	client_class->get_backend_property		= book_client_get_backend_property;
-	client_class->get_backend_property_finish	= book_client_get_backend_property_finish;
-	client_class->get_backend_property_sync		= book_client_get_backend_property_sync;
-	client_class->set_backend_property_sync		= book_client_set_backend_property_sync;
-	client_class->open				= book_client_open;
-	client_class->open_finish			= book_client_open_finish;
-	client_class->open_sync				= book_client_open_sync;
-	client_class->refresh				= book_client_refresh;
-	client_class->refresh_finish			= book_client_refresh_finish;
-	client_class->refresh_sync			= book_client_refresh_sync;
+	client_class->get_dbus_proxy = book_client_get_dbus_proxy;
+	client_class->unwrap_dbus_error = book_client_unwrap_dbus_error;
+	client_class->retrieve_capabilities_sync = book_client_retrieve_capabilities_sync;
+	client_class->get_backend_property_sync = book_client_get_backend_property_sync;
+	client_class->set_backend_property_sync = book_client_set_backend_property_sync;
+	client_class->open_sync = book_client_open_sync;
+	client_class->refresh_sync = book_client_refresh_sync;
+}
+
+static void
+e_book_client_initable_init (GInitableIface *interface)
+{
+	interface->init = book_client_initable_init;
+}
+
+static void
+e_book_client_async_initable_init (GAsyncInitableIface *interface)
+{
+	interface->init_async = book_client_initable_init_async;
+	interface->init_finish = book_client_initable_init_finish;
 }
 
 static void
@@ -789,6 +1093,10 @@ e_book_client_init (EBookClient *client)
 	UNLOCK_FACTORY ();
 
 	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+
+	/* This is so the D-Bus thread can schedule signal emissions
+	 * on the thread-default context for this thread. */
+	client->priv->main_context = g_main_context_ref_thread_default ();
 }
 
 /**
@@ -808,105 +1116,11 @@ EBookClient *
 e_book_client_new (ESource *source,
                    GError **error)
 {
-	EBookClient *client;
-	GError *err = NULL;
-	GDBusConnection *connection;
-	const gchar *uid;
-	gchar *object_path = NULL;
-
-	g_return_val_if_fail (source != NULL, NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	LOCK_FACTORY ();
-	/* XXX Oops, e_book_client_new() forgot to take a GCancellable. */
-	if (!gdbus_book_factory_activate (NULL, &err)) {
-		UNLOCK_FACTORY ();
-		if (err) {
-			unwrap_dbus_error (err, &err);
-			g_warning ("%s: Failed to run book factory: %s", G_STRFUNC, err->message);
-			g_propagate_error (error, err);
-		} else {
-			g_warning ("%s: Failed to run book factory: Unknown error", G_STRFUNC);
-			g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, _("Failed to run book factory"));
-		}
-
-		return NULL;
-	}
-
-	uid = e_source_get_uid (source);
-
-	client = g_object_new (E_TYPE_BOOK_CLIENT, "source", source, NULL);
-	UNLOCK_FACTORY ();
-
-	e_dbus_address_book_factory_call_open_address_book_sync (
-		book_factory, uid, &object_path, NULL, &err);
-
-	/* Sanity check. */
-	g_return_val_if_fail (
-		((object_path != NULL) && (err == NULL)) ||
-		((object_path == NULL) && (err != NULL)), NULL);
-
-	if (err != NULL) {
-		unwrap_dbus_error (err, &err);
-		g_propagate_error (error, err);
-		g_object_unref (client);
-		return NULL;
-	}
-
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (book_factory));
-
-	client->priv->dbus_proxy = G_DBUS_PROXY (e_gdbus_book_proxy_new_sync (
-		connection,
-		G_DBUS_PROXY_FLAGS_NONE,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
-		object_path,
-		NULL, &err));
-
-	g_free (object_path);
-
-	/* Sanity check. */
-	g_return_val_if_fail (
-		((client->priv->dbus_proxy != NULL) && (err == NULL)) ||
-		((client->priv->dbus_proxy == NULL) && (err != NULL)), NULL);
-
-	if (err != NULL) {
-		unwrap_dbus_error (err, &err);
-		g_propagate_error (error, err);
-		g_object_unref (client);
-		return NULL;
-	}
-
-	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (
-		connection,
-		"org.freedesktop.DBus",				/* sender */
-		"org.freedesktop.DBus",				/* interface */
-		"NameOwnerChanged",				/* member */
-		"/org/freedesktop/DBus",			/* object_path */
-		"org.gnome.evolution.dataserver.AddressBook",	/* arg0 */
-		G_DBUS_SIGNAL_FLAGS_NONE,
-		gdbus_book_client_connection_gone_cb, client, NULL);
-
-	g_signal_connect (
-		connection, "closed",
-		G_CALLBACK (gdbus_book_client_closed_cb), client);
-
-	g_signal_connect (
-		client->priv->dbus_proxy, "backend_error",
-		G_CALLBACK (backend_error_cb), client);
-	g_signal_connect (
-		client->priv->dbus_proxy, "readonly",
-		G_CALLBACK (readonly_cb), client);
-	g_signal_connect (
-		client->priv->dbus_proxy, "online",
-		G_CALLBACK (online_cb), client);
-	g_signal_connect (
-		client->priv->dbus_proxy, "opened",
-		G_CALLBACK (opened_cb), client);
-	g_signal_connect (
-		client->priv->dbus_proxy, "backend-property-changed",
-		G_CALLBACK (backend_property_changed_cb), client);
-
-	return client;
+	return g_initable_new (
+		E_TYPE_BOOK_CLIENT, NULL, error,
+		"source", source, NULL);
 }
 
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
@@ -953,12 +1167,12 @@ make_me_card (void)
 /**
  * e_book_client_get_self:
  * @registry: an #ESourceRegistry
- * @contact: (out): an #EContact pointer to set
- * @client: (out): an #EBookClient pointer to set
+ * @out_contact: (out): an #EContact pointer to set
+ * @out_client: (out): an #EBookClient pointer to set
  * @error: a #GError to set on failure
  *
  * Get the #EContact referring to the user of the address book
- * and set it in @contact and @client.
+ * and set it in @out_contact and @out_client.
  *
  * Returns: %TRUE if successful, otherwise %FALSE.
  *
@@ -966,67 +1180,74 @@ make_me_card (void)
  **/
 gboolean
 e_book_client_get_self (ESourceRegistry *registry,
-                        EContact **contact,
-                        EBookClient **client,
+                        EContact **out_contact,
+                        EBookClient **out_client,
                         GError **error)
 {
+	EBookClient *book_client;
 	ESource *source;
-	GError *local_error = NULL;
+	EContact *contact = NULL;
 	GSettings *settings;
 	gchar *uid;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
-	g_return_val_if_fail (contact != NULL, FALSE);
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (out_contact != NULL, FALSE);
+	g_return_val_if_fail (out_client != NULL, FALSE);
 
 	source = e_source_registry_ref_builtin_address_book (registry);
-	*client = e_book_client_new (source, &local_error);
+	book_client = e_book_client_new (source, error);
 	g_object_unref (source);
 
-	if (!*client) {
-		g_propagate_error (error, local_error);
+	if (book_client == NULL)
+		return FALSE;
+
+	success = e_client_open_sync (
+		E_CLIENT (book_client), FALSE, NULL, error);
+	if (!success) {
+		g_object_unref (book_client);
 		return FALSE;
 	}
 
-	if (!e_client_open_sync (E_CLIENT (*client), FALSE, NULL, &local_error)) {
-		g_object_unref (*client);
-		*client = NULL;
-		g_propagate_error (error, local_error);
-
-		return FALSE;
-	}
+	*out_client = book_client;
 
 	settings = g_settings_new (SELF_UID_PATH_ID);
 	uid = g_settings_get_string (settings, SELF_UID_KEY);
 	g_object_unref (settings);
 
 	if (uid) {
-		gboolean got;
-
-		/* Don't care about errors because we'll create a new card on failure */
-		got = e_book_client_get_contact_sync (*client, uid, contact, NULL, NULL);
+		/* Don't care about errors because
+		 * we'll create a new card on failure. */
+		e_book_client_get_contact_sync (
+			book_client, uid, &contact, NULL, NULL);
 		g_free (uid);
-		if (got)
+
+		if (contact != NULL) {
+			*out_client = book_client;
+			*out_contact = contact;
 			return TRUE;
+		}
 	}
 
 	uid = NULL;
-	*contact = make_me_card ();
-	if (!e_book_client_add_contact_sync (*client, *contact, &uid, NULL, &local_error)) {
-		g_object_unref (*client);
-		*client = NULL;
-		g_object_unref (*contact);
-		*contact = NULL;
-		g_propagate_error (error, local_error);
+	contact = make_me_card ();
+	success = e_book_client_add_contact_sync (
+		book_client, contact, &uid, NULL, error);
+	if (!success) {
+		g_object_unref (book_client);
+		g_object_unref (contact);
 		return FALSE;
 	}
 
-	if (uid) {
-		e_contact_set (*contact, E_CONTACT_UID, uid);
+	if (uid != NULL) {
+		e_contact_set (contact, E_CONTACT_UID, uid);
 		g_free (uid);
 	}
 
-	e_book_client_set_self (*client, *contact, NULL);
+	e_book_client_set_self (book_client, contact, NULL);
+
+	*out_client = book_client;
+	*out_contact = contact;
 
 	return TRUE;
 }
@@ -1092,6 +1313,27 @@ e_book_client_is_self (EContact *contact)
 	return is_self;
 }
 
+/* Helper for e_book_client_add_contact() */
+static void
+book_client_add_contact_thread (GSimpleAsyncResult *simple,
+                                GObject *source_object,
+                                GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_add_contact_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->contact,
+		&async_context->uid,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * e_book_client_add_contact:
  * @client: an #EBookClient
@@ -1108,45 +1350,45 @@ e_book_client_is_self (EContact *contact)
  **/
 void
 e_book_client_add_contact (EBookClient *client,
-                           /* const */ EContact *contact,
+                           EContact *contact,
                            GCancellable *cancellable,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	gchar *vcard, *gdbus_vcard = NULL;
-	const gchar *strv[2];
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_if_fail (contact != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (E_IS_CONTACT (contact));
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
-	strv[1] = NULL;
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->contact = g_object_ref (contact);
 
-	g_return_if_fail (strv[0] != NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_add_contact);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		strv, cancellable, callback, user_data,
-		e_book_client_add_contact,
-		e_gdbus_book_call_add_contacts,
-		NULL, NULL, NULL,
-		e_gdbus_book_call_add_contacts_finish,
-		NULL);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	g_free (vcard);
-	g_free (gdbus_vcard);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_add_contact_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
  * e_book_client_add_contact_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @added_uid: (out): UID of a newly added contact; can be %NULL
+ * @out_added_uid: (out): UID of a newly added contact; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_add_contact() and
- * sets @added_uid to a UID of a newly added contact.
+ * sets @out_added_uid to a UID of a newly added contact.
  * This string should be freed with g_free().
  *
  * Note: This is not modifying original #EContact.
@@ -1158,37 +1400,43 @@ e_book_client_add_contact (EBookClient *client,
 gboolean
 e_book_client_add_contact_finish (EBookClient *client,
                                   GAsyncResult *result,
-                                  gchar **added_uid,
+                                  gchar **out_added_uid,
                                   GError **error)
 {
-	gboolean res;
-	gchar **out_uids = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	res = e_client_proxy_call_finish_strv (
-		E_CLIENT (client), result, &out_uids, error,
-		e_book_client_add_contact);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_add_contact), FALSE);
 
-	if (res && out_uids && added_uid) {
-		*added_uid = g_strdup (out_uids[0]);
-	} else {
-		if (added_uid)
-			*added_uid = NULL;
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->uid != NULL, FALSE);
+
+	if (out_added_uid != NULL) {
+		*out_added_uid = async_context->uid;
+		async_context->uid = NULL;
 	}
-	g_strfreev (out_uids);
 
-	return res;
+	return TRUE;
 }
 
 /**
  * e_book_client_add_contact_sync:
  * @client: an #EBookClient
  * @contact: an #EContact
- * @added_uid: (out): UID of a newly added contact; can be %NULL
+ * @out_added_uid: (out): UID of a newly added contact; can be %NULL
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Adds @contact to @client and
- * sets @added_uid to a UID of a newly added contact.
+ * sets @out_added_uid to a UID of a newly added contact.
  * This string should be freed with g_free().
  *
  * Note: This is not modifying original @contact, thus if it's needed,
@@ -1200,44 +1448,60 @@ e_book_client_add_contact_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_add_contact_sync (EBookClient *client,
-                                /* const */ EContact *contact,
-                                gchar **added_uid,
+                                EContact *contact,
+                                gchar **out_added_uid,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	gboolean res;
-	gchar *vcard, *gdbus_vcard = NULL, **out_uids = NULL;
-	const gchar *strv[2];
+	GSList link = { contact, NULL };
+	GSList *uids = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
-	strv[1] = NULL;
+	success = e_book_client_add_contacts_sync (
+		client, &link, &uids, cancellable, error);
 
-	g_return_val_if_fail (strv[0] != NULL, FALSE);
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (uids != NULL)) ||
+		(!success && (uids == NULL)), FALSE);
 
-	res = e_client_proxy_call_sync_strv__strv (
-		E_CLIENT (client), strv, &out_uids, cancellable, error,
-		e_gdbus_book_call_add_contacts_sync);
+	if (uids != NULL) {
+		if (out_added_uid != NULL)
+			*out_added_uid = g_strdup (uids->data);
 
-	if (res && out_uids && added_uid) {
-		*added_uid = g_strdup (out_uids[0]);
-	} else {
-		if (added_uid)
-			*added_uid = NULL;
+		g_slist_free_full (uids, (GDestroyNotify) g_free);
 	}
 
-	g_strfreev (out_uids);
-	g_free (vcard);
-	g_free (gdbus_vcard);
+	return success;
+}
 
-	return res;
+/* Helper for e_book_client_add_contacts() */
+static void
+book_client_add_contacts_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_add_contacts_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->object_list,
+		&async_context->string_list,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1256,40 +1520,47 @@ e_book_client_add_contact_sync (EBookClient *client,
  **/
 void
 e_book_client_add_contacts (EBookClient *client,
-                            /* const */ GSList *contacts,
+                            GSList *contacts,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	gchar **array;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (contacts != NULL);
 
-	array = contact_slist_to_utf8_vcard_array (contacts);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->object_list = g_slist_copy_deep (
+		contacts, (GCopyFunc) g_object_ref, NULL);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		(const gchar * const *) array,
-		cancellable, callback, user_data,
-		e_book_client_add_contacts,
-		e_gdbus_book_call_add_contacts,
-		NULL, NULL, NULL,
-		e_gdbus_book_call_add_contacts_finish,
-		NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_add_contacts);
 
-	g_strfreev (array);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_add_contacts_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
  * e_book_client_add_contacts_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @added_uids: (out) (element-type utf8) (allow-none): UIDs of newly added
- * contacts; can be %NULL
+ * @out_added_uids: (out) (element-type utf8) (allow-none): UIDs of
+ *                  newly added contacts; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_add_contacts() and
- * sets @added_uids to the UIDs of newly added contacts if successful.
+ * sets @out_added_uids to the UIDs of newly added contacts if successful.
  * This #GSList should be freed with e_client_util_free_string_slist().
  *
  * If any of the contacts cannot be inserted, all of the insertions will be
@@ -1304,39 +1575,42 @@ e_book_client_add_contacts (EBookClient *client,
 gboolean
 e_book_client_add_contacts_finish (EBookClient *client,
                                    GAsyncResult *result,
-                                   GSList **added_uids,
+                                   GSList **out_added_uids,
                                    GError **error)
 {
-	gboolean res;
-	gchar **out_uids = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	res = e_client_proxy_call_finish_strv (
-		E_CLIENT (client), result, &out_uids, error,
-		e_book_client_add_contacts);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_add_contacts), FALSE);
 
-	if (res && out_uids && added_uids) {
-		*added_uids = e_client_util_strv_to_slist ((const gchar * const*) out_uids);
-	} else {
-		if (added_uids)
-			*added_uids = NULL;
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	if (out_added_uids != NULL) {
+		*out_added_uids = async_context->string_list;
+		async_context->string_list = NULL;
 	}
 
-	g_strfreev (out_uids);
-
-	return res;
+	return TRUE;
 }
 
 /**
  * e_book_client_add_contacts_sync:
  * @client: an #EBookClient
  * @contacts: (element-type EContact): a #GSList of #EContact objects to add
- * @added_uids: (out) (element-type utf8) (allow-none): UIDs of newly added
- * contacts; can be %NULL
+ * @out_added_uids: (out) (element-type utf8) (allow-none): UIDs of newly
+ *                  added contacts; can be %NULL
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Adds @contacts to @client and
- * sets @added_uids to the UIDs of newly added contacts if successful.
+ * sets @out_added_uids to the UIDs of newly added contacts if successful.
  * This #GSList should be freed with e_client_util_free_string_slist().
  *
  * If any of the contacts cannot be inserted, all of the insertions will be
@@ -1351,40 +1625,91 @@ e_book_client_add_contacts_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_add_contacts_sync (EBookClient *client,
-                                 /* const */ GSList *contacts,
-                                 GSList **added_uids,
+                                 GSList *contacts,
+                                 GSList **out_added_uids,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	gboolean res;
-	gchar **array, **out_uids = NULL;
+	GSList *link;
+	gchar **strv;
+	gchar **uids = NULL;
+	gboolean success;
+	gint ii = 0;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (contacts != NULL, FALSE);
 
 	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
-	array = contact_slist_to_utf8_vcard_array (contacts);
+	/* Build a string array, ensuring each element is valid UTF-8. */
+	strv = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (link = contacts; link != NULL; link = g_slist_next (link)) {
+		EVCard *vcard;
+		gchar *string;
 
-	res = e_client_proxy_call_sync_strv__strv (
-		E_CLIENT (client),
-		(const gchar * const *) array,
-		&out_uids, cancellable, error,
-		e_gdbus_book_call_add_contacts_sync);
-
-	if (res && out_uids && added_uids) {
-		*added_uids = e_client_util_strv_to_slist ((const gchar * const*) out_uids);
-	} else {
-		if (added_uids)
-			*added_uids = NULL;
+		vcard = E_VCARD (link->data);
+		string = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+		strv[ii++] = e_util_utf8_make_valid (string);
+		g_free (string);
 	}
 
-	g_strfreev (out_uids);
-	g_strfreev (array);
+	success = e_dbus_address_book_call_create_contacts_sync (
+		client->priv->dbus_proxy,
+		(const gchar * const *) strv,
+		&uids, cancellable, error);
 
-	return res;
+	g_strfreev (strv);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (uids != NULL)) ||
+		(!success && (uids == NULL)), FALSE);
+
+	if (!success)
+		return FALSE;
+
+	/* XXX We should have passed the string array directly
+	 *     back to the caller instead of building a linked
+	 *     list.  This is unnecessary work. */
+	if (out_added_uids != NULL) {
+		GSList *tmp = NULL;
+		gint ii;
+
+		/* Take ownership of the string array elements. */
+		for (ii = 0; uids[ii] != NULL; ii++) {
+			tmp = g_slist_prepend (tmp, uids[ii]);
+			uids[ii] = NULL;
+		}
+
+		*out_added_uids = g_slist_reverse (tmp);
+	}
+
+	g_strfreev (uids);
+
+	return TRUE;
+}
+
+/* Helper for e_book_client_modify_contact() */
+static void
+book_client_modify_contact_thread (GSimpleAsyncResult *simple,
+                                   GObject *source_object,
+                                   GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_modify_contact_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->contact,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1403,33 +1728,34 @@ e_book_client_add_contacts_sync (EBookClient *client,
  **/
 void
 e_book_client_modify_contact (EBookClient *client,
-                              /* const */ EContact *contact,
+                              EContact *contact,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	gchar *vcard, *gdbus_vcard = NULL;
-	const gchar *strv[2];
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_if_fail (contact != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (E_IS_CONTACT (contact));
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
-	strv[1] = NULL;
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->contact = g_object_ref (contact);
 
-	g_return_if_fail (strv[0] != NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_modify_contact);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		strv, cancellable, callback, user_data,
-		e_book_client_modify_contact,
-		e_gdbus_book_call_modify_contacts,
-		e_gdbus_book_call_modify_contacts_finish,
-		NULL, NULL, NULL, NULL);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	g_free (vcard);
-	g_free (gdbus_vcard);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_modify_contact_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1449,9 +1775,17 @@ e_book_client_modify_contact_finish (EBookClient *client,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	return e_client_proxy_call_finish_void (
-		E_CLIENT (client), result, error,
-		e_book_client_modify_contact);
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_modify_contact), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -1469,36 +1803,37 @@ e_book_client_modify_contact_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_modify_contact_sync (EBookClient *client,
-                                   /* const */ EContact *contact,
+                                   EContact *contact,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-	gboolean res;
-	gchar *vcard, *gdbus_vcard = NULL;
-	const gchar *strv[2];
+	GSList link = { contact, NULL };
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
+	return e_book_client_modify_contacts_sync (
+		client, &link, cancellable, error);
+}
 
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
-	strv[1] = NULL;
+/* Helper for e_book_client_modify_contacts() */
+static void
+book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
 
-	g_return_val_if_fail (strv[0] != NULL, FALSE);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	res = e_client_proxy_call_sync_strv__void (
-		E_CLIENT (client),
-		strv, cancellable, error,
-		e_gdbus_book_call_modify_contacts_sync);
+	e_book_client_modify_contacts_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->object_list,
+		cancellable, &error);
 
-	g_free (vcard);
-	g_free (gdbus_vcard);
-
-	return res;
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1517,27 +1852,35 @@ e_book_client_modify_contact_sync (EBookClient *client,
  **/
 void
 e_book_client_modify_contacts (EBookClient *client,
-                               /* const */ GSList *contacts,
+                               GSList *contacts,
                                GCancellable *cancellable,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	gchar **array;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (contacts != NULL);
 
-	array = contact_slist_to_utf8_vcard_array (contacts);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->object_list = g_slist_copy_deep (
+		contacts, (GCopyFunc) g_object_ref, NULL);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		(const gchar * const *) array,
-		cancellable, callback, user_data,
-		e_book_client_modify_contacts,
-		e_gdbus_book_call_modify_contacts,
-		e_gdbus_book_call_modify_contacts_finish,
-		NULL, NULL, NULL, NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_modify_contacts);
 
-	g_strfreev (array);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_modify_contacts_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1557,9 +1900,17 @@ e_book_client_modify_contacts_finish (EBookClient *client,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	return e_client_proxy_call_finish_void (
-		E_CLIENT (client), result, error,
-		e_book_client_modify_contacts);
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_modify_contacts), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -1577,12 +1928,14 @@ e_book_client_modify_contacts_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_modify_contacts_sync (EBookClient *client,
-                                    /* const */ GSList *contacts,
+                                    GSList *contacts,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	gboolean res;
-	gchar **array;
+	GSList *link;
+	gchar **strv;
+	gboolean success;
+	gint ii = 0;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
@@ -1592,17 +1945,46 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 		return FALSE;
 	}
 
-	array = contact_slist_to_utf8_vcard_array (contacts);
+	/* Build a string array, ensuring each element is valid UTF-8. */
+	strv = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (link = contacts; link != NULL; link = g_slist_next (link)) {
+		EVCard *vcard;
+		gchar *string;
 
-	res = e_client_proxy_call_sync_strv__void (
-		E_CLIENT (client),
-		(const gchar * const *) array,
-		cancellable, error,
-		e_gdbus_book_call_modify_contacts_sync);
+		vcard = E_VCARD (link->data);
+		string = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+		strv[ii++] = e_util_utf8_make_valid (string);
+		g_free (string);
+	}
 
-	g_strfreev (array);
+	success = e_dbus_address_book_call_modify_contacts_sync (
+		client->priv->dbus_proxy,
+		(const gchar * const *) strv,
+		cancellable, error);
 
-	return res;
+	g_strfreev (strv);
+
+	return success;
+}
+
+/* Helper for e_book_client_remove_contact() */
+static void
+book_client_remove_contact_thread (GSimpleAsyncResult *simple,
+                                   GObject *source_object,
+                                   GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_remove_contact_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->contact,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1626,31 +2008,29 @@ e_book_client_remove_contact (EBookClient *client,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	const gchar *uid, *safe_uid;
-	const gchar *strv[2];
-	gchar *gdbus_uid = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_if_fail (contact != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (E_IS_CONTACT (contact));
 
-	uid = e_contact_get_const ( E_CONTACT (contact), E_CONTACT_UID);
-	g_return_if_fail (uid != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->contact = g_object_ref (contact);
 
-	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
-	g_return_if_fail (safe_uid != NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_remove_contact);
 
-	strv[0] = safe_uid;
-	strv[1] = NULL;
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		strv, cancellable, callback, user_data,
-		e_book_client_remove_contact,
-		e_gdbus_book_call_remove_contacts,
-		e_gdbus_book_call_remove_contacts_finish,
-		NULL, NULL, NULL, NULL);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
 
-	g_free (gdbus_uid);
+	g_simple_async_result_run_in_thread (
+		simple, book_client_remove_contact_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1670,9 +2050,17 @@ e_book_client_remove_contact_finish (EBookClient *client,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	return e_client_proxy_call_finish_void (
-		E_CLIENT (client), result, error,
-		e_book_client_remove_contact);
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_remove_contact), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -1690,40 +2078,40 @@ e_book_client_remove_contact_finish (EBookClient *client,
  **/
 gboolean
 e_book_client_remove_contact_sync (EBookClient *client,
-                                   /* const */ EContact *contact,
+                                   EContact *contact,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-	gboolean res;
-	const gchar *strv[2];
-	const gchar *uid, *safe_uid;
-	gchar *gdbus_uid = NULL;
+	const gchar *uid;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	uid = e_contact_get_const (E_CONTACT (contact), E_CONTACT_UID);
+	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
-	g_return_val_if_fail (safe_uid != NULL, FALSE);
+	return e_book_client_remove_contact_by_uid_sync (
+		client, uid, cancellable, error);
+}
 
-	strv[0] = safe_uid;
-	strv[1] = NULL;
+/* Helper for e_book_client_remove_contact_by_uid() */
+static void
+book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
+                                          GObject *source_object,
+                                          GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
 
-	res = e_client_proxy_call_sync_strv__void (
-		E_CLIENT (client),
-		strv, cancellable, error,
-		e_gdbus_book_call_remove_contacts_sync);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	g_free (gdbus_uid);
+	e_book_client_remove_contact_by_uid_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->uid,
+		cancellable, &error);
 
-	return res;
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1747,27 +2135,29 @@ e_book_client_remove_contact_by_uid (EBookClient *client,
                                      GAsyncReadyCallback callback,
                                      gpointer user_data)
 {
-	const gchar *safe_uid;
-	gchar *gdbus_uid = NULL;
-	const gchar *strv[2];
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (uid != NULL);
 
-	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
-	g_return_if_fail (safe_uid != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->uid = g_strdup (uid);
 
-	strv[0] = safe_uid;
-	strv[1] = NULL;
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_remove_contact_by_uid);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		strv, cancellable, callback, user_data,
-		e_book_client_remove_contact_by_uid,
-		e_gdbus_book_call_remove_contacts,
-		e_gdbus_book_call_remove_contacts_finish,
-		NULL, NULL, NULL, NULL);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	g_free (gdbus_uid);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_remove_contact_by_uid_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1787,9 +2177,17 @@ e_book_client_remove_contact_by_uid_finish (EBookClient *client,
                                             GAsyncResult *result,
                                             GError **error)
 {
-	return e_client_proxy_call_finish_void (
-		E_CLIENT (client), result, error,
-		e_book_client_remove_contact_by_uid);
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_remove_contact_by_uid), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -1811,32 +2209,33 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client,
                                           GCancellable *cancellable,
                                           GError **error)
 {
-	gboolean res;
-	const gchar *safe_uid;
-	gchar *gdbus_uid = NULL;
-	const gchar *strv[2];
+	GSList link = { (gpointer) uid, NULL };
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
+	return e_book_client_remove_contacts_sync (
+		client, &link, cancellable, error);
+}
 
-	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
-	g_return_val_if_fail (safe_uid != NULL, FALSE);
+/* Helper for e_book_client_remove_contacts() */
+static void
+book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
 
-	strv[0] = safe_uid;
-	strv[1] = NULL;
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	res = e_client_proxy_call_sync_strv__void (
-		E_CLIENT (client), strv, cancellable, error,
-		e_gdbus_book_call_remove_contacts_sync);
+	e_book_client_remove_contacts_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->string_list,
+		cancellable, &error);
 
-	g_free (gdbus_uid);
-
-	return res;
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1863,23 +2262,30 @@ e_book_client_remove_contacts (EBookClient *client,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	gchar **strv;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (uids != NULL);
 
-	strv = e_client_util_slist_to_strv (uids);
-	g_return_if_fail (strv != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->string_list = g_slist_copy_deep (
+		(GSList *) uids, (GCopyFunc) g_strdup, NULL);
 
-	e_client_proxy_call_strv (
-		E_CLIENT (client),
-		(const gchar * const *) strv,
-		cancellable, callback, user_data,
-		e_book_client_remove_contacts,
-		e_gdbus_book_call_remove_contacts,
-		e_gdbus_book_call_remove_contacts_finish,
-		NULL, NULL, NULL, NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_remove_contacts);
 
-	g_strfreev (strv);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_remove_contacts_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1899,9 +2305,17 @@ e_book_client_remove_contacts_finish (EBookClient *client,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	return e_client_proxy_call_finish_void (
-		E_CLIENT (client), result, error,
-		e_book_client_remove_contacts);
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_remove_contacts), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -1926,8 +2340,9 @@ e_book_client_remove_contacts_sync (EBookClient *client,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	gboolean res;
 	gchar **strv;
+	gboolean success;
+	gint ii = 0;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
@@ -1937,17 +2352,41 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 		return FALSE;
 	}
 
-	strv = e_client_util_slist_to_strv (uids);
-	g_return_val_if_fail (strv != NULL, FALSE);
+	strv = g_new0 (gchar *, g_slist_length ((GSList *) uids) + 1);
+	while (uids != NULL) {
+		strv[ii++] = e_util_utf8_make_valid (uids->data);
+		uids = g_slist_next (uids);
+	}
 
-	res = e_client_proxy_call_sync_strv__void (
-		E_CLIENT (client), (const gchar * const *) strv,
-		cancellable, error,
-		e_gdbus_book_call_remove_contacts_sync);
+	success = e_dbus_address_book_call_remove_contacts_sync (
+		client->priv->dbus_proxy,
+		(const gchar * const *) strv,
+		cancellable, error);
 
 	g_strfreev (strv);
 
-	return res;
+	return success;
+}
+
+/* Helper for e_book_client_get_contact() */
+static void
+book_client_get_contact_thread (GSimpleAsyncResult *simple,
+                                GObject *source_object,
+                                GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_get_contact_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->uid,
+		&async_context->contact,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1971,35 +2410,40 @@ e_book_client_get_contact (EBookClient *client,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	const gchar *safe_uid;
-	gchar *gdbus_uid = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (uid != NULL);
 
-	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
-	g_return_if_fail (safe_uid != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->uid  = g_strdup (uid);
 
-	e_client_proxy_call_string (
-		E_CLIENT (client),
-		safe_uid, cancellable, callback, user_data,
-		e_book_client_get_contact,
-		e_gdbus_book_call_get_contact,
-		NULL, NULL,
-		e_gdbus_book_call_get_contact_finish,
-		NULL, NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_get_contact);
 
-	g_free (gdbus_uid);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_get_contact_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
  * e_book_client_get_contact_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contact: (out): an #EContact for previously given uid
+ * @out_contact: (out): an #EContact for previously given uid
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contact().
- * If successful, then the @contact is set to newly allocated
+ * If successful, then the @out_contact is set to newly allocated
  * #EContact, which should be freed with g_object_unref().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
@@ -2009,39 +2453,41 @@ e_book_client_get_contact (EBookClient *client,
 gboolean
 e_book_client_get_contact_finish (EBookClient *client,
                                   GAsyncResult *result,
-                                  EContact **contact,
+                                  EContact **out_contact,
                                   GError **error)
 {
-	gboolean res;
-	gchar *vcard = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_val_if_fail (contact != NULL, FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_get_contact), FALSE);
 
-	res = e_client_proxy_call_finish_string (
-		E_CLIENT (client),
-		result, &vcard, error,
-		e_book_client_get_contact);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	if (vcard && res)
-		*contact = e_contact_new_from_vcard (vcard);
-	else
-		*contact = NULL;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
 
-	g_free (vcard);
+	g_return_val_if_fail (async_context->contact != NULL, FALSE);
 
-	return res;
+	if (out_contact != NULL)
+		*out_contact = g_object_ref (async_context->contact);
+
+	return TRUE;
 }
 
 /**
  * e_book_client_get_contact_sync:
  * @client: an #EBookClient
  * @uid: a unique string ID specifying the contact
- * @contact: (out): an #EContact for given @uid
+ * @out_contact: (out): an #EContact for given @uid
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Receive #EContact from the @client for the gived @uid.
- * If successful, then the @contact is set to newly allocated
+ * If successful, then the @out_contact is set to newly allocated
  * #EContact, which should be freed with g_object_unref().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
@@ -2051,40 +2497,64 @@ e_book_client_get_contact_finish (EBookClient *client,
 gboolean
 e_book_client_get_contact_sync (EBookClient *client,
                                 const gchar *uid,
-                                EContact **contact,
+                                EContact **out_contact,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	gboolean res;
-	const gchar *safe_uid;
-	gchar *vcard = NULL, *gdbus_uid = NULL;
+	gchar *utf8_uid;
+	gchar *vcard = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (contact != NULL, FALSE);
+	g_return_val_if_fail (out_contact != NULL, FALSE);
 
 	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
-	safe_uid = e_util_ensure_gdbus_string (uid, &gdbus_uid);
-	g_return_val_if_fail (safe_uid != NULL, FALSE);
+	utf8_uid = e_util_utf8_make_valid (uid);
 
-	res = e_client_proxy_call_sync_string__string (
-		E_CLIENT (client),
-		safe_uid, &vcard, cancellable, error,
-		e_gdbus_book_call_get_contact_sync);
+	success = e_dbus_address_book_call_get_contact_sync (
+		client->priv->dbus_proxy,
+		utf8_uid, &vcard, cancellable, error);
 
-	if (vcard && res)
-		*contact = e_contact_new_from_vcard_with_uid (vcard, safe_uid);
-	else
-		*contact = NULL;
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (vcard != NULL)) ||
+		(!success && (vcard == NULL)), FALSE);
 
-	g_free (gdbus_uid);
-	g_free (vcard);
+	if (vcard != NULL) {
+		*out_contact =
+			e_contact_new_from_vcard_with_uid (vcard, utf8_uid);
+		g_free (vcard);
+	}
 
-	return res;
+	g_free (utf8_uid);
+
+	return success;
+}
+
+/* Helper for e_book_client_get_contacts() */
+static void
+book_client_get_contacts_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_get_contacts_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->sexp,
+		&async_context->object_list,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -2111,33 +2581,42 @@ e_book_client_get_contacts (EBookClient *client,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	gchar *gdbus_sexp = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (
-		E_CLIENT (client),
-		e_util_ensure_gdbus_string (sexp, &gdbus_sexp),
-		cancellable, callback, user_data,
-		e_book_client_get_contacts,
-		e_gdbus_book_call_get_contact_list,
-		NULL, NULL, NULL,
-		e_gdbus_book_call_get_contact_list_finish,
-		NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->sexp = g_strdup (sexp);
 
-	g_free (gdbus_sexp);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_get_contacts);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_get_contacts_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
  * e_book_client_get_contacts_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contacts: (element-type EContact) (out): a #GSList of matched #EContact-s
+ * @out_contacts: (element-type EContact) (out): a #GSList of matched
+ *                #EContact-s
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts().
- * If successful, then the @contacts is set to newly allocated list of #EContact-s,
- * which should be freed with e_client_util_free_object_slist().
+ * If successful, then the @out_contacts is set to newly allocated list of
+ * #EContact-s, which should be freed with e_client_util_free_object_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -2146,47 +2625,42 @@ e_book_client_get_contacts (EBookClient *client,
 gboolean
 e_book_client_get_contacts_finish (EBookClient *client,
                                    GAsyncResult *result,
-                                   GSList **contacts,
+                                   GSList **out_contacts,
                                    GError **error)
 {
-	gboolean res;
-	gchar **vcards = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_val_if_fail (contacts != NULL, FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_get_contacts), FALSE);
 
-	res = e_client_proxy_call_finish_strv (
-		E_CLIENT (client),
-		result, &vcards, error,
-		e_book_client_get_contacts);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	if (vcards && res) {
-		gint ii;
-		GSList *slist = NULL;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
 
-		for (ii = 0; vcards[ii]; ii++) {
-			slist = g_slist_prepend (slist, e_contact_new_from_vcard (vcards[ii]));
-		}
-
-		*contacts = g_slist_reverse (slist);
-	} else {
-		*contacts = NULL;
+	if (out_contacts != NULL) {
+		*out_contacts = async_context->object_list;
+		async_context->object_list = NULL;
 	}
 
-	g_strfreev (vcards);
-
-	return res;
+	return TRUE;
 }
 
 /**
  * e_book_client_get_contacts_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @contacts: (element-type EContact) (out): a #GSList of matched #EContact-s
+ * @out_contacts: (element-type EContact) (out): a #GSList of matched
+ *                #EContact-s
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Query @client with @sexp, receiving a list of contacts which matched.
- * If successful, then the @contacts is set to newly allocated #GSList of
+ * If successful, then the @out_contacts is set to newly allocated #GSList of
  * #EContact-s, which should be freed with e_client_util_free_object_slist().
  *
  * Note: @sexp can be obtained through #EBookQuery, by converting it
@@ -2199,46 +2673,73 @@ e_book_client_get_contacts_finish (EBookClient *client,
 gboolean
 e_book_client_get_contacts_sync (EBookClient *client,
                                  const gchar *sexp,
-                                 GSList **contacts,
+                                 GSList **out_contacts,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	gboolean res;
-	gchar *gdbus_sexp = NULL;
+	gchar *utf8_sexp;
 	gchar **vcards = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
-	g_return_val_if_fail (contacts != NULL, FALSE);
+	g_return_val_if_fail (out_contacts != NULL, FALSE);
 
 	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
-	res = e_client_proxy_call_sync_string__strv (
-		E_CLIENT (client),
-		e_util_ensure_gdbus_string (sexp, &gdbus_sexp),
-		&vcards, cancellable, error,
-		e_gdbus_book_call_get_contact_list_sync);
+	utf8_sexp = e_util_utf8_make_valid (sexp);
 
-	if (vcards && res) {
+	success = e_dbus_address_book_call_get_contact_list_sync (
+		client->priv->dbus_proxy,
+		utf8_sexp, &vcards, cancellable, error);
+
+	g_free (utf8_sexp);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (vcards != NULL)) ||
+		(!success && (vcards == NULL)), FALSE);
+
+	if (vcards != NULL) {
+		EContact *contact;
+		GSList *tmp = NULL;
 		gint ii;
-		GSList *slist = NULL;
 
-		for (ii = 0; vcards[ii]; ii++) {
-			slist = g_slist_prepend (slist, e_contact_new_from_vcard (vcards[ii]));
+		for (ii = 0; vcards[ii] != NULL; ii++) {
+			contact = e_contact_new_from_vcard (vcards[ii]);
+			tmp = g_slist_prepend (tmp, contact);
 		}
 
-		*contacts = g_slist_reverse (slist);
-	} else {
-		*contacts = NULL;
+		*out_contacts = g_slist_reverse (tmp);
+
+		g_strfreev (vcards);
 	}
 
-	g_free (gdbus_sexp);
-	g_strfreev (vcards);
+	return success;
+}
 
-	return res;
+/* Helper for e_book_client_get_contacts_uids() */
+static void
+book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
+                                      GObject *source_object,
+                                      GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_get_contacts_uids_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->sexp,
+		&async_context->string_list,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -2265,32 +2766,41 @@ e_book_client_get_contacts_uids (EBookClient *client,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	gchar *gdbus_sexp = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (
-		E_CLIENT (client),
-		e_util_ensure_gdbus_string (sexp, &gdbus_sexp),
-		cancellable, callback, user_data,
-		e_book_client_get_contacts_uids,
-		e_gdbus_book_call_get_contact_list_uids,
-		NULL, NULL, NULL,
-		e_gdbus_book_call_get_contact_list_uids_finish,
-		NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->sexp = g_strdup (sexp);
 
-	g_free (gdbus_sexp);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_get_contacts_uids);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, book_client_get_contacts_uids_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
  * e_book_client_get_contacts_uids_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contacts_uids: (element-type utf8) (out): a #GSList of matched contacts UIDs stored as strings
+ * @out_contact_uids: (element-type utf8) (out): a #GSList of matched
+ *                    contact UIDs stored as strings
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts_uids().
- * If successful, then the @contacts_uids is set to newly allocated list
+ * If successful, then the @out_contact_uids is set to newly allocated list
  * of UID strings, which should be freed with e_client_util_free_string_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
@@ -2300,47 +2810,42 @@ e_book_client_get_contacts_uids (EBookClient *client,
 gboolean
 e_book_client_get_contacts_uids_finish (EBookClient *client,
                                         GAsyncResult *result,
-                                        GSList **contacts_uids,
+                                        GSList **out_contact_uids,
                                         GError **error)
 {
-	gboolean res;
-	gchar **uids = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_val_if_fail (contacts_uids != NULL, FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_get_contacts_uids), FALSE);
 
-	res = e_client_proxy_call_finish_strv (
-		E_CLIENT (client),
-		result, &uids, error,
-		e_book_client_get_contacts_uids);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	if (uids && res) {
-		gint ii;
-		GSList *slist = NULL;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
 
-		for (ii = 0; uids[ii]; ii++) {
-			slist = g_slist_prepend (slist, g_strdup (uids[ii]));
-		}
-
-		*contacts_uids = g_slist_reverse (slist);
-	} else {
-		*contacts_uids = NULL;
+	if (out_contact_uids != NULL) {
+		*out_contact_uids = async_context->string_list;
+		async_context->string_list = NULL;
 	}
 
-	g_strfreev (uids);
-
-	return res;
+	return TRUE;
 }
 
 /**
  * e_book_client_get_contacts_uids_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @contacts_uids: (element-type utf8) (out): a #GSList of matched contacts UIDs stored as strings
+ * @out_contact_uids: (element-type utf8) (out): a #GSList of matched
+ *                    contacts UIDs stored as strings
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Query @client with @sexp, receiving a list of contacts UIDs which matched.
- * If successful, then the @contacts_uids is set to newly allocated list
+ * If successful, then the @out_contact_uids is set to newly allocated list
  * of UID strings, which should be freed with e_client_util_free_string_slist().
  *
  * Note: @sexp can be obtained through #EBookQuery, by converting it
@@ -2353,46 +2858,76 @@ e_book_client_get_contacts_uids_finish (EBookClient *client,
 gboolean
 e_book_client_get_contacts_uids_sync (EBookClient *client,
                                       const gchar *sexp,
-                                      GSList **contacts_uids,
+                                      GSList **out_contact_uids,
                                       GCancellable *cancellable,
                                       GError **error)
 {
-	gboolean res;
-	gchar *gdbus_sexp = NULL;
+	gchar *utf8_sexp;
 	gchar **uids = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
-	g_return_val_if_fail (contacts_uids != NULL, FALSE);
+	g_return_val_if_fail (out_contact_uids != NULL, FALSE);
 
 	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
-	res = e_client_proxy_call_sync_string__strv (
-		E_CLIENT (client),
-		e_util_ensure_gdbus_string (sexp, &gdbus_sexp),
-		&uids, cancellable, error,
-		e_gdbus_book_call_get_contact_list_uids_sync);
+	utf8_sexp = e_util_utf8_make_valid (sexp);
 
-	if (uids && res) {
+	success = e_dbus_address_book_call_get_contact_list_uids_sync (
+		client->priv->dbus_proxy,
+		utf8_sexp, &uids, cancellable, error);
+
+	g_free (utf8_sexp);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (uids != NULL)) ||
+		(!success && (uids == NULL)), FALSE);
+
+	/* XXX We should have passed the string array directly
+	 *     back to the caller instead of building a linked
+	 *     list.  This is unnecessary work. */
+	if (uids != NULL) {
+		GSList *tmp = NULL;
 		gint ii;
-		GSList *slist = NULL;
 
-		for (ii = 0; uids[ii]; ii++) {
-			slist = g_slist_prepend (slist, g_strdup (uids[ii]));
+		/* Take ownership of the string array elements. */
+		for (ii = 0; uids[ii] != NULL; ii++) {
+			tmp = g_slist_prepend (tmp, uids[ii]);
+			uids[ii] = NULL;
 		}
 
-		*contacts_uids = g_slist_reverse (slist);
-	} else {
-		*contacts_uids = NULL;
+		*out_contact_uids = g_slist_reverse (tmp);
+
+		g_free (uids);
 	}
 
-	g_free (gdbus_sexp);
-	g_strfreev (uids);
+	return success;
+}
 
-	return res;
+/* Helper for e_book_client_get_view() */
+static void
+book_client_get_view_thread (GSimpleAsyncResult *simple,
+                             GObject *source_object,
+                             GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_book_client_get_view_sync (
+		E_BOOK_CLIENT (source_object),
+		async_context->sexp,
+		&async_context->client_view,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -2419,73 +2954,41 @@ e_book_client_get_view (EBookClient *client,
                         GAsyncReadyCallback callback,
                         gpointer user_data)
 {
-	gchar *gdbus_sexp = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	e_client_proxy_call_string (
-		E_CLIENT (client),
-		e_util_ensure_gdbus_string (sexp, &gdbus_sexp),
-		cancellable, callback, user_data,
-		e_book_client_get_view,
-		e_gdbus_book_call_get_view,
-		NULL, NULL,
-		e_gdbus_book_call_get_view_finish, NULL, NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->sexp = g_strdup (sexp);
 
-	g_free (gdbus_sexp);
-}
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_get_view);
 
-static gboolean
-complete_get_view (EBookClient *client,
-                   gboolean res,
-                   gchar *view_path,
-                   EBookClientView **view,
-                   GError **error)
-{
-	g_return_val_if_fail (view != NULL, FALSE);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	if (view_path && res && book_factory) {
-		GDBusConnection *connection;
-		GError *local_error = NULL;
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
 
-		connection = g_dbus_proxy_get_connection (
-			G_DBUS_PROXY (book_factory));
+	g_simple_async_result_run_in_thread (
+		simple, book_client_get_view_thread,
+		G_PRIORITY_DEFAULT, cancellable);
 
-		*view = g_initable_new (
-			E_TYPE_BOOK_CLIENT_VIEW,
-			NULL, &local_error,
-			"client", client,
-			"connection", connection,
-			"object-path", view_path,
-			NULL);
-
-		if (local_error != NULL) {
-			unwrap_dbus_error (local_error, error);
-			res = FALSE;
-		}
-	} else {
-		*view = NULL;
-		res = FALSE;
-	}
-
-	if (!*view && error && !*error)
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, _("Cannot get connection to view"));
-
-	g_free (view_path);
-
-	return res;
+	g_object_unref (simple);
 }
 
 /**
  * e_book_client_get_view_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @view: (out): an #EBookClientView
+ * @out_view: (out): an #EBookClientView
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_view().
- * If successful, then the @view is set to newly allocated #EBookClientView,
- * which should be freed with g_object_unref().
+ * If successful, then the @out_view is set to newly allocated
+ * #EBookClientView, which should be freed with g_object_unref().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -2494,33 +2997,42 @@ complete_get_view (EBookClient *client,
 gboolean
 e_book_client_get_view_finish (EBookClient *client,
                                GAsyncResult *result,
-                               EBookClientView **view,
+                               EBookClientView **out_view,
                                GError **error)
 {
-	gboolean res;
-	gchar *view_path = NULL;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	g_return_val_if_fail (view != NULL, FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_get_view), FALSE);
 
-	res = e_client_proxy_call_finish_string (
-		E_CLIENT (client),
-		result, &view_path, error,
-		e_book_client_get_view);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	return complete_get_view (client, res, view_path, view, error);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->client_view != NULL, FALSE);
+
+	if (out_view != NULL)
+		*out_view = g_object_ref (async_context->client_view);
+
+	return TRUE;
 }
 
 /**
  * e_book_client_get_view_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @view: (out) an #EBookClientView
+ * @out_view: (out) an #EBookClientView
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Query @client with @sexp, creating an #EBookClientView.
- * If successful, then the @view is set to newly allocated #EBookClientView,
- * which should be freed with g_object_unref().
+ * If successful, then the @out_view is set to newly allocated
+ * #EBookClientView, which should be freed with g_object_unref().
  *
  * Note: @sexp can be obtained through #EBookQuery, by converting it
  * to a string with e_book_query_to_string().
@@ -2532,31 +3044,62 @@ e_book_client_get_view_finish (EBookClient *client,
 gboolean
 e_book_client_get_view_sync (EBookClient *client,
                              const gchar *sexp,
-                             EBookClientView **view,
+                             EBookClientView **out_view,
                              GCancellable *cancellable,
                              GError **error)
 {
-	gboolean res;
-	gchar *gdbus_sexp = NULL;
-	gchar *view_path = NULL;
+	gchar *utf8_sexp;
+	gchar *object_path = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
-	g_return_val_if_fail (view != NULL, FALSE);
+	g_return_val_if_fail (out_view != NULL, FALSE);
 
 	if (client->priv->dbus_proxy == NULL) {
 		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
-	res = e_client_proxy_call_sync_string__string (
-		E_CLIENT (client),
-		e_util_ensure_gdbus_string (sexp, &gdbus_sexp),
-		&view_path, cancellable, error,
-		e_gdbus_book_call_get_view_sync);
+	utf8_sexp = e_util_utf8_make_valid (sexp);
 
-	g_free (gdbus_sexp);
+	success = e_dbus_address_book_call_get_view_sync (
+		client->priv->dbus_proxy, utf8_sexp,
+		&object_path, cancellable, error);
 
-	return complete_get_view (client, res, view_path, view, error);
+	g_free (utf8_sexp);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (object_path != NULL)) ||
+		(!success && (object_path == NULL)), FALSE);
+
+	if (object_path != NULL) {
+		GDBusConnection *connection;
+		EBookClientView *client_view;
+
+		connection = g_dbus_proxy_get_connection (
+			G_DBUS_PROXY (client->priv->dbus_proxy));
+
+		client_view = g_initable_new (
+			E_TYPE_BOOK_CLIENT_VIEW,
+			cancellable, error,
+			"client", client,
+			"connection", connection,
+			"object-path", object_path,
+			NULL);
+
+		/* XXX Would have been easier to return the
+		 *     EBookClientView directly rather than
+		 *     through an "out" parameter. */
+		if (client_view != NULL)
+			*out_view = client_view;
+		else
+			success = FALSE;
+
+		g_free (object_path);
+	}
+
+	return success;
 }
 

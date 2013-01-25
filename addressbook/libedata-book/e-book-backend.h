@@ -285,10 +285,6 @@ void		e_book_backend_notify_complete	(EBookBackend *backend);
 
 void		e_book_backend_notify_error	(EBookBackend *backend,
 						 const gchar *message);
-void		e_book_backend_notify_readonly	(EBookBackend *backend,
-						 gboolean is_readonly);
-void		e_book_backend_notify_online	(EBookBackend *backend,
-						 gboolean is_online);
 void		e_book_backend_notify_property_changed
 						(EBookBackend *backend,
 						 const gchar *prop_name,
@@ -348,6 +344,10 @@ void		e_book_backend_foreach_view	(EBookBackend *backend,
 								       gpointer user_data);
 void		e_book_backend_notify_opened	(EBookBackend *backend,
 						 GError *error);
+void		e_book_backend_notify_readonly	(EBookBackend *backend,
+						 gboolean is_readonly);
+void		e_book_backend_notify_online	(EBookBackend *backend,
+						 gboolean is_online);
 void		e_book_backend_respond_opened	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,

@@ -37,8 +37,6 @@ e_book_backend_notify_update
 e_book_backend_notify_remove
 e_book_backend_notify_complete
 e_book_backend_notify_error
-e_book_backend_notify_readonly
-e_book_backend_notify_online
 e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
@@ -50,6 +48,8 @@ e_book_backend_is_opening
 e_book_backend_set_backend_property
 e_book_backend_foreach_view
 e_book_backend_notify_opened
+e_book_backend_notify_readonly
+e_book_backend_notify_online
 e_book_backend_respond_opened
 <SUBSECTION Standard>
 E_BOOK_BACKEND
@@ -281,13 +281,13 @@ e_data_book_respond_get_contact
 e_data_book_respond_get_contact_list
 e_data_book_respond_get_contact_list_uids
 e_data_book_report_error
-e_data_book_report_readonly
-e_data_book_report_online
 e_data_book_report_backend_property_changed
 e_data_book_string_slist_to_comma_string
 <SUBSECTION Deprecated>
 e_data_book_respond_set_backend_property
 e_data_book_report_opened
+e_data_book_report_readonly
+e_data_book_report_online
 <SUBSECTION Standard>
 E_DATA_BOOK
 E_IS_DATA_BOOK

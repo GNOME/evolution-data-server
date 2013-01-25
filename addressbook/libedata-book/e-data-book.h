@@ -195,10 +195,6 @@ void		e_data_book_respond_get_contact_list_uids
 
 void		e_data_book_report_error	(EDataBook *book,
 						 const gchar *message);
-void		e_data_book_report_readonly	(EDataBook *book,
-						 gboolean readonly);
-void		e_data_book_report_online	(EDataBook *book,
-						 gboolean is_online);
 void		e_data_book_report_backend_property_changed
 						(EDataBook *book,
 						 const gchar *prop_name,
@@ -214,6 +210,10 @@ void		e_data_book_respond_set_backend_property
 						 GError *error);
 void		e_data_book_report_opened	(EDataBook *book,
 						 const GError *error);
+void		e_data_book_report_readonly	(EDataBook *book,
+						 gboolean readonly);
+void		e_data_book_report_online	(EDataBook *book,
+						 gboolean is_online);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
