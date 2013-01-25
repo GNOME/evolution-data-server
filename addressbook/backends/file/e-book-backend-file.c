@@ -652,8 +652,8 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 						   &error)) {
 		g_warning (
 			G_STRLOC ": Error loading database revision: %s",
-			error->message);
-		g_error_free (error);
+			error ? error->message : "Unknown error");
+		g_clear_error (&error);
 	} else if (bf->priv->revision == NULL) {
 		e_book_backend_file_bump_revision (bf);
 	}
@@ -1455,17 +1455,18 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		return;
 	bf->priv->photo_dirname = dirname;
 
-	e_book_backend_file_load_revision (bf);
+	g_rec_mutex_lock (&bf->priv->revision_mutex);
+	if (!bf->priv->revision) {
+		e_book_backend_file_load_revision (bf);
+		e_book_backend_notify_property_changed (E_BOOK_BACKEND (backend),
+							BOOK_BACKEND_PROPERTY_REVISION,
+							bf->priv->revision);
+		g_rec_mutex_unlock (&bf->priv->revision_mutex);
+	}
 
 	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), FALSE);
 	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL /* Success */);
-
-	g_rec_mutex_lock (&bf->priv->revision_mutex);
-	e_book_backend_notify_property_changed (E_BOOK_BACKEND (backend),
-						BOOK_BACKEND_PROPERTY_REVISION,
-						bf->priv->revision);
-	g_rec_mutex_unlock (&bf->priv->revision_mutex);
 }
 
 static gboolean
