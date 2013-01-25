@@ -26,7 +26,7 @@ struct _EBookBackendPrivate {
 	GMutex clients_mutex;
 	GList *clients;
 
-	gboolean opening, opened, removed;
+	gboolean opened, removed;
 	gboolean writable;
 
 	GMutex views_mutex;
@@ -499,9 +499,6 @@ e_book_backend_open (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
-
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_book_backend_is_opened (backend)) {
@@ -518,7 +515,6 @@ e_book_backend_open (EBookBackend *backend,
 
 		e_book_backend_respond_opened (backend, book, opid, NULL);
 	} else {
-		backend->priv->opening = TRUE;
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->open != NULL);
@@ -551,9 +547,6 @@ e_book_backend_refresh (EBookBackend *backend,
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
 
 	if (!E_BOOK_BACKEND_GET_CLASS (backend)->refresh)
 		e_data_book_respond_refresh (book, opid, e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_SUPPORTED, NULL));
@@ -589,9 +582,6 @@ e_book_backend_create_contacts (EBookBackend *backend,
 	g_return_if_fail (vcards);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
-
 	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_create_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
@@ -621,9 +611,6 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (id_list);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
 
 	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_remove_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
@@ -657,9 +644,6 @@ e_book_backend_modify_contacts (EBookBackend *backend,
 	g_return_if_fail (vcards);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
-
 	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_modify_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
@@ -690,9 +674,6 @@ e_book_backend_get_contact (EBookBackend *backend,
 	g_return_if_fail (id);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
-
 	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_get_contact (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
@@ -722,9 +703,6 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (query);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
 
 	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_get_contact_list (book, opid, EDB_NOT_OPENED_ERROR, NULL);
@@ -757,9 +735,6 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (query);
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_book_backend_is_opening (backend));
 
 	if (!e_book_backend_is_opened (backend))
 		e_data_book_respond_get_contact_list_uids (book, opid, EDB_NOT_OPENED_ERROR, NULL);
@@ -897,9 +872,6 @@ e_book_backend_remove_client (EBookBackend *backend,
 	/* Disconnect */
 	g_mutex_lock (&backend->priv->clients_mutex);
 	backend->priv->clients = g_list_remove (backend->priv->clients, book);
-
-	if (backend->priv->clients == NULL)
-		backend->priv->opening = FALSE;
 
 	g_mutex_unlock (&backend->priv->clients_mutex);
 
@@ -1075,7 +1047,10 @@ e_book_backend_is_opened (EBookBackend *backend)
  * every operation except of cancel and authenticate_user while
  * it is being opening.
  *
- * Returns: %TRUE if opening phase is in the effect, %FALSE otherwise.
+ * Returns: %FALSE always
+ *
+ * Deprecated: 3.8: This function is no longer relevant,
+ *                  and always returns %FALSE.
  *
  * Since: 3.2
  **/
@@ -1084,7 +1059,7 @@ e_book_backend_is_opening (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
-	return backend->priv->opening;
+	return FALSE;
 }
 
 /**
@@ -1360,7 +1335,6 @@ e_book_backend_notify_opened (EBookBackend *backend,
 	priv = backend->priv;
 	g_mutex_lock (&priv->clients_mutex);
 
-	priv->opening = FALSE;
 	priv->opened = error == NULL;
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))

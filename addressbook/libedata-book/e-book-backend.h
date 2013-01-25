@@ -214,7 +214,6 @@ void		e_book_backend_remove_client	(EBookBackend *backend,
 						 EDataBook *book);
 
 gboolean	e_book_backend_is_opened	(EBookBackend *backend);
-gboolean	e_book_backend_is_opening	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
 gboolean	e_book_backend_is_removed	(EBookBackend *backend);
 
@@ -347,6 +346,7 @@ void		e_book_backend_respond_opened	(EBookBackend *backend,
  **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
+gboolean	e_book_backend_is_opening	(EBookBackend *backend);
 void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
 								       gpointer user_data),

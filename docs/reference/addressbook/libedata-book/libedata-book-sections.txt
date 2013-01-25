@@ -17,7 +17,6 @@ e_book_backend_set_writable
 e_book_backend_add_client
 e_book_backend_remove_client
 e_book_backend_is_opened
-e_book_backend_is_opening
 e_book_backend_is_readonly
 e_book_backend_is_removed
 e_book_backend_get_backend_property
@@ -50,6 +49,7 @@ e_book_backend_respond_opened
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
+e_book_backend_is_opening
 e_book_backend_foreach_view
 <SUBSECTION Standard>
 E_BOOK_BACKEND
