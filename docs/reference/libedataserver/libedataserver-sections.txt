@@ -54,7 +54,6 @@ e_client_check_capability
 e_client_check_refresh_supported
 e_client_is_readonly
 e_client_is_online
-e_client_is_opened
 e_client_unwrap_dbus_error
 e_client_cancel_all
 e_client_get_backend_property
@@ -78,6 +77,7 @@ e_client_util_unwrap_dbus_error
 <SUBSECTION Deprecated>
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
+e_client_is_opened
 e_client_remove
 e_client_remove_finish
 e_client_remove_sync

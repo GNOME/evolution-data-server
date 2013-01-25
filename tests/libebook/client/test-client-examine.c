@@ -87,7 +87,6 @@ print_values (const ExtraValues *evals,
 
 	g_print ("\treadonly:%s\n", e_client_is_readonly (client) ? "yes" : "no");
 	g_print ("\tonline:%s\n", e_client_is_online (client) ? "yes" : "no");
-	g_print ("\topened:%s\n", e_client_is_opened (client) ? "yes" : "no");
 	g_print ("\tcapabilities: ");
 	values = e_client_get_capabilities (client);
 	if (!values) {

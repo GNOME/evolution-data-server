@@ -287,7 +287,6 @@ gboolean	e_client_check_refresh_supported
 						(EClient *client);
 gboolean	e_client_is_readonly		(EClient *client);
 gboolean	e_client_is_online		(EClient *client);
-gboolean	e_client_is_opened		(EClient *client);
 void		e_client_unwrap_dbus_error	(EClient *client,
 						 GError *dbus_error,
 						 GError **out_error);
@@ -416,6 +415,7 @@ gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
+gboolean	e_client_is_opened		(EClient *client);
 void		e_client_remove			(EClient *client,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,

@@ -237,50 +237,15 @@ cal_backend_contacts_remove_book_record (ECalBackendContacts *cbc,
 	return removed;
 }
 
-static gpointer
-cbc_reopen_book_client_thread (gpointer user_data)
-{
-	EBookClient *book_client = user_data;
-	gboolean done = FALSE;
-
-	g_object_ref (book_client);
-
-	while (!done) {
-		done = TRUE;
-
-		if (!e_client_is_opened (E_CLIENT (book_client))) {
-			GError *error = NULL;
-
-			if (!e_client_open_sync (E_CLIENT (book_client), TRUE, NULL, &error) || error) {
-				g_warning ("%s: Failed to open book: %s", G_STRFUNC, error ? error->message : "Unknown error");
-			}
-
-			g_clear_error (&error);
-		}
-	}
-
-	g_object_unref (book_client);
-
-	return NULL;
-}
-
 static void
 cbc_reopen_book_client (BookRecord *br)
 {
-	GThread *thread;
-
 	g_mutex_lock (&br->lock);
 
 	g_warn_if_fail (br->book_client_opened_id == 0);
 	br->book_client_opened_id = g_signal_connect (
 		br->book_client, "opened",
 		G_CALLBACK (book_client_opened_cb), br);
-
-	thread = g_thread_new (
-		NULL,
-		cbc_reopen_book_client_thread,
-		br->book_client);
-	g_thread_unref (thread);
 
 	g_mutex_unlock (&br->lock);
 }

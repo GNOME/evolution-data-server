@@ -44,7 +44,6 @@ struct _EClientPrivate {
 	gchar *uri;
 	gboolean online;
 	gboolean readonly;
-	gboolean opened;
 	gboolean capabilities_retrieved;
 	GSList *capabilities;
 
@@ -714,16 +713,19 @@ e_client_set_online (EClient *client,
  * during the opening phase except of authenticate or cancel it.
  * Every other operation results in an %E_CLIENT_ERROR_BUSY error.
  *
- * Returns: %TRUE if this @client is fully opened, otherwise %FALSE.
+ * Returns: always %TRUE
  *
  * Since: 3.2.
+ *
+ * Deprecated: 3.8: Clients don't need to care if they're fully opened
+ *                  anymore.  This function always returns %TRUE.
  **/
 gboolean
 e_client_is_opened (EClient *client)
 {
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 
-	return client->priv->opened;
+	return TRUE;
 }
 
 /*
@@ -848,8 +850,6 @@ e_client_emit_opened (EClient *client,
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CLIENT (client));
-
-	client->priv->opened = dbus_error == NULL;
 
 	if (dbus_error) {
 		local_error = g_error_copy (dbus_error);

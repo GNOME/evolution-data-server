@@ -2147,7 +2147,6 @@ e_cal_client_generate_instances (ECalClient *client,
 	GCancellable *use_cancellable;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
 	g_return_if_fail (start >= 0);
 	g_return_if_fail (end >= 0);
@@ -2199,7 +2198,6 @@ e_cal_client_generate_instances_sync (ECalClient *client,
 	GSList *objects = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
 	g_return_if_fail (start >= 0);
 	g_return_if_fail (end >= 0);
@@ -2326,7 +2324,6 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	GCancellable *use_cancellable;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
 	g_return_if_fail (start >= 0);
 	g_return_if_fail (end >= 0);
@@ -2428,7 +2425,6 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	gboolean is_single_instance = FALSE;
 
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
 	g_return_if_fail (start >= 0);
 	g_return_if_fail (end >= 0);
