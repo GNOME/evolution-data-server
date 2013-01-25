@@ -270,35 +270,66 @@ operation_thread (gpointer data,
 
 	switch (op->op) {
 	case OP_OPEN:
-		e_book_backend_open (backend, op->book, op->id, op->cancellable, op->d.only_if_exists);
+		e_book_backend_open (
+			backend, op->book, op->id,
+			op->cancellable, op->d.only_if_exists);
 		break;
+
 	case OP_ADD_CONTACTS:
-		e_book_backend_create_contacts (backend, op->book, op->id, op->cancellable, op->d.vcards);
+		e_book_backend_create_contacts (
+			backend, op->book, op->id,
+			op->cancellable, op->d.vcards);
 		break;
+
 	case OP_GET_CONTACT:
-		e_book_backend_get_contact (backend, op->book, op->id, op->cancellable, op->d.uid);
+		e_book_backend_get_contact (
+			backend, op->book, op->id,
+			op->cancellable, op->d.uid);
 		break;
+
 	case OP_GET_CONTACTS:
-		e_book_backend_get_contact_list (backend, op->book, op->id, op->cancellable, op->d.query);
+		e_book_backend_get_contact_list (
+			backend, op->book, op->id,
+			op->cancellable, op->d.query);
 		break;
+
 	case OP_GET_CONTACTS_UIDS:
-		e_book_backend_get_contact_list_uids (backend, op->book, op->id, op->cancellable, op->d.query);
+		e_book_backend_get_contact_list_uids (
+			backend, op->book, op->id,
+			op->cancellable, op->d.query);
 		break;
+
 	case OP_MODIFY_CONTACTS:
-		e_book_backend_modify_contacts (backend, op->book, op->id, op->cancellable, op->d.vcards);
+		e_book_backend_modify_contacts (
+			backend, op->book, op->id,
+			op->cancellable, op->d.vcards);
 		break;
+
 	case OP_REMOVE_CONTACTS:
-		e_book_backend_remove_contacts (backend, op->book, op->id, op->cancellable, op->d.ids);
+		e_book_backend_remove_contacts (
+			backend, op->book, op->id,
+			op->cancellable, op->d.ids);
 		break;
+
 	case OP_REFRESH:
-		e_book_backend_refresh (backend, op->book, op->id, op->cancellable);
+		e_book_backend_refresh (
+			backend, op->book, op->id, op->cancellable);
 		break;
+
 	case OP_GET_BACKEND_PROPERTY:
-		e_book_backend_get_backend_property (backend, op->book, op->id, op->cancellable, op->d.prop_name);
+		e_book_backend_get_backend_property (
+			backend, op->book, op->id,
+			op->cancellable, op->d.prop_name);
 		break;
+
 	case OP_SET_BACKEND_PROPERTY:
-		e_book_backend_set_backend_property (backend, op->book, op->id, op->cancellable, op->d.sbp.prop_name, op->d.sbp.prop_value);
+		e_book_backend_set_backend_property (
+			backend, op->book, op->id,
+			op->cancellable,
+			op->d.sbp.prop_name,
+			op->d.sbp.prop_value);
 		break;
+
 	case OP_GET_VIEW:
 		if (op->d.query) {
 			EDataBookView *view;
@@ -318,8 +349,7 @@ operation_thread (gpointer data,
 			}
 
 			object_path = construct_bookview_path ();
-			connection = e_gdbus_book_stub_get_connection (
-				op->book->priv->dbus_interface);
+			connection = e_data_book_get_connection (op->book);
 
 			view = e_data_book_view_new (
 				op->book, card_sexp,
@@ -348,6 +378,7 @@ operation_thread (gpointer data,
 			g_free (object_path);
 		}
 		break;
+
 	case OP_CANCEL_OPERATION:
 		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
 
@@ -359,9 +390,11 @@ operation_thread (gpointer data,
 
 		g_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
 		break;
+
 	case OP_CLOSE:
 		/* close just cancels all pending ops and frees data book */
 		e_book_backend_remove_client (backend, op->book);
+
 	case OP_CANCEL_ALL:
 		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
 
