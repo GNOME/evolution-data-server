@@ -93,6 +93,8 @@ typedef enum {
 } OperationID;
 
 typedef struct {
+	volatile gint ref_count;
+
 	OperationID op;
 	guint32 id; /* operation id */
 	EDataCal *cal; /* calendar */
@@ -187,6 +189,140 @@ cancel_ops_cb (gpointer opid,
 	g_cancellable_cancel (cancellable);
 }
 
+static OperationData *
+op_ref (OperationData *data)
+{
+	g_return_val_if_fail (data != NULL, data);
+	g_return_val_if_fail (data->ref_count > 0, data);
+
+	g_atomic_int_inc (&data->ref_count);
+
+	return data;
+}
+
+static OperationData *
+op_new (OperationID op,
+        EDataCal *cal)
+{
+	OperationData *data;
+
+	data = g_slice_new0 (OperationData);
+	data->ref_count = 1;
+	data->op = op;
+	data->id = e_operation_pool_reserve_opid (ops_pool);
+	data->cal = g_object_ref (cal);
+	data->cancellable = g_cancellable_new ();
+
+	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
+	g_hash_table_insert (cal->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
+	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
+
+	return data;
+}
+
+static void
+op_unref (OperationData *data)
+{
+	g_return_if_fail (data != NULL);
+	g_return_if_fail (data->ref_count > 0);
+
+	if (g_atomic_int_dec_and_test (&data->ref_count)) {
+
+		switch (data->op) {
+			case OP_GET_OBJECT:
+			case OP_GET_ATTACHMENT_URIS:
+				g_free (data->d.ur.uid);
+				g_free (data->d.ur.rid);
+				break;
+			case OP_DISCARD_ALARM:
+				g_free (data->d.ura.uid);
+				g_free (data->d.ura.rid);
+				g_free (data->d.ura.auid);
+				break;
+			case OP_GET_OBJECT_LIST:
+			case OP_GET_VIEW:
+				g_free (data->d.sexp);
+				break;
+			case OP_GET_FREE_BUSY:
+				g_slist_free_full (
+					data->d.fb.users,
+					(GDestroyNotify) g_free);
+				break;
+			case OP_CREATE_OBJECTS:
+				g_slist_free_full (
+					data->d.calobjs,
+					(GDestroyNotify) g_free);
+				break;
+			case OP_RECEIVE_OBJECTS:
+			case OP_SEND_OBJECTS:
+				g_free (data->d.co.calobj);
+				break;
+			case OP_MODIFY_OBJECTS:
+				g_slist_free_full (
+					data->d.mo.calobjs,
+					(GDestroyNotify) g_free);
+				break;
+			case OP_REMOVE_OBJECTS:
+				g_slist_free_full (
+					data->d.ro.ids, (GDestroyNotify)
+					e_cal_component_free_id);
+				break;
+			case OP_GET_TIMEZONE:
+				g_free (data->d.tzid);
+				break;
+			case OP_ADD_TIMEZONE:
+				g_free (data->d.tzobject);
+				break;
+			case OP_GET_BACKEND_PROPERTY:
+				g_free (data->d.prop_name);
+				break;
+			case OP_SET_BACKEND_PROPERTY:
+				g_free (data->d.sbp.prop_name);
+				g_free (data->d.sbp.prop_value);
+				break;
+			default:
+				break;
+		}
+
+		g_object_unref (data->cal);
+		g_object_unref (data->cancellable);
+
+		g_slice_free (OperationData, data);
+	}
+}
+
+static void
+op_dispatch (EDataCal *cal,
+             OperationData *data)
+{
+	g_mutex_lock (&cal->priv->open_lock);
+
+	/* If an open operation is currently in progress, queue this
+	 * operation to be dispatched when the open operation finishes. */
+	if (cal->priv->open_opid > 0) {
+		g_queue_push_tail (&cal->priv->open_queue, data);
+	} else {
+		if (data->op == OP_OPEN)
+			cal->priv->open_opid = data->id;
+		e_operation_pool_push (ops_pool, data);
+	}
+
+	g_mutex_unlock (&cal->priv->open_lock);
+}
+
+static void
+op_complete (EDataCal *cal,
+             guint32 opid)
+{
+	g_return_if_fail (cal != NULL);
+
+	e_operation_pool_release_opid (ops_pool, opid);
+
+	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
+	g_hash_table_remove (cal->priv->pending_ops, GUINT_TO_POINTER (opid));
+	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
+}
+
 static void
 operation_thread (gpointer data,
                   gpointer user_data)
@@ -205,56 +341,39 @@ operation_thread (gpointer data,
 		break;
 	case OP_GET_BACKEND_PROPERTY:
 		e_cal_backend_get_backend_property (backend, op->cal, op->id, op->cancellable, op->d.prop_name);
-		g_free (op->d.prop_name);
 		break;
 	case OP_SET_BACKEND_PROPERTY:
 		e_cal_backend_set_backend_property (backend, op->cal, op->id, op->cancellable, op->d.sbp.prop_name, op->d.sbp.prop_value);
-		g_free (op->d.sbp.prop_name);
-		g_free (op->d.sbp.prop_value);
 		break;
 	case OP_GET_OBJECT:
 		e_cal_backend_get_object (backend, op->cal, op->id, op->cancellable, op->d.ur.uid, op->d.ur.rid && *op->d.ur.rid ? op->d.ur.rid : NULL);
-		g_free (op->d.ur.uid);
-		g_free (op->d.ur.rid);
 		break;
 	case OP_GET_OBJECT_LIST:
 		e_cal_backend_get_object_list (backend, op->cal, op->id, op->cancellable, op->d.sexp);
-		g_free (op->d.sexp);
 		break;
 	case OP_GET_FREE_BUSY:
 		e_cal_backend_get_free_busy (backend, op->cal, op->id, op->cancellable, op->d.fb.users, op->d.fb.start, op->d.fb.end);
-		g_slist_free_full (op->d.fb.users, g_free);
 		break;
 	case OP_CREATE_OBJECTS:
 		e_cal_backend_create_objects (backend, op->cal, op->id, op->cancellable, op->d.calobjs);
-		g_slist_free_full (op->d.calobjs, g_free);
 		break;
 	case OP_MODIFY_OBJECTS:
 		e_cal_backend_modify_objects (backend, op->cal, op->id, op->cancellable, op->d.mo.calobjs, op->d.mo.mod);
-		g_slist_free_full (op->d.mo.calobjs, g_free);
 		break;
 	case OP_REMOVE_OBJECTS:
 		e_cal_backend_remove_objects (backend, op->cal, op->id, op->cancellable, op->d.ro.ids, op->d.ro.mod);
-		g_slist_free_full (op->d.ro.ids, (GDestroyNotify) e_cal_component_free_id);
 		break;
 	case OP_RECEIVE_OBJECTS:
 		e_cal_backend_receive_objects (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
-		g_free (op->d.co.calobj);
 		break;
 	case OP_SEND_OBJECTS:
 		e_cal_backend_send_objects (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
-		g_free (op->d.co.calobj);
 		break;
 	case OP_GET_ATTACHMENT_URIS:
 		e_cal_backend_get_attachment_uris (backend, op->cal, op->id, op->cancellable, op->d.ur.uid, op->d.ur.rid && *op->d.ur.rid ? op->d.ur.rid : NULL);
-		g_free (op->d.ur.uid);
-		g_free (op->d.ur.rid);
 		break;
 	case OP_DISCARD_ALARM:
 		e_cal_backend_discard_alarm (backend, op->cal, op->id, op->cancellable, op->d.ura.uid, op->d.ura.rid && *op->d.ura.rid ? op->d.ura.rid : NULL, op->d.ura.auid);
-		g_free (op->d.ura.uid);
-		g_free (op->d.ura.rid);
-		g_free (op->d.ura.auid);
 		break;
 	case OP_GET_VIEW:
 		if (op->d.sexp) {
@@ -304,15 +423,12 @@ operation_thread (gpointer data,
 
 			g_free (object_path);
 		}
-		g_free (op->d.sexp);
 		break;
 	case OP_GET_TIMEZONE:
 		e_cal_backend_get_timezone (backend, op->cal, op->id, op->cancellable, op->d.tzid);
-		g_free (op->d.tzid);
 		break;
 	case OP_ADD_TIMEZONE:
 		e_cal_backend_add_timezone (backend, op->cal, op->id, op->cancellable, op->d.tzobject);
-		g_free (op->d.tzobject);
 		break;
 	case OP_CANCEL_OPERATION:
 		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
@@ -335,60 +451,7 @@ operation_thread (gpointer data,
 		break;
 	}
 
-	g_object_unref (op->cal);
-	g_object_unref (op->cancellable);
-	g_slice_free (OperationData, op);
-}
-
-static OperationData *
-op_new (OperationID op,
-        EDataCal *cal)
-{
-	OperationData *data;
-
-	data = g_slice_new0 (OperationData);
-	data->op = op;
-	data->cal = g_object_ref (cal);
-	data->id = e_operation_pool_reserve_opid (ops_pool);
-	data->cancellable = g_cancellable_new ();
-
-	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
-	g_hash_table_insert (cal->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
-	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
-
-	return data;
-}
-
-static void
-op_dispatch (EDataCal *cal,
-             OperationData *data)
-{
-	g_mutex_lock (&cal->priv->open_lock);
-
-	/* If an open operation is currently in progress, queue this
-	 * operation to be dispatched when the open operation finishes. */
-	if (cal->priv->open_opid > 0) {
-		g_queue_push_tail (&cal->priv->open_queue, data);
-	} else {
-		if (data->op == OP_OPEN)
-			cal->priv->open_opid = data->id;
-		e_operation_pool_push (ops_pool, data);
-	}
-
-	g_mutex_unlock (&cal->priv->open_lock);
-}
-
-static void
-op_complete (EDataCal *cal,
-             guint32 opid)
-{
-	g_return_if_fail (cal != NULL);
-
-	e_operation_pool_release_opid (ops_pool, opid);
-
-	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
-	g_hash_table_remove (cal->priv->pending_ops, GUINT_TO_POINTER (opid));
-	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
+	op_unref (op);
 }
 
 /* Create the EDataCal error quark */
