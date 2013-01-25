@@ -51,7 +51,7 @@ struct _EDataCalPrivate {
 	gchar *object_path;
 
 	GRecMutex pending_ops_lock;
-	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
+	GHashTable *pending_ops; /* opid -> OperationData */
 
 	/* Operations are queued while an
 	 * open operation is in progress. */
@@ -179,16 +179,6 @@ construct_calview_path (void)
 	return g_strdup_printf ("/org/gnome/evolution/dataserver/CalendarView/%d/%d", getpid (), counter++);
 }
 
-static void
-cancel_ops_cb (gpointer opid,
-               gpointer cancellable,
-               gpointer user_data)
-{
-	g_return_if_fail (cancellable != NULL);
-
-	g_cancellable_cancel (cancellable);
-}
-
 static OperationData *
 op_ref (OperationData *data)
 {
@@ -214,7 +204,10 @@ op_new (OperationID op,
 	data->cancellable = g_cancellable_new ();
 
 	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
-	g_hash_table_insert (cal->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
+	g_hash_table_insert (
+		cal->priv->pending_ops,
+		GUINT_TO_POINTER (data->id),
+		op_ref (data));
 	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
 
 	return data;
@@ -319,7 +312,9 @@ op_complete (EDataCal *cal,
 	e_operation_pool_release_opid (ops_pool, opid);
 
 	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
-	g_hash_table_remove (cal->priv->pending_ops, GUINT_TO_POINTER (opid));
+	g_hash_table_remove (
+		cal->priv->pending_ops,
+		GUINT_TO_POINTER (opid));
 	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
 }
 
@@ -328,7 +323,10 @@ operation_thread (gpointer data,
                   gpointer user_data)
 {
 	OperationData *op = data;
+	OperationData *cancel_op;
 	ECalBackend *backend;
+	GHashTableIter iter;
+	gpointer value;
 
 	backend = e_data_cal_get_backend (op->cal);
 
@@ -433,11 +431,11 @@ operation_thread (gpointer data,
 	case OP_CANCEL_OPERATION:
 		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 
-		if (g_hash_table_lookup (op->cal->priv->pending_ops, GUINT_TO_POINTER (op->d.opid))) {
-			GCancellable *cancellable = g_hash_table_lookup (op->cal->priv->pending_ops, GUINT_TO_POINTER (op->d.opid));
-
-			g_cancellable_cancel (cancellable);
-		}
+		cancel_op = g_hash_table_lookup (
+			op->cal->priv->pending_ops,
+			GUINT_TO_POINTER (op->d.opid));
+		if (cancel_op != NULL)
+			g_cancellable_cancel (cancel_op->cancellable);
 
 		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
 		break;
@@ -446,7 +444,13 @@ operation_thread (gpointer data,
 		e_cal_backend_remove_client (backend, op->cal);
 	case OP_CANCEL_ALL:
 		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
-		g_hash_table_foreach (op->cal->priv->pending_ops, cancel_ops_cb, NULL);
+
+		g_hash_table_iter_init (&iter, op->cal->priv->pending_ops);
+		while (g_hash_table_iter_next (&iter, NULL, &value)) {
+			cancel_op = (OperationData *) value;
+			g_cancellable_cancel (cancel_op->cancellable);
+		}
+
 		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
 		break;
 	}
@@ -1910,7 +1914,10 @@ e_data_cal_init (EDataCal *ecal)
 
 	ecal->priv->dbus_interface = e_gdbus_cal_stub_new ();
 	ecal->priv->pending_ops = g_hash_table_new_full (
-		g_direct_hash, g_direct_equal, NULL, g_object_unref);
+		(GHashFunc) g_direct_hash,
+		(GEqualFunc) g_direct_equal,
+		(GDestroyNotify) NULL,
+		(GDestroyNotify) op_unref);
 	g_rec_mutex_init (&ecal->priv->pending_ops_lock);
 
 	g_mutex_init (&ecal->priv->open_lock);
