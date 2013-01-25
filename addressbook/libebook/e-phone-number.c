@@ -93,16 +93,16 @@ e_phone_number_is_supported (void)
 /**
  * e_phone_number_from_string:
  * @phone_number: the phone number to parse
- * @country_code: (allow-none): a 2-letter country code, or %NULL
+ * @region_code: (allow-none): a 2-letter country code, or %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Parses the string passed in @phone_number. Note that no validation is
  * performed whether the recognized phone number is valid for a particular
  * region.
  *
- * The 2-letter country code passed in @country_code only is used if the
+ * The 2-letter country code passed in @region_code only is used if the
  * @phone_number is not written in international format. The applications's
- * currently locale is consulted if %NULL gets passed for @country_code.
+ * currently locale is consulted if %NULL gets passed for @region_code.
  * If the number is guaranteed to start with a '+' followed by the country
  * calling code, then "ZZ" can be passed here.
  *
@@ -113,12 +113,12 @@ e_phone_number_is_supported (void)
  **/
 EPhoneNumber *
 e_phone_number_from_string (const gchar *phone_number,
-                            const gchar *country_code,
+                            const gchar *region_code,
                             GError **error)
 {
 #ifdef ENABLE_PHONENUMBER
 
-	return _e_phone_number_cxx_from_string (phone_number, country_code, error);
+	return _e_phone_number_cxx_from_string (phone_number, region_code, error);
 
 #else /* ENABLE_PHONENUMBER */
 

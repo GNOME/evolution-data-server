@@ -24,6 +24,7 @@
 #endif
 
 #include <libebook/libebook.h>
+#include <locale.h>
 
 static const char *match_candidates[] = {
 	"not-a-number",
@@ -185,6 +186,41 @@ test_parse_bad_number (void)
 }
 
 static void
+test_parse_auto_region (void)
+{
+	GError *error = NULL;
+	EPhoneNumber *parsed;
+
+	parsed = e_phone_number_from_string ("212-5423789", NULL, &error);
+
+#ifdef ENABLE_PHONENUMBER
+
+	{
+		gchar *formatted;
+
+		g_assert (parsed != NULL);
+		g_assert (error == NULL);
+
+		formatted = e_phone_number_to_string (parsed, E_PHONE_NUMBER_FORMAT_E164);
+		g_assert_cmpstr (formatted, ==, "+12125423789");
+		g_free (formatted);
+
+		e_phone_number_free (parsed);
+	}
+
+#else /* ENABLE_PHONENUMBER */
+
+	g_assert (parsed == NULL);
+	g_assert (error != NULL);
+	g_assert (error->domain == E_PHONE_NUMBER_ERROR);
+	g_assert (error->code == E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+	g_assert (error->message != NULL);
+	g_clear_error (&error);
+
+#endif /* ENABLE_PHONENUMBER */
+}
+
+static void
 test_compare_numbers (gconstpointer data)
 {
 	const size_t n = GPOINTER_TO_UINT (data);
@@ -242,6 +278,8 @@ main (gint argc,
 {
 	size_t i, j;
 
+	setlocale (LC_ALL, "en_US.UTF-8");
+
 	g_type_init ();
 
 	g_test_init (&argc, &argv, NULL);
@@ -268,8 +306,12 @@ main (gint argc,
 		 test_parse_and_format);
 
 	g_test_add_func
-		("/ebook-phone-number/parse-and-format/BadNumber",
+		("/ebook-phone-number/parse-and-format/bad-number",
 		 test_parse_bad_number);
+
+	g_test_add_func
+		("/ebook-phone-number/parse-and-format/auto-region",
+		 test_parse_auto_region);
 
 	g_assert_cmpint (G_N_ELEMENTS (match_candidates) * G_N_ELEMENTS (match_candidates),
 			 ==, G_N_ELEMENTS (expected_matches));

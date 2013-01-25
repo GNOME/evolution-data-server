@@ -58,7 +58,7 @@ E_PHONE_NUMBER_LOCAL void		_e_phone_number_set_error		(GError **error,
 /* defined in e-phone-number-private.cpp, and used by by e-phone-number.c */
 
 E_PHONE_NUMBER_LOCAL EPhoneNumber *	_e_phone_number_cxx_from_string		(const gchar *phone_number,
-										 const gchar *country_code,
+										 const gchar *region,
 										 GError **error);
 E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_to_string		(const EPhoneNumber *phone_number,
 										 EPhoneNumberFormat format);

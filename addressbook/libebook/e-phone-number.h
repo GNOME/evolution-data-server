@@ -169,7 +169,7 @@ GQuark			e_phone_number_error_quark	(void);
 gboolean		e_phone_number_is_supported	(void) G_GNUC_CONST;
 
 EPhoneNumber *		e_phone_number_from_string	(const gchar *phone_number,
-							 const gchar *country_code,
+							 const gchar *region_code,
 							 GError **error);
 gchar *			e_phone_number_to_string	(const EPhoneNumber *phone_number,
 							 EPhoneNumberFormat format);

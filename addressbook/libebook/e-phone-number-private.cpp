@@ -34,6 +34,7 @@
 
 /* system headers */
 #include <langinfo.h>
+#include <locale.h>
 
 /* libphonenumber */
 #include <phonenumbers/logger.h>
@@ -88,23 +89,38 @@ e_phone_number_error_code (PhoneNumberUtil::ErrorType error)
 
 EPhoneNumber *
 _e_phone_number_cxx_from_string (const gchar *phone_number,
-                                 const gchar *country_code,
+                                 const gchar *region_code,
                                  GError **error)
 {
 	g_return_val_if_fail (NULL != phone_number, NULL);
 
-	if (country_code == NULL) {
+	std::string valid_region;
+
+	/* Get country code from current locale's address facet if supported */
 #if HAVE__NL_ADDRESS_COUNTRY_AB2
-		country_code = nl_langinfo (_NL_ADDRESS_COUNTRY_AB2);
-#else /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
-#error Cannot resolve default 2-letter country code. Find a replacement for _NL_ADDRESS_COUNTRY_AB2 or implement code to parse the locale name.
+	if (region_code == NULL || region_code[0] == '\0')
+		region_code = nl_langinfo (_NL_ADDRESS_COUNTRY_AB2);
 #endif /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
+
+	/* Extract country code from current locale id if needed */
+	if (region_code == NULL || region_code[0] == '\0') {
+		/* From outside this is a C library, so we better consult the
+		 * C infrastructure instead of std::locale, which might divert. */
+		valid_region = setlocale (LC_ADDRESS, NULL);
+
+		const std::string::size_type underscore = valid_region.find ('_');
+
+		if (underscore != std::string::npos)
+			valid_region.resize (underscore);
+	} else {
+		valid_region = region_code;
 	}
 
+	/* Now finally parse the phone number */
 	std::auto_ptr<EPhoneNumber> parsed_number(new EPhoneNumber);
 
 	const PhoneNumberUtil::ErrorType err =
-		e_phone_number_util_get_instance ()->Parse (phone_number, country_code,
+		e_phone_number_util_get_instance ()->Parse (phone_number, valid_region,
 		                                            &parsed_number->phone_number);
 
 	if (err != PhoneNumberUtil::NO_PARSING_ERROR) {
@@ -112,7 +128,7 @@ _e_phone_number_cxx_from_string (const gchar *phone_number,
 		return NULL;
 	}
 
-	return parsed_number.release();
+	return parsed_number.release ();
 }
 
 gchar *
