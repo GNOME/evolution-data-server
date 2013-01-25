@@ -45,11 +45,6 @@ struct _EPhoneNumber {
 	i18n::phonenumbers::PhoneNumber phone_number;
 };
 
-G_DEFINE_BOXED_TYPE (EPhoneNumber,
-                     e_phone_number,
-                     e_phone_number_copy,
-                     e_phone_number_free)
-
 static PhoneNumberUtil *
 e_phone_number_util_get_instance (void)
 {

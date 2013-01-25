@@ -29,16 +29,9 @@
 
 #include "e-phone-number-private.h"
 
-#ifndef ENABLE_PHONENUMBER
-
-/* With phonenumber support enabled the boxed type must be defined in
- * the C++ code because we cannot compute the size of C++ types here. */
-G_DEFINE_BOXED_TYPE (EPhoneNumber,
-                     e_phone_number,
-                     e_phone_number_copy,
-                     e_phone_number_free)
-
-#endif /* ENABLE_PHONENUMBER */
+G_DEFINE_BOXED_TYPE (
+	EPhoneNumber, e_phone_number,
+	e_phone_number_copy, e_phone_number_free)
 
 G_DEFINE_QUARK (e-phone-number-error-quark, e_phone_number_error)
 
