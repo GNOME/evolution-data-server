@@ -88,6 +88,7 @@ typedef struct {
 	guint32 id; /* operation id */
 	EDataBook *book; /* book */
 	GCancellable *cancellable;
+	GDBusMethodInvocation *invocation;
 
 	union {
 		/* OP_OPEN */
@@ -155,7 +156,8 @@ op_ref (OperationData *data)
 
 static OperationData *
 op_new (OperationID op,
-        EDataBook *book)
+        EDataBook *book,
+        GDBusMethodInvocation *invocation)
 {
 	OperationData *data;
 
@@ -165,6 +167,7 @@ op_new (OperationID op,
 	data->id = e_operation_pool_reserve_opid (ops_pool);
 	data->book = g_object_ref (book);
 	data->cancellable = g_cancellable_new ();
+	data->invocation = g_object_ref (invocation);
 
 	g_rec_mutex_lock (&book->priv->pending_ops_lock);
 	g_hash_table_insert (
@@ -217,6 +220,7 @@ op_unref (OperationData *data)
 
 		g_object_unref (data->book);
 		g_object_unref (data->cancellable);
+		g_object_unref (data->invocation);
 
 		g_slice_free (OperationData, data);
 	}
@@ -612,7 +616,7 @@ data_book_handle_open_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_OPEN, book);
+	op = op_new (OP_OPEN, book, invocation);
 	op->d.only_if_exists = only_if_exists;
 
 	e_gdbus_book_complete_open (interface, invocation, op->id);
@@ -629,7 +633,7 @@ data_book_handle_refresh_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_REFRESH, book);
+	op = op_new (OP_REFRESH, book, invocation);
 
 	e_gdbus_book_complete_refresh (interface, invocation, op->id);
 
@@ -656,7 +660,7 @@ data_book_handle_get_contact_cb (EGdbusBook *interface,
 		return TRUE;
 	}
 
-	op = op_new (OP_GET_CONTACT, book);
+	op = op_new (OP_GET_CONTACT, book, invocation);
 	op->d.uid = g_strdup (in_uid);
 
 	e_gdbus_book_complete_get_contact (interface, invocation, op->id);
@@ -682,7 +686,7 @@ data_book_handle_get_contact_list_cb (EGdbusBook *interface,
 		return TRUE;
 	}
 
-	op = op_new (OP_GET_CONTACTS, book);
+	op = op_new (OP_GET_CONTACTS, book, invocation);
 	op->d.query = g_strdup (in_query);
 
 	e_gdbus_book_complete_get_contact_list (interface, invocation, op->id);
@@ -708,7 +712,7 @@ data_book_handle_get_contact_list_uids_cb (EGdbusBook *interface,
 		return TRUE;
 	}
 
-	op = op_new (OP_GET_CONTACTS_UIDS, book);
+	op = op_new (OP_GET_CONTACTS_UIDS, book, invocation);
 	op->d.query = g_strdup (in_query);
 
 	e_gdbus_book_complete_get_contact_list_uids (interface, invocation, op->id);
@@ -734,7 +738,7 @@ data_book_handle_add_contacts_cb (EGdbusBook *interface,
 		return TRUE;
 	}
 
-	op = op_new (OP_ADD_CONTACTS, book);
+	op = op_new (OP_ADD_CONTACTS, book, invocation);
 	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
 	e_gdbus_book_complete_add_contacts (interface, invocation, op->id);
@@ -760,7 +764,7 @@ data_book_handle_modify_contacts_cb (EGdbusBook *interface,
 		return TRUE;
 	}
 
-	op = op_new (OP_MODIFY_CONTACTS, book);
+	op = op_new (OP_MODIFY_CONTACTS, book, invocation);
 	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
 	e_gdbus_book_complete_modify_contacts (interface, invocation, op->id);
@@ -778,7 +782,7 @@ data_book_handle_remove_contacts_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_REMOVE_CONTACTS, book);
+	op = op_new (OP_REMOVE_CONTACTS, book, invocation);
 
 	/* Allow an empty array to be removed */
 	for (; in_uids && *in_uids; in_uids++) {
@@ -800,7 +804,7 @@ data_book_handle_get_backend_property_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_GET_BACKEND_PROPERTY, book);
+	op = op_new (OP_GET_BACKEND_PROPERTY, book, invocation);
 	op->d.prop_name = g_strdup (in_prop_name);
 
 	e_gdbus_book_complete_get_backend_property (interface, invocation, op->id);
@@ -819,7 +823,7 @@ data_book_handle_set_backend_property_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_SET_BACKEND_PROPERTY, book);
+	op = op_new (OP_SET_BACKEND_PROPERTY, book, invocation);
 	g_return_val_if_fail (e_gdbus_book_decode_set_backend_property (in_prop_name_value, &op->d.sbp.prop_name, &op->d.sbp.prop_value), FALSE);
 
 	e_gdbus_book_complete_set_backend_property (interface, invocation, op->id);
@@ -849,7 +853,7 @@ data_book_handle_get_view_cb (EGdbusBook *interface,
 		return TRUE;
 	}
 
-	op = op_new (OP_GET_VIEW, book);
+	op = op_new (OP_GET_VIEW, book, invocation);
 	op->d.query = g_strdup (in_query);
 
 	e_gdbus_book_complete_get_view (interface, invocation, op->id);
@@ -868,7 +872,7 @@ data_book_handle_cancel_operation_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_CANCEL_OPERATION, book);
+	op = op_new (OP_CANCEL_OPERATION, book, invocation);
 	op->d.opid = in_opid;
 
 	e_gdbus_book_complete_cancel_operation (interface, invocation, NULL);
@@ -886,7 +890,7 @@ data_book_handle_cancel_all_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_CANCEL_ALL, book);
+	op = op_new (OP_CANCEL_ALL, book, invocation);
 
 	e_gdbus_book_complete_cancel_all (interface, invocation, NULL);
 
@@ -903,7 +907,7 @@ data_book_handle_close_cb (EGdbusBook *interface,
 {
 	OperationData *op;
 
-	op = op_new (OP_CLOSE, book);
+	op = op_new (OP_CLOSE, book, invocation);
 	/* unref here makes sure the book is freed in a separate thread */
 	g_object_unref (book);
 
