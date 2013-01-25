@@ -78,7 +78,7 @@ book_backend_get_backend_property (EBookBackend *backend,
 	g_return_if_fail (prop_name != NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_is_opened (backend) ? "TRUE" : "FALSE");
+		e_data_book_respond_get_backend_property (book, opid, NULL, "TRUE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
 		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_is_opening (backend) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {

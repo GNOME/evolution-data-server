@@ -144,7 +144,7 @@ cal_backend_get_backend_property (ECalBackend *backend,
 	g_return_if_fail (prop_name != NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_is_opened (backend) ? "TRUE" : "FALSE");
+		e_data_cal_respond_get_backend_property (cal, opid, NULL, "TRUE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
 		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_is_opening (backend) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {

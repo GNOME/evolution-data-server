@@ -50,16 +50,6 @@
 	((obj), E_TYPE_CLIENT, EClientClass))
 
 /**
- * CLIENT_BACKEND_PROPERTY_OPENED:
- *
- * The "opened" property is "TRUE" when the client is fully opened,
- * "FALSE" at all other times.
- *
- * Since: 3.2
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
-
-/**
  * CLIENT_BACKEND_PROPERTY_OPENING:
  *
  * The "opening" property is "TRUE" when the client is in the process of
@@ -410,6 +400,19 @@ gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
 						 gboolean fail_when_none_matched);
 
 #ifndef EDS_DISABLE_DEPRECATED
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENED:
+ *
+ * The "opened" property is "TRUE" when the client is fully opened,
+ * "FALSE" at all other times.
+ *
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: Clients don't need to care if they're fully opened
+ *                  anymore.  This property will always return %TRUE.
+ **/
+#define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
+
 void		e_client_remove			(EClient *client,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
