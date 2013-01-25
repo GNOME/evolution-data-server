@@ -82,6 +82,8 @@ typedef enum {
 } OperationID;
 
 typedef struct {
+	volatile gint ref_count;
+
 	OperationID op;
 	guint32 id; /* operation id */
 	EDataBook *book; /* book */
@@ -94,7 +96,7 @@ typedef struct {
 		gchar *uid;
 		/* OP_REMOVE_CONTACTS */
 		GSList *ids;
-		/* OP_ADD_CONTACT */
+		/* OP_ADD_CONTACTS */
 		/* OP_MODIFY_CONTACTS */
 		GSList *vcards;
 		/* OP_GET_VIEW */
@@ -150,6 +152,115 @@ cancel_ops_cb (gpointer opid,
 	g_cancellable_cancel (cancellable);
 }
 
+static OperationData *
+op_ref (OperationData *data)
+{
+	g_return_val_if_fail (data != NULL, data);
+	g_return_val_if_fail (data->ref_count > 0, data);
+
+	g_atomic_int_inc (&data->ref_count);
+
+	return data;
+}
+
+static OperationData *
+op_new (OperationID op,
+        EDataBook *book)
+{
+	OperationData *data;
+
+	data = g_slice_new0 (OperationData);
+	data->ref_count = 1;
+	data->op = op;
+	data->id = e_operation_pool_reserve_opid (ops_pool);
+	data->book = g_object_ref (book);
+	data->cancellable = g_cancellable_new ();
+
+	g_rec_mutex_lock (&book->priv->pending_ops_lock);
+	g_hash_table_insert (book->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
+	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
+
+	return data;
+}
+
+static void
+op_unref (OperationData *data)
+{
+	g_return_if_fail (data != NULL);
+	g_return_if_fail (data->ref_count > 0);
+
+	if (g_atomic_int_dec_and_test (&data->ref_count)) {
+
+		switch (data->op) {
+			case OP_GET_CONTACT:
+				g_free (data->d.uid);
+				break;
+			case OP_REMOVE_CONTACTS:
+				g_slist_free_full (
+					data->d.ids,
+					(GDestroyNotify) g_free);
+				break;
+			case OP_ADD_CONTACTS:
+			case OP_MODIFY_CONTACTS:
+				g_slist_free_full (
+					data->d.vcards,
+					(GDestroyNotify) g_free);
+				break;
+			case OP_GET_VIEW:
+			case OP_GET_CONTACTS:
+			case OP_GET_CONTACTS_UIDS:
+				g_free (data->d.query);
+				break;
+			case OP_GET_BACKEND_PROPERTY:
+				g_free (data->d.prop_name);
+				break;
+			case OP_SET_BACKEND_PROPERTY:
+				g_free (data->d.sbp.prop_name);
+				g_free (data->d.sbp.prop_value);
+				break;
+			default:
+				break;
+		}
+
+		g_object_unref (data->book);
+		g_object_unref (data->cancellable);
+
+		g_slice_free (OperationData, data);
+	}
+}
+
+static void
+op_dispatch (EDataBook *book,
+             OperationData *data)
+{
+	g_mutex_lock (&book->priv->open_lock);
+
+	/* If an open operation is currently in progress, queue this
+	 * operation to be dispatched when the open operation finishes. */
+	if (book->priv->open_opid > 0) {
+		g_queue_push_tail (&book->priv->open_queue, data);
+	} else {
+		if (data->op == OP_OPEN)
+			book->priv->open_opid = data->id;
+		e_operation_pool_push (ops_pool, data);
+	}
+
+	g_mutex_unlock (&book->priv->open_lock);
+}
+
+static void
+op_complete (EDataBook *book,
+             guint32 opid)
+{
+	g_return_if_fail (book != NULL);
+
+	e_operation_pool_release_opid (ops_pool, opid);
+
+	g_rec_mutex_lock (&book->priv->pending_ops_lock);
+	g_hash_table_remove (book->priv->pending_ops, GUINT_TO_POINTER (opid));
+	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
+}
+
 static void
 operation_thread (gpointer data,
                   gpointer user_data)
@@ -165,39 +276,30 @@ operation_thread (gpointer data,
 		break;
 	case OP_ADD_CONTACTS:
 		e_book_backend_create_contacts (backend, op->book, op->id, op->cancellable, op->d.vcards);
-		e_util_free_string_slist (op->d.vcards);
 		break;
 	case OP_GET_CONTACT:
 		e_book_backend_get_contact (backend, op->book, op->id, op->cancellable, op->d.uid);
-		g_free (op->d.uid);
 		break;
 	case OP_GET_CONTACTS:
 		e_book_backend_get_contact_list (backend, op->book, op->id, op->cancellable, op->d.query);
-		g_free (op->d.query);
 		break;
 	case OP_GET_CONTACTS_UIDS:
 		e_book_backend_get_contact_list_uids (backend, op->book, op->id, op->cancellable, op->d.query);
-		g_free (op->d.query);
 		break;
 	case OP_MODIFY_CONTACTS:
 		e_book_backend_modify_contacts (backend, op->book, op->id, op->cancellable, op->d.vcards);
-		e_util_free_string_slist (op->d.vcards);
 		break;
 	case OP_REMOVE_CONTACTS:
 		e_book_backend_remove_contacts (backend, op->book, op->id, op->cancellable, op->d.ids);
-		e_util_free_string_slist (op->d.ids);
 		break;
 	case OP_REFRESH:
 		e_book_backend_refresh (backend, op->book, op->id, op->cancellable);
 		break;
 	case OP_GET_BACKEND_PROPERTY:
 		e_book_backend_get_backend_property (backend, op->book, op->id, op->cancellable, op->d.prop_name);
-		g_free (op->d.prop_name);
 		break;
 	case OP_SET_BACKEND_PROPERTY:
 		e_book_backend_set_backend_property (backend, op->book, op->id, op->cancellable, op->d.sbp.prop_name, op->d.sbp.prop_value);
-		g_free (op->d.sbp.prop_name);
-		g_free (op->d.sbp.prop_value);
 		break;
 	case OP_GET_VIEW:
 		if (op->d.query) {
@@ -247,7 +349,6 @@ operation_thread (gpointer data,
 
 			g_free (object_path);
 		}
-		g_free (op->d.query);
 		break;
 	case OP_CANCEL_OPERATION:
 		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
@@ -270,60 +371,7 @@ operation_thread (gpointer data,
 		break;
 	}
 
-	g_object_unref (op->book);
-	g_object_unref (op->cancellable);
-	g_slice_free (OperationData, op);
-}
-
-static OperationData *
-op_new (OperationID op,
-        EDataBook *book)
-{
-	OperationData *data;
-
-	data = g_slice_new0 (OperationData);
-	data->op = op;
-	data->book = g_object_ref (book);
-	data->id = e_operation_pool_reserve_opid (ops_pool);
-	data->cancellable = g_cancellable_new ();
-
-	g_rec_mutex_lock (&book->priv->pending_ops_lock);
-	g_hash_table_insert (book->priv->pending_ops, GUINT_TO_POINTER (data->id), g_object_ref (data->cancellable));
-	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
-
-	return data;
-}
-
-static void
-op_dispatch (EDataBook *book,
-             OperationData *data)
-{
-	g_mutex_lock (&book->priv->open_lock);
-
-	/* If an open operation is currently in progress, queue this
-	 * operation to be dispatched when the open operation finishes. */
-	if (book->priv->open_opid > 0) {
-		g_queue_push_tail (&book->priv->open_queue, data);
-	} else {
-		if (data->op == OP_OPEN)
-			book->priv->open_opid = data->id;
-		e_operation_pool_push (ops_pool, data);
-	}
-
-	g_mutex_unlock (&book->priv->open_lock);
-}
-
-static void
-op_complete (EDataBook *book,
-             guint32 opid)
-{
-	g_return_if_fail (book != NULL);
-
-	e_operation_pool_release_opid (ops_pool, opid);
-
-	g_rec_mutex_lock (&book->priv->pending_ops_lock);
-	g_hash_table_remove (book->priv->pending_ops, GUINT_TO_POINTER (opid));
-	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
+	op_unref (op);
 }
 
 /**
