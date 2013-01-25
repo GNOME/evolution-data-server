@@ -70,15 +70,46 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 				AC_MSG_ERROR([libphonenumber cannot be used. Use --with-phonenumber to specify the library prefix.])])
 			])
 
-		CXXFLAGS="$evo_cxxflags_saved"
-		LDFLAGS="$evo_ldflags_saved"
-		LIBS="$evo_libs_saved"
 
 		AS_VAR_IF([evo_phonenumber_prefix],,
 		          [msg_phonenumber=$with_phonenumber],
 		          [msg_phonenumber=$evo_phonenumber_prefix])
 
 		AC_MSG_RESULT([$with_phonenumber])
+
+		AS_VAR_IF(
+			[with_phonenumber],[yes],
+			[AC_MSG_CHECKING([whether ParseAndKeepRawInput() is needed])
+			 AC_RUN_IFELSE(
+				[AC_LANG_PROGRAM(
+					[[#include <phonenumbers/phonenumberutil.h>]],
+					[[namespace pn = i18n::phonenumbers;i18n::phonenumbers;
+
+					  pn::PhoneNumber n;
+
+					  if (pn::PhoneNumberUtil::GetInstance ()->
+						Parse("049(800)46663", "DE", &) == pn::PhoneNumberUtil::NO_PARSING_ERROR
+							&& n.has_country_code_source ()
+							&& n.country_code_source () == 49)
+						return EXIT_SUCCESS;
+
+					  return EXIT_FAILURE;]]
+					)],
+
+				[AC_MSG_RESULT([no])],
+				[AC_MSG_RESULT([yes])
+
+				 AC_DEFINE_UNQUOTED(
+					[PHONENUMBER_RAW_INPUT_NEEDED], 1,
+					[Whether Parse() or ParseAndKeepRawInput() must be used to get the country-code source])
+				])
+			])
+
+
+		CXXFLAGS="$evo_cxxflags_saved"
+		LDFLAGS="$evo_ldflags_saved"
+		LIBS="$evo_libs_saved"
+
 		AC_LANG_POP(C++)
 	])
 

@@ -560,12 +560,15 @@ ESourceBackendSummarySetupPrivate
 <SECTION>
 <FILE>e-phone-number</FILE>
 EPhoneNumber
+EPhoneNumberCountrySource
 EPhoneNumberError
 EPhoneNumberFormat
 EPhoneNumberMatch
 e_phone_number_is_supported
 e_phone_number_from_string
 e_phone_number_to_string
+e_phone_number_get_country_code
+e_phone_number_get_national_number
 e_phone_number_compare
 e_phone_number_compare_strings
 e_phone_number_copy

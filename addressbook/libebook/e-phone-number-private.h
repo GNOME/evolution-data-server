@@ -58,10 +58,14 @@ E_PHONE_NUMBER_LOCAL void		_e_phone_number_set_error		(GError **error,
 /* defined in e-phone-number-private.cpp, and used by by e-phone-number.c */
 
 E_PHONE_NUMBER_LOCAL EPhoneNumber *	_e_phone_number_cxx_from_string		(const gchar *phone_number,
-										 const gchar *region,
+										 const gchar *region_code,
 										 GError **error);
 E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_to_string		(const EPhoneNumber *phone_number,
 										 EPhoneNumberFormat format);
+E_PHONE_NUMBER_LOCAL gint		_e_phone_number_cxx_get_country_code	(const EPhoneNumber *phone_number,
+										 EPhoneNumberCountrySource *source);
+E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_get_national_number	(const EPhoneNumber *phone_number);
+
 E_PHONE_NUMBER_LOCAL EPhoneNumberMatch	_e_phone_number_cxx_compare		(const EPhoneNumber *first_number,
 										 const EPhoneNumber *second_number);
 E_PHONE_NUMBER_LOCAL EPhoneNumberMatch	_e_phone_number_cxx_compare_strings	(const gchar *first_number,

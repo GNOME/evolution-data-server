@@ -157,6 +157,27 @@ typedef enum {
 } EPhoneNumberError;
 
 /**
+ * EPhoneNumberCountrySource:
+ * @E_PHONE_NUMBER_COUNTRY_FROM_FQTN: the EPhoneNumber was build from a
+ * fully qualified telephone number that contained a valid country code
+ * @E_PHONE_NUMBER_COUNTRY_FROM_IDD: the parsed phone number started
+ * with the current locale's international call prefix, followed by a
+ * valid country code
+ * @E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT: the parsed phone didn't start
+ * with a (recognizable) country code, the country code was chosen by
+ * checking the current locale settings
+ *
+ * The origin of a parsed EPhoneNumber's country code.
+ *
+ * Since: 3.8
+ */
+typedef enum {
+	E_PHONE_NUMBER_COUNTRY_FROM_FQTN = 1,
+	E_PHONE_NUMBER_COUNTRY_FROM_IDD = 5,
+	E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT = 20
+} EPhoneNumberCountrySource;
+
+/**
  * EPhoneNumber:
  * This opaque type describes a parsed phone number. It can be copied using
  * e_phone_number_copy(). To release it call e_phone_number_free().
@@ -173,6 +194,10 @@ EPhoneNumber *		e_phone_number_from_string	(const gchar *phone_number,
 							 GError **error);
 gchar *			e_phone_number_to_string	(const EPhoneNumber *phone_number,
 							 EPhoneNumberFormat format);
+gint			e_phone_number_get_country_code	(const EPhoneNumber *phone_number,
+							 EPhoneNumberCountrySource *source);
+gchar *			e_phone_number_get_national_number
+							(const EPhoneNumber *phone_number);
 
 EPhoneNumberMatch	e_phone_number_compare		(const EPhoneNumber *first_number,
 							 const EPhoneNumber *second_number);

@@ -156,6 +156,62 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 }
 
 /**
+ * e_phone_number_get_country_code:
+ * @phone_number: the phone number to query
+ * @source: an optional location for storing the phone number's origin, or %NULL
+ *
+ * Queries the @phone_number's country code and optionally stores the country code's
+ * origin in @source. For instance when parsing "+1-617-5423789" this function
+ * would return one and assing E_PHONE_NUMBER_COUNTRY_FROM_FQTN to @source.
+ *
+ * Returns: A valid country code, or zero if no country code is known.
+ *
+ * Since: 3.8
+ **/
+gint
+e_phone_number_get_country_code (const EPhoneNumber *phone_number,
+                                 EPhoneNumberCountrySource *source)
+{
+#ifdef ENABLE_PHONENUMBER
+
+	return _e_phone_number_cxx_get_country_code (phone_number, source);
+
+#else /* ENABLE_PHONENUMBER */
+
+	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
+	return 0;
+
+#endif /* ENABLE_PHONENUMBER */
+}
+
+/**
+ * e_phone_number_get_national_number:
+ * @phone_number: the phone number to query
+ *
+ * Queries the national portion of @phone_number without any call-out
+ * prefixes. For instance when parsing "+1-617-5423789" this function would
+ * return the string "6175423789".
+ *
+ * Returns: (transfer full): The national portion of @phone_number.
+ *
+ * Since: 3.8
+ **/
+gchar *
+e_phone_number_get_national_number (const EPhoneNumber *phone_number)
+{
+#ifdef ENABLE_PHONENUMBER
+
+	return _e_phone_number_cxx_get_national_number (phone_number);
+
+#else /* ENABLE_PHONENUMBER */
+
+	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
+	return NULL;
+
+#endif /* ENABLE_PHONENUMBER */
+}
+
+/**
  * e_phone_number_compare:
  * @first_number: the first EPhoneNumber to compare
  * @second_number: the second EPhoneNumber to compare
