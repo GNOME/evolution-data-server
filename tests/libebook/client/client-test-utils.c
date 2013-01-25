@@ -101,7 +101,7 @@ void
 main_initialize (void)
 {
 	static gboolean initialized = FALSE;
-	GTestDBus *test_dbus = NULL;
+	ETestDBus *test_dbus = NULL;
 
 	if (initialized)
 		return;
@@ -114,10 +114,10 @@ main_initialize (void)
 	e_test_setup_base_directories ();
 	test_dbus = e_test_setup_dbus_session ();
 
-	g_test_dbus_up (test_dbus);
+	e_test_dbus_up (test_dbus);
 
 	g_print ("Using private D-Bus session for testing: \"%s\"\n",
-                 g_test_dbus_get_bus_address (test_dbus));
+                 e_test_dbus_get_bus_address (test_dbus));
 
 	initialized = TRUE;
 }

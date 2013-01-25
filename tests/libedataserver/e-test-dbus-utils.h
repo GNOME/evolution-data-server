@@ -20,13 +20,14 @@
 #define E_TEST_DBUS_UTILS_H
 
 #include <gio/gio.h>
+#include "e-test-dbus.h"
 
 G_BEGIN_DECLS
 
 const gchar *	e_test_setup_base_directories	(void);
 gboolean	e_test_clean_base_directories	(GError **error);
 
-GTestDBus *	e_test_setup_dbus_session	(void);
+ETestDBus *	e_test_setup_dbus_session	(void);
 
 G_END_DECLS
 

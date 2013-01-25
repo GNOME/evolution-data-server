@@ -3,6 +3,8 @@ noinst_LTLIBRARIES = libclient-test-utils.la
 libclient_test_utils_la_SOURCES =				\
 	client-test-utils.c					\
 	client-test-utils.h					\
+	$(top_srcdir)/tests/test-server-utils/e-test-dbus.c	\
+	$(top_srcdir)/tests/test-server-utils/e-test-dbus.h	\
 	$(top_srcdir)/tests/libedataserver/e-test-dbus-utils.c	\
 	$(top_srcdir)/tests/libedataserver/e-test-dbus-utils.h	\
 	$(NULL)
