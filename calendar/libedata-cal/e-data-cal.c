@@ -541,10 +541,10 @@ e_data_cal_create_error_fmt (EDataCalCallStatus status,
 }
 
 static gboolean
-impl_Cal_open (EGdbusCal *interface,
-               GDBusMethodInvocation *invocation,
-               gboolean in_only_if_exists,
-               EDataCal *cal)
+data_cal_handle_open_cb (EGdbusCal *interface,
+                         GDBusMethodInvocation *invocation,
+                         gboolean in_only_if_exists,
+                         EDataCal *cal)
 {
 	OperationData *op;
 
@@ -559,9 +559,9 @@ impl_Cal_open (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_refresh (EGdbusCal *interface,
-                  GDBusMethodInvocation *invocation,
-                  EDataCal *cal)
+data_cal_handle_refresh_cb (EGdbusCal *interface,
+                            GDBusMethodInvocation *invocation,
+                            EDataCal *cal)
 {
 	OperationData *op;
 
@@ -575,10 +575,10 @@ impl_Cal_refresh (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_backend_property (EGdbusCal *interface,
-                               GDBusMethodInvocation *invocation,
-                               const gchar *in_prop_name,
-                               EDataCal *cal)
+data_cal_handle_get_backend_property_cb (EGdbusCal *interface,
+                                         GDBusMethodInvocation *invocation,
+                                         const gchar *in_prop_name,
+                                         EDataCal *cal)
 {
 	OperationData *op;
 
@@ -594,10 +594,10 @@ impl_Cal_get_backend_property (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_set_backend_property (EGdbusCal *interface,
-                               GDBusMethodInvocation *invocation,
-                               const gchar * const *in_prop_name_value,
-                               EDataCal *cal)
+data_cal_handle_set_backend_property_cb (EGdbusCal *interface,
+                                         GDBusMethodInvocation *invocation,
+                                         const gchar * const *in_prop_name_value,
+                                         EDataCal *cal)
 {
 	OperationData *op;
 
@@ -613,10 +613,10 @@ impl_Cal_set_backend_property (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_object (EGdbusCal *interface,
-                     GDBusMethodInvocation *invocation,
-                     const gchar * const *in_uid_rid,
-                     EDataCal *cal)
+data_cal_handle_get_object_cb (EGdbusCal *interface,
+                               GDBusMethodInvocation *invocation,
+                               const gchar * const *in_uid_rid,
+                               EDataCal *cal)
 {
 	OperationData *op;
 
@@ -631,10 +631,10 @@ impl_Cal_get_object (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_object_list (EGdbusCal *interface,
-                          GDBusMethodInvocation *invocation,
-                          const gchar *in_sexp,
-                          EDataCal *cal)
+data_cal_handle_get_object_list_cb (EGdbusCal *interface,
+                                    GDBusMethodInvocation *invocation,
+                                    const gchar *in_sexp,
+                                    EDataCal *cal)
 {
 	OperationData *op;
 
@@ -649,10 +649,10 @@ impl_Cal_get_object_list (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_free_busy (EGdbusCal *interface,
-                        GDBusMethodInvocation *invocation,
-                        const gchar * const *in_start_end_userlist,
-                        EDataCal *cal)
+data_cal_handle_get_free_busy_cb (EGdbusCal *interface,
+                                  GDBusMethodInvocation *invocation,
+                                  const gchar * const *in_start_end_userlist,
+                                  EDataCal *cal)
 {
 	OperationData *op;
 	guint start, end;
@@ -671,10 +671,10 @@ impl_Cal_get_free_busy (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_create_objects (EGdbusCal *interface,
-                         GDBusMethodInvocation *invocation,
-                         const gchar * const *in_calobjs,
-                         EDataCal *cal)
+data_cal_handle_create_objects_cb (EGdbusCal *interface,
+                                   GDBusMethodInvocation *invocation,
+                                   const gchar * const *in_calobjs,
+                                   EDataCal *cal)
 {
 	OperationData *op;
 
@@ -689,10 +689,10 @@ impl_Cal_create_objects (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_modify_objects (EGdbusCal *interface,
-                         GDBusMethodInvocation *invocation,
-                         const gchar * const *in_mod_calobjs,
-                         EDataCal *cal)
+data_cal_handle_modify_objects_cb (EGdbusCal *interface,
+                                   GDBusMethodInvocation *invocation,
+                                   const gchar * const *in_mod_calobjs,
+                                   EDataCal *cal)
 {
 	OperationData *op;
 	guint mod;
@@ -709,10 +709,10 @@ impl_Cal_modify_objects (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_remove_objects (EGdbusCal *interface,
-                         GDBusMethodInvocation *invocation,
-                         const gchar * const *in_mod_ids,
-                         EDataCal *cal)
+data_cal_handle_remove_objects_cb (EGdbusCal *interface,
+                                   GDBusMethodInvocation *invocation,
+                                   const gchar * const *in_mod_ids,
+                                   EDataCal *cal)
 {
 	OperationData *op;
 	guint mod = 0;
@@ -729,10 +729,10 @@ impl_Cal_remove_objects (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_receive_objects (EGdbusCal *interface,
-                          GDBusMethodInvocation *invocation,
-                          const gchar *in_calobj,
-                          EDataCal *cal)
+data_cal_handle_receive_objects_cb (EGdbusCal *interface,
+                                    GDBusMethodInvocation *invocation,
+                                    const gchar *in_calobj,
+                                    EDataCal *cal)
 {
 	OperationData *op;
 
@@ -747,10 +747,10 @@ impl_Cal_receive_objects (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_send_objects (EGdbusCal *interface,
-                       GDBusMethodInvocation *invocation,
-                       const gchar *in_calobj,
-                       EDataCal *cal)
+data_cal_handle_send_objects_cb (EGdbusCal *interface,
+                                 GDBusMethodInvocation *invocation,
+                                 const gchar *in_calobj,
+                                 EDataCal *cal)
 {
 	OperationData *op;
 
@@ -765,10 +765,10 @@ impl_Cal_send_objects (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_attachment_uris (EGdbusCal *interface,
-                              GDBusMethodInvocation *invocation,
-                              const gchar * const *in_uid_rid,
-                              EDataCal *cal)
+data_cal_handle_get_attachment_uris_cb (EGdbusCal *interface,
+                                        GDBusMethodInvocation *invocation,
+                                        const gchar * const *in_uid_rid,
+                                        EDataCal *cal)
 {
 	OperationData *op;
 
@@ -783,10 +783,10 @@ impl_Cal_get_attachment_uris (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_discard_alarm (EGdbusCal *interface,
-                        GDBusMethodInvocation *invocation,
-                        const gchar * const *in_uid_rid_auid,
-                        EDataCal *cal)
+data_cal_handle_discard_alarm_cb (EGdbusCal *interface,
+                                  GDBusMethodInvocation *invocation,
+                                  const gchar * const *in_uid_rid_auid,
+                                  EDataCal *cal)
 {
 	OperationData *op;
 
@@ -801,10 +801,10 @@ impl_Cal_discard_alarm (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_view (EGdbusCal *interface,
-                   GDBusMethodInvocation *invocation,
-                   const gchar *in_sexp,
-                   EDataCal *cal)
+data_cal_handle_get_view_cb (EGdbusCal *interface,
+                             GDBusMethodInvocation *invocation,
+                             const gchar *in_sexp,
+                             EDataCal *cal)
 {
 	OperationData *op;
 
@@ -820,10 +820,10 @@ impl_Cal_get_view (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_get_timezone (EGdbusCal *interface,
-                       GDBusMethodInvocation *invocation,
-                       const gchar *in_tzid,
-                       EDataCal *cal)
+data_cal_handle_get_timezone_cb (EGdbusCal *interface,
+                                 GDBusMethodInvocation *invocation,
+                                 const gchar *in_tzid,
+                                 EDataCal *cal)
 {
 	OperationData *op;
 
@@ -838,10 +838,10 @@ impl_Cal_get_timezone (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_add_timezone (EGdbusCal *interface,
-                       GDBusMethodInvocation *invocation,
-                       const gchar *in_tzobject,
-                       EDataCal *cal)
+data_cal_handle_add_timezone_cb (EGdbusCal *interface,
+                                 GDBusMethodInvocation *invocation,
+                                 const gchar *in_tzobject,
+                                 EDataCal *cal)
 {
 	OperationData *op;
 
@@ -856,10 +856,10 @@ impl_Cal_add_timezone (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_cancel_operation (EGdbusCal *interface,
-                           GDBusMethodInvocation *invocation,
-                           guint in_opid,
-                           EDataCal *cal)
+data_cal_handle_cancel_operation_cb (EGdbusCal *interface,
+                                     GDBusMethodInvocation *invocation,
+                                     guint in_opid,
+                                     EDataCal *cal)
 {
 	OperationData *op;
 
@@ -875,9 +875,9 @@ impl_Cal_cancel_operation (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_cancel_all (EGdbusCal *interface,
-                     GDBusMethodInvocation *invocation,
-                     EDataCal *cal)
+data_cal_handle_cancel_all_cb (EGdbusCal *interface,
+                               GDBusMethodInvocation *invocation,
+                               EDataCal *cal)
 {
 	OperationData *op;
 
@@ -892,9 +892,9 @@ impl_Cal_cancel_all (EGdbusCal *interface,
 }
 
 static gboolean
-impl_Cal_close (EGdbusCal *interface,
-                GDBusMethodInvocation *invocation,
-                EDataCal *cal)
+data_cal_handle_close_cb (EGdbusCal *interface,
+                          GDBusMethodInvocation *invocation,
+                          EDataCal *cal)
 {
 	OperationData *op;
 
@@ -1855,64 +1855,64 @@ e_data_cal_init (EDataCal *ecal)
 	dbus_interface = ecal->priv->dbus_interface;
 	g_signal_connect (
 		dbus_interface, "handle-open",
-		G_CALLBACK (impl_Cal_open), ecal);
+		G_CALLBACK (data_cal_handle_open_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-refresh",
-		G_CALLBACK (impl_Cal_refresh), ecal);
+		G_CALLBACK (data_cal_handle_refresh_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-backend-property",
-		G_CALLBACK (impl_Cal_get_backend_property), ecal);
+		G_CALLBACK (data_cal_handle_get_backend_property_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-set-backend-property",
-		G_CALLBACK (impl_Cal_set_backend_property), ecal);
+		G_CALLBACK (data_cal_handle_set_backend_property_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-object",
-		G_CALLBACK (impl_Cal_get_object), ecal);
+		G_CALLBACK (data_cal_handle_get_object_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-object-list",
-		G_CALLBACK (impl_Cal_get_object_list), ecal);
+		G_CALLBACK (data_cal_handle_get_object_list_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-free-busy",
-		G_CALLBACK (impl_Cal_get_free_busy), ecal);
+		G_CALLBACK (data_cal_handle_get_free_busy_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-create-objects",
-		G_CALLBACK (impl_Cal_create_objects), ecal);
+		G_CALLBACK (data_cal_handle_create_objects_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-modify-objects",
-		G_CALLBACK (impl_Cal_modify_objects), ecal);
+		G_CALLBACK (data_cal_handle_modify_objects_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-remove-objects",
-		G_CALLBACK (impl_Cal_remove_objects), ecal);
+		G_CALLBACK (data_cal_handle_remove_objects_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-receive-objects",
-		G_CALLBACK (impl_Cal_receive_objects), ecal);
+		G_CALLBACK (data_cal_handle_receive_objects_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-send-objects",
-		G_CALLBACK (impl_Cal_send_objects), ecal);
+		G_CALLBACK (data_cal_handle_send_objects_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-attachment-uris",
-		G_CALLBACK (impl_Cal_get_attachment_uris), ecal);
+		G_CALLBACK (data_cal_handle_get_attachment_uris_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-discard-alarm",
-		G_CALLBACK (impl_Cal_discard_alarm), ecal);
+		G_CALLBACK (data_cal_handle_discard_alarm_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-view",
-		G_CALLBACK (impl_Cal_get_view), ecal);
+		G_CALLBACK (data_cal_handle_get_view_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-timezone",
-		G_CALLBACK (impl_Cal_get_timezone), ecal);
+		G_CALLBACK (data_cal_handle_get_timezone_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-add-timezone",
-		G_CALLBACK (impl_Cal_add_timezone), ecal);
+		G_CALLBACK (data_cal_handle_add_timezone_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-cancel-operation",
-		G_CALLBACK (impl_Cal_cancel_operation), ecal);
+		G_CALLBACK (data_cal_handle_cancel_operation_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-cancel-all",
-		G_CALLBACK (impl_Cal_cancel_all), ecal);
+		G_CALLBACK (data_cal_handle_cancel_all_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-close",
-		G_CALLBACK (impl_Cal_close), ecal);
+		G_CALLBACK (data_cal_handle_close_cb), ecal);
 }
 
 /**
