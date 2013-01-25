@@ -940,6 +940,8 @@ e_data_cal_respond_open (EDataCal *cal,
                          guint32 opid,
                          GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -982,6 +984,8 @@ e_data_cal_respond_refresh (EDataCal *cal,
                             guint32 opid,
                             GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1011,6 +1015,8 @@ e_data_cal_respond_get_backend_property (EDataCal *cal,
 {
 	gchar *gdbus_prop_value = NULL;
 
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1037,6 +1043,8 @@ e_data_cal_respond_set_backend_property (EDataCal *cal,
                                          guint32 opid,
                                          GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1065,6 +1073,8 @@ e_data_cal_respond_get_object (EDataCal *cal,
                                const gchar *object)
 {
 	gchar *gdbus_object = NULL;
+
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	op_complete (cal, opid);
 
@@ -1096,6 +1106,8 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
 {
 	gchar **strv_objects;
 
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1125,6 +1137,8 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
                                   guint32 opid,
                                   GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1157,6 +1171,8 @@ e_data_cal_respond_create_objects (EDataCal *cal,
 	gchar **array = NULL;
 	const GSList *l;
 	gint i = 0;
+
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	op_complete (cal, opid);
 
@@ -1198,6 +1214,8 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
                                    /* const */ GSList *old_components,
                                    /* const */ GSList *new_components)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1238,6 +1256,8 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
                                   /* const */ GSList *old_components,
                                   /* const */ GSList *new_components)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1275,6 +1295,8 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
                                     guint32 opid,
                                     GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1305,6 +1327,8 @@ e_data_cal_respond_send_objects (EDataCal *cal,
                                  const gchar *calobj)
 {
 	gchar **strv_users_calobj;
+
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	op_complete (cal, opid);
 
@@ -1338,6 +1362,8 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
 {
 	gchar **strv_attachment_uris;
 
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1366,6 +1392,8 @@ e_data_cal_respond_discard_alarm (EDataCal *cal,
                                   guint32 opid,
                                   GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1394,6 +1422,8 @@ e_data_cal_respond_get_view (EDataCal *cal,
                              const gchar *view_path)
 {
 	gchar *gdbus_view_path = NULL;
+
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	op_complete (cal, opid);
 
@@ -1425,6 +1455,8 @@ e_data_cal_respond_get_timezone (EDataCal *cal,
 {
 	gchar *gdbus_tzobject = NULL;
 
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1451,6 +1483,8 @@ e_data_cal_respond_add_timezone (EDataCal *cal,
                                  guint32 opid,
                                  GError *error)
 {
+	g_return_if_fail (E_IS_DATA_CAL (cal));
+
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1473,7 +1507,7 @@ void
 e_data_cal_report_error (EDataCal *cal,
                          const gchar *message)
 {
-	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 	g_return_if_fail (message != NULL);
 
 	e_gdbus_cal_emit_backend_error (cal->priv->dbus_interface, message);
@@ -1490,7 +1524,7 @@ void
 e_data_cal_report_readonly (EDataCal *cal,
                             gboolean readonly)
 {
-	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	e_gdbus_cal_emit_readonly (cal->priv->dbus_interface, readonly);
 }
@@ -1506,7 +1540,7 @@ void
 e_data_cal_report_online (EDataCal *cal,
                           gboolean is_online)
 {
-	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	e_gdbus_cal_emit_online (cal->priv->dbus_interface, is_online);
 }
@@ -1526,6 +1560,8 @@ e_data_cal_report_opened (EDataCal *cal,
                           const GError *error)
 {
 	gchar **strv_error;
+
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	strv_error = e_gdbus_templates_encode_error (error);
 
@@ -1547,7 +1583,7 @@ e_data_cal_report_free_busy_data (EDataCal *cal,
 {
 	gchar **strv_freebusy;
 
-	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	strv_freebusy = gslist_to_strv (freebusy);
 
@@ -1570,7 +1606,7 @@ e_data_cal_report_backend_property_changed (EDataCal *cal,
 {
 	gchar **strv;
 
-	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_DATA_CAL (cal));
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (*prop_name != '\0');
 	g_return_if_fail (prop_value != NULL);
