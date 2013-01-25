@@ -42,7 +42,8 @@ struct _ECalBackendPrivate {
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
-	gboolean opening, opened, readonly, removed;
+	gboolean opening, opened, removed;
+	gboolean writable;
 
 	gchar *cache_dir;
 
@@ -66,7 +67,8 @@ enum {
 	PROP_0,
 	PROP_CACHE_DIR,
 	PROP_KIND,
-	PROP_REGISTRY
+	PROP_REGISTRY,
+	PROP_WRITABLE
 };
 
 /* Forward Declarations */
@@ -213,6 +215,12 @@ cal_backend_set_property (GObject *object,
 				E_CAL_BACKEND (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_WRITABLE:
+			e_cal_backend_set_writable (
+				E_CAL_BACKEND (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -240,6 +248,12 @@ cal_backend_get_property (GObject *object,
 		case PROP_REGISTRY:
 			g_value_set_object (
 				value, e_cal_backend_get_registry (
+				E_CAL_BACKEND (object)));
+			return;
+
+		case PROP_WRITABLE:
+			g_value_set_boolean (
+				value, e_cal_backend_get_writable (
 				E_CAL_BACKEND (object)));
 			return;
 	}
@@ -513,6 +527,17 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_WRITABLE,
+		g_param_spec_boolean (
+			"writable",
+			"Writable",
+			"Whether the backend will accept changes",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -544,8 +569,6 @@ e_cal_backend_init (ECalBackend *backend)
 
 	backend->priv->zone_cache = zone_cache;
 	g_mutex_init (&backend->priv->zone_cache_lock);
-
-	backend->priv->readonly = TRUE;
 }
 
 /**
@@ -580,6 +603,47 @@ e_cal_backend_get_registry (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
 	return backend->priv->registry;
+}
+
+/**
+ * e_cal_backend_get_writable:
+ * @backend: an #ECalBackend
+ *
+ * Returns whether @backend will accept changes to its data content.
+ *
+ * Returns: whether @backend is writable
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_cal_backend_get_writable (ECalBackend *backend)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+
+	return backend->priv->writable;
+}
+
+/**
+ * e_cal_backend_set_writable:
+ * @backend: an #ECalBackend
+ * @writable: whether @backend is writable
+ *
+ * Sets whether @backend will accept changes to its data content.
+ *
+ * Since: 3.8
+ **/
+void
+e_cal_backend_set_writable (ECalBackend *backend,
+                            gboolean writable)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	if (writable == backend->priv->writable)
+		return;
+
+	backend->priv->writable = writable;
+
+	g_object_notify (G_OBJECT (backend), "writable");
 }
 
 /**
@@ -640,7 +704,7 @@ e_cal_backend_is_readonly (ECalBackend *backend)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
-	return backend->priv->readonly;
+	return !e_cal_backend_get_writable (backend);
 }
 
 /**
@@ -1107,13 +1171,15 @@ e_cal_backend_open (ECalBackend *backend,
 
 	if (e_cal_backend_is_opened (backend)) {
 		gboolean online;
+		gboolean writable;
 
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
-		e_data_cal_report_readonly (cal, backend->priv->readonly);
-
 		online = e_backend_get_online (E_BACKEND (backend));
+		writable = e_cal_backend_get_writable (backend);
+
 		e_data_cal_report_online (cal, online);
+		e_data_cal_report_readonly (cal, !writable);
 
 		e_cal_backend_respond_opened (backend, cal, opid, NULL);
 	} else {
@@ -1835,7 +1901,7 @@ e_cal_backend_notify_readonly (ECalBackend *backend,
 	GList *l;
 
 	priv = backend->priv;
-	priv->readonly = is_readonly;
+	e_cal_backend_set_writable (backend, !is_readonly);
 
 	if (priv->notification_proxy) {
 		e_cal_backend_notify_readonly (priv->notification_proxy, is_readonly);

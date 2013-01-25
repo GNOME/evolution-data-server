@@ -14,6 +14,8 @@ CAL_BACKEND_PROPERTY_DEFAULT_OBJECT
 CAL_BACKEND_PROPERTY_REVISION
 e_cal_backend_get_kind
 e_cal_backend_get_registry
+e_cal_backend_get_writable
+e_cal_backend_set_writable
 e_cal_backend_is_opened
 e_cal_backend_is_opening
 e_cal_backend_is_readonly

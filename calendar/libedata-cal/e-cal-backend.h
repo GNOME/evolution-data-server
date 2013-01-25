@@ -262,6 +262,9 @@ icalcomponent_kind
 		e_cal_backend_get_kind		(ECalBackend *backend);
 ESourceRegistry *
 		e_cal_backend_get_registry	(ECalBackend *backend);
+gboolean	e_cal_backend_get_writable	(ECalBackend *backend);
+void		e_cal_backend_set_writable	(ECalBackend *backend,
+						 gboolean writable);
 gboolean	e_cal_backend_is_opened		(ECalBackend *backend);
 gboolean	e_cal_backend_is_opening	(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly	(ECalBackend *backend);
