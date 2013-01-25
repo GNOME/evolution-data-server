@@ -42,7 +42,7 @@ struct _ECalBackendPrivate {
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
-	gboolean opening, opened, removed;
+	gboolean opened, removed;
 	gboolean writable;
 
 	gchar *cache_dir;
@@ -678,16 +678,19 @@ e_cal_backend_is_opened (ECalBackend *backend)
  * every operation except of cancel and authenticate_user while
  * it is being opening.
  *
- * Returns: %TRUE if opening phase is in the effect, %FALSE otherwise.
+ * Returns: %FALSE always
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function is no longer relevant,
+ *                  and always returns %FALSE.
  **/
 gboolean
 e_cal_backend_is_opening (ECalBackend *backend)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
-	return backend->priv->opening;
+	return FALSE;
 }
 
 /**
@@ -936,9 +939,6 @@ e_cal_backend_remove_client_private (ECalBackend *backend,
 	g_mutex_lock (&backend->priv->clients_mutex);
 	backend->priv->clients = g_list_remove (backend->priv->clients, cal);
 
-	if (backend->priv->clients == NULL)
-		backend->priv->opening = FALSE;
-
 	g_mutex_unlock (&backend->priv->clients_mutex);
 
 	g_object_unref (backend);
@@ -1164,9 +1164,6 @@ e_cal_backend_open (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->open != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_cal_backend_is_opened (backend)) {
@@ -1183,7 +1180,6 @@ e_cal_backend_open (ECalBackend *backend,
 
 		e_cal_backend_respond_opened (backend, cal, opid, NULL);
 	} else {
-		backend->priv->opening = TRUE;
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
 		(* E_CAL_BACKEND_GET_CLASS (backend)->open) (backend, cal, opid, cancellable, only_if_exists);
@@ -1214,9 +1210,6 @@ e_cal_backend_refresh (ECalBackend *backend,
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
 
 	if (!E_CAL_BACKEND_GET_CLASS (backend)->refresh)
 		e_data_cal_respond_refresh (cal, opid, EDC_ERROR (UnsupportedMethod));
@@ -1252,9 +1245,6 @@ e_cal_backend_get_object (ECalBackend *backend,
 	g_return_if_fail (uid != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_object != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_get_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
@@ -1282,9 +1272,6 @@ e_cal_backend_get_object_list (ECalBackend *backend,
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_object_list != NULL);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
 
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_get_object_list (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
@@ -1321,9 +1308,6 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
 	g_return_if_fail (start <= end);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_free_busy != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_get_free_busy (cal, opid, EDC_NOT_OPENED_ERROR);
 	else
@@ -1353,9 +1337,6 @@ e_cal_backend_create_objects (ECalBackend *backend,
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobjs != NULL);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
 
 	if (!E_CAL_BACKEND_GET_CLASS (backend)->create_objects)
 		e_data_cal_respond_create_objects (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
@@ -1390,9 +1371,6 @@ e_cal_backend_modify_objects (ECalBackend *backend,
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobjs != NULL);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
 
 	if (!E_CAL_BACKEND_GET_CLASS (backend)->modify_objects)
 		e_data_cal_respond_modify_objects (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
@@ -1430,9 +1408,6 @@ e_cal_backend_remove_objects (ECalBackend *backend,
 	g_return_if_fail (ids != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->remove_objects != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_remove_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL, NULL);
 	else
@@ -1462,9 +1437,6 @@ e_cal_backend_receive_objects (ECalBackend *backend,
 	g_return_if_fail (calobj != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->receive_objects != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_receive_objects (cal, opid, EDC_NOT_OPENED_ERROR);
 	else
@@ -1493,9 +1465,6 @@ e_cal_backend_send_objects (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->send_objects != NULL);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
 
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_send_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
@@ -1531,9 +1500,6 @@ e_cal_backend_get_attachment_uris (ECalBackend *backend,
 	g_return_if_fail (uid != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_attachment_uris != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_get_attachment_uris (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
@@ -1568,9 +1534,6 @@ e_cal_backend_discard_alarm (ECalBackend *backend,
 	g_return_if_fail (uid != NULL);
 	g_return_if_fail (auid != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm)
 		e_data_cal_respond_discard_alarm (cal, opid, e_data_cal_create_error (NotSupported, NULL));
 	else if (!e_cal_backend_is_opened (backend))
@@ -1604,9 +1567,6 @@ e_cal_backend_get_timezone (ECalBackend *backend,
 	g_return_if_fail (tzid != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_timezone != NULL);
 
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
-
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_get_timezone (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
@@ -1634,9 +1594,6 @@ e_cal_backend_add_timezone (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobject != NULL);
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->add_timezone != NULL);
-
-	/* This should never be called while we're opening. */
-	g_return_if_fail (!e_cal_backend_is_opening (backend));
 
 	if (!e_cal_backend_is_opened (backend))
 		e_data_cal_respond_add_timezone (cal, opid, EDC_NOT_OPENED_ERROR);
@@ -1979,7 +1936,6 @@ e_cal_backend_notify_opened (ECalBackend *backend,
 	priv = backend->priv;
 	g_mutex_lock (&priv->clients_mutex);
 
-	priv->opening = FALSE;
 	priv->opened = error == NULL;
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))

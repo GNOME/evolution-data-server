@@ -248,7 +248,6 @@ gboolean	e_cal_backend_get_writable	(ECalBackend *backend);
 void		e_cal_backend_set_writable	(ECalBackend *backend,
 						 gboolean writable);
 gboolean	e_cal_backend_is_opened		(ECalBackend *backend);
-gboolean	e_cal_backend_is_opening	(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly	(ECalBackend *backend);
 gboolean	e_cal_backend_is_removed	(ECalBackend *backend);
 
@@ -436,6 +435,7 @@ void		e_cal_backend_respond_opened	(ECalBackend *backend,
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
+gboolean	e_cal_backend_is_opening	(ECalBackend *backend);
 void		e_cal_backend_foreach_view	(ECalBackend *backend,
 						 gboolean (*callback) (EDataCalView *view,
 								       gpointer user_data),
