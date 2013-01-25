@@ -52,7 +52,7 @@ setup_custom_book (ESource            *scratch,
 {
 	ESourceBackendSummarySetup *setup;
 
-	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP));
 	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
 	e_source_backend_summary_setup_set_summary_fields (setup,
 							   E_CONTACT_FULL_NAME,
