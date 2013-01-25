@@ -332,47 +332,104 @@ operation_thread (gpointer data,
 
 	switch (op->op) {
 	case OP_OPEN:
-		e_cal_backend_open (backend, op->cal, op->id, op->cancellable, op->d.only_if_exists);
+		e_cal_backend_open (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.only_if_exists);
 		break;
+
 	case OP_REFRESH:
-		e_cal_backend_refresh (backend, op->cal, op->id, op->cancellable);
+		e_cal_backend_refresh (
+			backend, op->cal, op->id, op->cancellable);
 		break;
+
 	case OP_GET_BACKEND_PROPERTY:
-		e_cal_backend_get_backend_property (backend, op->cal, op->id, op->cancellable, op->d.prop_name);
+		e_cal_backend_get_backend_property (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.prop_name);
 		break;
+
 	case OP_SET_BACKEND_PROPERTY:
-		e_cal_backend_set_backend_property (backend, op->cal, op->id, op->cancellable, op->d.sbp.prop_name, op->d.sbp.prop_value);
+		e_cal_backend_set_backend_property (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.sbp.prop_name,
+			op->d.sbp.prop_value);
 		break;
+
 	case OP_GET_OBJECT:
-		e_cal_backend_get_object (backend, op->cal, op->id, op->cancellable, op->d.ur.uid, op->d.ur.rid && *op->d.ur.rid ? op->d.ur.rid : NULL);
+		e_cal_backend_get_object (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.ur.uid,
+			op->d.ur.rid && *op->d.ur.rid ? op->d.ur.rid : NULL);
 		break;
+
 	case OP_GET_OBJECT_LIST:
-		e_cal_backend_get_object_list (backend, op->cal, op->id, op->cancellable, op->d.sexp);
+		e_cal_backend_get_object_list (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.sexp);
 		break;
+
 	case OP_GET_FREE_BUSY:
-		e_cal_backend_get_free_busy (backend, op->cal, op->id, op->cancellable, op->d.fb.users, op->d.fb.start, op->d.fb.end);
+		e_cal_backend_get_free_busy (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.fb.users,
+			op->d.fb.start,
+			op->d.fb.end);
 		break;
+
 	case OP_CREATE_OBJECTS:
-		e_cal_backend_create_objects (backend, op->cal, op->id, op->cancellable, op->d.calobjs);
+		e_cal_backend_create_objects (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.calobjs);
 		break;
+
 	case OP_MODIFY_OBJECTS:
-		e_cal_backend_modify_objects (backend, op->cal, op->id, op->cancellable, op->d.mo.calobjs, op->d.mo.mod);
+		e_cal_backend_modify_objects (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.mo.calobjs,
+			op->d.mo.mod);
 		break;
+
 	case OP_REMOVE_OBJECTS:
-		e_cal_backend_remove_objects (backend, op->cal, op->id, op->cancellable, op->d.ro.ids, op->d.ro.mod);
+		e_cal_backend_remove_objects (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.ro.ids,
+			op->d.ro.mod);
 		break;
+
 	case OP_RECEIVE_OBJECTS:
-		e_cal_backend_receive_objects (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
+		e_cal_backend_receive_objects (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.co.calobj);
 		break;
+
 	case OP_SEND_OBJECTS:
-		e_cal_backend_send_objects (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
+		e_cal_backend_send_objects (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.co.calobj);
 		break;
+
 	case OP_GET_ATTACHMENT_URIS:
-		e_cal_backend_get_attachment_uris (backend, op->cal, op->id, op->cancellable, op->d.ur.uid, op->d.ur.rid && *op->d.ur.rid ? op->d.ur.rid : NULL);
+		e_cal_backend_get_attachment_uris (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.ur.uid,
+			op->d.ur.rid && *op->d.ur.rid ? op->d.ur.rid : NULL);
 		break;
+
 	case OP_DISCARD_ALARM:
-		e_cal_backend_discard_alarm (backend, op->cal, op->id, op->cancellable, op->d.ura.uid, op->d.ura.rid && *op->d.ura.rid ? op->d.ura.rid : NULL, op->d.ura.auid);
+		e_cal_backend_discard_alarm (
+			backend, op->cal, op->id,
+			op->cancellable,
+			op->d.ura.uid,
+			op->d.ura.rid && *op->d.ura.rid ? op->d.ura.rid : NULL,
+			op->d.ura.auid);
 		break;
+
 	case OP_GET_VIEW:
 		if (op->d.sexp) {
 			EDataCalView *view;
@@ -393,8 +450,7 @@ operation_thread (gpointer data,
 			}
 
 			object_path = construct_calview_path ();
-			connection = e_gdbus_cal_stub_get_connection (
-				op->cal->priv->dbus_interface);
+			connection = e_data_cal_get_connection (op->cal);
 
 			view = e_data_cal_view_new (
 				backend, obj_sexp,
@@ -422,12 +478,19 @@ operation_thread (gpointer data,
 			g_free (object_path);
 		}
 		break;
+
 	case OP_GET_TIMEZONE:
-		e_cal_backend_get_timezone (backend, op->cal, op->id, op->cancellable, op->d.tzid);
+		e_cal_backend_get_timezone (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.tzid);
 		break;
+
 	case OP_ADD_TIMEZONE:
-		e_cal_backend_add_timezone (backend, op->cal, op->id, op->cancellable, op->d.tzobject);
+		e_cal_backend_add_timezone (
+			backend, op->cal, op->id,
+			op->cancellable, op->d.tzobject);
 		break;
+
 	case OP_CANCEL_OPERATION:
 		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 
@@ -439,9 +502,11 @@ operation_thread (gpointer data,
 
 		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
 		break;
+
 	case OP_CLOSE:
 		/* close just cancels all pending ops and frees data cal */
 		e_cal_backend_remove_client (backend, op->cal);
+
 	case OP_CANCEL_ALL:
 		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 
