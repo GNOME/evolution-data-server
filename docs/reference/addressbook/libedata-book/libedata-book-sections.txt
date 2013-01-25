@@ -14,6 +14,8 @@ BOOK_BACKEND_PROPERTY_REVISION
 e_book_backend_get_cache_dir
 e_book_backend_set_cache_dir
 e_book_backend_get_registry
+e_book_backend_get_writable
+e_book_backend_set_writable
 e_book_backend_add_client
 e_book_backend_remove_client
 e_book_backend_is_opened

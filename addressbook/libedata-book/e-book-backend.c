@@ -26,7 +26,8 @@ struct _EBookBackendPrivate {
 	GMutex clients_mutex;
 	GList *clients;
 
-	gboolean opening, opened, readonly, removed, online;
+	gboolean opening, opened, removed, online;
+	gboolean writable;
 
 	GMutex views_mutex;
 	GList *views;
@@ -38,7 +39,8 @@ struct _EBookBackendPrivate {
 enum {
 	PROP_0,
 	PROP_CACHE_DIR,
-	PROP_REGISTRY
+	PROP_REGISTRY,
+	PROP_WRITABLE
 };
 
 G_DEFINE_TYPE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
@@ -134,6 +136,12 @@ book_backend_set_property (GObject *object,
 				E_BOOK_BACKEND (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_WRITABLE:
+			e_book_backend_set_writable (
+				E_BOOK_BACKEND (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -155,6 +163,12 @@ book_backend_get_property (GObject *object,
 		case PROP_REGISTRY:
 			g_value_set_object (
 				value, e_book_backend_get_registry (
+				E_BOOK_BACKEND (object)));
+			return;
+
+		case PROP_WRITABLE:
+			g_value_set_boolean (
+				value, e_book_backend_get_writable (
 				E_BOOK_BACKEND (object)));
 			return;
 	}
@@ -289,6 +303,17 @@ e_book_backend_class_init (EBookBackendClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_WRITABLE,
+		g_param_spec_boolean (
+			"writable",
+			"Writable",
+			"Whether the backend will accept changes",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -369,6 +394,47 @@ e_book_backend_get_registry (EBookBackend *backend)
 }
 
 /**
+ * e_book_backend_get_writable:
+ * @backend: an #EBookBackend
+ *
+ * Returns whether @backend will accept changes to its data content.
+ *
+ * Returns: whether @backend is writable
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_book_backend_get_writable (EBookBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+
+	return backend->priv->writable;
+}
+
+/**
+ * e_book_backend_set_writable:
+ * @backend: an #EBookBackend
+ * @writable: whether @backend is writable
+ *
+ * Sets whether @backend will accept changes to its data content.
+ *
+ * Since: 3.8
+ **/
+void
+e_book_backend_set_writable (EBookBackend *backend,
+                             gboolean writable)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	if (writable == backend->priv->writable)
+		return;
+
+	backend->priv->writable = writable;
+
+	g_object_notify (G_OBJECT (backend), "writable");
+}
+
+/**
  * e_book_backend_open:
  * @backend: an #EBookBackend
  * @book: an #EDataBook
@@ -439,9 +505,13 @@ e_book_backend_open (EBookBackend *backend,
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_book_backend_is_opened (backend)) {
+		gboolean writable;
+
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
-		e_data_book_report_readonly (book, backend->priv->readonly);
+		writable = e_book_backend_get_writable (backend);
+
+		e_data_book_report_readonly (book, !writable);
 		e_data_book_report_online (book, backend->priv->online);
 
 		e_book_backend_respond_opened (backend, book, opid, NULL);
@@ -1021,7 +1091,7 @@ e_book_backend_is_opening (EBookBackend *backend)
  *
  * Checks if we can write to @backend.
  *
- * Returns: %TRUE if writeable, %FALSE if not.
+ * Returns: %TRUE if read-only, %FALSE if not.
  *
  * Since: 3.2
  **/
@@ -1030,7 +1100,7 @@ e_book_backend_is_readonly (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
-	return backend->priv->readonly;
+	return !e_book_backend_get_writable (backend);
 }
 
 /**
@@ -1217,7 +1287,7 @@ e_book_backend_notify_readonly (EBookBackend *backend,
 	GList *clients;
 
 	priv = backend->priv;
-	priv->readonly = is_readonly;
+	e_book_backend_set_writable (backend, !is_readonly);
 	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))

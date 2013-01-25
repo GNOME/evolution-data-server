@@ -222,6 +222,9 @@ void		e_book_backend_set_cache_dir	(EBookBackend *backend,
 						 const gchar *cache_dir);
 ESourceRegistry *
 		e_book_backend_get_registry	(EBookBackend *backend);
+gboolean	e_book_backend_get_writable	(EBookBackend *backend);
+void		e_book_backend_set_writable	(EBookBackend *backend,
+						 gboolean writable);
 
 gboolean	e_book_backend_add_client	(EBookBackend *backend,
 						 EDataBook *book);
