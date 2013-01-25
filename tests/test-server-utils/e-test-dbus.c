@@ -271,7 +271,6 @@ typedef struct _ETestDBusPrivate ETestDBusPrivate;
  * The #ETestDBus structure contains only private data and
  * should only be accessed using the provided API.
  *
- * Since: 2.34
  */
 struct _ETestDBus {
   GObject parent;
@@ -303,7 +302,7 @@ G_DEFINE_TYPE (ETestDBus, e_test_dbus, G_TYPE_OBJECT)
 static void
 e_test_dbus_init (ETestDBus *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), G_TYPE_TEST_DBUS,
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), E_TYPE_TEST_DBUS,
       ETestDBusPrivate);
 
   self->priv->service_dirs = g_ptr_array_new_with_free_func (g_free);
@@ -342,7 +341,7 @@ e_test_dbus_get_property (GObject *object,
   switch (property_id)
     {
       case PROP_FLAGS:
-        g_value_set_flags (value, e_test_dbus_get_flags (self));
+        g_value_set_uint (value, e_test_dbus_get_flags (self));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -361,7 +360,7 @@ e_test_dbus_set_property (GObject *object,
   switch (property_id)
     {
       case PROP_FLAGS:
-        self->priv->flags = g_value_get_flags (value);
+        self->priv->flags = g_value_get_uint (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -385,16 +384,14 @@ e_test_dbus_class_init (ETestDBusClass *klass)
    * ETestDBus:flags:
    *
    * #ETestDBusFlags specifying the behaviour of the dbus session
-   *
-   * Since: 2.34
    */
   g_object_class_install_property (object_class, PROP_FLAGS,
-    g_param_spec_flags ("flags",
-                        "dbus session flags",
-                        "Flags specifying the behaviour of the dbus session",
-                        G_TYPE_TEST_DBUS_FLAGS, E_TEST_DBUS_NONE,
-                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
-                        G_PARAM_STATIC_STRINGS));
+    g_param_spec_uint ("flags",
+		       "dbus session flags",
+		       "Flags specifying the behaviour of the dbus session",
+		       0, 1, 0,
+		       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
+		       G_PARAM_STATIC_STRINGS));
 
 }
 
@@ -453,7 +450,7 @@ write_config_file (ETestDBus *self)
 static void
 start_daemon (ETestDBus *self)
 {
-  gchar *argv[] = {"dbus-daemon", "--print-address", "--config-file=foo", NULL};
+  gchar const* argv[] = {"dbus-daemon", "--print-address", "--config-file=foo", NULL};
   gchar *config_path;
   gchar *config_arg;
   gint stdout_fd;
@@ -471,7 +468,7 @@ start_daemon (ETestDBus *self)
 
   /* Spawn dbus-daemon */
   g_spawn_async_with_pipes (NULL,
-                            argv,
+                            (gchar **)argv,
                             NULL,
 #ifdef G_OS_WIN32
                             /* We Need this to get the pid returned on win32 */
@@ -550,7 +547,7 @@ stop_daemon (ETestDBus *self)
 ETestDBus *
 e_test_dbus_new (ETestDBusFlags flags)
 {
-  return g_object_new (G_TYPE_TEST_DBUS,
+  return g_object_new (E_TYPE_TEST_DBUS,
       "flags", flags,
       NULL);
 }
@@ -566,7 +563,7 @@ e_test_dbus_new (ETestDBusFlags flags)
 ETestDBusFlags
 e_test_dbus_get_flags (ETestDBus *self)
 {
-  g_return_val_if_fail (G_IS_TEST_DBUS (self), E_TEST_DBUS_NONE);
+  g_return_val_if_fail (E_IS_TEST_DBUS (self), E_TEST_DBUS_NONE);
 
   return self->priv->flags;
 }
@@ -584,7 +581,7 @@ e_test_dbus_get_flags (ETestDBus *self)
 const gchar *
 e_test_dbus_get_bus_address (ETestDBus *self)
 {
-  g_return_val_if_fail (G_IS_TEST_DBUS (self), NULL);
+  g_return_val_if_fail (E_IS_TEST_DBUS (self), NULL);
 
   return self->priv->bus_address;
 }
@@ -601,7 +598,7 @@ void
 e_test_dbus_add_service_dir (ETestDBus *self,
     const gchar *path)
 {
-  g_return_if_fail (G_IS_TEST_DBUS (self));
+  g_return_if_fail (E_IS_TEST_DBUS (self));
   g_return_if_fail (self->priv->bus_address == NULL);
 
   g_ptr_array_add (self->priv->service_dirs, g_strdup (path));
@@ -623,7 +620,7 @@ e_test_dbus_add_service_dir (ETestDBus *self,
 void
 e_test_dbus_up (ETestDBus *self)
 {
-  g_return_if_fail (G_IS_TEST_DBUS (self));
+  g_return_if_fail (E_IS_TEST_DBUS (self));
   g_return_if_fail (self->priv->bus_address == NULL);
   g_return_if_fail (!self->priv->up);
 
@@ -648,7 +645,7 @@ e_test_dbus_up (ETestDBus *self)
 void
 e_test_dbus_stop (ETestDBus *self)
 {
-  g_return_if_fail (G_IS_TEST_DBUS (self));
+  g_return_if_fail (E_IS_TEST_DBUS (self));
   g_return_if_fail (self->priv->bus_address != NULL);
 
   stop_daemon (self);
@@ -669,7 +666,7 @@ e_test_dbus_down (ETestDBus *self)
 {
   GDBusConnection *connection = NULL;
 
-  g_return_if_fail (G_IS_TEST_DBUS (self));
+  g_return_if_fail (E_IS_TEST_DBUS (self));
   g_return_if_fail (self->priv->up);
 
   /* connection = _g_bus_get_singleton_if_exists (G_BUS_TYPE_SESSION); */
