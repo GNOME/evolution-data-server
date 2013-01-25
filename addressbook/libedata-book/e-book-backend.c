@@ -26,7 +26,7 @@ struct _EBookBackendPrivate {
 	GMutex clients_mutex;
 	GList *clients;
 
-	gboolean opening, opened, removed, online;
+	gboolean opening, opened, removed;
 	gboolean writable;
 
 	GMutex views_mutex;
@@ -505,14 +505,16 @@ e_book_backend_open (EBookBackend *backend,
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_book_backend_is_opened (backend)) {
+		gboolean online;
 		gboolean writable;
 
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
+		online = e_backend_get_online (E_BACKEND (backend));
 		writable = e_book_backend_get_writable (backend);
 
+		e_data_book_report_online (book, online);
 		e_data_book_report_readonly (book, !writable);
-		e_data_book_report_online (book, backend->priv->online);
 
 		e_book_backend_respond_opened (backend, book, opid, NULL);
 	} else {
@@ -1314,8 +1316,11 @@ e_book_backend_notify_online (EBookBackend *backend,
 	EBookBackendPrivate *priv;
 	GList *clients;
 
+	/* XXX Disregard the argument.
+	 *     EBackend determines this for itself. */
+	is_online = e_backend_get_online (E_BACKEND (backend));
+
 	priv = backend->priv;
-	priv->online = is_online;
 	g_mutex_lock (&priv->clients_mutex);
 
 	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
