@@ -52,15 +52,6 @@
 	((obj), E_TYPE_CAL_BACKEND, ECalBackendClass))
 
 /**
- * CLIENT_BACKEND_PROPERTY_OPENING:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
-
-/**
  * CLIENT_BACKEND_PROPERTY_ONLINE:
  *
  * FIXME: Document me.
@@ -432,6 +423,18 @@ void		e_cal_backend_respond_opened	(ECalBackend *backend,
  *                  anymore.  This property will always return %TRUE.
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENING:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: Clients don't need to care if they're fully opened
+ *                  anymore.  This property will always return %FALSE.
+ **/
+#define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
 void		e_cal_backend_foreach_view	(ECalBackend *backend,
 						 gboolean (*callback) (EDataCalView *view,

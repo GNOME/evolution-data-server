@@ -42,7 +42,6 @@ E_CLIENT_ERROR
 EClientError
 e_client_error_to_string
 e_client_error_create
-CLIENT_BACKEND_PROPERTY_OPENING
 CLIENT_BACKEND_PROPERTY_ONLINE
 CLIENT_BACKEND_PROPERTY_READONLY
 CLIENT_BACKEND_PROPERTY_CACHE_DIR
@@ -78,6 +77,7 @@ EClientErrorsList
 e_client_util_unwrap_dbus_error
 <SUBSECTION Deprecated>
 CLIENT_BACKEND_PROPERTY_OPENED
+CLIENT_BACKEND_PROPERTY_OPENING
 e_client_remove
 e_client_remove_finish
 e_client_remove_sync

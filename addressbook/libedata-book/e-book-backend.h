@@ -52,15 +52,6 @@
 	((obj), E_TYPE_BOOK_BACKEND, EBookBackendClass))
 
 /**
- * CLIENT_BACKEND_PROPERTY_OPENING:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
-
-/**
  * CLIENT_BACKEND_PROPERTY_ONLINE:
  *
  * FIXME: Document me.
@@ -334,6 +325,18 @@ void		e_book_backend_respond_opened	(EBookBackend *backend,
  *                  anymore.  This property will always return %TRUE.
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENING:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: Clients don't need to care if they're fully opened
+ *                  anymore.  This property will always return %FALSE.
+ **/
+#define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
 /**
  * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
