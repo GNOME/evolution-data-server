@@ -835,6 +835,8 @@ e_data_book_respond_open (EDataBook *book,
                           guint opid,
                           GError *error)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -877,6 +879,8 @@ e_data_book_respond_refresh (EDataBook *book,
                              guint32 opid,
                              GError *error)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -903,6 +907,8 @@ e_data_book_respond_get_backend_property (EDataBook *book,
 {
 	gchar *gdbus_prop_value = NULL;
 
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -928,6 +934,8 @@ e_data_book_respond_set_backend_property (EDataBook *book,
                                           guint32 opid,
                                           GError *error)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -946,6 +954,8 @@ e_data_book_respond_get_contact (EDataBook *book,
                                  const gchar *vcard)
 {
 	gchar *gdbus_vcard = NULL;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	op_complete (book, opid);
 
@@ -966,6 +976,8 @@ e_data_book_respond_get_contact_list (EDataBook *book,
                                       GError *error,
                                       const GSList *cards)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	if (error) {
 		/* Translators: This is prefix to a detailed error message */
 		g_prefix_error (&error, "%s", _("Cannot get contact list: "));
@@ -1000,6 +1012,8 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
                                            GError *error,
                                            const GSList *uids)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	if (error) {
 		/* Translators: This is prefix to a detailed error message */
 		g_prefix_error (&error, "%s", _("Cannot get contact list uids: "));
@@ -1037,6 +1051,8 @@ e_data_book_respond_create_contacts (EDataBook *book,
 	gchar **array = NULL;
 	const GSList *l;
 	gint i = 0;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	op_complete (book, opid);
 
@@ -1079,6 +1095,8 @@ e_data_book_respond_modify_contacts (EDataBook *book,
                                      GError *error,
                                      const GSList *contacts)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1104,6 +1122,8 @@ e_data_book_respond_remove_contacts (EDataBook *book,
                                      GError *error,
                                      const GSList *ids)
 {
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
@@ -1135,7 +1155,7 @@ void
 e_data_book_report_error (EDataBook *book,
                           const gchar *message)
 {
-	g_return_if_fail (book != NULL);
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (message != NULL);
 
 	e_gdbus_book_emit_backend_error (book->priv->dbus_interface, message);
@@ -1152,7 +1172,7 @@ void
 e_data_book_report_readonly (EDataBook *book,
                              gboolean readonly)
 {
-	g_return_if_fail (book != NULL);
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	e_gdbus_book_emit_readonly (book->priv->dbus_interface, readonly);
 }
@@ -1168,7 +1188,7 @@ void
 e_data_book_report_online (EDataBook *book,
                            gboolean is_online)
 {
-	g_return_if_fail (book != NULL);
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	e_gdbus_book_emit_online (book->priv->dbus_interface, is_online);
 }
@@ -1188,6 +1208,8 @@ e_data_book_report_opened (EDataBook *book,
                            const GError *error)
 {
 	gchar **strv_error;
+
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	strv_error = e_gdbus_templates_encode_error (error);
 
@@ -1212,7 +1234,7 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 
 	/* Notifies client about certain property value change */
 
-	g_return_if_fail (book != NULL);
+	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (*prop_name != '\0');
 	g_return_if_fail (prop_value != NULL);
