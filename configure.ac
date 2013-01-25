@@ -164,21 +164,35 @@ dnl Put the ACLOCAL flags in the Makefile
 dnl **************************************
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
+dnl *********************************************
+dnl Figure out early if we'll need a C++ compiler
+dnl *********************************************
+
+evo_with_cxx=no
+EVO_PHONENUMBER_ARGS
+
 dnl ******************************
 dnl Compiler Warning Flags
 dnl ******************************
-AS_COMPILER_FLAGS(WARNING_FLAGS,
-	"-Wall -Wextra
+proposed_warning_flags="-Wall -Wextra
 	-Wdeprecated-declarations
-	-Wno-missing-field-initializers
-	-Wno-sign-compare
-	-Wno-unused-parameter
-	-Wdeclaration-after-statement
 	-Werror-implicit-function-declaration
 	-Wformat-security -Winit-self
 	-Wmissing-declarations -Wmissing-include-dirs
-	-Wmissing-noreturn -Wnested-externs -Wpointer-arith
-	-Wredundant-decls -Wundef -Wwrite-strings")
+	-Wmissing-noreturn -Wpointer-arith
+	-Wredundant-decls -Wundef -Wwrite-strings"
+
+proposed_c_warning_flags="$proposed_warning_flags
+	-Wdeclaration-after-statement
+	-Wno-missing-field-initializers
+	-Wno-sign-compare
+	-Wno-unused-parameter
+	-Wnested-externs"
+
+proposed_cxx_warning_flags="$proposed_warning_flags
+	-Wabi -Wnoexcept"
+
+AS_COMPILER_FLAGS(WARNING_FLAGS, [$proposed_c_warning_flags])
 AC_SUBST(WARNING_FLAGS)
 
 dnl Other useful compiler warnings for test builds only.
@@ -190,7 +204,19 @@ dnl	-Wmissing-format-attribute
 dnl	-Wshadow
 dnl	-Wstrict-aliasing=2
 
-AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
+AM_CFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
+AC_SUBST(AM_CFLAGS)
+
+if test "x$evo_with_cxx" = xyes; then
+	AC_PROG_CXX
+
+	AC_LANG_PUSH([C++])
+	AS_COMPILER_FLAGS(CXX_WARNING_FLAGS, [$proposed_cxx_warning_flags])
+	AC_SUBST(CXX_WARNING_FLAGS)
+	AM_CXXFLAGS="$CXX_WARNING_FLAGS"
+	AC_SUBST(AM_CXXFLAGS)
+	AC_LANG_POP([C++])
+fi
 
 dnl *******************************
 dnl Check for --enable-strict
@@ -210,6 +236,8 @@ if test "x$enable_strict" = xauto; then
 	fi
 fi
 AC_MSG_RESULT([$enable_strict])
+
+AM_CPPFLAGS=
 
 if test "x$enable_strict" = xyes; then
 	AM_CPPFLAGS="$AM_CPPFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
@@ -272,18 +300,6 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 
 localedir='$(prefix)/$(DATADIRNAME)/locale'
 AC_SUBST(localedir)
-
-dnl ******************************
-dnl libphonenumber support
-dnl ******************************
-
-dnl The EVO_PHONENUMBER_SUPPORT macro calls AC_PROG_CXX if libphonenumber
-dnl support got requested. Therefore this macro must be expanded before
-dnl the libtool macros. Feel free to move back to the other optional
-dnl dependencies if you know how to fix the autoconf issue, or if you
-dnl concluded that C++ actually is pretty awesome and should be a hard
-dnl dependency.
-EVO_PHONENUMBER_SUPPORT
 
 dnl ******************************
 dnl Initialize libtool
@@ -382,6 +398,12 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
 fi
+
+dnl ******************************
+dnl Check for libphonenumber
+dnl ******************************
+
+EVO_PHONENUMBER_SUPPORT
 
 dnl *************************
 dnl Check for GTK+
