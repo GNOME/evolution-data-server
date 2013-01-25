@@ -28,6 +28,17 @@ normalize_space (char *str)
 }
 
 static void
+test_data_free (gpointer data)
+{
+	TestData *const test = data;
+
+	e_book_query_unref (test->query);
+	g_free (test->sexp);
+
+	g_slice_free (TestData, test);
+}
+
+static void
 test_query (gconstpointer data)
 {
 	const TestData *const test = data;
@@ -47,17 +58,8 @@ test_query (gconstpointer data)
 
 	g_assert_cmpstr (test->sexp, ==, sexp);
 	g_free (sexp);
-}
 
-static void
-test_data_free (gpointer data)
-{
-	TestData *const test = data;
-
-	e_book_query_unref (test->query);
-	g_free (test->sexp);
-
-	g_slice_free (TestData, test);
+	test_data_free (data);
 }
 
 static void
@@ -70,7 +72,7 @@ add_query_test (const char *path,
 	data->sexp = g_strdup (sexp);
 	data->query = query;
 
-	g_test_add_data_func_full (path, data, test_query, test_data_free);
+	g_test_add_data_func (path, data, test_query);
 }
 
 gint
