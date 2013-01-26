@@ -730,25 +730,6 @@ data_cal_handle_get_backend_property_cb (EGdbusCal *interface,
 }
 
 static gboolean
-data_cal_handle_set_backend_property_cb (EGdbusCal *interface,
-                                         GDBusMethodInvocation *invocation,
-                                         const gchar * const *in_prop_name_value,
-                                         EDataCal *cal)
-{
-	OperationData *op;
-
-	op = op_new (OP_SET_BACKEND_PROPERTY, cal, invocation);
-	g_return_val_if_fail (e_gdbus_cal_decode_set_backend_property (in_prop_name_value, &op->d.sbp.prop_name, &op->d.sbp.prop_value), FALSE);
-
-	e_gdbus_cal_complete_set_backend_property (interface, invocation, op->id);
-
-	/* This operation is never queued. */
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
 data_cal_handle_get_object_cb (EGdbusCal *interface,
                                GDBusMethodInvocation *invocation,
                                const gchar * const *in_uid_rid,
@@ -2001,9 +1982,6 @@ e_data_cal_init (EDataCal *ecal)
 	g_signal_connect (
 		dbus_interface, "handle-get-backend-property",
 		G_CALLBACK (data_cal_handle_get_backend_property_cb), ecal);
-	g_signal_connect (
-		dbus_interface, "handle-set-backend-property",
-		G_CALLBACK (data_cal_handle_set_backend_property_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-get-object",
 		G_CALLBACK (data_cal_handle_get_object_cb), ecal);
