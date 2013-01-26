@@ -643,39 +643,6 @@ book_client_get_backend_property_sync (EClient *client,
 	return res;
 }
 
-static void
-book_client_set_backend_property (EClient *client,
-                                  const gchar *prop_name,
-                                  const gchar *prop_value,
-                                  GCancellable *cancellable,
-                                  GAsyncReadyCallback callback,
-                                  gpointer user_data)
-{
-	gchar **prop_name_value;
-
-	prop_name_value = e_gdbus_book_encode_set_backend_property (prop_name, prop_value);
-
-	e_client_proxy_call_strv (
-		client, (const gchar * const *) prop_name_value,
-		cancellable, callback, user_data,
-		book_client_set_backend_property,
-		e_gdbus_book_call_set_backend_property,
-		e_gdbus_book_call_set_backend_property_finish,
-		NULL, NULL, NULL, NULL);
-
-	g_strfreev (prop_name_value);
-}
-
-static gboolean
-book_client_set_backend_property_finish (EClient *client,
-                                         GAsyncResult *result,
-                                         GError **error)
-{
-	return e_client_proxy_call_finish_void (
-		client, result, error,
-		book_client_set_backend_property);
-}
-
 static gboolean
 book_client_set_backend_property_sync (EClient *client,
                                        const gchar *prop_name,
@@ -683,27 +650,13 @@ book_client_set_backend_property_sync (EClient *client,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	EBookClient *book_client;
-	gboolean res;
-	gchar **prop_name_value;
+	g_set_error (
+		error, E_CLIENT_ERROR,
+		E_CLIENT_ERROR_NOT_SUPPORTED,
+		_("Cannot change value of book property '%s'"),
+		prop_name);
 
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-
-	book_client = E_BOOK_CLIENT (client);
-
-	if (book_client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	prop_name_value = e_gdbus_book_encode_set_backend_property (prop_name, prop_value);
-	res = e_client_proxy_call_sync_strv__void (
-		client, (const gchar * const *) prop_name_value,
-		cancellable, error,
-		e_gdbus_book_call_set_backend_property_sync);
-	g_strfreev (prop_name_value);
-
-	return res;
+	return FALSE;
 }
 
 static void
@@ -818,8 +771,6 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->get_backend_property		= book_client_get_backend_property;
 	client_class->get_backend_property_finish	= book_client_get_backend_property_finish;
 	client_class->get_backend_property_sync		= book_client_get_backend_property_sync;
-	client_class->set_backend_property		= book_client_set_backend_property;
-	client_class->set_backend_property_finish	= book_client_set_backend_property_finish;
 	client_class->set_backend_property_sync		= book_client_set_backend_property_sync;
 	client_class->open				= book_client_open;
 	client_class->open_finish			= book_client_open_finish;
