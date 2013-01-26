@@ -10,6 +10,7 @@
 #include <config.h>
 #endif
 
+#include <glib/gi18n-lib.h>
 #include <libedataserver/libedataserver.h>
 
 #include "e-book-backend-sync.h"
@@ -160,6 +161,9 @@ e_book_backend_sync_get_backend_property (EBookBackendSync *backend,
  * set in this case.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function always returns %FALSE and sets an
+ *                  %E_DATA_BOOK_STATUS_NOT_SUPPORTED error.
  **/
 gboolean
 e_book_backend_sync_set_backend_property (EBookBackendSync *backend,
@@ -169,13 +173,12 @@ e_book_backend_sync_set_backend_property (EBookBackendSync *backend,
                                           const gchar *prop_value,
                                           GError **error)
 {
-	e_return_data_book_error_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (prop_name, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (prop_value, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->set_backend_property_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	g_set_error_literal (
+		error, E_DATA_BOOK_ERROR,
+		E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+		_("Clients cannot set backend properties"));
 
-	return (* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->set_backend_property_sync) (backend, book, cancellable, prop_name, prop_value, error);
+	return FALSE;
 }
 
 /**
@@ -415,12 +418,7 @@ book_backend_set_backend_property (EBookBackend *backend,
                                    const gchar *prop_name,
                                    const gchar *prop_value)
 {
-	GError *error = NULL;
-
-	if (e_book_backend_sync_set_backend_property (E_BOOK_BACKEND_SYNC (backend), book, cancellable, prop_name, prop_value, &error))
-		e_data_book_respond_set_backend_property (book, opid, error);
-	else
-		(* E_BOOK_BACKEND_CLASS (e_book_backend_sync_parent_class)->set_backend_property) (backend, book, opid, cancellable, prop_name, prop_value);
+	/* Do nothing. */
 }
 
 static void
