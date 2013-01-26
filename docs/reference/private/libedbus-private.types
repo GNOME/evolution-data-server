@@ -3,6 +3,7 @@
 #include <private/e-dbus-authenticator.h>
 #include <private/e-dbus-address-book.h>
 #include <private/e-dbus-address-book-factory.h>
+#include <private/e-dbus-calendar.h>
 #include <private/e-dbus-calendar-factory.h>
 #include <private/e-dbus-user-prompter.h>
 
@@ -40,6 +41,9 @@ e_dbus_address_book_skeleton_get_type
 e_dbus_address_book_factory_get_type
 e_dbus_address_book_factory_proxy_get_type
 e_dbus_address_book_factory_skeleton_get_type
+e_dbus_calendar_get_type
+e_dbus_calendar_proxy_get_type
+e_dbus_calendar_skeleton_get_type
 e_dbus_calendar_factory_get_type
 e_dbus_calendar_factory_proxy_get_type
 e_dbus_calendar_factory_skeleton_get_type

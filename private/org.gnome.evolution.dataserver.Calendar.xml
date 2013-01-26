@@ -1,0 +1,109 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.Calendar:
+    @short_description: Calendar objects
+    @since: 3.8
+
+    This interface allows for interaction with a calendar backend.
+-->
+<interface name="org.gnome.evolution.dataserver.Calendar">
+
+  <property name="Online" type="b" access="read"/>
+  <property name="Revision" type="s" access="read"/>
+  <property name="Writable" type="b" access="read"/>
+
+  <!-- These properties are static. -->
+
+  <property name="CacheDir" type="s" access="read"/>
+  <property name="Capabilities" type="as" access="read"/>
+  <property name="DefaultObject" type="s" access="read"/>
+  <property name="CalEmailAddress" type="s" access="read"/>
+  <property name="AlarmEmailAddress" type="s" access="read"/>
+
+  <signal name="Error">
+    <arg name="error_message" type="s"/>
+  </signal>
+
+  <signal name="FreeBusyData">
+    <arg name="ics_objects" type="as"/>
+  </signal>
+
+  <method name="Open"/>
+
+  <method name="Close"/>
+
+  <method name="Refresh"/>
+
+  <method name="CreateObjects">
+    <arg name="ics_objects" direction="in" type="as"/>
+    <arg name="uids" direction="out" type="as"/>
+  </method>
+
+  <method name="ModifyObjects">
+    <arg name="ics_objects" direction="in" type="as"/>
+    <arg name="mod_type" direction="in" type="s"/>
+  </method>
+
+  <method name="RemoveObjects">
+    <arg name="uid_rid_array" direction="in" type="a(ss)"/>
+    <arg name="mod_type" direction="in" type="s"/>
+  </method>
+
+  <method name="ReceiveObjects">
+    <arg name="ics_object" direction="in" type="s"/>
+  </method>
+
+  <method name="SendObjects">
+    <arg name="ics_object" direction="in" type="s"/>
+    <arg name="users" direction="out" type="as"/>
+    <arg name="out_ics_object" direction="out" type="s"/>
+  </method>
+
+  <method name="GetObject">
+    <arg name="uid" direction="in" type="s"/>
+    <arg name="rid" direction="in" type="s"/>
+    <arg name="ics_object" direction="out" type="s"/>
+  </method>
+
+  <method name="GetObjectList">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="ics_objects" direction="out" type="as"/>
+  </method>
+
+  <method name="GetFreeBusy">
+    <arg name="start" direction="in" type="x"/>
+    <arg name="end" direction="in" type="x"/>
+    <arg name="users" direction="in" type="as"/>
+  </method>
+
+  <method name="GetAttachmentUris">
+    <arg name="uid" direction="in" type="s"/>
+    <arg name="rid" direction="in" type="s"/>
+    <arg name="uris" direction="out" type="as"/>
+  </method>
+
+  <method name="DiscardAlarm">
+    <arg name="uid" direction="in" type="s"/>
+    <arg name="rid" direction="in" type="s"/>
+    <arg name="alarm_uid" direction="in" type="s"/>
+  </method>
+
+  <method name="GetTimezone">
+    <arg name="tz_id" direction="in" type="s"/>
+    <arg name="tz_object" direction="out" type="s"/>
+  </method>
+
+  <method name="AddTimezone">
+    <arg name="tz_object" direction="in" type="s"/>
+  </method>
+
+  <method name="GetView">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="o"/>
+  </method>
+
+</interface>

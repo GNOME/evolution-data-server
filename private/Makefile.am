@@ -46,6 +46,15 @@ $(GENERATED_DBUS_ADDRESS_BOOK_FACTORY) : Makefile.am org.gnome.evolution.dataser
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.AddressBookFactory.xml \
 	$(NULL)
 
+$(GENERATED_DBUS_CALENDAR) : Makefile.am org.gnome.evolution.dataserver.Calendar.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-calendar \
+	--generate-docbook e-dbus-calendar \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.Calendar.xml \
+	$(NULL)
+
 $(GENERATED_DBUS_CALENDAR_FACTORY) : Makefile.am org.gnome.evolution.dataserver.CalendarFactory.xml
 	$(AM_V_GEN) gdbus-codegen \
 	--interface-prefix org.gnome.evolution.dataserver \
@@ -105,6 +114,12 @@ GENERATED_DBUS_ADDRESS_BOOK_FACTORY = \
 	e-dbus-address-book-factory-org.gnome.evolution.dataserver.AddressBookFactory.xml \
 	$(NULL)
 
+GENERATED_DBUS_CALENDAR = \
+	e-dbus-calendar.c \
+	e-dbus-calendar.h \
+	e-dbus-calendar-org.gnome.evolution.dataserver.Calendar.xml \
+	$(NULL)
+
 GENERATED_DBUS_CALENDAR_FACTORY = \
 	e-dbus-calendar-factory.c \
 	e-dbus-calendar-factory.h \
@@ -117,6 +132,7 @@ BUILT_SOURCES = \
 	$(GENERATED_DBUS_AUTHENTICATOR) \
 	$(GENERATED_DBUS_ADDRESS_BOOK) \
 	$(GENERATED_DBUS_ADDRESS_BOOK_FACTORY) \
+	$(GENERATED_DBUS_CALENDAR) \
 	$(GENERATED_DBUS_CALENDAR_FACTORY) \
 	$(GENERATED_DBUS_USER_PROMPTER) \
 	$(NULL)
@@ -152,6 +168,7 @@ EXTRA_DIST = \
 	org.gnome.evolution.dataserver.Authenticator.xml \
 	org.gnome.evolution.dataserver.AddressBook.xml \
 	org.gnome.evolution.dataserver.AddressBookFactory.xml \
+	org.gnome.evolution.dataserver.Calendar.xml \
 	org.gnome.evolution.dataserver.CalendarFactory.xml \
 	org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
