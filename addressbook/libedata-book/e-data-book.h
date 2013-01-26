@@ -163,10 +163,6 @@ void		e_data_book_respond_get_backend_property
 						 guint32 opid,
 						 GError *error,
 						 const gchar *prop_value);
-void		e_data_book_respond_set_backend_property
-						(EDataBook *book,
-						 guint32 opid,
-						 GError *error);
 void		e_data_book_respond_create_contacts
 						(EDataBook *book,
 						 guint32 opid,
@@ -212,6 +208,13 @@ void		e_data_book_report_backend_property_changed
 
 gchar *		e_data_book_string_slist_to_comma_string
 						(const GSList *strings);
+
+#ifndef EDS_DISABLE_DEPRECATED
+void		e_data_book_respond_set_backend_property
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

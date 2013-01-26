@@ -273,7 +273,6 @@ e_data_book_get_object_path
 e_data_book_respond_open
 e_data_book_respond_refresh
 e_data_book_respond_get_backend_property
-e_data_book_respond_set_backend_property
 e_data_book_respond_create_contacts
 e_data_book_respond_remove_contacts
 e_data_book_respond_modify_contacts
@@ -286,6 +285,8 @@ e_data_book_report_online
 e_data_book_report_opened
 e_data_book_report_backend_property_changed
 e_data_book_string_slist_to_comma_string
+<SUBSECTION Deprecated>
+e_data_book_respond_set_backend_property
 <SUBSECTION Standard>
 E_DATA_BOOK
 E_IS_DATA_BOOK

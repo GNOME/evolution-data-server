@@ -980,23 +980,15 @@ e_data_book_respond_get_backend_property (EDataBook *book,
  * FIXME: Document me.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function no longer does anything.
  **/
 void
 e_data_book_respond_set_backend_property (EDataBook *book,
                                           guint32 opid,
                                           GError *error)
 {
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	op_complete (book, opid);
-
-	/* Translators: This is prefix to a detailed error message */
-	g_prefix_error (&error, "%s", _("Cannot set backend property: "));
-
-	e_gdbus_book_emit_set_backend_property_done (book->priv->dbus_interface, opid, error);
-
-	if (error)
-		g_error_free (error);
+	/* Do nothing. */
 }
 
 void
