@@ -147,7 +147,9 @@ struct _ECalBackendClass {
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *prop_name);
-        void		(*set_backend_property)	(ECalBackend *backend,
+
+	/* This method is deprecated. */
+	void		(*set_backend_property)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
@@ -281,13 +283,6 @@ void		e_cal_backend_get_backend_property
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *prop_name);
-void		e_cal_backend_set_backend_property
-						(ECalBackend *backend,
-						 EDataCal *cal,
-						 guint32 opid,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value);
 
 void		e_cal_backend_open		(ECalBackend *backend,
 						 EDataCal *cal,
@@ -436,6 +431,13 @@ void		e_cal_backend_respond_opened	(ECalBackend *backend,
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
 gboolean	e_cal_backend_is_opening	(ECalBackend *backend);
+void		e_cal_backend_set_backend_property
+						(ECalBackend *backend,
+						 EDataCal *cal,
+						 guint32 opid,
+						 GCancellable *cancellable,
+						 const gchar *prop_name,
+						 const gchar *prop_value);
 void		e_cal_backend_foreach_view	(ECalBackend *backend,
 						 gboolean (*callback) (EDataCalView *view,
 								       gpointer user_data),

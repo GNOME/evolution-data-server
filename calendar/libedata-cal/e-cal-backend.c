@@ -166,12 +166,7 @@ cal_backend_set_backend_property (ECalBackend *backend,
                                   const gchar *prop_name,
                                   const gchar *prop_value)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (cal != NULL);
-	g_return_if_fail (prop_name != NULL);
-
-	e_data_cal_respond_set_backend_property (cal, opid, e_data_cal_create_error_fmt (NotSupported, _("Cannot change value of calendar property '%s'"), prop_name));
+	/* Do nothing. */
 }
 
 static void
@@ -866,6 +861,8 @@ e_cal_backend_get_backend_property (ECalBackend *backend,
  * which fetching it doesn't overwrite.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function no longer does anything.
  **/
 void
 e_cal_backend_set_backend_property (ECalBackend *backend,
@@ -875,13 +872,7 @@ e_cal_backend_set_backend_property (ECalBackend *backend,
                                     const gchar *prop_name,
                                     const gchar *prop_value)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (prop_value != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->set_backend_property != NULL);
-
-	(* E_CAL_BACKEND_GET_CLASS (backend)->set_backend_property) (backend, cal, opid, cancellable, prop_name, prop_value);
+	/* Do nothing. */
 }
 
 static void

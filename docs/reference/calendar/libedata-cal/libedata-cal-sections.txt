@@ -27,7 +27,6 @@ e_cal_backend_remove_view
 e_cal_backend_list_views
 e_cal_backend_set_notification_proxy
 e_cal_backend_get_backend_property
-e_cal_backend_set_backend_property
 e_cal_backend_open
 e_cal_backend_refresh
 e_cal_backend_get_object
@@ -59,6 +58,7 @@ e_cal_backend_respond_opened
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
 e_cal_backend_is_opening
+e_cal_backend_set_backend_property
 e_cal_backend_foreach_view
 <SUBSECTION Standard>
 E_CAL_BACKEND
