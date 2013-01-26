@@ -214,6 +214,7 @@ struct _EClientClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
+	/* This method is deprecated. */
 	void		(*set_backend_property)	(EClient *client,
 						 const gchar *prop_name,
 						 const gchar *prop_value,
@@ -310,23 +311,6 @@ gboolean	e_client_get_backend_property_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
-void		e_client_set_backend_property	(EClient *client,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	e_client_set_backend_property_finish
-						(EClient *client,
-						 GAsyncResult *result,
-						 GError **error);
-gboolean	e_client_set_backend_property_sync
-						(EClient *client,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GCancellable *cancellable,
-						 GError **error);
-
 void		e_client_open			(EClient *client,
 						 gboolean only_if_exists,
 						 GCancellable *cancellable,
@@ -416,6 +400,22 @@ gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
 gboolean	e_client_is_opened		(EClient *client);
+void		e_client_set_backend_property	(EClient *client,
+						 const gchar *prop_name,
+						 const gchar *prop_value,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_client_set_backend_property_finish
+						(EClient *client,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_client_set_backend_property_sync
+						(EClient *client,
+						 const gchar *prop_name,
+						 const gchar *prop_value,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_client_remove			(EClient *client,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,

@@ -59,9 +59,6 @@ e_client_cancel_all
 e_client_get_backend_property
 e_client_get_backend_property_finish
 e_client_get_backend_property_sync
-e_client_set_backend_property
-e_client_set_backend_property_finish
-e_client_set_backend_property_sync
 e_client_open
 e_client_open_finish
 e_client_open_sync
@@ -81,6 +78,9 @@ e_client_is_opened
 e_client_remove
 e_client_remove_finish
 e_client_remove_sync
+e_client_set_backend_property
+e_client_set_backend_property_finish
+e_client_set_backend_property_sync
 e_client_util_slist_to_strv
 e_client_util_strv_to_slist
 e_client_util_copy_string_slist

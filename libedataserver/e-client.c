@@ -1554,6 +1554,9 @@ e_client_get_backend_property_sync (EClient *client,
  * by e_client_set_backend_property_finish() from the @callback.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Clients cannot set backend properties.  Any attempt
+ *                  will fail with an %E_CLIENT_ERROR_NOT_SUPPORTED error.
  **/
 void
 e_client_set_backend_property (EClient *client,
@@ -1588,6 +1591,9 @@ e_client_set_backend_property (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Clients cannot set backend properties.  Any attempt
+ *                  will fail with an %E_CLIENT_ERROR_NOT_SUPPORTED error.
  **/
 gboolean
 e_client_set_backend_property_finish (EClient *client,
@@ -1625,6 +1631,9 @@ e_client_set_backend_property_finish (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Clients cannot set backend properties.  Any attempt
+ *                  will fail with an %E_CLIENT_ERROR_NOT_SUPPORTED error.
  **/
 gboolean
 e_client_set_backend_property_sync (EClient *client,
