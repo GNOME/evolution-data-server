@@ -188,10 +188,6 @@ void		e_data_cal_respond_get_backend_property
 						 guint32 opid,
 						 GError *error,
 						 const gchar *prop_value);
-void		e_data_cal_respond_set_backend_property
-						(EDataCal *cal,
-						 guint32 opid,
-						 GError *error);
 void		e_data_cal_respond_get_object	(EDataCal *cal,
 						 guint32 opid,
 						 GError *error,
@@ -268,6 +264,13 @@ void		e_data_cal_report_backend_property_changed
 						(EDataCal *cal,
 						 const gchar *prop_name,
 						 const gchar *prop_value);
+
+#ifndef EDS_DISABLE_DEPRECATED
+void		e_data_cal_respond_set_backend_property
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

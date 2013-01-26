@@ -1136,23 +1136,15 @@ e_data_cal_respond_get_backend_property (EDataCal *cal,
  * Notifies listeners of the completion of the set_backend_property method call.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function no longer does anything.
  */
 void
 e_data_cal_respond_set_backend_property (EDataCal *cal,
                                          guint32 opid,
                                          GError *error)
 {
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	op_complete (cal, opid);
-
-	/* Translators: This is prefix to a detailed error message */
-	g_prefix_error (&error, "%s", _("Cannot set backend property: "));
-
-	e_gdbus_cal_emit_set_backend_property_done (cal->priv->dbus_interface, opid, error);
-
-	if (error)
-		g_error_free (error);
+	/* Do nothing. */
 }
 
 /**

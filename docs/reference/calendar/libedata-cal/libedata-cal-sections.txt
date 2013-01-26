@@ -248,7 +248,6 @@ e_data_cal_get_object_path
 e_data_cal_respond_open
 e_data_cal_respond_refresh
 e_data_cal_respond_get_backend_property
-e_data_cal_respond_set_backend_property
 e_data_cal_respond_get_object
 e_data_cal_respond_get_object_list
 e_data_cal_respond_get_free_busy
@@ -268,6 +267,8 @@ e_data_cal_report_online
 e_data_cal_report_opened
 e_data_cal_report_free_busy_data
 e_data_cal_report_backend_property_changed
+<SUBSECTION Deprecated>
+e_data_cal_respond_set_backend_property
 <SUBSECTION Standard>
 E_DATA_CAL
 E_IS_DATA_CAL
