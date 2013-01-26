@@ -816,25 +816,6 @@ data_book_handle_get_backend_property_cb (EGdbusBook *interface,
 }
 
 static gboolean
-data_book_handle_set_backend_property_cb (EGdbusBook *interface,
-                                          GDBusMethodInvocation *invocation,
-                                          const gchar * const *in_prop_name_value,
-                                          EDataBook *book)
-{
-	OperationData *op;
-
-	op = op_new (OP_SET_BACKEND_PROPERTY, book, invocation);
-	g_return_val_if_fail (e_gdbus_book_decode_set_backend_property (in_prop_name_value, &op->d.sbp.prop_name, &op->d.sbp.prop_value), FALSE);
-
-	e_gdbus_book_complete_set_backend_property (interface, invocation, op->id);
-
-	/* This operation is never queued. */
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
 data_book_handle_get_view_cb (EGdbusBook *interface,
                               GDBusMethodInvocation *invocation,
                               const gchar *in_query,
@@ -1600,9 +1581,6 @@ e_data_book_init (EDataBook *ebook)
 	g_signal_connect (
 		dbus_interface, "handle-get-backend-property",
 		G_CALLBACK (data_book_handle_get_backend_property_cb), ebook);
-	g_signal_connect (
-		dbus_interface, "handle-set-backend-property",
-		G_CALLBACK (data_book_handle_set_backend_property_cb), ebook);
 	g_signal_connect (
 		dbus_interface, "handle-get-view",
 		G_CALLBACK (data_book_handle_get_view_cb), ebook);
