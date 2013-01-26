@@ -279,11 +279,15 @@ client_set_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_SOURCE:
-			client_set_source (E_CLIENT (object), g_value_get_object (value));
+			client_set_source (
+				E_CLIENT (object),
+				g_value_get_object (value));
 			return;
 
 		case PROP_ONLINE:
-			e_client_set_online (E_CLIENT (object), g_value_get_boolean (value));
+			e_client_set_online (
+				E_CLIENT (object),
+				g_value_get_boolean (value));
 			return;
 	}
 
@@ -298,23 +302,38 @@ client_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_SOURCE:
-			g_value_set_object (value, e_client_get_source (E_CLIENT (object)));
+			g_value_set_object (
+				value,
+				e_client_get_source (
+				E_CLIENT (object)));
 			return;
 
 		case PROP_CAPABILITIES:
-			g_value_set_pointer (value, (gpointer) e_client_get_capabilities (E_CLIENT (object)));
+			g_value_set_pointer (
+				value,
+				(gpointer) e_client_get_capabilities (
+				E_CLIENT (object)));
 			return;
 
 		case PROP_READONLY:
-			g_value_set_boolean (value, e_client_is_readonly (E_CLIENT (object)));
+			g_value_set_boolean (
+				value,
+				e_client_is_readonly (
+				E_CLIENT (object)));
 			return;
 
 		case PROP_ONLINE:
-			g_value_set_boolean (value, e_client_is_online (E_CLIENT (object)));
+			g_value_set_boolean (
+				value,
+				e_client_is_online (
+				E_CLIENT (object)));
 			return;
 
 		case PROP_OPENED:
-			g_value_set_boolean (value, e_client_is_opened (E_CLIENT (object)));
+			g_value_set_boolean (
+				value,
+				e_client_is_opened (
+				E_CLIENT (object)));
 			return;
 	}
 
@@ -764,7 +783,9 @@ e_client_class_init (EClientClass *class)
 			NULL,
 			NULL,
 			E_TYPE_SOURCE,
-			G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -773,7 +794,8 @@ e_client_class_init (EClientClass *class)
 			"capabilities",
 			NULL,
 			NULL,
-			G_PARAM_READABLE));
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -783,7 +805,8 @@ e_client_class_init (EClientClass *class)
 			NULL,
 			NULL,
 			FALSE,
-			G_PARAM_READABLE));
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -793,7 +816,8 @@ e_client_class_init (EClientClass *class)
 			NULL,
 			NULL,
 			FALSE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -803,7 +827,8 @@ e_client_class_init (EClientClass *class)
 			NULL,
 			NULL,
 			FALSE,
-			G_PARAM_READABLE));
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 
 	signals[OPENED] = g_signal_new (
 		"opened",
