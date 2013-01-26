@@ -73,7 +73,6 @@ typedef enum {
 	OP_OPEN,
 	OP_REFRESH,
 	OP_GET_BACKEND_PROPERTY,
-	OP_SET_BACKEND_PROPERTY,
 	OP_GET_OBJECT,
 	OP_GET_OBJECT_LIST,
 	OP_GET_FREE_BUSY,
@@ -149,11 +148,6 @@ typedef struct {
 		guint opid;
 		/* OP_GET_BACKEND_PROPERTY */
 		gchar *prop_name;
-		/* OP_SET_BACKEND_PROPERTY */
-		struct _sbp {
-			gchar *prop_name;
-			gchar *prop_value;
-		} sbp;
 
 		/* OP_REFRESH */
 		/* OP_CANCEL_ALL */
@@ -272,10 +266,6 @@ op_unref (OperationData *data)
 			case OP_GET_BACKEND_PROPERTY:
 				g_free (data->d.prop_name);
 				break;
-			case OP_SET_BACKEND_PROPERTY:
-				g_free (data->d.sbp.prop_name);
-				g_free (data->d.sbp.prop_value);
-				break;
 			default:
 				break;
 		}
@@ -350,14 +340,6 @@ operation_thread (gpointer data,
 		e_cal_backend_get_backend_property (
 			backend, op->cal, op->id,
 			op->cancellable, op->d.prop_name);
-		break;
-
-	case OP_SET_BACKEND_PROPERTY:
-		e_cal_backend_set_backend_property (
-			backend, op->cal, op->id,
-			op->cancellable,
-			op->d.sbp.prop_name,
-			op->d.sbp.prop_value);
 		break;
 
 	case OP_GET_OBJECT:
