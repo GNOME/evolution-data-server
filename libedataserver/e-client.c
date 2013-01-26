@@ -37,6 +37,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CLIENT, EClientPrivate))
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _EClientPrivate {
 	GRecMutex prop_mutex;
 
@@ -52,6 +54,13 @@ struct _EClientPrivate {
 	GRecMutex ops_mutex;
 	guint32 last_opid;
 	GHashTable *ops; /* opid to GCancellable */
+};
+
+struct _AsyncContext {
+	gchar *capabilities;
+	gchar *prop_name;
+	gchar *prop_value;
+	gboolean only_if_exists;
 };
 
 enum {
@@ -74,6 +83,16 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE (EClient, e_client, G_TYPE_OBJECT)
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	g_free (async_context->capabilities);
+	g_free (async_context->prop_name);
+	g_free (async_context->prop_value);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 /*
  * Well-known client backend properties, which are common for each #EClient:
@@ -302,14 +321,308 @@ client_get_property (GObject *object,
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
+/* Helper for client_retrieve_capabilities() */
+static void
+client_retrieve_capabilities_thread (GSimpleAsyncResult *simple,
+                                     GObject *source_object,
+                                     GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_client_retrieve_capabilities_sync (
+		E_CLIENT (source_object),
+		&async_context->capabilities,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+client_retrieve_capabilities (EClient *client,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback,
+		user_data, client_retrieve_capabilities);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, client_retrieve_capabilities_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+client_retrieve_capabilities_finish (EClient *client,
+                                     GAsyncResult *result,
+                                     gchar **capabilities,
+                                     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		client_retrieve_capabilities), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->capabilities != NULL, FALSE);
+
+	if (capabilities != NULL) {
+		*capabilities = async_context->capabilities;
+		async_context->capabilities = NULL;
+	}
+
+	return TRUE;
+}
+
+/* Helper for client_get_backend_property() */
+static void
+client_get_backend_property_thread (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_client_get_backend_property_sync (
+		E_CLIENT (source_object),
+		async_context->prop_name,
+		&async_context->prop_value,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+client_get_backend_property (EClient *client,
+                             const gchar *prop_name,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->prop_name = g_strdup (prop_name);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback,
+		user_data, client_get_backend_property);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, client_get_backend_property_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+client_get_backend_property_finish (EClient *client,
+                                    GAsyncResult *result,
+                                    gchar **prop_value,
+                                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		client_get_backend_property), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->prop_value != NULL, FALSE);
+
+	if (prop_value != NULL) {
+		*prop_value = async_context->prop_value;
+		async_context->prop_value = NULL;
+	}
+
+	return TRUE;
+}
+
+/* Helper for client_set_backend_property() */
+static void
+client_set_backend_property_thread (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_client_set_backend_property_sync (
+		E_CLIENT (source_object),
+		async_context->prop_name,
+		async_context->prop_value,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+client_set_backend_property (EClient *client,
+                             const gchar *prop_name,
+                             const gchar *prop_value,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->prop_name = g_strdup (prop_name);
+	async_context->prop_value = g_strdup (prop_value);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback,
+		user_data, client_set_backend_property);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, client_set_backend_property_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+client_set_backend_property_finish (EClient *client,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		client_set_backend_property), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/* Helper for client_open() */
+static void
+client_open_thread (GSimpleAsyncResult *simple,
+                    GObject *source_object,
+                    GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_client_open_sync (
+		E_CLIENT (source_object),
+		async_context->only_if_exists,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+client_open (EClient *client,
+             gboolean only_if_exists,
+             GCancellable *cancellable,
+             GAsyncReadyCallback callback,
+             gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->only_if_exists = only_if_exists;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data, client_open);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, client_open_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+client_open_finish (EClient *client,
+                    GAsyncResult *result,
+                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client), client_open), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/* Helper for client_remove() */
 static void
 client_remove_thread (GSimpleAsyncResult *simple,
-                      GObject *object,
+                      GObject *source_object,
                       GCancellable *cancellable)
 {
 	GError *error = NULL;
 
-	e_client_remove_sync (E_CLIENT (object), cancellable, &error);
+	e_client_remove_sync (
+		E_CLIENT (source_object), cancellable, &error);
 
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
@@ -364,6 +677,58 @@ client_remove_sync (EClient *client,
 	return e_source_remove_sync (source, cancellable, error);
 }
 
+/* Helper for client_refresh() */
+static void
+client_refresh_thread (GSimpleAsyncResult *simple,
+                       GObject *source_object,
+                       GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	e_client_refresh_sync (
+		E_CLIENT (source_object), cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+client_refresh (EClient *client,
+                GCancellable *cancellable,
+                GAsyncReadyCallback callback,
+                gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data, client_refresh);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_run_in_thread (
+		simple, client_refresh_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+client_refresh_finish (EClient *client,
+                       GAsyncResult *result,
+                       GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client), client_refresh), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
 static void
 e_client_class_init (EClientClass *class)
 {
@@ -377,9 +742,19 @@ e_client_class_init (EClientClass *class)
 	object_class->dispose = client_dispose;
 	object_class->finalize = client_finalize;
 
+	class->retrieve_capabilities = client_retrieve_capabilities;
+	class->retrieve_capabilities_finish = client_retrieve_capabilities_finish;
+	class->get_backend_property = client_get_backend_property;
+	class->get_backend_property_finish = client_get_backend_property_finish;
+	class->set_backend_property = client_set_backend_property;
+	class->set_backend_property_finish = client_set_backend_property_finish;
+	class->open = client_open;
+	class->open_finish = client_open_finish;
 	class->remove = client_remove;
 	class->remove_finish = client_remove_finish;
 	class->remove_sync = client_remove_sync;
+	class->refresh = client_refresh;
+	class->refresh_finish = client_refresh_finish;
 
 	g_object_class_install_property (
 		object_class,
