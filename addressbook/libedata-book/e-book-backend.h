@@ -136,6 +136,8 @@ struct _EBookBackendClass {
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *prop_name);
+
+	/* This method is deprecated. */
 	void		(*set_backend_property)	(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
@@ -223,13 +225,6 @@ void		e_book_backend_get_backend_property
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const gchar *prop_name);
-void		e_book_backend_set_backend_property
-						(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value);
 
 void		e_book_backend_open		(EBookBackend *backend,
 						 EDataBook *book,
@@ -347,6 +342,13 @@ void		e_book_backend_respond_opened	(EBookBackend *backend,
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
 gboolean	e_book_backend_is_opening	(EBookBackend *backend);
+void		e_book_backend_set_backend_property
+						(EBookBackend *backend,
+						 EDataBook *book,
+						 guint32 opid,
+						 GCancellable *cancellable,
+						 const gchar *prop_name,
+						 const gchar *prop_value);
 void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
 								       gpointer user_data),

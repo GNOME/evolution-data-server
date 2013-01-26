@@ -100,12 +100,7 @@ book_backend_set_backend_property (EBookBackend *backend,
                                    const gchar *prop_name,
                                    const gchar *prop_value)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (book != NULL);
-	g_return_if_fail (prop_name != NULL);
-
-	e_data_book_respond_set_backend_property (book, opid, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_NOT_SUPPORTED, _("Cannot change value of book property '%s'"), prop_name));
+	/* Do nothing. */
 }
 
 static void
@@ -997,6 +992,8 @@ e_book_backend_get_backend_property (EBookBackend *backend,
  * which fetching it doesn't overwrite.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function no longer does anything.
  **/
 void
 e_book_backend_set_backend_property (EBookBackend *backend,
@@ -1006,13 +1003,7 @@ e_book_backend_set_backend_property (EBookBackend *backend,
                                      const gchar *prop_name,
                                      const gchar *prop_value)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (prop_value != NULL);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->set_backend_property != NULL);
-
-	E_BOOK_BACKEND_GET_CLASS (backend)->set_backend_property (backend, book, opid, cancellable, prop_name, prop_value);
+	/* Do nothing. */
 }
 
 /**
