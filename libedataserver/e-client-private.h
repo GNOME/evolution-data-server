@@ -37,9 +37,6 @@ void		e_client_emit_backend_error	(EClient *client, const gchar *error_msg);
 void		e_client_emit_backend_died	(EClient *client);
 void		e_client_emit_backend_property_changed   (EClient *client, const gchar *prop_name, const gchar *prop_value);
 
-void		e_client_update_backend_property_cache   (EClient *client, const gchar *prop_name, const gchar *prop_value);
-gchar *		e_client_get_backend_property_from_cache (EClient *client, const gchar *prop_name);
-
 /* protected functions simplifying sync/async calls */
 void		e_client_finish_async_without_dbus (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer soure_tag, gpointer op_res, GDestroyNotify destroy_op_res);
 GDBusProxy *	e_client_get_dbus_proxy		(EClient *client);

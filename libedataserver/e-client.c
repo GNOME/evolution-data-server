@@ -48,8 +48,6 @@ struct _EClientPrivate {
 	gboolean capabilities_retrieved;
 	GSList *capabilities;
 
-	GHashTable *backend_property_cache;
-
 	GRecMutex ops_mutex;
 	guint32 last_opid;
 	GHashTable *ops; /* opid to GCancellable */
@@ -206,7 +204,6 @@ e_client_init (EClient *client)
 	client->priv->readonly = TRUE;
 
 	g_rec_mutex_init (&client->priv->prop_mutex);
-	client->priv->backend_property_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	g_rec_mutex_init (&client->priv->ops_mutex);
 	client->priv->last_opid = 0;
@@ -247,11 +244,6 @@ client_finalize (GObject *object)
 		g_slist_foreach (priv->capabilities, (GFunc) g_free, NULL);
 		g_slist_free (priv->capabilities);
 		priv->capabilities = NULL;
-	}
-
-	if (priv->backend_property_cache) {
-		g_hash_table_destroy (priv->backend_property_cache);
-		priv->backend_property_cache = NULL;
 	}
 
 	if (priv->ops) {
@@ -1293,47 +1285,7 @@ e_client_emit_backend_property_changed (EClient *client,
 	g_return_if_fail (*prop_name);
 	g_return_if_fail (prop_value != NULL);
 
-	e_client_update_backend_property_cache (client, prop_name, prop_value);
-
 	g_signal_emit (client, signals[BACKEND_PROPERTY_CHANGED], 0, prop_name, prop_value);
-}
-
-void
-e_client_update_backend_property_cache (EClient *client,
-                                        const gchar *prop_name,
-                                        const gchar *prop_value)
-{
-	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (*prop_name);
-	g_return_if_fail (prop_value != NULL);
-
-	g_rec_mutex_lock (&client->priv->prop_mutex);
-
-	if (client->priv->backend_property_cache)
-		g_hash_table_insert (client->priv->backend_property_cache, g_strdup (prop_name), g_strdup (prop_value));
-
-	g_rec_mutex_unlock (&client->priv->prop_mutex);
-}
-
-gchar *
-e_client_get_backend_property_from_cache (EClient *client,
-                                          const gchar *prop_name)
-{
-	gchar *prop_value = NULL;
-
-	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (prop_name != NULL, NULL);
-	g_return_val_if_fail (*prop_name, NULL);
-
-	g_rec_mutex_lock (&client->priv->prop_mutex);
-
-	if (client->priv->backend_property_cache)
-		prop_value = g_strdup (g_hash_table_lookup (client->priv->backend_property_cache, prop_name));
-
-	g_rec_mutex_unlock (&client->priv->prop_mutex);
-
-	return prop_value;
 }
 
 /**
