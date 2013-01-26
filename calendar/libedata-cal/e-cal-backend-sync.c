@@ -6,10 +6,11 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
-#ifdef CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <glib/gi18n-lib.h>
 #include <libedataserver/libedataserver.h>
 
 #include "e-cal-backend-sync.h"
@@ -164,6 +165,9 @@ e_cal_backend_sync_get_backend_property (ECalBackendSync *backend,
  * set in this case.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function always returns %FALSE and sets an
+ *                  %UnsupportedMethod error.
  **/
 gboolean
 e_cal_backend_sync_set_backend_property (ECalBackendSync *backend,
@@ -173,15 +177,11 @@ e_cal_backend_sync_set_backend_property (ECalBackendSync *backend,
                                          const gchar *prop_value,
                                          GError **error)
 {
-	gboolean res = FALSE;
+	g_set_error_literal (
+		error, E_DATA_CAL_ERROR, UnsupportedMethod,
+		_("Clients cannot set backend properties"));
 
-	e_return_data_cal_error_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_val_if_fail (prop_name, InvalidArg);
-	e_return_data_cal_error_val_if_fail (prop_value, InvalidArg);
-
-	LOCK_WRAPPER_RET_VAL (set_backend_property_sync, (backend, cal, cancellable, prop_name, prop_value, error));
-
-	return res;
+	return FALSE;
 }
 
 /**
@@ -600,12 +600,7 @@ cal_backend_set_backend_property (ECalBackend *backend,
                                   const gchar *prop_name,
                                   const gchar *prop_value)
 {
-	GError *error = NULL;
-
-	if (e_cal_backend_sync_set_backend_property (E_CAL_BACKEND_SYNC (backend), cal, cancellable, prop_name, prop_value, &error))
-		e_data_cal_respond_set_backend_property (cal, opid, error);
-	else
-		(* E_CAL_BACKEND_CLASS (e_cal_backend_sync_parent_class)->set_backend_property) (backend, cal, opid, cancellable, prop_name, prop_value);
+	/* Do nothing. */
 }
 
 static void

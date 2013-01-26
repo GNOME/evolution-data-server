@@ -197,7 +197,6 @@ e_cal_backend_sync_set_lock
 e_cal_backend_sync_open
 e_cal_backend_sync_refresh
 e_cal_backend_sync_get_backend_property
-e_cal_backend_sync_set_backend_property
 e_cal_backend_sync_get_object
 e_cal_backend_sync_get_object_list
 e_cal_backend_sync_get_free_busy
@@ -210,6 +209,8 @@ e_cal_backend_sync_get_attachment_uris
 e_cal_backend_sync_discard_alarm
 e_cal_backend_sync_get_timezone
 e_cal_backend_sync_add_timezone
+<SUBSECTION Deprecated>
+e_cal_backend_sync_set_backend_property
 <SUBSECTION Standard>
 E_CAL_BACKEND_SYNC
 E_IS_CAL_BACKEND_SYNC

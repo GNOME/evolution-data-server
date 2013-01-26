@@ -61,6 +61,8 @@ struct _ECalBackendSyncClass {
 						 const gchar *prop_name,
 						 gchar **prop_value,
 						 GError **error);
+
+	/* This method is deprecated. */
 	gboolean	(*set_backend_property_sync)
 						(ECalBackendSync *backend,
 						 EDataCal *cal,
@@ -68,6 +70,7 @@ struct _ECalBackendSyncClass {
 						 const gchar *prop_name,
 						 const gchar *prop_value,
 						 GError **error);
+
 	void		(*get_object_sync)	(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
@@ -171,13 +174,6 @@ gboolean	e_cal_backend_sync_get_backend_property
 						 const gchar *prop_name,
 						 gchar **prop_value,
 						 GError **error);
-gboolean	e_cal_backend_sync_set_backend_property
-						(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GError **error);
 void		e_cal_backend_sync_get_object	(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
@@ -267,6 +263,16 @@ void		e_cal_backend_sync_add_timezone	(ECalBackendSync *backend,
 						 GCancellable *cancellable,
 						 const gchar *tzobject,
 						 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+gboolean	e_cal_backend_sync_set_backend_property
+						(ECalBackendSync *backend,
+						 EDataCal *cal,
+						 GCancellable *cancellable,
+						 const gchar *prop_name,
+						 const gchar *prop_value,
+						 GError **error);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

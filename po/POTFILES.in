@@ -31,6 +31,7 @@ calendar/libecal/e-cal-recur.c
 calendar/libecal/e-cal-util.c
 calendar/libedata-cal/e-cal-backend.c
 calendar/libedata-cal/e-cal-backend-sexp.c
+calendar/libedata-cal/e-cal-backend-sync.c
 calendar/libedata-cal/e-cal-backend-util.c
 calendar/libedata-cal/e-data-cal.c
 calendar/libedata-cal/e-data-cal-factory.c
