@@ -43,7 +43,6 @@ struct _EClientPrivate {
 	GRecMutex prop_mutex;
 
 	ESource *source;
-	gchar *uri;
 	gboolean online;
 	gboolean readonly;
 	gboolean capabilities_retrieved;
@@ -240,11 +239,6 @@ client_finalize (GObject *object)
 	if (priv->source) {
 		g_object_unref (priv->source);
 		priv->source = NULL;
-	}
-
-	if (priv->uri) {
-		g_free (priv->uri);
-		priv->uri = NULL;
 	}
 
 	if (priv->capabilities) {
