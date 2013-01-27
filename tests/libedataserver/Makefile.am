@@ -12,8 +12,11 @@ noinst_PROGRAMS = $(TESTS)
 test_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-I$(top_srcdir) \
+	-I$(top_builddir) \
 	-I$(top_srcdir)/addressbook \
+	-I$(top_builddir)/addressbook \
 	-I$(top_srcdir)/calendar \
+	-I$(top_builddir)/calendar \
 	-I$(top_srcdir)/tests/test-server-utils \
 	-DG_LOG_DOMAIN=\"e-data-server\" \
 	-DDATADIR=\"$(datadir)\" \
