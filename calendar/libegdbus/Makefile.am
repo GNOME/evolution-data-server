@@ -11,8 +11,6 @@ libegdbus_cal_la_CPPFLAGS =			\
 	$(NULL)
 
 libegdbus_cal_la_SOURCES =			\
-	e-gdbus-cal.h				\
-	e-gdbus-cal.c				\
 	e-gdbus-cal-view.h			\
 	e-gdbus-cal-view.c
 

@@ -147,6 +147,8 @@ cal_backend_get_backend_property (ECalBackend *backend,
 		e_data_cal_respond_get_backend_property (cal, opid, NULL, "TRUE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
 		e_data_cal_respond_get_backend_property (cal, opid, NULL, "FALSE");
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
+		e_data_cal_respond_get_backend_property (cal, opid, NULL, "0");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
 		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_backend_get_online (E_BACKEND (backend)) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
@@ -1158,16 +1160,7 @@ e_cal_backend_open (ECalBackend *backend,
 	g_mutex_lock (&backend->priv->clients_mutex);
 
 	if (e_cal_backend_is_opened (backend)) {
-		gboolean online;
-		gboolean writable;
-
 		g_mutex_unlock (&backend->priv->clients_mutex);
-
-		online = e_backend_get_online (E_BACKEND (backend));
-		writable = e_cal_backend_get_writable (backend);
-
-		e_data_cal_report_online (cal, online);
-		e_data_cal_report_readonly (cal, !writable);
 
 		e_data_cal_respond_open (cal, opid, NULL);
 	} else {
@@ -1840,28 +1833,16 @@ e_cal_backend_notify_error (ECalBackend *backend,
  *
  * Notifies all backend's clients about the current readonly state.
  * Meant to be used by backend implementations.
+ *
+ * Deprecated: 3.8: Use e_cal_backend_set_writable() instead.
  **/
 void
 e_cal_backend_notify_readonly (ECalBackend *backend,
                                gboolean is_readonly)
 {
-	ECalBackendPrivate *priv;
-	GList *l;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	priv = backend->priv;
 	e_cal_backend_set_writable (backend, !is_readonly);
-
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_readonly (priv->notification_proxy, is_readonly);
-		return;
-	}
-
-	g_mutex_lock (&priv->clients_mutex);
-
-	for (l = priv->clients; l; l = l->next)
-		e_data_cal_report_readonly (l->data, is_readonly);
-
-	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1873,27 +1854,16 @@ e_cal_backend_notify_readonly (ECalBackend *backend,
  * Meant to be used by backend implementations.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_backend_set_online() instead.
  **/
 void
 e_cal_backend_notify_online (ECalBackend *backend,
                              gboolean is_online)
 {
-	ECalBackendPrivate *priv;
-	GList *clients;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	priv = backend->priv;
-
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_online (priv->notification_proxy, is_online);
-		return;
-	}
-
-	g_mutex_lock (&priv->clients_mutex);
-
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_cal_report_online (E_DATA_CAL (clients->data), is_online);
-
-	g_mutex_unlock (&priv->clients_mutex);
+	e_backend_set_online (E_BACKEND (backend), is_online);
 }
 
 /**

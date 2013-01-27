@@ -207,11 +207,11 @@ void		e_cal_client_get_default_object	(ECalClient *client,
 gboolean	e_cal_client_get_default_object_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 icalcomponent **icalcomp,
+						 icalcomponent **out_icalcomp,
 						 GError **error);
 gboolean	e_cal_client_get_default_object_sync
 						(ECalClient *client,
-						 icalcomponent **icalcomp,
+						 icalcomponent **out_icalcomp,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_object		(ECalClient *client,
@@ -222,12 +222,12 @@ void		e_cal_client_get_object		(ECalClient *client,
 						 gpointer user_data);
 gboolean	e_cal_client_get_object_finish	(ECalClient *client,
 						 GAsyncResult *result,
-						 icalcomponent **icalcomp,
+						 icalcomponent **out_icalcomp,
 						 GError **error);
 gboolean	e_cal_client_get_object_sync	(ECalClient *client,
 						 const gchar *uid,
 						 const gchar *rid,
-						 icalcomponent **icalcomp,
+						 icalcomponent **out_icalcomp,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_objects_for_uid
@@ -239,12 +239,12 @@ void		e_cal_client_get_objects_for_uid
 gboolean	e_cal_client_get_objects_for_uid_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 GSList **ecalcomps,
+						 GSList **out_ecalcomps,
 						 GError **error);
 gboolean	e_cal_client_get_objects_for_uid_sync
 						(ECalClient *client,
 						 const gchar *uid,
-						 GSList **ecalcomps,
+						 GSList **out_ecalcomps,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_object_list	(ECalClient *client,
@@ -255,12 +255,12 @@ void		e_cal_client_get_object_list	(ECalClient *client,
 gboolean	e_cal_client_get_object_list_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 GSList **icalcomps,
+						 GSList **out_icalcomps,
 						 GError **error);
 gboolean	e_cal_client_get_object_list_sync
 						(ECalClient *client,
 						 const gchar *sexp,
-						 GSList **icalcomps,
+						 GSList **out_icalcomps,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_object_list_as_comps
@@ -272,12 +272,12 @@ void		e_cal_client_get_object_list_as_comps
 gboolean	e_cal_client_get_object_list_as_comps_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 GSList **ecalcomps,
+						 GSList **out_ecalcomps,
 						 GError **error);
 gboolean	e_cal_client_get_object_list_as_comps_sync
 						(ECalClient *client,
 						 const gchar *sexp,
-						 GSList **ecalcomps,
+						 GSList **out_ecalcomps,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_free_busy	(ECalClient *client,
@@ -305,11 +305,11 @@ void		e_cal_client_create_object	(ECalClient *client,
 gboolean	e_cal_client_create_object_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 gchar **uid,
+						 gchar **out_uid,
 						 GError **error);
 gboolean	e_cal_client_create_object_sync	(ECalClient *client,
 						 icalcomponent *icalcomp,
-						 gchar **uid,
+						 gchar **out_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_create_objects	(ECalClient *client,
@@ -320,12 +320,12 @@ void		e_cal_client_create_objects	(ECalClient *client,
 gboolean	e_cal_client_create_objects_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 GSList **uids,
+						 GSList **out_uids,
 						 GError **error);
 gboolean	e_cal_client_create_objects_sync
 						(ECalClient *client,
 						 GSList *icalcomps,
-						 GSList **uids,
+						 GSList **out_uids,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_modify_object	(ECalClient *client,
@@ -414,13 +414,13 @@ void		e_cal_client_send_objects	(ECalClient *client,
 gboolean	e_cal_client_send_objects_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 GSList **users,
-						 icalcomponent **modified_icalcomp,
+						 GSList **out_users,
+						 icalcomponent **out_modified_icalcomp,
 						 GError **error);
 gboolean	e_cal_client_send_objects_sync	(ECalClient *client,
 						 icalcomponent *icalcomp,
-						 GSList **users,
-						 icalcomponent **modified_icalcomp,
+						 GSList **out_users,
+						 icalcomponent **out_modified_icalcomp,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_attachment_uris
@@ -433,13 +433,13 @@ void		e_cal_client_get_attachment_uris
 gboolean	e_cal_client_get_attachment_uris_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 GSList **attachment_uris,
+						 GSList **out_attachment_uris,
 						 GError **error);
 gboolean	e_cal_client_get_attachment_uris_sync
 						(ECalClient *client,
 						 const gchar *uid,
 						 const gchar *rid,
-						 GSList **attachment_uris,
+						 GSList **out_attachment_uris,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_discard_alarm	(ECalClient *client,
@@ -466,11 +466,11 @@ void		e_cal_client_get_view		(ECalClient *client,
 						 gpointer user_data);
 gboolean	e_cal_client_get_view_finish	(ECalClient *client,
 						 GAsyncResult *result,
-						 ECalClientView **view,
+						 ECalClientView **out_view,
 						 GError **error);
 gboolean	e_cal_client_get_view_sync	(ECalClient *client,
 						 const gchar *sexp,
-						 ECalClientView **view,
+						 ECalClientView **out_view,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_get_timezone	(ECalClient *client,
@@ -481,11 +481,11 @@ void		e_cal_client_get_timezone	(ECalClient *client,
 gboolean	e_cal_client_get_timezone_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
-						 icaltimezone **zone,
+						 icaltimezone **out_zone,
 						 GError **error);
 gboolean	e_cal_client_get_timezone_sync	(ECalClient *client,
 						 const gchar *tzid,
-						 icaltimezone **zone,
+						 icaltimezone **out_zone,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_add_timezone	(ECalClient *client,
