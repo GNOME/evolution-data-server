@@ -34,6 +34,7 @@
 #include "e-cal-client.h"
 #include "e-cal-component.h"
 #include "e-cal-check-timezones.h"
+#include "e-cal-enumtypes.h"
 #include "e-cal-time-util.h"
 #include "e-cal-types.h"
 #include "e-timezone-cache.h"
@@ -54,6 +55,11 @@ struct _ECalClientPrivate {
 
 	GMutex zone_cache_lock;
 	GHashTable *zone_cache;
+};
+
+enum {
+	PROP_0,
+	PROP_SOURCE_TYPE
 };
 
 enum {
@@ -561,6 +567,48 @@ cal_client_get_backend_property_from_cache_finish (EClient *client,
 }
 
 static void
+cal_client_set_source_type (ECalClient *cal_client,
+                            ECalClientSourceType source_type)
+{
+	cal_client->priv->source_type = source_type;
+}
+
+static void
+cal_client_set_property (GObject *object,
+                         guint property_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SOURCE_TYPE:
+			cal_client_set_source_type (
+				E_CAL_CLIENT (object),
+				g_value_get_enum (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+cal_client_get_property (GObject *object,
+                         guint property_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SOURCE_TYPE:
+			g_value_set_enum (
+				value,
+				e_cal_client_get_source_type (
+				E_CAL_CLIENT (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 cal_client_dispose (GObject *object)
 {
 	EClient *client;
@@ -989,6 +1037,8 @@ e_cal_client_class_init (ECalClientClass *class)
 	g_type_class_add_private (class, sizeof (ECalClientPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = cal_client_set_property;
+	object_class->get_property = cal_client_get_property;
 	object_class->dispose = cal_client_dispose;
 	object_class->finalize = cal_client_finalize;
 
@@ -1008,6 +1058,19 @@ e_cal_client_class_init (ECalClientClass *class)
 	client_class->refresh				= cal_client_refresh;
 	client_class->refresh_finish			= cal_client_refresh_finish;
 	client_class->refresh_sync			= cal_client_refresh_sync;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SOURCE_TYPE,
+		g_param_spec_enum (
+			"source-type",
+			"Source Type",
+			"The iCalendar data type",
+			E_TYPE_CAL_CLIENT_SOURCE_TYPE,
+			E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 
 	signals[FREE_BUSY_DATA] = g_signal_new (
 		"free-busy-data",
@@ -1099,8 +1162,9 @@ e_cal_client_new (ESource *source,
 
 	uid = e_source_get_uid (source);
 
-	client = g_object_new (E_TYPE_CAL_CLIENT, "source", source, NULL);
-	client->priv->source_type = source_type;
+	client = g_object_new (
+		E_TYPE_CAL_CLIENT,
+		"source", source, "source-type", source_type, NULL);
 
 	UNLOCK_FACTORY ();
 
