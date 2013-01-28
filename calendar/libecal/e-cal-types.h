@@ -30,6 +30,50 @@
 
 G_BEGIN_DECLS
 
+/**
+ * ECalClientSourceType:
+ *
+ * FIXME: Document me!
+ *
+ * Since: 3.2
+ **/
+typedef enum {
+	E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
+	E_CAL_CLIENT_SOURCE_TYPE_TASKS,
+	E_CAL_CLIENT_SOURCE_TYPE_MEMOS,
+	E_CAL_CLIENT_SOURCE_TYPE_LAST  /*< skip >*/
+} ECalClientSourceType;
+
+/**
+ * EDataCalObjType:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
+typedef enum {
+	Event = 1 << 0,
+	Todo = 1 << 1,
+	Journal = 1 << 2,
+	AnyType = 0x07
+} EDataCalObjType;
+
+/**
+ * EDataCalObjModType:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
+typedef enum {
+	This = 1 << 0,
+	ThisAndPrior = 1 << 1,
+	ThisAndFuture = 1 << 2,
+	All = 0x07
+} EDataCalObjModType;
+
+/** Everything below this point is deprecated. **/
+
 #ifndef EDS_DISABLE_DEPRECATED
 
 #define E_CALENDAR_ERROR e_calendar_error_quark()
@@ -82,49 +126,7 @@ typedef enum {
 
 #endif /* EDS_DISABLE_DEPRECATED */
 
-/**
- * ECalClientSourceType:
- *
- * FIXME: Document me!
- *
- * Since: 3.2
- **/
-typedef enum {
-	E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
-	E_CAL_CLIENT_SOURCE_TYPE_TASKS,
-	E_CAL_CLIENT_SOURCE_TYPE_MEMOS,
-	E_CAL_CLIENT_SOURCE_TYPE_LAST  /*< skip >*/
-} ECalClientSourceType;
-
-/**
- * EDataCalObjType:
- *
- * FIXME Document me!
- *
- * Since: 3.6
- **/
-typedef enum {
-	Event = 1 << 0,
-	Todo = 1 << 1,
-	Journal = 1 << 2,
-	AnyType = 0x07
-} EDataCalObjType;
-
-/**
- * EDataCalObjModType:
- *
- * FIXME Document me!
- *
- * Since: 3.6
- **/
-typedef enum {
-	This = 1 << 0,
-	ThisAndPrior = 1 << 1,
-	ThisAndFuture = 1 << 2,
-	All = 0x07
-} EDataCalObjModType;
-
 G_END_DECLS
 
-#endif
+#endif /* E_CAL_TYPES_H */
 
