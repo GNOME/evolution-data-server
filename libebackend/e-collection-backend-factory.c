@@ -19,7 +19,7 @@
 /**
  * SECTION: e-collection-backend-factory
  * @include: libebackend/libebackend.h
- * @short_description: An abstract base class for a data source collection
+ * @short_description: A base class for a data source collection
  *                     backend factory
  *
  * #ECollectionBackendFactory is a type of #EBackendFactory for creating
@@ -33,7 +33,7 @@
 #include <libebackend/e-collection-backend.h>
 #include <libebackend/e-source-registry-server.h>
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_TYPE (
 	ECollectionBackendFactory,
 	e_collection_backend_factory,
 	E_TYPE_BACKEND_FACTORY)
@@ -135,6 +135,8 @@ e_collection_backend_factory_class_init (ECollectionBackendFactoryClass *class)
 	factory_class->get_hash_key = collection_backend_factory_get_hash_key;
 	factory_class->new_backend = collection_backend_factory_new_backend;
 
+	class->factory_name = "none";
+	class->backend_type = E_TYPE_COLLECTION_BACKEND;
 	class->prepare_mail = collection_backend_factory_prepare_mail;
 }
 

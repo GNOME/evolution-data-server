@@ -19,13 +19,12 @@
 /**
  * SECTION: e-collection-backend
  * @include: libebackend/libebackend.h
- * @short_description: An abstract base class for a data source
- *                     collection backend
+ * @short_description: A base class for a data source collection backend
  *
- * #ECollectionBackend is an abstract base class for backends which
- * manage a collection of data sources which collectively represent the
- * resources on a remote server.  The resources can include any number
- * of private and shared email stores, calendars and address books.
+ * #ECollectionBackend is a base class for backends which manage a
+ * collection of data sources that collectively represent the resources
+ * on a remote server.  The resources can include any number of private
+ * and shared email stores, calendars and address books.
  *
  * The backend's job is to synchronize local representations of remote
  * resources by adding and removing #EServerSideSource instances in an
@@ -83,7 +82,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_ABSTRACT_TYPE (
+G_DEFINE_TYPE (
 	ECollectionBackend,
 	e_collection_backend,
 	E_TYPE_BACKEND)
