@@ -103,7 +103,7 @@ struct _ECalBackendSyncClass {
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
-						 CalObjModType mod,
+						 ECalObjModType mod,
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -111,7 +111,7 @@ struct _ECalBackendSyncClass {
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const GSList *ids,
-						 CalObjModType mod,
+						 ECalObjModType mod,
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -210,7 +210,7 @@ void		e_cal_backend_sync_modify_objects
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
-						 CalObjModType mod,
+						 ECalObjModType mod,
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);
@@ -219,7 +219,7 @@ void		e_cal_backend_sync_remove_objects
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 const GSList *ids,
-						 CalObjModType mod,
+						 ECalObjModType mod,
 						 GSList **old_components,
 						 GSList **new_components,
 						 GError **error);

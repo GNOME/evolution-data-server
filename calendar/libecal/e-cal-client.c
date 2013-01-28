@@ -3881,9 +3881,9 @@ e_cal_client_create_objects_sync (ECalClient *client,
  * does not exist on the calendar, an error will be returned.
  *
  * For recurrent appointments, the @mod argument specifies what to modify,
- * if all instances (CALOBJ_MOD_ALL), a single instance (CALOBJ_MOD_THIS),
- * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
- * CALOBJ_MOD_THISANDFUTURE).
+ * if all instances (E_CAL_OBJ_MOD_ALL), a single instance (E_CAL_OBJ_MOD_THIS),
+ * or a specific set of instances (E_CAL_OBJ_MOD_THIS_AND_PRIOR and
+ * E_CAL_OBJ_MOD_THIS_AND_FUTURE).
  *
  * The call is finished by e_cal_client_modify_object_finish() from
  * the @callback.
@@ -3893,7 +3893,7 @@ e_cal_client_create_objects_sync (ECalClient *client,
 void
 e_cal_client_modify_object (ECalClient *client,
                             /* const */ icalcomponent *icalcomp,
-                            CalObjModType mod,
+                            ECalObjModType mod,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -3948,9 +3948,9 @@ e_cal_client_modify_object_finish (ECalClient *client,
  * does not exist on the calendar, an error will be returned.
  *
  * For recurrent appointments, the @mod argument specifies what to modify,
- * if all instances (CALOBJ_MOD_ALL), a single instance (CALOBJ_MOD_THIS),
- * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
- * CALOBJ_MOD_THISANDFUTURE).
+ * if all instances (E_CAL_OBJ_MOD_ALL), a single instance (E_CAL_OBJ_MOD_THIS),
+ * or a specific set of instances (E_CAL_OBJ_MOD_THISNADPRIOR and
+ * E_CAL_OBJ_MOD_THIS_AND_FUTURE).
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -3959,7 +3959,7 @@ e_cal_client_modify_object_finish (ECalClient *client,
 gboolean
 e_cal_client_modify_object_sync (ECalClient *client,
                                  /* const */ icalcomponent *icalcomp,
-                                 CalObjModType mod,
+                                 ECalObjModType mod,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -4000,9 +4000,9 @@ e_cal_client_modify_object_sync (ECalClient *client,
  * does not exist on the calendar, an error will be returned.
  *
  * For recurrent appointments, the @mod argument specifies what to modify,
- * if all instances (CALOBJ_MOD_ALL), a single instance (CALOBJ_MOD_THIS),
- * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
- * CALOBJ_MOD_THISANDFUTURE).
+ * if all instances (E_CAL_OBJ_MOD_ALL), a single instance (E_CAL_OBJ_MOD_THIS),
+ * or a specific set of instances (E_CAL_OBJ_MOD_THISNADPRIOR and
+ * E_CAL_OBJ_MOD_THIS_AND_FUTURE).
  *
  * The call is finished by e_cal_client_modify_objects_finish() from
  * the @callback.
@@ -4012,7 +4012,7 @@ e_cal_client_modify_object_sync (ECalClient *client,
 void
 e_cal_client_modify_objects (ECalClient *client,
                              /* const */ GSList *comps,
-                             CalObjModType mod,
+                             ECalObjModType mod,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
@@ -4069,9 +4069,9 @@ e_cal_client_modify_objects_finish (ECalClient *client,
  * does not exist on the calendar, an error will be returned.
  *
  * For recurrent appointments, the @mod argument specifies what to modify,
- * if all instances (CALOBJ_MOD_ALL), a single instance (CALOBJ_MOD_THIS),
- * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
- * CALOBJ_MOD_THISANDFUTURE).
+ * if all instances (E_CAL_OBJ_MOD_ALL), a single instance (E_CAL_OBJ_MOD_THIS),
+ * or a specific set of instances (E_CAL_OBJ_MOD_THISNADPRIOR and
+ * E_CAL_OBJ_MOD_THIS_AND_FUTURE).
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -4080,7 +4080,7 @@ e_cal_client_modify_objects_finish (ECalClient *client,
 gboolean
 e_cal_client_modify_objects_sync (ECalClient *client,
                                   /* const */ GSList *comps,
-                                  CalObjModType mod,
+                                  ECalObjModType mod,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -4120,7 +4120,7 @@ e_cal_client_modify_objects_sync (ECalClient *client,
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
  * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use #NULL @rid and CALOBJ_MOD_ALL
+ * is to remove all instances, use #NULL @rid and E_CAL_OBJ_MOD_ALL
  * for the @mod.
  *
  * The call is finished by e_cal_client_remove_object_finish() from
@@ -4132,7 +4132,7 @@ void
 e_cal_client_remove_object (ECalClient *client,
                             const gchar *uid,
                             const gchar *rid,
-                            CalObjModType mod,
+                            ECalObjModType mod,
                             GCancellable *cancellable,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
@@ -4188,7 +4188,7 @@ e_cal_client_remove_object_finish (ECalClient *client,
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
  * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use #NULL @rid and CALOBJ_MODE_THIS
+ * is to remove all instances, use #NULL @rid and E_CAL_OBJ_MODE_THIS
  * for the @mod.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
@@ -4199,7 +4199,7 @@ gboolean
 e_cal_client_remove_object_sync (ECalClient *client,
                                  const gchar *uid,
                                  const gchar *rid,
-                                 CalObjModType mod,
+                                 ECalObjModType mod,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -4240,7 +4240,7 @@ e_cal_client_remove_object_sync (ECalClient *client,
  *
  * This function allows the removal of instances of recurrent
  * appointments. #ECalComponentId objects can identify specific instances (if rid is not NULL).
- * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and CALOBJ_MOD_ALL
+ * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and E_CAL_OBJ_MOD_ALL
  * for the @mod.
  *
  * The call is finished by e_cal_client_remove_objects_finish() from
@@ -4251,7 +4251,7 @@ e_cal_client_remove_object_sync (ECalClient *client,
 void
 e_cal_client_remove_objects (ECalClient *client,
                              const GSList *ids,
-                             CalObjModType mod,
+                             ECalObjModType mod,
                              GCancellable *cancellable,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
@@ -4301,7 +4301,7 @@ e_cal_client_remove_objects_finish (ECalClient *client,
  *
  * This function allows the removal of instances of recurrent
  * appointments. #ECalComponentId objects can identify specific instances (if rid is not NULL).
- * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and CALOBJ_MOD_ALL
+ * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and E_CAL_OBJ_MOD_ALL
  * for the @mod.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
@@ -4311,7 +4311,7 @@ e_cal_client_remove_objects_finish (ECalClient *client,
 gboolean
 e_cal_client_remove_objects_sync (ECalClient *client,
                                   const GSList *ids,
-                                  CalObjModType mod,
+                                  ECalObjModType mod,
                                   GCancellable *cancellable,
                                   GError **error)
 {

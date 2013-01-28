@@ -29,6 +29,7 @@
 #include <time.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-recur.h>
+#include <libecal/e-cal-types.h>
 
 G_BEGIN_DECLS
 
@@ -42,15 +43,6 @@ typedef struct {
 } CalObjInstance;
 
 void cal_obj_instance_list_free (GList *list);
-
-/* Used for modifying objects */
-typedef enum {
-	CALOBJ_MOD_THIS          = 1 << 0,
-	CALOBJ_MOD_THISANDPRIOR  = 1 << 1,
-	CALOBJ_MOD_THISANDFUTURE = 1 << 2,
-	CALOBJ_MOD_ONLY_THIS     = 1 << 3,
-	CALOBJ_MOD_ALL           = 0x07
-} CalObjModType;
 
 void cal_obj_uid_list_free (GList *list);
 
@@ -183,7 +175,7 @@ icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 						 struct icaltimetype rid);
 void		e_cal_util_remove_instances	(icalcomponent *icalcomp,
 						 struct icaltimetype rid,
-						 CalObjModType mod);
+						 ECalObjModType mod);
 
 gchar *		e_cal_util_get_system_timezone_location (void);
 icaltimezone *	e_cal_util_get_system_timezone (void);

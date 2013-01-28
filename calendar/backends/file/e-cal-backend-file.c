@@ -2253,7 +2253,7 @@ typedef struct {
 	ECalBackendFile *cbfile;
 	ECalBackendFileObject *obj_data;
 	const gchar *rid;
-	CalObjModType mod;
+	ECalObjModType mod;
 } RemoveRecurrenceData;
 
 static gboolean
@@ -2269,8 +2269,8 @@ remove_object_instance_cb (gpointer key,
 	instancett = icaltime_as_timet (get_rid_icaltime (instance));
 
 	if (fromtt > 0 && instancett > 0) {
-		if ((rrdata->mod == CALOBJ_MOD_THISANDPRIOR && instancett <= fromtt) ||
-		    (rrdata->mod == CALOBJ_MOD_THISANDFUTURE && instancett >= fromtt)) {
+		if ((rrdata->mod == E_CAL_OBJ_MOD_THIS_AND_PRIOR && instancett <= fromtt) ||
+		    (rrdata->mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE && instancett >= fromtt)) {
 			/* remove the component from our data */
 			icalcomponent_remove_component (
 				rrdata->cbfile->priv->icalcomp,
@@ -2291,7 +2291,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
-                                   CalObjModType mod,
+                                   ECalObjModType mod,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -2307,10 +2307,10 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
 	e_return_data_cal_error_if_fail (calobjs != NULL, ObjectNotFound);
 	switch (mod) {
-	case CALOBJ_MOD_THIS:
-	case CALOBJ_MOD_THISANDPRIOR:
-	case CALOBJ_MOD_THISANDFUTURE:
-	case CALOBJ_MOD_ALL:
+	case E_CAL_OBJ_MOD_THIS:
+	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
+	case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
+	case E_CAL_OBJ_MOD_ALL:
 		break;
 	default:
 		g_propagate_error (error, EDC_ERROR (NotSupported));
@@ -2391,7 +2391,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 
 		/* handle mod_type */
 		switch (mod) {
-		case CALOBJ_MOD_THIS :
+		case E_CAL_OBJ_MOD_THIS:
 			if (!rid || !*rid) {
 				if (old_components)
 					*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);
@@ -2443,8 +2443,8 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			priv->comp = g_list_append (priv->comp, comp);
 			obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 			break;
-		case CALOBJ_MOD_THISANDPRIOR :
-		case CALOBJ_MOD_THISANDFUTURE :
+		case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
+		case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
 			if (!rid || !*rid) {
 				if (old_components)
 					*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);
@@ -2509,7 +2509,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			priv->comp = g_list_append (priv->comp, comp);
 			obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 			break;
-		case CALOBJ_MOD_ALL :
+		case E_CAL_OBJ_MOD_ALL :
 			/* Remove the old version */
 			if (old_components)
 				*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);
@@ -2548,7 +2548,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				g_list_free (detached);
 			}
 			break;
-		case CALOBJ_MOD_ONLY_THIS:
+		case E_CAL_OBJ_MOD_ONLY_THIS:
 			/* not reached, keep compiler happy */
 			break;
 		}
@@ -2578,9 +2578,9 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
  * Remove one and only one instance. The object may be empty
  * afterwards, in which case it will be removed completely.
  *
- * @mod    CALOBJ_MOD_THIS or CAL_OBJ_MOD_ONLY_THIS: the later only removes
- *         the instance, the former also adds an EXDATE if rid is set
- *         TODO: CAL_OBJ_MOD_ONLY_THIS
+ * @mod    E_CAL_OBJ_MOD_THIS or E_CAL_OBJ_MOD_ONLY_THIS: the later only
+ *         removes the instance, the former also adds an EXDATE if rid is set
+ *         TODO: E_CAL_OBJ_MOD_ONLY_THIS
  * @uid    pointer to UID which must remain valid even if the object gets
  *         removed
  * @rid    NULL, "", or non-empty string when manipulating a specific recurrence;
@@ -2593,7 +2593,7 @@ remove_instance (ECalBackendFile *cbfile,
                  ECalBackendFileObject *obj_data,
                  const gchar *uid,
                  const gchar *rid,
-                 CalObjModType mod,
+                 ECalObjModType mod,
                  ECalComponent **old_comp,
                  ECalComponent **new_comp,
                  GError **error)
@@ -2613,14 +2613,14 @@ remove_instance (ECalBackendFile *cbfile,
 			/* Removing without parent or not modifying parent?
 			 * Report removal to caller. */
 			if (old_comp &&
-			    (!obj_data->full_object || mod == CALOBJ_MOD_ONLY_THIS)) {
+			    (!obj_data->full_object || mod == E_CAL_OBJ_MOD_ONLY_THIS)) {
 				*old_comp = e_cal_component_clone (comp);
 			}
 
 			/* Reporting parent modification to caller?
 			 * Report directly instead of going via caller. */
 			if (obj_data->full_object &&
-			    mod != CALOBJ_MOD_ONLY_THIS) {
+			    mod != E_CAL_OBJ_MOD_ONLY_THIS) {
 				/* old object string not provided,
 				 * instead rely on the view detecting
 				 * whether it contains the id */
@@ -2637,7 +2637,7 @@ remove_instance (ECalBackendFile *cbfile,
 			cbfile->priv->comp = g_list_remove (cbfile->priv->comp, comp);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, comp);
 			g_hash_table_remove (obj_data->recurrences, rid);
-		} else if (mod == CALOBJ_MOD_ONLY_THIS) {
+		} else if (mod == E_CAL_OBJ_MOD_ONLY_THIS) {
 			if (error)
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return obj_data;
@@ -2656,7 +2656,7 @@ remove_instance (ECalBackendFile *cbfile,
 		}
 
 		/* avoid modifying parent? */
-		if (mod == CALOBJ_MOD_ONLY_THIS)
+		if (mod == E_CAL_OBJ_MOD_ONLY_THIS)
 			return obj_data;
 
 		/* remove the main component from our data before modifying it */
@@ -2672,7 +2672,7 @@ remove_instance (ECalBackendFile *cbfile,
 
 		e_cal_util_remove_instances (
 			e_cal_component_get_icalcomponent (obj_data->full_object),
-			icaltime_from_string (rid), CALOBJ_MOD_THIS);
+			icaltime_from_string (rid), E_CAL_OBJ_MOD_THIS);
 
 		/* Since we are only removing one instance of recurrence
 		 * event, update the last modified time on the component */
@@ -2695,8 +2695,8 @@ remove_instance (ECalBackendFile *cbfile,
 		if (!obj_data->full_object) {
 			/* Nothing to do, parent doesn't exist. Tell
 			 * caller about this? Not an error with
-			 * CALOBJ_MOD_THIS. */
-			if (mod == CALOBJ_MOD_ONLY_THIS && error)
+			 * E_CAL_OBJ_MOD_THIS. */
+			if (mod == E_CAL_OBJ_MOD_ONLY_THIS && error)
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return obj_data;
 		}
@@ -2777,7 +2777,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *ids,
-                                   CalObjModType mod,
+                                   ECalObjModType mod,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -2795,11 +2795,11 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 	e_return_data_cal_error_if_fail (new_components != NULL, ObjectNotFound);
 
 	switch (mod) {
-	case CALOBJ_MOD_THIS:
-	case CALOBJ_MOD_THISANDPRIOR:
-	case CALOBJ_MOD_THISANDFUTURE:
-	case CALOBJ_MOD_ONLY_THIS:
-	case CALOBJ_MOD_ALL:
+	case E_CAL_OBJ_MOD_THIS:
+	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
+	case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
+	case E_CAL_OBJ_MOD_ONLY_THIS:
+	case E_CAL_OBJ_MOD_ALL:
 		break;
 	default:
 		g_propagate_error (error, EDC_ERROR (NotSupported));
@@ -2819,9 +2819,9 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;
 		}
-				/* Check that it has a recurrence id if mod is CALOBJ_MOD_THISANDPRIOR
-					 or CALOBJ_MOD_THISANDFUTURE */
-		if ((mod == CALOBJ_MOD_THISANDPRIOR || mod == CALOBJ_MOD_THISANDFUTURE) &&
+				/* Check that it has a recurrence id if mod is E_CAL_OBJ_MOD_THIS_AND_PRIOR
+					 or E_CAL_OBJ_MOD_THIS_AND_FUTURE */
+		if ((mod == E_CAL_OBJ_MOD_THIS_AND_PRIOR || mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE) &&
 			(!id->rid || !*(id->rid))) {
 			g_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
@@ -2849,7 +2849,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			recur_id = id->rid;
 
 		switch (mod) {
-		case CALOBJ_MOD_ALL :
+		case E_CAL_OBJ_MOD_ALL :
 			*old_components = g_slist_prepend (*old_components, clone_ecalcomp_from_fileobject (obj_data, recur_id));
 			*new_components = g_slist_prepend (*new_components, NULL);
 
@@ -2857,8 +2857,8 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 				g_list_foreach (obj_data->recurrences_list, notify_comp_removed_cb, cbfile);
 			remove_component (cbfile, id->uid, obj_data);
 			break;
-		case CALOBJ_MOD_ONLY_THIS:
-		case CALOBJ_MOD_THIS: {
+		case E_CAL_OBJ_MOD_ONLY_THIS:
+		case E_CAL_OBJ_MOD_THIS: {
 			ECalComponent *old_component = NULL;
 			ECalComponent *new_component = NULL;
 
@@ -2870,8 +2870,8 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			*new_components = g_slist_prepend (*new_components, new_component);
 			break;
 		}
-		case CALOBJ_MOD_THISANDPRIOR :
-		case CALOBJ_MOD_THISANDFUTURE :
+		case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
+		case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
 			comp = obj_data->full_object;
 
 			if (comp) {
@@ -2947,7 +2947,7 @@ cancel_received_object (ECalBackendFile *cbfile,
 	rid = e_cal_component_get_recurid_as_string (comp);
 	if (rid && *rid) {
 		obj_data = remove_instance (
-			cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS,
+			cbfile, obj_data, uid, rid, E_CAL_OBJ_MOD_THIS,
 			old_comp, new_comp, NULL);
 		if (obj_data && obj_data->full_object && !*new_comp) {
 			*new_comp = e_cal_component_clone (obj_data->full_object);
@@ -3202,7 +3202,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 					ECalComponent *ignore_comp = NULL;
 
 					remove_instance (
-						cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS,
+						cbfile, obj_data, uid, rid, E_CAL_OBJ_MOD_THIS,
 						&old_component, &ignore_comp, NULL);
 
 					if (ignore_comp)

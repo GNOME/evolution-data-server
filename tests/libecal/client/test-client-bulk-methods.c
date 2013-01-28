@@ -141,7 +141,7 @@ test_bulk_methods (ECalClient *cal_client,
 	}
 
 	/* Save the modified objects in bulk */
-	if (!e_cal_client_modify_objects_sync (cal_client, icalcomps, CALOBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_objects_sync (cal_client, icalcomps, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify objects sync: %s", error->message);
 
 	/* Retrieve all the objects and check that they have been modified */
@@ -150,7 +150,7 @@ test_bulk_methods (ECalClient *cal_client,
 	/* Remove all the objects in bulk */
 	ids = uid_slist_to_ecalcomponentid_slist (uids);
 
-	if (!e_cal_client_remove_objects_sync (cal_client, ids, CALOBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_objects_sync (cal_client, ids, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove objects sync: %s", error->message);
 
 	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);

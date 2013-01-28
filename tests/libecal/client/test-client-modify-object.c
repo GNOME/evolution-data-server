@@ -59,7 +59,7 @@ test_modify_object_sync (ETestServerFixture *fixture,
 
 	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
 
-	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, CALOBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
 	icalcomponent_free (icalcomp);
@@ -117,7 +117,7 @@ test_modify_object_async (ETestServerFixture *fixture,
 
 	icalcomponent_set_summary (icalcomp, EVENT_SUMMARY);
 
-	e_cal_client_modify_object (cal_client, icalcomp, CALOBJ_MOD_ALL, NULL, async_modify_result_ready, fixture->loop);
+	e_cal_client_modify_object (cal_client, icalcomp, E_CAL_OBJ_MOD_ALL, NULL, async_modify_result_ready, fixture->loop);
 	icalcomponent_free (icalcomp);
 
 	g_main_loop_run (fixture->loop);

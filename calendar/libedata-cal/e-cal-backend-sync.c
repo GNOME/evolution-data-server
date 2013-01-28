@@ -316,7 +316,7 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *calobjs,
-                                   CalObjModType mod,
+                                   ECalObjModType mod,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -350,7 +350,7 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
                                    EDataCal *cal,
                                    GCancellable *cancellable,
                                    const GSList *ids,
-                                   CalObjModType mod,
+                                   ECalObjModType mod,
                                    GSList **old_components,
                                    GSList **new_components,
                                    GError **error)
@@ -703,7 +703,7 @@ cal_backend_modify_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *calobjs,
-                            CalObjModType mod)
+                            ECalObjModType mod)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;
@@ -725,7 +725,7 @@ cal_backend_remove_objects (ECalBackend *backend,
                             guint32 opid,
                             GCancellable *cancellable,
                             const GSList *ids,
-                            CalObjModType mod)
+                            ECalObjModType mod)
 {
 	GError *error = NULL;
 	GSList *old_components = NULL, *new_components = NULL;

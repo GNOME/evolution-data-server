@@ -46,7 +46,7 @@ test_remove_object_sync (ETestServerFixture *fixture,
 	uid = create_object (cal_client);
 	g_assert (uid != NULL);
 
-	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
 	g_free (uid);
@@ -81,7 +81,7 @@ test_remove_object_async (ETestServerFixture *fixture,
 	uid = create_object (cal_client);
 	g_assert (uid != NULL);
 
-	e_cal_client_remove_object (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, async_remove_result_ready, fixture->loop);
+	e_cal_client_remove_object (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, async_remove_result_ready, fixture->loop);
 	g_free (uid);
 	g_main_loop_run (fixture->loop);
 }

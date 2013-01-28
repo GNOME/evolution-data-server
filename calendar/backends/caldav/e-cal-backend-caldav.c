@@ -3596,7 +3596,7 @@ static gboolean
 remove_instance (ECalBackendCalDAV *cbdav,
                  icalcomponent *icalcomp,
                  struct icaltimetype rid,
-                 CalObjModType mod,
+                 ECalObjModType mod,
                  gboolean also_exdate)
 {
 	icalcomponent *master = icalcomp;
@@ -3811,7 +3811,7 @@ do_create_objects (ECalBackendCalDAV *cbdav,
 static void
 do_modify_objects (ECalBackendCalDAV *cbdav,
                    const GSList *calobjs,
-                   CalObjModType mod,
+                   ECalObjModType mod,
                    GSList **old_components,
                    GSList **new_components,
                    GCancellable *cancellable,
@@ -3904,8 +3904,8 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 	}
 
 	switch (mod) {
-	case CALOBJ_MOD_ONLY_THIS:
-	case CALOBJ_MOD_THIS:
+	case E_CAL_OBJ_MOD_ONLY_THIS:
+	case E_CAL_OBJ_MOD_THIS:
 		if (e_cal_component_is_instance (comp)) {
 			icalcomponent *new_comp = e_cal_component_get_icalcomponent (comp);
 
@@ -3939,11 +3939,11 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 			cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
 		}
 		break;
-	case CALOBJ_MOD_ALL:
+	case E_CAL_OBJ_MOD_ALL:
 		cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
 		break;
-	case CALOBJ_MOD_THISANDPRIOR:
-	case CALOBJ_MOD_THISANDFUTURE:
+	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
+	case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
 		break;
 	}
 
@@ -3982,7 +3982,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 static void
 do_remove_objects (ECalBackendCalDAV *cbdav,
                    const GSList *ids,
-                   CalObjModType mod,
+                   ECalObjModType mod,
                    GSList **old_components,
                    GSList **new_components,
                    GCancellable *cancellable,
@@ -4029,11 +4029,11 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 	}
 
 	switch (mod) {
-	case CALOBJ_MOD_ONLY_THIS:
-	case CALOBJ_MOD_THIS:
+	case E_CAL_OBJ_MOD_ONLY_THIS:
+	case E_CAL_OBJ_MOD_THIS:
 		if (rid && *rid) {
 			/* remove one instance from the component */
-			if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, mod != CALOBJ_MOD_ONLY_THIS)) {
+			if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, mod != E_CAL_OBJ_MOD_ONLY_THIS)) {
 				if (new_components) {
 					icalcomponent *master = get_master_comp (cbdav, cache_comp);
 					if (master) {
@@ -4050,11 +4050,11 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 			remove_comp_from_cache (cbdav, uid, NULL);
 		}
 		break;
-	case CALOBJ_MOD_ALL:
+	case E_CAL_OBJ_MOD_ALL:
 		remove_comp_from_cache (cbdav, uid, NULL);
 		break;
-	case CALOBJ_MOD_THISANDPRIOR:
-	case CALOBJ_MOD_THISANDFUTURE:
+	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
+	case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
 		break;
 	}
 
@@ -4065,7 +4065,7 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 		caldav_object.etag  = etag;
 		caldav_object.cdata = NULL;
 
-		if (mod == CALOBJ_MOD_THIS && rid && *rid) {
+		if (mod == E_CAL_OBJ_MOD_THIS && rid && *rid) {
 			caldav_object.cdata = pack_cobj (cbdav, cache_comp);
 
 			caldav_server_put_object (cbdav, &caldav_object, cache_comp, cancellable, perror);
@@ -4077,7 +4077,7 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 		etag = NULL;
 	} else {
 		/* mark component as out of synch */
-		/*if (mod == CALOBJ_MOD_THIS && rid && *rid)
+		/*if (mod == E_CAL_OBJ_MOD_THIS && rid && *rid)
 			ecalcomp_set_synch_state (cache_comp_master, ECALCOMP_LOCALLY_MODIFIED);
 		else
 			ecalcomp_set_synch_state (cache_comp_master, ECALCOMP_LOCALLY_DELETED);*/
@@ -4173,7 +4173,7 @@ process_object (ECalBackendCalDAV *cbdav,
 	struct icaltimetype       now;
 	gchar *new_obj_str;
 	gboolean is_declined, is_in_cache;
-	CalObjModType mod;
+	ECalObjModType mod;
 	ECalComponentId *id = e_cal_component_get_id (ecomp);
 	GError *err = NULL;
 
@@ -4192,7 +4192,7 @@ process_object (ECalBackendCalDAV *cbdav,
 	is_in_cache = cache_contains (cbdav, id->uid, NULL) || cache_contains (cbdav, id->uid, id->rid);
 
 	new_obj_str = e_cal_component_get_as_string (ecomp);
-	mod = e_cal_component_is_instance (ecomp) ? CALOBJ_MOD_THIS : CALOBJ_MOD_ALL;
+	mod = e_cal_component_is_instance (ecomp) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL;
 
 	switch (method) {
 	case ICAL_METHOD_PUBLISH:
@@ -4257,7 +4257,7 @@ process_object (ECalBackendCalDAV *cbdav,
 			GSList ids = {0,};
 
 			ids.data = id;
-			do_remove_objects (cbdav, &ids, CALOBJ_MOD_THIS, &old_components, &new_components, cancellable, &err);
+			do_remove_objects (cbdav, &ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, cancellable, &err);
 			if (!err && old_components && old_components->data) {
 				if (new_components && new_components->data) {
 					e_cal_backend_notify_component_modified (backend, old_components->data, new_components->data);
@@ -4408,7 +4408,7 @@ caldav_busy_stub (
                   EDataCal *cal,
                   GCancellable *cancellable,
                   const GSList *calobjs,
-                  CalObjModType mod,
+                  ECalObjModType mod,
                   GSList **old_components,
                   GSList **new_components,
                   GError **perror),
@@ -4427,7 +4427,7 @@ caldav_busy_stub (
                   EDataCal *cal,
                   GCancellable *cancellable,
                   const GSList *ids,
-                  CalObjModType mod,
+                  ECalObjModType mod,
                   GSList **old_components,
                   GSList **new_components,
                   GError **perror),

@@ -152,10 +152,10 @@ alter_cal_client (gpointer user_data)
 	icalcomponent_set_uid (icalcomp, uid);
 	icalcomponent_set_summary (icalcomp, "Modified event summary");
 
-	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, CALOBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_modify_object_sync (cal_client, icalcomp, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("modify object sync: %s", error->message);
 
-	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, CALOBJ_MOD_ALL, NULL, &error))
+	if (!e_cal_client_remove_object_sync (cal_client, uid, NULL, E_CAL_OBJ_MOD_ALL, NULL, &error))
 		g_error ("remove object sync: %s", error->message);
 
 	g_free (uid);

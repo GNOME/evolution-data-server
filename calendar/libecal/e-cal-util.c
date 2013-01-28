@@ -1045,16 +1045,16 @@ e_cal_util_construct_instance (icalcomponent *icalcomp,
 static inline gboolean
 time_matches_rid (struct icaltimetype itt,
                   struct icaltimetype rid,
-                  CalObjModType mod)
+                  ECalObjModType mod)
 {
 	gint compare;
 
 	compare = icaltime_compare (itt, rid);
 	if (compare == 0)
 		return TRUE;
-	else if (compare < 0 && (mod & CALOBJ_MOD_THISANDPRIOR))
+	else if (compare < 0 && (mod & E_CAL_OBJ_MOD_THIS_AND_PRIOR))
 		return TRUE;
-	else if (compare > 0 && (mod & CALOBJ_MOD_THISANDFUTURE))
+	else if (compare > 0 && (mod & E_CAL_OBJ_MOD_THIS_AND_FUTURE))
 		return TRUE;
 
 	return FALSE;
@@ -1074,7 +1074,7 @@ time_matches_rid (struct icaltimetype itt,
 void
 e_cal_util_remove_instances (icalcomponent *icalcomp,
                              struct icaltimetype rid,
-                             CalObjModType mod)
+                             ECalObjModType mod)
 {
 	icalproperty *prop;
 	struct icaltimetype itt, recur;
@@ -1082,7 +1082,7 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 	icalrecur_iterator *iter;
 
 	g_return_if_fail (icalcomp != NULL);
-	g_return_if_fail (mod != CALOBJ_MOD_ALL);
+	g_return_if_fail (mod != E_CAL_OBJ_MOD_ALL);
 
 	/* First remove RDATEs and EXDATEs in the indicated range. */
 	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_RDATE_PROPERTY);
@@ -1103,7 +1103,7 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 	}
 
 	/* If we're only removing one instance, just add an EXDATE. */
-	if (mod == CALOBJ_MOD_THIS) {
+	if (mod == E_CAL_OBJ_MOD_THIS) {
 		prop = icalproperty_new_exdate (rid);
 		icalcomponent_add_property (icalcomp, prop);
 		return;
@@ -1119,7 +1119,7 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 		iter = icalrecur_iterator_new (rule, rid);
 		recur = icalrecur_iterator_next (iter);
 
-		if (mod & CALOBJ_MOD_THISANDFUTURE) {
+		if (mod & E_CAL_OBJ_MOD_THIS_AND_FUTURE) {
 			/* If there is a recurrence on or after rid,
 			 * use the UNTIL parameter to truncate the rule
 			 * at rid.

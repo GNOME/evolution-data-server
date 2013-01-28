@@ -194,13 +194,13 @@ struct _ECalBackendClass {
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
-						 CalObjModType mod);
+						 ECalObjModType mod);
 	void		(*remove_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *ids,
-						 CalObjModType mod);
+						 ECalObjModType mod);
 	void		(*receive_objects)	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
@@ -321,13 +321,13 @@ void		e_cal_backend_modify_objects	(ECalBackend *backend,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *calobjs,
-						 CalObjModType mod);
+						 ECalObjModType mod);
 void		e_cal_backend_remove_objects	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 const GSList *ids,
-						 CalObjModType mod);
+						 ECalObjModType mod);
 void		e_cal_backend_receive_objects	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,

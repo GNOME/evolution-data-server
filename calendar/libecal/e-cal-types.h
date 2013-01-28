@@ -45,18 +45,19 @@ typedef enum {
 } ECalClientSourceType;
 
 /**
- * EDataCalObjModType:
+ * ECalObjModType:
  *
  * FIXME Document me!
  *
- * Since: 3.6
+ * Since: 3.8
  **/
 typedef enum {
-	This = 1 << 0,
-	ThisAndPrior = 1 << 1,
-	ThisAndFuture = 1 << 2,
-	All = 0x07
-} EDataCalObjModType;
+	E_CAL_OBJ_MOD_THIS            = 1 << 0,
+	E_CAL_OBJ_MOD_THIS_AND_PRIOR  = 1 << 1,
+	E_CAL_OBJ_MOD_THIS_AND_FUTURE = 1 << 2,
+	E_CAL_OBJ_MOD_ALL             = 0x07,
+	E_CAL_OBJ_MOD_ONLY_THIS       = 1 << 3
+} ECalObjModType;
 
 /** Everything below this point is deprecated. **/
 
@@ -123,6 +124,27 @@ typedef enum {
 	Journal = 1 << 2,
 	AnyType = 0x07
 } EDataCalObjType;
+
+/**
+ * EDataCalObjModType:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
+typedef enum {
+	This = 1 << 0,
+	ThisAndPrior = 1 << 1,
+	ThisAndFuture = 1 << 2,
+	All = 0x07
+} EDataCalObjModType;
+
+typedef ECalObjModType CalObjModType;
+#define CALOBJ_MOD_THIS          E_CAL_OBJ_MOD_THIS
+#define CALOBJ_MOD_THISANDPRIOR  E_CAL_OBJ_MOD_THIS_AND_PRIOR
+#define CALOBJ_MOD_THISANDFUTURE E_CAL_OBJ_MOD_THIS_AND_FUTURE
+#define CALOBJ_MOD_ALL           E_CAL_OBJ_MOD_ALL
+#define CALOBJ_MOD_ONLY_THIS     E_CAL_OBJ_MOD_ONLY_THIS
 
 #endif /* EDS_DISABLE_DEPRECATED */
 

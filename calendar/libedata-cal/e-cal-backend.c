@@ -1357,7 +1357,7 @@ e_cal_backend_modify_objects (ECalBackend *backend,
                               guint32 opid,
                               GCancellable *cancellable,
                               const GSList *calobjs,
-                              CalObjModType mod)
+                              ECalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1392,7 +1392,7 @@ e_cal_backend_remove_objects (ECalBackend *backend,
                               guint32 opid,
                               GCancellable *cancellable,
                               const GSList *ids,
-                              CalObjModType mod)
+                              ECalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
