@@ -431,7 +431,6 @@ tm_to_icaltimetype
 
 <SECTION>
 <FILE>e-cal-types</FILE>
-EDataCalObjType
 EDataCalObjModType
 <SUBSECTION Deprecated>
 E_CALENDAR_ERROR
@@ -440,6 +439,7 @@ ECalChangeType
 ECalChange
 ECalendarStatus
 E_CALENDAR_STATUS_CORBA_EXCEPTION
+EDataCalObjType
 </SECTION>
 
 <SECTION>

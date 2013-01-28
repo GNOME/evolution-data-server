@@ -45,20 +45,6 @@ typedef enum {
 } ECalClientSourceType;
 
 /**
- * EDataCalObjType:
- *
- * FIXME Document me!
- *
- * Since: 3.6
- **/
-typedef enum {
-	Event = 1 << 0,
-	Todo = 1 << 1,
-	Journal = 1 << 2,
-	AnyType = 0x07
-} EDataCalObjType;
-
-/**
  * EDataCalObjModType:
  *
  * FIXME Document me!
@@ -123,6 +109,20 @@ typedef enum {
 } ECalendarStatus;
 
 #define E_CALENDAR_STATUS_CORBA_EXCEPTION E_CALENDAR_STATUS_DBUS_EXCEPTION
+
+/**
+ * EDataCalObjType:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
+typedef enum {
+	Event = 1 << 0,
+	Todo = 1 << 1,
+	Journal = 1 << 2,
+	AnyType = 0x07
+} EDataCalObjType;
 
 #endif /* EDS_DISABLE_DEPRECATED */
 
