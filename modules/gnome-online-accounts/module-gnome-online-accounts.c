@@ -111,6 +111,9 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 	if (g_str_equal (goa_provider_type, "google"))
 		eds_backend_name = "google";
 
+	if (g_str_equal (goa_provider_type, "imap_smtp"))
+		eds_backend_name = "none";
+
 	if (g_str_equal (goa_provider_type, "yahoo"))
 		eds_backend_name = "yahoo";
 
