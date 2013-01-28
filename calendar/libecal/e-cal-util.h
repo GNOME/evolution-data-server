@@ -52,19 +52,6 @@ typedef enum {
 	CALOBJ_MOD_ALL           = 0x07
 } CalObjModType;
 
-/* Used for mode stuff */
-typedef enum {
-	CAL_MODE_INVALID = -1,
-	CAL_MODE_LOCAL   = 1 << 0,
-	CAL_MODE_REMOTE  = 1 << 1,
-	CAL_MODE_ANY     = 0x07
-} CalMode;
-
-#define cal_mode_to_corba(mode) \
-	(mode == CAL_MODE_LOCAL   ? Local  : \
-	 mode == CAL_MODE_REMOTE  ? Remote : \
-	 AnyMode)
-
 void cal_obj_uid_list_free (GList *list);
 
 icalcomponent *	e_cal_util_new_top_level	(void);
@@ -208,6 +195,21 @@ void		e_cal_util_get_component_occur_times
 						 gpointer tz_cb_data,
 						 const icaltimezone *default_timezone,
 						 icalcomponent_kind kind);
+
+#ifndef EDS_DISABLE_DEPRECATED
+/* Used for mode stuff */
+typedef enum {
+	CAL_MODE_INVALID = -1,
+	CAL_MODE_LOCAL   = 1 << 0,
+	CAL_MODE_REMOTE  = 1 << 1,
+	CAL_MODE_ANY     = 0x07
+} CalMode;
+
+#define cal_mode_to_corba(mode) \
+	(mode == CAL_MODE_LOCAL   ? Local  : \
+	 mode == CAL_MODE_REMOTE  ? Remote : \
+	 AnyMode)
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 
