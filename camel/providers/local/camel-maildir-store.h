@@ -47,9 +47,12 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMaildirStore CamelMaildirStore;
 typedef struct _CamelMaildirStoreClass CamelMaildirStoreClass;
+typedef struct _CamelMaildirStorePrivate CamelMaildirStorePrivate;
 
 struct _CamelMaildirStore {
 	CamelLocalStore parent;
+
+	CamelMaildirStorePrivate *priv;
 };
 
 struct _CamelMaildirStoreClass {
