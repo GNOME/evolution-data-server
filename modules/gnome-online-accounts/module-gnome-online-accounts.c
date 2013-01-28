@@ -98,18 +98,20 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 {
 	const gchar *eds_backend_name = NULL;
 
+	g_return_val_if_fail (goa_provider_type != NULL, NULL);
+
 	/* This is a mapping between GoaAccount provider types and
 	 * ESourceCollection backend names.  It requires knowledge
 	 * of other registry modules, possibly even from 3rd party
 	 * packages.  No way around it. */
 
-	if (g_strcmp0 (goa_provider_type, "exchange") == 0)
+	if (g_str_equal (goa_provider_type, "exchange"))
 		eds_backend_name = "ews";
 
-	if (g_strcmp0 (goa_provider_type, "google") == 0)
+	if (g_str_equal (goa_provider_type, "google"))
 		eds_backend_name = "google";
 
-	else if (g_strcmp0 (goa_provider_type, "yahoo") == 0)
+	if (g_str_equal (goa_provider_type, "yahoo"))
 		eds_backend_name = "yahoo";
 
 	return eds_backend_name;
