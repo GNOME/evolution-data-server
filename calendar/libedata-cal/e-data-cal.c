@@ -1631,20 +1631,14 @@ e_data_cal_report_online (EDataCal *cal,
  * including successfull authentication to the server/storage.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function no longer does anything.
  **/
 void
 e_data_cal_report_opened (EDataCal *cal,
                           const GError *error)
 {
-	gchar **strv_error;
-
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	strv_error = e_gdbus_templates_encode_error (error);
-
-	e_gdbus_cal_emit_opened (cal->priv->dbus_interface, (const gchar * const *) strv_error);
-
-	g_strfreev (strv_error);
+	/* Do nothing. */
 }
 
 /**

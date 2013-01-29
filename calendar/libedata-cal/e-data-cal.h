@@ -255,8 +255,6 @@ void		e_data_cal_report_readonly	(EDataCal *cal,
 						 gboolean is_readonly);
 void		e_data_cal_report_online	(EDataCal *cal,
 						 gboolean is_online);
-void		e_data_cal_report_opened	(EDataCal *cal,
-						 const GError *error);
 void		e_data_cal_report_free_busy_data
 						(EDataCal *cal,
 						 const GSList *freebusy);
@@ -270,6 +268,8 @@ void		e_data_cal_respond_set_backend_property
 						(EDataCal *cal,
 						 guint32 opid,
 						 GError *error);
+void		e_data_cal_report_opened	(EDataCal *cal,
+						 const GError *error);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

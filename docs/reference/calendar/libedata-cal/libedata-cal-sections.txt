@@ -265,11 +265,11 @@ e_data_cal_respond_add_timezone
 e_data_cal_report_error
 e_data_cal_report_readonly
 e_data_cal_report_online
-e_data_cal_report_opened
 e_data_cal_report_free_busy_data
 e_data_cal_report_backend_property_changed
 <SUBSECTION Deprecated>
 e_data_cal_respond_set_backend_property
+e_data_cal_report_opened
 <SUBSECTION Standard>
 E_DATA_CAL
 E_IS_DATA_CAL

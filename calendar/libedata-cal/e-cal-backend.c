@@ -1924,15 +1924,11 @@ e_cal_backend_notify_opened (ECalBackend *backend,
                              GError *error)
 {
 	ECalBackendPrivate *priv;
-	GList *clients;
 
 	priv = backend->priv;
 	g_mutex_lock (&priv->clients_mutex);
 
 	priv->opened = error == NULL;
-
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_cal_report_opened (E_DATA_CAL (clients->data), error);
 
 	g_mutex_unlock (&priv->clients_mutex);
 
