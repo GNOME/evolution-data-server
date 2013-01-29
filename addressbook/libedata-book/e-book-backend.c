@@ -1323,15 +1323,11 @@ e_book_backend_notify_opened (EBookBackend *backend,
                               GError *error)
 {
 	EBookBackendPrivate *priv;
-	GList *clients;
 
 	priv = backend->priv;
 	g_mutex_lock (&priv->clients_mutex);
 
 	priv->opened = error == NULL;
-
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_book_report_opened (E_DATA_BOOK (clients->data), error);
 
 	g_mutex_unlock (&priv->clients_mutex);
 

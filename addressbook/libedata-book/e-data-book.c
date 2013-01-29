@@ -1234,20 +1234,14 @@ e_data_book_report_online (EDataBook *book,
  * including successfull authentication to the server/storage.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function no longer does anything.
  **/
 void
 e_data_book_report_opened (EDataBook *book,
                            const GError *error)
 {
-	gchar **strv_error;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	strv_error = e_gdbus_templates_encode_error (error);
-
-	e_gdbus_book_emit_opened (book->priv->dbus_interface, (const gchar * const *) strv_error);
-
-	g_strfreev (strv_error);
+	/* Do nothing. */
 }
 
 /**

@@ -199,8 +199,6 @@ void		e_data_book_report_readonly	(EDataBook *book,
 						 gboolean readonly);
 void		e_data_book_report_online	(EDataBook *book,
 						 gboolean is_online);
-void		e_data_book_report_opened	(EDataBook *book,
-						 const GError *error);
 void		e_data_book_report_backend_property_changed
 						(EDataBook *book,
 						 const gchar *prop_name,
@@ -214,6 +212,8 @@ void		e_data_book_respond_set_backend_property
 						(EDataBook *book,
 						 guint32 opid,
 						 GError *error);
+void		e_data_book_report_opened	(EDataBook *book,
+						 const GError *error);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
