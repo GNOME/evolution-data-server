@@ -158,8 +158,6 @@ op_new (OperationID op,
         GDBusMethodInvocation *invocation)
 {
 	OperationData *data;
-	GDBusConnection *connection;
-	const gchar *sender;
 
 	data = g_slice_new0 (OperationData);
 	data->ref_count = 1;
@@ -167,18 +165,24 @@ op_new (OperationID op,
 	data->id = e_operation_pool_reserve_opid (ops_pool);
 	data->book = g_object_ref (book);
 	data->cancellable = g_cancellable_new ();
-	data->invocation = g_object_ref (invocation);
 
-	connection = g_dbus_method_invocation_get_connection (invocation);
-	sender = g_dbus_method_invocation_get_sender (invocation);
+	if (invocation != NULL) {
+		GDBusConnection *connection;
+		const gchar *sender;
 
-	data->watcher_id = g_bus_watch_name_on_connection (
-		connection, sender,
-		G_BUS_NAME_WATCHER_FLAGS_NONE,
-		(GBusNameAppearedCallback) NULL,
-		(GBusNameVanishedCallback) op_sender_vanished_cb,
-		g_object_ref (data->cancellable),
-		(GDestroyNotify) g_object_unref);
+		data->invocation = g_object_ref (invocation);
+
+		connection = e_data_book_get_connection (book);
+		sender = g_dbus_method_invocation_get_sender (invocation);
+
+		data->watcher_id = g_bus_watch_name_on_connection (
+			connection, sender,
+			G_BUS_NAME_WATCHER_FLAGS_NONE,
+			(GBusNameAppearedCallback) NULL,
+			(GBusNameVanishedCallback) op_sender_vanished_cb,
+			g_object_ref (data->cancellable),
+			(GDestroyNotify) g_object_unref);
+	}
 
 	g_rec_mutex_lock (&book->priv->pending_ops_lock);
 	g_hash_table_insert (
@@ -227,9 +231,12 @@ op_unref (OperationData *data)
 
 		g_object_unref (data->book);
 		g_object_unref (data->cancellable);
-		g_object_unref (data->invocation);
 
-		g_bus_unwatch_name (data->watcher_id);
+		if (data->invocation != NULL)
+			g_object_unref (data->invocation);
+
+		if (data->watcher_id > 0)
+			g_bus_unwatch_name (data->watcher_id);
 
 		g_slice_free (OperationData, data);
 	}
