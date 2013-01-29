@@ -1169,7 +1169,7 @@ e_cal_backend_open (ECalBackend *backend,
 		e_data_cal_report_online (cal, online);
 		e_data_cal_report_readonly (cal, !writable);
 
-		e_cal_backend_respond_opened (backend, cal, opid, NULL);
+		e_data_cal_respond_open (cal, opid, NULL);
 	} else {
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
@@ -1987,6 +1987,8 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
  * See e_cal_backend_open() for more details how the opening phase works.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_data_book_respond_open() instead.
  **/
 void
 e_cal_backend_respond_opened (ECalBackend *backend,
