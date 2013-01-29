@@ -75,7 +75,6 @@ typedef enum {
 	OP_MODIFY_CONTACTS,
 	OP_GET_BACKEND_PROPERTY,
 	OP_GET_VIEW,
-	OP_CANCEL_ALL,
 	OP_CLOSE
 } OperationID;
 
@@ -107,7 +106,6 @@ typedef struct {
 		gchar *prop_name;
 
 		/* OP_REFRESH */
-		/* OP_CANCEL_ALL */
 		/* OP_CLOSE */
 	} d;
 } OperationData;
@@ -390,7 +388,6 @@ operation_thread (gpointer data,
 		/* close just cancels all pending ops and frees data book */
 		e_book_backend_remove_client (backend, op->book);
 
-	case OP_CANCEL_ALL:
 		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
 
 		g_hash_table_iter_init (&iter, op->book->priv->pending_ops);
@@ -831,23 +828,6 @@ data_book_handle_get_view_cb (EGdbusBook *interface,
 	op->d.query = g_strdup (in_query);
 
 	e_gdbus_book_complete_get_view (interface, invocation, op->id);
-
-	/* This operation is never queued. */
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
-data_book_handle_cancel_all_cb (EGdbusBook *interface,
-                                GDBusMethodInvocation *invocation,
-                                EDataBook *book)
-{
-	OperationData *op;
-
-	op = op_new (OP_CANCEL_ALL, book, invocation);
-
-	e_gdbus_book_complete_cancel_all (interface, invocation, NULL);
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
@@ -1550,9 +1530,6 @@ e_data_book_init (EDataBook *ebook)
 	g_signal_connect (
 		dbus_interface, "handle-get-view",
 		G_CALLBACK (data_book_handle_get_view_cb), ebook);
-	g_signal_connect (
-		dbus_interface, "handle-cancel-all",
-		G_CALLBACK (data_book_handle_cancel_all_cb), ebook);
 	g_signal_connect (
 		dbus_interface, "handle-close",
 		G_CALLBACK (data_book_handle_close_cb), ebook);
