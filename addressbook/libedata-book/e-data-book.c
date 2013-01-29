@@ -75,7 +75,6 @@ typedef enum {
 	OP_MODIFY_CONTACTS,
 	OP_GET_BACKEND_PROPERTY,
 	OP_GET_VIEW,
-	OP_CANCEL_OPERATION,
 	OP_CANCEL_ALL,
 	OP_CLOSE
 } OperationID;
@@ -104,8 +103,6 @@ typedef struct {
 		/* OP_GET_CONTACTS */
 		/* OP_GET_CONTACTS_UIDS */
 		gchar *query;
-		/* OP_CANCEL_OPERATION */
-		guint opid;
 		/* OP_GET_BACKEND_PROPERTY */
 		gchar *prop_name;
 
@@ -387,18 +384,6 @@ operation_thread (gpointer data,
 
 			g_free (object_path);
 		}
-		break;
-
-	case OP_CANCEL_OPERATION:
-		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
-
-		cancel_op = g_hash_table_lookup (
-			op->book->priv->pending_ops,
-			GUINT_TO_POINTER (op->d.opid));
-		if (cancel_op != NULL)
-			g_cancellable_cancel (cancel_op->cancellable);
-
-		g_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
 		break;
 
 	case OP_CLOSE:
@@ -846,25 +831,6 @@ data_book_handle_get_view_cb (EGdbusBook *interface,
 	op->d.query = g_strdup (in_query);
 
 	e_gdbus_book_complete_get_view (interface, invocation, op->id);
-
-	/* This operation is never queued. */
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
-data_book_handle_cancel_operation_cb (EGdbusBook *interface,
-                                      GDBusMethodInvocation *invocation,
-                                      guint in_opid,
-                                      EDataBook *book)
-{
-	OperationData *op;
-
-	op = op_new (OP_CANCEL_OPERATION, book, invocation);
-	op->d.opid = in_opid;
-
-	e_gdbus_book_complete_cancel_operation (interface, invocation, NULL);
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
@@ -1584,9 +1550,6 @@ e_data_book_init (EDataBook *ebook)
 	g_signal_connect (
 		dbus_interface, "handle-get-view",
 		G_CALLBACK (data_book_handle_get_view_cb), ebook);
-	g_signal_connect (
-		dbus_interface, "handle-cancel-operation",
-		G_CALLBACK (data_book_handle_cancel_operation_cb), ebook);
 	g_signal_connect (
 		dbus_interface, "handle-cancel-all",
 		G_CALLBACK (data_book_handle_cancel_all_cb), ebook);
