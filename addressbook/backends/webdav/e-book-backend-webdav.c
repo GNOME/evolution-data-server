@@ -1388,7 +1388,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 		e_source_offline_get_stay_synchronized (offline_extension);
 
 	if (!e_backend_get_online (E_BACKEND (backend)) && !priv->marked_for_offline ) {
-		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
+		e_data_book_respond_open (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
 		return;
 	}
 
@@ -1399,7 +1399,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 		g_free (priv->uri);
 		priv->uri = NULL;
 		soup_uri_free (suri);
-		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, _("Cannot transform SoupURI to string")));
+		e_data_book_respond_open (book, opid, EDB_ERROR_EX (OTHER_ERROR, _("Cannot transform SoupURI to string")));
 		return;
 	}
 
@@ -1454,7 +1454,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	soup_uri_free (suri);
 
 	/* This function frees the GError passed to it. */
-	e_book_backend_respond_opened (backend, book, opid, error);
+	e_data_book_respond_open (book, opid, error);
 }
 
 static void

@@ -1899,10 +1899,8 @@ e_book_backend_google_open (EBookBackend *backend,
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->cancellables && backend_is_authorized (backend)) {
-		e_book_backend_respond_opened (backend, book, opid, NULL);
+	if (priv->cancellables && backend_is_authorized (backend))
 		return;
-	}
 
 	/* Set up our object */
 	if (!priv->cancellables) {

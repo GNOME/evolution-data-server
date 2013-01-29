@@ -5268,7 +5268,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 		if (!bl->priv->marked_for_offline)
 			error = EDB_ERROR (OFFLINE_UNAVAILABLE);
 
-		e_book_backend_respond_opened (backend, book, opid, error);
+		e_data_book_respond_open (book, opid, error);
 		return;
 	}
 
@@ -5300,7 +5300,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	if (error == NULL && bl->priv->marked_for_offline)
 		generate_cache (bl);
 
-	e_book_backend_respond_opened (backend, book, opid, error);
+	e_data_book_respond_open (book, opid, error);
 }
 
 static void

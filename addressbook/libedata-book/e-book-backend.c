@@ -508,7 +508,7 @@ e_book_backend_open (EBookBackend *backend,
 		e_data_book_report_online (book, online);
 		e_data_book_report_readonly (book, !writable);
 
-		e_book_backend_respond_opened (backend, book, opid, NULL);
+		e_data_book_respond_open (book, opid, NULL);
 	} else {
 		g_mutex_unlock (&backend->priv->clients_mutex);
 
@@ -1386,6 +1386,8 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
  * See e_book_backend_open() for more details how the opening phase works.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_data_book_respond_open() instead.
  **/
 void
 e_book_backend_respond_opened (EBookBackend *backend,

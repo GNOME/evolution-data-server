@@ -300,11 +300,6 @@ void		e_book_backend_sync		(EBookBackend *backend);
 void		e_book_backend_set_is_removed	(EBookBackend *backend,
 						 gboolean is_removed);
 
-void		e_book_backend_respond_opened	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GError *error);
-
 #ifndef EDS_DISABLE_DEPRECATED
 /**
  * CLIENT_BACKEND_PROPERTY_OPENED:
@@ -352,6 +347,10 @@ void		e_book_backend_foreach_view	(EBookBackend *backend,
 								       gpointer user_data),
 								       gpointer user_data);
 void		e_book_backend_notify_opened	(EBookBackend *backend,
+						 GError *error);
+void		e_book_backend_respond_opened	(EBookBackend *backend,
+						 EDataBook *book,
+						 guint32 opid,
 						 GError *error);
 #endif /* EDS_DISABLE_DEPRECATED */
 
