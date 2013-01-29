@@ -625,7 +625,7 @@ e_book_backend_file_new_revision (EBookBackendFile *bf)
  * every DB modification is going to really be an overhead.
  */
 static void
-e_book_backend_file_bump_revision_locked (EBookBackendFile *bf)
+e_book_backend_file_bump_revision (EBookBackendFile *bf)
 {
 	GError *error = NULL;
 
@@ -647,17 +647,11 @@ e_book_backend_file_bump_revision_locked (EBookBackendFile *bf)
 }
 
 static void
-e_book_backend_file_bump_revision (EBookBackendFile *bf)
-{
-	g_rw_lock_writer_lock (&(bf->priv->lock));
-	e_book_backend_file_bump_revision_locked (bf);
-	g_rw_lock_writer_unlock (&(bf->priv->lock));
-}
-
-static void
 e_book_backend_file_load_revision (EBookBackendFile *bf)
 {
 	GError *error = NULL;
+
+	g_rw_lock_writer_lock (&(bf->priv->lock));
 
 	if (!e_book_backend_sqlitedb_get_revision (bf->priv->sqlitedb,
 						   SQLITEDB_FOLDER_ID,
@@ -669,6 +663,8 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 	} else if (bf->priv->revision == NULL) {
 		e_book_backend_file_bump_revision (bf);
 	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 }
 
 static void
@@ -799,7 +795,7 @@ e_book_backend_file_create_contacts (EBookBackendSync *backend,
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
 	if (do_create (bf, vcards, added_contacts, perror)) {
-		e_book_backend_file_bump_revision_locked (bf);
+		e_book_backend_file_bump_revision (bf);
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
@@ -866,7 +862,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			g_propagate_error (perror, local_error);
 		}
 
-		e_book_backend_file_bump_revision_locked (bf);
+		e_book_backend_file_bump_revision (bf);
 
 		*ids = removed_ids;
 	} else {
@@ -996,7 +992,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 	}
 
 	if (status != STATUS_ERROR)
-		e_book_backend_file_bump_revision_locked (bf);
+		e_book_backend_file_bump_revision (bf);
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
