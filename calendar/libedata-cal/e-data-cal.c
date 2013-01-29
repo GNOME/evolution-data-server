@@ -86,7 +86,6 @@ typedef enum {
 	OP_GET_VIEW,
 	OP_GET_TIMEZONE,
 	OP_ADD_TIMEZONE,
-	OP_CANCEL_ALL,
 	OP_CLOSE
 } OperationID;
 
@@ -148,7 +147,6 @@ typedef struct {
 		gchar *prop_name;
 
 		/* OP_REFRESH */
-		/* OP_CANCEL_ALL */
 		/* OP_CLOSE */
 	} d;
 } OperationData;
@@ -502,7 +500,6 @@ operation_thread (gpointer data,
 		/* close just cancels all pending ops and frees data cal */
 		e_cal_backend_remove_client (backend, op->cal);
 
-	case OP_CANCEL_ALL:
 		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
 
 		g_hash_table_iter_init (&iter, op->cal->priv->pending_ops);
@@ -959,23 +956,6 @@ data_cal_handle_add_timezone_cb (EGdbusCal *interface,
 	e_gdbus_cal_complete_add_timezone (interface, invocation, op->id);
 
 	op_dispatch (cal, op);
-
-	return TRUE;
-}
-
-static gboolean
-data_cal_handle_cancel_all_cb (EGdbusCal *interface,
-                               GDBusMethodInvocation *invocation,
-                               EDataCal *cal)
-{
-	OperationData *op;
-
-	op = op_new (OP_CANCEL_ALL, cal, invocation);
-
-	e_gdbus_cal_complete_cancel_all (interface, invocation, NULL);
-
-	/* This operation is never queued. */
-	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
 }
@@ -1985,9 +1965,6 @@ e_data_cal_init (EDataCal *ecal)
 	g_signal_connect (
 		dbus_interface, "handle-add-timezone",
 		G_CALLBACK (data_cal_handle_add_timezone_cb), ecal);
-	g_signal_connect (
-		dbus_interface, "handle-cancel-all",
-		G_CALLBACK (data_cal_handle_cancel_all_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-close",
 		G_CALLBACK (data_cal_handle_close_cb), ecal);
