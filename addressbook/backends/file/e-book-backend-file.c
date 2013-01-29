@@ -1548,7 +1548,9 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
 		*prop_value = NULL;
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REVISION)) {
+		g_rw_lock_reader_lock (&(bf->priv->lock));
 		*prop_value = g_strdup (bf->priv->revision);
+		g_rw_lock_reader_unlock (&(bf->priv->lock));
 	} else {
 		processed = FALSE;
 	}
