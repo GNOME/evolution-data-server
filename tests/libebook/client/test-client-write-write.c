@@ -18,11 +18,11 @@ static void
 setup_custom_book (ESource            *scratch,
 		   ETestServerClosure *closure)
 {
-	ESourceAddressBookConfig *config;
+	ESourceRevisionGuards *guards;
 
-	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_ADDRESS_BOOK_CONFIG));
-	config = e_source_get_extension (scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
-	e_source_address_book_config_set_revision_guards_enabled (config, TRUE);
+	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_REVISION_GUARDS));
+	guards = e_source_get_extension (scratch, E_SOURCE_EXTENSION_REVISION_GUARDS);
+	e_source_revision_guards_set_enabled (guards, TRUE);
 }
 
 
