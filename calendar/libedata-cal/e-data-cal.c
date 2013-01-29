@@ -86,7 +86,6 @@ typedef enum {
 	OP_GET_VIEW,
 	OP_GET_TIMEZONE,
 	OP_ADD_TIMEZONE,
-	OP_CANCEL_OPERATION,
 	OP_CANCEL_ALL,
 	OP_CLOSE
 } OperationID;
@@ -145,8 +144,6 @@ typedef struct {
 		gchar *tzid;
 		/* OP_ADD_TIMEZONE */
 		gchar *tzobject;
-		/* OP_CANCEL_OPERATION */
-		guint opid;
 		/* OP_GET_BACKEND_PROPERTY */
 		gchar *prop_name;
 
@@ -499,18 +496,6 @@ operation_thread (gpointer data,
 		e_cal_backend_add_timezone (
 			backend, op->cal, op->id,
 			op->cancellable, op->d.tzobject);
-		break;
-
-	case OP_CANCEL_OPERATION:
-		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
-
-		cancel_op = g_hash_table_lookup (
-			op->cal->priv->pending_ops,
-			GUINT_TO_POINTER (op->d.opid));
-		if (cancel_op != NULL)
-			g_cancellable_cancel (cancel_op->cancellable);
-
-		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
 		break;
 
 	case OP_CLOSE:
@@ -974,25 +959,6 @@ data_cal_handle_add_timezone_cb (EGdbusCal *interface,
 	e_gdbus_cal_complete_add_timezone (interface, invocation, op->id);
 
 	op_dispatch (cal, op);
-
-	return TRUE;
-}
-
-static gboolean
-data_cal_handle_cancel_operation_cb (EGdbusCal *interface,
-                                     GDBusMethodInvocation *invocation,
-                                     guint in_opid,
-                                     EDataCal *cal)
-{
-	OperationData *op;
-
-	op = op_new (OP_CANCEL_OPERATION, cal, invocation);
-	op->d.opid = in_opid;
-
-	e_gdbus_cal_complete_cancel_operation (interface, invocation, NULL);
-
-	/* This operation is never queued. */
-	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
 }
@@ -2019,9 +1985,6 @@ e_data_cal_init (EDataCal *ecal)
 	g_signal_connect (
 		dbus_interface, "handle-add-timezone",
 		G_CALLBACK (data_cal_handle_add_timezone_cb), ecal);
-	g_signal_connect (
-		dbus_interface, "handle-cancel-operation",
-		G_CALLBACK (data_cal_handle_cancel_operation_cb), ecal);
 	g_signal_connect (
 		dbus_interface, "handle-cancel-all",
 		G_CALLBACK (data_cal_handle_cancel_all_cb), ecal);
