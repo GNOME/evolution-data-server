@@ -41,7 +41,6 @@ libebook_contacts_1_2_la_SOURCES =				\
 	e-book-query.c					\
 	e-contact.c					\
 	e-vcard.c					\
-	e-source-address-book-config.c			\
 	e-source-backend-summary-setup.c
 
 
@@ -67,7 +66,6 @@ libebookcontactsinclude_HEADERS =			\
 	e-name-western.h				\
 	e-contact.h					\
 	e-vcard.h					\
-	e-source-address-book-config.h			\
 	e-source-backend-summary-setup.h
 
 
