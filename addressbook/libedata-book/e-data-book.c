@@ -88,6 +88,7 @@ typedef struct {
 	EDataBook *book; /* book */
 	GCancellable *cancellable;
 	GDBusMethodInvocation *invocation;
+	guint watcher_id;
 
 	union {
 		/* OP_OPEN */
@@ -137,6 +138,14 @@ construct_bookview_path (void)
 		getpid (), counter);
 }
 
+static void
+op_sender_vanished_cb (GDBusConnection *connection,
+                       const gchar *sender,
+                       GCancellable *cancellable)
+{
+	g_cancellable_cancel (cancellable);
+}
+
 static OperationData *
 op_ref (OperationData *data)
 {
@@ -154,6 +163,8 @@ op_new (OperationID op,
         GDBusMethodInvocation *invocation)
 {
 	OperationData *data;
+	GDBusConnection *connection;
+	const gchar *sender;
 
 	data = g_slice_new0 (OperationData);
 	data->ref_count = 1;
@@ -162,6 +173,17 @@ op_new (OperationID op,
 	data->book = g_object_ref (book);
 	data->cancellable = g_cancellable_new ();
 	data->invocation = g_object_ref (invocation);
+
+	connection = g_dbus_method_invocation_get_connection (invocation);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+
+	data->watcher_id = g_bus_watch_name_on_connection (
+		connection, sender,
+		G_BUS_NAME_WATCHER_FLAGS_NONE,
+		(GBusNameAppearedCallback) NULL,
+		(GBusNameVanishedCallback) op_sender_vanished_cb,
+		g_object_ref (data->cancellable),
+		(GDestroyNotify) g_object_unref);
 
 	g_rec_mutex_lock (&book->priv->pending_ops_lock);
 	g_hash_table_insert (
@@ -211,6 +233,8 @@ op_unref (OperationData *data)
 		g_object_unref (data->book);
 		g_object_unref (data->cancellable);
 		g_object_unref (data->invocation);
+
+		g_bus_unwatch_name (data->watcher_id);
 
 		g_slice_free (OperationData, data);
 	}
