@@ -289,8 +289,6 @@ void		e_book_backend_notify_readonly	(EBookBackend *backend,
 						 gboolean is_readonly);
 void		e_book_backend_notify_online	(EBookBackend *backend,
 						 gboolean is_online);
-void		e_book_backend_notify_opened	(EBookBackend *backend,
-						 GError *error);
 void		e_book_backend_notify_property_changed
 						(EBookBackend *backend,
 						 const gchar *prop_name,
@@ -353,6 +351,8 @@ void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
 								       gpointer user_data),
 								       gpointer user_data);
+void		e_book_backend_notify_opened	(EBookBackend *backend,
+						 GError *error);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

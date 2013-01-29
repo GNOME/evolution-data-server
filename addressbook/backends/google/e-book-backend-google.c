@@ -1933,8 +1933,6 @@ e_book_backend_google_open (EBookBackend *backend,
 			e_book_backend_notify_readonly (backend, FALSE);
 			cache_refresh_if_needed (backend);
 		}
-
-		e_book_backend_notify_opened (backend, NULL /* Success */);
 	}
 
 	/* This function frees the GError passed to it. */

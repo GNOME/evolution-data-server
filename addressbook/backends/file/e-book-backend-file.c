@@ -1505,7 +1505,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 
 	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), FALSE);
-	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL /* Success */);
 }
 
 static gboolean

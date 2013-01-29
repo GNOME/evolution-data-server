@@ -1315,6 +1315,8 @@ e_book_backend_notify_online (EBookBackend *backend,
  * Meant to be used by backend implementations.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_data_book_respond_open() instead.
  **/
 void
 e_book_backend_notify_opened (EBookBackend *backend,
@@ -1391,16 +1393,10 @@ e_book_backend_respond_opened (EBookBackend *backend,
                                guint32 opid,
                                GError *error)
 {
-	GError *copy = NULL;
-
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (book != NULL);
 	g_return_if_fail (opid != 0);
 
-	if (error)
-		copy = g_error_copy (error);
-
-	e_book_backend_notify_opened (backend, copy);
 	e_data_book_respond_open (book, opid, error);
 }

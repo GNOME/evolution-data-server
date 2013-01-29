@@ -866,12 +866,21 @@ e_data_book_respond_open (EDataBook *book,
                           guint opid,
                           GError *error)
 {
+	GError *copy = NULL;
+
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open book: "));
+
+	/* This function is deprecated, but it's the only way to
+	 * set EBookBackend's internal 'opened' flag.  We should
+	 * be the only ones calling this. */
+	if (error != NULL)
+		copy = g_error_copy (error);
+	e_book_backend_notify_opened (book->priv->backend, copy);
 
 	e_gdbus_book_emit_open_done (book->priv->dbus_interface, opid, error);
 

@@ -39,7 +39,6 @@ e_book_backend_notify_complete
 e_book_backend_notify_error
 e_book_backend_notify_readonly
 e_book_backend_notify_online
-e_book_backend_notify_opened
 e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
@@ -51,6 +50,7 @@ BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 e_book_backend_is_opening
 e_book_backend_set_backend_property
 e_book_backend_foreach_view
+e_book_backend_notify_opened
 <SUBSECTION Standard>
 E_BOOK_BACKEND
 E_IS_BOOK_BACKEND
