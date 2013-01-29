@@ -1317,7 +1317,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	GError           *local_error = NULL;
 	gboolean          populated;
 	ESourceBackendSummarySetup *setup;
-	ESourceAddressBookConfig *config;
+	ESourceRevisionGuards *guards;
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
@@ -1331,11 +1331,11 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 	backup   = g_build_filename (dirname, "addressbook.db.old", NULL);
 
-	REGISTER_TYPE (E_TYPE_SOURCE_ADDRESS_BOOK_CONFIG);
+	REGISTER_TYPE (E_TYPE_SOURCE_REVISION_GUARDS);
 	REGISTER_TYPE (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
 
-	config         = e_source_get_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK_CONFIG);
-	bf->priv->revision_guards = e_source_address_book_config_get_revision_guards_enabled (config);
+	guards         = e_source_get_extension (source, E_SOURCE_EXTENSION_REVISION_GUARDS);
+	bf->priv->revision_guards = e_source_revision_guards_get_enabled (guards);
 
 	setup = e_source_get_extension (source, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
  
