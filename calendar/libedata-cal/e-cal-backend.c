@@ -1916,6 +1916,8 @@ e_cal_backend_notify_online (ECalBackend *backend,
  * Meant to be used by backend implementations.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_data_cal_respond_open() instead.
  **/
 void
 e_cal_backend_notify_opened (ECalBackend *backend,
@@ -1992,17 +1994,11 @@ e_cal_backend_respond_opened (ECalBackend *backend,
                               guint32 opid,
                               GError *error)
 {
-	GError *copy = NULL;
-
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (opid != 0);
 
-	if (error)
-		copy = g_error_copy (error);
-
-	e_cal_backend_notify_opened (backend, copy);
 	e_data_cal_respond_open (cal, opid, error);
 }
 

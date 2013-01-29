@@ -509,7 +509,6 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 
 		/* do we require to load this new store */
 		e_cal_backend_store_load (priv->store);
-		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 
 		if (!e_backend_get_online (E_BACKEND (backend)))
 			return;
@@ -517,8 +516,6 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 		if (!priv->begin_retrival_id)
 			priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, cbw);
 	}
-
-	e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 }
 
 static void

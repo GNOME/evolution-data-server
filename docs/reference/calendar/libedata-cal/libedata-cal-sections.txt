@@ -49,7 +49,6 @@ e_cal_backend_notify_component_removed
 e_cal_backend_notify_error
 e_cal_backend_notify_readonly
 e_cal_backend_notify_online
-e_cal_backend_notify_opened
 e_cal_backend_notify_property_changed
 e_cal_backend_empty_cache
 e_cal_backend_set_is_removed
@@ -60,6 +59,7 @@ CLIENT_BACKEND_PROPERTY_OPENING
 e_cal_backend_is_opening
 e_cal_backend_set_backend_property
 e_cal_backend_foreach_view
+e_cal_backend_notify_opened
 <SUBSECTION Standard>
 E_CAL_BACKEND
 E_IS_CAL_BACKEND

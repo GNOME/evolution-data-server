@@ -1016,12 +1016,21 @@ e_data_cal_respond_open (EDataCal *cal,
                          guint32 opid,
                          GError *error)
 {
+	GError *copy = NULL;
+
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open calendar: "));
+
+	/* This function is deprecated, but it's the only way to
+	 * set ECalBackend's internal 'opened' flag.  We should
+	 * be the only ones calling this. */
+	if (error != NULL)
+		copy = g_error_copy (error);
+	e_cal_backend_notify_opened (cal->priv->backend, copy);
 
 	e_gdbus_cal_emit_open_done (cal->priv->dbus_interface, opid, error);
 

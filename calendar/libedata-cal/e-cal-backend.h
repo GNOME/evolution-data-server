@@ -386,8 +386,6 @@ void		e_cal_backend_notify_readonly	(ECalBackend *backend,
 						 gboolean is_readonly);
 void		e_cal_backend_notify_online	(ECalBackend *backend,
 						 gboolean is_online);
-void		e_cal_backend_notify_opened	(ECalBackend *backend,
-						 GError *error);
 void		e_cal_backend_notify_property_changed
 						(ECalBackend *backend,
 						 const gchar *prop_name,
@@ -442,6 +440,8 @@ void		e_cal_backend_foreach_view	(ECalBackend *backend,
 						 gboolean (*callback) (EDataCalView *view,
 								       gpointer user_data),
 								       gpointer user_data);
+void		e_cal_backend_notify_opened	(ECalBackend *backend,
+						 GError *error);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

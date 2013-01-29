@@ -2792,7 +2792,6 @@ caldav_do_open (ECalBackendSync *backend,
                 GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	gboolean opened = TRUE;
 	gboolean online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
@@ -2822,11 +2821,11 @@ caldav_do_open (ECalBackendSync *backend,
 	if (online) {
 		GError *local_error = NULL;
 
-		opened = open_calendar (cbdav, cancellable, &local_error);
+		open_calendar (cbdav, cancellable, &local_error);
 
 		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired) || g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
 			g_clear_error (&local_error);
-			opened = caldav_authenticate (
+			caldav_authenticate (
 				cbdav, FALSE, cancellable, perror);
 		}
 
@@ -2836,9 +2835,6 @@ caldav_do_open (ECalBackendSync *backend,
 	} else {
 		cbdav->priv->read_only = TRUE;
 	}
-
-	if (opened)
-		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 
 	e_cal_backend_notify_readonly (
 		E_CAL_BACKEND (backend), cbdav->priv->read_only);

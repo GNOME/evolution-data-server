@@ -876,10 +876,8 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	priv = cbhttp->priv;
 
 	/* already opened, thus can skip all this initialization */
-	if (priv->opened) {
-		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
+	if (priv->opened)
 		return;
-	}
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
@@ -917,11 +915,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		if (!priv->store) {
 			g_propagate_error (
 				perror, EDC_ERROR_EX (OtherError,
-				_("Could not create cache file")));
-			e_cal_backend_notify_opened (
-				E_CAL_BACKEND (backend),
-				EDC_ERROR_EX (
-				OtherError,
 				_("Could not create cache file")));
 			return;
 		}
@@ -962,8 +955,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		if (!priv->reload_timeout_id)
 			priv->reload_timeout_id = e_source_refresh_add_timeout (source, NULL, http_cal_reload_cb, backend, NULL);
 	}
-
-	e_cal_backend_notify_opened (E_CAL_BACKEND (backend), local_error);
 }
 
 static void

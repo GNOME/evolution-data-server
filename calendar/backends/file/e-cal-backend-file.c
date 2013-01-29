@@ -1401,8 +1401,6 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 
 	if (err)
 		g_propagate_error (perror, g_error_copy (err));
-
-	e_cal_backend_notify_opened (E_CAL_BACKEND (backend), err);
 }
 
 static void
