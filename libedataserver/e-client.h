@@ -312,19 +312,6 @@ gboolean	e_client_get_backend_property_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
-void		e_client_open			(EClient *client,
-						 gboolean only_if_exists,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	e_client_open_finish		(EClient *client,
-						 GAsyncResult *result,
-						 GError **error);
-gboolean	e_client_open_sync		(EClient *client,
-						 gboolean only_if_exists,
-						 GCancellable *cancellable,
-						 GError **error);
-
 void		e_client_refresh		(EClient *client,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
@@ -415,6 +402,18 @@ gboolean	e_client_set_backend_property_sync
 						(EClient *client,
 						 const gchar *prop_name,
 						 const gchar *prop_value,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_client_open			(EClient *client,
+						 gboolean only_if_exists,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_client_open_finish		(EClient *client,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_client_open_sync		(EClient *client,
+						 gboolean only_if_exists,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_client_remove			(EClient *client,

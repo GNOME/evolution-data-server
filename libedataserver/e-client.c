@@ -1591,6 +1591,11 @@ e_client_set_backend_property_sync (EClient *client,
  * The call is finished by e_client_open_finish() from the @callback.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_client_connect() and
+ *                  e_book_client_connect_finish() or
+ *                  e_cal_client_connect() and
+ *                  e_cal_client_connect_finish() instead.
  **/
 void
 e_client_open (EClient *client,
@@ -1622,6 +1627,11 @@ e_client_open (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_client_connect() and
+ *                  e_book_client_connect_finish() or
+ *                  e_cal_client_connect() and
+ *                  e_cal_client_connect_finish() instead.
  **/
 gboolean
 e_client_open_finish (EClient *client,
@@ -1657,6 +1667,9 @@ e_client_open_finish (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_book_client_connect_sync() or
+ *                  e_cal_client_connect_sync() instead.
  **/
 gboolean
 e_client_open_sync (EClient *client,
