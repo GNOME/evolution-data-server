@@ -826,10 +826,16 @@ e_client_class_init (EClientClass *class)
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EClient::opened:
+	 *
+	 * Deprecated: 3.8: This signal is no longer emitted.
+	 **/
 	signals[OPENED] = g_signal_new (
 		"opened",
 		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_LAST,
+		G_SIGNAL_RUN_LAST |
+		G_SIGNAL_DEPRECATED,
 		G_STRUCT_OFFSET (EClientClass, opened),
 		NULL, NULL,
 		g_cclosure_marshal_VOID__BOXED,
