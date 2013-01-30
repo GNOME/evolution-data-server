@@ -1218,6 +1218,11 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		priv->dbus_proxy, "free-busy-data",
 		G_CALLBACK (cal_client_dbus_proxy_free_busy_data_cb), client);
 	priv->dbus_proxy_free_busy_data_handler_id = handler_id;
+
+	/* Initialize our public-facing GObject properties. */
+	g_object_notify (G_OBJECT (priv->dbus_proxy), "online");
+	g_object_notify (G_OBJECT (priv->dbus_proxy), "writable");
+	g_object_notify (G_OBJECT (priv->dbus_proxy), "capabilities");
 }
 
 static gboolean
