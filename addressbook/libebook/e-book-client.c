@@ -763,17 +763,6 @@ book_client_unwrap_dbus_error (EClient *client,
 }
 
 static gboolean
-book_client_retrieve_capabilities_sync (EClient *client,
-                                        gchar **capabilities,
-                                        GCancellable *cancellable,
-                                        GError **error)
-{
-	return e_client_get_backend_property_sync (
-		client, CLIENT_BACKEND_PROPERTY_CAPABILITIES,
-		capabilities, cancellable, error);
-}
-
-static gboolean
 book_client_get_backend_property_sync (EClient *client,
                                        const gchar *prop_name,
                                        gchar **prop_value,
@@ -1088,7 +1077,6 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy = book_client_get_dbus_proxy;
 	client_class->unwrap_dbus_error = book_client_unwrap_dbus_error;
-	client_class->retrieve_capabilities_sync = book_client_retrieve_capabilities_sync;
 	client_class->get_backend_property_sync = book_client_get_backend_property_sync;
 	client_class->set_backend_property_sync = book_client_set_backend_property_sync;
 	client_class->open_sync = book_client_open_sync;

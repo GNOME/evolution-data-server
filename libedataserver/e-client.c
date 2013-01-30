@@ -45,7 +45,6 @@ struct _EClientPrivate {
 	ESource *source;
 	gboolean online;
 	gboolean readonly;
-	gboolean capabilities_retrieved;
 	GSList *capabilities;
 
 	GRecMutex ops_mutex;
@@ -405,6 +404,17 @@ client_retrieve_capabilities_finish (EClient *client,
 	return TRUE;
 }
 
+static gboolean
+client_retrieve_capabilities_sync (EClient *client,
+                                   gchar **capabilities,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	return e_client_get_backend_property_sync (
+		client, CLIENT_BACKEND_PROPERTY_CAPABILITIES,
+		capabilities, cancellable, error);
+}
+
 /* Helper for client_get_backend_property() */
 static void
 client_get_backend_property_thread (GSimpleAsyncResult *simple,
@@ -751,6 +761,7 @@ e_client_class_init (EClientClass *class)
 
 	class->retrieve_capabilities = client_retrieve_capabilities;
 	class->retrieve_capabilities_finish = client_retrieve_capabilities_finish;
+	class->retrieve_capabilities_sync = client_retrieve_capabilities_sync;
 	class->get_backend_property = client_get_backend_property;
 	class->get_backend_property_finish = client_get_backend_property_finish;
 	class->set_backend_property = client_set_backend_property;
@@ -899,23 +910,19 @@ e_client_get_source (EClient *client)
 static void
 client_ensure_capabilities (EClient *client)
 {
-	gchar *capabilities;
+	gchar *capabilities = NULL;
 
 	g_return_if_fail (E_IS_CLIENT (client));
 
-	if (client->priv->capabilities_retrieved || client->priv->capabilities)
+	if (client->priv->capabilities != NULL)
 		return;
 
-	g_rec_mutex_lock (&client->priv->prop_mutex);
-
-	capabilities = NULL;
-	e_client_retrieve_capabilities_sync (client, &capabilities, NULL, NULL);
-	/* e_client_set_capabilities is called inside the previous function */
+	/* Despite appearances this function does not actually block. */
+	e_client_get_backend_property_sync (
+		client, CLIENT_BACKEND_PROPERTY_CAPABILITIES,
+		&capabilities, NULL, NULL);
+	e_client_set_capabilities (client, capabilities);
 	g_free (capabilities);
-
-	client->priv->capabilities_retrieved = TRUE;
-
-	g_rec_mutex_unlock (&client->priv->prop_mutex);
 }
 
 /**
@@ -1007,9 +1014,6 @@ e_client_set_capabilities (EClient *client,
 	g_return_if_fail (E_IS_CLIENT (client));
 
 	g_rec_mutex_lock (&client->priv->prop_mutex);
-
-	if (!capabilities)
-		client->priv->capabilities_retrieved = FALSE;
 
 	g_slist_foreach (client->priv->capabilities, (GFunc) g_free, NULL);
 	g_slist_free (client->priv->capabilities);
@@ -1242,6 +1246,8 @@ e_client_emit_backend_property_changed (EClient *client,
  * from the @callback.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_client_get_capabilities() instead.
  **/
 void
 e_client_retrieve_capabilities (EClient *client,
@@ -1275,6 +1281,8 @@ e_client_retrieve_capabilities (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_client_get_capabilities() instead.
  **/
 gboolean
 e_client_retrieve_capabilities_finish (EClient *client,
@@ -1319,6 +1327,8 @@ e_client_retrieve_capabilities_finish (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_client_get_capabilities() instead.
  **/
 gboolean
 e_client_retrieve_capabilities_sync (EClient *client,

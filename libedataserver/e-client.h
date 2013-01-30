@@ -182,6 +182,7 @@ struct _EClientClass {
 						 GError *dbus_error,
 						 GError **out_error);
 
+	/* This method is deprecated. */
 	void		(*retrieve_capabilities)
 						(EClient *client,
 						 GCancellable *cancellable,
@@ -323,21 +324,6 @@ gboolean	e_client_refresh_sync		(EClient *client,
 						 GCancellable *cancellable,
 						 GError **error);
 
-void		e_client_retrieve_capabilities	(EClient *client,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	e_client_retrieve_capabilities_finish
-						(EClient *client,
-						 GAsyncResult *result,
-						 gchar **capabilities,
-						 GError **error);
-gboolean	e_client_retrieve_capabilities_sync
-						(EClient *client,
-						 gchar **capabilities,
-						 GCancellable *cancellable,
-						 GError **error);
-
 GSList *	e_client_util_parse_comma_strings
 						(const gchar *strings);
 
@@ -388,6 +374,20 @@ gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
 gboolean	e_client_is_opened		(EClient *client);
+void		e_client_retrieve_capabilities	(EClient *client,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_client_retrieve_capabilities_finish
+						(EClient *client,
+						 GAsyncResult *result,
+						 gchar **capabilities,
+						 GError **error);
+gboolean	e_client_retrieve_capabilities_sync
+						(EClient *client,
+						 gchar **capabilities,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_client_set_backend_property	(EClient *client,
 						 const gchar *prop_name,
 						 const gchar *prop_value,
