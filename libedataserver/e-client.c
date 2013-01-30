@@ -19,6 +19,14 @@
  *
  */
 
+/* TODO The next time we have a good excuse to break libedataserver's API,
+ *      I'd like to purge all the deprecated cruft here and convert EClient
+ *      from a GObjectClass to a GTypeInterface, implemented by EBookClient
+ *      and ECalClient.  Then we could just bind the "online", "readonly"
+ *      and "capabilities" properties to equivalent GDBusProxy properties
+ *      and kill e-client-private.h.  Would simplify things.  --mbarnes
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
