@@ -3757,6 +3757,9 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 		(success && (string != NULL)) ||
 		(!success && (string == NULL)), FALSE);
 
+	if (!success)
+		return FALSE;
+
 	icalcomp = icalparser_parse_string (string);
 
 	g_free (string);
