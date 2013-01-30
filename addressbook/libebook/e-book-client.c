@@ -47,6 +47,7 @@
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
+typedef struct _ConnectClosure ConnectClosure;
 typedef struct _RunInThreadClosure RunInThreadClosure;
 
 struct _EBookClientPrivate {
@@ -71,6 +72,11 @@ struct _SignalClosure {
 	EClient *client;
 	gchar *property_name;
 	gchar *error_message;
+};
+
+struct _ConnectClosure {
+	ESource *source;
+	GCancellable *cancellable;
 };
 
 struct _RunInThreadClosure {
@@ -128,6 +134,18 @@ signal_closure_free (SignalClosure *signal_closure)
 	g_free (signal_closure->error_message);
 
 	g_slice_free (SignalClosure, signal_closure);
+}
+
+static void
+connect_closure_free (ConnectClosure *connect_closure)
+{
+	if (connect_closure->source != NULL)
+		g_object_unref (connect_closure->source);
+
+	if (connect_closure->cancellable != NULL)
+		g_object_unref (connect_closure->cancellable);
+
+	g_slice_free (ConnectClosure, connect_closure);
 }
 
 static void
@@ -1111,6 +1129,10 @@ e_book_client_init (EBookClient *client)
  * Unlike with e_book_client_new(), there is no need to call
  * e_client_open_sync() after obtaining the #EBookClient.
  *
+ * For error handling convenience, any error message returned by this
+ * function will have a descriptive prefix that includes the display
+ * name of @source.
+ *
  * Returns: a new #EBookClient, or %NULL
  *
  * Since: 3.8
@@ -1137,6 +1159,9 @@ e_book_client_connect_sync (ESource *source,
 			client->priv->dbus_proxy, cancellable, error);
 
 	if (!success) {
+		g_prefix_error (
+			error, _("Unable to connect to '%s': "),
+			e_source_get_display_name (source));
 		g_object_unref (client);
 		return NULL;
 	}
@@ -1173,8 +1198,8 @@ book_client_connect_init_cb (GObject *source_object,
                              gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
-	GCancellable *cancellable;
 	EBookClientPrivate *priv;
+	ConnectClosure *closure;
 	GError *error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
@@ -1192,12 +1217,13 @@ book_client_connect_init_cb (GObject *source_object,
 
 	result = G_ASYNC_RESULT (simple);
 	source_object = g_async_result_get_source_object (result);
-	cancellable = g_simple_async_result_get_op_res_gpointer (simple);
+	closure = g_simple_async_result_get_op_res_gpointer (simple);
 
 	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
 
 	e_dbus_address_book_call_open (
-		priv->dbus_proxy, cancellable,
+		priv->dbus_proxy,
+		closure->cancellable,
 		book_client_connect_open_cb,
 		g_object_ref (simple));
 
@@ -1232,6 +1258,7 @@ e_book_client_connect (ESource *source,
                        gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
+	ConnectClosure *closure;
 	EBookClient *client;
 
 	g_return_if_fail (E_IS_SOURCE (source));
@@ -1241,6 +1268,12 @@ e_book_client_connect (ESource *source,
 	 * gets plucked, and 2) do not call the D-Bus open() method
 	 * from our designated D-Bus thread -- it may take a long
 	 * time and block other clients from receiving signals. */
+
+	closure = g_slice_new0 (ConnectClosure);
+	closure->source = g_object_ref (source);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		closure->cancellable = g_object_ref (cancellable);
 
 	client = g_object_new (
 		E_TYPE_BOOK_CLIENT,
@@ -1252,13 +1285,8 @@ e_book_client_connect (ESource *source,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	if (G_IS_CANCELLABLE (cancellable)) {
-		/* XXX Stuff the GCancellable in the GSimpleAsyncResult
-		 *     so we don't have to carry an AsyncContext struct. */
-		g_simple_async_result_set_op_res_gpointer (
-			simple, g_object_ref (cancellable),
-			(GDestroyNotify) g_object_unref);
-	}
+	g_simple_async_result_set_op_res_gpointer (
+		simple, closure, (GDestroyNotify) connect_closure_free);
 
 	g_async_initable_init_async (
 		G_ASYNC_INITABLE (client),
@@ -1279,6 +1307,10 @@ e_book_client_connect (ESource *source,
  * error occurs in connecting to the D-Bus service, the function sets
  * @error and returns %NULL.
  *
+ * For error handling convenience, any error message returned by this
+ * function will have a descriptive prefix that includes the display
+ * name of the #ESource passed to e_book_client_connect().
+ *
  * Returns: a new #EBookClient, or %NULL
  *
  * Since: 3.8
@@ -1288,17 +1320,23 @@ e_book_client_connect_finish (GAsyncResult *result,
                               GError **error)
 {
 	GSimpleAsyncResult *simple;
+	ConnectClosure *closure;
 	gpointer source_tag;
 
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
+	closure = g_simple_async_result_get_op_res_gpointer (simple);
 
 	source_tag = g_simple_async_result_get_source_tag (simple);
 	g_return_val_if_fail (source_tag == e_book_client_connect, NULL);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	if (g_simple_async_result_propagate_error (simple, error)) {
+		g_prefix_error (
+			error, _("Unable to connect to '%s': "),
+			e_source_get_display_name (closure->source));
 		return NULL;
+	}
 
 	return E_CLIENT (g_async_result_get_source_object (result));
 }
