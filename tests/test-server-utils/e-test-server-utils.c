@@ -67,13 +67,15 @@ delete_work_directory (void)
 	 * corrupting our contained D-Bus environment with service files
 	 * from the OS.
 	 */
-	const gchar *argv[] = { "/bin/rm", "-rf", EDS_TEST_WORK_DIR, NULL };
+	gchar *cmdline;
 	gboolean spawn_succeeded;
 	gint exit_status;
 
-	spawn_succeeded = g_spawn_sync (NULL, (char **) argv, NULL, 0, NULL, NULL,
-	                                NULL, NULL, &exit_status, NULL);
+	cmdline = g_strdup_printf ("rm -rf %s", EDS_TEST_WORK_DIR);
 
+	spawn_succeeded = g_spawn_command_line_sync (cmdline, NULL, NULL, &exit_status, NULL);
+
+	g_free (cmdline);
 	g_assert (spawn_succeeded);
 	g_assert (WIFEXITED (exit_status));
 	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
