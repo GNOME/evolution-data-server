@@ -204,7 +204,9 @@ test_compare_numbers (gconstpointer data)
 	                                               match_candidates[j],
 	                                               &error);
 
+#ifdef ENABLE_PHONENUMBER
 	g_assert_cmpuint (actual_match, ==, expected_matches[n]);
+#endif /* ENABLE_PHONENUMBER */
 
 	if (!error_expected) {
 		g_assert (error == NULL);
