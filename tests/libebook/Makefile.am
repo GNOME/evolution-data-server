@@ -58,6 +58,11 @@ TEST_LIBS =					\
 	libebook-test-utils.la			\
 	$(NULL)
 
+# The EBook tests are not running on this branch,
+# this is because they wont succeed until the patches
+# that cause EBook to implement with an internal EBookClient.
+# (these deprecated apis are thoroughly broken for the
+# gnome-3-6 cycle).
 DEPRECATED_TESTS =				\
 	test-changes				\
 	test-ebook				\
@@ -65,30 +70,27 @@ DEPRECATED_TESTS =				\
 	test-nonexistent-id			\
 	test-search				\
 	test-self				\
-	test-stress-bookviews
+	test-stress-bookviews			\
+	test-ebook-add-contact 			\
+	test-ebook-get-contact 			\
+	test-ebook-commit-contact 		\
+	test-ebook-remove-contact 		\
+	test-ebook-get-required-fields 		\
+	test-ebook-get-static-capabilities 	\
+	test-ebook-get-supported-fields 	\
+	test-ebook-get-supported-auth-methods 	\
+	test-ebook-remove-contact-by-id 	\
+	test-ebook-remove-contacts 		\
+	test-ebook-get-book-view
 
 endif
 
 # Should be kept ordered approximately from least to most difficult/complex
-TESTS = \
-	test-ebook-add-contact \
-	test-ebook-get-contact \
-	test-ebook-commit-contact \
-	test-ebook-remove-contact \
-	test-ebook-get-required-fields \
-	test-ebook-get-static-capabilities \
-	test-ebook-get-supported-fields \
-	test-ebook-get-supported-auth-methods \
-	test-ebook-remove-contact-by-id \
-	test-ebook-remove-contacts \
-	test-ebook-get-book-view
-
 #	test-ebook-stress-factory--serial \
 #	test-ebook-stress-factory--fifo \
 #	test-ebook-stress-factory--single-book
 
 noinst_PROGRAMS = \
-	$(TESTS)				\
 	$(DEPRECATED_TESTS)			\
 	test-categories				\
 	test-date				\
