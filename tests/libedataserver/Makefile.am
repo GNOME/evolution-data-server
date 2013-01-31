@@ -1,9 +1,10 @@
 TESTS = \
 	e-phone-utils-test \
-	e-source-test \
 	$(NULL)
 
-noinst_PROGRAMS = $(TESTS)
+noinst_PROGRAMS = \
+	e-source-test \
+	$(TESTS)
 
 TEST_CPPFLAGS =							\
 	$(AM_CPPFLAGS)						\
