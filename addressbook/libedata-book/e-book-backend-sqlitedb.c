@@ -284,7 +284,7 @@ book_backend_sql_exec_real (sqlite3 *db,
 	}
 
 	if (ret != SQLITE_OK) {
-		d (g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
+		d (g_printerr ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
 		g_set_error_literal (
 			error, E_BOOK_SDB_ERROR,
 			ret == SQLITE_CONSTRAINT ?
@@ -311,12 +311,12 @@ print_debug_cb (gpointer ref,
 {
 	gint i;
 
-	g_print ("  DEBUG BEGIN: %d results\n", col);
+	g_printerr ("  DEBUG BEGIN: %d results\n", col);
 
 	for (i = 0; i < col; i++)
-		g_print ("    NAME: '%s' COL: %s\n", name[i], cols[i]);
+		g_printerr ("    NAME: '%s' COL: %s\n", name[i], cols[i]);
 
-	g_print ("  DEBUG END\n");
+	g_printerr ("  DEBUG END\n");
 
 	return 0;
 }
@@ -332,9 +332,9 @@ book_backend_sql_debug (sqlite3 *db,
 	GError *local_error = NULL;
 	debug = g_strconcat ("EXPLAIN QUERY PLAN ", stmt, NULL);
 
-	g_print ("DEBUG STATEMENT: %s\n", stmt);
+	g_printerr ("DEBUG STATEMENT: %s\n", stmt);
 	book_backend_sql_exec_real (db, debug, print_debug_cb, NULL, &local_error);
-	g_print ("DEBUG STATEMENT END: %s%s\n", local_error ? "Error: " : "", local_error ? local_error->message : "Success");
+	g_printerr ("DEBUG STATEMENT END: %s%s\n", local_error ? "Error: " : "", local_error ? local_error->message : "Success");
 	g_free (debug);
 
 	g_clear_error (&local_error);
@@ -960,7 +960,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 		} else {
 			const gchar *errmsg;
 			errmsg = sqlite3_errmsg (ebsdb->priv->db);
-			d (g_print ("Can't open database %s: %s\n", path, errmsg));
+			d (g_printerr ("Can't open database %s: %s\n", path, errmsg));
 			g_set_error_literal (
 				error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER, errmsg);
 			sqlite3_close (ebsdb->priv->db);
