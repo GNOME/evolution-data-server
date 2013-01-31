@@ -57,7 +57,6 @@ TESTS =								\
 	test-client-remove-contact-by-uid			\
 	test-client-remove-contacts				\
 	test-client-photo-is-uri				\
-	test-client-change-country-code				\
 	test-client-upgrade-addressbook				\
 	test-client-async					\
 	$(NULL)
@@ -68,7 +67,7 @@ TESTS =								\
 # not been ported to use ETestServerFixture yet.
 noinst_PROGRAMS =						\
 	$(TESTS)						\
-	test-client-write-write					\
+	test-client-change-country-code				\
 	test-client-examine					\
 	test-client						\
 	test-client-nonexistent-id				\
