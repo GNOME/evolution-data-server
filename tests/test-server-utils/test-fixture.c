@@ -27,8 +27,11 @@
 static ETestServerClosure registry_closure = { E_TEST_SERVER_NONE, NULL, 0 };
 static ETestServerClosure book_closure     = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure calendar_closure = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
+
+#if 0 /* Disable deprecated API tests in this branch */
 static ETestServerClosure deprecated_book_closure     = { E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure deprecated_calendar_closure = { E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
+#endif
 
 static void
 empty_test (ETestServerFixture *fixture,
@@ -78,6 +81,7 @@ main (int   argc,
 			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
 
+#if 0 /* Disable deprecated API tests in this branch */
 	for (i = 0; i < N_CYCLES; i++) {
 		deprecated_book_keys[i] = g_strdup_printf ("/Fixture/Deprecated/Book%d", i);
 		g_test_add (deprecated_book_keys[i], ETestServerFixture, &deprecated_book_closure,
@@ -89,6 +93,7 @@ main (int   argc,
 		g_test_add (deprecated_calendar_keys[i], ETestServerFixture, &deprecated_calendar_closure,
 			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
+#endif
 
 	ret = e_test_server_utils_run ();
 
