@@ -282,7 +282,8 @@ set_proxy_gone_error (GError **error)
 	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, "D-Bus book proxy gone");
 }
 
-static guint active_book_clients = 0, book_connection_closed_id = 0;
+static volatile gint active_book_clients = 0;
+static guint book_connection_closed_id = 0;
 static EDBusAddressBookFactory *book_factory = NULL;
 static GRecMutex book_factory_lock;
 #define LOCK_FACTORY()   g_rec_mutex_lock (&book_factory_lock)
@@ -330,7 +331,7 @@ gdbus_book_factory_closed_cb (GDBusConnection *connection,
 	if (err) {
 		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
 		g_error_free (err);
-	} else if (active_book_clients) {
+	} else if (active_book_clients > 0) {
 		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
@@ -737,11 +738,8 @@ book_client_finalize (GObject *object)
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
 
-	LOCK_FACTORY ();
-	active_book_clients--;
-	if (!active_book_clients)
+	if (g_atomic_int_dec_and_test (&active_book_clients))
 		gdbus_book_factory_disconnect (NULL);
-	UNLOCK_FACTORY ();
 }
 
 static GDBusProxy *
@@ -1099,9 +1097,7 @@ e_book_client_async_initable_init (GAsyncInitableIface *interface)
 static void
 e_book_client_init (EBookClient *client)
 {
-	LOCK_FACTORY ();
-	active_book_clients++;
-	UNLOCK_FACTORY ();
+	g_atomic_int_inc (&active_book_clients);
 
 	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
 
