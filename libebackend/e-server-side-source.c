@@ -584,7 +584,7 @@ server_side_source_get_property (GObject *object,
 			return;
 
 		case PROP_AUTH_SESSION_TYPE:
-			g_value_set_boolean (
+			g_value_set_gtype (
 				value,
 				e_server_side_source_get_auth_session_type (
 				E_SERVER_SIDE_SOURCE (object)));
