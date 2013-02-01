@@ -324,18 +324,26 @@ print_debug_cb (gpointer ref,
 static void
 book_backend_sql_debug (sqlite3 *db,
                         const gchar *stmt,
+                        gint debug_level,
                         gint (*callback)(gpointer ,gint,gchar **,gchar **),
                         gpointer data,
                         GError **error)
 {
-	gchar *debug;
 	GError *local_error = NULL;
-	debug = g_strconcat ("EXPLAIN QUERY PLAN ", stmt, NULL);
 
 	g_printerr ("DEBUG STATEMENT: %s\n", stmt);
-	book_backend_sql_exec_real (db, debug, print_debug_cb, NULL, &local_error);
-	g_printerr ("DEBUG STATEMENT END: %s%s\n", local_error ? "Error: " : "", local_error ? local_error->message : "Success");
-	g_free (debug);
+
+	if (debug_level > 1) {
+		gchar *debug = g_strconcat ("EXPLAIN QUERY PLAN ", stmt, NULL);
+		book_backend_sql_exec_real (db, debug, print_debug_cb, NULL, &local_error);
+		g_free (debug);
+	}
+
+	if (local_error) {
+		g_printerr ("DEBUG STATEMENT END: Error: %s\n", local_error->message);
+	} else if (debug_level > 1) {
+		g_printerr ("DEBUG STATEMENT END: Success\n");
+	}
 
 	g_clear_error (&local_error);
 }
@@ -350,11 +358,12 @@ book_backend_sql_exec (sqlite3 *db,
 	static gint booksql_debug = -1;
 
 	if (booksql_debug == -1) {
-		booksql_debug = g_getenv ("BOOKSQL_DEBUG") != NULL ? 1 : 0;
+		const gchar *const tmp = g_getenv ("BOOKSQL_DEBUG");
+		booksql_debug = (tmp != NULL ? MAX (0, atoi (tmp)) : 0);
 	}
 
 	if (booksql_debug)
-		book_backend_sql_debug (db, stmt, callback, data, error);
+		book_backend_sql_debug (db, stmt, booksql_debug, callback, data, error);
 
 	return book_backend_sql_exec_real (db, stmt, callback, data, error);
 }
