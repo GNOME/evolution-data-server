@@ -343,7 +343,8 @@ set_proxy_gone_error (GError **error)
 	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, "D-Bus calendar proxy gone");
 }
 
-static guint active_cal_clients = 0, cal_connection_closed_id = 0;
+static volatile gint active_cal_clients = 0;
+static guint cal_connection_closed_id = 0;
 static EDBusCalendarFactory *cal_factory = NULL;
 static GRecMutex cal_factory_lock;
 #define LOCK_FACTORY()   g_rec_mutex_lock (&cal_factory_lock)
@@ -391,7 +392,7 @@ gdbus_cal_factory_closed_cb (GDBusConnection *connection,
 	if (err) {
 		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
 		g_error_free (err);
-	} else if (active_cal_clients) {
+	} else if (active_cal_clients > 0) {
 		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
 	}
 
@@ -935,11 +936,8 @@ cal_client_finalize (GObject *object)
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
 
-	LOCK_FACTORY ();
-	active_cal_clients--;
-	if (!active_cal_clients)
+	if (g_atomic_int_dec_and_test (&active_cal_clients))
 		gdbus_cal_factory_disconnect (NULL);
-	UNLOCK_FACTORY ();
 }
 
 static GDBusProxy *
@@ -1498,9 +1496,7 @@ e_cal_client_init (ECalClient *client)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) free_zone_cb);
 
-	LOCK_FACTORY ();
-	active_cal_clients++;
-	UNLOCK_FACTORY ();
+	g_atomic_int_inc (&active_cal_clients);
 
 	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
