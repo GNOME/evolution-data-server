@@ -753,15 +753,17 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 
 	if (g_str_equal (pspec->name, "capabilities")) {
 		gchar **strv;
-		gchar *csv;
+		gchar *csv = NULL;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
 
 		strv = e_dbus_calendar_dup_capabilities (dbus_proxy);
-		csv = g_strjoinv (",", strv);
+		if (strv != NULL) {
+			csv = g_strjoinv (",", strv);
+			g_strfreev (strv);
+		}
 		e_client_set_capabilities (E_CLIENT (cal_client), csv);
 		g_free (csv);
-		g_free (strv);
 	}
 
 	if (g_str_equal (pspec->name, "default-object")) {
@@ -1010,7 +1012,10 @@ cal_client_get_backend_property_sync (EClient *client,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		strv = e_dbus_calendar_dup_capabilities (dbus_proxy);
-		*prop_value = g_strjoinv (",", strv);
+		if (strv != NULL)
+			*prop_value = g_strjoinv (",", strv);
+		else
+			*prop_value = g_strdup ("");
 		g_strfreev (strv);
 		return TRUE;
 	}

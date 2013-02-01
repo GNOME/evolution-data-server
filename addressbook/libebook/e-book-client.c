@@ -638,15 +638,17 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 
 	if (g_str_equal (pspec->name, "capabilities")) {
 		gchar **strv;
-		gchar *csv;
+		gchar *csv = NULL;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
 
 		strv = e_dbus_address_book_dup_capabilities (dbus_proxy);
-		csv = g_strjoinv (",", strv);
+		if (strv != NULL) {
+			csv = g_strjoinv (",", strv);
+			g_strfreev (strv);
+		}
 		e_client_set_capabilities (E_CLIENT (book_client), csv);
 		g_free (csv);
-		g_free (strv);
 	}
 
 	if (g_str_equal (pspec->name, "online")) {
@@ -812,21 +814,30 @@ book_client_get_backend_property_sync (EClient *client,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		strv = e_dbus_address_book_dup_capabilities (dbus_proxy);
-		*prop_value = g_strjoinv (",", strv);
+		if (strv != NULL)
+			*prop_value = g_strjoinv (",", strv);
+		else
+			*prop_value = g_strdup ("");
 		g_strfreev (strv);
 		return TRUE;
 	}
 
 	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		strv = e_dbus_address_book_dup_required_fields (dbus_proxy);
-		*prop_value = g_strjoinv (",", strv);
+		if (strv != NULL)
+			*prop_value = g_strjoinv (",", strv);
+		else
+			*prop_value = g_strdup ("");
 		g_strfreev (strv);
 		return TRUE;
 	}
 
 	if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		strv = e_dbus_address_book_dup_supported_fields (dbus_proxy);
-		*prop_value = g_strjoinv (",", strv);
+		if (strv != NULL)
+			*prop_value = g_strjoinv (",", strv);
+		else
+			*prop_value = g_strdup ("");
 		g_strfreev (strv);
 		return TRUE;
 	}
