@@ -835,6 +835,8 @@ G_DEFINE_QUARK (
  * Returns: a newly-created #EAuthenticationSession
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.8: Use e_source_registry_server_new_auth_session() instead.
  **/
 EAuthenticationSession *
 e_authentication_session_new (ESourceRegistryServer *server,

@@ -96,11 +96,6 @@ GQuark		e_authentication_session_error_quark
 					(void) G_GNUC_CONST;
 GType		e_authentication_session_get_type
 					(void) G_GNUC_CONST;
-EAuthenticationSession *
-		e_authentication_session_new
-					(struct _ESourceRegistryServer *server,
-					 ESourceAuthenticator *authenticator,
-					 const gchar *source_uid);
 struct _ESourceRegistryServer *
 		e_authentication_session_get_server
 					(EAuthenticationSession *session);
@@ -209,6 +204,12 @@ gboolean	e_authentication_session_delete_password_finish
  **/
 #define E_AUTHENTICATION_SESSION_KEYRING_ERROR \
 	(e_authentication_session_error_quark ())
+
+EAuthenticationSession *
+		e_authentication_session_new
+					(struct _ESourceRegistryServer *server,
+					 ESourceAuthenticator *authenticator,
+					 const gchar *source_uid);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

@@ -27,7 +27,6 @@ EAuthenticationMediatorPrivate
 <TITLE>EAuthenticationSession</TITLE>
 EAuthenticationSession
 EAuthenticationSessionResult
-e_authentication_session_new
 e_authentication_session_get_server
 e_authentication_session_get_authenticator
 e_authentication_session_get_source_uid
@@ -54,6 +53,7 @@ e_authentication_session_delete_password
 e_authentication_session_delete_password_finish
 <SUBSECTION Deprecated>
 E_AUTHENTICATION_SESSION_KEYRING_ERROR
+e_authentication_session_new
 <SUBSECTION Standard>
 E_AUTHENTICATION_SESSION
 E_IS_AUTHENTICATION_SESSION
