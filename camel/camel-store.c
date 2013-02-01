@@ -355,6 +355,7 @@ store_synchronize_sync (CamelStore *store,
 		root = camel_store_get_folder_info_sync (
 			store, NULL,
 			CAMEL_STORE_FOLDER_INFO_RECURSIVE |
+			CAMEL_STORE_FOLDER_INFO_SUBSCRIBED |
 			CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
 			NULL, NULL);
 		fi = root;
