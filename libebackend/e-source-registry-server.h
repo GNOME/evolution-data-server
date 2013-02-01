@@ -146,6 +146,11 @@ ECollectionBackendFactory *
 		e_source_registry_server_ref_backend_factory
 						(ESourceRegistryServer *server,
 						 ESource *source);
+EAuthenticationSession *
+		e_source_registry_server_new_auth_session
+						(ESourceRegistryServer *server,
+						 ESourceAuthenticator *authenticator,
+						 const gchar *source_uid);
 gboolean	e_source_registry_server_authenticate_sync
 						(ESourceRegistryServer *server,
 						 EAuthenticationSession *session,

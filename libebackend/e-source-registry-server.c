@@ -2290,6 +2290,58 @@ e_source_registry_server_ref_backend_factory (ESourceRegistryServer *server,
 }
 
 /**
+ * e_source_registry_server_new_auth_session:
+ * @server: an #ESourceRegistryServer
+ * @authenticator: an #ESourceAuthenticator
+ * @source_uid: a data source identifier
+ *
+ * Convenience function instantiates an appropriate authentication
+ * session type for @source_uid.
+ *
+ * If @server has an #EServerSideSource instance for @source_uid, then
+ * its #EServerSideSource:auth-session-type is used to instantiate a new
+ * authentication session.  Otherwise a plain #EAuthenticationSession is
+ * instantiated.
+ *
+ * Unreference the returned #EAuthenticationSession with g_object_unref()
+ * when finished with it.
+ *
+ * Returns: a new #EAuthenticationSession for @source_uid
+ *
+ * Since: 3.8
+ **/
+EAuthenticationSession *
+e_source_registry_server_new_auth_session (ESourceRegistryServer *server,
+                                           ESourceAuthenticator *authenticator,
+                                           const gchar *source_uid)
+{
+	GType auth_session_type = E_TYPE_AUTHENTICATION_SESSION;
+	ESource *source;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATOR (authenticator), NULL);
+	g_return_val_if_fail (source_uid != NULL, NULL);
+
+	source = e_source_registry_server_ref_source (server, source_uid);
+	if (source != NULL) {
+		auth_session_type =
+			e_server_side_source_get_auth_session_type (
+			E_SERVER_SIDE_SOURCE (source));
+		g_object_unref (source);
+	}
+
+	g_return_val_if_fail (
+		g_type_is_a (auth_session_type,
+		E_TYPE_AUTHENTICATION_SESSION), NULL);
+
+	return g_object_new (
+		auth_session_type,
+		"server", server,
+		"authenticator", authenticator,
+		"source-uid", source_uid, NULL);
+}
+
+/**
  * e_source_registry_server_authenticate_sync:
  * @server: an #ESourceRegistryServer
  * @session: an #EAuthenticationSession
