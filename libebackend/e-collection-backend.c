@@ -719,6 +719,12 @@ collection_backend_child_added (ECollectionBackend *backend,
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (child_source), FALSE);
 
+	/* Collection children inherit the authentication session type. */
+	g_object_bind_property (
+		collection_source, "auth-session-type",
+		child_source, "auth-session-type",
+		G_BINDING_SYNC_CREATE);
+
 	/* Collection children inherit OAuth 2.0 support if available. */
 	g_object_bind_property (
 		collection_source, "oauth2-support",
