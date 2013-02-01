@@ -54,6 +54,7 @@ struct _EServerSideSourcePrivate {
 	gchar *file_contents;
 
 	gboolean allow_auth_prompt;
+	GType auth_session_type;
 	gchar *write_directory;
 };
 
@@ -67,6 +68,7 @@ struct _AsyncContext {
 enum {
 	PROP_0,
 	PROP_ALLOW_AUTH_PROMPT,
+	PROP_AUTH_SESSION_TYPE,
 	PROP_EXPORTED,
 	PROP_FILE,
 	PROP_OAUTH2_SUPPORT,
@@ -509,6 +511,12 @@ server_side_source_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_AUTH_SESSION_TYPE:
+			e_server_side_source_set_auth_session_type (
+				E_SERVER_SIDE_SOURCE (object),
+				g_value_get_gtype (value));
+			return;
+
 		case PROP_FILE:
 			server_side_source_set_file (
 				E_SERVER_SIDE_SOURCE (object),
@@ -572,6 +580,13 @@ server_side_source_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_server_side_source_get_allow_auth_prompt (
+				E_SERVER_SIDE_SOURCE (object)));
+			return;
+
+		case PROP_AUTH_SESSION_TYPE:
+			g_value_set_boolean (
+				value,
+				e_server_side_source_get_auth_session_type (
 				E_SERVER_SIDE_SOURCE (object)));
 			return;
 
@@ -1171,6 +1186,18 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_AUTH_SESSION_TYPE,
+		g_param_spec_gtype (
+			"auth-session-type",
+			"Auth Session Type",
+			"The type of authentication session "
+			"to instantiate for this source",
+			E_TYPE_AUTHENTICATION_SESSION,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_EXPORTED,
 		g_param_spec_boolean (
 			"exported",
@@ -1302,6 +1329,8 @@ e_server_side_source_init (EServerSideSource *source)
 
 	user_dir = e_server_side_source_get_user_dir ();
 	source->priv->write_directory = g_strdup (user_dir);
+
+	source->priv->auth_session_type = E_TYPE_AUTHENTICATION_SESSION;
 }
 
 /**
@@ -1709,6 +1738,66 @@ e_server_side_source_set_allow_auth_prompt (EServerSideSource *source,
 	source->priv->allow_auth_prompt = allow_auth_prompt;
 
 	g_object_notify (G_OBJECT (source), "allow-auth-prompt");
+}
+
+/**
+ * e_server_side_source_get_auth_session_type:
+ * @source: an #EServerSideSource
+ *
+ * Returns the type of authentication session to use for @source,
+ * which will get passed to e_source_registry_server_authenticate().
+ *
+ * This defaults to the #GType for #EAuthenticationSession.
+ *
+ * Returns: the type of authentication session to use for @source
+ *
+ * Since: 3.8
+ **/
+GType
+e_server_side_source_get_auth_session_type (EServerSideSource *source)
+{
+	g_return_val_if_fail (
+		E_IS_SERVER_SIDE_SOURCE (source),
+		E_TYPE_AUTHENTICATION_SESSION);
+
+	return source->priv->auth_session_type;
+}
+
+/**
+ * e_server_side_source_set_auth_session_type:
+ * @source: an #EServerSideSource
+ * @auth_session_type: the type of authentication session to use for @source
+ *
+ * Sets the type of authentication session to use for @source, which will
+ * get passed to e_source_registry_server_authenticate().
+ *
+ * @auth_session_type must be derived from #EAuthenticationSession, or else
+ * the function will reject the #GType with a runtime warning.
+ *
+ * This defaults to the #GType for #EAuthenticationSession.
+ *
+ * Since: 3.8
+ **/
+void
+e_server_side_source_set_auth_session_type (EServerSideSource *source,
+                                            GType auth_session_type)
+{
+	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+
+	if (!g_type_is_a (auth_session_type, E_TYPE_AUTHENTICATION_SESSION)) {
+		g_warning (
+			"Invalid auth session type '%s' for source '%s'",
+			g_type_name (auth_session_type),
+			e_source_get_display_name (E_SOURCE (source)));
+		return;
+	}
+
+	if (auth_session_type == source->priv->auth_session_type)
+		return;
+
+	source->priv->auth_session_type = auth_session_type;
+
+	g_object_notify (G_OBJECT (source), "auth-session-type");
 }
 
 /**

@@ -97,6 +97,11 @@ gboolean	e_server_side_source_get_allow_auth_prompt
 void		e_server_side_source_set_allow_auth_prompt
 						(EServerSideSource *source,
 						 gboolean allow_auth_prompt);
+GType		e_server_side_source_get_auth_session_type
+						(EServerSideSource *source);
+void		e_server_side_source_set_auth_session_type
+						(EServerSideSource *source,
+						 GType auth_session_type);
 gboolean	e_server_side_source_get_exported
 						(EServerSideSource *source);
 const gchar *	e_server_side_source_get_write_directory
