@@ -707,7 +707,7 @@ source_registry_server_authenticate_cb (EDBusSourceManager *interface,
 		E_IS_SOURCE_AUTHENTICATOR (authenticator), FALSE);
 
 	/* Create the authentication session. */
-	session = e_authentication_session_new (
+	session = e_source_registry_server_new_auth_session (
 		server, authenticator, source_uid);
 
 	/* Configure the authentication session. */

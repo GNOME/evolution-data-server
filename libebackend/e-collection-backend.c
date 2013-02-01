@@ -652,7 +652,7 @@ collection_backend_constructed (GObject *object)
 
 static gboolean
 collection_backend_authenticate_sync (EBackend *backend,
-                                      ESourceAuthenticator *auth,
+                                      ESourceAuthenticator *authenticator,
                                       GCancellable *cancellable,
                                       GError **error)
 {
@@ -660,15 +660,16 @@ collection_backend_authenticate_sync (EBackend *backend,
 	ESourceRegistryServer *server;
 	EAuthenticationSession *session;
 	ESource *source;
-	const gchar *uid;
+	const gchar *source_uid;
 	gboolean success;
 
 	source = e_backend_get_source (backend);
-	uid = e_source_get_uid (source);
+	source_uid = e_source_get_uid (source);
 
 	collection_backend = E_COLLECTION_BACKEND (backend);
 	server = e_collection_backend_ref_server (collection_backend);
-	session = e_authentication_session_new (server, auth, uid);
+	session = e_source_registry_server_new_auth_session (
+		server, authenticator, source_uid);
 
 	success = e_source_registry_server_authenticate_sync (
 		server, session, cancellable, error);
