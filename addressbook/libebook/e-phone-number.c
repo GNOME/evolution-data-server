@@ -91,6 +91,66 @@ e_phone_number_is_supported (void)
 }
 
 /**
+ * e_phone_number_get_country_code_for_region:
+ * @region_code: (allow-none): a 2-letter country code, or %NULL
+ *
+ * Returns the preferred country code for @region_code, e.g. 358 for "fi".
+ *
+ * If %NULL is passed for @region_code the default region as returned by
+ * e_phone_number_get_default_region() is used.
+ *
+ * Returns: a valid country code, or zero if an unknown region code was passed.
+ *
+ * Since: 3.8
+ */
+gint
+e_phone_number_get_country_code_for_region (const gchar *region_code)
+{
+#ifdef ENABLE_PHONENUMBER
+
+	return _e_phone_number_cxx_get_country_code_for_region (region_code);
+
+#else /* ENABLE_PHONENUMBER */
+
+	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
+	return 0;
+
+#endif /* ENABLE_PHONENUMBER */
+}
+
+/**
+ * e_phone_number_get_default_region:
+ *
+ * Retrieves the current 2-letter region code that's used by default for
+ * parsing phone numbers in e_phone_number_from_string(). It can be useful
+ * to store this number before parsing a bigger number of phone numbers.
+ *
+ * The result of this functions depends on the current setup of the
+ * %LC_ADDRESS category: If that category provides a reasonable value
+ * for %_NL_ADDRESS_COUNTRY_AB2 this value is returned. Otherwise the
+ * locale name configured for %LC_ADDRESS is parsed.
+ *
+ * Returns: (transfer full): a newly allocated string containing the
+ * current locale's 2-letter code for phone number parsing.
+ *
+ * Since: 3.8
+ */
+gchar *
+e_phone_number_get_default_region (void)
+{
+#ifdef ENABLE_PHONENUMBER
+
+	return _e_phone_number_cxx_get_default_region ();
+
+#else /* ENABLE_PHONENUMBER */
+
+	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
+	return NULL;
+
+#endif /* ENABLE_PHONENUMBER */
+}
+
+/**
  * e_phone_number_from_string:
  * @phone_number: the phone number to parse
  * @region_code: (allow-none): a 2-letter country code, or %NULL
@@ -101,10 +161,12 @@ e_phone_number_is_supported (void)
  * region.
  *
  * The 2-letter country code passed in @region_code only is used if the
- * @phone_number is not written in international format. The applications's
- * currently locale is consulted if %NULL gets passed for @region_code.
+ * @phone_number is not written in international format. The application's
+ * default region as returned by e_phone_number_get_default_region() is used
+ * if @region_code is %NULL.
+ *
  * If the number is guaranteed to start with a '+' followed by the country
- * calling code, then "ZZ" can be passed here.
+ * calling code, then "ZZ" can be passed for @region_code.
  *
  * Returns: (transfer full): a new EPhoneNumber instance on success,
  * or %NULL on error. Call e_phone_number_free() to release this instance.

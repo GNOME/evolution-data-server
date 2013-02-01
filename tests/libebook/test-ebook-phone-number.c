@@ -335,6 +335,16 @@ test_supported (void)
 #endif /* ENABLE_PHONENUMBER */
 }
 
+static void
+test_country_code_for_region (void)
+{
+	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+	g_assert_cmpint (e_phone_number_get_country_code_for_region ("CH"), ==, 41);
+	g_assert_cmpint (e_phone_number_get_country_code_for_region (NULL), ==, 1);
+	g_assert_cmpint (e_phone_number_get_country_code_for_region ("C"), ==, 0);
+	g_assert_cmpint (e_phone_number_get_country_code_for_region (""), ==, 1);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -382,13 +392,13 @@ main (gint argc,
 			 "+3587144556677", "+358 71 44556677", "071 44556677", "tel:+358-71-44556677"),
 		test_parse_and_format, parse_and_format_data_free);
 
-	g_test_add_func
-		("/ebook-phone-number/parse-and-format/bad-number",
-		 test_parse_bad_number);
+	g_test_add_func (
+		"/ebook-phone-number/parse-and-format/bad-number",
+		test_parse_bad_number);
 
-	g_test_add_func
-		("/ebook-phone-number/parse-and-format/auto-region",
-		 test_parse_auto_region);
+	g_test_add_func (
+		"/ebook-phone-number/parse-and-format/auto-region",
+		test_parse_auto_region);
 
 	g_assert_cmpint (G_N_ELEMENTS (match_candidates) * G_N_ELEMENTS (match_candidates),
 			 ==, G_N_ELEMENTS (expected_matches));
@@ -403,6 +413,10 @@ main (gint argc,
 			g_free (path);
 		}
 	}
+
+	g_test_add_func (
+		"/ebook-phone-number/country-code/for-region",
+		test_country_code_for_region);
 
 	return g_test_run ();
 }

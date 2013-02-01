@@ -88,15 +88,9 @@ e_phone_number_error_code (PhoneNumberUtil::ErrorType error)
 	g_return_val_if_reached (E_PHONE_NUMBER_ERROR_UNKNOWN);
 }
 
-EPhoneNumber *
-_e_phone_number_cxx_from_string (const gchar *phone_number,
-                                 const gchar *region_code,
-                                 GError **error)
+static std::string
+e_phone_number_make_region_code (const gchar *region_code)
 {
-	g_return_val_if_fail (NULL != phone_number, NULL);
-
-	std::string valid_region;
-
 	/* Get country code from current locale's address facet if supported */
 #if HAVE__NL_ADDRESS_COUNTRY_AB2
 	if (region_code == NULL || region_code[0] == '\0')
@@ -107,17 +101,40 @@ _e_phone_number_cxx_from_string (const gchar *phone_number,
 	if (region_code == NULL || region_code[0] == '\0') {
 		/* From outside this is a C library, so we better consult the
 		 * C infrastructure instead of std::locale, which might divert. */
-		valid_region = setlocale (LC_ADDRESS, NULL);
+		std::string current_region = setlocale (LC_ADDRESS, NULL);
 
-		const std::string::size_type underscore = valid_region.find ('_');
+		const std::string::size_type underscore = current_region.find ('_');
 
 		if (underscore != std::string::npos)
-			valid_region.resize (underscore);
-	} else {
-		valid_region = region_code;
+			current_region.resize (underscore);
+
+		return current_region;
 	}
 
-	/* Now finally parse the phone number */
+	return region_code;
+}
+
+gint
+_e_phone_number_cxx_get_country_code_for_region (const gchar *region_code)
+{
+	return e_phone_number_util_get_instance ()->GetCountryCodeForRegion (
+		e_phone_number_make_region_code (region_code));
+}
+
+gchar *
+_e_phone_number_cxx_get_default_region ()
+{
+	return g_strdup (e_phone_number_make_region_code (NULL).c_str ());
+}
+
+EPhoneNumber *
+_e_phone_number_cxx_from_string (const gchar *phone_number,
+                                 const gchar *region_code,
+                                 GError **error)
+{
+	g_return_val_if_fail (NULL != phone_number, NULL);
+
+	const std::string valid_region = e_phone_number_make_region_code (region_code);
 	std::auto_ptr<EPhoneNumber> parsed_number(new EPhoneNumber);
 
 	const PhoneNumberUtil::ErrorType err =

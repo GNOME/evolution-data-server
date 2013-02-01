@@ -188,6 +188,10 @@ GType			e_phone_number_get_type		(void);
 GQuark			e_phone_number_error_quark	(void);
 
 gboolean		e_phone_number_is_supported	(void) G_GNUC_CONST;
+gint			e_phone_number_get_country_code_for_region
+							(const gchar *region_code);
+gchar *			e_phone_number_get_default_region
+							(void);
 
 EPhoneNumber *		e_phone_number_from_string	(const gchar *phone_number,
 							 const gchar *region_code,
