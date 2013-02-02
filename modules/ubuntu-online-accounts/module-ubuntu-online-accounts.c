@@ -1103,9 +1103,6 @@ e_ubuntu_online_accounts_class_init (EUbuntuOnlineAccountsClass *class)
 
 	extension_class = E_EXTENSION_CLASS (class);
 	extension_class->extensible_type = E_TYPE_SOURCE_REGISTRY_SERVER;
-
-	/* XXX Just to verify we're using the right registry service... */
-	g_message ("Ubuntu Online Accounts development...");
 }
 
 static void
