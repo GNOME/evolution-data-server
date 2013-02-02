@@ -16,6 +16,8 @@ module_ubuntu_online_accounts_la_CPPFLAGS = \
 
 module_ubuntu_online_accounts_la_SOURCES = \
 	module-ubuntu-online-accounts.c \
+	e-signon-session-password.c \
+	e-signon-session-password.h \
 	uoa-utils.c \
 	uoa-utils.h \
 	$(NULL)
