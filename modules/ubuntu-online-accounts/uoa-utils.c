@@ -360,3 +360,40 @@ e_ag_account_collect_userinfo_finish (AgAccount *ag_account,
 	return TRUE;
 }
 
+const gchar *
+e_source_get_ag_service_type (ESource *source)
+{
+	const gchar *extension_name;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	/* Determine an appropriate service type based on
+	 * which extensions are present in the ESource. */
+
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	if (e_source_has_extension (source, extension_name))
+		return E_AG_SERVICE_TYPE_CONTACTS;
+
+	extension_name = E_SOURCE_EXTENSION_CALENDAR;
+	if (e_source_has_extension (source, extension_name))
+		return E_AG_SERVICE_TYPE_CALENDAR;
+
+	extension_name = E_SOURCE_EXTENSION_MEMO_LIST;
+	if (e_source_has_extension (source, extension_name))
+		return E_AG_SERVICE_TYPE_CALENDAR;
+
+	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
+	if (e_source_has_extension (source, extension_name))
+		return E_AG_SERVICE_TYPE_CALENDAR;
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
+	if (e_source_has_extension (source, extension_name))
+		return E_AG_SERVICE_TYPE_MAIL;
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
+	if (e_source_has_extension (source, extension_name))
+		return E_AG_SERVICE_TYPE_MAIL;
+
+	g_return_val_if_reached (NULL);
+}
+

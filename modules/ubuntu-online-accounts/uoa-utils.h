@@ -19,6 +19,7 @@
 #ifndef UOA_UTILS_H
 #define UOA_UTILS_H
 
+#include <libebackend/libebackend.h>
 #include <libaccounts-glib/accounts-glib.h>
 
 /* Service types we support. */
@@ -38,6 +39,7 @@ gboolean	e_ag_account_collect_userinfo_finish
 						 gchar **out_user_identity,
 						 gchar **out_email_address,
 						 GError **error);
+const gchar *	e_source_get_ag_service_type	(ESource *source);
 
 G_END_DECLS
 

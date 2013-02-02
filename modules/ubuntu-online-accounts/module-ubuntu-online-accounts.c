@@ -21,8 +21,6 @@
 #include <libsignon-glib/signon-glib.h>
 #include <libaccounts-glib/accounts-glib.h>
 
-#include <libebackend/libebackend.h>
-
 #include "uoa-utils.h"
 
 /* Standard GObject macros */
@@ -148,36 +146,10 @@ ubuntu_online_accounts_ref_account_service (EUbuntuOnlineAccounts *extension,
 	ESourceRegistryServer *server;
 	AgAccountService *ag_account_service = NULL;
 	const gchar *extension_name;
-	const gchar *service_name = NULL;
+	const gchar *service_type;
 
-	/* Figure out which AgAccountService to use based
-	 * on which extensions are present in the ESource. */
-
-	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-	if (e_source_has_extension (source, extension_name))
-		service_name = E_AG_SERVICE_TYPE_CONTACTS;
-
-	extension_name = E_SOURCE_EXTENSION_CALENDAR;
-	if (e_source_has_extension (source, extension_name))
-		service_name = E_AG_SERVICE_TYPE_CALENDAR;
-
-	extension_name = E_SOURCE_EXTENSION_MEMO_LIST;
-	if (e_source_has_extension (source, extension_name))
-		service_name = E_AG_SERVICE_TYPE_CALENDAR;
-
-	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
-	if (e_source_has_extension (source, extension_name))
-		service_name = E_AG_SERVICE_TYPE_CALENDAR;
-
-	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
-	if (e_source_has_extension (source, extension_name))
-		service_name = E_AG_SERVICE_TYPE_MAIL;
-
-	extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
-	if (e_source_has_extension (source, extension_name))
-		service_name = E_AG_SERVICE_TYPE_MAIL;
-
-	g_return_val_if_fail (service_name != NULL, NULL);
+	service_type = e_source_get_ag_service_type (source);
+	g_return_val_if_fail (service_type != NULL, NULL);
 
 	extension_name = E_SOURCE_EXTENSION_UOA;
 	server = ubuntu_online_accounts_get_server (extension);
@@ -192,7 +164,7 @@ ubuntu_online_accounts_ref_account_service (EUbuntuOnlineAccounts *extension,
 
 		if (account_services != NULL) {
 			ag_account_service = g_hash_table_lookup (
-				account_services, service_name);
+				account_services, service_type);
 			if (ag_account_service != NULL)
 				g_object_ref (ag_account_service);
 		}
