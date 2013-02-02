@@ -32,11 +32,6 @@
 	(G_TYPE_CHECK_INSTANCE_CAST \
 	((obj), E_TYPE_UBUNTU_ONLINE_ACCOUNTS, EUbuntuOnlineAccounts))
 
-/* Service types we support. */
-#define SERVICE_TYPE_MAIL     "mail"
-#define SERVICE_TYPE_CALENDAR "calendar"
-#define SERVICE_TYPE_CONTACTS "contacts"
-
 #define CAMEL_OAUTH2_MECHANISM_NAME "XOAUTH2"
 
 typedef struct _EUbuntuOnlineAccounts EUbuntuOnlineAccounts;
@@ -160,27 +155,27 @@ ubuntu_online_accounts_ref_account_service (EUbuntuOnlineAccounts *extension,
 
 	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 	if (e_source_has_extension (source, extension_name))
-		service_name = SERVICE_TYPE_CONTACTS;
+		service_name = E_AG_SERVICE_TYPE_CONTACTS;
 
 	extension_name = E_SOURCE_EXTENSION_CALENDAR;
 	if (e_source_has_extension (source, extension_name))
-		service_name = SERVICE_TYPE_CALENDAR;
+		service_name = E_AG_SERVICE_TYPE_CALENDAR;
 
 	extension_name = E_SOURCE_EXTENSION_MEMO_LIST;
 	if (e_source_has_extension (source, extension_name))
-		service_name = SERVICE_TYPE_CALENDAR;
+		service_name = E_AG_SERVICE_TYPE_CALENDAR;
 
 	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
 	if (e_source_has_extension (source, extension_name))
-		service_name = SERVICE_TYPE_CALENDAR;
+		service_name = E_AG_SERVICE_TYPE_CALENDAR;
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 	if (e_source_has_extension (source, extension_name))
-		service_name = SERVICE_TYPE_MAIL;
+		service_name = E_AG_SERVICE_TYPE_MAIL;
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
 	if (e_source_has_extension (source, extension_name))
-		service_name = SERVICE_TYPE_MAIL;
+		service_name = E_AG_SERVICE_TYPE_MAIL;
 
 	g_return_val_if_fail (service_name != NULL, NULL);
 
@@ -295,7 +290,7 @@ ubuntu_online_accounts_config_oauth2 (EUbuntuOnlineAccounts *extension,
 	const gchar *extension_name;
 
 	ag_account_service = g_hash_table_lookup (
-		account_services, SERVICE_TYPE_MAIL);
+		account_services, E_AG_SERVICE_TYPE_MAIL);
 	if (ag_account_service == NULL)
 		return;
 
@@ -357,7 +352,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 			user_identity);
 
 	ag_account_service = g_hash_table_lookup (
-		account_services, SERVICE_TYPE_MAIL);
+		account_services, E_AG_SERVICE_TYPE_MAIL);
 	if (ag_account_service != NULL) {
 		g_object_bind_property (
 			ag_account_service , "enabled",
@@ -369,7 +364,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	}
 
 	ag_account_service = g_hash_table_lookup (
-		account_services, SERVICE_TYPE_CALENDAR);
+		account_services, E_AG_SERVICE_TYPE_CALENDAR);
 	if (ag_account_service != NULL) {
 		g_object_bind_property (
 			ag_account_service, "enabled",
@@ -381,7 +376,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	}
 
 	ag_account_service = g_hash_table_lookup (
-		account_services, SERVICE_TYPE_CONTACTS);
+		account_services, E_AG_SERVICE_TYPE_CONTACTS);
 	if (ag_account_service != NULL) {
 		g_object_bind_property (
 			ag_account_service, "enabled",

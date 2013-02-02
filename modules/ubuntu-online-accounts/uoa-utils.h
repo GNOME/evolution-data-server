@@ -21,6 +21,11 @@
 
 #include <libaccounts-glib/accounts-glib.h>
 
+/* Service types we support. */
+#define E_AG_SERVICE_TYPE_MAIL     "mail"
+#define E_AG_SERVICE_TYPE_CALENDAR "calendar"
+#define E_AG_SERVICE_TYPE_CONTACTS "contacts"
+
 G_BEGIN_DECLS
 
 void		e_ag_account_collect_userinfo	(AgAccount *ag_account,
