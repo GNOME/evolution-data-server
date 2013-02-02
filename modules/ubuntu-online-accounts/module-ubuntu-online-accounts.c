@@ -21,9 +21,6 @@
 #include <libsignon-glib/signon-glib.h>
 #include <libaccounts-glib/accounts-glib.h>
 
-/* XXX accounts-glib.h should include this */
-#include <libaccounts-glib/ag-auth-data.h>
-
 #include <libebackend/libebackend.h>
 
 #include "uoa-utils.h"

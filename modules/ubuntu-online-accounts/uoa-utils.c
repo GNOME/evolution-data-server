@@ -24,9 +24,6 @@
 #include <json-glib/json-glib.h>
 #include <libsignon-glib/signon-glib.h>
 
-/* XXX accounts-glib.h should include this */
-#include <libaccounts-glib/ag-auth-data.h>
-
 #define GOOGLE_USERINFO_URI \
 	"https://www.googleapis.com/oauth2/v2/userinfo"
 
