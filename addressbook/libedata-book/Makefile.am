@@ -85,9 +85,7 @@ pkgconfig_DATA = libedata-book-$(API_VERSION).pc
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = \
-	e-data-book-factory.xml \
 	e-data-book-view.xml \
-	e-data-book.xml \
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 -include $(top_srcdir)/git.mk

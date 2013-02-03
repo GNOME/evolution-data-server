@@ -69,9 +69,7 @@ pkgconfig_DATA = libedata-cal-$(API_VERSION).pc
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
-	e-data-cal-factory.xml				\
 	e-data-cal-view.xml				\
-	e-data-cal.xml					\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 -include $(top_srcdir)/git.mk

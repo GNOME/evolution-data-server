@@ -35,6 +35,7 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
+	evolution-source-registry-resource.xml \
 	$(builtin_sources_in_files) \
 	$(service_in_files) \
 	$(NULL)
