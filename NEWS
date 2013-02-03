@@ -1,3 +1,66 @@
+Evolution-Data-Server 3.7.5 2013-02-04
+--------------------------------------
+
+* This release adds support for Ubuntu's Single-SignOn framework (a.k.a.
+  Ubuntu Online Accounts), with the following optional pkg dependencies:
+
+    libaccounts-glib
+    libsignon-glib
+    json-glib-1.0
+    librest-0.7
+
+  Pass --disable-uoa to configure to disable support.
+
+Bug Fixes:
+	Bug 651399 - [maildir] Escape dots in folder display names (Milan Crha)
+	Bug 691126 - Fix warnings find by Clang (Milan Crha)
+	Bug 692278 - LDAP backend mutex deadlock on finalize (Milan Crha)
+
+Other Changes:
+	* Generate address book and calendar GDBus classes with gdbus-codegen
+	  and simplify the APIs to require only one round trip per method.
+	  (Matthew Barnes)
+	* Introduce e_book_client_connect() and e_cal_client_connect() as
+	  one-step replacements for e_book/cal_client_new() + e_client_open().
+	  (Matthew Barnes)
+	* Built-in data sources are now packaged as a GResource rather than
+	  installed data files for better reliability. (Matthew Barnes)
+	* Add --disable-google configure option to make libgdata dependency
+	  optional.  (Tristan Van Berkom)
+	* Unit test suite improvements. (Mathias Hasselmann and Tristan Van
+	  Berkom)
+	* Bump libsoup dependency to 2.40.3 (Milan Crha)
+	* GOA: Support the upcoming "imap_smtp" provider type. (Matthew Barnes)
+	* Optional libphonenumber support for local address books.
+	  (Mathias Hasselmann)
+	* EBookBackendSqliteDB: Added e_book_backend_new_contact[s]() APIs
+	  (Tristan Van Berkom)
+	* EBookBackendFile: Don't overwrite UIDs on incomming/new contacts.
+	  (Tristan Van Berkom)
+	* CamelIMAPXStore: Configure folder flags on folder creation.
+	  (Matthew Barnes)
+	* EBookBackendFile: Avoid lost data in contact modifications
+	  (Tristan Van Berkom)
+	* store_synchronize_sync(): Only synchronize subscribed folders.
+	  (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Krasimir Chonov (bg)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Aurimas Černius (lt)
+	Kjartan Maraas (nb)
+	Piotr Drąg (pl)
+	Marián Čavojský (sk)
+	Matej Urbančič (sl)
+	Мирослав Николић (sr)
+	Theppitak Karoonboonyanan (th)
+	Gheyret Kenji (ug)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.7.4 2013-01-14
 --------------------------------------
 
