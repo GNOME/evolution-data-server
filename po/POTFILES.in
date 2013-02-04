@@ -200,6 +200,7 @@ modules/trust-prompt/module-trust-prompt.c
 modules/trust-prompt/trust-prompt-gtk.c
 [type: gettext/xml]modules/ubuntu-online-accounts/calendar.service-type.in.in
 [type: gettext/xml]modules/ubuntu-online-accounts/contacts.service-type.in.in
+modules/ubuntu-online-accounts/e-signon-session-password.c
 [type: gettext/xml]modules/ubuntu-online-accounts/google-calendar.service.in.in
 [type: gettext/xml]modules/ubuntu-online-accounts/google-contacts.service.in.in
 [type: gettext/xml]modules/ubuntu-online-accounts/google-gmail.service.in.in
