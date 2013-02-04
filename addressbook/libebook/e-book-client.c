@@ -989,14 +989,16 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		connection, "closed",
 		G_CALLBACK (gdbus_book_client_closed_cb), client);
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_object (
 		priv->dbus_proxy, "error",
-		G_CALLBACK (book_client_dbus_proxy_error_cb), client);
+		G_CALLBACK (book_client_dbus_proxy_error_cb),
+		client, 0);
 	priv->dbus_proxy_error_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_object (
 		priv->dbus_proxy, "notify",
-		G_CALLBACK (book_client_dbus_proxy_notify_cb), client);
+		G_CALLBACK (book_client_dbus_proxy_notify_cb),
+		client, 0);
 	priv->dbus_proxy_notify_handler_id = handler_id;
 
 	/* Initialize our public-facing GObject properties. */
