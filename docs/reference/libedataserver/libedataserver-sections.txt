@@ -904,6 +904,26 @@ ESourceResourcePrivate
 </SECTION>
 
 <SECTION>
+<FILE>e-source-revision-guards</FILE>
+<TITLE>ESourceRevisionGuards</TITLE>
+ESourceRevisionGuards
+E_SOURCE_EXTENSION_REVISION_GUARDS
+e_source_revision_guards_get_enabled
+e_source_revision_guards_set_enabled
+<SUBSECTION Standard>
+E_SOURCE_REVISION_GUARDS
+E_IS_SOURCE_REVISION_GUARDS
+E_TYPE_SOURCE_REVISION_GUARDS
+E_SOURCE_REVISION_GUARDS_CLASS
+E_IS_SOURCE_REVISION_GUARDS_CLASS
+E_SOURCE_REVISION_GUARDS_GET_CLASS
+ESourceRevisionGuardsClass
+e_source_revision_guards_get_type
+<SUBSECTION Private>
+ESourceRevisionGuardsPrivate
+</SECTION>
+
+<SECTION>
 <FILE>e-source-security</FILE>
 <TITLE>ESourceSecurity</TITLE>
 ESourceSecurity

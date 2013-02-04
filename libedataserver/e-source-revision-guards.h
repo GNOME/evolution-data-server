@@ -82,12 +82,13 @@ struct _ESourceRevisionGuardsClass {
 	ESourceExtensionClass parent_class;
 };
 
-GType           e_source_revision_guards_get_type     (void);
-
-void            e_source_revision_guards_set_enabled  (ESourceRevisionGuards  *extension,
-						       gboolean                enabled);
-gboolean        e_source_revision_guards_get_enabled  (ESourceRevisionGuards  *extension);
-
+GType		e_source_revision_guards_get_type
+					(void) G_GNUC_CONST;
+gboolean	e_source_revision_guards_get_enabled
+					(ESourceRevisionGuards *extension);
+void		e_source_revision_guards_set_enabled
+					(ESourceRevisionGuards *extension,
+					 gboolean enabled);
 
 G_END_DECLS
 
