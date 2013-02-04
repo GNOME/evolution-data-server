@@ -23,6 +23,11 @@
 #error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_GDBUS_TEMPLATES_H
 #define E_GDBUS_TEMPLATES_H
 
@@ -757,3 +762,8 @@ gboolean e_gdbus_templates_decode_two_strings (const gchar * const *in_strv, gch
 G_END_DECLS
 
 #endif /* E_GDBUS_TEMPLATES_H */
+
+#endif /* __GI_SCANNER__ */
+
+#endif /* EDS_DISABLE_DEPRECATED */
+
