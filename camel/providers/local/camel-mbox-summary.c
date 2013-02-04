@@ -748,8 +748,8 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 }
 
 static gint
-cms_sort_frompos (gpointer a,
-                  gpointer b,
+cms_sort_frompos (gconstpointer a,
+                  gconstpointer b,
                   gpointer data)
 {
 	CamelFolderSummary *summary = (CamelFolderSummary *) data;
@@ -832,7 +832,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 	/* Sync only the changes */
 	summary = camel_folder_summary_get_changed ((CamelFolderSummary *) mbs);
 	if (summary->len)
-		g_ptr_array_sort_with_data (summary, (GCompareDataFunc) cms_sort_frompos, (gpointer) mbs);
+		g_ptr_array_sort_with_data (summary, cms_sort_frompos, mbs);
 
 	for (i = 0; i < summary->len; i++) {
 		gint xevoffset;
@@ -1099,6 +1099,9 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 
 	camel_folder_summary_prepare_fetch_all (s, NULL);
 	known_uids = camel_folder_summary_get_array (s);
+	/* walk them in the same order as stored in the file */
+	if (known_uids->len)
+		g_ptr_array_sort_with_data (known_uids, cms_sort_frompos, mbs);
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		gint pc = (i + 1) * 100 / known_uids->len;
 
@@ -1131,8 +1134,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 
 		if (camel_mime_parser_tell_start_from (mp) != info->frompos) {
 			g_warning (
-				"Didn't get the next message where "
-				"I expected (%d) got %d instead",
+				"Didn't get the next message where I expected (%d) got %d instead",
 				(gint) info->frompos,
 				(gint) camel_mime_parser_tell_start_from (mp));
 			g_set_error (
