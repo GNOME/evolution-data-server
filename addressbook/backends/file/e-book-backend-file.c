@@ -63,7 +63,17 @@
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 #define EDB_NOT_OPENED_ERROR      EDB_ERROR(NOT_OPENED)
 
-G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
+/* Forward Declarations */
+static void	e_book_backend_file_initable_init
+						(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EBookBackendFile,
+	e_book_backend_file,
+	E_TYPE_BOOK_BACKEND_SYNC,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_book_backend_file_initable_init))
 
 struct _EBookBackendFilePrivate {
 	gchar     *photo_dirname;
@@ -690,11 +700,6 @@ do_create (EBookBackendFile *bf,
 	g_assert (bf);
 	g_assert (vcards_req);
 
-	if (!bf || !bf->priv || !bf->priv->sqlitedb) {
-		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
-		return FALSE;
-	}
-
 	for (l = vcards_req; l != NULL; l = l->next) {
 		gchar           *id;
 		const gchar     *rev;
@@ -879,11 +884,6 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 	GError           *local_error = NULL;
 	PhotoModifiedStatus status = STATUS_NORMAL;
 
-	if (!bf || !bf->priv || !bf->priv->sqlitedb) {
-		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
-		return;
-	}
-
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
 	for (l = vcards; l != NULL; l = l->next) {
@@ -1008,11 +1008,6 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GError *local_error = NULL;
 
-	if (!bf || !bf->priv || !bf->priv->sqlitedb) {
-		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
-		return;
-	}
-
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 
 	*vcard = e_book_backend_sqlitedb_get_vcard_string (bf->priv->sqlitedb,
@@ -1049,11 +1044,6 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	GError           *local_error = NULL;
 
 	d (printf ("e_book_backend_file_get_contact_list (%s)\n", query));
-
-	if (!bf || !bf->priv || !bf->priv->sqlitedb) {
-		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
-		return;
-	}
 
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 	summary_list = e_book_backend_sqlitedb_search (
@@ -1096,11 +1086,6 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 	GError           *local_error = NULL;
 
 	d (printf ("e_book_backend_file_get_contact_list (%s)\n", query));
-
-	if (!bf || !bf->priv || !bf->priv->sqlitedb) {
-		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
-		return;
-	}
 
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 	uids = e_book_backend_sqlitedb_search_uids (
@@ -1204,12 +1189,6 @@ book_view_thread (gpointer data)
 
 	fields_of_interest = e_data_book_view_get_fields_of_interest (book_view);
 
-	if (!bf->priv->sqlitedb) {
-		e_data_book_view_notify_complete (book_view, EDB_NOT_OPENED_ERROR);
-		g_object_unref (book_view);
-		return NULL;
-	}
-
 	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
 		e_data_book_view_notify_progress (book_view, -1, _("Loading..."));
 	} else {
@@ -1294,10 +1273,6 @@ e_book_backend_file_stop_view (EBookBackend *backend,
 	}
 }
 
-#ifdef CREATE_DEFAULT_VCARD
-# include <libedata-book/ximian-vcard.h>
-#endif
-
 static void
 e_book_backend_file_open (EBookBackendSync *backend,
                           EDataBook *book,
@@ -1306,193 +1281,15 @@ e_book_backend_file_open (EBookBackendSync *backend,
                           GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	gchar            *dirname, *filename, *backup;
-	ESourceRegistry  *registry;
 	ESource          *source;
-	GError           *local_error = NULL;
-	gboolean          populated;
-	ESourceBackendSummarySetup *setup;
 	ESourceRevisionGuards *guards;
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
-	dirname = e_book_backend_file_extract_path_from_source (
-		registry, source, GET_PATH_DB_DIR);
-	filename = g_build_filename (dirname, "addressbook.db", NULL);
-	backup   = g_build_filename (dirname, "addressbook.db.old", NULL);
 
 	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
-	g_type_ensure (E_TYPE_SOURCE_REVISION_GUARDS);
-	setup = e_source_get_extension (source, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
 	guards = e_source_get_extension (source, E_SOURCE_EXTENSION_REVISION_GUARDS);
 
 	bf->priv->revision_guards = e_source_revision_guards_get_enabled (guards);
-
-	/* The old BDB exists, lets migrate that to sqlite right away
-	 */
-	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (
-			dirname,
-			SQLITEDB_EMAIL_ID,
-			SQLITEDB_FOLDER_ID,
-			SQLITEDB_FOLDER_NAME,
-			TRUE, setup,
-			&local_error);
-
-		if (!bf->priv->sqlitedb) {
-			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
-			g_propagate_error (perror, local_error);
-			g_free (dirname);
-			g_free (filename);
-			g_free (backup);
-			return;
-		}
-
-		if (!e_book_backend_file_migrate_bdb (bf->priv->sqlitedb,
-						      SQLITEDB_FOLDER_ID,
-						      dirname, filename, &local_error)) {
-
-			/* Perhaps this error should not be fatal */
-			g_warning (
-				G_STRLOC ": Failed to migrate old BDB to sqlitedb: %s",
-				local_error->message);
-			g_propagate_error (perror, local_error);
-			g_free (dirname);
-			g_free (filename);
-			g_free (backup);
-
-			g_object_unref (bf->priv->sqlitedb);
-			bf->priv->sqlitedb = NULL;
-			return;
-		}
-
-		/* Now we've migrated the database, lets rename it instead of unlinking it */
-		if (g_rename (filename, backup) < 0) {
-
-			g_warning (
-				G_STRLOC ": Failed to rename old database from '%s' to '%s': %s",
-				filename, backup, g_strerror (errno));
-
-			g_propagate_error (
-				perror, e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
-				_("Failed to rename old database from '%s' to '%s': %s"),
-				filename, backup, g_strerror (errno)));
-
-			g_free (dirname);
-			g_free (filename);
-			g_free (backup);
-			bf->priv->sqlitedb = NULL;
-			return;
-		}
-	}
-
-	/* If we already have a handle on this, it means there was an old BDB migrated
-	 * and no need to reopen it
-	 */
-	if (bf->priv->sqlitedb == NULL) {
-
-		/* ensure the directory exists first */
-		if (!only_if_exists && !create_directory (dirname, &local_error)) {
-
-			g_warning (G_STRLOC ": Failed to create directory for sqlite db: %s", local_error->message);
-			g_propagate_error (perror, local_error);
-
-			g_free (dirname);
-			g_free (filename);
-			g_free (backup);
-			return;
-		}
-
-		/* Create the sqlitedb */
-		bf->priv->sqlitedb = e_book_backend_sqlitedb_new_full (
-			dirname,
-			SQLITEDB_EMAIL_ID,
-			SQLITEDB_FOLDER_ID,
-			SQLITEDB_FOLDER_NAME,
-			TRUE, setup,
-			&local_error);
-
-		if (!bf->priv->sqlitedb) {
-			g_warning (G_STRLOC ": Failed to open sqlitedb: %s", local_error->message);
-			g_propagate_error (perror, local_error);
-			g_free (dirname);
-			g_free (filename);
-			g_free (backup);
-			return;
-		}
-
-		/* An sqlite DB only 'exists' if the populated flag is set */
-		populated = e_book_backend_sqlitedb_get_is_populated (
-			bf->priv->sqlitedb,
-			SQLITEDB_FOLDER_ID,
-			&local_error);
-
-		if (local_error != NULL) {
-			/* Perhaps this error should not be fatal */
-			g_warning (G_STRLOC ": Failed to check populated flag in sqlite db: %s", local_error->message);
-			g_propagate_error (perror, local_error);
-			g_free (dirname);
-			g_free (filename);
-			g_free (backup);
-
-			g_object_unref (bf->priv->sqlitedb);
-			bf->priv->sqlitedb = NULL;
-			return;
-		}
-
-		if (!populated) {
-			/* Shutdown, no such book ! */
-			if (only_if_exists) {
-				g_free (dirname);
-				g_free (filename);
-				g_free (backup);
-				g_object_unref (bf->priv->sqlitedb);
-				bf->priv->sqlitedb = NULL;
-				g_propagate_error (perror, EDB_ERROR (NO_SUCH_BOOK));
-				return;
-			}
-
-#ifdef CREATE_DEFAULT_VCARD
-			{
-				GSList l;
-				l.data = XIMIAN_VCARD;
-				l.next = NULL;
-
-				if (!do_create (bf, &l, NULL, NULL))
-					g_warning ("Cannot create default contact");
-			}
-#endif
-
-			/* Set the populated flag */
-			if (!e_book_backend_sqlitedb_set_is_populated (bf->priv->sqlitedb,
-								       SQLITEDB_FOLDER_ID,
-								       TRUE,
-								       &local_error)) {
-				g_warning (
-					G_STRLOC ": Failed to set populated flag in sqlite db: %s",
-					local_error->message);
-				g_propagate_error (perror, local_error);
-				g_free (dirname);
-				g_free (filename);
-				g_free (backup);
-				g_object_unref (bf->priv->sqlitedb);
-				bf->priv->sqlitedb = NULL;
-				return;
-			}
-		}
-	}
-
-	g_free (dirname);
-	g_free (filename);
-	g_free (backup);
-
-	/* Resolve the photo directory here */
-	dirname = e_book_backend_file_extract_path_from_source (
-		registry, source, GET_PATH_PHOTO_DIR);
-	if (!only_if_exists && !create_directory (dirname, perror))
-		return;
-	bf->priv->photo_dirname = dirname;
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 	if (!bf->priv->revision) {
@@ -1650,6 +1447,135 @@ e_book_backend_file_finalize (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->finalize (object);
 }
 
+static gboolean
+book_backend_file_initable_init (GInitable *initable,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	EBookBackendFilePrivate *priv;
+	ESourceBackendSummarySetup *setup_extension;
+	ESourceRegistry *registry;
+	ESource *source;
+	const gchar *extension_name;
+	gchar *backup;
+	gchar *dirname;
+	gchar *filename;
+	gboolean success = TRUE;
+
+	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (initable);
+
+	source = e_backend_get_source (E_BACKEND (initable));
+	registry = e_book_backend_get_registry (E_BOOK_BACKEND (initable));
+
+	extension_name = E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP;
+	setup_extension = e_source_get_extension (source, extension_name);
+
+	dirname = e_book_backend_file_extract_path_from_source (
+		registry, source, GET_PATH_DB_DIR);
+	filename = g_build_filename (dirname, "addressbook.db", NULL);
+	backup = g_build_filename (dirname, "addressbook.db.old", NULL);
+
+	/* The old BDB exists, lets migrate that to sqlite right away. */
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		priv->sqlitedb = e_book_backend_sqlitedb_new_full (
+			dirname,
+			SQLITEDB_EMAIL_ID,
+			SQLITEDB_FOLDER_ID,
+			SQLITEDB_FOLDER_NAME,
+			TRUE, setup_extension,
+			error);
+
+		if (priv->sqlitedb == NULL) {
+			success = FALSE;
+			goto exit;
+		}
+
+		success = e_book_backend_file_migrate_bdb (
+			priv->sqlitedb,
+			SQLITEDB_FOLDER_ID,
+			dirname, filename, error);
+
+		if (!success)
+			goto exit;
+
+		/* Now that we've migrated the database,
+		 * lets rename it instead of unlinking it. */
+		if (g_rename (filename, backup) < 0) {
+			g_set_error (
+				error, G_FILE_ERROR,
+				g_file_error_from_errno (errno),
+				_("Failed to rename old database from "
+				"'%s' to '%s': %s"), filename, backup,
+				g_strerror (errno));
+			success = FALSE;
+			goto exit;
+		}
+	}
+
+	/* If we already have a handle on this, it means there
+	 * was an old BDB migrated and no need to reopen it. */
+	if (priv->sqlitedb == NULL) {
+		gboolean populated;
+		GError *local_error = NULL;
+
+		/* Ensure the directory exists first. */
+		success = create_directory (dirname, error);
+
+		if (!success)
+			goto exit;
+
+		/* Create the sqlitedb. */
+		priv->sqlitedb = e_book_backend_sqlitedb_new_full (
+			dirname,
+			SQLITEDB_EMAIL_ID,
+			SQLITEDB_FOLDER_ID,
+			SQLITEDB_FOLDER_NAME,
+			TRUE, setup_extension,
+			error);
+
+		if (priv->sqlitedb == NULL) {
+			success = FALSE;
+			goto exit;
+		}
+
+		/* An sqlite DB only 'exists' if the populated flag is set. */
+		populated = e_book_backend_sqlitedb_get_is_populated (
+			priv->sqlitedb,
+			SQLITEDB_FOLDER_ID,
+			&local_error);
+
+		if (local_error != NULL) {
+			g_propagate_error (error, local_error);
+			success = FALSE;
+			goto exit;
+		}
+
+		if (!populated) {
+			/* Set the populated flag. */
+			success = e_book_backend_sqlitedb_set_is_populated (
+				priv->sqlitedb,
+				SQLITEDB_FOLDER_ID,
+				TRUE, error);
+
+			if (!success)
+				goto exit;
+		}
+	}
+
+	/* Resolve the photo directory here. */
+	priv->photo_dirname =
+		e_book_backend_file_extract_path_from_source (
+		registry, source, GET_PATH_PHOTO_DIR);
+	success = create_directory (priv->photo_dirname, error);
+
+exit:
+	g_free (dirname);
+	g_free (filename);
+	g_free (backup);
+
+	return success;
+}
+
 static void
 e_book_backend_file_class_init (EBookBackendFileClass *class)
 {
@@ -1679,6 +1605,12 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 
 	object_class->dispose = e_book_backend_file_dispose;
 	object_class->finalize = e_book_backend_file_finalize;
+}
+
+static void
+e_book_backend_file_initable_init (GInitableIface *interface)
+{
+	interface->init = book_backend_file_initable_init;
 }
 
 static void
