@@ -1196,19 +1196,22 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		connection, "closed",
 		G_CALLBACK (gdbus_cal_client_closed_cb), client);
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_object (
 		priv->dbus_proxy, "error",
-		G_CALLBACK (cal_client_dbus_proxy_error_cb), client);
+		G_CALLBACK (cal_client_dbus_proxy_error_cb),
+		client, 0);
 	priv->dbus_proxy_error_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_object (
 		priv->dbus_proxy, "notify",
-		G_CALLBACK (cal_client_dbus_proxy_notify_cb), client);
+		G_CALLBACK (cal_client_dbus_proxy_notify_cb),
+		client, 0);
 	priv->dbus_proxy_notify_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_object (
 		priv->dbus_proxy, "free-busy-data",
-		G_CALLBACK (cal_client_dbus_proxy_free_busy_data_cb), client);
+		G_CALLBACK (cal_client_dbus_proxy_free_busy_data_cb),
+		client, 0);
 	priv->dbus_proxy_free_busy_data_handler_id = handler_id;
 
 	/* Initialize our public-facing GObject properties. */
