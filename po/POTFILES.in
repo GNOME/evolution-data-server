@@ -179,6 +179,7 @@ libebackend/e-authentication-mediator.c
 libebackend/e-authentication-session.c
 libebackend/e-backend.c
 libebackend/e-collection-backend.c
+libebackend/e-data-factory.c
 libebackend/e-server-side-source.c
 libebackend/e-source-registry-server.c
 libebackend/e-user-prompter-server.c
