@@ -53,6 +53,8 @@ G_BEGIN_DECLS
  * "tel:+49-30-55667788".
  *
  * The supported formatting rules for phone numbers.
+ *
+ * Since: 3.8
  **/
 typedef enum {
 	E_PHONE_NUMBER_FORMAT_E164,
@@ -122,7 +124,9 @@ typedef enum {
  *   </tr>
  *  </tbody>
  * </informaltable>
- */
+ *
+ * Since: 3.8
+ **/
 typedef enum {
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_EXACT,
@@ -145,6 +149,8 @@ typedef enum {
  * @E_PHONE_NUMBER_ERROR_TOO_LONG: the text is too long for a phone number.
  *
  * Numeric description of a phone number related error.
+ *
+ * Since: 3.8
  **/
 typedef enum {
 	E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED,
@@ -170,7 +176,7 @@ typedef enum {
  * The origin of a parsed EPhoneNumber's country code.
  *
  * Since: 3.8
- */
+ **/
 typedef enum {
 	E_PHONE_NUMBER_COUNTRY_FROM_FQTN = 1,
 	E_PHONE_NUMBER_COUNTRY_FROM_IDD = 5,
@@ -181,7 +187,9 @@ typedef enum {
  * EPhoneNumber:
  * This opaque type describes a parsed phone number. It can be copied using
  * e_phone_number_copy(). To release it call e_phone_number_free().
- */
+ *
+ * Since: 3.8
+ **/
 typedef struct _EPhoneNumber EPhoneNumber;
 
 GType			e_phone_number_get_type		(void);

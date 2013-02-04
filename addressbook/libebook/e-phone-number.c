@@ -75,6 +75,8 @@ _e_phone_number_set_error (GError **error,
  * needed.
  *
  * Returns: %TRUE if phone number support is available.
+ *
+ * Since: 3.8
  **/
 gboolean
 e_phone_number_is_supported (void)
