@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-02-01 01:28+0000\n"
-"PO-Revision-Date: 2013-02-01 10:44+0100\n"
+"POT-Creation-Date: 2013-02-04 12:46+0000\n"
+"PO-Revision-Date: 2013-02-04 17:38+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -60,7 +60,7 @@ msgstr ""
 "Se intentó modificar el contacto «%s» sin la revisión de la sincronización"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1030
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2127
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2136
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Contacto «%s» no encontrado"
@@ -297,23 +297,22 @@ msgstr "No existe la fuente"
 msgid "No space"
 msgstr "Sin espacio"
 
-#: ../addressbook/libebook/e-book-client.c:838
+#: ../addressbook/libebook/e-book-client.c:847
 #: ../addressbook/libedata-book/e-book-backend.c:93
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Propiedad «%s» de la libreta desconocida"
 
-#: ../addressbook/libebook/e-book-client.c:853
+#: ../addressbook/libebook/e-book-client.c:862
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "No se puede cambiar el valor de la propiedad «%s» de la libreta"
 
-#: ../addressbook/libebook/e-book-client.c:1156
-#: ../addressbook/libebook/e-book-client.c:1329
-#: ../calendar/libecal/e-cal-client.c:1566
-#: ../calendar/libecal/e-cal-client.c:1746
+#: ../addressbook/libebook/e-book-client.c:1163
+#: ../addressbook/libebook/e-book-client.c:1336
+#: ../calendar/libecal/e-cal-client.c:1567
+#: ../calendar/libecal/e-cal-client.c:1747
 #, c-format
-#| msgid "Could not connect to '%s:%s': "
 msgid "Unable to connect to '%s': "
 msgstr "No se pudo conectar a «%s: "
 
@@ -935,23 +934,23 @@ msgstr "El texto es demasiado largo para ser un número de teléfono"
 msgid "Clients cannot set backend properties"
 msgstr "Los clientes no pueden establecer las propiedades del «backend»"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:734
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:743
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Error al hacer la introspección del campo de resumen «%s» no válido"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:959
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:968
 #: ../camel/camel-db.c:510
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1090
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1099
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo de contacto «%d» no válido especificado en el resumen"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1124
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1133
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -960,8 +959,8 @@ msgstr ""
 "Campo de contacto «%s» de tipo «%s» especificado en el resumen, pero sólo se "
 "permiten campos de tipo booleano, cadena y lista de cadenas"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2115
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2910
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2124
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2919
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -969,7 +968,7 @@ msgstr ""
 "La búsqueda completa de contactos no se almacena en la caché. No se pueden "
 "devolver las «vcards»"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3052
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3061
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -978,7 +977,7 @@ msgstr ""
 "La búsqueda completa de contactos no se almacena en la caché. Por lo tanto, "
 "sólo se soporta la consulta del resumen."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3133
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3142
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -986,7 +985,7 @@ msgstr ""
 "Las «vcards» completas no se almacenan en la caché. Por lo tanto, sólo se "
 "soporta la consulta del resumen."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3805
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3814
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "No se pudo quitar el archivo db: número de error %d"
@@ -1417,13 +1416,13 @@ msgstr "Usuario desconocido"
 msgid "Invalid range"
 msgstr "Rango no válido"
 
-#: ../calendar/libecal/e-cal-client.c:1034
+#: ../calendar/libecal/e-cal-client.c:1037
 #: ../calendar/libedata-cal/e-cal-backend.c:159
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Propiedad «%s» del calendario desconocida"
 
-#: ../calendar/libecal/e-cal-client.c:1049
+#: ../calendar/libecal/e-cal-client.c:1052
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "No se puede cambiar el valor de la propiedad «%s» del calendario"
@@ -3141,50 +3140,50 @@ msgstr "Falló al añadir datos al codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descifrado S/MIME: No se ha encontrado contenido cifrado"
 
-#: ../camel/camel-store.c:1827
+#: ../camel/camel-store.c:1832
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "No se pudo crear la carpeta: «%s»: la carpeta existe"
 
-#: ../camel/camel-store.c:1870
+#: ../camel/camel-store.c:1875
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Abriendo carpeta «%s»"
 
-#: ../camel/camel-store.c:2055
+#: ../camel/camel-store.c:2060
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Analizando carpetas en «%s»"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:2067 ../camel/camel-store.c:2077
+#: ../camel/camel-store.c:2072 ../camel/camel-store.c:2082
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Papelera"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:2070 ../camel/camel-store.c:2081
+#: ../camel/camel-store.c:2075 ../camel/camel-store.c:2086
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "SPAM"
 
-#: ../camel/camel-store.c:2529
+#: ../camel/camel-store.c:2534
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "No se pudo crear la carpeta: %s: la carpeta existe"
 
-#: ../camel/camel-store.c:2543
+#: ../camel/camel-store.c:2548
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Creando carpeta «%s»"
 
-#: ../camel/camel-store.c:2661 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2666 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:311
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No se pudo eliminar la carpeta: %s: Operación no válida"
 
-#: ../camel/camel-store.c:2804 ../camel/camel-vee-store.c:460
+#: ../camel/camel-store.c:2809 ../camel/camel-vee-store.c:460
 #: ../camel/providers/local/camel-maildir-store.c:835
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3837,7 +3836,7 @@ msgid "Could not store folder: %s"
 msgstr "No se pudo almacenar carpeta:: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:860
-#: ../camel/providers/local/camel-mbox-summary.c:1127
+#: ../camel/providers/local/camel-mbox-summary.c:1130
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
@@ -3847,7 +3846,7 @@ msgstr ""
 "no se obtuvo.)"
 
 #: ../camel/providers/local/camel-mbox-summary.c:870
-#: ../camel/providers/local/camel-mbox-summary.c:1140
+#: ../camel/providers/local/camel-mbox-summary.c:1142
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "El resumen y la carpeta no coinciden, incluso después de sincronizar"
@@ -3858,13 +3857,13 @@ msgstr "El resumen y la carpeta no coinciden, incluso después de sincronizar"
 msgid "Unknown error: %s"
 msgstr "Error desconocido: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1198
-#: ../camel/providers/local/camel-mbox-summary.c:1228
+#: ../camel/providers/local/camel-mbox-summary.c:1200
+#: ../camel/providers/local/camel-mbox-summary.c:1230
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Error la escribir al buzón temporal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1217
+#: ../camel/providers/local/camel-mbox-summary.c:1219
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Error la escribir al buzón temporal: %s: %s"
@@ -4727,27 +4726,28 @@ msgstr "La contraseña era incorrecta"
 msgid "%s does not support authentication"
 msgstr "%s no soporta la autenticación"
 
-#: ../libebackend/e-collection-backend.c:774
+#: ../libebackend/e-collection-backend.c:781
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s no soporta la creación de recursos remotos"
 
-#: ../libebackend/e-collection-backend.c:833
+#: ../libebackend/e-collection-backend.c:840
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s no soporta eliminar recursos remotos"
 
-#: ../libebackend/e-server-side-source.c:132
+#: ../libebackend/e-server-side-source.c:134
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Falta [%s] grupo en la fuente de datos"
 
-#: ../libebackend/e-server-side-source.c:993 ../libedataserver/e-source.c:1111
+#: ../libebackend/e-server-side-source.c:1008
+#: ../libedataserver/e-source.c:1111
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "La fuente de datos «%s» no soporta crear recursos remotos"
 
-#: ../libebackend/e-server-side-source.c:1007
+#: ../libebackend/e-server-side-source.c:1022
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
@@ -4755,13 +4755,13 @@ msgstr ""
 "La fuente de datos «%s» no tiene una colección de «backend» para crear el "
 "recurso remoto"
 
-#: ../libebackend/e-server-side-source.c:1035
+#: ../libebackend/e-server-side-source.c:1050
 #: ../libedataserver/e-source.c:1218
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "La fuente de datos «%s» no soporta eliminar recursos remotos"
 
-#: ../libebackend/e-server-side-source.c:1049
+#: ../libebackend/e-server-side-source.c:1064
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
@@ -4769,14 +4769,14 @@ msgstr ""
 "La fuente de datos «%s» no tiene una colección de «backend» para eliminar el "
 "recurso remoto"
 
-#: ../libebackend/e-server-side-source.c:1080
+#: ../libebackend/e-server-side-source.c:1095
 #: ../libedataserver/e-source.c:1308
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1020
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "El origen de datos %s no soporta la autenticación OAuth 2.0"
 
-#: ../libebackend/e-server-side-source.c:1406
+#: ../libebackend/e-server-side-source.c:1435
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "El archivo debe tener una extensión «.source»"
@@ -5707,24 +5707,29 @@ msgstr "Integrar sus calendarios"
 msgid "Integrate your contacts"
 msgstr "Integrar sus contactos"
 
+#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:257
+msgid "Signon service did not return a secret"
+msgstr "El servicio de inicio de sesión no devolvió un secreto"
+
+#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
+#, c-format
+#| msgid "No such source for UID '%s'"
+msgid "No such data source for UID '%s'"
+msgstr "No existe una fuente para el UID «%s»"
+
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
-#| msgid "Calendar"
 msgid "Google Calendar"
 msgstr "Calendario de Google"
 
 #: ../modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
-#| msgctxt "CategoryName"
-#| msgid "Hot Contacts"
 msgid "Google Contacts"
 msgstr "Contactos de Google"
 
 #: ../modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-#| msgid "Mailer"
 msgid "GMail"
 msgstr "GMail"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
-#| msgid "Mailer"
 msgid "Mail"
 msgstr "Correo-e"
 
@@ -5732,11 +5737,8 @@ msgstr "Correo-e"
 msgid "Integrate your mailboxes"
 msgstr "Integrar sus carpetas de correo"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1001
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:971
 #, c-format
-#| msgid ""
-#| "Cannot find a corresponding account in the org.gnome.OnlineAccounts "
-#| "service from which to obtain an access token for '%s'"
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
 "which to obtain an access token for '%s'"
@@ -5744,24 +5746,22 @@ msgstr ""
 "No se puede encontrar una cuenta correspondiente en la base de datos de la "
 "que obtener un token de acceso para «%s»"
 
-#: ../modules/ubuntu-online-accounts/uoa-utils.c:82
+#: ../modules/ubuntu-online-accounts/uoa-utils.c:79
 #, c-format
 msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
 msgstr ""
 "Se esperada un estado 200 al solicitar el guid, pero se obtuvo el estado %d "
 "(%s)"
 
-#: ../modules/ubuntu-online-accounts/uoa-utils.c:99
-#| msgid "Error parsing filter: %s: %s"
+#: ../modules/ubuntu-online-accounts/uoa-utils.c:96
 msgid "Error parsing response as JSON: "
 msgstr "Error al analizar la respuesta como JSON: "
 
-#: ../modules/ubuntu-online-accounts/uoa-utils.c:115
+#: ../modules/ubuntu-online-accounts/uoa-utils.c:112
 msgid "Didn't find email member in JSON data"
 msgstr "No se encontró el correo-e del miembro en los datos JSON"
 
 #: ../modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
-#| msgid "Calendar"
 msgid "Yahoo! Calendar"
 msgstr "Yahoo! Calendar"
 
