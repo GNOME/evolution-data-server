@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-02-04 12:46+0000\n"
-"PO-Revision-Date: 2013-02-04 17:38+0100\n"
+"POT-Creation-Date: 2013-02-04 18:11+0000\n"
+"PO-Revision-Date: 2013-02-05 16:39+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -28,27 +28,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: Gtranslator 2.91.5\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:103
+#: ../addressbook/backends/file/e-book-backend-file.c:113
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Falló al quitar el archivo «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:127
+#: ../addressbook/backends/file/e-book-backend-file.c:137
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Falló al crear la carpeta %s: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:374
+#: ../addressbook/backends/file/e-book-backend-file.c:384
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Falló al crear el enlace duro para el recurso «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:476
+#: ../addressbook/backends/file/e-book-backend-file.c:486
 #: ../addressbook/backends/file/e-book-backend-file.c:900
 msgid "No UID in the contact"
 msgstr "El contacto no tiene ningún UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:751
+#: ../addressbook/backends/file/e-book-backend-file.c:756
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Encontrados UID en conflicto en los contactos añadidos"
@@ -59,22 +59,22 @@ msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr ""
 "Se intentó modificar el contacto «%s» sin la revisión de la sincronización"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1030
+#: ../addressbook/backends/file/e-book-backend-file.c:1025
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2136
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Contacto «%s» no encontrado"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1214
+#: ../addressbook/backends/file/e-book-backend-file.c:1193
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1216
+#: ../addressbook/backends/file/e-book-backend-file.c:1195
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4918
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1379
+#: ../addressbook/backends/file/e-book-backend-file.c:1507
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
@@ -308,10 +308,10 @@ msgstr "Propiedad «%s» de la libreta desconocida"
 msgid "Cannot change value of book property '%s'"
 msgstr "No se puede cambiar el valor de la propiedad «%s» de la libreta"
 
-#: ../addressbook/libebook/e-book-client.c:1163
-#: ../addressbook/libebook/e-book-client.c:1336
-#: ../calendar/libecal/e-cal-client.c:1567
-#: ../calendar/libecal/e-cal-client.c:1747
+#: ../addressbook/libebook/e-book-client.c:1165
+#: ../addressbook/libebook/e-book-client.c:1338
+#: ../calendar/libecal/e-cal-client.c:1570
+#: ../calendar/libecal/e-cal-client.c:1750
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "No se pudo conectar a «%s: "
@@ -1168,20 +1168,14 @@ msgstr "No se pueden quitar los contactos: "
 msgid "No backend name in source '%s'"
 msgstr "No existe ningún nombre de «backend» en la fuente «%s»"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:106
-#: ../calendar/libedata-cal/e-data-cal-factory.c:110
-#, c-format
-msgid "Invalid backend name '%s' in source '%s'"
-msgstr "Nombre de «backend» «%s» no válido en la fuente «%s»"
-
-#: ../addressbook/libedata-book/e-data-book-factory.c:191
-#: ../calendar/libedata-cal/e-data-cal-factory.c:196
+#: ../addressbook/libedata-book/e-data-book-factory.c:185
+#: ../calendar/libedata-cal/e-data-cal-factory.c:191
 #, c-format
 msgid "Missing source UID"
 msgstr "Falta el UID de la fuente"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:202
-#: ../calendar/libedata-cal/e-data-cal-factory.c:206
+#: ../addressbook/libedata-book/e-data-book-factory.c:196
+#: ../calendar/libedata-cal/e-data-cal-factory.c:201
 #, c-format
 msgid "No such source for UID '%s'"
 msgstr "No existe una fuente para el UDI «%s»"
@@ -4736,13 +4730,19 @@ msgstr "%s no soporta la creación de recursos remotos"
 msgid "%s does not support deleting remote resources"
 msgstr "%s no soporta eliminar recursos remotos"
 
+#: ../libebackend/e-data-factory.c:320
+#, c-format
+#| msgid "No backend name in source '%s'"
+msgid "No backend factory for hash key '%s'"
+msgstr "No existe ningún «backend» de fábrica para la clave «%s»"
+
 #: ../libebackend/e-server-side-source.c:134
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Falta [%s] grupo en la fuente de datos"
 
 #: ../libebackend/e-server-side-source.c:1008
-#: ../libedataserver/e-source.c:1111
+#: ../libedataserver/e-source.c:1112
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "La fuente de datos «%s» no soporta crear recursos remotos"
@@ -4756,7 +4756,7 @@ msgstr ""
 "recurso remoto"
 
 #: ../libebackend/e-server-side-source.c:1050
-#: ../libedataserver/e-source.c:1218
+#: ../libedataserver/e-source.c:1219
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "La fuente de datos «%s» no soporta eliminar recursos remotos"
@@ -4770,7 +4770,7 @@ msgstr ""
 "recurso remoto"
 
 #: ../libebackend/e-server-side-source.c:1095
-#: ../libedataserver/e-source.c:1308
+#: ../libedataserver/e-source.c:1309
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -4978,22 +4978,22 @@ msgstr "Introduzca la contraseña para la lista de tareas «%s»."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Introduzca la contraseña para la cuenta «%s»."
 
-#: ../libedataserver/e-source.c:621
+#: ../libedataserver/e-source.c:622
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Falta [%s] grupo en el archivo de fuentes"
 
-#: ../libedataserver/e-source.c:938
+#: ../libedataserver/e-source.c:939
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "La fuente de datos «%s» no es eliminable:"
 
-#: ../libedataserver/e-source.c:1020
+#: ../libedataserver/e-source.c:1021
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "La fuente de datos «%s» no es escribible:"
 
-#: ../libedataserver/e-source.c:1514
+#: ../libedataserver/e-source.c:1515
 msgid "Unnamed"
 msgstr "Sin nombre"
 
@@ -5713,7 +5713,6 @@ msgstr "El servicio de inicio de sesión no devolvió un secreto"
 
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
 #, c-format
-#| msgid "No such source for UID '%s'"
 msgid "No such data source for UID '%s'"
 msgstr "No existe una fuente para el UID «%s»"
 
@@ -5823,6 +5822,9 @@ msgstr "WebDAV"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
 msgstr "_Descartar"
+
+#~ msgid "Invalid backend name '%s' in source '%s'"
+#~ msgstr "Nombre de «backend» «%s» no válido en la fuente «%s»"
 
 #~ msgid "Failed to run book factory"
 #~ msgstr "Falló al ejecutar la fábrica de la libreta"
