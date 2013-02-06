@@ -36,7 +36,6 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
 	-DE_DATA_SERVER_PRIVDATADIR=\"$(privdatadir)\"			\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"				\
-	-DDEFAULT_EDS_DBUS_TIMEOUT=$(DEFAULT_EDS_DBUS_TIMEOUT)		\
 	$(E_DATA_SERVER_CFLAGS)						\
 	$(GCR_BASE_CFLAGS)						\
 	$(GIO_UNIX_CFLAGS)						\
