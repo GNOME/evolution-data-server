@@ -39,7 +39,7 @@ struct _CamelMimeFilterToHTMLPrivate {
 
 	CamelUrlScanner *scanner;
 
-	guint32 flags;
+	CamelMimeFilterToHTMLFlags flags;
 	guint32 color;
 
 	guint32 column   : 31;
@@ -62,7 +62,7 @@ struct _CamelMimeFilterToHTMLPrivate {
 #define CONVERT_ADDRSPEC  CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES
 
 static struct {
-	guint mask;
+	CamelMimeFilterToHTMLFlags mask;
 	urlpattern_t pattern;
 } patterns[] = {
 	{ CONVERT_WEB_URLS, { "file://",   "",        camel_url_file_start,     camel_url_file_end     } },
@@ -502,7 +502,7 @@ camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
  * Returns: a new #CamelMimeFilterToHTML object
  **/
 CamelMimeFilter *
-camel_mime_filter_tohtml_new (guint32 flags,
+camel_mime_filter_tohtml_new (CamelMimeFilterToHTMLFlags flags,
                               guint32 color)
 {
 	CamelMimeFilter *filter;
@@ -537,7 +537,7 @@ camel_mime_filter_tohtml_new (guint32 flags,
  **/
 gchar *
 camel_text_to_html (const gchar *in,
-                    guint32 flags,
+                    CamelMimeFilterToHTMLFlags flags,
                     guint32 color)
 {
 	CamelMimeFilter *filter;

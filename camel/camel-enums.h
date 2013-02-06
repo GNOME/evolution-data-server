@@ -135,6 +135,19 @@ typedef enum { /*< flags >*/
 
 #define CAMEL_FOLDER_TYPE_MASK (63 << CAMEL_FOLDER_TYPE_BIT)
 
+typedef enum { /*< flags >*/
+	CAMEL_MIME_FILTER_TOHTML_PRE               = 1 << 0,
+	CAMEL_MIME_FILTER_TOHTML_CONVERT_NL        = 1 << 1,
+	CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES    = 1 << 2,
+	CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS      = 1 << 3,
+	CAMEL_MIME_FILTER_TOHTML_MARK_CITATION     = 1 << 4,
+	CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES = 1 << 5,
+	CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT       = 1 << 6,
+	CAMEL_MIME_FILTER_TOHTML_CITE              = 1 << 7,
+	CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT     = 1 << 8,
+	CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED     = 1 << 9
+} CamelMimeFilterToHTMLFlags;
+
 /* WARNING: This enum and CamelFolderInfoFlags must stay in sync.
  * FIXME: Eliminate the need for two separate types. */
 typedef enum { /*< flags >*/
