@@ -1666,7 +1666,7 @@ PUBLIC_GETTER (localedir)
 
 #endif	/* G_OS_WIN32 */
 
-static gint default_dbus_timeout = DEFAULT_EDS_DBUS_TIMEOUT;
+static gint default_dbus_timeout = -1;
 
 /**
  * e_data_server_util_set_dbus_call_timeout:
@@ -1682,6 +1682,8 @@ static gint default_dbus_timeout = DEFAULT_EDS_DBUS_TIMEOUT;
  * and -1 is used when not set.
  *
  * Since: 3.0
+ *
+ * Deprecated: 3.8: This value is not used anywhere.
  **/
 void
 e_data_server_util_set_dbus_call_timeout (gint timeout_msec)
@@ -1697,6 +1699,8 @@ e_data_server_util_set_dbus_call_timeout (gint timeout_msec)
  * Returns: the D-Bus call timeout in milliseconds
  *
  * Since: 3.0
+ *
+ * Deprecated: 3.8: This value is not used anywhere.
  **/
 gint
 e_data_server_util_get_dbus_call_timeout (void)

@@ -126,11 +126,6 @@ gchar *		e_util_replace_prefix		(const gchar *configure_time_prefix,
 						 const gchar *configure_time_path);
 #endif
 
-gint		e_data_server_util_get_dbus_call_timeout
-						(void);
-void		e_data_server_util_set_dbus_call_timeout
-						(gint timeout_msec);
-
 /* utility functions for easier processing of named parameters */
 
 /**
@@ -168,6 +163,11 @@ GSList *	e_util_copy_string_slist	(GSList *copy_to,
 						 const GSList *strings);
 GSList *	e_util_copy_object_slist	(GSList *copy_to,
 						 const GSList *objects);
+gint		e_data_server_util_get_dbus_call_timeout
+						(void);
+void		e_data_server_util_set_dbus_call_timeout
+						(gint timeout_msec);
+
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
