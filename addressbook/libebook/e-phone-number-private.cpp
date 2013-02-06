@@ -102,11 +102,17 @@ e_phone_number_make_region_code (const gchar *region_code)
 		/* From outside this is a C library, so we better consult the
 		 * C infrastructure instead of std::locale, which might divert. */
 		std::string current_region = setlocale (LC_ADDRESS, NULL);
+		const std::string::size_type uscore = current_region.find ('_');
 
-		const std::string::size_type underscore = current_region.find ('_');
+		if (uscore != std::string::npos) {
+			const std::string::size_type n = std::min (uscore + 3, current_region.length ());
 
-		if (underscore != std::string::npos)
-			current_region.resize (underscore);
+			if (n == current_region.length() || not ::isalpha(current_region.at(n)))
+				current_region = current_region.substr (uscore + 1, 2);
+		}
+
+		if (current_region.length() != 2)
+			return "US";
 
 		return current_region;
 	}
