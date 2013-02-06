@@ -426,16 +426,23 @@ func_n_ary (EBookQueryNAry make_query,
 
 		qs = g_new0 (EBookQuery *, argc);
 
-		for (i = 0; i < argc; i++) {
+		for (i = argc - 1; i >= 0; --i) {
 			GList *list_head = *list;
-			if (!list_head)
-				break;
+
+			if (!list_head) {
+				g_free (qs);
+
+				r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+				r->value.boolean = TRUE;
+
+				return r;
+			}
+
 			qs[i] = list_head->data;
 			*list = g_list_delete_link(*list, list_head);
 		}
 
 		*list = g_list_prepend(*list, make_query (argc, qs, TRUE));
-
 		g_free (qs);
 	}
 
