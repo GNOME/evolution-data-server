@@ -1423,6 +1423,7 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 		if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN &&
 		    g_strcmp0 (old_host, host) == 0 &&
 		    g_strcmp0 (old_hash, hash) == 0) {
+			g_byte_array_unref (bytes);
 			g_free (old_host);
 			g_free (old_hash);
 			g_free (hash);
