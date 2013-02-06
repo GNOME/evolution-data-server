@@ -453,7 +453,7 @@ e_cal_backend_weather_get_backend_property (ECalBackendSync *backend,
 		/* Weather has no particular email addresses associated with it */
 		*prop_value = NULL;
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
-		g_propagate_error (perror, EDC_ERROR (UnsupportedMethod));
+		*prop_value = NULL;
 	} else {
 		processed = FALSE;
 	}

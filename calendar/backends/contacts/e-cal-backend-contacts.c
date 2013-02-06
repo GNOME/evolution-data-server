@@ -1023,7 +1023,7 @@ e_cal_backend_contacts_get_backend_property (ECalBackendSync *backend,
 		 */
 		*prop_value = NULL;
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
-		g_propagate_error (perror, EDC_ERROR (UnsupportedMethod));
+		*prop_value = NULL;
 	} else {
 		processed = FALSE;
 	}
