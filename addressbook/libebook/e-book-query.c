@@ -4,6 +4,7 @@
 
 #include <config.h>
 
+#include <locale.h>
 #include <stdarg.h>
 #include <string.h>
 
@@ -36,6 +37,7 @@ struct EBookQuery {
 			EBookQueryTest test;
 			gchar          *field_name;
 			gchar          *value;
+			gchar          *locale;
 		} field_test;
 
 		struct {
@@ -195,6 +197,34 @@ e_book_query_not (EBookQuery *q,
 	return ret;
 }
 
+static const gchar *
+address_locale (void)
+{
+	const gchar *locale = setlocale (LC_ADDRESS, NULL);
+
+	if (locale == NULL || strcmp (locale, "C") == 0)
+		locale = setlocale (LC_MESSAGES, NULL);
+
+	return locale;
+}
+
+static EBookQuery *
+e_book_query_field_test_with_locale (EContactField field,
+                                     EBookQueryTest test,
+                                     const gchar *value,
+                                     const gchar *locale)
+{
+	EBookQuery *ret = g_new0 (EBookQuery, 1);
+
+	ret->type = E_BOOK_QUERY_TYPE_FIELD_TEST;
+	ret->query.field_test.field_name = g_strdup (e_contact_field_name (field));
+	ret->query.field_test.test = test;
+	ret->query.field_test.value = g_strdup (value);
+	ret->query.field_test.locale = g_strdup (locale ? locale : address_locale ());
+
+	return ret;
+}
+
 /**
  * e_book_query_field_test:
  * @field: an #EContactField to test
@@ -210,12 +240,22 @@ e_book_query_field_test (EContactField field,
                          EBookQueryTest test,
                          const gchar *value)
 {
+	return e_book_query_field_test_with_locale (field, test, value, NULL);
+}
+
+static EBookQuery *
+e_book_query_vcard_field_test_with_locale (const gchar *field,
+                                           EBookQueryTest test,
+                                           const gchar *value,
+                                           const gchar *locale)
+{
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
 	ret->type = E_BOOK_QUERY_TYPE_FIELD_TEST;
-	ret->query.field_test.field_name = g_strdup (e_contact_field_name (field));
+	ret->query.field_test.field_name = g_strdup (field);
 	ret->query.field_test.test = test;
 	ret->query.field_test.value = g_strdup (value);
+	ret->query.field_test.locale = g_strdup (locale);
 
 	return ret;
 }
@@ -444,6 +484,20 @@ func_not (struct _ESExp *f,
 	return r;
 }
 
+static EBookQuery *
+field_test_query (EBookQueryTest op,
+                  const gchar *propname,
+                  const gchar *value,
+                  const gchar *locale)
+{
+	const EContactField field = e_contact_field_id (propname);
+
+	if (field)
+		return e_book_query_field_test_with_locale (field, op, value, locale);
+
+	return e_book_query_vcard_field_test_with_locale (propname, op, value, locale);
+}
+
 static ESExpResult *
 func_field_test (EBookQueryTest op,
                  struct _ESExp *f,
@@ -457,22 +511,27 @@ func_field_test (EBookQueryTest op,
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		gchar *propname = argv[0]->value.string;
-		gchar *str = argv[1]->value.string;
+		const gchar *const propname = argv[0]->value.string;
+		const gchar *const value = argv[1]->value.string;
 		EBookQuery *q;
 
 		if (op == E_BOOK_QUERY_CONTAINS
 		    && strcmp (propname, "x-evolution-any-field") == 0) {
-			q = e_book_query_any_field_contains (str);
+			q = e_book_query_any_field_contains (value);
 		} else {
-			EContactField field = e_contact_field_id (propname);
-
-			if (field)
-				q = e_book_query_field_test (field, op, str);
-			else
-				q = e_book_query_vcard_field_test (propname, op, str);
+			q = field_test_query (op, propname, value, NULL);
 		}
 
+		*list = g_list_prepend (*list, q);
+	} else if (argc == 3
+	    && argv[0]->type == ESEXP_RES_STRING
+	    && argv[1]->type == ESEXP_RES_STRING
+	    && argv[2]->type == ESEXP_RES_STRING) {
+		const gchar *const propname = argv[0]->value.string;
+		const gchar *const value = argv[1]->value.string;
+		const gchar *const locale = argv[2]->value.string;
+
+		EBookQuery *q = field_test_query (op, propname, value, locale);
 		*list = g_list_prepend (*list, q);
 	}
 
@@ -689,6 +748,25 @@ field_test_name (EBookQueryTest field_test)
 	return NULL;
 }
 
+static gboolean
+is_phone_test (EBookQueryTest field_test)
+{
+	switch (field_test) {
+	case E_BOOK_QUERY_EQUALS_PHONE_NUMBER:
+	case E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER:
+	case E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER:
+		return TRUE;
+
+	case E_BOOK_QUERY_IS:
+	case E_BOOK_QUERY_CONTAINS:
+	case E_BOOK_QUERY_BEGINS_WITH:
+	case E_BOOK_QUERY_ENDS_WITH:
+		break;
+	}
+
+	return FALSE;
+}
+
 /**
  * e_book_query_to_string:
  * @q: an #EBookQuery
@@ -753,6 +831,10 @@ e_book_query_to_string (EBookQuery *q)
 			str, "%s \"%s\" %s", fn,
 			q->query.field_test.field_name,
 			encoded->str);
+
+		if (is_phone_test (q->query.field_test.test))
+			g_string_append_printf (str, " \"%s\"", address_locale ());
+
 		break;
 	case E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS:
 		g_string_append_printf (str, "contains \"x-evolution-any-field\"");

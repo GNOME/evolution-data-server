@@ -20,6 +20,7 @@
 
 #include "e-book-backend-sexp.h"
 
+#include <locale.h>
 #include <string.h>
 
 #define E_BOOK_BACKEND_SEXP_GET_PRIVATE(obj) \
@@ -377,15 +378,23 @@ entry_compare (SearchContext *ctx,
 {
 	ESExpResult *r;
 	gint truth = FALSE;
+	const gchar *saved_locale = NULL;
 
-	if (argc == 2
-	    && argv[0]->type == ESEXP_RES_STRING
-	    && argv[1]->type == ESEXP_RES_STRING) {
+	if ((argc == 2
+		&& argv[0]->type == ESEXP_RES_STRING
+		&& argv[1]->type == ESEXP_RES_STRING) ||
+	    (argc == 3
+		&& argv[0]->type == ESEXP_RES_STRING
+		&& argv[1]->type == ESEXP_RES_STRING
+		&& argv[2]->type == ESEXP_RES_STRING)) {
 		gchar *propname;
 		struct prop_info *info = NULL;
 		gint i;
 		gboolean any_field;
 		gboolean saw_any = FALSE;
+
+		if (argc > 2)
+			saved_locale = setlocale (LC_ADDRESS, argv[2]->value.string);
 
 		propname = argv[0]->value.string;
 
@@ -485,6 +494,10 @@ entry_compare (SearchContext *ctx,
 			}
 		}
 	}
+
+	if (saved_locale)
+		saved_locale = setlocale (LC_ADDRESS, saved_locale);
+
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
