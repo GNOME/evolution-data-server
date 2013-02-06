@@ -305,26 +305,38 @@ book_backend_sql_exec_real (sqlite3 *db,
 
 static gint
 print_debug_cb (gpointer ref,
-                gint col,
+		gint n_cols,
                 gchar **cols,
                 gchar **name)
 {
 	gint i;
 
-	g_printerr ("  DEBUG BEGIN: %d results\n", col);
+	g_printerr ("  DEBUG BEGIN:\n");
 
-	for (i = 0; i < col; i++)
-		g_printerr ("    NAME: '%s' COL: %s\n", name[i], cols[i]);
+	for (i = 0; i < n_cols; i++)
+		g_printerr ("    NAME: '%s' VALUE: %s\n", name[i], cols[i]);
 
 	g_printerr ("  DEBUG END\n");
 
 	return 0;
 }
 
+static gint G_GNUC_CONST
+booksql_debug (void)
+{
+	static gint booksql_debug = -1;
+
+	if (booksql_debug == -1) {
+		const gchar *const tmp = g_getenv ("BOOKSQL_DEBUG");
+		booksql_debug = (tmp != NULL ? MAX (0, atoi (tmp)) : 0);
+	}
+
+	return booksql_debug;
+}
+
 static void
 book_backend_sql_debug (sqlite3 *db,
                         const gchar *stmt,
-                        gint debug_level,
                         gint (*callback)(gpointer ,gint,gchar **,gchar **),
                         gpointer data,
                         GError **error)
@@ -333,7 +345,7 @@ book_backend_sql_debug (sqlite3 *db,
 
 	g_printerr ("DEBUG STATEMENT: %s\n", stmt);
 
-	if (debug_level > 1) {
+	if (booksql_debug () > 1) {
 		gchar *debug = g_strconcat ("EXPLAIN QUERY PLAN ", stmt, NULL);
 		book_backend_sql_exec_real (db, debug, print_debug_cb, NULL, &local_error);
 		g_free (debug);
@@ -341,7 +353,7 @@ book_backend_sql_debug (sqlite3 *db,
 
 	if (local_error) {
 		g_printerr ("DEBUG STATEMENT END: Error: %s\n", local_error->message);
-	} else if (debug_level > 1) {
+	} else if (booksql_debug () > 1) {
 		g_printerr ("DEBUG STATEMENT END: Success\n");
 	}
 
@@ -355,15 +367,8 @@ book_backend_sql_exec (sqlite3 *db,
                        gpointer data,
                        GError **error)
 {
-	static gint booksql_debug = -1;
-
-	if (booksql_debug == -1) {
-		const gchar *const tmp = g_getenv ("BOOKSQL_DEBUG");
-		booksql_debug = (tmp != NULL ? MAX (0, atoi (tmp)) : 0);
-	}
-
-	if (booksql_debug)
-		book_backend_sql_debug (db, stmt, booksql_debug, callback, data, error);
+	if (booksql_debug ())
+		book_backend_sql_debug (db, stmt, callback, data, error);
 
 	return book_backend_sql_exec_real (db, stmt, callback, data, error);
 }
