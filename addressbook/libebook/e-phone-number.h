@@ -48,7 +48,7 @@ G_BEGIN_DECLS
  * @E_PHONE_NUMBER_FORMAT_INTERNATIONAL: a formatted phone number always
  * starting with the country calling code: "+49 30 55667788".
  * @E_PHONE_NUMBER_FORMAT_NATIONAL: a formatted phone number in national
- * scope, that is without country code: "(030) 55667788".
+ * scope, that is without country calling code: "(030) 55667788".
  * @E_PHONE_NUMBER_FORMAT_RFC3966: a tel: URL according to RFC 3966:
  * "tel:+49-30-55667788".
  *
@@ -67,18 +67,19 @@ typedef enum {
  * EPhoneNumberMatch:
  * @E_PHONE_NUMBER_MATCH_NONE: The phone numbers did not match.
  * @E_PHONE_NUMBER_MATCH_EXACT: The phone numbers matched exactly.
- * @E_PHONE_NUMBER_MATCH_NATIONAL: There was no country code for at least
- * one of the numbers, but the national parts matched.
- * @E_PHONE_NUMBER_MATCH_SHORT: There was no country code for at least
- * one of the numbers, but one number might be part (suffix) of the other.
+ * @E_PHONE_NUMBER_MATCH_NATIONAL: There was no country calling code
+ * for at least one of the numbers, but the national parts matched.
+ * @E_PHONE_NUMBER_MATCH_SHORT: There was no country calling code for
+ * at least one of the numbers, but one number might be part (suffix)
+ * of the other.
  *
  * The quality of a phone number match.
 
  * Let's consider the phone number "+1-221-5423789", then comparing with
  * "+1.221.542.3789" we have get E_PHONE_NUMBER_MATCH_EXACT because country
  * code, region code and local number are matching. Comparing with "2215423789"
- * will result in E_PHONE_NUMBER_MATCH_NATIONAL because the country code is
- * missing, but the national portion is matching. Finally comparing with
+ * will result in E_PHONE_NUMBER_MATCH_NATIONAL because the country calling code
+ * is missing, but the national portion is matching. Finally comparing with
  * "5423789" gives E_PHONE_NUMBER_MATCH_SHORT. For more detail have a look at
  * the following table:
  *
@@ -141,10 +142,10 @@ typedef enum {
  * @E_PHONE_NUMBER_ERROR_UNKNOWN: the phone number parser reported an yet
  * unkown error code.
  * @E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE: the supplied phone number has an
- * invalid country code.
+ * invalid country calling code.
  * @E_PHONE_NUMBER_ERROR_NOT_A_NUMBER: the supplied text is not a phone number.
  * @E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD: the remaining text after the
- * country code is to short for a phone number.
+ * country calling code is to short for a phone number.
  * @E_PHONE_NUMBER_ERROR_TOO_SHORT: the text is too short for a phone number.
  * @E_PHONE_NUMBER_ERROR_TOO_LONG: the text is too long for a phone number.
  *
@@ -165,15 +166,16 @@ typedef enum {
 /**
  * EPhoneNumberCountrySource:
  * @E_PHONE_NUMBER_COUNTRY_FROM_FQTN: the EPhoneNumber was build from a
- * fully qualified telephone number that contained a valid country code
+ * fully qualified telephone number that contained a valid country
+ * calling code
  * @E_PHONE_NUMBER_COUNTRY_FROM_IDD: the parsed phone number started
  * with the current locale's international call prefix, followed by a
- * valid country code
+ * valid country calling code
  * @E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT: the parsed phone didn't start
- * with a (recognizable) country code, the country code was chosen by
+ * with a (recognizable) country calling code, the code was chosen by
  * checking the current locale settings
  *
- * The origin of a parsed EPhoneNumber's country code.
+ * The origin of a parsed EPhoneNumber's country calling code.
  *
  * Since: 3.8
  **/

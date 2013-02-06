@@ -25,7 +25,7 @@ typedef struct EBookQuery EBookQuery;
  * formatting like dashes, dots and spaces. See E_PHONE_NUMBER_MATCH_EXACT.
  * @E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER: check that a field and the
  * test value match when interpreted as phone number, except for the
- * (omitted) country code.
+ * (omitted) country calling code.
  * @E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER: check that a field and the test
  * value match is the sense that both values appear to be phone numbers,
  * and one might be a part (suffix) of the other.

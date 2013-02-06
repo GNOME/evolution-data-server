@@ -46,9 +46,9 @@ e_phone_number_error_to_string (EPhoneNumberError code)
 	case E_PHONE_NUMBER_ERROR_NOT_A_NUMBER:
 		return _("Not a phone number");
 	case E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE:
-		return _("Invalid country code");
+		return _("Invalid country calling code");
 	case E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD:
-		return _("Remaining text after the country code is to short for a phone number");
+		return _("Remaining text after the country calling code is to short for a phone number");
 	case E_PHONE_NUMBER_ERROR_TOO_SHORT:
 		return _("Text is too short for a phone number");
 	case E_PHONE_NUMBER_ERROR_TOO_LONG:
@@ -94,14 +94,16 @@ e_phone_number_is_supported (void)
 
 /**
  * e_phone_number_get_country_code_for_region:
- * @region_code: (allow-none): a 2-letter country code, or %NULL
+ * @region_code: (allow-none): a two-letter country code, or %NULL
  *
- * Returns the preferred country code for @region_code, e.g. 358 for "fi".
+ * Retrieves the preferred country calling code for @region_code,
+ * e.g. 358 for "fi".
  *
  * If %NULL is passed for @region_code the default region as returned by
  * e_phone_number_get_default_region() is used.
  *
- * Returns: a valid country code, or zero if an unknown region code was passed.
+ * Returns: a valid country calling code, or zero if an unknown region
+ * code was passed.
  *
  * Since: 3.8
  */
@@ -123,7 +125,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code)
 /**
  * e_phone_number_get_default_region:
  *
- * Retrieves the current 2-letter region code that's used by default for
+ * Retrieves the current two-letter country code that's used by default for
  * parsing phone numbers in e_phone_number_from_string(). It can be useful
  * to store this number before parsing a bigger number of phone numbers.
  *
@@ -133,7 +135,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code)
  * locale name configured for %LC_ADDRESS is parsed.
  *
  * Returns: (transfer full): a newly allocated string containing the
- * current locale's 2-letter code for phone number parsing.
+ * current locale's two-letter code for phone number parsing.
  *
  * Since: 3.8
  */
@@ -155,14 +157,14 @@ e_phone_number_get_default_region (void)
 /**
  * e_phone_number_from_string:
  * @phone_number: the phone number to parse
- * @region_code: (allow-none): a 2-letter country code, or %NULL
+ * @region_code: (allow-none): a two-letter country code, or %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Parses the string passed in @phone_number. Note that no validation is
  * performed whether the recognized phone number is valid for a particular
  * region.
  *
- * The 2-letter country code passed in @region_code only is used if the
+ * The two-letter country code passed in @region_code only is used if the
  * @phone_number is not written in international format. The application's
  * default region as returned by e_phone_number_get_default_region() is used
  * if @region_code is %NULL.
@@ -224,11 +226,11 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
  * @phone_number: the phone number to query
  * @source: an optional location for storing the phone number's origin, or %NULL
  *
- * Queries the @phone_number's country code and optionally stores the country code's
- * origin in @source. For instance when parsing "+1-617-5423789" this function
- * would return one and assing E_PHONE_NUMBER_COUNTRY_FROM_FQTN to @source.
+ * Queries the @phone_number's country calling code and optionally stores the country
+ * calling code's origin in @source. For instance when parsing "+1-617-5423789" this
+ * function would return one and assing E_PHONE_NUMBER_COUNTRY_FROM_FQTN to @source.
  *
- * Returns: A valid country code, or zero if no country code is known.
+ * Returns: A valid country calling code, or zero if no code is known.
  *
  * Since: 3.8
  **/

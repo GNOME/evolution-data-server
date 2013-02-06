@@ -91,13 +91,13 @@ e_phone_number_error_code (PhoneNumberUtil::ErrorType error)
 static std::string
 e_phone_number_make_region_code (const gchar *region_code)
 {
-	/* Get country code from current locale's address facet if supported */
+	/* Get two-letter country code from current locale's address facet if supported */
 #if HAVE__NL_ADDRESS_COUNTRY_AB2
 	if (region_code == NULL || region_code[0] == '\0')
 		region_code = nl_langinfo (_NL_ADDRESS_COUNTRY_AB2);
 #endif /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
 
-	/* Extract country code from current locale id if needed */
+	/* Extract two-letter country code from current locale id if needed */
 	if (region_code == NULL || region_code[0] == '\0') {
 		/* From outside this is a C library, so we better consult the
 		 * C infrastructure instead of std::locale, which might divert. */
