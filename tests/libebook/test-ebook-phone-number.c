@@ -345,6 +345,18 @@ test_country_code_for_region (void)
 	g_assert_cmpint (e_phone_number_get_country_code_for_region (""), ==, 1);
 }
 
+static void
+test_default_region (void)
+{
+	gchar *country;
+
+	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+
+	country = e_phone_number_get_default_region ();
+	g_assert_cmpstr (country, ==, "US");
+	g_free (country);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -417,6 +429,9 @@ main (gint argc,
 	g_test_add_func (
 		"/ebook-phone-number/country-code/for-region",
 		test_country_code_for_region);
+	g_test_add_func (
+		"/ebook-phone-number/country-code/default-region",
+		test_default_region);
 
 	return g_test_run ();
 }
