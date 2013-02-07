@@ -91,6 +91,8 @@ struct _ETestServerClosure {
 	ETestServiceType         type;
 	ETestSourceCustomizeFunc customize;
 	gint                     calendar_source_type;
+	gboolean                 keep_work_directory;
+	GDestroyNotify           destroy_closure_func;
 };
 
 /**

@@ -359,8 +359,12 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	}
 
 	/* Cleanup work directory */
-	if (!test_installed_services ())
+	if (!closure->keep_work_directory && !test_installed_services ())
 		delete_work_directory ();
+
+	/* Destroy dynamically allocated closure */
+	if (closure->destroy_closure_func)
+		closure->destroy_closure_func (closure);
 }
 
 gint
