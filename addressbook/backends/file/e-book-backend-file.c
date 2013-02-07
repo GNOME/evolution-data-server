@@ -1286,7 +1286,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 
 	source = e_backend_get_source (E_BACKEND (backend));
 
-	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	g_type_ensure (E_TYPE_SOURCE_REVISION_GUARDS);
 	guards = e_source_get_extension (source, E_SOURCE_EXTENSION_REVISION_GUARDS);
 
 	bf->priv->revision_guards = e_source_revision_guards_get_enabled (guards);
@@ -1467,6 +1467,7 @@ book_backend_file_initable_init (GInitable *initable,
 	source = e_backend_get_source (E_BACKEND (initable));
 	registry = e_book_backend_get_registry (E_BOOK_BACKEND (initable));
 
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
 	extension_name = E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP;
 	setup_extension = e_source_get_extension (source, extension_name);
 
