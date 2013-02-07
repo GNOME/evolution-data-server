@@ -42,6 +42,8 @@ struct _CamelMimeFilterToHTMLPrivate {
 	CamelMimeFilterToHTMLFlags flags;
 	guint32 color;
 
+	guint blockquote_depth;
+
 	guint32 column   : 31;
 	guint32 pre_open : 1;
 };
@@ -123,29 +125,43 @@ append_string_verbatim (CamelMimeFilter *mime_filter,
 
 static gint
 citation_depth (const gchar *in,
-                const gchar *inend)
+                const gchar *inend,
+                goffset *out_skip)
 {
 	register const gchar *inptr = in;
-	gint depth = 1;
+	gint depth = 0;
+	goffset skip = 0;
+
+	if (out_skip != NULL)
+		*out_skip = 0;
 
 	if (*inptr++ != '>')
-		return 0;
+		goto exit;
 
 #if FOOLISHLY_UNMUNGE_FROM
 	/* check that it isn't an escaped From line */
-	if (!strncmp (inptr, "From", 4))
-		return 0;
+	if (!strncmp (inptr, "From", 4)) {
+		goto exit;
 #endif
 
+	depth = 1;
+
 	while (inptr < inend && *inptr != '\n') {
-		if (*inptr == ' ')
+		if (*inptr == ' ') {
 			inptr++;
+			skip++;
+		}
 
 		if (inptr >= inend || *inptr++ != '>')
 			break;
 
 		depth++;
+		skip++;
 	}
+
+exit:
+	if (out_skip != NULL)
+		*out_skip = (depth > 0) ? skip : 0;
 
 	return depth;
 }
@@ -243,21 +259,33 @@ html_convert (CamelMimeFilter *mime_filter,
 	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	if (inlen == 0) {
-		if (priv->pre_open) {
-			/* close the pre-tag */
-			outend = mime_filter->outbuf + mime_filter->outsize;
-			outptr = check_size (mime_filter, mime_filter->outbuf, &outend, 10);
-			outptr = g_stpcpy (outptr, "</pre>");
-			priv->pre_open = FALSE;
-
-			*out = mime_filter->outbuf;
-			*outlen = outptr - mime_filter->outbuf;
-			*outprespace = mime_filter->outpre;
-		} else {
+		if (!priv->pre_open && priv->blockquote_depth == 0) {
+			/* No closing tags needed. */
 			*out = (gchar *) in;
 			*outlen = 0;
 			*outprespace = 0;
+			return;
 		}
+
+		outptr = mime_filter->outbuf;
+		outend = mime_filter->outbuf + mime_filter->outsize;
+
+		while (priv->blockquote_depth > 0) {
+			outptr = check_size (mime_filter, outptr, &outend, 15);
+			outptr = g_stpcpy (outptr, "</blockquote>");
+			priv->blockquote_depth--;
+		}
+
+		if (priv->pre_open) {
+			/* close the pre-tag */
+			outptr = check_size (mime_filter, outptr, &outend, 10);
+			outptr = g_stpcpy (outptr, "</pre>");
+			priv->pre_open = FALSE;
+		}
+
+		*out = mime_filter->outbuf;
+		*outlen = outptr - mime_filter->outbuf;
+		*outprespace = mime_filter->outpre;
 
 		return;
 	}
@@ -286,7 +314,9 @@ html_convert (CamelMimeFilter *mime_filter,
 		depth = 0;
 
 		if (priv->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) {
-			if ((depth = citation_depth (start, inend)) > 0) {
+			depth = citation_depth (start, inend, NULL);
+
+			if (depth > 0) {
 				/* FIXME: we could easily support multiple color depths here */
 
 				outptr = check_size (mime_filter, outptr, &outend, 25);
@@ -298,6 +328,29 @@ html_convert (CamelMimeFilter *mime_filter,
 				start++;
 			}
 #endif
+
+		} else if (priv->flags & CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION) {
+			goffset skip = 0;
+
+			depth = citation_depth (start, inend, &skip);
+			while (priv->blockquote_depth < depth) {
+				outptr = check_size (mime_filter, outptr, &outend, 30);
+				outptr = g_stpcpy (outptr, "<blockquote type=\"cite\">\n");
+				priv->blockquote_depth++;
+			}
+			while (priv->blockquote_depth > depth) {
+				outptr = check_size (mime_filter, outptr, &outend, 15);
+				outptr = g_stpcpy (outptr, "</blockquote>\n");
+				priv->blockquote_depth--;
+			}
+#if FOOLISHLY_UNMUNGE_FROM
+			if (depth == 0 && *start == '>') {
+				/* >From line */
+				skip = 1;
+			}
+#endif
+			start += skip;
+
 		} else if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CITE) {
 			outptr = check_size (mime_filter, outptr, &outend, 6);
 			outptr = g_stpcpy (outptr, "&gt; ");
@@ -398,7 +451,17 @@ html_convert (CamelMimeFilter *mime_filter,
 	if (flush) {
 		/* flush the rest of our input buffer */
 		if (start < inend)
-			outptr = writeln (mime_filter, (const guchar *) start, (const guchar *) inend, outptr, &outend);
+			outptr = writeln (
+				mime_filter,
+				(const guchar *) start,
+				(const guchar *) inend,
+				outptr, &outend);
+
+		while (priv->blockquote_depth > 0) {
+			outptr = check_size (mime_filter, outptr, &outend, 15);
+			outptr = g_stpcpy (outptr, "</blockquote>");
+			priv->blockquote_depth--;
+		}
 
 		if (priv->pre_open) {
 			/* close the pre-tag */
@@ -407,7 +470,8 @@ html_convert (CamelMimeFilter *mime_filter,
 		}
 	} else if (start < inend) {
 		/* backup */
-		camel_mime_filter_backup (mime_filter, start, (unsigned) (inend - start));
+		camel_mime_filter_backup (
+			mime_filter, start, (gsize) (inend - start));
 	}
 
 	*out = mime_filter->outbuf;

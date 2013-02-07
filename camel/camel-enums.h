@@ -157,6 +157,10 @@ typedef enum { /*< flags >*/
  *     This flag is not used by #CamelMimeFilterToHTML.
  * @CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED:
  *     This flag is not used by #CamelMimeFilterToHTML.
+ * @CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION:
+ *     Group lines beginning with one or more '>' characters in
+ *     <blockquote type="cite"> ... </blockquote> tags.  The tags
+ *     are nested according to the number of '>' characters.
  *
  * Flags for converting text/plain content into text/html.
  **/
@@ -170,7 +174,8 @@ typedef enum { /*< flags >*/
 	CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT       = 1 << 6,
 	CAMEL_MIME_FILTER_TOHTML_CITE              = 1 << 7,
 	CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT     = 1 << 8,
-	CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED     = 1 << 9
+	CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED     = 1 << 9,
+	CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION    = 1 << 10
 } CamelMimeFilterToHTMLFlags;
 
 /* WARNING: This enum and CamelFolderInfoFlags must stay in sync.
