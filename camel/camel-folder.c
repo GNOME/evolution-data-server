@@ -2887,7 +2887,7 @@ camel_folder_search_free (CamelFolder *folder,
  * Marks @folder as deleted and performs any required cleanup.
  *
  * This also emits the #CamelFolder::deleted signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT.
+ * the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  **/
 void
 camel_folder_delete (CamelFolder *folder)
@@ -2927,10 +2927,9 @@ camel_folder_delete (CamelFolder *folder)
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->folder = g_object_ref (folder);
 
-	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
-	   same as GAsyncResult, where this operation is quite similar to it anyway */
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT,
+		session, G_PRIORITY_HIGH_IDLE,
 		folder_emit_deleted_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -2943,7 +2942,7 @@ camel_folder_delete (CamelFolder *folder)
  * Marks @folder as renamed.
  *
  * This also emits the #CamelFolder::renamed signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT.
+ * the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * NOTE: This is an internal function used by camel stores, no locking
  * is performed on the folder.
@@ -2979,10 +2978,9 @@ camel_folder_rename (CamelFolder *folder,
 	signal_data->folder = g_object_ref (folder);
 	signal_data->folder_name = old_name;  /* transfer ownership */
 
-	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
-	   same as GAsyncResult, where this operation is quite similar to it anyway */
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT,
+		session, G_PRIORITY_HIGH_IDLE,
 		folder_emit_renamed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }

@@ -53,9 +53,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
 
-/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
-   same as GAsyncResult, where this operation is quite similar to it anyway */
-#define JOB_PRIORITY G_PRIORITY_DEFAULT
+/* Prioritize ahead of GTK+ redraws. */
+#define JOB_PRIORITY G_PRIORITY_HIGH_IDLE
 
 #define d(x)
 
