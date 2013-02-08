@@ -726,7 +726,7 @@ async_report_idle (ECal *ecal,
 	data->ecal = g_object_ref (ecal);
 	data->error = error;
 
-	g_idle_add (idle_async_error_reply_cb, data);
+	g_idle_add_full (G_PRIORITY_DEFAULT, idle_async_error_reply_cb, data, NULL);
 }
 
 /**

@@ -409,7 +409,7 @@ service_queue_notify_connection_status (CamelService *service)
 	session = camel_service_get_session (service);
 
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_DEFAULT,
 		service_notify_connection_status_cb,
 		g_object_ref (service),
 		(GDestroyNotify) g_object_unref);
