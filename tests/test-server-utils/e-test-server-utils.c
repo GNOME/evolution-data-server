@@ -46,6 +46,20 @@ typedef struct {
 	ETestServerClosure *closure;
 } FixturePair;
 
+static gboolean
+test_installed_services (void)
+{
+	static gint use_installed_services = -1;
+
+	if (use_installed_services < 0) {
+		if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL)
+			use_installed_services = 1;
+		else
+			use_installed_services = 0;
+	}
+	return use_installed_services;
+}
+
 static void
 setup_environment (void)
 {
@@ -240,18 +254,20 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 	fixture->loop = g_main_loop_new (NULL, FALSE);
 
+	if (!test_installed_services ()) {
 #if !GLOBAL_DBUS_DAEMON
-	/* Create the global dbus-daemon for this test suite */
-	fixture->dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+		/* Create the global dbus-daemon for this test suite */
+		fixture->dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
 
-	/* Add the private directory with our in-tree service files */
-	g_test_dbus_add_service_dir (fixture->dbus, EDS_TEST_DBUS_SERVICE_DIR);
+		/* Add the private directory with our in-tree service files */
+		g_test_dbus_add_service_dir (fixture->dbus, EDS_TEST_DBUS_SERVICE_DIR);
 
-	/* Start the private D-Bus daemon */
-	g_test_dbus_up (fixture->dbus);
+		/* Start the private D-Bus daemon */
+		g_test_dbus_up (fixture->dbus);
 #else
-	fixture->dbus = global_test_dbus;
+		fixture->dbus = global_test_dbus;
 #endif
+	}
 
 	g_idle_add ((GSourceFunc) e_test_server_utils_bootstrap_idle, &pair);
 	g_main_loop_run (fixture->loop);
@@ -319,22 +335,24 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	g_main_loop_unref (fixture->loop);
 	fixture->loop = NULL;
 
+	if (!test_installed_services ()) {
 #if !GLOBAL_DBUS_DAEMON
-	/* Teardown the D-Bus Daemon
-	 *
-	 * Note that we intentionally leak the TestDBus daemon
-	 * in this case, presumably this is due to some leaked
-	 * GDBusConnection reference counting
-	 */
-	g_test_dbus_down (fixture->dbus);
-	g_object_unref (fixture->dbus);
-	fixture->dbus = NULL;
+		/* Teardown the D-Bus Daemon
+		 *
+		 * Note that we intentionally leak the TestDBus daemon
+		 * in this case, presumably this is due to some leaked
+		 * GDBusConnection reference counting
+		 */
+		g_test_dbus_down (fixture->dbus);
+		g_object_unref (fixture->dbus);
+		fixture->dbus = NULL;
 #else
-	fixture->dbus = NULL;
+		fixture->dbus = NULL;
 #endif
+	}
 
 	/* Cleanup work directory */
-	if (!closure->keep_work_directory)
+	if (!closure->keep_work_directory && !test_installed_services ())
 		delete_work_directory ();
 
 	/* Destroy dynamically allocated closure */
@@ -353,31 +371,34 @@ e_test_server_utils_run (void)
 	setup_environment ();
 
 #if GLOBAL_DBUS_DAEMON
+	if (!test_installed_services ()) {
+		/* Create the global dbus-daemon for this test suite */
+		global_test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
 
-	/* Create the global dbus-daemon for this test suite */
-	global_test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+		/* Add the private directory with our in-tree service files */
+		g_test_dbus_add_service_dir (global_test_dbus, EDS_TEST_DBUS_SERVICE_DIR);
 
-	/* Add the private directory with our in-tree service files */
-	g_test_dbus_add_service_dir (global_test_dbus, EDS_TEST_DBUS_SERVICE_DIR);
-
-	/* Start the private D-Bus daemon */
-	g_test_dbus_up (global_test_dbus);
+		/* Start the private D-Bus daemon */
+		g_test_dbus_up (global_test_dbus);
+	}
 #endif
 
 	/* Run the GTest suite */
 	tests_ret = g_test_run ();
 
 #if GLOBAL_DBUS_DAEMON
-	/* Teardown the D-Bus Daemon
-	 *
-	 * Note that we intentionally leak the TestDBus daemon
-	 * in this case, presumably this is due to some leaked
-	 * GDBusConnection reference counting
-	 */
-	g_test_dbus_stop (global_test_dbus);
-	/* g_object_unref (global_test_dbus); */
-	global_test_dbus = NULL;
+	if (!test_installed_services ()) {
+		/* Teardown the D-Bus Daemon
+		 *
+		 * Note that we intentionally leak the TestDBus daemon
+		 * in this case, presumably this is due to some leaked
+		 * GDBusConnection reference counting
+		 */
+		g_test_dbus_stop (global_test_dbus);
+		/* g_object_unref (global_test_dbus); */
+		global_test_dbus = NULL;
+	}
 #endif
 
-  return tests_ret;
+	return tests_ret;
 }
