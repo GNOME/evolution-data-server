@@ -92,6 +92,7 @@ struct _SignalClosure {
 	gchar *property_name;
 	gchar *error_message;
 	gchar **free_busy_data;
+	icaltimezone *cached_zone;
 };
 
 struct _ConnectClosure {
@@ -184,6 +185,9 @@ signal_closure_free (SignalClosure *signal_closure)
 	g_free (signal_closure->error_message);
 
 	g_strfreev (signal_closure->free_busy_data);
+
+	/* The icaltimezone is cached in ECalClient's internal
+	 * "zone_cache" hash table and must not be freed here. */
 
 	g_slice_free (SignalClosure, signal_closure);
 }
@@ -706,6 +710,19 @@ cal_client_emit_free_busy_data_idle_cb (gpointer user_data)
 		signals[FREE_BUSY_DATA], 0, list);
 
 	g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+
+	return FALSE;
+}
+
+static gboolean
+cal_client_emit_timezone_added_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit_by_name (
+		signal_closure->client,
+		"timezone-added",
+		signal_closure->cached_zone);
 
 	return FALSE;
 }
@@ -1292,7 +1309,6 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 {
 	ECalClientPrivate *priv;
 	const gchar *tzid;
-	gboolean timezone_added = FALSE;
 
 	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
 
@@ -1304,6 +1320,9 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 	 * invalidate any icaltimezone pointers that may have already
 	 * been returned through e_timezone_cache_get_timezone(). */
 	if (!g_hash_table_contains (priv->zone_cache, tzid)) {
+		GSource *idle_source;
+		SignalClosure *signal_closure;
+
 		icalcomponent *icalcomp;
 		icaltimezone *cached_zone;
 
@@ -1316,17 +1335,24 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 			priv->zone_cache,
 			g_strdup (tzid), cached_zone);
 
-		timezone_added = TRUE;
+		/* The closure's client reference will keep the
+		 * internally cached icaltimezone alive for the
+		 * duration of the idle callback. */
+		signal_closure = g_slice_new0 (SignalClosure);
+		signal_closure->client = g_object_ref (cache);
+		signal_closure->cached_zone = cached_zone;
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_emit_timezone_added_idle_cb,
+			signal_closure,
+			(GDestroyNotify) g_object_unref);
+		g_source_attach (idle_source, priv->main_context);
+		g_source_unref (idle_source);
 	}
 
 	g_mutex_unlock (&priv->zone_cache_lock);
-
-	/* FIXME Should emit this from an idle GSource on
-	 *       a stored GMainContext, but we don't have
-	 *       a stored GMainContext.  Check back after
-	 *       the D-Bus API rewrite. */
-	if (timezone_added)
-		g_signal_emit_by_name (cache, "timezone-added", zone);
 }
 
 static icaltimezone *
