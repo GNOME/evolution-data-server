@@ -53,7 +53,7 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
 
-#define JOB_PRIORITY G_PRIORITY_LOW
+#define JOB_PRIORITY G_PRIORITY_DEFAULT
 
 #define d(x)
 
