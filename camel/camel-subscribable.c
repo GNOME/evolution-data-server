@@ -635,6 +635,8 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 	signal_data->subscribable = g_object_ref (subscribable);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		subscribable_emit_folder_subscribed_cb,
@@ -671,6 +673,8 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 	signal_data->subscribable = g_object_ref (subscribable);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		subscribable_emit_folder_unsubscribed_cb,

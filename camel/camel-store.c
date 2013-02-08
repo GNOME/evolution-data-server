@@ -1279,6 +1279,8 @@ camel_store_folder_created (CamelStore *store,
 	signal_data->store = g_object_ref (store);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		store_emit_folder_created_cb,
@@ -1313,6 +1315,8 @@ camel_store_folder_deleted (CamelStore *store,
 	signal_data->store = g_object_ref (store);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		store_emit_folder_deleted_cb,
@@ -1347,6 +1351,8 @@ camel_store_folder_opened (CamelStore *store,
 	signal_data->store = g_object_ref (store);
 	signal_data->folder = g_object_ref (folder);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		store_emit_folder_opened_cb,
@@ -1385,6 +1391,8 @@ camel_store_folder_renamed (CamelStore *store,
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 	signal_data->folder_name = g_strdup (old_name);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		store_emit_folder_renamed_cb,
