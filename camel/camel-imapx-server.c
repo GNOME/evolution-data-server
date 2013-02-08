@@ -6284,8 +6284,10 @@ imapx_server_dispose (GObject *object)
 
 	if (server->parser_thread) {
 		if (server->parser_thread == g_thread_self ())
-			/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE) */
-			g_idle_add_full (G_PRIORITY_HIGH, &join_helper, server->parser_thread, NULL);
+			/* Prioritize ahead of GTK+ redraws. */
+			g_idle_add_full (
+				G_PRIORITY_HIGH_IDLE,
+				&join_helper, server->parser_thread, NULL);
 		else
 			g_thread_join (server->parser_thread);
 		server->parser_thread = NULL;
