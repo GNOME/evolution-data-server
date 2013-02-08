@@ -408,6 +408,8 @@ service_queue_notify_connection_status (CamelService *service)
 
 	session = camel_service_get_session (service);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		service_notify_connection_status_cb,

@@ -1151,6 +1151,7 @@ async_report_idle (ECal *ecal,
 	data->ecal = g_object_ref (ecal);
 	data->error = error;
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE) */
 	g_idle_add_full (G_PRIORITY_DEFAULT, idle_async_error_reply_cb, data, NULL);
 }
 

@@ -2822,6 +2822,8 @@ camel_folder_delete (CamelFolder *folder)
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->folder = g_object_ref (folder);
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		folder_emit_deleted_cb,
@@ -2872,6 +2874,8 @@ camel_folder_rename (CamelFolder *folder,
 	signal_data->folder = g_object_ref (folder);
 	signal_data->folder_name = old_name;  /* transfer ownership */
 
+	/* schedule with priority higher than gtk+ uses for animations (check docs for G_PRIORITY_HIGH_IDLE),
+	   same as GAsyncResult, where this operation is quite similar to it anyway */
 	camel_session_idle_add (
 		session, G_PRIORITY_DEFAULT,
 		folder_emit_renamed_cb,

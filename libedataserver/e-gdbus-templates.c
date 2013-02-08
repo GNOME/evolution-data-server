@@ -1014,7 +1014,9 @@ e_gdbus_op_cancelled_cb (GCancellable *cancellable,
 	cd->op_data = op_data;
 
 	/* do this on idle, because this callback should be left
-	 * as soon as possible, with no sync calls being done */
+	 * as soon as possible, with no sync calls being done;
+	 * also schedule with priority higher than gtk+ uses
+	 * for animations (check docs for G_PRIORITY_HIGH_IDLE) */
 	op_data->cancel_idle_id = g_idle_add_full (G_PRIORITY_DEFAULT, e_gdbus_op_cancelled_idle_cb, cd, cancel_data_free);
 }
 
