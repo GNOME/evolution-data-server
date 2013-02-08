@@ -1015,7 +1015,7 @@ e_gdbus_op_cancelled_cb (GCancellable *cancellable,
 
 	/* do this on idle, because this callback should be left
 	 * as soon as possible, with no sync calls being done */
-	op_data->cancel_idle_id = g_idle_add_full (G_PRIORITY_DEFAULT, e_gdbus_op_cancelled_idle_cb, cd, cancel_data_free);
+	op_data->cancel_idle_id = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, e_gdbus_op_cancelled_idle_cb, cd, cancel_data_free);
 }
 
 static void

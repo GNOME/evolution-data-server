@@ -1268,7 +1268,7 @@ camel_store_error_quark (void)
  * @folder_info: information about the created folder
  *
  * Emits the #CamelStore::folder-created signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT.
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1291,7 +1291,7 @@ camel_store_folder_created (CamelStore *store,
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT,
+		session, G_PRIORITY_DEFAULT_IDLE,
 		store_emit_folder_created_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -1302,7 +1302,7 @@ camel_store_folder_created (CamelStore *store,
  * @folder_info: information about the deleted folder
  *
  * Emits the #CamelStore::folder-deleted signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT.
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1325,7 +1325,7 @@ camel_store_folder_deleted (CamelStore *store,
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT,
+		session, G_PRIORITY_DEFAULT_IDLE,
 		store_emit_folder_deleted_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -1336,7 +1336,7 @@ camel_store_folder_deleted (CamelStore *store,
  * @folder: the #CamelFolder that was opened
  *
  * Emits the #CamelStore::folder-opened signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT.
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1359,7 +1359,7 @@ camel_store_folder_opened (CamelStore *store,
 	signal_data->folder = g_object_ref (folder);
 
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT,
+		session, G_PRIORITY_DEFAULT_IDLE,
 		store_emit_folder_opened_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -1371,7 +1371,7 @@ camel_store_folder_opened (CamelStore *store,
  * @folder_info: information about the renamed folder
  *
  * Emits the #CamelStore::folder-renamed signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT.
+ * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1397,7 +1397,7 @@ camel_store_folder_renamed (CamelStore *store,
 	signal_data->folder_name = g_strdup (old_name);
 
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT,
+		session, G_PRIORITY_DEFAULT_IDLE,
 		store_emit_folder_renamed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
