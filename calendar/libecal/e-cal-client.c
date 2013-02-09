@@ -5730,7 +5730,7 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	if (icalcomp != NULL) {
 		*out_modified_icalcomp = icalcomp;
 	} else {
-		g_propagate_error (
+		g_set_error_literal (
 			error, E_CAL_CLIENT_ERROR,
 			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
 			e_cal_client_error_to_string (
