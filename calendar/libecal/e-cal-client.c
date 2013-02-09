@@ -342,13 +342,6 @@ unwrap_dbus_error (GError *error,
 	return FALSE;
 }
 
-static void
-set_proxy_gone_error (GError **error)
-{
-	/* do not translate this string, it should ideally never happen */
-	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, "D-Bus calendar proxy gone");
-}
-
 static volatile gint active_cal_clients = 0;
 static guint cal_factory_watcher_id = 0;
 static EDBusCalendarFactory *cal_factory = NULL;
@@ -1030,11 +1023,6 @@ cal_client_open_sync (EClient *client,
 
 	cal_client = E_CAL_CLIENT (client);
 
-	if (cal_client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	return e_dbus_calendar_call_open_sync (
 		cal_client->priv->dbus_proxy, cancellable, error);
 }
@@ -1049,11 +1037,6 @@ cal_client_refresh_sync (EClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
-
-	if (cal_client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	return e_dbus_calendar_call_refresh_sync (
 		cal_client->priv->dbus_proxy, cancellable, error);
@@ -3262,11 +3245,6 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (out_icalcomp != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	string = e_dbus_calendar_dup_default_object (client->priv->dbus_proxy);
 	if (string != NULL) {
 		icalcomp = icalparser_parse_string (string);
@@ -3465,11 +3443,6 @@ e_cal_client_get_object_sync (ECalClient *client,
 
 	if (rid == NULL)
 		rid = "";
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	utf8_uid = e_util_utf8_make_valid (uid);
 	utf8_rid = e_util_utf8_make_valid (rid);
@@ -3707,11 +3680,6 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_ecalcomps != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	utf8_uid = e_util_utf8_make_valid (uid);
 
 	success = e_dbus_calendar_call_get_object_sync (
@@ -3938,11 +3906,6 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_icalcomps != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -4300,11 +4263,6 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 	g_return_val_if_fail (start > 0, FALSE);
 	g_return_val_if_fail (end > 0, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	strv = g_new0 (gchar *, g_slist_length ((GSList *) users) + 1);
 	while (users != NULL) {
 		strv[ii++] = e_util_utf8_make_valid (users->data);
@@ -4634,11 +4592,6 @@ e_cal_client_create_objects_sync (ECalClient *client,
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
 	g_return_val_if_fail (out_uids != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	strv = g_new0 (gchar *, g_slist_length (icalcomps) + 1);
 	while (icalcomps != NULL) {
 		gchar *ical_string;
@@ -4966,11 +4919,6 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (comps != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	enum_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
 	enum_value = g_enum_get_value (enum_class, mod);
 	g_return_val_if_fail (enum_value != NULL, FALSE);
@@ -5140,11 +5088,6 @@ e_cal_client_remove_object_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	return e_cal_client_remove_objects_sync (
 		client, &link, mod, cancellable, error);
 }
@@ -5287,11 +5230,6 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	enum_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
 	enum_value = g_enum_get_value (enum_class, mod);
@@ -5454,11 +5392,6 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	ical_string = icalcomponent_as_ical_string_r (icalcomp);
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
@@ -5636,11 +5569,6 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 	g_return_val_if_fail (out_users != NULL, FALSE);
 	g_return_val_if_fail (out_modified_icalcomp != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	ical_string = icalcomponent_as_ical_string_r (icalcomp);
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
@@ -5845,11 +5773,6 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 	if (rid == NULL)
 		rid = "";
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	utf8_uid = e_util_utf8_make_valid (uid);
 	utf8_rid = e_util_utf8_make_valid (rid);
 
@@ -6021,11 +5944,6 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 	if (rid == NULL)
 		rid = "";
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	utf8_uid = e_util_utf8_make_valid (uid);
 	utf8_rid = e_util_utf8_make_valid (rid);
 	utf8_auid = e_util_utf8_make_valid (auid);
@@ -6181,11 +6099,6 @@ e_cal_client_get_view_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_view != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -6372,11 +6285,6 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
 	g_return_val_if_fail (out_zone != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	zone = e_timezone_cache_get_timezone (
 		E_TIMEZONE_CACHE (client), tzid);
@@ -6580,11 +6488,6 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 		g_propagate_error (
 			error, e_client_error_create (
 			E_CLIENT_ERROR_INVALID_ARG, NULL));
-		return FALSE;
-	}
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
 		return FALSE;
 	}
 
