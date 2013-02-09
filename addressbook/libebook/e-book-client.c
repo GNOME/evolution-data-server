@@ -906,7 +906,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	priv->dbus_proxy = e_dbus_address_book_proxy_new_sync (
 		g_dbus_proxy_get_connection (factory_proxy),
-		G_DBUS_PROXY_FLAGS_NONE,
+		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
 		g_dbus_proxy_get_name (factory_proxy),
 		object_path, cancellable, &error);
 
