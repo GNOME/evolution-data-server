@@ -217,6 +217,8 @@ e_book_client_error_to_string (EBookClientError code)
  * Returned pointer should be freed with g_error_free().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Just use the #GError API directly.
  **/
 GError *
 e_book_client_error_create (EBookClientError code,

@@ -117,8 +117,6 @@ struct _EBookClientClass {
 
 GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_book_client_error_to_string	(EBookClientError code);
-GError *	e_book_client_error_create	(EBookClientError code,
-						 const gchar *custom_msg);
 
 GType		e_book_client_get_type		(void) G_GNUC_CONST;
 EClient *	e_book_client_connect_sync	(ESource *source,
@@ -312,6 +310,8 @@ gboolean	e_book_client_get_view_sync	(EBookClient *client,
 
 EBookClient *	e_book_client_new		(ESource *source,
 						 GError **error);
+GError *	e_book_client_error_create	(EBookClientError code,
+						 const gchar *custom_msg);
 #endif /* E_BOOK_DISABLE_DEPRECATED */
 
 G_END_DECLS
