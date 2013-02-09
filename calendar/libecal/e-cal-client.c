@@ -3333,9 +3333,11 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 	}
 
 	if (icalcomp == NULL) {
-		g_propagate_error (
-			error, e_cal_client_error_create (
-			E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
@@ -3551,9 +3553,11 @@ e_cal_client_get_object_sync (ECalClient *client,
 	g_free (string);
 
 	if (icalcomp == NULL) {
-		g_propagate_error (
-			error, e_cal_client_error_create (
-			E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
@@ -3788,9 +3792,11 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 	g_free (string);
 
 	if (icalcomp == NULL) {
-		g_propagate_error (
-			error, e_cal_client_error_create (
-			E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
@@ -5723,8 +5729,10 @@ e_cal_client_send_objects_sync (ECalClient *client,
 		*out_modified_icalcomp = icalcomp;
 	} else {
 		g_propagate_error (
-			error, e_cal_client_error_create (
-			E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		g_strfreev (users);
 		return FALSE;
 	}
@@ -6457,17 +6465,21 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 	g_free (string);
 
 	if (icalcomp == NULL) {
-		g_propagate_error (
-			error, e_cal_client_error_create (
-			E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		return FALSE;
 	}
 
 	zone = icaltimezone_new ();
 	if (!icaltimezone_set_component (zone, icalcomp)) {
-		g_propagate_error (
-			error, e_cal_client_error_create (
-			E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		icalcomponent_free (icalcomp);
 		icaltimezone_free (zone, 1);
 		return FALSE;
