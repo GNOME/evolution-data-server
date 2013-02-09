@@ -54,9 +54,9 @@ typedef struct _ConnectClosure ConnectClosure;
 typedef struct _RunInThreadClosure RunInThreadClosure;
 
 struct _ECalClientPrivate {
-	EDBusCalendar *dbus_proxy;
 	GMainContext *main_context;
-	guint gone_signal_id;
+	EDBusCalendar *dbus_proxy;
+	guint name_watcher_id;
 
 	ECalClientSourceType source_type;
 	icaltimezone *default_zone;
@@ -350,87 +350,46 @@ set_proxy_gone_error (GError **error)
 }
 
 static volatile gint active_cal_clients = 0;
-static guint cal_connection_closed_id = 0;
+static guint cal_factory_watcher_id = 0;
 static EDBusCalendarFactory *cal_factory = NULL;
 static GRecMutex cal_factory_lock;
 #define LOCK_FACTORY()   g_rec_mutex_lock (&cal_factory_lock)
 #define UNLOCK_FACTORY() g_rec_mutex_unlock (&cal_factory_lock)
 
-static void gdbus_cal_factory_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
-
 static void
-gdbus_cal_factory_disconnect (GDBusConnection *connection)
+cal_factory_disconnect (void)
 {
 	LOCK_FACTORY ();
 
-	if (!connection && cal_factory)
-		connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
-
-	if (connection && cal_connection_closed_id) {
-		g_dbus_connection_signal_unsubscribe (connection, cal_connection_closed_id);
-		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_factory_closed_cb, NULL);
+	if (cal_factory_watcher_id > 0) {
+		g_bus_unwatch_name (cal_factory_watcher_id);
+		cal_factory_watcher_id = 0;
 	}
 
-	if (cal_factory != NULL)
-		g_object_unref (cal_factory);
-
-	cal_connection_closed_id = 0;
-	cal_factory = NULL;
+	g_clear_object (&cal_factory);
 
 	UNLOCK_FACTORY ();
 }
 
 static void
-gdbus_cal_factory_closed_cb (GDBusConnection *connection,
-                             gboolean remote_peer_vanished,
-                             GError *error,
-                             gpointer user_data)
+cal_factory_name_vanished_cb (GDBusConnection *connection,
+                              const gchar *name,
+                              gpointer user_data)
 {
-	GError *err = NULL;
-
-	LOCK_FACTORY ();
-
-	gdbus_cal_factory_disconnect (connection);
-
-	if (error)
-		unwrap_dbus_error (g_error_copy (error), &err);
-
-	if (err) {
-		g_debug ("GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
-		g_error_free (err);
-	} else if (active_cal_clients > 0) {
-		g_debug ("GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
-	}
-
-	UNLOCK_FACTORY ();
-}
-
-static void
-gdbus_cal_factory_connection_gone_cb (GDBusConnection *connection,
-                                      const gchar *sender_name,
-                                      const gchar *object_path,
-                                      const gchar *interface_name,
-                                      const gchar *signal_name,
-                                      GVariant *parameters,
-                                      gpointer user_data)
-{
-	/* signal subscription takes care of correct parameters,
-	 * thus just do what is to be done here */
-	gdbus_cal_factory_closed_cb (connection, TRUE, NULL, user_data);
+	cal_factory_disconnect ();
 }
 
 static gboolean
-gdbus_cal_factory_activate (GCancellable *cancellable,
-                            GError **error)
+cal_factory_activate (GCancellable *cancellable,
+                      GError **error)
 {
-	GDBusConnection *connection;
+	GDBusProxy *proxy;
+	gboolean success = TRUE;
 
 	LOCK_FACTORY ();
 
-	if (G_LIKELY (cal_factory != NULL)) {
-		UNLOCK_FACTORY ();
-		return TRUE;
-	}
+	if (G_LIKELY (cal_factory != NULL))
+		goto exit;
 
 	cal_factory = e_dbus_calendar_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
@@ -440,28 +399,24 @@ gdbus_cal_factory_activate (GCancellable *cancellable,
 		cancellable, error);
 
 	if (cal_factory == NULL) {
-		UNLOCK_FACTORY ();
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
 
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
-	cal_connection_closed_id = g_dbus_connection_signal_subscribe (
-		connection,
-		NULL,						/* sender */
-		"org.freedesktop.DBus",				/* interface */
-		"NameOwnerChanged",				/* member */
-		"/org/freedesktop/DBus",			/* object_path */
-		"org.gnome.evolution.dataserver.Calendar",	/* arg0 */
-		G_DBUS_SIGNAL_FLAGS_NONE,
-		gdbus_cal_factory_connection_gone_cb, NULL, NULL);
+	proxy = G_DBUS_PROXY (cal_factory);
 
-	g_signal_connect (
-		connection, "closed",
-		G_CALLBACK (gdbus_cal_factory_closed_cb), NULL);
+	cal_factory_watcher_id = g_bus_watch_name_on_connection (
+		g_dbus_proxy_get_connection (proxy),
+		g_dbus_proxy_get_name (proxy),
+		G_BUS_NAME_WATCHER_FLAGS_NONE,
+		(GBusNameAppearedCallback) NULL,
+		(GBusNameVanishedCallback) cal_factory_name_vanished_cb,
+		NULL, (GDestroyNotify) NULL);
 
+exit:
 	UNLOCK_FACTORY ();
 
-	return TRUE;
+	return success;
 }
 
 static gpointer
@@ -565,72 +520,16 @@ cal_client_run_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_main_context_unref (main_context);
 }
 
-static void gdbus_cal_client_disconnect (ECalClient *client);
-
-/*
- * Called when the calendar server dies.
- */
-static void
-gdbus_cal_client_closed_cb (GDBusConnection *connection,
-                            gboolean remote_peer_vanished,
-                            GError *error,
-                            ECalClient *client)
+static gboolean
+cal_client_emit_backend_died_idle_cb (gpointer user_data)
 {
-	GError *err = NULL;
+	SignalClosure *signal_closure = user_data;
 
-	g_assert (E_IS_CAL_CLIENT (client));
+	g_signal_emit_by_name (
+		signal_closure->client,
+		"backend-died");
 
-	if (error)
-		unwrap_dbus_error (g_error_copy (error), &err);
-
-	if (err) {
-		g_debug (G_STRLOC ": ECalClient GDBus connection is closed%s: %s", remote_peer_vanished ? ", remote peer vanished" : "", err->message);
-		g_error_free (err);
-	} else {
-		g_debug (G_STRLOC ": ECalClient GDBus connection is closed%s", remote_peer_vanished ? ", remote peer vanished" : "");
-	}
-
-	gdbus_cal_client_disconnect (client);
-
-	e_client_emit_backend_died (E_CLIENT (client));
-}
-
-static void
-gdbus_cal_client_connection_gone_cb (GDBusConnection *connection,
-                                     const gchar *sender_name,
-                                     const gchar *object_path,
-                                     const gchar *interface_name,
-                                     const gchar *signal_name,
-                                     GVariant *parameters,
-                                     gpointer user_data)
-{
-	/* signal subscription takes care of correct parameters,
-	 * thus just do what is to be done here */
-	gdbus_cal_client_closed_cb (connection, TRUE, NULL, user_data);
-}
-
-static void
-gdbus_cal_client_disconnect (ECalClient *client)
-{
-	g_return_if_fail (E_IS_CAL_CLIENT (client));
-
-	/* Ensure that everything relevant is NULL */
-	LOCK_FACTORY ();
-
-	if (client->priv->dbus_proxy != NULL) {
-		GDBusConnection *connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (client->priv->dbus_proxy));
-
-		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_client_closed_cb, client);
-		g_dbus_connection_signal_unsubscribe (connection, client->priv->gone_signal_id);
-		client->priv->gone_signal_id = 0;
-
-		e_dbus_calendar_call_close_sync (
-			client->priv->dbus_proxy, NULL, NULL);
-		g_object_unref (client->priv->dbus_proxy);
-		client->priv->dbus_proxy = NULL;
-	}
-
-	UNLOCK_FACTORY ();
+	return FALSE;
 }
 
 static gboolean
@@ -853,6 +752,43 @@ cal_client_dbus_proxy_free_busy_data_cb (EDBusCalendar *dbus_proxy,
 }
 
 static void
+cal_client_name_vanished_cb (GDBusConnection *connection,
+                             const gchar *name,
+                             ECalClient *cal_client)
+{
+	GSource *idle_source;
+	SignalClosure *signal_closure;
+
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client = g_object_ref (cal_client);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		cal_client_emit_backend_died_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, cal_client->priv->main_context);
+	g_source_unref (idle_source);
+}
+
+static void
+cal_client_close_cb (GObject *source_object,
+                     GAsyncResult *result,
+                     gpointer user_data)
+{
+	GError *error = NULL;
+
+	e_dbus_calendar_call_close_finish (
+		E_DBUS_CALENDAR (source_object), result, &error);
+
+	if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 cal_client_set_source_type (ECalClient *cal_client,
                             ECalClientSourceType source_type)
 {
@@ -924,7 +860,15 @@ cal_client_dispose (GObject *object)
 		priv->dbus_proxy_free_busy_data_handler_id = 0;
 	}
 
-	gdbus_cal_client_disconnect (E_CAL_CLIENT (object));
+	if (priv->dbus_proxy != NULL) {
+		/* Call close() asynchronously
+		 * so we don't block dispose(). */
+		e_dbus_calendar_call_close (
+			priv->dbus_proxy, NULL,
+			cal_client_close_cb, NULL);
+		g_object_unref (priv->dbus_proxy);
+		priv->dbus_proxy = NULL;
+	}
 
 	if (priv->main_context != NULL) {
 		g_main_context_unref (priv->main_context);
@@ -938,12 +882,12 @@ cal_client_dispose (GObject *object)
 static void
 cal_client_finalize (GObject *object)
 {
-	ECalClient *client;
 	ECalClientPrivate *priv;
 
-	client = E_CAL_CLIENT (object);
+	priv = E_CAL_CLIENT_GET_PRIVATE (object);
 
-	priv = client->priv;
+	if (priv->name_watcher_id > 0)
+		g_bus_unwatch_name (priv->name_watcher_id);
 
 	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ())
 		icaltimezone_free (priv->default_zone, 1);
@@ -958,7 +902,7 @@ cal_client_finalize (GObject *object)
 	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
 
 	if (g_atomic_int_dec_and_test (&active_cal_clients))
-		gdbus_cal_factory_disconnect (NULL);
+		cal_factory_disconnect ();
 }
 
 static GDBusProxy *
@@ -1123,7 +1067,8 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	ECalClientPrivate *priv;
 	EClient *client;
 	ESource *source;
-	GDBusConnection *connection;
+	GDBusProxy *factory_proxy;
+	GDBusProxy *proxy;
 	const gchar *uid;
 	gchar *object_path = NULL;
 	gulong handler_id;
@@ -1135,9 +1080,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	source = e_client_get_source (client);
 	uid = e_source_get_uid (source);
 
-	LOCK_FACTORY ();
-	gdbus_cal_factory_activate (cancellable, &error);
-	UNLOCK_FACTORY ();
+	cal_factory_activate (cancellable, &error);
 
 	if (error != NULL) {
 		unwrap_dbus_error (error, &error);
@@ -1176,14 +1119,13 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		return;
 	}
 
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
+	factory_proxy = G_DBUS_PROXY (cal_factory);
 
 	priv->dbus_proxy = e_dbus_calendar_proxy_new_sync (
-		connection,
+		g_dbus_proxy_get_connection (factory_proxy),
 		G_DBUS_PROXY_FLAGS_NONE,
-		CALENDAR_DBUS_SERVICE_NAME,
-		object_path,
-		cancellable, &error);
+		g_dbus_proxy_get_name (factory_proxy),
+		object_path, cancellable, &error);
 
 	g_free (object_path);
 
@@ -1198,45 +1140,42 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		return;
 	}
 
-	g_dbus_proxy_set_default_timeout (
-		G_DBUS_PROXY (priv->dbus_proxy), DBUS_PROXY_TIMEOUT_MS);
+	/* Configure our new GDBusProxy. */
 
-	priv->gone_signal_id = g_dbus_connection_signal_subscribe (
-		connection,
-		"org.freedesktop.DBus",				/* sender */
-		"org.freedesktop.DBus",				/* interface */
-		"NameOwnerChanged",				/* member */
-		"/org/freedesktop/DBus",			/* object_path */
-		"org.gnome.evolution.dataserver.Calendar",	/* arg0 */
-		G_DBUS_SIGNAL_FLAGS_NONE,
-		gdbus_cal_client_connection_gone_cb, client, NULL);
+	proxy = G_DBUS_PROXY (priv->dbus_proxy);
 
-	g_signal_connect (
-		connection, "closed",
-		G_CALLBACK (gdbus_cal_client_closed_cb), client);
+	g_dbus_proxy_set_default_timeout (proxy, DBUS_PROXY_TIMEOUT_MS);
+
+	priv->name_watcher_id = g_bus_watch_name_on_connection (
+		g_dbus_proxy_get_connection (proxy),
+		g_dbus_proxy_get_name (proxy),
+		G_BUS_NAME_WATCHER_FLAGS_NONE,
+		(GBusNameAppearedCallback) NULL,
+		(GBusNameVanishedCallback) cal_client_name_vanished_cb,
+		client, (GDestroyNotify) NULL);
 
 	handler_id = g_signal_connect_object (
-		priv->dbus_proxy, "error",
+		proxy, "error",
 		G_CALLBACK (cal_client_dbus_proxy_error_cb),
 		client, 0);
 	priv->dbus_proxy_error_handler_id = handler_id;
 
 	handler_id = g_signal_connect_object (
-		priv->dbus_proxy, "notify",
+		proxy, "notify",
 		G_CALLBACK (cal_client_dbus_proxy_notify_cb),
 		client, 0);
 	priv->dbus_proxy_notify_handler_id = handler_id;
 
 	handler_id = g_signal_connect_object (
-		priv->dbus_proxy, "free-busy-data",
+		proxy, "free-busy-data",
 		G_CALLBACK (cal_client_dbus_proxy_free_busy_data_cb),
 		client, 0);
 	priv->dbus_proxy_free_busy_data_handler_id = handler_id;
 
 	/* Initialize our public-facing GObject properties. */
-	g_object_notify (G_OBJECT (priv->dbus_proxy), "online");
-	g_object_notify (G_OBJECT (priv->dbus_proxy), "writable");
-	g_object_notify (G_OBJECT (priv->dbus_proxy), "capabilities");
+	g_object_notify (G_OBJECT (proxy), "online");
+	g_object_notify (G_OBJECT (proxy), "writable");
+	g_object_notify (G_OBJECT (proxy), "capabilities");
 }
 
 static gboolean
