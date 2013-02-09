@@ -135,8 +135,6 @@ struct _ECalClientClass {
 
 GQuark		e_cal_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_cal_client_error_to_string	(ECalClientError code);
-GError *	e_cal_client_error_create	(ECalClientError code,
-						 const gchar *custom_msg);
 
 GType		e_cal_client_get_type		(void) G_GNUC_CONST;
 EClient *	e_cal_client_connect_sync	(ESource *source,
@@ -514,6 +512,8 @@ gboolean	e_cal_client_add_timezone_sync	(ECalClient *client,
 ECalClient *	e_cal_client_new		(ESource *source,
 						 ECalClientSourceType source_type,
 						 GError **error);
+GError *	e_cal_client_error_create	(ECalClientError code,
+						 const gchar *custom_msg);
 #endif /* E_CAL_DISABLE_DEPRECATED */
 
 G_END_DECLS
