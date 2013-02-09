@@ -277,13 +277,6 @@ unwrap_dbus_error (GError *error,
 	return FALSE;
 }
 
-static void
-set_proxy_gone_error (GError **error)
-{
-	/* do not translate this string, it should ideally never happen */
-	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, "D-Bus book proxy gone");
-}
-
 static volatile gint active_book_clients = 0;
 static guint book_factory_watcher_id = 0;
 static EDBusAddressBookFactory *book_factory = NULL;
@@ -830,11 +823,6 @@ book_client_open_sync (EClient *client,
 
 	book_client = E_BOOK_CLIENT (client);
 
-	if (book_client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	return e_dbus_address_book_call_open_sync (
 		book_client->priv->dbus_proxy, cancellable, error);
 }
@@ -849,11 +837,6 @@ book_client_refresh_sync (EClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
-
-	if (book_client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	return e_dbus_address_book_call_refresh_sync (
 		book_client->priv->dbus_proxy, cancellable, error);
@@ -1657,11 +1640,6 @@ e_book_client_add_contact_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	success = e_book_client_add_contacts_sync (
 		client, &link, &uids, cancellable, error);
 
@@ -1835,11 +1813,6 @@ e_book_client_add_contacts_sync (EBookClient *client,
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	/* Build a string array, ensuring each element is valid UTF-8. */
 	strv = g_new0 (gchar *, g_slist_length (contacts) + 1);
@@ -2136,11 +2109,6 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	/* Build a string array, ensuring each element is valid UTF-8. */
 	strv = g_new0 (gchar *, g_slist_length (contacts) + 1);
@@ -2544,11 +2512,6 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	strv = g_new0 (gchar *, g_slist_length ((GSList *) uids) + 1);
 	while (uids != NULL) {
 		strv[ii++] = e_util_utf8_make_valid (uids->data);
@@ -2705,11 +2668,6 @@ e_book_client_get_contact_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_contact != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	utf8_uid = e_util_utf8_make_valid (uid);
 
@@ -2881,11 +2839,6 @@ e_book_client_get_contacts_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -3067,11 +3020,6 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contact_uids != NULL, FALSE);
 
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
 	success = e_dbus_address_book_call_get_contact_list_uids_sync (
@@ -3252,11 +3200,6 @@ e_book_client_get_view_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_view != NULL, FALSE);
-
-	if (client->priv->dbus_proxy == NULL) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
