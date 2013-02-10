@@ -30,7 +30,6 @@ void		e_client_set_capabilities	(EClient *client, const gchar *capabilities);
 void		e_client_set_readonly		(EClient *client, gboolean readonly);
 void		e_client_set_online		(EClient *client, gboolean is_online);
 
-void		e_client_emit_backend_error	(EClient *client, const gchar *error_msg);
 void		e_client_emit_backend_property_changed   (EClient *client, const gchar *prop_name, const gchar *prop_value);
 
 /* protected functions simplifying sync/async calls */
