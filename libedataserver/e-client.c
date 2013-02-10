@@ -54,10 +54,6 @@ struct _EClientPrivate {
 	gboolean online;
 	gboolean readonly;
 	GSList *capabilities;
-
-	GRecMutex ops_mutex;
-	guint32 last_opid;
-	GHashTable *ops; /* opid to GCancellable */
 };
 
 struct _AsyncContext {
@@ -211,10 +207,6 @@ e_client_init (EClient *client)
 	client->priv->readonly = TRUE;
 
 	g_rec_mutex_init (&client->priv->prop_mutex);
-
-	g_rec_mutex_init (&client->priv->ops_mutex);
-	client->priv->last_opid = 0;
-	client->priv->ops = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 }
 
 static void
@@ -253,14 +245,8 @@ client_finalize (GObject *object)
 		priv->capabilities = NULL;
 	}
 
-	if (priv->ops) {
-		g_hash_table_destroy (priv->ops);
-		priv->ops = NULL;
-	}
-
 	g_rec_mutex_unlock (&priv->prop_mutex);
 	g_rec_mutex_clear (&priv->prop_mutex);
-	g_rec_mutex_clear (&priv->ops_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_client_parent_class)->finalize (object);
@@ -1134,54 +1120,6 @@ e_client_is_opened (EClient *client)
 	return TRUE;
 }
 
-/*
- * client_cancel_op:
- * @client: an #EClient
- * @opid: asynchronous operation ID
- *
- * Cancels particular asynchronous operation. The @opid is returned from
- * an e_client_register_op(). The function does nothing if the asynchronous
- * operation doesn't exist any more.
- *
- * Since: 3.2
- */
-static void
-client_cancel_op (EClient *client,
-                  guint32 opid)
-{
-	GCancellable *cancellable;
-
-	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv->ops != NULL);
-
-	g_rec_mutex_lock (&client->priv->ops_mutex);
-
-	cancellable = g_hash_table_lookup (client->priv->ops, GINT_TO_POINTER (opid));
-	if (cancellable)
-		g_cancellable_cancel (cancellable);
-
-	g_rec_mutex_unlock (&client->priv->ops_mutex);
-}
-
-static void
-gather_opids_cb (gpointer opid,
-                 gpointer cancellable,
-                 gpointer ids_list)
-{
-	GSList **ids = ids_list;
-
-	g_return_if_fail (ids_list != NULL);
-
-	*ids = g_slist_prepend (*ids, opid);
-}
-
-static void
-cancel_op_cb (gpointer opid,
-              gpointer client)
-{
-	client_cancel_op (client, GPOINTER_TO_INT (opid));
-}
-
 /**
  * e_client_cancel_all:
  * @client: an #EClient
@@ -1193,19 +1131,7 @@ cancel_op_cb (gpointer opid,
 void
 e_client_cancel_all (EClient *client)
 {
-	GSList *opids = NULL;
-
-	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv->ops != NULL);
-
-	g_rec_mutex_lock (&client->priv->ops_mutex);
-
-	g_hash_table_foreach (client->priv->ops, gather_opids_cb, &opids);
-
-	g_slist_foreach (opids, cancel_op_cb, client);
-	g_slist_free (opids);
-
-	g_rec_mutex_unlock (&client->priv->ops_mutex);
+	/* Do nothing. */
 }
 
 /**
