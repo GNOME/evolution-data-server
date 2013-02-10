@@ -830,8 +830,6 @@ cal_client_dispose (GObject *object)
 
 	priv = E_CAL_CLIENT_GET_PRIVATE (object);
 
-	e_client_cancel_all (E_CLIENT (object));
-
 	if (priv->dbus_proxy_error_handler_id > 0) {
 		g_signal_handler_disconnect (
 			priv->dbus_proxy,

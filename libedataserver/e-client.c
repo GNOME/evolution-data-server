@@ -210,19 +210,6 @@ e_client_init (EClient *client)
 }
 
 static void
-client_dispose (GObject *object)
-{
-	EClient *client;
-
-	client = E_CLIENT (object);
-
-	e_client_cancel_all (client);
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_client_parent_class)->dispose (object);
-}
-
-static void
 client_finalize (GObject *object)
 {
 	EClient *client;
@@ -750,7 +737,6 @@ e_client_class_init (EClientClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = client_set_property;
 	object_class->get_property = client_get_property;
-	object_class->dispose = client_dispose;
 	object_class->finalize = client_finalize;
 
 	class->retrieve_capabilities = client_retrieve_capabilities;
@@ -1127,6 +1113,8 @@ e_client_is_opened (EClient *client)
  * Cancels all pending operations started on @client.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: The function no longer does anything.
  **/
 void
 e_client_cancel_all (EClient *client)
