@@ -1219,14 +1219,6 @@ e_client_emit_backend_error (EClient *client,
 }
 
 void
-e_client_emit_backend_died (EClient *client)
-{
-	g_return_if_fail (E_IS_CLIENT (client));
-
-	g_signal_emit (client, signals[BACKEND_DIED], 0);
-}
-
-void
 e_client_emit_backend_property_changed (EClient *client,
                                         const gchar *prop_name,
                                         const gchar *prop_value)
