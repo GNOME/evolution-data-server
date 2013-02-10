@@ -2053,20 +2053,6 @@ e_client_util_parse_comma_strings (const gchar *strings)
 	return g_slist_reverse (strs_slist);
 }
 
-GDBusProxy *
-e_client_get_dbus_proxy (EClient *client)
-{
-	EClientClass *class;
-
-	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-
-	class = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (class != NULL, NULL);
-	g_return_val_if_fail (class->get_dbus_proxy != NULL, NULL);
-
-	return class->get_dbus_proxy (client);
-}
-
 /**
  * e_client_unwrap_dbus_error:
  * @client: an #EClient
