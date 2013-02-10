@@ -1208,19 +1208,6 @@ e_client_cancel_all (EClient *client)
 	g_rec_mutex_unlock (&client->priv->ops_mutex);
 }
 
-void
-e_client_emit_backend_property_changed (EClient *client,
-                                        const gchar *prop_name,
-                                        const gchar *prop_value)
-{
-	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (*prop_name);
-	g_return_if_fail (prop_value != NULL);
-
-	g_signal_emit (client, signals[BACKEND_PROPERTY_CHANGED], 0, prop_name, prop_value);
-}
-
 /**
  * e_client_retrieve_capabilities:
  * @client: an #EClient
