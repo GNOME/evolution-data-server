@@ -1013,15 +1013,19 @@ camel_vee_store_rebuild_unmatched_folder (CamelVeeStore *vstore,
 	/* this operation requires cancellable, thus if called
 	 * without it then run in a dedicated thread */
 	if (!cancellable) {
+		CamelService *service;
 		CamelSession *session;
 
-		session = camel_service_get_session (CAMEL_SERVICE (vstore));
+		service = CAMEL_SERVICE (vstore);
+		session = camel_service_ref_session (service);
 
 		camel_session_submit_job (
 			session, (CamelSessionCallback)
 			vee_store_rebuild_unmatched_folder,
 			g_object_ref (vstore),
 			g_object_unref);
+
+		g_object_unref (session);
 	} else {
 		vee_store_rebuild_unmatched_folder (NULL, cancellable, vstore, error);
 	}

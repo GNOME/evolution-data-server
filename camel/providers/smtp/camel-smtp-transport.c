@@ -365,7 +365,7 @@ smtp_transport_connect_sync (CamelService *service,
 	if (auth_required) {
 		CamelSession *session;
 
-		session = camel_service_get_session (service);
+		session = camel_service_ref_session (service);
 
 		if (g_hash_table_lookup (transport->authtypes, mechanism)) {
 			success = camel_session_authenticate_sync (
@@ -379,6 +379,8 @@ smtp_transport_connect_sync (CamelService *service,
 				"authentication"), host, mechanism);
 			success = FALSE;
 		}
+
+		g_object_unref (session);
 
 		if (!success)
 			camel_service_disconnect_sync (

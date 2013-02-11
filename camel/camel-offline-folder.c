@@ -134,7 +134,7 @@ offline_folder_changed (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	service = CAMEL_SERVICE (parent_store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	settings = camel_service_ref_settings (service);
 
@@ -159,6 +159,8 @@ offline_folder_changed (CamelFolder *folder,
 			offline_folder_downsync_background, data,
 			(GDestroyNotify) offline_downsync_data_free);
 	}
+
+	g_object_unref (session);
 }
 
 static void

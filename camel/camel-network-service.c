@@ -52,7 +52,7 @@ network_service_connect_sync (CamelNetworkService *service,
 	gchar *host;
 	gint status;
 
-	session = camel_service_get_session (CAMEL_SERVICE (service));
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
 	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
@@ -118,6 +118,8 @@ network_service_connect_sync (CamelNetworkService *service,
 	}
 
 	g_free (host);
+
+	g_object_unref (session);
 
 	return stream;
 }

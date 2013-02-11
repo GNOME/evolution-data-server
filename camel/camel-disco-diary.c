@@ -201,7 +201,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 		gchar *msg;
 
 		service = CAMEL_SERVICE (diary->store);
-		session = camel_service_get_session (service);
+		session = camel_service_ref_session (service);
 
 		msg = g_strdup_printf (
 			_("Could not write log entry: %s\n"
@@ -212,6 +212,8 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 		camel_session_alert_user (
 			session, CAMEL_SESSION_ALERT_ERROR, msg, NULL, NULL);
 		g_free (msg);
+
+		g_object_unref (session);
 
 		fclose (diary->file);
 		diary->file = NULL;
@@ -267,17 +269,26 @@ diary_decode_folder (CamelDiscoDiary *diary,
 		if (folder)
 			g_hash_table_insert (diary->folders, name, folder);
 		else {
+			CamelService *service;
+			CamelSession *session;
+
+			service = CAMEL_SERVICE (diary->store);
+			session = camel_service_ref_session (service);
+
 			msg = g_strdup_printf (
 				_("Could not open '%s':\n%s\n"
 				"Changes made to this folder "
 				"will not be resynchronized."),
 				name, error->message);
-			g_error_free (error);
 			camel_session_alert_user (
-				camel_service_get_session (CAMEL_SERVICE (diary->store)),
+				session,
 				CAMEL_SESSION_ALERT_WARNING,
 				msg, NULL, cancellable);
 			g_free (msg);
+
+			g_object_unref (session);
+			g_error_free (error);
+
 			g_free (name);
 		}
 	} else

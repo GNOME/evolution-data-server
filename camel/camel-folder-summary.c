@@ -2118,17 +2118,19 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 		return FALSE;
 	}
 
-	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
-
 	if (time (NULL) - summary->priv->cache_load_time < SUMMARY_CACHE_DROP)
 		return TRUE;
+
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
 
 	camel_session_submit_job (
 		session,
 		(CamelSessionCallback) remove_cache,
 		g_object_ref (summary),
 		(GDestroyNotify) g_object_unref);
+
+	g_object_unref (session);
 
 	return TRUE;
 }
@@ -2301,7 +2303,7 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
+	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
 	cdb = parent_store->cdb_r;
 
 	data.columns_hash = NULL;
@@ -2323,6 +2325,8 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 			(CamelSessionCallback) preview_update,
 			g_object_ref (summary->priv->folder),
 			(GDestroyNotify) g_object_unref);
+
+	g_object_unref (session);
 
 	return ret == 0 ? 0 : -1;
 }

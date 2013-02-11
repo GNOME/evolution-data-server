@@ -112,7 +112,7 @@ cdf_folder_changed (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	service = CAMEL_SERVICE (parent_store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	sync_folder = camel_disco_folder_get_offline_sync (
 		CAMEL_DISCO_FOLDER (folder));
@@ -137,6 +137,8 @@ cdf_folder_changed (CamelFolder *folder,
 			(CamelSessionCallback) cdf_sync_offline,
 			data, (GDestroyNotify) cdf_sync_free);
 	}
+
+	g_object_unref (session);
 }
 
 static void

@@ -322,7 +322,6 @@ service_find_old_data_dir (CamelService *service)
 	gchar *old_data_dir;
 
 	provider = camel_service_get_provider (service);
-	session = camel_service_get_session (service);
 	url = camel_service_new_camel_url (service);
 
 	allows_host = CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_HOST);
@@ -376,8 +375,12 @@ service_find_old_data_dir (CamelService *service)
 		g_string_append (path, url->path);
 	}
 
+	session = camel_service_ref_session (service);
+
 	base_dir = camel_session_get_user_data_dir (session);
 	old_data_dir = g_build_filename (base_dir, path->str, NULL);
+
+	g_object_unref (session);
 
 	g_string_free (path, TRUE);
 
@@ -406,7 +409,7 @@ service_queue_notify_connection_status (CamelService *service)
 {
 	CamelSession *session;
 
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
@@ -414,6 +417,8 @@ service_queue_notify_connection_status (CamelService *service)
 		service_notify_connection_status_cb,
 		g_object_ref (service),
 		(GDestroyNotify) g_object_unref);
+
+	g_object_unref (session);
 }
 
 static void
@@ -610,8 +615,8 @@ service_get_property (GObject *object,
 			return;
 
 		case PROP_SESSION:
-			g_value_set_object (
-				value, camel_service_get_session (
+			g_value_take_object (
+				value, camel_service_ref_session (
 				CAMEL_SERVICE (object)));
 			return;
 
@@ -688,7 +693,7 @@ service_constructed (GObject *object)
 	G_OBJECT_CLASS (camel_service_parent_class)->constructed (object);
 
 	service = CAMEL_SERVICE (object);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	uid = camel_service_get_uid (service);
 
@@ -697,6 +702,8 @@ service_constructed (GObject *object)
 
 	base_dir = camel_session_get_user_cache_dir (session);
 	service->priv->user_cache_dir = g_build_filename (base_dir, uid, NULL);
+
+	g_object_unref (session);
 }
 
 static gchar *

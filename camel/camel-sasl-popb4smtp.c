@@ -76,7 +76,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	gchar *pop_uid;
 
 	service = camel_sasl_get_service (sasl);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	camel_sasl_set_authenticated (sasl, FALSE);
 
@@ -88,6 +88,8 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 		service = camel_session_ref_service (session, pop_uid);
 	else
 		service = NULL;
+
+	g_object_unref (session);
 
 	if (service == NULL) {
 		g_set_error (

@@ -54,8 +54,9 @@ offline_store_constructed (GObject *object)
 	G_OBJECT_CLASS (camel_offline_store_parent_class)->
 		constructed (object);
 
-	session = camel_service_get_session (CAMEL_SERVICE (object));
+	session = camel_service_ref_session (CAMEL_SERVICE (object));
 	priv->online = camel_session_get_online (session);
+	g_object_unref (session);
 }
 
 static void
@@ -124,7 +125,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		return TRUE;
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	network_available = camel_session_get_network_available (session);
 	store_is_online = camel_offline_store_get_online (store);
@@ -135,6 +136,8 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		CAMEL_OFFLINE_SETTINGS (settings));
 
 	g_object_unref (settings);
+
+	g_object_unref (session);
 
 	/* Returning to online mode is the simpler case. */
 	if (!store_is_online) {
@@ -203,7 +206,7 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	network_available = camel_session_get_network_available (session);
 	store_is_online = camel_offline_store_get_online (store);
@@ -214,6 +217,8 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 		CAMEL_OFFLINE_SETTINGS (settings));
 
 	g_object_unref (settings);
+
+	g_object_unref (session);
 
 	if (network_available && store_is_online) {
 		GPtrArray *folders;

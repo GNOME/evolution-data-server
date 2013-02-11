@@ -992,9 +992,6 @@ camel_session_remove_service (CamelSession *session,
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	/* Verify the service belongs to this session. */
-	g_return_if_fail (camel_service_get_session (service) == session);
-
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_if_fail (class->remove_service != NULL);
 

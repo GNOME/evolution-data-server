@@ -68,7 +68,7 @@ disco_store_constructed (GObject *object)
 	G_OBJECT_CLASS (camel_disco_store_parent_class)->constructed (object);
 
 	service = CAMEL_SERVICE (object);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	if (camel_session_get_online (session))
 		disco->status = CAMEL_DISCO_STORE_ONLINE;
@@ -78,6 +78,8 @@ disco_store_constructed (GObject *object)
 	g_signal_connect (
 		service, "notify::connection-status",
 		G_CALLBACK (disco_store_update_status), NULL);
+
+	g_object_unref (session);
 }
 
 static gboolean
@@ -283,9 +285,11 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 
 	store = CAMEL_STORE (disco_store);
 	service = CAMEL_SERVICE (disco_store);
-	session = camel_service_get_session (service);
 
+	session = camel_service_ref_session (service);
 	network_available = camel_session_get_network_available (session);
+	g_object_unref (session);
+
 	store_is_online = (disco_store->status == CAMEL_DISCO_STORE_ONLINE);
 	going_offline = (status == CAMEL_DISCO_STORE_OFFLINE);
 
@@ -384,11 +388,13 @@ camel_disco_store_status (CamelDiscoStore *store)
 		CAMEL_IS_DISCO_STORE (store), CAMEL_DISCO_STORE_ONLINE);
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	if (store->status != CAMEL_DISCO_STORE_OFFLINE
 	    && !camel_session_get_online (session))
 		store->status = CAMEL_DISCO_STORE_OFFLINE;
+
+	g_object_unref (session);
 
 	return store->status;
 }
@@ -480,6 +486,7 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 	CamelService *service;
 	CamelSession *session;
 	CamelSettings *settings;
+	gboolean network_available;
 	gboolean store_is_online;
 	gboolean sync_store;
 
@@ -487,10 +494,13 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 
 	store = CAMEL_STORE (disco_store);
 	service = CAMEL_SERVICE (disco_store);
-	session = camel_service_get_session (service);
+
+	session = camel_service_ref_session (service);
+	network_available = camel_session_get_network_available (session);
+	g_object_unref (session);
 
 	/* We can't prepare for offline if we're already offline. */
-	if (!camel_session_get_network_available (session))
+	if (!network_available)
 		return;
 
 	/* Sync the folder fully if we've been told to

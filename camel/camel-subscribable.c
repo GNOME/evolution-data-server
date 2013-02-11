@@ -629,7 +629,7 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 	g_return_if_fail (folder_info != NULL);
 
 	service = CAMEL_SERVICE (subscribable);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->subscribable = g_object_ref (subscribable);
@@ -640,6 +640,8 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 		session, G_PRIORITY_HIGH_IDLE,
 		subscribable_emit_folder_subscribed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 /**
@@ -666,7 +668,7 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 	g_return_if_fail (folder_info != NULL);
 
 	service = CAMEL_SERVICE (subscribable);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->subscribable = g_object_ref (subscribable);
@@ -677,5 +679,7 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 		session, G_PRIORITY_HIGH_IDLE,
 		subscribable_emit_folder_unsubscribed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 

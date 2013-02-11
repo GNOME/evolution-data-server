@@ -407,7 +407,7 @@ pop3_store_connect_sync (CamelService *service,
 	gboolean success = TRUE;
 	gchar *mechanism;
 
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	settings = camel_service_ref_settings (service);
@@ -458,6 +458,8 @@ pop3_store_connect_sync (CamelService *service,
 
 exit:
 	g_free (mechanism);
+
+	g_object_unref (session);
 
 	return success;
 }

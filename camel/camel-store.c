@@ -1273,7 +1273,7 @@ camel_store_folder_created (CamelStore *store,
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (folder_info != NULL);
 
-	session = camel_service_get_session (CAMEL_SERVICE (store));
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->store = g_object_ref (store);
@@ -1284,6 +1284,8 @@ camel_store_folder_created (CamelStore *store,
 		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_created_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 /**
@@ -1308,7 +1310,7 @@ camel_store_folder_deleted (CamelStore *store,
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (folder_info != NULL);
 
-	session = camel_service_get_session (CAMEL_SERVICE (store));
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->store = g_object_ref (store);
@@ -1319,6 +1321,8 @@ camel_store_folder_deleted (CamelStore *store,
 		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_deleted_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 /**
@@ -1343,7 +1347,7 @@ camel_store_folder_opened (CamelStore *store,
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	session = camel_service_get_session (CAMEL_SERVICE (store));
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->store = g_object_ref (store);
@@ -1354,6 +1358,8 @@ camel_store_folder_opened (CamelStore *store,
 		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_opened_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 /**
@@ -1381,7 +1387,7 @@ camel_store_folder_renamed (CamelStore *store,
 	g_return_if_fail (old_name != NULL);
 	g_return_if_fail (folder_info != NULL);
 
-	session = camel_service_get_session (CAMEL_SERVICE (store));
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->store = g_object_ref (store);
@@ -1393,6 +1399,8 @@ camel_store_folder_renamed (CamelStore *store,
 		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_renamed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 static void

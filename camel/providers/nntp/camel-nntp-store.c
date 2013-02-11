@@ -258,7 +258,7 @@ connect_to_server (CamelService *service,
 	guint len;
 	gchar *host, *path, *user, *mechanism;
 
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	settings = camel_service_ref_settings (service);
@@ -344,6 +344,8 @@ fail:
 	g_free (host);
 	g_free (user);
 	g_free (mechanism);
+
+	g_object_unref (session);
 
 	return retval;
 }
@@ -1677,7 +1679,7 @@ camel_nntp_raw_command_auth (CamelNNTPStore *store,
 	va_list ap;
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	retry = 0;
 
@@ -1690,12 +1692,14 @@ camel_nntp_raw_command_auth (CamelNNTPStore *store,
 		va_end (ap);
 
 		if (ret == NNTP_AUTH_REQUIRED) {
-			if (!camel_session_authenticate_sync (
-				session, service, NULL, cancellable, error))
-				return -1;
-			go = TRUE;
+			go = camel_session_authenticate_sync (
+				session, service, NULL, cancellable, error);
+			if (!go)
+				ret = -1;
 		}
 	} while (retry < 3 && go);
+
+	g_object_unref (session);
 
 	return ret;
 }
@@ -1711,6 +1715,7 @@ camel_nntp_command (CamelNNTPStore *store,
 {
 	CamelService *service;
 	CamelSession *session;
+	gboolean success;
 	const gchar *full_name = NULL;
 	const guchar *p;
 	va_list ap;
@@ -1719,7 +1724,6 @@ camel_nntp_command (CamelNNTPStore *store,
 	GError *local_error = NULL;
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
 
 	if (((CamelDiscoStore *) store)->status == CAMEL_DISCO_STORE_OFFLINE) {
 		g_set_error (
@@ -1773,8 +1777,12 @@ camel_nntp_command (CamelNNTPStore *store,
 	error:
 		switch (ret) {
 		case NNTP_AUTH_REQUIRED:
-			if (!camel_session_authenticate_sync (
-				session, service, NULL, cancellable, error))
+			session = camel_service_ref_session (service);
+			success = camel_session_authenticate_sync (
+				session, service, NULL, cancellable, error);
+			g_object_unref (session);
+
+			if (!success)
 				return -1;
 			retry--;
 			ret = -1;

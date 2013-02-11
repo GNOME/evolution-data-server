@@ -1340,14 +1340,12 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 	CamelFolderInfo * fi= NULL;
 	CamelService *service;
-	CamelSession *session;
 	CamelSettings *settings;
 	gboolean initial_setup = FALSE;
 	gboolean use_subscriptions;
 	gchar *pattern;
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
 
 	settings = camel_service_ref_settings (service);
 
@@ -1375,13 +1373,19 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		time_t now = time (NULL);
 
 		if (now - istore->last_refresh_time > FINFO_REFRESH_INTERVAL) {
+			CamelSession *session;
+
 			istore->last_refresh_time = time (NULL);
+
+			session = camel_service_ref_session (service);
 
 			camel_session_submit_job (
 				session, (CamelSessionCallback)
 				imapx_refresh_finfo,
 				g_object_ref (store),
 				(GDestroyNotify) g_object_unref);
+
+			g_object_unref (session);
 		}
 
 		fi = get_folder_info_offline (store, top, flags, error);

@@ -1662,10 +1662,6 @@ folder_changed (CamelFolder *folder,
 
 	g_return_if_fail (info != NULL);
 
-	parent_store = camel_folder_get_parent_store (folder);
-	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
-	junk_filter = camel_session_get_junk_filter (session);
-
 	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 	if (folder->priv->frozen) {
 		camel_folder_change_info_cat (folder->priv->changed_frozen, info);
@@ -1674,6 +1670,10 @@ folder_changed (CamelFolder *folder,
 		return;
 	}
 	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+
+	parent_store = camel_folder_get_parent_store (folder);
+	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+	junk_filter = camel_session_get_junk_filter (session);
 
 	if (junk_filter != NULL && info->uid_changed->len) {
 		CamelMessageFlags flags;
@@ -1738,6 +1738,8 @@ folder_changed (CamelFolder *folder,
 
 		g_signal_stop_emission (folder, signals[CHANGED], 0);
 	}
+
+	g_object_unref (session);
 }
 
 static void
@@ -2922,7 +2924,7 @@ camel_folder_delete (CamelFolder *folder)
 	camel_db_delete_folder (parent_store->cdb_w, full_name, NULL);
 
 	service = CAMEL_SERVICE (parent_store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->folder = g_object_ref (folder);
@@ -2932,6 +2934,8 @@ camel_folder_delete (CamelFolder *folder)
 		session, G_PRIORITY_HIGH_IDLE,
 		folder_emit_deleted_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 /**
@@ -2972,7 +2976,7 @@ camel_folder_rename (CamelFolder *folder,
 	camel_db_rename_folder (parent_store->cdb_w, old_name, new_name, NULL);
 
 	service = CAMEL_SERVICE (parent_store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->folder = g_object_ref (folder);
@@ -2983,6 +2987,8 @@ camel_folder_rename (CamelFolder *folder,
 		session, G_PRIORITY_HIGH_IDLE,
 		folder_emit_renamed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
+
+	g_object_unref (session);
 }
 
 /**
@@ -3030,7 +3036,7 @@ camel_folder_changed (CamelFolder *folder,
 		parent_store = camel_folder_get_parent_store (folder);
 
 		service = CAMEL_SERVICE (parent_store);
-		session = camel_service_get_session (service);
+		session = camel_service_ref_session (service);
 
 		pending_changes = camel_folder_change_info_new ();
 		folder->priv->pending_changes = pending_changes;
@@ -3042,6 +3048,8 @@ camel_folder_changed (CamelFolder *folder,
 			session, G_PRIORITY_LOW,
 			folder_emit_changed_cb,
 			signal_data, (GDestroyNotify) signal_data_free);
+
+		g_object_unref (session);
 	}
 
 	camel_folder_change_info_cat (pending_changes, changes);

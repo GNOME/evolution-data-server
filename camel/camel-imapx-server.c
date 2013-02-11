@@ -4093,7 +4093,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 	store = camel_imapx_server_ref_store (is);
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
+	session = camel_service_ref_session (service);
 
 	settings = camel_service_ref_settings (service);
 
@@ -4200,6 +4200,7 @@ exception:
 exit:
 	g_free (mechanism);
 
+	g_object_unref (session);
 	g_object_unref (store);
 
 	return success;
