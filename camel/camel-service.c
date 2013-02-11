@@ -55,7 +55,7 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _ConnectionOp ConnectionOp;
 
 struct _CamelServicePrivate {
-	gpointer session;  /* weak pointer */
+	GWeakRef session;
 
 	CamelSettings *settings;
 	GMutex settings_lock;
@@ -517,12 +517,8 @@ service_set_session (CamelService *service,
                      CamelSession *session)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (service->priv->session == NULL);
 
-	service->priv->session = session;
-
-	g_object_add_weak_pointer (
-		G_OBJECT (session), &service->priv->session);
+	g_weak_ref_set (&service->priv->session, session);
 }
 
 static void
@@ -642,11 +638,7 @@ service_dispose (GObject *object)
 
 	priv = CAMEL_SERVICE_GET_PRIVATE (object);
 
-	if (priv->session != NULL) {
-		g_object_remove_weak_pointer (
-			G_OBJECT (priv->session), &priv->session);
-		priv->session = NULL;
-	}
+	g_weak_ref_set (&priv->session, NULL);
 
 	if (priv->settings != NULL) {
 		g_object_unref (priv->settings);
@@ -1442,19 +1434,55 @@ camel_service_get_provider (CamelService *service)
 }
 
 /**
+ * camel_service_ref_session:
+ * @service: a #CamelService
+ *
+ * Returns the #CamelSession associated with the service.
+ *
+ * The returned #CamelSession is referenced for thread-safety.  Unreference
+ * the #CamelSession with g_object_unref() when finished with it.
+ *
+ * Returns: the #CamelSession
+ *
+ * Since: 3.8
+ **/
+CamelSession *
+camel_service_ref_session (CamelService *service)
+{
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	return g_weak_ref_get (&service->priv->session);
+}
+
+/**
  * camel_service_get_session:
  * @service: a #CamelService
  *
- * Gets the #CamelSession associated with the service.
+ * Returns the #CamelSession associated with the service.
+ *
+ * Note this function is not thread-safe.  The returned #CamelSession could
+ * be finalized by another thread while the caller is still using it.
  *
  * Returns: the #CamelSession
+ *
+ * Deprecated: 3.8: Use camel_service_ref_session() instead.
  **/
 CamelSession *
 camel_service_get_session (CamelService *service)
 {
+	CamelSession *session;
+
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
-	return CAMEL_SESSION (service->priv->session);
+	session = camel_service_ref_session (service);
+
+	/* XXX Drop the CamelSession reference for backward-compatibility.
+	 *     This is risky.  Without a reference, the CamelSession could
+	 *     be finalized while the caller is still using it. */
+	if (session != NULL)
+		g_object_unref (session);
+
+	return session;
 }
 
 /**

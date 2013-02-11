@@ -184,7 +184,7 @@ gchar *		camel_service_get_name		(CamelService *service,
 						 gboolean brief);
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 struct _CamelSession *
-		camel_service_get_session	(CamelService *service);
+		camel_service_ref_session	(CamelService *service);
 CamelSettings *	camel_service_ref_settings	(CamelService *service);
 void		camel_service_set_settings	(CamelService *service,
 						 CamelSettings *settings);
@@ -243,6 +243,11 @@ GList *		camel_service_query_auth_types_finish
 						(CamelService *service,
 						 GAsyncResult *result,
 						 GError **error);
+
+#ifndef CAMEL_DISABLE_DEPRECATED
+struct _CamelSession *
+		camel_service_get_session	(CamelService *service);
+#endif /* CAMEL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 
