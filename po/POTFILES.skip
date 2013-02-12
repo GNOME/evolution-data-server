@@ -5,4 +5,6 @@ camel/providers/nntp/camel-nntp-grouplist.c
 camel/providers/nntp/camel-nntp-newsrc.c
 camel/providers/nntp/camel-nntp-utils.c
 camel/providers/nntp/test-newsrc.c
+modules/ubuntu-online-accounts/google-contacts.service.in
+modules/ubuntu-online-accounts/google-gmail.service.in
 servers/exchange/lib/e2k-user-dialog.c
