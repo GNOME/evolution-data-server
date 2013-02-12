@@ -267,6 +267,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 
 	g_object_unref (file);
 	g_object_unref (server);
+	g_dir_close (dir);
 }
 
 static ESource *

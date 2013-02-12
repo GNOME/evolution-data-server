@@ -480,6 +480,7 @@ gnome_online_accounts_config_password (EGnomeOnlineAccounts *extension,
 	secret_password_store_finish (result, &error);
 
 	g_free (display_name);
+	g_free (password);
 
 	/* If we fail to store the password, we'll just end up prompting
 	 * for a password like normal.  Annoying, maybe, but not the end

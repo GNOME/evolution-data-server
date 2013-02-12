@@ -1485,6 +1485,7 @@ e_server_side_source_new (ESourceRegistryServer *server,
 		"uid", uid, NULL);
 
 	g_object_unref (dbus_object);
+	g_free (uid);
 
 	return source;
 }
