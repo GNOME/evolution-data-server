@@ -135,32 +135,34 @@ typedef enum { /*< flags >*/
 
 #define CAMEL_FOLDER_TYPE_MASK (63 << CAMEL_FOLDER_TYPE_BIT)
 
+/* Note: The HTML elements are escaped in the doc comment intentionally,
+   to have them shown as expected in generated documentation. */
 /**
  * CamelMimeFilterToHTMLFlags:
  * @CAMEL_MIME_FILTER_TOHTML_PRE:
- *     Enclose the content in <pre> ... </pre> tags.
+ *     Enclose the content in &lt;pre&gt; ... &lt;/pre&gt; tags.
  * @CAMEL_MIME_FILTER_TOHTML_CONVERT_NL:
- *     Convert newline characters to <br> tags.
+ *     Convert newline characters to &lt;br&gt; tags.
  * @CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES:
- *     Convert space and tab characters to a non-breaking space (&nbsp;).
+ *     Convert space and tab characters to a non-breaking space (&amp;nbsp;).
  * @CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS:
- *     Convert recognized URLs to <a href="foo">foo</a>.
+ *     Convert recognized URLs to &lt;a href="foo"&gt;foo&lt;/a&gt;.
  * @CAMEL_MIME_FILTER_TOHTML_MARK_CITATION:
- *     Color quoted lines (lines beginning with '>').
+ *     Color quoted lines (lines beginning with '&gt;').
  * @CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES:
- *     Convert mailto: URLs to <a href="mailto:foo">mailto:foo</a>.
+ *     Convert mailto: URLs to &lt;a href="mailto:foo"&gt;mailto:foo&lt;/a&gt;.
  * @CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT:
- *     Convert 8-bit characters to escaped hexdecimal (&#nnn;).
+ *     Convert 8-bit characters to escaped hexdecimal (&amp;#nnn;).
  * @CAMEL_MIME_FILTER_TOHTML_CITE:
- *     Prefix each line with "> ".
+ *     Prefix each line with "&gt; ".
  * @CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT:
  *     This flag is not used by #CamelMimeFilterToHTML.
  * @CAMEL_MIME_FILTER_TOHTML_FORMAT_FLOWED:
  *     This flag is not used by #CamelMimeFilterToHTML.
  * @CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION:
- *     Group lines beginning with one or more '>' characters in
- *     <blockquote type="cite"> ... </blockquote> tags.  The tags
- *     are nested according to the number of '>' characters.
+ *     Group lines beginning with one or more '&gt;' characters in
+ *     &lt;blockquote type="cite"&gt; ... &lt;/blockquote&gt; tags. The tags
+ *     are nested according to the number of '&gt;' characters.
  *
  * Flags for converting text/plain content into text/html.
  **/
