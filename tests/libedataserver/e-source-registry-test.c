@@ -20,8 +20,7 @@
 
 #include <libedataserver/libedataserver.h>
 
-static ETestServiceType test_closure = {
-	E_TEST_SERVER_NONE, NULL, 0, FALSE };
+static ETestServerClosure test_closure = { E_TEST_SERVER_NONE, NULL, 0, FALSE, NULL };
 
 static gboolean
 test_commit_source_idle_cb (gpointer user_data)
