@@ -47,11 +47,15 @@
 struct _ESourceGoaPrivate {
 	GMutex property_lock;
 	gchar *account_id;
+	gchar *calendar_url;
+	gchar *contacts_url;
 };
 
 enum {
 	PROP_0,
-	PROP_ACCOUNT_ID
+	PROP_ACCOUNT_ID,
+	PROP_CALENDAR_URL,
+	PROP_CONTACTS_URL
 };
 
 G_DEFINE_TYPE (
@@ -68,6 +72,18 @@ source_goa_set_property (GObject *object,
 	switch (property_id) {
 		case PROP_ACCOUNT_ID:
 			e_source_goa_set_account_id (
+				E_SOURCE_GOA (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_CALENDAR_URL:
+			e_source_goa_set_calendar_url (
+				E_SOURCE_GOA (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_CONTACTS_URL:
+			e_source_goa_set_contacts_url (
 				E_SOURCE_GOA (object),
 				g_value_get_string (value));
 			return;
@@ -89,6 +105,20 @@ source_goa_get_property (GObject *object,
 				e_source_goa_dup_account_id (
 				E_SOURCE_GOA (object)));
 			return;
+
+		case PROP_CALENDAR_URL:
+			g_value_take_string (
+				value,
+				e_source_goa_dup_calendar_url (
+				E_SOURCE_GOA (object)));
+			return;
+
+		case PROP_CONTACTS_URL:
+			g_value_take_string (
+				value,
+				e_source_goa_dup_contacts_url (
+				E_SOURCE_GOA (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -104,6 +134,8 @@ source_goa_finalize (GObject *object)
 	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->account_id);
+	g_free (priv->calendar_url);
+	g_free (priv->contacts_url);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_goa_parent_class)->finalize (object);
@@ -132,6 +164,32 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			"account-id",
 			"Account ID",
 			"GNOME Online Account ID",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CALENDAR_URL,
+		g_param_spec_string (
+			"calendar-url",
+			"Calendar URL",
+			"GNOME Online Calendar URL",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONTACTS_URL,
+		g_param_spec_string (
+			"contacts-url",
+			"Contacts URL",
+			"GNOME Online Contacts URL",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -231,3 +289,174 @@ e_source_goa_set_account_id (ESourceGoa *extension,
 	g_object_notify (G_OBJECT (extension), "account-id");
 }
 
+/**
+ * e_source_goa_get_calendar_url:
+ * @extension: an #ESourceGoa
+ *
+ * Returns the calendar URL string of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs. Can be %NULL or an empty
+ * string for accounts not supporting this property.
+ *
+ * Returns: the associated GNOME Online Account calendar URL
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_source_goa_get_calendar_url (ESourceGoa *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	return extension->priv->calendar_url;
+}
+
+/**
+ * e_source_goa_dup_calendar_url:
+ * @extension: an #ESourceGoa
+ *
+ * Thread-safe variation of e_source_goa_get_calendar_url().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceGoa:calendar-url
+ *
+ * Since: 3.8
+ **/
+gchar *
+e_source_goa_dup_calendar_url (ESourceGoa *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	protected = e_source_goa_get_calendar_url (extension);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
+ * e_source_goa_set_calendar_url:
+ * @extension: an #ESourceGoa
+ * @calendar_url: (allow-none): the associated GNOME Online Account calendar URL, or %NULL
+ *
+ * Sets the calendar URL of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs.
+ *
+ * The internal copy of @calendar_url is automatically stripped of leading
+ * and trailing whitespace.  If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.8
+ **/
+void
+e_source_goa_set_calendar_url (ESourceGoa *extension,
+			       const gchar *calendar_url)
+{
+	g_return_if_fail (E_IS_SOURCE_GOA (extension));
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
+		g_mutex_unlock (&extension->priv->property_lock);
+		return;
+	}
+
+	g_free (extension->priv->calendar_url);
+	extension->priv->calendar_url = e_util_strdup_strip (calendar_url);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	g_object_notify (G_OBJECT (extension), "calendar-url");
+}
+
+/**
+ * e_source_goa_get_contacts_url:
+ * @extension: an #ESourceGoa
+ *
+ * Returns the contacts URL string of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs. Can be %NULL or an empty
+ * string for accounts not supporting this property.
+ *
+ * Returns: the associated GNOME Online Account contacts URL
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_source_goa_get_contacts_url (ESourceGoa *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	return extension->priv->contacts_url;
+}
+
+/**
+ * e_source_goa_dup_contacts_url:
+ * @extension: an #ESourceGoa
+ *
+ * Thread-safe variation of e_source_goa_get_contacts_url().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceGoa:contacts-url
+ *
+ * Since: 3.8
+ **/
+gchar *
+e_source_goa_dup_contacts_url (ESourceGoa *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	protected = e_source_goa_get_contacts_url (extension);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
+ * e_source_goa_set_contacts_url:
+ * @extension: an #ESourceGoa
+ * @contacts_url: (allow-none): the associated GNOME Online Account contacts URL, or %NULL
+ *
+ * Sets the contacts URL of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs.
+ *
+ * The internal copy of @contacts_url is automatically stripped of leading
+ * and trailing whitespace.  If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.8
+ **/
+void
+e_source_goa_set_contacts_url (ESourceGoa *extension,
+			       const gchar *contacts_url)
+{
+	g_return_if_fail (E_IS_SOURCE_GOA (extension));
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
+		g_mutex_unlock (&extension->priv->property_lock);
+		return;
+	}
+
+	g_free (extension->priv->contacts_url);
+	extension->priv->contacts_url = e_util_strdup_strip (contacts_url);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	g_object_notify (G_OBJECT (extension), "contacts-url");
+}

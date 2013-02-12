@@ -135,6 +135,12 @@ ETrustPromptResponse
 						 SoupMessage *message,
 						 struct _ESourceRegistry *registry,
 						 struct _ENamedParameters *parameters);
+ETrustPromptResponse
+		e_source_webdav_prepare_ssl_trust_prompt_with_parent
+						(ESourceWebdav *extension,
+						 SoupMessage *message,
+						 ESource *parent_source,
+						 struct _ENamedParameters *parameters);
 void		e_source_webdav_store_ssl_trust_prompt
 						(ESourceWebdav *extension,
 						 SoupMessage *message,

@@ -82,6 +82,14 @@ const gchar *	e_source_goa_get_account_id	(ESourceGoa *extension);
 gchar *		e_source_goa_dup_account_id	(ESourceGoa *extension);
 void		e_source_goa_set_account_id	(ESourceGoa *extension,
 						 const gchar *account_id);
+const gchar *	e_source_goa_get_calendar_url	(ESourceGoa *extension);
+gchar *		e_source_goa_dup_calendar_url	(ESourceGoa *extension);
+void		e_source_goa_set_calendar_url	(ESourceGoa *extension,
+						 const gchar *calendar_url);
+const gchar *	e_source_goa_get_contacts_url	(ESourceGoa *extension);
+gchar *		e_source_goa_dup_contacts_url	(ESourceGoa *extension);
+void		e_source_goa_set_contacts_url	(ESourceGoa *extension,
+						 const gchar *contacts_url);
 
 G_END_DECLS
 

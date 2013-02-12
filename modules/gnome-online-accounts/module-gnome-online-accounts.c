@@ -117,6 +117,9 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 	if (g_str_equal (goa_provider_type, "yahoo"))
 		eds_backend_name = "yahoo";
 
+	if (g_str_equal (goa_provider_type, "owncloud"))
+		eds_backend_name = "owncloud";
+
 	return eds_backend_name;
 }
 
@@ -500,8 +503,12 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	GoaAccount *goa_account;
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
+	const gchar *provider_type;
+	const gchar *backend_name;
 
 	goa_account = goa_object_get_account (goa_object);
+	provider_type = goa_account_get_provider_type (goa_account);
+	backend_name = gnome_online_accounts_get_backend_name (provider_type);
 
 	g_object_bind_property (
 		goa_account, "presentation-identity",
@@ -515,6 +522,33 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		goa_account, "id",
 		source_extension, "account-id",
 		G_BINDING_SYNC_CREATE);
+
+	/* requires more properties from ownCould, but these are not
+	   available before ownCloud was introduced, thus workaround
+	   it with the backend_name check
+	*/
+	if (g_strcmp0 (backend_name, "owncloud") == 0) {
+		GoaCalendar *goa_calendar;
+		GoaContacts *goa_contacts;
+
+		goa_calendar = goa_object_get_calendar (goa_object);
+		if (goa_calendar) {
+			g_object_bind_property (
+				goa_calendar, "uri",
+				source_extension, "calendar-url",
+				G_BINDING_SYNC_CREATE);
+			g_object_unref (goa_calendar);
+		}
+
+		goa_contacts = goa_object_get_contacts (goa_object);
+		if (goa_contacts) {
+			g_object_bind_property (
+				goa_contacts, "uri",
+				source_extension, "contacts-url",
+				G_BINDING_SYNC_CREATE);
+			g_object_unref (goa_contacts);
+		}
+	}
 
 	extension_name = E_SOURCE_EXTENSION_COLLECTION;
 	source_extension = e_source_get_extension (source, extension_name);
@@ -705,9 +739,9 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
 	GoaAccount *goa_account;
 	ESourceRegistryServer *server;
 	ESource *collection_source;
-	ESource *mail_account_source;
-	ESource *mail_identity_source;
-	ESource *mail_transport_source;
+	ESource *mail_account_source = NULL;
+	ESource *mail_identity_source = NULL;
+	ESource *mail_transport_source = NULL;
 	const gchar *account_id;
 	const gchar *parent_uid;
 
@@ -716,43 +750,53 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
 	collection_source = gnome_online_accounts_new_source (extension);
 	g_return_if_fail (E_IS_SOURCE (collection_source));
 
-	mail_account_source = gnome_online_accounts_new_source (extension);
-	g_return_if_fail (E_IS_SOURCE (mail_account_source));
-
-	mail_identity_source = gnome_online_accounts_new_source (extension);
-	g_return_if_fail (E_IS_SOURCE (mail_identity_source));
-
-	mail_transport_source = gnome_online_accounts_new_source (extension);
-	g_return_if_fail (E_IS_SOURCE (mail_transport_source));
-
-	/* Configure parent/child relationships. */
+	gnome_online_accounts_config_collection (extension, collection_source, goa_object);
 	parent_uid = e_source_get_uid (collection_source);
-	e_source_set_parent (mail_account_source, parent_uid);
-	e_source_set_parent (mail_identity_source, parent_uid);
-	e_source_set_parent (mail_transport_source, parent_uid);
 
-	/* Give the factory first crack at mail configuration. */
-	e_collection_backend_factory_prepare_mail (
-		E_COLLECTION_BACKEND_FACTORY (backend_factory),
-		mail_account_source,
-		mail_identity_source,
-		mail_transport_source);
+	if (goa_object_peek_mail (goa_object)) {
+		mail_account_source = gnome_online_accounts_new_source (extension);
+		g_return_if_fail (E_IS_SOURCE (mail_account_source));
 
-	/* Now it's our turn. */
-	gnome_online_accounts_config_collection (
-		extension, collection_source, goa_object);
-	gnome_online_accounts_config_mail_account (
-		extension, mail_account_source, goa_object);
-	gnome_online_accounts_config_mail_identity (
-		extension, mail_identity_source, goa_object);
-	gnome_online_accounts_config_mail_transport (
-		extension, mail_transport_source, goa_object);
+		mail_identity_source = gnome_online_accounts_new_source (extension);
+		g_return_if_fail (E_IS_SOURCE (mail_identity_source));
+
+		mail_transport_source = gnome_online_accounts_new_source (extension);
+		g_return_if_fail (E_IS_SOURCE (mail_transport_source));
+
+		/* Configure parent/child relationships. */
+		e_source_set_parent (mail_account_source, parent_uid);
+		e_source_set_parent (mail_identity_source, parent_uid);
+		e_source_set_parent (mail_transport_source, parent_uid);
+
+		/* Give the factory first crack at mail configuration. */
+		e_collection_backend_factory_prepare_mail (
+			E_COLLECTION_BACKEND_FACTORY (backend_factory),
+			mail_account_source,
+			mail_identity_source,
+			mail_transport_source);
+
+		gnome_online_accounts_config_mail_account (extension, mail_account_source, goa_object);
+		gnome_online_accounts_config_mail_identity (extension, mail_identity_source, goa_object);
+		gnome_online_accounts_config_mail_transport (extension, mail_transport_source, goa_object);
+	}
 
 	/* Export the new source collection. */
 	e_source_registry_server_add_source (server, collection_source);
-	e_source_registry_server_add_source (server, mail_account_source);
-	e_source_registry_server_add_source (server, mail_identity_source);
-	e_source_registry_server_add_source (server, mail_transport_source);
+
+	if (mail_account_source) {
+		e_source_registry_server_add_source (server, mail_account_source);
+		g_object_unref (mail_account_source);
+	}
+
+	if (mail_identity_source) {
+		e_source_registry_server_add_source (server, mail_identity_source);
+		g_object_unref (mail_identity_source);
+	}
+
+	if (mail_transport_source) {
+		e_source_registry_server_add_source (server, mail_transport_source);
+		g_object_unref (mail_transport_source);
+	}
 
 	goa_account = goa_object_get_account (goa_object);
 	account_id = goa_account_get_id (goa_account);
@@ -763,11 +807,7 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
 		g_strdup (parent_uid));
 
 	g_object_unref (goa_account);
-
 	g_object_unref (collection_source);
-	g_object_unref (mail_account_source);
-	g_object_unref (mail_identity_source);
-	g_object_unref (mail_transport_source);
 }
 
 static void
