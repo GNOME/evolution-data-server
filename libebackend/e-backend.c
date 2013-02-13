@@ -256,6 +256,16 @@ backend_authenticate_finish (EBackend *backend,
 	return !g_simple_async_result_propagate_error (simple, error);
 }
 
+static gboolean
+backend_get_destination_address (EBackend *backend,
+				 gchar **host,
+				 guint16 *port)
+{
+	/* default implementation returns FALSE, indicating
+	   no remote destination being used for this backend */
+	return FALSE;
+}
+
 static void
 e_backend_class_init (EBackendClass *class)
 {
@@ -272,6 +282,7 @@ e_backend_class_init (EBackendClass *class)
 	class->authenticate_sync = backend_authenticate_sync;
 	class->authenticate = backend_authenticate;
 	class->authenticate_finish = backend_authenticate_finish;
+	class->get_destination_address = backend_get_destination_address;
 
 	g_object_class_install_property (
 		object_class,
@@ -643,4 +654,96 @@ e_backend_trust_prompt_finish (EBackend *backend,
 		return E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
 
 	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
+}
+
+/**
+ * e_backend_get_destination_address:
+ * @backend: an #EBackend instance
+ * @host: (out): destination server host name
+ * @port: (out): destination server port
+ *
+ * Provides destination server host name and port to which
+ * the backend connects. This is used to determine required
+ * connection point for e_backend_destination_is_reachable().
+ * The @host is a newly allocated string, which will be freed
+ * with g_free(). When @backend sets both @host and @port, then
+ * it should return %TRUE, indicating it's a remote backend.
+ * Default implementation returns %FALSE, which is treated
+ * like the backend is local, no checking for server reachability
+ * is possible.
+ *
+ * Returns: %TRUE, when it's a remote backend and provides both
+ *   @host and @port; %FALSE otherwise.
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_backend_get_destination_address (EBackend *backend,
+				   gchar **host,
+				   guint16 *port)
+{
+	EBackendClass *klass;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (host != NULL, FALSE);
+	g_return_val_if_fail (port != NULL, FALSE);
+
+	klass = E_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (klass->get_destination_address != NULL, FALSE);
+
+	return klass->get_destination_address (backend, host, port);
+}
+
+/**
+ * e_backend_is_destination_reachable:
+ * @backend: an #EBackend instance
+ * @cancellable: a #GCancellable instance, or %NULL
+ * @error: a #GError for errors, or %NULL
+ *
+ * Checks whether the @backend<!-- -->'s destination server, as returned
+ * by e_backend_get_destination_address(), is reachable.
+ * If the e_backend_get_destination_address() returns %FALSE, this function
+ * returns %TRUE, meaning the destination is always reachable.
+ * This uses #GNetworkMonitor<!-- -->'s g_network_monitor_can_reach()
+ * for reachability tests.
+ *
+ * Returns: %TRUE, when destination server address is reachable or
+ *    the backend doesn't provide destination address; %FALSE if
+ *    the backend destination server cannot be reached currently.
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_backend_is_destination_reachable (EBackend *backend,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	gboolean reachable = TRUE;
+	gchar *host = NULL;
+	guint16 port = 0;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
+
+	if (e_backend_get_destination_address (backend, &host, &port)) {
+		g_warn_if_fail (host != NULL);
+
+		if (host) {
+			GNetworkMonitor *network_monitor;
+			GSocketConnectable *connectable;
+
+			network_monitor = g_network_monitor_get_default ();
+
+			connectable = g_network_address_new (host, port);
+			if (connectable) {
+				reachable = g_network_monitor_can_reach (network_monitor, connectable, cancellable, error);
+				g_object_unref (connectable);
+			} else {
+				reachable = FALSE;
+			}
+		}
+	}
+
+	g_free (host);
+
+	return reachable;
 }

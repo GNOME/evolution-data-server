@@ -83,6 +83,11 @@ struct _EBackendClass {
 						 GAsyncResult *result,
 						 GError **error);
 
+	gboolean	(*get_destination_address)
+						(EBackend *backend,
+						 gchar **host,
+						 guint16 *port);
+
 	gpointer reserved[13];
 };
 
@@ -118,6 +123,15 @@ void		e_backend_trust_prompt		(EBackend *backend,
 ETrustPromptResponse
 		e_backend_trust_prompt_finish	(EBackend *backend,
 						 GAsyncResult *result,
+						 GError **error);
+
+gboolean	e_backend_get_destination_address
+						(EBackend *backend,
+						 gchar **host,
+						 guint16 *port);
+gboolean	e_backend_is_destination_reachable
+						(EBackend *backend,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS
