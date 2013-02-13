@@ -88,7 +88,7 @@ struct _EBackendClass {
 						 gchar **host,
 						 guint16 *port);
 
-	gpointer reserved[13];
+	gpointer reserved[12];
 };
 
 GType		e_backend_get_type		(void) G_GNUC_CONST;
