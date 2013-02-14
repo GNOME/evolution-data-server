@@ -849,15 +849,23 @@ e_book_client_set_self (EBookClient *client,
 gboolean
 e_book_client_is_self (EContact *contact)
 {
-	GSettings *settings;
+	static GSettings *settings;
+	static GMutex mutex;
 	gchar *uid;
 	gboolean is_self;
 
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), FALSE);
 
-	settings = g_settings_new (SELF_UID_PATH_ID);
+	/*
+	 * It would be nice to attach this instance to the EBookClient
+	 * instance so that it can be free again later, but
+	 * unfortunately the API doesn't allow that.
+	 */
+	g_mutex_lock (&mutex);
+	if (!settings)
+		settings = g_settings_new (SELF_UID_PATH_ID);
 	uid = g_settings_get_string (settings, SELF_UID_KEY);
-	g_object_unref (settings);
+	g_mutex_unlock (&mutex);
 
 	is_self = uid && !g_strcmp0 (uid, e_contact_get_const (contact, E_CONTACT_UID));
 
