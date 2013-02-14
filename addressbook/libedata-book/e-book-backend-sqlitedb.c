@@ -39,13 +39,28 @@
 
 #define d(x)
 
+#if d(1)+0
+#  define LOCK_MUTEX(mutex)					\
+	G_STMT_START {						\
+		g_message ("%s: DB Locking ", G_STRFUNC);	\
+		g_mutex_lock (mutex);				\
+		g_message ("%s: DB Locked ", G_STRFUNC);	\
+	} G_STMT_END
+
+
+#  define UNLOCK_MUTEX(mutex)					\
+	G_STMT_START {						\
+		g_message ("%s: Unlocking ", G_STRFUNC);	\
+		g_mutex_unlock (mutex);				\
+		g_message ("%s: DB Unlocked ", G_STRFUNC);	\
+	} G_STMT_END
+#else
+#  define LOCK_MUTEX(mutex)   g_mutex_lock (mutex)
+#  define UNLOCK_MUTEX(mutex) g_mutex_unlock (mutex)
+#endif
+
 #define DB_FILENAME "contacts.db"
 #define FOLDER_VERSION 3
-
-#define READER_LOCK(ebsdb) g_rw_lock_reader_lock (&ebsdb->priv->rwlock)
-#define READER_UNLOCK(ebsdb) g_rw_lock_reader_unlock (&ebsdb->priv->rwlock)
-#define WRITER_LOCK(ebssdb) g_rw_lock_writer_lock (&ebsdb->priv->rwlock)
-#define WRITER_UNLOCK(ebssdb) g_rw_lock_writer_unlock (&ebsdb->priv->rwlock)
 
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
@@ -64,10 +79,10 @@ struct _EBookBackendSqliteDBPrivate {
 	gchar *path;
 	gchar *hash_key;
 
-	gboolean store_vcard;
-	GRWLock rwlock;
+	GMutex lock;
+	GMutex updates_lock; /* This is for deprecated e_book_backend_sqlitedb_lock_updates() */
 
-	GMutex in_transaction_lock;
+	gboolean store_vcard;
 	guint32 in_transaction;
 
 	SummaryField   *summary_fields;
@@ -189,14 +204,13 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 
 	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
 
-	g_rw_lock_clear (&priv->rwlock);
-
 	sqlite3_close (priv->db);
 
 	g_free (priv->path);
 	g_free (priv->summary_fields);
 
-	g_mutex_clear (&priv->in_transaction_lock);
+	g_mutex_clear (&priv->lock);
+	g_mutex_clear (&priv->updates_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_sqlitedb_parent_class)->finalize (object);
@@ -220,10 +234,10 @@ e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 	ebsdb->priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (ebsdb);
 
 	ebsdb->priv->store_vcard = TRUE;
-	g_rw_lock_init (&ebsdb->priv->rwlock);
 
 	ebsdb->priv->in_transaction = 0;
-	g_mutex_init (&ebsdb->priv->in_transaction_lock);
+	g_mutex_init (&ebsdb->priv->lock);
+	g_mutex_init (&ebsdb->priv->updates_lock);
 }
 
 static gint
@@ -373,7 +387,7 @@ book_backend_sql_exec (sqlite3 *db,
 	return book_backend_sql_exec_real (db, stmt, callback, data, error);
 }
 
-/* the first caller holds the writer lock too */
+/* This function must always be called with the priv->lock held */
 static gboolean
 book_backend_sqlitedb_start_transaction (EBookBackendSqliteDB *ebsdb,
                                          GError **error)
@@ -384,29 +398,19 @@ book_backend_sqlitedb_start_transaction (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
 
-	g_mutex_lock (&ebsdb->priv->in_transaction_lock);
-
 	ebsdb->priv->in_transaction++;
-	if (ebsdb->priv->in_transaction == 0) {
-		g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
-
-		g_return_val_if_fail (ebsdb->priv->in_transaction != 0, FALSE);
-		return FALSE;
-	}
+	g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
 
 	if (ebsdb->priv->in_transaction == 1) {
-		WRITER_LOCK (ebsdb);
 
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, "BEGIN", NULL, NULL, error);
 	}
 
-	g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
-
 	return success;
 }
 
-/* the last caller releases the writer lock too */
+/* This function must always be called with the priv->lock held */
 static gboolean
 book_backend_sqlitedb_commit_transaction (EBookBackendSqliteDB *ebsdb,
                                           GError **error)
@@ -417,30 +421,19 @@ book_backend_sqlitedb_commit_transaction (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
 
-	g_mutex_lock (&ebsdb->priv->in_transaction_lock);
-
-	if (ebsdb->priv->in_transaction == 0) {
-		g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
-
-		g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
-		return FALSE;
-	}
+	g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
 
 	ebsdb->priv->in_transaction--;
 
 	if (ebsdb->priv->in_transaction == 0) {
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, "COMMIT", NULL, NULL, error);
-
-		WRITER_UNLOCK (ebsdb);
 	}
-
-	g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
 
 	return success;
 }
 
-/* the last caller releases the writer lock too */
+/* This function must always be called with the priv->lock held */
 static gboolean
 book_backend_sqlitedb_rollback_transaction (EBookBackendSqliteDB *ebsdb,
                                             GError **error)
@@ -451,14 +444,7 @@ book_backend_sqlitedb_rollback_transaction (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
 
-	g_mutex_lock (&ebsdb->priv->in_transaction_lock);
-
-	if (ebsdb->priv->in_transaction == 0) {
-		g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
-
-		g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
-		return FALSE;
-	}
+	g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
 
 	ebsdb->priv->in_transaction--;
 
@@ -466,11 +452,7 @@ book_backend_sqlitedb_rollback_transaction (EBookBackendSqliteDB *ebsdb,
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, "ROLLBACK", NULL, NULL, error);
 
-		WRITER_UNLOCK (ebsdb);
 	}
-
-	g_mutex_unlock (&ebsdb->priv->in_transaction_lock);
-
 	return success;
 }
 
@@ -867,8 +849,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	stmt = sqlite3_mprintf (string->str, folderid);
 	g_string_free (string, TRUE);
 
-	WRITER_LOCK (ebsdb);
-
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, NULL, NULL , error);
 
@@ -947,8 +927,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 	}
 
-	WRITER_UNLOCK (ebsdb);
-
 	if (success)
 		success = introspect_summary (ebsdb, folderid, error);
 
@@ -982,8 +960,6 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 		return FALSE;
 	}
 
-	WRITER_LOCK (ebsdb);
-
 	book_backend_sql_exec (
 		ebsdb->priv->db,
 		"ATTACH DATABASE ':memory:' AS mem",
@@ -996,8 +972,6 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db,
 		"PRAGMA case_sensitive_like = ON",
 		NULL, NULL, NULL);
-
-	WRITER_UNLOCK (ebsdb);
 
 	return create_folders_table (ebsdb, error);
 }
@@ -1031,7 +1005,6 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 
 		if (ebsdb) {
 			g_object_ref (ebsdb);
-			g_mutex_unlock (&dbcon_lock);
 			g_free (hash_key);
 			goto exit;
 		}
@@ -1071,18 +1044,26 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	g_hash_table_insert (db_connections, hash_key, ebsdb);
 	ebsdb->priv->hash_key = g_strdup (hash_key);
 
+ exit:
+	/* While the global dbcon_lock is held, hold the ebsdb specific lock and
+	 * prolong the locking on that instance until the folders are all set up
+	 */
+	LOCK_MUTEX (&ebsdb->priv->lock);
 	g_mutex_unlock (&dbcon_lock);
 
-exit:
 	if (!add_folder_into_db (ebsdb, folderid, folder_name, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		g_object_unref (ebsdb);
 		return NULL;
 	}
 
 	if (!create_contacts_table (ebsdb, folderid, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		g_object_unref (ebsdb);
 		return NULL;
 	}
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return ebsdb;
 }
@@ -1353,9 +1334,17 @@ gboolean
 e_book_backend_sqlitedb_lock_updates (EBookBackendSqliteDB *ebsdb,
                                       GError **error)
 {
+	gboolean success;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 
-	return book_backend_sqlitedb_start_transaction (ebsdb, error);
+	LOCK_MUTEX (&ebsdb->priv->updates_lock);
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return success;
 }
 
 gboolean
@@ -1363,11 +1352,19 @@ e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
                                         gboolean do_commit,
                                         GError **error)
 {
+	gboolean success;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 
-	return do_commit ?
+	LOCK_MUTEX (&ebsdb->priv->lock);
+	success = do_commit ?
 		book_backend_sqlitedb_commit_transaction (ebsdb, error) :
 		book_backend_sqlitedb_rollback_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	UNLOCK_MUTEX (&ebsdb->priv->updates_lock);
+
+	return success;
 }
 
 /* Add Contact (free the result with g_free() ) */
@@ -1582,13 +1579,18 @@ e_book_backend_sqlitedb_new_contacts (EBookBackendSqliteDB *ebsdb,
                                       GError **error)
 {
 	GSList *l;
-	gboolean success;
+	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
 
-	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		return FALSE;
+	}
 
 	for (l = contacts; success && l != NULL; l = g_slist_next (l)) {
 		EContact *contact = (EContact *) l->data;
@@ -1597,12 +1599,14 @@ e_book_backend_sqlitedb_new_contacts (EBookBackendSqliteDB *ebsdb,
 	}
 
 	if (success)
-		return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-	return FALSE;
+	return success;
 }
 
 /**
@@ -1742,14 +1746,19 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
                                          GSList *uids,
                                          GError **error)
 {
-	gboolean success;
+	gboolean success = TRUE;
 	gchar *stmt;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
-	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		return FALSE;
+	}
 
 	/* Delete the auxillary contact infos first */
 	if (success && ebsdb->priv->have_attr_list) {
@@ -1769,12 +1778,14 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
 	}
 
 	if (success)
-		return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-	return FALSE;
+	return success;
 }
 
 struct _contact_info {
@@ -1821,7 +1832,7 @@ e_book_backend_sqlitedb_has_contact (EBookBackendSqliteDB *ebsdb,
 	cinfo.exists = FALSE;
 	cinfo.partial_content = FALSE;
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT partial_content FROM %Q WHERE uid = %Q",
@@ -1833,7 +1844,7 @@ e_book_backend_sqlitedb_has_contact (EBookBackendSqliteDB *ebsdb,
 	if (success)
 		*partial_content = cinfo.partial_content;
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	/* FIXME Returning FALSE can mean either "contact not found" or
 	 *       "error occurred".  Add a boolean (out) "exists" parameter. */
@@ -1966,7 +1977,7 @@ e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
  **/
 gboolean
 e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
-                                              GHashTable *fields_of_interest)
+					      GHashTable *fields_of_interest)
 {
 	gboolean summary_fields = TRUE;
 	GHashTableIter iter;
@@ -1974,6 +1985,8 @@ e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
 
 	if (!fields_of_interest)
 		return FALSE;
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	g_hash_table_iter_init (&iter, fields_of_interest);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -1985,6 +1998,8 @@ e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
 			break;
 		}
 	}
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return summary_fields;
 }
@@ -2083,7 +2098,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid != NULL, NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	/* Try constructing contacts from only UID/REV first if that's requested */
 	if (uid_rev_fields (fields_of_interest)) {
@@ -2130,7 +2145,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 
 	}
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (with_all_required_fields)
 		*with_all_required_fields = local_with_all_required_fields;
@@ -2260,21 +2275,10 @@ static const struct {
 	{ "exists", func_check, 0 }
 };
 
-/**
- * e_book_backend_sqlitedb_check_summary_query:
- * @ebsdb: an #EBookBackendSqliteDB
- * @query: the query to check
- * @with_list_attrs: Return location to store whether the query touches upon list attributes
- *
- * Checks whether @query contains only checks for the summary fields
- * configured in @ebsdb
- *
- * Since: 3.8
- **/
-gboolean
-e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
-                                             const gchar *query,
-                                             gboolean *with_list_attrs)
+static gboolean
+e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
+						    const gchar *query,
+						    gboolean *with_list_attrs)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -2321,6 +2325,33 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 }
 
 /**
+ * e_book_backend_sqlitedb_check_summary_query:
+ * @ebsdb: an #EBookBackendSqliteDB
+ * @query: the query to check
+ * @with_list_attrs: Return location to store whether the query touches upon list attributes
+ *
+ * Checks whether @query contains only checks for the summary fields
+ * configured in @ebsdb
+ *
+ * Since: 3.8
+ **/
+gboolean
+e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
+                                             const gchar *query,
+                                             gboolean *with_list_attrs)
+{
+	gboolean is_summary;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+	is_summary = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, query, with_list_attrs);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return is_summary;
+}
+
+/**
  * e_book_backend_sqlitedb_is_summary_query:
  *
  * Checks whether the query contains only checks for the default summary fields
@@ -2332,7 +2363,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 gboolean
 e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 {
-	return e_book_backend_sqlitedb_check_summary_query (NULL, query, NULL);
+	return e_book_backend_sqlitedb_check_summary_query_locked (NULL, query, NULL);
 }
 
 static ESExpResult *
@@ -2846,8 +2877,6 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 	gboolean local_with_all_required_fields = FALSE;
 	gboolean success = TRUE;
 
-	READER_LOCK (ebsdb);
-
 	/* Try constructing contacts from only UID/REV first if that's requested */
 	if (uid_rev_fields (fields_of_interest)) {
 		gchar *select_portion;
@@ -2924,8 +2953,6 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 			_("Full search_contacts are not stored in cache. vcards cannot be returned."));
 	}
 
-	READER_UNLOCK (ebsdb);
-
 	if (!success) {
 		g_warn_if_fail (vcard_data == NULL);
 		return NULL;
@@ -2949,14 +2976,10 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb,
 	gboolean success;
 	gchar *stmt;
 
-	READER_LOCK (ebsdb);
-
 	stmt = sqlite3_mprintf ("SELECT uid, vcard, bdata FROM %Q", folderid);
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, addto_vcard_list_cb , &all, error);
 	sqlite3_free (stmt);
-
-	READER_UNLOCK (ebsdb);
 
 	if (!success) {
 		g_warn_if_fail (all == NULL);
@@ -3039,8 +3062,10 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	if (sexp && !*sexp)
 		sexp = NULL;
 
-	if (!sexp || e_book_backend_sqlitedb_check_summary_query (ebsdb, sexp,
-								  &query_with_list_attrs)) {
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!sexp || e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
+									 &query_with_list_attrs)) {
 		gchar *sql_query;
 
 		sql_query = sexp ? sexp_to_sql_query (ebsdb, folderid, sexp) : NULL;
@@ -3066,6 +3091,8 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 			_("Full search_contacts are not stored in cache. "
 			"Hence only summary query is supported."));
 	}
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (searched)
 		*searched = local_searched;
@@ -3099,11 +3126,11 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 	if (sexp && !*sexp)
 		sexp = NULL;
 
-	if (!sexp || e_book_backend_sqlitedb_check_summary_query (ebsdb, sexp, &query_with_list_attrs)) {
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!sexp || e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp, &query_with_list_attrs)) {
 		gchar *stmt;
 		gchar *sql_query = sexp ? sexp_to_sql_query (ebsdb, folderid, sexp) : NULL;
-
-		READER_LOCK (ebsdb);
 
 		if (sql_query && sql_query[0]) {
 
@@ -3129,8 +3156,6 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 			sqlite3_free (stmt);
 		}
 
-		READER_UNLOCK (ebsdb);
-
 		local_searched = TRUE;
 
 		g_free (sql_query);
@@ -3147,6 +3172,8 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 			_("Full vcards are not stored in cache. "
 			"Hence only summary query is supported."));
 	}
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (searched)
 		*searched = local_searched;
@@ -3191,7 +3218,7 @@ e_book_backend_sqlitedb_get_uids_and_rev (EBookBackendSqliteDB *ebsdb,
 
 	uids_and_rev = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf ("SELECT uid,rev FROM %Q", folderid);
 	book_backend_sql_exec (
@@ -3199,7 +3226,7 @@ e_book_backend_sqlitedb_get_uids_and_rev (EBookBackendSqliteDB *ebsdb,
 		get_uids_and_rev_cb, uids_and_rev, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return uids_and_rev;
 }
@@ -3222,7 +3249,7 @@ e_book_backend_sqlitedb_get_is_populated (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT is_populated FROM folders WHERE folder_id = %Q",
@@ -3231,7 +3258,7 @@ e_book_backend_sqlitedb_get_is_populated (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, get_bool_cb , &ret, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return ret;
 
@@ -3256,26 +3283,29 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	stmt = sqlite3_mprintf (
-		"UPDATE folders SET is_populated = %d "
+	        "UPDATE folders SET is_populated = %d "
 		"WHERE folder_id = %Q", populated, folderid);
-	success =book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
+	success = book_backend_sql_exec (
+                ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
-	if (!success)
-		goto rollback;
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-rollback:
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
-
-	return FALSE;
+	return success;
 }
 
 /**
@@ -3308,7 +3338,7 @@ e_book_backend_sqlitedb_get_revision (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid && folderid[0], FALSE);
 	g_return_val_if_fail (revision_out != NULL && *revision_out == NULL, FALSE);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT revision FROM folders WHERE folder_id = %Q", folderid);
@@ -3316,7 +3346,7 @@ e_book_backend_sqlitedb_get_revision (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, get_string_cb, &revision_out, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return success;
 }
@@ -3346,26 +3376,29 @@ e_book_backend_sqlitedb_set_revision (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid && folderid[0], FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	stmt = sqlite3_mprintf (
-		"UPDATE folders SET revision = %Q "
+	        "UPDATE folders SET revision = %Q "
 		"WHERE folder_id = %Q", revision, folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
+	        ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
-	if (!success)
-		goto rollback;
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-rollback:
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
-
-	return FALSE;
+	return success;
 }
 
 /**
@@ -3391,7 +3424,7 @@ e_book_backend_sqlitedb_get_has_partial_content (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT partial_content FROM folders "
@@ -3400,7 +3433,7 @@ e_book_backend_sqlitedb_get_has_partial_content (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, get_bool_cb , &ret, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return ret;
 }
@@ -3424,26 +3457,29 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	stmt = sqlite3_mprintf (
-		"UPDATE folders SET partial_content = %d "
+	        "UPDATE folders SET partial_content = %d "
 		"WHERE folder_id = %Q", partial_content, folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
+	        ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
-	if (!success)
-		goto rollback;
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-rollback:
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
-
-	return FALSE;
+	return success;
 }
 
 /**
@@ -3466,7 +3502,7 @@ e_book_backend_sqlitedb_get_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid != NULL, NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT bdata FROM %Q WHERE uid = %Q", folderid, uid);
@@ -3474,7 +3510,7 @@ e_book_backend_sqlitedb_get_contact_bdata (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, get_string_cb , &ret, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (!success) {
 		g_warn_if_fail (ret == NULL);
@@ -3506,26 +3542,29 @@ e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	stmt = sqlite3_mprintf (
-		"UPDATE %Q SET bdata = %Q WHERE uid = %Q",
+	        "UPDATE %Q SET bdata = %Q WHERE uid = %Q",
 		folderid, value, uid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
+	        ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
-	if (!success)
-		goto rollback;
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-rollback:
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
-
-	return FALSE;
+	return success;
 }
 
 /**
@@ -3545,7 +3584,7 @@ e_book_backend_sqlitedb_get_sync_data (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
 	g_return_val_if_fail (folderid != NULL, NULL);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT sync_data FROM folders WHERE folder_id = %Q",
@@ -3554,7 +3593,7 @@ e_book_backend_sqlitedb_get_sync_data (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, get_string_cb , &ret, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return ret;
 }
@@ -3579,26 +3618,29 @@ e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid != NULL, FALSE);
 	g_return_val_if_fail (sync_data != NULL, FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	stmt = sqlite3_mprintf (
-		"UPDATE folders SET sync_data = %Q "
+	        "UPDATE folders SET sync_data = %Q "
 		"WHERE folder_id = %Q", sync_data, folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
+	        ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
-	if (!success)
-		goto rollback;
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-rollback:
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
-
-	return FALSE;
+	return success;
 }
 
 /**
@@ -3620,7 +3662,7 @@ e_book_backend_sqlitedb_get_key_value (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT value FROM keys WHERE folder_id = %Q AND key = %Q",
@@ -3629,7 +3671,7 @@ e_book_backend_sqlitedb_get_key_value (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, get_string_cb , &ret, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return ret;
 }
@@ -3656,26 +3698,29 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (key != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	stmt = sqlite3_mprintf (
-		"INSERT or REPLACE INTO keys (key, value, folder_id) "
+	        "INSERT or REPLACE INTO keys (key, value, folder_id) "
 		"values (%Q, %Q, %Q)", key, value, folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
+	        ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
-	if (!success)
-		goto rollback;
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
-rollback:
-	/* The GError is already set. */
-	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
-
-	return FALSE;
+	return success;
 }
 
 /**
@@ -3696,7 +3741,7 @@ e_book_backend_sqlitedb_get_partially_cached_ids (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
 	g_return_val_if_fail (folderid != NULL, NULL);
 
-	READER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT uid FROM %Q WHERE partial_content = 1",
@@ -3705,7 +3750,7 @@ e_book_backend_sqlitedb_get_partially_cached_ids (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 	sqlite3_free (stmt);
 
-	READER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return uids;
 }
@@ -3728,8 +3773,12 @@ e_book_backend_sqlitedb_delete_addressbook (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid != NULL, FALSE);
 
-	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		return FALSE;
+	}
 
 	/* delete the contacts table */
 	stmt = sqlite3_mprintf ("DROP TABLE %Q ", folderid);
@@ -3760,11 +3809,16 @@ e_book_backend_sqlitedb_delete_addressbook (EBookBackendSqliteDB *ebsdb,
 	if (!success)
 		goto rollback;
 
-	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return success;
 
 rollback:
 	/* The GError is already set. */
 	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return FALSE;
 }
@@ -3803,7 +3857,7 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 
-	WRITER_LOCK (ebsdb);
+	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	sqlite3_close (ebsdb->priv->db);
 
@@ -3811,7 +3865,7 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 	ret = g_unlink (filename);
 	g_free (filename);
 
-	WRITER_UNLOCK (ebsdb);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (ret == -1) {
 		g_set_error (
