@@ -2479,6 +2479,25 @@ e_contact_inline_local_photos (EContact *contact,
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_photo, "EContactPhoto")
 
 /**
+ * e_contact_geo_new:
+ *
+ * Creates an #EContactGeo struct with all coordinates set to 0.
+ *
+ * Returns: (transfer full): A new #EContactGeo struct.
+ *
+ * Since: 3.8
+ **/
+EContactGeo *
+e_contact_geo_new (void)
+{
+	EContactGeo *geo;
+	geo = g_new0 (EContactGeo, 1);
+	geo->latitude = 0;
+	geo->longitude = 0;
+	return geo;
+}
+
+/**
  * e_contact_geo_free:
  * @geo: an #EContactGeo
  *

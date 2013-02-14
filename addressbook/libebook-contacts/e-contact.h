@@ -382,6 +382,7 @@ void		e_contact_photo_set_uri		(EContactPhoto *photo,
 gboolean	e_contact_inline_local_photos	(EContact *contact,
 						 GError **error);
 
+EContactGeo *	e_contact_geo_new		(void);
 GType		e_contact_geo_get_type		(void);
 void		e_contact_geo_free		(EContactGeo *geo);
 
