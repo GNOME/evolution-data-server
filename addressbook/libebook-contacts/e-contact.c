@@ -2581,6 +2581,23 @@ e_contact_address_copy (EContactAddress *address)
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_address, "EContactAddress")
 
 /**
+ * e_contact_cert_new:
+ *
+ * Creates an #EContactCert struct with all values set to 0.
+ *
+ * Returns: (transfer full): A new #EContactCert struct.
+ *
+ * Since: 3.7
+ **/
+EContactCert *
+e_contact_cert_new ()
+{
+	EContactCert *cert;
+	cert = g_new0 (EContactCert, 1);
+	return cert;
+}
+
+/**
  * e_contact_cert_free:
  * @cert: an #EContactCert
  *
