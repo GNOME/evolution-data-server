@@ -3,6 +3,7 @@ ebook_backend_LTLIBRARIES = libebookbackendfile.la
 libebookbackendfile_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libebookbackend\"		\
+	-DBACKENDDIR="\"$(ebook_backenddir)\""		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\

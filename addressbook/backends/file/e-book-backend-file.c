@@ -76,6 +76,7 @@ G_DEFINE_TYPE_WITH_CODE (
 		e_book_backend_file_initable_init))
 
 struct _EBookBackendFilePrivate {
+	gchar     *base_directory;
 	gchar     *photo_dirname;
 	gchar     *revision;
 	gint       rev_counter;
@@ -1441,6 +1442,7 @@ e_book_backend_file_finalize (GObject *object)
 
 	g_free (priv->photo_dirname);
 	g_free (priv->revision);
+	g_free (priv->base_directory);
 	g_rw_lock_clear (&(priv->lock));
 
 	/* Chain up to parent's finalize() method. */
@@ -1471,8 +1473,12 @@ book_backend_file_initable_init (GInitable *initable,
 	extension_name = E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP;
 	setup_extension = e_source_get_extension (source, extension_name);
 
-	dirname = e_book_backend_file_extract_path_from_source (
-		registry, source, GET_PATH_DB_DIR);
+	if (priv->base_directory)
+		dirname = g_strdup (priv->base_directory);
+	else
+		dirname = e_book_backend_file_extract_path_from_source (
+		        registry, source, GET_PATH_DB_DIR);
+
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 	backup = g_build_filename (dirname, "addressbook.db.old", NULL);
 
@@ -1577,6 +1583,47 @@ exit:
 	return success;
 }
 
+
+static EDataBookDirect *
+e_book_backend_file_get_direct_book (EBookBackend *backend)
+{
+	EDataBookDirect *direct;
+	ESourceRegistry *registry;
+	ESource *source;
+	gchar *backend_path;
+	gchar *dirname;
+	const gchar *modules_env = NULL;
+	
+	modules_env = g_getenv (EDS_ADDRESS_BOOK_MODULES);
+
+	source = e_backend_get_source (E_BACKEND (backend));
+	registry = e_book_backend_get_registry (backend);
+	dirname = e_book_backend_file_extract_path_from_source (
+		registry, source, GET_PATH_DB_DIR);
+
+	/* Support in-tree testing / relocated modules */
+	if (modules_env)
+		backend_path = g_build_filename (modules_env, "libebookbackendfile.so", NULL);
+	else
+		backend_path = g_build_filename (BACKENDDIR, "libebookbackendfile.so", NULL);
+	direct = e_data_book_direct_new (backend_path, "EBookBackendFileFactory", dirname);
+
+	g_free (backend_path);
+	g_free (dirname);
+
+	return direct;
+}
+
+static void
+e_book_backend_file_configure_direct (EBookBackend *backend,
+				      const gchar  *config)
+{
+	EBookBackendFilePrivate *priv;
+
+	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
+	priv->base_directory = g_strdup (config);
+}
+
 static void
 e_book_backend_file_class_init (EBookBackendFileClass *class)
 {
@@ -1594,6 +1641,8 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->stop_view		= e_book_backend_file_stop_view;
 	backend_class->sync			= e_book_backend_file_sync;
 	backend_class->notify_update            = e_book_backend_file_notify_update;
+	backend_class->get_direct_book          = e_book_backend_file_get_direct_book;
+	backend_class->configure_direct         = e_book_backend_file_configure_direct;
 
 	sync_class->open_sync			= e_book_backend_file_open;
 	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
