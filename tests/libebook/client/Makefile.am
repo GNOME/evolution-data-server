@@ -31,7 +31,8 @@ TESTS =								\
 	test-client-preserve-uid				\
 	test-client-get-contact					\
 	test-client-get-contact-uids				\
-	test-client-custom-summary				\
+	test-client-e164-param					\
+        test-client-custom-summary				\
 	test-client-get-revision				\
 	test-client-get-view					\
 	test-client-write-write					\
@@ -90,6 +91,8 @@ test_client_get_contact_LDADD=$(TEST_LIBS)
 test_client_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_contact_uids_LDADD=$(TEST_LIBS)
 test_client_get_contact_uids_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_e164_param_LDADD=$(TEST_LIBS)
+test_client_e164_param_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_custom_summary_LDADD=$(TEST_LIBS)
 test_client_custom_summary_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_revision_LDADD=$(TEST_LIBS)
