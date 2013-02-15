@@ -123,12 +123,17 @@ typedef struct {
  * EBookIndexType:
  * @E_BOOK_INDEX_PREFIX: An index suitable for searching contacts with a prefix pattern
  * @E_BOOK_INDEX_SUFFIX: An index suitable for searching contacts with a suffix pattern
+ * @E_BOOK_INDEX_PHONE: An index suitable for searching contacts for phone numbers.
+ * <note><para>that phone numbers must be convertible into FQTN according to E.164 to be
+ * stored in this index. The number "+9999999" for instance won't be stored because
+ * the country calling code "+999" currently is not assigned.</para></note>
  *
  * The type of index defined by e_source_backend_summary_setup_set_indexed_fields()
  */
 typedef enum {
 	E_BOOK_INDEX_PREFIX = 0,
-	E_BOOK_INDEX_SUFFIX
+	E_BOOK_INDEX_SUFFIX,
+	E_BOOK_INDEX_PHONE
 } EBookIndexType;
 
 GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;

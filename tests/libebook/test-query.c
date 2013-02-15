@@ -1,4 +1,6 @@
+#include <locale.h>
 #include <string.h>
+
 #include <libebook/libebook.h>
 
 #define QUERY_STRING1
@@ -6,7 +8,8 @@
 
 typedef struct {
 	EBookQuery *query;
-	char *sexp;
+	gchar *locale;
+	gchar *sexp;
 } TestData;
 
 static void
@@ -34,6 +37,7 @@ test_query (gconstpointer data)
 	EBookQuery *query;
 	char *sexp;
 
+	setlocale (LC_ADDRESS, test->locale);
 	sexp = e_book_query_to_string (test->query);
 	normalize_space (sexp);
 
@@ -41,6 +45,8 @@ test_query (gconstpointer data)
 	g_free (sexp);
 
 	query = e_book_query_from_string (test->sexp);
+	g_assert (query != NULL);
+
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 	normalize_space (sexp);
@@ -56,6 +62,7 @@ test_data_free (gpointer data)
 
 	e_book_query_unref (test->query);
 	g_free (test->sexp);
+	g_free (test->locale);
 
 	g_slice_free (TestData, test);
 }
@@ -67,6 +74,7 @@ add_query_test (const char *path,
 {
 	TestData *data = g_slice_new (TestData);
 
+	data->locale = g_strdup (setlocale (LC_ADDRESS, NULL));
 	data->sexp = g_strdup (sexp);
 	data->query = query;
 
@@ -80,6 +88,8 @@ main (gint argc,
 	g_type_init ();
 
 	g_test_init (&argc, &argv, NULL);
+
+	setlocale (LC_ADDRESS, "en_US.UTF-8");
 
 	add_query_test ("/libebook/test-query/sexp/all",
 	                e_book_query_any_field_contains (NULL),
@@ -137,8 +147,7 @@ main (gint argc,
 	                                         "5423789"),
 	                "(endswith \"phone\" \"5423789\")");
 
-	add_query_test ("/libebook/test-query/sexp/eqphone",
-
+	add_query_test ("/libebook/test-query/sexp/eqphone/us",
 	                e_book_query_orv (e_book_query_field_test (E_CONTACT_TEL,
 	                                                           E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
 	                                                           "+1-2215423789"),
@@ -150,10 +159,30 @@ main (gint argc,
 	                                                           "5423789"),
 	                                  NULL),
 
-	                "(or (eqphone \"phone\" \"+1-2215423789\")"
-	                   " (eqphone_national \"phone\" \"2215423789\")"
-	                   " (eqphone_short \"phone\" \"5423789\")"
+	                "(or (eqphone \"phone\" \"+1-2215423789\" \"en_US.UTF-8\")"
+	                   " (eqphone_national \"phone\" \"2215423789\" \"en_US.UTF-8\")"
+	                   " (eqphone_short \"phone\" \"5423789\" \"en_US.UTF-8\")"
 	                   " )");
+
+	setlocale (LC_ADDRESS, "en_GB.UTF-8");
+
+	add_query_test ("/libebook/test-query/sexp/eqphone/gb",
+			e_book_query_orv (e_book_query_field_test (E_CONTACT_TEL,
+								   E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+								   "+1-2215423789"),
+					  e_book_query_field_test (E_CONTACT_TEL,
+								   E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+								   "2215423789"),
+					  e_book_query_field_test (E_CONTACT_TEL,
+								   E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
+								   "5423789"),
+					  NULL),
+
+			"(or (eqphone \"phone\" \"+1-2215423789\" \"en_GB.UTF-8\")"
+			   " (eqphone_national \"phone\" \"2215423789\" \"en_GB.UTF-8\")"
+			   " (eqphone_short \"phone\" \"5423789\" \"en_GB.UTF-8\")"
+			   " )");
+
 
 	return g_test_run ();
 }
