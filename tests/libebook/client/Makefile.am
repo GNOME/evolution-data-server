@@ -37,6 +37,7 @@ TESTS =								\
 	test-client-write-write					\
 	test-client-uid-only-view				\
 	test-client-revision-view				\
+	test-client-view-operations		 		\
 	test-client-suppress-notifications			\
 	test-client-modify-contact				\
 	test-client-remove-contact				\
@@ -99,6 +100,8 @@ test_client_uid_only_view_LDADD=$(TEST_LIBS)
 test_client_uid_only_view_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_revision_view_LDADD=$(TEST_LIBS)
 test_client_revision_view_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_view_operations_LDADD=$(TEST_LIBS)
+test_client_view_operations_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_suppress_notifications_LDADD=$(TEST_LIBS)
 test_client_suppress_notifications_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_modify_contact_LDADD=$(TEST_LIBS)
