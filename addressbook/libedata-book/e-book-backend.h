@@ -31,6 +31,7 @@
 
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-data-book-view.h>
+#include <libedata-book/e-data-book-direct.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND \
@@ -195,6 +196,11 @@ struct _EBookBackendClass {
 	void		(*notify_update)	(EBookBackend *backend,
 						 const EContact *contact);
 
+
+	EDataBookDirect *
+	        (* get_direct_book)             (EBookBackend *backend);
+	void    (* configure_direct)            (EBookBackend *backend, const gchar *config);
+
 	/* Notification signals */
 	void		(*sync)			(EBookBackend *backend);
 };
@@ -289,6 +295,10 @@ void		e_book_backend_notify_property_changed
 						(EBookBackend *backend,
 						 const gchar *prop_name,
 						 const gchar *prop_value);
+
+EDataBookDirect *
+                e_book_backend_get_direct_book  (EBookBackend *backend);
+void            e_book_backend_configure_direct (EBookBackend *backend, const gchar *config);
 
 void		e_book_backend_sync		(EBookBackend *backend);
 
