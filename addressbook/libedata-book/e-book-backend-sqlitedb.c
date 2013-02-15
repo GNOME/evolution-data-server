@@ -1643,6 +1643,71 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 	return g_string_free (string, FALSE);
 }
 
+static void
+update_e164_attribute_params (EVCard *vcard)
+{
+	GList *attr_list;
+
+	for (attr_list = e_vcard_get_attributes (vcard); attr_list; attr_list = attr_list->next) {
+		EVCardAttribute *const attr = attr_list->data;
+		EVCardAttributeParam *param = NULL;
+		gchar *e164 = NULL, *cc, *nn;
+		GList *param_list, *values;
+
+		/* We only attach E164 parameters to TEL attributes. */
+		if (strcmp (e_vcard_attribute_get_name (attr), EVC_TEL) != 0)
+			continue;
+
+		/* Compute E164 number. */
+		values = e_vcard_attribute_get_values (attr);
+		e164 = values && values->data ? convert_phone (values->data, NULL) : NULL;
+
+		if (e164 == NULL) {
+			e_vcard_attribute_remove_param (attr, EVC_X_E164);
+			continue;
+		}
+
+		/* Find already exisiting parameter, so that we can reuse it. */
+		for (param_list = e_vcard_attribute_get_params (attr); param_list; param_list = param_list->next) {
+			if (strcmp (e_vcard_attribute_param_get_name (param_list->data), EVC_X_E164) == 0) {
+				param = param_list->data;
+				break;
+			}
+		}
+
+		/* Create a new parameter instance if needed. Otherwise clean
+		 * the existing parameter's values: This is much cheaper than
+		 * checking for modifications. */
+		if (param == NULL) {
+			param = e_vcard_attribute_param_new (EVC_X_E164);
+			e_vcard_attribute_add_param (attr, param);
+		} else {
+			e_vcard_attribute_param_remove_values (param);
+		}
+
+		/* Split the phone number into country calling code and
+		 * national number code. */
+		nn = strchr (e164, '|');
+
+		if (nn == NULL) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		*nn++ = '\0';
+		cc = e164;
+
+		/* Assign the parameter values. It seems odd that we revert
+		 * the order of NN and CC, but at least EVCard's parser doesn't
+		 * permit an empty first param value. Which of course could be
+		 * fixed - in order to create a nice potential IOP problem with
+		 ** other vCard parsers. */
+		e_vcard_attribute_param_add_values (param, nn, cc, NULL);
+
+		g_free (e164);
+	}
+}
+
 static gboolean
 insert_contact (EBookBackendSqliteDB *ebsdb,
 		EContact *contact,
@@ -1655,6 +1720,10 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt;
 
 	priv = ebsdb->priv;
+
+	/* Update E.164 parameters in vcard if needed */
+	if (priv->store_vcard)
+		update_e164_attribute_params (E_VCARD (contact));
 
 	/* Update main summary table */
 	stmt = insert_stmt_from_contact (ebsdb, contact, folderid, priv->store_vcard, replace_existing);
