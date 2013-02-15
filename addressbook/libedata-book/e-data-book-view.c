@@ -68,6 +68,7 @@ struct _EDataBookViewPrivate {
 
 	/* which fields is listener interested in */
 	GHashTable *fields_of_interest;
+	gboolean send_uids_only;
 };
 
 enum {
@@ -331,11 +332,18 @@ impl_DataBookView_set_fields_of_interest (EGdbusBookView *object,
 		view->priv->fields_of_interest = NULL;
 	}
 
+	view->priv->send_uids_only = FALSE;
+
 	for (ii = 0; in_fields_of_interest[ii]; ii++) {
 		const gchar *field = in_fields_of_interest[ii];
 
 		if (!*field)
 			continue;
+
+		if (strcmp (field, "x-evolution-uids-only") == 0) {
+			view->priv->send_uids_only = TRUE;
+			continue;
+		}
 
 		if (view->priv->fields_of_interest == NULL)
 			view->priv->fields_of_interest =
@@ -824,10 +832,12 @@ notify_change (EDataBookView *view,
 		send_pending_changes (view);
 	}
 
-	utf8_vcard = e_util_utf8_make_valid (vcard);
-	utf8_id = e_util_utf8_make_valid (id);
+	if (view->priv->send_uids_only == FALSE) {
+		utf8_vcard = e_util_utf8_make_valid (vcard);
+		g_array_append_val (view->priv->changes, utf8_vcard);
+	}
 
-	g_array_append_val (view->priv->changes, utf8_vcard);
+	utf8_id = e_util_utf8_make_valid (id);
 	g_array_append_val (view->priv->changes, utf8_id);
 
 	ensure_pending_flush_timeout (view);
@@ -881,9 +891,11 @@ notify_add (EDataBookView *view,
 			send_pending_adds (view);
 		}
 
-		utf8_vcard = e_util_utf8_make_valid (vcard);
+		if (view->priv->send_uids_only == FALSE) {
+			utf8_vcard = e_util_utf8_make_valid (vcard);
+			g_array_append_val (view->priv->adds, utf8_vcard);
+		}
 
-		g_array_append_val (view->priv->adds, utf8_vcard);
 		g_array_append_val (view->priv->adds, utf8_id_copy);
 
 		ensure_pending_flush_timeout (view);
