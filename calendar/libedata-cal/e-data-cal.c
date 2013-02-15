@@ -1425,7 +1425,16 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
 			objects = g_slist_next (objects);
 		}
 
+		e_dbus_calendar_complete_get_object_list (
+			cal->priv->dbus_interface,
+			data->invocation,
+			(const gchar * const *) strv);
+
 		g_strfreev (strv);
+	} else {
+		data_cal_convert_to_client_error (error);
+		g_dbus_method_invocation_take_error (
+			data->invocation, error);
 	}
 
 	op_unref (data);
