@@ -33,6 +33,7 @@
 #include <libedata-book/e-book-backend-sync.h>
 #include <libedata-book/e-book-backend.h>
 #include <libedata-book/e-data-book-factory.h>
+#include <libedata-book/e-data-book-direct.h>
 #include <libedata-book/e-data-book-view.h>
 #include <libedata-book/e-data-book.h>
 

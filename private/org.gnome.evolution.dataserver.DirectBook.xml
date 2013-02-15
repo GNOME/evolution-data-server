@@ -1,0 +1,19 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.DirectBook:
+    @short_description: Direct Access book metadata object
+    @since: 3.8
+
+    This interface reports direct read access capability for an addressbook backend.
+-->
+<interface name="org.gnome.evolution.dataserver.DirectBook">
+
+  <property name="BackendPath" type="s" access="read"/>
+  <property name="BackendName" type="s" access="read"/>
+  <property name="BackendConfig" type="s" access="read"/>
+
+</interface>
