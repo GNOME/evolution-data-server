@@ -402,6 +402,11 @@ data_book_convert_to_client_error (GError *error)
 			error->code = E_CLIENT_ERROR_NOT_OPENED;
 			break;
 
+	        case E_DATA_BOOK_STATUS_OUT_OF_SYNC:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_OUT_OF_SYNC;
+			break;
+
 		case E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD:
 		case E_DATA_BOOK_STATUS_OTHER_ERROR:
 		case E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION:
