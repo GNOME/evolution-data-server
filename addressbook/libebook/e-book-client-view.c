@@ -27,6 +27,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libedataserver/libedataserver.h>
+#include <libedata-book/libedata-book.h>
 
 #include "e-book-client.h"
 #include "e-book-client-view.h"
@@ -42,7 +43,10 @@ struct _EBookClientViewPrivate {
 	GDBusProxy *dbus_proxy;
 	GDBusConnection *connection;
 	gchar *object_path;
-	gboolean running;
+	guint running : 1;
+	guint complete : 1;
+
+	EDataBook *direct_book;
 
 	gulong objects_added_handler_id;
 	gulong objects_modified_handler_id;
@@ -55,7 +59,8 @@ enum {
 	PROP_0,
 	PROP_CLIENT,
 	PROP_CONNECTION,
-	PROP_OBJECT_PATH
+	PROP_OBJECT_PATH,
+	PROP_DIRECT_BOOK
 };
 
 enum {
@@ -81,6 +86,95 @@ G_DEFINE_TYPE_WITH_CODE (
 		G_TYPE_INITABLE,
 		e_book_client_view_initable_init))
 
+typedef struct {
+	EBookClientView *view;
+	guint signum;
+} NotificationData;
+
+static gchar *
+direct_contacts_query (const gchar * const *uids)
+{
+	EBookQuery *query, **qs;
+	gchar *sexp;
+	gint i, len;
+
+	len = g_strv_length ((gchar **)uids);
+	qs = g_new0 (EBookQuery *, len);
+
+	for (i = 0; uids[i] != NULL; i++) {
+		const gchar *uid = uids[i];
+
+		qs[i] = e_book_query_field_test (E_CONTACT_UID, E_BOOK_QUERY_IS, uid);
+	}
+
+	query = e_book_query_or (len, qs, TRUE);
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+
+	return sexp;
+}
+
+static void
+direct_contacts_ready (GObject *source_object,
+		       GAsyncResult *res,
+		       gpointer user_data)
+{
+	NotificationData *data = (NotificationData *)user_data;
+	GSList *contacts = NULL;
+	GError *error = NULL;
+
+	if (!e_data_book_get_contacts_finish (E_DATA_BOOK (source_object),
+					      res, &contacts, &error)) {
+		g_warning ("Error fetching contacts directly: %s\n", error->message);
+		g_error_free (error);
+	} else {
+		g_signal_emit (data->view, data->signum, 0, contacts);
+	}
+
+	g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
+	g_object_unref (data->view);
+	g_slice_free (NotificationData, data);
+}
+
+static void
+direct_contacts_fetch (EBookClientView *view,
+		       const gchar * const *uids,
+		       guint signum)
+{
+	NotificationData *data;
+	gchar *sexp = direct_contacts_query (uids);
+
+	/* Until the view has completely loaded, we need to make
+	 * sync calls to the backend
+	 */
+	if (!view->priv->complete) {
+		GSList *contacts = NULL;
+		GError *error = NULL;
+
+		if (!e_data_book_get_contacts_sync (view->priv->direct_book,
+						    sexp, &contacts, NULL, &error)) {
+			g_warning ("Error fetching contacts directly: %s\n", error->message);
+			g_error_free (error);
+		} else {
+			g_signal_emit (view, signum, 0, contacts);
+			g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
+		}
+
+	} else {
+		/* Make async calls, avoid blocking the thread owning the view
+		 * as much as possible
+		 */
+		data = g_slice_new (NotificationData);
+		data->view = g_object_ref (view);
+		data->signum = signum;
+
+		e_data_book_get_contacts (view->priv->direct_book,
+					  sexp, NULL, direct_contacts_ready, data);
+	}
+
+	g_free (sexp);
+}
+
 static void
 book_client_view_objects_added_cb (EGdbusBookView *object,
                                    const gchar * const *vcards,
@@ -91,6 +185,12 @@ book_client_view_objects_added_cb (EGdbusBookView *object,
 
 	if (!view->priv->running)
 		return;
+
+	/* array contains UIDs only */
+	if (view->priv->direct_book) {
+		direct_contacts_fetch (view, vcards, signals[OBJECTS_ADDED]);
+		return;
+	}
 
 	/* array contains both UID and vcard */
 	for (p = vcards; p[0] && p[1]; p += 2) {
@@ -119,6 +219,12 @@ book_client_view_objects_modified_cb (EGdbusBookView *object,
 
 	if (!view->priv->running)
 		return;
+
+	/* array contains UIDs only */
+	if (view->priv->direct_book) {
+		direct_contacts_fetch (view, vcards, signals[OBJECTS_MODIFIED]);
+		return;
+	}
 
 	/* array contains both UID and vcard */
 	for (p = vcards; p[0] && p[1]; p += 2) {
@@ -181,6 +287,8 @@ book_client_view_complete_cb (EGdbusBookView *object,
 	if (!view->priv->running)
 		return;
 
+	view->priv->complete = TRUE;
+
 	g_return_if_fail (e_gdbus_templates_decode_error (in_error_strv, &error));
 
 	g_signal_emit (view, signals[COMPLETE], 0, error);
@@ -220,6 +328,18 @@ book_client_view_set_object_path (EBookClientView *view,
 }
 
 static void
+book_client_view_set_direct_book (EBookClientView *view,
+				  EDataBook       *book)
+{
+	g_return_if_fail (book == NULL ||
+			  E_IS_DATA_BOOK (book));
+	g_return_if_fail (view->priv->direct_book == NULL);
+
+	if (book)
+		view->priv->direct_book = g_object_ref (book);
+}
+
+static void
 book_client_view_set_property (GObject *object,
                                guint property_id,
                                const GValue *value,
@@ -242,6 +362,12 @@ book_client_view_set_property (GObject *object,
 			book_client_view_set_object_path (
 				E_BOOK_CLIENT_VIEW (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_DIRECT_BOOK:
+			book_client_view_set_direct_book (
+				E_BOOK_CLIENT_VIEW (object),
+				g_value_get_object (value));
 			return;
 	}
 
@@ -295,6 +421,11 @@ book_client_view_dispose (GObject *object)
 	if (priv->connection != NULL) {
 		g_object_unref (priv->connection);
 		priv->connection = NULL;
+	}
+
+	if (priv->direct_book != NULL) {
+		g_object_unref (priv->direct_book);
+		priv->direct_book = NULL;
 	}
 
 	if (priv->dbus_proxy != NULL) {
@@ -396,6 +527,12 @@ book_client_view_initable_init (GInitable *initable,
 		G_CALLBACK (book_client_view_complete_cb), initable);
 	priv->complete_handler_id = handler_id;
 
+	/* When in direct read access mode, we add a special field
+	 * to fields-of-interest indicating we only want uids sent
+	 */
+	if (priv->direct_book)
+		e_book_client_view_set_fields_of_interest (E_BOOK_CLIENT_VIEW (initable), NULL, NULL);
+
 	return TRUE;
 }
 
@@ -447,6 +584,20 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 			"to create the D-Bus proxy",
 			NULL,
 			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_DIRECT_BOOK,
+		g_param_spec_object (
+			"direct-book",
+			"Direct Book",
+			"The EDataBook to fetch contact "
+			"data from, if direct read access "
+			"is enabled",
+			E_TYPE_DATA_BOOK,
+			G_PARAM_WRITABLE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
@@ -671,7 +822,20 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
-	strv = e_client_util_slist_to_strv (fields_of_interest);
+	/* When in direct read access mode, ensure that the
+	 * backend is configured to only send us UIDs for everything,
+	 *
+	 * Just ignore the fields_of_interest and use them locally
+	 * when filtering cards to be returned in direct reads.
+	 */
+	if (view->priv->direct_book) {
+		GSList uid_field = { 0, };
+
+		uid_field.data = (gpointer)"x-evolution-uids-only";
+		strv = e_client_util_slist_to_strv (&uid_field);
+	} else
+		strv = e_client_util_slist_to_strv (fields_of_interest);
+
 	e_gdbus_book_view_call_set_fields_of_interest_sync (
 		view->priv->dbus_proxy,
 		(const gchar * const *) strv,

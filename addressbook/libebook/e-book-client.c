@@ -29,9 +29,13 @@
 /* Private D-Bus classes. */
 #include <e-dbus-address-book.h>
 #include <e-dbus-address-book-factory.h>
+#include <e-dbus-direct-book.h>
 
 #include <libedataserver/libedataserver.h>
 #include <libedataserver/e-client-private.h>
+
+#include <libebackend/libebackend.h>
+#include <libedata-book/libedata-book.h>
 
 #include "e-book-client.h"
 
@@ -51,6 +55,7 @@ typedef struct _RunInThreadClosure RunInThreadClosure;
 struct _EBookClientPrivate {
 	GMainContext *main_context;
 	EDBusAddressBook *dbus_proxy;
+	EDataBook *direct_book;
 	guint name_watcher_id;
 
 	gulong dbus_proxy_error_handler_id;
@@ -230,6 +235,61 @@ static EDBusAddressBookFactory *book_factory = NULL;
 static GRecMutex book_factory_lock;
 #define LOCK_FACTORY()   g_rec_mutex_lock (&book_factory_lock)
 #define UNLOCK_FACTORY() g_rec_mutex_unlock (&book_factory_lock)
+
+
+typedef struct {
+	EBookClient         *client;
+	GAsyncReadyCallback  callback;
+	gpointer             user_data;
+	gpointer             source_tag;
+} PropagateReadyData;
+
+static PropagateReadyData *
+propagate_ready_data_new (EBookClient         *client,
+			  GAsyncReadyCallback  callback,
+			  gpointer             user_data,
+			  gpointer             source_tag)
+{
+	PropagateReadyData *data = g_slice_new0 (PropagateReadyData);
+
+	data->client = g_object_ref (client);
+	data->callback = callback;
+	data->user_data = user_data;
+	data->source_tag = source_tag;
+
+	return data;
+}
+
+static void
+propagate_ready_data_free (PropagateReadyData *data)
+{
+	if (data) {
+		g_object_unref (data->client);
+		g_slice_free (PropagateReadyData, data);
+	}
+}
+
+static void
+propagate_direct_book_async_ready (GObject *source_object,
+				   GAsyncResult *res,
+				   gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+	PropagateReadyData *data = (PropagateReadyData *)user_data;
+
+	result = g_simple_async_result_new (G_OBJECT (data->client),
+					    data->callback,
+					    data->user_data,
+					    data->source_tag);
+
+	g_object_ref (res);
+	g_simple_async_result_set_op_res_gpointer (result, res, g_object_unref);
+
+	g_simple_async_result_complete (result);
+	g_object_unref (result);
+
+	propagate_ready_data_free (data);
+}
 
 static void
 book_factory_disconnect (void)
@@ -582,8 +642,10 @@ static void
 book_client_dispose (GObject *object)
 {
 	EBookClientPrivate *priv;
+	EBookClient *book_client;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (object);
+	book_client = E_BOOK_CLIENT (object);
+	priv = book_client->priv;
 
 	if (priv->dbus_proxy_error_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -612,6 +674,12 @@ book_client_dispose (GObject *object)
 	if (priv->main_context != NULL) {
 		g_main_context_unref (priv->main_context);
 		priv->main_context = NULL;
+	}
+
+	if (book_client->priv->direct_book) {
+		e_data_book_close_sync (book_client->priv->direct_book, NULL, NULL);
+		g_object_unref (book_client->priv->direct_book);
+		book_client->priv->direct_book = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -1246,6 +1314,81 @@ e_book_client_new (ESource *source,
 	return g_initable_new (
 		E_TYPE_BOOK_CLIENT, NULL, error,
 		"source", source, NULL);
+}
+
+/**
+ * e_book_client_connect_direct_sync:
+ * @source: An #ESource pointer
+ * @error: A #GError pointer
+ *
+ * Like e_book_client_connect_sync(), except creates the book client for
+ * direct read access to the underlying addressbook.
+ *
+ * Returns: a new but unopened #EBookClient.
+ *
+ * Since: 3.8
+ **/
+EClient *
+e_book_client_connect_direct_sync (ESourceRegistry *registry,
+				   ESource *source,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	EClient *client;
+	EBookClientPrivate *priv;
+	EDBusDirectBook *direct_config;
+	const gchar *backend_name, *backend_path, *config;
+	GError *local_error = NULL;
+
+	client = e_book_client_connect_sync (source, cancellable, error);
+
+	if (!client)
+		return NULL;
+
+	priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+
+	direct_config = e_dbus_direct_book_proxy_new_sync (
+                g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->dbus_proxy)),
+		G_DBUS_PROXY_FLAGS_NONE,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		g_dbus_proxy_get_object_path (G_DBUS_PROXY (priv->dbus_proxy)),
+		NULL, NULL);
+
+	backend_path = e_dbus_direct_book_get_backend_path (direct_config);
+	backend_name = e_dbus_direct_book_get_backend_name (direct_config);
+	config = e_dbus_direct_book_get_backend_config (direct_config);
+
+	if (backend_path && backend_path[0] &&
+	    backend_name && backend_name[0]) {
+		priv->direct_book =
+			e_data_book_new_direct (registry, source,
+						backend_path,
+						backend_name,
+						config, &local_error);
+		if (!priv->direct_book) {
+			g_warning ("Failed to open addressbook in direct read access mode, "
+				   "falling back to normal read access mode. Reason: %s",
+				   local_error->message);
+			g_error_free (local_error);
+		}
+
+	} else
+		g_warning ("Direct read access mode not supported by the given backend, falling back to normal read access mode");
+
+	g_object_unref (direct_config);
+
+	/* We have to perform the opeining of the direct book separately
+	 * from the EClient->open() implementation, because the direct
+	 * book does not exist yet
+	 */
+	if (priv->direct_book &&
+	    !e_data_book_open_sync (priv->direct_book, cancellable, error)) {
+		g_warning ("Unable to open direct read access book, falling back to normal read access mode");
+		g_clear_object (&priv->direct_book);
+	}
+
+	return client;
+
 }
 
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
@@ -2521,6 +2664,15 @@ e_book_client_get_contact (EBookClient *client,
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (uid != NULL);
 
+	if (client->priv->direct_book) {
+		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
+								     e_book_client_get_contact);
+
+		e_data_book_get_contact (client->priv->direct_book, uid, cancellable,
+					 propagate_direct_book_async_ready, data);
+		return;
+	}
+
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->uid  = g_strdup (uid);
 
@@ -2569,6 +2721,12 @@ e_book_client_get_contact_finish (EBookClient *client,
 		result, G_OBJECT (client),
 		e_book_client_get_contact), FALSE);
 
+	if (client->priv->direct_book) {
+		GAsyncResult *res = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+		return e_data_book_get_contact_finish (client->priv->direct_book, res, out_contact, error);
+	}
+
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -2613,6 +2771,9 @@ e_book_client_get_contact_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_contact != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contact_sync (client->priv->direct_book, uid, out_contact, cancellable, error);
 
 	utf8_uid = e_util_utf8_make_valid (uid);
 
@@ -2687,6 +2848,15 @@ e_book_client_get_contacts (EBookClient *client,
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
+	if (client->priv->direct_book) {
+		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
+								     e_book_client_get_contacts);
+
+		e_data_book_get_contacts (client->priv->direct_book, sexp, cancellable, 
+					  propagate_direct_book_async_ready, data);
+		return;
+	}
+
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->sexp = g_strdup (sexp);
 
@@ -2730,6 +2900,14 @@ e_book_client_get_contacts_finish (EBookClient *client,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
+
+	if (client->priv->direct_book) {
+		GAsyncResult *direct_res =
+			g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+		return e_data_book_get_contacts_finish (client->priv->direct_book,
+							direct_res, out_contacts, error);
+	}
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -2784,6 +2962,10 @@ e_book_client_get_contacts_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contacts_sync (client->priv->direct_book,
+						      sexp, out_contacts, cancellable, error);
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -2867,6 +3049,15 @@ e_book_client_get_contacts_uids (EBookClient *client,
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
+	if (client->priv->direct_book) {
+		PropagateReadyData *data = propagate_ready_data_new (client, callback, user_data,
+								     e_book_client_get_contacts_uids);
+
+		e_data_book_get_contacts_uids (client->priv->direct_book, sexp, cancellable, 
+					       propagate_direct_book_async_ready, data);
+		return;
+	}
+
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->sexp = g_strdup (sexp);
 
@@ -2910,6 +3101,15 @@ e_book_client_get_contacts_uids_finish (EBookClient *client,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
+
+	if (client->priv->direct_book) {
+		GAsyncResult *direct_res =
+			g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
+
+		return e_data_book_get_contacts_uids_finish (
+		               client->priv->direct_book,
+			       direct_res, out_contact_uids, error);
+	}
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -2964,6 +3164,11 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contact_uids != NULL, FALSE);
+
+	if (client->priv->direct_book)
+		return e_data_book_get_contacts_uids_sync (
+		               client->priv->direct_book, sexp, 
+			       out_contact_uids, cancellable, error);
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -3172,6 +3377,7 @@ e_book_client_get_view_sync (EBookClient *client,
 			"client", client,
 			"connection", connection,
 			"object-path", object_path,
+			"direct-book", client->priv->direct_book,
 			NULL);
 
 		/* XXX Would have been easier to return the
