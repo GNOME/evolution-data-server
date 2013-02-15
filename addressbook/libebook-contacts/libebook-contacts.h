@@ -1,5 +1,5 @@
 /*
- * libebook.h
+ * libebook-contacts.h
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,23 +16,24 @@
  *
  */
 
-#ifndef LIBEBOOK_H
-#define LIBEBOOK_H
+#ifndef LIBEBOOK_CONTACTS_H
+#define LIBEBOOK_CONTACTS_H
 
-#define __LIBEBOOK_H_INSIDE__
+#define __LIBEBOOK_CONTACTS_H_INSIDE__
 
 #include <libedataserver/libedataserver.h>
-#include <libebook-contacts/libebook-contacts.h>
 
-#include <libebook/e-book-client-view.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-enumtypes.h>
-#include <libebook/e-book-types.h>
-#include <libebook/e-book-view.h>
-#include <libebook/e-book.h>
-#include <libebook/e-destination.h>
+#include <libebook-contacts/e-book-contacts-types.h>
+#include <libebook-contacts/e-book-query.h>
+#include <libebook-contacts/e-name-western.h>
+#include <libebook-contacts/e-address-western.h>
+#include <libebook-contacts/e-contact.h>
+#include <libebook-contacts/e-vcard.h>
+#include <libebook-contacts/e-book-contacts-enumtypes.h>
+#include <libebook-contacts/e-source-backend-summary-setup.h>
+#include <libebook-contacts/e-phone-number.h>
 
-#undef __LIBEBOOK_H_INSIDE__
+#undef __LIBEBOOK_CONTACTS_H_INSIDE__
 
-#endif /* LIBEBOOK_H */
+#endif /* LIBEBOOK_CONTACTS_H */
 

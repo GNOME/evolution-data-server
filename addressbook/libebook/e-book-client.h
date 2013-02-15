@@ -29,7 +29,7 @@
 #include <libedataserver/libedataserver.h>
 
 #include <libebook/e-book-client-view.h>
-#include <libebook/e-contact.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_CLIENT \
@@ -79,21 +79,6 @@
 
 G_BEGIN_DECLS
 
-/**
- * EBookClientError:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-typedef enum {
-	E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK,
-	E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-	E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
-	E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE,
-	E_BOOK_CLIENT_ERROR_NO_SPACE
-} EBookClientError;
-
 typedef struct _EBookClient        EBookClient;
 typedef struct _EBookClientClass   EBookClientClass;
 typedef struct _EBookClientPrivate EBookClientPrivate;
@@ -114,9 +99,6 @@ struct _EBookClient {
 struct _EBookClientClass {
 	EClientClass parent_class;
 };
-
-GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
-const gchar *	e_book_client_error_to_string	(EBookClientError code);
 
 GType		e_book_client_get_type		(void) G_GNUC_CONST;
 EClient *	e_book_client_connect_sync	(ESource *source,
@@ -310,8 +292,6 @@ gboolean	e_book_client_get_view_sync	(EBookClient *client,
 
 EBookClient *	e_book_client_new		(ESource *source,
 						 GError **error);
-GError *	e_book_client_error_create	(EBookClientError code,
-						 const gchar *custom_msg);
 #endif /* E_BOOK_DISABLE_DEPRECATED */
 
 G_END_DECLS

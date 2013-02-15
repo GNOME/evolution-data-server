@@ -22,8 +22,7 @@
 
 #include <libedataserver/libedataserver.h>
 
-#include <libebook/e-contact.h>
-#include <libebook/e-book-query.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <libebook/e-book-view.h>
 #include <libebook/e-book-types.h>
 

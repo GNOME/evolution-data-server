@@ -26,6 +26,7 @@
 #define E_BOOK_CLIENT_VIEW_H
 
 #include <glib-object.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_CLIENT_VIEW \
@@ -53,24 +54,6 @@ typedef struct _EBookClientViewClass EBookClientViewClass;
 typedef struct _EBookClientViewPrivate EBookClientViewPrivate;
 
 struct _EBookClient;
-
-/**
- * EBookClientViewFlags:
- * @E_BOOK_CLIENT_VIEW_FLAGS_NONE:
- *   Symbolic value for no flags
- * @E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL:
- *   If this flag is set then all contacts matching the view's query will
- *   be sent as notifications when starting the view, otherwise only future
- *   changes will be reported.  The default for a #EBookClientView is %TRUE.
- *
- * Flags that control the behaviour of an #EBookClientView.
- *
- * Since: 3.4
- */
-typedef enum {
-	E_BOOK_CLIENT_VIEW_FLAGS_NONE           = 0,
-	E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0),
-} EBookClientViewFlags;
 
 /**
  * EBookClientView:

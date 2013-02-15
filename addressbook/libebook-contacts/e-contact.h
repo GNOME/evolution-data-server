@@ -6,8 +6,8 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
-#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
-#error "Only <libebook/libebook.h> should be included directly."
+#if !defined (__LIBEBOOK_CONTACTS_H_INSIDE__) && !defined (LIBEBOOK_CONTACTS_COMPILATION)
+#error "Only <libebook-contacts/libebook-contacts.h> should be included directly."
 #endif
 
 #ifndef E_CONTACT_H
@@ -15,7 +15,7 @@
 
 #include <time.h>
 #include <stdio.h>
-#include <libebook/e-vcard.h>
+#include <libebook-contacts/e-vcard.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CONTACT \

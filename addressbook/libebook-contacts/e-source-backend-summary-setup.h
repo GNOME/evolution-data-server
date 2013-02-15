@@ -20,16 +20,16 @@
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
-#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
-#error "Only <libebook/libebook.h> should be included directly."
+#if !defined (__LIBEBOOK_CONTACTS_H_INSIDE__) && !defined (LIBEBOOK_CONTACTS_COMPILATION)
+#error "Only <libebook-contacts/libebook-contacts.h> should be included directly."
 #endif
 
 #ifndef E_SOURCE_BACKEND_SUMMARY_SETUP_H
 #define E_SOURCE_BACKEND_SUMMARY_SETUP_H
 
 #include <libedataserver/libedataserver.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-book-types.h>
+#include <libebook-contacts/e-contact.h>
+#include <libebook-contacts/e-book-contacts-types.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP \

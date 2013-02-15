@@ -21,7 +21,7 @@
 
 #define __LIBEDATA_BOOK_H_INSIDE__
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <libebackend/libebackend.h>
 
 #include <libedata-book/e-book-backend-cache.h>

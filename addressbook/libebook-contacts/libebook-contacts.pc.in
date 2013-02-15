@@ -1,0 +1,16 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+privincludedir=@privincludedir@
+
+Name: libebook-contacts
+Description: Client library for evolution contacts and vcard structures
+Version: @VERSION@
+Requires: libedataserver-1.2
+Requires.private: camel-1.2
+Libs: -L${libdir} -lebook-contacts-1.2
+Cflags: -I${privincludedir}

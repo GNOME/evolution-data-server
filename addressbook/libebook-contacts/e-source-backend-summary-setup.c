@@ -22,7 +22,7 @@
 
 /**
  * SECTION: e-source-backend-summary-setup
- * @include: libebook/libebook.h
+ * @include: libebook-contacts/libebook-contacts.h
  * @short_description: #ESource extension to configure summary fields
  *
  * The #ESourceBackendSummarySetup extension configures which #EContactFields
@@ -32,7 +32,7 @@
  * Access the extension as follows:
  *
  * |[
- *   #include <libebook/libebook.h>
+ *   #include <libebook-contacts/libebook-contacts.h>
  *
  *   ESourceBackendSummarySetup *extension;
  *
@@ -46,7 +46,7 @@
  **/
 
 #include "e-source-backend-summary-setup.h"
-#include "e-book-enumtypes.h"
+#include "e-book-contacts-enumtypes.h"
 
 #define E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE(obj)	\
 	(G_TYPE_INSTANCE_GET_PRIVATE			\

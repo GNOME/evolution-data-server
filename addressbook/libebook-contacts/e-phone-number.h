@@ -28,8 +28,8 @@
  * phone numbers. Under the hood it uses Google's libphonenumber.
  **/
 
-#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
-#error "Only <libebook/libebook.h> should be included directly."
+#if !defined (__LIBEBOOK_CONTACTS_H_INSIDE__) && !defined (LIBEBOOK_CONTACTS_COMPILATION)
+#error "Only <libebook-contacts/libebook-contacts.h> should be included directly."
 #endif
 
 #ifndef E_PHONE_NUMBER_H

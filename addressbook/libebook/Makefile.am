@@ -40,27 +40,22 @@ libebook_1_2_la_CPPFLAGS = \
 libebook_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
 	$(MARSHAL_GENERATED)				\
-	e-address-western.c				\
 	e-book-client.c					\
 	e-book-client-view.c				\
-	e-book-query.c					\
 	e-book-view-private.h				\
 	e-book-view.c					\
 	e-book.c					\
-	e-contact.c					\
 	e-destination.c					\
-	e-name-western.c				\
-	e-name-western-tables.h				\
-	e-phone-number.c				\
-	e-phone-number-private.h			\
-	e-source-backend-summary-setup.c		\
-	e-vcard.c					\
 	e-error.h
 
 libebook_1_2_la_LIBADD =					\
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
 	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la	\
 	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)
 
@@ -69,38 +64,20 @@ libebook_1_2_la_LDFLAGS = 							\
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
-if ENABLE_PHONENUMBER
-libebook_1_2_la_SOURCES += e-phone-number-private.cpp
-libebook_1_2_la_CPPFLAGS += $(PHONENUMBER_INCLUDES)
-libebook_1_2_la_LIBADD += $(PHONENUMBER_LIBS)
-endif # ENABLE_PHONENUMBER
-
 libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
 	libebook.h					\
-	e-address-western.h				\
 	e-book-client.h					\
 	e-book-client-view.h				\
 	e-book-enumtypes.h				\
-	e-book-query.h					\
 	e-book-view.h					\
 	e-book-types.h					\
-	e-book.h					\
-	e-contact.h					\
 	e-destination.h					\
-	e-name-western.h				\
-	e-phone-number.h				\
-	e-source-backend-summary-setup.h		\
-	e-vcard.h
+	e-book.h
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
-
-e-name-western-tables.h: e-name-western-tables.h.in
-	$(AM_V_GEN) ($(PYTHON) ${srcdir}/gen-western-table.py < $< > $@.tmp && mv $@.tmp $@) || rm -f $@.tmp
-
-BUILT_SOURCES += e-name-western-tables.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
@@ -116,6 +93,7 @@ INTROSPECTION_SCANNER_ARGS = \
 	--c-include="libebook/libebook.h" \
 	$(NULL)
 INTROSPECTION_COMPILER_ARGS = \
+	--includedir=$(top_builddir)/addressbook/libebook-contacts \
 	--includedir=$(top_builddir)/libedataserver \
 	--includedir=$(srcdir) \
 	$(NULL)
@@ -141,15 +119,15 @@ EBook_1_2_gir_CFLAGS = \
 	$(NULL)
 EBook_1_2_gir_SCANNERFLAGS = \
 	--include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir \
+	--include-uninstalled=$(top_builddir)/addressbook/libebook-contacts/EBookContacts-1.2.gir \
 	$(NULL)
 EBook_1_2_gir_LIBS = \
-	libebook-1.2.la \
-	$(top_builddir)/libedataserver/libedataserver-1.2.la \
-	$(NULL)
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
+	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
 EBook_1_2_gir_FILES = \
 	$(libebook_1_2_la_SOURCES) \
-	$(libebookinclude_HEADERS) \
-	$(NULL)
+	$(libebookinclude_HEADERS)
 
 INTROSPECTION_GIRS += EBook-1.2.gir
 

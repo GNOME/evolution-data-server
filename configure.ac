@@ -126,6 +126,10 @@ LIBEBOOK_CURRENT=17
 LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=3
 
+LIBEBOOK_CONTACTS_CURRENT=0
+LIBEBOOK_CONTACTS_REVISION=0
+LIBEBOOK_CONTACTS_AGE=0
+
 LIBCAMEL_CURRENT=43
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
@@ -149,6 +153,9 @@ AC_SUBST(LIBEDATACAL_AGE)
 AC_SUBST(LIBEBOOK_CURRENT)
 AC_SUBST(LIBEBOOK_REVISION)
 AC_SUBST(LIBEBOOK_AGE)
+AC_SUBST(LIBEBOOK_CONTACTS_CURRENT)
+AC_SUBST(LIBEBOOK_CONTACTS_REVISION)
+AC_SUBST(LIBEBOOK_CONTACTS_AGE)
 AC_SUBST(LIBEDATABOOK_CURRENT)
 AC_SUBST(LIBEDATABOOK_REVISION)
 AC_SUBST(LIBEDATABOOK_AGE)
@@ -1653,6 +1660,8 @@ evolution-data-server.pc
 addressbook/Makefile
 addressbook/libebook/Makefile
 addressbook/libebook/libebook.pc
+addressbook/libebook-contacts/Makefile
+addressbook/libebook-contacts/libebook-contacts.pc
 addressbook/libedata-book/Makefile
 addressbook/libedata-book/libedata-book.pc
 addressbook/libegdbus/Makefile

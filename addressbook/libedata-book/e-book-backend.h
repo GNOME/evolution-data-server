@@ -26,7 +26,7 @@
 #ifndef E_BOOK_BACKEND_H
 #define E_BOOK_BACKEND_H
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <libebackend/libebackend.h>
 
 #include <libedata-book/e-data-book.h>

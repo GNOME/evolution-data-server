@@ -27,7 +27,7 @@
 #ifndef E_BOOK_BACKEND_CACHE_H
 #define E_BOOK_BACKEND_CACHE_H
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <libebackend/libebackend.h>
 
 /* Standard GObject macros */

@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdio.h>
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 gint
 main (gint argc,

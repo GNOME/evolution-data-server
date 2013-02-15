@@ -26,7 +26,7 @@
 #ifndef E_BOOK_BACKEND_DB_CACHE_H
 #define E_BOOK_BACKEND_DB_CACHE_H
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 G_BEGIN_DECLS
 

@@ -34,8 +34,6 @@
 #include <libedataserver/e-client-private.h>
 
 #include "e-book-client.h"
-#include "e-contact.h"
-#include "e-name-western.h"
 
 #define E_BOOK_CLIENT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -175,57 +173,6 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
  *   @CLIENT_BACKEND_PROPERTY_ONLINE, @CLIENT_BACKEND_PROPERTY_READONLY
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
-
-G_DEFINE_QUARK (e-book-client-error-quark, e_book_client_error)
-
-/**
- * e_book_client_error_to_string:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-const gchar *
-e_book_client_error_to_string (EBookClientError code)
-{
-	switch (code) {
-	case E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK:
-		return _("No such book");
-	case E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND:
-		return _("Contact not found");
-	case E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS:
-		return _("Contact ID already exists");
-	case E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE:
-		return _("No such source");
-	case E_BOOK_CLIENT_ERROR_NO_SPACE:
-		return _("No space");
-	}
-
-	return _("Unknown error");
-}
-
-/**
- * e_book_client_error_create:
- * @code: an #EBookClientError code to create
- * @custom_msg: custom message to use for the error; can be %NULL
- *
- * Returns: a new #GError containing an E_BOOK_CLIENT_ERROR of the given
- * @code. If the @custom_msg is NULL, then the error message is
- * the one returned from e_book_client_error_to_string() for the @code,
- * otherwise the given message is used.
- *
- * Returned pointer should be freed with g_error_free().
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Just use the #GError API directly.
- **/
-GError *
-e_book_client_error_create (EBookClientError code,
-                            const gchar *custom_msg)
-{
-	return g_error_new_literal (E_BOOK_CLIENT_ERROR, code, custom_msg ? custom_msg : e_book_client_error_to_string (code));
-}
 
 /*
  * If the specified GError is a remote error, then create a new error

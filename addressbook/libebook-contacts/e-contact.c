@@ -30,7 +30,6 @@
 #include <gio/gio.h>
 #include <glib/gi18n-lib.h>
 #include "e-contact.h"
-#include "e-book.h"
 #include "e-name-western.h"
 
 #ifdef G_OS_WIN32

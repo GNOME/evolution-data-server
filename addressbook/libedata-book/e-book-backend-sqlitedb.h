@@ -26,7 +26,7 @@
 #ifndef E_BOOK_BACKEND_SQLITEDB_H
 #define E_BOOK_BACKEND_SQLITEDB_H
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND_SQLITEDB \

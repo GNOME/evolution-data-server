@@ -2,15 +2,21 @@ vapidir = $(datarootdir)/vala/vapi
 vapi_DATA = \
 	libedataserver-1.2.vapi \
 	libebook-1.2.vapi \
+	libebook-contacts-1.2.vapi \
+	libecalendar-1.2.vapi \
 	$(NULL)
 dist_vapi_DATA = \
 	libedataserver-1.2.deps \
 	libebook-1.2.deps \
+	libebook-contacts-1.2.deps \
+	libecalendar-1.2.deps \
 	$(NULL)
 
 EXTRA_DIST = \
 	EBook-1.2.metadata \
-	libebook-1.2-custom.vala \
+	EBookContacts-1.2.metadata \
+	libebook-contacts-1.2-custom.vala \
+	ECalendar-1.2.metadata \
 	EDataServer-1.2.metadata \
 	$(NULL)
 
@@ -32,7 +38,19 @@ libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir  lib
 		$< \
 		$(NULL)
 
-libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-1.2-custom.vala libebook-1.2.deps
+libecalendar-1.2.vapi: $(top_builddir)/calendar/libecal/ECalendar-1.2.gir libedataserver-1.2.vapi
+	$(VAPIGEN_V)$(VAPIGEN) \
+		--vapidir=. \
+		--girdir=$(top_builddir)/libedataserver \
+		--pkg libedataserver-1.2 \
+		--pkg gio-2.0 \
+		--pkg libxml-2.0 \
+		--library libecalendar-1.2 \
+		--metadatadir=$(srcdir) \
+		$< \
+		$(NULL)
+
+libebook-contacts-1.2.vapi: $(top_builddir)/addressbook/libebook-contacts/EBookContacts-1.2.gir libedataserver-1.2.vapi libebook-contacts-1.2-custom.vala
 	$(VAPIGEN_V)$(VAPIGEN) \
 		--vapidir=. \
 		--vapidir=$(srcdir) \
@@ -40,10 +58,25 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--pkg libedataserver-1.2 \
 		--pkg gio-2.0 \
 		--pkg libxml-2.0 \
+		--library libebook-contacts-1.2 \
+		--metadatadir=$(srcdir) \
+		$< \
+		$(srcdir)/libebook-contacts-1.2-custom.vala \
+		$(NULL)
+
+libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-contacts-1.2.vapi
+	$(VAPIGEN_V)$(VAPIGEN) \
+		--vapidir=. \
+		--vapidir=$(srcdir) \
+		--girdir=$(top_builddir)/libedataserver \
+		--girdir=$(top_builddir)/addressbook/libebook-contacts \
+		--pkg libedataserver-1.2 \
+		--pkg libebook-contacts-1.2 \
+		--pkg gio-2.0 \
+		--pkg libxml-2.0 \
 		--library libebook-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
-		$(srcdir)/libebook-1.2-custom.vala \
 		$(NULL)
 
 CLEANFILES = \
