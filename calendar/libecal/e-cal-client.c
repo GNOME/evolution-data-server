@@ -108,6 +108,7 @@ struct _RunInThreadClosure {
 
 enum {
 	PROP_0,
+	PROP_DEFAULT_TIMEZONE,
 	PROP_SOURCE_TYPE
 };
 
@@ -795,6 +796,12 @@ cal_client_set_property (GObject *object,
                          GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_DEFAULT_TIMEZONE:
+			e_cal_client_set_default_timezone (
+				E_CAL_CLIENT (object),
+				g_value_get_pointer (value));
+			return;
+
 		case PROP_SOURCE_TYPE:
 			cal_client_set_source_type (
 				E_CAL_CLIENT (object),
@@ -812,6 +819,13 @@ cal_client_get_property (GObject *object,
                          GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_DEFAULT_TIMEZONE:
+			g_value_set_pointer (
+				value,
+				e_cal_client_get_default_timezone (
+				E_CAL_CLIENT (object)));
+			return;
+
 		case PROP_SOURCE_TYPE:
 			g_value_set_enum (
 				value,
@@ -1398,6 +1412,17 @@ e_cal_client_class_init (ECalClientClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_DEFAULT_TIMEZONE,
+		g_param_spec_pointer (
+			"default-timezone",
+			"Default Timezone",
+			"Timezone used to resolve DATE "
+			"and floating DATE-TIME values",
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_SOURCE_TYPE,
 		g_param_spec_enum (
 			"source-type",
@@ -1828,6 +1853,9 @@ e_cal_client_set_default_timezone (ECalClient *client,
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (zone != NULL);
 
+	if (zone == client->priv->default_zone)
+		return;
+
 	if (client->priv->default_zone != icaltimezone_get_utc_timezone ())
 		icaltimezone_free (client->priv->default_zone, 1);
 
@@ -1835,6 +1863,8 @@ e_cal_client_set_default_timezone (ECalClient *client,
 		client->priv->default_zone = zone;
 	else
 		client->priv->default_zone = copy_timezone (zone);
+
+	g_object_notify (G_OBJECT (client), "default-timezone");
 }
 
 /**
