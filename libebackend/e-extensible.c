@@ -136,11 +136,22 @@ e_extensible_load_extensions (EExtensible *extensible)
 
 	g_object_set_qdata_full (
 		G_OBJECT (extensible), extensible_quark,
-		extensions, (GDestroyNotify) g_ptr_array_unref);
+		g_ptr_array_ref (extensions),
+		(GDestroyNotify) g_ptr_array_unref);
 
 	e_type_traverse (
 		E_TYPE_EXTENSION, (ETypeFunc)
 		extensible_load_extension, extensible);
+
+	/* If the extension array is still empty, remove it from the
+	 * extensible object.  It may be that no extension types have
+	 * been registered yet, so this allows for trying again later. */
+	if (extensions->len == 0)
+		g_object_set_qdata (
+			G_OBJECT (extensible),
+			extensible_quark, NULL);
+
+	g_ptr_array_unref (extensions);
 }
 
 /**
@@ -173,7 +184,10 @@ e_extensible_list_extensions (EExtensible *extensible,
 	e_extensible_load_extensions (extensible);
 
 	extensions = extensible_get_extensions (extensible);
-	g_return_val_if_fail (extensions != NULL, NULL);
+
+	/* This will be NULL if no extensions are present. */
+	if (extensions == NULL)
+		return NULL;
 
 	for (ii = 0; ii < extensions->len; ii++) {
 		GObject *object;
