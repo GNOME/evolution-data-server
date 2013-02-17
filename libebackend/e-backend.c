@@ -144,15 +144,8 @@ backend_dispose (GObject *object)
 
 	priv = E_BACKEND_GET_PRIVATE (object);
 
-	if (priv->source != NULL) {
-		g_object_unref (priv->source);
-		priv->source = NULL;
-	}
-
-	if (priv->prompter) {
-		g_object_unref (priv->prompter);
-		priv->prompter = NULL;
-	}
+	g_clear_object (&priv->source);
+	g_clear_object (&priv->prompter);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->dispose (object);
