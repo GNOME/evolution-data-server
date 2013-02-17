@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.7.90 2013-02-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 675287 - Spool file account doesn't show messages (Milan Crha)
+	Bug 683867 - Schedule actions with higher idle priority (Michel Dänzer)
+	Bug 686528 - Pickup ownCloud accounts from GOA (Milan Crha)
+	Bug 693841 - EDataCal: Complete implementation of GetObjectsList
+	             (Giocanni Campagna)
+
+Other Changes:
+	* Improved phone number support. (Mathias Hasselmann)
+	* Direct access to local address books. (Tristan Van Berkom)
+	* Make e_book_client_is_self() more efficient. (Patrick Ohly)
+	* Add e_data_factory_ref_initable_backend(). (Matthew Barnes)
+	* Remove --with-dbus-call-timeout configure option. (Matthew Barnes)
+	* Add CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION flag. (Matthew Barnes)
+	* EBookClient: Use g_bus_watch_name_on_connection(). (Matthew Barnes)
+	* ECalClient: Use g_bus_watch_name_on_connection(). (Matthew Barnes)
+	* Add camel_service_ref_session(). (Matthew Barnes)
+	* Fix few memory leaks in evolution-source-registry (Milan Crha)
+	* Introduce e_backend_is_destination_reachable() (Milan Crha)
+	* CalDAV: Try to search for event when not in local cache (Milan Crha)
+	* e_extensible_load_extensions: Allow for retries. (Matthew Barnes)
+
+Translations:
+	Ihar Hrachyshka (be)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Aurimas Černius (lt)
+	Piotr Drąg (pl)
+
+
 Evolution-Data-Server 3.7.5 2013-02-04
 --------------------------------------
 
