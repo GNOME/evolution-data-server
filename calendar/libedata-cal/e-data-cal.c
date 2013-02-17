@@ -960,26 +960,39 @@ data_cal_handle_modify_objects_cb (EDBusCalendar *interface,
                                    const gchar *in_mod_type,
                                    EDataCal *cal)
 {
-	GEnumClass *enum_class;
-	GEnumValue *enum_value;
+	GFlagsClass *flags_class;
+	ECalObjModType mod = 0;
 	OperationData *op;
 	GSList *tmp = NULL;
+	gchar **flags_strv;
 	gint ii;
 
-	enum_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
-	enum_value = g_enum_get_value_by_nick (enum_class, in_mod_type);
-	g_return_val_if_fail (enum_value != NULL, FALSE);
+	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
+	flags_strv = g_strsplit (in_mod_type, ":", -1);
+	for (ii = 0; flags_strv[ii] != NULL; ii++) {
+		GFlagsValue *flags_value;
+
+		flags_value = g_flags_get_value_by_nick (
+			flags_class, flags_strv[ii]);
+		if (flags_value != NULL) {
+			mod |= flags_value->value;
+		} else {
+			g_warning (
+				"%s: Unknown flag: %s",
+				G_STRFUNC, flags_strv[ii]);
+		}
+	}
+	g_strfreev (flags_strv);
+	g_type_class_unref (flags_class);
 
 	for (ii = 0; in_ics_objects[ii] != NULL; ii++)
 		tmp = g_slist_prepend (tmp, g_strdup (in_ics_objects[ii]));
 
 	op = op_new (OP_MODIFY_OBJECTS, cal, invocation);
 	op->d.mo.calobjs = g_slist_reverse (tmp);
-	op->d.mo.mod = enum_value->value;
+	op->d.mo.mod = mod;
 
 	op_dispatch (cal, op);
-
-	g_type_class_unref (enum_class);
 
 	return TRUE;
 }
@@ -991,15 +1004,30 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *interface,
                                    const gchar *in_mod_type,
                                    EDataCal *cal)
 {
-	GEnumClass *enum_class;
-	GEnumValue *enum_value;
+	GFlagsClass *flags_class;
+	ECalObjModType mod = 0;
 	OperationData *op;
 	GSList *tmp = NULL;
+	gchar **flags_strv;
 	gsize n_children, ii;
 
-	enum_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
-	enum_value = g_enum_get_value_by_nick (enum_class, in_mod_type);
-	g_return_val_if_fail (enum_value != NULL, FALSE);
+	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
+	flags_strv = g_strsplit (in_mod_type, ":", -1);
+	for (ii = 0; flags_strv[ii] != NULL; ii++) {
+		GFlagsValue *flags_value;
+
+		flags_value = g_flags_get_value_by_nick (
+			flags_class, flags_strv[ii]);
+		if (flags_value != NULL) {
+			mod |= flags_value->value;
+		} else {
+			g_warning (
+				"%s: Unknown flag: %s",
+				G_STRFUNC, flags_strv[ii]);
+		}
+	}
+	g_strfreev (flags_strv);
+	g_type_class_unref (flags_class);
 
 	n_children = g_variant_n_children (in_uid_rid_array);
 	for (ii = 0; ii < n_children; ii++) {
@@ -1030,7 +1058,7 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *interface,
 
 	op = op_new (OP_REMOVE_OBJECTS, cal, invocation);
 	op->d.ro.ids = g_slist_reverse (tmp);
-	op->d.ro.mod = enum_value->value;
+	op->d.ro.mod = mod;
 
 	op_dispatch (cal, op);
 

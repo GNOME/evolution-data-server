@@ -4938,8 +4938,9 @@ e_cal_client_modify_objects_sync (ECalClient *client,
                                   GCancellable *cancellable,
                                   GError **error)
 {
-	GEnumClass *enum_class;
-	GEnumValue *enum_value;
+	GFlagsClass *flags_class;
+	GFlagsValue *flags_value;
+	GString *flags;
 	gboolean success;
 	gchar **strv;
 	gint ii = 0;
@@ -4947,9 +4948,16 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (comps != NULL, FALSE);
 
-	enum_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
-	enum_value = g_enum_get_value (enum_class, mod);
-	g_return_val_if_fail (enum_value != NULL, FALSE);
+	flags = g_string_new (NULL);
+	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
+	flags_value = g_flags_get_first_value (flags_class, mod);
+	while (flags_value != NULL) {
+		if (flags->len > 0)
+			g_string_append_c (flags, ':');
+		g_string_append (flags, flags_value->value_nick);
+		mod &= ~flags_value->value;
+		flags_value = g_flags_get_first_value (flags_class, mod);
+	}
 
 	strv = g_new0 (gchar *, g_slist_length (comps) + 1);
 	while (comps != NULL) {
@@ -4963,12 +4971,12 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	success = e_dbus_calendar_call_modify_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		enum_value->value_nick,
-		cancellable, error);
+		flags->str, cancellable, error);
 
 	g_strfreev (strv);
 
-	g_type_class_unref (enum_class);
+	g_type_class_unref (flags_class);
+	g_string_free (flags, TRUE);
 
 	return success;
 }
@@ -5252,16 +5260,24 @@ e_cal_client_remove_objects_sync (ECalClient *client,
                                   GError **error)
 {
 	GVariantBuilder builder;
-	GEnumClass *enum_class;
-	GEnumValue *enum_value;
+	GFlagsClass *flags_class;
+	GFlagsValue *flags_value;
+	GString *flags;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
 
-	enum_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
-	enum_value = g_enum_get_value (enum_class, mod);
-	g_return_val_if_fail (enum_value != NULL, FALSE);
+	flags = g_string_new (NULL);
+	flags_class = g_type_class_ref (E_TYPE_CAL_OBJ_MOD_TYPE);
+	flags_value = g_flags_get_first_value (flags_class, mod);
+	while (flags_value != NULL) {
+		if (flags->len > 0)
+			g_string_append_c (flags, ':');
+		g_string_append (flags, flags_value->value_nick);
+		mod &= ~flags_value->value;
+		flags_value = g_flags_get_first_value (flags_class, mod);
+	}
 
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
 	while (ids != NULL) {
@@ -5287,10 +5303,10 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	success = e_dbus_calendar_call_remove_objects_sync (
 		client->priv->dbus_proxy,
 		g_variant_builder_end (&builder),
-		enum_value->value_nick,
-		cancellable, error);
+		flags->str, cancellable, error);
 
-	g_type_class_unref (enum_class);
+	g_type_class_unref (flags_class);
+	g_string_free (flags, TRUE);
 
 	return success;
 }
