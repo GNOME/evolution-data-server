@@ -1036,10 +1036,10 @@ data_cal_handle_remove_objects_cb (EDBusCalendar *interface,
 		/* e_cal_component_free_id() uses g_free(),
 		 * not g_slice_free().  Therefore allocate
 		 * with g_malloc(), not g_slice_new(). */
-		id = g_malloc (sizeof (ECalComponentId));
+		id = g_malloc0 (sizeof (ECalComponentId));
 
 		g_variant_get_child (
-			in_uid_rid_array, ii, "ss", &id->uid, &id->rid);
+			in_uid_rid_array, ii, "(ss)", &id->uid, &id->rid);
 
 		if (id->uid != NULL && *id->uid == '\0') {
 			e_cal_component_free_id (id);
