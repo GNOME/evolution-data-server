@@ -5285,6 +5285,8 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 		gchar *utf8_uid;
 		gchar *utf8_rid;
 
+		ids = g_slist_next (ids);
+
 		if (id->uid == NULL || *id->uid == '\0')
 			continue;
 
