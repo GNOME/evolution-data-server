@@ -14,6 +14,6 @@ backenddir=@ebook_backenddir@
 Name: libedatabook
 Description: Backend library for evolution address books
 Version: @VERSION@
-Requires: libebackend-1.2 libebook-1.2
+Requires: libebackend-1.2 libebook-contacts-1.2
 Libs: -L${libdir} -ledata-book-1.2
 Cflags: -I${privincludedir}
