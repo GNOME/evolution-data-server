@@ -45,6 +45,12 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BACKEND, EBackendPrivate))
 
+#define G_IS_IO_ERROR(error, code) \
+	(g_error_matches ((error), G_IO_ERROR, (code)))
+
+#define G_IS_RESOLVER_ERROR(error, code) \
+	(g_error_matches ((error), G_RESOLVER_ERROR, (code)))
+
 typedef struct _AsyncContext AsyncContext;
 
 struct _EBackendPrivate {
@@ -56,6 +62,9 @@ struct _EBackendPrivate {
 
 	GNetworkMonitor *network_monitor;
 	gulong network_changed_handler_id;
+
+	GMutex network_monitor_cancellable_lock;
+	GCancellable *network_monitor_cancellable;
 };
 
 struct _AsyncContext {
@@ -82,11 +91,89 @@ async_context_free (AsyncContext *async_context)
 }
 
 static void
+backend_network_monitor_can_reach_cb (GObject *source_object,
+                                      GAsyncResult *result,
+                                      gpointer user_data)
+{
+	EBackend *backend = E_BACKEND (user_data);
+	gboolean host_is_reachable;
+	GError *error = NULL;
+
+	host_is_reachable = g_network_monitor_can_reach_finish (
+		G_NETWORK_MONITOR (source_object), result, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		(host_is_reachable && (error == NULL)) ||
+		(!host_is_reachable && (error != NULL)));
+
+	if (host_is_reachable) {
+		e_backend_set_online (backend, TRUE);
+
+	} else if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED)) {
+		/* Ignore cancellations. */
+
+	} else if (G_IS_IO_ERROR (error, G_IO_ERROR_HOST_UNREACHABLE)) {
+		e_backend_set_online (backend, FALSE);
+
+	} else if (G_IS_RESOLVER_ERROR (error, G_RESOLVER_ERROR_NOT_FOUND)) {
+		e_backend_set_online (backend, FALSE);
+
+	} else {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+	}
+
+	if (error != NULL)
+		g_error_free (error);
+
+	g_object_unref (backend);
+}
+
+static void
+backend_update_online_state (EBackend *backend)
+{
+	GSocketConnectable *connectable;
+	GCancellable *cancellable;
+
+	connectable = e_backend_ref_connectable (backend);
+
+	g_mutex_lock (&backend->priv->network_monitor_cancellable_lock);
+
+	cancellable = backend->priv->network_monitor_cancellable;
+	backend->priv->network_monitor_cancellable = NULL;
+
+	if (cancellable != NULL) {
+		g_cancellable_cancel (cancellable);
+		g_object_unref (cancellable);
+		cancellable = NULL;
+	}
+
+	if (connectable == NULL) {
+		e_backend_set_online (backend, TRUE);
+	} else {
+		cancellable = g_cancellable_new ();
+
+		g_network_monitor_can_reach_async (
+			backend->priv->network_monitor,
+			connectable, cancellable,
+			backend_network_monitor_can_reach_cb,
+			g_object_ref (backend));
+	}
+
+	backend->priv->network_monitor_cancellable = cancellable;
+
+	g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
+
+	if (connectable != NULL)
+		g_object_unref (connectable);
+}
+
+static void
 backend_network_changed_cb (GNetworkMonitor *network_monitor,
                             gboolean network_available,
                             EBackend *backend)
 {
-	/* Do nothing for the moment. */
+	backend_update_online_state (backend);
 }
 
 static void
@@ -181,6 +268,7 @@ backend_dispose (GObject *object)
 	g_clear_object (&priv->prompter);
 	g_clear_object (&priv->connectable);
 	g_clear_object (&priv->network_monitor);
+	g_clear_object (&priv->network_monitor_cancellable);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->dispose (object);
@@ -194,6 +282,7 @@ backend_finalize (GObject *object)
 	priv = E_BACKEND_GET_PRIVATE (object);
 
 	g_mutex_clear (&priv->property_lock);
+	g_mutex_clear (&priv->network_monitor_cancellable_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->finalize (object);
@@ -406,6 +495,7 @@ e_backend_init (EBackend *backend)
 	backend->priv->prompter = e_user_prompter_new ();
 
 	g_mutex_init (&backend->priv->property_lock);
+	g_mutex_init (&backend->priv->network_monitor_cancellable_lock);
 
 	/* Configure network monitoring. */
 
@@ -423,8 +513,12 @@ e_backend_init (EBackend *backend)
  * @backend: an #EBackend
  *
  * Returns the online state of @backend: %TRUE if @backend is online,
- * %FALSE if offline.  The online state of each backend is bound to the
- * online state of the #EDataFactory that created it.
+ * %FALSE if offline.
+ *
+ * If the #EBackend:connectable property is non-%NULL, the @backend will
+ * automatically determine whether the network service should be reachable,
+ * and hence whether the @backend is #EBackend:online.  But subclasses may
+ * override the online state if, for example, a connection attempt fails.
  *
  * Returns: the online state
  *
@@ -444,8 +538,12 @@ e_backend_get_online (EBackend *backend)
  * @online: the online state
  *
  * Sets the online state of @backend: %TRUE if @backend is online,
- * @FALSE if offline.  The online state of each backend is bound to
- * the online state of the #EDataFactory that created it.
+ * @FALSE if offline.
+ *
+ * If the #EBackend:connectable property is non-%NULL, the @backend will
+ * automatically determine whether the network service should be reachable,
+ * and hence whether the @backend is #EBackend:online.  But subclasses may
+ * override the online state if, for example, a connection attempt fails.
  *
  * Since: 3.4
  **/
@@ -460,6 +558,11 @@ e_backend_set_online (EBackend *backend,
 		return;
 
 	backend->priv->online = online;
+
+	/* Cancel any automatic "online" state update in progress. */
+	g_mutex_lock (&backend->priv->network_monitor_cancellable_lock);
+	g_cancellable_cancel (backend->priv->network_monitor_cancellable);
+	g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 
 	g_object_notify (G_OBJECT (backend), "online");
 }
@@ -550,6 +653,8 @@ e_backend_set_connectable (EBackend *backend,
 	backend->priv->connectable = connectable;
 
 	g_mutex_unlock (&backend->priv->property_lock);
+
+	backend_update_online_state (backend);
 
 	g_object_notify (G_OBJECT (backend), "connectable");
 }
