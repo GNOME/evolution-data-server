@@ -1746,6 +1746,7 @@ docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
 docs/reference/addressbook/libebook/Makefile
+docs/reference/addressbook/libebook-contacts/Makefile
 docs/reference/addressbook/libedata-book/Makefile
 docs/reference/calendar/Makefile
 docs/reference/calendar/libecal/Makefile
