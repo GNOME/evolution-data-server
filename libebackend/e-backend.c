@@ -53,6 +53,9 @@ struct _EBackendPrivate {
 	EUserPrompter *prompter;
 	GSocketConnectable *connectable;
 	gboolean online;
+
+	GNetworkMonitor *network_monitor;
+	gulong network_changed_handler_id;
 };
 
 struct _AsyncContext {
@@ -76,6 +79,14 @@ async_context_free (AsyncContext *async_context)
 		g_object_unref (async_context->auth);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+backend_network_changed_cb (GNetworkMonitor *network_monitor,
+                            gboolean network_available,
+                            EBackend *backend)
+{
+	/* Do nothing for the moment. */
 }
 
 static void
@@ -159,9 +170,17 @@ backend_dispose (GObject *object)
 
 	priv = E_BACKEND_GET_PRIVATE (object);
 
+	if (priv->network_changed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->network_monitor,
+			priv->network_changed_handler_id);
+		priv->network_changed_handler_id = 0;
+	}
+
 	g_clear_object (&priv->source);
 	g_clear_object (&priv->prompter);
 	g_clear_object (&priv->connectable);
+	g_clear_object (&priv->network_monitor);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->dispose (object);
@@ -185,7 +204,6 @@ backend_constructed (GObject *object)
 {
 	EBackend *backend;
 	ESource *source;
-	GNetworkMonitor *monitor;
 	const gchar *extension_name;
 
 	backend = E_BACKEND (object);
@@ -220,15 +238,6 @@ backend_constructed (GObject *object)
 
 		g_free (host);
 	}
-
-	/* Synchronize network monitoring. */
-
-	monitor = g_network_monitor_get_default ();
-
-	g_object_bind_property (
-		monitor, "network-available",
-		object, "online",
-		G_BINDING_SYNC_CREATE);
 }
 
 static void
@@ -390,10 +399,23 @@ e_backend_class_init (EBackendClass *class)
 static void
 e_backend_init (EBackend *backend)
 {
+	GNetworkMonitor *network_monitor;
+	gulong handler_id;
+
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
 	backend->priv->prompter = e_user_prompter_new ();
 
 	g_mutex_init (&backend->priv->property_lock);
+
+	/* Configure network monitoring. */
+
+	network_monitor = g_network_monitor_get_default ();
+	backend->priv->network_monitor = g_object_ref (network_monitor);
+
+	handler_id = g_signal_connect (
+		backend->priv->network_monitor, "network-changed",
+		G_CALLBACK (backend_network_changed_cb), backend);
+	backend->priv->network_changed_handler_id = handler_id;
 }
 
 /**
