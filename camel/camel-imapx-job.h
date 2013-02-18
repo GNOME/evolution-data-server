@@ -80,6 +80,7 @@ gboolean	camel_imapx_job_has_folder	(CamelIMAPXJob *job,
 CamelFolder *	camel_imapx_job_ref_folder	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_folder	(CamelIMAPXJob *job,
 						 CamelFolder *folder);
+GCancellable *	camel_imapx_job_get_cancellable	(CamelIMAPXJob *job);
 
 G_END_DECLS
 

@@ -6683,7 +6683,7 @@ cancel_all_jobs (CamelIMAPXServer *is,
 		/* Send a NULL GError since we already cancelled
 		 * the job and we're not interested in individual
 		 * command errors. */
-		ic->complete (is, ic, NULL, NULL);
+		ic->complete (is, ic, camel_imapx_job_get_cancellable (job), NULL);
 	}
 
 	camel_imapx_command_queue_free (queue);

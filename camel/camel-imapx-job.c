@@ -337,3 +337,14 @@ camel_imapx_job_set_folder (CamelIMAPXJob *job,
 	g_mutex_unlock (&real_job->folder_lock);
 }
 
+GCancellable *
+camel_imapx_job_get_cancellable (CamelIMAPXJob *job)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	return real_job->cancellable;
+}
