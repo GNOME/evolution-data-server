@@ -74,63 +74,6 @@ G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-GQuark
-e_book_client_error_quark (void)
-{
-	static GQuark q = 0;
-	if (q == 0)
-		q = g_quark_from_static_string ("e-book-client-error-quark");
-
-	return q;
-}
-
-/**
- * e_book_client_error_to_string:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-const gchar *
-e_book_client_error_to_string (EBookClientError code)
-{
-	switch (code) {
-	case E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK:
-		return _("No such book");
-	case E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND:
-		return _("Contact not found");
-	case E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS:
-		return _("Contact ID already exists");
-	case E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE:
-		return _("No such source");
-	case E_BOOK_CLIENT_ERROR_NO_SPACE:
-		return _("No space");
-	}
-
-	return _("Unknown error");
-}
-
-/**
- * e_book_client_error_create:
- * @code: an #EBookClientError code to create
- * @custom_msg: custom message to use for the error; can be %NULL
- *
- * Returns: a new #GError containing an E_BOOK_CLIENT_ERROR of the given
- * @code. If the @custom_msg is NULL, then the error message is
- * the one returned from e_book_client_error_to_string() for the @code,
- * otherwise the given message is used.
- *
- * Returned pointer should be freed with g_error_free().
- *
- * Since: 3.2
- **/
-GError *
-e_book_client_error_create (EBookClientError code,
-                            const gchar *custom_msg)
-{
-	return g_error_new_literal (E_BOOK_CLIENT_ERROR, code, custom_msg ? custom_msg : e_book_client_error_to_string (code));
-}
-
 /*
  * If the specified GError is a remote error, then create a new error
  * representing the remote error.  If the error is anything else, then

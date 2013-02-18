@@ -18,8 +18,16 @@
 
 #include <libebook-contacts/e-contact.h>
 
-G_BEGIN_DECLS
+/**
+ * E_BOOK_CLIENT_ERROR:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
+#define E_BOOK_CLIENT_ERROR e_book_client_error_quark ()
 
+G_BEGIN_DECLS
 
 /**
  * EBookClientViewFlags:
@@ -112,6 +120,25 @@ typedef enum {
 	E_BOOK_INDEX_SUFFIX,
 	E_BOOK_INDEX_PHONE,
 } EBookIndexType;
+
+/**
+ * EBookClientError:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
+typedef enum {
+	E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK,
+	E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
+	E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
+	E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE,
+	E_BOOK_CLIENT_ERROR_NO_SPACE
+} EBookClientError;
+
+GQuark          e_book_client_error_quark (void) G_GNUC_CONST;
+const gchar *	e_book_client_error_to_string (EBookClientError code);
+GError *	e_book_client_error_create (EBookClientError code, const gchar *custom_msg);
 
 G_END_DECLS
 

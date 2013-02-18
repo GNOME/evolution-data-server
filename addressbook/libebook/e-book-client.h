@@ -67,35 +67,6 @@ G_BEGIN_DECLS
  **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
-/**
- * E_BOOK_CLIENT_ERROR:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define E_BOOK_CLIENT_ERROR e_book_client_error_quark ()
-
-GQuark e_book_client_error_quark (void) G_GNUC_CONST;
-
-/**
- * EBookClientError:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-typedef enum {
-	E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK,
-	E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-	E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
-	E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE,
-	E_BOOK_CLIENT_ERROR_NO_SPACE
-} EBookClientError;
-
-const gchar *	e_book_client_error_to_string (EBookClientError code);
-GError *	e_book_client_error_create (EBookClientError code, const gchar *custom_msg);
-
 typedef struct _EBookClient        EBookClient;
 typedef struct _EBookClientClass   EBookClientClass;
 typedef struct _EBookClientPrivate EBookClientPrivate;

@@ -35,6 +35,7 @@ libebook_contacts_1_2_la_CPPFLAGS = \
 libebook_contacts_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
 	$(MARSHAL_GENERATED)				\
+	e-book-contacts-types.c				\
 	e-address-western.c				\
 	e-name-western.c				\
 	e-name-western-tables.h                         \
