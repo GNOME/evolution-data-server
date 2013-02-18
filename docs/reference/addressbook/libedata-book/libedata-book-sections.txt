@@ -40,6 +40,8 @@ e_book_backend_notify_error
 e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
+e_book_backend_get_direct_book
+e_book_backend_configure_direct
 <SUBSECTION Deprecated>
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
@@ -283,6 +285,20 @@ e_data_book_respond_get_contact_list_uids
 e_data_book_report_error
 e_data_book_report_backend_property_changed
 e_data_book_string_slist_to_comma_string
+e_data_book_new_direct
+e_data_book_open_sync
+e_data_book_close
+e_data_book_close_finish
+e_data_book_close_sync
+e_data_book_get_contact
+e_data_book_get_contact_finish
+e_data_book_get_contact_sync
+e_data_book_get_contacts
+e_data_book_get_contacts_finish
+e_data_book_get_contacts_sync
+e_data_book_get_contacts_uids
+e_data_book_get_contacts_uids_finish
+e_data_book_get_contacts_uids_sync
 <SUBSECTION Deprecated>
 e_data_book_respond_set_backend_property
 e_data_book_report_opened
@@ -306,6 +322,24 @@ e_data_book_status_get_type
 <SUBSECTION Private>
 EDataBookPrivate
 e_data_book_error_quark
+</SECTION>
+
+<SECTION>
+<FILE>e-data-book-direct</FILE>
+<TITLE>EDataBookDirect</TITLE>
+EDataBookDirect
+EDataBookDirectClass
+e_data_book_direct_new
+e_data_book_direct_register_gdbus_object
+<SUBSECTION Standard>
+EDataBookDirectPrivate
+E_DATA_BOOK_DIRECT
+E_DATA_BOOK_DIRECT_CLASS
+E_DATA_BOOK_DIRECT_GET_CLASS
+E_IS_DATA_BOOK_DIRECT
+E_IS_DATA_BOOK_DIRECT_CLASS
+E_TYPE_DATA_BOOK_DIRECT
+e_data_book_direct_get_type
 </SECTION>
 
 <SECTION>

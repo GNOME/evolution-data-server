@@ -2157,6 +2157,27 @@ e_data_book_new (EBookBackend *backend,
 		NULL);
 }
 
+/**
+ * e_data_book_new_direct:
+ * @registry: The #ESourceRegistry
+ * @source: The #ESource to create a book for
+ * @backend_path: The full path to the backend module to use
+ * @backend_name: The #EDataFactory type name to use from the module specified by @backend_path
+ * @config: The backend specific configuration string specified by the #EDataBookDirect
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Creates an #EDataBook for Direct Read Access, the @backend_path, @backend_name and @config
+ * parameters are fetched from an #EDataBookDirect reported over D-Bus from the server side
+ * counter part of a given backend.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Returns: (transfer full): A newly created #EDataBook for direct read access,
+ *          otherwise %NULL is returned and @error is set.
+ *
+ * Since: 3.8
+ */
 EDataBook *
 e_data_book_new_direct (ESourceRegistry *registry,
 			ESource         *source,
@@ -2308,6 +2329,21 @@ e_data_book_open_finish (EDataBook *book,
 	return res;
 }
 
+/**
+ * e_data_book_open_sync:
+ * @book: an #EDataBook
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Opens the #EDataBook and it's backend.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Returns: %TRUE on success. If %FALSE is returned, @error will be set
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_open_sync (EDataBook *book,
 		       GCancellable *cancellable,
@@ -2366,6 +2402,21 @@ e_data_book_respond_close (EDataBook *book,
 		g_error_free (error);
 }
 
+/**
+ * e_data_book_close:
+ * @book: an #EDataBook
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to @callback
+ *
+ * Closes the @book and its backend.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Since: 3.8
+ */
 void
 e_data_book_close (EDataBook *book,
 		   GCancellable *cancellable,
@@ -2382,6 +2433,19 @@ e_data_book_close (EDataBook *book,
 	e_operation_pool_push (ops_pool, op);
 }
 
+/**
+ * e_data_book_close_finish:
+ * @book: an #EDataBook
+ * @result: a #GAsyncResult
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_data_book_close().  If an
+ * error occurs, then this function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_close_finish (EDataBook *book,
 			  GAsyncResult *result,
@@ -2398,6 +2462,21 @@ e_data_book_close_finish (EDataBook *book,
 	return res;
 }
 
+/**
+ * e_data_book_close_sync:
+ * @book: an #EDataBook
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Closes the @book and its backend.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Returns: %TRUE on success. If %FALSE is returned, @error will be set
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_close_sync (EDataBook *book,
 			GCancellable *cancellable,
@@ -2421,6 +2500,24 @@ e_data_book_close_sync (EDataBook *book,
 	return result;
 }
 
+/**
+ * e_data_book_get_contact:
+ * @book: an #EDataBook
+ * @uid: a unique string ID specifying the contact
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to @callback
+ *
+ * Retrieves #EContact from the @book for the gived @uid.
+ * The call is finished by e_data_book_get_contact_finish()
+ * from the @callback.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Since: 3.8
+ */
 void
 e_data_book_get_contact (EDataBook *book,
 			 const gchar *uid,
@@ -2439,6 +2536,20 @@ e_data_book_get_contact (EDataBook *book,
 	op_dispatch (book, op);
 }
 
+/**
+ * e_data_book_get_contact_finish:
+ * @book: an #EDataBook
+ * @result: a #GAsyncResult
+ * @contact: return location for the fetched #EContact
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_data_book_get_contact().  If an
+ * error occurs, then this function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_get_contact_finish (EDataBook *book,
 				GAsyncResult *result,
@@ -2463,6 +2574,23 @@ e_data_book_get_contact_finish (EDataBook *book,
 	return ret_contact != NULL;
 }
 
+/**
+ * e_data_book_get_contact_sync:
+ * @book: an #EDataBook
+ * @uid: a unique string ID specifying the contact
+ * @contact: return location for the fetched #EContact
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Retrieves an #EContact from the @book for the gived @uid.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Returns: %TRUE on success. If %FALSE is returned, @error will be set
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_get_contact_sync (EDataBook *book,
 			      const gchar *uid,
@@ -2489,6 +2617,24 @@ e_data_book_get_contact_sync (EDataBook *book,
 	return result;
 }
 
+/**
+ * e_data_book_get_contacts:
+ * @book: an #EDataBook
+ * @sexp: an S-expression representing the query
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to @callback
+ *
+ * Query @book with @sexp, receiving a list of contacts which
+ * matched. The call is finished by e_data_book_get_contacts_finish()
+ * from the @callback.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Since: 3.8
+ */
 void
 e_data_book_get_contacts (EDataBook *book,
 			  const gchar *sexp,
@@ -2506,6 +2652,20 @@ e_data_book_get_contacts (EDataBook *book,
 	op_dispatch (book, op);
 }
 
+/**
+ * e_data_book_get_contacts_finish:
+ * @book: an #EDataBook
+ * @result: a #GAsyncResult
+ * @contacts: (element-type EContact) (out): a #GSList of matched #EContacts
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_data_book_get_contacts(). If an
+ * error occurs, then this function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_get_contacts_finish (EDataBook *book,
 				 GAsyncResult *result,
@@ -2533,6 +2693,24 @@ e_data_book_get_contacts_finish (EDataBook *book,
 	return TRUE;
 }
 
+/**
+ * e_data_book_get_contacts_sync:
+ * @book: an #EDataBook
+ * @sexp: an S-expression representing the query
+ * @contacts: (element-type EContact) (out): a #GSList of matched #EContacts
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Query @book with @sexp, receiving a list of contacts which
+ * matched.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Returns: %TRUE on success. If %FALSE is returned, @error will be set
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_get_contacts_sync (EDataBook *book,
 			       const gchar *sexp,
@@ -2558,6 +2736,24 @@ e_data_book_get_contacts_sync (EDataBook *book,
 	return result;
 }
 
+/**
+ * e_data_book_get_contacts_uids:
+ * @book: an #EDataBook
+ * @sexp: an S-expression representing the query
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to @callback
+ *
+ * Query @book with @sexp, receiving a list of contacts UIDs which
+ * matched. The call is finished by e_data_book_get_contacts_uids_finish()
+ * from the @callback.
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Since: 3.8
+ */
 void
 e_data_book_get_contacts_uids (EDataBook *book,
 			       const gchar *sexp,
@@ -2575,6 +2771,20 @@ e_data_book_get_contacts_uids (EDataBook *book,
 	op_dispatch (book, op);
 }
 
+/**
+ * e_data_book_get_contacts_uids_finish:
+ * @book: an #EDataBook
+ * @result: a #GAsyncResult
+ * @contacts_uids: (element-type utf8) (out): a #GSList of matched contact UIDs stored as strings
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_data_book_get_contacts_uids(). If an
+ * error occurs, then this function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_get_contacts_uids_finish (EDataBook *book,
 				      GAsyncResult *result,
@@ -2602,6 +2812,24 @@ e_data_book_get_contacts_uids_finish (EDataBook *book,
 	return TRUE;
 }
 
+/**
+ * e_data_book_get_contacts_uids_sync:
+ * @book: an #EDataBook
+ * @sexp: an S-expression representing the query
+ * @contacts_uids: (element-type utf8) (out): a #GSList of matched contact UIDs stored as strings
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Query @book with @sexp, receiving a list of contacts UIDs which
+ * matched. 
+ *
+ * <note><para>This API is intended for internal use only, if you want client side
+ * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
+ *
+ * Returns: %TRUE on success. If %FALSE is returned, @error will be set
+ *
+ * Since: 3.8
+ */
 gboolean
 e_data_book_get_contacts_uids_sync (EDataBook *book,
 				    const gchar *sexp,
@@ -2626,4 +2854,3 @@ e_data_book_get_contacts_uids_sync (EDataBook *book,
 
 	return result;
 }
-
