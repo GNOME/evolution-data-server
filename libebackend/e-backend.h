@@ -96,6 +96,10 @@ gboolean	e_backend_get_online		(EBackend *backend);
 void		e_backend_set_online		(EBackend *backend,
 						 gboolean online);
 ESource *	e_backend_get_source		(EBackend *backend);
+GSocketConnectable *
+		e_backend_ref_connectable	(EBackend *backend);
+void		e_backend_set_connectable	(EBackend *backend,
+						 GSocketConnectable *connectable);
 gboolean	e_backend_authenticate_sync	(EBackend *backend,
 						 ESourceAuthenticator *auth,
 						 GCancellable *cancellable,

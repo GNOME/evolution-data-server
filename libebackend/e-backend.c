@@ -48,8 +48,10 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _EBackendPrivate {
+	GMutex property_lock;
 	ESource *source;
 	EUserPrompter *prompter;
+	GSocketConnectable *connectable;
 	gboolean online;
 };
 
@@ -59,6 +61,7 @@ struct _AsyncContext {
 
 enum {
 	PROP_0,
+	PROP_CONNECTABLE,
 	PROP_ONLINE,
 	PROP_SOURCE,
 	PROP_USER_PROMPTER
@@ -92,6 +95,12 @@ backend_set_property (GObject *object,
                       GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_CONNECTABLE:
+			e_backend_set_connectable (
+				E_BACKEND (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_ONLINE:
 			e_backend_set_online (
 				E_BACKEND (object),
@@ -115,6 +124,12 @@ backend_get_property (GObject *object,
                       GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_CONNECTABLE:
+			g_value_take_object (
+				value, e_backend_ref_connectable (
+				E_BACKEND (object)));
+			return;
+
 		case PROP_ONLINE:
 			g_value_set_boolean (
 				value, e_backend_get_online (
@@ -146,18 +161,65 @@ backend_dispose (GObject *object)
 
 	g_clear_object (&priv->source);
 	g_clear_object (&priv->prompter);
+	g_clear_object (&priv->connectable);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->dispose (object);
 }
 
 static void
+backend_finalize (GObject *object)
+{
+	EBackendPrivate *priv;
+
+	priv = E_BACKEND_GET_PRIVATE (object);
+
+	g_mutex_clear (&priv->property_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_backend_parent_class)->finalize (object);
+}
+
+static void
 backend_constructed (GObject *object)
 {
+	EBackend *backend;
+	ESource *source;
 	GNetworkMonitor *monitor;
+	const gchar *extension_name;
+
+	backend = E_BACKEND (object);
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->constructed (object);
+
+	/* Create an initial GSocketConnectable from the data
+	 * source's [Authentication] extension, if present. */
+	source = e_backend_get_source (backend);
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	if (e_source_has_extension (source, extension_name)) {
+		ESourceAuthentication *extension;
+		gchar *host;
+		guint16 port;
+
+		extension = e_source_get_extension (source, extension_name);
+		host = e_source_authentication_dup_host (extension);
+		port = e_source_authentication_get_port (extension);
+
+		/* XXX We should realy check both host and port, but
+		 *     too many backends neglect to set a port number.
+		 *     Need to fix that first before we can insist on
+		 *     a valid port number. */
+		if (host != NULL) {
+			GSocketConnectable *connectable;
+
+			connectable = g_network_address_new (host, port);
+			e_backend_set_connectable (backend, connectable);
+			g_object_unref (connectable);
+		}
+
+		g_free (host);
+	}
 
 	/* Synchronize network monitoring. */
 
@@ -270,12 +332,24 @@ e_backend_class_init (EBackendClass *class)
 	object_class->set_property = backend_set_property;
 	object_class->get_property = backend_get_property;
 	object_class->dispose = backend_dispose;
+	object_class->finalize = backend_finalize;
 	object_class->constructed = backend_constructed;
 
 	class->authenticate_sync = backend_authenticate_sync;
 	class->authenticate = backend_authenticate;
 	class->authenticate_finish = backend_authenticate_finish;
 	class->get_destination_address = backend_get_destination_address;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTABLE,
+		g_param_spec_object (
+			"connectable",
+			"Connectable",
+			"Socket endpoint of a network service",
+			G_TYPE_SOCKET_CONNECTABLE,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -318,6 +392,8 @@ e_backend_init (EBackend *backend)
 {
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
 	backend->priv->prompter = e_user_prompter_new ();
+
+	g_mutex_init (&backend->priv->property_lock);
 }
 
 /**
@@ -382,6 +458,78 @@ e_backend_get_source (EBackend *backend)
 	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
 
 	return backend->priv->source;
+}
+
+/**
+ * e_backend_ref_connectable:
+ * @backend: an #EBackend
+ *
+ * Returns the socket endpoint for the network service to which @backend
+ * is a client, or %NULL if @backend does not use network sockets.
+ *
+ * The initial value of the #EBackend:connectable property is derived from
+ * the #ESourceAuthentication extension of the @backend's #EBackend:source
+ * property, if the extension is present.
+ *
+ * The returned #GSocketConnectable is referenced for thread-safety and
+ * must be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GSocketConnectable, or %NULL
+ *
+ * Since: 3.8
+ **/
+GSocketConnectable *
+e_backend_ref_connectable (EBackend *backend)
+{
+	GSocketConnectable *connectable = NULL;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	if (backend->priv->connectable != NULL)
+		connectable = g_object_ref (backend->priv->connectable);
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	return connectable;
+}
+
+/**
+ * e_backend_set_connectable:
+ * @backend: an #EBackend
+ * @connectable: a #GSocketConnectable, or %NULL
+ *
+ * Sets the socket endpoint for the network service to which @backend is
+ * a client.  This can be %NULL if @backend does not use network sockets.
+ *
+ * The initial value of the #EBackend:connectable property is derived from
+ * the #ESourceAuthentication extension of the @backend's #EBackend:source
+ * property, if the extension is present.
+ *
+ * Since: 3.8
+ **/
+void
+e_backend_set_connectable (EBackend *backend,
+                           GSocketConnectable *connectable)
+{
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	if (connectable != NULL) {
+		g_return_if_fail (G_IS_SOCKET_CONNECTABLE (connectable));
+		g_object_ref (connectable);
+	}
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	if (backend->priv->connectable != NULL)
+		g_object_unref (backend->priv->connectable);
+
+	backend->priv->connectable = connectable;
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	g_object_notify (G_OBJECT (backend), "connectable");
 }
 
 /**
