@@ -68,15 +68,6 @@
  **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
 
-/**
- * E_BOOK_CLIENT_ERROR:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define E_BOOK_CLIENT_ERROR e_book_client_error_quark ()
-
 G_BEGIN_DECLS
 
 typedef struct _EBookClient        EBookClient;
