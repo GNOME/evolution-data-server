@@ -7,6 +7,7 @@
 #include "e-test-server-utils.h"
 
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure direct_book_closure = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0 };
 
 static void
 test_get_contact_sync (ETestServerFixture *fixture,
@@ -77,6 +78,12 @@ main (gint argc,
 		e_test_server_utils_setup, test_get_contact_sync, e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/GetContact/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_get_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/GetContact/Sync", ETestServerFixture, &direct_book_closure,
+		e_test_server_utils_setup, test_get_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/GetContact/Async", ETestServerFixture, &direct_book_closure,
 		e_test_server_utils_setup, test_get_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
