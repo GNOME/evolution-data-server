@@ -76,7 +76,7 @@ CamelIMAPXServer *
 void		camel_imapx_search_set_server	(CamelIMAPXSearch *search,
 						 CamelIMAPXServer *server);
 
-G_BEGIN_DECLS
+G_END_DECLS
 
 #endif /* CAMEL_IMAPX_SEARCH_H */
 
