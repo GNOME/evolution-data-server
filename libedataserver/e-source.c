@@ -924,15 +924,19 @@ source_remove_sync (ESource *source,
                     GCancellable *cancellable,
                     GError **error)
 {
-	EDBusObject *dbus_object;
-	EDBusSourceRemovable *dbus_source;
+	EDBusSourceRemovable *dbus_interface = NULL;
+	GDBusObject *dbus_object;
 	gboolean success;
 
-	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_interface =
+			e_dbus_object_get_source_removable (
+			E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
 
-	dbus_source = e_dbus_object_get_source_removable (dbus_object);
-
-	if (dbus_source == NULL) {
+	if (dbus_interface == NULL) {
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_PERMISSION_DENIED,
@@ -942,9 +946,9 @@ source_remove_sync (ESource *source,
 	}
 
 	success = e_dbus_source_removable_call_remove_sync (
-		dbus_source, cancellable, error);
+		dbus_interface, cancellable, error);
 
-	g_object_unref (dbus_source);
+	g_object_unref (dbus_interface);
 
 	return success;
 }
