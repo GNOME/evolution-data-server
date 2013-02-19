@@ -63,6 +63,7 @@ typedef void (* ETestSourceCustomizeFunc) (ESource            *scratch,
  * ETestServiceType:
  * @E_TEST_SERVER_NONE: Only the #ESourceRegistry will be created
  * @E_TEST_SERVER_ADDRESS_BOOK: An #EBookCLient will be created and opened for the test
+ * @E_TEST_SERVER_DIRECT_ADDRESS_BOOK: An #EBookCLient in direct read access mode will be created and opened for the test
  * @E_TEST_SERVER_CALENDAR: An #ECalClient will be created and opened for the test
  * @E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK: An #EBook will be created and opened for the test
  *
@@ -71,6 +72,7 @@ typedef void (* ETestSourceCustomizeFunc) (ESource            *scratch,
 typedef enum {
 	E_TEST_SERVER_NONE = 0,
 	E_TEST_SERVER_ADDRESS_BOOK,
+	E_TEST_SERVER_DIRECT_ADDRESS_BOOK,
 	E_TEST_SERVER_CALENDAR,
 	E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK,
 	E_TEST_SERVER_DEPRECATED_CALENDAR
@@ -119,6 +121,7 @@ typedef union {
  * @dbus: The D-Bus test scaffold
  * @registry: An #ESourceRegistry
  * @service: The #ETestService
+ * @timeout_source_id: A private detail, tracks the idle source which times out if the registry cannot create an ESource.
  *
  * A fixture for running tests on the Evolution Data Server
  * components in an encapsulated D-Bus environment.
@@ -128,6 +131,7 @@ struct _ETestServerFixture {
 	ETestDBus       *dbus;
 	ESourceRegistry *registry;
 	ETestService     service;
+	guint            timeout_source_id;
 };
 
 
