@@ -99,6 +99,8 @@ static gboolean
 e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 {
 	g_error ("Timed out while waiting for ESource creation from the registry");
+
+	pair->fixture->timeout_source_id = 0;
 	return FALSE;
 }
 
@@ -111,10 +113,11 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 	switch (pair->closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
 			return;
 
-		if (g_getenv ("DEBUG_DIRECT") != NULL)
+		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
 			pair->fixture->service.book_client = (EBookClient *)
 				e_book_client_connect_direct_sync (pair->fixture->registry, source, NULL, &error);
 		else
@@ -189,6 +192,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	/* Create an address book */
 	switch (pair->closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 
 		scratch = e_source_new_with_uid (ADDRESS_BOOK_SOURCE_UID, NULL, &error);
@@ -228,7 +232,8 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	}
 
 	if (pair->closure->type != E_TEST_SERVER_NONE)
-		g_timeout_add (20 * 1000, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
+		pair->fixture->timeout_source_id =
+			g_timeout_add (20 * 1000, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
 	else
 		g_main_loop_quit (pair->fixture->loop);
 
@@ -271,6 +276,16 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 	g_idle_add ((GSourceFunc) e_test_server_utils_bootstrap_idle, &pair);
 	g_main_loop_run (fixture->loop);
+
+	/* This needs to be explicitly removed, otherwise the timeout source
+	 * stays in the default GMainContext and after running tests for 20 seconds
+	 * in the same test suite... the tests bail out.
+	 */
+	if (fixture->timeout_source_id) {
+		g_source_remove (fixture->timeout_source_id);
+		fixture->timeout_source_id = 0;
+	}
+
 	g_signal_handlers_disconnect_by_func (fixture->registry, e_test_server_utils_source_added, &pair);
 }
 
@@ -290,6 +305,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 
 	switch (closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 		if (!e_client_remove_sync (E_CLIENT (fixture->service.book_client), NULL, &error)) {
 			g_message ("Failed to remove test book: %s (ignoring)", error->message);
 			g_clear_error (&error);
