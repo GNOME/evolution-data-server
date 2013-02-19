@@ -56,5 +56,6 @@ typedef enum {
 #define E_BOOK_ERROR_CORBA_EXCEPTION E_BOOK_ERROR_DBUS_EXCEPTION
 #endif
 
+G_END_DECLS
 
 #endif /* __E_BOOK_TYPES_H__ */
