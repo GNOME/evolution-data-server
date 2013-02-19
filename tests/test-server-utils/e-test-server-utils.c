@@ -117,7 +117,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
 			return;
 
-		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
+		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
 			pair->fixture->service.book_client = (EBookClient *)
 				e_book_client_connect_direct_sync (pair->fixture->registry, source, NULL, &error);
 

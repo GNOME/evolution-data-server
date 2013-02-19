@@ -53,11 +53,12 @@ static TestData *
 test_data_new (const gchar *vcard_name,
 	       const gchar *formatted_number,
 	       const gchar *country_calling_code,
-	       const gchar *national_number)
+	       const gchar *national_number,
+	       gboolean     direct)
 {
 	TestData *const data = g_new0 (TestData, 1);
 
-	data->parent.type = E_TEST_SERVER_ADDRESS_BOOK;
+	data->parent.type = direct ? E_TEST_SERVER_DIRECT_ADDRESS_BOOK : E_TEST_SERVER_ADDRESS_BOOK;
 	data->parent.destroy_closure_func = test_data_free;
 	data->vcard_name = g_strdup (vcard_name);
 	data->formatted_number = g_strdup (formatted_number);
@@ -143,12 +144,22 @@ main (gint argc,
 
 	g_test_add (
 		"/EBookClient/AddContact/AddE164Param/1", ETestServerFixture,
-		test_data_new ("custom-1", "+1-221-5423789", "+1", "2215423789"),
+		test_data_new ("custom-1", "+1-221-5423789", "+1", "2215423789", FALSE),
 		e_test_server_utils_setup, test_add_e164_param,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/AddContact/AddE164Param/2", ETestServerFixture,
-		test_data_new ("custom-2", "7654321", NULL, "7654321"),
+		test_data_new ("custom-2", "7654321", NULL, "7654321", FALSE),
+		e_test_server_utils_setup, test_add_e164_param,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/AddContact/AddE164Param/1", ETestServerFixture,
+		test_data_new ("custom-1", "+1-221-5423789", "+1", "2215423789", TRUE),
+		e_test_server_utils_setup, test_add_e164_param,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/AddContact/AddE164Param/2", ETestServerFixture,
+		test_data_new ("custom-2", "7654321", NULL, "7654321", TRUE),
 		e_test_server_utils_setup, test_add_e164_param,
 		e_test_server_utils_teardown);
 
