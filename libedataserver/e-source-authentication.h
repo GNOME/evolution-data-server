@@ -81,6 +81,9 @@ GType		e_source_authentication_get_type
 					(void) G_GNUC_CONST;
 gboolean	e_source_authentication_required
 					(ESourceAuthentication *extension);
+GSocketConnectable *
+		e_source_authentication_ref_connectable
+					(ESourceAuthentication *extension);
 const gchar *	e_source_authentication_get_host
 					(ESourceAuthentication *extension);
 gchar *		e_source_authentication_dup_host

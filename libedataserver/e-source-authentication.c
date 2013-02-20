@@ -49,10 +49,16 @@ struct _ESourceAuthenticationPrivate {
 	gchar *method;
 	guint16 port;
 	gchar *user;
+
+	/* GNetworkAddress caches data internally, so we maintain the
+	 * instance to preserve the cache as opposed to just creating
+	 * a new GNetworkAddress instance each time it's requested. */
+	GSocketConnectable *connectable;
 };
 
 enum {
 	PROP_0,
+	PROP_CONNECTABLE,
 	PROP_HOST,
 	PROP_METHOD,
 	PROP_PORT,
@@ -63,6 +69,26 @@ G_DEFINE_TYPE (
 	ESourceAuthentication,
 	e_source_authentication,
 	E_TYPE_SOURCE_EXTENSION)
+
+static void
+source_authentication_update_connectable (ESourceAuthentication *extension)
+{
+	const gchar *host;
+	guint16 port;
+
+	/* This MUST be called with the property_lock acquired. */
+
+	g_clear_object (&extension->priv->connectable);
+
+	host = e_source_authentication_get_host (extension);
+	port = e_source_authentication_get_port (extension);
+
+	if (host != NULL) {
+		GSocketConnectable *connectable;
+		connectable = g_network_address_new (host, port);
+		extension->priv->connectable = connectable;
+	}
+}
 
 static void
 source_authentication_set_property (GObject *object,
@@ -106,6 +132,13 @@ source_authentication_get_property (GObject *object,
                                     GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_CONNECTABLE:
+			g_value_take_object (
+				value,
+				e_source_authentication_ref_connectable (
+				E_SOURCE_AUTHENTICATION (object)));
+			return;
+
 		case PROP_HOST:
 			g_value_take_string (
 				value,
@@ -139,6 +172,19 @@ source_authentication_get_property (GObject *object,
 }
 
 static void
+source_authentication_dispose (GObject *object)
+{
+	ESourceAuthenticationPrivate *priv;
+
+	priv = E_SOURCE_AUTHENTICATION_GET_PRIVATE (object);
+
+	g_clear_object (&priv->connectable);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_source_authentication_parent_class)->dispose (object);
+}
+
+static void
 source_authentication_finalize (GObject *object)
 {
 	ESourceAuthenticationPrivate *priv;
@@ -166,10 +212,23 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_authentication_set_property;
 	object_class->get_property = source_authentication_get_property;
+	object_class->dispose = source_authentication_dispose;
 	object_class->finalize = source_authentication_finalize;
 
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
 	extension_class->name = E_SOURCE_EXTENSION_AUTHENTICATION;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTABLE,
+		g_param_spec_object (
+			"connectable",
+			"Connectable",
+			"A GSocketConnectable constructed "
+			"from the host and port properties",
+			G_TYPE_SOCKET_CONNECTABLE,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -258,6 +317,38 @@ e_source_authentication_required (ESourceAuthentication *extension)
 }
 
 /**
+ * e_source_authentication_ref_connectable:
+ * @extension: an #ESourceAuthentication
+ *
+ * Returns a #GSocketConnectable instance constructed from @extension's
+ * #ESourceAuthentication:host and #ESourceAuthentication:port properties,
+ * or %NULL if the #ESourceAuthentication:host is not set.
+ *
+ * The returned #GSocketConnectable is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: (transfer full): a #GSocketConnectable, or %NULL
+ *
+ * Since: 3.8
+ **/
+GSocketConnectable *
+e_source_authentication_ref_connectable (ESourceAuthentication *extension)
+{
+	GSocketConnectable *connectable = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	if (extension->priv->connectable != NULL)
+		connectable = g_object_ref (extension->priv->connectable);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	return connectable;
+}
+
+/**
  * e_source_authentication_get_host:
  * @extension: an #ESourceAuthentication
  *
@@ -335,9 +426,14 @@ e_source_authentication_set_host (ESourceAuthentication *extension,
 	g_free (extension->priv->host);
 	extension->priv->host = e_util_strdup_strip (host);
 
+	source_authentication_update_connectable (extension);
+
 	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "host");
+
+	/* Changing the host also changes the connectable. */
+	g_object_notify (G_OBJECT (extension), "connectable");
 }
 
 /**
@@ -463,12 +559,23 @@ e_source_authentication_set_port (ESourceAuthentication *extension,
 {
 	g_return_if_fail (E_SOURCE_AUTHENTICATION (extension));
 
-	if (extension->priv->port == port)
+	g_mutex_lock (&extension->priv->property_lock);
+
+	if (extension->priv->port == port) {
+		g_mutex_unlock (&extension->priv->property_lock);
 		return;
+	}
 
 	extension->priv->port = port;
 
+	source_authentication_update_connectable (extension);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
 	g_object_notify (G_OBJECT (extension), "port");
+
+	/* Changing the port also changes the connectable. */
+	g_object_notify (G_OBJECT (extension), "connectable");
 }
 
 /**
