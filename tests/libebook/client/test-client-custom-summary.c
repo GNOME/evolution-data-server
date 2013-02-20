@@ -36,7 +36,7 @@ typedef struct {
 
 typedef struct {
 	ETestServerFixture parent;
-	EContact *contacts[6];
+	EContact *contacts[7];
 } ClientTestFixture;
 
 static void
@@ -138,7 +138,8 @@ setup_book (ClientTestFixture *fixture)
 	    !add_contact_from_test_case_verify (book_client, "custom-3", it++) ||
 	    !add_contact_from_test_case_verify (book_client, "custom-4", it++) ||
 	    !add_contact_from_test_case_verify (book_client, "custom-5", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-6", it++)) {
+	    !add_contact_from_test_case_verify (book_client, "custom-6", it++) ||
+	    !add_contact_from_test_case_verify (book_client, "custom-7", it++)) {
 		g_error ("Failed to add contacts");
 	}
 
@@ -281,6 +282,14 @@ main (gint argc,
 		add_client_test (suites[i].prefix, "/Suffix/Phone", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
 				 2, suites[i].direct);
+
+		/* This test proves that we do not get any results for custom-7.vcf, which contains
+		 * a phone number ending with "88 99", if this were accidentally normalized, we would
+		 * get a result for it.
+		 */
+		add_client_test (suites[i].prefix, "/Suffix/Phone/NotNormalized", suites[i].func,
+				 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "8899"),
+				 0, suites[i].direct);
 
 		add_client_test (suites[i].prefix, "/Suffix/Email", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
