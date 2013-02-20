@@ -625,6 +625,41 @@ e_book_client_new_direct (ESourceRegistry *registry,
 	return client;
 }
 
+/**
+ * e_book_client_connect_direct_sync:
+ * @registry: an #ESourceRegistry object
+ * @source: an #ESource
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
+ *
+ * Like e_book_client_connect_sync(), except creates the book client for
+ * direct read access to the underlying addressbook.
+ *
+ * Returns: a new but unopened #EBookClient.
+ *
+ * Since: 3.8
+ **/
+EClient *
+e_book_client_connect_direct_sync (ESourceRegistry *registry,
+				   ESource *source,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	EBookClient *client;
+
+	client = e_book_client_new_direct (registry, source, error);
+	if (!client)
+		return NULL;
+
+	if (!e_client_open_sync (E_CLIENT (client),
+				 FALSE, cancellable, error)) {
+		g_object_unref (client);
+		return NULL;
+	}
+
+	return (EClient *)client;
+}
+
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
 #define SELF_UID_KEY "self-contact-uid"
 

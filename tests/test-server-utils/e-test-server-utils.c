@@ -114,18 +114,23 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
 			return;
 
-		if (g_getenv ("DEBUG_DIRECT") != NULL)
-			pair->fixture->service.book_client =
-				e_book_client_new_direct (pair->fixture->registry, source, &error);
-		else
+		if (g_getenv ("DEBUG_DIRECT") != NULL) {
+
+			pair->fixture->service.book_client = (EBookClient *)
+				e_book_client_connect_direct_sync (pair->fixture->registry, source, NULL, &error);
+
+		} else {
 			pair->fixture->service.book_client =
 				e_book_client_new (source, &error);
 
+			if (!e_client_open_sync (E_CLIENT (pair->fixture->service.book_client),
+						 FALSE, NULL, &error))
+				g_error ("Unable to open book client: %s", error->message);
+
+		}
+
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
-
-		if (!e_client_open_sync (E_CLIENT (pair->fixture->service.book_client), FALSE, NULL, &error))
-			g_error ("Unable to open book client: %s", error->message);
 
 		break;
 

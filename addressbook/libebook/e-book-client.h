@@ -96,6 +96,7 @@ GType		e_book_client_get_type				(void);
 EBookClient *	e_book_client_new				(ESource *source, GError **error);
 
 EBookClient *   e_book_client_new_direct                        (ESourceRegistry *registry, ESource *source, GError **error);
+EClient *       e_book_client_connect_direct_sync               (ESourceRegistry *registry, ESource *source, GCancellable *cancellable, GError **error);
 
 /* Identity */
 gboolean	e_book_client_get_self				(ESourceRegistry *registry, EContact **contact, EBookClient **client, GError **error);
