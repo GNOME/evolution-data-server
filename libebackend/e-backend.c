@@ -300,32 +300,19 @@ backend_constructed (GObject *object)
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->constructed (object);
 
-	/* Create an initial GSocketConnectable from the data
+	/* Get an initial GSocketConnectable from the data
 	 * source's [Authentication] extension, if present. */
 	source = e_backend_get_source (backend);
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	if (e_source_has_extension (source, extension_name)) {
 		ESourceAuthentication *extension;
-		gchar *host;
-		guint16 port;
 
 		extension = e_source_get_extension (source, extension_name);
-		host = e_source_authentication_dup_host (extension);
-		port = e_source_authentication_get_port (extension);
 
-		/* XXX We should realy check both host and port, but
-		 *     too many backends neglect to set a port number.
-		 *     Need to fix that first before we can insist on
-		 *     a valid port number. */
-		if (host != NULL) {
-			GSocketConnectable *connectable;
+		backend->priv->connectable =
+			e_source_authentication_ref_connectable (extension);
 
-			connectable = g_network_address_new (host, port);
-			e_backend_set_connectable (backend, connectable);
-			g_object_unref (connectable);
-		}
-
-		g_free (host);
+		backend_update_online_state (backend);
 	}
 }
 
