@@ -59,6 +59,10 @@ static CamelProvider mh_provider = {
 
 #endif
 
+static CamelProviderConfEntry mbox_conf_entries[] = {
+	{ CAMEL_PROVIDER_CONF_END }
+};
+
 static CamelProvider mbox_provider = {
 	"mbox",
 	N_("Local delivery"),
@@ -66,7 +70,7 @@ static CamelProvider mbox_provider = {
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	NULL,  /* no conf entries */
+	mbox_conf_entries,  /* semi-empty entries, thus evolution will show "Receiving Options" page */
 	NULL,
 	/* ... */
 };
