@@ -380,7 +380,7 @@ e_test_server_utils_run (void)
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
 		/* Create the global dbus-daemon for this test suite */
-		global_test_dbus = g_test_dbus_new (G_TEST_DBUS_NONE);
+		global_test_dbus = e_test_dbus_new (E_TEST_DBUS_NONE);
 
 		/* Add the private directory with our in-tree service files */
 		e_test_dbus_add_service_dir (global_test_dbus, EDS_TEST_DBUS_SERVICE_DIR);
