@@ -155,6 +155,12 @@ backend_update_online_state (EBackend *backend)
 	GSocketConnectable *connectable;
 	GCancellable *cancellable;
 
+	/* This should be eventually replaced with default implementation
+	   of EBackend::get_destination_address() doing basically the same
+	   what currently does the backend silently on construction, thus
+	   it'll get also current values from the ESource, not stale from
+	   construct time.
+	*/
 	connectable = e_backend_ref_connectable (backend);
 
 	g_mutex_lock (&backend->priv->network_monitor_cancellable_lock);
@@ -168,6 +174,7 @@ backend_update_online_state (EBackend *backend)
 		cancellable = NULL;
 	}
 
+	#if !GLIB_CHECK_VERSION (2, 35, 9)
 	if (connectable && G_IS_NETWORK_ADDRESS (connectable)) {
 		GNetworkAddress *network_address = G_NETWORK_ADDRESS (connectable);
 
@@ -175,11 +182,8 @@ backend_update_online_state (EBackend *backend)
 		   reaches its destination it caches the value and doesn't retry after
 		   network changes.
 
-		   This should be eventually replaced with default implementation
-		   of EBackend::get_destination_address() doing basically the same
-		   what currently does the backend silently on construction, thus
-		   it'll get also current values from the ESource, not stale from
-		   construct time.
+		   This might be fixed since GLib 2.35.9, see:
+		   https://bugzilla.gnome.org/show_bug.cgi?id=694181
 		*/
 		connectable = g_network_address_new (
 			g_network_address_get_hostname (network_address),
@@ -187,6 +191,7 @@ backend_update_online_state (EBackend *backend)
 
 		g_object_unref (network_address);
 	}
+	#endif
 
 	if (!connectable) {
 		gchar *host = NULL;
