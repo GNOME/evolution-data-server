@@ -707,8 +707,10 @@ endswith_helper (const gchar *ps1,
 	glong s1len = g_utf8_strlen (s1, -1);
 	glong s2len = g_utf8_strlen (s2, -1);
 
-	if (s1len >= s2len)
-		res = TRUE;
+	if (s1len < s2len)
+		res = FALSE;
+	else
+		res = e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2) != NULL;
 
 	g_free (s1);
 	g_free (s2);
