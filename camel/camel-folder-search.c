@@ -1497,6 +1497,36 @@ folder_search_uid (CamelSExp *sexp,
 	return r;
 }
 
+/* this is copied from Evolution's libemail-engine/e-mail-folder-utils.c */
+static gchar *
+mail_folder_uri_build (CamelStore *store,
+		       const gchar *folder_name)
+{
+	const gchar *uid;
+	gchar *encoded_name;
+	gchar *encoded_uid;
+	gchar *uri;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (folder_name != NULL, NULL);
+
+	/* Skip the leading slash, if present. */
+	if (*folder_name == '/')
+		folder_name++;
+
+	uid = camel_service_get_uid (CAMEL_SERVICE (store));
+
+	encoded_uid = camel_url_encode (uid, ":;@/");
+	encoded_name = camel_url_encode (folder_name, "#");
+
+	uri = g_strdup_printf ("folder://%s/%s", encoded_uid, encoded_name);
+
+	g_free (encoded_uid);
+	g_free (encoded_name);
+
+	return uri;
+}
+
 static CamelSExpResult *
 folder_search_message_location (CamelSExp *sexp,
                                 gint argc,
@@ -1510,17 +1540,14 @@ folder_search_message_location (CamelSExp *sexp,
 		if (argv[0]->value.string && search->folder) {
 			CamelStore *store;
 			const gchar *name;
-			const gchar *uid;
 			gchar *uri;
 
-			/* FIXME Folder URI formats are Evolution-specific
-			 *       knowledge and doesn't belong here! */
 			store = camel_folder_get_parent_store (search->folder);
 			name = camel_folder_get_full_name (search->folder);
-			uid = camel_service_get_uid (CAMEL_SERVICE (store));
+			uri = mail_folder_uri_build (store, name);
 
-			uri = g_strdup_printf ("folder://%s/%s", uid, name);
 			same = g_str_equal (uri, argv[0]->value.string);
+
 			g_free (uri);
 		}
 	}
