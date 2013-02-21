@@ -79,19 +79,16 @@ complete (EBookClientView *view,
 	g_mutex_unlock (&data->complete_mutex);
 }
 
-static gboolean
-start_view (ThreadData *data)
+static void
+view_ready (GObject *source_object,
+	    GAsyncResult *res,
+	    gpointer user_data)
 {
-	EBookQuery   *query;
-	gchar        *sexp;
+	ThreadData *data = (ThreadData *)user_data;
 	GError *error = NULL;
 
-	query = e_book_query_any_field_contains ("");
-	sexp = e_book_query_to_string (query);
-
-	if (!e_book_client_get_view_sync (data->client, sexp,
-					  &(data->view), NULL, &error))
-		g_error ("Error getting view: %s", error->message);
+	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), res, &(data->view), &error))
+		g_error ("Getting view failed: %s", error->message);
 
 	g_signal_connect (data->view, "objects-added", G_CALLBACK (objects_added), data);
 	g_signal_connect (data->view, "objects-modified", G_CALLBACK (objects_modified), data);
@@ -106,23 +103,21 @@ start_view (ThreadData *data)
 	if (error)
 		g_error ("start view: %s", error->message);
 
-	e_book_query_unref (query);
-	g_free (sexp);
-
-	return FALSE;
 }
 
 static void
 start_thread_test (ThreadData *data)
 {
-	GMainContext *context;
-	GSource      *source;
+	EBookQuery   *query;
+	gchar        *sexp;
 
-	context = g_main_loop_get_context (data->loop);
-	source  = g_idle_source_new ();
+	query = e_book_query_any_field_contains ("");
+	sexp = e_book_query_to_string (query);
 
-	g_source_set_callback (source, (GSourceFunc)start_view, data, NULL);
-	g_source_attach (source, context);
+	e_book_client_get_view (data->client, sexp, NULL, view_ready, data);
+
+	e_book_query_unref (query);
+	g_free (sexp);
 }
 
 static void
@@ -135,6 +130,19 @@ finish_thread_test (ThreadData *data)
 	g_mutex_clear (&data->complete_mutex);
 	g_cond_clear (&data->complete_cond);
 	g_slice_free (ThreadData, data);
+}
+
+static void
+book_client_opened (GObject *source_object,
+		    GAsyncResult *res,
+		    gpointer user_data)
+{
+	GError *error = NULL;
+
+	if (!e_client_open_finish (E_CLIENT (source_object), res, &error))
+		g_error ("Failed to open client: %s", error->message);
+
+	start_thread_test ((ThreadData *)user_data);
 }
 
 static gpointer
@@ -158,12 +166,12 @@ test_view_thread (ThreadData *data)
 	if (!source)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
-	data->client = (EBookClient *)e_book_client_connect_direct_sync (registry, source, NULL, &error);
+	data->client = (EBookClient *)e_book_client_new_direct (registry, source, &error);
 
 	if (!data->client)
 		g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
 
-	start_thread_test (data);
+	e_client_open (E_CLIENT (data->client), FALSE, NULL, book_client_opened, data);
 
 	g_main_loop_run (data->loop);
 
