@@ -55,6 +55,12 @@ extern gint camel_verbose_debug;
 #define SMTP_PORT  25
 #define SMTPS_PORT 465
 
+enum {
+	PROP_0,
+	PROP_CONNECTABLE,
+	PROP_HOST_REACHABLE
+};
+
 /* support prototypes */
 static GHashTable *	esmtp_get_authtypes	(const guchar *buffer);
 static gboolean		smtp_helo		(CamelSmtpTransport *transport,
@@ -278,6 +284,48 @@ authtypes_free (gpointer key,
                 gpointer data)
 {
 	g_free (value);
+}
+
+static void
+smtp_transport_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CONNECTABLE:
+			camel_network_service_set_connectable (
+				CAMEL_NETWORK_SERVICE (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+smtp_transport_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CONNECTABLE:
+			g_value_take_object (
+				value,
+				camel_network_service_ref_connectable (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_HOST_REACHABLE:
+			g_value_set_boolean (
+				value,
+				camel_network_service_get_host_reachable (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static gchar *
@@ -770,8 +818,13 @@ smtp_transport_get_default_port (CamelNetworkService *service,
 static void
 camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 {
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelTransportClass *transport_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = smtp_transport_set_property;
+	object_class->get_property = smtp_transport_get_property;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_SMTP_SETTINGS;
@@ -783,6 +836,18 @@ camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
 	transport_class->send_to_sync = smtp_transport_send_to_sync;
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_CONNECTABLE,
+		"connectable");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST_REACHABLE,
+		"host-reachable");
 }
 
 static void
