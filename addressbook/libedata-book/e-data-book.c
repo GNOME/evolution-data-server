@@ -2227,16 +2227,22 @@ e_data_book_new_direct (ESourceRegistry *registry,
 	backend_type  = E_BOOK_BACKEND_FACTORY_CLASS (factory_class)->backend_type;
 	g_type_class_unref (factory_class);
 
-	backend = g_initable_new (backend_type, NULL, error,
+
+	backend = g_object_new (backend_type,
 				"registry", registry,
 				"source", source, NULL);
 
-	if (!backend) {
+	/* The backend must be configured for direct access
+	 * before calling g_initable_init() because backends
+	 * now can open thier content at initable_init() time.
+	 */
+	e_book_backend_configure_direct (backend, config);
+
+	if (!g_initable_init (G_INITABLE (backend), NULL, error)) {
+		g_object_unref (backend);
 		g_type_module_unuse (G_TYPE_MODULE (module));
 		goto new_direct_finish;
 	}
-
-	e_book_backend_configure_direct (backend, config);
 
 	book = g_initable_new (E_TYPE_DATA_BOOK, NULL, error,
 			       "backend", backend, NULL);
