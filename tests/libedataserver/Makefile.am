@@ -1,5 +1,4 @@
 TESTS = \
-	e-phone-utils-test \
 	$(NULL)
 
 noinst_PROGRAMS = \
@@ -17,9 +16,6 @@ TEST_LDADD =							\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(E_DATA_SERVER_LIBS)					\
 	$(GIO_UNIX_LIBS)
-
-e_phone_utils_test_CPPFLAGS = $(TEST_CPPFLAGS)
-e_phone_utils_test_LDADD = $(TEST_LDADD)
 
 e_source_test_CPPFLAGS = $(TEST_CPPFLAGS)
 e_source_test_LDADD = $(TEST_LDADD)

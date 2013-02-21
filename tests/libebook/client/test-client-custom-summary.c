@@ -21,6 +21,7 @@
  */
 
 #include <stdlib.h>
+#include <locale.h>
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
@@ -251,6 +252,7 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
+	setlocale (LC_ALL, "en_US.UTF-8");
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
 	 */

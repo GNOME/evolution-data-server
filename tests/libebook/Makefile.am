@@ -92,6 +92,7 @@ endif
 
 noinst_PROGRAMS = \
 	$(DEPRECATED_TESTS)			\
+	test-ebook-phone-number 		\
 	test-categories				\
 	test-date				\
 	test-photo				\
@@ -109,6 +110,8 @@ EXTRA_DIST = \
 	$(srcdir)/data/vcards/simple-2.vcf	\
 	$(NULL)
 
+test_ebook_phone_number_LDADD=$(TEST_LIBS)
+test_ebook_phone_number_CPPFLAGS=$(TEST_CPPFLAGS)
 test_categories_LDADD=$(TEST_LIBS)
 test_categories_CPPFLAGS=$(TEST_CPPFLAGS)
 test_date_LDADD=$(TEST_LIBS)

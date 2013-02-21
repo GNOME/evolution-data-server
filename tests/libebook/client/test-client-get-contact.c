@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdlib.h>
+#include <locale.h>
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
@@ -73,6 +74,8 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+
+	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_test_add (
 		"/EBookClient/GetContact/Sync", ETestServerFixture, &book_closure,

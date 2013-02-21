@@ -31,6 +31,7 @@
 #include <libebook-contacts/e-vcard.h>
 #include <libebook-contacts/e-book-contacts-enumtypes.h>
 #include <libebook-contacts/e-source-backend-summary-setup.h>
+#include <libebook-contacts/e-phone-number.h>
 
 #undef __LIBEBOOK_CONTACTS_H_INSIDE__
 

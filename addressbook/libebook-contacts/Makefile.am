@@ -35,6 +35,8 @@ libebook_contacts_1_2_la_CPPFLAGS = \
 libebook_contacts_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
 	$(MARSHAL_GENERATED)				\
+	e-phone-number.c				\
+	e-phone-number-private.h			\
 	e-book-contacts-types.c				\
 	e-address-western.c				\
 	e-name-western.c				\
@@ -56,6 +58,12 @@ libebook_contacts_1_2_la_LDFLAGS = 							\
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
+if ENABLE_PHONENUMBER
+libebook_contacts_1_2_la_SOURCES += e-phone-number-private.cpp
+libebook_contacts_1_2_la_CPPFLAGS += $(PHONENUMBER_INCLUDES)
+libebook_contacts_1_2_la_LIBADD += $(PHONENUMBER_LIBS)
+endif # ENABLE_PHONENUMBER
+
 libebookcontactsincludedir = $(privincludedir)/libebook-contacts
 
 libebookcontactsinclude_HEADERS =			\
@@ -67,6 +75,7 @@ libebookcontactsinclude_HEADERS =			\
 	e-name-western.h				\
 	e-contact.h					\
 	e-vcard.h					\
+	e-phone-number.h				\
 	e-source-backend-summary-setup.h
 
 

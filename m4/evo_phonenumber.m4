@@ -1,15 +1,21 @@
-dnl EVO_PHONENUMBER_SUPPORT([default])
-dnl Check for Google's libphonenumber. Adds a --with-phonenumber option
-dnl to explicitly enable and disable phonenumber support, but also for
-dnl pointing to libphonenumber's install prefix.
-AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
-	AC_MSG_CHECKING([whether to enable phonenumber support])
+dnl EVO_PHONENUMBER_ARGS([default])
+dnl
+dnl Checks configure script options for requesting libphonenumber support.
+dnl Adds a --with-phonenumber option to explicitly enable and disable
+dnl phonenumber support, but also for pointing to libphonenumber's install
+dnl prefix.
+dnl
+dnl Must be called before any other macro that might use the C++ compiler.
+AC_DEFUN([EVO_PHONENUMBER_ARGS],[
+	AC_BEFORE([$0], [AC_COMPILE_IFELSE])
+	AC_BEFORE([$0], [AC_LINK_IFELSE])
+	AC_BEFORE([$0], [AC_PROG_CXX])
+	AC_BEFORE([$0], [AC_RUN_IFELSE])
+	AC_BEFORE([$0], [LT_INIT])
 
 	evo_phonenumber_prefix=
-	msg_phonenumber=no
 
-	PHONENUMBER_INCLUDES=
-	PHONENUMBER_LIBS=
+	AC_MSG_CHECKING([whether to enable phonenumber support])
 
 	AC_ARG_WITH([phonenumber],
 		[AS_HELP_STRING([--with-phonenumber@<:@=PREFIX@:>@],
@@ -18,6 +24,25 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 		[with_phonenumber=m4_default([$1],[check])])
 
 	AC_MSG_RESULT([$with_phonenumber])
+
+	AS_VAR_IF([with_phonenumber],[no],,[evo_with_cxx=yes])
+])
+
+dnl EVO_PHONENUMBER_SUPPORT
+dnl
+dnl Check for Google's libphonenumber. Adds a --with-phonenumber option
+dnl to explicitly enable and disable phonenumber support, but also for
+dnl pointing to libphonenumber's install prefix.
+dnl
+dnl You most probably want to place a call to EVO_PHONENUMBER_ARGS near
+dnl to the top of your configure script.
+AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
+	AC_REQUIRE([EVO_PHONENUMBER_ARGS])
+
+	msg_phonenumber=no
+
+	PHONENUMBER_INCLUDES=
+	PHONENUMBER_LIBS=
 
 	AS_VAR_IF([with_phonenumber], [no],, [
 		AC_LANG_PUSH(C++)
@@ -45,15 +70,46 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 				AC_MSG_ERROR([libphonenumber cannot be used. Use --with-phonenumber to specify the library prefix.])])
 			])
 
-		CXXFLAGS="$evo_cxxflags_saved"
-		LDFLAGS="$evo_ldflags_saved"
-		LIBS="$evo_libs_saved"
 
 		AS_VAR_IF([evo_phonenumber_prefix],,
 		          [msg_phonenumber=$with_phonenumber],
 		          [msg_phonenumber=$evo_phonenumber_prefix])
 
 		AC_MSG_RESULT([$with_phonenumber])
+
+		AS_VAR_IF(
+			[with_phonenumber],[yes],
+			[AC_MSG_CHECKING([whether ParseAndKeepRawInput() is needed])
+			 AC_RUN_IFELSE(
+				[AC_LANG_PROGRAM(
+					[[#include <phonenumbers/phonenumberutil.h>]],
+					[[namespace pn = i18n::phonenumbers;i18n::phonenumbers;
+
+					  pn::PhoneNumber n;
+
+					  if (pn::PhoneNumberUtil::GetInstance ()->
+						Parse("049(800)46663", "DE", &) == pn::PhoneNumberUtil::NO_PARSING_ERROR
+							&& n.has_country_code_source ()
+							&& n.country_code_source () == 49)
+						return EXIT_SUCCESS;
+
+					  return EXIT_FAILURE;]]
+					)],
+
+				[AC_MSG_RESULT([no])],
+				[AC_MSG_RESULT([yes])
+
+				 AC_DEFINE_UNQUOTED(
+					[PHONENUMBER_RAW_INPUT_NEEDED], 1,
+					[Whether Parse() or ParseAndKeepRawInput() must be used to get the country-code source])
+				])
+			])
+
+
+		CXXFLAGS="$evo_cxxflags_saved"
+		LDFLAGS="$evo_ldflags_saved"
+		LIBS="$evo_libs_saved"
+
 		AC_LANG_POP(C++)
 	])
 

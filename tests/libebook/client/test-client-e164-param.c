@@ -21,6 +21,7 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <locale.h>
 #include <libebook/libebook.h>
 
 #include "client-test-utils.h"
@@ -139,6 +140,8 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+
+	setlocale (LC_ALL, "en_US.UTF-8");
 
 #ifdef ENABLE_PHONENUMBER
 
