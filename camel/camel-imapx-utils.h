@@ -26,6 +26,8 @@
 
 #include <camel/camel-store.h>
 
+G_BEGIN_DECLS
+
 struct _CamelIMAPXStream;
 struct _CamelFlag;
 struct _CamelIMAPXNamespaceList;
@@ -397,6 +399,8 @@ struct _CamelIMAPXNamespaceList *
 						 GError **error);
 struct _CamelIMAPXNamespaceList *
 		camel_imapx_namespace_list_copy	(const struct _CamelIMAPXNamespaceList *nsl);
+
+G_END_DECLS
 
 #endif /* CAMEL_IMAPX_UTILS_H */
 

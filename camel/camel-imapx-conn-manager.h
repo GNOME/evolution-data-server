@@ -28,6 +28,8 @@
 
 #include "camel-imapx-server.h"
 
+G_BEGIN_DECLS
+
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_CONN_MANAGER \
 	(camel_imapx_conn_manager_get_type ())
@@ -79,5 +81,7 @@ void		camel_imapx_conn_manager_update_con_info
 						(CamelIMAPXConnManager *con_man,
 						 CamelIMAPXServer *server,
 						 const gchar *folder_name);
+
+G_END_DECLS
 
 #endif /* _CAMEL_IMAPX_SERVER_H */

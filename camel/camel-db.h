@@ -10,6 +10,8 @@
 #include <sqlite3.h>
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 /**
  * CAMEL_DB_FILE:
  *
@@ -319,5 +321,7 @@ gint camel_db_write_preview_record (CamelDB *db, const gchar *folder_name, const
 
 gint
 camel_db_reset_folder_version (CamelDB *cdb, const gchar *folder_name, gint reset_version, GError **error);
+
+G_END_DECLS
 
 #endif
