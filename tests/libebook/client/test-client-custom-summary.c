@@ -105,12 +105,12 @@ add_client_test (const gchar *prefix,
 	ClientTestData *data = g_slice_new0 (ClientTestData);
 	gchar *path = g_strconcat (prefix, test_case_name, NULL);
 
-	data->parent.type = direct ? E_TEST_SERVER_DIRECT_ADDRESS_BOOK : E_TEST_SERVER_ADDRESS_BOOK;
+	data->closure.type = direct ? E_TEST_SERVER_DIRECT_ADDRESS_BOOK : E_TEST_SERVER_ADDRESS_BOOK;
 
 	if (custom)
-		data->parent.customize = setup_custom_book;
+		data->closure.customize = setup_custom_book;
 
-	data->parent.destroy_closure_func = client_test_data_free;
+	data->closure.destroy_closure_func = client_test_data_free;
 	data->query = query;
 	data->num_contacts = num_contacts;
 
