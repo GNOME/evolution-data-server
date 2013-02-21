@@ -29,10 +29,36 @@
 
 #include <camel/camel-tcp-stream-ssl.h>
 
+#define PRIVATE_KEY "CamelNetworkService:private"
+
+#define CAMEL_NETWORK_SERVICE_GET_PRIVATE(obj) \
+	(g_object_get_data (G_OBJECT (obj), PRIVATE_KEY))
+
+typedef struct _CamelNetworkServicePrivate CamelNetworkServicePrivate;
+
+struct _CamelNetworkServicePrivate {
+	gint placeholder;
+};
+
+/* Forward Declarations */
+void		camel_network_service_init	(CamelNetworkService *service);
+
 G_DEFINE_INTERFACE (
 	CamelNetworkService,
 	camel_network_service,
 	CAMEL_TYPE_SERVICE)
+
+static CamelNetworkServicePrivate *
+network_service_private_new (CamelNetworkService *service)
+{
+	return g_slice_new0 (CamelNetworkServicePrivate);
+}
+
+static void
+network_service_private_free (CamelNetworkServicePrivate *priv)
+{
+	g_slice_free (CamelNetworkServicePrivate, priv);
+}
 
 static CamelStream *
 network_service_connect_sync (CamelNetworkService *service,
@@ -128,6 +154,20 @@ static void
 camel_network_service_default_init (CamelNetworkServiceInterface *interface)
 {
 	interface->connect_sync = network_service_connect_sync;
+}
+
+void
+camel_network_service_init (CamelNetworkService *service)
+{
+	/* This is called from CamelService during instance
+	 * construction.  It is not part of the public API. */
+
+	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
+
+	g_object_set_data_full (
+		G_OBJECT (service), PRIVATE_KEY,
+		network_service_private_new (service),
+		(GDestroyNotify) network_service_private_free);
 }
 
 /**

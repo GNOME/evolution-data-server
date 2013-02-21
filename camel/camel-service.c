@@ -38,6 +38,7 @@
 #include "camel-debug.h"
 #include "camel-enumtypes.h"
 #include "camel-local-settings.h"
+#include "camel-network-service.h"
 #include "camel-network-settings.h"
 #include "camel-operation.h"
 #include "camel-service.h"
@@ -112,6 +113,7 @@ enum {
 };
 
 /* Forward Declarations */
+void camel_network_service_init (CamelNetworkService *service);
 static void camel_service_initable_init (GInitableIface *interface);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
@@ -704,6 +706,10 @@ service_constructed (GObject *object)
 	service->priv->user_cache_dir = g_build_filename (base_dir, uid, NULL);
 
 	g_object_unref (session);
+
+	/* The CamelNetworkService interface needs initialization. */
+	if (CAMEL_IS_NETWORK_SERVICE (service))
+		camel_network_service_init (CAMEL_NETWORK_SERVICE (service));
 }
 
 static gchar *
