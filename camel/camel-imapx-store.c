@@ -61,6 +61,12 @@ struct _CamelIMAPXStorePrivate {
 	GMutex quota_info_lock;
 };
 
+enum {
+	PROP_0,
+	PROP_CONNECTABLE,
+	PROP_HOST_REACHABLE
+};
+
 static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
@@ -134,6 +140,48 @@ imapx_store_update_store_flags (CamelStore *store)
 		store->flags |= CAMEL_STORE_VTRASH;
 
 	g_object_unref (settings);
+}
+
+static void
+imapx_store_set_property (GObject *object,
+                          guint property_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CONNECTABLE:
+			camel_network_service_set_connectable (
+				CAMEL_NETWORK_SERVICE (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_store_get_property (GObject *object,
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_CONNECTABLE:
+			g_value_take_object (
+				value,
+				camel_network_service_ref_connectable (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_HOST_REACHABLE:
+			g_value_set_boolean (
+				value,
+				camel_network_service_get_host_reachable (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -1888,6 +1936,8 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	g_type_class_add_private (class, sizeof (CamelIMAPXStorePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_store_set_property;
+	object_class->get_property = imapx_store_get_property;
 	object_class->dispose = imapx_store_dispose;
 	object_class->finalize = imapx_store_finalize;
 
@@ -1912,6 +1962,18 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->delete_folder_sync = imapx_store_delete_folder_sync;
 	store_class->rename_folder_sync = imapx_store_rename_folder_sync;
 	store_class->noop_sync = imapx_store_noop_sync;
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_CONNECTABLE,
+		"connectable");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST_REACHABLE,
+		"host-reachable");
 }
 
 static void
