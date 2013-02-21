@@ -34,11 +34,27 @@
 #define CAMEL_NETWORK_SERVICE_GET_PRIVATE(obj) \
 	(g_object_get_data (G_OBJECT (obj), PRIVATE_KEY))
 
+#define G_IS_IO_ERROR(error, code) \
+	(g_error_matches ((error), G_IO_ERROR, (code)))
+
+#define G_IS_RESOLVER_ERROR(error, code) \
+	(g_error_matches ((error), G_RESOLVER_ERROR, (code)))
+
 typedef struct _CamelNetworkServicePrivate CamelNetworkServicePrivate;
 
 struct _CamelNetworkServicePrivate {
 	GMutex property_lock;
 	GSocketConnectable *connectable;
+	gboolean host_reachable;
+
+	GNetworkMonitor *network_monitor;
+	gulong network_changed_handler_id;
+
+	GCancellable *network_monitor_cancellable;
+	GMutex network_monitor_cancellable_lock;
+
+	GSource *update_host_reachable;
+	GMutex update_host_reachable_lock;
 };
 
 /* Forward Declarations */
@@ -49,14 +65,181 @@ G_DEFINE_INTERFACE (
 	camel_network_service,
 	CAMEL_TYPE_SERVICE)
 
+static void
+network_service_set_host_reachable (CamelNetworkService *service,
+                                    gboolean host_reachable)
+{
+	CamelNetworkServicePrivate *priv;
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_if_fail (priv != NULL);
+
+	g_mutex_lock (&priv->property_lock);
+
+	if (host_reachable == priv->host_reachable) {
+		g_mutex_unlock (&priv->property_lock);
+		return;
+	}
+
+	priv->host_reachable = host_reachable;
+
+	g_mutex_unlock (&priv->property_lock);
+
+	g_object_notify (G_OBJECT (service), "host-reachable");
+}
+
+static void
+network_service_can_reach_cb (GObject *source_object,
+                              GAsyncResult *result,
+                              gpointer user_data)
+{
+	CamelNetworkService *service;
+	GError *error = NULL;
+
+	service = CAMEL_NETWORK_SERVICE (user_data);
+
+	g_network_monitor_can_reach_finish (
+		G_NETWORK_MONITOR (source_object), result, &error);
+
+	if (error == NULL) {
+		network_service_set_host_reachable (service, TRUE);
+
+	} else if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED)) {
+		/* Ignore cancellations. */
+
+	} else if (G_IS_IO_ERROR (error, G_IO_ERROR_HOST_UNREACHABLE)) {
+		network_service_set_host_reachable (service, FALSE);
+
+	} else if (G_IS_RESOLVER_ERROR (error, G_RESOLVER_ERROR_NOT_FOUND)) {
+		network_service_set_host_reachable (service, FALSE);
+
+	} else {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+	}
+
+	if (error != NULL)
+		g_error_free (error);
+
+	g_object_unref (service);
+}
+
+static gboolean
+network_service_update_host_reachable_idle_cb (gpointer user_data)
+{
+	CamelNetworkService *service;
+	CamelNetworkServicePrivate *priv;
+	GSocketConnectable *connectable;
+	GCancellable *cancellable;
+
+	service = CAMEL_NETWORK_SERVICE (user_data);
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_val_if_fail (priv != NULL, FALSE);
+
+	g_mutex_lock (&priv->update_host_reachable_lock);
+	g_source_unref (priv->update_host_reachable);
+	priv->update_host_reachable = NULL;
+	g_mutex_unlock (&priv->update_host_reachable_lock);
+
+	connectable = camel_network_service_ref_connectable (service);
+
+	g_mutex_lock (&priv->network_monitor_cancellable_lock);
+
+	cancellable = priv->network_monitor_cancellable;
+	priv->network_monitor_cancellable = NULL;
+
+	if (cancellable != NULL) {
+		g_cancellable_cancel (cancellable);
+		g_object_unref (cancellable);
+		cancellable = NULL;
+	}
+
+	if (connectable == NULL) {
+		network_service_set_host_reachable (service, FALSE);
+	} else {
+		cancellable = g_cancellable_new ();
+
+		g_network_monitor_can_reach_async (
+			priv->network_monitor,
+			connectable, cancellable,
+			network_service_can_reach_cb,
+			g_object_ref (service));
+	}
+
+	priv->network_monitor_cancellable = cancellable;
+
+	g_mutex_unlock (&priv->network_monitor_cancellable_lock);
+
+	if (connectable != NULL)
+		g_object_unref (connectable);
+
+	return FALSE;
+}
+
+static void
+network_service_update_host_reachable (CamelNetworkService *service)
+{
+	CamelNetworkServicePrivate *priv;
+	CamelSession *session;
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
+
+	g_mutex_lock (&priv->update_host_reachable_lock);
+
+	if (priv->update_host_reachable == NULL) {
+		GMainContext *main_context;
+		GSource *idle_source;
+
+		main_context = camel_session_get_main_context (session);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_priority (idle_source, G_PRIORITY_LOW);
+		g_source_set_callback (
+			idle_source,
+			network_service_update_host_reachable_idle_cb,
+			g_object_ref (service),
+			(GDestroyNotify) g_object_unref);
+		g_source_attach (idle_source, main_context);
+		priv->update_host_reachable = g_source_ref (idle_source);
+		g_source_unref (idle_source);
+	}
+
+	g_mutex_unlock (&priv->update_host_reachable_lock);
+
+	g_object_unref (session);
+}
+
+static void
+network_service_network_changed_cb (GNetworkMonitor *network_monitor,
+                                    gboolean network_available,
+                                    CamelNetworkService *service)
+{
+	network_service_update_host_reachable (service);
+}
+
 static CamelNetworkServicePrivate *
 network_service_private_new (CamelNetworkService *service)
 {
 	CamelNetworkServicePrivate *priv;
+	GNetworkMonitor *network_monitor;
+	gulong handler_id;
 
 	priv = g_slice_new0 (CamelNetworkServicePrivate);
 
 	g_mutex_init (&priv->property_lock);
+	g_mutex_init (&priv->network_monitor_cancellable_lock);
+	g_mutex_init (&priv->update_host_reachable_lock);
+
+	/* Configure network monitoring. */
+
+	network_monitor = g_network_monitor_get_default ();
+	priv->network_monitor = g_object_ref (network_monitor);
+
+	handler_id = g_signal_connect (
+		priv->network_monitor, "network-changed",
+		G_CALLBACK (network_service_network_changed_cb), service);
+	priv->network_changed_handler_id = handler_id;
 
 	return priv;
 }
@@ -64,9 +247,22 @@ network_service_private_new (CamelNetworkService *service)
 static void
 network_service_private_free (CamelNetworkServicePrivate *priv)
 {
+	g_signal_handler_disconnect (
+		priv->network_monitor,
+		priv->network_changed_handler_id);
+
 	g_clear_object (&priv->connectable);
+	g_clear_object (&priv->network_monitor);
+	g_clear_object (&priv->network_monitor_cancellable);
+
+	if (priv->update_host_reachable != NULL) {
+		g_source_destroy (priv->update_host_reachable);
+		g_source_unref (priv->update_host_reachable);
+	}
 
 	g_mutex_clear (&priv->property_lock);
+	g_mutex_clear (&priv->network_monitor_cancellable_lock);
+	g_mutex_clear (&priv->update_host_reachable_lock);
 
 	g_slice_free (CamelNetworkServicePrivate, priv);
 }
@@ -204,6 +400,16 @@ camel_network_service_default_init (CamelNetworkServiceInterface *interface)
 			"Socket endpoint of a network service",
 			G_TYPE_SOCKET_CONNECTABLE,
 			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_interface_install_property (
+		interface,
+		g_param_spec_boolean (
+			"host-reachable",
+			"Host Reachable",
+			"Whether the host is reachable",
+			FALSE,
+			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 }
 
@@ -362,7 +568,34 @@ camel_network_service_set_connectable (CamelNetworkService *service,
 
 	g_mutex_unlock (&priv->property_lock);
 
+	network_service_update_host_reachable (service);
+
 	g_object_notify (G_OBJECT (service), "connectable");
+}
+
+/**
+ * camel_network_service_get_host_reachable:
+ * @service: a #CamelNetworkService
+ *
+ * Returns %TRUE if @service believes that the host pointed to by
+ * #CamelNetworkService:connectable can be reached.  This property
+ * is updated automatically as network conditions change.
+ *
+ * Returns: whether the host is reachable
+ *
+ * Since: 3.8
+ **/
+gboolean
+camel_network_service_get_host_reachable (CamelNetworkService *service)
+{
+	CamelNetworkServicePrivate *priv;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), FALSE);
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_val_if_fail (priv != NULL, FALSE);
+
+	return priv->host_reachable;
 }
 
 /**

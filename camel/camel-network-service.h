@@ -90,6 +90,8 @@ GSocketConnectable *
 void		camel_network_service_set_connectable
 					(CamelNetworkService *service,
 					 GSocketConnectable *connectable);
+gboolean	camel_network_service_get_host_reachable
+					(CamelNetworkService *service);
 CamelStream *	camel_network_service_connect_sync
 					(CamelNetworkService *service,
 					 GCancellable *cancellable,
