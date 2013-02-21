@@ -1802,8 +1802,10 @@ camel_multipart_get_type
 <FILE>camel-network-service</FILE>
 <TITLE>CamelNetworkService</TITLE>
 CamelNetworkService
-camel_network_service_get_default_port
 camel_network_service_get_service_name
+camel_network_service_get_default_port
+camel_network_service_ref_connectable
+camel_network_service_set_connectable
 camel_network_service_connect_sync
 <SUBSECTION Standard>
 CAMEL_NETWORK_SERVICE

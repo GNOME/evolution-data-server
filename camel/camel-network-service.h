@@ -70,7 +70,11 @@ struct _CamelNetworkServiceInterface {
 					 GCancellable *cancellable,
 					 GError **error);
 
-	gpointer reserved[16];
+	GSocketConnectable *
+			(*new_connectable)
+					(CamelNetworkService *service);
+
+	gpointer reserved[15];
 };
 
 GType		camel_network_service_get_type	(void) G_GNUC_CONST;
@@ -80,6 +84,12 @@ const gchar *	camel_network_service_get_service_name
 guint16		camel_network_service_get_default_port
 					(CamelNetworkService *service,
 					 CamelNetworkSecurityMethod method);
+GSocketConnectable *
+		camel_network_service_ref_connectable
+					(CamelNetworkService *service);
+void		camel_network_service_set_connectable
+					(CamelNetworkService *service,
+					 GSocketConnectable *connectable);
 CamelStream *	camel_network_service_connect_sync
 					(CamelNetworkService *service,
 					 GCancellable *cancellable,

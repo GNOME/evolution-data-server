@@ -72,6 +72,8 @@ struct _CamelServicePrivate {
 	GMutex connection_lock;
 	ConnectionOp *connection_op;
 	CamelServiceConnectionStatus status;
+
+	gboolean network_service_inited;
 };
 
 /* This is copied from EAsyncClosure in libedataserver.
@@ -708,8 +710,10 @@ service_constructed (GObject *object)
 	g_object_unref (session);
 
 	/* The CamelNetworkService interface needs initialization. */
-	if (CAMEL_IS_NETWORK_SERVICE (service))
+	if (CAMEL_IS_NETWORK_SERVICE (service)) {
 		camel_network_service_init (CAMEL_NETWORK_SERVICE (service));
+		service->priv->network_service_inited = TRUE;
+	}
 }
 
 static gchar *
@@ -1576,6 +1580,12 @@ camel_service_set_settings (CamelService *service,
 	service->priv->settings = settings;  /* takes ownership */
 
 	g_mutex_unlock (&service->priv->settings_lock);
+
+	/* If the service is a CamelNetworkService, it needs to
+	 * replace its GSocketConnectable for the new settings. */
+	if (service->priv->network_service_inited)
+		camel_network_service_set_connectable (
+			CAMEL_NETWORK_SERVICE (service), NULL);
 
 	g_object_notify (G_OBJECT (service), "settings");
 }

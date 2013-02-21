@@ -37,7 +37,8 @@
 typedef struct _CamelNetworkServicePrivate CamelNetworkServicePrivate;
 
 struct _CamelNetworkServicePrivate {
-	gint placeholder;
+	GMutex property_lock;
+	GSocketConnectable *connectable;
 };
 
 /* Forward Declarations */
@@ -51,12 +52,22 @@ G_DEFINE_INTERFACE (
 static CamelNetworkServicePrivate *
 network_service_private_new (CamelNetworkService *service)
 {
-	return g_slice_new0 (CamelNetworkServicePrivate);
+	CamelNetworkServicePrivate *priv;
+
+	priv = g_slice_new0 (CamelNetworkServicePrivate);
+
+	g_mutex_init (&priv->property_lock);
+
+	return priv;
 }
 
 static void
 network_service_private_free (CamelNetworkServicePrivate *priv)
 {
+	g_clear_object (&priv->connectable);
+
+	g_mutex_clear (&priv->property_lock);
+
 	g_slice_free (CamelNetworkServicePrivate, priv);
 }
 
@@ -150,10 +161,50 @@ network_service_connect_sync (CamelNetworkService *service,
 	return stream;
 }
 
+static GSocketConnectable *
+network_service_new_connectable (CamelNetworkService *service)
+{
+	GSocketConnectable *connectable = NULL;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	guint16 port;
+	gchar *host;
+
+	/* Some services might want to override this method to
+	 * create a GNetworkService instead of a GNetworkAddress. */
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_dup_host (network_settings);
+	port = camel_network_settings_get_port (network_settings);
+
+	if (host != NULL)
+		connectable = g_network_address_new (host, port);
+
+	g_free (host);
+
+	g_object_unref (settings);
+
+	return connectable;
+}
+
 static void
 camel_network_service_default_init (CamelNetworkServiceInterface *interface)
 {
 	interface->connect_sync = network_service_connect_sync;
+	interface->new_connectable = network_service_new_connectable;
+
+	g_object_interface_install_property (
+		interface,
+		g_param_spec_object (
+			"connectable",
+			"Connectable",
+			"Socket endpoint of a network service",
+			G_TYPE_SOCKET_CONNECTABLE,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 void
@@ -230,6 +281,88 @@ camel_network_service_get_default_port (CamelNetworkService *service,
 		default_port = interface->get_default_port (service, method);
 
 	return default_port;
+}
+
+/**
+ * camel_network_service_ref_connectable:
+ * @service: a #CamelNetworkService
+ *
+ * Returns the socket endpoint for the network service to which @service
+ * is a client.
+ *
+ * The returned #GSocketConnectable is referenced for thread-safety and
+ * must be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GSocketConnectable
+ *
+ * Since: 3.8
+ **/
+GSocketConnectable *
+camel_network_service_ref_connectable (CamelNetworkService *service)
+{
+	CamelNetworkServicePrivate *priv;
+	GSocketConnectable *connectable = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), NULL);
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_val_if_fail (priv != NULL, NULL);
+
+	g_mutex_lock (&priv->property_lock);
+
+	if (priv->connectable != NULL)
+		connectable = g_object_ref (priv->connectable);
+
+	g_mutex_unlock (&priv->property_lock);
+
+	return connectable;
+}
+
+/**
+ * camel_network_service_set_connectable:
+ * @service: a #CamelNetworkService
+ * @connectable: a #GSocketConnectable, or %NULL
+ *
+ * Sets the socket endpoint for the network service to which @service is
+ * a client.  If @connectable is %NULL, a #GSocketConnectable is derived
+ * from the @service's #CamelNetworkSettings.
+ *
+ * Since: 3.8
+ **/
+void
+camel_network_service_set_connectable (CamelNetworkService *service,
+                                       GSocketConnectable *connectable)
+{
+	CamelNetworkServiceInterface *interface;
+	CamelNetworkServicePrivate *priv;
+
+	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
+
+	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
+	g_return_if_fail (interface->new_connectable != NULL);
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_if_fail (priv != NULL);
+
+	if (connectable != NULL) {
+		g_return_if_fail (G_IS_SOCKET_CONNECTABLE (connectable));
+		g_object_ref (connectable);
+	} else {
+		/* This may return NULL if we don't have valid network
+		 * settings from which to create a GSocketConnectable. */
+		connectable = interface->new_connectable (service);
+	}
+
+	g_mutex_lock (&priv->property_lock);
+
+	if (priv->connectable != NULL)
+		g_object_unref (priv->connectable);
+
+	priv->connectable = connectable;
+
+	g_mutex_unlock (&priv->property_lock);
+
+	g_object_notify (G_OBJECT (service), "connectable");
 }
 
 /**
