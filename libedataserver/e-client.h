@@ -176,8 +176,9 @@ struct _EClient {
 struct _EClientClass {
 	GObjectClass parent;
 
-	/* virtual methods */
+	/* This method is deprecated. */
 	GDBusProxy *	(*get_dbus_proxy)	(EClient *client);
+
 	void		(*unwrap_dbus_error)	(EClient *client,
 						 GError *dbus_error,
 						 GError **out_error);
