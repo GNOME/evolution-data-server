@@ -34,8 +34,9 @@ libebookbackendgoogle_la_SOURCES = \
 	$(GOA_SOURCES)
 
 libebookbackendgoogle_la_LIBADD = \
-	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
