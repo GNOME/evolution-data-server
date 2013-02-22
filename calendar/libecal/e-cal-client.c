@@ -4966,6 +4966,8 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 		ical_string = icalcomponent_as_ical_string_r (comps->data);
 		strv[ii++] = e_util_utf8_make_valid (ical_string);
 		g_free (ical_string);
+
+		comps = g_slist_next (comps);
 	}
 
 	success = e_dbus_calendar_call_modify_objects_sync (
