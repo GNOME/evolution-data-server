@@ -125,9 +125,9 @@ main (gint argc,
 
 	/* We run the direct access variants here because we're interested in testing the error
 	 * code from e_book_client_get_contact(removed_contact_uid)  */
-	g_test_add ("/EBookClient/DirectAccess/RemoveContact/Sync", ETestServerFixture, &book_closure,
+	g_test_add ("/EBookClient/DirectAccess/RemoveContact/Sync", ETestServerFixture, &direct_book_closure,
 		    e_test_server_utils_setup, test_remove_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/DirectAccess/RemoveContact/Async", ETestServerFixture, &book_closure,
+	g_test_add ("/EBookClient/DirectAccess/RemoveContact/Async", ETestServerFixture, &direct_book_closure,
 		    e_test_server_utils_setup, test_remove_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
