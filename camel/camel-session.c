@@ -772,7 +772,8 @@ camel_session_class_init (CamelSessionClass *class)
 		g_param_spec_boxed (
 			"main-context",
 			"Main Context",
-			"The GMainContext used for signal emissions",
+			"The main loop context on "
+			"which to attach event sources",
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
@@ -871,11 +872,10 @@ camel_session_init (CamelSession *session)
  * camel_session_get_main_context:
  * @session: a #CamelSession
  *
- * Returns the #GMainContext from which signals are emitted.  This
- * was the thread-default #GMainContext for the thread where @session
- * was instantiated.
+ * Returns the #GMainContext on which event sources for @session are to
+ * be attached.
  *
- * Returns: the #GMainContext for signal emissions
+ * Returns: a #GMainContext
  *
  * Since: 3.6
  **/
