@@ -324,25 +324,6 @@ gboolean	e_client_refresh_sync		(EClient *client,
 GSList *	e_client_util_parse_comma_strings
 						(const gchar *strings);
 
-typedef struct _EClientErrorsList EClientErrorsList;
-
-/**
- * EClientErrorsList:
- *
- * Since: 3.2
- **/
-struct _EClientErrorsList {
-	const gchar *name;
-	gint err_code;
-};
-
-gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
-						 GError **client_error,
-						 const EClientErrorsList *known_errors,
-						 guint known_errors_count,
-						 GQuark known_errors_domain,
-						 gboolean fail_when_none_matched);
-
 #ifndef EDS_DISABLE_DEPRECATED
 /**
  * CLIENT_BACKEND_PROPERTY_OPENED:
@@ -435,6 +416,28 @@ GSList *	e_client_util_copy_object_slist	(GSList *copy_to,
 						 const GSList *objects);
 void		e_client_util_free_string_slist	(GSList *strings);
 void		e_client_util_free_object_slist	(GSList *objects);
+
+typedef struct _EClientErrorsList EClientErrorsList;
+
+/**
+ * EClientErrorsList:
+ *
+ * Since: 3.2
+ *
+ * Deprecated: 3.8: This structure is no longer used.
+ **/
+struct _EClientErrorsList {
+	const gchar *name;
+	gint err_code;
+};
+
+gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
+						 GError **client_error,
+						 const EClientErrorsList *known_errors,
+						 guint known_errors_count,
+						 GQuark known_errors_domain,
+						 gboolean fail_when_none_matched);
+
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

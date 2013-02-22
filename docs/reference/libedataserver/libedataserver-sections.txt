@@ -61,8 +61,6 @@ e_client_refresh
 e_client_refresh_finish
 e_client_refresh_sync
 e_client_util_parse_comma_strings
-EClientErrorsList
-e_client_util_unwrap_dbus_error
 <SUBSECTION Deprecated>
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
@@ -87,6 +85,8 @@ e_client_util_copy_string_slist
 e_client_util_copy_object_slist
 e_client_util_free_string_slist
 e_client_util_free_object_slist
+EClientErrorsList
+e_client_util_unwrap_dbus_error
 <SUBSECTION Standard>
 E_CLIENT
 E_IS_CLIENT

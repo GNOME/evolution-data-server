@@ -1962,6 +1962,8 @@ e_client_unwrap_dbus_error (EClient *client,
  * Note: The @dbus_error is automatically freed if returned %TRUE.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: This function is no longer used.
  **/
 gboolean
 e_client_util_unwrap_dbus_error (GError *dbus_error,
