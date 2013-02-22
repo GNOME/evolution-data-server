@@ -107,7 +107,6 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 
 
 		CXXFLAGS="$evo_cxxflags_saved"
-		LDFLAGS="$evo_ldflags_saved"
 		LIBS="$evo_libs_saved"
 
 		AC_LANG_POP(C++)
