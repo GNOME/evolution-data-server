@@ -269,8 +269,8 @@ e_source_mail_composition_init (ESourceMailComposition *extension)
  * Returns a %NULL-terminated string array of recipients which should
  * automatically be added to the blind carbon-copy (Bcc) list when
  * composing a new mail message.  The recipient strings should be of
- * the form "Full Name <email-address>".  The returned array is owned
- * by @extension and should not be modified or freed.
+ * the form "Full Name &lt;email-address&gt;".  The returned array is
+ * owned by @extension and should not be modified or freed.
  *
  * Returns: (transfer none): a %NULL-terminated string array of Bcc recipients
  *
@@ -341,7 +341,7 @@ strv_equal (const gchar * const *strv1,
  *
  * Sets the recipients which should automatically be added to the blind
  * carbon-copy (Bcc) list when composing a new mail message.  The recipient
- * strings should be of the form "Full Name <email-address>".
+ * strings should be of the form "Full Name &lt;email-address&gt;".
  *
  * Since: 3.6
  **/
@@ -428,7 +428,7 @@ e_source_mail_composition_dup_cc (ESourceMailComposition *extension)
  *
  * Sets the recipients which should automatically be added to the carbon
  * copy (Cc) list when composing a new mail message.  The recipient strings
- * should be of the form "Full Name <email-address>".
+ * should be of the form "Full Name &lt;email-address&gt;".
  *
  * Since: 3.6
  **/
