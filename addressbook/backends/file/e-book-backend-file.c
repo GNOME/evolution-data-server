@@ -839,7 +839,16 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			removed_contacts = g_slist_prepend (removed_contacts, contact);
 		} else {
 			g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
-			g_propagate_error (perror, local_error);
+
+			if (g_error_matches (local_error,
+					     E_BOOK_SDB_ERROR,
+					     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
+				g_set_error (perror, E_DATA_BOOK_ERROR,
+					     E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
+					     _("Contact '%s' not found"), id);
+				g_error_free (local_error);
+			} else
+				g_propagate_error (perror, local_error);
 
 			/* Abort as soon as missing contact is to be deleted */
 			delete_failed = TRUE;
