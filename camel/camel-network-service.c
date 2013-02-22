@@ -191,7 +191,7 @@ network_service_update_host_reachable (CamelNetworkService *service)
 		GMainContext *main_context;
 		GSource *idle_source;
 
-		main_context = camel_session_get_main_context (session);
+		main_context = camel_session_ref_main_context (session);
 
 		idle_source = g_idle_source_new ();
 		g_source_set_priority (idle_source, G_PRIORITY_LOW);
@@ -203,6 +203,8 @@ network_service_update_host_reachable (CamelNetworkService *service)
 		g_source_attach (idle_source, main_context);
 		priv->update_host_reachable = g_source_ref (idle_source);
 		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
 	}
 
 	g_mutex_unlock (&priv->update_host_reachable_lock);

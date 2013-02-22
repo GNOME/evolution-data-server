@@ -180,7 +180,7 @@ struct _CamelSessionClass {
 };
 
 GType		camel_session_get_type		(void);
-GMainContext *	camel_session_get_main_context	(CamelSession *session);
+GMainContext *	camel_session_ref_main_context	(CamelSession *session);
 const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
 const gchar *	camel_session_get_user_cache_dir
 						(CamelSession *session);
@@ -298,6 +298,10 @@ void		camel_session_forward_to	(CamelSession *session,
 gboolean	camel_session_forward_to_finish	(CamelSession *session,
 						 GAsyncResult *result,
 						 GError **error);
+
+#ifndef CAMEL_DISABLE_DEPRECATED
+GMainContext *	camel_session_get_main_context	(CamelSession *session);
+#endif /* CAMEL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

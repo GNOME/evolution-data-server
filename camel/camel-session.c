@@ -300,8 +300,8 @@ session_get_property (GObject *object,
 			return;
 
 		case PROP_MAIN_CONTEXT:
-			g_value_set_boxed (
-				value, camel_session_get_main_context (
+			g_value_take_boxed (
+				value, camel_session_ref_main_context (
 				CAMEL_SESSION (object)));
 			return;
 
@@ -878,6 +878,8 @@ camel_session_init (CamelSession *session)
  * Returns: a #GMainContext
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.8: Use camel_session_ref_main_context() instead.
  **/
 GMainContext *
 camel_session_get_main_context (CamelSession *session)
@@ -885,6 +887,25 @@ camel_session_get_main_context (CamelSession *session)
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return session->priv->main_context;
+}
+
+/**
+ * camel_session_ref_main_context:
+ * @session: a #CamelSession
+ *
+ * Returns the #GMainContext on which event sources for @session are to
+ * be attached.
+ *
+ * Returns: a #GMainContext
+ *
+ * Since: 3.8
+ **/
+GMainContext *
+camel_session_ref_main_context (CamelSession *session)
+{
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	return g_main_context_ref (session->priv->main_context);
 }
 
 /**
@@ -1564,7 +1585,7 @@ camel_session_idle_add (CamelSession *session,
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), 0);
 	g_return_val_if_fail (function != NULL, 0);
 
-	main_context = camel_session_get_main_context (session);
+	main_context = camel_session_ref_main_context (session);
 
 	source = g_idle_source_new ();
 
@@ -1576,6 +1597,8 @@ camel_session_idle_add (CamelSession *session,
 	source_id = g_source_attach (source, main_context);
 
 	g_source_unref (source);
+
+	g_main_context_unref (main_context);
 
 	return source_id;
 }

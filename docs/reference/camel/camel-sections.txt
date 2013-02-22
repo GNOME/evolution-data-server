@@ -2325,7 +2325,7 @@ camel_service_error_quark
 <TITLE>CamelSession</TITLE>
 CamelSession
 CamelSessionAlertType
-camel_session_get_main_context
+camel_session_ref_main_context
 camel_session_get_user_data_dir
 camel_session_get_user_cache_dir
 camel_session_get_socks_proxy
@@ -2361,6 +2361,8 @@ camel_session_authenticate_finish
 camel_session_forward_to_sync
 camel_session_forward_to
 camel_session_forward_to_finish
+<SUBSECTION Deprecated>
+camel_session_get_main_context
 <SUBSECTION Standard>
 CAMEL_SESSION
 CAMEL_IS_SESSION
