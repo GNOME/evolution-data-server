@@ -79,6 +79,7 @@ e_backend_set_online
 e_backend_get_source
 e_backend_ref_connectable
 e_backend_set_connectable
+e_backend_ref_main_context
 e_backend_authenticate_sync
 e_backend_authenticate
 e_backend_authenticate_finish

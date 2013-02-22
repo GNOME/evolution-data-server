@@ -57,6 +57,7 @@ struct _EBackendPrivate {
 	GMutex property_lock;
 	ESource *source;
 	EUserPrompter *prompter;
+	GMainContext *main_context;
 	GSocketConnectable *connectable;
 	gboolean online;
 
@@ -75,6 +76,7 @@ struct _AsyncContext {
 enum {
 	PROP_0,
 	PROP_CONNECTABLE,
+	PROP_MAIN_CONTEXT,
 	PROP_ONLINE,
 	PROP_SOURCE,
 	PROP_USER_PROMPTER
@@ -301,6 +303,12 @@ backend_get_property (GObject *object,
 				E_BACKEND (object)));
 			return;
 
+		case PROP_MAIN_CONTEXT:
+			g_value_take_boxed (
+				value, e_backend_ref_main_context (
+				E_BACKEND (object)));
+			return;
+
 		case PROP_ONLINE:
 			g_value_set_boolean (
 				value, e_backend_get_online (
@@ -340,6 +348,11 @@ backend_dispose (GObject *object)
 	if (priv->network_changed_timeout_id) {
 		g_source_remove (priv->network_changed_timeout_id);
 		priv->network_changed_timeout_id = 0;
+	}
+
+	if (priv->main_context != NULL) {
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
 	}
 
 	g_clear_object (&priv->source);
@@ -521,6 +534,18 @@ e_backend_class_init (EBackendClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_MAIN_CONTEXT,
+		g_param_spec_boxed (
+			"main-context",
+			"Main Context",
+			"The main loop context on "
+			"which to attach event sources",
+			G_TYPE_MAIN_CONTEXT,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_ONLINE,
 		g_param_spec_boolean (
 			"online",
@@ -563,6 +588,7 @@ e_backend_init (EBackend *backend)
 
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
 	backend->priv->prompter = e_user_prompter_new ();
+	backend->priv->main_context = g_main_context_ref_thread_default ();
 
 	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->network_monitor_cancellable_lock);
@@ -727,6 +753,28 @@ e_backend_set_connectable (EBackend *backend,
 	backend_update_online_state (backend);
 
 	g_object_notify (G_OBJECT (backend), "connectable");
+}
+
+/**
+ * e_backend_ref_main_context:
+ * @backend: an #EBackend
+ *
+ * Returns the #GMainContext on which event sources for @backend are to
+ * be attached.
+ *
+ * The returned #GMainContext is referenced for thread-safety and must be
+ * unreferenced with g_main_context_unref() when finished with it.
+ *
+ * Returns: (transfer full): a #GMainContext
+ *
+ * Since: 3.8
+ **/
+GMainContext *
+e_backend_ref_main_context (EBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
+
+	return g_main_context_ref (backend->priv->main_context);
 }
 
 /**

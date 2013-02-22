@@ -100,6 +100,7 @@ GSocketConnectable *
 		e_backend_ref_connectable	(EBackend *backend);
 void		e_backend_set_connectable	(EBackend *backend,
 						 GSocketConnectable *connectable);
+GMainContext *	e_backend_ref_main_context	(EBackend *backend);
 gboolean	e_backend_authenticate_sync	(EBackend *backend,
 						 ESourceAuthenticator *auth,
 						 GCancellable *cancellable,
