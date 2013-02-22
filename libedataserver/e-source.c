@@ -1545,7 +1545,8 @@ e_source_class_init (ESourceClass *class)
 		g_param_spec_boxed (
 			"main-context",
 			"Main Context",
-			"The GMainContext used for signal emissions",
+			"The main loop context on "
+			"which to attach event sources",
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
@@ -2304,13 +2305,13 @@ e_source_ref_dbus_object (ESource *source)
  * e_source_ref_main_context:
  * @source: an #ESource
  *
- * Returns the #GMainContext from which #ESource::changed signals are
- * emitted.
+ * Returns the #GMainContext on which event sources for @source are to
+ * be attached.
  *
  * The returned #GMainContext is referenced for thread-safety and must be
  * unreferenced with g_main_context_unref() when finished with it.
  *
- * Returns: (transfer full): the #GMainContext for signal emissions
+ * Returns: (transfer full): a #GMainContext
  *
  * Since: 3.6
  **/
