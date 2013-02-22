@@ -711,19 +711,19 @@ smime_context_hash_to_id (CamelCipherContext *context,
                           CamelCipherHash hash)
 {
 	switch (hash) {
-	case CAMEL_CIPHER_HASH_MD5:
-		return "md5";
-	case CAMEL_CIPHER_HASH_SHA1:
-	case CAMEL_CIPHER_HASH_DEFAULT:
-		return "sha1";
-	case CAMEL_CIPHER_HASH_SHA256:
-		return "sha256";
-	case CAMEL_CIPHER_HASH_SHA384:
-		return "sha384";
-	case CAMEL_CIPHER_HASH_SHA512:
-		return "sha512";
-	default:
-		return NULL;
+		case CAMEL_CIPHER_HASH_MD5:
+			return "md5";
+		case CAMEL_CIPHER_HASH_SHA1:
+		case CAMEL_CIPHER_HASH_DEFAULT:
+			return "sha1";
+		case CAMEL_CIPHER_HASH_SHA256:
+			return "sha256";
+		case CAMEL_CIPHER_HASH_SHA384:
+			return "sha384";
+		case CAMEL_CIPHER_HASH_SHA512:
+			return "sha512";
+		default:
+			return NULL;
 	}
 }
 
@@ -731,16 +731,16 @@ static CamelCipherHash
 smime_context_id_to_hash (CamelCipherContext *context,
                           const gchar *id)
 {
-	if (id) {
-		if (!strcmp (id, "md5"))
+	if (id != NULL) {
+		if (g_str_equal (id, "md5"))
 			return CAMEL_CIPHER_HASH_MD5;
-		else if (!strcmp (id, "sha1"))
+		if (g_str_equal (id, "sha1"))
 			return CAMEL_CIPHER_HASH_SHA1;
-		else if (!strcmp (id, "sha256"))
+		if (g_str_equal (id, "sha256"))
 			return CAMEL_CIPHER_HASH_SHA256;
-		else if (!strcmp (id, "sha384"))
+		if (g_str_equal (id, "sha384"))
 			return CAMEL_CIPHER_HASH_SHA384;
-		else if (!strcmp (id, "sha512"))
+		if (g_str_equal (id, "sha512"))
 			return CAMEL_CIPHER_HASH_SHA512;
 	}
 
