@@ -1283,7 +1283,7 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 			idle_source,
 			cal_client_emit_timezone_added_idle_cb,
 			signal_closure,
-			(GDestroyNotify) g_object_unref);
+			(GDestroyNotify) signal_closure_free);
 		g_source_attach (idle_source, priv->main_context);
 		g_source_unref (idle_source);
 	}
