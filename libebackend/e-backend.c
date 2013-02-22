@@ -63,7 +63,9 @@ struct _EBackendPrivate {
 
 	GNetworkMonitor *network_monitor;
 	gulong network_changed_handler_id;
-	guint network_changed_timeout_id;
+
+	GSource *update_online_state;
+	GMutex update_online_state_lock;
 
 	GMutex network_monitor_cancellable_lock;
 	GCancellable *network_monitor_cancellable;
@@ -151,19 +153,20 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 	g_thread_unref (thread);
 }
 
-static void
-backend_update_online_state (EBackend *backend)
+static gboolean
+backend_update_online_state_idle_cb (gpointer user_data)
 {
+	EBackend *backend;
 	GSocketConnectable *connectable;
 	GCancellable *cancellable;
 
-	/* This should be eventually replaced with default implementation
-	   of EBackend::get_destination_address() doing basically the same
-	   what currently does the backend silently on construction, thus
-	   it'll get also current values from the ESource, not stale from
-	   construct time.
-	*/
+	backend = E_BACKEND (user_data);
 	connectable = e_backend_ref_connectable (backend);
+
+	g_mutex_lock (&backend->priv->update_online_state_lock);
+	g_source_unref (backend->priv->update_online_state);
+	backend->priv->update_online_state = NULL;
+	g_mutex_unlock (&backend->priv->update_online_state_lock);
 
 	g_mutex_lock (&backend->priv->network_monitor_cancellable_lock);
 
@@ -223,20 +226,37 @@ backend_update_online_state (EBackend *backend)
 
 	if (connectable != NULL)
 		g_object_unref (connectable);
-}
-
-static gboolean
-backend_network_changed_timeout_cb (gpointer user_data)
-{
-	EBackend *backend = user_data;
-
-	if (!g_source_is_destroyed (g_main_current_source ())) {
-		backend->priv->network_changed_timeout_id = 0;
-
-		backend_update_online_state (backend);
-	}
 
 	return FALSE;
+}
+
+static void
+backend_update_online_state (EBackend *backend)
+{
+	g_mutex_lock (&backend->priv->update_online_state_lock);
+
+	if (backend->priv->update_online_state == NULL) {
+		GMainContext *main_context;
+		GSource *idle_source;
+
+		main_context = e_backend_ref_main_context (backend);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_priority (idle_source, G_PRIORITY_LOW);
+		g_source_set_callback (
+			idle_source,
+			backend_update_online_state_idle_cb,
+			g_object_ref (backend),
+			(GDestroyNotify) g_object_unref);
+		g_source_attach (idle_source, main_context);
+		backend->priv->update_online_state =
+			g_source_ref (idle_source);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+	}
+
+	g_mutex_unlock (&backend->priv->update_online_state_lock);
 }
 
 static void
@@ -244,11 +264,7 @@ backend_network_changed_cb (GNetworkMonitor *network_monitor,
                             gboolean network_available,
                             EBackend *backend)
 {
-	if (backend->priv->network_changed_timeout_id)
-		g_source_remove (backend->priv->network_changed_timeout_id);
-
-	/* wait few seconds, a network change can fire this event multiple times */
-	backend->priv->network_changed_timeout_id = g_timeout_add_seconds (3, backend_network_changed_timeout_cb, backend);
+	backend_update_online_state (backend);
 }
 
 static void
@@ -345,14 +361,15 @@ backend_dispose (GObject *object)
 		priv->network_changed_handler_id = 0;
 	}
 
-	if (priv->network_changed_timeout_id) {
-		g_source_remove (priv->network_changed_timeout_id);
-		priv->network_changed_timeout_id = 0;
-	}
-
 	if (priv->main_context != NULL) {
 		g_main_context_unref (priv->main_context);
 		priv->main_context = NULL;
+	}
+
+	if (priv->update_online_state != NULL) {
+		g_source_destroy (priv->update_online_state);
+		g_source_unref (priv->update_online_state);
+		priv->update_online_state = NULL;
 	}
 
 	g_clear_object (&priv->source);
@@ -373,12 +390,8 @@ backend_finalize (GObject *object)
 	priv = E_BACKEND_GET_PRIVATE (object);
 
 	g_mutex_clear (&priv->property_lock);
+	g_mutex_clear (&priv->update_online_state_lock);
 	g_mutex_clear (&priv->network_monitor_cancellable_lock);
-
-	if (priv->network_changed_timeout_id) {
-		g_source_remove (priv->network_changed_timeout_id);
-		priv->network_changed_timeout_id = 0;
-	}
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->finalize (object);
@@ -591,6 +604,7 @@ e_backend_init (EBackend *backend)
 	backend->priv->main_context = g_main_context_ref_thread_default ();
 
 	g_mutex_init (&backend->priv->property_lock);
+	g_mutex_init (&backend->priv->update_online_state_lock);
 	g_mutex_init (&backend->priv->network_monitor_cancellable_lock);
 
 	/* Configure network monitoring. */
