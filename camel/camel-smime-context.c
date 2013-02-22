@@ -711,17 +711,19 @@ smime_context_hash_to_id (CamelCipherContext *context,
                           CamelCipherHash hash)
 {
 	switch (hash) {
+		/* Support registered IANA hash function textual names.
+		 * http://www.iana.org/assignments/hash-function-text-names */
 		case CAMEL_CIPHER_HASH_MD5:
 			return "md5";
 		case CAMEL_CIPHER_HASH_SHA1:
 		case CAMEL_CIPHER_HASH_DEFAULT:
-			return "sha1";
+			return "sha-1";
 		case CAMEL_CIPHER_HASH_SHA256:
-			return "sha256";
+			return "sha-256";
 		case CAMEL_CIPHER_HASH_SHA384:
-			return "sha384";
+			return "sha-384";
 		case CAMEL_CIPHER_HASH_SHA512:
-			return "sha512";
+			return "sha-512";
 		default:
 			return NULL;
 	}
@@ -732,8 +734,20 @@ smime_context_id_to_hash (CamelCipherContext *context,
                           const gchar *id)
 {
 	if (id != NULL) {
+		/* Support registered IANA hash function textual names.
+		 * http://www.iana.org/assignments/hash-function-text-names */
 		if (g_str_equal (id, "md5"))
 			return CAMEL_CIPHER_HASH_MD5;
+		if (g_str_equal (id, "sha-1"))
+			return CAMEL_CIPHER_HASH_SHA1;
+		if (g_str_equal (id, "sha-256"))
+			return CAMEL_CIPHER_HASH_SHA256;
+		if (g_str_equal (id, "sha-384"))
+			return CAMEL_CIPHER_HASH_SHA384;
+		if (g_str_equal (id, "sha-512"))
+			return CAMEL_CIPHER_HASH_SHA512;
+
+		/* Non-standard names. */
 		if (g_str_equal (id, "sha1"))
 			return CAMEL_CIPHER_HASH_SHA1;
 		if (g_str_equal (id, "sha256"))
