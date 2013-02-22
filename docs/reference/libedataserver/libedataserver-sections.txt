@@ -41,7 +41,6 @@ ECancellableLocksBase
 E_CLIENT_ERROR
 EClientError
 e_client_error_to_string
-e_client_error_create
 CLIENT_BACKEND_PROPERTY_ONLINE
 CLIENT_BACKEND_PROPERTY_READONLY
 CLIENT_BACKEND_PROPERTY_CACHE_DIR
@@ -64,6 +63,7 @@ e_client_util_parse_comma_strings
 <SUBSECTION Deprecated>
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
+e_client_error_create
 e_client_is_opened
 e_client_cancel_all
 e_client_unwrap_dbus_error

@@ -153,8 +153,6 @@ typedef enum {
 } EClientError;
 
 const gchar *	e_client_error_to_string	(EClientError code);
-GError *	e_client_error_create		(EClientError code,
-						 const gchar *custom_msg);
 
 /**
  * EClient:
@@ -351,6 +349,8 @@ GSList *	e_client_util_parse_comma_strings
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
+GError *	e_client_error_create		(EClientError code,
+						 const gchar *custom_msg);
 gboolean	e_client_is_opened		(EClient *client);
 void		e_client_cancel_all		(EClient *client);
 void		e_client_unwrap_dbus_error	(EClient *client,
