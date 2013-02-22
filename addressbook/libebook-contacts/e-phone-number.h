@@ -66,15 +66,22 @@ typedef enum {
 /**
  * EPhoneNumberMatch:
  * @E_PHONE_NUMBER_MATCH_NONE: The phone numbers did not match.
- * @E_PHONE_NUMBER_MATCH_EXACT: The phone numbers matched exactly.
- * @E_PHONE_NUMBER_MATCH_NATIONAL: There was no country calling code
- * for at least one of the numbers, but the national parts matched.
- * @E_PHONE_NUMBER_MATCH_SHORT: There was no country calling code for
- * at least one of the numbers, but one number might be part (suffix)
- * of the other.
+ * @E_PHONE_NUMBER_MATCH_EXACT: The phone numbers matched exactly. Two phone number strings are an exact match
+ * if the country code, national phone number, presence of a leading zero for Italian numbers and any
+ * extension present are the same.
+ * @E_PHONE_NUMBER_MATCH_NATIONAL: The national phone number matched. Two phone number strings match at
+ * this strength if either or both has no region specified, and the national phone number 
+ * and extensions are the same.
+ * @E_PHONE_NUMBER_MATCH_SHORT: The weakest sort of match. Two phone numbers match at
+ * this strength if either or both has no region specified, or the region specified is the same, and one national
+ * phone number could be a shorter version of the other number. This includes the case where one has an extension specified,
+ * and the other does not.
  *
- * The quality of a phone number match.
-
+ * The strength of a phone number match.
+ *
+ * <example>
+ * <title>Some examples of phone number matches</title>
+ * <para>
  * Let's consider the phone number "+1-221-5423789", then comparing with
  * "+1.221.542.3789" we have get E_PHONE_NUMBER_MATCH_EXACT because country
  * code, region code and local number are matching. Comparing with "2215423789"
@@ -125,6 +132,8 @@ typedef enum {
  *   </tr>
  *  </tbody>
  * </informaltable>
+ * </para>
+ * </example>
  *
  * Since: 3.8
  **/
