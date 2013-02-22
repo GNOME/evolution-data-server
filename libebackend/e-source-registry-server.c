@@ -1778,20 +1778,38 @@ e_source_registry_server_load_directory (ESourceRegistryServer *server,
 	 * sources directory should be removable. */
 	if (removable) {
 		GFileMonitor *monitor;
+		GError *local_error = NULL;
 
+		/* Directory monitoring is a nice-to-have feature.
+		 * If this fails, leave a breadcrumb on the console
+		 * to indicate something went wrong, but don't return
+		 * an error status. */
 		monitor = g_file_monitor_directory (
-			file, G_FILE_MONITOR_NONE, NULL, error);
-		if (monitor == NULL)
-			return FALSE;
+			file, G_FILE_MONITOR_NONE, NULL, &local_error);
 
-		g_signal_connect (
-			monitor, "changed",
-			G_CALLBACK (source_registry_server_monitor_changed_cb),
-			server);
+		/* Sanity check. */
+		g_warn_if_fail (
+			((monitor != NULL) && (local_error == NULL)) ||
+			((monitor == NULL) && (local_error != NULL)));
 
-		g_hash_table_insert (
-			server->priv->monitors,
-			g_object_ref (file), monitor);
+		if (monitor != NULL) {
+			g_signal_connect (
+				monitor, "changed", G_CALLBACK (
+				source_registry_server_monitor_changed_cb),
+				server);
+
+			g_hash_table_insert (
+				server->priv->monitors,
+				g_object_ref (file),
+				g_object_ref (monitor));
+
+			g_object_unref (monitor);
+		}
+
+		if (local_error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_error_free (local_error);
+		}
 	}
 
 	g_object_unref (file);
