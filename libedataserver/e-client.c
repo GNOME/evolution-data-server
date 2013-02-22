@@ -308,6 +308,17 @@ client_get_property (GObject *object,
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
+static void
+client_unwrap_dbus_error (EClient *client,
+                          GError *dbus_error,
+                          GError **out_error)
+{
+	/* This method is deprecated.  Make it a no-op. */
+
+	if (out_error != NULL)
+		*out_error = dbus_error;
+}
+
 /* Helper for client_retrieve_capabilities() */
 static void
 client_retrieve_capabilities_thread (GSimpleAsyncResult *simple,
@@ -739,6 +750,7 @@ e_client_class_init (EClientClass *class)
 	object_class->get_property = client_get_property;
 	object_class->finalize = client_finalize;
 
+	class->unwrap_dbus_error = client_unwrap_dbus_error;
 	class->retrieve_capabilities = client_retrieve_capabilities;
 	class->retrieve_capabilities_finish = client_retrieve_capabilities_finish;
 	class->retrieve_capabilities_sync = client_retrieve_capabilities_sync;
@@ -1196,9 +1208,6 @@ e_client_retrieve_capabilities_finish (EClient *client,
 
 	e_client_set_capabilities (client, res ? *capabilities : NULL);
 
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
 	return res;
 }
 
@@ -1241,9 +1250,6 @@ e_client_retrieve_capabilities_sync (EClient *client,
 	res = class->retrieve_capabilities_sync (client, capabilities, cancellable, error);
 
 	e_client_set_capabilities (client, res ? *capabilities : NULL);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
 
 	return res;
 }
@@ -1302,7 +1308,6 @@ e_client_get_backend_property_finish (EClient *client,
                                       GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
@@ -1311,12 +1316,8 @@ e_client_get_backend_property_finish (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->get_backend_property_finish != NULL, FALSE);
 
-	res = class->get_backend_property_finish (client, result, prop_value, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->get_backend_property_finish (
+		client, result, prop_value, error);
 }
 
 /**
@@ -1341,7 +1342,6 @@ e_client_get_backend_property_sync (EClient *client,
                                     GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (prop_name != NULL, FALSE);
@@ -1351,12 +1351,8 @@ e_client_get_backend_property_sync (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->get_backend_property_sync != NULL, FALSE);
 
-	res = class->get_backend_property_sync (client, prop_name, prop_value, cancellable, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->get_backend_property_sync (
+		client, prop_name, prop_value, cancellable, error);
 }
 
 /**
@@ -1420,7 +1416,6 @@ e_client_set_backend_property_finish (EClient *client,
                                       GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 
@@ -1428,12 +1423,7 @@ e_client_set_backend_property_finish (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->set_backend_property_finish != NULL, FALSE);
 
-	res = class->set_backend_property_finish (client, result, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->set_backend_property_finish (client, result, error);
 }
 
 /**
@@ -1462,7 +1452,6 @@ e_client_set_backend_property_sync (EClient *client,
                                     GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (prop_name != NULL, FALSE);
@@ -1472,12 +1461,8 @@ e_client_set_backend_property_sync (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->set_backend_property_sync != NULL, FALSE);
 
-	res = class->set_backend_property_sync (client, prop_name, prop_value, cancellable, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->set_backend_property_sync (
+		client, prop_name, prop_value, cancellable, error);
 }
 
 /**
@@ -1540,7 +1525,6 @@ e_client_open_finish (EClient *client,
                       GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 
@@ -1548,12 +1532,7 @@ e_client_open_finish (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->open_finish != NULL, FALSE);
 
-	res = class->open_finish (client, result, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->open_finish (client, result, error);
 }
 
 /**
@@ -1579,18 +1558,12 @@ e_client_open_sync (EClient *client,
                     GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->open_sync != NULL, FALSE);
 
-	res = class->open_sync (client, only_if_exists, cancellable, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->open_sync (client, only_if_exists, cancellable, error);
 }
 
 /**
@@ -1646,7 +1619,6 @@ e_client_remove_finish (EClient *client,
                         GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 
@@ -1654,12 +1626,7 @@ e_client_remove_finish (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remove_finish != NULL, FALSE);
 
-	res = class->remove_finish (client, result, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->remove_finish (client, result, error);
 }
 
 /**
@@ -1683,18 +1650,12 @@ e_client_remove_sync (EClient *client,
                       GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remove_sync != NULL, FALSE);
 
-	res = class->remove_sync (client, cancellable, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->remove_sync (client, cancellable, error);
 }
 
 /**
@@ -1748,7 +1709,6 @@ e_client_refresh_finish (EClient *client,
                          GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 
@@ -1756,12 +1716,7 @@ e_client_refresh_finish (EClient *client,
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->refresh_finish != NULL, FALSE);
 
-	res = class->refresh_finish (client, result, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->refresh_finish (client, result, error);
 }
 
 /**
@@ -1785,18 +1740,12 @@ e_client_refresh_sync (EClient *client,
                        GError **error)
 {
 	EClientClass *class;
-	gboolean res;
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->refresh_sync != NULL, FALSE);
 
-	res = class->refresh_sync (client, cancellable, error);
-
-	if (error && *error)
-		e_client_unwrap_dbus_error (client, *error, error);
-
-	return res;
+	return class->refresh_sync (client, cancellable, error);
 }
 
 /**
@@ -1964,6 +1913,8 @@ e_client_util_parse_comma_strings (const gchar *strings)
  * @dbus_erorr and @out_error can point to the same variable.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use g_dbus_error_strip_remote_error() instead.
  **/
 void
 e_client_unwrap_dbus_error (EClient *client,

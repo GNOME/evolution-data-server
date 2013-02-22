@@ -292,57 +292,6 @@ e_cal_client_error_create (ECalClientError code,
 	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg ? custom_msg : e_cal_client_error_to_string (code));
 }
 
-/*
- * If the specified GError is a remote error, then create a new error
- * representing the remote error.  If the error is anything else, then
- * leave it alone.
- */
-static gboolean
-unwrap_dbus_error (GError *error,
-                   GError **client_error)
-{
-	#define err(a,b) "org.gnome.evolution.dataserver.Calendar." a, b
-	static EClientErrorsList cal_errors[] = {
-		{ err ("Success",				-1) },
-		{ err ("ObjectNotFound",			E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND) },
-		{ err ("InvalidObject",				E_CAL_CLIENT_ERROR_INVALID_OBJECT) },
-		{ err ("ObjectIdAlreadyExists",			E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS) },
-		{ err ("NoSuchCal",				E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR) },
-		{ err ("UnknownUser",				E_CAL_CLIENT_ERROR_UNKNOWN_USER) },
-		{ err ("InvalidRange",				E_CAL_CLIENT_ERROR_INVALID_RANGE) },
-	}, cl_errors[] = {
-		{ err ("Busy",					E_CLIENT_ERROR_BUSY) },
-		{ err ("InvalidArg",				E_CLIENT_ERROR_INVALID_ARG) },
-		{ err ("RepositoryOffline",			E_CLIENT_ERROR_REPOSITORY_OFFLINE) },
-		{ err ("OfflineUnavailable",			E_CLIENT_ERROR_OFFLINE_UNAVAILABLE) },
-		{ err ("PermissionDenied",			E_CLIENT_ERROR_PERMISSION_DENIED) },
-		{ err ("AuthenticationFailed",			E_CLIENT_ERROR_AUTHENTICATION_FAILED) },
-		{ err ("AuthenticationRequired",		E_CLIENT_ERROR_AUTHENTICATION_REQUIRED) },
-		{ err ("CouldNotCancel",			E_CLIENT_ERROR_COULD_NOT_CANCEL) },
-		{ err ("NotSupported",				E_CLIENT_ERROR_NOT_SUPPORTED) },
-		{ err ("UnsupportedAuthenticationMethod",	E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
-		{ err ("TLSNotAvailable",			E_CLIENT_ERROR_TLS_NOT_AVAILABLE) },
-		{ err ("SearchSizeLimitExceeded",		E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED) },
-		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED) },
-		{ err ("InvalidQuery",				E_CLIENT_ERROR_INVALID_QUERY) },
-		{ err ("QueryRefused",				E_CLIENT_ERROR_QUERY_REFUSED) },
-		{ err ("NotOpened",				E_CLIENT_ERROR_NOT_OPENED) },
-		{ err ("UnsupportedField",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("UnsupportedMethod",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("InvalidServerVersion",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("OtherError",				E_CLIENT_ERROR_OTHER_ERROR) }
-	};
-	#undef err
-
-	if (error == NULL)
-		return TRUE;
-
-	if (!e_client_util_unwrap_dbus_error (error, client_error, cal_errors, G_N_ELEMENTS (cal_errors), E_CAL_CLIENT_ERROR, TRUE))
-		e_client_util_unwrap_dbus_error (error, client_error, cl_errors, G_N_ELEMENTS (cl_errors), E_CLIENT_ERROR, FALSE);
-
-	return FALSE;
-}
-
 static volatile gint active_cal_clients = 0;
 static guint cal_factory_watcher_id = 0;
 static EDBusCalendarFactory *cal_factory = NULL;
@@ -920,14 +869,6 @@ cal_client_get_dbus_proxy (EClient *client)
 	return G_DBUS_PROXY (priv->dbus_proxy);
 }
 
-static void
-cal_client_unwrap_dbus_error (EClient *client,
-                              GError *dbus_error,
-                              GError **out_error)
-{
-	unwrap_dbus_error (dbus_error, out_error);
-}
-
 static gboolean
 cal_client_get_backend_property_sync (EClient *client,
                                       const gchar *prop_name,
@@ -1078,7 +1019,6 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	cal_factory_activate (cancellable, &error);
 
 	if (error != NULL) {
-		unwrap_dbus_error (error, &error);
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
@@ -1109,7 +1049,6 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		((object_path == NULL) && (error != NULL)));
 
 	if (object_path == NULL) {
-		unwrap_dbus_error (error, &error);
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
@@ -1130,7 +1069,6 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		((priv->dbus_proxy == NULL) && (error != NULL)));
 
 	if (error != NULL) {
-		unwrap_dbus_error (error, &error);
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
@@ -1404,7 +1342,6 @@ e_cal_client_class_init (ECalClientClass *class)
 
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy = cal_client_get_dbus_proxy;
-	client_class->unwrap_dbus_error = cal_client_unwrap_dbus_error;
 	client_class->get_backend_property_sync = cal_client_get_backend_property_sync;
 	client_class->set_backend_property_sync = cal_client_set_backend_property_sync;
 	client_class->open_sync = cal_client_open_sync;
@@ -2454,7 +2391,6 @@ get_objects_sync (ECalClient *client,
 		GError *error = NULL;
 
 		if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, NULL, &error)) {
-			unwrap_dbus_error (error, &error);
 			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
 			g_clear_error (&error);
 			return NULL;

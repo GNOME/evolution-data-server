@@ -179,6 +179,7 @@ struct _EClientClass {
 	/* This method is deprecated. */
 	GDBusProxy *	(*get_dbus_proxy)	(EClient *client);
 
+	/* This method is deprecated. */
 	void		(*unwrap_dbus_error)	(EClient *client,
 						 GError *dbus_error,
 						 GError **out_error);
@@ -291,9 +292,6 @@ gboolean	e_client_check_refresh_supported
 						(EClient *client);
 gboolean	e_client_is_readonly		(EClient *client);
 gboolean	e_client_is_online		(EClient *client);
-void		e_client_unwrap_dbus_error	(EClient *client,
-						 GError *dbus_error,
-						 GError **out_error);
 
 void		e_client_get_backend_property	(EClient *client,
 						 const gchar *prop_name,
@@ -374,6 +372,9 @@ gboolean	e_client_util_unwrap_dbus_error	(GError *dbus_error,
 
 gboolean	e_client_is_opened		(EClient *client);
 void		e_client_cancel_all		(EClient *client);
+void		e_client_unwrap_dbus_error	(EClient *client,
+						 GError *dbus_error,
+						 GError **out_error);
 void		e_client_retrieve_capabilities	(EClient *client,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,

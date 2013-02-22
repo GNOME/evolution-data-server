@@ -179,56 +179,6 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-/*
- * If the specified GError is a remote error, then create a new error
- * representing the remote error.  If the error is anything else, then
- * leave it alone.
- */
-static gboolean
-unwrap_dbus_error (GError *error,
-                   GError **client_error)
-{
-	#define err(a,b) "org.gnome.evolution.dataserver.AddressBook." a, b
-	static EClientErrorsList book_errors[] = {
-		{ err ("Success",				-1) },
-		{ err ("ContactNotFound",			E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND) },
-		{ err ("ContactIDAlreadyExists",		E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS) },
-		{ err ("NoSuchBook",				E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK) },
-		{ err ("BookRemoved",				E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE) },
-		{ err ("NoSpace",				E_BOOK_CLIENT_ERROR_NO_SPACE) }
-	}, cl_errors[] = {
-		{ err ("Busy",					E_CLIENT_ERROR_BUSY) },
-		{ err ("RepositoryOffline",			E_CLIENT_ERROR_REPOSITORY_OFFLINE) },
-		{ err ("OfflineUnavailable",			E_CLIENT_ERROR_OFFLINE_UNAVAILABLE) },
-		{ err ("PermissionDenied",			E_CLIENT_ERROR_PERMISSION_DENIED) },
-		{ err ("AuthenticationFailed",			E_CLIENT_ERROR_AUTHENTICATION_FAILED) },
-		{ err ("AuthenticationRequired",		E_CLIENT_ERROR_AUTHENTICATION_REQUIRED) },
-		{ err ("CouldNotCancel",			E_CLIENT_ERROR_COULD_NOT_CANCEL) },
-		{ err ("InvalidArg",				E_CLIENT_ERROR_INVALID_ARG) },
-		{ err ("NotSupported",				E_CLIENT_ERROR_NOT_SUPPORTED) },
-		{ err ("UnsupportedAuthenticationMethod",	E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
-		{ err ("TLSNotAvailable",			E_CLIENT_ERROR_TLS_NOT_AVAILABLE) },
-		{ err ("SearchSizeLimitExceeded",		E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED) },
-		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED) },
-		{ err ("InvalidQuery",				E_CLIENT_ERROR_INVALID_QUERY) },
-		{ err ("QueryRefused",				E_CLIENT_ERROR_QUERY_REFUSED) },
-		{ err ("NotOpened",				E_CLIENT_ERROR_NOT_OPENED) },
-		{ err ("UnsupportedField",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("InvalidServerVersion",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("OutOfSync",			        E_CLIENT_ERROR_OUT_OF_SYNC) },
-		{ err ("OtherError",				E_CLIENT_ERROR_OTHER_ERROR) }
-	};
-	#undef err
-
-	if (error == NULL)
-		return TRUE;
-
-	if (!e_client_util_unwrap_dbus_error (error, client_error, book_errors, G_N_ELEMENTS (book_errors), E_BOOK_CLIENT_ERROR, TRUE))
-		e_client_util_unwrap_dbus_error (error, client_error, cl_errors, G_N_ELEMENTS (cl_errors), E_CLIENT_ERROR, FALSE);
-
-	return FALSE;
-}
-
 static volatile gint active_book_clients = 0;
 static guint book_factory_watcher_id = 0;
 static EDBusAddressBookFactory *book_factory = NULL;
@@ -713,14 +663,6 @@ book_client_get_dbus_proxy (EClient *client)
 	return G_DBUS_PROXY (priv->dbus_proxy);
 }
 
-static void
-book_client_unwrap_dbus_error (EClient *client,
-                               GError *dbus_error,
-                               GError **out_error)
-{
-	unwrap_dbus_error (dbus_error, out_error);
-}
-
 static gboolean
 book_client_get_backend_property_sync (EClient *client,
                                        const gchar *prop_name,
@@ -879,7 +821,6 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	book_factory_activate (cancellable, &error);
 
 	if (error != NULL) {
-		unwrap_dbus_error (error, &error);
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
@@ -893,7 +834,6 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		((object_path == NULL) && (error != NULL)));
 
 	if (error != NULL) {
-		unwrap_dbus_error (error, &error);
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
@@ -914,7 +854,6 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		((priv->dbus_proxy == NULL) && (error != NULL)));
 
 	if (error != NULL) {
-		unwrap_dbus_error (error, &error);
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
@@ -1031,7 +970,6 @@ e_book_client_class_init (EBookClientClass *class)
 
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy = book_client_get_dbus_proxy;
-	client_class->unwrap_dbus_error = book_client_unwrap_dbus_error;
 	client_class->get_backend_property_sync = book_client_get_backend_property_sync;
 	client_class->set_backend_property_sync = book_client_set_backend_property_sync;
 	client_class->open_sync = book_client_open_sync;
