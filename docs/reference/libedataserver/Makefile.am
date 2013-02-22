@@ -9,6 +9,9 @@ MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=e
 # Extra options to supply to gtkdoc-scan
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 
+# Extra options to supply to gtkdoc-mkdb
+MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=e
+
 # The directory containing the source code. Relative to $(srcdir).
 DOC_SOURCE_DIR = $(top_srcdir)/libedataserver
 
