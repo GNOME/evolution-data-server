@@ -53,7 +53,6 @@ typedef struct _ConnectClosure ConnectClosure;
 typedef struct _RunInThreadClosure RunInThreadClosure;
 
 struct _EBookClientPrivate {
-	GMainContext *main_context;
 	EDBusAddressBook *dbus_proxy;
 	EDataBook *direct_book;
 	guint name_watcher_id;
@@ -457,14 +456,17 @@ book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 static void
 book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
                                  const gchar *error_message,
-                                 EBookClient *book_client)
+                                 EClient *client)
 {
 	GSource *idle_source;
+	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (book_client);
+	signal_closure->client = g_object_ref (client);
 	signal_closure->error_message = g_strdup (error_message);
+
+	main_context = e_client_ref_main_context (client);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -472,14 +474,16 @@ book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
 		book_client_emit_backend_error_idle_cb,
 		signal_closure,
 		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, book_client->priv->main_context);
+	g_source_attach (idle_source, main_context);
 	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
 book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
                                   GParamSpec *pspec,
-                                  EBookClient *book_client)
+                                  EClient *client)
 {
 	const gchar *backend_prop_name = NULL;
 
@@ -498,7 +502,7 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 			csv = g_strjoinv (",", strv);
 			g_strfreev (strv);
 		}
-		e_client_set_capabilities (E_CLIENT (book_client), csv);
+		e_client_set_capabilities (client, csv);
 		g_free (csv);
 	}
 
@@ -508,7 +512,7 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
 
 		online = e_dbus_address_book_get_online (dbus_proxy);
-		e_client_set_online (E_CLIENT (book_client), online);
+		e_client_set_online (client, online);
 	}
 
 	if (g_str_equal (pspec->name, "required-fields")) {
@@ -529,16 +533,19 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
 
 		writable = e_dbus_address_book_get_writable (dbus_proxy);
-		e_client_set_readonly (E_CLIENT (book_client), !writable);
+		e_client_set_readonly (client, !writable);
 	}
 
 	if (backend_prop_name != NULL) {
 		GSource *idle_source;
+		GMainContext *main_context;
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		signal_closure->client = g_object_ref (book_client);
+		signal_closure->client = g_object_ref (client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
+
+		main_context = e_client_ref_main_context (client);
 
 		idle_source = g_idle_source_new ();
 		g_source_set_callback (
@@ -546,21 +553,26 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 			book_client_emit_backend_property_changed_idle_cb,
 			signal_closure,
 			(GDestroyNotify) signal_closure_free);
-		g_source_attach (idle_source, book_client->priv->main_context);
+		g_source_attach (idle_source, main_context);
 		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
 	}
 }
 
 static void
 book_client_name_vanished_cb (GDBusConnection *connection,
                               const gchar *name,
-                              EBookClient *book_client)
+                              EClient *client)
 {
 	GSource *idle_source;
+	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (book_client);
+	signal_closure->client = g_object_ref (client);
+
+	main_context = e_client_ref_main_context (client);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -568,8 +580,10 @@ book_client_name_vanished_cb (GDBusConnection *connection,
 		book_client_emit_backend_died_idle_cb,
 		signal_closure,
 		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, book_client->priv->main_context);
+	g_source_attach (idle_source, main_context);
 	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
@@ -619,11 +633,6 @@ book_client_dispose (GObject *object)
 			book_client_close_cb, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
-	}
-
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
 	}
 
 	if (book_client->priv->direct_book) {
@@ -995,10 +1004,6 @@ e_book_client_init (EBookClient *client)
 	g_atomic_int_inc (&active_book_clients);
 
 	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
-
-	/* This is so the D-Bus thread can schedule signal emissions
-	 * on the thread-default context for this thread. */
-	client->priv->main_context = g_main_context_ref_thread_default ();
 }
 
 /**

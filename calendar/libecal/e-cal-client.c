@@ -54,7 +54,6 @@ typedef struct _ConnectClosure ConnectClosure;
 typedef struct _RunInThreadClosure RunInThreadClosure;
 
 struct _ECalClientPrivate {
-	GMainContext *main_context;
 	EDBusCalendar *dbus_proxy;
 	guint name_watcher_id;
 
@@ -574,14 +573,17 @@ cal_client_emit_timezone_added_idle_cb (gpointer user_data)
 static void
 cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
                                 const gchar *error_message,
-                                ECalClient *cal_client)
+                                EClient *client)
 {
 	GSource *idle_source;
+	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (cal_client);
+	signal_closure->client = g_object_ref (client);
 	signal_closure->error_message = g_strdup (error_message);
+
+	main_context = e_client_ref_main_context (client);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -589,14 +591,16 @@ cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
 		cal_client_emit_backend_error_idle_cb,
 		signal_closure,
 		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, cal_client->priv->main_context);
+	g_source_attach (idle_source, main_context);
 	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
 cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
                                  GParamSpec *pspec,
-                                 ECalClient *cal_client)
+                                 EClient *client)
 {
 	const gchar *backend_prop_name = NULL;
 
@@ -623,7 +627,7 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 			csv = g_strjoinv (",", strv);
 			g_strfreev (strv);
 		}
-		e_client_set_capabilities (E_CLIENT (cal_client), csv);
+		e_client_set_capabilities (client, csv);
 		g_free (csv);
 	}
 
@@ -637,7 +641,7 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
 
 		online = e_dbus_calendar_get_online (dbus_proxy);
-		e_client_set_online (E_CLIENT (cal_client), online);
+		e_client_set_online (client, online);
 	}
 
 	if (g_str_equal (pspec->name, "revision")) {
@@ -650,16 +654,19 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
 
 		writable = e_dbus_calendar_get_writable (dbus_proxy);
-		e_client_set_readonly (E_CLIENT (cal_client), !writable);
+		e_client_set_readonly (client, !writable);
 	}
 
 	if (backend_prop_name != NULL) {
 		GSource *idle_source;
+		GMainContext *main_context;
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		signal_closure->client = g_object_ref (cal_client);
+		signal_closure->client = g_object_ref (client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
+
+		main_context = e_client_ref_main_context (client);
 
 		idle_source = g_idle_source_new ();
 		g_source_set_callback (
@@ -667,22 +674,27 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 			cal_client_emit_backend_property_changed_idle_cb,
 			signal_closure,
 			(GDestroyNotify) signal_closure_free);
-		g_source_attach (idle_source, cal_client->priv->main_context);
+		g_source_attach (idle_source, main_context);
 		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
 	}
 }
 
 static void
 cal_client_dbus_proxy_free_busy_data_cb (EDBusCalendar *dbus_proxy,
                                          gchar **free_busy_data,
-                                         ECalClient *cal_client)
+                                         EClient *client)
 {
 	GSource *idle_source;
+	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (cal_client);
+	signal_closure->client = g_object_ref (client);
 	signal_closure->free_busy_data = g_strdupv (free_busy_data);
+
+	main_context = e_client_ref_main_context (client);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -690,20 +702,25 @@ cal_client_dbus_proxy_free_busy_data_cb (EDBusCalendar *dbus_proxy,
 		cal_client_emit_free_busy_data_idle_cb,
 		signal_closure,
 		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, cal_client->priv->main_context);
+	g_source_attach (idle_source, main_context);
 	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
 cal_client_name_vanished_cb (GDBusConnection *connection,
                              const gchar *name,
-                             ECalClient *cal_client)
+                             EClient *client)
 {
 	GSource *idle_source;
+	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (cal_client);
+	signal_closure->client = g_object_ref (client);
+
+	main_context = e_client_ref_main_context (client);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -711,8 +728,10 @@ cal_client_name_vanished_cb (GDBusConnection *connection,
 		cal_client_emit_backend_died_idle_cb,
 		signal_closure,
 		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, cal_client->priv->main_context);
+	g_source_attach (idle_source, main_context);
 	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
@@ -822,11 +841,6 @@ cal_client_dispose (GObject *object)
 			cal_client_close_cb, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
-	}
-
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -1195,6 +1209,7 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 	 * been returned through e_timezone_cache_get_timezone(). */
 	if (!g_hash_table_contains (priv->zone_cache, tzid)) {
 		GSource *idle_source;
+		GMainContext *main_context;
 		SignalClosure *signal_closure;
 
 		icalcomponent *icalcomp;
@@ -1216,14 +1231,18 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 		signal_closure->client = g_object_ref (cache);
 		signal_closure->cached_zone = cached_zone;
 
+		main_context = e_client_ref_main_context (E_CLIENT (cache));
+
 		idle_source = g_idle_source_new ();
 		g_source_set_callback (
 			idle_source,
 			cal_client_emit_timezone_added_idle_cb,
 			signal_closure,
 			(GDestroyNotify) signal_closure_free);
-		g_source_attach (idle_source, priv->main_context);
+		g_source_attach (idle_source, main_context);
 		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
 	}
 
 	g_mutex_unlock (&priv->zone_cache_lock);
@@ -1421,10 +1440,6 @@ e_cal_client_init (ECalClient *client)
 	client->priv->default_zone = icaltimezone_get_utc_timezone ();
 	g_mutex_init (&client->priv->zone_cache_lock);
 	client->priv->zone_cache = zone_cache;
-
-	/* This is so the D-Bus thread can schedule signal emissions
-	 * on the thread-default context for this thread. */
-	client->priv->main_context = g_main_context_ref_thread_default ();
 }
 
 /**

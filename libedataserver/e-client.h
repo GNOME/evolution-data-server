@@ -284,6 +284,7 @@ GType		e_client_get_type		(void) G_GNUC_CONST;
 
 ESource *	e_client_get_source		(EClient *client);
 const GSList *	e_client_get_capabilities	(EClient *client);
+GMainContext *	e_client_ref_main_context	(EClient *client);
 gboolean	e_client_check_capability	(EClient *client,
 						 const gchar *capability);
 gboolean	e_client_check_refresh_supported

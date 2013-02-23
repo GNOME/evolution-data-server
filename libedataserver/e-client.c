@@ -54,6 +54,7 @@ struct _EClientPrivate {
 	gboolean online;
 	gboolean readonly;
 	GSList *capabilities;
+	GMainContext *main_context;
 };
 
 struct _AsyncContext {
@@ -66,6 +67,7 @@ struct _AsyncContext {
 enum {
 	PROP_0,
 	PROP_CAPABILITIES,
+	PROP_MAIN_CONTEXT,
 	PROP_ONLINE,
 	PROP_OPENED,
 	PROP_READONLY,
@@ -246,6 +248,13 @@ client_get_property (GObject *object,
 				E_CLIENT (object)));
 			return;
 
+		case PROP_MAIN_CONTEXT:
+			g_value_take_boxed (
+				value,
+				e_client_ref_main_context (
+				E_CLIENT (object)));
+			return;
+
 		case PROP_ONLINE:
 			g_value_set_boolean (
 				value,
@@ -284,6 +293,11 @@ client_dispose (GObject *object)
 	EClientPrivate *priv;
 
 	priv = E_CLIENT_GET_PRIVATE (object);
+
+	if (priv->main_context != NULL) {
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
+	}
 
 	g_clear_object (&priv->source);
 
@@ -777,6 +791,18 @@ e_client_class_init (EClientClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_MAIN_CONTEXT,
+		g_param_spec_boxed (
+			"main-context",
+			"Main Context",
+			"The main loop context on "
+			"which to attach event sources",
+			G_TYPE_MAIN_CONTEXT,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_ONLINE,
 		g_param_spec_boolean (
 			"online",
@@ -871,6 +897,7 @@ e_client_init (EClient *client)
 	client->priv = E_CLIENT_GET_PRIVATE (client);
 
 	client->priv->readonly = TRUE;
+	client->priv->main_context = g_main_context_ref_thread_default ();
 
 	g_rec_mutex_init (&client->priv->prop_mutex);
 }
@@ -932,6 +959,28 @@ e_client_get_capabilities (EClient *client)
 	client_ensure_capabilities (client);
 
 	return client->priv->capabilities;
+}
+
+/**
+ * e_client_ref_main_context:
+ * @client: an #EClient
+ *
+ * Returns the #GMainContext on which event sources for @client are to
+ * be attached.
+ *
+ * The returned #GMainContext is referenced for thread-safety and must be
+ * unreferenced with g_main_context_unref() when finished with it.
+ *
+ * Returns: (transfer full): a #GMainContext
+ *
+ * Since: 3.8
+ **/
+GMainContext *
+e_client_ref_main_context (EClient *client)
+{
+	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
+
+	return g_main_context_ref (client->priv->main_context);
 }
 
 /**

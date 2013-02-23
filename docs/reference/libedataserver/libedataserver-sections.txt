@@ -49,6 +49,7 @@ CLIENT_BACKEND_PROPERTY_REVISION
 EClient
 e_client_get_source
 e_client_get_capabilities
+e_client_ref_main_context
 e_client_check_capability
 e_client_check_refresh_supported
 e_client_is_readonly
