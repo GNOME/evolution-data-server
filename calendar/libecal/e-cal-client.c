@@ -5773,7 +5773,7 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 		(!success && (uris == NULL)), FALSE);
 
 	if (uris != NULL) {
-		GSList *tmp;
+		GSList *tmp = NULL;
 		gint ii;
 
 		for (ii = 0; uris[ii] != NULL; ii++) {
