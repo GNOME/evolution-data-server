@@ -178,6 +178,127 @@ load_module (const gchar *module_path)
 	return module;
 }
 
+static void
+data_book_convert_to_client_error (GError *error)
+{
+	if (error == NULL)
+		return;
+
+	if (error->domain != E_DATA_BOOK_ERROR)
+		return;
+
+	switch (error->code) {
+		case E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_REPOSITORY_OFFLINE;
+			break;
+
+		case E_DATA_BOOK_STATUS_PERMISSION_DENIED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_PERMISSION_DENIED;
+			break;
+
+		case E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND:
+			error->domain = E_BOOK_CLIENT_ERROR;
+			error->code = E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND;
+			break;
+
+		case E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS:
+			error->domain = E_BOOK_CLIENT_ERROR;
+			error->code = E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS;
+			break;
+
+		case E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_AUTHENTICATION_FAILED;
+			break;
+
+		case E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD;
+			break;
+
+		case E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_TLS_NOT_AVAILABLE;
+			break;
+
+		case E_DATA_BOOK_STATUS_NO_SUCH_BOOK:
+			error->domain = E_BOOK_CLIENT_ERROR;
+			error->code = E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK;
+			break;
+
+		case E_DATA_BOOK_STATUS_BOOK_REMOVED:
+			error->domain = E_BOOK_CLIENT_ERROR;
+			error->code = E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE;
+			break;
+
+		case E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_OFFLINE_UNAVAILABLE;
+			break;
+
+		case E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED;
+			break;
+
+		case E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED;
+			break;
+
+		case E_DATA_BOOK_STATUS_INVALID_QUERY:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_INVALID_QUERY;
+			break;
+
+		case E_DATA_BOOK_STATUS_QUERY_REFUSED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_QUERY_REFUSED;
+			break;
+
+		case E_DATA_BOOK_STATUS_COULD_NOT_CANCEL:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_COULD_NOT_CANCEL;
+			break;
+
+		case E_DATA_BOOK_STATUS_NO_SPACE:
+			error->domain = E_BOOK_CLIENT_ERROR;
+			error->code = E_BOOK_CLIENT_ERROR_NO_SPACE;
+			break;
+
+		case E_DATA_BOOK_STATUS_INVALID_ARG:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_INVALID_ARG;
+			break;
+
+		case E_DATA_BOOK_STATUS_NOT_SUPPORTED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_NOT_SUPPORTED;
+			break;
+
+		case E_DATA_BOOK_STATUS_NOT_OPENED:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_NOT_OPENED;
+			break;
+
+	        case E_DATA_BOOK_STATUS_OUT_OF_SYNC:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_OUT_OF_SYNC;
+			break;
+
+		case E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD:
+		case E_DATA_BOOK_STATUS_OTHER_ERROR:
+		case E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_OTHER_ERROR;
+			break;
+
+		default:
+			g_warn_if_reached ();
+	}
+}
 
 static DirectOperationData *
 direct_operation_data_push (EDataBook          *book,
@@ -341,6 +462,7 @@ operation_thread (gpointer data,
 			if (!card_sexp) {
 				error = e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, NULL);
 				/* Translators: This is prefix to a detailed error message */
+				data_book_convert_to_client_error (error);
 				g_prefix_error (&error, "%s", _("Invalid query: "));
 				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
 				g_error_free (error);
@@ -355,6 +477,7 @@ operation_thread (gpointer data,
 			if (error) {
 				/* Translators: This is prefix to a detailed error message */
 				g_prefix_error (&error, "%s", _("Invalid query: "));
+				data_book_convert_to_client_error (error);
 				e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, error, NULL);
 				g_error_free (error);
 				g_object_unref (book_view);
@@ -626,6 +749,7 @@ data_book_return_error (GDBusMethodInvocation *invocation,
 		error = g_error_new (E_DATA_BOOK_ERROR, perror->code, "%s", perror->message);
 
 	g_prefix_error (&error, "%s", error_prefix);
+	data_book_convert_to_client_error (error);
 
 	g_dbus_method_invocation_return_gerror (invocation, error);
 
@@ -988,17 +1112,18 @@ e_data_book_respond_open (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open book: "));
+	data_book_convert_to_client_error (error);
 
 	if (data) {
 		gboolean result = FALSE;
 
-		if (error)
+		if (error) {
 			g_simple_async_result_set_error (data->result,
 							 error->domain,
 							 error->code,
 							 "%s", error->message);
 
-		else {
+		} else {
 			g_simple_async_result_set_check_cancellable (data->result,
 								     data->cancellable);
 
@@ -1026,6 +1151,7 @@ e_data_book_respond_remove (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot remove book: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_remove_done (book->priv->gdbus_object, opid, error);
 
@@ -1053,6 +1179,7 @@ e_data_book_respond_refresh (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot refresh address book: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_refresh_done (book->priv->gdbus_object, opid, error);
 
@@ -1079,6 +1206,7 @@ e_data_book_respond_get_backend_property (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot get backend property: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_get_backend_property_done (book->priv->gdbus_object, opid, error, e_util_ensure_gdbus_string (prop_value, &gdbus_prop_value));
 
@@ -1104,6 +1232,7 @@ e_data_book_respond_set_backend_property (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot set backend property: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_set_backend_property_done (book->priv->gdbus_object, opid, error);
 
@@ -1123,6 +1252,7 @@ e_data_book_respond_get_contact (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot get contact: "));
+	data_book_convert_to_client_error (error);
 
 	if (data) {
 
@@ -1170,8 +1300,10 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 	DirectOperationData *data;
 
 	/* Translators: This is prefix to a detailed error message */
-	if (error)
+	if (error) {
 		g_prefix_error (&error, "%s", _("Cannot get contact list: "));
+		data_book_convert_to_client_error (error);
+	}
 
 	data = op_complete (book, opid);
 
@@ -1247,8 +1379,10 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 	DirectOperationData *data;
 
 	/* Translators: This is prefix to a detailed error message */
-	if (error)
+	if (error) {
 		g_prefix_error (&error, "%s", _("Cannot get contact list uids: "));
+		data_book_convert_to_client_error (error);
+	}
 
 	data = op_complete (book, opid);
 
@@ -1327,6 +1461,7 @@ e_data_book_respond_create_contacts (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot add contact: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_add_contacts_done (book->priv->gdbus_object, opid, error, (const gchar * const *) array);
 
@@ -1361,6 +1496,7 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot modify contacts: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_modify_contacts_done (book->priv->gdbus_object, opid, error);
 
@@ -1386,6 +1522,7 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot remove contacts: "));
+	data_book_convert_to_client_error (error);
 
 	e_gdbus_book_emit_remove_contacts_done (book->priv->gdbus_object, opid, error);
 
@@ -1907,13 +2044,14 @@ e_data_book_respond_close (EDataBook *book,
 	if (data) {
 		gboolean result = FALSE;
 
-		if (error)
+		if (error) {
+			data_book_convert_to_client_error (error);
 			g_simple_async_result_set_error (data->result,
 							 error->domain,
 							 error->code,
 							 "%s", error->message);
 
-		else {
+		} else {
 			if (!g_cancellable_is_cancelled (data->cancellable))
 				result = TRUE;
 
