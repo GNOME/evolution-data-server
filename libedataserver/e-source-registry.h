@@ -150,6 +150,10 @@ GNode *		e_source_registry_build_display_tree
 						 const gchar *extension_name);
 void		e_source_registry_free_display_tree
 						(GNode *display_tree);
+gchar *		e_source_registry_dup_unique_display_name
+						(ESourceRegistry *registry,
+						 ESource *source,
+						 const gchar *extension_name);
 void		e_source_registry_debug_dump	(ESourceRegistry *registry,
 						 const gchar *extension_name);
 

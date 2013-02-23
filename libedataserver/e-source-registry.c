@@ -2666,6 +2666,117 @@ e_source_registry_free_display_tree (GNode *display_tree)
 	g_node_destroy (display_tree);
 }
 
+/**
+ * e_source_registry_dup_unique_display_name:
+ * @registry: an #ESourceRegistry
+ * @source: an #ESource
+ * @extension_name: (allow-none): an extension name, or %NULL
+ *
+ * Compares @source's #ESource:display-name against other sources having
+ * an #ESourceExtension named @extension_name, if given, or else against
+ * all other sources in the @registry.
+ *
+ * If @sources's #ESource:display-name is unique among these other sources,
+ * the function will return the #ESource:display-name verbatim.  Otherwise
+ * the function will construct a string that includes the @sources's own
+ * #ESource:display-name as well as those of its ancestors.
+ *
+ * The function's return value is intended to be used in messages shown to
+ * the user to help clarify which source is being referred to.  It assumes
+ * @source's #ESource:display-name is at least unique among its siblings.
+ *
+ * Free the returned string with g_free() when finished with it.
+ *
+ * Returns: a unique display name for @source
+ *
+ * Since: 3.8
+ **/
+gchar *
+e_source_registry_dup_unique_display_name (ESourceRegistry *registry,
+                                           ESource *source,
+                                           const gchar *extension_name)
+{
+	GString *buffer;
+	GList *list, *link;
+	gchar *display_name;
+	gboolean need_clarification = FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	list = e_source_registry_list_sources (registry, extension_name);
+
+	/* Remove the input source from the list, if present. */
+	link = g_list_find (list, source);
+	if (link != NULL) {
+		g_object_unref (link->data);
+		list = g_list_remove_link (list, link);
+	}
+
+	/* Now find another source with a matching display name. */
+	link = g_list_find_custom (
+		list, source, (GCompareFunc)
+		e_source_compare_by_display_name);
+
+	need_clarification = (link != NULL);
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	list = NULL;
+
+	display_name = e_source_dup_display_name (source);
+	buffer = g_string_new (display_name);
+	g_free (display_name);
+
+	if (need_clarification) {
+		/* Build a list of ancestor sources. */
+
+		g_object_ref (source);
+
+		while (source != NULL) {
+			gchar *parent_uid;
+
+			parent_uid = e_source_dup_parent (source);
+
+			g_object_unref (source);
+			source = NULL;
+
+			if (parent_uid != NULL) {
+				source = e_source_registry_ref_source (
+					registry, parent_uid);
+				g_free (parent_uid);
+			}
+
+			if (source != NULL) {
+				g_object_ref (source);
+				list = g_list_prepend (list, source);
+			}
+		}
+
+		/* Display the ancestor names from the most distant
+		 * ancestor to the input source's immediate parent. */
+
+		if (list != NULL)
+			g_string_append (buffer, " (");
+
+		for (link = list; link != NULL; link = g_list_next (link)) {
+			if (link != list)
+				g_string_append (buffer, " / ");
+
+			source = E_SOURCE (link->data);
+			display_name = e_source_dup_display_name (source);
+			g_string_append (buffer, display_name);
+			g_free (display_name);
+		}
+
+		if (list != NULL)
+			g_string_append (buffer, ")");
+
+		g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	}
+
+	return g_string_free (buffer, FALSE);
+}
+
 /* Helper for e_source_registry_debug_dump() */
 static gboolean
 source_registry_debug_dump_cb (GNode *node)
