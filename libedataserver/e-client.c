@@ -65,11 +65,11 @@ struct _AsyncContext {
 
 enum {
 	PROP_0,
-	PROP_SOURCE,
 	PROP_CAPABILITIES,
-	PROP_READONLY,
 	PROP_ONLINE,
-	PROP_OPENED
+	PROP_OPENED,
+	PROP_READONLY,
+	PROP_SOURCE
 };
 
 enum {
@@ -199,46 +199,14 @@ e_client_error_create (EClientError code,
 	return g_error_new_literal (E_CLIENT_ERROR, code, custom_msg ? custom_msg : e_client_error_to_string (code));
 }
 
-static void client_set_source (EClient *client, ESource *source);
-
 static void
-e_client_init (EClient *client)
+client_set_source (EClient *client,
+                   ESource *source)
 {
-	client->priv = E_CLIENT_GET_PRIVATE (client);
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (client->priv->source == NULL);
 
-	client->priv->readonly = TRUE;
-
-	g_rec_mutex_init (&client->priv->prop_mutex);
-}
-
-static void
-client_finalize (GObject *object)
-{
-	EClient *client;
-	EClientPrivate *priv;
-
-	client = E_CLIENT (object);
-
-	priv = client->priv;
-
-	g_rec_mutex_lock (&priv->prop_mutex);
-
-	if (priv->source) {
-		g_object_unref (priv->source);
-		priv->source = NULL;
-	}
-
-	if (priv->capabilities) {
-		g_slist_foreach (priv->capabilities, (GFunc) g_free, NULL);
-		g_slist_free (priv->capabilities);
-		priv->capabilities = NULL;
-	}
-
-	g_rec_mutex_unlock (&priv->prop_mutex);
-	g_rec_mutex_clear (&priv->prop_mutex);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_client_parent_class)->finalize (object);
+	client->priv->source = g_object_ref (source);
 }
 
 static void
@@ -248,16 +216,16 @@ client_set_property (GObject *object,
                      GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_SOURCE:
-			client_set_source (
-				E_CLIENT (object),
-				g_value_get_object (value));
-			return;
-
 		case PROP_ONLINE:
 			e_client_set_online (
 				E_CLIENT (object),
 				g_value_get_boolean (value));
+			return;
+
+		case PROP_SOURCE:
+			client_set_source (
+				E_CLIENT (object),
+				g_value_get_object (value));
 			return;
 	}
 
@@ -271,24 +239,10 @@ client_get_property (GObject *object,
                      GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_SOURCE:
-			g_value_set_object (
-				value,
-				e_client_get_source (
-				E_CLIENT (object)));
-			return;
-
 		case PROP_CAPABILITIES:
 			g_value_set_pointer (
 				value,
 				(gpointer) e_client_get_capabilities (
-				E_CLIENT (object)));
-			return;
-
-		case PROP_READONLY:
-			g_value_set_boolean (
-				value,
-				e_client_is_readonly (
 				E_CLIENT (object)));
 			return;
 
@@ -305,9 +259,51 @@ client_get_property (GObject *object,
 				e_client_is_opened (
 				E_CLIENT (object)));
 			return;
+
+		case PROP_READONLY:
+			g_value_set_boolean (
+				value,
+				e_client_is_readonly (
+				E_CLIENT (object)));
+			return;
+
+		case PROP_SOURCE:
+			g_value_set_object (
+				value,
+				e_client_get_source (
+				E_CLIENT (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+client_dispose (GObject *object)
+{
+	EClientPrivate *priv;
+
+	priv = E_CLIENT_GET_PRIVATE (object);
+
+	g_clear_object (&priv->source);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_client_parent_class)->dispose (object);
+}
+
+static void
+client_finalize (GObject *object)
+{
+	EClientPrivate *priv;
+
+	priv = E_CLIENT_GET_PRIVATE (object);
+
+	g_slist_free_full (priv->capabilities, (GDestroyNotify) g_free);
+
+	g_rec_mutex_clear (&priv->prop_mutex);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_client_parent_class)->finalize (object);
 }
 
 static void
@@ -750,6 +746,7 @@ e_client_class_init (EClientClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = client_set_property;
 	object_class->get_property = client_get_property;
+	object_class->dispose = client_dispose;
 	object_class->finalize = client_finalize;
 
 	class->unwrap_dbus_error = client_unwrap_dbus_error;
@@ -770,34 +767,11 @@ e_client_class_init (EClientClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_SOURCE,
-		g_param_spec_object (
-			"source",
-			NULL,
-			NULL,
-			E_TYPE_SOURCE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
 		PROP_CAPABILITIES,
 		g_param_spec_pointer (
 			"capabilities",
 			NULL,
 			NULL,
-			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_READONLY,
-		g_param_spec_boolean (
-			"readonly",
-			NULL,
-			NULL,
-			FALSE,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
@@ -821,6 +795,29 @@ e_client_class_init (EClientClass *class)
 			NULL,
 			FALSE,
 			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_READONLY,
+		g_param_spec_boolean (
+			"readonly",
+			NULL,
+			NULL,
+			FALSE,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SOURCE,
+		g_param_spec_object (
+			"source",
+			NULL,
+			NULL,
+			E_TYPE_SOURCE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -869,18 +866,13 @@ e_client_class_init (EClientClass *class)
 }
 
 static void
-client_set_source (EClient *client,
-                   ESource *source)
+e_client_init (EClient *client)
 {
-	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (E_IS_SOURCE (source));
+	client->priv = E_CLIENT_GET_PRIVATE (client);
 
-	g_object_ref (source);
+	client->priv->readonly = TRUE;
 
-	if (client->priv->source)
-		g_object_unref (client->priv->source);
-
-	client->priv->source = source;
+	g_rec_mutex_init (&client->priv->prop_mutex);
 }
 
 /**
