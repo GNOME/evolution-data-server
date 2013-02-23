@@ -16,26 +16,45 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif /* HAVE_CONFIG_H */
-
 #include <locale.h>
 #include <libintl.h>
+#include <glib/gi18n.h>
 
 #include "prompt-user.h"
+
+static gboolean opt_keep_running = FALSE;
+
+static GOptionEntry entries[] = {
+
+	{ "keep-running", 'r', 0, G_OPTION_ARG_NONE, &opt_keep_running,
+	  N_("Keep running after the last client is closed"), NULL },
+	{ NULL }
+};
 
 gint
 main (gint argc,
       gchar **argv)
 {
+	GOptionContext *context;
 	EDBusServer *server;
+	GError *error = NULL;
 
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 	prompt_user_init (&argc, &argv);
+
+	context = g_option_context_new (NULL);
+	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+	g_option_context_parse (context, &argc, &argv, &error);
+	g_option_context_free (context);
+
+	if (error != NULL) {
+		g_printerr ("%s\n", error->message);
+		exit (EXIT_FAILURE);
+	}
 
 	e_gdbus_templates_init_main_thread ();
 
@@ -45,6 +64,11 @@ main (gint argc,
 		G_CALLBACK (prompt_user_show), NULL);
 
 	g_print ("Prompter is up and running...\n");
+
+	/* This SHOULD keep the server's use
+	 * count from ever reaching zero. */
+	if (opt_keep_running)
+		e_dbus_server_hold (server);
 
 	e_dbus_server_run (server, TRUE);
 
