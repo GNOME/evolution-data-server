@@ -1416,10 +1416,10 @@ camel_session_build_password_prompt (const gchar *type,
 	user_markup = g_markup_printf_escaped ("<b>%s</b>", user);
 	host_markup = g_markup_printf_escaped ("<b>%s</b>", host);
 
-	/* Translators: The first argument is the account type
-	 * (e.g. "IMAP"), the second is the user name, and the
-	 * third is the host name. */
 	prompt = g_strdup_printf (
+		/* Translators: The first argument is the account type
+		 * (e.g. "IMAP"), the second is the user name, and the
+		 * third is the host name. */
 		_("Please enter the %s password for %s on host %s."),
 		type, user_markup, host_markup);
 
