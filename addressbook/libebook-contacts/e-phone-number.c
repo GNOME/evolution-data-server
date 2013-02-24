@@ -48,7 +48,7 @@ e_phone_number_error_to_string (EPhoneNumberError code)
 	case E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE:
 		return _("Invalid country calling code");
 	case E_PHONE_NUMBER_ERROR_TOO_SHORT_AFTER_IDD:
-		return _("Remaining text after the country calling code is to short for a phone number");
+		return _("Remaining text after the country calling code is too short for a phone number");
 	case E_PHONE_NUMBER_ERROR_TOO_SHORT:
 		return _("Text is too short for a phone number");
 	case E_PHONE_NUMBER_ERROR_TOO_LONG:
