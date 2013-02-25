@@ -324,17 +324,17 @@ main (gint argc,
 		 * are specifically in the active country code.
 		 *
 		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +1-221-5423789 | Matches: yes |
-		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +3-221-5423789 | Matches: no  |
+		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no  |
 		 */
 		add_client_test (suites[i].prefix, "/EqPhone/National", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
-				 1, suites[i].direct, suites[i].custom);
+				 2, suites[i].direct, suites[i].custom);
 
 		/* Test that a query term with a specified country returns only vCards that 
 		 * are specifically in the specified country code.
 		 *
 		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +1-221-5423789 | Matches: no |
-		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +3-221-5423789 | Matches: no |
+		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no |
 		 */
 		add_client_test (suites[i].prefix, "/EqPhone/National/CountryMismatch", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_TEL,
