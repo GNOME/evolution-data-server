@@ -60,6 +60,14 @@
 #define E_SOURCE_REGISTRY_SERVER_OBJECT_PATH \
 	"/org/gnome/evolution/dataserver/SourceManager"
 
+/**
+ * EDS_REGISTRY_MODULES:
+ *
+ * This environment variable configures where the registry
+ * server loads it's backend modules from.
+ */
+#define EDS_REGISTRY_MODULES    "EDS_REGISTRY_MODULES"
+
 G_BEGIN_DECLS
 
 typedef struct _ESourceRegistryServer ESourceRegistryServer;

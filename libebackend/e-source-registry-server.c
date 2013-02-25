@@ -1219,6 +1219,13 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 	EDBusServerClass *dbus_server_class;
 	EDataFactoryClass *data_factory_class;
 	GType backend_factory_type;
+	const gchar *modules_directory = MODULE_DIRECTORY;
+	const gchar *modules_directory_env;
+
+	modules_directory_env = g_getenv (EDS_REGISTRY_MODULES);
+	if (modules_directory_env &&
+	    g_file_test (modules_directory_env, G_FILE_TEST_IS_DIR))
+		modules_directory = g_strdup (modules_directory_env);
 
 	g_type_class_add_private (class, sizeof (ESourceRegistryServerPrivate));
 
@@ -1228,7 +1235,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->bus_name = SOURCES_DBUS_SERVICE_NAME;
-	dbus_server_class->module_directory = MODULE_DIRECTORY;
+	dbus_server_class->module_directory = modules_directory;
 	dbus_server_class->bus_acquired = source_registry_server_bus_acquired;
 	dbus_server_class->quit_server = source_registry_server_quit_server;
 
