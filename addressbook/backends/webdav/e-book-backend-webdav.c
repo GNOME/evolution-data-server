@@ -403,7 +403,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 				book, opid,
 				e_data_book_create_error_fmt (
 				E_DATA_BOOK_STATUS_OTHER_ERROR,
-				_("Create resource '%s' failed with HTTP status: %d (%s)"),
+				_("Create resource '%s' failed with HTTP status %d (%s)"),
 				uid, status, status_reason),
 					NULL);
 		}
@@ -580,7 +580,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 		e_data_book_respond_modify_contacts (book, opid,
 			e_data_book_create_error_fmt (
 			E_DATA_BOOK_STATUS_OTHER_ERROR,
-			_("Modify contact failed with HTTP status: %d (%s)"),
+			_("Modify contact failed with HTTP status %d (%s)"),
 			status, status_reason),
 			NULL);
 		g_free (status_reason);
