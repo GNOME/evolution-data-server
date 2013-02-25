@@ -3966,7 +3966,7 @@ e_cal_client_get_object_list_as_comps_finish (ECalClient *client,
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
 		result, G_OBJECT (client),
-		e_cal_client_get_object_list), FALSE);
+		e_cal_client_get_object_list_as_comps), FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
