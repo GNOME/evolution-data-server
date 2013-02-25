@@ -291,76 +291,6 @@ e_cal_client_error_create (ECalClientError code,
 	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg ? custom_msg : e_cal_client_error_to_string (code));
 }
 
-static volatile gint active_cal_clients = 0;
-static guint cal_factory_watcher_id = 0;
-static EDBusCalendarFactory *cal_factory = NULL;
-static GRecMutex cal_factory_lock;
-#define LOCK_FACTORY()   g_rec_mutex_lock (&cal_factory_lock)
-#define UNLOCK_FACTORY() g_rec_mutex_unlock (&cal_factory_lock)
-
-static void
-cal_factory_disconnect (void)
-{
-	LOCK_FACTORY ();
-
-	if (cal_factory_watcher_id > 0) {
-		g_bus_unwatch_name (cal_factory_watcher_id);
-		cal_factory_watcher_id = 0;
-	}
-
-	g_clear_object (&cal_factory);
-
-	UNLOCK_FACTORY ();
-}
-
-static void
-cal_factory_name_vanished_cb (GDBusConnection *connection,
-                              const gchar *name,
-                              gpointer user_data)
-{
-	cal_factory_disconnect ();
-}
-
-static gboolean
-cal_factory_activate (GCancellable *cancellable,
-                      GError **error)
-{
-	GDBusProxy *proxy;
-	gboolean success = TRUE;
-
-	LOCK_FACTORY ();
-
-	if (G_LIKELY (cal_factory != NULL))
-		goto exit;
-
-	cal_factory = e_dbus_calendar_factory_proxy_new_for_bus_sync (
-		G_BUS_TYPE_SESSION,
-		G_DBUS_PROXY_FLAGS_NONE,
-		CALENDAR_DBUS_SERVICE_NAME,
-		"/org/gnome/evolution/dataserver/CalendarFactory",
-		cancellable, error);
-
-	if (cal_factory == NULL) {
-		success = FALSE;
-		goto exit;
-	}
-
-	proxy = G_DBUS_PROXY (cal_factory);
-
-	cal_factory_watcher_id = g_bus_watch_name_on_connection (
-		g_dbus_proxy_get_connection (proxy),
-		g_dbus_proxy_get_name (proxy),
-		G_BUS_NAME_WATCHER_FLAGS_NONE,
-		(GBusNameAppearedCallback) NULL,
-		(GBusNameVanishedCallback) cal_factory_name_vanished_cb,
-		NULL, (GDestroyNotify) NULL);
-
-exit:
-	UNLOCK_FACTORY ();
-
-	return success;
-}
-
 static gpointer
 cal_client_dbus_thread (gpointer user_data)
 {
@@ -868,9 +798,6 @@ cal_client_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
-
-	if (g_atomic_int_dec_and_test (&active_cal_clients))
-		cal_factory_disconnect ();
 }
 
 static GDBusProxy *
@@ -1015,10 +942,11 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
                                 GCancellable *cancellable)
 {
 	ECalClientPrivate *priv;
+	EDBusCalendarFactory *factory_proxy;
+	GDBusConnection *connection;
+	GDBusProxy *proxy;
 	EClient *client;
 	ESource *source;
-	GDBusProxy *factory_proxy;
-	GDBusProxy *proxy;
 	const gchar *uid;
 	gchar *object_path = NULL;
 	gulong handler_id;
@@ -1030,32 +958,57 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	source = e_client_get_source (client);
 	uid = e_source_get_uid (source);
 
-	cal_factory_activate (cancellable, &error);
+	connection = g_bus_get_sync (G_BUS_TYPE_SESSION, cancellable, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((connection != NULL) && (error == NULL)) ||
+		((connection == NULL) && (error != NULL)));
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
 
+	factory_proxy = e_dbus_calendar_factory_proxy_new_sync (
+		connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		"/org/gnome/evolution/dataserver/CalendarFactory",
+		cancellable, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((factory_proxy != NULL) && (error == NULL)) ||
+		((factory_proxy == NULL) && (error != NULL)));
+
+	if (error != NULL) {
+		g_simple_async_result_take_error (simple, error);
+		g_object_unref (connection);
+		return;
+	}
+
 	switch (e_cal_client_get_source_type (E_CAL_CLIENT (client))) {
 		case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
 			e_dbus_calendar_factory_call_open_calendar_sync (
-				cal_factory, uid, &object_path,
+				factory_proxy, uid, &object_path,
 				cancellable, &error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
 			e_dbus_calendar_factory_call_open_task_list_sync (
-				cal_factory, uid, &object_path,
+				factory_proxy, uid, &object_path,
 				cancellable, &error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
 			e_dbus_calendar_factory_call_open_memo_list_sync (
-				cal_factory, uid, &object_path,
+				factory_proxy, uid, &object_path,
 				cancellable, &error);
 			break;
 		default:
 			g_return_if_reached ();
 	}
+
+	g_object_unref (factory_proxy);
 
 	/* Sanity check. */
 	g_return_if_fail (
@@ -1064,15 +1017,14 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (object_path == NULL) {
 		g_simple_async_result_take_error (simple, error);
+		g_object_unref (connection);
 		return;
 	}
 
-	factory_proxy = G_DBUS_PROXY (cal_factory);
-
 	priv->dbus_proxy = e_dbus_calendar_proxy_new_sync (
-		g_dbus_proxy_get_connection (factory_proxy),
+		connection,
 		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-		g_dbus_proxy_get_name (factory_proxy),
+		CALENDAR_DBUS_SERVICE_NAME,
 		object_path, cancellable, &error);
 
 	g_free (object_path);
@@ -1084,6 +1036,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
+		g_object_unref (connection);
 		return;
 	}
 
@@ -1094,7 +1047,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_dbus_proxy_set_default_timeout (proxy, DBUS_PROXY_TIMEOUT_MS);
 
 	priv->name_watcher_id = g_bus_watch_name_on_connection (
-		g_dbus_proxy_get_connection (proxy),
+		connection,
 		g_dbus_proxy_get_name (proxy),
 		G_BUS_NAME_WATCHER_FLAGS_NONE,
 		(GBusNameAppearedCallback) NULL,
@@ -1123,6 +1076,8 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_object_notify (G_OBJECT (proxy), "online");
 	g_object_notify (G_OBJECT (proxy), "writable");
 	g_object_notify (G_OBJECT (proxy), "capabilities");
+
+	g_object_unref (connection);
 }
 
 static gboolean
@@ -1432,8 +1387,6 @@ e_cal_client_init (ECalClient *client)
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) free_zone_cb);
-
-	g_atomic_int_inc (&active_cal_clients);
 
 	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
