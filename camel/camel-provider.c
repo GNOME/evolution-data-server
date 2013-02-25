@@ -172,6 +172,11 @@ camel_provider_init (void)
 	gchar *p, *name, buf[80];
 	CamelProviderModule *m;
 	static gint loaded = 0;
+	const gchar *provider_dir;
+
+	provider_dir = g_getenv (EDS_CAMEL_PROVIDER_DIR);
+	if (!provider_dir)
+		provider_dir = CAMEL_PROVIDERDIR;
 
 	g_once (&setup_once, provider_setup, NULL);
 
@@ -180,11 +185,11 @@ camel_provider_init (void)
 
 	loaded = 1;
 
-	dir = g_dir_open (CAMEL_PROVIDERDIR, 0, NULL);
+	dir = g_dir_open (provider_dir, 0, NULL);
 	if (!dir) {
 		g_warning (
 			"Could not open camel provider directory (%s): %s",
-			CAMEL_PROVIDERDIR, g_strerror (errno));
+			provider_dir, g_strerror (errno));
 		return;
 	}
 
@@ -195,7 +200,7 @@ camel_provider_init (void)
 		if (!p || strcmp (p, ".urls") != 0)
 			continue;
 
-		name = g_strdup_printf ("%s/%s", CAMEL_PROVIDERDIR, entry);
+		name = g_strdup_printf ("%s/%s", provider_dir, entry);
 		fp = g_fopen (name, "r");
 		if (!fp) {
 			g_warning (
