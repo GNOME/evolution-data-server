@@ -784,7 +784,11 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 
 	backend->priv->is_loading = FALSE;
 
-	if (error != NULL) {
+	/* Ignore cancellations. */
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_error_free (error);
+
+	} else if (error != NULL) {
 		e_cal_backend_notify_error (
 			E_CAL_BACKEND (backend),
 			error->message);
