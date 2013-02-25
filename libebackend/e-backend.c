@@ -95,27 +95,6 @@ async_context_free (AsyncContext *async_context)
 	g_slice_free (AsyncContext, async_context);
 }
 
-struct UpdateOnlineData
-{
-	EBackend *backend;
-	gboolean is_online;
-};
-
-static gpointer
-set_backend_online_thread (gpointer user_data)
-{
-	struct UpdateOnlineData *uod = user_data;
-
-	g_return_val_if_fail (uod != NULL, NULL);
-
-	e_backend_set_online (uod->backend, uod->is_online);
-
-	g_object_unref (uod->backend);
-	g_slice_free (struct UpdateOnlineData, uod);
-
-	return NULL;
-}
-
 static void
 backend_network_monitor_can_reach_cb (GObject *source_object,
                                       GAsyncResult *result,
@@ -123,8 +102,6 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 {
 	EBackend *backend = E_BACKEND (user_data);
 	gboolean host_is_reachable;
-	struct UpdateOnlineData *uod;
-	GThread *thread;
 	GError *error = NULL;
 
 	host_is_reachable = g_network_monitor_can_reach_finish (
@@ -144,13 +121,9 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 
 	g_clear_error (&error);
 
-	uod = g_slice_new (struct UpdateOnlineData);
-	uod->backend = backend;
-	uod->is_online = host_is_reachable;
+	e_backend_set_online (backend, host_is_reachable);
 
-	/* do this in a separate thread, not the main thread */
-	thread = g_thread_new (NULL, set_backend_online_thread, uod);
-	g_thread_unref (thread);
+	g_object_unref (backend);
 }
 
 static gboolean
