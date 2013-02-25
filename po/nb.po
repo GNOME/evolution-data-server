@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.7.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-29 19:31+0100\n"
-"PO-Revision-Date: 2013-01-29 19:32+0100\n"
+"POT-Creation-Date: 2013-02-25 17:25+0100\n"
+"PO-Revision-Date: 2013-02-25 17:33+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -884,7 +884,7 @@ msgstr "Liste uten navn"
 
 #: ../addressbook/libebook/e-phone-number.c:50
 msgid "The library was built without phone number support."
-msgstr ""
+msgstr "Biblioteket ble bygget uten støtte for telefonnumre."
 
 #: ../addressbook/libebook/e-phone-number.c:52
 msgid "The phone number parser reported an yet unkown error code."
@@ -900,7 +900,7 @@ msgstr "Ugyldig landskode"
 
 #: ../addressbook/libebook/e-phone-number.c:58
 msgid "Remaining text after the country code is to short for a phone number"
-msgstr ""
+msgstr "Gjenværende tekst etter landskode er for kort til å være et telefonnummer"
 
 #: ../addressbook/libebook/e-phone-number.c:60
 msgid "Text is too short for a phone number"
