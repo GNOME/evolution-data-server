@@ -178,14 +178,6 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-static volatile gint active_book_clients = 0;
-static guint book_factory_watcher_id = 0;
-static EDBusAddressBookFactory *book_factory = NULL;
-static GRecMutex book_factory_lock;
-#define LOCK_FACTORY()   g_rec_mutex_lock (&book_factory_lock)
-#define UNLOCK_FACTORY() g_rec_mutex_unlock (&book_factory_lock)
-
-
 typedef struct {
 	EBookClient         *client;
 	GAsyncReadyCallback  callback;
@@ -238,69 +230,6 @@ propagate_direct_book_async_ready (GObject *source_object,
 	g_object_unref (result);
 
 	propagate_ready_data_free (data);
-}
-
-static void
-book_factory_disconnect (void)
-{
-	LOCK_FACTORY ();
-
-	if (book_factory_watcher_id > 0) {
-		g_bus_unwatch_name (book_factory_watcher_id);
-		book_factory_watcher_id = 0;
-	}
-
-	g_clear_object (&book_factory);
-
-	UNLOCK_FACTORY ();
-}
-
-static void
-book_factory_name_vanished_cb (GDBusConnection *connection,
-                               const gchar *name,
-                               gpointer user_data)
-{
-	book_factory_disconnect ();
-}
-
-static gboolean
-book_factory_activate (GCancellable *cancellable,
-                       GError **error)
-{
-	GDBusProxy *proxy;
-	gboolean success = TRUE;
-
-	LOCK_FACTORY ();
-
-	if (G_LIKELY (book_factory != NULL))
-		goto exit;
-
-	book_factory = e_dbus_address_book_factory_proxy_new_for_bus_sync (
-		G_BUS_TYPE_SESSION,
-		G_DBUS_PROXY_FLAGS_NONE,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
-		"/org/gnome/evolution/dataserver/AddressBookFactory",
-		cancellable, error);
-
-	if (book_factory == NULL) {
-		success = FALSE;
-		goto exit;
-	}
-
-	proxy = G_DBUS_PROXY (book_factory);
-
-	book_factory_watcher_id = g_bus_watch_name_on_connection (
-		g_dbus_proxy_get_connection (proxy),
-		g_dbus_proxy_get_name (proxy),
-		G_BUS_NAME_WATCHER_FLAGS_NONE,
-		(GBusNameAppearedCallback) NULL,
-		(GBusNameVanishedCallback) book_factory_name_vanished_cb,
-		NULL, (GDestroyNotify) NULL);
-
-exit:
-	UNLOCK_FACTORY ();
-
-	return success;
 }
 
 static gpointer
@@ -657,9 +586,6 @@ book_client_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
-
-	if (g_atomic_int_dec_and_test (&active_book_clients))
-		book_factory_disconnect ();
 }
 
 static GDBusProxy *
@@ -812,10 +738,11 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	EBookClientPrivate *priv;
+	EDBusAddressBookFactory *factory_proxy;
+	GDBusConnection *connection;
+	GDBusProxy *proxy;
 	EClient *client;
 	ESource *source;
-	GDBusProxy *factory_proxy;
-	GDBusProxy *proxy;
 	const gchar *uid;
 	gchar *object_path = NULL;
 	gulong handler_id;
@@ -827,15 +754,40 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	source = e_client_get_source (client);
 	uid = e_source_get_uid (source);
 
-	book_factory_activate (cancellable, &error);
+	connection = g_bus_get_sync (G_BUS_TYPE_SESSION, cancellable, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((connection != NULL) && (error == NULL)) ||
+		((connection == NULL) && (error != NULL)));
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
 		return;
 	}
 
+	factory_proxy = e_dbus_address_book_factory_proxy_new_sync (
+		connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		"/org/gnome/evolution/dataserver/AddressBookFactory",
+		cancellable, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((factory_proxy != NULL) && (error == NULL)) ||
+		((factory_proxy == NULL) && (error != NULL)));
+
+	if (error != NULL) {
+		g_simple_async_result_take_error (simple, error);
+		g_object_unref (connection);
+		return;
+	}
+
 	e_dbus_address_book_factory_call_open_address_book_sync (
-		book_factory, uid, &object_path, cancellable, &error);
+		factory_proxy, uid, &object_path, cancellable, &error);
+
+	g_object_unref (factory_proxy);
 
 	/* Sanity check. */
 	g_return_if_fail (
@@ -844,15 +796,14 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
+		g_object_unref (connection);
 		return;
 	}
 
-	factory_proxy = G_DBUS_PROXY (book_factory);
-
 	priv->dbus_proxy = e_dbus_address_book_proxy_new_sync (
-		g_dbus_proxy_get_connection (factory_proxy),
+		connection,
 		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-		g_dbus_proxy_get_name (factory_proxy),
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
 		object_path, cancellable, &error);
 
 	g_free (object_path);
@@ -864,6 +815,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
+		g_object_unref (connection);
 		return;
 	}
 
@@ -874,7 +826,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_dbus_proxy_set_default_timeout (proxy, DBUS_PROXY_TIMEOUT_MS);
 
 	priv->name_watcher_id = g_bus_watch_name_on_connection (
-		g_dbus_proxy_get_connection (proxy),
+		connection,
 		g_dbus_proxy_get_name (proxy),
 		G_BUS_NAME_WATCHER_FLAGS_NONE,
 		(GBusNameAppearedCallback) NULL,
@@ -897,6 +849,8 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_object_notify (G_OBJECT (proxy), "online");
 	g_object_notify (G_OBJECT (proxy), "writable");
 	g_object_notify (G_OBJECT (proxy), "capabilities");
+
+	g_object_unref (connection);
 }
 
 static gboolean
@@ -1001,8 +955,6 @@ e_book_client_async_initable_init (GAsyncInitableIface *interface)
 static void
 e_book_client_init (EBookClient *client)
 {
-	g_atomic_int_inc (&active_book_clients);
-
 	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
 }
 
