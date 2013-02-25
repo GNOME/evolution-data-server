@@ -1598,10 +1598,14 @@ e_contact_map_google_with_evo_group (const gchar *group_name,
 		const gchar *google_id;
 		const gchar *evo_name;
 	} groups_map[] = {
-		{ GDATA_CONTACTS_GROUP_CONTACTS,  N_("Personal") }, /* System Group: My Contacts */
-		{ GDATA_CONTACTS_GROUP_FRIENDS,   N_("Friends")  }, /* System Group: Friends */
-		{ GDATA_CONTACTS_GROUP_FAMILY,    N_("Family")   }, /* System Group: Family */
-		{ GDATA_CONTACTS_GROUP_COWORKERS, N_("Coworkers") } /* System Group: Coworkers */
+		/* System Group: My Contacts */
+		{ GDATA_CONTACTS_GROUP_CONTACTS,  N_("Personal") },
+		/* System Group: Friends */
+		{ GDATA_CONTACTS_GROUP_FRIENDS,   N_("Friends") },
+		/* System Group: Family */
+		{ GDATA_CONTACTS_GROUP_FAMILY,    N_("Family") },
+		/* System Group: Coworkers */
+		{ GDATA_CONTACTS_GROUP_COWORKERS, N_("Coworkers") }
 	};
 	guint ii;
 
