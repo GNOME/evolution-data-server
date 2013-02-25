@@ -1132,8 +1132,27 @@ ixphone_compare_national (gpointer      data,
 	g_return_val_if_fail (sep1 != NULL, 0);
 	g_return_val_if_fail (sep2 != NULL, 0);
 
+	/* First only check national portions */
 	cmp = e_strcmp2n (sep1 + 1, len1 - (sep1 + 1 - str1),
 			  sep2 + 1, len2 - (sep2 + 1 - str2));
+
+	/* On match we also have to check for potential country codes.
+	 * Note that we can't just compare the full phone number string
+	 * in the case that both numbers have a country code, because
+	 * this would break the collations sorting order. As a result
+	 * the binary search performed on the index would miss matches.
+	 * Consider the index contains "|2215423789" and "+31|2215423789"
+	 * while we look for "+1|2215423789". By performing full string
+	 * compares in case of fully qualified numbers, we might check
+	 * "+31|2215423789" first and then miss "|2215423789" because
+	 * we traverse the binary tree in wrong direction.
+	 */
+	if (cmp == 0 && sep1 != str1 && sep2 != str2) {
+		/* Also compare the country code if the national number
+		 * matches and both numbers have a country code. */
+		cmp = e_strcmp2n (str1, sep1 - str1,
+				  str2, sep2 - str2);
+	}
 
 	if (booksql_debug ()) {
 		gchar *const tmp1 = g_strndup (str1, len1);
@@ -1658,27 +1677,6 @@ phone_number_from_string (const gchar *normal,
 	}
 
 	return number;
-}
-
-static gchar *
-convert_phone_national (const gchar *normal,
-			const gchar *default_region)
-{
-	EPhoneNumber *number = phone_number_from_string (normal, default_region);
-	gchar *indexed_phone_number = NULL;
-	gchar *national_number = NULL;
-
-	if (number) {
-		national_number = e_phone_number_get_national_number (number);
-		e_phone_number_free (number);
-	}
-
-	if (national_number) {
-		indexed_phone_number = g_strconcat ("|", national_number, NULL);
-		g_free (national_number);
-	}
-
-	return indexed_phone_number;
 }
 
 static gchar *
@@ -3024,12 +3022,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 		computed = g_utf8_strreverse (normal, -1);
 		ptr = computed;
 	} else if (flags & CONVERT_PHONE) {
-		if (match == MATCH_NATIONAL_PHONE_NUMBER) {
-			computed = convert_phone_national (normal, NULL);
-		} else {
-			computed = convert_phone (normal, NULL);
-		}
-
+		computed = convert_phone (normal, NULL);
 		ptr = computed;
 	} else {
 		ptr = normal;
@@ -3162,16 +3155,16 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 					ebsdb, query_term_input,
 					CONVERT_NORMALIZE | CONVERT_PHONE, match);
 			} else {
-				gchar *const digits = extract_digits (query_term_input);
 				extra = g_strdup (" COLLATE ixphone_nn");
 
 				if (match == MATCH_NATIONAL_PHONE_NUMBER) {
-					value = convert_string_value (ebsdb, digits, CONVERT_PHONE, MATCH_NATIONAL_PHONE_NUMBER);
+					value = convert_string_value (ebsdb, query_term_input, CONVERT_PHONE, MATCH_NATIONAL_PHONE_NUMBER);
 				} else {
+					gchar *const digits = extract_digits (query_term_input);
 					value = convert_string_value (ebsdb, digits, CONVERT_NOTHING, MATCH_ENDS_WITH);
+					g_free (digits);
 				}
 
-				g_free (digits);
 			}
 		} else {
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {

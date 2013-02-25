@@ -352,14 +352,6 @@ main (gint argc,
 							  E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+1 514-845-8436"),
 				 1, suites[i].direct, suites[i].custom);
 
-#if 0
-		/* FIXME: This test passes with the default summary, but fails in the custom summary.
-		 *
-		 * Because EBookBackendSexp uses a straiht-forward e_phone_number_compare_strings() method
-		 * of comparison, it's my feeling that the method used in EBookBackendSqliteDB needs to be
-		 * fixed (possibly by just using e_phone_number_compare_strings() directly in it's collation rule).
-		 */
-
 		/* Test that a query term with an arbitrary country code specified returns a vCard with an unspecified
 		 * country code.
 		 *
@@ -369,7 +361,6 @@ main (gint argc,
 				 e_book_query_field_test (E_CONTACT_TEL,
 							  E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+49 514-845-8436"),
 				 1, suites[i].direct, suites[i].custom);
-#endif
 
 		add_client_test (suites[i].prefix, "/EqPhone/Short", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
