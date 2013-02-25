@@ -18,6 +18,8 @@ common_cflags = \
 	-DEDS_TEST_SCHEMA_DIR=\""$(abs_top_builddir)/data"\" \
 	-DEDS_TEST_ADDRESS_BOOK_DIR=\""$(abs_top_builddir)/addressbook/backends/file/.libs"\" \
 	-DEDS_TEST_CALENDAR_DIR=\""$(abs_top_builddir)/calendar/backends/file/.libs"\" \
+	-DEDS_TEST_REGISTRY_DIR=\""$(abs_top_builddir)/modules/cache-reaper/.libs"\" \
+	-DEDS_TEST_CAMEL_DIR=\""$(abs_top_builddir)/camel/providers/local/.libs"\" \
 	$(E_DATA_SERVER_CFLAGS) \
 	$(GIO_UNIX_CFLAGS) \
 	$(NULL)

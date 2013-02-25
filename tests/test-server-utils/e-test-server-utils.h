@@ -118,6 +118,7 @@ typedef union {
  * @dbus: The D-Bus test scaffold
  * @registry: An #ESourceRegistry
  * @service: The #ETestService
+ * @source_name: A private detail, the ESource name used for this test case
  * @timeout_source_id: A private detail, tracks the idle source which times out if the registry cannot create an ESource.
  *
  * A fixture for running tests on the Evolution Data Server
@@ -128,6 +129,7 @@ struct _ETestServerFixture {
 	GTestDBus       *dbus;
 	ESourceRegistry *registry;
 	ETestService     service;
+	gchar           *source_name;
 	guint            timeout_source_id;
 };
 

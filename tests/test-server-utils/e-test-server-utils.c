@@ -41,6 +41,13 @@
 static GTestDBus *global_test_dbus = NULL;
 #endif
 
+/* The ESource identifier numerical component, this should
+ * not be needed (and should probably be removed) once we
+ * can get rid of the GLOBAL_DBUS_DAEMON hack.
+ */
+static gint global_test_source_id = 0;
+
+
 typedef struct {
 	ETestServerFixture *fixture;
 	ETestServerClosure *closure;
@@ -69,6 +76,8 @@ setup_environment (void)
 	g_assert (g_setenv ("GSETTINGS_SCHEMA_DIR", EDS_TEST_SCHEMA_DIR, TRUE));
 	g_assert (g_setenv ("EDS_CALENDAR_MODULES", EDS_TEST_CALENDAR_DIR, TRUE));
 	g_assert (g_setenv ("EDS_ADDRESS_BOOK_MODULES", EDS_TEST_ADDRESS_BOOK_DIR, TRUE));
+	g_assert (g_setenv ("EDS_REGISTRY_MODULES", EDS_TEST_REGISTRY_DIR, TRUE));
+	g_assert (g_setenv ("EDS_CAMEL_PROVIDER_DIR", EDS_TEST_CAMEL_DIR, TRUE));
 	g_assert (g_setenv ("GIO_USE_VFS", "local", TRUE));
 }
 
@@ -111,11 +120,12 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 {
 	GError  *error = NULL;
 
+	if (g_strcmp0 (e_source_get_uid (source), pair->fixture->source_name) != 0)
+		return;
+
 	switch (pair->closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
-		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
-			return;
 
 		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
 			pair->fixture->service.book_client = (EBookClient *)
@@ -130,8 +140,6 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-		if (g_strcmp0 (e_source_get_uid (source), ADDRESS_BOOK_SOURCE_UID) != 0)
-			return;
 
 		pair->fixture->service.book = e_book_new (source, &error);
 		if (!pair->fixture->service.book)
@@ -143,8 +151,6 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		break;
 
 	case E_TEST_SERVER_CALENDAR:
-		if (g_strcmp0 (e_source_get_uid (source), CALENDAR_SOURCE_UID) != 0)
-			return;
 
 		pair->fixture->service.calendar_client = (ECalClient *)
 			e_cal_client_connect_sync (source,
@@ -155,8 +161,6 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		if (g_strcmp0 (e_source_get_uid (source), CALENDAR_SOURCE_UID) != 0)
-			return;
 
 		pair->fixture->service.calendar = e_cal_new (source, pair->closure->calendar_source_type);
 		if (!pair->fixture->service.calendar)
@@ -195,7 +199,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 
-		scratch = e_source_new_with_uid (ADDRESS_BOOK_SOURCE_UID, NULL, &error);
+		pair->fixture->source_name = g_strdup_printf ("%s-%d", ADDRESS_BOOK_SOURCE_UID, global_test_source_id++);
+
+		scratch = e_source_new_with_uid (pair->fixture->source_name, NULL, &error);
 		if (!scratch)
 			g_error ("Failed to create scratch source for an addressbook: %s", error->message);
 
@@ -207,7 +213,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	case E_TEST_SERVER_CALENDAR:
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 
-		scratch = e_source_new_with_uid (CALENDAR_SOURCE_UID, NULL, &error);
+		pair->fixture->source_name = g_strdup_printf ("%s-%d", CALENDAR_SOURCE_UID, global_test_source_id++);
+
+		scratch = e_source_new_with_uid (pair->fixture->source_name, NULL, &error);
 		if (!scratch)
 			g_error ("Failed to create scratch source for a calendar: %s", error->message);
 
@@ -344,6 +352,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 	}
 
+	g_free (fixture->source_name);
 	g_object_run_dispose (G_OBJECT (fixture->registry));
 	g_object_unref (fixture->registry);
 	fixture->registry = NULL;
@@ -367,9 +376,18 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 #endif
 	}
 
-	/* Cleanup work directory */
-	if (!closure->keep_work_directory && !test_installed_services ())
-		delete_work_directory ();
+	/* Cleanup work directory
+	 *
+	 * XXX This is avoided for now since we are currently using
+	 * a separate ESource UID for each test, removing the work directory
+	 * would cause the cache-reaper module to spew error messages when
+	 * attempting to move missing removed ESources to the trash.
+	 *
+	 * This should probably be all completely removed once the
+	 * GLOBAL_DBUS_DAEMON clauses can be removed.
+	 */
+	/* if (!closure->keep_work_directory && !test_installed_services ()) */
+	/* 	delete_work_directory (); */
 
 	/* Destroy dynamically allocated closure */
 	if (closure->destroy_closure_func)
