@@ -8,6 +8,7 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure direct_book_closure = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0 };
 
 #define N_THREADS  5
@@ -260,6 +261,8 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 	setlocale (LC_ALL, "en_US.UTF-8");
 
+	g_test_add ("/EBookClient/ConcurrentViews", ETestServerFixture, &book_closure,
+		    e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
 	g_test_add ("/EBookClient/DirectAccess/ConcurrentViews", ETestServerFixture, &direct_book_closure,
 		    e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
 
