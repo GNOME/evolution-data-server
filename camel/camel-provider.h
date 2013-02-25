@@ -38,6 +38,14 @@
 
 #define CAMEL_PROVIDER(obj) ((CamelProvider *)(obj))
 
+/**
+ * EDS_CAMEL_PROVIDER_DIR:
+ *
+ * This environment variable configures where the camel
+ * provider modules are loaded from.
+ */
+#define EDS_CAMEL_PROVIDER_DIR    "EDS_CAMEL_PROVIDER_DIR"
+
 G_BEGIN_DECLS
 
 extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
