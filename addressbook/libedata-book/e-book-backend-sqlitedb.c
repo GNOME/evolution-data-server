@@ -1639,7 +1639,7 @@ mprintf_suffix (const gchar *normal)
 
 static EPhoneNumber *
 phone_number_from_string (const gchar *normal,
-			   const gchar *default_region)
+			  const gchar *default_region)
 {
 	EPhoneNumber *number = NULL;
 	GError *error = NULL;
@@ -1662,7 +1662,7 @@ phone_number_from_string (const gchar *normal,
 
 static gchar *
 convert_phone_national (const gchar *normal,
-			 const gchar *default_region)
+			const gchar *default_region)
 {
 	EPhoneNumber *number = phone_number_from_string (normal, default_region);
 	gchar *indexed_phone_number = NULL;
@@ -1683,7 +1683,7 @@ convert_phone_national (const gchar *normal,
 
 static gchar *
 convert_phone (const gchar *normal,
-		const gchar *default_region)
+	       const gchar *default_region)
 {
 	EPhoneNumber *number = phone_number_from_string (normal, default_region);
 	gchar *indexed_phone_number = NULL;
@@ -1714,7 +1714,7 @@ convert_phone (const gchar *normal,
 
 static gchar *
 mprintf_phone (const gchar *normal,
-		const gchar *default_region)
+	       const gchar *default_region)
 {
 	gchar *phone = convert_phone (normal, default_region);
 	gchar *stmt = NULL;
