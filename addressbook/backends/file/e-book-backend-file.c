@@ -623,6 +623,8 @@ e_book_backend_file_new_revision (EBookBackendFile *bf)
  * time the revision bumps, this is the safest approach and
  * its unclear so far if bumping the revision string for 
  * every DB modification is going to really be an overhead.
+ *
+ * This is always called with the writer lock held.
  */
 static void
 e_book_backend_file_bump_revision (EBookBackendFile *bf)
@@ -653,15 +655,20 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	if (!e_book_backend_sqlitedb_get_revision (bf->priv->sqlitedb,
-						   SQLITEDB_FOLDER_ID,
-						   &bf->priv->revision,
-						   &error)) {
-		g_warning (G_STRLOC ": Error loading database revision: %s",
-			   error->message);
-		g_error_free (error);
-	} else if (bf->priv->revision == NULL) {
-		e_book_backend_file_bump_revision (bf);
+	/* Only load the revision if it's not already loaded */
+	if (bf->priv->revision == NULL) {
+
+		if (!e_book_backend_sqlitedb_get_revision (bf->priv->sqlitedb,
+							   SQLITEDB_FOLDER_ID,
+							   &bf->priv->revision,
+							   &error)) {
+			g_warning (G_STRLOC ": Error loading database revision: %s",
+				   error->message);
+			g_error_free (error);
+		} else if (bf->priv->revision == NULL) {
+			/* If we loaded a NULL revision then we are the first, set the initial revision */
+			e_book_backend_file_bump_revision (bf);
+		}
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
@@ -1516,9 +1523,11 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), FALSE);
 	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL /* Success */);
 
+	g_rw_lock_reader_lock (&(bf->priv->lock));
 	e_book_backend_notify_property_changed (E_BOOK_BACKEND (backend),
 						BOOK_BACKEND_PROPERTY_REVISION,
 						bf->priv->revision);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
 }
 
 static gboolean
