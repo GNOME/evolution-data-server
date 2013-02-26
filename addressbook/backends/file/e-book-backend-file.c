@@ -1103,8 +1103,18 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		g_slist_free (summary_list);
 
 	} else if (local_error != NULL) {
-		g_warning ("Failed to fetch contacts: %s", local_error->message);
-		g_propagate_error (perror, local_error);
+
+		if (g_error_matches (local_error,
+				     E_BOOK_SDB_ERROR,
+				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
+			g_set_error (perror, E_DATA_BOOK_ERROR,
+				     E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+				     _("Query '%s' not supported"), query);
+			g_error_free (local_error);
+		} else {
+			g_warning ("Failed to fetch contact ids: %s", local_error->message);
+			g_propagate_error (perror, local_error);
+		}
 	}
 
 	*contacts = contact_list;
@@ -1137,8 +1147,18 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 	g_rw_lock_reader_unlock (&(bf->priv->lock));
 
 	if (uids == NULL && local_error != NULL) {
-		g_warning ("Failed to fetch contact ids: %s", local_error->message);
-		g_propagate_error (perror, local_error);
+
+		if (g_error_matches (local_error,
+				     E_BOOK_SDB_ERROR,
+				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
+			g_set_error (perror, E_DATA_BOOK_ERROR,
+				     E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+				     _("Query '%s' not supported"), query);
+			g_error_free (local_error);
+		} else {
+			g_warning ("Failed to fetch contact ids: %s", local_error->message);
+			g_propagate_error (perror, local_error);
+		}
 	}
 
 	*contacts_uids = g_slist_reverse (uids);
