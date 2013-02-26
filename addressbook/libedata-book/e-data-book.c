@@ -2684,7 +2684,6 @@ e_data_book_get_contacts_finish (EDataBook *book,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	ret_contacts = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
 
 	if (contacts) {
 		if (ret_contacts)
@@ -2693,9 +2692,12 @@ e_data_book_get_contacts_finish (EDataBook *book,
 			*contacts = NULL;
 	}
 
-	/* How can we tell if it failed ? ... we need to check the error but
-	 * GSimpleAsyncResult doesnt tell us if there was an error, only propagates it
+	/* If there was an error, the return is FALSE, otherwise
+	 * the call was successfull even if no results were found
 	 */
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
+		return FALSE;
+
 	return TRUE;
 }
 
@@ -2803,7 +2805,6 @@ e_data_book_get_contacts_uids_finish (EDataBook *book,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	ret_uids = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
-	g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error);
 
 	if (contacts_uids) {
 		if (ret_uids)
@@ -2812,9 +2813,12 @@ e_data_book_get_contacts_uids_finish (EDataBook *book,
 			*contacts_uids = NULL;
 	}
 
-	/* How can we tell if it failed ? ... we need to check the error but
-	 * GSimpleAsyncResult doesnt tell us if there was an error, only propagates it
+	/* If there was an error, the return is FALSE, otherwise
+	 * the call was successfull even if no results were found
 	 */
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error))
+		return FALSE;
+
 	return TRUE;
 }
 
