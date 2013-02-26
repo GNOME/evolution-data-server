@@ -2199,28 +2199,40 @@ e_contact_photo_free (EContactPhoto *photo)
  * Creates a copy of @photo.
  *
  * Returns: A new #EContactPhoto struct identical to @photo.
+ *
+ * Since: 3.8
  **/
-static EContactPhoto *
+EContactPhoto *
 e_contact_photo_copy (EContactPhoto *photo)
 {
-	EContactPhoto *photo2 = g_new0 (EContactPhoto, 1);
+	EContactPhoto *copy;
+
+	g_return_val_if_fail (photo != NULL, NULL);
+
+	copy = g_new0 (EContactPhoto, 1);
+
 	switch (photo->type) {
 	case E_CONTACT_PHOTO_TYPE_INLINED:
-		photo2->type = E_CONTACT_PHOTO_TYPE_INLINED;
-		photo2->data.inlined.mime_type = g_strdup (photo->data.inlined.mime_type);
-		photo2->data.inlined.length = photo->data.inlined.length;
-		photo2->data.inlined.data = g_malloc (photo2->data.inlined.length);
-		memcpy (photo2->data.inlined.data, photo->data.inlined.data, photo->data.inlined.length);
+		copy->type = E_CONTACT_PHOTO_TYPE_INLINED;
+		copy->data.inlined.mime_type =
+			g_strdup (photo->data.inlined.mime_type);
+		copy->data.inlined.length = photo->data.inlined.length;
+		copy->data.inlined.data = g_malloc (copy->data.inlined.length);
+		memcpy (
+			copy->data.inlined.data,
+			photo->data.inlined.data,
+			photo->data.inlined.length);
 		break;
 	case E_CONTACT_PHOTO_TYPE_URI:
-		photo2->type = E_CONTACT_PHOTO_TYPE_URI;
-		photo2->data.uri = g_strdup (photo->data.uri);
+		copy->type = E_CONTACT_PHOTO_TYPE_URI;
+		copy->data.uri = g_strdup (photo->data.uri);
 		break;
 	default:
 		g_warning ("Unknown EContactPhotoType %d", photo->type);
 		break;
 	}
-	return photo2;
+
+	return copy;
 }
 
 /**

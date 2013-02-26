@@ -368,6 +368,7 @@ void		e_contact_name_free		(EContactName *name);
 GType		e_contact_photo_get_type	(void);
 EContactPhoto *	e_contact_photo_new		(void);
 void		e_contact_photo_free		(EContactPhoto *photo);
+EContactPhoto *	e_contact_photo_copy		(EContactPhoto *photo);
 const guchar *	e_contact_photo_get_inlined	(EContactPhoto *photo,
 						 gsize *len);
 void		e_contact_photo_set_inlined	(EContactPhoto *photo,
