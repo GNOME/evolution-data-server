@@ -2604,6 +2604,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 enum {
 	CHECK_IS_SUMMARY   = (1 << 0),
 	CHECK_IS_LIST_ATTR = (1 << 1),
+	CHECK_UNSUPPORTED  = (1 << 2),
 };
 
 static ESExpResult *
@@ -2638,7 +2639,7 @@ func_check_subset (ESExp *f,
 	 * thus cannot be done with an SQL statement
 	 */
 	if (one_non_summary_query)
-		result = 0;
+		result &= ~CHECK_IS_SUMMARY;
 
 	r = e_sexp_result_new (f, ESEXP_RES_INT);
 	r->value.number = result;
@@ -2730,6 +2731,11 @@ func_check_phone (struct _ESExp         *f,
 {
 	ESExpResult *const r = func_check (f, argc, argv, data);
 
+	if (!e_phone_number_is_supported ()) {
+		r->value.number |= CHECK_UNSUPPORTED;
+		return r;
+	}
+
 	if (r && r->value.number) {
 		GError *error = NULL;
 		const gchar *const query_value = argv[1]->value.string;
@@ -2775,7 +2781,8 @@ static const struct {
 static gboolean
 e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 						    const gchar *query,
-						    gboolean *with_list_attrs)
+						    gboolean *with_list_attrs,
+						    gboolean *unsupported_query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -2813,6 +2820,9 @@ e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 
 		if ((r->value.number & CHECK_IS_LIST_ATTR) != 0 && with_list_attrs)
 			*with_list_attrs = TRUE;
+
+		if (unsupported_query)
+			*unsupported_query = (r->value.number & CHECK_UNSUPPORTED) != 0;
 	}
 
 	e_sexp_result_free (sexp, r);
@@ -2842,7 +2852,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 
 	LOCK_MUTEX (&ebsdb->priv->lock);
-	is_summary = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, query, with_list_attrs);
+	is_summary = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, query, with_list_attrs, NULL);
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return is_summary;
@@ -2860,7 +2870,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 gboolean
 e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 {
-	return e_book_backend_sqlitedb_check_summary_query_locked (NULL, query, NULL);
+	return e_book_backend_sqlitedb_check_summary_query_locked (NULL, query, NULL, NULL);
 }
 
 static ESExpResult *
@@ -3698,6 +3708,8 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	gboolean local_searched = FALSE;
 	gboolean local_with_all_required_fields = FALSE;
 	gboolean query_with_list_attrs = FALSE;
+	gboolean query_unsupported = FALSE;
+	gboolean summary_query = FALSE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
 	g_return_val_if_fail (folderid != NULL, NULL);
@@ -3707,8 +3719,16 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 
 	LOCK_MUTEX (&ebsdb->priv->lock);
 
-	if (!sexp || e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
-									 &query_with_list_attrs)) {
+	if (sexp)
+		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
+										    &query_with_list_attrs,
+										    &query_unsupported);
+
+	if (query_unsupported)
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_NOT_SUPPORTED,
+			_("Query contained unsupported elements"));
+	else if (!sexp || summary_query) {
 		gchar *sql_query;
 
 		sql_query = sexp ? sexp_to_sql_query (ebsdb, folderid, sexp) : NULL;
@@ -3762,6 +3782,8 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 	GSList *uids = NULL;
 	gboolean local_searched = FALSE;
 	gboolean query_with_list_attrs = FALSE;
+	gboolean query_unsupported = FALSE;
+	gboolean summary_query = FALSE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
 	g_return_val_if_fail (folderid != NULL, NULL);
@@ -3771,7 +3793,16 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 
 	LOCK_MUTEX (&ebsdb->priv->lock);
 
-	if (!sexp || e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp, &query_with_list_attrs)) {
+	if (sexp)
+		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
+										    &query_with_list_attrs,
+										    &query_unsupported);
+
+	if (query_unsupported)
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_NOT_SUPPORTED,
+			_("Query contained unsupported elements"));
+	else if (!sexp || summary_query) {
 		gchar *stmt;
 		gchar *sql_query = sexp ? sexp_to_sql_query (ebsdb, folderid, sexp) : NULL;
 
