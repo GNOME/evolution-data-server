@@ -47,7 +47,7 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 	AS_VAR_IF([with_phonenumber], [no],, [
 		AC_LANG_PUSH(C++)
 
-		PHONENUMBER_LIBS="-lphonenumber -lboost_thread"
+		PHONENUMBER_LIBS="-lphonenumber"
 
 		AS_VAR_IF([evo_phonenumber_prefix],,,[
 			PHONENUMBER_INCLUDES="-I$evo_phonenumber_prefix/include"
@@ -58,18 +58,28 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 		CXXFLAGS="$CXXFLAGS $PHONENUMBER_INCLUDES"
 
 		evo_libs_saved="$LIBS"
-		LIBS="$LIBS $PHONENUMBER_LIBS"
+		evo_libphonenumber_usable=no
 
 		AC_MSG_CHECKING([if libphonenumber is usable])
-		AC_LINK_IFELSE(
-			[AC_LANG_PROGRAM(
-				[[#include <phonenumbers/phonenumberutil.h>]],
-				[[i18n::phonenumbers::PhoneNumberUtil::GetInstance();]])],
-			[with_phonenumber=yes],
-			[AS_VAR_IF([with_phonenumber], [check], [with_phonenumber=no], [
-				AC_MSG_ERROR([libphonenumber cannot be used. Use --with-phonenumber to specify the library prefix.])])
-			])
 
+		for lib in boost_thread-mt boost_thread; do
+			LIBS="$evo_libs_saved $PHONENUMBER_LIBS -l$lib"
+
+			AC_LINK_IFELSE(
+				[AC_LANG_PROGRAM(
+					[[#include <phonenumbers/phonenumberutil.h>]],
+					[[i18n::phonenumbers::PhoneNumberUtil::GetInstance();]])],
+				[with_phonenumber=yes
+				 evo_libphonenumber_usable=yes
+				 PHONENUMBER_LIBS="$PHONENUMBER_LIBS -l$lib"
+				 break])
+		done
+
+		AS_VAR_IF([evo_libphonenumber_usable], [no],
+			[AS_VAR_IF(
+				[with_phonenumber], [check], [with_phonenumber=no],
+				[AC_MSG_ERROR([libphonenumber cannot be used. Use --with-phonenumber to specify the library prefix.])])
+			])
 
 		AS_VAR_IF([evo_phonenumber_prefix],,
 		          [msg_phonenumber=$with_phonenumber],
