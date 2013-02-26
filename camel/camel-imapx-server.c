@@ -5429,7 +5429,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		}
 
 		camel_operation_push_message (
-			cancellable, ngettext (
+			cancellable, dngettext (GETTEXT_PACKAGE,
 			"Fetching summary information for %d message in '%s'",
 			"Fetching summary information for %d messages in '%s'",
 			data->fetch_msg_limit),
@@ -5462,7 +5462,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		end_uid = g_strdup_printf ("%" G_GINT64_MODIFIER "d", (((gint) uidl) - fetch_limit > 0) ? (uidl - fetch_limit) : 1);
 
 		camel_operation_push_message (
-			cancellable, ngettext (
+			cancellable, dngettext (GETTEXT_PACKAGE,
 			"Fetching summary information for %d message in '%s'",
 			"Fetching summary information for %d messages in '%s'",
 			data->fetch_msg_limit),

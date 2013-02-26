@@ -268,7 +268,7 @@ folder_filter (CamelSession *session,
 		/* Translators: The %s is replaced with the
 		 * folder name where the operation is running. */
 		camel_operation_push_message (
-			cancellable, ngettext (
+			cancellable, dngettext (GETTEXT_PACKAGE,
 			"Learning new spam message in '%s'",
 			"Learning new spam messages in '%s'",
 			data->junk->len), display_name);
@@ -308,7 +308,7 @@ folder_filter (CamelSession *session,
 		/* Translators: The %s is replaced with the
 		 * folder name where the operation is running. */
 		camel_operation_push_message (
-			cancellable, ngettext (
+			cancellable, dngettext (GETTEXT_PACKAGE,
 			"Learning new ham message in '%s'",
 			"Learning new ham messages in '%s'",
 			data->notjunk->len), display_name);
@@ -356,7 +356,7 @@ folder_filter (CamelSession *session,
 		/* Translators: The %s is replaced with the
 		 * folder name where the operation is running. */
 		camel_operation_push_message (
-			cancellable, ngettext (
+			cancellable, dngettext (GETTEXT_PACKAGE,
 			"Filtering new message in '%s'",
 			"Filtering new messages in '%s'",
 			data->recents->len), display_name);
