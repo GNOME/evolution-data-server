@@ -48,7 +48,7 @@ e_source_registry_test_CPPFLAGS = $(test_CPPFLAGS)
 e_source_registry_test_LDADD = $(test_LDADD)
 
 if HAVE_GTK
-TESTS += e-user-prompter-test
+noinst_PROGRAMS += e-user-prompter-test
 
 e_user_prompter_test_SOURCES = e-user-prompter-test.c
 e_user_prompter_test_CPPFLAGS = $(test_CPPFLAGS) $(GTK_CFLAGS)
