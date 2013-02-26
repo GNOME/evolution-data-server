@@ -223,6 +223,12 @@ if test "x$evo_with_cxx" = xyes; then
 	AM_CXXFLAGS="$CXX_WARNING_FLAGS"
 	AC_SUBST(AM_CXXFLAGS)
 	AC_LANG_POP([C++])
+else
+	dnl Autoconf requires those automake conditionals to be defined when
+	dnl generating the config files, but apparently it forgets to initialize
+	dnl them dnl if AC_PROG_CXX never gets called. Therefore we do it manually.
+	am__fastdepCXX_TRUE='#'
+	am__fastdepCXX_FALSE=
 fi
 
 dnl *******************************
