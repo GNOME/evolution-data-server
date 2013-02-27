@@ -70,9 +70,7 @@ setup_custom_book (ESource *scratch,
 	e_source_backend_summary_setup_set_indexed_fields (
 		setup,
 		E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
-#ifdef ENABLE_PHONENUMBER
 		E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
-#endif /* ENABLE_PHONENUMBER */
 		E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
 		E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
 		E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
