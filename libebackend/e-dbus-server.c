@@ -240,6 +240,20 @@ dbus_server_quit_server (EDBusServer *server,
 }
 
 static void
+ignore_log (const gchar *log_domain,
+	    GLogLevelFlags log_level,
+	    const gchar *message,
+	    gpointer user_data)
+{
+	/* Avoid printing of trivial messages while running test cases, only print warnings/criticals and errors */
+	if ((log_level & (G_LOG_FLAG_FATAL     |
+			  G_LOG_LEVEL_ERROR    |
+			  G_LOG_LEVEL_CRITICAL |
+			  G_LOG_LEVEL_WARNING)) != 0)
+		g_log_default_handler (log_domain, log_level, message, user_data);
+}
+
+static void
 e_dbus_server_class_init (EDBusServerClass *class)
 {
 	GObjectClass *object_class;
@@ -341,6 +355,9 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_DBUS_SERVER_EXIT_CODE);
+
+	if (g_getenv ("EDS_TESTING") != NULL)
+		g_log_set_default_handler (ignore_log, NULL);
 }
 
 static void

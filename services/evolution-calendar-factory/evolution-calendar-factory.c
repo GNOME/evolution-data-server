@@ -97,9 +97,12 @@ main (gint argc,
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 #if defined(ENABLE_MAINTAINER_MODE) && defined(HAVE_EDATASERVERUI)
-	/* This is only to load gtk-modules, like
-	 * bug-buddy's gnomesegvhandler, if possible. */
-	gtk_init_check (&argc, &argv);
+	if (g_getenv ("EDS_TESTING") == NULL)
+		/* This is only to load gtk-modules, like
+		 * bug-buddy's gnomesegvhandler, if possible */
+		gtk_init_check (&argc, &argv);
+	else
+		g_type_init ();
 #else
 	g_type_init ();
 #endif
