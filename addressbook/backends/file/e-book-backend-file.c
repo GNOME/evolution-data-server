@@ -1111,6 +1111,15 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				     E_DATA_BOOK_STATUS_NOT_SUPPORTED,
 				     _("Query '%s' not supported"), query);
 			g_error_free (local_error);
+
+		} else if (g_error_matches (local_error,
+				     E_BOOK_SDB_ERROR,
+				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
+			g_set_error (perror, E_DATA_BOOK_ERROR,
+				     E_DATA_BOOK_STATUS_INVALID_QUERY,
+				     _("Invalid Query '%s'"), query);
+			g_error_free (local_error);
+
 		} else {
 			g_warning ("Failed to fetch contact ids: %s", local_error->message);
 			g_propagate_error (perror, local_error);
@@ -1155,6 +1164,15 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 				     E_DATA_BOOK_STATUS_NOT_SUPPORTED,
 				     _("Query '%s' not supported"), query);
 			g_error_free (local_error);
+
+		} else if (g_error_matches (local_error,
+				     E_BOOK_SDB_ERROR,
+				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
+			g_set_error (perror, E_DATA_BOOK_ERROR,
+				     E_DATA_BOOK_STATUS_INVALID_QUERY,
+				     _("Invalid Query '%s'"), query);
+			g_error_free (local_error);
+
 		} else {
 			g_warning ("Failed to fetch contact ids: %s", local_error->message);
 			g_propagate_error (perror, local_error);
