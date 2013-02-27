@@ -79,6 +79,10 @@ setup_environment (void)
 	g_assert (g_setenv ("EDS_REGISTRY_MODULES", EDS_TEST_REGISTRY_DIR, TRUE));
 	g_assert (g_setenv ("EDS_CAMEL_PROVIDER_DIR", EDS_TEST_CAMEL_DIR, TRUE));
 	g_assert (g_setenv ("GIO_USE_VFS", "local", TRUE));
+	g_assert (g_setenv ("EDS_TESTING", "1", TRUE));
+	g_assert (g_setenv ("GSETTINGS_BACKEND", "memory", TRUE));
+
+	g_unsetenv ("DISPLAY");
 }
 
 static void
