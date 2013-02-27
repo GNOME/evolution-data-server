@@ -39,6 +39,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewPrivate))
 
+typedef struct _SignalClosure SignalClosure;
+
 struct _ECalClientViewPrivate {
 	ECalClient *client;
 	GDBusProxy *dbus_proxy;
@@ -51,6 +53,15 @@ struct _ECalClientViewPrivate {
 	gulong objects_removed_handler_id;
 	gulong progress_handler_id;
 	gulong complete_handler_id;
+};
+
+struct _SignalClosure {
+	ECalClientView *client_view;
+	GSList *component_list;
+	GSList *component_id_list;
+	gchar *message;
+	guint percent;
+	GError *error;
 };
 
 enum {
@@ -81,6 +92,27 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_cal_client_view_initable_init))
+
+static void
+signal_closure_free (SignalClosure *signal_closure)
+{
+	g_object_unref (signal_closure->client_view);
+
+	g_slist_free_full (
+		signal_closure->component_list,
+		(GDestroyNotify) icalcomponent_free);
+
+	g_slist_free_full (
+		signal_closure->component_id_list,
+		(GDestroyNotify) e_cal_component_free_id);
+
+	g_free (signal_closure->message);
+
+	if (signal_closure->error != NULL)
+		g_error_free (signal_closure->error);
+
+	g_slice_free (SignalClosure, signal_closure);
+}
 
 static GSList *
 build_object_list (const gchar * const *seq)
@@ -131,97 +163,232 @@ build_id_list (const gchar * const *seq)
 	return g_slist_reverse (list);
 }
 
+static gboolean
+cal_client_view_emit_objects_added_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[OBJECTS_ADDED], 0,
+		signal_closure->component_list);
+
+	return FALSE;
+}
+
+static gboolean
+cal_client_view_emit_objects_modified_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[OBJECTS_MODIFIED], 0,
+		signal_closure->component_list);
+
+	return FALSE;
+}
+
+static gboolean
+cal_client_view_emit_objects_removed_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[OBJECTS_REMOVED], 0,
+		signal_closure->component_id_list);
+
+	return FALSE;
+}
+
+static gboolean
+cal_client_view_emit_progress_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[PROGRESS], 0,
+		signal_closure->percent,
+		signal_closure->message);
+
+	return FALSE;
+}
+
+static gboolean
+cal_client_view_emit_complete_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[COMPLETE], 0,
+		signal_closure->error);
+
+	return FALSE;
+}
+
 static void
 cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
                                   const gchar * const *objects,
-                                  ECalClientView *view)
+                                  ECalClientView *client_view)
 {
-	GSList *list;
+	ECalClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
-	g_object_ref (view);
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->component_list = build_object_list (objects);
 
-	list = build_object_list (objects);
+	client = e_cal_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
 
-	g_signal_emit (view, signals[OBJECTS_ADDED], 0, list);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		cal_client_view_emit_objects_added_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
 
-	g_slist_free_full (list, (GDestroyNotify) icalcomponent_free);
-
-	g_object_unref (view);
+	g_main_context_unref (main_context);
 }
 
 static void
 cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
                                      const gchar * const *objects,
-                                     ECalClientView *view)
+                                     ECalClientView *client_view)
 {
-	GSList *list;
+	ECalClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
-	g_object_ref (view);
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->component_list = build_object_list (objects);
 
-	list = build_object_list (objects);
+	client = e_cal_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
 
-	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, list);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		cal_client_view_emit_objects_modified_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
 
-	g_slist_free_full (list, (GDestroyNotify) icalcomponent_free);
-
-	g_object_unref (view);
+	g_main_context_unref (main_context);
 }
 
 static void
 cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
                                     const gchar * const *uids,
-                                    ECalClientView *view)
+                                    ECalClientView *client_view)
 {
-	GSList *list;
+	ECalClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
-	g_object_ref (view);
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->component_id_list = build_id_list (uids);
 
-	list = build_id_list (uids);
+	client = e_cal_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
 
-	g_signal_emit (view, signals[OBJECTS_REMOVED], 0, list);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		cal_client_view_emit_objects_removed_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
 
-	g_slist_free_full (list, (GDestroyNotify) e_cal_component_free_id);
-
-	g_object_unref (view);
+	g_main_context_unref (main_context);
 }
 
 static void
 cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
                              guint percent,
                              const gchar *message,
-                             ECalClientView *view)
+                             ECalClientView *client_view)
 {
-	if (!view->priv->running)
+	ECalClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
+
+	if (!client_view->priv->running)
 		return;
 
-	g_signal_emit (G_OBJECT (view), signals[PROGRESS], 0, percent, message);
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->message = g_strdup (message);
+	signal_closure->percent = percent;
+
+	client = e_cal_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		cal_client_view_emit_progress_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
 cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
                              const gchar * const *arg_error,
-                             ECalClientView *view)
+                             ECalClientView *client_view)
 {
-	GError *error = NULL;
+	ECalClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
-	g_return_if_fail (e_gdbus_templates_decode_error (arg_error, &error));
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	e_gdbus_templates_decode_error (arg_error, &signal_closure->error);
 
-	g_signal_emit (G_OBJECT (view), signals[COMPLETE], 0, error);
+	client = e_cal_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
 
-	if (error != NULL)
-		g_error_free (error);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		cal_client_view_emit_complete_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
