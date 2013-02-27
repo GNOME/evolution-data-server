@@ -133,8 +133,8 @@ struct _CamelIMAPXServer {
 
 	/* info on currently selected folder */
 	GMutex select_lock;
-	CamelFolder *select_folder;
-	CamelFolder *select_pending;
+	GWeakRef select_folder;
+	GWeakRef select_pending;
 	CamelFolderChangeInfo *changes;
 	guint32 permanentflags;
 	guint32 unseen;
