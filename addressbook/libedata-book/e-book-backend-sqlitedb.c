@@ -1661,20 +1661,13 @@ phone_number_from_string (const gchar *normal,
 			  const gchar *default_region)
 {
 	EPhoneNumber *number = NULL;
-	GError *error = NULL;
 
+	/* Don't warn about erronous phone number strings, it's a perfectly normal
+	 * use case for users to enter notes instead of phone numbers in the phone
+	 * number contact fields, such as "Ask Jenny for Lisa's phone number"
+	 */
 	if (normal && e_phone_number_is_supported ())
-		number = e_phone_number_from_string (normal, default_region, &error);
-
-	if (error) {
-		/* Only barf on unusual errors */
-		if (error->domain != E_PHONE_NUMBER_ERROR
-			|| error->code != E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE) {
-			g_warning ("%s: '%s': %s", G_STRLOC, normal, error->message);
-		}
-
-		g_clear_error (&error);
-	}
+		number = e_phone_number_from_string (normal, default_region, NULL);
 
 	return number;
 }
@@ -2605,6 +2598,7 @@ enum {
 	CHECK_IS_SUMMARY   = (1 << 0),
 	CHECK_IS_LIST_ATTR = (1 << 1),
 	CHECK_UNSUPPORTED  = (1 << 2),
+	CHECK_INVALID      = (1 << 3)
 };
 
 static ESExpResult *
@@ -2730,29 +2724,27 @@ func_check_phone (struct _ESExp         *f,
 		   gpointer              data)
 {
 	ESExpResult *const r = func_check (f, argc, argv, data);
+	const gchar *const query_value = argv[1]->value.string;
+	EPhoneNumber *number;
 
+	/* Here we need to catch unsupported queries and invalid queries
+	 * so we perform validity checks even if func_check() reports this
+	 * as not a part of the summary.
+	 */
 	if (!e_phone_number_is_supported ()) {
 		r->value.number |= CHECK_UNSUPPORTED;
 		return r;
 	}
 
-	if (r && r->value.number) {
-		GError *error = NULL;
-		const gchar *const query_value = argv[1]->value.string;
-		EPhoneNumber *const number = e_phone_number_from_string (
-				query_value, NULL, &error);
+	number = e_phone_number_from_string (query_value, NULL, NULL);
 
-		if (number == NULL) {
-			if (error) {
-				g_warning ("Bad value \"%s\" in phone number query: %s.",
-					   query_value, error->message);
-				g_clear_error (&error);
-			}
-
-			r->value.number = 0;
-		} else {
-			e_phone_number_free (number);
-		}
+	if (number == NULL) {
+		/* Could not construct a phone number from the query input,
+		 * an invalid query error will be propagated to the client.
+		 */
+		r->value.number |= CHECK_INVALID;
+	} else {
+		e_phone_number_free (number);
 	}
 
 	return r;
@@ -2782,7 +2774,8 @@ static gboolean
 e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 						    const gchar *query,
 						    gboolean *with_list_attrs,
-						    gboolean *unsupported_query)
+						    gboolean *unsupported_query,
+						    gboolean *invalid_query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -2811,6 +2804,9 @@ e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 	esexp_error = e_sexp_parse (sexp);
 
 	if (esexp_error == -1) {
+		if (invalid_query)
+			*invalid_query = TRUE;
+
 		return FALSE;
 	}
 
@@ -2818,11 +2814,14 @@ e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 	if (r && r->type == ESEXP_RES_INT) {
 		retval = (r->value.number & CHECK_IS_SUMMARY) != 0;
 
-		if ((r->value.number & CHECK_IS_LIST_ATTR) != 0 && with_list_attrs)
-			*with_list_attrs = TRUE;
+		if (with_list_attrs)
+			*with_list_attrs = (r->value.number & CHECK_IS_LIST_ATTR) != 0;
 
 		if (unsupported_query)
 			*unsupported_query = (r->value.number & CHECK_UNSUPPORTED) != 0;
+
+		if (invalid_query)
+			*invalid_query = (r->value.number & CHECK_INVALID) != 0;
 	}
 
 	e_sexp_result_free (sexp, r);
@@ -2852,7 +2851,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 
 	LOCK_MUTEX (&ebsdb->priv->lock);
-	is_summary = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, query, with_list_attrs, NULL);
+	is_summary = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, query, with_list_attrs, NULL, NULL);
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return is_summary;
@@ -2870,7 +2869,7 @@ e_book_backend_sqlitedb_check_summary_query (EBookBackendSqliteDB *ebsdb,
 gboolean
 e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 {
-	return e_book_backend_sqlitedb_check_summary_query_locked (NULL, query, NULL, NULL);
+	return e_book_backend_sqlitedb_check_summary_query_locked (NULL, query, NULL, NULL, NULL);
 }
 
 static ESExpResult *
@@ -3709,6 +3708,7 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	gboolean local_with_all_required_fields = FALSE;
 	gboolean query_with_list_attrs = FALSE;
 	gboolean query_unsupported = FALSE;
+	gboolean query_invalid = FALSE;
 	gboolean summary_query = FALSE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
@@ -3722,12 +3722,16 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	if (sexp)
 		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
 										    &query_with_list_attrs,
-										    &query_unsupported);
+										    &query_unsupported, &query_invalid);
 
 	if (query_unsupported)
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_NOT_SUPPORTED,
 			_("Query contained unsupported elements"));
+	else if (query_invalid)
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+			_("Invalid Query"));
 	else if (!sexp || summary_query) {
 		gchar *sql_query;
 
@@ -3784,6 +3788,7 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 	gboolean query_with_list_attrs = FALSE;
 	gboolean query_unsupported = FALSE;
 	gboolean summary_query = FALSE;
+	gboolean query_invalid = FALSE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
 	g_return_val_if_fail (folderid != NULL, NULL);
@@ -3796,12 +3801,17 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 	if (sexp)
 		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
 										    &query_with_list_attrs,
-										    &query_unsupported);
+										    &query_unsupported,
+										    &query_invalid);
 
 	if (query_unsupported)
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_NOT_SUPPORTED,
 			_("Query contained unsupported elements"));
+	else if (query_invalid)
+		g_set_error (
+			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+			_("Invalid query"));
 	else if (!sexp || summary_query) {
 		gchar *stmt;
 		gchar *sql_query = sexp ? sexp_to_sql_query (ebsdb, folderid, sexp) : NULL;
