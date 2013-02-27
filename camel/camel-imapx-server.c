@@ -6940,6 +6940,7 @@ imapx_server_finalize (GObject *object)
 	is->done = NULL;
 
 	g_rec_mutex_clear (&is->queue_lock);
+	g_mutex_clear (&is->select_lock);
 	g_mutex_clear (&is->fetch_mutex);
 	g_cond_clear (&is->fetch_cond);
 
@@ -7060,6 +7061,8 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->job_timeout = 29 * 60 * 1000 * 1000;
 
 	g_rec_mutex_init (&is->queue_lock);
+
+	g_mutex_init (&is->select_lock);
 
 	is->state = IMAPX_DISCONNECTED;
 

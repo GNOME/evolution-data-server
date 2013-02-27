@@ -132,9 +132,10 @@ struct _CamelIMAPXServer {
 	CamelIMAPXCommandQueue *done;
 
 	/* info on currently selected folder */
+	GMutex select_lock;
 	CamelFolder *select_folder;
-	CamelFolderChangeInfo *changes;
 	CamelFolder *select_pending;
+	CamelFolderChangeInfo *changes;
 	guint32 permanentflags;
 	guint32 unseen;
 	guint64 uidvalidity;
