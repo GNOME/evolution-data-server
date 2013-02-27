@@ -28,9 +28,19 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
+/* Define this macro to expect E_CLIENT_ERROR_NOT_SUPPORTED
+ * only on phone number queries when EDS is built with no
+ * phone number support.
+ */
+#ifdef ENABLE_PHONENUMBER
+#  define CHECK_UNSUPPORTED_ERROR(data) (FALSE)
+#else
+#  define CHECK_UNSUPPORTED_ERROR(data) (((ClientTestData *)(data))->phone_number_query != FALSE)
+#endif
+
 typedef struct {
 	ETestServerClosure parent;
-	EBookQuery *query;
+	gchar *sexp;
 	gint num_contacts;
 	gboolean phone_number_query;
 } ClientTestData;
@@ -45,9 +55,7 @@ client_test_data_free (gpointer p)
 {
 	ClientTestData *data = (ClientTestData *) p;
 
-	if (data->query)
-		e_book_query_unref (data->query);
-
+	g_free (data->sexp);
 	g_slice_free (ClientTestData, data);
 }
 
@@ -100,14 +108,14 @@ client_test_teardown (ClientTestFixture *fixture,
 }
 
 static void
-add_client_test (const gchar *prefix,
-		 const gchar *test_case_name,
-                 gpointer func,
-                 EBookQuery *query,
-                 gint num_contacts,
-		 gboolean direct,
-		 gboolean custom,
-		 gboolean phone_number_query)
+add_client_test_sexp (const gchar *prefix,
+		      const gchar *test_case_name,
+		      gpointer func,
+		      gchar *sexp, /* sexp is 'given' */
+		      gint num_contacts,
+		      gboolean direct,
+		      gboolean custom,
+		      gboolean phone_number_query)
 {
 	ClientTestData *data = g_slice_new0 (ClientTestData);
 	gchar *path = g_strconcat (prefix, test_case_name, NULL);
@@ -118,7 +126,7 @@ add_client_test (const gchar *prefix,
 		data->parent.customize = setup_custom_book;
 
 	data->parent.destroy_closure_func = client_test_data_free;
-	data->query = query;
+	data->sexp = sexp;
 	data->num_contacts = num_contacts;
 	data->phone_number_query = phone_number_query;
 
@@ -126,6 +134,22 @@ add_client_test (const gchar *prefix,
 		    client_test_setup, func, client_test_teardown);
 
 	g_free (path);
+}
+
+static void
+add_client_test (const gchar *prefix,
+		 const gchar *test_case_name,
+                 gpointer func,
+                 EBookQuery *query,
+                 gint num_contacts,
+		 gboolean direct,
+		 gboolean custom,
+		 gboolean phone_number_query)
+{
+	add_client_test_sexp (prefix, test_case_name, func,
+			      e_book_query_to_string (query),
+			      num_contacts, direct, custom, phone_number_query);
+	e_book_query_unref (query);
 }
 
 static void
@@ -160,46 +184,39 @@ search_test (ClientTestFixture *fixture,
 	EBookClient *book_client;
 	GSList *results = NULL;
 	GError *error = NULL;
-	gchar *sexp;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 	setup_book (fixture);
 
-	sexp = e_book_query_to_string (data->query);
-
-#ifdef ENABLE_PHONENUMBER
-
-	if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-		g_error ("get contacts: %s", error->message);
-	}
-
-	g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
-
-#else /* if (!ENABLE_PHONENUMBER) */
-
-	if (data->phone_number_query == FALSE) {
-
-		if (!e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error)) {
-			g_error ("get contacts: %s", error->message);
-		}
-
-		g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
-
-	} else {
-
-		if (e_book_client_get_contacts_sync (book_client, sexp, &results, NULL, &error))
+	if (CHECK_UNSUPPORTED_ERROR (data)) {
+		/* Expect unsupported query (no phone number support in a phone number query) */
+		if (e_book_client_get_contacts_sync (book_client, data->sexp, &results, NULL, &error))
 			g_error ("Succeeded to query contacts when phone numbers are not supported");
 		else if (!g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED))
 			g_error ("Wrong error when querying with unsupported query: %s (domain: %s, code: %d)",
 				 error->message, g_quark_to_string (error->domain), error->code);
 		else
 			g_clear_error (&error);
+
+	} else if (data->num_contacts < 0) {
+		/* Expect E_CLIENT_ERROR_INVALID_QUERY */
+		if (e_book_client_get_contacts_sync (book_client, data->sexp, &results, NULL, &error))
+			g_error ("Succeeded to query contacts with an invalid query type");
+		else if (!g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_QUERY))
+			g_error ("Wrong error when querying with an invalid query: %s (domain: %s, code: %d)",
+				 error->message, g_quark_to_string (error->domain), error->code);
+		else
+			g_clear_error (&error);
+	} else {
+		/* Expect successful query */
+		if (!e_book_client_get_contacts_sync (book_client, data->sexp, &results, NULL, &error)) {
+			g_error ("get contacts: %s", error->message);
+		}
+
+		g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
 	}
 
-#endif /* ENABLE_PHONENUMBER */
-
 	e_util_free_object_slist (results);
-	g_free (sexp);
 }
 
 static void
@@ -210,47 +227,39 @@ uid_test (ClientTestFixture *fixture,
 	EBookClient *book_client;
 	GSList *results = NULL;
 	GError *error = NULL;
-	gchar *sexp;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 	setup_book (fixture);
 
-	sexp = e_book_query_to_string (data->query);
-
-#ifdef ENABLE_PHONENUMBER
-
-	if (!e_book_client_get_contacts_uids_sync (book_client, sexp, &results, NULL, &error)) {
-		g_error ("get contact uids: %s", error->message);
-	}
-
-	g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
-
-#else /* if (!ENABLE_PHONENUMBER) */
-
-	if (data->phone_number_query == FALSE) {
-
-		if (!e_book_client_get_contacts_uids_sync (book_client, sexp, &results, NULL, &error)) {
-			g_error ("get contact uids: %s", error->message);
-		}
-
-		g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
-
-	} else {
-
-		if (e_book_client_get_contacts_uids_sync (book_client, sexp, &results, NULL, &error))
+	if (CHECK_UNSUPPORTED_ERROR (data)) {
+		/* Expect unsupported query (no phone number support in a phone number query) */
+		if (e_book_client_get_contacts_uids_sync (book_client, data->sexp, &results, NULL, &error))
 			g_error ("Succeeded to query contact uids when phone numbers are not supported");
 		else if (!g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED))
 			g_error ("Wrong error when querying uids with unsupported query: %s (domain: %s, code: %d)",
 				 error->message, g_quark_to_string (error->domain), error->code);
 		else
 			g_clear_error (&error);
+
+	} else if (data->num_contacts < 0) {
+		/* Expect E_CLIENT_ERROR_INVALID_QUERY */
+		if (e_book_client_get_contacts_uids_sync (book_client, data->sexp, &results, NULL, &error))
+			g_error ("Succeeded to query contacts with an invalid query type");
+		else if (!g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_QUERY))
+			g_error ("Wrong error when querying with an invalid query: %s (domain: %s, code: %d)",
+				 error->message, g_quark_to_string (error->domain), error->code);
+		else
+			g_clear_error (&error);
+	} else {
+		/* Expect successful query */
+		if (!e_book_client_get_contacts_uids_sync (book_client, data->sexp, &results, NULL, &error)) {
+			g_error ("get contact uids: %s", error->message);
+		}
+
+		g_assert_cmpint (g_slist_length (results), ==, data->num_contacts);
 	}
 
-#endif /* ENABLE_PHONENUMBER */
-
-
 	e_util_free_string_slist (results);
-	g_free (sexp);
 }
 
 #ifdef ENABLE_PHONENUMBER
@@ -328,6 +337,11 @@ main (gint argc,
 	 */
 	for (i = 0; i < G_N_ELEMENTS (suites); i++) {
 
+		/* A query that will cause e_sexp_parse() to report an error */
+		add_client_test_sexp (suites[i].prefix, "/InvalidQuery", suites[i].func,
+				      g_strdup ("(invalid \"query\" \"term\")"),
+				      -1, suites[i].direct, suites[i].custom, FALSE);
+
 		/* Add search tests that fetch contacts */
 		add_client_test (suites[i].prefix, "/Exact/FullName", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
@@ -343,6 +357,13 @@ main (gint argc,
 
 		add_client_test (suites[i].prefix, "/Prefix/FullName/Percent", suites[i].func,
 				 e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
+				 1, suites[i].direct, suites[i].custom, FALSE);
+
+		/* Query the E_CONTACT_TEL field for something that is not a phone number, user is
+		 * searching for all the contacts when they noted they must ask Jenny for the phone number
+		 */
+		add_client_test (suites[i].prefix, "/Prefix/Phone/NotAPhoneNumber", suites[i].func,
+				 e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_BEGINS_WITH, "ask Jenny"),
 				 1, suites[i].direct, suites[i].custom, FALSE);
 
 		add_client_test (suites[i].prefix, "/Suffix/Phone", suites[i].func,
@@ -364,6 +385,16 @@ main (gint argc,
 		/*********************************************
 		 *         PHONE NUMBER QUERIES FOLLOW       *
 		 *********************************************/
+
+		/* Expect E_CLIENT_ERROR_INVALID_QUERY, "ask Jenny for Lisa's number" was entered
+		 * for contact-6.vcf, it can be searched using normal E_BOOK_QUERY_* queries but
+		 * treating it as a phone number is an invalid query.
+		 */
+		add_client_test (suites[i].prefix, "/EqPhone/InvalidPhoneNumber", suites[i].func,
+				 e_book_query_field_test (E_CONTACT_TEL,
+							  E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+							  "ask Jenny for Lisa's number"),
+				 -1, suites[i].direct, suites[i].custom, TRUE);
 
 		/* These queries will do an index lookup with a custom summary, and a full table scan
 		 * matching with EBookBackendSexp when the default summary is used
