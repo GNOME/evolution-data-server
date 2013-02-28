@@ -525,8 +525,8 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		G_BINDING_SYNC_CREATE);
 
 	/* requires more properties from ownCould, but these are not
-	   available before ownCloud was introduced, thus workaround
-	   it with the backend_name check
+	 * available before ownCloud was introduced, thus workaround
+	 * it with the backend_name check
 	*/
 	if (g_strcmp0 (backend_name, "owncloud") == 0) {
 		GoaCalendar *goa_calendar;
@@ -751,17 +751,21 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
 	collection_source = gnome_online_accounts_new_source (extension);
 	g_return_if_fail (E_IS_SOURCE (collection_source));
 
-	gnome_online_accounts_config_collection (extension, collection_source, goa_object);
+	gnome_online_accounts_config_collection (
+		extension, collection_source, goa_object);
 	parent_uid = e_source_get_uid (collection_source);
 
 	if (goa_object_peek_mail (goa_object)) {
-		mail_account_source = gnome_online_accounts_new_source (extension);
+		mail_account_source =
+			gnome_online_accounts_new_source (extension);
 		g_return_if_fail (E_IS_SOURCE (mail_account_source));
 
-		mail_identity_source = gnome_online_accounts_new_source (extension);
+		mail_identity_source =
+			gnome_online_accounts_new_source (extension);
 		g_return_if_fail (E_IS_SOURCE (mail_identity_source));
 
-		mail_transport_source = gnome_online_accounts_new_source (extension);
+		mail_transport_source =
+			gnome_online_accounts_new_source (extension);
 		g_return_if_fail (E_IS_SOURCE (mail_transport_source));
 
 		/* Configure parent/child relationships. */
@@ -776,26 +780,32 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
 			mail_identity_source,
 			mail_transport_source);
 
-		gnome_online_accounts_config_mail_account (extension, mail_account_source, goa_object);
-		gnome_online_accounts_config_mail_identity (extension, mail_identity_source, goa_object);
-		gnome_online_accounts_config_mail_transport (extension, mail_transport_source, goa_object);
+		gnome_online_accounts_config_mail_account (
+			extension, mail_account_source, goa_object);
+		gnome_online_accounts_config_mail_identity (
+			extension, mail_identity_source, goa_object);
+		gnome_online_accounts_config_mail_transport (
+			extension, mail_transport_source, goa_object);
 	}
 
 	/* Export the new source collection. */
 	e_source_registry_server_add_source (server, collection_source);
 
-	if (mail_account_source) {
-		e_source_registry_server_add_source (server, mail_account_source);
+	if (mail_account_source != NULL) {
+		e_source_registry_server_add_source (
+			server, mail_account_source);
 		g_object_unref (mail_account_source);
 	}
 
-	if (mail_identity_source) {
-		e_source_registry_server_add_source (server, mail_identity_source);
+	if (mail_identity_source != NULL) {
+		e_source_registry_server_add_source (
+			server, mail_identity_source);
 		g_object_unref (mail_identity_source);
 	}
 
-	if (mail_transport_source) {
-		e_source_registry_server_add_source (server, mail_transport_source);
+	if (mail_transport_source != NULL) {
+		e_source_registry_server_add_source (
+			server, mail_transport_source);
 		g_object_unref (mail_transport_source);
 	}
 
@@ -1193,7 +1203,8 @@ e_gnome_online_accounts_class_finalize (EGnomeOnlineAccountsClass *class)
 static void
 e_gnome_online_accounts_oauth2_support_init (EOAuth2SupportInterface *interface)
 {
-	interface->get_access_token_sync = gnome_online_accounts_get_access_token_sync;
+	interface->get_access_token_sync =
+		gnome_online_accounts_get_access_token_sync;
 }
 
 static void
