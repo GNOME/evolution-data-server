@@ -392,6 +392,22 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 }
 
 static void
+cal_client_view_dispose_cb (GObject *source_object,
+                            GAsyncResult *result,
+                            gpointer user_data)
+{
+	GError *error = NULL;
+
+	e_gdbus_cal_view_call_dispose_finish (
+		G_DBUS_PROXY (source_object), result, &error);
+
+	if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+	}
+}
+
+static void
 cal_client_view_set_client (ECalClientView *view,
                             ECalClient *client)
 {
@@ -500,8 +516,6 @@ cal_client_view_dispose (GObject *object)
 	}
 
 	if (priv->dbus_proxy != NULL) {
-		GError *error = NULL;
-
 		g_signal_handler_disconnect (
 			priv->dbus_proxy,
 			priv->objects_added_handler_id);
@@ -518,17 +532,11 @@ cal_client_view_dispose (GObject *object)
 			priv->dbus_proxy,
 			priv->complete_handler_id);
 
-		e_gdbus_cal_view_call_dispose_sync (
-			priv->dbus_proxy, NULL, &error);
-
-		if (error != NULL) {
-			g_dbus_error_strip_remote_error (error);
-			g_warning (
-				"Failed to dispose cal view: %s",
-				error->message);
-			g_error_free (error);
-		}
-
+		/* Call D-Bus dispose() asynchronously
+		 * so we don't block this dispose(). */
+		e_gdbus_cal_view_call_dispose (
+			priv->dbus_proxy, NULL,
+			cal_client_view_dispose_cb, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
