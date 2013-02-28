@@ -214,7 +214,8 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 
-		pair->fixture->source_name = g_strdup_printf ("%s-%d", ADDRESS_BOOK_SOURCE_UID, global_test_source_id++);
+		if (!pair->fixture->source_name)
+			pair->fixture->source_name = g_strdup_printf ("%s-%d", ADDRESS_BOOK_SOURCE_UID, global_test_source_id++);
 
 		scratch = e_source_new_with_uid (pair->fixture->source_name, NULL, &error);
 		if (!scratch)
@@ -228,7 +229,8 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	case E_TEST_SERVER_CALENDAR:
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 
-		pair->fixture->source_name = g_strdup_printf ("%s-%d", CALENDAR_SOURCE_UID, global_test_source_id++);
+		if (!pair->fixture->source_name)
+			pair->fixture->source_name = g_strdup_printf ("%s-%d", CALENDAR_SOURCE_UID, global_test_source_id++);
 
 		scratch = e_source_new_with_uid (pair->fixture->source_name, NULL, &error);
 		if (!scratch)
