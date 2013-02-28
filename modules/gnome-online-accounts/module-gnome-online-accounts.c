@@ -36,6 +36,9 @@
 	(G_TYPE_CHECK_INSTANCE_CAST \
 	((obj), E_TYPE_GNOME_ONLINE_ACCOUNTS, EGnomeOnlineAccounts))
 
+#define CAMEL_IMAP_PROVIDER_NAME    "imapx"
+#define CAMEL_SMTP_PROVIDER_NAME    "smtp"
+
 #define CAMEL_OAUTH_MECHANISM_NAME  "XOAUTH"
 #define CAMEL_OAUTH2_MECHANISM_NAME "XOAUTH2"
 
@@ -375,6 +378,172 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 }
 
 static void
+gnome_online_accounts_config_imap (EGnomeOnlineAccounts *extension,
+                                   ESource *source,
+                                   GoaObject *goa_object)
+{
+#ifdef HAVE_GOA_IMAP_SMTP
+	GoaMail *goa_mail;
+	ESourceCamel *camel_extension;
+	ESourceBackend *backend_extension;
+	GSocketConnectable *network_address;
+	CamelSettings *settings;
+	const gchar *extension_name;
+	const gchar *provider_name;
+	gboolean use_ssl;
+	gboolean use_tls;
+	GError *error = NULL;
+
+	goa_mail = goa_object_peek_mail (goa_object);
+
+	if (goa_mail == NULL)
+		return;
+
+	if (!goa_mail_get_imap_supported (goa_mail))
+		return;
+
+	use_ssl = goa_mail_get_imap_use_ssl (goa_mail);
+	use_tls = goa_mail_get_imap_use_tls (goa_mail);
+
+	/* Check that the host string is parsable. */
+	network_address = g_network_address_parse (
+		goa_mail_get_imap_host (goa_mail),
+		use_ssl ? 993 : 143, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((network_address != NULL) && (error == NULL)) ||
+		((network_address == NULL) && (error != NULL)));
+
+	if (error != NULL) {
+		/* XXX Mail account will be broken if we fail. */
+		g_critical ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+		return;
+	}
+
+	provider_name = CAMEL_IMAP_PROVIDER_NAME;
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
+	backend_extension = e_source_get_extension (source, extension_name);
+
+	e_source_backend_set_backend_name (backend_extension, provider_name);
+
+	extension_name = e_source_camel_get_extension_name (provider_name);
+	camel_extension = e_source_get_extension (source, extension_name);
+	settings = e_source_camel_get_settings (camel_extension);
+
+	camel_network_settings_set_host (
+		CAMEL_NETWORK_SETTINGS (settings),
+		g_network_address_get_hostname (
+		G_NETWORK_ADDRESS (network_address)));
+
+	camel_network_settings_set_port (
+		CAMEL_NETWORK_SETTINGS (settings),
+		g_network_address_get_port (
+		G_NETWORK_ADDRESS (network_address)));
+
+	camel_network_settings_set_user (
+		CAMEL_NETWORK_SETTINGS (settings),
+		goa_mail_get_imap_user_name (goa_mail));
+
+	/* Prefer "use_tls" over "use_ssl" if both are set. */
+	camel_network_settings_set_security_method (
+		CAMEL_NETWORK_SETTINGS (settings),
+		use_tls ?
+		CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT :
+		use_ssl ?
+		CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT :
+		CAMEL_NETWORK_SECURITY_METHOD_NONE);
+
+	g_object_unref (network_address);
+#endif
+}
+
+static void
+gnome_online_accounts_config_smtp (EGnomeOnlineAccounts *extension,
+                                   ESource *source,
+                                   GoaObject *goa_object)
+{
+#ifdef HAVE_GOA_IMAP_SMTP
+	GoaMail *goa_mail;
+	ESourceCamel *camel_extension;
+	ESourceBackend *backend_extension;
+	GSocketConnectable *network_address;
+	CamelSettings *settings;
+	const gchar *extension_name;
+	const gchar *provider_name;
+	gboolean use_ssl;
+	gboolean use_tls;
+	GError *error = NULL;
+
+	goa_mail = goa_object_peek_mail (goa_object);
+
+	if (goa_mail == NULL)
+		return;
+
+	if (!goa_mail_get_smtp_supported (goa_mail))
+		return;
+
+	use_ssl = goa_mail_get_smtp_use_ssl (goa_mail);
+	use_tls = goa_mail_get_smtp_use_tls (goa_mail);
+
+	/* Check that the host string is parsable. */
+	network_address = g_network_address_parse (
+		goa_mail_get_smtp_host (goa_mail),
+		use_ssl ? 465 : 587, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((network_address != NULL) && (error == NULL)) ||
+		((network_address == NULL) && (error != NULL)));
+
+	if (error != NULL) {
+		/* XXX Mail account will be broken if we fail. */
+		g_critical ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+		return;
+	}
+
+	provider_name = CAMEL_SMTP_PROVIDER_NAME;
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
+	backend_extension = e_source_get_extension (source, extension_name);
+
+	e_source_backend_set_backend_name (backend_extension, provider_name);
+
+	extension_name = e_source_camel_get_extension_name (provider_name);
+	camel_extension = e_source_get_extension (source, extension_name);
+	settings = e_source_camel_get_settings (camel_extension);
+
+	camel_network_settings_set_host (
+		CAMEL_NETWORK_SETTINGS (settings),
+		g_network_address_get_hostname (
+		G_NETWORK_ADDRESS (network_address)));
+
+	camel_network_settings_set_port (
+		CAMEL_NETWORK_SETTINGS (settings),
+		g_network_address_get_port (
+		G_NETWORK_ADDRESS (network_address)));
+
+	camel_network_settings_set_user (
+		CAMEL_NETWORK_SETTINGS (settings),
+		goa_mail_get_smtp_user_name (goa_mail));
+
+	/* Prefer "use_tls" over "use_ssl" if both are set. */
+	camel_network_settings_set_security_method (
+		CAMEL_NETWORK_SETTINGS (settings),
+		use_tls ?
+		CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT :
+		use_ssl ?
+		CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT :
+		CAMEL_NETWORK_SECURITY_METHOD_NONE);
+
+	g_object_unref (network_address);
+#endif
+}
+
+static void
 gnome_online_accounts_config_oauth (EGnomeOnlineAccounts *extension,
                                     ESource *source,
                                     GoaObject *goa_object)
@@ -626,7 +795,14 @@ gnome_online_accounts_config_mail_account (EGnomeOnlineAccounts *extension,
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "imap-use-tls" tells
 	 *     us neither the port number, nor whether to use IMAP
-	 *     over SSL versus STARTTLS.  The module will know. */
+	 *     over SSL versus STARTTLS.  The module will know.
+	 *
+	 *     Addendum: This got fixed in GOA 3.8.  There's now both
+	 *               "imap-use-tls" and "imap-use-ssl" properties.
+	 *               Go ahead and set up IMAP details here if we
+	 *               have GOA 3.8, otherwise continue deferring
+	 *               to provider-specific modules. */
+	gnome_online_accounts_config_imap (extension, source, goa_object);
 
 	/* Clients may change the source by may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
@@ -677,7 +853,14 @@ gnome_online_accounts_config_mail_transport (EGnomeOnlineAccounts *extension,
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "smtp-use-tls" tells
 	 *     us neither the port number, nor whether to use SMTP
-	 *     over SSL versus STARTTLS.  The module will know. */
+	 *     over SSL versus STARTTLS.  The module will know.
+	 *
+	 *     Addendum: This got fixed in GOA 3.8.  There's now both
+	 *               "smtp-use-tls" and "smtp-use-ssl" properties.
+	 *               Go ahead and set up SMTP details here if we
+	 *               have GOA 3.8, otherwise continue deferring
+	 *               to provider-specific modules. */
+	gnome_online_accounts_config_smtp (extension, source, goa_object);
 
 	/* Clients may change the source by may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
