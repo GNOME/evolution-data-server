@@ -89,33 +89,41 @@ e_phone_number_error_code (PhoneNumberUtil::ErrorType error)
 }
 
 static std::string
-e_phone_number_make_region_code (const gchar *region_code)
+_e_phone_number_cxx_region_code_from_locale (const gchar *locale)
 {
+	std::string current_region = locale;
+	const std::string::size_type uscore = current_region.find ('_');
+
+	if (uscore != std::string::npos) {
+		const std::string::size_type n = std::min (uscore + 3, current_region.length ());
+
+		if (n == current_region.length() || not ::isalpha(current_region.at(n)))
+			current_region = current_region.substr (uscore + 1, 2);
+	}
+
+	if (current_region.length() != 2)
+		return "US";
+
+	return current_region;
+}
+
+static std::string
+_e_phone_number_cxx_make_region_code (const gchar *region_code)
+{
+	if (region_code && strlen (region_code) > 2)
+		return _e_phone_number_cxx_region_code_from_locale (region_code);
+
 	/* Get two-letter country code from current locale's address facet if supported */
 #if HAVE__NL_ADDRESS_COUNTRY_AB2
 	if (region_code == NULL || region_code[0] == '\0')
 		region_code = nl_langinfo (_NL_ADDRESS_COUNTRY_AB2);
 #endif /* HAVE__NL_ADDRESS_COUNTRY_AB2 */
 
-	/* Extract two-letter country code from current locale id if needed */
-	if (region_code == NULL || region_code[0] == '\0') {
-		/* From outside this is a C library, so we better consult the
-		 * C infrastructure instead of std::locale, which might divert. */
-		std::string current_region = setlocale (LC_ADDRESS, NULL);
-		const std::string::size_type uscore = current_region.find ('_');
-
-		if (uscore != std::string::npos) {
-			const std::string::size_type n = std::min (uscore + 3, current_region.length ());
-
-			if (n == current_region.length() || not ::isalpha(current_region.at(n)))
-				current_region = current_region.substr (uscore + 1, 2);
-		}
-
-		if (current_region.length() != 2)
-			return "US";
-
-		return current_region;
-	}
+	/* Extract two-letter country code from current locale id if needed.
+	 * From outside this is a C library, so we better consult the
+         * C infrastructure instead of std::locale, which might divert. */
+	if (region_code == NULL || region_code[0] == '\0')
+		return _e_phone_number_cxx_region_code_from_locale (setlocale (LC_ADDRESS, NULL));
 
 	return region_code;
 }
@@ -124,13 +132,13 @@ gint
 _e_phone_number_cxx_get_country_code_for_region (const gchar *region_code)
 {
 	return e_phone_number_util_get_instance ()->GetCountryCodeForRegion (
-		e_phone_number_make_region_code (region_code));
+		_e_phone_number_cxx_make_region_code (region_code));
 }
 
 gchar *
 _e_phone_number_cxx_get_default_region ()
 {
-	return g_strdup (e_phone_number_make_region_code (NULL).c_str ());
+	return g_strdup (_e_phone_number_cxx_make_region_code (NULL).c_str ());
 }
 
 static bool
@@ -163,7 +171,7 @@ _e_phone_number_cxx_from_string (const gchar *phone_number,
 {
 	g_return_val_if_fail (NULL != phone_number, NULL);
 
-	const std::string valid_region = e_phone_number_make_region_code (region_code);
+	const std::string valid_region = _e_phone_number_cxx_make_region_code (region_code);
 	std::auto_ptr<EPhoneNumber> parsed_number(new EPhoneNumber);
 
 	if (!_e_phone_number_cxx_parse (
@@ -320,7 +328,7 @@ _e_phone_number_cxx_compare_strings (const gchar *first_number,
 	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
 	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
 
-	const std::string region = e_phone_number_make_region_code (region_code);
+	const std::string region = _e_phone_number_cxx_make_region_code (region_code);
 	PhoneNumber pn1, pn2;
 
 	if (!_e_phone_number_cxx_parse (first_number, region, &pn1, error))

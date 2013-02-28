@@ -1800,7 +1800,8 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 }
 
 static void
-update_e164_attribute_params (EVCard *vcard)
+update_e164_attribute_params (EVCard *vcard,
+			      const gchar *default_region)
 {
 	GList *attr_list;
 
@@ -1816,7 +1817,10 @@ update_e164_attribute_params (EVCard *vcard)
 
 		/* Compute E164 number. */
 		values = e_vcard_attribute_get_values (attr);
-		e164 = values && values->data ? convert_phone (values->data, NULL) : NULL;
+
+		e164 = values && values->data
+			? convert_phone (values->data, default_region)
+			: NULL;
 
 		if (e164 == NULL) {
 			e_vcard_attribute_remove_param (attr, EVC_X_E164);
@@ -1880,7 +1884,7 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 
 	/* Update E.164 parameters in vcard if needed */
 	if (priv->store_vcard)
-		update_e164_attribute_params (E_VCARD (contact));
+		update_e164_attribute_params (E_VCARD (contact), default_region);
 
 	/* Update main summary table */
 	stmt = insert_stmt_from_contact (ebsdb, contact, folderid, priv->store_vcard, replace_existing, default_region);
@@ -2988,9 +2992,10 @@ extract_digits (const gchar *normal)
 
 static gchar *
 convert_string_value (EBookBackendSqliteDB *ebsdb,
-                      const gchar *value,
-                      ConvertFlags flags,
-                      MatchType match)
+		      const gchar          *value,
+		      const gchar          *region,
+		      ConvertFlags          flags,
+		      MatchType             match)
 {
 	GString *str;
 	size_t len;
@@ -3034,7 +3039,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 		computed = g_utf8_strreverse (normal, -1);
 		ptr = computed;
 	} else if (flags & CONVERT_PHONE) {
-		computed = convert_phone (normal, NULL);
+		computed = convert_phone (normal, region);
 		ptr = computed;
 	} else {
 		ptr = normal;
@@ -3078,13 +3083,14 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 
 static gchar *
 field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
-                           const gchar *folderid,
-                           const gchar *field_name_input,
-                           const gchar *query_term_input,
-                           MatchType match,
-                           gboolean *is_list_attr,
-                           gchar **query_term,
-                           gchar **extra_term)
+			   const gchar          *folderid,
+			   const gchar          *field_name_input,
+			   const gchar          *query_term_input,
+			   const gchar          *region,
+			   MatchType             match,
+			   gboolean             *is_list_attr,
+			   gchar               **query_term,
+			   gchar               **extra_term)
 {
 	gint summary_index;
 	gchar *field_name = NULL;
@@ -3097,7 +3103,9 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 	if (summary_index < 0) {
 		g_critical ("Only summary field matches should be converted to sql queries");
 		field_name = g_strconcat (folderid, ".", field_name_input, NULL);
-		value = convert_string_value (ebsdb, query_term_input, CONVERT_NORMALIZE, match);
+		value = convert_string_value (
+			ebsdb, query_term_input, region,
+			CONVERT_NORMALIZE, match);
 	} else {
 		gboolean suffix_search = FALSE;
 		gboolean phone_search = FALSE;
@@ -3139,18 +3147,19 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
 			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
 				value = convert_string_value (
-					ebsdb, query_term_input, CONVERT_REVERSE,
+					ebsdb, query_term_input, region, CONVERT_REVERSE,
 					(match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
 			else
 				value = convert_string_value (
-					ebsdb, query_term_input, CONVERT_REVERSE | CONVERT_NORMALIZE,
+					ebsdb, query_term_input, region,
+					CONVERT_REVERSE | CONVERT_NORMALIZE,
 					(match == MATCH_ENDS_WITH) ? MATCH_BEGINS_WITH : MATCH_IS);
 		} else if (phone_search) {
 			/* Special case for E.164 matching:
 			 *  o Normalize the string
 			 *  o Check the E.164 column instead
 			 */
-			const gint country_code = e_phone_number_get_country_code_for_region (NULL);
+			const gint country_code = e_phone_number_get_country_code_for_region (region);
 
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
 				field_name = g_strdup ("multi.value_phone");
@@ -3165,16 +3174,20 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 				extra = g_strdup_printf (" COLLATE ixphone_%d", country_code);
 
 				value = convert_string_value (
-					ebsdb, query_term_input,
+					ebsdb, query_term_input, region,
 					CONVERT_NORMALIZE | CONVERT_PHONE, match);
 			} else {
 				extra = g_strdup (" COLLATE ixphone_nn");
 
 				if (match == MATCH_NATIONAL_PHONE_NUMBER) {
-					value = convert_string_value (ebsdb, query_term_input, CONVERT_PHONE, MATCH_NATIONAL_PHONE_NUMBER);
+					value = convert_string_value (
+						ebsdb, query_term_input, region,
+						CONVERT_PHONE, MATCH_NATIONAL_PHONE_NUMBER);
 				} else {
 					gchar *const digits = extract_digits (query_term_input);
-					value = convert_string_value (ebsdb, digits, CONVERT_NOTHING, MATCH_ENDS_WITH);
+					value = convert_string_value (
+						ebsdb, digits, region,
+						CONVERT_NOTHING, MATCH_ENDS_WITH);
 					g_free (digits);
 				}
 
@@ -3189,10 +3202,15 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 					ebsdb->priv->summary_fields[summary_index].dbname, NULL);
 
 			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
-			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
-				value = convert_string_value (ebsdb, query_term_input, CONVERT_NOTHING, match);
-			else
-				value = convert_string_value (ebsdb, query_term_input, CONVERT_NORMALIZE, match);
+			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV) {
+				value = convert_string_value (
+					ebsdb, query_term_input, region,
+					CONVERT_NOTHING, match);
+			} else {
+				value = convert_string_value (
+					ebsdb, query_term_input, region,
+					CONVERT_NORMALIZE, match);
+			}
 		}
 	}
 
@@ -3259,7 +3277,7 @@ convert_match_exp (struct _ESExp *f,
 
 				field_name = field_name_and_query_term (
 					ebsdb, qdata->folderid, "full_name",
-					argv[1]->value.string,
+					argv[1]->value.string, NULL,
 					match, NULL, &query_term, NULL);
 				g_string_append_printf (
 					names, "(%s IS NOT NULL AND %s %s %s)",
@@ -3270,7 +3288,7 @@ convert_match_exp (struct _ESExp *f,
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_FAMILY_NAME)) {
 					field_name = field_name_and_query_term (
 						ebsdb, qdata->folderid, "family_name",
-						argv[1]->value.string,
+						argv[1]->value.string, NULL,
 						match, NULL, &query_term, NULL);
 					g_string_append_printf (
 						names, " OR (%s IS NOT NULL AND %s %s %s)",
@@ -3282,7 +3300,7 @@ convert_match_exp (struct _ESExp *f,
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_GIVEN_NAME)) {
 					field_name = field_name_and_query_term (
 						ebsdb, qdata->folderid, "given_name",
-						argv[1]->value.string,
+						argv[1]->value.string, NULL,
 						match, NULL, &query_term, NULL);
 					g_string_append_printf (
 						names, " OR (%s IS NOT NULL AND %s %s %s)",
@@ -3294,7 +3312,7 @@ convert_match_exp (struct _ESExp *f,
 				if (summary_dbname_from_field (ebsdb, E_CONTACT_NICKNAME)) {
 					field_name = field_name_and_query_term (
 						ebsdb, qdata->folderid, "nickname",
-						argv[1]->value.string,
+						argv[1]->value.string, NULL,
 						match, NULL, &query_term, NULL);
 					g_string_append_printf (
 						names, " OR (%s IS NOT NULL AND %s %s %s)",
@@ -3307,18 +3325,16 @@ convert_match_exp (struct _ESExp *f,
 				g_string_free (names, FALSE);
 
 			} else {
-				const gchar *const query_locale =
+				const gchar *const region =
 					argc > 2 && argv[2]->type == ESEXP_RES_STRING ?
 					argv[2]->value.string : NULL;
-				const gchar *const saved_locale = query_locale ?
-					setlocale (LC_ADDRESS, query_locale) : NULL;
 
 				gboolean is_list = FALSE;
 
 				/* This should ideally be the only valid case from all the above special casing, but oh well... */
 				field_name = field_name_and_query_term (
 					ebsdb, qdata->folderid, field,
-					argv[1]->value.string,
+					argv[1]->value.string, region,
 					match, &is_list, &query_term, &extra_term);
 
 				/* User functions like eqphone_national() cannot utilize indexes. Therefore we
@@ -3342,9 +3358,6 @@ convert_match_exp (struct _ESExp *f,
 
 				g_free (field_name);
 				g_free (query_term);
-
-				if (saved_locale)
-					setlocale (LC_ADDRESS, saved_locale);
 			}
 		}
 	}

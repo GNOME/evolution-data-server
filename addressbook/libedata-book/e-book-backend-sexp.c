@@ -30,7 +30,7 @@
 G_DEFINE_TYPE (EBookBackendSExp, e_book_backend_sexp, G_TYPE_OBJECT)
 
 typedef struct _SearchContext SearchContext;
-typedef gboolean (*CompareFunc) (const gchar *, const gchar *);
+typedef gboolean (*CompareFunc) (const gchar *, const gchar *, const gchar *);
 
 struct _EBookBackendSExpPrivate {
 	ESExp *search_sexp;
@@ -45,6 +45,7 @@ struct _SearchContext {
 static gboolean
 compare_im (EContact *contact,
             const gchar *str,
+            const gchar *region,
             CompareFunc compare,
             EContactField im_field)
 {
@@ -56,7 +57,7 @@ compare_im (EContact *contact,
 	for (l = aims; l != NULL; l = l->next) {
 		gchar *im = (gchar *) l->data;
 
-		if (im && compare (im, str)) {
+		if (im && compare (im, str, region)) {
 			found_it = TRUE;
 			break;
 		}
@@ -70,78 +71,88 @@ compare_im (EContact *contact,
 static gboolean
 compare_im_aim (EContact *contact,
                 const gchar *str,
+                const gchar *region,
                 CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_AIM);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_AIM);
 }
 
 static gboolean
 compare_im_msn (EContact *contact,
                 const gchar *str,
+                const gchar *region,
                 CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_MSN);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_MSN);
 }
 
 static gboolean
 compare_im_skype (EContact *contact,
                   const gchar *str,
+                  const gchar *region,
                   CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_SKYPE);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_SKYPE);
 }
 
 static gboolean
 compare_im_google_talk (EContact *contact,
                         const gchar *str,
+                        const gchar *region,
                         CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_GOOGLE_TALK);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_GOOGLE_TALK);
 }
 
 static gboolean
 compare_im_icq (EContact *contact,
                 const gchar *str,
+                const gchar *region,
                 CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_ICQ);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_ICQ);
 }
 
 static gboolean
 compare_im_yahoo (EContact *contact,
                   const gchar *str,
+                  const gchar *region,
                   CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_YAHOO);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_YAHOO);
 }
 
 static gboolean
 compare_im_gadugadu (EContact *contact,
                      const gchar *str,
+                     const gchar *region,
                      CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_GADUGADU);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_GADUGADU);
 }
 
 static gboolean
 compare_im_jabber (EContact *contact,
                    const gchar *str,
+                   const gchar *region,
                    CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_JABBER);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_JABBER);
 }
 
 static gboolean
 compare_im_groupwise (EContact *contact,
                       const gchar *str,
+                      const gchar *region,
                       CompareFunc compare)
 {
-	return compare_im (contact, str, compare, E_CONTACT_IM_GROUPWISE);
+	return compare_im (contact, str, region, compare, E_CONTACT_IM_GROUPWISE);
 }
 
 static gboolean
 compare_email (EContact *contact,
                const gchar *str,
+               const gchar *region,
                CompareFunc compare)
 {
 	gboolean rv = FALSE;
@@ -152,7 +163,7 @@ compare_email (EContact *contact,
 	for (l = list; l; l = l->next) {
 		const gchar *email = l->data;
 
-		rv = email && compare (email, str);
+		rv = email && compare (email, str, region);
 
 		if (rv)
 			break;
@@ -166,6 +177,7 @@ compare_email (EContact *contact,
 static gboolean
 compare_phone (EContact *contact,
                const gchar *str,
+               const gchar *region,
                CompareFunc compare)
 {
 	GList *list, *l;
@@ -176,7 +188,7 @@ compare_phone (EContact *contact,
 	for (l = list; l; l = l->next) {
 		const gchar *phone = l->data;
 
-		rv = phone && compare (phone, str);
+		rv = phone && compare (phone, str, region);
 
 		if (rv)
 			break;
@@ -190,24 +202,25 @@ compare_phone (EContact *contact,
 static gboolean
 compare_name (EContact *contact,
               const gchar *str,
+              const gchar *region,
               CompareFunc compare)
 {
 	const gchar *name;
 
 	name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
-	if (name && compare (name, str))
+	if (name && compare (name, str, region))
 		return TRUE;
 
 	name = e_contact_get_const (contact, E_CONTACT_FAMILY_NAME);
-	if (name && compare (name, str))
+	if (name && compare (name, str, region))
 		return TRUE;
 
 	name = e_contact_get_const (contact, E_CONTACT_GIVEN_NAME);
-	if (name && compare (name, str))
+	if (name && compare (name, str, region))
 		return TRUE;
 
 	name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
-	if (name && compare (name, str))
+	if (name && compare (name, str, region))
 		return TRUE;
 
 	return FALSE;
@@ -216,6 +229,7 @@ compare_name (EContact *contact,
 static gboolean
 compare_photo_uri (EContact *contact,
                    const gchar *str,
+                   const gchar *region,
                    CompareFunc compare)
 {
 	EContactPhoto *photo;
@@ -226,7 +240,7 @@ compare_photo_uri (EContact *contact,
 	if (photo) {
 		/* Compare the photo uri with the string */
 		if ((photo->type == E_CONTACT_PHOTO_TYPE_URI)
-		     && compare (photo->data.uri, str)) {
+		     && compare (photo->data.uri, str, region)) {
 			ret_val = TRUE;
 		}
 		e_contact_photo_free (photo);
@@ -237,6 +251,7 @@ compare_photo_uri (EContact *contact,
 static gboolean
 compare_address (EContact *contact,
                  const gchar *str,
+                 const gchar *region,
                  CompareFunc compare)
 {
 
@@ -246,13 +261,13 @@ compare_address (EContact *contact,
 	for (i = E_CONTACT_FIRST_ADDRESS_ID; i <= E_CONTACT_LAST_ADDRESS_ID; i++) {
 		EContactAddress *address = e_contact_get (contact, i);
 		if (address) {
-			rv =  (address->po && compare (address->po, str)) ||
-				(address->street && compare (address->street, str)) ||
-				(address->ext && compare (address->ext, str)) ||
-				(address->locality && compare (address->locality, str)) ||
-				(address->region && compare (address->region, str)) ||
-				(address->code && compare (address->code, str)) ||
-				(address->country && compare (address->country, str));
+			rv =  (address->po && compare (address->po, str, region)) ||
+				(address->street && compare (address->street, str, region)) ||
+				(address->ext && compare (address->ext, str, region)) ||
+				(address->locality && compare (address->locality, str, region)) ||
+				(address->region && compare (address->region, str, region)) ||
+				(address->code && compare (address->code, str, region)) ||
+				(address->country && compare (address->country, str, region));
 
 			e_contact_address_free (address);
 
@@ -268,6 +283,7 @@ compare_address (EContact *contact,
 static gboolean
 compare_category (EContact *contact,
                   const gchar *str,
+                  const gchar *region,
                   CompareFunc compare)
 {
 	GList *categories;
@@ -279,7 +295,7 @@ compare_category (EContact *contact,
 	for (iterator = categories; iterator; iterator = iterator->next) {
 		const gchar *category = iterator->data;
 
-		if (compare (category, str)) {
+		if (compare (category, str, region)) {
 			ret_val = TRUE;
 			break;
 		}
@@ -294,13 +310,14 @@ compare_category (EContact *contact,
 static gboolean
 compare_date (EContactDate *date,
               const gchar *str,
+              const gchar *region,
               CompareFunc compare)
 {
 	gchar *date_str = e_contact_date_to_string (date);
 	gboolean ret_val = FALSE;
 
 	if (date_str) {
-		if (compare (date_str, str)) {
+		if (compare (date_str, str, region)) {
 			ret_val = TRUE;
 		}
 		g_free (date_str);
@@ -320,6 +337,7 @@ static struct prop_info {
 	enum prop_type prop_type;
 	gboolean (*list_compare) (EContact *contact,
 				  const gchar *str,
+				  const gchar *region,
 				  CompareFunc compare);
 
 } prop_info_table[] = {
@@ -378,7 +396,6 @@ entry_compare (SearchContext *ctx,
 {
 	ESExpResult *r;
 	gint truth = FALSE;
-	const gchar *saved_locale = NULL;
 
 	if ((argc == 2
 		&& argv[0]->type == ESEXP_RES_STRING
@@ -389,12 +406,13 @@ entry_compare (SearchContext *ctx,
 		&& argv[2]->type == ESEXP_RES_STRING)) {
 		gchar *propname;
 		struct prop_info *info = NULL;
+		const gchar *region = NULL;
 		gint i;
 		gboolean any_field;
 		gboolean saw_any = FALSE;
 
 		if (argc > 2)
-			saved_locale = setlocale (LC_ADDRESS, argv[2]->value.string);
+			region = argv[2]->value.string;
 
 		propname = argv[0]->value.string;
 
@@ -418,16 +436,16 @@ entry_compare (SearchContext *ctx,
 
 					prop = e_contact_get_const (ctx->contact, info->field_id);
 
-					if (prop && compare (prop, argv[1]->value.string)) {
+					if (prop && compare (prop, argv[1]->value.string, region)) {
 						truth = TRUE;
 					}
-					if ((!prop) && compare ("", argv[1]->value.string)) {
+					if ((!prop) && compare ("", argv[1]->value.string, region)) {
 						truth = TRUE;
 					}
 				}
 				else if (info->prop_type == PROP_TYPE_LIST) {
 					/* the special searches that match any of the list elements */
-					truth = info->list_compare (ctx->contact, argv[1]->value.string, compare);
+					truth = info->list_compare (ctx->contact, argv[1]->value.string, region, compare);
 				}
 				else if (info->prop_type == PROP_TYPE_DATE) {
 					/* the special searches that match dates */
@@ -436,7 +454,7 @@ entry_compare (SearchContext *ctx,
 					date = e_contact_get (ctx->contact, info->field_id);
 
 					if (date) {
-						truth = compare_date (date, argv[1]->value.string, compare);
+						truth = compare_date (date, argv[1]->value.string, region, compare);
 						e_contact_date_free (date);
 					}
 				} else {
@@ -464,11 +482,11 @@ entry_compare (SearchContext *ctx,
 			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
 				const gchar *prop = e_contact_get_const (ctx->contact, fid);
 
-				if (prop && compare (prop, argv[1]->value.string)) {
+				if (prop && compare (prop, argv[1]->value.string, region)) {
 					truth = TRUE;
 				}
 
-				if ((!prop) && compare ("", argv[1]->value.string)) {
+				if ((!prop) && compare ("", argv[1]->value.string, region)) {
 					truth = TRUE;
 				}
 			} else {
@@ -483,9 +501,9 @@ entry_compare (SearchContext *ctx,
 						for (l = values; l && !truth; l = l->next) {
 							const gchar *value = l->data;
 
-							if (value && compare (value, argv[1]->value.string)) {
+							if (value && compare (value, argv[1]->value.string, region)) {
 								truth = TRUE;
-							} else if ((!value) && compare ("", argv[1]->value.string)) {
+							} else if ((!value) && compare ("", argv[1]->value.string, region)) {
 								truth = TRUE;
 							}
 						}
@@ -494,9 +512,6 @@ entry_compare (SearchContext *ctx,
 			}
 		}
 	}
-
-	if (saved_locale)
-		saved_locale = setlocale (LC_ADDRESS, saved_locale);
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
@@ -566,7 +581,8 @@ try_contains_word (const gchar *s1,
 */
 static gboolean
 contains_helper (const gchar *s1,
-                 const gchar *s2)
+                 const gchar *s2,
+                 const gchar *region)
 {
 	gchar *s1uni;
 	gchar *s2uni;
@@ -669,7 +685,8 @@ func_contains (struct _ESExp *f,
 
 static gboolean
 is_helper (const gchar *ps1,
-           const gchar *ps2)
+           const gchar *ps2,
+           const gchar *region)
 {
 	gchar *s1, *s2;
 	gboolean res = FALSE;
@@ -699,7 +716,8 @@ func_is (struct _ESExp *f,
 
 static gboolean
 endswith_helper (const gchar *ps1,
-                 const gchar *ps2)
+                 const gchar *ps2,
+                 const gchar *region)
 {
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
 	gchar *s2 = e_util_utf8_remove_accents (ps2);
@@ -731,7 +749,8 @@ func_endswith (struct _ESExp *f,
 
 static gboolean
 beginswith_helper (const gchar *ps1,
-                   const gchar *ps2)
+                   const gchar *ps2,
+                   const gchar *region)
 {
 	gchar *p;
 	gboolean res = FALSE;
@@ -762,10 +781,12 @@ func_beginswith (struct _ESExp *f,
 static gboolean
 eqphone_helper (const gchar *ps1,
                 const gchar *ps2,
+                const gchar *region,
                 EPhoneNumberMatch required_match)
 {
 	const EPhoneNumberMatch actual_match =
-		e_phone_number_compare_strings (ps1, ps2, NULL);
+		e_phone_number_compare_strings_with_region (
+			ps1, ps2, region, NULL);
 
 	return actual_match >= E_PHONE_NUMBER_MATCH_EXACT
 		&& actual_match <= required_match;
@@ -773,23 +794,26 @@ eqphone_helper (const gchar *ps1,
 
 static gboolean
 eqphone_exact_helper (const gchar *ps1,
-                      const gchar *ps2)
+                      const gchar *ps2,
+                      const gchar *region)
 {
-	return eqphone_helper (ps1, ps2, E_PHONE_NUMBER_MATCH_EXACT);
+	return eqphone_helper (ps1, ps2, region, E_PHONE_NUMBER_MATCH_EXACT);
 }
 
 static gboolean
 eqphone_national_helper (const gchar *ps1,
-                         const gchar *ps2)
+                         const gchar *ps2,
+                         const gchar *region)
 {
-	return eqphone_helper (ps1, ps2, E_PHONE_NUMBER_MATCH_NATIONAL);
+	return eqphone_helper (ps1, ps2, region, E_PHONE_NUMBER_MATCH_NATIONAL);
 }
 
 static gboolean
 eqphone_short_helper (const gchar *ps1,
-                      const gchar *ps2)
+                      const gchar *ps2,
+                      const gchar *region)
 {
-	return eqphone_helper (ps1, ps2, E_PHONE_NUMBER_MATCH_SHORT);
+	return eqphone_helper (ps1, ps2, region, E_PHONE_NUMBER_MATCH_SHORT);
 }
 
 static ESExpResult *
@@ -827,7 +851,8 @@ func_eqphone_short (struct _ESExp *f,
 
 static gboolean
 exists_helper (const gchar *ps1,
-               const gchar *ps2)
+               const gchar *ps2,
+               const gchar *region)
 {
 	gboolean res = FALSE;
 	gchar *s1 = e_util_utf8_remove_accents (ps1);
@@ -878,7 +903,7 @@ func_exists (struct _ESExp *f,
 				}
 				else if (info->prop_type == PROP_TYPE_LIST) {
 					/* the special searches that match any of the list elements */
-					truth = info->list_compare (ctx->contact, "", exists_helper);
+					truth = info->list_compare (ctx->contact, "", NULL, exists_helper);
 				}
 				else if (info->prop_type == PROP_TYPE_DATE) {
 					EContactDate *date;

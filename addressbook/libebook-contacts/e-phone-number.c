@@ -94,10 +94,11 @@ e_phone_number_is_supported (void)
 
 /**
  * e_phone_number_get_country_code_for_region:
- * @region_code: (allow-none): a two-letter country code, or %NULL
+ * @region_code: (allow-none): a two-letter country code, a locale name, or
+ * %NULL
  *
  * Retrieves the preferred country calling code for @region_code,
- * e.g. 358 for "fi".
+ * e.g. 358 for "fi" or 1 for "en_US@UTF-8".
  *
  * If %NULL is passed for @region_code the default region as returned by
  * e_phone_number_get_default_region() is used.
