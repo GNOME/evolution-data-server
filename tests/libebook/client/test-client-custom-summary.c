@@ -21,6 +21,7 @@
  */
 
 #include <config.h>
+
 #include <stdlib.h>
 #include <libebook/libebook.h>
 #include <locale.h>
