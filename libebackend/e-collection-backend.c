@@ -711,11 +711,29 @@ collection_backend_child_added (ECollectionBackend *backend,
                                 ESource *child_source)
 {
 	ESource *collection_source;
+	const gchar *extension_name;
+	gboolean is_mail = FALSE;
 
 	collection_backend_children_insert (backend, child_source);
 	collection_backend_bind_child_enabled (backend, child_source);
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
+	is_mail |= e_source_has_extension (child_source, extension_name);
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
+	is_mail |= e_source_has_extension (child_source, extension_name);
+
+	extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
+	is_mail |= e_source_has_extension (child_source, extension_name);
+
+	/* Synchronize mail-related display names with the collection. */
+	if (is_mail)
+		g_object_bind_property (
+			collection_source, "display-name",
+			child_source, "display-name",
+			G_BINDING_SYNC_CREATE);
 
 	/* Collection children are not removable. */
 	e_server_side_source_set_removable (
