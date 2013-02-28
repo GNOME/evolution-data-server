@@ -444,7 +444,7 @@ e_test_server_utils_run (void)
 		 * in this case, presumably this is due to some leaked
 		 * GDBusConnection reference counting
 		 */
-		e_test_dbus_stop (global_test_dbus);
+		e_test_dbus_down (global_test_dbus);
 		/* g_object_unref (global_test_dbus); */
 		global_test_dbus = NULL;
 	}

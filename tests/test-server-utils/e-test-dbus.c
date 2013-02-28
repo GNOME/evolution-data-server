@@ -665,18 +665,20 @@ void
 e_test_dbus_down (ETestDBus *self)
 {
   GDBusConnection *connection = NULL;
+  gpointer weak_connection = NULL;
 
   g_return_if_fail (E_IS_TEST_DBUS (self));
   g_return_if_fail (self->priv->up);
 
-  /* connection = _g_bus_get_singleton_if_exists (G_BUS_TYPE_SESSION); */
-  /* if (connection != NULL) */
-  /*   g_dbus_connection_set_exit_on_close (connection, FALSE); */
+  connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+  g_dbus_connection_set_exit_on_close (connection, FALSE);
+  g_object_add_weak_pointer (G_OBJECT (connection), &weak_connection);
+  g_object_unref (connection);
 
   if (self->priv->bus_address != NULL)
     stop_daemon (self);
 
-  if (connection != NULL)
+  if (weak_connection)
     _g_object_unref_and_wait_weak_notify (connection);
 
   g_unsetenv ("DBUS_SESSION_BUS_ADDRESS");
