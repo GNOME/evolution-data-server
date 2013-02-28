@@ -3109,20 +3109,56 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 
 /* Helper for e_book_client_get_view() */
 static void
-book_client_get_view_thread (GSimpleAsyncResult *simple,
-                             GObject *source_object,
-                             GCancellable *cancellable)
+book_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
+                                     GObject *source_object,
+                                     GCancellable *cancellable)
 {
+	EBookClient *client = E_BOOK_CLIENT (source_object);
 	AsyncContext *async_context;
+	gchar *utf8_sexp;
+	gchar *object_path = NULL;
 	GError *error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_get_view_sync (
-		E_BOOK_CLIENT (source_object),
-		async_context->sexp,
-		&async_context->client_view,
-		cancellable, &error);
+	utf8_sexp = e_util_utf8_make_valid (async_context->sexp);
+
+	e_dbus_address_book_call_get_view_sync (
+		client->priv->dbus_proxy, utf8_sexp,
+		&object_path, cancellable, &error);
+
+	g_free (utf8_sexp);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((object_path != NULL) && (error == NULL)) ||
+		((object_path == NULL) && (error != NULL)));
+
+	if (object_path != NULL) {
+		GDBusConnection *connection;
+		EBookClientView *client_view;
+
+		connection = g_dbus_proxy_get_connection (
+			G_DBUS_PROXY (client->priv->dbus_proxy));
+
+		client_view = g_initable_new (
+			E_TYPE_BOOK_CLIENT_VIEW,
+			cancellable, &error,
+			"client", client,
+			"connection", connection,
+			"object-path", object_path,
+			"direct-book", client->priv->direct_book,
+			NULL);
+
+		/* Sanity check. */
+		g_return_if_fail (
+			((client_view != NULL) && (error == NULL)) ||
+			((client_view == NULL) && (error != NULL)));
+
+		async_context->client_view = client_view;
+
+		g_free (object_path);
+	}
 
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
@@ -3170,8 +3206,8 @@ e_book_client_get_view (EBookClient *client,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	g_simple_async_result_run_in_thread (
-		simple, book_client_get_view_thread,
+	book_client_run_in_dbus_thread (
+		simple, book_client_get_view_in_dbus_thread,
 		G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (simple);
@@ -3246,53 +3282,26 @@ e_book_client_get_view_sync (EBookClient *client,
                              GCancellable *cancellable,
                              GError **error)
 {
-	gchar *utf8_sexp;
-	gchar *object_path = NULL;
+	EAsyncClosure *closure;
+	GAsyncResult *result;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_view != NULL, FALSE);
 
-	utf8_sexp = e_util_utf8_make_valid (sexp);
+	closure = e_async_closure_new ();
 
-	success = e_dbus_address_book_call_get_view_sync (
-		client->priv->dbus_proxy, utf8_sexp,
-		&object_path, cancellable, error);
+	e_book_client_get_view (
+		client, sexp, cancellable,
+		e_async_closure_callback, closure);
 
-	g_free (utf8_sexp);
+	result = e_async_closure_wait (closure);
 
-	/* Sanity check. */
-	g_return_val_if_fail (
-		(success && (object_path != NULL)) ||
-		(!success && (object_path == NULL)), FALSE);
+	success = e_book_client_get_view_finish (
+		client, result, out_view, error);
 
-	if (object_path != NULL) {
-		GDBusConnection *connection;
-		EBookClientView *client_view;
-
-		connection = g_dbus_proxy_get_connection (
-			G_DBUS_PROXY (client->priv->dbus_proxy));
-
-		client_view = g_initable_new (
-			E_TYPE_BOOK_CLIENT_VIEW,
-			cancellable, error,
-			"client", client,
-			"connection", connection,
-			"object-path", object_path,
-			"direct-book", client->priv->direct_book,
-			NULL);
-
-		/* XXX Would have been easier to return the
-		 *     EBookClientView directly rather than
-		 *     through an "out" parameter. */
-		if (client_view != NULL)
-			*out_view = client_view;
-		else
-			success = FALSE;
-
-		g_free (object_path);
-	}
+	e_async_closure_free (closure);
 
 	return success;
 }

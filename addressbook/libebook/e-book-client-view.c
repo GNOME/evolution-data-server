@@ -38,6 +38,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewPrivate))
 
+typedef struct _SignalClosure SignalClosure;
+
 struct _EBookClientViewPrivate {
 	EBookClient *client;
 	GDBusProxy *dbus_proxy;
@@ -53,6 +55,15 @@ struct _EBookClientViewPrivate {
 	gulong objects_removed_handler_id;
 	gulong progress_handler_id;
 	gulong complete_handler_id;
+};
+
+struct _SignalClosure {
+	EBookClientView *client_view;
+	GSList *object_list;
+	GSList *string_list;
+	gchar *message;
+	guint percent;
+	GError *error;
 };
 
 enum {
@@ -91,6 +102,149 @@ typedef struct {
 	guint signum;
 } NotificationData;
 
+static void
+signal_closure_free (SignalClosure *signal_closure)
+{
+	g_object_unref (signal_closure->client_view);
+
+	g_slist_free_full (
+		signal_closure->object_list,
+		(GDestroyNotify) g_object_unref);
+
+	g_slist_free_full (
+		signal_closure->string_list,
+		(GDestroyNotify) g_free);
+
+	g_free (signal_closure->message);
+
+	if (signal_closure->error != NULL)
+		g_error_free (signal_closure->error);
+
+	g_slice_free (SignalClosure, signal_closure);
+}
+
+static gboolean
+book_client_view_emit_objects_added_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[OBJECTS_ADDED], 0,
+		signal_closure->object_list);
+
+	return FALSE;
+}
+
+static gboolean
+book_client_view_emit_objects_modified_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[OBJECTS_MODIFIED], 0,
+		signal_closure->object_list);
+
+	return FALSE;
+}
+
+static gboolean
+book_client_view_emit_objects_removed_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[OBJECTS_REMOVED], 0,
+		signal_closure->string_list);
+
+	return FALSE;
+}
+
+static gboolean
+book_client_view_emit_progress_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[PROGRESS], 0,
+		signal_closure->percent,
+		signal_closure->message);
+
+	return FALSE;
+}
+
+static gboolean
+book_client_view_emit_complete_idle_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+
+	g_signal_emit (
+		signal_closure->client_view,
+		signals[COMPLETE], 0,
+		signal_closure->error);
+
+	return FALSE;
+}
+
+static void
+book_client_view_emit_objects_added (EBookClientView *client_view,
+                                     GSList *object_list)
+{
+	EBookClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
+
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->object_list = object_list;  /* takes ownership */
+
+	client = e_book_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		book_client_view_emit_objects_added_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
+}
+
+static void
+book_client_view_emit_objects_modified (EBookClientView *client_view,
+                                        GSList *object_list)
+{
+	EBookClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
+
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->object_list = object_list;  /* takes ownership */
+
+	client = e_book_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		book_client_view_emit_objects_modified_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
+}
+
 static gchar *
 direct_contacts_query (const gchar * const *uids)
 {
@@ -116,30 +270,44 @@ direct_contacts_query (const gchar * const *uids)
 
 static void
 direct_contacts_ready (GObject *source_object,
-		       GAsyncResult *res,
-		       gpointer user_data)
+                       GAsyncResult *result,
+                       gpointer user_data)
 {
 	NotificationData *data = (NotificationData *)user_data;
 	GSList *contacts = NULL;
 	GError *error = NULL;
 
-	if (!e_data_book_get_contacts_finish (E_DATA_BOOK (source_object),
-					      res, &contacts, &error)) {
-		g_warning ("Error fetching contacts directly: %s\n", error->message);
+	e_data_book_get_contacts_finish (
+		E_DATA_BOOK (source_object),
+		result, &contacts, &error);
+
+	if (error != NULL) {
+		g_warn_if_fail (contacts == NULL);
+		g_warning (
+			"Error fetching contacts directly: %s\n",
+			error->message);
 		g_error_free (error);
+
+	} else if (data->signum == OBJECTS_ADDED) {
+		/* Takes ownership of the linked list. */
+		book_client_view_emit_objects_added (data->view, contacts);
+
+	} else if (data->signum == OBJECTS_MODIFIED) {
+		/* Takes ownership of the linked list. */
+		book_client_view_emit_objects_modified (data->view, contacts);
+
 	} else {
-		g_signal_emit (data->view, data->signum, 0, contacts);
+		g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 	}
 
-	g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 	g_object_unref (data->view);
 	g_slice_free (NotificationData, data);
 }
 
 static void
 direct_contacts_fetch (EBookClientView *view,
-		       const gchar * const *uids,
-		       guint signum)
+                       const gchar * const *uids,
+                       guint signum)
 {
 	NotificationData *data;
 	gchar *sexp = direct_contacts_query (uids);
@@ -151,13 +319,28 @@ direct_contacts_fetch (EBookClientView *view,
 		GSList *contacts = NULL;
 		GError *error = NULL;
 
-		if (!e_data_book_get_contacts_sync (view->priv->direct_book,
-						    sexp, &contacts, NULL, &error)) {
-			g_warning ("Error fetching contacts directly: %s\n", error->message);
+		e_data_book_get_contacts_sync (
+			view->priv->direct_book,
+			sexp, &contacts, NULL, &error);
+
+		if (error != NULL) {
+			g_warn_if_fail (contacts == NULL);
+			g_warning (
+				"Error fetching contacts directly: %s\n",
+				error->message);
 			g_error_free (error);
+
+		} else if (signum == OBJECTS_ADDED) {
+			/* Takes ownership of the linked list. */
+			book_client_view_emit_objects_added (view, contacts);
+
+		} else if (signum == OBJECTS_MODIFIED) {
+			/* Takes ownership of the linked list. */
+			book_client_view_emit_objects_modified (view, contacts);
+
 		} else {
-			g_signal_emit (view, signum, 0, contacts);
-			g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
+			g_slist_free_full (
+				contacts, (GDestroyNotify) g_object_unref);
 		}
 
 	} else {
@@ -168,8 +351,9 @@ direct_contacts_fetch (EBookClientView *view,
 		data->view = g_object_ref (view);
 		data->signum = signum;
 
-		e_data_book_get_contacts (view->priv->direct_book,
-					  sexp, NULL, direct_contacts_ready, data);
+		e_data_book_get_contacts (
+			view->priv->direct_book,
+			sexp, NULL, direct_contacts_ready, data);
 	}
 
 	g_free (sexp);
@@ -178,25 +362,25 @@ direct_contacts_fetch (EBookClientView *view,
 static void
 book_client_view_objects_added_cb (EGdbusBookView *object,
                                    const gchar * const *vcards,
-                                   EBookClientView *view)
+                                   EBookClientView *client_view)
 {
-	const gchar * const *p;
 	GSList *list = NULL;
+	gint ii;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
 	/* array contains UIDs only */
-	if (view->priv->direct_book) {
-		direct_contacts_fetch (view, vcards, signals[OBJECTS_ADDED]);
+	if (client_view->priv->direct_book != NULL) {
+		direct_contacts_fetch (client_view, vcards, OBJECTS_ADDED);
 		return;
 	}
 
 	/* array contains both UID and vcard */
-	for (p = vcards; p[0] && p[1]; p += 2) {
+	for (ii = 0; vcards[ii] != NULL && vcards[ii + 1] != NULL; ii += 2) {
 		EContact *contact;
-		const gchar *vcard = p[0];
-		const gchar *uid = p[1];
+		const gchar *vcard = vcards[ii];
+		const gchar *uid = vcards[ii + 1];
 
 		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 		list = g_slist_prepend (list, contact);
@@ -204,33 +388,32 @@ book_client_view_objects_added_cb (EGdbusBookView *object,
 
 	list = g_slist_reverse (list);
 
-	g_signal_emit (view, signals[OBJECTS_ADDED], 0, list);
-
-	g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+	/* Takes ownership of the linked list. */
+	book_client_view_emit_objects_added (client_view, list);
 }
 
 static void
 book_client_view_objects_modified_cb (EGdbusBookView *object,
                                       const gchar * const *vcards,
-                                      EBookClientView *view)
+                                      EBookClientView *client_view)
 {
-	const gchar * const *p;
 	GSList *list = NULL;
+	gint ii;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
 	/* array contains UIDs only */
-	if (view->priv->direct_book) {
-		direct_contacts_fetch (view, vcards, signals[OBJECTS_MODIFIED]);
+	if (client_view->priv->direct_book != NULL) {
+		direct_contacts_fetch (client_view, vcards, OBJECTS_MODIFIED);
 		return;
 	}
 
 	/* array contains both UID and vcard */
-	for (p = vcards; p[0] && p[1]; p += 2) {
+	for (ii = 0; vcards[ii] != NULL && vcards[ii + 1] != NULL; ii += 2) {
 		EContact *contact;
-		const gchar *vcard = p[0];
-		const gchar *uid = p[1];
+		const gchar *vcard = vcards[ii];
+		const gchar *uid = vcards[ii + 1];
 
 		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 		list = g_slist_prepend (list, contact);
@@ -238,63 +421,113 @@ book_client_view_objects_modified_cb (EGdbusBookView *object,
 
 	list = g_slist_reverse (list);
 
-	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, list);
-
-	g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+	/* Takes ownership of the linked list. */
+	book_client_view_emit_objects_modified (client_view, list);
 }
 
 static void
 book_client_view_objects_removed_cb (EGdbusBookView *object,
                                      const gchar * const *ids,
-                                     EBookClientView *view)
+                                     EBookClientView *client_view)
 {
-	const gchar * const *p;
+	EBookClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
 	GSList *list = NULL;
+	gint ii;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
-	for (p = ids; *p; p++)
-		list = g_slist_prepend (list, (gchar *) *p);
+	for (ii = 0; ids[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (ids[ii]));
 
-	list = g_slist_reverse (list);
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->string_list = g_slist_reverse (list);
 
-	g_signal_emit (view, signals[OBJECTS_REMOVED], 0, list);
+	client = e_book_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
 
-	/* No need to free the values, our caller will */
-	g_slist_free (list);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		book_client_view_emit_objects_removed_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
 book_client_view_progress_cb (EGdbusBookView *object,
                               guint percent,
                               const gchar *message,
-                              EBookClientView *view)
+                              EBookClientView *client_view)
 {
-	if (!view->priv->running)
+	EBookClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
+
+	if (!client_view->priv->running)
 		return;
 
-	g_signal_emit (view, signals[PROGRESS], 0, percent, message);
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	signal_closure->message = g_strdup (message);
+	signal_closure->percent = percent;
+
+	client = e_book_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		book_client_view_emit_progress_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
 book_client_view_complete_cb (EGdbusBookView *object,
                               const gchar * const *in_error_strv,
-                              EBookClientView *view)
+                              EBookClientView *client_view)
 {
-	GError *error = NULL;
+	EBookClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	SignalClosure *signal_closure;
 
-	if (!view->priv->running)
+	if (!client_view->priv->running)
 		return;
 
-	view->priv->complete = TRUE;
+	signal_closure = g_slice_new0 (SignalClosure);
+	signal_closure->client_view = g_object_ref (client_view);
+	e_gdbus_templates_decode_error (in_error_strv, &signal_closure->error);
 
-	g_return_if_fail (e_gdbus_templates_decode_error (in_error_strv, &error));
+	client = e_book_client_view_get_client (client_view);
+	main_context = e_client_ref_main_context (E_CLIENT (client));
 
-	g_signal_emit (view, signals[COMPLETE], 0, error);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		book_client_view_emit_complete_idle_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
 
-	if (error != NULL)
-		g_error_free (error);
+	g_main_context_unref (main_context);
+
+	client_view->priv->complete = TRUE;
 }
 
 static void
