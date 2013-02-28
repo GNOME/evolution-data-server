@@ -307,8 +307,15 @@ upload_contact (EBookBackendWebdav *webdav,
 			SoupURI *suri = soup_uri_new (uri);
 			gchar *full_uri;
 
-			soup_uri_set_path (suri, redir_uri);
-			full_uri = soup_uri_to_string (suri, TRUE);
+			if (*redir_uri != '/' && *redir_uri != '\\') {
+				gchar *slashed_path = g_strconcat ("/", redir_uri, NULL);
+
+				soup_uri_set_path (suri, slashed_path);
+				g_free (slashed_path);
+			} else {
+				soup_uri_set_path (suri, redir_uri);
+			}
+			full_uri = soup_uri_to_string (suri, FALSE);
 
 			e_contact_set (contact, E_CONTACT_UID, full_uri);
 
@@ -1080,7 +1087,7 @@ download_contacts (EBookBackendWebdav *webdav,
 			SoupURI *soup_uri = soup_uri_new (priv->uri);
 			soup_uri->path    = g_strdup (uri);
 
-			complete_uri = soup_uri_to_string (soup_uri, 0);
+			complete_uri = soup_uri_to_string (soup_uri, FALSE);
 			soup_uri_free (soup_uri);
 		} else {
 			complete_uri = g_strdup (uri);
