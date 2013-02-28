@@ -19,6 +19,8 @@ module_gnome_online_accounts_la_CPPFLAGS = \
 
 module_gnome_online_accounts_la_SOURCES = \
 	module-gnome-online-accounts.c \
+	e-goa-password-based.c \
+	e-goa-password-based.h \
 	goaewsclient.c \
 	goaewsclient.h \
 	$(NULL)

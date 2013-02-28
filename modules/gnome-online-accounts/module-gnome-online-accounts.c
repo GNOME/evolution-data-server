@@ -22,12 +22,12 @@
 #include <config.h>
 #include <goa/goa.h>
 #include <glib/gi18n-lib.h>
-#include <libsecret/secret.h>
 #include <libsoup/soup.h>
 
 #include <libebackend/libebackend.h>
 
 #include "goaewsclient.h"
+#include "e-goa-password-based.h"
 
 /* Standard GObject macros */
 #define E_TYPE_GNOME_ONLINE_ACCOUNTS \
@@ -58,25 +58,6 @@ struct _EGnomeOnlineAccounts {
 struct _EGnomeOnlineAccountsClass {
 	EExtensionClass parent_class;
 };
-
-/* The keyring definintions are copied from e-authentication-session.c */
-
-#define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
-#define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source %s"
-
-#ifdef HAVE_GOA_PASSWORD_BASED
-/* XXX Probably want to share this with
- *     evolution-source-registry-migrate-sources.c */
-static SecretSchema schema = {
-	"org.gnome.Evolution.DataSource",
-	SECRET_SCHEMA_DONT_MATCH_NAME,
-	{
-		{ KEYRING_ITEM_ATTRIBUTE_NAME,
-		  SECRET_SCHEMA_ATTRIBUTE_STRING },
-		{ NULL, 0 }
-	}
-};
-#endif /* HAVE_GOA_PASSWORD_BASED */
 
 /* Module Entry Points */
 void e_module_load (GTypeModule *type_module);
@@ -582,90 +563,6 @@ gnome_online_accounts_config_oauth2 (EGnomeOnlineAccounts *extension,
 }
 
 static void
-gnome_online_accounts_config_password (EGnomeOnlineAccounts *extension,
-                                       ESource *source,
-                                       GoaObject *goa_object)
-{
-#ifdef HAVE_GOA_PASSWORD_BASED
-	GoaAccount *goa_account;
-	GoaPasswordBased *goa_password_based;
-	EAsyncClosure *closure;
-	GAsyncResult *result;
-	const gchar *uid;
-	gchar *arg_id;
-	gchar *display_name;
-	gchar *password = NULL;
-	GError *error = NULL;
-
-	/* If the GNOME Online Account is password-based, we use its
-	 * password to seed our own keyring entry for the collection
-	 * source which avoids having to special-case authentication
-	 * like we do for OAuth.  Plus, if the stored password is no
-	 * good we'll prompt for a new one instead of just giving up. */
-
-	goa_password_based = goa_object_get_password_based (goa_object);
-
-	if (goa_password_based == NULL)
-		return;
-
-	closure = e_async_closure_new ();
-
-	/* XXX The GOA documentation doesn't explain the string
-	 *     argument in goa_password_based_get_password() so
-	 *     we'll pass in the identity and hope for the best. */
-	goa_account = goa_object_get_account (goa_object);
-	arg_id = goa_account_dup_identity (goa_account);
-	g_object_unref (goa_account);
-
-	goa_password_based_call_get_password (
-		goa_password_based, arg_id, NULL,
-		e_async_closure_callback, closure);
-
-	g_free (arg_id);
-
-	result = e_async_closure_wait (closure);
-
-	goa_password_based_call_get_password_finish (
-		goa_password_based, &password, result, &error);
-
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-		goto exit;
-	}
-
-	uid = e_source_get_uid (source);
-	display_name = g_strdup_printf (KEYRING_ITEM_DISPLAY_FORMAT, uid);
-
-	secret_password_store (
-		&schema, SECRET_COLLECTION_DEFAULT,
-		display_name, password, NULL,
-		e_async_closure_callback, closure,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
-		NULL);
-
-	result = e_async_closure_wait (closure);
-
-	secret_password_store_finish (result, &error);
-
-	g_free (display_name);
-	g_free (password);
-
-	/* If we fail to store the password, we'll just end up prompting
-	 * for a password like normal.  Annoying, maybe, but not the end
-	 * of the world.  Still leave a breadcrumb for debugging though. */
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-	}
-
-exit:
-	e_async_closure_free (closure);
-	g_object_unref (goa_password_based);
-#endif /* HAVE_GOA_PASSWORD_BASED */
-}
-
-static void
 gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
                                          ESource *source,
                                          GoaObject *goa_object)
@@ -764,11 +661,19 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 
 	/* Handle optional GOA interfaces. */
 	gnome_online_accounts_config_exchange (extension, source, goa_object);
-	gnome_online_accounts_config_password (extension, source, goa_object);
 
 	/* The data source should not be removable by clients. */
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (source), FALSE);
+
+#ifdef HAVE_GOA_PASSWORD_BASED
+	if (goa_object_peek_password_based (goa_object) != NULL) {
+		/* Obtain passwords from the OnlineAccounts service. */
+		e_server_side_source_set_auth_session_type (
+			E_SERVER_SIDE_SOURCE (source),
+			E_TYPE_GOA_PASSWORD_BASED);
+	}
+#endif /* HAVE_GOA_PASSWORD_BASED */
 
 	if (goa_object_peek_oauth2_based (goa_object) != NULL) {
 		/* This module provides OAuth 2.0 support to the collection.
@@ -1406,6 +1311,7 @@ e_gnome_online_accounts_init (EGnomeOnlineAccounts *extension)
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
+	e_goa_password_based_type_register (type_module);
 	e_gnome_online_accounts_register_type (type_module);
 }
 
