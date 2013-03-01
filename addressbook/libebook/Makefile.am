@@ -124,10 +124,12 @@ EBook_1_2_gir_SCANNERFLAGS = \
 EBook_1_2_gir_LIBS = \
 	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
-	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
+	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(NULL)
 EBook_1_2_gir_FILES = \
 	$(libebook_1_2_la_SOURCES) \
-	$(libebookinclude_HEADERS)
+	$(libebookinclude_HEADERS) \
+	$(NULL)
 
 INTROSPECTION_GIRS += EBook-1.2.gir
 

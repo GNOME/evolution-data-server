@@ -91,36 +91,46 @@ pkgconfig_DATA = libebook-contacts-$(API_VERSION).pc
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver \
-	--add-include-path=$(srcdir) --identifier-prefix=E --pkg-export \
-	libebook-contacts-1.2 --c-include="libebook-contacts/libebook-contacts.h" --warn-all
-INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver \
-	--includedir=$(srcdir)
+INTROSPECTION_SCANNER_ARGS = \
+	--add-include-path=$(top_builddir)/libedataserver \
+	--add-include-path=$(srcdir) \
+	--identifier-prefix=E \
+	--pkg-export libebook-contacts-1.2 \
+	--c-include="libebook-contacts/libebook-contacts.h" \
+	$(NULL)
+INTROSPECTION_COMPILER_ARGS = \
+	--includedir=$(top_builddir)/libedataserver \
+	--includedir=$(srcdir) \
+	$(NULL)
 
 if HAVE_INTROSPECTION
 introspection_sources = $(libebook_contacts_1_2_la_SOURCES)
 EBookContacts-1.2.gir: libebook-contacts-1.2.la
 
-EBookContacts_1_2_gir_INCLUDES = GObject-2.0 GLib-2.0 libxml2-2.0 \
-	Gio-2.0 \
-	$(NULL)
+EBookContacts_1_2_gir_INCLUDES = GObject-2.0 GLib-2.0 libxml2-2.0 Gio-2.0
 libxml_include = `$(PKG_CONFIG) --cflags libxml-2.0`
-EBookContacts_1_2_gir_CFLAGS = $(INCLUDES) \
-		       $(libxml_include) \
-		       -I$(top_srcdir) \
-		       -I$(top_builddir) \
-		       -I$(top_srcdir)/addressbook/ \
-		       -I$(top_builddir)/addressbook/ \
-		       -I$(top_srcdir)/addressbook/libebook-contacts \
-		       -I$(top_builddir)/addressbook/libebook-contacts \
-			-DLIBEBOOK_CONTACTS_COMPILATION		\
-		       $(EVOLUTION_ADDRESSBOOK_CFLAGS) \
-		       $(CAMEL_CFLAGS) \
-			$(NULL)
-EBookContacts_1_2_gir_SCANNERFLAGS = --include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir
+EBookContacts_1_2_gir_CFLAGS = \
+	$(INCLUDES) \
+	$(libxml_include) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir)/addressbook/ \
+	-I$(top_builddir)/addressbook/ \
+	-I$(top_srcdir)/addressbook/libebook-contacts \
+	-I$(top_builddir)/addressbook/libebook-contacts \
+	-DLIBEBOOK_CONTACTS_COMPILATION		\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(NULL)
+EBookContacts_1_2_gir_SCANNERFLAGS = \
+	--include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir
 EBookContacts_1_2_gir_LIBS = \
-	libebook-contacts-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
-EBookContacts_1_2_gir_FILES = $(libebook_contacts_1_2_la_SOURCES) $(libebookcontactsinclude_HEADERS)
+	libebook-contacts-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(NULL)
+EBookContacts_1_2_gir_FILES = \
+	$(libebook_contacts_1_2_la_SOURCES) \
+	$(libebookcontactsinclude_HEADERS) \
+	$(NULL)
 
 INTROSPECTION_GIRS += EBookContacts-1.2.gir
 
