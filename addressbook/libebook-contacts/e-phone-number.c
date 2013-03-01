@@ -324,9 +324,33 @@ e_phone_number_compare_strings (const gchar *first_number,
                                 const gchar *second_number,
                                 GError **error)
 {
+	return e_phone_number_compare_strings_with_region (
+		first_number, second_number, NULL, error);
+}
+
+/**
+ * e_phone_number_compare_strings_with_region:
+ * @first_number: the first EPhoneNumber to compare
+ * @second_number: the second EPhoneNumber to compare
+ * @region_code: (allow-none): a two-letter country code, or %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Compares two phone numbers within the context of @region_code.
+ *
+ * Returns: The quality of matching for the two phone numbers.
+ *
+ * Since: 3.8
+ **/
+EPhoneNumberMatch
+e_phone_number_compare_strings_with_region (const gchar *first_number,
+                                            const gchar *second_number,
+                                            const gchar *region_code,
+                                            GError **error)
+{
 #ifdef ENABLE_PHONENUMBER
 
-	return _e_phone_number_cxx_compare_strings (first_number, second_number, error);
+	return _e_phone_number_cxx_compare_strings (
+		first_number, second_number, region_code, error);
 
 #else /* ENABLE_PHONENUMBER */
 

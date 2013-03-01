@@ -228,6 +228,11 @@ EPhoneNumberMatch	e_phone_number_compare		(const EPhoneNumber *first_number,
 EPhoneNumberMatch	e_phone_number_compare_strings	(const gchar *first_number,
 							 const gchar *second_number,
 							 GError **error);
+EPhoneNumberMatch	e_phone_number_compare_strings_with_region
+							(const gchar *first_number,
+							 const gchar *second_number,
+							 const gchar *region_code,
+							 GError **error);
 
 EPhoneNumber *		e_phone_number_copy		(const EPhoneNumber *phone_number);
 void			e_phone_number_free		(EPhoneNumber *phone_number);

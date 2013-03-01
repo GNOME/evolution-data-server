@@ -74,6 +74,7 @@ E_PHONE_NUMBER_LOCAL EPhoneNumberMatch	_e_phone_number_cxx_compare		(const EPhon
 										 const EPhoneNumber *second_number);
 E_PHONE_NUMBER_LOCAL EPhoneNumberMatch	_e_phone_number_cxx_compare_strings	(const gchar *first_number,
 										 const gchar *second_number,
+										 const gchar *region_code,
 										 GError **error);
 E_PHONE_NUMBER_LOCAL EPhoneNumber *	_e_phone_number_cxx_copy		(const EPhoneNumber *phone_number);
 E_PHONE_NUMBER_LOCAL void		_e_phone_number_cxx_free		(EPhoneNumber *phone_number);
