@@ -1615,6 +1615,8 @@ source_registry_call_authenticate_for_source (ESourceRegistry *registry,
 	gchar *prompt_description = NULL;
 	gboolean success;
 
+	g_object_ref (source);
+
 	/* If the source is a member of a collection, we want to store
 	 * the password under the UID of the "collection" source so it
 	 * will apply to the entire collection.
@@ -1623,13 +1625,32 @@ source_registry_call_authenticate_for_source (ESourceRegistry *registry,
 	 *     password.  If that turns out not to be true in all cases
 	 *     we could maybe add a "SharedPassword: true/false" key to
 	 *     [Collection] and apply it here.
+	 *
+	 *     Addendum: Assumption proven wrong.  GOA's generic IMAP/SMTP
+	 *               provider uses a plain ECollectionBackend (backend
+	 *               name "none") with separately stored passwords for
+	 *               IMAP vs SMTP.  Just handle this case directly for
+	 *               now, but don't rule out the "SharedPassword" idea.
 	 */
 	collection = e_source_registry_find_extension (
 		registry, source, E_SOURCE_EXTENSION_COLLECTION);
-	if (collection != NULL)
-		source = collection;
-	else
-		g_object_ref (source);
+	if (collection != NULL) {
+		ESourceBackend *extension;
+		gchar *backend_name;
+
+		extension = e_source_get_extension (
+			collection, E_SOURCE_EXTENSION_COLLECTION);
+		backend_name = e_source_backend_dup_backend_name (extension);
+
+		if (g_strcmp0 (backend_name, "none") != 0) {
+			g_object_unref (source);
+			source = g_object_ref (collection);
+		}
+
+		g_free (backend_name);
+
+		g_object_unref (collection);
+	}
 
 	uid = e_source_get_uid (source);
 
