@@ -132,6 +132,7 @@ static SummaryField * append_summary_field (GArray         *array,
 
 static gboolean upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 					 const gchar           *folderid,
+					 const gchar           *region,
 					 GError               **error);
 
 static const gchar *
@@ -475,6 +476,23 @@ collect_versions_cb (gpointer ref,
 	return 0;
 }
 
+static gint
+find_country_code_column (gpointer data,
+                          gint n_cols,
+                          gchar **cols,
+                          gchar **name)
+{
+	if (strcmp (cols[1], "countrycode") == 0) {
+		gboolean *result = data;
+		*result = TRUE;
+
+		/* Should return a non-zero value now to about iteration, but
+		 * book_backend_sql_exec() doesn't know about SQLITE_ABORT. */
+	}
+
+	return 0;
+}
+
 static gboolean
 create_folders_table (EBookBackendSqliteDB *ebsdb,
                       gint *previous_schema,
@@ -482,6 +500,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 {
 	gboolean success;
 	gint version = 0;
+	gboolean has_country_code = FALSE;
 
 	/* sync_data points to syncronization data, it could be last_modified
 	 * time or a sequence number or some text depending on the backend.
@@ -595,6 +614,28 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	if (!success)
 		goto rollback;
 
+	/* Adding countrycode column again to track the addressbook's country code.
+	 * Detecting presence of this column by reflection instead of assigning a
+	 * dedicated schema version number, because upstream is not going to accept
+	 * a locale bound addressbook database. See discussion in bug 689622.
+	 */
+	stmt = "PRAGMA table_info(folders)";
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, find_country_code_column, &has_country_code, error);
+
+	if (!success)
+		goto rollback;
+
+	if (!has_country_code) {
+		stmt = "ALTER TABLE folders ADD COLUMN countrycode VARCHAR(2)";
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+
+		if (!success)
+			goto rollback;
+
+	}
+
+	/* Remember the schema version for later use and finish the transaction. */
 	*previous_schema = version;
 	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
 
@@ -979,8 +1020,27 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 	if (success)
 		success = introspect_summary (ebsdb, folderid, error);
-	if (success && previous_schema == 4)
-		success = upgrade_contacts_table (ebsdb, folderid, error);
+
+	if (success && e_phone_number_is_supported ()) {
+		gchar *current_region = e_phone_number_get_default_region ();
+
+		if (previous_schema == 4) {
+			success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
+		} else {
+			gchar *stored_region = NULL;
+
+			stmt = sqlite3_mprintf ("SELECT countrycode FROM folders WHERE folder_id = %Q", folderid);
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_region, error);
+			sqlite3_free (stmt);
+
+			if (success && g_strcmp0 (current_region, stored_region) != 0)
+				success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
+
+			g_free (stored_region);
+		}
+
+		g_free (current_region);
+	}
 
 	return success;
 }
@@ -4598,14 +4658,14 @@ destroy_search_data (gpointer data)
 
 static gboolean
 upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
-			 const gchar           *folderid,
-			 GError               **error)
+			 const gchar          *folderid,
+			 const gchar          *region,
+			 GError              **error)
 {
 	gchar *stmt;
 	gboolean success = FALSE;
 	GSList *vcard_data = NULL;
 	GSList *l;
-	gchar *default_region = NULL;
 
 	stmt = sqlite3_mprintf ("SELECT uid, vcard, NULL FROM %Q", folderid);
 	success = book_backend_sql_exec (
@@ -4615,11 +4675,6 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 	if (vcard_data == NULL)
 		return TRUE;
 
-	if (e_phone_number_is_supported ()) {
-		g_message ("The phone number indexes' format has changed. Rebuilding them.");
-		default_region = e_phone_number_get_default_region ();
-	}
-
 	for (l = vcard_data; success && l; l = l->next) {
 		EbSdbSearchData *const s_data = l->data;
 		EContact *contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
@@ -4627,13 +4682,21 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 		if (contact == NULL)
 			continue;
 
-		success = insert_contact (ebsdb, contact, folderid, TRUE, default_region, error);
+		success = insert_contact (ebsdb, contact, folderid, TRUE, region, error);
 
 		g_object_unref (contact);
 	}
 
 	g_slist_free_full (vcard_data, destroy_search_data);
-	g_free (default_region);
+
+	if (success) {
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET countrycode = %Q WHERE folder_id = %Q",
+			region, folderid);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+	}
 
 	return success;
 }
