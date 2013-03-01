@@ -816,7 +816,7 @@ e_authentication_session_init (EAuthenticationSession *session)
 }
 
 G_DEFINE_QUARK (
-	e-authentication-session-error-quark,
+	e - authentication - session - error - quark,
 	e_authentication_session_error);
 
 /**

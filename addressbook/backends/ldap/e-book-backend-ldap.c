@@ -154,16 +154,27 @@
 
 static gboolean enable_debug = FALSE;
 
-static const gchar *query_prop_to_ldap (gchar *query_prop);
-static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query);
+static const gchar *
+		query_prop_to_ldap		(gchar *query_prop);
+static gchar *	e_book_backend_ldap_build_query	(EBookBackendLDAP *bl,
+						 const gchar *query);
 
 typedef struct LDAPOp LDAPOp;
 
-#define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
-#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
-/* Translators: An error message shown to a user when trying to do an operation on the LDAP address book which is not connected to the server */
-#define EDB_ERROR_NOT_CONNECTED() e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Not connected"))
-#define EDB_ERROR_MSG_TYPE(_msg_type) e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_INVALID_ARG, "Incorrect msg type %d passed to %s", _msg_type, G_STRFUNC)
+#define EDB_ERROR(_code) \
+	(e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL))
+#define EDB_ERROR_EX(_code, _msg) \
+	(e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg))
+/* Translators: An error message shown to a user when trying to do an
+ * operation on the LDAP address book which is not connected to the server */
+#define EDB_ERROR_NOT_CONNECTED() \
+	(e_data_book_create_error ( \
+	E_DATA_BOOK_STATUS_OTHER_ERROR, _("Not connected")))
+#define EDB_ERROR_MSG_TYPE(_msg_type) \
+	(e_data_book_create_error_fmt ( \
+	E_DATA_BOOK_STATUS_INVALID_ARG, \
+	"Incorrect msg type %d passed to %s", \
+	_msg_type, G_STRFUNC))
 
 /* Forward Declarations */
 static void	e_book_backend_ldap_source_authenticator_init
@@ -507,26 +518,38 @@ add_to_supported_fields (EBookBackendLDAP *bl,
 	for (i = 0; attrs[i]; i++) {
 		gchar *query_prop = g_hash_table_lookup (attr_hash, attrs[i]);
 
-		if (query_prop) {
-			bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (query_prop));
+		if (query_prop == NULL)
+			continue;
 
-			/* handle the list attributes here */
-			if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_EMAIL))) {
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_1)));
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_4)));
-			}
-			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_BUSINESS))) {
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_BUSINESS_2)));
-			}
-			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_HOME))) {
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_PHONE_HOME_2)));
-			}
-			else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_CATEGORY_LIST) )) {
-				bl->priv->supported_fields = g_slist_append (bl->priv->supported_fields, g_strdup (e_contact_field_name (E_CONTACT_CATEGORIES)));
-			}
+		bl->priv->supported_fields = g_slist_append (
+			bl->priv->supported_fields, g_strdup (query_prop));
 
+		/* handle the list attributes here */
+		if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_EMAIL))) {
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_EMAIL_1)));
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_EMAIL_4)));
+		} else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_BUSINESS))) {
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_PHONE_BUSINESS_2)));
+		} else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_PHONE_HOME))) {
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_PHONE_HOME_2)));
+		} else if (!strcmp (query_prop, e_contact_field_name (E_CONTACT_CATEGORY_LIST) )) {
+			bl->priv->supported_fields = g_slist_append (
+				bl->priv->supported_fields,
+				g_strdup (e_contact_field_name (E_CONTACT_CATEGORIES)));
 		}
 	}
 }
@@ -728,7 +751,12 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 		(gchar **) attrs, 0, NULL, NULL, &timeout, LDAP_NO_LIMIT, &resp);
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (ldap_error != LDAP_SUCCESS) {
-		g_warning ("could not perform query on Root DSE (ldap_error 0x%02x/%s)", ldap_error, ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : "Unknown error");
+		g_warning (
+			"could not perform query on Root DSE "
+			"(ldap_error 0x%02x/%s)", ldap_error,
+			ldap_err2string (ldap_error) ?
+				ldap_err2string (ldap_error) :
+				"Unknown error");
 		return ldap_error;
 	}
 
@@ -1984,10 +2012,13 @@ modify_contact_search_handler (LDAPOp *op,
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (!e) {
-			e_data_book_respond_modify_contacts (op->book,
-							     op->opid,
-							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("%s: NULL returned from ldap_first_entry"), G_STRFUNC),
-							     NULL);
+			e_data_book_respond_modify_contacts (
+				op->book, op->opid,
+				e_data_book_create_error_fmt (
+					E_DATA_BOOK_STATUS_OTHER_ERROR,
+					_("%s: NULL returned from ldap_first_entry"),
+					G_STRFUNC),
+				NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -2379,9 +2410,11 @@ get_contact_handler (LDAPOp *op,
 
 		if (!e) {
 			e_data_book_respond_get_contact (
-				op->book,
-				op->opid,
-				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("%s: NULL returned from ldap_first_entry"), G_STRFUNC),
+				op->book, op->opid,
+				e_data_book_create_error_fmt (
+					E_DATA_BOOK_STATUS_OTHER_ERROR,
+					_("%s: NULL returned from ldap_first_entry"),
+					G_STRFUNC),
 				NULL);
 			ldap_op_finished (op);
 			return;
@@ -2865,13 +2898,25 @@ contact_list_uids_handler (LDAPOp *op,
 		g_warning ("search returned %d\n", ldap_error);
 
 		if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
-			e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR (SEARCH_TIME_LIMIT_EXCEEDED), contact_list_uids_op->uids);
+			e_data_book_respond_get_contact_list_uids (
+				op->book, op->opid,
+				EDB_ERROR (SEARCH_TIME_LIMIT_EXCEEDED),
+				contact_list_uids_op->uids);
 		else if (ldap_error == LDAP_SIZELIMIT_EXCEEDED)
-			e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR (SEARCH_SIZE_LIMIT_EXCEEDED), contact_list_uids_op->uids);
+			e_data_book_respond_get_contact_list_uids (
+				op->book, op->opid,
+				EDB_ERROR (SEARCH_SIZE_LIMIT_EXCEEDED),
+				contact_list_uids_op->uids);
 		else if (ldap_error == LDAP_SUCCESS)
-			e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR (SUCCESS), contact_list_uids_op->uids);
+			e_data_book_respond_get_contact_list_uids (
+				op->book, op->opid,
+				EDB_ERROR (SUCCESS),
+				contact_list_uids_op->uids);
 		else
-			e_data_book_respond_get_contact_list_uids (op->book, op->opid, ldap_error_to_response (ldap_error), contact_list_uids_op->uids);
+			e_data_book_respond_get_contact_list_uids (
+				op->book, op->opid,
+				ldap_error_to_response (ldap_error),
+				contact_list_uids_op->uids);
 
 		ldap_op_finished (op);
 		if (enable_debug) {

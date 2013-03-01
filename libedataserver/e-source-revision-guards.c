@@ -165,7 +165,7 @@ e_source_revision_guards_get_enabled (ESourceRevisionGuards *extension)
  * Since: 3.8
  */
 void
-e_source_revision_guards_set_enabled (ESourceRevisionGuards  *extension,
+e_source_revision_guards_set_enabled (ESourceRevisionGuards *extension,
                                       gboolean enabled)
 {
 	g_return_if_fail (E_IS_SOURCE_REVISION_GUARDS (extension));

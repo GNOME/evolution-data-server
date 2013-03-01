@@ -302,7 +302,9 @@ e_source_alarms_set_last_notified (ESourceAlarms *extension,
 		GTimeVal time_val;
 
 		if (!g_time_val_from_iso8601 (last_notified, &time_val)) {
-			g_warning ("%s: Invalid timestamp: '%s'", G_STRFUNC, last_notified);
+			g_warning (
+				"%s: Invalid timestamp: '%s'",
+				G_STRFUNC, last_notified);
 			return;
 		}
 	}

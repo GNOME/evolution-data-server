@@ -11,7 +11,7 @@ static ETestServerClosure direct_book_closure = { E_TEST_SERVER_DIRECT_ADDRESS_B
 
 static void
 check_removed_contact (EBookClient *book_client,
-		       const gchar *uid)
+                       const gchar *uid)
 {
 	GError *error = NULL;
 	EContact *contact = NULL;
@@ -19,16 +19,18 @@ check_removed_contact (EBookClient *book_client,
 	if (e_book_client_get_contact_sync (book_client, uid, &contact, NULL, &error))
 		g_error ("succeeded to fetch removed contact");
 	else if (!g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND))
-		g_error ("Wrong error in get contact sync on removed contact: %s (domain: %s, code: %d)",
-			 error->message, g_quark_to_string (error->domain), error->code);
+		g_error (
+			"Wrong error in get contact sync on removed contact: %s (domain: %s, code: %d)",
+			error->message, g_quark_to_string (error->domain), error->code);
 	else
 		g_clear_error (&error);
 
 	if (e_book_client_remove_contact_by_uid_sync (book_client, uid, NULL, &error))
 		g_error ("succeeded to remove the already removed contact");
 	else if (!g_error_matches (error, E_BOOK_CLIENT_ERROR, E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND))
-		g_error ("Wrong error in remove contact sync on removed contact: %s (domain: %s, code: %d)",
-			 error->message, g_quark_to_string (error->domain), error->code);
+		g_error (
+			"Wrong error in remove contact sync on removed contact: %s (domain: %s, code: %d)",
+			error->message, g_quark_to_string (error->domain), error->code);
 	else
 		g_clear_error (&error);
 }
@@ -126,10 +128,12 @@ main (gint argc,
 
 	/* We run the direct access variants here because we're interested in testing the error
 	 * code from e_book_client_get_contact(removed_contact_uid)  */
-	g_test_add ("/EBookClient/DirectAccess/RemoveContact/Sync", ETestServerFixture, &direct_book_closure,
-		    e_test_server_utils_setup, test_remove_contact_sync, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/DirectAccess/RemoveContact/Async", ETestServerFixture, &direct_book_closure,
-		    e_test_server_utils_setup, test_remove_contact_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/RemoveContact/Sync", ETestServerFixture, &direct_book_closure,
+		e_test_server_utils_setup, test_remove_contact_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/RemoveContact/Async", ETestServerFixture, &direct_book_closure,
+		e_test_server_utils_setup, test_remove_contact_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

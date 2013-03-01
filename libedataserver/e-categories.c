@@ -297,7 +297,8 @@ categories_add_full (const gchar *category,
 	cat_info = g_slice_new (CategoryInfo);
 	if (is_default) {
 		const gchar *display_name;
-		display_name = g_dpgettext2 (GETTEXT_PACKAGE, "CategoryName", category);
+		display_name = g_dpgettext2 (
+			GETTEXT_PACKAGE, "CategoryName", category);
 		cat_info->display_name = g_strdup (display_name);
 		cat_info->clocale_name = g_strdup (category);
 	} else {

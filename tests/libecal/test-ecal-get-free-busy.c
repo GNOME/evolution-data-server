@@ -16,7 +16,7 @@ static ETestServerClosure cal_closure =
 
 static void
 setup_fixture (ETestServerFixture *fixture,
-	       gconstpointer user_data)
+               gconstpointer user_data)
 {
 	GError *error = NULL;
 	ESource *scratch;
@@ -54,7 +54,7 @@ setup_fixture (ETestServerFixture *fixture,
 
 static void
 teardown_fixture (ETestServerFixture *fixture,
-		  gconstpointer user_data)
+                  gconstpointer user_data)
 {
 	GError *error = NULL;
 	ESource *source;

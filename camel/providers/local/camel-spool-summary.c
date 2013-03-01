@@ -44,11 +44,20 @@
 
 #define CAMEL_SPOOL_SUMMARY_VERSION (0x400)
 
-static gint spool_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
-static gint spool_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint	spool_summary_load		(CamelLocalSummary *cls,
+						 gint forceindex,
+						 GError **error);
+static gint	spool_summary_check		(CamelLocalSummary *cls,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
 
-static gint spool_summary_sync_full (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static gint spool_summary_need_index (void);
+static gint	spool_summary_sync_full		(CamelMboxSummary *cls,
+						 gboolean expunge,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static gint	spool_summary_need_index	(void);
 
 G_DEFINE_TYPE (CamelSpoolSummary, camel_spool_summary, CAMEL_TYPE_MBOX_SUMMARY)
 

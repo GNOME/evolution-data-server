@@ -26,7 +26,7 @@
 #include <libebook/libebook.h>
 #include <locale.h>
 
-static const char *match_candidates[] = {
+static const gchar *match_candidates[] = {
 	"not-a-number",
 	"+1-617-4663489", "617-4663489", "4663489",
 	"+1.408.845.5246", "4088455246", "8455246",
@@ -125,15 +125,15 @@ typedef struct {
 } ParseAndFormatData;
 
 static ParseAndFormatData *
-parse_and_format_data_new (const gchar			*phone_number,
-                           const gchar			*region_code,
-                           EPhoneNumberCountrySource	 country_source,
-                           gint				 country_code,
-                           const gchar			*national_number,
-                           const gchar			*formatted_e164,
-                           const gchar			*formatted_intl,
-                           const gchar			*formatted_natl,
-                           const gchar			*formatted_uri)
+parse_and_format_data_new (const gchar *phone_number,
+                           const gchar *region_code,
+                           EPhoneNumberCountrySource country_source,
+                           gint country_code,
+                           const gchar *national_number,
+                           const gchar *formatted_e164,
+                           const gchar *formatted_intl,
+                           const gchar *formatted_natl,
+                           const gchar *formatted_uri)
 {
 	ParseAndFormatData *test_data = g_slice_new0 (ParseAndFormatData);
 
@@ -291,7 +291,7 @@ test_compare_numbers (gconstpointer data)
 	const size_t j = n / G_N_ELEMENTS (match_candidates);
 
 #ifdef ENABLE_PHONENUMBER
-	const gboolean error_expected = !(i && j) ;
+	const gboolean error_expected = !(i && j);
 #else /* ENABLE_PHONENUMBER */
 	const gboolean error_expected = TRUE;
 #endif /* ENABLE_PHONENUMBER */
@@ -299,9 +299,10 @@ test_compare_numbers (gconstpointer data)
 	EPhoneNumberMatch actual_match;
 	GError *error = NULL;
 
-	actual_match = e_phone_number_compare_strings (match_candidates[i],
-	                                               match_candidates[j],
-	                                               &error);
+	actual_match = e_phone_number_compare_strings (
+		match_candidates[i],
+		match_candidates[j],
+		&error);
 
 #ifdef ENABLE_PHONENUMBER
 	g_assert_cmpuint (actual_match, ==, expected_matches[n]);
@@ -381,27 +382,27 @@ main (gint argc,
 		test_parse_and_format, parse_and_format_data_free);
 	g_test_add_data_func_full (
 		"/ebook-phone-number/parse-and-format/national", parse_and_format_data_new (
-			 "(030) 22334-455", "DE",
-			 E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT, 49, "3022334455",
-			 "+493022334455", "+49 30 22334455", "030 22334455", "tel:+49-30-22334455"),
+		"(030) 22334-455", "DE",
+		E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT, 49, "3022334455",
+		"+493022334455", "+49 30 22334455", "030 22334455", "tel:+49-30-22334455"),
 		test_parse_and_format, parse_and_format_data_free);
 	g_test_add_data_func_full (
 		"/ebook-phone-number/parse-and-format/national2", parse_and_format_data_new (
-			 "0049 (30) 22334-455", "DE",
-			 E_PHONE_NUMBER_COUNTRY_FROM_IDD, 49, "3022334455",
-			 "+493022334455", "+49 30 22334455", "030 22334455", "tel:+49-30-22334455"),
+		"0049 (30) 22334-455", "DE",
+		E_PHONE_NUMBER_COUNTRY_FROM_IDD, 49, "3022334455",
+		"+493022334455", "+49 30 22334455", "030 22334455", "tel:+49-30-22334455"),
 		test_parse_and_format, parse_and_format_data_free);
 	g_test_add_data_func_full (
 		"/ebook-phone-number/parse-and-format/international", parse_and_format_data_new (
-			 "+1 212 33445566", NULL,
-			 E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 1, "21233445566",
-			 "+121233445566", "+1 21233445566", "21233445566", "tel:+1-21233445566"),
+		"+1 212 33445566", NULL,
+		E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 1, "21233445566",
+		"+121233445566", "+1 21233445566", "21233445566", "tel:+1-21233445566"),
 		test_parse_and_format, parse_and_format_data_free);
 	g_test_add_data_func_full (
 		"/ebook-phone-number/parse-and-format/rfc3966", parse_and_format_data_new (
-			 "tel:+358-71-44556677", NULL,
-			 E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 358, "7144556677",
-			 "+3587144556677", "+358 71 44556677", "071 44556677", "tel:+358-71-44556677"),
+		"tel:+358-71-44556677", NULL,
+		E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 358, "7144556677",
+		"+3587144556677", "+358 71 44556677", "071 44556677", "tel:+358-71-44556677"),
 		test_parse_and_format, parse_and_format_data_free);
 
 	g_test_add_func (
@@ -412,14 +413,16 @@ main (gint argc,
 		"/ebook-phone-number/parse-and-format/auto-region",
 		test_parse_auto_region);
 
-	g_assert_cmpint (G_N_ELEMENTS (match_candidates) * G_N_ELEMENTS (match_candidates),
-			 ==, G_N_ELEMENTS (expected_matches));
+	g_assert_cmpint (
+		G_N_ELEMENTS (match_candidates) * G_N_ELEMENTS (match_candidates),
+		==, G_N_ELEMENTS (expected_matches));
 
 	for (i = 0; i < G_N_ELEMENTS (match_candidates); ++i) {
 		for (j = 0; j < G_N_ELEMENTS (match_candidates); ++j) {
 			const size_t n = j + i * G_N_ELEMENTS (match_candidates);
-			char *path = g_strdup_printf ("/ebook-phone-number/compare/%s/%s",
-			                              match_candidates[i], match_candidates[j]);
+			gchar *path = g_strdup_printf (
+				"/ebook-phone-number/compare/%s/%s",
+				match_candidates[i], match_candidates[j]);
 
 			g_test_add_data_func (path, GUINT_TO_POINTER (n), test_compare_numbers);
 			g_free (path);

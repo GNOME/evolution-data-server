@@ -33,6 +33,10 @@
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"
 
+#define CAMEL_VEE_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_VEE_STORE, CamelVeeStorePrivate))
+
 /* Translators: 'Unmatched' is a folder name under Search folders where are shown
  * all messages not belonging into any other configured search folder */
 #define PRETTY_UNMATCHED_FOLDER_NAME _("Unmatched")
@@ -56,8 +60,7 @@ enum {
 
 G_DEFINE_TYPE (CamelVeeStore, camel_vee_store, CAMEL_TYPE_STORE)
 
-struct _CamelVeeStorePrivate
-{
+struct _CamelVeeStorePrivate {
 	CamelVeeDataCache *vee_data_cache;
 	CamelVeeFolder *unmatched_folder;
 	gboolean unmatched_enabled;
@@ -113,16 +116,53 @@ change_folder (CamelStore *store,
 }
 
 static void
+vee_store_set_property (GObject *object,
+                        guint property_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_UNMATCHED_ENABLED:
+			camel_vee_store_set_unmatched_enabled (
+				CAMEL_VEE_STORE (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+vee_store_get_property (GObject *object,
+                        guint property_id,
+                        GValue *value,
+                        GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_UNMATCHED_ENABLED:
+			g_value_set_boolean (
+				value,
+				camel_vee_store_get_unmatched_enabled (
+				CAMEL_VEE_STORE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 vee_store_finalize (GObject *object)
 {
-	CamelVeeStore *vee_store = CAMEL_VEE_STORE (object);
+	CamelVeeStorePrivate *priv;
 
-	g_object_unref (vee_store->priv->unmatched_folder);
-	g_object_unref (vee_store->priv->vee_data_cache);
-	g_hash_table_destroy (vee_store->priv->subfolder_usage_counts);
-	g_hash_table_destroy (vee_store->priv->vuid_usage_counts);
-	g_mutex_clear (&vee_store->priv->sf_counts_mutex);
-	g_mutex_clear (&vee_store->priv->vu_counts_mutex);
+	priv = CAMEL_VEE_STORE_GET_PRIVATE (object);
+
+	g_object_unref (priv->unmatched_folder);
+	g_object_unref (priv->vee_data_cache);
+	g_hash_table_destroy (priv->subfolder_usage_counts);
+	g_hash_table_destroy (priv->vuid_usage_counts);
+	g_mutex_clear (&priv->sf_counts_mutex);
+	g_mutex_clear (&priv->vu_counts_mutex);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_vee_store_parent_class)->finalize (object);
@@ -150,40 +190,6 @@ vee_store_constructed (GObject *object)
 	vee_store->priv->vuid_usage_counts = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
 	g_mutex_init (&vee_store->priv->sf_counts_mutex);
 	g_mutex_init (&vee_store->priv->vu_counts_mutex);
-}
-
-static void
-vee_store_get_property (GObject *object,
-                        guint property_id,
-                        GValue *value,
-                        GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_UNMATCHED_ENABLED:
-			g_value_set_boolean (
-				value, camel_vee_store_get_unmatched_enabled (
-				CAMEL_VEE_STORE (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-vee_store_set_property (GObject *object,
-                        guint property_id,
-                        const GValue *value,
-                        GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_UNMATCHED_ENABLED:
-			camel_vee_store_set_unmatched_enabled (
-				CAMEL_VEE_STORE (object),
-				g_value_get_boolean (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static gchar *
@@ -506,10 +512,10 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	g_type_class_add_private (class, sizeof (CamelVeeStorePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = vee_store_set_property;
+	object_class->get_property = vee_store_get_property;
 	object_class->finalize = vee_store_finalize;
 	object_class->constructed = vee_store_constructed;
-	object_class->get_property = vee_store_get_property;
-	object_class->set_property = vee_store_set_property;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = vee_store_get_name;
@@ -539,7 +545,7 @@ camel_vee_store_init (CamelVeeStore *vee_store)
 {
 	CamelStore *store = CAMEL_STORE (vee_store);
 
-	vee_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (vee_store, CAMEL_TYPE_VEE_STORE, CamelVeeStorePrivate);
+	vee_store->priv = CAMEL_VEE_STORE_GET_PRIVATE (vee_store);
 	vee_store->priv->vee_data_cache = camel_vee_data_cache_new ();
 	vee_store->priv->unmatched_enabled = TRUE;
 

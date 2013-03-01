@@ -73,8 +73,8 @@ G_DEFINE_DYNAMIC_TYPE (
 
 static void
 owncloud_remove_unknown_sources_cb (gpointer resource_id,
-				    gpointer uid,
-				    gpointer user_data)
+                                    gpointer uid,
+                                    gpointer user_data)
 {
 	ESourceRegistryServer *server = user_data;
 	ESource *source;
@@ -89,11 +89,11 @@ owncloud_remove_unknown_sources_cb (gpointer resource_id,
 
 static void
 owncloud_source_found_cb (ECollectionBackend *collection,
-			  OwnCloudSourceType source_type,
-			  SoupURI *uri,
-			  const gchar *display_name,
-			  const gchar *color,
-			  gpointer user_data)
+                          OwnCloudSourceType source_type,
+                          SoupURI *uri,
+                          const gchar *display_name,
+                          const gchar *color,
+                          gpointer user_data)
 {
 	GHashTable *known_sources = user_data;
 	ESourceRegistryServer *server;
@@ -194,7 +194,7 @@ owncloud_source_found_cb (ECollectionBackend *collection,
 
 static void
 owncloud_add_uid_to_hashtable (gpointer source,
-			       gpointer known_sources)
+                               gpointer known_sources)
 {
 	ESourceResource *resource;
 	gchar *uid, *rid;

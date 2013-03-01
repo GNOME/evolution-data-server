@@ -43,29 +43,61 @@
 
 #define CAMEL_MBOX_SUMMARY_VERSION (1)
 
-static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
-static gboolean summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
-static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record);
-static CamelMIRecord * message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info);
+static CamelFIRecord *
+		summary_header_to_db		(CamelFolderSummary *,
+						 GError **error);
+static gboolean	summary_header_from_db		(CamelFolderSummary *,
+						 CamelFIRecord *);
+static CamelMessageInfo *
+		message_info_from_db		(CamelFolderSummary *s,
+						 CamelMIRecord *record);
+static CamelMIRecord *
+		message_info_to_db		(CamelFolderSummary *s,
+						 CamelMessageInfo *info);
 
-static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
-static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
-/*static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);*/
+static CamelMessageInfo *
+		message_info_new_from_header	(CamelFolderSummary *,
+						 struct _camel_header_raw *);
+static CamelMessageInfo *
+		message_info_new_from_parser	(CamelFolderSummary *,
+						 CamelMimeParser *);
 
-static gchar *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
+static gchar *	mbox_summary_encode_x_evolution	(CamelLocalSummary *cls,
+						 const CamelLocalMessageInfo *mi);
 
-static gint mbox_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static gint mbox_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint	mbox_summary_check		(CamelLocalSummary *cls,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static gint	mbox_summary_sync		(CamelLocalSummary *cls,
+						 gboolean expunge,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
 #ifdef STATUS_PINE
-static CamelMessageInfo *mbox_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, GError **error);
+static CamelMessageInfo *
+		mbox_summary_add		(CamelLocalSummary *cls,
+						 CamelMimeMessage *msg,
+						 const CamelMessageInfo *info,
+						 CamelFolderChangeInfo *ci,
+						 GError **error);
 #endif
 
-static gint mbox_summary_sync_quick (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static gint mbox_summary_sync_full (CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint	mbox_summary_sync_quick		(CamelMboxSummary *cls,
+						 gboolean expunge,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static gint	mbox_summary_sync_full		(CamelMboxSummary *cls,
+						 gboolean expunge,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
 
 #ifdef STATUS_PINE
 /* Which status flags are stored in each separate header */
-#define STATUS_XSTATUS (CAMEL_MESSAGE_FLAGGED|CAMEL_MESSAGE_ANSWERED|CAMEL_MESSAGE_DELETED)
+#define STATUS_XSTATUS \
+	(CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED)
 #define STATUS_STATUS (CAMEL_MESSAGE_SEEN)
 
 static void encode_status (guint32 flags, gchar status[8]);

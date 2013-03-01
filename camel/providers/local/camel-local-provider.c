@@ -109,7 +109,9 @@ static CamelProviderConfEntry spool_conf_entries[] = {
 static CamelProvider spool_file_provider = {
 	"spool",
 	N_("Standard Unix mbox spool file"),
-	N_("For reading and storing local mail in external standard mbox spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt style folders."),
+	N_("For reading and storing local mail in external standard mbox "
+	"spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt "
+	"style folders."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
@@ -121,7 +123,9 @@ static CamelProvider spool_file_provider = {
 static CamelProvider spool_directory_provider = {
 	"spooldir",
 	N_("Standard Unix mbox spool directory"),
-	N_("For reading and storing local mail in external standard mbox spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt style folders."),
+	N_("For reading and storing local mail in external standard mbox "
+	"spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt "
+	"style folders."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_NEED_PATH_DIR | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,

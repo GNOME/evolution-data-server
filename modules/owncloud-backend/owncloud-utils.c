@@ -49,9 +49,9 @@ struct _EOwncloudAuthenticatorClass {
 
 static ESourceAuthenticationResult
 owncloud_authenticator_try_password_sync (ESourceAuthenticator *auth,
-					  const GString *password,
-					  GCancellable *cancellable,
-					  GError **error)
+                                          const GString *password,
+                                          GCancellable *cancellable,
+                                          GError **error)
 {
 	EOwncloudAuthenticator *authenticator = (EOwncloudAuthenticator *) auth;
 
@@ -64,12 +64,18 @@ owncloud_authenticator_try_password_sync (ESourceAuthenticator *auth,
 
 #define E_TYPE_OWNCLOUD_AUTHENTICATOR (e_owncloud_authenticator_get_type ())
 
-GType e_owncloud_authenticator_get_type (void) G_GNUC_CONST;
+GType		e_owncloud_authenticator_get_type
+				(void) G_GNUC_CONST;
+static void	e_owncloud_authenticator_authenticator_init
+				(ESourceAuthenticatorInterface *interface);
 
-static void e_owncloud_authenticator_authenticator_init (ESourceAuthenticatorInterface *interface);
-
-G_DEFINE_TYPE_EXTENDED (EOwncloudAuthenticator, e_owncloud_authenticator, G_TYPE_OBJECT, 0,
-	G_IMPLEMENT_INTERFACE (E_TYPE_SOURCE_AUTHENTICATOR, e_owncloud_authenticator_authenticator_init))
+G_DEFINE_TYPE_EXTENDED (
+	EOwncloudAuthenticator,
+	e_owncloud_authenticator,
+	G_TYPE_OBJECT, 0,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_SOURCE_AUTHENTICATOR,
+		e_owncloud_authenticator_authenticator_init))
 
 static void
 owncloud_authenticator_finalize (GObject *object)
@@ -187,13 +193,13 @@ xp_object_get_string (xmlXPathObjectPtr xpres)
 
 static void
 add_source (ECollectionBackend *collection,
-	    OwnCloudSourceFoundCb found_cb,
-	    gpointer user_data,
-	    OwnCloudSourceType source_type,
-	    SoupURI *base_uri,
-	    const gchar *href,
-	    const gchar *display_name,
-	    const gchar *color)
+            OwnCloudSourceFoundCb found_cb,
+            gpointer user_data,
+            OwnCloudSourceType source_type,
+            SoupURI *base_uri,
+            const gchar *href,
+            const gchar *display_name,
+            const gchar *color)
 {
 	SoupURI *uri = NULL;
 
@@ -206,7 +212,13 @@ add_source (ECollectionBackend *collection,
 		uri = soup_uri_new (href);
 	}
 
-	found_cb (collection, source_type, uri ? uri : base_uri, display_name, color, user_data);
+	found_cb (
+		collection,
+		source_type,
+		uri ? uri : base_uri,
+		display_name,
+		color,
+		user_data);
 
 	if (uri)
 		soup_uri_free (uri);
@@ -214,19 +226,31 @@ add_source (ECollectionBackend *collection,
 
 static void
 enum_calendars (ECollectionBackend *collection,
-		OwnCloudSourceFoundCb found_cb,
-		gpointer user_data,
-		/* const */ xmlXPathContextPtr xpctx,
-		/* const */ xmlXPathObjectPtr xpathobj,
-		gint response_index,
-		SoupURI *base_uri,
-		const gchar *href,
-		const gchar *display_name,
-		const gchar *color)
+                OwnCloudSourceFoundCb found_cb,
+                gpointer user_data,
+                /* const */ xmlXPathContextPtr xpctx,
+                /* const */ xmlXPathObjectPtr xpathobj,
+                gint response_index,
+                SoupURI *base_uri,
+                const gchar *href,
+                const gchar *display_name,
+                const gchar *color)
 {
 	gint ii, nn;
 
-	if (!href || !display_name || !xpctx || !xpathobj || xpathobj->type != XPATH_NODESET)
+	if (href == NULL)
+		return;
+
+	if (display_name == NULL)
+		return;
+
+	if (xpctx == NULL)
+		return;
+
+	if (xpathobj == NULL)
+		return;
+
+	if (xpathobj->type != XPATH_NODESET)
 		return;
 
 	nn = xmlXPathNodeSetGetLength (xpathobj->nodesetval);
@@ -234,15 +258,43 @@ enum_calendars (ECollectionBackend *collection,
 		xmlXPathObjectPtr xpres;
 		gchar *comp_type;
 
-		xpres = xpath_eval (xpctx, XPATH_CALENDAR_COMP_TYPE, response_index, ii + 1);
+		xpres = xpath_eval (
+			xpctx,
+			XPATH_CALENDAR_COMP_TYPE,
+			response_index,
+			ii + 1);
 		comp_type = xp_object_get_string (xpres);
 
 		if (g_strcmp0 (comp_type, "VEVENT") == 0) {
-			add_source (collection, found_cb, user_data, OwnCloud_Source_Events, base_uri, href, display_name, color);
+			add_source (
+				collection,
+				found_cb,
+				user_data,
+				OwnCloud_Source_Events,
+				base_uri,
+				href,
+				display_name,
+				color);
 		} else if (g_strcmp0 (comp_type, "VTODO") == 0) {
-			add_source (collection, found_cb, user_data, OwnCloud_Source_Tasks, base_uri, href, display_name, color);
+			add_source (
+				collection,
+				found_cb,
+				user_data,
+				OwnCloud_Source_Tasks,
+				base_uri,
+				href,
+				display_name,
+				color);
 		} else if (g_strcmp0 (comp_type, "VJOURNAL") == 0) {
-			add_source (collection, found_cb, user_data, OwnCloud_Source_Memos, base_uri, href, display_name, color);
+			add_source (
+				collection,
+				found_cb,
+				user_data,
+				OwnCloud_Source_Memos,
+				base_uri,
+				href,
+				display_name,
+				color);
 		}
 
 		g_free (comp_type);
@@ -251,11 +303,11 @@ enum_calendars (ECollectionBackend *collection,
 
 static void
 parse_propfind_response (ECollectionBackend *collection,
-			 OwnCloudSourceFoundCb found_cb,
-			 gpointer user_data,
-			 SoupURI *base_uri,
-			 const gchar *body_str,
-			 glong body_len)
+                         OwnCloudSourceFoundCb found_cb,
+                         gpointer user_data,
+                         SoupURI *base_uri,
+                         const gchar *body_str,
+                         glong body_len)
 {
 	xmlXPathContextPtr xpctx;
 	xmlXPathObjectPtr xpathobj;
@@ -269,11 +321,26 @@ parse_propfind_response (ECollectionBackend *collection,
 		return;
 
 	xpctx = xmlXPathNewContext (doc);
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "B", (xmlChar *) "urn:ietf:params:xml:ns:carddav");
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "C", (xmlChar *) "urn:ietf:params:xml:ns:caldav");
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "CS", (xmlChar *) "http://calendarserver.org/ns/");
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "APL", (xmlChar *) "http://apple.com/ns/ical/");
+	xmlXPathRegisterNs (
+		xpctx,
+		(xmlChar *) "D",
+		(xmlChar *) "DAV:");
+	xmlXPathRegisterNs (
+		xpctx,
+		(xmlChar *) "B",
+		(xmlChar *) "urn:ietf:params:xml:ns:carddav");
+	xmlXPathRegisterNs (
+		xpctx,
+		(xmlChar *) "C",
+		(xmlChar *) "urn:ietf:params:xml:ns:caldav");
+	xmlXPathRegisterNs (
+		xpctx,
+		(xmlChar *) "CS",
+		(xmlChar *) "http://calendarserver.org/ns/");
+	xmlXPathRegisterNs (
+		xpctx,
+		(xmlChar *) "APL",
+		(xmlChar *) "http://apple.com/ns/ical/");
 
 	xpathobj = xpath_eval (xpctx, "/D:multistatus/D:response");
 	if (xpathobj && xpathobj->type == XPATH_NODESET) {
@@ -301,19 +368,46 @@ parse_propfind_response (ECollectionBackend *collection,
 			color = xp_object_get_string (xpres);
 
 			if (display_name && *display_name) {
-				xpres = xpath_eval (xpctx, XPATH_RESOURCE_TYPE_ADDRESSBOOK, ii + 1);
+				xpres = xpath_eval (
+					xpctx,
+					XPATH_RESOURCE_TYPE_ADDRESSBOOK,
+					ii + 1);
 				if (xpres) {
-					add_source (collection, found_cb, user_data, OwnCloud_Source_Contacts, base_uri, href, display_name, NULL);
+					add_source (
+						collection,
+						found_cb,
+						user_data,
+						OwnCloud_Source_Contacts,
+						base_uri,
+						href,
+						display_name,
+						NULL);
 					xmlXPathFreeObject (xpres);
 				}
 
-				xpres = xpath_eval (xpctx, XPATH_RESOURCE_TYPE_CALENDAR, ii + 1);
+				xpres = xpath_eval (
+					xpctx,
+					XPATH_RESOURCE_TYPE_CALENDAR,
+					ii + 1);
 				if (xpres) {
 					xmlXPathFreeObject (xpres);
 
-					xpres = xpath_eval (xpctx, XPATH_SUPPORTED_CALENDAR_COMPONENT_SET, ii + 1);
+					xpres = xpath_eval (
+						xpctx,
+						XPATH_SUPPORTED_CALENDAR_COMPONENT_SET,
+						ii + 1);
 					if (xpres) {
-						enum_calendars (collection, found_cb, user_data, xpctx, xpres, ii + 1, base_uri, href, display_name, color);
+						enum_calendars (
+							collection,
+							found_cb,
+							user_data,
+							xpctx,
+							xpres,
+							ii + 1,
+							base_uri,
+							href,
+							display_name,
+							color);
 						xmlXPathFreeObject (xpres);
 					}
 				}
@@ -333,10 +427,10 @@ parse_propfind_response (ECollectionBackend *collection,
 
 static void
 authenticate_cb (SoupSession *session,
-		 SoupMessage *msg,
-		 SoupAuth *auth,
-		 gboolean retrying,
-		 gpointer user_data)
+                 SoupMessage *msg,
+                 SoupAuth *auth,
+                 gboolean retrying,
+                 gpointer user_data)
 {
 	EOwncloudAuthenticator *authenticator = user_data;
 
@@ -347,10 +441,15 @@ authenticate_cb (SoupSession *session,
 		EAuthenticationSession *auth_session;
 		ESource *source;
 
-		source = e_backend_get_source (E_BACKEND (authenticator->collection));
-		server = e_collection_backend_ref_server (authenticator->collection);
+		source = e_backend_get_source (
+			E_BACKEND (authenticator->collection));
+		server = e_collection_backend_ref_server (
+			authenticator->collection);
 
-		auth_session = e_source_registry_server_new_auth_session (server, E_SOURCE_AUTHENTICATOR (authenticator), e_source_get_uid (source));
+		auth_session = e_source_registry_server_new_auth_session (
+			server,
+			E_SOURCE_AUTHENTICATOR (authenticator),
+			e_source_get_uid (source));
 		if (!e_source_registry_server_authenticate_sync (server, auth_session, NULL, NULL)) {
 			if (authenticator->password)
 				g_string_free (authenticator->password, TRUE);
@@ -362,23 +461,29 @@ authenticate_cb (SoupSession *session,
 	}
 
 	if (authenticator->username && authenticator->password)
-		soup_auth_authenticate (auth, authenticator->username, authenticator->password->str);
+		soup_auth_authenticate (
+			auth, authenticator->username,
+			authenticator->password->str);
 }
 
 static ETrustPromptResponse
 trust_prompt_sync (const ENamedParameters *parameters,
-		   GCancellable *cancellable,
-		   GError **error)
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	EUserPrompter *prompter;
 	gint response;
 
-	g_return_val_if_fail (parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
 	prompter = e_user_prompter_new ();
-	g_return_val_if_fail (prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (
+		prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
-	response = e_user_prompter_extension_prompt_sync (prompter, "ETrustPrompt::trust-prompt", parameters, NULL, cancellable, error);
+	response = e_user_prompter_extension_prompt_sync (
+		prompter, "ETrustPrompt::trust-prompt",
+		parameters, NULL, cancellable, error);
 
 	g_object_unref (prompter);
 
@@ -396,11 +501,11 @@ trust_prompt_sync (const ENamedParameters *parameters,
 
 static gboolean
 find_sources (ECollectionBackend *collection,
-	      OwnCloudSourceFoundCb found_cb,
-	      gpointer user_data,
-	      const gchar *base_url,
-	      const gchar *base_collection_path,
-	      EOwncloudAuthenticator *authenticator)
+              OwnCloudSourceFoundCb found_cb,
+              gpointer user_data,
+              const gchar *base_url,
+              const gchar *base_collection_path,
+              EOwncloudAuthenticator *authenticator)
 {
 	const gchar *req_body =
 		"<D:propfind "
@@ -441,12 +546,15 @@ find_sources (ECollectionBackend *collection,
 	}
 
 	session = soup_session_sync_new ();
-	g_object_set (session,
+	g_object_set (
+		session,
 		SOUP_SESSION_TIMEOUT, 90,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
 		SOUP_SESSION_SSL_STRICT, TRUE,
 		NULL);
-	g_signal_connect (session, "authenticate", G_CALLBACK (authenticate_cb), authenticator);
+	g_signal_connect (
+		session, "authenticate",
+		G_CALLBACK (authenticate_cb), authenticator);
 
 	proxy = e_proxy_new ();
 	e_proxy_setup_proxy (proxy);
@@ -462,7 +570,9 @@ find_sources (ECollectionBackend *collection,
 
 	g_string_free (url, TRUE);
 
-	soup_message_set_request (msg, "application/xml; charset=utf-8", SOUP_MEMORY_STATIC, req_body, strlen (req_body));
+	soup_message_set_request (
+		msg, "application/xml; charset=utf-8",
+		SOUP_MEMORY_STATIC, req_body, strlen (req_body));
 
 	if (soup_session_send_message (session, msg) == SOUP_STATUS_SSL_FAILED) {
 		ETrustPromptResponse response;
@@ -498,7 +608,10 @@ find_sources (ECollectionBackend *collection,
 
 		suri = soup_uri_copy (suri);
 
-		parse_propfind_response (collection, found_cb, user_data, suri, msg->response_body->data, msg->response_body->length);
+		parse_propfind_response (
+			collection, found_cb, user_data, suri,
+			msg->response_body->data,
+			msg->response_body->length);
 
 		soup_uri_free (suri);
 		tested = TRUE;
@@ -513,8 +626,8 @@ find_sources (ECollectionBackend *collection,
 
 gboolean
 owncloud_utils_search_server (ECollectionBackend *collection,
-			      OwnCloudSourceFoundCb found_cb,
-			      gpointer user_data)
+                              OwnCloudSourceFoundCb found_cb,
+                              gpointer user_data)
 {
 	ESourceCollection *collection_extension;
 	ESourceGoa *goa_extension;
@@ -538,7 +651,9 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 		url = e_source_goa_dup_calendar_url (goa_extension);
 
 		if (url && *url)
-			res = find_sources (collection, found_cb, user_data, url, "calendars", authenticator);
+			res = find_sources (
+				collection, found_cb, user_data,
+				url, "calendars", authenticator);
 
 		g_free (url);
 	}
@@ -547,7 +662,9 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 		url = e_source_goa_dup_contacts_url (goa_extension);
 
 		if (url && *url)
-			res = find_sources (collection, found_cb, user_data, url, "addressbooks", authenticator);
+			res = find_sources (
+				collection, found_cb, user_data,
+				url, "addressbooks", authenticator);
 
 		g_free (url);
 	}

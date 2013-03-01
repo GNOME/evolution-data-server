@@ -196,10 +196,10 @@ struct _EBookBackendClass {
 	void		(*notify_update)	(EBookBackend *backend,
 						 const EContact *contact);
 
-
 	EDataBookDirect *
-	        (* get_direct_book)             (EBookBackend *backend);
-	void    (* configure_direct)            (EBookBackend *backend, const gchar *config);
+			(*get_direct_book)	(EBookBackend *backend);
+	void		(*configure_direct)	(EBookBackend *backend,
+						 const gchar *config);
 
 	/* Notification signals */
 	void		(*sync)			(EBookBackend *backend);

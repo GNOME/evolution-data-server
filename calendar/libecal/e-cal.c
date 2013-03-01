@@ -762,7 +762,13 @@ e_cal_open_async (ECal *ecal,
 
 	switch (priv->load_state) {
 	case E_CAL_LOAD_LOADING :
-		async_report_idle (ecal, g_error_new_literal (E_CALENDAR_ERROR, E_CALENDAR_STATUS_BUSY, e_cal_get_error_message (E_CALENDAR_STATUS_BUSY)));
+		async_report_idle (
+			ecal,
+			g_error_new_literal (
+				E_CALENDAR_ERROR,
+				E_CALENDAR_STATUS_BUSY,
+				e_cal_get_error_message (
+				E_CALENDAR_STATUS_BUSY)));
 		return;
 	case E_CAL_LOAD_LOADED :
 		async_report_idle (ecal, NULL /* success */);
@@ -1936,7 +1942,8 @@ e_cal_get_component_as_string (ECal *ecal,
  * e_cal_create_object: (skip)
  * @ecal: A calendar client.
  * @icalcomp: The component to create.
- * @uid: Return value for the UID assigned to the new component by the calendar backend.
+ * @uid: Return value for the UID assigned to the new component by the
+ *       calendar backend.
  * @error: Placeholder for error information.
  *
  * Requests the calendar backend to create the object specified by the @icalcomp
@@ -2061,13 +2068,15 @@ e_cal_remove_object_with_mod (ECal *ecal,
  * @error: Placeholder for error information.
  *
  * Asks a calendar to remove all components with the given UID.
- * If more control of the removal is desired, then use e_cal_remove_object_with_mod().
+ * If more control of the removal is desired, then use
+ * e_cal_remove_object_with_mod().
  * If the server is able to remove the component(s), all clients will
  * be notified and they will emit the "obj_removed" signal.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Deprecated: 3.2: Use e_cal_client_remove_object_sync() instead, with rid set to NULL and mod set to CALOBJ_MOD_ALL.
+ * Deprecated: 3.2: Use e_cal_client_remove_object_sync() instead, with rid
+ *                  set to NULL and mod set to CALOBJ_MOD_ALL.
  **/
 gboolean
 e_cal_remove_object (ECal *ecal,

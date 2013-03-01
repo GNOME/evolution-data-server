@@ -161,19 +161,51 @@ cal_backend_get_backend_property (ECalBackend *backend,
 	g_return_if_fail (prop_name != NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, "TRUE");
+		e_data_cal_respond_get_backend_property (
+			cal, opid, NULL, "TRUE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, "FALSE");
+		e_data_cal_respond_get_backend_property (
+			cal, opid, NULL, "FALSE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, "0");
+		e_data_cal_respond_get_backend_property (
+			cal, opid, NULL, "0");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_backend_get_online (E_BACKEND (backend)) ? "TRUE" : "FALSE");
+		gboolean online;
+
+		online = e_backend_get_online (E_BACKEND (backend));
+
+		e_data_cal_respond_get_backend_property (
+			cal, opid, NULL, online ? "TRUE" : "FALSE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_is_readonly (backend) ? "TRUE" : "FALSE");
+		gboolean readonly;
+
+		readonly = e_cal_backend_is_readonly (backend);
+
+		e_data_cal_respond_get_backend_property (
+			cal, opid, NULL, readonly ? "TRUE" : "FALSE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_get_cache_dir (backend));
+		const gchar *cache_dir;
+
+		cache_dir = e_cal_backend_get_cache_dir (backend);
+
+		e_data_cal_respond_get_backend_property (
+			cal, opid, NULL, cache_dir);
+
 	} else {
-		e_data_cal_respond_get_backend_property (cal, opid, e_data_cal_create_error_fmt (NotSupported, _("Unknown calendar property '%s'"), prop_name), NULL);
+		GError *error;
+
+		error = e_data_cal_create_error_fmt (
+			NotSupported,
+			_("Unknown calendar property '%s'"), prop_name);
+
+		/* Takes ownership of the GError. */
+		e_data_cal_respond_get_backend_property (
+			cal, opid, error, NULL);
 	}
 }
 

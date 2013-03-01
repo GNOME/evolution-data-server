@@ -230,7 +230,8 @@ e_file_cache_remove (EFileCache *cache)
 		dir = g_dir_open (dirname, 0, NULL);
 		if (dir) {
 			while ((fname = g_dir_read_name (dir))) {
-				full_path = g_build_filename (dirname, fname, NULL);
+				full_path = g_build_filename (
+					dirname, fname, NULL);
 				if (g_unlink (full_path) != 0) {
 					g_free (full_path);
 					g_free (dirname);

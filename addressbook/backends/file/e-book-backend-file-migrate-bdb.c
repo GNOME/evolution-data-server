@@ -139,7 +139,14 @@ db_error_to_gerror (const gint db_error,
 		g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
 		return;
 	default:
-		g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "db error 0x%x (%s)", db_error, db_strerror (db_error) ? db_strerror (db_error) : _("Unknown error")));
+		g_propagate_error (
+			perror,
+			e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				"db error 0x%x (%s)", db_error,
+				db_strerror (db_error) ?
+					db_strerror (db_error) :
+					_("Unknown error")));
 		return;
 	}
 }
@@ -439,14 +446,17 @@ e_book_backend_file_migrate_bdb (EBookBackendSqliteDB *sqlitedb,
 	 *
 	 * DB_INIT_MPOOL enables the in-memory cache.
 	 *
-	 * Note that historically we needed either DB_INIT_CDB or DB_INIT_LOCK, because we
-	 * had multiple threads reading and writing concurrently without
-	 * any locking above libdb. DB_INIT_LOCK was used because
+	 * Note that historically we needed either DB_INIT_CDB or DB_INIT_LOCK,
+	 * because we had multiple threads reading and writing concurrently
+	 * without any locking above libdb. DB_INIT_LOCK was used because
 	 * DB_INIT_TXN conflicts with DB_INIT_CDB.
 	 *
 	 * Currently we leave this in place because it is known to work.
 	 */
-	db_error = (*db_env->open) (db_env, dirname, DB_INIT_LOCK | DB_INIT_TXN | DB_INIT_LOG | DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+	db_error = (*db_env->open) (
+		db_env, dirname,
+		DB_INIT_LOCK | DB_INIT_TXN | DB_INIT_LOG | DB_CREATE |
+		DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
 	if (db_error != 0) {
 		g_warning ("db_env_open failed with %s", db_strerror (db_error));
 		db_error_to_gerror (db_error, error);
@@ -460,8 +470,9 @@ e_book_backend_file_migrate_bdb (EBookBackendSqliteDB *sqlitedb,
 		goto close_env;
 	}
 
-	/* First try opening the DB... we want write permission because it's possible we need to update
-	 * an out of date DB before actually migrating it to the SQLite DB */
+	/* First try opening the DB.  We want write permission because it's
+	 * possible we need to update an out of date DB before actually
+	 * migrating it to the SQLite DB. */
 	db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD | DB_AUTO_COMMIT, 0666);
 
 	/* Was an old version,  lets upgrade the format ... */

@@ -241,11 +241,12 @@ dbus_server_quit_server (EDBusServer *server,
 
 static void
 ignore_log (const gchar *log_domain,
-	    GLogLevelFlags log_level,
-	    const gchar *message,
-	    gpointer user_data)
+            GLogLevelFlags log_level,
+            const gchar *message,
+            gpointer user_data)
 {
-	/* Avoid printing of trivial messages while running test cases, only print warnings/criticals and errors */
+	/* Avoid printing of trivial messages while running test
+	 * cases.  Only print warnings, criticals and errors. */
 	if ((log_level & (G_LOG_FLAG_FATAL     |
 			  G_LOG_LEVEL_ERROR    |
 			  G_LOG_LEVEL_CRITICAL |

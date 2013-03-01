@@ -142,8 +142,9 @@ e_client_error_to_string (EClientError code)
 	case E_CLIENT_ERROR_REPOSITORY_OFFLINE:
 		return _("Repository offline");
 	case E_CLIENT_ERROR_OFFLINE_UNAVAILABLE:
-		/* Translators: This means that the EClient does not support offline mode, or
-		 * it's not set to by a user, thus it is unavailable while user is not connected. */
+		/* Translators: This means that the EClient does not
+		 * support offline mode, or it's not set to by a user,
+		 * thus it is unavailable while user is not connected. */
 		return _("Offline unavailable");
 	case E_CLIENT_ERROR_PERMISSION_DENIED:
 		return _("Permission denied");
@@ -198,7 +199,10 @@ GError *
 e_client_error_create (EClientError code,
                        const gchar *custom_msg)
 {
-	return g_error_new_literal (E_CLIENT_ERROR, code, custom_msg ? custom_msg : e_client_error_to_string (code));
+	if (custom_msg == NULL)
+		custom_msg = e_client_error_to_string (code);
+
+	return g_error_new_literal (E_CLIENT_ERROR, code, custom_msg);
 }
 
 static void
@@ -1247,7 +1251,8 @@ e_client_retrieve_capabilities_finish (EClient *client,
 	g_return_val_if_fail (class->retrieve_capabilities_finish != NULL, FALSE);
 
 	*capabilities = NULL;
-	res = class->retrieve_capabilities_finish (client, result, capabilities, error);
+	res = class->retrieve_capabilities_finish (
+		client, result, capabilities, error);
 
 	e_client_set_capabilities (client, res ? *capabilities : NULL);
 
@@ -1290,7 +1295,8 @@ e_client_retrieve_capabilities_sync (EClient *client,
 	g_return_val_if_fail (class->retrieve_capabilities_sync != NULL, FALSE);
 
 	*capabilities = NULL;
-	res = class->retrieve_capabilities_sync (client, capabilities, cancellable, error);
+	res = class->retrieve_capabilities_sync (
+		client, capabilities, cancellable, error);
 
 	e_client_set_capabilities (client, res ? *capabilities : NULL);
 
@@ -1328,7 +1334,8 @@ e_client_get_backend_property (EClient *client,
 	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_backend_property != NULL);
 
-	class->get_backend_property (client, prop_name, cancellable, callback, user_data);
+	class->get_backend_property (
+		client, prop_name, cancellable, callback, user_data);
 }
 
 /**
@@ -1435,7 +1442,9 @@ e_client_set_backend_property (EClient *client,
 	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_backend_property != NULL);
 
-	class->set_backend_property (client, prop_name, prop_value, cancellable, callback, user_data);
+	class->set_backend_property (
+		client, prop_name, prop_value,
+		cancellable, callback, user_data);
 }
 
 /**
@@ -1511,7 +1520,8 @@ e_client_set_backend_property_sync (EClient *client,
 /**
  * e_client_open:
  * @client: an #EClient
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
+ *                  otherwise create it first
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -1581,7 +1591,8 @@ e_client_open_finish (EClient *client,
 /**
  * e_client_open_sync:
  * @client: an #EClient
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
+ *                  otherwise create it first
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -2044,7 +2055,10 @@ e_client_util_unwrap_dbus_error (GError *dbus_error,
 					g_free (name);
 
 					g_dbus_error_strip_remote_error (dbus_error);
-					*client_error = g_error_new_literal (known_errors_domain, known_errors[ii].err_code, dbus_error->message);
+					*client_error = g_error_new_literal (
+						known_errors_domain,
+						known_errors[ii].err_code,
+						dbus_error->message);
 					g_error_free (dbus_error);
 					return TRUE;
 				}
@@ -2059,7 +2073,10 @@ e_client_util_unwrap_dbus_error (GError *dbus_error,
 
 	if (g_error_matches (dbus_error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
 		g_dbus_error_strip_remote_error (dbus_error);
-		*client_error = g_error_new_literal (E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR, dbus_error->message);
+		*client_error = g_error_new_literal (
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OTHER_ERROR,
+			dbus_error->message);
 		g_error_free (dbus_error);
 	} else {
 		g_dbus_error_strip_remote_error (dbus_error);

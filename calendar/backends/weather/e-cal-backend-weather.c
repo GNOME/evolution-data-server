@@ -41,10 +41,18 @@
 
 G_DEFINE_TYPE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYNC)
 
-static gboolean reload_cb (ECalBackendWeather *cbw);
-static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
-static ECalComponent * create_weather (ECalBackendWeather *cbw, GWeatherInfo *report, gboolean is_forecast);
-static void e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
+static gboolean	reload_cb			(ECalBackendWeather *cbw);
+static gboolean	begin_retrieval_cb		(ECalBackendWeather *cbw);
+static ECalComponent *
+		create_weather			(ECalBackendWeather *cbw,
+						 GWeatherInfo *report,
+						 gboolean is_forecast);
+static void	e_cal_backend_weather_add_timezone
+						(ECalBackendSync *backend,
+						 EDataCal *cal,
+						 GCancellable *cancellable,
+						 const gchar *tzobj,
+						 GError **perror);
 
 /* Private part of the ECalBackendWeather structure */
 struct _ECalBackendWeatherPrivate {

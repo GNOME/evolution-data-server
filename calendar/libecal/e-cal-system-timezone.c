@@ -216,8 +216,8 @@ update_fallback (gchar **fallback,
 
 	/* ignore those not available in libical */
 	if (adept && ical_zones) {
-		if (!g_hash_table_lookup (ical_zones, adept) ||
-		    (*fallback && g_hash_table_lookup (ical_zones, *fallback))) {
+		if (!g_hash_table_contains (ical_zones, adept) ||
+		    (*fallback && g_hash_table_contains (ical_zones, *fallback))) {
 			g_free (adept);
 			return;
 		}
@@ -268,12 +268,12 @@ recursive_compare (struct stat *localtime_stat,
 				  file)) {
 			gchar *tz = system_timezone_strip_path_if_valid (file);
 
-			if (deep_level <= 1 || (ical_zones && g_hash_table_lookup (ical_zones, tz))) {
+			if (deep_level <= 1 || (ical_zones && g_hash_table_contains (ical_zones, tz))) {
 				update_fallback (fallback, tz, ical_zones);
 				return NULL;
 			}
 
-			if (ical_zones && !g_hash_table_lookup (ical_zones, tz)) {
+			if (ical_zones && !g_hash_table_contains (ical_zones, tz)) {
 				g_free (tz);
 				return NULL;
 			}
@@ -336,8 +336,9 @@ files_are_identical_inode (struct stat *a_stat,
 		else
 			filename = b_filename;
 
-		/* There is a 'localtime' soft link to /etc/localtime in the zoneinfo
-		 * directory on Slackware, thus rather skip this file. */
+		/* There is a 'localtime' soft link to /etc/localtime in the
+		 * zoneinfo directory on Slackware, thus rather skip this file.
+		 */
 		res = !g_str_equal (filename, "localtime");
 	}
 
@@ -507,7 +508,7 @@ system_timezone_is_valid (const gchar *tz,
 {
 	const gchar *c;
 
-	if (!tz)
+	if (tz == NULL)
 		return FALSE;
 
 	for (c = tz; *c != '\0'; c++) {
@@ -516,10 +517,10 @@ system_timezone_is_valid (const gchar *tz,
 			return FALSE;
 	}
 
-	if (ical_zones && !g_hash_table_lookup (ical_zones, tz))
-		return FALSE;
+	if (ical_zones == NULL)
+		return TRUE;
 
-	return TRUE;
+	return g_hash_table_contains (ical_zones, tz);
 }
 
 static gchar *
@@ -532,7 +533,7 @@ system_timezone_find (void)
 
 	/* return only timezones known to libical */
 	ical_zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	g_hash_table_insert (ical_zones, g_strdup ("UTC"), GINT_TO_POINTER (1));
+	g_hash_table_add (ical_zones, g_strdup ("UTC"));
 
 	builtin_timezones = icaltimezone_get_builtin_timezones ();
 	for (ii = 0; ii < builtin_timezones->num_elements; ii++) {
@@ -545,7 +546,8 @@ system_timezone_find (void)
 
 		location = icaltimezone_get_location (zone);
 		if (location)
-			g_hash_table_insert (ical_zones, g_strdup (location), GINT_TO_POINTER (1));
+			g_hash_table_add (
+				ical_zones, g_strdup (location));
 	}
 
 	/* softlink is the best option, it points to the correct file */
@@ -586,7 +588,10 @@ system_timezone_find (void)
 					 &localtime_content_len,
 					 NULL)) {
 			struct stat stat_config_tz;
-			gchar *filename = g_build_filename (SYSTEM_ZONEINFODIR, config_tz, NULL);
+			gchar *filename;
+
+			filename = g_build_filename (
+				SYSTEM_ZONEINFODIR, config_tz, NULL);
 
 			if (filename &&
 			    g_stat (filename, &stat_config_tz) == 0 &&
@@ -599,10 +604,11 @@ system_timezone_find (void)
 				g_free (localtime_content);
 				g_hash_table_destroy (ical_zones);
 
-				/* corresponding file name to config_tz matches /etc/localtime,
-				 * thus that's the correct one - return it as system timezone;
-				 * bonus is that it might match configured system timezone name too
-				*/
+				/* Corresponding file name to config_tz matches
+				 * /etc/localtime, thus that's the correct one.
+				 * Return it as system timezone; bonus is that
+				 * it might match configured system timezone
+				 * name too. */
 				return config_tz;
 			}
 			g_free (filename);
@@ -631,8 +637,7 @@ system_timezone_find (void)
 #else /* G_OS_WIN32 */
 #include <windows.h>
 
-struct timezone_map_entry
-{
+struct timezone_map_entry {
 	const gchar *windows_string;
 	const gchar *olson_string;
 };
@@ -837,16 +842,19 @@ system_timezone_win32_query_registry (void)
 
 	res = RegOpenKeyExA (
 		HKEY_LOCAL_MACHINE,
-		"SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", 0, KEY_READ, &reg_key);
+		"SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", 0,
+		KEY_READ, &reg_key);
 	if (res != ERROR_SUCCESS) {
 		g_debug ("Could not find system timezone! (1)\n");
 		return NULL;
 	}
 
-	/* On Windows Vista, Windows Server 2008 and later, the Windows timezone name is the value of 'TimeZoneKeyName' */
+	/* On Windows Vista, Windows Server 2008 and later,
+	 * the Windows timezone name is the value of 'TimeZoneKeyName' */
 
 	size = MAX_VALUE_NAME;
-	res = RegQueryValueExA (reg_key, "TimeZoneKeyName", 0, &type, (LPBYTE) timeZone, &size);
+	res = RegQueryValueExA (
+		reg_key, "TimeZoneKeyName", 0, &type, (LPBYTE) timeZone, &size);
 
 	if (type == REG_SZ && res == ERROR_SUCCESS) {
 		RegCloseKey (reg_key);
@@ -856,7 +864,8 @@ system_timezone_win32_query_registry (void)
 
 	/* On older Windows, we must first find the value of 'StandardName' */
 
-	res = RegQueryValueExA (reg_key, "StandardName", 0, &type, (LPBYTE) timeZone, &size);
+	res = RegQueryValueExA (
+		reg_key, "StandardName", 0, &type, (LPBYTE) timeZone, &size);
 
 	if (type != REG_SZ || res != ERROR_SUCCESS) {
 		RegCloseKey (reg_key);
@@ -880,7 +889,8 @@ system_timezone_win32_query_registry (void)
 		size = MAX_VALUE_NAME;
 		res = RegEnumKeyEx (reg_key, i, subKey, &size, NULL, NULL, NULL, NULL);
 		if (res == ERROR_SUCCESS) {
-			res = RegOpenKeyExA (reg_key, subKey, 0, KEY_READ, &reg_subkey);
+			res = RegOpenKeyExA (
+				reg_key, subKey, 0, KEY_READ, &reg_subkey);
 			if (res != ERROR_SUCCESS)
 				continue;
 			size = MAX_VALUE_NAME;
@@ -928,7 +938,8 @@ e_cal_system_timezone_get_location (void)
 
 	if (!(windows_timezone_string = system_timezone_win32_query_registry ()))
 		return NULL;
-	olson_timezone_string = windows_timezone_string_to_olson (windows_timezone_string);
+	olson_timezone_string =
+		windows_timezone_string_to_olson (windows_timezone_string);
 	g_free (windows_timezone_string);
 	if (!olson_timezone_string)
 		return NULL;

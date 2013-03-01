@@ -1431,7 +1431,7 @@ e_gdbus_proxy_sync_ready_cb (GObject *proxy,
 
 	if (!sync_data) {
 		/* already finished operation; it can happen when the operation is cancelled,
-		   but the result is already waiting in an idle queue.
+		 * but the result is already waiting in an idle queue.
 		*/
 		return;
 	}

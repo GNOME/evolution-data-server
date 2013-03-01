@@ -118,7 +118,6 @@ typedef struct {
 	EContact        *contact;
 } EBookChange;
 
-
 /**
  * EBookIndexType:
  * @E_BOOK_INDEX_PREFIX: An index suitable for searching contacts with a prefix pattern
@@ -138,7 +137,6 @@ typedef enum {
 
 GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_book_client_error_to_string	(EBookClientError code);
-
 
 #ifndef EDS_DISABLE_DEPRECATED
 GError *	e_book_client_error_create	(EBookClientError code,

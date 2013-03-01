@@ -380,10 +380,44 @@ init_sqlite_vfs (void)
 }
 
 #define d(x) if (camel_debug("sqlite")) x
-#define START(stmt)	if (camel_debug("dbtime")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
-#define END	if (camel_debug("dbtime")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
-#define STARTTS(stmt)	if (camel_debug("dbtimets")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
-#define ENDTS	if (camel_debug("dbtimets")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
+#define START(stmt) \
+	if (camel_debug ("dbtime")) { \
+		g_print ( \
+			"\n===========\n" \
+			"DB SQL operation [%s] started\n", stmt); \
+		if (!cdb->priv->timer) { \
+			cdb->priv->timer = g_timer_new (); \
+		} else { \
+			g_timer_reset (cdb->priv->timer); \
+		} \
+	}
+#define END \
+	if (camel_debug ("dbtime")) { \
+		g_timer_stop (cdb->priv->timer); \
+		g_print ( \
+			"DB Operation ended. " \
+			"Time Taken : %f\n###########\n", \
+			g_timer_elapsed (cdb->priv->timer, NULL)); \
+	}
+#define STARTTS(stmt) \
+	if (camel_debug ("dbtimets")) { \
+		g_print ( \
+			"\n===========\n" \
+			"DB SQL operation [%s] started\n", stmt); \
+		if (!cdb->priv->timer) { \
+			cdb->priv->timer = g_timer_new (); \
+		} else { \
+			g_timer_reset (cdb->priv->timer); \
+		} \
+	}
+#define ENDTS \
+	if (camel_debug ("dbtimets")) { \
+		g_timer_stop (cdb->priv->timer); \
+		g_print ( \
+			"DB Operation ended. " \
+			"Time Taken : %f\n###########\n", \
+			g_timer_elapsed (cdb->priv->timer, NULL)); \
+	}
 
 struct _CamelDBPrivate {
 	GTimer *timer;
@@ -1051,7 +1085,13 @@ camel_db_get_folder_uids (CamelDB *db,
 	 gchar *sel_query;
 	 gint ret;
 
-	 sel_query = sqlite3_mprintf ("SELECT uid,flags FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
+		sel_query = sqlite3_mprintf (
+		"SELECT uid,flags FROM %Q%s%s%s%s",
+		folder_name,
+		sort_by ? " order by " : "",
+		sort_by ? sort_by : "",
+		(sort_by && collate) ? " collate " : "",
+		(sort_by && collate) ? collate : "");
 
 	 ret = camel_db_select (db, sel_query, read_uids_to_hash_callback, hash, error);
 	 sqlite3_free (sel_query);
@@ -1218,7 +1258,19 @@ gint
 camel_db_create_folders_table (CamelDB *cdb,
                                GError **error)
 {
-	const gchar *query = "CREATE TABLE IF NOT EXISTS folders ( folder_name TEXT PRIMARY KEY, version REAL, flags INTEGER, nextuid INTEGER, time NUMERIC, saved_count INTEGER, unread_count INTEGER, deleted_count INTEGER, junk_count INTEGER, visible_count INTEGER, jnd_count INTEGER, bdata TEXT )";
+	const gchar *query = "CREATE TABLE IF NOT EXISTS folders ( "
+		"folder_name TEXT PRIMARY KEY, "
+		"version REAL, "
+		"flags INTEGER, "
+		"nextuid INTEGER, "
+		"time NUMERIC, "
+		"saved_count INTEGER, "
+		"unread_count INTEGER, "
+		"deleted_count INTEGER, "
+		"junk_count INTEGER, "
+		"visible_count INTEGER, "
+		"jnd_count INTEGER, "
+		"bdata TEXT )";
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	return ((camel_db_command (cdb, query, error)));
 }
@@ -1231,12 +1283,50 @@ camel_db_create_message_info_table (CamelDB *cdb,
 	gint ret;
 	gchar *table_creation_query, *safe_index;
 
-	/* README: It is possible to compress all system flags into a single column and use just as userflags but that makes querying for other applications difficult an d bloats the parsing code. Instead, it is better to bloat the tables. Sqlite should have some optimizations for sparse columns etc. */
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT, created TEXT, modified TEXT)", folder_name);
+	/* README: It is possible to compress all system flags into a single
+	 * column and use just as userflags but that makes querying for other
+	 * applications difficult and bloats the parsing code. Instead, it is
+	 * better to bloat the tables. Sqlite should have some optimizations
+	 * for sparse columns etc. */
+	table_creation_query = sqlite3_mprintf (
+		"CREATE TABLE IF NOT EXISTS %Q ( "
+			"uid TEXT PRIMARY KEY , "
+			"flags INTEGER , "
+			"msg_type INTEGER , "
+			"read INTEGER , "
+			"deleted INTEGER , "
+			"replied INTEGER , "
+			"important INTEGER , "
+			"junk INTEGER , "
+			"attachment INTEGER , "
+			"dirty INTEGER , "
+			"size INTEGER , "
+			"dsent NUMERIC , "
+			"dreceived NUMERIC , "
+			"subject TEXT , "
+			"mail_from TEXT , "
+			"mail_to TEXT , "
+			"mail_cc TEXT , "
+			"mlist TEXT , "
+			"followup_flag TEXT , "
+			"followup_completed_on TEXT , "
+			"followup_due_by TEXT , "
+			"part TEXT , "
+			"labels TEXT , "
+			"usertags TEXT , "
+			"cinfo TEXT , "
+			"bdata TEXT, "
+			"created TEXT, "
+			"modified TEXT)",
+			folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	sqlite3_free (table_creation_query);
 
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_bodystructure' (  uid TEXT PRIMARY KEY , bodystructure TEXT )", folder_name);
+	table_creation_query = sqlite3_mprintf (
+		"CREATE TABLE IF NOT EXISTS '%q_bodystructure' ( "
+			"uid TEXT PRIMARY KEY , "
+			"bodystructure TEXT )",
+			folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	sqlite3_free (table_creation_query);
 
@@ -1306,11 +1396,51 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
 
-		table_creation_query = sqlite3_mprintf ("CREATE TEMP TABLE IF NOT EXISTS 'mem.%q' (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT, created TEXT, modified TEXT )", folder_name);
+		table_creation_query = sqlite3_mprintf (
+			"CREATE TEMP TABLE IF NOT EXISTS 'mem.%q' ( "
+				"uid TEXT PRIMARY KEY , "
+				"flags INTEGER , "
+				"msg_type INTEGER , "
+				"read INTEGER , "
+				"deleted INTEGER , "
+				"replied INTEGER , "
+				"important INTEGER , "
+				"junk INTEGER , "
+				"attachment INTEGER , "
+				"dirty INTEGER , "
+				"size INTEGER , "
+				"dsent NUMERIC , "
+				"dreceived NUMERIC , "
+				"subject TEXT , "
+				"mail_from TEXT , "
+				"mail_to TEXT , "
+				"mail_cc TEXT , "
+				"mlist TEXT , "
+				"followup_flag TEXT , "
+				"followup_completed_on TEXT , "
+				"followup_due_by TEXT , "
+				"part TEXT , "
+				"labels TEXT , "
+				"usertags TEXT , "
+				"cinfo TEXT , "
+				"bdata TEXT, "
+				"created TEXT, "
+				"modified TEXT )",
+				folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
 
-		table_creation_query = sqlite3_mprintf ("INSERT INTO 'mem.%q' SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata , strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') FROM %Q", folder_name, folder_name);
+		table_creation_query = sqlite3_mprintf (
+			"INSERT INTO 'mem.%q' SELECT "
+			"uid , flags , msg_type , read , deleted , "
+			"replied , important , junk , attachment , dirty , "
+			"size , dsent , dreceived , subject , mail_from , "
+			"mail_to , mail_cc , mlist , followup_flag , "
+			"followup_completed_on , followup_due_by , "
+			"part , labels , usertags , cinfo , bdata , "
+			"strftime(\"%%s\", 'now'), "
+			"strftime(\"%%s\", 'now') FROM %Q",
+			folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
 
@@ -1341,7 +1471,15 @@ camel_db_migrate_folder_recreate (CamelDB *cdb,
 	if (version < 2) {
 		GError *local_error = NULL;
 
-		table_creation_query = sqlite3_mprintf ("INSERT INTO %Q SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata, created, modified FROM 'mem.%q'", folder_name, folder_name);
+		table_creation_query = sqlite3_mprintf (
+			"INSERT INTO %Q SELECT uid , flags , msg_type , "
+			"read , deleted , replied , important , junk , "
+			"attachment , dirty , size , dsent , dreceived , "
+			"subject , mail_from , mail_to , mail_cc , mlist , "
+			"followup_flag , followup_completed_on , "
+			"followup_due_by , part , labels , usertags , "
+			"cinfo , bdata, created, modified FROM 'mem.%q'",
+			folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, &local_error);
 		sqlite3_free (table_creation_query);
 
@@ -1755,7 +1893,11 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 	gchar *query;
 	gint ret;
 
-	query = sqlite3_mprintf ("SELECT uid, flags, size, dsent, dreceived, subject, mail_from, mail_to, mail_cc, mlist, part, labels, usertags, cinfo, bdata FROM %Q WHERE uid = %Q", folder_name, uid);
+	query = sqlite3_mprintf (
+		"SELECT uid, flags, size, dsent, dreceived, subject, "
+		"mail_from, mail_to, mail_cc, mlist, part, labels, "
+		"usertags, cinfo, bdata FROM %Q WHERE uid = %Q",
+		folder_name, uid);
 	ret = camel_db_select (cdb, query, read_mir_callback, p, error);
 	sqlite3_free (query);
 
@@ -1777,7 +1919,10 @@ camel_db_read_message_info_records (CamelDB *cdb,
 	gchar *query;
 	gint ret;
 
-	query = sqlite3_mprintf ("SELECT uid, flags, size, dsent, dreceived, subject, mail_from, mail_to, mail_cc, mlist, part, labels, usertags, cinfo, bdata FROM %Q ", folder_name);
+	query = sqlite3_mprintf (
+		"SELECT uid, flags, size, dsent, dreceived, subject, "
+		"mail_from, mail_to, mail_cc, mlist, part, labels, "
+		"usertags, cinfo, bdata FROM %Q ", folder_name);
 	ret = camel_db_select (cdb, query, read_mir_callback, p, error);
 	sqlite3_free (query);
 
@@ -1795,7 +1940,12 @@ camel_db_create_deleted_table (CamelDB *cdb,
 {
 	gint ret;
 	gchar *table_creation_query;
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS Deletes (id INTEGER primary key AUTOINCREMENT not null, uid TEXT, time TEXT, mailbox TEXT)");
+	table_creation_query = sqlite3_mprintf (
+		"CREATE TABLE IF NOT EXISTS Deletes ("
+			"id INTEGER primary key AUTOINCREMENT not null, "
+			"uid TEXT, "
+			"time TEXT, "
+			"mailbox TEXT)");
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	sqlite3_free (table_creation_query);
 	return ret;
@@ -1832,7 +1982,10 @@ camel_db_delete_uid (CamelDB *cdb,
 
 	ret = camel_db_create_deleted_table (cdb, error);
 
-	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q WHERE uid = %Q", folder, folder, uid);
+	tab = sqlite3_mprintf (
+		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
+		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q "
+		"WHERE uid = %Q", folder, folder, uid);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
@@ -1970,7 +2123,10 @@ camel_db_clear_folder_summary (CamelDB *cdb,
 
 	ret = camel_db_create_deleted_table (cdb, error);
 
-	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q", folder, folder);
+	tab = sqlite3_mprintf (
+		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
+		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q",
+		folder, folder);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
@@ -2007,7 +2163,10 @@ camel_db_delete_folder (CamelDB *cdb,
 
 	ret = camel_db_create_deleted_table (cdb, error);
 
-	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q", folder, folder);
+	tab = sqlite3_mprintf (
+		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
+		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q",
+		folder, folder);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
@@ -2049,7 +2208,10 @@ camel_db_rename_folder (CamelDB *cdb,
 
 	ret = camel_db_create_deleted_table (cdb, error);
 
-	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q", old_folder, old_folder);
+	tab = sqlite3_mprintf (
+		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
+		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q",
+		old_folder, old_folder);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
@@ -2197,7 +2359,35 @@ camel_db_start_in_memory_transactions (CamelDB *cdb,
 	ret = camel_db_command (cdb, cmd, error);
 	sqlite3_free (cmd);
 
-	cmd = sqlite3_mprintf ("CREATE TEMPORARY TABLE %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT )", CAMEL_DB_IN_MEMORY_TABLE);
+	cmd = sqlite3_mprintf (
+		"CREATE TEMPORARY TABLE %Q ( "
+			"uid TEXT PRIMARY KEY , "
+			"flags INTEGER , "
+			"msg_type INTEGER , "
+			"read INTEGER , "
+			"deleted INTEGER , "
+			"replied INTEGER , "
+			"important INTEGER , "
+			"junk INTEGER , "
+			"attachment INTEGER , "
+			"dirty INTEGER , "
+			"size INTEGER , "
+			"dsent NUMERIC , "
+			"dreceived NUMERIC , "
+			"subject TEXT , "
+			"mail_from TEXT , "
+			"mail_to TEXT , "
+			"mail_cc TEXT , "
+			"mlist TEXT , "
+			"followup_flag TEXT , "
+			"followup_completed_on TEXT , "
+			"followup_due_by TEXT , "
+			"part TEXT , "
+			"labels TEXT , "
+			"usertags TEXT , "
+			"cinfo TEXT , "
+			"bdata TEXT )",
+		CAMEL_DB_IN_MEMORY_TABLE);
 	ret = camel_db_command (cdb, cmd, error);
 	if (ret != 0 )
 		abort ();

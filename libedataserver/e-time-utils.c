@@ -518,19 +518,22 @@ __strptime_internal (rp,
 #elif defined (G_OS_WIN32)
 	      if (*decided !=raw)
 		{
-		  if (match_string (get_locale_string (LOCALE_SDAYNAME1 + cnt), rp))
+		  const gchar *locale_str;
+
+		  locale_str = get_locale_string (LOCALE_SDAYNAME1 + cnt);
+		  if (match_string (locale_str, rp))
 		    {
 		      if (*decided == not
-			  && strcmp (get_locale_string (LOCALE_SDAYNAME1 + cnt),
-				     weekday_name[cnt]))
+			  && strcmp (locale_str, weekday_name[cnt]))
 			*decided = loc;
 		      break;
 		    }
-		  if (match_string (get_locale_string (LOCALE_SABBREVDAYNAME1 + cnt), rp))
+
+		  locale_str = get_locale_string (LOCALE_SABBREVDAYNAME1 + cnt);
+		  if (match_string (locale_str, rp))
 		    {
 		      if (*decided == not
-			  && strcmp (get_locale_string (LOCALE_SABBREVDAYNAME1 + cnt),
-				     ab_weekday_name[cnt]))
+			  && strcmp (locale_str, ab_weekday_name[cnt]))
 			*decided = loc;
 		      break;
 		    }
@@ -579,19 +582,22 @@ __strptime_internal (rp,
 #elif defined (G_OS_WIN32)
 	      if (*decided !=raw)
 		{
-		  if (match_string (get_locale_string (LOCALE_SMONTHNAME1 + cnt), rp))
+		  const gchar *locale_str;
+
+		  locale_str = get_locale_string (LOCALE_SMONTHNAME1 + cnt);
+		  if (match_string (locale_str, rp))
 		    {
 		      if (*decided == not
-			  && strcmp (get_locale_string (LOCALE_SMONTHNAME1 + cnt),
-				     month_name[cnt]))
+			  && strcmp (locale_str, month_name[cnt]))
 			*decided = loc;
 		      break;
 		    }
-		  if (match_string (get_locale_string (LOCALE_SABBREVMONTHNAME1 + cnt), rp))
+
+		  locale_str = get_locale_string (LOCALE_SABBREVMONTHNAME1 + cnt);
+		  if (match_string (locale_str, rp))
 		    {
 		      if (*decided == not
-			  && strcmp (get_locale_string (LOCALE_SABBREVMONTHNAME1 + cnt),
-				     ab_month_name[cnt]))
+			  && strcmp (locale_str, ab_month_name[cnt]))
 			*decided = loc;
 		      break;
 		    }
@@ -712,7 +718,12 @@ __strptime_internal (rp,
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-		const gchar *posix_d_fmt = translate_picture (get_locale_string (LOCALE_SSHORTDATE));
+		const gchar *picture;
+		const gchar *posix_d_fmt;
+
+		picture = get_locale_string (LOCALE_SSHORTDATE);
+		posix_d_fmt = translate_picture (picture);
+
 		if (!recursive (posix_d_fmt))
 		{
 		  if (*decided == loc)
@@ -930,7 +941,12 @@ __strptime_internal (rp,
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-	      const gchar *posix_t_fmt = translate_picture (get_locale_string (LOCALE_STIMEFORMAT));
+	      const gchar *picture;
+	      const gchar *posix_t_fmt;
+
+	      picture = get_local_string (LOCALE_STIMEFORMAT);
+	      posix_t_fmt = translate_picture (picture);
+
 	      if (!recursive (posix_t_fmt))
 		{
 		  if (*decided == loc)

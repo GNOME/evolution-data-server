@@ -590,10 +590,9 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		source_extension, "account-id",
 		G_BINDING_SYNC_CREATE);
 
-	/* requires more properties from ownCould, but these are not
+	/* Requires more properties from ownCloud, but these are not
 	 * available before ownCloud was introduced, thus workaround
-	 * it with the backend_name check
-	*/
+	 * it with the backend_name check. */
 	if (g_strcmp0 (backend_name, "owncloud") == 0) {
 		GoaCalendar *goa_calendar;
 		GoaContacts *goa_contacts;

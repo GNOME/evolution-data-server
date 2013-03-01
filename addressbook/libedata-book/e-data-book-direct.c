@@ -89,8 +89,8 @@ e_data_book_direct_class_init (EDataBookDirectClass *class)
  */
 EDataBookDirect *
 e_data_book_direct_new (const gchar *backend_path,
-			const gchar *backend_factory_name,
-			const gchar *config)
+                        const gchar *backend_factory_name,
+                        const gchar *config)
 {
 	EDataBookDirect *direct;
 
@@ -119,14 +119,15 @@ e_data_book_direct_new (const gchar *backend_path,
  **/
 gboolean
 e_data_book_direct_register_gdbus_object (EDataBookDirect *direct,
-					  GDBusConnection *connection,
-					  const gchar *object_path,
-					  GError **error)
+                                          GDBusConnection *connection,
+                                          const gchar *object_path,
+                                          GError **error)
 {
 	g_return_val_if_fail (E_IS_DATA_BOOK_DIRECT (direct), FALSE);
 	g_return_val_if_fail (connection != NULL, FALSE);
 	g_return_val_if_fail (object_path != NULL, 0);
 
-	return g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (direct->priv->gdbus_object),
-						 connection, object_path, error);
+	return g_dbus_interface_skeleton_export (
+		G_DBUS_INTERFACE_SKELETON (direct->priv->gdbus_object),
+		connection, object_path, error);
 }

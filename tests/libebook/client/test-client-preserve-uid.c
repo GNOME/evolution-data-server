@@ -31,7 +31,7 @@ static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 }
 
 static void
 test_preserve_uid (ETestServerFixture *fixture,
-		   gconstpointer       user_data)
+                   gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact    *contact;
@@ -57,7 +57,7 @@ test_preserve_uid (ETestServerFixture *fixture,
 
 static void
 test_uid_conflict (ETestServerFixture *fixture,
-		   gconstpointer       user_data)
+                   gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact    *contact;
@@ -93,10 +93,12 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EBookClient/AddContact/PreserveUid", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_preserve_uid, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/AddContact/UidConflict", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_uid_conflict, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/AddContact/PreserveUid", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_preserve_uid, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/AddContact/UidConflict", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_uid_conflict, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

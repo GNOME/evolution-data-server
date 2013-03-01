@@ -39,11 +39,9 @@
 
 #define d(x)
 
-G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
-
-struct _CamelMaildirStorePrivate {
-	gboolean already_migrated;
-};
+#define CAMEL_MAILDIR_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MAILDIR_STORE, CamelMaildirStorePrivate))
 
 /* after the space is a version of the folder structure */
 #define MAILDIR_CONTENT_VERSION_STR  "maildir++ 1"
@@ -51,6 +49,10 @@ struct _CamelMaildirStorePrivate {
 
 #define HIER_SEP "."
 #define HIER_SEP_CHAR '.'
+
+struct _CamelMaildirStorePrivate {
+	gboolean already_migrated;
+};
 
 static CamelFolder * maildir_store_get_folder_sync (CamelStore *store, const gchar *folder_name, CamelStoreGetFolderFlags flags,
 						GCancellable *cancellable, GError **error);
@@ -64,6 +66,8 @@ static gchar *maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name
 static gchar *maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static void maildir_migrate_hierarchy (CamelMaildirStore *mstore, gint maildir_version, GCancellable *cancellable, GError **error);
 static gboolean maildir_version_requires_migrate (const gchar *meta_filename, gint *maildir_version);
+
+G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
 
 /* This fixes up some historical cruft of names starting with "./" */
 static const gchar *
@@ -845,7 +849,11 @@ maildir_store_rename_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
-	subfolders = maildir_store_get_folder_info_sync (store, old, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, cancellable, NULL);
+	subfolders = maildir_store_get_folder_info_sync (
+		store, old,
+		CAMEL_STORE_FOLDER_INFO_RECURSIVE |
+		CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
+		cancellable, NULL);
 
 	old_dir = maildir_full_name_to_dir_name (old);
 	new_dir = maildir_full_name_to_dir_name (new);
@@ -857,7 +865,11 @@ maildir_store_rename_folder_sync (CamelStore *store,
 
 	if (subfolders) {
 		if (ret)
-			ret = rename_traverse_fi (store, store_class, subfolders->child, old, new, cancellable, error);
+			ret = rename_traverse_fi (
+				store, store_class,
+				subfolders->child,
+				old, new,
+				cancellable, error);
 
 		camel_store_free_folder_info (store, subfolders);
 	}
@@ -895,7 +907,7 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 static void
 camel_maildir_store_init (CamelMaildirStore *maildir_store)
 {
-	maildir_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (maildir_store, CAMEL_TYPE_MAILDIR_STORE, CamelMaildirStorePrivate);
+	maildir_store->priv = CAMEL_MAILDIR_STORE_GET_PRIVATE (maildir_store);
 	maildir_store->priv->already_migrated = FALSE;
 }
 
@@ -980,7 +992,7 @@ scan_hash (gconstpointer d)
 
 static gboolean
 scan_equal (gconstpointer a,
-	    gconstpointer b)
+            gconstpointer b)
 {
 	const struct _scan_node *v1 = a, *v2 = b;
 
@@ -989,8 +1001,8 @@ scan_equal (gconstpointer a,
 
 static void
 scan_free (gpointer k,
-	   gpointer v,
-	   gpointer d)
+           gpointer v,
+           gpointer d)
 {
 	g_free (k);
 }
@@ -1115,23 +1127,23 @@ exit:
 
 static void
 maildir_maybe_rename_old_folder (CamelMaildirStore *mstore,
-				 CamelFolderInfo *fi,
-				 gint maildir_version,
-				 GCancellable *cancellable,
-				 GError **error)
+                                 CamelFolderInfo *fi,
+                                 gint maildir_version,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	gchar *new_name = NULL;
 
 	if (maildir_version == -1) {
 		/* this is when maildir was not converted yet to maildir++ at all,
-		   the '_' and '.'  are still there and the dir separator is slash
+		 * the '_' and '.'  are still there and the dir separator is slash
 		*/
 		new_name = maildir_full_name_to_dir_name (fi->full_name);
 	} else if (maildir_version == 0) {
 		/* this is a conversion with maildir folder being already there,
-		   only with no version; there should be escaped only '_', because
-		   the '.' is already garbled;
-		   fi->full_name is a dir name here
+		 * only with no version; there should be escaped only '_', because
+		 * the '.' is already garbled;
+		 * fi->full_name is a dir name here
 		*/
 		gchar *full_name;
 
@@ -1164,7 +1176,7 @@ maildir_maybe_rename_old_folder (CamelMaildirStore *mstore,
 static void
 traverse_rename_folder_info (CamelMaildirStore *mstore,
                              CamelFolderInfo *fi,
-			     gint maildir_version,
+                             gint maildir_version,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -1180,7 +1192,7 @@ traverse_rename_folder_info (CamelMaildirStore *mstore,
 
 static gboolean
 maildir_version_requires_migrate (const gchar *meta_filename,
-				  gint *maildir_version)
+                                  gint *maildir_version)
 {
 	FILE *metafile;
 	gchar cc;
@@ -1226,7 +1238,7 @@ maildir_version_requires_migrate (const gchar *meta_filename,
 
 static void
 maildir_migrate_hierarchy (CamelMaildirStore *mstore,
-			   gint maildir_version,
+                           gint maildir_version,
                            GCancellable *cancellable,
                            GError **error)
 {

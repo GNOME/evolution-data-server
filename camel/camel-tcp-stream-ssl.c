@@ -557,8 +557,8 @@ enable_ssl (CamelTcpStreamSSL *ssl,
 		static gchar v2_hello = -1;
 
 		/* Zarafa server with disabled SSL v2 rejects connection when
-		   SSL v2 compatible hello is sent, thus disabled this by default.
-		   After all, SSL v3 should be used in general these days anyway.
+		 * SSL v2 compatible hello is sent, thus disabled this by default.
+		 * After all, SSL v3 should be used in general these days anyway.
 		*/
 		if (v2_hello == -1)
 			v2_hello = g_strcmp0 (g_getenv ("CAMEL_SSL_V2_HELLO"), "1") == 0 ? 1 : 0;

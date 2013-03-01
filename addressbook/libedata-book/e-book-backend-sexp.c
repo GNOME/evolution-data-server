@@ -965,12 +965,45 @@ func_exists_vcard (struct _ESExp *f,
 	return r;
 }
 
+static void
+book_backend_sexp_finalize (GObject *object)
+{
+	EBookBackendSExpPrivate *priv;
+
+	priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (object);
+
+	e_sexp_unref (priv->search_sexp);
+	g_free (priv->text);
+	g_free (priv->search_context);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_sexp_parent_class)->finalize (object);
+}
+
+static void
+e_book_backend_sexp_class_init (EBookBackendSExpClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (EBookBackendSExpPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = book_backend_sexp_finalize;
+}
+
+static void
+e_book_backend_sexp_init (EBookBackendSExp *sexp)
+{
+	sexp->priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (sexp);
+	sexp->priv->search_context = g_new (SearchContext, 1);
+}
+
 /* 'builtin' functions */
 static struct {
 	const gchar *name;
 	ESExpFunc *func;
-	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
-				   doesn't execute everything, 0 otherwise */
+	gint type;	/* 1 if a function can perform shortcut evaluation,
+			 * or doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "contains", func_contains, 0 },
 	{ "is", func_is, 0 },
@@ -984,101 +1017,47 @@ static struct {
 };
 
 /**
- * e_book_backend_sexp_match_contact:
- * @sexp: an #EBookBackendSExp
- * @contact: an #EContact
- *
- * Checks if @contact matches @sexp.
- *
- * Returns: %TRUE if the contact matches, %FALSE otherwise.
- **/
-gboolean
-e_book_backend_sexp_match_contact (EBookBackendSExp *sexp,
-                                   EContact *contact)
-{
-	ESExpResult *r;
-	gboolean retval;
-
-	if (!contact) {
-		g_warning ("null EContact passed to e_book_backend_sexp_match_contact");
-		return FALSE;
-	}
-
-	sexp->priv->search_context->contact = g_object_ref (contact);
-
-	r = e_sexp_eval (sexp->priv->search_sexp);
-
-	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
-
-	g_object_unref (sexp->priv->search_context->contact);
-
-	e_sexp_result_free (sexp->priv->search_sexp, r);
-
-	return retval;
-}
-
-/**
- * e_book_backend_sexp_match_vcard:
- * @sexp: an #EBookBackendSExp
- * @vcard: a VCard string
- *
- * Checks if @vcard matches @sexp.
- *
- * Returns: %TRUE if the VCard matches, %FALSE otherwise.
- **/
-gboolean
-e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp,
-                                 const gchar *vcard)
-{
-	EContact *contact;
-	gboolean retval;
-
-	contact = e_contact_new_from_vcard (vcard);
-
-	retval = e_book_backend_sexp_match_contact (sexp, contact);
-
-	g_object_unref (contact);
-
-	return retval;
-}
-
-
-
-/**
  * e_book_backend_sexp_new:
  * @text: an s-expression to parse
  *
  * Creates a new #EBookBackendSExp from @text.
  *
- * Returns: A new #EBookBackendSExp.
+ * Returns: a new #EBookBackendSExp
  **/
 EBookBackendSExp *
 e_book_backend_sexp_new (const gchar *text)
 {
-	EBookBackendSExp *sexp = g_object_new (E_TYPE_BOOK_BACKEND_SEXP, NULL);
-	gint esexp_error;
-	gint i;
+	EBookBackendSExp *sexp;
+	gint ii;
 
+	g_return_val_if_fail (text != NULL, NULL);
+
+	sexp = g_object_new (E_TYPE_BOOK_BACKEND_SEXP, NULL);
 	sexp->priv->search_sexp = e_sexp_new ();
 	sexp->priv->text = g_strdup (text);
 
-	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
-		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction (sexp->priv->search_sexp, 0, symbols[i].name,
-					     (ESExpIFunc *) symbols[i].func, sexp->priv->search_context);
-		}
-		else {
+	for (ii = 0; ii < G_N_ELEMENTS (symbols); ii++) {
+		if (symbols[ii].type == 1) {
+			e_sexp_add_ifunction (
+				sexp->priv->search_sexp, 0,
+				symbols[ii].name,
+				(ESExpIFunc *) symbols[ii].func,
+				sexp->priv->search_context);
+		} else {
 			e_sexp_add_function (
-				sexp->priv->search_sexp, 0, symbols[i].name,
-				symbols[i].func, sexp->priv->search_context);
+				sexp->priv->search_sexp, 0,
+				symbols[ii].name,
+				symbols[ii].func,
+				sexp->priv->search_context);
 		}
 	}
 
 	e_sexp_input_text (sexp->priv->search_sexp, text, strlen (text));
-	esexp_error = e_sexp_parse (sexp->priv->search_sexp);
 
-	if (esexp_error == -1) {
-		g_warning ("%s: Error in parsing: %s", G_STRFUNC, sexp->priv->search_sexp->error);
+	if (e_sexp_parse (sexp->priv->search_sexp) == -1) {
+		g_warning (
+			"%s: Error in parsing: %s",
+			G_STRFUNC, sexp->priv->search_sexp->error);
 		g_object_unref (sexp);
 		sexp = NULL;
 	}
@@ -1104,35 +1083,63 @@ e_book_backend_sexp_text (EBookBackendSExp *sexp)
 	return sexp->priv->text;
 }
 
-static void
-e_book_backend_sexp_finalize (GObject *object)
+/**
+ * e_book_backend_sexp_match_contact:
+ * @sexp: an #EBookBackendSExp
+ * @contact: an #EContact
+ *
+ * Checks if @contact matches @sexp.
+ *
+ * Returns: %TRUE if the contact matches, %FALSE otherwise
+ **/
+gboolean
+e_book_backend_sexp_match_contact (EBookBackendSExp *sexp,
+                                   EContact *contact)
 {
-	EBookBackendSExpPrivate *priv;
+	ESExpResult *r;
+	gboolean retval;
 
-	priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (object);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp), FALSE);
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
-	e_sexp_unref (priv->search_sexp);
-	g_free (priv->text);
-	g_free (priv->search_context);
+	sexp->priv->search_context->contact = g_object_ref (contact);
 
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_book_backend_sexp_parent_class)->finalize (object);
+	r = e_sexp_eval (sexp->priv->search_sexp);
+
+	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
+
+	g_object_unref (sexp->priv->search_context->contact);
+
+	e_sexp_result_free (sexp->priv->search_sexp, r);
+
+	return retval;
 }
 
-static void
-e_book_backend_sexp_class_init (EBookBackendSExpClass *class)
+/**
+ * e_book_backend_sexp_match_vcard:
+ * @sexp: an #EBookBackendSExp
+ * @vcard: a vCard string
+ *
+ * Checks if @vcard matches @sexp.
+ *
+ * Returns: %TRUE if the vCard matches, %FALSE otherwise
+ **/
+gboolean
+e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp,
+                                 const gchar *vcard)
 {
-	GObjectClass *object_class;
+	EContact *contact;
+	gboolean retval;
 
-	g_type_class_add_private (class, sizeof (EBookBackendSExpPrivate));
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp), FALSE);
+	g_return_val_if_fail (vcard != NULL, FALSE);
 
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = e_book_backend_sexp_finalize;
+	contact = e_contact_new_from_vcard (vcard);
+
+	retval = e_book_backend_sexp_match_contact (sexp, contact);
+
+	g_object_unref (contact);
+
+	return retval;
 }
 
-static void
-e_book_backend_sexp_init (EBookBackendSExp *sexp)
-{
-	sexp->priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (sexp);
-	sexp->priv->search_context = g_new (SearchContext, 1);
-}

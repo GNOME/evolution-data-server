@@ -136,7 +136,7 @@ typedef enum { /*< flags >*/
 #define CAMEL_FOLDER_TYPE_MASK (63 << CAMEL_FOLDER_TYPE_BIT)
 
 /* Note: The HTML elements are escaped in the doc comment intentionally,
-   to have them shown as expected in generated documentation. */
+ *       to have them shown as expected in generated documentation. */
 /**
  * CamelMimeFilterToHTMLFlags:
  * @CAMEL_MIME_FILTER_TOHTML_PRE:

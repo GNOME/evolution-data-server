@@ -51,10 +51,10 @@ test_data_free (gpointer user_data)
 
 static TestData *
 test_data_new (const gchar *vcard_name,
-	       const gchar *formatted_number,
-	       const gchar *country_calling_code,
-	       const gchar *national_number,
-	       gboolean     direct)
+               const gchar *formatted_number,
+               const gchar *country_calling_code,
+               const gchar *national_number,
+               gboolean direct)
 {
 	TestData *const data = g_new0 (TestData, 1);
 
@@ -72,7 +72,7 @@ test_data_new (const gchar *vcard_name,
 
 static void
 test_add_e164_param (ETestServerFixture *fixture,
-		     gconstpointer       user_data)
+                     gconstpointer user_data)
 {
 	const TestData *const data = user_data;
 	EBookClient          *book_client;
@@ -108,7 +108,6 @@ test_add_e164_param (ETestServerFixture *fixture,
 		g_error ("Failed to restore contact: %s", error->message);
 
 	g_free (uid);
-
 
 	tel = e_vcard_get_attribute (E_VCARD (contact), EVC_TEL);
 	values = tel ? e_vcard_attribute_get_values (tel) : NULL;

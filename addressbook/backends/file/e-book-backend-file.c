@@ -665,10 +665,9 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 	}
 }
 
-
 static void
 set_revision (EBookBackendFile *bf,
-	      EContact *contact)
+              EContact *contact)
 {
 	gchar *rev;
 
@@ -752,13 +751,14 @@ do_create (EBookBackendFile *bf,
 			if (g_error_matches (local_error,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONSTRAINT)) {
-				g_set_error (perror, E_DATA_BOOK_ERROR,
-					     E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,
-					     _("Conflicting UIDs found in added contacts"));
+				g_set_error (
+					perror, E_DATA_BOOK_ERROR,
+					E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,
+					_("Conflicting UIDs found in added contacts"));
 				g_clear_error (&local_error);
 			} else
 				g_propagate_error (perror, local_error);
- 
+
 			status = STATUS_ERROR;
 		}
 	}
@@ -838,9 +838,10 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			if (g_error_matches (local_error,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
-				g_set_error (perror, E_DATA_BOOK_ERROR,
-					     E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
-					     _("Contact '%s' not found"), id);
+				g_set_error (
+					perror, E_DATA_BOOK_ERROR,
+					E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
+					_("Contact '%s' not found"), id);
 				g_error_free (local_error);
 			} else
 				g_propagate_error (perror, local_error);
@@ -933,10 +934,11 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 
 			if (!contact_rev || !old_contact_rev ||
 			    strcmp (contact_rev, old_contact_rev) != 0) {
-				g_set_error (perror, E_DATA_BOOK_ERROR,
-					     E_DATA_BOOK_STATUS_OUT_OF_SYNC,
-					     _("Tried to modify contact '%s' with out of sync revision"),
-					     (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
+				g_set_error (
+					perror, E_DATA_BOOK_ERROR,
+					E_DATA_BOOK_STATUS_OUT_OF_SYNC,
+					_("Tried to modify contact '%s' with out of sync revision"),
+					(gchar *) e_contact_get_const (contact, E_CONTACT_UID));
 
 				status = STATUS_ERROR;
 
@@ -1030,9 +1032,10 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 		if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
-			g_set_error (perror, E_DATA_BOOK_ERROR,
-				     E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
-				     _("Contact '%s' not found"), id);
+			g_set_error (
+				perror, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
+				_("Contact '%s' not found"), id);
 			g_error_free (local_error);
 		} else
 			g_propagate_error (perror, local_error);
@@ -1080,17 +1083,19 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
-			g_set_error (perror, E_DATA_BOOK_ERROR,
-				     E_DATA_BOOK_STATUS_NOT_SUPPORTED,
-				     _("Query '%s' not supported"), query);
+			g_set_error (
+				perror, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+				_("Query '%s' not supported"), query);
 			g_error_free (local_error);
 
 		} else if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
-			g_set_error (perror, E_DATA_BOOK_ERROR,
-				     E_DATA_BOOK_STATUS_INVALID_QUERY,
-				     _("Invalid Query '%s'"), query);
+			g_set_error (
+				perror, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_INVALID_QUERY,
+				_("Invalid Query '%s'"), query);
 			g_error_free (local_error);
 
 		} else {
@@ -1128,17 +1133,19 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 		if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
-			g_set_error (perror, E_DATA_BOOK_ERROR,
-				     E_DATA_BOOK_STATUS_NOT_SUPPORTED,
-				     _("Query '%s' not supported"), query);
+			g_set_error (
+				perror, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+				_("Query '%s' not supported"), query);
 			g_error_free (local_error);
 
 		} else if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
-			g_set_error (perror, E_DATA_BOOK_ERROR,
-				     E_DATA_BOOK_STATUS_INVALID_QUERY,
-				     _("Invalid Query '%s'"), query);
+			g_set_error (
+				perror, E_DATA_BOOK_ERROR,
+				E_DATA_BOOK_STATUS_INVALID_QUERY,
+				_("Invalid Query '%s'"), query);
 			g_error_free (local_error);
 
 		} else {
@@ -1524,7 +1531,7 @@ book_backend_file_initable_init (GInitable *initable,
 		dirname = g_strdup (priv->base_directory);
 	else
 		dirname = e_book_backend_file_extract_path_from_source (
-		        registry, source, GET_PATH_DB_DIR);
+			registry, source, GET_PATH_DB_DIR);
 
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 	backup = g_build_filename (dirname, "addressbook.db.old", NULL);
@@ -1630,7 +1637,6 @@ exit:
 	return success;
 }
 
-
 static EDataBookDirect *
 e_book_backend_file_get_direct_book (EBookBackend *backend)
 {
@@ -1640,7 +1646,7 @@ e_book_backend_file_get_direct_book (EBookBackend *backend)
 	gchar *backend_path;
 	gchar *dirname;
 	const gchar *modules_env = NULL;
-	
+
 	modules_env = g_getenv (EDS_ADDRESS_BOOK_MODULES);
 
 	source = e_backend_get_source (E_BACKEND (backend));
@@ -1663,7 +1669,7 @@ e_book_backend_file_get_direct_book (EBookBackend *backend)
 
 static void
 e_book_backend_file_configure_direct (EBookBackend *backend,
-				      const gchar  *config)
+                                      const gchar *config)
 {
 	EBookBackendFilePrivate *priv;
 

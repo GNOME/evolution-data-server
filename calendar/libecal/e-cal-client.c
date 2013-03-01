@@ -288,7 +288,10 @@ GError *
 e_cal_client_error_create (ECalClientError code,
                            const gchar *custom_msg)
 {
-	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg ? custom_msg : e_cal_client_error_to_string (code));
+	if (custom_msg == NULL)
+		custom_msg = e_cal_client_error_to_string (code);
+
+	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg);
 }
 
 static gpointer
@@ -1713,9 +1716,10 @@ e_cal_client_get_local_attachment_store (ECalClient *client)
 	return e_dbus_calendar_get_cache_dir (client->priv->dbus_proxy);
 }
 
-/* icaltimezone_copy does a shallow copy while icaltimezone_free tries to free the entire 
- * the contents inside the structure with libical 0.43. Use this, till eds allows older libical.
-*/
+/* icaltimezone_copy does a shallow copy while icaltimezone_free tries to
+ * free the entire the contents inside the structure with libical 0.43.
+ * Use this, till eds allows older libical.
+ */
 static icaltimezone *
 copy_timezone (icaltimezone *ozone)
 {
@@ -1728,13 +1732,14 @@ copy_timezone (icaltimezone *ozone)
 		icalcomponent *comp;
 
 		comp = icaltimezone_get_component (ozone);
-		if (comp) {
+		if (comp != NULL) {
 			zone = icaltimezone_new ();
-			icaltimezone_set_component (zone, icalcomponent_new_clone (comp));
+			icaltimezone_set_component (
+				zone, icalcomponent_new_clone (comp));
 		}
 	}
 
-	if (!zone)
+	if (zone == NULL)
 		zone = icaltimezone_get_utc_timezone ();
 
 	return zone;
@@ -1776,8 +1781,11 @@ e_cal_client_set_default_timezone (ECalClient *client,
  * e_cal_client_get_default_timezone:
  * @client: A calendar client.
  *
- * Returns: Default timezone previously set with e_cal_client_set_default_timezone().
- * Returned pointer is owned by the @client and should not be freed.
+ * Returns the default timezone previously set with
+ * e_cal_client_set_default_timezone().  The returned pointer is owned by
+ * the @client and should not be freed.
+ *
+ * Returns: an #icaltimezone
  *
  * Since: 3.2
  **/
@@ -1949,8 +1957,10 @@ e_cal_client_resolve_tzid_cb (const gchar *tzid,
 
 	e_cal_client_get_timezone_sync (client, tzid, &zone, NULL, &error);
 
-	if (error) {
-		g_debug ("%s: Failed to find '%s' timezone: %s", G_STRFUNC, tzid, error->message);
+	if (error != NULL) {
+		g_debug (
+			"%s: Failed to find '%s' timezone: %s",
+			G_STRFUNC, tzid, error->message);
 		g_error_free (error);
 	}
 
@@ -1986,7 +1996,8 @@ add_instance (ECalComponent *comp,
 
 	ci = g_new (struct comp_instance, 1);
 
-	icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
+	icalcomp = icalcomponent_new_clone (
+		e_cal_component_get_icalcomponent (comp));
 
 	/* add the instance to the list */
 	ci->comp = e_cal_component_new ();
@@ -2006,11 +2017,15 @@ add_instance (ECalComponent *comp,
 		e_cal_component_get_dtstart (comp, &dtstart);
 
 		if (instances_hold->start_zone) {
-			itt = icaltime_from_timet_with_zone (start, dtstart.value && dtstart.value->is_date, instances_hold->start_zone);
+			itt = icaltime_from_timet_with_zone (
+				start, dtstart.value && dtstart.value->is_date,
+				instances_hold->start_zone);
 			g_free ((gchar *) dtstart.tzid);
-			dtstart.tzid = g_strdup (icaltimezone_get_tzid (instances_hold->start_zone));
+			dtstart.tzid = g_strdup (icaltimezone_get_tzid (
+				instances_hold->start_zone));
 		} else {
-			itt = icaltime_from_timet (start, dtstart.value && dtstart.value->is_date);
+			itt = icaltime_from_timet (
+				start, dtstart.value && dtstart.value->is_date);
 			if (dtstart.tzid) {
 				g_free ((gchar *) dtstart.tzid);
 				dtstart.tzid = NULL;
@@ -2038,11 +2053,15 @@ add_instance (ECalComponent *comp,
 		e_cal_component_get_dtend (comp, &dtend);
 
 		if (instances_hold->end_zone) {
-			itt = icaltime_from_timet_with_zone (end, dtend.value && dtend.value->is_date, instances_hold->end_zone);
+			itt = icaltime_from_timet_with_zone (
+				end, dtend.value && dtend.value->is_date,
+				instances_hold->end_zone);
 			g_free ((gchar *) dtend.tzid);
-			dtend.tzid = g_strdup (icaltimezone_get_tzid (instances_hold->end_zone));
+			dtend.tzid = g_strdup (icaltimezone_get_tzid (
+				instances_hold->end_zone));
 		} else {
-			itt = icaltime_from_timet (end, dtend.value && dtend.value->is_date);
+			itt = icaltime_from_timet (
+				end, dtend.value && dtend.value->is_date);
 			if (dtend.tzid) {
 				g_free ((gchar *) dtend.tzid);
 				dtend.tzid = NULL;
@@ -2172,7 +2191,8 @@ process_detached_instances (GSList *instances,
 			unprocessed_instances = g_slist_prepend (unprocessed_instances, cid);
 	}
 
-	/* add the unprocessed instances (ie, detached instances with no master object */
+	/* add the unprocessed instances
+	 * (ie, detached instances with no master object) */
 	while (unprocessed_instances != NULL) {
 		cid = unprocessed_instances->data;
 		ci = g_new0 (struct comp_instance, 1);
@@ -2232,7 +2252,8 @@ generate_instances (ECalClient *client,
 			 * TZID (i.e. floating times) we use the default
 			 * timezone. */
 			if (dtstart.tzid && dtstart.value && !dtstart.value->is_date) {
-				start_zone = e_cal_client_resolve_tzid_cb (dtstart.tzid, client);
+				start_zone = e_cal_client_resolve_tzid_cb (
+					dtstart.tzid, client);
 				if (!start_zone)
 					start_zone = default_zone;
 			} else {
@@ -2240,17 +2261,20 @@ generate_instances (ECalClient *client,
 			}
 
 			if (dtend.tzid && dtend.value && !dtend.value->is_date) {
-				end_zone = e_cal_client_resolve_tzid_cb (dtend.tzid, client);
+				end_zone = e_cal_client_resolve_tzid_cb (
+					dtend.tzid, client);
 				if (!end_zone)
 					end_zone = default_zone;
 			} else {
 				end_zone = default_zone;
 			}
 
-			ci->start = icaltime_as_timet_with_zone (*dtstart.value, start_zone);
+			ci->start = icaltime_as_timet_with_zone (
+				*dtstart.value, start_zone);
 
 			if (dtend.value)
-				ci->end = icaltime_as_timet_with_zone (*dtend.value, end_zone);
+				ci->end = icaltime_as_timet_with_zone (
+					*dtend.value, end_zone);
 			else if (icaltime_is_date (*dtstart.value))
 				ci->end = time_day_end (ci->start);
 			else
@@ -2260,7 +2284,8 @@ generate_instances (ECalClient *client,
 			e_cal_component_free_datetime (&dtend);
 
 			if (ci->start <= end && ci->end >= start) {
-				detached_instances = g_slist_prepend (detached_instances, ci);
+				detached_instances = g_slist_prepend (
+					detached_instances, ci);
 			} else {
 				/* it doesn't fit to our time range, thus skip it */
 				g_object_unref (G_OBJECT (ci->comp));
@@ -2274,7 +2299,9 @@ generate_instances (ECalClient *client,
 			/* Get the start timezone */
 			e_cal_component_get_dtstart (comp, &datetime);
 			if (datetime.tzid)
-				e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, cancellable, NULL);
+				e_cal_client_get_timezone_sync (
+					client, datetime.tzid,
+					&start_zone, cancellable, NULL);
 			else
 				start_zone = NULL;
 			e_cal_component_free_datetime (&datetime);
@@ -2282,7 +2309,9 @@ generate_instances (ECalClient *client,
 			/* Get the end timezone */
 			e_cal_component_get_dtend (comp, &datetime);
 			if (datetime.tzid)
-				e_cal_client_get_timezone_sync (client, datetime.tzid, &end_zone, cancellable, NULL);
+				e_cal_client_get_timezone_sync (
+					client, datetime.tzid,
+					&end_zone, cancellable, NULL);
 			else
 				end_zone = NULL;
 			e_cal_component_free_datetime (&datetime);
@@ -2358,8 +2387,13 @@ get_objects_sync (ECalClient *client,
 	if (uid && *uid) {
 		GError *error = NULL;
 
-		if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, NULL, &error)) {
-			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
+		e_cal_client_get_objects_for_uid_sync (
+			client, uid, &objects, NULL, &error);
+
+		if (error != NULL) {
+			g_warning (
+				"Failed to get recurrence objects "
+				"for uid: %s\n", error->message);
 			g_clear_error (&error);
 			return NULL;
 		}
@@ -2378,11 +2412,13 @@ get_objects_sync (ECalClient *client,
 		}
 
 		query = g_strdup_printf (
-			"(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
+			"(occur-in-time-range? "
+			"(make-time \"%s\") (make-time \"%s\"))",
 			iso_start, iso_end);
 		g_free (iso_start);
 		g_free (iso_end);
-		if (!e_cal_client_get_object_list_as_comps_sync (client, query, &objects, NULL, NULL)) {
+		if (!e_cal_client_get_object_list_as_comps_sync (
+			client, query, &objects, NULL, NULL)) {
 			g_free (query);
 			return NULL;
 		}
@@ -2392,8 +2428,7 @@ get_objects_sync (ECalClient *client,
 	return objects;
 }
 
-struct get_objects_async_data
-{
+struct get_objects_async_data {
 	GCancellable *cancellable;
 	ECalClient *client;
 	time_t start;
@@ -2443,7 +2478,10 @@ got_objects_for_uid_cb (GObject *source_object,
 	g_return_if_fail (goad != NULL);
 	g_return_if_fail (goad->client == E_CAL_CLIENT (source_object));
 
-	if (!e_cal_client_get_objects_for_uid_finish (goad->client, result, &objects, &error)) {
+	e_cal_client_get_objects_for_uid_finish (
+		goad->client, result, &objects, &error);
+
+	if (error != NULL) {
 		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
 		    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 			free_get_objects_async_data (goad);
@@ -2475,7 +2513,10 @@ got_object_list_as_comps_cb (GObject *source_object,
 	g_return_if_fail (goad != NULL);
 	g_return_if_fail (goad->client == E_CAL_CLIENT (source_object));
 
-	if (!e_cal_client_get_object_list_as_comps_finish (goad->client, result, &objects, &error)) {
+	e_cal_client_get_object_list_as_comps_finish (
+		goad->client, result, &objects, &error);
+
+	if (error != NULL) {
 		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
 		    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 			free_get_objects_async_data (goad);
@@ -2493,7 +2534,8 @@ got_object_list_as_comps_cb (GObject *source_object,
 	goad->ready_cb (goad, objects);
 }
 
-/* ready_cb may take care of both arguments, goad and objects; objects can be also NULL */
+/* ready_cb may take care of both arguments, goad and objects;
+ * objects can be also NULL */
 static void
 get_objects_async (void (*ready_cb) (struct get_objects_async_data *goad,
                                      GSList *objects),
@@ -2505,7 +2547,9 @@ get_objects_async (void (*ready_cb) (struct get_objects_async_data *goad,
 	goad->ready_cb = ready_cb;
 
 	if (goad->uid && *goad->uid) {
-		e_cal_client_get_objects_for_uid (goad->client, goad->uid, goad->cancellable, got_objects_for_uid_cb, goad);
+		e_cal_client_get_objects_for_uid (
+			goad->client, goad->uid, goad->cancellable,
+			got_objects_for_uid_cb, goad);
 	} else {
 		gchar *iso_start, *iso_end;
 
@@ -2522,12 +2566,17 @@ get_objects_async (void (*ready_cb) (struct get_objects_async_data *goad,
 			return;
 		}
 
-		goad->query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))", iso_start, iso_end);
+		goad->query = g_strdup_printf (
+			"(occur-in-time-range? "
+			"(make-time \"%s\") (make-time \"%s\"))",
+			iso_start, iso_end);
 
 		g_free (iso_start);
 		g_free (iso_end);
 
-		e_cal_client_get_object_list_as_comps (goad->client, goad->query, goad->cancellable, got_object_list_as_comps_cb, goad);
+		e_cal_client_get_object_list_as_comps (
+			goad->client, goad->query, goad->cancellable,
+			got_object_list_as_comps_cb, goad);
 	}
 }
 
@@ -2539,7 +2588,9 @@ generate_instances_got_objects_cb (struct get_objects_async_data *goad,
 
 	/* generate_instaces () frees 'objects' slist */
 	if (objects)
-		generate_instances (goad->client, goad->start, goad->end, objects, goad->cancellable, goad->cb, goad->cb_data);
+		generate_instances (
+			goad->client, goad->start, goad->end, objects,
+			goad->cancellable, goad->cb, goad->cb_data);
 
 	free_get_objects_async_data (goad);
 }
@@ -2552,11 +2603,13 @@ generate_instances_got_objects_cb (struct get_objects_async_data *goad,
  * @cancellable: a #GCancellable; can be %NULL
  * @cb: Callback for each generated instance.
  * @cb_data: Closure data for the callback.
- * @destroy_cb_data: Function to call when the processing is done, to free @cb_data; can be %NULL.
+ * @destroy_cb_data: Function to call when the processing is done, to free
+ *                   @cb_data; can be %NULL.
  *
  * Does a combination of e_cal_client_get_object_list() and
- * e_cal_client_recur_generate_instances(). Unlike e_cal_client_generate_instances_sync(),
- * this returns immediately and the @cb callback is called asynchronously.
+ * e_cal_client_recur_generate_instances(). Unlike
+ * e_cal_client_generate_instances_sync(), this returns immediately and the
+ * @cb callback is called asynchronously.
  *
  * The callback function should do a g_object_ref() of the calendar component
  * it gets passed if it intends to keep it around, since it will be unref'ed
@@ -2656,7 +2709,8 @@ process_instances (ECalComponent *comp,
 
 	rid = e_cal_component_get_recurid_as_string (comp);
 
-	/* Reverse the instances list because the add_instance() function is prepending */
+	/* Reverse the instances list because the add_instance() function
+	 * is prepending. */
 	instances = g_slist_reverse (instances);
 
 	/* now only return back the instances for the given object */
@@ -2674,7 +2728,7 @@ process_instances (ECalComponent *comp,
 				if (instance_rid && *instance_rid && strcmp (rid, instance_rid) == 0)
 					result = (* cb) (ci->comp, ci->start, ci->end, cb_data);
 			} else
-				result = (* cb)  (ci->comp, ci->start, ci->end, cb_data);
+				result = (* cb) (ci->comp, ci->start, ci->end, cb_data);
 		}
 
 		/* remove instance from list */
@@ -2703,10 +2757,14 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
 	instances_hold->end_zone = goad->end_zone;
 
 	/* generate all instances in the given time range */
-	generate_instances (goad->client, goad->start, goad->end, objects, goad->cancellable, add_instance, instances_hold);
+	generate_instances (
+		goad->client, goad->start, goad->end, objects,
+		goad->cancellable, add_instance, instances_hold);
 
 	/* it also frees 'instances' GSList */
-	process_instances (goad->comp, *(instances_hold->instances), goad->cb, goad->cb_data);
+	process_instances (
+		goad->comp, *(instances_hold->instances),
+		goad->cb, goad->cb_data);
 
 	/* clean up */
 	free_get_objects_async_data (goad);
@@ -2722,12 +2780,14 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
  * @cancellable: a #GCancellable; can be %NULL
  * @cb: Callback for each generated instance.
  * @cb_data: Closure data for the callback.
- * @destroy_cb_data: Function to call when the processing is done, to free @cb_data; can be %NULL.
+ * @destroy_cb_data: Function to call when the processing is done, to
+ *                   free @cb_data; can be %NULL.
  *
  * Does a combination of e_cal_client_get_object_list() and
- * e_cal_client_recur_generate_instances(), like e_cal_client_generate_instances(), but
- * for a single object. Unlike e_cal_client_generate_instances_for_object_sync(),
- * this returns immediately and the @cb callback is called asynchronously.
+ * e_cal_client_recur_generate_instances(), like
+ * e_cal_client_generate_instances(), but for a single object. Unlike
+ * e_cal_client_generate_instances_for_object_sync(), this returns immediately
+ * and the @cb callback is called asynchronously.
  *
  * The callback function should do a g_object_ref() of the calendar component
  * it gets passed if it intends to keep it around, since it will be unref'ed
@@ -2769,8 +2829,14 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	 * have a master object - do not expand */
 	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
 		/* return the same instance */
-		(* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), client->priv->default_zone),
-				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), client->priv->default_zone), cb_data);
+		(* cb)  (comp,
+			icaltime_as_timet_with_zone (
+				icalcomponent_get_dtstart (icalcomp),
+				client->priv->default_zone),
+			icaltime_as_timet_with_zone (
+				icalcomponent_get_dtend (icalcomp),
+				client->priv->default_zone),
+			cb_data);
 		g_object_unref (comp);
 
 		if (destroy_cb_data)
@@ -2783,7 +2849,8 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	/* Get the start timezone */
 	e_cal_component_get_dtstart (comp, &datetime);
 	if (datetime.tzid)
-		e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+		e_cal_client_get_timezone_sync (
+			client, datetime.tzid, &start_zone, NULL, NULL);
 	else
 		start_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
@@ -2791,7 +2858,8 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	/* Get the end timezone */
 	e_cal_component_get_dtend (comp, &datetime);
 	if (datetime.tzid)
-		e_cal_client_get_timezone_sync (client, datetime.tzid, &end_zone, NULL, NULL);
+		e_cal_client_get_timezone_sync (
+			client, datetime.tzid, &end_zone, NULL, NULL);
 	else
 		end_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
@@ -2829,8 +2897,8 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
  * @cb_data: (closure): Closure data for the callback
  *
  * Does a combination of e_cal_client_get_object_list() and
- * e_cal_client_recur_generate_instances(), like e_cal_client_generate_instances_sync(), but
- * for a single object.
+ * e_cal_client_recur_generate_instances(), like
+ * e_cal_client_generate_instances_sync(), but for a single object.
  *
  * The callback function should do a g_object_ref() of the calendar component
  * it gets passed if it intends to keep it around, since it will be unref'ed
@@ -2870,8 +2938,14 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	 * have a master object - do not expand */
 	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
 		/* return the same instance */
-		(* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), client->priv->default_zone),
-				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), client->priv->default_zone), cb_data);
+		(* cb)  (comp,
+			icaltime_as_timet_with_zone (
+				icalcomponent_get_dtstart (icalcomp),
+				client->priv->default_zone),
+			icaltime_as_timet_with_zone (
+				icalcomponent_get_dtend (icalcomp),
+				client->priv->default_zone),
+			cb_data);
 		g_object_unref (comp);
 		return;
 	}
@@ -2881,7 +2955,8 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	/* Get the start timezone */
 	e_cal_component_get_dtstart (comp, &datetime);
 	if (datetime.tzid)
-		e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+		e_cal_client_get_timezone_sync (
+			client, datetime.tzid, &start_zone, NULL, NULL);
 	else
 		start_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
@@ -2889,7 +2964,8 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	/* Get the end timezone */
 	e_cal_component_get_dtend (comp, &datetime);
 	if (datetime.tzid)
-		e_cal_client_get_timezone_sync (client, datetime.tzid, &end_zone, NULL, NULL);
+		e_cal_client_get_timezone_sync (
+			client, datetime.tzid, &end_zone, NULL, NULL);
 	else
 		end_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
@@ -2900,7 +2976,10 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	instances_hold->end_zone = end_zone;
 
 	/* generate all instances in the given time range */
-	generate_instances (client, start, end, get_objects_sync (client, start, end, uid), NULL, add_instance, instances_hold);
+	generate_instances (
+		client, start, end,
+		get_objects_sync (client, start, end, uid),
+		NULL, add_instance, instances_hold);
 
 	/* it also frees 'instances' GSList */
 	process_instances (comp, *(instances_hold->instances), cb, cb_data);
@@ -4922,7 +5001,7 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
  * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use #NULL @rid and E_CAL_OBJ_MOD_ALL
+ * is to remove all instances, use %NULL @rid and E_CAL_OBJ_MOD_ALL
  * for the @mod.
  *
  * The call is finished by e_cal_client_remove_object_finish() from
@@ -5009,7 +5088,7 @@ e_cal_client_remove_object_finish (ECalClient *client,
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
  * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use #NULL @rid and E_CAL_OBJ_MODE_THIS
+ * is to remove all instances, use %NULL @rid and E_CAL_OBJ_MODE_THIS
  * for the @mod.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
@@ -5065,10 +5144,10 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
- * This function allows the removal of instances of recurrent
- * appointments. #ECalComponentId objects can identify specific instances (if rid is not NULL).
- * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and E_CAL_OBJ_MOD_ALL
- * for the @mod.
+ * This function allows the removal of instances of recurrent appointments.
+ * #ECalComponentId objects can identify specific instances (if rid is not
+ * %NULL).  If what you want is to remove all instances, use a %NULL rid in
+ * the #ECalComponentId and E_CAL_OBJ_MOD_ALL for the @mod.
  *
  * The call is finished by e_cal_client_remove_objects_finish() from
  * the @callback.

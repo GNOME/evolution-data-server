@@ -47,7 +47,6 @@ static GTestDBus *global_test_dbus = NULL;
  */
 static gint global_test_source_id = 0;
 
-
 typedef struct {
 	ETestServerFixture *fixture;
 	ETestServerClosure *closure;
@@ -119,8 +118,8 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 
 static void
 e_test_server_utils_source_added (ESourceRegistry *registry,
-				  ESource         *source,
-				  FixturePair     *pair)
+                                  ESource *source,
+                                  FixturePair *pair)
 {
 	GError  *error = NULL;
 
@@ -157,8 +156,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 	case E_TEST_SERVER_CALENDAR:
 
 		pair->fixture->service.calendar_client = (ECalClient *)
-			e_cal_client_connect_sync (source,
-						   pair->closure->calendar_source_type, NULL, &error);
+			e_cal_client_connect_sync (
+				source,
+				pair->closure->calendar_source_type, NULL, &error);
 		if (!pair->fixture->service.calendar_client)
 			g_error ("Unable to create the test calendar: %s", error->message);
 
@@ -194,8 +194,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	if (!pair->fixture->registry)
 		g_error ("Unable to create the test registry: %s", error->message);
 
-	g_signal_connect (pair->fixture->registry, "source-added",
-			  G_CALLBACK (e_test_server_utils_source_added), pair);
+	g_signal_connect (
+		pair->fixture->registry, "source-added",
+		G_CALLBACK (e_test_server_utils_source_added), pair);
 
 	/* Create an address book */
 	switch (pair->closure->type) {

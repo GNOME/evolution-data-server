@@ -74,7 +74,11 @@ struct _ECalBackendHttpPrivate {
 
 #define d(x)
 
-static void e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
+static void	e_cal_backend_http_add_timezone	(ECalBackendSync *backend,
+						 EDataCal *cal,
+						 GCancellable *cancellable,
+						 const gchar *tzobj,
+						 GError **perror);
 
 static void
 soup_authenticate (SoupSession *session,

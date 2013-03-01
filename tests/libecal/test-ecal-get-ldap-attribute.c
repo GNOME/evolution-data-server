@@ -21,9 +21,12 @@ test_get_ldap_attribute (ETestServerFixture *fixture,
 	if (e_cal_get_ldap_attribute (cal, &attr, &error))
 		g_error ("e_cal_get_ldap_attribute() is dropped but returned TRUE");
 	else if (!g_error_matches (error, E_CALENDAR_ERROR, E_CALENDAR_STATUS_NOT_SUPPORTED))
-		g_error ("e_cal_get_ldap_attribute() returned unexpected error code '%d' from "
-			 "domain %s: %s",
-			 error->code, g_quark_to_string (error->domain), error->message);
+		g_error (
+			"e_cal_get_ldap_attribute() returned unexpected "
+			"error code '%d' from domain %s: %s",
+			error->code,
+			g_quark_to_string (error->domain),
+			error->message);
 }
 
 gint

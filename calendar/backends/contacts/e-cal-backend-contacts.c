@@ -97,16 +97,32 @@ typedef struct _ContactRecord {
 #define ANNIVERSARY_UID_EXT "-anniversary"
 #define BIRTHDAY_UID_EXT   "-birthday"
 
-static ECalComponent * create_birthday (ECalBackendContacts *cbc, EContact *contact);
-static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *contact);
-
-static void contacts_modified_cb (EBookClientView *book_view, const GSList *contacts, gpointer user_data);
-static void contacts_added_cb   (EBookClientView *book_view, const GSList *contacts, gpointer user_data);
-static void contacts_removed_cb (EBookClientView *book_view, const GSList *contact_ids, gpointer user_data);
-static void e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
-static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
-
-static void book_client_opened_cb (EBookClient *book_client, const GError *error, BookRecord *br);
+static ECalComponent *
+		create_birthday			(ECalBackendContacts *cbc,
+						 EContact *contact);
+static ECalComponent *
+		create_anniversary		(ECalBackendContacts *cbc,
+						 EContact *contact);
+static void	contacts_modified_cb		(EBookClientView *book_view,
+						 const GSList *contacts,
+						 gpointer user_data);
+static void	contacts_added_cb		(EBookClientView *book_view,
+						 const GSList *contacts,
+						 gpointer user_data);
+static void	contacts_removed_cb		(EBookClientView *book_view,
+						 const GSList *contact_ids,
+						 gpointer user_data);
+static void	e_cal_backend_contacts_add_timezone
+						(ECalBackendSync *backend,
+						 EDataCal *cal,
+						 GCancellable *cancellable,
+						 const gchar *tzobj,
+						 GError **perror);
+static void	setup_alarm			(ECalBackendContacts *cbc,
+						 ECalComponent *comp);
+static void	book_client_opened_cb		(EBookClient *book_client,
+						 const GError *error,
+						 BookRecord *br);
 
 static gboolean
 remove_by_book (gpointer key,
@@ -255,7 +271,7 @@ book_record_get_view_thread (gpointer user_data)
 {
 	BookRecord *br;
 	EBookQuery *query;
-	EBookClientView *book_view;
+	EBookClientView *book_view = NULL;
 	gchar *query_sexp;
 	GError *error = NULL;
 
@@ -279,23 +295,48 @@ book_record_get_view_thread (gpointer user_data)
 	query_sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	if (!e_book_client_get_view_sync (br->book_client, query_sexp, &book_view, NULL, &error)) {
-		ESource *source = e_client_get_source (E_CLIENT (br->book_client));
+	e_book_client_get_view_sync (
+		br->book_client, query_sexp, &book_view, NULL, &error);
 
-		g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_get_display_name (source), error ? error->message : "Unknown error");
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((book_view != NULL) && (error == NULL)) ||
+		((book_view == NULL) && (error != NULL)), NULL);
+
+	if (error != NULL) {
+		ESource *source;
+
+		source = e_client_get_source (E_CLIENT (br->book_client));
+
+		g_warning (
+			"%s: Failed to get book view on '%s': %s",
+			G_STRFUNC, e_source_get_display_name (source),
+			error->message);
+
+		g_clear_error (&error);
+
+		goto exit;
 	}
-	g_free (query_sexp);
-	g_clear_error (&error);
 
-	g_signal_connect (book_view, "objects-added", G_CALLBACK (contacts_added_cb), br->cbc);
-	g_signal_connect (book_view, "objects-removed", G_CALLBACK (contacts_removed_cb), br->cbc);
-	g_signal_connect (book_view, "objects-modified", G_CALLBACK (contacts_modified_cb), br->cbc);
+	g_signal_connect (
+		book_view, "objects-added",
+		G_CALLBACK (contacts_added_cb), br->cbc);
+	g_signal_connect (
+		book_view, "objects-removed",
+		G_CALLBACK (contacts_removed_cb), br->cbc);
+	g_signal_connect (
+		book_view, "objects-modified",
+		G_CALLBACK (contacts_modified_cb), br->cbc);
 
 	e_book_client_view_start (book_view, NULL);
 
 	book_record_set_book_view (br, book_view);
 
 	g_object_unref (book_view);
+
+exit:
+	g_free (query_sexp);
+
 	book_record_unref (br);
 
 	return NULL;

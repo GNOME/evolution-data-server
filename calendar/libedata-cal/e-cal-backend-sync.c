@@ -833,8 +833,11 @@ cal_backend_get_timezone (ECalBackend *backend,
 
 			icaltimezone *zone = icaltimezone_get_builtin_timezone (tzid);
 			if (!zone) {
-				/* Try fetching the timezone from zone directory. There are some timezones like MST, US/Pacific etc. which do not appear in
-				zone.tab, so they will not be available in the libical builtin timezone */
+				/* Try fetching the timezone from zone
+				 * directory. There are some timezones like
+				 * MST, US/Pacific etc. which do not appear
+				 * in zone.tab, so they will not be available
+				 * in the libical builtin timezone */
 				icalcomp = free_comp = icaltzutil_fetch_timezone (tzid);
 			}
 

@@ -335,7 +335,9 @@ check_header (CamelSExp *sexp,
 				if (argv[i]->value.string[0] == 0) {
 					truth = TRUE;
 				} else if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
-					/* doesn't make sense to split words on anything but contains i.e. we can't have an ending match different words */
+					/* Doesn't make sense to split words on
+					 * anything but contains i.e. we can't
+					 * have an ending match different words */
 					words = camel_search_words_split ((const guchar *) argv[i]->value.string);
 					truth = TRUE;
 					for (j = 0; j < words->len && truth; j++) {
@@ -350,7 +352,10 @@ check_header (CamelSExp *sexp,
 
 							truth = raw_header != NULL;
 						} else
-							truth = camel_search_header_match (header, words->words[j]->word, how, type, charset);
+							truth = camel_search_header_match (
+								header,
+								words->words[j]->word,
+								how, type, charset);
 					}
 					camel_search_words_free (words);
 				} else {
@@ -358,11 +363,17 @@ check_header (CamelSExp *sexp,
 						for (raw_header = ((CamelMimePart *) message)->headers; raw_header && !truth; raw_header = raw_header->next) {
 							/* empty name means any header */
 							if (!headername || !*headername || !g_ascii_strcasecmp (raw_header->name, headername)) {
-								truth = camel_search_header_match (raw_header->value, argv[i]->value.string, how, type, charset);
+								truth = camel_search_header_match (
+									raw_header->value,
+									argv[i]->value.string,
+									how, type, charset);
 							}
 						}
 					} else
-						truth = camel_search_header_match (header, argv[i]->value.string, how, type, charset);
+						truth = camel_search_header_match (
+							header,
+							argv[i]->value.string,
+							how, type, charset);
 				}
 			}
 		}
@@ -449,7 +460,10 @@ match_words_index (CamelFolderSearch *search,
 								gint mask;
 
 								mask = (GPOINTER_TO_INT (g_hash_table_lookup (ht, name))) | (1 << i);
-								g_hash_table_insert (ht, (gchar *) camel_pstring_peek (name), GINT_TO_POINTER (mask));
+								g_hash_table_insert (
+									ht,
+									(gchar *) camel_pstring_peek (name),
+									GINT_TO_POINTER (mask));
 						}
 						g_object_unref (nc);
 					}
@@ -1031,10 +1045,19 @@ folder_search_body_contains (CamelSExp *sexp,
 					truth = TRUE;
 					if ((words->type & CAMEL_SEARCH_WORD_COMPLEX) == 0 && search->body_index) {
 						for (j = 0; j < words->len && truth; j++)
-							truth = match_message_index (search->body_index, camel_message_info_uid (search->current), words->words[j]->word, error);
+							truth = match_message_index (
+								search->body_index,
+								camel_message_info_uid (search->current),
+								words->words[j]->word,
+								error);
 					} else {
 						/* TODO: cache current message incase of multiple body search terms */
-						truth = match_words_message (search->folder, camel_message_info_uid (search->current), words, search->priv->cancellable, error);
+						truth = match_words_message (
+							search->folder,
+							camel_message_info_uid (search->current),
+							words,
+							search->priv->cancellable,
+							error);
 					}
 					camel_search_words_free (words);
 				}
@@ -1097,7 +1120,13 @@ folder_search_body_regex (CamelSExp *sexp,
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 
 		if (!g_cancellable_is_cancelled (search->priv->cancellable) &&
-		    camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE | CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_NEWLINE, argc, argv, search->priv->error) == 0) {
+		    camel_search_build_match_regex (
+				&pattern,
+				CAMEL_SEARCH_MATCH_ICASE |
+				CAMEL_SEARCH_MATCH_REGEX |
+				CAMEL_SEARCH_MATCH_NEWLINE,
+				argc, argv,
+				search->priv->error) == 0) {
 			r->value.boolean = camel_search_message_body_contains ((CamelDataWrapper *) msg, &pattern);
 			regfree (&pattern);
 		} else
@@ -1111,7 +1140,13 @@ folder_search_body_regex (CamelSExp *sexp,
 		r->value.ptrarray = g_ptr_array_new ();
 
 		if (!g_cancellable_is_cancelled (search->priv->cancellable) &&
-		    camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE | CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_NEWLINE, argc, argv, search->priv->error) == 0) {
+		    camel_search_build_match_regex (
+				&pattern,
+				CAMEL_SEARCH_MATCH_ICASE |
+				CAMEL_SEARCH_MATCH_REGEX |
+				CAMEL_SEARCH_MATCH_NEWLINE,
+				argc, argv,
+				search->priv->error) == 0) {
 			gint i;
 			GPtrArray *v = search->summary_set ? search->summary_set : search->summary;
 			CamelMimeMessage *message;
@@ -1224,7 +1259,12 @@ folder_search_header_regex (CamelSExp *sexp,
 
 		if (argc > 1 && argv[0]->type == CAMEL_SEXP_RES_STRING
 		    && (contents = camel_medium_get_header (CAMEL_MEDIUM (msg), argv[0]->value.string))
-		    && camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_ICASE, argc - 1, argv + 1, search->priv->error) == 0) {
+		    && camel_search_build_match_regex (
+				&pattern,
+				CAMEL_SEARCH_MATCH_REGEX |
+				CAMEL_SEARCH_MATCH_ICASE,
+				argc - 1, argv + 1,
+				search->priv->error) == 0) {
 			r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 			regfree (&pattern);
 		} else
@@ -1255,7 +1295,13 @@ folder_search_header_full_regex (CamelSExp *sexp,
 
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 
-		if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_ICASE | CAMEL_SEARCH_MATCH_NEWLINE, argc, argv, search->priv->error) == 0) {
+		if (camel_search_build_match_regex (
+				&pattern,
+				CAMEL_SEARCH_MATCH_REGEX |
+				CAMEL_SEARCH_MATCH_ICASE |
+				CAMEL_SEARCH_MATCH_NEWLINE,
+				argc, argv,
+				search->priv->error) == 0) {
 			gchar *contents;
 
 			contents = get_full_header (msg);
@@ -1500,7 +1546,7 @@ folder_search_uid (CamelSExp *sexp,
 /* this is copied from Evolution's libemail-engine/e-mail-folder-utils.c */
 static gchar *
 mail_folder_uri_build (CamelStore *store,
-		       const gchar *folder_name)
+                       const gchar *folder_name)
 {
 	const gchar *uid;
 	gchar *encoded_name;

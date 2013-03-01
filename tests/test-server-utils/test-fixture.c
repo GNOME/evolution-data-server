@@ -62,32 +62,37 @@ main (gint argc,
 
 	for (i = 0; i < N_CYCLES; i++) {
 		registry_keys[i] = g_strdup_printf ("/Fixture/Registry%d", i);
-		g_test_add (registry_keys[i], ETestServerFixture, &registry_closure,
-			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+		g_test_add (
+			registry_keys[i], ETestServerFixture, &registry_closure,
+			e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
 
 	for (i = 0; i < N_CYCLES; i++) {
 		book_keys[i] = g_strdup_printf ("/Fixture/Book%d", i);
-		g_test_add (book_keys[i], ETestServerFixture, &book_closure,
-			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+		g_test_add (
+			book_keys[i], ETestServerFixture, &book_closure,
+			e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
 
 	for (i = 0; i < N_CYCLES; i++) {
 		calendar_keys[i] = g_strdup_printf ("/Fixture/Calendar%d", i);
-		g_test_add (calendar_keys[i], ETestServerFixture, &calendar_closure,
-			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+		g_test_add (
+			calendar_keys[i], ETestServerFixture, &calendar_closure,
+			e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
 
 	for (i = 0; i < N_CYCLES; i++) {
 		deprecated_book_keys[i] = g_strdup_printf ("/Fixture/Deprecated/Book%d", i);
-		g_test_add (deprecated_book_keys[i], ETestServerFixture, &deprecated_book_closure,
-			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+		g_test_add (
+			deprecated_book_keys[i], ETestServerFixture, &deprecated_book_closure,
+			e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
 
 	for (i = 0; i < N_CYCLES; i++) {
 		deprecated_calendar_keys[i] = g_strdup_printf ("/Fixture/Deprecated/Calendar%d", i);
-		g_test_add (deprecated_calendar_keys[i], ETestServerFixture, &deprecated_calendar_closure,
-			    e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
+		g_test_add (
+			deprecated_calendar_keys[i], ETestServerFixture, &deprecated_calendar_closure,
+			e_test_server_utils_setup, empty_test, e_test_server_utils_teardown);
 	}
 
 	ret = e_test_server_utils_run ();

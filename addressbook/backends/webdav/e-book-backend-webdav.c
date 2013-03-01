@@ -328,9 +328,16 @@ upload_contact (EBookBackendWebdav *webdav,
 		e_contact_set (contact, E_CONTACT_UID, uri);
 	}
 
-	if (reason) {
-		*reason = g_strdup (message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
-				    (soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")));
+	if (reason != NULL) {
+		const gchar *phrase;
+
+		phrase = message->reason_phrase;
+		if (phrase == NULL)
+			phrase = soup_status_get_phrase (message->status_code);
+		if (phrase == NULL)
+			phrase = _("Unknown error");
+
+		*reason = g_strdup (phrase);
 	}
 
 	g_object_unref (message);

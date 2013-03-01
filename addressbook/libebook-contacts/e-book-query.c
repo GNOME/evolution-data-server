@@ -133,7 +133,7 @@ conjoinv (EBookQueryType type,
 /**
  * e_book_query_andv:
  * @q: first #EBookQuery
- * @...: #NULL terminated list of #EBookQuery pointers
+ * @...: %NULL terminated list of #EBookQuery pointers
  *
  * Creates a new #EBookQuery which is the logical AND of the queries specified.
  *
@@ -155,7 +155,7 @@ e_book_query_andv (EBookQuery *q, ...)
 /**
  * e_book_query_orv:
  * @q: first #EBookQuery
- * @...: #NULL terminated list of #EBookQuery pointers
+ * @...: %NULL terminated list of #EBookQuery pointers
  *
  * Creates a new #EBookQuery which is the logical OR of the queries specified.
  *

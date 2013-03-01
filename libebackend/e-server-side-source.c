@@ -1167,9 +1167,12 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	source_class->write_sync = server_side_source_write_sync;
 	source_class->write = server_side_source_write;
 	source_class->write_finish = server_side_source_write_finish;
-	source_class->remote_create_sync = server_side_source_remote_create_sync;
-	source_class->remote_delete_sync = server_side_source_remote_delete_sync;
-	source_class->get_oauth2_access_token_sync = server_side_source_get_oauth2_access_token_sync;
+	source_class->remote_create_sync =
+		server_side_source_remote_create_sync;
+	source_class->remote_delete_sync =
+		server_side_source_remote_delete_sync;
+	source_class->get_oauth2_access_token_sync =
+		server_side_source_get_oauth2_access_token_sync;
 
 	g_object_class_install_property (
 		object_class,

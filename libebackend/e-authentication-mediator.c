@@ -959,9 +959,12 @@ e_authentication_mediator_initable_init (GInitableIface *interface)
 static void
 e_authentication_mediator_interface_init (ESourceAuthenticatorInterface *interface)
 {
-	interface->try_password_sync = authentication_mediator_try_password_sync;
-	interface->try_password = authentication_mediator_try_password;
-	interface->try_password_finish = authentication_mediator_try_password_finish;
+	interface->try_password_sync =
+		authentication_mediator_try_password_sync;
+	interface->try_password =
+		authentication_mediator_try_password;
+	interface->try_password_finish =
+		authentication_mediator_try_password_finish;
 }
 
 static void

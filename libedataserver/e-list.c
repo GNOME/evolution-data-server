@@ -134,7 +134,8 @@ e_list_append (EList *list,
 {
 	e_list_invalidate_iterators (list, NULL);
 	if (list->copy)
-		list->list = g_list_append (list->list, list->copy (data, list->closure));
+		list->list = g_list_append (
+			list->list, list->copy (data, list->closure));
 	else
 		list->list = g_list_append (list->list, (gpointer) data);
 }

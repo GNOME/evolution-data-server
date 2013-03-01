@@ -30,10 +30,9 @@ static void setup_custom_book (ESource            *scratch,
 
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0 };
 
-
 static void
-setup_custom_book (ESource            *scratch,
-		   ETestServerClosure *closure)
+setup_custom_book (ESource *scratch,
+                   ETestServerClosure *closure)
 {
 	ESourceRevisionGuards *guards;
 
@@ -89,8 +88,8 @@ static gboolean try_write_field_thread_idle (ThreadData *data);
 
 static void
 test_write_thread_contact_modified (GObject *source_object,
-				    GAsyncResult *res,
-				    ThreadData *data)
+                                    GAsyncResult *res,
+                                    ThreadData *data)
 {
 	GError   *error = NULL;
 	gboolean  retry = FALSE;
@@ -105,9 +104,10 @@ test_write_thread_contact_modified (GObject *source_object,
 				     E_CLIENT_ERROR_OUT_OF_SYNC))
 			retry = TRUE;
 		else
-			g_error ("Error updating '%s' field: %s\n",
-				 e_contact_field_name (data->field),
-				 error->message);
+			g_error (
+				"Error updating '%s' field: %s\n",
+				e_contact_field_name (data->field),
+				error->message);
 
 		g_error_free (error);
 	}
@@ -120,20 +120,22 @@ test_write_thread_contact_modified (GObject *source_object,
 
 static void
 test_write_thread_contact_fetched (GObject *source_object,
-				   GAsyncResult *res,
-				   ThreadData *data)
+                                   GAsyncResult *res,
+                                   ThreadData *data)
 {
 	EContact *contact = NULL;
 	GError   *error = NULL;
 
 	if (!e_book_client_get_contact_finish (E_BOOK_CLIENT (source_object), res, &contact, &error))
-		g_error ("Failed to fetch contact in thread '%s': %s",
-			 e_contact_field_name (data->field), error->message);
+		g_error (
+			"Failed to fetch contact in thread '%s': %s",
+			e_contact_field_name (data->field), error->message);
 
 	e_contact_set (contact, data->field, data->value);
 
-	e_book_client_modify_contact (data->client, contact, NULL, 
-				      (GAsyncReadyCallback)test_write_thread_contact_modified, data);
+	e_book_client_modify_contact (
+		data->client, contact, NULL,
+		(GAsyncReadyCallback) test_write_thread_contact_modified, data);
 
 	g_object_unref (contact);
 }
@@ -141,29 +143,31 @@ test_write_thread_contact_fetched (GObject *source_object,
 static gboolean
 try_write_field_thread_idle (ThreadData *data)
 {
-	e_book_client_get_contact (data->client, data->contact_uid, NULL,
-				   (GAsyncReadyCallback)test_write_thread_contact_fetched, data);
+	e_book_client_get_contact (
+		data->client, data->contact_uid, NULL,
+		(GAsyncReadyCallback) test_write_thread_contact_fetched, data);
 
 	return FALSE;
 }
 
 static void
 test_write_thread_client_opened (GObject *source_object,
-				 GAsyncResult *res,
-				 ThreadData *data)
+                                 GAsyncResult *res,
+                                 ThreadData *data)
 {
 	GMainContext *context;
 	GSource      *gsource;
 	GError       *error = NULL;
 
 	if (!e_client_open_finish (E_CLIENT (source_object), res, &error))
-		g_error ("Error opening client for thread '%s': %s",
-			 e_contact_field_name (data->field),
-			 error->message);
+		g_error (
+			"Error opening client for thread '%s': %s",
+			e_contact_field_name (data->field),
+			error->message);
 
 	context = g_main_loop_get_context (data->loop);
 	gsource = g_idle_source_new ();
-	g_source_set_callback (gsource, (GSourceFunc)try_write_field_thread_idle, data, NULL);
+	g_source_set_callback (gsource, (GSourceFunc) try_write_field_thread_idle, data, NULL);
 	g_source_attach (gsource, context);
 }
 
@@ -171,7 +175,7 @@ static gboolean
 test_write_thread_open_idle (ThreadData *data)
 {
 	/* Open the book client, only if it exists, it should be the same book created by the main thread */
-	e_client_open (E_CLIENT (data->client), TRUE, NULL, (GAsyncReadyCallback)test_write_thread_client_opened, data);
+	e_client_open (E_CLIENT (data->client), TRUE, NULL, (GAsyncReadyCallback) test_write_thread_client_opened, data);
 
 	return FALSE;
 }
@@ -205,7 +209,7 @@ test_write_thread (ThreadData *data)
 	/* Retry setting the contact field until we succeed setting the field
 	 */
 	gsource = g_idle_source_new ();
-	g_source_set_callback (gsource, (GSourceFunc)test_write_thread_open_idle, data, NULL);
+	g_source_set_callback (gsource, (GSourceFunc) test_write_thread_open_idle, data, NULL);
 	g_source_attach (gsource, context);
 	g_main_loop_run (data->loop);
 
@@ -221,10 +225,10 @@ test_write_thread (ThreadData *data)
 }
 
 static ThreadData *
-create_test_thread (const gchar   *book_uid,
-		    const gchar   *contact_uid,
-		    EContactField  field,
-		    const gchar   *value)
+create_test_thread (const gchar *book_uid,
+                    const gchar *contact_uid,
+                    EContactField field,
+                    const gchar *value)
 {
 	ThreadData  *data = g_slice_new0 (ThreadData);
 	const gchar *name = e_contact_field_name (field);
@@ -234,7 +238,7 @@ create_test_thread (const gchar   *book_uid,
 	data->field       = field;
 	data->value       = value;
 
-	data->thread = g_thread_new (name, (GThreadFunc)test_write_thread, data);
+	data->thread = g_thread_new (name, (GThreadFunc) test_write_thread, data);
 
 	return data;
 }
@@ -248,7 +252,7 @@ wait_thread_test (ThreadData *data)
 
 static void
 test_concurrent_writes (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	EBookClient *main_client;
 	ESource *source;
@@ -273,9 +277,10 @@ test_concurrent_writes (ETestServerFixture *fixture,
 	/* Create all concurrent threads accessing the same addressbook */
 	tests = g_new0 (ThreadData *, G_N_ELEMENTS (field_tests));
 	for (i = 0; i < G_N_ELEMENTS (field_tests); i++)
-		tests[i] = create_test_thread (book_uid, contact_uid,
-					       field_tests[i].field,
-					       field_tests[i].value);
+		tests[i] = create_test_thread (
+			book_uid, contact_uid,
+			field_tests[i].field,
+			field_tests[i].value);
 
 	/* Wait for all threads to complete */
 	for (i = 0; i < G_N_ELEMENTS (field_tests); i++)
@@ -296,9 +301,12 @@ test_concurrent_writes (ETestServerFixture *fixture,
 
 			vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
-			g_error ("Lost data in concurrent writes, expected value for field '%s' was '%s', "
-				 "actual value is '%s', vcard:\n%s\n",
-				 e_contact_field_name (field_tests[i].field), field_tests[i].value, value, vcard);
+			g_error (
+				"Lost data in concurrent writes, expected "
+				"value for field '%s' was '%s', actual value "
+				"is '%s', vcard:\n%s\n",
+				e_contact_field_name (field_tests[i].field),
+				field_tests[i].value, value, vcard);
 		}
 
 		g_free (value);
@@ -318,8 +326,9 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 	setlocale (LC_ALL, "en_US.UTF-8");
 
-	g_test_add ("/EBookClient/ConcurrentWrites", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_concurrent_writes, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/ConcurrentWrites", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_concurrent_writes, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

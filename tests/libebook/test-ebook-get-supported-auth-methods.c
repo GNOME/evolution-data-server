@@ -87,7 +87,7 @@ static void
 test_get_supported_auth_methods_async (ETestServerFixture *fixture,
                                        gconstpointer user_data)
 {
-	g_idle_add ((GSourceFunc)get_supported_auth_methods_async_in_idle, fixture);
+	g_idle_add ((GSourceFunc) get_supported_auth_methods_async_in_idle, fixture);
 	g_timeout_add (5 * 1000, (GSourceFunc) main_loop_fail_timeout, NULL);
 	g_main_loop_run (fixture->loop);
 }

@@ -586,7 +586,14 @@ isodate_from_time_t (time_t t)
 
 	gmtime_r (&t, &stm);
 	ret = g_malloc (ISODATE_LENGTH);
-	g_snprintf (ret, ISODATE_LENGTH, fmt, (stm.tm_year + 1900), (stm.tm_mon + 1), stm.tm_mday, stm.tm_hour, stm.tm_min, stm.tm_sec);
+	g_snprintf (
+		ret, ISODATE_LENGTH, fmt,
+		(stm.tm_year + 1900),
+		(stm.tm_mon + 1),
+		stm.tm_mday,
+		stm.tm_hour,
+		stm.tm_min,
+		stm.tm_sec);
 
 	return ret;
 }

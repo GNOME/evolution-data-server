@@ -783,7 +783,15 @@ ep_set_proxy (EProxy *proxy,
 	changed = ep_change_uri (&priv->uri_socks, uri_socks) || changed;
 
  emit_signal:
-	d (g_print ("%s: changed:%d uri_http: %s; uri_https: %s; uri_socks: %s\n", G_STRFUNC, changed ? 1 : 0, uri_http ? uri_http : "[null]", uri_https ? uri_https : "[null]", uri_socks ? uri_socks : "[null]"));
+	d (g_print (
+		"%s: changed:%d "
+		"uri_http: %s; "
+		"uri_https: %s; "
+		"uri_socks: %s\n",
+		G_STRFUNC, changed ? 1 : 0,
+		uri_http ? uri_http : "[null]",
+		uri_https ? uri_https : "[null]",
+		uri_socks ? uri_socks : "[null]"));
 	if (changed)
 		g_signal_emit (proxy, signals[CHANGED], 0);
 

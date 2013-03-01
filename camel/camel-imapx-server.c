@@ -863,7 +863,15 @@ imapx_command_start (CamelIMAPXServer *is,
 		goto err;
 	}
 
-	c (is->tagprefix, "Starting command (active=%d,%s) %c%05u %s\r\n", camel_imapx_command_queue_get_length (is->active), is->literal?" literal":"", is->tagprefix, ic->tag, cp->data && g_str_has_prefix (cp->data, "LOGIN") ? "LOGIN..." : cp->data);
+	c (
+		is->tagprefix,
+		"Starting command (active=%d,%s) %c%05u %s\r\n",
+		camel_imapx_command_queue_get_length (is->active),
+		is->literal ? " literal" : "",
+		is->tagprefix,
+		ic->tag,
+		cp->data && g_str_has_prefix (cp->data, "LOGIN") ?
+			"LOGIN..." : cp->data);
 
 	string = g_strdup_printf (
 		"%c%05u %s\r\n", is->tagprefix, ic->tag, cp->data);
@@ -1256,7 +1264,11 @@ imapx_command_queue (CamelIMAPXServer *is,
 
 	camel_imapx_command_close (ic);
 
-	c (is->tagprefix, "enqueue job '%.*s'\n", ((CamelIMAPXCommandPart *) ic->parts.head->data)->data_size, ((CamelIMAPXCommandPart *) ic->parts.head->data)->data);
+	c (
+		is->tagprefix,
+		"enqueue job '%.*s'\n",
+		((CamelIMAPXCommandPart *) ic->parts.head->data)->data_size,
+		((CamelIMAPXCommandPart *) ic->parts.head->data)->data);
 
 	QUEUE_LOCK (is);
 
@@ -1926,7 +1938,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 						mid = (min + max) / 2;
 						r = &g_array_index (data->infos, struct _refresh_info, mid);
-						cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, is->priv->context->fetch_order == CAMEL_SORT_ASCENDING);
+						cmp = imapx_refresh_info_uid_cmp (
+							finfo->uid,
+							r->uid,
+							is->priv->context->fetch_order == CAMEL_SORT_ASCENDING);
 
 						if (cmp > 0)
 							min = mid + 1;
@@ -4989,10 +5004,14 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		//printf ("Total: %d: %d, %d, %d\n", total, fetch_limit, i, data->last_index);
 		data->last_index = i;
 
-		/* If its mobile client and  when total=0 (new account setup) fetch only one batch of mails,
- 		 * on futher attempts download all new mails as per the limit. */
+		/* If its mobile client and when total=0 (new account setup)
+		 * fetch only one batch of mails, on futher attempts download
+		 * all new mails as per the limit. */
 		//printf ("Total: %d: %d\n", total, fetch_limit);
-		for (; i < data->infos->len && (!mobile_mode || (total && i == 0) || ((fetch_limit != -1 && i < fetch_limit) || (fetch_limit == -1 && i < batch_count))); i++) {
+		for (; i < data->infos->len &&
+			(!mobile_mode || (total && i == 0) ||
+			((fetch_limit != -1 && i < fetch_limit) ||
+			(fetch_limit == -1 && i < batch_count))); i++) {
 
 			gint res;
 			struct _refresh_info *r = &g_array_index (data->infos, struct _refresh_info, i);
@@ -5168,8 +5187,15 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			if (s_minfo && uid_cmp (s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *) s_minfo;
 
-				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, is->permanentflags, folder, FALSE))
-					camel_folder_change_info_change_uid (data->changes, camel_message_info_uid (s_minfo));
+				if (imapx_update_message_info_flags (
+						(CamelMessageInfo *) info,
+						r->server_flags,
+						r->server_user_flags,
+						is->permanentflags,
+						folder, FALSE))
+					camel_folder_change_info_change_uid (
+						data->changes,
+						camel_message_info_uid (s_minfo));
 				r->exists = TRUE;
 			} else
 				fetch_new = TRUE;
@@ -5778,12 +5804,22 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		can_qresync = TRUE;
 
 	e (
-		is->tagprefix, "folder %s is %sselected, total %u / %u, unread %u / %u, modseq %" G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT ", uidnext %u / %u: will %srescan\n",
-		full_name, is_selected?"": "not ", total, ifolder->exists_on_server,
-		camel_folder_summary_get_unread_count (folder->summary), ifolder->unread_on_server,
-		(guint64) isum->modseq, (guint64) ifolder->modseq_on_server,
-		isum->uidnext, ifolder->uidnext_on_server,
-		need_rescan?"":"not ");
+		is->tagprefix,
+		"folder %s is %sselected, "
+		"total %u / %u, unread %u / %u, modseq %"
+		G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT
+		", uidnext %u / %u: will %srescan\n",
+		full_name,
+		is_selected ? "" : "not ",
+		total,
+		ifolder->exists_on_server,
+		camel_folder_summary_get_unread_count (folder->summary),
+		ifolder->unread_on_server,
+		(guint64) isum->modseq,
+		(guint64) ifolder->modseq_on_server,
+		isum->uidnext,
+		ifolder->uidnext_on_server,
+		need_rescan ? "" : "not ");
 
 	/* Fetch new messages first, so that they appear to the user ASAP */
 	if (ifolder->exists_on_server > total ||
@@ -5818,16 +5854,26 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		    camel_folder_summary_get_unread_count (folder->summary) != ifolder->unread_on_server ||
 		    (isum->modseq != ifolder->modseq_on_server)) {
 			c (
-				is->tagprefix, "Eep, after QRESYNC we're out of sync. total %u / %u, unread %u / %u, modseq %" G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
+				is->tagprefix,
+				"Eep, after QRESYNC we're out of sync. "
+				"total %u / %u, unread %u / %u, modseq %"
+				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				total, ifolder->exists_on_server,
-				camel_folder_summary_get_unread_count (folder->summary), ifolder->unread_on_server,
-				isum->modseq, ifolder->modseq_on_server);
+				camel_folder_summary_get_unread_count (folder->summary),
+				ifolder->unread_on_server,
+				isum->modseq,
+				ifolder->modseq_on_server);
 		} else {
 			c (
-				is->tagprefix, "OK, after QRESYNC we're still in sync. total %u / %u, unread %u / %u, modseq %" G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
+				is->tagprefix,
+				"OK, after QRESYNC we're still in sync. "
+				"total %u / %u, unread %u / %u, modseq %"
+				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				total, ifolder->exists_on_server,
-				camel_folder_summary_get_unread_count (folder->summary), ifolder->unread_on_server,
-				isum->modseq, ifolder->modseq_on_server);
+				camel_folder_summary_get_unread_count (folder->summary),
+				ifolder->unread_on_server,
+				isum->modseq,
+				ifolder->modseq_on_server);
 			goto done;
 		}
 	}
@@ -6610,7 +6656,10 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 				if (si->total != camel_folder_summary_get_saved_count (folder->summary) ||
 				    si->unread != camel_folder_summary_get_unread_count (folder->summary)) {
 					si->total = camel_folder_summary_get_saved_count (folder->summary);
-					if (!mobile_mode) /* Don't mess with server's unread count in mobile mode, as what we have downloaded is little */
+					/* Don't mess with server's unread
+					 * count in mobile mode, as what we
+					 * have downloaded is little. */
+					if (!mobile_mode)
 						si->unread = camel_folder_summary_get_unread_count (folder->summary);
 					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 				}

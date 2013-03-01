@@ -57,7 +57,8 @@ e_dbhash_new (const gchar *filename)
 			return NULL;
 		}
 
-		rv = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
+		rv = (*db->open) (
+			db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
 		if (rv != 0) {
 			db->close (db, 0);

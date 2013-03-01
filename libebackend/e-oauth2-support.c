@@ -145,8 +145,10 @@ oauth2_support_get_access_token_finish (EOAuth2Support *support,
 static void
 e_oauth2_support_default_init (EOAuth2SupportInterface *interface)
 {
-	interface->get_access_token = oauth2_support_get_access_token;
-	interface->get_access_token_finish = oauth2_support_get_access_token_finish;
+	interface->get_access_token =
+		oauth2_support_get_access_token;
+	interface->get_access_token_finish =
+		oauth2_support_get_access_token_finish;
 }
 
 /**

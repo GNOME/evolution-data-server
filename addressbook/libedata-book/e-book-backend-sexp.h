@@ -56,7 +56,7 @@ typedef struct _EBookBackendSExpClass EBookBackendSExpClass;
 typedef struct _EBookBackendSExpPrivate EBookBackendSExpPrivate;
 
 struct _EBookBackendSExp {
-	GObject parent_object;
+	GObject parent;
 	EBookBackendSExpPrivate *priv;
 };
 

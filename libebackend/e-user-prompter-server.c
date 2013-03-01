@@ -62,8 +62,12 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE_WITH_CODE (EUserPrompterServer, e_user_prompter_server, E_TYPE_DBUS_SERVER,
-			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
+G_DEFINE_TYPE_WITH_CODE (
+	EUserPrompterServer,
+	e_user_prompter_server,
+	E_TYPE_DBUS_SERVER,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_EXTENSIBLE, NULL))
 
 typedef struct _PromptRequest {
 	gint id;
@@ -160,7 +164,8 @@ remove_prompt (EUserPrompterServer *server,
 		PromptRequest *pr = iter->data;
 
 		if (pr && pr->id == prompt_id) {
-			server->priv->prompts = g_slist_remove (server->priv->prompts, pr);
+			server->priv->prompts = g_slist_remove (
+				server->priv->prompts, pr);
 
 			if (is_extension_prompt)
 				*is_extension_prompt = pr->is_extension_prompt;
@@ -193,14 +198,29 @@ do_show_prompt (EUserPrompterServer *server)
 	if (pr->is_extension_prompt) {
 		EUserPrompterServerExtension *extension;
 
-		extension = g_hash_table_lookup (server->priv->extensions, pr->dialog_name);
+		extension = g_hash_table_lookup (
+			server->priv->extensions, pr->dialog_name);
 		g_return_if_fail (extension != NULL);
 
-		if (!e_user_prompter_server_extension_prompt (extension, pr->id, pr->dialog_name, pr->parameters)) {
-			e_user_prompter_server_response (server, pr->id, -1, NULL);
+		if (!e_user_prompter_server_extension_prompt (
+				extension,
+				pr->id,
+				pr->dialog_name,
+				pr->parameters)) {
+			e_user_prompter_server_response (
+				server, pr->id, -1, NULL);
 		}
 	} else {
-		g_signal_emit (server, signals[PROMPT], 0, pr->id, pr->type, pr->title, pr->primary_text, pr->secondary_text, pr->use_markup, pr->button_captions);
+		g_signal_emit (
+			server,
+			signals[PROMPT], 0,
+			pr->id,
+			pr->type,
+			pr->title,
+			pr->primary_text,
+			pr->secondary_text,
+			pr->use_markup,
+			pr->button_captions);
 	}
 }
 
@@ -230,7 +250,8 @@ maybe_schedule_prompt (EUserPrompterServer *server)
 
 	g_rec_mutex_lock (&server->priv->lock);
 	if (!server->priv->schedule_id && server->priv->prompts)
-		server->priv->schedule_id = g_idle_add (show_prompt_idle_cb, server);
+		server->priv->schedule_id = g_idle_add (
+			show_prompt_idle_cb, server);
 	g_rec_mutex_unlock (&server->priv->lock);
 }
 
@@ -249,7 +270,10 @@ user_prompter_server_prompt_cb (EDBusUserPrompter *dbus_prompter,
 
 	g_rec_mutex_lock (&server->priv->lock);
 
-	id = add_prompt (server, FALSE, type, title, primary_text, secondary_text, use_markup, button_captions, NULL, NULL);
+	id = add_prompt (
+		server, FALSE, type, title,
+		primary_text, secondary_text,
+		use_markup, button_captions, NULL, NULL);
 
 	e_dbus_user_prompter_complete_prompt (dbus_prompter, invocation, id);
 
@@ -276,14 +300,18 @@ user_prompter_server_extension_prompt_cb (EDBusUserPrompter *dbus_prompter,
 
 		g_dbus_method_invocation_return_error (
 			invocation, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("Extension dialog '%s' not found."), dialog_name ? dialog_name : "[null]");
+			_("Extension dialog '%s' not found."),
+			dialog_name ? dialog_name : "[null]");
 
 		return TRUE;
 	}
 
-	id = add_prompt (server, TRUE, NULL, NULL, NULL, NULL, FALSE, NULL, dialog_name, parameters);
+	id = add_prompt (
+		server, TRUE, NULL, NULL, NULL, NULL, FALSE, NULL,
+		dialog_name, parameters);
 
-	e_dbus_user_prompter_complete_extension_prompt (dbus_prompter, invocation, id);
+	e_dbus_user_prompter_complete_extension_prompt (
+		dbus_prompter, invocation, id);
 
 	maybe_schedule_prompt (server);
 
@@ -296,7 +324,8 @@ static void
 user_prompter_server_constructed (GObject *object)
 {
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_user_prompter_server_parent_class)->constructed (object);
+	G_OBJECT_CLASS (e_user_prompter_server_parent_class)->
+		constructed (object);
 
 	e_extensible_load_extensions (E_EXTENSIBLE (object));
 }
@@ -367,10 +396,12 @@ user_prompter_server_quit_server (EDBusServer *server,
 
 	priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (server);
 
-	g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (priv->dbus_prompter));
+	g_dbus_interface_skeleton_unexport (
+		G_DBUS_INTERFACE_SKELETON (priv->dbus_prompter));
 
 	/* Chain up to parent's quit_server() method. */
-	E_DBUS_SERVER_CLASS (e_user_prompter_server_parent_class)->quit_server (server, code);
+	E_DBUS_SERVER_CLASS (e_user_prompter_server_parent_class)->
+		quit_server (server, code);
 }
 
 static void
@@ -397,10 +428,15 @@ e_user_prompter_server_class_init (EUserPrompterServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EUserPrompterServerClass, prompt),
-		NULL, NULL,
-		e_marshal_VOID__INT_STRING_STRING_STRING_STRING_BOOLEAN_POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 7,
-		G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_POINTER);
+		G_TYPE_INT,
+		G_TYPE_STRING,
+		G_TYPE_STRING,
+		G_TYPE_STRING,
+		G_TYPE_STRING,
+		G_TYPE_BOOLEAN,
+		G_TYPE_POINTER);
 }
 
 static void
@@ -409,7 +445,11 @@ e_user_prompter_server_init (EUserPrompterServer *server)
 	server->priv = E_USER_PROMPTER_SERVER_GET_PRIVATE (server);
 	server->priv->dbus_prompter = e_dbus_user_prompter_skeleton_new ();
 	server->priv->prompts = NULL;
-	server->priv->extensions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	server->priv->extensions = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_object_unref);
 
 	g_rec_mutex_init (&server->priv->lock);
 
@@ -478,13 +518,16 @@ e_user_prompter_server_response (EUserPrompterServer *server,
 			values = e_named_parameters_to_strv (extension_values);
 
 			e_dbus_user_prompter_emit_extension_response (
-				server->priv->dbus_prompter, prompt_id, response,
+				server->priv->dbus_prompter,
+				prompt_id, response,
 				(const gchar * const *) values);
 
 			if (values)
 				g_strfreev (values);
 		} else {
-			e_dbus_user_prompter_emit_response (server->priv->dbus_prompter, prompt_id, response);
+			e_dbus_user_prompter_emit_response (
+				server->priv->dbus_prompter,
+				prompt_id, response);
 		}
 	}
 
@@ -532,8 +575,13 @@ e_user_prompter_server_register (EUserPrompterServer *server,
 		return FALSE;
 	}
 
-	g_print ("Registering %s for dialog '%s'\n", G_OBJECT_TYPE_NAME (extension), dialog_name);
-	g_hash_table_insert (server->priv->extensions, g_strdup (dialog_name), g_object_ref (extension));
+	g_print (
+		"Registering %s for dialog '%s'\n",
+		G_OBJECT_TYPE_NAME (extension), dialog_name);
+	g_hash_table_insert (
+		server->priv->extensions,
+		g_strdup (dialog_name),
+		g_object_ref (extension));
 
 	g_rec_mutex_unlock (&server->priv->lock);
 

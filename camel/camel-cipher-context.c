@@ -1611,9 +1611,18 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 		CamelCipherCertInfo *info = link->data;
 
 		if (info->cert_data && info->cert_data_clone && info->cert_data_free)
-			camel_cipher_validity_add_certinfo_ex (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email, info->cert_data_clone (info->cert_data), info->cert_data_free, info->cert_data_clone);
+			camel_cipher_validity_add_certinfo_ex (
+				vo, CAMEL_CIPHER_VALIDITY_SIGN,
+				info->name,
+				info->email,
+				info->cert_data_clone (info->cert_data),
+				info->cert_data_free,
+				info->cert_data_clone);
 		else
-			camel_cipher_validity_add_certinfo (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email);
+			camel_cipher_validity_add_certinfo (
+				vo, CAMEL_CIPHER_VALIDITY_SIGN,
+				info->name,
+				info->email);
 	}
 
 	head = g_queue_peek_head_link (&vin->encrypt.encrypters);
@@ -1621,9 +1630,18 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 		CamelCipherCertInfo *info = link->data;
 
 		if (info->cert_data && info->cert_data_clone && info->cert_data_free)
-			camel_cipher_validity_add_certinfo_ex (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email, info->cert_data_clone (info->cert_data), info->cert_data_free, info->cert_data_clone);
+			camel_cipher_validity_add_certinfo_ex (
+				vo, CAMEL_CIPHER_VALIDITY_SIGN,
+				info->name,
+				info->email,
+				info->cert_data_clone (info->cert_data),
+				info->cert_data_free,
+				info->cert_data_clone);
 		else
-			camel_cipher_validity_add_certinfo (vo, CAMEL_CIPHER_VALIDITY_ENCRYPT, info->name, info->email);
+			camel_cipher_validity_add_certinfo (
+				vo, CAMEL_CIPHER_VALIDITY_ENCRYPT,
+				info->name,
+				info->email);
 	}
 
 	return vo;

@@ -417,7 +417,8 @@ e_book_async_add_contact (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_add_contact() and e_book_client_add_contact_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_add_contact() and
+ *                  e_book_client_add_contact_finish() instead.
  **/
 gboolean
 e_book_add_contact_async (EBook *book,
@@ -545,7 +546,8 @@ e_book_async_commit_contact (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_modify_contact() and e_book_client_modify_contact_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_modify_contact() and
+ *                  e_book_client_modify_contact_finish() instead.
  **/
 gboolean
 e_book_commit_contact_async (EBook *book,
@@ -573,7 +575,8 @@ e_book_commit_contact_async (EBook *book,
 /**
  * e_book_get_required_fields:
  * @book: an #EBook
- * @fields: (out) (transfer full) (element-type utf8): a #GList of fields to set on success
+ * @fields: (out) (transfer full) (element-type utf8): a #GList of fields
+ *          to set on success
  * @error: a #GError to set on failure
  *
  * Gets a list of fields that are required to be filled in for
@@ -727,8 +730,10 @@ e_book_async_get_required_fields (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_client_get_backend_property() and e_client_get_backend_property_finish()
- * on an #EBookClient object with #BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS instead.
+ * Deprecated: 3.2: Use e_client_get_backend_property() and
+ *                  e_client_get_backend_property_finish() on an
+ *                  #EBookClient object with
+ *                  #BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS instead.
  **/
 gboolean
 e_book_get_required_fields_async (EBook *book,
@@ -755,7 +760,8 @@ e_book_get_required_fields_async (EBook *book,
 /**
  * e_book_get_supported_fields:
  * @book: an #EBook
- * @fields: (out) (transfer full) (element-type utf8): a #GList of fields to set on success
+ * @fields: (out) (transfer full) (element-type utf8): a #GList of fields
+ *          to set on success
  * @error: a #GError to set on failure
  *
  * Gets a list of fields that can be stored for contacts
@@ -911,8 +917,10 @@ e_book_async_get_supported_fields (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_client_get_backend_property() and e_client_get_backend_property_finish()
- * on an #EBookClient object with #BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
+ * Deprecated: 3.2: Use e_client_get_backend_property() and
+ *                  e_client_get_backend_property_finish() on an
+ *                  #EBookClient object with
+ *                  #BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
  **/
 gboolean
 e_book_get_supported_fields_async (EBook *book,
@@ -939,7 +947,8 @@ e_book_get_supported_fields_async (EBook *book,
 /**
  * e_book_get_supported_auth_methods:
  * @book: an #EBook
- * @auth_methods: (out) (transfer full) (element-type utf8): a #GList of auth methods to set on success
+ * @auth_methods: (out) (transfer full) (element-type utf8): a #GList of
+ *                auth methods to set on success
  * @error: a #GError to set on failure
  *
  * Queries @book for the list of authentication methods it supports.
@@ -1133,7 +1142,8 @@ e_book_async_get_contact (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_get_contact() and e_book_client_get_contact_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_get_contact() and
+ *                  e_book_client_get_contact_finish() instead.
  **/
 gboolean
 e_book_get_contact_async (EBook *book,
@@ -1168,7 +1178,8 @@ e_book_get_contact_async (EBook *book,
  *
  * Returns: %TRUE if successful, %FALSE otherwise
  *
- * Deprecated: 3.2: Use e_book_client_remove_contact_by_uid_sync() or e_book_client_remove_contact_sync() instead.
+ * Deprecated: 3.2: Use e_book_client_remove_contact_by_uid_sync() or
+ *                  e_book_client_remove_contact_sync() instead.
  **/
 gboolean
 e_book_remove_contact (EBook *book,
@@ -1299,7 +1310,8 @@ e_book_async_remove_contact (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_remove_contact() and e_book_client_remove_contact_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_remove_contact() and
+ *                  e_book_client_remove_contact_finish() instead.
  **/
 gboolean
 e_book_remove_contact_async (EBook *book,
@@ -1400,7 +1412,8 @@ e_book_async_remove_contact_by_id (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_remove_contact_by_uid() and e_book_client_remove_contact_by_uid_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_remove_contact_by_uid() and
+ *                  e_book_client_remove_contact_by_uid_finish() instead.
  **/
 gboolean
 e_book_remove_contact_by_id_async (EBook *book,
@@ -1516,7 +1529,8 @@ e_book_async_remove_contacts (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_remove_contacts() and e_book_client_remove_contacts_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_remove_contacts() and
+ *                  e_book_client_remove_contacts_finish() instead.
  **/
 gboolean
 e_book_remove_contacts_async (EBook *book,
@@ -1554,8 +1568,8 @@ e_book_remove_contacts_async (EBook *book,
  * e_book_get_book_view:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (allow-none) (element-type utf8): a #GList containing the names of fields to
- * return, or NULL for all
+ * @requested_fields: (allow-none) (element-type utf8): a #GList containing
+ *                    the names of fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @book_view: (out): A #EBookView pointer, will be set to the view
  * @error: a #GError to set on failure
@@ -1648,7 +1662,8 @@ get_book_view_reply (GObject *source_object,
  * e_book_async_get_book_view:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (element-type utf8): a #GList containing the names of fields to return, or NULL for all
+ * @requested_fields: (element-type utf8): a #GList containing the names of
+ *                    fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -1694,7 +1709,8 @@ e_book_async_get_book_view (EBook *book,
  * e_book_get_book_view_async:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (allow-none) (element-type utf8): a #GList containing the names of fields to
+ * @requested_fields: (allow-none) (element-type utf8): a #GList containing
+ *                    the names of fields to
  * return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @cb: (scope async): a function to call when the operation finishes
@@ -1707,7 +1723,8 @@ e_book_async_get_book_view (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_get_view() and e_book_client_get_view_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_get_view() and
+ *                  e_book_client_get_view_finish() instead.
  **/
 gboolean
 e_book_get_book_view_async (EBook *book,
@@ -1743,7 +1760,8 @@ e_book_get_book_view_async (EBook *book,
  * e_book_get_contacts:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @contacts: (element-type utf8): a #GList pointer, will be set to the list of contacts
+ * @contacts: (element-type utf8): a #GList pointer, will be set to the
+ *            list of contacts
  * @error: a #GError to set on failure
  *
  * Query @book with @query, setting @contacts to the list of contacts which
@@ -1893,7 +1911,8 @@ e_book_async_get_contacts (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_book_client_get_contacts() and e_book_client_get_contacts_finish() instead.
+ * Deprecated: 3.2: Use e_book_client_get_contacts() and
+ *                  e_book_client_get_contacts_finish() instead.
  **/
 gboolean
 e_book_get_contacts_async (EBook *book,
@@ -2057,7 +2076,8 @@ e_book_free_change_list (GList *change_list)
  *
  * Returns: %TRUE on success, %FALSE otherwise
  *
- * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an #EBookClient object instead.
+ * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an
+ *                  #EBookClient object instead.
  **/
 gboolean
 e_book_cancel (EBook *book,
@@ -2078,7 +2098,8 @@ e_book_cancel (EBook *book,
  *
  * Since: 2.24
  *
- * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an #EBookClient object instead.
+ * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an
+ *                  #EBookClient object instead.
  **/
 gboolean
 e_book_cancel_async_op (EBook *book,
@@ -2094,7 +2115,8 @@ e_book_cancel_async_op (EBook *book,
 /**
  * e_book_open:
  * @book: an #EBook
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
+ *                  otherwise create it first
  * @error: a #GError to set on failure
  *
  * Opens the addressbook, making it ready for queries and other operations.
@@ -2144,8 +2166,10 @@ open_reply (GObject *source_object,
 /**
  * e_book_async_open:
  * @book: an #EBook
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
- * @open_response: (scope call) (closure closure): a function to call when the operation finishes
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
+ *                  otherwise create it first
+ * @open_response: (scope call) (closure closure): a function to call when
+ *                 the operation finishes
  * @closure: data to pass to callback function
  *
  * Opens the addressbook, making it ready for queries and other operations.
@@ -2180,7 +2204,8 @@ e_book_async_open (EBook *book,
 /**
  * e_book_open_async:
  * @book: an #EBook
- * @only_if_exists: if %TRUE, fail if this book doesn't already exist, otherwise create it first
+ * @only_if_exists: if %TRUE, fail if this book doesn't already exist,
+ *                  otherwise create it first
  * @open_response: (scope call): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
@@ -2191,7 +2216,8 @@ e_book_async_open (EBook *book,
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_client_open() and e_client_open_finish() on an #EBookClient object instead.
+ * Deprecated: 3.2: Use e_client_open() and e_client_open_finish() on an
+ *                  #EBookClient object instead.
  **/
 gboolean
 e_book_open_async (EBook *book,
@@ -2308,14 +2334,15 @@ e_book_async_remove (EBook *book,
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
- * Remove the backing data for this #EBook. For example, with the file backend this
- * deletes the database file. You cannot get it back!
+ * Remove the backing data for this #EBook. For example, with the file
+ * backend this deletes the database file. You cannot get it back!
  *
  * Returns: %FALSE if successful, %TRUE otherwise.
  *
  * Since: 2.32
  *
- * Deprecated: 3.2: Use e_client_remove() and e_client_remove_finish() on an #EBookClient object instead.
+ * Deprecated: 3.2: Use e_client_remove() and e_client_remove_finish() on an
+ *                  #EBookClient object instead.
  **/
 gboolean
 e_book_remove_async (EBook *book,
@@ -2569,7 +2596,8 @@ e_book_get_self (ESourceRegistry *registry,
 	if (uid) {
 		gboolean got;
 
-		/* Don't care about errors because we'll create a new card on failure */
+		/* Don't care about errors because we'll create a
+		 * new card on failure. */
 		got = e_book_get_contact (*book, uid, contact, NULL);
 		g_free (uid);
 		if (got)
@@ -2617,7 +2645,9 @@ e_book_set_self (EBook *book,
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	settings = g_settings_new (SELF_UID_PATH_ID);
-	g_settings_set_string (settings, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID));
+	g_settings_set_string (
+		settings, SELF_UID_KEY,
+		e_contact_get_const (contact, E_CONTACT_UID));
 	g_object_unref (settings);
 
 	return TRUE;

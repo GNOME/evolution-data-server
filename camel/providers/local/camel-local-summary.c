@@ -43,19 +43,43 @@
 
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
 
-static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
-static gboolean summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
+static CamelFIRecord *
+		summary_header_to_db		(CamelFolderSummary *,
+						 GError **error);
+static gboolean	summary_header_from_db		(CamelFolderSummary *,
+						 CamelFIRecord *);
 
-static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
+static CamelMessageInfo *
+		message_info_new_from_header	(CamelFolderSummary *,
+						 struct _camel_header_raw *);
 
-static gint local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *mi);
-static gchar *local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
+static gint	local_summary_decode_x_evolution
+						(CamelLocalSummary *cls,
+						 const gchar *xev,
+						 CamelLocalMessageInfo *mi);
+static gchar *	local_summary_encode_x_evolution
+						(CamelLocalSummary *cls,
+						 const CamelLocalMessageInfo *mi);
 
-static gint local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
-static gint local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static gint local_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static CamelMessageInfo *local_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
-static gint local_summary_need_index (void);
+static gint	local_summary_load		(CamelLocalSummary *cls,
+						 gint forceindex,
+						 GError **error);
+static gint	local_summary_check		(CamelLocalSummary *cls,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static gint	local_summary_sync		(CamelLocalSummary *cls,
+						 gboolean expunge,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static CamelMessageInfo *
+		local_summary_add		(CamelLocalSummary *cls,
+						 CamelMimeMessage *msg,
+						 const CamelMessageInfo *info,
+						 CamelFolderChangeInfo *,
+						 GError **error);
+static gint	local_summary_need_index	(void);
 
 G_DEFINE_TYPE (CamelLocalSummary, camel_local_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 

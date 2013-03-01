@@ -72,25 +72,56 @@ book_backend_get_backend_property (EBookBackend *backend,
                                    GCancellable *cancellable,
                                    const gchar *prop_name)
 {
-	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (book != NULL);
 	g_return_if_fail (prop_name != NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, "TRUE");
+		e_data_book_respond_get_backend_property (
+			book, opid, NULL, "TRUE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, "FALSE");
+		e_data_book_respond_get_backend_property (
+			book, opid, NULL, "FALSE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, "0");
+		e_data_book_respond_get_backend_property (
+			book, opid, NULL, "0");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, e_backend_get_online (E_BACKEND (backend)) ? "TRUE" : "FALSE");
+		gboolean online;
+
+		online = e_backend_get_online (E_BACKEND (backend));
+
+		e_data_book_respond_get_backend_property (
+			book, opid, NULL, online ? "TRUE" : "FALSE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_is_readonly (backend) ? "TRUE" : "FALSE");
+		gboolean readonly;
+
+		readonly = e_book_backend_is_readonly (backend);
+
+		e_data_book_respond_get_backend_property (
+			book, opid, NULL, readonly ? "TRUE" : "FALSE");
+
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_get_cache_dir (backend));
+		const gchar *cache_dir;
+
+		cache_dir = e_book_backend_get_cache_dir (backend);
+
+		e_data_book_respond_get_backend_property (
+			book, opid, NULL, cache_dir);
+
 	} else {
-		e_data_book_respond_get_backend_property (book, opid, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_NOT_SUPPORTED, _("Unknown book property '%s'"), prop_name), NULL);
+		GError *error;
+
+		error = e_data_book_create_error_fmt (
+			E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+			_("Unknown book property '%s'"), prop_name);
+
+		/* Takes ownership of the GError. */
+		e_data_book_respond_get_backend_property (
+			book, opid, error, NULL);
 	}
 }
 
@@ -1137,7 +1168,7 @@ e_book_backend_get_direct_book (EBookBackend *backend)
  */
 void
 e_book_backend_configure_direct (EBookBackend *backend,
-				 const gchar *config)
+                                 const gchar *config)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 

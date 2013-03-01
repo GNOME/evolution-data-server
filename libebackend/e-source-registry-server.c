@@ -2356,8 +2356,9 @@ e_source_registry_server_new_auth_session (ESourceRegistryServer *server,
 	}
 
 	g_return_val_if_fail (
-		g_type_is_a (auth_session_type,
-		E_TYPE_AUTHENTICATION_SESSION), NULL);
+		g_type_is_a (
+			auth_session_type,
+			E_TYPE_AUTHENTICATION_SESSION), NULL);
 
 	return g_object_new (
 		auth_session_type,

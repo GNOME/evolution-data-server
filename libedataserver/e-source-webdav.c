@@ -1392,12 +1392,14 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 		parent_uid = e_source_get_parent (source);
 
 		if (parent_uid != NULL)
-			parent_source = e_source_registry_ref_source (registry, parent_uid);
+			parent_source = e_source_registry_ref_source (
+				registry, parent_uid);
 
 		g_object_unref (source);
 	}
 
-	res = e_source_webdav_prepare_ssl_trust_prompt_with_parent (extension, message, parent_source, parameters);
+	res = e_source_webdav_prepare_ssl_trust_prompt_with_parent (
+		extension, message, parent_source, parameters);
 
 	if (parent_source)
 		g_object_unref (parent_source);
@@ -1412,17 +1414,18 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
  * @parent_source: an #ESource, parent of the @extension<!-- -->'s source
  * @parameters: an #ENamedParameters to be populated
  *
- * The same as e_source_webdav_prepare_ssl_trust_prompt(), only takes @parent_source
- * directly, instead of an #ESourceRegistry. See e_source_webdav_prepare_ssl_trust_prompt()
- * for more details.
+ * The same as e_source_webdav_prepare_ssl_trust_prompt(), only takes
+ * @parent_source directly, instead of an #ESourceRegistry.
+ *
+ * See e_source_webdav_prepare_ssl_trust_prompt() for more details.
  *
  * Since: 3.8
  **/
 ETrustPromptResponse
 e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
-						      SoupMessage *message,
-						      ESource *parent_source,
-						      ENamedParameters *parameters)
+                                                      SoupMessage *message,
+                                                      ESource *parent_source,
+                                                      ENamedParameters *parameters)
 {
 	ETrustPromptResponse response;
 	ESource *source;
@@ -1431,7 +1434,11 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 	GByteArray *bytes = NULL;
 	SoupURI *soup_uri;
 	const gchar *host;
-	gchar *base64, *old_host = NULL, *old_hash = NULL, *cert_errs_str, *markup = NULL;
+	gchar *base64;
+	gchar *old_host = NULL;
+	gchar *old_hash = NULL;
+	gchar *cert_errs_str;
+	gchar *markup = NULL;
 	gint issuer_count;
 
 	g_return_val_if_fail (
@@ -1503,8 +1510,11 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 		if (parent_source != NULL) {
 			const gchar *parent_display_name;
 
-			parent_display_name = e_source_get_display_name (parent_source);
-			bname = g_strdup_printf ("<b>%s: %s</b>", parent_display_name, display_name);
+			parent_display_name =
+				e_source_get_display_name (parent_source);
+			bname = g_strdup_printf (
+				"<b>%s: %s</b>",
+				parent_display_name, display_name);
 		}
 
 		if (bname == NULL)
@@ -1579,12 +1589,15 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 			if (bytes) {
 				base64 = g_base64_encode (bytes->data, bytes->len);
 				if (issuer_count == 0) {
-					e_named_parameters_set (parameters, "issuer", base64);
+					e_named_parameters_set (
+					parameters, "issuer", base64);
 				} else {
 					gchar *name;
 
-					name = g_strdup_printf ("issuer-%d", issuer_count);
-					e_named_parameters_set (parameters, name, base64);
+					name = g_strdup_printf (
+						"issuer-%d", issuer_count);
+					e_named_parameters_set (
+						parameters, name, base64);
 					g_free (name);
 				}
 
@@ -1670,8 +1683,11 @@ e_source_webdav_store_ssl_trust_prompt (ESourceWebdav *extension,
 	if (changed) {
 		ESource *source;
 
-		source = e_source_extension_ref_source (E_SOURCE_EXTENSION (extension));
-		e_source_write (source, NULL, webdav_extension_changes_written_cb, NULL);
+		source = e_source_extension_ref_source (
+			E_SOURCE_EXTENSION (extension));
+		e_source_write (
+			source, NULL,
+			webdav_extension_changes_written_cb, NULL);
 		g_object_unref (source);
 	}
 }

@@ -343,7 +343,8 @@ e_source_goa_dup_calendar_url (ESourceGoa *extension)
 /**
  * e_source_goa_set_calendar_url:
  * @extension: an #ESourceGoa
- * @calendar_url: (allow-none): the associated GNOME Online Account calendar URL, or %NULL
+ * @calendar_url: (allow-none): the associated GNOME Online Account
+ *                calendar URL, or %NULL
  *
  * Sets the calendar URL of the GNOME Online Account associated
  * with the #ESource to which @extension belongs.
@@ -356,7 +357,7 @@ e_source_goa_dup_calendar_url (ESourceGoa *extension)
  **/
 void
 e_source_goa_set_calendar_url (ESourceGoa *extension,
-			       const gchar *calendar_url)
+                               const gchar *calendar_url)
 {
 	g_return_if_fail (E_IS_SOURCE_GOA (extension));
 
@@ -429,7 +430,8 @@ e_source_goa_dup_contacts_url (ESourceGoa *extension)
 /**
  * e_source_goa_set_contacts_url:
  * @extension: an #ESourceGoa
- * @contacts_url: (allow-none): the associated GNOME Online Account contacts URL, or %NULL
+ * @contacts_url: (allow-none): the associated GNOME Online Account
+ *                contacts URL, or %NULL
  *
  * Sets the contacts URL of the GNOME Online Account associated
  * with the #ESource to which @extension belongs.
@@ -442,7 +444,7 @@ e_source_goa_dup_contacts_url (ESourceGoa *extension)
  **/
 void
 e_source_goa_set_contacts_url (ESourceGoa *extension,
-			       const gchar *contacts_url)
+                               const gchar *contacts_url)
 {
 	g_return_if_fail (E_IS_SOURCE_GOA (extension));
 

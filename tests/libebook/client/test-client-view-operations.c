@@ -32,7 +32,7 @@ typedef struct {
 static void
 objects_added (EBookClientView *view,
                const GSList *contacts,
-	       ThreadData *data)
+               ThreadData *data)
 {
 	const GSList *l;
 
@@ -45,8 +45,8 @@ objects_added (EBookClientView *view,
 
 static void
 objects_modified (EBookClientView *view,
-		  const GSList *contacts,
-		  ThreadData *data)
+                  const GSList *contacts,
+                  ThreadData *data)
 {
 	const GSList *l;
 
@@ -58,7 +58,7 @@ objects_modified (EBookClientView *view,
 static void
 objects_removed (EBookClientView *view,
                  const GSList *ids,
-		 ThreadData *data)
+                 ThreadData *data)
 {
 	const GSList *l;
 
@@ -72,7 +72,7 @@ objects_removed (EBookClientView *view,
 static void
 complete (EBookClientView *view,
           const GError *error,
-	  ThreadData *data)
+          ThreadData *data)
 {
 	g_mutex_lock (&data->complete_mutex);
 	data->complete = TRUE;
@@ -122,7 +122,7 @@ start_thread_test (ThreadData *data)
 	context = g_main_loop_get_context (data->loop);
 	source  = g_idle_source_new ();
 
-	g_source_set_callback (source, (GSourceFunc)start_view, data, NULL);
+	g_source_set_callback (source, (GSourceFunc) start_view, data, NULL);
 	g_source_attach (source, context);
 }
 
@@ -160,9 +160,9 @@ test_view_thread (ThreadData *data)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
 	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
-		data->client = (EBookClient *)e_book_client_connect_direct_sync (registry, source, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, NULL, &error);
 	else
-		data->client = (EBookClient *)e_book_client_connect_sync (source, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
 
 	if (!data->client)
 		g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
@@ -183,25 +183,25 @@ test_view_thread (ThreadData *data)
 }
 
 static ThreadData *
-create_test_thread (const gchar   *book_uid,
-		    gconstpointer  user_data)
+create_test_thread (const gchar *book_uid,
+                    gconstpointer user_data)
 {
 	ThreadData  *data = g_slice_new0 (ThreadData);
 
 	data->book_uid    = book_uid;
-	data->closure     = (ETestServerClosure *)user_data;
+	data->closure     = (ETestServerClosure *) user_data;
 
 	g_mutex_init (&data->complete_mutex);
 	g_cond_init (&data->complete_cond);
 
-	data->thread = g_thread_new ("test-thread", (GThreadFunc)test_view_thread, data);
+	data->thread = g_thread_new ("test-thread", (GThreadFunc) test_view_thread, data);
 
 	return data;
 }
 
 static void
 test_concurrent_views (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	EBookClient *main_client;
 	ESource *source;
@@ -228,13 +228,13 @@ test_concurrent_views (ETestServerFixture *fixture,
 	for (i = 0; i < N_THREADS; i++)
 		tests[i] = create_test_thread (book_uid, user_data);
 
-
 	/* Wait for all threads to receive the complete signal */
 	for (i = 0; i < N_THREADS; i++) {
 		g_mutex_lock (&(tests[i]->complete_mutex));
 		while (!tests[i]->complete)
-			g_cond_wait (&(tests[i]->complete_cond),
-				     &(tests[i]->complete_mutex));
+			g_cond_wait (
+				&(tests[i]->complete_cond),
+				&(tests[i]->complete_mutex));
 		g_mutex_unlock (&(tests[i]->complete_mutex));
 	}
 
@@ -256,10 +256,12 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 	setlocale (LC_ALL, "en_US.UTF-8");
 
-	g_test_add ("/EBookClient/ConcurrentViews", ETestServerFixture, &book_closure,
-		    e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
-	g_test_add ("/EBookClient/DirectAccess/ConcurrentViews", ETestServerFixture, &direct_book_closure,
-		    e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/ConcurrentViews", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/ConcurrentViews", ETestServerFixture, &direct_book_closure,
+		e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

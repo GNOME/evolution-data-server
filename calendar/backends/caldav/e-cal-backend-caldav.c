@@ -1482,9 +1482,9 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 
 static gboolean
 caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
-			     const gchar *uid,
-			     GCancellable *cancellable,
-			     GError **error)
+                             const gchar *uid,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	SoupMessage *message;
 	xmlOutputBufferPtr buf;
@@ -3086,10 +3086,10 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav,
 
 static void
 put_server_comp_to_cache (ECalBackendCalDAV *cbdav,
-			  icalcomponent *icomp,
-			  const gchar *href,
-			  const gchar *etag,
-			  GTree *c_uid2complist)
+                          icalcomponent *icomp,
+                          const gchar *href,
+                          const gchar *etag,
+                          GTree *c_uid2complist)
 {
 	icalcomponent_kind kind;
 	ECalBackend *cal_backend;

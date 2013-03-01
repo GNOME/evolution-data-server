@@ -5503,7 +5503,7 @@ e_cal_component_get_alarm_uids (ECalComponent *comp)
  * Queries a particular alarm subcomponent of a calendar component.
  *
  * Returns: The alarm subcomponent that corresponds to the specified @auid,
- * or #NULL if no alarm exists with that UID.  This should be freed using
+ * or %NULL if no alarm exists with that UID.  This should be freed using
  * e_cal_component_alarm_free().
  **/
 ECalComponentAlarm *

@@ -251,11 +251,14 @@ e_xmlhash_remove (EXmlHash *hash,
 {
 	gpointer orig_key;
 	gpointer orig_value;
+	gboolean found;
 
 	g_return_if_fail (hash != NULL);
 	g_return_if_fail (key != NULL);
 
-	if (g_hash_table_lookup_extended (hash->objects, key, &orig_key, &orig_value)) {
+	found = g_hash_table_lookup_extended (
+		hash->objects, key, &orig_key, &orig_value);
+	if (found) {
 		g_hash_table_remove (hash->objects, key);
 		g_free (orig_key);
 		g_free (orig_value);

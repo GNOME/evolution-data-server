@@ -50,18 +50,42 @@
 
 #define CAMEL_MAILDIR_SUMMARY_VERSION (0x2000)
 
-static CamelMessageInfo *message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
-static CamelMessageInfo *maildir_message_info_from_db (CamelFolderSummary *summary, CamelMIRecord *record);
-static void message_info_free (CamelFolderSummary *, CamelMessageInfo *mi);
+static CamelMessageInfo *
+		message_info_new_from_header	(CamelFolderSummary *,
+						 struct _camel_header_raw *);
+static CamelMessageInfo *
+		maildir_message_info_from_db	(CamelFolderSummary *summary,
+						 CamelMIRecord *record);
+static void	message_info_free		(CamelFolderSummary *,
+						 CamelMessageInfo *mi);
 
-static gint maildir_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
-static gint maildir_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static gint maildir_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
-static CamelMessageInfo *maildir_summary_add (CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
+static gint	maildir_summary_load		(CamelLocalSummary *cls,
+						 gint forceindex,
+						 GError **error);
+static gint	maildir_summary_check		(CamelLocalSummary *cls,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static gint	maildir_summary_sync		(CamelLocalSummary *cls,
+						 gboolean expunge,
+						 CamelFolderChangeInfo *changeinfo,
+						 GCancellable *cancellable,
+						 GError **error);
+static CamelMessageInfo *
+		maildir_summary_add		(CamelLocalSummary *cls,
+						 CamelMimeMessage *msg,
+						 const CamelMessageInfo *info,
+						 CamelFolderChangeInfo *,
+						 GError **error);
 
-static gchar *maildir_summary_next_uid_string (CamelFolderSummary *s);
-static gint maildir_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *mi);
-static gchar *maildir_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
+static gchar *	maildir_summary_next_uid_string	(CamelFolderSummary *s);
+static gint	maildir_summary_decode_x_evolution
+						(CamelLocalSummary *cls,
+						 const gchar *xev,
+						 CamelLocalMessageInfo *mi);
+static gchar *	maildir_summary_encode_x_evolution
+						(CamelLocalSummary *cls,
+						 const CamelLocalMessageInfo *mi);
 
 struct _CamelMaildirSummaryPrivate {
 	gchar *current_file;

@@ -70,8 +70,8 @@ enum {
 	PROP_0,
 	PROP_CLIENT,
 	PROP_CONNECTION,
-	PROP_OBJECT_PATH,
-	PROP_DIRECT_BOOK
+	PROP_DIRECT_BOOK,
+	PROP_OBJECT_PATH
 };
 
 enum {
@@ -252,7 +252,7 @@ direct_contacts_query (const gchar * const *uids)
 	gchar *sexp;
 	gint i, len;
 
-	len = g_strv_length ((gchar **)uids);
+	len = g_strv_length ((gchar **) uids);
 	qs = g_new0 (EBookQuery *, len);
 
 	for (i = 0; uids[i] != NULL; i++) {
@@ -273,7 +273,7 @@ direct_contacts_ready (GObject *source_object,
                        GAsyncResult *result,
                        gpointer user_data)
 {
-	NotificationData *data = (NotificationData *)user_data;
+	NotificationData *data = (NotificationData *) user_data;
 	GSList *contacts = NULL;
 	GError *error = NULL;
 
@@ -567,6 +567,17 @@ book_client_view_set_connection (EBookClientView *view,
 }
 
 static void
+book_client_view_set_direct_book (EBookClientView *view,
+                                  EDataBook *book)
+{
+	g_return_if_fail (book == NULL || E_IS_DATA_BOOK (book));
+	g_return_if_fail (view->priv->direct_book == NULL);
+
+	if (book != NULL)
+		view->priv->direct_book = g_object_ref (book);
+}
+
+static void
 book_client_view_set_object_path (EBookClientView *view,
                                   const gchar *object_path)
 {
@@ -574,18 +585,6 @@ book_client_view_set_object_path (EBookClientView *view,
 	g_return_if_fail (view->priv->object_path == NULL);
 
 	view->priv->object_path = g_strdup (object_path);
-}
-
-static void
-book_client_view_set_direct_book (EBookClientView *view,
-				  EDataBook       *book)
-{
-	g_return_if_fail (book == NULL ||
-			  E_IS_DATA_BOOK (book));
-	g_return_if_fail (view->priv->direct_book == NULL);
-
-	if (book)
-		view->priv->direct_book = g_object_ref (book);
 }
 
 static void
@@ -607,16 +606,16 @@ book_client_view_set_property (GObject *object,
 				g_value_get_object (value));
 			return;
 
-		case PROP_OBJECT_PATH:
-			book_client_view_set_object_path (
-				E_BOOK_CLIENT_VIEW (object),
-				g_value_get_string (value));
-			return;
-
 		case PROP_DIRECT_BOOK:
 			book_client_view_set_direct_book (
 				E_BOOK_CLIENT_VIEW (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			book_client_view_set_object_path (
+				E_BOOK_CLIENT_VIEW (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -772,7 +771,8 @@ book_client_view_initable_init (GInitable *initable,
 	 * to fields-of-interest indicating we only want uids sent
 	 */
 	if (priv->direct_book)
-		e_book_client_view_set_fields_of_interest (E_BOOK_CLIENT_VIEW (initable), NULL, NULL);
+		e_book_client_view_set_fields_of_interest (
+			E_BOOK_CLIENT_VIEW (initable), NULL, NULL);
 
 	return TRUE;
 }
@@ -817,19 +817,6 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_OBJECT_PATH,
-		g_param_spec_string (
-			"object-path",
-			"Object Path",
-			"The object path used "
-			"to create the D-Bus proxy",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
 		PROP_DIRECT_BOOK,
 		g_param_spec_object (
 			"direct-book",
@@ -839,6 +826,19 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 			"is enabled",
 			E_TYPE_DATA_BOOK,
 			G_PARAM_WRITABLE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path used "
+			"to create the D-Bus proxy",
+			NULL,
+			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 

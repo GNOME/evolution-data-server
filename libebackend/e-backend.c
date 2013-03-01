@@ -113,7 +113,7 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 		(!host_is_reachable && (error != NULL)));
 
 	if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED) ||
-	    (host_is_reachable ? 1 : 0) == (e_backend_get_online (backend) ? 1 : 0)) {
+	    host_is_reachable == e_backend_get_online (backend)) {
 		g_clear_error (&error);
 		g_object_unref (backend);
 		return;
@@ -152,16 +152,16 @@ backend_update_online_state_idle_cb (gpointer user_data)
 		cancellable = NULL;
 	}
 
-	#if !GLIB_CHECK_VERSION (2, 35, 9)
+#if !GLIB_CHECK_VERSION (2, 35, 9)
 	if (connectable && G_IS_NETWORK_ADDRESS (connectable)) {
 		GNetworkAddress *network_address = G_NETWORK_ADDRESS (connectable);
 
-		/* create copy of the backend's connectable, because once the connectable
-		   reaches its destination it caches the value and doesn't retry after
-		   network changes.
-
-		   This might be fixed since GLib 2.35.9, see:
-		   https://bugzilla.gnome.org/show_bug.cgi?id=694181
+		/* Create a copy of the backend's connectable, because once
+		 * the connectable reaches its destination it caches the value
+		 * and doesn't retry after network changes.
+		 *
+		 * This is fixed since GLib 2.35.9, see:
+		 * https://bugzilla.gnome.org/show_bug.cgi?id=694181
 		*/
 		connectable = g_network_address_new (
 			g_network_address_get_hostname (network_address),
@@ -169,7 +169,7 @@ backend_update_online_state_idle_cb (gpointer user_data)
 
 		g_object_unref (network_address);
 	}
-	#endif
+#endif
 
 	if (!connectable) {
 		gchar *host = NULL;
@@ -480,11 +480,11 @@ backend_authenticate_finish (EBackend *backend,
 
 static gboolean
 backend_get_destination_address (EBackend *backend,
-				 gchar **host,
-				 guint16 *port)
+                                 gchar **host,
+                                 guint16 *port)
 {
 	/* default implementation returns FALSE, indicating
-	   no remote destination being used for this backend */
+	 * no remote destination being used for this backend */
 	return FALSE;
 }
 
@@ -1052,8 +1052,8 @@ e_backend_trust_prompt_finish (EBackend *backend,
  **/
 gboolean
 e_backend_get_destination_address (EBackend *backend,
-				   gchar **host,
-				   guint16 *port)
+                                   gchar **host,
+                                   guint16 *port)
 {
 	EBackendClass *klass;
 
@@ -1088,8 +1088,8 @@ e_backend_get_destination_address (EBackend *backend,
  **/
 gboolean
 e_backend_is_destination_reachable (EBackend *backend,
-				    GCancellable *cancellable,
-				    GError **error)
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	gboolean reachable = TRUE;
 	gchar *host = NULL;
@@ -1108,7 +1108,9 @@ e_backend_is_destination_reachable (EBackend *backend,
 
 			connectable = g_network_address_new (host, port);
 			if (connectable) {
-				reachable = g_network_monitor_can_reach (network_monitor, connectable, cancellable, error);
+				reachable = g_network_monitor_can_reach (
+					network_monitor, connectable,
+					cancellable, error);
 				g_object_unref (connectable);
 			} else {
 				reachable = FALSE;
