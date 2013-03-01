@@ -1122,6 +1122,7 @@ ixphone_compare_national (gpointer      data,
 			  gint          len2,
 			  gconstpointer arg2)
 {
+	const gchar *const country_code = data;
 	const gchar *const str1 = arg1;
 	const gchar *const str2 = arg2;
 	const gchar *sep1 = memchr (str1, '|', len1);
@@ -1147,11 +1148,17 @@ ixphone_compare_national (gpointer      data,
 	 * "+31|2215423789" first and then miss "|2215423789" because
 	 * we traverse the binary tree in wrong direction.
 	 */
-	if (cmp == 0 && sep1 != str1 && sep2 != str2) {
-		/* Also compare the country code if the national number
-		 * matches and both numbers have a country code. */
-		cmp = e_strcmp2n (str1, sep1 - str1,
-				  str2, sep2 - str2);
+	if (cmp == 0) {
+		if (sep1 == str1) {
+			cmp = e_strcmp2n (country_code, 2, str2, sep2 - str2);
+		} else if (sep2 == str2) {
+			cmp = e_strcmp2n (str1, sep1 - str1, country_code, 2);
+		} else {
+			/* Also compare the country code if the national number
+			 * matches and both numbers have a country code. */
+			cmp = e_strcmp2n (str1, sep1 - str1,
+					  str2, sep2 - str2);
+		}
 	}
 
 	if (booksql_debug ()) {
@@ -1184,10 +1191,13 @@ create_collation (gpointer     data,
 		ret = sqlite3_create_collation (
 			db, name, SQLITE_UTF8, GINT_TO_POINTER (country_code),
 			ixphone_compare_for_country);
-	} else if (strcmp (name, "ixphone_nn") == 0) {
-		ret = sqlite3_create_collation (
-			db, name, SQLITE_UTF8, NULL,
-			ixphone_compare_national);
+	} else if (strcmp (name, "ixphone_national") == 0) {
+		country_code = e_phone_number_get_country_code_for_region (NULL);
+
+		ret = sqlite3_create_collation_v2 (
+			db, name, SQLITE_UTF8,
+			g_strdup_printf ("+%d", country_code),
+			ixphone_compare_national, g_free);
 	}
 
 	if (ret == SQLITE_OK) {
@@ -3167,24 +3177,28 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			}
 
 			if (match == MATCH_PHONE_NUMBER) {
-				extra = g_strdup_printf (" COLLATE ixphone_%d", country_code);
-
 				value = convert_string_value (
 					ebsdb, query_term_input, region,
 					CONVERT_NORMALIZE | CONVERT_PHONE, match);
-			} else {
-				extra = g_strdup (" COLLATE ixphone_nn");
 
+				extra = sqlite3_mprintf (" COLLATE ixphone_%d", country_code);
+			} else {
 				if (match == MATCH_NATIONAL_PHONE_NUMBER) {
 					value = convert_string_value (
 						ebsdb, query_term_input, region,
 						CONVERT_PHONE, MATCH_NATIONAL_PHONE_NUMBER);
+
+					extra = sqlite3_mprintf (" COLLATE ixphone_national");
 				} else {
 					gchar *const digits = extract_digits (query_term_input);
 					value = convert_string_value (
 						ebsdb, digits, region,
 						CONVERT_NOTHING, MATCH_ENDS_WITH);
 					g_free (digits);
+
+					extra = sqlite3_mprintf (
+						" AND (%q LIKE '|%%' OR %q LIKE '+%d|%%')",
+						field_name, field_name, country_code);
 				}
 
 			}
@@ -3354,6 +3368,8 @@ convert_match_exp (struct _ESExp *f,
 
 				g_free (field_name);
 				g_free (query_term);
+
+				sqlite3_free (extra_term);
 			}
 		}
 	}
