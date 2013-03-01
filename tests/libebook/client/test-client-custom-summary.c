@@ -338,7 +338,11 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	setlocale (LC_ALL, "en_US.UTF-8");
+	/* Change environment so that the addressbook factory inherits this setting */
+	g_setenv ("LC_ALL", "en_US.UTF-8", TRUE);
+	setlocale (LC_ALL, "");
+
+	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
 	 */
@@ -417,7 +421,7 @@ main (gint argc,
 		 * matching with EBookBackendSexp when the default summary is used
 		 */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/Exact", suites[i].func,
+			suites[i].prefix, "/EqPhone/Exact/Common", suites[i].func,
 			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
 			1, suites[i].direct, suites[i].custom, TRUE);
 
@@ -446,12 +450,12 @@ main (gint argc,
 		 * have the same national number regardless of country codes.
 		 *
 		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +1-221-5423789 | Matches: yes |
-		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +31-221-5423789 | Matches: yes  |
+		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no  |
 		 */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/National", suites[i].func,
+			suites[i].prefix, "/EqPhone/National/Common", suites[i].func,
 			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
-			2, suites[i].direct, suites[i].custom, TRUE);
+			1, suites[i].direct, suites[i].custom, TRUE);
 
 		/* Test that a query term with a specified country returns only vCards that 
 		 * are specifically in the specified country code.
@@ -483,14 +487,13 @@ main (gint argc,
 		 */
 		add_client_test (
 			suites[i].prefix, "/EqPhone/National/CountryAbsent/QueryOtherCountry", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL,
-			E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+49 514-845-8436"),
-			1, suites[i].direct, suites[i].custom, TRUE);
+			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+49 514-845-8436"),
+			0, suites[i].direct, suites[i].custom, TRUE);
 
 		add_client_test (
 			suites[i].prefix, "/EqPhone/Short", suites[i].func,
 			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
-			2, suites[i].direct, suites[i].custom, TRUE);
+			1, suites[i].direct, suites[i].custom, TRUE);
 
 	}
 
