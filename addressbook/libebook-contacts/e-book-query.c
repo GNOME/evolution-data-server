@@ -19,7 +19,7 @@ typedef enum {
 	E_BOOK_QUERY_TYPE_ANY_FIELD_CONTAINS
 } EBookQueryType;
 
-struct EBookQuery {
+struct _EBookQuery {
 	EBookQueryType type;
 	gint ref_count;
 

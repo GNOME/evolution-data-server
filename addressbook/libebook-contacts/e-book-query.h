@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 
 #define E_TYPE_BOOK_QUERY (e_book_query_get_type ())
 
-typedef struct EBookQuery EBookQuery;
+typedef struct _EBookQuery EBookQuery;
 
 /**
  * EBookQueryTest:
