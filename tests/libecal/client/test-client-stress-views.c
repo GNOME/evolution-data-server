@@ -7,6 +7,7 @@
 
 #define NUM_VIEWS 200
 
+#if 0  /* ACCOUNT_MGMT */
 static void
 objects_added (ECalClientView *cal_view,
                const GSList *objects)
@@ -87,6 +88,7 @@ stress_cal_views_thread (gpointer user_data)
 
 	return NULL;
 }
+#endif /* ACCOUNT_MGMT */
 
 gint
 main (gint argc,

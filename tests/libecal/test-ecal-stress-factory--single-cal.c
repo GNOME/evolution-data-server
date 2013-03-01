@@ -13,7 +13,9 @@ main (gint argc,
 {
 	gchar *uri = NULL;
 	ECal *cal;
+#if 0
 	gint i;
+#endif
 
 	g_type_init ();
 

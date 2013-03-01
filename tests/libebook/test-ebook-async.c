@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <libebook/libebook.h>
 
+#if 0  /* ACCOUNT_MGMT */
 static GMainLoop *loop;
 
 static void
@@ -92,6 +93,7 @@ book_loaded_cb (EBook *book,
 	printf ("printing one contact\n");
 	print_one_email (book);
 }
+#endif /* ACCOUNT_MGMT */
 
 gint
 main (gint argc,

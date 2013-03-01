@@ -42,6 +42,7 @@ struct _TestFixture {
 	gboolean changed;
 };
 
+#if 0  /* ACCOUNT_MGMT */
 static void
 source_changed_cb (ESource *source,
                    TestESource *test)
@@ -73,10 +74,8 @@ setup_test_source (TestESource *test,
 	test->file = g_file_new_for_path (filename);
 
 	/* Create an ESource from the GFile and load the key file. */
-#if 0  /* ACCOUNT_MGMT */
 	test->source = e_source_new (test->file, &error);
 	g_assert_no_error (error);
-#endif /* ACCOUNT_MGMT */
 
 	g_signal_connect (
 		test->source, "changed",
@@ -97,6 +96,7 @@ teardown_test_source (TestESource *test)
 	g_object_unref (test->file);
 	g_object_unref (test->source);
 }
+#endif /* ACCOUNT_MGMT */
 
 static void
 test_fixture_setup_key_file (TestFixture *fixture,

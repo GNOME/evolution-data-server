@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <libebook/libebook.h>
 
+#if 0  /* ACCOUNT_MGMT */
 static void
 print_contact (EContact *contact)
 {
@@ -51,6 +52,7 @@ view_complete (EBookView *book_view,
 {
   printf ("view_complete (status == %d, error_msg == %s%s%s)\n", status, error_msg ? "'" : "", error_msg ? error_msg : "NULL", error_msg ? "'" : "");
 }
+#endif /* ACCOUNT_MGMT */
 
 gint
 main (gint argc,

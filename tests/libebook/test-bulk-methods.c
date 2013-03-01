@@ -2,6 +2,7 @@
 
 #define BATCH_SIZE 50
 
+#if 0  /* ACCOUNT_MGMT */
 static gboolean
 check_string_in_slist (GSList *list,
                        const gchar *str)
@@ -163,6 +164,7 @@ test_bulk_modify (EBookClient *client,
 	g_slist_free_full (contacts, g_object_unref);
 	return TRUE;
 }
+#endif /* ACCOUNT_MGMT */
 
 gint main (gint argc, gchar **argv)
 {

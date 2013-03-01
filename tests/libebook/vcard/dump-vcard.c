@@ -17,7 +17,9 @@ main (gint argc,
 		return 1;
 	}
 
+#if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init_with_debug_flags (G_TYPE_DEBUG_OBJECTS);
+#endif
 
 	fp = fopen (argv[1], "r");
 	if (fp == NULL) {

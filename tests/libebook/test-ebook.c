@@ -5,6 +5,7 @@
 
 #include "ebook-test-utils.h"
 
+#if 0  /* ACCOUNT_MGMT */
 static void
 print_email (EContact *contact)
 {
@@ -69,6 +70,7 @@ print_one_email (EBook *book)
 
 	g_object_unref (contact);
 }
+#endif /* ACCOUNT_MGMT */
 
 gint
 main (gint argc,
