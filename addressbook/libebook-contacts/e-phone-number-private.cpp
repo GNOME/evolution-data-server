@@ -133,6 +133,29 @@ _e_phone_number_cxx_get_default_region ()
 	return g_strdup (e_phone_number_make_region_code (NULL).c_str ());
 }
 
+static bool
+_e_phone_number_cxx_parse (const std::string &phone_number,
+                           const std::string &region,
+                           PhoneNumber *parsed_number,
+                           GError **error)
+{
+	const PhoneNumberUtil::ErrorType err =
+#ifdef PHONENUMBER_RAW_INPUT_NEEDED
+		e_phone_number_util_get_instance ()->ParseAndKeepRawInput (
+			phone_number, region, parsed_number);
+#else /* PHONENUMBER_RAW_INPUT_NEEDED */
+		e_phone_number_util_get_instance ()->Parse (
+			phone_number, region, parsed_number);
+#endif /* PHONENUMBER_RAW_INPUT_NEEDED */
+
+	if (err != PhoneNumberUtil::NO_PARSING_ERROR) {
+		_e_phone_number_set_error (error, e_phone_number_error_code (err));
+		return false;
+	}
+
+	return true;
+}
+
 EPhoneNumber *
 _e_phone_number_cxx_from_string (const gchar *phone_number,
                                  const gchar *region_code,
@@ -143,19 +166,9 @@ _e_phone_number_cxx_from_string (const gchar *phone_number,
 	const std::string valid_region = e_phone_number_make_region_code (region_code);
 	std::auto_ptr<EPhoneNumber> parsed_number(new EPhoneNumber);
 
-	const PhoneNumberUtil::ErrorType err =
-#ifdef PHONENUMBER_RAW_INPUT_NEEDED
-		e_phone_number_util_get_instance ()->ParseAndKeepRawInput (
-			phone_number, valid_region, &parsed_number->priv);
-#else /* PHONENUMBER_RAW_INPUT_NEEDED */
-		e_phone_number_util_get_instance ()->Parse (
-			phone_number, valid_region, &parsed_number->priv);
-#endif /* PHONENUMBER_RAW_INPUT_NEEDED */
-
-	if (err != PhoneNumberUtil::NO_PARSING_ERROR) {
-		_e_phone_number_set_error (error, e_phone_number_error_code (err));
+	if (!_e_phone_number_cxx_parse (
+		phone_number, valid_region, &parsed_number->priv, error))
 		return NULL;
-	}
 
 	return parsed_number.release ();
 }
@@ -180,13 +193,13 @@ _e_phone_number_cxx_to_string (const EPhoneNumber *phone_number,
 }
 
 static EPhoneNumberCountrySource
-e_phone_number_get_country_source (const EPhoneNumber *phone_number)
+_e_phone_number_cxx_get_country_source (const PhoneNumber &phone_number)
 {
 	g_return_val_if_fail (
-		phone_number->priv.has_country_code_source (),
+		phone_number.has_country_code_source (),
 		E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT);
 
-	switch (phone_number->priv.country_code_source ()) {
+	switch (phone_number.country_code_source ()) {
 		case PhoneNumber::FROM_NUMBER_WITH_PLUS_SIGN:
 			return E_PHONE_NUMBER_COUNTRY_FROM_FQTN;
 
@@ -207,6 +220,12 @@ e_phone_number_get_country_source (const EPhoneNumber *phone_number)
 	return E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT;
 }
 
+static EPhoneNumberCountrySource
+_e_phone_number_cxx_get_country_source (const EPhoneNumber *phone_number)
+{
+	return _e_phone_number_cxx_get_country_source (phone_number->priv);
+}
+
 gint
 _e_phone_number_cxx_get_country_code (const EPhoneNumber *phone_number,
                                       EPhoneNumberCountrySource *source)
@@ -215,7 +234,7 @@ _e_phone_number_cxx_get_country_code (const EPhoneNumber *phone_number,
 
 	if (phone_number->priv.has_country_code ()) {
 		if (source)
-			*source = e_phone_number_get_country_source (phone_number);
+			*source = _e_phone_number_cxx_get_country_source (phone_number);
 
 		return phone_number->priv.country_code ();
 	}
@@ -257,6 +276,31 @@ e_phone_number_match (PhoneNumberUtil::MatchType match_type)
 	g_return_val_if_reached (E_PHONE_NUMBER_MATCH_NONE);
 }
 
+static EPhoneNumberMatch
+_e_phone_number_cxx_compare (const PhoneNumber &first_number,
+                             const PhoneNumber &second_number)
+{
+	PhoneNumberUtil::MatchType match_type =
+		e_phone_number_util_get_instance ()->IsNumberMatch (
+			first_number, second_number);
+
+	/* Downgrade exact matches to national number matches
+	 * if one of the numbers had a guessed country code. */
+	if (match_type == PhoneNumberUtil::EXACT_MATCH) {
+		const EPhoneNumberCountrySource cs1 =
+			_e_phone_number_cxx_get_country_source (first_number);
+		const EPhoneNumberCountrySource cs2 =
+			_e_phone_number_cxx_get_country_source (second_number);
+
+		if (cs1 == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT
+			|| cs2 == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT)
+		match_type = PhoneNumberUtil::NSN_MATCH;
+	}
+
+	g_warn_if_fail (match_type != PhoneNumberUtil::INVALID_NUMBER);
+	return e_phone_number_match (match_type);
+}
+
 EPhoneNumberMatch
 _e_phone_number_cxx_compare (const EPhoneNumber *first_number,
                              const EPhoneNumber *second_number)
@@ -264,35 +308,27 @@ _e_phone_number_cxx_compare (const EPhoneNumber *first_number,
 	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
 	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
 
-	const PhoneNumberUtil::MatchType match_type =
-		e_phone_number_util_get_instance ()->
-		IsNumberMatch (first_number->priv, second_number->priv);
-
-	g_warn_if_fail (match_type != PhoneNumberUtil::INVALID_NUMBER);
-	return e_phone_number_match (match_type);
+	return _e_phone_number_cxx_compare (first_number->priv, second_number->priv);
 }
 
 EPhoneNumberMatch
 _e_phone_number_cxx_compare_strings (const gchar *first_number,
                                      const gchar *second_number,
+                                     const gchar *region_code,
                                      GError **error)
 {
-	EPhoneNumberMatch result = E_PHONE_NUMBER_MATCH_NONE;
-
 	g_return_val_if_fail (NULL != first_number, E_PHONE_NUMBER_MATCH_NONE);
 	g_return_val_if_fail (NULL != second_number, E_PHONE_NUMBER_MATCH_NONE);
 
-	const PhoneNumberUtil::MatchType match_type =
-		e_phone_number_util_get_instance ()->
-		IsNumberMatchWithTwoStrings (first_number, second_number);
+	const std::string region = e_phone_number_make_region_code (region_code);
+	PhoneNumber pn1, pn2;
 
-	if (match_type == PhoneNumberUtil::INVALID_NUMBER) {
-		_e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_A_NUMBER);
-	} else {
-		result = e_phone_number_match (match_type);
-	}
+	if (!_e_phone_number_cxx_parse (first_number, region, &pn1, error))
+		return E_PHONE_NUMBER_MATCH_NONE;
+	if (!_e_phone_number_cxx_parse (second_number, region, &pn2, error))
+		return E_PHONE_NUMBER_MATCH_NONE;
 
-	return result;
+	return _e_phone_number_cxx_compare (pn1, pn2);
 }
 
 EPhoneNumber *
