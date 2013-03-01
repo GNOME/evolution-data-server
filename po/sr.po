@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
 "=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-02-15 03:01+0000\n"
-"PO-Revision-Date: 2013-02-19 11:54+0200\n"
+"POT-Creation-Date: 2013-02-28 19:51+0000\n"
+"PO-Revision-Date: 2013-03-01 11:09+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
@@ -21,52 +21,67 @@ msgstr ""
 "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:113
+#: ../addressbook/backends/file/e-book-backend-file.c:114
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Нисам успео да уклоним датотеку „%s“: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:137
+#: ../addressbook/backends/file/e-book-backend-file.c:138
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Нисам успео да направим директоријум „%s“: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:384
+#: ../addressbook/backends/file/e-book-backend-file.c:385
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Нисам успео да направим чврсту везу за извор „%s“: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:486
-#: ../addressbook/backends/file/e-book-backend-file.c:900
+#: ../addressbook/backends/file/e-book-backend-file.c:487
+#: ../addressbook/backends/file/e-book-backend-file.c:910
 msgid "No UID in the contact"
 msgstr "Нема КИБ-а у контакту"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:756
+#: ../addressbook/backends/file/e-book-backend-file.c:757
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Пронађени су сукобљавајући КИБ-ови у додатим контактима"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:928
-#, c-format
-msgid "Tried to modify contact '%s' with out of sync revision"
-msgstr "Покушах да изменим контакт „%s“ са прегледом који није усклађен"
-
-#: ../addressbook/backends/file/e-book-backend-file.c:1025
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2156
+#: ../addressbook/backends/file/e-book-backend-file.c:843
+#: ../addressbook/backends/file/e-book-backend-file.c:1035
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2592
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Контакт „%s“ није пронађен"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1193
+#: ../addressbook/backends/file/e-book-backend-file.c:938
+#, c-format
+msgid "Tried to modify contact '%s' with out of sync revision"
+msgstr "Покушах да изменим контакт „%s“ са прегледом који није усклађен"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1085
+#: ../addressbook/backends/file/e-book-backend-file.c:1133
+#, c-format
+#| msgid "Protocol not supported"
+msgid "Query '%s' not supported"
+msgstr "Упит „%s“ није подржан"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1093
+#: ../addressbook/backends/file/e-book-backend-file.c:1141
+#, c-format
+#| msgid "Invalid query: "
+msgid "Invalid Query '%s'"
+msgstr "Неисправан упит „%s“"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1241
 msgid "Loading..."
 msgstr "Учитавам..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1195
+#: ../addressbook/backends/file/e-book-backend-file.c:1243
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4918
 msgid "Searching..."
 msgstr "Претражујем..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1508
+#: ../addressbook/backends/file/e-book-backend-file.c:1561
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Нисам успео да преименујем стару базу података „%s“ у „%s“: %s"
@@ -74,15 +89,15 @@ msgstr "Нисам успео да преименујем стару базу п
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1194
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4813
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1015
-#: ../addressbook/libebook/e-book-client.c:204
-#: ../addressbook/libebook/e-phone-number.c:58
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:333
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1022
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:34
+#: ../addressbook/libebook-contacts/e-phone-number.c:58
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:562
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:592
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:604
 #: ../calendar/libecal/e-cal.c:2330 ../calendar/libecal/e-cal-client.c:268
-#: ../camel/camel-imapx-command.c:594 ../libedataserver/e-client.c:176
+#: ../camel/camel-imapx-command.c:596 ../libedataserver/e-client.c:178
 msgid "Unknown error"
 msgstr "Непозната грешка"
 
@@ -98,7 +113,7 @@ msgstr "Пропитујем за ажурираним групама…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1235
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1625
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:375
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:382
 msgid "The backend does not support bulk additions"
 msgstr "Позадинац не подржава групно додавање"
 
@@ -108,7 +123,7 @@ msgid "Creating new contact…"
 msgstr "Стварам нови контакт…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1358
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:492
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:499
 msgid "The backend does not support bulk removals"
 msgstr "Позадинац не подржава групно уклањање"
 
@@ -118,7 +133,7 @@ msgstr "Бришем контакт…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1640
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2288
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:553
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:560
 msgid "The backend does not support bulk modifications"
 msgstr "Позадинац не подржава групно уређивање"
 
@@ -131,7 +146,8 @@ msgstr "Мењам контакт…"
 msgid "Loading…"
 msgstr "Учитавам…"
 
-#: ../addressbook/backends/google/e-book-google-utils.c:1601
+#. System Group: My Contacts
+#: ../addressbook/backends/google/e-book-google-utils.c:1602
 #: ../services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -139,18 +155,18 @@ msgstr "Учитавам…"
 msgid "Personal"
 msgstr "Лично"
 
-#. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1602
+#. System Group: Friends
+#: ../addressbook/backends/google/e-book-google-utils.c:1604
 msgid "Friends"
 msgstr "Пријатељи"
 
-#. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1603
+#. System Group: Family
+#: ../addressbook/backends/google/e-book-google-utils.c:1606
 msgid "Family"
 msgstr "Породица"
 
-#. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1604
+#. System Group: Coworkers
+#: ../addressbook/backends/google/e-book-google-utils.c:1608
 msgid "Coworkers"
 msgstr "Сарадници"
 
@@ -225,93 +241,75 @@ msgstr "Преузимам контакте (%d)... "
 msgid "Failed to get the DN for user '%s'"
 msgstr "Нисам успео да добавим ДН за корисника „%s“"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:406
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:413
 #, c-format
-msgid "Create resource '%s' failed with HTTP status: %d (%s)"
-msgstr "Није успело стварање ресурса „%s“ са ХТТП стањем: %d (%s)"
+#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+msgid "Create resource '%s' failed with HTTP status %d (%s)"
+msgstr "Није успело стварање ресурса „%s“ са ХТТП стањем %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "Није успело брисање (DELETE) са ХТТП стањем %d"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:574
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:581
 msgid "Contact on server changed -> not modifying"
 msgstr "Измењен је контакт на серверу —> не мењам"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:583
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:590
 #, c-format
-msgid "Modify contact failed with HTTP status: %d (%s)"
-msgstr "Измена контакта није успела са ХТТП стањем: %d (%s)"
+#| msgid "Modify contact failed with HTTP status: %d (%s)"
+msgid "Modify contact failed with HTTP status %d (%s)"
+msgstr "Измена контакта није успела са ХТТП стањем %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:993
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1000
 msgid "Loading Addressbook summary..."
 msgstr "Учитавам сажетак адресара..."
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1012
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1019
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr ""
 "Није успело налажење својства (PROPFIND) на вебдаву са ХТТП стањем %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1037
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1044
 msgid "No response body in webdav PROPFIND result"
 msgstr "Нема тела одговора у резултатима налажења својстава вебдава"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1069
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1076
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Учитавам контакте (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1409
 msgid "Cannot transform SoupURI to string"
 msgstr "Не могу да преобратим Соуп адресу у ниску"
 
-#: ../addressbook/libebook/e-book-client.c:193
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:23
 msgid "No such book"
 msgstr "Нема таквог адресара"
 
-#: ../addressbook/libebook/e-book-client.c:195
-#: ../addressbook/libedata-book/e-data-book.c:582
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:25
+#: ../addressbook/libedata-book/e-data-book.c:797
 msgid "Contact not found"
 msgstr "Контакт није пронађен"
 
-#: ../addressbook/libebook/e-book-client.c:197
-#: ../addressbook/libedata-book/e-data-book.c:583
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:27
+#: ../addressbook/libedata-book/e-data-book.c:798
 msgid "Contact ID already exists"
 msgstr "ИБ контакта већ постоји"
 
-#: ../addressbook/libebook/e-book-client.c:199
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:29
 msgid "No such source"
 msgstr "Нема таквог извора"
 
-#: ../addressbook/libebook/e-book-client.c:201
-#: ../addressbook/libedata-book/e-data-book.c:599
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:31
+#: ../addressbook/libedata-book/e-data-book.c:814
 msgid "No space"
 msgstr "Нема простора"
 
-#: ../addressbook/libebook/e-book-client.c:791
-#: ../addressbook/libedata-book/e-book-backend.c:93
-#, c-format
-msgid "Unknown book property '%s'"
-msgstr "Непознато својство адресара „%s“"
-
-#: ../addressbook/libebook/e-book-client.c:806
-#, c-format
-msgid "Cannot change value of book property '%s'"
-msgstr "Не могу да изменим вредност својства адресара „%s“"
-
-#: ../addressbook/libebook/e-book-client.c:1094
-#: ../addressbook/libebook/e-book-client.c:1267
-#: ../calendar/libecal/e-cal-client.c:1518
-#: ../calendar/libecal/e-cal-client.c:1698
-#, c-format
-#| msgid "Could not connect to '%s:%s': "
-msgid "Unable to connect to '%s': "
-msgstr "Не могу да се повежем на „%s“: "
-
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook/e-contact.c:121
+#: ../addressbook/libebook-contacts/e-contact.c:120
 msgid "Unique ID"
 msgstr "Јединствени ИБ"
 
@@ -319,12 +317,12 @@ msgstr "Јединствени ИБ"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../addressbook/libebook/e-contact.c:126
+#: ../addressbook/libebook-contacts/e-contact.c:125
 msgid "File Under"
 msgstr "Смести под"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:128
+#: ../addressbook/libebook-contacts/e-contact.c:127
 msgid "Book UID"
 msgstr "Путања адресара"
 
@@ -332,434 +330,434 @@ msgstr "Путања адресара"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook-contacts/e-contact.c:133
 msgid "Full Name"
 msgstr "Име и презиме"
 
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook-contacts/e-contact.c:134
 msgid "Given Name"
 msgstr "Дато име"
 
-#: ../addressbook/libebook/e-contact.c:136
+#: ../addressbook/libebook-contacts/e-contact.c:135
 msgid "Family Name"
 msgstr "Презиме"
 
-#: ../addressbook/libebook/e-contact.c:137
+#: ../addressbook/libebook-contacts/e-contact.c:136
 msgid "Nickname"
 msgstr "Надимак"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook-contacts/e-contact.c:139
 msgid "Email 1"
 msgstr "1° електронска адреса"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook-contacts/e-contact.c:140
 msgid "Email 2"
 msgstr "2° електронска адреса"
 
-#: ../addressbook/libebook/e-contact.c:142
+#: ../addressbook/libebook-contacts/e-contact.c:141
 msgid "Email 3"
 msgstr "3° електронска адреса"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook-contacts/e-contact.c:142
 msgid "Email 4"
 msgstr "4° електронска адреса"
 
-#: ../addressbook/libebook/e-contact.c:145
+#: ../addressbook/libebook-contacts/e-contact.c:144
 msgid "Mailer"
 msgstr "Пошиљалац"
 
 #. Address Labels
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook-contacts/e-contact.c:147
 msgid "Home Address Label"
 msgstr "Ознака кућне адресе"
 
-#: ../addressbook/libebook/e-contact.c:149
+#: ../addressbook/libebook-contacts/e-contact.c:148
 msgid "Work Address Label"
 msgstr "Ознака адресе на послу"
 
-#: ../addressbook/libebook/e-contact.c:150
+#: ../addressbook/libebook-contacts/e-contact.c:149
 msgid "Other Address Label"
 msgstr "Ознака друге адресе"
 
 #. Phone fields
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook-contacts/e-contact.c:152
 msgid "Assistant Phone"
 msgstr "Телефон помоћника"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook-contacts/e-contact.c:153
 msgid "Business Phone"
 msgstr "Телефон на послу"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook-contacts/e-contact.c:154
 msgid "Business Phone 2"
 msgstr "2° телефон на послу"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook-contacts/e-contact.c:155
 msgid "Business Fax"
 msgstr "Факс на послу"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook-contacts/e-contact.c:156
 msgid "Callback Phone"
 msgstr "Телефон за позивање"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook-contacts/e-contact.c:157
 msgid "Car Phone"
 msgstr "Телефон у колима"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook-contacts/e-contact.c:158
 msgid "Company Phone"
 msgstr "Телефон предузећа"
 
-#: ../addressbook/libebook/e-contact.c:160
+#: ../addressbook/libebook-contacts/e-contact.c:159
 msgid "Home Phone"
 msgstr "Кућни телефон"
 
-#: ../addressbook/libebook/e-contact.c:161
+#: ../addressbook/libebook-contacts/e-contact.c:160
 msgid "Home Phone 2"
 msgstr "2° кућни телефон"
 
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook-contacts/e-contact.c:161
 msgid "Home Fax"
 msgstr "Кућни факс"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook-contacts/e-contact.c:162
 msgid "ISDN"
 msgstr "ИСДН"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook-contacts/e-contact.c:163
 msgid "Mobile Phone"
 msgstr "Мобилни телефон"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook-contacts/e-contact.c:164
 msgid "Other Phone"
 msgstr "Други телефон"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook-contacts/e-contact.c:165
 msgid "Other Fax"
 msgstr "Други факс"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook-contacts/e-contact.c:166
 msgid "Pager"
 msgstr "Пејџер"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook-contacts/e-contact.c:167
 msgid "Primary Phone"
 msgstr "Главни телефон"
 
-#: ../addressbook/libebook/e-contact.c:169
+#: ../addressbook/libebook-contacts/e-contact.c:168
 msgid "Radio"
 msgstr "Радио"
 
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook-contacts/e-contact.c:169
 msgid "Telex"
 msgstr "Телекс"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:172
+#: ../addressbook/libebook-contacts/e-contact.c:171
 msgid "TTY"
 msgstr "ТТВ"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook-contacts/e-contact.c:174
 msgid "Organization"
 msgstr "Организација"
 
-#: ../addressbook/libebook/e-contact.c:176
+#: ../addressbook/libebook-contacts/e-contact.c:175
 msgid "Organizational Unit"
 msgstr "Организациона јединица"
 
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook-contacts/e-contact.c:176
 msgid "Office"
 msgstr "Канцеларија"
 
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook-contacts/e-contact.c:177
 msgid "Title"
 msgstr "Титула"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook-contacts/e-contact.c:178
 msgid "Role"
 msgstr "Улога"
 
-#: ../addressbook/libebook/e-contact.c:180
+#: ../addressbook/libebook-contacts/e-contact.c:179
 msgid "Manager"
 msgstr "Руководилац"
 
-#: ../addressbook/libebook/e-contact.c:181
+#: ../addressbook/libebook-contacts/e-contact.c:180
 msgid "Assistant"
 msgstr "Помоћник"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:184
+#: ../addressbook/libebook-contacts/e-contact.c:183
 msgid "Homepage URL"
 msgstr "Лична страница"
 
-#: ../addressbook/libebook/e-contact.c:185
+#: ../addressbook/libebook-contacts/e-contact.c:184
 msgid "Weblog URL"
 msgstr "Адреса веб дневника"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:188
+#: ../addressbook/libebook-contacts/e-contact.c:187
 msgid "Categories"
 msgstr "Категорије"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook-contacts/e-contact.c:190
 msgid "Calendar URI"
 msgstr "Адреса календара"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook-contacts/e-contact.c:191
 msgid "Free/Busy URL"
 msgstr "Адреса за слободно/заузето"
 
-#: ../addressbook/libebook/e-contact.c:193
+#: ../addressbook/libebook-contacts/e-contact.c:192
 msgid "ICS Calendar"
 msgstr "ИЦС календар"
 
-#: ../addressbook/libebook/e-contact.c:194
+#: ../addressbook/libebook-contacts/e-contact.c:193
 msgid "Video Conferencing URL"
 msgstr "Адреса видео конференције"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:197
+#: ../addressbook/libebook-contacts/e-contact.c:196
 msgid "Spouse's Name"
 msgstr "Име супружника"
 
-#: ../addressbook/libebook/e-contact.c:198
+#: ../addressbook/libebook-contacts/e-contact.c:197
 msgid "Note"
 msgstr "Напомена"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook-contacts/e-contact.c:200
 msgid "AIM Home Screen Name 1"
 msgstr "1° кућни АИМ надимак"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook-contacts/e-contact.c:201
 msgid "AIM Home Screen Name 2"
 msgstr "2° кућни АИМ надимак"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook-contacts/e-contact.c:202
 msgid "AIM Home Screen Name 3"
 msgstr "3° кућни АИМ надимак"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook-contacts/e-contact.c:203
 msgid "AIM Work Screen Name 1"
 msgstr "1° пословни АИМ надимак"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook-contacts/e-contact.c:204
 msgid "AIM Work Screen Name 2"
 msgstr "2° пословни АИМ надимак"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook-contacts/e-contact.c:205
 msgid "AIM Work Screen Name 3"
 msgstr "3° пословни АИМ надимак"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook-contacts/e-contact.c:206
 msgid "GroupWise Home Screen Name 1"
 msgstr "1° кућни ГроупВајз надимак"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook-contacts/e-contact.c:207
 msgid "GroupWise Home Screen Name 2"
 msgstr "2° кућни ГроупВајз надимак"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook-contacts/e-contact.c:208
 msgid "GroupWise Home Screen Name 3"
 msgstr "3° кућни ГроупВајз надимак"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook-contacts/e-contact.c:209
 msgid "GroupWise Work Screen Name 1"
 msgstr "1° пословни ГроупВајз надимак"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook-contacts/e-contact.c:210
 msgid "GroupWise Work Screen Name 2"
 msgstr "2° пословни ГроупВајз надимак"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook-contacts/e-contact.c:211
 msgid "GroupWise Work Screen Name 3"
 msgstr "3° пословни ГроупВајз надимак"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook-contacts/e-contact.c:212
 msgid "Jabber Home ID 1"
 msgstr "1° кућни Џабер ИБ"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook-contacts/e-contact.c:213
 msgid "Jabber Home ID 2"
 msgstr "2° кућни Џабер ИБ"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook-contacts/e-contact.c:214
 msgid "Jabber Home ID 3"
 msgstr "3° кућни Џабер ИБ"
 
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook-contacts/e-contact.c:215
 msgid "Jabber Work ID 1"
 msgstr "1° пословни Џабер ИБ"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook-contacts/e-contact.c:216
 msgid "Jabber Work ID 2"
 msgstr "2° пословни Џабер ИБ"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook-contacts/e-contact.c:217
 msgid "Jabber Work ID 3"
 msgstr "3° пословни Џабер ИБ"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook-contacts/e-contact.c:218
 msgid "Yahoo! Home Screen Name 1"
 msgstr "1° кућни Јаху! надимак"
 
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook-contacts/e-contact.c:219
 msgid "Yahoo! Home Screen Name 2"
 msgstr "2° кућни Јаху! надимак"
 
-#: ../addressbook/libebook/e-contact.c:221
+#: ../addressbook/libebook-contacts/e-contact.c:220
 msgid "Yahoo! Home Screen Name 3"
 msgstr "3° кућни Јаху! надимак"
 
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook-contacts/e-contact.c:221
 msgid "Yahoo! Work Screen Name 1"
 msgstr "1° пословни Јаху! надимак"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook-contacts/e-contact.c:222
 msgid "Yahoo! Work Screen Name 2"
 msgstr "2° пословни Јаху! надимак"
 
-#: ../addressbook/libebook/e-contact.c:224
+#: ../addressbook/libebook-contacts/e-contact.c:223
 msgid "Yahoo! Work Screen Name 3"
 msgstr "3° пословни Јаху! надимак"
 
-#: ../addressbook/libebook/e-contact.c:225
+#: ../addressbook/libebook-contacts/e-contact.c:224
 msgid "MSN Home Screen Name 1"
 msgstr "1° кућни МСН надимак"
 
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook-contacts/e-contact.c:225
 msgid "MSN Home Screen Name 2"
 msgstr "2° кућни МСН надимак"
 
-#: ../addressbook/libebook/e-contact.c:227
+#: ../addressbook/libebook-contacts/e-contact.c:226
 msgid "MSN Home Screen Name 3"
 msgstr "3° кућни МСН надимак"
 
-#: ../addressbook/libebook/e-contact.c:228
+#: ../addressbook/libebook-contacts/e-contact.c:227
 msgid "MSN Work Screen Name 1"
 msgstr "1° пословни МСН надимак"
 
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook-contacts/e-contact.c:228
 msgid "MSN Work Screen Name 2"
 msgstr "2° пословни МСН надимак"
 
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook-contacts/e-contact.c:229
 msgid "MSN Work Screen Name 3"
 msgstr "3° пословни МСН надимак"
 
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook-contacts/e-contact.c:230
 msgid "ICQ Home ID 1"
 msgstr "1° кућни ИЦКу ИБ"
 
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook-contacts/e-contact.c:231
 msgid "ICQ Home ID 2"
 msgstr "2° кућни ИЦКу ИБ"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook-contacts/e-contact.c:232
 msgid "ICQ Home ID 3"
 msgstr "3° кућни ИЦКу ИБ"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook-contacts/e-contact.c:233
 msgid "ICQ Work ID 1"
 msgstr "1° пословни ИЦКу ИБ"
 
-#: ../addressbook/libebook/e-contact.c:235
+#: ../addressbook/libebook-contacts/e-contact.c:234
 msgid "ICQ Work ID 2"
 msgstr "2° пословни ИЦКу ИБ"
 
-#: ../addressbook/libebook/e-contact.c:236
+#: ../addressbook/libebook-contacts/e-contact.c:235
 msgid "ICQ Work ID 3"
 msgstr "3° пословни ИЦКу ИБ"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:239
+#: ../addressbook/libebook-contacts/e-contact.c:238
 msgid "Last Revision"
 msgstr "Последња ревизија"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook-contacts/e-contact.c:242
 msgid "Name or Org"
 msgstr "Име или орг."
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:246
+#: ../addressbook/libebook-contacts/e-contact.c:245
 msgid "Address List"
 msgstr "Разне адресе"
 
-#: ../addressbook/libebook/e-contact.c:247
+#: ../addressbook/libebook-contacts/e-contact.c:246
 msgid "Home Address"
 msgstr "Кућна адреса"
 
-#: ../addressbook/libebook/e-contact.c:248
+#: ../addressbook/libebook-contacts/e-contact.c:247
 msgid "Work Address"
 msgstr "Адреса на послу"
 
-#: ../addressbook/libebook/e-contact.c:249
+#: ../addressbook/libebook-contacts/e-contact.c:248
 msgid "Other Address"
 msgstr "Друга адреса"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:252
+#: ../addressbook/libebook-contacts/e-contact.c:251
 msgid "Category List"
 msgstr "Списак категорија"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:255
+#: ../addressbook/libebook-contacts/e-contact.c:254
 msgid "Photo"
 msgstr "Слика"
 
-#: ../addressbook/libebook/e-contact.c:256
+#: ../addressbook/libebook-contacts/e-contact.c:255
 msgid "Logo"
 msgstr "Лого"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../addressbook/libebook/e-contact.c:260
+#: ../addressbook/libebook-contacts/e-contact.c:259
 msgid "Name"
 msgstr "Име"
 
-#: ../addressbook/libebook/e-contact.c:261
+#: ../addressbook/libebook-contacts/e-contact.c:260
 msgid "Email List"
 msgstr "Списак ел. адреса"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:264
+#: ../addressbook/libebook-contacts/e-contact.c:263
 msgid "AIM Screen Name List"
 msgstr "Списак АИМ надимака"
 
-#: ../addressbook/libebook/e-contact.c:265
+#: ../addressbook/libebook-contacts/e-contact.c:264
 msgid "GroupWise ID List"
 msgstr "Списак ГроупВајз налога"
 
-#: ../addressbook/libebook/e-contact.c:266
+#: ../addressbook/libebook-contacts/e-contact.c:265
 msgid "Jabber ID List"
 msgstr "Списак Џабер налога"
 
-#: ../addressbook/libebook/e-contact.c:267
+#: ../addressbook/libebook-contacts/e-contact.c:266
 msgid "Yahoo! Screen Name List"
 msgstr "Списак Јаху! надимака"
 
-#: ../addressbook/libebook/e-contact.c:268
+#: ../addressbook/libebook-contacts/e-contact.c:267
 msgid "MSN Screen Name List"
 msgstr "Списак МСН надимака"
 
-#: ../addressbook/libebook/e-contact.c:269
+#: ../addressbook/libebook-contacts/e-contact.c:268
 msgid "ICQ ID List"
 msgstr "Списак ИЦКу налога"
 
-#: ../addressbook/libebook/e-contact.c:271
+#: ../addressbook/libebook-contacts/e-contact.c:270
 msgid "Wants HTML Mail"
 msgstr "Жели ХТМЛ пошту"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../addressbook/libebook/e-contact.c:276
+#: ../addressbook/libebook-contacts/e-contact.c:275
 msgid "List"
 msgstr "Списак"
 
@@ -767,185 +765,199 @@ msgstr "Списак"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../addressbook/libebook/e-contact.c:281
+#: ../addressbook/libebook-contacts/e-contact.c:280
 msgid "List Shows Addresses"
 msgstr "Списак приказује адресе"
 
-#: ../addressbook/libebook/e-contact.c:283
+#: ../addressbook/libebook-contacts/e-contact.c:282
 msgid "Birth Date"
 msgstr "Рођендан"
 
-#: ../addressbook/libebook/e-contact.c:284
+#: ../addressbook/libebook-contacts/e-contact.c:283
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:919
 msgid "Anniversary"
 msgstr "Годишњица"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:287
+#: ../addressbook/libebook-contacts/e-contact.c:286
 msgid "X.509 Certificate"
 msgstr "X.509 уверење"
 
-#: ../addressbook/libebook/e-contact.c:289
+#: ../addressbook/libebook-contacts/e-contact.c:288
 msgid "Gadu-Gadu Home ID 1"
 msgstr "1° кућни Гаду-Гаду ИБ"
 
-#: ../addressbook/libebook/e-contact.c:290
+#: ../addressbook/libebook-contacts/e-contact.c:289
 msgid "Gadu-Gadu Home ID 2"
 msgstr "2° кућни Гаду-Гаду ИБ"
 
-#: ../addressbook/libebook/e-contact.c:291
+#: ../addressbook/libebook-contacts/e-contact.c:290
 msgid "Gadu-Gadu Home ID 3"
 msgstr "3° кућни Гаду-Гаду ИБ"
 
-#: ../addressbook/libebook/e-contact.c:292
+#: ../addressbook/libebook-contacts/e-contact.c:291
 msgid "Gadu-Gadu Work ID 1"
 msgstr "1° пословни Гаду-Гаду ИБ"
 
-#: ../addressbook/libebook/e-contact.c:293
+#: ../addressbook/libebook-contacts/e-contact.c:292
 msgid "Gadu-Gadu Work ID 2"
 msgstr "2° пословни Гаду-Гаду ИБ"
 
-#: ../addressbook/libebook/e-contact.c:294
+#: ../addressbook/libebook-contacts/e-contact.c:293
 msgid "Gadu-Gadu Work ID 3"
 msgstr "3° пословни Гаду-Гаду ИБ"
 
-#: ../addressbook/libebook/e-contact.c:295
+#: ../addressbook/libebook-contacts/e-contact.c:294
 msgid "Gadu-Gadu ID List"
 msgstr "Списак Гаду-Гаду налога"
 
 #. Geo information
-#: ../addressbook/libebook/e-contact.c:298
+#: ../addressbook/libebook-contacts/e-contact.c:297
 msgid "Geographic Information"
 msgstr "Географски подаци"
 
-#: ../addressbook/libebook/e-contact.c:300
+#: ../addressbook/libebook-contacts/e-contact.c:299
 msgid "Telephone"
 msgstr "Телефон"
 
-#: ../addressbook/libebook/e-contact.c:302
+#: ../addressbook/libebook-contacts/e-contact.c:301
 msgid "Skype Home Name 1"
 msgstr "1° кућно Скајп име"
 
-#: ../addressbook/libebook/e-contact.c:303
+#: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Skype Home Name 2"
 msgstr "2° кућно Скајп име"
 
-#: ../addressbook/libebook/e-contact.c:304
+#: ../addressbook/libebook-contacts/e-contact.c:303
 msgid "Skype Home Name 3"
 msgstr "3° кућно Скајп име"
 
-#: ../addressbook/libebook/e-contact.c:305
+#: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Skype Work Name 1"
 msgstr "1° пословно Скајп име"
 
-#: ../addressbook/libebook/e-contact.c:306
+#: ../addressbook/libebook-contacts/e-contact.c:305
 msgid "Skype Work Name 2"
 msgstr "2° пословно Скајп име"
 
-#: ../addressbook/libebook/e-contact.c:307
+#: ../addressbook/libebook-contacts/e-contact.c:306
 msgid "Skype Work Name 3"
 msgstr "3° пословно Скајп име"
 
-#: ../addressbook/libebook/e-contact.c:308
+#: ../addressbook/libebook-contacts/e-contact.c:307
 msgid "Skype Name List"
 msgstr "Списак Скајп имена"
 
-#: ../addressbook/libebook/e-contact.c:310
+#: ../addressbook/libebook-contacts/e-contact.c:309
 msgid "SIP address"
 msgstr "СИП адреса"
 
-#: ../addressbook/libebook/e-contact.c:312
+#: ../addressbook/libebook-contacts/e-contact.c:311
 msgid "Google Talk Home Name 1"
 msgstr "1° кућно име Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:313
+#: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "Google Talk Home Name 2"
 msgstr "2° кућно име Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:314
+#: ../addressbook/libebook-contacts/e-contact.c:313
 msgid "Google Talk Home Name 3"
 msgstr "3° кућно име Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:315
+#: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Google Talk Work Name 1"
 msgstr "1° пословно име Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:316
+#: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Google Talk Work Name 2"
 msgstr "2° пословно име Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:317
+#: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Google Talk Work Name 3"
 msgstr "3° пословно име Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:318
+#: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Google Talk Name List"
 msgstr "Списак имена Гугл разговора"
 
-#: ../addressbook/libebook/e-contact.c:320
+#: ../addressbook/libebook-contacts/e-contact.c:319
 msgid "Twitter Name List"
 msgstr "Списак Твитер имена"
 
-#: ../addressbook/libebook/e-contact.c:1684
+#: ../addressbook/libebook-contacts/e-contact.c:1683
 #: ../addressbook/libebook/e-destination.c:884
 msgid "Unnamed List"
 msgstr "Неименовани списак"
 
-#: ../addressbook/libebook/e-phone-number.c:43
+#: ../addressbook/libebook-contacts/e-phone-number.c:43
 msgid "The library was built without phone number support."
 msgstr "Библиотека је изграђена без подршке за телефонске бројеве."
 
-#: ../addressbook/libebook/e-phone-number.c:45
+#: ../addressbook/libebook-contacts/e-phone-number.c:45
 msgid "The phone number parser reported an yet unkown error code."
 msgstr "Обрађивач телефонског броја је пријавио још увек непознат код грешке."
 
-#: ../addressbook/libebook/e-phone-number.c:47
+#: ../addressbook/libebook-contacts/e-phone-number.c:47
 msgid "Not a phone number"
 msgstr "Није број телефона"
 
-#: ../addressbook/libebook/e-phone-number.c:49
-#| msgid "Invalid country code"
+#: ../addressbook/libebook-contacts/e-phone-number.c:49
 msgid "Invalid country calling code"
 msgstr "Неисправан позивни код државе"
 
-#: ../addressbook/libebook/e-phone-number.c:51
-#| msgid "Remaining text after the country code is to short for a phone number"
+#: ../addressbook/libebook-contacts/e-phone-number.c:51
+#| msgid ""
+#| "Remaining text after the country calling code is to short for a phone "
+#| "number"
 msgid ""
-"Remaining text after the country calling code is to short for a phone number"
+"Remaining text after the country calling code is too short for a phone number"
 msgstr ""
 "Преостали текст након позивног кода државе је прекратак за телефонски број"
 
-#: ../addressbook/libebook/e-phone-number.c:53
+#: ../addressbook/libebook-contacts/e-phone-number.c:53
 msgid "Text is too short for a phone number"
 msgstr "Текст је прекратак за број телефона"
 
-#: ../addressbook/libebook/e-phone-number.c:55
+#: ../addressbook/libebook-contacts/e-phone-number.c:55
 msgid "Text is too long for a phone number"
 msgstr "Текст је предуг за број телефона"
 
-#: ../addressbook/libedata-book/e-book-backend-sync.c:179
-#: ../calendar/libedata-cal/e-cal-backend-sync.c:182
-#| msgid "Cannot set backend property: "
-msgid "Clients cannot set backend properties"
-msgstr "Клијенти не могу да поставе својства позадинца"
+#: ../addressbook/libebook/e-book-client.c:683
+#: ../addressbook/libedata-book/e-book-backend.c:93
+#, c-format
+msgid "Unknown book property '%s'"
+msgstr "Непознато својство адресара „%s“"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:730
+#: ../addressbook/libebook/e-book-client.c:698
+#, c-format
+msgid "Cannot change value of book property '%s'"
+msgstr "Не могу да изменим вредност својства адресара „%s“"
+
+#: ../addressbook/libebook/e-book-client.c:1004
+#: ../addressbook/libebook/e-book-client.c:1177
+#: ../calendar/libecal/e-cal-client.c:1448
+#: ../calendar/libecal/e-cal-client.c:1628
+#, c-format
+msgid "Unable to connect to '%s': "
+msgstr "Не могу да се повежем на „%s“: "
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:754
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Грешка сагледавања непознатог поља сажетка „%s“"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:951
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1228
 #: ../camel/camel-db.c:510
 #, c-format
 msgid "Insufficient memory"
 msgstr "Недовољно меморије"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1085
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1361
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Неисправно поље контакта „%d“ наведено у сажетку"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1119
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1395
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -954,8 +966,8 @@ msgstr ""
 "Поље контакта „%s“ „%s“ врсте је наведено у сажетку. али су подржане само "
 "врсте поља логичке вредности, ниске и списка ниске"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2144
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2953
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2580
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3605
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -963,7 +975,19 @@ msgstr ""
 "Читави контакти_претраге нису ускладиштени у остави. в-картице не могу дати "
 "одговор."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3091
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3730
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3810
+#, c-format
+msgid "Query contained unsupported elements"
+msgstr "Упит је садржао неподржане елементе"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3734
+#, c-format
+#| msgid "Invalid query"
+msgid "Invalid Query"
+msgstr "Неисправан упит"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3758
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -972,7 +996,16 @@ msgstr ""
 "Читави контакти_претраге нису ускладиштени у остави. Отуда је подржан само "
 "упит сажетка."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3172
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3814
+#: ../addressbook/libedata-book/e-data-book.c:669
+#: ../addressbook/libedata-book/e-data-book.c:809
+#: ../calendar/libedata-cal/e-data-cal.c:612
+#: ../calendar/libedata-cal/e-data-cal.c:771 ../libedataserver/e-client.c:165
+#, c-format
+msgid "Invalid query"
+msgstr "Неисправан упит"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3856
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -980,181 +1013,178 @@ msgstr ""
 "Читаве в-картице нису ускладиштене у остави. Отуда је подржан само упит "
 "сажетка."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3873
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4557
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Не могу да уклоним датотеку базе података: бр. грешке %d"
 
-#: ../addressbook/libedata-book/e-data-book.c:496
-#: ../addressbook/libedata-book/e-data-book.c:594
-#: ../calendar/libedata-cal/e-data-cal.c:612
-#: ../calendar/libedata-cal/e-data-cal.c:771 ../libedataserver/e-client.c:163
-msgid "Invalid query"
-msgstr "Неисправан упит"
+#: ../addressbook/libedata-book/e-book-backend-sync.c:179
+#: ../calendar/libedata-cal/e-cal-backend-sync.c:182
+msgid "Clients cannot set backend properties"
+msgstr "Клијенти не могу да поставе својства позадинца"
 
 #. Translators: This is prefix to a detailed error message
 #. Translators: This is a prefix to a detailed error message *
 #.
-#: ../addressbook/libedata-book/e-data-book.c:518
+#: ../addressbook/libedata-book/e-data-book.c:691
 #: ../calendar/libedata-cal/e-data-cal.c:635
 msgid "Invalid query: "
 msgstr "Неисправан упит: "
 
-#: ../addressbook/libedata-book/e-data-book.c:578
+#: ../addressbook/libedata-book/e-data-book.c:793
 #: ../calendar/libedata-cal/e-data-cal.c:752
 msgid "Success"
 msgstr "Успешно"
 
-#: ../addressbook/libedata-book/e-data-book.c:579
+#: ../addressbook/libedata-book/e-data-book.c:794
 #: ../calendar/libecal/e-cal.c:2298 ../calendar/libedata-cal/e-data-cal.c:753
-#: ../libedataserver/e-client.c:131
+#: ../libedataserver/e-client.c:133
 msgid "Backend is busy"
 msgstr "Позадинац је заузет"
 
-#: ../addressbook/libedata-book/e-data-book.c:580
-#: ../calendar/libedata-cal/e-data-cal.c:754 ../libedataserver/e-client.c:141
+#: ../addressbook/libedata-book/e-data-book.c:795
+#: ../calendar/libedata-cal/e-data-cal.c:754 ../libedataserver/e-client.c:143
 msgid "Repository offline"
 msgstr "Складиште није на мрежи"
 
-#: ../addressbook/libedata-book/e-data-book.c:581
+#: ../addressbook/libedata-book/e-data-book.c:796
 #: ../calendar/libecal/e-cal.c:2312 ../calendar/libedata-cal/e-data-cal.c:755
-#: ../libedataserver/e-client.c:147
+#: ../libedataserver/e-client.c:149
 msgid "Permission denied"
 msgstr "Приступ је одбијен"
 
-#: ../addressbook/libedata-book/e-data-book.c:584
+#: ../addressbook/libedata-book/e-data-book.c:799
 #: ../calendar/libedata-cal/e-data-cal.c:760
 msgid "Authentication Failed"
 msgstr "Неуспела аутентификација"
 
-#: ../addressbook/libedata-book/e-data-book.c:585
+#: ../addressbook/libedata-book/e-data-book.c:800
 #: ../calendar/libedata-cal/e-data-cal.c:761
 msgid "Authentication Required"
 msgstr "Потребна је пријава"
 
-#: ../addressbook/libedata-book/e-data-book.c:586
+#: ../addressbook/libedata-book/e-data-book.c:801
 #: ../calendar/libedata-cal/e-data-cal.c:762
 msgid "Unsupported field"
 msgstr "Неподржано поље"
 
-#: ../addressbook/libedata-book/e-data-book.c:587
-#: ../calendar/libedata-cal/e-data-cal.c:764 ../libedataserver/e-client.c:155
+#: ../addressbook/libedata-book/e-data-book.c:802
+#: ../calendar/libedata-cal/e-data-cal.c:764 ../libedataserver/e-client.c:157
 msgid "Unsupported authentication method"
 msgstr "Неподржан начин аутентификације"
 
-#: ../addressbook/libedata-book/e-data-book.c:588
-#: ../calendar/libedata-cal/e-data-cal.c:765 ../libedataserver/e-client.c:157
+#: ../addressbook/libedata-book/e-data-book.c:803
+#: ../calendar/libedata-cal/e-data-cal.c:765 ../libedataserver/e-client.c:159
 msgid "TLS not available"
 msgstr "ТЛС није доступан"
 
-#: ../addressbook/libedata-book/e-data-book.c:589
+#: ../addressbook/libedata-book/e-data-book.c:804
 msgid "Address book does not exist"
 msgstr "Адресар не постоји"
 
-#: ../addressbook/libedata-book/e-data-book.c:590
+#: ../addressbook/libedata-book/e-data-book.c:805
 msgid "Book removed"
 msgstr "Књига је уклоњена"
 
-#: ../addressbook/libedata-book/e-data-book.c:591
+#: ../addressbook/libedata-book/e-data-book.c:806
 #: ../calendar/libedata-cal/e-data-cal.c:768
 msgid "Not available in offline mode"
 msgstr "Није доступно у режиму ван мреже"
 
-#: ../addressbook/libedata-book/e-data-book.c:592
-#: ../calendar/libedata-cal/e-data-cal.c:769 ../libedataserver/e-client.c:159
+#: ../addressbook/libedata-book/e-data-book.c:807
+#: ../calendar/libedata-cal/e-data-cal.c:769 ../libedataserver/e-client.c:161
 msgid "Search size limit exceeded"
 msgstr "Премашена величина претраге"
 
-#: ../addressbook/libedata-book/e-data-book.c:593
-#: ../calendar/libedata-cal/e-data-cal.c:770 ../libedataserver/e-client.c:161
+#: ../addressbook/libedata-book/e-data-book.c:808
+#: ../calendar/libedata-cal/e-data-cal.c:770 ../libedataserver/e-client.c:163
 msgid "Search time limit exceeded"
 msgstr "Истекло време за претрагу"
 
-#: ../addressbook/libedata-book/e-data-book.c:595
-#: ../calendar/libedata-cal/e-data-cal.c:772 ../libedataserver/e-client.c:165
+#: ../addressbook/libedata-book/e-data-book.c:810
+#: ../calendar/libedata-cal/e-data-cal.c:772 ../libedataserver/e-client.c:167
 msgid "Query refused"
 msgstr "Упит је одбијен"
 
-#: ../addressbook/libedata-book/e-data-book.c:596
-#: ../calendar/libedata-cal/e-data-cal.c:773 ../libedataserver/e-client.c:151
+#: ../addressbook/libedata-book/e-data-book.c:811
+#: ../calendar/libedata-cal/e-data-cal.c:773 ../libedataserver/e-client.c:153
 msgid "Could not cancel"
 msgstr "Не могу да откажем"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:598
+#: ../addressbook/libedata-book/e-data-book.c:813
 #: ../calendar/libedata-cal/e-data-cal.c:775
 msgid "Invalid server version"
 msgstr "Неисправна верзија сервера"
 
-#: ../addressbook/libedata-book/e-data-book.c:600
+#: ../addressbook/libedata-book/e-data-book.c:815
 #: ../calendar/libecal/e-cal.c:2296 ../calendar/libedata-cal/e-data-cal.c:776
-#: ../libedataserver/e-client.c:129
+#: ../libedataserver/e-client.c:131
 msgid "Invalid argument"
 msgstr "Неисправан аргумент"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:602
+#: ../addressbook/libedata-book/e-data-book.c:817
 #: ../calendar/libecal/e-cal.c:1058 ../calendar/libecal/e-cal.c:1426
 #: ../calendar/libecal/e-cal.c:1906 ../calendar/libecal/e-cal.c:2335
-#: ../calendar/libedata-cal/e-data-cal.c:778 ../libedataserver/e-client.c:153
+#: ../calendar/libedata-cal/e-data-cal.c:778 ../libedataserver/e-client.c:155
 #, c-format
 msgid "Not supported"
 msgstr "Није подржан"
 
-#: ../addressbook/libedata-book/e-data-book.c:603
-#: ../calendar/libedata-cal/e-data-cal.c:779 ../libedataserver/e-client.c:171
+#: ../addressbook/libedata-book/e-data-book.c:818
+#: ../calendar/libedata-cal/e-data-cal.c:779 ../libedataserver/e-client.c:173
 msgid "Backend is not opened yet"
 msgstr "Позадинац није отворен још увек"
 
-#: ../addressbook/libedata-book/e-data-book.c:604
-#: ../libedataserver/e-client.c:173
-#| msgid "Object not found"
+#: ../addressbook/libedata-book/e-data-book.c:819
+#: ../libedataserver/e-client.c:175
 msgid "Object is out of sync"
 msgstr "Објекат није усклађен"
 
-#: ../addressbook/libedata-book/e-data-book.c:612
-#: ../calendar/libedata-cal/e-data-cal.c:787 ../libedataserver/e-client.c:169
+#: ../addressbook/libedata-book/e-data-book.c:827
+#: ../calendar/libedata-cal/e-data-cal.c:787 ../libedataserver/e-client.c:171
 msgid "Other error"
 msgstr "Друга грешка"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:917
+#: ../addressbook/libedata-book/e-data-book.c:1133
 msgid "Cannot open book: "
 msgstr "Не могу да отворим адресар: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:978
+#: ../addressbook/libedata-book/e-data-book.c:1215
 msgid "Cannot refresh address book: "
 msgstr "Не могу да освежим адресар: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1057
+#: ../addressbook/libedata-book/e-data-book.c:1296
 msgid "Cannot get contact: "
 msgstr "Не могу да добијем контакт: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1093
+#: ../addressbook/libedata-book/e-data-book.c:1360
 msgid "Cannot get contact list: "
 msgstr "Не могу да добавим списак контакта: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1144
+#: ../addressbook/libedata-book/e-data-book.c:1449
 msgid "Cannot get contact list uids: "
 msgstr "Не могу да добавим киб-ове списка контаката: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1195
+#: ../addressbook/libedata-book/e-data-book.c:1526
 msgid "Cannot add contact: "
 msgstr "Не могу да додам контакт: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1258
+#: ../addressbook/libedata-book/e-data-book.c:1589
 msgid "Cannot modify contacts: "
 msgstr "Не могу да изменим контакте: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1299
+#: ../addressbook/libedata-book/e-data-book.c:1630
 msgid "Cannot remove contacts: "
 msgstr "Не могу да уклоним контакте: "
 
@@ -1281,7 +1311,7 @@ msgstr "Лош облик датотеке."
 msgid "Not a calendar."
 msgstr "Није календар."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:918
+#: ../calendar/backends/http/e-cal-backend-http.c:922
 #: ../calendar/backends/weather/e-cal-backend-weather.c:506
 msgid "Could not create cache file"
 msgstr "Не могу да направим датотеку за оставу"
@@ -1377,13 +1407,13 @@ msgstr "Операција је отказана"
 msgid "Could not cancel operation"
 msgstr "Не могу да откажем операцију"
 
-#: ../calendar/libecal/e-cal.c:2324 ../libedataserver/e-client.c:137
+#: ../calendar/libecal/e-cal.c:2324 ../libedataserver/e-client.c:139
 msgid "Authentication failed"
 msgstr "Потврђивање идентитета није успело"
 
 #: ../calendar/libecal/e-cal.c:2326
-#: ../camel/providers/smtp/camel-smtp-transport.c:858
-#: ../libedataserver/e-client.c:139
+#: ../camel/providers/smtp/camel-smtp-transport.c:923
+#: ../libedataserver/e-client.c:141
 msgid "Authentication required"
 msgstr "Потребно је потврђивање идентитета"
 
@@ -1405,13 +1435,13 @@ msgstr "Непознат корисник"
 msgid "Invalid range"
 msgstr "Неисправан опсег"
 
-#: ../calendar/libecal/e-cal-client.c:991
-#: ../calendar/libedata-cal/e-cal-backend.c:159
+#: ../calendar/libecal/e-cal-client.c:887
+#: ../calendar/libedata-cal/e-cal-backend.c:176
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Непознато својство календара „%s“"
 
-#: ../calendar/libecal/e-cal-client.c:1006
+#: ../calendar/libecal/e-cal-client.c:902
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Не могу да изменим вредност својства календара „%s“"
@@ -1685,82 +1715,82 @@ msgid "Calendar does not exist"
 msgstr "Календар не постоји"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1209
+#: ../calendar/libedata-cal/e-data-cal.c:1237
 msgid "Cannot open calendar: "
 msgstr "Не могу да отворим календар: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1270
+#: ../calendar/libedata-cal/e-data-cal.c:1298
 msgid "Cannot refresh calendar: "
 msgstr "Не могу да освежим календар: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1309
+#: ../calendar/libedata-cal/e-data-cal.c:1337
 msgid "Cannot retrieve backend property: "
 msgstr "Не могу да преузмем својство позадинца: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1367
+#: ../calendar/libedata-cal/e-data-cal.c:1395
 msgid "Cannot retrieve calendar object path: "
 msgstr "Не могу да преузмем путању објекта календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1413
+#: ../calendar/libedata-cal/e-data-cal.c:1441
 msgid "Cannot retrieve calendar object list: "
 msgstr "Не могу да преузмем списак објекта календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1466
+#: ../calendar/libedata-cal/e-data-cal.c:1494
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Не могу да преузмем списак слободног/заузетог календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1507
+#: ../calendar/libedata-cal/e-data-cal.c:1535
 msgid "Cannot create calendar object: "
 msgstr "Не могу да направим објекат календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1576
+#: ../calendar/libedata-cal/e-data-cal.c:1604
 msgid "Cannot modify calendar object: "
 msgstr "Не могу да изменим објекат календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1638
+#: ../calendar/libedata-cal/e-data-cal.c:1666
 msgid "Cannot remove calendar object: "
 msgstr "Не могу да уклоним објекат календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1699
+#: ../calendar/libedata-cal/e-data-cal.c:1727
 msgid "Cannot receive calendar objects: "
 msgstr "Не могу да примим објекте календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1740
+#: ../calendar/libedata-cal/e-data-cal.c:1768
 msgid "Cannot send calendar objects: "
 msgstr "Не могу да пошаљем објекте календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1800
+#: ../calendar/libedata-cal/e-data-cal.c:1828
 msgid "Could not retrieve attachment uris: "
 msgstr "Не могу да преузмем адресе прилога: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1850
+#: ../calendar/libedata-cal/e-data-cal.c:1878
 msgid "Could not discard reminder: "
 msgstr "Не могу да одбацим подсетник: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1889
+#: ../calendar/libedata-cal/e-data-cal.c:1917
 msgid "Could not get calendar view path: "
 msgstr "Не могу да добавим путању прегледа календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1935
+#: ../calendar/libedata-cal/e-data-cal.c:1963
 msgid "Could not retrieve calendar time zone: "
 msgstr "Не могу да преузмем временску зону календара: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1979
+#: ../calendar/libedata-cal/e-data-cal.c:2007
 msgid "Could not add calendar time zone: "
 msgstr "Не могу да додам временску зону календара: "
 
@@ -1863,15 +1893,15 @@ msgstr "Локално умножи садржај фасцикле за рад 
 #: ../camel/camel-imapx-folder.c:514 ../camel/camel-imapx-folder.c:553
 #: ../camel/camel-imapx-folder.c:613 ../camel/camel-imapx-folder.c:748
 #: ../camel/camel-imapx-folder.c:933 ../camel/camel-imapx-folder.c:993
-#: ../camel/camel-imapx-folder.c:1032 ../camel/camel-imapx-store.c:320
-#: ../camel/camel-imapx-store.c:1525 ../camel/camel-imapx-store.c:1614
-#: ../camel/camel-imapx-store.c:1663
+#: ../camel/camel-imapx-folder.c:1032 ../camel/camel-imapx-store.c:368
+#: ../camel/camel-imapx-store.c:1573 ../camel/camel-imapx-store.c:1662
+#: ../camel/camel-imapx-store.c:1711
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #: ../camel/providers/pop3/camel-pop3-folder.c:677
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
 #: ../camel/providers/pop3/camel-pop3-folder.c:1106
-#: ../camel/providers/pop3/camel-pop3-store.c:424
-#: ../camel/providers/pop3/camel-pop3-store.c:834
+#: ../camel/providers/pop3/camel-pop3-store.c:472
+#: ../camel/providers/pop3/camel-pop3-store.c:896
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Морате да будете на мрежи да бисте завршили ову операцију"
@@ -2066,7 +2096,7 @@ msgstr "(%s) очекује низ као резултат"
 msgid "(%s) requires the folder set"
 msgstr "(%s) захтева скуп фасцикли"
 
-#: ../camel/camel-folder-search.c:1789 ../camel/camel-folder-search.c:1956
+#: ../camel/camel-folder-search.c:1816 ../camel/camel-folder-search.c:1983
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2075,7 +2105,7 @@ msgstr ""
 "Не могу да анализирам израз претраге: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1801 ../camel/camel-folder-search.c:1968
+#: ../camel/camel-folder-search.c:1828 ../camel/camel-folder-search.c:1995
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2091,7 +2121,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "Нисам успео да извршим гчп: %s"
 
 #: ../camel/camel-gpg-context.c:696
-#: ../camel/providers/smtp/camel-smtp-transport.c:861
+#: ../camel/providers/smtp/camel-smtp-transport.c:926
 msgid "Unknown"
 msgstr "Непознато"
 
@@ -2150,7 +2180,7 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:911 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:388
-#: ../libedataserver/e-client.c:149
+#: ../libedataserver/e-client.c:151
 #, c-format
 msgid "Cancelled"
 msgstr "Отказано"
@@ -2170,7 +2200,7 @@ msgstr "Неочекиван одговор ГнуЧП-а: %s"
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Нисам успео да шифрујем: нису означени исправни примаоци."
 
-#: ../camel/camel-gpg-context.c:1626 ../camel/camel-smime-context.c:832
+#: ../camel/camel-gpg-context.c:1626 ../camel/camel-smime-context.c:846
 msgid "Could not generate signing data: "
 msgstr "Не могу да направим податке за потписивање: "
 
@@ -2182,8 +2212,8 @@ msgstr "Нисам успео да извршим гчп."
 
 #: ../camel/camel-gpg-context.c:1754 ../camel/camel-gpg-context.c:1762
 #: ../camel/camel-gpg-context.c:1770 ../camel/camel-gpg-context.c:1790
-#: ../camel/camel-smime-context.c:959 ../camel/camel-smime-context.c:973
-#: ../camel/camel-smime-context.c:982
+#: ../camel/camel-smime-context.c:973 ../camel/camel-smime-context.c:987
+#: ../camel/camel-smime-context.c:996
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Не могу да проверим потпис поруке: неисправан облик поруке"
@@ -2211,7 +2241,7 @@ msgstr "Не могу да дешифрујем поруку: неисправа
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Нисам успео да дешифрујем МИМЕ део: грешка у протоколу"
 
-#: ../camel/camel-gpg-context.c:2177 ../camel/camel-smime-context.c:1273
+#: ../camel/camel-gpg-context.c:2177 ../camel/camel-smime-context.c:1287
 msgid "Encrypted content"
 msgstr "Шифрован садржај"
 
@@ -2248,111 +2278,111 @@ msgstr "Не могу да направим сажетак фасцикле за
 msgid "Could not create cache for %s: "
 msgstr "Не могу да направим оставу за „%s“: "
 
-#: ../camel/camel-imapx-server.c:1254
+#: ../camel/camel-imapx-server.c:1267
 msgid "Server disconnected"
 msgstr "Веза са сервером је искључена"
 
-#: ../camel/camel-imapx-server.c:1727
+#: ../camel/camel-imapx-server.c:1775
 msgid "Error writing to cache stream"
 msgstr "Грешка приликом уписа у ток оставе"
 
-#: ../camel/camel-imapx-server.c:2893
+#: ../camel/camel-imapx-server.c:2980
 #, c-format
 msgid "Not authenticated"
 msgstr "Непотврђеног идентитета"
 
-#: ../camel/camel-imapx-server.c:2971
+#: ../camel/camel-imapx-server.c:3058
 msgid "Error performing IDLE"
 msgstr "Грешка приликом извршавања ИДЛЕ-а"
 
-#: ../camel/camel-imapx-server.c:3875
+#: ../camel/camel-imapx-server.c:4015
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Нисам успео да се повежем на ИМАП сервер „%s“ у безбедном режиму: %s"
 
-#: ../camel/camel-imapx-server.c:3876
-#: ../camel/providers/smtp/camel-smtp-transport.c:202
+#: ../camel/camel-imapx-server.c:4016
+#: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "СТАРТТЛС није подржано"
 
-#: ../camel/camel-imapx-server.c:3915
+#: ../camel/camel-imapx-server.c:4055
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Нисам успео да се повежем на ИМАП сервер „%s“ у безбедном режиму: "
 
-#: ../camel/camel-imapx-server.c:3995
+#: ../camel/camel-imapx-server.c:4135
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "ИМАП сервер „%s“ не подржава „%s“ пријављивање идентитета"
 
-#: ../camel/camel-imapx-server.c:4006 ../camel/camel-session.c:495
-#: ../camel/providers/pop3/camel-pop3-store.c:266
-#: ../camel/providers/pop3/camel-pop3-store.c:606
-#: ../camel/providers/smtp/camel-smtp-transport.c:469
+#: ../camel/camel-imapx-server.c:4146 ../camel/camel-session.c:495
+#: ../camel/providers/pop3/camel-pop3-store.c:272
+#: ../camel/providers/pop3/camel-pop3-store.c:654
+#: ../camel/providers/smtp/camel-smtp-transport.c:517
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Нема подршке за „%s“ потврђивања идентитета"
 
-#: ../camel/camel-imapx-server.c:4025
-#: ../camel/providers/nntp/camel-nntp-store.c:314
-#: ../camel/providers/nntp/camel-nntp-store.c:514
+#: ../camel/camel-imapx-server.c:4165
+#: ../camel/providers/nntp/camel-nntp-store.c:362
+#: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "Не могу да потврдим идентитет без корисничког имена"
 
-#: ../camel/camel-imapx-server.c:4034
-#: ../camel/providers/nntp/camel-nntp-store.c:523
-#: ../camel/providers/pop3/camel-pop3-store.c:531
-#: ../camel/providers/pop3/camel-pop3-store.c:551
+#: ../camel/camel-imapx-server.c:4174
+#: ../camel/providers/nntp/camel-nntp-store.c:571
+#: ../camel/providers/pop3/camel-pop3-store.c:579
+#: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "Лозинка потврђивања идентитета није доступна"
 
-#: ../camel/camel-imapx-server.c:4242
+#: ../camel/camel-imapx-server.c:4382
 msgid "Error fetching message"
 msgstr "Грешка приликом преузимања поруке"
 
-#: ../camel/camel-imapx-server.c:4324
+#: ../camel/camel-imapx-server.c:4464
 msgid "Failed to copy the tmp file"
 msgstr "Нисам успео да умножим привремену датотеку"
 
-#: ../camel/camel-imapx-server.c:4338
+#: ../camel/camel-imapx-server.c:4478
 msgid "Failed to close the tmp stream"
 msgstr "Нисам успео да затворим привремену датотеку"
 
-#: ../camel/camel-imapx-server.c:4459
+#: ../camel/camel-imapx-server.c:4599
 msgid "Error copying messages"
 msgstr "Грешка умножавања порука"
 
-#: ../camel/camel-imapx-server.c:4625
+#: ../camel/camel-imapx-server.c:4765
 msgid "Error appending message"
 msgstr "Грешка прикачињања порука"
 
-#: ../camel/camel-imapx-server.c:4824
+#: ../camel/camel-imapx-server.c:4964
 msgid "Error fetching message headers"
 msgstr "Грешка преузимања заглавља поруке"
 
-#: ../camel/camel-imapx-server.c:4971
+#: ../camel/camel-imapx-server.c:5111
 msgid "Error retrieving message"
 msgstr "Грешка довлачења поруке"
 
-#: ../camel/camel-imapx-server.c:5095 ../camel/camel-imapx-server.c:5323
+#: ../camel/camel-imapx-server.c:5235 ../camel/camel-imapx-server.c:5463
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Прикупљам преглед података нових порука у „%s“"
 
-#: ../camel/camel-imapx-server.c:5159
+#: ../camel/camel-imapx-server.c:5299
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Прегледам измењене поруке у „%s“"
 
-#: ../camel/camel-imapx-server.c:5212
+#: ../camel/camel-imapx-server.c:5352
 msgid "Error fetching new messages"
 msgstr "Грешка приликом преузимања нових порука"
 
-#: ../camel/camel-imapx-server.c:5425
+#: ../camel/camel-imapx-server.c:5565
 msgid "Error while fetching messages"
 msgstr "Грешка за време преузимања порука"
 
-#: ../camel/camel-imapx-server.c:5433 ../camel/camel-imapx-server.c:5466
+#: ../camel/camel-imapx-server.c:5573 ../camel/camel-imapx-server.c:5606
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2361,95 +2391,95 @@ msgstr[1] "Прикупљам преглед података за %d порук
 msgstr[2] "Прикупљам преглед података за %d порука у „%s“"
 msgstr[3] "Прикупљам преглед података за %d поруку у „%s“"
 
-#: ../camel/camel-imapx-server.c:5602 ../camel/camel-imapx-server.c:5632
+#: ../camel/camel-imapx-server.c:5742 ../camel/camel-imapx-server.c:5772
 msgid "Error refreshing folder"
 msgstr "Грешка током претраге"
 
-#: ../camel/camel-imapx-server.c:5736
+#: ../camel/camel-imapx-server.c:5876
 msgid "Error expunging message"
 msgstr "Грешка приликом избацивања поруке"
 
-#: ../camel/camel-imapx-server.c:5847
+#: ../camel/camel-imapx-server.c:5987
 msgid "Error fetching folders"
 msgstr "Грешка приликом преузимања фасцикле"
 
-#: ../camel/camel-imapx-server.c:5929
+#: ../camel/camel-imapx-server.c:6069
 msgid "Error subscribing to folder"
 msgstr "Грешка приликом пријављивања на фасциклу"
 
-#: ../camel/camel-imapx-server.c:5994
+#: ../camel/camel-imapx-server.c:6134
 msgid "Error creating folder"
 msgstr "Грешка приликом стварања фасцикле"
 
-#: ../camel/camel-imapx-server.c:6048
+#: ../camel/camel-imapx-server.c:6188
 msgid "Error deleting folder"
 msgstr "Грешка приликом брисања фасцикле"
 
-#: ../camel/camel-imapx-server.c:6122
+#: ../camel/camel-imapx-server.c:6262
 msgid "Error renaming folder"
 msgstr "Грешка приликом преименовања фасцикле"
 
-#: ../camel/camel-imapx-server.c:6197
+#: ../camel/camel-imapx-server.c:6337
 msgid "Error retrieving quota information"
 msgstr "Грешка довлачења обавештења о количини"
 
-#: ../camel/camel-imapx-server.c:6262
+#: ../camel/camel-imapx-server.c:6402
 msgid "Search failed"
 msgstr "Претрага није успела"
 
-#: ../camel/camel-imapx-server.c:6325
+#: ../camel/camel-imapx-server.c:6465
 msgid "Error performing NOOP"
 msgstr "Грешка приликом обављања НООП-а"
 
-#: ../camel/camel-imapx-server.c:6434
+#: ../camel/camel-imapx-server.c:6574
 msgid "Error syncing changes"
 msgstr "Грешка приликом усклађивања измена"
 
-#: ../camel/camel-imapx-server.c:7246
+#: ../camel/camel-imapx-server.c:7383
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не могу да набавим поруку са ИБ „%s“: %s"
 
-#: ../camel/camel-imapx-server.c:7247
+#: ../camel/camel-imapx-server.c:7384
 msgid "No such message available."
 msgstr "Нема такве поруке."
 
-#: ../camel/camel-imapx-server.c:7405 ../camel/camel-imapx-server.c:7420
+#: ../camel/camel-imapx-server.c:7542 ../camel/camel-imapx-server.c:7557
 msgid "Cannot create spool file: "
 msgstr "Не могу да направим датотеку припреме: "
 
-#: ../camel/camel-imapx-server.c:8162
+#: ../camel/camel-imapx-server.c:8299
 msgid "IMAP server does not support quotas"
 msgstr "ИМАП сервер не подржава количине"
 
-#: ../camel/camel-imapx-store.c:201
+#: ../camel/camel-imapx-store.c:249
 #, c-format
 msgid "IMAP server %s"
 msgstr "ИМАП сервер „%s“"
 
-#: ../camel/camel-imapx-store.c:204
+#: ../camel/camel-imapx-store.c:252
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "ИМАП сервис за „%s“ на „%s"
 
-#: ../camel/camel-imapx-store.c:295
+#: ../camel/camel-imapx-store.c:343
 #: ../camel/providers/nntp/camel-nntp-provider.c:95
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid "Password"
 msgstr "Лозинка"
 
-#: ../camel/camel-imapx-store.c:297
+#: ../camel/camel-imapx-store.c:345
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Ова опција ће повезати на ИМАП сервер коришћењем лозинке у обичном тексту."
 
-#: ../camel/camel-imapx-store.c:405
+#: ../camel/camel-imapx-store.c:453
 #, c-format
 msgid "No such folder %s"
 msgstr "Нема такве фасцикле „%s“"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:430 ../camel/camel-imapx-store.c:920
+#: ../camel/camel-imapx-store.c:478 ../camel/camel-imapx-store.c:968
 #: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:312
 #: ../camel/providers/local/camel-maildir-store.c:746
@@ -2459,23 +2489,23 @@ msgstr "Нема такве фасцикле „%s“"
 msgid "Inbox"
 msgstr "Сандуче"
 
-#: ../camel/camel-imapx-store.c:1164
+#: ../camel/camel-imapx-store.c:1212
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Довлачим списак фасцикле за „%s“"
 
-#: ../camel/camel-imapx-store.c:1547
+#: ../camel/camel-imapx-store.c:1595
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Име фасцикле „%s“ није исправно јер садржи знак „%c“"
 
-#: ../camel/camel-imapx-store.c:1558
+#: ../camel/camel-imapx-store.c:1606
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Непозната главна фасцикла: %s"
 
-#: ../camel/camel-imapx-store.c:1568
+#: ../camel/camel-imapx-store.c:1616
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Главна фасцикла не може да садржи друге фасцикле"
@@ -2641,7 +2671,7 @@ msgstr ""
 msgid "Name lookup failed: %s"
 msgstr "Није успело тражење назива: %s"
 
-#: ../camel/camel-network-service.c:115
+#: ../camel/camel-network-service.c:350
 #, c-format
 msgid "Could not connect to '%s:%s': "
 msgstr "Не могу да се повежем на „%s:%s“: "
@@ -2664,22 +2694,22 @@ msgstr "Достављач виртуелне фасцикле е-поште"
 msgid "For reading mail as a query of another set of folders"
 msgstr "За читање поште као упита другог скупа фасцикли"
 
-#: ../camel/camel-provider.c:258
+#: ../camel/camel-provider.c:263
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Не могу да учитам „%s“: овај систем не подржава учитавање модула."
 
-#: ../camel/camel-provider.c:267
+#: ../camel/camel-provider.c:272
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Не могу да учитам „%s“: %s"
 
-#: ../camel/camel-provider.c:276
+#: ../camel/camel-provider.c:281
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Не могу да учитам „%s“: нема кода за покретање у модулу."
 
-#: ../camel/camel-provider.c:424 ../camel/camel-session.c:407
+#: ../camel/camel-provider.c:429 ../camel/camel-session.c:407
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Нема доступног достављача за протокол „%s“"
@@ -2851,7 +2881,7 @@ msgstr "Важење тражених уверења је истекло."
 
 #: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:340
 #: ../camel/camel-sasl-gssapi.c:388 ../camel/camel-sasl-gssapi.c:405
-#: ../camel/providers/smtp/camel-smtp-transport.c:576
+#: ../camel/providers/smtp/camel-smtp-transport.c:624
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Лош одговор потврђивања идентитета са сервера."
@@ -2931,12 +2961,15 @@ msgstr "Није успело %s потврђивање идентитета"
 msgid "Forwarding messages is not supported"
 msgstr "Прослеђивање порука није подржано"
 
-#: ../camel/camel-session.c:1402
+#. Translators: The first argument is the account type
+#. * (e.g. "IMAP"), the second is the user name, and the
+#. * third is the host name.
+#: ../camel/camel-session.c:1423
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Унесите „%s“ лозинку за „%s“ на домаћину „%s“."
 
-#: ../camel/camel-smime-context.c:351 ../camel/camel-smime-context.c:1060
+#: ../camel/camel-smime-context.c:351 ../camel/camel-smime-context.c:1074
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Не могу да нађем уверење за „%s“"
@@ -3073,59 +3106,59 @@ msgstr "Не могу да нађем збирке потписа"
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Потписник: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:844 ../camel/camel-smime-context.c:1134
+#: ../camel/camel-smime-context.c:858 ../camel/camel-smime-context.c:1148
 msgid "Cannot create encoder context"
 msgstr "Не могу да направим контекст шифровања"
 
-#: ../camel/camel-smime-context.c:850
+#: ../camel/camel-smime-context.c:864
 msgid "Failed to add data to CMS encoder"
 msgstr "Нисам успео да додам податак у ЦМС шифрер"
 
-#: ../camel/camel-smime-context.c:855 ../camel/camel-smime-context.c:1151
+#: ../camel/camel-smime-context.c:869 ../camel/camel-smime-context.c:1165
 msgid "Failed to encode data"
 msgstr "Нисам успео да шифрујем податке"
 
-#: ../camel/camel-smime-context.c:999 ../camel/camel-smime-context.c:1248
+#: ../camel/camel-smime-context.c:1013 ../camel/camel-smime-context.c:1262
 msgid "Decoder failed"
 msgstr "Нисам успео да дешифрујем"
 
-#: ../camel/camel-smime-context.c:1068
+#: ../camel/camel-smime-context.c:1082
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Не могу да нађем општи алгоритам за шифровање групе"
 
-#: ../camel/camel-smime-context.c:1076
+#: ../camel/camel-smime-context.c:1090
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Не могу да доделим место кључу за шифровање групе"
 
-#: ../camel/camel-smime-context.c:1087
+#: ../camel/camel-smime-context.c:1101
 msgid "Cannot create CMS Message"
 msgstr "Не могу да направим ЦМС поруку"
 
-#: ../camel/camel-smime-context.c:1093
+#: ../camel/camel-smime-context.c:1107
 msgid "Cannot create CMS Enveloped data"
 msgstr "Не могу да направим ЦМС обавијене податке"
 
-#: ../camel/camel-smime-context.c:1099
+#: ../camel/camel-smime-context.c:1113
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Не могу да приложим ЦМС обавијене податке"
 
-#: ../camel/camel-smime-context.c:1105
+#: ../camel/camel-smime-context.c:1119
 msgid "Cannot attach CMS data object"
 msgstr "Не могу да приложим објекат ЦМС података"
 
-#: ../camel/camel-smime-context.c:1114
+#: ../camel/camel-smime-context.c:1128
 msgid "Cannot create CMS Recipient information"
 msgstr "Не могу да направим податак ЦМС примаоца"
 
-#: ../camel/camel-smime-context.c:1119
+#: ../camel/camel-smime-context.c:1133
 msgid "Cannot add CMS Recipient information"
 msgstr "Не могу да додам податак ЦМС примаоца"
 
-#: ../camel/camel-smime-context.c:1145
+#: ../camel/camel-smime-context.c:1159
 msgid "Failed to add data to encoder"
 msgstr "Нисам успео да додам податке у шифрер"
 
-#: ../camel/camel-smime-context.c:1255
+#: ../camel/camel-smime-context.c:1269
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "С/МИМЕ дешифровање: нису нађени шифровани подаци"
 
@@ -3385,8 +3418,8 @@ msgstr "Облик имена:"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:59
 #: ../camel/providers/local/camel-local-provider.c:41
-#: ../camel/providers/local/camel-local-provider.c:77
-#: ../camel/providers/local/camel-local-provider.c:97
+#: ../camel/providers/local/camel-local-provider.c:81
+#: ../camel/providers/local/camel-local-provider.c:101
 #: ../camel/providers/nntp/camel-nntp-provider.c:41
 msgid "Options"
 msgstr "Опције"
@@ -3469,11 +3502,11 @@ msgstr "МХ-обликовани директоријуми поште"
 msgid "For storing local mail in MH-like mail directories."
 msgstr "За смештање локалне поште у директоријуме поште налик МХ."
 
-#: ../camel/providers/local/camel-local-provider.c:64
+#: ../camel/providers/local/camel-local-provider.c:68
 msgid "Local delivery"
 msgstr "Локална достава"
 
-#: ../camel/providers/local/camel-local-provider.c:65
+#: ../camel/providers/local/camel-local-provider.c:69
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
@@ -3481,29 +3514,29 @@ msgstr ""
 "За довлачење (премештање) локалне поште из стандардне мбокс форматиране "
 "припреме у фасцикле којима управља Еволуција."
 
-#: ../camel/providers/local/camel-local-provider.c:79
-#: ../camel/providers/local/camel-local-provider.c:99
+#: ../camel/providers/local/camel-local-provider.c:83
+#: ../camel/providers/local/camel-local-provider.c:103
 msgid "_Apply filters to new messages in Inbox"
 msgstr "_Примени филтере на нове поруке у САНДУЧЕТУ"
 
-#: ../camel/providers/local/camel-local-provider.c:86
+#: ../camel/providers/local/camel-local-provider.c:90
 msgid "Maildir-format mail directories"
 msgstr "Директоријуми поште у Мејлдир облику"
 
-#: ../camel/providers/local/camel-local-provider.c:87
+#: ../camel/providers/local/camel-local-provider.c:91
 msgid "For storing local mail in maildir directories."
 msgstr "За смештање локалне поште у мејлдир директоријуме."
 
-#: ../camel/providers/local/camel-local-provider.c:100
+#: ../camel/providers/local/camel-local-provider.c:104
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr "_Смести заглавља стања у Елм/Пине/Мут формату"
 
-#: ../camel/providers/local/camel-local-provider.c:107
+#: ../camel/providers/local/camel-local-provider.c:111
 msgid "Standard Unix mbox spool file"
 msgstr "Стандардна Уникс мбокс датотека припреме"
 
-#: ../camel/providers/local/camel-local-provider.c:108
-#: ../camel/providers/local/camel-local-provider.c:120
+#: ../camel/providers/local/camel-local-provider.c:112
+#: ../camel/providers/local/camel-local-provider.c:124
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3512,7 +3545,7 @@ msgstr ""
 "припреме.\n"
 "Такође се може користити за читање стабла фасцикли у Елм, Пине или Мут стилу."
 
-#: ../camel/providers/local/camel-local-provider.c:119
+#: ../camel/providers/local/camel-local-provider.c:123
 msgid "Standard Unix mbox spool directory"
 msgstr "Стандардни Уникс мбокс директоријум припреме"
 
@@ -4059,22 +4092,22 @@ msgid ""
 msgstr ""
 "Ова опција ће пријавити на ННТП сервер коришћењем лозинке у обичном тексту."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:285
+#: ../camel/providers/nntp/camel-nntp-store.c:333
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "Не могу да прочитам поздрав са „%s“: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:297
+#: ../camel/providers/nntp/camel-nntp-store.c:345
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "ННТП сервер „%s“ је вратио код грешке „%d“: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:474
+#: ../camel/providers/nntp/camel-nntp-store.c:522
 #, c-format
 msgid "USENET News via %s"
 msgstr "ЈУЗНЕТ вести преко „%s“"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1075
+#: ../camel/providers/nntp/camel-nntp-store.c:1123
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4085,24 +4118,24 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1169
+#: ../camel/providers/nntp/camel-nntp-store.c:1217
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Не можете да направите фасциклу у остави вести: пријавите се уместо тога."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1185
+#: ../camel/providers/nntp/camel-nntp-store.c:1233
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Не можете да преименујете фасциклу у остави вести."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1208
+#: ../camel/providers/nntp/camel-nntp-store.c:1256
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Не можете да уклоните фасциклу у остави вести: одјавите се уместо тога."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1407
+#: ../camel/providers/nntp/camel-nntp-store.c:1455
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4113,7 +4146,7 @@ msgstr ""
 "\n"
 "Нема такве групе. Изабрана ставка је вероватно надређена фасцикла."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1455
+#: ../camel/providers/nntp/camel-nntp-store.c:1503
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4124,16 +4157,16 @@ msgstr ""
 "\n"
 "група не постоји!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1645
+#: ../camel/providers/nntp/camel-nntp-store.c:1707
 msgid "NNTP Command failed: "
 msgstr "ННТП наредба није успела: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1732
+#: ../camel/providers/nntp/camel-nntp-store.c:1794
 #, c-format
 msgid "Not connected."
 msgstr "Нисам повезан."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1794
+#: ../camel/providers/nntp/camel-nntp-store.c:1856
 #, c-format
 msgid "No such folder: %s"
 msgstr "Нема такве фасцикле: %s"
@@ -4252,57 +4285,57 @@ msgstr ""
 "тврде да то подржавају."
 
 #. Translators: This is the separator between an error and an explanation
-#: ../camel/providers/pop3/camel-pop3-store.c:83
+#: ../camel/providers/pop3/camel-pop3-store.c:89
 msgid ": "
 msgstr ": "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:144
+#: ../camel/providers/pop3/camel-pop3-store.c:150
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Неуспело читање исправног поздрава ПОП сервера „%s“"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:159
+#: ../camel/providers/pop3/camel-pop3-store.c:165
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Нисам успео да се повежем на ПОП сервер „%s“ у безбедном режиму: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:160
+#: ../camel/providers/pop3/camel-pop3-store.c:166
 msgid "STLS not supported by server"
 msgstr "Сервер не подржава СТЛС"
 
 #. Translators: Last %s is an optional
 #. * explanation beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:181
+#: ../camel/providers/pop3/camel-pop3-store.c:187
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "Нисам успео да се повежем на ПОП сервер „%s“ у безбедном режиму%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:194
+#: ../camel/providers/pop3/camel-pop3-store.c:200
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr "Нисам успео да се повежем на ПОП сервер „%s“ у безбедном режиму: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:305
+#: ../camel/providers/pop3/camel-pop3-store.c:311
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Не могу да се пријавим на ПОП сервер „%s“: грешка САСЛ протокола"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:327
+#: ../camel/providers/pop3/camel-pop3-store.c:333
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Нисам успео да потврдим идентитет на ПОП серверу „%s“: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:387
+#: ../camel/providers/pop3/camel-pop3-store.c:435
 #, c-format
 msgid "POP3 server %s"
 msgstr "ПОП3 сервер „%s“"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:390
+#: ../camel/providers/pop3/camel-pop3-store.c:438
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "ПОП3 сервер за „%s“ на „%s“"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:565
+#: ../camel/providers/pop3/camel-pop3-store.c:613
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4311,7 +4344,7 @@ msgstr ""
 "Не могу да се повежем на ПОП сервер „%s“: Примих неисправан АПОП ИБ. Могућ "
 "је напад заменом идентитета. Обратите се админу."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:617
+#: ../camel/providers/pop3/camel-pop3-store.c:665
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4322,7 +4355,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:632
+#: ../camel/providers/pop3/camel-pop3-store.c:680
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4331,12 +4364,12 @@ msgstr ""
 "Не могу да се повежем на ПОП сервер „%s“.\n"
 "Грешка при слању корисничког имена%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:703
+#: ../camel/providers/pop3/camel-pop3-store.c:751
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Нема такве фасцикле „%s“."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:720
+#: ../camel/providers/pop3/camel-pop3-store.c:768
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "ПОП3 остава нема хијерархију фасцикли"
@@ -4421,218 +4454,218 @@ msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 "За доставу поште повезивањем на прослеђивач поште у мрежи коришћењем СМТП."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:154
-#: ../camel/providers/smtp/camel-smtp-transport.c:162
+#: ../camel/providers/smtp/camel-smtp-transport.c:160
+#: ../camel/providers/smtp/camel-smtp-transport.c:168
 msgid "Welcome response error: "
 msgstr "Грешка одговора добродошлице: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:201
+#: ../camel/providers/smtp/camel-smtp-transport.c:207
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Не могу да се повежем на СМТП сервер „%s“ у сигурносном режиму: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:210
-#: ../camel/providers/smtp/camel-smtp-transport.c:223
-#: ../camel/providers/smtp/camel-smtp-transport.c:230
+#: ../camel/providers/smtp/camel-smtp-transport.c:216
+#: ../camel/providers/smtp/camel-smtp-transport.c:229
+#: ../camel/providers/smtp/camel-smtp-transport.c:236
 msgid "STARTTLS command failed: "
 msgstr "Неуспела СТАРТТЛС наредба: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:241
+#: ../camel/providers/smtp/camel-smtp-transport.c:247
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Не могу да се повежем на СМТП сервер „%s“ у сигурносном режиму: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:301
+#: ../camel/providers/smtp/camel-smtp-transport.c:349
 #, c-format
 msgid "SMTP server %s"
 msgstr "СМТП сервер „%s“"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:304
+#: ../camel/providers/smtp/camel-smtp-transport.c:352
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "СМТП достава поште преко „%s“"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:378
+#: ../camel/providers/smtp/camel-smtp-transport.c:426
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "СМТП сервер „%s“ не подржава „%s“ потврђивање идентитета"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:460
+#: ../camel/providers/smtp/camel-smtp-transport.c:508
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Није наведен САСЛ механизам"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:490
-#: ../camel/providers/smtp/camel-smtp-transport.c:501
-#: ../camel/providers/smtp/camel-smtp-transport.c:514
+#: ../camel/providers/smtp/camel-smtp-transport.c:538
+#: ../camel/providers/smtp/camel-smtp-transport.c:549
+#: ../camel/providers/smtp/camel-smtp-transport.c:562
 msgid "AUTH command failed: "
 msgstr "Неуспела наредба „AUTH“: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:655
+#: ../camel/providers/smtp/camel-smtp-transport.c:703
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Не могу да пошаљем поруку: сервис није повезан."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:662
+#: ../camel/providers/smtp/camel-smtp-transport.c:710
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Не могу да пошаљем поруку: адреса пошиљаоца није исправна."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:666
+#: ../camel/providers/smtp/camel-smtp-transport.c:714
 msgid "Sending message"
 msgstr "Слање поруке"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:691
+#: ../camel/providers/smtp/camel-smtp-transport.c:739
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Не могу да пошаљем поруку: нису одређени примаоци."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:704
+#: ../camel/providers/smtp/camel-smtp-transport.c:752
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Не могу да пошаљем поруку: један или више неисправних прималаца"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:808
+#: ../camel/providers/smtp/camel-smtp-transport.c:873
 msgid "Syntax error, command unrecognized"
 msgstr "Грешка у синтакси, наредба није препозната"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:810
+#: ../camel/providers/smtp/camel-smtp-transport.c:875
 msgid "Syntax error in parameters or arguments"
 msgstr "Грешка у синтакси у параметрима или аргументима"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:812
+#: ../camel/providers/smtp/camel-smtp-transport.c:877
 msgid "Command not implemented"
 msgstr "Наредба није подржана"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:814
+#: ../camel/providers/smtp/camel-smtp-transport.c:879
 msgid "Command parameter not implemented"
 msgstr "Параметар наредбе није подржан"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:816
+#: ../camel/providers/smtp/camel-smtp-transport.c:881
 msgid "System status, or system help reply"
 msgstr "Статус система, или одговор на помоћ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:818
+#: ../camel/providers/smtp/camel-smtp-transport.c:883
 msgid "Help message"
 msgstr "Порука о помоћи"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:820
+#: ../camel/providers/smtp/camel-smtp-transport.c:885
 msgid "Service ready"
 msgstr "Сервис је спреман"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:822
+#: ../camel/providers/smtp/camel-smtp-transport.c:887
 msgid "Service closing transmission channel"
 msgstr "Сервис затвара канал преноса"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:824
+#: ../camel/providers/smtp/camel-smtp-transport.c:889
 msgid "Service not available, closing transmission channel"
 msgstr "Сервис није доступан, затварам канал преноса"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:826
+#: ../camel/providers/smtp/camel-smtp-transport.c:891
 msgid "Requested mail action okay, completed"
 msgstr "Тражена радња за пошту је у реду, завршено"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:828
+#: ../camel/providers/smtp/camel-smtp-transport.c:893
 msgid "User not local; will forward to <forward-path>"
 msgstr "Корисник није локалан; биће прослеђено на <путања-прослеђивања>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:830
+#: ../camel/providers/smtp/camel-smtp-transport.c:895
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Тражена радња за пошту није предузета: недоступно поштанско сандуче"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:832
+#: ../camel/providers/smtp/camel-smtp-transport.c:897
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Тражена радња није предузета: поштанско сандуче је недоступно"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:834
+#: ../camel/providers/smtp/camel-smtp-transport.c:899
 msgid "Requested action aborted: error in processing"
 msgstr "Тражена радња није предузета: грешка при обради"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:836
+#: ../camel/providers/smtp/camel-smtp-transport.c:901
 msgid "User not local; please try <forward-path>"
 msgstr "Корисник није локалан; покушајте <путања-прослеђивања>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:838
+#: ../camel/providers/smtp/camel-smtp-transport.c:903
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Тражена радња није предузета: недовољно простора на систему"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:840
+#: ../camel/providers/smtp/camel-smtp-transport.c:905
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Прекинута је тражена радња за пошту: премашен је додељен простор"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:842
+#: ../camel/providers/smtp/camel-smtp-transport.c:907
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Тражена радња није предузета: име поштанског сандучета није дозвољено"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:844
+#: ../camel/providers/smtp/camel-smtp-transport.c:909
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Почиње унос поште; завршава са <CRLF>.<CRLF>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:846
+#: ../camel/providers/smtp/camel-smtp-transport.c:911
 msgid "Transaction failed"
 msgstr "Неуспео пренос"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:850
+#: ../camel/providers/smtp/camel-smtp-transport.c:915
 msgid "A password transition is needed"
 msgstr "Потребно је слање лозинке"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:852
+#: ../camel/providers/smtp/camel-smtp-transport.c:917
 msgid "Authentication mechanism is too weak"
 msgstr "Механизам потврђивања идентитета је преслаб"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:854
+#: ../camel/providers/smtp/camel-smtp-transport.c:919
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Неопходно је шифровање за тражени механизам потврђивања идентитета"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:856
+#: ../camel/providers/smtp/camel-smtp-transport.c:921
 msgid "Temporary authentication failure"
 msgstr "Није успело привремено потврђивање идентитета"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1113
+#: ../camel/providers/smtp/camel-smtp-transport.c:1178
 msgid "SMTP Greeting"
 msgstr "СМТП поздрав"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1140
-#: ../camel/providers/smtp/camel-smtp-transport.c:1158
-#: ../camel/providers/smtp/camel-smtp-transport.c:1166
+#: ../camel/providers/smtp/camel-smtp-transport.c:1205
+#: ../camel/providers/smtp/camel-smtp-transport.c:1223
+#: ../camel/providers/smtp/camel-smtp-transport.c:1231
 msgid "HELO command failed: "
 msgstr "Неуспела наредба „HELO“: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1241
-#: ../camel/providers/smtp/camel-smtp-transport.c:1256
-#: ../camel/providers/smtp/camel-smtp-transport.c:1266
+#: ../camel/providers/smtp/camel-smtp-transport.c:1306
+#: ../camel/providers/smtp/camel-smtp-transport.c:1321
+#: ../camel/providers/smtp/camel-smtp-transport.c:1331
 msgid "MAIL FROM command failed: "
 msgstr "Неуспела наредба „MAIL FROM“: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1293
+#: ../camel/providers/smtp/camel-smtp-transport.c:1358
 msgid "RCPT TO command failed: "
 msgstr "Неуспела наредба „RCPT TO“: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1310
-#: ../camel/providers/smtp/camel-smtp-transport.c:1320
+#: ../camel/providers/smtp/camel-smtp-transport.c:1375
+#: ../camel/providers/smtp/camel-smtp-transport.c:1385
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> није успело: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1363
-#: ../camel/providers/smtp/camel-smtp-transport.c:1374
-#: ../camel/providers/smtp/camel-smtp-transport.c:1385
-#: ../camel/providers/smtp/camel-smtp-transport.c:1444
-#: ../camel/providers/smtp/camel-smtp-transport.c:1464
-#: ../camel/providers/smtp/camel-smtp-transport.c:1478
-#: ../camel/providers/smtp/camel-smtp-transport.c:1487
+#: ../camel/providers/smtp/camel-smtp-transport.c:1428
+#: ../camel/providers/smtp/camel-smtp-transport.c:1439
+#: ../camel/providers/smtp/camel-smtp-transport.c:1450
+#: ../camel/providers/smtp/camel-smtp-transport.c:1509
+#: ../camel/providers/smtp/camel-smtp-transport.c:1529
+#: ../camel/providers/smtp/camel-smtp-transport.c:1543
+#: ../camel/providers/smtp/camel-smtp-transport.c:1552
 msgid "DATA command failed: "
 msgstr "Неуспела наредба „DATA“: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1512
-#: ../camel/providers/smtp/camel-smtp-transport.c:1527
-#: ../camel/providers/smtp/camel-smtp-transport.c:1536
+#: ../camel/providers/smtp/camel-smtp-transport.c:1577
+#: ../camel/providers/smtp/camel-smtp-transport.c:1592
+#: ../camel/providers/smtp/camel-smtp-transport.c:1601
 msgid "RSET command failed: "
 msgstr "Неуспела наредба „RSET“: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1561
-#: ../camel/providers/smtp/camel-smtp-transport.c:1575
-#: ../camel/providers/smtp/camel-smtp-transport.c:1582
+#: ../camel/providers/smtp/camel-smtp-transport.c:1626
+#: ../camel/providers/smtp/camel-smtp-transport.c:1640
+#: ../camel/providers/smtp/camel-smtp-transport.c:1647
 msgid "QUIT command failed: "
 msgstr "Неуспела наредба „QUIT“: "
 
@@ -4697,24 +4730,23 @@ msgstr "Додајте ову лозинку у ваш привезак"
 msgid "Password was incorrect"
 msgstr "Лозинка је неисправна"
 
-#: ../libebackend/e-backend.c:206
+#: ../libebackend/e-backend.c:428
 #, c-format
 msgid "%s does not support authentication"
 msgstr "„%s“ не подржава потврђивање идентитета"
 
-#: ../libebackend/e-collection-backend.c:782
+#: ../libebackend/e-collection-backend.c:800
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "„%s“ не подржава стварање удаљених изворишта"
 
-#: ../libebackend/e-collection-backend.c:841
+#: ../libebackend/e-collection-backend.c:859
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "„%s“ не подржава брисање удаљених изворишта"
 
 #: ../libebackend/e-data-factory.c:320
 #, c-format
-#| msgid "No backend name in source '%s'"
 msgid "No backend factory for hash key '%s'"
 msgstr "Нема погона позадинца за тастер мешања „%s“"
 
@@ -4724,7 +4756,7 @@ msgid "Data source is missing a [%s] group"
 msgstr "Извору података недостаје [%s] група"
 
 #: ../libebackend/e-server-side-source.c:1008
-#: ../libedataserver/e-source.c:1112
+#: ../libedataserver/e-source.c:1120
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Извор података „%s“ не подржава стварање удаљених изворишта"
@@ -4737,7 +4769,7 @@ msgstr ""
 "Извор података „%s“ нема позадинца збирке да би направио удаљено извориште"
 
 #: ../libebackend/e-server-side-source.c:1050
-#: ../libedataserver/e-source.c:1219
+#: ../libedataserver/e-source.c:1227
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Извор података „%s“ не подржава брисање удаљених изворишта"
@@ -4750,7 +4782,7 @@ msgstr ""
 "Извор података „%s“ нема позадинца збирке да би обрисао удаљено извориште"
 
 #: ../libebackend/e-server-side-source.c:1095
-#: ../libedataserver/e-source.c:1309
+#: ../libedataserver/e-source.c:1317
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -4889,21 +4921,21 @@ msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Чекање"
 
-#: ../libedataserver/e-client.c:133
+#: ../libedataserver/e-client.c:135
 msgid "Source not loaded"
 msgstr "Извор није учитан"
 
-#: ../libedataserver/e-client.c:135
+#: ../libedataserver/e-client.c:137
 msgid "Source already loaded"
 msgstr "Извор је већ учитан"
 
 #. Translators: This means that the EClient does not support offline mode, or
 #. * it's not set to by a user, thus it is unavailable while user is not connected.
-#: ../libedataserver/e-client.c:145
+#: ../libedataserver/e-client.c:147
 msgid "Offline unavailable"
 msgstr "Рад ван мреже није доступан"
 
-#: ../libedataserver/e-client.c:167
+#: ../libedataserver/e-client.c:169
 msgid "D-Bus error"
 msgstr "Грешка у Д-магистрали"
 
@@ -4964,17 +4996,17 @@ msgstr "Унесите лозинку за налог „%s“."
 msgid "Source file is missing a [%s] group"
 msgstr "Изворној датотеци недостаје [%s] група"
 
-#: ../libedataserver/e-source.c:939
+#: ../libedataserver/e-source.c:943
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "Извор података „%s“ се не може уклонити"
 
-#: ../libedataserver/e-source.c:1021
+#: ../libedataserver/e-source.c:1029
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "Извор подтака „%s“ није уписив"
 
-#: ../libedataserver/e-source.c:1515
+#: ../libedataserver/e-source.c:1523
 msgid "Unnamed"
 msgstr "Неименован"
 
@@ -5297,7 +5329,7 @@ msgstr "Нисам успео да пронађем елемент налога"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Нисам успео да пронађем АСадресу и ОАБадресу у одговору самооткривања"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1140
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1333
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5306,7 +5338,7 @@ msgstr ""
 "Не могу да пронађем одговарајући налог на услузи „орг.гном.Налози на мрежи“ "
 "са које бих добио приступ за „%s“."
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1167
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1360
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Нисам успео да добијем приступ за „%s“: "
@@ -5694,28 +5726,22 @@ msgstr "Услуга пријављивања није вратила тајну
 
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
 #, c-format
-#| msgid "No such source for UID '%s'"
 msgid "No such data source for UID '%s'"
 msgstr "Нема таквог извора података за КИБ „%s“"
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
-#| msgid "Calendar"
 msgid "Google Calendar"
 msgstr "Гуглов календар"
 
 #: ../modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
-#| msgctxt "CategoryName"
-#| msgid "Hot Contacts"
 msgid "Google Contacts"
 msgstr "Гуглови контакти"
 
 #: ../modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-#| msgid "Mailer"
 msgid "GMail"
 msgstr "Г-пошта"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
-#| msgid "Mailer"
 msgid "Mail"
 msgstr "Пошта"
 
@@ -5725,9 +5751,6 @@ msgstr "Обједините ваше сандучиће"
 
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:971
 #, c-format
-#| msgid ""
-#| "Cannot find a corresponding account in the org.gnome.OnlineAccounts "
-#| "service from which to obtain an access token for '%s'"
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
 "which to obtain an access token for '%s'"
@@ -5738,10 +5761,10 @@ msgstr ""
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:79
 #, c-format
 msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
-msgstr "Очекивах стање 200 приликом потраживања гуиб-а, али добих стање %d (%s)"
+msgstr ""
+"Очекивах стање 200 приликом потраживања гуиб-а, али добих стање %d (%s)"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:96
-#| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing response as JSON: "
 msgstr "Грешка обраде одговора као ЈСОН:"
 
@@ -5750,7 +5773,6 @@ msgid "Didn't find email member in JSON data"
 msgstr "Нисам нашао члана ел. поште у ЈСОН подацима"
 
 #: ../modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
-#| msgid "Calendar"
 msgid "Yahoo! Calendar"
 msgstr "Јаху! календар"
 
@@ -5764,6 +5786,7 @@ msgstr "Задужења"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:47
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:51
+#: ../services/evolution-user-prompter/evolution-user-prompter.c:31
 msgid "Keep running after the last client is closed"
 msgstr "Наставља да ради након затварања последњег клијента"
 
