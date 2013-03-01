@@ -38,6 +38,7 @@ G_DEFINE_DYNAMIC_TYPE (
 	e_goa_password_based,
 	E_TYPE_AUTHENTICATION_SESSION)
 
+#ifdef HAVE_GOA_PASSWORD_BASED
 static GoaObject *
 e_goa_password_based_ref_account (ESourceRegistryServer *server,
                                   ESource *source,
@@ -90,6 +91,7 @@ e_goa_password_based_ref_account (ESourceRegistryServer *server,
 
 	return match;
 }
+#endif /* HAVE_GOA_PASSWORD_BASED */
 
 static EAuthenticationSessionResult
 e_goa_password_based_execute_sync (EAuthenticationSession *session,
