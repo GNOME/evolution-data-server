@@ -4,6 +4,8 @@
 
 /**
  * e_return_error_if_fail:
+ * @expr: the expression to check
+ * @error_code: the error code to set if @expr fails
  *
  * FIXME Document me!
  *
@@ -31,6 +33,8 @@
 
 /**
  * e_return_async_error_if_fail:
+ * @expr: the expression to check
+ * @error: a #GError
  *
  * Since: 2.32
  **/
@@ -71,6 +75,8 @@
 
 /**
  * e_return_ex_async_error_val_if_fail:
+ * @expr: the expression to check
+ * @error: a #GError
  *
  * Since: 2.32
  **/

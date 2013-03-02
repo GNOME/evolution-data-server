@@ -87,6 +87,8 @@ e_backend_get_user_prompter
 e_backend_trust_prompt_sync
 e_backend_trust_prompt
 e_backend_trust_prompt_finish
+e_backend_get_destination_address
+e_backend_is_destination_reachable
 <SUBSECTION Standard>
 E_BACKEND
 E_IS_BACKEND
@@ -398,6 +400,7 @@ EServerSideSourcePrivate
 <FILE>e-source-registry-server</FILE>
 <TITLE>ESourceRegistryServer</TITLE>
 E_SOURCE_REGISTRY_SERVER_OBJECT_PATH
+EDS_REGISTRY_MODULES
 ESourceRegistryServer
 e_source_registry_server_new
 e_source_registry_server_add_source

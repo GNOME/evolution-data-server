@@ -61,7 +61,6 @@ EBookListAsyncCallback
 EBookBookViewAsyncCallback
 EBookEListAsyncCallback
 EBookCallback
-EBookOpenProgressCallback
 EBookIdCallback
 EBookEListCallback
 EBookListCallback
@@ -113,13 +112,11 @@ EBookPrivate
 <TITLE>EBookClient</TITLE>
 BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS
 BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS
-E_BOOK_CLIENT_ERROR
-EBookClientError
-e_book_client_error_to_string
 EBookClient
 e_book_client_connect_sync
 e_book_client_connect
 e_book_client_connect_finish
+e_book_client_connect_direct_sync
 e_book_client_get_self
 e_book_client_set_self
 e_book_client_is_self
@@ -184,7 +181,6 @@ e_book_client_view_is_running
 e_book_client_view_set_fields_of_interest
 e_book_client_view_start
 e_book_client_view_stop
-EBookClientViewFlags
 e_book_client_view_set_flags
 <SUBSECTION Standard>
 E_BOOK_CLIENT_VIEW
@@ -204,7 +200,6 @@ EBookClientViewPrivate
 E_BOOK_ERROR
 e_book_error_quark
 EBookStatus
-EBookIndexType
 <SUBSECTION Deprecated>
 E_BOOK_ERROR_CORBA_EXCEPTION
 </SECTION>

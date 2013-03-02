@@ -43,6 +43,9 @@ typedef void (*EBookCallback) (EBook *book, EBookStatus status, gpointer closure
 
 /**
  * EBookAsyncCallback:
+ * @book: an #EBook
+ * @error: a #GError or %NULL
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/
@@ -50,6 +53,10 @@ typedef void (*EBookAsyncCallback) (EBook *book, const GError *error, gpointer c
 
 /**
  * EBookOpenProgressCallback:
+ * @book: an #EBook
+ * @status_message: a status message
+ * @percent: percent complete (0 - 100)
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/
@@ -65,6 +72,10 @@ typedef void (*EBookEListCallback)   (EBook *book, EBookStatus status, EList *li
 
 /**
  * EBookIdAsyncCallback:
+ * @book: an #EBook
+ * @error: a #GError or %NULL
+ * @id: a contact ID
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/
@@ -72,6 +83,10 @@ typedef void (*EBookIdAsyncCallback)       (EBook *book, const GError *error, co
 
 /**
  * EBookContactAsyncCallback:
+ * @book: an #EBook
+ * @error: a #GError or %NULL
+ * @contact: an #EContact or %NULL
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/
@@ -79,6 +94,10 @@ typedef void (*EBookContactAsyncCallback)  (EBook *book, const GError *error, EC
 
 /**
  * EBookListAsyncCallback:
+ * @book: an #EBook
+ * @error: a #GError or %NULL
+ * @list: a #GList of results
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/
@@ -86,6 +105,10 @@ typedef void (*EBookListAsyncCallback)     (EBook *book, const GError *error, GL
 
 /**
  * EBookBookViewAsyncCallback:
+ * @book: an #EBook
+ * @error: a #GError or %NULL
+ * @book_view: an #EBookView
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/
@@ -93,6 +116,10 @@ typedef void (*EBookBookViewAsyncCallback) (EBook *book, const GError *error, EB
 
 /**
  * EBookEListAsyncCallback:
+ * @book: an #EBook
+ * @error: a #GError or %NULL
+ * @list: an #EList of results
+ * @closure: the callback closure
  *
  * Since: 2.32
  **/

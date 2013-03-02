@@ -174,15 +174,15 @@ typedef enum {
 
 /**
  * EPhoneNumberCountrySource:
- * @E_PHONE_NUMBER_COUNTRY_FROM_FQTN: the EPhoneNumber was build from a
- * fully qualified telephone number that contained a valid country
- * calling code
- * @E_PHONE_NUMBER_COUNTRY_FROM_IDD: the parsed phone number started
- * with the current locale's international call prefix, followed by a
- * valid country calling code
- * @E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT: the parsed phone didn't start
- * with a (recognizable) country calling code, the code was chosen by
- * checking the current locale settings
+ * @E_PHONE_NUMBER_COUNTRY_FROM_FQTN:
+ *   the EPhoneNumber was build from a fully qualified telephone number
+ *   that contained a valid country calling code
+ * @E_PHONE_NUMBER_COUNTRY_FROM_IDD:
+ *   the parsed phone number started with the current locale's international
+ *   call prefix, followed by a valid country calling code
+ * @E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT:
+ *   the parsed phone didn't start with a (recognizable) country calling code,
+ *   the code was chosen by checking the current locale settings
  *
  * The origin of a parsed EPhoneNumber's country calling code.
  *
@@ -196,6 +196,7 @@ typedef enum {
 
 /**
  * EPhoneNumber:
+ *
  * This opaque type describes a parsed phone number. It can be copied using
  * e_phone_number_copy(). To release it call e_phone_number_free().
  *

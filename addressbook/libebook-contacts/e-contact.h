@@ -260,6 +260,8 @@ typedef struct {
 
 /**
  * EContactGeo:
+ * @latitude: latitude
+ * @longitude: longitude
  *
  * Since: 1.12
  **/

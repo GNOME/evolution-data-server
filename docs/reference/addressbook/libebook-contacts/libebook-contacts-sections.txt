@@ -58,7 +58,6 @@ EContactAddress
 EContactDate
 EContactCert
 EContact
-EContactClass
 e_contact_new
 e_contact_new_from_vcard
 e_contact_new_from_vcard_with_uid
@@ -103,27 +102,29 @@ e_contact_vcard_attribute
 e_contact_field_id
 e_contact_field_id_from_vcard
 <SUBSECTION Standard>
-EContactPrivate
 E_CONTACT
-E_CONTACT_CLASS
-E_CONTACT_GET_CLASS
 E_IS_CONTACT
-E_IS_CONTACT_CLASS
 E_TYPE_CONTACT
+E_CONTACT_CLASS
+E_IS_CONTACT_CLASS
+E_CONTACT_GET_CLASS
 E_TYPE_CONTACT_ADDRESS
 E_TYPE_CONTACT_ATTR_LIST
 E_TYPE_CONTACT_CERT
 E_TYPE_CONTACT_DATE
 E_TYPE_CONTACT_NAME
 E_TYPE_CONTACT_PHOTO
+EContactClass
+e_contact_get_type
 e_contact_address_get_type
 e_contact_attr_list_get_type
 e_contact_cert_get_type
 e_contact_date_get_type
 e_contact_geo_get_type
-e_contact_get_type
 e_contact_name_get_type
 e_contact_photo_get_type
+<SUBSECTION Private>
+EContactPrivate
 </SECTION>
 
 <SECTION>
@@ -161,16 +162,10 @@ e_phone_number_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-phone-number-private</FILE>
-E_PHONE_NUMBER_LOCAL
-</SECTION>
-
-<SECTION>
 <FILE>e-source-backend-summary-setup</FILE>
 <TITLE>ESourceBackendSummarySetup</TITLE>
 E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP
 ESourceBackendSummarySetup
-ESourceBackendSummarySetupClass
 e_source_backend_summary_setup_get_summary_fields
 e_source_backend_summary_setup_set_summary_fieldsv
 e_source_backend_summary_setup_set_summary_fields
@@ -178,14 +173,16 @@ e_source_backend_summary_setup_get_indexed_fields
 e_source_backend_summary_setup_set_indexed_fieldsv
 e_source_backend_summary_setup_set_indexed_fields
 <SUBSECTION Standard>
-ESourceBackendSummarySetupPrivate
-E_IS_SOURCE_BACKEND_SUMMARY_SETUP
-E_IS_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
 E_SOURCE_BACKEND_SUMMARY_SETUP
-E_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
-E_SOURCE_BACKEND_SUMMARY_SETUP_GET_CLASS
+E_IS_SOURCE_BACKEND_SUMMARY_SETUP
 E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP
+E_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
+E_IS_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
+E_SOURCE_BACKEND_SUMMARY_SETUP_GET_CLASS
+ESourceBackendSummarySetupClass
 e_source_backend_summary_setup_get_type
+<SUBSECTION Private>
+ESourceBackendSummarySetupPrivate
 </SECTION>
 
 <SECTION>
@@ -265,7 +262,6 @@ E_TYPE_VCARD_PARAM_ATTRIBUTE
 E_VCARD_21_VALID_PROPERTIES
 E_VCARD_21_VALID_PARAMETERS
 EVCard
-EVCardClass
 e_vcard_construct
 e_vcard_construct_with_uid
 e_vcard_new
@@ -321,16 +317,18 @@ e_vcard_unescape_string
 EVCardAttribute
 EVCardAttributeParam
 <SUBSECTION Standard>
-EVCardPrivate
-E_IS_VCARD
-E_IS_VCARD_CLASS
-E_TYPE_VCARD
-E_TYPE_VCARD_ATTRIBUTE
 E_VCARD
+E_IS_VCARD
+E_TYPE_VCARD
 E_VCARD_CLASS
+E_IS_VCARD_CLASS
 E_VCARD_GET_CLASS
+E_TYPE_VCARD_ATTRIBUTE
+EVCardClass
+e_vcard_get_type
 e_vcard_attribute_get_type
 e_vcard_attribute_param_get_type
-e_vcard_get_type
+<SUBSECTION Private>
+EVCardPrivate
 </SECTION>
 

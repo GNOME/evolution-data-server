@@ -539,6 +539,12 @@ E_SOURCE_EXTENSION_GOA
 e_source_goa_get_account_id
 e_source_goa_dup_account_id
 e_source_goa_set_account_id
+e_source_goa_get_calendar_url
+e_source_goa_dup_calendar_url
+e_source_goa_set_calendar_url
+e_source_goa_get_contacts_url
+e_source_goa_dup_contacts_url
+e_source_goa_set_contacts_url
 <SUBSECTION Standard>
 E_SOURCE_GOA
 E_IS_SOURCE_GOA
@@ -1070,6 +1076,7 @@ e_source_webdav_dup_soup_uri
 e_source_webdav_set_soup_uri
 ETrustPromptResponse
 e_source_webdav_prepare_ssl_trust_prompt
+e_source_webdav_prepare_ssl_trust_prompt_with_parent
 e_source_webdav_store_ssl_trust_prompt
 e_source_webdav_unset_temporary_ssl_trust
 <SUBSECTION Deprecated>

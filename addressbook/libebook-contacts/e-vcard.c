@@ -39,8 +39,8 @@
 
 G_DEFINE_TYPE (EVCard, e_vcard, G_TYPE_OBJECT)
 
-/** Encoding used in v-card
- *  Note: v-card spec defines additional 7BIT 8BIT and X- encoding
+/* Encoding used in v-card
+ * Note: v-card spec defines additional 7BIT 8BIT and X- encoding
  */
 typedef enum {
 	EVC_ENCODING_RAW,    /* no encoding */
@@ -845,6 +845,9 @@ e_vcard_construct (EVCard *evc,
 
 /**
  * e_vcard_construct_with_uid:
+ * @evc: an #EVCard
+ * @str: a vCard string
+ * @uid: a unique ID string
  *
  * FIXME: Document me!
  *

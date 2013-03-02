@@ -795,8 +795,8 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		PROP_CLIENT,
 		g_param_spec_object (
 			"client",
+			"Client",
 			"The EBookClient for the view",
-			NULL,
 			E_TYPE_BOOK_CLIENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |

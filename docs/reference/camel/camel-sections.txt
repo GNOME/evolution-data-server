@@ -833,6 +833,7 @@ camel_imapx_job_set_data
 camel_imapx_job_has_folder
 camel_imapx_job_ref_folder
 camel_imapx_job_set_folder
+camel_imapx_job_get_cancellable
 <SUBSECTION Private>
 uidset_state
 </SECTION>
@@ -2058,6 +2059,7 @@ CamelOperationPrivate
 
 <SECTION>
 <FILE>camel-provider</FILE>
+EDS_CAMEL_PROVIDER_DIR
 CamelProvider
 CamelProviderType
 CamelProviderFlags

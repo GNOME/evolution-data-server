@@ -1212,8 +1212,10 @@ e_book_client_new (ESource *source,
 
 /**
  * e_book_client_connect_direct_sync:
- * @source: An #ESource pointer
- * @error: A #GError pointer
+ * @registry: an #ESourceRegistry
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Like e_book_client_connect_sync(), except creates the book client for
  * direct read access to the underlying addressbook.

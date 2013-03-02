@@ -153,13 +153,15 @@ EBookBackendSExpPrivate
 <FILE>e-book-backend-sqlitedb</FILE>
 <TITLE>EBookBackendSqliteDB</TITLE>
 EBookBackendSqliteDB
+E_BOOK_SDB_ERROR
+EBookSDBError
 EbSdbSearchData
 e_book_backend_sqlitedb_new
 e_book_backend_sqlitedb_new_full
 e_book_backend_sqlitedb_lock_updates
 e_book_backend_sqlitedb_unlock_updates
-e_book_backend_sqlitedb_add_contact
-e_book_backend_sqlitedb_add_contacts
+e_book_backend_sqlitedb_new_contact
+e_book_backend_sqlitedb_new_contacts
 e_book_backend_sqlitedb_remove_contact
 e_book_backend_sqlitedb_remove_contacts
 e_book_backend_sqlitedb_has_contact
@@ -189,6 +191,8 @@ e_book_backend_sqlitedb_check_summary_fields
 <SUBSECTION Deprecated>
 e_book_backend_sqlitedb_is_summary_query
 e_book_backend_sqlitedb_is_summary_fields
+e_book_backend_sqlitedb_add_contact
+e_book_backend_sqlitedb_add_contacts
 <SUBSECTION Standard>
 E_TYPE_BOOK_BACKEND_SQLITEDB
 E_BOOK_BACKEND_SQLITEDB
@@ -198,6 +202,7 @@ E_IS_BOOK_BACKEND_SQLITEDB_CLASS
 E_BOOK_BACKEND_SQLITEDB_GET_CLASS
 EBookBackendSqliteDBClass;
 e_book_backend_sqlitedb_get_type
+e_book_backend_sqlitedb_error_quark
 <SUBSECTION Private>
 EBookBackendSqliteDBPrivate
 </SECTION>

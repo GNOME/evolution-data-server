@@ -2092,6 +2092,8 @@ e_book_cancel (EBook *book,
 
 /**
  * e_book_cancel_async_op:
+ * @book: an #EBook
+ * @error: return location for a #GError, or %NULL
  *
  * Similar to above e_book_cancel function, only cancels last, still running,
  * asynchronous operation.

@@ -238,7 +238,7 @@ void		e_book_client_get_contacts	(EBookClient *client,
 gboolean	e_book_client_get_contacts_finish
 						(EBookClient *client,
 						 GAsyncResult *result,
-						 GSList **contacts,
+						 GSList **out_contacts,
 						 GError **error);
 gboolean	e_book_client_get_contacts_sync	(EBookClient *client,
 						 const gchar *sexp,

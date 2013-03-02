@@ -117,6 +117,7 @@ G_BEGIN_DECLS
 
 /**
  * EVC_X_TWITTER:
+ *
  * Twitter name(s).
  *
  * Since: 3.6

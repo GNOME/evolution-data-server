@@ -79,6 +79,8 @@ struct _ESourceRefreshClass {
 
 /**
  * ESourceRefreshFunc:
+ * @source: an #ESource
+ * @user_data: user data provided to the callback function
  *
  * Since: 3.6
  **/

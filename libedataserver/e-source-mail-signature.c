@@ -394,7 +394,7 @@ source_mail_signature_load_thread (GSimpleAsyncResult *simple,
  * captured as the email signature content.  If the signature file is not
  * executable, the email signature content is read directly from the file.
  *
- * Returns; %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on failure
  *
  * Since: 3.6
  **/
