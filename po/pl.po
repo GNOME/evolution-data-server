@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 19:52+0100\n"
-"PO-Revision-Date: 2013-02-27 19:53+0100\n"
+"POT-Creation-Date: 2013-03-02 01:50+0100\n"
+"PO-Revision-Date: 2013-03-02 01:51+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -95,8 +95,8 @@ msgstr ""
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1194
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4813
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1015
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:333
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1022
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:34
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:562
@@ -119,7 +119,7 @@ msgstr "Sprawdzanie dostępności aktualizacji grup…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1235
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1625
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:375
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:382
 msgid "The backend does not support bulk additions"
 msgstr "Mechanizm nie obsługuje dodawania całości"
 
@@ -129,7 +129,7 @@ msgid "Creating new contact…"
 msgstr "Tworzenie nowych kontaktów…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1358
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:492
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:499
 msgid "The backend does not support bulk removals"
 msgstr "Mechanizm nie obsługuje usuwania całości"
 
@@ -139,7 +139,7 @@ msgstr "Usuwanie kontaktu…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1640
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2288
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:553
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:560
 msgid "The backend does not support bulk modifications"
 msgstr "Mechanizm nie obsługuje modyfikacji całości"
 
@@ -247,44 +247,44 @@ msgstr "Pobieranie kontaktów (%d)... "
 msgid "Failed to get the DN for user '%s'"
 msgstr "Uzyskanie DN dla użytkownika \"%s\" się nie powiodło"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:406
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:413
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "Utworzenie zasobu \"%s\" się nie powiodło ze stanem HTTP %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "Usunięcie się nie powiodło ze stanem HTTP %d"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:574
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:581
 msgid "Contact on server changed -> not modifying"
 msgstr "Kontakt na serwerze został zmieniony -> bez modyfikowania"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:583
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:590
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "Zmodyfikowanie kontaktu się nie powiodło ze stanem HTTP %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:993
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1000
 msgid "Loading Addressbook summary..."
 msgstr "Wczytywanie podsumowania książki adresowej..."
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1012
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1019
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "PROPFIND na WebDAV się nie powiodło ze stanem HTTP %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1037
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1044
 msgid "No response body in webdav PROPFIND result"
 msgstr "Brak treści odpowiedzi w wyniku PROPFIND WebDAV"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1069
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1076
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Wczytywanie kontaktów (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1409
 msgid "Cannot transform SoupURI to string"
 msgstr "Nie można przekształcić adresu URI biblioteki Soup na ciąg"
 
@@ -2281,45 +2281,45 @@ msgstr "Nie można utworzyć podsumowania katalogu dla %s"
 msgid "Could not create cache for %s: "
 msgstr "Nie można utworzyć bufora dla %s: "
 
-#: ../camel/camel-imapx-server.c:1254
+#: ../camel/camel-imapx-server.c:1267
 msgid "Server disconnected"
 msgstr "Serwer został rozłączony"
 
-#: ../camel/camel-imapx-server.c:1727
+#: ../camel/camel-imapx-server.c:1775
 msgid "Error writing to cache stream"
 msgstr "Błąd podczas zapisywania do potoku bufora"
 
-#: ../camel/camel-imapx-server.c:2893
+#: ../camel/camel-imapx-server.c:2980
 #, c-format
 msgid "Not authenticated"
 msgstr "Nie uwierzytelniono"
 
-#: ../camel/camel-imapx-server.c:2971
+#: ../camel/camel-imapx-server.c:3058
 msgid "Error performing IDLE"
 msgstr "Błąd podczas wykonywania zajętości"
 
-#: ../camel/camel-imapx-server.c:3875
+#: ../camel/camel-imapx-server.c:4015
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Połączenie z serwerem IMAP %s w trybie bezpiecznym się nie powiodło: %s"
 
-#: ../camel/camel-imapx-server.c:3876
+#: ../camel/camel-imapx-server.c:4016
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nie jest obsługiwane"
 
-#: ../camel/camel-imapx-server.c:3915
+#: ../camel/camel-imapx-server.c:4055
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Połączenie z serwerem IMAP %s w trybie bezpiecznym się nie powiodło: "
 
-#: ../camel/camel-imapx-server.c:3995
+#: ../camel/camel-imapx-server.c:4135
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Serwer IMAP %s nie obsługuje uwierzytelniania %s"
 
-#: ../camel/camel-imapx-server.c:4006 ../camel/camel-session.c:495
+#: ../camel/camel-imapx-server.c:4146 ../camel/camel-session.c:495
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2327,66 +2327,66 @@ msgstr "Serwer IMAP %s nie obsługuje uwierzytelniania %s"
 msgid "No support for %s authentication"
 msgstr "Brak obsługi uwierzytelniania %s"
 
-#: ../camel/camel-imapx-server.c:4025
+#: ../camel/camel-imapx-server.c:4165
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "Nie można uwierzytelnić bez nazwy użytkownika"
 
-#: ../camel/camel-imapx-server.c:4034
+#: ../camel/camel-imapx-server.c:4174
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "Hasło uwierzytelnienia jest niedostępne"
 
-#: ../camel/camel-imapx-server.c:4242
+#: ../camel/camel-imapx-server.c:4382
 msgid "Error fetching message"
 msgstr "Błąd podczas pobierania wiadomości"
 
-#: ../camel/camel-imapx-server.c:4324
+#: ../camel/camel-imapx-server.c:4464
 msgid "Failed to copy the tmp file"
 msgstr "Skopiowanie pliku tymczasowego się nie powiodło"
 
-#: ../camel/camel-imapx-server.c:4338
+#: ../camel/camel-imapx-server.c:4478
 msgid "Failed to close the tmp stream"
 msgstr "Zamknięcie potoku tymczasowego się nie powiodło"
 
-#: ../camel/camel-imapx-server.c:4459
+#: ../camel/camel-imapx-server.c:4599
 msgid "Error copying messages"
 msgstr "Błąd podczas kopiowania wiadomości"
 
-#: ../camel/camel-imapx-server.c:4625
+#: ../camel/camel-imapx-server.c:4765
 msgid "Error appending message"
 msgstr "Błąd podczas dołączania wiadomości"
 
-#: ../camel/camel-imapx-server.c:4824
+#: ../camel/camel-imapx-server.c:4964
 msgid "Error fetching message headers"
 msgstr "Błąd podczas pobierania nagłówków wiadomości"
 
-#: ../camel/camel-imapx-server.c:4971
+#: ../camel/camel-imapx-server.c:5111
 msgid "Error retrieving message"
 msgstr "Błąd podczas pobierania wiadomości"
 
-#: ../camel/camel-imapx-server.c:5095 ../camel/camel-imapx-server.c:5323
+#: ../camel/camel-imapx-server.c:5235 ../camel/camel-imapx-server.c:5463
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Pobieranie informacji podsumowujących dla nowych wiadomości w \"%s\""
 
-#: ../camel/camel-imapx-server.c:5159
+#: ../camel/camel-imapx-server.c:5299
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Wyszukiwanie zmodyfikowanych wiadomości w \"%s\""
 
-#: ../camel/camel-imapx-server.c:5212
+#: ../camel/camel-imapx-server.c:5352
 msgid "Error fetching new messages"
 msgstr "Błąd podczas pobierania nowych wiadomości"
 
-#: ../camel/camel-imapx-server.c:5425
+#: ../camel/camel-imapx-server.c:5565
 msgid "Error while fetching messages"
 msgstr "Błąd podczas pobierania wiadomości"
 
-#: ../camel/camel-imapx-server.c:5433 ../camel/camel-imapx-server.c:5466
+#: ../camel/camel-imapx-server.c:5573 ../camel/camel-imapx-server.c:5606
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2397,64 +2397,64 @@ msgstr[1] ""
 msgstr[2] ""
 "Pobieranie informacji podsumowujących dla %d nowych wiadomości w \"%s\""
 
-#: ../camel/camel-imapx-server.c:5602 ../camel/camel-imapx-server.c:5632
+#: ../camel/camel-imapx-server.c:5742 ../camel/camel-imapx-server.c:5772
 msgid "Error refreshing folder"
 msgstr "Błąd podczas odświeżania katalogu"
 
-#: ../camel/camel-imapx-server.c:5736
+#: ../camel/camel-imapx-server.c:5876
 msgid "Error expunging message"
 msgstr "Błąd podczas czyszczenia wiadomości"
 
-#: ../camel/camel-imapx-server.c:5847
+#: ../camel/camel-imapx-server.c:5987
 msgid "Error fetching folders"
 msgstr "Błąd podczas pobierania katalogów"
 
-#: ../camel/camel-imapx-server.c:5929
+#: ../camel/camel-imapx-server.c:6069
 msgid "Error subscribing to folder"
 msgstr "Błąd podczas subskrybowania katalogu"
 
-#: ../camel/camel-imapx-server.c:5994
+#: ../camel/camel-imapx-server.c:6134
 msgid "Error creating folder"
 msgstr "Błąd podczas tworzenia katalogu"
 
-#: ../camel/camel-imapx-server.c:6048
+#: ../camel/camel-imapx-server.c:6188
 msgid "Error deleting folder"
 msgstr "Błąd podczas usuwania katalogu"
 
-#: ../camel/camel-imapx-server.c:6122
+#: ../camel/camel-imapx-server.c:6262
 msgid "Error renaming folder"
 msgstr "Błąd podczas zmieniania nazwy katalogu"
 
-#: ../camel/camel-imapx-server.c:6197
+#: ../camel/camel-imapx-server.c:6337
 msgid "Error retrieving quota information"
 msgstr "Błąd podczas pobierania informacji o przydziale"
 
-#: ../camel/camel-imapx-server.c:6262
+#: ../camel/camel-imapx-server.c:6402
 msgid "Search failed"
 msgstr "Wyszukiwanie się nie powiodło"
 
-#: ../camel/camel-imapx-server.c:6325
+#: ../camel/camel-imapx-server.c:6465
 msgid "Error performing NOOP"
 msgstr "Błąd podczas wykonywania NOOP"
 
-#: ../camel/camel-imapx-server.c:6434
+#: ../camel/camel-imapx-server.c:6574
 msgid "Error syncing changes"
 msgstr "Błąd podczas synchronizowania zmian"
 
-#: ../camel/camel-imapx-server.c:7246
+#: ../camel/camel-imapx-server.c:7383
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nie można pobrać wiadomości z identyfikatorem %s: %s"
 
-#: ../camel/camel-imapx-server.c:7247
+#: ../camel/camel-imapx-server.c:7384
 msgid "No such message available."
 msgstr "Nie ma takiej wiadomości."
 
-#: ../camel/camel-imapx-server.c:7405 ../camel/camel-imapx-server.c:7420
+#: ../camel/camel-imapx-server.c:7542 ../camel/camel-imapx-server.c:7557
 msgid "Cannot create spool file: "
 msgstr "Nie można utworzyć pliku kolejki: "
 
-#: ../camel/camel-imapx-server.c:8162
+#: ../camel/camel-imapx-server.c:8299
 msgid "IMAP server does not support quotas"
 msgstr "Serwer IMAP nie obsługuje przydziałów"
 
@@ -4767,12 +4767,12 @@ msgstr "Niepoprawne hasło"
 msgid "%s does not support authentication"
 msgstr "%s nie obsługuje uwierzytelniania"
 
-#: ../libebackend/e-collection-backend.c:782
+#: ../libebackend/e-collection-backend.c:800
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s nie obsługuje tworzenia zdalnych zasobów"
 
-#: ../libebackend/e-collection-backend.c:841
+#: ../libebackend/e-collection-backend.c:859
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s nie obsługuje usuwania zdalnych zasobów"
@@ -5322,6 +5322,26 @@ msgstr "Adres URL automatycznej konfiguracji pośrednika"
 msgid "Where to read automatic proxy configuration from."
 msgstr "Skąd odczytywać automatyczną konfigurację pośrednika."
 
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:132
+#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
+#, c-format
+msgid "No such data source for UID '%s'"
+msgstr "Nie ma takiego źródła danych dla UID \"%s\""
+
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:144
+#, c-format
+msgid ""
+"Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
+"from which to obtain a password for '%s'"
+msgstr ""
+"Nie można odnaleźć odpowiedniego konta w usłudze org.gnome.OnlineAccounts, z "
+"której ma zostać uzyskane hasło dla \"%s\""
+
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:216
+#, c-format
+msgid "Invalid password for '%s'"
+msgstr "Nieprawidłowe hasło dla \"%s\""
+
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:223
 #, c-format
@@ -5361,7 +5381,7 @@ msgstr ""
 "Odnalezienie ASUrl i OABUrl w odpowiedzi automatycznego wykrywania się nie "
 "powiodło"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1140
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1238
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5370,7 +5390,7 @@ msgstr ""
 "Nie można odnaleźć odpowiedniego konta w usłudze org.gnome.OnlineAccounts, z "
 "której ma zostać uzyskany token dostępu dla \"%s\""
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1167
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1265
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Uzyskanie tokenu dostępu dla \"%s\" się nie powiodło: "
@@ -5759,11 +5779,6 @@ msgstr "Integracja kontaktów"
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:257
 msgid "Signon service did not return a secret"
 msgstr "Usługa logowania nie zwróciła sekretu"
-
-#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
-#, c-format
-msgid "No such data source for UID '%s'"
-msgstr "Nie ma takiego źródła danych dla UID \"%s\""
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
 msgid "Google Calendar"
