@@ -1,6 +1,6 @@
 # Vietnamese translation for Evolution Data Server.
 # Copyright © 2009 GNOME i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2007,2011-2012.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2007,2011-2013.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
 #
 msgid ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2013-03-01 18:36+0000\n"
-"PO-Revision-Date: 2013-03-02 20:05+0700\n"
+"PO-Revision-Date: 2013-03-02 20:31+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "Language: vi\n"
@@ -58,17 +58,15 @@ msgstr ""
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1085
 #: ../addressbook/backends/file/e-book-backend-file.c:1133
-#, fuzzy, c-format
-#| msgid "Protocol not supported"
+#, c-format
 msgid "Query '%s' not supported"
-msgstr "Chưa hỗ trợ giao thức này"
+msgstr "Không hỗ trợ truy vấn '%s'"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1093
 #: ../addressbook/backends/file/e-book-backend-file.c:1141
-#, fuzzy, c-format
-#| msgid "Invalid query: "
+#, c-format
 msgid "Invalid Query '%s'"
-msgstr "Truy vấn không hợp lệ: "
+msgstr "Truy vấn không hợp lệ '%s'"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1241
 msgid "Loading..."
@@ -80,10 +78,9 @@ msgid "Searching..."
 msgstr "Đang tìm kiếm..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1561
-#, fuzzy, c-format
-#| msgid "Could not rename folder %s to %s: %s"
+#, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
-msgstr "Không thể đổi tên thư mục %s thành %s: %s"
+msgstr "Không thể đổi tên cơ sở dữ liệu từ '%s' thành '%s': %s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1194
@@ -241,10 +238,9 @@ msgid "Failed to get the DN for user '%s'"
 msgstr "Lỗi lấy DN cho người dùng '%s'"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:413
-#, fuzzy, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+#, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
-msgstr "Lỗi tạo tài nguyên '%s' với mã trạng thái HTTP: %d (%s)"
+msgstr "Lỗi tạo tài nguyên '%s' với mã trạng thái HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
 #, c-format
@@ -256,10 +252,9 @@ msgid "Contact on server changed -> not modifying"
 msgstr "Liên lạc trên máy chủ thay đổi -> không sửa"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:590
-#, fuzzy, c-format
-#| msgid "Modify contact failed with HTTP status: %d (%s)"
+#, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
-msgstr "Lỗi thay đổi liên lạc với mã HTTP: %d (%s)"
+msgstr "Lỗi thay đổi liên lạc với mã HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1000
 msgid "Loading Addressbook summary..."
@@ -897,13 +892,11 @@ msgstr ""
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:47
 msgid "Not a phone number"
-msgstr ""
+msgstr "Không phải số điện thoại"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:49
-#, fuzzy
-#| msgid "Invalid range"
 msgid "Invalid country calling code"
-msgstr "Phạm vi không hợp lệ"
+msgstr "Mã gọi quốc gia không hợp lệ"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:51
 msgid ""
@@ -933,10 +926,9 @@ msgstr "Không thể thay đổi thuộc tính sổ '%s'"
 #: ../addressbook/libebook/e-book-client.c:1177
 #: ../calendar/libecal/e-cal-client.c:1448
 #: ../calendar/libecal/e-cal-client.c:1628
-#, fuzzy, c-format
-#| msgid "Could not connect to %s: "
+#, c-format
 msgid "Unable to connect to '%s': "
-msgstr "Không thể kết nối tới %s: "
+msgstr "Không thể kết nối đến '%s': "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:754
 #, c-format
@@ -975,8 +967,7 @@ msgid "Query contained unsupported elements"
 msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3734
-#, fuzzy, c-format
-#| msgid "Invalid query"
+#, c-format
 msgid "Invalid Query"
 msgstr "Truy vấn không hợp lệ"
 
@@ -1003,17 +994,14 @@ msgid ""
 msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4557
-#, fuzzy, c-format
-#| msgid "Failed to remove file '%s': %s"
+#, c-format
 msgid "Unable to remove the db file: errno %d"
-msgstr "Lỗi loại bỏ tập tin '%s': %s"
+msgstr "Lỗi xoá tập tin cơ sở dữ liệu: errno %d"
 
 #: ../addressbook/libedata-book/e-book-backend-sync.c:179
 #: ../calendar/libedata-cal/e-cal-backend-sync.c:182
-#, fuzzy
-#| msgid "Cannot set backend property: "
 msgid "Clients cannot set backend properties"
-msgstr "Không thể đặt thuộc tính hậu phương: "
+msgstr "Không thể đặt thuộc tính hậu phương"
 
 #. Translators: This is prefix to a detailed error message
 #. Translators: This is a prefix to a detailed error message *
@@ -1132,10 +1120,8 @@ msgstr "Hậu phương chưa mở"
 
 #: ../addressbook/libedata-book/e-data-book.c:819
 #: ../libedataserver/e-client.c:175
-#, fuzzy
-#| msgid "Object not found"
 msgid "Object is out of sync"
-msgstr "Không tìm thấy đối tượng"
+msgstr "Đối tượng không đồng bộ"
 
 #: ../addressbook/libedata-book/e-data-book.c:827
 #: ../calendar/libedata-cal/e-data-cal.c:787 ../libedataserver/e-client.c:171
@@ -1970,22 +1956,19 @@ msgid "Failed at message %d of %d"
 msgstr "Lỗi tại thư %d trên %d"
 
 #: ../camel/camel-filter-driver.c:1741 ../camel/camel-filter-driver.c:1775
-#, fuzzy, c-format
-#| msgid "Error executing filter: %s: %s"
+#, c-format
 msgid "Execution of filter '%s' failed: "
-msgstr "Lỗi thực hiện bộ lọc: %s: %s"
+msgstr "Lỗi thực hiện bộ lọc '%s': "
 
 #: ../camel/camel-filter-driver.c:1765
-#, fuzzy, c-format
-#| msgid "Error parsing filter: %s: %s"
+#, c-format
 msgid "Error parsing filter '%s': %s: %s"
-msgstr "Lỗi phân tích bộ lọc: %s: %s"
+msgstr "Lỗi phân tích bộ lọc '%s': %s: %s"
 
 #: ../camel/camel-filter-driver.c:1784
-#, fuzzy, c-format
-#| msgid "Error executing filter: %s: %s"
+#, c-format
 msgid "Error executing filter '%s': %s: %s"
-msgstr "Lỗi thực hiện bộ lọc: %s: %s"
+msgstr "Lỗi thực hiện bộ lọc '%s': %s: %s"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
@@ -2236,27 +2219,22 @@ msgid "Encrypted content"
 msgstr "Nội dung bị mật mã hóa"
 
 #: ../camel/camel-imapx-folder.c:710
-#, fuzzy, c-format
-#| msgid "Quota information not supported for folder '%s'"
+#, c-format
 msgid "No quota information available for folder '%s'"
-msgstr "Không hỗ trợ thông tin chỉ tiêu cho thư mục '%s'"
+msgstr "Không có thông tin chỉ tiêu cho thư mục '%s'"
 
 #: ../camel/camel-imapx-folder.c:809 ../camel/camel-imapx-folder.c:882
 #, c-format
 msgid "No destination folder specified"
-msgstr ""
+msgstr "Chưa xác định thư mục đích"
 
 #: ../camel/camel-imapx-folder.c:828
-#, fuzzy
-#| msgid "Unable to retrieve message: "
 msgid "Unable to move junk messages"
-msgstr "Không thể lấy thư: "
+msgstr "Không thể di chuyển thư rác"
 
 #: ../camel/camel-imapx-folder.c:901
-#, fuzzy
-#| msgid "Unable to retrieve message: "
 msgid "Unable to move deleted messages"
-msgstr "Không thể lấy thư: "
+msgstr "Không thể di chuyển thư đã xoá"
 
 #: ../camel/camel-imapx-folder.c:1115
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
@@ -2278,10 +2256,8 @@ msgid "Server disconnected"
 msgstr "Máy chủ ngắt kết nối"
 
 #: ../camel/camel-imapx-server.c:1775
-#, fuzzy
-#| msgid "Error writing to cache stream: "
 msgid "Error writing to cache stream"
-msgstr "Lỗi ghi vào luồng trữ tạm (cache): "
+msgstr "Lỗi ghi vào luồng trữ tạm (cache)"
 
 #: ../camel/camel-imapx-server.c:2980
 #, c-format
@@ -2414,16 +2390,12 @@ msgid "Error renaming folder"
 msgstr "Lỗi đổi tên thư mục"
 
 #: ../camel/camel-imapx-server.c:6337
-#, fuzzy
-#| msgid "Retrieving quota information for '%s'"
 msgid "Error retrieving quota information"
-msgstr "Đang lấy thông tin chỉ tiêu cho '%s'"
+msgstr "Lỗi lấy thông tin chỉ tiêu"
 
 #: ../camel/camel-imapx-server.c:6402
-#, fuzzy
-#| msgid "Decoder failed"
 msgid "Search failed"
-msgstr "Lỗi bộ giải mã"
+msgstr "Lỗi tìm"
 
 #: ../camel/camel-imapx-server.c:6465
 msgid "Error performing NOOP"
@@ -2447,10 +2419,8 @@ msgid "Cannot create spool file: "
 msgstr "Không thể tạo tập tin spool: "
 
 #: ../camel/camel-imapx-server.c:8299
-#, fuzzy
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "IMAP server does not support quotas"
-msgstr "Máy phục vụ IMAP %s không hỗ trợ xác thực %s"
+msgstr "Máy phục vụ IMAP %s không hỗ trợ chỉ tiêu"
 
 #: ../camel/camel-imapx-store.c:249
 #, c-format
@@ -2642,13 +2612,12 @@ msgstr "Lỗi tra cứu máy phục vụ: không tìm thấy máy phục vụ"
 #: ../camel/camel-net-utils.c:732
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
-msgstr ""
+msgstr "Lỗi tra cứu máy '%s'. Hãy kiểm tra tên máy có sai chính tả không."
 
 #: ../camel/camel-net-utils.c:736
-#, fuzzy, c-format
-#| msgid "Host lookup failed: %s: %s"
+#, c-format
 msgid "Host lookup '%s' failed: %s"
-msgstr "Lỗi tra cứu máy phục vụ: %s: %s (không tìm thấy máy phục vụ)"
+msgstr "Lỗi tra cứu máy '%s': %s"
 
 #: ../camel/camel-net-utils.c:857
 msgid "Resolving address"
@@ -2660,7 +2629,7 @@ msgstr "Lỗi tra cứu máy phục vụ tên"
 
 #: ../camel/camel-net-utils.c:885
 msgid "Name lookup failed. Check your host name for spelling errors."
-msgstr ""
+msgstr "Lỗi tra cứu tên máy. Hãy kiểm tra tên máy có sai chính tả không."
 
 #: ../camel/camel-net-utils.c:889
 #, c-format
@@ -2668,10 +2637,9 @@ msgid "Name lookup failed: %s"
 msgstr "Lỗi tra cứu máy phục vụ tên: %s"
 
 #: ../camel/camel-network-service.c:350
-#, fuzzy, c-format
-#| msgid "Could not connect to %s: %s"
+#, c-format
 msgid "Could not connect to '%s:%s': "
-msgstr "Không thể kết nối tới %s: %s"
+msgstr "Không thể kết nối đến '%s:%s': "
 
 #: ../camel/camel-offline-folder.c:212
 #, c-format
@@ -2814,7 +2782,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:93
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "Tùy chọn này sẽ kết nối tới máy chu bằng cơ chế xác minh Kerberos 5."
+msgstr "Tùy chọn này sẽ kết nối tới máy chủ bằng cơ chế xác minh Kerberos 5."
 
 #: ../camel/camel-sasl-gssapi.c:134
 msgid ""
@@ -4076,13 +4044,10 @@ msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "Đây là bộ cung cấp đọc từ và gửi thư tới các nhóm tin USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:87
-#, fuzzy
-#| msgid ""
-#| "This option will connect to the server using Kerberos 5 authentication."
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
-msgstr "Tùy chọn này sẽ kết nối tới máy chu bằng cơ chế xác minh Kerberos 5."
+msgstr "Tùy chọn này sẽ kết nối vô danh tới máy chủ NNTP, không cần xác thực."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
@@ -4400,44 +4365,38 @@ msgid "Could not parse recipient list"
 msgstr "Không thể phân tích danh sách người nhận"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:182
-#, fuzzy, c-format
-#| msgid "Could not parse recipient list"
+#, c-format
 msgid "Could not parse arguments"
-msgstr "Không thể phân tích danh sách người nhận"
+msgstr "Không thể phân tích đối số"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:213
-#, fuzzy, c-format
-#| msgid "Could not create pipe to sendmail: %s: mail not sent"
+#, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr "Không thể tạo ống dẫn tới trình sendmail: %s: chưa gửi thư"
+msgstr "Không thể tạo ống dẫn tới '%s': %s: chưa gửi thư"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:238
-#, fuzzy, c-format
-#| msgid "Could not fork sendmail: %s: mail not sent"
+#, c-format
 msgid "Could not fork '%s': %s: mail not sent"
-msgstr "Không thể tạo tiến trình sendmail mới: %s: chưa gửi thư"
+msgstr "Không thể fork '%s': %s: chưa gửi thư"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:287
 msgid "Could not send message: "
 msgstr "Không thể gửi thư: "
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:317
-#, fuzzy, c-format
-#| msgid "sendmail exited with signal %s: mail not sent."
+#, c-format
 msgid "'%s' exited with signal %s: mail not sent."
-msgstr "Trình sendmail đã thoát với tín hiệu %s: chưa gửi thư."
+msgstr "'%s' đã thoát với tín hiệu %s: chưa gửi thư."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:327
-#, fuzzy, c-format
-#| msgid "Could not execute %s: mail not sent."
+#, c-format
 msgid "Could not execute '%s': mail not sent."
-msgstr "Không thể thực hiện %s: chưa gửi thư."
+msgstr "Không thể thực hiện '%s': chưa gửi thư."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:332
-#, fuzzy, c-format
-#| msgid "sendmail exited with status %d: mail not sent."
+#, c-format
 msgid "'%s' exited with status %d: mail not sent."
-msgstr "Trình sendmail đã thoát với trạng thái %d: chưa gửi thư."
+msgstr "'%s' đã thoát với trạng thái %d: chưa gửi thư."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4753,10 +4712,9 @@ msgid "%s does not support deleting remote resources"
 msgstr "%s không hỗ trợ xoá tài nguyên ở xa"
 
 #: ../libebackend/e-data-factory.c:320
-#, fuzzy, c-format
-#| msgid "No backend name in source '%s'"
+#, c-format
 msgid "No backend factory for hash key '%s'"
-msgstr "Không có mặt sau cho trong nguồn '%s'"
+msgstr "Không có backend factory cho khoá băm '%s'"
 
 #: ../libebackend/e-server-side-source.c:134
 #, c-format
@@ -4790,10 +4748,9 @@ msgstr "Nguồn dữ liệu '%s' không có collection backend để xoá tài n
 #: ../libebackend/e-server-side-source.c:1095
 #: ../libedataserver/e-source.c:1317
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
-#, fuzzy, c-format
-#| msgid "IMAP server %s does not support %s authentication"
+#, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
-msgstr "Máy phục vụ IMAP %s không hỗ trợ xác thực %s"
+msgstr "Nguồn dữ liệu '%s' không hỗ trợ xác thực OAuth 2.0"
 
 #: ../libebackend/e-server-side-source.c:1435
 #, c-format
@@ -4811,10 +4768,9 @@ msgid "UID '%s' is already in use"
 msgstr "UID '%s' đang dùng"
 
 #: ../libebackend/e-user-prompter-server.c:279
-#, fuzzy, c-format
-#| msgid "Contact '%s' not found"
+#, c-format
 msgid "Extension dialog '%s' not found."
-msgstr "Không tìm thấy liên lạc '%s'"
+msgstr "Không tìm thấy hộp thoại mở rộng '%s'."
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -5023,68 +4979,40 @@ msgid "Signature script must be a local file"
 msgstr "Văn lệnh chữ ký phải là tập tin cục bộ"
 
 #: ../libedataserver/e-source-webdav.c:1519
-#, fuzzy, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
+#, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
-"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?\n"
-"\n"
-"Thông tin chi tiết về chứng nhận:\n"
-"%s"
+"Chứng nhận SSL cho máy '%s', dùng bởi sổ địa chỉ '%s', không tin tưởng được. "
+"Bạn có muốn chấp nhận nó không?"
 
 #: ../libedataserver/e-source-webdav.c:1528
-#, fuzzy, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
+#, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
 "wish to accept it?"
 msgstr ""
-"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?\n"
-"\n"
-"Thông tin chi tiết về chứng nhận:\n"
-"%s"
+"Chứng nhận SSL cho máy '%s', dùng bởi lịch '%s', không tin tưởng được. Bạn "
+"có muốn chấp nhận nó không?"
 
 #: ../libedataserver/e-source-webdav.c:1537
-#, fuzzy, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
+#, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
-"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?\n"
-"\n"
-"Thông tin chi tiết về chứng nhận:\n"
-"%s"
+"Chứng nhận SSL cho máy '%s', dùng bởi danh sách bản ghi nhớ '%s', không tin "
+"tưởng được. Bạn có muốn chấp nhận nó không?"
 
 #: ../libedataserver/e-source-webdav.c:1546
-#, fuzzy, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
+#, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
-"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?\n"
-"\n"
-"Thông tin chi tiết về chứng nhận:\n"
-"%s"
+"Chứng nhận SSL cho máy '%s', dùng bởi danh sách tác vụ '%s', không tin tưởng "
+"được. Bạn có muốn chấp nhận nó không?"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5325,10 +5253,9 @@ msgstr "Nơi đọc cấu hình uỷ nhiệm tự động."
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:132
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
-#, fuzzy, c-format
-#| msgid "No such source for UID '%s'"
+#, c-format
 msgid "No such data source for UID '%s'"
-msgstr "Không có nguồn cho UID '%s'"
+msgstr "Không có nguồn dữ liệu cho UID '%s'"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:144
 #, c-format
@@ -5338,10 +5265,9 @@ msgid ""
 msgstr ""
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:216
-#, fuzzy, c-format
-#| msgid "Enter password for %s"
+#, c-format
 msgid "Invalid password for '%s'"
-msgstr "Nhập mật khẩu cho « %s »."
+msgstr "Mật khẩu cho '%s' không hợp lệ"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:223
@@ -5387,10 +5313,9 @@ msgid ""
 msgstr ""
 
 #: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1265
-#, fuzzy, c-format
-#| msgid "Failed to open addressbook at '%s': %s"
+#, c-format
 msgid "Failed to obtain an access token for '%s': "
-msgstr "Lỗi mở sổ địa chỉ tại '%s': %s"
+msgstr "Lỗi lấy thẻ truy cập cho '%s': "
 
 #: ../modules/google-backend/module-google-backend.c:140
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
@@ -5405,195 +5330,175 @@ msgid "Contacts"
 msgstr "Liên lạc"
 
 #: ../modules/trust-prompt/certificate-viewer.c:292
-#, fuzzy
-#| msgid "Cannot add encryption certificate"
 msgid "Not part of certificate"
-msgstr "Không thể thêm chứng nhận mã hóa"
+msgstr "Không thuộc về chứng nhận"
 
 #: ../modules/trust-prompt/certificate-viewer.c:600
 msgid "This certificate has been verified for the following uses:"
-msgstr ""
+msgstr "Chứng nhận này được xác minh cho những cách dùng sau:"
 
 #: ../modules/trust-prompt/certificate-viewer.c:604
 #: ../modules/trust-prompt/e-asn1-object.c:387
-#, fuzzy
-#| msgid "X.509 Certificate"
 msgid "SSL Client Certificate"
-msgstr "Chứng nhận X.509"
+msgstr "Chứng nhận khách SSL"
 
 #: ../modules/trust-prompt/certificate-viewer.c:609
 #: ../modules/trust-prompt/e-asn1-object.c:391
-#, fuzzy
-#| msgid "X.509 Certificate"
 msgid "SSL Server Certificate"
-msgstr "Chứng nhận X.509"
+msgstr "Chứng nhận máy chủ SSL"
 
 #: ../modules/trust-prompt/certificate-viewer.c:614
 msgid "Email Signer Certificate"
-msgstr ""
+msgstr "Chứng nhận người ký thư"
 
 #: ../modules/trust-prompt/certificate-viewer.c:619
-#, fuzzy
-#| msgid "Cannot add encryption certificate"
 msgid "Email Recipient Certificate"
-msgstr "Không thể thêm chứng nhận mã hóa"
+msgstr "Chứng nhận nhận thư"
 
 #: ../modules/trust-prompt/certificate-viewer.c:634
 msgid "Issued To"
-msgstr ""
+msgstr "Phát hành cho"
 
 #: ../modules/trust-prompt/certificate-viewer.c:635
 #: ../modules/trust-prompt/certificate-viewer.c:641
 msgid "Common Name (CN)"
-msgstr ""
+msgstr "Tên chung (CN)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:636
 #: ../modules/trust-prompt/certificate-viewer.c:642
-#, fuzzy
-#| msgid "Organization"
 msgid "Organization (O)"
-msgstr "Tổ chức"
+msgstr "Tổ chức (O)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:637
 #: ../modules/trust-prompt/certificate-viewer.c:643
-#, fuzzy
-#| msgid "Organizational Unit"
 msgid "Organizational Unit (OU)"
-msgstr "Đơn vị tổ chức"
+msgstr "Đơn vị tổ chức (OU)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:638
 #: ../modules/trust-prompt/e-asn1-object.c:134
 msgid "Serial Number"
-msgstr ""
+msgstr "Số sê-ri"
 
 #: ../modules/trust-prompt/certificate-viewer.c:640
 msgid "Issued By"
-msgstr ""
+msgstr "Phát hành bởi"
 
 #: ../modules/trust-prompt/certificate-viewer.c:645
 msgid "Validity"
-msgstr ""
+msgstr "Tính hợp lệ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:646
 msgid "Issued On"
-msgstr ""
+msgstr "Phát hành vào"
 
 #: ../modules/trust-prompt/certificate-viewer.c:647
 msgid "Expires On"
-msgstr ""
+msgstr "Hết hạn vào"
 
 #: ../modules/trust-prompt/certificate-viewer.c:649
 msgid "Fingerprints"
-msgstr ""
+msgstr "Dấu vân tay"
 
 #: ../modules/trust-prompt/certificate-viewer.c:650
 msgid "SHA1 Fingerprint"
-msgstr ""
+msgstr "Vân tay SHA1"
 
 #: ../modules/trust-prompt/certificate-viewer.c:651
 msgid "MD5 Fingerprint"
-msgstr ""
+msgstr "Vân tay MD5"
 
 #: ../modules/trust-prompt/certificate-viewer.c:653
 msgid "General"
-msgstr ""
+msgstr "Chung"
 
 #: ../modules/trust-prompt/certificate-viewer.c:672
-#, fuzzy
-#| msgid "Certificate rejected"
 msgid "Certificate Hierarchy"
-msgstr "Chứng nhận bị từ chối"
+msgstr "Cây chứng nhận"
 
 #: ../modules/trust-prompt/certificate-viewer.c:676
-#, fuzzy
-#| msgid "Certificate Revoked"
 msgid "Certificate Fields"
-msgstr "Chứng nhận bị hủy bỏ"
+msgstr "Các trường chứng nhận"
 
 #: ../modules/trust-prompt/certificate-viewer.c:680
 msgid "Field Value"
-msgstr ""
+msgstr "Giá trị trường"
 
 #: ../modules/trust-prompt/certificate-viewer.c:682
 msgid "Details"
-msgstr ""
+msgstr "Chi tiết"
 
 #: ../modules/trust-prompt/e-asn1-object.c:95
 msgid "Version"
-msgstr ""
+msgstr "Phiên bản"
 
 #: ../modules/trust-prompt/e-asn1-object.c:110
 msgid "Version 1"
-msgstr ""
+msgstr "Phiên bản 1"
 
 #: ../modules/trust-prompt/e-asn1-object.c:113
 msgid "Version 2"
-msgstr ""
+msgstr "Phiên bản 2"
 
 #: ../modules/trust-prompt/e-asn1-object.c:116
 msgid "Version 3"
-msgstr ""
+msgstr "Phiên bản 3"
 
 #: ../modules/trust-prompt/e-asn1-object.c:192
 msgid "PKCS #1 MD2 With RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 MD2 với RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:195
 msgid "PKCS #1 MD5 With RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 MD5 với RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:198
 msgid "PKCS #1 SHA-1 With RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 SHA-1 với RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:201
 msgid "PKCS #1 SHA-256 With RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 SHA-256 với RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:204
 msgid "PKCS #1 SHA-384 With RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 SHA-384 với RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:207
 msgid "PKCS #1 SHA-512 With RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 SHA-512 với RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:234
 msgid "PKCS #1 RSA Encryption"
-msgstr ""
+msgstr "Mã hoá PKCS #1 RSA"
 
 #: ../modules/trust-prompt/e-asn1-object.c:237
-#, fuzzy
-#| msgid "Certificate Revoked"
 msgid "Certificate Key Usage"
-msgstr "Chứng nhận bị hủy bỏ"
+msgstr "Cách dùng khoá chứng nhận"
 
 #: ../modules/trust-prompt/e-asn1-object.c:240
 msgid "Netscape Certificate Type"
-msgstr ""
+msgstr "Loại chứng nhận Netscape"
 
 #: ../modules/trust-prompt/e-asn1-object.c:243
-#, fuzzy
-#| msgid "Certificate untrusted"
 msgid "Certificate Authority Key Identifier"
-msgstr "Chứng nhận không đáng tin"
+msgstr "Định danh khoá nhà cầm quyền chứng nhận"
 
 #: ../modules/trust-prompt/e-asn1-object.c:255
 #, c-format
 msgid "Object Identifier (%s)"
-msgstr ""
+msgstr "Định danh đối tượng (%s)"
 
 #: ../modules/trust-prompt/e-asn1-object.c:306
 msgid "Algorithm Identifier"
-msgstr ""
+msgstr "Định danh thuật toán"
 
 #: ../modules/trust-prompt/e-asn1-object.c:314
 msgid "Algorithm Parameters"
-msgstr ""
+msgstr "Tham số thuật toán"
 
 #: ../modules/trust-prompt/e-asn1-object.c:336
 msgid "Subject Public Key Info"
-msgstr ""
+msgstr "Thông tin khoá công khai chủ đề"
 
 #: ../modules/trust-prompt/e-asn1-object.c:341
 msgid "Subject Public Key Algorithm"
@@ -5605,45 +5510,33 @@ msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:378
 #: ../modules/trust-prompt/e-asn1-object.c:428
-#, fuzzy
-#| msgid "Unable to process spool folder"
 msgid "Error: Unable to process extension"
-msgstr "Không thể xử lý thư mục hàng đợi"
+msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:395
-#, fuzzy
-#| msgid "Email 1"
 msgid "Email"
-msgstr "Thư điện tử 1"
+msgstr "Email"
 
 #: ../modules/trust-prompt/e-asn1-object.c:399
 #: ../modules/trust-prompt/e-asn1-object.c:411
 msgid "Object Signer"
-msgstr ""
+msgstr "Bên ký đối tượng"
 
 #: ../modules/trust-prompt/e-asn1-object.c:403
-#, fuzzy
-#| msgid "Invalid Certificate Authority (CA)"
 msgid "SSL Certificate Authority"
-msgstr "Nhà cầm quyền chứng nhận không hợp lệ"
+msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:407
-#, fuzzy
-#| msgid "Invalid Certificate Authority (CA)"
 msgid "Email Certificate Authority"
-msgstr "Nhà cầm quyền chứng nhận không hợp lệ"
+msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:436
-#, fuzzy
-#| msgid "Signing message"
 msgid "Signing"
-msgstr "Đang ký thư"
+msgstr "Ký"
 
 #: ../modules/trust-prompt/e-asn1-object.c:440
-#, fuzzy
-#| msgid "Non-editing Author"
 msgid "Non-repudiation"
-msgstr "Tác giả không sửa đổi"
+msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:444
 msgid "Key Encipherment"
@@ -5655,30 +5548,28 @@ msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:452
 msgid "Key Agreement"
-msgstr ""
+msgstr "Thoả thuận khoá"
 
 #: ../modules/trust-prompt/e-asn1-object.c:456
-#, fuzzy
-#| msgid "Certificate signature failure"
 msgid "Certificate Signer"
-msgstr "Lỗi chữ ký chứng nhận"
+msgstr "Người ký chứng nhận"
 
 #: ../modules/trust-prompt/e-asn1-object.c:460
 msgid "CRL Signer"
-msgstr ""
+msgstr "Bên ký CRL"
 
 #: ../modules/trust-prompt/e-asn1-object.c:509
 msgid "Critical"
-msgstr ""
+msgstr "Nghiêm trọng"
 
 #: ../modules/trust-prompt/e-asn1-object.c:511
 #: ../modules/trust-prompt/e-asn1-object.c:514
 msgid "Not Critical"
-msgstr ""
+msgstr "Không nghiêm trọng"
 
 #: ../modules/trust-prompt/e-asn1-object.c:535
 msgid "Extensions"
-msgstr ""
+msgstr "Phần mở rộng"
 
 #. Translators: This string is used in Certificate
 #. * details for fields like Issuer or Subject, which
@@ -5691,52 +5582,40 @@ msgstr ""
 #: ../modules/trust-prompt/e-asn1-object.c:615
 #, c-format
 msgid "%s = %s"
-msgstr ""
+msgstr "%s = %s"
 
 #: ../modules/trust-prompt/e-asn1-object.c:658
-#, fuzzy
-#| msgid "X.509 Certificate"
 msgid "Certificate"
-msgstr "Chứng nhận X.509"
+msgstr "Chứng nhận"
 
 #: ../modules/trust-prompt/e-asn1-object.c:674
 #: ../modules/trust-prompt/e-asn1-object.c:812
-#, fuzzy
-#| msgid "Certificate signature failure"
 msgid "Certificate Signature Algorithm"
-msgstr "Lỗi chữ ký chứng nhận"
+msgstr "Thuật toán chữ ký chứng nhận"
 
 #: ../modules/trust-prompt/e-asn1-object.c:683
 msgid "Issuer"
-msgstr ""
+msgstr "Bên phát hành"
 
 #: ../modules/trust-prompt/e-asn1-object.c:714
 msgid "Subject"
-msgstr ""
+msgstr "Chủ đề"
 
 #: ../modules/trust-prompt/e-asn1-object.c:738
-#, fuzzy
-#| msgid "Unique ID"
 msgid "Issuer Unique ID"
-msgstr "ID duy nhất"
+msgstr "ID duy nhất của bên phát hành"
 
 #: ../modules/trust-prompt/e-asn1-object.c:757
-#, fuzzy
-#| msgid "Unique ID"
 msgid "Subject Unique ID"
-msgstr "ID duy nhất"
+msgstr ""
 
 #: ../modules/trust-prompt/e-asn1-object.c:818
-#, fuzzy
-#| msgid "Certificate signature failure"
 msgid "Certificate Signature Value"
-msgstr "Lỗi chữ ký chứng nhận"
+msgstr ""
 
 #: ../modules/trust-prompt/module-trust-prompt.c:201
-#, fuzzy
-#| msgid "Signing certificate not found"
 msgid "The signing certificate authority is not known."
-msgstr "Không tìm thấy chứng nhận ký tên"
+msgstr ""
 
 #: ../modules/trust-prompt/module-trust-prompt.c:203
 msgid ""
@@ -5745,16 +5624,12 @@ msgid ""
 msgstr ""
 
 #: ../modules/trust-prompt/module-trust-prompt.c:205
-#, fuzzy
-#| msgid "Certificate Revocation List signature failure"
 msgid "The certificate's activation time is still in the future."
-msgstr "Lỗi chữ ký danh sách hủy bỏ chứng nhận"
+msgstr ""
 
 #: ../modules/trust-prompt/module-trust-prompt.c:207
-#, fuzzy
-#| msgid "Certificate has expired"
 msgid "The certificate has expired."
-msgstr "Chứng nhận quá hạn"
+msgstr "Chứng nhận quá hạn."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:209
 msgid ""
@@ -5767,16 +5642,12 @@ msgid "The certificate's algorithm is considered insecure."
 msgstr ""
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:162
-#, fuzzy
-#| msgid "Certificate untrusted"
 msgid "Certificate trust..."
-msgstr "Chứng nhận không đáng tin"
+msgstr ""
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:163
-#, fuzzy
-#| msgid "X.509 Certificate"
 msgid "_View Certificate"
-msgstr "Chứng nhận X.509"
+msgstr "_Xem chứng nhận"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:164
 msgid "_Reject"
@@ -5791,79 +5662,62 @@ msgid "_Accept Permanently"
 msgstr "_Chấp nhận vĩnh viễn"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:203
-#, fuzzy, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
+#, c-format
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
 msgstr ""
-"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?\n"
-"\n"
-"Thông tin chi tiết về chứng nhận:\n"
-"%s"
+"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:209
 msgid "Detailed information about the certificate:"
-msgstr ""
+msgstr "Thông tin chi tiết về chứng nhận:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:223
 msgid "Issuer:"
-msgstr ""
+msgstr "Bên phát hành:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:224
 msgid "Subject:"
-msgstr ""
+msgstr "Chủ đề:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:225
 msgid "Fingerprint:"
-msgstr ""
+msgstr "Dấu vân tay:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:226
 msgid "Reason:"
-msgstr ""
+msgstr "Lý do:"
 
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
 msgid "Integrate your calendars"
-msgstr ""
+msgstr "Tích hợp lịch của bạn"
 
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
 msgid "Integrate your contacts"
-msgstr ""
+msgstr "Tích hợp liên lạc của bạn"
 
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:257
 msgid "Signon service did not return a secret"
 msgstr ""
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
-#, fuzzy
-#| msgid "Calendar"
 msgid "Google Calendar"
-msgstr "Lịch"
+msgstr "Lịch Google"
 
 #: ../modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
-#, fuzzy
-#| msgctxt "CategoryName"
-#| msgid "Hot Contacts"
 msgid "Google Contacts"
-msgstr "Liên lạc quan trọng"
+msgstr "Liên lạc Google"
 
 #: ../modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-#, fuzzy
-#| msgid "Mailer"
 msgid "GMail"
-msgstr "Trình thư"
+msgstr "GMail"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
-#, fuzzy
-#| msgid "Mailer"
 msgid "Mail"
-msgstr "Trình thư"
+msgstr "Thư"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
 msgid "Integrate your mailboxes"
-msgstr ""
+msgstr "Tích hợp hộp thư của bạn"
 
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:971
 #, c-format
@@ -5878,24 +5732,20 @@ msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
 msgstr ""
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:96
-#, fuzzy
-#| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing response as JSON: "
-msgstr "Lỗi phân tích bộ lọc: %s: %s"
+msgstr "Lỗi phân tích phản hồi JSON: "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:112
 msgid "Didn't find email member in JSON data"
 msgstr ""
 
 #: ../modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
-#, fuzzy
-#| msgid "Calendar"
 msgid "Yahoo! Calendar"
-msgstr "Lịch"
+msgstr "Lịch Yahoo!"
 
 #: ../modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
 msgid "Yahoo! Mail"
-msgstr ""
+msgstr "Yahoo! Mail"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:227
 msgid "Tasks"
@@ -5913,24 +5763,20 @@ msgid "Wait running until at least one client is connected"
 msgstr "Chờ cho đến khi ít nhất một trình khách kết nối"
 
 #: ../services/evolution-source-registry/builtin/birthdays.source.in.h:1
-#, fuzzy
-#| msgid "Birthday and anniversary reminder"
 msgid "Birthdays & Anniversaries"
-msgstr "Nhắc nhở ngày sinh nhật và kỉ niệm"
+msgstr "Sinh nhật và kỉ niệm"
 
 #: ../services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
 msgid "CalDAV"
-msgstr ""
+msgstr "CalDAV"
 
 #: ../services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
-msgstr ""
+msgstr "Google"
 
 #: ../services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
-#, fuzzy
-#| msgid "IMAP server %s"
 msgid "On LDAP Servers"
-msgstr "Máy phục vụ IMAP %s"
+msgstr "Trên máy phục vụ LDAP"
 
 #: ../services/evolution-source-registry/builtin/local.source.in.h:1
 #: ../services/evolution-source-registry/builtin/local-stub.source.in.h:1
@@ -5938,28 +5784,24 @@ msgid "On This Computer"
 msgstr "Trên máy này"
 
 #: ../services/evolution-source-registry/builtin/vfolder.source.in.h:1
-#, fuzzy
-#| msgid "Personal Folders"
 msgid "Search Folders"
-msgstr "Thư mục cá nhân"
+msgstr "Thư mục tìm"
 
 #: ../services/evolution-source-registry/builtin/weather-stub.source.in.h:1
-#, fuzzy
-#| msgid "Weather: Fog"
 msgid "Weather"
-msgstr "Thời tiết: sương mù"
+msgstr "Thời tiết"
 
 #: ../services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
-msgstr ""
+msgstr "Trên Web"
 
 #: ../services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
 msgid "WebDAV"
-msgstr ""
+msgstr "WebDAV"
 
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
-msgstr ""
+msgstr "_Bỏ qua"
 
 #~ msgid "Failed to build summary for an address book %s"
 #~ msgstr "Lỗi tạo tóm tắt cho sổ địa chỉ %s"
