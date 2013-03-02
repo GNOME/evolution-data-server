@@ -164,6 +164,10 @@ libedbus_private_la_CPPFLAGS = \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
+libedbus_private_la_CFLAGS = \
+	-Wno-redundant-decls \
+	$(NULL)
+
 libedbus_private_la_SOURCES = \
 	$(BUILT_SOURCES) \
 	$(NULL)
