@@ -26,7 +26,6 @@ EXTRA_DIST = 						\
 	MAINTAINERS					\
 	TODO						\
 	NEWS						\
-	marshal.mk					\
 	iconv-detect.c					\
 	intltool-merge.in				\
 	intltool-update.in				\
