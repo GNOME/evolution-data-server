@@ -12,9 +12,6 @@ LIBCAMEL_PLATFORM_DEP_SOURCES = \
 LOCK_HELPER = camel-lock-helper-1.2
 endif
 
-MARSHAL_GENERATED = camel-marshal.c camel-marshal.h
-@EVO_MARSHAL_RULE@
-
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
@@ -59,7 +56,6 @@ libcamel_1_2_la_CPPFLAGS = \
 
 libcamel_1_2_la_SOURCES = 			\
 	$(ENUM_GENERATED)			\
-	$(MARSHAL_GENERATED)			\
 	camel-address.c				\
 	camel-block-file.c			\
 	camel-certdb.c				\
@@ -419,15 +415,13 @@ noinst_HEADERS =				\
 
 BUILT_SOURCES =					\
 	camel-mime-tables.c			\
-	$(ENUM_GENERATED)			\
-	$(MARSHAL_GENERATED)
+	$(ENUM_GENERATED)
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
 	camel-enumtypes.h.template		\
 	camel-enumtypes.c.template		\
 	camel-imapx-tokens.txt			\
-	camel-marshal.list			\
 	gentables.pl				\
 	README
 

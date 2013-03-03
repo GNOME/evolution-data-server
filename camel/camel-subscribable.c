@@ -293,8 +293,7 @@ camel_subscribable_default_init (CamelSubscribableInterface *interface)
 		G_STRUCT_OFFSET (
 			CamelSubscribableInterface,
 			folder_subscribed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -305,8 +304,7 @@ camel_subscribable_default_init (CamelSubscribableInterface *interface)
 		G_STRUCT_OFFSET (
 			CamelSubscribableInterface,
 			folder_unsubscribed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 }

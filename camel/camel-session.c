@@ -40,7 +40,6 @@
 #include "camel-debug.h"
 #include "camel-file-utils.h"
 #include "camel-folder.h"
-#include "camel-marshal.h"
 #include "camel-mime-message.h"
 #include "camel-sasl.h"
 #include "camel-session.h"
@@ -831,8 +830,7 @@ camel_session_class_init (CamelSessionClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (CamelSessionClass, job_started),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_CANCELLABLE);
 
@@ -841,8 +839,7 @@ camel_session_class_init (CamelSessionClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (CamelSessionClass, job_finished),
-		NULL, NULL,
-		camel_marshal_VOID__OBJECT_POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_CANCELLABLE,
 		G_TYPE_POINTER);

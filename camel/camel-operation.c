@@ -25,7 +25,6 @@
 
 #include <nspr.h>
 
-#include "camel-marshal.h"
 #include "camel-msgport.h"
 #include "camel-operation.h"
 
@@ -172,8 +171,7 @@ camel_operation_class_init (CamelOperationClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (CamelOperationClass, status),
-		NULL, NULL,
-		camel_marshal_VOID__STRING_INT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_STRING,
 		G_TYPE_INT);

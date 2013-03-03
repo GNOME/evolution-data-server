@@ -37,7 +37,6 @@
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-folder.h"
-#include "camel-marshal.h"
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-store-settings.h"
@@ -1206,8 +1205,7 @@ camel_store_class_init (CamelStoreClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelStoreClass, folder_created),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -1216,8 +1214,7 @@ camel_store_class_init (CamelStoreClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelStoreClass, folder_deleted),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -1226,8 +1223,7 @@ camel_store_class_init (CamelStoreClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelStoreClass, folder_opened),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		CAMEL_TYPE_FOLDER);
 
@@ -1236,8 +1232,7 @@ camel_store_class_init (CamelStoreClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelStoreClass, folder_renamed),
-		NULL, NULL,
-		camel_marshal_VOID__STRING_POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_STRING,
 		G_TYPE_POINTER);

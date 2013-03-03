@@ -50,7 +50,6 @@ IGNORE_HFILES = 			\
 	camel-imapx-tokenise.h		\
 	camel-imapx-utils.h		\
 	camel-local-private.h		\
-	camel-marshal.h			\
 	camel-net-utils-win32.h		\
 	camel-nntp-private.h		\
 	camel-nntp-types.h		\

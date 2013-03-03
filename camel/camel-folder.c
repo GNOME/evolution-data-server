@@ -1897,8 +1897,7 @@ camel_folder_class_init (CamelFolderClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelFolderClass, changed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -1911,8 +1910,7 @@ camel_folder_class_init (CamelFolderClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelFolderClass, deleted),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 
 	/**
@@ -1925,8 +1923,7 @@ camel_folder_class_init (CamelFolderClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelFolderClass, renamed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
 }
