@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-02-25 00:08+0000\n"
-"PO-Revision-Date: 2013-02-25 15:54+0900\n"
+"POT-Creation-Date: 2013-03-01 18:36+0000\n"
+"PO-Revision-Date: 2013-03-03 15:57+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: \n"
@@ -47,7 +47,7 @@ msgstr "بۇ CA غا ئىشىنىشتىن ئىلگىرى، ئۇنىڭ گۇۋاھ
 
 #: ../addressbook/backends/file/e-book-backend-file.c:843
 #: ../addressbook/backends/file/e-book-backend-file.c:1035
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2601
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2592
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "ئالاقەداش ‹%s› تېپىلمىدى"
@@ -57,16 +57,30 @@ msgstr "ئالاقەداش ‹%s› تېپىلمىدى"
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr ""
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1203
+#: ../addressbook/backends/file/e-book-backend-file.c:1085
+#: ../addressbook/backends/file/e-book-backend-file.c:1133
+#, c-format
+#| msgid "Protocol not supported"
+msgid "Query '%s' not supported"
+msgstr "سۈرۈشتۈرۈش ‹%s› نى ئىشلەتكىلى بولمايدۇ"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1093
+#: ../addressbook/backends/file/e-book-backend-file.c:1141
+#, c-format
+#| msgid "Invalid query: "
+msgid "Invalid Query '%s'"
+msgstr " سۈرۈشتۈرۈش ‹%s› ئىناۋەتسىز"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1241
 msgid "Loading..."
 msgstr "ئوقۇۋاتىدۇ…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1205
+#: ../addressbook/backends/file/e-book-backend-file.c:1243
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4918
 msgid "Searching..."
 msgstr "ئىزدەۋاتىدۇ…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1523
+#: ../addressbook/backends/file/e-book-backend-file.c:1561
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "كونا سانداننىڭ ئاتىنى ‹%s› دىن ‹%s› غا ئۆزگەرتىش مەغلۇپ بولدى: %s"
@@ -74,8 +88,8 @@ msgstr "كونا سانداننىڭ ئاتىنى ‹%s› دىن ‹%s› غا �
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:142
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1194
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4813
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1015
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:333
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1022
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:34
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:562
@@ -98,7 +112,7 @@ msgstr "يېڭىلانغان گۇرۇپپىلارنى سۈرۈشتۈرۈۋاتى
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1235
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1625
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:375
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:382
 msgid "The backend does not support bulk additions"
 msgstr "ئارقا ئۇچ توپ قوشۇشنى قوللىمايدۇ"
 
@@ -108,7 +122,7 @@ msgid "Creating new contact…"
 msgstr "يېڭى ئالاقەداش قۇرۇۋاتىدۇ…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1358
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:492
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:499
 msgid "The backend does not support bulk removals"
 msgstr "ئارقا ئۇچ توپ ئۆچۈرۈشنى قوللىمايدۇ"
 
@@ -118,7 +132,7 @@ msgstr "ئالاقەداشنى ئۆچۈرۈۋاتىدۇ…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1640
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2288
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:553
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:560
 msgid "The backend does not support bulk modifications"
 msgstr "ئارقا ئۇچ توپ ئۆزگەرتىشنى قوللىمايدۇ"
 
@@ -226,46 +240,44 @@ msgstr "ئالاقەداشلارنى چۈشۈرۈۋاتىدۇ(%d)... "
 msgid "Failed to get the DN for user '%s'"
 msgstr "ئىشلەتكۈچى ‹%s› نىڭ DN نى ئېلىش مەغلۇپ بولدى"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:406
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:413
 #, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
-msgstr ""
+msgstr "مەنبە «%s» نى قۇرۇش مەغلۇپ بولدى. بۇ چاغدىكى HTTP ھالىتى %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:508
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE مەغلۇپ بولدى. HTTP ھالىتى: %d"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:574
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:581
 msgid "Contact on server changed -> not modifying"
 msgstr "مۇلازىمېتىردىكى ئالاقەداش ->ئۆزگەرتىلمىدى غا ئۆزگەرتىلدى"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:583
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:590
 #, c-format
-#| msgid "Modify contact failed with HTTP status: %d (%s)"
 msgid "Modify contact failed with HTTP status %d (%s)"
-msgstr ""
+msgstr "ئالاقەداشنى ئۆزگەرتىش مەغلۇپ بولدى. HTTP ھالىتى %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:993
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1000
 msgid "Loading Addressbook summary..."
 msgstr "ئادرېس دەپتىرىنىڭ ئاساسىي مەزمۇنىنى ئوقۇۋاتىدۇ…"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1012
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1019
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "webdav دىكى PROPFIND مەغلۇپ بولدى. HTTP ھالىتى: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1037
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1044
 msgid "No response body in webdav PROPFIND result"
 msgstr "webdav دىكى PROPFIND قايتۇرغان نەتىجىدە جاۋاب گەۋدىسى(response body) يوق"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1069
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1076
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "ئالاقەداشلارنى ئوقۇۋاتىدۇ (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1409
 msgid "Cannot transform SoupURI to string"
 msgstr "SoupURI نى تېكىست(string) كە ئايلاندۇرغىلى بولمىدى"
 
@@ -875,7 +887,7 @@ msgstr "نامسىز تىزىم"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:43
 msgid "The library was built without phone number support."
-msgstr ""
+msgstr "مەزكۇر ئامبار تېلېفون نومۇرىنى قوللىمايدىغان قىلىپ ھاسىللىنىپتۇ."
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:45
 msgid "The phone number parser reported an yet unkown error code."
@@ -886,7 +898,6 @@ msgid "Not a phone number"
 msgstr "تېلېفون نومۇرى ئەمەس"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:49
-#| msgid "Invalid range"
 msgid "Invalid country calling code"
 msgstr ""
 
@@ -897,27 +908,27 @@ msgstr ""
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:53
 msgid "Text is too short for a phone number"
-msgstr ""
+msgstr "تېكىست قىسقا بولغاچقا تېلېفون نومۇرى قىلىشقا بولمايدۇ"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:55
 msgid "Text is too long for a phone number"
-msgstr ""
+msgstr "تېكىست ئۇزۇن بولغاچقا تېلېفون نومۇرى قىلىشقا بولمايدۇ"
 
-#: ../addressbook/libebook/e-book-client.c:757
+#: ../addressbook/libebook/e-book-client.c:683
 #: ../addressbook/libedata-book/e-book-backend.c:93
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "نامەلۇم كىتاب خاسلىقى «%s»"
 
-#: ../addressbook/libebook/e-book-client.c:772
+#: ../addressbook/libebook/e-book-client.c:698
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "كىتاب خاسلىقى «%s» نىڭ قىممىتىنى ئۆزگەرتكىلى بولمىدى"
 
-#: ../addressbook/libebook/e-book-client.c:1052
-#: ../addressbook/libebook/e-book-client.c:1225
-#: ../calendar/libecal/e-cal-client.c:1495
-#: ../calendar/libecal/e-cal-client.c:1675
+#: ../addressbook/libebook/e-book-client.c:1004
+#: ../addressbook/libebook/e-book-client.c:1177
+#: ../calendar/libecal/e-cal-client.c:1448
+#: ../calendar/libecal/e-cal-client.c:1628
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "‹%s› غا باغلانغىلى بولمىدى "
@@ -927,60 +938,74 @@ msgstr "‹%s› غا باغلانغىلى بولمىدى "
 msgid "Error introspecting unknown summary field '%s'"
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1209
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1228
 #: ../camel/camel-db.c:510
 #, c-format
 msgid "Insufficient memory"
 msgstr "ئەسلەك يەتمىدى"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1342
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1361
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1376
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1395
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2589
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3603
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2580
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3605
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3741
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3730
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3810
+#, c-format
+msgid "Query contained unsupported elements"
+msgstr "سۈرۈشتۈرۈشنىڭ ئىچىدە قوللىمايدىغان ئېلېمېنتلار بار"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3734
+#, c-format
+#| msgid "Invalid query"
+msgid "Invalid Query"
+msgstr "ئىناۋەتسىز سۈرۈشتۈرۈش"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3758
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3822
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3814
+#: ../addressbook/libedata-book/e-data-book.c:669
+#: ../addressbook/libedata-book/e-data-book.c:809
+#: ../calendar/libedata-cal/e-data-cal.c:612
+#: ../calendar/libedata-cal/e-data-cal.c:771 ../libedataserver/e-client.c:165
+#, c-format
+msgid "Invalid query"
+msgstr "ئىناۋەتسىز سۈرۈشتۈرۈش"
+
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3856
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4523
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4557
 #, c-format
 msgid "Unable to remove the db file: errno %d"
-msgstr ""
+msgstr "ساندان(db) ھۆججىتى يۆتكىۋەتكىلى بولمىدى: خاتالىق نومۇرى %d"
 
 #: ../addressbook/libedata-book/e-book-backend-sync.c:179
 #: ../calendar/libedata-cal/e-cal-backend-sync.c:182
 msgid "Clients cannot set backend properties"
-msgstr ""
-
-#: ../addressbook/libedata-book/e-data-book.c:669
-#: ../addressbook/libedata-book/e-data-book.c:809
-#: ../calendar/libedata-cal/e-data-cal.c:612
-#: ../calendar/libedata-cal/e-data-cal.c:771 ../libedataserver/e-client.c:165
-msgid "Invalid query"
-msgstr "ئىناۋەتسىز سۈرۈشتۈرۈش"
+msgstr "خېرىدارلار ئارقا ئۇچ خاسلىقلىرىنى بەلگىلىيەلمەيدۇ"
 
 #. Translators: This is prefix to a detailed error message
 #. Translators: This is a prefix to a detailed error message *
@@ -1269,7 +1294,7 @@ msgstr "ھۆججەت فورماتى خاتا."
 msgid "Not a calendar."
 msgstr "يىلنامە ئەمەس."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:918
+#: ../calendar/backends/http/e-cal-backend-http.c:922
 #: ../calendar/backends/weather/e-cal-backend-weather.c:506
 msgid "Could not create cache file"
 msgstr "غەملەك ھۆججىتى قۇرالمىدى"
@@ -1393,13 +1418,13 @@ msgstr "نامەلۇم ئىشلەتكۈچى"
 msgid "Invalid range"
 msgstr "ئىناۋەتسىز دائىرە"
 
-#: ../calendar/libecal/e-cal-client.c:960
+#: ../calendar/libecal/e-cal-client.c:887
 #: ../calendar/libedata-cal/e-cal-backend.c:176
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "نامەلۇم يىلنامە خاسلىقى «%s»"
 
-#: ../calendar/libecal/e-cal-client.c:975
+#: ../calendar/libecal/e-cal-client.c:902
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "يىلنامە خاسلىقى «%s» نىڭ قىممىتىنى ئۆزگەرتكىلى بولمىدى"
@@ -1932,12 +1957,12 @@ msgstr "سۈزگۈچ ‹%s› ئىجرا قىلىش مەغلۇپ بولدى: "
 #: ../camel/camel-filter-driver.c:1765
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
-msgstr ""
+msgstr "سۈزگۈچ ‹%s› نى تەھلىل قىلىۋاتقاندا خاتالىق كۆرۈلدى: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1784
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
-msgstr ""
+msgstr "سۈزگۈچ ‹%s› نى ئىجرا قىلىۋاتقاندا خاتالىق كۆرۈلدى: %s: %s"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
@@ -2213,174 +2238,174 @@ msgstr "قىسقۇچ %s ھەققىدە قىسقىچە مەزمۇن قۇرغىل�
 msgid "Could not create cache for %s: "
 msgstr "%s غەملىكىنى قۇرغىلى بولمىدى: "
 
-#: ../camel/camel-imapx-server.c:1254
+#: ../camel/camel-imapx-server.c:1267
 msgid "Server disconnected"
 msgstr "مۇلازىمېتىر ئۈزۈلدى"
 
-#: ../camel/camel-imapx-server.c:1727
+#: ../camel/camel-imapx-server.c:1775
 msgid "Error writing to cache stream"
 msgstr "غەملەك ئېقىمىغا يېزىۋاتقاندا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:2893
+#: ../camel/camel-imapx-server.c:2980
 #, c-format
 msgid "Not authenticated"
 msgstr "سالاھىيىتى دەلىللەنمىگەن"
 
-#: ../camel/camel-imapx-server.c:2971
+#: ../camel/camel-imapx-server.c:3058
 msgid "Error performing IDLE"
 msgstr "IDLE مەشغۇلاتىدا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:3875
+#: ../camel/camel-imapx-server.c:4015
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "IMAP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: %s"
 
-#: ../camel/camel-imapx-server.c:3876
+#: ../camel/camel-imapx-server.c:4016
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "STARTTLS نى قوللىمايدۇ"
 
-#: ../camel/camel-imapx-server.c:3915
+#: ../camel/camel-imapx-server.c:4055
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "IMAP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: "
 
-#: ../camel/camel-imapx-server.c:3995
+#: ../camel/camel-imapx-server.c:4135
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP مۇلازىمېتىرى %s سالاھىيەت دەلىللەش %s نى قوللىمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4006 ../camel/camel-session.c:495
+#: ../camel/camel-imapx-server.c:4146 ../camel/camel-session.c:495
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
 #, c-format
 msgid "No support for %s authentication"
-msgstr ""
+msgstr "%s نىڭ كىملىك دەلىللىشىنى قوللىمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4025
+#: ../camel/camel-imapx-server.c:4165
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "ئىشلەتكۈچى ئاتى بولمىسا كىملىك دەلىللىگىلى بولمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4034
+#: ../camel/camel-imapx-server.c:4174
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "كىملىك دەلىللەش ئىمى يوق"
 
-#: ../camel/camel-imapx-server.c:4242
+#: ../camel/camel-imapx-server.c:4382
 msgid "Error fetching message"
 msgstr "ئۇچۇرلارنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4324
+#: ../camel/camel-imapx-server.c:4464
 msgid "Failed to copy the tmp file"
 msgstr "ھۆججەت tmp نى كۆچۈرۈش مەغلۇپ بولدى"
 
-#: ../camel/camel-imapx-server.c:4338
+#: ../camel/camel-imapx-server.c:4478
 msgid "Failed to close the tmp stream"
 msgstr "ئېقىم tmp نى يېپىش مەغلۇپ بولدى"
 
-#: ../camel/camel-imapx-server.c:4459
+#: ../camel/camel-imapx-server.c:4599
 msgid "Error copying messages"
 msgstr "ئۇچۇرلارنى كۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4625
+#: ../camel/camel-imapx-server.c:4765
 msgid "Error appending message"
 msgstr "ئۇچۇرلارنى قېتىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4824
+#: ../camel/camel-imapx-server.c:4964
 msgid "Error fetching message headers"
 msgstr "ئۇچۇرنىڭ قاشلىرىنى(headers) كۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4971
+#: ../camel/camel-imapx-server.c:5111
 msgid "Error retrieving message"
 msgstr "ئۇچۇرنى چاقىرىشتا خاتالىق يۈز بەردى"
 
-#: ../camel/camel-imapx-server.c:5095 ../camel/camel-imapx-server.c:5323
+#: ../camel/camel-imapx-server.c:5235 ../camel/camel-imapx-server.c:5463
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "‹%s› نىڭ دىكى يېڭى ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
 
-#: ../camel/camel-imapx-server.c:5159
+#: ../camel/camel-imapx-server.c:5299
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "‹%s› نىڭدىكى ئۇچۇرلارنىڭ ئۆزگىرىشىنى تەكشۈرۈۋاتىدۇ"
 
-#: ../camel/camel-imapx-server.c:5212
+#: ../camel/camel-imapx-server.c:5352
 msgid "Error fetching new messages"
 msgstr "يېڭى ئۇچۇرلارنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5425
+#: ../camel/camel-imapx-server.c:5565
 msgid "Error while fetching messages"
 msgstr "يېڭى ئۇچۇرلارنى ئېلىۋاتقاندا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5433 ../camel/camel-imapx-server.c:5466
+#: ../camel/camel-imapx-server.c:5573 ../camel/camel-imapx-server.c:5606
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] ""
 
-#: ../camel/camel-imapx-server.c:5602 ../camel/camel-imapx-server.c:5632
+#: ../camel/camel-imapx-server.c:5742 ../camel/camel-imapx-server.c:5772
 msgid "Error refreshing folder"
 msgstr "قىسقۇچنى يېڭىلاشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5736
+#: ../camel/camel-imapx-server.c:5876
 msgid "Error expunging message"
 msgstr "ئۇچۇرلارنى ئۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5847
+#: ../camel/camel-imapx-server.c:5987
 msgid "Error fetching folders"
 msgstr "قىسقۇچلارنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5929
+#: ../camel/camel-imapx-server.c:6069
 msgid "Error subscribing to folder"
 msgstr "قىسقۇچقا مۇشتەرى بولۇشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5994
+#: ../camel/camel-imapx-server.c:6134
 msgid "Error creating folder"
 msgstr "قىسقۇچ قۇرۇشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6048
+#: ../camel/camel-imapx-server.c:6188
 msgid "Error deleting folder"
 msgstr "قىسقۇچ ئۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6122
+#: ../camel/camel-imapx-server.c:6262
 msgid "Error renaming folder"
 msgstr "قىسقۇچنىڭ ئاتىنى ئۆزگەرتىشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6197
+#: ../camel/camel-imapx-server.c:6337
 msgid "Error retrieving quota information"
 msgstr ""
 
-#: ../camel/camel-imapx-server.c:6262
+#: ../camel/camel-imapx-server.c:6402
 msgid "Search failed"
 msgstr "ئىزدەش مەغلۇپ بولدى"
 
-#: ../camel/camel-imapx-server.c:6325
+#: ../camel/camel-imapx-server.c:6465
 msgid "Error performing NOOP"
 msgstr "NOOP مەشغۇلاتىدا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6434
+#: ../camel/camel-imapx-server.c:6574
 msgid "Error syncing changes"
 msgstr "ئۆزگەرتىشلەرنى قەدەمداشلاشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:7246
+#: ../camel/camel-imapx-server.c:7383
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "كىملىكى %s بولغان ئۇچۇرغا ئېرىشەلمىدى: %s"
 
-#: ../camel/camel-imapx-server.c:7247
+#: ../camel/camel-imapx-server.c:7384
 msgid "No such message available."
 msgstr "بۇنداق ئۇچۇر يوق."
 
-#: ../camel/camel-imapx-server.c:7405 ../camel/camel-imapx-server.c:7420
+#: ../camel/camel-imapx-server.c:7542 ../camel/camel-imapx-server.c:7557
 msgid "Cannot create spool file: "
 msgstr "spool ھۆججىتى قۇرغىلى بولمىدى: "
 
-#: ../camel/camel-imapx-server.c:8162
+#: ../camel/camel-imapx-server.c:8299
 msgid "IMAP server does not support quotas"
 msgstr ""
 
@@ -2619,22 +2644,22 @@ msgstr "مەۋھۇم قىسقۇچ ئېلخەت تەمىنلىگۈچى"
 msgid "For reading mail as a query of another set of folders"
 msgstr "باشقا قىسقۇچلار توپىنىڭ سۈرۈشتۈرمىسى سۈپىتىدە خەت ئوقۇش"
 
-#: ../camel/camel-provider.c:258
+#: ../camel/camel-provider.c:263
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "%s نى ئوقۇغىلى بولمىدى: بۆلەك يۈكلەشنى بۇ سىستېمىدا ئىشلەتكىلى بولمايدۇ."
 
-#: ../camel/camel-provider.c:267
+#: ../camel/camel-provider.c:272
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "%s نى ئوقۇيالمىدى: %s"
 
-#: ../camel/camel-provider.c:276
+#: ../camel/camel-provider.c:281
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s نى ئوقۇغىلى بولمىدى: بۆلەكتە دەسلەپلەشتۈرۈش فۇنكسىيىسى يوق."
 
-#: ../camel/camel-provider.c:424 ../camel/camel-session.c:407
+#: ../camel/camel-provider.c:429 ../camel/camel-session.c:407
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "كېلىشىم «%s» نىڭ تەمىنلىگۈچىسى يوق"
@@ -2876,7 +2901,7 @@ msgstr "%s%s@%s نىڭ ئىمىنى كىرگۈزۈڭ."
 #: ../camel/camel-smime-context.c:351 ../camel/camel-smime-context.c:1074
 #, c-format
 msgid "Cannot find certificate for '%s'"
-msgstr "«%s» نىڭ ئىسپاتنامىسىنى تاپقىلى بولمىدى"
+msgstr "«%s» نىڭ گۇۋاھنامىسىنى تاپقىلى بولمىدى"
 
 #: ../camel/camel-smime-context.c:379
 msgid "Cannot create CMS message"
@@ -2900,7 +2925,7 @@ msgstr "CMS ئىمزا قويغۇچىنىڭ ئۇچۇرىنى قۇرغىلى بو
 
 #: ../camel/camel-smime-context.c:409
 msgid "Cannot find certificate chain"
-msgstr "ئىسپاتنامە زەنجىرىنى تاپقىلى بولمىدى"
+msgstr "گۇۋاھنامە زەنجىرىنى تاپقىلى بولمىدى"
 
 #: ../camel/camel-smime-context.c:415
 msgid "Cannot add CMS Signing time"
@@ -2909,7 +2934,7 @@ msgstr "CMS ئىمزا ۋاقتىنى قوشقىلى بولمىدى"
 #: ../camel/camel-smime-context.c:439 ../camel/camel-smime-context.c:454
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
-msgstr "‹%s› نىڭ شىفىرلاش ئىسپاتنامىسى مەۋجۇت ئەمەس"
+msgstr "‹%s› نىڭ شىفىرلاش گۇۋاھنامىسى مەۋجۇت ئەمەس"
 
 #: ../camel/camel-smime-context.c:461
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -2921,7 +2946,7 @@ msgstr "MS SMIMEEncKeyPrefs خاسلىقىنى قوشقىلى بولمىدى"
 
 #: ../camel/camel-smime-context.c:471
 msgid "Cannot add encryption certificate"
-msgstr "شىفىرلاش ئىسپاتنامىسىنى قوشقىلى بولمىدى"
+msgstr "شىفىرلاش گۇۋاھنامىسىنى قوشقىلى بولمىدى"
 
 #: ../camel/camel-smime-context.c:477
 msgid "Cannot add CMS Signer information"
@@ -2946,11 +2971,11 @@ msgstr "مەزمۇن يوللىنىش جەريانىدا ئۆزگەرتىلگە�
 
 #: ../camel/camel-smime-context.c:518
 msgid "Signing certificate not found"
-msgstr "ئىمزالىق ئىسپاتنامە تېپىلمىدى"
+msgstr "ئىمزالىق گۇۋاھنامە تېپىلمىدى"
 
 #: ../camel/camel-smime-context.c:520
 msgid "Signing certificate not trusted"
-msgstr "ئىمزالىق ئىسپاتنامە ئىشەنچسىز"
+msgstr "ئىمزالىق گۇۋاھنامە ئىشەنچسىز"
 
 #: ../camel/camel-smime-context.c:522
 msgid "Signature algorithm unknown"
@@ -2986,17 +3011,17 @@ msgstr "ئۇچۇر digests نى بەلگىلىگىلى بولمىدى"
 
 #: ../camel/camel-smime-context.c:623 ../camel/camel-smime-context.c:628
 msgid "Certificate import failed"
-msgstr "ئىسپاتنامىنى ئىمپورت قىلىش مەغلۇپ بولدى"
+msgstr "گۇۋاھنامىنى ئىمپورت قىلىش مەغلۇپ بولدى"
 
 #: ../camel/camel-smime-context.c:638
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr "ئۇچۇرلارنىلا ئىسپاتلايدۇ، ئىسپاتنامىلەرنى تەكشۈرمەيدۇ"
+msgstr "ئۇچۇرلارنىلا ئىسپاتلايدۇ، گۇۋاھنامىلەرنى تەكشۈرمەيدۇ"
 
 #: ../camel/camel-smime-context.c:641
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "ئۇچۇرلار، ئىمپورت قىلىنغان ۋە تەكشۈرۈلگەن ئىسپاتنامىلەرنى ئىسپاتلايدۇ"
+msgstr "ئۇچۇرلار، ئىمپورت قىلىنغان ۋە تەكشۈرۈلگەن گۇۋاھنامىلەرنى ئىسپاتلايدۇ"
 
 #: ../camel/camel-smime-context.c:645
 msgid "Cannot find signature digests"
@@ -3969,7 +3994,7 @@ msgstr "بۇ USENET خەۋەر گۇرۇپپىسىدىن ئوقۇش ۋە ئۇنى
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
-msgstr ""
+msgstr "بۇ تاللانما ئارقىلىق NNTP مۇلازىمېتىرىغا كىملىك دەلىللىمەيلا نامسىز باغلىنىشقا بولىدۇ"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
@@ -4277,12 +4302,12 @@ msgstr "پارامېتىرنى پارچىلىيالمىدى"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:213
 #, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr ""
+msgstr "‹%s› غا نەيچە(pipe) قۇرالمىدى: %s: خەت ئەۋەتىلمىدى"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:238
 #, c-format
 msgid "Could not fork '%s': %s: mail not sent"
-msgstr ""
+msgstr "‹%s› نى ئاچىلىيالمىدى: %s: خەت ئەۋەتىلمىدى"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:287
 msgid "Could not send message: "
@@ -4291,7 +4316,7 @@ msgstr "ئۇچۇرنى يوللىيالمىدى: "
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:317
 #, c-format
 msgid "'%s' exited with signal %s: mail not sent."
-msgstr ""
+msgstr "‹%s› پروگراممىسى %s دېگەن سىگنال بىلەن ئاخىرلىشىپ كەتتى: خەت ئەۋەتىلمىدى."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:327
 #, c-format
@@ -4573,7 +4598,7 @@ msgstr "تۇغۇلغان كۈن ياكى خاتىرە كۈننى ئەسكەرت�
 #: ../libebackend/e-authentication-mediator.c:852
 #: ../libebackend/e-authentication-mediator.c:1182
 msgid "Bus name vanished (client terminated?)"
-msgstr ""
+msgstr "باش لىنىيە ئاتى غايىب بولدى(خېرىدار توختاپ قالدىمۇ؟)"
 
 #: ../libebackend/e-authentication-mediator.c:264
 msgid "No response from client"
@@ -4588,7 +4613,7 @@ msgstr "خېرىدار مەشغۇلاتنى ئەمەلدىن قالدۇردى"
 
 #: ../libebackend/e-authentication-mediator.c:416
 msgid "Client reports password was rejected"
-msgstr ""
+msgstr "خېرىدار ئىمنىڭ رەت قىلىنغانلىقىنى ئۇقتۇردى"
 
 #: ../libebackend/e-authentication-session.c:532
 msgid "Add this password to your keyring"
@@ -4598,24 +4623,23 @@ msgstr "مەزكۇر ئىمنى ئاچقۇچ ھالقىسىغا ئۆتكۈزۈۋ
 msgid "Password was incorrect"
 msgstr "ئىن توغرا ئەمەس"
 
-#: ../libebackend/e-backend.c:455
+#: ../libebackend/e-backend.c:428
 #, c-format
 msgid "%s does not support authentication"
 msgstr "كىملىك دەلىللەشنى %s قوللىمايدۇ"
 
-#: ../libebackend/e-collection-backend.c:782
+#: ../libebackend/e-collection-backend.c:800
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "يىراقتا مەنبەلەرنى قۇرۇشنى %s قوللىمايدۇ"
 
-#: ../libebackend/e-collection-backend.c:841
+#: ../libebackend/e-collection-backend.c:859
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "يىراقتىكى مەنبەلەرنى ئۆچۈرۈشنى %s قوللىمايدۇ"
 
 #: ../libebackend/e-data-factory.c:320
 #, c-format
-#| msgid "No backend name in source '%s'"
 msgid "No backend factory for hash key '%s'"
 msgstr ""
 
@@ -4673,7 +4697,7 @@ msgstr "كىملىك(UID) ‹%s› مەۋجۇت"
 #: ../libebackend/e-user-prompter-server.c:279
 #, c-format
 msgid "Extension dialog '%s' not found."
-msgstr ""
+msgstr "كېڭەيتىلمە سۆزلەشكۈ ‹%s› تېپىلمىدى."
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -4860,7 +4884,7 @@ msgstr "ھېسابات «%s» ئۈچۈن ئىم كىرگۈزۈڭ."
 #: ../libedataserver/e-source.c:622
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "مەنبە ھۆججىتىدە بىر [%s] گۇرۇپپا يوق"
 
 #: ../libedataserver/e-source.c:943
 #, c-format
@@ -5144,6 +5168,25 @@ msgstr "ئاپتوماتىك ۋاكالەتچى مۇلازىمېتىر سەپل�
 msgid "Where to read automatic proxy configuration from."
 msgstr "ئاپتوماتىك ۋاكالەتچى سەپلىمىسىنى ئوقۇيدىغان يەرنىڭ ئادرېسى."
 
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:132
+#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
+#, c-format
+msgid "No such data source for UID '%s'"
+msgstr "كىملىكى(UID) ‹%s› بولغان سانلىق-مەلۇمات مەنبەسى يوق"
+
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:144
+#, c-format
+msgid ""
+"Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
+"from which to obtain a password for '%s'"
+msgstr ""
+
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:216
+#, c-format
+#| msgid "Invalid GType registered for protocol '%s'"
+msgid "Invalid password for '%s'"
+msgstr "‹%s› نىڭ ئىمى خاتا"
+
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:223
 #, c-format
@@ -5180,14 +5223,14 @@ msgstr "Account ئېلېمېنتىنى تېپىش مەغلۇپ بولدى"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "ئاپتوماتىك بايقاش(autodiscover) ئىنكاسىدىن ASUrl ۋە OABUrl نى تېپىش مەغلۇپ بولدى"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1140
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1238
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for '%s'"
 msgstr ""
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1167
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1265
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr ""
@@ -5504,7 +5547,7 @@ msgstr "گۇۋاھنامىنىڭ ئاكتىپلاش ۋاقتى يەنىلا كە
 
 #: ../modules/trust-prompt/module-trust-prompt.c:207
 msgid "The certificate has expired."
-msgstr "ئىسپاتنامىنىڭ ۋاقتى ئوتكەن."
+msgstr "گۇۋاھنامىنىڭ ۋاقتى ئوتكەن."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:209
 msgid ""
@@ -5518,7 +5561,7 @@ msgstr "گۇۋاھنامىنىڭ ھېسابلاش ئۇسۇلى(algorithm) بىخ
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:162
 msgid "Certificate trust..."
-msgstr ""
+msgstr "گۇۋاھنامە ئىشەنچى…"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:163
 msgid "_View Certificate"
@@ -5539,11 +5582,11 @@ msgstr "مەڭگۈ قوبۇل قىل(_A)"
 #: ../modules/trust-prompt/trust-prompt-gtk.c:203
 #, c-format
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
-msgstr ""
+msgstr "‹%s› نىڭ SSL گۇۋاھنامىسى ئىشەنچلىك ئەمەس. قوبۇل قىلغۇڭىز بارمۇ؟"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:209
 msgid "Detailed information about the certificate:"
-msgstr "ئىسپاتنامە ھەققىدىكى بەزى تەپسىلىي ئۇچۇرلار:"
+msgstr "گۇۋاھنامە ھەققىدىكى بەزى تەپسىلىي ئۇچۇرلار:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:223
 msgid "Issuer:"
@@ -5563,20 +5606,14 @@ msgstr "ئىزاھات:"
 
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
 msgid "Integrate your calendars"
-msgstr ""
+msgstr "بارلىق يىلنامىلىرىڭىزنى بىر يەرگە يىغىڭ"
 
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
 msgid "Integrate your contacts"
-msgstr ""
+msgstr "بارلىق ئالاقەداشلىرىڭىزنى بىر يەرگە يىغىڭ"
 
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:257
 msgid "Signon service did not return a secret"
-msgstr ""
-
-#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
-#, c-format
-#| msgid "No such source for UID '%s'"
-msgid "No such data source for UID '%s'"
 msgstr ""
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
@@ -5585,11 +5622,11 @@ msgstr "گۇگىل يىلنامىسى"
 
 #: ../modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
 msgid "Google Contacts"
-msgstr ""
+msgstr "Google ئالاقەداشلىرى"
 
 #: ../modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
 msgid "GMail"
-msgstr ""
+msgstr "GMail"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
 msgid "Mail"
@@ -5597,7 +5634,7 @@ msgstr "خەت"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
 msgid "Integrate your mailboxes"
-msgstr ""
+msgstr "بارلىق خەت ساندۇقلىرىڭىزنى بىر يەرگە يىغىڭ"
 
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:971
 #, c-format
@@ -5621,11 +5658,11 @@ msgstr "JSON سانلىق-مەلۇماتىدىن email دېگەن ئەزانى �
 
 #: ../modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
 msgid "Yahoo! Calendar"
-msgstr ""
+msgstr "Yahoo! Calendar"
 
 #: ../modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
 msgid "Yahoo! Mail"
-msgstr ""
+msgstr "Yahoo! Mail"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:227
 msgid "Tasks"
