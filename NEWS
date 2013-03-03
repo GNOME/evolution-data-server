@@ -1,3 +1,68 @@
+Evolution-Data-Server 3.7.91 2013-03-04
+---------------------------------------
+
+Bug Fixes:
+	Bug 693101 - IMAPx can vanish and redownload folder summary
+	             (Milan Crha)
+	Bug 693345 - dngettext should be used instead of ngettext (Milan Crha)
+	Bug 694152 - Compile errors in C++ due to G_BEGIN/END_DECLS
+	             (Patrick Ohly)
+	Bug 694223 - The "message-location" search never matches on IMAP+
+	             (Milan Crha)
+	Bug 694734 - Relative URI in Location on PUT confuses WebDAV
+	             (Milan Crha)
+
+Other Changes:
+	* Add VPN-awareness to calendar, contact, task and memo backends.
+	  VPN-awareness for mail accounts not yet finished. (Matthew Barnes)
+	* Support GOA's new IMAP/SMTP provider. (Matthew Barnes)
+	* Added documentation for new Direct Read Access related apis.
+	  (Tristan Van Berkom)
+	* Fixing pkg-config files for libebook & libedata-book
+	  (Tristan Van Berkom)
+	* source_write_sync: Fail gracefully when given a scratch source.
+	  (Matthew Barnes)
+	* source_remove_sync: Fail gracefully when given a scratch source.
+	  (Matthew Barnes)
+	* e-test-server-utils: Add support for testing Direct Read Access
+	  books. (Tristan Van Berkom)
+	* Ported various EBookClient tests to additionally test Direct Read
+	  Access variants (Tristan Van Berkom)
+	* Do not use SSL_V2_COMPATIBLE_HELLO by default (Milan Crha)
+	* Local Delivery not updated on start and missing Receiving Options
+	  page (Milan Crha)
+	* EBookBackendSexp: Restore suffix search functionality
+	  (Tristan Van Berkom)
+	* e_source_registry_server_load_directory: Monitor failure is
+	  non-fatal. (Matthew Barnes)
+	* e_cal_client_modify_objects_sync: Fix infinite loop. (Matthew Barnes)
+	* EBookQuery/EPhoneNumber: Enhanced documentation (Tristan Van Berkom)
+	* CamelSMIMEContext: Support IANA registered hash function names.
+	  (Matthew Barnes)
+	* evolution-user-prompter: Add a --keep-running option.
+	  (Matthew Barnes)
+	* Make the ESourceRegistryServer modules relocatable like addressbook
+	  & calendar (Tristan Van Berkom)
+	* Make the Camel provider modules relocatable (Tristan Van Berkom)
+	* build: Support (and prefer) libboost_thread-mt (Mathias Hasselmann)
+	* CamelIMAPXServer: Improve thread-safety when selecting folders.
+	  (Matthew Barnes)
+
+Translations:
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Aurimas Černius (lt)
+	Anish A (ml)
+	Kjartan Maraas (nb)
+	Piotr Drąg (pl)
+	Yuri Myasoedov (ru)
+	Мирослав Николић (sr)
+	Gheyret Kenji (ug)
+	Nguyễn Thái Ngọc Duy (vi)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.7.90 2013-02-18
 ---------------------------------------
 
