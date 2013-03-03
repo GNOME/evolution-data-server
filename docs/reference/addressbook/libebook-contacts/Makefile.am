@@ -21,7 +21,6 @@ CFILE_GLOB = $(top_srcdir)/addressbook/libebook-contacts/*.c
 
 IGNORE_HFILES = \
 	e-book-contacts-enumtypes.h	\
-	e-book-contacts-marshal.h \
 	e-phone-number-private.h
 
 GTKDOC_CFLAGS = \

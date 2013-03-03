@@ -11,10 +11,6 @@ e-book-contacts-enumtypes.c: e-book-contacts-enumtypes.c.template $(ENUM_TYPES)
 
 ENUM_GENERATED = e-book-contacts-enumtypes.h e-book-contacts-enumtypes.c
 
-# The marshallers
-MARSHAL_GENERATED = e-book-contacts-marshal.c e-book-contacts-marshal.h
-@EVO_MARSHAL_RULE@
-
 # The library
 lib_LTLIBRARIES = libebook-contacts-1.2.la
 noinst_LTLIBRARIES =
@@ -39,7 +35,6 @@ libebook_contacts_1_2_la_CPPFLAGS = \
 
 libebook_contacts_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
-	$(MARSHAL_GENERATED)				\
 	e-address-western.c				\
 	e-name-western.c				\
 	e-name-western-tables.h                         \
@@ -154,7 +149,7 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
 endif
 
-BUILT_SOURCES += $(ENUM_GENERATED) $(MARSHAL_GENERATED)
+BUILT_SOURCES += $(ENUM_GENERATED)
 CLEANFILES    += $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
@@ -162,7 +157,6 @@ EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	e-book-contacts-enumtypes.h.template			\
 	e-book-contacts-enumtypes.c.template			\
-	e-book-contacts-marshal.list	\
 	e-name-western-tables.h.in                      \
 	gen-western-table.py
 
