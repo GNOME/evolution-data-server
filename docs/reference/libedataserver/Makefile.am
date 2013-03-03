@@ -19,8 +19,6 @@ CFILE_GLOB = $(top_srcdir)/libedataserver/*.c
 
 IGNORE_HFILES = 					\
 	e-client-private.h				\
-	e-marshal.h					\
-	e-gdbus-marshallers.h				\
 	e-gdbus-templates.h				\
 	e-source-enumtypes.h				\
 	libedataserver-private.h

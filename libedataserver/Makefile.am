@@ -8,17 +8,7 @@ e-source-enumtypes.c: e-source-enumtypes.c.template $(ENUM_TYPES)
 
 ENUM_GENERATED = e-source-enumtypes.h e-source-enumtypes.c
 
-# The marshallers
-MARSHAL_GENERATED = \
-	e-gdbus-marshallers.c \
-	e-gdbus-marshallers.h \
-	e-marshal.c \
-	e-marshal.h
-@EVO_MARSHAL_RULE@
-
-BUILT_SOURCES = \
-	$(ENUM_GENERATED) \
-	$(MARSHAL_GENERATED)
+BUILT_SOURCES = $(ENUM_GENERATED)
 
 lib_LTLIBRARIES = libedataserver-1.2.la
 
@@ -123,7 +113,6 @@ libedataserverinclude_HEADERS =		\
 	e-client.h			\
 	e-credentials.h			\
 	e-flag.h			\
-	e-gdbus-marshallers.h		\
 	e-gdbus-templates.h		\
 	e-iterator.h			\
 	e-list.h			\

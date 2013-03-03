@@ -191,8 +191,7 @@ e_data_factory_class_init (EDataFactoryClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDataFactoryClass, backend_created),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_BACKEND);
 }

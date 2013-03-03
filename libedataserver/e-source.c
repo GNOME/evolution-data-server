@@ -1636,8 +1636,7 @@ e_source_class_init (ESourceClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
 		G_STRUCT_OFFSET (ESourceClass, changed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 
 	/* Register built-in ESourceExtension types. */

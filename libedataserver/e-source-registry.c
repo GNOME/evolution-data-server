@@ -53,7 +53,6 @@
 #include <e-dbus-source.h>
 #include <e-dbus-source-manager.h>
 
-#include <libedataserver/e-marshal.h>
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-source-collection.h>
 
@@ -1256,8 +1255,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryClass, source_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SOURCE);
 
@@ -1274,8 +1272,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryClass, source_changed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SOURCE);
 
@@ -1291,8 +1288,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryClass, source_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SOURCE);
 
@@ -1308,8 +1304,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryClass, source_enabled),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SOURCE);
 
@@ -1325,8 +1320,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryClass, source_disabled),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SOURCE);
 }

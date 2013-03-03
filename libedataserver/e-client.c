@@ -36,8 +36,6 @@
 
 #include <libedataserver/e-data-server-util.h>
 
-#include "e-gdbus-marshallers.h"
-
 #include "e-client.h"
 #include "e-client-private.h"
 
@@ -861,8 +859,7 @@ e_client_class_init (EClientClass *class)
 		G_SIGNAL_RUN_LAST |
 		G_SIGNAL_DEPRECATED,
 		G_STRUCT_OFFSET (EClientClass, opened),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__BOXED,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_ERROR);
 
@@ -871,8 +868,7 @@ e_client_class_init (EClientClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (EClientClass, backend_error),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
 
@@ -881,8 +877,7 @@ e_client_class_init (EClientClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EClientClass, backend_died),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 
 	signals[BACKEND_PROPERTY_CHANGED] = g_signal_new (
@@ -890,9 +885,10 @@ e_client_class_init (EClientClass *class)
 		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EClientClass, backend_property_changed),
-		NULL, NULL,
-		e_gdbus_marshallers_VOID__STRING_STRING,
-		G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 2,
+		G_TYPE_STRING,
+		G_TYPE_STRING);
 }
 
 static void

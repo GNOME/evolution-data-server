@@ -283,8 +283,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, bus_acquired),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
 
@@ -300,8 +299,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, bus_name_acquired),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
 
@@ -319,8 +317,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, bus_name_lost),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
 

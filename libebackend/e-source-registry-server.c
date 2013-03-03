@@ -43,8 +43,6 @@
 #include <e-dbus-source.h>
 #include <e-dbus-source-manager.h>
 
-#include <libedataserver/e-marshal.h>
-
 #include <libebackend/e-authentication-mediator.h>
 #include <libebackend/e-authentication-session.h>
 #include <libebackend/e-server-side-source.h>
@@ -1294,8 +1292,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryServerClass, load_error),
-		NULL, NULL,
-		e_marshal_VOID__OBJECT_BOXED,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_FILE,
 		G_TYPE_ERROR | G_SIGNAL_TYPE_STATIC_SCOPE);
@@ -1313,8 +1310,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryServerClass, files_loaded),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 
 	/**
@@ -1329,8 +1325,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryServerClass, source_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SERVER_SIDE_SOURCE);
 
@@ -1346,8 +1341,7 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ESourceRegistryServerClass, source_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SERVER_SIDE_SOURCE);
 

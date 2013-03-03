@@ -936,8 +936,7 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ECollectionBackendClass, child_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SERVER_SIDE_SOURCE);
 
@@ -959,8 +958,7 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ECollectionBackendClass, child_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SERVER_SIDE_SOURCE);
 }

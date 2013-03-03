@@ -32,7 +32,6 @@
 #define E_GDBUS_TEMPLATES_H
 
 #include <gio/gio.h>
-#include <libedataserver/e-gdbus-marshallers.h>
 
 G_BEGIN_DECLS
 
@@ -347,7 +346,7 @@ enum {
 			G_STRUCT_OFFSET (_iface_struct, _sig_name_var),								\
 			NULL,													\
 			NULL,													\
-			g_cclosure_marshal_VOID__VOID,										\
+			NULL,													\
 			G_TYPE_NONE,												\
 			0);													\
 																\
@@ -362,7 +361,7 @@ enum {
 			G_STRUCT_OFFSET (_iface_struct, _sig_name_var),								\
 			NULL,													\
 			NULL,													\
-			g_cclosure_marshal_VOID__ ## _mtype,									\
+			NULL,													\
 			G_TYPE_NONE,												\
 			1,													\
 			G_TYPE_ ## _gtype);											\
@@ -390,7 +389,7 @@ enum {
 			G_STRUCT_OFFSET (_iface_struct, _sig_name_var),								\
 			NULL,													\
 			NULL,													\
-			e_gdbus_marshallers_VOID__UINT_STRING,									\
+			NULL,													\
 			G_TYPE_NONE,												\
 			2,													\
 			G_TYPE_UINT, G_TYPE_STRING);										\
@@ -406,7 +405,7 @@ enum {
 			G_STRUCT_OFFSET (_iface_struct, _sig_name_var ## _done),						\
 			NULL,													\
 			NULL,													\
-			e_gdbus_marshallers_VOID__UINT_BOXED,									\
+			NULL,													\
 			G_TYPE_NONE,												\
 			2,													\
 			G_TYPE_UINT, G_TYPE_ERROR);										\
@@ -422,7 +421,7 @@ enum {
 			G_STRUCT_OFFSET (_iface_struct, _sig_name_var ## _done),						\
 			NULL,													\
 			NULL,													\
-			e_gdbus_marshallers_VOID__UINT_BOXED_ ## _mtype,							\
+			NULL,													\
 			G_TYPE_NONE,												\
 			3,													\
 			G_TYPE_UINT, G_TYPE_ERROR, G_TYPE_ ## _gtype);								\
@@ -449,8 +448,7 @@ enum {
 			G_TYPE_FROM_INTERFACE (iface),										\
 			G_SIGNAL_RUN_LAST,											\
 			G_STRUCT_OFFSET (_iface_struct, handle_ ## _sig_name_var),						\
-			NULL, NULL,												\
-			e_gdbus_marshallers_BOOLEAN__OBJECT,									\
+			NULL, NULL, NULL,											\
 			G_TYPE_BOOLEAN,												\
 			1,													\
 			G_TYPE_DBUS_METHOD_INVOCATION);										\
@@ -462,8 +460,7 @@ enum {
 			G_TYPE_FROM_INTERFACE (iface),										\
 			G_SIGNAL_RUN_LAST,											\
 			G_STRUCT_OFFSET (_iface_struct, handle_ ## _sig_name_var),						\
-			NULL, NULL,												\
-			e_gdbus_marshallers_BOOLEAN__OBJECT_ ## _mtype,								\
+			NULL, NULL, NULL,											\
 			G_TYPE_BOOLEAN,												\
 			2,													\
 			G_TYPE_DBUS_METHOD_INVOCATION,										\

@@ -952,8 +952,7 @@ e_proxy_class_init (EProxyClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (EProxyClass, changed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 
 }
