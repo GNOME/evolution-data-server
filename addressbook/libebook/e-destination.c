@@ -156,8 +156,7 @@ e_destination_class_init (EDestinationClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDestinationClass, changed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 }
 

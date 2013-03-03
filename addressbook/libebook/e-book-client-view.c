@@ -31,7 +31,6 @@
 
 #include "e-book-client.h"
 #include "e-book-client-view.h"
-#include "e-book-marshal.h"
 #include "e-gdbus-book-view.h"
 
 #define E_BOOK_CLIENT_VIEW_GET_PRIVATE(obj) \
@@ -877,8 +876,7 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClientViewClass, objects_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -887,8 +885,7 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClientViewClass, objects_modified),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -897,8 +894,7 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClientViewClass, objects_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -907,8 +903,7 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClientViewClass, progress),
-		NULL, NULL,
-		e_gdbus_marshallers_VOID__UINT_STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_UINT,
 		G_TYPE_STRING);
@@ -918,8 +913,7 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClientViewClass, complete),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__BOXED,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_ERROR);
 }

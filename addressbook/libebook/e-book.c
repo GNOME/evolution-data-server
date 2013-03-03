@@ -41,7 +41,6 @@
 #include "e-book.h"
 #include "e-error.h"
 #include "e-book-view-private.h"
-#include "e-book-marshal.h"
 
 #define E_BOOK_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -267,8 +266,7 @@ e_book_class_init (EBookClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClass, writable_status),
-		NULL, NULL,
-		e_book_marshal_NONE__BOOL,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_BOOLEAN);
 
@@ -277,8 +275,7 @@ e_book_class_init (EBookClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClass, connection_status),
-		NULL, NULL,
-		e_book_marshal_NONE__BOOL,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_BOOLEAN);
 
@@ -287,8 +284,7 @@ e_book_class_init (EBookClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookClass, backend_died),
-		NULL, NULL,
-		e_book_marshal_NONE__NONE,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 }
 

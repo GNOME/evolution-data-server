@@ -11,10 +11,6 @@ e-book-enumtypes.c: e-book-enumtypes.c.template $(ENUM_TYPES)
 
 ENUM_GENERATED = e-book-enumtypes.h e-book-enumtypes.c
 
-# The marshallers
-MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
-@EVO_MARSHAL_RULE@
-
 # The library
 lib_LTLIBRARIES = libebook-1.2.la
 
@@ -39,7 +35,6 @@ libebook_1_2_la_CPPFLAGS = \
 
 libebook_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
-	$(MARSHAL_GENERATED)				\
 	e-book-client.c					\
 	e-book-client-view.c				\
 	e-book-view-private.h				\
@@ -142,15 +137,14 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
 endif
 
-BUILT_SOURCES += $(ENUM_GENERATED) $(MARSHAL_GENERATED)
+BUILT_SOURCES += $(ENUM_GENERATED)
 CLEANFILES    += $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	e-book-enumtypes.h.template			\
-	e-book-enumtypes.c.template			\
-	e-book-marshal.list
+	e-book-enumtypes.c.template
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

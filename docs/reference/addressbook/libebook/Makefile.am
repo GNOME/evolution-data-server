@@ -21,7 +21,6 @@ CFILE_GLOB = $(top_srcdir)/addressbook/libebook/*.c
 
 IGNORE_HFILES = \
 	e-book-enumtypes.h				\
-	e-book-marshal.h				\
 	e-data-book-bindings.h				\
 	e-data-book-factory-bindings.h			\
 	e-data-book-view-bindings.h

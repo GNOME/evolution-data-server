@@ -24,7 +24,6 @@
 #include "e-book-view.h"
 #include "e-book-view-private.h"
 #include "e-book-enumtypes.h"
-#include "e-book-marshal.h"
 
 G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 
@@ -203,8 +202,7 @@ e_book_view_class_init (EBookViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookViewClass, contacts_changed),
-		NULL, NULL,
-		e_book_marshal_NONE__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[CONTACTS_REMOVED] = g_signal_new (
@@ -212,8 +210,7 @@ e_book_view_class_init (EBookViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookViewClass, contacts_removed),
-		NULL, NULL,
-		e_book_marshal_NONE__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	signals[CONTACTS_ADDED] = g_signal_new (
@@ -221,8 +218,7 @@ e_book_view_class_init (EBookViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookViewClass, contacts_added),
-		NULL, NULL,
-		e_book_marshal_NONE__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	/* XXX The "sequence-complete" signal is deprecated. */
@@ -231,8 +227,7 @@ e_book_view_class_init (EBookViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
-		NULL, NULL,
-		e_book_marshal_NONE__INT,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1, G_TYPE_UINT);
 
 	signals[VIEW_COMPLETE] = g_signal_new (
@@ -240,8 +235,7 @@ e_book_view_class_init (EBookViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookViewClass, view_complete),
-		NULL, NULL,
-		e_book_marshal_NONE__UINT_STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
 	signals[STATUS_MESSAGE] = g_signal_new (
@@ -249,8 +243,7 @@ e_book_view_class_init (EBookViewClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookViewClass, status_message),
-		NULL, NULL,
-		e_book_marshal_NONE__STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
