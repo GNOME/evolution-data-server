@@ -44,7 +44,6 @@
 
 #include "e-cal-client.h"
 #include "e-cal-check-timezones.h"
-#include "e-cal-marshal.h"
 #include "e-cal-time-util.h"
 #include "e-cal-view-private.h"
 #include "e-cal.h"
@@ -483,9 +482,9 @@ e_cal_class_init (ECalClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClass, cal_opened),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__INT,
-		G_TYPE_NONE, 1, G_TYPE_INT);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_INT);
 
 	/**
 	 * ECal::cal-opened-ex:
@@ -497,17 +496,16 @@ e_cal_class_init (ECalClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClass, cal_opened_ex),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	signals[CAL_SET_MODE] = g_signal_new (
 		"cal_set_mode",
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClass, cal_set_mode),
-		NULL, NULL,
-		e_cal_marshal_VOID__ENUM_ENUM,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		E_CAL_SET_MODE_STATUS_ENUM_TYPE,
 		CAL_MODE_ENUM_TYPE);
@@ -517,8 +515,7 @@ e_cal_class_init (ECalClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClass, backend_error),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
 
@@ -527,8 +524,7 @@ e_cal_class_init (ECalClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClass, backend_died),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 }
 

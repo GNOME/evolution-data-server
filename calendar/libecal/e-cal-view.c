@@ -26,7 +26,6 @@
 #endif
 
 #include <string.h>
-#include "e-cal-marshal.h"
 #include "e-cal.h"
 #include "e-cal-view.h"
 #include "e-cal-view-private.h"
@@ -193,9 +192,9 @@ e_cal_view_class_init (ECalViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalViewClass, objects_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	/**
 	 * ECalView::objects-modified:
@@ -207,9 +206,9 @@ e_cal_view_class_init (ECalViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalViewClass, objects_modified),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	/**
 	 * ECalView::objects-removed:
@@ -221,18 +220,19 @@ e_cal_view_class_init (ECalViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalViewClass, objects_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1, G_TYPE_POINTER);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
 
 	signals[VIEW_PROGRESS] = g_signal_new (
 		"view_progress",
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalViewClass, view_progress),
-		NULL, NULL,
-		e_cal_marshal_VOID__STRING_UINT,
-		G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 2,
+		G_TYPE_STRING,
+		G_TYPE_UINT);
 
 	/* XXX The "view-done" signal is deprecated. */
 	signals[VIEW_DONE] = g_signal_new (
@@ -240,18 +240,19 @@ e_cal_view_class_init (ECalViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalViewClass, view_done),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__INT,
-		G_TYPE_NONE, 1, G_TYPE_INT);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_INT);
 
 	signals[VIEW_COMPLETE] = g_signal_new (
 		"view_complete",
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalViewClass, view_complete),
-		NULL, NULL,
-		e_cal_marshal_VOID__UINT_STRING,
-		G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 2,
+		G_TYPE_UINT,
+		G_TYPE_STRING);
 }
 
 static void

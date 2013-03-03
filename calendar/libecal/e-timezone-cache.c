@@ -49,8 +49,7 @@ e_timezone_cache_default_init (ETimezoneCacheInterface *interface)
 		G_OBJECT_CLASS_TYPE (interface),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ETimezoneCacheInterface, timezone_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 }

@@ -31,8 +31,6 @@
 #include "e-cal-client.h"
 #include "e-cal-client-view.h"
 
-#include "libedataserver/e-gdbus-marshallers.h"
-
 #include "e-gdbus-cal-view.h"
 
 #define E_CAL_CLIENT_VIEW_GET_PRIVATE(obj) \
@@ -700,8 +698,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClientViewClass, objects_added),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -715,8 +712,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClientViewClass, objects_modified),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -730,8 +726,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClientViewClass, objects_removed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
@@ -740,8 +735,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClientViewClass, progress),
-		NULL, NULL,
-		e_gdbus_marshallers_VOID__UINT_STRING,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_UINT,
 		G_TYPE_STRING);
@@ -751,8 +745,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClientViewClass, complete),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__BOXED,
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_ERROR);
 }

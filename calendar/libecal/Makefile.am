@@ -8,10 +8,6 @@ e-cal-enumtypes.c: e-cal-enumtypes.c.template $(ENUM_TYPES)
 
 ENUM_GENERATED = e-cal-enumtypes.h e-cal-enumtypes.c
 
-# The marshallers
-MARSHAL_GENERATED = e-cal-marshal.c e-cal-marshal.h
-@EVO_MARSHAL_RULE@
-
 # The library
 lib_LTLIBRARIES = libecal-1.2.la
 
@@ -38,7 +34,6 @@ libecal_1_2_la_CPPFLAGS =			\
 
 libecal_1_2_la_SOURCES =			\
 	$(ENUM_GENERATED)			\
-	$(MARSHAL_GENERATED)			\
 	e-cal.c					\
 	e-cal-client.c				\
 	e-cal-client-view.c			\
@@ -90,15 +85,14 @@ libecalinclude_HEADERS =	\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libecal-$(API_VERSION).pc
 
-BUILT_SOURCES = $(ENUM_GENERATED) $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(ENUM_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	e-cal-enumtypes.h.template			\
-	e-cal-enumtypes.c.template			\
-	e-cal-marshal.list
+	e-cal-enumtypes.c.template
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

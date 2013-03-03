@@ -22,7 +22,6 @@ IGNORE_HFILES = \
 	e-data-cal-glue.h				\
 	e-data-cal-factory-glue.h			\
 	e-data-cal-view-glue.h				\
-	e-data-cal-marshal.h				\
 	e-data-cal-types.h
 
 GTKDOC_CFLAGS = \
