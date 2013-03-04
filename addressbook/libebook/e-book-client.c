@@ -973,7 +973,7 @@ e_book_client_init (EBookClient *client)
  * function will have a descriptive prefix that includes the display
  * name of @source.
  *
- * Returns: a new #EBookClient, or %NULL
+ * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
  *
  * Since: 3.8
  **/
@@ -1151,7 +1151,7 @@ e_book_client_connect (ESource *source,
  * function will have a descriptive prefix that includes the display
  * name of the #ESource passed to e_book_client_connect().
  *
- * Returns: a new #EBookClient, or %NULL
+ * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
  *
  * Since: 3.8
  **/
@@ -1214,13 +1214,13 @@ e_book_client_new (ESource *source,
  * e_book_client_connect_direct_sync:
  * @registry: an #ESourceRegistry
  * @source: an #ESource
- * @cancellable: optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Like e_book_client_connect_sync(), except creates the book client for
  * direct read access to the underlying addressbook.
  *
- * Returns: a new but unopened #EBookClient.
+ * Returns: (transfer full) (type EBookClient): a new but unopened #EBookClient.
  *
  * Since: 3.8
  **/
@@ -2810,8 +2810,8 @@ e_book_client_get_contacts (EBookClient *client,
  * e_book_client_get_contacts_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @out_contacts: (element-type EContact) (out): a #GSList of matched
- *                #EContact-s
+ * @out_contacts: (element-type EContact) (out) (transfer full): a #GSList
+ *                of matched #EContact-s
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts().
