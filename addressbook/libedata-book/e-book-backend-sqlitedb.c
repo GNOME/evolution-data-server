@@ -881,55 +881,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 	sqlite3_free (stmt);
 
-	/* Create indexes on the summary fields configured for indexing */
-	for (i = 0; success && i < ebsdb->priv->n_summary_fields; i++) {
-		if ((ebsdb->priv->summary_fields[i].index & INDEX_PREFIX) != 0 &&
-		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
-			/* Derive index name from field & folder */
-			tmp = g_strdup_printf (
-				"INDEX_%s_%s",
-				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
-				folderid);
-			stmt = sqlite3_mprintf (
-				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)", tmp, folderid,
-				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-			sqlite3_free (stmt);
-			g_free (tmp);
-		}
-
-		if (success &&
-		    (ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0 &&
-		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
-			/* Derive index name from field & folder */
-			tmp = g_strdup_printf (
-				"RINDEX_%s_%s",
-				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
-				folderid);
-			stmt = sqlite3_mprintf (
-				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_reverse)", tmp, folderid,
-				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-			sqlite3_free (stmt);
-			g_free (tmp);
-		}
-
-		if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0 &&
-		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
-			/* Derive index name from field & folder */
-			tmp = g_strdup_printf (
-				"PINDEX_%s_%s",
-				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
-				folderid);
-			stmt = sqlite3_mprintf (
-				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_phone)", tmp, folderid,
-				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-			sqlite3_free (stmt);
-			g_free (tmp);
-		}
-	}
-
 	/* Construct the create statement from the attribute list summary table */
 	if (success && ebsdb->priv->have_attr_list) {
 		string = g_string_new ("CREATE TABLE IF NOT EXISTS %Q ( uid TEXT NOT NULL REFERENCES %Q(uid), "
@@ -974,11 +925,58 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		}
 
 		g_free (tmp);
-
 	}
 
 	if (success)
 		success = introspect_summary (ebsdb, folderid, error);
+
+	/* Create indexes on the summary fields configured for indexing */
+	for (i = 0; success && i < ebsdb->priv->n_summary_fields; i++) {
+		if ((ebsdb->priv->summary_fields[i].index & INDEX_PREFIX) != 0 &&
+		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+			/* Derive index name from field & folder */
+			tmp = g_strdup_printf (
+				"INDEX_%s_%s",
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+				folderid);
+			stmt = sqlite3_mprintf (
+				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)", tmp, folderid,
+						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+			g_free (tmp);
+		}
+
+		if (success &&
+		    (ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0 &&
+		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+			/* Derive index name from field & folder */
+			tmp = g_strdup_printf (
+				"RINDEX_%s_%s",
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+				folderid);
+			stmt = sqlite3_mprintf (
+				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_reverse)", tmp, folderid,
+						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+			g_free (tmp);
+		}
+
+		if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0 &&
+		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+			/* Derive index name from field & folder */
+			tmp = g_strdup_printf ("PINDEX_%s_%s",
+					       summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+					       folderid);
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_phone)", tmp, folderid,
+						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+			g_free (tmp);
+		}
+	}
+
 	if (success && previous_schema == 4)
 		success = upgrade_contacts_table (ebsdb, folderid, error);
 
