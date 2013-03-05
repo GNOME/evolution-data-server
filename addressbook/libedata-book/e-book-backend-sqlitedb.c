@@ -785,6 +785,8 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 	if (!success)
 		goto introspect_summary_finish;
 
+	ebsdb->priv->attr_list_indexes = 0;
+
 	if (multivalues) {
 		gchar **fields = g_strsplit (multivalues, ":", 0);
 
@@ -807,6 +809,8 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 						iter->index |= INDEX_PHONE;
 					}
 				}
+
+				ebsdb->priv->attr_list_indexes |= iter->index;
 			}
 
 			g_strfreev (params);
