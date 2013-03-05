@@ -321,7 +321,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	switch (closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
-		if (!e_client_remove_sync (E_CLIENT (fixture->service.book_client), NULL, &error)) {
+		if (!closure->keep_work_directory && !e_client_remove_sync (E_CLIENT (fixture->service.book_client), NULL, &error)) {
 			g_message ("Failed to remove test book: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -330,7 +330,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-		if (!e_book_remove (fixture->service.book, &error)) {
+		if (!closure->keep_work_directory && !e_book_remove (fixture->service.book, &error)) {
 			g_message ("Failed to remove test book: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -339,7 +339,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 
 	case E_TEST_SERVER_CALENDAR:
-		if (!e_client_remove_sync (E_CLIENT (fixture->service.calendar_client), NULL, &error)) {
+		if (!closure->keep_work_directory && !e_client_remove_sync (E_CLIENT (fixture->service.calendar_client), NULL, &error)) {
 			g_message ("Failed to remove test calendar: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -348,7 +348,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		if (!e_cal_remove (fixture->service.calendar, &error)) {
+		if (!closure->keep_work_directory && !e_cal_remove (fixture->service.calendar, &error)) {
 			g_message ("Failed to remove test calendar: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
