@@ -1211,7 +1211,7 @@ ixphone_compare_national (gpointer      data,
 	if (cmp == 0) {
 		if (sep1 == str1) {
 			if (sep2 != str2)
-				cmp = e_strcmp2n (country_code, 2, str2, sep2 - str2);
+				cmp = e_strcmp2n (country_code, strlen (country_code), str2, sep2 - str2);
 		} else if (sep2 == str2) {
 			cmp = e_strcmp2n (str1, sep1 - str1, country_code, 2);
 		} else {
