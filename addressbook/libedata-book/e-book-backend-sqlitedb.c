@@ -924,6 +924,55 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 	sqlite3_free (stmt);
 
+	/* Construct the create statement from the attribute list summary table */
+	if (success && ebsdb->priv->have_attr_list) {
+		string = g_string_new ("CREATE TABLE IF NOT EXISTS %Q ( uid TEXT NOT NULL REFERENCES %Q(uid), "
+			"field TEXT, value TEXT");
+
+		if ((ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0)
+			g_string_append (string, ", value_reverse TEXT");
+		if ((ebsdb->priv->attr_list_indexes & INDEX_PHONE) != 0)
+			g_string_append (string, ", value_phone TEXT");
+
+		g_string_append_c (string, ')');
+
+		tmp = g_strdup_printf ("%s_lists", folderid);
+		stmt = sqlite3_mprintf (string->str, tmp, folderid);
+		g_string_free (string, TRUE);
+
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+
+		/* Give the UID an index in this table, always */
+		stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS LISTINDEX ON %Q (uid)", tmp);
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+
+		/* Create indexes if specified */
+		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PREFIX) != 0) {
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS VALINDEX ON %Q (value)", tmp);
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+		}
+
+		if (success && (ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0) {
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS RVALINDEX ON %Q (value_reverse)", tmp);
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+		}
+
+		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PHONE) != 0) {
+			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS PVALINDEX ON %Q (value_phone)", tmp);
+			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+			sqlite3_free (stmt);
+		}
+
+		g_free (tmp);
+	}
+
+	if (success)
+		success = introspect_summary (ebsdb, folderid, error);
+
 	/* Create indexes on the summary fields configured for indexing */
 	for (i = 0; success && i < ebsdb->priv->n_summary_fields; i++) {
 		if ((ebsdb->priv->summary_fields[i].index & INDEX_PREFIX) != 0 &&
@@ -970,56 +1019,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			g_free (tmp);
 		}
 	}
-
-	/* Construct the create statement from the attribute list summary table */
-	if (success && ebsdb->priv->have_attr_list) {
-		string = g_string_new ("CREATE TABLE IF NOT EXISTS %Q ( uid TEXT NOT NULL REFERENCES %Q(uid), "
-			"field TEXT, value TEXT");
-
-		if ((ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0)
-			g_string_append (string, ", value_reverse TEXT");
-		if ((ebsdb->priv->attr_list_indexes & INDEX_PHONE) != 0)
-			g_string_append (string, ", value_phone TEXT");
-
-		g_string_append_c (string, ')');
-
-		tmp = g_strdup_printf ("%s_lists", folderid);
-		stmt = sqlite3_mprintf (string->str, tmp, folderid);
-		g_string_free (string, TRUE);
-
-		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-		sqlite3_free (stmt);
-
-		/* Give the UID an index in this table, always */
-		stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS LISTINDEX ON %Q (uid)", tmp);
-		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-		sqlite3_free (stmt);
-
-		/* Create indexes if specified */
-		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PREFIX) != 0) {
-			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS VALINDEX ON %Q (value)", tmp);
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-			sqlite3_free (stmt);
-		}
-
-		if (success && (ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0) {
-			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS RVALINDEX ON %Q (value_reverse)", tmp);
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-			sqlite3_free (stmt);
-		}
-
-		if (success && (ebsdb->priv->attr_list_indexes & INDEX_PHONE) != 0) {
-			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS PVALINDEX ON %Q (value_phone)", tmp);
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
-			sqlite3_free (stmt);
-		}
-
-		g_free (tmp);
-
-	}
-
-	if (success)
-		success = introspect_summary (ebsdb, folderid, error);
 
 	if (success && e_phone_number_is_supported ()) {
 		gchar *current_region = e_phone_number_get_default_region ();
