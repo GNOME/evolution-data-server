@@ -59,6 +59,7 @@ TESTS =								\
 	test-client-remove-contacts				\
 	test-client-photo-is-uri				\
 	test-client-async					\
+	test-client-change-country-code				\
 	$(NULL)
 
 # The noinst tests are functional tests, not unit tests.
@@ -68,7 +69,6 @@ TESTS =								\
 noinst_PROGRAMS =						\
 	$(TESTS)						\
 	test-client-upgrade-addressbook				\
-	test-client-change-country-code				\
 	test-client-examine					\
 	test-client						\
 	test-client-nonexistent-id				\
