@@ -26,6 +26,7 @@ module_gnome_online_accounts_la_SOURCES = \
 	$(NULL)
 
 module_gnome_online_accounts_la_LIBADD = \
+	$(top_builddir)/camel/libcamel-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(E_BACKEND_LIBS) \
@@ -53,7 +54,6 @@ module_data_factory_goa_SOURCES = \
 	$(NULL)
 
 module_data_factory_goa_LIBADD = \
-	$(top_builddir)/camel/libcamel-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(E_BACKEND_LIBS) \
