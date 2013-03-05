@@ -136,6 +136,16 @@ struct _ETestServerFixture {
 	guint            registry_finalized : 1;
 };
 
+/**
+ * ETestServiceFlags:
+ * @E_TEST_SERVER_KEEP_WORK_DIRECTORY: Don't delete working directory upon startup.
+ *
+ * Instructions upon e_test_server_utils_run_full() operation.
+ */
+typedef enum {
+	E_TEST_SERVER_KEEP_WORK_DIRECTORY = (1 << 0)
+} ETestServerFlags;
+
 void e_test_server_utils_setup    (ETestServerFixture *fixture,
 				   gconstpointer       user_data);
 
@@ -143,5 +153,6 @@ void e_test_server_utils_teardown (ETestServerFixture *fixture,
 				   gconstpointer       user_data);
 
 gint e_test_server_utils_run      (void);
+gint e_test_server_utils_run_full (ETestServerFlags flags);
 
 #endif /* E_TEST_UTILS_H */
