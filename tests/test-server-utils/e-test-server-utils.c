@@ -451,10 +451,17 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 gint
 e_test_server_utils_run (void)
 {
+	return e_test_server_utils_run_full (0);
+}
+
+gint
+e_test_server_utils_run_full (ETestServerFlags flags)
+{
 	gint tests_ret;
 
 	/* Cleanup work directory */
-	delete_work_directory ();
+	if ((flags & E_TEST_SERVER_KEEP_WORK_DIRECTORY) == 0)
+		delete_work_directory ();
 
 	setup_environment ();
 
