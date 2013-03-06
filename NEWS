@@ -1,4 +1,37 @@
-Evolution-Data-Server 3.6.3 2012-01-21
+Evolution-Data-Server 3.6.4 2013-03-06
+--------------------------------------
+
+Bug Fixes:
+	Bug 692278 - LDAP backend mutex deadlock on finalize (Milan Crha)
+	Bug 689476 - Slow composer open (ENameSelector object leaks)
+	             (Milan Crha)
+	Bug 675287 - Spool file account doesn't show messages (Milan Crha)
+	Bug 683867 - Schedule actions with higher idle priority (Michel Dänzer)
+	Bug 694223 - The "message-location" search never matches on IMAP+
+	             (Milan Crha)
+	Bug 694734 - Relative URI in Location on PUT confuses WebDAV
+	             (Milan Crha)
+
+Other Changes:
+	* EGdbusTemplates: Address crash on operation cancel (Milan Crha)
+	* store_synchronize_sync(): Only sync subscribed folders.
+	  (Matthew Barnes)
+	* [CalDAV] Try to search for event when not in local cache (Milan Crha)
+	* ebook: avoid repeatedly creating GSettings in e_book_client_is_self
+	  (Patrick Ohly)
+	* source_write_sync: Fail gracefully when given a scratch source.
+	  (Matthew Barnes)
+	* source_remove_sync: Fail gracefully when given a scratch source.
+	  (Matthew Barnes)
+	* Do not use SSL_V2_COMPATIBLE_HELLO by default (Milan Crha)
+	* Local Delivery not updated on start and missing Receiving Options
+	  page (Milan Crha)
+	* e_source_registry_server_load_directory: Monitor failure is
+	  non-fatal. (Matthew Barnes)
+	* Speed-up auto-completion results showing (Milan Crha)
+
+
+Evolution-Data-Server 3.6.3 2013-01-21
 --------------------------------------
 
 Bug Fixes:
