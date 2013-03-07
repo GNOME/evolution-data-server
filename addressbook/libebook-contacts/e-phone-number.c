@@ -96,6 +96,7 @@ e_phone_number_is_supported (void)
  * e_phone_number_get_country_code_for_region:
  * @region_code: (allow-none): a two-letter country code, a locale name, or
  * %NULL
+ * @error: (out): a #GError to set an error, if any
  *
  * Retrieves the preferred country calling code for @region_code,
  * e.g. 358 for "fi" or 1 for "en_US@UTF-8".
@@ -109,7 +110,8 @@ e_phone_number_is_supported (void)
  * Since: 3.8
  */
 gint
-e_phone_number_get_country_code_for_region (const gchar *region_code)
+e_phone_number_get_country_code_for_region (const gchar *region_code,
+                                            GError **error)
 {
 #ifdef ENABLE_PHONENUMBER
 
@@ -117,7 +119,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code)
 
 #else /* ENABLE_PHONENUMBER */
 
-	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
+	_e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
 	return 0;
 
 #endif /* ENABLE_PHONENUMBER */
@@ -125,6 +127,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code)
 
 /**
  * e_phone_number_get_default_region:
+ * @error: (out): a #GError to set an error, if any
  *
  * Retrieves the current two-letter country code that's used by default for
  * parsing phone numbers in e_phone_number_from_string(). It can be useful
@@ -141,7 +144,7 @@ e_phone_number_get_country_code_for_region (const gchar *region_code)
  * Since: 3.8
  */
 gchar *
-e_phone_number_get_default_region (void)
+e_phone_number_get_default_region (GError **error)
 {
 #ifdef ENABLE_PHONENUMBER
 
@@ -149,7 +152,7 @@ e_phone_number_get_default_region (void)
 
 #else /* ENABLE_PHONENUMBER */
 
-	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
+	_e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
 	return NULL;
 
 #endif /* ENABLE_PHONENUMBER */
@@ -216,6 +219,9 @@ e_phone_number_to_string (const EPhoneNumber *phone_number,
 
 #else /* ENABLE_PHONENUMBER */
 
+	/* The EPhoneNumber instance must be invalid. We'd also bail out with
+	 * a warning if phone numbers are supported. Any code triggering this
+	 * is broken and should be fixed. */
 	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
 	return NULL;
 
@@ -245,6 +251,9 @@ e_phone_number_get_country_code (const EPhoneNumber *phone_number,
 
 #else /* ENABLE_PHONENUMBER */
 
+	/* The EPhoneNumber instance must be invalid. We'd also bail out with
+	 * a warning if phone numbers are supported. Any code triggering this
+	 * is broken and should be fixed. */
 	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
 	return 0;
 
@@ -272,6 +281,9 @@ e_phone_number_get_national_number (const EPhoneNumber *phone_number)
 
 #else /* ENABLE_PHONENUMBER */
 
+	/* The EPhoneNumber instance must be invalid. We'd also bail out with
+	 * a warning if phone numbers are supported. Any code triggering this
+	 * is broken and should be fixed. */
 	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
 	return NULL;
 
@@ -299,9 +311,9 @@ e_phone_number_compare (const EPhoneNumber *first_number,
 
 #else /* ENABLE_PHONENUMBER */
 
-	/* NOTE: This calls for a dedicated return value, but I sense broken
-	 * client code that only checks for E_PHONE_NUMBER_MATCH_NONE and then
-	 * treats the "not-implemented" return value as a match */
+	/* The EPhoneNumber instance must be invalid. We'd also bail out with
+	 * a warning if phone numbers are supported. Any code triggering this
+	 * is broken and should be fixed. */
 	g_warning ("%s: The library was built without phone number support.", G_STRFUNC);
 	return E_PHONE_NUMBER_MATCH_NONE;
 

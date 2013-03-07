@@ -1194,7 +1194,7 @@ create_collation (gpointer data,
 			db, name, SQLITE_UTF8, GINT_TO_POINTER (country_code),
 			ixphone_compare_for_country);
 	} else if (strcmp (name, "ixphone_national") == 0) {
-		country_code = e_phone_number_get_country_code_for_region (NULL);
+		country_code = e_phone_number_get_country_code_for_region (NULL, NULL);
 
 		ret = sqlite3_create_collation_v2 (
 			db, name, SQLITE_UTF8,
@@ -2042,8 +2042,12 @@ e_book_backend_sqlitedb_new_contacts (EBookBackendSqliteDB *ebsdb,
 		return FALSE;
 	}
 
-	if (e_phone_number_is_supported ())
-		default_region = e_phone_number_get_default_region ();
+	if (e_phone_number_is_supported ()) {
+		default_region = e_phone_number_get_default_region (error);
+
+		if (default_region == NULL)
+			success = FALSE;
+	}
 
 	for (l = contacts; success && l != NULL; l = g_slist_next (l)) {
 		EContact *contact = (EContact *) l->data;
@@ -3170,7 +3174,7 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			 *  o Normalize the string
 			 *  o Check the E.164 column instead
 			 */
-			const gint country_code = e_phone_number_get_country_code_for_region (region);
+			const gint country_code = e_phone_number_get_country_code_for_region (region, NULL);
 
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
 				field_name = g_strdup ("multi.value_phone");
@@ -4624,7 +4628,10 @@ upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 	if (e_phone_number_is_supported ()) {
 		g_message ("The phone number indexes' format has changed. Rebuilding them.");
-		default_region = e_phone_number_get_default_region ();
+		default_region = e_phone_number_get_default_region (error);
+
+		if (default_region == NULL)
+			success = FALSE;
 	}
 
 	for (l = vcard_data; success && l; l = l->next) {

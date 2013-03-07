@@ -339,22 +339,66 @@ test_supported (void)
 static void
 test_country_code_for_region (void)
 {
+	GError *error = NULL;
+	gint code;
+
 	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
-	g_assert_cmpint (e_phone_number_get_country_code_for_region ("CH"), ==, 41);
-	g_assert_cmpint (e_phone_number_get_country_code_for_region (NULL), ==, 1);
-	g_assert_cmpint (e_phone_number_get_country_code_for_region ("C"), ==, 0);
-	g_assert_cmpint (e_phone_number_get_country_code_for_region (""), ==, 1);
+
+#ifdef ENABLE_PHONENUMBER
+
+	code = e_phone_number_get_country_code_for_region ("CH", &error);
+	g_assert_cmpstr (error ? error->message : NULL, ==, NULL);
+	g_assert_cmpint (code, ==, 41);
+
+	code = e_phone_number_get_country_code_for_region (NULL, &error);
+	g_assert_cmpstr (error ? error->message : NULL, ==, NULL);
+	g_assert_cmpint (code, ==, 1);
+
+	code = e_phone_number_get_country_code_for_region ("C", &error);
+	g_assert_cmpstr (error ? error->message : NULL, ==, NULL);
+	g_assert_cmpint (code, ==, 0);
+
+	code = e_phone_number_get_country_code_for_region ("", &error);
+	g_assert_cmpstr (error ? error->message : NULL, ==, NULL);
+	g_assert_cmpint (code, ==, 1);
+
+#else /* ENABLE_PHONENUMBER */
+
+	code = e_phone_number_get_country_code_for_region ("CH", &error);
+
+	g_assert (error != NULL);
+	g_assert (error->domain == E_PHONE_NUMBER_ERROR);
+	g_assert (error->code == E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+	g_assert (error->message != NULL);
+	g_assert_cmpint (code, ==, 0);
+
+#endif /* ENABLE_PHONENUMBER */
 }
 
 static void
 test_default_region (void)
 {
+	GError *error = NULL;
 	gchar *country;
 
 	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+	country = e_phone_number_get_default_region (&error);
 
-	country = e_phone_number_get_default_region ();
+#ifdef ENABLE_PHONENUMBER
+
+	g_assert_cmpstr (error ? error->message : NULL, ==, NULL);
 	g_assert_cmpstr (country, ==, "US");
+
+#else /* ENABLE_PHONENUMBER */
+
+	g_assert (error != NULL);
+	g_assert (error->domain == E_PHONE_NUMBER_ERROR);
+	g_assert (error->code == E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+	g_assert (error->message != NULL);
+	g_assert_cmpstr (country, ==, NULL);
+
+#endif /* ENABLE_PHONENUMBER */
+
 	g_free (country);
 }
 
