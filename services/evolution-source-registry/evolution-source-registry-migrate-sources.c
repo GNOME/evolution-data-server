@@ -2189,17 +2189,19 @@ migrate_parse_signature_xml_text (GMarkupParseContext *context,
 		parse_data->signature_file = NULL;
 
 		/* If the signature is a script, we symlink to it.
-		 * Otherwise we move and rename the regular file. */
+		 * Otherwise we move and rename the regular file.
+		 * Also ignore errors here, otherwise it stops whole migration.
+		 */
 		if (parse_data->is_script)
 			g_file_make_symbolic_link (
 				new_signature_file,
-				absolute_path, NULL, error);
+				absolute_path, NULL, NULL);
 		else
 			g_file_move (
 				old_signature_file,
 				new_signature_file,
 				G_FILE_COPY_NONE,
-				NULL, NULL, NULL, error);
+				NULL, NULL, NULL, NULL);
 
 		g_object_unref (old_signature_file);
 		g_object_unref (new_signature_file);
