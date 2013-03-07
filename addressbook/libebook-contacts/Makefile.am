@@ -17,6 +17,11 @@ MARSHAL_GENERATED = e-book-contacts-marshal.c e-book-contacts-marshal.h
 
 # The library
 lib_LTLIBRARIES = libebook-contacts-1.2.la
+noinst_LTLIBRARIES =
+
+if ENABLE_PHONENUMBER
+noinst_LTLIBRARIES += libephonenumber-private.la
+endif # ENABLE_PHONENUMBER
 
 libebook_contacts_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
@@ -52,12 +57,6 @@ libebook_contacts_1_2_la_LIBADD =					\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)
 
-if ENABLE_PHONENUMBER
-libebook_contacts_1_2_la_SOURCES += e-phone-number-private.cpp
-libebook_contacts_1_2_la_CPPFLAGS += $(PHONENUMBER_INCLUDES)
-libebook_contacts_1_2_la_LIBADD += $(PHONENUMBER_LIBS)
-endif # ENABLE_PHONENUMBER
-
 libebook_contacts_1_2_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CONTACTS_CURRENT):$(LIBEBOOK_CONTACTS_REVISION):$(LIBEBOOK_CONTACTS_AGE) $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \
@@ -76,6 +75,18 @@ libebookcontactsinclude_HEADERS =			\
 	e-vcard.h					\
 	e-phone-number.h				\
 	e-source-backend-summary-setup.h
+
+if ENABLE_PHONENUMBER
+
+# We put the C++ code into a separate static library, so that we can use
+# the C linker for libebook-contacts. This avoids that libebook-contacts
+# depends on the C++ Standard Library, even if phone number support is
+# disabled.
+libephonenumber_private_la_SOURCES = e-phone-number-private.cpp
+libephonenumber_private_la_CPPFLAGS = $(libebook_contacts_1_2_la_CPPFLAGS) $(PHONENUMBER_INCLUDES)
+libebook_contacts_1_2_la_LIBADD += @predeps_CXX@ libephonenumber-private.la $(PHONENUMBER_LIBS) @postdeps_CXX@
+
+endif # ENABLE_PHONENUMBER
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

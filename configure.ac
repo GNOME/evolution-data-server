@@ -231,6 +231,10 @@ else
 	am__fastdepCXX_FALSE=
 fi
 
+dnl Permits linking of C++ based libraries using the C linker if needed.
+AC_SUBST([predeps_CXX])
+AC_SUBST([postdeps_CXX])
+
 dnl *******************************
 dnl Check for --enable-strict
 dnl *******************************
