@@ -56,7 +56,7 @@ struct _ECalClientViewPrivate {
 };
 
 struct _SignalClosure {
-	ECalClientView *client_view;
+	GWeakRef client_view;
 	GSList *component_list;
 	GSList *component_id_list;
 	gchar *message;
@@ -96,7 +96,7 @@ G_DEFINE_TYPE_WITH_CODE (
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_object_unref (signal_closure->client_view);
+	g_weak_ref_set (&signal_closure->client_view, NULL);
 
 	g_slist_free_full (
 		signal_closure->component_list,
@@ -167,11 +167,17 @@ static gboolean
 cal_client_view_emit_objects_added_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	ECalClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[OBJECTS_ADDED], 0,
-		signal_closure->component_list);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[OBJECTS_ADDED], 0,
+			signal_closure->component_list);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -180,11 +186,17 @@ static gboolean
 cal_client_view_emit_objects_modified_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	ECalClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[OBJECTS_MODIFIED], 0,
-		signal_closure->component_list);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[OBJECTS_MODIFIED], 0,
+			signal_closure->component_list);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -193,11 +205,17 @@ static gboolean
 cal_client_view_emit_objects_removed_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	ECalClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[OBJECTS_REMOVED], 0,
-		signal_closure->component_id_list);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[OBJECTS_REMOVED], 0,
+			signal_closure->component_id_list);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -206,12 +224,18 @@ static gboolean
 cal_client_view_emit_progress_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	ECalClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[PROGRESS], 0,
-		signal_closure->percent,
-		signal_closure->message);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[PROGRESS], 0,
+			signal_closure->percent,
+			signal_closure->message);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -220,11 +244,17 @@ static gboolean
 cal_client_view_emit_complete_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	ECalClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[COMPLETE], 0,
-		signal_closure->error);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[COMPLETE], 0,
+			signal_closure->error);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -243,7 +273,7 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_list = build_object_list (objects);
 
 	client = e_cal_client_view_get_client (client_view);
@@ -275,7 +305,7 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_list = build_object_list (objects);
 
 	client = e_cal_client_view_get_client (client_view);
@@ -307,7 +337,7 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_id_list = build_id_list (uids);
 
 	client = e_cal_client_view_get_client (client_view);
@@ -340,7 +370,7 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->message = g_strdup (message);
 	signal_closure->percent = percent;
 
@@ -373,7 +403,7 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	e_gdbus_templates_decode_error (arg_error, &signal_closure->error);
 
 	client = e_cal_client_view_get_client (client_view);
