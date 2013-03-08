@@ -26,14 +26,14 @@
 #include "camel-vtrash-folder.h"
 
 typedef struct _AsyncContext AsyncContext;
-typedef struct _SignalData SignalData;
+typedef struct _SignalClosure SignalClosure;
 
 struct _AsyncContext {
 	gchar *folder_name;
 };
 
-struct _SignalData {
-	CamelSubscribable *subscribable;
+struct _SignalClosure {
+	GWeakRef subscribable;
 	CamelFolderInfo *folder_info;
 };
 
@@ -56,26 +56,31 @@ async_context_free (AsyncContext *async_context)
 }
 
 static void
-signal_data_free (SignalData *signal_data)
+signal_closure_free (SignalClosure *signal_closure)
 {
-	if (signal_data->subscribable != NULL)
-		g_object_unref (signal_data->subscribable);
+	g_weak_ref_set (&signal_closure->subscribable, NULL);
 
-	if (signal_data->folder_info != NULL)
-		camel_folder_info_free (signal_data->folder_info);
+	if (signal_closure->folder_info != NULL)
+		camel_folder_info_free (signal_closure->folder_info);
 
-	g_slice_free (SignalData, signal_data);
+	g_slice_free (SignalClosure, signal_closure);
 }
 
 static gboolean
 subscribable_emit_folder_subscribed_cb (gpointer user_data)
 {
-	SignalData *signal_data = user_data;
+	SignalClosure *signal_closure = user_data;
+	CamelSubscribable *subscribable;
 
-	g_signal_emit (
-		signal_data->subscribable,
-		signals[FOLDER_SUBSCRIBED], 0,
-		signal_data->folder_info);
+	subscribable = g_weak_ref_get (&signal_closure->subscribable);
+
+	if (subscribable != NULL) {
+		g_signal_emit (
+			subscribable,
+			signals[FOLDER_SUBSCRIBED], 0,
+			signal_closure->folder_info);
+		g_object_unref (subscribable);
+	}
 
 	return FALSE;
 }
@@ -83,12 +88,18 @@ subscribable_emit_folder_subscribed_cb (gpointer user_data)
 static gboolean
 subscribable_emit_folder_unsubscribed_cb (gpointer user_data)
 {
-	SignalData *signal_data = user_data;
+	SignalClosure *signal_closure = user_data;
+	CamelSubscribable *subscribable;
 
-	g_signal_emit (
-		signal_data->subscribable,
-		signals[FOLDER_UNSUBSCRIBED], 0,
-		signal_data->folder_info);
+	subscribable = g_weak_ref_get (&signal_closure->subscribable);
+
+	if (subscribable != NULL) {
+		g_signal_emit (
+			subscribable,
+			signals[FOLDER_UNSUBSCRIBED], 0,
+			signal_closure->folder_info);
+		g_object_unref (subscribable);
+	}
 
 	return FALSE;
 }
@@ -623,7 +634,7 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 {
 	CamelService *service;
 	CamelSession *session;
-	SignalData *signal_data;
+	SignalClosure *signal_closure;
 
 	g_return_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable));
 	g_return_if_fail (folder_info != NULL);
@@ -631,15 +642,16 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 	service = CAMEL_SERVICE (subscribable);
 	session = camel_service_ref_session (service);
 
-	signal_data = g_slice_new0 (SignalData);
-	signal_data->subscribable = g_object_ref (subscribable);
-	signal_data->folder_info = camel_folder_info_clone (folder_info);
+	signal_closure = g_slice_new0 (SignalClosure);
+	g_weak_ref_set (&signal_closure->subscribable, subscribable);
+	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 
 	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
 		session, G_PRIORITY_HIGH_IDLE,
 		subscribable_emit_folder_subscribed_cb,
-		signal_data, (GDestroyNotify) signal_data_free);
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
 
 	g_object_unref (session);
 }
@@ -662,7 +674,7 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 {
 	CamelService *service;
 	CamelSession *session;
-	SignalData *signal_data;
+	SignalClosure *signal_closure;
 
 	g_return_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable));
 	g_return_if_fail (folder_info != NULL);
@@ -670,15 +682,16 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 	service = CAMEL_SERVICE (subscribable);
 	session = camel_service_ref_session (service);
 
-	signal_data = g_slice_new0 (SignalData);
-	signal_data->subscribable = g_object_ref (subscribable);
-	signal_data->folder_info = camel_folder_info_clone (folder_info);
+	signal_closure = g_slice_new0 (SignalClosure);
+	g_weak_ref_set (&signal_closure->subscribable, subscribable);
+	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 
 	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
 		session, G_PRIORITY_HIGH_IDLE,
 		subscribable_emit_folder_unsubscribed_cb,
-		signal_data, (GDestroyNotify) signal_data_free);
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
 
 	g_object_unref (session);
 }
