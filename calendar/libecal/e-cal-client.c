@@ -87,7 +87,7 @@ struct _AsyncContext {
 };
 
 struct _SignalClosure {
-	EClient *client;
+	GWeakRef client;
 	gchar *property_name;
 	gchar *error_message;
 	gchar **free_busy_data;
@@ -179,7 +179,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_object_unref (signal_closure->client);
+	g_weak_ref_set (&signal_closure->client, NULL);
 
 	g_free (signal_closure->property_name);
 	g_free (signal_closure->error_message);
@@ -399,10 +399,14 @@ static gboolean
 cal_client_emit_backend_died_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EClient *client;
 
-	g_signal_emit_by_name (
-		signal_closure->client,
-		"backend-died");
+	client = g_weak_ref_get (&signal_closure->client);
+
+	if (client != NULL) {
+		g_signal_emit_by_name (client, "backend-died");
+		g_object_unref (client);
+	}
 
 	return FALSE;
 }
@@ -411,11 +415,16 @@ static gboolean
 cal_client_emit_backend_error_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EClient *client;
 
-	g_signal_emit_by_name (
-		signal_closure->client,
-		"backend-error",
-		signal_closure->error_message);
+	client = g_weak_ref_get (&signal_closure->client);
+
+	if (client != NULL) {
+		g_signal_emit_by_name (
+			client, "backend-error",
+			signal_closure->error_message);
+		g_object_unref (client);
+	}
 
 	return FALSE;
 }
@@ -424,21 +433,29 @@ static gboolean
 cal_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
-	gchar *prop_value = NULL;
+	EClient *client;
 
-	/* XXX Despite appearances, this function does not block. */
-	e_client_get_backend_property_sync (
-		signal_closure->client,
-		signal_closure->property_name,
-		&prop_value, NULL, NULL);
+	client = g_weak_ref_get (&signal_closure->client);
 
-	if (prop_value != NULL) {
-		g_signal_emit_by_name (
-			signal_closure->client,
-			"backend-property-changed",
+	if (client != NULL) {
+		gchar *prop_value = NULL;
+
+		/* XXX Despite appearances, this function does not block. */
+		e_client_get_backend_property_sync (
+			client,
 			signal_closure->property_name,
-			prop_value);
-		g_free (prop_value);
+			&prop_value, NULL, NULL);
+
+		if (prop_value != NULL) {
+			g_signal_emit_by_name (
+				client,
+				"backend-property-changed",
+				signal_closure->property_name,
+				prop_value);
+			g_free (prop_value);
+		}
+
+		g_object_unref (client);
 	}
 
 	return FALSE;
@@ -448,44 +465,50 @@ static gboolean
 cal_client_emit_free_busy_data_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
-	GSList *list = NULL;
-	gchar **strv;
-	gint ii;
+	EClient *client;
 
-	strv = signal_closure->free_busy_data;
+	client = g_weak_ref_get (&signal_closure->client);
 
-	for (ii = 0; strv[ii] != NULL; ii++) {
-		ECalComponent *comp;
-		icalcomponent *icalcomp;
-		icalcomponent_kind kind;
+	if (client != NULL) {
+		GSList *list = NULL;
+		gchar **strv;
+		gint ii;
 
-		icalcomp = icalcomponent_new_from_string (strv[ii]);
-		if (icalcomp == NULL)
-			continue;
+		strv = signal_closure->free_busy_data;
 
-		kind = icalcomponent_isa (icalcomp);
-		if (kind != ICAL_VFREEBUSY_COMPONENT) {
-			icalcomponent_free (icalcomp);
-			continue;
+		for (ii = 0; strv[ii] != NULL; ii++) {
+			ECalComponent *comp;
+			icalcomponent *icalcomp;
+			icalcomponent_kind kind;
+
+			icalcomp = icalcomponent_new_from_string (strv[ii]);
+			if (icalcomp == NULL)
+				continue;
+
+			kind = icalcomponent_isa (icalcomp);
+			if (kind != ICAL_VFREEBUSY_COMPONENT) {
+				icalcomponent_free (icalcomp);
+				continue;
+			}
+
+			comp = e_cal_component_new ();
+			if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
+				icalcomponent_free (icalcomp);
+				g_object_unref (comp);
+				continue;
+			}
+
+			list = g_slist_prepend (list, comp);
 		}
 
-		comp = e_cal_component_new ();
-		if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
-			icalcomponent_free (icalcomp);
-			g_object_unref (comp);
-			continue;
-		}
+		list = g_slist_reverse (list);
 
-		list = g_slist_prepend (list, comp);
+		g_signal_emit (client, signals[FREE_BUSY_DATA], 0, list);
+
+		g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+
+		g_object_unref (client);
 	}
-
-	list = g_slist_reverse (list);
-
-	g_signal_emit (
-		signal_closure->client,
-		signals[FREE_BUSY_DATA], 0, list);
-
-	g_slist_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return FALSE;
 }
@@ -494,11 +517,16 @@ static gboolean
 cal_client_emit_timezone_added_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EClient *client;
 
-	g_signal_emit_by_name (
-		signal_closure->client,
-		"timezone-added",
-		signal_closure->cached_zone);
+	client = g_weak_ref_get (&signal_closure->client);
+
+	if (client != NULL) {
+		g_signal_emit_by_name (
+			client, "timezone-added",
+			signal_closure->cached_zone);
+		g_object_unref (client);
+	}
 
 	return FALSE;
 }
@@ -513,7 +541,7 @@ cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (client);
+	g_weak_ref_set (&signal_closure->client, client);
 	signal_closure->error_message = g_strdup (error_message);
 
 	main_context = e_client_ref_main_context (client);
@@ -596,7 +624,7 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		signal_closure->client = g_object_ref (client);
+		g_weak_ref_set (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
 
 		main_context = e_client_ref_main_context (client);
@@ -624,7 +652,7 @@ cal_client_dbus_proxy_free_busy_data_cb (EDBusCalendar *dbus_proxy,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (client);
+	g_weak_ref_set (&signal_closure->client, client);
 	signal_closure->free_busy_data = g_strdupv (free_busy_data);
 
 	main_context = e_client_ref_main_context (client);
@@ -651,7 +679,7 @@ cal_client_name_vanished_cb (GDBusConnection *connection,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (client);
+	g_weak_ref_set (&signal_closure->client, client);
 
 	main_context = e_client_ref_main_context (client);
 
@@ -1186,7 +1214,7 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 		 * internally cached icaltimezone alive for the
 		 * duration of the idle callback. */
 		signal_closure = g_slice_new0 (SignalClosure);
-		signal_closure->client = g_object_ref (cache);
+		g_weak_ref_set (&signal_closure->client, cache);
 		signal_closure->cached_zone = cached_zone;
 
 		main_context = e_client_ref_main_context (E_CLIENT (cache));
