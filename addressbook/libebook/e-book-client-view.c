@@ -58,7 +58,7 @@ struct _EBookClientViewPrivate {
 };
 
 struct _SignalClosure {
-	EBookClientView *client_view;
+	GWeakRef client_view;
 	GSList *object_list;
 	GSList *string_list;
 	gchar *message;
@@ -105,7 +105,7 @@ typedef struct {
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_object_unref (signal_closure->client_view);
+	g_weak_ref_set (&signal_closure->client_view, NULL);
 
 	g_slist_free_full (
 		signal_closure->object_list,
@@ -127,11 +127,17 @@ static gboolean
 book_client_view_emit_objects_added_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EBookClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[OBJECTS_ADDED], 0,
-		signal_closure->object_list);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[OBJECTS_ADDED], 0,
+			signal_closure->object_list);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -140,11 +146,17 @@ static gboolean
 book_client_view_emit_objects_modified_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EBookClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[OBJECTS_MODIFIED], 0,
-		signal_closure->object_list);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[OBJECTS_MODIFIED], 0,
+			signal_closure->object_list);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -153,11 +165,17 @@ static gboolean
 book_client_view_emit_objects_removed_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EBookClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[OBJECTS_REMOVED], 0,
-		signal_closure->string_list);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[OBJECTS_REMOVED], 0,
+			signal_closure->string_list);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -166,12 +184,18 @@ static gboolean
 book_client_view_emit_progress_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EBookClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[PROGRESS], 0,
-		signal_closure->percent,
-		signal_closure->message);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[PROGRESS], 0,
+			signal_closure->percent,
+			signal_closure->message);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -180,11 +204,17 @@ static gboolean
 book_client_view_emit_complete_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EBookClientView *client_view;
 
-	g_signal_emit (
-		signal_closure->client_view,
-		signals[COMPLETE], 0,
-		signal_closure->error);
+	client_view = g_weak_ref_get (&signal_closure->client_view);
+
+	if (client_view != NULL) {
+		g_signal_emit (
+			client_view,
+			signals[COMPLETE], 0,
+			signal_closure->error);
+		g_object_unref (client_view);
+	}
 
 	return FALSE;
 }
@@ -199,7 +229,7 @@ book_client_view_emit_objects_added (EBookClientView *client_view,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
 	client = e_book_client_view_get_client (client_view);
@@ -227,7 +257,7 @@ book_client_view_emit_objects_modified (EBookClientView *client_view,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
 	client = e_book_client_view_get_client (client_view);
@@ -444,7 +474,7 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 		list = g_slist_prepend (list, g_strdup (ids[ii]));
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->string_list = g_slist_reverse (list);
 
 	client = e_book_client_view_get_client (client_view);
@@ -477,7 +507,7 @@ book_client_view_progress_cb (EGdbusBookView *object,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->message = g_strdup (message);
 	signal_closure->percent = percent;
 
@@ -510,7 +540,7 @@ book_client_view_complete_cb (EGdbusBookView *object,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client_view = g_object_ref (client_view);
+	g_weak_ref_set (&signal_closure->client_view, client_view);
 	e_gdbus_templates_decode_error (in_error_strv, &signal_closure->error);
 
 	client = e_book_client_view_get_client (client_view);
