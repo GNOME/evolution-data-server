@@ -138,7 +138,7 @@ struct _CreateContext {
 };
 
 struct _SourceClosure {
-	ESourceRegistry *registry;
+	GWeakRef registry;
 	ESource *source;
 };
 
@@ -259,7 +259,7 @@ create_context_free (CreateContext *create_context)
 static void
 source_closure_free (SourceClosure *closure)
 {
-	g_object_unref (closure->registry);
+	g_weak_ref_set (&closure->registry, NULL);
 	g_object_unref (closure->source);
 
 	g_slice_free (SourceClosure, closure);
@@ -476,11 +476,17 @@ static gboolean
 source_registry_source_changed_idle_cb (gpointer user_data)
 {
 	SourceClosure *closure = user_data;
+	ESourceRegistry *registry;
 
-	g_signal_emit (
-		closure->registry,
-		signals[SOURCE_CHANGED], 0,
-		closure->source);
+	registry = g_weak_ref_get (&closure->registry);
+
+	if (registry != NULL) {
+		g_signal_emit (
+			registry,
+			signals[SOURCE_CHANGED], 0,
+			closure->source);
+		g_object_unref (registry);
+	}
 
 	return FALSE;
 }
@@ -489,17 +495,24 @@ static gboolean
 source_registry_source_notify_enabled_idle_cb (gpointer user_data)
 {
 	SourceClosure *closure = user_data;
+	ESourceRegistry *registry;
 
-	if (e_source_get_enabled (closure->source))
-		g_signal_emit (
-			closure->registry,
-			signals[SOURCE_ENABLED], 0,
-			closure->source);
-	else
-		g_signal_emit (
-			closure->registry,
-			signals[SOURCE_DISABLED], 0,
-			closure->source);
+	registry = g_weak_ref_get (&closure->registry);
+
+	if (registry != NULL) {
+		if (e_source_get_enabled (closure->source)) {
+			g_signal_emit (
+				registry,
+				signals[SOURCE_ENABLED], 0,
+				closure->source);
+		} else {
+			g_signal_emit (
+				registry,
+				signals[SOURCE_DISABLED], 0,
+				closure->source);
+		}
+		g_object_unref (registry);
+	}
 
 	return FALSE;
 }
@@ -512,7 +525,7 @@ source_registry_source_changed_cb (ESource *source,
 	SourceClosure *closure;
 
 	closure = g_slice_new0 (SourceClosure);
-	closure->registry = g_object_ref (registry);
+	g_weak_ref_set (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -533,7 +546,7 @@ source_registry_source_notify_enabled_cb (ESource *source,
 	SourceClosure *closure;
 
 	closure = g_slice_new0 (SourceClosure);
-	closure->registry = g_object_ref (registry);
+	g_weak_ref_set (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -635,10 +648,17 @@ static gboolean
 source_registry_object_added_idle_cb (gpointer user_data)
 {
 	SourceClosure *closure = user_data;
-	ESourceRegistry *registry = closure->registry;
-	ESource *source = closure->source;
+	ESourceRegistry *registry;
 
-	g_signal_emit (registry, signals[SOURCE_ADDED], 0, source);
+	registry = g_weak_ref_get (&closure->registry);
+
+	if (registry != NULL) {
+		g_signal_emit (
+			registry,
+			signals[SOURCE_ADDED], 0,
+			closure->source);
+		g_object_unref (registry);
+	}
 
 	return FALSE;
 }
@@ -664,7 +684,7 @@ source_registry_object_added_cb (GDBusObjectManager *object_manager,
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 
 	closure = g_slice_new0 (SourceClosure);
-	closure->registry = g_object_ref (registry);
+	g_weak_ref_set (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -682,13 +702,24 @@ static gboolean
 source_registry_object_removed_idle_cb (gpointer user_data)
 {
 	SourceClosure *closure = user_data;
-	ESourceRegistry *registry = closure->registry;
-	ESource *source = closure->source;
+	ESourceRegistry *registry;
 
-	/* Removing the ESource won't finalize it because the
-	 * SourceClosure itself still holds a reference on it. */
-	if (source_registry_sources_remove (registry, source))
-		g_signal_emit (registry, signals[SOURCE_REMOVED], 0, source);
+	registry = g_weak_ref_get (&closure->registry);
+
+	if (registry != NULL) {
+		ESource *source = closure->source;
+
+		/* Removing the ESource won't finalize it because the
+		 * SourceClosure itself still holds a reference on it. */
+		if (source_registry_sources_remove (registry, source)) {
+			g_signal_emit (
+				registry,
+				signals[SOURCE_REMOVED], 0,
+				source);
+		}
+
+		g_object_unref (registry);
+	}
 
 	return FALSE;
 }
@@ -716,7 +747,7 @@ source_registry_object_removed_cb (GDBusObjectManager *manager,
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 
 	closure = g_slice_new0 (SourceClosure);
-	closure->registry = g_object_ref (registry);
+	g_weak_ref_set (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
