@@ -64,7 +64,7 @@ struct _ECalBackendPrivate {
 };
 
 struct _SignalClosure {
-	ECalBackend *backend;
+	GWeakRef backend;
 	icaltimezone *cached_zone;
 };
 
@@ -96,7 +96,7 @@ G_DEFINE_TYPE_WITH_CODE (
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_object_unref (signal_closure->backend);
+	g_weak_ref_set (&signal_closure->backend, NULL);
 
 	/* The icaltimezone is cached in ECalBackend's internal
 	 * "zone_cache" hash table and must not be freed here. */
@@ -213,11 +213,16 @@ static gboolean
 cal_backend_emit_timezone_added_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	ECalBackend *backend;
 
-	g_signal_emit_by_name (
-		signal_closure->backend,
-		"timezone-added",
-		signal_closure->cached_zone);
+	backend = g_weak_ref_get (&signal_closure->backend);
+
+	if (backend != NULL) {
+		g_signal_emit_by_name (
+			backend, "timezone-added",
+			signal_closure->cached_zone);
+		g_object_unref (backend);
+	}
 
 	return FALSE;
 }
@@ -425,7 +430,7 @@ cal_backend_add_cached_timezone (ETimezoneCache *cache,
 		 * internally cached icaltimezone alive for the
 		 * duration of the idle callback. */
 		signal_closure = g_slice_new0 (SignalClosure);
-		signal_closure->backend = g_object_ref (cache);
+		g_weak_ref_set (&signal_closure->backend, cache);
 		signal_closure->cached_zone = cached_zone;
 
 		main_context = e_backend_ref_main_context (E_BACKEND (cache));
