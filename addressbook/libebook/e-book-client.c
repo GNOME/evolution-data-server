@@ -71,7 +71,7 @@ struct _AsyncContext {
 };
 
 struct _SignalClosure {
-	EClient *client;
+	GWeakRef client;
 	gchar *property_name;
 	gchar *error_message;
 };
@@ -130,7 +130,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_object_unref (signal_closure->client);
+	g_weak_ref_set (&signal_closure->client, NULL);
 
 	g_free (signal_closure->property_name);
 	g_free (signal_closure->error_message);
@@ -338,10 +338,14 @@ static gboolean
 book_client_emit_backend_died_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EClient *client;
 
-	g_signal_emit_by_name (
-		signal_closure->client,
-		"backend-died");
+	client = g_weak_ref_get (&signal_closure->client);
+
+	if (client != NULL) {
+		g_signal_emit_by_name (client, "backend-died");
+		g_object_unref (client);
+	}
 
 	return FALSE;
 }
@@ -350,11 +354,16 @@ static gboolean
 book_client_emit_backend_error_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
+	EClient *client;
 
-	g_signal_emit_by_name (
-		signal_closure->client,
-		"backend-error",
-		signal_closure->error_message);
+	client = g_weak_ref_get (&signal_closure->client);
+
+	if (client != NULL) {
+		g_signal_emit_by_name (
+			client, "backend-error",
+			signal_closure->error_message);
+		g_object_unref (client);
+	}
 
 	return FALSE;
 }
@@ -363,21 +372,29 @@ static gboolean
 book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
-	gchar *prop_value = NULL;
+	EClient *client;
 
-	/* XXX Despite appearances, this function does not block. */
-	e_client_get_backend_property_sync (
-		signal_closure->client,
-		signal_closure->property_name,
-		&prop_value, NULL, NULL);
+	client = g_weak_ref_get (&signal_closure->client);
 
-	if (prop_value != NULL) {
-		g_signal_emit_by_name (
-			signal_closure->client,
-			"backend-property-changed",
+	if (client != NULL) {
+		gchar *prop_value = NULL;
+
+		/* XXX Despite appearances, this function does not block. */
+		e_client_get_backend_property_sync (
+			client,
 			signal_closure->property_name,
-			prop_value);
-		g_free (prop_value);
+			&prop_value, NULL, NULL);
+
+		if (prop_value != NULL) {
+			g_signal_emit_by_name (
+				client,
+				"backend-property-changed",
+				signal_closure->property_name,
+				prop_value);
+			g_free (prop_value);
+		}
+
+		g_object_unref (client);
 	}
 
 	return FALSE;
@@ -393,7 +410,7 @@ book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (client);
+	g_weak_ref_set (&signal_closure->client, client);
 	signal_closure->error_message = g_strdup (error_message);
 
 	main_context = e_client_ref_main_context (client);
@@ -472,7 +489,7 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		signal_closure->client = g_object_ref (client);
+		g_weak_ref_set (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
 
 		main_context = e_client_ref_main_context (client);
@@ -500,7 +517,7 @@ book_client_name_vanished_cb (GDBusConnection *connection,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	signal_closure->client = g_object_ref (client);
+	g_weak_ref_set (&signal_closure->client, client);
 
 	main_context = e_client_ref_main_context (client);
 
