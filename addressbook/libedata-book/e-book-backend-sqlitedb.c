@@ -59,7 +59,7 @@
 #endif
 
 #define DB_FILENAME "contacts.db"
-#define FOLDER_VERSION 5
+#define FOLDER_VERSION 6
 
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
@@ -561,7 +561,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	 * create_contacts_table() as we need introspection details for doing
 	 * that.
 	 */
-	if (version >= 3 && version < FOLDER_VERSION) {
+	if (version >= 3 && version < 5) {
 		stmt = "UPDATE folders SET "
 				"multivalues = REPLACE(RTRIM(REPLACE("
 					"multivalues || ':', ':', "
@@ -981,7 +981,8 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		}
 	}
 
-	if (success && previous_schema == 4)
+	/* Until version 6, the whole contacts table requires a re-normalization of the data */
+	if (success && previous_schema < 6)
 		success = upgrade_contacts_table (ebsdb, folderid, error);
 
 	return success;
@@ -4627,23 +4628,33 @@ upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
 		return TRUE;
 
 	if (e_phone_number_is_supported ()) {
-		g_message ("The phone number indexes' format has changed. Rebuilding them.");
 		default_region = e_phone_number_get_default_region (error);
 
 		if (default_region == NULL)
 			success = FALSE;
 	}
 
-	for (l = vcard_data; success && l; l = l->next) {
-		EbSdbSearchData *const s_data = l->data;
-		EContact *contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
+	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
 
-		if (contact == NULL)
-			continue;
+	if (success) {
 
-		success = insert_contact (ebsdb, contact, folderid, TRUE, default_region, error);
+		for (l = vcard_data; success && l; l = l->next) {
+			EbSdbSearchData *const s_data = l->data;
+			EContact *contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
 
-		g_object_unref (contact);
+			if (contact == NULL)
+				continue;
+
+			success = insert_contact (ebsdb, contact, folderid, TRUE, default_region, error);
+
+			g_object_unref (contact);
+		}
+
+		if (success)
+			success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+		else
+			/* The GError is already set. */
+			book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 	}
 
 	g_slist_free_full (vcard_data, destroy_search_data);
