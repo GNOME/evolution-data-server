@@ -2392,7 +2392,7 @@ e_source_registry_ref_source (ESourceRegistry *registry,
  *
  * The sources returned in the list are referenced for thread-safety.
  * They must each be unreferenced with g_object_unref() when finished
- * when them.  Free the returned list itself with g_list_free().
+ * with them.  Free the returned list itself with g_list_free().
  *
  * An easy way to free the list properly in one step is as follows:
  *
