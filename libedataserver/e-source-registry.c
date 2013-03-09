@@ -2431,6 +2431,55 @@ e_source_registry_list_sources (ESourceRegistry *registry,
 }
 
 /**
+ * e_source_registry_list_enabled:
+ * @registry: an #ESourceRegistry
+ * @extension_name: (allow-none): an extension name, or %NULL
+ *
+ * Similar to e_source_registry_list_sources(), but returns only enabled
+ * sources according to e_source_registry_check_enabled().
+ *
+ * The sources returned in the list are referenced for thread-safety.
+ * They must each be unreferenced with g_object_unref() when finished
+ * with them.  Free the returned list itself with g_list_free().
+ *
+ * An easy way to free the list properly in one step is as follows:
+ *
+ * |[
+ *   g_list_free_full (list, g_object_unref);
+ * ]|
+ *
+ * Returns: (element-type ESource) (transfer full): a sorted list of sources
+ *
+ * Since: 3.10
+ **/
+GList *
+e_source_registry_list_enabled (ESourceRegistry *registry,
+                                const gchar *extension_name)
+{
+	GList *list, *link;
+	GQueue trash = G_QUEUE_INIT;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	list = e_source_registry_list_sources (registry, extension_name);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		ESource *source = E_SOURCE (link->data);
+
+		if (!e_source_registry_check_enabled (registry, source)) {
+			g_queue_push_tail (&trash, link);
+			g_object_unref (source);
+		}
+	}
+
+	/* We do want pop_head() here, not pop_head_link(). */
+	while ((link = g_queue_pop_head (&trash)) != NULL)
+		list = g_list_delete_link (list, link);
+
+	return list;
+}
+
+/**
  * e_source_registry_find_extension:
  * @registry: an #ESourceRegistry
  * @source: an #ESource

@@ -139,6 +139,8 @@ ESource *	e_source_registry_ref_source	(ESourceRegistry *registry,
 						 const gchar *uid);
 GList *		e_source_registry_list_sources	(ESourceRegistry *registry,
 						 const gchar *extension_name);
+GList *		e_source_registry_list_enabled	(ESourceRegistry *registry,
+						 const gchar *extension_name);
 ESource *	e_source_registry_find_extension
 						(ESourceRegistry *registry,
 						 ESource *source,
