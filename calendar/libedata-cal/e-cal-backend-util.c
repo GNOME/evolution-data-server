@@ -92,7 +92,7 @@ e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 
-	list = e_source_registry_list_sources (registry, extension_name);
+	list = e_source_registry_list_enabled (registry, extension_name);
 
 	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
 		ESource *source = E_SOURCE (iter->data);
@@ -101,9 +101,6 @@ e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
 		const gchar *uid;
 		gboolean match = FALSE;
 		gchar *address;
-
-		if (!e_source_registry_check_enabled (registry, source))
-			continue;
 
 		extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 		mail_account = e_source_get_extension (source, extension_name);
@@ -220,15 +217,12 @@ e_cal_backend_user_declined (ESourceRegistry *registry,
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 
-	list = e_source_registry_list_sources (registry, extension_name);
+	list = e_source_registry_list_enabled (registry, extension_name);
 
 	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
 		ESource *source = E_SOURCE (iter->data);
 		ESourceMailIdentity *extension;
 		const gchar *address;
-
-		if (!e_source_registry_check_enabled (registry, source))
-			continue;
 
 		extension = e_source_get_extension (source, extension_name);
 		address = e_source_mail_identity_get_address (extension);
