@@ -5744,6 +5744,9 @@ e_cal_client_get_attachment_uris (ECalClient *client,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
 	g_simple_async_result_run_in_thread (
 		simple, cal_client_get_attachment_uris_thread,
 		G_PRIORITY_DEFAULT, cancellable);
