@@ -1827,7 +1827,7 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not retrieve attachment uris: "));
 
-	if (error != NULL) {
+	if (error == NULL) {
 		gchar **strv;
 		guint length;
 		gint ii = 0;
