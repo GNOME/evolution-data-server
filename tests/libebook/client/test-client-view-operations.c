@@ -146,9 +146,8 @@ test_view_thread (ThreadData *data)
 	ESource         *source;
 	GError          *error = NULL;
 
-	context    = g_main_context_new ();
+	context = g_main_context_get_thread_default ();
 	data->loop = g_main_loop_new (context, FALSE);
-	g_main_context_push_thread_default (context);
 
 	/* Open the test book client in this thread */
 	registry = e_source_registry_new_sync (NULL, &error);
@@ -175,9 +174,7 @@ test_view_thread (ThreadData *data)
 	g_object_unref (registry);
 
 	g_object_unref (data->client);
-	g_main_context_pop_thread_default (context);
 	g_main_loop_unref (data->loop);
-	g_main_context_unref (context);
 
 	return NULL;
 }
