@@ -178,61 +178,6 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-typedef struct {
-	EBookClient         *client;
-	GAsyncReadyCallback  callback;
-	gpointer             user_data;
-	gpointer             source_tag;
-} PropagateReadyData;
-
-static PropagateReadyData *
-propagate_ready_data_new (EBookClient *client,
-                          GAsyncReadyCallback callback,
-                          gpointer user_data,
-                          gpointer source_tag)
-{
-	PropagateReadyData *data = g_slice_new0 (PropagateReadyData);
-
-	data->client = g_object_ref (client);
-	data->callback = callback;
-	data->user_data = user_data;
-	data->source_tag = source_tag;
-
-	return data;
-}
-
-static void
-propagate_ready_data_free (PropagateReadyData *data)
-{
-	if (data) {
-		g_object_unref (data->client);
-		g_slice_free (PropagateReadyData, data);
-	}
-}
-
-static void
-propagate_direct_book_async_ready (GObject *source_object,
-                                   GAsyncResult *res,
-                                   gpointer user_data)
-{
-	GSimpleAsyncResult *result;
-	PropagateReadyData *data = (PropagateReadyData *) user_data;
-
-	result = g_simple_async_result_new (
-		G_OBJECT (data->client),
-		data->callback,
-		data->user_data,
-		data->source_tag);
-
-	g_object_ref (res);
-	g_simple_async_result_set_op_res_gpointer (result, res, g_object_unref);
-
-	g_simple_async_result_complete (result);
-	g_object_unref (result);
-
-	propagate_ready_data_free (data);
-}
-
 static gpointer
 book_client_dbus_thread (gpointer user_data)
 {
@@ -2597,19 +2542,6 @@ e_book_client_get_contact (EBookClient *client,
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (uid != NULL);
 
-	if (client->priv->direct_book) {
-		PropagateReadyData *data;
-
-		data = propagate_ready_data_new (
-			client, callback, user_data,
-			e_book_client_get_contact);
-
-		e_data_book_get_contact (
-			client->priv->direct_book, uid, cancellable,
-			propagate_direct_book_async_ready, data);
-		return;
-	}
-
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->uid  = g_strdup (uid);
 
@@ -2658,16 +2590,6 @@ e_book_client_get_contact_finish (EBookClient *client,
 		result, G_OBJECT (client),
 		e_book_client_get_contact), FALSE);
 
-	if (client->priv->direct_book) {
-		GAsyncResult *res;
-
-		res = g_simple_async_result_get_op_res_gpointer (
-			G_SIMPLE_ASYNC_RESULT (result));
-
-		return e_data_book_get_contact_finish (
-			client->priv->direct_book, res, out_contact, error);
-	}
-
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -2713,7 +2635,7 @@ e_book_client_get_contact_sync (EBookClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_contact != NULL, FALSE);
 
-	if (client->priv->direct_book)
+	if (client->priv->direct_book != NULL)
 		return e_data_book_get_contact_sync (
 			client->priv->direct_book, uid,
 			out_contact, cancellable, error);
@@ -2791,19 +2713,6 @@ e_book_client_get_contacts (EBookClient *client,
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	if (client->priv->direct_book) {
-		PropagateReadyData *data;
-
-		data = propagate_ready_data_new (
-			client, callback, user_data,
-			e_book_client_get_contacts);
-
-		e_data_book_get_contacts (
-			client->priv->direct_book, sexp, cancellable,
-			propagate_direct_book_async_ready, data);
-		return;
-	}
-
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->sexp = g_strdup (sexp);
 
@@ -2847,17 +2756,6 @@ e_book_client_get_contacts_finish (EBookClient *client,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-
-	if (client->priv->direct_book) {
-		GAsyncResult *direct_res;
-
-		direct_res = g_simple_async_result_get_op_res_gpointer (
-			G_SIMPLE_ASYNC_RESULT (result));
-
-		return e_data_book_get_contacts_finish (
-			client->priv->direct_book,
-			direct_res, out_contacts, error);
-	}
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -2913,7 +2811,7 @@ e_book_client_get_contacts_sync (EBookClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
 
-	if (client->priv->direct_book)
+	if (client->priv->direct_book != NULL)
 		return e_data_book_get_contacts_sync (
 			client->priv->direct_book,
 			sexp, out_contacts, cancellable, error);
@@ -3000,19 +2898,6 @@ e_book_client_get_contacts_uids (EBookClient *client,
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (sexp != NULL);
 
-	if (client->priv->direct_book) {
-		PropagateReadyData *data;
-
-		data = propagate_ready_data_new (
-			client, callback, user_data,
-			e_book_client_get_contacts_uids);
-
-		e_data_book_get_contacts_uids (
-			client->priv->direct_book, sexp, cancellable,
-			propagate_direct_book_async_ready, data);
-		return;
-	}
-
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->sexp = g_strdup (sexp);
 
@@ -3056,17 +2941,6 @@ e_book_client_get_contacts_uids_finish (EBookClient *client,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-
-	if (client->priv->direct_book) {
-		GAsyncResult *direct_res;
-
-		direct_res = g_simple_async_result_get_op_res_gpointer (
-			G_SIMPLE_ASYNC_RESULT (result));
-
-		return e_data_book_get_contacts_uids_finish (
-			client->priv->direct_book,
-			direct_res, out_contact_uids, error);
-	}
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -3122,7 +2996,7 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contact_uids != NULL, FALSE);
 
-	if (client->priv->direct_book)
+	if (client->priv->direct_book != NULL)
 		return e_data_book_get_contacts_uids_sync (
 			client->priv->direct_book, sexp,
 			out_contact_uids, cancellable, error);
