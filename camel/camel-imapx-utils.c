@@ -1712,7 +1712,7 @@ imapx_parse_uids (CamelIMAPXStream *is,
                   GCancellable *cancellable,
                   GError **error)
 {
-	GPtrArray *uids = g_ptr_array_new ();
+	GPtrArray *uids;
 	guchar *token;
 	gchar **splits;
 	guint len, str_len;
@@ -1722,6 +1722,7 @@ imapx_parse_uids (CamelIMAPXStream *is,
 	if (tok < 0)
 		return NULL;
 
+	uids = g_ptr_array_new ();
 	splits = g_strsplit ((gchar *) token, ",", -1);
 	str_len = g_strv_length (splits);
 

@@ -1636,7 +1636,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	uid_list = g_list_reverse (uid_list);
 	camel_folder_summary_remove_uids (folder->summary, uid_list);
 	is->expunged = g_list_concat (is->expunged, uid_list);
-	g_ptr_array_free (uids, FALSE);
+	g_ptr_array_free (uids, TRUE);
 
 	g_object_unref (folder);
 
