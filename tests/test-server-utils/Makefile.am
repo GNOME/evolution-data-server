@@ -1,3 +1,5 @@
+SUBDIRS = services
+
 NULL =
 
 common_cflags = \
