@@ -1952,8 +1952,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 					} while (!found && min <= max);
 
-					if (!found)
-						g_assert_not_reached ();
+					g_return_val_if_fail (found, FALSE);
 
 					server_flags = r->server_flags;
 					server_user_flags = r->server_user_flags;
