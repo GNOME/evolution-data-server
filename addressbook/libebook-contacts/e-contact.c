@@ -161,8 +161,8 @@ static const EContactFieldInfo field_info[] = {
 	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_HOME_FAX,     EVC_TEL, "home_fax",          N_("Home Fax"),         FALSE, "HOME", "FAX",           0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_ISDN,         EVC_TEL, "isdn_phone",        N_("ISDN"),             FALSE, "ISDN",                  0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_MOBILE,       EVC_TEL, "mobile_phone",      N_("Mobile Phone"),     FALSE, "CELL",                  0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER,        EVC_TEL, "other_phone",       N_("Other Phone"),      FALSE, "VOICE",                 0),
-	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_OTHER_FAX,    EVC_TEL, "other_fax",         N_("Other Fax"),        FALSE, "FAX",                   0),
+	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_OTHER,        EVC_TEL, "other_phone",       N_("Other Phone"),      FALSE, "VOICE", "",             0),
+	ATTR2_TYPE_STR_FIELD (E_CONTACT_PHONE_OTHER_FAX,    EVC_TEL, "other_fax",         N_("Other Fax"),        FALSE, "FAX", "",               0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PAGER,        EVC_TEL, "pager",             N_("Pager"),            FALSE, "PAGER",                 0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_PRIMARY,      EVC_TEL, "primary_phone",     N_("Primary Phone"),    FALSE, "PREF",                  0),
 	ATTR_TYPE_STR_FIELD  (E_CONTACT_PHONE_RADIO,        EVC_TEL, "radio",             N_("Radio"),            FALSE, EVC_X_RADIO,     0),
@@ -843,7 +843,81 @@ cert_setter (EContact *contact,
 	e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
 }
 
-
+static EVCardAttribute *
+e_contact_find_attribute_with_types (EContact *contact,
+                                     const gchar *attr_name,
+                                     const gchar *type_needed1,
+                                     const gchar *type_needed2,
+                                     gint nth)
+{
+	GList *l, *attrs;
+	gboolean found_needed1, found_needed2;
+
+	attrs = e_vcard_get_attributes (E_VCARD (contact));
+
+	for (l = attrs; l; l = l->next) {
+		EVCardAttribute *attr = l->data;
+		const gchar *name;
+
+		found_needed1 = (type_needed1 == NULL);
+		found_needed2 = (type_needed2 == NULL);
+
+		name = e_vcard_attribute_get_name (attr);
+
+		if (!g_ascii_strcasecmp (name, attr_name)) {
+			GList *params;
+
+			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
+				EVCardAttributeParam *param = params->data;
+				const gchar *param_name = e_vcard_attribute_param_get_name (param);
+
+				if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
+					gboolean matches = FALSE;
+					GList *values = e_vcard_attribute_param_get_values (param);
+
+					/* empty string on type_needed2 is to get only those attributes,
+					 * which has exactly one TYPE, to not rewrite those with multiple */
+					if (type_needed2 && !*type_needed2)
+						found_needed2 = values && !values->next;
+
+					while (values && values->data) {
+						if (!found_needed1 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed1)) {
+							found_needed1 = TRUE;
+							matches = TRUE;
+						}
+						else if (!found_needed2 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed2)) {
+							found_needed2 = TRUE;
+							matches = TRUE;
+						} else if (found_needed1) {
+							if (!matches || !found_needed2)
+								matches = FALSE;
+							break;
+						}
+						values = values->next;
+					}
+
+					if (!matches) {
+						/* this is to enforce that we find an attribute
+						 * with *only* the TYPE='s we need.  This may seem like
+						 * an odd restriction but it's the only way at present to
+						 * implement the Other Fax and Other Phone attributes. */
+						found_needed1 = FALSE;
+						break;
+					}
+				}
+
+				if (found_needed1 && found_needed2) {
+					if (nth-- == 0)
+						return attr;
+					else
+						break;
+				}
+			}
+		}
+	}
+
+	return NULL;
+}
 
 /* Set_arg handler for the contact */
 static void
@@ -917,7 +991,7 @@ e_contact_set_property (GObject *object,
 					attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 					if (!g_ascii_strcasecmp (info->vcard_field_name, "EMAIL") &&
 					    !info->attr_type1 &&
-					    !info->attr_type2) {
+					    (!info->attr_type2 || !*info->attr_type2)) {
 						/* Add default type */
 						e_vcard_attribute_add_param_with_value (
 							attr,
@@ -941,71 +1015,9 @@ e_contact_set_property (GObject *object,
 			 * exist.  But, if we *did* pad the lists we'd
 			 * end up with empty items in the vcard.  I
 			 * dunno which is worse. */
-			EVCardAttribute *attr = NULL;
-			gboolean found = FALSE;
-			gint num_left = info->list_elem;
-			GList *attrs = e_vcard_get_attributes (E_VCARD (contact));
-			GList *l;
+			EVCardAttribute *attr = e_contact_find_attribute_with_types (contact, info->vcard_field_name, info->attr_type1, info->attr_type2, info->list_elem);
 
-			for (l = attrs; l && !found; l = l->next) {
-				const gchar *name;
-				gboolean found_needed1, found_needed2;
-
-				found_needed1 = (info->attr_type1 == NULL);
-				found_needed2 = (info->attr_type2 == NULL);
-
-				attr = l->data;
-				name = e_vcard_attribute_get_name (attr);
-
-				if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
-					GList *params;
-
-					for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
-						EVCardAttributeParam *param = params->data;
-						const gchar *param_name = e_vcard_attribute_param_get_name (param);
-
-						if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
-							gboolean matches = FALSE;
-							GList *values = e_vcard_attribute_param_get_values (param);
-
-							while (values && values->data) {
-								if (!found_needed1 && !g_ascii_strcasecmp ((gchar *) values->data, info->attr_type1)) {
-									found_needed1 = TRUE;
-									matches = TRUE;
-								}
-								else if (!found_needed2 && !g_ascii_strcasecmp ((gchar *) values->data, info->attr_type2)) {
-									found_needed2 = TRUE;
-									matches = TRUE;
-								} else if (found_needed1) {
-									if (!matches || !found_needed2)
-										matches = FALSE;
-									break;
-								}
-
-								values = values->next;
-							}
-
-							if (!matches) {
-								/* this is to enforce that we find an attribute
-								 * with *only* the TYPE='s we need.  This may seem like
-								 * an odd restriction but it's the only way at present to
-								 * implement the Other Fax and Other Phone attributes. */
-								found_needed1 = FALSE;
-								break;
-							}
-						}
-
-						if (found_needed1 && found_needed2) {
-							if (num_left-- == 0) {
-								found = TRUE;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			if (found) {
+			if (attr) {
 				/* we found it, overwrite it */
 				e_vcard_attribute_remove_values (attr);
 			}
@@ -1017,7 +1029,7 @@ e_contact_set_property (GObject *object,
 					e_vcard_attribute_add_param_with_value (
 						attr, e_vcard_attribute_param_new (EVC_TYPE),
 						info->attr_type1);
-				if (info->attr_type2)
+				if (info->attr_type2 && *info->attr_type2)
 					e_vcard_attribute_add_param_with_value (
 						attr, e_vcard_attribute_param_new (EVC_TYPE),
 						info->attr_type2);
@@ -1223,77 +1235,6 @@ e_contact_set_property (GObject *object,
 	else {
 		g_warning ("unhandled attribute `%s'", info->vcard_field_name);
 	}
-}
-
-static EVCardAttribute *
-e_contact_find_attribute_with_types (EContact *contact,
-                                     const gchar *attr_name,
-                                     const gchar *type_needed1,
-                                     const gchar *type_needed2,
-                                     gint nth)
-{
-	GList *l, *attrs;
-	gboolean found_needed1, found_needed2;
-
-	attrs = e_vcard_get_attributes (E_VCARD (contact));
-
-	for (l = attrs; l; l = l->next) {
-		EVCardAttribute *attr = l->data;
-		const gchar *name;
-
-		found_needed1 = (type_needed1 == NULL);
-		found_needed2 = (type_needed2 == NULL);
-
-		name = e_vcard_attribute_get_name (attr);
-
-		if (!g_ascii_strcasecmp (name, attr_name)) {
-			GList *params;
-
-			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
-				EVCardAttributeParam *param = params->data;
-				const gchar *param_name = e_vcard_attribute_param_get_name (param);
-
-				if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
-					gboolean matches = FALSE;
-					GList *values = e_vcard_attribute_param_get_values (param);
-
-					while (values && values->data) {
-						if (!found_needed1 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed1)) {
-							found_needed1 = TRUE;
-							matches = TRUE;
-						}
-						else if (!found_needed2 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed2)) {
-							found_needed2 = TRUE;
-							matches = TRUE;
-						} else if (found_needed1) {
-							if (!matches || !found_needed2)
-								matches = FALSE;
-							break;
-						}
-						values = values->next;
-					}
-
-					if (!matches) {
-						/* this is to enforce that we find an attribute
-						 * with *only* the TYPE='s we need.  This may seem like
-						 * an odd restriction but it's the only way at present to
-						 * implement the Other Fax and Other Phone attributes. */
-						found_needed1 = FALSE;
-						break;
-					}
-				}
-
-				if (found_needed1 && found_needed2) {
-					if (nth-- == 0)
-						return attr;
-					else
-						break;
-				}
-			}
-		}
-	}
-
-	return NULL;
 }
 
 static void
