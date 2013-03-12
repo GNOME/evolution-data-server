@@ -1417,7 +1417,7 @@ append_summary_field (GArray *array,
 	new_field.field  = field;
 	new_field.dbname = dbname;
 	new_field.type   = type;
-	new_field.index  = INDEX_PREFIX;
+	new_field.index  = 0;
 	g_array_append_val (array, new_field);
 
 	return &g_array_index (array, SummaryField, array->len - 1);
