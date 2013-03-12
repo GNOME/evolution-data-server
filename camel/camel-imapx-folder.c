@@ -1043,7 +1043,11 @@ imapx_transfer_messages_to_sync (CamelFolder *source,
 		g_object_unref (server);
 	}
 
-	imapx_refresh_info_sync (dest, cancellable, NULL);
+	/* update destination folder only if not frozen, to not update
+	   for each single message transfer during filtering
+	 */
+	if (!camel_folder_is_frozen (dest))
+		imapx_refresh_info_sync (dest, cancellable, NULL);
 
 	return success;
 }
