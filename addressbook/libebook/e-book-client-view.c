@@ -40,7 +40,7 @@
 typedef struct _SignalClosure SignalClosure;
 
 struct _EBookClientViewPrivate {
-	EBookClient *client;
+	GWeakRef client;
 	GDBusProxy *dbus_proxy;
 	GDBusConnection *connection;
 	gchar *object_path;
@@ -618,9 +618,8 @@ book_client_view_set_client (EBookClientView *view,
                              EBookClient *client)
 {
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-	g_return_if_fail (view->priv->client == NULL);
 
-	view->priv->client = g_object_ref (client);
+	g_weak_ref_set (&view->priv->client, client);
 }
 
 static void
@@ -728,10 +727,7 @@ book_client_view_dispose (GObject *object)
 
 	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
 
-	if (priv->client != NULL) {
-		g_object_unref (priv->client);
-		priv->client = NULL;
-	}
+	g_weak_ref_set (&priv->client, NULL);
 
 	if (priv->connection != NULL) {
 		g_object_unref (priv->connection);
@@ -986,7 +982,7 @@ e_book_client_view_ref_client (EBookClientView *view)
 {
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
 
-	return g_object_ref (view->priv->client);
+	return g_weak_ref_get (&view->priv->client);
 }
 
 /**
@@ -1002,9 +998,19 @@ e_book_client_view_ref_client (EBookClientView *view)
 EBookClient *
 e_book_client_view_get_client (EBookClientView *view)
 {
+	EBookClient *client;
+
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
 
-	return view->priv->client;
+	client = e_book_client_view_ref_client (view);
+
+	/* XXX Drop the EBookClient reference for backward-compatibility.
+	 *     This is risky.  Without a reference, the EBookClient could
+	 *     be finalized while the caller is still using it. */
+	if (client != NULL)
+		g_object_unref (client);
+
+	return client;
 }
 
 /**
