@@ -77,9 +77,15 @@ static void
 complete (EBookClientView *view,
           const GError *error)
 {
+	EBookClient *client;
+
+	client = e_book_client_view_ref_client (view);
+
 	/* Now add a contact and assert that we received notification */
 	loading_view = FALSE;
-	add_contact (e_book_client_view_get_client (view));
+	add_contact (client);
+
+	g_object_unref (client);
 }
 
 static void

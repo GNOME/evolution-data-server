@@ -538,8 +538,12 @@ contacts_modified_cb (EBookClientView *book_view,
                       gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-	EBookClient *book_client = e_book_client_view_get_client (book_view);
+	EBookClient *book_client;
 	const GSList *ii;
+
+	book_client = e_book_client_view_ref_client (book_view);
+	if (book_client == NULL)
+		return;
 
 	g_rec_mutex_lock (&cbc->priv->tracked_contacts_lock);
 
@@ -566,6 +570,8 @@ contacts_modified_cb (EBookClientView *book_view,
 	}
 
 	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
+
+	g_object_unref (book_client);
 }
 
 static void
@@ -574,8 +580,12 @@ contacts_added_cb (EBookClientView *book_view,
                    gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-	EBookClient *book_client = e_book_client_view_get_client (book_view);
+	EBookClient *book_client;
 	const GSList *ii;
+
+	book_client = e_book_client_view_ref_client (book_view);
+	if (book_client == NULL)
+		return;
 
 	g_rec_mutex_lock (&cbc->priv->tracked_contacts_lock);
 
@@ -599,6 +609,8 @@ contacts_added_cb (EBookClientView *book_view,
 	}
 
 	g_rec_mutex_unlock (&cbc->priv->tracked_contacts_lock);
+
+	g_object_unref (book_client);
 }
 
 static void

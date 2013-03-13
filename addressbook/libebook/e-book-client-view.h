@@ -87,7 +87,7 @@ struct _EBookClientViewClass {
 
 GType		e_book_client_view_get_type	(void) G_GNUC_CONST;
 struct _EBookClient *
-		e_book_client_view_get_client	(EBookClientView *view);
+		e_book_client_view_ref_client	(EBookClientView *view);
 GDBusConnection *
 		e_book_client_view_get_connection
 						(EBookClientView *view);
@@ -105,6 +105,11 @@ void		e_book_client_view_stop		(EBookClientView *view,
 void		e_book_client_view_set_flags	(EBookClientView *view,
 						 EBookClientViewFlags flags,
 						 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+struct _EBookClient *
+		e_book_client_view_get_client	(EBookClientView *view);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

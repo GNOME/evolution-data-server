@@ -184,7 +184,7 @@ static void
 complete (EBookClientView *view,
           const GError *error)
 {
-	EBookClient *book = e_book_client_view_get_client (view);
+	EBookClient *book = e_book_client_view_ref_client (view);
 	GError *local_error = NULL;
 
 	g_print ("View complete, iteration %d\n", iteration);
@@ -227,6 +227,7 @@ complete (EBookClientView *view,
 		break;
 	}
 
+	g_object_unref (book);
 }
 
 static void

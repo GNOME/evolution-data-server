@@ -227,11 +227,17 @@ book_client_view_emit_objects_added (EBookClientView *client_view,
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
+	client = e_book_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our EBookClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
-	client = e_book_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -244,6 +250,8 @@ book_client_view_emit_objects_added (EBookClientView *client_view,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -255,11 +263,17 @@ book_client_view_emit_objects_modified (EBookClientView *client_view,
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
 
+	client = e_book_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our EBookClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
-	client = e_book_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -469,6 +483,13 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_book_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our EBookClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	for (ii = 0; ids[ii] != NULL; ii++)
 		list = g_slist_prepend (list, g_strdup (ids[ii]));
 
@@ -476,7 +497,6 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->string_list = g_slist_reverse (list);
 
-	client = e_book_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -489,6 +509,8 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -505,12 +527,18 @@ book_client_view_progress_cb (EGdbusBookView *object,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_book_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our EBookClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->message = g_strdup (message);
 	signal_closure->percent = percent;
 
-	client = e_book_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -523,6 +551,8 @@ book_client_view_progress_cb (EGdbusBookView *object,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -538,11 +568,17 @@ book_client_view_complete_cb (EGdbusBookView *object,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_book_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our EBookClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	e_gdbus_templates_decode_error (in_error_strv, &signal_closure->error);
 
-	client = e_book_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -557,6 +593,8 @@ book_client_view_complete_cb (EGdbusBookView *object,
 	g_main_context_unref (main_context);
 
 	client_view->priv->complete = TRUE;
+
+	g_object_unref (client);
 }
 
 static void
@@ -659,9 +697,9 @@ book_client_view_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_CLIENT:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				e_book_client_view_get_client (
+				e_book_client_view_ref_client (
 				E_BOOK_CLIENT_VIEW (object)));
 			return;
 
@@ -931,12 +969,35 @@ e_book_client_view_init (EBookClientView *view)
 }
 
 /**
+ * e_book_client_view_ref_client:
+ * @view: an #EBookClientView
+ *
+ * Returns the #EBookClientView:client associated with @view.
+ *
+ * The returned #EBookClient is referenced for thread-safety.  Unreference
+ * the #EBookClient with g_object_unref() when finished with it.
+ *
+ * Returns: an #EBookClient
+ *
+ * Since: 3.10
+ **/
+EBookClient *
+e_book_client_view_ref_client (EBookClientView *view)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+
+	return g_object_ref (view->priv->client);
+}
+
+/**
  * e_book_client_view_get_client:
  * @view: an #EBookClientView
  *
- * Returns the #EBookClient associated with @view.
+ * Returns the #EBookClientView:client associated with @view.
  *
  * Returns: (transfer none): an #EBookClient
+ *
+ * Deprecated: 3.10: Use e_book_client_view_ref_client() instead.
  **/
 EBookClient *
 e_book_client_view_get_client (EBookClientView *view)
@@ -993,10 +1054,14 @@ void
 e_book_client_view_start (EBookClientView *view,
                           GError **error)
 {
+	EBookClient *client;
 	gboolean success;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+
+	client = e_book_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	view->priv->running = TRUE;
 
@@ -1006,7 +1071,9 @@ e_book_client_view_start (EBookClientView *view,
 		view->priv->running = FALSE;
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
 /**
@@ -1020,9 +1087,13 @@ void
 e_book_client_view_stop (EBookClientView *view,
                          GError **error)
 {
+	EBookClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+
+	client = e_book_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	view->priv->running = FALSE;
 
@@ -1030,7 +1101,9 @@ e_book_client_view_stop (EBookClientView *view,
 		view->priv->dbus_proxy, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
 /**
@@ -1048,15 +1121,21 @@ e_book_client_view_set_flags (EBookClientView *view,
                               EBookClientViewFlags flags,
                               GError **error)
 {
+	EBookClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+
+	client = e_book_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	e_gdbus_book_view_call_set_flags_sync (
 		view->priv->dbus_proxy, flags, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
 /**
@@ -1082,10 +1161,14 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
                                            const GSList *fields_of_interest,
                                            GError **error)
 {
+	EBookClient *client;
 	gchar **strv;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+
+	client = e_book_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	/* When in direct read access mode, ensure that the
 	 * backend is configured to only send us UIDs for everything,
@@ -1108,6 +1191,8 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 	g_strfreev (strv);
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
