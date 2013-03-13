@@ -199,7 +199,7 @@ e_cal_client_error_quark
 <FILE>e-cal-client-view</FILE>
 <TITLE>ECalClientView</TITLE>
 ECalClientView
-e_cal_client_view_get_client
+e_cal_client_view_ref_client
 e_cal_client_view_get_connection
 e_cal_client_view_get_object_path
 e_cal_client_view_is_running
@@ -208,6 +208,8 @@ e_cal_client_view_start
 e_cal_client_view_stop
 ECalClientViewFlags
 e_cal_client_view_set_flags
+<SUBSECTION Deprecated>
+e_cal_client_view_get_client
 <SUBSECTION Standard>
 E_CAL_CLIENT_VIEW
 E_IS_CAL_CLIENT_VIEW

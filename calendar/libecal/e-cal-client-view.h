@@ -104,7 +104,7 @@ struct _ECalClientViewClass {
 
 GType		e_cal_client_view_get_type	(void) G_GNUC_CONST;
 struct _ECalClient *
-		e_cal_client_view_get_client	(ECalClientView *view);
+		e_cal_client_view_ref_client	(ECalClientView *view);
 GDBusConnection *
 		e_cal_client_view_get_connection
 						(ECalClientView *view);
@@ -122,6 +122,11 @@ void		e_cal_client_view_stop		(ECalClientView *view,
 void		e_cal_client_view_set_flags	(ECalClientView *view,
 						 ECalClientViewFlags flags,
 						 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+struct _ECalClient *
+		e_cal_client_view_get_client	(ECalClientView *view);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

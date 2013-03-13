@@ -270,11 +270,17 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_cal_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our ECalClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_list = build_object_list (objects);
 
-	client = e_cal_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -287,6 +293,8 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -302,11 +310,17 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_cal_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our ECalClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_list = build_object_list (objects);
 
-	client = e_cal_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -319,6 +333,8 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -334,11 +350,17 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_cal_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our ECalClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_id_list = build_id_list (uids);
 
-	client = e_cal_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -351,6 +373,8 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -367,12 +391,18 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_cal_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our ECalClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->message = g_strdup (message);
 	signal_closure->percent = percent;
 
-	client = e_cal_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -385,6 +415,8 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -400,11 +432,17 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 	if (!client_view->priv->running)
 		return;
 
+	client = e_cal_client_view_ref_client (client_view);
+
+	/* Suppress any further signal emissions if
+	 * our ECalClient has already been finalized. */
+	if (client == NULL)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	e_gdbus_templates_decode_error (arg_error, &signal_closure->error);
 
-	client = e_cal_client_view_get_client (client_view);
 	main_context = e_client_ref_main_context (E_CLIENT (client));
 
 	idle_source = g_idle_source_new ();
@@ -417,6 +455,8 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static void
@@ -502,9 +542,9 @@ cal_client_view_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_CLIENT:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				e_cal_client_view_get_client (
+				e_cal_client_view_ref_client (
 				E_CAL_CLIENT_VIEW (object)));
 			return;
 
@@ -763,12 +803,35 @@ e_cal_client_view_init (ECalClientView *view)
 }
 
 /**
+ * e_cal_client_view_ref_client:
+ * @view: an #ECalClientView
+ *
+ * Returns the #ECalClientView:client associated with @view.
+ *
+ * The returned #ECalClient is referenced for thread-safety.  Unreference
+ * the #ECalClient with g_object_unref() when finished with it.
+ *
+ * Returns: an #ECalClient
+ *
+ * Since: 3.10
+ **/
+ECalClient *
+e_cal_client_view_ref_client (ECalClientView *view)
+{
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+
+	return g_object_ref (view->priv->client);
+}
+
+/**
  * e_cal_client_view_get_client:
  * @view: an #ECalClientView
  *
- * Returns the #ECalClient associated with @view.
+ * Returns the #ECalClientView:client associated with @view.
  *
- * Returns: (transfer none): the associated client.
+ * Returns: (transfer none): an #ECalClient
+ *
+ * Deprecated: 3.10: Use e_cal_client_view_ref_client() instead.
  *
  * Since: 3.2
  **/
@@ -846,10 +909,14 @@ void
 e_cal_client_view_start (ECalClientView *view,
                          GError **error)
 {
+	ECalClient *client;
 	gboolean success;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+
+	client = e_cal_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	view->priv->running = TRUE;
 
@@ -859,7 +926,9 @@ e_cal_client_view_start (ECalClientView *view,
 		view->priv->running = FALSE;
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
 /**
@@ -875,9 +944,13 @@ void
 e_cal_client_view_stop (ECalClientView *view,
                         GError **error)
 {
+	ECalClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+
+	client = e_cal_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	view->priv->running = FALSE;
 
@@ -885,7 +958,9 @@ e_cal_client_view_stop (ECalClientView *view,
 		view->priv->dbus_proxy, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
 /**
@@ -912,10 +987,14 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
                                           const GSList *fields_of_interest,
                                           GError **error)
 {
+	ECalClient *client;
 	gchar **strv;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+
+	client = e_cal_client_view_ref_client (view);
+	g_return_if_fail (client != NULL);
 
 	strv = e_client_util_slist_to_strv (fields_of_interest);
 	e_gdbus_cal_view_call_set_fields_of_interest_sync (
@@ -925,7 +1004,9 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
 	g_strfreev (strv);
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
 
 /**
@@ -943,13 +1024,18 @@ e_cal_client_view_set_flags (ECalClientView *view,
                              ECalClientViewFlags flags,
                              GError **error)
 {
+	ECalClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+
+	client = e_cal_client_view_ref_client (view);
 
 	e_gdbus_cal_view_call_set_flags_sync (
 		view->priv->dbus_proxy, flags, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+		E_CLIENT (client), local_error, error);
+
+	g_object_unref (client);
 }
