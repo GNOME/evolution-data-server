@@ -2344,7 +2344,7 @@ msgstr "يېڭى ئۇچۇرلارنى ئېلىۋاتقاندا خاتالىق ك
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] "‹%s› نىڭ دىكى %d ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
+msgstr[0] "‹%$2s› نىڭ دىكى %$1d ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
 
 #: ../camel/camel-imapx-server.c:5768 ../camel/camel-imapx-server.c:5798
 msgid "Error refreshing folder"
