@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2013-03-12 12:36+0000\n"
-"PO-Revision-Date: 2013-03-13 20:46+0900\n"
+"PO-Revision-Date: 2013-03-13 21:11+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: \n"
@@ -2325,7 +2325,7 @@ msgstr "ئۇچۇرنى چاقىرىشتا خاتالىق يۈز بەردى"
 #: ../camel/camel-imapx-server.c:5261 ../camel/camel-imapx-server.c:5489
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
-msgstr ""
+msgstr "‹%s› نىڭ دىكى يېڭى ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
 
 #: ../camel/camel-imapx-server.c:5325
 #, c-format
@@ -2344,7 +2344,7 @@ msgstr "يېڭى ئۇچۇرلارنى ئېلىۋاتقاندا خاتالىق ك
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] "‹%s› نىڭ دىكى %d ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
+msgstr[0] ""
 
 #: ../camel/camel-imapx-server.c:5768 ../camel/camel-imapx-server.c:5798
 msgid "Error refreshing folder"
@@ -4383,7 +4383,7 @@ msgstr "SMTP مۇلازىمېتىرى %s كىملىك دەلىللەش %s نى �
 #: ../camel/providers/smtp/camel-smtp-transport.c:508
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr "SASL مېخانىزمى كۆرسىتىلمىگەن"
+msgstr "SASL مېخانىزىمى كۆرسىتىلمىگەن"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:538
 #: ../camel/providers/smtp/camel-smtp-transport.c:549
