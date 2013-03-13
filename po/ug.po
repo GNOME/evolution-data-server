@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-03-06 22:25+0000\n"
-"PO-Revision-Date: 2013-03-07 20:34+0900\n"
+"POT-Creation-Date: 2013-03-12 12:36+0000\n"
+"PO-Revision-Date: 2013-03-13 20:46+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: \n"
@@ -47,7 +47,7 @@ msgstr "بۇ CA غا ئىشىنىشتىن ئىلگىرى، ئۇنىڭ گۇۋاھ
 
 #: ../addressbook/backends/file/e-book-backend-file.c:844
 #: ../addressbook/backends/file/e-book-backend-file.c:1038
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2610
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2615
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "ئالاقەداش ‹%s› تېپىلمىدى"
@@ -913,21 +913,21 @@ msgstr "تېكىست قىسقا بولغاچقا تېلېفون نومۇرى ق�
 msgid "Text is too long for a phone number"
 msgstr "تېكىست ئۇزۇن بولغاچقا تېلېفون نومۇرى قىلىشقا بولمايدۇ"
 
-#: ../addressbook/libebook/e-book-client.c:682
+#: ../addressbook/libebook/e-book-client.c:644
 #: ../addressbook/libedata-book/e-book-backend.c:120
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "نامەلۇم كىتاب خاسلىقى «%s»"
 
-#: ../addressbook/libebook/e-book-client.c:697
+#: ../addressbook/libebook/e-book-client.c:659
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "كىتاب خاسلىقى «%s» نىڭ قىممىتىنى ئۆزگەرتكىلى بولمىدى"
 
-#: ../addressbook/libebook/e-book-client.c:1003
-#: ../addressbook/libebook/e-book-client.c:1176
-#: ../calendar/libecal/e-cal-client.c:1451
-#: ../calendar/libecal/e-cal-client.c:1631
+#: ../addressbook/libebook/e-book-client.c:965
+#: ../addressbook/libebook/e-book-client.c:1138
+#: ../calendar/libecal/e-cal-client.c:1479
+#: ../calendar/libecal/e-cal-client.c:1659
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "‹%s› غا باغلانغىلى بولمىدى "
@@ -937,50 +937,50 @@ msgstr "‹%s› غا باغلانغىلى بولمىدى "
 msgid "Error introspecting unknown summary field '%s'"
 msgstr ""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1240
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1241
 #: ../camel/camel-db.c:544
 #, c-format
 msgid "Insufficient memory"
 msgstr "ئەسلەك يەتمىدى"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1373
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1374
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "قىسقىچە مەزمۇن ئىچىدىكى كۆرسىتىلگەن سوز بۆلىكى ‹%d› ئىناۋەتسىز"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1407
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1408
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr "قىسقىچە مەزمۇن ئىچىدىكى تىپ ‹%2$s› نىڭ سوز بۆلىكى ‹%1$s› غا، پەقەت boolean، string ۋە string تىزىمىنىلا ئىشلىتىشكە بولىدۇ"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2598
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3639
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2603
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3644
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr "تولۇق search_contacts غەملەككە ساقلانماپتۇ. vcards نى قايتۇرمايدۇ."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3765
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3846
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3770
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3851
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "سۈرۈشتۈرۈشنىڭ ئىچىدە قوللىمايدىغان ئېلېمېنتلار بار"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3769
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3774
 #, c-format
 msgid "Invalid Query"
 msgstr "ئىناۋەتسىز سۈرۈشتۈرۈش"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3793
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3798
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr "تولۇق search_contacts غەملەككە ساقلانماپتۇ. شۇڭا قىسقىچە مەزمۇن سۈرۈشتۈرۈشنىلا ئىشلىتىشكە بولىدۇ."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3850
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3855
 #: ../addressbook/libedata-book/e-data-book.c:669
 #: ../addressbook/libedata-book/e-data-book.c:809
 #: ../calendar/libedata-cal/e-data-cal.c:612
@@ -989,13 +989,13 @@ msgstr "تولۇق search_contacts غەملەككە ساقلانماپتۇ. شۇ
 msgid "Invalid query"
 msgstr "ئىناۋەتسىز سۈرۈشتۈرۈش"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3892
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3897
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr "ھەممە vcards غەملەككە ساقلانماپتۇ. شۇڭا قىسقىچە مەزمۇن سۈرۈشتۈرۈشنىلا ئىشلىتىشكە بولىدۇ."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4593
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4598
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "ساندان(db) ھۆججىتى يۆتكىۋەتكىلى بولمىدى: خاتالىق نومۇرى %d"
@@ -1209,7 +1209,7 @@ msgstr "ئارقا ئۇچ CalDAV تېخى ئوقۇلمىدى"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1009
 msgid "Invalid Redirect URL"
-msgstr ""
+msgstr "بېشىنى بۇراش URL ى خاتا"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2491
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2849
@@ -1280,7 +1280,7 @@ msgstr "بولمىغۇر URI: %s"
 #: ../calendar/backends/http/e-cal-backend-http.c:568
 #, c-format
 msgid "Redirected to Invalid URI"
-msgstr "ئىناۋەتسىز URI غا بەشى بۇرالدى"
+msgstr "ئىناۋەتسىز URI غا بېشى بۇرالدى"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:605
 #, c-format
@@ -1416,13 +1416,13 @@ msgstr "نامەلۇم ئىشلەتكۈچى"
 msgid "Invalid range"
 msgstr "ئىناۋەتسىز دائىرە"
 
-#: ../calendar/libecal/e-cal-client.c:890
+#: ../calendar/libecal/e-cal-client.c:918
 #: ../calendar/libedata-cal/e-cal-backend.c:204
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "نامەلۇم يىلنامە خاسلىقى «%s»"
 
-#: ../calendar/libecal/e-cal-client.c:905
+#: ../calendar/libecal/e-cal-client.c:933
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "يىلنامە خاسلىقى «%s» نىڭ قىممىتىنى ئۆزگەرتكىلى بولمىدى"
@@ -1979,54 +1979,54 @@ msgstr "(user-tag)گە بېرىلگەن پارامېتىر ئىناۋەتسىز"
 msgid "Error executing filter search: %s: %s"
 msgstr "سۈزگۈچلۈك ئىزدەشتە خاتالىق كۆرۈلدى: %s: %s"
 
-#: ../camel/camel-folder.c:272
+#: ../camel/camel-folder.c:291
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "«%s» نىڭدىكى يېڭى spam ئۇچۇرلىرىنى ئۆگىنىۋاتىدۇ"
 
-#: ../camel/camel-folder.c:312
+#: ../camel/camel-folder.c:331
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "«%s» نىڭدىكى يېڭى ham ئۇچۇرلىرىنى ئۆگىنىۋاتىدۇ"
 
-#: ../camel/camel-folder.c:360
+#: ../camel/camel-folder.c:379
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "‹%s› دىكى يېڭى ئۇچۇرنى سۈزۈۋاتىدۇ"
 
-#: ../camel/camel-folder.c:934
+#: ../camel/camel-folder.c:953
 #: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "ئۇچۇرلار يۆتكىلىۋاتىدۇ."
 
-#: ../camel/camel-folder.c:937
+#: ../camel/camel-folder.c:956
 msgid "Copying messages"
 msgstr "ئۇچۇرلار كۆچۈرۈلۈۋاتىدۇ"
 
-#: ../camel/camel-folder.c:1257
+#: ../camel/camel-folder.c:1276
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "قىسقۇچ «%s» دا نورما ئۇچۇرىنى ئىشلەتكىلى بولمايدۇ"
 
-#: ../camel/camel-folder.c:3487
+#: ../camel/camel-folder.c:3509
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "قىسقۇچ «%s» نى ئۆچۈرۈۋاتىدۇ"
 
-#: ../camel/camel-folder.c:3719
+#: ../camel/camel-folder.c:3741
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "ئۇچۇر «%s» نى %s دىن ئوقۇۋاتىدۇ"
 
-#: ../camel/camel-folder.c:3870
+#: ../camel/camel-folder.c:3892
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "«%s»  نورما ئۇچۇرىنى ئوقۇۋاتىدۇ"
 
-#: ../camel/camel-folder.c:4102
+#: ../camel/camel-folder.c:4124
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "قىسقۇچ «%s» نى يېڭىلاۋاتىدۇ"
@@ -2344,7 +2344,7 @@ msgstr "يېڭى ئۇچۇرلارنى ئېلىۋاتقاندا خاتالىق ك
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] ""
+msgstr[0] "‹%s› نىڭ دىكى %d ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
 
 #: ../camel/camel-imapx-server.c:5768 ../camel/camel-imapx-server.c:5798
 msgid "Error refreshing folder"
@@ -3086,48 +3086,48 @@ msgstr "كودلىغۇچقا سانلىق-مەلۇمات قوشۇش مەغلۇپ
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME شىفىرسىزلاش: شىفىرلانغان مەزمۇن تېپىلمىدى"
 
-#: ../camel/camel-store.c:1844
+#: ../camel/camel-store.c:1871
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "قىسقۇچ «%s» نى قۇرغىلى بولمىدى: قىسقۇچ مەۋجۇت"
 
-#: ../camel/camel-store.c:1887
+#: ../camel/camel-store.c:1914
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "قىسقۇچ ‹%s› نى ئېچىۋاتىدۇ"
 
-#: ../camel/camel-store.c:2072
+#: ../camel/camel-store.c:2099
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "«%s» دا قىسقۇچلارنى تەكشۈرۈۋاتىدۇ"
 
-#: ../camel/camel-store.c:2088 ../camel/camel-store.c:2119
+#: ../camel/camel-store.c:2115 ../camel/camel-store.c:2146
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "ئەخلەتخانا"
 
-#: ../camel/camel-store.c:2100 ../camel/camel-store.c:2135
+#: ../camel/camel-store.c:2127 ../camel/camel-store.c:2162
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "ئەخلەت"
 
-#: ../camel/camel-store.c:2588
+#: ../camel/camel-store.c:2615
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "قىسقۇچ قۇرغىلى بولمىدى: %s:قىسقۇچ مەۋجۇت"
 
-#: ../camel/camel-store.c:2602
+#: ../camel/camel-store.c:2629
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "قىسقۇچ «%s» نى قۇرۇۋاتىدۇ"
 
-#: ../camel/camel-store.c:2720 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2747 ../camel/camel-vee-store.c:416
 #: ../camel/providers/local/camel-maildir-store.c:315
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "قىسقۇچنى ئۆچۈرگىلى بولمىدى: %s: ئىناۋەتسىز مەشغۇلات"
 
-#: ../camel/camel-store.c:2863 ../camel/camel-vee-store.c:466
+#: ../camel/camel-store.c:2890 ../camel/camel-vee-store.c:466
 #: ../camel/providers/local/camel-maildir-store.c:839
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3151,12 +3151,12 @@ msgstr "باغلىنىش ئەمەلدىن قالدۇرۇلدى"
 msgid "Could not connect with command \"%s\": %s"
 msgstr "«%s» بۇيرۇقىنى ئىشلىتىپ باغلانغىلى بولمىدى: %s"
 
-#: ../camel/camel-subscribable.c:386
+#: ../camel/camel-subscribable.c:397
 #, c-format
 msgid "Subscribing to folder '%s'"
 msgstr "قىسقۇچ ‹%s› غا مۇشتەرى بولۇۋاتىدۇ"
 
-#: ../camel/camel-subscribable.c:518
+#: ../camel/camel-subscribable.c:529
 #, c-format
 msgid "Unsubscribing from folder '%s'"
 msgstr "‹%s› قىسقۇچقا مۇشتەرى بولۇشتىن چېكىنىۋاتىدۇ"
@@ -4383,7 +4383,7 @@ msgstr "SMTP مۇلازىمېتىرى %s كىملىك دەلىللەش %s نى �
 #: ../camel/providers/smtp/camel-smtp-transport.c:508
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr ""
+msgstr "SASL مېخانىزمى كۆرسىتىلمىگەن"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:538
 #: ../camel/providers/smtp/camel-smtp-transport.c:549
@@ -4637,12 +4637,12 @@ msgstr "يىراقتىكى مەنبەلەرنى ئۆچۈرۈشنى %s قوللى
 #: ../libebackend/e-data-factory.c:320
 #, c-format
 msgid "No backend factory for hash key '%s'"
-msgstr ""
+msgstr "hash ئاچقۇچ ‹%s› نى ئارقا ئۇچ زاۋۇتى يوق"
 
 #: ../libebackend/e-server-side-source.c:134
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "سانلىق-مەلۇمات مەنبەسىدە بىر  [%s] گۇرۇپپا يوق"
 
 #: ../libebackend/e-server-side-source.c:1008
 #: ../libedataserver/e-source.c:1120
@@ -4654,7 +4654,7 @@ msgstr "يىراقتا مەنبەلەرنى قۇرۇشنى سانلىق-مەلۇ
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
-msgstr ""
+msgstr "سانلىق-مەلۇمات مەنبەسى ‹%s› نىڭدا يىراقتىكى بايلىقلار(resource) نى قۇرىدىغان توپلام(collection) ئارقا ئۇچى يوق"
 
 #: ../libebackend/e-server-side-source.c:1050
 #: ../libedataserver/e-source.c:1227
@@ -4666,7 +4666,7 @@ msgstr "يىراقتىكى مەنبەلەرنى ئۆچۈرۈشنى سانلىق-
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
-msgstr ""
+msgstr "سانلىق-مەلۇمات مەنبەسى ‹%s› نىڭدا يىراقتىكى بايلىقلار(resource) نى ئۆچۈرىدىغان توپلام(collection) ئارقا ئۇچى يوق"
 
 #: ../libebackend/e-server-side-source.c:1095
 #: ../libedataserver/e-source.c:1317
@@ -4681,7 +4681,7 @@ msgid "File must have a '.source' extension"
 msgstr "ھۆججەتنىڭ كېڭەيتمە ئاتى چوقۇم ‹.source› بولۇشى كېرەك."
 
 #: ../libebackend/e-source-registry-server.c:523
-#: ../libedataserver/e-source-registry.c:1594
+#: ../libedataserver/e-source-registry.c:1625
 msgid "The user declined to authenticate"
 msgstr "ئىشلەتكۈچى كىملىك دەلىللەشنى رەت قىلدى"
 
