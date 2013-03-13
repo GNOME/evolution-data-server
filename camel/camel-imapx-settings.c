@@ -661,7 +661,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"use-idle",
 			"Use IDLE",
 			"Whether to use the IDLE IMAP extension",
-			TRUE,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -685,7 +685,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"use-qresync",
 			"Use QRESYNC",
 			"Whether to use the QRESYNC IMAP extension",
-			TRUE,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -734,7 +734,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"use-subscriptions",
 			"Use Subscriptions",
 			"Whether to honor folder subscriptions",
-			TRUE,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
