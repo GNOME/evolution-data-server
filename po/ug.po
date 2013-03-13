@@ -2325,7 +2325,7 @@ msgstr "ئۇچۇرنى چاقىرىشتا خاتالىق يۈز بەردى"
 #: ../camel/camel-imapx-server.c:5261 ../camel/camel-imapx-server.c:5489
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
-msgstr "‹%s› نىڭ دىكى يېڭى ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
+msgstr ""
 
 #: ../camel/camel-imapx-server.c:5325
 #, c-format
