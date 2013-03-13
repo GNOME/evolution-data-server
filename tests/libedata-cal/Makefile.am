@@ -43,3 +43,4 @@ test_intervaltree_CPPFLAGS = $(test_CPPFLAGS)
 test_intervaltree_LDADD = $(test_LDADD)
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

@@ -56,6 +56,7 @@ test_fixture_LDADD    = $(common_libs) libetestserverutils.la
 test_fixture_SOURCES  = test-fixture.c
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester
 
 ######################################
 # The test directory needs to be     #

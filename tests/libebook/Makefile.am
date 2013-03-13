@@ -97,3 +97,4 @@ test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
 test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

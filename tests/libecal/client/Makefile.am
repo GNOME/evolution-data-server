@@ -86,3 +86,4 @@ test_client_send_objects_LDADD=$(TEST_LIBS)
 test_client_send_objects_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

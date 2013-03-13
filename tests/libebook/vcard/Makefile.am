@@ -17,3 +17,4 @@ dump_vcard_LDADD = 						\
 EXTRA_DIST=1.vcf 2.vcf 3.vcf 4.vcf 5.vcf 6.vcf 7.vcf 8.vcf 9.vcf 10.vcf 11.vcf
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

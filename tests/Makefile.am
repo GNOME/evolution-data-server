@@ -3,3 +3,4 @@ SUBDIRS = test-server-utils libedataserver libebook-contacts libebook libecal li
 @GNOME_CODE_COVERAGE_RULES@
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

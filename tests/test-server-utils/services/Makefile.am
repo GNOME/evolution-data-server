@@ -4,3 +4,4 @@ EXTRA_DIST = \
 	org.gnome.evolution.dataserver.Sources.service.in
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

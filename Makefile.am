@@ -102,3 +102,8 @@ MAINTAINERCLEANFILES =					\
 	$(srcdir)/po/remove-potcdate.sin
 
 -include $(top_srcdir)/git.mk
+
+test-report perf-report full-report:
+	@cd tests && $(MAKE) $(AM_MAKEFLAGS) $@
+
+.PHONY:test-report perf-report full-report

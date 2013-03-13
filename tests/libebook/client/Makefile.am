@@ -116,3 +116,4 @@ test_client_self_LDADD=$(TEST_LIBS)
 test_client_self_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

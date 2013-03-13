@@ -56,3 +56,4 @@ e_user_prompter_test_LDADD = $(top_builddir)/libebackend/libebackend-1.2.la $(te
 endif
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester

@@ -108,3 +108,4 @@ test_ecal_set_default_timezone_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_default_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+-include $(top_srcdir)/tests/Makefile.gtester
