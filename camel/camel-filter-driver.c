@@ -1411,6 +1411,9 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		if (st.st_size > 0)
 			pc = (gint)(100.0 * ((double) camel_mime_parser_tell (mp) / (double) st.st_size));
 
+		if (pc > 0)
+			camel_operation_progress (cancellable, pc);
+
 		report_status (
 			driver, CAMEL_FILTER_STATUS_START,
 			pc, _("Getting message %d (%d%%)"), i, pc);
@@ -1457,6 +1460,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 
 		camel_message_info_free (info);
 	}
+
+	camel_operation_progress (cancellable, 100);
 
 	if (driver->priv->defaultfolder) {
 		report_status (
@@ -1525,6 +1530,8 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		gint pc = (100 * i) / uids->len;
 		GError *local_error = NULL;
 
+		camel_operation_progress (cancellable, pc);
+
 		report_status (
 			driver, CAMEL_FILTER_STATUS_START,
 			pc, _("Getting message %d of %d"),
@@ -1563,6 +1570,8 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 		if (cache && (i % 10) == 0)
 			camel_uid_cache_save (cache);
 	}
+
+	camel_operation_progress (cancellable, 100);
 
 	/* Save the cache of any pending mails. */
 	if (cache)
