@@ -271,7 +271,7 @@ msgstr "વપરાશકર્તા '%s' માટે DN ને મેળવ�
 #, c-format
 #| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
-msgstr "HTTP સ્થિતિ %d (%s) સાથે નિષ્ફળ થયેલ સ્ત્રોત '%s' ને બનાવો"
+msgstr "નિષ્ફળ થયેલ સ્ત્રોત '%s'ને HTTP સ્થિતિ %d (%s) સાથે બનાવો"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:522
 #, c-format
@@ -4804,7 +4804,7 @@ msgstr "UID '%s' પહેલેથી જ વપરાશમાં છે"
 #, c-format
 #| msgid "Contact '%s' not found"
 msgid "Extension dialog '%s' not found."
-msgstr "ઍક્સટેન્શન સંવાદ મળ્યુ નથી."
+msgstr "ઍક્સટેન્શન સંવાદ '%s' મળ્યુ નથી."
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
