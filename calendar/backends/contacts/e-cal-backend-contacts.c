@@ -31,7 +31,6 @@
 #include "e-cal-backend-contacts.h"
 
 #include <glib/gi18n-lib.h>
-#include <libsoup/soup.h>
 
 #include <libebook/libebook.h>
 
@@ -82,7 +81,6 @@ typedef struct _BookRecord {
 	ECalBackendContacts *cbc;
 	EBookClient *book_client;
 	EBookClientView *book_view;
-	gulong book_client_opened_id;
 } BookRecord;
 
 typedef struct _ContactRecord {
@@ -120,9 +118,9 @@ static void	e_cal_backend_contacts_add_timezone
 						 GError **perror);
 static void	setup_alarm			(ECalBackendContacts *cbc,
 						 ECalComponent *comp);
-static void	book_client_opened_cb		(EBookClient *book_client,
-						 const GError *error,
-						 BookRecord *br);
+static void	book_client_connected_cb	(GObject *source_object,
+						 GAsyncResult *result,
+						 gpointer user_data);
 
 static gboolean
 remove_by_book (gpointer key,
@@ -135,34 +133,19 @@ remove_by_book (gpointer key,
 	return (cr && cr->book_client == book_client);
 }
 
-static BookRecord *
-book_record_new (ECalBackendContacts *cbc,
-                 ESource *source)
+static void
+create_book_record (ECalBackendContacts *cbc,
+                    ESource *source)
 {
 	BookRecord *br;
-	EBookClient *book_client;
-	GError *error = NULL;
-
-	book_client = e_book_client_new (source, &error);
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-		return NULL;
-	}
-
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (book_client), NULL);
 
 	br = g_slice_new0 (BookRecord);
 	br->ref_count = 1;
 	g_mutex_init (&br->lock);
 	br->cbc = g_object_ref (cbc);
-	br->book_client = book_client;  /* takes ownership */
 
-	br->book_client_opened_id = g_signal_connect (
-		br->book_client, "opened",
-		G_CALLBACK (book_client_opened_cb), br);
-
-	return br;
+	e_book_client_connect (
+		source, NULL, book_client_connected_cb, br);
 }
 
 static BookRecord *
@@ -183,10 +166,6 @@ book_record_unref (BookRecord *br)
 	g_return_if_fail (br->ref_count > 0);
 
 	if (g_atomic_int_dec_and_test (&br->ref_count)) {
-		if (br->book_client_opened_id)
-			g_signal_handler_disconnect (
-				br->book_client,
-				br->book_client_opened_id);
 		g_rec_mutex_lock (&br->cbc->priv->tracked_contacts_lock);
 		g_hash_table_foreach_remove (
 			br->cbc->priv->tracked_contacts,
@@ -251,19 +230,6 @@ cal_backend_contacts_remove_book_record (ECalBackendContacts *cbc,
 	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 
 	return removed;
-}
-
-static void
-cbc_reopen_book_client (BookRecord *br)
-{
-	g_mutex_lock (&br->lock);
-
-	g_warn_if_fail (br->book_client_opened_id == 0);
-	br->book_client_opened_id = g_signal_connect (
-		br->book_client, "opened",
-		G_CALLBACK (book_client_opened_cb), br);
-
-	g_mutex_unlock (&br->lock);
 }
 
 static gpointer
@@ -343,92 +309,41 @@ exit:
 }
 
 static void
-book_client_opened_cb (EBookClient *book_client,
-                       const GError *error,
-                       BookRecord *br)
+book_client_connected_cb (GObject *source_object,
+                          GAsyncResult *result,
+                          gpointer user_data)
 {
-	ESource *source;
-	const gchar *source_uid;
-
-	g_return_if_fail (book_client != NULL);
-	g_return_if_fail (br != NULL);
-
-	g_mutex_lock (&br->lock);
-	g_signal_handler_disconnect (
-		br->book_client,
-		br->book_client_opened_id);
-	br->book_client_opened_id = 0;
-	g_mutex_unlock (&br->lock);
-
-	source = e_client_get_source (E_CLIENT (book_client));
-	source_uid = e_source_get_uid (source);
-	g_return_if_fail (source_uid != NULL);
-
-	if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED)) {
-		cbc_reopen_book_client (br);
-	} else if (!error) {
-		GThread *thread;
-
-		thread = g_thread_new (NULL, book_record_get_view_thread, book_record_ref (br));
-		g_thread_unref (thread);
-	}
-}
-
-static void
-client_open_cb (GObject *source_object,
-                GAsyncResult *result,
-                gpointer user_data)
-{
-	BookRecord *br = user_data;
 	EClient *client;
+	ESource *source;
+	GThread *thread;
+	BookRecord *br = user_data;
 	GError *error = NULL;
 
-	client = E_CLIENT (source_object);
+	g_return_if_fail (br != NULL);
 
-	e_client_open_finish (client, result, &error);
+	client = e_book_client_connect_finish (result, &error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((client != NULL) && (error == NULL)) ||
+		((client == NULL) && (error != NULL)));
 
 	if (error != NULL) {
-		ESource *source;
-
-		g_mutex_lock (&br->lock);
-		if (br->book_client_opened_id) {
-			g_signal_handler_disconnect (
-				br->book_client,
-				br->book_client_opened_id);
-			br->book_client_opened_id = 0;
-		}
-		g_mutex_unlock (&br->lock);
-
-		g_warning (
-			"%s: Failed to open book: %s",
-			G_STRFUNC, error->message);
+		g_warning ("%s: %s", G_STRFUNC, error->message);
 		g_error_free (error);
-
-		source = e_client_get_source (client);
-		cal_backend_contacts_remove_book_record (br->cbc, source);
+		g_slice_free (BookRecord, br);
+		return;
 	}
 
-	book_record_unref (br);
-}
+	source = e_client_get_source (client);
+	br->book_client = g_object_ref (client);
+	cal_backend_contacts_insert_book_record (br->cbc, source, br);
 
-/* BookRecord methods */
-static void
-create_book_record (ECalBackendContacts *cbc,
-                    ESource *source)
-{
-	BookRecord *br;
+	thread = g_thread_new (
+		NULL, book_record_get_view_thread, book_record_ref (br));
+	g_thread_unref (thread);
 
-	br = book_record_new (cbc, source);
-
-	if (br != NULL) {
-		cal_backend_contacts_insert_book_record (cbc, source, br);
-
-		e_client_open (
-			E_CLIENT (br->book_client), TRUE, NULL,
-			client_open_cb, book_record_ref (br));
-
-		book_record_unref (br);
-	}
+	g_object_unref (client);
 }
 
 /* ContactRecord methods */
