@@ -5196,6 +5196,31 @@ e_cal_component_free_id (ECalComponentId *id)
 }
 
 /**
+ * e_cal_component_id_copy:
+ * @id: an #ECalComponentId
+ *
+ * Returns a newly-allocated copy of @id, which should be freed with
+ * e_cal_component_free_id().
+ *
+ * Returns: a newly-allocated copy of @id
+ *
+ * Since: 3.10
+ **/
+ECalComponentId *
+e_cal_component_id_copy (const ECalComponentId *id)
+{
+	ECalComponentId *copy;
+
+	g_return_val_if_fail (id != NULL, NULL);
+
+	copy = g_new0 (ECalComponentId, 1);
+	copy->uid = g_strdup (id->uid);
+	copy->rid = g_strdup (id->rid);
+
+	return copy;
+}
+
+/**
  * e_cal_component_free_text_list:
  * @text_list: (element-type ECalComponentText): List of #ECalComponentText
  * structures.
