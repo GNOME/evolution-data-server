@@ -5180,24 +5180,17 @@ e_cal_component_free_sequence (gint *sequence)
 
 /**
  * e_cal_component_free_id:
- * @id: Component ID
+ * @id: an #ECalComponentId
  *
- * Frees the id.
+ * Frees the @id.
  **/
 void
 e_cal_component_free_id (ECalComponentId *id)
 {
 	g_return_if_fail (id != NULL);
 
-	if (id->uid) {
-		g_free (id->uid);
-		id->uid = NULL;
-	}
-
-	if (id->rid) {
-		g_free (id->rid);
-		id->rid = NULL;
-	}
+	g_free (id->uid);
+	g_free (id->rid);
 
 	g_free (id);
 }
