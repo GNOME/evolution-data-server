@@ -53,12 +53,6 @@ gboolean
 ebook_test_utils_contacts_are_equal_shallow (EContact *a,
                                              EContact *b);
 
-EBook *
-ebook_test_utils_book_new_from_uri (const gchar *uri);
-
-EBook *
-ebook_test_utils_book_new_temp (gchar **uri);
-
 const gchar *
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact);
@@ -132,10 +126,6 @@ ebook_test_utils_book_async_remove_contacts (EBook       *book,
                                              GList       *uids,
                                              GSourceFunc  callback,
                                              gpointer     user_data);
-
-void
-ebook_test_utils_book_open (EBook    *book,
-                            gboolean  only_if_exists);
 
 void
 ebook_test_utils_book_get_book_view (EBook       *book,

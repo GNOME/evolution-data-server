@@ -38,16 +38,6 @@ TEST_LIBS =					\
 	libebook-test-utils.la			\
 	$(NULL)
 
-DEPRECATED_TESTS =				\
-	test-changes				\
-	test-ebook				\
-	test-ebook-async			\
-	test-nonexistent-id			\
-	test-search				\
-	test-self				\
-	test-stress-bookviews			\
-	test-bulk-methods
-
 ### EBookClient Tests ###
 
 # Should be kept ordered approximately from least to most difficult/complex
@@ -64,13 +54,8 @@ TESTS = \
 	test-ebook-remove-contacts \
 	test-ebook-get-book-view
 
-#	test-ebook-stress-factory--serial \
-#	test-ebook-stress-factory--fifo \
-#	test-ebook-stress-factory--single-book
-
 noinst_PROGRAMS = \
 	$(TESTS)				\
-	$(DEPRECATED_TESTS)			\
 	$(NULL)
 
 EXTRA_DIST = \
@@ -79,14 +64,6 @@ EXTRA_DIST = \
 	$(srcdir)/data/vcards/simple-2.vcf	\
 	$(NULL)
 
-test_bulk_methods_LDADD=$(TEST_LIBS)
-test_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
-test_search_LDADD=$(TEST_LIBS)
-test_search_CPPFLAGS=$(TEST_CPPFLAGS)
-test_ebook_LDADD=$(TEST_LIBS)
-test_ebook_CPPFLAGS=$(TEST_CPPFLAGS)
-test_ebook_async_LDADD=$(TEST_LIBS)
-test_ebook_async_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_commit_contact_LDADD=$(TEST_LIBS)
 test_ebook_commit_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_get_book_view_LDADD=$(TEST_LIBS)
@@ -109,19 +86,5 @@ test_ebook_remove_contact_by_id_LDADD=$(TEST_LIBS)
 test_ebook_remove_contact_by_id_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
 test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
-#test_ebook_stress_factory__fifo_LDADD=$(TEST_LIBS)
-test_ebook_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
-#test_ebook_stress_factory__serial_LDADD=$(TEST_LIBS)
-test_ebook_stress_factory__serial_CPPFLAGS=$(TEST_CPPFLAGS)
-#test_ebook_stress_factory__single_book_LDADD=$(TEST_LIBS)
-test_ebook_stress_factory__single_book_CPPFLAGS=$(TEST_CPPFLAGS)
-test_changes_LDADD=$(TEST_LIBS)
-test_changes_CPPFLAGS=$(TEST_CPPFLAGS)
-test_nonexistent_id_LDADD=$(TEST_LIBS)
-test_nonexistent_id_CPPFLAGS=$(TEST_CPPFLAGS)
-test_self_LDADD=$(TEST_LIBS)
-test_self_CPPFLAGS=$(TEST_CPPFLAGS)
-test_stress_bookviews_LDADD=$(TEST_LIBS)
-test_stress_bookviews_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
