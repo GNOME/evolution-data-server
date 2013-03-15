@@ -45,13 +45,13 @@ DEPRECATED_TESTS =				\
 	test-nonexistent-id			\
 	test-search				\
 	test-self				\
-	test-stress-bookviews
+	test-stress-bookviews			\
+	test-bulk-methods
 
 ### EBookClient Tests ###
 
 # Should be kept ordered approximately from least to most difficult/complex
 TESTS = \
-	test-ebook-phone-number \
 	test-ebook-add-contact \
 	test-ebook-get-contact \
 	test-ebook-commit-contact \
@@ -71,15 +71,6 @@ TESTS = \
 noinst_PROGRAMS = \
 	$(TESTS)				\
 	$(DEPRECATED_TESTS)			\
-	test-categories				\
-	test-date				\
-	test-photo				\
-	test-query				\
-	test-string				\
-	test-undefinedfield			\
-	test-untyped-phones			\
-	test-vcard-parsing			\
-	test-bulk-methods			\
 	$(NULL)
 
 EXTRA_DIST = \
@@ -88,25 +79,8 @@ EXTRA_DIST = \
 	$(srcdir)/data/vcards/simple-2.vcf	\
 	$(NULL)
 
-test_categories_LDADD=$(TEST_LIBS)
-test_categories_CPPFLAGS=$(TEST_CPPFLAGS)
-test_date_LDADD=$(TEST_LIBS)
-test_date_CPPFLAGS=$(TEST_CPPFLAGS)
-test_photo_LDADD=$(TEST_LIBS)
-test_photo_CPPFLAGS=$(TEST_CPPFLAGS)
-test_query_LDADD=$(TEST_LIBS)
-test_query_CPPFLAGS=$(TEST_CPPFLAGS)
-test_string_LDADD=$(TEST_LIBS)
-test_string_CPPFLAGS=$(TEST_CPPFLAGS)
-test_undefinedfield_LDADD=$(TEST_LIBS)
-test_undefinedfield_CPPFLAGS=$(TEST_CPPFLAGS)
-test_untyped_phones_LDADD=$(TEST_LIBS)
-test_untyped_phones_CPPFLAGS=$(TEST_CPPFLAGS)
-test_vcard_parsing_LDADD=$(TEST_LIBS)
-test_vcard_parsing_CPPFLAGS=$(TEST_CPPFLAGS)
 test_bulk_methods_LDADD=$(TEST_LIBS)
 test_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
-
 test_search_LDADD=$(TEST_LIBS)
 test_search_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_LDADD=$(TEST_LIBS)
@@ -135,8 +109,6 @@ test_ebook_remove_contact_by_id_LDADD=$(TEST_LIBS)
 test_ebook_remove_contact_by_id_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
 test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
-test_ebook_phone_number_LDADD=$(TEST_LIBS)
-test_ebook_phone_number_CPPFLAGS=$(TEST_CPPFLAGS)
 #test_ebook_stress_factory__fifo_LDADD=$(TEST_LIBS)
 test_ebook_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
 #test_ebook_stress_factory__serial_LDADD=$(TEST_LIBS)

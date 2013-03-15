@@ -23,7 +23,7 @@
 #include <config.h>
 #endif
 
-#include <libebook/libebook.h>
+#include <libebook-contacts/libebook-contacts.h>
 #include <locale.h>
 
 static const gchar *match_candidates[] = {

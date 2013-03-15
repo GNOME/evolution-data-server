@@ -219,47 +219,60 @@ test_econtact (const gchar *vcard_str)
 	return TRUE;
 }
 
+static const gchar *test_vcard_no_uid_str = 
+	"BEGIN:VCARD\r\n"
+	"VERSION:3.0\r\n"
+	"EMAIL;TYPE=OTHER:zyx@no.where\r\n"
+	"FN:zyx mix\r\n"
+	"N:zyx;mix;;;\r\n"
+	"END:VCARD";
+
+static const gchar *test_vcard_with_uid_str = 
+	"BEGIN:VCARD\r\n"
+	"VERSION:3.0\r\n"
+	"UID:some-uid\r\n"
+	"EMAIL;TYPE=OTHER:zyx@no.where\r\n"
+	"FN:zyx mix\r\n"
+	"N:zyx;mix;;;\r\n"
+	"END:VCARD";
+
+
+static void
+test_vcard_with_uid (void)
+{
+	g_assert (test_vcard (test_vcard_with_uid_str));
+}
+
+static void
+test_vcard_without_uid (void)
+{
+	g_assert (test_vcard (test_vcard_no_uid_str));
+}
+
+static void
+test_contact_with_uid (void)
+{
+	g_assert (test_econtact (test_vcard_with_uid_str));
+}
+
+static void
+test_contact_without_uid (void)
+{
+	g_assert (test_econtact (test_vcard_no_uid_str));
+}
+
 gint
 main (gint argc,
       gchar **argv)
 {
-	const gchar
-		*test_vcard_no_uid_str = 
-			"BEGIN:VCARD\r\n"
-			"VERSION:3.0\r\n"
-			"EMAIL;TYPE=OTHER:zyx@no.where\r\n"
-			"FN:zyx mix\r\n"
-			"N:zyx;mix;;;\r\n"
-			"END:VCARD",
-
-		*test_vcard_with_uid_str = 
-			"BEGIN:VCARD\r\n"
-			"VERSION:3.0\r\n"
-			"UID:some-uid\r\n"
-			"EMAIL;TYPE=OTHER:zyx@no.where\r\n"
-			"FN:zyx mix\r\n"
-			"N:zyx;mix;;;\r\n"
-			"END:VCARD";
-
 	g_type_init ();
 
-	g_print ("Testing vCard without UID...\n");
-	g_return_val_if_fail (test_vcard (test_vcard_no_uid_str), 1);
-	g_print ("Passed.\n");
+	g_test_init (&argc, &argv, NULL);
 
-	g_print ("Testing vCard with UID set...\n");
-	g_return_val_if_fail (test_vcard (test_vcard_with_uid_str), 1);
-	g_print ("Passed.\n");
+	g_test_add_func ("/Parsing/VCard/WithUID", test_vcard_with_uid);
+	g_test_add_func ("/Parsing/VCard/WithoutUID", test_vcard_without_uid);
+	g_test_add_func ("/Parsing/VCard/WithUID", test_contact_with_uid);
+	g_test_add_func ("/Parsing/VCard/WithoutUID", test_contact_without_uid);
 
-	g_print ("Testing EContact without UID...\n");
-	g_return_val_if_fail (test_econtact (test_vcard_no_uid_str), 1);
-	g_print ("Passed.\n");
-
-	g_print ("Testing EContact with UID set...\n");
-	g_return_val_if_fail (test_econtact (test_vcard_with_uid_str), 1);
-	g_print ("Passed.\n");
-
-	g_print ("Bye.\n");
-
-	return 0;
+	return g_test_run ();
 }
