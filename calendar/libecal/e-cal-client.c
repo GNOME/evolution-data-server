@@ -903,14 +903,17 @@ cal_client_get_backend_property_sync (EClient *client,
 
 	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		*prop_value = e_dbus_calendar_dup_alarm_email_address (dbus_proxy);
+		return TRUE;
 	}
 
 	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS)) {
 		*prop_value = e_dbus_calendar_dup_cal_email_address (dbus_proxy);
+		return TRUE;
 	}
 
 	if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		*prop_value = e_dbus_calendar_dup_default_object (dbus_proxy);
+		return TRUE;
 	}
 
 	g_set_error (
