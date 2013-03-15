@@ -88,8 +88,131 @@ complete (EBookClientView *view,
 	g_mutex_unlock (&data->complete_mutex);
 }
 
-static gboolean
-start_view (ThreadData *data)
+static void
+finish_thread_test (ThreadData *data)
+{
+	g_assert_cmpint (data->n_contacts, ==, N_CONTACTS);
+
+	g_main_loop_quit (data->loop);
+	g_thread_join (data->thread);
+	g_mutex_clear (&data->complete_mutex);
+	g_cond_clear (&data->complete_cond);
+	g_slice_free (ThreadData, data);
+}
+
+/************************************
+ *     Threads using async API      *
+ ************************************/
+static void
+view_ready (GObject *source_object,
+	    GAsyncResult *res,
+	    gpointer user_data)
+{
+	ThreadData *data = (ThreadData *)user_data;
+	GError *error = NULL;
+
+	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), res, &(data->view), &error))
+		g_error ("Getting view failed: %s", error->message);
+
+	g_signal_connect (data->view, "objects-added", G_CALLBACK (objects_added), data);
+	g_signal_connect (data->view, "objects-modified", G_CALLBACK (objects_modified), data);
+	g_signal_connect (data->view, "objects-removed", G_CALLBACK (objects_removed), data);
+	g_signal_connect (data->view, "complete", G_CALLBACK (complete), data);
+
+	e_book_client_view_set_fields_of_interest (data->view, NULL, &error);
+	if (error)
+		g_error ("set fields of interest: %s", error->message);
+
+	e_book_client_view_start (data->view, &error);
+	if (error)
+		g_error ("start view: %s", error->message);
+}
+
+static void
+start_thread_test_async (ThreadData *data)
+{
+	EBookQuery   *query;
+	gchar        *sexp;
+
+	query = e_book_query_any_field_contains ("");
+	sexp = e_book_query_to_string (query);
+
+	e_book_client_get_view (data->client, sexp, NULL, view_ready, data);
+
+	e_book_query_unref (query);
+	g_free (sexp);
+}
+
+static void
+connect_ready (GObject *source_object,
+	       GAsyncResult *res,
+	       gpointer user_data)
+{
+	ThreadData *data = (ThreadData *)user_data;
+	GError     *error = NULL;
+
+	data->client = (EBookClient *)e_book_client_connect_finish (res, &error);
+	if (!data->client)
+		g_error ("Error asynchronously connecting to client");
+
+	start_thread_test_async (data);
+}
+
+static gpointer
+test_view_thread_async (ThreadData *data)
+{
+	GMainContext    *context;
+	ESourceRegistry *registry;
+	ESource         *source;
+	GError          *error = NULL;
+
+	context    = g_main_context_new ();
+	data->loop = g_main_loop_new (context, FALSE);
+	g_main_context_push_thread_default (context);
+
+	/* Open the test book client in this thread */
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (!registry)
+		g_error ("Unable to create the registry: %s", error->message);
+
+	source = e_source_registry_ref_source (registry, data->book_uid);
+	if (!source)
+		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
+
+	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
+		/* There is no Async API to open a direct book for now, let's stick with the sync API
+		 */
+		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, NULL, &error);
+
+		if (!data->client)
+			g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
+
+		/* Fetch the view right away */
+		start_thread_test_async (data);
+
+	} else {
+		/* Connect asynchronously */
+		e_book_client_connect (source, NULL, connect_ready, data);
+	}
+
+	g_main_loop_run (data->loop);
+
+	g_object_unref (source);
+	g_object_unref (registry);
+
+	g_object_unref (data->client);
+	g_main_context_pop_thread_default (context);
+	g_main_loop_unref (data->loop);
+	g_main_context_unref (context);
+
+	return NULL;
+}
+
+/************************************
+ *     Threads using sync API       *
+ ************************************/
+static void
+start_thread_test_sync (ThreadData *data)
 {
 	EBookQuery   *query;
 	gchar        *sexp;
@@ -117,37 +240,10 @@ start_view (ThreadData *data)
 
 	e_book_query_unref (query);
 	g_free (sexp);
-
-	return FALSE;
-}
-
-static void
-start_thread_test (ThreadData *data)
-{
-	GMainContext *context;
-	GSource      *source;
-
-	context = g_main_loop_get_context (data->loop);
-	source  = g_idle_source_new ();
-
-	g_source_set_callback (source, (GSourceFunc) start_view, data, NULL);
-	g_source_attach (source, context);
-}
-
-static void
-finish_thread_test (ThreadData *data)
-{
-	g_assert_cmpint (data->n_contacts, ==, N_CONTACTS);
-
-	g_main_loop_quit (data->loop);
-	g_thread_join (data->thread);
-	g_mutex_clear (&data->complete_mutex);
-	g_cond_clear (&data->complete_cond);
-	g_slice_free (ThreadData, data);
 }
 
 static gpointer
-test_view_thread (ThreadData *data)
+test_view_thread_sync (ThreadData *data)
 {
 	GMainContext    *context;
 	ESourceRegistry *registry;
@@ -175,7 +271,7 @@ test_view_thread (ThreadData *data)
 	if (!data->client)
 		g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
 
-	start_thread_test (data);
+	start_thread_test_sync (data);
 
 	g_main_loop_run (data->loop);
 
@@ -192,7 +288,8 @@ test_view_thread (ThreadData *data)
 
 static ThreadData *
 create_test_thread (const gchar *book_uid,
-                    gconstpointer user_data)
+                    gconstpointer user_data,
+		    gboolean sync)
 {
 	ThreadData  *data = g_slice_new0 (ThreadData);
 
@@ -202,14 +299,18 @@ create_test_thread (const gchar *book_uid,
 	g_mutex_init (&data->complete_mutex);
 	g_cond_init (&data->complete_cond);
 
-	data->thread = g_thread_new ("test-thread", (GThreadFunc) test_view_thread, data);
+	if (sync)
+		data->thread = g_thread_new ("test-thread", (GThreadFunc) test_view_thread_sync, data);
+	else
+		data->thread = g_thread_new ("test-thread", (GThreadFunc) test_view_thread_async, data);
 
 	return data;
 }
 
 static void
 test_concurrent_views (ETestServerFixture *fixture,
-                       gconstpointer user_data)
+                       gconstpointer user_data,
+		       gboolean sync)
 {
 	EBookClient *main_client;
 	ESource *source;
@@ -234,7 +335,7 @@ test_concurrent_views (ETestServerFixture *fixture,
 	/* Create all concurrent threads accessing the same addressbook */
 	tests = g_new0 (ThreadData *, N_THREADS);
 	for (i = 0; i < N_THREADS; i++)
-		tests[i] = create_test_thread (book_uid, user_data);
+		tests[i] = create_test_thread (book_uid, user_data, sync);
 
 	/* Wait for all threads to receive the complete signal */
 	for (i = 0; i < N_THREADS; i++) {
@@ -254,6 +355,21 @@ test_concurrent_views (ETestServerFixture *fixture,
 	g_free (tests);
 }
 
+static void
+test_concurrent_views_sync (ETestServerFixture *fixture,
+			    gconstpointer user_data)
+{
+	test_concurrent_views (fixture, user_data, TRUE);
+}
+
+static void
+test_concurrent_views_async (ETestServerFixture *fixture,
+			     gconstpointer user_data)
+{
+	test_concurrent_views (fixture, user_data, FALSE);
+}
+
+
 gint
 main (gint argc,
       gchar **argv)
@@ -265,11 +381,17 @@ main (gint argc,
 	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_test_add (
-		"/EBookClient/ConcurrentViews", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
+		"/EBookClient/ConcurrentViews/Sync", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_concurrent_views_sync, e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/ConcurrentViews", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_concurrent_views, e_test_server_utils_teardown);
+		"/EBookClient/ConcurrentViews/Async", ETestServerFixture, &book_closure,
+		e_test_server_utils_setup, test_concurrent_views_async, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/ConcurrentViews/Sync", ETestServerFixture, &direct_book_closure,
+		e_test_server_utils_setup, test_concurrent_views_sync, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/DirectAccess/ConcurrentViews/Async", ETestServerFixture, &direct_book_closure,
+		e_test_server_utils_setup, test_concurrent_views_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }
