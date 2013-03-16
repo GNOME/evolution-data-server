@@ -1221,6 +1221,8 @@ e_util_slist_to_strv
 e_util_strv_to_slist
 e_util_free_nullable_object_slist
 e_queue_transfer
+e_weak_ref_new
+e_weak_ref_free
 e_file_recursive_delete_sync
 e_file_recursive_delete
 e_file_recursive_delete_finish

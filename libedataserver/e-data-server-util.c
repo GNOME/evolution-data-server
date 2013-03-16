@@ -1068,6 +1068,46 @@ e_queue_transfer (GQueue *src_queue,
 	src_queue->length = 0;
 }
 
+/**
+ * e_weak_ref_new:
+ * @object: (allow-none): a #GObject or %NULL
+ *
+ * Allocates a new #GWeakRef and calls g_weak_ref_set() with @object.
+ *
+ * Free the returned #GWeakRef with e_weak_ref_free().
+ *
+ * Returns: a new #GWeakRef
+ *
+ * Since: 3.10
+ **/
+GWeakRef *
+e_weak_ref_new (gpointer object)
+{
+	GWeakRef *weak_ref;
+
+	weak_ref = g_slice_new0 (GWeakRef);
+	g_weak_ref_set (weak_ref, object);
+
+	return weak_ref;
+}
+
+/**
+ * e_weak_ref_free:
+ * @weak_ref: a #GWeakRef
+ *
+ * Frees a #GWeakRef created by e_weak_ref_new().
+ *
+ * Since: 3.10
+ **/
+void
+e_weak_ref_free (GWeakRef *weak_ref)
+{
+	g_return_if_fail (weak_ref != NULL);
+
+	g_weak_ref_set (weak_ref, NULL);
+	g_slice_free (GWeakRef, weak_ref);
+}
+
 /* Helper for e_file_recursive_delete() */
 static void
 file_recursive_delete_thread (GSimpleAsyncResult *simple,

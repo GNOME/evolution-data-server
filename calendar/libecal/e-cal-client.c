@@ -217,13 +217,6 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
 }
 
 static void
-weak_ref_free (GWeakRef *weak_ref)
-{
-	g_weak_ref_set (weak_ref, NULL);
-	g_slice_free (GWeakRef, weak_ref);
-}
-
-static void
 free_zone_cb (gpointer zone)
 {
 	icaltimezone_free (zone, 1);
@@ -994,7 +987,6 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	EDBusCalendarFactory *factory_proxy;
 	GDBusConnection *connection;
 	GDBusProxy *proxy;
-	GWeakRef *weak_ref;
 	EClient *client;
 	ESource *source;
 	const gchar *uid;
@@ -1096,17 +1088,14 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	g_dbus_proxy_set_default_timeout (proxy, DBUS_PROXY_TIMEOUT_MS);
 
-	/* XXX Wishing for g_weak_ref_new() / g_weak_ref_free() here. */
-	weak_ref = g_slice_new0 (GWeakRef);
-	g_weak_ref_set (weak_ref, client);
-
 	priv->name_watcher_id = g_bus_watch_name_on_connection (
 		connection,
 		g_dbus_proxy_get_name (proxy),
 		G_BUS_NAME_WATCHER_FLAGS_NONE,
 		(GBusNameAppearedCallback) NULL,
 		(GBusNameVanishedCallback) cal_client_name_vanished_cb,
-		weak_ref, (GDestroyNotify) weak_ref_free);
+		e_weak_ref_new (client),
+		(GDestroyNotify) e_weak_ref_free);
 
 	handler_id = g_signal_connect_object (
 		proxy, "error",

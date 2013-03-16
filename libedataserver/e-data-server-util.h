@@ -77,6 +77,8 @@ void		e_util_free_nullable_object_slist
 						(GSList *objects);
 void		e_queue_transfer		(GQueue *src_queue,
 						 GQueue *dst_queue);
+GWeakRef *	e_weak_ref_new			(gpointer object);
+void		e_weak_ref_free			(GWeakRef *weak_ref);
 
 gboolean	e_file_recursive_delete_sync	(GFile *file,
 						 GCancellable *cancellable,

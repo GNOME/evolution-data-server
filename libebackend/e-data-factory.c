@@ -59,21 +59,6 @@ G_DEFINE_ABSTRACT_TYPE (
 	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER)
 
 static GWeakRef *
-data_factory_weak_ref_new (void)
-{
-	/* A GWeakRef allocated in zero-filled memory is sufficiently
-	 * initialized without calling g_weak_ref_init(weak_ref, NULL). */
-	return g_slice_new0 (GWeakRef);
-}
-
-static void
-data_factory_weak_ref_free (GWeakRef *weak_ref)
-{
-	g_weak_ref_clear (weak_ref);
-	g_slice_free (GWeakRef, weak_ref);
-}
-
-static GWeakRef *
 data_factory_backends_lookup (EDataFactory *data_factory,
                               const gchar *uid)
 {
@@ -84,7 +69,7 @@ data_factory_backends_lookup (EDataFactory *data_factory,
 	weak_ref = g_hash_table_lookup (backends, uid);
 
 	if (weak_ref == NULL) {
-		weak_ref = data_factory_weak_ref_new ();
+		weak_ref = e_weak_ref_new (NULL);
 		g_hash_table_insert (backends, g_strdup (uid), weak_ref);
 	}
 
@@ -207,7 +192,7 @@ e_data_factory_init (EDataFactory *data_factory)
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
-		(GDestroyNotify) data_factory_weak_ref_free);
+		(GDestroyNotify) e_weak_ref_free);
 
 	data_factory->priv->backend_factories = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
