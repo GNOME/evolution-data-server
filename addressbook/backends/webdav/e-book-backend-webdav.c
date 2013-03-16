@@ -1456,8 +1456,8 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	proxy_settings_changed (priv->proxy, priv);
 	webdav_debug_setup (priv->session);
 
-	e_book_backend_notify_online (backend, TRUE);
-	e_book_backend_notify_readonly (backend, FALSE);
+	e_backend_set_online (E_BACKEND (backend), TRUE);
+	e_book_backend_set_writable (backend, TRUE);
 
 	if (e_source_authentication_required (auth_extension))
 		e_backend_authenticate_sync (
@@ -1475,17 +1475,16 @@ static void
 e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
                                         GParamSpec *pspec)
 {
+	gboolean online;
+
 	/* set_mode is called before the backend is loaded */
 	if (!e_book_backend_is_opened (backend))
 		return;
 
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_book_backend_notify_readonly (backend, TRUE);
-		e_book_backend_notify_online (backend, FALSE);
-	} else {
-		e_book_backend_notify_readonly (backend, FALSE);
-		e_book_backend_notify_online (backend, TRUE);
-	}
+	/* XXX Could just use a property binding for this.
+	 *     EBackend:online --> EBookBackend:writable */
+	online = e_backend_get_online (E_BACKEND (backend));
+	e_book_backend_set_writable (backend, online);
 }
 
 static void
