@@ -5245,6 +5245,37 @@ e_cal_component_id_hash (const ECalComponentId *id)
 }
 
 /**
+ * e_cal_component_id_equal:
+ * @id1: the first #ECalComponentId
+ * @id2: the second #ECalComponentId
+ *
+ * Compares two #ECalComponentId structs for equality.
+ *
+ * Returns: %TRUE if @id1 and @id2 are equal
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_component_id_equal (const ECalComponentId *id1,
+                          const ECalComponentId *id2)
+{
+	gboolean uids_equal;
+	gboolean rids_equal;
+
+	if (id1 == id2)
+		return TRUE;
+
+	/* Safety check before we dereference. */
+	g_return_val_if_fail (id1 != NULL, FALSE);
+	g_return_val_if_fail (id2 != NULL, FALSE);
+
+	uids_equal = (g_strcmp0 (id1->uid, id2->uid) == 0);
+	rids_equal = (g_strcmp0 (id1->rid, id2->rid) == 0);
+
+	return uids_equal && rids_equal;
+}
+
+/**
  * e_cal_component_free_text_list:
  * @text_list: (element-type ECalComponentText): List of #ECalComponentText
  * structures.

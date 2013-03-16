@@ -233,6 +233,7 @@ ECalComponentId *e_cal_component_get_id (ECalComponent *comp);
 void e_cal_component_free_id (ECalComponentId *id);
 ECalComponentId *e_cal_component_id_copy (const ECalComponentId *id);
 guint e_cal_component_id_hash (const ECalComponentId *id);
+gboolean e_cal_component_id_equal (const ECalComponentId *id1, const ECalComponentId *id2);
 
 void e_cal_component_get_categories (ECalComponent *comp, const gchar **categories);
 void e_cal_component_set_categories (ECalComponent *comp, const gchar *categories);
