@@ -211,6 +211,9 @@ test_get_revision_view_async (ETestServerFixture *fixture,
 
 	e_cal_client_get_view (cal_client, "(contains? \"any\" \"event\")", NULL, async_get_view_ready, fixture->loop);
 	g_main_loop_run (fixture->loop);
+
+	/* Will unref the view */
+	g_object_set_data (G_OBJECT (cal_client), "cal-view", NULL);
 }
 
 static void
