@@ -356,7 +356,7 @@ migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
 	/* Detect error case */
 	if (db_error != DB_NOTFOUND) {
 		g_warning (G_STRLOC ": dbc->c_get failed with %s", db_strerror (db_error));
-		e_util_free_object_slist (contacts);
+		g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 		db_error_to_gerror (db_error, error);
 		return FALSE;
 	}
@@ -372,11 +372,11 @@ migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
 			g_warning ("Failed to add contacts to sqlite db: unknown error");
 		}
 
-		e_util_free_object_slist (contacts);
+		g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 		return FALSE;
 	}
 
-	e_util_free_object_slist (contacts);
+	g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 
 	if (!e_book_backend_sqlitedb_set_is_populated (sqlitedb, sqlite_folder_id, TRUE, error)) {
 		if (error && *error) {

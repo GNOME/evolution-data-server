@@ -770,7 +770,7 @@ do_create (EBookBackendFile *bf,
 		if (contacts)
 			*contacts = NULL;
 
-		e_util_free_object_slist (slist);
+		g_slist_free_full (slist, (GDestroyNotify) g_object_unref);
 	}
 
 	return (status != STATUS_ERROR);
@@ -872,12 +872,12 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		*ids = removed_ids;
 	} else {
 		*ids = NULL;
-		e_util_free_string_slist (removed_ids);
+		g_slist_free_full (removed_ids, (GDestroyNotify) g_free);
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
-	e_util_free_object_slist (removed_contacts);
+	g_slist_free_full (removed_contacts, (GDestroyNotify) g_object_unref);
 }
 
 static void
@@ -1002,10 +1002,12 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		*contacts = g_slist_reverse (modified_contacts);
 	} else {
 		*contacts = NULL;
-		e_util_free_object_slist (modified_contacts);
+		g_slist_free_full (
+			modified_contacts,
+			(GDestroyNotify) g_object_unref);
 	}
 
-	e_util_free_string_slist (ids);
+	g_slist_free_full (ids, (GDestroyNotify) g_free);
 	g_slist_free_full (old_contacts, g_object_unref);
 }
 
@@ -1355,8 +1357,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	}
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
-	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
-	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), FALSE);
+	e_backend_set_online (E_BACKEND (backend), TRUE);
+	e_book_backend_set_writable (E_BOOK_BACKEND (backend), TRUE);
 }
 
 static gboolean
@@ -1400,14 +1402,6 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 }
 
 static void
-e_book_backend_file_notify_online_cb (EBookBackend *backend,
-                                      GParamSpec *pspec)
-{
-	if (e_book_backend_is_opened (backend))
-		e_book_backend_notify_online (backend, TRUE);
-}
-
-static void
 e_book_backend_file_sync (EBookBackend *backend)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
@@ -1431,8 +1425,8 @@ view_notify_update (EBookBackendFile *backend,
 	sexp = e_data_book_view_get_sexp (view);
 	query = e_book_backend_sexp_text (sexp);
 
-	if (e_book_backend_sqlitedb_is_summary_query (query) &&
-	    e_book_backend_sqlitedb_is_summary_fields (fields)) {
+	if (e_book_backend_sqlitedb_check_summary_query (backend->priv->sqlitedb, query, NULL) &&
+	    e_book_backend_sqlitedb_check_summary_fields (backend->priv->sqlitedb, fields)) {
 
 		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
 		gchar       *vcard;
@@ -1722,9 +1716,5 @@ e_book_backend_file_init (EBookBackendFile *backend)
 	backend->priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
 
 	g_rw_lock_init (&(backend->priv->lock));
-
-	g_signal_connect (
-		backend, "notify::online",
-		G_CALLBACK (e_book_backend_file_notify_online_cb), NULL);
 }
 
