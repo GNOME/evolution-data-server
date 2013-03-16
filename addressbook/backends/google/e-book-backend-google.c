@@ -1915,8 +1915,7 @@ e_book_backend_google_open (EBookBackend *backend,
 
 	/* Set up ready to be interacted with */
 	is_online = e_backend_get_online (E_BACKEND (backend));
-	e_book_backend_notify_online (backend, is_online);
-	e_book_backend_notify_readonly (backend, TRUE);
+	e_book_backend_set_writable (backend, FALSE);
 
 	if (is_online) {
 		if (request_authorization (backend, cancellable, &error)) {
@@ -1928,7 +1927,7 @@ e_book_backend_google_open (EBookBackend *backend,
 
 	if (!is_online || backend_is_authorized (backend)) {
 		if (is_online) {
-			e_book_backend_notify_readonly (backend, FALSE);
+			e_book_backend_set_writable (backend, TRUE);
 			cache_refresh_if_needed (backend);
 		}
 	}
@@ -2131,19 +2130,18 @@ e_book_backend_google_notify_online_cb (EBookBackend *backend,
 	__debug__ (G_STRFUNC);
 
 	is_online = e_backend_get_online (E_BACKEND (backend));
-	e_book_backend_notify_online (backend, is_online);
 
 	if (is_online && e_book_backend_is_opened (backend)) {
 		request_authorization (backend, NULL, NULL);
 		if (backend_is_authorized (backend))
-			e_book_backend_notify_readonly (backend, FALSE);
+			e_book_backend_set_writable (backend, TRUE);
 	} else {
 		/* Going offline, so cancel all running operations */
 		google_cancel_all_operations (backend);
 
 		/* Mark the book as unwriteable if we're going offline, but don't do the inverse when we go online;
 		 * e_book_backend_google_authenticate_user() will mark us as writeable again once the user's authenticated again. */
-		e_book_backend_notify_readonly (backend, TRUE);
+		e_book_backend_set_writable (backend, FALSE);
 
 		/* We can free our service. */
 		if (priv->service)
