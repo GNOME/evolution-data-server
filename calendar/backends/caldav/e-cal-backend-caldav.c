@@ -95,9 +95,6 @@ struct _ECalBackendCalDAVPrivate {
 	SoupSession *session;
 	EProxy *proxy;
 
-	/* well, guess what */
-	gboolean read_only;
-
 	/* clandar uri */
 	gchar *uri;
 
@@ -562,7 +559,8 @@ status_code_to_result (SoupMessage *message,
 					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
 		if (priv) {
 			priv->opened = FALSE;
-			priv->read_only = TRUE;
+			e_cal_backend_set_writable (
+				E_CAL_BACKEND (cbdav), FALSE);
 		}
 		break;
 	case 404:
@@ -1175,7 +1173,9 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	g_object_unref (message);
 
 	if (calendar_access) {
-		cbdav->priv->read_only = !(put_allowed && delete_allowed);
+		e_cal_backend_set_writable (
+			E_CAL_BACKEND (cbdav),
+			put_allowed && delete_allowed);
 		return TRUE;
 	}
 
@@ -1457,9 +1457,8 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			cbdav->priv->opened = FALSE;
 			update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
-			cbdav->priv->read_only = TRUE;
-			e_cal_backend_notify_readonly (
-				E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
+			e_cal_backend_set_writable (
+				E_CAL_BACKEND (cbdav), FALSE);
 			break;
 		case 401:
 			caldav_authenticate (cbdav, TRUE, NULL, NULL);
@@ -1581,9 +1580,8 @@ caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			cbdav->priv->opened = FALSE;
 			update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
-			cbdav->priv->read_only = TRUE;
-			e_cal_backend_notify_readonly (
-				E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
+			e_cal_backend_set_writable (
+				E_CAL_BACKEND (cbdav), FALSE);
 			break;
 		case 401:
 			caldav_authenticate (cbdav, TRUE, NULL, NULL);
@@ -2470,7 +2468,6 @@ caldav_synch_slave_loop (gpointer data)
 		if (!cbdav->priv->opened) {
 			gboolean server_unreachable = FALSE;
 			GError *local_error = NULL;
-			gboolean online;
 
 			if (caldav_server_open_calendar (cbdav, &server_unreachable, NULL, &local_error)) {
 				cbdav->priv->opened = TRUE;
@@ -2481,7 +2478,8 @@ caldav_synch_slave_loop (gpointer data)
 				know_unreachable = FALSE;
 			} else if (local_error) {
 				cbdav->priv->opened = FALSE;
-				cbdav->priv->read_only = TRUE;
+				e_cal_backend_set_writable (
+					E_CAL_BACKEND (cbdav), FALSE);
 
 				if (!know_unreachable) {
 					gchar *msg;
@@ -2496,14 +2494,10 @@ caldav_synch_slave_loop (gpointer data)
 				g_clear_error (&local_error);
 			} else {
 				cbdav->priv->opened = FALSE;
-				cbdav->priv->read_only = TRUE;
+				e_cal_backend_set_writable (
+					E_CAL_BACKEND (cbdav), FALSE);
 				know_unreachable = TRUE;
 			}
-
-			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
-
-			online = e_backend_get_online (E_BACKEND (cbdav));
-			e_cal_backend_notify_online (E_CAL_BACKEND (cbdav), online);
 		}
 
 		if (cbdav->priv->opened) {
@@ -2844,7 +2838,7 @@ open_calendar (ECalBackendCalDAV *cbdav,
 		cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 	} else if (server_unreachable) {
 		cbdav->priv->opened = FALSE;
-		cbdav->priv->read_only = TRUE;
+		e_cal_backend_set_writable (E_CAL_BACKEND (cbdav), FALSE);
 		if (local_error) {
 			gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
@@ -2909,12 +2903,8 @@ caldav_do_open (ECalBackendSync *backend,
 			g_propagate_error (perror, local_error);
 
 	} else {
-		cbdav->priv->read_only = TRUE;
+		e_cal_backend_set_writable (E_CAL_BACKEND (cbdav), FALSE);
 	}
-
-	e_cal_backend_notify_readonly (
-		E_CAL_BACKEND (backend), cbdav->priv->read_only);
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
 	g_mutex_unlock (&cbdav->priv->busy_lock);
 }
@@ -5009,7 +4999,6 @@ caldav_notify_online_cb (ECalBackend *backend,
 	online = e_backend_get_online (E_BACKEND (backend));
 
 	if (!cbdav->priv->loaded) {
-		e_cal_backend_notify_online (backend, online);
 		/*g_mutex_unlock (&cbdav->priv->busy_lock);*/
 		return;
 	}
@@ -5022,8 +5011,6 @@ caldav_notify_online_cb (ECalBackend *backend,
 		soup_session_abort (cbdav->priv->session);
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
 	}
-
-	e_cal_backend_notify_online (backend, online);
 
 	/*g_mutex_unlock (&cbdav->priv->busy_lock);*/
 }
