@@ -24,30 +24,9 @@
 
 #include <libecal/libecal.h>
 
-typedef struct {
-        GSourceFunc  cb;
-        gpointer     user_data;
-	CalMode      mode;
-	ECal        *cal;
-} ECalTestClosure;
-
 void
 test_print (const gchar *format,
             ...);
-
-ECal *
-ecal_test_utils_cal_new_temp (gchar           **uri,
-			      ECalSourceType   type);
-
-void
-ecal_test_utils_cal_open (ECal     *cal,
-                          gboolean  only_if_exists);
-
-void
-ecal_test_utils_cal_async_open (ECal        *cal,
-                                gboolean     only_if_exists,
-                                GSourceFunc  callback,
-                                gpointer     user_data);
 
 gchar *
 ecal_test_utils_cal_get_alarm_email_address (ECal *cal);

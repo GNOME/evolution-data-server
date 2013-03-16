@@ -36,7 +36,6 @@ test_set_default_timezone (ETestServerFixture *fixture,
 	icaltimezone_set_component (zone, component);
 
 	/* set default; must be done before opening the calendar */
-	ecal_test_utils_cal_open (cal, FALSE);
 	ecal_test_utils_cal_add_timezone (cal, zone);
 	ecal_test_utils_cal_set_default_timezone (cal, zone);
 

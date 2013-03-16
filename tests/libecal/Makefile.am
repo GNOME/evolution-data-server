@@ -34,7 +34,6 @@ TEST_ECAL_LIBS = \
 
 # ordered by relative complexity
 TESTS = \
-	test-ecal-get-free-busy			\
 	test-ecal-get-timezone			\
 	test-ecal-add-timezone			\
 	test-ecal-set-default-timezone		\
@@ -54,17 +53,15 @@ TESTS = \
 	test-ecal-get-query			\
 	$(NULL)
 
+# test-ecal-get-free-busy:
+#   broken by design, the API needs to be fixed.
+BROKEN_TESTS = \
+	test-ecal-get-free-busy
+
 # The test program
 noinst_PROGRAMS = 		\
 	$(TESTS) 		\
-	test-ecal 		\
-	test-recur 		\
-	test-search		\
-	test-ecal-set-mode	\
-	test-ecal-stress-factory--serial	\
-	test-ecal-stress-factory--fifo		\
-	test-ecal-stress-factory--single-cal	\
-	test-ecal-stress-factory--open-async	\
+	$(BROKEN_TESTS)		\
 	$(NULL)
 
 
@@ -109,54 +106,5 @@ test_ecal_send_objects_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_send_objects_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_set_default_timezone_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_default_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-test_ecal_set_mode_LDADD=$(TEST_ECAL_LIBS)
-test_ecal_set_mode_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-test_ecal_stress_factory__fifo_LDADD=$(TEST_ECAL_LIBS)
-test_ecal_stress_factory__fifo_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-test_ecal_stress_factory__open_async_LDADD=$(TEST_ECAL_LIBS)
-test_ecal_stress_factory__open_async_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-test_ecal_stress_factory__serial_LDADD=$(TEST_ECAL_LIBS)
-test_ecal_stress_factory__serial_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-test_ecal_stress_factory__single_cal_LDADD=$(TEST_ECAL_LIBS)
-test_ecal_stress_factory__single_cal_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
-
-# monolithic tests
-test_ecal_SOURCES = test-ecal.c
-test_ecal_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
-test_ecal_INCLUDES =			\
-	$(INCLUDES)			\
-	-DG_LOG_DOMAIN=\"test-ecal\"
-test_ecal_LDADD =							\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(EVOLUTION_CALENDAR_LIBS)
-
-test_recur_SOURCES = test-recur.c
-test_recur_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
-test_recur_INCLUDES =			\
-	$(INCLUDES)			\
-	-DG_LOG_DOMAIN=\"test-ecal\"
-test_recur_LDADD =							\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(EVOLUTION_CALENDAR_LIBS)
-
-test_search_SOURCES = test-search.c
-test_search_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
-test_search_INCLUDES =			\
-	$(INCLUDES)			\
-	-DG_LOG_DOMAIN=\"test-ecal\"
-test_search_LDADD =							\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(EVOLUTION_CALENDAR_LIBS)
-
-EXTRA_DIST =			\
-	$(test_scripts)		\
-	testdata.ics
-
-test_scripts =			\
-	test-runner.sh		\
-	cleanup.sh
 
 -include $(top_srcdir)/git.mk

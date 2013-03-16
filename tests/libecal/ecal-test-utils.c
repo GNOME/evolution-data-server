@@ -25,6 +25,13 @@
 
 #include "ecal-test-utils.h"
 
+typedef struct {
+        GSourceFunc  cb;
+        gpointer     user_data;
+	CalMode      mode;
+	ECal        *cal;
+} ECalTestClosure;
+
 void
 test_print (const gchar *format,
             ...)
@@ -47,99 +54,6 @@ test_print (const gchar *format,
 		vprintf (format, args);
 		va_end (args);
 	}
-}
-
-ECal *
-ecal_test_utils_cal_new_temp (gchar **uri,
-                              ECalSourceType type)
-{
-	ECal *cal;
-	gchar *file_template;
-	gchar *uri_result;
-
-	file_template = g_build_filename (
-		g_get_tmp_dir (),
-		"ecal-test-XXXXXX/", NULL);
-	g_mkstemp (file_template);
-
-	uri_result = g_strconcat ("local:", file_template, NULL);
-	if (!uri_result) {
-		g_error ("failed to convert %s to a 'local:' URI", file_template);
-	}
-	g_free (file_template);
-
-	/* FIXME We don't build ECals from URIs anymore. */
-	/* cal = ecal_test_utils_cal_new_from_uri (uri_result, type); */
-	cal = NULL;
-
-	if (uri)
-		*uri = g_strdup (uri_result);
-
-	g_free (uri_result);
-
-	return cal;
-}
-
-void
-ecal_test_utils_cal_open (ECal *cal,
-                          gboolean only_if_exists)
-{
-	GError *error = NULL;
-
-	if (!e_cal_open (cal, only_if_exists, &error)) {
-		ESource *source;
-		const gchar *uid;
-
-		source = e_cal_get_source (cal);
-		uid = e_source_get_uid (source);
-
-		g_warning (
-			"failed to open calendar: `%s': %s",
-			uid, error->message);
-		exit (1);
-	}
-}
-
-static void
-open_ex_cb (ECal *cal,
-         const GError *error,
-         ECalTestClosure *closure)
-{
-	if (FALSE) {
-	} else if (error && error->code == E_CALENDAR_STATUS_BUSY) {
-		test_print ("calendar server is busy; waiting...");
-		return;
-	} else if (error) {
-		g_warning ("failed to asynchronously remove the calendar: "
-				"status %d (%s)", error->code, error->message);
-		exit (1);
-	}
-
-	closure->cal = cal;
-
-	test_print ("successfully asynchronously removed the temporary "
-			"calendar\n");
-	if (closure->cb)
-		(*closure->cb) (closure);
-
-	g_signal_handlers_disconnect_by_func (cal, open_ex_cb, closure);
-	g_free (closure);
-}
-
-void
-ecal_test_utils_cal_async_open (ECal *cal,
-                                gboolean only_if_exists,
-                                GSourceFunc callback,
-                                gpointer user_data)
-{
-	ECalTestClosure *closure;
-
-	closure = g_new0 (ECalTestClosure, 1);
-	closure->cb = callback;
-	closure->user_data = user_data;
-
-	g_signal_connect (G_OBJECT (cal), "cal_opened_ex", G_CALLBACK (open_ex_cb), closure);
-	e_cal_open_async (cal, only_if_exists);
 }
 
 gchar *
