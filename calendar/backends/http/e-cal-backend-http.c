@@ -876,7 +876,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	const gchar *cache_dir;
 	gboolean auth_required;
 	gboolean opened = TRUE;
-	gboolean online;
 	gchar *tmp;
 	GError *local_error = NULL;
 
@@ -928,12 +927,9 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		}
 	}
 
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
+	e_cal_backend_set_writable (E_CAL_BACKEND (backend), FALSE);
 
-	online = e_backend_get_online (E_BACKEND (backend));
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
-
-	if (online) {
+	if (e_backend_get_online (E_BACKEND (backend))) {
 		const gchar *uri;
 
 		uri = cal_backend_http_ensure_uri (cbhttp);
@@ -1005,9 +1001,6 @@ e_cal_backend_http_notify_online_cb (ECalBackend *backend,
 			g_object_ref (backend),
 			(GDestroyNotify) g_object_unref,
 			G_PRIORITY_DEFAULT, NULL);
-
-	if (loaded)
-		e_cal_backend_notify_online (backend, online);
 }
 
 /* Get_object_component handler for the http backend */
