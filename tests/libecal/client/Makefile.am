@@ -47,7 +47,7 @@ TESTS = 					\
 #   This should be fixed and the test put back into TESTS, see bug 693464:
 #      https://bugzilla.gnome.org/show_bug.cgi?id=693464
 #
-BROKEN_TEST =		\
+BROKEN_TESTS =		\
 	test-client-get-revision		\
 	test-client-get-free-busy
 
