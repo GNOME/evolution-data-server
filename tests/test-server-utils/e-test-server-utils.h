@@ -131,6 +131,8 @@ struct _ETestServerFixture {
 	ETestService     service;
 	gchar           *source_name;
 	guint            timeout_source_id;
+	guint            client_finalized : 1;
+	guint            registry_finalized : 1;
 };
 
 void e_test_server_utils_setup    (ETestServerFixture *fixture,
