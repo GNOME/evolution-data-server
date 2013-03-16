@@ -217,6 +217,13 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
 }
 
 static void
+weak_ref_free (GWeakRef *weak_ref)
+{
+	g_weak_ref_set (weak_ref, NULL);
+	g_slice_free (GWeakRef, weak_ref);
+}
+
+static void
 free_zone_cb (gpointer zone)
 {
 	icaltimezone_free (zone, 1);
@@ -672,27 +679,35 @@ cal_client_dbus_proxy_free_busy_data_cb (EDBusCalendar *dbus_proxy,
 static void
 cal_client_name_vanished_cb (GDBusConnection *connection,
                              const gchar *name,
-                             EClient *client)
+                             GWeakRef *client_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	EClient *client;
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client, client);
+	client = g_weak_ref_get (client_weak_ref);
 
-	main_context = e_client_ref_main_context (client);
+	if (client != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		cal_client_emit_backend_died_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client, client);
 
-	g_main_context_unref (main_context);
+		main_context = e_client_ref_main_context (client);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_emit_backend_died_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client);
+	}
 }
 
 static void
@@ -979,6 +994,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	EDBusCalendarFactory *factory_proxy;
 	GDBusConnection *connection;
 	GDBusProxy *proxy;
+	GWeakRef *weak_ref;
 	EClient *client;
 	ESource *source;
 	const gchar *uid;
@@ -1080,13 +1096,17 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	g_dbus_proxy_set_default_timeout (proxy, DBUS_PROXY_TIMEOUT_MS);
 
+	/* XXX Wishing for g_weak_ref_new() / g_weak_ref_free() here. */
+	weak_ref = g_slice_new0 (GWeakRef);
+	g_weak_ref_set (weak_ref, client);
+
 	priv->name_watcher_id = g_bus_watch_name_on_connection (
 		connection,
 		g_dbus_proxy_get_name (proxy),
 		G_BUS_NAME_WATCHER_FLAGS_NONE,
 		(GBusNameAppearedCallback) NULL,
 		(GBusNameVanishedCallback) cal_client_name_vanished_cb,
-		client, (GDestroyNotify) NULL);
+		weak_ref, (GDestroyNotify) weak_ref_free);
 
 	handler_id = g_signal_connect_object (
 		proxy, "error",
