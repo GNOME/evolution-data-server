@@ -1115,13 +1115,9 @@ e_cal_backend_contacts_send_objects (ECalBackendSync *backend,
 
 static void
 e_cal_backend_contacts_notify_online_cb (ECalBackend *backend,
-                                         gboolean is_online)
+                                         GParamSpec *pspec)
 {
-	gboolean online;
-
-	online = e_backend_get_online (E_BACKEND (backend));
-	e_cal_backend_notify_online (backend, online);
-	e_cal_backend_notify_readonly (backend, TRUE);
+	e_cal_backend_set_writable (backend, FALSE);
 }
 
 static void
@@ -1138,8 +1134,8 @@ e_cal_backend_contacts_open (ECalBackendSync *backend,
 		return;
 
 	priv->addressbook_loaded = TRUE;
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), TRUE);
+	e_cal_backend_set_writable (E_CAL_BACKEND (backend), FALSE);
+	e_backend_set_online (E_BACKEND (backend), TRUE);
 }
 
 /* Add_timezone handler for the file backend */
