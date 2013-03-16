@@ -483,7 +483,6 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 	const gchar *extension_name;
 	const gchar *cache_dir;
 	gchar *location;
-	gboolean online;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
@@ -500,10 +499,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 	priv->city = g_strdup (strrchr (location, '/') + 1);
 	g_free (location);
 
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
-
-	online = e_backend_get_online (E_BACKEND (backend));
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
+	e_cal_backend_set_writable (E_CAL_BACKEND (backend), FALSE);
 
 	if (!priv->store) {
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
@@ -744,12 +740,10 @@ e_cal_backend_weather_notify_online_cb (ECalBackend *backend,
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
 	gboolean loaded;
-	gboolean online;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	online = e_backend_get_online (E_BACKEND (backend));
 	loaded = e_cal_backend_is_opened (backend);
 
 	if (loaded && priv->reload_timeout_id) {
@@ -757,10 +751,8 @@ e_cal_backend_weather_notify_online_cb (ECalBackend *backend,
 		priv->reload_timeout_id = 0;
 	}
 
-	if (loaded) {
-		e_cal_backend_notify_online (backend, online);
-		e_cal_backend_notify_readonly (backend, TRUE);
-	}
+	if (loaded)
+		e_cal_backend_set_writable (backend, FALSE);
 }
 
 /* Finalize handler for the weather backend */
