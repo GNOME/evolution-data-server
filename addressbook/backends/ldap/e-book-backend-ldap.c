@@ -5307,8 +5307,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 
 		/* Offline */
-		e_book_backend_notify_readonly (backend, TRUE);
-		e_book_backend_notify_online (backend, FALSE);
+		e_book_backend_set_writable (backend, FALSE);
 
 		if (!bl->priv->marked_for_offline)
 			error = EDB_ERROR (OFFLINE_UNAVAILABLE);
@@ -5317,8 +5316,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 		return;
 	}
 
-	e_book_backend_notify_readonly (backend, FALSE);
-	e_book_backend_notify_online (backend, TRUE);
+	e_book_backend_set_writable (backend, TRUE);
 
 	auth_required = e_source_authentication_required (auth_extension);
 
@@ -5408,15 +5406,13 @@ e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 		/* Go offline */
 
-		e_book_backend_notify_readonly (backend, TRUE);
-		e_book_backend_notify_online (backend, FALSE);
+		e_book_backend_set_writable (backend, FALSE);
 
 		bl->priv->connected = FALSE;
 	} else {
 		/* Go online */
 
-		e_book_backend_notify_readonly (backend, FALSE);
-		e_book_backend_notify_online (backend, TRUE);
+		e_book_backend_set_writable (backend, TRUE);
 
 		if (e_book_backend_is_opened (backend)) {
 			GError *error = NULL;
@@ -5686,8 +5682,8 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 exit:
 	switch (ldap_error) {
 		case LDAP_SUCCESS:
-			e_book_backend_notify_readonly (
-				E_BOOK_BACKEND (authenticator), FALSE);
+			e_book_backend_set_writable (
+				E_BOOK_BACKEND (authenticator), TRUE);
 
 			/* force a requery on the root dse since some ldap
 			 * servers are set up such that they don't report
