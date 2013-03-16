@@ -4,7 +4,6 @@
 #include <libecal/libecal.h>
 #include <libical/ical.h>
 
-#include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
 #define TZID_NEW "XYZ"

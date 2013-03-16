@@ -5,10 +5,48 @@
 #include <libical/ical.h>
 
 #include "e-test-server-utils.h"
-#include "client-test-utils.h" /* For print_icomp() */
 
 static ETestServerClosure cal_closure =
 	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
+
+static void
+print_ecomp (ECalComponent *ecalcomp)
+{
+	const gchar *uid = NULL;
+	ECalComponentText summary = { 0 };
+
+	g_return_if_fail (ecalcomp != NULL);
+
+	e_cal_component_get_uid (ecalcomp, &uid);
+	e_cal_component_get_summary (ecalcomp, &summary);
+
+	g_print ("   Component: %s\n", uid ? uid : "no-uid");
+	g_print ("   Summary: %s\n", summary.value ? summary.value : "NULL");
+	g_print ("\n");
+}
+
+static void
+print_icomp (icalcomponent *icalcomp)
+{
+	ECalComponent *ecomp;
+
+	g_return_if_fail (icalcomp != NULL);
+
+	ecomp = e_cal_component_new ();
+	icalcomp = icalcomponent_new_clone (icalcomp);
+
+	if (!e_cal_component_set_icalcomponent (ecomp, icalcomp)) {
+		icalcomponent_free (icalcomp);
+		g_object_unref (ecomp);
+		g_printerr ("%s: Failed to assing icalcomp to ECalComponent\n", G_STRFUNC);
+		g_print ("\n");
+		return;
+	}
+
+	print_ecomp (ecomp);
+
+	g_object_unref (ecomp);
+}
 
 static icalcomponent *
 create_object (void)
