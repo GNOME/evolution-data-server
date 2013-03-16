@@ -63,7 +63,6 @@ struct _ECalBackendFilePrivate {
 
 	/* Filename in the dir */
 	gchar *file_name;
-	gboolean read_only;
 	gboolean is_dirty;
 	guint dirty_idle_id;
 
@@ -155,13 +154,16 @@ save_file_when_idle (gpointer user_data)
 	gchar *tmp, *backup_uristr;
 	gchar *buf;
 	ECalBackendFile *cbfile = user_data;
+	gboolean writable;
 
 	priv = cbfile->priv;
 	g_assert (priv->path != NULL);
 	g_assert (priv->icalcomp != NULL);
 
+	writable = e_cal_backend_get_writable (E_CAL_BACKEND (cbfile));
+
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
-	if (!priv->is_dirty || priv->read_only) {
+	if (!priv->is_dirty || !writable) {
 		priv->dirty_idle_id = 0;
 		priv->is_dirty = FALSE;
 		g_rec_mutex_unlock (&priv->idle_save_rmutex);
@@ -1302,15 +1304,13 @@ static void
 source_changed_cb (ESource *source,
                    ECalBackend *backend)
 {
-	ECalBackendFile *cbfile;
 	ESourceLocal *extension;
 	const gchar *extension_name;
-	gboolean read_only;
+	gboolean backend_writable;
+	gboolean source_writable;
 
 	g_return_if_fail (source != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
 
 	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
 	extension = e_source_get_extension (source, extension_name);
@@ -1318,21 +1318,22 @@ source_changed_cb (ESource *source,
 	if (e_source_local_get_custom_file (extension) == NULL)
 		return;
 
-	read_only = !e_source_get_writable (source);
+	source_writable = e_source_get_writable (source);
+	backend_writable = e_cal_backend_get_writable (backend);
 
-	if (read_only != cbfile->priv->read_only) {
-		cbfile->priv->read_only = read_only;
+	if (source_writable != backend_writable) {
+		backend_writable = source_writable;
 		if (e_source_get_writable (source)) {
 			gchar *str_uri = get_uri_string (backend);
 
 			g_return_if_fail (str_uri != NULL);
 
-			cbfile->priv->read_only = g_access (str_uri, W_OK) != 0;
+			backend_writable = (g_access (str_uri, W_OK) != 0);
 
 			g_free (str_uri);
 		}
 
-		e_cal_backend_notify_readonly (backend, cbfile->priv->read_only);
+		e_cal_backend_set_writable (backend, backend_writable);
 	}
 }
 
@@ -1347,6 +1348,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
+	gboolean writable;
 	GError *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
@@ -1365,11 +1367,11 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 		goto done;
 	}
 
-	priv->read_only = FALSE;
+	writable = TRUE;
 	if (g_access (str_uri, R_OK) == 0) {
 		open_cal (cbfile, str_uri, &err);
 		if (g_access (str_uri, W_OK) != 0)
-			priv->read_only = TRUE;
+			writable = FALSE;
 	} else {
 		if (only_if_exists)
 			err = EDC_ERROR (NoSuchCal);
@@ -1378,7 +1380,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	}
 
 	if (!err) {
-		if (!priv->read_only) {
+		if (writable) {
 			ESource *source;
 
 			source = e_backend_get_source (E_BACKEND (backend));
@@ -1388,7 +1390,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 				G_CALLBACK (source_changed_cb), backend);
 
 			if (!e_source_get_writable (source))
-				priv->read_only = TRUE;
+				writable = FALSE;
 		}
 	}
 
@@ -1396,8 +1398,8 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 
   done:
 	g_rec_mutex_unlock (&priv->idle_save_rmutex);
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), priv->read_only);
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), TRUE);
+	e_cal_backend_set_writable (E_CAL_BACKEND (backend), writable);
+	e_backend_set_online (E_BACKEND (backend), TRUE);
 
 	if (err)
 		g_propagate_error (perror, g_error_copy (err));
@@ -3572,6 +3574,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 {
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
+	gboolean writable;
 	GError *err = NULL;
 
 	priv = cbfile->priv;
@@ -3583,27 +3586,29 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 		goto done;
 	}
 
+	writable = e_cal_backend_get_writable (E_CAL_BACKEND (cbfile));
+
 	if (g_access (str_uri, R_OK) == 0) {
 		reload_cal (cbfile, str_uri, &err);
 		if (g_access (str_uri, W_OK) != 0)
-			priv->read_only = TRUE;
+			writable = FALSE;
 	} else {
 		err = EDC_ERROR (NoSuchCal);
 	}
 
 	g_free (str_uri);
 
-	if (!err && !priv->read_only) {
+	if (!err && writable) {
 		ESource *source;
 
 		source = e_backend_get_source (E_BACKEND (cbfile));
 
 		if (!e_source_get_writable (source))
-			priv->read_only = TRUE;
+			writable = FALSE;
 	}
   done:
 	g_rec_mutex_unlock (&priv->idle_save_rmutex);
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (cbfile), cbfile->priv->read_only);
+	e_cal_backend_set_writable (E_CAL_BACKEND (cbfile), writable);
 
 	if (err)
 		g_propagate_error (perror, err);
