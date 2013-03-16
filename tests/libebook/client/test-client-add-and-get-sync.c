@@ -8,72 +8,54 @@
 
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
+#define N_CONTACTS 6
+
+static gint fetched_contacts = 0;
+static gint fetched_uids = 0;
+
 static void
-print_all_uids (EBookClient *book)
+count_all_uids (EBookClient *book)
 {
 	GError *error = NULL;
 	EBookQuery *query;
 	gchar *sexp;
-	gboolean result;
-	GSList *uids, *u;
+	GSList *uids;
 
 	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	result = e_book_client_get_contacts_uids_sync (book, sexp, &uids, NULL, &error);
+	if (!e_book_client_get_contacts_uids_sync (book, sexp, &uids, NULL, &error))
+		g_error ("Error getting contact uids: %s", error->message);
 
 	g_free (sexp);
 
-	if (!result) {
-		fprintf (stderr, "Error getting uid list: %s\n", error ? error->message : "Unknown error");
-		if (error)
-			g_error_free (error);
-		exit (1);
-	}
-
-	for (u = uids; u; u = u->next) {
-		const gchar *uid = u->data;
-
-		g_print ("   uid:'%s'\n", uid);
-	}
+	fetched_uids = g_slist_length (uids);
 
 	g_slist_foreach (uids, (GFunc) g_free, NULL);
 	g_slist_free (uids);
 }
 
 static void
-print_all_emails (EBookClient *book)
+count_all_contacts (EBookClient *book)
 {
 	GError *error = NULL;
 	EBookQuery *query;
 	gchar *sexp;
-	gboolean result;
-	GSList *cards, *c;
+	GSList *cards;
 
 	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	result = e_book_client_get_contacts_sync (book, sexp, &cards, NULL, &error);
+	if (!e_book_client_get_contacts_sync (book, sexp, &cards, NULL, &error))
+		g_error ("Error getting contacts: %s", error->message);
 
 	g_free (sexp);
 
-	if (!result) {
-		fprintf (stderr, "Error getting card list: %s\n", error ? error->message : "Unknown error");
-		if (error)
-			g_error_free (error);
-		exit (1);
-	}
+	fetched_contacts = g_slist_length (cards);
 
-	for (c = cards; c; c = c->next) {
-		EContact *contact = E_CONTACT (c->data);
-
-		print_email (contact);
-
-		g_object_unref (contact);
-	}
-
+	g_slist_foreach (cards, (GFunc) g_object_unref, NULL);
 	g_slist_free (cards);
 }
 
@@ -96,11 +78,11 @@ test_client (ETestServerFixture *fixture,
 		g_error ("Failed to add contacts");
 	}
 
-	printf ("printing all contacts\n");
-	print_all_emails (book_client);
+	count_all_contacts (book_client);
+	count_all_uids (book_client);
 
-	printf ("printing all uids\n");
-	print_all_uids (book_client);
+	g_assert_cmpint (fetched_contacts, ==, N_CONTACTS);
+	g_assert_cmpint (fetched_uids, ==, N_CONTACTS);
 }
 
 gint
@@ -113,7 +95,7 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add (
-		"/EBookClient/BasicTest", ETestServerFixture, &book_closure,
+		"/EBookClient/AddAndGet/Sync", ETestServerFixture, &book_closure,
 		e_test_server_utils_setup, test_client, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();

@@ -53,7 +53,6 @@ contacts_ready_cb (GObject *source_object,
 
 	if (!e_book_client_get_contacts_uids_finish (E_BOOK_CLIENT (source_object), result, &contacts, &error)) {
 		g_error ("get contact finish: %s", error->message);
-		stop_main_loop (1);
 	} else {
 
 		g_assert_cmpint (g_slist_length (contacts), ==, 1);

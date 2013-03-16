@@ -28,23 +28,26 @@ libclient_test_utils_la_LIBADD = 				\
 TESTS =								\
 	test-client-refresh					\
 	test-client-add-contact					\
-	test-client-preserve-uid				\
 	test-client-get-contact					\
 	test-client-get-contact-uids				\
-	test-client-e164-param					\
-        test-client-custom-summary				\
-	test-client-get-revision				\
-	test-client-get-view					\
-	test-client-write-write					\
-	test-client-uid-only-view				\
-	test-client-revision-view				\
-	test-client-view-operations		 		\
-	test-client-suppress-notifications			\
 	test-client-modify-contact				\
 	test-client-remove-contact				\
 	test-client-remove-contact-by-uid			\
 	test-client-remove-contacts				\
+	test-client-add-and-get-sync				\
+	test-client-add-and-get-async				\
+	test-client-self					\
+	test-client-preserve-uid				\
 	test-client-photo-is-uri				\
+	test-client-e164-param					\
+        test-client-custom-summary				\
+	test-client-get-revision				\
+	test-client-write-write					\
+	test-client-get-view					\
+	test-client-uid-only-view				\
+	test-client-revision-view				\
+	test-client-view-operations		 		\
+	test-client-suppress-notifications			\
 	$(NULL)
 
 # The noinst tests are functional tests, not unit tests.
@@ -53,16 +56,6 @@ TESTS =								\
 # not been ported to use ETestServerFixture yet.
 noinst_PROGRAMS =						\
 	$(TESTS)						\
-	test-client-async					\
-	test-client-examine					\
-	test-client						\
-	test-client-nonexistent-id				\
-	test-client-search					\
-	test-client-self					\
-	test-client-stress-views				\
-	test-client-stress-factory--serial			\
-	test-client-stress-factory--fifo			\
-	test-client-stress-factory--single-book			\
 	$(NULL)
 
 TEST_CPPFLAGS =							\
@@ -77,16 +70,14 @@ TEST_LIBS =							\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(NULL)
 
-test_client_LDADD=$(TEST_LIBS)
-test_client_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_async_LDADD=$(TEST_LIBS)
-test_client_async_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_add_and_get_sync_LDADD=$(TEST_LIBS)
+test_client_add_and_get_sync_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_add_and_get_async_LDADD=$(TEST_LIBS)
+test_client_add_and_get_async_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_add_contact_LDADD=$(TEST_LIBS)
 test_client_add_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_preserve_uid_LDADD=$(TEST_LIBS)
 test_client_preserve_uid_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_examine_LDADD=$(TEST_LIBS)
-test_client_examine_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_contact_LDADD=$(TEST_LIBS)
 test_client_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_contact_uids_LDADD=$(TEST_LIBS)
@@ -121,19 +112,7 @@ test_client_photo_is_uri_LDADD=$(TEST_LIBS)
 test_client_photo_is_uri_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_write_write_LDADD=$(TEST_LIBS)
 test_client_write_write_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_stress_factory__fifo_LDADD=$(TEST_LIBS)
-test_client_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_stress_factory__serial_LDADD=$(TEST_LIBS)
-test_client_stress_factory__serial_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_stress_factory__single_book_LDADD=$(TEST_LIBS)
-test_client_stress_factory__single_book_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_nonexistent_id_LDADD=$(TEST_LIBS)
-test_client_nonexistent_id_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_search_LDADD=$(TEST_LIBS)
-test_client_search_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_self_LDADD=$(TEST_LIBS)
 test_client_self_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_stress_views_LDADD=$(TEST_LIBS)
-test_client_stress_views_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk

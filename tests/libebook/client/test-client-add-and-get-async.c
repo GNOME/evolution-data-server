@@ -8,13 +8,20 @@
 
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 
+#define N_CONTACTS 5
+
+static gint fetched_contacts = 0;
+static gint fetched_uids = 0;
+static gint added_contacts = 0;
+
+
 static void
-print_all_uids_cb (GObject *source_object,
+count_all_uids_cb (GObject *source_object,
                    GAsyncResult *result,
                    gpointer user_data)
 {
 	EBookClient *book_client;
-	GSList *uids = NULL, *u;
+	GSList *uids = NULL;
 	GError *error = NULL;
 	GMainLoop *loop = (GMainLoop *) user_data;
 
@@ -24,11 +31,7 @@ print_all_uids_cb (GObject *source_object,
 	if (!e_book_client_get_contacts_uids_finish (book_client, result, &uids, &error))
 		g_error ("get contacts uids finish: %s", error->message);
 
-	for (u = uids; u; u = u->next) {
-		const gchar *uid = u->data;
-
-		g_print ("   uid:'%s'\n", uid);
-	}
+	fetched_uids = g_slist_length (uids);
 
 	g_slist_foreach (uids, (GFunc) g_free, NULL);
 	g_slist_free (uids);
@@ -37,14 +40,14 @@ print_all_uids_cb (GObject *source_object,
 }
 
 static void
-print_all_emails_cb (GObject *source_object,
-                     GAsyncResult *result,
-                     gpointer user_data)
+count_all_contacts_cb (GObject *source_object,
+		       GAsyncResult *result,
+		       gpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
 	gchar *sexp;
-	GSList *contacts = NULL, *c;
+	GSList *contacts = NULL;
 	GError *error = NULL;
 	GMainLoop *loop = (GMainLoop *) user_data;
 
@@ -54,11 +57,7 @@ print_all_emails_cb (GObject *source_object,
 	if (!e_book_client_get_contacts_finish (book_client, result, &contacts, &error))
 		g_error ("get contacts finish: %s", error->message);
 
-	for (c = contacts; c; c = c->next) {
-		EContact *contact = E_CONTACT (c->data);
-
-		print_email (contact);
-	}
+	fetched_contacts = g_slist_length (contacts);
 
 	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
 	g_slist_free (contacts);
@@ -67,14 +66,14 @@ print_all_emails_cb (GObject *source_object,
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	e_book_client_get_contacts_uids (book_client, sexp, NULL, print_all_uids_cb, loop);
+	e_book_client_get_contacts_uids (book_client, sexp, NULL, count_all_uids_cb, loop);
 
 	g_free (sexp);
 }
 
 static void
-print_all_emails (EBookClient *book_client,
-                  GMainLoop *loop)
+count_all_contacts (EBookClient *book_client,
+		    GMainLoop *loop)
 {
 	EBookQuery *query;
 	gchar *sexp;
@@ -83,15 +82,15 @@ print_all_emails (EBookClient *book_client,
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	e_book_client_get_contacts (book_client, sexp, NULL, print_all_emails_cb, loop);
+	e_book_client_get_contacts (book_client, sexp, NULL, count_all_contacts_cb, loop);
 
 	g_free (sexp);
 }
 
 static void
-print_email_cb (GObject *source_object,
-                GAsyncResult *result,
-                gpointer user_data)
+get_contact_cb (GObject *source_object,
+		GAsyncResult *result,
+		gpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -104,24 +103,20 @@ print_email_cb (GObject *source_object,
 	if (!e_book_client_get_contact_finish (book_client, result, &contact, &error)) {
 		g_error ("get contact finish: %s", error->message);
 	} else {
-		print_email (contact);
 		g_object_unref (contact);
 	}
 
-	printf ("printing all contacts\n");
-	print_all_emails (book_client, loop);
+	count_all_contacts (book_client, loop);
 }
 
 static void
-print_one_email (EBookClient *book_client,
-                 GSList *uids,
-                 GMainLoop *loop)
+get_contact_async (EBookClient *book_client,
+		   GSList *uids,
+		   GMainLoop *loop)
 {
 	const gchar *uid = uids->data;
 
-	e_book_client_get_contact (book_client, uid, NULL, print_email_cb, loop);
-
-	e_util_free_string_slist (uids);
+	e_book_client_get_contact (book_client, uid, NULL, get_contact_cb, loop);
 }
 
 static void
@@ -131,7 +126,7 @@ contacts_added_cb (GObject *source_object,
 {
 	EBookClient *book_client;
 	GError *error = NULL;
-	GSList *uids = NULL, *l;
+	GSList *uids = NULL;
 	GMainLoop *loop = (GMainLoop *) user_data;
 
 	book_client = E_BOOK_CLIENT (source_object);
@@ -139,16 +134,10 @@ contacts_added_cb (GObject *source_object,
 	if (!e_book_client_add_contacts_finish (book_client, result, &uids, &error))
 		g_error ("client open finish: %s", error->message);
 
-	printf ("Added contacts uids are:\n");
-	for (l = uids; l; l = l->next) {
-		const gchar *uid = l->data;
+	added_contacts = g_slist_length (uids);
+	get_contact_async (book_client, uids, loop);
 
-		printf ("\t%s\n", uid);
-	}
-	printf ("\n");
-
-	printf ("printing one contact\n");
-	print_one_email (book_client, uids, loop);
+	e_util_free_string_slist (uids);
 }
 
 static void
@@ -197,9 +186,12 @@ test_async (ETestServerFixture *fixture,
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	printf ("Adding contacts\n");
 	add_contacts (book_client, fixture->loop);
 	g_main_loop_run (fixture->loop);
+
+	g_assert_cmpint (added_contacts, ==, N_CONTACTS);
+	g_assert_cmpint (fetched_contacts, ==, N_CONTACTS);
+	g_assert_cmpint (fetched_uids, ==, N_CONTACTS);
 }
 
 gint
@@ -212,7 +204,7 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 
 	g_test_add (
-		"/EBookClient/AsyncTest", ETestServerFixture, &book_closure,
+		"/EBookClient/AddAndGet/Async", ETestServerFixture, &book_closure,
 		e_test_server_utils_setup, test_async, e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();

@@ -3,50 +3,94 @@
 #include <stdlib.h>
 #include <libebook/libebook.h>
 
+#include "e-test-server-utils.h"
 #include "client-test-utils.h"
+
+static ETestServerClosure registry_closure = { E_TEST_SERVER_NONE, NULL, 0 };
+
+static void
+test_get_self (ETestServerFixture *fixture,
+	       gconstpointer user_data)
+{
+	EBookClient *client;
+	EContact    *contact;
+	GError      *error = NULL;
+
+	if (!e_book_client_get_self (fixture->registry, &contact, &client, &error))
+		g_error ("failed to get self contact: %s", error->message);
+
+	if (!client)
+		g_error ("e_book_client_get_self(): No client returned");
+
+	if (!contact)
+		g_error ("e_book_client_get_self(): No contact returned");
+
+	g_object_unref (contact);
+	g_object_unref (client);
+}
+
+static void
+test_set_self (ETestServerFixture *fixture,
+	       gconstpointer user_data)
+{
+	ESource     *source;
+	EBookClient *client;
+	EContact    *loaded_contact = NULL;
+	EContact    *self_contact = NULL;
+	GError      *error = NULL;
+	const gchar *added_uid, *self_uid;
+
+	/* Open the system addressbook */
+	source = e_source_registry_ref_builtin_address_book (fixture->registry);
+	client = (EBookClient *)e_book_client_connect_sync (source, NULL, &error);
+	g_object_unref (source);
+	if (!client)
+		g_error ("Error connecting to system addressbook: %s", error->message);
+
+	/* Add contact to addressbook */
+	g_assert (add_contact_from_test_case_verify (client, "simple-1", &loaded_contact));
+
+	/* Set contact as self */
+	if (!e_book_client_set_self (client, loaded_contact, &error))
+		g_error ("Error setting self: %s", error->message);
+
+	g_object_unref (client);
+	client = NULL;
+
+	if (!e_book_client_get_self (fixture->registry, &self_contact, &client, &error))
+		g_error ("failed to get self contact: %s", error->message);
+
+	if (!client)
+		g_error ("e_book_client_get_self(): No client returned");
+
+	if (!self_contact)
+		g_error ("e_book_client_get_self(): No contact returned");
+
+	/* Assert the fetched contact is the right one */
+	added_uid = e_contact_get_const (loaded_contact, E_CONTACT_UID);
+	self_uid = e_contact_get_const (self_contact, E_CONTACT_UID);
+	g_assert_cmpstr (added_uid, ==, self_uid);
+
+	g_object_unref (self_contact);
+	g_object_unref (loaded_contact);
+	g_object_unref (client);
+}
 
 gint
 main (gint argc,
       gchar **argv)
 {
-	EBookClient *book_client = NULL;
-	ESourceRegistry *registry;
-	EContact *contact = NULL;
-	GError *error = NULL;
-	gchar *vcard;
+#if !GLIB_CHECK_VERSION (2, 35, 1)
+	g_type_init ();
+#endif
+	g_test_init (&argc, &argv, NULL);
 
-	main_initialize ();
+	g_test_add (
+		"/EBookClient/Self/Get", ETestServerFixture, &registry_closure,
+		e_test_server_utils_setup, test_get_self, e_test_server_utils_teardown);
+	g_test_add (
+		"/EBookClient/Self/Set", ETestServerFixture, &registry_closure,
+		e_test_server_utils_setup, test_set_self, e_test_server_utils_teardown);
 
-	printf ("getting the self contact\n");
-
-	registry = e_source_registry_new_sync (NULL, &error);
-	if (error != NULL)
-		g_error ("%s", error->message);
-
-	if (!e_book_client_get_self (registry, &contact, &book_client, &error)) {
-		report_error ("get self", &error);
-		return 1;
-	}
-
-	if (!contact) {
-		fprintf (stderr, " * Self contact not set\n");
-		if (book_client)
-			g_object_unref (book_client);
-		return 0;
-	}
-
-	if (!book_client) {
-		fprintf (stderr, " * Book client for a self contact not returned\n");
-		g_object_unref (contact);
-		return 1;
-	}
-
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	printf ("self contact = \n%s\n", vcard);
-	g_free (vcard);
-
-	g_object_unref (contact);
-	g_object_unref (book_client);
-
-	return 0;
+	return e_test_server_utils_run ();
 }

@@ -23,7 +23,7 @@ add_contact (EBookClient *client)
 	e_contact_set (contact, E_CONTACT_FULL_NAME, "Micheal Jackson");
 
 	if (!add_contact_verify (client, contact))
-		stop_main_loop (1);
+		g_error ("Failed to add Micheal Jackson");
 
 	g_object_unref (contact);
 }
