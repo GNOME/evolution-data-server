@@ -1,3 +1,51 @@
+Evolution-Data-Server 3.7.92 2013-03-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 215428 - Show percentage progress when filtering messages
+	             (Milan Crha)
+	Bug 350323 - Filter by "Mailing list contains" requires "@" symbol
+	             (Milan Crha)
+	Bug 352266 - Can't filter on body of message if
+	             Content-Transfer-Encoding is base64 (Milan Crha)
+	Bug 690433 - Do not refresh folder on every message transfer
+	             (Milan Crha)
+	Bug 690552 - Property 'other-phone' overwrites first phone in home or
+	             work group (Milan Crha)
+	Bug 695308 - Migration of broken signature breaks whole migration
+	             (Milan Crha)
+	Bug 695539 - Birthdays don't show up in the calendar (Sebastian Keller)
+	Bug 695960 - Use a weak reference for GBusNameVanishedCallback
+	             (Matthew Barnes)
+
+Other Changes:
+	* Test suite improvements. (Tristan Van Berkom, Mathias Hasselmann)
+	* EBookBackendSqliteDB improvements. (Mathias Hasselmann)
+	* EBookClient introspection fixes. (Simon McVittie)
+	* Fix a memory leak around imapx_untagged_vanished() (Milan Crha)
+	* Correct names for im_jabber_work variables (Vadim Rutkovsky)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Mario Blättermann (de)
+	Bruce Cowan (en_GB)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Sweta Kothari (gu)
+	Changwoo Ryu (ko)
+	Rūdolfs Mazurs (lv)
+	Kjartan Maraas (nb)
+	Duarte Loreto (pt)
+	Enrico Nicoletto (pt_BR)
+	Marián Čavojský (sk)
+	Martin Srebotnjak (sl)
+	Matej Urbančič (sl)
+	Мирослав Николић (sr)
+	Gheyret Kenji (ug)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.7.91 2013-03-04
 ---------------------------------------
 
