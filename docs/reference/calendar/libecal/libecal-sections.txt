@@ -246,8 +246,8 @@ e_cal_component_new_from_string
 e_cal_component_new_from_icalcomponent
 e_cal_component_clone
 e_cal_component_set_new_vtype
-e_cal_component_set_icalcomponent
 e_cal_component_get_icalcomponent
+e_cal_component_set_icalcomponent
 e_cal_component_rescan
 e_cal_component_strip_errors
 e_cal_component_get_vtype
@@ -390,6 +390,7 @@ E_IS_CAL_COMPONENT
 E_TYPE_CAL_COMPONENT
 E_CAL_COMPONENT_CLASS
 E_IS_CAL_COMPONENT_CLASS
+E_CAL_COMPONENT_GET_CLASS
 ECalComponentClass
 e_cal_component_get_type
 <SUBSECTION Private>
