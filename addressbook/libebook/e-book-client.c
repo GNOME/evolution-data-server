@@ -348,36 +348,49 @@ book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 static void
 book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
                                  const gchar *error_message,
-                                 EClient *client)
+                                 GWeakRef *client_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	EClient *client;
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client, client);
-	signal_closure->error_message = g_strdup (error_message);
+	client = g_weak_ref_get (client_weak_ref);
 
-	main_context = e_client_ref_main_context (client);
+	if (client != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		book_client_emit_backend_error_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client, client);
+		signal_closure->error_message = g_strdup (error_message);
 
-	g_main_context_unref (main_context);
+		main_context = e_client_ref_main_context (client);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			book_client_emit_backend_error_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client);
+	}
 }
 
 static void
 book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
                                   GParamSpec *pspec,
-                                  EClient *client)
+                                  GWeakRef *client_weak_ref)
 {
+	EClient *client;
 	const gchar *backend_prop_name = NULL;
+
+	client = g_weak_ref_get (client_weak_ref);
+	if (client == NULL)
+		return;
 
 	if (g_str_equal (pspec->name, "cache-dir")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
@@ -450,6 +463,8 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 
 		g_main_context_unref (main_context);
 	}
+
+	g_object_unref (client);
 }
 
 static void
@@ -803,16 +818,20 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		e_weak_ref_new (client),
 		(GDestroyNotify) e_weak_ref_free);
 
-	handler_id = g_signal_connect_object (
+	handler_id = g_signal_connect_data (
 		proxy, "error",
 		G_CALLBACK (book_client_dbus_proxy_error_cb),
-		client, 0);
+		e_weak_ref_new (client),
+		(GClosureNotify) e_weak_ref_free,
+		0);
 	priv->dbus_proxy_error_handler_id = handler_id;
 
-	handler_id = g_signal_connect_object (
+	handler_id = g_signal_connect_data (
 		proxy, "notify",
 		G_CALLBACK (book_client_dbus_proxy_notify_cb),
-		client, 0);
+		e_weak_ref_new (client),
+		(GClosureNotify) e_weak_ref_free,
+		0);
 	priv->dbus_proxy_notify_handler_id = handler_id;
 
 	/* Initialize our public-facing GObject properties. */
