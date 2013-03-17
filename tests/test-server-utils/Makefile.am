@@ -56,3 +56,12 @@ test_fixture_LDADD    = $(common_libs) libetestserverutils.la
 test_fixture_SOURCES  = test-fixture.c
 
 -include $(top_srcdir)/git.mk
+
+######################################
+# The test directory needs to be     #
+# cleaned in order to pass distcheck #
+######################################
+clean-local: clean-local-check
+.PHONY: clean-local-check
+clean-local-check:
+	-rm -rf $(abs_top_builddir)/tests/test-server-utils/cache
