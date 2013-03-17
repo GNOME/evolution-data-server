@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-03-12 12:36+0000\n"
-"PO-Revision-Date: 2013-03-13 21:11+0900\n"
+"POT-Creation-Date: 2013-03-13 12:12+0000\n"
+"PO-Revision-Date: 2013-03-17 13:32+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: \n"
@@ -879,7 +879,7 @@ msgstr "Google Talk ئات تىزىمى"
 msgid "Twitter Name List"
 msgstr "Twitter ئات تىزىمى"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1683
+#: ../addressbook/libebook-contacts/e-contact.c:1624
 #: ../addressbook/libebook/e-destination.c:884
 msgid "Unnamed List"
 msgstr "نامسىز تىزىم"
@@ -935,7 +935,7 @@ msgstr "‹%s› غا باغلانغىلى بولمىدى "
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:752
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
-msgstr ""
+msgstr "نامەلۇم قىسقىچە مەزمۇن سۆز بۆلىكى ‹%s› نى ئۆزى تەكشۈرۈشتە خاتالىق كۆرۈلدى"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1241
 #: ../camel/camel-db.c:544
@@ -1123,7 +1123,7 @@ msgstr "ئارقا ئۇچى تېخى ئېچىلمىغان"
 #: ../addressbook/libedata-book/e-data-book.c:819
 #: ../libedataserver/e-client.c:176
 msgid "Object is out of sync"
-msgstr ""
+msgstr "نەڭ قەدەمداشلانمىغان"
 
 #: ../addressbook/libedata-book/e-data-book.c:827
 #: ../calendar/libedata-cal/e-data-cal.c:787 ../libedataserver/e-client.c:172
@@ -1895,69 +1895,69 @@ msgstr "‹%s› تارماق ئىجرا قۇرالمىدى: %s"
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s نىڭدىن ئىناۋەتسىز ئۇچۇر ئېقىمى تاپشۇرۇۋالدى: %s"
 
-#: ../camel/camel-filter-driver.c:1169 ../camel/camel-filter-driver.c:1178
+#: ../camel/camel-filter-driver.c:1170 ../camel/camel-filter-driver.c:1179
 msgid "Syncing folders"
 msgstr "قىسقۇچلارنى قەدەمداشلاۋاتىدۇ"
 
-#: ../camel/camel-filter-driver.c:1276
+#: ../camel/camel-filter-driver.c:1277
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "سۈزگۈچنى تەھلىل قىلىۋاتقاندا خاتالىق كۆرۈلدى: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1287
+#: ../camel/camel-filter-driver.c:1288
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "سۈزگۈچنى ئىجرا قىلىۋاتقاندا خاتالىق كۆرۈلدى: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1383
+#: ../camel/camel-filter-driver.c:1384
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "ئوراملىق قىسقۇچنى ئاچالمىدى"
 
-#: ../camel/camel-filter-driver.c:1395
+#: ../camel/camel-filter-driver.c:1396
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "ئوراملىق قىسقۇچنى بىر تەرەپ قىلالمىدى"
 
-#: ../camel/camel-filter-driver.c:1415
+#: ../camel/camel-filter-driver.c:1416
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "ئۇچۇر %d نى ئوقۇۋاتىدۇ (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1424 ../camel/camel-filter-driver.c:1446
+#: ../camel/camel-filter-driver.c:1425 ../camel/camel-filter-driver.c:1447
 #, c-format
 msgid "Failed on message %d"
 msgstr "ئۇچۇر %d دا مەغلۇپ بولدى"
 
-#: ../camel/camel-filter-driver.c:1463 ../camel/camel-filter-driver.c:1573
+#: ../camel/camel-filter-driver.c:1464 ../camel/camel-filter-driver.c:1574
 msgid "Syncing folder"
 msgstr "قىسقۇچنى قەدەمداشلاۋاتىدۇ"
 
-#: ../camel/camel-filter-driver.c:1468 ../camel/camel-filter-driver.c:1581
+#: ../camel/camel-filter-driver.c:1469 ../camel/camel-filter-driver.c:1582
 msgid "Complete"
 msgstr "تولۇق"
 
-#: ../camel/camel-filter-driver.c:1529
+#: ../camel/camel-filter-driver.c:1530
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "ئۇچۇر %d / %d ئوقۇۋاتىدۇ"
 
-#: ../camel/camel-filter-driver.c:1547
+#: ../camel/camel-filter-driver.c:1548
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "ئۇچۇر %d / %d دا مەغلۇپ بولدى"
 
-#: ../camel/camel-filter-driver.c:1741 ../camel/camel-filter-driver.c:1775
+#: ../camel/camel-filter-driver.c:1742 ../camel/camel-filter-driver.c:1776
 #, c-format
 msgid "Execution of filter '%s' failed: "
 msgstr "سۈزگۈچ ‹%s› ئىجرا قىلىش مەغلۇپ بولدى: "
 
-#: ../camel/camel-filter-driver.c:1765
+#: ../camel/camel-filter-driver.c:1766
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "سۈزگۈچ ‹%s› نى تەھلىل قىلىۋاتقاندا خاتالىق كۆرۈلدى: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1784
+#: ../camel/camel-filter-driver.c:1785
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
 msgstr "سۈزگۈچ ‹%s› نى ئىجرا قىلىۋاتقاندا خاتالىق كۆرۈلدى: %s: %s"
@@ -2221,17 +2221,17 @@ msgstr "ئەخلەت ئۇچۇرلارنى يۆتكىگىلى بولمىدى"
 msgid "Unable to move deleted messages"
 msgstr "ئۆچۈرۈلگەن ئۇچۇرلارنى يۆتكىگىلى بولمىدى"
 
-#: ../camel/camel-imapx-folder.c:1115
+#: ../camel/camel-imapx-folder.c:1119
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "ئۇچۇر سۈزگۈچلىرىنى مەزكۇر قىسقۇچقا قوللانسۇن(_F)"
 
-#: ../camel/camel-imapx-folder.c:1224
+#: ../camel/camel-imapx-folder.c:1228
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "قىسقۇچ %s ھەققىدە قىسقىچە مەزمۇن قۇرغىلى بولمىدى"
 
-#: ../camel/camel-imapx-folder.c:1232
+#: ../camel/camel-imapx-folder.c:1236
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s غەملىكىنى قۇرغىلى بولمىدى: "
@@ -2244,36 +2244,36 @@ msgstr "مۇلازىمېتىر ئۈزۈلدى"
 msgid "Error writing to cache stream"
 msgstr "غەملەك ئېقىمىغا يېزىۋاتقاندا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:2995
+#: ../camel/camel-imapx-server.c:2994
 #, c-format
 msgid "Not authenticated"
 msgstr "سالاھىيىتى دەلىللەنمىگەن"
 
-#: ../camel/camel-imapx-server.c:3073
+#: ../camel/camel-imapx-server.c:3072
 msgid "Error performing IDLE"
 msgstr "IDLE مەشغۇلاتىدا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4030
+#: ../camel/camel-imapx-server.c:4029
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "IMAP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: %s"
 
-#: ../camel/camel-imapx-server.c:4031
+#: ../camel/camel-imapx-server.c:4030
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "STARTTLS نى قوللىمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4070
+#: ../camel/camel-imapx-server.c:4069
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "IMAP مۇلازىمېتىرى %s غا بىخەتەر ھالەتتە باغلىنىش مەغلۇپ بولدى: "
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4149
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP مۇلازىمېتىرى %s كىملىك دەلىللەش %s نى قوللىمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4161 ../camel/camel-session.c:495
+#: ../camel/camel-imapx-server.c:4160 ../camel/camel-session.c:495
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2281,129 +2281,129 @@ msgstr "IMAP مۇلازىمېتىرى %s كىملىك دەلىللەش %s نى �
 msgid "No support for %s authentication"
 msgstr "%s نىڭ كىملىك دەلىللىشىنى قوللىمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4180
+#: ../camel/camel-imapx-server.c:4179
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "ئىشلەتكۈچى ئاتى بولمىسا كىملىك دەلىللىگىلى بولمايدۇ"
 
-#: ../camel/camel-imapx-server.c:4189
+#: ../camel/camel-imapx-server.c:4188
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "كىملىك دەلىللەش ئىمى يوق"
 
-#: ../camel/camel-imapx-server.c:4397
+#: ../camel/camel-imapx-server.c:4396
 msgid "Error fetching message"
 msgstr "ئۇچۇرلارنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4479
+#: ../camel/camel-imapx-server.c:4478
 msgid "Failed to copy the tmp file"
 msgstr "ھۆججەت tmp نى كۆچۈرۈش مەغلۇپ بولدى"
 
-#: ../camel/camel-imapx-server.c:4493
+#: ../camel/camel-imapx-server.c:4492
 msgid "Failed to close the tmp stream"
 msgstr "ئېقىم tmp نى يېپىش مەغلۇپ بولدى"
 
-#: ../camel/camel-imapx-server.c:4614
+#: ../camel/camel-imapx-server.c:4613
 msgid "Error copying messages"
 msgstr "ئۇچۇرلارنى كۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4780
+#: ../camel/camel-imapx-server.c:4779
 msgid "Error appending message"
 msgstr "ئۇچۇرلارنى قېتىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:4979
+#: ../camel/camel-imapx-server.c:4978
 msgid "Error fetching message headers"
 msgstr "ئۇچۇرنىڭ قاشلىرىنى(headers) كۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5130
+#: ../camel/camel-imapx-server.c:5129
 msgid "Error retrieving message"
 msgstr "ئۇچۇرنى چاقىرىشتا خاتالىق يۈز بەردى"
 
-#: ../camel/camel-imapx-server.c:5261 ../camel/camel-imapx-server.c:5489
+#: ../camel/camel-imapx-server.c:5260 ../camel/camel-imapx-server.c:5488
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "‹%s› نىڭ دىكى يېڭى ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
 
-#: ../camel/camel-imapx-server.c:5325
+#: ../camel/camel-imapx-server.c:5324
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "‹%s› نىڭدىكى ئۇچۇرلارنىڭ ئۆزگىرىشىنى تەكشۈرۈۋاتىدۇ"
 
-#: ../camel/camel-imapx-server.c:5378
+#: ../camel/camel-imapx-server.c:5377
 msgid "Error fetching new messages"
 msgstr "يېڭى ئۇچۇرلارنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5591
+#: ../camel/camel-imapx-server.c:5590
 msgid "Error while fetching messages"
 msgstr "يېڭى ئۇچۇرلارنى ئېلىۋاتقاندا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5599 ../camel/camel-imapx-server.c:5632
+#: ../camel/camel-imapx-server.c:5598 ../camel/camel-imapx-server.c:5631
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] ""
+msgstr[0] "‹%s› نىڭ دىكى %d ئۇچۇرنىڭ قىسقىچە مەزمۇنىنى ئېلىۋاتىدۇ"
 
-#: ../camel/camel-imapx-server.c:5768 ../camel/camel-imapx-server.c:5798
+#: ../camel/camel-imapx-server.c:5767 ../camel/camel-imapx-server.c:5797
 msgid "Error refreshing folder"
 msgstr "قىسقۇچنى يېڭىلاشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:5922
+#: ../camel/camel-imapx-server.c:5921
 msgid "Error expunging message"
 msgstr "ئۇچۇرلارنى ئۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6033
+#: ../camel/camel-imapx-server.c:6032
 msgid "Error fetching folders"
 msgstr "قىسقۇچلارنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6115
+#: ../camel/camel-imapx-server.c:6114
 msgid "Error subscribing to folder"
 msgstr "قىسقۇچقا مۇشتەرى بولۇشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6180
+#: ../camel/camel-imapx-server.c:6179
 msgid "Error creating folder"
 msgstr "قىسقۇچ قۇرۇشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6234
+#: ../camel/camel-imapx-server.c:6233
 msgid "Error deleting folder"
 msgstr "قىسقۇچ ئۆچۈرۈشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6308
+#: ../camel/camel-imapx-server.c:6307
 msgid "Error renaming folder"
 msgstr "قىسقۇچنىڭ ئاتىنى ئۆزگەرتىشتە خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6383
+#: ../camel/camel-imapx-server.c:6382
 msgid "Error retrieving quota information"
 msgstr "نورما ئۇچۇرىنى ئېلىشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6447
 msgid "Search failed"
 msgstr "ئىزدەش مەغلۇپ بولدى"
 
-#: ../camel/camel-imapx-server.c:6511
+#: ../camel/camel-imapx-server.c:6510
 msgid "Error performing NOOP"
 msgstr "NOOP مەشغۇلاتىدا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:6620
+#: ../camel/camel-imapx-server.c:6619
 msgid "Error syncing changes"
 msgstr "ئۆزگەرتىشلەرنى قەدەمداشلاشتا خاتالىق كۆرۈلدى"
 
-#: ../camel/camel-imapx-server.c:7432
+#: ../camel/camel-imapx-server.c:7431
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "كىملىكى %s بولغان ئۇچۇرغا ئېرىشەلمىدى: %s"
 
-#: ../camel/camel-imapx-server.c:7433
+#: ../camel/camel-imapx-server.c:7432
 msgid "No such message available."
 msgstr "بۇنداق ئۇچۇر يوق."
 
-#: ../camel/camel-imapx-server.c:7591 ../camel/camel-imapx-server.c:7606
+#: ../camel/camel-imapx-server.c:7590 ../camel/camel-imapx-server.c:7605
 msgid "Cannot create spool file: "
 msgstr "spool ھۆججىتى قۇرغىلى بولمىدى: "
 
-#: ../camel/camel-imapx-server.c:8348
+#: ../camel/camel-imapx-server.c:8347
 msgid "IMAP server does not support quotas"
 msgstr "IMAP مۇلازىمېتىرىدا نورمىلارنى ئىشلىتىشكە بولمايدۇ"
 
@@ -4383,7 +4383,7 @@ msgstr "SMTP مۇلازىمېتىرى %s كىملىك دەلىللەش %s نى �
 #: ../camel/providers/smtp/camel-smtp-transport.c:508
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr "SASL مېخانىزىمى كۆرسىتىلمىگەن"
+msgstr "SASL مېخانىزمى كۆرسىتىلمىگەن"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:538
 #: ../camel/providers/smtp/camel-smtp-transport.c:549
@@ -5549,7 +5549,7 @@ msgstr "گۇۋاھنامىنىڭ ۋاقتى ئوتكەن."
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
-msgstr ""
+msgstr "باغلىنىشنىڭ گۇۋاھنامە تىزىمىغا ئاساسەن مەزكۇر گۇۋاھنامە ئىناۋەتسىز قىلىنغان."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:211
 msgid "The certificate's algorithm is considered insecure."
