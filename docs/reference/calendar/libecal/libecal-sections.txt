@@ -258,6 +258,7 @@ e_cal_component_get_uid
 e_cal_component_set_uid
 e_cal_component_get_id
 e_cal_component_free_id
+e_cal_component_id_new
 e_cal_component_id_copy
 e_cal_component_id_hash
 e_cal_component_id_equal

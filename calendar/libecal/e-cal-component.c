@@ -5196,6 +5196,37 @@ e_cal_component_free_id (ECalComponentId *id)
 }
 
 /**
+ * e_cal_component_id_new:
+ * @uid: a unique ID string
+ * @rid: (allow-none): an optional recurrence ID string
+ *
+ * Creates a new #ECalComponentId from @uid and @rid, which should be
+ * freed with e_cal_component_free_id().
+ *
+ * Returns: an #ECalComponentId
+ *
+ * Since: 3.10
+ **/
+ECalComponentId *
+e_cal_component_id_new (const gchar *uid,
+                        const gchar *rid)
+{
+	ECalComponentId *id;
+
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	/* Normalize an empty recurrence ID to NULL. */
+	if (rid != NULL && *rid == '\0')
+		rid = NULL;
+
+	id = g_new0 (ECalComponentId, 1);
+	id->uid = g_strdup (uid);
+	id->rid = g_strdup (rid);
+
+	return id;
+}
+
+/**
  * e_cal_component_id_copy:
  * @id: an #ECalComponentId
  *
@@ -5209,15 +5240,9 @@ e_cal_component_free_id (ECalComponentId *id)
 ECalComponentId *
 e_cal_component_id_copy (const ECalComponentId *id)
 {
-	ECalComponentId *copy;
-
 	g_return_val_if_fail (id != NULL, NULL);
 
-	copy = g_new0 (ECalComponentId, 1);
-	copy->uid = g_strdup (id->uid);
-	copy->rid = g_strdup (id->rid);
-
-	return copy;
+	return e_cal_component_id_new (id->uid, id->rid);
 }
 
 /**
