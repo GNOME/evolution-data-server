@@ -476,32 +476,32 @@ cal_client_view_dispose_cb (GObject *source_object,
 }
 
 static void
-cal_client_view_set_client (ECalClientView *view,
+cal_client_view_set_client (ECalClientView *client_view,
                             ECalClient *client)
 {
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
-	g_weak_ref_set (&view->priv->client, client);
+	g_weak_ref_set (&client_view->priv->client, client);
 }
 
 static void
-cal_client_view_set_connection (ECalClientView *view,
+cal_client_view_set_connection (ECalClientView *client_view,
                                 GDBusConnection *connection)
 {
 	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
-	g_return_if_fail (view->priv->connection == NULL);
+	g_return_if_fail (client_view->priv->connection == NULL);
 
-	view->priv->connection = g_object_ref (connection);
+	client_view->priv->connection = g_object_ref (connection);
 }
 
 static void
-cal_client_view_set_object_path (ECalClientView *view,
+cal_client_view_set_object_path (ECalClientView *client_view,
                                  const gchar *object_path)
 {
 	g_return_if_fail (object_path != NULL);
-	g_return_if_fail (view->priv->object_path == NULL);
+	g_return_if_fail (client_view->priv->object_path == NULL);
 
-	view->priv->object_path = g_strdup (object_path);
+	client_view->priv->object_path = g_strdup (object_path);
 }
 
 static void
@@ -726,7 +726,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 
 	/**
 	 * ECalClientView::objects-added:
-	 * @view: the #ECalClientView which emitted the signal
+	 * @client_view: the #ECalClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type long):
 	 */
 	signals[OBJECTS_ADDED] = g_signal_new (
@@ -740,7 +740,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 
 	/**
 	 * ECalClientView::objects-modified:
-	 * @view: the #ECalClientView which emitted the signal
+	 * @client_view: the #ECalClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type long):
 	 */
 	signals[OBJECTS_MODIFIED] = g_signal_new (
@@ -754,7 +754,7 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 
 	/**
 	 * ECalClientView::objects-removed:
-	 * @view: the #ECalClientView which emitted the signal
+	 * @client_view: the #ECalClientView which emitted the signal
 	 * @objects: (type GSList) (transfer none) (element-type ECalComponentId):
 	 */
 	signals[OBJECTS_REMOVED] = g_signal_new (
@@ -793,16 +793,16 @@ e_cal_client_view_initable_init (GInitableIface *interface)
 }
 
 static void
-e_cal_client_view_init (ECalClientView *view)
+e_cal_client_view_init (ECalClientView *client_view)
 {
-	view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (view);
+	client_view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (client_view);
 }
 
 /**
  * e_cal_client_view_ref_client:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  *
- * Returns the #ECalClientView:client associated with @view.
+ * Returns the #ECalClientView:client associated with @client_view.
  *
  * The returned #ECalClient is referenced for thread-safety.  Unreference
  * the #ECalClient with g_object_unref() when finished with it.
@@ -812,18 +812,18 @@ e_cal_client_view_init (ECalClientView *view)
  * Since: 3.10
  **/
 ECalClient *
-e_cal_client_view_ref_client (ECalClientView *view)
+e_cal_client_view_ref_client (ECalClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), NULL);
 
-	return g_weak_ref_get (&view->priv->client);
+	return g_weak_ref_get (&client_view->priv->client);
 }
 
 /**
  * e_cal_client_view_get_client:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  *
- * Returns the #ECalClientView:client associated with @view.
+ * Returns the #ECalClientView:client associated with @client_view.
  *
  * Returns: (transfer none): an #ECalClient
  *
@@ -832,13 +832,13 @@ e_cal_client_view_ref_client (ECalClientView *view)
  * Since: 3.2
  **/
 ECalClient *
-e_cal_client_view_get_client (ECalClientView *view)
+e_cal_client_view_get_client (ECalClientView *client_view)
 {
 	ECalClient *client;
 
-	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), NULL);
 
-	client = e_cal_client_view_ref_client (view);
+	client = e_cal_client_view_ref_client (client_view);
 
 	/* XXX Drop the ECalClient reference for backward-compatibility.
 	 *     This is risky.  Without a reference, the ECalClient could
@@ -851,7 +851,7 @@ e_cal_client_view_get_client (ECalClientView *view)
 
 /**
  * e_cal_client_view_get_connection:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  *
  * Returns the #GDBusConnection used to create the D-Bus proxy.
  *
@@ -860,16 +860,16 @@ e_cal_client_view_get_client (ECalClientView *view)
  * Since: 3.8
  **/
 GDBusConnection *
-e_cal_client_view_get_connection (ECalClientView *view)
+e_cal_client_view_get_connection (ECalClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), NULL);
 
-	return view->priv->connection;
+	return client_view->priv->connection;
 }
 
 /**
  * e_cal_client_view_get_object_path:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  *
  * Returns the object path used to create the D-Bus proxy.
  *
@@ -878,16 +878,16 @@ e_cal_client_view_get_connection (ECalClientView *view)
  * Since: 3.8
  **/
 const gchar *
-e_cal_client_view_get_object_path (ECalClientView *view)
+e_cal_client_view_get_object_path (ECalClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), NULL);
 
-	return view->priv->object_path;
+	return client_view->priv->object_path;
 }
 
 /**
  * e_cal_client_view_is_running:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  *
  * Retunrs: Whether view is running. Not running views are ignoring
  * all events sent from the server.
@@ -895,41 +895,41 @@ e_cal_client_view_get_object_path (ECalClientView *view)
  * Since: 3.2
  **/
 gboolean
-e_cal_client_view_is_running (ECalClientView *view)
+e_cal_client_view_is_running (ECalClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (view), FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), FALSE);
 
-	return view->priv->running;
+	return client_view->priv->running;
 }
 
 /**
  * e_cal_client_view_start:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  * @error: return location for a #GError, or %NULL
  *
- * Tells @view to start processing events.
+ * Tells @client_view to start processing events.
  *
  * Since: 3.2
  **/
 void
-e_cal_client_view_start (ECalClientView *view,
+e_cal_client_view_start (ECalClientView *client_view,
                          GError **error)
 {
 	ECalClient *client;
 	gboolean success;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
-	client = e_cal_client_view_ref_client (view);
+	client = e_cal_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
-	view->priv->running = TRUE;
+	client_view->priv->running = TRUE;
 
 	success = e_gdbus_cal_view_call_start_sync (
-		view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, NULL, &local_error);
 	if (!success)
-		view->priv->running = FALSE;
+		client_view->priv->running = FALSE;
 
 	e_client_unwrap_dbus_error (
 		E_CLIENT (client), local_error, error);
@@ -939,29 +939,29 @@ e_cal_client_view_start (ECalClientView *view,
 
 /**
  * e_cal_client_view_stop:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  * @error: return location for a #GError, or %NULL
  *
- * Tells @view to stop processing events.
+ * Tells @client_view to stop processing events.
  *
  * Since: 3.2
  */
 void
-e_cal_client_view_stop (ECalClientView *view,
+e_cal_client_view_stop (ECalClientView *client_view,
                         GError **error)
 {
 	ECalClient *client;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
-	client = e_cal_client_view_ref_client (view);
+	client = e_cal_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
-	view->priv->running = FALSE;
+	client_view->priv->running = FALSE;
 
 	e_gdbus_cal_view_call_stop_sync (
-		view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
 		E_CLIENT (client), local_error, error);
@@ -971,7 +971,7 @@ e_cal_client_view_stop (ECalClientView *view,
 
 /**
  * e_cal_client_view_set_fields_of_interest:
- * @view: an #ECalClientView
+ * @client_view: an #ECalClientView
  * @fields_of_interest: (element-type utf8) (allow-none): List of field names
  *                      in which the client is interested, or %NULL to reset
  *                      the fields of interest
@@ -989,7 +989,7 @@ e_cal_client_view_stop (ECalClientView *view,
  * it will simply return object as is stored in the cache.
  **/
 void
-e_cal_client_view_set_fields_of_interest (ECalClientView *view,
+e_cal_client_view_set_fields_of_interest (ECalClientView *client_view,
                                           const GSList *fields_of_interest,
                                           GError **error)
 {
@@ -997,14 +997,14 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
 	gchar **strv;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
-	client = e_cal_client_view_ref_client (view);
+	client = e_cal_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
 	strv = e_client_util_slist_to_strv (fields_of_interest);
 	e_gdbus_cal_view_call_set_fields_of_interest_sync (
-		view->priv->dbus_proxy,
+		client_view->priv->dbus_proxy,
 		(const gchar * const *) strv,
 		NULL, &local_error);
 	g_strfreev (strv);
@@ -1017,28 +1017,28 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
 
 /**
  * e_cal_client_view_set_flags:
- * @view: an #ECalClientView
- * @flags: the #ECalClientViewFlags for @view
+ * @client_view: an #ECalClientView
+ * @flags: the #ECalClientViewFlags for @client_view
  * @error: return location for a #GError, or %NULL
  *
- * Sets the @flags which control the behaviour of @view.
+ * Sets the @flags which control the behaviour of @client_view.
  *
  * Since: 3.6
  */
 void
-e_cal_client_view_set_flags (ECalClientView *view,
+e_cal_client_view_set_flags (ECalClientView *client_view,
                              ECalClientViewFlags flags,
                              GError **error)
 {
 	ECalClient *client;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
 
-	client = e_cal_client_view_ref_client (view);
+	client = e_cal_client_view_ref_client (client_view);
 
 	e_gdbus_cal_view_call_set_flags_sync (
-		view->priv->dbus_proxy, flags, NULL, &local_error);
+		client_view->priv->dbus_proxy, flags, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
 		E_CLIENT (client), local_error, error);

@@ -89,43 +89,43 @@ struct _ECalClientViewClass {
 	GObjectClass parent_class;
 
 	/* Signals */
-	void		(*objects_added)	(ECalClientView *view,
+	void		(*objects_added)	(ECalClientView *client_view,
 						 const GSList *objects);
-	void		(*objects_modified)	(ECalClientView *view,
+	void		(*objects_modified)	(ECalClientView *client_view,
 						 const GSList *objects);
-	void		(*objects_removed)	(ECalClientView *view,
+	void		(*objects_removed)	(ECalClientView *client_view,
 						 const GSList *uids);
-	void		(*progress)		(ECalClientView *view,
+	void		(*progress)		(ECalClientView *client_view,
 						 guint percent,
 						 const gchar *message);
-	void		(*complete)		(ECalClientView *view,
+	void		(*complete)		(ECalClientView *client_view,
 						 const GError *error);
 };
 
 GType		e_cal_client_view_get_type	(void) G_GNUC_CONST;
 struct _ECalClient *
-		e_cal_client_view_ref_client	(ECalClientView *view);
+		e_cal_client_view_ref_client	(ECalClientView *client_view);
 GDBusConnection *
 		e_cal_client_view_get_connection
-						(ECalClientView *view);
+						(ECalClientView *client_view);
 const gchar *	e_cal_client_view_get_object_path
-						(ECalClientView *view);
-gboolean	e_cal_client_view_is_running	(ECalClientView *view);
+						(ECalClientView *client_view);
+gboolean	e_cal_client_view_is_running	(ECalClientView *client_view);
 void		e_cal_client_view_set_fields_of_interest
-						(ECalClientView *view,
+						(ECalClientView *client_view,
 						 const GSList *fields_of_interest,
 						 GError **error);
-void		e_cal_client_view_start		(ECalClientView *view,
+void		e_cal_client_view_start		(ECalClientView *client_view,
 						 GError **error);
-void		e_cal_client_view_stop		(ECalClientView *view,
+void		e_cal_client_view_stop		(ECalClientView *client_view,
 						 GError **error);
-void		e_cal_client_view_set_flags	(ECalClientView *view,
+void		e_cal_client_view_set_flags	(ECalClientView *client_view,
 						 ECalClientViewFlags flags,
 						 GError **error);
 
 #ifndef EDS_DISABLE_DEPRECATED
 struct _ECalClient *
-		e_cal_client_view_get_client	(ECalClientView *view);
+		e_cal_client_view_get_client	(ECalClientView *client_view);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
