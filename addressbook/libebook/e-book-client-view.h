@@ -72,43 +72,43 @@ struct _EBookClientViewClass {
 	GObjectClass parent_class;
 
 	/* Signals */
-	void		(*objects_added)	(EBookClientView *view,
+	void		(*objects_added)	(EBookClientView *client_view,
 						 const GSList *objects);
-	void		(*objects_modified)	(EBookClientView *view,
+	void		(*objects_modified)	(EBookClientView *client_view,
 						 const GSList *objects);
-	void		(*objects_removed)	(EBookClientView *view,
+	void		(*objects_removed)	(EBookClientView *client_view,
 						 const GSList *uids);
-	void		(*progress)		(EBookClientView *view,
+	void		(*progress)		(EBookClientView *client_view,
 						 guint percent,
 						 const gchar *message);
-	void		(*complete)		(EBookClientView *view,
+	void		(*complete)		(EBookClientView *client_view,
 						 const GError *error);
 };
 
 GType		e_book_client_view_get_type	(void) G_GNUC_CONST;
 struct _EBookClient *
-		e_book_client_view_ref_client	(EBookClientView *view);
+		e_book_client_view_ref_client	(EBookClientView *client_view);
 GDBusConnection *
 		e_book_client_view_get_connection
-						(EBookClientView *view);
+						(EBookClientView *client_view);
 const gchar *	e_book_client_view_get_object_path
-						(EBookClientView *view);
-gboolean	e_book_client_view_is_running	(EBookClientView *view);
+						(EBookClientView *client_view);
+gboolean	e_book_client_view_is_running	(EBookClientView *client_view);
 void		e_book_client_view_set_fields_of_interest
-						(EBookClientView *view,
+						(EBookClientView *client_view,
 						 const GSList *fields_of_interest,
 						 GError **error);
-void		e_book_client_view_start	(EBookClientView *view,
+void		e_book_client_view_start	(EBookClientView *client_view,
 						 GError **error);
-void		e_book_client_view_stop		(EBookClientView *view,
+void		e_book_client_view_stop		(EBookClientView *client_view,
 						 GError **error);
-void		e_book_client_view_set_flags	(EBookClientView *view,
+void		e_book_client_view_set_flags	(EBookClientView *client_view,
 						 EBookClientViewFlags flags,
 						 GError **error);
 
 #ifndef EDS_DISABLE_DEPRECATED
 struct _EBookClient *
-		e_book_client_view_get_client	(EBookClientView *view);
+		e_book_client_view_get_client	(EBookClientView *client_view);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

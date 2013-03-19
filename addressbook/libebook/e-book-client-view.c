@@ -97,7 +97,7 @@ G_DEFINE_TYPE_WITH_CODE (
 		e_book_client_view_initable_init))
 
 typedef struct {
-	EBookClientView *view;
+	EBookClientView *client_view;
 	guint signum;
 } NotificationData;
 
@@ -333,22 +333,24 @@ direct_contacts_ready (GObject *source_object,
 
 	} else if (data->signum == OBJECTS_ADDED) {
 		/* Takes ownership of the linked list. */
-		book_client_view_emit_objects_added (data->view, contacts);
+		book_client_view_emit_objects_added (
+			data->client_view, contacts);
 
 	} else if (data->signum == OBJECTS_MODIFIED) {
 		/* Takes ownership of the linked list. */
-		book_client_view_emit_objects_modified (data->view, contacts);
+		book_client_view_emit_objects_modified (
+			data->client_view, contacts);
 
 	} else {
 		g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 	}
 
-	g_object_unref (data->view);
+	g_object_unref (data->client_view);
 	g_slice_free (NotificationData, data);
 }
 
 static void
-direct_contacts_fetch (EBookClientView *view,
+direct_contacts_fetch (EBookClientView *client_view,
                        const gchar * const *uids,
                        guint signum)
 {
@@ -358,12 +360,12 @@ direct_contacts_fetch (EBookClientView *view,
 	/* Until the view has completely loaded, we need to make
 	 * sync calls to the backend
 	 */
-	if (!view->priv->complete) {
+	if (!client_view->priv->complete) {
 		GSList *contacts = NULL;
 		GError *error = NULL;
 
 		e_data_book_get_contacts_sync (
-			view->priv->direct_book,
+			client_view->priv->direct_book,
 			sexp, &contacts, NULL, &error);
 
 		if (error != NULL) {
@@ -375,11 +377,13 @@ direct_contacts_fetch (EBookClientView *view,
 
 		} else if (signum == OBJECTS_ADDED) {
 			/* Takes ownership of the linked list. */
-			book_client_view_emit_objects_added (view, contacts);
+			book_client_view_emit_objects_added (
+				client_view, contacts);
 
 		} else if (signum == OBJECTS_MODIFIED) {
 			/* Takes ownership of the linked list. */
-			book_client_view_emit_objects_modified (view, contacts);
+			book_client_view_emit_objects_modified (
+				client_view, contacts);
 
 		} else {
 			g_slist_free_full (
@@ -391,11 +395,11 @@ direct_contacts_fetch (EBookClientView *view,
 		 * as much as possible
 		 */
 		data = g_slice_new (NotificationData);
-		data->view = g_object_ref (view);
+		data->client_view = g_object_ref (client_view);
 		data->signum = signum;
 
 		e_data_book_get_contacts (
-			view->priv->direct_book,
+			client_view->priv->direct_book,
 			sexp, NULL, direct_contacts_ready, data);
 	}
 
@@ -614,43 +618,43 @@ book_client_view_dispose_cb (GObject *source_object,
 }
 
 static void
-book_client_view_set_client (EBookClientView *view,
+book_client_view_set_client (EBookClientView *client_view,
                              EBookClient *client)
 {
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 
-	g_weak_ref_set (&view->priv->client, client);
+	g_weak_ref_set (&client_view->priv->client, client);
 }
 
 static void
-book_client_view_set_connection (EBookClientView *view,
+book_client_view_set_connection (EBookClientView *client_view,
                                  GDBusConnection *connection)
 {
 	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
-	g_return_if_fail (view->priv->connection == NULL);
+	g_return_if_fail (client_view->priv->connection == NULL);
 
-	view->priv->connection = g_object_ref (connection);
+	client_view->priv->connection = g_object_ref (connection);
 }
 
 static void
-book_client_view_set_direct_book (EBookClientView *view,
+book_client_view_set_direct_book (EBookClientView *client_view,
                                   EDataBook *book)
 {
 	g_return_if_fail (book == NULL || E_IS_DATA_BOOK (book));
-	g_return_if_fail (view->priv->direct_book == NULL);
+	g_return_if_fail (client_view->priv->direct_book == NULL);
 
 	if (book != NULL)
-		view->priv->direct_book = g_object_ref (book);
+		client_view->priv->direct_book = g_object_ref (book);
 }
 
 static void
-book_client_view_set_object_path (EBookClientView *view,
+book_client_view_set_object_path (EBookClientView *client_view,
                                   const gchar *object_path)
 {
 	g_return_if_fail (object_path != NULL);
-	g_return_if_fail (view->priv->object_path == NULL);
+	g_return_if_fail (client_view->priv->object_path == NULL);
 
-	view->priv->object_path = g_strdup (object_path);
+	client_view->priv->object_path = g_strdup (object_path);
 }
 
 static void
@@ -959,16 +963,16 @@ e_book_client_view_initable_init (GInitableIface *interface)
 }
 
 static void
-e_book_client_view_init (EBookClientView *view)
+e_book_client_view_init (EBookClientView *client_view)
 {
-	view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (view);
+	client_view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (client_view);
 }
 
 /**
  * e_book_client_view_ref_client:
- * @view: an #EBookClientView
+ * @client_view: an #EBookClientView
  *
- * Returns the #EBookClientView:client associated with @view.
+ * Returns the #EBookClientView:client associated with @client_view.
  *
  * The returned #EBookClient is referenced for thread-safety.  Unreference
  * the #EBookClient with g_object_unref() when finished with it.
@@ -978,31 +982,31 @@ e_book_client_view_init (EBookClientView *view)
  * Since: 3.10
  **/
 EBookClient *
-e_book_client_view_ref_client (EBookClientView *view)
+e_book_client_view_ref_client (EBookClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view), NULL);
 
-	return g_weak_ref_get (&view->priv->client);
+	return g_weak_ref_get (&client_view->priv->client);
 }
 
 /**
  * e_book_client_view_get_client:
- * @view: an #EBookClientView
+ * @client_view: an #EBookClientView
  *
- * Returns the #EBookClientView:client associated with @view.
+ * Returns the #EBookClientView:client associated with @client_view.
  *
  * Returns: (transfer none): an #EBookClient
  *
  * Deprecated: 3.10: Use e_book_client_view_ref_client() instead.
  **/
 EBookClient *
-e_book_client_view_get_client (EBookClientView *view)
+e_book_client_view_get_client (EBookClientView *client_view)
 {
 	EBookClient *client;
 
-	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view), NULL);
 
-	client = e_book_client_view_ref_client (view);
+	client = e_book_client_view_ref_client (client_view);
 
 	/* XXX Drop the EBookClient reference for backward-compatibility.
 	 *     This is risky.  Without a reference, the EBookClient could
@@ -1015,7 +1019,7 @@ e_book_client_view_get_client (EBookClientView *view)
 
 /**
  * e_book_client_view_get_connection:
- * @view: an #EBookClientView
+ * @client_view: an #EBookClientView
  *
  * Returns the #GDBusConnection used to create the D-Bus proxy.
  *
@@ -1024,16 +1028,16 @@ e_book_client_view_get_client (EBookClientView *view)
  * Since: 3.8
  **/
 GDBusConnection *
-e_book_client_view_get_connection (EBookClientView *view)
+e_book_client_view_get_connection (EBookClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view), NULL);
 
-	return view->priv->connection;
+	return client_view->priv->connection;
 }
 
 /**
  * e_book_client_view_get_object_path:
- * @view: an #EBookClientView
+ * @client_view: an #EBookClientView
  *
  * Returns the object path used to create the D-Bus proxy.
  *
@@ -1042,39 +1046,39 @@ e_book_client_view_get_connection (EBookClientView *view)
  * Since: 3.8
  **/
 const gchar *
-e_book_client_view_get_object_path (EBookClientView *view)
+e_book_client_view_get_object_path (EBookClientView *client_view)
 {
-	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (view), NULL);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view), NULL);
 
-	return view->priv->object_path;
+	return client_view->priv->object_path;
 }
 
 /**
  * e_book_client_view_start:
- * @view: an #EBookClientView
+ * @client_view: an #EBookClientView
  * @error: return location for a #GError, or %NULL
  *
- * Tells @view to start processing events.
+ * Tells @client_view to start processing events.
  */
 void
-e_book_client_view_start (EBookClientView *view,
+e_book_client_view_start (EBookClientView *client_view,
                           GError **error)
 {
 	EBookClient *client;
 	gboolean success;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
 
-	client = e_book_client_view_ref_client (view);
+	client = e_book_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
-	view->priv->running = TRUE;
+	client_view->priv->running = TRUE;
 
 	success = e_gdbus_book_view_call_start_sync (
-		view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, NULL, &local_error);
 	if (!success)
-		view->priv->running = FALSE;
+		client_view->priv->running = FALSE;
 
 	e_client_unwrap_dbus_error (
 		E_CLIENT (client), local_error, error);
@@ -1084,27 +1088,27 @@ e_book_client_view_start (EBookClientView *view,
 
 /**
  * e_book_client_view_stop:
- * @view: an #EBookClientView
+ * @client_view: an #EBookClientView
  * @error: return location for a #GError, or %NULL
  *
- * Tells @view to stop processing events.
+ * Tells @client_view to stop processing events.
  **/
 void
-e_book_client_view_stop (EBookClientView *view,
+e_book_client_view_stop (EBookClientView *client_view,
                          GError **error)
 {
 	EBookClient *client;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
 
-	client = e_book_client_view_ref_client (view);
+	client = e_book_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
-	view->priv->running = FALSE;
+	client_view->priv->running = FALSE;
 
 	e_gdbus_book_view_call_stop_sync (
-		view->priv->dbus_proxy, NULL, &local_error);
+		client_view->priv->dbus_proxy, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
 		E_CLIENT (client), local_error, error);
@@ -1114,29 +1118,29 @@ e_book_client_view_stop (EBookClientView *view,
 
 /**
  * e_book_client_view_set_flags:
- * @view: an #EBookClientView
- * @flags: the #EBookClientViewFlags for @view
+ * @client_view: an #EBookClientView
+ * @flags: the #EBookClientViewFlags for @client_view
  * @error: return location for a #GError, or %NULL
  *
- * Sets the @flags which control the behaviour of @view.
+ * Sets the @flags which control the behaviour of @client_view.
  *
  * Since: 3.4
  */
 void
-e_book_client_view_set_flags (EBookClientView *view,
+e_book_client_view_set_flags (EBookClientView *client_view,
                               EBookClientViewFlags flags,
                               GError **error)
 {
 	EBookClient *client;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
 
-	client = e_book_client_view_ref_client (view);
+	client = e_book_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
 	e_gdbus_book_view_call_set_flags_sync (
-		view->priv->dbus_proxy, flags, NULL, &local_error);
+		client_view->priv->dbus_proxy, flags, NULL, &local_error);
 
 	e_client_unwrap_dbus_error (
 		E_CLIENT (client), local_error, error);
@@ -1146,7 +1150,7 @@ e_book_client_view_set_flags (EBookClientView *view,
 
 /**
  * e_book_client_view_set_fields_of_interest:
- * @view: An #EBookClientView object
+ * @client_view: an #EBookClientView
  * @fields_of_interest: (element-type utf8): List of field names in which
  *                      the client is interested
  * @error: return location for a #GError, or %NULL
@@ -1163,7 +1167,7 @@ e_book_client_view_set_flags (EBookClientView *view,
  * it will simply return object as is stored in the cache.
  **/
 void
-e_book_client_view_set_fields_of_interest (EBookClientView *view,
+e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
                                            const GSList *fields_of_interest,
                                            GError **error)
 {
@@ -1171,9 +1175,9 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 	gchar **strv;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
 
-	client = e_book_client_view_ref_client (view);
+	client = e_book_client_view_ref_client (client_view);
 	g_return_if_fail (client != NULL);
 
 	/* When in direct read access mode, ensure that the
@@ -1182,7 +1186,7 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 	 * Just ignore the fields_of_interest and use them locally
 	 * when filtering cards to be returned in direct reads.
 	 */
-	if (view->priv->direct_book) {
+	if (client_view->priv->direct_book) {
 		GSList uid_field = { 0, };
 
 		uid_field.data = (gpointer)"x-evolution-uids-only";
@@ -1191,7 +1195,7 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 		strv = e_client_util_slist_to_strv (fields_of_interest);
 
 	e_gdbus_book_view_call_set_fields_of_interest_sync (
-		view->priv->dbus_proxy,
+		client_view->priv->dbus_proxy,
 		(const gchar * const *) strv,
 		NULL, &local_error);
 	g_strfreev (strv);
