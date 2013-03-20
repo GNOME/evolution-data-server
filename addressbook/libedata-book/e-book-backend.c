@@ -22,9 +22,7 @@
 
 struct _EBookBackendPrivate {
 	ESourceRegistry *registry;
-
-	GMutex clients_mutex;
-	GList *clients;
+	EDataBook *data_book;
 
 	gboolean opened, removed;
 	gboolean writable;
@@ -218,10 +216,8 @@ book_backend_dispose (GObject *object)
 
 	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
 
-	if (priv->registry != NULL) {
-		g_object_unref (priv->registry);
-		priv->registry = NULL;
-	}
+	g_clear_object (&priv->registry);
+	g_clear_object (&priv->data_book);
 
 	if (priv->views != NULL) {
 		g_list_free (priv->views);
@@ -239,9 +235,6 @@ book_backend_finalize (GObject *object)
 
 	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
 
-	g_list_free (priv->clients);
-
-	g_mutex_clear (&priv->clients_mutex);
 	g_mutex_clear (&priv->views_mutex);
 
 	g_free (priv->cache_dir);
@@ -374,9 +367,6 @@ e_book_backend_init (EBookBackend *backend)
 {
 	backend->priv = E_BOOK_BACKEND_GET_PRIVATE (backend);
 
-	backend->priv->clients = NULL;
-	g_mutex_init (&backend->priv->clients_mutex);
-
 	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);
 }
@@ -426,6 +416,61 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
 	backend->priv->cache_dir = g_strdup (cache_dir);
 
 	g_object_notify (G_OBJECT (backend), "cache-dir");
+}
+
+/**
+ * e_book_backend_ref_data_book:
+ * @backend: an #EBookBackend
+ *
+ * Returns the #EDataBook for @backend.  The #EDataBook is essentially
+ * the glue between incoming D-Bus requests and @backend's native API.
+ *
+ * An #EDataBook should be set only once after @backend is first created.
+ * If an #EDataBook has not yet been set, the function returns %NULL.
+ *
+ * The returned #EDataBook is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: an #EDataBook, or %NULL
+ *
+ * Since: 3.10
+ **/
+EDataBook *
+e_book_backend_ref_data_book (EBookBackend *backend)
+{
+	EDataBook *data_book = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	if (backend->priv->data_book != NULL)
+		data_book = g_object_ref (backend->priv->data_book);
+
+	return data_book;
+}
+
+/**
+ * e_book_backend_set_data_book:
+ * @backend: an #EBookBackend
+ * @data_book: an #EDataBook
+ *
+ * Sets the #EDataBook for @backend.  The #EDataBook is essentially the
+ * glue between incoming D-Bus requests and @backend's native API.
+ *
+ * An #EDataBook should be set only once after @backend is first created.
+ *
+ * Since: 3.10
+ **/
+void
+e_book_backend_set_data_book (EBookBackend *backend,
+                              EDataBook *data_book)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (data_book));
+
+	/* This should be set only once.  Warn if not. */
+	g_warn_if_fail (backend->priv->data_book == NULL);
+
+	backend->priv->data_book = g_object_ref (data_book);
 }
 
 /**
@@ -552,15 +597,9 @@ e_book_backend_open (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	g_mutex_lock (&backend->priv->clients_mutex);
-
 	if (e_book_backend_is_opened (backend)) {
-		g_mutex_unlock (&backend->priv->clients_mutex);
-
 		e_data_book_respond_open (book, opid, NULL);
 	} else {
-		g_mutex_unlock (&backend->priv->clients_mutex);
-
 		g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->open != NULL);
 
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->open) (backend, book, opid, cancellable, only_if_exists);
@@ -881,18 +920,13 @@ e_book_backend_remove_view (EBookBackend *backend,
  * Adds a client to an addressbook backend.
  *
  * Returns: TRUE on success, FALSE on failure to add the client.
+ *
+ * Deprecated: 3.10: This function no longer does anything.
  */
 gboolean
 e_book_backend_add_client (EBookBackend *backend,
                            EDataBook *book)
 {
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-
-	g_mutex_lock (&backend->priv->clients_mutex);
-	backend->priv->clients = g_list_prepend (backend->priv->clients, book);
-	g_mutex_unlock (&backend->priv->clients_mutex);
-
 	return TRUE;
 }
 
@@ -902,24 +936,13 @@ e_book_backend_add_client (EBookBackend *backend,
  * @book: an #EDataBook to remove
  *
  * Removes @book from the list of @backend's clients.
+ *
+ * Deprecated: 3.10: This function no longer does anything.
  **/
 void
 e_book_backend_remove_client (EBookBackend *backend,
                               EDataBook *book)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	/* Make sure the backend stays alive while holding the mutex. */
-	g_object_ref (backend);
-
-	/* Disconnect */
-	g_mutex_lock (&backend->priv->clients_mutex);
-	backend->priv->clients = g_list_remove (backend->priv->clients, book);
-
-	g_mutex_unlock (&backend->priv->clients_mutex);
-
-	g_object_unref (backend);
 }
 
 /**
@@ -1322,17 +1345,17 @@ void
 e_book_backend_notify_error (EBookBackend *backend,
                              const gchar *message)
 {
-	EBookBackendPrivate *priv;
-	GList *clients;
+	EDataBook *data_book;
 
-	priv = backend->priv;
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (message != NULL);
 
-	g_mutex_lock (&priv->clients_mutex);
+	data_book = e_book_backend_ref_data_book (backend);
 
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_book_report_error (E_DATA_BOOK (clients->data), message);
-
-	g_mutex_unlock (&priv->clients_mutex);
+	if (data_book != NULL) {
+		e_data_book_report_error (data_book, message);
+		g_object_unref (data_book);
+	}
 }
 
 /**
@@ -1403,16 +1426,11 @@ void
 e_book_backend_notify_opened (EBookBackend *backend,
                               GError *error)
 {
-	EBookBackendPrivate *priv;
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	priv = backend->priv;
-	g_mutex_lock (&priv->clients_mutex);
+	backend->priv->opened = (error == NULL);
 
-	priv->opened = error == NULL;
-
-	g_mutex_unlock (&priv->clients_mutex);
-
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 }
 
@@ -1431,21 +1449,19 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
                                         const gchar *prop_name,
                                         const gchar *prop_value)
 {
-	EBookBackendPrivate *priv;
-	GList *clients;
+	EDataBook *data_book;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (*prop_name != '\0');
 	g_return_if_fail (prop_value != NULL);
 
-	priv = backend->priv;
-	g_mutex_lock (&priv->clients_mutex);
+	data_book = e_book_backend_ref_data_book (backend);
 
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_book_report_backend_property_changed (E_DATA_BOOK (clients->data), prop_name, prop_value);
-
-	g_mutex_unlock (&priv->clients_mutex);
+	if (data_book != NULL) {
+		e_data_book_report_backend_property_changed (
+			data_book, prop_name, prop_value);
+		g_object_unref (data_book);
+	}
 }
 
 /**

@@ -317,26 +317,37 @@ data_book_factory_open (EDataBookFactory *factory,
 	if (backend == NULL)
 		return NULL;
 
-	object_path = construct_book_factory_path ();
+	/* If the backend already has an EDataBook installed, return its
+	 * object path.  Otherwise we need to install a new EDataBook. */
 
-	data_book = e_data_book_new (
-		E_BOOK_BACKEND (backend),
-		connection, object_path, error);
+	data_book = e_book_backend_ref_data_book (E_BOOK_BACKEND (backend));
 
 	if (data_book != NULL) {
-		e_book_backend_add_client (E_BOOK_BACKEND (backend), data_book);
-
-		data_book_factory_watched_names_add (
-			factory, connection, sender);
-
-		g_signal_connect_object (
-			backend, "closed",
-			G_CALLBACK (data_book_factory_closed_cb),
-			factory, 0);
-
+		object_path = g_strdup (
+			e_data_book_get_object_path (data_book));
 	} else {
-		g_free (object_path);
-		object_path = NULL;
+		object_path = construct_book_factory_path ();
+
+		data_book = e_data_book_new (
+			E_BOOK_BACKEND (backend),
+			connection, object_path, error);
+
+		if (data_book != NULL) {
+			e_book_backend_set_data_book (
+				E_BOOK_BACKEND (backend), data_book);
+
+			data_book_factory_watched_names_add (
+				factory, connection, sender);
+
+			g_signal_connect_object (
+				backend, "closed",
+				G_CALLBACK (data_book_factory_closed_cb),
+				factory, 0);
+
+		} else {
+			g_free (object_path);
+			object_path = NULL;
+		}
 	}
 
 	if (data_book != NULL) {

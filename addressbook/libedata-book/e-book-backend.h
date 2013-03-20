@@ -213,16 +213,14 @@ GType		e_book_backend_get_type		(void) G_GNUC_CONST;
 const gchar *	e_book_backend_get_cache_dir	(EBookBackend *backend);
 void		e_book_backend_set_cache_dir	(EBookBackend *backend,
 						 const gchar *cache_dir);
+EDataBook *	e_book_backend_ref_data_book	(EBookBackend *backend);
+void		e_book_backend_set_data_book	(EBookBackend *backend,
+						 EDataBook *data_book);
 ESourceRegistry *
 		e_book_backend_get_registry	(EBookBackend *backend);
 gboolean	e_book_backend_get_writable	(EBookBackend *backend);
 void		e_book_backend_set_writable	(EBookBackend *backend,
 						 gboolean writable);
-
-gboolean	e_book_backend_add_client	(EBookBackend *backend,
-						 EDataBook *book);
-void		e_book_backend_remove_client	(EBookBackend *backend,
-						 EDataBook *book);
 
 gboolean	e_book_backend_is_opened	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
@@ -343,6 +341,10 @@ void		e_book_backend_set_is_removed	(EBookBackend *backend,
  **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
+gboolean	e_book_backend_add_client	(EBookBackend *backend,
+						 EDataBook *book);
+void		e_book_backend_remove_client	(EBookBackend *backend,
+						 EDataBook *book);
 gboolean	e_book_backend_is_opening	(EBookBackend *backend);
 void		e_book_backend_set_backend_property
 						(EBookBackend *backend,
