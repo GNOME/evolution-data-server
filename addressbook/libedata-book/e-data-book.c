@@ -1778,6 +1778,11 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 
 	dbus_interface = book->priv->dbus_interface;
 
+	/* XXX This will be NULL in direct access mode.  No way to
+	 *     report property changes, I guess.  Return silently. */
+	if (dbus_interface == NULL)
+		return;
+
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		strv = g_strsplit (prop_value, ",", -1);
 		e_dbus_address_book_set_capabilities (
