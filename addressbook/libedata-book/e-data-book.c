@@ -92,6 +92,7 @@ typedef struct {
 	EDataBook *book; /* book */
 	GCancellable *cancellable;
 	GDBusMethodInvocation *invocation;
+	const gchar *sender; /* owned by invocation */
 	guint watcher_id;
 
 	union {
@@ -308,15 +309,14 @@ op_new (OperationID op,
 	/* This is optional so we can fake client requests. */
 	if (invocation != NULL) {
 		GDBusConnection *connection;
-		const gchar *sender;
 
 		data->invocation = g_object_ref (invocation);
+		data->sender = g_dbus_method_invocation_get_sender (invocation);
 
 		connection = e_data_book_get_connection (book);
-		sender = g_dbus_method_invocation_get_sender (invocation);
 
 		data->watcher_id = g_bus_watch_name_on_connection (
-			connection, sender,
+			connection, data->sender,
 			G_BUS_NAME_WATCHER_FLAGS_NONE,
 			(GBusNameAppearedCallback) NULL,
 			(GBusNameVanishedCallback) op_sender_vanished_cb,
@@ -588,13 +588,33 @@ data_book_convert_to_client_error (GError *error)
 }
 
 static void
+cancel_operations_for_sender (EDataBook *book,
+                              const gchar *sender)
+{
+	GHashTableIter iter;
+	gpointer value;
+
+	g_return_if_fail (sender != NULL);
+
+	g_rec_mutex_lock (&book->priv->pending_ops_lock);
+
+	g_hash_table_iter_init (&iter, book->priv->pending_ops);
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		OperationData *op = value;
+
+		if (op->sender != NULL && g_str_equal (sender, op->sender))
+			g_cancellable_cancel (op->cancellable);
+	}
+
+	g_rec_mutex_unlock (&book->priv->pending_ops_lock);
+}
+
+static void
 operation_thread (gpointer data,
                   gpointer user_data)
 {
 	OperationData *op = data;
 	EBookBackend *backend;
-	GHashTableIter iter;
-	gpointer value;
 
 	backend = e_data_book_get_backend (op->book);
 
@@ -714,15 +734,8 @@ operation_thread (gpointer data,
 		/* close just cancels all pending ops and frees data book */
 		e_book_backend_remove_client (backend, op->book);
 
-		g_rec_mutex_lock (&op->book->priv->pending_ops_lock);
-
-		g_hash_table_iter_init (&iter, op->book->priv->pending_ops);
-		while (g_hash_table_iter_next (&iter, NULL, &value)) {
-			OperationData *cancel_op = value;
-			g_cancellable_cancel (cancel_op->cancellable);
-		}
-
-		g_rec_mutex_unlock (&op->book->priv->pending_ops_lock);
+		if (op->sender != NULL)
+			cancel_operations_for_sender (op->book, op->sender);
 
 		if (op->book->priv->dbus_interface)
 			e_dbus_address_book_complete_close (
@@ -1107,6 +1120,9 @@ data_book_handle_close_cb (EDBusAddressBook *interface,
 	EBookBackend *backend;
 	const gchar *sender;
 
+	backend = e_data_book_get_backend (book);
+	g_object_ref (backend);
+
 	op = op_new (OP_CLOSE, book, invocation);
 	/* unref here makes sure the book is freed in a separate thread */
 	g_object_unref (book);
@@ -1114,9 +1130,10 @@ data_book_handle_close_cb (EDBusAddressBook *interface,
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
-	backend = e_data_book_get_backend (book);
 	sender = g_dbus_method_invocation_get_sender (invocation);
 	g_signal_emit_by_name (backend, "closed", sender);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
