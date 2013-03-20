@@ -248,6 +248,9 @@ struct _ECalBackendClass {
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;
 icalcomponent_kind
 		e_cal_backend_get_kind		(ECalBackend *backend);
+EDataCal *	e_cal_backend_ref_data_cal	(ECalBackend *backend);
+void		e_cal_backend_set_data_cal	(ECalBackend *backend,
+						 EDataCal *data_cal);
 ESourceRegistry *
 		e_cal_backend_get_registry	(ECalBackend *backend);
 gboolean	e_cal_backend_get_writable	(ECalBackend *backend);
@@ -265,11 +268,6 @@ gchar *		e_cal_backend_create_cache_filename
 						 const gchar *uid,
 						 const gchar *filename,
 						 gint fileindex);
-
-void		e_cal_backend_add_client	(ECalBackend *backend,
-						 EDataCal *cal);
-void		e_cal_backend_remove_client	(ECalBackend *backend,
-						 EDataCal *cal);
 
 void		e_cal_backend_add_view		(ECalBackend *backend,
 						 EDataCalView *view);
@@ -423,6 +421,10 @@ void		e_cal_backend_set_is_removed	(ECalBackend *backend,
  **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
 
+void		e_cal_backend_add_client	(ECalBackend *backend,
+						 EDataCal *cal);
+void		e_cal_backend_remove_client	(ECalBackend *backend,
+						 EDataCal *cal);
 gboolean	e_cal_backend_is_opening	(ECalBackend *backend);
 void		e_cal_backend_set_backend_property
 						(ECalBackend *backend,

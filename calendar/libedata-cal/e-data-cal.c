@@ -687,9 +687,6 @@ operation_thread (gpointer data,
 		break;
 
 	case OP_CLOSE:
-		/* close just cancels all pending ops and frees data cal */
-		e_cal_backend_remove_client (backend, op->cal);
-
 		if (op->sender != NULL)
 			cancel_operations_for_sender (op->cal, op->sender);
 

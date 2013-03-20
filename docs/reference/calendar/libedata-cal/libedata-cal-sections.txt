@@ -11,6 +11,8 @@ CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS
 CAL_BACKEND_PROPERTY_DEFAULT_OBJECT
 CAL_BACKEND_PROPERTY_REVISION
 e_cal_backend_get_kind
+e_cal_backend_ref_data_cal
+e_cal_backend_set_data_cal
 e_cal_backend_get_registry
 e_cal_backend_get_writable
 e_cal_backend_set_writable
@@ -20,8 +22,6 @@ e_cal_backend_is_removed
 e_cal_backend_get_cache_dir
 e_cal_backend_set_cache_dir
 e_cal_backend_create_cache_filename
-e_cal_backend_add_client
-e_cal_backend_remove_client
 e_cal_backend_add_view
 e_cal_backend_remove_view
 e_cal_backend_list_views
@@ -53,6 +53,8 @@ e_cal_backend_set_is_removed
 <SUBSECTION Deprecated>
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
+e_cal_backend_add_client
+e_cal_backend_remove_client
 e_cal_backend_is_opening
 e_cal_backend_set_backend_property
 e_cal_backend_foreach_view

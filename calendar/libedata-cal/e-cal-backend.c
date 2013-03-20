@@ -41,6 +41,8 @@ typedef struct _SignalClosure SignalClosure;
 struct _ECalBackendPrivate {
 	ESourceRegistry *registry;
 
+	EDataCal *data_cal;
+
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
@@ -48,10 +50,6 @@ struct _ECalBackendPrivate {
 	gboolean writable;
 
 	gchar *cache_dir;
-
-	/* List of Cal objects */
-	GMutex clients_mutex;
-	GList *clients;
 
 	GMutex views_mutex;
 	GList *views;
@@ -85,10 +83,6 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
-static void	e_cal_backend_remove_client_private
-					(ECalBackend *backend,
-					 EDataCal *cal,
-					 gboolean weak_unref);
 static void	e_cal_backend_timezone_cache_init
 					(ETimezoneCacheInterface *interface);
 
@@ -339,10 +333,8 @@ cal_backend_dispose (GObject *object)
 
 	priv = E_CAL_BACKEND_GET_PRIVATE (object);
 
-	if (priv->registry != NULL) {
-		g_object_unref (priv->registry);
-		priv->registry = NULL;
-	}
+	g_clear_object (&priv->registry);
+	g_clear_object (&priv->data_cal);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->dispose (object);
@@ -354,12 +346,6 @@ cal_backend_finalize (GObject *object)
 	ECalBackendPrivate *priv;
 
 	priv = E_CAL_BACKEND_GET_PRIVATE (object);
-
-	g_assert (priv->clients == NULL);
-
-	/* should be NULL, anyway */
-	g_list_free (priv->clients);
-	g_mutex_clear (&priv->clients_mutex);
 
 	g_list_free (priv->views);
 	g_mutex_clear (&priv->views_mutex);
@@ -663,9 +649,6 @@ e_cal_backend_init (ECalBackend *backend)
 
 	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 
-	backend->priv->clients = NULL;
-	g_mutex_init (&backend->priv->clients_mutex);
-
 	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);
 
@@ -687,6 +670,61 @@ e_cal_backend_get_kind (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
 
 	return backend->priv->kind;
+}
+
+/**
+ * e_cal_backend_ref_data_cal:
+ * @backend: an #ECalBackend
+ *
+ * Returns the #EDataCal for @backend.  The #EDataCal is essentially
+ * the glue between incoming D-Bus requests and @backend's native API.
+ *
+ * An #EDataCal should be set only once after @backend is first created.
+ * If an #EDataCal has not yet been set, the function returns %NULL.
+ *
+ * The returned #EDataCal is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: an #EDataCal, or %NULL
+ *
+ * Since: 3.10
+ **/
+EDataCal *
+e_cal_backend_ref_data_cal (ECalBackend *backend)
+{
+	EDataCal *data_cal = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	if (backend->priv->data_cal != NULL)
+		data_cal = g_object_ref (backend->priv->data_cal);
+
+	return data_cal;
+}
+
+/**
+ * e_cal_backend_set_data_book:
+ * @backend: an #ECalBackend
+ * @data_cal: an #EDataCal
+ *
+ * Sets the #EDataCal for @backend.  The #EDataCal is essentially the
+ * glue between incoming D-Bus requests and @backend's native API.
+ *
+ * An #EDataCal should be set only once after @backend is first created.
+ *
+ * Since: 3.10
+ **/
+void
+e_cal_backend_set_data_cal (ECalBackend *backend,
+                            EDataCal *data_cal)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_CAL (data_cal));
+
+	/* This should be set only once.  Warn if not. */
+	g_warn_if_fail (backend->priv->data_cal == NULL);
+
+	backend->priv->data_cal = g_object_ref (data_cal);
 }
 
 /**
@@ -982,15 +1020,6 @@ e_cal_backend_set_backend_property (ECalBackend *backend,
 	/* Do nothing. */
 }
 
-static void
-cal_destroy_cb (gpointer data,
-                GObject *where_cal_was)
-{
-	e_cal_backend_remove_client_private (
-		E_CAL_BACKEND (data),
-		(EDataCal *) where_cal_was, FALSE);
-}
-
 /**
  * e_cal_backend_add_client:
  * @backend: an #ECalBackend
@@ -998,48 +1027,13 @@ cal_destroy_cb (gpointer data,
  *
  * Adds a new client to the given backend. For any event, the backend will
  * notify all clients added via this function.
+ *
+ * Deprecated: 3.10: This function no longer does anything.
  */
 void
 e_cal_backend_add_client (ECalBackend *backend,
                           EDataCal *cal)
 {
-	ECalBackendPrivate *priv;
-
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (cal != NULL);
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	priv = backend->priv;
-
-	g_object_weak_ref (G_OBJECT (cal), cal_destroy_cb, backend);
-
-	g_mutex_lock (&priv->clients_mutex);
-	priv->clients = g_list_append (priv->clients, cal);
-	g_mutex_unlock (&priv->clients_mutex);
-}
-
-static void
-e_cal_backend_remove_client_private (ECalBackend *backend,
-                                     EDataCal *cal,
-                                     gboolean weak_unref)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	if (weak_unref)
-		g_object_weak_unref (G_OBJECT (cal), cal_destroy_cb, backend);
-
-	/* Make sure the backend stays alive while holding the mutex. */
-	g_object_ref (backend);
-
-	/* Disconnect */
-	g_mutex_lock (&backend->priv->clients_mutex);
-	backend->priv->clients = g_list_remove (backend->priv->clients, cal);
-
-	g_mutex_unlock (&backend->priv->clients_mutex);
-
-	g_object_unref (backend);
 }
 
 /**
@@ -1048,12 +1042,13 @@ e_cal_backend_remove_client_private (ECalBackend *backend,
  * @cal: an #EDataCal
  *
  * Removes a client from the list of connected clients to the given backend.
+ *
+ * Deprecated: 3.10: This function no longer does anything.
  */
 void
 e_cal_backend_remove_client (ECalBackend *backend,
                              EDataCal *cal)
 {
-	e_cal_backend_remove_client_private (backend, cal, TRUE);
 }
 
 /**
@@ -1262,15 +1257,9 @@ e_cal_backend_open (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->open != NULL);
 
-	g_mutex_lock (&backend->priv->clients_mutex);
-
 	if (e_cal_backend_is_opened (backend)) {
-		g_mutex_unlock (&backend->priv->clients_mutex);
-
 		e_data_cal_respond_open (cal, opid, NULL);
 	} else {
-		g_mutex_unlock (&backend->priv->clients_mutex);
-
 		(* E_CAL_BACKEND_GET_CLASS (backend)->open) (backend, cal, opid, cancellable, only_if_exists);
 	}
 }
@@ -1915,20 +1904,17 @@ void
 e_cal_backend_notify_error (ECalBackend *backend,
                             const gchar *message)
 {
-	ECalBackendPrivate *priv = backend->priv;
-	GList *l;
+	EDataCal *data_cal;
 
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_error (priv->notification_proxy, message);
-		return;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (message != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+
+	if (data_cal != NULL) {
+		e_data_cal_report_error (data_cal, message);
+		g_object_unref (data_cal);
 	}
-
-	g_mutex_lock (&priv->clients_mutex);
-
-	for (l = priv->clients; l; l = l->next)
-		e_data_cal_report_error (l->data, message);
-
-	g_mutex_unlock (&priv->clients_mutex);
 }
 
 /**
@@ -1998,16 +1984,11 @@ void
 e_cal_backend_notify_opened (ECalBackend *backend,
                              GError *error)
 {
-	ECalBackendPrivate *priv;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	priv = backend->priv;
-	g_mutex_lock (&priv->clients_mutex);
+	backend->priv->opened = (error == NULL);
 
-	priv->opened = error == NULL;
-
-	g_mutex_unlock (&priv->clients_mutex);
-
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 }
 
@@ -2026,21 +2007,19 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
                                        const gchar *prop_name,
                                        const gchar *prop_value)
 {
-	ECalBackendPrivate *priv;
-	GList *clients;
+	EDataCal *data_cal;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (*prop_name != '\0');
 	g_return_if_fail (prop_value != NULL);
 
-	priv = backend->priv;
-	g_mutex_lock (&priv->clients_mutex);
+	data_cal = e_cal_backend_ref_data_cal (backend);
 
-	for (clients = priv->clients; clients != NULL; clients = g_list_next (clients))
-		e_data_cal_report_backend_property_changed (E_DATA_CAL (clients->data), prop_name, prop_value);
-
-	g_mutex_unlock (&priv->clients_mutex);
+	if (data_cal != NULL) {
+		e_data_cal_report_backend_property_changed (
+			data_cal, prop_name, prop_value);
+		g_object_unref (data_cal);
+	}
 }
 
 /**

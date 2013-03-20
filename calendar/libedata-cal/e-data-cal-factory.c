@@ -323,26 +323,37 @@ data_cal_factory_open (EDataCalFactory *factory,
 	if (backend == NULL)
 		return NULL;
 
-	object_path = construct_cal_factory_path ();
+	/* If the backend already has an EDataCal installed, return its
+	 * object path.  Otherwise we need to install a new EDataCal. */
 
-	data_cal = e_data_cal_new (
-		E_CAL_BACKEND (backend),
-		connection, object_path, error);
+	data_cal = e_cal_backend_ref_data_cal (E_CAL_BACKEND (backend));
 
 	if (data_cal != NULL) {
-		e_cal_backend_add_client (E_CAL_BACKEND (backend), data_cal);
-
-		data_cal_factory_watched_names_add (
-			factory, connection, sender);
-
-		g_signal_connect_object (
-			backend, "closed",
-			G_CALLBACK (data_cal_factory_closed_cb),
-			factory, 0);
-
+		object_path = g_strdup (
+			e_data_cal_get_object_path (data_cal));
 	} else {
-		g_free (object_path);
-		object_path = NULL;
+		object_path = construct_cal_factory_path ();
+
+		data_cal = e_data_cal_new (
+			E_CAL_BACKEND (backend),
+			connection, object_path, error);
+
+		if (data_cal != NULL) {
+			e_cal_backend_set_data_cal (
+				E_CAL_BACKEND (backend), data_cal);
+
+			data_cal_factory_watched_names_add (
+				factory, connection, sender);
+
+			g_signal_connect_object (
+				backend, "closed",
+				G_CALLBACK (data_cal_factory_closed_cb),
+				factory, 0);
+
+		} else {
+			g_free (object_path);
+			object_path = NULL;
+		}
 	}
 
 	if (data_cal != NULL) {
