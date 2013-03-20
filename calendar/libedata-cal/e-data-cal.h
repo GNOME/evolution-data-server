@@ -172,7 +172,7 @@ EDataCal *	e_data_cal_new			(struct _ECalBackend *backend,
 						 const gchar *object_path,
 						 GError **error);
 struct _ECalBackend *
-		e_data_cal_get_backend		(EDataCal *cal);
+		e_data_cal_ref_backend		(EDataCal *cal);
 GDBusConnection *
 		e_data_cal_get_connection	(EDataCal *cal);
 const gchar *	e_data_cal_get_object_path	(EDataCal *cal);
@@ -260,6 +260,8 @@ void		e_data_cal_report_backend_property_changed
 						 const gchar *prop_value);
 
 #ifndef EDS_DISABLE_DEPRECATED
+struct _ECalBackend *
+		e_data_cal_get_backend		(EDataCal *cal);
 void		e_data_cal_respond_set_backend_property
 						(EDataCal *cal,
 						 guint32 opid,
