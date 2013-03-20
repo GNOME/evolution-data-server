@@ -1200,6 +1200,8 @@ data_cal_handle_close_cb (EDBusCalendar *interface,
                           EDataCal *cal)
 {
 	OperationData *op;
+	ECalBackend *backend;
+	const gchar *sender;
 
 	op = op_new (OP_CLOSE, cal, invocation);
 	/* unref here makes sure the cal is freed in a separate thread */
@@ -1207,6 +1209,10 @@ data_cal_handle_close_cb (EDBusCalendar *interface,
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
+
+	backend = e_data_cal_get_backend (cal);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+	g_signal_emit_by_name (backend, "closed", sender);
 
 	return TRUE;
 }

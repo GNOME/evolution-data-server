@@ -77,6 +77,13 @@ enum {
 	PROP_WRITABLE
 };
 
+enum {
+	CLOSED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 /* Forward Declarations */
 static void	e_cal_backend_remove_client_private
 					(ECalBackend *backend,
@@ -615,6 +622,24 @@ e_cal_backend_class_init (ECalBackendClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * ECalBackend::closed:
+	 * @backend: the #ECalBackend which emitted the signal
+	 * @sender: the bus name that invoked the "close" method
+	 *
+	 * Emitted when a client destroys its #ECalClient for @backend
+	 *
+	 * Since: 3.10
+	 **/
+	signals[CLOSED] = g_signal_new (
+		"closed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ECalBackendClass, closed),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRING);
 }
 
 static void

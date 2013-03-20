@@ -239,6 +239,10 @@ struct _ECalBackendClass {
 						 EDataCalView *view);
 	void		(*stop_view)		(ECalBackend *backend,
 						 EDataCalView *view);
+
+	/* Signals */
+	void		(*closed)		(ECalBackend *backend,
+						 const gchar *sender);
 };
 
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;
