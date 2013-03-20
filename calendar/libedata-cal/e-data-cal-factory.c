@@ -50,10 +50,6 @@ struct _EDataCalFactoryPrivate {
 	ESourceRegistry *registry;
 	EDBusCalendarFactory *dbus_factory;
 
-	GMutex calendars_lock;
-	/* A hash of object paths for calendar URIs to EDataCals */
-	GHashTable *calendars;
-
 	GMutex connections_lock;
 	/* This is a hash of client addresses to GList* of EDataCals */
 	GHashTable *connections;
@@ -122,14 +118,6 @@ construct_cal_factory_path (void)
 		getpid (), counter);
 }
 
-static gboolean
-remove_dead_calendar_cb (gpointer path,
-                         gpointer calendar,
-                         gpointer dead_calendar)
-{
-	return calendar == dead_calendar;
-}
-
 static void
 calendar_freed_cb (EDataCalFactory *factory,
                    GObject *dead)
@@ -140,11 +128,7 @@ calendar_freed_cb (EDataCalFactory *factory,
 
 	d (g_debug ("in factory %p (%p) is dead", factory, dead));
 
-	g_mutex_lock (&priv->calendars_lock);
 	g_mutex_lock (&priv->connections_lock);
-
-	g_hash_table_foreach_remove (
-		priv->calendars, remove_dead_calendar_cb, dead);
 
 	g_hash_table_iter_init (&iter, priv->connections);
 	while (g_hash_table_iter_next (&iter, &hkey, &hvalue)) {
@@ -164,7 +148,6 @@ calendar_freed_cb (EDataCalFactory *factory,
 	}
 
 	g_mutex_unlock (&priv->connections_lock);
-	g_mutex_unlock (&priv->calendars_lock);
 
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
@@ -220,12 +203,6 @@ data_cal_factory_open (EDataCalFactory *factory,
 		connection, object_path, error);
 
 	if (calendar != NULL) {
-		g_mutex_lock (&factory->priv->calendars_lock);
-		g_hash_table_insert (
-			factory->priv->calendars,
-			g_strdup (object_path), calendar);
-		g_mutex_unlock (&factory->priv->calendars_lock);
-
 		e_cal_backend_add_client (E_CAL_BACKEND (backend), calendar);
 
 		g_object_weak_ref (
@@ -401,10 +378,8 @@ data_cal_factory_finalize (GObject *object)
 
 	priv = E_DATA_CAL_FACTORY_GET_PRIVATE (object);
 
-	g_hash_table_destroy (priv->calendars);
 	g_hash_table_destroy (priv->connections);
 
-	g_mutex_clear (&priv->calendars_lock);
 	g_mutex_clear (&priv->connections_lock);
 
 	/* Chain up to parent's finalize() method. */
@@ -573,12 +548,6 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 		factory->priv->dbus_factory, "handle-open-memo-list",
 		G_CALLBACK (data_cal_factory_handle_open_memo_list_cb),
 		factory);
-
-	g_mutex_init (&factory->priv->calendars_lock);
-	factory->priv->calendars = g_hash_table_new_full (
-		g_str_hash, g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) NULL);
 
 	g_mutex_init (&factory->priv->connections_lock);
 	factory->priv->connections = g_hash_table_new_full (
