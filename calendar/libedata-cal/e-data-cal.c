@@ -99,6 +99,7 @@ typedef struct {
 	EDataCal *cal; /* calendar */
 	GCancellable *cancellable;
 	GDBusMethodInvocation *invocation;
+	const gchar *sender; /* owned by invocation */
 	guint watcher_id;
 
 	union {
@@ -206,15 +207,14 @@ op_new (OperationID op,
 	/* This is optional so we can fake client requests. */
 	if (invocation != NULL) {
 		GDBusConnection *connection;
-		const gchar *sender;
 
 		data->invocation = g_object_ref (invocation);
+		data->sender = g_dbus_method_invocation_get_sender (invocation);
 
 		connection = e_data_cal_get_connection (cal);
-		sender = g_dbus_method_invocation_get_sender (invocation);
 
 		data->watcher_id = g_bus_watch_name_on_connection (
-			connection, sender,
+			connection, data->sender,
 			G_BUS_NAME_WATCHER_FLAGS_NONE,
 			(GBusNameAppearedCallback) NULL,
 			(GBusNameVanishedCallback) op_sender_vanished_cb,
@@ -489,13 +489,33 @@ data_cal_convert_to_client_error (GError *error)
 }
 
 static void
+cancel_operations_for_sender (EDataCal *cal,
+                              const gchar *sender)
+{
+	GHashTableIter iter;
+	gpointer value;
+
+	g_return_if_fail (sender != NULL);
+
+	g_rec_mutex_lock (&cal->priv->pending_ops_lock);
+
+	g_hash_table_iter_init (&iter, cal->priv->pending_ops);
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		OperationData *op = value;
+
+		if (op->sender != NULL && g_str_equal (sender, op->sender))
+			g_cancellable_cancel (op->cancellable);
+	}
+
+	g_rec_mutex_unlock (&cal->priv->pending_ops_lock);
+}
+
+static void
 operation_thread (gpointer data,
                   gpointer user_data)
 {
 	OperationData *op = data;
 	ECalBackend *backend;
-	GHashTableIter iter;
-	gpointer value;
 
 	backend = e_data_cal_get_backend (op->cal);
 
@@ -670,15 +690,8 @@ operation_thread (gpointer data,
 		/* close just cancels all pending ops and frees data cal */
 		e_cal_backend_remove_client (backend, op->cal);
 
-		g_rec_mutex_lock (&op->cal->priv->pending_ops_lock);
-
-		g_hash_table_iter_init (&iter, op->cal->priv->pending_ops);
-		while (g_hash_table_iter_next (&iter, NULL, &value)) {
-			OperationData *cancel_op = value;
-			g_cancellable_cancel (cancel_op->cancellable);
-		}
-
-		g_rec_mutex_unlock (&op->cal->priv->pending_ops_lock);
+		if (op->sender != NULL)
+			cancel_operations_for_sender (op->cal, op->sender);
 
 		e_dbus_calendar_complete_close (
 			op->cal->priv->dbus_interface,
@@ -1203,6 +1216,9 @@ data_cal_handle_close_cb (EDBusCalendar *interface,
 	ECalBackend *backend;
 	const gchar *sender;
 
+	backend = e_data_cal_get_backend (cal);
+	g_object_ref (backend);
+
 	op = op_new (OP_CLOSE, cal, invocation);
 	/* unref here makes sure the cal is freed in a separate thread */
 	g_object_unref (cal);
@@ -1210,9 +1226,10 @@ data_cal_handle_close_cb (EDBusCalendar *interface,
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
 
-	backend = e_data_cal_get_backend (cal);
 	sender = g_dbus_method_invocation_get_sender (invocation);
 	g_signal_emit_by_name (backend, "closed", sender);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
