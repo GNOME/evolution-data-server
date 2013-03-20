@@ -50,9 +50,15 @@ struct _EDataCalFactoryPrivate {
 	ESourceRegistry *registry;
 	EDBusCalendarFactory *dbus_factory;
 
-	GMutex connections_lock;
-	/* This is a hash of client addresses to GList* of EDataCals */
+	/* This is a hash table of client bus names to an array of
+	 * ECalBackend references; one for every connection opened. */
 	GHashTable *connections;
+	GMutex connections_lock;
+
+	/* This is a hash table of client bus names being watched.
+	 * The value is the watcher ID for g_bus_unwatch_name(). */
+	GHashTable *watched_names;
+	GMutex watched_names_lock;
 };
 
 enum {
@@ -71,6 +77,156 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_data_cal_factory_initable_init))
+
+static void
+watched_names_value_free (gpointer value)
+{
+	g_bus_unwatch_name (GPOINTER_TO_UINT (value));
+}
+
+static void
+data_cal_factory_connections_add (EDataCalFactory *factory,
+                                  const gchar *name,
+                                  ECalBackend *backend)
+{
+	GHashTable *connections;
+	GPtrArray *array;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (backend != NULL);
+
+	g_mutex_lock (&factory->priv->connections_lock);
+
+	connections = factory->priv->connections;
+
+	if (g_hash_table_size (connections) == 0)
+		e_dbus_server_hold (E_DBUS_SERVER (factory));
+
+	array = g_hash_table_lookup (connections, name);
+
+	if (array == NULL) {
+		array = g_ptr_array_new_with_free_func (
+			(GDestroyNotify) g_object_unref);
+		g_hash_table_insert (
+			connections, g_strdup (name), array);
+	}
+
+	g_ptr_array_add (array, g_object_ref (backend));
+
+	g_mutex_unlock (&factory->priv->connections_lock);
+}
+
+static gboolean
+data_cal_factory_connections_remove (EDataCalFactory *factory,
+                                     const gchar *name,
+                                     ECalBackend *backend)
+{
+	GHashTable *connections;
+	GPtrArray *array;
+	gboolean removed = FALSE;
+
+	/* If backend is NULL, we remove all backends for name. */
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	g_mutex_lock (&factory->priv->connections_lock);
+
+	connections = factory->priv->connections;
+	array = g_hash_table_lookup (connections, name);
+
+	if (array != NULL) {
+		if (backend != NULL) {
+			removed = g_ptr_array_remove_fast (array, backend);
+		} else if (array->len > 0) {
+			g_ptr_array_set_size (array, 0);
+			removed = TRUE;
+		}
+
+		if (array->len == 0)
+			g_hash_table_remove (connections, name);
+
+		if (g_hash_table_size (connections) == 0)
+			e_dbus_server_release (E_DBUS_SERVER (factory));
+	}
+
+	g_mutex_unlock (&factory->priv->connections_lock);
+
+	return removed;
+}
+
+static void
+data_cal_factory_connections_remove_all (EDataCalFactory *factory)
+{
+	GHashTable *connections;
+
+	g_mutex_lock (&factory->priv->connections_lock);
+
+	connections = factory->priv->connections;
+
+	if (g_hash_table_size (connections) > 0) {
+		g_hash_table_remove_all (connections);
+		e_dbus_server_release (E_DBUS_SERVER (factory));
+	}
+
+	g_mutex_unlock (&factory->priv->connections_lock);
+}
+
+static void
+data_cal_factory_name_vanished_cb (GDBusConnection *connection,
+                                   const gchar *name,
+                                   gpointer user_data)
+{
+	GWeakRef *weak_ref = user_data;
+	EDataCalFactory *factory;
+
+	factory = g_weak_ref_get (weak_ref);
+
+	if (factory != NULL) {
+		g_mutex_lock (&factory->priv->watched_names_lock);
+		g_hash_table_remove (factory->priv->watched_names, name);
+		g_mutex_unlock (&factory->priv->watched_names_lock);
+
+		data_cal_factory_connections_remove (factory, name, NULL);
+
+		g_object_unref (factory);
+	}
+}
+
+static void
+data_cal_factory_watched_names_add (EDataCalFactory *factory,
+                                    GDBusConnection *connection,
+                                    const gchar *name)
+{
+	GHashTable *watched_names;
+
+	g_return_if_fail (name != NULL);
+
+	g_mutex_lock (&factory->priv->watched_names_lock);
+
+	watched_names = factory->priv->watched_names;
+
+	if (!g_hash_table_contains (watched_names, name)) {
+		guint watcher_id;
+
+		/* The g_bus_watch_name() documentation says one of the two
+		 * callbacks are guaranteed to be invoked after calling the
+		 * function.  But which one is determined asynchronously so
+		 * there should be no chance of the name vanished callback
+		 * deadlocking with us when it tries to acquire the lock. */
+		watcher_id = g_bus_watch_name_on_connection (
+			connection, name,
+			G_BUS_NAME_WATCHER_FLAGS_NONE,
+			(GBusNameAppearedCallback) NULL,
+			data_cal_factory_name_vanished_cb,
+			e_weak_ref_new (factory),
+			(GDestroyNotify) e_weak_ref_free);
+
+		g_hash_table_insert (
+			watched_names, g_strdup (name),
+			GUINT_TO_POINTER (watcher_id));
+	}
+
+	g_mutex_unlock (&factory->priv->watched_names_lock);
+}
 
 static EBackend *
 data_cal_factory_ref_backend (EDataFactory *factory,
@@ -119,37 +275,11 @@ construct_cal_factory_path (void)
 }
 
 static void
-calendar_freed_cb (EDataCalFactory *factory,
-                   GObject *dead)
+data_cal_factory_closed_cb (ECalBackend *backend,
+                            const gchar *sender,
+                            EDataCalFactory *factory)
 {
-	EDataCalFactoryPrivate *priv = factory->priv;
-	GHashTableIter iter;
-	gpointer hkey, hvalue;
-
-	d (g_debug ("in factory %p (%p) is dead", factory, dead));
-
-	g_mutex_lock (&priv->connections_lock);
-
-	g_hash_table_iter_init (&iter, priv->connections);
-	while (g_hash_table_iter_next (&iter, &hkey, &hvalue)) {
-		GList *calendars = hvalue;
-
-		if (g_list_find (calendars, dead)) {
-			calendars = g_list_remove (calendars, dead);
-			if (calendars != NULL)
-				g_hash_table_insert (
-					priv->connections,
-					g_strdup (hkey), calendars);
-			else
-				g_hash_table_remove (priv->connections, hkey);
-
-			break;
-		}
-	}
-
-	g_mutex_unlock (&priv->connections_lock);
-
-	e_dbus_server_release (E_DBUS_SERVER (factory));
+	data_cal_factory_connections_remove (factory, sender, backend);
 }
 
 static gchar *
@@ -161,12 +291,11 @@ data_cal_factory_open (EDataCalFactory *factory,
                        const gchar *type_string,
                        GError **error)
 {
-	EDataCal *calendar;
+	EDataCal *data_cal;
 	EBackend *backend;
 	ESourceRegistry *registry;
 	ESource *source;
 	gchar *object_path;
-	GList *list;
 
 	if (uid == NULL || *uid == '\0') {
 		g_set_error (
@@ -194,34 +323,34 @@ data_cal_factory_open (EDataCalFactory *factory,
 	if (backend == NULL)
 		return NULL;
 
-	e_dbus_server_hold (E_DBUS_SERVER (factory));
-
 	object_path = construct_cal_factory_path ();
 
-	calendar = e_data_cal_new (
+	data_cal = e_data_cal_new (
 		E_CAL_BACKEND (backend),
 		connection, object_path, error);
 
-	if (calendar != NULL) {
-		e_cal_backend_add_client (E_CAL_BACKEND (backend), calendar);
+	if (data_cal != NULL) {
+		e_cal_backend_add_client (E_CAL_BACKEND (backend), data_cal);
 
-		g_object_weak_ref (
-			G_OBJECT (calendar), (GWeakNotify)
-			calendar_freed_cb, factory);
+		data_cal_factory_watched_names_add (
+			factory, connection, sender);
 
-		/* Update the hash of open connections. */
-		g_mutex_lock (&factory->priv->connections_lock);
-		list = g_hash_table_lookup (
-			factory->priv->connections, sender);
-		list = g_list_prepend (list, calendar);
-		g_hash_table_insert (
-			factory->priv->connections,
-			g_strdup (sender), list);
-		g_mutex_unlock (&factory->priv->connections_lock);
+		g_signal_connect_object (
+			backend, "closed",
+			G_CALLBACK (data_cal_factory_closed_cb),
+			factory, 0);
 
 	} else {
 		g_free (object_path);
 		object_path = NULL;
+	}
+
+	if (data_cal != NULL) {
+		/* A client may create multiple EClient instances for the
+		 * same ESource, each of which calls close() individually.
+		 * So we must track each and every connection made. */
+		data_cal_factory_connections_add (
+			factory, sender, E_CAL_BACKEND (backend));
 	}
 
 	g_object_unref (backend);
@@ -320,19 +449,6 @@ data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *interface,
 }
 
 static void
-remove_data_cal_cb (EDataCal *data_cal)
-{
-	ECalBackend *backend;
-
-	g_return_if_fail (data_cal != NULL);
-
-	backend = e_data_cal_get_backend (data_cal);
-	e_cal_backend_remove_client (backend, data_cal);
-
-	g_object_unref (data_cal);
-}
-
-static void
 data_cal_factory_get_property (GObject *object,
                                guint property_id,
                                GValue *value,
@@ -367,6 +483,9 @@ data_cal_factory_dispose (GObject *object)
 		priv->dbus_factory = NULL;
 	}
 
+	g_hash_table_remove_all (priv->connections);
+	g_hash_table_remove_all (priv->watched_names);
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_cal_factory_parent_class)->dispose (object);
 }
@@ -379,8 +498,10 @@ data_cal_factory_finalize (GObject *object)
 	priv = E_DATA_CAL_FACTORY_GET_PRIVATE (object);
 
 	g_hash_table_destroy (priv->connections);
-
 	g_mutex_clear (&priv->connections_lock);
+
+	g_hash_table_destroy (priv->watched_names);
+	g_mutex_clear (&priv->watched_names_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_factory_parent_class)->finalize (object);
@@ -417,30 +538,11 @@ static void
 data_cal_factory_bus_name_lost (EDBusServer *server,
                                 GDBusConnection *connection)
 {
-	EDataCalFactoryPrivate *priv;
-	GList *list = NULL;
-	gchar *key;
+	EDataCalFactory *factory;
 
-	priv = E_DATA_CAL_FACTORY_GET_PRIVATE (server);
+	factory = E_DATA_CAL_FACTORY (server);
 
-	g_mutex_lock (&priv->connections_lock);
-
-	while (g_hash_table_lookup_extended (
-		priv->connections,
-		CALENDAR_DBUS_SERVICE_NAME,
-		(gpointer) &key, (gpointer) &list)) {
-		GList *copy;
-
-		/* this should trigger the calendar's weak ref notify
-		 * function, which will remove it from the list before
-		 * it's freed, and will remove the connection from
-		 * priv->connections once they're all gone */
-		copy = g_list_copy (list);
-		g_list_foreach (copy, (GFunc) remove_data_cal_cb, NULL);
-		g_list_free (copy);
-	}
-
-	g_mutex_unlock (&priv->connections_lock);
+	data_cal_factory_connections_remove_all (factory);
 
 	/* Chain up to parent's bus_name_lost() method. */
 	E_DBUS_SERVER_CLASS (e_data_cal_factory_parent_class)->
@@ -549,11 +651,19 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 		G_CALLBACK (data_cal_factory_handle_open_memo_list_cb),
 		factory);
 
-	g_mutex_init (&factory->priv->connections_lock);
 	factory->priv->connections = g_hash_table_new_full (
-		g_str_hash, g_str_equal,
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
-		(GDestroyNotify) NULL);
+		(GDestroyNotify) g_ptr_array_unref);
+
+	g_mutex_init (&factory->priv->connections_lock);
+
+	factory->priv->watched_names = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) watched_names_value_free);
 }
 
 EDBusServer *
