@@ -1104,6 +1104,8 @@ data_book_handle_close_cb (EDBusAddressBook *interface,
                            EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
+	const gchar *sender;
 
 	op = op_new (OP_CLOSE, book, invocation);
 	/* unref here makes sure the book is freed in a separate thread */
@@ -1111,6 +1113,10 @@ data_book_handle_close_cb (EDBusAddressBook *interface,
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
+
+	backend = e_data_book_get_backend (book);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+	g_signal_emit_by_name (backend, "closed", sender);
 
 	return TRUE;
 }

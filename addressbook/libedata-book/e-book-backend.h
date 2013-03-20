@@ -201,8 +201,11 @@ struct _EBookBackendClass {
 	void		(*configure_direct)	(EBookBackend *backend,
 						 const gchar *config);
 
-	/* Notification signals */
 	void		(*sync)			(EBookBackend *backend);
+
+	/* Signals */
+	void		(*closed)		(EBookBackend *backend,
+						 const gchar *sender);
 };
 
 GType		e_book_backend_get_type		(void) G_GNUC_CONST;

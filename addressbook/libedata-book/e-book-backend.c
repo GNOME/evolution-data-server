@@ -43,6 +43,13 @@ enum {
 	PROP_WRITABLE
 };
 
+enum {
+	CLOSED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_TYPE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
 
 static void
@@ -342,6 +349,24 @@ e_book_backend_class_init (EBookBackendClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * EBookBackend::closed:
+	 * @backend: the #EBookBackend which emitted the signal
+	 * @sender: the bus name that invoked the "close" method
+	 *
+	 * Emitted when a client destroys its #EBookClient for @backend.
+	 *
+	 * Since: 3.10
+	 **/
+	signals[CLOSED] = g_signal_new (
+		"closed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookBackendClass, closed),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRING);
 }
 
 static void
