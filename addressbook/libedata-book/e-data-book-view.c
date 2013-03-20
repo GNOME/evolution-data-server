@@ -703,7 +703,7 @@ e_data_book_view_new (EDataBook *book,
 	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
 	g_return_val_if_fail (object_path != NULL, NULL);
 
-	backend = e_data_book_get_backend (book);
+	backend = e_data_book_ref_backend (book);
 
 	view = g_initable_new (
 		E_TYPE_DATA_BOOK_VIEW, NULL, error,
@@ -711,6 +711,8 @@ e_data_book_view_new (EDataBook *book,
 		"connection", connection,
 		"object-path", object_path,
 		"sexp", sexp, NULL);
+
+	g_object_unref (backend);
 
 	if (view == NULL)
 		return NULL;

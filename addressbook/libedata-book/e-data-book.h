@@ -153,7 +153,7 @@ EDataBook *	e_data_book_new_direct		(ESourceRegistry *registry,
 						 const gchar *config,
 						 GError **error);
 struct _EBookBackend *
-		e_data_book_get_backend		(EDataBook *book);
+		e_data_book_ref_backend		(EDataBook *book);
 GDBusConnection *
 		e_data_book_get_connection	(EDataBook *book);
 const gchar *	e_data_book_get_object_path	(EDataBook *book);
@@ -273,6 +273,8 @@ gboolean	e_data_book_get_contacts_uids_sync
 						 GError **error);
 
 #ifndef EDS_DISABLE_DEPRECATED
+struct _EBookBackend *
+		e_data_book_get_backend		(EDataBook *book);
 void		e_data_book_respond_set_backend_property
 						(EDataBook *book,
 						 guint32 opid,

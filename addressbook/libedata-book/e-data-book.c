@@ -47,7 +47,7 @@ struct _EDataBookPrivate {
 	EModule *direct_module;
 	EDataBookDirect *direct_book;
 
-	EBookBackend *backend;
+	GWeakRef backend;
 	gchar *object_path;
 
 	GRecMutex pending_ops_lock;
@@ -89,7 +89,8 @@ typedef struct {
 
 	OperationID op;
 	guint32 id; /* operation id */
-	EDataBook *book; /* book */
+	EDataBook *book;
+	EBookBackend *backend;
 	GCancellable *cancellable;
 	GDBusMethodInvocation *invocation;
 	const gchar *sender; /* owned by invocation */
@@ -295,6 +296,7 @@ op_ref (OperationData *data)
 static OperationData *
 op_new (OperationID op,
         EDataBook *book,
+        EBookBackend *backend,
         GDBusMethodInvocation *invocation)
 {
 	OperationData *data;
@@ -304,6 +306,7 @@ op_new (OperationID op,
 	data->op = op;
 	data->id = e_operation_pool_reserve_opid (ops_pool);
 	data->book = g_object_ref (book);
+	data->backend = g_object_ref (backend);
 	data->cancellable = g_cancellable_new ();
 
 	/* This is optional so we can fake client requests. */
@@ -367,6 +370,7 @@ op_unref (OperationData *data)
 		}
 
 		g_object_unref (data->book);
+		g_object_unref (data->backend);
 		g_object_unref (data->cancellable);
 
 		if (data->invocation != NULL)
@@ -614,61 +618,58 @@ operation_thread (gpointer data,
                   gpointer user_data)
 {
 	OperationData *op = data;
-	EBookBackend *backend;
-
-	backend = e_data_book_get_backend (op->book);
 
 	switch (op->op) {
 	case OP_OPEN:
 		e_book_backend_open (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, FALSE);
 		break;
 
 	case OP_ADD_CONTACTS:
 		e_book_backend_create_contacts (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.vcards);
 		break;
 
 	case OP_GET_CONTACT:
 		e_book_backend_get_contact (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.uid);
 		break;
 
 	case OP_GET_CONTACTS:
 		e_book_backend_get_contact_list (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.query);
 		break;
 
 	case OP_GET_CONTACTS_UIDS:
 		e_book_backend_get_contact_list_uids (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.query);
 		break;
 
 	case OP_MODIFY_CONTACTS:
 		e_book_backend_modify_contacts (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.vcards);
 		break;
 
 	case OP_REMOVE_CONTACTS:
 		e_book_backend_remove_contacts (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.ids);
 		break;
 
 	case OP_REFRESH:
 		e_book_backend_refresh (
-			backend, op->book, op->id, op->cancellable);
+			op->backend, op->book, op->id, op->cancellable);
 		break;
 
 	case OP_GET_BACKEND_PROPERTY:
 		e_book_backend_get_backend_property (
-			backend, op->book, op->id,
+			op->backend, op->book, op->id,
 			op->cancellable, op->d.prop_name);
 		break;
 
@@ -718,7 +719,7 @@ operation_thread (gpointer data,
 				break;
 			}
 
-			e_book_backend_add_view (backend, view);
+			e_book_backend_add_view (op->backend, view);
 
 			e_dbus_address_book_complete_get_view (
 				op->book->priv->dbus_interface,
@@ -734,7 +735,7 @@ operation_thread (gpointer data,
 		if (op->sender != NULL)
 			cancel_operations_for_sender (op->book, op->sender);
 
-		if (op->book->priv->dbus_interface)
+		if (op->book->priv->dbus_interface != NULL)
 			e_dbus_address_book_complete_close (
 				op->book->priv->dbus_interface,
 				op->invocation);
@@ -750,6 +751,7 @@ operation_thread (gpointer data,
 static OperationData *
 op_direct_new (OperationID op,
                EDataBook *book,
+               EBookBackend *backend,
                GCancellable *cancellable,
                GAsyncReadyCallback callback,
                gpointer user_data,
@@ -764,6 +766,7 @@ op_direct_new (OperationID op,
 	data->ref_count = 1;
 	data->op = op;
 	data->book = g_object_ref (book);
+	data->backend = g_object_ref (backend);
 	data->id = e_operation_pool_reserve_opid (ops_pool);
 
 	if (cancellable)
@@ -969,10 +972,16 @@ data_book_handle_open_cb (EDBusAddressBook *interface,
                           EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_OPEN, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_OPEN, book, backend, invocation);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -983,10 +992,16 @@ data_book_handle_refresh_cb (EDBusAddressBook *interface,
                              EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_REFRESH, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_REFRESH, book, backend, invocation);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -998,11 +1013,17 @@ data_book_handle_get_contact_cb (EDBusAddressBook *interface,
                                  EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_GET_CONTACT, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_GET_CONTACT, book, backend, invocation);
 	op->d.uid = g_strdup (in_uid);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1014,11 +1035,17 @@ data_book_handle_get_contact_list_cb (EDBusAddressBook *interface,
                                       EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_GET_CONTACTS, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_GET_CONTACTS, book, backend, invocation);
 	op->d.query = g_strdup (in_query);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1030,11 +1057,17 @@ data_book_handle_get_contact_list_uids_cb (EDBusAddressBook *interface,
                                            EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_GET_CONTACTS_UIDS, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_GET_CONTACTS_UIDS, book, backend, invocation);
 	op->d.query = g_strdup (in_query);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1046,11 +1079,17 @@ data_book_handle_create_contacts_cb (EDBusAddressBook *interface,
                                      EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_ADD_CONTACTS, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_ADD_CONTACTS, book, backend, invocation);
 	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1062,11 +1101,17 @@ data_book_handle_modify_contacts_cb (EDBusAddressBook *interface,
                                      EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_MODIFY_CONTACTS, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_MODIFY_CONTACTS, book, backend, invocation);
 	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1078,8 +1123,12 @@ data_book_handle_remove_contacts_cb (EDBusAddressBook *interface,
                                      EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_REMOVE_CONTACTS, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_REMOVE_CONTACTS, book, backend, invocation);
 
 	/* Allow an empty array to be removed */
 	for (; in_uids && *in_uids; in_uids++) {
@@ -1087,6 +1136,8 @@ data_book_handle_remove_contacts_cb (EDBusAddressBook *interface,
 	}
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1098,12 +1149,18 @@ data_book_handle_get_view_cb (EDBusAddressBook *interface,
                               EDataBook *book)
 {
 	OperationData *op;
+	EBookBackend *backend;
 
-	op = op_new (OP_GET_VIEW, book, invocation);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_new (OP_GET_VIEW, book, backend, invocation);
 	op->d.query = g_strdup (in_query);
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
+
+	g_object_unref (backend);
 
 	return TRUE;
 }
@@ -1117,12 +1174,10 @@ data_book_handle_close_cb (EDBusAddressBook *interface,
 	EBookBackend *backend;
 	const gchar *sender;
 
-	backend = e_data_book_get_backend (book);
-	g_object_ref (backend);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
 
-	op = op_new (OP_CLOSE, book, invocation);
-	/* unref here makes sure the book is freed in a separate thread */
-	g_object_unref (book);
+	op = op_new (OP_CLOSE, book, backend, invocation);
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
@@ -1159,7 +1214,8 @@ e_data_book_respond_open (EDataBook *book,
 		data_book_convert_to_client_error (error);
 		copy = g_error_copy (error);
 	}
-	e_book_backend_notify_opened (book->priv->backend, copy);
+
+	e_book_backend_notify_opened (data->backend, copy);
 
 	if (direct) {
 		gboolean result = FALSE;
@@ -1556,12 +1612,9 @@ e_data_book_respond_create_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot add contact: "));
 
 	if (error == NULL) {
-		EBookBackend *backend;
 		gchar **strv;
 		guint length;
 		gint ii = 0;
-
-		backend = e_data_book_get_backend (book);
 
 		length = g_slist_length ((GSList *) contacts);
 		strv = g_new0 (gchar *, length + 1);
@@ -1573,7 +1626,7 @@ e_data_book_respond_create_contacts (EDataBook *book,
 			uid = e_contact_get_const (contact, E_CONTACT_UID);
 			strv[ii++] = e_util_utf8_make_valid (uid);
 
-			e_book_backend_notify_update (backend, contact);
+			e_book_backend_notify_update (data->backend, contact);
 
 			contacts = g_slist_next ((GSList *) contacts);
 		}
@@ -1583,9 +1636,10 @@ e_data_book_respond_create_contacts (EDataBook *book,
 			data->invocation,
 			(const gchar * const *) strv);
 
-		e_book_backend_notify_complete (backend);
+		e_book_backend_notify_complete (data->backend);
 
 		g_strfreev (strv);
+
 	} else {
 		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
@@ -1619,21 +1673,18 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot modify contacts: "));
 
 	if (error == NULL) {
-		EBookBackend *backend;
-
-		backend = e_data_book_get_backend (book);
-
 		e_dbus_address_book_complete_modify_contacts (
 			book->priv->dbus_interface,
 			data->invocation);
 
 		while (contacts != NULL) {
 			EContact *contact = E_CONTACT (contacts->data);
-			e_book_backend_notify_update (backend, contact);
+			e_book_backend_notify_update (data->backend, contact);
 			contacts = g_slist_next ((GSList *) contacts);
 		}
 
-		e_book_backend_notify_complete (backend);
+		e_book_backend_notify_complete (data->backend);
+
 	} else {
 		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
@@ -1660,20 +1711,17 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 	g_prefix_error (&error, "%s", _("Cannot remove contacts: "));
 
 	if (error == NULL) {
-		EBookBackend *backend;
-
-		backend = e_data_book_get_backend (book);
-
 		e_dbus_address_book_complete_remove_contacts (
 			book->priv->dbus_interface,
 			data->invocation);
 
 		while (ids != NULL) {
-			e_book_backend_notify_remove (backend, ids->data);
+			e_book_backend_notify_remove (data->backend, ids->data);
 			ids = g_slist_next ((GSList *) ids);
 		}
 
-		e_book_backend_notify_complete (backend);
+		e_book_backend_notify_complete (data->backend);
+
 	} else {
 		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
@@ -1713,9 +1761,16 @@ void
 e_data_book_report_readonly (EDataBook *book,
                              gboolean readonly)
 {
+	EBookBackend *backend;
+
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	e_book_backend_set_writable (book->priv->backend, !readonly);
+	backend = e_data_book_ref_backend (book);
+
+	if (backend != NULL) {
+		e_book_backend_set_writable (backend, !readonly);
+		g_object_unref (backend);
+	}
 }
 
 /**
@@ -1731,9 +1786,16 @@ void
 e_data_book_report_online (EDataBook *book,
                            gboolean is_online)
 {
+	EBookBackend *backend;
+
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	e_backend_set_online (E_BACKEND (book->priv->backend), is_online);
+	backend = e_data_book_ref_backend (book);
+
+	if (backend != NULL) {
+		e_backend_set_online (E_BACKEND (backend), is_online);
+		g_object_unref (backend);
+	}
 }
 
 /**
@@ -1815,9 +1877,8 @@ data_book_set_backend (EDataBook *book,
                        EBookBackend *backend)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (book->priv->backend == NULL);
 
-	book->priv->backend = g_object_ref (backend);
+	g_weak_ref_set (&book->priv->backend, backend);
 }
 
 static void
@@ -1878,9 +1939,9 @@ data_book_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_BACKEND:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				e_data_book_get_backend (
+				e_data_book_ref_backend (
 				E_DATA_BOOK (object)));
 			return;
 
@@ -1909,14 +1970,11 @@ data_book_dispose (GObject *object)
 
 	priv = E_DATA_BOOK_GET_PRIVATE (object);
 
+	g_weak_ref_set (&priv->backend, NULL);
+
 	if (priv->connection != NULL) {
 		g_object_unref (priv->connection);
 		priv->connection = NULL;
-	}
-
-	if (priv->backend != NULL) {
-		g_object_unref (priv->backend);
-		priv->backend = NULL;
 	}
 
 	if (priv->direct_book) {
@@ -1978,6 +2036,11 @@ data_book_initable_init (GInitable *initable,
 	book = E_DATA_BOOK (initable);
 
 	if (book->priv->connection != NULL && book->priv->object_path != NULL) {
+		EBookBackend *backend;
+
+		backend = e_data_book_ref_backend (book);
+		g_warn_if_fail (backend != NULL);
+
 		book->priv->dbus_interface =
 			e_dbus_address_book_skeleton_new ();
 
@@ -2015,7 +2078,7 @@ data_book_initable_init (GInitable *initable,
 		/* This will be NULL for a backend that does not support
 		 * direct read access. */
 		book->priv->direct_book =
-			e_book_backend_get_direct_book (book->priv->backend);
+			e_book_backend_get_direct_book (backend);
 
 		if (book->priv->direct_book != NULL) {
 			gboolean success;
@@ -2025,22 +2088,24 @@ data_book_initable_init (GInitable *initable,
 				book->priv->connection,
 				book->priv->object_path,
 				error);
-			if (!success)
+			if (!success) {
+				g_object_unref (backend);
 				return FALSE;
+			}
 		}
 
 		g_object_bind_property (
-			book->priv->backend, "cache-dir",
+			backend, "cache-dir",
 			book->priv->dbus_interface, "cache-dir",
 			G_BINDING_SYNC_CREATE);
 
 		g_object_bind_property (
-			book->priv->backend, "online",
+			backend, "online",
 			book->priv->dbus_interface, "online",
 			G_BINDING_SYNC_CREATE);
 
 		g_object_bind_property (
-			book->priv->backend, "writable",
+			backend, "writable",
 			book->priv->dbus_interface, "writable",
 			G_BINDING_SYNC_CREATE);
 
@@ -2048,33 +2113,35 @@ data_book_initable_init (GInitable *initable,
 		 *     requests.  At present it's the only way to fish values
 		 *     from EBookBackend's antiquated API. */
 
-		op = op_new (OP_GET_BACKEND_PROPERTY, book, NULL);
+		op = op_new (OP_GET_BACKEND_PROPERTY, book, backend, NULL);
 		op->d.prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
 		e_book_backend_get_backend_property (
-			book->priv->backend, book, op->id,
+			backend, book, op->id,
 			op->cancellable, op->d.prop_name);
 		op_unref (op);
 
-		op = op_new (OP_GET_BACKEND_PROPERTY, book, NULL);
+		op = op_new (OP_GET_BACKEND_PROPERTY, book, backend, NULL);
 		op->d.prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
 		e_book_backend_get_backend_property (
-			book->priv->backend, book, op->id,
+			backend, book, op->id,
 			op->cancellable, op->d.prop_name);
 		op_unref (op);
 
-		op = op_new (OP_GET_BACKEND_PROPERTY, book, NULL);
+		op = op_new (OP_GET_BACKEND_PROPERTY, book, backend, NULL);
 		op->d.prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
 		e_book_backend_get_backend_property (
-			book->priv->backend, book, op->id,
+			backend, book, op->id,
 			op->cancellable, op->d.prop_name);
 		op_unref (op);
 
-		op = op_new (OP_GET_BACKEND_PROPERTY, book, NULL);
+		op = op_new (OP_GET_BACKEND_PROPERTY, book, backend, NULL);
 		op->d.prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
 		e_book_backend_get_backend_property (
-			book->priv->backend, book, op->id,
+			backend, book, op->id,
 			op->cancellable, op->d.prop_name);
 		op_unref (op);
+
+		g_object_unref (backend);
 
 		return g_dbus_interface_skeleton_export (
 			G_DBUS_INTERFACE_SKELETON (book->priv->dbus_interface),
@@ -2288,7 +2355,7 @@ e_data_book_new_direct (ESourceRegistry *registry,
 	book = g_initable_new (
 		E_TYPE_DATA_BOOK, NULL, error,
 		"backend", backend, NULL);
-	g_object_unref (backend);
+	e_book_backend_set_data_book (backend, book);
 
 	if (!book) {
 		g_type_module_unuse (G_TYPE_MODULE (module));
@@ -2303,6 +2370,28 @@ e_data_book_new_direct (ESourceRegistry *registry,
 }
 
 /**
+ * e_data_book_ref_backend:
+ * @book: an #EDataBook
+ *
+ * Returns the #EBookBackend to which incoming remote method invocations
+ * are being forwarded.
+ *
+ * The returned #EBookBackend is referenced for thread-safety and should
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: an #EBookBackend
+ *
+ * Since: 3.10
+ **/
+EBookBackend *
+e_data_book_ref_backend (EDataBook *book)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
+
+	return g_weak_ref_get (&book->priv->backend);
+}
+
+/**
  * e_data_book_get_backend:
  * @book: an #EDataBook
  *
@@ -2310,13 +2399,25 @@ e_data_book_new_direct (ESourceRegistry *registry,
  * are being forwarded.
  *
  * Returns: the #EBookBackend
+ *
+ * Deprecated: 3.10: Use e_data_book_ref_backend() instead.
  **/
 EBookBackend *
 e_data_book_get_backend (EDataBook *book)
 {
+	EBookBackend *backend;
+
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 
-	return book->priv->backend;
+	backend = e_data_book_ref_backend (book);
+
+	/* XXX Drop the EBookBackend reference for backward-compatibility.
+	 *     This is risky.  Without a reference, the EBookBackend could
+	 *     be finalized while the caller is still using it. */
+	if (backend != NULL)
+		g_object_unref (backend);
+
+	return backend;
 }
 
 /**
@@ -2397,19 +2498,25 @@ e_data_book_open_sync (EDataBook *book,
                        GCancellable *cancellable,
                        GError **error)
 {
+	EBookBackend *backend;
 	DirectOperationData *data = NULL;
 	OperationData *op;
 	gboolean result = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	op = op_direct_new (OP_OPEN, book, cancellable, NULL, NULL, e_data_book_open_sync, TRUE, &data);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_direct_new (OP_OPEN, book, backend, cancellable, NULL, NULL, e_data_book_open_sync, TRUE, &data);
 
 	op_dispatch (book, op);
 
 	direct_operation_wait (data);
 	result = e_data_book_open_finish (book, G_ASYNC_RESULT (data->result), error);
 	direct_operation_data_free (data);
+
+	g_object_unref (backend);
 
 	return result;
 }
@@ -2473,14 +2580,20 @@ e_data_book_close (EDataBook *book,
                    GAsyncReadyCallback callback,
                    gpointer user_data)
 {
+	EBookBackend *backend;
 	OperationData *op;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	op = op_direct_new (OP_CLOSE, book, cancellable, callback, user_data, e_data_book_close, FALSE, NULL);
+	backend = e_data_book_ref_backend (book);
+	g_return_if_fail (backend != NULL);
+
+	op = op_direct_new (OP_CLOSE, book, backend, cancellable, callback, user_data, e_data_book_close, FALSE, NULL);
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -2532,13 +2645,17 @@ e_data_book_close_sync (EDataBook *book,
                         GCancellable *cancellable,
                         GError **error)
 {
+	EBookBackend *backend;
 	DirectOperationData *data = NULL;
 	OperationData *op;
 	gboolean result = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	op = op_direct_new (OP_CLOSE, book, cancellable, NULL, NULL, e_data_book_close_sync, TRUE, &data);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_direct_new (OP_CLOSE, book, backend, cancellable, NULL, NULL, e_data_book_close_sync, TRUE, &data);
 
 	/* This operation is never queued. */
 	e_operation_pool_push (ops_pool, op);
@@ -2546,6 +2663,8 @@ e_data_book_close_sync (EDataBook *book,
 	direct_operation_wait (data);
 	result = e_data_book_close_finish (book, G_ASYNC_RESULT (data->result), error);
 	direct_operation_data_free (data);
+
+	g_object_unref (backend);
 
 	return result;
 }
@@ -2575,15 +2694,21 @@ e_data_book_get_contact (EDataBook *book,
                          GAsyncReadyCallback callback,
                          gpointer user_data)
 {
+	EBookBackend *backend;
 	OperationData *op;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 	g_return_if_fail (uid && uid[0]);
 
-	op = op_direct_new (OP_GET_CONTACT, book, cancellable, callback, user_data, e_data_book_get_contact, FALSE, NULL);
+	backend = e_data_book_ref_backend (book);
+	g_return_if_fail (backend != NULL);
+
+	op = op_direct_new (OP_GET_CONTACT, book, backend, cancellable, callback, user_data, e_data_book_get_contact, FALSE, NULL);
 	op->d.uid = g_strdup (uid);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -2648,6 +2773,7 @@ e_data_book_get_contact_sync (EDataBook *book,
                               GCancellable *cancellable,
                               GError **error)
 {
+	EBookBackend *backend;
 	DirectOperationData *data = NULL;
 	OperationData *op;
 	gboolean result = FALSE;
@@ -2655,7 +2781,10 @@ e_data_book_get_contact_sync (EDataBook *book,
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 	g_return_val_if_fail (uid && uid[0], FALSE);
 
-	op = op_direct_new (OP_GET_CONTACT, book, cancellable, NULL, NULL, e_data_book_get_contact_sync, TRUE, &data);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_direct_new (OP_GET_CONTACT, book, backend, cancellable, NULL, NULL, e_data_book_get_contact_sync, TRUE, &data);
 	op->d.uid = g_strdup (uid);
 
 	op_dispatch (book, op);
@@ -2663,6 +2792,8 @@ e_data_book_get_contact_sync (EDataBook *book,
 	direct_operation_wait (data);
 	result = e_data_book_get_contact_finish (book, G_ASYNC_RESULT (data->result), contact, error);
 	direct_operation_data_free (data);
+
+	g_object_unref (backend);
 
 	return result;
 }
@@ -2692,14 +2823,20 @@ e_data_book_get_contacts (EDataBook *book,
                           GAsyncReadyCallback callback,
                           gpointer user_data)
 {
+	EBookBackend *backend;
 	OperationData *op;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	op = op_direct_new (OP_GET_CONTACTS, book, cancellable, callback, user_data, e_data_book_get_contacts, FALSE, NULL);
+	backend = e_data_book_ref_backend (book);
+	g_return_if_fail (backend != NULL);
+
+	op = op_direct_new (OP_GET_CONTACTS, book, backend, cancellable, callback, user_data, e_data_book_get_contacts, FALSE, NULL);
 	op->d.query = g_strdup (sexp);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -2770,13 +2907,17 @@ e_data_book_get_contacts_sync (EDataBook *book,
                                GCancellable *cancellable,
                                GError **error)
 {
+	EBookBackend *backend;
 	DirectOperationData *data = NULL;
 	OperationData *op;
 	gboolean result = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	op = op_direct_new (OP_GET_CONTACTS, book, cancellable, NULL, NULL, e_data_book_get_contacts_sync, TRUE, &data);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_direct_new (OP_GET_CONTACTS, book, backend, cancellable, NULL, NULL, e_data_book_get_contacts_sync, TRUE, &data);
 	op->d.query = g_strdup (sexp);
 
 	op_dispatch (book, op);
@@ -2784,6 +2925,8 @@ e_data_book_get_contacts_sync (EDataBook *book,
 	direct_operation_wait (data);
 	result = e_data_book_get_contacts_finish (book, G_ASYNC_RESULT (data->result), contacts, error);
 	direct_operation_data_free (data);
+
+	g_object_unref (backend);
 
 	return result;
 }
@@ -2813,14 +2956,20 @@ e_data_book_get_contacts_uids (EDataBook *book,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
+	EBookBackend *backend;
 	OperationData *op;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	op = op_direct_new (OP_GET_CONTACTS_UIDS, book, cancellable, callback, user_data, e_data_book_get_contacts_uids, FALSE, NULL);
+	backend = e_data_book_ref_backend (book);
+	g_return_if_fail (backend != NULL);
+
+	op = op_direct_new (OP_GET_CONTACTS_UIDS, book, backend, cancellable, callback, user_data, e_data_book_get_contacts_uids, FALSE, NULL);
 	op->d.query = g_strdup (sexp);
 
 	op_dispatch (book, op);
+
+	g_object_unref (backend);
 }
 
 /**
@@ -2891,13 +3040,17 @@ e_data_book_get_contacts_uids_sync (EDataBook *book,
                                     GCancellable *cancellable,
                                     GError **error)
 {
+	EBookBackend *backend;
 	DirectOperationData *data = NULL;
 	OperationData *op;
 	gboolean result = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	op = op_direct_new (OP_GET_CONTACTS_UIDS, book, cancellable, NULL, NULL, e_data_book_get_contacts_uids_sync, TRUE, &data);
+	backend = e_data_book_ref_backend (book);
+	g_return_val_if_fail (backend != NULL, FALSE);
+
+	op = op_direct_new (OP_GET_CONTACTS_UIDS, book, backend, cancellable, NULL, NULL, e_data_book_get_contacts_uids_sync, TRUE, &data);
 	op->d.query = g_strdup (sexp);
 
 	op_dispatch (book, op);
@@ -2905,6 +3058,8 @@ e_data_book_get_contacts_uids_sync (EDataBook *book,
 	direct_operation_wait (data);
 	result = e_data_book_get_contacts_uids_finish (book, G_ASYNC_RESULT (data->result), contacts_uids, error);
 	direct_operation_data_free (data);
+
+	g_object_unref (backend);
 
 	return result;
 }

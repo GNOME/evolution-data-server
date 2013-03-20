@@ -277,7 +277,7 @@ e_data_book_status_to_string
 e_return_data_book_error_if_fail
 e_return_data_book_error_val_if_fail
 e_data_book_new
-e_data_book_get_backend
+e_data_book_ref_backend
 e_data_book_get_connection
 e_data_book_get_object_path
 e_data_book_respond_open
@@ -307,6 +307,7 @@ e_data_book_get_contacts_uids
 e_data_book_get_contacts_uids_finish
 e_data_book_get_contacts_uids_sync
 <SUBSECTION Deprecated>
+e_data_book_get_backend
 e_data_book_respond_set_backend_property
 e_data_book_report_opened
 e_data_book_report_readonly
