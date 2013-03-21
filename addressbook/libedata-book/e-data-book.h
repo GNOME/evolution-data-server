@@ -273,21 +273,6 @@ gboolean	e_data_book_get_contacts_uids_sync
 						 GCancellable *cancellable,
 						 GError **error);
 
-#ifndef EDS_DISABLE_DEPRECATED
-struct _EBookBackend *
-		e_data_book_get_backend		(EDataBook *book);
-void		e_data_book_respond_set_backend_property
-						(EDataBook *book,
-						 guint32 opid,
-						 GError *error);
-void		e_data_book_report_opened	(EDataBook *book,
-						 const GError *error);
-void		e_data_book_report_readonly	(EDataBook *book,
-						 gboolean readonly);
-void		e_data_book_report_online	(EDataBook *book,
-						 gboolean is_online);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_DATA_BOOK_H */

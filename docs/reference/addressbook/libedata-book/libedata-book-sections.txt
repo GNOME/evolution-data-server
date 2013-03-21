@@ -42,19 +42,6 @@ e_book_backend_sync
 e_book_backend_set_is_removed
 e_book_backend_get_direct_book
 e_book_backend_configure_direct
-<SUBSECTION Deprecated>
-CLIENT_BACKEND_PROPERTY_OPENED
-CLIENT_BACKEND_PROPERTY_OPENING
-BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
-e_book_backend_add_client
-e_book_backend_remove_client
-e_book_backend_is_opening
-e_book_backend_set_backend_property
-e_book_backend_foreach_view
-e_book_backend_notify_opened
-e_book_backend_notify_readonly
-e_book_backend_notify_online
-e_book_backend_respond_opened
 <SUBSECTION Standard>
 E_BOOK_BACKEND
 E_IS_BOOK_BACKEND
@@ -251,8 +238,6 @@ e_book_backend_sync_modify_contacts
 e_book_backend_sync_get_contact
 e_book_backend_sync_get_contact_list
 e_book_backend_sync_get_contact_list_uids
-<SUBSECTION Deprecated>
-e_book_backend_sync_set_backend_property
 <SUBSECTION Standard>
 E_BOOK_BACKEND_SYNC
 E_IS_BOOK_BACKEND_SYNC
@@ -307,12 +292,6 @@ e_data_book_get_contacts_sync
 e_data_book_get_contacts_uids
 e_data_book_get_contacts_uids_finish
 e_data_book_get_contacts_uids_sync
-<SUBSECTION Deprecated>
-e_data_book_get_backend
-e_data_book_respond_set_backend_property
-e_data_book_report_opened
-e_data_book_report_readonly
-e_data_book_report_online
 <SUBSECTION Standard>
 E_DATA_BOOK
 E_IS_DATA_BOOK

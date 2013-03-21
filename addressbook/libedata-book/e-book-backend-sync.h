@@ -173,16 +173,6 @@ void		e_book_backend_sync_get_contact_list_uids
 						 GSList **contacts_uids,
 						 GError **error);
 
-#ifndef EDS_DISABLE_DEPRECATED
-gboolean	e_book_backend_sync_set_backend_property
-						(EBookBackendSync *backend,
-						 EDataBook *book,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GError **error);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_BOOK_BACKEND_SYNC_H */

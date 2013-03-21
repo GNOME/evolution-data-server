@@ -913,39 +913,6 @@ e_book_backend_remove_view (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_add_client:
- * @backend: An addressbook backend.
- * @book: the corba object representing the client connection.
- *
- * Adds a client to an addressbook backend.
- *
- * Returns: TRUE on success, FALSE on failure to add the client.
- *
- * Deprecated: 3.10: This function no longer does anything.
- */
-gboolean
-e_book_backend_add_client (EBookBackend *backend,
-                           EDataBook *book)
-{
-	return TRUE;
-}
-
-/**
- * e_book_backend_remove_client:
- * @backend: an #EBookBackend
- * @book: an #EDataBook to remove
- *
- * Removes @book from the list of @backend's clients.
- *
- * Deprecated: 3.10: This function no longer does anything.
- **/
-void
-e_book_backend_remove_client (EBookBackend *backend,
-                              EDataBook *book)
-{
-}
-
-/**
  * e_book_backend_list_views:
  * @backend: an #EBookBackend
  *
@@ -985,40 +952,6 @@ e_book_backend_list_views (EBookBackend *backend)
 }
 
 /**
- * e_book_backend_foreach_view:
- * @backend: an #EBookBackend
- * @callback: callback to call
- * @user_data: user_data passed into the @callback
- *
- * Calls @callback for each known book view of this @backend.
- * @callback returns %FALSE to stop further processing.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_book_backend_list_views() instead.
- **/
-void
-e_book_backend_foreach_view (EBookBackend *backend,
-                             gboolean (*callback) (EDataBookView *view,
-                                                   gpointer user_data),
-                             gpointer user_data)
-{
-	GList *list, *link;
-
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (callback != NULL);
-
-	list = e_book_backend_list_views (backend);
-
-	for (link = list; link != NULL; link = g_list_next (link)) {
-		if (!callback (E_DATA_BOOK_VIEW (link->data), user_data))
-			break;
-	}
-
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-}
-
-/**
  * e_book_backend_get_book_backend_property:
  * @backend: an #EBookBackend
  * @book: an #EDataBook
@@ -1046,36 +979,6 @@ e_book_backend_get_backend_property (EBookBackend *backend,
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_backend_property);
 
 	E_BOOK_BACKEND_GET_CLASS (backend)->get_backend_property (backend, book, opid, cancellable, prop_name);
-}
-
-/**
- * e_book_backend_set_backend_property:
- * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @prop_name: property name to change; cannot be NULL
- * @prop_value: value to set to @prop_name; cannot be NULL
- *
- * Calls the set_backend_property method on the given backend.
- * This might be finished with e_data_book_respond_set_backend_property().
- * Default implementation simply returns an 'unsupported' error.
- * The subclass may always call this default implementation for properties
- * which fetching it doesn't overwrite.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function no longer does anything.
- **/
-void
-e_book_backend_set_backend_property (EBookBackend *backend,
-                                     EDataBook *book,
-                                     guint32 opid,
-                                     GCancellable *cancellable,
-                                     const gchar *prop_name,
-                                     const gchar *prop_value)
-{
-	/* Do nothing. */
 }
 
 /**
@@ -1107,32 +1010,6 @@ e_book_backend_is_opened (EBookBackend *backend)
 	}
 
 	return opened;
-}
-
-/**
- * e_book_backend_is_opening:
- * @backend: an #EBookBackend
- *
- * Checks if @backend is processing its opening phase, which
- * includes everything since the e_book_backend_open() call,
- * through authentication, up to e_book_backend_notify_opened().
- * This property is managed automatically and the backend deny
- * every operation except of cancel and authenticate_user while
- * it is being opening.
- *
- * Returns: %FALSE always
- *
- * Deprecated: 3.8: This function is no longer relevant,
- *                  and always returns %FALSE.
- *
- * Since: 3.2
- **/
-gboolean
-e_book_backend_is_opening (EBookBackend *backend)
-{
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-
-	return FALSE;
 }
 
 /**
@@ -1369,76 +1246,6 @@ e_book_backend_notify_error (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_notify_readonly:
- * @backend: an #EBookBackend
- * @is_readonly: flag indicating readonly status
- *
- * Notifies all backend's clients about the current readonly state.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_book_backend_set_writable() instead.
- **/
-void
-e_book_backend_notify_readonly (EBookBackend *backend,
-                                gboolean is_readonly)
-{
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-
-	e_book_backend_set_writable (backend, !is_readonly);
-}
-
-/**
- * e_book_backend_notify_online:
- * @backend: an #EBookBackend
- * @is_online: flag indicating whether @backend is connected and online
- *
- * Notifies clients of @backend's connection status indicated by @is_online.
- * Meant to be used by backend implementations.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_backend_set_online() instead.
- **/
-void
-e_book_backend_notify_online (EBookBackend *backend,
-                              gboolean is_online)
-{
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-
-	e_backend_set_online (E_BACKEND (backend), is_online);
-}
-
-/**
- * e_book_backend_notify_opened:
- * @backend: an #EBookBackend
- * @error: a #GError corresponding to the error encountered during
- *    the opening phase. Use %NULL for success. The @error is freed
- *    automatically if not %NULL.
- *
- * Notifies clients that @backend finished its opening phase.
- * See e_book_backend_open() for more information how the opening
- * phase works. Calling this function changes 'opening' property,
- * same as 'opened'. 'opening' is set to %FALSE and the backend
- * is considered 'opened' only if the @error is %NULL.
- *
- * See also: e_book_backend_respond_opened()
- *
- * Note: The @error is freed automatically if not %NULL.
- *
- * Meant to be used by backend implementations.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_data_book_respond_open() instead.
- **/
-void
-e_book_backend_notify_opened (EBookBackend *backend,
-                              GError *error)
-{
-}
-
-/**
  * e_book_backend_notify_property_changed:
  * @backend: an #EBookBackend
  * @prop_name: property name, which changed
@@ -1468,34 +1275,3 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
 	}
 }
 
-/**
- * e_book_backend_respond_opened:
- * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: an operation ID
- * @error: result error; can be %NULL, if it isn't then it's automatically freed
- *
- * This is a replacement for e_data_book_respond_open() for cases where
- * the finish of 'open' method call also finishes backend opening phase.
- * This function covers calling of both e_book_backend_notify_opened()
- * and e_data_book_respond_open() with the same @error.
- *
- * See e_book_backend_open() for more details how the opening phase works.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_data_book_respond_open() instead.
- **/
-void
-e_book_backend_respond_opened (EBookBackend *backend,
-                               EDataBook *book,
-                               guint32 opid,
-                               GError *error)
-{
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (book != NULL);
-	g_return_if_fail (opid != 0);
-
-	e_data_book_respond_open (book, opid, error);
-}

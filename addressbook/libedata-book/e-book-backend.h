@@ -307,68 +307,6 @@ void		e_book_backend_sync		(EBookBackend *backend);
 void		e_book_backend_set_is_removed	(EBookBackend *backend,
 						 gboolean is_removed);
 
-#ifndef EDS_DISABLE_DEPRECATED
-/**
- * CLIENT_BACKEND_PROPERTY_OPENED:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Clients don't need to care if they're fully opened
- *                  anymore.  This property will always return %TRUE.
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
-
-/**
- * CLIENT_BACKEND_PROPERTY_OPENING:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Clients don't need to care if they're fully opened
- *                  anymore.  This property will always return %FALSE.
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
-
-/**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: The property is no longer supported.
- **/
-#define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
-
-gboolean	e_book_backend_add_client	(EBookBackend *backend,
-						 EDataBook *book);
-void		e_book_backend_remove_client	(EBookBackend *backend,
-						 EDataBook *book);
-gboolean	e_book_backend_is_opening	(EBookBackend *backend);
-void		e_book_backend_set_backend_property
-						(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value);
-void		e_book_backend_foreach_view	(EBookBackend *backend,
-						 gboolean (*callback) (EDataBookView *view,
-								       gpointer user_data),
-								       gpointer user_data);
-void		e_book_backend_notify_opened	(EBookBackend *backend,
-						 GError *error);
-void		e_book_backend_notify_readonly	(EBookBackend *backend,
-						 gboolean is_readonly);
-void		e_book_backend_notify_online	(EBookBackend *backend,
-						 gboolean is_online);
-void		e_book_backend_respond_opened	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GError *error);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_BOOK_BACKEND_H */

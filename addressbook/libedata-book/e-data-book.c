@@ -1329,23 +1329,6 @@ e_data_book_respond_get_backend_property (EDataBook *book,
 	op_unref (data);
 }
 
-/**
- * e_data_book_respond_set_backend_property:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function no longer does anything.
- **/
-void
-e_data_book_respond_set_backend_property (EDataBook *book,
-                                          guint32 opid,
-                                          GError *error)
-{
-	/* Do nothing. */
-}
-
 void
 e_data_book_respond_get_contact (EDataBook *book,
                                  guint32 opid,
@@ -1737,75 +1720,6 @@ e_data_book_report_error (EDataBook *book,
 	g_return_if_fail (message != NULL);
 
 	e_dbus_address_book_emit_error (book->priv->dbus_interface, message);
-}
-
-/**
- * e_data_book_report_readonly:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_book_backend_set_writable() instead.
- **/
-void
-e_data_book_report_readonly (EDataBook *book,
-                             gboolean readonly)
-{
-	EBookBackend *backend;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	backend = e_data_book_ref_backend (book);
-
-	if (backend != NULL) {
-		e_book_backend_set_writable (backend, !readonly);
-		g_object_unref (backend);
-	}
-}
-
-/**
- * e_data_book_report_online:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_backend_set_online() instead.
- **/
-void
-e_data_book_report_online (EDataBook *book,
-                           gboolean is_online)
-{
-	EBookBackend *backend;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	backend = e_data_book_ref_backend (book);
-
-	if (backend != NULL) {
-		e_backend_set_online (E_BACKEND (backend), is_online);
-		g_object_unref (backend);
-	}
-}
-
-/**
- * e_data_book_report_opened:
- *
- * Reports to associated client that opening phase of the book is finished.
- * error being NULL means successfully, otherwise reports an error which
- * happened during opening phase. By opening phase is meant a process
- * including successfull authentication to the server/storage.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function no longer does anything.
- **/
-void
-e_data_book_report_opened (EDataBook *book,
-                           const GError *error)
-{
-	/* Do nothing. */
 }
 
 /**
@@ -2380,35 +2294,6 @@ e_data_book_ref_backend (EDataBook *book)
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 
 	return g_weak_ref_get (&book->priv->backend);
-}
-
-/**
- * e_data_book_get_backend:
- * @book: an #EDataBook
- *
- * Returns the #EBookBackend to which incoming remote method invocations
- * are being forwarded.
- *
- * Returns: the #EBookBackend
- *
- * Deprecated: 3.10: Use e_data_book_ref_backend() instead.
- **/
-EBookBackend *
-e_data_book_get_backend (EDataBook *book)
-{
-	EBookBackend *backend;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
-
-	backend = e_data_book_ref_backend (book);
-
-	/* XXX Drop the EBookBackend reference for backward-compatibility.
-	 *     This is risky.  Without a reference, the EBookBackend could
-	 *     be finalized while the caller is still using it. */
-	if (backend != NULL)
-		g_object_unref (backend);
-
-	return backend;
 }
 
 /**

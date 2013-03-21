@@ -146,42 +146,6 @@ e_book_backend_sync_get_backend_property (EBookBackendSync *backend,
 }
 
 /**
- * e_book_backend_sync_set_backend_property:
- * @backend: an #EBookBackendSync
- * @book: an #EDataBook
- * @cancellable: a #GCancellable for the operation
- * @prop_name: Property name to set.
- * @prop_value: New value of the @prop_name.
- * @error: #GError to set, when something fails
- *
- * Calls the set_backend_property_sync method on the given backend.
- *
- * Returns whether processed this property. Returning FALSE means to pass
- * the call to the EBookBackend parent class, thus neither @error should be
- * set in this case.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function always returns %FALSE and sets an
- *                  %E_DATA_BOOK_STATUS_NOT_SUPPORTED error.
- **/
-gboolean
-e_book_backend_sync_set_backend_property (EBookBackendSync *backend,
-                                          EDataBook *book,
-                                          GCancellable *cancellable,
-                                          const gchar *prop_name,
-                                          const gchar *prop_value,
-                                          GError **error)
-{
-	g_set_error_literal (
-		error, E_DATA_BOOK_ERROR,
-		E_DATA_BOOK_STATUS_NOT_SUPPORTED,
-		_("Clients cannot set backend properties"));
-
-	return FALSE;
-}
-
-/**
  * e_book_backend_sync_remove_contacts:
  * @backend: an #EBookBackendSync
  * @book: an #EDataBook
