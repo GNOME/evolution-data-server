@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-03-06 11:11+0000\n"
-"PO-Revision-Date: 2013-03-06 19:59+0000\n"
+"POT-Creation-Date: 2013-03-21 21:18+0000\n"
+"PO-Revision-Date: 2013-03-12 23:49+0000\n"
 "Last-Translator: Marián Čavojský <cavo+gnomel10n@cavo.sk>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -48,8 +48,8 @@ msgid "Conflicting UIDs found in added contacts"
 msgstr "Kolidujúce jednoznačné identifikátory v pridávaných kontaktoch"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:844
-#: ../addressbook/backends/file/e-book-backend-file.c:1038
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2610
+#: ../addressbook/backends/file/e-book-backend-file.c:1040
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2615
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Kontakt „%s“ sa nenašiel"
@@ -59,30 +59,28 @@ msgstr "Kontakt „%s“ sa nenašiel"
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr "Vyskúšaná úprava kontaktu „%s“ s nesynchronizovanou revíziou"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1089
-#: ../addressbook/backends/file/e-book-backend-file.c:1139
-#, fuzzy, c-format
-#| msgid "Protocol not supported"
+#: ../addressbook/backends/file/e-book-backend-file.c:1091
+#: ../addressbook/backends/file/e-book-backend-file.c:1141
+#, c-format
 msgid "Query '%s' not supported"
-msgstr "Protokol nepodporovaný"
+msgstr "Požiadavka „%s“ nie je nepodporovaná"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1098
-#: ../addressbook/backends/file/e-book-backend-file.c:1148
-#, fuzzy, c-format
-#| msgid "Invalid query: "
+#: ../addressbook/backends/file/e-book-backend-file.c:1100
+#: ../addressbook/backends/file/e-book-backend-file.c:1150
+#, c-format
 msgid "Invalid Query '%s'"
-msgstr "Neplatná požiadavka: "
+msgstr "Neplatná požiadavka „%s“"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1248
+#: ../addressbook/backends/file/e-book-backend-file.c:1250
 msgid "Loading..."
 msgstr "Načítava sa…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1250
+#: ../addressbook/backends/file/e-book-backend-file.c:1252
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4963
 msgid "Searching..."
 msgstr "Hľadá sa…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1568
+#: ../addressbook/backends/file/e-book-backend-file.c:1562
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Zlyhalo premenovanie starej databázy „%s“ na „%s“: %s"
@@ -94,11 +92,11 @@ msgstr "Zlyhalo premenovanie starej databázy „%s“ na „%s“: %s"
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1029
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:562
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:592
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:604
-#: ../calendar/libecal/e-cal.c:2339 ../calendar/libecal/e-cal-client.c:268
-#: ../camel/camel-imapx-command.c:596 ../libedataserver/e-client.c:179
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:559
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:590
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:602
+#: ../calendar/libecal/e-cal.c:2335 ../calendar/libecal/e-cal-client.c:268
+#: ../camel/camel-imapx-command.c:596 ../libedataserver/e-client.c:177
 msgid "Unknown error"
 msgstr "Neznáma chyba"
 
@@ -233,51 +231,44 @@ msgstr "Prijímajú sa výsledky hľadania v LDAP…"
 msgid "Error performing search"
 msgstr "Chyba počas hľadania"
 
-# PK: preco tu je medzera na konci?
-# MČ: nie som si istý, ale vypisuje sa to cez e_data_book_view_notify_progress, takže za to možno chce vypisovať priebežný stav.
-# PK: toto by sa takto urcite nemalo robit, nahlas bug
+# https://bugzilla.gnome.org/show_bug.cgi?id=695578
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5108
-#, fuzzy, c-format
+#, c-format
 msgid "Downloading contacts (%d)... "
-msgstr "Preberajú sa kontakty (%d)… "
+msgstr "Preberajú sa kontakty (%d)…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5571
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Zlyhalo získanie rozlišujúceho názvu (DN) pre používateľa „%s“"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:420
-#, fuzzy, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+#, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
-msgstr "Vytvorenie prostriedku „%s“ zlyhalo so stavom HTTP: %d (%s)"
+msgstr "Vytvorenie prostriedku „%s“ zlyhalo so stavom HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:522
 #, c-format
 msgid "DELETE failed with HTTP status %d"
-msgstr "Operácia DELETE zlyhala so stavom HTTP: %d"
+msgstr "Operácia DELETE zlyhala so stavom HTTP %d"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:588
 msgid "Contact on server changed -> not modifying"
 msgstr "Kontakt bol na serveri zmenený -> úpravy nebudú zapísané"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:597
-#, fuzzy, c-format
-#| msgid "Modify contact failed with HTTP status: %d (%s)"
+#, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
-msgstr "Úprava kontaktu zlyhala so stavom HTTP: %d (%s)"
+msgstr "Úprava kontaktu zlyhala so stavom HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1007
 msgid "Loading Addressbook summary..."
 msgstr "Načítava sa súhrn adresára kontaktov…"
 
-# PK: preco v originale neni colon?
-# MČ: ak sa nemýlim v angličtine sa to berie ako jeden pojem „status 404“, i keď v reťazci „Create resorce“ o pár riadkov vyššie dvojbodku použili. Majú v tom trošku nekonzistentnosť. Zadal som bug.
-# https://bugzilla.gnome.org/show_bug.cgi?id=694572
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1026
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr "Operácia PROPFIND nad webdav zlyhala so stavom HTTP: %d (%s)"
+msgstr "Operácia PROPFIND nad webdav zlyhala so stavom HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1051
 msgid "No response body in webdav PROPFIND result"
@@ -288,8 +279,6 @@ msgstr "Žiadne telo odpovede vo výsledku webdav operácie PROPFIND"
 msgid "Loading Contacts (%d%%)"
 msgstr "Načítavajú sa kontakty (%d %%)"
 
-# PK: zmenit asi
-# PM: vety v slovenčine väčšinou začínajú podmetom - SoupURI sa nedá...
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1416
 msgid "Cannot transform SoupURI to string"
 msgstr "SoupURI sa nedá pretvoriť na reťazec"
@@ -299,12 +288,12 @@ msgid "No such book"
 msgstr "Adresár kontaktov neexistuje"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:26
-#: ../addressbook/libedata-book/e-data-book.c:797
+#: ../addressbook/libedata-book/e-data-book.c:812
 msgid "Contact not found"
 msgstr "Kontakt sa nenašiel"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:28
-#: ../addressbook/libedata-book/e-data-book.c:798
+#: ../addressbook/libedata-book/e-data-book.c:813
 msgid "Contact ID already exists"
 msgstr "Identifikátor kontaktu už existuje"
 
@@ -313,7 +302,7 @@ msgid "No such source"
 msgstr "Zdroj neexistuje"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:32
-#: ../addressbook/libedata-book/e-data-book.c:814
+#: ../addressbook/libedata-book/e-data-book.c:829
 msgid "No space"
 msgstr "Žiadne miesto"
 
@@ -355,27 +344,22 @@ msgstr "Priezvisko"
 msgid "Nickname"
 msgstr "Prezývka"
 
-# PK: preco nie Email c. 1
 #. Email fields
 #: ../addressbook/libebook-contacts/e-contact.c:139
-#, fuzzy
 msgid "Email 1"
-msgstr "Email 1"
+msgstr "Email č. 1"
 
 #: ../addressbook/libebook-contacts/e-contact.c:140
-#, fuzzy
 msgid "Email 2"
-msgstr "Email 2"
+msgstr "Email č. 2"
 
 #: ../addressbook/libebook-contacts/e-contact.c:141
-#, fuzzy
 msgid "Email 3"
-msgstr "Email 3"
+msgstr "Email č. 3"
 
 #: ../addressbook/libebook-contacts/e-contact.c:142
-#, fuzzy
 msgid "Email 4"
-msgstr "Email 4"
+msgstr "Email č. 4"
 
 #: ../addressbook/libebook-contacts/e-contact.c:144
 msgid "Mailer"
@@ -400,15 +384,12 @@ msgid "Assistant Phone"
 msgstr "Asistentov telefón"
 
 #: ../addressbook/libebook-contacts/e-contact.c:153
-#, fuzzy
 msgid "Business Phone"
 msgstr "Telefón do práce"
 
-# PK:  c. 2
 #: ../addressbook/libebook-contacts/e-contact.c:154
-#, fuzzy
 msgid "Business Phone 2"
-msgstr "Telefón do práce 2"
+msgstr "Telefón do práce č. 2"
 
 #: ../addressbook/libebook-contacts/e-contact.c:155
 msgid "Business Fax"
@@ -430,11 +411,9 @@ msgstr "Telefón do firmy"
 msgid "Home Phone"
 msgstr "Telefón domov"
 
-# PK: c. 2
 #: ../addressbook/libebook-contacts/e-contact.c:160
-#, fuzzy
 msgid "Home Phone 2"
-msgstr "Telefón domov 2"
+msgstr "Telefón domov č. 2"
 
 #: ../addressbook/libebook-contacts/e-contact.c:161
 msgid "Home Fax"
@@ -546,153 +525,150 @@ msgstr "Manžel(ka)"
 msgid "Note"
 msgstr "Poznámka"
 
-# PM: rozmýšľam či nemá byť Prezývky k (službe) AIM domov 1 - oprav prosím všade 
-# PK: prezyvka domov c. 1 pre sluzbu AIM skor, viackrat
 #. Instant messaging fields
 #: ../addressbook/libebook-contacts/e-contact.c:200
-#, fuzzy
 msgid "AIM Home Screen Name 1"
-msgstr "Prezývka k službe AIM domov 1"
+msgstr "Prezývka domov č. 1 pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:201
 msgid "AIM Home Screen Name 2"
-msgstr "Prezývka k službe AIM domov 2"
+msgstr "Prezývka domov č. 2 pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:202
 msgid "AIM Home Screen Name 3"
-msgstr "Prezývka k službe AIM domov 3"
+msgstr "Prezývka domov č. 3 pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:203
 msgid "AIM Work Screen Name 1"
-msgstr "Prezývka k službe AIM do práce 1"
+msgstr "Prezývka do práce č. 1 pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:204
 msgid "AIM Work Screen Name 2"
-msgstr "Prezývka k službe AIM do práce 2"
+msgstr "Prezývka do práce č. 2 pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:205
 msgid "AIM Work Screen Name 3"
-msgstr "Prezývka k službe AIM do práce 3"
+msgstr "Prezývka do práce č. 3 pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:206
 msgid "GroupWise Home Screen Name 1"
-msgstr "Prezývka k službe GroupWise domov 1"
+msgstr "Prezývka domov č. 1 pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:207
 msgid "GroupWise Home Screen Name 2"
-msgstr "Prezývka k službe GroupWise domov 2"
+msgstr "Prezývka domov č. 2 pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:208
 msgid "GroupWise Home Screen Name 3"
-msgstr "Prezývka k službe GroupWise domov 3"
+msgstr "Prezývka domov č. 3 pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:209
 msgid "GroupWise Work Screen Name 1"
-msgstr "Prezývka k službe GroupWise do práce 1"
+msgstr "Prezývka do práce č. 1 pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:210
 msgid "GroupWise Work Screen Name 2"
-msgstr "Prezývka k službe GroupWise do práce 2"
+msgstr "Prezývka do práce č. 2 pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:211
 msgid "GroupWise Work Screen Name 3"
-msgstr "Prezývka k službe GroupWise do práce 3"
+msgstr "Prezývka do práce č. 3 pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:212
 msgid "Jabber Home ID 1"
-msgstr "Identifikátor k službe Jabber domov 1"
+msgstr "Identifikátor domov č. 1 pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:213
 msgid "Jabber Home ID 2"
-msgstr "Identifikátor k službe Jabber domov 2"
+msgstr "Identifikátor domov č. 2 pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:214
 msgid "Jabber Home ID 3"
-msgstr "Identifikátor k službe Jabber domov 3"
+msgstr "Identifikátor domov č. 3 pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:215
 msgid "Jabber Work ID 1"
-msgstr "Identifikátor k službe Jabber do práce 1"
+msgstr "Identifikátor do práce č. 1 pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:216
 msgid "Jabber Work ID 2"
-msgstr "Identifikátor k službe Jabber do práce 2"
+msgstr "Identifikátor do práce č. 2 pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:217
 msgid "Jabber Work ID 3"
-msgstr "Identifikátor k službe Jabber do práce 3"
+msgstr "Identifikátor do práce č. 3 pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:218
 msgid "Yahoo! Home Screen Name 1"
-msgstr "Yahoo! prezývka domov 1"
+msgstr "Prezývka domov č. 1 pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:219
 msgid "Yahoo! Home Screen Name 2"
-msgstr "Prezývka k službe Yahoo! domov 2"
+msgstr "Prezývka domov č. 2 pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:220
 msgid "Yahoo! Home Screen Name 3"
-msgstr "Prezývka k službe Yahoo! domov 3"
+msgstr "Prezývka domov č. 3 pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:221
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Prezývka k službe Yahoo! do práce 1"
+msgstr "Prezývka do práce č. 1 pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:222
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Prezývka k službe Yahoo! do práce 2"
+msgstr "Prezývka do práce č. 2 pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:223
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Prezývka k službe Yahoo! do práce 3"
+msgstr "Prezývka do práce č. 3 pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:224
 msgid "MSN Home Screen Name 1"
-msgstr "Prezývka k službe MSN domov 1"
+msgstr "Prezývka domov č. 1 pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:225
 msgid "MSN Home Screen Name 2"
-msgstr "Prezývka k službe MSN domov 2"
+msgstr "Prezývka domov č. 2 pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:226
 msgid "MSN Home Screen Name 3"
-msgstr "Prezývka k službe MSN domov 3"
+msgstr "Prezývka domov č. 3 pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:227
 msgid "MSN Work Screen Name 1"
-msgstr "Prezývka k službe MSN do práce 1"
+msgstr "Prezývka do práce č. 1 pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:228
 msgid "MSN Work Screen Name 2"
-msgstr "Prezývka k službe MSN do práce 2"
+msgstr "Prezývka do práce č. 2 pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:229
 msgid "MSN Work Screen Name 3"
-msgstr "Prezývka k službe MSN do práce 3"
+msgstr "Prezývka do práce č. 3 pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:230
 msgid "ICQ Home ID 1"
-msgstr "Identifikátor k službe ICQ domov 1"
+msgstr "Identifikátor domov č. 1 pre službu ICQ"
 
 #: ../addressbook/libebook-contacts/e-contact.c:231
 msgid "ICQ Home ID 2"
-msgstr "Identifikátor k službe ICQ domov 2"
+msgstr "Identifikátor domov č. 2 pre službu ICQ"
 
 #: ../addressbook/libebook-contacts/e-contact.c:232
 msgid "ICQ Home ID 3"
-msgstr "Identifikátor k službe ICQ domov 3"
+msgstr "Identifikátor domov č. 3 pre službu ICQ"
 
 #: ../addressbook/libebook-contacts/e-contact.c:233
 msgid "ICQ Work ID 1"
-msgstr "Identifikátor k službe ICQ do práce 1"
+msgstr "Identifikátor do práce č. 1 pre službu ICQ"
 
 #: ../addressbook/libebook-contacts/e-contact.c:234
 msgid "ICQ Work ID 2"
-msgstr "Identifikátor k službe ICQ do práce 2"
+msgstr "Identifikátor do práce č. 2 pre službu ICQ"
 
 #: ../addressbook/libebook-contacts/e-contact.c:235
 msgid "ICQ Work ID 3"
-msgstr "Identifikátor k službe ICQ do práce 3"
+msgstr "Identifikátor do práce č. 3 pre službu ICQ"
 
 #. Last modified time
 #: ../addressbook/libebook-contacts/e-contact.c:238
@@ -750,34 +726,31 @@ msgstr "Zoznam emailov"
 #. Instant messaging fields
 #: ../addressbook/libebook-contacts/e-contact.c:263
 msgid "AIM Screen Name List"
-msgstr "Zoznam prezývok k službe AIM"
+msgstr "Zoznam prezývok pre službu AIM"
 
 #: ../addressbook/libebook-contacts/e-contact.c:264
 msgid "GroupWise ID List"
-msgstr "Zoznam identifikátorov k službe GroupWise"
+msgstr "Zoznam identifikátorov pre službu GroupWise"
 
 #: ../addressbook/libebook-contacts/e-contact.c:265
 msgid "Jabber ID List"
-msgstr "Zoznam identifikátorov k službe Jabber"
+msgstr "Zoznam identifikátorov pre službu Jabber"
 
 #: ../addressbook/libebook-contacts/e-contact.c:266
 msgid "Yahoo! Screen Name List"
-msgstr "Zoznam prezývok k službe Yahoo!"
+msgstr "Zoznam prezývok pre službu Yahoo!"
 
 #: ../addressbook/libebook-contacts/e-contact.c:267
 msgid "MSN Screen Name List"
-msgstr "Zoznam prezývok k službe MSN"
+msgstr "Zoznam prezývok pre službu MSN"
 
 #: ../addressbook/libebook-contacts/e-contact.c:268
 msgid "ICQ ID List"
-msgstr "Zoznam identifikátorov k službe ICQ"
+msgstr "Zoznam identifikátorov pre službu ICQ"
 
-# PM: rozmýšlam či nebude lepšie mail v HTML
-# PK: mail -> postu, vo formate HTML
 #: ../addressbook/libebook-contacts/e-contact.c:270
-#, fuzzy
 msgid "Wants HTML Mail"
-msgstr "Chce mail v HTML formáte"
+msgstr "Chce poštové správy vo formáte HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
@@ -799,7 +772,7 @@ msgid "Birth Date"
 msgstr "Dátum narodenia"
 
 #: ../addressbook/libebook-contacts/e-contact.c:283
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:960
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:887
 msgid "Anniversary"
 msgstr "Výročie"
 
@@ -808,35 +781,33 @@ msgstr "Výročie"
 msgid "X.509 Certificate"
 msgstr "Certifikát X.509"
 
-# PK: tiez ako hore, prever ako to vlastne ma byt a co to robi
 #: ../addressbook/libebook-contacts/e-contact.c:288
-#, fuzzy
 msgid "Gadu-Gadu Home ID 1"
-msgstr "Identifikátor k službe Gadu-Gadu domov 1"
+msgstr "Identifikátor domov č. 1 pre službu Gadu-Gadu"
 
 #: ../addressbook/libebook-contacts/e-contact.c:289
 msgid "Gadu-Gadu Home ID 2"
-msgstr "Identifikátor k službe Gadu-Gadu domov 2"
+msgstr "Identifikátor domov č. 2 pre službu Gadu-Gadu"
 
 #: ../addressbook/libebook-contacts/e-contact.c:290
 msgid "Gadu-Gadu Home ID 3"
-msgstr "Identifikátor k službe Gadu-Gadu domov 3"
+msgstr "Identifikátor domov č. 3 pre službu Gadu-Gadu"
 
 #: ../addressbook/libebook-contacts/e-contact.c:291
 msgid "Gadu-Gadu Work ID 1"
-msgstr "Identifikátor k službe Gadu-Gadu do práce 1"
+msgstr "Identifikátor do práce č. 1 pre službu Gadu-Gadu"
 
 #: ../addressbook/libebook-contacts/e-contact.c:292
 msgid "Gadu-Gadu Work ID 2"
-msgstr "Identifikátor k službe Gadu-Gadu do práce 2"
+msgstr "Identifikátor do práce č. 2 pre službu Gadu-Gadu"
 
 #: ../addressbook/libebook-contacts/e-contact.c:293
 msgid "Gadu-Gadu Work ID 3"
-msgstr "Identifikátor k službe Gadu-Gadu do práce 3"
+msgstr "Identifikátor do práce č. 3 pre službu Gadu-Gadu"
 
 #: ../addressbook/libebook-contacts/e-contact.c:294
 msgid "Gadu-Gadu ID List"
-msgstr "Zoznam identifikátorov k službe Gadu-Gadu"
+msgstr "Zoznam identifikátorov pre službu Gadu-Gadu"
 
 #. Geo information
 #: ../addressbook/libebook-contacts/e-contact.c:297
@@ -849,31 +820,31 @@ msgstr "Telefón"
 
 #: ../addressbook/libebook-contacts/e-contact.c:301
 msgid "Skype Home Name 1"
-msgstr "Prezývka k službe Skype domov 1"
+msgstr "Prezývka domov č. 1 pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Skype Home Name 2"
-msgstr "Prezývka k službe Skype domov 2"
+msgstr "Prezývka domov č. 2 pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:303
 msgid "Skype Home Name 3"
-msgstr "Prezývka k službe Skype domov 3"
+msgstr "Prezývka domov č. 3 pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Skype Work Name 1"
-msgstr "Prezývka k službe Skype do práce 1"
+msgstr "Prezývka do práce č. 1 pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:305
 msgid "Skype Work Name 2"
-msgstr "Prezývka k službe Skype do práce 2"
+msgstr "Prezývka do práce č. 2 pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:306
 msgid "Skype Work Name 3"
-msgstr "Prezývka k službe Skype do práce 3"
+msgstr "Prezývka do práce č. 2 pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:307
 msgid "Skype Name List"
-msgstr "Zoznam prezývok k službe Skype"
+msgstr "Zoznam prezývok pre službu Skype"
 
 #: ../addressbook/libebook-contacts/e-contact.c:309
 msgid "SIP address"
@@ -881,38 +852,38 @@ msgstr "Adresa SIP"
 
 #: ../addressbook/libebook-contacts/e-contact.c:311
 msgid "Google Talk Home Name 1"
-msgstr "Prezývka k službe Google Talk domov 1"
+msgstr "Prezývka domov č. 1 pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "Google Talk Home Name 2"
-msgstr "Prezývka k službe Google Talk domov 2"
+msgstr "Prezývka domov č. 2 pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:313
 msgid "Google Talk Home Name 3"
-msgstr "Prezývka k službe Google Talk domov 3"
+msgstr "Prezývka domov č. 3 pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Google Talk Work Name 1"
-msgstr "Prezývka k službe Google Talk do práce 1"
+msgstr "Prezývka do práce č. 1 pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Google Talk Work Name 2"
-msgstr "Prezývka k službe Google Talk do práce 2"
+msgstr "Prezývka do práce č. 2 pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Google Talk Work Name 3"
-msgstr "Prezývka k službe Google Talk do práce 3"
+msgstr "Prezývka do práce č. 3 pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Google Talk Name List"
-msgstr "Zoznam Prezývok k službe Google Talk"
+msgstr "Zoznam Prezývok pre službu Google Talk"
 
 #: ../addressbook/libebook-contacts/e-contact.c:319
 msgid "Twitter Name List"
-msgstr "Zoznam prezývok k službe Twitter"
+msgstr "Zoznam prezývok pre službu Twitter"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1683
-#: ../addressbook/libebook/e-destination.c:884
+#: ../addressbook/libebook-contacts/e-contact.c:1624
+#: ../addressbook/libebook/e-destination.c:883
 msgid "Unnamed List"
 msgstr "Zoznam bez názvu"
 
@@ -946,43 +917,42 @@ msgstr "Text je prikrátky na telefónne číslo"
 msgid "Text is too long for a phone number"
 msgstr "Text je pridlhý na telefónne číslo"
 
-#: ../addressbook/libebook/e-book-client.c:682
-#: ../addressbook/libedata-book/e-book-backend.c:120
+#: ../addressbook/libebook/e-book-client.c:667
+#: ../addressbook/libedata-book/e-book-backend.c:125
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Neznáma vlastnosť adresára kontaktov „%s“"
 
-#: ../addressbook/libebook/e-book-client.c:697
+#: ../addressbook/libebook/e-book-client.c:682
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Nedá sa zmeniť hodnota vlastnosti adresára kontaktov „%s“"
 
-#: ../addressbook/libebook/e-book-client.c:1003
-#: ../addressbook/libebook/e-book-client.c:1176
-#: ../calendar/libecal/e-cal-client.c:1451
-#: ../calendar/libecal/e-cal-client.c:1631
+#: ../addressbook/libebook/e-book-client.c:993
+#: ../addressbook/libebook/e-book-client.c:1166
+#: ../calendar/libecal/e-cal-client.c:1509
+#: ../calendar/libecal/e-cal-client.c:1689
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Nedá sa pripojiť k „%s“: "
 
-# PK: suhrnu
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:752
-#, fuzzy, c-format
+#, c-format
 msgid "Error introspecting unknown summary field '%s'"
-msgstr "Chyba vnútornej analýzy neznámeho poľa sumáru „%s“"
+msgstr "Chyba vnútornej analýzy neznámeho poľa súhrnu „%s“"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1240
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1241
 #: ../camel/camel-db.c:544
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nedostatok pamäte"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1373
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1374
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Neplatné pole kontaktu „%d“ špecifikované v súhrne"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1407
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1408
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -991,48 +961,53 @@ msgstr ""
 "Pole kontaktu „%s“ s typu „%s“ je špecifikované v súhrne, ale podporované sú "
 "len pravdivostná hodnota, reťazec, prípadne reťazec poľa zoznamu"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2598
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3639
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2603
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3644
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
+"Úplný výstup z funkcie search_contacts nie je uchovaný vo vyrovnávacej "
+"pamäti. Vizitky nemôžu byť sprístupnené."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3765
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3846
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3770
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3851
 #, c-format
 msgid "Query contained unsupported elements"
-msgstr ""
+msgstr "Požiadavka obsahuje nepodporované prvky"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3769
-#, fuzzy, c-format
-#| msgid "Invalid query"
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3774
+#, c-format
 msgid "Invalid Query"
 msgstr "Neplatná požiadavka"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3793
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3798
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr ""
+"Úplný výstup z funkcie search_contacts nie je uchovaný vo vyrovnávacej "
+"pamäti, a preto je podporovaný len súhrn požiadavky."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3850
-#: ../addressbook/libedata-book/e-data-book.c:669
-#: ../addressbook/libedata-book/e-data-book.c:809
-#: ../calendar/libedata-cal/e-data-cal.c:612
-#: ../calendar/libedata-cal/e-data-cal.c:771 ../libedataserver/e-client.c:166
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3855
+#: ../addressbook/libedata-book/e-data-book.c:692
+#: ../addressbook/libedata-book/e-data-book.c:824
+#: ../calendar/libedata-cal/e-data-cal.c:635
+#: ../calendar/libedata-cal/e-data-cal.c:784 ../libedataserver/e-client.c:164
 #, c-format
 msgid "Invalid query"
 msgstr "Neplatná požiadavka"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3892
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3897
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
+"Všetky vizitky nie sú uchované vo vyrovnávacej pamäti, a preto je "
+"podporovaný len súhrn požiadavky."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4593
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4598
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Nedá sa odstrániť súbor databázy: chyba číslo %d"
@@ -1045,211 +1020,211 @@ msgstr "Klienti nemôžu nastaviť vlastnosti obslužného programu"
 #. Translators: This is prefix to a detailed error message
 #. Translators: This is a prefix to a detailed error message *
 #.
-#: ../addressbook/libedata-book/e-data-book.c:691
-#: ../calendar/libedata-cal/e-data-cal.c:635
+#: ../addressbook/libedata-book/e-data-book.c:714
+#: ../calendar/libedata-cal/e-data-cal.c:658
 msgid "Invalid query: "
 msgstr "Neplatná požiadavka: "
 
-#: ../addressbook/libedata-book/e-data-book.c:793
-#: ../calendar/libedata-cal/e-data-cal.c:752
+#: ../addressbook/libedata-book/e-data-book.c:808
+#: ../calendar/libedata-cal/e-data-cal.c:765
 msgid "Success"
 msgstr "Úspech"
 
-#: ../addressbook/libedata-book/e-data-book.c:794
-#: ../calendar/libecal/e-cal.c:2307 ../calendar/libedata-cal/e-data-cal.c:753
-#: ../libedataserver/e-client.c:133
+#: ../addressbook/libedata-book/e-data-book.c:809
+#: ../calendar/libecal/e-cal.c:2303 ../calendar/libedata-cal/e-data-cal.c:766
+#: ../libedataserver/e-client.c:131
 msgid "Backend is busy"
 msgstr "Obslužný program je zaneprázdnený"
 
-#: ../addressbook/libedata-book/e-data-book.c:795
-#: ../calendar/libedata-cal/e-data-cal.c:754 ../libedataserver/e-client.c:143
+#: ../addressbook/libedata-book/e-data-book.c:810
+#: ../calendar/libedata-cal/e-data-cal.c:767 ../libedataserver/e-client.c:141
 msgid "Repository offline"
 msgstr "Repozitár je odpojený"
 
-#: ../addressbook/libedata-book/e-data-book.c:796
-#: ../calendar/libecal/e-cal.c:2321 ../calendar/libedata-cal/e-data-cal.c:755
-#: ../libedataserver/e-client.c:150
+#: ../addressbook/libedata-book/e-data-book.c:811
+#: ../calendar/libecal/e-cal.c:2317 ../calendar/libedata-cal/e-data-cal.c:768
+#: ../libedataserver/e-client.c:148
 msgid "Permission denied"
 msgstr "Prístup zamietnutý"
 
-#: ../addressbook/libedata-book/e-data-book.c:799
-#: ../calendar/libedata-cal/e-data-cal.c:760
+#: ../addressbook/libedata-book/e-data-book.c:814
+#: ../calendar/libedata-cal/e-data-cal.c:773
 msgid "Authentication Failed"
 msgstr "Overenie totožnosti zlyhalo"
 
-#: ../addressbook/libedata-book/e-data-book.c:800
-#: ../calendar/libedata-cal/e-data-cal.c:761
+#: ../addressbook/libedata-book/e-data-book.c:815
+#: ../calendar/libedata-cal/e-data-cal.c:774
 msgid "Authentication Required"
 msgstr "Vyžaduje sa overenie totožnosti"
 
-#: ../addressbook/libedata-book/e-data-book.c:801
-#: ../calendar/libedata-cal/e-data-cal.c:762
+#: ../addressbook/libedata-book/e-data-book.c:816
+#: ../calendar/libedata-cal/e-data-cal.c:775
 msgid "Unsupported field"
 msgstr "Nepodporované pole"
 
-#: ../addressbook/libedata-book/e-data-book.c:802
-#: ../calendar/libedata-cal/e-data-cal.c:764 ../libedataserver/e-client.c:158
+#: ../addressbook/libedata-book/e-data-book.c:817
+#: ../calendar/libedata-cal/e-data-cal.c:777 ../libedataserver/e-client.c:156
 msgid "Unsupported authentication method"
 msgstr "Nepodporovaná metóda overenia totožnosti"
 
-#: ../addressbook/libedata-book/e-data-book.c:803
-#: ../calendar/libedata-cal/e-data-cal.c:765 ../libedataserver/e-client.c:160
+#: ../addressbook/libedata-book/e-data-book.c:818
+#: ../calendar/libedata-cal/e-data-cal.c:778 ../libedataserver/e-client.c:158
 msgid "TLS not available"
 msgstr "TLS nie je dostupné"
 
-#: ../addressbook/libedata-book/e-data-book.c:804
+#: ../addressbook/libedata-book/e-data-book.c:819
 msgid "Address book does not exist"
 msgstr "Adresár kontaktov neexistuje"
 
-#: ../addressbook/libedata-book/e-data-book.c:805
+#: ../addressbook/libedata-book/e-data-book.c:820
 msgid "Book removed"
 msgstr "Adresár kontaktov odstránený"
 
-#: ../addressbook/libedata-book/e-data-book.c:806
-#: ../calendar/libedata-cal/e-data-cal.c:768
+#: ../addressbook/libedata-book/e-data-book.c:821
+#: ../calendar/libedata-cal/e-data-cal.c:781
 msgid "Not available in offline mode"
 msgstr "Nedostupný v odpojenom režime"
 
-#: ../addressbook/libedata-book/e-data-book.c:807
-#: ../calendar/libedata-cal/e-data-cal.c:769 ../libedataserver/e-client.c:162
+#: ../addressbook/libedata-book/e-data-book.c:822
+#: ../calendar/libedata-cal/e-data-cal.c:782 ../libedataserver/e-client.c:160
 msgid "Search size limit exceeded"
 msgstr "Prekročený limit veľkosti vyhľadávania"
 
-#: ../addressbook/libedata-book/e-data-book.c:808
-#: ../calendar/libedata-cal/e-data-cal.c:770 ../libedataserver/e-client.c:164
+#: ../addressbook/libedata-book/e-data-book.c:823
+#: ../calendar/libedata-cal/e-data-cal.c:783 ../libedataserver/e-client.c:162
 msgid "Search time limit exceeded"
 msgstr "Prekročený časový limit vyhľadávania"
 
-#: ../addressbook/libedata-book/e-data-book.c:810
-#: ../calendar/libedata-cal/e-data-cal.c:772 ../libedataserver/e-client.c:168
+#: ../addressbook/libedata-book/e-data-book.c:825
+#: ../calendar/libedata-cal/e-data-cal.c:785 ../libedataserver/e-client.c:166
 msgid "Query refused"
 msgstr "Požiadavka odmietnutá"
 
-#: ../addressbook/libedata-book/e-data-book.c:811
-#: ../calendar/libedata-cal/e-data-cal.c:773 ../libedataserver/e-client.c:154
+#: ../addressbook/libedata-book/e-data-book.c:826
+#: ../calendar/libedata-cal/e-data-cal.c:786 ../libedataserver/e-client.c:152
 msgid "Could not cancel"
 msgstr "Nepodarilo sa zrušiť"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:813
-#: ../calendar/libedata-cal/e-data-cal.c:775
+#: ../addressbook/libedata-book/e-data-book.c:828
+#: ../calendar/libedata-cal/e-data-cal.c:788
 msgid "Invalid server version"
 msgstr "Neplatná verzia servera"
 
-#: ../addressbook/libedata-book/e-data-book.c:815
-#: ../calendar/libecal/e-cal.c:2305 ../calendar/libedata-cal/e-data-cal.c:776
-#: ../libedataserver/e-client.c:131
+#: ../addressbook/libedata-book/e-data-book.c:830
+#: ../calendar/libecal/e-cal.c:2301 ../calendar/libedata-cal/e-data-cal.c:789
+#: ../libedataserver/e-client.c:129
 msgid "Invalid argument"
 msgstr "Neplatný parameter"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:817
-#: ../calendar/libecal/e-cal.c:1064 ../calendar/libecal/e-cal.c:1432
-#: ../calendar/libecal/e-cal.c:1912 ../calendar/libecal/e-cal.c:2344
-#: ../calendar/libedata-cal/e-data-cal.c:778 ../libedataserver/e-client.c:156
+#: ../addressbook/libedata-book/e-data-book.c:832
+#: ../calendar/libecal/e-cal.c:1060 ../calendar/libecal/e-cal.c:1428
+#: ../calendar/libecal/e-cal.c:1908 ../calendar/libecal/e-cal.c:2340
+#: ../calendar/libedata-cal/e-data-cal.c:791 ../libedataserver/e-client.c:154
 #, c-format
 msgid "Not supported"
 msgstr "Nepodporované"
 
-#: ../addressbook/libedata-book/e-data-book.c:818
-#: ../calendar/libedata-cal/e-data-cal.c:779 ../libedataserver/e-client.c:174
+#: ../addressbook/libedata-book/e-data-book.c:833
+#: ../calendar/libedata-cal/e-data-cal.c:792 ../libedataserver/e-client.c:172
 msgid "Backend is not opened yet"
 msgstr "Obslužný program nie je ešte otvorený"
 
-#: ../addressbook/libedata-book/e-data-book.c:819
-#: ../libedataserver/e-client.c:176
+#: ../addressbook/libedata-book/e-data-book.c:834
+#: ../libedataserver/e-client.c:174
 msgid "Object is out of sync"
 msgstr "Objekt je nezosynchonizovaný"
 
-#: ../addressbook/libedata-book/e-data-book.c:827
-#: ../calendar/libedata-cal/e-data-cal.c:787 ../libedataserver/e-client.c:172
+#: ../addressbook/libedata-book/e-data-book.c:842
+#: ../calendar/libedata-cal/e-data-cal.c:800 ../libedataserver/e-client.c:170
 msgid "Other error"
 msgstr "Iná chyba"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1133
+#: ../addressbook/libedata-book/e-data-book.c:1209
 msgid "Cannot open book: "
 msgstr "Nedá sa otvoriť adresár kontaktov: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1217
+#: ../addressbook/libedata-book/e-data-book.c:1284
 msgid "Cannot refresh address book: "
 msgstr "Nedá sa obnoviť adresár kontaktov: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1298
+#: ../addressbook/libedata-book/e-data-book.c:1365
 msgid "Cannot get contact: "
 msgstr "Nedá sa získať kontakt: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1364
+#: ../addressbook/libedata-book/e-data-book.c:1431
 msgid "Cannot get contact list: "
 msgstr "Nedá sa získať zoznam kontaktov: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1456
+#: ../addressbook/libedata-book/e-data-book.c:1523
 msgid "Cannot get contact list uids: "
 msgstr "Nedá sa získať zoznam uid kontaktov: %s"
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1536
+#: ../addressbook/libedata-book/e-data-book.c:1603
 msgid "Cannot add contact: "
 msgstr "Nedá sa pridať kontakt: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1599
+#: ../addressbook/libedata-book/e-data-book.c:1664
 msgid "Cannot modify contacts: "
 msgstr "Nedajú sa upraviť kontakty: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1640
+#: ../addressbook/libedata-book/e-data-book.c:1702
 msgid "Cannot remove contacts: "
 msgstr "Nedajú sa odstrániť kontakty: "
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:94
-#: ../calendar/libedata-cal/e-data-cal-factory.c:97
+#: ../addressbook/libedata-book/e-data-book-factory.c:246
+#: ../calendar/libedata-cal/e-data-cal-factory.c:249
 #, c-format
 msgid "No backend name in source '%s'"
 msgstr "Žiadny názov obslužného programu v zdroji „%s“"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:185
-#: ../calendar/libedata-cal/e-data-cal-factory.c:191
+#: ../addressbook/libedata-book/e-data-book-factory.c:297
+#: ../calendar/libedata-cal/e-data-cal-factory.c:303
 #, c-format
 msgid "Missing source UID"
 msgstr "Chýba UID zdroja"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:196
-#: ../calendar/libedata-cal/e-data-cal-factory.c:201
+#: ../addressbook/libedata-book/e-data-book-factory.c:308
+#: ../calendar/libedata-cal/e-data-cal-factory.c:313
 #, c-format
 msgid "No such source for UID '%s'"
 msgstr "Pre UID „%s“ neexistuje zdroj"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:560
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:557
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Server je nedostupný (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:590
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:588
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Zlyhalo pripojenie k serveru použitím SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:601
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Vrátený neočakávaný stavový kód HTTP %d (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:620
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
 msgid "CalDAV backend is not loaded yet"
 msgstr "Obslužný program CalDAV nie je ešte načítaný"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1009
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1007
 msgid "Invalid Redirect URL"
 msgstr "Neplatná URL presmerovania"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2491
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2849
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2489
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2843
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1258,55 +1233,56 @@ msgstr ""
 "Server je nedostupný, kalendár je otvorený v režime iba-na-čítanie.\n"
 "Chybová správa: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2801
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2795
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nedá sa vytvoriť miestny priečinok vyrovnávacej pamäte „%s“"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3893
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3883
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV nepodporuje hromadné pridávanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3996
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3986
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV nepodporuje hromadné úpravy"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4165
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4155
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV nepodporuje hromadné odstraňovanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4837
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4827
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendár nepodporuje diár"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4846
+# MČ: 	/* with 'calendar-schedule' supported, here's an outbox url for queries of free/busy information */
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4836
 msgid "Schedule outbox url not found"
-msgstr ""
+msgstr "Nebola nájdená url výstupu diára"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4945
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4935
 msgid "Unexpected result in schedule-response"
-msgstr ""
+msgstr "Neočakávaný výsledok v odpovedi diára"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:962
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:889
 msgid "Birthday"
 msgstr "Dátum narodenia"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:998
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:925
 #, c-format
 msgid "Birthday: %s"
 msgstr "Dátum narodenia: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1029
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:956
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Výročie: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:243
+#: ../calendar/backends/file/e-cal-backend-file.c:245
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Nedajú sa uložiť údaje kalendára: Poškodený URI."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:250
-#: ../calendar/backends/file/e-cal-backend-file.c:256
+#: ../calendar/backends/file/e-cal-backend-file.c:252
+#: ../calendar/backends/file/e-cal-backend-file.c:258
 msgid "Cannot save calendar data"
 msgstr "Nedajú sa uložiť údaje kalendára"
 
@@ -1330,8 +1306,8 @@ msgstr "Nesprávny formát súboru."
 msgid "Not a calendar."
 msgstr "Nie je kalendár."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:926
-#: ../calendar/backends/weather/e-cal-backend-weather.c:514
+#: ../calendar/backends/http/e-cal-backend-http.c:925
+#: ../calendar/backends/weather/e-cal-backend-weather.c:510
 msgid "Could not create cache file"
 msgstr "Nepodarilo sa vytvoriť súbor vyrovnávacej pamäte"
 
@@ -1379,88 +1355,88 @@ msgstr "Počasie: Búrky"
 msgid "Forecast"
 msgstr "Predpoveď"
 
-#: ../calendar/libecal/e-cal.c:2309
+#: ../calendar/libecal/e-cal.c:2305
 msgid "Repository is offline"
 msgstr "Repozitár je odpojený"
 
-#: ../calendar/libecal/e-cal.c:2311 ../calendar/libecal/e-cal-client.c:255
+#: ../calendar/libecal/e-cal.c:2307 ../calendar/libecal/e-cal-client.c:255
 msgid "No such calendar"
 msgstr "Kalendár neexistuje"
 
-#: ../calendar/libecal/e-cal.c:2313 ../calendar/libecal/e-cal-client.c:257
-#: ../calendar/libedata-cal/e-data-cal.c:757
+#: ../calendar/libecal/e-cal.c:2309 ../calendar/libecal/e-cal-client.c:257
+#: ../calendar/libedata-cal/e-data-cal.c:770
 msgid "Object not found"
 msgstr "Objekt sa nepodarilo nájsť"
 
-#: ../calendar/libecal/e-cal.c:2315 ../calendar/libecal/e-cal-client.c:259
-#: ../calendar/libedata-cal/e-data-cal.c:758
+#: ../calendar/libecal/e-cal.c:2311 ../calendar/libecal/e-cal-client.c:259
+#: ../calendar/libedata-cal/e-data-cal.c:771
 msgid "Invalid object"
 msgstr "Neplatný objekt"
 
-#: ../calendar/libecal/e-cal.c:2317
+#: ../calendar/libecal/e-cal.c:2313
 msgid "URI not loaded"
 msgstr "URI nebol načítaný"
 
-#: ../calendar/libecal/e-cal.c:2319
+#: ../calendar/libecal/e-cal.c:2315
 msgid "URI already loaded"
 msgstr "URI už bol načítaný"
 
-#: ../calendar/libecal/e-cal.c:2323
+#: ../calendar/libecal/e-cal.c:2319
 msgid "Unknown User"
 msgstr "Neznámy používateľ"
 
-#: ../calendar/libecal/e-cal.c:2325 ../calendar/libecal/e-cal-client.c:263
-#: ../calendar/libedata-cal/e-data-cal.c:759
+#: ../calendar/libecal/e-cal.c:2321 ../calendar/libecal/e-cal-client.c:263
+#: ../calendar/libedata-cal/e-data-cal.c:772
 msgid "Object ID already exists"
 msgstr "Identifikátor objektu už existuje"
 
-#: ../calendar/libecal/e-cal.c:2327
+#: ../calendar/libecal/e-cal.c:2323
 msgid "Protocol not supported"
 msgstr "Protokol nepodporovaný"
 
-#: ../calendar/libecal/e-cal.c:2329
+#: ../calendar/libecal/e-cal.c:2325
 msgid "Operation has been canceled"
 msgstr "Operácia bola zrušená"
 
-#: ../calendar/libecal/e-cal.c:2331
+#: ../calendar/libecal/e-cal.c:2327
 msgid "Could not cancel operation"
 msgstr "Nepodarilo sa zrušiť operáciu"
 
-#: ../calendar/libecal/e-cal.c:2333 ../libedataserver/e-client.c:139
+#: ../calendar/libecal/e-cal.c:2329 ../libedataserver/e-client.c:137
 msgid "Authentication failed"
 msgstr "Zlyhalo overenie totožnosti"
 
-#: ../calendar/libecal/e-cal.c:2335
+#: ../calendar/libecal/e-cal.c:2331
 #: ../camel/providers/smtp/camel-smtp-transport.c:923
-#: ../libedataserver/e-client.c:141
+#: ../libedataserver/e-client.c:139
 msgid "Authentication required"
 msgstr "Vyžaduje sa overenie totožnosti"
 
-#: ../calendar/libecal/e-cal.c:2337
+#: ../calendar/libecal/e-cal.c:2333
 msgid "A D-Bus exception has occurred"
 msgstr "Vyskytla sa D-Bus výnimka"
 
-#: ../calendar/libecal/e-cal.c:2341
+#: ../calendar/libecal/e-cal.c:2337
 msgid "No error"
 msgstr "Žiadna chyba"
 
 #: ../calendar/libecal/e-cal-client.c:261
-#: ../calendar/libedata-cal/e-data-cal.c:767
+#: ../calendar/libedata-cal/e-data-cal.c:780
 msgid "Unknown user"
 msgstr "Neznámy používateľ"
 
 #: ../calendar/libecal/e-cal-client.c:265
-#: ../calendar/libedata-cal/e-data-cal.c:756
+#: ../calendar/libedata-cal/e-data-cal.c:769
 msgid "Invalid range"
 msgstr "Neplatný rozsah"
 
-#: ../calendar/libecal/e-cal-client.c:890
-#: ../calendar/libedata-cal/e-cal-backend.c:204
+#: ../calendar/libecal/e-cal-client.c:944
+#: ../calendar/libedata-cal/e-cal-backend.c:205
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Neznáma vlastnosť kalendára „%s“"
 
-#: ../calendar/libecal/e-cal-client.c:905
+#: ../calendar/libecal/e-cal-client.c:959
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Nedá sa zmeniť hodnota vlastnosti kalendára „%s“"
@@ -1724,117 +1700,113 @@ msgstr "„%s“ očakáva ako prvý parameter reťazec dátumu/času podľa ISO
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "„%s“ očakáva ako druhý parameter celé číslo"
 
-#: ../calendar/libedata-cal/e-data-cal.c:763
+#: ../calendar/libedata-cal/e-data-cal.c:776
 msgid "Unsupported method"
 msgstr "Nepodporovaná metóda"
 
-#: ../calendar/libedata-cal/e-data-cal.c:766
+#: ../calendar/libedata-cal/e-data-cal.c:779
 msgid "Calendar does not exist"
 msgstr "Kalendár neexistuje"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1237
+#: ../calendar/libedata-cal/e-data-cal.c:1347
 msgid "Cannot open calendar: "
 msgstr "Nedá sa otvoriť kalendár: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1298
+#: ../calendar/libedata-cal/e-data-cal.c:1403
 msgid "Cannot refresh calendar: "
 msgstr "Nedá sa obnoviť kalendár: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1337
+#: ../calendar/libedata-cal/e-data-cal.c:1442
 msgid "Cannot retrieve backend property: "
 msgstr "Nedá sa získať vlastnosť obslužného programu: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1395
+#: ../calendar/libedata-cal/e-data-cal.c:1500
 msgid "Cannot retrieve calendar object path: "
 msgstr "Nedá sa získať cesta k objektu kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1441
+#: ../calendar/libedata-cal/e-data-cal.c:1546
 msgid "Cannot retrieve calendar object list: "
 msgstr "Nedá sa získať zoznam objektov kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1494
+#: ../calendar/libedata-cal/e-data-cal.c:1599
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Nedá sa získať diár kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1535
+#: ../calendar/libedata-cal/e-data-cal.c:1640
 msgid "Cannot create calendar object: "
 msgstr "Nedá sa vytvoriť objekt kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1604
+#: ../calendar/libedata-cal/e-data-cal.c:1706
 msgid "Cannot modify calendar object: "
 msgstr "Nedá sa upraviť objekt kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1666
+#: ../calendar/libedata-cal/e-data-cal.c:1764
 msgid "Cannot remove calendar object: "
 msgstr "Nedá sa odstrániť objekt kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1727
+#: ../calendar/libedata-cal/e-data-cal.c:1821
 msgid "Cannot receive calendar objects: "
 msgstr "Nedajú sa získať objekty kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1768
+#: ../calendar/libedata-cal/e-data-cal.c:1862
 msgid "Cannot send calendar objects: "
 msgstr "Nedajú sa odoslať objekty kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1828
+#: ../calendar/libedata-cal/e-data-cal.c:1922
 msgid "Could not retrieve attachment uris: "
 msgstr "Nepodarilo sa získať URI príloh: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1878
+#: ../calendar/libedata-cal/e-data-cal.c:1972
 msgid "Could not discard reminder: "
 msgstr "Nepodarilo sa zrušiť upozorňovanie: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1917
+#: ../calendar/libedata-cal/e-data-cal.c:2011
 msgid "Could not get calendar view path: "
 msgstr "Nepodarilo sa získať cestu pohľadu kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1963
+#: ../calendar/libedata-cal/e-data-cal.c:2057
 msgid "Could not retrieve calendar time zone: "
 msgstr "Nepodarilo sa získať časové pásmo kalendára: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2007
+#: ../calendar/libedata-cal/e-data-cal.c:2101
 msgid "Could not add calendar time zone: "
 msgstr "Nepodarilo sa pridať časové pásmo kalendára: "
 
-# PM: podľa mňa "s touto šifrou" - viackrát
-# MČ: Myslím si, že sa podpisuje šifrou (pomocou šifry) a nie so šifrou.
-# MČ: Možno by som to preformuloval na „Táto šifra nepodporuje digitálne podpisovanie“ ak si za, tak to urobím.
-# PK: Preformuluj
 #: ../camel/camel-cipher-context.c:208
-#, fuzzy, c-format
+#, c-format
 msgid "Signing is not supported by this cipher"
-msgstr "Digitálne podpisovanie nie je podporované touto šifrou"
+msgstr "Táto šifra nepodporuje digitálne podpisovanie"
 
 #: ../camel/camel-cipher-context.c:221
-#, fuzzy, c-format
+#, c-format
 msgid "Verifying is not supported by this cipher"
-msgstr "Overovanie podpisu nie je podporované touto šifrou"
+msgstr "Táto šifra nepodporuje overovanie podpisu"
 
 #: ../camel/camel-cipher-context.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "Encryption is not supported by this cipher"
-msgstr "Šifrovanie nie je podporované touto šifrou"
+msgstr "Táto šifra nepodporuje šifrovanie"
 
 #: ../camel/camel-cipher-context.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Decryption is not supported by this cipher"
-msgstr "Dešifrovanie nie je podporované touto šifrou"
+msgstr "Táto šifra nepodporuje dešifrovanie"
 
 #: ../camel/camel-cipher-context.c:264
 #, c-format
@@ -1945,78 +1917,77 @@ msgstr "Zlyhalo vytvorenie dcérskeho procesu „%s“: %s"
 msgid "Invalid message stream received from %s: %s"
 msgstr "Prijatý neplatný dátový prúd správy od %s: %s"
 
-#: ../camel/camel-filter-driver.c:1169 ../camel/camel-filter-driver.c:1178
+#: ../camel/camel-filter-driver.c:1170 ../camel/camel-filter-driver.c:1179
 msgid "Syncing folders"
 msgstr "Synchronizujú sa priečinky"
 
-#: ../camel/camel-filter-driver.c:1276
+#: ../camel/camel-filter-driver.c:1277
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Chyba pri analyzovaní filtra: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1287
+#: ../camel/camel-filter-driver.c:1288
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Chyba pri vykonávaní filtra: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1383
+#: ../camel/camel-filter-driver.c:1384
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Nepodarilo sa otvoriť zoraďovací priečinok"
 
-#: ../camel/camel-filter-driver.c:1395
+#: ../camel/camel-filter-driver.c:1396
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Nepodarilo sa spracovať zoraďovací priečinok"
 
-#: ../camel/camel-filter-driver.c:1415
+#: ../camel/camel-filter-driver.c:1419
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Získava sa správa %d (%d %%)"
 
-#: ../camel/camel-filter-driver.c:1424 ../camel/camel-filter-driver.c:1446
+#: ../camel/camel-filter-driver.c:1428 ../camel/camel-filter-driver.c:1450
 #, c-format
 msgid "Failed on message %d"
 msgstr "Zlyhanie pri správe %d"
 
-#: ../camel/camel-filter-driver.c:1463 ../camel/camel-filter-driver.c:1573
+#: ../camel/camel-filter-driver.c:1469 ../camel/camel-filter-driver.c:1583
 msgid "Syncing folder"
 msgstr "Synchronizuje sa priečinok"
 
-#: ../camel/camel-filter-driver.c:1468 ../camel/camel-filter-driver.c:1581
+#: ../camel/camel-filter-driver.c:1474 ../camel/camel-filter-driver.c:1591
 msgid "Complete"
 msgstr "Hotovo"
 
-#: ../camel/camel-filter-driver.c:1529
+#: ../camel/camel-filter-driver.c:1537
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Získava sa %d. správa z %d"
 
-#: ../camel/camel-filter-driver.c:1547
+#: ../camel/camel-filter-driver.c:1555
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Zlyhanie na %d. správe z %d"
 
-#: ../camel/camel-filter-driver.c:1741 ../camel/camel-filter-driver.c:1775
+#: ../camel/camel-filter-driver.c:1751 ../camel/camel-filter-driver.c:1785
 #, c-format
 msgid "Execution of filter '%s' failed: "
 msgstr "Zlyhalo vykonávanie filtra „%s“: "
 
-#: ../camel/camel-filter-driver.c:1765
+#: ../camel/camel-filter-driver.c:1775
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "Chyba pri analyzovaní filtra „%s“: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1784
+#: ../camel/camel-filter-driver.c:1794
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
 msgstr "Chyba pri vykonávaní filtra „%s“: %s: %s"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
-msgstr "Nepodarilo sa prijať správu"
+msgstr "Zlyhalo získanie správy"
 
-# PM: čo to je v zátvorke? netreba to preložiť?
 # MČ: sú to symboly ku vstavaným funkciám (asi filtre), prakticky ich názvy. Neviem či je ich vhodné preložiť, hlavne keď nasledujúca chybová hláška ich dopĺňa cez %s.
 #: ../camel/camel-filter-search.c:537
 msgid "Invalid arguments to (system-flag)"
@@ -2031,8 +2002,7 @@ msgstr "Neplatné parametre pre (user-tag)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Chyba pri vykonávaní vyhľadávacieho filtra: %s: %s"
 
-# PK: co tak nevyziadana posta (junk inde)
-#: ../camel/camel-folder.c:272
+#: ../camel/camel-folder.c:291
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
@@ -2040,9 +2010,7 @@ msgstr[0] "Učenie pomocou nových nevyžiadaných správ v „%s“"
 msgstr[1] "Učenie pomocou novej nevyžiadanej správy v „%s“"
 msgstr[2] "Učenie pomocou nových nevyžiadaných správ v „%s“"
 
-# PK: neviem ci ludia vedia co je ham sprava
-# MČ: nie som si istý tým prekladom, ale myslím, že by to malo byť zrozumiteľné
-#: ../camel/camel-folder.c:312
+#: ../camel/camel-folder.c:331
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
@@ -2050,7 +2018,7 @@ msgstr[0] "Učenie pomocou nových očakávaných správ v „%s“"
 msgstr[1] "Učenie pomocou novej očakávanej správy v „%s“"
 msgstr[2] "Učenie pomocou nových očakávaných správ v „%s“"
 
-#: ../camel/camel-folder.c:360
+#: ../camel/camel-folder.c:379
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
@@ -2058,36 +2026,36 @@ msgstr[0] "Filtrujú sa nové správy v „%s“"
 msgstr[1] "Filtruje sa nová správa v „%s“"
 msgstr[2] "Filtrujú sa nové správy v „%s“"
 
-#: ../camel/camel-folder.c:934
+#: ../camel/camel-folder.c:953
 #: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "Presúvajú sa správy"
 
-#: ../camel/camel-folder.c:937
+#: ../camel/camel-folder.c:956
 msgid "Copying messages"
 msgstr "Kopírujú sa správy"
 
-#: ../camel/camel-folder.c:1257
+#: ../camel/camel-folder.c:1276
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Informácie o kvóte nie sú podporované pre priečinok „%s“"
 
-#: ../camel/camel-folder.c:3487
+#: ../camel/camel-folder.c:3506
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Prečisťuje sa priečinok „%s“"
 
-#: ../camel/camel-folder.c:3719
+#: ../camel/camel-folder.c:3738
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Získava sa správa „%s“ v %s"
 
-#: ../camel/camel-folder.c:3870
+#: ../camel/camel-folder.c:3889
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Získavajú sa informácie o kvóte pre „%s“"
 
-#: ../camel/camel-folder.c:4102
+#: ../camel/camel-folder.c:4121
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Obnovuje sa priečinok „%s“"
@@ -2144,14 +2112,14 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:1359
 #, c-format
 msgid "Failed to execute gpg: %s"
-msgstr "Nepodarilo sa spustiť gpg: %s"
+msgstr "Zlyhalo spustenie gpg: %s"
 
 # je tu správny rod?
 # PŠ: ide o chybu a chybový kód - zišiel by sa kontext (neznáma, neznáme)
 # PM: vyžiadaj si komentár od vývojárov
+# MČ: v oboch prípadoch ide o neznámu chybu. Nie je potrebné rozdelenie.
 #: ../camel/camel-gpg-context.c:696
 #: ../camel/providers/smtp/camel-smtp-transport.c:926
-#, fuzzy
 msgid "Unknown"
 msgstr "Neznáma"
 
@@ -2211,7 +2179,7 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:911 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:388
-#: ../libedataserver/e-client.c:152
+#: ../libedataserver/e-client.c:150
 #, c-format
 msgid "Cancelled"
 msgstr "Zrušené"
@@ -2239,7 +2207,7 @@ msgstr "Nepodarilo sa vygenerovať podpisovacie údaje: "
 #: ../camel/camel-gpg-context.c:1989 ../camel/camel-gpg-context.c:2136
 #: ../camel/camel-gpg-context.c:2236 ../camel/camel-gpg-context.c:2284
 msgid "Failed to execute gpg."
-msgstr "Nepodarilo sa spustiť gpg."
+msgstr "Zlyhalo spustenie gpg."
 
 #: ../camel/camel-gpg-context.c:1754 ../camel/camel-gpg-context.c:1762
 #: ../camel/camel-gpg-context.c:1770 ../camel/camel-gpg-context.c:1790
@@ -2270,7 +2238,7 @@ msgstr "Nedá sa dešifrovať správa: Nesprávny formát správy"
 #: ../camel/camel-gpg-context.c:2086
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "Nepodarilo sa dešifrovať časť MIME: chyba protokolu"
+msgstr "Zlyhalo dešifrovanie časti MIME: chyba protokolu"
 
 #: ../camel/camel-gpg-context.c:2177 ../camel/camel-smime-context.c:1287
 msgid "Encrypted content"
@@ -2292,21 +2260,20 @@ msgstr "Nepodarilo sa presunúť nevyžiadanú správu"
 
 # PK: odstranenu
 #: ../camel/camel-imapx-folder.c:901
-#, fuzzy
 msgid "Unable to move deleted messages"
-msgstr "Nepodarilo sa presunúť zrušenú správu"
+msgstr "Nepodarilo sa presunúť odstránenú správu"
 
-#: ../camel/camel-imapx-folder.c:1115
+#: ../camel/camel-imapx-folder.c:1119
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "Aplikovať _filtre na správy v tomto priečinku"
 
-#: ../camel/camel-imapx-folder.c:1224
+#: ../camel/camel-imapx-folder.c:1228
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nepodarilo sa vytvoriť súhrn o priečinku pre %s"
 
-#: ../camel/camel-imapx-folder.c:1232
+#: ../camel/camel-imapx-folder.c:1236
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nepodarilo sa vytvoriť vyrovnávaciu pamäť pre %s: "
@@ -2320,7 +2287,7 @@ msgstr "Server sa odpojil"
 msgid "Error writing to cache stream"
 msgstr "Chyba pri zápise do vyrovnávacieho prúdu dát"
 
-#: ../camel/camel-imapx-server.c:2995
+#: ../camel/camel-imapx-server.c:2994
 #, c-format
 msgid "Not authenticated"
 msgstr "Neoverená totožnosť"
@@ -2328,31 +2295,31 @@ msgstr "Neoverená totožnosť"
 # MČ: IDLE - stav na IMAP priečinku, keď sa očakávajú správy od servera
 # PM: mne tu chýba preklad performing Chyba počas vykonávania/nastavovania stavu IDLE alebo niečo v tom duchu - pozri všetky výskyty performing
 # MČ: vyčerpávajúco by malo byť: „Chyba počas čakania v stave IDLE“, ale sa mi to zdá zbytočné.
-#: ../camel/camel-imapx-server.c:3073
+#: ../camel/camel-imapx-server.c:3072
 msgid "Error performing IDLE"
 msgstr "Chyba počas IDLE"
 
-#: ../camel/camel-imapx-server.c:4030
+#: ../camel/camel-imapx-server.c:4029
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Zlyhalo pripojenie k serveru IMAP %s v zabezpečenom režime: %s"
 
-#: ../camel/camel-imapx-server.c:4031
+#: ../camel/camel-imapx-server.c:4030
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nie je podporované"
 
-#: ../camel/camel-imapx-server.c:4070
+#: ../camel/camel-imapx-server.c:4069
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Zlyhalo pripojenie k serveru IMAP %s v zabezpečenom režime: "
 
-#: ../camel/camel-imapx-server.c:4150
+#: ../camel/camel-imapx-server.c:4149
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s nepodporuje overenie totožnosti %s"
 
-#: ../camel/camel-imapx-server.c:4161 ../camel/camel-session.c:495
+#: ../camel/camel-imapx-server.c:4160 ../camel/camel-session.c:494
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2360,66 +2327,66 @@ msgstr "Server IMAP %s nepodporuje overenie totožnosti %s"
 msgid "No support for %s authentication"
 msgstr "Overenie totožnosti %s nie je podporované"
 
-#: ../camel/camel-imapx-server.c:4180
+#: ../camel/camel-imapx-server.c:4179
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "Nedá sa overiť totožnosť bez používateľského mena"
 
-#: ../camel/camel-imapx-server.c:4189
+#: ../camel/camel-imapx-server.c:4188
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "Heslo overenia totožnosti nie je dostupné"
 
-#: ../camel/camel-imapx-server.c:4397
+#: ../camel/camel-imapx-server.c:4396
 msgid "Error fetching message"
 msgstr "Chyba pri získavaní správy"
 
-#: ../camel/camel-imapx-server.c:4479
+#: ../camel/camel-imapx-server.c:4478
 msgid "Failed to copy the tmp file"
 msgstr "Zlyhalo kopírovanie dočasného súboru"
 
-#: ../camel/camel-imapx-server.c:4493
+#: ../camel/camel-imapx-server.c:4492
 msgid "Failed to close the tmp stream"
 msgstr "Zlyhalo uzavretie dočasného dátového prúdu"
 
-#: ../camel/camel-imapx-server.c:4614
+#: ../camel/camel-imapx-server.c:4613
 msgid "Error copying messages"
 msgstr "Chyba pri kopírovaní správ"
 
-#: ../camel/camel-imapx-server.c:4780
+#: ../camel/camel-imapx-server.c:4779
 msgid "Error appending message"
 msgstr "Chyba pri pridávaní správy"
 
-#: ../camel/camel-imapx-server.c:4979
+#: ../camel/camel-imapx-server.c:4978
 msgid "Error fetching message headers"
 msgstr "Chyba pri získavaní hlavičiek správy"
 
-#: ../camel/camel-imapx-server.c:5130
+#: ../camel/camel-imapx-server.c:5129
 msgid "Error retrieving message"
-msgstr "Chyba pri vyberaní správy"
+msgstr "Chyba pri získavaní správy"
 
-#: ../camel/camel-imapx-server.c:5261 ../camel/camel-imapx-server.c:5489
+#: ../camel/camel-imapx-server.c:5260 ../camel/camel-imapx-server.c:5488
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Získavajú sa súhrnné informácie pre nové správy v „%s“"
 
-#: ../camel/camel-imapx-server.c:5325
+#: ../camel/camel-imapx-server.c:5324
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Prehľadávajú sa zmenené správy v „%s“"
 
-#: ../camel/camel-imapx-server.c:5378
+#: ../camel/camel-imapx-server.c:5377
 msgid "Error fetching new messages"
 msgstr "Chyba pri získavaní nových správ"
 
-#: ../camel/camel-imapx-server.c:5591
+#: ../camel/camel-imapx-server.c:5590
 msgid "Error while fetching messages"
 msgstr "Chyba počas získavania správ"
 
-#: ../camel/camel-imapx-server.c:5599 ../camel/camel-imapx-server.c:5632
+#: ../camel/camel-imapx-server.c:5598 ../camel/camel-imapx-server.c:5631
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2427,64 +2394,64 @@ msgstr[0] "Získavajú sa súhrnné informácie pre %d nových správ v „%s“
 msgstr[1] "Získavajú sa súhrnné informácie pre %d novú správu v „%s“"
 msgstr[2] "Získavajú sa súhrnné informácie pre %d nové správy v „%s“"
 
-#: ../camel/camel-imapx-server.c:5768 ../camel/camel-imapx-server.c:5798
+#: ../camel/camel-imapx-server.c:5767 ../camel/camel-imapx-server.c:5797
 msgid "Error refreshing folder"
 msgstr "Chyba počas obnovovania priečinka"
 
-#: ../camel/camel-imapx-server.c:5922
+#: ../camel/camel-imapx-server.c:5921
 msgid "Error expunging message"
-msgstr "Chyba pri škrtaní správ"
+msgstr "Chyba pri prečisťovaní správ"
 
-#: ../camel/camel-imapx-server.c:6033
+#: ../camel/camel-imapx-server.c:6032
 msgid "Error fetching folders"
 msgstr "Chyba pri získavaní priečinka"
 
-#: ../camel/camel-imapx-server.c:6115
+#: ../camel/camel-imapx-server.c:6114
 msgid "Error subscribing to folder"
 msgstr "Chyba pri prihlasovaní sa k odberu priečinka"
 
-#: ../camel/camel-imapx-server.c:6180
+#: ../camel/camel-imapx-server.c:6179
 msgid "Error creating folder"
 msgstr "Chyba pri vytváraní priečinka"
 
-#: ../camel/camel-imapx-server.c:6234
+#: ../camel/camel-imapx-server.c:6233
 msgid "Error deleting folder"
 msgstr "Chyba pri rušení priečinka"
 
-#: ../camel/camel-imapx-server.c:6308
+#: ../camel/camel-imapx-server.c:6307
 msgid "Error renaming folder"
 msgstr "Chyba pri premenovávaní priečinka"
 
-#: ../camel/camel-imapx-server.c:6383
+#: ../camel/camel-imapx-server.c:6382
 msgid "Error retrieving quota information"
 msgstr "Chyba pri získavaní informácie o kvóte"
 
-#: ../camel/camel-imapx-server.c:6448
+#: ../camel/camel-imapx-server.c:6447
 msgid "Search failed"
 msgstr "Vyhľadávanie zlyhalo"
 
-#: ../camel/camel-imapx-server.c:6511
+#: ../camel/camel-imapx-server.c:6510
 msgid "Error performing NOOP"
 msgstr "Chyba počas NOOP"
 
-#: ../camel/camel-imapx-server.c:6620
+#: ../camel/camel-imapx-server.c:6619
 msgid "Error syncing changes"
 msgstr "Chyba pri synchronizácii zmien"
 
-#: ../camel/camel-imapx-server.c:7432
+#: ../camel/camel-imapx-server.c:7429
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nedá sa získať správa s identifikátorom správy %s: %s"
 
-#: ../camel/camel-imapx-server.c:7433
+#: ../camel/camel-imapx-server.c:7430
 msgid "No such message available."
 msgstr "Správa nie je dostupná."
 
-#: ../camel/camel-imapx-server.c:7591 ../camel/camel-imapx-server.c:7606
+#: ../camel/camel-imapx-server.c:7588 ../camel/camel-imapx-server.c:7603
 msgid "Cannot create spool file: "
 msgstr "Nedá sa vytvoriť zoraďovací súbor: "
 
-#: ../camel/camel-imapx-server.c:8348
+#: ../camel/camel-imapx-server.c:8345
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP nepodporuje kvóty"
 
@@ -2570,12 +2537,12 @@ msgstr "Vypršal čas pri pokuse o získanie zámku na %s. Skúste to neskôr."
 #: ../camel/camel-lock.c:205
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr "Nepodarilo sa získať zámok pomocou fcntl(2): %s"
+msgstr "Zlyhalo získanie zámku pomocou fcntl(2): %s"
 
 #: ../camel/camel-lock.c:272
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr "Nepodarilo sa získať zámok pomocou flock(2): %s"
+msgstr "Zlyhalo získanie zámku pomocou flock(2): %s"
 
 #: ../camel/camel-lock-client.c:106
 #, c-format
@@ -2617,7 +2584,7 @@ msgstr "Nepodarilo sa otvoriť dočasný súbor s poštou %s: %s"
 #: ../camel/camel-movemail.c:159
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "Nepodarilo sa uložiť poštu v dočasnom súbore %s: %s"
+msgstr "Zlyhalo uloženie pošty v dočasnom súbore %s: %s"
 
 #: ../camel/camel-movemail.c:193
 #, c-format
@@ -2748,7 +2715,7 @@ msgstr "Nepodarilo sa načítať %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Nepodarilo sa načítať %s: V module nie je inicializačný kód."
 
-#: ../camel/camel-provider.c:429 ../camel/camel-session.c:407
+#: ../camel/camel-provider.c:429 ../camel/camel-session.c:406
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Pre protokol „%s“ nie je k dispozícii žiadny poskytovateľ"
@@ -2993,17 +2960,17 @@ msgstr "Overenie totožnosti POP pred SMTP pomocou služby %s"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Preklad regulárneho výrazu zlyhal: %s: %s"
 
-#: ../camel/camel-session.c:416
+#: ../camel/camel-session.c:415
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "Neplatný GType registrovaný pre protokol „%s“"
 
-#: ../camel/camel-session.c:510
+#: ../camel/camel-session.c:509
 #, c-format
 msgid "%s authentication failed"
 msgstr "Zlyhalo overenie totožnosti %s"
 
-#: ../camel/camel-session.c:646
+#: ../camel/camel-session.c:645
 msgid "Forwarding messages is not supported"
 msgstr "Nie je podporované preposielanie správ"
 
@@ -3015,7 +2982,7 @@ msgstr "Nie je podporované preposielanie správ"
 #. Translators: The first argument is the account type
 #. * (e.g. "IMAP"), the second is the user name, and the
 #. * third is the host name.
-#: ../camel/camel-session.c:1423
+#: ../camel/camel-session.c:1420
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Prosím, zadajte %s heslo pre %s na hostiteľovi %s."
@@ -3027,28 +2994,29 @@ msgstr "Nedá sa nájsť certifikát pre „%s“"
 
 # MČ: Cryptographic Message Syntax - http://en.wikipedia.org/wiki/Cryptographic_Message_Syntax
 # PM: toto sa mi nevidí, nejde o správu chránenú pomocou CMS? ked si tú skratku rozpíšem nedáva mi to zmysel - správa syntaxe šifrovanej správy, pozri prosím všetky reťazce, ktoré obsahujú skratku CMS
+# MČ: pozrel som si kód poriadne (dúfam) a aj nejaké základné veci o NSS knižnici a asi máš pravdu.
 #: ../camel/camel-smime-context.c:379
-#, fuzzy
 msgid "Cannot create CMS message"
-msgstr "Nedá sa vytvoriť správa CMS"
+msgstr "Nedá sa vytvoriť správa chánená pomocou CMS"
 
 #  PM: Nerozumiem tej vete, nedje o dáta podpísané pomocou CMS?
 #: ../camel/camel-smime-context.c:384
-#, fuzzy
 msgid "Cannot create CMS signed data"
-msgstr "Nedajú sa vytvoriť podpísané údaje CMS"
+msgstr "Nedajú sa vytvoriť údaje podpísané pomocou CMS"
 
 #: ../camel/camel-smime-context.c:390
 msgid "Cannot attach CMS signed data"
-msgstr "Nedajú sa priložiť podpísané údaje CMS"
+msgstr "Nedajú sa priložiť údaje podpísané pomocou CMS"
 
 #: ../camel/camel-smime-context.c:397
 msgid "Cannot attach CMS data"
-msgstr "Nedajú sa priložiť údaje CMS"
+msgstr "Nedajú sa priložiť údaje vytvorené pomocou CMS"
 
+# PK: jedna, anglicane nemaju plural tohto slova
 #: ../camel/camel-smime-context.c:403
+#, fuzzy
 msgid "Cannot create CMS Signer information"
-msgstr "Nedá sa vytvoriť informácia CMS podpisovateľa"
+msgstr "Nedá sa vytvoriť informácia o podpisovateľovi CMS"
 
 #: ../camel/camel-smime-context.c:409
 msgid "Cannot find certificate chain"
@@ -3056,7 +3024,7 @@ msgstr "Nedá sa nájsť reťaz certifikátov"
 
 #: ../camel/camel-smime-context.c:415
 msgid "Cannot add CMS Signing time"
-msgstr "Nedá sa pridať čas CMS podpisovania"
+msgstr "Nedá sa pridať čas podpisovania pomocou CMS"
 
 #: ../camel/camel-smime-context.c:439 ../camel/camel-smime-context.c:454
 #, c-format
@@ -3076,8 +3044,9 @@ msgid "Cannot add encryption certificate"
 msgstr "Nedá sa pridať šifrovací certifikát"
 
 #: ../camel/camel-smime-context.c:477
+#, fuzzy
 msgid "Cannot add CMS Signer information"
-msgstr "Nedá sa pridať informácia o CMS podpisovateľovi"
+msgstr "Nedá sa pridať informácia o podpisovateľovi CMS"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
 #: ../camel/camel-smime-context.c:510
@@ -3220,48 +3189,48 @@ msgstr "Zlyhalo pridávanie údajov do kódera"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Dešifrovanie S/MIME: Nebol nájdený žiadny šifrovaný obsah"
 
-#: ../camel/camel-store.c:1844
+#: ../camel/camel-store.c:1866
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Nedá sa vytvoriť priečinok „%s“: priečinok existuje"
 
-#: ../camel/camel-store.c:1887
+#: ../camel/camel-store.c:1909
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Otvára sa priečinok „%s“"
 
-#: ../camel/camel-store.c:2072
+#: ../camel/camel-store.c:2094
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Prezerajú sa priečinky v „%s“"
 
-#: ../camel/camel-store.c:2088 ../camel/camel-store.c:2119
+#: ../camel/camel-store.c:2110 ../camel/camel-store.c:2141
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Kôš"
 
-#: ../camel/camel-store.c:2100 ../camel/camel-store.c:2135
+#: ../camel/camel-store.c:2122 ../camel/camel-store.c:2157
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Nevyžiadaná pošta"
 
-#: ../camel/camel-store.c:2588
+#: ../camel/camel-store.c:2610
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nedá sa vytvoriť priečinok: %s: priečinok existuje"
 
-#: ../camel/camel-store.c:2602
+#: ../camel/camel-store.c:2624
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Vytvára sa priečinok „%s“"
 
-#: ../camel/camel-store.c:2720 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2742 ../camel/camel-vee-store.c:416
 #: ../camel/providers/local/camel-maildir-store.c:315
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nedá sa odstrániť priečinok: %s: Neplatná operácia"
 
-#: ../camel/camel-store.c:2863 ../camel/camel-vee-store.c:466
+#: ../camel/camel-store.c:2885 ../camel/camel-vee-store.c:466
 #: ../camel/providers/local/camel-maildir-store.c:839
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3286,13 +3255,13 @@ msgid "Could not connect with command \"%s\": %s"
 msgstr "Nepodarilo sa pripojiť pomocou príkazu „%s“: %s"
 
 #  message
-#: ../camel/camel-subscribable.c:386
+#: ../camel/camel-subscribable.c:395
 #, c-format
 msgid "Subscribing to folder '%s'"
 msgstr "Prihlasovanie sa k odberu priečinka „%s“"
 
 # message
-#: ../camel/camel-subscribable.c:518
+#: ../camel/camel-subscribable.c:527
 #, c-format
 msgid "Unsubscribing from folder '%s'"
 msgstr "Odhlasovanie sa z odberu priečinka „%s“"
@@ -3308,8 +3277,9 @@ msgid "The proxy host does not support SOCKS4"
 msgstr "Hostiteľ proxy nepodporuje SOCKS4"
 
 # PM: nie je čudné že je tu our? Skús sa opýtať vývojárov
+# MČ: zatiaľ som sa nepýtal vývojárov, ale hádam, že to bude kvôli tomu, že „my“ nemáme povolenie použiť proxy.
 #: ../camel/camel-tcp-stream-raw.c:675
-#, fuzzy, c-format
+#, c-format
 msgid "The proxy host denied our request: code %d"
 msgstr "Hostiteľ proxy zamietol našu požiadavku: kód %d"
 
@@ -4136,19 +4106,18 @@ msgstr "Odosielanie zlyhalo: "
 # MČ: http://www.w3.org/Protocols/rfc977/rfc977, používa sa na konferencie, dnes už nazývané mailové, ale pôvodne chodili výhradne NNTP protokolom. Kopu mailových konferencijí je ešte stále bránou do NNTP. No a určite ešte existujú konferencie, ktoré nemajú žiadnu bránu na poštu, takže sú prístupné len cez NNTP.
 # PK: spravy NNTP
 #: ../camel/providers/nntp/camel-nntp-folder.c:633
-#, fuzzy, c-format
+#, c-format
 msgid "You cannot post NNTP messages while working offline!"
-msgstr "Nemôžete odoslať NNTP správy, keď pracujete v odpojenom režime!"
+msgstr "Nemôžete odoslať správy NNTP, keď pracujete v odpojenom režime!"
 
 # PM: Nedáva to zmysel NNTP je názov protokolu, asi priečinok pre NNTP
 # MČ: Beriem to ako typ priečinka, lebo môžeš byť prihlásený do viacerých diskusných skupín prístupných cez NNTP a každú budeš mať v samostatnom priečinku.
 # PK: priecinka NNTP
 #: ../camel/providers/nntp/camel-nntp-folder.c:653
-#, fuzzy, c-format
+#, c-format
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "Nemôžete kopírovať správy z NNTP priečinka!"
+msgstr "Nemôžete kopírovať správy z priečinka NNTP!"
 
-# PM: skôr ako -> namiesto
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
@@ -4309,9 +4278,9 @@ msgstr "Žiadna správa s UID %s"
 
 # PM: Retrieve a fetch - treba ujednotiť; čo je POP správa? Zdá sa mi to nezmysel 
 #: ../camel/providers/pop3/camel-pop3-folder.c:542
-#, fuzzy, c-format
+#, c-format
 msgid "Retrieving POP message %d"
-msgstr "Získava sa POP správa %d"
+msgstr "Získava sa správa č. %d protokolom POP"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:634
 msgid "Unknown reason"
@@ -4319,9 +4288,8 @@ msgstr "Neznámy dôvod"
 
 # PM: POP je protokol POP súhrn sa mi zdá nelogické - viackrát
 #: ../camel/providers/pop3/camel-pop3-folder.c:682
-#, fuzzy
 msgid "Retrieving POP summary"
-msgstr "Získava sa POP súhrn"
+msgstr "Získava sa súhrn správ protokolom POP"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:741
 #: ../camel/providers/pop3/camel-pop3-folder.c:744
@@ -4329,17 +4297,17 @@ msgstr "Získava sa POP súhrn"
 #: ../camel/providers/pop3/camel-pop3-folder.c:770
 #: ../camel/providers/pop3/camel-pop3-folder.c:784
 msgid "Cannot get POP summary: "
-msgstr "Nedá sa získať POP súhrn: "
+msgstr "Nedá sa získať súhrn protokolom POP: "
 
 # PM: expunging a expunge je niečo iné lebo to máš inde vyškrtnúť - prejdi si celý preklad
+# MČ: zjednitil som to na prečistiť, prečistené. Asi najlepšie to vyjadruje odstránenie správ, označených značkou DELETED, keď tie sa prekladajú ako odstránené.
 #: ../camel/providers/pop3/camel-pop3-folder.c:891
-#, fuzzy
 msgid "Expunging old messages"
-msgstr "Čistia sa staré správy"
+msgstr "Prečisťujú sa staré správy"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:911
 msgid "Expunging deleted messages"
-msgstr "Čistia sa odstránené správy"
+msgstr "Prečisťujú sa odstránené správy"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:39
 msgid "Message Storage"
@@ -4358,7 +4326,7 @@ msgstr "O_dstrániť po %s dňoch"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 msgid "Delete _expunged from local Inbox"
-msgstr "Odstrániť _vyškrtnuté z miestnej doručenej pošty"
+msgstr "Odstrániť p_rečistené z miestnej doručenej pošty"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:49
 msgid "Disable _support for all POP3 extensions"
@@ -4406,7 +4374,7 @@ msgstr ": "
 #: ../camel/providers/pop3/camel-pop3-store.c:150
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr "Nepodarilo sa prečítať správne privítanie zo servera POP %s"
+msgstr "Zlyhalo čítanie správneho privítania zo servera POP %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:165
 #, c-format
@@ -4579,7 +4547,7 @@ msgstr "Chyba odpovede na privítanie: "
 #: ../camel/providers/smtp/camel-smtp-transport.c:207
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr "Nepodarilo sa pripojiť k serveru SMTP %s v zabezpečenom režime: %s"
+msgstr "Zlyhalo pripojenie k serveru SMTP %s v zabezpečenom režime: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 #: ../camel/providers/smtp/camel-smtp-transport.c:229
@@ -4865,7 +4833,7 @@ msgstr "%s nepodporuje vytváranie vzdialených zdrojov"
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepodporuje odstraňovanie vzdialených zdrojov"
 
-#: ../libebackend/e-data-factory.c:320
+#: ../libebackend/e-data-factory.c:304
 #, c-format
 msgid "No backend factory for hash key '%s'"
 msgstr "Žiadny tvorca obslužného programu pre hash kľúč „%s“"
@@ -4873,7 +4841,7 @@ msgstr "Žiadny tvorca obslužného programu pre hash kľúč „%s“"
 #: ../libebackend/e-server-side-source.c:134
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "Chýba zdroj údajov skupiny [%s]"
 
 #: ../libebackend/e-server-side-source.c:1008
 #: ../libedataserver/e-source.c:1120
@@ -4881,11 +4849,14 @@ msgstr ""
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Zdroj údajov „%s“ nepodporuje vytváranie vzdialených zdrojov"
 
+# MČ: backend = e_source_registry_server_ref_backend (server, source);
 #: ../libebackend/e-server-side-source.c:1022
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
 msgstr ""
+"Zdroj údajov „%s“ nemá naviazaný obslužný program na vytvorenie vzdialeného "
+"zdroja"
 
 #: ../libebackend/e-server-side-source.c:1050
 #: ../libedataserver/e-source.c:1227
@@ -4893,11 +4864,14 @@ msgstr ""
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Zdroj údajov „%s“ nepodporuje odstraňovanie vzdialených zdrojov"
 
+# MČ: backend = e_source_registry_server_ref_backend (server, source);
 #: ../libebackend/e-server-side-source.c:1064
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr ""
+"Zdroj údajov „%s“ nemá naviazaný obslužný program na odstránenie vzdialeného "
+"zdroja"
 
 #: ../libebackend/e-server-side-source.c:1095
 #: ../libedataserver/e-source.c:1317
@@ -4911,21 +4885,22 @@ msgstr "Zdroj údajov „%s“ nepodporuje overenie totožnosti OAuth 2.0"
 msgid "File must have a '.source' extension"
 msgstr "Súbor musí mať príponu „.source“"
 
-#: ../libebackend/e-source-registry-server.c:523
-#: ../libedataserver/e-source-registry.c:1594
+#: ../libebackend/e-source-registry-server.c:521
+#: ../libedataserver/e-source-registry.c:1619
 msgid "The user declined to authenticate"
 msgstr "Používateľ odmietol overiť svoju totožnosť"
 
-#: ../libebackend/e-source-registry-server.c:792
+#: ../libebackend/e-source-registry-server.c:790
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "UID „%s“ sa práve používa"
 
 # PK: neni to dialogove okno pre rozsirenia?
-#: ../libebackend/e-user-prompter-server.c:303
-#, fuzzy, c-format
+# MČ: priznám sa, že netuším, ale keďže je kód o „prompter“, talk to asi tak bude.
+#: ../libebackend/e-user-prompter-server.c:301
+#, c-format
 msgid "Extension dialog '%s' not found."
-msgstr "Rozšírený dialóg „%s“ sa nenašiel."
+msgstr "Dialógové okno pre rozšírenia „%s“ sa nenašlo."
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -5039,22 +5014,22 @@ msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Čakajúce"
 
-#: ../libedataserver/e-client.c:135
+#: ../libedataserver/e-client.c:133
 msgid "Source not loaded"
 msgstr "Zdroj nie je načítaný"
 
-#: ../libedataserver/e-client.c:137
+#: ../libedataserver/e-client.c:135
 msgid "Source already loaded"
 msgstr "Zdroj už je načítaný"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
-#: ../libedataserver/e-client.c:148
+#: ../libedataserver/e-client.c:146
 msgid "Offline unavailable"
 msgstr "Odpojený režim je nedostupný"
 
-#: ../libedataserver/e-client.c:170
+#: ../libedataserver/e-client.c:168
 msgid "D-Bus error"
 msgstr "Chyba D-Bus"
 
@@ -5113,7 +5088,7 @@ msgstr "Prosím, zadajte heslo pre účet „%s“."
 #: ../libedataserver/e-source.c:622
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Chýba zdrojový súbor skupiny [%s]"
 
 #: ../libedataserver/e-source.c:943
 #, c-format
@@ -5428,22 +5403,18 @@ msgid "No such data source for UID '%s'"
 msgstr "Pre UID „%s“ neexistujú zdrojové údaje"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:144
-#, fuzzy, c-format
-#| msgid ""
-#| "Cannot find a corresponding account in the org.gnome.OnlineAccounts "
-#| "service from which to obtain an access token for '%s'"
+#, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for '%s'"
 msgstr ""
 "Nedá sa nájsť zodpovedajúci účet v službe org.gnome.OnlineAccounts, z "
-"ktorého možno získať prístupový token pre „%s“"
+"ktorého možno získať heslo pre „%s“"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:216
-#, fuzzy, c-format
-#| msgid "Invalid GType registered for protocol '%s'"
+#, c-format
 msgid "Invalid password for '%s'"
-msgstr "Neplatný GType registrovaný pre protokol „%s“"
+msgstr "Neplatné heslo pre „%s“"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:223
@@ -5455,26 +5426,26 @@ msgstr "Kód: %u - Neočakávaná odpoveď zo servera"
 #: ../modules/gnome-online-accounts/goaewsclient.c:244
 #, c-format
 msgid "Failed to parse autodiscover response XML"
-msgstr "Nepodarilo sa analyzovať XML odpoveď automatického zisťovania"
+msgstr "Zlyhala analýza XML odpovede automatického zisťovania"
 
 #  PM: treba Autodiscaver prekladať nie je to názov prvku? - viackrát
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:253
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to find Autodiscover element"
-msgstr "Zlyhalo vyhľadanie prvku „automatické zisťovanie“"
+msgstr "Zlyhalo vyhľadanie prvku „Autodiscover“ (automatické zisťovanie)"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:265
 #, c-format
 msgid "Failed to find Response element"
-msgstr "Zlyhalo vyhľadanie prvku „odpoveď“"
+msgstr "Zlyhalo vyhľadanie prvku „Response“ (odpoveď)"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:277
 #, c-format
 msgid "Failed to find Account element"
-msgstr "Zlyhalo vyhľadanie prvku „účet“"
+msgstr "Zlyhalo vyhľadanie prvku „Account“ (účet)"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:291
@@ -5569,30 +5540,25 @@ msgstr "Platnosť"
 # MČ: vo FF: „Dátum vydania“, zjednotíme?
 # PK: ano, toto neni spravne
 #: ../modules/trust-prompt/certificate-viewer.c:646
-#, fuzzy
 msgid "Issued On"
-msgstr "Vydaný od"
+msgstr "Dátum vydania"
 
 # MČ: vo FF: „Platnosť vyprší“, zjednotíme?
 #: ../modules/trust-prompt/certificate-viewer.c:647
 msgid "Expires On"
 msgstr "Neplatný od"
 
-# PK: ten prst by som sem neplietol
 #: ../modules/trust-prompt/certificate-viewer.c:649
-#, fuzzy
 msgid "Fingerprints"
-msgstr "Odtlačky prstov"
+msgstr "Odtlačky"
 
 #: ../modules/trust-prompt/certificate-viewer.c:650
-#, fuzzy
 msgid "SHA1 Fingerprint"
-msgstr "Odtlačok prsta SHA1"
+msgstr "Odtlačok SHA1"
 
 #: ../modules/trust-prompt/certificate-viewer.c:651
-#, fuzzy
 msgid "MD5 Fingerprint"
-msgstr "Odtlačok prsta MD5"
+msgstr "Odtlačok MD5"
 
 #: ../modules/trust-prompt/certificate-viewer.c:653
 msgid "General"
@@ -5619,18 +5585,16 @@ msgid "Version"
 msgstr "Verzia"
 
 # PK: preco nie c. 1?
+# MČ: je to názov
 #: ../modules/trust-prompt/e-asn1-object.c:110
-#, fuzzy
 msgid "Version 1"
 msgstr "Verzia 1"
 
 #: ../modules/trust-prompt/e-asn1-object.c:113
-#, fuzzy
 msgid "Version 2"
 msgstr "Verzia 2"
 
 #: ../modules/trust-prompt/e-asn1-object.c:116
-#, fuzzy
 msgid "Version 3"
 msgstr "Verzia 3"
 
@@ -5670,11 +5634,9 @@ msgstr "Použitie kľúča certifikátu"
 msgid "Netscape Certificate Type"
 msgstr "Typ certifikátu Netscape"
 
-# PK: preco velkym?
 #: ../modules/trust-prompt/e-asn1-object.c:243
-#, fuzzy
 msgid "Certificate Authority Key Identifier"
-msgstr "Identifikačný kľúč Certifikačnej autority"
+msgstr "Identifikačný kľúč certifikačnej autority"
 
 #: ../modules/trust-prompt/e-asn1-object.c:255
 #, c-format
@@ -5693,11 +5655,9 @@ msgstr "Parametre algoritmu"
 msgid "Subject Public Key Info"
 msgstr "Informácie o verejnom kľúči subjektu"
 
-# PK: malym
 #: ../modules/trust-prompt/e-asn1-object.c:341
-#, fuzzy
 msgid "Subject Public Key Algorithm"
-msgstr "Algoritmus Verejného kľúča subjektu"
+msgstr "Algoritmus verejného kľúča subjektu"
 
 #: ../modules/trust-prompt/e-asn1-object.c:356
 msgid "Subject's Public Key"
@@ -5826,7 +5786,7 @@ msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr ""
-"Certifikát sa nezhoduje s očakávanou identitou stránky odkiaľ bol prijatý."
+"Certifikát sa nezhoduje s očakávanou identitou stránky odkiaľ bol získaný."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:205
 msgid "The certificate's activation time is still in the future."
@@ -5885,11 +5845,9 @@ msgstr "Vydavateľ:"
 msgid "Subject:"
 msgstr "Subjekt:"
 
-# PK: odtlacok
 #: ../modules/trust-prompt/trust-prompt-gtk.c:225
-#, fuzzy
 msgid "Fingerprint:"
-msgstr "Odtlačok prsta:"
+msgstr "Odtlačok:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:226
 msgid "Reason:"
@@ -6017,17 +5975,3 @@ msgstr "WebDAV"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
 msgstr "_Zavrhnúť"
-
-#~ msgid "Invalid backend name '%s' in source '%s'"
-#~ msgstr "Neplatný názov „%s“ obslužného programu v zdroji „%s“"
-
-#~ msgid ""
-#~ "   Issuer:       %s\n"
-#~ "   Subject:      %s\n"
-#~ "   Fingerprint:  %s\n"
-#~ "   Signature:    %s"
-#~ msgstr ""
-#~ "   Vydal:        %s\n"
-#~ "   Predmet:      %s\n"
-#~ "   Odtlačok:     %s\n"
-#~ "   Podpis:       %s"
