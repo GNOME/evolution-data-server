@@ -46,7 +46,7 @@ struct _ECalBackendPrivate {
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
-	gboolean opened, removed;
+	gboolean removed;
 	gboolean writable;
 
 	gchar *cache_dir;
@@ -802,9 +802,19 @@ e_cal_backend_set_writable (ECalBackend *backend,
 gboolean
 e_cal_backend_is_opened (ECalBackend *backend)
 {
+	EDataCal *data_cal;
+	gboolean opened = FALSE;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
-	return backend->priv->opened;
+	data_cal = e_cal_backend_ref_data_cal (backend);
+
+	if (data_cal != NULL) {
+		opened = e_data_cal_is_opened (data_cal);
+		g_object_unref (data_cal);
+	}
+
+	return opened;
 }
 
 /**
@@ -1984,12 +1994,6 @@ void
 e_cal_backend_notify_opened (ECalBackend *backend,
                              GError *error)
 {
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	backend->priv->opened = (error == NULL);
-
-	if (error != NULL)
-		g_error_free (error);
 }
 
 /**

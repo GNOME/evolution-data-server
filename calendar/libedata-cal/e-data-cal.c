@@ -52,6 +52,8 @@ struct _EDataCalPrivate {
 	GWeakRef backend;
 	gchar *object_path;
 
+	gboolean opened;
+
 	GRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid -> OperationData */
 
@@ -1335,7 +1337,6 @@ e_data_cal_respond_open (EDataCal *cal,
                          GError *error)
 {
 	OperationData *data;
-	GError *copy = NULL;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1345,12 +1346,7 @@ e_data_cal_respond_open (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open calendar: "));
 
-	/* This function is deprecated, but it's the only way to
-	 * set ECalBackend's internal 'opened' flag.  We should
-	 * be the only ones calling this. */
-	if (error != NULL)
-		copy = g_error_copy (error);
-	e_cal_backend_notify_opened (data->backend, copy);
+	cal->priv->opened = (error == NULL);
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_open (
@@ -2754,5 +2750,31 @@ e_data_cal_get_object_path (EDataCal *cal)
 	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
 
 	return cal->priv->object_path;
+}
+
+/**
+ * e_data_cal_is_opened:
+ * @cal: an #EDataCal
+ *
+ * Returns whether the @cal's #EDataCal:backend was successfully opened.
+ *
+ * <note>
+ *   <para>
+ *     This is a temporary function serving only to keep
+ *     e_cal_backend_is_opened() working for a little while longer.
+ *     Do not call this function directly.
+ *   </para>
+ * </note>
+ *
+ * Returns: whether the #EDataCal:backend is opened
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_data_cal_is_opened (EDataCal *cal)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL (cal), FALSE);
+
+	return cal->priv->opened;
 }
 

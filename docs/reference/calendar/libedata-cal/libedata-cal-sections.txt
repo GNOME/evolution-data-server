@@ -248,6 +248,7 @@ e_data_cal_new
 e_data_cal_ref_backend
 e_data_cal_get_connection
 e_data_cal_get_object_path
+e_data_cal_is_opened
 e_data_cal_respond_open
 e_data_cal_respond_refresh
 e_data_cal_respond_get_backend_property
