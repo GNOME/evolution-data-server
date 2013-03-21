@@ -53,7 +53,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
 
-#define JOB_PRIORITY G_PRIORITY_LOW
+/* Prioritize ahead of GTK+ redraws. */
+#define JOB_PRIORITY G_PRIORITY_HIGH_IDLE
 
 #define d(x)
 

@@ -783,6 +783,8 @@ source_changed_cb (ESource *source,
 {
 	g_return_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp));
 
+	g_object_ref (cbhttp);
+
 	if (cbhttp->priv->uri != NULL) {
 		gboolean uri_changed;
 		const gchar *new_uri;
@@ -806,6 +808,8 @@ source_changed_cb (ESource *source,
 
 		g_free (old_uri);
 	}
+
+	g_object_unref (cbhttp);
 }
 
 static void

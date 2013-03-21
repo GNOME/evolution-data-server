@@ -111,7 +111,7 @@ sort_uid_cmp (gpointer enc,
 	a1 = strtoul (sa1, NULL, 10);
 	a2 = strtoul (sa2, NULL, 10);
 
-	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
+	return (a1 < a2) ? -1 : (a1 > a2) ? 1 : 0;
 }
 
 /**

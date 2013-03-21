@@ -715,7 +715,7 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	CamelSExp *sexp;
 	CamelSExpResult *r;
 	gint i;
-	gchar *res;
+	gchar *res = NULL;
 
 	sexp = camel_sexp_new ();
 

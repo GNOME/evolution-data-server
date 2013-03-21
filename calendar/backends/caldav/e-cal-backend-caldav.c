@@ -303,6 +303,7 @@ static void caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav)
 
 static gboolean remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid);
 static gboolean put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gchar *href, const gchar *etag);
+static void put_server_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icomp, const gchar *href, const gchar *etag, GTree *c_uid2complist);
 
 /* ************************************************************************* */
 /* Misc. utility functions */
@@ -1461,6 +1462,150 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 }
 
 static gboolean
+caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
+			     const gchar *uid,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	SoupMessage *message;
+	xmlOutputBufferPtr buf;
+	xmlNodePtr node;
+	xmlNodePtr sn;
+	xmlNodePtr root;
+	xmlDocPtr doc;
+	xmlNsPtr nsdav;
+	xmlNsPtr nscd;
+	gconstpointer buf_content;
+	gsize buf_size;
+	gboolean result = FALSE;
+	gint ii, len = 0;
+	CalDAVObject *objs = NULL, *object;
+
+	g_return_val_if_fail (cbdav != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
+	g_return_val_if_fail (uid && *uid, FALSE);
+
+	/* Allocate the soup message */
+	message = soup_message_new ("REPORT", cbdav->priv->uri);
+	if (message == NULL)
+		return FALSE;
+
+	/* Maybe we should just do a g_strdup_printf here? */
+	/* Prepare request body */
+	doc = xmlNewDoc ((xmlChar *) "1.0");
+	root = xmlNewDocNode (doc, NULL, (xmlChar *) "calendar-query", NULL);
+	nscd = xmlNewNs (root, (xmlChar *) "urn:ietf:params:xml:ns:caldav", (xmlChar *) "C");
+	xmlSetNs (root, nscd);
+	xmlDocSetRootElement (doc, root);
+
+	/* Add webdav tags */
+	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", (xmlChar *) "D");
+	node = xmlNewTextChild (root, nsdav, (xmlChar *) "prop", NULL);
+	xmlNewTextChild (node, nsdav, (xmlChar *) "getetag", NULL);
+	xmlNewTextChild (node, nscd, (xmlChar *) "calendar-data", NULL);
+
+	node = xmlNewTextChild (root, nscd, (xmlChar *) "filter", NULL);
+	node = xmlNewTextChild (node, nscd, (xmlChar *) "comp-filter", NULL);
+	xmlSetProp (node, (xmlChar *) "name", (xmlChar *) "VCALENDAR");
+
+	sn = xmlNewTextChild (node, nscd, (xmlChar *) "comp-filter", NULL);
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
+		default:
+		case ICAL_VEVENT_COMPONENT:
+			xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VEVENT");
+			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VJOURNAL");
+			break;
+		case ICAL_VTODO_COMPONENT:
+			xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VTODO");
+			break;
+	}
+
+	node = xmlNewTextChild (sn, nscd, (xmlChar *) "prop-filter", NULL);
+	xmlSetProp (node, (xmlChar *) "name", (xmlChar *) "UID");
+
+	sn = xmlNewTextChild (node, nscd, (xmlChar *) "text-match", NULL);
+	xmlSetProp (sn, (xmlChar *) "collation", (xmlChar *) "i;octet");
+	xmlNodeSetContent (sn, (xmlChar *) uid);
+
+	buf = xmlAllocOutputBuffer (NULL);
+	xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
+	xmlOutputBufferFlush (buf);
+
+	/* Prepare the soup message */
+	soup_message_headers_append (
+		message->request_headers,
+		"User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (
+		message->request_headers,
+		"Depth", "1");
+
+	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
+	soup_message_set_request (
+		message,
+		"application/xml",
+		SOUP_MEMORY_COPY,
+		buf_content, buf_size);
+
+	/* Send the request now */
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
+
+	/* Clean up the memory */
+	xmlOutputBufferClose (buf);
+	xmlFreeDoc (doc);
+
+	/* Check the result */
+	if (message->status_code != 207) {
+		switch (message->status_code) {
+		case SOUP_STATUS_CANT_CONNECT:
+		case SOUP_STATUS_CANT_CONNECT_PROXY:
+			cbdav->priv->opened = FALSE;
+			update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
+			cbdav->priv->read_only = TRUE;
+			e_cal_backend_notify_readonly (
+				E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
+			break;
+		case 401:
+			caldav_authenticate (cbdav, TRUE, NULL, NULL);
+			break;
+		default:
+			g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+			break;
+		}
+
+		g_object_unref (message);
+		return FALSE;
+	}
+
+	/* Parse the response body */
+	if (parse_report_response (message, &objs, &len)) {
+		result = TRUE;
+
+		for (ii = 0, object = objs; ii < len; ii++, object++) {
+			if (object->status == 200 && object->href && object->etag && object->cdata && *object->cdata) {
+				icalcomponent *icomp = icalparser_parse_string (object->cdata);
+
+				if (icomp) {
+					put_server_comp_to_cache (cbdav, icomp, object->href, object->etag, NULL);
+					icalcomponent_free (icomp);
+				}
+			}
+
+			/* these free immediately */
+			caldav_object_free (object, FALSE);
+		}
+
+		/* cache update done for fetched items */
+		g_free (objs);
+	}
+
+	g_object_unref (message);
+
+	return result;
+}
+
+static gboolean
 caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
                                    const gchar *attachment_uri,
                                    gchar **content,
@@ -2022,7 +2167,6 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
                    time_t start_time,
                    time_t end_time)
 {
-	ECalBackend *bkend;
 	CalDAVObject *sobjs, *object;
 	GSList *c_objs, *c_iter; /* list of all items known from our cache */
 	GTree *c_uid2complist;  /* cache components list (with detached instances) sorted by (master's) uid */
@@ -2035,7 +2179,6 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 		return;
 	}
 
-	bkend  = E_CAL_BACKEND (cbdav);
 	len    = 0;
 	sobjs  = NULL;
 
@@ -2195,74 +2338,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 					icalcomponent *icomp = icalparser_parse_string (object->cdata);
 
 					if (icomp) {
-						icalcomponent_kind kind = icalcomponent_isa (icomp);
-
-						extract_timezones (cbdav, icomp);
-
-						if (kind == ICAL_VCALENDAR_COMPONENT) {
-							icalcomponent *subcomp;
-
-							kind = e_cal_backend_get_kind (bkend);
-
-							for (subcomp = icalcomponent_get_first_component (icomp, kind);
-							     subcomp;
-							     subcomp = icalcomponent_get_next_component (icomp, kind)) {
-								ECalComponent *new_comp, *old_comp;
-
-								convert_to_url_attachment (cbdav, subcomp);
-								new_comp = e_cal_component_new ();
-								if (e_cal_component_set_icalcomponent (new_comp, icalcomponent_new_clone (subcomp))) {
-									const gchar *uid = NULL;
-									struct cache_comp_list *ccl;
-
-									e_cal_component_get_uid (new_comp, &uid);
-									if (!uid) {
-										g_warning ("%s: no UID on component!", G_STRFUNC);
-										g_object_unref (new_comp);
-										continue;
-									}
-
-									ecalcomp_set_href (new_comp, object->href);
-									ecalcomp_set_etag (new_comp, object->etag);
-
-									old_comp = NULL;
-									ccl = g_tree_lookup (c_uid2complist, uid);
-									if (ccl) {
-										gchar *nc_rid = e_cal_component_get_recurid_as_string (new_comp);
-										GSList *p;
-
-										for (p = ccl->slist; p && !old_comp; p = p->next) {
-											gchar *oc_rid;
-
-											old_comp = p->data;
-
-											oc_rid = e_cal_component_get_recurid_as_string (old_comp);
-											if (g_strcmp0 (nc_rid, oc_rid) != 0) {
-												old_comp = NULL;
-											}
-
-											g_free (oc_rid);
-										}
-
-										g_free (nc_rid);
-									}
-
-									put_component_to_store (cbdav, new_comp);
-
-									if (old_comp == NULL) {
-										e_cal_backend_notify_component_created (bkend, new_comp);
-									} else {
-										e_cal_backend_notify_component_modified (bkend, old_comp, new_comp);
-
-										ccl->slist = g_slist_remove (ccl->slist, old_comp);
-										g_object_unref (old_comp);
-									}
-								}
-
-								g_object_unref (new_comp);
-							}
-						}
-
+						put_server_comp_to_cache (cbdav, icomp, object->href, object->etag, c_uid2complist);
 						icalcomponent_free (icomp);
 					}
 				}
@@ -2992,6 +3068,93 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav,
 	}
 
 	return icalcomp;
+}
+
+static void
+put_server_comp_to_cache (ECalBackendCalDAV *cbdav,
+			  icalcomponent *icomp,
+			  const gchar *href,
+			  const gchar *etag,
+			  GTree *c_uid2complist)
+{
+	icalcomponent_kind kind;
+	ECalBackend *cal_backend;
+
+	g_return_if_fail (cbdav != NULL);
+	g_return_if_fail (icomp != NULL);
+
+	cal_backend = E_CAL_BACKEND (cbdav);
+	kind = icalcomponent_isa (icomp);
+	extract_timezones (cbdav, icomp);
+
+	if (kind == ICAL_VCALENDAR_COMPONENT) {
+		icalcomponent *subcomp;
+
+		kind = e_cal_backend_get_kind (cal_backend);
+
+		for (subcomp = icalcomponent_get_first_component (icomp, kind);
+		     subcomp;
+		     subcomp = icalcomponent_get_next_component (icomp, kind)) {
+			ECalComponent *new_comp, *old_comp;
+
+			convert_to_url_attachment (cbdav, subcomp);
+			new_comp = e_cal_component_new ();
+			if (e_cal_component_set_icalcomponent (new_comp, icalcomponent_new_clone (subcomp))) {
+				const gchar *uid = NULL;
+				struct cache_comp_list *ccl;
+
+				e_cal_component_get_uid (new_comp, &uid);
+				if (!uid) {
+					g_warning ("%s: no UID on component!", G_STRFUNC);
+					g_object_unref (new_comp);
+					continue;
+				}
+
+				if (href)
+					ecalcomp_set_href (new_comp, href);
+				if (etag)
+					ecalcomp_set_etag (new_comp, etag);
+
+				old_comp = NULL;
+				if (c_uid2complist) {
+					ccl = g_tree_lookup (c_uid2complist, uid);
+					if (ccl) {
+						gchar *nc_rid = e_cal_component_get_recurid_as_string (new_comp);
+						GSList *p;
+
+						for (p = ccl->slist; p && !old_comp; p = p->next) {
+							gchar *oc_rid;
+
+							old_comp = p->data;
+
+							oc_rid = e_cal_component_get_recurid_as_string (old_comp);
+							if (g_strcmp0 (nc_rid, oc_rid) != 0) {
+								old_comp = NULL;
+							}
+
+							g_free (oc_rid);
+						}
+
+						g_free (nc_rid);
+					}
+				}
+
+				put_component_to_store (cbdav, new_comp);
+
+				if (old_comp == NULL) {
+					e_cal_backend_notify_component_created (cal_backend, new_comp);
+				} else {
+					e_cal_backend_notify_component_modified (cal_backend, old_comp, new_comp);
+
+					if (ccl)
+						ccl->slist = g_slist_remove (ccl->slist, old_comp);
+					g_object_unref (old_comp);
+				}
+			}
+
+			g_object_unref (new_comp);
+		}
+	}
 }
 
 static gboolean
@@ -4451,6 +4614,13 @@ caldav_get_object (ECalBackendSync *backend,
 
 	*object = NULL;
 	icalcomp = get_comp_from_cache (cbdav, uid, rid, NULL, NULL);
+
+	if (!icalcomp && e_backend_get_online (E_BACKEND (backend))) {
+		/* try to fetch from the server, maybe the event was received only recently */
+		if (caldav_server_query_for_uid (cbdav, uid, cancellable, NULL)) {
+			icalcomp = get_comp_from_cache (cbdav, uid, rid, NULL, NULL);
+		}
+	}
 
 	if (!icalcomp) {
 		g_propagate_error (perror, EDC_ERROR (ObjectNotFound));

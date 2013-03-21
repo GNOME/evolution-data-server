@@ -10,10 +10,10 @@ EBookViewClass
 E_BOOK_VIEW
 E_IS_BOOK_VIEW
 E_TYPE_BOOK_VIEW
-e_book_view_get_type
 E_BOOK_VIEW_CLASS
 E_IS_BOOK_VIEW_CLASS
 E_BOOK_VIEW_GET_CLASS
+e_book_view_get_type
 <SUBSECTION Private>
 EBookViewPrivate
 </SECTION>
@@ -100,10 +100,10 @@ EBookClass
 E_BOOK
 E_IS_BOOK
 E_TYPE_BOOK
-e_book_get_type
 E_BOOK_CLASS
 E_IS_BOOK_CLASS
 E_BOOK_GET_CLASS
+e_book_get_type
 <SUBSECTION Private>
 EBookPrivate
 </SECTION>
@@ -258,13 +258,13 @@ E_TYPE_CONTACT_PHOTO
 e_contact_get_type
 e_contact_address_get_type
 e_contact_cert_get_type
+e_contact_geo_get_type
 e_contact_photo_get_type
 e_contact_name_get_type
 e_contact_date_get_type
 EContactPhotoType
 <SUBSECTION Private>
 EContactPrivate
-e_contact_geo_get_type
 </SECTION>
 
 <SECTION>

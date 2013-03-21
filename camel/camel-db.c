@@ -119,7 +119,7 @@ sync_push_request (CamelSqlite3File *cFile,
 
 	if (!cFile->flags) {
 		/* nothing to sync, might be when xClose is called
-		   without any pending xSync request */
+		 * without any pending xSync request */
 		g_static_rec_mutex_unlock (&cFile->sync_mutex);
 		return;
 	}

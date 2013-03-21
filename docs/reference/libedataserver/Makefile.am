@@ -2,7 +2,7 @@
 DOC_MODULE = libedataserver
 
 # The top-level SGML file.
-DOC_MAIN_SGML_FILE = libedataserver-docs.sgml
+DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 
 MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=e
 

@@ -1,9 +1,8 @@
 # The name of the module.
 DOC_MODULE = camel
-DOC_MODULE_VERSIONED = $(DOC_MODULE)-$(CAMEL_MAJOR_VERSION).$(CAMEL_MINOR_VERSION)
 
 # The top-level SGML file.
-DOC_MAIN_SGML_FILE = camel-docs.sgml
+DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 
 # The directory containing the source code (if it contains documentation).
 DOC_SOURCE_DIR = $(top_srcdir)/camel

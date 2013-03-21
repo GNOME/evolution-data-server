@@ -611,7 +611,7 @@ camel_subscribable_unsubscribe_folder_finish (CamelSubscribable *subscribable,
  * @folder_info: information about the subscribed folder
  *
  * Emits the #CamelSubscribable::folder-subscribed signal from an idle source
- * on the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * on the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -635,8 +635,9 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 	signal_data->subscribable = g_object_ref (subscribable);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		subscribable_emit_folder_subscribed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -647,7 +648,7 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
  * @folder_info: information about the unsubscribed folder
  *
  * Emits the #CamelSubscribable::folder-unsubscribed signal from an idle source
- * on the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * on the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -671,8 +672,9 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 	signal_data->subscribable = g_object_ref (subscribable);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		subscribable_emit_folder_unsubscribed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }

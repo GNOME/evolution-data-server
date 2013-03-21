@@ -11,30 +11,14 @@
   <chapter>
     <title>D-Bus API Reference</title>
     <xi:include href="xml/e-dbus-object.xml"/>
-    <xi:include href="xml/e-dbus-object-proxy.xml"/>
-    <xi:include href="xml/e-dbus-object-skeleton.xml"/>
     <xi:include href="xml/e-dbus-source.xml"/>
-    <xi:include href="xml/e-dbus-source-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-skeleton.xml"/>
     <xi:include href="xml/e-dbus-source-removable.xml"/>
-    <xi:include href="xml/e-dbus-source-removable-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-removable-skeleton.xml"/>
     <xi:include href="xml/e-dbus-source-writable.xml"/>
-    <xi:include href="xml/e-dbus-source-writable-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-writable-skeleton.xml"/>
     <xi:include href="xml/e-dbus-source-remote-creatable.xml"/>
-    <xi:include href="xml/e-dbus-source-remote-creatable-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-remote-creatable-skeleton.xml"/>
     <xi:include href="xml/e-dbus-source-remote-deletable.xml"/>
-    <xi:include href="xml/e-dbus-source-remote-deletable-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-remote-deletable-skeleton.xml"/>
     <xi:include href="xml/e-dbus-source-manager.xml"/>
-    <xi:include href="xml/e-dbus-source-manager-proxy.xml"/>
-    <xi:include href="xml/e-dbus-source-manager-skeleton.xml"/>
     <xi:include href="xml/e-dbus-object-manager-client.xml"/>
     <xi:include href="xml/e-dbus-authenticator.xml"/>
-    <xi:include href="xml/e-dbus-authenticator-proxy.xml"/>
-    <xi:include href="xml/e-dbus-authenticator-skeleton.xml"/>
   </chapter>
 
   <chapter>

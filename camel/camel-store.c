@@ -343,9 +343,8 @@ store_synchronize_sync (CamelStore *store,
                         GError **error)
 {
 	GPtrArray *folders;
-	CamelFolder *folder;
 	gboolean success = TRUE;
-	gint i;
+	gint ii;
 	GError *local_error = NULL;
 
 	if (expunge) {
@@ -353,27 +352,33 @@ store_synchronize_sync (CamelStore *store,
 		CamelFolderInfo *root, *fi;
 
 		folders = g_ptr_array_new ();
-		root = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, NULL, NULL);
+		root = camel_store_get_folder_info_sync (
+			store, NULL,
+			CAMEL_STORE_FOLDER_INFO_RECURSIVE |
+			CAMEL_STORE_FOLDER_INFO_SUBSCRIBED |
+			CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
+			NULL, NULL);
 		fi = root;
-		while (fi) {
+		while (fi != NULL) {
 			CamelFolderInfo *next;
 
 			if ((fi->flags & CAMEL_FOLDER_NOSELECT) == 0) {
-				CamelFolder *fldr;
+				CamelFolder *folder;
 
-				fldr = camel_store_get_folder_sync (store, fi->full_name, 0, NULL, NULL);
-				if (fldr)
-					g_ptr_array_add (folders, fldr);
+				folder = camel_store_get_folder_sync (
+					store, fi->full_name, 0, NULL, NULL);
+				if (folder != NULL)
+					g_ptr_array_add (folders, folder);
 			}
 
 			/* pick the next */
 			next = fi->child;
-			if (!next)
+			if (next == NULL)
 				next = fi->next;
-			if (!next) {
+			if (next == NULL) {
 				next = fi->parent;
-				while (next) {
-					if (next->next) {
+				while (next != NULL) {
+					if (next->next != NULL) {
 						next = next->next;
 						break;
 					}
@@ -385,7 +390,7 @@ store_synchronize_sync (CamelStore *store,
 			fi = next;
 		}
 
-		if (root)
+		if (root != NULL)
 			camel_store_free_folder_info_full (store, root);
 	} else {
 		/* sync only folders opened until now */
@@ -395,10 +400,10 @@ store_synchronize_sync (CamelStore *store,
 	/* We don't sync any vFolders, that is used to update certain
 	 * vfolder queries mainly, and we're really only interested in
 	 * storing/expunging the physical mails. */
-	for (i = 0; i < folders->len; i++) {
-		folder = folders->pdata[i];
-		if (!CAMEL_IS_VEE_FOLDER (folder)
-		    && local_error == NULL) {
+	for (ii = 0; ii < folders->len; ii++) {
+		CamelFolder *folder = folders->pdata[ii];
+
+		if (!CAMEL_IS_VEE_FOLDER (folder) && local_error == NULL) {
 			camel_folder_synchronize_sync (
 				folder, expunge, cancellable, &local_error);
 			ignore_no_such_table_exception (&local_error);
@@ -1263,7 +1268,7 @@ camel_store_error_quark (void)
  * @folder_info: information about the created folder
  *
  * Emits the #CamelStore::folder-created signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1285,8 +1290,9 @@ camel_store_folder_created (CamelStore *store,
 	signal_data->store = g_object_ref (store);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_created_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -1297,7 +1303,7 @@ camel_store_folder_created (CamelStore *store,
  * @folder_info: information about the deleted folder
  *
  * Emits the #CamelStore::folder-deleted signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1319,8 +1325,9 @@ camel_store_folder_deleted (CamelStore *store,
 	signal_data->store = g_object_ref (store);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_deleted_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -1331,7 +1338,7 @@ camel_store_folder_deleted (CamelStore *store,
  * @folder: the #CamelFolder that was opened
  *
  * Emits the #CamelStore::folder-opened signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1353,8 +1360,9 @@ camel_store_folder_opened (CamelStore *store,
 	signal_data->store = g_object_ref (store);
 	signal_data->folder = g_object_ref (folder);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_opened_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
@@ -1366,7 +1374,7 @@ camel_store_folder_opened (CamelStore *store,
  * @folder_info: information about the renamed folder
  *
  * Emits the #CamelStore::folder-renamed signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * the main loop.  The idle source's priority is #G_PRIORITY_HIGH_IDLE.
  *
  * This function is only intended for Camel providers.
  *
@@ -1391,8 +1399,9 @@ camel_store_folder_renamed (CamelStore *store,
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 	signal_data->folder_name = g_strdup (old_name);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		store_emit_folder_renamed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }

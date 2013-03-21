@@ -2,7 +2,7 @@
 DOC_MODULE = libebackend
 
 # The top-level SGML file.
-DOC_MAIN_SGML_FILE = libebackend-docs.xml
+DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.xml
 
 # Extra options to supply to gtkdoc-scan
 SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"

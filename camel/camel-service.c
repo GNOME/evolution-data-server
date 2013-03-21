@@ -408,8 +408,9 @@ service_queue_notify_connection_status (CamelService *service)
 
 	session = camel_service_get_session (service);
 
+	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
+		session, G_PRIORITY_HIGH_IDLE,
 		service_notify_connection_status_cb,
 		g_object_ref (service),
 		(GDestroyNotify) g_object_unref);

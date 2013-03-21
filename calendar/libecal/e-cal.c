@@ -241,7 +241,7 @@ get_status_from_error (const GError *error)
 	#undef err
 
 	if G_LIKELY (error == NULL)
-		return Success;
+		return E_CALENDAR_STATUS_OK;
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR)) {
 		gchar *name;
@@ -1151,7 +1151,10 @@ async_report_idle (ECal *ecal,
 	data->ecal = g_object_ref (ecal);
 	data->error = error;
 
-	g_idle_add (idle_async_error_reply_cb, data);
+	/* Prioritize ahead of GTK+ redraws. */
+	g_idle_add_full (
+		G_PRIORITY_HIGH_IDLE,
+		idle_async_error_reply_cb, data, NULL);
 }
 
 /**

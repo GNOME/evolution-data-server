@@ -1,3 +1,81 @@
+Evolution-Data-Server 3.6.4 2013-03-06
+--------------------------------------
+
+Bug Fixes:
+	Bug 692278 - LDAP backend mutex deadlock on finalize (Milan Crha)
+	Bug 689476 - Slow composer open (ENameSelector object leaks)
+	             (Milan Crha)
+	Bug 675287 - Spool file account doesn't show messages (Milan Crha)
+	Bug 683867 - Schedule actions with higher idle priority (Michel Dänzer)
+	Bug 694223 - The "message-location" search never matches on IMAP+
+	             (Milan Crha)
+	Bug 694734 - Relative URI in Location on PUT confuses WebDAV
+	             (Milan Crha)
+
+Other Changes:
+	* EGdbusTemplates: Address crash on operation cancel (Milan Crha)
+	* store_synchronize_sync(): Only sync subscribed folders.
+	  (Matthew Barnes)
+	* [CalDAV] Try to search for event when not in local cache (Milan Crha)
+	* ebook: avoid repeatedly creating GSettings in e_book_client_is_self
+	  (Patrick Ohly)
+	* source_write_sync: Fail gracefully when given a scratch source.
+	  (Matthew Barnes)
+	* source_remove_sync: Fail gracefully when given a scratch source.
+	  (Matthew Barnes)
+	* Do not use SSL_V2_COMPATIBLE_HELLO by default (Milan Crha)
+	* Local Delivery not updated on start and missing Receiving Options
+	  page (Milan Crha)
+	* e_source_registry_server_load_directory: Monitor failure is
+	  non-fatal. (Matthew Barnes)
+	* Speed-up auto-completion results showing (Milan Crha)
+
+
+Evolution-Data-Server 3.6.3 2013-01-21
+--------------------------------------
+
+Bug Fixes:
+	Bug 202576 - A way to refresh IMAP folder list (Milan Crha)
+	Bug 674454 - Crash in e_book_backend_ldap_authenticate_user
+	             (Milan Crha)
+	Bug 677378 - Crash in imapx_query_auth_types_sync() (Milan Crha)
+	Bug 680201 - Backup restore doesn't migrate accounts from GConf
+	             (Milan Crha)
+	Bug 684175 - Check email value in e_destination_set_contact()
+	             (Paul Menzel)
+	Bug 687634 - Improve camel console warning text (Paul Menzel)
+	Bug 687670 - Signing with both pgp and S/MIME causes a broken
+	             signature (Milan Crha)
+	Bug 687865 - Shows old reminders for GOA accounts (Milan Crha)
+	Bug 688146 - Crash in Contacts calendar backend (Milan Crha)
+	Bug 688366 - WebDAV book can cause high CPU usage (Milan Crha)
+	Bug 688479 - Empty name selector dialog on open (Milan Crha)
+	Bug 688639 - SMTP: Correctly deal with 535 authentication error
+	             (Paul Menzel)
+	Bug 688660 - Crash on webdav contact cache update (Milan Crha)
+	Bug 688795 - Crash under e_cal_backend_contacts_start_view()
+	             (Milan Crha)
+	Bug 688926 - SIGABRT on call_old_file_Sync (Daniele Rondina)
+	Bug 689124 - Increase Camel's TCP read/write timeout (Matthew Barnes)
+	Bug 690151 - Crash in e_book_backend_file_bump_revision() (Milan Crha)
+	Bug 691124 - [imap] Typo in sort_uid_cmp() (Paul Menzel)
+	Bug 691126 - Fix warnings found by Clang (Milan Crha)
+	Bug 691298 - Deadlock under e_cal_backend_foreach_view() (Milan Crha)
+	Bug 691470 - ENameSelectorEntry: Copy to clipboard issue with
+	             multi-byte characters (Milan Crha)
+	Bug 691477 - exists_vcard is not supported when parsing a query from
+	             string (Milan Crha)
+
+Translations:
+	Sayak Sarkar (bn_IN)
+	Christian Kirbach (de)
+	Rajesh Ranjan (hi)
+	Rafael Ferreira (pt_BR)
+	Dr.T.Vasudevan (ta)
+	Krishnababu Krothapalli (te)
+	Gheyret Kenji (ug)
+
+
 Evolution-Data-Server 3.6.2 2012-11-12
 --------------------------------------
 
