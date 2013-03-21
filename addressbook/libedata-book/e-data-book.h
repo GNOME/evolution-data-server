@@ -157,6 +157,7 @@ struct _EBookBackend *
 GDBusConnection *
 		e_data_book_get_connection	(EDataBook *book);
 const gchar *	e_data_book_get_object_path	(EDataBook *book);
+gboolean	e_data_book_is_opened		(EDataBook *book);
 
 void		e_data_book_respond_open	(EDataBook *book,
 						 guint32 opid,

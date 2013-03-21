@@ -280,6 +280,7 @@ e_data_book_new
 e_data_book_ref_backend
 e_data_book_get_connection
 e_data_book_get_object_path
+e_data_book_is_opened
 e_data_book_respond_open
 e_data_book_respond_refresh
 e_data_book_respond_get_backend_property

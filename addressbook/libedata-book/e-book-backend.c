@@ -24,7 +24,7 @@ struct _EBookBackendPrivate {
 	ESourceRegistry *registry;
 	EDataBook *data_book;
 
-	gboolean opened, removed;
+	gboolean removed;
 	gboolean writable;
 
 	GMutex views_mutex;
@@ -1094,9 +1094,19 @@ e_book_backend_set_backend_property (EBookBackend *backend,
 gboolean
 e_book_backend_is_opened (EBookBackend *backend)
 {
+	EDataBook *data_book;
+	gboolean opened = FALSE;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
-	return backend->priv->opened;
+	data_book = e_book_backend_ref_data_book (backend);
+
+	if (data_book != NULL) {
+		opened = e_data_book_is_opened (data_book);
+		g_object_unref (data_book);
+	}
+
+	return opened;
 }
 
 /**
@@ -1426,12 +1436,6 @@ void
 e_book_backend_notify_opened (EBookBackend *backend,
                               GError *error)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-
-	backend->priv->opened = (error == NULL);
-
-	if (error != NULL)
-		g_error_free (error);
 }
 
 /**

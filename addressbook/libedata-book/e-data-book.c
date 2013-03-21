@@ -50,6 +50,8 @@ struct _EDataBookPrivate {
 	GWeakRef backend;
 	gchar *object_path;
 
+	gboolean opened;
+
 	GRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid -> OperationData */
 	GHashTable *direct_ops; /* opid to DirectOperationData for still running operations */
@@ -1197,7 +1199,6 @@ e_data_book_respond_open (EDataBook *book,
 {
 	DirectOperationData *direct = NULL;
 	OperationData *data;
-	GError *copy = NULL;
 
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
@@ -1207,26 +1208,15 @@ e_data_book_respond_open (EDataBook *book,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open book: "));
 
-	/* This function is deprecated, but it's the only way to
-	 * set EBookBackend's internal 'opened' flag.  We should
-	 * be the only ones calling this. */
-	if (error != NULL) {
-		data_book_convert_to_client_error (error);
-		copy = g_error_copy (error);
-	}
-
-	e_book_backend_notify_opened (data->backend, copy);
+	book->priv->opened = (error == NULL);
 
 	if (direct) {
 		gboolean result = FALSE;
 
 		if (error) {
-			g_simple_async_result_set_error (
-				direct->result,
-				error->domain,
-				error->code,
-				"%s", error->message);
-			g_error_free (error);
+			data_book_convert_to_client_error (error);
+			g_simple_async_result_take_error (
+				direct->result, error);
 		} else {
 			g_simple_async_result_set_check_cancellable (
 				direct->result,
@@ -1245,6 +1235,7 @@ e_data_book_respond_open (EDataBook *book,
 			book->priv->dbus_interface,
 			data->invocation);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			data->invocation, error);
 	}
@@ -2456,6 +2447,32 @@ e_data_book_get_object_path (EDataBook *book)
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 
 	return book->priv->object_path;
+}
+
+/**
+ * e_data_book_is_opened:
+ * @book: an #EDataBook
+ *
+ * Returns whether the @book's #EDataBook:backend was successfully opened.
+ *
+ * <note>
+ *   <para>
+ *     This is a temporary function serving only to keep
+ *     e_book_backend_is_opened() working for a little while longer.
+ *     Do not call this function directly.
+ *   </para>
+ * </note>
+ *
+ * Returns: whether the #EDataBook:backend is opened
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_data_book_is_opened (EDataBook *book)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
+
+	return book->priv->opened;
 }
 
 /*************************************************************************
