@@ -1455,25 +1455,6 @@ e_data_cal_respond_get_backend_property (EDataCal *cal,
 }
 
 /**
- * e_data_cal_respond_set_backend_property:
- * @cal: A calendar client interface.
- * @error: Operation error, if any, automatically freed if passed it.
- *
- * Notifies listeners of the completion of the set_backend_property method call.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function no longer does anything.
- */
-void
-e_data_cal_respond_set_backend_property (EDataCal *cal,
-                                         guint32 opid,
-                                         GError *error)
-{
-	/* Do nothing. */
-}
-
-/**
  * e_data_cal_respond_get_object:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
@@ -2131,75 +2112,6 @@ e_data_cal_report_error (EDataCal *cal,
 }
 
 /**
- * e_data_cal_report_readonly:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_cal_backend_set_writable() instead.
- **/
-void
-e_data_cal_report_readonly (EDataCal *cal,
-                            gboolean readonly)
-{
-	ECalBackend *backend;
-
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	backend = e_data_cal_ref_backend (cal);
-
-	if (backend != NULL) {
-		e_cal_backend_set_writable (backend, !readonly);
-		g_object_unref (backend);
-	}
-}
-
-/**
- * e_data_cal_report_online:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_backend_set_online() instead.
- **/
-void
-e_data_cal_report_online (EDataCal *cal,
-                          gboolean is_online)
-{
-	ECalBackend *backend;
-
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	backend = e_data_cal_ref_backend (cal);
-
-	if (backend != NULL) {
-		e_backend_set_online (E_BACKEND (backend), is_online);
-		g_object_unref (backend);
-	}
-}
-
-/**
- * e_data_cal_report_opened:
- *
- * Reports to associated client that opening phase of the cal is finished.
- * error being NULL means successfully, otherwise reports an error which
- * happened during opening phase. By opening phase is meant a process
- * including successfull authentication to the server/storage.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function no longer does anything.
- **/
-void
-e_data_cal_report_opened (EDataCal *cal,
-                          const GError *error)
-{
-	/* Do nothing. */
-}
-
-/**
  * e_data_cal_report_free_busy_data:
  *
  * FIXME: Document me.
@@ -2683,35 +2595,6 @@ e_data_cal_ref_backend (EDataCal *cal)
 	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
 
 	return g_weak_ref_get (&cal->priv->backend);
-}
-
-/**
- * e_data_cal_get_backend:
- * @cal: an #EDataCal
- *
- * Returns the #ECalBackend to which incoming remote method invocations
- * are being forwarded.
- *
- * Returns: the #ECalBackend
- *
- * Deprecated: 3.10: Use e_data_cal_ref_backend() instead.
- **/
-ECalBackend *
-e_data_cal_get_backend (EDataCal *cal)
-{
-	ECalBackend *backend;
-
-	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
-
-	backend = e_data_cal_ref_backend (cal);
-
-	/* XXX Drop the ECalBackend reference for backwards-compatibility.
-	 *     This is risky.  Without a reference, the ECalBackend could
-	 *     be finalized while the caller is still using it. */
-	if (backend != NULL)
-		g_object_unref (backend);
-
-	return backend;
 }
 
 /**

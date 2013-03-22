@@ -396,59 +396,6 @@ void		e_cal_backend_empty_cache	(ECalBackend *backend,
 void		e_cal_backend_set_is_removed	(ECalBackend *backend,
 						 gboolean is_removed);
 
-#ifndef EDS_DISABLE_DEPRECATED
-/**
- * CLIENT_BACKEND_PROPERTY_OPENED:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Clients don't need to care if they're fully opened
- *                  anymore.  This property will always return %TRUE.
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
-
-/**
- * CLIENT_BACKEND_PROPERTY_OPENING:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Clients don't need to care if they're fully opened
- *                  anymore.  This property will always return %FALSE.
- **/
-#define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
-
-void		e_cal_backend_add_client	(ECalBackend *backend,
-						 EDataCal *cal);
-void		e_cal_backend_remove_client	(ECalBackend *backend,
-						 EDataCal *cal);
-gboolean	e_cal_backend_is_opening	(ECalBackend *backend);
-void		e_cal_backend_set_backend_property
-						(ECalBackend *backend,
-						 EDataCal *cal,
-						 guint32 opid,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value);
-void		e_cal_backend_foreach_view	(ECalBackend *backend,
-						 gboolean (*callback) (EDataCalView *view,
-								       gpointer user_data),
-								       gpointer user_data);
-void		e_cal_backend_notify_opened	(ECalBackend *backend,
-						 GError *error);
-void		e_cal_backend_notify_readonly	(ECalBackend *backend,
-						 gboolean is_readonly);
-void		e_cal_backend_notify_online	(ECalBackend *backend,
-						 gboolean is_online);
-void		e_cal_backend_respond_opened	(ECalBackend *backend,
-						 EDataCal *cal,
-						 guint32 opid,
-						 GError *error);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_CAL_BACKEND_H */

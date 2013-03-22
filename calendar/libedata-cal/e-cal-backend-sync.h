@@ -264,16 +264,6 @@ void		e_cal_backend_sync_add_timezone	(ECalBackendSync *backend,
 						 const gchar *tzobject,
 						 GError **error);
 
-#ifndef EDS_DISABLE_DEPRECATED
-gboolean	e_cal_backend_sync_set_backend_property
-						(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GError **error);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_CAL_BACKEND_SYNC_H */

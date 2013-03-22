@@ -150,41 +150,6 @@ e_cal_backend_sync_get_backend_property (ECalBackendSync *backend,
 }
 
 /**
- * e_cal_backend_sync_set_backend_property:
- * @backend: An ECalBackendSync object.
- * @cal: An EDataCal object.
- * @cancellable: a #GCancellable for the operation
- * @prop_name: Property name to set.
- * @prop_value: New value of the @prop_name.
- * @error: Out parameter for a #GError.
- *
- * Calls the set_backend_property_sync method on the given backend.
- *
- * Returns whether processed this property. Returning FALSE means to pass
- * the call to the ECalBackend parent class, thus neither @error should be
- * set in this case.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function always returns %FALSE and sets an
- *                  %UnsupportedMethod error.
- **/
-gboolean
-e_cal_backend_sync_set_backend_property (ECalBackendSync *backend,
-                                         EDataCal *cal,
-                                         GCancellable *cancellable,
-                                         const gchar *prop_name,
-                                         const gchar *prop_value,
-                                         GError **error)
-{
-	g_set_error_literal (
-		error, E_DATA_CAL_ERROR, UnsupportedMethod,
-		_("Clients cannot set backend properties"));
-
-	return FALSE;
-}
-
-/**
  * e_cal_backend_sync_get_object:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.

@@ -818,32 +818,6 @@ e_cal_backend_is_opened (ECalBackend *backend)
 }
 
 /**
- * e_cal_backend_is_opening:
- * @backend: an #ECalBackend
- *
- * Checks if @backend is processing its opening phase, which
- * includes everything since the e_cal_backend_open() call,
- * through authentication, up to e_cal_backend_notify_opened().
- * This property is managed automatically and the backend deny
- * every operation except of cancel and authenticate_user while
- * it is being opening.
- *
- * Returns: %FALSE always
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function is no longer relevant,
- *                  and always returns %FALSE.
- **/
-gboolean
-e_cal_backend_is_opening (ECalBackend *backend)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
-
-	return FALSE;
-}
-
-/**
  * e_cal_backend_is_readonly:
  * @backend: an #ECalBackend
  *
@@ -1001,67 +975,6 @@ e_cal_backend_get_backend_property (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_set_backend_property:
- * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @prop_name: property name to change; cannot be NULL
- * @prop_value: value to set to @prop_name; cannot be NULL
- *
- * Calls the set_backend_property method on the given backend.
- * This might be finished with e_data_cal_respond_set_backend_property().
- * Default implementation simply returns an 'unsupported' error.
- * The subclass may always call this default implementation for properties
- * which fetching it doesn't overwrite.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: This function no longer does anything.
- **/
-void
-e_cal_backend_set_backend_property (ECalBackend *backend,
-                                    EDataCal *cal,
-                                    guint32 opid,
-                                    GCancellable *cancellable,
-                                    const gchar *prop_name,
-                                    const gchar *prop_value)
-{
-	/* Do nothing. */
-}
-
-/**
- * e_cal_backend_add_client:
- * @backend: an #ECalBackend
- * @cal: an #EDataCal
- *
- * Adds a new client to the given backend. For any event, the backend will
- * notify all clients added via this function.
- *
- * Deprecated: 3.10: This function no longer does anything.
- */
-void
-e_cal_backend_add_client (ECalBackend *backend,
-                          EDataCal *cal)
-{
-}
-
-/**
- * e_cal_backend_remove_client:
- * @backend: an #ECalBackend
- * @cal: an #EDataCal
- *
- * Removes a client from the list of connected clients to the given backend.
- *
- * Deprecated: 3.10: This function no longer does anything.
- */
-void
-e_cal_backend_remove_client (ECalBackend *backend,
-                             EDataCal *cal)
-{
-}
-
-/**
  * e_cal_backend_add_view:
  * @backend: an #ECalBackend
  * @view: An #EDataCalView object.
@@ -1146,40 +1059,6 @@ e_cal_backend_list_views (ECalBackend *backend)
 	g_mutex_unlock (&backend->priv->views_mutex);
 
 	return list;
-}
-
-/**
- * e_cal_backend_foreach_view:
- * @backend: an #ECalBackend
- * @callback: callback to call
- * @user_data: user_data passed into the @callback
- *
- * Calls @callback for each known calendar view of this @backend.
- * @callback returns %FALSE to stop further processing.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_cal_backend_list_views() instead.
- **/
-void
-e_cal_backend_foreach_view (ECalBackend *backend,
-                            gboolean (*callback) (EDataCalView *view,
-                                                  gpointer user_data),
-                            gpointer user_data)
-{
-	GList *list, *link;
-
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (callback != NULL);
-
-	list = e_cal_backend_list_views (backend);
-
-	for (link = list; link != NULL; link = g_list_next (link)) {
-		if (!callback (E_DATA_CAL_VIEW (link->data), user_data))
-			break;
-	}
-
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -1928,75 +1807,6 @@ e_cal_backend_notify_error (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_notify_readonly:
- * @backend: an #ECalBackend
- * @is_readonly: flag indicating readonly status
- *
- * Notifies all backend's clients about the current readonly state.
- * Meant to be used by backend implementations.
- *
- * Deprecated: 3.8: Use e_cal_backend_set_writable() instead.
- **/
-void
-e_cal_backend_notify_readonly (ECalBackend *backend,
-                               gboolean is_readonly)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	e_cal_backend_set_writable (backend, !is_readonly);
-}
-
-/**
- * e_cal_backend_notify_online:
- * @backend: an #ECalBackend
- * @is_online: flag indicating whether @backend is connected and online
- *
- * Notifies clients of @backend's connection status indicated by @is_online.
- * Meant to be used by backend implementations.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_backend_set_online() instead.
- **/
-void
-e_cal_backend_notify_online (ECalBackend *backend,
-                             gboolean is_online)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	e_backend_set_online (E_BACKEND (backend), is_online);
-}
-
-/**
- * e_cal_backend_notify_opened:
- * @backend: an #ECalBackend
- * @error: a #GError corresponding to the error encountered during
- *    the opening phase. Use %NULL for success. The @error is freed
- *    automatically if not %NULL.
- *
- * Notifies clients that @backend finished its opening phase.
- * See e_cal_backend_open() for more information how the opening
- * phase works. Calling this function changes 'opening' property,
- * same as 'opened'. 'opening' is set to %FALSE and the backend
- * is considered 'opened' only if the @error is %NULL.
- *
- * See also: e_cal_backend_respond_opened()
- *
- * Note: The @error is freed automatically if not %NULL.
- *
- * Meant to be used by backend implementations.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_data_cal_respond_open() instead.
- **/
-void
-e_cal_backend_notify_opened (ECalBackend *backend,
-                             GError *error)
-{
-}
-
-/**
  * e_cal_backend_notify_property_changed:
  * @backend: an #ECalBackend
  * @prop_name: property name, which changed
@@ -2024,38 +1834,6 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
 			data_cal, prop_name, prop_value);
 		g_object_unref (data_cal);
 	}
-}
-
-/**
- * e_cal_backend_respond_opened:
- * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: an operation ID
- * @error: result error; can be %NULL, if it isn't then it's automatically freed
- *
- * This is a replacement for e_data_cal_respond_open() for cases where
- * the finish of 'open' method call also finishes backend opening phase.
- * This function covers calling of both e_cal_backend_notify_opened() and
- * e_data_cal_respond_open() with the same @error.
- *
- * See e_cal_backend_open() for more details how the opening phase works.
- *
- * Since: 3.2
- *
- * Deprecated: 3.8: Use e_data_book_respond_open() instead.
- **/
-void
-e_cal_backend_respond_opened (ECalBackend *backend,
-                              EDataCal *cal,
-                              guint32 opid,
-                              GError *error)
-{
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (cal != NULL);
-	g_return_if_fail (opid != 0);
-
-	e_data_cal_respond_open (cal, opid, error);
 }
 
 /**

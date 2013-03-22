@@ -119,21 +119,6 @@ void		e_data_cal_view_notify_progress	(EDataCalView *view,
 void		e_data_cal_view_notify_complete	(EDataCalView *view,
 						 const GError *error);
 
-#ifndef EDS_DISABLE_DEPRECATED
-void		e_data_cal_view_notify_objects_added
-						(EDataCalView *view,
-						 const GSList *objects);
-void		e_data_cal_view_notify_objects_added_1
-						(EDataCalView *view,
-						 const gchar *object);
-void		e_data_cal_view_notify_objects_modified
-						(EDataCalView *view,
-						 const GSList *objects);
-void		e_data_cal_view_notify_objects_modified_1
-						(EDataCalView *view,
-						 const gchar *object);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_DATA_CAL_VIEW_H */

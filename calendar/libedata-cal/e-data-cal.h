@@ -260,21 +260,6 @@ void		e_data_cal_report_backend_property_changed
 						 const gchar *prop_name,
 						 const gchar *prop_value);
 
-#ifndef EDS_DISABLE_DEPRECATED
-struct _ECalBackend *
-		e_data_cal_get_backend		(EDataCal *cal);
-void		e_data_cal_respond_set_backend_property
-						(EDataCal *cal,
-						 guint32 opid,
-						 GError *error);
-void		e_data_cal_report_opened	(EDataCal *cal,
-						 const GError *error);
-void		e_data_cal_report_readonly	(EDataCal *cal,
-						 gboolean is_readonly);
-void		e_data_cal_report_online	(EDataCal *cal,
-						 gboolean is_online);
-#endif /* EDS_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* E_DATA_CAL_H */
