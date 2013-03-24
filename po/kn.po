@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2013-03-17 14:48+0000\n"
-"PO-Revision-Date: 2013-03-24 01:31+0530\n"
+"PO-Revision-Date: 2013-03-24 10:25+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -2726,14 +2726,15 @@ msgstr "ಅತಿಥೇಯಕ್ಕಾಗಿ ನೋಡುವಲ್ಲಿ ವಿ�
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
 msgstr ""
-"ಅತಿಥೇಯಕ್ಕಾಗಿ ನೋಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ. ಕಾಗುಣಿತ ದೋಷಗಳಿಗಾಗಿ ನಿಮ್ಮ ಆತಿಥೇಯ ಹೆಸರನ್ನು "
+"ಅತಿಥೇಯಕ್ಕಾಗಿ '%s' ನೋಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ. ಕಾಗುಣಿತ ದೋಷಗಳಿಗಾಗಿ ನಿಮ್ಮ ಆತಿಥೇಯ "
+"ಹೆಸರನ್ನು "
 "ಪರಿಶೀಲಿಸಿ."
 
 #: ../camel/camel-net-utils.c:736
-#, fuzzy, c-format
+#, c-format
 #| msgid "Host lookup failed: %s: %s"
 msgid "Host lookup '%s' failed: %s"
-msgstr "ಅತಿಥೇಯಕ್ಕಾಗಿ ನೋಡುವಿಕೆಯು ವಿಫಲಗೊಂಡಿದೆ %s"
+msgstr "ಅತಿಥೇಯಕ್ಕಾಗಿ '%s' ನೋಡುವಿಕೆಯು ವಿಫಲಗೊಂಡಿದೆ %s"
 
 #: ../camel/camel-net-utils.c:857
 msgid "Resolving address"
