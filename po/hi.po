@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2013-03-17 14:48+0000\n"
-"PO-Revision-Date: 2013-03-24 12:59+0000\n"
+"PO-Revision-Date: 2013-03-24 14:10+0000\n"
 "Last-Translator: chandankumar <chandankumar.093047@gmail.com>\n"
 "Language-Team: Hindi <kde-i18n-doc@kde.org>\n"
 "Language: hi\n"
@@ -5826,10 +5826,9 @@ msgid "Google Contacts"
 msgstr "गूगल संपर्क"
 
 #: ../modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-#, fuzzy
 #| msgid "Mailer"
 msgid "GMail"
-msgstr "Gmail"
+msgstr "Gmail "
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
 #| msgid "Mailer"
