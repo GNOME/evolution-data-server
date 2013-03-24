@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.8.0 2013-03-25
+--------------------------------------
+
+Miscellaneous Changes:
+	* Clean testing work directory (Tristan Van Berkom)
+
+Translations:
+	Jiri Eischmann (cs)
+	Flemming Christensen (da)
+	Jiri Grönroos (fi)
+	Alexandre Franke (fr)
+	Gabor Kelemen (hu)
+	Noriko Mizumoto (ja)
+	Sandeep Sheshrao Shedmake (mr)
+	ManojKumar Giri (or)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+	Martin Srebotnjak (sl)
+	Shantha kumar (ta)
+
+
 Evolution-Data-Server 3.7.92 2013-03-18
 ---------------------------------------
 
