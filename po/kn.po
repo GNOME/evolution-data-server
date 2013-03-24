@@ -979,7 +979,7 @@ msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
-"ಸಾರಾಂಶದಲ್ಲಿ ಸೂಚಿಸಲಾದ ಸಂಪರ್ಕ ವಿಳಾಸದ ಸ್ಥಳ '%s' ದಲ್ಲಿ ಕೇವಲ ಬೂಲಿಯನ್, ವಾಕ್ಯಾಂಶ "
+"ಸಾರಾಂಶದಲ್ಲಿ ಸೂಚಿಸಲಾದ ಸಂಪರ್ಕ ವಿಳಾಸದ ಸ್ಥಳ '%s' ದಲ್ಲಿ ( '%s' ಬಗೆಯ) ಕೇವಲ ಬೂಲಿಯನ್, ವಾಕ್ಯಾಂಶ "
 "ಮತ್ತು ವಾಕ್ಯಾಂಶದ ಪಟ್ಟಿ ಸ್ಥಳದ ಬಗೆಗಳನ್ನು ಮಾತ್ರ ಬೆಂಬಲಿಸಲಾಗುತ್ತದೆ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2603
