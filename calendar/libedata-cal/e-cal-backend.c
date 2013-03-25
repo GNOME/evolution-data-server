@@ -1012,12 +1012,22 @@ void
 e_cal_backend_remove_view (ECalBackend *backend,
                            EDataCalView *view)
 {
+	GList *list, *link;
+
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_mutex_lock (&backend->priv->views_mutex);
 
-	backend->priv->views = g_list_remove (backend->priv->views, view);
+	list = backend->priv->views;
+
+	link = g_list_find (list, view);
+	if (link != NULL) {
+		g_object_unref (view);
+		list = g_list_delete_link (list, link);
+	}
+
+	backend->priv->views = list;
 
 	g_mutex_unlock (&backend->priv->views_mutex);
 }
