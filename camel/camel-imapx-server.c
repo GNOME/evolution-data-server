@@ -2327,6 +2327,9 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 			error, CAMEL_IMAPX_ERROR, 1,
 			"IMAP server said BYE: %s", token);
 	}
+
+	g_free (token);
+
 	is->state = IMAPX_SHUTDOWN;
 
 	return FALSE;

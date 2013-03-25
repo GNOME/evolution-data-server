@@ -63,12 +63,28 @@ imapx_message_info_clone (CamelFolderSummary *s,
 
 	to = (CamelIMAPXMessageInfo *)
 		folder_summary_class->message_info_clone (s, mi);
+	if (from->server_user_flags) {
+		CamelIMAPXMessageInfo *xfrom = (CamelIMAPXMessageInfo *) from;
+
+		camel_flag_list_copy (&to->server_user_flags, &xfrom->server_user_flags);
+	}
 	to->server_flags = from->server_flags;
 
 	/* FIXME: parent clone should do this */
 	to->info.content = camel_folder_summary_content_info_new (s);
 
 	return (CamelMessageInfo *) to;
+}
+
+static void
+imapx_message_info_free (CamelFolderSummary *summary,
+			 CamelMessageInfo *mi)
+{
+	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) mi;
+
+	camel_flag_list_free (&xinfo->server_user_flags);
+
+	CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->message_info_free (summary, mi);
 }
 
 static void
@@ -80,6 +96,7 @@ camel_imapx_summary_class_init (CamelIMAPXSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelIMAPXMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelIMAPXMessageContentInfo);
 	folder_summary_class->message_info_clone = imapx_message_info_clone;
+	folder_summary_class->message_info_free = imapx_message_info_free;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->message_info_to_db = message_info_to_db;
