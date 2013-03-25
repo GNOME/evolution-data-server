@@ -339,6 +339,9 @@ struct _CamelIMAPXServerPrivate {
 	 * when finished and reset the pointer to NULL. */
 	GArray *search_results;
 	GMutex search_results_lock;
+
+	GHashTable *known_alerts;
+	GMutex known_alerts_lock;
 };
 
 enum {
@@ -2418,6 +2421,37 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 		break;
 	case IMAPX_ALERT:
 		c (is->tagprefix, "ALERT!: %s\n", is->priv->context->sinfo->text);
+		g_mutex_lock (&is->priv->known_alerts_lock);
+
+		if (is->priv->context->sinfo->text &&
+		    !g_hash_table_lookup (is->priv->known_alerts, is->priv->context->sinfo->text)) {
+			CamelIMAPXStore *store;
+
+			store = camel_imapx_server_ref_store (is);
+			if (store) {
+				const gchar *alert = is->priv->context->sinfo->text;
+				gchar *msg;
+				CamelService *service;
+				CamelSession *session;
+
+				g_hash_table_insert (is->priv->known_alerts, g_strdup (alert), GINT_TO_POINTER (1));
+
+				service = CAMEL_SERVICE (store);
+				session = camel_service_get_session (service);
+
+				msg = g_strdup_printf (
+					_("Alert from IMAP server %s:\n%s"),
+					camel_service_get_display_name (service), alert);
+				camel_session_alert_user (
+					session, CAMEL_SESSION_ALERT_WARNING,
+					msg, NULL, cancellable);
+				g_free (msg);
+
+				g_object_unref (store);
+			}
+		}
+
+		g_mutex_unlock (&is->priv->known_alerts_lock);
 		break;
 	case IMAPX_PARSE:
 		c (is->tagprefix, "PARSE: %s\n", is->priv->context->sinfo->text);
@@ -7144,6 +7178,9 @@ imapx_server_finalize (GObject *object)
 		g_array_unref (is->priv->search_results);
 	g_mutex_clear (&is->priv->search_results_lock);
 
+	g_hash_table_destroy (is->priv->known_alerts);
+	g_mutex_clear (&is->priv->known_alerts_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
 }
@@ -7241,6 +7278,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	g_mutex_init (&is->priv->stream_lock);
 	g_mutex_init (&is->priv->search_results_lock);
+	g_mutex_init (&is->priv->known_alerts_lock);
 
 	is->queue = camel_imapx_command_queue_new ();
 	is->active = camel_imapx_command_queue_new ();
@@ -7263,6 +7301,8 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	g_mutex_init (&is->fetch_mutex);
 	g_cond_init (&is->fetch_cond);
+
+	is->priv->known_alerts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 CamelIMAPXServer *
