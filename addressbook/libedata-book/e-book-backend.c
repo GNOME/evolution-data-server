@@ -1,9 +1,19 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Author:
- *   Nat Friedman (nat@ximian.com)
+ * e-book-backend.c
  *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
  */
 
 #include <config.h>
@@ -14,11 +24,12 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#define EDB_NOT_OPENED_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_OPENED, NULL)
-
 #define E_BOOK_BACKEND_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_BACKEND, EBookBackendPrivate))
+
+typedef struct _AsyncContext AsyncContext;
+typedef struct _DispatchNode DispatchNode;
 
 struct _EBookBackendPrivate {
 	ESourceRegistry *registry;
@@ -31,9 +42,40 @@ struct _EBookBackendPrivate {
 	GList *views;
 
 	gchar *cache_dir;
+
+	GMutex operation_lock;
+	GHashTable *operation_ids;
+	GQueue pending_operations;
+	guint32 next_operation_id;
+	GSimpleAsyncResult *blocked;
 };
 
-/* Property IDs */
+struct _AsyncContext {
+	/* Inputs */
+	gchar *uid;
+	gchar *query;
+	const gchar *prop_name;
+	GSList *string_list;
+
+	/* Outputs */
+	GQueue result_queue;
+
+	/* One of these should point to result_queue
+	 * so any leftover resources can be released. */
+	GQueue *object_queue;
+	GQueue *string_queue;
+};
+
+struct _DispatchNode {
+	/* This is the dispatch function
+	 * that invokes the class method. */
+	GSimpleAsyncThreadFunc dispatch_func;
+	gboolean blocking_operation;
+
+	GSimpleAsyncResult *simple;
+	GCancellable *cancellable;
+};
+
 enum {
 	PROP_0,
 	PROP_CACHE_DIR,
@@ -49,6 +91,175 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	GQueue *queue;
+
+	g_free (async_context->uid);
+	g_free (async_context->query);
+
+	g_slist_free_full (
+		async_context->string_list,
+		(GDestroyNotify) g_free);
+
+	queue = async_context->object_queue;
+	while (queue != NULL && !g_queue_is_empty (queue))
+		g_object_unref (g_queue_pop_head (queue));
+
+	queue = async_context->string_queue;
+	while (queue != NULL && !g_queue_is_empty (queue))
+		g_free (g_queue_pop_head (queue));
+
+	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+dispatch_node_free (DispatchNode *dispatch_node)
+{
+	g_clear_object (&dispatch_node->simple);
+	g_clear_object (&dispatch_node->cancellable);
+
+	g_slice_free (DispatchNode, dispatch_node);
+}
+
+static void
+book_backend_push_operation (EBookBackend *backend,
+                             GSimpleAsyncResult *simple,
+                             GCancellable *cancellable,
+                             gboolean blocking_operation,
+                             GSimpleAsyncThreadFunc dispatch_func)
+{
+	DispatchNode *node;
+
+	g_return_if_fail (G_IS_SIMPLE_ASYNC_RESULT (simple));
+	g_return_if_fail (dispatch_func != NULL);
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	node = g_slice_new0 (DispatchNode);
+	node->dispatch_func = dispatch_func;
+	node->blocking_operation = blocking_operation;
+	node->simple = g_object_ref (simple);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		node->cancellable = g_object_ref (cancellable);
+
+	g_queue_push_tail (&backend->priv->pending_operations, node);
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+}
+
+static gboolean
+book_backend_dispatch_thread (GIOSchedulerJob *job,
+                              GCancellable *cancellable,
+                              gpointer user_data)
+{
+	DispatchNode *node = user_data;
+	GError *error = NULL;
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		g_simple_async_result_take_error (node->simple, error);
+		g_simple_async_result_complete_in_idle (node->simple);
+	} else {
+		GAsyncResult *result;
+		GObject *source_object;
+
+		result = G_ASYNC_RESULT (node->simple);
+		source_object = g_async_result_get_source_object (result);
+		node->dispatch_func (node->simple, source_object, cancellable);
+		g_object_unref (source_object);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+book_backend_dispatch_next_operation (EBookBackend *backend)
+{
+	DispatchNode *node;
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	/* We can't dispatch additional operations
+	 * while a blocking operation is in progress. */
+	if (backend->priv->blocked != NULL) {
+		g_mutex_unlock (&backend->priv->operation_lock);
+		return FALSE;
+	}
+
+	/* Pop the next DispatchNode off the queue. */
+	node = g_queue_pop_head (&backend->priv->pending_operations);
+	if (node == NULL) {
+		g_mutex_unlock (&backend->priv->operation_lock);
+		return FALSE;
+	}
+
+	/* If this a blocking operation, block any
+	 * further dispatching until this finishes. */
+	if (node->blocking_operation)
+		backend->priv->blocked = g_object_ref (node->simple);
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	g_io_scheduler_push_job (
+		book_backend_dispatch_thread,
+		node, (GDestroyNotify) dispatch_node_free,
+		G_PRIORITY_DEFAULT,
+		node->cancellable);
+
+	return TRUE;
+}
+
+static guint32
+book_backend_stash_operation (EBookBackend *backend,
+                              GSimpleAsyncResult *simple)
+{
+	guint32 opid;
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	if (backend->priv->next_operation_id == 0)
+		backend->priv->next_operation_id = 1;
+
+	opid = backend->priv->next_operation_id++;
+
+	g_hash_table_insert (
+		backend->priv->operation_ids,
+		GUINT_TO_POINTER (opid),
+		g_object_ref (simple));
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	return opid;
+}
+
+static GSimpleAsyncResult *
+book_backend_claim_operation (EBookBackend *backend,
+                              guint32 opid)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (opid > 0, NULL);
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	simple = g_hash_table_lookup (
+		backend->priv->operation_ids,
+		GUINT_TO_POINTER (opid));
+
+	if (simple != NULL) {
+		/* Steal the hash table's reference. */
+		g_hash_table_steal (
+			backend->priv->operation_ids,
+			GUINT_TO_POINTER (opid));
+	}
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	return simple;
+}
 
 static void
 book_backend_set_default_cache_dir (EBookBackend *backend)
@@ -224,6 +435,13 @@ book_backend_dispose (GObject *object)
 		priv->views = NULL;
 	}
 
+	g_hash_table_remove_all (priv->operation_ids);
+
+	while (!g_queue_is_empty (&priv->pending_operations))
+		g_object_unref (g_queue_pop_head (&priv->pending_operations));
+
+	g_clear_object (&priv->blocked);
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_backend_parent_class)->dispose (object);
 }
@@ -238,6 +456,9 @@ book_backend_finalize (GObject *object)
 	g_mutex_clear (&priv->views_mutex);
 
 	g_free (priv->cache_dir);
+
+	g_mutex_clear (&priv->operation_lock);
+	g_hash_table_destroy (priv->operation_ids);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_parent_class)->finalize (object);
@@ -369,6 +590,14 @@ e_book_backend_init (EBookBackend *backend)
 
 	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);
+
+	g_mutex_init (&backend->priv->operation_lock);
+
+	backend->priv->operation_ids = g_hash_table_new_full (
+		(GHashFunc) g_direct_hash,
+		(GEqualFunc) g_direct_equal,
+		(GDestroyNotify) NULL,
+		(GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -533,296 +762,1473 @@ e_book_backend_set_writable (EBookBackend *backend,
 }
 
 /**
+ * e_book_backend_open_sync:
+ * @backend: an #EBookBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * "Opens" the @backend.  Opening a backend is something of an outdated
+ * concept, but the operation is hanging around for a little while longer.
+ * This usually involves some custom initialization logic, and testing of
+ * remote authentication if applicable.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_open_sync (EBookBackend *backend,
+                          GCancellable *cancellable,
+                          GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_open (
+		backend, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_open_finish (backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_open() */
+static void
+book_backend_open_thread (GSimpleAsyncResult *simple,
+                          GObject *source_object,
+                          GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->open != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	if (e_book_backend_is_opened (backend)) {
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->open (backend, data_book, opid, cancellable, FALSE);
+	}
+
+	g_object_unref (data_book);
+}
+
+/**
  * e_book_backend_open:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @only_if_exists: %TRUE to prevent the creation of a new book
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Executes an 'open' request specified by @opid on @book
- * using @backend. This call might be finished
- * with e_data_book_respond_open() or e_book_backend_respond_opened(),
- * though the overall opening phase finishes only after call
- * of e_book_backend_notify_opened() after which call the backend
- * is either fully opened (including authentication against (remote)
- * server/storage) or an error was encountered during this opening phase.
- * 'opened' and 'opening' properties are updated automatically.
- * The backend refuses all other operations until the opening phase is finished.
+ * Asynchronously "opens" the @backend.  Opening a backend is something of
+ * an outdated concept, but the operation is hanging around for a little
+ * while longer.  This usually involves some custom initialization logic,
+ * and testing of remote authentication if applicable.
  *
- * The e_book_backend_notify_opened() is called either from this function
- * or from e_book_backend_authenticate_user(), or after necessary steps
- * initiated by these two functions.
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_open_finish() to get the result of the operation.
  *
- * The opening phase usually works like this:
- * 1) client requests open for the backend
- * 2) server receives this request and calls e_book_backend_open() - the opening phase begun
- * 3) either the backend is opened during this call, and notifies client
- *    with e_book_backend_notify_opened() about that. This is usually
- *    for local backends; their opening phase is finished
- * 4) or the backend requires authentication, thus it notifies client
- *    about that with e_book_backend_notify_auth_required() and is
- *    waiting for credentials, which will be received from client
- *    by e_book_backend_authenticate_user() call. Backend's opening
- *    phase is still running in this case, thus it doesn't call
- *    e_book_backend_notify_opened() within e_book_backend_open() call.
- * 5) when backend receives credentials in e_book_backend_authenticate_user()
- *    then it tries to authenticate against a server/storage with them
- *    and only after it knows result of the authentication, whether user
- *    was or wasn't authenticated, it notifies client with the result
- *    by e_book_backend_notify_opened() and it's opening phase is
- *    finished now. If there was no error returned then the backend is
- *    considered opened, otherwise it's considered closed. Use AuthenticationFailed
- *    error when the given credentials were rejected by the server/store, which
- *    will result in a re-prompt on the client side, otherwise use AuthenticationRequired
- *    if there was anything wrong with the given credentials. Set error's
- *    message to a reason for a re-prompt, it'll be shown to a user.
- * 6) client checks error returned from e_book_backend_notify_opened() and
- *    reprompts for a password if it was AuthenticationFailed. Otherwise
- *    considers backend opened based on the error presence (no error means success).
- *
- * In any case, the call of e_book_backend_open() should be always finished
- * with e_data_book_respond_open(), which has no influence on the opening phase,
- * or alternatively with e_book_backend_respond_opened(). Never use authentication
- * errors in e_data_book_respond_open() to notify the client the authentication is
- * required, there is e_book_backend_notify_auth_required() for this.
+ * Since: 3.10
  **/
 void
 e_book_backend_open (EBookBackend *backend,
-                     EDataBook *book,
-                     guint32 opid,
                      GCancellable *cancellable,
-                     gboolean only_if_exists)
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
 {
+	GSimpleAsyncResult *simple;
+
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	if (e_book_backend_is_opened (backend)) {
-		e_data_book_respond_open (book, opid, NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback,
+		user_data, e_book_backend_open);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, TRUE,
+		book_backend_open_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_open_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_open().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_open_finish (EBookBackend *backend,
+                            GAsyncResult *result,
+                            GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_open), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* This operation blocks, so we need to let waiting operations
+	 * through.  (FIXME Centralize this for any blocking operation.) */
+	g_mutex_lock (&backend->priv->operation_lock);
+	if (backend->priv->blocked == simple)
+		g_clear_object (&backend->priv->blocked);
+	g_mutex_unlock (&backend->priv->operation_lock);
+	while (book_backend_dispatch_next_operation (backend))
+		;
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_book_backend_refresh_sync:
+ * @backend: an #EBookBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Initiates a refresh for @backend, if the @backend supports refreshing.
+ * The actual refresh operation completes on its own time.  This function
+ * merely initiates the operation.
+ *
+ * If an error occurs while initiating the refresh, the function will set
+ * @error and return %FALSE.  If the @backend does not support refreshing,
+ * the function will set an %E_DATA_BOOK_STATUS_NOT_SUPPORTED error and
+ * return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_refresh_sync (EBookBackend *backend,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_refresh (
+		backend, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_refresh_finish (backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_refresh() */
+static void
+book_backend_refresh_thread (GSimpleAsyncResult *simple,
+                             GObject *source_object,
+                             GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	if (class->refresh == NULL) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
 	} else {
-		g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->open != NULL);
+		guint32 opid;
 
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->open) (backend, book, opid, cancellable, only_if_exists);
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->refresh (backend, data_book, opid, cancellable);
 	}
+
+	g_object_unref (data_book);
 }
 
 /**
  * e_book_backend_refresh:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Refreshes the address book being accessed by the given backend.
- * This might be finished with e_data_book_respond_refresh(),
- * and it might be called as soon as possible; it doesn't mean
- * that the refreshing is done after calling that, the backend
- * is only notifying client whether it started the refresh process
- * or not.
+ * Asynchronously initiates a refresh for @backend, if the @backend supports
+ * refreshing.  The actual refresh operation completes on its own time.  This
+ * function, along with e_book_backend_refresh_finish(), merely initiates the
+ * operation.
  *
- * Since: 3.2
+ * Once the refresh is initiated, @callback will be called.  You can then
+ * call e_book_backend_refresh_finish() to get the result of the initiation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_refresh (EBookBackend *backend,
-                        EDataBook *book,
-                        guint32 opid,
-                        GCancellable *cancellable)
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	if (!E_BOOK_BACKEND_GET_CLASS (backend)->refresh)
-		e_data_book_respond_refresh (book, opid, e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_SUPPORTED, NULL));
-	else if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_refresh (book, opid, EDB_NOT_OPENED_ERROR);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->refresh) (backend, book, opid, cancellable);
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback,
+		user_data, e_book_backend_refresh);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_refresh_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_refresh_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the refresh initiation started with e_book_backend_refresh().
+ *
+ * If an error occurred while initiating the refresh, the function will set
+ * @error and return %FALSE.  If the @backend does not support refreshing,
+ * the function will set an %E_DATA_BOOK_STATUS_NOT_SUPPORTED error and
+ * return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_refresh_finish (EBookBackend *backend,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_refresh), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_book_backend_create_contacts_sync:
+ * @backend: an #EBookBackend
+ * @vcards: a %NULL-terminated array of vCard strings
+ * @out_contacts: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates one or more new contacts from @vcards, and deposits an #EContact
+ * instance for each newly-created contact in @out_contacts.
+ *
+ * The returned #EContact instances are referenced for thread-safety and
+ * must be unreferenced with g_object_unref() when finished with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_create_contacts_sync (EBookBackend *backend,
+                                     const gchar * const *vcards,
+                                     GQueue *out_contacts,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (vcards != NULL, FALSE);
+	g_return_val_if_fail (out_contacts != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_create_contacts (
+		backend, vcards, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_create_contacts_finish (
+		backend, result, out_contacts, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_create_contacts() */
+static void
+book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
+                                     GObject *source_object,
+                                     GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->create_contacts != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->create_contacts (
+			backend, data_book, opid, cancellable,
+			async_context->string_list);
+	}
+
+	g_object_unref (data_book);
 }
 
 /**
  * e_book_backend_create_contacts
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @vcards: a #GSList of vCards to add
+ * @vcards: a %NULL-terminated array of vCard strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Executes a 'create contacts' request specified by @opid on @book
- * using @backend.
- * This might be finished with e_data_book_respond_create_contacts().
+ * Asynchronously creates one or more new contacts from @vcards.
  *
- * Since: 3.4
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_create_contacts_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_create_contacts (EBookBackend *backend,
-                               EDataBook *book,
-                               guint32 opid,
-                               GCancellable *cancellable,
-                               const GSList *vcards)
+                                const gchar * const *vcards,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (vcards);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
+	gint ii;
 
-	if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_create_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts) (backend, book, opid, cancellable, vcards);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (vcards != NULL);
+
+	for (ii = 0; vcards[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (vcards[ii]));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->string_list = g_slist_reverse (list);
+	async_context->object_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_create_contacts);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_create_contacts_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
 }
 
 /**
- * e_book_backend_remove_contacts:
+ * e_book_backend_create_contacts_finish:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @id_list: list of string IDs to remove
+ * @result: a #GAsyncResult
+ * @out_contacts: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
  *
- * Executes a 'remove contacts' request specified by @opid on @book
- * using @backend.
- * This might be finished with e_data_book_respond_remove_contacts().
+ * Finishes the operation started with e_book_backend_create_contacts().
+ *
+ * An #EContact instance for each newly-created contact is deposited in
+ * @out_contacts.  The returned #EContact instances are referenced for
+ * thread-safety and must be unreferenced with g_object_unref() when
+ * finished with them.
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
  **/
-void
-e_book_backend_remove_contacts (EBookBackend *backend,
-                                EDataBook *book,
-                                guint32 opid,
-                                GCancellable *cancellable,
-                                const GSList *id_list)
+gboolean
+e_book_backend_create_contacts_finish (EBookBackend *backend,
+                                       GAsyncResult *result,
+                                       GQueue *out_contacts,
+                                       GError **error)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (id_list);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_remove_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, opid, cancellable, id_list);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_create_contacts), FALSE);
+	g_return_val_if_fail (out_contacts != NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	while (!g_queue_is_empty (&async_context->result_queue)) {
+		EContact *contact;
+
+		contact = g_queue_pop_head (&async_context->result_queue);
+		g_queue_push_tail (out_contacts, g_object_ref (contact));
+		e_book_backend_notify_update (backend, contact);
+		g_object_unref (contact);
+	}
+
+	e_book_backend_notify_complete (backend);
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_modify_contacts_sync:
+ * @backend: an #EBookBackend
+ * @vcards: a %NULL-terminated array of vCard strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Modifies one or more contacts according to @vcards.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_modify_contacts_sync (EBookBackend *backend,
+                                     const gchar * const *vcards,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_modify_contacts (
+		backend, vcards, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_modify_contacts_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_modify_contacts() */
+static void
+book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
+                                     GObject *source_object,
+                                     GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->modify_contacts != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->modify_contacts (
+			backend, data_book, opid, cancellable,
+			async_context->string_list);
+	}
+
+	g_object_unref (data_book);
 }
 
 /**
  * e_book_backend_modify_contacts:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @vcards: the VCards to update
+ * @vcards: a %NULL-terminated array of vCard strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Executes a 'modify contacts' request specified by @opid on @book
- * using @backend.
- * This might be finished with e_data_book_respond_modify_contacts().
+ * Asynchronously modifies one or more contacts according to @vcards.
  *
- * Since: 3.4
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_modify_contacts_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_modify_contacts (EBookBackend *backend,
-                               EDataBook *book,
-                               guint32 opid,
-                               GCancellable *cancellable,
-                               const GSList *vcards)
+                                const gchar * const *vcards,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (vcards);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
+	gint ii;
 
-	if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_modify_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts) (backend, book, opid, cancellable, vcards);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (vcards != NULL);
+
+	for (ii = 0; vcards[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (vcards[ii]));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->string_list = g_slist_reverse (list);
+	async_context->object_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_modify_contacts);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_modify_contacts_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_modify_contacts_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_modify_contacts().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_modify_contacts_finish (EBookBackend *backend,
+                                       GAsyncResult *result,
+                                       GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_modify_contacts), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	while (!g_queue_is_empty (&async_context->result_queue)) {
+		EContact *contact;
+
+		contact = g_queue_pop_head (&async_context->result_queue);
+		e_book_backend_notify_update (backend, contact);
+		g_object_unref (contact);
+	}
+
+	e_book_backend_notify_complete (backend);
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_remove_contacts_sync:
+ * @backend: an #EBookBackend
+ * @uids: a %NULL-terminated array of contact ID strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Removes one or more contacts according to @uids.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_remove_contacts_sync (EBookBackend *backend,
+                                     const gchar * const *uids,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (uids != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_remove_contacts (
+		backend, uids, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_remove_contacts_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_remove_contacts() */
+static void
+book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
+                                     GObject *source_object,
+                                     GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->remove_contacts != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->remove_contacts (
+			backend, data_book, opid, cancellable,
+			async_context->string_list);
+	}
+
+	g_object_unref (data_book);
+}
+
+/**
+ * e_book_backend_remove_contacts:
+ * @backend: an #EBookBackend
+ * @uids: a %NULL-terminated array of contact ID strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously removes one or more contacts according to @uids.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_remove_contacts_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
+ **/
+void
+e_book_backend_remove_contacts (EBookBackend *backend,
+                                const gchar * const *uids,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
+	gint ii;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (uids != NULL);
+
+	for (ii = 0; uids[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (uids[ii]));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->string_list = g_slist_reverse (list);
+	async_context->string_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_remove_contacts);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_remove_contacts_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_remove_contacts_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_remove_contacts().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_remove_contacts_finish (EBookBackend *backend,
+                                       GAsyncResult *result,
+                                       GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_remove_contacts), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	while (!g_queue_is_empty (&async_context->result_queue)) {
+		gchar *uid;
+
+		uid = g_queue_pop_head (&async_context->result_queue);
+		e_book_backend_notify_remove (backend, uid);
+		g_free (uid);
+	}
+
+	e_book_backend_notify_complete (backend);
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_get_contact_sync:
+ * @backend: an #EBookBackend
+ * @uid: a contact ID
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains an #EContact for @uid.
+ *
+ * The returned #EContact is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * If an error occurs, the function will set @error and return %NULL.
+ *
+ * Returns: an #EContact, or %NULL
+ *
+ * Since: 3.10
+ **/
+EContact *
+e_book_backend_get_contact_sync (EBookBackend *backend,
+                                 const gchar *uid,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	EContact *contact;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_get_contact (
+		backend, uid, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	contact = e_book_backend_get_contact_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return contact;
+}
+
+/* Helper for e_book_backend_get_contact() */
+static void
+book_backend_get_contact_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_contact != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->get_contact (
+			backend, data_book, opid, cancellable,
+			async_context->uid);
+	}
+
+	g_object_unref (data_book);
 }
 
 /**
  * e_book_backend_get_contact:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @id: the ID of the contact to get
+ * @uid: a contact ID
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Executes a 'get contact' request specified by @opid on @book
- * using @backend.
- * This might be finished with e_data_book_respond_get_contact().
+ * Asynchronously obtains an #EContact for @uid.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call e_book_backend_get_contact_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_get_contact (EBookBackend *backend,
-                            EDataBook *book,
-                            guint32 opid,
+                            const gchar *uid,
                             GCancellable *cancellable,
-                            const gchar *id)
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (id);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_get_contact (book, opid, EDB_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, opid, cancellable, id);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (uid != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->uid = g_strdup (uid);
+	async_context->object_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_get_contact);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_get_contact_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_get_contact_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_get_contact_finish().
+ *
+ * The returned #EContact is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * If an error occurred, the function will set @error and return %NULL.
+ *
+ * Returns: an #EContact, or %NULL
+ *
+ * Since: 3.10
+ **/
+EContact *
+e_book_backend_get_contact_finish (EBookBackend *backend,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	EContact *contact;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_get_contact), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	contact = g_queue_pop_head (&async_context->result_queue);
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	return contact;
+}
+
+/**
+ * e_book_backend_get_contact_list_sync:
+ * @backend: an #EBookBackend
+ * @query: a search query in S-expression format
+ * @out_contacts: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains a set of #EContact instances which satisfy the criteria specified
+ * in @query, and deposits them in @out_contacts.
+ *
+ * The returned #EContact instances are referenced for thread-safety and
+ * must be unreferenced with g_object_unref() when finished with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_get_contact_list_sync (EBookBackend *backend,
+                                      const gchar *query,
+                                      GQueue *out_contacts,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+	g_return_val_if_fail (out_contacts != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_get_contact_list (
+		backend, query, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_get_contact_list_finish (
+		backend, result, out_contacts, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_get_contact_list() */
+static void
+book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
+                                      GObject *source_object,
+                                      GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_contact_list != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->get_contact_list (
+			backend, data_book, opid, cancellable,
+			async_context->query);
+	}
+
+	g_object_unref (data_book);
 }
 
 /**
  * e_book_backend_get_contact_list:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @query: the s-expression to match
+ * @query: a search query in S-expression format
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Executes a 'get contact list' request specified by @opid on @book
- * using @backend.
- * This might be finished with e_data_book_respond_get_contact_list().
+ * Asynchronously obtains a set of #EContact instances which satisfy the
+ * criteria specified in @query.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_get_contact_list_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_get_contact_list (EBookBackend *backend,
-                                 EDataBook *book,
-                                 guint32 opid,
+                                 const gchar *query,
                                  GCancellable *cancellable,
-                                 const gchar *query)
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (query);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_get_contact_list (book, opid, EDB_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, opid, cancellable, query);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (query != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->query = g_strdup (query);
+	async_context->object_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_get_contact_list);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_get_contact_list_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_get_contact_list_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @out_contacts: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_get_contact_list().
+ *
+ * The matching #EContact instances are deposited in @out_contacts.  The
+ * returned #EContact instances are referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with them.
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_get_contact_list_finish (EBookBackend *backend,
+                                        GAsyncResult *result,
+                                        GQueue *out_contacts,
+                                        GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_get_contact_list), FALSE);
+	g_return_val_if_fail (out_contacts != NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	e_queue_transfer (&async_context->result_queue, out_contacts);
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_get_contact_list_uids_sync:
+ * @backend: an #EBookBackend
+ * @query: a search query in S-expression format
+ * @out_uids: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains a set of ID strings for contacts which satisfy the criteria
+ * specified in @query, and deposits them in @out_uids.
+ *
+ * The returned ID strings must be freed with g_free() with finished
+ * with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_get_contact_list_uids_sync (EBookBackend *backend,
+                                           const gchar *query,
+                                           GQueue *out_uids,
+                                           GCancellable *cancellable,
+                                           GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_get_contact_list_uids (
+		backend, query, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_backend_get_contact_list_uids_finish (
+		backend, result, out_uids, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_backend_get_contact_list_uids() */
+static void
+book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
+                                           GObject *source_object,
+                                           GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_contact_list_uids != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NOT_OPENED,
+			"%s", e_data_book_status_to_string (
+			E_DATA_BOOK_STATUS_NOT_OPENED));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = book_backend_stash_operation (backend, simple);
+
+		class->get_contact_list_uids (
+			backend, data_book, opid, cancellable,
+			async_context->query);
+	}
+
+	g_object_unref (data_book);
 }
 
 /**
  * e_book_backend_get_contact_list_uids:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @query: the s-expression to match
+ * @query: a search query in S-expression format
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Executes a 'get contact list uids' request specified by @opid on @book
- * using @backend.
- * This might be finished with e_data_book_respond_get_contact_list_uids().
+ * Asynchronously obtains a set of ID strings for contacts which satisfy
+ * the criteria specified in @query.
  *
- * Since: 3.2
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_get_contact_list_uids_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_get_contact_list_uids (EBookBackend *backend,
-                                      EDataBook *book,
-                                      guint32 opid,
+                                      const gchar *query,
                                       GCancellable *cancellable,
-                                      const gchar *query)
+                                      GAsyncReadyCallback callback,
+                                      gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (query);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_get_contact_list_uids (book, opid, EDB_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids) (backend, book, opid, cancellable, query);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (query != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->query = g_strdup (query);
+	async_context->string_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_get_contact_list_uids);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_get_contact_list_uids_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_get_contact_list_uids_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @out_uids: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with
+ * e_book_backend_get_contact_list_uids_finish().
+ *
+ * ID strings for the matching contacts are deposited in @out_uids, and
+ * must be freed with g_free() when finished with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_book_backend_get_contact_list_uids_finish (EBookBackend *backend,
+                                             GAsyncResult *result,
+                                             GQueue *out_uids,
+                                             GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_get_contact_list_uids), FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	e_queue_transfer (&async_context->result_queue, out_uids);
+
+	return TRUE;
 }
 
 /**
@@ -961,33 +2367,180 @@ e_book_backend_list_views (EBookBackend *backend)
 }
 
 /**
- * e_book_backend_get_book_backend_property:
+ * e_book_backend_get_backend_property_sync:
  * @backend: an #EBookBackend
- * @book: an #EDataBook
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @prop_name: property name to get value of; cannot be NULL
+ * @prop_name: a backend property name
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
- * Calls the get_backend_property method on the given backend.
- * This might be finished with e_data_book_respond_get_backend_property().
- * Default implementation takes care of common properties and returns
- * an 'unsupported' error for any unknown properties. The subclass may
- * always call this default implementation for properties which fetching
- * it doesn't overwrite.
+ * Obtains the value of the backend property named @prop_name.
  *
- * Since: 3.2
+ * Despite appearances, this function does not actually block.  So the
+ * @cancellable can safely be %NULL.  It can, however, return an error
+ * if @prop_name is not recognized.
+ *
+ * The returned string must be freed with g_free() when finished with it.
+ *
+ * Returns: the value for @prop_name
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_book_backend_get_backend_property_sync (EBookBackend *backend,
+                                          const gchar *prop_name,
+                                          GCancellable *cancellable,
+                                          GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gchar *prop_value;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
+
+	closure = e_async_closure_new ();
+
+	e_book_backend_get_backend_property (
+		backend, prop_name, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	prop_value = e_book_backend_get_backend_property_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return prop_value;
+}
+
+/* Helper for e_book_backend_get_backend_property() */
+static void
+book_backend_get_backend_property_thread (GSimpleAsyncResult *simple,
+                                          GObject *source_object,
+                                          GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
+	EDataBook *data_book;
+	AsyncContext *async_context;
+	guint32 opid;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_backend_property != NULL);
+
+	data_book = e_book_backend_ref_data_book (backend);
+	g_return_if_fail (data_book != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	opid = book_backend_stash_operation (backend, simple);
+
+	class->get_backend_property (
+		backend, data_book, opid, cancellable,
+		async_context->prop_name);
+
+	g_object_unref (data_book);
+}
+
+/**
+ * e_book_backend_get_backend_property:
+ * @backend: an #EBookBackend
+ * @prop_name: a backend property name
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously obtains the value of the backend property named @prop_name.
+ *
+ * Despite appearances, e_book_backend_get_backend_property_sync() does not
+ * actually block, and is more convenient than this function.  This function
+ * exists for the moment merely to invoke the class method and collect the
+ * result from #EDataBook.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_backend_get_backend_property_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_book_backend_get_backend_property (EBookBackend *backend,
-                                     EDataBook *book,
-                                     guint32 opid,
+                                     const gchar *prop_name,
                                      GCancellable *cancellable,
-                                     const gchar *prop_name)
+                                     GAsyncReadyCallback callback,
+                                     gpointer user_data)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_backend_property);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	E_BOOK_BACKEND_GET_CLASS (backend)->get_backend_property (backend, book, opid, cancellable, prop_name);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (prop_name != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->prop_name = g_intern_string (prop_name);
+	async_context->string_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_book_backend_get_backend_property);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		book_backend_get_backend_property_thread);
+
+	book_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_backend_get_backend_property_finish:
+ * @backend: an #EBookBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_backend_get_backend_property().
+ *
+ * The returned string must be freed with g_free() when finished with it.
+ *
+ * Returns: the requested property value
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_book_backend_get_backend_property_finish (EBookBackend *backend,
+                                            GAsyncResult *result,
+                                            GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	gchar *prop_value;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_book_backend_get_backend_property), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	prop_value = g_queue_pop_head (&async_context->result_queue);
+	g_return_val_if_fail (prop_value != NULL, NULL);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	return prop_value;
 }
 
 /**
@@ -1282,5 +2835,52 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
 			data_book, prop_name, prop_value);
 		g_object_unref (data_book);
 	}
+}
+
+/**
+ * e_book_backend_prepare_for_completion:
+ * @backend: an #EBookBackend
+ * @opid: an operation ID given to #EDataBook
+ * @result_queue: return location for a #GQueue, or %NULL
+ *
+ * Obtains the #GSimpleAsyncResult for @opid and sets @result_queue as a
+ * place to deposit results prior to completing the #GSimpleAsyncResult.
+ *
+ * <note>
+ *   <para>
+ *     This is a temporary function to serve #EDataBook's "respond"
+ *     functions until they can be removed.  Nothing else should be
+ *     calling this function.
+ *   </para>
+ * </note>
+ *
+ * Returns: (transfer full): a #GSimpleAsyncResult
+ *
+ * Since: 3.10
+ **/
+GSimpleAsyncResult *
+e_book_backend_prepare_for_completion (EBookBackend *backend,
+                                       guint32 opid,
+                                       GQueue **result_queue)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (opid > 0, NULL);
+
+	simple = book_backend_claim_operation (backend, opid);
+	g_return_val_if_fail (simple != NULL, NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (result_queue != NULL) {
+		if (async_context != NULL)
+			*result_queue = &async_context->result_queue;
+		else
+			*result_queue = NULL;
+	}
+
+	return simple;
 }
 

@@ -1,22 +1,19 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * An abstract class which defines the API to a given backend.
- * There will be one EBookBackend object for every URI which is loaded.
+ * e-book-backend.h
  *
- * Two people will call into the EBookBackend API:
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
  *
- * 1. The PASBookFactory, when it has been asked to load a book.
- *    It will create a new EBookBackend if one is not already running
- *    for the requested URI.  It will call e_book_backend_add_client to
- *    add a new client to an existing EBookBackend server.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * 2. A PASBook, when a client has requested an operation on the
- *    GNOME_Evolution_Addressbook_Book interface.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
- * Author:
- *   Nat Friedman (nat@ximian.com)
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
 #if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
@@ -226,53 +223,131 @@ gboolean	e_book_backend_is_opened	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
 gboolean	e_book_backend_is_removed	(EBookBackend *backend);
 
+gchar *		e_book_backend_get_backend_property_sync
+						(EBookBackend *backend,
+						 const gchar *prop_name,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_get_backend_property
 						(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 const gchar *prop_name,
 						 GCancellable *cancellable,
-						 const gchar *prop_name);
-
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gchar *		e_book_backend_get_backend_property_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_backend_open_sync	(EBookBackend *backend,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_open		(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
 						 GCancellable *cancellable,
-						 gboolean only_if_exists);
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_open_finish	(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_backend_refresh_sync	(EBookBackend *backend,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_refresh		(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable);
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_refresh_finish	(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_backend_create_contacts_sync
+						(EBookBackend *backend,
+						 const gchar * const *vcards,
+						 GQueue *out_contacts,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_create_contacts	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 const gchar * const *vcards,
 						 GCancellable *cancellable,
-						 const GSList *vcards);
-void		e_book_backend_remove_contacts	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_create_contacts_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GQueue *out_contacts,
+						 GError **error);
+gboolean	e_book_backend_modify_contacts_sync
+						(EBookBackend *backend,
+						 const gchar * const *vcards,
 						 GCancellable *cancellable,
-						 const GSList *id_list);
+						 GError **error);
 void		e_book_backend_modify_contacts	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 const gchar * const *vcards,
 						 GCancellable *cancellable,
-						 const GSList *vcards);
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_modify_contacts_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_backend_remove_contacts_sync
+						(EBookBackend *backend,
+						 const gchar * const *uids,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_book_backend_remove_contacts	(EBookBackend *backend,
+						 const gchar * const *uids,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_remove_contacts_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+EContact *	e_book_backend_get_contact_sync	(EBookBackend *backend,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_get_contact	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 const gchar *uid,
 						 GCancellable *cancellable,
-						 const gchar *id);
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+EContact *	e_book_backend_get_contact_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_backend_get_contact_list_sync
+						(EBookBackend *backend,
+						 const gchar *query,
+						 GQueue *out_contacts,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_get_contact_list	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 const gchar *query,
 						 GCancellable *cancellable,
-						 const gchar *query);
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_get_contact_list_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GQueue *out_contacts,
+						 GError **error);
+gboolean	e_book_backend_get_contact_list_uids_sync
+						(EBookBackend *backend,
+						 const gchar *query,
+						 GQueue *out_uids,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_book_backend_get_contact_list_uids
 						(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
+						 const gchar *query,
 						 GCancellable *cancellable,
-						 const gchar *query);
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_backend_get_contact_list_uids_finish
+						(EBookBackend *backend,
+						 GAsyncResult *result,
+						 GQueue *out_uids,
+						 GError **error);
 
 void		e_book_backend_start_view	(EBookBackend *backend,
 						 EDataBookView *view);
@@ -298,14 +373,21 @@ void		e_book_backend_notify_property_changed
 						 const gchar *prop_value);
 
 EDataBookDirect *
-                e_book_backend_get_direct_book  (EBookBackend *backend);
-void            e_book_backend_configure_direct (EBookBackend *backend, const gchar *config);
+		e_book_backend_get_direct_book	(EBookBackend *backend);
+void		e_book_backend_configure_direct	(EBookBackend *backend,
+						 const gchar *config);
 
 void		e_book_backend_sync		(EBookBackend *backend);
 
 /* protected functions for subclasses */
 void		e_book_backend_set_is_removed	(EBookBackend *backend,
 						 gboolean is_removed);
+
+GSimpleAsyncResult *
+		e_book_backend_prepare_for_completion
+						(EBookBackend *backend,
+						 guint32 opid,
+						 GQueue **result_queue);
 
 G_END_DECLS
 
