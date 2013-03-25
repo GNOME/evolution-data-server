@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2013-03-12 12:36+0000\n"
-"PO-Revision-Date: 2013-03-13 15:43+0530\n"
+"PO-Revision-Date: 2013-03-25 14:52+0530\n"
 "Last-Translator: \n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -68,7 +68,7 @@ msgstr "સંપર્કમાં UID નથી"
 #: ../addressbook/backends/file/e-book-backend-file.c:757
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
-msgstr ""
+msgstr "ઉમેરાયેલ સંપર્કોમાં મળેલ UIDs અસંગત"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:844
 #: ../addressbook/backends/file/e-book-backend-file.c:1038
@@ -80,7 +80,7 @@ msgstr "સંપર્ક  '%s' મળ્યુ નથી"
 #: ../addressbook/backends/file/e-book-backend-file.c:940
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
-msgstr ""
+msgstr "સુમેળ આવૃત્તિની બહાર સાથે સંપર્ક '%s' ને બદલવાનો પ્રયત્ન થયેલ છે"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1089
 #: ../addressbook/backends/file/e-book-backend-file.c:1139
@@ -106,10 +106,10 @@ msgid "Searching..."
 msgstr "શોધી રહ્યા છીએ..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1568
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not rename folder %s to %s: %s"
 msgid "Failed to rename old database from '%s' to '%s': %s"
-msgstr "ફોલ્ડર %s ને %s માં નામ બદલી શકતા નથી: %s"
+msgstr "'%s' થી '%s' માં જૂના ડેટાબેઝનું નામ બદલવામાં નિષ્ફતા: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1222
@@ -916,33 +916,32 @@ msgstr "નામ વગરની યાદી"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:43
 msgid "The library was built without phone number support."
-msgstr ""
+msgstr "લાઇબ્રેરી ફોન નંબર આધાર વગર બનેલ હતી."
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:45
 msgid "The phone number parser reported an yet unkown error code."
-msgstr ""
+msgstr "ફોન નંબર પાર્સર હજુ અજ્ઞાત ભૂલ કોડ અહેવાલ થયેલ છે."
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:47
 msgid "Not a phone number"
-msgstr ""
+msgstr "ફોન નંબર નથી"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:49
-#, fuzzy
 #| msgid "Invalid range"
 msgid "Invalid country calling code"
-msgstr "અયોગ્ય વિસ્તાર"
+msgstr "અયોગ્ય દેશ કોલીંગ કોડ"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:51
 msgid "Remaining text after the country calling code is too short for a phone number"
-msgstr ""
+msgstr "દેશ કોલીંગ કોડ પછી બાકી રહેલ લખાણ ફોન નંબર માટે ઘણુ ટૂંકુ છે"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:53
 msgid "Text is too short for a phone number"
-msgstr ""
+msgstr "લખાણ ફોન નંબર માટે ઘણો ટૂંકો છે"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:55
 msgid "Text is too long for a phone number"
-msgstr ""
+msgstr "લખાણ ફોન નંબર માટે ઘણુ લાંબુ છે"
 
 #: ../addressbook/libebook/e-book-client.c:644
 #: ../addressbook/libedata-book/e-book-backend.c:120
@@ -959,15 +958,15 @@ msgstr "ચોપડી ગુણધર્મ '%s' ની કિંમતને 
 #: ../addressbook/libebook/e-book-client.c:1138
 #: ../calendar/libecal/e-cal-client.c:1479
 #: ../calendar/libecal/e-cal-client.c:1659
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s: "
 msgid "Unable to connect to '%s': "
-msgstr "%s સાથે જોડાઈ શક્યા નથી: "
+msgstr "'%s' સાથે જોડાવાનું અસમર્થ': "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:752
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
-msgstr ""
+msgstr "અજ્ઞાત સારાંશ ક્ષેત્ર '%s' નું નિરિક્ષણ કરી રહ્યા હોય ત્યારે ભૂલ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1241
 #: ../camel/camel-db.c:544
@@ -978,7 +977,7 @@ msgstr "અપૂરતી મેમરી"
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1374
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
-msgstr ""
+msgstr "સારાંશમાં સ્પષ્ટ થયેલ અયોગ્ય સંપર્ક ક્ષેત્ર '%d'"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1408
 #, c-format
@@ -986,18 +985,20 @@ msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
+"સારાંશમાં સ્પષ્ટ થયેલ પ્રકાર '%s' નો સંપર્ક ક્ષેત્ર '%s', પરંતુ ફક્ત બુલિયન, શબ્દમાળા અને "
+"શબ્દમાળા યાદી ક્ષેત્ર આધારભૂત છે"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2603
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3644
 #, c-format
 msgid "Full search_contacts are not stored in cache. vcards cannot be returned."
-msgstr ""
+msgstr "સંપૂર્ણ શોધ સંપર્કો કેશમાં સંગ્રહેલ નથી. vcards ને પાછા લાવી શકાતા નથી  (_c)."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3770
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3851
 #, c-format
 msgid "Query contained unsupported elements"
-msgstr ""
+msgstr "ક્વોરી બિનઆધારભૂત ઘટકોને સમાવેલ છે"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3774
 #, c-format
@@ -1010,7 +1011,7 @@ msgstr "અમાન્ય પ્રશ્ર્ન"
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
-msgstr ""
+msgstr "સંપૂર્ણ શોધ સંપર્કો કેશમાં સંગ્રહેલ નથી. તેથી ફક્ત સારાંશ ક્વેરી આધારભૂત છે (_c)."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3855
 #: ../addressbook/libedata-book/e-data-book.c:669
@@ -1024,20 +1025,19 @@ msgstr "અમાન્ય પ્રશ્ર્ન"
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3897
 #, c-format
 msgid "Full vcards are not stored in cache. Hence only summary query is supported."
-msgstr ""
+msgstr "સંપૂર્ણ vcards કેશમાં સંગ્રહેલ નથી. તેથી ફક્ત સારાંશ ક્વેરી આધારભૂત છે."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4598
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to remove file '%s': %s"
 msgid "Unable to remove the db file: errno %d"
-msgstr "ફાઇલ '%s' ને દૂર કરતી વખતે નિષ્ફળતા: %s"
+msgstr "ડેટાબેઝ ફાઇલને દૂર કરવાનું અસમર્થ: errno %d"
 
 #: ../addressbook/libedata-book/e-book-backend-sync.c:179
 #: ../calendar/libedata-cal/e-cal-backend-sync.c:182
-#, fuzzy
 #| msgid "Cannot set backend property: "
 msgid "Clients cannot set backend properties"
-msgstr "બેકએન્ડ ગુણધર્મને સુયોજિત કરી શકાતુ નથી: "
+msgstr "ક્લાયન્ટ બેકઍન્ડ ગુણધર્મોને સુયોજિત કરી શકતા નથી"
 
 #. Translators: This is prefix to a detailed error message
 #. Translators: This is a prefix to a detailed error message *
@@ -1990,22 +1990,22 @@ msgid "Failed at message %d of %d"
 msgstr "%d માંનો %d સંદેશો નિષ્ફળ ગયો"
 
 #: ../camel/camel-filter-driver.c:1741 ../camel/camel-filter-driver.c:1775
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error executing filter: %s: %s"
 msgid "Execution of filter '%s' failed: "
-msgstr "ગાળકને ચલાવતાં ભૂલ: %s: %s"
+msgstr "ફિલ્ટર '%s' નું ઍક્સક્યૂથન નિષ્ફળ: "
 
 #: ../camel/camel-filter-driver.c:1765
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing filter '%s': %s: %s"
-msgstr "ગાળકનું પદચ્છેદ કરતાં ભૂલ: %s: %s"
+msgstr "ફિલ્ટર '%s' નું પદચ્છેદન કરી રહ્યા હોય ત્યારે ભૂલ: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1784
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error executing filter: %s: %s"
 msgid "Error executing filter '%s': %s: %s"
-msgstr "ગાળકને ચલાવતાં ભૂલ: %s: %s"
+msgstr "ફિલ્ટર '%s' ચલાવી રહ્યા હોય ત્યારે ભૂલ: %s: %s"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
@@ -2259,10 +2259,10 @@ msgid "Encrypted content"
 msgstr "એનક્રિપ્ટ કરેલ સમાવિષ્ટ"
 
 #: ../camel/camel-imapx-folder.c:710
-#, fuzzy, c-format
+#, c-format
 #| msgid "Quota information not supported for folder '%s'"
 msgid "No quota information available for folder '%s'"
-msgstr "ફોલ્ડર '%s' માટે ક્વોટા જાણકારી આધારભૂત નથી"
+msgstr "ફોલ્ડર '%s' માટે ક્વોટા જાણકારી ઉપલબ્ધ નથી"
 
 #: ../camel/camel-imapx-folder.c:809 ../camel/camel-imapx-folder.c:882
 #, c-format
@@ -2270,16 +2270,14 @@ msgid "No destination folder specified"
 msgstr "લક્ષ્ય ફોલ્ડર સ્પષ્ટ થયેલ નથી"
 
 #: ../camel/camel-imapx-folder.c:828
-#, fuzzy
 #| msgid "Unable to retrieve message: "
 msgid "Unable to move junk messages"
-msgstr "સંદેશો પ્રાપ્ત કરવામાં અસમર્થ: "
+msgstr "બગડેલ સંદેશાને ખસેડવાનું અસમર્થ"
 
 #: ../camel/camel-imapx-folder.c:901
-#, fuzzy
 #| msgid "Unable to retrieve message: "
 msgid "Unable to move deleted messages"
-msgstr "સંદેશો પ્રાપ્ત કરવામાં અસમર્થ: "
+msgstr "કાઢી નાંખેલ સંદેશાને ખસેડવાનું અસમર્થ"
 
 #: ../camel/camel-imapx-folder.c:1115
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
@@ -2437,10 +2435,9 @@ msgid "Error renaming folder"
 msgstr "ફોલ્ડરનું નામ બદલી રહ્યા હોય ત્યારે ભૂલ"
 
 #: ../camel/camel-imapx-server.c:6383
-#, fuzzy
 #| msgid "Retrieving quota information for '%s'"
 msgid "Error retrieving quota information"
-msgstr "'%s' માટે ક્વોટા જાણકારીને પુન:પ્રાપ્ત કરી રહ્યા છે"
+msgstr "ક્વોટા જાણકારીને પુન:પ્રાપ્ત કરી રહ્યા છે"
 
 #: ../camel/camel-imapx-server.c:6448
 #| msgid "Decoder failed"
@@ -2469,10 +2466,9 @@ msgid "Cannot create spool file: "
 msgstr "સ્પુલ ફાઇલને બનાવી શકાતુ નથી: "
 
 #: ../camel/camel-imapx-server.c:8348
-#, fuzzy
 #| msgid "IMAP server %s does not support %s authentication"
 msgid "IMAP server does not support quotas"
-msgstr "IMAP સર્વર %s એ %s સત્તાધિકરણને આધાર આપતુ નથી"
+msgstr "IMAP સર્વર ક્વોટાને આધાર આપતુ નથી"
 
 #: ../camel/camel-imapx-store.c:249
 #, c-format
@@ -2661,13 +2657,13 @@ msgstr "યજમાન જોવામાં નિષ્ફળ"
 #: ../camel/camel-net-utils.c:732
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
-msgstr ""
+msgstr "યજમાન લુકઅપ '%s' નિષ્ફળ. જોડણી ચકાસણી ભૂલો માટે તમારા યજમાનનામને ચકાસો."
 
 #: ../camel/camel-net-utils.c:736
-#, fuzzy, c-format
+#, c-format
 #| msgid "Host lookup failed: %s: %s"
 msgid "Host lookup '%s' failed: %s"
-msgstr "યજમાન જોવામાં નિષ્ફળ: %s: %s"
+msgstr "યજમાન લુકઅપ '%s' નિષ્ફળ: %s"
 
 #: ../camel/camel-net-utils.c:857
 msgid "Resolving address"
@@ -2679,7 +2675,7 @@ msgstr "નામ જોવામાં નિષ્ફળ"
 
 #: ../camel/camel-net-utils.c:885
 msgid "Name lookup failed. Check your host name for spelling errors."
-msgstr ""
+msgstr "નામ લુકઅપ નિષ્ફળ. જોડણી ચકાસણી ભૂલો માટે તમારા યજમાનનામને ચકાસો."
 
 #: ../camel/camel-net-utils.c:889
 #, c-format
@@ -2687,10 +2683,10 @@ msgid "Name lookup failed: %s"
 msgstr "નામ જોવામાં નિષ્ફળ: %s"
 
 #: ../camel/camel-network-service.c:350
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s: %s"
 msgid "Could not connect to '%s:%s': "
-msgstr "%s સાથે જોડાઈ શક્યા નથી: %s"
+msgstr "'%s:%s' સાથે જોડી શક્યા નહિં: "
 
 #: ../camel/camel-offline-folder.c:212
 #, c-format
@@ -4075,13 +4071,12 @@ msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "આ USENET સમાચાર જૂથમાંથી વાંચવા માટે અને તેમાં પોસ્ટ કરવા માટે પ્રોવાઈડર છે."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:87
-#, fuzzy
 #| msgid ""
 #| "This option will connect to the server using Kerberos 5 authentication."
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
-msgstr "આ વિકલ્પ સર્વર સાથે Kerberos 5 સત્તાધિકરણની મદદથી જોડાશે."
+msgstr "આ વિકલ્પ અનામિક રીતે NNTP સર્વર સાથે જોડાશે, સત્તાધિકરણ વગર."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
@@ -4399,26 +4394,26 @@ msgid "Could not parse arguments"
 msgstr "દલીલોનું પદચ્છેદન કરી શક્યા નહિં"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:213
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create pipe to sendmail: %s: mail not sent"
 msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr "મેઈલમોકલોને pipe બનાવી શક્યા નહિં: %s: મેઈલ મોકલાયો નહિં"
+msgstr "'%s' ને pipe બનાવી શક્યા નહિં: %s: મેઈલ મોકલાયો નહિં"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:238
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not fork sendmail: %s: mail not sent"
 msgid "Could not fork '%s': %s: mail not sent"
-msgstr "મેઈલમોકલોન fork કરી શક્યા નહિં: %s: મેઈલ મોકલાયો નથી"
+msgstr "'%s' ને fork કરી શક્યા નહિં: %s: મેઈલ મોકલાયો નથી"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:287
 msgid "Could not send message: "
 msgstr "સંદેશો મોકલી શક્યા નહિં: "
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:317
-#, fuzzy, c-format
+#, c-format
 #| msgid "sendmail exited with signal %s: mail not sent."
 msgid "'%s' exited with signal %s: mail not sent."
-msgstr "મેઈલમોકલો સંકેત %s થી ઉત્તેજિત થઈ ગયો: મેઈલ મોકલાયો નથી."
+msgstr "'%s' એ સંકેત %s સાથે બહાર નીકળી ગયુ: મેઇલ મોકલેલ નથી."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:327
 #, c-format
@@ -4427,10 +4422,10 @@ msgid "Could not execute '%s': mail not sent."
 msgstr "'%s' ચલાવી શક્યા નથી: મેઈલ મોકલાયો નથી."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:332
-#, fuzzy, c-format
+#, c-format
 #| msgid "sendmail exited with status %d: mail not sent."
 msgid "'%s' exited with status %d: mail not sent."
-msgstr "મેઈલમોકલો સ્થિતિ %d થી ઉત્તેજિત થઈ ગયો છે: મેઈલ મોકલાયો નથી."
+msgstr "'%s' એ પરિસ્થિતિ %d સાથે બહાર નીકળી ગયુ: મેઇલ મોકલેલ નથી."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4745,10 +4740,10 @@ msgid "%s does not support deleting remote resources"
 msgstr "%s દૂરસ્થ સ્ત્રોતને કાઢવા માટે આધાર આપતુ નથી"
 
 #: ../libebackend/e-data-factory.c:320
-#, fuzzy, c-format
+#, c-format
 #| msgid "No backend name in source '%s'"
 msgid "No backend factory for hash key '%s'"
-msgstr "સ્ત્રોત '%s' માં બેકએન્ડ નામ નથી"
+msgstr "હેશ કી '%s' માટે બેકઍન્ડ ફેક્ટરી નથી"
 
 #: ../libebackend/e-server-side-source.c:134
 #, c-format
@@ -4780,10 +4775,10 @@ msgstr "માહિતી સ્ત્રોત '%s' પાસે દૂરસ�
 #: ../libebackend/e-server-side-source.c:1095
 #: ../libedataserver/e-source.c:1317
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s does not support %s authentication"
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
-msgstr "IMAP સર્વર %s એ %s સત્તાધિકરણને આધાર આપતુ નથી"
+msgstr "માહિતી સ્ત્રોત '%s' એ OAuth 2.0 સત્તાધિકરણને આધાર આપતુ નથી"
 
 #: ../libebackend/e-server-side-source.c:1438
 #, c-format
@@ -5014,7 +5009,7 @@ msgid "Signature script must be a local file"
 msgstr "હસ્તાક્ષર સ્ક્રિપ્ટ સ્થાનિક ફાઇલ હોવી જ જોઇએ"
 
 #: ../libedataserver/e-source-webdav.c:1529
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
 #| "\n"
@@ -5024,13 +5019,11 @@ msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
-"'%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે તેને સ્વીકારવા માંગો છો?\n"
-"\n"
-"પ્રમાણપત્ર વિશે વિગત થયેલ જાણકારી:\n"
-"%s"
+"સરનામાં પુસ્તિકા '%s' દ્દારા વાપરેલ યજમાન '%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું "
+"તમે તેને સ્વીકારવા માંગો છો?"
 
 #: ../libedataserver/e-source-webdav.c:1538
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
 #| "\n"
@@ -5040,13 +5033,11 @@ msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
 "wish to accept it?"
 msgstr ""
-"'%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે તેને સ્વીકારવા માંગો છો?\n"
-"\n"
-"પ્રમાણપત્ર વિશે વિગત થયેલ જાણકારી:\n"
-"%s"
+"કૅલેન્ડર '%s' દ્દારા વાપરેલ યજમાન '%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે "
+"તેને સ્વીકારવા માંગો છો?"
 
 #: ../libedataserver/e-source-webdav.c:1547
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
 #| "\n"
@@ -5056,13 +5047,11 @@ msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
-"'%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે તેને સ્વીકારવા માંગો છો?\n"
-"\n"
-"પ્રમાણપત્ર વિશે વિગત થયેલ જાણકારી:\n"
-"%s"
+"મેમો યાદી '%s' દ્દારા વાપરેલ યજમાનનામ '%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે "
+"તેને સ્વીકારવા માંગો છો?"
 
 #: ../libedataserver/e-source-webdav.c:1556
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
 #| "\n"
@@ -5072,10 +5061,8 @@ msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
-"'%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે તેને સ્વીકારવા માંગો છો?\n"
-"\n"
-"પ્રમાણપત્ર વિશે વિગત થયેલ જાણકારી:\n"
-"%s"
+"કાર્ય યાદી '%s' દ્દારા વાપરેલ યજમાન '%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે "
+"તેને સ્વીકારવા માંગો છો?"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5316,10 +5303,10 @@ msgstr "ક્યાંતો તેમાંથી સ્વયં પ્રો
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:132
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
-#, fuzzy, c-format
+#, c-format
 #| msgid "No such source for UID '%s'"
 msgid "No such data source for UID '%s'"
-msgstr "UID '%s' માટે આવો સ્ત્રોત નથી"
+msgstr "UID '%s' માટે આવો માહિતી સ્ત્રોત નથી"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:144
 #, c-format
@@ -5327,6 +5314,8 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for '%s'"
 msgstr ""
+"org.gnome.OnlineAccounts સેવામાં સંકળાયેલ ખાતાને શોધી શકાતુ નથી કે જેમાંથી '%s' માટે "
+"પ્રાપ્ત કરવાનું છે"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:216
 #, c-format
@@ -5376,12 +5365,14 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for '%s'"
 msgstr ""
+"org.gnome.OnlineAccounts સેવામાં સંકળાયેલ ખાતુ શોધી શકાતુ નથી કે જેમાંથી '%s' માટે પ્રવેશ "
+"ટોકન પ્રાપ્ત કરવાનું છે"
 
 #: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1264
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to open addressbook at '%s': %s"
 msgid "Failed to obtain an access token for '%s': "
-msgstr "'%s પર સરનામાં પુસ્તિકાને ખોલવાનું નિષ્ફળ: %s"
+msgstr "'%s' માટે પ્રવેશ ટોકન પ્રાપ્ત કરવામાં નિષ્ફળતા: "
 
 #: ../modules/google-backend/module-google-backend.c:140
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
@@ -5709,6 +5700,7 @@ msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
 msgstr ""
+"પ્રમાણપત્ર સાઇટની ઇચ્છિત ઓળખાણ સાથે બંધબેસતુ નથી કે જે કે જે તેમાંથી પ્રાપ્ત થયેલ હતુ."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:205
 msgid "The certificate's activation time is still in the future."
@@ -5723,7 +5715,7 @@ msgstr "પ્રમાણપત્ર નિવૃત્ત થયેલ છે
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
-msgstr ""
+msgstr "પ્રમાણપત્ર આ જોડાણની પ્રમાણપત્ર રદ યાદી અનુસાર રદ કરવામાં આવ્યુ છે."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:211
 msgid "The certificate's algorithm is considered insecure."
@@ -5752,22 +5744,18 @@ msgid "_Accept Permanently"
 msgstr "કાયમ માટે સ્વીકારો (_A)"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:203
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
 #| "\n"
 #| "Detailed information about the certificate:\n"
 #| "%s"
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
-msgstr ""
-"'%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે તેને સ્વીકારવા માંગો છો?\n"
-"\n"
-"પ્રમાણપત્ર વિશે વિગત થયેલ જાણકારી:\n"
-"%s"
+msgstr "'%s' માટે SSL પ્રમાણપત્ર વિશ્ર્વાસપાત્ર નથી. શું તમે તેને સ્વીકારવા માંગો છો?"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:209
 msgid "Detailed information about the certificate:"
-msgstr ""
+msgstr "પ્રમાણપત્ર વિશે વિગતવાર જાણકારી:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:223
 msgid "Issuer:"
@@ -5779,7 +5767,7 @@ msgstr "વિષય:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:225
 msgid "Fingerprint:"
-msgstr ""
+msgstr "આંગળીની છાપ:"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:226
 msgid "Reason:"
@@ -5787,15 +5775,15 @@ msgstr "કારણ:"
 
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
 msgid "Integrate your calendars"
-msgstr ""
+msgstr "તમારા કૅલેન્ડરને એકત્રિત કરો"
 
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
 msgid "Integrate your contacts"
-msgstr ""
+msgstr "તમારાં સંપર્ક એકત્રિત કરો"
 
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:257
 msgid "Signon service did not return a secret"
-msgstr ""
+msgstr "Signon સેવા ખાનગી પાછુ લાવતી નથી"
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
 #| msgid "Calendar"
@@ -5820,7 +5808,7 @@ msgstr "મેઈલ"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
 msgid "Integrate your mailboxes"
-msgstr ""
+msgstr "તમારાં મેઇલબોક્સ એકત્રિત કરો"
 
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:971
 #, c-format
@@ -5828,6 +5816,8 @@ msgid ""
 "Cannot find a corresponding account service in the accounts database from "
 "which to obtain an access token for '%s'"
 msgstr ""
+"ખાતા ડેટાબેઝમાં સંકળાયેલ ખાતા સેવાને શોધી શકાતુ નથી કે જેમાંથી '%s' માટે પ્રવેશ ટોકનને "
+"પ્રાપ્ત કરવાનું છે"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:79
 #, c-format
