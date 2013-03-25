@@ -729,6 +729,8 @@ operation_thread (gpointer data,
 				object_path);
 
 			op_complete (op->book, op->id);
+
+			g_object_unref (view);
 			g_free (object_path);
 		}
 		break;

@@ -312,8 +312,6 @@ impl_DataBookView_dispose (EGdbusBookView *object,
 	view->priv->running = FALSE;
 	e_book_backend_remove_view (view->priv->backend, view);
 
-	g_object_unref (view);
-
 	return TRUE;
 }
 
