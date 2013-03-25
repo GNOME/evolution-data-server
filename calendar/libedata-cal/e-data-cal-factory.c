@@ -334,14 +334,13 @@ data_cal_factory_open (EDataCalFactory *factory,
 	} else {
 		object_path = construct_cal_factory_path ();
 
+		/* The EDataCal will attach itself to ECalBackend,
+		 * so no need to call e_cal_backend_set_data_cal(). */
 		data_cal = e_data_cal_new (
 			E_CAL_BACKEND (backend),
 			connection, object_path, error);
 
 		if (data_cal != NULL) {
-			e_cal_backend_set_data_cal (
-				E_CAL_BACKEND (backend), data_cal);
-
 			data_cal_factory_watched_names_add (
 				factory, connection, sender);
 

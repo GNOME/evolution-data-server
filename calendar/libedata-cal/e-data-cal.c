@@ -2339,6 +2339,9 @@ data_cal_constructed (GObject *object)
 	backend = e_data_cal_ref_backend (cal);
 	g_warn_if_fail (backend != NULL);
 
+	/* Attach ourselves to the ECalBackend. */
+	e_cal_backend_set_data_cal (backend, cal);
+
 	g_object_bind_property (
 		backend, "cache-dir",
 		cal->priv->dbus_interface, "cache-dir",
