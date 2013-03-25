@@ -634,7 +634,8 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 	ESource *source;
 	EOwncloudAuthenticator *authenticator;
 	gchar *url;
-	gboolean res = TRUE;
+	gboolean res_calendars = FALSE;
+	gboolean res_contacts = FALSE;
 
 	g_return_val_if_fail (collection != NULL, FALSE);
 	g_return_val_if_fail (found_cb != NULL, FALSE);
@@ -647,22 +648,22 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 	authenticator->collection = collection;
 	authenticator->username = e_source_collection_dup_identity (collection_extension);
 
-	if (res && e_source_collection_get_calendar_enabled (collection_extension)) {
+	if (e_source_collection_get_calendar_enabled (collection_extension)) {
 		url = e_source_goa_dup_calendar_url (goa_extension);
 
 		if (url && *url)
-			res = find_sources (
+			res_calendars = find_sources (
 				collection, found_cb, user_data,
 				url, "calendars", authenticator);
 
 		g_free (url);
 	}
 
-	if (res && e_source_collection_get_contacts_enabled (collection_extension)) {
+	if (e_source_collection_get_contacts_enabled (collection_extension)) {
 		url = e_source_goa_dup_contacts_url (goa_extension);
 
 		if (url && *url)
-			res = find_sources (
+			res_contacts = find_sources (
 				collection, found_cb, user_data,
 				url, "addressbooks", authenticator);
 
@@ -671,5 +672,5 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 
 	g_object_unref (authenticator);
 
-	return res;
+	return res_calendars || res_contacts;
 }
