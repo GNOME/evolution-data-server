@@ -1935,16 +1935,19 @@ data_book_initable_init (GInitable *initable,
                          GCancellable *cancellable,
                          GError **error)
 {
+	EBookBackend *backend;
 	EDataBook *book;
 	OperationData *op;
+	gboolean success = TRUE;
 
 	book = E_DATA_BOOK (initable);
 
-	if (book->priv->connection != NULL && book->priv->object_path != NULL) {
-		EBookBackend *backend;
+	backend = e_data_book_ref_backend (book);
 
-		backend = e_data_book_ref_backend (book);
-		g_warn_if_fail (backend != NULL);
+	if (book->priv->connection != NULL && book->priv->object_path != NULL) {
+
+		/* Attach ourselves to the EBookBackend. */
+		e_book_backend_set_data_book (backend, book);
 
 		book->priv->dbus_interface =
 			e_dbus_address_book_skeleton_new ();
@@ -1986,17 +1989,13 @@ data_book_initable_init (GInitable *initable,
 			e_book_backend_get_direct_book (backend);
 
 		if (book->priv->direct_book != NULL) {
-			gboolean success;
-
 			success = e_data_book_direct_register_gdbus_object (
 				book->priv->direct_book,
 				book->priv->connection,
 				book->priv->object_path,
 				error);
-			if (!success) {
-				g_object_unref (backend);
-				return FALSE;
-			}
+			if (!success)
+				goto exit;
 		}
 
 		g_object_bind_property (
@@ -2046,16 +2045,17 @@ data_book_initable_init (GInitable *initable,
 			op->cancellable, op->d.prop_name);
 		op_unref (op);
 
-		g_object_unref (backend);
-
-		return g_dbus_interface_skeleton_export (
+		success = g_dbus_interface_skeleton_export (
 			G_DBUS_INTERFACE_SKELETON (book->priv->dbus_interface),
 			book->priv->connection,
 			book->priv->object_path,
 			error);
 	}
 
-	return TRUE;
+exit:
+	g_clear_object (&backend);
+
+	return success;
 }
 
 static void

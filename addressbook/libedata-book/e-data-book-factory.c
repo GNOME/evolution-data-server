@@ -328,14 +328,13 @@ data_book_factory_open (EDataBookFactory *factory,
 	} else {
 		object_path = construct_book_factory_path ();
 
+		/* The EDataBook will attach itself to EBookBackend,
+		 * so no need to call e_book_backend_set_data_book(). */
 		data_book = e_data_book_new (
 			E_BOOK_BACKEND (backend),
 			connection, object_path, error);
 
 		if (data_book != NULL) {
-			e_book_backend_set_data_book (
-				E_BOOK_BACKEND (backend), data_book);
-
 			data_book_factory_watched_names_add (
 				factory, connection, sender);
 
