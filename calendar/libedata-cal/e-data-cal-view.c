@@ -419,9 +419,6 @@ data_cal_view_dispose (GObject *object)
 	priv = E_DATA_CAL_VIEW_GET_PRIVATE (object);
 
 	if (priv->backend != NULL) {
-		e_cal_backend_remove_view (
-			priv->backend,
-			E_DATA_CAL_VIEW (object));
 		g_object_unref (priv->backend);
 		priv->backend = NULL;
 	}
