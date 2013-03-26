@@ -464,20 +464,9 @@ data_book_view_dispose (GObject *object)
 
 	priv = E_DATA_BOOK_VIEW_GET_PRIVATE (object);
 
-	if (priv->connection != NULL) {
-		g_object_unref (priv->connection);
-		priv->connection = NULL;
-	}
-
-	if (priv->backend != NULL) {
-		g_object_unref (priv->backend);
-		priv->backend = NULL;
-	}
-
-	if (priv->sexp != NULL) {
-		g_object_unref (priv->sexp);
-		priv->sexp = NULL;
-	}
+	g_clear_object (&priv->connection);
+	g_clear_object (&priv->backend);
+	g_clear_object (&priv->sexp);
 
 	g_mutex_lock (&priv->pending_mutex);
 
