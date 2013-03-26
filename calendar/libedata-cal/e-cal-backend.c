@@ -56,9 +56,6 @@ struct _ECalBackendPrivate {
 
 	GHashTable *zone_cache;
 	GMutex zone_cache_lock;
-
-	/* ECalBackend to pass notifications on to */
-	ECalBackend *notification_proxy;
 };
 
 struct _SignalClosure {
@@ -1072,24 +1069,6 @@ e_cal_backend_list_views (ECalBackend *backend)
 }
 
 /**
- * e_cal_backend_set_notification_proxy:
- * @backend: an #ECalBackend
- * @proxy: The calendar backend to act as notification proxy.
- *
- * Sets the backend that will act as notification proxy for the given backend.
- *
- * Since: 3.2
- */
-void
-e_cal_backend_set_notification_proxy (ECalBackend *backend,
-                                      ECalBackend *proxy)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	backend->priv->notification_proxy = proxy;
-}
-
-/**
  * e_cal_backend_open:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal
@@ -1644,12 +1623,6 @@ e_cal_backend_notify_component_created (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (E_IS_CAL_COMPONENT (component));
 
-	if (backend->priv->notification_proxy != NULL) {
-		e_cal_backend_notify_component_created (
-			backend->priv->notification_proxy, component);
-		return;
-	}
-
 	list = e_cal_backend_list_views (backend);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
@@ -1714,13 +1687,6 @@ e_cal_backend_notify_component_modified (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_COMPONENT (old_component));
 	g_return_if_fail (E_IS_CAL_COMPONENT (new_component));
 
-	if (backend->priv->notification_proxy != NULL) {
-		e_cal_backend_notify_component_modified (
-			backend->priv->notification_proxy,
-			old_component, new_component);
-		return;
-	}
-
 	list = e_cal_backend_list_views (backend);
 
 	for (link = list; link != NULL; link = g_list_next (link))
@@ -1765,13 +1731,6 @@ e_cal_backend_notify_component_removed (ECalBackend *backend,
 
 	if (new_component != NULL)
 		g_return_if_fail (E_IS_CAL_COMPONENT (new_component));
-
-	if (backend->priv->notification_proxy != NULL) {
-		e_cal_backend_notify_component_removed (
-			backend->priv->notification_proxy,
-			id, old_component, new_component);
-		return;
-	}
 
 	list = e_cal_backend_list_views (backend);
 

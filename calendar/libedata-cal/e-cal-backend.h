@@ -275,10 +275,6 @@ void		e_cal_backend_remove_view	(ECalBackend *backend,
 						 EDataCalView *view);
 GList *		e_cal_backend_list_views	(ECalBackend *backend);
 
-void		e_cal_backend_set_notification_proxy
-						(ECalBackend *backend,
-						 ECalBackend *proxy);
-
 void		e_cal_backend_get_backend_property
 						(ECalBackend *backend,
 						 EDataCal *cal,

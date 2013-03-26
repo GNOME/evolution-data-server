@@ -25,7 +25,6 @@ e_cal_backend_create_cache_filename
 e_cal_backend_add_view
 e_cal_backend_remove_view
 e_cal_backend_list_views
-e_cal_backend_set_notification_proxy
 e_cal_backend_get_backend_property
 e_cal_backend_open
 e_cal_backend_refresh
