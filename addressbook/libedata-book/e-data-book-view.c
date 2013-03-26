@@ -465,6 +465,7 @@ data_book_view_dispose (GObject *object)
 	priv = E_DATA_BOOK_VIEW_GET_PRIVATE (object);
 
 	g_clear_object (&priv->connection);
+	g_clear_object (&priv->gdbus_object);
 	g_clear_object (&priv->backend);
 	g_clear_object (&priv->sexp);
 
