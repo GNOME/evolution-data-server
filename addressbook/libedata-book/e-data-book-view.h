@@ -53,7 +53,6 @@
 
 G_BEGIN_DECLS
 
-struct _EDataBook;
 struct _EBookBackend;
 
 typedef struct _EDataBookView EDataBookView;
@@ -70,7 +69,7 @@ struct _EDataBookViewClass {
 };
 
 GType		e_data_book_view_get_type	(void) G_GNUC_CONST;
-EDataBookView *	e_data_book_view_new		(struct _EDataBook *book,
+EDataBookView *	e_data_book_view_new		(struct _EBookBackend *backend,
 						 EBookBackendSExp *sexp,
 						 GDBusConnection *connection,
 						 const gchar *object_path,

@@ -48,7 +48,6 @@ struct _EDataBookViewPrivate {
 	EGdbusBookView *gdbus_object;
 	gchar *object_path;
 
-	EDataBook *book;
 	EBookBackend *backend;
 
 	EBookBackendSExp *sexp;
@@ -206,24 +205,6 @@ ensure_pending_flush_timeout (EDataBookView *view)
 
 	view->priv->flush_id = g_timeout_add_seconds (
 		THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
-}
-
-static void
-book_destroyed_cb (gpointer data,
-                   GObject *dead)
-{
-	EDataBookView *view = E_DATA_BOOK_VIEW (data);
-
-	/* The book has just died, so unset the pointer so
-	 * we don't try and remove a dead weak reference. */
-	view->priv->book = NULL;
-
-	/* If the view is running stop it here. */
-	if (view->priv->running) {
-		e_book_backend_stop_view (view->priv->backend, view);
-		view->priv->running = FALSE;
-		view->priv->complete = FALSE;
-	}
 }
 
 static gpointer
@@ -488,14 +469,6 @@ data_book_view_dispose (GObject *object)
 		priv->connection = NULL;
 	}
 
-	if (priv->book != NULL) {
-		/* Remove the weak reference */
-		g_object_weak_unref (
-			G_OBJECT (priv->book),
-			book_destroyed_cb, object);
-		priv->book = NULL;
-	}
-
 	if (priv->backend != NULL) {
 		g_object_unref (priv->backend);
 		priv->backend = NULL;
@@ -687,42 +660,23 @@ e_data_book_view_init (EDataBookView *view)
  * and place it on DBus at the object path #path.
  */
 EDataBookView *
-e_data_book_view_new (EDataBook *book,
+e_data_book_view_new (EBookBackend *backend,
                       EBookBackendSExp *sexp,
                       GDBusConnection *connection,
                       const gchar *object_path,
                       GError **error)
 {
-	EDataBookView *view;
-	EBookBackend *backend;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SEXP (sexp), NULL);
 	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
 	g_return_val_if_fail (object_path != NULL, NULL);
 
-	backend = e_data_book_ref_backend (book);
-
-	view = g_initable_new (
+	return g_initable_new (
 		E_TYPE_DATA_BOOK_VIEW, NULL, error,
 		"backend", backend,
 		"connection", connection,
 		"object-path", object_path,
 		"sexp", sexp, NULL);
-
-	g_object_unref (backend);
-
-	if (view == NULL)
-		return NULL;
-
-	view->priv->book = book;
-	/* Attach a weak reference to the book, so
-	 * if it dies the book view is destroyed too. */
-	g_object_weak_ref (
-		G_OBJECT (view->priv->book),
-		book_destroyed_cb, view);
-
-	return view;
 }
 
 /**

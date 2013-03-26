@@ -699,7 +699,7 @@ operation_thread (gpointer data,
 			connection = e_data_book_get_connection (op->book);
 
 			view = e_data_book_view_new (
-				op->book, card_sexp,
+				op->backend, card_sexp,
 				connection, object_path, &error);
 
 			g_object_unref (card_sexp);
