@@ -991,6 +991,7 @@ e_cal_backend_add_view (ECalBackend *backend,
 
 	g_mutex_lock (&backend->priv->views_mutex);
 
+	g_object_ref (view);
 	backend->priv->views = g_list_append (backend->priv->views, view);
 
 	g_mutex_unlock (&backend->priv->views_mutex);
