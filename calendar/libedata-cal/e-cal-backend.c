@@ -1,24 +1,19 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* Evolution calendar - generic backend class
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- *
- * Authors: Federico Mena-Quintero <federico@ximian.com>
- *          JP Rosevear <jpr@ximian.com>
- *          Rodrigo Moya <rodrigo@ximian.com>
+/*
+ * e-cal-backend.c
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
- * License as published by the Free Software Foundation.
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
  */
 
 #include <config.h>
@@ -35,9 +30,10 @@
 #define EDC_ERROR(_code)	e_data_cal_create_error (_code, NULL)
 #define EDC_NOT_OPENED_ERROR	e_data_cal_create_error (NotOpened, NULL)
 
+typedef struct _AsyncContext AsyncContext;
+typedef struct _DispatchNode DispatchNode;
 typedef struct _SignalClosure SignalClosure;
 
-/* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
 	ESourceRegistry *registry;
 
@@ -56,6 +52,47 @@ struct _ECalBackendPrivate {
 
 	GHashTable *zone_cache;
 	GMutex zone_cache_lock;
+
+	GMutex operation_lock;
+	GHashTable *operation_ids;
+	GQueue pending_operations;
+	guint32 next_operation_id;
+	GSimpleAsyncResult *blocked;
+};
+
+struct _AsyncContext {
+	/* Inputs */
+	gchar *uid;
+	gchar *rid;
+	gchar *alarm_uid;
+	gchar *calobj;
+	gchar *query;
+	gchar *tzid;
+	gchar *tzobject;
+	ECalObjModType mod;
+	const gchar *prop_name;
+	time_t start;
+	time_t end;
+	GSList *compid_list;
+	GSList *string_list;
+
+	/* Outputs */
+	GQueue result_queue;
+
+	/* One of these should point to result_queue
+	 * so any leftover resources can be released. */
+	GQueue *object_queue;
+	GQueue *string_queue;
+};
+
+struct _DispatchNode {
+	/* This is the dispatch function
+	 * that invokes the class method. */
+	GSimpleAsyncThreadFunc dispatch_func;
+	gboolean blocking_operation;
+
+	GSimpleAsyncResult *simple;
+	GCancellable *cancellable;
 };
 
 struct _SignalClosure {
@@ -63,7 +100,6 @@ struct _SignalClosure {
 	icaltimezone *cached_zone;
 };
 
-/* Property IDs */
 enum {
 	PROP_0,
 	PROP_CACHE_DIR,
@@ -92,6 +128,47 @@ G_DEFINE_TYPE_WITH_CODE (
 		e_cal_backend_timezone_cache_init))
 
 static void
+async_context_free (AsyncContext *async_context)
+{
+	GQueue *queue;
+
+	g_free (async_context->uid);
+	g_free (async_context->rid);
+	g_free (async_context->alarm_uid);
+	g_free (async_context->calobj);
+	g_free (async_context->query);
+	g_free (async_context->tzid);
+	g_free (async_context->tzobject);
+
+	g_slist_free_full (
+		async_context->compid_list,
+		(GDestroyNotify) e_cal_component_free_id);
+
+	g_slist_free_full (
+		async_context->string_list,
+		(GDestroyNotify) g_free);
+
+	queue = async_context->object_queue;
+	while (queue != NULL && !g_queue_is_empty (queue))
+		g_object_unref (g_queue_pop_head (queue));
+
+	queue = async_context->string_queue;
+	while (queue != NULL && !g_queue_is_empty (queue))
+		g_free (g_queue_pop_head (queue));
+
+	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+dispatch_node_free (DispatchNode *dispatch_node)
+{
+	g_clear_object (&dispatch_node->simple);
+	g_clear_object (&dispatch_node->cancellable);
+
+	g_slice_free (DispatchNode, dispatch_node);
+}
+
+static void
 signal_closure_free (SignalClosure *signal_closure)
 {
 	g_weak_ref_set (&signal_closure->backend, NULL);
@@ -106,6 +183,143 @@ static void
 cal_backend_free_zone (icaltimezone *zone)
 {
 	icaltimezone_free (zone, 1);
+}
+
+static void
+cal_backend_push_operation (ECalBackend *backend,
+                            GSimpleAsyncResult *simple,
+                            GCancellable *cancellable,
+                            gboolean blocking_operation,
+                            GSimpleAsyncThreadFunc dispatch_func)
+{
+	DispatchNode *node;
+
+	g_return_if_fail (G_IS_SIMPLE_ASYNC_RESULT (simple));
+	g_return_if_fail (dispatch_func != NULL);
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	node = g_slice_new0 (DispatchNode);
+	node->dispatch_func = dispatch_func;
+	node->blocking_operation = blocking_operation;
+	node->simple = g_object_ref (simple);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		node->cancellable = g_object_ref (cancellable);
+
+	g_queue_push_tail (&backend->priv->pending_operations, node);
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+}
+
+static gboolean
+cal_backend_dispatch_thread (GIOSchedulerJob *job,
+                             GCancellable *cancellable,
+                             gpointer user_data)
+{
+	DispatchNode *node = user_data;
+	GError *error = NULL;
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		g_simple_async_result_take_error (node->simple, error);
+		g_simple_async_result_complete_in_idle (node->simple);
+	} else {
+		GAsyncResult *result;
+		GObject *source_object;
+
+		result = G_ASYNC_RESULT (node->simple);
+		source_object = g_async_result_get_source_object (result);
+		node->dispatch_func (node->simple, source_object, cancellable);
+		g_object_unref (source_object);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+cal_backend_dispatch_next_operation (ECalBackend *backend)
+{
+	DispatchNode *node;
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	/* We can't dispatch additional operations
+	 * while a blocking operation is in progress. */
+	if (backend->priv->blocked != NULL) {
+		g_mutex_unlock (&backend->priv->operation_lock);
+		return FALSE;
+	}
+
+	/* Pop the next DispatchNode off the queue. */
+	node = g_queue_pop_head (&backend->priv->pending_operations);
+	if (node == NULL) {
+		g_mutex_unlock (&backend->priv->operation_lock);
+		return FALSE;
+	}
+
+	/* If this a blocking operation, block any
+	 * further dispatching until this finishes. */
+	if (node->blocking_operation)
+		backend->priv->blocked = g_object_ref (node->simple);
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	g_io_scheduler_push_job (
+		cal_backend_dispatch_thread,
+		node, (GDestroyNotify) dispatch_node_free,
+		G_PRIORITY_DEFAULT,
+		node->cancellable);
+
+	return TRUE;
+}
+
+static guint32
+cal_backend_stash_operation (ECalBackend *backend,
+                             GSimpleAsyncResult *simple)
+{
+	guint32 opid;
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	if (backend->priv->next_operation_id == 0)
+		backend->priv->next_operation_id = 1;
+
+	opid = backend->priv->next_operation_id++;
+
+	g_hash_table_insert (
+		backend->priv->operation_ids,
+		GUINT_TO_POINTER (opid),
+		g_object_ref (simple));
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	return opid;
+}
+
+static GSimpleAsyncResult *
+cal_backend_claim_operation (ECalBackend *backend,
+                             guint32 opid)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (opid > 0, NULL);
+
+	g_mutex_lock (&backend->priv->operation_lock);
+
+	simple = g_hash_table_lookup (
+		backend->priv->operation_ids,
+		GUINT_TO_POINTER (opid));
+
+	if (simple != NULL) {
+		/* Steal the hash table's reference. */
+		g_hash_table_steal (
+			backend->priv->operation_ids,
+			GUINT_TO_POINTER (opid));
+	}
+
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	return simple;
 }
 
 static void
@@ -333,6 +547,13 @@ cal_backend_dispose (GObject *object)
 	g_clear_object (&priv->registry);
 	g_clear_object (&priv->data_cal);
 
+	g_hash_table_remove_all (priv->operation_ids);
+
+	while (!g_queue_is_empty (&priv->pending_operations))
+		g_object_unref (g_queue_pop_head (&priv->pending_operations));
+
+	g_clear_object (&priv->blocked);
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->dispose (object);
 }
@@ -351,6 +572,9 @@ cal_backend_finalize (GObject *object)
 	g_mutex_clear (&priv->zone_cache_lock);
 
 	g_free (priv->cache_dir);
+
+	g_mutex_clear (&priv->operation_lock);
+	g_hash_table_destroy (priv->operation_ids);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
@@ -651,6 +875,14 @@ e_cal_backend_init (ECalBackend *backend)
 
 	backend->priv->zone_cache = zone_cache;
 	g_mutex_init (&backend->priv->zone_cache_lock);
+
+	g_mutex_init (&backend->priv->operation_lock);
+
+	backend->priv->operation_ids = g_hash_table_new_full (
+		(GHashFunc) g_direct_hash,
+		(GEqualFunc) g_direct_equal,
+		(GDestroyNotify) NULL,
+		(GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -700,7 +932,7 @@ e_cal_backend_ref_data_cal (ECalBackend *backend)
 }
 
 /**
- * e_cal_backend_set_data_book:
+ * e_cal_backend_set_data_cal:
  * @backend: an #ECalBackend
  * @data_cal: an #EDataCal
  *
@@ -933,42 +1165,191 @@ e_cal_backend_create_cache_filename (ECalBackend *backend,
                                      const gchar *filename,
                                      gint fileindex)
 {
+	const gchar *cache_dir;
+
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 
-	return e_filename_mkdir_encoded (e_cal_backend_get_cache_dir (backend), uid, filename, fileindex);
+	cache_dir = e_cal_backend_get_cache_dir (backend);
+
+	return e_filename_mkdir_encoded (cache_dir, uid, filename, fileindex);
+}
+
+/**
+ * e_cal_backend_get_backend_property_sync:
+ * @backend: an #ECalBackend
+ * @prop_name: a backend property name
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains the value of the backend property named @prop_name.
+ *
+ * Despite appearances, this function does not actually block.  So the
+ * @cancellable can safely be %NULL.  If can, however, return an error
+ * if @prop_name is not recognized.
+ *
+ * The returned string must be freed with g_free() when finished with it.
+ *
+ * Returns: the value for @prop_name
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_cal_backend_get_backend_property_sync (ECalBackend *backend,
+                                         const gchar *prop_name,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gchar *prop_value;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_get_backend_property (
+		backend, prop_name, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	prop_value = e_cal_backend_get_backend_property_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return prop_value;
+}
+
+/* Helper for e_cal_backend_get_backend_property() */
+static void
+cal_backend_get_backend_property_thread (GSimpleAsyncResult *simple,
+                                         GObject *source_object,
+                                         GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+	guint32 opid;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_backend_property != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	opid = cal_backend_stash_operation (backend, simple);
+
+	class->get_backend_property (
+		backend, data_cal, opid, cancellable,
+		async_context->prop_name);
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_get_backend_property:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @prop_name: property name to get value of; cannot be NULL
+ * @prop_name: a backend property name
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Calls the get_backend_property method on the given backend.
- * This might be finished with e_data_cal_respond_get_backend_property().
- * Default implementation takes care of common properties and returns
- * an 'unsupported' error for any unknown properties. The subclass may
- * always call this default implementation for properties which fetching
- * it doesn't overwrite.
+ * Asynchronously obtains the value of the backend property named @prop_name.
  *
- * Since: 3.2
+ * Despite appearances, e_cal_backend_get_backend_property_sync() does not
+ * actually block, and is more convenient than this function.  This function
+ * exists for the moment merely to invoke the class method and collect the
+ * result from #EDataCal.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_get_backend_property_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_get_backend_property (ECalBackend *backend,
-                                    EDataCal *cal,
-                                    guint32 opid,
+                                    const gchar *prop_name,
                                     GCancellable *cancellable,
-                                    const gchar *prop_name)
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (prop_name != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_backend_property != NULL);
 
-	(* E_CAL_BACKEND_GET_CLASS (backend)->get_backend_property) (backend, cal, opid, cancellable, prop_name);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->prop_name = g_intern_string (prop_name);
+	async_context->string_queue = &async_context->result_queue;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_get_backend_property);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_get_backend_property_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_get_backend_property_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_get_backend_property().
+ *
+ * The returned string must be freed with g_free() when finished with it.
+ *
+ * Returns: the requested property value
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_cal_backend_get_backend_property_finish (ECalBackend *backend,
+                                           GAsyncResult *result,
+                                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	gchar *prop_value;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_get_backend_property), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	prop_value = g_queue_pop_head (&async_context->result_queue);
+	g_return_val_if_fail (prop_value != NULL, NULL);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	return prop_value;
 }
 
 /**
@@ -1070,492 +1451,2692 @@ e_cal_backend_list_views (ECalBackend *backend)
 }
 
 /**
+ * e_cal_backend_open_sync:
+ * @backend: an #ECalBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * "Opens" the @backend.  Opening a backend is something of an outdated
+ * concept, but the operation is hanging around for a little while longer.
+ * This usually involves some custom initialization logic, and testing of
+ * remote authentication if applicable.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_open_sync (ECalBackend *backend,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_open (
+		backend, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_open_finish (backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_open() */
+static void
+cal_backend_open_thread (GSimpleAsyncResult *simple,
+                         GObject *source_object,
+                         GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->open != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	if (e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->open (backend, data_cal, opid, cancellable, FALSE);
+	}
+
+	g_object_unref (data_cal);
+}
+
+/**
  * e_cal_backend_open:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @only_if_exists: Whether the calendar should be opened only if it already
- * exists.  If FALSE, a new calendar will be created when the specified @uri
- * does not exist.
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Opens a calendar backend with data from a calendar stored at the specified URI.
- * This might be finished with e_data_cal_respond_open() or e_cal_backend_respond_opened(),
- * though the overall opening phase finishes only after call
- * of e_cal_backend_notify_opened() after which call the backend
- * is either fully opened (including authentication against (remote)
- * server/storage) or an error was encountered during this opening phase.
- * 'opened' and 'opening' properties are updated automatically.
- * The backend refuses all other operations until the opening phase is finished.
+ * Asynchronously "opens" the @backend.  Opening a backend is something of
+ * an outdated concept, but the operation is hanging around for a little
+ * while longer.  This usually involves some custom initialization logic,
+ * and testing of remote authentication if applicable.
  *
- * The e_cal_backend_notify_opened() is called either from this function
- * or from e_cal_backend_authenticate_user(), or after necessary steps
- * initiated by these two functions.
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_open_finish() to get the result of the operation.
  *
- * The opening phase usually works like this:
- * 1) client requests open for the backend
- * 2) server receives this request and calls e_cal_backend_open() - the opening phase begun
- * 3) either the backend is opened during this call, and notifies client
- *    with e_cal_backend_notify_opened() about that. This is usually
- *    for local backends; their opening phase is finished
- * 4) or the backend requires authentication, thus it notifies client
- *    about that with e_cal_backend_notify_auth_required() and is
- *    waiting for credentials, which will be received from client
- *    by e_cal_backend_authenticate_user() call. Backend's opening
- *    phase is still running in this case, thus it doesn't call
- *    e_cal_backend_notify_opened() within e_cal_backend_open() call.
- * 5) when backend receives credentials in e_cal_backend_authenticate_user()
- *    then it tries to authenticate against a server/storage with them
- *    and only after it knows result of the authentication, whether user
- *    was or wasn't authenticated, it notifies client with the result
- *    by e_cal_backend_notify_opened() and it's opening phase is
- *    finished now. If there was no error returned then the backend is
- *    considered opened, otherwise it's considered closed. Use AuthenticationFailed
- *    error when the given credentials were rejected by the server/store, which
- *    will result in a re-prompt on the client side, otherwise use AuthenticationRequired
- *    if there was anything wrong with the given credentials. Set error's
- *    message to a reason for a re-prompt, it'll be shown to a user.
- * 6) client checks error returned from e_cal_backend_notify_opened() and
- *    reprompts for a password if it was AuthenticationFailed. Otherwise
- *    considers backend opened based on the error presence (no error means success).
- *
- * In any case, the call of e_cal_backend_open() should be always finished
- * with e_data_cal_respond_open(), which has no influence on the opening phase,
- * or alternatively with e_cal_backend_respond_opened(). Never use authentication
- * errors in e_data_cal_respond_open() to notify the client the authentication is
- * required, there is e_cal_backend_notify_auth_required() for this.
+ * Since: 3.10
  **/
 void
 e_cal_backend_open (ECalBackend *backend,
-                    EDataCal *cal,
-                    guint32 opid,
                     GCancellable *cancellable,
-                    gboolean only_if_exists)
+                    GAsyncReadyCallback callback,
+                    gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->open != NULL);
+	GSimpleAsyncResult *simple;
 
-	if (e_cal_backend_is_opened (backend)) {
-		e_data_cal_respond_open (cal, opid, NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback,
+		user_data, e_cal_backend_open);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, TRUE,
+		cal_backend_open_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_open_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_open().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_open_finish (ECalBackend *backend,
+                           GAsyncResult *result,
+                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_open), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* This operation blocks, so we need to let waiting operations
+	 * through.  (FIXME Centralize this for any blocking operation.) */
+	g_mutex_lock (&backend->priv->operation_lock);
+	if (backend->priv->blocked == simple)
+		g_clear_object (&backend->priv->blocked);
+	g_mutex_unlock (&backend->priv->operation_lock);
+	while (cal_backend_dispatch_next_operation (backend))
+		;
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_cal_backend_refresh_sync:
+ * @backend: an #ECalBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Initiates a refresh for @backend, if the @backend supports refreshing.
+ * The actual refresh operation completes on its own time.  This function
+ * merely initiates the operation.
+ *
+ * If an error occrs while initiating the refresh, the function will set
+ * @error and return %FALSE.  If the @backend does not support refreshing,
+ * the function will set an %UnsupportedMethod error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_refresh_sync (ECalBackend *backend,
+                            GCancellable *cancellable,
+                            GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_refresh (
+		backend, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_refresh_finish (backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_refresh() */
+static void
+cal_backend_refresh_thread (GSimpleAsyncResult *simple,
+                            GObject *source_object,
+                            GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	if (class->refresh == NULL) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			UnsupportedMethod,
+			"%s", e_data_cal_status_to_string (
+			UnsupportedMethod));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
 	} else {
-		(* E_CAL_BACKEND_GET_CLASS (backend)->open) (backend, cal, opid, cancellable, only_if_exists);
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->refresh (backend, data_cal, opid, cancellable);
 	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_refresh:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Refreshes the calendar being accessed by the given backend.
- * This might be finished with e_data_cal_respond_refresh(),
- * and it might be called as soon as possible; it doesn't mean
- * that the refreshing is done after calling that, the backend
- * is only notifying client whether it started the refresh process
- * or not.
+ * Asynchronously initiates a refresh for @backend, if the @backend supports
+ * refreshing.  The actual refresh operation completes on its own time.  This
+ * function, along with e_cal_backend_refresh_finish(), merely initiates the
+ * operation.
  *
- * Since: 2.30
+ * Once the refresh is initiated, @callback will be called.  You can then
+ * call e_cal-backend_refresh_finish() to get the result of the initiation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_refresh (ECalBackend *backend,
-                       EDataCal *cal,
-                       guint32 opid,
-                       GCancellable *cancellable)
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	if (!E_CAL_BACKEND_GET_CLASS (backend)->refresh)
-		e_data_cal_respond_refresh (cal, opid, EDC_ERROR (UnsupportedMethod));
-	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_refresh (cal, opid, EDC_NOT_OPENED_ERROR);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->refresh) (backend, cal, opid, cancellable);
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback,
+		user_data, e_cal_backend_refresh);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_refresh_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_refresh_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the refresh initiation started with e_cal_backend_refresh().
+ *
+ * If an error occurred while initiating the refresh, the function will set
+ * @error and return %FALSE.  If the @backend does not support refreshing,
+ * the function will set an %UnsupportedMethod error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_refresh_finish (ECalBackend *backend,
+                              GAsyncResult *result,
+                              GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_refresh), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_cal_backend_get_objects_sync:
+ * @backend: an #ECalBackend
+ * @uid: a unique ID for an iCalendar object
+ * @rid: a recurrence ID, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains an #ECalComponent by its @uid and, optionally, @rid.
+ *
+ * The returned #ECalComponent is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * If an error occurs, the function will set @error and return %NULL.
+ *
+ * Returns: an #ECalComponent, or %NULL
+ *
+ * Since: 3.10
+ **/
+ECalComponent *
+e_cal_backend_get_object_sync (ECalBackend *backend,
+                               const gchar *uid,
+                               const gchar *rid,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	ECalComponent *component;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+	/* rid can be NULL */
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_get_object (
+		backend, uid, rid, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	component = e_cal_backend_get_object_finish (backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return component;
+}
+
+/* Helper for e_cal_backend_get_object() */
+static void
+cal_backend_get_object_thread (GSimpleAsyncResult *simple,
+                               GObject *source_object,
+                               GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_object != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->get_object (
+			backend, data_cal, opid, cancellable,
+			async_context->uid,
+			async_context->rid);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_get_object:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @uid: Unique identifier for a calendar object.
- * @rid: ID for the object's recurrence to get.
+ * @uid: a unique ID for an iCalendar object
+ * @rid: a recurrence ID, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Queries a calendar backend for a calendar object based on its unique
- * identifier and its recurrence ID (if a recurrent appointment).
- * This might be finished with e_data_cal_respond_get_object().
+ * Asynchronously obtains an #ECalComponent by its @uid and, optionally, @rid.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_get_object_finish() to get the result of the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_get_object (ECalBackend *backend,
-                          EDataCal *cal,
-                          guint32 opid,
-                          GCancellable *cancellable,
                           const gchar *uid,
-                          const gchar *rid)
+                          const gchar *rid,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_object != NULL);
+	/* rid can be NULL */
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_get_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->get_object) (backend, cal, opid, cancellable, uid, rid);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->uid = g_strdup (uid);
+	async_context->rid = g_strdup (rid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_get_object);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_get_object_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_get_object_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_get_object().
+ *
+ * The returned #ECalComponent is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * If an error occurs, the function will set @error and return %NULL.
+ *
+ * Returns: an #ECalComponent, or %NULL
+ *
+ * Since: 3.10
+ **/
+ECalComponent *
+e_cal_backend_get_object_finish (ECalBackend *backend,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	ECalComponent *component;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_get_object), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	component = g_queue_pop_head (&async_context->result_queue);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	return component;
+}
+
+/**
+ * e_cal_backend_get_object_list_sync:
+ * @backend: an #ECalBackend
+ * @query: a search query in S-expression format
+ * @out_objects: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains a set of #ECalComponent instances which satisfy the criteria
+ * specified in @query, and deposits them in @out_objects.
+ *
+ * The returned #ECalComponent instances are referenced for thread-safety
+ * and must be unreferenced with g_object_unref() when finished with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_get_object_list_sync (ECalBackend *backend,
+                                    const gchar *query,
+                                    GQueue *out_objects,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (query != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_get_object_list (
+		backend, query, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_get_object_list_finish (
+		backend, result, out_objects, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_get_object_list() */
+static void
+cal_backend_get_object_list_thread (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_object_list != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->get_object_list (
+			backend, data_cal, opid, cancellable,
+			async_context->query);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_get_object_list:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @sexp: Expression to search for.
+ * @query: a search query in S-expression format
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Calls the get_object_list method on the given backend.
- * This might be finished with e_data_cal_respond_get_object_list().
+ * Asynchronously obtains a set of #ECalComponent instances which satisfy
+ * the criteria specified in @query.
+ *
+ * When the operation in finished, @callback will be called.  You can then
+ * call e_cal_backend_get_object_list_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_get_object_list (ECalBackend *backend,
-                               EDataCal *cal,
-                               guint32 opid,
+                               const gchar *query,
                                GCancellable *cancellable,
-                               const gchar *sexp)
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_object_list != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_get_object_list (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->get_object_list) (backend, cal, opid, cancellable, sexp);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (query != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->query = g_strdup (query);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_get_object_list);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_get_object_list_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_get_object_list_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @out_objects: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_get_object_list().
+ *
+ * The matching #ECalComponent instances are deposited in @out_objects.
+ * The returned #ECalComponent instances are referenced for thread-safety
+ * and must be unreferenced with g_object_unref() when finished with them.
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_get_object_list_finish (ECalBackend *backend,
+                                      GAsyncResult *result,
+                                      GQueue *out_objects,
+                                      GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_get_object_list), FALSE);
+	g_return_val_if_fail (out_objects != NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	e_queue_transfer (&async_context->result_queue, out_objects);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_get_free_busy_sync:
+ * @backend: an #ECalBackend
+ * @start: start time
+ * @end: end time
+ * @users: a %NULL-terminated array of user strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains a free/busy object for the list of @users in the time interval
+ * between @start and @end.  The free/busy results are returned through the
+ * e_data_cal_report_free_busy_data() function rather than directly through
+ * this function.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure.
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_get_free_busy_sync (ECalBackend *backend,
+                                  time_t start,
+                                  time_t end,
+                                  const gchar * const *users,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (users != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_get_free_busy (
+		backend, start, end, users, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_get_free_busy_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+static void
+cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
+                                  GObject *source_object,
+                                  GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_free_busy != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->get_free_busy (
+			backend, data_cal, opid, cancellable,
+			async_context->string_list,
+			async_context->start,
+			async_context->end);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_get_free_busy:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @users: List of users to get free/busy information for.
- * @start: Start time for query.
- * @end: End time for query.
+ * @start: start time
+ * @end: end time
+ * @users: a %NULL-terminated array of user strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Gets a free/busy object for the given time interval. Client side is
- * notified about free/busy objects throug e_data_cal_report_free_busy_data().
- * This might be finished with e_data_cal_respond_get_free_busy().
+ * Asynchronously obtains a free/busy object for the list of @users in the
+ * time interval between @start and @end.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call e_cal_backend_get_free_busy_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_get_free_busy (ECalBackend *backend,
-                             EDataCal *cal,
-                             guint32 opid,
-                             GCancellable *cancellable,
-                             const GSList *users,
                              time_t start,
-                             time_t end)
+                             time_t end,
+                             const gchar * const *users,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
+	gint ii;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (start != -1 && end != -1);
 	g_return_if_fail (start <= end);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_free_busy != NULL);
+	g_return_if_fail (users != NULL);
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_get_free_busy (cal, opid, EDC_NOT_OPENED_ERROR);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->get_free_busy) (backend, cal, opid, cancellable, users, start, end);
+	for (ii = 0; users[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (users[ii]));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->start = start;
+	async_context->end = end;
+	async_context->string_list = g_slist_reverse (list);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_get_free_busy);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_get_free_busy_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_get_free_busy_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_get_free_busy().
+ *
+ * The free/busy results are returned through the
+ * e_data_cal_report_free_busy_data() function rather than directly through
+ * this function.
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_get_free_busy_finish (ECalBackend *backend,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_get_free_busy), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_cal_backend_create_objects_sync:
+ * @backend: an #ECalBackend
+ * @calobjs: a %NULL-terminated array of iCalendar strings
+ * @out_uids: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates one or more new iCalendar objects from @calobjs, and deposits
+ * the unique ID string for each newly-created object in @out_uids.
+ *
+ * Free the returned ID strings with g_free() when finished with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_create_objects_sync (ECalBackend *backend,
+                                   const gchar * const *calobjs,
+                                   GQueue *out_uids,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (calobjs != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_create_objects (
+		backend, calobjs, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_create_objects_finish (
+		backend, result, out_uids, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_create_objects() */
+static void
+cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
+                                   GObject *source_object,
+                                   GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (class->create_objects == NULL) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			UnsupportedMethod,
+			"%s", e_data_cal_status_to_string (
+			UnsupportedMethod));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->create_objects (
+			backend, data_cal, opid, cancellable,
+			async_context->string_list);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_create_objects:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @calobjs: The objects to create (list of gchar *).
+ * @calobjs: a %NULL-terminated array of iCalendar strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisifed
+ * @user_data: data to pass to the callback function
  *
- * Calls the create_object method on the given backend.
- * This might be finished with e_data_cal_respond_create_objects().
+ * Asynchronously creates one or more new iCalendar objects from @calobjs.
  *
- * Since: 3.6
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_create_objects_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_create_objects (ECalBackend *backend,
-                              EDataCal *cal,
-                              guint32 opid,
+                              const gchar * const *calobjs,
                               GCancellable *cancellable,
-                              const GSList *calobjs)
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
+	gint ii;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobjs != NULL);
 
-	if (!E_CAL_BACKEND_GET_CLASS (backend)->create_objects)
-		e_data_cal_respond_create_objects (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
-	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_create_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->create_objects) (backend, cal, opid, cancellable, calobjs);
+	for (ii = 0; calobjs[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (calobjs[ii]));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->string_list = g_slist_reverse (list);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_create_objects);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_create_objects_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_create_objects_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @out_uids: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_create_objects().
+ *
+ * A unique ID string for each newly-created object is deposited in @out_uids.
+ * Free the returned ID strings with g_free() when finished with them.
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_create_objects_finish (ECalBackend *backend,
+                                     GAsyncResult *result,
+                                     GQueue *out_uids,
+                                     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GQueue *string_queue;
+	GQueue *component_queue;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_create_objects), FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	/* XXX Packing GQueues in a GQueue is pretty awkward, but until
+	 *     the backend methods can be updated I'm trying to make do
+	 *     with a single data container for all kinds of results. */
+
+	string_queue = g_queue_pop_head (&async_context->result_queue);
+	component_queue = g_queue_pop_head (&async_context->result_queue);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	g_return_val_if_fail (string_queue != NULL, FALSE);
+	g_return_val_if_fail (component_queue != NULL, FALSE);
+
+	e_queue_transfer (string_queue, out_uids);
+
+	while (!g_queue_is_empty (component_queue)) {
+		ECalComponent *component;
+
+		component = g_queue_pop_head (component_queue);
+		e_cal_backend_notify_component_created (backend, component);
+		g_object_unref (component);
+	}
+
+	g_queue_free (string_queue);
+	g_queue_free (component_queue);
+
+	return TRUE;
 }
 
 /**
  * e_cal_backend_modify_objects:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @calobjs: Objects to be modified (list of gchar *).
- * @mod: Type of modification.
+ * @calobjs: a %NULL-terminated array of iCalendar strings
+ * @mod: modification type for recurrences
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
- * Calls the modify_objects method on the given backend.
- * This might be finished with e_data_cal_respond_modify_objects().
+ * Modifies one or more iCalendar objects according to @calobjs and @mod.
  *
- * Since: 3.6
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_modify_objects_sync (ECalBackend *backend,
+                                   const gchar * const *calobjs,
+                                   ECalObjModType mod,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (calobjs != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_modify_objects (
+		backend, calobjs, mod, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_modify_objects_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_modify_objects() */
+static void
+cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
+                                   GObject *source_object,
+                                   GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (class->modify_objects == NULL) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			UnsupportedMethod,
+			"%s", e_data_cal_status_to_string (
+			UnsupportedMethod));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->modify_objects (
+			backend, data_cal, opid, cancellable,
+			async_context->string_list,
+			async_context->mod);
+	}
+
+	g_object_unref (data_cal);
+}
+
+/**
+ * e_cal_backend_modify_objects:
+ * @backend: an #ECalBackend
+ * @calobjs: a %NULL-terminated array of iCalendar strings
+ * @mod: modification type for recurrences
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously modifies one or more iCalendar objects according to
+ * @calobjs and @mod.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_modify_objects_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_modify_objects (ECalBackend *backend,
-                              EDataCal *cal,
-                              guint32 opid,
+                              const gchar * const *calobjs,
+                              ECalObjModType mod,
                               GCancellable *cancellable,
-                              const GSList *calobjs,
-                              ECalObjModType mod)
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
+	gint ii;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobjs != NULL);
 
-	if (!E_CAL_BACKEND_GET_CLASS (backend)->modify_objects)
-		e_data_cal_respond_modify_objects (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
-	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_modify_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->modify_objects) (backend, cal, opid, cancellable, calobjs, mod);
+	for (ii = 0; calobjs[ii] != NULL; ii++)
+		list = g_slist_prepend (list, g_strdup (calobjs[ii]));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->string_list = g_slist_reverse (list);
+	async_context->mod = mod;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_modify_objects);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_modify_objects_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_modify_objects_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_modify_objects().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_modify_objects_finish (ECalBackend *backend,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GQueue *old_component_queue;
+	GQueue *new_component_queue;
+	guint length, ii;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_modify_objects), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	/* XXX Packing GQueues in a GQueue is pretty awkward, but until
+	 *     the backend methods can be updated I'm trying to make do
+	 *     with a single data container for all kinds of results. */
+
+	old_component_queue = g_queue_pop_head (&async_context->result_queue);
+	new_component_queue = g_queue_pop_head (&async_context->result_queue);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	g_return_val_if_fail (old_component_queue != NULL, FALSE);
+	g_return_val_if_fail (new_component_queue != NULL, FALSE);
+
+	length = MIN (
+		g_queue_get_length (old_component_queue),
+		g_queue_get_length (new_component_queue));
+
+	for (ii = 0; ii < length; ii++) {
+		ECalComponent *old_component;
+		ECalComponent *new_component;
+
+		old_component = g_queue_pop_head (old_component_queue);
+		new_component = g_queue_pop_head (new_component_queue);
+
+		e_cal_backend_notify_component_modified (
+			backend, old_component, new_component);
+
+		g_object_unref (old_component);
+		g_object_unref (new_component);
+	}
+
+	g_warn_if_fail (g_queue_is_empty (old_component_queue));
+	g_queue_free (old_component_queue);
+
+	g_warn_if_fail (g_queue_is_empty (new_component_queue));
+	g_queue_free (new_component_queue);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_remove_objects_sync:
+ * @backend: an #ECalBackend
+ * @component_ids: a #GList of #ECalComponentId structs
+ * @mod: modification type for recurrences
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Removes one or more iCalendar objects according to @component_ids and @mod.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_remove_objects_sync (ECalBackend *backend,
+                                   GList *component_ids,
+                                   ECalObjModType mod,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (component_ids != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_remove_objects (
+		backend, component_ids, mod, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_remove_objects_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_remove_objects() */
+static void
+cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
+                                   GObject *source_object,
+                                   GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->remove_objects != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->remove_objects (
+			backend, data_cal, opid, cancellable,
+			async_context->compid_list,
+			async_context->mod);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_remove_objects:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @ids: List of #ECalComponentId objects identifying the objects to remove
- * @mod: Type of removal.
+ * @component_ids: a #GList of #ECalComponentId structs
+ * @mod: modification type for recurrences
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Removes objects in a calendar backend.  The backend will notify all of its
- * clients about the change.
- * This might be finished with e_data_cal_respond_remove_objects().
+ * Asynchronously removes one or more iCalendar objects according to
+ * @component_ids and @mod.
  *
- * Since: 3.6
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_remove_objects_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_remove_objects (ECalBackend *backend,
-                              EDataCal *cal,
-                              guint32 opid,
+                              GList *component_ids,
+                              ECalObjModType mod,
                               GCancellable *cancellable,
-                              const GSList *ids,
-                              ECalObjModType mod)
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (ids != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->remove_objects != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *list = NULL;
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_remove_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->remove_objects) (backend, cal, opid, cancellable, ids, mod);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (component_ids != NULL);
+
+	while (component_ids != NULL) {
+		ECalComponentId *id = component_ids->data;
+		list = g_slist_prepend (list, e_cal_component_id_copy (id));
+		component_ids = g_list_next (component_ids);
+	}
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->compid_list = g_slist_reverse (list);
+	async_context->mod = mod;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_remove_objects);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_remove_objects_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_remove_objects_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_remove_objects().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_remove_objects_finish (ECalBackend *backend,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GQueue *component_id_queue;
+	GQueue *old_component_queue;
+	GQueue *new_component_queue;
+	guint length, ii;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_remove_objects), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	/* XXX Packing GQueues in a GQueue is pretty awkward, but until
+	 *     the backend methods can be updated I'm trying to make do
+	 *     with a single data container for all kinds of results. */
+
+	component_id_queue = g_queue_pop_head (&async_context->result_queue);
+	old_component_queue = g_queue_pop_head (&async_context->result_queue);
+	new_component_queue = g_queue_pop_head (&async_context->result_queue);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	g_return_val_if_fail (component_id_queue != NULL, FALSE);
+	g_return_val_if_fail (old_component_queue != NULL, FALSE);
+	/* new_component_queue may be NULL */
+
+	length = MIN (
+		g_queue_get_length (component_id_queue),
+		g_queue_get_length (old_component_queue));
+
+	for (ii = 0; ii < length; ii++) {
+		ECalComponentId *component_id;
+		ECalComponent *old_component;
+		ECalComponent *new_component = NULL;
+
+		component_id = g_queue_pop_head (component_id_queue);
+		old_component = g_queue_pop_head (old_component_queue);
+		if (new_component_queue != NULL)
+			new_component = g_queue_pop_head (new_component_queue);
+
+		e_cal_backend_notify_component_removed (
+			backend, component_id, old_component, new_component);
+
+		e_cal_component_free_id (component_id);
+		g_clear_object (&old_component);
+		g_clear_object (&new_component);
+	}
+
+	g_warn_if_fail (g_queue_is_empty (component_id_queue));
+	g_queue_free (component_id_queue);
+
+	g_warn_if_fail (g_queue_is_empty (old_component_queue));
+	g_queue_free (old_component_queue);
+
+	if (new_component_queue != NULL) {
+		g_warn_if_fail (g_queue_is_empty (new_component_queue));
+		g_queue_free (new_component_queue);
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_receive_objects_sync:
+ * @backend: an #ECalBackend
+ * @calobj: an iCalendar string
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Receives the set of iCalendar objects specified by @calobj.  This is used
+ * for iTIP confirmation and cancellation messages for scheduled meetings.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_receive_objects_sync (ECalBackend *backend,
+                                    const gchar *calobj,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (calobj != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_receive_objects (
+		backend, calobj, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_receive_objects_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_receive_objects() */
+static void
+cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->receive_objects != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->receive_objects (
+			backend, data_cal, opid, cancellable,
+			async_context->calobj);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_receive_objects:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @calobj: iCalendar object.
+ * @calobj: an iCalendar string
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Calls the receive_objects method on the given backend.
- * This might be finished with e_data_cal_respond_receive_objects().
+ * Asynchronously receives the set of iCalendar objects specified by
+ * @calobj.  This is used for iTIP confirmation and cancellation messages
+ * for scheduled meetings.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_receive_objects_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_receive_objects (ECalBackend *backend,
-                               EDataCal *cal,
-                               guint32 opid,
+                               const gchar *calobj,
                                GCancellable *cancellable,
-                               const gchar *calobj)
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->receive_objects != NULL);
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_receive_objects (cal, opid, EDC_NOT_OPENED_ERROR);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->receive_objects) (backend, cal, opid, cancellable, calobj);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->calobj = g_strdup (calobj);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_receive_objects);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_receive_objects_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_receive_objects_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_receive_objects().
+ *
+ * If an error occurred, the function will set @error and erturn %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_receive_objects_finish (ECalBackend *backend,
+                                      GAsyncResult *result,
+                                      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_receive_objects), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_cal_backend_send_objects_sync:
+ * @backend: an #ECalBackend
+ * @calobj: an iCalendar string
+ * @out_users: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sends meeting information in @calobj.  The @backend may modify @calobj
+ * and send meeting information only to particular users.  The function
+ * returns the sent #ECalComponent and deposits the list of users the
+ * meeting information was sent to in @out_users.
+ *
+ * The returned #ECalComponent is referenced for thread-safety and must
+ * be unrefenced with g_object_unref() when finished with it.
+ *
+ * If an error occurs, the function will set @error and return %NULL.
+ *
+ * Returns: an #ECalComponent, or %NULL
+ *
+ * Since: 3.10
+ **/
+ECalComponent *
+e_cal_backend_send_objects_sync (ECalBackend *backend,
+                                 const gchar *calobj,
+                                 GQueue *out_users,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	ECalComponent *component;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (calobj != NULL, NULL);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_send_objects (
+		backend, calobj, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	component = e_cal_backend_send_objects_finish (
+		backend, result, out_users, error);
+
+	e_async_closure_free (closure);
+
+	return component;
+}
+
+/* Helper for e_cal_backend_send_objects() */
+static void
+cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->send_objects != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->send_objects (
+			backend, data_cal, opid, cancellable,
+			async_context->calobj);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_send_objects:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @calobj: iCalendar object to be sent.
+ * @calobj: an iCalendar string
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Calls the send_objects method on the given backend.
- * This might be finished with e_data_cal_respond_send_objects().
+ * Asynchronously sends meeting information in @calobj.  The @backend may
+ * modify @calobj and send meeting information only to particular users.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_send_objects_finish() to get the result of the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_send_objects (ECalBackend *backend,
-                            EDataCal *cal,
-                            guint32 opid,
+                            const gchar *calobj,
                             GCancellable *cancellable,
-                            const gchar *calobj)
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->send_objects != NULL);
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_send_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->send_objects) (backend, cal, opid, cancellable, calobj);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->calobj = g_strdup (calobj);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_send_objects);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_send_objects_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_send_objects_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @out_users: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_send_objects().
+ *
+ * The function returns the sent #ECalComponent and deposits the list of
+ * users the meeting information was sent to in @out_users.
+ *
+ * The returned #ECalComponent is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * If an error occurs, the function will set @error and return %NULL.
+ *
+ * Returns: an #ECalComponent, or %NULL
+ *
+ * Since: 3.10
+ **/
+ECalComponent *
+e_cal_backend_send_objects_finish (ECalBackend *backend,
+                                   GAsyncResult *result,
+                                   GQueue *out_users,
+                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	ECalComponent *component;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_send_objects), NULL);
+	g_return_val_if_fail (out_users != NULL, NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	component = g_queue_pop_head (&async_context->result_queue);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
+
+	e_queue_transfer (&async_context->result_queue, out_users);
+
+	return component;
+}
+
+/**
+ * e_cal_backend_get_attachment_uris_sync:
+ * @backend: an #ECalBackend
+ * @uid: a unique ID for an iCalendar object
+ * @rid: a recurrence ID, or %NULL
+ * @out_attachment_uris: a #GQueue in which to deposit results
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Inspects the iCalendar object specified by @uid and, optionally, @rid
+ * for attachments and deposits a URI string for each attachment in
+ * @out_attachment_uris.  Free the returned strings with g_free() when
+ * finished with them.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_get_attachment_uris_sync (ECalBackend *backend,
+                                        const gchar *uid,
+                                        const gchar *rid,
+                                        GQueue *out_attachment_uris,
+                                        GCancellable *cancellable,
+                                        GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	/* rid can be NULL */
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_get_attachment_uris (
+		backend, uid, rid, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_get_attachment_uris_finish (
+		backend, result, out_attachment_uris, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_get_attachment_uris() */
+static void
+cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
+                                        GObject *source_object,
+                                        GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_attachment_uris != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->get_attachment_uris (
+			backend, data_cal, opid, cancellable,
+			async_context->uid,
+			async_context->rid);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_get_attachment_uris:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @uid: Unique identifier for a calendar object.
- * @rid: ID for the object's recurrence to get.
+ * @uid: a unique ID for an iCalendar object
+ * @rid: a recurrence ID, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Queries a calendar backend for attachments present in a calendar object based
- * on its unique identifier and its recurrence ID (if a recurrent appointment).
- * This might be finished with e_data_cal_respond_get_attachment_uris().
+ * Asynchronously inspects the iCalendar object specified by @uid and,
+ * optionally, @rid for attachments.
  *
- * Since: 3.2
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_backend_get_attachment_uris_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_get_attachment_uris (ECalBackend *backend,
-                                   EDataCal *cal,
-                                   guint32 opid,
-                                   GCancellable *cancellable,
                                    const gchar *uid,
-                                   const gchar *rid)
+                                   const gchar *rid,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_attachment_uris != NULL);
+	/* rid is optional */
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_get_attachment_uris (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->get_attachment_uris) (backend, cal, opid, cancellable, uid, rid);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->uid = g_strdup (uid);
+	async_context->rid = g_strdup (rid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_get_attachment_uris);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_get_attachment_uris_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_get_attachment_uris_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @out_attachment_uris: a #GQueue in which to deposit results
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_get_attachment_uris().
+ *
+ * The requested attachment URI strings are deposited in @out_attachment_uris.
+ * Free the returned strings with g_free() when finished with them.
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ * Note that an empty result set does not necessarily imply an error.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_get_attachment_uris_finish (ECalBackend *backend,
+                                          GAsyncResult *result,
+                                          GQueue *out_attachment_uris,
+                                          GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_get_attachment_uris), FALSE);
+	g_return_val_if_fail (out_attachment_uris != NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	e_queue_transfer (&async_context->result_queue, out_attachment_uris);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_discard_alarm_sync:
+ * @backend: an #ECalBackend
+ * @uid: a unique ID for an iCalendar object
+ * @rid: a recurrence ID, or %NULL
+ * @alarm_uid: a unique ID for an iCalendar VALARM object
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Discards the VALARM object with a unique ID of @alarm_uid from the
+ * iCalendar object identified by @uid and, optionally, @rid.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_discard_alarm_sync (ECalBackend *backend,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  const gchar *alarm_uid,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	/* rid can be NULL */
+	g_return_val_if_fail (alarm_uid != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_discard_alarm (
+		backend, uid, rid, alarm_uid, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_discard_alarm_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_discard_alarm() */
+static void
+cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
+                                  GObject *source_object,
+                                  GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (class->discard_alarm == NULL) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotSupported,
+			"%s", e_data_cal_status_to_string (
+			NotSupported));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->discard_alarm (
+			backend, data_cal, opid, cancellable,
+			async_context->uid,
+			async_context->rid,
+			async_context->alarm_uid);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_discard_alarm:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @uid: Unique identifier for a calendar object.
- * @rid: ID for the object's recurrence to discard alarm in.
- * @auid: Unique identifier of the alarm itself.
+ * @uid: a unique ID for an iCalendar object
+ * @rid: a recurrence ID, or %NULL
+ * @alarm_uid: a unique ID for an iCalendar VALARM object
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Discards alarm @auid from the object identified by @uid and @rid.
- * This might be finished with e_data_cal_respond_discard_alarm().
- * Default implementation of this method returns Not Supported error.
+ * Asynchronously discards the VALARM object with a unique ID of @alarm_uid
+ * from the iCalendar object identified by @uid and, optionally, @rid.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call e_cal_backend_discard_alarm_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_discard_alarm (ECalBackend *backend,
-                             EDataCal *cal,
-                             guint32 opid,
-                             GCancellable *cancellable,
                              const gchar *uid,
                              const gchar *rid,
-                             const gchar *auid)
+                             const gchar *alarm_uid,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
-	g_return_if_fail (auid != NULL);
+	/* rid can be NULL */
+	g_return_if_fail (alarm_uid != NULL);
 
-	if (!E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm)
-		e_data_cal_respond_discard_alarm (cal, opid, e_data_cal_create_error (NotSupported, NULL));
-	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_discard_alarm (cal, opid, EDC_NOT_OPENED_ERROR);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm) (backend, cal, opid, cancellable, uid, rid, auid);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->uid = g_strdup (uid);
+	async_context->rid = g_strdup (rid);
+	async_context->alarm_uid = g_strdup (alarm_uid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_discard_alarm);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_discard_alarm_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_discard_alarm_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_discard_alarm().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_discard_alarm_finish (ECalBackend *backend,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_discard_alarm), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_cal_backend_get_timezone_sync:
+ * @backend: an #ECalBackend
+ * @tzid: a unique ID for an iCalendar VTIMEZONE object
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains the VTIMEZONE object identified by @tzid.  Free the returned
+ * string with g_free() when finished with it.
+ *
+ * If an error occurs, the function will set @error and return %NULL.
+ *
+ * Returns: an iCalendar string, or %NULL
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_cal_backend_get_timezone_sync (ECalBackend *backend,
+                                 const gchar *tzid,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gchar *tzobject;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (tzid != NULL, NULL);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_get_timezone (
+		backend, tzid, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	tzobject = e_cal_backend_get_timezone_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return tzobject;
+}
+
+/* Helper for e_cal_backend_get_timezone() */
+static void
+cal_backend_get_timezone_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_timezone != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->get_timezone (
+			backend, data_cal, opid, cancellable,
+			async_context->tzid);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_get_timezone:
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @tzid: Unique identifier of a VTIMEZONE object. Note that this must not be
- * NULL.
+ * @tzid: a unique ID for an iCalendar VTIMEZONE object
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Returns the icaltimezone* corresponding to the TZID, or NULL if the TZID
- * can't be found.
- * This might be finished with e_data_cal_respond_get_timezone().
+ * Asynchronously obtains the VTIMEZONE object identified by @tzid.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call e_cal_backend_get_timezone_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_get_timezone (ECalBackend *backend,
-                            EDataCal *cal,
-                            guint32 opid,
+                            const gchar *tzid,
                             GCancellable *cancellable,
-                            const gchar *tzid)
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
 {
-	g_return_if_fail (backend != NULL);
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzid != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->get_timezone != NULL);
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_get_timezone (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->get_timezone) (backend, cal, opid, cancellable, tzid);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->tzid = g_strdup (tzid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_get_timezone);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_get_timezone_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_get_timezone_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_get_timezone().
+ *
+ * Free the returned string with g_free() when finished with it.
+ *
+ * If an error occurred, the function will set @error and return %NULL.
+ *
+ * Returns: an iCalendar string, or %NULL
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_cal_backend_get_timezone_finish (ECalBackend *backend,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	gchar *tzobject;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_get_timezone), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	tzobject = g_queue_pop_head (&async_context->result_queue);
+	g_return_val_if_fail (tzobject != NULL, NULL);
+
+	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+
+	return tzobject;
+}
+
+/**
+ * e_cal_backend_add_timezone_sync:
+ * @backend: an #ECalBackend
+ * @tzobject: an iCalendar VTIMEZONE string
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Adds the timezone described by @tzobject to @backend.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_add_timezone_sync (ECalBackend *backend,
+                                 const gchar *tzobject,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (tzobject != NULL, FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_cal_backend_add_timezone (
+		backend, tzobject, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_cal_backend_add_timezone_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_cal_backend_add_timezone() */
+static void
+cal_backend_add_timezone_thread (GSimpleAsyncResult *simple,
+                                 GObject *source_object,
+                                 GCancellable *cancellable)
+{
+	ECalBackend *backend;
+	ECalBackendClass *class;
+	EDataCal *data_cal;
+	AsyncContext *async_context;
+
+	backend = E_CAL_BACKEND (source_object);
+
+	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->add_timezone != NULL);
+
+	data_cal = e_cal_backend_ref_data_cal (backend);
+	g_return_if_fail (data_cal != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_cal_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_DATA_CAL_ERROR,
+			NotOpened,
+			"%s", e_data_cal_status_to_string (
+			NotOpened));
+		g_simple_async_result_complete_in_idle (simple);
+
+	} else {
+		guint32 opid;
+
+		opid = cal_backend_stash_operation (backend, simple);
+
+		class->add_timezone (
+			backend, data_cal, opid, cancellable,
+			async_context->tzobject);
+	}
+
+	g_object_unref (data_cal);
 }
 
 /**
  * e_cal_backend_add_timezone
  * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- * @tzobject: The timezone object, in a string.
+ * @tzobject: an iCalendar VTIMEZONE string
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
- * Add a timezone object to the given backend.
- * This might be finished with e_data_cal_respond_add_timezone().
+ * Asynchronously adds the timezone described by @tzobject to @backend.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call e_cal_backend_add_timezone_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.10
  **/
 void
 e_cal_backend_add_timezone (ECalBackend *backend,
-                            EDataCal *cal,
-                            guint32 opid,
+                            const gchar *tzobject,
                             GCancellable *cancellable,
-                            const gchar *tzobject)
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
 {
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobject != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->add_timezone != NULL);
 
-	if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_add_timezone (cal, opid, EDC_NOT_OPENED_ERROR);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->add_timezone) (backend, cal, opid, cancellable, tzobject);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->tzobject = g_strdup (tzobject);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (backend), callback, user_data,
+		e_cal_backend_add_timezone);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	cal_backend_push_operation (
+		backend, simple, cancellable, FALSE,
+		cal_backend_add_timezone_thread);
+
+	cal_backend_dispatch_next_operation (backend);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_backend_add_timezone_finish:
+ * @backend: an #ECalBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_backend_add_timezone().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_cal_backend_add_timezone_finish (ECalBackend *backend,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (backend),
+		e_cal_backend_add_timezone), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -1852,3 +4433,51 @@ e_cal_backend_empty_cache (ECalBackend *backend,
 
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 }
+
+/**
+ * e_cal_backend_prepare_for_completion:
+ * @backend: an #ECalBackend
+ * @opid: an operation ID given to #EDataCal
+ * @result_queue: return location for a #GQueue, or %NULL
+ *
+ * Obtains the #GSimpleAsyncResult for @opid and sets @result_queue as a
+ * place to deposit results prior to completing the #GSimpleAsyncResult.
+ *
+ * <note>
+ *   <para>
+ *     This is a temporary function to serve #EDataCal's "respond"
+ *     functions until they can be removed.  Nothing else should be
+ *     calling this function.
+ *   </para>
+ * </note>
+ *
+ * Returns: (transfer full): a #GSimpleAsyncResult
+ *
+ * Since: 3.10
+ **/
+GSimpleAsyncResult *
+e_cal_backend_prepare_for_completion (ECalBackend *backend,
+                                      guint32 opid,
+                                      GQueue **result_queue)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (opid > 0, NULL);
+
+	simple = cal_backend_claim_operation (backend, opid);
+	g_return_val_if_fail (simple != NULL, NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (result_queue != NULL) {
+		if (async_context != NULL)
+			*result_queue = &async_context->result_queue;
+		else
+			*result_queue = NULL;
+	}
+
+	return simple;
+}
+

@@ -1,23 +1,19 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* Evolution calendar client interface object
- *
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- *
- * Authors: Federico Mena-Quintero <federico@ximian.com>
- *          Rodrigo Moya <rodrigo@ximian.com>
+/*
+ * e-data-cal.h
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
- * License as published by the Free Software Foundation.
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
  */
 
 #if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
@@ -239,10 +235,6 @@ void		e_data_cal_respond_discard_alarm
 						(EDataCal *cal,
 						 guint32 opid,
 						 GError *error);
-void		e_data_cal_respond_get_view	(EDataCal *cal,
-						 guint32 opid,
-						 GError *error,
-						 const gchar *view_path);
 void		e_data_cal_respond_get_timezone	(EDataCal *cal,
 						 guint32 opid,
 						 GError *error,
