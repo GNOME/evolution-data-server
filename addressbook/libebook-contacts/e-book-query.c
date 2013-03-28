@@ -375,6 +375,7 @@ e_book_query_unref (EBookQuery *q)
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
 		g_free (q->query.field_test.field_name);
 		g_free (q->query.field_test.value);
+		g_free (q->query.field_test.locale);
 		break;
 
 	case E_BOOK_QUERY_TYPE_FIELD_EXISTS:
