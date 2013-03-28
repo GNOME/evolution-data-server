@@ -11,7 +11,7 @@
 static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure direct_book_closure = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0 };
 
-#define N_THREADS  5
+#define N_THREADS  20
 #define N_CONTACTS 5
 
 typedef struct {
@@ -167,7 +167,10 @@ test_view_thread (ThreadData *data)
 	if (!source)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
-	data->client = (EBookClient *)e_book_client_new_direct (registry, source, &error);
+	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
+		data->client = (EBookClient *)e_book_client_new_direct (registry, source, &error);
+	else
+		data->client = (EBookClient *)e_book_client_new (source, &error);
 
 	if (!data->client)
 		g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
