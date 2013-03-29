@@ -22,6 +22,8 @@
 
 #include "e-test-server-utils.h"
 
+#include <sys/wait.h>
+
 #define ADDRESS_BOOK_SOURCE_UID "test-address-book"
 #define CALENDAR_SOURCE_UID     "test-calendar"
 
