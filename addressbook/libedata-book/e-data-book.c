@@ -69,13 +69,6 @@ enum {
 	PROP_OBJECT_PATH
 };
 
-/* EModule's can never be free'd, however the use count can change
- * Here we ensure that there is only one ever created by way of
- * static variables and locks
- */
-static GHashTable *modules_table = NULL;
-G_LOCK_DEFINE (modules_table);
-
 /* Forward Declarations */
 static void e_data_book_initable_init (GInitableIface *interface);
 
@@ -200,31 +193,6 @@ async_context_free (AsyncContext *async_context)
 		g_bus_unwatch_name (async_context->watcher_id);
 
 	g_slice_free (AsyncContext, async_context);
-}
-
-static EModule *
-load_module (const gchar *module_path)
-{
-	EModule *module = NULL;
-
-	G_LOCK (modules_table);
-
-	if (!modules_table)
-		modules_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-
-	module = g_hash_table_lookup (modules_table, module_path);
-
-	if (!module) {
-		module = e_module_new (module_path);
-		if (!module)
-			g_warning ("Failed to open EModule at path: %s", module_path);
-		else
-			g_hash_table_insert (modules_table, g_strdup (module_path), module);
-	}
-
-	G_UNLOCK (modules_table);
-
-	return module;
 }
 
 static gchar *
@@ -1672,6 +1640,71 @@ data_book_finalize (GObject *object)
 	G_OBJECT_CLASS (e_data_book_parent_class)->finalize (object);
 }
 
+static void
+data_book_constructed (GObject *object)
+{
+	EDataBook *book = E_DATA_BOOK (object);
+	EBookBackend *backend;
+	const gchar *prop_name;
+	gchar *prop_value;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_data_book_parent_class)->constructed (object);
+
+	backend = e_data_book_ref_backend (book);
+	g_warn_if_fail (backend != NULL);
+
+	/* Attach ourselves to the EBookBackend. */
+	e_book_backend_set_data_book (backend, book);
+
+	g_object_bind_property (
+		backend, "cache-dir",
+		book->priv->dbus_interface, "cache-dir",
+		G_BINDING_SYNC_CREATE);
+
+	g_object_bind_property (
+		backend, "online",
+		book->priv->dbus_interface, "online",
+		G_BINDING_SYNC_CREATE);
+
+	g_object_bind_property (
+		backend, "writable",
+		book->priv->dbus_interface, "writable",
+		G_BINDING_SYNC_CREATE);
+
+	/* XXX Initialize the rest of the properties. */
+
+	prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
+	prop_value = e_book_backend_get_backend_property_sync (
+		backend, prop_name, NULL, NULL);
+	e_data_book_report_backend_property_changed (
+		book, prop_name, prop_value);
+	g_free (prop_value);
+
+	prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
+	prop_value = e_book_backend_get_backend_property_sync (
+		backend, prop_name, NULL, NULL);
+	e_data_book_report_backend_property_changed (
+		book, prop_name, prop_value);
+	g_free (prop_value);
+
+	prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
+	prop_value = e_book_backend_get_backend_property_sync (
+		backend, prop_name, NULL, NULL);
+	e_data_book_report_backend_property_changed (
+		book, prop_name, prop_value);
+	g_free (prop_value);
+
+	prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
+	prop_value = e_book_backend_get_backend_property_sync (
+		backend, prop_name, NULL, NULL);
+	e_data_book_report_backend_property_changed (
+		book, prop_name, prop_value);
+	g_free (prop_value);
+
+	g_object_unref (backend);
+}
+
 static gboolean
 data_book_initable_init (GInitable *initable,
                          GCancellable *cancellable,
@@ -1679,124 +1712,40 @@ data_book_initable_init (GInitable *initable,
 {
 	EBookBackend *backend;
 	EDataBook *book;
-	gboolean success = TRUE;
 
 	book = E_DATA_BOOK (initable);
 
+	/* XXX If we're serving a direct access backend only for the
+	 *     purpose of catching "respond" calls, skip this stuff. */
+	if (book->priv->connection == NULL)
+		return TRUE;
+	if (book->priv->object_path == NULL)
+		return TRUE;
+
+	/* This will be NULL for a backend that
+	 * does not support direct read access. */
 	backend = e_data_book_ref_backend (book);
+	book->priv->direct_book = e_book_backend_get_direct_book (backend);
+	g_object_unref (backend);
 
-	/* Attach ourselves to the EBookBackend. */
-	e_book_backend_set_data_book (backend, book);
+	if (book->priv->direct_book != NULL) {
+		gboolean success;
 
-	if (book->priv->connection != NULL && book->priv->object_path != NULL) {
-		const gchar *prop_name;
-		gchar *prop_value;
-
-		book->priv->dbus_interface =
-			e_dbus_address_book_skeleton_new ();
-
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-open",
-			G_CALLBACK (data_book_handle_open_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-refresh",
-			G_CALLBACK (data_book_handle_refresh_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-get-contact",
-			G_CALLBACK (data_book_handle_get_contact_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-get-contact-list",
-			G_CALLBACK (data_book_handle_get_contact_list_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-get-contact-list-uids",
-			G_CALLBACK (data_book_handle_get_contact_list_uids_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-create-contacts",
-			G_CALLBACK (data_book_handle_create_contacts_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-remove-contacts",
-			G_CALLBACK (data_book_handle_remove_contacts_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-modify-contacts",
-			G_CALLBACK (data_book_handle_modify_contacts_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-get-view",
-			G_CALLBACK (data_book_handle_get_view_cb), book);
-		g_signal_connect (
-			book->priv->dbus_interface, "handle-close",
-			G_CALLBACK (data_book_handle_close_cb), book);
-
-		/* This will be NULL for a backend that does not support
-		 * direct read access. */
-		book->priv->direct_book =
-			e_book_backend_get_direct_book (backend);
-
-		if (book->priv->direct_book != NULL) {
-			success = e_data_book_direct_register_gdbus_object (
-				book->priv->direct_book,
-				book->priv->connection,
-				book->priv->object_path,
-				error);
-			if (!success)
-				goto exit;
-		}
-
-		g_object_bind_property (
-			backend, "cache-dir",
-			book->priv->dbus_interface, "cache-dir",
-			G_BINDING_SYNC_CREATE);
-
-		g_object_bind_property (
-			backend, "online",
-			book->priv->dbus_interface, "online",
-			G_BINDING_SYNC_CREATE);
-
-		g_object_bind_property (
-			backend, "writable",
-			book->priv->dbus_interface, "writable",
-			G_BINDING_SYNC_CREATE);
-
-		/* XXX Initialize the rest of the properties. */
-
-		prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
-		prop_value = e_book_backend_get_backend_property_sync (
-			backend, prop_name, NULL, NULL);
-		e_data_book_report_backend_property_changed (
-			book, prop_name, prop_value);
-		g_free (prop_value);
-
-		prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
-		prop_value = e_book_backend_get_backend_property_sync (
-			backend, prop_name, NULL, NULL);
-		e_data_book_report_backend_property_changed (
-			book, prop_name, prop_value);
-		g_free (prop_value);
-
-		prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
-		prop_value = e_book_backend_get_backend_property_sync (
-			backend, prop_name, NULL, NULL);
-		e_data_book_report_backend_property_changed (
-			book, prop_name, prop_value);
-		g_free (prop_value);
-
-		prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
-		prop_value = e_book_backend_get_backend_property_sync (
-			backend, prop_name, NULL, NULL);
-		e_data_book_report_backend_property_changed (
-			book, prop_name, prop_value);
-		g_free (prop_value);
-
-		success = g_dbus_interface_skeleton_export (
-			G_DBUS_INTERFACE_SKELETON (book->priv->dbus_interface),
+		success = e_data_book_direct_register_gdbus_object (
+			book->priv->direct_book,
 			book->priv->connection,
 			book->priv->object_path,
 			error);
+
+		if (!success)
+			return FALSE;
 	}
 
-exit:
-	g_clear_object (&backend);
-
-	return success;
+	return g_dbus_interface_skeleton_export (
+		G_DBUS_INTERFACE_SKELETON (book->priv->dbus_interface),
+		book->priv->connection,
+		book->priv->object_path,
+		error);
 }
 
 static void
@@ -1811,6 +1760,7 @@ e_data_book_class_init (EDataBookClass *class)
 	object_class->get_property = data_book_get_property;
 	object_class->dispose = data_book_dispose;
 	object_class->finalize = data_book_finalize;
+	object_class->constructed = data_book_constructed;
 
 	g_object_class_install_property (
 		object_class,
@@ -1860,7 +1810,12 @@ e_data_book_initable_init (GInitableIface *interface)
 static void
 e_data_book_init (EDataBook *data_book)
 {
+	EDBusAddressBook *dbus_interface;
+
 	data_book->priv = E_DATA_BOOK_GET_PRIVATE (data_book);
+
+	dbus_interface = e_dbus_address_book_skeleton_new ();
+	data_book->priv->dbus_interface = dbus_interface;
 
 	g_mutex_init (&data_book->priv->sender_lock);
 
@@ -1869,6 +1824,47 @@ e_data_book_init (EDataBook *data_book)
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_ptr_array_unref);
+
+	g_signal_connect (
+		dbus_interface, "handle-open",
+		G_CALLBACK (data_book_handle_open_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-refresh",
+		G_CALLBACK (data_book_handle_refresh_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-get-contact",
+		G_CALLBACK (data_book_handle_get_contact_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-get-contact-list",
+		G_CALLBACK (data_book_handle_get_contact_list_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-get-contact-list-uids",
+		G_CALLBACK (data_book_handle_get_contact_list_uids_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-create-contacts",
+		G_CALLBACK (data_book_handle_create_contacts_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-remove-contacts",
+		G_CALLBACK (data_book_handle_remove_contacts_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-modify-contacts",
+		G_CALLBACK (data_book_handle_modify_contacts_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-get-view",
+		G_CALLBACK (data_book_handle_get_view_cb),
+		data_book);
+	g_signal_connect (
+		dbus_interface, "handle-close",
+		G_CALLBACK (data_book_handle_close_cb),
+		data_book);
 }
 
 /**
@@ -1901,111 +1897,6 @@ e_data_book_new (EBookBackend *backend,
 		"connection", connection,
 		"object-path", object_path,
 		NULL);
-}
-
-/**
- * e_data_book_new_direct:
- * @registry: The #ESourceRegistry
- * @source: The #ESource to create a book for
- * @backend_path: The full path to the backend module to use
- * @backend_name: The #EDataFactory type name to use from the module specified by @backend_path
- * @config: The backend specific configuration string specified by the #EDataBookDirect
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Creates an #EDataBook for Direct Read Access, the @backend_path, @backend_name and @config
- * parameters are fetched from an #EDataBookDirect reported over D-Bus from the server side
- * counter part of a given backend.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Returns: (transfer full): A newly created #EDataBook for direct read access,
- *          otherwise %NULL is returned and @error is set.
- *
- * Since: 3.8
- */
-EDataBook *
-e_data_book_new_direct (ESourceRegistry *registry,
-                        ESource *source,
-                        const gchar *backend_path,
-                        const gchar *backend_name,
-                        const gchar *config,
-                        GError **error)
-{
-	EDataBook *book = NULL;
-	EModule *module;
-	EBookBackend *backend;
-	GType backend_type;
-	GType factory_type;
-	GTypeClass *factory_class;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
-	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-	g_return_val_if_fail (backend_path && backend_path[0], NULL);
-	g_return_val_if_fail (backend_name && backend_name[0], NULL);
-
-	module = load_module (backend_path);
-	if (!module) {
-		g_set_error (
-			error, E_CLIENT_ERROR,
-			E_CLIENT_ERROR_OTHER_ERROR,
-			"Failed to load module at specified path: %s", backend_path);
-		goto new_direct_finish;
-	}
-
-	if (!g_type_module_use (G_TYPE_MODULE (module))) {
-		g_set_error (
-			error, E_CLIENT_ERROR,
-			E_CLIENT_ERROR_OTHER_ERROR,
-			"Failed to use EModule at path: %s", backend_path);
-		goto new_direct_finish;
-	}
-
-	factory_type = g_type_from_name (backend_name);
-	if (factory_type == 0) {
-		g_set_error (
-			error, E_CLIENT_ERROR,
-			E_CLIENT_ERROR_OTHER_ERROR,
-			"Failed to get backend factory '%s' from EModule at path: %s",
-			backend_name, backend_path);
-		g_type_module_unuse (G_TYPE_MODULE (module));
-		goto new_direct_finish;
-	}
-
-	factory_class = g_type_class_ref (factory_type);
-	backend_type  = E_BOOK_BACKEND_FACTORY_CLASS (factory_class)->backend_type;
-	g_type_class_unref (factory_class);
-
-	backend = g_object_new (
-		backend_type,
-		"registry", registry,
-		"source", source, NULL);
-
-	/* The backend must be configured for direct access
-	 * before calling g_initable_init() because backends
-	 * now can open thier content at initable_init() time. */
-	e_book_backend_configure_direct (backend, config);
-
-	if (!g_initable_init (G_INITABLE (backend), NULL, error)) {
-		g_object_unref (backend);
-		g_type_module_unuse (G_TYPE_MODULE (module));
-		goto new_direct_finish;
-	}
-
-	book = g_initable_new (
-		E_TYPE_DATA_BOOK, NULL, error,
-		"backend", backend, NULL);
-
-	if (!book) {
-		g_type_module_unuse (G_TYPE_MODULE (module));
-		goto new_direct_finish;
-	}
-
-	book->priv->direct_module = module;
-
- new_direct_finish:
-
-	return book;
 }
 
 /**
@@ -2094,662 +1985,3 @@ e_data_book_is_opened (EDataBook *book)
 	return book->priv->opened;
 }
 
-/*************************************************************************
- *                        Direct Read Access APIs                        *
- *************************************************************************/
-
-/**
- * e_data_book_open_sync:
- * @book: an #EDataBook
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Opens the #EDataBook and it's backend.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Returns: %TRUE on success. If %FALSE is returned, @error will be set
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_open_sync (EDataBook *book,
-                       GCancellable *cancellable,
-                       GError **error)
-{
-	EBookBackend *backend;
-	gboolean success;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-
-	backend = e_data_book_ref_backend (book);
-	g_return_val_if_fail (backend != NULL, FALSE);
-
-	success = e_book_backend_open_sync (backend, cancellable, error);
-
-	g_object_unref (backend);
-
-	return success;
-}
-
-/**
- * e_data_book_close:
- * @book: an #EDataBook
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to @callback
- *
- * Closes the @book and its backend.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Since: 3.8
- */
-void
-e_data_book_close (EDataBook *book,
-                   GCancellable *cancellable,
-                   GAsyncReadyCallback callback,
-                   gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (book), callback,
-		user_data, e_data_book_close);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	/* XXX This operation has no GDBusMethodInvocation,
-	 *     so there's nothing to do. */
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_data_book_close_finish:
- * @book: an #EDataBook
- * @result: a #GAsyncResult
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_data_book_close().  If an
- * error occurs, then this function sets @error and returns %FALSE.
- *
- * Returns: %TRUE on success
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_close_finish (EDataBook *book,
-                          GAsyncResult *result,
-                          GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (book), e_data_book_close), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-/**
- * e_data_book_close_sync:
- * @book: an #EDataBook
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Closes the @book and its backend.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Returns: %TRUE on success. If %FALSE is returned, @error will be set
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_close_sync (EDataBook *book,
-                        GCancellable *cancellable,
-                        GError **error)
-{
-	/* XXX This operation has no GDBusMethodInvocation,
-	 *     so there's nothing to do. */
-	return TRUE;
-}
-
-static void
-data_book_get_contact_cb (GObject *source_object,
-                          GAsyncResult *result,
-                          gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	EContact *contact;
-	GError *error = NULL;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-
-	contact = e_book_backend_get_contact_finish (
-		E_BOOK_BACKEND (source_object), result, &error);
-
-	/* Sanity check. */
-	g_return_if_fail (
-		((contact != NULL) && (error == NULL)) ||
-		((contact == NULL) && (error != NULL)));
-
-	if (contact != NULL) {
-		g_simple_async_result_set_op_res_gpointer (
-			simple, g_object_ref (contact),
-			(GDestroyNotify) g_object_unref);
-		g_object_unref (contact);
-	}
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_data_book_get_contact:
- * @book: an #EDataBook
- * @uid: a unique string ID specifying the contact
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to @callback
- *
- * Retrieves #EContact from the @book for the gived @uid.
- * The call is finished by e_data_book_get_contact_finish()
- * from the @callback.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Since: 3.8
- */
-void
-e_data_book_get_contact (EDataBook *book,
-                         const gchar *uid,
-                         GCancellable *cancellable,
-                         GAsyncReadyCallback callback,
-                         gpointer user_data)
-{
-	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (uid && uid[0]);
-
-	backend = e_data_book_ref_backend (book);
-	g_return_if_fail (backend != NULL);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (book), callback,
-		user_data, e_data_book_get_contact);
-
-	e_book_backend_get_contact (
-		backend, uid, cancellable,
-		data_book_get_contact_cb,
-		g_object_ref (simple));
-
-	g_object_unref (simple);
-	g_object_unref (backend);
-}
-
-/**
- * e_data_book_get_contact_finish:
- * @book: an #EDataBook
- * @result: a #GAsyncResult
- * @contact: return location for the fetched #EContact
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_data_book_get_contact().  If an
- * error occurs, then this function sets @error and returns %FALSE.
- *
- * Returns: %TRUE on success
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_get_contact_finish (EDataBook *book,
-                                GAsyncResult *result,
-                                EContact **contact,
-                                GError **error)
-{
-	GSimpleAsyncResult *simple;
-	EContact *ret_contact;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	ret_contact = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	g_return_val_if_fail (ret_contact != NULL, FALSE);
-
-	if (contact != NULL)
-		*contact = g_object_ref (ret_contact);
-
-	return TRUE;
-}
-
-/**
- * e_data_book_get_contact_sync:
- * @book: an #EDataBook
- * @uid: a unique string ID specifying the contact
- * @contact: return location for the fetched #EContact
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Retrieves an #EContact from the @book for the gived @uid.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Returns: %TRUE on success. If %FALSE is returned, @error will be set
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_get_contact_sync (EDataBook *book,
-                              const gchar *uid,
-                              EContact **contact,
-                              GCancellable *cancellable,
-                              GError **error)
-{
-	EBookBackend *backend;
-	EContact *ret_contact;
-	gboolean success = FALSE;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-	g_return_val_if_fail (uid && uid[0], FALSE);
-
-	backend = e_data_book_ref_backend (book);
-	g_return_val_if_fail (backend != NULL, FALSE);
-
-	ret_contact = e_book_backend_get_contact_sync (
-		backend, uid, cancellable, error);
-
-	if (ret_contact != NULL) {
-		if (contact != NULL)
-			*contact = g_object_ref (ret_contact);
-
-		g_object_unref (ret_contact);
-
-		success = TRUE;
-	}
-
-	g_object_unref (backend);
-
-	return success;
-}
-
-static void
-data_book_get_contacts_cb (GObject *source_object,
-                           GAsyncResult *result,
-                           gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	GQueue queue = G_QUEUE_INIT;
-	GError *error = NULL;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-
-	e_book_backend_get_contact_list_finish (
-		E_BOOK_BACKEND (source_object), result, &queue, &error);
-
-	if (error == NULL) {
-		GSList *list = NULL;
-
-		while (!g_queue_is_empty (&queue)) {
-			EContact *contact;
-
-			contact = g_queue_pop_tail (&queue);
-			list = g_slist_prepend (list, contact);
-		}
-
-		/* XXX This assumes the finish() function will be called. */
-		g_simple_async_result_set_op_res_gpointer (
-			simple, list, (GDestroyNotify) NULL);
-	} else {
-		g_simple_async_result_take_error (simple, error);
-	}
-
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_data_book_get_contacts:
- * @book: an #EDataBook
- * @sexp: an S-expression representing the query
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to @callback
- *
- * Query @book with @sexp, receiving a list of contacts which
- * matched. The call is finished by e_data_book_get_contacts_finish()
- * from the @callback.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Since: 3.8
- */
-void
-e_data_book_get_contacts (EDataBook *book,
-                          const gchar *sexp,
-                          GCancellable *cancellable,
-                          GAsyncReadyCallback callback,
-                          gpointer user_data)
-{
-	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	backend = e_data_book_ref_backend (book);
-	g_return_if_fail (backend != NULL);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (book), callback, user_data,
-		e_data_book_get_contacts);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	e_book_backend_get_contact_list (
-		backend, sexp, cancellable,
-		data_book_get_contacts_cb,
-		g_object_ref (simple));
-
-	g_object_unref (simple);
-	g_object_unref (backend);
-}
-
-/**
- * e_data_book_get_contacts_finish:
- * @book: an #EDataBook
- * @result: a #GAsyncResult
- * @contacts: (element-type EContact) (out): a #GSList of matched #EContacts
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_data_book_get_contacts(). If an
- * error occurs, then this function sets @error and returns %FALSE.
- *
- * Returns: %TRUE on success
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_get_contacts_finish (EDataBook *book,
-                                 GAsyncResult *result,
-                                 GSList **contacts,
-                                 GError **error)
-{
-	GSimpleAsyncResult *simple;
-	GSList *list;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (book),
-		e_data_book_get_contacts), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	list = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (contacts != NULL)
-		*contacts = list;
-	else
-		g_slist_free_full (list, (GDestroyNotify) g_object_unref);
-
-	return TRUE;
-}
-
-/**
- * e_data_book_get_contacts_sync:
- * @book: an #EDataBook
- * @sexp: an S-expression representing the query
- * @contacts: (element-type EContact) (out): a #GSList of matched #EContacts
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Query @book with @sexp, receiving a list of contacts which
- * matched.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Returns: %TRUE on success. If %FALSE is returned, @error will be set
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_get_contacts_sync (EDataBook *book,
-                               const gchar *sexp,
-                               GSList **contacts,
-                               GCancellable *cancellable,
-                               GError **error)
-{
-	EBookBackend *backend;
-	GQueue queue = G_QUEUE_INIT;
-	gboolean success;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-
-	backend = e_data_book_ref_backend (book);
-	g_return_val_if_fail (backend != NULL, FALSE);
-
-	success = e_book_backend_get_contact_list_sync (
-		backend, sexp, &queue, cancellable, error);
-
-	if (contacts != NULL) {
-		while (!g_queue_is_empty (&queue))
-			*contacts = g_slist_prepend (
-				*contacts, g_queue_pop_tail (&queue));
-	} else {
-		while (!g_queue_is_empty (&queue))
-			g_object_unref (g_queue_pop_head (&queue));
-	}
-
-	g_object_unref (backend);
-
-	return success;
-}
-
-static void
-data_book_get_contacts_uids_cb (GObject *source_object,
-                                GAsyncResult *result,
-                                gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	GQueue queue = G_QUEUE_INIT;
-	GError *error = NULL;
-
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-
-	e_book_backend_get_contact_list_uids_finish (
-		E_BOOK_BACKEND (source_object), result, &queue, &error);
-
-	if (error == NULL) {
-		GSList *list = NULL;
-
-		while (!g_queue_is_empty (&queue)) {
-			gchar *uid;
-
-			uid = g_queue_pop_tail (&queue);
-			list = g_slist_prepend (list, uid);
-		}
-
-		/* XXX This assumes the finish() function will be called. */
-		g_simple_async_result_set_op_res_gpointer (
-			simple, list, (GDestroyNotify) NULL);
-	} else {
-		g_simple_async_result_take_error (simple, error);
-	}
-
-	g_simple_async_result_complete (simple);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_data_book_get_contacts_uids:
- * @book: an #EDataBook
- * @sexp: an S-expression representing the query
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to @callback
- *
- * Query @book with @sexp, receiving a list of contacts UIDs which
- * matched. The call is finished by e_data_book_get_contacts_uids_finish()
- * from the @callback.
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Since: 3.8
- */
-void
-e_data_book_get_contacts_uids (EDataBook *book,
-                               const gchar *sexp,
-                               GCancellable *cancellable,
-                               GAsyncReadyCallback callback,
-                               gpointer user_data)
-{
-	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	backend = e_data_book_ref_backend (book);
-	g_return_if_fail (backend != NULL);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (book), callback, user_data,
-		e_data_book_get_contacts_uids);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	e_book_backend_get_contact_list_uids (
-		backend, sexp, cancellable,
-		data_book_get_contacts_uids_cb,
-		g_object_ref (simple));
-
-	g_object_unref (simple);
-	g_object_unref (backend);
-}
-
-/**
- * e_data_book_get_contacts_uids_finish:
- * @book: an #EDataBook
- * @result: a #GAsyncResult
- * @contacts_uids: (element-type utf8) (out): a #GSList of matched contact UIDs stored as strings
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_data_book_get_contacts_uids(). If an
- * error occurs, then this function sets @error and returns %FALSE.
- *
- * Returns: %TRUE on success
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_get_contacts_uids_finish (EDataBook *book,
-                                      GAsyncResult *result,
-                                      GSList **contacts_uids,
-                                      GError **error)
-{
-	GSimpleAsyncResult *simple;
-	GSList *list;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (book),
-		e_data_book_get_contacts_uids), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	list = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (contacts_uids != NULL)
-		*contacts_uids = list;
-	else
-		g_slist_free_full (list, (GDestroyNotify) g_free);
-
-	return TRUE;
-}
-
-/**
- * e_data_book_get_contacts_uids_sync:
- * @book: an #EDataBook
- * @sexp: an S-expression representing the query
- * @contacts_uids: (element-type utf8) (out): a #GSList of matched contact UIDs stored as strings
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: (allow-none): return location for a #GError, or %NULL
- *
- * Query @book with @sexp, receiving a list of contacts UIDs which
- * matched. 
- *
- * <note><para>This API is intended for internal use only, if you want client side
- * direct read access then use e_book_client_connect_direct_sync() instead</para></note>
- *
- * Returns: %TRUE on success. If %FALSE is returned, @error will be set
- *
- * Since: 3.8
- */
-gboolean
-e_data_book_get_contacts_uids_sync (EDataBook *book,
-                                    const gchar *sexp,
-                                    GSList **contacts_uids,
-                                    GCancellable *cancellable,
-                                    GError **error)
-{
-	EBookBackend *backend;
-	GQueue queue = G_QUEUE_INIT;
-	gboolean success;
-
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-
-	backend = e_data_book_ref_backend (book);
-	g_return_val_if_fail (backend != NULL, FALSE);
-
-	success = e_book_backend_get_contact_list_uids_sync (
-		backend, sexp, &queue, cancellable, error);
-
-	if (contacts_uids != NULL) {
-		while (!g_queue_is_empty (&queue))
-			*contacts_uids = g_slist_prepend (
-				*contacts_uids, g_queue_pop_tail (&queue));
-	} else {
-		while (!g_queue_is_empty (&queue))
-			g_free (g_queue_pop_head (&queue));
-	}
-
-	g_object_unref (backend);
-
-	return success;
-}

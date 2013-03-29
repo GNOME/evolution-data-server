@@ -54,7 +54,7 @@ typedef struct _RunInThreadClosure RunInThreadClosure;
 
 struct _EBookClientPrivate {
 	EDBusAddressBook *dbus_proxy;
-	EDataBook *direct_book;
+	EBookBackend *direct_backend;
 	guint name_watcher_id;
 
 	gulong dbus_proxy_error_handler_id;
@@ -177,6 +177,104 @@ run_in_thread_closure_free (RunInThreadClosure *run_in_thread_closure)
  *   @CLIENT_BACKEND_PROPERTY_ONLINE, @CLIENT_BACKEND_PROPERTY_READONLY
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
+
+static EBookBackend *
+book_client_load_direct_backend (ESourceRegistry *registry,
+                                 ESource *source,
+                                 const gchar *backend_path,
+                                 const gchar *backend_name,
+                                 const gchar *config,
+                                 GError **error)
+{
+	static GHashTable *modules_table = NULL;
+	G_LOCK_DEFINE_STATIC (modules_table);
+
+	EModule *module;
+	GType factory_type;
+	EBookBackend *backend;
+	EBookBackendFactoryClass *factory_class;
+
+	g_return_val_if_fail (backend_path != NULL, NULL);
+	g_return_val_if_fail (backend_name != NULL, NULL);
+
+	G_LOCK (modules_table);
+
+	if (modules_table == NULL)
+		modules_table = g_hash_table_new (
+			(GHashFunc) g_str_hash,
+			(GEqualFunc) g_str_equal);
+
+	module = g_hash_table_lookup (modules_table, backend_path);
+
+	if (module == NULL) {
+		module = e_module_new (backend_path);
+		g_hash_table_insert (
+			modules_table, g_strdup (backend_path), module);
+	}
+
+	G_UNLOCK (modules_table);
+
+	if (!g_type_module_use (G_TYPE_MODULE (module))) {
+		g_set_error (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OTHER_ERROR,
+			"Failed to use EModule at path '%s'",
+			backend_path);
+		return NULL;
+	}
+
+	factory_type = g_type_from_name (backend_name);
+	if (factory_type == G_TYPE_INVALID) {
+		g_set_error (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OTHER_ERROR,
+			"Failed to get backend factory '%s' "
+			"from EModule at path '%s'",
+			backend_name, backend_path);
+		g_type_module_unuse (G_TYPE_MODULE (module));
+		return NULL;
+	}
+
+	factory_class = g_type_class_ref (factory_type);
+
+	backend = g_object_new (
+		factory_class->backend_type,
+		"registry", registry,
+		"source", source, NULL);
+
+	/* The backend must be configured for direct access
+	 * before calling g_initable_init(), since backends
+	 * can access their content in initable_init(). */
+	e_book_backend_configure_direct (backend, config);
+
+	if (!g_initable_init (G_INITABLE (backend), NULL, error)) {
+		g_type_module_unuse (G_TYPE_MODULE (module));
+		g_object_unref (backend);
+		backend = NULL;
+	}
+
+	g_type_class_unref (factory_class);
+
+	/* XXX Until backend methods can be updated, EBookBackend
+	 *     still needs an EDataBook to catch "respond" calls. */
+	if (backend != NULL) {
+		EDataBook *data_book;
+
+		data_book = g_initable_new (
+			E_TYPE_DATA_BOOK, NULL, error,
+			"backend", backend, NULL);
+
+		if (data_book == NULL) {
+			g_type_module_unuse (G_TYPE_MODULE (module));
+			g_object_unref (backend);
+			backend = NULL;
+		}
+
+		g_clear_object (&data_book);
+	}
+
+	return backend;
+}
 
 static gpointer
 book_client_dbus_thread (gpointer user_data)
@@ -548,10 +646,9 @@ book_client_dispose (GObject *object)
 		priv->dbus_proxy = NULL;
 	}
 
-	if (priv->direct_book != NULL) {
-		e_data_book_close_sync (priv->direct_book, NULL, NULL);
-		g_object_unref (priv->direct_book);
-		priv->direct_book = NULL;
+	if (priv->direct_backend != NULL) {
+		g_object_unref (priv->direct_backend);
+		priv->direct_backend = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -1244,14 +1341,14 @@ e_book_client_connect_direct_sync (ESourceRegistry *registry,
 	backend_name = e_dbus_direct_book_get_backend_name (direct_config);
 	config = e_dbus_direct_book_get_backend_config (direct_config);
 
-	if (backend_path && backend_path[0] &&
-	    backend_name && backend_name[0]) {
-		priv->direct_book = e_data_book_new_direct (
+	if (backend_path != NULL && *backend_path != '\0' &&
+	    backend_name != NULL && *backend_name != '\0') {
+		priv->direct_backend = book_client_load_direct_backend (
 			registry, source,
 			backend_path,
 			backend_name,
 			config, &local_error);
-		if (!priv->direct_book) {
+		if (local_error != NULL) {
 			g_warning (
 				"Failed to open addressbook in direct read "
 				"access mode, falling back to normal read "
@@ -1268,16 +1365,21 @@ e_book_client_connect_direct_sync (ESourceRegistry *registry,
 
 	g_object_unref (direct_config);
 
-	/* We have to perform the opeining of the direct book separately
+	/* We have to perform the opening of the direct backend separately
 	 * from the EClient->open() implementation, because the direct
-	 * book does not exist yet
-	 */
-	if (priv->direct_book &&
-	    !e_data_book_open_sync (priv->direct_book, cancellable, error)) {
-		g_warning (
-			"Unable to open direct read access book, "
-			"falling back to normal read access mode");
-		g_clear_object (&priv->direct_book);
+	 * backend does not exist yet. */
+	if (priv->direct_backend != NULL) {
+		gboolean success;
+
+		success = e_book_backend_open_sync (
+			priv->direct_backend, cancellable, error);
+
+		if (!success) {
+			g_warning (
+				"Unable to open direct read access book, "
+				"falling back to normal read access mode");
+			g_clear_object (&priv->direct_backend);
+		}
 	}
 
 	return client;
@@ -2663,10 +2765,22 @@ e_book_client_get_contact_sync (EBookClient *client,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_contact != NULL, FALSE);
 
-	if (client->priv->direct_book != NULL)
-		return e_data_book_get_contact_sync (
-			client->priv->direct_book, uid,
-			out_contact, cancellable, error);
+	if (client->priv->direct_backend != NULL) {
+		EContact *contact;
+		gboolean success = FALSE;
+
+		contact = e_book_backend_get_contact_sync (
+			client->priv->direct_backend,
+			uid, cancellable, error);
+
+		if (contact != NULL) {
+			*out_contact = g_object_ref (contact);
+			g_object_unref (contact);
+			success = TRUE;
+		}
+
+		return success;
+	}
 
 	utf8_uid = e_util_utf8_make_valid (uid);
 
@@ -2839,10 +2953,28 @@ e_book_client_get_contacts_sync (EBookClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contacts != NULL, FALSE);
 
-	if (client->priv->direct_book != NULL)
-		return e_data_book_get_contacts_sync (
-			client->priv->direct_book,
-			sexp, out_contacts, cancellable, error);
+	if (client->priv->direct_backend != NULL) {
+		GQueue queue = G_QUEUE_INIT;
+		GSList *list = NULL;
+		gboolean success;
+
+		success = e_book_backend_get_contact_list_sync (
+			client->priv->direct_backend,
+			sexp, &queue, cancellable, error);
+
+		if (success) {
+			while (!g_queue_is_empty (&queue)) {
+				EContact *contact;
+
+				contact = g_queue_pop_head (&queue);
+				list = g_slist_prepend (list, contact);
+			}
+
+			*out_contacts = g_slist_reverse (list);
+		}
+
+		return success;
+	}
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -3024,10 +3156,28 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (out_contact_uids != NULL, FALSE);
 
-	if (client->priv->direct_book != NULL)
-		return e_data_book_get_contacts_uids_sync (
-			client->priv->direct_book, sexp,
-			out_contact_uids, cancellable, error);
+	if (client->priv->direct_backend != NULL) {
+		GQueue queue = G_QUEUE_INIT;
+		GSList *list = NULL;
+		gboolean success;
+
+		success = e_book_backend_get_contact_list_uids_sync (
+			client->priv->direct_backend,
+			sexp, &queue, cancellable, error);
+
+		if (success) {
+			while (!g_queue_is_empty (&queue)) {
+				gchar *uid;
+
+				uid = g_queue_pop_head (&queue);
+				list = g_slist_prepend (list, uid);
+			}
+
+			*out_contact_uids = g_slist_reverse (list);
+		}
+
+		return success;
+	}
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
@@ -3103,7 +3253,7 @@ book_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 			"client", client,
 			"connection", connection,
 			"object-path", object_path,
-			"direct-book", client->priv->direct_book,
+			"direct-backend", client->priv->direct_backend,
 			NULL);
 
 		/* Sanity check. */
