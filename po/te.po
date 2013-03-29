@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-03-17 14:48+0000\n"
-"PO-Revision-Date: 2013-03-26 03:09+0530\n"
+"POT-Creation-Date: 2013-03-29 12:31+0000\n"
+"PO-Revision-Date: 2013-03-29 18:18+0530\n"
 "Last-Translator: Krishnababu Krothapalli <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <Fedora-trans-te@redhat.com>\n"
 "Language: te\n"
@@ -68,14 +68,12 @@ msgstr "సింక్ రివిజన్ లేకుండా పరిచ
 #: ../addressbook/backends/file/e-book-backend-file.c:1089
 #: ../addressbook/backends/file/e-book-backend-file.c:1139
 #, c-format
-#| msgid "Protocol not supported"
 msgid "Query '%s' not supported"
 msgstr "క్వరీ '%s' తోడ్పాటులేదు"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1098
 #: ../addressbook/backends/file/e-book-backend-file.c:1148
 #, c-format
-#| msgid "Invalid query: "
 msgid "Invalid Query '%s'"
 msgstr "చెల్లని క్వరీ '%s'"
 
@@ -251,7 +249,6 @@ msgstr "వినియోగదారునికి '%s' కొరకు DN �
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:420
 #, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "వనరు '%s'ను సృష్టించుట HTTP  స్థితి %d (%s)తో విఫలమైంది"
 
@@ -266,7 +263,6 @@ msgstr "సేవికపైని పరిచయం మార్చబడి�
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:597
 #, c-format
-#| msgid "Modify contact failed with HTTP status: %d (%s)"
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "పరిచయం సవరించుట యీ HTTP స్థితితో విఫలమైంది: %d (%s)"
 
@@ -909,7 +905,6 @@ msgid "Not a phone number"
 msgstr "ఫోన్ నంబర్ కాదు"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:49
-#| msgid "Invalid range"
 msgid "Invalid country calling code"
 msgstr "చెల్లని దేశపు కాలింగ్ కోడ్"
 
@@ -942,7 +937,6 @@ msgstr "పుస్తకం లక్షణం '%s' యొక్క విల�
 #: ../calendar/libecal/e-cal-client.c:1502
 #: ../calendar/libecal/e-cal-client.c:1682
 #, c-format
-#| msgid "Could not connect to %s: "
 msgid "Unable to connect to '%s': "
 msgstr "'%s' కు అనుసంధానం కాలేకపోయింది: "
 
@@ -969,8 +963,8 @@ msgid ""
 "string and string list field types are supported"
 msgstr ""
 "పరిచయ క్షేత్రం '%s' రకం '%s' ది సంగ్రహం నందు తెలుపబడెను, అయితే బూలియన్, "
-"స్ట్రింగ్ మరియు స్ట్రింగ్ జాబితా క్షేత్ర "
-"రకాలు తోడ్పాటునిచ్చును"
+"స్ట్రింగ్ మరియు స్ట్రింగ్ "
+"జాబితా క్షేత్ర రకాలు తోడ్పాటునిచ్చును"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2603
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3644
@@ -989,7 +983,6 @@ msgstr "క్వరీ తోడ్పాటులేని మూలకాల�
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3774
 #, c-format
-#| msgid "Invalid query"
 msgid "Invalid Query"
 msgstr "చెల్లని క్వరీ"
 
@@ -1026,7 +1019,6 @@ msgstr "db ఫైలును తొలగించలేదు: దోషసం
 
 #: ../addressbook/libedata-book/e-book-backend-sync.c:179
 #: ../calendar/libedata-cal/e-cal-backend-sync.c:182
-#| msgid "Cannot set backend property: "
 msgid "Clients cannot set backend properties"
 msgstr "క్లైంట్స్ బ్యాకెండ్ లక్షణాలను అమర్చలేదు"
 
@@ -1147,7 +1139,6 @@ msgstr "బ్యాకెండ్ యింకా తెరువబడలే�
 
 #: ../addressbook/libedata-book/e-data-book.c:819
 #: ../libedataserver/e-client.c:176
-#| msgid "Object not found"
 msgid "Object is out of sync"
 msgstr "ఆబ్జక్టు సింకు బయటవుంది"
 
@@ -1904,8 +1895,8 @@ msgstr "ఆఫ్‌లైన్ కార్యము కొరకు సంచ
 #: ../camel/camel-imapx-folder.c:613 ../camel/camel-imapx-folder.c:748
 #: ../camel/camel-imapx-folder.c:933 ../camel/camel-imapx-folder.c:993
 #: ../camel/camel-imapx-folder.c:1032 ../camel/camel-imapx-store.c:368
-#: ../camel/camel-imapx-store.c:1573 ../camel/camel-imapx-store.c:1662
-#: ../camel/camel-imapx-store.c:1711
+#: ../camel/camel-imapx-store.c:1592 ../camel/camel-imapx-store.c:1681
+#: ../camel/camel-imapx-store.c:1730
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #: ../camel/providers/pop3/camel-pop3-folder.c:677
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
@@ -1985,19 +1976,16 @@ msgstr "%d లో %d సందేశం వద్ద విఫలమైంది
 
 #: ../camel/camel-filter-driver.c:1751 ../camel/camel-filter-driver.c:1785
 #, c-format
-#| msgid "Error executing filter: %s: %s"
 msgid "Execution of filter '%s' failed: "
 msgstr "ఫిల్టర్ '%s' యొక్క నిర్వర్తన విఫలమైంది:"
 
 #: ../camel/camel-filter-driver.c:1775
 #, c-format
-#| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "ఫిల్టర్ '%s' పార్సు చేయుటలో దోషం: %s: %s"
 
 #: ../camel/camel-filter-driver.c:1794
 #, c-format
-#| msgid "Error executing filter: %s: %s"
 msgid "Error executing filter '%s': %s: %s"
 msgstr "ఫిల్టర్ '%s' నిర్వర్తించుటలో దోషం: %s: %s"
 
@@ -2256,7 +2244,6 @@ msgstr "రహస్యపరచిన సారం"
 
 #: ../camel/camel-imapx-folder.c:710
 #, c-format
-#| msgid "Quota information not supported for folder '%s'"
 msgid "No quota information available for folder '%s'"
 msgstr "సంచయం '%s' కొరకు యే కోటా సమాచారం అందుబాటులో లేదు"
 
@@ -2266,12 +2253,10 @@ msgid "No destination folder specified"
 msgstr "ఏ గమ్యపు సంచయం తెలుపలేదు"
 
 #: ../camel/camel-imapx-folder.c:828
-#| msgid "Unable to retrieve message: "
 msgid "Unable to move junk messages"
 msgstr "నిరర్థక సందేశాలను కదల్చలేదు"
 
 #: ../camel/camel-imapx-folder.c:901
-#| msgid "Unable to retrieve message: "
 msgid "Unable to move deleted messages"
 msgstr "తొలగించిన సందేశాలను కదల్చలేదు"
 
@@ -2290,44 +2275,56 @@ msgstr "%s కొరకు సంచయం సంగ్రహాన్ని స
 msgid "Could not create cache for %s: "
 msgstr "%s కొరకు క్యాచీను సృష్టించలేక పోయింది: "
 
-#: ../camel/camel-imapx-server.c:1279
+#: ../camel/camel-imapx-server.c:1282
 msgid "Server disconnected"
 msgstr "సేవిక అననుసంధానించబడింది"
 
-#: ../camel/camel-imapx-server.c:1787
+#: ../camel/camel-imapx-server.c:1790
 msgid "Error writing to cache stream"
 msgstr "క్యాచీ స్ట్రీమ్‌కు వ్రాయుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:2994
+#: ../camel/camel-imapx-server.c:2443
+#, c-format
+#| msgid ""
+#| "Alert from IMAP server %s@%s:\n"
+#| "%s"
+msgid ""
+"Alert from IMAP server %s:\n"
+"%s"
+msgstr ""
+"ఐమాప్ సేవికనుండి జాగురూకత %s:\n"
+"%s"
+
+#: ../camel/camel-imapx-server.c:3031
 #, c-format
 msgid "Not authenticated"
 msgstr "దృవీకరించలేదు"
 
-#: ../camel/camel-imapx-server.c:3072
+#: ../camel/camel-imapx-server.c:3109
 msgid "Error performing IDLE"
 msgstr "IDLE నిర్వర్తించుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4029
+#: ../camel/camel-imapx-server.c:4066
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "ఐమాప్ సేవికను సంవిధానపరచుటలో విఫలమైంది %s రక్షిత సంవిధానంలో: %s"
 
-#: ../camel/camel-imapx-server.c:4030
+#: ../camel/camel-imapx-server.c:4067
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "STARTTLS సహకరించలేదు"
 
-#: ../camel/camel-imapx-server.c:4069
+#: ../camel/camel-imapx-server.c:4106
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "రక్షిత రీతిలో IMAP సేవిక %sకు అనుసంధానమగుటలో విఫలమైంది: "
 
-#: ../camel/camel-imapx-server.c:4149
+#: ../camel/camel-imapx-server.c:4186
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "ఐమాప్ సేవిక %s అనునది %s ధృవీకరణకు తోడ్పాటునీయదు"
 
-#: ../camel/camel-imapx-server.c:4160 ../camel/camel-session.c:495
+#: ../camel/camel-imapx-server.c:4197 ../camel/camel-session.c:495
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2335,133 +2332,130 @@ msgstr "ఐమాప్ సేవిక %s అనునది %s ధృవీక
 msgid "No support for %s authentication"
 msgstr "%s ధృవీకరణ కొరకు సహకారంలేదు"
 
-#: ../camel/camel-imapx-server.c:4179
+#: ../camel/camel-imapx-server.c:4216
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "వాడుకరిపేరు లేకుండా ధృవీకరించలేదు"
 
-#: ../camel/camel-imapx-server.c:4188
+#: ../camel/camel-imapx-server.c:4225
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "ధృవీకరణ సంకేతపదం అందుబాటులోలేదు"
 
-#: ../camel/camel-imapx-server.c:4396
+#: ../camel/camel-imapx-server.c:4433
 msgid "Error fetching message"
 msgstr "సందేశాన్ని వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4478
+#: ../camel/camel-imapx-server.c:4515
 msgid "Failed to copy the tmp file"
 msgstr "Tmp దస్త్రం నకలు చేయుటలో  విఫలమైం ది"
 
-#: ../camel/camel-imapx-server.c:4492
+#: ../camel/camel-imapx-server.c:4529
 msgid "Failed to close the tmp stream"
 msgstr "tmp ప్రవాహం మూసివేయుటలో విఫలమైం ది"
 
-#: ../camel/camel-imapx-server.c:4613
+#: ../camel/camel-imapx-server.c:4650
 msgid "Error copying messages"
 msgstr "సందేశాలను నకలుతీయుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4779
+#: ../camel/camel-imapx-server.c:4816
 msgid "Error appending message"
 msgstr "సందేశంకు చేర్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4978
+#: ../camel/camel-imapx-server.c:5015
 msgid "Error fetching message headers"
 msgstr "సందేశపు యెగువసూచీలను వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:5129
+#: ../camel/camel-imapx-server.c:5166
 msgid "Error retrieving message"
 msgstr "సందేశమును పొందుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:5260 ../camel/camel-imapx-server.c:5488
+#: ../camel/camel-imapx-server.c:5297 ../camel/camel-imapx-server.c:5525
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "'%s' లో కొత్త సందేశాల కొరకు సంక్షింప్తమైన సమాచారాన్ని తీసుకువస్తున్నది"
 
-#: ../camel/camel-imapx-server.c:5324
+#: ../camel/camel-imapx-server.c:5361
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "'%s' లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
 
-#: ../camel/camel-imapx-server.c:5377
+#: ../camel/camel-imapx-server.c:5414
 msgid "Error fetching new messages"
 msgstr "కొత్త సందేశాలను వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:5590
+#: ../camel/camel-imapx-server.c:5627
 msgid "Error while fetching messages"
 msgstr "సందేశాలను వెతికితెచ్చునప్పుడు దోషం"
 
-#: ../camel/camel-imapx-server.c:5598 ../camel/camel-imapx-server.c:5631
+#: ../camel/camel-imapx-server.c:5635 ../camel/camel-imapx-server.c:5668
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "%d సందేశం కొరకు '%s' నందు సారాంశ సమాచారం వెతికితెచ్చుచున్నది'"
 msgstr[1] "%d సందేశాల కొరకు '%s' నందు సారాంశ సమాచారం వెతికితెచ్చుచున్నది"
 
-#: ../camel/camel-imapx-server.c:5767 ../camel/camel-imapx-server.c:5797
+#: ../camel/camel-imapx-server.c:5804 ../camel/camel-imapx-server.c:5834
 msgid "Error refreshing folder"
 msgstr "సంచయం తాజాపరచుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:5921
+#: ../camel/camel-imapx-server.c:5958
 msgid "Error expunging message"
 msgstr "సందేశం యెక్సుపంజింగ్ దోషం"
 
-#: ../camel/camel-imapx-server.c:6032
+#: ../camel/camel-imapx-server.c:6069
 msgid "Error fetching folders"
 msgstr "సంచయాలను వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6114
+#: ../camel/camel-imapx-server.c:6151
 msgid "Error subscribing to folder"
 msgstr "సంచయంకు సబ్‌స్క్రైబ్ అగుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6179
+#: ../camel/camel-imapx-server.c:6216
 msgid "Error creating folder"
 msgstr "సంచయాన్ని సృష్టించుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6233
+#: ../camel/camel-imapx-server.c:6270
 msgid "Error deleting folder"
 msgstr "సంచయాన్ని తొలగించుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6307
+#: ../camel/camel-imapx-server.c:6344
 msgid "Error renaming folder"
 msgstr "సంచయానికి తిరిగిపేరు పెట్టుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6382
-#| msgid "Retrieving quota information for '%s'"
+#: ../camel/camel-imapx-server.c:6419
 msgid "Error retrieving quota information"
 msgstr "కోటా సమాచారం తిరిగిపొందుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6447
-#| msgid "Decoder failed"
+#: ../camel/camel-imapx-server.c:6484
 msgid "Search failed"
 msgstr "అన్వేషణ విఫలమైంది"
 
-#: ../camel/camel-imapx-server.c:6510
+#: ../camel/camel-imapx-server.c:6547
 msgid "Error performing NOOP"
 msgstr "NOOP నిర్వర్తించటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:6619
+#: ../camel/camel-imapx-server.c:6656
 msgid "Error syncing changes"
 msgstr "మార్పులను సింక్ చేయుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:7431
+#: ../camel/camel-imapx-server.c:7474
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "సందేశము ID %sతో సందేశాన్ని పొందలేకపోయింది: %s"
 
-#: ../camel/camel-imapx-server.c:7432
+#: ../camel/camel-imapx-server.c:7475
 msgid "No such message available."
 msgstr "అటువంటి సందేశము అందుబాటులోలేదు."
 
-#: ../camel/camel-imapx-server.c:7590 ../camel/camel-imapx-server.c:7605
+#: ../camel/camel-imapx-server.c:7633 ../camel/camel-imapx-server.c:7648
 msgid "Cannot create spool file: "
 msgstr "స్పూల్ ఫైలును సృష్టించలేదు: "
 
-#: ../camel/camel-imapx-server.c:8347
-#| msgid "IMAP server %s does not support %s authentication"
+#: ../camel/camel-imapx-server.c:8390
 msgid "IMAP server does not support quotas"
 msgstr "ఐమాప్ సేవిక కోటాలకు తోడ్పాటునీయదు"
 
@@ -2502,24 +2496,24 @@ msgstr "%s లో ఎటువంటి సంచయం లేదు"
 msgid "Inbox"
 msgstr "ఇన్‌బాక్స్"
 
-#: ../camel/camel-imapx-store.c:1212
+#: ../camel/camel-imapx-store.c:1231
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "%s కొరకు సంచయ జాబితా తిరిగిపొందుచున్నది"
 
-#: ../camel/camel-imapx-store.c:1595
+#: ../camel/camel-imapx-store.c:1614
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "ఆ సంచయపేరు \"%s\" సరికానిది ఎంచేతంటే ఇది అక్షరం \"%c\" ను కలిగిఉంటుంది."
 
-#: ../camel/camel-imapx-store.c:1606
+#: ../camel/camel-imapx-store.c:1625
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "తెలియని మూల సంచయం‌:%s"
 
-#: ../camel/camel-imapx-store.c:1616
+#: ../camel/camel-imapx-store.c:1635
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "ఉపసంచయాలు కలిగిఉండుటవలన మూలసంచయం అనుమతించబడదు"
@@ -2662,7 +2656,6 @@ msgstr ""
 
 #: ../camel/camel-net-utils.c:736
 #, c-format
-#| msgid "Host lookup failed: %s: %s"
 msgid "Host lookup '%s' failed: %s"
 msgstr "అతిధేయ లుకప్ '%s' విఫలమైంది: %s"
 
@@ -2686,7 +2679,6 @@ msgstr "%s పేరు వెతుకుటలో విఫలంచెంద�
 
 #: ../camel/camel-network-service.c:350
 #, c-format
-#| msgid "Could not connect to %s: %s"
 msgid "Could not connect to '%s:%s': "
 msgstr "'%s:%s' కు అనుసంధానం కాలేదు: "
 
@@ -4766,7 +4758,6 @@ msgstr "%s రిమోట్ వనరులను తొలగించుట�
 
 #: ../libebackend/e-data-factory.c:320
 #, c-format
-#| msgid "No backend name in source '%s'"
 msgid "No backend factory for hash key '%s'"
 msgstr "హాష్ కీ '%s' కొరకు బ్యాకెండ్ ఫాక్టరీ లేదు"
 
@@ -4805,7 +4796,6 @@ msgstr ""
 #: ../libedataserver/e-source.c:1317
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
 #, c-format
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "డాటా మూలం '%s' అనునది OAuth 2.0 ధృవీకరణకు తోడ్పాటునీయదు"
 
@@ -4826,7 +4816,6 @@ msgstr "UID '%s' ఇప్పటికే ఉపయోగంలో ఉంది"
 
 #: ../libebackend/e-user-prompter-server.c:303
 #, c-format
-#| msgid "Contact '%s' not found"
 msgid "Extension dialog '%s' not found."
 msgstr "పొడిగింపు డైలాగ్ '%s' కనబడలేదు."
 
@@ -5039,63 +5028,43 @@ msgstr "సంతకం లిపిలో ఒక స్థానిక దస�
 
 #: ../libedataserver/e-source-webdav.c:1529
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
 "అతిధేయ '%s' కొరకు SSL ధృవీకరణపత్రం, చిరునామా పుస్తకం '%s' చే వుపయోగించబడును, "
-"నమ్మదగినది కాదు. మీరు దానిని "
-"ఆమోదించాలని అనుకొనుచున్నారా?"
+"నమ్మదగినది "
+"కాదు. మీరు దానిని ఆమోదించాలని అనుకొనుచున్నారా?"
 
 #: ../libedataserver/e-source-webdav.c:1538
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
 "wish to accept it?"
 msgstr ""
 "అతిధేయ '%s' కొరకు SSL ధృవీకరణపత్రం, క్యాలెండర్ '%s' చే వుపయోగించబడును, "
-"నమ్మదగినది కాదు. మీరు దానిని "
-"ఆమోదించాలని అనుకొనుచున్నారా?"
+"నమ్మదగినది కాదు. మీరు "
+"దానిని ఆమోదించాలని అనుకొనుచున్నారా?"
 
 #: ../libedataserver/e-source-webdav.c:1547
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
 "అతిధేయ '%s' కొరకు SSL ధృవీకరణపత్రం, మెమో జాబితా '%s' చే వుపయోగించబడును, "
-"నమ్మదగినది కాదు. మీరు దానిని "
-"ఆమోదించాలని అనుకొనుచున్నారా?"
+"నమ్మదగినది కాదు. మీరు "
+"దానిని ఆమోదించాలని అనుకొనుచున్నారా?"
 
 #: ../libedataserver/e-source-webdav.c:1556
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr ""
 "అతిధేయ '%s' కొరకు SSL ధృవీకరణపత్రం, కర్తవ్య జాబితా '%s' చే వుపయోగించబడును, "
-"నమ్మదగినది కాదు. మీరు దానిని "
-"ఆమోదించాలని అనుకొనుచున్నారా?"
+"నమ్మదగినది కాదు. "
+"మీరు దానిని ఆమోదించాలని అనుకొనుచున్నారా?"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5338,7 +5307,6 @@ msgstr "ఎచట నుండి స్వయంచాలక ప్రోక్
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:132
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
 #, c-format
-#| msgid "No such source for UID '%s'"
 msgid "No such data source for UID '%s'"
 msgstr "UID'%s' కోసం అటువంటి దత్తాంశ మూలంలేదు"
 
@@ -5349,11 +5317,11 @@ msgid ""
 "from which to obtain a password for '%s'"
 msgstr ""
 "org.gnome.OnlineAccounts నుండి '%s' కొరకు సంకేతపదం పొందుటకు దానినందు తత్సంబంద "
-"ఖాతా కనబడలేదు"
+"ఖాతా "
+"కనబడలేదు"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:216
 #, c-format
-#| msgid "Enter password for %s"
 msgid "Invalid password for '%s'"
 msgstr "%s కొరకు చెల్లని సంకేతపదం"
 
@@ -5400,11 +5368,11 @@ msgid ""
 "from which to obtain an access token for '%s'"
 msgstr ""
 "org.gnome.OnlineAccounts నుండి '%s' కొరకు వొక యాక్సెస్ టోకెన్ పొందుటకు "
-"దానినందు తత్సంబంద ఖాతా కనబడలేదు"
+"దానినందు తత్సంబంద "
+"ఖాతా కనబడలేదు"
 
 #: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1264
 #, c-format
-#| msgid "Failed to open addressbook at '%s': %s"
 msgid "Failed to obtain an access token for '%s': "
 msgstr "'%s' కొరకు యాక్సెస్ టోకెన్ పొందుటకు విఫలమైంది"
 
@@ -5421,7 +5389,6 @@ msgid "Contacts"
 msgstr "పరిచయాలు"
 
 #: ../modules/trust-prompt/certificate-viewer.c:292
-#| msgid "Cannot add encryption certificate"
 msgid "Not part of certificate"
 msgstr "ధృవీకరణపత్రములో భాగముకాదు"
 
@@ -5431,13 +5398,11 @@ msgstr "ఈ దృవీకరణపత్రం ఈ క్రింది ఉ�
 
 #: ../modules/trust-prompt/certificate-viewer.c:604
 #: ../modules/trust-prompt/e-asn1-object.c:387
-#| msgid "X.509 Certificate"
 msgid "SSL Client Certificate"
 msgstr "SSL క్లైంట్ ధృవీకరణపత్రం"
 
 #: ../modules/trust-prompt/certificate-viewer.c:609
 #: ../modules/trust-prompt/e-asn1-object.c:391
-#| msgid "X.509 Certificate"
 msgid "SSL Server Certificate"
 msgstr "SSL సేవిక ధృవీకరణపత్రం"
 
@@ -5446,7 +5411,6 @@ msgid "Email Signer Certificate"
 msgstr "ఈమెయిల్ సైనర్ దృవీకరణపత్రం"
 
 #: ../modules/trust-prompt/certificate-viewer.c:619
-#| msgid "Cannot add encryption certificate"
 msgid "Email Recipient Certificate"
 msgstr "ఈమెయిల్ స్వీకర్త ధృవీకరణపత్రం"
 
@@ -5461,13 +5425,11 @@ msgstr "ఉమ్మడి పేరు (CN)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:636
 #: ../modules/trust-prompt/certificate-viewer.c:642
-#| msgid "Organization"
 msgid "Organization (O)"
 msgstr "సంస్థ (O)"
 
 #: ../modules/trust-prompt/certificate-viewer.c:637
 #: ../modules/trust-prompt/certificate-viewer.c:643
-#| msgid "Organizational Unit"
 msgid "Organizational Unit (OU)"
 msgstr "వ్యవస్థాపరమైన ప్రమాణము (OU)"
 
@@ -5509,12 +5471,10 @@ msgid "General"
 msgstr "సాధారణ"
 
 #: ../modules/trust-prompt/certificate-viewer.c:672
-#| msgid "Certificate rejected"
 msgid "Certificate Hierarchy"
 msgstr "ధృవీకరణపత్రం పారంపర్యం"
 
 #: ../modules/trust-prompt/certificate-viewer.c:676
-#| msgid "Certificate Revoked"
 msgid "Certificate Fields"
 msgstr "ధృవీకరణపత్రం క్షేత్రాలు"
 
@@ -5571,7 +5531,6 @@ msgid "PKCS #1 RSA Encryption"
 msgstr "PKCS #1 RSA ఎన్క్రిప్షన్"
 
 #: ../modules/trust-prompt/e-asn1-object.c:237
-#| msgid "Certificate Revoked"
 msgid "Certificate Key Usage"
 msgstr "దృవీకరణపత్రం కీ వినియోగం"
 
@@ -5580,7 +5539,6 @@ msgid "Netscape Certificate Type"
 msgstr "నెట్ స్కేప్ ధృవీకరణపత్రం రకం"
 
 #: ../modules/trust-prompt/e-asn1-object.c:243
-#| msgid "Certificate untrusted"
 msgid "Certificate Authority Key Identifier"
 msgstr "ధృవీకరణపత్రం అధికారిక కీ గుర్తింపుకారి"
 
@@ -5611,12 +5569,10 @@ msgstr "సబ్జక్టు పబ్లిక్ కీ"
 
 #: ../modules/trust-prompt/e-asn1-object.c:378
 #: ../modules/trust-prompt/e-asn1-object.c:428
-#| msgid "Unable to process spool folder"
 msgid "Error: Unable to process extension"
 msgstr "దోషం: పొడిగింపులను ప్రోసెస్ చేయలేదు"
 
 #: ../modules/trust-prompt/e-asn1-object.c:395
-#| msgid "Email 1"
 msgid "Email"
 msgstr "ఈమెయిల్"
 
@@ -5626,22 +5582,18 @@ msgid "Object Signer"
 msgstr "ఆబ్జక్టు సైనర్"
 
 #: ../modules/trust-prompt/e-asn1-object.c:403
-#| msgid "Invalid Certificate Authority (CA)"
 msgid "SSL Certificate Authority"
 msgstr "SSL ధృవీకరణపత్రం అధికారము"
 
 #: ../modules/trust-prompt/e-asn1-object.c:407
-#| msgid "Invalid Certificate Authority (CA)"
 msgid "Email Certificate Authority"
 msgstr "ఈ మెయిల్ ధృవీకరణపత్రం అధికారము"
 
 #: ../modules/trust-prompt/e-asn1-object.c:436
-#| msgid "Signing message"
 msgid "Signing"
 msgstr "సంతకంచేస్తోంది"
 
 #: ../modules/trust-prompt/e-asn1-object.c:440
-#| msgid "Non-editing Author"
 msgid "Non-repudiation"
 msgstr "నాన్-రిప్యుడియేషన్"
 
@@ -5658,7 +5610,6 @@ msgid "Key Agreement"
 msgstr "కీ వొప్పందం"
 
 #: ../modules/trust-prompt/e-asn1-object.c:456
-#| msgid "Certificate signature failure"
 msgid "Certificate Signer"
 msgstr "ధృవీకరణపత్రం సంతకంచేసేది"
 
@@ -5693,13 +5644,11 @@ msgid "%s = %s"
 msgstr "%s = %s"
 
 #: ../modules/trust-prompt/e-asn1-object.c:658
-#| msgid "X.509 Certificate"
 msgid "Certificate"
 msgstr "ధృవీకరణపత్రం"
 
 #: ../modules/trust-prompt/e-asn1-object.c:674
 #: ../modules/trust-prompt/e-asn1-object.c:812
-#| msgid "Certificate signature failure"
 msgid "Certificate Signature Algorithm"
 msgstr "ధృవీకరణపత్ర సంతకం అల్గార్దెమ్"
 
@@ -5712,22 +5661,18 @@ msgid "Subject"
 msgstr "సబ్జక్ట్/సంగతి"
 
 #: ../modules/trust-prompt/e-asn1-object.c:738
-#| msgid "Unique ID"
 msgid "Issuer Unique ID"
 msgstr "జారీచేయుదాని విశిష్ట ఐడి"
 
 #: ../modules/trust-prompt/e-asn1-object.c:757
-#| msgid "Unique ID"
 msgid "Subject Unique ID"
 msgstr "సబ్జక్ట్ విశిష్ట ఐడి"
 
 #: ../modules/trust-prompt/e-asn1-object.c:818
-#| msgid "Certificate signature failure"
 msgid "Certificate Signature Value"
 msgstr "ధృవీకరణపత్రం సంతకం విలువ"
 
 #: ../modules/trust-prompt/module-trust-prompt.c:201
-#| msgid "Signing certificate not found"
 msgid "The signing certificate authority is not known."
 msgstr "ధృవీకరణపత్రం ధృవీకరణ సంతకం తెలియనిది."
 
@@ -5740,12 +5685,10 @@ msgstr ""
 "సరిపోలడంలేదు."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:205
-#| msgid "Certificate Revocation List signature failure"
 msgid "The certificate's activation time is still in the future."
 msgstr "ధృవీకరణపత్రం క్రీయాశీలమగు సమయం యింకా భవిష్యత్తులోనే వుంది."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:207
-#| msgid "Certificate has expired"
 msgid "The certificate has expired."
 msgstr "ధృవీకరణపత్రము గడువుతీరెను."
 
@@ -5761,12 +5704,10 @@ msgid "The certificate's algorithm is considered insecure."
 msgstr "ధృవీకరణపత్రం యొక్క అల్గార్దెమ్ సురక్షితం కానిదిగా పరిగణించడమైంది."
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:162
-#| msgid "Certificate untrusted"
 msgid "Certificate trust..."
 msgstr "ధృవీకరణపత్రం విశ్వాసం..."
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:163
-#| msgid "X.509 Certificate"
 msgid "_View Certificate"
 msgstr "ధృవీకరణపత్రం దర్శించు (_V)"
 
@@ -5784,15 +5725,10 @@ msgstr "శాశ్వతంగా ఆమోదించు (_A)"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:203
 #, c-format
-#| msgid ""
-#| "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
-#| "\n"
-#| "Detailed information about the certificate:\n"
-#| "%s"
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
 msgstr ""
-"'%s' కొరకు SSL ధృవీకరణపత్రం నమ్మదగినదికాదు. మీరు దానిని "
-"ఆమోదించాలని అనుకొనుచున్నారా?"
+"'%s' కొరకు SSL ధృవీకరణపత్రం నమ్మదగినదికాదు. మీరు దానిని ఆమోదించాలని "
+"అనుకొనుచున్నారా?"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:209
 msgid "Detailed information about the certificate:"
@@ -5827,23 +5763,18 @@ msgid "Signon service did not return a secret"
 msgstr "సైన్ఆన్ సేవ రహస్యాన్ని తిప్పియివ్వలేదు"
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
-#| msgid "Calendar"
 msgid "Google Calendar"
 msgstr "గూగుల్ క్యాలెండర్"
 
 #: ../modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
-#| msgctxt "CategoryName"
-#| msgid "Hot Contacts"
 msgid "Google Contacts"
 msgstr "గూగుల్ పరిచయాలు"
 
 #: ../modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
-#| msgid "Mailer"
 msgid "GMail"
 msgstr "జిమెయిల్"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
-#| msgid "Mailer"
 msgid "Mail"
 msgstr "మెయిల్"
 
@@ -5866,7 +5797,6 @@ msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
 msgstr "guid అభ్యర్ధిస్తున్నప్పుడు కావసిన స్థితి 200, బదులుగా %d (%s) పొందినది"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:96
-#| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing response as JSON: "
 msgstr "JSON వలె స్పందనను పార్శ్ చేయుటలో దోషం:"
 
@@ -5875,7 +5805,6 @@ msgid "Didn't find email member in JSON data"
 msgstr "JSON దత్తాంశం నందు ఈమెయిల్ సంభ్యులు కనబడలేదు"
 
 #: ../modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
-#| msgid "Calendar"
 msgid "Yahoo! Calendar"
 msgstr "యాహూ! క్యాలెండర్"
 
@@ -6040,13 +5969,6 @@ msgstr "తొలగించు (_D)"
 #~ "%s"
 #~ msgstr ""
 #~ "ఐమాప్ సేవికనుండి హెచ్చరిక %s@%s సంచయం %s నందు:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Alert from IMAP server %s@%s:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "ఐమాప్ సేవికనుండి జాగురూకత %s@%s:\n"
 #~ "%s"
 
 #~ msgid "Unexpected response from IMAP server: %s"
