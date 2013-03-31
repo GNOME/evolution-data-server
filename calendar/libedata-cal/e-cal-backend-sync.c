@@ -558,17 +558,6 @@ cal_backend_get_backend_property (ECalBackend *backend,
 }
 
 static void
-cal_backend_set_backend_property (ECalBackend *backend,
-                                  EDataCal *cal,
-                                  guint32 opid,
-                                  GCancellable *cancellable,
-                                  const gchar *prop_name,
-                                  const gchar *prop_value)
-{
-	/* Do nothing. */
-}
-
-static void
 cal_backend_get_object (ECalBackend *backend,
                         EDataCal *cal,
                         guint32 opid,
@@ -864,18 +853,6 @@ cal_backend_sync_get_backend_property (ECalBackendSync *backend,
 	return FALSE;
 }
 
-static gboolean
-cal_backend_sync_set_backend_property (ECalBackendSync *backend,
-                                       EDataCal *cal,
-                                       GCancellable *cancellable,
-                                       const gchar *prop_name,
-                                       const gchar *prop_value,
-                                       GError **error)
-{
-	/* to indicate to pass to the ECalBackend parent class */
-	return FALSE;
-}
-
 static void
 e_cal_backend_sync_finalize (GObject *object)
 {
@@ -904,7 +881,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 	backend_class->open			= cal_backend_open;
 	backend_class->refresh			= cal_backend_refresh;
 	backend_class->get_backend_property	= cal_backend_get_backend_property;
-	backend_class->set_backend_property	= cal_backend_set_backend_property;
 	backend_class->get_object		= cal_backend_get_object;
 	backend_class->get_object_list		= cal_backend_get_object_list;
 	backend_class->get_free_busy		= cal_backend_get_free_busy;
@@ -919,7 +895,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 	backend_class->add_timezone		= cal_backend_add_timezone;
 
 	class->get_backend_property_sync	= cal_backend_sync_get_backend_property;
-	class->set_backend_property_sync	= cal_backend_sync_set_backend_property;
 }
 
 static void

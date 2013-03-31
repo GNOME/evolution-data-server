@@ -117,14 +117,6 @@ struct _ECalBackendClass {
 						 GCancellable *cancellable,
 						 const gchar *prop_name);
 
-	/* This method is deprecated. */
-	void		(*set_backend_property)	(ECalBackend *backend,
-						 EDataCal *cal,
-						 guint32 opid,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value);
-
 	void		(*open)			(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,

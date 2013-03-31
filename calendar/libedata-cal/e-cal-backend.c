@@ -440,17 +440,6 @@ cal_backend_emit_timezone_added_idle_cb (gpointer user_data)
 }
 
 static void
-cal_backend_set_backend_property (ECalBackend *backend,
-                                  EDataCal *cal,
-                                  guint32 opid,
-                                  GCancellable *cancellable,
-                                  const gchar *prop_name,
-                                  const gchar *prop_value)
-{
-	/* Do nothing. */
-}
-
-static void
 cal_backend_set_kind (ECalBackend *backend,
                       icalcomponent_kind kind)
 {
@@ -779,7 +768,6 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	backend_class->authenticate_sync = cal_backend_authenticate_sync;
 
 	class->get_backend_property = cal_backend_get_backend_property;
-	class->set_backend_property = cal_backend_set_backend_property;
 
 	g_object_class_install_property (
 		object_class,
