@@ -342,17 +342,6 @@ book_backend_get_backend_property (EBookBackend *backend,
 }
 
 static void
-book_backend_set_backend_property (EBookBackend *backend,
-                                   EDataBook *book,
-                                   guint32 opid,
-                                   GCancellable *cancellable,
-                                   const gchar *prop_name,
-                                   const gchar *prop_value)
-{
-	/* Do nothing. */
-}
-
-static void
 book_backend_set_registry (EBookBackend *backend,
                            ESourceRegistry *registry)
 {
@@ -527,8 +516,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 	backend_class->authenticate_sync = book_backend_authenticate_sync;
 
 	class->get_backend_property = book_backend_get_backend_property;
-	class->set_backend_property = book_backend_set_backend_property;
-	class->notify_update        = book_backend_notify_update;
+	class->notify_update = book_backend_notify_update;
 
 	g_object_class_install_property (
 		object_class,

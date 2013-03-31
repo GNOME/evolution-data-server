@@ -375,17 +375,6 @@ book_backend_get_backend_property (EBookBackend *backend,
 }
 
 static void
-book_backend_set_backend_property (EBookBackend *backend,
-                                   EDataBook *book,
-                                   guint32 opid,
-                                   GCancellable *cancellable,
-                                   const gchar *prop_name,
-                                   const gchar *prop_value)
-{
-	/* Do nothing. */
-}
-
-static void
 book_backend_create_contacts (EBookBackend *backend,
                               EDataBook *book,
                               guint32 opid,
@@ -504,18 +493,6 @@ book_backend_sync_get_backend_property (EBookBackendSync *backend,
 	return FALSE;
 }
 
-static gboolean
-book_backend_sync_set_backend_property (EBookBackendSync *backend,
-                                        EDataBook *book,
-                                        GCancellable *cancellable,
-                                        const gchar *prop_name,
-                                        const gchar *prop_value,
-                                        GError **error)
-{
-	/* to indicate to pass to the EBookBackend parent class */
-	return FALSE;
-}
-
 static void
 e_book_backend_sync_init (EBookBackendSync *backend)
 {
@@ -529,7 +506,6 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *class)
 	backend_class->open			= book_backend_open;
 	backend_class->refresh			= book_backend_refresh;
 	backend_class->get_backend_property	= book_backend_get_backend_property;
-	backend_class->set_backend_property	= book_backend_set_backend_property;
 	backend_class->create_contacts		= book_backend_create_contacts;
 	backend_class->remove_contacts		= book_backend_remove_contacts;
 	backend_class->modify_contacts		= book_backend_modify_contacts;
@@ -538,5 +514,4 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *class)
 	backend_class->get_contact_list_uids	= book_backend_get_contact_list_uids;
 
 	class->get_backend_property_sync	= book_backend_sync_get_backend_property;
-	class->set_backend_property_sync	= book_backend_sync_set_backend_property;
 }

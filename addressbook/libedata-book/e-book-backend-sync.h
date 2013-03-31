@@ -62,15 +62,6 @@ struct _EBookBackendSyncClass {
 						 gchar **prop_value,
 						 GError **error);
 
-	/* This method is deprecated. */
-	gboolean	(*set_backend_property_sync)
-						(EBookBackendSync *backend,
-						 EDataBook *book,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 const gchar *prop_value,
-						 GError **error);
-
 	void		(*create_contacts_sync)	(EBookBackendSync *backend,
 						 EDataBook *book,
 						 GCancellable *cancellable,
