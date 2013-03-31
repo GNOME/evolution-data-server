@@ -50,15 +50,6 @@
 	((obj), E_TYPE_BOOK_BACKEND, EBookBackendClass))
 
 /**
- * CLIENT_BACKEND_PROPERTY_CACHE_DIR:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CLIENT_BACKEND_PROPERTY_CACHE_DIR		"cache-dir"
-
-/**
  * CLIENT_BACKEND_PROPERTY_CAPABILITIES:
  *
  * FIXME: Document me.
