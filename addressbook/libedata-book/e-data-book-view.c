@@ -643,11 +643,17 @@ e_data_book_view_init (EDataBookView *view)
 
 /**
  * e_data_book_view_new:
- * @book: The #EDataBook to search
- * @sexp: The query as an #EBookBackendSExp
+ * @backend: an #EBookBackend
+ * @sexp: an #EBookBackendSExp
+ * @connection: a #GDBusConnection
+ * @object_path: an object path for the view
+ * @error: return location for a #GError, or %NULL
  *
- * Create a new #EDataBookView for the given #EBook, filtering on @sexp,
- * and place it on DBus at the object path #path.
+ * Creates a new #EDataBookView and exports its D-Bus interface on
+ * @connection at @object_path.  If an error occurs while exporting,
+ * the function sets @error and returns %NULL.
+ *
+ * Returns: an #EDataBookView
  */
 EDataBookView *
 e_data_book_view_new (EBookBackend *backend,
