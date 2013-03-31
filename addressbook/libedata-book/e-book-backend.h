@@ -50,15 +50,6 @@
 	((obj), E_TYPE_BOOK_BACKEND, EBookBackendClass))
 
 /**
- * CLIENT_BACKEND_PROPERTY_ONLINE:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-#define CLIENT_BACKEND_PROPERTY_ONLINE			"online"
-
-/**
  * CLIENT_BACKEND_PROPERTY_READONLY:
  *
  * FIXME: Document me.
