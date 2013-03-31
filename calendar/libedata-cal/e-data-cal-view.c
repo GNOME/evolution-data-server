@@ -598,6 +598,20 @@ e_data_cal_view_init (EDataCalView *view)
 	view->priv->flush_id = 0;
 }
 
+/**
+ * e_data_cal_view_new:
+ * @backend: an #ECalBackend
+ * @sexp: an #ECalBackendSExp
+ * @connection: a #GDBusConnection
+ * @object_path: an object path for the view
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #EDataCalView and exports its D-Bus interface on
+ * @connection at @object_path.  If an error occurs while exporting,
+ * the function sets @error and returns %NULL.
+ *
+ * Returns: an #EDataCalView
+ **/
 EDataCalView *
 e_data_cal_view_new (ECalBackend *backend,
                      ECalBackendSExp *sexp,
