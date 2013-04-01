@@ -434,39 +434,37 @@ create_weather (ECalBackendWeather *cbw,
 	return cal_comp;
 }
 
-static gboolean
-e_cal_backend_weather_get_backend_property (ECalBackendSync *backend,
-                                            EDataCal *cal,
-                                            GCancellable *cancellable,
-                                            const gchar *prop_name,
-                                            gchar **prop_value,
-                                            GError **perror)
+static gchar *
+e_cal_backend_weather_get_backend_property (ECalBackend *backend,
+                                            const gchar *prop_name)
 {
-	gboolean processed = TRUE;
-
 	g_return_val_if_fail (prop_name != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		*prop_value = g_strdup (CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT ","
-					CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS ","
-					CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS ","
-					CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS ","
-					CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT ","
-					CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-					CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-					CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+		return g_strjoin (
+			","
+			CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT,
+			CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS,
+			CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS,
+			CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS,
+			CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT,
+			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
+			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED,
+			NULL);
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		/* Weather has no particular email addresses associated with it */
-		*prop_value = NULL;
+		return NULL;
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
-		*prop_value = NULL;
-	} else {
-		processed = FALSE;
+		return NULL;
 	}
 
-	return processed;
+	/* Chain up to parent's get_backend_property() method. */
+	return E_CAL_BACKEND_CLASS (e_cal_backend_weather_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static void
@@ -809,7 +807,8 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 
 	object_class->finalize = e_cal_backend_weather_finalize;
 
-	sync_class->get_backend_property_sync	= e_cal_backend_weather_get_backend_property;
+	backend_class->get_backend_property = e_cal_backend_weather_get_backend_property;
+
 	sync_class->open_sync			= e_cal_backend_weather_open;
 	sync_class->refresh_sync		= e_cal_backend_weather_refresh;
 	sync_class->receive_objects_sync	= e_cal_backend_weather_receive_objects;

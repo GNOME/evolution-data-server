@@ -127,6 +127,18 @@ struct _ECalBackendCalDAVPrivate {
 	guint refresh_id;
 };
 
+/* Forward Declarations */
+static void	caldav_source_authenticator_init
+				(ESourceAuthenticatorInterface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	ECalBackendCalDAV,
+	e_cal_backend_caldav,
+	E_TYPE_CAL_BACKEND_SYNC,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_SOURCE_AUTHENTICATOR,
+		caldav_source_authenticator_init))
+
 /* ************************************************************************* */
 /* Debugging */
 
@@ -2594,18 +2606,11 @@ get_usermail (ECalBackend *backend)
 /* ************************************************************************* */
 /* ********** ECalBackendSync virtual function implementation *************  */
 
-static gboolean
-caldav_get_backend_property (ECalBackendSync *backend,
-                             EDataCal *cal,
-                             GCancellable *cancellable,
-                             const gchar *prop_name,
-                             gchar **prop_value,
-                             GError **perror)
+static gchar *
+caldav_get_backend_property (ECalBackend *backend,
+                             const gchar *prop_name)
 {
-	gboolean processed = TRUE;
-
 	g_return_val_if_fail (prop_name != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		ESourceWebdav *extension;
@@ -2636,12 +2641,15 @@ caldav_get_backend_property (ECalBackendSync *backend,
 				"," CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
 		}
 
-		*prop_value = g_string_free (caps, FALSE);
+		return g_string_free (caps, FALSE);
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
-		*prop_value = get_usermail (E_CAL_BACKEND (backend));
+		return get_usermail (E_CAL_BACKEND (backend));
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		ECalComponent *comp;
+		gchar *prop_value;
 
 		comp = e_cal_component_new ();
 
@@ -2657,17 +2665,19 @@ caldav_get_backend_property (ECalBackendSync *backend,
 			break;
 		default:
 			g_object_unref (comp);
-			g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
-			return TRUE;
+			return NULL;
 		}
 
-		*prop_value = e_cal_component_get_as_string (comp);
+		prop_value = e_cal_component_get_as_string (comp);
+
 		g_object_unref (comp);
-	} else {
-		processed = FALSE;
+
+		return prop_value;
 	}
 
-	return processed;
+	/* Chain up to parent's get_backend_property() method. */
+	return E_CAL_BACKEND_CLASS (e_cal_backend_caldav_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static void
@@ -5107,14 +5117,6 @@ caldav_source_authenticator_init (ESourceAuthenticatorInterface *interface)
 /* ************************************************************************* */
 /* ***************************** GObject Foo ******************************* */
 
-G_DEFINE_TYPE_WITH_CODE (
-	ECalBackendCalDAV,
-	e_cal_backend_caldav,
-	E_TYPE_CAL_BACKEND_SYNC,
-	G_IMPLEMENT_INTERFACE (
-		E_TYPE_SOURCE_AUTHENTICATOR,
-		caldav_source_authenticator_init))
-
 static void
 e_cal_backend_caldav_dispose (GObject *object)
 {
@@ -5264,7 +5266,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	object_class->finalize = e_cal_backend_caldav_finalize;
 	object_class->constructed = cal_backend_caldav_constructed;
 
-	sync_class->get_backend_property_sync	= caldav_get_backend_property;
+	backend_class->get_backend_property = caldav_get_backend_property;
 
 	sync_class->open_sync			= caldav_do_open;
 	sync_class->refresh_sync		= caldav_refresh;

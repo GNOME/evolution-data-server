@@ -22,9 +22,7 @@ e_cal_backend_create_cache_filename
 e_cal_backend_add_view
 e_cal_backend_remove_view
 e_cal_backend_list_views
-e_cal_backend_get_backend_property_sync
 e_cal_backend_get_backend_property
-e_cal_backend_get_backend_property_finish
 e_cal_backend_open_sync
 e_cal_backend_open
 e_cal_backend_open_finish
@@ -212,7 +210,6 @@ ECalBackendSync
 e_cal_backend_sync_set_lock
 e_cal_backend_sync_open
 e_cal_backend_sync_refresh
-e_cal_backend_sync_get_backend_property
 e_cal_backend_sync_get_object
 e_cal_backend_sync_get_object_list
 e_cal_backend_sync_get_free_busy
@@ -263,7 +260,6 @@ e_data_cal_get_object_path
 e_data_cal_is_opened
 e_data_cal_respond_open
 e_data_cal_respond_refresh
-e_data_cal_respond_get_backend_property
 e_data_cal_respond_get_object
 e_data_cal_respond_get_object_list
 e_data_cal_respond_get_free_busy

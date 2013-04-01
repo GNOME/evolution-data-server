@@ -111,10 +111,7 @@ struct _ECalBackendClass {
 	EBackendClass parent_class;
 
 	/* Virtual methods */
-	void		(*get_backend_property)	(ECalBackend *backend,
-						 EDataCal *cal,
-						 guint32 opid,
-						 GCancellable *cancellable,
+	gchar *		(*get_backend_property)	(ECalBackend *backend,
 						 const gchar *prop_name);
 
 	void		(*open)			(ECalBackend *backend,
@@ -236,21 +233,9 @@ void		e_cal_backend_remove_view	(ECalBackend *backend,
 						 EDataCalView *view);
 GList *		e_cal_backend_list_views	(ECalBackend *backend);
 
-gchar *		e_cal_backend_get_backend_property_sync
+gchar *		e_cal_backend_get_backend_property
 						(ECalBackend *backend,
-						 const gchar *prop_name,
-						 GCancellable *cancellable,
-						 GError **error);
-void		e_cal_backend_get_backend_property
-						(ECalBackend *backend,
-						 const gchar *prop_name,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gchar *		e_cal_backend_get_backend_property_finish
-						(ECalBackend *backend,
-						 GAsyncResult *result,
-						 GError **error);
+						 const gchar *prop_name);
 gboolean	e_cal_backend_open_sync		(ECalBackend *backend,
 						 GCancellable *cancellable,
 						 GError **error);

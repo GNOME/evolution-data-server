@@ -1537,50 +1537,6 @@ e_data_cal_respond_refresh (EDataCal *cal,
 }
 
 /**
- * e_data_cal_respond_get_backend_property:
- * @cal: A calendar client interface.
- * @error: Operation error, if any, automatically freed if passed it.
- * @prop_value: Value of a property
- *
- * Notifies listeners of the completion of the get_backend_property method call.
- *
- * Since: 3.2
- */
-void
-e_data_cal_respond_get_backend_property (EDataCal *cal,
-                                         guint32 opid,
-                                         GError *error,
-                                         const gchar *prop_value)
-{
-	ECalBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
-
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	backend = e_data_cal_ref_backend (cal);
-	g_return_if_fail (backend != NULL);
-
-	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
-
-	if (error == NULL) {
-		/* Convert NULL to an empty string. */
-		if (prop_value == NULL)
-			prop_value = "";
-		g_queue_push_tail (queue, g_strdup (prop_value));
-	} else {
-		g_simple_async_result_take_error (simple, error);
-	}
-
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
-	g_object_unref (backend);
-}
-
-/**
  * e_data_cal_respond_get_object:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
@@ -2502,36 +2458,31 @@ data_cal_constructed (GObject *object)
 	/* XXX Initialize the rest of the properties. */
 
 	prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
-	prop_value = e_cal_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
-	prop_value = e_cal_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
-	prop_value = e_cal_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
-	prop_value = e_cal_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
-	prop_value = e_cal_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_cal_backend_get_backend_property (backend, prop_name);
 	e_data_cal_report_backend_property_changed (
 		cal, prop_name, prop_value);
 	g_free (prop_value);

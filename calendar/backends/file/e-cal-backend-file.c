@@ -459,36 +459,35 @@ bump_revision (ECalBackendFile *cbfile)
 /* Calendar backend methods */
 
 /* Get_email_address handler for the file backend */
-static gboolean
-e_cal_backend_file_get_backend_property (ECalBackendSync *backend,
-                                         EDataCal *cal,
-                                         GCancellable *cancellable,
-                                         const gchar *prop_name,
-                                         gchar **prop_value,
-                                         GError **perror)
+static gchar *
+e_cal_backend_file_get_backend_property (ECalBackend *backend,
+                                         const gchar *prop_name)
 {
-	gboolean processed = TRUE;
-
 	g_return_val_if_fail (prop_name != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		*prop_value = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
-					CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-					CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED ","
-					CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS ","
-					CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-					CAL_STATIC_CAPABILITY_BULK_ADDS ","
-					CAL_STATIC_CAPABILITY_BULK_MODIFIES ","
-					CAL_STATIC_CAPABILITY_BULK_REMOVES);
+		return g_strjoin (
+			","
+			CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS,
+			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED,
+			CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS,
+			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
+			CAL_STATIC_CAPABILITY_BULK_ADDS,
+			CAL_STATIC_CAPABILITY_BULK_MODIFIES,
+			CAL_STATIC_CAPABILITY_BULK_REMOVES,
+			NULL);
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		/* A file backend has no particular email address associated
 		 * with it (although that would be a useful feature some day).
 		 */
-		*prop_value = NULL;
+		return NULL;
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		ECalComponent *comp;
+		gchar *prop_value;
 
 		comp = e_cal_component_new ();
 
@@ -504,25 +503,25 @@ e_cal_backend_file_get_backend_property (ECalBackendSync *backend,
 			break;
 		default:
 			g_object_unref (comp);
-			g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
-			return TRUE;
+			return NULL;
 		}
 
-		*prop_value = e_cal_component_get_as_string (comp);
+		prop_value = e_cal_component_get_as_string (comp);
+
 		g_object_unref (comp);
+
+		return prop_value;
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_REVISION)) {
-	       icalproperty *prop;
-	       const gchar  *revision;
+		icalproperty *prop;
 
-	       prop     = ensure_revision (E_CAL_BACKEND_FILE (backend));
-	       revision = icalproperty_get_x (prop);
-
-	       *prop_value = g_strdup (revision);
-	} else {
-		processed = FALSE;
+		prop = ensure_revision (E_CAL_BACKEND_FILE (backend));
+		return g_strdup (icalproperty_get_x (prop));
 	}
 
-	return processed;
+	/* Chain up to parent's get_backend_property() method. */
+	return E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 /* function to resolve timezones */
@@ -3486,7 +3485,8 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	object_class->finalize = e_cal_backend_file_finalize;
 	object_class->constructed = cal_backend_file_constructed;
 
-	sync_class->get_backend_property_sync	= e_cal_backend_file_get_backend_property;
+	backend_class->get_backend_property = e_cal_backend_file_get_backend_property;
+
 	sync_class->open_sync			= e_cal_backend_file_open;
 	sync_class->create_objects_sync		= e_cal_backend_file_create_objects;
 	sync_class->modify_objects_sync		= e_cal_backend_file_modify_objects;

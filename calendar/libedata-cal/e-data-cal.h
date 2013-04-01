@@ -180,11 +180,6 @@ void		e_data_cal_respond_open		(EDataCal *cal,
 void		e_data_cal_respond_refresh	(EDataCal *cal,
 						 guint32 opid,
 						 GError *error);
-void		e_data_cal_respond_get_backend_property
-						(EDataCal *cal,
-						 guint32 opid,
-						 GError *error,
-						 const gchar *prop_value);
 void		e_data_cal_respond_get_object	(EDataCal *cal,
 						 guint32 opid,
 						 GError *error,

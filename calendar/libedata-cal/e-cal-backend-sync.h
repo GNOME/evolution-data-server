@@ -54,13 +54,6 @@ struct _ECalBackendSyncClass {
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 GError **error);
-	gboolean	(*get_backend_property_sync)
-						(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 gchar **prop_value,
-						 GError **error);
 
 	/* This method is deprecated. */
 	gboolean	(*set_backend_property_sync)
@@ -166,13 +159,6 @@ void		e_cal_backend_sync_open		(ECalBackendSync *backend,
 void		e_cal_backend_sync_refresh	(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
-						 GError **error);
-gboolean	e_cal_backend_sync_get_backend_property
-						(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 gchar **prop_value,
 						 GError **error);
 void		e_cal_backend_sync_get_object	(ECalBackendSync *backend,
 						 EDataCal *cal,

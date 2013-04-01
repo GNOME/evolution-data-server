@@ -199,41 +199,42 @@ e_cal_backend_http_constructed (GObject *object)
 
 /* Calendar backend methods */
 
-static gboolean
-e_cal_backend_http_get_backend_property (ECalBackendSync *backend,
-                                         EDataCal *cal,
-                                         GCancellable *cancellable,
-                                         const gchar *prop_name,
-                                         gchar **prop_value,
-                                         GError **perror)
+static gchar *
+e_cal_backend_http_get_backend_property (ECalBackend *backend,
+                                         const gchar *prop_name)
 {
-	gboolean processed = TRUE;
-
-	g_return_val_if_fail (prop_name != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		*prop_value = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
-					CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+		return g_strjoin (
+			","
+			CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS,
+			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED,
+			NULL);
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		/* A HTTP backend has no particular email address associated
 		 * with it (although that would be a useful feature some day).
 		 */
-		*prop_value = NULL;
+		return NULL;
+
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
 		icalcomponent *icalcomp;
 		icalcomponent_kind kind;
+		gchar *prop_value;
 
 		kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
 		icalcomp = e_cal_util_new_component (kind);
-		*prop_value = icalcomponent_as_ical_string_r (icalcomp);
+		prop_value = icalcomponent_as_ical_string_r (icalcomp);
 		icalcomponent_free (icalcomp);
-	} else {
-		processed = FALSE;
+
+		return prop_value;
 	}
 
-	return processed;
+	/* Chain up to parent's get_backend_property() method. */
+	return E_CAL_BACKEND_CLASS (e_cal_backend_http_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static gchar *
@@ -1502,7 +1503,8 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	object_class->finalize = e_cal_backend_http_finalize;
 	object_class->constructed = e_cal_backend_http_constructed;
 
-	sync_class->get_backend_property_sync	= e_cal_backend_http_get_backend_property;
+	backend_class->get_backend_property = e_cal_backend_http_get_backend_property;
+
 	sync_class->open_sync			= e_cal_backend_http_open;
 	sync_class->refresh_sync		= e_cal_backend_http_refresh;
 	sync_class->create_objects_sync		= e_cal_backend_http_create_objects;

@@ -69,7 +69,6 @@ struct _AsyncContext {
 	gchar *tzid;
 	gchar *tzobject;
 	ECalObjModType mod;
-	const gchar *prop_name;
 	time_t start;
 	time_t end;
 	GSList *compid_list;
@@ -359,65 +358,41 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 	g_free (filename);
 }
 
-static void
+static gchar *
 cal_backend_get_backend_property (ECalBackend *backend,
-                                  EDataCal *cal,
-                                  guint32 opid,
-                                  GCancellable *cancellable,
                                   const gchar *prop_name)
 {
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (cal != NULL);
-	g_return_if_fail (prop_name != NULL);
+	gchar *prop_value = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		e_data_cal_respond_get_backend_property (
-			cal, opid, NULL, "TRUE");
+		prop_value = g_strdup ("TRUE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
-		e_data_cal_respond_get_backend_property (
-			cal, opid, NULL, "FALSE");
+		prop_value = g_strdup ("FALSE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
-		e_data_cal_respond_get_backend_property (
-			cal, opid, NULL, "0");
+		prop_value = g_strdup ("0");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
 		gboolean online;
 
 		online = e_backend_get_online (E_BACKEND (backend));
-
-		e_data_cal_respond_get_backend_property (
-			cal, opid, NULL, online ? "TRUE" : "FALSE");
+		prop_value = g_strdup (online ? "TRUE" : "FALSE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
 		gboolean readonly;
 
 		readonly = e_cal_backend_is_readonly (backend);
-
-		e_data_cal_respond_get_backend_property (
-			cal, opid, NULL, readonly ? "TRUE" : "FALSE");
+		prop_value = g_strdup (readonly ? "TRUE" : "FALSE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
-		const gchar *cache_dir;
-
-		cache_dir = e_cal_backend_get_cache_dir (backend);
-
-		e_data_cal_respond_get_backend_property (
-			cal, opid, NULL, cache_dir);
-
-	} else {
-		GError *error;
-
-		error = e_data_cal_create_error_fmt (
-			NotSupported,
-			_("Unknown calendar property '%s'"), prop_name);
-
-		/* Takes ownership of the GError. */
-		e_data_cal_respond_get_backend_property (
-			cal, opid, error, NULL);
+		prop_value = e_cal_backend_dup_cache_dir (backend);
 	}
+
+	return prop_value;
 }
 
 static gboolean
@@ -1164,180 +1139,30 @@ e_cal_backend_create_cache_filename (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_get_backend_property_sync:
+ * e_cal_backend_get_backend_property:
  * @backend: an #ECalBackend
  * @prop_name: a backend property name
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
  *
  * Obtains the value of the backend property named @prop_name.
- *
- * Despite appearances, this function does not actually block.  So the
- * @cancellable can safely be %NULL.  If can, however, return an error
- * if @prop_name is not recognized.
- *
- * The returned string must be freed with g_free() when finished with it.
+ * Freed the returned string with g_free() when finished with it.
  *
  * Returns: the value for @prop_name
  *
  * Since: 3.10
  **/
 gchar *
-e_cal_backend_get_backend_property_sync (ECalBackend *backend,
-                                         const gchar *prop_name,
-                                         GCancellable *cancellable,
-                                         GError **error)
+e_cal_backend_get_backend_property (ECalBackend *backend,
+                                    const gchar *prop_name)
 {
-	EAsyncClosure *closure;
-	GAsyncResult *result;
-	gchar *prop_value;
+	ECalBackendClass *class;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
-	closure = e_async_closure_new ();
-
-	e_cal_backend_get_backend_property (
-		backend, prop_name, cancellable,
-		e_async_closure_callback, closure);
-
-	result = e_async_closure_wait (closure);
-
-	prop_value = e_cal_backend_get_backend_property_finish (
-		backend, result, error);
-
-	e_async_closure_free (closure);
-
-	return prop_value;
-}
-
-/* Helper for e_cal_backend_get_backend_property() */
-static void
-cal_backend_get_backend_property_thread (GSimpleAsyncResult *simple,
-                                         GObject *source_object,
-                                         GCancellable *cancellable)
-{
-	ECalBackend *backend;
-	ECalBackendClass *class;
-	EDataCal *data_cal;
-	AsyncContext *async_context;
-	guint32 opid;
-
-	backend = E_CAL_BACKEND (source_object);
-
 	class = E_CAL_BACKEND_GET_CLASS (backend);
-	g_return_if_fail (class->get_backend_property != NULL);
+	g_return_val_if_fail (class->get_backend_property != NULL, NULL);
 
-	data_cal = e_cal_backend_ref_data_cal (backend);
-	g_return_if_fail (data_cal != NULL);
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	opid = cal_backend_stash_operation (backend, simple);
-
-	class->get_backend_property (
-		backend, data_cal, opid, cancellable,
-		async_context->prop_name);
-
-	g_object_unref (data_cal);
-}
-
-/**
- * e_cal_backend_get_backend_property:
- * @backend: an #ECalBackend
- * @prop_name: a backend property name
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Asynchronously obtains the value of the backend property named @prop_name.
- *
- * Despite appearances, e_cal_backend_get_backend_property_sync() does not
- * actually block, and is more convenient than this function.  This function
- * exists for the moment merely to invoke the class method and collect the
- * result from #EDataCal.
- *
- * When the operation is finished, @callback will be called.  You can then
- * call e_cal_backend_get_backend_property_finish() to get the result of
- * the operation.
- *
- * Since: 3.10
- **/
-void
-e_cal_backend_get_backend_property (ECalBackend *backend,
-                                    const gchar *prop_name,
-                                    GCancellable *cancellable,
-                                    GAsyncReadyCallback callback,
-                                    gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (prop_name != NULL);
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->prop_name = g_intern_string (prop_name);
-	async_context->string_queue = &async_context->result_queue;
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_cal_backend_get_backend_property);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	cal_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		cal_backend_get_backend_property_thread);
-
-	cal_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_cal_backend_get_backend_property_finish:
- * @backend: an #ECalBackend
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_cal_backend_get_backend_property().
- *
- * The returned string must be freed with g_free() when finished with it.
- *
- * Returns: the requested property value
- *
- * Since: 3.10
- **/
-gchar *
-e_cal_backend_get_backend_property_finish (ECalBackend *backend,
-                                           GAsyncResult *result,
-                                           GError **error)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	gchar *prop_value;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_cal_backend_get_backend_property), NULL);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	prop_value = g_queue_pop_head (&async_context->result_queue);
-	g_return_val_if_fail (prop_value != NULL, NULL);
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	return prop_value;
+	return class->get_backend_property (backend, prop_name);
 }
 
 /**

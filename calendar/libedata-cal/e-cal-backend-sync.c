@@ -114,42 +114,6 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
 }
 
 /**
- * e_cal_backend_sync_get_backend_property:
- * @backend: An ECalBackendSync object.
- * @cal: An EDataCal object.
- * @cancellable: a #GCancellable for the operation
- * @prop_name: Property name whose value to retrieve.
- * @prop_value: Return value of the @prop_name.
- * @error: Out parameter for a #GError.
- *
- * Calls the get_backend_property_sync method on the given backend.
- *
- * Returns whether processed this property. Returning FALSE means to pass
- * the call to the ECalBackend parent class, thus neither @error should be
- * set in this case.
- *
- * Since: 3.2
- **/
-gboolean
-e_cal_backend_sync_get_backend_property (ECalBackendSync *backend,
-                                         EDataCal *cal,
-                                         GCancellable *cancellable,
-                                         const gchar *prop_name,
-                                         gchar **prop_value,
-                                         GError **error)
-{
-	gboolean res = FALSE;
-
-	e_return_data_cal_error_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_val_if_fail (prop_name, InvalidArg);
-	e_return_data_cal_error_val_if_fail (prop_value, InvalidArg);
-
-	LOCK_WRAPPER_RET_VAL (get_backend_property_sync, (backend, cal, cancellable, prop_name, prop_value, error));
-
-	return res;
-}
-
-/**
  * e_cal_backend_sync_get_object:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
@@ -540,24 +504,6 @@ cal_backend_refresh (ECalBackend *backend,
 }
 
 static void
-cal_backend_get_backend_property (ECalBackend *backend,
-                                  EDataCal *cal,
-                                  guint32 opid,
-                                  GCancellable *cancellable,
-                                  const gchar *prop_name)
-{
-	GError *error = NULL;
-	gchar *prop_value = NULL;
-
-	if (e_cal_backend_sync_get_backend_property (E_CAL_BACKEND_SYNC (backend), cal, cancellable, prop_name, &prop_value, &error))
-		e_data_cal_respond_get_backend_property (cal, opid, error, prop_value);
-	else
-		(* E_CAL_BACKEND_CLASS (e_cal_backend_sync_parent_class)->get_backend_property) (backend, cal, opid, cancellable, prop_name);
-
-	g_free (prop_value);
-}
-
-static void
 cal_backend_get_object (ECalBackend *backend,
                         EDataCal *cal,
                         guint32 opid,
@@ -841,18 +787,6 @@ cal_backend_add_timezone (ECalBackend *backend,
 	e_data_cal_respond_add_timezone (cal, opid, error);
 }
 
-static gboolean
-cal_backend_sync_get_backend_property (ECalBackendSync *backend,
-                                       EDataCal *cal,
-                                       GCancellable *cancellable,
-                                       const gchar *prop_name,
-                                       gchar **prop_value,
-                                       GError **error)
-{
-	/* to indicate to pass to the ECalBackend parent class */
-	return FALSE;
-}
-
 static void
 e_cal_backend_sync_finalize (GObject *object)
 {
@@ -880,7 +814,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 	backend_class = E_CAL_BACKEND_CLASS (class);
 	backend_class->open			= cal_backend_open;
 	backend_class->refresh			= cal_backend_refresh;
-	backend_class->get_backend_property	= cal_backend_get_backend_property;
 	backend_class->get_object		= cal_backend_get_object;
 	backend_class->get_object_list		= cal_backend_get_object_list;
 	backend_class->get_free_busy		= cal_backend_get_free_busy;
@@ -893,8 +826,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 	backend_class->discard_alarm		= cal_backend_discard_alarm;
 	backend_class->get_timezone		= cal_backend_get_timezone;
 	backend_class->add_timezone		= cal_backend_add_timezone;
-
-	class->get_backend_property_sync	= cal_backend_sync_get_backend_property;
 }
 
 static void
