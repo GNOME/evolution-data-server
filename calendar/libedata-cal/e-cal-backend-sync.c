@@ -30,20 +30,9 @@ struct _ECalBackendSyncPrivate {
 
 #define LOCK_WRAPPER(func, args) G_STMT_START {									\
 	gboolean locked = backend->priv->mutex_lock;								\
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func, NotSupported);		\
 	if (locked)												\
 		g_mutex_lock (&backend->priv->sync_mutex);							\
 	(* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func) args;							\
-	if (locked)												\
-		g_mutex_unlock (&backend->priv->sync_mutex);							\
-	} G_STMT_END
-
-#define LOCK_WRAPPER_RET_VAL(func, args) G_STMT_START {								\
-	gboolean locked = backend->priv->mutex_lock;								\
-	e_return_data_cal_error_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func, NotSupported);	\
-	if (locked)												\
-		g_mutex_lock (&backend->priv->sync_mutex);							\
-	res = (* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func) args;						\
 	if (locked)												\
 		g_mutex_unlock (&backend->priv->sync_mutex);							\
 	} G_STMT_END
@@ -85,9 +74,20 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
                          gboolean only_if_exists,
                          GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (open_sync, (backend, cal, cancellable, only_if_exists, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->open_sync != NULL) {
+		LOCK_WRAPPER (open_sync, (backend, cal, cancellable, only_if_exists, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -107,10 +107,20 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
                             GCancellable *cancellable,
                             GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->refresh_sync != NULL, UnsupportedMethod);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (refresh_sync, (backend, cal, cancellable, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->refresh_sync != NULL) {
+		LOCK_WRAPPER (refresh_sync, (backend, cal, cancellable, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -135,10 +145,21 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend,
                                gchar **calobj,
                                GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (calobj, InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (get_object_sync, (backend, cal, cancellable, uid, rid, calobj, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+	g_return_if_fail (calobj != NULL);
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_object_sync != NULL) {
+		LOCK_WRAPPER (get_object_sync, (backend, cal, cancellable, uid, rid, calobj, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -160,10 +181,21 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend,
                                     GSList **calobjs,
                                     GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (calobjs, InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (get_object_list_sync, (backend, cal, cancellable, sexp, calobjs, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+	g_return_if_fail (calobjs != NULL);
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_object_list_sync != NULL) {
+		LOCK_WRAPPER (get_object_list_sync, (backend, cal, cancellable, sexp, calobjs, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -189,9 +221,20 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
                                   GSList **freebusyobjects,
                                   GError **error)
 {
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (get_free_busy_sync, (backend, cal, cancellable, users, start, end, freebusyobjects, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_free_busy_sync != NULL) {
+		LOCK_WRAPPER (get_free_busy_sync, (backend, cal, cancellable, users, start, end, freebusyobjects, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -217,10 +260,20 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
                                    GSList **new_components,
                                    GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_objects_sync != NULL, UnsupportedMethod);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (create_objects_sync, (backend, cal, cancellable, calobjs, uids, new_components, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->create_objects_sync != NULL) {
+		LOCK_WRAPPER (create_objects_sync, (backend, cal, cancellable, calobjs, uids, new_components, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -250,10 +303,20 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
                                    GSList **new_components,
                                    GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_objects_sync != NULL, UnsupportedMethod);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (modify_objects_sync, (backend, cal, cancellable, calobjs, mod, old_components, new_components, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->modify_objects_sync != NULL) {
+		LOCK_WRAPPER (modify_objects_sync, (backend, cal, cancellable, calobjs, mod, old_components, new_components, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -284,10 +347,20 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
                                    GSList **new_components,
                                    GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_objects_sync != NULL, UnsupportedMethod);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (remove_objects_sync, (backend, cal, cancellable, ids, mod, old_components, new_components, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->remove_objects_sync != NULL) {
+		LOCK_WRAPPER (remove_objects_sync, (backend, cal, cancellable, ids, mod, old_components, new_components, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -307,10 +380,20 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
                                     const gchar *calobj,
                                     GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync != NULL, UnsupportedMethod);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (receive_objects_sync, (backend, cal, cancellable, calobj, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->receive_objects_sync != NULL) {
+		LOCK_WRAPPER (receive_objects_sync, (backend, cal, cancellable, calobj, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -334,10 +417,20 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
                                  gchar **modified_calobj,
                                  GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync != NULL, UnsupportedMethod);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (send_objects_sync, (backend, cal, cancellable, calobj, users, modified_calobj, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->send_objects_sync != NULL) {
+		LOCK_WRAPPER (send_objects_sync, (backend, cal, cancellable, calobj, users, modified_calobj, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -363,10 +456,21 @@ e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,
                                         GSList **attachments,
                                         GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (attachments, InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (get_attachment_uris_sync, (backend, cal, cancellable, uid, rid, attachments, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+	g_return_if_fail (attachments != NULL);
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_attachment_uris_sync != NULL) {
+		LOCK_WRAPPER (get_attachment_uris_sync, (backend, cal, cancellable, uid, rid, attachments, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -390,11 +494,22 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
                                   const gchar *auid,
                                   GError **error)
 {
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-	e_return_data_cal_error_if_fail (uid, InvalidArg);
-	e_return_data_cal_error_if_fail (auid, InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (discard_alarm_sync, (backend, cal, cancellable, uid, rid, auid, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+	g_return_if_fail (uid != NULL);
+	g_return_if_fail (auid != NULL);
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->discard_alarm_sync != NULL) {
+		LOCK_WRAPPER (discard_alarm_sync, (backend, cal, cancellable, uid, rid, auid, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -422,9 +537,12 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
                                  gchar **tzobject,
                                  GError **error)
 {
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
+	ECalBackendSyncClass *class;
 
-	if (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->get_timezone_sync) {
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_timezone_sync != NULL) {
 		LOCK_WRAPPER (get_timezone_sync, (backend, cal, cancellable, tzid, tzobject, error));
 	}
 
@@ -471,9 +589,20 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend,
                                  const gchar *tzobject,
                                  GError **error)
 {
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
+	ECalBackendSyncClass *class;
 
-	LOCK_WRAPPER (add_timezone_sync, (backend, cal, cancellable, tzobject, error));
+	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
+
+	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->add_timezone_sync != NULL) {
+		LOCK_WRAPPER (add_timezone_sync, (backend, cal, cancellable, tzobject, error));
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 static void
