@@ -271,7 +271,6 @@ E_DATA_BOOK_ERROR
 e_data_book_create_error
 e_data_book_create_error_fmt
 e_data_book_status_to_string
-e_return_data_book_error_if_fail
 e_return_data_book_error_val_if_fail
 e_data_book_new
 e_data_book_ref_backend
