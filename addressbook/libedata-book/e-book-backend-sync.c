@@ -50,11 +50,22 @@ e_book_backend_sync_open (EBookBackendSync *backend,
                           gboolean only_if_exists,
                           GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->open_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->open_sync) (backend, book, cancellable, only_if_exists, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->open_sync != NULL) {
+		class->open_sync (
+			backend, book, cancellable, only_if_exists, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -78,13 +89,25 @@ e_book_backend_sync_create_contacts (EBookBackendSync *backend,
                                      GSList **added_contacts,
                                      GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (vcards, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (added_contacts, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->create_contacts_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->create_contacts_sync) (backend, book, cancellable, vcards, added_contacts, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (vcards != NULL);
+	g_return_if_fail (added_contacts != NULL);
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->create_contacts_sync != NULL) {
+		class->create_contacts_sync (
+			backend, book, cancellable,
+			vcards, added_contacts, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -104,11 +127,21 @@ e_book_backend_sync_refresh (EBookBackendSync *backend,
                              GCancellable *cancellable,
                              GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->refresh_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->refresh_sync) (backend, book, cancellable, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->refresh_sync != NULL) {
+		class->refresh_sync (backend, book, cancellable, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -132,13 +165,25 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
                                      GSList **removed_ids,
                                      GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (id_list, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (removed_ids, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->remove_contacts_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->remove_contacts_sync) (backend, book, cancellable, id_list, removed_ids, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (id_list != NULL);
+	g_return_if_fail (removed_ids != NULL);
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->remove_contacts_sync != NULL) {
+		class->remove_contacts_sync (
+			backend, book, cancellable,
+			id_list, removed_ids, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -158,19 +203,31 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_modify_contacts (EBookBackendSync *backend,
-                                    EDataBook *book,
-                                    GCancellable *cancellable,
-                                    const GSList *vcards,
-                                    GSList **modified_contacts,
-                                    GError **error)
+                                     EDataBook *book,
+                                     GCancellable *cancellable,
+                                     const GSList *vcards,
+                                     GSList **modified_contacts,
+                                     GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (vcards, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (modified_contacts, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync) (backend, book, cancellable, vcards, modified_contacts, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (vcards != NULL);
+	g_return_if_fail (modified_contacts != NULL);
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->modify_contacts_sync != NULL) {
+		class->modify_contacts_sync (
+			backend, book, cancellable,
+			vcards, modified_contacts, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -191,13 +248,24 @@ e_book_backend_sync_get_contact (EBookBackendSync *backend,
                                  gchar **vcard,
                                  GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (id, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (vcard, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_sync) (backend, book, cancellable, id, vcard, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (id != NULL);
+	g_return_if_fail (vcard != NULL);
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_contact_sync != NULL) {
+		class->get_contact_sync (
+			backend, book, cancellable, id, vcard, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -220,13 +288,24 @@ e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
                                       GSList **contacts,
                                       GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (query, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (contacts, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_list_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	EBookBackendSyncClass *class;
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_list_sync) (backend, book, cancellable, query, contacts, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (query != NULL);
+	g_return_if_fail (contacts != NULL);
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_contact_list_sync != NULL) {
+		class->get_contact_list_sync (
+			backend, book, cancellable, query, contacts, error);
+	} else {
+		g_set_error_literal (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+	}
 }
 
 /**
@@ -251,19 +330,26 @@ e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
                                            GSList **contacts_uids,
                                            GError **error)
 {
-	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (query, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (contacts_uids, E_DATA_BOOK_STATUS_INVALID_ARG);
+	EBookBackendSyncClass *class;
 
-	if (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_list_uids_sync != NULL) {
-		(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_list_uids_sync) (backend, book, cancellable, query, contacts_uids, error);
+	g_return_if_fail (E_IS_BOOK_BACKEND_SYNC (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (query != NULL);
+	g_return_if_fail (contacts_uids != NULL);
+
+	class = E_BOOK_BACKEND_SYNC_GET_CLASS (backend);
+	if (class->get_contact_list_uids_sync != NULL) {
+		class->get_contact_list_uids_sync (
+			backend, book, cancellable,
+			query, contacts_uids, error);
 	} else {
 		/* inefficient fallback code */
 		GSList *vcards = NULL;
 		GError *local_error = NULL;
 
-		e_book_backend_sync_get_contact_list (backend, book, cancellable, query, &vcards, &local_error);
+		e_book_backend_sync_get_contact_list (
+			backend, book, cancellable,
+			query, &vcards, &local_error);
 
 		if (local_error) {
 			g_propagate_error (error, local_error);
@@ -282,7 +368,9 @@ e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
 				attr = e_vcard_get_attribute (card, EVC_UID);
 
 				if (attr)
-					*contacts_uids = g_slist_prepend (*contacts_uids, e_vcard_attribute_get_value (attr));
+					*contacts_uids = g_slist_prepend (
+						*contacts_uids,
+						e_vcard_attribute_get_value (attr));
 
 				g_object_unref (card);
 			}
