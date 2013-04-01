@@ -932,8 +932,8 @@ e_book_backend_open_finish (EBookBackend *backend,
  *
  * If an error occurs while initiating the refresh, the function will set
  * @error and return %FALSE.  If the @backend does not support refreshing,
- * the function will set an %E_DATA_BOOK_STATUS_NOT_SUPPORTED error and
- * return %FALSE.
+ * the function will set an %E_CLIENT_ERROR_NOT_SUPPORTED error and return
+ * %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
@@ -984,18 +984,18 @@ book_backend_refresh_thread (GSimpleAsyncResult *simple,
 
 	if (class->refresh == NULL) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_SUPPORTED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_SUPPORTED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1061,8 +1061,8 @@ e_book_backend_refresh (EBookBackend *backend,
  *
  * If an error occurred while initiating the refresh, the function will set
  * @error and return %FALSE.  If the @backend does not support refreshing,
- * the function will set an %E_DATA_BOOK_STATUS_NOT_SUPPORTED error and
- * return %FALSE.
+ * the function will set an %E_CLIENT_ERROR_NOT_SUPPORTED error and return
+ * %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
@@ -1161,9 +1161,9 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
 			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1354,10 +1354,10 @@ book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
 
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1542,10 +1542,10 @@ book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
 
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1733,10 +1733,10 @@ book_backend_get_contact_thread (GSimpleAsyncResult *simple,
 
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1923,10 +1923,10 @@ book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
 
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -2115,10 +2115,10 @@ book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
 
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
-			E_DATA_BOOK_STATUS_NOT_OPENED,
-			"%s", e_data_book_status_to_string (
-			E_DATA_BOOK_STATUS_NOT_OPENED));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
