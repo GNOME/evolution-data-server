@@ -251,7 +251,6 @@ EDataCalCallStatus
 e_data_cal_create_error
 e_data_cal_create_error_fmt
 e_data_cal_status_to_string
-e_return_data_cal_error_val_if_fail
 e_data_cal_new
 e_data_cal_ref_backend
 e_data_cal_get_connection

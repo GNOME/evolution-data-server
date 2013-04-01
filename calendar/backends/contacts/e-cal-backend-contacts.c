@@ -1153,14 +1153,8 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend,
                                      const gchar *tzobj,
                                      GError **error)
 {
-	ECalBackendContacts *cbcontacts;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
-
-	cbcontacts = (ECalBackendContacts *) backend;
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {

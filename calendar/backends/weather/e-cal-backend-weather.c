@@ -567,9 +567,6 @@ e_cal_backend_weather_get_object (ECalBackendSync *backend,
 	ECalBackendWeatherPrivate *priv = cbw->priv;
 	ECalComponent *comp;
 
-	e_return_data_cal_error_if_fail (uid != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (priv->store != NULL, InvalidArg);
-
 	comp = e_cal_backend_store_get_component (priv->store, uid, rid);
 	if (!comp) {
 		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
@@ -631,17 +628,18 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend,
                                     const gchar *tzobj,
                                     GError **error)
 {
-	ECalBackendWeather *cbw;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
 
-	cbw = (ECalBackendWeather *) backend;
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
 	tz_comp = icalparser_parse_string (tzobj);
-	e_return_data_cal_error_if_fail (tz_comp != NULL, InvalidObject);
+	if (tz_comp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+		return;
+	}
 
 	if (icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT) {
 		g_propagate_error (error, EDC_ERROR (InvalidObject));

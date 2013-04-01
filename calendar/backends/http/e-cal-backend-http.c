@@ -1021,8 +1021,6 @@ e_cal_backend_http_get_object (ECalBackendSync *backend,
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
-
 	if (!priv->store) {
 		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 		return;
@@ -1046,16 +1044,11 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend,
                                  const gchar *tzobj,
                                  GError **error)
 {
-	ECalBackendHttp *cbhttp;
 	ETimezoneCache *timezone_cache;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
 
-	cbhttp = (ECalBackendHttp *) backend;
 	timezone_cache = E_TIMEZONE_CACHE (backend);
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -1338,9 +1331,6 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend,
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
-
-	e_return_data_cal_error_if_fail (start != -1 && end != -1, InvalidRange);
-	e_return_data_cal_error_if_fail (start <= end, InvalidRange);
 
 	if (!priv->store) {
 		g_propagate_error (error, EDC_ERROR (NoSuchCal));

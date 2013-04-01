@@ -1750,11 +1750,6 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 {
 	SoupMessage *message;
 
-	e_return_data_cal_error_if_fail (cbdav != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (url != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (post_fb != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (*post_fb != NULL, InvalidArg);
-
 	message = soup_message_new (SOUP_METHOD_POST, url);
 	if (message == NULL) {
 		g_propagate_error (error, EDC_ERROR (NoSuchCal));
@@ -4019,7 +4014,14 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 	sanitize_component ((ECalBackend *) cbdav, comp);
 
 	id = e_cal_component_get_id (comp);
-	e_return_data_cal_error_if_fail (id != NULL, InvalidObject);
+	if (id == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+		return;
+	}
 
 	/* fetch full component from cache, it will be pushed to the server */
 	cache_comp = get_comp_from_cache (cbdav, id->uid, NULL, &href, &etag);
@@ -4257,9 +4259,6 @@ extract_objects (icalcomponent *icomp,
 	icalcomponent         *scomp;
 	icalcomponent_kind     kind;
 
-	e_return_data_cal_error_if_fail (icomp, InvalidArg);
-	e_return_data_cal_error_if_fail (objects, InvalidArg);
-
 	kind = icalcomponent_isa (icomp);
 
 	if (kind == ekind) {
@@ -4338,7 +4337,14 @@ process_object (ECalBackendCalDAV *cbdav,
 
 	backend = E_CAL_BACKEND (cbdav);
 
-	e_return_data_cal_error_if_fail (id != NULL, InvalidObject);
+	if (id == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+		return;
+	}
 
 	registry = e_cal_backend_get_registry (E_CAL_BACKEND (cbdav));
 
@@ -4667,14 +4673,9 @@ caldav_add_timezone (ECalBackendSync *backend,
                      GError **error)
 {
 	ETimezoneCache *timezone_cache;
-	ECalBackendCalDAV *cbdav;
 	icalcomponent *tz_comp;
 
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	timezone_cache = E_TIMEZONE_CACHE (backend);
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -4829,10 +4830,6 @@ caldav_get_free_busy (ECalBackendSync *backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
-	e_return_data_cal_error_if_fail (users != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (freebusy != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (start < end, InvalidArg);
-
 	if (!cbdav->priv->calendar_schedule) {
 		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("Calendar doesn't support Free/Busy")));
 		return;
@@ -4921,8 +4918,6 @@ caldav_get_free_busy (ECalBackendSync *backend,
 
 	icalcomponent_free (icalcomp);
 	g_object_unref (comp);
-
-	e_return_data_cal_error_if_fail (str != NULL, OtherError);
 
 	caldav_post_freebusy (cbdav, cbdav->priv->schedule_outbox_url, &str, cancellable, &err);
 

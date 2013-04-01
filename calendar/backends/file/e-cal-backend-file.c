@@ -1434,8 +1434,16 @@ e_cal_backend_file_get_object (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, InvalidObject);
-	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
+	if (priv->icalcomp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+		return;
+	}
+
+	g_return_if_fail (uid != NULL);
 	g_assert (priv->comp_uid_hash != NULL);
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
@@ -1513,13 +1521,8 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend,
 {
 	ETimezoneCache *timezone_cache;
 	icalcomponent *tz_comp;
-	ECalBackendFile *cbfile;
 
-	cbfile = (ECalBackendFile *) backend;
 	timezone_cache = E_TIMEZONE_CACHE (backend);
-
-	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), InvalidArg);
-	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -1753,9 +1756,6 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, InvalidObject);
-	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
-	e_return_data_cal_error_if_fail (attachment_uris != NULL, InvalidArg);
 	g_assert (priv->comp_uid_hash != NULL);
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
@@ -2042,9 +2042,14 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
-	e_return_data_cal_error_if_fail (start != -1 && end != -1, InvalidRange);
-	e_return_data_cal_error_if_fail (start <= end, InvalidRange);
+	if (priv->icalcomp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR));
+		return;
+	}
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
@@ -2143,9 +2148,14 @@ e_cal_backend_file_create_objects (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
-	e_return_data_cal_error_if_fail (in_calobjs != NULL, ObjectNotFound);
-	e_return_data_cal_error_if_fail (new_components != NULL, ObjectNotFound);
+	if (priv->icalcomp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR));
+		return;
+	}
 
 	if (uids)
 		*uids = NULL;
@@ -2303,8 +2313,15 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
-	e_return_data_cal_error_if_fail (calobjs != NULL, ObjectNotFound);
+	if (priv->icalcomp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR));
+		return;
+	}
+
 	switch (mod) {
 	case E_CAL_OBJ_MOD_THIS:
 	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
@@ -2788,10 +2805,14 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
-	e_return_data_cal_error_if_fail (ids != NULL, ObjectNotFound);
-	e_return_data_cal_error_if_fail (old_components != NULL, ObjectNotFound);
-	e_return_data_cal_error_if_fail (new_components != NULL, ObjectNotFound);
+	if (priv->icalcomp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR));
+		return;
+	}
 
 	switch (mod) {
 	case E_CAL_OBJ_MOD_THIS:
@@ -3068,8 +3089,14 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, InvalidArg);
-	e_return_data_cal_error_if_fail (calobj != NULL, InvalidObject);
+	if (priv->icalcomp == NULL) {
+		g_set_error_literal (
+			error, E_CAL_CLIENT_ERROR,
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR,
+			e_cal_client_error_to_string (
+			E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR));
+		return;
+	}
 
 	/* Pull the component from the string and ensure that it is sane */
 	toplevel_comp = icalparser_parse_string ((gchar *) calobj);
