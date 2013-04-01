@@ -1052,24 +1052,6 @@ e_cal_backend_is_readonly (ECalBackend *backend)
 }
 
 /**
- * e_cal_backend_is_removed:
- * @backend: an #ECalBackend
- *
- * Checks if @backend has been removed from its physical storage.
- *
- * Returns: %TRUE if @backend has been removed, %FALSE otherwise.
- *
- * Since: 3.2
- **/
-gboolean
-e_cal_backend_is_removed (ECalBackend *backend)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
-
-	return backend->priv->removed;
-}
-
-/**
  * e_cal_backend_set_is_removed:
  * @backend: an #ECalBackend
  * @is_removed: A flag indicating whether the backend's storage was removed

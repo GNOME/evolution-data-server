@@ -219,7 +219,6 @@ void		e_cal_backend_set_writable	(ECalBackend *backend,
 						 gboolean writable);
 gboolean	e_cal_backend_is_opened		(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly	(ECalBackend *backend);
-gboolean	e_cal_backend_is_removed	(ECalBackend *backend);
 
 const gchar *	e_cal_backend_get_cache_dir	(ECalBackend *backend);
 void		e_cal_backend_set_cache_dir	(ECalBackend *backend,

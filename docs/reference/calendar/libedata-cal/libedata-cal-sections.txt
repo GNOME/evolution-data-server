@@ -15,7 +15,6 @@ e_cal_backend_get_writable
 e_cal_backend_set_writable
 e_cal_backend_is_opened
 e_cal_backend_is_readonly
-e_cal_backend_is_removed
 e_cal_backend_get_cache_dir
 e_cal_backend_set_cache_dir
 e_cal_backend_create_cache_filename
