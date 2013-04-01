@@ -27,9 +27,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
 
-#define EDC_ERROR(_code)	e_data_cal_create_error (_code, NULL)
-#define EDC_NOT_OPENED_ERROR	e_data_cal_create_error (NotOpened, NULL)
-
 typedef struct _AsyncContext AsyncContext;
 typedef struct _DispatchNode DispatchNode;
 typedef struct _SignalClosure SignalClosure;
@@ -1433,7 +1430,8 @@ e_cal_backend_open_finish (ECalBackend *backend,
  *
  * If an error occrs while initiating the refresh, the function will set
  * @error and return %FALSE.  If the @backend does not support refreshing,
- * the function will set an %UnsupportedMethod error and return %FALSE.
+ * the function will set an %E_CLIENT_ERROR_NOT_SUPPORTED error and return
+ * %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
@@ -1484,18 +1482,18 @@ cal_backend_refresh_thread (GSimpleAsyncResult *simple,
 
 	if (class->refresh == NULL) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			UnsupportedMethod,
-			"%s", e_data_cal_status_to_string (
-			UnsupportedMethod));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1561,7 +1559,8 @@ e_cal_backend_refresh (ECalBackend *backend,
  *
  * If an error occurred while initiating the refresh, the function will set
  * @error and return %FALSE.  If the @backend does not support refreshing,
- * the function will set an %UnsupportedMethod error and return %FALSE.
+ * the function will set an %E_CLIENT_ERROR_NOT_SUPPORTED error and return
+ * %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
@@ -1657,10 +1656,10 @@ cal_backend_get_object_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -1849,10 +1848,10 @@ cal_backend_get_object_list_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -2038,10 +2037,10 @@ cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -2230,18 +2229,18 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 
 	if (class->create_objects == NULL) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			UnsupportedMethod,
-			"%s", e_data_cal_status_to_string (
-			UnsupportedMethod));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -2449,18 +2448,18 @@ cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
 
 	if (class->modify_objects == NULL) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			UnsupportedMethod,
-			"%s", e_data_cal_status_to_string (
-			UnsupportedMethod));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -2680,10 +2679,10 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -2916,10 +2915,10 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -3094,10 +3093,10 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -3290,10 +3289,10 @@ cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -3483,18 +3482,18 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
 
 	if (class->discard_alarm == NULL) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotSupported,
-			"%s", e_data_cal_status_to_string (
-			NotSupported));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -3671,10 +3670,10 @@ cal_backend_get_timezone_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
@@ -3851,10 +3850,10 @@ cal_backend_add_timezone_thread (GSimpleAsyncResult *simple,
 
 	if (!e_cal_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_CAL_ERROR,
-			NotOpened,
-			"%s", e_data_cal_status_to_string (
-			NotOpened));
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
