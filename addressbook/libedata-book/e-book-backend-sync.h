@@ -54,13 +54,6 @@ struct _EBookBackendSyncClass {
 						 EDataBook *book,
 						 GCancellable *cancellable,
 						 GError **error);
-	gboolean	(*get_backend_property_sync)
-						(EBookBackendSync *backend,
-						 EDataBook *book,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 gchar **prop_value,
-						 GError **error);
 
 	void		(*create_contacts_sync)	(EBookBackendSync *backend,
 						 EDataBook *book,
@@ -114,13 +107,6 @@ void		e_book_backend_sync_open	(EBookBackendSync *backend,
 void		e_book_backend_sync_refresh	(EBookBackendSync *backend,
 						 EDataBook *book,
 						 GCancellable *cancellable,
-						 GError **error);
-gboolean	e_book_backend_sync_get_backend_property
-						(EBookBackendSync *backend,
-						 EDataBook *book,
-						 GCancellable *cancellable,
-						 const gchar *prop_name,
-						 gchar **prop_value,
 						 GError **error);
 void		e_book_backend_sync_create_contacts
 						(EBookBackendSync *backend,

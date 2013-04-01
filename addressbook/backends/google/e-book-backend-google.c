@@ -1936,164 +1936,150 @@ e_book_backend_google_open (EBookBackend *backend,
 	e_data_book_respond_open (book, opid, error);
 }
 
-static void
+static gchar *
 e_book_backend_google_get_backend_property (EBookBackend *backend,
-                                            EDataBook *book,
-                                            guint32 opid,
-                                            GCancellable *cancellable,
                                             const gchar *prop_name)
 {
 	__debug__ (G_STRFUNC);
 
-	g_return_if_fail (prop_name != NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, "net,do-initial-query,contact-lists");
+		return g_strdup ("net,do-initial-query,contact-lists");
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, "");
+		return g_strdup ("");
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
-		GSList *fields = NULL;
-		gchar *fields_str;
-		guint i;
-		const gint supported_fields[] = {
-			E_CONTACT_FULL_NAME,
-			E_CONTACT_EMAIL_1,
-			E_CONTACT_EMAIL_2,
-			E_CONTACT_EMAIL_3,
-			E_CONTACT_EMAIL_4,
-			E_CONTACT_ADDRESS_LABEL_HOME,
-			E_CONTACT_ADDRESS_LABEL_WORK,
-			E_CONTACT_ADDRESS_LABEL_OTHER,
-			E_CONTACT_PHONE_HOME,
-			E_CONTACT_PHONE_HOME_FAX,
-			E_CONTACT_PHONE_BUSINESS,
-			E_CONTACT_PHONE_BUSINESS_FAX,
-			E_CONTACT_PHONE_MOBILE,
-			E_CONTACT_PHONE_PAGER,
-			E_CONTACT_IM_AIM,
-			E_CONTACT_IM_JABBER,
-			E_CONTACT_IM_YAHOO,
-			E_CONTACT_IM_MSN,
-			E_CONTACT_IM_ICQ,
-			E_CONTACT_IM_SKYPE,
-			E_CONTACT_IM_GOOGLE_TALK,
-			E_CONTACT_IM_GADUGADU,
-			E_CONTACT_IM_GROUPWISE,
-			E_CONTACT_ADDRESS,
-			E_CONTACT_ADDRESS_HOME,
-			E_CONTACT_ADDRESS_WORK,
-			E_CONTACT_ADDRESS_OTHER,
-			E_CONTACT_NAME,
-			E_CONTACT_GIVEN_NAME,
-			E_CONTACT_FAMILY_NAME,
-			E_CONTACT_PHONE_ASSISTANT,
-			E_CONTACT_PHONE_BUSINESS_2,
-			E_CONTACT_PHONE_CALLBACK,
-			E_CONTACT_PHONE_CAR,
-			E_CONTACT_PHONE_COMPANY,
-			E_CONTACT_PHONE_HOME_2,
-			E_CONTACT_PHONE_ISDN,
-			E_CONTACT_PHONE_OTHER,
-			E_CONTACT_PHONE_OTHER_FAX,
-			E_CONTACT_PHONE_PRIMARY,
-			E_CONTACT_PHONE_RADIO,
-			E_CONTACT_PHONE_TELEX,
-			E_CONTACT_PHONE_TTYTDD,
-			E_CONTACT_IM_AIM_HOME_1,
-			E_CONTACT_IM_AIM_HOME_2,
-			E_CONTACT_IM_AIM_HOME_3,
-			E_CONTACT_IM_AIM_WORK_1,
-			E_CONTACT_IM_AIM_WORK_2,
-			E_CONTACT_IM_AIM_WORK_3,
-			E_CONTACT_IM_GROUPWISE_HOME_1,
-			E_CONTACT_IM_GROUPWISE_HOME_2,
-			E_CONTACT_IM_GROUPWISE_HOME_3,
-			E_CONTACT_IM_GROUPWISE_WORK_1,
-			E_CONTACT_IM_GROUPWISE_WORK_2,
-			E_CONTACT_IM_GROUPWISE_WORK_3,
-			E_CONTACT_IM_JABBER_HOME_1,
-			E_CONTACT_IM_JABBER_HOME_2,
-			E_CONTACT_IM_JABBER_HOME_3,
-			E_CONTACT_IM_JABBER_WORK_1,
-			E_CONTACT_IM_JABBER_WORK_2,
-			E_CONTACT_IM_JABBER_WORK_3,
-			E_CONTACT_IM_YAHOO_HOME_1,
-			E_CONTACT_IM_YAHOO_HOME_2,
-			E_CONTACT_IM_YAHOO_HOME_3,
-			E_CONTACT_IM_YAHOO_WORK_1,
-			E_CONTACT_IM_YAHOO_WORK_2,
-			E_CONTACT_IM_YAHOO_WORK_3,
-			E_CONTACT_IM_MSN_HOME_1,
-			E_CONTACT_IM_MSN_HOME_2,
-			E_CONTACT_IM_MSN_HOME_3,
-			E_CONTACT_IM_MSN_WORK_1,
-			E_CONTACT_IM_MSN_WORK_2,
-			E_CONTACT_IM_MSN_WORK_3,
-			E_CONTACT_IM_ICQ_HOME_1,
-			E_CONTACT_IM_ICQ_HOME_2,
-			E_CONTACT_IM_ICQ_HOME_3,
-			E_CONTACT_IM_ICQ_WORK_1,
-			E_CONTACT_IM_ICQ_WORK_2,
-			E_CONTACT_IM_ICQ_WORK_3,
-			E_CONTACT_EMAIL,
-			E_CONTACT_IM_GADUGADU_HOME_1,
-			E_CONTACT_IM_GADUGADU_HOME_2,
-			E_CONTACT_IM_GADUGADU_HOME_3,
-			E_CONTACT_IM_GADUGADU_WORK_1,
-			E_CONTACT_IM_GADUGADU_WORK_2,
-			E_CONTACT_IM_GADUGADU_WORK_3,
-			E_CONTACT_TEL,
-			E_CONTACT_IM_SKYPE_HOME_1,
-			E_CONTACT_IM_SKYPE_HOME_2,
-			E_CONTACT_IM_SKYPE_HOME_3,
-			E_CONTACT_IM_SKYPE_WORK_1,
-			E_CONTACT_IM_SKYPE_WORK_2,
-			E_CONTACT_IM_SKYPE_WORK_3,
-			E_CONTACT_IM_GOOGLE_TALK_HOME_1,
-			E_CONTACT_IM_GOOGLE_TALK_HOME_2,
-			E_CONTACT_IM_GOOGLE_TALK_HOME_3,
-			E_CONTACT_IM_GOOGLE_TALK_WORK_1,
-			E_CONTACT_IM_GOOGLE_TALK_WORK_2,
-			E_CONTACT_IM_GOOGLE_TALK_WORK_3,
-			E_CONTACT_SIP,
-			E_CONTACT_ORG,
-			E_CONTACT_ORG_UNIT,
-			E_CONTACT_TITLE,
-			E_CONTACT_ROLE,
-			E_CONTACT_HOMEPAGE_URL,
-			E_CONTACT_BLOG_URL,
-			E_CONTACT_BIRTH_DATE,
-			E_CONTACT_ANNIVERSARY,
-			E_CONTACT_NOTE,
-			E_CONTACT_PHOTO,
-			E_CONTACT_CATEGORIES,
+		return g_strjoin (
+			",",
+			e_contact_field_name (E_CONTACT_FULL_NAME),
+			e_contact_field_name (E_CONTACT_EMAIL_1),
+			e_contact_field_name (E_CONTACT_EMAIL_2),
+			e_contact_field_name (E_CONTACT_EMAIL_3),
+			e_contact_field_name (E_CONTACT_EMAIL_4),
+			e_contact_field_name (E_CONTACT_ADDRESS_LABEL_HOME),
+			e_contact_field_name (E_CONTACT_ADDRESS_LABEL_WORK),
+			e_contact_field_name (E_CONTACT_ADDRESS_LABEL_OTHER),
+			e_contact_field_name (E_CONTACT_PHONE_HOME),
+			e_contact_field_name (E_CONTACT_PHONE_HOME_FAX),
+			e_contact_field_name (E_CONTACT_PHONE_BUSINESS),
+			e_contact_field_name (E_CONTACT_PHONE_BUSINESS_FAX),
+			e_contact_field_name (E_CONTACT_PHONE_MOBILE),
+			e_contact_field_name (E_CONTACT_PHONE_PAGER),
+			e_contact_field_name (E_CONTACT_IM_AIM),
+			e_contact_field_name (E_CONTACT_IM_JABBER),
+			e_contact_field_name (E_CONTACT_IM_YAHOO),
+			e_contact_field_name (E_CONTACT_IM_MSN),
+			e_contact_field_name (E_CONTACT_IM_ICQ),
+			e_contact_field_name (E_CONTACT_IM_SKYPE),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE),
+			e_contact_field_name (E_CONTACT_ADDRESS),
+			e_contact_field_name (E_CONTACT_ADDRESS_HOME),
+			e_contact_field_name (E_CONTACT_ADDRESS_WORK),
+			e_contact_field_name (E_CONTACT_ADDRESS_OTHER),
+			e_contact_field_name (E_CONTACT_NAME),
+			e_contact_field_name (E_CONTACT_GIVEN_NAME),
+			e_contact_field_name (E_CONTACT_FAMILY_NAME),
+			e_contact_field_name (E_CONTACT_PHONE_ASSISTANT),
+			e_contact_field_name (E_CONTACT_PHONE_BUSINESS_2),
+			e_contact_field_name (E_CONTACT_PHONE_CALLBACK),
+			e_contact_field_name (E_CONTACT_PHONE_CAR),
+			e_contact_field_name (E_CONTACT_PHONE_COMPANY),
+			e_contact_field_name (E_CONTACT_PHONE_HOME_2),
+			e_contact_field_name (E_CONTACT_PHONE_ISDN),
+			e_contact_field_name (E_CONTACT_PHONE_OTHER),
+			e_contact_field_name (E_CONTACT_PHONE_OTHER_FAX),
+			e_contact_field_name (E_CONTACT_PHONE_PRIMARY),
+			e_contact_field_name (E_CONTACT_PHONE_RADIO),
+			e_contact_field_name (E_CONTACT_PHONE_TELEX),
+			e_contact_field_name (E_CONTACT_PHONE_TTYTDD),
+			e_contact_field_name (E_CONTACT_IM_AIM_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_AIM_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_AIM_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_AIM_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_AIM_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_AIM_WORK_3),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_GROUPWISE_WORK_3),
+			e_contact_field_name (E_CONTACT_IM_JABBER_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_JABBER_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_JABBER_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_JABBER_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_JABBER_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_JABBER_WORK_3),
+			e_contact_field_name (E_CONTACT_IM_YAHOO_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_YAHOO_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_YAHOO_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_YAHOO_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_YAHOO_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_YAHOO_WORK_3),
+			e_contact_field_name (E_CONTACT_IM_MSN_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_MSN_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_MSN_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_MSN_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_MSN_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_MSN_WORK_3),
+			e_contact_field_name (E_CONTACT_IM_ICQ_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_ICQ_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_ICQ_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_ICQ_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_ICQ_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_ICQ_WORK_3),
+			e_contact_field_name (E_CONTACT_EMAIL),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_GADUGADU_WORK_3),
+			e_contact_field_name (E_CONTACT_TEL),
+			e_contact_field_name (E_CONTACT_IM_SKYPE_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_SKYPE_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_SKYPE_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_SKYPE_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_SKYPE_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_SKYPE_WORK_3),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK_HOME_1),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK_HOME_2),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK_HOME_3),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK_WORK_1),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK_WORK_2),
+			e_contact_field_name (E_CONTACT_IM_GOOGLE_TALK_WORK_3),
+			e_contact_field_name (E_CONTACT_SIP),
+			e_contact_field_name (E_CONTACT_ORG),
+			e_contact_field_name (E_CONTACT_ORG_UNIT),
+			e_contact_field_name (E_CONTACT_TITLE),
+			e_contact_field_name (E_CONTACT_ROLE),
+			e_contact_field_name (E_CONTACT_HOMEPAGE_URL),
+			e_contact_field_name (E_CONTACT_BLOG_URL),
+			e_contact_field_name (E_CONTACT_BIRTH_DATE),
+			e_contact_field_name (E_CONTACT_ANNIVERSARY),
+			e_contact_field_name (E_CONTACT_NOTE),
+			e_contact_field_name (E_CONTACT_PHOTO),
+			e_contact_field_name (E_CONTACT_CATEGORIES),
 #if defined(GDATA_CHECK_VERSION)
 #if GDATA_CHECK_VERSION(0, 11, 0)
-			E_CONTACT_CATEGORY_LIST,
-			E_CONTACT_FILE_AS
+			e_contact_field_name (E_CONTACT_CATEGORY_LIST),
+			e_contact_field_name (E_CONTACT_FILE_AS),
 #else
-			E_CONTACT_CATEGORY_LIST
+			e_contact_field_name (E_CONTACT_CATEGORY_LIST),
 #endif
 #else
-			E_CONTACT_CATEGORY_LIST
+			e_contact_field_name (E_CONTACT_CATEGORY_LIST),
 #endif
-		};
-
-		/* Add all the fields above to the list */
-		for (i = 0; i < G_N_ELEMENTS (supported_fields); i++) {
-			const gchar *field_name = e_contact_field_name (supported_fields[i]);
-			fields = g_slist_prepend (fields, (gpointer) field_name);
-		}
-
-		fields_str = e_data_book_string_slist_to_comma_string (fields);
-
-		e_data_book_respond_get_backend_property (book, opid, NULL, fields_str);
-
-		g_slist_free (fields);
-		g_free (fields_str);
-	} else {
-		E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->get_backend_property (backend, book, opid, cancellable, prop_name);
+			NULL);
 	}
+
+	/* Chain up to parent's get_backend_property() method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_google_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static void

@@ -1487,38 +1487,37 @@ e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
 	e_book_backend_set_writable (backend, online);
 }
 
-static void
+static gchar *
 e_book_backend_webdav_get_backend_property (EBookBackend *backend,
-                                            EDataBook *book,
-                                            guint32 opid,
-                                            GCancellable *cancellable,
                                             const gchar *prop_name)
 {
-	g_return_if_fail (prop_name != NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, "net,do-initial-query,contact-lists");
+		return g_strdup ("net,do-initial-query,contact-lists");
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, e_contact_field_name (E_CONTACT_FILE_AS));
+		return g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
-		gchar *fields_str;
-		GSList *fields = NULL;
-		gint    i;
+		GString *fields;
+		gint ii;
+
+		fields = g_string_sized_new (1024);
 
 		/* we support everything */
-		for (i = 1; i < E_CONTACT_FIELD_LAST; ++i) {
-			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
+		for (ii = 1; ii < E_CONTACT_FIELD_LAST; ii++) {
+			if (fields->len > 0)
+				g_string_append_c (fields, ',');
+			g_string_append (fields, e_contact_field_name (ii));
 		}
 
-		fields_str = e_data_book_string_slist_to_comma_string (fields);
-
-		e_data_book_respond_get_backend_property (book, opid, NULL, fields_str);
-
-		g_slist_free (fields);
-		g_free (fields_str);
-	} else {
-		E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->get_backend_property (backend, book, opid, cancellable, prop_name);
+		return g_string_free (fields, FALSE);
 	}
+
+	/* Chain up to parent's get_backend_property() method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static void

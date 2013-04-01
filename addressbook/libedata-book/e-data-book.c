@@ -1111,47 +1111,6 @@ e_data_book_respond_refresh (EDataBook *book,
 	g_object_unref (backend);
 }
 
-/**
- * e_data_book_respond_get_backend_property:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-void
-e_data_book_respond_get_backend_property (EDataBook *book,
-                                          guint32 opid,
-                                          GError *error,
-                                          const gchar *prop_value)
-{
-	EBookBackend *backend;
-	GSimpleAsyncResult *simple;
-	GQueue *queue = NULL;
-
-	g_return_if_fail (E_IS_DATA_BOOK (book));
-
-	backend = e_data_book_ref_backend (book);
-	g_return_if_fail (backend != NULL);
-
-	simple = e_book_backend_prepare_for_completion (backend, opid, &queue);
-	g_return_if_fail (simple != NULL);
-	g_return_if_fail (queue != NULL);
-
-	if (error == NULL) {
-		/* Convert NULL to an empty string. */
-		if (prop_value == NULL)
-			prop_value = "";
-		g_queue_push_tail (queue, g_strdup (prop_value));
-	} else {
-		g_simple_async_result_take_error (simple, error);
-	}
-
-	g_simple_async_result_complete_in_idle (simple);
-
-	g_object_unref (simple);
-	g_object_unref (backend);
-}
-
 void
 e_data_book_respond_get_contact (EDataBook *book,
                                  guint32 opid,
@@ -1675,29 +1634,25 @@ data_book_constructed (GObject *object)
 	/* XXX Initialize the rest of the properties. */
 
 	prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
-	prop_value = e_book_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
-	prop_value = e_book_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
-	prop_value = e_book_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);
 	g_free (prop_value);
 
 	prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
-	prop_value = e_book_backend_get_backend_property_sync (
-		backend, prop_name, NULL, NULL);
+	prop_value = e_book_backend_get_backend_property (backend, prop_name);
 	e_data_book_report_backend_property_changed (
 		book, prop_name, prop_value);
 	g_free (prop_value);

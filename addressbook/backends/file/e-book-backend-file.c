@@ -1361,44 +1361,49 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	e_book_backend_set_writable (E_BOOK_BACKEND (backend), TRUE);
 }
 
-static gboolean
-e_book_backend_file_get_backend_property (EBookBackendSync *backend,
-                                          EDataBook *book,
-                                          GCancellable *cancellable,
-                                          const gchar *prop_name,
-                                          gchar **prop_value,
-                                          GError **error)
+static gchar *
+e_book_backend_file_get_backend_property (EBookBackend *backend,
+                                          const gchar *prop_name)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	gboolean processed = TRUE;
 
-	g_return_val_if_fail (prop_name != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		*prop_value = g_strdup ("local,do-initial-query,bulk-adds,bulk-modifies,bulk-removes,contact-lists");
+		return g_strdup ("local,do-initial-query,bulk-adds,bulk-modifies,bulk-removes,contact-lists");
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
-		*prop_value = g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
+		return g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
-		GSList *fields = NULL;
-		gint i;
+		GString *fields;
+		gint ii;
+
+		fields = g_string_sized_new (1024);
 
 		/* XXX we need a way to say "we support everything", since the
 		 * file backend does */
-		for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
-			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
+		for (ii = 1; ii < E_CONTACT_FIELD_LAST; ii++) {
+			if (fields->len > 0)
+				g_string_append_c (fields, ',');
+			g_string_append (fields, e_contact_field_name (ii));
+		}
 
-		*prop_value = e_data_book_string_slist_to_comma_string (fields);
-		g_slist_free (fields);
+		return g_string_free (fields, FALSE);
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REVISION)) {
+		gchar *prop_value;
+
 		g_rw_lock_reader_lock (&(bf->priv->lock));
-		*prop_value = g_strdup (bf->priv->revision);
+		prop_value = g_strdup (bf->priv->revision);
 		g_rw_lock_reader_unlock (&(bf->priv->lock));
-	} else {
-		processed = FALSE;
+
+		return prop_value;
 	}
 
-	return processed;
+	/* Chain up to parent's get_backend_property() method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_file_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static void
@@ -1684,6 +1689,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
+	backend_class->get_backend_property = e_book_backend_file_get_backend_property;
 	backend_class->start_view		= e_book_backend_file_start_view;
 	backend_class->stop_view		= e_book_backend_file_stop_view;
 	backend_class->sync			= e_book_backend_file_sync;
@@ -1692,7 +1698,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->configure_direct         = e_book_backend_file_configure_direct;
 
 	sync_class->open_sync			= e_book_backend_file_open;
-	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
 	sync_class->create_contacts_sync	= e_book_backend_file_create_contacts;
 	sync_class->remove_contacts_sync	= e_book_backend_file_remove_contacts;
 	sync_class->modify_contacts_sync	= e_book_backend_file_modify_contacts;

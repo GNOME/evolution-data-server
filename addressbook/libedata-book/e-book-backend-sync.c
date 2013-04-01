@@ -112,40 +112,6 @@ e_book_backend_sync_refresh (EBookBackendSync *backend,
 }
 
 /**
- * e_book_backend_sync_get_backend_property:
- * @backend: an #EBookBackendSync
- * @book: an #EDataBook
- * @cancellable: a #GCancellable for the operation
- * @prop_name: Property name whose value to retrieve.
- * @prop_value: Return value of the @prop_name.
- * @error: #GError to set, when something fails
- *
- * Calls the get_backend_property_sync method on the given backend.
- *
- * Returns whether processed this property. Returning FALSE means to pass
- * the call to the EBookBackend parent class, thus neither @error should be
- * set in this case.
- *
- * Since: 3.2
- **/
-gboolean
-e_book_backend_sync_get_backend_property (EBookBackendSync *backend,
-                                          EDataBook *book,
-                                          GCancellable *cancellable,
-                                          const gchar *prop_name,
-                                          gchar **prop_value,
-                                          GError **error)
-{
-	e_return_data_book_error_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (prop_name, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (prop_value, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_val_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_backend_property_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
-
-	return (* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_backend_property_sync) (backend, book, cancellable, prop_name, prop_value, error);
-}
-
-/**
  * e_book_backend_sync_remove_contacts:
  * @backend: an #EBookBackendSync
  * @book: an #EDataBook
@@ -357,24 +323,6 @@ book_backend_refresh (EBookBackend *backend,
 }
 
 static void
-book_backend_get_backend_property (EBookBackend *backend,
-                                   EDataBook *book,
-                                   guint32 opid,
-                                   GCancellable *cancellable,
-                                   const gchar *prop_name)
-{
-	GError *error = NULL;
-	gchar *prop_value = NULL;
-
-	if (e_book_backend_sync_get_backend_property (E_BOOK_BACKEND_SYNC (backend), book, cancellable, prop_name, &prop_value, &error))
-		e_data_book_respond_get_backend_property (book, opid, error, prop_value);
-	else
-		(* E_BOOK_BACKEND_CLASS (e_book_backend_sync_parent_class)->get_backend_property) (backend, book, opid, cancellable, prop_name);
-
-	g_free (prop_value);
-}
-
-static void
 book_backend_create_contacts (EBookBackend *backend,
                               EDataBook *book,
                               guint32 opid,
@@ -481,18 +429,6 @@ book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_slist_free (uids);
 }
 
-static gboolean
-book_backend_sync_get_backend_property (EBookBackendSync *backend,
-                                        EDataBook *book,
-                                        GCancellable *cancellable,
-                                        const gchar *prop_name,
-                                        gchar **prop_value,
-                                        GError **error)
-{
-	/* to indicate to pass to the EBookBackend parent class */
-	return FALSE;
-}
-
 static void
 e_book_backend_sync_init (EBookBackendSync *backend)
 {
@@ -505,13 +441,10 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *class)
 
 	backend_class->open			= book_backend_open;
 	backend_class->refresh			= book_backend_refresh;
-	backend_class->get_backend_property	= book_backend_get_backend_property;
 	backend_class->create_contacts		= book_backend_create_contacts;
 	backend_class->remove_contacts		= book_backend_remove_contacts;
 	backend_class->modify_contacts		= book_backend_modify_contacts;
 	backend_class->get_contact		= book_backend_get_contact;
 	backend_class->get_contact_list		= book_backend_get_contact_list;
 	backend_class->get_contact_list_uids	= book_backend_get_contact_list_uids;
-
-	class->get_backend_property_sync	= book_backend_sync_get_backend_property;
 }

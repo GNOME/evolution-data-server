@@ -102,10 +102,7 @@ struct _EBookBackendClass {
 	EBackendClass parent_class;
 
 	/* Virtual methods */
-	void		(*get_backend_property)	(EBookBackend *backend,
-						 EDataBook *book,
-						 guint32 opid,
-						 GCancellable *cancellable,
+	gchar *		(*get_backend_property)	(EBookBackend *backend,
 						 const gchar *prop_name);
 
 	void		(*open)			(EBookBackend *backend,
@@ -188,21 +185,9 @@ void		e_book_backend_set_writable	(EBookBackend *backend,
 gboolean	e_book_backend_is_opened	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
 
-gchar *		e_book_backend_get_backend_property_sync
+gchar *		e_book_backend_get_backend_property
 						(EBookBackend *backend,
-						 const gchar *prop_name,
-						 GCancellable *cancellable,
-						 GError **error);
-void		e_book_backend_get_backend_property
-						(EBookBackend *backend,
-						 const gchar *prop_name,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gchar *		e_book_backend_get_backend_property_finish
-						(EBookBackend *backend,
-						 GAsyncResult *result,
-						 GError **error);
+						 const gchar *prop_name);
 gboolean	e_book_backend_open_sync	(EBookBackend *backend,
 						 GCancellable *cancellable,
 						 GError **error);

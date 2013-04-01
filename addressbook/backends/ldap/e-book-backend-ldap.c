@@ -5346,27 +5346,25 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	e_data_book_respond_open (book, opid, error);
 }
 
-static void
+static gchar *
 e_book_backend_ldap_get_backend_property (EBookBackend *backend,
-                                          EDataBook *book,
-                                          guint32 opid,
-                                          GCancellable *cancellable,
                                           const gchar *prop_name)
 {
 	EBookBackendLDAPPrivate *priv;
 
-	g_return_if_fail (prop_name != NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		if (can_browse (backend) || priv->marked_for_offline)
-			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query");
+			return g_strdup ("net,anon-access,contact-lists,do-initial-query");
 		else
-			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists");
+			return g_strdup ("net,anon-access,contact-lists");
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
-		gchar *fields_str;
 		GSList *fields = NULL;
+		gchar *prop_value;
 
 		/*FIMEME we should look at mandatory attributs in the schema
 		  and return all those fields here */
@@ -5374,24 +5372,22 @@ e_book_backend_ldap_get_backend_property (EBookBackend *backend,
 		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FULL_NAME));
 		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FAMILY_NAME));
 
-		fields_str = e_data_book_string_slist_to_comma_string (fields);
-
-		e_data_book_respond_get_backend_property (book, opid, NULL, fields_str);
+		prop_value = e_data_book_string_slist_to_comma_string (fields);
 
 		g_slist_free (fields);
-		g_free (fields_str);
+
+		return prop_value;
+
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-		gchar *str;
 
-		str = e_data_book_string_slist_to_comma_string (bl->priv->supported_fields);
+		return e_data_book_string_slist_to_comma_string (bl->priv->supported_fields);
 
-		e_data_book_respond_get_backend_property (book, opid, NULL, str);
-
-		g_free (str);
-	} else {
-		E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->get_backend_property (backend, book, opid, cancellable, prop_name);
 	}
+
+	/* Chain up to parent's get_backend_property() method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->
+		get_backend_property (backend, prop_name);
 }
 
 static void

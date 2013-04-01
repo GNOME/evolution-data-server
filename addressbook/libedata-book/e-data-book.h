@@ -155,11 +155,6 @@ void		e_data_book_respond_open	(EDataBook *book,
 void		e_data_book_respond_refresh	(EDataBook *book,
 						 guint32 opid,
 						 GError *error);
-void		e_data_book_respond_get_backend_property
-						(EDataBook *book,
-						 guint32 opid,
-						 GError *error,
-						 const gchar *prop_value);
 void		e_data_book_respond_create_contacts
 						(EDataBook *book,
 						 guint32 opid,

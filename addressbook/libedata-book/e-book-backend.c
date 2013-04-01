@@ -53,7 +53,6 @@ struct _AsyncContext {
 	/* Inputs */
 	gchar *uid;
 	gchar *query;
-	const gchar *prop_name;
 	GSList *string_list;
 
 	/* Outputs */
@@ -280,64 +279,41 @@ book_backend_set_default_cache_dir (EBookBackend *backend)
 	g_free (filename);
 }
 
-static void
+static gchar *
 book_backend_get_backend_property (EBookBackend *backend,
-                                   EDataBook *book,
-                                   guint32 opid,
-                                   GCancellable *cancellable,
                                    const gchar *prop_name)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (book != NULL);
-	g_return_if_fail (prop_name != NULL);
+	gchar *prop_value = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		e_data_book_respond_get_backend_property (
-			book, opid, NULL, "TRUE");
+		prop_value = g_strdup ("TRUE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
-		e_data_book_respond_get_backend_property (
-			book, opid, NULL, "FALSE");
+		prop_value = g_strdup ("FALSE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
-		e_data_book_respond_get_backend_property (
-			book, opid, NULL, "0");
+		prop_value = g_strdup ("0");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
 		gboolean online;
 
 		online = e_backend_get_online (E_BACKEND (backend));
-
-		e_data_book_respond_get_backend_property (
-			book, opid, NULL, online ? "TRUE" : "FALSE");
+		prop_value = g_strdup (online ? "TRUE" : "FALSE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
 		gboolean readonly;
 
 		readonly = e_book_backend_is_readonly (backend);
-
-		e_data_book_respond_get_backend_property (
-			book, opid, NULL, readonly ? "TRUE" : "FALSE");
+		prop_value = g_strdup (readonly ? "TRUE" : "FALSE");
 
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
-		const gchar *cache_dir;
-
-		cache_dir = e_book_backend_get_cache_dir (backend);
-
-		e_data_book_respond_get_backend_property (
-			book, opid, NULL, cache_dir);
-
-	} else {
-		GError *error;
-
-		error = e_data_book_create_error_fmt (
-			E_DATA_BOOK_STATUS_NOT_SUPPORTED,
-			_("Unknown book property '%s'"), prop_name);
-
-		/* Takes ownership of the GError. */
-		e_data_book_respond_get_backend_property (
-			book, opid, error, NULL);
+		prop_value = e_book_backend_dup_cache_dir (backend);
 	}
+
+	return prop_value;
 }
 
 static void
@@ -2392,180 +2368,30 @@ e_book_backend_list_views (EBookBackend *backend)
 }
 
 /**
- * e_book_backend_get_backend_property_sync:
+ * e_book_backend_get_backend_property:
  * @backend: an #EBookBackend
  * @prop_name: a backend property name
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
  *
  * Obtains the value of the backend property named @prop_name.
- *
- * Despite appearances, this function does not actually block.  So the
- * @cancellable can safely be %NULL.  It can, however, return an error
- * if @prop_name is not recognized.
- *
- * The returned string must be freed with g_free() when finished with it.
+ * Freed the returned string with g_free() when finished with it.
  *
  * Returns: the value for @prop_name
  *
  * Since: 3.10
  **/
 gchar *
-e_book_backend_get_backend_property_sync (EBookBackend *backend,
-                                          const gchar *prop_name,
-                                          GCancellable *cancellable,
-                                          GError **error)
+e_book_backend_get_backend_property (EBookBackend *backend,
+                                     const gchar *prop_name)
 {
-	EAsyncClosure *closure;
-	GAsyncResult *result;
-	gchar *prop_value;
+	EBookBackendClass *class;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
-	closure = e_async_closure_new ();
-
-	e_book_backend_get_backend_property (
-		backend, prop_name, cancellable,
-		e_async_closure_callback, closure);
-
-	result = e_async_closure_wait (closure);
-
-	prop_value = e_book_backend_get_backend_property_finish (
-		backend, result, error);
-
-	e_async_closure_free (closure);
-
-	return prop_value;
-}
-
-/* Helper for e_book_backend_get_backend_property() */
-static void
-book_backend_get_backend_property_thread (GSimpleAsyncResult *simple,
-                                          GObject *source_object,
-                                          GCancellable *cancellable)
-{
-	EBookBackend *backend;
-	EBookBackendClass *class;
-	EDataBook *data_book;
-	AsyncContext *async_context;
-	guint32 opid;
-
-	backend = E_BOOK_BACKEND (source_object);
-
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
-	g_return_if_fail (class->get_backend_property != NULL);
+	g_return_val_if_fail (class->get_backend_property != NULL, NULL);
 
-	data_book = e_book_backend_ref_data_book (backend);
-	g_return_if_fail (data_book != NULL);
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	opid = book_backend_stash_operation (backend, simple);
-
-	class->get_backend_property (
-		backend, data_book, opid, cancellable,
-		async_context->prop_name);
-
-	g_object_unref (data_book);
-}
-
-/**
- * e_book_backend_get_backend_property:
- * @backend: an #EBookBackend
- * @prop_name: a backend property name
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Asynchronously obtains the value of the backend property named @prop_name.
- *
- * Despite appearances, e_book_backend_get_backend_property_sync() does not
- * actually block, and is more convenient than this function.  This function
- * exists for the moment merely to invoke the class method and collect the
- * result from #EDataBook.
- *
- * When the operation is finished, @callback will be called.  You can then
- * call e_book_backend_get_backend_property_finish() to get the result of
- * the operation.
- *
- * Since: 3.10
- **/
-void
-e_book_backend_get_backend_property (EBookBackend *backend,
-                                     const gchar *prop_name,
-                                     GCancellable *cancellable,
-                                     GAsyncReadyCallback callback,
-                                     gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (prop_name != NULL);
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->prop_name = g_intern_string (prop_name);
-	async_context->string_queue = &async_context->result_queue;
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback, user_data,
-		e_book_backend_get_backend_property);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_get_backend_property_thread);
-
-	book_backend_dispatch_next_operation (backend);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_book_backend_get_backend_property_finish:
- * @backend: an #EBookBackend
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_book_backend_get_backend_property().
- *
- * The returned string must be freed with g_free() when finished with it.
- *
- * Returns: the requested property value
- *
- * Since: 3.10
- **/
-gchar *
-e_book_backend_get_backend_property_finish (EBookBackend *backend,
-                                            GAsyncResult *result,
-                                            GError **error)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	gchar *prop_value;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		e_book_backend_get_backend_property), NULL);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	prop_value = g_queue_pop_head (&async_context->result_queue);
-	g_return_val_if_fail (prop_value != NULL, NULL);
-
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
-
-	return prop_value;
+	return class->get_backend_property (backend, prop_name);
 }
 
 /**
