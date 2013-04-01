@@ -95,28 +95,6 @@ GError *	e_data_book_create_error_fmt	(EDataBookStatus status,
 
 const gchar *	e_data_book_status_to_string	(EDataBookStatus status);
 
-/**
- * e_return_data_book_error_val_if_fail:
- *
- * Same as e_return_data_book_error_if_fail(), only returns FALSE on a failure
- *
- * Since: 3.2
- **/
-#define e_return_data_book_error_val_if_fail(expr, _code)			\
-	G_STMT_START {								\
-		if (G_LIKELY (expr)) {						\
-		} else {							\
-			g_log (G_LOG_DOMAIN,					\
-				G_LOG_LEVEL_CRITICAL,				\
-				"file %s: line %d (%s): assertion `%s' failed",	\
-				__FILE__, __LINE__, G_STRFUNC, #expr);		\
-			g_set_error (error, E_DATA_BOOK_ERROR, (_code),		\
-				"file %s: line %d (%s): assertion `%s' failed",	\
-				__FILE__, __LINE__, G_STRFUNC, #expr);		\
-			return FALSE;						\
-		}								\
-	} G_STMT_END
-
 GType		e_data_book_get_type		(void) G_GNUC_CONST;
 EDataBook *	e_data_book_new			(struct _EBookBackend *backend,
 						 GDBusConnection *connection,
