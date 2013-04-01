@@ -42,12 +42,12 @@ struct _ECalBackendPrivate {
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
-	gboolean writable;
-
-	gchar *cache_dir;
-
 	GMutex views_mutex;
 	GList *views;
+
+	GMutex property_lock;
+	gchar *cache_dir;
+	gboolean writable;
 
 	GHashTable *zone_cache;
 	GMutex zone_cache_lock;
@@ -498,8 +498,8 @@ cal_backend_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_CACHE_DIR:
-			g_value_set_string (
-				value, e_cal_backend_get_cache_dir (
+			g_value_take_string (
+				value, e_cal_backend_dup_cache_dir (
 				E_CAL_BACKEND (object)));
 			return;
 
@@ -555,11 +555,12 @@ cal_backend_finalize (GObject *object)
 
 	g_list_free (priv->views);
 	g_mutex_clear (&priv->views_mutex);
+	g_mutex_clear (&priv->property_lock);
+
+	g_free (priv->cache_dir);
 
 	g_hash_table_destroy (priv->zone_cache);
 	g_mutex_clear (&priv->zone_cache_lock);
-
-	g_free (priv->cache_dir);
 
 	g_mutex_clear (&priv->operation_lock);
 	g_hash_table_destroy (priv->operation_ids);
@@ -857,8 +858,8 @@ e_cal_backend_init (ECalBackend *backend)
 
 	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 
-	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);
+	g_mutex_init (&backend->priv->property_lock);
 
 	backend->priv->zone_cache = zone_cache;
 	g_mutex_init (&backend->priv->zone_cache_lock);
@@ -1054,9 +1055,9 @@ e_cal_backend_is_readonly (ECalBackend *backend)
  * e_cal_backend_get_cache_dir:
  * @backend: an #ECalBackend
  *
- * Returns the cache directory for the given backend.
+ * Returns the cache directory path used by @backend.
  *
- * Returns: the cache directory for the backend
+ * Returns: the cache directory path
  *
  * Since: 2.32
  **/
@@ -1069,15 +1070,46 @@ e_cal_backend_get_cache_dir (ECalBackend *backend)
 }
 
 /**
+ * e_cal_backend_dup_cache_dir:
+ * @backend: an #ECalBackend
+ *
+ * Thread-safe variation of e_cal_backend_get_cache_dir().
+ * Use this function when accessing @backend from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ECalBackend:cache-dir
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_cal_backend_dup_cache_dir (ECalBackend *backend)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	protected = e_cal_backend_get_cache_dir (backend);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * e_cal_backend_set_cache_dir:
  * @backend: an #ECalBackend
- * @cache_dir: a local cache directory
+ * @cache_dir: a local cache directory path
  *
- * Sets the cache directory for the given backend.
+ * Sets the cache directory path for use by @backend.
  *
- * Note that #ECalBackend is initialized with a usable default based on
- * #ECalBackend:source and #ECalBackend:kind properties.  Backends should
- * not override the default without good reason.
+ * Note that #ECalBackend is initialized with a default cache directory
+ * path which should suffice for most cases.  Backends should not override
+ * the default path without good reason.
  *
  * Since: 2.32
  **/
@@ -1088,11 +1120,17 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (cache_dir != NULL);
 
-	if (g_strcmp0 (backend->priv->cache_dir, cache_dir) == 0)
+	g_mutex_lock (&backend->priv->property_lock);
+
+	if (g_strcmp0 (backend->priv->cache_dir, cache_dir) == 0) {
+		g_mutex_unlock (&backend->priv->property_lock);
 		return;
+	}
 
 	g_free (backend->priv->cache_dir);
 	backend->priv->cache_dir = g_strdup (cache_dir);
+
+	g_mutex_unlock (&backend->priv->property_lock);
 
 	g_object_notify (G_OBJECT (backend), "cache-dir");
 }

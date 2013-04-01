@@ -221,6 +221,7 @@ gboolean	e_cal_backend_is_opened		(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly	(ECalBackend *backend);
 
 const gchar *	e_cal_backend_get_cache_dir	(ECalBackend *backend);
+gchar *		e_cal_backend_dup_cache_dir	(ECalBackend *backend);
 void		e_cal_backend_set_cache_dir	(ECalBackend *backend,
 						 const gchar *cache_dir);
 gchar *		e_cal_backend_create_cache_filename
