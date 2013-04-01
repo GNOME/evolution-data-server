@@ -35,12 +35,12 @@ struct _EBookBackendPrivate {
 	ESourceRegistry *registry;
 	EDataBook *data_book;
 
-	gboolean writable;
-
 	GMutex views_mutex;
 	GList *views;
 
+	GMutex property_lock;
 	gchar *cache_dir;
+	gboolean writable;
 
 	GMutex operation_lock;
 	GHashTable *operation_ids;
@@ -387,8 +387,8 @@ book_backend_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_CACHE_DIR:
-			g_value_set_string (
-				value, e_book_backend_get_cache_dir (
+			g_value_take_string (
+				value, e_book_backend_dup_cache_dir (
 				E_BOOK_BACKEND (object)));
 			return;
 
@@ -442,6 +442,7 @@ book_backend_finalize (GObject *object)
 	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
 
 	g_mutex_clear (&priv->views_mutex);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->cache_dir);
 
@@ -577,7 +578,7 @@ e_book_backend_init (EBookBackend *backend)
 
 	backend->priv->views = NULL;
 	g_mutex_init (&backend->priv->views_mutex);
-
+	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->operation_lock);
 
 	backend->priv->operation_ids = g_hash_table_new_full (
@@ -591,9 +592,9 @@ e_book_backend_init (EBookBackend *backend)
  * e_book_backend_get_cache_dir:
  * @backend: an #EBookBackend
  *
- * Returns the cache directory for the given backend.
+ * Returns the cache directory path used by @backend.
  *
- * Returns: the cache directory for the backend
+ * Returns: the cache directory path
  *
  * Since: 2.32
  **/
@@ -606,15 +607,46 @@ e_book_backend_get_cache_dir (EBookBackend *backend)
 }
 
 /**
+ * e_book_backend_dup_cache_dir:
+ * @backend: an #EBookBackend
+ *
+ * Thread-safe variation of e_book_backend_get_cache_dir().
+ * Use this function when accessing @backend from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #EBookBackend:cache-dir
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_book_backend_dup_cache_dir (EBookBackend *backend)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	protected = e_book_backend_get_cache_dir (backend);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * e_book_backend_set_cache_dir:
  * @backend: an #EBookBackend
- * @cache_dir: a local cache directory
+ * @cache_dir: a local cache directory path
  *
- * Sets the cache directory for the given backend.
+ * Sets the cache directory path for use by @backend.
  *
- * Note that #EBookBackend is initialized with a usable default based on
- * the #ESource given to e_book_backend_open().  Backends should
- * not override the default without good reason.
+ * Note that #EBookBackend is initialized with a default cache directory
+ * path which should suffice for most cases.  Backends should not override
+ * the default path without good reason.
  *
  * Since: 2.32
  **/
@@ -625,11 +657,17 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (cache_dir != NULL);
 
-	if (g_strcmp0 (backend->priv->cache_dir, cache_dir) == 0)
+	g_mutex_lock (&backend->priv->property_lock);
+
+	if (g_strcmp0 (backend->priv->cache_dir, cache_dir) == 0) {
+		g_mutex_unlock (&backend->priv->property_lock);
 		return;
+	}
 
 	g_free (backend->priv->cache_dir);
 	backend->priv->cache_dir = g_strdup (cache_dir);
+
+	g_mutex_unlock (&backend->priv->property_lock);
 
 	g_object_notify (G_OBJECT (backend), "cache-dir");
 }

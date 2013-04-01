@@ -173,6 +173,7 @@ struct _EBookBackendClass {
 GType		e_book_backend_get_type		(void) G_GNUC_CONST;
 
 const gchar *	e_book_backend_get_cache_dir	(EBookBackend *backend);
+gchar *		e_book_backend_dup_cache_dir	(EBookBackend *backend);
 void		e_book_backend_set_cache_dir	(EBookBackend *backend,
 						 const gchar *cache_dir);
 EDataBook *	e_book_backend_ref_data_book	(EBookBackend *backend);
