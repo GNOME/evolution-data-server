@@ -2581,22 +2581,6 @@ e_book_backend_is_readonly (EBookBackend *backend)
 }
 
 /**
- * e_book_backend_is_removed:
- * @backend: an #EBookBackend
- *
- * Checks if @backend has been removed from its physical storage.
- *
- * Returns: %TRUE if @backend has been removed, %FALSE otherwise.
- **/
-gboolean
-e_book_backend_is_removed (EBookBackend *backend)
-{
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-
-	return backend->priv->removed;
-}
-
-/**
  * e_book_backend_set_is_removed:
  * @backend: an #EBookBackend
  * @is_removed: A flag indicating whether the backend's storage was removed

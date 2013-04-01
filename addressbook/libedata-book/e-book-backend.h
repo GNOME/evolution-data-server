@@ -186,7 +186,6 @@ void		e_book_backend_set_writable	(EBookBackend *backend,
 
 gboolean	e_book_backend_is_opened	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
-gboolean	e_book_backend_is_removed	(EBookBackend *backend);
 
 gchar *		e_book_backend_get_backend_property_sync
 						(EBookBackend *backend,
