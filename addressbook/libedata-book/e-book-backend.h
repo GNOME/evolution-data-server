@@ -343,10 +343,6 @@ void		e_book_backend_configure_direct	(EBookBackend *backend,
 
 void		e_book_backend_sync		(EBookBackend *backend);
 
-/* protected functions for subclasses */
-void		e_book_backend_set_is_removed	(EBookBackend *backend,
-						 gboolean is_removed);
-
 GSimpleAsyncResult *
 		e_book_backend_prepare_for_completion
 						(EBookBackend *backend,

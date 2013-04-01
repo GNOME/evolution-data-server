@@ -35,7 +35,6 @@ struct _EBookBackendPrivate {
 	ESourceRegistry *registry;
 	EDataBook *data_book;
 
-	gboolean removed;
 	gboolean writable;
 
 	GMutex views_mutex;
@@ -2578,23 +2577,6 @@ e_book_backend_is_readonly (EBookBackend *backend)
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
 	return !e_book_backend_get_writable (backend);
-}
-
-/**
- * e_book_backend_set_is_removed:
- * @backend: an #EBookBackend
- * @is_removed: A flag indicating whether the backend's storage was removed
- *
- * Sets the flag indicating whether @backend was removed to @is_removed.
- * Meant to be used by backend implementations.
- **/
-void
-e_book_backend_set_is_removed (EBookBackend *backend,
-                               gboolean is_removed)
-{
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-
-	backend->priv->removed = is_removed;
 }
 
 /**

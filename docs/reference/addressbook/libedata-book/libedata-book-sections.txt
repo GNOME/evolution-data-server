@@ -53,7 +53,6 @@ e_book_backend_notify_complete
 e_book_backend_notify_error
 e_book_backend_notify_property_changed
 e_book_backend_sync
-e_book_backend_set_is_removed
 e_book_backend_get_direct_book
 e_book_backend_configure_direct
 <SUBSECTION Standard>
