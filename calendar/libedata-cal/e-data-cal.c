@@ -499,6 +499,7 @@ data_cal_complete_open_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -546,6 +547,7 @@ data_cal_complete_refresh_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -609,6 +611,7 @@ data_cal_complete_get_object_cb (GObject *source_object,
 		g_free (utf8_string);
 		g_free (string);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -686,6 +689,7 @@ data_cal_complete_get_object_list_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -735,6 +739,7 @@ data_cal_complete_get_free_busy_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -805,6 +810,7 @@ data_cal_complete_create_objects_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -854,6 +860,7 @@ data_cal_complete_modify_objects_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -926,6 +933,7 @@ data_cal_complete_remove_objects_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1029,6 +1037,7 @@ data_cal_complete_receive_objects_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1110,6 +1119,7 @@ data_cal_complete_send_objects_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1176,6 +1186,7 @@ data_cal_complete_get_attachment_uris_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1231,6 +1242,7 @@ data_cal_complete_discard_alarm_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1355,6 +1367,7 @@ data_cal_complete_get_timezone_cb (GObject *source_object,
 
 		g_free (tzobject);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1404,6 +1417,7 @@ data_cal_complete_add_timezone_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1486,10 +1500,8 @@ e_data_cal_respond_open (EDataCal *cal,
 
 	cal->priv->opened = (error == NULL);
 
-	if (error != NULL) {
-		data_cal_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete_in_idle (simple);
 
@@ -1525,10 +1537,8 @@ e_data_cal_respond_refresh (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot refresh calendar: "));
 
-	if (error != NULL) {
-		data_cal_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete (simple);
 
@@ -1582,7 +1592,6 @@ e_data_cal_respond_get_object (EDataCal *cal,
 				E_CAL_CLIENT_ERROR_INVALID_OBJECT));
 		}
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1642,7 +1651,6 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
 		}
 
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1681,10 +1689,8 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot retrieve calendar free/busy list: "));
 
-	if (error != NULL) {
-		data_cal_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete_in_idle (simple);
 
@@ -1751,7 +1757,6 @@ e_data_cal_respond_create_objects (EDataCal *cal,
 		g_queue_push_tail (queue, inner_queue);
 
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1824,7 +1829,6 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
 		g_queue_push_tail (queue, inner_queue);
 
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1917,7 +1921,6 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
 		}
 
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1955,10 +1958,8 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot receive calendar objects: "));
 
-	if (error != NULL) {
-		data_cal_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete_in_idle (simple);
 
@@ -2015,7 +2016,6 @@ e_data_cal_respond_send_objects (EDataCal *cal,
 			g_queue_push_tail (queue, g_strdup (link->data));
 
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -2065,7 +2065,6 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
 		for (link = list; link != NULL; link = g_slist_next (link))
 			g_queue_push_tail (queue, g_strdup (link->data));
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -2103,10 +2102,8 @@ e_data_cal_respond_discard_alarm (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not discard reminder: "));
 
-	if (error != NULL) {
-		data_cal_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete_in_idle (simple);
 
@@ -2149,7 +2146,6 @@ e_data_cal_respond_get_timezone (EDataCal *cal,
 	if (error == NULL) {
 		g_queue_push_tail (queue, g_strdup (tzobject));
 	} else {
-		data_cal_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -2187,10 +2183,8 @@ e_data_cal_respond_add_timezone (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Could not add calendar time zone: "));
 
-	if (error != NULL) {
-		data_cal_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete_in_idle (simple);
 
