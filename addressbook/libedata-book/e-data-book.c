@@ -520,6 +520,7 @@ data_book_complete_open_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -567,6 +568,7 @@ data_book_complete_refresh_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -632,6 +634,7 @@ data_book_complete_get_contact_cb (GObject *source_object,
 
 		g_object_unref (contact);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -704,6 +707,7 @@ data_book_complete_get_contact_list_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -767,6 +771,7 @@ data_book_complete_get_contact_list_uids_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -833,6 +838,7 @@ data_book_complete_create_contacts_cb (GObject *source_object,
 
 		g_strfreev (strv);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -881,6 +887,7 @@ data_book_complete_modify_contacts_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -929,6 +936,7 @@ data_book_complete_remove_contacts_cb (GObject *source_object,
 			async_context->interface,
 			async_context->invocation);
 	} else {
+		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
@@ -1061,10 +1069,8 @@ e_data_book_respond_open (EDataBook *book,
 
 	book->priv->opened = (error == NULL);
 
-	if (error != NULL) {
-		data_book_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete_in_idle (simple);
 
@@ -1100,10 +1106,8 @@ e_data_book_respond_refresh (EDataBook *book,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot refresh address book: "));
 
-	if (error != NULL) {
-		data_book_convert_to_client_error (error);
+	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
-	}
 
 	g_simple_async_result_complete (simple);
 
@@ -1140,7 +1144,6 @@ e_data_book_respond_get_contact (EDataBook *book,
 		g_queue_push_tail (queue, g_object_ref (contact));
 		g_object_unref (contact);
 	} else {
-		data_book_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1186,7 +1189,6 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 		}
 
 	} else {
-		data_book_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1234,7 +1236,6 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 			g_queue_push_tail (queue, g_strdup (link->data));
 
 	} else {
-		data_book_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1284,7 +1285,6 @@ e_data_book_respond_create_contacts (EDataBook *book,
 		}
 
 	} else {
-		data_book_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1334,7 +1334,6 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 		}
 
 	} else {
-		data_book_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
@@ -1375,7 +1374,6 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 			g_queue_push_tail (queue, g_strdup (link->data));
 
 	} else {
-		data_book_convert_to_client_error (error);
 		g_simple_async_result_take_error (simple, error);
 	}
 
