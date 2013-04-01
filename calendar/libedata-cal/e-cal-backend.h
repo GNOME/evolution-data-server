@@ -486,10 +486,6 @@ void		e_cal_backend_notify_property_changed
 void		e_cal_backend_empty_cache	(ECalBackend *backend,
 						 struct _ECalBackendCache *cache);
 
-/* protected functions for subclasses */
-void		e_cal_backend_set_is_removed	(ECalBackend *backend,
-						 gboolean is_removed);
-
 GSimpleAsyncResult *
 		e_cal_backend_prepare_for_completion
 						(ECalBackend *backend,

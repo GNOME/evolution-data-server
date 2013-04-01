@@ -42,7 +42,6 @@ struct _ECalBackendPrivate {
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
-	gboolean removed;
 	gboolean writable;
 
 	gchar *cache_dir;
@@ -1049,25 +1048,6 @@ e_cal_backend_is_readonly (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
 	return !e_cal_backend_get_writable (backend);
-}
-
-/**
- * e_cal_backend_set_is_removed:
- * @backend: an #ECalBackend
- * @is_removed: A flag indicating whether the backend's storage was removed
- *
- * Sets the flag indicating whether @backend was removed to @is_removed.
- * Meant to be used by backend implementations.
- *
- * Since: 3.2
- **/
-void
-e_cal_backend_set_is_removed (ECalBackend *backend,
-                              gboolean is_removed)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	backend->priv->removed = is_removed;
 }
 
 /**
