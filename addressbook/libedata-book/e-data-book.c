@@ -278,6 +278,11 @@ data_book_convert_to_client_error (GError *error)
 			error->code = E_CLIENT_ERROR_NOT_SUPPORTED;
 			break;
 
+		case E_DATA_BOOK_STATUS_BUSY:
+			error->domain = E_CLIENT_ERROR;
+			error->code = E_CLIENT_ERROR_BUSY;
+			break;
+
 		case E_DATA_BOOK_STATUS_NOT_OPENED:
 			error->domain = E_CLIENT_ERROR;
 			error->code = E_CLIENT_ERROR_NOT_OPENED;
