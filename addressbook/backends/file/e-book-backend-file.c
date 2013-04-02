@@ -59,10 +59,6 @@
 #define SQLITEDB_FOLDER_ID   "folder_id"
 #define SQLITEDB_FOLDER_NAME "folder"
 
-#define EDB_ERROR(_code)          e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
-#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
-#define EDB_NOT_OPENED_ERROR      EDB_ERROR(NOT_OPENED)
-
 /* Forward Declarations */
 static void	e_book_backend_file_initable_init
 						(GInitableIface *interface);
@@ -106,13 +102,17 @@ remove_file (const gchar *filename,
 {
 	if (-1 == g_unlink (filename)) {
 		if (errno == EACCES || errno == EPERM) {
-			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
+			g_set_error_literal (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_PERMISSION_DENIED,
+				e_client_error_to_string (
+				E_CLIENT_ERROR_PERMISSION_DENIED));
 		} else {
-			g_propagate_error (
-				error, e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
+			g_set_error (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
 				_("Failed to remove file '%s': %s"),
-				filename, g_strerror (errno)));
+				filename, g_strerror (errno));
 		}
 		return FALSE;
 	}
@@ -130,13 +130,17 @@ create_directory (const gchar *dirname,
 	if (rv == -1 && errno != EEXIST) {
 		g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
 		if (errno == EACCES || errno == EPERM)
-			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
+			g_set_error_literal (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_PERMISSION_DENIED,
+				e_client_error_to_string (
+				E_CLIENT_ERROR_PERMISSION_DENIED));
 		else
-			g_propagate_error (
-				error, e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
+			g_set_error (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
 				_("Failed to make directory %s: %s"),
-				dirname, g_strerror (errno)));
+				dirname, g_strerror (errno));
 		return FALSE;
 	}
 	return TRUE;
@@ -377,13 +381,17 @@ hard_link_photo (EBookBackendFile *bf,
 
 	if (ret < 0) {
 		if (errno == EACCES || errno == EPERM) {
-			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
+			g_set_error_literal (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_PERMISSION_DENIED,
+				e_client_error_to_string (
+				E_CLIENT_ERROR_PERMISSION_DENIED));
 		} else {
-			g_propagate_error (
-				error, e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
+			g_set_error (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
 				_("Failed to create hardlink for resource '%s': %s"),
-				src_filename, g_strerror (errno)));
+				src_filename, g_strerror (errno));
 		}
 		g_free (fullname);
 		fullname = NULL;
@@ -484,7 +492,10 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 		 */
 		uid = e_contact_get_const (contact, E_CONTACT_UID);
 		if (uid == NULL) {
-			g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, _("No UID in the contact")));
+			g_set_error_literal (
+				error, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("No UID in the contact"));
 			status = STATUS_ERROR;
 			goto done;
 		}
@@ -752,8 +763,8 @@ do_create (EBookBackendFile *bf,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONSTRAINT)) {
 				g_set_error (
-					perror, E_DATA_BOOK_ERROR,
-					E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS,
+					perror, E_BOOK_CLIENT_ERROR,
+					E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
 					_("Conflicting UIDs found in added contacts"));
 				g_clear_error (&local_error);
 			} else
@@ -839,8 +850,8 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
 				g_set_error (
-					perror, E_DATA_BOOK_ERROR,
-					E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
+					perror, E_BOOK_CLIENT_ERROR,
+					E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
 					_("Contact '%s' not found"), id);
 				g_error_free (local_error);
 			} else
@@ -908,7 +919,10 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		if (id == NULL) {
 			status = STATUS_ERROR;
 
-			g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, _("No UID in the contact")));
+			g_set_error_literal (
+				perror, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("No UID in the contact"));
 			g_object_unref (contact);
 			break;
 		}
@@ -935,8 +949,8 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			if (!contact_rev || !old_contact_rev ||
 			    strcmp (contact_rev, old_contact_rev) != 0) {
 				g_set_error (
-					perror, E_DATA_BOOK_ERROR,
-					E_DATA_BOOK_STATUS_OUT_OF_SYNC,
+					perror, E_CLIENT_ERROR,
+					E_CLIENT_ERROR_OUT_OF_SYNC,
 					_("Tried to modify contact '%s' with out of sync revision"),
 					(gchar *) e_contact_get_const (contact, E_CONTACT_UID));
 
@@ -1035,8 +1049,8 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
 			g_set_error (
-				perror, E_DATA_BOOK_ERROR,
-				E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND,
+				perror, E_BOOK_CLIENT_ERROR,
+				E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
 				_("Contact '%s' not found"), id);
 			g_error_free (local_error);
 		} else
@@ -1086,8 +1100,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
 			g_set_error (
-				perror, E_DATA_BOOK_ERROR,
-				E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+				perror, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_NOT_SUPPORTED,
 				_("Query '%s' not supported"), query);
 			g_error_free (local_error);
 
@@ -1095,8 +1109,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
 			g_set_error (
-				perror, E_DATA_BOOK_ERROR,
-				E_DATA_BOOK_STATUS_INVALID_QUERY,
+				perror, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_INVALID_QUERY,
 				_("Invalid Query '%s'"), query);
 			g_error_free (local_error);
 
@@ -1136,8 +1150,8 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
 			g_set_error (
-				perror, E_DATA_BOOK_ERROR,
-				E_DATA_BOOK_STATUS_NOT_SUPPORTED,
+				perror, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_NOT_SUPPORTED,
 				_("Query '%s' not supported"), query);
 			g_error_free (local_error);
 
@@ -1145,8 +1159,8 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
 			g_set_error (
-				perror, E_DATA_BOOK_ERROR,
-				E_DATA_BOOK_STATUS_INVALID_QUERY,
+				perror, E_CLIENT_ERROR,
+				E_CLIENT_ERROR_INVALID_QUERY,
 				_("Invalid Query '%s'"), query);
 			g_error_free (local_error);
 
@@ -1266,7 +1280,13 @@ book_view_thread (gpointer data)
 	if (!summary_list && local_error != NULL) {
 		g_warning (G_STRLOC ": Failed to query initial contacts: %s", local_error->message);
 		g_error_free (local_error);
-		e_data_book_view_notify_complete (book_view, EDB_NOT_OPENED_ERROR);
+		e_data_book_view_notify_complete (
+			book_view,
+			g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_NOT_OPENED,
+				e_client_error_to_string (
+				E_CLIENT_ERROR_NOT_OPENED)));
 		g_object_unref (book_view);
 		return NULL;
 	}
