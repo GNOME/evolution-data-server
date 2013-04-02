@@ -1025,67 +1025,15 @@ static void book_client_open (EClient *client,
 			      gpointer user_data);
 
 static void
-direct_book_async_opened (GObject *source_object,
-			  GAsyncResult *res,
-			  gpointer user_data)
-{
-	PropagateReadyData *data = (PropagateReadyData *)user_data;
-	GError *error = NULL;
-
-	if (e_data_book_open_finish (E_DATA_BOOK (source_object), res, &error)) {
-
-		/* Open direct book succeeded, now proceed to open the real book over D-Bus */
-		e_client_proxy_call_boolean (E_CLIENT (data->client), data->only_if_exists,
-					     data->cancellable, data->callback, data->user_data, book_client_open,
-					     e_gdbus_book_call_open, e_gdbus_book_call_open_finish,
-					     NULL, NULL, NULL, NULL);
-	} else {
-		/* Open failed, report error right away */
-		GSimpleAsyncResult *result;
-
-		result = g_simple_async_result_new_take_error (G_OBJECT (data->client),
-							       data->callback,
-							       data->user_data,
-							       error);
-		g_simple_async_result_complete (result);
-		g_object_unref (result);
-	}
-
-	propagate_ready_data_free (data);
-}
-
-static void
 book_client_open (EClient *client,
                   gboolean only_if_exists,
                   GCancellable *cancellable,
                   GAsyncReadyCallback callback,
                   gpointer user_data)
 {
-	EBookClient *book_client;
-	PropagateReadyData *data;
-
-	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-
-	book_client = E_BOOK_CLIENT (client);
-
-	if (book_client->priv->direct_book) {
-		data = propagate_ready_data_new (book_client,
-						 callback,
-						 user_data,
-						 book_client_open,
-						 cancellable);
-		data->only_if_exists = only_if_exists;
-
-		e_data_book_open (book_client->priv->direct_book,
-				  only_if_exists,
-				  cancellable,
-				  direct_book_async_opened,
-				  data);
-	} else {
-		e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, book_client_open,
+	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, book_client_open,
 					     e_gdbus_book_call_open,
 					     e_gdbus_book_call_open_finish, NULL, NULL, NULL, NULL);
-	}
 }
 
 static gboolean
@@ -1093,7 +1041,33 @@ book_client_open_finish (EClient *client,
                          GAsyncResult *result,
                          GError **error)
 {
-	return e_client_proxy_call_finish_void (client, result, error, book_client_open);
+	EBookClient *book_client;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+
+	book_client = E_BOOK_CLIENT (client);
+
+	if (!e_client_proxy_call_finish_void (client, result, error, book_client_open))
+		return FALSE;
+
+	/**
+	 * This is cheating, for two reasons:
+	 * - We should avoid the synchronous call here and instead
+	 *   hook into the asynchronous processing of the opening.
+	 * - only_if_exists is assumed to always be FALSE (as safe bet,
+	 *   because setting the parameter to TRUE does not make sense,
+	 *   as discussed on #evolution a while back).
+	 * - This operation cannot be cancelled.
+	 *
+	 * This is a quick fix for openismus-work. A better solution must
+	 * land in master.
+	 */
+	if (book_client->priv->direct_book &&
+	    !e_data_book_open_sync (book_client->priv->direct_book,
+				    FALSE /* only_if_exists */, NULL /* cancellable */, error))
+		return FALSE;
+
+	return TRUE;
 }
 
 static gboolean
@@ -1113,12 +1087,15 @@ book_client_open_sync (EClient *client,
 		return FALSE;
 	}
 
+	if (!e_client_proxy_call_sync_boolean__void (client, only_if_exists, cancellable, error, e_gdbus_book_call_open_sync))
+		return FALSE;
+
 	if (book_client->priv->direct_book &&
 	    !e_data_book_open_sync (book_client->priv->direct_book,
 				    only_if_exists, cancellable, error))
 		return FALSE;
 
-	return e_client_proxy_call_sync_boolean__void (client, only_if_exists, cancellable, error, e_gdbus_book_call_open_sync);
+	return TRUE;
 }
 
 static void
