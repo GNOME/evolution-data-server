@@ -207,7 +207,6 @@ ECalBackendSExpPrivate
 <FILE>e-cal-backend-sync</FILE>
 <TITLE>ECalBackendSync</TITLE>
 ECalBackendSync
-e_cal_backend_sync_set_lock
 e_cal_backend_sync_open
 e_cal_backend_sync_refresh
 e_cal_backend_sync_get_object

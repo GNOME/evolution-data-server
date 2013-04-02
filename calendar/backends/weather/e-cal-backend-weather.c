@@ -782,8 +782,6 @@ e_cal_backend_weather_init (ECalBackendWeather *cbw)
 {
 	cbw->priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (cbw);
 
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbw), TRUE);
-
 	g_signal_connect (
 		cbw, "notify::online",
 		G_CALLBACK (e_cal_backend_weather_notify_online_cb), NULL);
@@ -804,6 +802,9 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class = (ECalBackendSyncClass *) class;
 
 	object_class->finalize = e_cal_backend_weather_finalize;
+
+	/* Execute one method at a time. */
+	backend_class->use_serial_dispatch_queue = TRUE;
 
 	backend_class->get_backend_property = e_cal_backend_weather_get_backend_property;
 

@@ -3553,12 +3553,6 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 	g_rec_mutex_init (&cbfile->priv->idle_save_rmutex);
 
 	g_mutex_init (&cbfile->priv->refresh_lock);
-
-	/*
-	 * data access is serialized via idle_save_rmutex, so locking at the
-	 * backend method level is not needed
-	 */
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), FALSE);
 }
 
 void

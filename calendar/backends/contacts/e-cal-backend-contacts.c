@@ -1316,8 +1316,6 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	cbc->priv->alarm_interval = -1;
 	cbc->priv->alarm_units = CAL_MINUTES;
 
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbc), TRUE);
-
 	g_signal_connect (
 		cbc, "notify::online",
 		G_CALLBACK (e_cal_backend_contacts_notify_online_cb), NULL);
@@ -1352,6 +1350,9 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	object_class->finalize = e_cal_backend_contacts_finalize;
 	object_class->dispose = e_cal_backend_contacts_dispose;
 	object_class->constructed = e_cal_backend_contacts_constructed;
+
+	/* Execute one method at a time. */
+	backend_class->use_serial_dispatch_queue = TRUE;
 
 	backend_class->get_backend_property = e_cal_backend_contacts_get_backend_property;
 

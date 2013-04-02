@@ -5234,8 +5234,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 		cbdav->priv->session, "authenticate",
 		G_CALLBACK (soup_authenticate), cbdav);
 
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbdav), FALSE);
-
 	g_signal_connect (
 		cbdav, "notify::online",
 		G_CALLBACK (caldav_notify_online_cb), NULL);

@@ -149,8 +149,6 @@ struct _ECalBackendSyncClass {
 };
 
 GType		e_cal_backend_sync_get_type	(void) G_GNUC_CONST;
-void		e_cal_backend_sync_set_lock	(ECalBackendSync *backend,
-						 gboolean lock);
 void		e_cal_backend_sync_open		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,

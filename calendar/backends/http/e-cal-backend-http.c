@@ -1468,8 +1468,6 @@ e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 {
 	cbhttp->priv = E_CAL_BACKEND_HTTP_GET_PRIVATE (cbhttp);
 
-	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbhttp), TRUE);
-
 	g_signal_connect (
 		cbhttp, "notify::online",
 		G_CALLBACK (e_cal_backend_http_notify_online_cb), NULL);
@@ -1492,6 +1490,9 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	object_class->dispose = e_cal_backend_http_dispose;
 	object_class->finalize = e_cal_backend_http_finalize;
 	object_class->constructed = e_cal_backend_http_constructed;
+
+	/* Execute one method at a time. */
+	backend_class->use_serial_dispatch_queue = TRUE;
 
 	backend_class->get_backend_property = e_cal_backend_http_get_backend_property;
 

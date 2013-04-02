@@ -22,40 +22,6 @@
 
 G_DEFINE_TYPE (ECalBackendSync, e_cal_backend_sync, E_TYPE_CAL_BACKEND)
 
-struct _ECalBackendSyncPrivate {
-	GMutex sync_mutex;
-
-	gboolean mutex_lock;
-};
-
-#define LOCK_WRAPPER(func, args) G_STMT_START {									\
-	gboolean locked = backend->priv->mutex_lock;								\
-	if (locked)												\
-		g_mutex_lock (&backend->priv->sync_mutex);							\
-	(* E_CAL_BACKEND_SYNC_GET_CLASS (backend)->func) args;							\
-	if (locked)												\
-		g_mutex_unlock (&backend->priv->sync_mutex);							\
-	} G_STMT_END
-
-/**
- * e_cal_backend_sync_set_lock:
- * @backend: An ECalBackendSync object.
- * @lock: Lock mode.
- *
- * Sets the lock mode on the ECalBackendSync object. If TRUE, the backend
- * will create a locking mutex for every operation, so that only one can
- * happen at a time. If FALSE, no lock would be done and many operations
- * can happen at the same time.
- */
-void
-e_cal_backend_sync_set_lock (ECalBackendSync *backend,
-                             gboolean lock)
-{
-	g_return_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend));
-
-	backend->priv->mutex_lock = lock;
-}
-
 /**
  * e_cal_backend_sync_open:
  * @backend: An ECalBackendSync object.
@@ -80,7 +46,8 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->open_sync != NULL) {
-		LOCK_WRAPPER (open_sync, (backend, cal, cancellable, only_if_exists, error));
+		class->open_sync (
+			backend, cal, cancellable, only_if_exists, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -113,7 +80,7 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->refresh_sync != NULL) {
-		LOCK_WRAPPER (refresh_sync, (backend, cal, cancellable, error));
+		class->refresh_sync (backend, cal, cancellable, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -152,7 +119,8 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->get_object_sync != NULL) {
-		LOCK_WRAPPER (get_object_sync, (backend, cal, cancellable, uid, rid, calobj, error));
+		class->get_object_sync (
+			backend, cal, cancellable, uid, rid, calobj, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -188,7 +156,8 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->get_object_list_sync != NULL) {
-		LOCK_WRAPPER (get_object_list_sync, (backend, cal, cancellable, sexp, calobjs, error));
+		class->get_object_list_sync (
+			backend, cal, cancellable, sexp, calobjs, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -227,7 +196,9 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->get_free_busy_sync != NULL) {
-		LOCK_WRAPPER (get_free_busy_sync, (backend, cal, cancellable, users, start, end, freebusyobjects, error));
+		class->get_free_busy_sync (
+			backend, cal, cancellable,
+			users, start, end, freebusyobjects, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -266,7 +237,9 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->create_objects_sync != NULL) {
-		LOCK_WRAPPER (create_objects_sync, (backend, cal, cancellable, calobjs, uids, new_components, error));
+		class->create_objects_sync (
+			backend, cal, cancellable,
+			calobjs, uids, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -309,7 +282,9 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->modify_objects_sync != NULL) {
-		LOCK_WRAPPER (modify_objects_sync, (backend, cal, cancellable, calobjs, mod, old_components, new_components, error));
+		class->modify_objects_sync (
+			backend, cal, cancellable,
+			calobjs, mod, old_components, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -353,7 +328,9 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->remove_objects_sync != NULL) {
-		LOCK_WRAPPER (remove_objects_sync, (backend, cal, cancellable, ids, mod, old_components, new_components, error));
+		class->remove_objects_sync (
+			backend, cal, cancellable,
+			ids, mod, old_components, new_components, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -386,7 +363,8 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->receive_objects_sync != NULL) {
-		LOCK_WRAPPER (receive_objects_sync, (backend, cal, cancellable, calobj, error));
+		class->receive_objects_sync (
+			backend, cal, cancellable, calobj, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -423,7 +401,9 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->send_objects_sync != NULL) {
-		LOCK_WRAPPER (send_objects_sync, (backend, cal, cancellable, calobj, users, modified_calobj, error));
+		class->send_objects_sync (
+			backend, cal, cancellable,
+			calobj, users, modified_calobj, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -463,7 +443,9 @@ e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->get_attachment_uris_sync != NULL) {
-		LOCK_WRAPPER (get_attachment_uris_sync, (backend, cal, cancellable, uid, rid, attachments, error));
+		class->get_attachment_uris_sync (
+			backend, cal, cancellable,
+			uid, rid, attachments, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -502,7 +484,9 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->discard_alarm_sync != NULL) {
-		LOCK_WRAPPER (discard_alarm_sync, (backend, cal, cancellable, uid, rid, auid, error));
+		class->discard_alarm_sync (
+			backend, cal, cancellable,
+			uid, rid, auid, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -543,18 +527,16 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->get_timezone_sync != NULL) {
-		LOCK_WRAPPER (get_timezone_sync, (backend, cal, cancellable, tzid, tzobject, error));
+		class->get_timezone_sync (
+			backend, cal, cancellable,
+			tzid, tzobject, error);
 	}
 
 	if (tzobject && !*tzobject) {
 		icaltimezone *zone = NULL;
 
-		if (backend->priv->mutex_lock)
-			g_mutex_lock (&backend->priv->sync_mutex);
 		zone = e_timezone_cache_get_timezone (
 			E_TIMEZONE_CACHE (backend), tzid);
-		if (backend->priv->mutex_lock)
-			g_mutex_unlock (&backend->priv->sync_mutex);
 
 		if (!zone) {
 			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
@@ -595,7 +577,8 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend,
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
 	if (class->add_timezone_sync != NULL) {
-		LOCK_WRAPPER (add_timezone_sync, (backend, cal, cancellable, tzobject, error));
+		class->add_timezone_sync (
+			backend, cal, cancellable, tzobject, error);
 	} else {
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
@@ -917,28 +900,9 @@ cal_backend_add_timezone (ECalBackend *backend,
 }
 
 static void
-e_cal_backend_sync_finalize (GObject *object)
-{
-	ECalBackendSyncPrivate *priv;
-
-	priv = E_CAL_BACKEND_SYNC_GET_PRIVATE (object);
-
-	g_mutex_clear (&priv->sync_mutex);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_cal_backend_sync_parent_class)->finalize (object);
-}
-
-static void
 e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 {
-	GObjectClass *object_class;
 	ECalBackendClass *backend_class;
-
-	g_type_class_add_private (class, sizeof (ECalBackendSyncPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = e_cal_backend_sync_finalize;
 
 	backend_class = E_CAL_BACKEND_CLASS (class);
 	backend_class->open			= cal_backend_open;
@@ -960,7 +924,5 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 static void
 e_cal_backend_sync_init (ECalBackendSync *backend)
 {
-	backend->priv = E_CAL_BACKEND_SYNC_GET_PRIVATE (backend);
-	g_mutex_init (&backend->priv->sync_mutex);
 }
 
