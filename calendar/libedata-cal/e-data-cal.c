@@ -1459,6 +1459,11 @@ data_cal_handle_close_cb (EDBusCalendar *interface,
 	ECalBackend *backend;
 	const gchar *sender;
 
+	/* G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED should be set on
+	 * the GDBusMessage, but we complete the invocation anyway
+	 * and let the D-Bus machinery suppress the reply. */
+	e_dbus_calendar_complete_close (interface, invocation);
+
 	backend = e_data_cal_ref_backend (data_cal);
 	g_return_val_if_fail (backend != NULL, FALSE);
 
