@@ -101,6 +101,13 @@ struct _EBookBackend {
 struct _EBookBackendClass {
 	EBackendClass parent_class;
 
+	/* Set this to TRUE to use a serial dispatch queue, instead
+	 * of a concurrent dispatch queue.  A serial dispatch queue
+	 * executes one method at a time in the order in which they
+	 * were called.  This is generally slower than a concurrent
+	 * dispatch queue, but helps avoid thread-safety issues. */
+	gboolean use_serial_dispatch_queue;
+
 	/* Virtual methods */
 	gchar *		(*get_backend_property)	(EBookBackend *backend,
 						 const gchar *prop_name);
