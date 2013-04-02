@@ -202,6 +202,10 @@ cal_backend_push_operation (ECalBackend *backend,
 	if (G_IS_CANCELLABLE (cancellable))
 		node->cancellable = g_object_ref (cancellable);
 
+	/* All operations block when using a serial dispatch queue. */
+	if (E_CAL_BACKEND_GET_CLASS (backend)->use_serial_dispatch_queue)
+		node->blocking_operation = TRUE;
+
 	g_queue_push_tail (&backend->priv->pending_operations, node);
 
 	g_mutex_unlock (&backend->priv->operation_lock);
@@ -266,6 +270,23 @@ cal_backend_dispatch_next_operation (ECalBackend *backend)
 		node->cancellable);
 
 	return TRUE;
+}
+
+static void
+cal_backend_unblock_operations (ECalBackend *backend,
+                                GSimpleAsyncResult *simple)
+{
+	/* If the GSimpleAsyncResult was blocking the dispatch queue,
+	 * unblock the dispatch queue.  Then dispatch as many waiting
+	 * operations as we can. */
+
+	g_mutex_lock (&backend->priv->operation_lock);
+	if (backend->priv->blocked == simple)
+		g_clear_object (&backend->priv->blocked);
+	g_mutex_unlock (&backend->priv->operation_lock);
+
+	while (cal_backend_dispatch_next_operation (backend))
+		;
 }
 
 static guint32
@@ -1405,14 +1426,7 @@ e_cal_backend_open_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 
-	/* This operation blocks, so we need to let waiting operations
-	 * through.  (FIXME Centralize this for any blocking operation.) */
-	g_mutex_lock (&backend->priv->operation_lock);
-	if (backend->priv->blocked == simple)
-		g_clear_object (&backend->priv->blocked);
-	g_mutex_unlock (&backend->priv->operation_lock);
-	while (cal_backend_dispatch_next_operation (backend))
-		;
+	cal_backend_unblock_operations (backend, simple);
 
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
@@ -1579,6 +1593,8 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
 		e_cal_backend_refresh), FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
@@ -1762,6 +1778,8 @@ e_cal_backend_get_object_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
@@ -1955,6 +1973,8 @@ e_cal_backend_get_object_list_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
@@ -2154,6 +2174,8 @@ e_cal_backend_get_free_busy_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 
+	cal_backend_unblock_operations (backend, simple);
+
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
 }
@@ -2348,6 +2370,8 @@ e_cal_backend_create_objects_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
@@ -2567,6 +2591,8 @@ e_cal_backend_modify_objects_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
@@ -2794,6 +2820,8 @@ e_cal_backend_remove_objects_finish (ECalBackend *backend,
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
+	cal_backend_unblock_operations (backend, simple);
+
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
@@ -3014,6 +3042,8 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 
+	cal_backend_unblock_operations (backend, simple);
+
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
 }
@@ -3201,6 +3231,8 @@ e_cal_backend_send_objects_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
 		return NULL;
@@ -3401,6 +3433,8 @@ e_cal_backend_get_attachment_uris_finish (ECalBackend *backend,
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
+	cal_backend_unblock_operations (backend, simple);
+
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
@@ -3598,6 +3632,8 @@ e_cal_backend_discard_alarm_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 
+	cal_backend_unblock_operations (backend, simple);
+
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
 }
@@ -3771,6 +3807,8 @@ e_cal_backend_get_timezone_finish (ECalBackend *backend,
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
@@ -3946,6 +3984,8 @@ e_cal_backend_add_timezone_finish (ECalBackend *backend,
 		e_cal_backend_add_timezone), FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	cal_backend_unblock_operations (backend, simple);
 
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
