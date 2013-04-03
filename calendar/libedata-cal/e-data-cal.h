@@ -130,7 +130,6 @@ struct _ECalBackend *
 GDBusConnection *
 		e_data_cal_get_connection	(EDataCal *cal);
 const gchar *	e_data_cal_get_object_path	(EDataCal *cal);
-gboolean	e_data_cal_is_opened		(EDataCal *cal);
 
 void		e_data_cal_respond_open		(EDataCal *cal,
 						 guint32 opid,

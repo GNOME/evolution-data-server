@@ -48,8 +48,6 @@ struct _EDataCalPrivate {
 	GWeakRef backend;
 	gchar *object_path;
 
-	gboolean opened;
-
 	GMutex sender_lock;
 	GHashTable *sender_table;
 };
@@ -1503,8 +1501,6 @@ e_data_cal_respond_open (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open calendar: "));
 
-	cal->priv->opened = (error == NULL);
-
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
 
@@ -2722,31 +2718,5 @@ e_data_cal_get_object_path (EDataCal *cal)
 	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
 
 	return cal->priv->object_path;
-}
-
-/**
- * e_data_cal_is_opened:
- * @cal: an #EDataCal
- *
- * Returns whether the @cal's #EDataCal:backend was successfully opened.
- *
- * <note>
- *   <para>
- *     This is a temporary function serving only to keep
- *     e_cal_backend_is_opened() working for a little while longer.
- *     Do not call this function directly.
- *   </para>
- * </note>
- *
- * Returns: whether the #EDataCal:backend is opened
- *
- * Since: 3.10
- **/
-gboolean
-e_data_cal_is_opened (EDataCal *cal)
-{
-	g_return_val_if_fail (E_IS_DATA_CAL (cal), FALSE);
-
-	return cal->priv->opened;
 }
 

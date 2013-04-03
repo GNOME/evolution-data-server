@@ -33,8 +33,9 @@ typedef struct _SignalClosure SignalClosure;
 
 struct _ECalBackendPrivate {
 	ESourceRegistry *registry;
-
 	EDataCal *data_cal;
+
+	gboolean opened;
 
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
@@ -1012,19 +1013,9 @@ e_cal_backend_set_writable (ECalBackend *backend,
 gboolean
 e_cal_backend_is_opened (ECalBackend *backend)
 {
-	EDataCal *data_cal;
-	gboolean opened = FALSE;
-
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
 
-	data_cal = e_cal_backend_ref_data_cal (backend);
-
-	if (data_cal != NULL) {
-		opened = e_data_cal_is_opened (data_cal);
-		g_object_unref (data_cal);
-	}
-
-	return opened;
+	return backend->priv->opened;
 }
 
 /**
@@ -1428,8 +1419,12 @@ e_cal_backend_open_finish (ECalBackend *backend,
 
 	cal_backend_unblock_operations (backend, simple);
 
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	backend->priv->opened = TRUE;
+
+	return TRUE;
 }
 
 /**
