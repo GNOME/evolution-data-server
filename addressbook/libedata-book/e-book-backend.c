@@ -1176,7 +1176,7 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 
 	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
-			simple, E_DATA_BOOK_ERROR,
+			simple, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
 			"%s", e_client_error_to_string (
 			E_CLIENT_ERROR_NOT_OPENED));
