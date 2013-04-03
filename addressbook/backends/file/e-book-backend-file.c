@@ -66,7 +66,7 @@ static void	e_book_backend_file_initable_init
 G_DEFINE_TYPE_WITH_CODE (
 	EBookBackendFile,
 	e_book_backend_file,
-	E_TYPE_BOOK_BACKEND_SYNC,
+	E_TYPE_BOOK_BACKEND,
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_book_backend_file_initable_init))
@@ -699,26 +699,23 @@ set_revision (EBookBackendFile *bf,
  */
 static gboolean
 do_create (EBookBackendFile *bf,
-           const GSList *vcards_req,
-           GSList **contacts,
-           GError **perror)
+           const gchar * const *vcards,
+           GQueue *out_contacts,
+           GError **error)
 {
-	GSList *slist = NULL;
-	const GSList *l;
 	PhotoModifiedStatus status = STATUS_NORMAL;
+	GQueue queue = G_QUEUE_INIT;
+	guint ii, length;
 	GError *local_error = NULL;
 
-	g_assert (bf);
-	g_assert (vcards_req);
+	length = g_strv_length ((gchar **) vcards);
 
-	for (l = vcards_req; l != NULL; l = l->next) {
+	for (ii = 0; ii < length; ii++) {
 		gchar           *id;
 		const gchar     *rev;
-		const gchar     *vcard_req;
 		EContact        *contact;
 
-		vcard_req = (const gchar *) l->data;
-		contact = e_contact_new_from_vcard (vcard_req);
+		contact = e_contact_new_from_vcard (vcards[ii]);
 
 		/* Preserve original UID, create a unique UID if needed */
 		if (e_contact_get_const (contact, E_CONTACT_UID) == NULL) {
@@ -731,17 +728,17 @@ do_create (EBookBackendFile *bf,
 		if (!(rev && *rev))
 			set_revision (bf, contact);
 
-		status = maybe_transform_vcard_for_photo (bf, NULL, contact, perror);
+		status = maybe_transform_vcard_for_photo (bf, NULL, contact, error);
 
 		if (status != STATUS_ERROR) {
 
-			/* Contact was added successfully, add it to the local list */
-			slist = g_slist_prepend (slist, contact);
+			/* Contact was added successfully. */
+			g_queue_push_tail (&queue, contact);
 		} else {
 			/* Contact could not be transformed */
 			g_warning (
 				G_STRLOC ": Error transforming vcard with image data %s",
-				(perror && *perror) ? (*perror)->message :
+				(error && *error) ? (*error)->message :
 				"Unknown error transforming vcard");
 			g_object_unref (contact);
 
@@ -751,6 +748,13 @@ do_create (EBookBackendFile *bf,
 	}
 
 	if (status != STATUS_ERROR) {
+		GList *tail, *link;
+		GSList *slist = NULL;
+
+		/* XXX EBookBackendSqliteDB still uses GSList. */
+		tail = g_queue_peek_tail_link (&queue);
+		for (link = tail; link != NULL; link = g_list_previous (link))
+			slist = g_slist_prepend (slist, link->data);
 
 		if (!e_book_backend_sqlitedb_new_contacts (bf->priv->sqlitedb,
 							   SQLITEDB_FOLDER_ID,
@@ -763,26 +767,24 @@ do_create (EBookBackendFile *bf,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONSTRAINT)) {
 				g_set_error (
-					perror, E_BOOK_CLIENT_ERROR,
+					error, E_BOOK_CLIENT_ERROR,
 					E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
 					_("Conflicting UIDs found in added contacts"));
 				g_clear_error (&local_error);
 			} else
-				g_propagate_error (perror, local_error);
+				g_propagate_error (error, local_error);
 
 			status = STATUS_ERROR;
 		}
+
+		g_slist_free (slist);
 	}
 
-	if (status != STATUS_ERROR && contacts != NULL) {
-		*contacts = g_slist_reverse (slist);
-	} else {
+	if (status != STATUS_ERROR && out_contacts != NULL)
+		e_queue_transfer (&queue, out_contacts);
 
-		if (contacts)
-			*contacts = NULL;
-
-		g_slist_free_full (slist, (GDestroyNotify) g_object_unref);
-	}
+	while (!g_queue_is_empty (&queue))
+		g_object_unref (g_queue_pop_head (&queue));
 
 	return (status != STATUS_ERROR);
 }
@@ -1043,12 +1045,10 @@ book_backend_file_get_backend_property (EBookBackend *backend,
 		get_backend_property (backend, prop_name);
 }
 
-static void
-book_backend_file_open (EBookBackendSync *backend,
-                        EDataBook *book,
-                        GCancellable *cancellable,
-                        gboolean only_if_exists,
-                        GError **perror)
+static gboolean
+book_backend_file_open_sync (EBookBackend *backend,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	ESource          *source;
@@ -1072,60 +1072,67 @@ book_backend_file_open (EBookBackendSync *backend,
 
 	e_backend_set_online (E_BACKEND (backend), TRUE);
 	e_book_backend_set_writable (E_BOOK_BACKEND (backend), TRUE);
+
+	return TRUE;
 }
 
-static void
-book_backend_file_create_contacts (EBookBackendSync *backend,
-                                   EDataBook *book,
-                                   GCancellable *cancellable,
-                                   const GSList *vcards,
-                                   GSList **added_contacts,
-                                   GError **perror)
+static gboolean
+book_backend_file_create_contacts_sync (EBookBackend *backend,
+                                        const gchar * const *vcards,
+                                        GQueue *out_contacts,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	gboolean success = FALSE;
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	if (do_create (bf, vcards, added_contacts, perror)) {
+	if (do_create (bf, vcards, out_contacts, error)) {
 		e_book_backend_file_bump_revision (bf);
+		success = TRUE;
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
+	return success;
 }
 
-static void
-book_backend_file_modify_contacts (EBookBackendSync *backend,
-                                   EDataBook *book,
-                                   GCancellable *cancellable,
-                                   const GSList *vcards,
-                                   GSList **contacts,
-                                   GError **perror)
+static gboolean
+book_backend_file_modify_contacts_sync (EBookBackend *backend,
+                                        const gchar * const *vcards,
+                                        GQueue *out_contacts,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	const GSList     *lold, *l;
-	GSList           *old_contacts = NULL, *modified_contacts = NULL;
 	GSList           *ids = NULL;
 	GError           *local_error = NULL;
 	PhotoModifiedStatus status = STATUS_NORMAL;
+	GQueue old_contact_queue = G_QUEUE_INIT;
+	GQueue mod_contact_queue = G_QUEUE_INIT;
+	guint ii, length;
+
+	length = g_strv_length ((gchar **) vcards);
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	for (l = vcards; l != NULL; l = l->next) {
+	for (ii = 0; ii < length; ii++) {
 		gchar *id;
-		EContact *contact, *old_contact;
-		const gchar *contact_rev, *old_contact_rev;
+		EContact *mod_contact, *old_contact;
+		const gchar *mod_contact_rev, *old_contact_rev;
 
-		contact = e_contact_new_from_vcard (l->data);
-		id = e_contact_get (contact, E_CONTACT_UID);
+		mod_contact = e_contact_new_from_vcard (vcards[ii]);
+		id = e_contact_get (mod_contact, E_CONTACT_UID);
 
 		if (id == NULL) {
 			status = STATUS_ERROR;
 
 			g_set_error_literal (
-				perror, E_CLIENT_ERROR,
+				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_OTHER_ERROR,
 				_("No UID in the contact"));
-			g_object_unref (contact);
+			g_object_unref (mod_contact);
 			break;
 		}
 
@@ -1135,78 +1142,95 @@ book_backend_file_modify_contacts (EBookBackendSync *backend,
 			NULL, NULL, &local_error);
 		if (!old_contact) {
 			g_warning (G_STRLOC ": Failed to load contact %s: %s", id, local_error->message);
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 
 			status = STATUS_ERROR;
 
 			g_free (id);
-			g_object_unref (contact);
+			g_object_unref (mod_contact);
 			break;
 		}
 
 		if (bf->priv->revision_guards) {
-			contact_rev = e_contact_get_const (contact, E_CONTACT_REV);
+			mod_contact_rev = e_contact_get_const (mod_contact, E_CONTACT_REV);
 			old_contact_rev = e_contact_get_const (old_contact, E_CONTACT_REV);
 
-			if (!contact_rev || !old_contact_rev ||
-			    strcmp (contact_rev, old_contact_rev) != 0) {
+			if (!mod_contact_rev || !old_contact_rev ||
+			    strcmp (mod_contact_rev, old_contact_rev) != 0) {
 				g_set_error (
-					perror, E_CLIENT_ERROR,
+					error, E_CLIENT_ERROR,
 					E_CLIENT_ERROR_OUT_OF_SYNC,
 					_("Tried to modify contact '%s' with out of sync revision"),
-					(gchar *) e_contact_get_const (contact, E_CONTACT_UID));
+					(gchar *) e_contact_get_const (mod_contact, E_CONTACT_UID));
 
 				status = STATUS_ERROR;
 
 				g_free (id);
-				g_object_unref (contact);
+				g_object_unref (mod_contact);
 				g_object_unref (old_contact);
 				break;
 			}
 		}
 
 		/* Transform incomming photo blobs to uris before storing this to the DB */
-		status = maybe_transform_vcard_for_photo (bf, old_contact, contact, &local_error);
+		status = maybe_transform_vcard_for_photo (bf, old_contact, mod_contact, &local_error);
 		if (status == STATUS_ERROR) {
 			g_warning (G_STRLOC ": Error transforming contact %s: %s", id, local_error->message);
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 
 			g_free (id);
 			g_object_unref (old_contact);
-			g_object_unref (contact);
+			g_object_unref (mod_contact);
 			break;
 		}
 
 		/* update the revision (modified time of contact) */
-		set_revision (bf, contact);
+		set_revision (bf, mod_contact);
 
-		old_contacts      = g_slist_prepend (old_contacts, old_contact);
-		modified_contacts = g_slist_prepend (modified_contacts, contact);
-		ids               = g_slist_prepend (ids, id);
+		g_queue_push_tail (&old_contact_queue, old_contact);
+		g_queue_push_tail (&mod_contact_queue, mod_contact);
+
+		ids = g_slist_prepend (ids, id);
 	}
 
 	if (status != STATUS_ERROR) {
+		GList *old_link;
+		GList *mod_link;
+		GSList *slist = NULL;
 
 		/* Delete old photo file uris if need be (this will compare the new contact
 		 * with the current copy in the BDB to extract the uris to delete) */
-		lold = old_contacts;
-		l    = modified_contacts;
-		while (lold && l) {
-			maybe_delete_unused_uris (bf, E_CONTACT (lold->data), E_CONTACT (l->data));
-			lold = lold->next;
-			l = l->next;
+		old_link = g_queue_peek_head_link (&old_contact_queue);
+		mod_link = g_queue_peek_head_link (&mod_contact_queue);
+
+		while (old_link != NULL && mod_link != NULL) {
+			maybe_delete_unused_uris (
+				bf,
+				E_CONTACT (old_link->data),
+				E_CONTACT (mod_link->data));
+			old_link = g_list_next (old_link);
+			mod_link = g_list_next (mod_link);
+		}
+
+		/* XXX EBookBackendSqliteDB still uses GSList. */
+		mod_link = g_queue_peek_tail_link (&mod_contact_queue);
+		while (mod_link != NULL) {
+			slist = g_slist_prepend (slist, mod_link->data);
+			mod_link = g_list_previous (mod_link);
 		}
 
 		/* Update summary as well */
 		if (!e_book_backend_sqlitedb_new_contacts (bf->priv->sqlitedb,
 							   SQLITEDB_FOLDER_ID,
-							   modified_contacts, TRUE,
+							   slist, TRUE,
 							   &local_error)) {
 			g_warning ("Failed to modify contacts: %s", local_error->message);
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 
 			status = STATUS_ERROR;
 		}
+
+		g_slist_free (slist);
 	}
 
 	if (status != STATUS_ERROR)
@@ -1214,40 +1238,39 @@ book_backend_file_modify_contacts (EBookBackendSync *backend,
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
-	if (status != STATUS_ERROR) {
-		*contacts = g_slist_reverse (modified_contacts);
-	} else {
-		*contacts = NULL;
-		g_slist_free_full (
-			modified_contacts,
-			(GDestroyNotify) g_object_unref);
-	}
+	if (status != STATUS_ERROR)
+		e_queue_transfer (&mod_contact_queue, out_contacts);
+
+	while (!g_queue_is_empty (&old_contact_queue))
+		g_object_unref (g_queue_pop_head (&old_contact_queue));
+
+	while (!g_queue_is_empty (&mod_contact_queue))
+		g_object_unref (g_queue_pop_head (&mod_contact_queue));
 
 	g_slist_free_full (ids, (GDestroyNotify) g_free);
-	g_slist_free_full (old_contacts, g_object_unref);
+
+	return (status != STATUS_ERROR);
 }
 
-static void
-book_backend_file_remove_contacts (EBookBackendSync *backend,
-                                   EDataBook *book,
-                                   GCancellable *cancellable,
-                                   const GSList *id_list,
-                                   GSList **ids,
-                                   GError **perror)
+static gboolean
+book_backend_file_remove_contacts_sync (EBookBackend *backend,
+                                        const gchar * const *uids,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GSList           *removed_ids = NULL, *removed_contacts = NULL;
 	GError           *local_error = NULL;
-	gboolean          delete_failed = FALSE;
 	const GSList     *l;
+	gboolean success = TRUE;
+	guint ii, length;
+
+	length = g_strv_length ((gchar **) uids);
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	for (l = id_list; l != NULL; l = l->next) {
-		const gchar *id;
+	for (ii = 0; ii < length; ii++) {
 		EContact *contact;
-
-		id = l->data;
 
 		/* First load the EContacts which need to be removed, we might delete some
 		 * photos from disk because of this...
@@ -1258,11 +1281,11 @@ book_backend_file_remove_contacts (EBookBackendSync *backend,
 		 */
 		contact = e_book_backend_sqlitedb_get_contact (
 			bf->priv->sqlitedb,
-			SQLITEDB_FOLDER_ID, id,
+			SQLITEDB_FOLDER_ID, uids[ii],
 			NULL, NULL, &local_error);
 
 		if (contact) {
-			removed_ids      = g_slist_prepend (removed_ids, g_strdup (id));
+			removed_ids      = g_slist_prepend (removed_ids, g_strdup (uids[ii]));
 			removed_contacts = g_slist_prepend (removed_contacts, contact);
 		} else {
 			g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
@@ -1271,20 +1294,20 @@ book_backend_file_remove_contacts (EBookBackendSync *backend,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
 				g_set_error (
-					perror, E_BOOK_CLIENT_ERROR,
+					error, E_BOOK_CLIENT_ERROR,
 					E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-					_("Contact '%s' not found"), id);
+					_("Contact '%s' not found"), uids[ii]);
 				g_error_free (local_error);
 			} else
-				g_propagate_error (perror, local_error);
+				g_propagate_error (error, local_error);
 
 			/* Abort as soon as missing contact is to be deleted */
-			delete_failed = TRUE;
+			success = FALSE;
 			break;
 		}
 	}
 
-	if (!delete_failed) {
+	if (success) {
 
 		/* Delete URI associated to those contacts */
 		for (l = removed_contacts; l; l = l->next) {
@@ -1296,39 +1319,43 @@ book_backend_file_remove_contacts (EBookBackendSync *backend,
 						      SQLITEDB_FOLDER_ID,
 						      removed_ids, &local_error)) {
 			g_warning ("Failed to remove contacts: %s", local_error->message);
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 		}
 
 		e_book_backend_file_bump_revision (bf);
-
-		*ids = removed_ids;
-	} else {
-		*ids = NULL;
-		g_slist_free_full (removed_ids, (GDestroyNotify) g_free);
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
+	g_slist_free_full (removed_ids, (GDestroyNotify) g_free);
 	g_slist_free_full (removed_contacts, (GDestroyNotify) g_object_unref);
+
+	return success;
 }
 
-static void
-book_backend_file_get_contact (EBookBackendSync *backend,
-                               EDataBook *book,
-                               GCancellable *cancellable,
-                               const gchar *id,
-                               gchar **vcard,
-                               GError **perror)
+static EContact *
+book_backend_file_get_contact_sync (EBookBackend *backend,
+                                    const gchar *uid,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	EContact *contact;
 	GError *local_error = NULL;
 
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 
-	*vcard = e_book_backend_sqlitedb_get_vcard_string (bf->priv->sqlitedb,
-							   SQLITEDB_FOLDER_ID, id,
-							   NULL, NULL, &local_error);
+	contact = e_book_backend_sqlitedb_get_contact (
+		bf->priv->sqlitedb,
+		SQLITEDB_FOLDER_ID, uid,
+		NULL, NULL, &local_error);
+
 	g_rw_lock_reader_unlock (&(bf->priv->lock));
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((contact != NULL) && (local_error == NULL)) ||
+		((contact == NULL) && (local_error != NULL)), NULL);
 
 	if (local_error) {
 
@@ -1336,30 +1363,32 @@ book_backend_file_get_contact (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND)) {
 			g_set_error (
-				perror, E_BOOK_CLIENT_ERROR,
+				error, E_BOOK_CLIENT_ERROR,
 				E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-				_("Contact '%s' not found"), id);
+				_("Contact '%s' not found"), uid);
 			g_error_free (local_error);
 		} else
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 
 	}
+
+	return contact;
 }
 
-static void
-book_backend_file_get_contact_list (EBookBackendSync *backend,
-                                    EDataBook *book,
-                                    GCancellable *cancellable,
-                                    const gchar *query,
-                                    GSList **contacts,
-                                    GError **perror)
+static gboolean
+book_backend_file_get_contact_list_sync (EBookBackend *backend,
+                                         const gchar *query,
+                                         GQueue *out_contacts,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	GSList           *contact_list = NULL, *l;
-	GSList           *summary_list = NULL;
-	GError           *local_error = NULL;
+	GSList *summary_list;
+	GSList *link;
+	gboolean success = TRUE;
+	GError *local_error = NULL;
 
-	d (printf ("book_backend_file_get_contact_list (%s)\n", query));
+	d (printf ("book_backend_file_get_contact_list_sync (%s)\n", query));
 
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 	summary_list = e_book_backend_sqlitedb_search (
@@ -1368,26 +1397,15 @@ book_backend_file_get_contact_list (EBookBackendSync *backend,
 		NULL, NULL, &local_error);
 	g_rw_lock_reader_unlock (&(bf->priv->lock));
 
-	if (summary_list) {
+	if (local_error != NULL) {
 
-		for (l = summary_list; l; l = l->next) {
-			EbSdbSearchData *data = l->data;
-
-			/* Steal the memory directly from the returned query */
-			contact_list = g_slist_prepend (contact_list, data->vcard);
-			data->vcard  = NULL;
-		}
-
-		g_slist_foreach (summary_list, (GFunc) e_book_backend_sqlitedb_search_data_free, NULL);
-		g_slist_free (summary_list);
-
-	} else if (local_error != NULL) {
+		g_warn_if_fail (summary_list == NULL);
 
 		if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
 			g_set_error (
-				perror, E_CLIENT_ERROR,
+				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_NOT_SUPPORTED,
 				_("Query '%s' not supported"), query);
 			g_error_free (local_error);
@@ -1396,33 +1414,48 @@ book_backend_file_get_contact_list (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
 			g_set_error (
-				perror, E_CLIENT_ERROR,
+				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_INVALID_QUERY,
 				_("Invalid Query '%s'"), query);
 			g_error_free (local_error);
 
 		} else {
 			g_warning ("Failed to fetch contact ids: %s", local_error->message);
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 		}
+
+		success = FALSE;
 	}
 
-	*contacts = contact_list;
+	for (link = summary_list; link != NULL; link = g_slist_next (link)) {
+		EbSdbSearchData *data = link->data;
+		EContact *contact;
+
+		contact = e_contact_new_from_vcard (data->vcard);
+		g_queue_push_tail (out_contacts, contact);
+	}
+
+	g_slist_free_full (
+		summary_list, (GDestroyNotify)
+		e_book_backend_sqlitedb_search_data_free);
+
+	return success;
 }
 
-static void
-book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
-                                         EDataBook *book,
-                                         GCancellable *cancellable,
-                                         const gchar *query,
-                                         GSList **contacts_uids,
-                                         GError **perror)
+static gboolean
+book_backend_file_get_contact_list_uids_sync (EBookBackend *backend,
+                                              const gchar *query,
+                                              GQueue *out_uids,
+                                              GCancellable *cancellable,
+                                              GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	GSList           *uids = NULL;
-	GError           *local_error = NULL;
+	GSList *uids;
+	GSList *link;
+	gboolean success = TRUE;
+	GError *local_error = NULL;
 
-	d (printf ("book_backend_file_get_contact_list (%s)\n", query));
+	d (printf ("book_backend_file_get_contact_list_sync (%s)\n", query));
 
 	g_rw_lock_reader_lock (&(bf->priv->lock));
 	uids = e_book_backend_sqlitedb_search_uids (
@@ -1431,13 +1464,15 @@ book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 		query, NULL, &local_error);
 	g_rw_lock_reader_unlock (&(bf->priv->lock));
 
-	if (uids == NULL && local_error != NULL) {
+	if (local_error != NULL) {
+
+		g_warn_if_fail (uids == NULL);
 
 		if (g_error_matches (local_error,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_NOT_SUPPORTED)) {
 			g_set_error (
-				perror, E_CLIENT_ERROR,
+				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_NOT_SUPPORTED,
 				_("Query '%s' not supported"), query);
 			g_error_free (local_error);
@@ -1446,18 +1481,26 @@ book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 				     E_BOOK_SDB_ERROR,
 				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
 			g_set_error (
-				perror, E_CLIENT_ERROR,
+				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_INVALID_QUERY,
 				_("Invalid Query '%s'"), query);
 			g_error_free (local_error);
 
 		} else {
 			g_warning ("Failed to fetch contact ids: %s", local_error->message);
-			g_propagate_error (perror, local_error);
+			g_propagate_error (error, local_error);
 		}
+
+		success = FALSE;
 	}
 
-	*contacts_uids = g_slist_reverse (uids);
+	/* Transfer UID strings to the GQueue. */
+	for (link = uids; link != NULL; link = g_slist_next (link))
+		g_queue_push_tail (out_uids, link->data);
+
+	g_slist_free (uids);
+
+	return success;
 }
 
 static void
@@ -1701,7 +1744,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 {
 	GObjectClass *object_class;
 	EBookBackendClass *backend_class;
-	EBookBackendSyncClass *sync_class;
 
 	g_type_class_add_private (class, sizeof (EBookBackendFilePrivate));
 
@@ -1711,21 +1753,19 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 
 	backend_class = E_BOOK_BACKEND_CLASS (class);
 	backend_class->get_backend_property = book_backend_file_get_backend_property;
+	backend_class->open_sync = book_backend_file_open_sync;
+	backend_class->create_contacts_sync = book_backend_file_create_contacts_sync;
+	backend_class->modify_contacts_sync = book_backend_file_modify_contacts_sync;
+	backend_class->remove_contacts_sync = book_backend_file_remove_contacts_sync;
+	backend_class->get_contact_sync = book_backend_file_get_contact_sync;
+	backend_class->get_contact_list_sync = book_backend_file_get_contact_list_sync;
+	backend_class->get_contact_list_uids_sync = book_backend_file_get_contact_list_uids_sync;
 	backend_class->start_view = book_backend_file_start_view;
 	backend_class->stop_view = book_backend_file_stop_view;
 	backend_class->notify_update = book_backend_file_notify_update;
 	backend_class->get_direct_book = book_backend_file_get_direct_book;
 	backend_class->configure_direct = book_backend_file_configure_direct;
 	backend_class->sync = book_backend_file_sync;
-
-	sync_class = E_BOOK_BACKEND_SYNC_CLASS (class);
-	sync_class->open_sync = book_backend_file_open;
-	sync_class->create_contacts_sync = book_backend_file_create_contacts;
-	sync_class->modify_contacts_sync = book_backend_file_modify_contacts;
-	sync_class->remove_contacts_sync = book_backend_file_remove_contacts;
-	sync_class->get_contact_sync = book_backend_file_get_contact;
-	sync_class->get_contact_list_sync = book_backend_file_get_contact_list;
-	sync_class->get_contact_list_uids_sync = book_backend_file_get_contact_list_uids;
 }
 
 static void
