@@ -125,6 +125,12 @@ static EBookIndexType default_index_types[] = {
 	E_BOOK_INDEX_PREFIX
 };
 
+static void
+destroy_search_data (gpointer data)
+{
+	e_book_backend_sqlitedb_search_data_free (data);
+}
+
 static SummaryField * append_summary_field (GArray         *array,
 					    EContactField   field,
 					    gboolean       *have_attr_list,
@@ -2636,9 +2642,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 			vcard_str = s_data->vcard;
 			s_data->vcard = NULL;
 
-			e_book_backend_sqlitedb_search_data_free (s_data);
-
-			g_slist_free (vcards);
+			g_slist_free_full (vcards, destroy_search_data);
 			vcards = NULL;
 		}
 
@@ -3699,7 +3703,18 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 	}
 
 	if (!success) {
-		g_warn_if_fail (vcard_data == NULL);
+		/* If sqlite failed after returning some results, we need to free them here. */
+#if d(1)+0
+		GSList *list = vcard_data;
+		g_debug ("sqlite3 backend in %s: search query failed: %s", ebsdb->priv->path, (error && *error) ? (*error)->message : "???");
+
+		while (list) {
+			EbSdbSearchData *s_data = (EbSdbSearchData *)list->data;
+			g_debug ("partial search result: %s = %s", s_data->uid, s_data->vcard);
+			list = list->next;
+		}
+#endif
+		g_slist_free_full (vcard_data, destroy_search_data);
 		return NULL;
 	}
 
@@ -4652,12 +4667,6 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 	}
 
 	return TRUE;
-}
-
-static void
-destroy_search_data (gpointer data)
-{
-	e_book_backend_sqlitedb_search_data_free (data);
 }
 
 static gboolean
