@@ -27,7 +27,6 @@ libedata_book_1_2_la_SOURCES = \
 	e-book-backend-cache.c \
 	e-book-backend-db-cache.c \
 	e-book-backend-sqlitedb.c \
-	e-book-backend-sync.c \
 	e-book-backend.c \
 	e-data-book.c \
 	e-data-book-direct.c \
@@ -57,7 +56,6 @@ libedata_bookinclude_HEADERS = \
 	e-book-backend-factory.h \
 	e-book-backend-sexp.h \
 	e-book-backend-summary.h \
-	e-book-backend-sync.h \
 	e-book-backend.h \
 	e-data-book-factory.h \
 	e-data-book-view.h \

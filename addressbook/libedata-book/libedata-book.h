@@ -30,7 +30,6 @@
 #include <libedata-book/e-book-backend-sexp.h>
 #include <libedata-book/e-book-backend-sqlitedb.h>
 #include <libedata-book/e-book-backend-summary.h>
-#include <libedata-book/e-book-backend-sync.h>
 #include <libedata-book/e-book-backend.h>
 #include <libedata-book/e-data-book-factory.h>
 #include <libedata-book/e-data-book-direct.h>
