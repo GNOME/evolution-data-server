@@ -52,12 +52,18 @@ struct _EBookBackendPrivate {
 };
 
 struct _AsyncContext {
+
+	/* Indicates if we're using the old or new style API,
+	 * as method results are stashed differently for each. */
+	gboolean old_style;
+
 	/* Inputs */
 	gchar *uid;
 	gchar *query;
-	GSList *string_list;
+	gchar **strv;
 
 	/* Outputs */
+	EContact *contact;
 	GQueue result_queue;
 
 	/* One of these should point to result_queue
@@ -99,10 +105,9 @@ async_context_free (AsyncContext *async_context)
 
 	g_free (async_context->uid);
 	g_free (async_context->query);
+	g_strfreev (async_context->strv);
 
-	g_slist_free_full (
-		async_context->string_list,
-		(GDestroyNotify) g_free);
+	g_clear_object (&async_context->contact);
 
 	queue = async_context->object_queue;
 	while (queue != NULL && !g_queue_is_empty (queue))
@@ -836,6 +841,35 @@ book_backend_open_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->open_sync != NULL);
+
+	if (!e_book_backend_is_opened (backend)) {
+		GError *error = NULL;
+
+		class->open_sync (backend, cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_open() */
+static void
+book_backend_open_thread_old_style (GSimpleAsyncResult *simple,
+                                    GObject *source_object,
+                                    GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 
 	backend = E_BOOK_BACKEND (source_object);
@@ -883,9 +917,12 @@ e_book_backend_open (EBookBackend *backend,
                      GAsyncReadyCallback callback,
                      gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback,
@@ -893,11 +930,26 @@ e_book_backend_open (EBookBackend *backend,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, TRUE,
-		book_backend_open_thread);
+	if (class->open_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, TRUE,
+			book_backend_open_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->open != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, TRUE,
+			book_backend_open_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -993,24 +1045,53 @@ book_backend_refresh_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->refresh_sync != NULL);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		class->refresh_sync (backend, cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_refresh() */
+static void
+book_backend_refresh_thread_old_style (GSimpleAsyncResult *simple,
+                                       GObject *source_object,
+                                       GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->refresh != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
 	g_return_if_fail (data_book != NULL);
 
-	if (class->refresh == NULL) {
-		g_simple_async_result_set_error (
-			simple, E_CLIENT_ERROR,
-			E_CLIENT_ERROR_NOT_SUPPORTED,
-			"%s", e_client_error_to_string (
-			E_CLIENT_ERROR_NOT_SUPPORTED));
-		g_simple_async_result_complete_in_idle (simple);
-
-	} else if (!e_book_backend_is_opened (backend)) {
+	if (!e_book_backend_is_opened (backend)) {
 		g_simple_async_result_set_error (
 			simple, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_OPENED,
@@ -1052,9 +1133,12 @@ e_book_backend_refresh (EBookBackend *backend,
                         GAsyncReadyCallback callback,
                         gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback,
@@ -1062,11 +1146,26 @@ e_book_backend_refresh (EBookBackend *backend,
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_refresh_thread);
+	if (class->refresh_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_refresh_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->refresh != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_refresh_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -1167,6 +1266,49 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->create_contacts_sync != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		class->create_contacts_sync (
+			backend,
+			(const gchar * const *) async_context->strv,
+			async_context->object_queue,
+			cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_create_contacts() */
+static void
+book_backend_create_contacts_thread_old_style (GSimpleAsyncResult *simple,
+                                               GObject *source_object,
+                                               GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 	AsyncContext *async_context;
 
@@ -1189,13 +1331,25 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
+		GSList *list = NULL;
 		guint32 opid;
+		guint ii;
+
+		/* This is so the finish function knows which method
+		 * was invoked and can gather results appropriately. */
+		async_context->old_style = TRUE;
 
 		opid = book_backend_stash_operation (backend, simple);
 
+		/* The AsyncContext retains ownership of the strings. */
+		for (ii = 0; async_context->strv[ii] != NULL; ii++)
+			list = g_slist_prepend (list, async_context->strv[ii]);
+		list = g_slist_reverse (list);
+
 		class->create_contacts (
-			backend, data_book, opid, cancellable,
-			async_context->string_list);
+			backend, data_book, opid, cancellable, list);
+
+		g_slist_free (list);
 	}
 
 	g_object_unref (data_book);
@@ -1224,19 +1378,17 @@ e_book_backend_create_contacts (EBookBackend *backend,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	GSList *list = NULL;
-	gint ii;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (vcards != NULL);
 
-	for (ii = 0; vcards[ii] != NULL; ii++)
-		list = g_slist_prepend (list, g_strdup (vcards[ii]));
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->string_list = g_slist_reverse (list);
+	async_context->strv = g_strdupv ((gchar **) vcards);
 	async_context->object_queue = &async_context->result_queue;
 
 	simple = g_simple_async_result_new (
@@ -1248,11 +1400,26 @@ e_book_backend_create_contacts (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_create_contacts_thread);
+	if (class->create_contacts_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_create_contacts_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->create_contacts != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_create_contacts_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -1300,10 +1467,10 @@ e_book_backend_create_contacts_finish (EBookBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
-	while (!g_queue_is_empty (&async_context->result_queue)) {
+	while (!g_queue_is_empty (async_context->object_queue)) {
 		EContact *contact;
 
-		contact = g_queue_pop_head (&async_context->result_queue);
+		contact = g_queue_pop_head (async_context->object_queue);
 		g_queue_push_tail (out_contacts, g_object_ref (contact));
 		e_book_backend_notify_update (backend, contact);
 		g_object_unref (contact);
@@ -1363,6 +1530,49 @@ book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->modify_contacts_sync != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		class->modify_contacts_sync (
+			backend,
+			(const gchar * const *) async_context->strv,
+			async_context->object_queue,
+			cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_modify_contacts() */
+static void
+book_backend_modify_contacts_thread_old_style (GSimpleAsyncResult *simple,
+                                               GObject *source_object,
+                                               GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 	AsyncContext *async_context;
 
@@ -1385,13 +1595,25 @@ book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
+		GSList *list = NULL;
 		guint32 opid;
+		guint ii;
+
+		/* This is so the finish function knows which method
+		 * was invoked and can gather results appropriately. */
+		async_context->old_style = TRUE;
 
 		opid = book_backend_stash_operation (backend, simple);
 
+		/* The AsyncContext retains ownership of the strings. */
+		for (ii = 0; async_context->strv[ii] != NULL; ii++)
+			list = g_slist_prepend (list, async_context->strv[ii]);
+		list = g_slist_reverse (list);
+
 		class->modify_contacts (
-			backend, data_book, opid, cancellable,
-			async_context->string_list);
+			backend, data_book, opid, cancellable, list);
+
+		g_slist_free (list);
 	}
 
 	g_object_unref (data_book);
@@ -1420,19 +1642,17 @@ e_book_backend_modify_contacts (EBookBackend *backend,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	GSList *list = NULL;
-	gint ii;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (vcards != NULL);
 
-	for (ii = 0; vcards[ii] != NULL; ii++)
-		list = g_slist_prepend (list, g_strdup (vcards[ii]));
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->string_list = g_slist_reverse (list);
+	async_context->strv = g_strdupv ((gchar **) vcards);
 	async_context->object_queue = &async_context->result_queue;
 
 	simple = g_simple_async_result_new (
@@ -1444,11 +1664,26 @@ e_book_backend_modify_contacts (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_modify_contacts_thread);
+	if (class->modify_contacts_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_modify_contacts_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->modify_contacts != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_modify_contacts_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -1488,10 +1723,10 @@ e_book_backend_modify_contacts_finish (EBookBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
-	while (!g_queue_is_empty (&async_context->result_queue)) {
+	while (!g_queue_is_empty (async_context->object_queue)) {
 		EContact *contact;
 
-		contact = g_queue_pop_head (&async_context->result_queue);
+		contact = g_queue_pop_head (async_context->object_queue);
 		e_book_backend_notify_update (backend, contact);
 		g_object_unref (contact);
 	}
@@ -1553,6 +1788,48 @@ book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->remove_contacts_sync != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		class->remove_contacts_sync (
+			backend,
+			(const gchar * const *) async_context->strv,
+			cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_remove_contacts() */
+static void
+book_backend_remove_contacts_thread_old_style (GSimpleAsyncResult *simple,
+                                               GObject *source_object,
+                                               GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 	AsyncContext *async_context;
 
@@ -1575,13 +1852,25 @@ book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
 		g_simple_async_result_complete_in_idle (simple);
 
 	} else {
+		GSList *list = NULL;
 		guint32 opid;
+		guint ii;
+
+		/* This is so the finish function knows which method
+		 * was invoked and can gather results appropriately. */
+		async_context->old_style = TRUE;
 
 		opid = book_backend_stash_operation (backend, simple);
 
+		/* The AsyncContext retains ownership of the strings. */
+		for (ii = 0; async_context->strv[ii] != NULL; ii++)
+			list = g_slist_prepend (list, async_context->strv[ii]);
+		list = g_slist_reverse (list);
+
 		class->remove_contacts (
-			backend, data_book, opid, cancellable,
-			async_context->string_list);
+			backend, data_book, opid, cancellable, list);
+
+		g_slist_free (list);
 	}
 
 	g_object_unref (data_book);
@@ -1610,19 +1899,17 @@ e_book_backend_remove_contacts (EBookBackend *backend,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	GSList *list = NULL;
-	gint ii;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (uids != NULL);
 
-	for (ii = 0; uids[ii] != NULL; ii++)
-		list = g_slist_prepend (list, g_strdup (uids[ii]));
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->string_list = g_slist_reverse (list);
+	async_context->strv = g_strdupv ((gchar **) uids);
 	async_context->string_queue = &async_context->result_queue;
 
 	simple = g_simple_async_result_new (
@@ -1634,11 +1921,26 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_remove_contacts_thread);
+	if (class->remove_contacts_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_remove_contacts_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->remove_contacts != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_remove_contacts_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -1664,6 +1966,7 @@ e_book_backend_remove_contacts_finish (EBookBackend *backend,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
+	guint ii;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -1678,12 +1981,9 @@ e_book_backend_remove_contacts_finish (EBookBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
-	while (!g_queue_is_empty (&async_context->result_queue)) {
-		gchar *uid;
-
-		uid = g_queue_pop_head (&async_context->result_queue);
+	for (ii = 0; async_context->strv[ii] != NULL; ii++) {
+		const gchar *uid = async_context->strv[ii];
 		e_book_backend_notify_remove (backend, uid);
-		g_free (uid);
 	}
 
 	e_book_backend_notify_complete (backend);
@@ -1746,6 +2046,48 @@ book_backend_get_contact_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_contact_sync != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		async_context->contact = class->get_contact_sync (
+			backend,
+			async_context->uid,
+			cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_get_contact() */
+static void
+book_backend_get_contact_thread_old_style (GSimpleAsyncResult *simple,
+                                           GObject *source_object,
+                                           GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 	AsyncContext *async_context;
 
@@ -1769,6 +2111,10 @@ book_backend_get_contact_thread (GSimpleAsyncResult *simple,
 
 	} else {
 		guint32 opid;
+
+		/* This is so the finish function knows which method
+		 * was invoked and can gather results appropriately. */
+		async_context->old_style = TRUE;
 
 		opid = book_backend_stash_operation (backend, simple);
 
@@ -1803,11 +2149,14 @@ e_book_backend_get_contact (EBookBackend *backend,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->uid = g_strdup (uid);
@@ -1822,11 +2171,26 @@ e_book_backend_get_contact (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_get_contact_thread);
+	if (class->get_contact_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_get_contact_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->get_contact != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_get_contact_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -1855,7 +2219,6 @@ e_book_backend_get_contact_finish (EBookBackend *backend,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	EContact *contact;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -1870,12 +2233,18 @@ e_book_backend_get_contact_finish (EBookBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return NULL;
 
-	contact = g_queue_pop_head (&async_context->result_queue);
-	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+	/* XXX e_data_book_respond_get_contact() stuffs the
+	 *     resulting EContact into the object queue. */
+	if (async_context->old_style) {
+		GQueue *queue = async_context->object_queue;
+		g_warn_if_fail (async_context->contact == NULL);
+		async_context->contact = g_queue_pop_head (queue);
+		g_warn_if_fail (g_queue_is_empty (queue));
+	}
 
-	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
+	g_return_val_if_fail (E_IS_CONTACT (async_context->contact), NULL);
 
-	return contact;
+	return g_object_ref (async_context->contact);
 }
 
 /**
@@ -1938,6 +2307,49 @@ book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_contact_list_sync != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		class->get_contact_list_sync (
+			backend,
+			async_context->query,
+			async_context->object_queue,
+			cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_get_contact_list() */
+static void
+book_backend_get_contact_list_thread_old_style (GSimpleAsyncResult *simple,
+                                                GObject *source_object,
+                                                GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 	AsyncContext *async_context;
 
@@ -1961,6 +2373,10 @@ book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
 
 	} else {
 		guint32 opid;
+
+		/* This is so the finish function knows which method
+		 * was invoked and can gather results appropriately. */
+		async_context->old_style = TRUE;
 
 		opid = book_backend_stash_operation (backend, simple);
 
@@ -1996,11 +2412,14 @@ e_book_backend_get_contact_list (EBookBackend *backend,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (query != NULL);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->query = g_strdup (query);
@@ -2015,11 +2434,26 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_get_contact_list_thread);
+	if (class->get_contact_list_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_get_contact_list_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->get_contact_list != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_get_contact_list_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -2067,7 +2501,7 @@ e_book_backend_get_contact_list_finish (EBookBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
-	e_queue_transfer (&async_context->result_queue, out_contacts);
+	e_queue_transfer (async_context->object_queue, out_contacts);
 
 	return TRUE;
 }
@@ -2132,6 +2566,49 @@ book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
 {
 	EBookBackend *backend;
 	EBookBackendClass *class;
+	AsyncContext *async_context;
+
+	backend = E_BOOK_BACKEND (source_object);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->get_contact_list_uids_sync != NULL);
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!e_book_backend_is_opened (backend)) {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_OPENED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_OPENED));
+
+	} else {
+		GError *error = NULL;
+
+		class->get_contact_list_uids_sync (
+			backend,
+			async_context->query,
+			async_context->string_queue,
+			cancellable, &error);
+
+		if (error != NULL)
+			g_simple_async_result_take_error (simple, error);
+	}
+
+	/* XXX Once we get rid of the old-style API we can dispatch
+	 *     methods using g_simple_async_result_run_in_thread(),
+	 *     which completes the GSimpleAsyncResult for us. */
+	g_simple_async_result_complete_in_idle (simple);
+}
+
+/* Helper for e_book_backend_get_contact_list_uids() */
+static void
+book_backend_get_contact_list_uids_thread_old_style (GSimpleAsyncResult *simple,
+                                                     GObject *source_object,
+                                                     GCancellable *cancellable)
+{
+	EBookBackend *backend;
+	EBookBackendClass *class;
 	EDataBook *data_book;
 	AsyncContext *async_context;
 
@@ -2155,6 +2632,10 @@ book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
 
 	} else {
 		guint32 opid;
+
+		/* This is so the finish function knows which method
+		 * was invoked and can gather results appropriately. */
+		async_context->old_style = TRUE;
 
 		opid = book_backend_stash_operation (backend, simple);
 
@@ -2190,11 +2671,14 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
                                       GAsyncReadyCallback callback,
                                       gpointer user_data)
 {
+	EBookBackendClass *class;
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (query != NULL);
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->query = g_strdup (query);
@@ -2209,11 +2693,26 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	book_backend_push_operation (
-		backend, simple, cancellable, FALSE,
-		book_backend_get_contact_list_uids_thread);
+	if (class->get_contact_list_uids_sync != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_get_contact_list_uids_thread);
+		book_backend_dispatch_next_operation (backend);
 
-	book_backend_dispatch_next_operation (backend);
+	} else if (class->get_contact_list_uids != NULL) {
+		book_backend_push_operation (
+			backend, simple, cancellable, FALSE,
+			book_backend_get_contact_list_uids_thread_old_style);
+		book_backend_dispatch_next_operation (backend);
+
+	} else {
+		g_simple_async_result_set_error (
+			simple, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"%s", e_client_error_to_string (
+			E_CLIENT_ERROR_NOT_SUPPORTED));
+		g_simple_async_result_complete_in_idle (simple);
+	}
 
 	g_object_unref (simple);
 }
@@ -2261,7 +2760,7 @@ e_book_backend_get_contact_list_uids_finish (EBookBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
-	e_queue_transfer (&async_context->result_queue, out_uids);
+	e_queue_transfer (async_context->string_queue, out_uids);
 
 	return TRUE;
 }

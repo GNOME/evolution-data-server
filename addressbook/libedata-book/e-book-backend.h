@@ -108,16 +108,53 @@ struct _EBookBackendClass {
 	 * dispatch queue, but helps avoid thread-safety issues. */
 	gboolean use_serial_dispatch_queue;
 
-	/* Virtual methods */
 	gchar *		(*get_backend_property)	(EBookBackend *backend,
 						 const gchar *prop_name);
 
+	gboolean	(*open_sync)		(EBookBackend *backend,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*refresh_sync)		(EBookBackend *backend,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*create_contacts_sync)	(EBookBackend *backend,
+						 const gchar * const *vcards,
+						 GQueue *out_contacts,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*modify_contacts_sync)	(EBookBackend *backend,
+						 const gchar * const *vcards,
+						 GQueue *out_contacts,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*remove_contacts_sync)	(EBookBackend *backend,
+						 const gchar * const *uids,
+						 GCancellable *cancellable,
+						 GError **error);
+	EContact *	(*get_contact_sync)	(EBookBackend *backend,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*get_contact_list_sync)
+						(EBookBackend *backend,
+						 const gchar *query,
+						 GQueue *out_contacts,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*get_contact_list_uids_sync)
+						(EBookBackend *backend,
+						 const gchar *query,
+						 GQueue *out_uids,
+						 GCancellable *cancellable,
+						 GError **error);
+
+	/* These methods are deprecated and will be removed once all
+	 * known subclasses are converted to the new methods above. */
 	void		(*open)			(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
 						 GCancellable *cancellable,
 						 gboolean only_if_exists);
-
 	void		(*refresh)		(EBookBackend *backend,
 						 EDataBook *book,
 						 guint32 opid,
