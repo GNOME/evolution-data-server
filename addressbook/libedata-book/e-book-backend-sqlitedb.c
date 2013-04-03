@@ -4135,7 +4135,7 @@ e_book_backend_sqlitedb_get_revision (EBookBackendSqliteDB *ebsdb,
 	stmt = sqlite3_mprintf (
 		"SELECT revision FROM folders WHERE folder_id = %Q", folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, get_string_cb, &revision_out, error);
+		ebsdb->priv->db, stmt, get_string_cb, revision_out, error);
 	sqlite3_free (stmt);
 
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
