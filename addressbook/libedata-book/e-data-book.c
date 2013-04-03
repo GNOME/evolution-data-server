@@ -48,8 +48,6 @@ struct _EDataBookPrivate {
 	GWeakRef backend;
 	gchar *object_path;
 
-	gboolean opened;
-
 	GMutex sender_lock;
 	GHashTable *sender_table;
 };
@@ -1070,8 +1068,6 @@ e_data_book_respond_open (EDataBook *book,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot open book: "));
 
-	book->priv->opened = (error == NULL);
-
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
 
@@ -1913,31 +1909,5 @@ e_data_book_get_object_path (EDataBook *book)
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 
 	return book->priv->object_path;
-}
-
-/**
- * e_data_book_is_opened:
- * @book: an #EDataBook
- *
- * Returns whether the @book's #EDataBook:backend was successfully opened.
- *
- * <note>
- *   <para>
- *     This is a temporary function serving only to keep
- *     e_book_backend_is_opened() working for a little while longer.
- *     Do not call this function directly.
- *   </para>
- * </note>
- *
- * Returns: whether the #EDataBook:backend is opened
- *
- * Since: 3.10
- **/
-gboolean
-e_data_book_is_opened (EDataBook *book)
-{
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
-
-	return book->priv->opened;
 }
 
