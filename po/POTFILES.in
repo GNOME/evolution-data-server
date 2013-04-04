@@ -16,7 +16,6 @@ addressbook/libebook/e-book-client-view.c
 addressbook/libebook/e-destination.c
 addressbook/libedata-book/e-book-backend.c
 addressbook/libedata-book/e-book-backend-sqlitedb.c
-addressbook/libedata-book/e-book-backend-sync.c
 addressbook/libedata-book/e-data-book.c
 addressbook/libedata-book/e-data-book-factory.c
 calendar/backends/caldav/e-cal-backend-caldav.c
