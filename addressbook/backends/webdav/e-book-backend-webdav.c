@@ -45,9 +45,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavPrivate))
 
-#define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
-#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
-
 #define USERAGENT             "Evolution/" VERSION
 #define WEBDAV_CLOSURE_NAME   "EBookBackendWebdav.BookView::closure"
 #define WEBDAV_CTAG_KEY "WEBDAV_CTAG"
