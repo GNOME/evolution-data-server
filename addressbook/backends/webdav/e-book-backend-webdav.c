@@ -364,101 +364,6 @@ webdav_handle_auth_request (EBookBackendWebdav *webdav)
 	}
 }
 
-static void
-e_book_backend_webdav_create_contacts (EBookBackend *backend,
-                                       EDataBook *book,
-                                       guint32 opid,
-                                       GCancellable *cancellable,
-                                       const GSList *vcards)
-{
-	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	EContact                  *contact;
-	gchar                     *uid;
-	guint                      status;
-	gchar                     *status_reason = NULL;
-	const gchar               *vcard = (const gchar *) vcards->data;
-	GSList                     added_contacts = {NULL,};
-
-	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
-	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
-	if (vcards->next != NULL) {
-		e_data_book_respond_create_contacts (
-			book, opid,
-			EDB_ERROR_EX (NOT_SUPPORTED,
-			_("The backend does not support bulk additions")),
-			NULL);
-		return;
-	}
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	/* do 3 rand() calls to construct a unique ID... poor way but should be
-	 * good enough for us */
-	uid = g_strdup_printf (
-		"%s%08X-%08X-%08X.vcf",
-		priv->uri, rand (), rand (), rand ());
-
-	contact = e_contact_new_from_vcard_with_uid (vcard, uid);
-
-	/* kill revision field (might have been set by some other backend) */
-	e_contact_set (contact, E_CONTACT_REV, NULL);
-
-	status = upload_contact (webdav, contact, &status_reason, cancellable);
-	if (status != 201 && status != 204) {
-		g_object_unref (contact);
-		if (status == 401 || status == 407) {
-			e_data_book_respond_create_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
-		} else {
-			e_data_book_respond_create_contacts (
-				book, opid,
-				e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
-				_("Create resource '%s' failed with HTTP status %d (%s)"),
-				uid, status, status_reason),
-					NULL);
-		}
-		g_free (uid);
-		g_free (status_reason);
-		return;
-	}
-
-	g_free (status_reason);
-
-	/* PUT request didn't return an etag? try downloading to get one */
-	if (e_contact_get_const (contact, E_CONTACT_REV) == NULL) {
-		const gchar *new_uid;
-		EContact *new_contact;
-
-		g_warning ("Server didn't return etag for new address resource");
-		new_uid = e_contact_get_const (contact, E_CONTACT_UID);
-		new_contact = download_contact (webdav, new_uid, cancellable);
-		g_object_unref (contact);
-
-		if (new_contact == NULL) {
-			e_data_book_respond_create_contacts (
-				book, opid,
-				EDB_ERROR (OTHER_ERROR), NULL);
-			g_free (uid);
-			return;
-		}
-		contact = new_contact;
-	}
-
-	g_mutex_lock (&priv->cache_lock);
-	e_book_backend_cache_add_contact (priv->cache, contact);
-	g_mutex_unlock (&priv->cache_lock);
-
-	added_contacts.data = contact;
-	e_data_book_respond_create_contacts (book, opid, EDB_ERROR (SUCCESS), &added_contacts);
-
-	g_object_unref (contact);
-	g_free (uid);
-}
-
 static guint
 delete_contact (EBookBackendWebdav *webdav,
                 const gchar *uri,
@@ -475,195 +380,6 @@ delete_contact (EBookBackendWebdav *webdav,
 	g_object_unref (message);
 
 	return status;
-}
-
-static void
-e_book_backend_webdav_remove_contacts (EBookBackend *backend,
-                                       EDataBook *book,
-                                       guint32 opid,
-                                       GCancellable *cancellable,
-                                       const GSList *id_list)
-{
-	EBookBackendWebdav        *webdav      = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv        = webdav->priv;
-	gchar                     *uid         = id_list->data;
-	GSList                     deleted_ids = {NULL,};
-	guint                      status;
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_remove_contacts (
-			book, opid,
-			EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
-	 * in our static capability list. */
-	if (id_list->next != NULL) {
-		e_data_book_respond_remove_contacts (
-			book, opid,
-			EDB_ERROR_EX (NOT_SUPPORTED,
-			_("The backend does not support bulk removals")),
-			NULL);
-		return;
-	}
-
-	status = delete_contact (webdav, uid, cancellable);
-	if (status != 204) {
-		if (status == 401 || status == 407) {
-			e_data_book_respond_remove_contacts (
-				book, opid,
-				webdav_handle_auth_request (webdav), NULL);
-		} else {
-			g_warning ("DELETE failed with HTTP status %d", status);
-			e_data_book_respond_remove_contacts (
-				book, opid,
-				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-				_("DELETE failed with HTTP status %d"), status),
-				NULL);
-		}
-		return;
-	}
-
-	g_mutex_lock (&priv->cache_lock);
-	e_book_backend_cache_remove_contact (priv->cache, uid);
-	g_mutex_unlock (&priv->cache_lock);
-
-	deleted_ids.data = uid;
-	e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (SUCCESS), &deleted_ids);
-}
-
-static void
-e_book_backend_webdav_modify_contacts (EBookBackend *backend,
-                                       EDataBook *book,
-                                       guint32 opid,
-                                       GCancellable *cancellable,
-                                       const GSList *vcards)
-{
-	EBookBackendWebdav        *webdav  = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv    = webdav->priv;
-	EContact                  *contact;
-	GSList                     modified_contacts = {NULL,};
-	const gchar                *uid;
-	const gchar                *etag;
-	guint status;
-	gchar *status_reason = NULL;
-	const gchar *vcard = vcards->data;
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create_contacts (
-			book, opid,
-			EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
-	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
-	if (vcards->next != NULL) {
-		e_data_book_respond_modify_contacts (
-			book, opid,
-			EDB_ERROR_EX (
-				NOT_SUPPORTED,
-				_("The backend does not support bulk modifications")),
-			NULL);
-		return;
-	}
-
-	/* modify contact */
-	contact = e_contact_new_from_vcard (vcard);
-	status = upload_contact (webdav, contact, &status_reason, cancellable);
-	if (status != 201 && status != 204) {
-		g_object_unref (contact);
-		if (status == 401 || status == 407) {
-			e_data_book_respond_modify_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
-			g_free (status_reason);
-			return;
-		}
-		/* data changed on server while we were editing */
-		if (status == 412) {
-			/* too bad no special error code in evolution for this... */
-			e_data_book_respond_modify_contacts (book, opid,
-				e_data_book_create_error_fmt (
-				E_DATA_BOOK_STATUS_OTHER_ERROR,
-				_("Contact on server changed -> not modifying")),
-				NULL);
-			g_free (status_reason);
-			return;
-		}
-
-		e_data_book_respond_modify_contacts (book, opid,
-			e_data_book_create_error_fmt (
-			E_DATA_BOOK_STATUS_OTHER_ERROR,
-			_("Modify contact failed with HTTP status %d (%s)"),
-			status, status_reason),
-			NULL);
-		g_free (status_reason);
-		return;
-	}
-
-	g_free (status_reason);
-
-	uid = e_contact_get_const (contact, E_CONTACT_UID);
-	g_mutex_lock (&priv->cache_lock);
-	e_book_backend_cache_remove_contact (priv->cache, uid);
-
-	etag = e_contact_get_const (contact, E_CONTACT_REV);
-
-	/* PUT request didn't return an etag? try downloading to get one */
-	if (etag == NULL || (etag[0] == 'W' && etag[1] == '/')) {
-		EContact *new_contact;
-
-		g_warning ("Server didn't return etag for modified address resource");
-		new_contact = download_contact (webdav, uid, cancellable);
-		if (new_contact != NULL) {
-			contact = new_contact;
-		}
-	}
-	e_book_backend_cache_add_contact (priv->cache, contact);
-	g_mutex_unlock (&priv->cache_lock);
-
-	modified_contacts.data = contact;
-	e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (SUCCESS), &modified_contacts);
-
-	g_object_unref (contact);
-}
-
-static void
-e_book_backend_webdav_get_contact (EBookBackend *backend,
-                                   EDataBook *book,
-                                   guint32 opid,
-                                   GCancellable *cancellable,
-                                   const gchar *uid)
-{
-	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	EContact                  *contact;
-	gchar                      *vcard;
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		g_mutex_lock (&priv->cache_lock);
-		contact = e_book_backend_cache_get_contact (priv->cache, uid);
-		g_mutex_unlock (&priv->cache_lock);
-	} else {
-		contact = download_contact (webdav, uid, cancellable);
-		/* update cache as we possibly have changes */
-		if (contact != NULL) {
-			g_mutex_lock (&priv->cache_lock);
-			e_book_backend_cache_remove_contact (priv->cache, uid);
-			e_book_backend_cache_add_contact (priv->cache, contact);
-			g_mutex_unlock (&priv->cache_lock);
-		}
-	}
-
-	if (contact == NULL) {
-		e_data_book_respond_get_contact (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
-		return;
-	}
-
-	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	e_data_book_respond_get_contact (book, opid, EDB_ERROR (SUCCESS), vcard);
-	g_free (vcard);
-	g_object_unref (contact);
 }
 
 typedef struct parser_strings_t {
@@ -1238,94 +954,6 @@ e_book_backend_webdav_stop_view (EBookBackend *backend,
 	}
 }
 
-static void
-e_book_backend_webdav_get_contact_list (EBookBackend *backend,
-                                        EDataBook *book,
-                                        guint32 opid,
-                                        GCancellable *cancellable,
-                                        const gchar *query)
-{
-	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	GList                     *contact_list;
-	GSList                    *vcard_list;
-	GList                     *c;
-
-	if (e_backend_get_online (E_BACKEND (backend))) {
-		/* make sure the cache is up to date */
-		GError *error = download_contacts (webdav, NULL, NULL, cancellable);
-
-		if (error) {
-			e_data_book_respond_get_contact_list (book, opid, error, NULL);
-			return;
-		}
-	}
-
-	/* answer query from cache */
-	g_mutex_lock (&priv->cache_lock);
-	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
-	g_mutex_unlock (&priv->cache_lock);
-
-	vcard_list   = NULL;
-	for (c = contact_list; c != NULL; c = g_list_next (c)) {
-		EContact *contact = c->data;
-		gchar     *vcard
-			= e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-		vcard_list = g_slist_append (vcard_list, vcard);
-		g_object_unref (contact);
-	}
-	g_list_free (contact_list);
-
-	e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (SUCCESS), vcard_list);
-
-	g_slist_foreach (vcard_list, (GFunc) g_free, NULL);
-	g_slist_free (vcard_list);
-}
-
-static void
-e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend,
-                                             EDataBook *book,
-                                             guint32 opid,
-                                             GCancellable *cancellable,
-                                             const gchar *query)
-{
-	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	GList                     *contact_list;
-	GSList                    *uids_list;
-	GList                     *c;
-
-	if (e_backend_get_online (E_BACKEND (backend))) {
-		/* make sure the cache is up to date */
-		GError *error = download_contacts (webdav, NULL, NULL, cancellable);
-
-		if (error) {
-			e_data_book_respond_get_contact_list_uids (book, opid, error, NULL);
-			return;
-		}
-	}
-
-	/* answer query from cache */
-	g_mutex_lock (&priv->cache_lock);
-	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
-	g_mutex_unlock (&priv->cache_lock);
-
-	uids_list   = NULL;
-	for (c = contact_list; c != NULL; c = g_list_next (c)) {
-		EContact *contact = c->data;
-
-		uids_list = g_slist_append (uids_list, e_contact_get (contact, E_CONTACT_UID));
-
-		g_object_unref (contact);
-	}
-	g_list_free (contact_list);
-
-	e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (SUCCESS), uids_list);
-
-	g_slist_foreach (uids_list, (GFunc) g_free, NULL);
-	g_slist_free (uids_list);
-}
-
 /** authentication callback for libsoup */
 static void
 soup_authenticate (SoupSession *session,
@@ -1364,11 +992,92 @@ proxy_settings_changed (EProxy *proxy,
 }
 
 static void
-e_book_backend_webdav_open (EBookBackend *backend,
-                            EDataBook *book,
-                            guint opid,
-                            GCancellable *cancellable,
-                            gboolean only_if_exists)
+e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
+                                        GParamSpec *pspec)
+{
+	gboolean online;
+
+	/* set_mode is called before the backend is loaded */
+	if (!e_book_backend_is_opened (backend))
+		return;
+
+	/* XXX Could just use a property binding for this.
+	 *     EBackend:online --> EBookBackend:writable */
+	online = e_backend_get_online (E_BACKEND (backend));
+	e_book_backend_set_writable (backend, online);
+}
+
+static void
+book_backend_webdav_dispose (GObject *object)
+{
+	EBookBackendWebdavPrivate *priv;
+
+	priv = E_BOOK_BACKEND_WEBDAV_GET_PRIVATE (object);
+
+	g_clear_object (&priv->session);
+	g_clear_object (&priv->proxy);
+	g_clear_object (&priv->cache);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->dispose (object);
+}
+
+static void
+book_backend_webdav_finalize (GObject *object)
+{
+	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (object);
+	EBookBackendWebdavPrivate *priv = webdav->priv;
+
+	g_free (priv->uri);
+	g_free (priv->username);
+	g_free (priv->password);
+
+	g_mutex_clear (&priv->cache_lock);
+	g_mutex_clear (&priv->update_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->finalize (object);
+}
+
+static gchar *
+book_backend_webdav_get_backend_property (EBookBackend *backend,
+                                          const gchar *prop_name)
+{
+	g_return_val_if_fail (prop_name != NULL, NULL);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		return g_strdup ("net,do-initial-query,contact-lists");
+
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		return g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
+
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		GString *fields;
+		gint ii;
+
+		fields = g_string_sized_new (1024);
+
+		/* we support everything */
+		for (ii = 1; ii < E_CONTACT_FIELD_LAST; ii++) {
+			if (fields->len > 0)
+				g_string_append_c (fields, ',');
+			g_string_append (fields, e_contact_field_name (ii));
+		}
+
+		return g_string_free (fields, FALSE);
+	}
+
+	/* Chain up to parent's get_backend_property() method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->
+		get_backend_property (backend, prop_name);
+}
+
+static void
+book_backend_webdav_open (EBookBackend *backend,
+                          EDataBook *book,
+                          guint opid,
+                          GCancellable *cancellable,
+                          gboolean only_if_exists)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1472,85 +1181,375 @@ e_book_backend_webdav_open (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
-                                        GParamSpec *pspec)
+book_backend_webdav_create_contacts (EBookBackend *backend,
+                                     EDataBook *book,
+                                     guint32 opid,
+                                     GCancellable *cancellable,
+                                     const GSList *vcards)
 {
-	gboolean online;
+	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
+	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	EContact                  *contact;
+	gchar                     *uid;
+	guint                      status;
+	gchar                     *status_reason = NULL;
+	const gchar               *vcard = (const gchar *) vcards->data;
+	GSList                     added_contacts = {NULL,};
 
-	/* set_mode is called before the backend is loaded */
-	if (!e_book_backend_is_opened (backend))
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_create_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk additions")),
+			NULL);
 		return;
-
-	/* XXX Could just use a property binding for this.
-	 *     EBackend:online --> EBookBackend:writable */
-	online = e_backend_get_online (E_BACKEND (backend));
-	e_book_backend_set_writable (backend, online);
-}
-
-static gchar *
-e_book_backend_webdav_get_backend_property (EBookBackend *backend,
-                                            const gchar *prop_name)
-{
-	g_return_val_if_fail (prop_name != NULL, NULL);
-
-	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		return g_strdup ("net,do-initial-query,contact-lists");
-
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
-		return g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
-
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
-		GString *fields;
-		gint ii;
-
-		fields = g_string_sized_new (1024);
-
-		/* we support everything */
-		for (ii = 1; ii < E_CONTACT_FIELD_LAST; ii++) {
-			if (fields->len > 0)
-				g_string_append_c (fields, ',');
-			g_string_append (fields, e_contact_field_name (ii));
-		}
-
-		return g_string_free (fields, FALSE);
 	}
 
-	/* Chain up to parent's get_backend_property() method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->
-		get_backend_property (backend, prop_name);
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	/* do 3 rand() calls to construct a unique ID... poor way but should be
+	 * good enough for us */
+	uid = g_strdup_printf (
+		"%s%08X-%08X-%08X.vcf",
+		priv->uri, rand (), rand (), rand ());
+
+	contact = e_contact_new_from_vcard_with_uid (vcard, uid);
+
+	/* kill revision field (might have been set by some other backend) */
+	e_contact_set (contact, E_CONTACT_REV, NULL);
+
+	status = upload_contact (webdav, contact, &status_reason, cancellable);
+	if (status != 201 && status != 204) {
+		g_object_unref (contact);
+		if (status == 401 || status == 407) {
+			e_data_book_respond_create_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
+		} else {
+			e_data_book_respond_create_contacts (
+				book, opid,
+				e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Create resource '%s' failed with HTTP status %d (%s)"),
+				uid, status, status_reason),
+					NULL);
+		}
+		g_free (uid);
+		g_free (status_reason);
+		return;
+	}
+
+	g_free (status_reason);
+
+	/* PUT request didn't return an etag? try downloading to get one */
+	if (e_contact_get_const (contact, E_CONTACT_REV) == NULL) {
+		const gchar *new_uid;
+		EContact *new_contact;
+
+		g_warning ("Server didn't return etag for new address resource");
+		new_uid = e_contact_get_const (contact, E_CONTACT_UID);
+		new_contact = download_contact (webdav, new_uid, cancellable);
+		g_object_unref (contact);
+
+		if (new_contact == NULL) {
+			e_data_book_respond_create_contacts (
+				book, opid,
+				EDB_ERROR (OTHER_ERROR), NULL);
+			g_free (uid);
+			return;
+		}
+		contact = new_contact;
+	}
+
+	g_mutex_lock (&priv->cache_lock);
+	e_book_backend_cache_add_contact (priv->cache, contact);
+	g_mutex_unlock (&priv->cache_lock);
+
+	added_contacts.data = contact;
+	e_data_book_respond_create_contacts (book, opid, EDB_ERROR (SUCCESS), &added_contacts);
+
+	g_object_unref (contact);
+	g_free (uid);
 }
 
 static void
-e_book_backend_webdav_dispose (GObject *object)
+book_backend_webdav_modify_contacts (EBookBackend *backend,
+                                     EDataBook *book,
+                                     guint32 opid,
+                                     GCancellable *cancellable,
+                                     const GSList *vcards)
 {
-	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (object);
+	EBookBackendWebdav        *webdav  = E_BOOK_BACKEND_WEBDAV (backend);
+	EBookBackendWebdavPrivate *priv    = webdav->priv;
+	EContact                  *contact;
+	GSList                     modified_contacts = {NULL,};
+	const gchar                *uid;
+	const gchar                *etag;
+	guint status;
+	gchar *status_reason = NULL;
+	const gchar *vcard = vcards->data;
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		e_data_book_respond_create_contacts (
+			book, opid,
+			EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_modify_contacts (
+			book, opid,
+			EDB_ERROR_EX (
+				NOT_SUPPORTED,
+				_("The backend does not support bulk modifications")),
+			NULL);
+		return;
+	}
+
+	/* modify contact */
+	contact = e_contact_new_from_vcard (vcard);
+	status = upload_contact (webdav, contact, &status_reason, cancellable);
+	if (status != 201 && status != 204) {
+		g_object_unref (contact);
+		if (status == 401 || status == 407) {
+			e_data_book_respond_modify_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
+			g_free (status_reason);
+			return;
+		}
+		/* data changed on server while we were editing */
+		if (status == 412) {
+			/* too bad no special error code in evolution for this... */
+			e_data_book_respond_modify_contacts (book, opid,
+				e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Contact on server changed -> not modifying")),
+				NULL);
+			g_free (status_reason);
+			return;
+		}
+
+		e_data_book_respond_modify_contacts (book, opid,
+			e_data_book_create_error_fmt (
+			E_DATA_BOOK_STATUS_OTHER_ERROR,
+			_("Modify contact failed with HTTP status %d (%s)"),
+			status, status_reason),
+			NULL);
+		g_free (status_reason);
+		return;
+	}
+
+	g_free (status_reason);
+
+	uid = e_contact_get_const (contact, E_CONTACT_UID);
+	g_mutex_lock (&priv->cache_lock);
+	e_book_backend_cache_remove_contact (priv->cache, uid);
+
+	etag = e_contact_get_const (contact, E_CONTACT_REV);
+
+	/* PUT request didn't return an etag? try downloading to get one */
+	if (etag == NULL || (etag[0] == 'W' && etag[1] == '/')) {
+		EContact *new_contact;
+
+		g_warning ("Server didn't return etag for modified address resource");
+		new_contact = download_contact (webdav, uid, cancellable);
+		if (new_contact != NULL) {
+			contact = new_contact;
+		}
+	}
+	e_book_backend_cache_add_contact (priv->cache, contact);
+	g_mutex_unlock (&priv->cache_lock);
+
+	modified_contacts.data = contact;
+	e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (SUCCESS), &modified_contacts);
+
+	g_object_unref (contact);
+}
+
+static void
+book_backend_webdav_remove_contacts (EBookBackend *backend,
+                                     EDataBook *book,
+                                     guint32 opid,
+                                     GCancellable *cancellable,
+                                     const GSList *id_list)
+{
+	EBookBackendWebdav        *webdav      = E_BOOK_BACKEND_WEBDAV (backend);
+	EBookBackendWebdavPrivate *priv        = webdav->priv;
+	gchar                     *uid         = id_list->data;
+	GSList                     deleted_ids = {NULL,};
+	guint                      status;
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		e_data_book_respond_remove_contacts (
+			book, opid,
+			EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
+	 * in our static capability list. */
+	if (id_list->next != NULL) {
+		e_data_book_respond_remove_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk removals")),
+			NULL);
+		return;
+	}
+
+	status = delete_contact (webdav, uid, cancellable);
+	if (status != 204) {
+		if (status == 401 || status == 407) {
+			e_data_book_respond_remove_contacts (
+				book, opid,
+				webdav_handle_auth_request (webdav), NULL);
+		} else {
+			g_warning ("DELETE failed with HTTP status %d", status);
+			e_data_book_respond_remove_contacts (
+				book, opid,
+				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("DELETE failed with HTTP status %d"), status),
+				NULL);
+		}
+		return;
+	}
+
+	g_mutex_lock (&priv->cache_lock);
+	e_book_backend_cache_remove_contact (priv->cache, uid);
+	g_mutex_unlock (&priv->cache_lock);
+
+	deleted_ids.data = uid;
+	e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (SUCCESS), &deleted_ids);
+}
+
+static void
+book_backend_webdav_get_contact (EBookBackend *backend,
+                                 EDataBook *book,
+                                 guint32 opid,
+                                 GCancellable *cancellable,
+                                 const gchar *uid)
+{
+	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	EContact                  *contact;
+	gchar                      *vcard;
 
-	#define do_unref(x) { if (x) g_object_unref (x); x = NULL; }
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		g_mutex_lock (&priv->cache_lock);
+		contact = e_book_backend_cache_get_contact (priv->cache, uid);
+		g_mutex_unlock (&priv->cache_lock);
+	} else {
+		contact = download_contact (webdav, uid, cancellable);
+		/* update cache as we possibly have changes */
+		if (contact != NULL) {
+			g_mutex_lock (&priv->cache_lock);
+			e_book_backend_cache_remove_contact (priv->cache, uid);
+			e_book_backend_cache_add_contact (priv->cache, contact);
+			g_mutex_unlock (&priv->cache_lock);
+		}
+	}
 
-	do_unref (priv->session);
-	do_unref (priv->proxy);
-	do_unref (priv->cache);
+	if (contact == NULL) {
+		e_data_book_respond_get_contact (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
+		return;
+	}
 
-	g_free (priv->uri);
-	g_free (priv->username);
-	g_free (priv->password);
-
-	#undef do_unref
-
-	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->dispose (object);
+	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	e_data_book_respond_get_contact (book, opid, EDB_ERROR (SUCCESS), vcard);
+	g_free (vcard);
+	g_object_unref (contact);
 }
 
 static void
-e_book_backend_webdav_finalize (GObject *object)
+book_backend_webdav_get_contact_list (EBookBackend *backend,
+                                      EDataBook *book,
+                                      guint32 opid,
+                                      GCancellable *cancellable,
+                                      const gchar *query)
 {
-	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (object);
-	EBookBackendWebdavPrivate *priv = webdav->priv;
+	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
+	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	GList                     *contact_list;
+	GSList                    *vcard_list;
+	GList                     *c;
 
-	g_mutex_clear (&priv->cache_lock);
-	g_mutex_clear (&priv->update_lock);
+	if (e_backend_get_online (E_BACKEND (backend))) {
+		/* make sure the cache is up to date */
+		GError *error = download_contacts (webdav, NULL, NULL, cancellable);
 
-	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->finalize (object);
+		if (error) {
+			e_data_book_respond_get_contact_list (book, opid, error, NULL);
+			return;
+		}
+	}
+
+	/* answer query from cache */
+	g_mutex_lock (&priv->cache_lock);
+	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
+	g_mutex_unlock (&priv->cache_lock);
+
+	vcard_list   = NULL;
+	for (c = contact_list; c != NULL; c = g_list_next (c)) {
+		EContact *contact = c->data;
+		gchar     *vcard
+			= e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		vcard_list = g_slist_append (vcard_list, vcard);
+		g_object_unref (contact);
+	}
+	g_list_free (contact_list);
+
+	e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (SUCCESS), vcard_list);
+
+	g_slist_foreach (vcard_list, (GFunc) g_free, NULL);
+	g_slist_free (vcard_list);
+}
+
+static void
+book_backend_webdav_get_contact_list_uids (EBookBackend *backend,
+                                           EDataBook *book,
+                                           guint32 opid,
+                                           GCancellable *cancellable,
+                                           const gchar *query)
+{
+	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
+	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	GList                     *contact_list;
+	GSList                    *uids_list;
+	GList                     *c;
+
+	if (e_backend_get_online (E_BACKEND (backend))) {
+		/* make sure the cache is up to date */
+		GError *error = download_contacts (webdav, NULL, NULL, cancellable);
+
+		if (error) {
+			e_data_book_respond_get_contact_list_uids (book, opid, error, NULL);
+			return;
+		}
+	}
+
+	/* answer query from cache */
+	g_mutex_lock (&priv->cache_lock);
+	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
+	g_mutex_unlock (&priv->cache_lock);
+
+	uids_list   = NULL;
+	for (c = contact_list; c != NULL; c = g_list_next (c)) {
+		EContact *contact = c->data;
+
+		uids_list = g_slist_append (uids_list, e_contact_get (contact, E_CONTACT_UID));
+
+		g_object_unref (contact);
+	}
+	g_list_free (contact_list);
+
+	e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (SUCCESS), uids_list);
+
+	g_slist_foreach (uids_list, (GFunc) g_free, NULL);
+	g_slist_free (uids_list);
 }
 
 static ESourceAuthenticationResult
@@ -1614,23 +1613,21 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 
 	g_type_class_add_private (class, sizeof (EBookBackendWebdavPrivate));
 
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = book_backend_webdav_dispose;
+	object_class->finalize = book_backend_webdav_finalize;
+
 	backend_class = E_BOOK_BACKEND_CLASS (class);
-
-	/* Set the virtual methods. */
-	backend_class->open			= e_book_backend_webdav_open;
-	backend_class->get_backend_property	= e_book_backend_webdav_get_backend_property;
-
-	backend_class->create_contacts		= e_book_backend_webdav_create_contacts;
-	backend_class->remove_contacts		= e_book_backend_webdav_remove_contacts;
-	backend_class->modify_contacts		= e_book_backend_webdav_modify_contacts;
-	backend_class->get_contact		= e_book_backend_webdav_get_contact;
-	backend_class->get_contact_list		= e_book_backend_webdav_get_contact_list;
-	backend_class->get_contact_list_uids	= e_book_backend_webdav_get_contact_list_uids;
-	backend_class->start_view		= e_book_backend_webdav_start_view;
-	backend_class->stop_view		= e_book_backend_webdav_stop_view;
-
-	object_class->dispose			= e_book_backend_webdav_dispose;
-	object_class->finalize			= e_book_backend_webdav_finalize;
+	backend_class->get_backend_property = book_backend_webdav_get_backend_property;
+	backend_class->open = book_backend_webdav_open;
+	backend_class->create_contacts = book_backend_webdav_create_contacts;
+	backend_class->modify_contacts = book_backend_webdav_modify_contacts;
+	backend_class->remove_contacts = book_backend_webdav_remove_contacts;
+	backend_class->get_contact = book_backend_webdav_get_contact;
+	backend_class->get_contact_list = book_backend_webdav_get_contact_list;
+	backend_class->get_contact_list_uids = book_backend_webdav_get_contact_list_uids;
+	backend_class->start_view = e_book_backend_webdav_start_view;
+	backend_class->stop_view = e_book_backend_webdav_stop_view;
 }
 
 static void
