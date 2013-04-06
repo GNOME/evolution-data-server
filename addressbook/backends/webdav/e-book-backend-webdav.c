@@ -1509,42 +1509,6 @@ book_backend_webdav_get_contact_list_sync (EBookBackend *backend,
 	return TRUE;
 }
 
-static gboolean
-book_backend_webdav_get_contact_list_uids_sync (EBookBackend *backend,
-                                                const gchar *query,
-                                                GQueue *out_uids,
-                                                GCancellable *cancellable,
-                                                GError **error)
-{
-	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	GList *contact_list;
-	GList *link;
-
-	if (e_backend_get_online (E_BACKEND (backend))) {
-		/* make sure the cache is up to date */
-		if (!download_contacts (webdav, NULL, NULL, cancellable, error))
-			return FALSE;
-	}
-
-	/* answer query from cache */
-	g_mutex_lock (&webdav->priv->cache_lock);
-	contact_list = e_book_backend_cache_get_contacts (
-		webdav->priv->cache, query);
-	g_mutex_unlock (&webdav->priv->cache_lock);
-
-	for (link = contact_list; link != NULL; link = g_list_next (link)) {
-		EContact *contact = E_CONTACT (link->data);
-		gchar *uid;
-
-		uid = e_contact_get (contact, E_CONTACT_UID);
-		g_queue_push_tail (out_uids, uid);
-	}
-
-	g_list_free_full (contact_list, (GDestroyNotify) g_object_unref);
-
-	return TRUE;
-}
-
 static ESourceAuthenticationResult
 book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
                                        const GString *password,
@@ -1618,7 +1582,6 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	backend_class->remove_contacts_sync = book_backend_webdav_remove_contacts_sync;
 	backend_class->get_contact_sync = book_backend_webdav_get_contact_sync;
 	backend_class->get_contact_list_sync = book_backend_webdav_get_contact_list_sync;
-	backend_class->get_contact_list_uids_sync = book_backend_webdav_get_contact_list_uids_sync;
 	backend_class->start_view = e_book_backend_webdav_start_view;
 	backend_class->stop_view = e_book_backend_webdav_stop_view;
 }
