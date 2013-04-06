@@ -307,43 +307,6 @@ book_backend_set_default_cache_dir (EBookBackend *backend)
 	g_free (filename);
 }
 
-static gchar *
-book_backend_get_backend_property (EBookBackend *backend,
-                                   const gchar *prop_name)
-{
-	gchar *prop_value = NULL;
-
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
-	g_return_val_if_fail (prop_name != NULL, NULL);
-
-	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
-		prop_value = g_strdup ("TRUE");
-
-	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
-		prop_value = g_strdup ("FALSE");
-
-	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
-		prop_value = g_strdup ("0");
-
-	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
-		gboolean online;
-
-		online = e_backend_get_online (E_BACKEND (backend));
-		prop_value = g_strdup (online ? "TRUE" : "FALSE");
-
-	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
-		gboolean readonly;
-
-		readonly = e_book_backend_is_readonly (backend);
-		prop_value = g_strdup (readonly ? "TRUE" : "FALSE");
-
-	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
-		prop_value = e_book_backend_dup_cache_dir (backend);
-	}
-
-	return prop_value;
-}
-
 static void
 book_backend_set_registry (EBookBackend *backend,
                            ESourceRegistry *registry)
@@ -483,6 +446,43 @@ book_backend_authenticate_sync (EBackend *backend,
 
 	return e_source_registry_authenticate_sync (
 		registry, source, auth, cancellable, error);
+}
+
+static gchar *
+book_backend_get_backend_property (EBookBackend *backend,
+                                   const gchar *prop_name)
+{
+	gchar *prop_value = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENED)) {
+		prop_value = g_strdup ("TRUE");
+
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
+		prop_value = g_strdup ("FALSE");
+
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_REVISION)) {
+		prop_value = g_strdup ("0");
+
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
+		gboolean online;
+
+		online = e_backend_get_online (E_BACKEND (backend));
+		prop_value = g_strdup (online ? "TRUE" : "FALSE");
+
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
+		gboolean readonly;
+
+		readonly = e_book_backend_is_readonly (backend);
+		prop_value = g_strdup (readonly ? "TRUE" : "FALSE");
+
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
+		prop_value = e_book_backend_dup_cache_dir (backend);
+	}
+
+	return prop_value;
 }
 
 static void
