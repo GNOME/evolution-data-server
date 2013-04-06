@@ -141,6 +141,11 @@ struct _EBookBackendClass {
 						 GQueue *out_contacts,
 						 GCancellable *cancellable,
 						 GError **error);
+
+	/* This method is optional.  By default, it simply calls
+	 * get_contact_list_sync() and extracts UID strings from
+	 * the matched EContacts.  Backends may override this if
+	 * they can implement it more efficiently. */
 	gboolean	(*get_contact_list_uids_sync)
 						(EBookBackend *backend,
 						 const gchar *query,

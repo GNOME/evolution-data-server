@@ -485,6 +485,40 @@ book_backend_get_backend_property (EBookBackend *backend,
 	return prop_value;
 }
 
+static gboolean
+book_backend_get_contact_list_uids_sync (EBookBackend *backend,
+                                         const gchar *query,
+                                         GQueue *out_uids,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	EBookBackendClass *class;
+	GQueue queue = G_QUEUE_INIT;
+	gboolean success;
+
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->get_contact_list_sync != NULL, FALSE);
+
+	success = class->get_contact_list_sync (
+		backend, query, &queue, cancellable, error);
+
+	if (success) {
+		while (!g_queue_is_empty (&queue)) {
+			EContact *contact;
+			gchar *uid;
+
+			contact = g_queue_pop_head (&queue);
+			uid = e_contact_get (contact, E_CONTACT_UID);
+			g_queue_push_tail (out_uids, uid);
+			g_object_unref (contact);
+		}
+	}
+
+	g_warn_if_fail (g_queue_is_empty (&queue));
+
+	return success;
+}
+
 static void
 book_backend_notify_update (EBookBackend *backend,
                             const EContact *contact)
@@ -520,6 +554,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 	backend_class->authenticate_sync = book_backend_authenticate_sync;
 
 	class->get_backend_property = book_backend_get_backend_property;
+	class->get_contact_list_uids_sync = book_backend_get_contact_list_uids_sync;
 	class->notify_update = book_backend_notify_update;
 
 	g_object_class_install_property (
