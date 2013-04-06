@@ -1629,142 +1629,6 @@ create_contact_dtor (LDAPOp *op)
 	g_free (create_op);
 }
 
-static void
-e_book_backend_ldap_create_contacts (EBookBackend *backend,
-                                     EDataBook *book,
-                                     guint32 opid,
-                                     GCancellable *cancellable,
-                                     const GSList *vcards)
-{
-	LDAPCreateOp *create_op = g_new0 (LDAPCreateOp, 1);
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	EDataBookView *book_view;
-	gint create_contact_msgid;
-	gint err;
-	GPtrArray *mod_array;
-	LDAPMod **ldap_mods;
-	gchar *new_uid;
-	const gchar *vcard = (const gchar *) vcards->data;
-
-	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
-	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
-	if (vcards->next != NULL) {
-		e_data_book_respond_create_contacts (
-			book, opid,
-			EDB_ERROR_EX (NOT_SUPPORTED,
-			_("The backend does not support bulk additions")),
-			NULL);
-		return;
-	}
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_create_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
-		return;
-	}
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	book_view = find_book_view (bl);
-
-	if (enable_debug)
-		printf ("Create Contact: vcard = %s\n", vcard);
-
-	create_op->new_contact = e_contact_new_from_vcard (vcard);
-
-	new_uid = create_dn_from_contact (create_op->new_contact, bl->priv->ldap_rootdn);
-	create_op->dn = create_full_dn_from_contact (new_uid, bl->priv->ldap_rootdn);
-
-	e_contact_set (create_op->new_contact, E_CONTACT_UID, create_op->dn);
-
-	/* build our mods */
-	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, new_uid);
-	g_free (new_uid);
-
-	/* remove the NULL at the end */
-	g_ptr_array_remove (mod_array, NULL);
-
-	/* add our objectclass(es) */
-	if (e_contact_get (create_op->new_contact, E_CONTACT_IS_LIST))
-		add_objectclass_mod (bl, mod_array, NULL, TRUE, FALSE);
-	else
-		add_objectclass_mod (bl, mod_array, NULL, FALSE, FALSE);
-
-	/* then put the NULL back */
-	g_ptr_array_add (mod_array, NULL);
-
-#ifdef LDAP_DEBUG_ADD
-	if (enable_debug) {
-		gint i;
-		printf ("Sending the following to the server as ADD\n");
-		printf ("Adding DN: %s\n", create_op->dn);
-
-		for (i = 0; g_ptr_array_index (mod_array, i); i++) {
-			LDAPMod *mod = g_ptr_array_index (mod_array, i);
-			if (mod->mod_op & LDAP_MOD_DELETE)
-				printf ("del ");
-			else if (mod->mod_op & LDAP_MOD_REPLACE)
-				printf ("rep ");
-			else
-				printf ("add ");
-			if (mod->mod_op & LDAP_MOD_BVALUES)
-				printf ("ber ");
-			else
-				printf ("    ");
-
-			printf (" %s:\n", mod->mod_type);
-
-			if (mod->mod_op & LDAP_MOD_BVALUES) {
-				gint j;
-				for (j = 0; mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
-					printf ("\t\t'%s'\n", mod->mod_bvalues[j]->bv_val);
-			} else {
-				gint j;
-
-				for (j = 0; mod->mod_values[j]; j++)
-					printf ("\t\t'%s'\n", mod->mod_values[j]);
-			}
-		}
-	}
-#endif
-
-	ldap_mods = (LDAPMod **) mod_array->pdata;
-
-	do {
-		book_view_notify_status (bl, book_view, _("Adding contact to LDAP server..."));
-		g_rec_mutex_lock (&eds_ldap_handler_lock);
-		err = ldap_add_ext (
-			bl->priv->ldap, create_op->dn, ldap_mods,
-			NULL, NULL, &create_contact_msgid);
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	} while (e_book_backend_ldap_reconnect (bl, book_view, err));
-
-	/* and clean up */
-	free_mods (mod_array);
-
-	if (LDAP_SUCCESS != err) {
-		e_data_book_respond_create_contacts (
-			create_op->op.book,
-			opid,
-			ldap_error_to_response (err),
-			NULL);
-		create_contact_dtor ((LDAPOp *) create_op);
-		return;
-	} else {
-		g_print ("ldap_add_ext returned %d\n", err);
-		ldap_op_add (
-			(LDAPOp *) create_op, backend, book,
-			book_view, opid, create_contact_msgid,
-			create_contact_handler, create_contact_dtor);
-	}
-}
-
 typedef struct {
 	LDAPOp op;
 	gchar *id;
@@ -1834,72 +1698,6 @@ remove_contact_dtor (LDAPOp *op)
 
 	g_free (remove_op->id);
 	g_free (remove_op);
-}
-
-static void
-e_book_backend_ldap_remove_contacts (EBookBackend *backend,
-                                     EDataBook *book,
-                                     guint32 opid,
-                                     GCancellable *cancellable,
-                                     const GSList *ids)
-{
-	LDAPRemoveOp *remove_op = g_new (LDAPRemoveOp, 1);
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	EDataBookView *book_view;
-	gint remove_msgid;
-	gint ldap_error;
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		g_free (remove_op);
-		return;
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
-		g_free (remove_op);
-		return;
-	}
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	book_view = find_book_view (bl);
-
-	/*
-	** since we didn't pass "bulk-removes" in our static
-	** capabilities, we should only get 1 length lists here, so
-	** the id we're deleting is the first and only id in the list.
-	*/
-	remove_op->id = g_strdup (ids->data);
-
-	do {
-		book_view_notify_status (bl, book_view, _("Removing contact from LDAP server..."));
-
-		g_rec_mutex_lock (&eds_ldap_handler_lock);
-		ldap_error = ldap_delete_ext (
-			bl->priv->ldap,
-			remove_op->id,
-			NULL, NULL, &remove_msgid);
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
-
-	if (ldap_error != LDAP_SUCCESS) {
-		e_data_book_respond_remove_contacts (
-			remove_op->op.book,
-			opid,
-			ldap_error_to_response (ldap_error),
-			NULL);
-		ldap_op_finished ((LDAPOp *) remove_op);
-		remove_contact_dtor ((LDAPOp *) remove_op);
-		return;
-	} else {
-		g_print ("ldap_delete_ext returned %d\n", ldap_error);
-		ldap_op_add (
-			(LDAPOp *) remove_op, backend, book,
-			book_view, opid, remove_msgid,
-			remove_contact_handler, remove_contact_dtor);
-	}
 }
 
 /*
@@ -2294,80 +2092,6 @@ modify_contact_dtor (LDAPOp *op)
 	g_free (modify_op);
 }
 
-static void
-e_book_backend_ldap_modify_contacts (EBookBackend *backend,
-                                    EDataBook *book,
-                                    guint32 opid,
-                                    GCancellable *cancellable,
-                                    const GSList *vcards)
-{
-	LDAPModifyOp *modify_op = g_new0 (LDAPModifyOp, 1);
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	gint ldap_error;
-	gint modify_contact_msgid;
-	EDataBookView *book_view;
-	gchar *vcard = vcards->data;
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
-	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
-	if (vcards->next != NULL) {
-		e_data_book_respond_modify_contacts (book, opid,
-						     EDB_ERROR_EX (NOT_SUPPORTED,
-						     _("The backend does not support bulk modifications")),
-						     NULL);
-		return;
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
-		g_free (modify_op);
-		return;
-	}
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	book_view = find_book_view (bl);
-
-	if (enable_debug)
-		printf ("Modify Contact: vcard = %s\n", vcard);
-	modify_op->contact = e_contact_new_from_vcard (vcard);
-	modify_op->id = e_contact_get_const (modify_op->contact, E_CONTACT_UID);
-
-	do {
-		book_view_notify_status (bl, book_view, _("Modifying contact from LDAP server..."));
-
-		g_rec_mutex_lock (&eds_ldap_handler_lock);
-		ldap_error = ldap_search_ext (
-			bl->priv->ldap, modify_op->id,
-			LDAP_SCOPE_BASE,
-			"(objectclass=*)",
-			NULL, 0, NULL, NULL,
-			NULL, /* XXX timeout */
-			1, &modify_contact_msgid);
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
-
-	if (ldap_error == LDAP_SUCCESS) {
-		ldap_op_add (
-			(LDAPOp *) modify_op, backend, book,
-			book_view, opid, modify_contact_msgid,
-			modify_contact_search_handler, modify_contact_dtor);
-	} else {
-		e_data_book_respond_modify_contacts (book,
-						     opid,
-						     ldap_error_to_response (ldap_error),
-						     NULL);
-		modify_contact_dtor ((LDAPOp *) modify_op);
-	}
-}
-
 typedef struct {
 	LDAPOp op;
 } LDAPGetContactOp;
@@ -2486,102 +2210,6 @@ get_contact_dtor (LDAPOp *op)
 	LDAPGetContactOp *get_contact_op = (LDAPGetContactOp *) op;
 
 	g_free (get_contact_op);
-}
-
-static void
-e_book_backend_ldap_get_contact (EBookBackend *backend,
-                                 EDataBook *book,
-                                 guint32 opid,
-                                 GCancellable *cancellable,
-                                 const gchar *id)
-{
-	LDAPGetContactOp *get_contact_op;
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	gint get_contact_msgid;
-	EDataBookView *book_view;
-	gint ldap_error;
-	GTimeVal start, end;
-	gulong diff;
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		if (bl->priv->marked_for_offline && bl->priv->cache) {
-			EContact *contact = e_book_backend_cache_get_contact (bl->priv->cache, id);
-			gchar *vcard_str;
-
-			if (!contact) {
-				e_data_book_respond_get_contact (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
-				return;
-			}
-
-			vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-
-			e_data_book_respond_get_contact (
-				book,
-				opid,
-				EDB_ERROR (SUCCESS),
-				vcard_str);
-			g_free (vcard_str);
-			g_object_unref (contact);
-			return;
-		}
-
-		e_data_book_respond_get_contact (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	if (enable_debug) {
-		printf ("e_book_backend_ldap_get_contact ... \n");
-		g_get_current_time (&start);
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_get_contact (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
-		if (enable_debug)
-			printf ("e_book_backend_ldap_get_contact ... ldap handler is NULL\n");
-		return;
-	}
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	get_contact_op = g_new0 (LDAPGetContactOp, 1);
-	book_view = find_book_view (bl);
-
-	do {
-		g_rec_mutex_lock (&eds_ldap_handler_lock);
-		ldap_error = ldap_search_ext (
-			bl->priv->ldap, id,
-			LDAP_SCOPE_BASE,
-			"(objectclass=*)",
-			NULL, 0, NULL, NULL,
-			NULL, /* XXX timeout */
-			1, &get_contact_msgid);
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
-
-	if (ldap_error == LDAP_SUCCESS) {
-		ldap_op_add (
-			(LDAPOp *) get_contact_op, backend, book,
-			book_view, opid, get_contact_msgid,
-			get_contact_handler, get_contact_dtor);
-
-		if (enable_debug) {
-			printf ("e_book_backend_ldap_get_contact invoked get_contact_handler\n");
-			g_get_current_time (&end);
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf (
-				"and took %ld.%03ld seconds\n",
-				diff / 1000, diff % 1000);
-		}
-	} else {
-		e_data_book_respond_get_contact (
-			book,
-			opid,
-			ldap_error_to_response (ldap_error),
-			NULL);
-		get_contact_dtor ((LDAPOp *) get_contact_op);
-	}
 }
 
 typedef struct {
@@ -2719,111 +2347,6 @@ contact_list_dtor (LDAPOp *op)
 	g_free (contact_list_op);
 }
 
-static void
-e_book_backend_ldap_get_contact_list (EBookBackend *backend,
-                                      EDataBook *book,
-                                      guint32 opid,
-                                      GCancellable *cancellable,
-                                      const gchar *query)
-{
-	LDAPGetContactListOp *contact_list_op;
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	gint contact_list_msgid;
-	EDataBookView *book_view;
-	gint ldap_error;
-	gchar *ldap_query;
-	GTimeVal start, end;
-	gulong diff;
-
-	if (enable_debug) {
-		printf ("e_book_backend_ldap_get_contact_list ... \n");
-		g_get_current_time (&start);
-	}
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		if (bl->priv->marked_for_offline && bl->priv->cache) {
-			GList *contacts;
-			GSList *vcard_strings = NULL;
-			GList *l;
-
-			contacts = e_book_backend_cache_get_contacts (bl->priv->cache, query);
-
-			for (l = contacts; l; l = g_list_next (l)) {
-				EContact *contact = l->data;
-				vcard_strings = g_slist_prepend (
-					vcard_strings, e_vcard_to_string (E_VCARD (contact),
-					EVC_FORMAT_VCARD_30));
-				g_object_unref (contact);
-			}
-
-			g_list_free (contacts);
-			e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (SUCCESS), vcard_strings);
-			g_slist_foreach (vcard_strings, (GFunc) g_free, NULL);
-			g_slist_free (vcard_strings);
-			return;
-		}
-
-		e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_get_contact_list (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
-		if (enable_debug)
-			printf ("e_book_backend_ldap_get_contact_list... ldap handler is NULL\n");
-		return;
-	}
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	contact_list_op = g_new0 (LDAPGetContactListOp, 1);
-	book_view = find_book_view (bl);
-
-	ldap_query = e_book_backend_ldap_build_query (bl, query);
-
-	if (enable_debug)
-		printf ("getting contact list with filter: %s\n", ldap_query);
-
-	do {
-		g_rec_mutex_lock (&eds_ldap_handler_lock);
-		ldap_error = ldap_search_ext (
-			bl->priv->ldap,
-			bl->priv->ldap_rootdn,
-			bl->priv->ldap_scope,
-			ldap_query,
-			NULL, 0, NULL, NULL,
-			NULL, /* XXX timeout */
-			LDAP_NO_LIMIT, &contact_list_msgid);
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
-
-	g_free (ldap_query);
-
-	if (ldap_error == LDAP_SUCCESS) {
-		ldap_op_add (
-			(LDAPOp *) contact_list_op, backend, book,
-			book_view, opid, contact_list_msgid,
-			contact_list_handler, contact_list_dtor);
-		if (enable_debug) {
-			g_get_current_time (&end);
-
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-
-			printf ("e_book_backend_ldap_get_contact_list invoked contact_list_handler ");
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
-		}
-	} else {
-		e_data_book_respond_get_contact_list (
-			book,
-			opid,
-			ldap_error_to_response (ldap_error),
-			NULL);
-		contact_list_dtor ((LDAPOp *) contact_list_op);
-	}
-}
-
 typedef struct {
 	LDAPOp op;
 	GSList *uids;
@@ -2949,105 +2472,6 @@ contact_list_uids_dtor (LDAPOp *op)
 	g_slist_free (contact_list_uids_op->uids);
 
 	g_free (contact_list_uids_op);
-}
-
-static void
-e_book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
-                                           EDataBook *book,
-                                           guint32 opid,
-                                           GCancellable *cancellable,
-                                           const gchar *query)
-{
-	LDAPGetContactListUIDsOp *contact_list_uids_op;
-	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	gint contact_list_uids_msgid;
-	EDataBookView *book_view;
-	gint ldap_error;
-	gchar *ldap_query;
-	GTimeVal start, end;
-	gulong diff;
-
-	if (enable_debug) {
-		printf ("e_book_backend_ldap_get_contact_list_uids ... \n");
-		g_get_current_time (&start);
-	}
-
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		if (bl->priv->marked_for_offline && bl->priv->cache) {
-			GList *contacts;
-			GSList *uids = NULL;
-			GList *l;
-
-			contacts = e_book_backend_cache_get_contacts (bl->priv->cache, query);
-
-			for (l = contacts; l; l = g_list_next (l)) {
-				EContact *contact = l->data;
-				uids = g_slist_prepend (uids, e_contact_get (contact, E_CONTACT_UID));
-				g_object_unref (contact);
-			}
-
-			g_list_free (contacts);
-			e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (SUCCESS), uids);
-			g_slist_foreach (uids, (GFunc) g_free, NULL);
-			g_slist_free (uids);
-			return;
-		}
-
-		e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		return;
-	}
-
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!bl->priv->ldap) {
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
-		if (enable_debug)
-			printf ("e_book_backend_ldap_get_contact_list_uids... ldap handler is NULL\n");
-		return;
-	}
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	contact_list_uids_op = g_new0 (LDAPGetContactListUIDsOp, 1);
-	book_view = find_book_view (bl);
-
-	ldap_query = e_book_backend_ldap_build_query (bl, query);
-
-	if (enable_debug)
-		printf ("getting contact list uids with filter: %s\n", ldap_query);
-
-	do {
-		g_rec_mutex_lock (&eds_ldap_handler_lock);
-		ldap_error = ldap_search_ext (
-			bl->priv->ldap,
-			bl->priv->ldap_rootdn,
-			bl->priv->ldap_scope,
-			ldap_query,
-			NULL, 0, NULL, NULL,
-			NULL, /* XXX timeout */
-			LDAP_NO_LIMIT, &contact_list_uids_msgid);
-		g_rec_mutex_unlock (&eds_ldap_handler_lock);
-	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
-
-	g_free (ldap_query);
-
-	if (ldap_error == LDAP_SUCCESS) {
-		ldap_op_add (
-			(LDAPOp *) contact_list_uids_op, backend, book,
-			book_view, opid, contact_list_uids_msgid,
-			contact_list_uids_handler, contact_list_uids_dtor);
-		if (enable_debug) {
-			g_get_current_time (&end);
-
-			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
-			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-
-			printf ("e_book_backend_ldap_get_contact_list_uids invoked contact_list_uids_handler ");
-			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
-		}
-	} else {
-		e_data_book_respond_get_contact_list_uids (book, opid, ldap_error_to_response (ldap_error), NULL);
-		contact_list_uids_dtor ((LDAPOp *) contact_list_uids_op);
-	}
 }
 
 static EContactField email_ids[4] = {
@@ -5020,8 +4444,8 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 }
 
 static void
-e_book_backend_ldap_start_view (EBookBackend *backend,
-                                EDataBookView *view)
+book_backend_ldap_start_view (EBookBackend *backend,
+                              EDataBookView *view)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 
@@ -5031,8 +4455,8 @@ e_book_backend_ldap_start_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_ldap_stop_view (EBookBackend *backend,
-                               EDataBookView *view)
+book_backend_ldap_stop_view (EBookBackend *backend,
+                             EDataBookView *view)
 {
 	LDAPSearchOp *op;
 
@@ -5233,11 +4657,164 @@ ldap_cancel_all_operations (EBookBackend *backend)
 }
 
 static void
-e_book_backend_ldap_open (EBookBackend *backend,
-                          EDataBook *book,
-                          guint opid,
-                          GCancellable *cancellable,
-                          gboolean only_if_exists)
+e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
+                                      GParamSpec *pspec)
+{
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+
+	/* Cancel all running operations */
+	ldap_cancel_all_operations (backend);
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		/* Go offline */
+
+		e_book_backend_set_writable (backend, FALSE);
+
+		bl->priv->connected = FALSE;
+	} else {
+		/* Go online */
+
+		e_book_backend_set_writable (backend, TRUE);
+
+		if (e_book_backend_is_opened (backend)) {
+			GError *error = NULL;
+
+			if (!e_book_backend_ldap_connect (bl, &error)) {
+				e_book_backend_notify_error (
+					backend, error->message);
+				g_error_free (error);
+			}
+
+			if (bl->priv->marked_for_offline && bl->priv->cache)
+				generate_cache (bl);
+		}
+	}
+}
+
+static gboolean
+call_dtor (gint msgid,
+           LDAPOp *op,
+           gpointer data)
+{
+	EBookBackendLDAP *bl;
+
+	bl = E_BOOK_BACKEND_LDAP (op->backend);
+
+	/* lock is held by the caller */
+	/* g_rec_mutex_lock (&eds_ldap_handler_lock); */
+	if (bl->priv->ldap)
+		ldap_abandon (bl->priv->ldap, op->id);
+	/* g_rec_mutex_unlock (&eds_ldap_handler_lock); */
+
+	op->dtor (op);
+
+	return TRUE;
+}
+
+static void
+book_backend_ldap_finalize (GObject *object)
+{
+	EBookBackendLDAPPrivate *priv;
+
+	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (object);
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	g_rec_mutex_lock (&priv->op_hash_mutex);
+	g_hash_table_foreach_remove (priv->id_to_op, (GHRFunc) call_dtor, NULL);
+	g_hash_table_destroy (priv->id_to_op);
+	g_rec_mutex_unlock (&priv->op_hash_mutex);
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+	g_rec_mutex_clear (&priv->op_hash_mutex);
+
+	/* Remove the timeout before unbinding to avoid a race. */
+	if (priv->poll_timeout > 0) {
+		g_source_remove (priv->poll_timeout);
+		priv->poll_timeout = 0;
+	}
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (priv->ldap)
+		ldap_unbind (priv->ldap);
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	g_slist_foreach (priv->supported_fields, (GFunc) g_free, NULL);
+	g_slist_free (priv->supported_fields);
+
+	g_slist_foreach (priv->supported_auth_methods, (GFunc) g_free, NULL);
+	g_slist_free (priv->supported_auth_methods);
+
+	g_free (priv->summary_file_name);
+
+	if (priv->summary) {
+		e_book_backend_summary_save (priv->summary);
+		g_object_unref (priv->summary);
+		priv->summary = NULL;
+	}
+
+	if (priv->cache) {
+		g_object_unref (priv->cache);
+		priv->cache = NULL;
+	}
+
+	g_free (priv->ldap_host);
+	g_free (priv->ldap_rootdn);
+	g_free (priv->ldap_search_filter);
+	g_free (priv->schema_dn);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_ldap_parent_class)->finalize (object);
+}
+
+static gchar *
+book_backend_ldap_get_backend_property (EBookBackend *backend,
+                                        const gchar *prop_name)
+{
+	EBookBackendLDAPPrivate *priv;
+
+	g_return_val_if_fail (prop_name != NULL, NULL);
+
+	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		if (can_browse (backend) || priv->marked_for_offline)
+			return g_strdup ("net,anon-access,contact-lists,do-initial-query");
+		else
+			return g_strdup ("net,anon-access,contact-lists");
+
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
+		GSList *fields = NULL;
+		gchar *prop_value;
+
+		/*FIMEME we should look at mandatory attributs in the schema
+		  and return all those fields here */
+		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FILE_AS));
+		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FULL_NAME));
+		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FAMILY_NAME));
+
+		prop_value = e_data_book_string_slist_to_comma_string (fields);
+
+		g_slist_free (fields);
+
+		return prop_value;
+
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
+		EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+
+		return e_data_book_string_slist_to_comma_string (bl->priv->supported_fields);
+
+	}
+
+	/* Chain up to parent's get_backend_property() method. */
+	return E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->
+		get_backend_property (backend, prop_name);
+}
+
+static void
+book_backend_ldap_open (EBookBackend *backend,
+                        EDataBook *book,
+                        guint opid,
+                        GCancellable *cancellable,
+                        gboolean only_if_exists)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	ESourceAuthentication *auth_extension;
@@ -5351,157 +4928,580 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	e_data_book_respond_open (book, opid, error);
 }
 
-static gchar *
-e_book_backend_ldap_get_backend_property (EBookBackend *backend,
-                                          const gchar *prop_name)
-{
-	EBookBackendLDAPPrivate *priv;
-
-	g_return_val_if_fail (prop_name != NULL, NULL);
-
-	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
-
-	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		if (can_browse (backend) || priv->marked_for_offline)
-			return g_strdup ("net,anon-access,contact-lists,do-initial-query");
-		else
-			return g_strdup ("net,anon-access,contact-lists");
-
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
-		GSList *fields = NULL;
-		gchar *prop_value;
-
-		/*FIMEME we should look at mandatory attributs in the schema
-		  and return all those fields here */
-		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FILE_AS));
-		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FULL_NAME));
-		fields = g_slist_append (fields, (gpointer) e_contact_field_name (E_CONTACT_FAMILY_NAME));
-
-		prop_value = e_data_book_string_slist_to_comma_string (fields);
-
-		g_slist_free (fields);
-
-		return prop_value;
-
-	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
-		EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-
-		return e_data_book_string_slist_to_comma_string (bl->priv->supported_fields);
-
-	}
-
-	/* Chain up to parent's get_backend_property() method. */
-	return E_BOOK_BACKEND_CLASS (e_book_backend_ldap_parent_class)->
-		get_backend_property (backend, prop_name);
-}
-
 static void
-e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
-                                      GParamSpec *pspec)
+book_backend_ldap_create_contacts (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const GSList *vcards)
 {
+	LDAPCreateOp *create_op = g_new0 (LDAPCreateOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	EDataBookView *book_view;
+	gint create_contact_msgid;
+	gint err;
+	GPtrArray *mod_array;
+	LDAPMod **ldap_mods;
+	gchar *new_uid;
+	const gchar *vcard = (const gchar *) vcards->data;
 
-	/* Cancel all running operations */
-	ldap_cancel_all_operations (backend);
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_create_contacts (
+			book, opid,
+			EDB_ERROR_EX (NOT_SUPPORTED,
+			_("The backend does not support bulk additions")),
+			NULL);
+		return;
+	}
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		/* Go offline */
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
 
-		e_book_backend_set_writable (backend, FALSE);
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		return;
+	}
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-		bl->priv->connected = FALSE;
-	} else {
-		/* Go online */
+	book_view = find_book_view (bl);
 
-		e_book_backend_set_writable (backend, TRUE);
+	if (enable_debug)
+		printf ("Create Contact: vcard = %s\n", vcard);
 
-		if (e_book_backend_is_opened (backend)) {
-			GError *error = NULL;
+	create_op->new_contact = e_contact_new_from_vcard (vcard);
 
-			if (!e_book_backend_ldap_connect (bl, &error)) {
-				e_book_backend_notify_error (
-					backend, error->message);
-				g_error_free (error);
+	new_uid = create_dn_from_contact (create_op->new_contact, bl->priv->ldap_rootdn);
+	create_op->dn = create_full_dn_from_contact (new_uid, bl->priv->ldap_rootdn);
+
+	e_contact_set (create_op->new_contact, E_CONTACT_UID, create_op->dn);
+
+	/* build our mods */
+	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, new_uid);
+	g_free (new_uid);
+
+	/* remove the NULL at the end */
+	g_ptr_array_remove (mod_array, NULL);
+
+	/* add our objectclass(es) */
+	if (e_contact_get (create_op->new_contact, E_CONTACT_IS_LIST))
+		add_objectclass_mod (bl, mod_array, NULL, TRUE, FALSE);
+	else
+		add_objectclass_mod (bl, mod_array, NULL, FALSE, FALSE);
+
+	/* then put the NULL back */
+	g_ptr_array_add (mod_array, NULL);
+
+#ifdef LDAP_DEBUG_ADD
+	if (enable_debug) {
+		gint i;
+		printf ("Sending the following to the server as ADD\n");
+		printf ("Adding DN: %s\n", create_op->dn);
+
+		for (i = 0; g_ptr_array_index (mod_array, i); i++) {
+			LDAPMod *mod = g_ptr_array_index (mod_array, i);
+			if (mod->mod_op & LDAP_MOD_DELETE)
+				printf ("del ");
+			else if (mod->mod_op & LDAP_MOD_REPLACE)
+				printf ("rep ");
+			else
+				printf ("add ");
+			if (mod->mod_op & LDAP_MOD_BVALUES)
+				printf ("ber ");
+			else
+				printf ("    ");
+
+			printf (" %s:\n", mod->mod_type);
+
+			if (mod->mod_op & LDAP_MOD_BVALUES) {
+				gint j;
+				for (j = 0; mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
+					printf ("\t\t'%s'\n", mod->mod_bvalues[j]->bv_val);
+			} else {
+				gint j;
+
+				for (j = 0; mod->mod_values[j]; j++)
+					printf ("\t\t'%s'\n", mod->mod_values[j]);
 			}
-
-			if (bl->priv->marked_for_offline && bl->priv->cache)
-				generate_cache (bl);
 		}
 	}
-}
+#endif
 
-static gboolean
-call_dtor (gint msgid,
-           LDAPOp *op,
-           gpointer data)
-{
-	EBookBackendLDAP *bl;
+	ldap_mods = (LDAPMod **) mod_array->pdata;
 
-	bl = E_BOOK_BACKEND_LDAP (op->backend);
+	do {
+		book_view_notify_status (bl, book_view, _("Adding contact to LDAP server..."));
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		err = ldap_add_ext (
+			bl->priv->ldap, create_op->dn, ldap_mods,
+			NULL, NULL, &create_contact_msgid);
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-	/* lock is held by the caller */
-	/* g_rec_mutex_lock (&eds_ldap_handler_lock); */
-	if (bl->priv->ldap)
-		ldap_abandon (bl->priv->ldap, op->id);
-	/* g_rec_mutex_unlock (&eds_ldap_handler_lock); */
+	} while (e_book_backend_ldap_reconnect (bl, book_view, err));
 
-	op->dtor (op);
+	/* and clean up */
+	free_mods (mod_array);
 
-	return TRUE;
+	if (LDAP_SUCCESS != err) {
+		e_data_book_respond_create_contacts (
+			create_op->op.book,
+			opid,
+			ldap_error_to_response (err),
+			NULL);
+		create_contact_dtor ((LDAPOp *) create_op);
+		return;
+	} else {
+		g_print ("ldap_add_ext returned %d\n", err);
+		ldap_op_add (
+			(LDAPOp *) create_op, backend, book,
+			book_view, opid, create_contact_msgid,
+			create_contact_handler, create_contact_dtor);
+	}
 }
 
 static void
-e_book_backend_ldap_finalize (GObject *object)
+book_backend_ldap_modify_contacts (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const GSList *vcards)
 {
-	EBookBackendLDAPPrivate *priv;
+	LDAPModifyOp *modify_op = g_new0 (LDAPModifyOp, 1);
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	gint ldap_error;
+	gint modify_contact_msgid;
+	EDataBookView *book_view;
+	gchar *vcard = vcards->data;
 
-	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (object);
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
 
-	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	g_rec_mutex_lock (&priv->op_hash_mutex);
-	g_hash_table_foreach_remove (priv->id_to_op, (GHRFunc) call_dtor, NULL);
-	g_hash_table_destroy (priv->id_to_op);
-	g_rec_mutex_unlock (&priv->op_hash_mutex);
-	g_rec_mutex_unlock (&eds_ldap_handler_lock);
-	g_rec_mutex_clear (&priv->op_hash_mutex);
-
-	/* Remove the timeout before unbinding to avoid a race. */
-	if (priv->poll_timeout > 0) {
-		g_source_remove (priv->poll_timeout);
-		priv->poll_timeout = 0;
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_modify_contacts (book, opid,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
+						     _("The backend does not support bulk modifications")),
+						     NULL);
+		return;
 	}
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (priv->ldap)
-		ldap_unbind (priv->ldap);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		g_free (modify_op);
+		return;
+	}
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-	g_slist_foreach (priv->supported_fields, (GFunc) g_free, NULL);
-	g_slist_free (priv->supported_fields);
+	book_view = find_book_view (bl);
 
-	g_slist_foreach (priv->supported_auth_methods, (GFunc) g_free, NULL);
-	g_slist_free (priv->supported_auth_methods);
+	if (enable_debug)
+		printf ("Modify Contact: vcard = %s\n", vcard);
+	modify_op->contact = e_contact_new_from_vcard (vcard);
+	modify_op->id = e_contact_get_const (modify_op->contact, E_CONTACT_UID);
 
-	g_free (priv->summary_file_name);
+	do {
+		book_view_notify_status (bl, book_view, _("Modifying contact from LDAP server..."));
 
-	if (priv->summary) {
-		e_book_backend_summary_save (priv->summary);
-		g_object_unref (priv->summary);
-		priv->summary = NULL;
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_error = ldap_search_ext (
+			bl->priv->ldap, modify_op->id,
+			LDAP_SCOPE_BASE,
+			"(objectclass=*)",
+			NULL, 0, NULL, NULL,
+			NULL, /* XXX timeout */
+			1, &modify_contact_msgid);
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	if (ldap_error == LDAP_SUCCESS) {
+		ldap_op_add (
+			(LDAPOp *) modify_op, backend, book,
+			book_view, opid, modify_contact_msgid,
+			modify_contact_search_handler, modify_contact_dtor);
+	} else {
+		e_data_book_respond_modify_contacts (book,
+						     opid,
+						     ldap_error_to_response (ldap_error),
+						     NULL);
+		modify_contact_dtor ((LDAPOp *) modify_op);
+	}
+}
+
+static void
+book_backend_ldap_remove_contacts (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const GSList *ids)
+{
+	LDAPRemoveOp *remove_op = g_new (LDAPRemoveOp, 1);
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	EDataBookView *book_view;
+	gint remove_msgid;
+	gint ldap_error;
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		g_free (remove_op);
+		return;
 	}
 
-	if (priv->cache) {
-		g_object_unref (priv->cache);
-		priv->cache = NULL;
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		g_free (remove_op);
+		return;
+	}
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	book_view = find_book_view (bl);
+
+	/*
+	** since we didn't pass "bulk-removes" in our static
+	** capabilities, we should only get 1 length lists here, so
+	** the id we're deleting is the first and only id in the list.
+	*/
+	remove_op->id = g_strdup (ids->data);
+
+	do {
+		book_view_notify_status (bl, book_view, _("Removing contact from LDAP server..."));
+
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_error = ldap_delete_ext (
+			bl->priv->ldap,
+			remove_op->id,
+			NULL, NULL, &remove_msgid);
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	if (ldap_error != LDAP_SUCCESS) {
+		e_data_book_respond_remove_contacts (
+			remove_op->op.book,
+			opid,
+			ldap_error_to_response (ldap_error),
+			NULL);
+		ldap_op_finished ((LDAPOp *) remove_op);
+		remove_contact_dtor ((LDAPOp *) remove_op);
+		return;
+	} else {
+		g_print ("ldap_delete_ext returned %d\n", ldap_error);
+		ldap_op_add (
+			(LDAPOp *) remove_op, backend, book,
+			book_view, opid, remove_msgid,
+			remove_contact_handler, remove_contact_dtor);
+	}
+}
+
+static void
+book_backend_ldap_get_contact (EBookBackend *backend,
+                               EDataBook *book,
+                               guint32 opid,
+                               GCancellable *cancellable,
+                               const gchar *id)
+{
+	LDAPGetContactOp *get_contact_op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	gint get_contact_msgid;
+	EDataBookView *book_view;
+	gint ldap_error;
+	GTimeVal start, end;
+	gulong diff;
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		if (bl->priv->marked_for_offline && bl->priv->cache) {
+			EContact *contact = e_book_backend_cache_get_contact (bl->priv->cache, id);
+			gchar *vcard_str;
+
+			if (!contact) {
+				e_data_book_respond_get_contact (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
+				return;
+			}
+
+			vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+			e_data_book_respond_get_contact (
+				book,
+				opid,
+				EDB_ERROR (SUCCESS),
+				vcard_str);
+			g_free (vcard_str);
+			g_object_unref (contact);
+			return;
+		}
+
+		e_data_book_respond_get_contact (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
 	}
 
-	g_free (priv->ldap_host);
-	g_free (priv->ldap_rootdn);
-	g_free (priv->ldap_search_filter);
-	g_free (priv->schema_dn);
+	if (enable_debug) {
+		printf ("e_book_backend_ldap_get_contact ... \n");
+		g_get_current_time (&start);
+	}
 
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_book_backend_ldap_parent_class)->finalize (object);
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_get_contact (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		if (enable_debug)
+			printf ("e_book_backend_ldap_get_contact ... ldap handler is NULL\n");
+		return;
+	}
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	get_contact_op = g_new0 (LDAPGetContactOp, 1);
+	book_view = find_book_view (bl);
+
+	do {
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_error = ldap_search_ext (
+			bl->priv->ldap, id,
+			LDAP_SCOPE_BASE,
+			"(objectclass=*)",
+			NULL, 0, NULL, NULL,
+			NULL, /* XXX timeout */
+			1, &get_contact_msgid);
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	if (ldap_error == LDAP_SUCCESS) {
+		ldap_op_add (
+			(LDAPOp *) get_contact_op, backend, book,
+			book_view, opid, get_contact_msgid,
+			get_contact_handler, get_contact_dtor);
+
+		if (enable_debug) {
+			printf ("e_book_backend_ldap_get_contact invoked get_contact_handler\n");
+			g_get_current_time (&end);
+			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
+			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+			printf (
+				"and took %ld.%03ld seconds\n",
+				diff / 1000, diff % 1000);
+		}
+	} else {
+		e_data_book_respond_get_contact (
+			book,
+			opid,
+			ldap_error_to_response (ldap_error),
+			NULL);
+		get_contact_dtor ((LDAPOp *) get_contact_op);
+	}
+}
+
+static void
+book_backend_ldap_get_contact_list (EBookBackend *backend,
+                                    EDataBook *book,
+                                    guint32 opid,
+                                    GCancellable *cancellable,
+                                    const gchar *query)
+{
+	LDAPGetContactListOp *contact_list_op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	gint contact_list_msgid;
+	EDataBookView *book_view;
+	gint ldap_error;
+	gchar *ldap_query;
+	GTimeVal start, end;
+	gulong diff;
+
+	if (enable_debug) {
+		printf ("e_book_backend_ldap_get_contact_list ... \n");
+		g_get_current_time (&start);
+	}
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		if (bl->priv->marked_for_offline && bl->priv->cache) {
+			GList *contacts;
+			GSList *vcard_strings = NULL;
+			GList *l;
+
+			contacts = e_book_backend_cache_get_contacts (bl->priv->cache, query);
+
+			for (l = contacts; l; l = g_list_next (l)) {
+				EContact *contact = l->data;
+				vcard_strings = g_slist_prepend (
+					vcard_strings, e_vcard_to_string (E_VCARD (contact),
+					EVC_FORMAT_VCARD_30));
+				g_object_unref (contact);
+			}
+
+			g_list_free (contacts);
+			e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (SUCCESS), vcard_strings);
+			g_slist_foreach (vcard_strings, (GFunc) g_free, NULL);
+			g_slist_free (vcard_strings);
+			return;
+		}
+
+		e_data_book_respond_get_contact_list (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_get_contact_list (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		if (enable_debug)
+			printf ("e_book_backend_ldap_get_contact_list... ldap handler is NULL\n");
+		return;
+	}
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	contact_list_op = g_new0 (LDAPGetContactListOp, 1);
+	book_view = find_book_view (bl);
+
+	ldap_query = e_book_backend_ldap_build_query (bl, query);
+
+	if (enable_debug)
+		printf ("getting contact list with filter: %s\n", ldap_query);
+
+	do {
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_error = ldap_search_ext (
+			bl->priv->ldap,
+			bl->priv->ldap_rootdn,
+			bl->priv->ldap_scope,
+			ldap_query,
+			NULL, 0, NULL, NULL,
+			NULL, /* XXX timeout */
+			LDAP_NO_LIMIT, &contact_list_msgid);
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	g_free (ldap_query);
+
+	if (ldap_error == LDAP_SUCCESS) {
+		ldap_op_add (
+			(LDAPOp *) contact_list_op, backend, book,
+			book_view, opid, contact_list_msgid,
+			contact_list_handler, contact_list_dtor);
+		if (enable_debug) {
+			g_get_current_time (&end);
+
+			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
+			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+
+			printf ("e_book_backend_ldap_get_contact_list invoked contact_list_handler ");
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+		}
+	} else {
+		e_data_book_respond_get_contact_list (
+			book,
+			opid,
+			ldap_error_to_response (ldap_error),
+			NULL);
+		contact_list_dtor ((LDAPOp *) contact_list_op);
+	}
+}
+
+static void
+book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
+                                         EDataBook *book,
+                                         guint32 opid,
+                                         GCancellable *cancellable,
+                                         const gchar *query)
+{
+	LDAPGetContactListUIDsOp *contact_list_uids_op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	gint contact_list_uids_msgid;
+	EDataBookView *book_view;
+	gint ldap_error;
+	gchar *ldap_query;
+	GTimeVal start, end;
+	gulong diff;
+
+	if (enable_debug) {
+		printf ("e_book_backend_ldap_get_contact_list_uids ... \n");
+		g_get_current_time (&start);
+	}
+
+	if (!e_backend_get_online (E_BACKEND (backend))) {
+		if (bl->priv->marked_for_offline && bl->priv->cache) {
+			GList *contacts;
+			GSList *uids = NULL;
+			GList *l;
+
+			contacts = e_book_backend_cache_get_contacts (bl->priv->cache, query);
+
+			for (l = contacts; l; l = g_list_next (l)) {
+				EContact *contact = l->data;
+				uids = g_slist_prepend (uids, e_contact_get (contact, E_CONTACT_UID));
+				g_object_unref (contact);
+			}
+
+			g_list_free (contacts);
+			e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (SUCCESS), uids);
+			g_slist_foreach (uids, (GFunc) g_free, NULL);
+			g_slist_free (uids);
+			return;
+		}
+
+		e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		if (enable_debug)
+			printf ("e_book_backend_ldap_get_contact_list_uids... ldap handler is NULL\n");
+		return;
+	}
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	contact_list_uids_op = g_new0 (LDAPGetContactListUIDsOp, 1);
+	book_view = find_book_view (bl);
+
+	ldap_query = e_book_backend_ldap_build_query (bl, query);
+
+	if (enable_debug)
+		printf ("getting contact list uids with filter: %s\n", ldap_query);
+
+	do {
+		g_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_error = ldap_search_ext (
+			bl->priv->ldap,
+			bl->priv->ldap_rootdn,
+			bl->priv->ldap_scope,
+			ldap_query,
+			NULL, 0, NULL, NULL,
+			NULL, /* XXX timeout */
+			LDAP_NO_LIMIT, &contact_list_uids_msgid);
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	g_free (ldap_query);
+
+	if (ldap_error == LDAP_SUCCESS) {
+		ldap_op_add (
+			(LDAPOp *) contact_list_uids_op, backend, book,
+			book_view, opid, contact_list_uids_msgid,
+			contact_list_uids_handler, contact_list_uids_dtor);
+		if (enable_debug) {
+			g_get_current_time (&end);
+
+			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
+			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
+
+			printf ("e_book_backend_ldap_get_contact_list_uids invoked contact_list_uids_handler ");
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
+		}
+	} else {
+		e_data_book_respond_get_contact_list_uids (book, opid, ldap_error_to_response (ldap_error), NULL);
+		contact_list_uids_dtor ((LDAPOp *) contact_list_uids_op);
+	}
 }
 
 static ESourceAuthenticationResult
@@ -5733,8 +5733,8 @@ exit:
 static void
 e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 {
-	GObjectClass  *object_class = G_OBJECT_CLASS (class);
-	EBookBackendClass *parent_class;
+	GObjectClass  *object_class;
+	EBookBackendClass *backend_class;
 
 	g_type_class_add_private (class, sizeof (EBookBackendLDAPPrivate));
 
@@ -5742,22 +5742,21 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	/* get client side information (extensions present in the library) */
 	get_ldap_library_info ();
 #endif
-	parent_class = E_BOOK_BACKEND_CLASS (class);
 
-	/* Set the virtual methods. */
-	parent_class->open			= e_book_backend_ldap_open;
-	parent_class->get_backend_property	= e_book_backend_ldap_get_backend_property;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = book_backend_ldap_finalize;
 
-	parent_class->create_contacts		= e_book_backend_ldap_create_contacts;
-	parent_class->remove_contacts		= e_book_backend_ldap_remove_contacts;
-	parent_class->modify_contacts		= e_book_backend_ldap_modify_contacts;
-	parent_class->get_contact		= e_book_backend_ldap_get_contact;
-	parent_class->get_contact_list		= e_book_backend_ldap_get_contact_list;
-	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;
-	parent_class->start_view		= e_book_backend_ldap_start_view;
-	parent_class->stop_view			= e_book_backend_ldap_stop_view;
-
-	object_class->finalize = e_book_backend_ldap_finalize;
+	backend_class = E_BOOK_BACKEND_CLASS (class);
+	backend_class->get_backend_property = book_backend_ldap_get_backend_property;
+	backend_class->open = book_backend_ldap_open;
+	backend_class->create_contacts = book_backend_ldap_create_contacts;
+	backend_class->modify_contacts = book_backend_ldap_modify_contacts;
+	backend_class->remove_contacts = book_backend_ldap_remove_contacts;
+	backend_class->get_contact = book_backend_ldap_get_contact;
+	backend_class->get_contact_list = book_backend_ldap_get_contact_list;
+	backend_class->get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
+	backend_class->start_view = book_backend_ldap_start_view;
+	backend_class->stop_view = book_backend_ldap_stop_view;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LDAP;
