@@ -2067,43 +2067,6 @@ book_backend_google_get_contact_list_sync (EBookBackend *backend,
 	return TRUE;
 }
 
-static gboolean
-book_backend_google_get_contact_list_uids_sync (EBookBackend *backend,
-                                                const gchar *query,
-                                                GQueue *out_uids,
-                                                GCancellable *cancellable,
-                                                GError **error)
-{
-	EBookBackendSExp *sexp;
-	GQueue queue = G_QUEUE_INIT;
-
-	__debug__ (G_STRFUNC);
-
-	sexp = e_book_backend_sexp_new (query);
-
-	/* Get all contacts */
-	cache_get_contacts (backend, &queue);
-
-	while (!g_queue_is_empty (&queue)) {
-		EContact *contact;
-
-		contact = g_queue_pop_head (&queue);
-
-		/* If the search expression matches the contact,
-		 * include it in the search results. */
-		if (e_book_backend_sexp_match_contact (sexp, contact)) {
-			gchar *uid = e_contact_get (contact, E_CONTACT_UID);
-			g_queue_push_tail (out_uids, uid);
-		}
-
-		g_object_unref (contact);
-	}
-
-	g_object_unref (sexp);
-
-	return TRUE;
-}
-
 static void
 book_backend_google_start_view (EBookBackend *backend,
                                 EDataBookView *bookview)
@@ -2241,7 +2204,6 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 	backend_class->remove_contacts_sync = book_backend_google_remove_contacts_sync;
 	backend_class->get_contact_sync = book_backend_google_get_contact_sync;
 	backend_class->get_contact_list_sync = book_backend_google_get_contact_list_sync;
-	backend_class->get_contact_list_uids_sync = book_backend_google_get_contact_list_uids_sync;
 	backend_class->start_view = book_backend_google_start_view;
 	backend_class->stop_view = book_backend_google_stop_view;
 
