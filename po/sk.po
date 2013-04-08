@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-03-21 21:22+0000\n"
-"PO-Revision-Date: 2013-03-22 08:58+0100\n"
+"POT-Creation-Date: 2013-04-08 18:44+0000\n"
+"PO-Revision-Date: 2013-04-07 10:41+0200\n"
 "Last-Translator: Marián Čavojský <cavo+gnomel10n@cavo.sk>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -917,21 +917,21 @@ msgstr "Text je prikrátky na telefónne číslo"
 msgid "Text is too long for a phone number"
 msgstr "Text je pridlhý na telefónne číslo"
 
-#: ../addressbook/libebook/e-book-client.c:659
+#: ../addressbook/libebook/e-book-client.c:643
 #: ../addressbook/libedata-book/e-book-backend.c:120
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Neznáma vlastnosť adresára kontaktov „%s“"
 
-#: ../addressbook/libebook/e-book-client.c:674
+#: ../addressbook/libebook/e-book-client.c:658
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Nedá sa zmeniť hodnota vlastnosti adresára kontaktov „%s“"
 
-#: ../addressbook/libebook/e-book-client.c:985
-#: ../addressbook/libebook/e-book-client.c:1158
-#: ../calendar/libecal/e-cal-client.c:1502
-#: ../calendar/libecal/e-cal-client.c:1682
+#: ../addressbook/libebook/e-book-client.c:969
+#: ../addressbook/libebook/e-book-client.c:1142
+#: ../calendar/libecal/e-cal-client.c:1486
+#: ../calendar/libecal/e-cal-client.c:1666
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Nedá sa pripojiť k „%s“: "
@@ -1430,13 +1430,13 @@ msgstr "Neznámy používateľ"
 msgid "Invalid range"
 msgstr "Neplatný rozsah"
 
-#: ../calendar/libecal/e-cal-client.c:936
+#: ../calendar/libecal/e-cal-client.c:920
 #: ../calendar/libedata-cal/e-cal-backend.c:204
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Neznáma vlastnosť kalendára „%s“"
 
-#: ../calendar/libecal/e-cal-client.c:951
+#: ../calendar/libecal/e-cal-client.c:935
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Nedá sa zmeniť hodnota vlastnosti kalendára „%s“"
@@ -1888,8 +1888,8 @@ msgstr "Vytvoriť lokálnu kópiu priečinka pre operácie v _odpojenom režime"
 #: ../camel/camel-imapx-folder.c:613 ../camel/camel-imapx-folder.c:748
 #: ../camel/camel-imapx-folder.c:933 ../camel/camel-imapx-folder.c:993
 #: ../camel/camel-imapx-folder.c:1032 ../camel/camel-imapx-store.c:368
-#: ../camel/camel-imapx-store.c:1573 ../camel/camel-imapx-store.c:1662
-#: ../camel/camel-imapx-store.c:1711
+#: ../camel/camel-imapx-store.c:1592 ../camel/camel-imapx-store.c:1681
+#: ../camel/camel-imapx-store.c:1730
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #: ../camel/providers/pop3/camel-pop3-folder.c:677
 #: ../camel/providers/pop3/camel-pop3-folder.c:906
@@ -2278,16 +2278,25 @@ msgstr "Nepodarilo sa vytvoriť súhrn o priečinku pre %s"
 msgid "Could not create cache for %s: "
 msgstr "Nepodarilo sa vytvoriť vyrovnávaciu pamäť pre %s: "
 
-#: ../camel/camel-imapx-server.c:1279
+#: ../camel/camel-imapx-server.c:1282
 msgid "Server disconnected"
 msgstr "Server sa odpojil"
 
 # PM: v tomto prípade asi prúdu dát - pozri všetky výskyty stream
-#: ../camel/camel-imapx-server.c:1787
+#: ../camel/camel-imapx-server.c:1790
 msgid "Error writing to cache stream"
 msgstr "Chyba pri zápise do vyrovnávacieho prúdu dát"
 
-#: ../camel/camel-imapx-server.c:2994
+#: ../camel/camel-imapx-server.c:2443
+#, c-format
+msgid ""
+"Alert from IMAP server %s:\n"
+"%s"
+msgstr ""
+"Výstraha zo serveru IMAP %s:\n"
+"%s"
+
+#: ../camel/camel-imapx-server.c:3031
 #, c-format
 msgid "Not authenticated"
 msgstr "Neoverená totožnosť"
@@ -2295,31 +2304,31 @@ msgstr "Neoverená totožnosť"
 # MČ: IDLE - stav na IMAP priečinku, keď sa očakávajú správy od servera
 # PM: mne tu chýba preklad performing Chyba počas vykonávania/nastavovania stavu IDLE alebo niečo v tom duchu - pozri všetky výskyty performing
 # MČ: vyčerpávajúco by malo byť: „Chyba počas čakania v stave IDLE“, ale sa mi to zdá zbytočné.
-#: ../camel/camel-imapx-server.c:3072
+#: ../camel/camel-imapx-server.c:3109
 msgid "Error performing IDLE"
 msgstr "Chyba počas IDLE"
 
-#: ../camel/camel-imapx-server.c:4029
+#: ../camel/camel-imapx-server.c:4066
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Zlyhalo pripojenie k serveru IMAP %s v zabezpečenom režime: %s"
 
-#: ../camel/camel-imapx-server.c:4030
+#: ../camel/camel-imapx-server.c:4067
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nie je podporované"
 
-#: ../camel/camel-imapx-server.c:4069
+#: ../camel/camel-imapx-server.c:4106
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Zlyhalo pripojenie k serveru IMAP %s v zabezpečenom režime: "
 
-#: ../camel/camel-imapx-server.c:4149
+#: ../camel/camel-imapx-server.c:4186
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s nepodporuje overenie totožnosti %s"
 
-#: ../camel/camel-imapx-server.c:4160 ../camel/camel-session.c:495
+#: ../camel/camel-imapx-server.c:4197 ../camel/camel-session.c:495
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2327,66 +2336,66 @@ msgstr "Server IMAP %s nepodporuje overenie totožnosti %s"
 msgid "No support for %s authentication"
 msgstr "Overenie totožnosti %s nie je podporované"
 
-#: ../camel/camel-imapx-server.c:4179
+#: ../camel/camel-imapx-server.c:4216
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "Nedá sa overiť totožnosť bez používateľského mena"
 
-#: ../camel/camel-imapx-server.c:4188
+#: ../camel/camel-imapx-server.c:4225
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "Heslo overenia totožnosti nie je dostupné"
 
-#: ../camel/camel-imapx-server.c:4396
+#: ../camel/camel-imapx-server.c:4433
 msgid "Error fetching message"
 msgstr "Chyba pri získavaní správy"
 
-#: ../camel/camel-imapx-server.c:4478
+#: ../camel/camel-imapx-server.c:4515
 msgid "Failed to copy the tmp file"
 msgstr "Zlyhalo kopírovanie dočasného súboru"
 
-#: ../camel/camel-imapx-server.c:4492
+#: ../camel/camel-imapx-server.c:4529
 msgid "Failed to close the tmp stream"
 msgstr "Zlyhalo uzavretie dočasného dátového prúdu"
 
-#: ../camel/camel-imapx-server.c:4613
+#: ../camel/camel-imapx-server.c:4650
 msgid "Error copying messages"
 msgstr "Chyba pri kopírovaní správ"
 
-#: ../camel/camel-imapx-server.c:4779
+#: ../camel/camel-imapx-server.c:4816
 msgid "Error appending message"
 msgstr "Chyba pri pridávaní správy"
 
-#: ../camel/camel-imapx-server.c:4978
+#: ../camel/camel-imapx-server.c:5015
 msgid "Error fetching message headers"
 msgstr "Chyba pri získavaní hlavičiek správy"
 
-#: ../camel/camel-imapx-server.c:5129
+#: ../camel/camel-imapx-server.c:5166
 msgid "Error retrieving message"
 msgstr "Chyba pri získavaní správy"
 
-#: ../camel/camel-imapx-server.c:5260 ../camel/camel-imapx-server.c:5488
+#: ../camel/camel-imapx-server.c:5297 ../camel/camel-imapx-server.c:5525
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Získavajú sa súhrnné informácie pre nové správy v „%s“"
 
-#: ../camel/camel-imapx-server.c:5324
+#: ../camel/camel-imapx-server.c:5361
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Prehľadávajú sa zmenené správy v „%s“"
 
-#: ../camel/camel-imapx-server.c:5377
+#: ../camel/camel-imapx-server.c:5414
 msgid "Error fetching new messages"
 msgstr "Chyba pri získavaní nových správ"
 
-#: ../camel/camel-imapx-server.c:5590
+#: ../camel/camel-imapx-server.c:5627
 msgid "Error while fetching messages"
 msgstr "Chyba počas získavania správ"
 
-#: ../camel/camel-imapx-server.c:5598 ../camel/camel-imapx-server.c:5631
+#: ../camel/camel-imapx-server.c:5635 ../camel/camel-imapx-server.c:5668
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
@@ -2394,64 +2403,64 @@ msgstr[0] "Získavajú sa súhrnné informácie pre %d nových správ v „%s“
 msgstr[1] "Získavajú sa súhrnné informácie pre %d novú správu v „%s“"
 msgstr[2] "Získavajú sa súhrnné informácie pre %d nové správy v „%s“"
 
-#: ../camel/camel-imapx-server.c:5767 ../camel/camel-imapx-server.c:5797
+#: ../camel/camel-imapx-server.c:5804 ../camel/camel-imapx-server.c:5834
 msgid "Error refreshing folder"
 msgstr "Chyba počas obnovovania priečinka"
 
-#: ../camel/camel-imapx-server.c:5921
+#: ../camel/camel-imapx-server.c:5958
 msgid "Error expunging message"
 msgstr "Chyba pri prečisťovaní správ"
 
-#: ../camel/camel-imapx-server.c:6032
+#: ../camel/camel-imapx-server.c:6069
 msgid "Error fetching folders"
 msgstr "Chyba pri získavaní priečinka"
 
-#: ../camel/camel-imapx-server.c:6114
+#: ../camel/camel-imapx-server.c:6151
 msgid "Error subscribing to folder"
 msgstr "Chyba pri prihlasovaní sa k odberu priečinka"
 
-#: ../camel/camel-imapx-server.c:6179
+#: ../camel/camel-imapx-server.c:6216
 msgid "Error creating folder"
 msgstr "Chyba pri vytváraní priečinka"
 
-#: ../camel/camel-imapx-server.c:6233
+#: ../camel/camel-imapx-server.c:6270
 msgid "Error deleting folder"
 msgstr "Chyba pri rušení priečinka"
 
-#: ../camel/camel-imapx-server.c:6307
+#: ../camel/camel-imapx-server.c:6344
 msgid "Error renaming folder"
 msgstr "Chyba pri premenovávaní priečinka"
 
-#: ../camel/camel-imapx-server.c:6382
+#: ../camel/camel-imapx-server.c:6419
 msgid "Error retrieving quota information"
 msgstr "Chyba pri získavaní informácie o kvóte"
 
-#: ../camel/camel-imapx-server.c:6447
+#: ../camel/camel-imapx-server.c:6484
 msgid "Search failed"
 msgstr "Vyhľadávanie zlyhalo"
 
-#: ../camel/camel-imapx-server.c:6510
+#: ../camel/camel-imapx-server.c:6547
 msgid "Error performing NOOP"
 msgstr "Chyba počas NOOP"
 
-#: ../camel/camel-imapx-server.c:6619
+#: ../camel/camel-imapx-server.c:6656
 msgid "Error syncing changes"
 msgstr "Chyba pri synchronizácii zmien"
 
-#: ../camel/camel-imapx-server.c:7431
+#: ../camel/camel-imapx-server.c:7453
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nedá sa získať správa s identifikátorom správy %s: %s"
 
-#: ../camel/camel-imapx-server.c:7432
+#: ../camel/camel-imapx-server.c:7454
 msgid "No such message available."
 msgstr "Správa nie je dostupná."
 
-#: ../camel/camel-imapx-server.c:7590 ../camel/camel-imapx-server.c:7605
+#: ../camel/camel-imapx-server.c:7607 ../camel/camel-imapx-server.c:7622
 msgid "Cannot create spool file: "
 msgstr "Nedá sa vytvoriť zoraďovací súbor: "
 
-#: ../camel/camel-imapx-server.c:8347
+#: ../camel/camel-imapx-server.c:8364
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP nepodporuje kvóty"
 
@@ -2493,23 +2502,23 @@ msgstr "Priečinok %s neexistuje"
 msgid "Inbox"
 msgstr "Doručená pošta"
 
-#: ../camel/camel-imapx-store.c:1212
+#: ../camel/camel-imapx-store.c:1231
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Získava sa zoznam priečinkov pre %s"
 
-#: ../camel/camel-imapx-store.c:1595
+#: ../camel/camel-imapx-store.c:1614
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Názov priečinka „%s“ nie je platný, pretože obsahuje znak „%c“"
 
-#: ../camel/camel-imapx-store.c:1606
+#: ../camel/camel-imapx-store.c:1625
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Neznámy rodičovský priečinok: %s"
 
-#: ../camel/camel-imapx-store.c:1616
+#: ../camel/camel-imapx-store.c:1635
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Rodičovský priečinok nesmie obsahovať podpriečinky"
