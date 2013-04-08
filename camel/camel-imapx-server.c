@@ -7166,8 +7166,6 @@ imapx_server_finalize (GObject *object)
 
 	g_rec_mutex_clear (&is->queue_lock);
 	g_mutex_clear (&is->select_lock);
-	g_mutex_clear (&is->fetch_mutex);
-	g_cond_clear (&is->fetch_cond);
 
 	camel_folder_change_info_free (is->changes);
 
@@ -7299,9 +7297,6 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->changes = camel_folder_change_info_new ();
 	is->parser_quit = FALSE;
 
-	g_mutex_init (&is->fetch_mutex);
-	g_cond_init (&is->fetch_cond);
-
 	is->priv->known_alerts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
@@ -7432,31 +7427,15 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	QUEUE_LOCK (is);
 
 	if ((job = imapx_is_job_in_queue (is, folder, IMAPX_JOB_GET_MESSAGE, uid))) {
+		/* Promote the existing GET_MESSAGE
+		 * job's priority if ours is higher. */
 		if (pri > job->pri)
 			job->pri = pri;
 
-		/* Wait for the job to finish. This would be so much nicer if
-		 * we could just use the queue lock with a GCond, but instead
-		 * we have to use a GMutex. I miss the kernel waitqueues. */
-		do {
-			gint this;
-
-			g_mutex_lock (&is->fetch_mutex);
-			this = is->fetch_count;
-
-			QUEUE_UNLOCK (is);
-
-			while (is->fetch_count == this)
-				g_cond_wait (&is->fetch_cond, &is->fetch_mutex);
-
-			g_mutex_unlock (&is->fetch_mutex);
-
-			QUEUE_LOCK (is);
-
-		} while (imapx_is_job_in_queue (is, folder,
-						IMAPX_JOB_GET_MESSAGE, uid));
-
 		QUEUE_UNLOCK (is);
+
+		/* Wait for the job to finish. */
+		camel_imapx_job_wait (job);
 
 		stream = camel_data_cache_get (
 			ifolder->cache, "cur", uid, error);
@@ -7506,11 +7485,6 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		stream = g_object_ref (data->stream);
 
 	camel_imapx_job_unref (job);
-
-	g_mutex_lock (&is->fetch_mutex);
-	is->fetch_count++;
-	g_cond_broadcast (&is->fetch_cond);
-	g_mutex_unlock (&is->fetch_mutex);
 
 	return stream;
 }

@@ -159,11 +159,6 @@ struct _CamelIMAPXServer {
 	gboolean use_idle;
 
 	gboolean use_qresync;
-
-	/* used to synchronize duplicate get_message requests */
-	GCond fetch_cond;
-	GMutex fetch_mutex;
-	gint fetch_count;
 };
 
 struct _CamelIMAPXServerClass {
