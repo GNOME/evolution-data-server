@@ -38,6 +38,11 @@
 
 #define d(x)
 
+enum {
+	PROP_0,
+	PROP_ONLINE
+};
+
 G_DEFINE_TYPE (CamelDiscoStore, camel_disco_store, CAMEL_TYPE_STORE)
 
 static void
@@ -53,6 +58,8 @@ disco_store_update_status (CamelDiscoStore *disco)
 			disco->status = CAMEL_DISCO_STORE_OFFLINE;
 			break;
 	}
+
+	g_object_notify (G_OBJECT (disco), "online");
 }
 
 static void
@@ -80,6 +87,23 @@ disco_store_constructed (GObject *object)
 		G_CALLBACK (disco_store_update_status), NULL);
 
 	g_object_unref (session);
+}
+
+static void
+disco_store_store_get_property (GObject *object,
+				guint property_id,
+				GValue *value,
+				GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_ONLINE:
+			g_value_set_boolean (
+				value, camel_disco_store_status (
+				CAMEL_DISCO_STORE (object)) == CAMEL_DISCO_STORE_ONLINE);
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static gboolean
@@ -122,6 +146,7 @@ disco_store_connect_sync (CamelService *service,
 		camel_disco_diary_replay (diary, cancellable, &local_error);
 		g_object_unref (diary);
 		store->status = CAMEL_DISCO_STORE_ONLINE;
+		g_object_notify (G_OBJECT (store), "online");
 		if (local_error != NULL) {
 			g_propagate_error (error, local_error);
 			return FALSE;
@@ -341,6 +366,8 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 
 	disco_store->status = status;
 
+	g_object_notify (G_OBJECT (disco_store), "online");
+
 	return camel_service_connect_sync (
 		CAMEL_SERVICE (disco_store), cancellable, error);
 }
@@ -354,6 +381,7 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = disco_store_constructed;
+	object_class->get_property = disco_store_store_get_property;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_OFFLINE_SETTINGS;
@@ -365,6 +393,16 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 	store_class->get_folder_info_sync = disco_store_get_folder_info_sync;
 
 	class->set_status = disco_store_set_status;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ONLINE,
+		g_param_spec_boolean (
+			"online",
+			"Online",
+			"Whether the store is online",
+			FALSE,
+			G_PARAM_READABLE));
 }
 
 static void
@@ -391,8 +429,11 @@ camel_disco_store_status (CamelDiscoStore *store)
 	session = camel_service_ref_session (service);
 
 	if (store->status != CAMEL_DISCO_STORE_OFFLINE
-	    && !camel_session_get_online (session))
+	    && !camel_session_get_online (session)) {
 		store->status = CAMEL_DISCO_STORE_OFFLINE;
+
+		g_object_notify (G_OBJECT (store), "online");
+	}
 
 	g_object_unref (session);
 

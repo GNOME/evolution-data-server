@@ -74,6 +74,10 @@ gchar *		camel_sendmail_settings_dup_custom_args		(CamelSendmailSettings *settin
 void		camel_sendmail_settings_set_custom_args		(CamelSendmailSettings *settings,
 								 const gchar *custom_args);
 
+gboolean	camel_sendmail_settings_get_send_in_offline	(CamelSendmailSettings *settings);
+void		camel_sendmail_settings_set_send_in_offline	(CamelSendmailSettings *settings,
+								 gboolean send_in_offline);
+
 G_END_DECLS
 
 #endif /* CAMEL_SENDMAIL_SETTINGS_H */

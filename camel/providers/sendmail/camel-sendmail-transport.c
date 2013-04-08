@@ -134,10 +134,30 @@ sendmail_send_to_sync (CamelTransport *transport,
 	success = camel_internet_address_get (
 		CAMEL_INTERNET_ADDRESS (from), 0, NULL, &from_addr);
 
-	if (!success)
+	if (!success) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Failed to read From address"));
 		return FALSE;
+	}
 
 	settings = CAMEL_SENDMAIL_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (transport)));
+
+	if (!camel_sendmail_settings_get_send_in_offline (settings)) {
+		CamelSession *session;
+		gboolean is_online;
+
+		session = camel_service_ref_session (CAMEL_SERVICE (transport));
+		is_online = camel_session_get_online (session);
+		g_object_unref (session);
+
+		if (!is_online) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("Message send in offline mode is disabled"));
+			return FALSE;
+		}
+	}
 
 	if (camel_sendmail_settings_get_use_custom_binary (settings)) {
 		custom_binary = camel_sendmail_settings_dup_custom_binary (settings);

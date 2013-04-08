@@ -29,6 +29,7 @@ struct _CamelSendmailSettingsPrivate {
 
 	gboolean use_custom_binary;
 	gboolean use_custom_args;
+	gboolean send_in_offline;
 };
 
 enum {
@@ -36,7 +37,8 @@ enum {
 	PROP_USE_CUSTOM_BINARY,
 	PROP_USE_CUSTOM_ARGS,
 	PROP_CUSTOM_BINARY,
-	PROP_CUSTOM_ARGS
+	PROP_CUSTOM_ARGS,
+	PROP_SEND_IN_OFFLINE
 };
 
 G_DEFINE_TYPE (CamelSendmailSettings, camel_sendmail_settings, CAMEL_TYPE_SETTINGS)
@@ -70,6 +72,12 @@ sendmail_settings_set_property (GObject *object,
 			camel_sendmail_settings_set_custom_args (
 				CAMEL_SENDMAIL_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_SEND_IN_OFFLINE:
+			camel_sendmail_settings_set_send_in_offline (
+				CAMEL_SENDMAIL_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 	}
 
@@ -108,6 +116,13 @@ sendmail_settings_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				camel_sendmail_settings_dup_custom_args (
+				CAMEL_SENDMAIL_SETTINGS (object)));
+			return;
+
+		case PROP_SEND_IN_OFFLINE:
+			g_value_set_boolean (
+				value,
+				camel_sendmail_settings_get_send_in_offline (
 				CAMEL_SENDMAIL_SETTINGS (object)));
 			return;
 	}
@@ -187,6 +202,18 @@ camel_sendmail_settings_class_init (CamelSendmailSettingsClass *class)
 			"Custom Arguments",
 			"Custom arguments to use, instead of default (predefined) arguments",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SEND_IN_OFFLINE,
+		g_param_spec_boolean (
+			"send-in-offline",
+			"Send in offline",
+			"Whether to allow message sending in offline mode",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -445,4 +472,45 @@ camel_sendmail_settings_set_custom_args (CamelSendmailSettings *settings,
 	g_mutex_unlock (&settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "custom-args");
+}
+
+/**
+ * camel_sendmail_settings_get_send_in_offline:
+ * @settings: a #CamelSendmailSettings
+ *
+ * Returns whether can send messages in offline mode.
+ *
+ * Returns: whether can send messages in offline mode
+ *
+ * Since: 3.10
+ **/
+gboolean
+camel_sendmail_settings_get_send_in_offline (CamelSendmailSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings), FALSE);
+
+	return settings->priv->send_in_offline;
+}
+
+/**
+ * camel_sendmail_settings_set_send_in_offline:
+ * @settings: a #CamelSendmailSettings
+ * @send_in_offline: whether can send messages in offline mode
+ *
+ * Sets whether can send messages in offline mode.
+ *
+ * Since: 3.10
+ **/
+void
+camel_sendmail_settings_set_send_in_offline (CamelSendmailSettings *settings,
+                                             gboolean send_in_offline)
+{
+	g_return_if_fail (CAMEL_IS_SENDMAIL_SETTINGS (settings));
+
+	if ((settings->priv->send_in_offline ? 1 : 0) == (send_in_offline ? 1 : 0))
+		return;
+
+	settings->priv->send_in_offline = send_in_offline;
+
+	g_object_notify (G_OBJECT (settings), "send-in-offline");
 }

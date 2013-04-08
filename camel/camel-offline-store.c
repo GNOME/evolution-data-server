@@ -40,6 +40,11 @@ struct _CamelOfflineStorePrivate {
 	gboolean online;
 };
 
+enum {
+	PROP_0,
+	PROP_ONLINE
+};
+
 G_DEFINE_TYPE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
 
 static void
@@ -60,6 +65,23 @@ offline_store_constructed (GObject *object)
 }
 
 static void
+offline_store_get_property (GObject *object,
+			    guint property_id,
+			    GValue *value,
+			    GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_ONLINE:
+			g_value_set_boolean (
+				value, camel_offline_store_get_online (
+				CAMEL_OFFLINE_STORE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 camel_offline_store_class_init (CamelOfflineStoreClass *class)
 {
 	GObjectClass *object_class;
@@ -69,9 +91,20 @@ camel_offline_store_class_init (CamelOfflineStoreClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->constructed = offline_store_constructed;
+	object_class->get_property = offline_store_get_property;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_OFFLINE_SETTINGS;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ONLINE,
+		g_param_spec_boolean (
+			"online",
+			"Online",
+			"Whether the store is online",
+			FALSE,
+			G_PARAM_READABLE));
 }
 
 static void
@@ -142,6 +175,9 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	/* Returning to online mode is the simpler case. */
 	if (!store_is_online) {
 		store->priv->online = online;
+
+		g_object_notify (G_OBJECT (store), "online");
+
 		return camel_service_connect_sync (
 			service, cancellable, error);
 	}
@@ -182,6 +218,8 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		service, network_available, cancellable, error);
 
 	store->priv->online = online;
+
+	g_object_notify (G_OBJECT (store), "online");
 
 	return success;
 }
