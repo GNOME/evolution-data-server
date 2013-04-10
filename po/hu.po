@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-03-25 13:34+0000\n"
-"PO-Revision-Date: 2013-03-30 11:04+0100\n"
+"POT-Creation-Date: 2013-04-08 17:20+0000\n"
+"PO-Revision-Date: 2013-04-10 23:13+0200\n"
 "Last-Translator: Balázs Úr <urbalazs at gmail dot com>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -26,60 +26,60 @@ msgstr ""
 msgid "Failed to remove file '%s': %s"
 msgstr "Nem sikerült a(z) „%s” fájl eltávolítása: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:138
+#: ../addressbook/backends/file/e-book-backend-file.c:142
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Nem sikerült létrehozni a(z) %s könyvtárat: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:385
+#: ../addressbook/backends/file/e-book-backend-file.c:393
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Nem sikerült hard linket létrehozni a(z) „%s” erőforráshoz: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:487
-#: ../addressbook/backends/file/e-book-backend-file.c:911
+#: ../addressbook/backends/file/e-book-backend-file.c:498
+#: ../addressbook/backends/file/e-book-backend-file.c:1134
 msgid "No UID in the contact"
 msgstr "Nincs UID a névjegyben"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:757
+#: ../addressbook/backends/file/e-book-backend-file.c:772
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Ütköző UID-k a hozzáadott névjegyekben"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:844
-#: ../addressbook/backends/file/e-book-backend-file.c:1040
+#: ../addressbook/backends/file/e-book-backend-file.c:880
+msgid "Loading..."
+msgstr "Betöltés…"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:882
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4963
+msgid "Searching..."
+msgstr "Keresés…"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1163
+#, c-format
+msgid "Tried to modify contact '%s' with out of sync revision"
+msgstr "Kísérlet „%s” névjegy módosítására szinkronon kívüli revízióval"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1299
+#: ../addressbook/backends/file/e-book-backend-file.c:1368
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2615
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "A(z) „%s” névjegy nem található"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:940
-#, c-format
-msgid "Tried to modify contact '%s' with out of sync revision"
-msgstr "Kísérlet „%s” névjegy módosítására szinkronon kívüli revízióval"
-
-#: ../addressbook/backends/file/e-book-backend-file.c:1091
-#: ../addressbook/backends/file/e-book-backend-file.c:1141
+#: ../addressbook/backends/file/e-book-backend-file.c:1410
+#: ../addressbook/backends/file/e-book-backend-file.c:1477
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "A lekérdezés („%s”) nem támogatott"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1100
-#: ../addressbook/backends/file/e-book-backend-file.c:1150
+#: ../addressbook/backends/file/e-book-backend-file.c:1419
+#: ../addressbook/backends/file/e-book-backend-file.c:1486
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "Érvénytelen lekérdezés: „%s”"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1250
-msgid "Loading..."
-msgstr "Betöltés…"
-
-#: ../addressbook/backends/file/e-book-backend-file.c:1252
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4963
-msgid "Searching..."
-msgstr "Keresés…"
-
-#: ../addressbook/backends/file/e-book-backend-file.c:1562
+#: ../addressbook/backends/file/e-book-backend-file.c:1670
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Nem sikerült a régi „%s” adatbázist „%s” névre átnevezni: %s"
@@ -87,60 +87,46 @@ msgstr "Nem sikerült a régi „%s” adatbázist „%s” névre átnevezni: %
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1222
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4858
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:338
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1029
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:335
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:753
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:559
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:590
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:571
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:602
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:614
 #: ../calendar/libecal/e-cal.c:2335 ../calendar/libecal/e-cal-client.c:268
 #: ../camel/camel-imapx-command.c:596 ../libedataserver/e-client.c:177
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:649
+#: ../addressbook/backends/google/e-book-backend-google.c:758
 msgid "Querying for updated contacts…"
 msgstr "Frissített névjegyek lekérése…"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:786
+#: ../addressbook/backends/google/e-book-backend-google.c:895
 msgid "Querying for updated groups…"
 msgstr "Frissített csoportok lekérése…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1235
+#: ../addressbook/backends/google/e-book-backend-google.c:1601
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1653
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:389
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1217
 msgid "The backend does not support bulk additions"
 msgstr "A háttérprogram nem támogatja a tömeges hozzáadásokat"
 
-#. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1267
-msgid "Creating new contact…"
-msgstr "Új névjegy létrehozása…"
-
-#: ../addressbook/backends/google/e-book-backend-google.c:1358
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:506
-msgid "The backend does not support bulk removals"
-msgstr "A háttérprogram nem támogatja a tömeges eltávolításokat"
-
-#: ../addressbook/backends/google/e-book-backend-google.c:1386
-msgid "Deleting contact…"
-msgstr "Névjegy törlése…"
-
-#: ../addressbook/backends/google/e-book-backend-google.c:1640
+#: ../addressbook/backends/google/e-book-backend-google.c:1752
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2319
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:567
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1316
 msgid "The backend does not support bulk modifications"
 msgstr "A háttérprogram nem támogatja a tömeges módosításokat"
 
-#. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1678
-msgid "Modifying contact…"
-msgstr "Névjegy módosítása…"
+#: ../addressbook/backends/google/e-book-backend-google.c:1962
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1404
+msgid "The backend does not support bulk removals"
+msgstr "A háttérprogram nem támogatja a tömeges eltávolításokat"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1849
+#: ../addressbook/backends/google/e-book-backend-google.c:2088
 msgid "Loading…"
 msgstr "Betöltés…"
 
@@ -235,63 +221,63 @@ msgstr "Hiba a keresés közben"
 msgid "Downloading contacts (%d)... "
 msgstr "Névjegyek letöltése (%d)… "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5563
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Nem sikerült a(z) „%s” felhasználó DN-jét lekérni"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:420
-#, c-format
-msgid "Create resource '%s' failed with HTTP status %d (%s)"
-msgstr "„%s” erőforrás létrehozása meghiúsult ezen HTTP állapottal: %d (%s)"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:522
-#, c-format
-msgid "DELETE failed with HTTP status %d"
-msgstr "DELETE meghiúsult ezen HTTP állapottal: %d"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:588
-msgid "Contact on server changed -> not modifying"
-msgstr "A névjegy megváltozott a kiszolgálón -> nem lesz módosítva"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:597
-#, c-format
-msgid "Modify contact failed with HTTP status %d (%s)"
-msgstr "A névjegy módosítása meghiúsult ezen HTTP állapottal: %d (%s)"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1007
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:732
 msgid "Loading Addressbook summary..."
 msgstr "Címjegyzék összefoglalójának betöltése…"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1026
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:750
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "A PROPFIND a WebDav-on meghiúsult ezen HTTP állapottal: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1051
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:769
 msgid "No response body in webdav PROPFIND result"
 msgstr "Nincs választörzs a WebDav PROPFIND eredményben"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1083
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:811
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Névjegyek betöltése (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1416
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1139
 msgid "Cannot transform SoupURI to string"
 msgstr "A SoupURI nem alakítható karakterlánccá"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1250
+#, c-format
+msgid "Create resource '%s' failed with HTTP status %d (%s)"
+msgstr "„%s” erőforrás létrehozása meghiúsult ezen HTTP állapottal: %d (%s)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1345
+msgid "Contact on server changed -> not modifying"
+msgstr "A névjegy megváltozott a kiszolgálón -> nem lesz módosítva"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1353
+#, c-format
+msgid "Modify contact failed with HTTP status %d (%s)"
+msgstr "A névjegy módosítása meghiúsult ezen HTTP állapottal: %d (%s)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1425
+#, c-format
+msgid "DELETE failed with HTTP status %d"
+msgstr "DELETE meghiúsult ezen HTTP állapottal: %d"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:24
 msgid "No such book"
 msgstr "Nincs ilyen címjegyzék"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:26
-#: ../addressbook/libedata-book/e-data-book.c:812
+#: ../addressbook/libedata-book/e-data-book.c:346
 msgid "Contact not found"
 msgstr "A névjegy nem található"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:28
-#: ../addressbook/libedata-book/e-data-book.c:813
+#: ../addressbook/libedata-book/e-data-book.c:347
 msgid "Contact ID already exists"
 msgstr "A névjegy-azonosító már létezik"
 
@@ -300,7 +286,7 @@ msgid "No such source"
 msgstr "Nincs ilyen forrás"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:32
-#: ../addressbook/libedata-book/e-data-book.c:829
+#: ../addressbook/libedata-book/e-data-book.c:363
 msgid "No space"
 msgstr "Nincs hely"
 
@@ -915,21 +901,20 @@ msgstr "A szöveg túl rövid ahhoz, hogy telefonszám legyen"
 msgid "Text is too long for a phone number"
 msgstr "A szöveg túl hosszú ahhoz, hogy telefonszám legyen"
 
-#: ../addressbook/libebook/e-book-client.c:667
-#: ../addressbook/libedata-book/e-book-backend.c:125
+#: ../addressbook/libebook/e-book-client.c:748
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Ismeretlen címjegyzék-tulajdonság: „%s”"
 
-#: ../addressbook/libebook/e-book-client.c:682
+#: ../addressbook/libebook/e-book-client.c:763
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Nem lehet módosítani a(z) „%s” címjegyzék-tulajdonság értékét"
 
-#: ../addressbook/libebook/e-book-client.c:993
-#: ../addressbook/libebook/e-book-client.c:1166
-#: ../calendar/libecal/e-cal-client.c:1509
-#: ../calendar/libecal/e-cal-client.c:1689
+#: ../addressbook/libebook/e-book-client.c:1074
+#: ../addressbook/libebook/e-book-client.c:1247
+#: ../calendar/libecal/e-cal-client.c:1493
+#: ../calendar/libecal/e-cal-client.c:1673
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Nem sikerült kapcsolódni a következőhöz: „%s”:"
@@ -989,10 +974,10 @@ msgstr ""
 "lekérdezése támogatott."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3855
-#: ../addressbook/libedata-book/e-data-book.c:692
-#: ../addressbook/libedata-book/e-data-book.c:824
-#: ../calendar/libedata-cal/e-data-cal.c:635
-#: ../calendar/libedata-cal/e-data-cal.c:784 ../libedataserver/e-client.c:164
+#: ../addressbook/libedata-book/e-data-book.c:358
+#: ../addressbook/libedata-book/e-data-book.c:992
+#: ../calendar/libedata-cal/e-data-cal.c:412
+#: ../calendar/libedata-cal/e-data-cal.c:1306 ../libedataserver/e-client.c:164
 #, c-format
 msgid "Invalid query"
 msgstr "Érvénytelen lekérdezés"
@@ -1010,168 +995,165 @@ msgstr ""
 msgid "Unable to remove the db file: errno %d"
 msgstr "Nem sikerült az adatbázisfájl eltávolítása: hibaszám: %d"
 
-#. Translators: This is prefix to a detailed error message
-#. Translators: This is a prefix to a detailed error message *
-#.
-#: ../addressbook/libedata-book/e-data-book.c:714
-#: ../calendar/libedata-cal/e-data-cal.c:658
-msgid "Invalid query: "
-msgstr "Érvénytelen lekérdezés: "
-
-#: ../addressbook/libedata-book/e-data-book.c:808
-#: ../calendar/libedata-cal/e-data-cal.c:765
+#: ../addressbook/libedata-book/e-data-book.c:342
+#: ../calendar/libedata-cal/e-data-cal.c:393
 msgid "Success"
 msgstr "Sikerült"
 
-#: ../addressbook/libedata-book/e-data-book.c:809
-#: ../calendar/libecal/e-cal.c:2303 ../calendar/libedata-cal/e-data-cal.c:766
+#: ../addressbook/libedata-book/e-data-book.c:343
+#: ../calendar/libecal/e-cal.c:2303 ../calendar/libedata-cal/e-data-cal.c:394
 #: ../libedataserver/e-client.c:131
 msgid "Backend is busy"
 msgstr "A háttérprogram foglalt"
 
-#: ../addressbook/libedata-book/e-data-book.c:810
-#: ../calendar/libedata-cal/e-data-cal.c:767 ../libedataserver/e-client.c:141
+#: ../addressbook/libedata-book/e-data-book.c:344
+#: ../calendar/libedata-cal/e-data-cal.c:395 ../libedataserver/e-client.c:141
 msgid "Repository offline"
 msgstr "Az adattár offline"
 
-#: ../addressbook/libedata-book/e-data-book.c:811
-#: ../calendar/libecal/e-cal.c:2317 ../calendar/libedata-cal/e-data-cal.c:768
+#: ../addressbook/libedata-book/e-data-book.c:345
+#: ../calendar/libecal/e-cal.c:2317 ../calendar/libedata-cal/e-data-cal.c:396
 #: ../libedataserver/e-client.c:148
 msgid "Permission denied"
 msgstr "Hozzáférés megtagadva"
 
-#: ../addressbook/libedata-book/e-data-book.c:814
-#: ../calendar/libedata-cal/e-data-cal.c:773
+#: ../addressbook/libedata-book/e-data-book.c:348
+#: ../calendar/libedata-cal/e-data-cal.c:401
 msgid "Authentication Failed"
 msgstr "Hitelesítés sikertelen"
 
-#: ../addressbook/libedata-book/e-data-book.c:815
-#: ../calendar/libedata-cal/e-data-cal.c:774
+#: ../addressbook/libedata-book/e-data-book.c:349
+#: ../calendar/libedata-cal/e-data-cal.c:402
 msgid "Authentication Required"
 msgstr "Hitelesítés szükséges"
 
-#: ../addressbook/libedata-book/e-data-book.c:816
-#: ../calendar/libedata-cal/e-data-cal.c:775
+#: ../addressbook/libedata-book/e-data-book.c:350
+#: ../calendar/libedata-cal/e-data-cal.c:403
 msgid "Unsupported field"
 msgstr "Nem támogatott mező"
 
-#: ../addressbook/libedata-book/e-data-book.c:817
-#: ../calendar/libedata-cal/e-data-cal.c:777 ../libedataserver/e-client.c:156
+#: ../addressbook/libedata-book/e-data-book.c:351
+#: ../calendar/libedata-cal/e-data-cal.c:405 ../libedataserver/e-client.c:156
 msgid "Unsupported authentication method"
 msgstr "Nem támogatott hitelesítési metódus"
 
-#: ../addressbook/libedata-book/e-data-book.c:818
-#: ../calendar/libedata-cal/e-data-cal.c:778 ../libedataserver/e-client.c:158
+#: ../addressbook/libedata-book/e-data-book.c:352
+#: ../calendar/libedata-cal/e-data-cal.c:406 ../libedataserver/e-client.c:158
 msgid "TLS not available"
 msgstr "TLS nem érhető el"
 
-#: ../addressbook/libedata-book/e-data-book.c:819
+#: ../addressbook/libedata-book/e-data-book.c:353
 msgid "Address book does not exist"
 msgstr "A címjegyzék nem létezik"
 
-#: ../addressbook/libedata-book/e-data-book.c:820
+#: ../addressbook/libedata-book/e-data-book.c:354
 msgid "Book removed"
 msgstr "A címjegyzék eltávolítva"
 
-#: ../addressbook/libedata-book/e-data-book.c:821
-#: ../calendar/libedata-cal/e-data-cal.c:781
+#: ../addressbook/libedata-book/e-data-book.c:355
+#: ../calendar/libedata-cal/e-data-cal.c:409
 msgid "Not available in offline mode"
 msgstr "Nem érhető el kapcsolat nélküli módban"
 
-#: ../addressbook/libedata-book/e-data-book.c:822
-#: ../calendar/libedata-cal/e-data-cal.c:782 ../libedataserver/e-client.c:160
+#: ../addressbook/libedata-book/e-data-book.c:356
+#: ../calendar/libedata-cal/e-data-cal.c:410 ../libedataserver/e-client.c:160
 msgid "Search size limit exceeded"
 msgstr "A keresési méretkorlát túllépve"
 
-#: ../addressbook/libedata-book/e-data-book.c:823
-#: ../calendar/libedata-cal/e-data-cal.c:783 ../libedataserver/e-client.c:162
+#: ../addressbook/libedata-book/e-data-book.c:357
+#: ../calendar/libedata-cal/e-data-cal.c:411 ../libedataserver/e-client.c:162
 msgid "Search time limit exceeded"
 msgstr "A keresési időkorlát túllépve"
 
-#: ../addressbook/libedata-book/e-data-book.c:825
-#: ../calendar/libedata-cal/e-data-cal.c:785 ../libedataserver/e-client.c:166
+#: ../addressbook/libedata-book/e-data-book.c:359
+#: ../calendar/libedata-cal/e-data-cal.c:413 ../libedataserver/e-client.c:166
 msgid "Query refused"
 msgstr "Lekérdezés visszautasítva"
 
-#: ../addressbook/libedata-book/e-data-book.c:826
-#: ../calendar/libedata-cal/e-data-cal.c:786 ../libedataserver/e-client.c:152
+#: ../addressbook/libedata-book/e-data-book.c:360
+#: ../calendar/libedata-cal/e-data-cal.c:414 ../libedataserver/e-client.c:152
 msgid "Could not cancel"
 msgstr "Nem lehet megszakítani"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:828
-#: ../calendar/libedata-cal/e-data-cal.c:788
+#: ../addressbook/libedata-book/e-data-book.c:362
+#: ../calendar/libedata-cal/e-data-cal.c:416
 msgid "Invalid server version"
 msgstr "Érvénytelen kiszolgálóverzió"
 
-#: ../addressbook/libedata-book/e-data-book.c:830
-#: ../calendar/libecal/e-cal.c:2301 ../calendar/libedata-cal/e-data-cal.c:789
+#: ../addressbook/libedata-book/e-data-book.c:364
+#: ../calendar/libecal/e-cal.c:2301 ../calendar/libedata-cal/e-data-cal.c:417
 #: ../libedataserver/e-client.c:129
 msgid "Invalid argument"
 msgstr "Érvénytelen argumentum"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:832
+#: ../addressbook/libedata-book/e-data-book.c:366
 #: ../calendar/libecal/e-cal.c:1060 ../calendar/libecal/e-cal.c:1428
 #: ../calendar/libecal/e-cal.c:1908 ../calendar/libecal/e-cal.c:2340
-#: ../calendar/libedata-cal/e-data-cal.c:791 ../libedataserver/e-client.c:154
+#: ../calendar/libedata-cal/e-data-cal.c:419 ../libedataserver/e-client.c:154
 #, c-format
 msgid "Not supported"
 msgstr "Nem támogatott"
 
-#: ../addressbook/libedata-book/e-data-book.c:833
-#: ../calendar/libedata-cal/e-data-cal.c:792 ../libedataserver/e-client.c:172
+#: ../addressbook/libedata-book/e-data-book.c:367
+#: ../calendar/libedata-cal/e-data-cal.c:420 ../libedataserver/e-client.c:172
 msgid "Backend is not opened yet"
 msgstr "A háttérprogram még nem nyílt meg"
 
-#: ../addressbook/libedata-book/e-data-book.c:834
+#: ../addressbook/libedata-book/e-data-book.c:368
 #: ../libedataserver/e-client.c:174
 msgid "Object is out of sync"
 msgstr "Az objektum nincs szinkronban"
 
-#: ../addressbook/libedata-book/e-data-book.c:842
-#: ../calendar/libedata-cal/e-data-cal.c:800 ../libedataserver/e-client.c:170
+#: ../addressbook/libedata-book/e-data-book.c:376
+#: ../calendar/libedata-cal/e-data-cal.c:428 ../libedataserver/e-client.c:170
 msgid "Other error"
 msgstr "Egyéb hiba"
 
+#: ../addressbook/libedata-book/e-data-book.c:1017
+#: ../calendar/libedata-cal/e-data-cal.c:1331
+msgid "Invalid query: "
+msgstr "Érvénytelen lekérdezés: "
+
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1209
+#: ../addressbook/libedata-book/e-data-book.c:1069
 msgid "Cannot open book: "
 msgstr "Nem lehet megnyitni a címjegyzéket: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1284
+#: ../addressbook/libedata-book/e-data-book.c:1106
 msgid "Cannot refresh address book: "
 msgstr "Nem frissíthető a címjegyzék: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1348
+#: ../addressbook/libedata-book/e-data-book.c:1137
 msgid "Cannot get contact: "
 msgstr "A névjegy nem kérhető le: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1414
+#: ../addressbook/libedata-book/e-data-book.c:1175
 msgid "Cannot get contact list: "
 msgstr "Nem lehet lekérni a névjegylistát: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1506
+#: ../addressbook/libedata-book/e-data-book.c:1227
 msgid "Cannot get contact list uids: "
 msgstr "Nem lehet lekérni a névjegylista felhasználói azonosítóit: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1586
+#: ../addressbook/libedata-book/e-data-book.c:1274
 msgid "Cannot add contact: "
 msgstr "A névjegy nem vehető fel: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1647
+#: ../addressbook/libedata-book/e-data-book.c:1323
 msgid "Cannot modify contacts: "
 msgstr "A névjegyek nem távolíthatók el: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1685
+#: ../addressbook/libedata-book/e-data-book.c:1365
 msgid "Cannot remove contacts: "
 msgstr "Nem törölhetők a névjegyek: "
 
@@ -1193,31 +1175,31 @@ msgstr "Hiányzó forrás UID"
 msgid "No such source for UID '%s'"
 msgstr "Nincs ilyen forrás a(z) „%s” UID-hez"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:557
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:569
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "A kiszolgáló nem érhető el (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:588
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Nem sikerült kapcsolódni a kiszolgálóhoz SSL használatával: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Váratlan HTTP állapotkód (%d) érkezett (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:630
 msgid "CalDAV backend is not loaded yet"
 msgstr "A CalDAV háttérprogram még nincs betöltve"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1007
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1019
 msgid "Invalid Redirect URL"
 msgstr "Érvénytelen átirányítási URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2489
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2843
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2496
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2848
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1226,32 +1208,32 @@ msgstr ""
 "A kiszolgáló nem érhető el, a naptár csak olvasható módban van megnyitva.\n"
 "A hibaüzenet: (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2795
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2800
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nem lehet létrehozni a helyi „%s” gyorsítótármappát"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3883
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3888
 msgid "CalDAV does not support bulk additions"
 msgstr "A CalDAV nem támogatja a tömeges hozzáadásokat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3986
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3991
 msgid "CalDAV does not support bulk modifications"
 msgstr "A CalDAV nem támogatja a tömeges módosításokat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4155
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4167
 msgid "CalDAV does not support bulk removals"
 msgstr "A CalDAV nem támogatja a tömeges eltávolításokat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4827
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4834
 msgid "Calendar doesn't support Free/Busy"
 msgstr "A naptár nem támogatja a szabad/elfoglalt jelzését"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4836
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4843
 msgid "Schedule outbox url not found"
 msgstr "Ütemezés kimenő URL-je nem található"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4935
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4940
 msgid "Unexpected result in schedule-response"
 msgstr "Váratlan eredmény az ütemezésre adott válaszban"
 
@@ -1278,28 +1260,28 @@ msgstr "Nem menthetők a naptáradatok: rosszul formázott URI."
 msgid "Cannot save calendar data"
 msgstr "Nem menthetők a naptáradatok"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:477
+#: ../calendar/backends/http/e-cal-backend-http.c:478
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "Rosszul formázott URI: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:568
+#: ../calendar/backends/http/e-cal-backend-http.c:569
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Átirányítva érvénytelen URI címre"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:605
+#: ../calendar/backends/http/e-cal-backend-http.c:606
 #, c-format
 msgid "Bad file format."
 msgstr "Hibás fájlformátum."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:615
+#: ../calendar/backends/http/e-cal-backend-http.c:616
 #, c-format
 msgid "Not a calendar."
 msgstr "Nem naptár."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:925
-#: ../calendar/backends/weather/e-cal-backend-weather.c:510
+#: ../calendar/backends/http/e-cal-backend-http.c:926
+#: ../calendar/backends/weather/e-cal-backend-weather.c:508
 msgid "Could not create cache file"
 msgstr "Nem lehet létrehozni a gyorsítótár fájlt"
 
@@ -1356,12 +1338,12 @@ msgid "No such calendar"
 msgstr "Nincs ilyen naptár"
 
 #: ../calendar/libecal/e-cal.c:2309 ../calendar/libecal/e-cal-client.c:257
-#: ../calendar/libedata-cal/e-data-cal.c:770
+#: ../calendar/libedata-cal/e-data-cal.c:398
 msgid "Object not found"
 msgstr "Az objektum nem található"
 
 #: ../calendar/libecal/e-cal.c:2311 ../calendar/libecal/e-cal-client.c:259
-#: ../calendar/libedata-cal/e-data-cal.c:771
+#: ../calendar/libedata-cal/e-data-cal.c:399
 msgid "Invalid object"
 msgstr "Érvénytelen objektum"
 
@@ -1378,7 +1360,7 @@ msgid "Unknown User"
 msgstr "Ismeretlen felhasználó"
 
 #: ../calendar/libecal/e-cal.c:2321 ../calendar/libecal/e-cal-client.c:263
-#: ../calendar/libedata-cal/e-data-cal.c:772
+#: ../calendar/libedata-cal/e-data-cal.c:400
 msgid "Object ID already exists"
 msgstr "Az objektumazonosító már létezik"
 
@@ -1413,22 +1395,21 @@ msgid "No error"
 msgstr "Nincs hiba"
 
 #: ../calendar/libecal/e-cal-client.c:261
-#: ../calendar/libedata-cal/e-data-cal.c:780
+#: ../calendar/libedata-cal/e-data-cal.c:408
 msgid "Unknown user"
 msgstr "Ismeretlen felhasználó"
 
 #: ../calendar/libecal/e-cal-client.c:265
-#: ../calendar/libedata-cal/e-data-cal.c:769
+#: ../calendar/libedata-cal/e-data-cal.c:397
 msgid "Invalid range"
 msgstr "Érvénytelen tartomány"
 
-#: ../calendar/libecal/e-cal-client.c:944
-#: ../calendar/libedata-cal/e-cal-backend.c:205
+#: ../calendar/libecal/e-cal-client.c:928
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Ismeretlen naptártulajdonság: „%s”"
 
-#: ../calendar/libecal/e-cal-client.c:959
+#: ../calendar/libecal/e-cal-client.c:943
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Nem lehet módosítani a(z) „%s” naptártulajdonság értékét"
@@ -1692,91 +1673,81 @@ msgstr "a(z) „%s” első argumentumként ISO 8601 dátum/idő karakterláncot
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "„%s” második argumentumként egész számot vár"
 
-#: ../calendar/libedata-cal/e-data-cal.c:776
+#: ../calendar/libedata-cal/e-data-cal.c:404
 msgid "Unsupported method"
 msgstr "Nem támogatott metódus"
 
-#: ../calendar/libedata-cal/e-data-cal.c:779
+#: ../calendar/libedata-cal/e-data-cal.c:407
 msgid "Calendar does not exist"
 msgstr "A naptár nem létezik"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1347
+#: ../calendar/libedata-cal/e-data-cal.c:1502
 msgid "Cannot open calendar: "
 msgstr "Nem nyitható meg a naptár: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1403
+#: ../calendar/libedata-cal/e-data-cal.c:1539
 msgid "Cannot refresh calendar: "
 msgstr "Nem frissíthető a naptár: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1442
-msgid "Cannot retrieve backend property: "
-msgstr "Nem kérhető le a háttérprogram-tulajdonság: "
-
-#. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1481
+#: ../calendar/libedata-cal/e-data-cal.c:1580
 msgid "Cannot retrieve calendar object path: "
 msgstr "Nem kérhető le a naptárobjektum-útvonal: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1527
+#: ../calendar/libedata-cal/e-data-cal.c:1635
 msgid "Cannot retrieve calendar object list: "
 msgstr "Nem kérhető le a naptárobjektum-lista: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1580
+#: ../calendar/libedata-cal/e-data-cal.c:1691
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Nem kérhető le a naptár szabad/foglalt listája: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1621
+#: ../calendar/libedata-cal/e-data-cal.c:1734
 msgid "Cannot create calendar object: "
 msgstr "Nem hozható létre a naptárobjektum: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1687
+#: ../calendar/libedata-cal/e-data-cal.c:1802
 msgid "Cannot modify calendar object: "
 msgstr "Nem módosítható a naptárobjektum: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1745
+#: ../calendar/libedata-cal/e-data-cal.c:1877
 msgid "Cannot remove calendar object: "
 msgstr "Nem távolítható el a naptárobjektum: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1802
+#: ../calendar/libedata-cal/e-data-cal.c:1960
 msgid "Cannot receive calendar objects: "
 msgstr "Nem fogadhatók a naptárobjektumok: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1843
+#: ../calendar/libedata-cal/e-data-cal.c:2003
 msgid "Cannot send calendar objects: "
 msgstr "Nem küldhetők el a naptárobjektumok: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1903
+#: ../calendar/libedata-cal/e-data-cal.c:2059
 msgid "Could not retrieve attachment uris: "
 msgstr "Nem kérhetők le a mellékletek URI-címei: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1953
+#: ../calendar/libedata-cal/e-data-cal.c:2104
 msgid "Could not discard reminder: "
 msgstr "Nem sikerült eldobni az emlékeztetőt: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1992
-msgid "Could not get calendar view path: "
-msgstr "Nem kérhető le a naptár megjelenítési útvonala: "
-
-#. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2038
+#: ../calendar/libedata-cal/e-data-cal.c:2145
 msgid "Could not retrieve calendar time zone: "
 msgstr "Nem kérhető le a naptár időzónája: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2082
+#: ../calendar/libedata-cal/e-data-cal.c:2185
 msgid "Could not add calendar time zone: "
 msgstr "Nem vehető fel a naptár időzónája: "
 
@@ -1876,7 +1847,7 @@ msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "A mappa tartalmáról _helyi másolat készítése kapcsolat nélküli munkához"
 
-#: ../camel/camel-disco-store.c:475 ../camel/camel-imapx-folder.c:478
+#: ../camel/camel-disco-store.c:516 ../camel/camel-imapx-folder.c:478
 #: ../camel/camel-imapx-folder.c:514 ../camel/camel-imapx-folder.c:553
 #: ../camel/camel-imapx-folder.c:613 ../camel/camel-imapx-folder.c:748
 #: ../camel/camel-imapx-folder.c:933 ../camel/camel-imapx-folder.c:993
@@ -2269,11 +2240,8 @@ msgstr "A kiszolgáló leválasztva"
 msgid "Error writing to cache stream"
 msgstr "Hiba a gyorsítótár-adatfolyam írása közben"
 
-#: ../camel/camel-imapx-server.c:2440
+#: ../camel/camel-imapx-server.c:2443
 #, c-format
-#| msgid ""
-#| "Alert from IMAP server %s@%s:\n"
-#| "%s"
 msgid ""
 "Alert from IMAP server %s:\n"
 "%s"
@@ -2281,40 +2249,40 @@ msgstr ""
 "Riasztás a(z) %s IMAP kiszolgálótól:\n"
 "%s"
 
-#: ../camel/camel-imapx-server.c:3028
+#: ../camel/camel-imapx-server.c:3031
 #, c-format
 msgid "Not authenticated"
 msgstr "Nincs hitelesítve"
 
-#: ../camel/camel-imapx-server.c:3106
+#: ../camel/camel-imapx-server.c:3109
 msgid "Error performing IDLE"
 msgstr "Hiba az IDLE végrehajtása közben"
 
-#: ../camel/camel-imapx-server.c:4063
+#: ../camel/camel-imapx-server.c:4066
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Nem sikerült biztonságos kapcsolattal kapcsolódni a(z) %s IMAP "
 "kiszolgálóhoz: %s"
 
-#: ../camel/camel-imapx-server.c:4064
+#: ../camel/camel-imapx-server.c:4067
 #: ../camel/providers/smtp/camel-smtp-transport.c:208
 msgid "STARTTLS not supported"
 msgstr "A STARTTLS nem támogatott"
 
-#: ../camel/camel-imapx-server.c:4103
+#: ../camel/camel-imapx-server.c:4106
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr ""
 "Nem sikerült biztonságos kapcsolattal kapcsolódni a(z) %s IMAP "
 "kiszolgálóhoz: "
 
-#: ../camel/camel-imapx-server.c:4183
+#: ../camel/camel-imapx-server.c:4186
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP kiszolgáló nem támogatja a(z) %s hitelesítési típust"
 
-#: ../camel/camel-imapx-server.c:4194 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:4197 ../camel/camel-session.c:494
 #: ../camel/providers/pop3/camel-pop3-store.c:272
 #: ../camel/providers/pop3/camel-pop3-store.c:654
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2322,130 +2290,130 @@ msgstr "%s IMAP kiszolgáló nem támogatja a(z) %s hitelesítési típust"
 msgid "No support for %s authentication"
 msgstr "A(z) %s hitelesítési típus nem támogatott"
 
-#: ../camel/camel-imapx-server.c:4213
+#: ../camel/camel-imapx-server.c:4216
 #: ../camel/providers/nntp/camel-nntp-store.c:362
 #: ../camel/providers/nntp/camel-nntp-store.c:562
 msgid "Cannot authenticate without a username"
 msgstr "Nem lehet felhasználónév nélkül hitelesíteni"
 
-#: ../camel/camel-imapx-server.c:4222
+#: ../camel/camel-imapx-server.c:4225
 #: ../camel/providers/nntp/camel-nntp-store.c:571
 #: ../camel/providers/pop3/camel-pop3-store.c:579
 #: ../camel/providers/pop3/camel-pop3-store.c:599
 msgid "Authentication password not available"
 msgstr "A hitelesítési jelszó nem érhető el"
 
-#: ../camel/camel-imapx-server.c:4430
+#: ../camel/camel-imapx-server.c:4433
 msgid "Error fetching message"
 msgstr "Hiba a levél lekérésekor"
 
-#: ../camel/camel-imapx-server.c:4512
+#: ../camel/camel-imapx-server.c:4515
 msgid "Failed to copy the tmp file"
 msgstr "Az ideiglenes fájl másolása meghiúsult"
 
-#: ../camel/camel-imapx-server.c:4526
+#: ../camel/camel-imapx-server.c:4529
 msgid "Failed to close the tmp stream"
 msgstr "Az ideiglenes adatfolyam lezárása meghiúsult"
 
-#: ../camel/camel-imapx-server.c:4647
+#: ../camel/camel-imapx-server.c:4650
 msgid "Error copying messages"
 msgstr "Hiba a levelek másolásakor"
 
-#: ../camel/camel-imapx-server.c:4813
+#: ../camel/camel-imapx-server.c:4816
 msgid "Error appending message"
 msgstr "Hiba az üzenet hozzáfűzésekor"
 
-#: ../camel/camel-imapx-server.c:5012
+#: ../camel/camel-imapx-server.c:5015
 msgid "Error fetching message headers"
 msgstr "Hiba a levélfejlécek lekérésekor"
 
-#: ../camel/camel-imapx-server.c:5163
+#: ../camel/camel-imapx-server.c:5166
 msgid "Error retrieving message"
 msgstr "Hiba a levél letöltése közben"
 
-#: ../camel/camel-imapx-server.c:5294 ../camel/camel-imapx-server.c:5522
+#: ../camel/camel-imapx-server.c:5297 ../camel/camel-imapx-server.c:5525
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Összefoglaló adatok letöltése az új levelekhez ebben: „%s”"
 
-#: ../camel/camel-imapx-server.c:5358
+#: ../camel/camel-imapx-server.c:5361
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Megváltozott levelek keresése ebben: „%s”"
 
-#: ../camel/camel-imapx-server.c:5411
+#: ../camel/camel-imapx-server.c:5414
 msgid "Error fetching new messages"
 msgstr "Hiba az új levelek lekérésekor"
 
-#: ../camel/camel-imapx-server.c:5624
+#: ../camel/camel-imapx-server.c:5627
 msgid "Error while fetching messages"
 msgstr "Hiba a levelek lekérésekor"
 
-#: ../camel/camel-imapx-server.c:5632 ../camel/camel-imapx-server.c:5665
+#: ../camel/camel-imapx-server.c:5635 ../camel/camel-imapx-server.c:5668
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Összefoglaló adatok letöltése %d levélhez ebben: „%s”"
 msgstr[1] "Összefoglaló adatok letöltése %d levélhez ebben: „%s”"
 
-#: ../camel/camel-imapx-server.c:5801 ../camel/camel-imapx-server.c:5831
+#: ../camel/camel-imapx-server.c:5804 ../camel/camel-imapx-server.c:5834
 msgid "Error refreshing folder"
 msgstr "Hiba a mappa frissítése közben"
 
-#: ../camel/camel-imapx-server.c:5955
+#: ../camel/camel-imapx-server.c:5958
 msgid "Error expunging message"
 msgstr "Hiba a levél törlésekor"
 
-#: ../camel/camel-imapx-server.c:6066
+#: ../camel/camel-imapx-server.c:6069
 msgid "Error fetching folders"
 msgstr "Hiba a mappák lekérésekor"
 
-#: ../camel/camel-imapx-server.c:6148
+#: ../camel/camel-imapx-server.c:6151
 msgid "Error subscribing to folder"
 msgstr "Hiba a mappára feliratkozáskor"
 
-#: ../camel/camel-imapx-server.c:6213
+#: ../camel/camel-imapx-server.c:6216
 msgid "Error creating folder"
 msgstr "Hiba a mappa létrehozásakor"
 
-#: ../camel/camel-imapx-server.c:6267
+#: ../camel/camel-imapx-server.c:6270
 msgid "Error deleting folder"
 msgstr "Hiba a mappa törlésekor"
 
-#: ../camel/camel-imapx-server.c:6341
+#: ../camel/camel-imapx-server.c:6344
 msgid "Error renaming folder"
 msgstr "Hiba a mappa átnevezésekor"
 
-#: ../camel/camel-imapx-server.c:6416
+#: ../camel/camel-imapx-server.c:6419
 msgid "Error retrieving quota information"
 msgstr "Hiba a kvótainformációk lekérésekor"
 
-#: ../camel/camel-imapx-server.c:6481
+#: ../camel/camel-imapx-server.c:6484
 msgid "Search failed"
 msgstr "A keresés sikertelen"
 
-#: ../camel/camel-imapx-server.c:6544
+#: ../camel/camel-imapx-server.c:6547
 msgid "Error performing NOOP"
 msgstr "Hiba a NOOP végrehajtásakor"
 
-#: ../camel/camel-imapx-server.c:6653
+#: ../camel/camel-imapx-server.c:6656
 msgid "Error syncing changes"
 msgstr "Hiba a változások szinkronizálásakor"
 
-#: ../camel/camel-imapx-server.c:7469
+#: ../camel/camel-imapx-server.c:7472
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nem lehet letölteni a(z) %s azonosítójú levelet: %s"
 
-#: ../camel/camel-imapx-server.c:7470
+#: ../camel/camel-imapx-server.c:7473
 msgid "No such message available."
 msgstr "Nincs ilyen üzenet."
 
-#: ../camel/camel-imapx-server.c:7628 ../camel/camel-imapx-server.c:7643
+#: ../camel/camel-imapx-server.c:7631 ../camel/camel-imapx-server.c:7646
 msgid "Cannot create spool file: "
 msgstr "Nem lehet létrehozni a várólistafájlt: "
 
-#: ../camel/camel-imapx-server.c:8385
+#: ../camel/camel-imapx-server.c:8388
 msgid "IMAP server does not support quotas"
 msgstr "Az IMAP kiszolgáló nem támogatja a kvótákat"
 
@@ -4393,42 +4361,53 @@ msgstr "sendmail"
 msgid "Mail delivery via the sendmail program"
 msgstr "Levélküldés a sendmail programon keresztül"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:165
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
+#, c-format
+#| msgid "Failed to retrieve message"
+msgid "Failed to read From address"
+msgstr "Nem sikerült olvasni a feladó címét"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:157
+#, c-format
+msgid "Message send in offline mode is disabled"
+msgstr "Az üzenet küldése kapcsolat nélküli módban le van tiltva"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:185
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Nem sikerült értelmezni a címzettek listáját"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:182
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:202
 #, c-format
 msgid "Could not parse arguments"
 msgstr "Az argumentumok nem dolgozhatók fel"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:213
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:233
 #, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
 msgstr ""
 "Nem sikerült adatcsatornát létrehozni ehhez: „%s”: %s: a levél nem ment el"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:238
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:258
 #, c-format
 msgid "Could not fork '%s': %s: mail not sent"
 msgstr "„%s” indítása sikertelen: %s: a levél nem ment el"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:287
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:307
 msgid "Could not send message: "
 msgstr "Nem sikerült elküldeni a levelet: "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:317
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:337
 #, c-format
 msgid "'%s' exited with signal %s: mail not sent."
 msgstr "„%s” %s szignállal kilépett: a levél nem ment el."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:327
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:347
 #, c-format
 msgid "Could not execute '%s': mail not sent."
 msgstr "A(z) „%s” végrehajtása meghiúsult: a levél nem ment el."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:332
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:352
 #, c-format
 msgid "'%s' exited with status %d: mail not sent."
 msgstr "„%s” %d állapottal lépett ki: a levél nem ment el."
@@ -5856,6 +5835,21 @@ msgstr "WebDAV"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
 msgstr "_Rendben"
+
+#~ msgid "Creating new contact…"
+#~ msgstr "Új névjegy létrehozása…"
+
+#~ msgid "Deleting contact…"
+#~ msgstr "Névjegy törlése…"
+
+#~ msgid "Modifying contact…"
+#~ msgstr "Névjegy módosítása…"
+
+#~ msgid "Cannot retrieve backend property: "
+#~ msgstr "Nem kérhető le a háttérprogram-tulajdonság: "
+
+#~ msgid "Could not get calendar view path: "
+#~ msgstr "Nem kérhető le a naptár megjelenítési útvonala: "
 
 #~ msgid "Clients cannot set backend properties"
 #~ msgstr "A kliensek nem tudják beállítani a háttérprogram-tulajdonságokat"
