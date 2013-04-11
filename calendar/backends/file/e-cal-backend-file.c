@@ -383,77 +383,77 @@ uid_in_use (ECalBackendFile *cbfile,
 static icalproperty *
 get_revision_property (ECalBackendFile *cbfile)
 {
-       ECalBackendFilePrivate *priv;
-       icalproperty           *prop;
+	ECalBackendFilePrivate *priv;
+	icalproperty           *prop;
 
-       priv = cbfile->priv;
-       prop = icalcomponent_get_first_property (priv->icalcomp, ICAL_X_PROPERTY);
+	priv = cbfile->priv;
+	prop = icalcomponent_get_first_property (priv->icalcomp, ICAL_X_PROPERTY);
 
-       while (prop != NULL) {
-	      const gchar *name = icalproperty_get_x_name (prop);
+	while (prop != NULL) {
+		const gchar *name = icalproperty_get_x_name (prop);
 
-	      if (name && strcmp (name, ECAL_REVISION_X_PROP) == 0)
-		     return prop;
+		if (name && strcmp (name, ECAL_REVISION_X_PROP) == 0)
+			return prop;
 
-	      prop = icalcomponent_get_next_property (priv->icalcomp, ICAL_X_PROPERTY);
-       }
+		prop = icalcomponent_get_next_property (priv->icalcomp, ICAL_X_PROPERTY);
+	}
 
-       return NULL;
+	return NULL;
 }
 
 static gchar *
 make_revision_string (ECalBackendFile *cbfile)
 {
-       GTimeVal timeval;
-       gchar   *datestr;
-       gchar   *revision;
+	GTimeVal timeval;
+	gchar   *datestr;
+	gchar   *revision;
 
-       g_get_current_time (&timeval);
+	g_get_current_time (&timeval);
 
-       datestr = g_time_val_to_iso8601 (&timeval);
-       revision = g_strdup_printf ("%s(%d)", datestr, cbfile->priv->revision_counter++);
+	datestr = g_time_val_to_iso8601 (&timeval);
+	revision = g_strdup_printf ("%s(%d)", datestr, cbfile->priv->revision_counter++);
 
-       g_free (datestr);
-       return revision;
+	g_free (datestr);
+	return revision;
 }
 
 static icalproperty *
 ensure_revision (ECalBackendFile *cbfile)
 {
-       icalproperty * prop;
+	icalproperty * prop;
 
-       prop = get_revision_property (cbfile);
+	prop = get_revision_property (cbfile);
 
-       if (!prop) {
-	      gchar *revision = make_revision_string (cbfile);
+	if (!prop) {
+		gchar *revision = make_revision_string (cbfile);
 
-	      prop = icalproperty_new (ICAL_X_PROPERTY);
+		prop = icalproperty_new (ICAL_X_PROPERTY);
 
-	      icalproperty_set_x_name (prop, ECAL_REVISION_X_PROP);
-	      icalproperty_set_x (prop, revision);
+		icalproperty_set_x_name (prop, ECAL_REVISION_X_PROP);
+		icalproperty_set_x (prop, revision);
 
-	      icalcomponent_add_property (cbfile->priv->icalcomp, prop);
+		icalcomponent_add_property (cbfile->priv->icalcomp, prop);
 
-	      g_free (revision);
-       }
+		g_free (revision);
+	}
 
-       return prop;
+	return prop;
 }
 
 static void
 bump_revision (ECalBackendFile *cbfile)
 {
-       /* Update the revision string */
-       icalproperty *prop     = ensure_revision (cbfile);
-       gchar        *revision = make_revision_string (cbfile);
+	/* Update the revision string */
+	icalproperty *prop     = ensure_revision (cbfile);
+	gchar        *revision = make_revision_string (cbfile);
 
-       icalproperty_set_x (prop, revision);
+	icalproperty_set_x (prop, revision);
 
-       e_cal_backend_notify_property_changed (E_CAL_BACKEND (cbfile),
+	e_cal_backend_notify_property_changed (E_CAL_BACKEND (cbfile),
 					      CAL_BACKEND_PROPERTY_REVISION,
 					      revision);
 
-       g_free (revision);
+	g_free (revision);
 }
 
 /* Calendar backend methods */
