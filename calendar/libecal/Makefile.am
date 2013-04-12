@@ -1,10 +1,15 @@
 ENUM_TYPES = e-cal-types.h
 
-e-cal-enumtypes.h: e-cal-enumtypes.h.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-cal-enumtypes.h.template $(ENUM_TYPES)) > $@
+e-cal-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
+		--fhead "#ifndef E_CAL_ENUMTYPES_H\n#define E_CAL_ENUMTYPES_H\n" \
+		--ftail "#endif /* E_CAL_ENUMTYPES_H */\n" \
+		$(ENUM_TYPES)) > $@
 
-e-cal-enumtypes.c: e-cal-enumtypes.c.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-cal-enumtypes.c.template $(ENUM_TYPES)) > $@
+e-cal-enumtypes.c: $(top_srcdir)/enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.c.template \
+		--fhead "#include \"e-cal-enumtypes.h\"" \
+		$(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-cal-enumtypes.h e-cal-enumtypes.c
 
@@ -96,8 +101,6 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
-	e-cal-enumtypes.h.template			\
-	e-cal-enumtypes.c.template			\
 	e-cal-marshal.list
 
 dist-hook:

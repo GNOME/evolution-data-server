@@ -34,11 +34,16 @@ lib_LTLIBRARIES = libcamel-1.2.la
 
 ENUM_TYPES = camel-enums.h
 
-camel-enumtypes.h: camel-enumtypes.h.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template camel-enumtypes.h.template $(ENUM_TYPES)) > $@
+camel-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
+		--fhead "#ifndef CAMEL_ENUMTYPES_H\n#define CAMEL_ENUMTYPES_H\n" \
+		--ftail "#endif /* CAMEL_ENUMTYPES_H */\n" \
+		$(ENUM_TYPES)) > $@
 
-camel-enumtypes.c: camel-enumtypes.c.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template camel-enumtypes.c.template $(ENUM_TYPES)) > $@
+camel-enumtypes.c: $(top_srcdir)/enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.c.template \
+		--fhead "#include \"camel-enumtypes.h\"" \
+		$(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = camel-enumtypes.h camel-enumtypes.c camel-imapx-tokenise.h
 
@@ -424,8 +429,6 @@ BUILT_SOURCES =					\
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
-	camel-enumtypes.h.template		\
-	camel-enumtypes.c.template		\
 	camel-imapx-tokens.txt			\
 	camel-marshal.list			\
 	gentables.pl				\

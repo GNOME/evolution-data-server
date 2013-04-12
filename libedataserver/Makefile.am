@@ -1,10 +1,15 @@
 ENUM_TYPES = e-source-enums.h
 
-e-source-enumtypes.h: e-source-enumtypes.h.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-source-enumtypes.h.template $(ENUM_TYPES)) > $@
+e-source-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
+		--fhead "#ifndef E_SOURCE_ENUMTYPES_H\n#define E_SOURCE_ENUMTYPES_H\n" \
+		--ftail "#endif /* E_SOURCE_ENUMTYPES_H */\n" \
+		$(ENUM_TYPES)) > $@
 
-e-source-enumtypes.c: e-source-enumtypes.c.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-source-enumtypes.c.template $(ENUM_TYPES)) > $@
+e-source-enumtypes.c: $(top_srcdir)/enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.c.template \
+		--fhead "#include \"e-source-enumtypes.h\"" \
+		$(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-source-enumtypes.h e-source-enumtypes.c
 
@@ -192,8 +197,6 @@ convert_DATA = libedataserver.convert
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	eds-version.h.in				\
-	e-source-enumtypes.h.template			\
-	e-source-enumtypes.c.template			\
 	$(convert_DATA)					\
 	$(gsettings_SCHEMAS:.xml=.xml.in)
 

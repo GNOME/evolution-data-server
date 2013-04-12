@@ -1,10 +1,15 @@
 ENUM_TYPES = e-backend-enums.h
 
-e-backend-enumtypes.h: e-backend-enumtypes.h.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-backend-enumtypes.h.template $(ENUM_TYPES)) > $@
+e-backend-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
+		--fhead "#ifndef E_BACKEND_ENUMTYPES_H\n#define E_BACKEND_ENUMTYPES_H\n" \
+		--ftail "#endif /* E_BACKEND_ENUMTYPES_H */\n" \
+		$(ENUM_TYPES)) > $@
 
-e-backend-enumtypes.c: e-backend-enumtypes.c.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-backend-enumtypes.c.template $(ENUM_TYPES)) > $@
+e-backend-enumtypes.c: $(top_srcdir)/enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.c.template \
+		--fhead "#include \"e-backend-enumtypes.h\"" \
+		$(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-backend-enumtypes.h e-backend-enumtypes.c
 
@@ -115,9 +120,7 @@ gsettings_SCHEMAS = \
 
 EXTRA_DIST = 						\
 	$(gsettings_SCHEMAS)				\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
-	e-backend-enumtypes.h.template			\
-	e-backend-enumtypes.c.template
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 CLEANFILES = $(gsettings_SCHEMAS:.xml=.valid)
 

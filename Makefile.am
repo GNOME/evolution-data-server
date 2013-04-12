@@ -26,6 +26,8 @@ EXTRA_DIST = 						\
 	MAINTAINERS					\
 	TODO						\
 	NEWS						\
+	enumtypes.c.template				\
+	enumtypes.h.template				\
 	marshal.mk					\
 	iconv-detect.c					\
 	intltool-merge.in				\
