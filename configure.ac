@@ -1620,6 +1620,7 @@ services/evolution-addressbook-factory/Makefile
 services/evolution-calendar-factory/Makefile
 services/evolution-source-registry/Makefile
 tests/Makefile
+tests/libedata-book/Makefile
 tests/libebook/Makefile
 tests/libebook/client/Makefile
 tests/libebook/vcard/Makefile

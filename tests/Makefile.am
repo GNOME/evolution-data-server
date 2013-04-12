@@ -1,3 +1,3 @@
-SUBDIRS = test-server-utils libedataserver libebook libecal libedata-cal
+SUBDIRS = test-server-utils libedataserver libedata-book libebook libecal libedata-cal
 
 -include $(top_srcdir)/git.mk
