@@ -3,11 +3,16 @@ BUILT_SOURCES=
 
 ENUM_TYPES = e-book-contacts-types.h
 
-e-book-contacts-enumtypes.h: e-book-contacts-enumtypes.h.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-book-contacts-enumtypes.h.template $(ENUM_TYPES)) > $@
+e-book-contacts-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
+		--fhead "#ifndef E_BOOK_CONTACTS_ENUMTYPES_H\n#define E_BOOK_CONTACTS_ENUMTYPES_H\n" \
+		--ftail "#endif /* E_BOOK_CONTACTS_ENUMTYPES_H */\n" \
+		$(ENUM_TYPES)) > $@
 
-e-book-contacts-enumtypes.c: e-book-contacts-enumtypes.c.template $(ENUM_TYPES)
-	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-book-contacts-enumtypes.c.template $(ENUM_TYPES)) > $@
+e-book-contacts-enumtypes.c: $(top_srcdir)/enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.c.template \
+		--fhead "#include \"e-book-contacts-enumtypes.h\"" \
+		$(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-book-contacts-enumtypes.h e-book-contacts-enumtypes.c
 
@@ -155,8 +160,6 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
-	e-book-contacts-enumtypes.h.template			\
-	e-book-contacts-enumtypes.c.template			\
 	e-name-western-tables.h.in                      \
 	gen-western-table.py
 
