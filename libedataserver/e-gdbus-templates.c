@@ -1416,18 +1416,23 @@ typedef struct _SyncOpData
 	gboolean finish_result;
 } SyncOpData;
 
+#define SYNC_DATA_HASH_KEY "EGdbusTemplates-SyncOp-Hash"
+static GMutex sync_data_hash_mutex;
+
 static void
 e_gdbus_proxy_sync_ready_cb (GObject *proxy,
                              GAsyncResult *result,
                              gpointer user_data)
 {
 	gint sync_opid = GPOINTER_TO_INT (user_data);
-	gchar *sync_opid_ident;
-	SyncOpData *sync_data;
+	SyncOpData *sync_data = NULL;
+	GHashTable *sync_data_hash;
 
-	sync_opid_ident = g_strdup_printf ("EGdbusTemplates-SyncOp-%d", sync_opid);
-	sync_data = g_object_get_data (proxy, sync_opid_ident);
-	g_free (sync_opid_ident);
+	g_mutex_lock (&sync_data_hash_mutex);
+	sync_data_hash = g_object_get_data (proxy, SYNC_DATA_HASH_KEY);
+	if (sync_data_hash)
+		sync_data = g_hash_table_lookup (sync_data_hash, GINT_TO_POINTER (sync_opid));
+	g_mutex_unlock (&sync_data_hash_mutex);
 
 	if (!sync_data) {
 		/* already finished operation; it can happen when the operation is cancelled,
@@ -1480,8 +1485,9 @@ e_gdbus_proxy_call_sync (GDBusProxy *proxy,
 {
 	static volatile gint sync_op_counter = 0;
 	gint sync_opid;
-	gchar *sync_opid_ident;
+	gpointer sync_opid_ident;
 	SyncOpData sync_data = { 0 };
+	GHashTable *sync_data_hash;
 
 	g_return_val_if_fail (proxy != NULL, FALSE);
 	g_return_val_if_fail (start_func != NULL, FALSE);
@@ -1520,8 +1526,17 @@ e_gdbus_proxy_call_sync (GDBusProxy *proxy,
 	sync_data.out_type = out_type;
 
 	sync_opid = g_atomic_int_add (&sync_op_counter, 1);
-	sync_opid_ident = g_strdup_printf ("EGdbusTemplates-SyncOp-%d", sync_opid);
-	g_object_set_data (G_OBJECT (proxy), sync_opid_ident, &sync_data);
+
+	g_mutex_lock (&sync_data_hash_mutex);
+	sync_data_hash = g_object_get_data (G_OBJECT (proxy), SYNC_DATA_HASH_KEY);
+	if (!sync_data_hash) {
+		sync_data_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+		g_object_set_data_full (G_OBJECT (proxy), SYNC_DATA_HASH_KEY, sync_data_hash,
+			(GDestroyNotify) g_hash_table_destroy);
+	}
+	sync_opid_ident = GINT_TO_POINTER (sync_opid);
+	g_hash_table_insert (sync_data_hash, sync_opid_ident, &sync_data);
+	g_mutex_unlock (&sync_data_hash_mutex);
 
 	switch (in_type) {
 	case E_GDBUS_TYPE_VOID: {
@@ -1547,8 +1562,9 @@ e_gdbus_proxy_call_sync (GDBusProxy *proxy,
 	default:
 		g_warning ("%s: Unknown 'in' E_GDBUS_TYPE %x", G_STRFUNC, in_type);
 		e_flag_free (sync_data.flag);
-		g_object_set_data (G_OBJECT (proxy), sync_opid_ident, NULL);
-		g_free (sync_opid_ident);
+		g_mutex_lock (&sync_data_hash_mutex);
+		g_hash_table_remove (sync_data_hash, sync_opid_ident);
+		g_mutex_unlock (&sync_data_hash_mutex);
 		g_object_unref (proxy);
 		return FALSE;
 	}
@@ -1578,10 +1594,13 @@ e_gdbus_proxy_call_sync (GDBusProxy *proxy,
 		/* is called in a dedicated thread */
 		e_flag_wait (sync_data.flag);
 	}
-	g_object_set_data (G_OBJECT (proxy), sync_opid_ident, NULL);
+
+	g_mutex_lock (&sync_data_hash_mutex);
+	g_hash_table_remove (sync_data_hash, sync_opid_ident);
+	g_mutex_unlock (&sync_data_hash_mutex);
+
 	e_flag_free (sync_data.flag);
 
-	g_free (sync_opid_ident);
 	g_object_unref (proxy);
 
 	return sync_data.finish_result;
