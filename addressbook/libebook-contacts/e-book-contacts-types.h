@@ -122,6 +122,18 @@ typedef enum {
 } EBookIndexType;
 
 /**
+ * EBookSortType:
+ * @E_BOOK_SORT_ASCENDING: Sort results in ascending order
+ * @E_BOOK_SORT_ASCENDING: Sort results in descending order
+ *
+ * Specifies the sort order of an ordered query
+ */
+typedef enum {
+	E_BOOK_SORT_ASCENDING = 0,
+	E_BOOK_SORT_DESCENDING
+} EBookSortType;
+
+/**
  * EBookClientError:
  *
  * FIXME: Document me.
