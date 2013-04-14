@@ -203,10 +203,15 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/ECalClient/BulkMethods", ETestServerFixture, &cal_closure,
-		e_test_server_utils_setup, run_test_bulk_methods, e_test_server_utils_teardown);
+		"/ECalClient/BulkMethods",
+		ETestServerFixture,
+		&cal_closure,
+		e_test_server_utils_setup,
+		run_test_bulk_methods,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

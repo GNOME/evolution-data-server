@@ -118,7 +118,7 @@ main (gint argc,
 {
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);
-	g_test_bug_base ("https://bugzilla.gnome.org/show_bug.cgi?id=");
+	g_test_bug_base ("https://bugzilla.gnome.org/");
 
 	g_test_add_func ("/phone-numbers/label-and-type", test_label_and_type);
 	g_test_add_func ("/phone-numbers/label-nor-type", test_label_nor_type);

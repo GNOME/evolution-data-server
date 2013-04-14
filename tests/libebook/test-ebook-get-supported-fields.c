@@ -78,13 +78,22 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBook/GetSupportedFields/Sync", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_supported_fields_sync, e_test_server_utils_teardown);
+		"/EBook/GetSupportedFields/Sync",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_supported_fields_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBook/GetSupportedFields/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_supported_fields_async, e_test_server_utils_teardown);
+		"/EBook/GetSupportedFields/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_supported_fields_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

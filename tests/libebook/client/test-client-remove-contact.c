@@ -116,24 +116,42 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_test_add (
-		"/EBookClient/RemoveContact/Sync", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_remove_contact_sync, e_test_server_utils_teardown);
+		"/EBookClient/RemoveContact/Sync",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_remove_contact_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/RemoveContact/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_remove_contact_async, e_test_server_utils_teardown);
+		"/EBookClient/RemoveContact/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_remove_contact_async,
+		e_test_server_utils_teardown);
 
-	/* We run the direct access variants here because we're interested in testing the error
-	 * code from e_book_client_get_contact(removed_contact_uid)  */
+	/* We run the direct access variants here because
+	 * we're interested in testing the error code from
+	 * e_book_client_get_contact(removed_contact_uid). */
 	g_test_add (
-		"/EBookClient/DirectAccess/RemoveContact/Sync", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_remove_contact_sync, e_test_server_utils_teardown);
+		"/EBookClient/DirectAccess/RemoveContact/Sync",
+		ETestServerFixture,
+		&direct_book_closure,
+		e_test_server_utils_setup,
+		test_remove_contact_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/RemoveContact/Async", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_remove_contact_async, e_test_server_utils_teardown);
+		"/EBookClient/DirectAccess/RemoveContact/Async",
+		ETestServerFixture,
+		&direct_book_closure,
+		e_test_server_utils_setup,
+		test_remove_contact_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

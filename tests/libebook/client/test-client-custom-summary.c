@@ -337,6 +337,7 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	/* Change environment so that the addressbook factory inherits this setting */
 	g_setenv ("LC_ALL", "en_US.UTF-8", TRUE);
@@ -350,162 +351,304 @@ main (gint argc,
 
 		/* A query that will cause e_sexp_parse() to report an error */
 		add_client_test_sexp (
-			suites[i].prefix, "/InvalidQuery", suites[i].func,
+			suites[i].prefix,
+			"/InvalidQuery",
+			suites[i].func,
 			g_strdup ("(invalid \"query\" \"term\")"),
-			-1, suites[i].direct, suites[i].custom, FALSE);
+			-1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		/* Add search tests that fetch contacts */
 		add_client_test (
-			suites[i].prefix, "/Exact/FullName", suites[i].func,
-			e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "James Brown"),
-			1, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Exact/FullName",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_IS,
+				"James Brown"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		add_client_test (
-			suites[i].prefix, "/Exact/Name", suites[i].func,
-			e_book_query_vcard_field_test (EVC_N, E_BOOK_QUERY_IS, "Janet"),
-			1, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Exact/Name",
+			suites[i].func,
+			e_book_query_vcard_field_test (
+				EVC_N,
+				E_BOOK_QUERY_IS,
+				"Janet"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		add_client_test (
-			suites[i].prefix, "/Prefix/FullName", suites[i].func,
-			e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "B"),
-			2, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Prefix/FullName",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_BEGINS_WITH,
+				"B"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		add_client_test (
-			suites[i].prefix, "/Prefix/FullName/Percent", suites[i].func,
-			e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_BEGINS_WITH, "%"),
-			1, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Prefix/FullName/Percent",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_BEGINS_WITH,
+				"%"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
-		/* Query the E_CONTACT_TEL field for something that is not a phone number, user is
-		 * searching for all the contacts when they noted they must ask Jenny for the phone number
-		 */
+		/* Query the E_CONTACT_TEL field for something that is not a
+		 * phone number, user is searching for all the contacts when
+		 * they noted they must ask Jenny for the phone number. */
 		add_client_test (
-			suites[i].prefix, "/Prefix/Phone/NotAPhoneNumber", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_BEGINS_WITH, "ask Jenny"),
-			1, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Prefix/Phone/NotAPhoneNumber",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_BEGINS_WITH,
+				"ask Jenny"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		add_client_test (
-			suites[i].prefix, "/Suffix/Phone", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "999"),
-			2, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Suffix/Phone",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_ENDS_WITH,
+				"999"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
-		/* This test proves that we do not get any results for custom-7.vcf, which contains
-		 * a phone number ending with "88 99", if this were accidentally normalized, we would
-		 * get a result for it.
-		 */
+		/* This test proves that we do not get any results for
+		 * custom-7.vcf, which contains a phone number ending with
+		 * "88 99", if this were accidentally normalized, we would
+		 * get a result for it. */
 		add_client_test (
-			suites[i].prefix, "/Suffix/Phone/NotNormalized", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_ENDS_WITH, "8899"),
-			0, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Suffix/Phone/NotNormalized",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_ENDS_WITH,
+				"8899"),
+			0,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		add_client_test (
-			suites[i].prefix, "/Suffix/Email", suites[i].func,
-			e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, "jackson.com"),
-			2, suites[i].direct, suites[i].custom, FALSE);
+			suites[i].prefix,
+			"/Suffix/Email",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_EMAIL,
+				E_BOOK_QUERY_ENDS_WITH,
+				"jackson.com"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 
 		/*********************************************
 		 *         PHONE NUMBER QUERIES FOLLOW       *
 		 *********************************************/
 
-		/* Expect E_CLIENT_ERROR_INVALID_QUERY, "ask Jenny for Lisa's number" was entered
-		 * for contact-6.vcf, it can be searched using normal E_BOOK_QUERY_* queries but
-		 * treating it as a phone number is an invalid query.
-		 */
+		/* Expect E_CLIENT_ERROR_INVALID_QUERY, "ask Jenny for
+		 * Lisa's number" was entered for contact-6.vcf, it can
+		 * be searched using normal E_BOOK_QUERY_* queries but
+		 * treating it as a phone number is an invalid query. */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/InvalidPhoneNumber", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL,
-			E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
-			"ask Jenny for Lisa's number"),
-			-1, suites[i].direct, suites[i].custom, TRUE);
+			suites[i].prefix,
+			"/EqPhone/InvalidPhoneNumber",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+				"ask Jenny for Lisa's number"),
+			-1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
-		/* These queries will do an index lookup with a custom summary, and a full table scan
-		 * matching with EBookBackendSexp when the default summary is used
-		 */
+		/* These queries will do an index lookup with a custom summary,
+		 * and a full table scan matching with EBookBackendSexp when
+		 * the default summary is used. */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/Exact/Common", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
-			1, suites[i].direct, suites[i].custom, TRUE);
+			suites[i].prefix,
+			"/EqPhone/Exact/Common",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+				"+1 221.542.3789"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
-		/* This test checks that phone number matching works when deeply nested into a query, when ENABLE_PHONENUMBER
-		 * is not defined, then it ensures that the query is refused while being deeply nested.
-		 */
+		/* This test checks that phone number matching works when
+		 * deeply nested into a query, when ENABLE_PHONENUMBER is
+		 * not defined, then it ensures that the query is refused
+		 * while being deeply nested. */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/Exact/Nested", suites[i].func,
+			suites[i].prefix,
+			"/EqPhone/Exact/Nested",
+			suites[i].func,
 			e_book_query_orv (
-			e_book_query_field_test (E_CONTACT_FULL_NAME, E_BOOK_QUERY_IS, "Not In The Summary"),
-			e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_IS, "not.in.the@summary.com"),
-			e_book_query_andv (
-			e_book_query_field_test (E_CONTACT_FULL_NAME,
-			E_BOOK_QUERY_BEGINS_WITH, "Micheal"),
-			e_book_query_field_test (E_CONTACT_TEL,
-			E_BOOK_QUERY_EQUALS_PHONE_NUMBER, "+1 221.542.3789"),
-			NULL),
-			NULL),
-			1, suites[i].direct, suites[i].custom, TRUE);
+				e_book_query_field_test (
+					E_CONTACT_FULL_NAME,
+					E_BOOK_QUERY_IS,
+					"Not In The Summary"),
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_IS,
+					"not.in.the@summary.com"),
+				e_book_query_andv (
+					e_book_query_field_test (
+						E_CONTACT_FULL_NAME,
+						E_BOOK_QUERY_BEGINS_WITH,
+						"Micheal"),
+					e_book_query_field_test (
+						E_CONTACT_TEL,
+						E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+						"+1 221.542.3789"),
+					NULL),
+				NULL),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
 		/*********************************************
 		 * E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER *
 		 *********************************************/
 
-		/* Test that a query term with no specified country returns all vCards that 
-		 * have the same national number regardless of country codes.
+		/* Test that a query term with no specified country returns
+		 * all vCards that have the same national number regardless
+		 * of country codes.
 		 *
 		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +1-221-5423789 | Matches: yes |
 		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no  |
 		 */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/National/Common", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "221.542.3789"),
-			1, suites[i].direct, suites[i].custom, TRUE);
+			suites[i].prefix,
+			"/EqPhone/National/Common",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"221.542.3789"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
-		/* Test that a query term with a specified country returns only vCards that 
-		 * are specifically in the specified country code.
+		/* Test that a query term with a specified country returns
+		 * only vCards that are specifically in the specified country
+		 * code.
 		 *
 		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +1-221-5423789 | Matches: no |
 		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no |
 		 */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/National/CountryMismatch", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL,
-			E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+49 221.542.3789"),
-			0, suites[i].direct, suites[i].custom, TRUE);
+			suites[i].prefix,
+			"/EqPhone/National/CountryMismatch",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"+49 221.542.3789"),
+			0,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
-		/* Test that a query term with the active country code specified returns a vCard with an unspecified
-		 * country code.
+		/* Test that a query term with the active country code
+		 * specified returns a vCard with an unspecified country code.
 		 *
 		 * | Active Country Code: +1 | Query: +1 514-845-8436 | vCard Data: 514-845-8436 | Matches: yes |
 		 */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/National/CountryAbsent/QueryWithCountry", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL,
-			E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+1 514-845-8436"),
-			1, suites[i].direct, suites[i].custom, TRUE);
+			suites[i].prefix,
+			"/EqPhone/National/CountryAbsent/QueryWithCountry",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"+1 514-845-8436"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
-		/* Test that a query term with an arbitrary country code specified returns a vCard with an unspecified
-		 * country code.
+		/* Test that a query term with an arbitrary country code
+		 * specified returns a vCard with an unspecified country code.
 		 *
 		 * | Active Country Code: +1 | Query: +49 514-845-8436 | vCard Data: 514-845-8436 | Matches: yes |
 		 */
 		add_client_test (
-			suites[i].prefix, "/EqPhone/National/CountryAbsent/QueryOtherCountry", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER, "+49 514-845-8436"),
-			0, suites[i].direct, suites[i].custom, TRUE);
+			suites[i].prefix,
+			"/EqPhone/National/CountryAbsent/QueryOtherCountry",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"+49 514-845-8436"),
+			0,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
 		add_client_test (
-			suites[i].prefix, "/EqPhone/Short", suites[i].func,
-			e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER, "5423789"),
-			1, suites[i].direct, suites[i].custom, TRUE);
-
+			suites[i].prefix,
+			"/EqPhone/Short",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
+				"5423789"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 	}
 
 #ifdef ENABLE_PHONENUMBER
 #if 0 /* FIXME: This test is broken */
 
 	add_client_test (
-		"/EBookClient", "/EqPhone/LocaleChange", locale_change_test,
+		"/EBookClient",
+		"/EqPhone/LocaleChange",
+		locale_change_test,
 		NULL, 0, FALSE, TRUE);
 
 	add_client_test (
-		"/EBookClient/DirectAccess", "/EqPhone/LocaleChange", locale_change_test,
+		"/EBookClient/DirectAccess",
+		"/EqPhone/LocaleChange",
+		locale_change_test,
 		NULL, 0, TRUE, TRUE);
 #endif
 #endif /* ENABLE_PHONENUMBER */

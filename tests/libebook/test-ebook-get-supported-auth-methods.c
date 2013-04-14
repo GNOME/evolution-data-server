@@ -100,13 +100,22 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBook/GetSupportedAuthMethods/Sync", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_supported_auth_methods_sync, e_test_server_utils_teardown);
+		"/EBook/GetSupportedAuthMethods/Sync",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_supported_auth_methods_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBook/GetSupportedAuthMethods/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_supported_auth_methods_async, e_test_server_utils_teardown);
+		"/EBook/GetSupportedAuthMethods/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_supported_auth_methods_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

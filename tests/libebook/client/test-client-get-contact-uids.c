@@ -97,19 +97,36 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBookClient/GetContactUids/Sync", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_contact_uids_sync, e_test_server_utils_teardown);
+		"/EBookClient/GetContactUids/Sync",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_contact_uids_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/GetContactUids/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_contact_uids_async, e_test_server_utils_teardown);
+		"/EBookClient/GetContactUids/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_contact_uids_async,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/GetContactUids/Sync", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_get_contact_uids_sync, e_test_server_utils_teardown);
+		"/EBookClient/DirectAccess/GetContactUids/Sync",
+		ETestServerFixture,
+		&direct_book_closure,
+		e_test_server_utils_setup,
+		test_get_contact_uids_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/GetContactUids/Async", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_get_contact_uids_async, e_test_server_utils_teardown);
+		"/EBookClient/DirectAccess/GetContactUids/Async",
+		ETestServerFixture,
+		&direct_book_closure,
+		e_test_server_utils_setup,
+		test_get_contact_uids_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

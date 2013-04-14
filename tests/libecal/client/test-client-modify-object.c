@@ -131,13 +131,22 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/ECalClient/ModifyObject/Sync", ETestServerFixture, &cal_closure,
-		e_test_server_utils_setup, test_modify_object_sync, e_test_server_utils_teardown);
+		"/ECalClient/ModifyObject/Sync",
+		ETestServerFixture,
+		&cal_closure,
+		e_test_server_utils_setup,
+		test_modify_object_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/ECalClient/ModifyObject/Async", ETestServerFixture, &cal_closure,
-		e_test_server_utils_setup, test_modify_object_async, e_test_server_utils_teardown);
+		"/ECalClient/ModifyObject/Async",
+		ETestServerFixture,
+		&cal_closure,
+		e_test_server_utils_setup,
+		test_modify_object_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

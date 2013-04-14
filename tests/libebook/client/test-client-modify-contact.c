@@ -133,13 +133,22 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBookClient/ModifyContact/Sync", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_modify_contact_sync, e_test_server_utils_teardown);
+		"/EBookClient/ModifyContact/Sync",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_modify_contact_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/ModifyContact/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_modify_contact_async, e_test_server_utils_teardown);
+		"/EBookClient/ModifyContact/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_modify_contact_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -31,10 +31,15 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/ECal/GetAlarmEmailAddress", ETestServerFixture, &cal_closure,
-		e_test_server_utils_setup, test_get_alarm_email_address, e_test_server_utils_teardown);
+		"/ECal/GetAlarmEmailAddress",
+		ETestServerFixture,
+		&cal_closure,
+		e_test_server_utils_setup,
+		test_get_alarm_email_address,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -14,12 +14,12 @@ static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 }
 static void
 get_revision_compare_cycle (EBookClient *client)
 {
-       gchar    *revision_before = NULL, *revision_after = NULL;
-       EContact *contact = NULL;
-       GError   *error = NULL;
+	gchar    *revision_before = NULL, *revision_after = NULL;
+	EContact *contact = NULL;
+	GError   *error = NULL;
 
-       if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_before, NULL, &error))
-	       g_error ("Error getting book revision: %s", error->message);
+	if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_before, NULL, &error))
+		g_error ("Error getting book revision: %s", error->message);
 
 	if (!add_contact_from_test_case_verify (client, "simple-1", &contact)) {
 		g_object_unref (client);
@@ -31,18 +31,19 @@ get_revision_compare_cycle (EBookClient *client)
 
 	g_object_unref (contact);
 
-       if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_after, NULL, &error))
-	       g_error ("Error getting book revision: %s", error->message);
+	if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_after, NULL, &error))
+		g_error ("Error getting book revision: %s", error->message);
 
-       g_assert (revision_before);
-       g_assert (revision_after);
-       g_assert (strcmp (revision_before, revision_after) != 0);
+	g_assert (revision_before);
+	g_assert (revision_after);
+	g_assert (strcmp (revision_before, revision_after) != 0);
 
-       g_message ("Passed cycle, revision before '%s' revision after '%s'",
-		  revision_before, revision_after);
+	g_message (
+		"Passed cycle, revision before '%s' revision after '%s'",
+		revision_before, revision_after);
 
-       g_free (revision_before);
-       g_free (revision_after);
+	g_free (revision_before);
+	g_free (revision_after);
 }
 
 static void
@@ -67,10 +68,15 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBookClient/GetRevision", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_get_revision, e_test_server_utils_teardown);
+		"/EBookClient/GetRevision",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_get_revision,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }
