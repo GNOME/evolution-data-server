@@ -5283,7 +5283,8 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	GFlagsClass *flags_class;
 	GFlagsValue *flags_value;
 	GString *flags;
-	gboolean success;
+	guint n_valid_uids = 0;
+	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
@@ -5299,7 +5300,7 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 		flags_value = g_flags_get_first_value (flags_class, mod);
 	}
 
-	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(ss)"));
 	while (ids != NULL) {
 		ECalComponentId *id = ids->data;
 		gchar *utf8_uid;
@@ -5307,8 +5308,22 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 
 		ids = g_slist_next (ids);
 
-		if (id->uid == NULL || *id->uid == '\0')
+		if (id->uid == NULL)
 			continue;
+
+		/* Reject empty UIDs with an OBJECT_NOT_FOUND error for
+		 * backward-compatibility, even though INVALID_ARG might
+		 * be more appropriate. */
+		if (*id->uid == '\0') {
+			g_set_error_literal (
+				error, E_CAL_CLIENT_ERROR,
+				E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
+				e_cal_client_error_to_string (
+				E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
+			n_valid_uids = 0;
+			success = FALSE;
+			break;
+		}
 
 		utf8_uid = e_util_utf8_make_valid (id->uid);
 		if (id->rid != NULL)
@@ -5320,12 +5335,18 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 
 		g_free (utf8_uid);
 		g_free (utf8_rid);
+
+		n_valid_uids++;
 	}
 
-	success = e_dbus_calendar_call_remove_objects_sync (
-		client->priv->dbus_proxy,
-		g_variant_builder_end (&builder),
-		flags->str, cancellable, error);
+	if (n_valid_uids > 0) {
+		success = e_dbus_calendar_call_remove_objects_sync (
+			client->priv->dbus_proxy,
+			g_variant_builder_end (&builder),
+			flags->str, cancellable, error);
+	} else {
+		g_variant_builder_clear (&builder);
+	}
 
 	g_type_class_unref (flags_class);
 	g_string_free (flags, TRUE);
