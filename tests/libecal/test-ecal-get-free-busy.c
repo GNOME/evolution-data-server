@@ -109,10 +109,15 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/ECal/GetFreeBusy", ETestServerFixture, &cal_closure,
-		setup_fixture, test_get_free_busy, teardown_fixture);
+		"/ECal/GetFreeBusy",
+		ETestServerFixture,
+		&cal_closure,
+		setup_fixture,
+		test_get_free_busy,
+		teardown_fixture);
 
 	return e_test_server_utils_run ();
 }

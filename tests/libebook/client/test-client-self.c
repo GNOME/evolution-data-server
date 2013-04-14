@@ -10,7 +10,7 @@ static ETestServerClosure registry_closure = { E_TEST_SERVER_NONE, NULL, 0 };
 
 static void
 test_get_self (ETestServerFixture *fixture,
-	       gconstpointer user_data)
+               gconstpointer user_data)
 {
 	EBookClient *client;
 	EContact    *contact;
@@ -31,7 +31,7 @@ test_get_self (ETestServerFixture *fixture,
 
 static void
 test_set_self (ETestServerFixture *fixture,
-	       gconstpointer user_data)
+               gconstpointer user_data)
 {
 	ESource     *source;
 	EBookClient *client;
@@ -42,7 +42,7 @@ test_set_self (ETestServerFixture *fixture,
 
 	/* Open the system addressbook */
 	source = e_source_registry_ref_builtin_address_book (fixture->registry);
-	client = (EBookClient *)e_book_client_connect_sync (source, NULL, &error);
+	client = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
 	g_object_unref (source);
 	if (!client)
 		g_error ("Error connecting to system addressbook: %s", error->message);
@@ -84,13 +84,22 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBookClient/Self/Get", ETestServerFixture, &registry_closure,
-		e_test_server_utils_setup, test_get_self, e_test_server_utils_teardown);
+		"/EBookClient/Self/Get",
+		ETestServerFixture,
+		&registry_closure,
+		e_test_server_utils_setup,
+		test_get_self,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/Self/Set", ETestServerFixture, &registry_closure,
-		e_test_server_utils_setup, test_set_self, e_test_server_utils_teardown);
+		"/EBookClient/Self/Set",
+		ETestServerFixture,
+		&registry_closure,
+		e_test_server_utils_setup,
+		test_set_self,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

@@ -219,7 +219,7 @@ test_econtact (const gchar *vcard_str)
 	return TRUE;
 }
 
-static const gchar *test_vcard_no_uid_str = 
+static const gchar *test_vcard_no_uid_str =
 	"BEGIN:VCARD\r\n"
 	"VERSION:3.0\r\n"
 	"EMAIL;TYPE=OTHER:zyx@no.where\r\n"
@@ -227,7 +227,7 @@ static const gchar *test_vcard_no_uid_str =
 	"N:zyx;mix;;;\r\n"
 	"END:VCARD";
 
-static const gchar *test_vcard_with_uid_str = 
+static const gchar *test_vcard_with_uid_str =
 	"BEGIN:VCARD\r\n"
 	"VERSION:3.0\r\n"
 	"UID:some-uid\r\n"
@@ -235,7 +235,6 @@ static const gchar *test_vcard_with_uid_str =
 	"FN:zyx mix\r\n"
 	"N:zyx;mix;;;\r\n"
 	"END:VCARD";
-
 
 static void
 test_vcard_with_uid (void)
@@ -268,6 +267,7 @@ main (gint argc,
 	g_type_init ();
 
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add_func ("/Parsing/VCard/WithUID", test_vcard_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_vcard_without_uid);

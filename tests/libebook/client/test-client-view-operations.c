@@ -105,10 +105,10 @@ finish_thread_test (ThreadData *data)
  ************************************/
 static void
 view_ready (GObject *source_object,
-	    GAsyncResult *res,
-	    gpointer user_data)
+            GAsyncResult *res,
+            gpointer user_data)
 {
-	ThreadData *data = (ThreadData *)user_data;
+	ThreadData *data = (ThreadData *) user_data;
 	GError *error = NULL;
 
 	if (!e_book_client_get_view_finish (E_BOOK_CLIENT (source_object), res, &(data->view), &error))
@@ -145,13 +145,13 @@ start_thread_test_async (ThreadData *data)
 
 static void
 connect_ready (GObject *source_object,
-	       GAsyncResult *res,
-	       gpointer user_data)
+               GAsyncResult *res,
+               gpointer user_data)
 {
-	ThreadData *data = (ThreadData *)user_data;
+	ThreadData *data = (ThreadData *) user_data;
 	GError     *error = NULL;
 
-	data->client = (EBookClient *)e_book_client_connect_finish (res, &error);
+	data->client = (EBookClient *) e_book_client_connect_finish (res, &error);
 	if (!data->client)
 		g_error ("Error asynchronously connecting to client");
 
@@ -289,7 +289,7 @@ test_view_thread_sync (ThreadData *data)
 static ThreadData *
 create_test_thread (const gchar *book_uid,
                     gconstpointer user_data,
-		    gboolean sync)
+                    gboolean sync)
 {
 	ThreadData  *data = g_slice_new0 (ThreadData);
 
@@ -310,7 +310,7 @@ create_test_thread (const gchar *book_uid,
 static void
 test_concurrent_views (ETestServerFixture *fixture,
                        gconstpointer user_data,
-		       gboolean sync)
+                       gboolean sync)
 {
 	EBookClient *main_client;
 	ESource *source;
@@ -357,18 +357,17 @@ test_concurrent_views (ETestServerFixture *fixture,
 
 static void
 test_concurrent_views_sync (ETestServerFixture *fixture,
-			    gconstpointer user_data)
+                            gconstpointer user_data)
 {
 	test_concurrent_views (fixture, user_data, TRUE);
 }
 
 static void
 test_concurrent_views_async (ETestServerFixture *fixture,
-			     gconstpointer user_data)
+                             gconstpointer user_data)
 {
 	test_concurrent_views (fixture, user_data, FALSE);
 }
-
 
 gint
 main (gint argc,
@@ -378,20 +377,38 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
+
 	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_test_add (
-		"/EBookClient/ConcurrentViews/Sync", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_concurrent_views_sync, e_test_server_utils_teardown);
+		"/EBookClient/ConcurrentViews/Sync",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_concurrent_views_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/ConcurrentViews/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_concurrent_views_async, e_test_server_utils_teardown);
+		"/EBookClient/ConcurrentViews/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_concurrent_views_async,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/ConcurrentViews/Sync", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_concurrent_views_sync, e_test_server_utils_teardown);
+		"/EBookClient/DirectAccess/ConcurrentViews/Sync",
+		ETestServerFixture,
+		&direct_book_closure,
+		e_test_server_utils_setup,
+		test_concurrent_views_sync,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/ConcurrentViews/Async", ETestServerFixture, &direct_book_closure,
-		e_test_server_utils_setup, test_concurrent_views_async, e_test_server_utils_teardown);
+		"/EBookClient/DirectAccess/ConcurrentViews/Async",
+		ETestServerFixture,
+		&direct_book_closure,
+		e_test_server_utils_setup,
+		test_concurrent_views_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

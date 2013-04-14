@@ -92,13 +92,22 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBookClient/AddContact/PreserveUid", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_preserve_uid, e_test_server_utils_teardown);
+		"/EBookClient/AddContact/PreserveUid",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_preserve_uid,
+		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/AddContact/UidConflict", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_uid_conflict, e_test_server_utils_teardown);
+		"/EBookClient/AddContact/UidConflict",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_uid_conflict,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

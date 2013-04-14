@@ -324,11 +324,17 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
+
 	setlocale (LC_ALL, "en_US.UTF-8");
 
 	g_test_add (
-		"/EBookClient/ConcurrentWrites", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_concurrent_writes, e_test_server_utils_teardown);
+		"/EBookClient/ConcurrentWrites",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_concurrent_writes,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

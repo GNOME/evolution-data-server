@@ -138,28 +138,53 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 #ifdef ENABLE_PHONENUMBER
 
 	g_test_add (
-		"/EBookClient/AddContact/AddE164Param/1", ETestServerFixture,
-		test_data_new ("custom-1", "+1-221-5423789", "+1", "2215423789", FALSE),
-		e_test_server_utils_setup, test_add_e164_param,
+		"/EBookClient/AddContact/AddE164Param/1",
+		ETestServerFixture,
+		test_data_new (
+			"custom-1",
+			"+1-221-5423789",
+			"+1", "2215423789",
+			FALSE),
+		e_test_server_utils_setup,
+		test_add_e164_param,
 		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/AddContact/AddE164Param/2", ETestServerFixture,
-		test_data_new ("custom-2", "7654321", NULL, "7654321", FALSE),
-		e_test_server_utils_setup, test_add_e164_param,
+		"/EBookClient/AddContact/AddE164Param/2",
+		ETestServerFixture,
+		test_data_new (
+			"custom-2",
+			"7654321",
+			NULL, "7654321",
+			FALSE),
+		e_test_server_utils_setup,
+		test_add_e164_param,
 		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/AddContact/AddE164Param/1", ETestServerFixture,
-		test_data_new ("custom-1", "+1-221-5423789", "+1", "2215423789", TRUE),
-		e_test_server_utils_setup, test_add_e164_param,
+		"/EBookClient/DirectAccess/AddContact/AddE164Param/1",
+		ETestServerFixture,
+		test_data_new (
+			"custom-1",
+			"+1-221-5423789",
+			"+1", "2215423789",
+			TRUE),
+		e_test_server_utils_setup,
+		test_add_e164_param,
 		e_test_server_utils_teardown);
 	g_test_add (
-		"/EBookClient/DirectAccess/AddContact/AddE164Param/2", ETestServerFixture,
-		test_data_new ("custom-2", "7654321", NULL, "7654321", TRUE),
-		e_test_server_utils_setup, test_add_e164_param,
+		"/EBookClient/DirectAccess/AddContact/AddE164Param/2",
+		ETestServerFixture,
+		test_data_new (
+			"custom-2",
+			"7654321",
+			NULL, "7654321",
+			TRUE),
+		e_test_server_utils_setup,
+		test_add_e164_param,
 		e_test_server_utils_teardown);
 
 #endif /* ENABLE_PHONENUMBER */

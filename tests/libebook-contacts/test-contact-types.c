@@ -1,21 +1,20 @@
 #include <string.h>
 #include <libebook-contacts/libebook-contacts.h>
 
-
 typedef struct {
 	EContact *contact;
 } TypesFixture;
 
 static void
 types_setup (TypesFixture *fixture,
-	     gconstpointer user_data)
+             gconstpointer user_data)
 {
 	fixture->contact = e_contact_new ();
 }
 
 static void
 types_teardown (TypesFixture *fixture,
-		gconstpointer user_data)
+                gconstpointer user_data)
 {
 	g_object_unref (fixture->contact);
 }
@@ -27,10 +26,10 @@ types_teardown (TypesFixture *fixture,
        */
 static void
 test_undefined_field (TypesFixture *fixture,
-		      gconstpointer user_data)
+                      gconstpointer user_data)
 {
 	gpointer test;
-	
+
 	test = e_contact_get (fixture->contact, 6000 /* something suitably high. */);
 	g_assert (test == NULL);
 }
@@ -41,7 +40,7 @@ test_undefined_field (TypesFixture *fixture,
 
 static void
 test_string (TypesFixture *fixture,
-	     gconstpointer user_data)
+             gconstpointer user_data)
 {
 	e_contact_set (fixture->contact, E_CONTACT_UID, TEST_ID);
 	g_assert_cmpstr (e_contact_get_const (fixture->contact, E_CONTACT_UID), ==, TEST_ID);
@@ -50,7 +49,7 @@ test_string (TypesFixture *fixture,
 /************* DATE *****************/
 static void
 test_date (TypesFixture *fixture,
-	   gconstpointer user_data)
+           gconstpointer user_data)
 {
 	EContactDate date, *dp;
 
@@ -93,7 +92,7 @@ static const gchar *photo_data =
 
 static void
 test_photo (TypesFixture *fixture,
-	    gconstpointer user_data)
+            gconstpointer user_data)
 {
 	EContactPhoto *photo, *new_photo;
 	guchar *data;
@@ -123,7 +122,7 @@ test_photo (TypesFixture *fixture,
 /************* CATEGORIES *****************/
 static void
 test_categories_initially_null_list (TypesFixture *fixture,
-				     gconstpointer user_data)
+                                     gconstpointer user_data)
 {
 	gpointer test;
 
@@ -133,7 +132,7 @@ test_categories_initially_null_list (TypesFixture *fixture,
 
 static void
 test_categories_convert_to_string (TypesFixture *fixture,
-				   gconstpointer user_data)
+                                   gconstpointer user_data)
 {
 	GList *category_list;
 	gchar *categories;
@@ -153,7 +152,7 @@ test_categories_convert_to_string (TypesFixture *fixture,
 
 static void
 test_categories_convert_to_list (TypesFixture *fixture,
-				 gconstpointer user_data)
+                                 gconstpointer user_data)
 {
 	GList *category_list;
 
@@ -175,23 +174,52 @@ main (gint argc,
 	g_type_init ();
 
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 #if 0   /* This can't properly be tested, the assertion causes the test to break */
-	g_test_add ("/Contact/Types/UndefinedField", TypesFixture, NULL,
-		    types_setup, test_undefined_field, types_teardown);
+	g_test_add (
+		"/Contact/Types/UndefinedField",
+		TypesFixture, NULL,
+		types_setup,
+		test_undefined_field,
+		types_teardown);
 #endif
-	g_test_add ("/Contact/Types/String", TypesFixture, NULL,
-		    types_setup, test_string, types_teardown);
-	g_test_add ("/Contact/Types/Date", TypesFixture, NULL,
-		    types_setup, test_date, types_teardown);
-	g_test_add ("/Contact/Types/Photo", TypesFixture, NULL,
-		    types_setup, test_photo, types_teardown);
-	g_test_add ("/Contact/Types/Categories/InitiallyNullList", TypesFixture, NULL,
-		    types_setup, test_categories_initially_null_list, types_teardown);
-	g_test_add ("/Contact/Types/Categories/ConvertToString", TypesFixture, NULL,
-		    types_setup, test_categories_convert_to_string, types_teardown);
-	g_test_add ("/Contact/Types/Categories/ConvertToList", TypesFixture, NULL,
-		    types_setup, test_categories_convert_to_list, types_teardown);
+	g_test_add (
+		"/Contact/Types/String",
+		TypesFixture, NULL,
+		types_setup,
+		test_string,
+		types_teardown);
+	g_test_add (
+		"/Contact/Types/Date",
+		TypesFixture, NULL,
+		types_setup,
+		test_date,
+		types_teardown);
+	g_test_add (
+		"/Contact/Types/Photo",
+		TypesFixture, NULL,
+		types_setup,
+		test_photo,
+		types_teardown);
+	g_test_add (
+		"/Contact/Types/Categories/InitiallyNullList",
+		TypesFixture, NULL,
+		types_setup,
+		test_categories_initially_null_list,
+		types_teardown);
+	g_test_add (
+		"/Contact/Types/Categories/ConvertToString",
+		TypesFixture, NULL,
+		types_setup,
+		test_categories_convert_to_string,
+		types_teardown);
+	g_test_add (
+		"/Contact/Types/Categories/ConvertToList",
+		TypesFixture, NULL,
+		types_setup,
+		test_categories_convert_to_list,
+		types_teardown);
 
 	return g_test_run ();
 }

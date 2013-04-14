@@ -120,18 +120,18 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 
 static void
 registry_weak_notify (gpointer data,
-		      GObject *where_the_object_was)
+                      GObject *where_the_object_was)
 {
-	ETestServerFixture *fixture = (ETestServerFixture *)data;
+	ETestServerFixture *fixture = (ETestServerFixture *) data;
 
 	fixture->registry_finalized = TRUE;
 }
 
 static void
 client_weak_notify (gpointer data,
-		    GObject *where_the_object_was)
+                    GObject *where_the_object_was)
 {
-	ETestServerFixture *fixture = (ETestServerFixture *)data;
+	ETestServerFixture *fixture = (ETestServerFixture *) data;
 
 	fixture->client_finalized = TRUE;
 }
@@ -160,8 +160,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.book_client),
+			client_weak_notify, pair->fixture);
 
 		break;
 
@@ -174,8 +175,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!e_book_open (pair->fixture->service.book, FALSE, &error))
 			g_error ("Unable to open book: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.book),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.book),
+			client_weak_notify, pair->fixture);
 
 		break;
 
@@ -188,8 +190,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!pair->fixture->service.calendar_client)
 			g_error ("Unable to create the test calendar: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.calendar_client),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.calendar_client),
+			client_weak_notify, pair->fixture);
 
 		break;
 
@@ -202,8 +205,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!e_cal_open (pair->fixture->service.calendar, FALSE, &error))
 			g_error ("Unable to open calendar: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.calendar),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.calendar),
+			client_weak_notify, pair->fixture);
 
 		break;
 
@@ -226,8 +230,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	if (!pair->fixture->registry)
 		g_error ("Unable to create the test registry: %s", error->message);
 
-	g_object_weak_ref (G_OBJECT (pair->fixture->registry),
-			   registry_weak_notify, pair->fixture);
+	g_object_weak_ref (
+		G_OBJECT (pair->fixture->registry),
+		registry_weak_notify, pair->fixture);
 
 	g_signal_connect (
 		pair->fixture->registry, "source-added",

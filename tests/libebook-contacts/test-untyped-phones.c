@@ -50,6 +50,7 @@ main (gint argc,
 	g_type_init ();
 
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 #if 0   /* This is failing for some reason, somewhere in EDS history it broke,
 	 * for now I'm leaving the compiler warning in place intentionally

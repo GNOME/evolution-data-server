@@ -413,41 +413,72 @@ main (gint argc,
 	g_type_init ();
 
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
-	g_test_add_func
-		("/ebook-phone-number/supported",
-		 test_supported);
+	g_test_add_func (
+		"/ebook-phone-number/supported",
+		test_supported);
 
 	g_test_add_data_func_full (
-		"/ebook-phone-number/parse-and-format/i164", parse_and_format_data_new (
+		"/ebook-phone-number/parse-and-format/i164",
+		parse_and_format_data_new (
 			"+493011223344", NULL,
-			E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 49, "3011223344",
-			"+493011223344", "+49 30 11223344", "030 11223344", "tel:+49-30-11223344"),
-		test_parse_and_format, parse_and_format_data_free);
+			E_PHONE_NUMBER_COUNTRY_FROM_FQTN,
+			49, "3011223344",
+			"+493011223344",
+			"+49 30 11223344",
+			"030 11223344",
+			"tel:+49-30-11223344"),
+		test_parse_and_format,
+		parse_and_format_data_free);
 	g_test_add_data_func_full (
-		"/ebook-phone-number/parse-and-format/national", parse_and_format_data_new (
-		"(030) 22334-455", "DE",
-		E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT, 49, "3022334455",
-		"+493022334455", "+49 30 22334455", "030 22334455", "tel:+49-30-22334455"),
-		test_parse_and_format, parse_and_format_data_free);
+		"/ebook-phone-number/parse-and-format/national",
+		parse_and_format_data_new (
+			"(030) 22334-455", "DE",
+			E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT,
+			49, "3022334455",
+			"+493022334455",
+			"+49 30 22334455",
+			"030 22334455",
+			"tel:+49-30-22334455"),
+		test_parse_and_format,
+		parse_and_format_data_free);
 	g_test_add_data_func_full (
-		"/ebook-phone-number/parse-and-format/national2", parse_and_format_data_new (
-		"0049 (30) 22334-455", "DE",
-		E_PHONE_NUMBER_COUNTRY_FROM_IDD, 49, "3022334455",
-		"+493022334455", "+49 30 22334455", "030 22334455", "tel:+49-30-22334455"),
-		test_parse_and_format, parse_and_format_data_free);
+		"/ebook-phone-number/parse-and-format/national2",
+		parse_and_format_data_new (
+			"0049 (30) 22334-455", "DE",
+			E_PHONE_NUMBER_COUNTRY_FROM_IDD,
+			49, "3022334455",
+			"+493022334455",
+			"+49 30 22334455",
+			"030 22334455",
+			"tel:+49-30-22334455"),
+		test_parse_and_format,
+		parse_and_format_data_free);
 	g_test_add_data_func_full (
-		"/ebook-phone-number/parse-and-format/international", parse_and_format_data_new (
-		"+1 212 33445566", NULL,
-		E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 1, "21233445566",
-		"+121233445566", "+1 21233445566", "21233445566", "tel:+1-21233445566"),
-		test_parse_and_format, parse_and_format_data_free);
+		"/ebook-phone-number/parse-and-format/international",
+		parse_and_format_data_new (
+			"+1 212 33445566", NULL,
+			E_PHONE_NUMBER_COUNTRY_FROM_FQTN,
+			1, "21233445566",
+			"+121233445566",
+			"+1 21233445566",
+			"21233445566",
+			"tel:+1-21233445566"),
+		test_parse_and_format,
+		parse_and_format_data_free);
 	g_test_add_data_func_full (
-		"/ebook-phone-number/parse-and-format/rfc3966", parse_and_format_data_new (
-		"tel:+358-71-44556677", NULL,
-		E_PHONE_NUMBER_COUNTRY_FROM_FQTN, 358, "7144556677",
-		"+3587144556677", "+358 71 44556677", "071 44556677", "tel:+358-71-44556677"),
-		test_parse_and_format, parse_and_format_data_free);
+		"/ebook-phone-number/parse-and-format/rfc3966",
+		parse_and_format_data_new (
+			"tel:+358-71-44556677", NULL,
+			E_PHONE_NUMBER_COUNTRY_FROM_FQTN,
+			358, "7144556677",
+			"+3587144556677",
+			"+358 71 44556677",
+			"071 44556677",
+			"tel:+358-71-44556677"),
+		test_parse_and_format,
+		parse_and_format_data_free);
 
 	g_test_add_func (
 		"/ebook-phone-number/parse-and-format/bad-number",
@@ -468,7 +499,10 @@ main (gint argc,
 				"/ebook-phone-number/compare/%s/%s",
 				match_candidates[i], match_candidates[j]);
 
-			g_test_add_data_func (path, GUINT_TO_POINTER (n), test_compare_numbers);
+			g_test_add_data_func (
+				path,
+				GUINT_TO_POINTER (n),
+				test_compare_numbers);
 			g_free (path);
 		}
 	}

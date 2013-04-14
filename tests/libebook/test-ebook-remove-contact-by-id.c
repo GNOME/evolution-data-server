@@ -33,10 +33,15 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBook/RemoveContactById/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_remove_contact_by_id_async, e_test_server_utils_teardown);
+		"/EBook/RemoveContactById/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_remove_contact_by_id_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }

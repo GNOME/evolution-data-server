@@ -14,7 +14,6 @@ static gint fetched_contacts = 0;
 static gint fetched_uids = 0;
 static gint added_contacts = 0;
 
-
 static void
 count_all_uids_cb (GObject *source_object,
                    GAsyncResult *result,
@@ -41,8 +40,8 @@ count_all_uids_cb (GObject *source_object,
 
 static void
 count_all_contacts_cb (GObject *source_object,
-		       GAsyncResult *result,
-		       gpointer user_data)
+                       GAsyncResult *result,
+                       gpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -73,7 +72,7 @@ count_all_contacts_cb (GObject *source_object,
 
 static void
 count_all_contacts (EBookClient *book_client,
-		    GMainLoop *loop)
+                    GMainLoop *loop)
 {
 	EBookQuery *query;
 	gchar *sexp;
@@ -89,8 +88,8 @@ count_all_contacts (EBookClient *book_client,
 
 static void
 get_contact_cb (GObject *source_object,
-		GAsyncResult *result,
-		gpointer user_data)
+                GAsyncResult *result,
+                gpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -111,8 +110,8 @@ get_contact_cb (GObject *source_object,
 
 static void
 get_contact_async (EBookClient *book_client,
-		   GSList *uids,
-		   GMainLoop *loop)
+                   GSList *uids,
+                   GMainLoop *loop)
 {
 	const gchar *uid = uids->data;
 
@@ -202,10 +201,15 @@ main (gint argc,
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
+	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	g_test_add (
-		"/EBookClient/AddAndGet/Async", ETestServerFixture, &book_closure,
-		e_test_server_utils_setup, test_async, e_test_server_utils_teardown);
+		"/EBookClient/AddAndGet/Async",
+		ETestServerFixture,
+		&book_closure,
+		e_test_server_utils_setup,
+		test_async,
+		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
 }
