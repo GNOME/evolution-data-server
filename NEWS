@@ -1,3 +1,57 @@
+Evolution-Data-Server 3.8.1 2013-04-14
+--------------------------------------
+
+Bug Fixes:
+	Bug 656488 - imapx: Memory leak of mi->server_user_flags (Milan Crha)
+	Bug 681837 - Make enum type registration thread safe (Milan Crha)
+	Bug 693101 - IMAPx can vanish and redownload folder summary
+	             (Milan Crha)
+	Bug 695915 - IMAP alert is not displayed (Milan Crha)
+	Bug 696285 - ownCloud: Check addressbook even if calendar fails
+	             (Vadim Rutkovsky)
+	Bug 696757 - Do not use dynamic keys in g_object_set_data()
+	             (Milan Crha)
+	Bug 697705 - e_cal_client_remove_objects_sync() crashes on empty UID
+	             (Matthew Barnes)
+	Bug 697734 - Memory leak in local calendar backend (Matthew Barnes)
+
+Other Changes:
+	* Fix implicit declaration of WIFEXITED. (Antoine Jacoutot)
+	* EBookClient/ECalClient: Use G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED
+	  for close(). (Matthew Barnes)
+	* sqlite addressbook: fix memory corruption in get_revision.
+	  (Patrick Ohly)
+	* CamelIMAPXServer: Rewrite duplicate message fetching.
+	  (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Marek Černocký (cs)
+	Joe Hansen (da)
+	Mario Blättermann (de)
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Inaki Larranaga Murgoitio (eu)
+	Alexandre Franke (fr)
+	Fran Diéguez (gl)
+	Sweta Kothari (gu)
+	Chandan Kumar (hi)
+	Balázs Úr (hu)
+	Andika Triwidada (id)
+	Shankar Prasad (kn)
+	Aurimas Černius (lt)
+	Ani Peter (ml)
+	Kjartan Maraas (nb)
+	ManojKumar Giri (or)
+	Piotr Drąg (pl)
+	Enrico Nicoletto (pt_BR)
+	Marián Čavojský (sk)
+	Matej Urbančič (sl)
+	Мирослав Николић (sr)
+	Krishnababu Krothapalli (te)
+
+
 Evolution-Data-Server 3.8.0 2013-03-25
 --------------------------------------
 
