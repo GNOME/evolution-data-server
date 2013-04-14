@@ -86,6 +86,24 @@ test_remove_object_async (ETestServerFixture *fixture,
 	g_main_loop_run (fixture->loop);
 }
 
+static void
+test_remove_object_empty_uid (ETestServerFixture *fixture,
+                              gconstpointer user_data)
+{
+	ECalClient *cal_client;
+	GError *error = NULL;
+
+	g_test_bug ("697705");
+
+	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
+
+	e_cal_client_remove_object_sync (
+		cal_client, "", NULL, E_CAL_OBJ_MOD_ALL, NULL, &error);
+	g_assert_error (
+		error, E_CAL_CLIENT_ERROR,
+		E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -109,6 +127,13 @@ main (gint argc,
 		&cal_closure,
 		e_test_server_utils_setup,
 		test_remove_object_async,
+		e_test_server_utils_teardown);
+	g_test_add (
+		"/ECalClient/RemoveObject/EmptyUid",
+		ETestServerFixture,
+		&cal_closure,
+		e_test_server_utils_setup,
+		test_remove_object_empty_uid,
 		e_test_server_utils_teardown);
 
 	return e_test_server_utils_run ();
