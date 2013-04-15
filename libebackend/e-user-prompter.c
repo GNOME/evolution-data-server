@@ -143,7 +143,7 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 {
 	GPtrArray *captions;
 	GList *list, *link;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (dbus_prompter != NULL, FALSE);
 	g_return_val_if_fail (async_data != NULL, FALSE);
@@ -161,7 +161,7 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 	/* NULL-terminated array */
 	g_ptr_array_add (captions, NULL);
 
-	success = e_dbus_user_prompter_call_prompt_sync (
+	e_dbus_user_prompter_call_prompt_sync (
 		dbus_prompter,
 		async_data->type ? async_data->type : "",
 		async_data->title ? async_data->title : "",
@@ -170,12 +170,17 @@ user_prompter_prompt_invoke (EDBusUserPrompter *dbus_prompter,
 		async_data->use_markup,
 		(const gchar *const *) captions->pdata,
 		&async_data->prompt_id,
-		cancellable,
-		error);
+		cancellable, &local_error);
 
 	g_ptr_array_free (captions, TRUE);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
@@ -201,24 +206,30 @@ user_prompter_extension_prompt_invoke (EDBusUserPrompter *dbus_prompter,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	gboolean success;
 	gchar **params;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (dbus_prompter != NULL, FALSE);
 	g_return_val_if_fail (async_data != NULL, FALSE);
 
 	params = e_named_parameters_to_strv (async_data->in_parameters);
-	success = e_dbus_user_prompter_call_extension_prompt_sync (
+
+	e_dbus_user_prompter_call_extension_prompt_sync (
 		dbus_prompter,
 		async_data->dialog_name,
 		(const gchar *const *) params,
 		&async_data->prompt_id,
-		cancellable,
-		error);
+		cancellable, &local_error);
 
 	g_strfreev (params);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void

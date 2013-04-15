@@ -305,18 +305,18 @@ direct_contacts_ready (GObject *source_object,
 {
 	NotificationData *data = (NotificationData *) user_data;
 	GSList *contacts = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	e_data_book_get_contacts_finish (
 		E_DATA_BOOK (source_object),
-		result, &contacts, &error);
+		result, &contacts, &local_error);
 
-	if (error != NULL) {
+	if (local_error != NULL) {
 		g_warn_if_fail (contacts == NULL);
 		g_warning (
 			"Error fetching contacts directly: %s\n",
-			error->message);
-		g_error_free (error);
+			local_error->message);
+		g_error_free (local_error);
 
 	} else if (data->signum == OBJECTS_ADDED) {
 		/* Takes ownership of the linked list. */
@@ -347,18 +347,18 @@ direct_contacts_fetch (EBookClientView *view,
 	 */
 	if (!view->priv->complete) {
 		GSList *contacts = NULL;
-		GError *error = NULL;
+		GError *local_error = NULL;
 
 		e_data_book_get_contacts_sync (
-			view->priv->direct_book,
-			sexp, &contacts, NULL, &error);
+			view->priv->direct_book, sexp,
+			&contacts, NULL, &local_error);
 
-		if (error != NULL) {
+		if (local_error != NULL) {
 			g_warn_if_fail (contacts == NULL);
 			g_warning (
 				"Error fetching contacts directly: %s\n",
-				error->message);
-			g_error_free (error);
+				local_error->message);
+			g_error_free (local_error);
 
 		} else if (signum == OBJECTS_ADDED) {
 			/* Takes ownership of the linked list. */
@@ -565,14 +565,15 @@ book_client_view_dispose_cb (GObject *source_object,
                              GAsyncResult *result,
                              gpointer user_data)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	e_gdbus_book_view_call_dispose_finish (
-		G_DBUS_PROXY (source_object), result, &error);
+		G_DBUS_PROXY (source_object), result, &local_error);
 
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_error_free (local_error);
 	}
 }
 
@@ -999,20 +1000,20 @@ void
 e_book_client_view_start (EBookClientView *view,
                           GError **error)
 {
-	gboolean success;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
 	view->priv->running = TRUE;
 
-	success = e_gdbus_book_view_call_start_sync (
+	e_gdbus_book_view_call_start_sync (
 		view->priv->dbus_proxy, NULL, &local_error);
-	if (!success)
-		view->priv->running = FALSE;
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		view->priv->running = FALSE;
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 
 /**
@@ -1035,8 +1036,10 @@ e_book_client_view_stop (EBookClientView *view,
 	e_gdbus_book_view_call_stop_sync (
 		view->priv->dbus_proxy, NULL, &local_error);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 
 /**
@@ -1061,8 +1064,10 @@ e_book_client_view_set_flags (EBookClientView *view,
 	e_gdbus_book_view_call_set_flags_sync (
 		view->priv->dbus_proxy, flags, NULL, &local_error);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 
 /**
@@ -1113,7 +1118,9 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 		NULL, &local_error);
 	g_strfreev (strv);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 

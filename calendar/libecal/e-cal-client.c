@@ -945,13 +945,22 @@ cal_client_open_sync (EClient *client,
                       GError **error)
 {
 	ECalClient *cal_client;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
 
-	return e_dbus_calendar_call_open_sync (
-		cal_client->priv->dbus_proxy, cancellable, error);
+	e_dbus_calendar_call_open_sync (
+		cal_client->priv->dbus_proxy, cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -960,13 +969,22 @@ cal_client_refresh_sync (EClient *client,
                          GError **error)
 {
 	ECalClient *cal_client;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
 
-	return e_dbus_calendar_call_refresh_sync (
-		cal_client->priv->dbus_proxy, cancellable, error);
+	e_dbus_calendar_call_refresh_sync (
+		cal_client->priv->dbus_proxy, cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
@@ -984,7 +1002,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	const gchar *uid;
 	gchar *object_path = NULL;
 	gulong handler_id;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	priv = E_CAL_CLIENT_GET_PRIVATE (source_object);
 
@@ -992,15 +1010,17 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	source = e_client_get_source (client);
 	uid = e_source_get_uid (source);
 
-	connection = g_bus_get_sync (G_BUS_TYPE_SESSION, cancellable, &error);
+	connection = g_bus_get_sync (
+		G_BUS_TYPE_SESSION, cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((connection != NULL) && (error == NULL)) ||
-		((connection == NULL) && (error != NULL)));
+		((connection != NULL) && (local_error == NULL)) ||
+		((connection == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		return;
 	}
 
@@ -1009,15 +1029,16 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		G_DBUS_PROXY_FLAGS_NONE,
 		CALENDAR_DBUS_SERVICE_NAME,
 		"/org/gnome/evolution/dataserver/CalendarFactory",
-		cancellable, &error);
+		cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((factory_proxy != NULL) && (error == NULL)) ||
-		((factory_proxy == NULL) && (error != NULL)));
+		((factory_proxy != NULL) && (local_error == NULL)) ||
+		((factory_proxy == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
 		return;
 	}
@@ -1026,17 +1047,17 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
 			e_dbus_calendar_factory_call_open_calendar_sync (
 				factory_proxy, uid, &object_path,
-				cancellable, &error);
+				cancellable, &local_error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
 			e_dbus_calendar_factory_call_open_task_list_sync (
 				factory_proxy, uid, &object_path,
-				cancellable, &error);
+				cancellable, &local_error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
 			e_dbus_calendar_factory_call_open_memo_list_sync (
 				factory_proxy, uid, &object_path,
-				cancellable, &error);
+				cancellable, &local_error);
 			break;
 		default:
 			g_return_if_reached ();
@@ -1046,11 +1067,12 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((object_path != NULL) && (error == NULL)) ||
-		((object_path == NULL) && (error != NULL)));
+		((object_path != NULL) && (local_error == NULL)) ||
+		((object_path == NULL) && (local_error != NULL)));
 
 	if (object_path == NULL) {
-		g_simple_async_result_take_error (simple, error);
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
 		return;
 	}
@@ -1059,17 +1081,18 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		connection,
 		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
 		CALENDAR_DBUS_SERVICE_NAME,
-		object_path, cancellable, &error);
+		object_path, cancellable, &local_error);
 
 	g_free (object_path);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((priv->dbus_proxy != NULL) && (error == NULL)) ||
-		((priv->dbus_proxy == NULL) && (error != NULL)));
+		((priv->dbus_proxy != NULL) && (local_error == NULL)) ||
+		((priv->dbus_proxy == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
 		return;
 	}
@@ -1461,7 +1484,7 @@ e_cal_client_connect_sync (ESource *source,
                            GError **error)
 {
 	ECalClient *client;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (
@@ -1474,14 +1497,15 @@ e_cal_client_connect_sync (ESource *source,
 		"source", source,
 		"source-type", source_type, NULL);
 
-	success = g_initable_init (
-		G_INITABLE (client), cancellable, error);
+	g_initable_init (G_INITABLE (client), cancellable, &local_error);
 
-	if (success)
-		success = e_dbus_calendar_call_open_sync (
-			client->priv->dbus_proxy, cancellable, error);
+	if (local_error == NULL)
+		e_dbus_calendar_call_open_sync (
+			client->priv->dbus_proxy, cancellable, &local_error);
 
-	if (!success) {
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		g_prefix_error (
 			error,_("Unable to connect to '%s': "),
 			e_source_get_display_name (source));
@@ -1499,15 +1523,17 @@ cal_client_connect_open_cb (GObject *source_object,
                             gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	e_dbus_calendar_call_open_finish (
-		E_DBUS_CALENDAR (source_object), result, &error);
+		E_DBUS_CALENDAR (source_object), result, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
+	}
 
 	g_simple_async_result_complete (simple);
 
@@ -1523,15 +1549,15 @@ cal_client_connect_init_cb (GObject *source_object,
 	GSimpleAsyncResult *simple;
 	ECalClientPrivate *priv;
 	ConnectClosure *closure;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	g_async_initable_init_finish (
-		G_ASYNC_INITABLE (source_object), result, &error);
+		G_ASYNC_INITABLE (source_object), result, &local_error);
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_simple_async_result_take_error (simple, local_error);
 		g_simple_async_result_complete (simple);
 		goto exit;
 	}
@@ -1986,17 +2012,18 @@ e_cal_client_resolve_tzid_cb (const gchar *tzid,
 {
 	ECalClient *client = data;
 	icaltimezone *zone = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 
-	e_cal_client_get_timezone_sync (client, tzid, &zone, NULL, &error);
+	e_cal_client_get_timezone_sync (
+		client, tzid, &zone, NULL, &local_error);
 
-	if (error != NULL) {
+	if (local_error != NULL) {
 		g_debug (
 			"%s: Failed to find '%s' timezone: %s",
-			G_STRFUNC, tzid, error->message);
-		g_error_free (error);
+			G_STRFUNC, tzid, local_error->message);
+		g_error_free (local_error);
 	}
 
 	return zone;
@@ -2420,16 +2447,16 @@ get_objects_sync (ECalClient *client,
 
 	/* Generate objects */
 	if (uid && *uid) {
-		GError *error = NULL;
+		GError *local_error = NULL;
 
 		e_cal_client_get_objects_for_uid_sync (
-			client, uid, &objects, NULL, &error);
+			client, uid, &objects, NULL, &local_error);
 
-		if (error != NULL) {
+		if (local_error != NULL) {
 			g_warning (
 				"Failed to get recurrence objects "
-				"for uid: %s\n", error->message);
-			g_clear_error (&error);
+				"for uid: %s\n", local_error->message);
+			g_error_free (local_error);
 			return NULL;
 		}
 	} else {
@@ -2506,7 +2533,7 @@ got_objects_for_uid_cb (GObject *source_object,
 {
 	struct get_objects_async_data *goad = user_data;
 	GSList *objects = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	g_return_if_fail (source_object != NULL);
 	g_return_if_fail (result != NULL);
@@ -2514,17 +2541,17 @@ got_objects_for_uid_cb (GObject *source_object,
 	g_return_if_fail (goad->client == E_CAL_CLIENT (source_object));
 
 	e_cal_client_get_objects_for_uid_finish (
-		goad->client, result, &objects, &error);
+		goad->client, result, &objects, &local_error);
 
-	if (error != NULL) {
-		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
-		    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+	if (local_error != NULL) {
+		if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 			free_get_objects_async_data (goad);
-			g_clear_error (&error);
+			g_error_free (local_error);
 			return;
 		}
 
-		g_clear_error (&error);
+		g_clear_error (&local_error);
 		objects = NULL;
 	}
 
@@ -2541,7 +2568,7 @@ got_object_list_as_comps_cb (GObject *source_object,
 {
 	struct get_objects_async_data *goad = user_data;
 	GSList *objects = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	g_return_if_fail (source_object != NULL);
 	g_return_if_fail (result != NULL);
@@ -2549,17 +2576,17 @@ got_object_list_as_comps_cb (GObject *source_object,
 	g_return_if_fail (goad->client == E_CAL_CLIENT (source_object));
 
 	e_cal_client_get_object_list_as_comps_finish (
-		goad->client, result, &objects, &error);
+		goad->client, result, &objects, &local_error);
 
-	if (error != NULL) {
-		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
-		    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+	if (local_error != NULL) {
+		if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 			free_get_objects_async_data (goad);
-			g_clear_error (&error);
+			g_error_free (local_error);
 			return;
 		}
 
-		g_clear_error (&error);
+		g_clear_error (&local_error);
 		objects = NULL;
 	}
 
@@ -3163,17 +3190,17 @@ cal_client_get_default_object_thread (GSimpleAsyncResult *simple,
                                       GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_cal_client_get_default_object_sync (
 		E_CAL_CLIENT (source_object),
 		&async_context->out_comp,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -3327,7 +3354,7 @@ cal_client_get_object_thread (GSimpleAsyncResult *simple,
                               GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -3336,10 +3363,10 @@ cal_client_get_object_thread (GSimpleAsyncResult *simple,
 		async_context->uid,
 		async_context->rid,
 		&async_context->out_comp,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -3481,7 +3508,7 @@ e_cal_client_get_object_sync (ECalClient *client,
 	gchar *utf8_uid;
 	gchar *utf8_rid;
 	gchar *string = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -3493,20 +3520,23 @@ e_cal_client_get_object_sync (ECalClient *client,
 	utf8_uid = e_util_utf8_make_valid (uid);
 	utf8_rid = e_util_utf8_make_valid (rid);
 
-	success = e_dbus_calendar_call_get_object_sync (
+	e_dbus_calendar_call_get_object_sync (
 		client->priv->dbus_proxy, utf8_uid, utf8_rid,
-		&string, cancellable, error);
+		&string, cancellable, &local_error);
 
 	g_free (utf8_uid);
 	g_free (utf8_rid);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (string != NULL)) ||
-		(!success && (string == NULL)), FALSE);
+		((string != NULL) && (local_error == NULL)) ||
+		((string == NULL) && (local_error != NULL)), FALSE);
 
-	if (!success)
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
+	}
 
 	icalcomp = icalparser_parse_string (string);
 
@@ -3582,7 +3612,7 @@ cal_client_get_objects_for_uid_thread (GSimpleAsyncResult *simple,
                                        GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -3590,10 +3620,10 @@ cal_client_get_objects_for_uid_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		&async_context->object_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -3720,7 +3750,7 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 	icalcomponent_kind kind;
 	gchar *utf8_uid;
 	gchar *string = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -3728,19 +3758,22 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 
 	utf8_uid = e_util_utf8_make_valid (uid);
 
-	success = e_dbus_calendar_call_get_object_sync (
+	e_dbus_calendar_call_get_object_sync (
 		client->priv->dbus_proxy, utf8_uid, "",
-		&string, cancellable, error);
+		&string, cancellable, &local_error);
 
 	g_free (utf8_uid);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (string != NULL)) ||
-		(!success && (string == NULL)), FALSE);
+		((string != NULL) && (local_error == NULL)) ||
+		((string == NULL) && (local_error != NULL)), FALSE);
 
-	if (!success)
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
+	}
 
 	icalcomp = icalparser_parse_string (string);
 
@@ -3813,7 +3846,7 @@ cal_client_get_object_list_thread (GSimpleAsyncResult *simple,
                                    GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -3821,10 +3854,10 @@ cal_client_get_object_list_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->comp_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -3946,8 +3979,8 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 	GSList *tmp = NULL;
 	gchar *utf8_sexp;
 	gchar **strv = NULL;
-	gboolean success;
 	gint ii;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
@@ -3955,19 +3988,22 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
-	success = e_dbus_calendar_call_get_object_list_sync (
+	e_dbus_calendar_call_get_object_list_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&strv, cancellable, error);
+		&strv, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (strv != NULL)) ||
-		(!success && (strv == NULL)), FALSE);
+		((strv != NULL) && (local_error == NULL)) ||
+		((strv == NULL) && (local_error != NULL)), FALSE);
 
-	if (!success)
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
+	}
 
 	for (ii = 0; strv[ii] != NULL; ii++) {
 		icalcomponent *icalcomp;
@@ -3991,7 +4027,7 @@ cal_client_get_object_list_as_comps_thread (GSimpleAsyncResult *simple,
                                             GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -3999,10 +4035,10 @@ cal_client_get_object_list_as_comps_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->object_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -4175,7 +4211,7 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -4184,10 +4220,10 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
 		async_context->start,
 		async_context->end,
 		async_context->string_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -4302,8 +4338,8 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
                                  GError **error)
 {
 	gchar **strv;
-	gboolean success;
 	gint ii = 0;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (start > 0, FALSE);
@@ -4315,15 +4351,21 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 		users = g_slist_next (users);
 	}
 
-	success = e_dbus_calendar_call_get_free_busy_sync (
+	e_dbus_calendar_call_get_free_busy_sync (
 		client->priv->dbus_proxy,
 		(gint64) start, (gint64) end,
 		(const gchar * const *) strv,
-		cancellable, error);
+		cancellable, &local_error);
 
 	g_strfreev (strv);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_create_object() */
@@ -4333,7 +4375,7 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -4341,10 +4383,10 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		&async_context->uid,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -4495,7 +4537,7 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
                                   GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -4503,10 +4545,10 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
 		&async_context->string_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -4631,8 +4673,8 @@ e_cal_client_create_objects_sync (ECalClient *client,
 {
 	gchar **strv;
 	gchar **uids = NULL;
-	gboolean success;
 	gint ii = 0;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
@@ -4649,17 +4691,17 @@ e_cal_client_create_objects_sync (ECalClient *client,
 		icalcomps = g_slist_next (icalcomps);
 	}
 
-	success = e_dbus_calendar_call_create_objects_sync (
+	e_dbus_calendar_call_create_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		&uids, cancellable, error);
+		&uids, cancellable, &local_error);
 
 	g_strfreev (strv);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (uids != NULL)) ||
-		(!success && (uids == NULL)), FALSE);
+		((uids != NULL) && (local_error == NULL)) ||
+		((uids == NULL) && (local_error != NULL)), FALSE);
 
 	if (uids != NULL) {
 		GSList *tmp = NULL;
@@ -4675,7 +4717,13 @@ e_cal_client_create_objects_sync (ECalClient *client,
 
 	g_strfreev (uids);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_modify_object() */
@@ -4685,7 +4733,7 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -4693,10 +4741,10 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		async_context->mod,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -4828,7 +4876,7 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
                                   GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -4836,10 +4884,10 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
 		async_context->mod,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -4959,9 +5007,9 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	GFlagsClass *flags_class;
 	GFlagsValue *flags_value;
 	GString *flags;
-	gboolean success;
 	gchar **strv;
 	gint ii = 0;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (comps != NULL, FALSE);
@@ -4988,17 +5036,23 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 		comps = g_slist_next (comps);
 	}
 
-	success = e_dbus_calendar_call_modify_objects_sync (
+	e_dbus_calendar_call_modify_objects_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		flags->str, cancellable, error);
+		flags->str, cancellable, &local_error);
 
 	g_strfreev (strv);
 
 	g_type_class_unref (flags_class);
 	g_string_free (flags, TRUE);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_remove_object() */
@@ -5008,7 +5062,7 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -5017,10 +5071,10 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
 		async_context->uid,
 		async_context->rid,
 		async_context->mod,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -5155,7 +5209,7 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
                                   GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -5163,10 +5217,10 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->string_list,
 		async_context->mod,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -5284,7 +5338,7 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	GFlagsValue *flags_value;
 	GString *flags;
 	guint n_valid_uids = 0;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
@@ -5315,13 +5369,12 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 		 * backward-compatibility, even though INVALID_ARG might
 		 * be more appropriate. */
 		if (*id->uid == '\0') {
-			g_set_error_literal (
-				error, E_CAL_CLIENT_ERROR,
+			local_error = g_error_new_literal (
+				E_CAL_CLIENT_ERROR,
 				E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
 				e_cal_client_error_to_string (
 				E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 			n_valid_uids = 0;
-			success = FALSE;
 			break;
 		}
 
@@ -5340,10 +5393,10 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	}
 
 	if (n_valid_uids > 0) {
-		success = e_dbus_calendar_call_remove_objects_sync (
+		e_dbus_calendar_call_remove_objects_sync (
 			client->priv->dbus_proxy,
 			g_variant_builder_end (&builder),
-			flags->str, cancellable, error);
+			flags->str, cancellable, &local_error);
 	} else {
 		g_variant_builder_clear (&builder);
 	}
@@ -5351,7 +5404,13 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	g_type_class_unref (flags_class);
 	g_string_free (flags, TRUE);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_receive_objects() */
@@ -5361,17 +5420,17 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
                                    GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_cal_client_receive_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -5476,21 +5535,27 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 {
 	gchar *ical_string;
 	gchar *utf8_ical_string;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	ical_string = icalcomponent_as_ical_string_r (icalcomp);
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
 
-	success = e_dbus_calendar_call_receive_objects_sync (
-		client->priv->dbus_proxy,
-		utf8_ical_string, cancellable, error);
+	e_dbus_calendar_call_receive_objects_sync (
+		client->priv->dbus_proxy, utf8_ical_string,
+		cancellable, &local_error);
 
 	g_free (utf8_ical_string);
 	g_free (ical_string);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_send_objects() */
@@ -5500,7 +5565,7 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
                                 GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -5509,10 +5574,10 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
 		async_context->in_comp,
 		&async_context->string_list,
 		&async_context->out_comp,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -5650,7 +5715,7 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	gchar *utf8_ical_string;
 	gchar **users = NULL;
 	gchar *out_ical_string = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
@@ -5660,20 +5725,22 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	ical_string = icalcomponent_as_ical_string_r (icalcomp);
 	utf8_ical_string = e_util_utf8_make_valid (ical_string);
 
-	success = e_dbus_calendar_call_send_objects_sync (
-		client->priv->dbus_proxy, utf8_ical_string,
-		&users, &out_ical_string, cancellable, error);
+	e_dbus_calendar_call_send_objects_sync (
+		client->priv->dbus_proxy, utf8_ical_string, &users,
+		&out_ical_string, cancellable, &local_error);
 
 	g_free (utf8_ical_string);
 	g_free (ical_string);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (out_ical_string != NULL)) ||
-		(!success && (out_ical_string == NULL)), FALSE);
+		((out_ical_string != NULL) && (local_error == NULL)) ||
+		((out_ical_string == NULL) && (local_error != NULL)), FALSE);
 
-	if (!success) {
+	if (local_error != NULL) {
 		g_warn_if_fail (users == NULL);
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
 	}
 
@@ -5717,7 +5784,7 @@ cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
                                        GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -5726,10 +5793,10 @@ cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 		async_context->uid,
 		async_context->rid,
 		&async_context->string_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -5854,7 +5921,7 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 	gchar *utf8_uid;
 	gchar *utf8_rid;
 	gchar **uris = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -5866,17 +5933,17 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 	utf8_uid = e_util_utf8_make_valid (uid);
 	utf8_rid = e_util_utf8_make_valid (rid);
 
-	success = e_dbus_calendar_call_get_attachment_uris_sync (
-		client->priv->dbus_proxy, utf8_uid,
-		utf8_rid, &uris, cancellable, error);
+	e_dbus_calendar_call_get_attachment_uris_sync (
+		client->priv->dbus_proxy, utf8_uid, utf8_rid,
+		&uris, cancellable, &local_error);
 
 	g_free (utf8_uid);
 	g_free (utf8_rid);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (uris != NULL)) ||
-		(!success && (uris == NULL)), FALSE);
+		((uris != NULL) && (local_error == NULL)) ||
+		((uris == NULL) && (local_error != NULL)), FALSE);
 
 	if (uris != NULL) {
 		GSList *tmp = NULL;
@@ -5890,7 +5957,13 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 		*out_attachment_uris = g_slist_reverse (tmp);
 	}
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_discard_alarm() */
@@ -5900,7 +5973,7 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -5909,10 +5982,10 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
 		async_context->uid,
 		async_context->rid,
 		async_context->auid,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -6025,7 +6098,7 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 	gchar *utf8_uid;
 	gchar *utf8_rid;
 	gchar *utf8_auid;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -6038,15 +6111,22 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 	utf8_rid = e_util_utf8_make_valid (rid);
 	utf8_auid = e_util_utf8_make_valid (auid);
 
-	success = e_dbus_calendar_call_discard_alarm_sync (
-		client->priv->dbus_proxy, utf8_uid,
-		utf8_rid, utf8_auid, cancellable, error);
+	e_dbus_calendar_call_discard_alarm_sync (
+		client->priv->dbus_proxy,
+		utf8_uid, utf8_rid, utf8_auid,
+		cancellable, &local_error);
 
 	g_free (utf8_uid);
 	g_free (utf8_rid);
 	g_free (utf8_auid);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_cal_client_get_view() */
@@ -6059,7 +6139,7 @@ cal_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 	gchar *utf8_sexp;
 	gchar *object_path = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -6067,14 +6147,14 @@ cal_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	e_dbus_calendar_call_get_view_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&object_path, cancellable, &error);
+		&object_path, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((object_path != NULL) && (error == NULL)) ||
-		((object_path == NULL) && (error != NULL)));
+		((object_path != NULL) && (local_error == NULL)) ||
+		((object_path == NULL) && (local_error != NULL)));
 
 	if (object_path != NULL) {
 		GDBusConnection *connection;
@@ -6085,7 +6165,7 @@ cal_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 
 		client_view = g_initable_new (
 			E_TYPE_CAL_CLIENT_VIEW,
-			cancellable, &error,
+			cancellable, &local_error,
 			"client", client,
 			"connection", connection,
 			"object-path", object_path,
@@ -6093,16 +6173,18 @@ cal_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 
 		/* Sanity check. */
 		g_return_if_fail (
-			((client_view != NULL) && (error == NULL)) ||
-			((client_view == NULL) && (error != NULL)));
+			((client_view != NULL) && (local_error == NULL)) ||
+			((client_view == NULL) && (local_error != NULL)));
 
 		async_context->client_view = client_view;
 
 		g_free (object_path);
 	}
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
+	}
 }
 
 /**
@@ -6248,7 +6330,7 @@ cal_client_get_timezone_thread (GSimpleAsyncResult *simple,
                                 GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -6256,10 +6338,10 @@ cal_client_get_timezone_thread (GSimpleAsyncResult *simple,
 		E_CAL_CLIENT (source_object),
 		async_context->tzid,
 		&async_context->zone,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -6379,7 +6461,7 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 	icaltimezone *zone;
 	gchar *utf8_tzid;
 	gchar *string = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
@@ -6394,19 +6476,22 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 
 	utf8_tzid = e_util_utf8_make_valid (tzid);
 
-	success = e_dbus_calendar_call_get_timezone_sync (
+	e_dbus_calendar_call_get_timezone_sync (
 		client->priv->dbus_proxy, utf8_tzid,
-		&string, cancellable, error);
+		&string, cancellable, &local_error);
 
 	g_free (utf8_tzid);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (string != NULL)) ||
-		(!success && (string == NULL)), FALSE);
+		((string != NULL) && (local_error == NULL)) ||
+		((string == NULL) && (local_error != NULL)), FALSE);
 
-	if (!success)
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
+	}
 
 	icalcomp = icalparser_parse_string (string);
 
@@ -6453,17 +6538,17 @@ cal_client_add_timezone_thread (GSimpleAsyncResult *simple,
                                 GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_cal_client_add_timezone_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->zone,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -6574,7 +6659,7 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 	icalcomponent *icalcomp;
 	gchar *zone_str;
 	gchar *utf8_zone_str;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
@@ -6593,12 +6678,19 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 	zone_str = icalcomponent_as_ical_string_r (icalcomp);
 	utf8_zone_str = e_util_utf8_make_valid (zone_str);
 
-	success = e_dbus_calendar_call_add_timezone_sync (
-		client->priv->dbus_proxy, utf8_zone_str, cancellable, error);
+	e_dbus_calendar_call_add_timezone_sync (
+		client->priv->dbus_proxy, utf8_zone_str,
+		cancellable, &local_error);
 
 	g_free (zone_str);
 	g_free (utf8_zone_str);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 

@@ -426,14 +426,15 @@ cal_client_view_dispose_cb (GObject *source_object,
                             GAsyncResult *result,
                             gpointer user_data)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	e_gdbus_cal_view_call_dispose_finish (
-		G_DBUS_PROXY (source_object), result, &error);
+		G_DBUS_PROXY (source_object), result, &local_error);
 
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_error_free (local_error);
 	}
 }
 
@@ -853,20 +854,20 @@ void
 e_cal_client_view_start (ECalClientView *view,
                          GError **error)
 {
-	gboolean success;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	view->priv->running = TRUE;
 
-	success = e_gdbus_cal_view_call_start_sync (
+	e_gdbus_cal_view_call_start_sync (
 		view->priv->dbus_proxy, NULL, &local_error);
-	if (!success)
-		view->priv->running = FALSE;
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		view->priv->running = FALSE;
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 
 /**
@@ -891,8 +892,10 @@ e_cal_client_view_stop (ECalClientView *view,
 	e_gdbus_cal_view_call_stop_sync (
 		view->priv->dbus_proxy, NULL, &local_error);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 
 /**
@@ -931,8 +934,10 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
 		NULL, &local_error);
 	g_strfreev (strv);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }
 
 /**
@@ -957,6 +962,8 @@ e_cal_client_view_set_flags (ECalClientView *view,
 	e_gdbus_cal_view_call_set_flags_sync (
 		view->priv->dbus_proxy, flags, NULL, &local_error);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (view->priv->client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 }

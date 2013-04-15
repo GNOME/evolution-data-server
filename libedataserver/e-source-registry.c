@@ -126,7 +126,6 @@ struct _AuthContext {
 	ESourceAuthenticationResult auth_result;
 	GcrSecretExchange *secret_exchange;
 	gboolean authenticating;
-	gboolean success;
 	GError **error;
 };
 
@@ -565,24 +564,24 @@ source_registry_new_source (ESourceRegistry *registry,
 	GMainContext *main_context;
 	ESource *source;
 	const gchar *object_path;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	/* We don't want the ESource emitting "changed" signals from
 	 * the manager thread, so we pass it the same main context the
 	 * registry uses for scheduling signal emissions. */
 	main_context = registry->priv->main_context;
-	source = e_source_new (dbus_object, main_context, &error);
+	source = e_source_new (dbus_object, main_context, &local_error);
 	object_path = g_dbus_object_get_object_path (dbus_object);
 
 	/* The likelihood of an error here is slim, so it's
 	 * sufficient to just print a warning if one occurs. */
-	if (error != NULL) {
+	if (local_error != NULL) {
 		g_warn_if_fail (source == NULL);
 		g_critical (
 			"ESourceRegistry: Failed to create a "
 			"data source object for path '%s': %s",
-			object_path, error->message);
-		g_error_free (error);
+			object_path, local_error->message);
+		g_error_free (local_error);
 		return NULL;
 	}
 
@@ -1049,6 +1048,7 @@ source_registry_initable_init (GInitable *initable,
 {
 	ESourceRegistry *registry;
 	ThreadClosure *closure;
+	GError *local_error = NULL;
 
 	registry = E_SOURCE_REGISTRY (initable);
 
@@ -1083,6 +1083,7 @@ source_registry_initable_init (GInitable *initable,
 
 	/* Check for error in the manager thread. */
 	if (closure->error != NULL) {
+		g_dbus_error_strip_remote_error (closure->error);
 		g_propagate_error (error, closure->error);
 		closure->error = NULL;
 		return FALSE;
@@ -1116,10 +1117,13 @@ source_registry_initable_init (GInitable *initable,
 			G_DBUS_PROXY_FLAGS_NONE,
 			SOURCES_DBUS_SERVICE_NAME,
 			DBUS_OBJECT_PATH,
-			cancellable, error);
+			cancellable, &local_error);
 
-	if (registry->priv->dbus_source_manager == NULL)
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
+	}
 
 	/* Allow authentication prompts for all exported data sources
 	 * when a new EDBusSourceManagerProxy is created.  The thought
@@ -1465,7 +1469,7 @@ source_registry_authenticate_thread (GSimpleAsyncResult *simple,
                                      GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -1473,10 +1477,10 @@ source_registry_authenticate_thread (GSimpleAsyncResult *simple,
 		E_SOURCE_REGISTRY (object),
 		async_context->source,
 		async_context->auth,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /* Helper for e_source_registry_authenticate_sync() */
@@ -1513,7 +1517,6 @@ source_registry_authenticate_respond_cb (AuthContext *auth_context)
 			auth_context->dbus_auth,
 			NULL, &non_fatal_error);
 		g_main_loop_quit (auth_context->main_loop);
-		auth_context->success = FALSE;
 
 	/* If an error occurred while attempting to authenticate,
 	 * tell the server to cancel the authentication session. */
@@ -1523,7 +1526,6 @@ source_registry_authenticate_respond_cb (AuthContext *auth_context)
 			auth_context->cancellable,
 			&non_fatal_error);
 		g_main_loop_quit (auth_context->main_loop);
-		auth_context->success = FALSE;
 
 	/* If the password was accepted, let the server know so it
 	 * can close any authentication dialogs and save the user
@@ -1534,7 +1536,6 @@ source_registry_authenticate_respond_cb (AuthContext *auth_context)
 			auth_context->cancellable,
 			&non_fatal_error);
 		g_main_loop_quit (auth_context->main_loop);
-		auth_context->success = TRUE;
 
 	/* If the password was rejected, let the server know so it can
 	 * indicate failure and request a different password, and then
@@ -1549,6 +1550,7 @@ source_registry_authenticate_respond_cb (AuthContext *auth_context)
 	/* Leave breadcrumbs if something went wrong,
 	 * but don't fail the whole operation over it. */
 	if (non_fatal_error != NULL) {
+		g_dbus_error_strip_remote_error (non_fatal_error);
 		g_warning ("%s: %s", G_STRFUNC, non_fatal_error->message);
 		g_error_free (non_fatal_error);
 	}
@@ -1627,7 +1629,6 @@ source_registry_authenticate_dismissed_cb (EDBusAuthenticator *dbus_auth,
 	}
 
 	g_main_loop_quit (auth_context->main_loop);
-	auth_context->success = FALSE;
 }
 
 /* Helper for e_source_registry_authenticate_sync() */
@@ -1644,7 +1645,7 @@ source_registry_call_authenticate_for_source (ESourceRegistry *registry,
 	gchar *prompt_title = NULL;
 	gchar *prompt_message = NULL;
 	gchar *prompt_description = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_object_ref (source);
 
@@ -1691,10 +1692,10 @@ source_registry_call_authenticate_for_source (ESourceRegistry *registry,
 		&prompt_message,
 		&prompt_description);
 
-	success = e_dbus_source_manager_call_authenticate_sync (
+	e_dbus_source_manager_call_authenticate_sync (
 		registry->priv->dbus_source_manager, uid,
 		prompt_title, prompt_message, prompt_description,
-		out_object_path, cancellable, error);
+		out_object_path, cancellable, &local_error);
 
 	g_free (prompt_title);
 	g_free (prompt_message);
@@ -1702,7 +1703,13 @@ source_registry_call_authenticate_for_source (ESourceRegistry *registry,
 
 	g_object_unref (source);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /**
@@ -1741,7 +1748,7 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	EDBusAuthenticator *dbus_auth;
 	gchar *encryption_key;
 	gchar *object_path = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
@@ -1750,11 +1757,13 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	/* This extracts authentication prompt details for the ESource
 	 * before initiating an authentication session with the server,
 	 * so split it out of the main algorithm for clarity's sake. */
-	success = source_registry_call_authenticate_for_source (
-		registry, auth, source, &object_path, cancellable, error);
+	source_registry_call_authenticate_for_source (
+		registry, auth, source, &object_path,
+		cancellable, &local_error);
 
-	if (!success) {
+	if (local_error != NULL) {
 		g_warn_if_fail (object_path == NULL);
+		g_propagate_error (error, local_error);
 		return FALSE;
 	}
 
@@ -1767,20 +1776,23 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
 		SOURCES_DBUS_SERVICE_NAME,
-		object_path, cancellable, error);
+		object_path, cancellable, &local_error);
 
 	g_free (object_path);
 
-	if (dbus_auth == NULL) {
-		success = FALSE;
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((dbus_auth != NULL) && (local_error == NULL)) ||
+		((dbus_auth == NULL) && (local_error != NULL)), FALSE);
+
+	if (local_error != NULL)
 		goto exit;
-	}
 
 	auth_context = g_slice_new0 (AuthContext);
 	auth_context->auth = g_object_ref (auth);
 	auth_context->dbus_auth = dbus_auth;  /* takes ownership */
 	auth_context->main_loop = g_main_loop_new (main_context, FALSE);
-	auth_context->error = error;
+	auth_context->error = &local_error;
 
 	/* This just needs to be something other than
 	 * E_SOURCE_AUTHENTICATION_ERROR so we don't trip
@@ -1810,15 +1822,13 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	 * authentication session.  This must happen AFTER we've
 	 * connected to the response signal since the server may
 	 * already have a response ready and waiting for us. */
-	success = e_dbus_authenticator_call_ready_sync (
-		dbus_auth, encryption_key, cancellable, error);
+	e_dbus_authenticator_call_ready_sync (
+		dbus_auth, encryption_key, cancellable, &local_error);
 
 	g_free (encryption_key);
 
-	if (success) {
+	if (local_error == NULL)
 		g_main_loop_run (auth_context->main_loop);
-		success = auth_context->success;
-	}
 
 	auth_context_free (auth_context);
 
@@ -1832,7 +1842,13 @@ exit:
 
 	g_main_context_unref (main_context);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /**
@@ -1935,17 +1951,17 @@ source_registry_commit_source_thread (GSimpleAsyncResult *simple,
                                       GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_source_registry_commit_source_sync (
 		E_SOURCE_REGISTRY (object),
 		async_context->source,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2106,17 +2122,17 @@ source_registry_create_sources_thread (GSimpleAsyncResult *simple,
                                        GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_source_registry_create_sources_sync (
 		E_SOURCE_REGISTRY (object),
 		async_context->list_of_sources,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /* Helper for e_source_registry_create_sources_sync() */
@@ -2191,7 +2207,7 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 	GVariant *variant;
 	GList *link;
 	gulong object_added_id;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
 
@@ -2231,9 +2247,9 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 		create_context);
 
 	/* This function sinks the floating GVariant reference. */
-	success = e_dbus_source_manager_call_create_sources_sync (
+	e_dbus_source_manager_call_create_sources_sync (
 		registry->priv->dbus_source_manager,
-		variant, cancellable, error);
+		variant, cancellable, &local_error);
 
 	g_variant_builder_clear (&builder);
 
@@ -2241,7 +2257,7 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 	 * But also set a short timeout to avoid getting stuck here in
 	 * case the registry service adds sources to its orphan table,
 	 * which prevents them from being exported over D-Bus. */
-	if (success) {
+	if (local_error == NULL) {
 		GSource *timeout_source;
 
 		timeout_source = g_timeout_source_new_seconds (2);
@@ -2262,7 +2278,13 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 	g_main_context_pop_thread_default (create_context->main_context);
 	create_context_free (create_context);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /**

@@ -387,7 +387,7 @@ source_set_property_from_key_file (GObject *object,
 {
 	gchar *key;
 	GValue *value;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	value = g_slice_new0 (GValue);
 	key = e_source_parameter_to_key (pspec->name);
@@ -401,8 +401,8 @@ source_set_property_from_key_file (GObject *object,
 		gint v_int;
 
 		v_int = g_key_file_get_integer (
-			key_file, group_name, key, &error);
-		if (error == NULL) {
+			key_file, group_name, key, &local_error);
+		if (local_error == NULL) {
 			g_value_init (value, G_TYPE_INT);
 			g_value_set_int (value, v_int);
 		}
@@ -411,8 +411,8 @@ source_set_property_from_key_file (GObject *object,
 		gint64 v_int64;
 
 		v_int64 = g_key_file_get_int64 (
-			key_file, group_name, key, &error);
-		if (error == NULL) {
+			key_file, group_name, key, &local_error);
+		if (local_error == NULL) {
 			g_value_init (value, G_TYPE_INT64);
 			g_value_set_int64 (value, v_int64);
 		}
@@ -422,8 +422,8 @@ source_set_property_from_key_file (GObject *object,
 		gchar *v_str;
 
 		v_str = g_key_file_get_string (
-			key_file, group_name, key, &error);
-		if (error == NULL) {
+			key_file, group_name, key, &local_error);
+		if (local_error == NULL) {
 			v_uint64 = g_ascii_strtoull (v_str, NULL, 16);
 
 			g_value_init (value, G_TYPE_UINT64);
@@ -436,8 +436,8 @@ source_set_property_from_key_file (GObject *object,
 		gboolean v_boolean;
 
 		v_boolean = g_key_file_get_boolean (
-			key_file, group_name, key, &error);
-		if (error == NULL) {
+			key_file, group_name, key, &local_error);
+		if (local_error == NULL) {
 			g_value_init (value, G_TYPE_BOOLEAN);
 			g_value_set_boolean (value, v_boolean);
 		}
@@ -446,8 +446,8 @@ source_set_property_from_key_file (GObject *object,
 		gchar *nick;
 
 		nick = g_key_file_get_string (
-			key_file, group_name, key, &error);
-		if (error == NULL) {
+			key_file, group_name, key, &local_error);
+		if (local_error == NULL) {
 			GParamSpecEnum *enum_pspec;
 			GEnumValue *enum_value;
 
@@ -466,8 +466,8 @@ source_set_property_from_key_file (GObject *object,
 		gdouble v_double;
 
 		v_double = g_key_file_get_double (
-			key_file, group_name, key, &error);
-		if (error == NULL) {
+			key_file, group_name, key, &local_error);
+		if (local_error == NULL) {
 			g_value_init (value, G_TYPE_DOUBLE);
 			g_value_set_double (value, v_double);
 		}
@@ -477,8 +477,8 @@ source_set_property_from_key_file (GObject *object,
 
 		/* Get the localized string if present. */
 		v_string = g_key_file_get_locale_string (
-			key_file, group_name, key, NULL, &error);
-		if (error == NULL) {
+			key_file, group_name, key, NULL, &local_error);
+		if (local_error == NULL) {
 			g_value_init (value, G_TYPE_STRING);
 			g_value_take_string (value, v_string);
 		}
@@ -487,8 +487,8 @@ source_set_property_from_key_file (GObject *object,
 		gchar **strv;
 
 		strv = g_key_file_get_string_list (
-			key_file, group_name, key, NULL, &error);
-		if (error == NULL) {
+			key_file, group_name, key, NULL, &local_error);
+		if (local_error == NULL) {
 			g_value_init (value, G_TYPE_STRV);
 			g_value_take_boxed (value, strv);
 		}
@@ -498,8 +498,8 @@ source_set_property_from_key_file (GObject *object,
 
 		/* Create the GFile from the URI string. */
 		uri = g_key_file_get_locale_string (
-			key_file, group_name, key, NULL, &error);
-		if (error == NULL) {
+			key_file, group_name, key, NULL, &local_error);
+		if (local_error == NULL) {
 			GFile *file = NULL;
 			if (uri != NULL && *uri != '\0')
 				file = g_file_new_for_uri (uri);
@@ -516,10 +516,10 @@ source_set_property_from_key_file (GObject *object,
 
 	/* If a value could not be retrieved from the key
 	 * file, restore the property to its default value. */
-	if (error != NULL) {
+	if (local_error != NULL) {
 		g_value_init (value, pspec->value_type);
 		g_param_value_set_default (pspec, value);
-		g_error_free (error);
+		g_error_free (local_error);
 	}
 
 	if (G_IS_VALUE (value)) {
@@ -646,17 +646,18 @@ source_notify_dbus_data_cb (EDBusSource *dbus_source,
                             GParamSpec *pspec,
                             ESource *source)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	g_rec_mutex_lock (&source->priv->lock);
 
 	/* Since the source data came from a GKeyFile structure on the
 	 * server-side, this should never fail.  But we'll print error
 	 * messages to the terminal just in case. */
-	if (!source_parse_dbus_data (source, &error)) {
-		g_return_if_fail (error != NULL);
-		g_warning ("%s", error->message);
-		g_error_free (error);
+	source_parse_dbus_data (source, &local_error);
+
+	if (local_error != NULL) {
+		g_warning ("%s", local_error->message);
+		g_error_free (local_error);
 	}
 
 	g_rec_mutex_unlock (&source->priv->lock);
@@ -926,7 +927,7 @@ source_remove_sync (ESource *source,
 {
 	EDBusSourceRemovable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
-	gboolean success;
+	GError *local_error = NULL;
 
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
@@ -945,12 +946,18 @@ source_remove_sync (ESource *source,
 		return FALSE;
 	}
 
-	success = e_dbus_source_removable_call_remove_sync (
-		dbus_interface, cancellable, error);
+	e_dbus_source_removable_call_remove_sync (
+		dbus_interface, cancellable, &local_error);
 
 	g_object_unref (dbus_interface);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for source_remove() */
@@ -959,12 +966,12 @@ source_remove_thread (GSimpleAsyncResult *simple,
                       GObject *object,
                       GCancellable *cancellable)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	e_source_remove_sync (E_SOURCE (object), cancellable, &error);
+	e_source_remove_sync (E_SOURCE (object), cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 static void
@@ -1011,8 +1018,8 @@ source_write_sync (ESource *source,
 {
 	EDBusSourceWritable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
-	gboolean success;
 	gchar *data;
+	GError *local_error = NULL;
 
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
@@ -1033,14 +1040,20 @@ source_write_sync (ESource *source,
 
 	data = e_source_to_string (source, NULL);
 
-	success = e_dbus_source_writable_call_write_sync (
-		dbus_interface, data, cancellable, error);
+	e_dbus_source_writable_call_write_sync (
+		dbus_interface, data, cancellable, &local_error);
 
 	g_free (data);
 
 	g_object_unref (dbus_interface);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for source_write() */
@@ -1049,12 +1062,12 @@ source_write_thread (GSimpleAsyncResult *simple,
                      GObject *object,
                      GCancellable *cancellable)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	e_source_write_sync (E_SOURCE (object), cancellable, &error);
+	e_source_write_sync (E_SOURCE (object), cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 static void
@@ -1103,7 +1116,7 @@ source_remote_create_sync (ESource *source,
 	EDBusSourceRemoteCreatable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
 	gchar *uid, *data;
-	gboolean success;
+	GError *local_error = NULL;
 
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
@@ -1126,15 +1139,21 @@ source_remote_create_sync (ESource *source,
 	uid = e_source_dup_uid (scratch_source);
 	data = e_source_to_string (scratch_source, NULL);
 
-	success = e_dbus_source_remote_creatable_call_create_sync (
-		dbus_interface, uid, data, cancellable, error);
+	e_dbus_source_remote_creatable_call_create_sync (
+		dbus_interface, uid, data, cancellable, &local_error);
 
 	g_free (data);
 	g_free (uid);
 
 	g_object_unref (dbus_interface);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for source_remote_create() */
@@ -1144,17 +1163,17 @@ source_remote_create_thread (GSimpleAsyncResult *simple,
                              GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_source_remote_create_sync (
 		E_SOURCE (object),
 		async_context->scratch_source,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 static void
@@ -1210,7 +1229,7 @@ source_remote_delete_sync (ESource *source,
 {
 	EDBusSourceRemoteDeletable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
-	gboolean success;
+	GError *local_error = NULL;
 
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
@@ -1230,12 +1249,18 @@ source_remote_delete_sync (ESource *source,
 		return FALSE;
 	}
 
-	success = e_dbus_source_remote_deletable_call_delete_sync (
-		dbus_interface, cancellable, error);
+	e_dbus_source_remote_deletable_call_delete_sync (
+		dbus_interface, cancellable, &local_error);
 
 	g_object_unref (dbus_interface);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for source_remote_delete() */
@@ -1244,13 +1269,13 @@ source_remote_delete_thread (GSimpleAsyncResult *simple,
                              GObject *object,
                              GCancellable *cancellable)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	e_source_remote_delete_sync (
-		E_SOURCE (object), cancellable, &error);
+		E_SOURCE (object), cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 static void
@@ -1300,7 +1325,7 @@ source_get_oauth2_access_token_sync (ESource *source,
 {
 	EDBusSourceOAuth2Support *dbus_interface = NULL;
 	GDBusObject *dbus_object;
-	gboolean success;
+	GError *local_error = NULL;
 
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
@@ -1320,13 +1345,19 @@ source_get_oauth2_access_token_sync (ESource *source,
 		return FALSE;
 	}
 
-	success = e_dbus_source_oauth2_support_call_get_access_token_sync (
+	e_dbus_source_oauth2_support_call_get_access_token_sync (
 		dbus_interface, out_access_token,
-		out_expires_in, cancellable, error);
+		out_expires_in, cancellable, &local_error);
 
 	g_object_unref (dbus_interface);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for source_get_oauth2_access_token() */
@@ -1336,7 +1367,7 @@ source_get_oauth2_access_token_thread (GSimpleAsyncResult *simple,
                                        GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -1344,10 +1375,10 @@ source_get_oauth2_access_token_thread (GSimpleAsyncResult *simple,
 		E_SOURCE (object), cancellable,
 		&async_context->access_token,
 		&async_context->expires_in,
-		&error);
+		&local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 static void
