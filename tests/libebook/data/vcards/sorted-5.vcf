@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:sorted-5
+N:Brown;James
+TEL;HOME:+6666666
+EMAIL;TYPE=home,work:james@brown.com
+END:VCARD

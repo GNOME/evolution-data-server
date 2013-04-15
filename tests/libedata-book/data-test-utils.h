@@ -46,5 +46,10 @@ gboolean add_contact_from_test_case_verify (EBookClient *book_client,
 					    const gchar *case_name,
 					    EContact   **contact);
 
+void     assert_contacts_order             (GSList      *results,
+					    const gchar *first_uid,
+					    ...) G_GNUC_NULL_TERMINATED;
+
+void     print_results                     (GSList      *results);
 
 #endif /* DATA_TEST_UTILS_H */

@@ -184,3 +184,73 @@ e_sqlitedb_fixture_teardown (ESqliteDBFixture *fixture,
 	g_object_unref (fixture->ebsdb);
 	e_test_server_utils_teardown ((ETestServerFixture *)fixture, user_data);
 }
+
+
+static gint
+find_contact_data (EbSdbSearchData *data,
+		   const gchar     *uid)
+{
+	return g_strcmp0 (data->uid, uid);
+}
+
+void
+assert_contacts_order (GSList      *results,
+		       const gchar *first_uid,
+		       ...)
+{
+	GSList *uids = NULL, *link, *l;
+	gint position = -1;
+	gchar *uid;
+	va_list args;
+
+	g_assert (first_uid);
+
+	uids = g_slist_append (uids, (gpointer)first_uid);
+
+	va_start (args, first_uid);
+	uid = va_arg (args, gchar*);
+	while (uid) {
+		uids = g_slist_append (uids, uid);
+		uid = va_arg (args, gchar*);
+	}
+	va_end (args);
+
+	/* Assert that all passed UIDs are found in the
+	 * results, and that those UIDs are in the
+	 * specified order.
+	 */
+	for (l = uids; l; l = l->next) {
+		gint new_position;
+
+		uid = l->data;
+
+		link = g_slist_find_custom (results, uid, (GCompareFunc)find_contact_data);
+		if (!link)
+			g_error ("Specified uid was not found in results");
+
+		new_position = g_slist_position (results, link);
+		g_assert_cmpint (new_position, >, position);
+		position = new_position;
+	}
+
+	g_slist_free (uids);
+}
+
+void
+print_results (GSList      *results)
+{
+	GSList *l;
+
+	if (g_getenv ("TEST_DEBUG") == NULL)
+		return;
+
+	g_print ("\nPRINTING RESULTS:\n");
+
+	for (l = results; l; l = l->next) {
+		EbSdbSearchData *data = l->data;
+
+		g_print ("\n%s\n", data->vcard);
+	}
+
+	g_print ("\nRESULT LIST_FINISHED\n");
+}
