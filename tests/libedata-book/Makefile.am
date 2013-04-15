@@ -35,8 +35,9 @@ libdata_test_utils_la_LIBADD = 				\
 	$(NULL)
 
 # Should be kept ordered approximately from least to most difficult/complex
-TESTS =				\
-	test-sqlite-get-contact
+TESTS =					\
+	test-sqlite-get-contact		\
+	test-sqlite-create-cursor
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -54,5 +55,7 @@ TEST_LIBS =							\
 
 test_sqlite_get_contact_LDADD=$(TEST_LIBS)
 test_sqlite_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_create_cursor_LDADD=$(TEST_LIBS)
+test_sqlite_create_cursor_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
