@@ -319,22 +319,23 @@ direct_contacts_ready (GObject *source_object,
 	NotificationData *data = (NotificationData *) user_data;
 	GQueue queue = G_QUEUE_INIT;
 	GSList *list = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	e_book_backend_get_contact_list_finish (
-		E_BOOK_BACKEND (source_object), result, &queue, &error);
+		E_BOOK_BACKEND (source_object),
+		result, &queue, &local_error);
 
 	while (!g_queue_is_empty (&queue))
 		list = g_slist_prepend (list, g_queue_pop_head (&queue));
 
 	list = g_slist_reverse (list);
 
-	if (error != NULL) {
+	if (local_error != NULL) {
 		g_warn_if_fail (list == NULL);
 		g_warning (
 			"Error fetching contacts directly: %s\n",
-			error->message);
-		g_error_free (error);
+			local_error->message);
+		g_error_free (local_error);
 
 	} else if (data->signum == OBJECTS_ADDED) {
 		/* Takes ownership of the linked list. */
@@ -371,10 +372,10 @@ direct_contacts_fetch (EBookClientView *client_view,
 	if (!client_view->priv->complete) {
 		GQueue queue = G_QUEUE_INIT;
 		GSList *list = NULL;
-		GError *error = NULL;
+		GError *local_error = NULL;
 
 		e_book_backend_get_contact_list_sync (
-			backend, sexp, &queue, NULL, &error);
+			backend, sexp, &queue, NULL, &local_error);
 
 		while (!g_queue_is_empty (&queue)) {
 			list = g_slist_prepend (
@@ -383,12 +384,12 @@ direct_contacts_fetch (EBookClientView *client_view,
 
 		list = g_slist_reverse (list);
 
-		if (error != NULL) {
+		if (local_error != NULL) {
 			g_warn_if_fail (list == NULL);
 			g_warning (
 				"Error fetching contacts directly: %s\n",
-				error->message);
-			g_error_free (error);
+				local_error->message);
+			g_error_free (local_error);
 
 		} else if (signum == OBJECTS_ADDED) {
 			/* Takes ownership of the linked list. */
@@ -620,14 +621,15 @@ book_client_view_dispose_cb (GObject *source_object,
                              GAsyncResult *result,
                              gpointer user_data)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	e_gdbus_book_view_call_dispose_finish (
-		G_DBUS_PROXY (source_object), result, &error);
+		G_DBUS_PROXY (source_object), result, &local_error);
 
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_error_free (local_error);
 	}
 }
 
@@ -1080,7 +1082,6 @@ e_book_client_view_start (EBookClientView *client_view,
                           GError **error)
 {
 	EBookClient *client;
-	gboolean success;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
@@ -1090,13 +1091,14 @@ e_book_client_view_start (EBookClientView *client_view,
 
 	client_view->priv->running = TRUE;
 
-	success = e_gdbus_book_view_call_start_sync (
+	e_gdbus_book_view_call_start_sync (
 		client_view->priv->dbus_proxy, NULL, &local_error);
-	if (!success)
-		client_view->priv->running = FALSE;
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (client), local_error, error);
+	if (local_error != NULL) {
+		client_view->priv->running = FALSE;
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	g_object_unref (client);
 }
@@ -1125,8 +1127,10 @@ e_book_client_view_stop (EBookClientView *client_view,
 	e_gdbus_book_view_call_stop_sync (
 		client_view->priv->dbus_proxy, NULL, &local_error);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	g_object_unref (client);
 }
@@ -1157,8 +1161,10 @@ e_book_client_view_set_flags (EBookClientView *client_view,
 	e_gdbus_book_view_call_set_flags_sync (
 		client_view->priv->dbus_proxy, flags, NULL, &local_error);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	g_object_unref (client);
 }
@@ -1214,8 +1220,10 @@ e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
 		NULL, &local_error);
 	g_strfreev (strv);
 
-	e_client_unwrap_dbus_error (
-		E_CLIENT (client), local_error, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	g_object_unref (client);
 }

@@ -773,13 +773,22 @@ book_client_open_sync (EClient *client,
                        GError **error)
 {
 	EBookClient *book_client;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
 
-	return e_dbus_address_book_call_open_sync (
-		book_client->priv->dbus_proxy, cancellable, error);
+	e_dbus_address_book_call_open_sync (
+		book_client->priv->dbus_proxy, cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -788,13 +797,22 @@ book_client_refresh_sync (EClient *client,
                           GError **error)
 {
 	EBookClient *book_client;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
 
-	return e_dbus_address_book_call_refresh_sync (
-		book_client->priv->dbus_proxy, cancellable, error);
+	e_dbus_address_book_call_refresh_sync (
+		book_client->priv->dbus_proxy, cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void
@@ -811,7 +829,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	const gchar *uid;
 	gchar *object_path = NULL;
 	gulong handler_id;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
 
@@ -819,15 +837,17 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	source = e_client_get_source (client);
 	uid = e_source_get_uid (source);
 
-	connection = g_bus_get_sync (G_BUS_TYPE_SESSION, cancellable, &error);
+	connection = g_bus_get_sync (
+		G_BUS_TYPE_SESSION, cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((connection != NULL) && (error == NULL)) ||
-		((connection == NULL) && (error != NULL)));
+		((connection != NULL) && (local_error == NULL)) ||
+		((connection == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		return;
 	}
 
@@ -836,31 +856,33 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		G_DBUS_PROXY_FLAGS_NONE,
 		ADDRESS_BOOK_DBUS_SERVICE_NAME,
 		"/org/gnome/evolution/dataserver/AddressBookFactory",
-		cancellable, &error);
+		cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((factory_proxy != NULL) && (error == NULL)) ||
-		((factory_proxy == NULL) && (error != NULL)));
+		((factory_proxy != NULL) && (local_error == NULL)) ||
+		((factory_proxy == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
 		return;
 	}
 
 	e_dbus_address_book_factory_call_open_address_book_sync (
-		factory_proxy, uid, &object_path, cancellable, &error);
+		factory_proxy, uid, &object_path, cancellable, &local_error);
 
 	g_object_unref (factory_proxy);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((object_path != NULL) && (error == NULL)) ||
-		((object_path == NULL) && (error != NULL)));
+		((object_path != NULL) && (local_error == NULL)) ||
+		((object_path == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
 		return;
 	}
@@ -869,17 +891,18 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		connection,
 		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
 		ADDRESS_BOOK_DBUS_SERVICE_NAME,
-		object_path, cancellable, &error);
+		object_path, cancellable, &local_error);
 
 	g_free (object_path);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((priv->dbus_proxy != NULL) && (error == NULL)) ||
-		((priv->dbus_proxy == NULL) && (error != NULL)));
+		((priv->dbus_proxy != NULL) && (local_error == NULL)) ||
+		((priv->dbus_proxy == NULL) && (local_error != NULL)));
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
 		return;
 	}
@@ -1054,7 +1077,7 @@ e_book_client_connect_sync (ESource *source,
                             GError **error)
 {
 	EBookClient *client;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
@@ -1062,14 +1085,15 @@ e_book_client_connect_sync (ESource *source,
 		E_TYPE_BOOK_CLIENT,
 		"source", source, NULL);
 
-	success = g_initable_init (
-		G_INITABLE (client), cancellable, error);
+	g_initable_init (G_INITABLE (client), cancellable, &local_error);
 
-	if (success)
-		success = e_dbus_address_book_call_open_sync (
-			client->priv->dbus_proxy, cancellable, error);
+	if (local_error == NULL)
+		e_dbus_address_book_call_open_sync (
+			client->priv->dbus_proxy, cancellable, &local_error);
 
-	if (!success) {
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		g_prefix_error (
 			error, _("Unable to connect to '%s': "),
 			e_source_get_display_name (source));
@@ -1087,15 +1111,17 @@ book_client_connect_open_cb (GObject *source_object,
                              gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	e_dbus_address_book_call_open_finish (
-		E_DBUS_ADDRESS_BOOK (source_object), result, &error);
+		E_DBUS_ADDRESS_BOOK (source_object), result, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
+	}
 
 	g_simple_async_result_complete (simple);
 
@@ -1111,15 +1137,15 @@ book_client_connect_init_cb (GObject *source_object,
 	GSimpleAsyncResult *simple;
 	EBookClientPrivate *priv;
 	ConnectClosure *closure;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	g_async_initable_init_finish (
-		G_ASYNC_INITABLE (source_object), result, &error);
+		G_ASYNC_INITABLE (source_object), result, &local_error);
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_simple_async_result_take_error (simple, local_error);
 		g_simple_async_result_complete (simple);
 		goto exit;
 	}
@@ -1355,6 +1381,8 @@ e_book_client_connect_direct_sync (ESourceRegistry *registry,
 	if (priv->direct_backend != NULL) {
 		gboolean success;
 
+		/* Direct backend is not using D-Bus (obviously),
+		 * so no need to strip D-Bus info from the error. */
 		success = e_book_backend_open_sync (
 			priv->direct_backend, cancellable, error);
 
@@ -1580,7 +1608,7 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
                                 GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -1588,10 +1616,10 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
 		&async_context->uid,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -1745,7 +1773,7 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -1753,10 +1781,10 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
 		E_BOOK_CLIENT (source_object),
 		async_context->object_list,
 		&async_context->string_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -1888,8 +1916,8 @@ e_book_client_add_contacts_sync (EBookClient *client,
 	GSList *link;
 	gchar **strv;
 	gchar **uids = NULL;
-	gboolean success;
 	gint ii = 0;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
@@ -1906,20 +1934,23 @@ e_book_client_add_contacts_sync (EBookClient *client,
 		g_free (string);
 	}
 
-	success = e_dbus_address_book_call_create_contacts_sync (
+	e_dbus_address_book_call_create_contacts_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		&uids, cancellable, error);
+		&uids, cancellable, &local_error);
 
 	g_strfreev (strv);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (uids != NULL)) ||
-		(!success && (uids == NULL)), FALSE);
+		((uids != NULL) && (local_error == NULL)) ||
+		((uids == NULL) && (local_error != NULL)), FALSE);
 
-	if (!success)
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
 		return FALSE;
+	}
 
 	/* XXX We should have passed the string array directly
 	 *     back to the caller instead of building a linked
@@ -1949,17 +1980,17 @@ book_client_modify_contact_thread (GSimpleAsyncResult *simple,
                                    GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_book_client_modify_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2073,17 +2104,17 @@ book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
                                     GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_book_client_modify_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->object_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2184,8 +2215,8 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 {
 	GSList *link;
 	gchar **strv;
-	gboolean success;
 	gint ii = 0;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
@@ -2202,14 +2233,20 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 		g_free (string);
 	}
 
-	success = e_dbus_address_book_call_modify_contacts_sync (
+	e_dbus_address_book_call_modify_contacts_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		cancellable, error);
+		cancellable, &local_error);
 
 	g_strfreev (strv);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_book_client_remove_contact() */
@@ -2219,17 +2256,17 @@ book_client_remove_contact_thread (GSimpleAsyncResult *simple,
                                    GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_book_client_remove_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2346,17 +2383,17 @@ book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
                                           GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_book_client_remove_contact_by_uid_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->uid,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2470,17 +2507,17 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
                                     GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	e_book_client_remove_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->string_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2586,8 +2623,8 @@ e_book_client_remove_contacts_sync (EBookClient *client,
                                     GError **error)
 {
 	gchar **strv;
-	gboolean success;
 	gint ii = 0;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
@@ -2598,14 +2635,20 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 		uids = g_slist_next (uids);
 	}
 
-	success = e_dbus_address_book_call_remove_contacts_sync (
+	e_dbus_address_book_call_remove_contacts_sync (
 		client->priv->dbus_proxy,
 		(const gchar * const *) strv,
-		cancellable, error);
+		cancellable, &local_error);
 
 	g_strfreev (strv);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_book_client_get_contact() */
@@ -2615,7 +2658,7 @@ book_client_get_contact_thread (GSimpleAsyncResult *simple,
                                 GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -2623,10 +2666,10 @@ book_client_get_contact_thread (GSimpleAsyncResult *simple,
 		E_BOOK_CLIENT (source_object),
 		async_context->uid,
 		&async_context->contact,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2743,7 +2786,7 @@ e_book_client_get_contact_sync (EBookClient *client,
 {
 	gchar *utf8_uid;
 	gchar *vcard = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -2753,6 +2796,8 @@ e_book_client_get_contact_sync (EBookClient *client,
 		EContact *contact;
 		gboolean success = FALSE;
 
+		/* Direct backend is not using D-Bus (obviously),
+		 * so no need to strip D-Bus info from the error. */
 		contact = e_book_backend_get_contact_sync (
 			client->priv->direct_backend,
 			uid, cancellable, error);
@@ -2768,14 +2813,14 @@ e_book_client_get_contact_sync (EBookClient *client,
 
 	utf8_uid = e_util_utf8_make_valid (uid);
 
-	success = e_dbus_address_book_call_get_contact_sync (
-		client->priv->dbus_proxy,
-		utf8_uid, &vcard, cancellable, error);
+	e_dbus_address_book_call_get_contact_sync (
+		client->priv->dbus_proxy, utf8_uid,
+		&vcard, cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (vcard != NULL)) ||
-		(!success && (vcard == NULL)), FALSE);
+		((vcard != NULL) && (local_error == NULL)) ||
+		((vcard == NULL) && (local_error != NULL)), FALSE);
 
 	if (vcard != NULL) {
 		*out_contact =
@@ -2785,7 +2830,13 @@ e_book_client_get_contact_sync (EBookClient *client,
 
 	g_free (utf8_uid);
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_book_client_get_contacts() */
@@ -2795,7 +2846,7 @@ book_client_get_contacts_thread (GSimpleAsyncResult *simple,
                                  GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -2803,10 +2854,10 @@ book_client_get_contacts_thread (GSimpleAsyncResult *simple,
 		E_BOOK_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->object_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -2931,7 +2982,7 @@ e_book_client_get_contacts_sync (EBookClient *client,
 {
 	gchar *utf8_sexp;
 	gchar **vcards = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
@@ -2942,6 +2993,8 @@ e_book_client_get_contacts_sync (EBookClient *client,
 		GSList *list = NULL;
 		gboolean success;
 
+		/* Direct backend is not using D-Bus (obviously),
+		 * so no need to strip D-Bus info from the error. */
 		success = e_book_backend_get_contact_list_sync (
 			client->priv->direct_backend,
 			sexp, &queue, cancellable, error);
@@ -2962,16 +3015,16 @@ e_book_client_get_contacts_sync (EBookClient *client,
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
-	success = e_dbus_address_book_call_get_contact_list_sync (
-		client->priv->dbus_proxy,
-		utf8_sexp, &vcards, cancellable, error);
+	e_dbus_address_book_call_get_contact_list_sync (
+		client->priv->dbus_proxy, utf8_sexp,
+		&vcards, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (vcards != NULL)) ||
-		(!success && (vcards == NULL)), FALSE);
+		((vcards != NULL) && (local_error == NULL)) ||
+		((vcards == NULL) && (local_error != NULL)), FALSE);
 
 	if (vcards != NULL) {
 		EContact *contact;
@@ -2988,7 +3041,13 @@ e_book_client_get_contacts_sync (EBookClient *client,
 		g_strfreev (vcards);
 	}
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_book_client_get_contacts_uids() */
@@ -2998,7 +3057,7 @@ book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
                                       GCancellable *cancellable)
 {
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -3006,10 +3065,10 @@ book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
 		E_BOOK_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->string_list,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 }
 
 /**
@@ -3134,7 +3193,7 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 {
 	gchar *utf8_sexp;
 	gchar **uids = NULL;
-	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
@@ -3145,6 +3204,8 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 		GSList *list = NULL;
 		gboolean success;
 
+		/* Direct backend is not using D-Bus (obviously),
+		 * so no need to strip D-Bus info from the error. */
 		success = e_book_backend_get_contact_list_uids_sync (
 			client->priv->direct_backend,
 			sexp, &queue, cancellable, error);
@@ -3165,16 +3226,16 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 
 	utf8_sexp = e_util_utf8_make_valid (sexp);
 
-	success = e_dbus_address_book_call_get_contact_list_uids_sync (
-		client->priv->dbus_proxy,
-		utf8_sexp, &uids, cancellable, error);
+	e_dbus_address_book_call_get_contact_list_uids_sync (
+		client->priv->dbus_proxy, utf8_sexp,
+		&uids, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		(success && (uids != NULL)) ||
-		(!success && (uids == NULL)), FALSE);
+		((uids != NULL) && (local_error == NULL)) ||
+		((uids == NULL) && (local_error != NULL)), FALSE);
 
 	/* XXX We should have passed the string array directly
 	 *     back to the caller instead of building a linked
@@ -3194,7 +3255,13 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 		g_free (uids);
 	}
 
-	return success;
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /* Helper for e_book_client_get_view() */
@@ -3207,7 +3274,7 @@ book_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 	AsyncContext *async_context;
 	gchar *utf8_sexp;
 	gchar *object_path = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
@@ -3215,14 +3282,14 @@ book_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	e_dbus_address_book_call_get_view_sync (
 		client->priv->dbus_proxy, utf8_sexp,
-		&object_path, cancellable, &error);
+		&object_path, cancellable, &local_error);
 
 	g_free (utf8_sexp);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((object_path != NULL) && (error == NULL)) ||
-		((object_path == NULL) && (error != NULL)));
+		((object_path != NULL) && (local_error == NULL)) ||
+		((object_path == NULL) && (local_error != NULL)));
 
 	if (object_path != NULL) {
 		GDBusConnection *connection;
@@ -3233,7 +3300,7 @@ book_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 
 		client_view = g_initable_new (
 			E_TYPE_BOOK_CLIENT_VIEW,
-			cancellable, &error,
+			cancellable, &local_error,
 			"client", client,
 			"connection", connection,
 			"object-path", object_path,
@@ -3242,16 +3309,18 @@ book_client_get_view_in_dbus_thread (GSimpleAsyncResult *simple,
 
 		/* Sanity check. */
 		g_return_if_fail (
-			((client_view != NULL) && (error == NULL)) ||
-			((client_view == NULL) && (error != NULL)));
+			((client_view != NULL) && (local_error == NULL)) ||
+			((client_view == NULL) && (local_error != NULL)));
 
 		async_context->client_view = client_view;
 
 		g_free (object_path);
 	}
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
+	}
 }
 
 /**
