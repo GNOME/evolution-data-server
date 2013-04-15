@@ -5105,7 +5105,7 @@ generate_cache_handler (LDAPOp *op,
 			contact_num++;
 			if (book_view) {
 				status_msg = g_strdup_printf (
-					_("Downloading contacts (%d)... "),
+					_("Downloading contacts (%d)..."),
 					contact_num);
 				book_view_notify_status (bl, book_view, status_msg);
 				g_free (status_msg);
