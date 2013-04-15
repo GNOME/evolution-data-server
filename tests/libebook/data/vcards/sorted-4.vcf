@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:sorted-4
+N:Brown;Big Bobby
+TEL;TYPE=work,pref:+9999999
+EMAIL:big.bobby@brown.org
+END:VCARD
