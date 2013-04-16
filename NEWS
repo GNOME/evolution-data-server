@@ -1,3 +1,10 @@
+Evolution-Data-Server 3.9.1 2013-04-29
+--------------------------------------
+
+* Dependency change: GNOME Online Accounts support is still optional.
+  But if enabled, the goa-1.0 requirement is now 3.8 (bumped from 3.2).
+
+
 Evolution-Data-Server 3.7.92 2013-03-18
 ---------------------------------------
 
