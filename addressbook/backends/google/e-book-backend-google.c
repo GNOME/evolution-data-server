@@ -32,10 +32,6 @@
 #include "e-book-google-utils.h"
 #include "e-gdata-oauth2-authorizer.h"
 
-#ifdef HAVE_GOA
-#include "e-gdata-goa-authorizer.h"
-#endif
-
 #define E_BOOK_BACKEND_GOOGLE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGooglePrivate))
@@ -370,15 +366,6 @@ backend_is_authorized (EBookBackend *backend)
 
 	if (priv->service == NULL)
 		return FALSE;
-
-#ifdef HAVE_GOA
-	/* If we're using OAuth tokens, then as far as the backend
-	 * is concerned it's always authorized.  The GDataAuthorizer
-	 * will take care of everything in the background without
-	 * bothering clients with "auth-required" signals. */
-	if (E_IS_GDATA_GOA_AUTHORIZER (priv->authorizer))
-		return TRUE;
-#endif
 
 	return gdata_service_is_authorized (priv->service);
 }
@@ -1089,27 +1076,6 @@ request_authorization (EBookBackend *backend,
 
 		g_free (method);
 	}
-
-#ifdef HAVE_GOA
-	/* If this is associated with a GNOME Online Account,
-	 * use OAuth 1.0a authentication instead of ClientLogin.
-	 *
-	 * XXX GNOME Online Accounts 3.8 switched its Google provider
-	 *     from OAuth 1.0a to OAuth 2.0.  Once we require GOA 3.8
-	 *     we can drop this and keep direct GOA usage confined to
-	 *     the "gnome-online-accounts" module. */
-	if (priv->authorizer == NULL) {
-		EGDataGoaAuthorizer *authorizer;
-		GoaObject *goa_object;
-
-		goa_object = g_object_get_data (
-			G_OBJECT (backend), "GNOME Online Account");
-		if (GOA_IS_OBJECT (goa_object)) {
-			authorizer = e_gdata_goa_authorizer_new (goa_object);
-			priv->authorizer = GDATA_AUTHORIZER (authorizer);
-		}
-	}
-#endif
 
 	if (priv->authorizer == NULL) {
 		GDataClientLoginAuthorizer *authorizer;

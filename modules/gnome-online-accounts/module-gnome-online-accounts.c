@@ -229,7 +229,6 @@ gnome_online_accounts_new_source (EGnomeOnlineAccounts *extension)
 	return source;
 }
 
-#ifdef HAVE_GOA_PASSWORD_BASED
 static void
 replace_host (gchar **url,
               const gchar *host)
@@ -247,14 +246,12 @@ replace_host (gchar **url,
 
 	soup_uri_free (uri);
 }
-#endif /* HAVE_GOA_PASSWORD_BASED */
 
 static void
 gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
                                        ESource *source,
                                        GoaObject *goa_object)
 {
-#ifdef HAVE_GOA_PASSWORD_BASED
 	GoaExchange *goa_exchange;
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
@@ -355,7 +352,6 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 
 	g_free (as_url);
 	g_free (oab_url);
-#endif /* HAVE_GOA_PASSWORD_BASED */
 }
 
 static void
@@ -363,7 +359,6 @@ gnome_online_accounts_config_imap (EGnomeOnlineAccounts *extension,
                                    ESource *source,
                                    GoaObject *goa_object)
 {
-#ifdef HAVE_GOA_IMAP_SMTP
 	GoaMail *goa_mail;
 	ESourceCamel *camel_extension;
 	ESourceBackend *backend_extension;
@@ -438,7 +433,6 @@ gnome_online_accounts_config_imap (EGnomeOnlineAccounts *extension,
 		CAMEL_NETWORK_SECURITY_METHOD_NONE);
 
 	g_object_unref (network_address);
-#endif
 }
 
 static void
@@ -446,7 +440,6 @@ gnome_online_accounts_config_smtp (EGnomeOnlineAccounts *extension,
                                    ESource *source,
                                    GoaObject *goa_object)
 {
-#ifdef HAVE_GOA_IMAP_SMTP
 	GoaMail *goa_mail;
 	ESourceCamel *camel_extension;
 	ESourceBackend *backend_extension;
@@ -521,7 +514,6 @@ gnome_online_accounts_config_smtp (EGnomeOnlineAccounts *extension,
 		CAMEL_NETWORK_SECURITY_METHOD_NONE);
 
 	g_object_unref (network_address);
-#endif
 }
 
 static void
@@ -568,14 +560,14 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
                                          GoaObject *goa_object)
 {
 	GoaAccount *goa_account;
+	GoaCalendar *goa_calendar;
+	GoaContacts *goa_contacts;
 	ESourceExtension *source_extension;
 	const gchar *extension_name;
-	const gchar *provider_type;
-	const gchar *backend_name;
 
 	goa_account = goa_object_get_account (goa_object);
-	provider_type = goa_account_get_provider_type (goa_account);
-	backend_name = gnome_online_accounts_get_backend_name (provider_type);
+	goa_calendar = goa_object_get_calendar (goa_object);
+	goa_contacts = goa_object_get_contacts (goa_object);
 
 	g_object_bind_property (
 		goa_account, "presentation-identity",
@@ -590,30 +582,18 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		source_extension, "account-id",
 		G_BINDING_SYNC_CREATE);
 
-	/* Requires more properties from ownCloud, but these are not
-	 * available before ownCloud was introduced, thus workaround
-	 * it with the backend_name check. */
-	if (g_strcmp0 (backend_name, "owncloud") == 0) {
-		GoaCalendar *goa_calendar;
-		GoaContacts *goa_contacts;
+	if (goa_calendar != NULL) {
+		g_object_bind_property (
+			goa_calendar, "uri",
+			source_extension, "calendar-url",
+			G_BINDING_SYNC_CREATE);
+	}
 
-		goa_calendar = goa_object_get_calendar (goa_object);
-		if (goa_calendar) {
-			g_object_bind_property (
-				goa_calendar, "uri",
-				source_extension, "calendar-url",
-				G_BINDING_SYNC_CREATE);
-			g_object_unref (goa_calendar);
-		}
-
-		goa_contacts = goa_object_get_contacts (goa_object);
-		if (goa_contacts) {
-			g_object_bind_property (
-				goa_contacts, "uri",
-				source_extension, "contacts-url",
-				G_BINDING_SYNC_CREATE);
-			g_object_unref (goa_contacts);
-		}
+	if (goa_contacts != NULL) {
+		g_object_bind_property (
+			goa_contacts, "uri",
+			source_extension, "contacts-url",
+			G_BINDING_SYNC_CREATE);
 	}
 
 	extension_name = E_SOURCE_EXTENSION_COLLECTION;
@@ -656,7 +636,9 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
-	g_object_unref (goa_account);
+	g_clear_object (&goa_account);
+	g_clear_object (&goa_calendar);
+	g_clear_object (&goa_contacts);
 
 	/* Handle optional GOA interfaces. */
 	gnome_online_accounts_config_exchange (extension, source, goa_object);
@@ -665,14 +647,12 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (source), FALSE);
 
-#ifdef HAVE_GOA_PASSWORD_BASED
 	if (goa_object_peek_password_based (goa_object) != NULL) {
 		/* Obtain passwords from the OnlineAccounts service. */
 		e_server_side_source_set_auth_session_type (
 			E_SERVER_SIDE_SOURCE (source),
 			E_TYPE_GOA_PASSWORD_BASED);
 	}
-#endif /* HAVE_GOA_PASSWORD_BASED */
 
 	if (goa_object_peek_oauth2_based (goa_object) != NULL) {
 		/* This module provides OAuth 2.0 support to the collection.

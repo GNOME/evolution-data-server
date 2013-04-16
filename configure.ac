@@ -468,16 +468,6 @@ if test "x$enable_goa" = xyes; then
 fi
 AM_CONDITIONAL(HAVE_GOA, [test x$enable_goa = xyes])
 
-dnl GoaPasswordBased was introduced in version 3.5.
-if `$PKG_CONFIG --atleast-version=3.5 goa-1.0`; then
-	AC_DEFINE(HAVE_GOA_PASSWORD_BASED,1,[Have GoaPasswordBased in goa-1.0])
-fi
-
-dnl The "imap_smtp" provider was introduced around version 3.7.90.
-if `$PKG_CONFIG --atleast-version=3.7.90 goa-1.0`; then
-	AC_DEFINE(HAVE_GOA_IMAP_SMTP,1,[Have IMAP/SMTP provider in goa-1.0])
-fi
-
 dnl ********************************
 dnl Check for Ubuntu Online Accounts
 dnl ********************************

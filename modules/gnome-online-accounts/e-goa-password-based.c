@@ -38,7 +38,6 @@ G_DEFINE_DYNAMIC_TYPE (
 	e_goa_password_based,
 	E_TYPE_AUTHENTICATION_SESSION)
 
-#ifdef HAVE_GOA_PASSWORD_BASED
 static GoaObject *
 e_goa_password_based_ref_account (ESourceRegistryServer *server,
                                   ESource *source,
@@ -91,14 +90,12 @@ e_goa_password_based_ref_account (ESourceRegistryServer *server,
 
 	return match;
 }
-#endif /* HAVE_GOA_PASSWORD_BASED */
 
 static EAuthenticationSessionResult
 e_goa_password_based_execute_sync (EAuthenticationSession *session,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-#ifdef HAVE_GOA_PASSWORD_BASED
 	EAuthenticationSessionResult session_result;
 	ESourceAuthenticationResult auth_result;
 	ESourceAuthenticator *authenticator;
@@ -234,9 +231,6 @@ exit:
 	g_free (password);
 
 	return session_result;
-#else
-	g_return_val_if_reached (E_AUTHENTICATION_SESSION_ERROR);
-#endif /* HAVE_GOA_PASSWORD_BASED */
 }
 
 static void

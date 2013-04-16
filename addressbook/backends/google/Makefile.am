@@ -2,12 +2,6 @@ SUBDIRS = . tests
 
 ebook_backend_LTLIBRARIES = libebookbackendgoogle.la
 
-if HAVE_GOA
-GOA_SOURCES = \
-	e-gdata-goa-authorizer.c \
-	e-gdata-goa-authorizer.h
-endif
-
 libebookbackendgoogle_la_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" \
@@ -18,7 +12,6 @@ libebookbackendgoogle_la_CPPFLAGS = \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(SOUP_CFLAGS) \
 	$(GDATA_CFLAGS) \
-	$(GOA_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
@@ -30,8 +23,7 @@ libebookbackendgoogle_la_SOURCES = \
 	e-book-google-utils.c \
 	e-book-google-utils.h \
 	e-gdata-oauth2-authorizer.c \
-	e-gdata-oauth2-authorizer.h \
-	$(GOA_SOURCES)
+	e-gdata-oauth2-authorizer.h
 
 libebookbackendgoogle_la_LIBADD = \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
@@ -42,7 +34,6 @@ libebookbackendgoogle_la_LIBADD = \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(SOUP_LIBS) \
 	$(GDATA_LIBS) \
-	$(GOA_LIBS) \
 	$(CAMEL_LIBS)
 
 libebookbackendgoogle_la_LDFLAGS = \

@@ -53,7 +53,6 @@ typedef struct {
 	gchar *username;
 } AutodiscoverAuthData;
 
-#ifdef HAVE_GOA_PASSWORD_BASED
 static void
 ews_autodiscover_data_free (AutodiscoverData *data)
 {
@@ -414,7 +413,6 @@ ews_create_msg_for_url (const gchar *url,
 
 	return msg;
 }
-#endif /* HAVE_GOA_PASSWORD_BASED */
 
 void
 goa_ews_autodiscover (GoaObject *goa_object,
@@ -422,9 +420,6 @@ goa_ews_autodiscover (GoaObject *goa_object,
                       GAsyncReadyCallback callback,
                       gpointer user_data)
 {
-	/* XXX This function is only called if HAVE_GOA_PASSWORD_BASED
-	 *     is defined, so don't worry about a fallback behavior. */
-#ifdef HAVE_GOA_PASSWORD_BASED
 	GoaAccount *goa_account;
 	GoaExchange *goa_exchange;
 	GoaPasswordBased *goa_password;
@@ -535,7 +530,6 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	g_object_unref (goa_account);
 	g_object_unref (goa_exchange);
 	g_object_unref (goa_password);
-#endif /* HAVE_GOA_PASSWORD_BASED */
 }
 
 gboolean
