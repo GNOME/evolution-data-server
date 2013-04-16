@@ -38,7 +38,8 @@ libdata_test_utils_la_LIBADD = 				\
 TESTS =					\
 	test-sqlite-get-contact		\
 	test-sqlite-create-cursor	\
-	test-sqlite-cursor-move-by
+	test-sqlite-cursor-move-by	\
+	test-sqlite-cursor-set-target
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -60,5 +61,7 @@ test_sqlite_create_cursor_LDADD=$(TEST_LIBS)
 test_sqlite_create_cursor_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_move_by_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_move_by_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_set_target_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_set_target_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
