@@ -461,6 +461,7 @@ e_util_utf8_remove_accents (const gchar *str)
  *
  * Returns a newly-allocated copy of @str, with invalid characters
  * replaced by Unicode replacement characters (U+FFFD).
+ * For %NULL @str returns newly allocated empty string ("").
  *
  * Returns: a newly-allocated string
  *
@@ -469,6 +470,9 @@ e_util_utf8_remove_accents (const gchar *str)
 gchar *
 e_util_utf8_make_valid (const gchar *str)
 {
+	if (!str)
+		return g_strdup ("");
+
 	return e_util_utf8_data_make_valid (str, strlen (str));
 }
 
@@ -479,6 +483,7 @@ e_util_utf8_make_valid (const gchar *str)
  *
  * Returns a newly-allocated NULL-terminated string with invalid characters
  * replaced by Unicode replacement characters (U+FFFD).
+ * For %NULL @data returns newly allocated empty string ("").
  *
  * Returns: a newly-allocated string
  *
@@ -493,7 +498,8 @@ e_util_utf8_data_make_valid (const gchar *data,
 	const gchar *remainder, *invalid;
 	gint remaining_bytes, valid_bytes;
 
-	g_return_val_if_fail (data != NULL, NULL);
+	if (!data)
+		return g_strdup ("");
 
 	string = NULL;
 	remainder = (gchar *) data,
