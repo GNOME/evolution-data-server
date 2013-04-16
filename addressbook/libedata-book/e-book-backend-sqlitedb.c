@@ -698,6 +698,47 @@ collect_columns_cb (gpointer ref,
 	return 0;
 }
 
+static gint
+get_count_cb (gpointer ref,
+	      gint n_cols,
+	      gchar **cols,
+	      gchar **name)
+{
+	gint64 count = 0;
+	gint *ret = ref;
+	gint i;
+
+	for (i = 0; i < n_cols; i++) {
+		if (g_strcmp0 (name[i], "count(*)") == 0) {
+			count = g_ascii_strtoll (cols[i], NULL, 10);
+		}
+	}
+
+	*ret = count;
+
+	return 0;
+}
+
+static gboolean
+check_folderid_exists (EBookBackendSqliteDB *ebsdb,
+		       const gchar *folderid,
+		       gboolean *exists,
+		       GError **error)
+{
+	gboolean success;
+	gint count = 0;
+	gchar *stmt;
+
+	stmt = sqlite3_mprintf ("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=%Q;", folderid);
+
+	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_count_cb, &count, error);
+	sqlite3_free (stmt);
+
+	*exists = (count > 0);
+
+	return success;
+}
+
 static gboolean
 introspect_summary (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
@@ -847,8 +888,12 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	gboolean success;
 	gchar *stmt, *tmp;
 	GString *string;
+	gboolean already_exists = FALSE;
 
-	/* Construct the create statement from the summary fields table */
+	success = check_folderid_exists (ebsdb, folderid, &already_exists, error);
+	if (!success)
+		return FALSE;
+
 	string = g_string_new (
 		"CREATE TABLE IF NOT EXISTS %Q ( uid TEXT PRIMARY KEY, ");
 
@@ -931,7 +976,8 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		g_free (tmp);
 	}
 
-	if (success)
+	/* Dont introspect the summary if the table did not yet exist */
+	if (success && already_exists)
 		success = introspect_summary (ebsdb, folderid, error);
 
 	/* Create indexes on the summary fields configured for indexing */
