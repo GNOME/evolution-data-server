@@ -412,6 +412,7 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	const gchar *prompt_password;
 	gchar *stored_password = NULL;
 	gboolean success;
+	gboolean remember_password = TRUE;
 	GError *local_error = NULL;
 
 	/* XXX I moved the execute() operation into a class method thinking
@@ -491,6 +492,7 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 		allow_auth_prompt =
 			e_server_side_source_get_allow_auth_prompt (
 			E_SERVER_SIDE_SOURCE (source));
+		remember_password = e_source_get_remember_password (source);
 		g_object_unref (source);
 	} else {
 		allow_auth_prompt = TRUE;
@@ -531,7 +533,7 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 
 	label = _("Add this password to your keyring");
 	gcr_prompt_set_choice_label (prompt, label);
-	gcr_prompt_set_choice_chosen (prompt, TRUE);
+	gcr_prompt_set_choice_chosen (prompt, remember_password);
 
 try_again:
 
@@ -551,6 +553,13 @@ try_again:
 	if (prompt_password == NULL) {
 		session_result = E_AUTHENTICATION_SESSION_DISMISSED;
 		goto close_prompt;
+	}
+
+	source = e_source_registry_server_ref_source (server, source_uid);
+	if (source != NULL) {
+		e_source_set_remember_password (source,
+			gcr_prompt_get_choice_chosen (prompt));
+		g_object_unref (source);
 	}
 
 	/* Attempt authentication with the provided password. */
