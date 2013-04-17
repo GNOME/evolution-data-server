@@ -489,10 +489,19 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	 * has not yet been submitted to the D-Bus registry service. */
 	source = e_source_registry_server_ref_source (server, source_uid);
 	if (source != NULL) {
+		ESourceExtension *extension;
+		const gchar *extension_name;
+
 		allow_auth_prompt =
 			e_server_side_source_get_allow_auth_prompt (
 			E_SERVER_SIDE_SOURCE (source));
-		remember_password = e_source_get_remember_password (source);
+
+		extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+		extension = e_source_get_extension (source, extension_name);
+		remember_password =
+			e_source_authentication_get_remember_password (
+			E_SOURCE_AUTHENTICATION (extension));
+
 		g_object_unref (source);
 	} else {
 		allow_auth_prompt = TRUE;
@@ -557,8 +566,16 @@ try_again:
 
 	source = e_source_registry_server_ref_source (server, source_uid);
 	if (source != NULL) {
-		e_source_set_remember_password (source,
+		ESourceExtension *extension;
+		const gchar *extension_name;
+
+		extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+		extension = e_source_get_extension (source, extension_name);
+
+		e_source_authentication_set_remember_password (
+			E_SOURCE_AUTHENTICATION (extension),
 			gcr_prompt_get_choice_chosen (prompt));
+
 		g_object_unref (source);
 	}
 

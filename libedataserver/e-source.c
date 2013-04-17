@@ -130,7 +130,6 @@ struct _ESourcePrivate {
 
 	gboolean enabled;
 	gboolean initialized;
-	gboolean remember_password;
 };
 
 struct _AsyncContext {
@@ -146,7 +145,6 @@ enum {
 	PROP_ENABLED,
 	PROP_MAIN_CONTEXT,
 	PROP_PARENT,
-	PROP_REMEMBER_PASSWORD,
 	PROP_REMOTE_CREATABLE,
 	PROP_REMOTE_DELETABLE,
 	PROP_REMOVABLE,
@@ -765,12 +763,6 @@ source_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
-		case PROP_REMEMBER_PASSWORD:
-			e_source_set_remember_password (
-				E_SOURCE (object),
-				g_value_get_boolean (value));
-			return;
-
 		case PROP_UID:
 			source_set_uid (
 				E_SOURCE (object),
@@ -815,12 +807,6 @@ source_get_property (GObject *object,
 		case PROP_PARENT:
 			g_value_take_string (
 				value, e_source_dup_parent (
-				E_SOURCE (object)));
-			return;
-
-		case PROP_REMEMBER_PASSWORD:
-			g_value_set_boolean (
-				value, e_source_get_remember_password (
 				E_SOURCE (object)));
 			return;
 
@@ -1611,19 +1597,6 @@ e_source_class_init (ESourceClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_REMEMBER_PASSWORD,
-		g_param_spec_boolean (
-			"remember-password",
-			"Remember Password",
-			"Whether to remember password - used in a password prompt",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
-
-	g_object_class_install_property (
-		object_class,
 		PROP_REMOTE_CREATABLE,
 		g_param_spec_boolean (
 			"remote-creatable",
@@ -2099,49 +2072,6 @@ e_source_set_enabled (ESource *source,
 	source->priv->enabled = enabled;
 
 	g_object_notify (G_OBJECT (source), "enabled");
-}
-
-/**
- * e_source_get_remember_password:
- * @source: an #ESource
- *
- * Returns whether @source should remember password. This influences
- * "Add this password to your keyring" option in a password prompt.
- *
- * Returns: whether @source should remember password
- *
- * Since: 3.10
- **/
-gboolean
-e_source_get_remember_password (ESource *source)
-{
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	return source->priv->remember_password;
-}
-
-/**
- * e_source_set_remember_password:
- * @source: an #ESource
- * @remember_password: whether to remember password
- *
- * The password prompt will have checked "Add this password to your keyring" option
- * based on this value.
- *
- * Since: 3.10
- **/
-void
-e_source_set_remember_password (ESource *source,
-				gboolean remember_password)
-{
-	g_return_if_fail (E_IS_SOURCE (source));
-
-	if ((source->priv->remember_password ? 1 : 0) == (remember_password ? 1 : 0))
-		return;
-
-	source->priv->remember_password = remember_password;
-
-	g_object_notify (G_OBJECT (source), "remember-password");
 }
 
 /**
