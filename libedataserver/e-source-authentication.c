@@ -48,6 +48,7 @@ struct _ESourceAuthenticationPrivate {
 	gchar *host;
 	gchar *method;
 	guint16 port;
+	gboolean remember_password;
 	gchar *user;
 
 	/* GNetworkAddress caches data internally, so we maintain the
@@ -62,6 +63,7 @@ enum {
 	PROP_HOST,
 	PROP_METHOD,
 	PROP_PORT,
+	PROP_REMEMBER_PASSWORD,
 	PROP_USER
 };
 
@@ -115,6 +117,12 @@ source_authentication_set_property (GObject *object,
 				g_value_get_uint (value));
 			return;
 
+		case PROP_REMEMBER_PASSWORD:
+			e_source_authentication_set_remember_password (
+				E_SOURCE_AUTHENTICATION (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_USER:
 			e_source_authentication_set_user (
 				E_SOURCE_AUTHENTICATION (object),
@@ -157,6 +165,13 @@ source_authentication_get_property (GObject *object,
 			g_value_set_uint (
 				value,
 				e_source_authentication_get_port (
+				E_SOURCE_AUTHENTICATION (object)));
+			return;
+
+		case PROP_REMEMBER_PASSWORD:
+			g_value_set_boolean (
+				value,
+				e_source_authentication_get_remember_password (
 				E_SOURCE_AUTHENTICATION (object)));
 			return;
 
@@ -264,6 +279,20 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			"Port",
 			"Port number for the remote account",
 			0, G_MAXUINT16, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REMEMBER_PASSWORD,
+		g_param_spec_boolean (
+			"remember-password",
+			"Remember Password",
+			"Whether to offer to remember the "
+			"password by default when prompted",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -576,6 +605,51 @@ e_source_authentication_set_port (ESourceAuthentication *extension,
 
 	/* Changing the port also changes the connectable. */
 	g_object_notify (G_OBJECT (extension), "connectable");
+}
+
+/**
+ * e_source_authentication_get_remember_password:
+ * @extension: an #ESourceAuthentication
+ *
+ * Returns whether to offer to remember the provided password by default
+ * in password prompts.  This way, if the user unchecks the option it will
+ * be unchecked by default in future password prompts.
+ *
+ * Returns: whether to offer to remember the password by default
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_source_authentication_get_remember_password (ESourceAuthentication *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), FALSE);
+
+	return extension->priv->remember_password;
+}
+
+/**
+ * e_source_authentication_set_remember_password:
+ * @extension: an #ESourceAuthentication
+ * @remember_password: whether to offer to remember the password by default
+ *
+ * Sets whether to offer to remember the provided password by default in
+ * password prompts.  This way, if the user unchecks the option it will be
+ * unchecked by default in future password prompts.
+ *
+ * Since: 3.10
+ **/
+void
+e_source_authentication_set_remember_password (ESourceAuthentication *extension,
+                                               gboolean remember_password)
+{
+	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
+
+	if (extension->priv->remember_password == remember_password)
+		return;
+
+	extension->priv->remember_password = remember_password;
+
+	g_object_notify (G_OBJECT (extension), "remember-password");
 }
 
 /**
