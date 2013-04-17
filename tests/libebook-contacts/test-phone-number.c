@@ -26,6 +26,15 @@
 #include <libebook-contacts/libebook-contacts.h>
 #include <locale.h>
 
+/* Pick a locale category to set and test. */
+#ifdef LC_ADDRESS
+/* LC_ADDRESS is a GNU extension. */
+#define CATEGORY LC_ADDRESS
+#else
+/* Mimic the fallback branch in EBookQuery. */
+#define CATEGORY LC_MESSAGES
+#endif /* LC_ADDRESS */
+
 static const gchar *match_candidates[] = {
 	"not-a-number",
 	"+1-617-4663489", "617-4663489", "4663489",
@@ -342,7 +351,7 @@ test_country_code_for_region (void)
 	GError *error = NULL;
 	gint code;
 
-	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+	g_assert_cmpstr (setlocale (CATEGORY, NULL), ==, "en_US.UTF-8");
 
 #ifdef ENABLE_PHONENUMBER
 
@@ -381,7 +390,7 @@ test_default_region (void)
 	GError *error = NULL;
 	gchar *country;
 
-	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+	g_assert_cmpstr (setlocale (CATEGORY, NULL), ==, "en_US.UTF-8");
 	country = e_phone_number_get_default_region (&error);
 
 #ifdef ENABLE_PHONENUMBER
@@ -408,7 +417,11 @@ main (gint argc,
 {
 	size_t i, j;
 
-	setlocale (LC_ALL, "en_US.UTF-8");
+	if (setlocale (LC_ALL, "en_US.UTF-8") == NULL) {
+		g_message ("Failed to set locale to en_US.UTF-8");
+		g_message ("Skipping all /ebook-phone-number/* tests");
+		return 0;
+	}
 
 	g_type_init ();
 
