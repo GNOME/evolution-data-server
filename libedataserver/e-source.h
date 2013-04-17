@@ -165,6 +165,9 @@ void		e_source_set_parent		(ESource *source,
 gboolean	e_source_get_enabled		(ESource *source);
 void		e_source_set_enabled		(ESource *source,
 						 gboolean enabled);
+gboolean	e_source_get_remember_password	(ESource *source);
+void		e_source_set_remember_password	(ESource *source,
+						 gboolean remember_password);
 gboolean	e_source_get_writable		(ESource *source);
 gboolean	e_source_get_removable		(ESource *source);
 gboolean	e_source_get_remote_creatable	(ESource *source);
