@@ -44,7 +44,8 @@ TESTS =					\
 	test-sqlite-create-cursor	\
 	test-sqlite-cursor-move-by	\
 	test-sqlite-cursor-set-target	\
-	test-sqlite-cursor-calculate
+	test-sqlite-cursor-calculate	\
+	test-sqlite-cursor-set-sexp
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -70,5 +71,7 @@ test_sqlite_cursor_set_target_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_set_target_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_calculate_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_calculate_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_set_sexp_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_set_sexp_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
