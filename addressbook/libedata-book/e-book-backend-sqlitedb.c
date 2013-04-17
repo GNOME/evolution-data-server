@@ -756,7 +756,7 @@ get_count_cb (gpointer ref,
 	gint i;
 
 	for (i = 0; i < n_cols; i++) {
-		if (g_strcmp0 (name[i], "count(*)") == 0) {
+		if (name[i] && strncmp (name[i], "count", 5) == 0) {
 			count = g_ascii_strtoll (cols[i], NULL, 10);
 		}
 	}
