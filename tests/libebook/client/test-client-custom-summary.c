@@ -343,7 +343,10 @@ main (gint argc,
 	g_setenv ("LC_ALL", "en_US.UTF-8", TRUE);
 	setlocale (LC_ALL, "");
 
+#if defined (LC_ADDRESS)
+	/* LC_ADDRESS is a GNU extension. */
 	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+#endif
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
 	 */

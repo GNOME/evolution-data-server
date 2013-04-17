@@ -200,7 +200,14 @@ e_book_query_not (EBookQuery *q,
 static const gchar *
 address_locale (void)
 {
-	const gchar *locale = setlocale (LC_ADDRESS, NULL);
+	const gchar *locale;
+
+#if defined (LC_ADDRESS)
+	/* LC_ADDRESS is a GNU extension. */
+	locale = setlocale (LC_ADDRESS, NULL);
+#else
+	locale = NULL;
+#endif
 
 	if (locale == NULL || strcmp (locale, "C") == 0)
 		locale = setlocale (LC_MESSAGES, NULL);
