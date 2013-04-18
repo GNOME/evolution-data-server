@@ -134,19 +134,8 @@ imapx_parse_flags (CamelIMAPXStream *stream,
 			found:
 				g_free (upper);
 			} else if (tok != ')') {
-				CamelStream *strm = CAMEL_STREAM (stream);
-				gssize read;
-
-				while (tok != ')' && tok != ' ' && tok > 0) {
-					gchar chr = 0;
-
-					read = camel_stream_read (strm, &chr, 1, cancellable, NULL);
-					if (read == 1) {
-						tok = chr;
-					} else {
-						tok = IMAPX_TOK_ERROR;
-					}
-				}
+				if (!camel_imapx_stream_skip_until (stream, ")", cancellable, NULL))
+					break;
 			}
 		} while (tok != ')' && tok > 0);
 	} else {

@@ -145,6 +145,11 @@ gint		camel_imapx_stream_skip		(CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
 
+gboolean	camel_imapx_stream_skip_until	(CamelIMAPXStream *is,
+						 const gchar *delimiters,
+						 GCancellable *cancellable,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_STREAM_H */
