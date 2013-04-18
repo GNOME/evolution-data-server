@@ -134,10 +134,21 @@ imapx_parse_flags (CamelIMAPXStream *stream,
 			found:
 				g_free (upper);
 			} else if (tok != ')') {
-				g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting flag");
-				return;
+				CamelStream *strm = CAMEL_STREAM (stream);
+				gssize read;
+
+				while (tok != ')' && tok != ' ' && tok > 0) {
+					gchar chr = 0;
+
+					read = camel_stream_read (strm, &chr, 1, cancellable, NULL);
+					if (read == 1) {
+						tok = chr;
+					} else {
+						tok = IMAPX_TOK_ERROR;
+					}
+				}
 			}
-		} while (tok != ')');
+		} while (tok != ')' && tok > 0);
 	} else {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "execting flag list");
 		return;

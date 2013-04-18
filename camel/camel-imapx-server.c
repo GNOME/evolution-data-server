@@ -1730,13 +1730,16 @@ imapx_untagged_flags (CamelIMAPXServer *is,
                       GError **error)
 {
 	guint32 flags;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	imapx_parse_flags (stream, &flags, NULL, cancellable, error);
-	c (is->tagprefix, "flags: %08x\n", flags);
+	imapx_parse_flags (stream, &flags, NULL, cancellable, &local_error);
+	c (is->tagprefix, "flags: %08x %s%s\n", flags, local_error ? "error: " : "", local_error ? local_error->message : "");
+
+	g_clear_error (&local_error);
 
 	return TRUE;
 }
