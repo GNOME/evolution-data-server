@@ -89,7 +89,7 @@ camel_store_settings_class_init (CamelStoreSettingsClass *class)
 			"filter-inbox",
 			"Filter Inbox",
 			"Whether to filter new messages in Inbox",
-			FALSE,
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
