@@ -1081,13 +1081,9 @@ void
 e_book_client_view_start (EBookClientView *client_view,
                           GError **error)
 {
-	EBookClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
-
-	client = e_book_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	client_view->priv->running = TRUE;
 
@@ -1099,8 +1095,6 @@ e_book_client_view_start (EBookClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
 /**
@@ -1114,13 +1108,9 @@ void
 e_book_client_view_stop (EBookClientView *client_view,
                          GError **error)
 {
-	EBookClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
-
-	client = e_book_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	client_view->priv->running = FALSE;
 
@@ -1131,8 +1121,6 @@ e_book_client_view_stop (EBookClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
 /**
@@ -1150,13 +1138,9 @@ e_book_client_view_set_flags (EBookClientView *client_view,
                               EBookClientViewFlags flags,
                               GError **error)
 {
-	EBookClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
-
-	client = e_book_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	e_gdbus_book_view_call_set_flags_sync (
 		client_view->priv->dbus_proxy, flags, NULL, &local_error);
@@ -1165,8 +1149,6 @@ e_book_client_view_set_flags (EBookClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
 /**
@@ -1192,14 +1174,10 @@ e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
                                            const GSList *fields_of_interest,
                                            GError **error)
 {
-	EBookClient *client;
 	gchar **strv;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view));
-
-	client = e_book_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	/* When in direct read access mode, ensure that the
 	 * backend is configured to only send us UIDs for everything,
@@ -1224,7 +1202,5 @@ e_book_client_view_set_fields_of_interest (EBookClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
