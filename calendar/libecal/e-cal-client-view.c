@@ -916,13 +916,9 @@ void
 e_cal_client_view_start (ECalClientView *client_view,
                          GError **error)
 {
-	ECalClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
-
-	client = e_cal_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	client_view->priv->running = TRUE;
 
@@ -934,8 +930,6 @@ e_cal_client_view_start (ECalClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
 /**
@@ -951,13 +945,9 @@ void
 e_cal_client_view_stop (ECalClientView *client_view,
                         GError **error)
 {
-	ECalClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
-
-	client = e_cal_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	client_view->priv->running = FALSE;
 
@@ -968,8 +958,6 @@ e_cal_client_view_stop (ECalClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
 /**
@@ -996,14 +984,10 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *client_view,
                                           const GSList *fields_of_interest,
                                           GError **error)
 {
-	ECalClient *client;
 	gchar **strv;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
-
-	client = e_cal_client_view_ref_client (client_view);
-	g_return_if_fail (client != NULL);
 
 	strv = e_client_util_slist_to_strv (fields_of_interest);
 	e_gdbus_cal_view_call_set_fields_of_interest_sync (
@@ -1016,8 +1000,6 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
 
 /**
@@ -1035,12 +1017,9 @@ e_cal_client_view_set_flags (ECalClientView *client_view,
                              ECalClientViewFlags flags,
                              GError **error)
 {
-	ECalClient *client;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (client_view));
-
-	client = e_cal_client_view_ref_client (client_view);
 
 	e_gdbus_cal_view_call_set_flags_sync (
 		client_view->priv->dbus_proxy, flags, NULL, &local_error);
@@ -1049,6 +1028,4 @@ e_cal_client_view_set_flags (ECalClientView *client_view,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (client);
 }
