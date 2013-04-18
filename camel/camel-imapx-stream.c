@@ -948,3 +948,42 @@ camel_imapx_stream_skip (CamelIMAPXStream *is,
 	return 0;
 }
 
+gboolean
+camel_imapx_stream_skip_until (CamelIMAPXStream *is,
+				const gchar *delimiters,
+				GCancellable *cancellable,
+				GError **error)
+{
+	register guchar c;
+	guchar *p, *e;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), FALSE);
+
+	if (is->priv->unget > 0) {
+		is->priv->unget--;
+		return TRUE;
+	}
+
+	if (is->priv->literal > 0) {
+		is->priv->literal--;
+		return TRUE;
+	}
+
+	p = is->priv->ptr;
+	e = is->priv->end;
+
+	do {
+		while (p >= e ) {
+			is->priv->ptr = p;
+			if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
+				return FALSE;
+			p = is->priv->ptr;
+			e = is->priv->end;
+		}
+		c = *p++;
+	} while (c && c != ' ' && c != '\r' && c != '\n' && (!delimiters || !strchr (delimiters, c)));
+
+	is->priv->ptr = p;
+
+	return TRUE;
+}
