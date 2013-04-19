@@ -58,6 +58,20 @@ new_vcard_from_test_case (const gchar *case_name)
 	return vcard;
 }
 
+EContact *
+new_contact_from_test_case (const gchar *case_name)
+{
+	gchar *vcard;
+	EContact *contact = NULL;
+
+	vcard = new_vcard_from_test_case (case_name);
+	if (vcard)
+		contact = e_contact_new_from_vcard (vcard);
+	g_free (vcard);
+
+	return contact;
+}
+
 static gboolean
 contacts_are_equal_shallow (EContact *a,
                             EContact *b)
@@ -83,15 +97,13 @@ add_contact_from_test_case_verify (EBookClient *book_client,
                                    const gchar *case_name,
                                    EContact **contact)
 {
-	gchar *vcard;
 	EContact *contact_orig;
 	EContact *contact_final;
 	gchar *uid;
 	GError *error = NULL;
 
-	vcard = new_vcard_from_test_case (case_name);
-	contact_orig = e_contact_new_from_vcard (vcard);
-	g_free (vcard);
+	contact_orig = new_contact_from_test_case (case_name);
+
 	if (!e_book_client_add_contact_sync (book_client, contact_orig, &uid, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
 

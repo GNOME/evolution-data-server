@@ -35,13 +35,26 @@ libdata_test_utils_la_LIBADD = 				\
 	$(NULL)
 
 # Should be kept ordered approximately from least to most difficult/complex
+#
+# Note that these tests must be run in order:
+#   test-sqlite-cursor-posix-initial,
+#   test-sqlite-cursor-en-US-migrated,
+#   test-sqlite-cursor-posix-migrated
+#
+# This is because each migrated test changes the
+# locale and reloads the same addressbook of the previous test. 
 TESTS =					\
 	test-sqlite-get-contact		\
 	test-sqlite-create-cursor	\
 	test-sqlite-cursor-move-by	\
 	test-sqlite-cursor-set-target	\
 	test-sqlite-cursor-calculate	\
-	test-sqlite-cursor-set-sexp
+	test-sqlite-cursor-set-sexp	\
+	test-sqlite-cursor-posix-initial	\
+	test-sqlite-cursor-en-US-migrated	\
+	test-sqlite-cursor-posix-migrated
+
+
 
 noinst_PROGRAMS = $(TESTS)
 
@@ -69,5 +82,11 @@ test_sqlite_cursor_calculate_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_calculate_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_set_sexp_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_set_sexp_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_posix_initial_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_posix_initial_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_en_US_migrated_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_en_US_migrated_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_posix_migrated_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_posix_migrated_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
