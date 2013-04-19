@@ -59,7 +59,7 @@
 #endif
 
 #define DB_FILENAME "contacts.db"
-#define FOLDER_VERSION 5
+#define FOLDER_VERSION 7
 
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
@@ -480,18 +480,25 @@ collect_versions_cb (gpointer ref,
 	return 0;
 }
 
-static gint
-find_country_code_column (gpointer data,
-                          gint n_cols,
-                          gchar **cols,
-                          gchar **name)
-{
-	if (strcmp (cols[1], "countrycode") == 0) {
-		gboolean *result = data;
-		*result = TRUE;
+typedef struct {
+	gboolean has_countrycode;
+	gboolean has_lc_collate;
+} LocaleColumns;
 
-		/* Should return a non-zero value now to about iteration, but
-		 * book_backend_sql_exec() doesn't know about SQLITE_ABORT. */
+static gint
+find_locale_columns (gpointer data,
+		     gint n_cols,
+		     gchar **cols,
+		     gchar **name)
+{
+	LocaleColumns *columns = (LocaleColumns *)data;
+	gint i;
+
+	for (i = 0; i < n_cols; i++) {
+		if (g_strcmp0 (cols[i], "countrycode") == 0)
+			columns->has_countrycode = TRUE;
+		else if (g_strcmp0 (cols[i], "lc_collate") == 0)
+			columns->has_lc_collate = TRUE;
 	}
 
 	return 0;
@@ -504,7 +511,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 {
 	gboolean success;
 	gint version = 0;
-	gboolean has_country_code = FALSE;
+	LocaleColumns locale_columns = { FALSE, FALSE };
 
 	/* sync_data points to syncronization data, it could be last_modified
 	 * time or a sequence number or some text depending on the backend.
@@ -625,18 +632,26 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	 */
 	stmt = "PRAGMA table_info(folders)";
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, find_country_code_column, &has_country_code, error);
+		ebsdb->priv->db, stmt, find_locale_columns, &locale_columns, error);
 
 	if (!success)
 		goto rollback;
 
-	if (!has_country_code) {
+	if (!locale_columns.has_countrycode) {
 		stmt = "ALTER TABLE folders ADD COLUMN countrycode VARCHAR(2)";
 		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 
 		if (!success)
 			goto rollback;
 
+	}
+
+	if (!locale_columns.has_lc_collate) {
+		stmt = "ALTER TABLE folders ADD COLUMN lc_collate TEXT";
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+
+		if (!success)
+			goto rollback;
 	}
 
 	/* Remember the schema version for later use and finish the transaction. */
@@ -816,6 +831,10 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		gchar *p;
 		IndexFlags computed = 0;
 
+		/* Ignore the 'localized' columns */
+		if (g_str_has_suffix (col, "_localized"))
+			continue;
+
 		/* Check if we're parsing a reverse field */
 		if ((p = strstr (col, "_reverse")) != NULL) {
 			computed = INDEX_SUFFIX;
@@ -935,11 +954,16 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	gboolean success;
 	gchar *stmt, *tmp;
 	GString *string;
+	gchar *current_region = NULL;
 	gboolean already_exists = FALSE;
+	gboolean relocalized = FALSE;
 
 	success = check_folderid_exists (ebsdb, folderid, &already_exists, error);
 	if (!success)
 		return FALSE;
+
+	if (e_phone_number_is_supported ())
+		current_region = e_phone_number_get_default_region ();
 
 	string = g_string_new (
 		"CREATE TABLE IF NOT EXISTS %Q ( uid TEXT PRIMARY KEY, ");
@@ -948,6 +972,14 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 			g_string_append (string, " TEXT, ");
+
+			/* For any string columns (not multivalued columns), also create a localized
+			 * data column for sort ordering
+			 */
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				g_string_append  (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append  (string, "_localized TEXT, ");
+			}
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 			g_string_append (string, " INTEGER, ");
@@ -976,6 +1008,29 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, NULL, NULL , error);
 
 	sqlite3_free (stmt);
+
+	/* Now, if we're upgrading from < version 7, we need to add the _localized columns */
+	if (success && previous_schema >= 1 && previous_schema < 7) {
+
+		tmp = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN ", folderid);
+
+		for (i = 1; i < ebsdb->priv->n_summary_fields && success; i++) {
+
+			if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING &&
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				string = g_string_new (tmp);
+
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_localized TEXT, ");
+
+				success = book_backend_sql_exec (
+				        ebsdb->priv->db, string->str, NULL, NULL , error);
+
+				g_string_free (string, TRUE);
+			}
+		}
+		sqlite3_free (tmp);
+	}
 
 	/* Construct the create statement from the attribute list summary table */
 	if (success && ebsdb->priv->have_attr_list) {
@@ -1042,6 +1097,20 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 			g_free (tmp);
+
+			/* For any indexed column, also index the localized column */
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				tmp = g_strdup_printf (
+				        "INDEX_%s_localized_%s",
+					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+					folderid);
+				stmt = sqlite3_mprintf (
+				        "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_localized)", tmp, folderid,
+					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+				success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+				sqlite3_free (stmt);
+				g_free (tmp);
+			}
 		}
 
 		if (success &&
@@ -1074,26 +1143,48 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		}
 	}
 
-	if (success && e_phone_number_is_supported ()) {
-		gchar *current_region = e_phone_number_get_default_region ();
+	/* Need to relocalize the whole thing if the schema has been upgraded to version 7 */
+	if (success && previous_schema >= 1 && previous_schema < 7) {
+		success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
+		relocalized = TRUE;
+	}
 
-		if (previous_schema == 4) {
+	/* We may need to relocalize for a country code change */
+	if (success && relocalized == FALSE && e_phone_number_is_supported ()) {
+		gchar *stored_region = NULL;
+
+		stmt = sqlite3_mprintf ("SELECT countrycode FROM folders WHERE folder_id = %Q", folderid);
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_region, error);
+		sqlite3_free (stmt);
+
+		if (success && g_strcmp0 (current_region, stored_region) != 0) {
 			success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
-		} else {
-			gchar *stored_region = NULL;
-
-			stmt = sqlite3_mprintf ("SELECT countrycode FROM folders WHERE folder_id = %Q", folderid);
-			success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_region, error);
-			sqlite3_free (stmt);
-
-			if (success && g_strcmp0 (current_region, stored_region) != 0)
-				success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
-
-			g_free (stored_region);
+			relocalized = TRUE;
 		}
 
-		g_free (current_region);
+		g_free (stored_region);
 	}
+
+	/* We may need to relocalize for an LC_COLLATE locale change */
+	if (success && relocalized == FALSE) {
+		const gchar *lc_collate = NULL;
+		gchar *stored_lc_collate;
+
+		stmt = sqlite3_mprintf ("SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
+		sqlite3_free (stmt);
+
+		lc_collate = setlocale (LC_COLLATE, NULL);
+
+		if (success && g_strcmp0 (stored_lc_collate, lc_collate) != 0) {
+			success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
+			relocalized = TRUE;
+		}
+
+		g_free (stored_lc_collate);
+	}
+
+	g_free (current_region);
 
 	return success;
 }
@@ -1854,31 +1945,89 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 	gchar *str, *vcard_str;
 	gint i;
 
-	str = sqlite3_mprintf ("INSERT or %s INTO %Q VALUES (",
+	str = sqlite3_mprintf ("INSERT or %s INTO %Q (",
 			       replace_existing ? "REPLACE" : "FAIL", folderid);
 	string = g_string_new (str);
 	sqlite3_free (str);
 
+	/*
+	 * First specify the column names for the insert, since it's possible we
+	 * upgraded the DB and cannot be sure the order of the columns are ordered
+	 * just how we like them to be.
+	 */
+	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
+
+		/* Multi values go into a separate table/statement */
+		if (ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+
+			if (i > 0)
+				g_string_append (string, ", ");
+
+			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+		}
+
+		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
+
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_localized");
+			}
+
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_reverse");
+			}
+
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0) {
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_phone");
+			}
+		}
+	}
+	g_string_append (string, ", vcard, bdata)");
+
+	/*
+	 * Now specify values for all of the column names we specified.
+	 */
+	g_string_append (string, " VALUES (");
 	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
 		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 			gchar *val;
 			gchar *normal;
+			gchar *localized = NULL;
 
 			if (i > 0)
 				g_string_append (string, ", ");
 
 			val = e_contact_get (contact, ebsdb->priv->summary_fields[i].field);
 
-			/* Special exception, never normalize the UID or REV string */
+			/* Special exception, never normalize/localize the UID or REV string */
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
-			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV)
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
 				normal = e_util_utf8_normalize (val);
-			else
+
+				if (val)
+					localized = g_utf8_collate_key (val, strlen (val));
+				else
+					localized = g_strdup ("");
+			} else
 				normal = g_strdup (val);
 
 			str = sqlite3_mprintf ("%Q", normal);
 			g_string_append (string, str);
 			sqlite3_free (str);
+
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				str = sqlite3_mprintf ("%Q", localized);
+				g_string_append (string, ", ");
+				g_string_append (string, str);
+				sqlite3_free (str);
+			}
 
 			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
 				str = mprintf_suffix (normal);
@@ -1896,6 +2045,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 			g_free (normal);
 			g_free (val);
+			g_free (localized);
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			gboolean val;
 
@@ -4722,6 +4872,7 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 			 GError              **error)
 {
 	gchar *stmt;
+	const gchar *lc_collate;
 	gboolean success = FALSE;
 	GSList *vcard_data = NULL;
 	GSList *l;
@@ -4749,9 +4900,18 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 	g_slist_free_full (vcard_data, destroy_search_data);
 
 	if (success) {
+		lc_collate = setlocale (LC_COLLATE, NULL);
+
 		stmt = sqlite3_mprintf (
 			"UPDATE folders SET countrycode = %Q WHERE folder_id = %Q",
 			region, folderid);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET lc_collate = %Q WHERE folder_id = %Q",
+			lc_collate, folderid);
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, stmt, NULL, NULL, error);
 		sqlite3_free (stmt);
