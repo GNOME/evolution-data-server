@@ -280,8 +280,24 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 		if (pair->closure->customize)
 			pair->closure->customize (scratch, pair->closure);
 
-		if (!e_source_registry_commit_source_sync (pair->fixture->registry, scratch, NULL, &error))
-			g_error ("Unable to add new addressbook source to the registry: %s", error->message);
+		if (!e_source_registry_commit_source_sync (pair->fixture->registry, scratch, NULL, &error)) {
+			/* Allow sources to carry from one test to the next, if the keep_work_directory
+			 * semantics are used then that's what we want (to reuse a source from the
+			 * previous test case).
+			 */
+			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+				ESource *source = e_source_registry_ref_source (pair->fixture->registry,
+										pair->fixture->source_name);
+
+				g_clear_error (&error);
+
+				g_assert (E_IS_SOURCE (source));
+
+				e_test_server_utils_source_added (pair->fixture->registry, source, pair);
+				g_object_unref (source);
+			} else
+				g_error ("Unable to add new addressbook source to the registry: %s", error->message);
+		}
 
 		g_object_unref (scratch);
 	}
