@@ -40,7 +40,8 @@ void     e_sqlitedb_fixture_teardown       (ESqliteDBFixture *fixture,
 					    gconstpointer     user_data);
 
 
-gchar   *new_vcard_from_test_case          (const gchar *case_name);
+gchar    *new_vcard_from_test_case         (const gchar *case_name);
+EContact *new_contact_from_test_case       (const gchar *case_name);
 
 gboolean add_contact_from_test_case_verify (EBookClient *book_client,
 					    const gchar *case_name,
