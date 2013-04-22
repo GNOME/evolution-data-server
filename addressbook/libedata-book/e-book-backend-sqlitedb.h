@@ -112,6 +112,15 @@ typedef struct {
 	gchar *bdata;
 } EbSdbSearchData;
 
+/**
+ * EbSdbCuror:
+ *
+ * An opaque cursor pointer
+ *
+ * Since: 3.10
+ */
+typedef struct _EbSdbCursor EbSdbCursor;
+
 GType		e_book_backend_sqlitedb_get_type
 						(void) G_GNUC_CONST;
 GQuark          e_book_backend_sqlitedb_error_quark
@@ -276,6 +285,48 @@ gboolean        e_book_backend_sqlitedb_check_summary_query
 gboolean        e_book_backend_sqlitedb_check_summary_fields
                                                 (EBookBackendSqliteDB *ebsdb,
 						 GHashTable *fields_of_interest);
+
+/* Cursor API */
+EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
+                                                (EBookBackendSqliteDB *ebsdb,
+						 const gchar          *folderid,
+						 const gchar          *sexp,
+						 EContactField        *sort_fields,
+						 EBookSortType        *sort_types,
+						 guint                 n_sort_fields,
+						 GError              **error);
+void            e_book_backend_sqlitedb_cursor_free
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor);
+GSList         *e_book_backend_sqlitedb_cursor_move_by
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 gint                  count,
+						 GError              **error);
+void            e_book_backend_sqlitedb_cursor_set_targetv
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 const gchar         **values,
+						 gint                  n_values);
+void            e_book_backend_sqlitedb_cursor_set_target
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 ...) G_GNUC_NULL_TERMINATED;
+void            e_book_backend_sqlitedb_cursor_set_target_contact
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 EContact             *contact);
+gboolean        e_book_backend_sqlitedb_cursor_set_sexp
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 const gchar          *sexp,
+						 GError              **error);
+gboolean        e_book_backend_sqlitedb_cursor_calculate
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 gint                 *total,
+						 gint                 *position,
+						 GError              **error);
 
 #ifndef EDS_DISABLE_DEPRECATED
 gboolean	e_book_backend_sqlitedb_is_summary_query

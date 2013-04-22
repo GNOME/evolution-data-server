@@ -135,6 +135,18 @@ typedef enum {
 	E_BOOK_INDEX_PHONE
 } EBookIndexType;
 
+/**
+ * EBookSortType:
+ * @E_BOOK_SORT_ASCENDING: Sort results in ascending order
+ * @E_BOOK_SORT_ASCENDING: Sort results in descending order
+ *
+ * Specifies the sort order of an ordered query
+ */
+typedef enum {
+	E_BOOK_SORT_ASCENDING = 0,
+	E_BOOK_SORT_DESCENDING
+} EBookSortType;
+
 GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_book_client_error_to_string	(EBookClientError code);
 
