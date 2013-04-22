@@ -62,7 +62,7 @@
 #endif
 
 #define DB_FILENAME "contacts.db"
-#define FOLDER_VERSION 6
+#define FOLDER_VERSION 7
 
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
@@ -92,6 +92,9 @@ struct _EBookBackendSqliteDBPrivate {
 	gint            n_summary_fields;
 	guint           have_attr_list : 1;
 	IndexFlags      attr_list_indexes;
+
+	ECollator      *collator; /* The ECollator to create sort keys for all fields */
+	gchar          *locale;   /* The current locale */
 };
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
@@ -126,14 +129,25 @@ static EBookIndexType default_index_types[] = {
 	E_BOOK_INDEX_PREFIX
 };
 
+static void
+destroy_search_data (gpointer data)
+{
+	e_book_backend_sqlitedb_search_data_free (data);
+}
+
 static SummaryField * append_summary_field (GArray         *array,
 					    EContactField   field,
 					    gboolean       *have_attr_list,
 					    GError        **error);
 
-static gboolean upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
-					 const gchar           *folderid,
-					 GError               **error);
+static gboolean upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
+					const gchar          *folderid,
+					const gchar          *region,
+					const gchar          *lc_collate,
+					GError              **error);
+static gboolean sqlitedb_set_locale_internal (EBookBackendSqliteDB *ebsdb,
+					      const gchar          *locale,
+					      GError              **error);
 
 static const gchar *
 summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
@@ -150,13 +164,10 @@ summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
 }
 
 static gint
-summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
-                               const gchar *field_name)
+summary_index_from_field (EBookBackendSqliteDB *ebsdb,
+			  EContactField         field)
 {
 	gint i;
-	EContactField field;
-
-	field = e_contact_field_id (field_name);
 
 	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
 		if (ebsdb->priv->summary_fields[i].field == field)
@@ -164,6 +175,17 @@ summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
 	}
 
 	return -1;
+}
+
+static gint
+summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
+                               const gchar *field_name)
+{
+	EContactField field;
+
+	field = e_contact_field_id (field_name);
+
+	return summary_index_from_field (ebsdb, field);
 }
 
 typedef struct {
@@ -213,6 +235,10 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 
 	g_free (priv->path);
 	g_free (priv->summary_fields);
+	g_free (priv->locale);
+
+	if (priv->collator)
+		e_collator_unref (priv->collator);
 
 	g_mutex_clear (&priv->lock);
 	g_mutex_clear (&priv->updates_lock);
@@ -476,6 +502,30 @@ collect_versions_cb (gpointer ref,
 	return 0;
 }
 
+typedef struct {
+	gboolean has_countrycode;
+	gboolean has_lc_collate;
+} LocaleColumns;
+
+static gint
+find_locale_columns (gpointer data,
+		     gint n_cols,
+		     gchar **cols,
+		     gchar **name)
+{
+	LocaleColumns *columns = (LocaleColumns *)data;
+	gint i;
+
+	for (i = 0; i < n_cols; i++) {
+		if (g_strcmp0 (cols[i], "countrycode") == 0)
+			columns->has_countrycode = TRUE;
+		else if (g_strcmp0 (cols[i], "lc_collate") == 0)
+			columns->has_lc_collate = TRUE;
+	}
+
+	return 0;
+}
+
 static gboolean
 create_folders_table (EBookBackendSqliteDB *ebsdb,
                       gint *previous_schema,
@@ -483,6 +533,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 {
 	gboolean success;
 	gint version = 0;
+	LocaleColumns locale_columns = { FALSE, FALSE };
 
 	/* sync_data points to syncronization data, it could be last_modified
 	 * time or a sequence number or some text depending on the backend.
@@ -596,6 +647,34 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	if (!success)
 		goto rollback;
 
+	/* Ensure countrycode column exists to track the addressbook's country code,
+	 * these statements are safe regardless of the previous schema version.
+	 */
+	stmt = "PRAGMA table_info(folders)";
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, find_locale_columns, &locale_columns, error);
+
+	if (!success)
+		goto rollback;
+
+	if (!locale_columns.has_countrycode) {
+		stmt = "ALTER TABLE folders ADD COLUMN countrycode VARCHAR(2)";
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+
+		if (!success)
+			goto rollback;
+
+	}
+
+	if (!locale_columns.has_lc_collate) {
+		stmt = "ALTER TABLE folders ADD COLUMN lc_collate TEXT";
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+
+		if (!success)
+			goto rollback;
+	}
+
+	/* Remember the schema version for later use and finish the transaction. */
 	*previous_schema = version;
 	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
 
@@ -637,33 +716,89 @@ format_multivalues (EBookBackendSqliteDB *ebsdb)
 	return g_string_free (string, FALSE);
 }
 
+static gint
+get_count_cb (gpointer ref,
+              gint n_cols,
+              gchar **cols,
+              gchar **name)
+{
+	gint64 count = 0;
+	gint *ret = ref;
+	gint i;
+
+	for (i = 0; i < n_cols; i++) {
+		if (name[i] && strncmp (name[i], "count", 5) == 0) {
+			count = g_ascii_strtoll (cols[i], NULL, 10);
+		}
+	}
+
+	*ret = count;
+
+	return 0;
+}
+
+static gboolean
+check_folderid_exists (EBookBackendSqliteDB *ebsdb,
+                       const gchar *folderid,
+                       gboolean *exists,
+                       GError **error)
+{
+	gboolean success;
+	gint count = 0;
+	gchar *stmt;
+
+	stmt = sqlite3_mprintf ("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=%Q;", folderid);
+
+	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_count_cb, &count, error);
+	sqlite3_free (stmt);
+
+	*exists = (count > 0);
+
+	return success;
+}
+
 static gboolean
 add_folder_into_db (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
                     const gchar *folder_name,
+		    gboolean *already_exists,
                     GError **error)
 {
 	gchar *stmt;
 	gboolean success;
 	gchar *multivalues;
+	gboolean exists = FALSE;
 
 	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
 		return FALSE;
 
-	multivalues = format_multivalues (ebsdb);
-
-	stmt = sqlite3_mprintf (
-		"INSERT OR IGNORE INTO "
-		"folders ( folder_id, folder_name, version, multivalues ) "
-		"VALUES ( %Q, %Q, %d, %Q ) ",
-		folderid, folder_name, FOLDER_VERSION, multivalues);
-	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
-	sqlite3_free (stmt);
-	g_free (multivalues);
-
+	success = check_folderid_exists (ebsdb, folderid, &exists, error);
 	if (!success)
 		goto rollback;
+
+	if (!exists) {
+		const gchar *lc_collate;
+
+		multivalues = format_multivalues (ebsdb);
+
+		lc_collate = setlocale (LC_COLLATE, NULL);
+
+		stmt = sqlite3_mprintf (
+			"INSERT OR IGNORE INTO "
+			"folders ( folder_id, folder_name, version, multivalues, lc_collate ) "
+			"VALUES ( %Q, %Q, %d, %Q, %Q ) ",
+			folderid, folder_name, FOLDER_VERSION, multivalues, lc_collate);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+		g_free (multivalues);
+
+		if (!success)
+			goto rollback;
+	}
+
+	if (already_exists)
+		*already_exists = exists;
 
 	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
 
@@ -701,47 +836,6 @@ collect_columns_cb (gpointer ref,
 	return 0;
 }
 
-static gint
-get_count_cb (gpointer ref,
-              gint n_cols,
-              gchar **cols,
-              gchar **name)
-{
-	gint64 count = 0;
-	gint *ret = ref;
-	gint i;
-
-	for (i = 0; i < n_cols; i++) {
-		if (g_strcmp0 (name[i], "count(*)") == 0) {
-			count = g_ascii_strtoll (cols[i], NULL, 10);
-		}
-	}
-
-	*ret = count;
-
-	return 0;
-}
-
-static gboolean
-check_folderid_exists (EBookBackendSqliteDB *ebsdb,
-                       const gchar *folderid,
-                       gboolean *exists,
-                       GError **error)
-{
-	gboolean success;
-	gint count = 0;
-	gchar *stmt;
-
-	stmt = sqlite3_mprintf ("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=%Q;", folderid);
-
-	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_count_cb, &count, error);
-	sqlite3_free (stmt);
-
-	*exists = (count > 0);
-
-	return success;
-}
-
 static gboolean
 introspect_summary (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
@@ -771,6 +865,10 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		gchar *col = l->data;
 		gchar *p;
 		IndexFlags computed = 0;
+
+		/* Ignore the 'localized' columns */
+		if (g_str_has_suffix (col, "_localized"))
+			continue;
 
 		/* Check if we're parsing a reverse field */
 		if ((p = strstr (col, "_reverse")) != NULL) {
@@ -888,17 +986,24 @@ static gboolean
 create_contacts_table (EBookBackendSqliteDB *ebsdb,
                        const gchar *folderid,
                        gint previous_schema,
+		       gboolean already_exists,
                        GError **error)
 {
 	gint i;
 	gboolean success = TRUE;
 	gchar *stmt, *tmp;
 	GString *string;
-	gboolean already_exists = FALSE;
+	gboolean relocalized = FALSE;
+	gchar *current_region = NULL;
+	const gchar *lc_collate = NULL;
+	gchar *stored_lc_collate = NULL;
 
-	success = check_folderid_exists (ebsdb, folderid, &already_exists, error);
-	if (!success)
-		return FALSE;
+	if (e_phone_number_is_supported ()) {
+		current_region = e_phone_number_get_default_region (error);
+
+		if (current_region == NULL)
+			return FALSE;
+	}
 
 	/* Introspect the summary if the table already exists */
 	if (already_exists) {
@@ -911,10 +1016,25 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	string = g_string_new (
 		"CREATE TABLE IF NOT EXISTS %Q ( uid TEXT PRIMARY KEY, ");
 
+	/* Add column creation statements for each summary field.
+	 *
+	 * Start looping over the summary fields only starting with the second element,
+	 * the first element (which is always the UID), is already specified in the
+	 * CREATE TABLE statement which we are building.
+	 */
 	for (i = 1; i < ebsdb->priv->n_summary_fields; i++) {
 		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 			g_string_append (string, " TEXT, ");
+
+			/* For any string columns (not multivalued columns), also create a localized
+			 * data column for sort ordering
+			 */
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				g_string_append  (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append  (string, "_localized TEXT, ");
+			}
+
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 			g_string_append (string, " INTEGER, ");
@@ -943,6 +1063,32 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		ebsdb->priv->db, stmt, NULL, NULL , error);
 
 	sqlite3_free (stmt);
+
+	/* Now, if we're upgrading from < version 7, we need to add the _localized columns */
+	if (success && previous_schema >= 1 && previous_schema < 7) {
+
+		tmp = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN ", folderid);
+
+		/* UID and REV are always the first two summary fields, in this
+		 * case we want to localize all strings EXCEPT these two, so
+		 * we start iterating with the third element.
+		 */
+		for (i = 2; i < ebsdb->priv->n_summary_fields && success; i++) {
+
+			if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
+				string = g_string_new (tmp);
+
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_localized TEXT");
+
+				success = book_backend_sql_exec (
+				        ebsdb->priv->db, string->str, NULL, NULL , error);
+
+				g_string_free (string, TRUE);
+			}
+		}
+		sqlite3_free (tmp);
+	}
 
 	/* Construct the create statement from the attribute list summary table */
 	if (success && ebsdb->priv->have_attr_list) {
@@ -1005,6 +1151,20 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 			g_free (tmp);
+
+			/* For any indexed column, also index the localized column */
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				tmp = g_strdup_printf (
+				        "INDEX_%s_localized_%s",
+					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+					folderid);
+				stmt = sqlite3_mprintf (
+				        "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_localized)", tmp, folderid,
+					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+				success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+				sqlite3_free (stmt);
+				g_free (tmp);
+			}
 		}
 
 		if (success &&
@@ -1039,9 +1199,51 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		}
 	}
 
-	/* Until version 6, the whole contacts table requires a re-normalization of the data */
-	if (success && previous_schema < 6)
-		success = upgrade_contacts_table (ebsdb, folderid, error);
+	/* Get the locale setting for this addressbook */
+	if (success && already_exists) {
+		stmt = sqlite3_mprintf ("SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
+		sqlite3_free (stmt);
+
+		lc_collate = stored_lc_collate;
+
+	}
+
+	if (!lc_collate)
+		/* When creating a new addressbook, or upgrading from a version
+		 * where we did not have any locale setting; default to system locale
+		 */
+		lc_collate = setlocale (LC_COLLATE, NULL);
+
+	/* Before touching any data, make sure we have a valid ECollator */
+	if (success) {
+		success = sqlitedb_set_locale_internal (ebsdb, lc_collate, error);
+	}
+
+	/* Need to relocalize the whole thing if the schema has been upgraded to version 7 */
+	if (success && previous_schema >= 1 && previous_schema < 7) {
+		success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
+		relocalized = TRUE;
+	}
+
+	/* We may need to relocalize for a country code change */
+	if (success && relocalized == FALSE && e_phone_number_is_supported ()) {
+		gchar *stored_region = NULL;
+
+		stmt = sqlite3_mprintf ("SELECT countrycode FROM folders WHERE folder_id = %Q", folderid);
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_region, error);
+		sqlite3_free (stmt);
+
+		if (success && g_strcmp0 (current_region, stored_region) != 0) {
+			success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
+			relocalized = TRUE;
+		}
+
+		g_free (stored_region);
+	}
+
+	g_free (current_region);
+	g_free (stored_lc_collate);
 
 	return success;
 }
@@ -1387,6 +1589,7 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	EBookBackendSqliteDB *ebsdb;
 	gchar *hash_key, *filename;
 	gint previous_schema = 0;
+	gboolean already_exists = FALSE;
 
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (emailid != NULL, NULL);
@@ -1413,8 +1616,10 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	ebsdb->priv->have_attr_list = have_attr_list;
 	ebsdb->priv->attr_list_indexes = attr_list_indexes;
 	ebsdb->priv->store_vcard = store_vcard;
+
 	if (g_mkdir_with_parents (path, 0777) < 0) {
 		g_mutex_unlock (&dbcon_lock);
+		g_object_unref (ebsdb);
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			"Can not make parent directory: errno %d", errno);
@@ -1446,13 +1651,14 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	LOCK_MUTEX (&ebsdb->priv->lock);
 	g_mutex_unlock (&dbcon_lock);
 
-	if (!add_folder_into_db (ebsdb, folderid, folder_name, error)) {
+	if (!add_folder_into_db (ebsdb, folderid, folder_name,
+				 &already_exists, error)) {
 		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		g_object_unref (ebsdb);
 		return NULL;
 	}
 
-	if (!create_contacts_table (ebsdb, folderid, previous_schema, error)) {
+	if (!create_contacts_table (ebsdb, folderid, previous_schema, already_exists, error)) {
 		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		g_object_unref (ebsdb);
 		return NULL;
@@ -1765,6 +1971,25 @@ e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
 	return success;
 }
 
+/**
+ * e_book_backend_sqlitedb_ref_collator:
+ * @ebsdb: An #EBookBackendSqliteDB
+ *
+ * References the currently active #ECollator for @ebsdb,
+ * use e_collator_unref() when finished using the returned collator.
+ *
+ * Note that the active collator will change with the active locale setting.
+ *
+ * Returns: (transfer full): A reference to the active collator.
+ */
+ECollator *
+e_book_backend_sqlitedb_ref_collator(EBookBackendSqliteDB *ebsdb)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
+
+	return e_collator_ref (ebsdb->priv->collator);
+}
+
 static gchar *
 mprintf_suffix (const gchar *normal)
 {
@@ -1851,31 +2076,100 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 	gint i;
 
 	str = sqlite3_mprintf (
-		"INSERT or %s INTO %Q VALUES (",
+		"INSERT or %s INTO %Q (",
 		replace_existing ? "REPLACE" : "FAIL", folderid);
 	string = g_string_new (str);
 	sqlite3_free (str);
 
+	/*
+	 * First specify the column names for the insert, since it's possible we
+	 * upgraded the DB and cannot be sure the order of the columns are ordered
+	 * just how we like them to be.
+	 */
 	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
-		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
-			gchar *val;
-			gchar *normal;
 
+		/* Multi values go into a separate table/statement */
+		if (ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+
+			/* Only add a ", " before every field except the first,
+			 * this will not break because the first 2 fields (UID & REV)
+			 * are string fields.
+			 */
 			if (i > 0)
 				g_string_append (string, ", ");
 
+			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+		}
+
+		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
+
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_localized");
+			}
+
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_reverse");
+			}
+
+			if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0) {
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_phone");
+			}
+		}
+	}
+	g_string_append (string, ", vcard, bdata)");
+
+	/*
+	 * Now specify values for all of the column names we specified.
+	 */
+	g_string_append (string, " VALUES (");
+	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
+
+		if (ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+			/* Only add a ", " before every field except the first,
+			 * this will not break because the first 2 fields (UID & REV)
+			 * are string fields.
+			 */
+			if (i > 0)
+				g_string_append (string, ", ");
+		}
+
+		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
+			gchar *val;
+			gchar *normal;
+			gchar *localized = NULL;
+
 			val = e_contact_get (contact, ebsdb->priv->summary_fields[i].field);
 
-			/* Special exception, never normalize the UID or REV string */
+			/* Special exception, never normalize/localize the UID or REV string */
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
-			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV)
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
 				normal = e_util_utf8_normalize (val);
-			else
+
+				if (val)
+					localized = e_collator_generate_key (ebsdb->priv->collator, val, NULL);
+				else
+					localized = g_strdup ("");
+			} else
 				normal = g_strdup (val);
 
 			str = sqlite3_mprintf ("%Q", normal);
 			g_string_append (string, str);
 			sqlite3_free (str);
+
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				str = sqlite3_mprintf ("%Q", localized);
+				g_string_append (string, ", ");
+				g_string_append (string, str);
+				sqlite3_free (str);
+			}
 
 			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
 				str = mprintf_suffix (normal);
@@ -1893,11 +2187,9 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 			g_free (normal);
 			g_free (val);
+			g_free (localized);
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			gboolean val;
-
-			if (i > 0)
-				g_string_append (string, ", ");
 
 			val = e_contact_get (contact, ebsdb->priv->summary_fields[i].field) ? TRUE : FALSE;
 			g_string_append_printf (string, "%d", val ? 1 : 0);
@@ -2680,9 +2972,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 			vcard_str = s_data->vcard;
 			s_data->vcard = NULL;
 
-			e_book_backend_sqlitedb_search_data_free (s_data);
-
-			g_slist_free (vcards);
+			g_slist_free_full (vcards, destroy_search_data);
 			vcards = NULL;
 		}
 
@@ -3651,6 +3941,23 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 	return res;
 }
 
+static EbSdbSearchData *
+search_data_from_results (gchar **cols)
+{
+	EbSdbSearchData *data = g_slice_new0 (EbSdbSearchData);
+
+	if (cols[0])
+		data->uid = g_strdup (cols[0]);
+
+	if (cols[1])
+		data->vcard = g_strdup (cols[1]);
+
+	if (cols[2])
+		data->bdata = g_strdup (cols[2]);
+
+	return data;
+}
+
 static gint
 addto_vcard_list_cb (gpointer ref,
                      gint col,
@@ -3658,16 +3965,9 @@ addto_vcard_list_cb (gpointer ref,
                      gchar **name)
 {
 	GSList **vcard_data = ref;
-	EbSdbSearchData *s_data = g_slice_new0 (EbSdbSearchData);
+	EbSdbSearchData *s_data;
 
-	if (cols[0])
-		s_data->uid = g_strdup (cols[0]);
-
-	if (cols[1])
-		s_data->vcard = g_strdup (cols[1]);
-
-	if (cols[2])
-		s_data->bdata = g_strdup (cols[2]);
+	s_data = search_data_from_results (cols);
 
 	*vcard_data = g_slist_prepend (*vcard_data, s_data);
 
@@ -3760,7 +4060,7 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 
 			success = book_backend_sql_exec (
 				ebsdb->priv->db, stmt,
-				addto_vcard_list_cb , &vcard_data, error);
+				addto_vcard_list_cb, &vcard_data, error);
 
 			sqlite3_free (stmt);
 		} else {
@@ -4740,73 +5040,1315 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 	return TRUE;
 }
 
-static void
-destroy_search_data (gpointer data)
-{
-	e_book_backend_sqlitedb_search_data_free (data);
-}
-
 static gboolean
 upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
-                        const gchar *folderid,
-                        GError **error)
+			const gchar          *folderid,
+			const gchar          *region,
+			const gchar          *lc_collate,
+			GError              **error)
 {
 	gchar *stmt;
 	gboolean success = FALSE;
 	GSList *vcard_data = NULL;
 	GSList *l;
-	gchar *default_region = NULL;
 
 	stmt = sqlite3_mprintf ("SELECT uid, vcard, NULL FROM %Q", folderid);
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, addto_vcard_list_cb, &vcard_data, error);
 	sqlite3_free (stmt);
 
-	if (vcard_data == NULL)
-		return TRUE;
+	for (l = vcard_data; success && l; l = l->next) {
+		EbSdbSearchData *const s_data = l->data;
+		EContact *contact = NULL;
 
-	if (e_phone_number_is_supported ()) {
-		default_region = e_phone_number_get_default_region (error);
+		/* It can be we're opening a light summary which was created without
+		 * storing the vcards, such as was used in EDS versions 3.2 to 3.6.
+		 *
+		 * In this case we just want to skip the contacts we can't load
+		 * and leave them as is in the SQLite, they will be added from
+		 * the old BDB in the case of a migration anyway.
+		 */
+		if (s_data->vcard)
+			contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
 
-		if (default_region == NULL)
-			success = FALSE;
-	}
+		if (contact == NULL)
+			continue;
 
-	success = book_backend_sqlitedb_start_transaction (ebsdb, error);
+		success = insert_contact (ebsdb, contact, folderid, TRUE, region, error);
 
-	if (success) {
-
-		for (l = vcard_data; success && l; l = l->next) {
-			EbSdbSearchData *const s_data = l->data;
-			EContact *contact = NULL;
-
-			/* It can be we're opening a light summary which was created without
-			 * storing the vcards, such as was used in EDS versions 3.2 to 3.6.
-			 *
-			 * In this case we just want to skip the contacts we can't load
-			 * and leave them as is in the SQLite, they will be added from
-			 * the old BDB in the case of a migration anyway.
-			 */
-			if (s_data->vcard)
-				contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
-
-			if (contact == NULL)
-				continue;
-
-			success = insert_contact (ebsdb, contact, folderid, TRUE, default_region, error);
-
-			g_object_unref (contact);
-		}
-
-		if (success)
-			success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
-		else
-			/* The GError is already set. */
-			book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+		g_object_unref (contact);
 	}
 
 	g_slist_free_full (vcard_data, destroy_search_data);
-	g_free (default_region);
+
+	if (success) {
+
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET countrycode = %Q WHERE folder_id = %Q",
+			region, folderid);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+
+		stmt = sqlite3_mprintf (
+			"UPDATE folders SET lc_collate = %Q WHERE folder_id = %Q",
+			lc_collate, folderid);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+	}
 
 	return success;
+}
+
+static gboolean
+sqlitedb_set_locale_internal (EBookBackendSqliteDB *ebsdb,
+			      const gchar          *locale,
+			      GError              **error)
+{
+	EBookBackendSqliteDBPrivate *priv = ebsdb->priv;
+	ECollator *collator;
+
+	if (g_strcmp0 (priv->locale, locale) != 0) {
+
+		collator = e_collator_new (locale, error);
+		if (!collator)
+			return FALSE;
+
+		g_free (priv->locale);
+		priv->locale = g_strdup (locale);
+
+		if (ebsdb->priv->collator)
+			e_collator_unref (ebsdb->priv->collator);
+
+		ebsdb->priv->collator = collator;
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_sqlitedb_set_locale:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @lc_collate: The new locale for the addressbook
+ * @error: A location to store any error that may have occurred
+ *
+ * Relocalizes any locale specific data in the specified
+ * new @lc_collate locale.
+ *
+ * The @lc_collate locale setting is stored and remembered on
+ * subsequent accesses of the addressbook, changing the locale
+ * will store the new locale and will modify sort keys and any
+ * locale specific data in the addressbook.
+ *
+ * Returns: Whether the new locale was successfully set.
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
+				    const gchar          *folderid,
+				    const gchar          *lc_collate,
+				    GError              **error)
+{
+	gboolean success;
+	gchar *stmt;
+	gchar *stored_lc_collate;
+	gchar *current_region = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid && folderid[0], FALSE);
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (e_phone_number_is_supported ()) {
+		current_region = e_phone_number_get_default_region (error);
+
+		if (current_region == NULL) {
+			UNLOCK_MUTEX (&ebsdb->priv->lock);
+			return FALSE;
+		}
+	}
+
+	if (!sqlitedb_set_locale_internal (ebsdb, lc_collate, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		g_free (current_region);
+		return FALSE;
+	}
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		g_free (current_region);
+		return FALSE;
+	}
+
+	stmt = sqlite3_mprintf ("SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
+	sqlite3_free (stmt);
+
+	if (success && g_strcmp0 (stored_lc_collate, lc_collate) != 0)
+		success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
+
+	/* If for some reason we failed, then reset the collator to use the old locale */
+	if (!success)
+		sqlitedb_set_locale_internal (ebsdb, stored_lc_collate, NULL);
+
+	g_free (stored_lc_collate);
+	g_free (current_region);
+
+	if (!success)
+		goto rollback;
+
+	success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return success;
+
+ rollback:
+	/* The GError is already set. */
+	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return FALSE;
+}
+
+/**
+ * e_book_backend_sqlitedb_get_locale:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @locale_out: (out) (transfer full): The location to return the current locale
+ * @error: A location to store any error that may have occurred
+ *
+ * Fetches the current locale setting for the address-book indicated by @folderid.
+ *
+ * Upon success, @lc_collate_out will hold the returned locale setting,
+ * otherwise %FALSE will be returned and @error will be updated accordingly.
+ *
+ * Returns: Whether the locale was successfully fetched.
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
+				    const gchar          *folderid,
+				    gchar               **locale_out,
+				    GError              **error)
+{
+	gchar *stmt;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid && folderid[0], FALSE);
+	g_return_val_if_fail (locale_out != NULL && *locale_out == NULL, FALSE);
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	stmt = sqlite3_mprintf (
+		"SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, get_string_cb, locale_out, error);
+	sqlite3_free (stmt);
+
+	if (!sqlitedb_set_locale_internal (ebsdb, *locale_out, &local_error)) {
+		g_warning ("Error loading new locale: %s", local_error->message);
+		g_clear_error (&local_error);
+	}
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return success;
+}
+
+/******************************************************************
+ *                          EbSdbCursor apis                      *
+ ******************************************************************/
+typedef struct _CursorState CursorState;
+
+struct _CursorState {
+	gchar            **values;    /* The current cursor position, results will be returned after this position */
+	gchar             *last_uid;  /* The current cursor contact UID position, used as a tie breaker */
+	EbSdbCursorOrigin  position;  /* The position is updated with the cursor state and is used to distinguish
+				       * between the beginning and the ending of the cursor's contact list.
+				       * While the cursor is in a non-null state, the position will be 
+				       * EBSDB_CURSOR_ORIGIN_CURRENT.
+				       */
+};
+
+struct _EbSdbCursor {
+	gchar         *folderid;      /* The folderid for this cursor */
+
+	EBookBackendSExp *sexp;       /* An EBookBackendSExp based on the query, used by e_book_backend_sqlitedb_cursor_compare() */
+	gchar         *select_vcards; /* The first fragment when querying results */
+	gchar         *select_count;  /* The first fragment when querying contact counts */
+	gchar         *query;         /* The SQL query expression derived from the passed search expression */
+	gchar         *order;         /* The normal order SQL query fragment to append at the end, containing ORDER BY etc */
+	gchar         *reverse_order; /* The reverse order SQL query fragment to append at the end, containing ORDER BY etc */
+
+	EContactField       *sort_fields;   /* The fields to sort in a query in the order or sort priority */
+	EBookCursorSortType *sort_types;    /* The sort method to use for each field */
+	gint                 n_sort_fields; /* The amound of sort fields */
+
+	CursorState          state;
+};
+
+static CursorState *cursor_state_copy             (EbSdbCursor          *cursor,
+						   CursorState          *state);
+static void         cursor_state_free             (EbSdbCursor          *cursor,
+						   CursorState          *state);
+static void         cursor_state_clear            (EbSdbCursor          *cursor,
+						   CursorState          *state,
+						   EbSdbCursorOrigin     position);
+static void         cursor_state_set_from_contact (EBookBackendSqliteDB *ebsdb,
+						   EbSdbCursor          *cursor,
+						   CursorState          *state,
+						   EContact             *contact);
+static void         cursor_state_set_from_vcard   (EBookBackendSqliteDB *ebsdb,
+						   EbSdbCursor          *cursor,
+						   CursorState          *state,
+						   const gchar          *vcard);
+
+static CursorState *
+cursor_state_copy (EbSdbCursor        *cursor,
+		   CursorState        *state)
+{
+	CursorState *copy;
+	gint i;
+
+	copy = g_slice_new0 (CursorState);
+	copy->values = g_new0 (gchar *, cursor->n_sort_fields);
+
+	for (i = 0; i < cursor->n_sort_fields; i++)
+		copy->values[i] = g_strdup (state->values[i]);
+
+	copy->last_uid = g_strdup (state->last_uid);
+	copy->position = state->position;
+
+	return copy;
+}
+
+static void
+cursor_state_free (EbSdbCursor  *cursor,
+		   CursorState  *state)
+{
+	if (state) {
+		cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_BEGIN);
+		g_free (state->values);
+		g_slice_free (CursorState, state);
+	}
+}
+
+static void
+cursor_state_clear (EbSdbCursor        *cursor,
+		    CursorState        *state,
+		    EbSdbCursorOrigin   position)
+{
+	gint i;
+
+	for (i = 0; i < cursor->n_sort_fields; i++) {
+		g_free (state->values[i]);
+		state->values[i] = NULL;
+	}
+
+	g_free (state->last_uid);
+	state->last_uid = NULL;
+	state->position = position;
+}
+
+static void
+cursor_state_set_from_contact (EBookBackendSqliteDB *ebsdb,
+			       EbSdbCursor          *cursor,
+			       CursorState          *state,
+			       EContact             *contact)
+{
+	gint i;
+
+	cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_BEGIN);
+
+	for (i = 0; i < cursor->n_sort_fields; i++) {
+		const gchar *string = e_contact_get_const (contact, cursor->sort_fields[i]);
+
+		if (string)
+			state->values[i] =
+				e_collator_generate_key (ebsdb->priv->collator,
+							 string, NULL);
+		else
+			state->values[i] = g_strdup ("");
+	}
+
+	state->last_uid = e_contact_get (contact, E_CONTACT_UID);
+	state->position = EBSDB_CURSOR_ORIGIN_CURRENT;
+}
+
+static void
+cursor_state_set_from_vcard (EBookBackendSqliteDB *ebsdb,
+			     EbSdbCursor          *cursor,
+			     CursorState          *state,
+			     const gchar          *vcard)
+{
+	EContact *contact;
+
+	contact = e_contact_new_from_vcard (vcard);
+	cursor_state_set_from_contact (ebsdb, cursor, state, contact);
+	g_object_unref (contact);
+}
+
+static void
+ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
+			  EbSdbCursor          *cursor,
+			  const gchar          *sexp,
+			  gboolean              query_with_list_attrs)
+{
+	gchar *stmt;
+	gchar *count_stmt;
+
+	g_free (cursor->select_vcards);
+	g_free (cursor->select_count);
+	g_free (cursor->query);
+	g_clear_object (&(cursor->sexp));
+
+	if (query_with_list_attrs) {
+		gchar *list_table = g_strconcat (cursor->folderid, "_lists", NULL);
+
+		stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid, vcard, bdata FROM %Q AS summary "
+					"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
+					cursor->folderid, list_table);
+
+		count_stmt = sqlite3_mprintf ("SELECT count(DISTINCT summary.uid), vcard, bdata FROM %Q AS summary "
+					      "LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
+					      cursor->folderid, list_table);
+		g_free (list_table);
+	} else {
+		stmt = sqlite3_mprintf ("SELECT uid, vcard, bdata FROM %Q AS summary", cursor->folderid);
+		count_stmt = sqlite3_mprintf ("SELECT count(*) FROM %Q AS summary", cursor->folderid);
+	}
+
+	cursor->select_vcards = g_strdup (stmt);
+	cursor->select_count = g_strdup (count_stmt);
+	sqlite3_free (stmt);
+	sqlite3_free (count_stmt);
+
+	if (sexp) {
+		cursor->query = sexp_to_sql_query (ebsdb, cursor->folderid, sexp);
+		cursor->sexp  = e_book_backend_sexp_new (sexp);
+	} else {
+		cursor->query = NULL;
+		cursor->sexp  = NULL;
+	}
+}
+
+static gchar *
+ebsdb_cursor_order_by_fragment (EBookBackendSqliteDB *ebsdb,
+				EContactField        *sort_fields,
+				EBookCursorSortType  *sort_types,
+				guint                 n_sort_fields,
+				gboolean              reverse)
+{
+	GString *string;
+	const gchar *field_name;
+	gint i;
+
+	string = g_string_new ("ORDER BY ");
+
+	for (i = 0; i < n_sort_fields; i++) {
+
+		field_name = summary_dbname_from_field (ebsdb, sort_fields[i]);
+
+		if (i > 0)
+			g_string_append (string, ", ");
+
+		g_string_append_printf (string, "summary.%s_localized %s", field_name,
+					reverse ?
+					(sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "DESC" : "ASC") :
+					(sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "ASC"  : "DESC"));
+	}
+
+	/* Also order the UID, since it's our tie breaker, we must also order the UID field */
+	if (n_sort_fields > 0)
+		g_string_append (string, ", ");
+	g_string_append_printf (string, "summary.uid %s", reverse ? "DESC" : "ASC");
+
+	return g_string_free (string, FALSE);
+}
+
+static EbSdbCursor *
+ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
+		  const gchar          *folderid,
+		  const gchar          *sexp,
+		  gboolean              query_with_list_attrs,
+		  EContactField        *sort_fields,
+		  EBookCursorSortType  *sort_types,
+		  guint                 n_sort_fields)
+{
+	EbSdbCursor *cursor = g_slice_new0 (EbSdbCursor);
+
+	cursor->folderid = g_strdup (folderid);
+
+	/* Setup the initial query fragments */
+	ebsdb_cursor_setup_query (ebsdb, cursor, sexp, query_with_list_attrs);
+
+	cursor->order = ebsdb_cursor_order_by_fragment (ebsdb,
+							sort_fields,
+							sort_types,
+							n_sort_fields,
+							FALSE);
+	cursor->reverse_order = ebsdb_cursor_order_by_fragment (ebsdb,
+								sort_fields,
+								sort_types,
+								n_sort_fields,
+								TRUE);
+
+	/* Sort parameters */
+	cursor->n_sort_fields  = n_sort_fields;
+	cursor->sort_fields    = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
+	cursor->sort_types     = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
+
+	/* Cursor state */
+	cursor->state.values   = g_new0 (gchar *, n_sort_fields);
+	cursor->state.last_uid = NULL;
+	cursor->state.position = EBSDB_CURSOR_ORIGIN_BEGIN;
+
+	return cursor;
+}
+
+static void
+ebsdb_cursor_free (EbSdbCursor *cursor)
+{
+	if (cursor) {
+		cursor_state_clear (cursor, &(cursor->state), EBSDB_CURSOR_ORIGIN_BEGIN);
+		g_free (cursor->state.values);
+
+		g_clear_object (&(cursor->sexp));
+		g_free (cursor->folderid);
+		g_free (cursor->select_vcards);
+		g_free (cursor->select_count);
+		g_free (cursor->query);
+		g_free (cursor->order);
+		g_free (cursor->reverse_order);
+		g_free (cursor->sort_fields);
+		g_free (cursor->sort_types);
+
+		g_slice_free (EbSdbCursor, cursor);
+	}
+}
+
+#define GREATER_OR_LESS(cursor, index, reverse)				\
+	(reverse ?							\
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '<' : '>') : \
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '>' : '<'))
+
+static gchar *
+ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
+			  EbSdbCursor          *cursor,
+			  CursorState          *state,
+			  gboolean              reverse,
+			  gboolean              include_current_uid)
+{
+	GString *string;
+	const gchar *field_name;
+	gint i, j;
+
+	/* Example for:
+	 *    ORDER BY family_name ASC, given_name DESC
+	 *
+	 * Where current cursor values are:
+	 *    family_name = Jackson
+	 *    given_name  = Micheal
+	 *
+	 * With reverse = FALSE
+	 *
+	 *    (summary.family_name > 'Jackson') OR
+	 *    (summary.family_name = 'Jackson' AND summary.given_name < 'Micheal') OR
+	 *    (summary.family_name = 'Jackson' AND summary.given_name = 'Micheal' AND summary.uid > 'last-uid')
+	 *
+	 * With reverse = TRUE (needed for moving the cursor backwards through results)
+	 *
+	 *    (summary.family_name < 'Jackson') OR
+	 *    (summary.family_name = 'Jackson' AND summary.given_name > 'Micheal') OR
+	 *    (summary.family_name = 'Jackson' AND summary.given_name = 'Micheal' AND summary.uid < 'last-uid')
+	 *
+	 */
+
+	string = g_string_new (NULL);
+
+	for (i = 0; i <= cursor->n_sort_fields; i++) {
+		gchar   *stmt;
+
+		/* Break once we hit a NULL value */
+		if ((i  < cursor->n_sort_fields && state->values[i] == NULL) ||
+		    (i == cursor->n_sort_fields && state->last_uid  == NULL))
+			break;
+
+		/* Between each qualifier, add an 'OR' */
+		if (i > 0)
+			g_string_append (string, " OR ");
+
+		/* Begin qualifier */
+		g_string_append_c (string, '(');
+
+		/* Create the '=' statements leading up to the current tie breaker */
+		for (j = 0; j < i; j++) {
+			field_name = summary_dbname_from_field (ebsdb, cursor->sort_fields[j]);
+
+			stmt = sqlite3_mprintf ("summary.%s_localized = %Q",
+						field_name, state->values[j]);
+
+			g_string_append (string, stmt);
+			g_string_append (string, " AND ");
+
+			sqlite3_free (stmt);
+
+		}
+
+		if (i == cursor->n_sort_fields) {
+
+			/* The 'include_current_uid' clause is used for calculating
+			 * the current position of the cursor, inclusive of the
+			 * current position.
+			 */
+			if (include_current_uid)
+				g_string_append_c (string, '(');
+
+			/* Append the UID tie breaker */
+			stmt = sqlite3_mprintf ("summary.uid %c %Q",
+						reverse ? '<' : '>',
+						state->last_uid);
+			g_string_append (string, stmt);
+			sqlite3_free (stmt);
+
+			if (include_current_uid) {
+				stmt = sqlite3_mprintf (" OR summary.uid = %Q",
+							state->last_uid);
+				g_string_append (string, stmt);
+				g_string_append_c (string, ')');
+				sqlite3_free (stmt);
+			}
+
+		} else {
+
+			/* SPECIAL CASE: If we have a parially set cursor state, then we must
+			 * report next results that are inclusive of the final qualifier.
+			 *
+			 * This allows one to set the cursor with the family name set to 'J'
+			 * and include the results for contact's Mr & Miss 'J'.
+			 */
+			gboolean include_exact_match =
+				(reverse == FALSE &&
+				 ((i + 1 < cursor->n_sort_fields && state->values[i + 1] == NULL) ||
+				  (i + 1 == cursor->n_sort_fields && state->last_uid == NULL)));
+
+			if (include_exact_match)
+				g_string_append_c (string, '(');
+
+			/* Append the final qualifier for this field */
+			field_name = summary_dbname_from_field (ebsdb, cursor->sort_fields[i]);
+
+			stmt = sqlite3_mprintf ("summary.%s_localized %c %Q",
+						field_name,
+						GREATER_OR_LESS (cursor, i, reverse),
+						state->values[i]);
+
+			g_string_append (string, stmt);
+			sqlite3_free (stmt);
+
+			if (include_exact_match) {
+
+				stmt = sqlite3_mprintf (" OR summary.%s_localized = %Q",
+							field_name, state->values[i]);
+
+				g_string_append (string, stmt);
+				g_string_append_c (string, ')');
+				sqlite3_free (stmt);
+			}
+		}
+
+		/* End qualifier */
+		g_string_append_c (string, ')');
+	}
+
+	return g_string_free (string, FALSE);
+}
+
+static gboolean
+cursor_count_total_locked (EBookBackendSqliteDB *ebsdb,
+			   EbSdbCursor          *cursor,
+			   gint                 *total,
+			   GError              **error)
+{
+	GString *query;
+	gboolean success;
+
+	query = g_string_new (cursor->select_count);
+
+	/* Add the filter constraints (if any) */
+	if (cursor->query) {
+		g_string_append (query, " WHERE ");
+
+		g_string_append_c (query, '(');
+		g_string_append (query, cursor->query);
+		g_string_append_c (query, ')');
+	}
+
+	/* Execute the query */
+	success = book_backend_sql_exec (ebsdb->priv->db, query->str,
+					 get_count_cb, total, error);
+
+	g_string_free (query, TRUE);
+
+	return success;
+}
+
+static gboolean
+cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
+			      EbSdbCursor          *cursor,
+			      gint                 *position,
+			      GError              **error)
+{
+	GString *query;
+	gboolean success;
+
+	query = g_string_new (cursor->select_count);
+
+	/* Add the filter constraints (if any) */
+	if (cursor->query) {
+		g_string_append (query, " WHERE ");
+
+		g_string_append_c (query, '(');
+		g_string_append (query, cursor->query);
+		g_string_append_c (query, ')');
+	}
+
+	/* Add the cursor constraints (if any) */
+	if (cursor->state.values[0] != NULL) {
+		gchar *constraints = NULL;
+
+		if (!cursor->query)
+			g_string_append (query, " WHERE ");
+		else
+			g_string_append (query, " AND ");
+
+		/* Here we do a reverse query, we're looking for all the
+		 * results leading up to the current cursor value, including
+		 * the cursor value
+		 */
+		constraints = ebsdb_cursor_constraints (ebsdb, cursor,
+							&(cursor->state),
+							TRUE, TRUE);
+
+		g_string_append_c (query, '(');
+		g_string_append (query, constraints);
+		g_string_append_c (query, ')');
+
+		g_free (constraints);
+	}
+
+	/* Execute the query */
+	success = book_backend_sql_exec (ebsdb->priv->db, query->str,
+					 get_count_cb, position, error);
+
+	g_string_free (query, TRUE);
+
+	return success;
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_new:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @sexp: search expression; use NULL or an empty string to get all stored contacts.
+ * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
+ * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
+ * @n_sort_fields: The number of fields to sort results by.
+ * @error: A return location to store any error that might be reported.
+ *
+ * Creates a new #EbSdbCursor.
+ *
+ * The cursor should be freed with e_book_backend_sqlitedb_cursor_free().
+ *
+ * Returns: (transfer full): A newly created #EbSdbCursor
+ *
+ * Since: 3.12
+ */
+EbSdbCursor *
+e_book_backend_sqlitedb_cursor_new (EBookBackendSqliteDB *ebsdb,
+				    const gchar          *folderid,
+				    const gchar          *sexp,
+				    EContactField        *sort_fields,
+				    EBookCursorSortType  *sort_types,
+				    guint                 n_sort_fields,
+				    GError              **error)
+{
+	gboolean query_with_list_attrs = FALSE;
+	gint i;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
+	g_return_val_if_fail (folderid && folderid[0], NULL);
+
+	/* We don't like '\0' sexps, prefer NULL */
+	if (sexp && !sexp[0])
+		sexp = NULL;
+
+	/* We only support cursors for summary fields in the query */
+	if (sexp && !e_book_backend_sqlitedb_check_summary_query (ebsdb, sexp, &query_with_list_attrs)) {
+		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+			     _("Only summary queries are supported by EbSdbCursor"));
+		return NULL;
+	}
+
+	if (n_sort_fields == 0) {
+		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+			     _("At least one sort field must be specified to use an EbSdbCursor"));
+		return NULL;
+	}
+
+	/* We only support summarized sort keys which are not multi value fields */
+	for (i = 0; i < n_sort_fields; i++) {
+
+		gint support;
+
+		support = func_check_field_test (ebsdb, e_contact_field_name (sort_fields[i]), NULL);
+
+		if ((support & CHECK_IS_SUMMARY) == 0) {
+			g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+				     _("Cannot sort by a field that is not in the summary"));
+			return NULL;
+		}
+
+		if ((support & CHECK_IS_LIST_ATTR) != 0) {
+			g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+				     _("Cannot sort by a field which may have multiple values"));
+			return NULL;
+		}
+	}
+
+	return ebsdb_cursor_new (ebsdb, folderid, sexp, query_with_list_attrs,
+				 sort_fields, sort_types, n_sort_fields);
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_free:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor to free
+ *
+ * Frees @cursor.
+ *
+ * Since: 3.12
+ */
+void
+e_book_backend_sqlitedb_cursor_free (EBookBackendSqliteDB *ebsdb,
+				     EbSdbCursor          *cursor)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb));
+
+	ebsdb_cursor_free (cursor);
+}
+
+typedef struct {
+	GSList *results;
+	gchar *alloc_vcard;
+	const gchar *last_vcard;
+
+	gboolean collect_results;
+	gint n_results;
+} CursorCollectData;
+
+static gint
+collect_results_for_cursor_cb (gpointer ref,
+			       gint col,
+			       gchar **cols,
+			       gchar **name)
+{
+	CursorCollectData *data = ref;
+
+	if (data->collect_results) {
+		EbSdbSearchData *search_data;
+
+		search_data = search_data_from_results (cols);
+
+		data->results = g_slist_prepend (data->results, search_data);
+
+		data->last_vcard = search_data->vcard;
+	} else {
+		g_free (data->alloc_vcard);
+		data->alloc_vcard = g_strdup (cols[1]);
+
+		data->last_vcard = data->alloc_vcard;
+	}
+
+	data->n_results++;
+
+	return 0;
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_step:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor to use
+ * @flags: The #EbSdbCursorStepFlags for this step
+ * @origin: The #EbSdbCursorOrigin from whence to step
+ * @count: A positive or negative amount of contacts to try and fetch
+ * @results: (out) (allow-none) (element-type EbSdbSearchData) (transfer full):
+ *   A return location to store the results, or %NULL if %EBSDB_CURSOR_STEP_FETCH is not specified in %flags.
+ * @error: A return location to store any error that might be reported.
+ *
+ * Steps @cursor through it's sorted query by a maximum of @count contacts
+ * starting from @origin.
+ *
+ * If @count is negative, then the cursor will move through the list in reverse.
+ *
+ * If @cursor reaches the beginning or end of the query results, then the
+ * returned list might not contain the amount of desired contacts, or might
+ * return no results if the cursor currently points to the last contact. 
+ * Reaching the end of the list is not considered an error condition. Attempts
+ * to step beyond the end of the list after having reached the end of the list
+ * will however trigger an %E_BOOK_SDB_ERROR_END_OF_LIST error.
+ *
+ * If %EBSDB_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * a %NULL #GSList pointer should be provided for the @results parameter.
+ *
+ * The result list will be stored to @results and should be freed with g_slist_free()
+ * and all elements freed with e_book_backend_sqlitedb_search_data_free().
+ *
+ * Returns: The number of contacts traversed if successful, otherwise -1 is
+ * returned and @error is set.
+ *
+ * Since: 3.12
+ */
+gint
+e_book_backend_sqlitedb_cursor_step (EBookBackendSqliteDB *ebsdb,
+				     EbSdbCursor          *cursor,
+				     EbSdbCursorStepFlags  flags,
+				     EbSdbCursorOrigin     origin,
+				     gint                  count,
+				     GSList              **results,
+				     GError              **error)
+{
+	CursorCollectData data = { NULL, NULL, NULL, FALSE, 0 };
+	CursorState *state;
+	GString *query;
+	gboolean success;
+	EbSdbCursorOrigin try_position;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), -1);
+	g_return_val_if_fail (cursor != NULL, -1);
+	g_return_val_if_fail ((flags & EBSDB_CURSOR_STEP_FETCH) == 0 ||
+			      (results != NULL && *results == NULL), -1);
+
+
+	/* Check if this step should result in an end of list error first */
+	try_position = cursor->state.position;
+	if (origin != EBSDB_CURSOR_ORIGIN_CURRENT)
+		try_position = origin;
+
+	/* Report errors for requests to run off the end of the list */
+	if (try_position == EBSDB_CURSOR_ORIGIN_BEGIN && count < 0) {
+		g_set_error (error, E_BOOK_SDB_ERROR,
+			     E_BOOK_SDB_ERROR_END_OF_LIST,
+			     _("Tried to step a cursor in reverse, "
+			       "but cursor is already at the beginning of the contact list"));
+
+		return -1;
+	} else if (try_position == EBSDB_CURSOR_ORIGIN_END && count > 0) {
+		g_set_error (error, E_BOOK_SDB_ERROR,
+			     E_BOOK_SDB_ERROR_END_OF_LIST,
+			     _("Tried to step a cursor forwards, "
+			       "but cursor is already at the end of the contact list"));
+
+		return -1;
+	}
+
+	/* Nothing to do, silently return */
+	if (count == 0 && try_position == EBSDB_CURSOR_ORIGIN_CURRENT)
+		return 0;
+
+	/* If we're not going to modify the position, just use
+	 * a copy of the current cursor state.
+	 */
+	if ((flags & EBSDB_CURSOR_STEP_MOVE) != 0)
+		state = &(cursor->state);
+	else
+		state = cursor_state_copy (cursor, &(cursor->state));
+
+	/* Every query starts with the STATE_CURRENT position, first
+	 * fix up the cursor state according to 'origin'
+	 */
+	switch (origin) {
+	case EBSDB_CURSOR_ORIGIN_CURRENT:
+		/* Do nothing, normal operation */
+		break;
+
+	case EBSDB_CURSOR_ORIGIN_BEGIN:
+	case EBSDB_CURSOR_ORIGIN_END:
+
+		/* Prepare the state before executing the query */
+		cursor_state_clear (cursor, state, origin);
+		break;
+	}
+
+	/* If count is 0 then there is no need to run any
+	 * query, however it can be useful if you just want
+	 * to move the cursor to the beginning or ending of
+	 * the list.
+	 */
+	if (count == 0) {
+
+		/* Free the state copy if need be */
+		if ((flags & EBSDB_CURSOR_STEP_MOVE) == 0)
+			cursor_state_free (cursor, state);
+
+		return 0;
+	}
+
+	query = g_string_new (cursor->select_vcards);
+
+	/* Add the filter constraints (if any) */
+	if (cursor->query) {
+		g_string_append (query, " WHERE ");
+
+		g_string_append_c (query, '(');
+		g_string_append (query, cursor->query);
+		g_string_append_c (query, ')');
+	}
+
+	/* Add the cursor constraints (if any) */
+	if (state->values[0] != NULL) {
+		gchar *constraints = NULL;
+
+		if (!cursor->query)
+			g_string_append (query, " WHERE ");
+		else
+			g_string_append (query, " AND ");
+
+		constraints = ebsdb_cursor_constraints (ebsdb,
+							cursor,
+							state,
+							count < 0,
+							FALSE);
+
+		g_string_append_c (query, '(');
+		g_string_append (query, constraints);
+		g_string_append_c (query, ')');
+
+		g_free (constraints);
+	}
+
+	/* Add the sort order */
+	g_string_append_c (query, ' ');
+	if (count > 0)
+		g_string_append (query, cursor->order);
+	else
+		g_string_append (query, cursor->reverse_order);
+
+	/* Add the limit */
+	g_string_append_printf (query, " LIMIT %d", ABS (count));
+
+	/* Specify whether we really want results or not */
+	data.collect_results = (flags & EBSDB_CURSOR_STEP_FETCH) != 0;
+
+	/* Execute the query */
+	LOCK_MUTEX (&ebsdb->priv->lock);
+	success = book_backend_sql_exec (ebsdb->priv->db, query->str,
+					 collect_results_for_cursor_cb, &data,
+					 error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	g_string_free (query, TRUE);
+
+	/* If there was no error, update the internal cursor state */
+	if (success) {
+
+		if (data.n_results < ABS (count)) {
+
+			/* We've reached the end, clear the current state */
+			if (count < 0)
+				cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_BEGIN);
+			else
+				cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_END);
+
+		} else if (data.last_vcard) {
+
+			/* Set the cursor state to the last result */
+			cursor_state_set_from_vcard (ebsdb, cursor, state, data.last_vcard);
+		} else
+			/* Should never get here */
+			g_warn_if_reached ();
+
+		/* Assign the results to return (if any) */
+		if (results) {
+			/* Correct the order of results at the last minute */
+			*results = g_slist_reverse (data.results);
+			data.results = NULL;
+		}
+	}
+
+	/* Cleanup what was allocated by collect_results_for_cursor_cb() */
+	if (data.results)
+		g_slist_free_full (data.results,
+				   (GDestroyNotify)e_book_backend_sqlitedb_search_data_free);
+	g_free (data.alloc_vcard);
+
+	/* Free the copy state if we were working with a copy */
+	if ((flags & EBSDB_CURSOR_STEP_MOVE) == 0)
+		cursor_state_free (cursor, state);
+
+	if (success)
+		return data.n_results;
+
+	return -1;
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_set_target_alphabetic_index:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor to modify
+ * @index: The alphabetic index
+ *
+ * Sets the @cursor position to an
+ * <link linkend="cursor-alphabet">Alphabetic Index</link>
+ * into the alphabet active in @ebsdb's locale.
+ *
+ * After setting the target to an alphabetic index, for example the
+ * index for letter 'E', then further calls to e_book_backend_sqlitedb_cursor_step()
+ * will return results starting with the letter 'E' (or results starting
+ * with the last result in 'D', if moving in a negative direction).
+ *
+ * The passed index must be a valid index in the active locale, knowledge
+ * on the currently active alphabet index must be obtained using #ECollator
+ * APIs.
+ *
+ * Use e_book_backend_sqlitedb_ref_collator() to obtain the active collator for @ebsdb.
+ *
+ * Since: 3.12
+ */
+void
+e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB *ebsdb,
+							    EbSdbCursor          *cursor,
+							    gint                  index)
+{
+	gint n_labels = 0;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb));
+	g_return_if_fail (cursor != NULL);
+	g_return_if_fail (index >= 0);
+
+	e_collator_get_index_labels (ebsdb->priv->collator, &n_labels,
+				     NULL, NULL, NULL);
+	g_return_if_fail (index < n_labels);
+
+	cursor_state_clear (cursor, &(cursor->state), EBSDB_CURSOR_ORIGIN_CURRENT);
+	if (cursor->n_sort_fields > 0) {
+		cursor->state.values[0] =
+			e_collator_generate_key_for_index (ebsdb->priv->collator,
+							   index);
+	}
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_set_sexp:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor
+ * @sexp: The new query expression for @cursor
+ * @error: A return location to store any error that might be reported.
+ *
+ * Modifies the current query expression for @cursor. This will not
+ * modify @cursor's state, but will change the outcome of any further
+ * calls to e_book_backend_sqlitedb_cursor_calculate() or
+ * e_book_backend_sqlitedb_cursor_step().
+ *
+ * Returns: %TRUE if the expression was valid and accepted by @ebsdb
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_backend_sqlitedb_cursor_set_sexp (EBookBackendSqliteDB *ebsdb,
+					 EbSdbCursor          *cursor,
+					 const gchar          *sexp,
+					 GError              **error)
+{
+	gboolean query_with_list_attrs = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (cursor != NULL, FALSE);
+
+	/* We don't like '\0' sexps, prefer NULL */
+	if (sexp && !sexp[0])
+		sexp = NULL;
+
+	/* We only support cursors for summary fields in the query */
+	if (sexp && !e_book_backend_sqlitedb_check_summary_query (ebsdb, sexp, &query_with_list_attrs)) {
+		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
+			     _("Only summary queries are supported by EbSdbCursor"));
+		return FALSE;
+	}
+
+	ebsdb_cursor_setup_query (ebsdb, cursor, sexp, query_with_list_attrs);
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_calculate:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor
+ * @total: (out) (allow-none): A return location to store the total result set for this cursor
+ * @position: (out) (allow-none): A return location to store the total results before the cursor value
+ * @error: (allow-none): A return location to store any error that might be reported.
+ *
+ * Calculates the @total amount of results for the @cursor's query expression,
+ * as well as the current @position of @cursor in the results. @position is
+ * represented as the amount of results which lead up to the current value
+ * of @cursor, if @cursor currently points to an exact contact, the position
+ * also includes the cursor contact.
+ *
+ * Returns: Whether @total and @position were successfully calculated.
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
+					  EbSdbCursor          *cursor,
+					  gint                 *total,
+					  gint                 *position,
+					  GError              **error)
+{
+	gboolean success = TRUE;
+	gint local_total = 0;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (cursor != NULL, FALSE);
+
+	/* If we're in a clear cursor state, then the position is 0 */
+	if (position && cursor->state.values[0] == NULL) {
+
+		if (cursor->state.position == EBSDB_CURSOR_ORIGIN_BEGIN) {
+			/* Mark the local pointer NULL, no need to calculate this anymore */
+			*position = 0;
+			position = NULL;
+		} else if (cursor->state.position == EBSDB_CURSOR_ORIGIN_END) {
+
+			/* Make sure that we look up the total so we can
+			 * set the position to 'total + 1'
+			 */
+			if (!total)
+				total = &local_total;
+		}
+	}
+
+	/* Early return if there is nothing to do */
+	if (!total && !position)
+		return TRUE;
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		return FALSE;
+	}
+
+	if (total)
+		success = cursor_count_total_locked (ebsdb, cursor, total, error);
+
+	if (success && position)
+		success = cursor_count_position_locked (ebsdb, cursor, position, error);
+
+	if (success)
+		success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	else
+		/* The GError is already set. */
+		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	/* In the case we're at the end, we just set the position
+	 * to be the total + 1
+	 */
+	if (success && position && total &&
+	    cursor->state.position == EBSDB_CURSOR_ORIGIN_END)
+		*position = *total + 1;
+
+	return success;
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_compare_contact:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor
+ * @contact: The #EContact to compare
+ * @matches_sexp: (out) (allow-none): Whether the contact matches the cursor's search expression
+ *
+ * Compares @contact with @cursor and returns whether @contact is less than, equal to, or greater
+ * than @cursor.
+ *
+ * Returns: A value that is less than, equal to, or greater than zero if @contact is found,
+ * respectively, to be less than, to match, or be greater than the current value of @cursor.
+ *
+ * Since: 3.12
+ */
+gint
+e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
+						EbSdbCursor          *cursor,
+						EContact             *contact,
+						gboolean             *matches_sexp)
+{
+	EBookBackendSqliteDBPrivate *priv;
+	gint i;
+	gint comparison = 0;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), -1);
+	g_return_val_if_fail (E_IS_CONTACT (contact), -1);
+	g_return_val_if_fail (cursor != NULL, -1);
+
+	priv = ebsdb->priv;
+
+	if (matches_sexp) {
+		if (cursor->sexp == NULL)
+			*matches_sexp = TRUE;
+		else
+			*matches_sexp =
+				e_book_backend_sexp_match_contact (cursor->sexp, contact);
+	}
+
+	for (i = 0; i < cursor->n_sort_fields && comparison == 0; i++) {
+
+		/* Empty state sorts below any contact value, which means the contact sorts above cursor */
+		if (cursor->state.values[i] == NULL) {
+			comparison = 1;
+		} else {
+			const gchar *field_value;
+
+			field_value = (const gchar *)
+				e_contact_get_const (contact, cursor->sort_fields[i]);
+
+			/* Empty contact state sorts below any cursor value */
+			if (field_value == NULL)
+				comparison = -1;
+			else {
+				gchar *collation_key;
+
+				/* Check of contact sorts below, equal to, or above the cursor */
+				collation_key = e_collator_generate_key (priv->collator, field_value, NULL);
+				comparison = strcmp (collation_key, cursor->state.values[i]);
+				g_free (collation_key);
+			}
+		}
+	}
+
+	/* UID tie-breaker */
+	if (comparison == 0) {
+		const gchar *uid;
+
+		uid = (const gchar *)e_contact_get_const (contact, E_CONTACT_UID);
+
+		if (cursor->state.last_uid == NULL)
+			comparison = 1;
+		else if (uid == NULL)
+			comparison = -1;
+		else
+			comparison = strcmp (uid, cursor->state.last_uid);
+	}
+
+	return comparison;
 }
