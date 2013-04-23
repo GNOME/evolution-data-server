@@ -620,6 +620,24 @@ func_eqphone_short (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_regex_normal (struct _ESExp *f,
+		   gint argc,
+		   struct _ESExpResult **argv,
+		   gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_REGEX_NORMAL, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_regex_raw (struct _ESExp *f,
+		gint argc,
+		struct _ESExpResult **argv,
+		gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_REGEX_RAW, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_exists (struct _ESExp *f,
              gint argc,
              struct _ESExpResult **argv,
@@ -682,6 +700,8 @@ static const struct {
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
+	{ "regex_normal", func_regex_normal, 0 },
+	{ "regex_raw", func_regex_raw, 0 },
 	{ "exists", func_exists, 0 },
 	{ "exists_vcard", func_exists_vcard, 0 }
 };
@@ -758,6 +778,10 @@ field_test_name (EBookQueryTest field_test)
 		return "eqphone_national";
 	case E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER:
 		return "eqphone_short";
+	case E_BOOK_QUERY_REGEX_NORMAL:
+		return "regex_normal";
+	case E_BOOK_QUERY_REGEX_RAW:
+		return "regex_raw";
 	}
 
 	return NULL;
@@ -776,6 +800,8 @@ is_phone_test (EBookQueryTest field_test)
 	case E_BOOK_QUERY_CONTAINS:
 	case E_BOOK_QUERY_BEGINS_WITH:
 	case E_BOOK_QUERY_ENDS_WITH:
+	case E_BOOK_QUERY_REGEX_NORMAL:
+	case E_BOOK_QUERY_REGEX_RAW:
 		break;
 	}
 
