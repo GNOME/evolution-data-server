@@ -1419,6 +1419,44 @@ create_collation (gpointer data,
 	}
 }
 
+static void
+ebsdb_regexp (sqlite3_context *context, 
+	      int argc, 
+	      sqlite3_value **argv)
+{
+	GRegex *regex;
+	const gchar *expression;
+	const gchar *text;
+
+	/* Reuse the same GRegex for all REGEXP queries with the same expression */
+	regex = sqlite3_get_auxdata (context, 0);
+	if (!regex) {
+		GError *error = NULL;
+
+		expression = (const gchar *)sqlite3_value_text (argv[0]);
+
+		regex = g_regex_new (expression, 0, 0, &error);
+
+		if (!regex) {
+			sqlite3_result_error (context, error->message, -1);
+			g_error_free (error);
+			return;
+		}
+
+		/* SQLite will take care of freeing the GRegex when we're done with the query */
+		sqlite3_set_auxdata (context, 0, regex, (void(*)(void*))g_regex_unref);
+	}
+
+	/* Now perform the comparison */
+	text = (const gchar *)sqlite3_value_text (argv[1]);
+	if (text != NULL) {
+		gboolean match;
+
+		match = g_regex_match (regex, text, 0, NULL);
+		sqlite3_result_int (context, match ? 1 : 0);
+	}
+}
+
 static gboolean
 book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
                             const gchar *filename,
@@ -1433,6 +1471,10 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 
 	if (ret == SQLITE_OK)
 		ret = sqlite3_collation_needed (ebsdb->priv->db, ebsdb, create_collation);
+
+	if (ret == SQLITE_OK)
+		ret = sqlite3_create_function (ebsdb->priv->db, "regexp", 2, SQLITE_UTF8, ebsdb,
+					       ebsdb_regexp, NULL, NULL);
 
 	if (ret != SQLITE_OK) {
 		if (!ebsdb->priv->db) {
@@ -3026,6 +3068,23 @@ func_check_phone (struct _ESExp *f,
 	return r;
 }
 
+static ESExpResult *
+func_check_regex_raw (struct _ESExp         *f,
+		      gint                  argc,
+		      struct _ESExpResult **argv,
+		      gpointer              data)
+{
+	/* Raw REGEX queries are not in the summary, we only keep
+	 * normalized data in the summary
+	 */
+	ESExpResult *r;
+
+	r = e_sexp_result_new (f, ESEXP_RES_INT);
+	r->value.number = 0;
+
+	return r;
+}
+
 /* 'builtin' functions */
 static const struct {
 	const gchar *name;
@@ -3043,7 +3102,9 @@ static const struct {
 	{ "exists", func_check, 0 },
 	{ "eqphone", func_check_phone, 0 },
 	{ "eqphone_national", func_check_phone, 0 },
-	{ "eqphone_short", func_check_phone, 0 }
+	{ "eqphone_short", func_check_phone, 0 },
+	{ "regex_normal", func_check, 0 },
+	{ "regex_raw", func_check_regex_raw, 0 },
 };
 
 static gboolean
@@ -3225,7 +3286,8 @@ typedef enum {
 	MATCH_ENDS_WITH,
 	MATCH_PHONE_NUMBER,
 	MATCH_NATIONAL_PHONE_NUMBER,
-	MATCH_SHORT_PHONE_NUMBER
+	MATCH_SHORT_PHONE_NUMBER,
+	MATCH_REGEX
 } MatchType;
 
 typedef enum {
@@ -3277,7 +3339,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 
 	g_return_val_if_fail (value != NULL, NULL);
 
-	if (flags & CONVERT_NORMALIZE)
+	if ((flags & CONVERT_NORMALIZE) && match != MATCH_REGEX)
 		normal = e_util_utf8_normalize (value);
 	else
 		normal = g_strdup (value);
@@ -3301,6 +3363,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	case MATCH_IS:
 	case MATCH_PHONE_NUMBER:
 	case MATCH_NATIONAL_PHONE_NUMBER:
+	case MATCH_REGEX:
 		break;
 	}
 
@@ -3317,7 +3380,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	while ((c = *ptr++)) {
 		if (c == '\'') {
 			g_string_append_c (str, '\'');
-		} else if (c == '%' || c == '^') {
+		} else if ((c == '%' || c == '^') && match != MATCH_REGEX) {
 			g_string_append_c (str, '^');
 			escape_modifier_needed = TRUE;
 		}
@@ -3336,6 +3399,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	case MATCH_PHONE_NUMBER:
 	case MATCH_NATIONAL_PHONE_NUMBER:
 	case MATCH_SHORT_PHONE_NUMBER:
+	case MATCH_REGEX:
 		break;
 	}
 
@@ -3510,6 +3574,9 @@ field_oper (MatchType match)
 	case MATCH_PHONE_NUMBER:
 	case MATCH_NATIONAL_PHONE_NUMBER:
 		return "=";
+
+	case MATCH_REGEX:
+		return "REGEXP";
 
 	case MATCH_CONTAINS:
 	case MATCH_BEGINS_WITH:
@@ -3705,6 +3772,16 @@ func_eqphone_short (struct _ESExp *f,
 	return convert_match_exp (f, argc, argv, data, MATCH_SHORT_PHONE_NUMBER);
 }
 
+static ESExpResult *
+func_regex (struct _ESExp *f,
+	    gint argc,
+	    struct _ESExpResult **argv,
+	    gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_REGEX);
+}
+
+
 /* 'builtin' functions */
 static struct {
 	const gchar *name;
@@ -3720,7 +3797,8 @@ static struct {
 	{ "endswith", func_endswith, 0 },
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
-	{ "eqphone_short", func_eqphone_short, 0 }
+	{ "eqphone_short", func_eqphone_short, 0 },
+	{ "regex_normal", func_regex, 0 }
 };
 
 static gchar *
