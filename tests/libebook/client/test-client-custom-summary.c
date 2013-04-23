@@ -29,6 +29,36 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
+static void
+setup_custom_book (ESource *scratch,
+                   ETestServerClosure *closure)
+{
+	ESourceBackendSummarySetup *setup;
+
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
+	e_source_backend_summary_setup_set_summary_fields (
+		setup,
+		E_CONTACT_FULL_NAME,
+		E_CONTACT_FAMILY_NAME,
+		E_CONTACT_EMAIL_1,
+		E_CONTACT_TEL,
+		E_CONTACT_EMAIL,
+		0);
+	e_source_backend_summary_setup_set_indexed_fields (
+		setup,
+		E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
+		E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
+		E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
+		E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
+		E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
+		E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_SUFFIX,
+		0);
+}
+
+static ETestServerClosure setup_custom_closure  = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0, TRUE, NULL };
+static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, TRUE, NULL };
+
 /* Define this macro to expect E_CLIENT_ERROR_NOT_SUPPORTED
  * only on phone number queries when EDS is built with no
  * phone number support.
@@ -39,6 +69,8 @@
 #  define CHECK_UNSUPPORTED_ERROR(data) (((ClientTestData *)(data))->phone_number_query != FALSE)
 #endif
 
+#define N_CONTACTS 9
+
 typedef struct {
 	ETestServerClosure closure;
 	gchar *sexp;
@@ -48,7 +80,6 @@ typedef struct {
 
 typedef struct {
 	ETestServerFixture parent;
-	EContact *contacts[9];
 } ClientTestFixture;
 
 static void
@@ -61,34 +92,18 @@ client_test_data_free (gpointer p)
 }
 
 static void
-setup_custom_book (ESource            *scratch,
-		   ETestServerClosure *closure)
+client_test_setup_custom (ClientTestFixture *fixture,
+			  gconstpointer user_data)
 {
-	ESourceBackendSummarySetup *setup;
-
-	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP));
-	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
-	e_source_backend_summary_setup_set_summary_fields (setup,
-							   E_CONTACT_FULL_NAME,
-							   E_CONTACT_FAMILY_NAME,
-							   E_CONTACT_EMAIL_1,
-							   E_CONTACT_TEL,
-							   E_CONTACT_EMAIL,
-							   0);
-	e_source_backend_summary_setup_set_indexed_fields (setup,
-							   E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
-							   E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
-							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_FULL_NAME, E_BOOK_INDEX_SUFFIX,
-							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_SUFFIX,
-							   0);
+	fixture->parent.source_name = g_strdup ("custom-book");
+	e_test_server_utils_setup (&fixture->parent, user_data);
 }
 
 static void
-client_test_setup (ClientTestFixture *fixture,
-		   gconstpointer user_data)
+client_test_setup_default (ClientTestFixture *fixture,
+			   gconstpointer user_data)
 {
+	fixture->parent.source_name = g_strdup ("default-book");
 	e_test_server_utils_setup (&fixture->parent, user_data);
 }
 
@@ -96,13 +111,6 @@ static void
 client_test_teardown (ClientTestFixture *fixture,
 		      gconstpointer user_data)
 {
-	gint i;
-
-	for (i = 0; i < G_N_ELEMENTS (fixture->contacts); ++i) {
-		if (fixture->contacts[i])
-			g_object_unref (fixture->contacts[i]);
-	}
-
 	e_test_server_utils_teardown (&fixture->parent, user_data);
 }
 
@@ -121,16 +129,20 @@ add_client_test_sexp (const gchar *prefix,
 
 	data->closure.type = direct ? E_TEST_SERVER_DIRECT_ADDRESS_BOOK : E_TEST_SERVER_ADDRESS_BOOK;
 
-	if (custom)
-		data->closure.customize = setup_custom_book;
-
 	data->closure.destroy_closure_func = client_test_data_free;
+	data->closure.keep_work_directory = TRUE;
 	data->sexp = sexp;
 	data->num_contacts = num_contacts;
 	data->phone_number_query = phone_number_query;
 
-	g_test_add (path, ClientTestFixture, data,
-		    client_test_setup, func, client_test_teardown);
+	if (custom)
+		g_test_add (path, ClientTestFixture, data,
+			    client_test_setup_custom, func,
+			    client_test_teardown);
+	else
+		g_test_add (path, ClientTestFixture, data,
+			    client_test_setup_default, func,
+			    client_test_teardown);
 
 	g_free (path);
 }
@@ -154,25 +166,36 @@ add_client_test (const gchar *prefix,
 static void
 setup_book (ClientTestFixture *fixture)
 {
-	EContact **it = fixture->contacts;
 	EBookClient *book_client;
+	GSList *contacts = NULL;
+	GError *error = NULL;
+	gint i;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	/* Add contacts */
-	if (!add_contact_from_test_case_verify (book_client, "custom-1", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-2", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-3", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-4", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-5", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-6", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-7", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-8", it++) ||
-	    !add_contact_from_test_case_verify (book_client, "custom-9", it++)) {
-		g_error ("Failed to add contacts");
+	for (i = 0; i < N_CONTACTS; i++) {
+		gchar *case_name = g_strdup_printf ("custom-%d", i + 1);
+		gchar *vcard;
+		EContact *contact;
+
+		vcard    = new_vcard_from_test_case (case_name);
+		contact  = e_contact_new_from_vcard (vcard);
+		contacts = g_slist_prepend (contacts, contact);
+		g_free (vcard);
+		g_free (case_name);
 	}
 
-	g_assert_cmpint (it - fixture->contacts, <=, G_N_ELEMENTS (fixture->contacts));
+	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error))
+		g_error ("Failed to add test contacts");
+
+	g_slist_free_full (contacts, (GDestroyNotify)g_object_unref);
+}
+
+static void
+setup_test (ClientTestFixture *fixture,
+	    gconstpointer user_data)
+{
+	setup_book (fixture);
 }
 
 static void
@@ -185,7 +208,6 @@ search_test (ETestServerFixture *fixture,
 	const ClientTestData *const data = user_data;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-	setup_book ((ClientTestFixture *)fixture);
 
 	if (CHECK_UNSUPPORTED_ERROR (data)) {
 		/* Expect unsupported query (no phone number support in a phone number query) */
@@ -228,7 +250,6 @@ uid_test (ETestServerFixture *fixture,
 	const ClientTestData *const data = user_data;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-	setup_book ((ClientTestFixture *)fixture);
 
 	if (CHECK_UNSUPPORTED_ERROR (data)) {
 		/* Expect unsupported query (no phone number support in a phone number query) */
@@ -260,47 +281,6 @@ uid_test (ETestServerFixture *fixture,
 
 	e_util_free_string_slist (results);
 }
-
-#ifdef ENABLE_PHONENUMBER
-#if 0 /* FIXME: This test is broken */
-
-static void
-locale_change_test (ClientTestFixture *fixture,
-		     gconstpointer user_data)
-{
-	EBookClient *book_client;
-	GSList *results = NULL;
-	GError *error = NULL;
-
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-	setup_book (fixture);
-
-	if (!e_book_client_get_contacts_uids_sync (
-		book_client, "(eqphone \"phone\" \"221-5423789\" \"en_US.UTF-8\")",
-				&results, NULL, &error)) {
-		g_error ("get contact uids: %s", error->message);
-	}
-
-	g_assert_cmpint (g_slist_length (results), ==, 1);
-
-	g_assert_cmpstr (
-		results->data, ==,
-		e_contact_get_const (fixture->contacts[0], E_CONTACT_UID));
-
-	e_util_free_string_slist (results);
-
-	if (!e_book_client_get_contacts_uids_sync (
-		book_client, "(eqphone \"phone\" \"221-5423789\" \"en_GB.UTF-8\")",
-				&results, NULL, &error)) {
-		g_error ("get contact uids: %s", error->message);
-	}
-
-	g_assert_cmpint (g_slist_length (results), ==, 0);
-	e_util_free_string_slist (results);
-}
-
-#endif
-#endif /* ENABLE_PHONENUMBER */
 
 typedef struct {
 	gpointer func;
@@ -335,6 +315,14 @@ main (gint argc,
 	setlocale (LC_ALL, "");
 
 	g_assert_cmpstr (setlocale (LC_ADDRESS, NULL), ==, "en_US.UTF-8");
+
+	/* Before beginning, setup two books and populate them with contacts, one with
+	 * a customized summary and another without a customized summary
+	 */
+	g_test_add ("/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
+		    client_test_setup_default, setup_test, client_test_teardown);
+	g_test_add ("/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
+		    client_test_setup_custom, setup_test, client_test_teardown);
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
 	 */
@@ -473,19 +461,6 @@ main (gint argc,
 				 1, suites[i].direct, suites[i].custom, TRUE);
 
 	}
-
-#ifdef ENABLE_PHONENUMBER
-#if 0 /* FIXME: This test is broken */
-
-	add_client_test (
-	        "/EBookClient", "/EqPhone/LocaleChange", locale_change_test,
-		NULL, 0, FALSE, TRUE);
-
-	add_client_test (
-	        "/EBookClient/DirectAccess", "/EqPhone/LocaleChange", locale_change_test,
-		NULL, 0, TRUE, TRUE);
-#endif
-#endif /* ENABLE_PHONENUMBER */
 
 	ret = e_test_server_utils_run ();
 
