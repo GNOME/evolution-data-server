@@ -850,6 +850,78 @@ func_eqphone_short (struct _ESExp *f,
 }
 
 static gboolean
+regex_helper (const gchar *ps1,
+	      const gchar *ps2,
+	      const gchar *region,
+	      gboolean     normalize)
+{
+	const gchar *field_data = ps1;
+	const gchar *expression = ps2;
+	GRegex      *regex;
+	GError      *error = NULL;
+	gboolean     match = FALSE;
+
+	regex = g_regex_new (expression, 0, 0, &error);
+	if (!regex) {
+		g_warning ("Failed to parse regular expression '%s': %s",
+			   expression, error->message);
+		g_error_free (error);
+		return FALSE;
+	}
+
+	if (normalize) {
+		gchar *normal = e_util_utf8_normalize (field_data);
+
+		match = g_regex_match (regex, normal, 0, NULL);
+
+		g_free (normal);
+	} else
+		match = g_regex_match (regex, field_data, 0, NULL);
+
+	g_regex_unref (regex);
+
+	return match;
+}
+
+static gboolean
+regex_normal_helper (const gchar *ps1,
+		     const gchar *ps2,
+		     const gchar *region)
+{
+	return regex_helper (ps1, ps2, region, TRUE);
+}
+
+static gboolean
+regex_raw_helper (const gchar *ps1,
+		  const gchar *ps2,
+		  const gchar *region)
+{
+	return regex_helper (ps1, ps2, region, FALSE);
+}
+
+static ESExpResult *
+func_regex_normal (struct _ESExp *f,
+		   gint argc,
+		   struct _ESExpResult **argv,
+		   gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, regex_normal_helper);
+}
+
+static ESExpResult *
+func_regex_raw (struct _ESExp *f,
+		gint argc,
+		struct _ESExpResult **argv,
+		gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, regex_raw_helper);
+}
+
+static gboolean
 exists_helper (const gchar *ps1,
                const gchar *ps2,
                const gchar *region)
@@ -1037,6 +1109,8 @@ static struct {
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
+	{ "regex_normal", func_regex_normal, 0 },
+	{ "regex_raw", func_regex_raw, 0 },
 	{ "exists", func_exists, 0 },
 	{ "exists_vcard", func_exists_vcard, 0 },
 };
