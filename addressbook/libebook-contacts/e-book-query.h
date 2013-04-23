@@ -29,6 +29,11 @@ typedef struct EBookQuery EBookQuery;
  * @E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER: check if a field matches with a value tested
  * using e_phone_number_compare_strings(), the match must be at least of strength %E_PHONE_NUMBER_MATCH_SHORT
  * for this query to return any matches.
+ * @E_BOOK_QUERY_REGEX_NORMAL: A regular expression query against contact data normalized with e_util_utf8_normalize(),
+ * the normalized data is lower case with any accents removed.
+ * @E_BOOK_QUERY_REGEX_RAW: A regular expression query against raw contact data, this is usually slower than
+ * a %E_BOOK_QUERY_REGEX_NORMAL as it implies that #EVCards must be parsed in order to get the raw data
+ * for comparison.
  *
  * The kind of test a query created by e_book_query_field_test() shall perform.
  *
@@ -43,6 +48,9 @@ typedef enum {
   E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
   E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
   E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
+
+  E_BOOK_QUERY_REGEX_NORMAL,
+  E_BOOK_QUERY_REGEX_RAW
 
   /*
     Consider these "coming soon".
