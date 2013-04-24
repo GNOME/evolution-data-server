@@ -7438,12 +7438,15 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		/* Wait for the job to finish. */
 		camel_imapx_job_wait (job);
 
+		/* Disregard errors here.  If we failed to retreive the
+		 * message from cache (implying the job we were waiting
+		 * on failed or got cancelled), we'll just re-fetch it. */
 		stream = camel_data_cache_get (
-			ifolder->cache, "cur", uid, error);
-		if (stream == NULL)
-			g_prefix_error (
-				error, "Could not retrieve the message: ");
-		return stream;
+			ifolder->cache, "cur", uid, NULL);
+		if (stream != NULL)
+			return stream;
+
+		QUEUE_LOCK (is);
 	}
 
 	mi = camel_folder_summary_get (folder->summary, uid);
