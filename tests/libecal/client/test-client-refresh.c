@@ -7,8 +7,10 @@
 
 #include "e-test-server-utils.h"
 
-static ETestServerClosure cal_closure =
-	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
+static ETestServerClosure cal_closure_sync =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
+static ETestServerClosure cal_closure_async =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, TRUE };
 
 static void
 setup_cal (ECalClient *cal_client)
@@ -100,14 +102,14 @@ main (gint argc,
 	g_test_add (
 		"/ECalClient/Refresh/Sync",
 		ETestServerFixture,
-		&cal_closure,
+		&cal_closure_sync,
 		e_test_server_utils_setup,
 		test_refresh_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/ECalClient/Refresh/Async",
 		ETestServerFixture,
-		&cal_closure,
+		&cal_closure_async,
 		e_test_server_utils_setup,
 		test_refresh_async,
 		e_test_server_utils_teardown);

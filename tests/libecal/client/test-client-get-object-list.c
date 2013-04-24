@@ -9,8 +9,10 @@
 #define EVENT_SUMMARY "Creation of new test event"
 #define EVENT_QUERY "(contains? \"summary\" \"" EVENT_SUMMARY "\")"
 
-static ETestServerClosure cal_closure =
-	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
+static ETestServerClosure cal_closure_sync =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
+static ETestServerClosure cal_closure_async =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, TRUE };
 
 static void
 setup_cal (ECalClient *cal_client)
@@ -139,14 +141,14 @@ main (gint argc,
 	g_test_add (
 		"/ECalClient/GetObjectList/Sync",
 		ETestServerFixture,
-		&cal_closure,
+		&cal_closure_sync,
 		e_test_server_utils_setup,
 		test_get_object_list_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/ECalClient/GetObjectList/Async",
 		ETestServerFixture,
-		&cal_closure,
+		&cal_closure_async,
 		e_test_server_utils_setup,
 		test_get_object_list_async,
 		e_test_server_utils_teardown);

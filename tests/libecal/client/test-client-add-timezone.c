@@ -9,8 +9,10 @@
 #define TZID_NEW "XYZ"
 #define TZNAME_NEW "Ex Wye Zee"
 
-static ETestServerClosure cal_closure =
-	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
+static ETestServerClosure cal_closure_sync =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, FALSE };
+static ETestServerClosure cal_closure_async =
+	{ E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS, FALSE, NULL, TRUE };
 
 static void
 test_add_timezone_sync (ETestServerFixture *fixture,
@@ -137,14 +139,14 @@ main (gint argc,
 	g_test_add (
 		"/ECalClient/AddTimezone/Sync",
 		ETestServerFixture,
-		&cal_closure,
+		&cal_closure_sync,
 		e_test_server_utils_setup,
 		test_add_timezone_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/ECalClient/AddTimezone/Async",
 		ETestServerFixture,
-		&cal_closure,
+		&cal_closure_async,
 		e_test_server_utils_setup,
 		test_add_timezone_async,
 		e_test_server_utils_teardown);
