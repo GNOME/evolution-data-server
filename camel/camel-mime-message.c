@@ -1234,9 +1234,23 @@ find_attachment (CamelMimeMessage *msg,
                  gpointer data)
 {
 	const CamelContentDisposition *cd;
+	CamelContentType *ct;
 	gboolean *found = (gboolean *) data;
 
 	g_return_val_if_fail (part != NULL, FALSE);
+
+	ct = camel_mime_part_get_content_type (part);
+	if (ct && (
+	    camel_content_type_is (ct, "application", "xpkcs7mime") ||
+	    camel_content_type_is (ct, "application", "x-pkcs7-mime") ||
+	    camel_content_type_is (ct, "application", "pkcs7-mime") ||
+	    camel_content_type_is (ct, "application", "pkcs7-signature") ||
+	    camel_content_type_is (ct, "application", "xpkcs7-signature") ||
+	    camel_content_type_is (ct, "application", "x-pkcs7-signature") ||
+	    camel_content_type_is (ct, "application", "pkcs7-signature") ||
+	    camel_content_type_is (ct, "application", "pgp-signature") ||
+	    camel_content_type_is (ct, "application", "pgp-encrypted")))
+		return !(*found);
 
 	cd = camel_mime_part_get_content_disposition (part);
 
