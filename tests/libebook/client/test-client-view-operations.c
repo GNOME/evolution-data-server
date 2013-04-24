@@ -8,8 +8,10 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
-static ETestServerClosure direct_book_closure = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure_sync         = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_async        = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
+static ETestServerClosure book_closure_direct_sync  = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_direct_async = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 #define N_THREADS  5
 #define N_CONTACTS 5
@@ -384,28 +386,28 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/ConcurrentViews/Sync",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_sync,
 		e_test_server_utils_setup,
 		test_concurrent_views_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/ConcurrentViews/Async",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_async,
 		e_test_server_utils_setup,
 		test_concurrent_views_async,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/DirectAccess/ConcurrentViews/Sync",
 		ETestServerFixture,
-		&direct_book_closure,
+		&book_closure_direct_sync,
 		e_test_server_utils_setup,
 		test_concurrent_views_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/DirectAccess/ConcurrentViews/Async",
 		ETestServerFixture,
-		&direct_book_closure,
+		&book_closure_direct_async,
 		e_test_server_utils_setup,
 		test_concurrent_views_async,
 		e_test_server_utils_teardown);

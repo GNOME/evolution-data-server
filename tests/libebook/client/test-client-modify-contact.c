@@ -6,7 +6,8 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure_sync  = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_async = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 #define EMAIL_ADD "foo@bar.com"
 
@@ -138,14 +139,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/ModifyContact/Sync",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_sync,
 		e_test_server_utils_setup,
 		test_modify_contact_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/ModifyContact/Async",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_async,
 		e_test_server_utils_setup,
 		test_modify_contact_async,
 		e_test_server_utils_teardown);

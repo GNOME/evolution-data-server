@@ -6,8 +6,10 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
-static ETestServerClosure direct_book_closure = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure_sync         = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_async        = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
+static ETestServerClosure book_closure_direct_sync  = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_direct_async = { E_TEST_SERVER_DIRECT_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 static void
 check_removed_contact (EBookClient *book_client,
@@ -123,14 +125,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/RemoveContact/Sync",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_sync,
 		e_test_server_utils_setup,
 		test_remove_contact_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/RemoveContact/Async",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_async,
 		e_test_server_utils_setup,
 		test_remove_contact_async,
 		e_test_server_utils_teardown);
@@ -141,14 +143,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/DirectAccess/RemoveContact/Sync",
 		ETestServerFixture,
-		&direct_book_closure,
+		&book_closure_direct_sync,
 		e_test_server_utils_setup,
 		test_remove_contact_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/DirectAccess/RemoveContact/Async",
 		ETestServerFixture,
-		&direct_book_closure,
+		&book_closure_direct_async,
 		e_test_server_utils_setup,
 		test_remove_contact_async,
 		e_test_server_utils_teardown);

@@ -5,7 +5,8 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure_sync  = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_async = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 static void
 check_removed (EBookClient *book_client,
@@ -132,14 +133,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/RemoveContacts/Sync",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_sync,
 		e_test_server_utils_setup,
 		test_remove_contacts_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/RemoveContacts/Async",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_async,
 		e_test_server_utils_setup,
 		test_remove_contacts_async,
 		e_test_server_utils_teardown);

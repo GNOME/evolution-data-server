@@ -7,7 +7,8 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure_sync  = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_async = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 /* asynchronous callback with a main-loop running */
 static void
@@ -84,14 +85,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/Refresh/Sync",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_sync,
 		e_test_server_utils_setup,
 		test_refresh_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/Refresh/Async",
 		ETestServerFixture,
-		&book_closure,
+		&book_closure_async,
 		e_test_server_utils_setup,
 		test_refresh_async,
 		e_test_server_utils_teardown);
