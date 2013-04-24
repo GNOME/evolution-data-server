@@ -11,8 +11,10 @@ typedef struct {
 	gboolean uids_only;
 } UIDOnlyClosure;
 
-static UIDOnlyClosure book_closure_all_data = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 }, FALSE };
-static UIDOnlyClosure book_closure_uids_only = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 }, TRUE };
+static UIDOnlyClosure book_closure_all_data_sync   = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE }, FALSE };
+static UIDOnlyClosure book_closure_all_data_async  = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE },  FALSE };
+static UIDOnlyClosure book_closure_uids_only_sync  = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE }, TRUE };
+static UIDOnlyClosure book_closure_uids_only_async = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE },  TRUE };
 
 #define N_TEST_CONTACTS 4
 
@@ -309,14 +311,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/UidOnlyView/Sync/AllData",
 		ETestServerFixture,
-		&book_closure_all_data,
+		&book_closure_all_data_sync,
 		e_test_server_utils_setup,
 		test_get_view_sync,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/UidOnlyView/Sync/UidsOnly",
 		ETestServerFixture,
-		&book_closure_uids_only,
+		&book_closure_uids_only_sync,
 		e_test_server_utils_setup,
 		test_get_view_sync,
 		e_test_server_utils_teardown);
@@ -324,14 +326,14 @@ main (gint argc,
 	g_test_add (
 		"/EBookClient/UidOnlyView/Async/AllData",
 		ETestServerFixture,
-		&book_closure_all_data,
+		&book_closure_all_data_async,
 		e_test_server_utils_setup,
 		test_get_view_async,
 		e_test_server_utils_teardown);
 	g_test_add (
 		"/EBookClient/UidOnlyView/Async/UidsOnly",
 		ETestServerFixture,
-		&book_closure_uids_only,
+		&book_closure_uids_only_async,
 		e_test_server_utils_setup,
 		test_get_view_async,
 		e_test_server_utils_teardown);

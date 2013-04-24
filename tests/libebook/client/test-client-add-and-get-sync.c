@@ -6,7 +6,7 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
 
 #define N_CONTACTS 6
 
