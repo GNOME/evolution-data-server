@@ -35,20 +35,13 @@ TESTS = 					\
 	test-client-get-attachment-uris		\
 	test-client-get-view			\
 	test-client-revision-view		\
+	test-client-get-revision		\
 	$(NULL)
 
 # test-client-get-free-busy:
 #   broken by design, the API needs to be fixed.
 #
-# test-client-get-revision:
-#   broken because the e_client_get_backend_property()
-#   implementations dont actually query the backend, causing a sort of race.
-#
-#   This should be fixed and the test put back into TESTS, see bug 693464:
-#      https://bugzilla.gnome.org/show_bug.cgi?id=693464
-#
 BROKEN_TESTS =		\
-	test-client-get-revision		\
 	test-client-get-free-busy
 
 # The test program
