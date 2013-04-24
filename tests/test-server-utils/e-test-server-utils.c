@@ -137,6 +137,54 @@ client_weak_notify (gpointer data,
 }
 
 static void
+e_test_server_utils_client_ready (GObject *source_object,
+				  GAsyncResult *res,
+				  gpointer user_data)
+{
+	FixturePair *pair = (FixturePair *)user_data;
+	GError *error = NULL;
+
+	switch (pair->closure->type) {
+	case E_TEST_SERVER_ADDRESS_BOOK:
+		pair->fixture->service.book_client = (EBookClient *)
+			e_book_client_connect_finish (res, &error);
+
+		if (!pair->fixture->service.book_client)
+			g_error ("Unable to create the test book: %s", error->message);
+
+		g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
+				   client_weak_notify, pair->fixture);
+		break;
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
+		pair->fixture->service.book_client = (EBookClient *)
+			e_book_client_connect_direct_finish (res, &error);
+
+		if (!pair->fixture->service.book_client)
+			g_error ("Unable to create the test book: %s", error->message);
+
+		g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
+				   client_weak_notify, pair->fixture);
+		break;
+	case E_TEST_SERVER_CALENDAR:
+		pair->fixture->service.calendar_client = (ECalClient *)
+			e_cal_client_connect_finish (res, &error);
+
+		if (!pair->fixture->service.calendar_client)
+			g_error ("Unable to create the test calendar: %s", error->message);
+
+		g_object_weak_ref (G_OBJECT (pair->fixture->service.calendar_client),
+				   client_weak_notify, pair->fixture);
+		break;
+	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
+	case E_TEST_SERVER_DEPRECATED_CALENDAR:
+	case E_TEST_SERVER_NONE:
+		g_assert_not_reached ();
+	}
+
+	g_main_loop_quit (pair->fixture->loop);
+}
+
+static void
 e_test_server_utils_source_added (ESourceRegistry *registry,
                                   ESource *source,
                                   FixturePair *pair)
@@ -150,24 +198,35 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 	case E_TEST_SERVER_ADDRESS_BOOK:
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 
-		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
-			pair->fixture->service.book_client = (EBookClient *)
-				e_book_client_connect_direct_sync (pair->fixture->registry, source, NULL, &error);
-		else
-			pair->fixture->service.book_client = (EBookClient *)
-				e_book_client_connect_sync (source, NULL, &error);
+		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
+			if (pair->closure->use_async_connect)
+				e_book_client_connect_direct (source, NULL, e_test_server_utils_client_ready, pair);
+			else
+				pair->fixture->service.book_client = (EBookClient *)
+					e_book_client_connect_direct_sync (pair->fixture->registry,
+									   source, NULL, &error);
+		} else {
 
-		if (!pair->fixture->service.book_client)
-			g_error ("Unable to create the test book: %s", error->message);
+			if (pair->closure->use_async_connect)
+				e_book_client_connect (source, NULL, e_test_server_utils_client_ready, pair);
+			else
+				pair->fixture->service.book_client = (EBookClient *)
+					e_book_client_connect_sync (source, NULL, &error);
+		}
 
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.book_client),
-			client_weak_notify, pair->fixture);
+		if (!pair->closure->use_async_connect) {
+			if (!pair->fixture->service.book_client)
+				g_error ("Unable to create the test book: %s", error->message);
+
+			g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
+					   client_weak_notify, pair->fixture);
+		}
 
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 
+		/* Dont bother testing the Async apis for deprecated APIs */
 		pair->fixture->service.book = e_book_new (source, &error);
 		if (!pair->fixture->service.book)
 			g_error ("Unable to create the test book: %s", error->message);
@@ -183,21 +242,28 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 	case E_TEST_SERVER_CALENDAR:
 
-		pair->fixture->service.calendar_client = (ECalClient *)
-			e_cal_client_connect_sync (
-				source,
-				pair->closure->calendar_source_type, NULL, &error);
-		if (!pair->fixture->service.calendar_client)
-			g_error ("Unable to create the test calendar: %s", error->message);
+		if (pair->closure->use_async_connect) {
+			e_cal_client_connect (source, pair->closure->calendar_source_type,
+					      NULL, e_test_server_utils_client_ready, pair);
 
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.calendar_client),
-			client_weak_notify, pair->fixture);
+		} else {
+
+			pair->fixture->service.calendar_client = (ECalClient *)
+				e_cal_client_connect_sync (
+				        source,
+					pair->closure->calendar_source_type, NULL, &error);
+			if (!pair->fixture->service.calendar_client)
+				g_error ("Unable to create the test calendar: %s", error->message);
+
+			g_object_weak_ref (G_OBJECT (pair->fixture->service.calendar_client),
+					   client_weak_notify, pair->fixture);
+		}
 
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 
+		/* Dont bother testing the Async apis for deprecated APIs */
 		pair->fixture->service.calendar = e_cal_new (source, pair->closure->calendar_source_type);
 		if (!pair->fixture->service.calendar)
 			g_error ("Unable to create the test calendar");
@@ -215,7 +281,8 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		return;
 	}
 
-	g_main_loop_quit (pair->fixture->loop);
+	if (!pair->closure->use_async_connect)
+		g_main_loop_quit (pair->fixture->loop);
 }
 
 static gboolean

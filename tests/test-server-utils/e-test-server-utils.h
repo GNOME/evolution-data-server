@@ -92,6 +92,7 @@ struct _ETestServerClosure {
 	gint                     calendar_source_type;
 	gboolean                 keep_work_directory;
 	GDestroyNotify           destroy_closure_func;
+	gboolean                 use_async_connect;
 };
 
 /**
