@@ -47,7 +47,6 @@
 		g_message ("%s: DB Locked ", G_STRFUNC);	\
 	} G_STMT_END
 
-
 #  define UNLOCK_MUTEX(mutex)					\
 	G_STMT_START {						\
 		g_message ("%s: Unlocking ", G_STRFUNC);	\
@@ -81,7 +80,7 @@ struct _EBookBackendSqliteDBPrivate {
 	gchar *hash_key;
 
 	GMutex lock;
-	GMutex updates_lock; /* This is for deprecated e_book_backend_sqlitedb_lock_updates() */
+	GMutex updates_lock; /* This is for deprecated e_book_backend_sqlitedb_lock_updates () */
 
 	gboolean store_vcard;
 	guint32 in_transaction;
@@ -93,7 +92,6 @@ struct _EBookBackendSqliteDBPrivate {
 };
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
-
 
 static GHashTable *db_connections = NULL;
 static GMutex dbcon_lock;
@@ -330,7 +328,7 @@ book_backend_sql_exec_real (sqlite3 *db,
 
 static gint
 print_debug_cb (gpointer ref,
-		gint n_cols,
+                gint n_cols,
                 gchar **cols,
                 gchar **name)
 {
@@ -1108,9 +1106,9 @@ typedef struct {
 
 static gint
 create_phone_indexes_for_columns (gpointer data,
-				  gint n_cols,
-				  gchar **cols,
-				  gchar **name)
+                                  gint n_cols,
+                                  gchar **cols,
+                                  gchar **name)
 {
 	const gchar *column_name = cols[1];
 	CollationInfo *info = data;
@@ -1139,9 +1137,9 @@ create_phone_indexes_for_columns (gpointer data,
 
 static gint
 create_phone_indexes_for_tables (gpointer data,
-				 gint n_cols,
-				 gchar **cols,
-				 gchar **name)
+                                 gint n_cols,
+                                 gchar **cols,
+                                 gchar **name)
 {
 	CollationInfo *info = data;
 	GError *error = NULL;
@@ -1167,7 +1165,6 @@ create_phone_indexes_for_tables (gpointer data,
 		g_clear_error (&error);
 	}
 
-
 	sqlite3_free (stmt);
 	g_free (tmp);
 
@@ -1175,9 +1172,9 @@ create_phone_indexes_for_tables (gpointer data,
 }
 
 static GString *
-ixphone_str (gint               country_code,
-	     const gchar *const national_str,
-	     gint               national_len)
+ixphone_str (gint country_code,
+             const gchar *const national_str,
+             gint national_len)
 {
 	GString *const str = g_string_sized_new (6 + national_len);
 	g_string_append_printf (str, "+%d|", country_code);
@@ -1187,9 +1184,9 @@ ixphone_str (gint               country_code,
 
 static gint
 e_strcmp2n (const gchar *str1,
-	    size_t       len1,
-	    const gchar *str2,
-	    size_t       len2)
+            size_t len1,
+            const gchar *str2,
+            size_t len2)
 {
 	const gint cmp = memcmp (str1, str2, MIN (len1, len2));
 
@@ -1199,11 +1196,11 @@ e_strcmp2n (const gchar *str1,
 }
 
 static gint
-ixphone_compare_for_country (gpointer      data,
-			     gint          len1,
-			     gconstpointer arg1,
-			     gint          len2,
-			     gconstpointer arg2)
+ixphone_compare_for_country (gpointer data,
+                             gint len1,
+                             gconstpointer arg1,
+                             gint len2,
+                             gconstpointer arg2)
 {
 	const gchar *const str1 = arg1;
 	const gchar *const str2 = arg2;
@@ -1231,11 +1228,11 @@ ixphone_compare_for_country (gpointer      data,
 }
 
 static gint
-ixphone_compare_national (gpointer      data,
-			  gint          len1,
-			  gconstpointer arg1,
-			  gint          len2,
-			  gconstpointer arg2)
+ixphone_compare_national (gpointer data,
+                          gint len1,
+                          gconstpointer arg1,
+                          gint len2,
+                          gconstpointer arg2)
 {
 	const gchar *const country_code = data;
 	const gchar *const str1 = arg1;
@@ -1249,8 +1246,9 @@ ixphone_compare_national (gpointer      data,
 	g_return_val_if_fail (sep2 != NULL, 0);
 
 	/* First only check national portions */
-	cmp = e_strcmp2n (sep1 + 1, len1 - (sep1 + 1 - str1),
-			  sep2 + 1, len2 - (sep2 + 1 - str2));
+	cmp = e_strcmp2n (
+		sep1 + 1, len1 - (sep1 + 1 - str1),
+		sep2 + 1, len2 - (sep2 + 1 - str2));
 
 	/* On match we also have to check for potential country codes.
 	 * Note that we can't just compare the full phone number string
@@ -1272,8 +1270,7 @@ ixphone_compare_national (gpointer      data,
 		} else {
 			/* Also compare the country code if the national number
 			 * matches and both numbers have a country code. */
-			cmp = e_strcmp2n (str1, sep1 - str1,
-					  str2, sep2 - str2);
+			cmp = e_strcmp2n (str1, sep1 - str1, str2, sep2 - str2);
 		}
 	}
 
@@ -1293,10 +1290,10 @@ ixphone_compare_national (gpointer      data,
 }
 
 static void
-create_collation (gpointer     data,
-		  sqlite3     *db,
-		  gint         encoding,
-		  const gchar *name)
+create_collation (gpointer data,
+                  sqlite3 *db,
+                  gint encoding,
+                  const gchar *name)
 {
 	gint ret = SQLITE_DONE;
 	gint country_code;
@@ -1537,11 +1534,11 @@ append_summary_field (GArray *array,
 }
 
 static void
-summary_fields_add_indexes (GArray         *array,
-                            EContactField  *indexes,
+summary_fields_add_indexes (GArray *array,
+                            EContactField *indexes,
                             EBookIndexType *index_types,
-                            gint            n_indexes,
-                            IndexFlags     *attr_list_indexes)
+                            gint n_indexes,
+                            IndexFlags *attr_list_indexes)
 {
 	gint i, j;
 
@@ -1784,7 +1781,7 @@ mprintf_suffix (const gchar *normal)
 
 static EPhoneNumber *
 phone_number_from_string (const gchar *normal,
-			  const gchar *default_region)
+                          const gchar *default_region)
 {
 	EPhoneNumber *number = NULL;
 
@@ -1800,7 +1797,7 @@ phone_number_from_string (const gchar *normal,
 
 static gchar *
 convert_phone (const gchar *normal,
-	       const gchar *default_region)
+               const gchar *default_region)
 {
 	EPhoneNumber *number = phone_number_from_string (normal, default_region);
 	gchar *indexed_phone_number = NULL;
@@ -1831,7 +1828,7 @@ convert_phone (const gchar *normal,
 
 static gchar *
 mprintf_phone (const gchar *normal,
-	       const gchar *default_region)
+               const gchar *default_region)
 {
 	gchar *phone = convert_phone (normal, default_region);
 	gchar *stmt = NULL;
@@ -1994,11 +1991,11 @@ update_e164_attribute_params (EVCard *vcard,
 
 static gboolean
 insert_contact (EBookBackendSqliteDB *ebsdb,
-		EContact *contact,
-		const gchar *folderid,
-		gboolean replace_existing,
-		const gchar *default_region,
-		GError **error)
+                EContact *contact,
+                const gchar *folderid,
+                gboolean replace_existing,
+                const gchar *default_region,
+                GError **error)
 {
 	EBookBackendSqliteDBPrivate *priv;
 	gboolean success;
@@ -2048,16 +2045,17 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 					&& (priv->summary_fields[i].index & INDEX_PHONE) != 0)
 					stmt_phone = mprintf_phone (normal, default_region);
 
-				stmt = sqlite3_mprintf ("INSERT INTO %Q (uid, field, value%s%s) "
-							"VALUES (%Q, %Q, %Q%s%s%s%s)",
-							list_folder,
-							stmt_suffix ? ", value_reverse" : "",
-							stmt_phone ? ", value_phone" : "",
-							uid, priv->summary_fields[i].dbname, normal,
-							stmt_suffix ? ", " : "",
-							stmt_suffix ? stmt_suffix : "",
-							stmt_phone ? ", " : "",
-							stmt_phone ? stmt_phone : "");
+				stmt = sqlite3_mprintf (
+					"INSERT INTO %Q (uid, field, value%s%s) "
+					"VALUES (%Q, %Q, %Q%s%s%s%s)",
+					list_folder,
+					stmt_suffix ? ", value_reverse" : "",
+					stmt_phone ? ", value_phone" : "",
+					uid, priv->summary_fields[i].dbname, normal,
+					stmt_suffix ? ", " : "",
+					stmt_suffix ? stmt_suffix : "",
+					stmt_phone ? ", " : "",
+					stmt_phone ? stmt_phone : "");
 
 				if (stmt_suffix)
 					sqlite3_free (stmt_suffix);
@@ -2546,7 +2544,7 @@ e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
  **/
 gboolean
 e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
-					      GHashTable *fields_of_interest)
+                                              GHashTable *fields_of_interest)
 {
 	gboolean summary_fields = TRUE;
 	GHashTableIter iter;
@@ -2771,8 +2769,8 @@ func_check_subset (ESExp *f,
 
 static gint
 func_check_field_test (EBookBackendSqliteDB *ebsdb,
-			const gchar *query_name,
-			const gchar *query_value)
+                        const gchar *query_name,
+                        const gchar *query_value)
 {
 	gint i;
 	gint ret_val = 0;
@@ -2846,10 +2844,10 @@ func_check (struct _ESExp *f,
 }
 
 static ESExpResult *
-func_check_phone (struct _ESExp         *f,
-		   gint                  argc,
-		   struct _ESExpResult **argv,
-		   gpointer              data)
+func_check_phone (struct _ESExp *f,
+                  gint argc,
+                  struct _ESExpResult **argv,
+                  gpointer data)
 {
 	ESExpResult *const r = func_check (f, argc, argv, data);
 	const gchar *const query_value = argv[1]->value.string;
@@ -2900,10 +2898,10 @@ static const struct {
 
 static gboolean
 e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
-						    const gchar *query,
-						    gboolean *with_list_attrs,
-						    gboolean *unsupported_query,
-						    gboolean *invalid_query)
+                                                    const gchar *query,
+                                                    gboolean *with_list_attrs,
+                                                    gboolean *unsupported_query,
+                                                    gboolean *invalid_query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -3532,27 +3530,27 @@ func_endswith (struct _ESExp *f,
 
 static ESExpResult *
 func_eqphone (struct _ESExp *f,
-	       gint argc,
-	       struct _ESExpResult **argv,
-	       gpointer data)
+              gint argc,
+              struct _ESExpResult **argv,
+              gpointer data)
 {
 	return convert_match_exp (f, argc, argv, data, MATCH_PHONE_NUMBER);
 }
 
 static ESExpResult *
 func_eqphone_national (struct _ESExp *f,
-			gint argc,
-			struct _ESExpResult **argv,
-			gpointer data)
+                       gint argc,
+                       struct _ESExpResult **argv,
+                       gpointer data)
 {
 	return convert_match_exp (f, argc, argv, data, MATCH_NATIONAL_PHONE_NUMBER);
 }
 
 static ESExpResult *
 func_eqphone_short (struct _ESExp *f,
-		     gint argc,
-		     struct _ESExpResult **argv,
-		     gpointer data)
+                    gint argc,
+                    struct _ESExpResult **argv,
+                    gpointer data)
 {
 	return convert_match_exp (f, argc, argv, data, MATCH_SHORT_PHONE_NUMBER);
 }
@@ -3874,9 +3872,10 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (sexp)
-		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
-										    &query_with_list_attrs,
-										    &query_unsupported, &query_invalid);
+		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (
+			ebsdb, sexp,
+			&query_with_list_attrs,
+			&query_unsupported, &query_invalid);
 
 	if (query_unsupported)
 		g_set_error (
@@ -3953,10 +3952,11 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	if (sexp)
-		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (ebsdb, sexp,
-										    &query_with_list_attrs,
-										    &query_unsupported,
-										    &query_invalid);
+		summary_query = e_book_backend_sqlitedb_check_summary_query_locked (
+			ebsdb, sexp,
+			&query_with_list_attrs,
+			&query_unsupported,
+			&query_invalid);
 
 	if (query_unsupported)
 		g_set_error (
@@ -4129,10 +4129,10 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
 	}
 
 	stmt = sqlite3_mprintf (
-	        "UPDATE folders SET is_populated = %d "
+		"UPDATE folders SET is_populated = %d "
 		"WHERE folder_id = %Q", populated, folderid);
 	success = book_backend_sql_exec (
-                ebsdb->priv->db, stmt, NULL, NULL, error);
+		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
 	if (success)
@@ -4222,10 +4222,10 @@ e_book_backend_sqlitedb_set_revision (EBookBackendSqliteDB *ebsdb,
 	}
 
 	stmt = sqlite3_mprintf (
-	        "UPDATE folders SET revision = %Q "
+		"UPDATE folders SET revision = %Q "
 		"WHERE folder_id = %Q", revision, folderid);
 	success = book_backend_sql_exec (
-	        ebsdb->priv->db, stmt, NULL, NULL, error);
+		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
 	if (success)
@@ -4303,10 +4303,10 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
 	}
 
 	stmt = sqlite3_mprintf (
-	        "UPDATE folders SET partial_content = %d "
+		"UPDATE folders SET partial_content = %d "
 		"WHERE folder_id = %Q", partial_content, folderid);
 	success = book_backend_sql_exec (
-	        ebsdb->priv->db, stmt, NULL, NULL, error);
+		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
 	if (success)
@@ -4388,10 +4388,10 @@ e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	}
 
 	stmt = sqlite3_mprintf (
-	        "UPDATE %Q SET bdata = %Q WHERE uid = %Q",
+		"UPDATE %Q SET bdata = %Q WHERE uid = %Q",
 		folderid, value, uid);
 	success = book_backend_sql_exec (
-	        ebsdb->priv->db, stmt, NULL, NULL, error);
+		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
 	if (success)
@@ -4464,10 +4464,10 @@ e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
 	}
 
 	stmt = sqlite3_mprintf (
-	        "UPDATE folders SET sync_data = %Q "
+		"UPDATE folders SET sync_data = %Q "
 		"WHERE folder_id = %Q", sync_data, folderid);
 	success = book_backend_sql_exec (
-	        ebsdb->priv->db, stmt, NULL, NULL, error);
+		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
 	if (success)
@@ -4544,10 +4544,10 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
 	}
 
 	stmt = sqlite3_mprintf (
-	        "INSERT or REPLACE INTO keys (key, value, folder_id) "
+		"INSERT or REPLACE INTO keys (key, value, folder_id) "
 		"values (%Q, %Q, %Q)", key, value, folderid);
 	success = book_backend_sql_exec (
-	        ebsdb->priv->db, stmt, NULL, NULL, error);
+		ebsdb->priv->db, stmt, NULL, NULL, error);
 	sqlite3_free (stmt);
 
 	if (success)
