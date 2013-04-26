@@ -1,6 +1,7 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetic order.
 [encoding: UTF-8]
+addressbook/backends/file/e-book-backend-file-migrate-bdb.c
 addressbook/backends/file/e-book-backend-file.c
 addressbook/backends/google/e-book-backend-google.c
 addressbook/backends/google/e-book-google-utils.c
@@ -10,8 +11,10 @@ addressbook/backends/webdav/e-book-backend-webdav.c
 addressbook/libebook/e-book.c
 addressbook/libebook/e-book-client.c
 addressbook/libebook/e-book-client-view.c
-addressbook/libebook/e-contact.c
 addressbook/libebook/e-destination.c
+addressbook/libebook-contacts/e-contact.c
+addressbook/libebook-contacts/e-phone-number.c
+addressbook/libebook-contacts/e-book-contacts-types.c
 addressbook/libedata-book/e-book-backend.c
 addressbook/libedata-book/e-book-backend-sqlitedb.c
 addressbook/libedata-book/e-data-book.c
@@ -213,23 +216,8 @@ libedataserver/e-source-mail-signature.c
 libedataserver/e-source-registry.c
 libedataserver/e-time-utils.c
 libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in
-libedataserverui/e-book-auth-util.c
-libedataserverui/e-categories-dialog.c
-libedataserverui/e-categories-editor.c
-libedataserverui/e-categories-selector.c
-libedataserverui/e-category-completion.c
-libedataserverui/e-category-editor.c
-libedataserverui/e-cell-renderer-color.c
-libedataserverui/e-client-utils.c
-libedataserverui/e-name-selector-dialog.c
-libedataserverui/e-name-selector-entry.c
-libedataserverui/e-name-selector-list.c
-libedataserverui/e-passwords.c
-libedataserverui/e-passwords-win32.c
-libedataserverui/e-source-selector-dialog.c
 modules/google-backend/module-google-backend.c
 modules/online-accounts/goaewsclient.c
 modules/yahoo-backend/module-yahoo-backend.c
 services/evolution-addressbook-factory/evolution-addressbook-factory.c
 services/evolution-calendar-factory/evolution-calendar-factory.c
-tests/libedataserverui/evolution-source-viewer.c
