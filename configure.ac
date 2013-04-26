@@ -422,6 +422,35 @@ dnl ******************************
 
 EVO_PHONENUMBER_SUPPORT
 
+dnl *******************
+dnl Check for ICU
+dnl *******************
+dnl
+dnl ICU recently started shipping pkg-config files but it's
+dnl not present on many systems, if we don't find the pkg-config
+dnl file then let's fallback on a manual check
+enable_icu=no
+PKG_CHECK_MODULES(ICU, icu-i18n, enable_icu=yes, [
+        enable_icu=yes
+	AC_CHECK_HEADERS(unicode/ucol.h,, enable_icu=no)
+	AC_MSG_CHECKING([for libicui18n])
+	LIBS_old=$LIBS
+	LIBS="$LIBS -licui18n -licuuc -licudata"
+	AC_TRY_LINK([#include <unicode/ucol.h>],
+		[ucol_open ("", NULL);],
+        	AC_MSG_RESULT(yes),
+        	AC_MSG_RESULT(no); enable_icu=no)
+	LIBS=$LIBS_old
+	if [test x$enable_icu = xyes]; then
+		ICU_CFLAGS=-D_REENTRANT
+		ICU_LIBS="-licui18n -licuuc -licudata"
+		AC_SUBST(ICU_CFLAGS)
+		AC_SUBST(ICU_LIBS)
+	else
+		AC_MSG_ERROR([ICU libs not found, icu-i18n is required.])
+	fi
+])
+
 dnl *************************
 dnl Check for GTK+
 dnl *************************
