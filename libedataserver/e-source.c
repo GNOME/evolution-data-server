@@ -2324,12 +2324,18 @@ e_source_has_extension (ESource *source,
 GDBusObject *
 e_source_ref_dbus_object (ESource *source)
 {
+	GDBusObject *dbus_object = NULL;
+
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	if (source->priv->dbus_object == NULL)
-		return NULL;
+	g_mutex_lock (&source->priv->property_lock);
 
-	return g_object_ref (source->priv->dbus_object);
+	if (source->priv->dbus_object != NULL)
+		dbus_object = g_object_ref (source->priv->dbus_object);
+
+	g_mutex_unlock (&source->priv->property_lock);
+
+	return dbus_object;
 }
 
 /**
