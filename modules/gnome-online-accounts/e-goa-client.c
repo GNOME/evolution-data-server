@@ -48,8 +48,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
-static void	e_goa_client_interface_init
-					(GInitableIface *interface);
+static void	e_goa_client_interface_init	(GInitableIface *interface);
 
 /* By default, the GAsyncInitable interface calls GInitable.init()
  * from a separate thread, so we only have to override GInitable. */
@@ -107,8 +106,6 @@ e_goa_client_claim_one_orphan (EGoaClient *client,
 	goa_account_id = goa_account_get_id (goa_account);
 	g_return_val_if_fail (goa_account_id != NULL, NULL);
 
-	g_print ("GOA: Claiming orphaned account '%s'\n", goa_account_id);
-
 	g_mutex_lock (&client->priv->orphans_lock);
 
 	old_goa_object = g_hash_table_lookup (orphans, goa_account_id);
@@ -119,6 +116,11 @@ e_goa_client_claim_one_orphan (EGoaClient *client,
 	}
 
 	g_mutex_unlock (&client->priv->orphans_lock);
+
+	if (old_goa_object != NULL)
+		g_print (
+			"GOA: Claiming orphaned account '%s'\n",
+			goa_account_id);
 
 	return old_goa_object;
 }
