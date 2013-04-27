@@ -16,17 +16,14 @@
  *
  */
 
-/* XXX Yeah, yeah... */
-#define GOA_API_IS_SUBJECT_TO_CHANGE
-
 #include <config.h>
-#include <goa/goa.h>
 #include <glib/gi18n-lib.h>
 #include <libsoup/soup.h>
 
 #include <libebackend/libebackend.h>
 
 #include "goaewsclient.h"
+#include "e-goa-client.h"
 #include "e-goa-password-based.h"
 
 /* Standard GObject macros */
@@ -48,7 +45,11 @@ typedef struct _EGnomeOnlineAccountsClass EGnomeOnlineAccountsClass;
 struct _EGnomeOnlineAccounts {
 	EExtension parent;
 
-	GoaClient *goa_client;
+	EGoaClient *goa_client;
+	gulong account_added_handler_id;
+	gulong account_removed_handler_id;
+	gulong account_swapped_handler_id;
+
 	GCancellable *create_client;
 
 	/* GoaAccount ID -> ESource UID */
@@ -154,7 +155,6 @@ gnome_online_accounts_ref_account (EGnomeOnlineAccounts *extension,
 {
 	ESourceRegistryServer *server;
 	GoaObject *match = NULL;
-	GList *list, *iter;
 	const gchar *extension_name;
 	gchar *account_id = NULL;
 
@@ -173,34 +173,11 @@ gnome_online_accounts_ref_account (EGnomeOnlineAccounts *extension,
 		g_object_unref (source);
 	}
 
-	if (account_id == NULL)
-		return NULL;
-
-	/* FIXME Use goa_client_lookup_by_id() once we require GOA 3.6. */
-
-	list = goa_client_get_accounts (extension->goa_client);
-
-	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-		GoaObject *goa_object;
-		GoaAccount *goa_account;
-		const gchar *candidate_id;
-
-		goa_object = GOA_OBJECT (iter->data);
-		goa_account = goa_object_get_account (goa_object);
-		candidate_id = goa_account_get_id (goa_account);
-
-		if (g_strcmp0 (account_id, candidate_id) == 0)
-			match = g_object_ref (goa_object);
-
-		g_object_unref (goa_account);
-
-		if (match != NULL)
-			break;
+	if (account_id != NULL) {
+		match = e_goa_client_lookup_by_id (
+			extension->goa_client, account_id);
+		g_free (account_id);
 	}
-
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-
-	g_free (account_id);
 
 	return match;
 }
@@ -925,7 +902,7 @@ gnome_online_accounts_remove_collection (EGnomeOnlineAccounts *extension,
 }
 
 static void
-gnome_online_accounts_account_added_cb (GoaClient *goa_client,
+gnome_online_accounts_account_added_cb (EGoaClient *goa_client,
                                         GoaObject *goa_object,
                                         EGnomeOnlineAccounts *extension)
 {
@@ -960,7 +937,7 @@ gnome_online_accounts_account_added_cb (GoaClient *goa_client,
 }
 
 static void
-gnome_online_accounts_account_removed_cb (GoaClient *goa_client,
+gnome_online_accounts_account_removed_cb (EGoaClient *goa_client,
                                           GoaObject *goa_object,
                                           EGnomeOnlineAccounts *extension)
 {
@@ -983,6 +960,42 @@ gnome_online_accounts_account_removed_cb (GoaClient *goa_client,
 
 	if (source != NULL) {
 		gnome_online_accounts_remove_collection (extension, source);
+		g_object_unref (source);
+	}
+
+	g_object_unref (goa_account);
+}
+
+static void
+gnome_online_accounts_account_swapped_cb (EGoaClient *goa_client,
+                                          GoaObject *old_goa_object,
+                                          GoaObject *new_goa_object,
+                                          EGnomeOnlineAccounts *extension)
+{
+	ESource *source = NULL;
+	ESourceRegistryServer *server;
+	GoaAccount *goa_account;
+	const gchar *account_id;
+	const gchar *source_uid;
+
+	/* The old GoaObject is about to be destroyed so we should
+	 * not need to bother with undoing property bindings on it.
+	 * Just set up new property bindings on the new GoaObject. */
+
+	server = gnome_online_accounts_get_server (extension);
+
+	goa_account = goa_object_get_account (new_goa_object);
+
+	account_id = goa_account_get_id (goa_account);
+	source_uid = g_hash_table_lookup (extension->goa_to_eds, account_id);
+
+	if (source_uid != NULL)
+		source = e_source_registry_server_ref_source (
+			server, source_uid);
+
+	if (source != NULL) {
+		gnome_online_accounts_config_sources (
+			extension, source, new_goa_object);
 		g_object_unref (source);
 	}
 
@@ -1075,15 +1088,16 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
                                         gpointer user_data)
 {
 	EGnomeOnlineAccounts *extension;
-	GoaClient *goa_client;
+	EGoaClient *goa_client;
 	GList *list, *link;
+	gulong handler_id;
 	GError *error = NULL;
 
 	/* If we get back a G_IO_ERROR_CANCELLED then it means the
 	 * EGnomeOnlineAccounts is already finalized, so be careful
-	 * not to touch it until after we have a valid GoaClient. */
+	 * not to touch it until after we have a valid EGoaClient. */
 
-	goa_client = goa_client_new_finish (result, &error);
+	goa_client = e_goa_client_new_finish (result, &error);
 
 	if (error != NULL) {
 		g_warn_if_fail (goa_client == NULL);
@@ -1094,7 +1108,7 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 		return;
 	}
 
-	g_return_if_fail (GOA_IS_CLIENT (goa_client));
+	g_return_if_fail (E_IS_GOA_CLIENT (goa_client));
 
 	/* Should be safe to dereference the EGnomeOnlineAccounts now. */
 
@@ -1105,7 +1119,7 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	g_object_unref (extension->create_client);
 	extension->create_client = NULL;
 
-	list = goa_client_get_accounts (extension->goa_client);
+	list = e_goa_client_list_accounts (extension->goa_client);
 
 	/* This populates a hash table of GOA ID -> ESource UID strings by
 	 * searching through available data sources for ones with a "GNOME
@@ -1124,13 +1138,22 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	/* Listen for Online Account changes. */
-	g_signal_connect (
+
+	handler_id = g_signal_connect (
 		extension->goa_client, "account-added",
 		G_CALLBACK (gnome_online_accounts_account_added_cb),
 		extension);
-	g_signal_connect (
+	extension->account_added_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
 		extension->goa_client, "account-removed",
 		G_CALLBACK (gnome_online_accounts_account_removed_cb),
+		extension);
+	extension->account_removed_handler_id = handler_id;
+
+	handler_id = g_signal_connect (
+		extension->goa_client, "account-swapped",
+		G_CALLBACK (gnome_online_accounts_account_swapped_cb),
 		extension);
 }
 
@@ -1144,7 +1167,7 @@ gnome_online_accounts_bus_acquired_cb (EDBusServer *server,
 	/* Note we don't reference the extension.  If the
 	 * extension gets destroyed before this completes
 	 * we cancel the operation from dispose(). */
-	goa_client_new (
+	e_goa_client_new (
 		extension->create_client,
 		gnome_online_accounts_create_client_cb,
 		extension);
@@ -1157,22 +1180,33 @@ gnome_online_accounts_dispose (GObject *object)
 
 	extension = E_GNOME_ONLINE_ACCOUNTS (object);
 
-	if (extension->goa_client != NULL) {
-		g_signal_handlers_disconnect_matched (
+	if (extension->account_added_handler_id > 0) {
+		g_signal_handler_disconnect (
 			extension->goa_client,
-			G_SIGNAL_MATCH_DATA,
-			0, 0, NULL, NULL, object);
-		g_object_unref (extension->goa_client);
-		extension->goa_client = NULL;
+			extension->account_added_handler_id);
+		extension->account_added_handler_id = 0;
 	}
 
-	/* This cancels goa_client_new() in case it still
-	 * hasn't completed.  We're no longer interested. */
-	if (extension->create_client != NULL) {
-		g_cancellable_cancel (extension->create_client);
-		g_object_unref (extension->create_client);
-		extension->create_client = NULL;
+	if (extension->account_removed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			extension->goa_client,
+			extension->account_removed_handler_id);
+		extension->account_removed_handler_id = 0;
 	}
+
+	if (extension->account_swapped_handler_id > 0) {
+		g_signal_handler_disconnect (
+			extension->goa_client,
+			extension->account_swapped_handler_id);
+		extension->account_swapped_handler_id = 0;
+	}
+
+	/* This cancels e_goa_client_new() in case it still
+	 * hasn't completed.  We're no longer interested. */
+	g_cancellable_cancel (extension->create_client);
+
+	g_clear_object (&extension->goa_client);
+	g_clear_object (&extension->create_client);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_gnome_online_accounts_parent_class)->
@@ -1297,7 +1331,7 @@ e_gnome_online_accounts_oauth2_support_init (EOAuth2SupportInterface *interface)
 static void
 e_gnome_online_accounts_init (EGnomeOnlineAccounts *extension)
 {
-	/* Used to cancel unfinished goa_client_new(). */
+	/* Used to cancel unfinished e_goa_client_new(). */
 	extension->create_client = g_cancellable_new ();
 
 	extension->goa_to_eds = g_hash_table_new_full (
@@ -1310,6 +1344,7 @@ e_gnome_online_accounts_init (EGnomeOnlineAccounts *extension)
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
+	e_goa_client_type_register (type_module);
 	e_goa_password_based_type_register (type_module);
 	e_gnome_online_accounts_register_type (type_module);
 }
