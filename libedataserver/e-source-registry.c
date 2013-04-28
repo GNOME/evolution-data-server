@@ -104,6 +104,9 @@ struct _ESourceRegistryPrivate {
 	GHashTable *object_path_table;
 	GMutex object_path_table_lock;
 
+	GHashTable *service_restart_table;
+	GMutex service_restart_table_lock;
+
 	GHashTable *sources;
 	GMutex sources_lock;
 
@@ -172,6 +175,11 @@ enum {
 static void	source_registry_add_source	(ESourceRegistry *registry,
 						 ESource *source);
 static void	e_source_registry_initable_init	(GInitableIface *interface);
+
+/* Private ESource function, for our use only. */
+void		__e_source_private_replace_dbus_object
+						(ESource *source,
+						 GDBusObject *dbus_object);
 
 static guint signals[LAST_SIGNAL];
 
@@ -355,6 +363,61 @@ source_registry_object_path_table_remove (ESourceRegistry *registry,
 	g_mutex_unlock (&registry->priv->object_path_table_lock);
 
 	return removed;
+}
+
+static void
+source_registry_service_restart_table_add (ESourceRegistry *registry,
+                                           const gchar *uid)
+{
+	GHashTable *service_restart_table;
+
+	g_return_if_fail (uid != NULL);
+
+	service_restart_table = registry->priv->service_restart_table;
+
+	g_mutex_lock (&registry->priv->service_restart_table_lock);
+
+	g_hash_table_add (service_restart_table, g_strdup (uid));
+
+	g_mutex_unlock (&registry->priv->service_restart_table_lock);
+}
+
+static gboolean
+source_registry_service_restart_table_remove (ESourceRegistry *registry,
+                                              const gchar *uid)
+{
+	GHashTable *service_restart_table;
+	gboolean removed;
+
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	service_restart_table = registry->priv->service_restart_table;
+
+	g_mutex_lock (&registry->priv->service_restart_table_lock);
+
+	removed = g_hash_table_remove (service_restart_table, uid);
+
+	g_mutex_unlock (&registry->priv->service_restart_table_lock);
+
+	return removed;
+}
+
+static GList *
+source_registry_service_restart_table_steal_all (ESourceRegistry *registry)
+{
+	GHashTable *service_restart_table;
+	GList *list;
+
+	service_restart_table = registry->priv->service_restart_table;
+
+	g_mutex_lock (&registry->priv->service_restart_table_lock);
+
+	list = g_hash_table_get_keys (service_restart_table);
+	g_hash_table_steal_all (service_restart_table);
+
+	g_mutex_unlock (&registry->priv->service_restart_table_lock);
+
+	return list;
 }
 
 static void
@@ -683,9 +746,8 @@ source_registry_object_added_idle_cb (gpointer user_data)
 }
 
 static void
-source_registry_object_added_cb (GDBusObjectManager *object_manager,
-                                 GDBusObject *dbus_object,
-                                 ESourceRegistry *registry)
+source_registry_object_added_by_owner (ESourceRegistry *registry,
+                                       GDBusObject *dbus_object)
 {
 	SourceClosure *closure;
 	GSource *idle_source;
@@ -717,6 +779,55 @@ source_registry_object_added_cb (GDBusObjectManager *object_manager,
 	g_object_unref (source);
 }
 
+static void
+source_registry_object_added_no_owner (ESourceRegistry *registry,
+                                       GDBusObject *dbus_object)
+{
+	ESource *source = NULL;
+	gchar *uid;
+
+	uid = source_registry_dbus_object_dup_uid (dbus_object);
+
+	if (source_registry_service_restart_table_remove (registry, uid))
+		source = e_source_registry_ref_source (registry, uid);
+
+	if (source != NULL) {
+		const gchar *object_path;
+
+		object_path = g_dbus_object_get_object_path (dbus_object);
+
+		source_registry_object_path_table_insert (
+			registry, object_path, source);
+
+		__e_source_private_replace_dbus_object (source, dbus_object);
+
+		g_object_unref (source);
+
+	} else {
+		source_registry_object_added_by_owner (registry, dbus_object);
+	}
+
+	g_free (uid);
+}
+
+static void
+source_registry_object_added_cb (GDBusObjectManager *object_manager,
+                                 GDBusObject *dbus_object,
+                                 ESourceRegistry *registry)
+{
+	gchar *name_owner;
+
+	name_owner = g_dbus_object_manager_client_get_name_owner (
+		G_DBUS_OBJECT_MANAGER_CLIENT (object_manager));
+
+	if (name_owner != NULL)
+		source_registry_object_added_by_owner (registry, dbus_object);
+	else
+		source_registry_object_added_no_owner (registry, dbus_object);
+
+	g_free (name_owner);
+}
+
 static gboolean
 source_registry_object_removed_idle_cb (gpointer user_data)
 {
@@ -744,9 +855,8 @@ source_registry_object_removed_idle_cb (gpointer user_data)
 }
 
 static void
-source_registry_object_removed_cb (GDBusObjectManager *manager,
-                                   GDBusObject *dbus_object,
-                                   ESourceRegistry *registry)
+source_registry_object_removed_by_owner (ESourceRegistry *registry,
+                                         GDBusObject *dbus_object)
 {
 	SourceClosure *closure;
 	GSource *idle_source;
@@ -780,6 +890,107 @@ source_registry_object_removed_cb (GDBusObjectManager *manager,
 	g_object_unref (source);
 }
 
+static void
+source_registry_object_removed_no_owner (ESourceRegistry *registry,
+                                         GDBusObject *dbus_object)
+{
+	const gchar *object_path;
+
+	object_path = g_dbus_object_get_object_path (dbus_object);
+
+	if (source_registry_object_path_table_remove (registry, object_path)) {
+		gchar *uid;
+
+		uid = source_registry_dbus_object_dup_uid (dbus_object);
+		source_registry_service_restart_table_add (registry, uid);
+		g_free (uid);
+	}
+}
+
+static void
+source_registry_object_removed_cb (GDBusObjectManager *object_manager,
+                                   GDBusObject *dbus_object,
+                                   ESourceRegistry *registry)
+{
+	gchar *name_owner;
+
+	name_owner = g_dbus_object_manager_client_get_name_owner (
+		G_DBUS_OBJECT_MANAGER_CLIENT (object_manager));
+
+	if (name_owner != NULL)
+		source_registry_object_removed_by_owner (registry, dbus_object);
+	else
+		source_registry_object_removed_no_owner (registry, dbus_object);
+
+	g_free (name_owner);
+}
+
+static void
+source_registry_name_appeared (ESourceRegistry *registry)
+{
+	GList *list, *link;
+
+	/* The D-Bus service restarted, and the GDBusObjectManager has
+	 * just set its "name-owner" property having finished emitting
+	 * an "object-added" signal for each GDBusObject. */
+
+	list = source_registry_service_restart_table_steal_all (registry);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		SourceClosure *closure;
+		GSource *idle_source;
+		ESource *source;
+		const gchar *uid = link->data;
+
+		source = e_source_registry_ref_source (registry, uid);
+		if (source == NULL)
+			continue;
+
+		closure = g_slice_new0 (SourceClosure);
+		g_weak_ref_set (&closure->registry, registry);
+		closure->source = g_object_ref (source);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			source_registry_object_removed_idle_cb,
+			closure, (GDestroyNotify) source_closure_free);
+		g_source_attach (idle_source, registry->priv->main_context);
+		g_source_unref (idle_source);
+
+		g_object_unref (source);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_free);
+}
+
+static void
+source_registry_name_vanished (ESourceRegistry *registry)
+{
+	/* This function is just a convenience breakpoint.  The D-Bus
+	 * service aborted, so the GDBusObjectManager has cleared its
+	 * "name-owner" property and will now emit a "object-removed"
+	 * signal for each GDBusObject. */
+}
+
+static void
+source_registry_notify_name_owner_cb (GDBusObjectManager *object_manager,
+                                      GParamSpec *pspec,
+                                      ESourceRegistry *registry)
+{
+	gchar *name_owner;
+
+	name_owner = g_dbus_object_manager_client_get_name_owner (
+		G_DBUS_OBJECT_MANAGER_CLIENT (object_manager));
+
+	if (name_owner != NULL)
+		source_registry_name_appeared (registry);
+	else
+		source_registry_name_vanished (registry);
+
+	g_free (name_owner);
+}
+
 static gboolean
 source_registry_object_manager_running (gpointer data)
 {
@@ -799,8 +1010,9 @@ source_registry_object_manager_thread (gpointer data)
 	ThreadClosure *closure = data;
 	GSource *idle_source;
 	GList *list, *link;
-	gulong object_added_id = 0;
-	gulong object_removed_id = 0;
+	gulong object_added_handler_id = 0;
+	gulong object_removed_handler_id = 0;
+	gulong notify_name_owner_handler_id = 0;
 
 	/* GDBusObjectManagerClient grabs the thread-default GMainContext
 	 * at creation time and only emits signals from that GMainContext.
@@ -860,14 +1072,19 @@ source_registry_object_manager_thread (gpointer data)
 
 	/* Listen for D-Bus object additions and removals. */
 
-	object_added_id = g_signal_connect (
+	object_added_handler_id = g_signal_connect (
 		object_manager, "object-added",
 		G_CALLBACK (source_registry_object_added_cb),
 		closure->registry);
 
-	object_removed_id = g_signal_connect (
+	object_removed_handler_id = g_signal_connect (
 		object_manager, "object-removed",
 		G_CALLBACK (source_registry_object_removed_cb),
+		closure->registry);
+
+	notify_name_owner_handler_id = g_signal_connect (
+		object_manager, "notify::name-owner",
+		G_CALLBACK (source_registry_notify_name_owner_cb),
 		closure->registry);
 
 notify:
@@ -889,8 +1106,12 @@ notify:
 	/* Clean up and exit. */
 
 	if (object_manager != NULL) {
-		g_signal_handler_disconnect (object_manager, object_added_id);
-		g_signal_handler_disconnect (object_manager, object_removed_id);
+		g_signal_handler_disconnect (
+			object_manager, object_added_handler_id);
+		g_signal_handler_disconnect (
+			object_manager, object_removed_handler_id);
+		g_signal_handler_disconnect (
+			object_manager, notify_name_owner_handler_id);
 		g_object_unref (object_manager);
 	}
 
@@ -1053,6 +1274,9 @@ source_registry_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->object_path_table);
 	g_mutex_clear (&priv->object_path_table_lock);
+
+	g_hash_table_destroy (priv->service_restart_table);
+	g_mutex_clear (&priv->service_restart_table_lock);
 
 	g_hash_table_destroy (priv->sources);
 	g_mutex_clear (&priv->sources_lock);
@@ -1374,6 +1598,16 @@ e_source_registry_init (ESourceRegistry *registry)
 			(GDestroyNotify) g_object_unref);
 
 	g_mutex_init (&registry->priv->object_path_table_lock);
+
+	/* Set of UID strings */
+	registry->priv->service_restart_table =
+		g_hash_table_new_full (
+			(GHashFunc) g_str_hash,
+			(GEqualFunc) g_str_equal,
+			(GDestroyNotify) g_free,
+			(GDestroyNotify) NULL);
+
+	g_mutex_init (&registry->priv->service_restart_table_lock);
 
 	/* UID string -> ESource */
 	registry->priv->sources = g_hash_table_new_full (
