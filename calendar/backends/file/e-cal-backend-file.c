@@ -514,10 +514,14 @@ e_cal_backend_file_get_backend_property (ECalBackendSync *backend,
 		g_object_unref (comp);
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_REVISION)) {
 		icalproperty *prop;
+		const gchar *revision = NULL;
 
 		/* This returns NULL if backend lacks an icalcomp. */
 		prop = ensure_revision (E_CAL_BACKEND_FILE (backend));
-		*prop_value = g_strdup (icalproperty_get_x (prop));
+		if (prop != NULL)
+			revision = icalproperty_get_x (prop);
+
+		*prop_value = g_strdup (revision);
 	} else {
 		processed = FALSE;
 	}
