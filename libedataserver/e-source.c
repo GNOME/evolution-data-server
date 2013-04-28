@@ -1731,6 +1731,28 @@ e_source_init (ESource *source)
 	g_rec_mutex_init (&source->priv->lock);
 }
 
+void
+__e_source_private_replace_dbus_object (ESource *source,
+                                        GDBusObject *dbus_object)
+{
+	/* XXX This function is only ever called by ESourceRegistry
+	 *     when recovering from a registry service restart.  It
+	 *     replaces the defunct proxy object with an equivalent
+	 *     proxy object for the newly-started registry service. */
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (E_DBUS_IS_OBJECT (dbus_object));
+
+	g_mutex_lock (&source->priv->property_lock);
+
+	g_clear_object (&source->priv->dbus_object);
+	source->priv->dbus_object = g_object_ref (dbus_object);
+
+	g_mutex_unlock (&source->priv->property_lock);
+
+	g_object_notify (G_OBJECT (source), "dbus-object");
+}
+
 /**
  * e_source_new:
  * @dbus_object: (allow-none): a #GDBusObject or %NULL
