@@ -4,6 +4,84 @@ Evolution-Data-Server 3.9.1 2013-04-29
 * Dependency change: GNOME Online Accounts support is still optional.
   But if enabled, the goa-1.0 requirement is now 3.8 (bumped from 3.2).
 
+Bug Fixes:
+	Bug 271262 - Allow Send/Receive of local stores in offline (Milan Crha)
+	Bug 656488 - imapx: Memory leak of mi->server_user_flags (Milan Crha)
+	Bug 681837 - Make enum type registration thread safe (Milan Crha)
+	Bug 691939 - Password prompt has "save password" always checked
+	             (Milan Crha)
+	Bug 693101 - IMAPx can vanish and redownload folder summary (Milan Crha)
+	Bug 695578 - Trailing space in translatable string (Matthew Barnes)
+	Bug 695915 - IMAP alert is not displayed (Milan Crha)
+	Bug 696285 - ownCloud: Check addressbook even if calendar fails
+	             (Vadim Rutkovsky)
+	Bug 696637 - Deadlock in data_cal_view_dispose(). (Matthew Barnes)
+	Bug 696757 - Do not use dynamic keys in g_object_set_data() (Milan Crha)
+	Bug 697705 - e_cal_client_remove_objects_sync() crashes on empty UID
+	             (Matthew Barnes)
+	Bug 697734 - Memory leak in local calendar backend (Matthew Barnes)
+	Bug 698261 - Skip invalid flags in imapx_parse_flags() (Milan Crha)
+	Bug 698726 - Handle goa-daemon crashes/restarts gracefully
+	             (Matthew Barnes)
+
+Other Changes:
+	* Start modernizing the EBookBackend and ECalBackend APIs (still a
+	  work in progress). (Matthew Barnes)
+	* Rewrite client connection tracking for factories. (Matthew Barnes)
+	* libedata-*: Remove all deprecated backend APIs. (Matthew Barnes)
+	* Simplify direct access to address books. (Matthew Barnes)
+	* Fix implicit declaration of WIFEXITED. (Antoine Jacoutot)
+	* E*Client: Use G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED for close().
+	  (Matthew Barnes)
+	* Remove EBookBackendSync. (Matthew Barnes)
+	* sqlite addressbook: fix memory corruption in get_revision
+	  (Patrick Ohly)
+	* CamelIMAPXServer: Rewrite duplicate message fetching.
+	  (Matthew Barnes)
+	* Automatically strip D-Bus info from error messages. (Matthew Barnes)
+	* EBookBackendSqliteDB: Avoid summary introspection on initial
+	  creation. (Tristan Van Berkom)
+	* Switch NULL to empty string in e_util_utf8_{data_}make_valid()
+	  (Milan Crha)
+	* LC_ADDRESS is a GNU extension. Treat it as such. (Matthew Barnes)
+	* CamelStoreSettings::filter-inbox: Change default to TRUE (Milan Crha)
+	* Do not consider PGP and S/MIME subparts as attachments (Milan Crha)
+	* ECalClient test: test-client-get-revision not broken anymore
+	  (Tristan Van Berkom)
+	* Improve error handling in imapx_server_get_message().
+	  (Matthew Barnes)
+	* Fix reference leak in book_client_view_emit_objects_modified().
+	  (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Jiri Eischmann (cs)
+	Marek Černocký (cs)
+	Flemming Christensen (da)
+	Joe Hansen (da)
+	Mario Blättermann (de)
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Inaki Larranaga Murgoitio (eu)
+	Jiri Grönroos (fi)
+	Alexandre Franke (fr)
+	Sweta Kothari (gu)
+	Chandan Kumar (hi)
+	Balázs Úr (hu)
+	Gabor Kelemen (hu)
+	Noriko Mizumoto (ja)
+	Shankar Prasad (kn)
+	ManojKumar Giri (or)
+	Piotr Drąg (pl)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+	Andrej Žnidaršič (sl)
+	Martin Srebotnjak (sl)
+	Matej Urbančič (sl)
+	Shantha kumar (ta)
+
 
 Evolution-Data-Server 3.7.92 2013-03-18
 ---------------------------------------
