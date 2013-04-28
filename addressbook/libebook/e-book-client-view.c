@@ -286,6 +286,8 @@ book_client_view_emit_objects_modified (EBookClientView *client_view,
 	g_source_unref (idle_source);
 
 	g_main_context_unref (main_context);
+
+	g_object_unref (client);
 }
 
 static gchar *
