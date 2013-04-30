@@ -24,6 +24,7 @@
 #include <libedataserver/e-cancellable-locks.h>
 #include <libedataserver/e-categories.h>
 #include <libedataserver/e-client.h>
+#include <libedataserver/e-collator.h>
 #include <libedataserver/e-credentials.h>
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-debug-log.h>
