@@ -280,6 +280,19 @@ thread_closure_free (ThreadClosure *closure)
 	g_slice_free (ThreadClosure, closure);
 }
 
+static gchar *
+source_registry_dbus_object_dup_uid (GDBusObject *dbus_object)
+{
+	EDBusObject *e_dbus_object;
+	EDBusSource *e_dbus_source;
+
+	/* EDBusSource interface should always be present. */
+	e_dbus_object = E_DBUS_OBJECT (dbus_object);
+	e_dbus_source = e_dbus_object_peek_source (e_dbus_object);
+
+	return e_dbus_source_dup_uid (e_dbus_source);
+}
+
 static void
 source_registry_object_path_table_insert (ESourceRegistry *registry,
                                           const gchar *object_path,
@@ -2146,15 +2159,14 @@ source_registry_create_sources_object_added_cb (GDBusObjectManager *object_manag
                                                 GDBusObject *dbus_object,
                                                 CreateContext *create_context)
 {
-	EDBusObject *e_dbus_object;
-	EDBusSource *e_dbus_source;
-	const gchar *uid;
+	gchar *uid;
 
-	e_dbus_object = E_DBUS_OBJECT (dbus_object);
-	e_dbus_source = e_dbus_object_get_source (e_dbus_object);
-	uid = e_dbus_source_get_uid (e_dbus_source);
+	uid = source_registry_dbus_object_dup_uid (dbus_object);
 
-	g_hash_table_remove (create_context->pending_uids, uid);
+	if (uid != NULL) {
+		g_hash_table_remove (create_context->pending_uids, uid);
+		g_free (uid);
+	}
 
 	/* The hash table will be empty when all of the expected
 	 * GDBusObjects have been added to the GDBusObjectManager. */
