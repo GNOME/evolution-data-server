@@ -16,6 +16,7 @@ ENUM_GENERATED = e-source-enumtypes.h e-source-enumtypes.c
 BUILT_SOURCES = $(ENUM_GENERATED)
 
 lib_LTLIBRARIES = libedataserver-1.2.la
+noinst_LTLIBRARIES = libedataserver-private.la
 
 libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
@@ -36,14 +37,17 @@ libedataserver_1_2_la_CPPFLAGS = \
 	$(GIO_UNIX_CFLAGS)						\
 	$(SOUP_CFLAGS)							\
 	$(CODE_COVERAGE_CFLAGS)						\
+	$(ICU_CFLAGS)							\
 	$(NULL)
 
 libedataserver_1_2_la_SOURCES =		\
 	$(BUILT_SOURCES)		\
+	e-alphabet-index-private.h	\
 	e-cancellable-locks.c		\
 	e-categories.c			\
 	e-client.c			\
 	e-client-private.h		\
+	e-collator.c			\
 	e-credentials.c			\
 	e-flag.c			\
 	e-gdbus-templates.c		\
@@ -86,6 +90,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-source-webdav.c		\
 	e-debug-log.c			\
 	e-time-utils.c			\
+	e-transliterator-private.h	\
 	e-uid.c				\
 	e-url.c				\
 	e-data-server-util.c		\
@@ -102,7 +107,9 @@ libedataserver_1_2_la_LIBADD =				\
 	$(GIO_UNIX_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(SOCKET_LIBS)					\
-	$(SOUP_LIBS)
+	$(SOUP_LIBS)					\
+	$(ICU_LIBS)					\
+	$(NULL)
 
 libedataserver_1_2_la_LDFLAGS = \
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED) \
@@ -116,6 +123,7 @@ libedataserverinclude_HEADERS =		\
 	e-cancellable-locks.h		\
 	e-categories.h			\
 	e-client.h			\
+	e-collator.h			\
 	e-credentials.h			\
 	e-flag.h			\
 	e-gdbus-templates.h		\
@@ -166,6 +174,12 @@ libedataserverinclude_HEADERS =		\
 	e-xml-utils.h			\
 	e-xml-hash-utils.h		\
 	eds-version.h
+
+# We put the C++ code into a separate static library, so that we can use
+# the C linker for libebook-contacts.
+libedataserver_private_la_SOURCES = e-alphabet-index-private.cpp e-transliterator-private.cpp
+libedataserver_private_la_CPPFLAGS = $(libedataserver_1_2_la_CPPFLAGS)
+libedataserver_1_2_la_LIBADD += @predeps_CXX@ libedataserver-private.la @postdeps_CXX@
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

@@ -175,7 +175,6 @@ dnl *********************************************
 dnl Figure out early if we'll need a C++ compiler
 dnl *********************************************
 
-evo_with_cxx=no
 EVO_PHONENUMBER_ARGS
 
 dnl ******************************
@@ -214,22 +213,15 @@ dnl	-Wstrict-aliasing=2
 AM_CFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 AC_SUBST(AM_CFLAGS)
 
-if test "x$evo_with_cxx" = xyes; then
-	AC_PROG_CXX
+dnl C++ Compiler flags, needed for ICU C++ access and libphonenumber usage
+AC_PROG_CXX
 
-	AC_LANG_PUSH([C++])
-	AS_COMPILER_FLAGS(CXX_WARNING_FLAGS, [$proposed_cxx_warning_flags])
-	AC_SUBST(CXX_WARNING_FLAGS)
-	AM_CXXFLAGS="$CXX_WARNING_FLAGS"
-	AC_SUBST(AM_CXXFLAGS)
-	AC_LANG_POP([C++])
-else
-	dnl Autoconf requires those automake conditionals to be defined when
-	dnl generating the config files, but apparently it forgets to initialize
-	dnl them dnl if AC_PROG_CXX never gets called. Therefore we do it manually.
-	am__fastdepCXX_TRUE='#'
-	am__fastdepCXX_FALSE=
-fi
+AC_LANG_PUSH([C++])
+AS_COMPILER_FLAGS(CXX_WARNING_FLAGS, [$proposed_cxx_warning_flags])
+AC_SUBST(CXX_WARNING_FLAGS)
+AM_CXXFLAGS="$CXX_WARNING_FLAGS"
+AC_SUBST(AM_CXXFLAGS)
+AC_LANG_POP([C++])
 
 dnl Permits linking of C++ based libraries using the C linker if needed.
 AC_SUBST([predeps_CXX])
