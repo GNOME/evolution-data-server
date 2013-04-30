@@ -299,13 +299,17 @@ source_registry_object_path_table_insert (ESourceRegistry *registry,
                                           const gchar *object_path,
                                           ESource *source)
 {
+	GHashTable *object_path_table;
+
 	g_return_if_fail (object_path != NULL);
 	g_return_if_fail (E_IS_SOURCE (source));
+
+	object_path_table = registry->priv->object_path_table;
 
 	g_mutex_lock (&registry->priv->object_path_table_lock);
 
 	g_hash_table_insert (
-		registry->priv->object_path_table,
+		object_path_table,
 		g_strdup (object_path),
 		g_object_ref (source));
 
@@ -316,14 +320,16 @@ static ESource *
 source_registry_object_path_table_lookup (ESourceRegistry *registry,
                                           const gchar *object_path)
 {
+	GHashTable *object_path_table;
 	ESource *source;
 
 	g_return_val_if_fail (object_path != NULL, NULL);
 
+	object_path_table = registry->priv->object_path_table;
+
 	g_mutex_lock (&registry->priv->object_path_table_lock);
 
-	source = g_hash_table_lookup (
-		registry->priv->object_path_table, object_path);
+	source = g_hash_table_lookup (object_path_table, object_path);
 	if (source != NULL)
 		g_object_ref (source);
 
@@ -336,14 +342,16 @@ static gboolean
 source_registry_object_path_table_remove (ESourceRegistry *registry,
                                           const gchar *object_path)
 {
+	GHashTable *object_path_table;
 	gboolean removed;
 
 	g_return_val_if_fail (object_path != NULL, FALSE);
 
+	object_path_table = registry->priv->object_path_table;
+
 	g_mutex_lock (&registry->priv->object_path_table_lock);
 
-	removed = g_hash_table_remove (
-		registry->priv->object_path_table, object_path);
+	removed = g_hash_table_remove (object_path_table, object_path);
 
 	g_mutex_unlock (&registry->priv->object_path_table_lock);
 
