@@ -73,6 +73,15 @@ EXTRA_DIST = \
 	$(srcdir)/data/vcards/sorted-9.vcf	\
 	$(srcdir)/data/vcards/sorted-10.vcf	\
 	$(srcdir)/data/vcards/sorted-11.vcf	\
+	$(srcdir)/data/vcards/sorted-12.vcf	\
+	$(srcdir)/data/vcards/sorted-13.vcf	\
+	$(srcdir)/data/vcards/sorted-14.vcf	\
+	$(srcdir)/data/vcards/sorted-15.vcf	\
+	$(srcdir)/data/vcards/sorted-16.vcf	\
+	$(srcdir)/data/vcards/sorted-17.vcf	\
+	$(srcdir)/data/vcards/sorted-18.vcf	\
+	$(srcdir)/data/vcards/sorted-19.vcf	\
+	$(srcdir)/data/vcards/sorted-20.vcf	\
 	$(srcdir)/data/vcards/custom-1.vcf	\
 	$(srcdir)/data/vcards/custom-2.vcf	\
 	$(srcdir)/data/vcards/custom-3.vcf	\

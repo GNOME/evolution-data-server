@@ -43,17 +43,19 @@ libdata_test_utils_la_LIBADD = 				\
 #
 # This is because each migrated test changes the
 # locale and reloads the same addressbook of the previous test. 
-TESTS =					\
-	test-sqlite-get-contact		\
-	test-sqlite-create-cursor	\
-	test-sqlite-cursor-move-by	\
-	test-sqlite-cursor-set-target	\
-	test-sqlite-cursor-calculate	\
-	test-sqlite-cursor-set-sexp	\
+TESTS =						\
+	test-sqlite-get-contact			\
+	test-sqlite-create-cursor		\
+	test-sqlite-cursor-move-by-posix	\
+	test-sqlite-cursor-move-by-en-US	\
+	test-sqlite-cursor-move-by-fr-CA	\
+	test-sqlite-cursor-move-by-de-DE	\
+	test-sqlite-cursor-set-target		\
+	test-sqlite-cursor-calculate		\
+	test-sqlite-cursor-set-sexp		\
 	test-sqlite-cursor-posix-initial	\
 	test-sqlite-cursor-en-US-migrated	\
 	test-sqlite-cursor-posix-migrated
-
 
 
 noinst_PROGRAMS = $(TESTS)
@@ -74,8 +76,14 @@ test_sqlite_get_contact_LDADD=$(TEST_LIBS)
 test_sqlite_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_create_cursor_LDADD=$(TEST_LIBS)
 test_sqlite_create_cursor_CPPFLAGS=$(TEST_CPPFLAGS)
-test_sqlite_cursor_move_by_LDADD=$(TEST_LIBS)
-test_sqlite_cursor_move_by_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_move_by_posix_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_move_by_posix_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_move_by_en_US_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_move_by_en_US_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_move_by_fr_CA_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_move_by_fr_CA_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_move_by_de_DE_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_move_by_de_DE_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_set_target_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_set_target_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_calculate_LDADD=$(TEST_LIBS)
