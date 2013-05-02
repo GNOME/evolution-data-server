@@ -72,6 +72,7 @@ typedef struct {
 	GType         type;    /* The GType (only support string or gboolean) */
 	const gchar  *dbname;  /* The key for this field in the sqlite3 table */
 	IndexFlags    index;   /* Whether this summary field should have an index in the SQLite DB */
+	ECollator    *collator;/* The ECollator to create sort keys for this field */
 } SummaryField;
 
 struct _EBookBackendSqliteDBPrivate {
@@ -139,6 +140,33 @@ static gboolean upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 					 const gchar           *region,
 					 GError               **error);
 
+static gboolean summary_fields_add_collations (SummaryField   *summary_fields,
+					       gint            n_summary_fields,
+					       EContactField  *fields,
+					       gchar         **collations,
+					       gint            n_fields,
+					       GError        **error);
+static void clear_collations (SummaryField *fields,
+			      gint          n_fields);
+
+
+static const gchar *
+get_current_collation_locale (void)
+{
+	const gchar *lc_collate;
+
+	/* Allow overriding the locale name explicitly, this is mainly
+	 * for test cases since we support locales with ICU that
+	 * may not be supported by a given system's setlocale()
+	 */
+	lc_collate = g_getenv ("EDS_COLLATE");
+
+	if (!lc_collate)
+		lc_collate = setlocale (LC_COLLATE, NULL);
+
+	return lc_collate;
+}
+
 static const gchar *
 summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
                            EContactField field)
@@ -154,13 +182,10 @@ summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
 }
 
 static gint
-summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
-                               const gchar *field_name)
+summary_index_from_field (EBookBackendSqliteDB *ebsdb,
+			  EContactField         field)
 {
 	gint i;
-	EContactField field;
-
-	field = e_contact_field_id (field_name);
 
 	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
 		if (ebsdb->priv->summary_fields[i].field == field)
@@ -168,6 +193,17 @@ summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
 	}
 
 	return -1;
+}
+
+static gint
+summary_index_from_field_name (EBookBackendSqliteDB *ebsdb,
+                               const gchar *field_name)
+{
+	EContactField field;
+
+	field = e_contact_field_id (field_name);
+
+	return summary_index_from_field (ebsdb, field);
 }
 
 typedef struct {
@@ -216,6 +252,8 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 	sqlite3_close (priv->db);
 
 	g_free (priv->path);
+
+	clear_collations (priv->summary_fields, priv->n_summary_fields);
 	g_free (priv->summary_fields);
 
 	g_mutex_clear (&priv->lock);
@@ -483,6 +521,7 @@ collect_versions_cb (gpointer ref,
 typedef struct {
 	gboolean has_countrycode;
 	gboolean has_lc_collate;
+	gboolean has_collations;
 } LocaleColumns;
 
 static gint
@@ -499,6 +538,8 @@ find_locale_columns (gpointer data,
 			columns->has_countrycode = TRUE;
 		else if (g_strcmp0 (cols[i], "lc_collate") == 0)
 			columns->has_lc_collate = TRUE;
+		else if (g_strcmp0 (cols[i], "collations") == 0)
+			columns->has_collations = TRUE;
 	}
 
 	return 0;
@@ -511,7 +552,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 {
 	gboolean success;
 	gint version = 0;
-	LocaleColumns locale_columns = { FALSE, FALSE };
+	LocaleColumns locale_columns = { FALSE, FALSE, FALSE };
 
 	/* sync_data points to syncronization data, it could be last_modified
 	 * time or a sequence number or some text depending on the backend.
@@ -654,6 +695,14 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 			goto rollback;
 	}
 
+	if (!locale_columns.has_collations) {
+		stmt = "ALTER TABLE folders ADD COLUMN collations TEXT";
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+
+		if (!success)
+			goto rollback;
+	}
+
 	/* Remember the schema version for later use and finish the transaction. */
 	*previous_schema = version;
 	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
@@ -696,33 +745,151 @@ format_multivalues (EBookBackendSqliteDB *ebsdb)
 	return g_string_free (string, FALSE);
 }
 
+static gint
+get_count_cb (gpointer ref,
+              gint n_cols,
+              gchar **cols,
+              gchar **name)
+{
+	gint64 count = 0;
+	gint *ret = ref;
+	gint i;
+
+	for (i = 0; i < n_cols; i++) {
+		if (name[i] && strncmp (name[i], "count", 5) == 0) {
+			count = g_ascii_strtoll (cols[i], NULL, 10);
+		}
+	}
+
+	*ret = count;
+
+	return 0;
+}
+
+static gboolean
+add_collations_from_introspection (SummaryField *summary_fields,
+				   gint          n_summary_fields,
+				   const gchar  *collation_desc)
+{
+
+	gchar **fields;
+	GArray *coll_fields;
+	GArray *collations;
+	gboolean success = TRUE;
+	gchar *collation;
+	gint i;
+
+	/* Construct an array of collation fields and names */
+	coll_fields = g_array_new (FALSE, FALSE, sizeof (EContactField));
+	collations = g_array_new (TRUE, FALSE, sizeof (gchar *));
+
+	fields = g_strsplit (collation_desc, ":", 0);
+	for (i = 0; success && fields[i] != NULL; i++) {
+		EContactField  field;
+		gchar **rule;
+
+		rule = g_strsplit (fields[i], "=", 0);
+		/* Sanity check */
+		if (!rule[0] || !rule[1]) {
+			success = FALSE;
+		} else {
+			/* 0 is the invalid EContactField id */
+			field = e_contact_field_id (rule[0]);
+			if (field == 0)
+				success = FALSE;
+		}
+
+		if (success == FALSE) {
+			g_warning ("Malformed collation rule '%s'", fields[i]);
+			g_strfreev (rule);
+			break;
+		}
+		/* Add a value to the arrays */
+		collation = g_strdup (rule[1]);
+		g_array_append_val (coll_fields, field);
+		g_array_append_val (collations, collation);
+		
+		g_strfreev (rule);
+	}
+	g_strfreev (fields);
+
+	if (success)
+		success = summary_fields_add_collations (summary_fields,
+							 n_summary_fields,
+							 (EContactField *)coll_fields->data,
+							 (gchar **)collations->data,
+							 coll_fields->len,
+							 NULL);
+
+	for (i = 0; i < collations->len; i++) {
+		collation = g_array_index (collations, gchar *, i);
+		g_free (collation);
+	}
+	g_array_free (collations, TRUE);
+	g_array_free (coll_fields, TRUE);
+
+ 	return success;
+}
+
+static gboolean
+check_folderid_exists (EBookBackendSqliteDB *ebsdb,
+                       const gchar *folderid,
+                       gboolean *exists,
+                       GError **error)
+{
+	gboolean success;
+	gint count = 0;
+	gchar *stmt;
+
+	stmt = sqlite3_mprintf ("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=%Q;", folderid);
+
+	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_count_cb, &count, error);
+	sqlite3_free (stmt);
+
+	*exists = (count > 0);
+
+	return success;
+}
+
 static gboolean
 add_folder_into_db (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
                     const gchar *folder_name,
+		    const gchar *initial_collations,
+		    gboolean *already_exists,
                     GError **error)
 {
 	gchar *stmt;
 	gboolean success;
 	gchar *multivalues;
+	gboolean exists = FALSE;
 
 	if (!book_backend_sqlitedb_start_transaction (ebsdb, error))
 		return FALSE;
 
-	multivalues = format_multivalues (ebsdb);
-
-	stmt = sqlite3_mprintf (
-		"INSERT OR IGNORE INTO "
-		"folders ( folder_id, folder_name, version, multivalues ) "
-		"VALUES ( %Q, %Q, %d, %Q ) ",
-		folderid, folder_name, FOLDER_VERSION, multivalues);
-	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, NULL, NULL, error);
-	sqlite3_free (stmt);
-	g_free (multivalues);
-
+	success = check_folderid_exists (ebsdb, folderid, &exists, error);
 	if (!success)
 		goto rollback;
+
+	if (!exists) {
+		multivalues = format_multivalues (ebsdb);
+
+		stmt = sqlite3_mprintf (
+			"INSERT OR IGNORE INTO "
+			"folders ( folder_id, folder_name, version, multivalues, collations ) "
+			"VALUES ( %Q, %Q, %d, %Q, %Q ) ",
+			folderid, folder_name, FOLDER_VERSION, multivalues, initial_collations);
+		success = book_backend_sql_exec (
+			ebsdb->priv->db, stmt, NULL, NULL, error);
+		sqlite3_free (stmt);
+		g_free (multivalues);
+
+		if (!success)
+			goto rollback;
+	}
+
+	if (already_exists)
+		*already_exists = exists;
 
 	return book_backend_sqlitedb_commit_transaction (ebsdb, error);
 
@@ -760,47 +927,6 @@ collect_columns_cb (gpointer ref,
 	return 0;
 }
 
-static gint
-get_count_cb (gpointer ref,
-              gint n_cols,
-              gchar **cols,
-              gchar **name)
-{
-	gint64 count = 0;
-	gint *ret = ref;
-	gint i;
-
-	for (i = 0; i < n_cols; i++) {
-		if (name[i] && strncmp (name[i], "count", 5) == 0) {
-			count = g_ascii_strtoll (cols[i], NULL, 10);
-		}
-	}
-
-	*ret = count;
-
-	return 0;
-}
-
-static gboolean
-check_folderid_exists (EBookBackendSqliteDB *ebsdb,
-                       const gchar *folderid,
-                       gboolean *exists,
-                       GError **error)
-{
-	gboolean success;
-	gint count = 0;
-	gchar *stmt;
-
-	stmt = sqlite3_mprintf ("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=%Q;", folderid);
-
-	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_count_cb, &count, error);
-	sqlite3_free (stmt);
-
-	*exists = (count > 0);
-
-	return success;
-}
-
 static gboolean
 introspect_summary (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
@@ -811,6 +937,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 	GList *summary_columns = NULL, *l;
 	GArray *summary_fields = NULL;
 	gchar *multivalues = NULL;
+	gchar *collations = NULL;
 	gint i, j;
 
 	stmt = sqlite3_mprintf ("PRAGMA table_info (%Q);", folderid);
@@ -926,6 +1053,19 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		g_strfreev (fields);
 	}
 
+	/* Introspect custom collation fields, here we setup the custom ECollators
+	 * on the SummaryFields if we need to.
+	 */
+	stmt = sqlite3_mprintf (
+		"SELECT collations FROM folders WHERE folder_id = %Q", folderid);
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, get_string_cb, &collations, error);
+	sqlite3_free (stmt);
+
+	success = add_collations_from_introspection ((SummaryField *)summary_fields->data,
+						     summary_fields->len,
+						     collations);
+
  introspect_summary_finish:
 
 	g_list_free_full (summary_columns, (GDestroyNotify) g_free);
@@ -933,10 +1073,13 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 
 	/* Apply the introspected summary fields */
 	if (success) {
+		clear_collations (ebsdb->priv->summary_fields, ebsdb->priv->n_summary_fields);
 		g_free (ebsdb->priv->summary_fields);
+
 		ebsdb->priv->n_summary_fields = summary_fields->len;
 		ebsdb->priv->summary_fields = (SummaryField *) g_array_free (summary_fields, FALSE);
 	} else if (summary_fields) {
+		clear_collations ((SummaryField *)summary_fields->data, summary_fields->len);
 		g_array_free (summary_fields, TRUE);
 	}
 
@@ -948,19 +1091,15 @@ static gboolean
 create_contacts_table (EBookBackendSqliteDB *ebsdb,
                        const gchar *folderid,
                        gint previous_schema,
+		       gboolean already_exists,
                        GError **error)
 {
 	gint i;
 	gboolean success;
 	gchar *stmt, *tmp;
 	GString *string;
-	gboolean already_exists = FALSE;
 	gboolean relocalized = FALSE;
 	gchar *current_region = NULL;
-
-	success = check_folderid_exists (ebsdb, folderid, &already_exists, error);
-	if (!success)
-		return FALSE;
 
 	if (e_phone_number_is_supported ()) {
 		current_region = e_phone_number_get_default_region (error);
@@ -1181,7 +1320,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
 		sqlite3_free (stmt);
 
-		lc_collate = setlocale (LC_COLLATE, NULL);
+		lc_collate = get_current_collation_locale ();
 
 		if (success && g_strcmp0 (stored_lc_collate, lc_collate) != 0) {
 			success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
@@ -1525,11 +1664,13 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
                                       gint n_fields,
                                       gboolean have_attr_list,
                                       IndexFlags attr_list_indexes,
+				      const gchar *initial_collations,
                                       GError **error)
 {
 	EBookBackendSqliteDB *ebsdb;
 	gchar *hash_key, *filename;
 	gint previous_schema = 0;
+	gboolean already_exists = FALSE;
 
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (emailid != NULL, NULL);
@@ -1556,8 +1697,10 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	ebsdb->priv->have_attr_list = have_attr_list;
 	ebsdb->priv->attr_list_indexes = attr_list_indexes;
 	ebsdb->priv->store_vcard = store_vcard;
+
 	if (g_mkdir_with_parents (path, 0777) < 0) {
 		g_mutex_unlock (&dbcon_lock);
+		g_object_unref (ebsdb);
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
 			"Can not make parent directory: errno %d", errno);
@@ -1589,13 +1732,14 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	LOCK_MUTEX (&ebsdb->priv->lock);
 	g_mutex_unlock (&dbcon_lock);
 
-	if (!add_folder_into_db (ebsdb, folderid, folder_name, error)) {
+	if (!add_folder_into_db (ebsdb, folderid, folder_name, initial_collations,
+				 &already_exists, error)) {
 		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		g_object_unref (ebsdb);
 		return NULL;
 	}
 
-	if (!create_contacts_table (ebsdb, folderid, previous_schema, error)) {
+	if (!create_contacts_table (ebsdb, folderid, previous_schema, already_exists, error)) {
 		UNLOCK_MUTEX (&ebsdb->priv->lock);
 		g_object_unref (ebsdb);
 		return NULL;
@@ -1714,6 +1858,116 @@ summary_fields_add_indexes (GArray *array,
 	}
 }
 
+static gboolean
+ensure_collation (SummaryField  *field,
+		  GHashTable    *col_hash,
+		  const gchar   *collation_name,
+		  GError       **error)
+{
+	ECollator *collator;
+	const gchar *lc_collate;
+
+	collator = g_hash_table_lookup (col_hash, collation_name);
+
+	if (!collator) {
+		lc_collate = get_current_collation_locale ();
+
+		collator = e_collator_new (lc_collate, collation_name, error);
+		if (collator)
+			g_hash_table_insert (col_hash,
+					     g_strdup (collation_name),
+					     collator);
+	}
+
+	if (collator)
+		field->collator = e_collator_ref (collator);
+
+	return (collator != NULL);
+}
+
+static gboolean
+summary_fields_add_collations (SummaryField   *summary_fields,
+			       gint            n_summary_fields,
+			       EContactField  *fields,
+			       gchar         **collations,
+			       gint            n_fields,
+			       GError        **error)
+{
+	GHashTable *col_hash;
+	gboolean  success = TRUE;
+	gint i, j;
+	ECollator *collator;
+	const gchar *lc_collate;
+
+	col_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+					  (GDestroyNotify)g_free,
+					  (GDestroyNotify)e_collator_unref);
+
+	lc_collate = get_current_collation_locale ();
+	collator = e_collator_new (lc_collate, NULL, error);
+
+	if (!collator)
+		success = FALSE;
+
+	for (i = 0; success && i < n_summary_fields; i++) {
+		for (j = 0; j < n_fields; j++) {
+
+			if (summary_fields[i].field == fields[j]) {
+				success = ensure_collation (&(summary_fields[i]),
+							    col_hash,
+							    collations[j],
+							    error);
+				break;
+			}
+		}
+	}
+
+	/* Fill any gaps with the default collator */
+	for (i = 0; success && i < n_summary_fields; i++) {
+
+		if (summary_fields[i].collator == NULL)
+			summary_fields[i].collator = e_collator_ref (collator);
+	}
+
+	g_hash_table_destroy (col_hash);
+	if (collator)
+		e_collator_unref (collator);
+
+	return success;
+}
+
+static void
+clear_collations (SummaryField *fields,
+		  gint          n_fields)
+{
+	gint i;
+
+	for (i = 0; i < n_fields; i++) {
+		if (fields[i].collator)
+			e_collator_unref (fields[i].collator);
+	}
+}
+
+static gchar *
+format_collations (EContactField *coll_fields,
+		   gchar        **collations,
+		   gint           n_fields)
+{
+	GString *string = g_string_new ("");
+	gint i;
+
+	for (i = 0; i < n_fields; i++) {
+		if (i > 0)
+			g_string_append_c (string, ':');
+
+		g_string_append_printf (string, "%s=%s",
+					e_contact_field_name (coll_fields[i]),
+					collations[i]);
+	}
+
+	return g_string_free (string, FALSE);
+}
+
 /**
  * e_book_backend_sqlitedb_new_full:
  * @path: location where the db would be created
@@ -1751,15 +2005,18 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 	EBookBackendSqliteDB *ebsdb = NULL;
 	EContactField *fields;
 	EContactField *indexed_fields;
+	EContactField *coll_fields;
 	EBookIndexType *index_types = NULL;
+	gchar **collations = NULL, *initial_collations;
 	gboolean have_attr_list = FALSE;
 	IndexFlags attr_list_indexes = 0;
 	gboolean had_error = FALSE;
 	GArray *summary_fields;
-	gint n_fields = 0, n_indexed_fields = 0, i;
+	gint n_fields = 0, n_indexed_fields = 0, n_coll_fields = 0, i;
 
 	fields         = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
 	indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);
+	coll_fields    = e_source_backend_summary_setup_get_collations     (setup, &collations, &n_coll_fields);
 
 	/* No specified summary fields indicates the default summary configuration should be used */
 	if (n_fields <= 0) {
@@ -1784,7 +2041,18 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 		}
 	}
 
+	/* Add the specialized collation types, populate the ECollators */
+	if (!had_error)
+		had_error = !summary_fields_add_collations ((SummaryField *)summary_fields->data,
+							    summary_fields->len,
+							    coll_fields,
+							    collations,
+							    n_coll_fields,
+							    error);
+
 	if (had_error) {
+
+		clear_collations ((SummaryField *)summary_fields->data, summary_fields->len);
 		g_array_free (summary_fields, TRUE);
 		g_free (fields);
 		g_free (index_types);
@@ -1797,6 +2065,8 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 		summary_fields, indexed_fields, index_types, n_indexed_fields,
 		&attr_list_indexes);
 
+	initial_collations = format_collations (coll_fields, collations, n_coll_fields);
+
 	ebsdb = e_book_backend_sqlitedb_new_internal (
 		path, emailid, folderid, folder_name,
 		store_vcard,
@@ -1804,11 +2074,15 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 		summary_fields->len,
 		have_attr_list,
 		attr_list_indexes,
+		initial_collations,
 		error);
 
 	g_free (fields);
 	g_free (index_types);
 	g_free (indexed_fields);
+	g_free (initial_collations);
+	g_free (coll_fields);
+	g_strfreev (collations);
 	g_array_free (summary_fields, FALSE);
 
 	return ebsdb;
@@ -1857,6 +2131,10 @@ e_book_backend_sqlitedb_new (const gchar *path,
 		G_N_ELEMENTS (default_indexed_fields),
 		&attr_list_indexes);
 
+	/* Add the default collator to all columns */
+	summary_fields_add_collations ((SummaryField *)summary_fields->data,
+				       summary_fields->len, NULL, NULL, 0, NULL);
+
 	ebsdb = e_book_backend_sqlitedb_new_internal (
 		path, emailid, folderid, folder_name,
 		store_vcard,
@@ -1864,7 +2142,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 		summary_fields->len,
 		have_attr_list,
 		attr_list_indexes,
-		error);
+		"", error);
 
 	g_array_free (summary_fields, FALSE);
 
@@ -2060,7 +2338,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 				normal = e_util_utf8_normalize (val);
 
 				if (val)
-					localized = g_utf8_collate_key (val, strlen (val));
+					localized = e_collator_generate_key (ebsdb->priv->summary_fields[i].collator, val, NULL);
 				else
 					localized = g_strdup ("");
 			} else
@@ -4981,7 +5259,7 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 	g_slist_free_full (vcard_data, destroy_search_data);
 
 	if (success) {
-		lc_collate = setlocale (LC_COLLATE, NULL);
+		lc_collate = get_current_collation_locale ();
 
 		stmt = sqlite3_mprintf (
 			"UPDATE folders SET countrycode = %Q WHERE folder_id = %Q",
@@ -5158,18 +5436,23 @@ ebsdb_cursor_free (EbSdbCursor *cursor)
 }
 
 static void
-ebsdb_cursor_set_state_from_contact (EbSdbCursor *cursor,
-				     EContact    *contact)
+ebsdb_cursor_set_state_from_contact (EBookBackendSqliteDB *ebsdb,
+				     EbSdbCursor          *cursor,
+				     EContact             *contact)
 {
-	gint i;
+	gint i, index;
 
 	ebsdb_cursor_clear_state (cursor);
 
 	for (i = 0; i < cursor->n_sort_fields; i++) {
 		const gchar *string = e_contact_get_const (contact, cursor->sort_fields[i]);
 
+		index = summary_index_from_field (ebsdb, cursor->sort_fields[i]);
+
 		if (string)
-			cursor->values[i] = g_utf8_collate_key (string, -1);
+			cursor->values[i] =
+				e_collator_generate_key (ebsdb->priv->summary_fields[index].collator,
+							 string, NULL);
 		else
 			cursor->values[i] = g_strdup ("");
 	}
@@ -5178,14 +5461,15 @@ ebsdb_cursor_set_state_from_contact (EbSdbCursor *cursor,
 }
 
 static void
-ebsdb_cursor_set_state (EbSdbCursor *cursor,
-			const gchar *vcard)
+ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
+			EbSdbCursor          *cursor,
+			const gchar          *vcard)
 {
 	EContact *contact;
 
 	if (vcard) {
 		contact = e_contact_new_from_vcard (vcard);
-		ebsdb_cursor_set_state_from_contact (cursor, contact);
+		ebsdb_cursor_set_state_from_contact (ebsdb, cursor, contact);
 		g_object_unref (contact);
 	} else {
 		ebsdb_cursor_clear_state (cursor);
@@ -5599,7 +5883,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 			GSList *last = g_slist_last (results);
 			EbSdbSearchData *data = last->data;
 
-			ebsdb_cursor_set_state (cursor, data->vcard);
+			ebsdb_cursor_set_state (ebsdb, cursor, data->vcard);
 		}
 	}
 
@@ -5647,7 +5931,7 @@ e_book_backend_sqlitedb_cursor_set_targetv (EBookBackendSqliteDB *ebsdb,
 					    const gchar         **values,
 					    gint                  n_values)
 {
-	gint i;
+	gint i, index;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb));
 	g_return_if_fail (cursor != NULL);
@@ -5656,7 +5940,10 @@ e_book_backend_sqlitedb_cursor_set_targetv (EBookBackendSqliteDB *ebsdb,
 	ebsdb_cursor_clear_state (cursor);
 
 	for (i = 0; i < MIN (cursor->n_sort_fields, n_values); i++) {
-		cursor->values[i] = g_utf8_collate_key (values[i], -1);
+
+		index = summary_index_from_field (ebsdb, cursor->sort_fields[i]);
+
+		cursor->values[i] = e_collator_generate_key (ebsdb->priv->summary_fields[index].collator, values[i], NULL);
 	}
 
 	if (n_values > cursor->n_sort_fields)
@@ -5723,7 +6010,7 @@ e_book_backend_sqlitedb_cursor_set_target_contact (EBookBackendSqliteDB *ebsdb,
 	g_return_if_fail (cursor != NULL);
 
 	if (contact)
-		ebsdb_cursor_set_state_from_contact (cursor, contact);
+		ebsdb_cursor_set_state_from_contact (ebsdb, cursor, contact);
 	else
 		ebsdb_cursor_clear_state (cursor);
 }
