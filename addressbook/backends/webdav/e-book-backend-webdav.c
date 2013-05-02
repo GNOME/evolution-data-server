@@ -509,7 +509,7 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 	}
 
 	status = delete_contact (webdav, uid, cancellable);
-	if (status != 204) {
+	if (!SOUP_STATUS_IS_SUCCESSFUL (status)) {
 		if (status == 401 || status == 407) {
 			e_data_book_respond_remove_contacts (
 				book, opid,
