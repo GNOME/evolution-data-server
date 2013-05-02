@@ -378,6 +378,7 @@ extern gint camel_imapx_debug_flags;
 	G_STMT_START { \
 		if (camel_debug_flag (type)) { \
 			printf ("[imapx:%c] " fmt, tagprefix , ##__VA_ARGS__); \
+			fflush (stdout); \
 		} \
 	} G_STMT_END
 
