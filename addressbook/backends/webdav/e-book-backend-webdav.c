@@ -1415,7 +1415,7 @@ book_backend_webdav_remove_contacts_sync (EBookBackend *backend,
 	}
 
 	status = delete_contact (webdav, uids[0], cancellable);
-	if (status != 204) {
+	if (!SOUP_STATUS_IS_SUCCESSFUL (status)) {
 		if (status == 401 || status == 407) {
 			webdav_handle_auth_request (webdav, error);
 		} else {
