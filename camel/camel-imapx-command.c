@@ -586,6 +586,18 @@ camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
 	if (ic->status != NULL && ic->status->result != IMAPX_OK) {
+
+		/* FIXME Map IMAP response codes to more
+		 *       meaningful GError domains/codes.
+		 *
+		 *       switch (ic->status->condition) {
+		 *               case IMAPX_AUTHENTICATIONFAILED:
+		 *                      g_set_error (...);
+		 *                      break;
+		 *               ...
+		 *       }
+		 */
+
 		if (ic->status->text != NULL)
 			g_set_error (
 				error, CAMEL_IMAPX_ERROR, 1,

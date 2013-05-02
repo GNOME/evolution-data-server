@@ -1834,6 +1834,27 @@ imapx_parse_status (CamelIMAPXStream *is,
 			case IMAPX_CAPABILITY:
 				sinfo->u.cinfo = imapx_parse_capability (is, cancellable, NULL);
 				break;
+
+			/* RFC 5530 Response Codes */
+			case IMAPX_ALREADYEXISTS:
+			case IMAPX_AUTHENTICATIONFAILED:
+			case IMAPX_AUTHORIZATIONFAILED:
+			case IMAPX_CANNOT:
+			case IMAPX_CLIENTBUG:
+			case IMAPX_CONTACTADMIN:
+			case IMAPX_CORRUPTION:
+			case IMAPX_EXPIRED:
+			case IMAPX_EXPUNGEISSUED:
+			case IMAPX_INUSE:
+			case IMAPX_LIMIT:
+			case IMAPX_NONEXISTENT:
+			case IMAPX_NOPERM:
+			case IMAPX_OVERQUOTA:
+			case IMAPX_PRIVACYREQUIRED:
+			case IMAPX_SERVERBUG:
+			case IMAPX_UNAVAILABLE:
+				break;
+
 			default:
 				sinfo->condition = IMAPX_UNKNOWN;
 				d (is->tagprefix, "Got unknown response code: %s: ignored\n", token);
