@@ -1289,6 +1289,33 @@ camel_mime_message_has_attachment (CamelMimeMessage *message)
 }
 
 static void
+dumpline (const char *indent, guint8 *data, gsize data_len)
+{
+	int j;
+	char *gutter;
+	guint gutter_size;
+
+	g_return_if_fail (data_len <= 16);
+
+	gutter_size = ((16 - data_len) * 3) + 4;
+	gutter = alloca (gutter_size + 1);
+	memset (gutter, ' ', gutter_size);
+	gutter[gutter_size] = 0;
+
+	printf ("%s    ", indent);
+	/* Hex dump */
+	for (j = 0; j < data_len; j++)
+		printf ("%s%02x", j > 0 ? " " : "", data[j]);
+
+	/* ASCII dump */
+	printf ("%s", gutter);
+	for (j = 0; j < data_len; j++) {
+		printf ("%c", isprint (data[j]) ? data[j] : '.');
+	}
+	printf ("\n");
+}
+
+static void
 cmm_dump_rec (CamelMimeMessage *msg,
               CamelMimePart *part,
               gint body,
@@ -1298,6 +1325,7 @@ cmm_dump_rec (CamelMimeMessage *msg,
 	gint parts, i;
 	gint go = TRUE;
 	gchar *s;
+	const GByteArray *data;
 
 	s = alloca (depth + 1);
 	memset (s, ' ', depth);
@@ -1313,6 +1341,17 @@ cmm_dump_rec (CamelMimeMessage *msg,
 
 	printf ("%scontent class: %s\n", s, G_OBJECT_TYPE_NAME (containee));
 	printf ("%scontent mime-type: %s\n", s, camel_content_type_format (((CamelDataWrapper *) containee)->mime_type));
+
+	data = camel_data_wrapper_get_byte_array (containee);
+	if (body && data) {
+		guint t = 0;
+
+		printf ("%scontent len %d\n", s, data->len);
+		for (t = 0; t < data->len / 16; t++)
+			dumpline (s, &data->data[t * 16], 16);
+		if (data->len % 16)
+			dumpline (s, &data->data[t * 16], data->len % 16);
+	}
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {
@@ -1334,8 +1373,7 @@ cmm_dump_rec (CamelMimeMessage *msg,
  *
  * Dump information about the mime message to stdout.
  *
- * If body is TRUE, then dump body content of the message as well
- * (currently unimplemented).
+ * If body is TRUE, then dump body content of the message as well.
  **/
 void
 camel_mime_message_dump (CamelMimeMessage *message,
