@@ -162,6 +162,11 @@ static guint signals[LAST_SIGNAL];
 /* Forward Declarations */
 static void	e_source_initable_init		(GInitableIface *interface);
 
+/* Private function shared only with ESourceRegistry. */
+void		__e_source_private_replace_dbus_object
+						(ESource *source,
+						 GDBusObject *dbus_object);
+
 G_DEFINE_TYPE_WITH_CODE (
 	ESource,
 	e_source,
