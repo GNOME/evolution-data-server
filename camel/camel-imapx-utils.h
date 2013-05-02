@@ -374,10 +374,12 @@ extern gint camel_imapx_debug_flags;
 #define camel_debug_flag(type) \
 	(camel_imapx_debug_flags & \
 	CAMEL_IMAPX_DEBUG_ALL & CAMEL_IMAPX_DEBUG_ ## type)
-#define camel_imapx_debug(type, tagprefix, fmt, ...) do {		\
-		if (camel_debug_flag (type))				\
+#define camel_imapx_debug(type, tagprefix, fmt, ...) \
+	G_STMT_START { \
+		if (camel_debug_flag (type)) { \
 			printf ("[imapx:%c] " fmt, tagprefix , ##__VA_ARGS__); \
-	} while (0)
+		} \
+	} G_STMT_END
 
 /* ********************************************************************** */
 
