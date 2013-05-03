@@ -48,6 +48,9 @@ struct _ECalClientViewPrivate {
 	gchar *object_path;
 	gboolean running;
 
+	GMainContext *main_context;
+	GMutex main_context_lock;
+
 	gulong objects_added_handler_id;
 	gulong objects_modified_handler_id;
 	gulong objects_removed_handler_id;
@@ -112,6 +115,38 @@ signal_closure_free (SignalClosure *signal_closure)
 		g_error_free (signal_closure->error);
 
 	g_slice_free (SignalClosure, signal_closure);
+}
+
+static GMainContext *
+cal_client_view_ref_main_context (ECalClientView *client_view)
+{
+	GMainContext *main_context;
+
+	/* Intentionally not checking for NULL so we get a console
+	 * warning if we try to reference a NULL main context, but
+	 * that should never happen. */
+
+	g_mutex_lock (&client_view->priv->main_context_lock);
+
+	main_context = g_main_context_ref (client_view->priv->main_context);
+
+	g_mutex_unlock (&client_view->priv->main_context_lock);
+
+	return main_context;
+}
+
+static void
+cal_client_view_set_main_context (ECalClientView *client_view,
+                                  GMainContext *main_context)
+{
+	g_mutex_lock (&client_view->priv->main_context_lock);
+
+	if (client_view->priv->main_context != NULL)
+		g_main_context_unref (client_view->priv->main_context);
+
+	client_view->priv->main_context = g_main_context_ref (main_context);
+
+	g_mutex_unlock (&client_view->priv->main_context_lock);
 }
 
 static GSList *
@@ -264,7 +299,6 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
                                   const gchar * const *objects,
                                   ECalClientView *client_view)
 {
-	ECalClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -276,8 +310,7 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_list = build_object_list (objects);
 
-	client = e_cal_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = cal_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -296,7 +329,6 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
                                      const gchar * const *objects,
                                      ECalClientView *client_view)
 {
-	ECalClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -308,8 +340,7 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_list = build_object_list (objects);
 
-	client = e_cal_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = cal_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -328,7 +359,6 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
                                     const gchar * const *uids,
                                     ECalClientView *client_view)
 {
-	ECalClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -340,8 +370,7 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->component_id_list = build_id_list (uids);
 
-	client = e_cal_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = cal_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -361,7 +390,6 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
                              const gchar *message,
                              ECalClientView *client_view)
 {
-	ECalClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -374,8 +402,7 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
 	signal_closure->message = g_strdup (message);
 	signal_closure->percent = percent;
 
-	client = e_cal_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = cal_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -394,7 +421,6 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
                              const gchar * const *arg_error,
                              ECalClientView *client_view)
 {
-	ECalClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -406,8 +432,7 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	e_gdbus_templates_decode_error (arg_error, &signal_closure->error);
 
-	client = e_cal_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = cal_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -546,6 +571,11 @@ cal_client_view_dispose (GObject *object)
 		priv->connection = NULL;
 	}
 
+	if (priv->main_context != NULL) {
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
+	}
+
 	if (priv->dbus_proxy != NULL) {
 		g_signal_handler_disconnect (
 			priv->dbus_proxy,
@@ -584,6 +614,8 @@ cal_client_view_finalize (GObject *object)
 	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (object);
 
 	g_free (priv->object_path);
+
+	g_mutex_clear (&priv->main_context_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_view_parent_class)->finalize (object);
@@ -768,6 +800,8 @@ static void
 e_cal_client_view_init (ECalClientView *view)
 {
 	view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (view);
+
+	g_mutex_init (&view->priv->main_context_lock);
 }
 
 /**
@@ -854,9 +888,15 @@ void
 e_cal_client_view_start (ECalClientView *view,
                          GError **error)
 {
+	GMainContext *main_context;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+
+	/* Emit signals from the current thread-default main context. */
+	main_context = g_main_context_ref_thread_default ();
+	cal_client_view_set_main_context (view, main_context);
+	g_main_context_unref (main_context);
 
 	view->priv->running = TRUE;
 

@@ -48,6 +48,9 @@ struct _EBookClientViewPrivate {
 	guint running : 1;
 	guint complete : 1;
 
+	GMainContext *main_context;
+	GMutex main_context_lock;
+
 	EDataBook *direct_book;
 
 	gulong objects_added_handler_id;
@@ -121,6 +124,38 @@ signal_closure_free (SignalClosure *signal_closure)
 		g_error_free (signal_closure->error);
 
 	g_slice_free (SignalClosure, signal_closure);
+}
+
+static GMainContext *
+book_client_view_ref_main_context (EBookClientView *client_view)
+{
+	GMainContext *main_context;
+
+	/* Intentionally not checking for NULL so we get a console
+	 * warning if we try to reference a NULL main context, but
+	 * that should never happen. */
+
+	g_mutex_lock (&client_view->priv->main_context_lock);
+
+	main_context = g_main_context_ref (client_view->priv->main_context);
+
+	g_mutex_unlock (&client_view->priv->main_context_lock);
+
+	return main_context;
+}
+
+static void
+book_client_view_set_main_context (EBookClientView *client_view,
+                                   GMainContext *main_context)
+{
+	g_mutex_lock (&client_view->priv->main_context_lock);
+
+	if (client_view->priv->main_context != NULL)
+		g_main_context_unref (client_view->priv->main_context);
+
+	client_view->priv->main_context = g_main_context_ref (main_context);
+
+	g_mutex_unlock (&client_view->priv->main_context_lock);
 }
 
 static gboolean
@@ -223,7 +258,6 @@ static void
 book_client_view_emit_objects_added (EBookClientView *client_view,
                                      GSList *object_list)
 {
-	EBookClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -232,8 +266,7 @@ book_client_view_emit_objects_added (EBookClientView *client_view,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
-	client = e_book_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = book_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -251,7 +284,6 @@ static void
 book_client_view_emit_objects_modified (EBookClientView *client_view,
                                         GSList *object_list)
 {
-	EBookClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -260,8 +292,7 @@ book_client_view_emit_objects_modified (EBookClientView *client_view,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
-	client = e_book_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = book_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -460,7 +491,6 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
                                      const gchar * const *ids,
                                      EBookClientView *client_view)
 {
-	EBookClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -477,8 +507,7 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	signal_closure->string_list = g_slist_reverse (list);
 
-	client = e_book_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = book_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -498,7 +527,6 @@ book_client_view_progress_cb (EGdbusBookView *object,
                               const gchar *message,
                               EBookClientView *client_view)
 {
-	EBookClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -511,8 +539,7 @@ book_client_view_progress_cb (EGdbusBookView *object,
 	signal_closure->message = g_strdup (message);
 	signal_closure->percent = percent;
 
-	client = e_book_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = book_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -531,7 +558,6 @@ book_client_view_complete_cb (EGdbusBookView *object,
                               const gchar * const *in_error_strv,
                               EBookClientView *client_view)
 {
-	EBookClient *client;
 	GSource *idle_source;
 	GMainContext *main_context;
 	SignalClosure *signal_closure;
@@ -543,8 +569,7 @@ book_client_view_complete_cb (EGdbusBookView *object,
 	g_weak_ref_set (&signal_closure->client_view, client_view);
 	e_gdbus_templates_decode_error (in_error_strv, &signal_closure->error);
 
-	client = e_book_client_view_get_client (client_view);
-	main_context = e_client_ref_main_context (E_CLIENT (client));
+	main_context = book_client_view_ref_main_context (client_view);
 
 	idle_source = g_idle_source_new ();
 	g_source_set_callback (
@@ -702,6 +727,11 @@ book_client_view_dispose (GObject *object)
 		priv->connection = NULL;
 	}
 
+	if (priv->main_context != NULL) {
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
+	}
+
 	if (priv->direct_book != NULL) {
 		g_object_unref (priv->direct_book);
 		priv->direct_book = NULL;
@@ -745,6 +775,8 @@ book_client_view_finalize (GObject *object)
 	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
 
 	g_free (priv->object_path);
+
+	g_mutex_clear (&priv->main_context_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_view_parent_class)->finalize (object);
@@ -935,6 +967,8 @@ static void
 e_book_client_view_init (EBookClientView *view)
 {
 	view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (view);
+
+	g_mutex_init (&view->priv->main_context_lock);
 }
 
 /**
@@ -1000,9 +1034,15 @@ void
 e_book_client_view_start (EBookClientView *view,
                           GError **error)
 {
+	GMainContext *main_context;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+
+	/* Emit signals from the current thread-default main context. */
+	main_context = g_main_context_ref_thread_default ();
+	book_client_view_set_main_context (view, main_context);
+	g_main_context_unref (main_context);
 
 	view->priv->running = TRUE;
 
