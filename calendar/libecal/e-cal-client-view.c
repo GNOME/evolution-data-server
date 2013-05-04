@@ -117,6 +117,24 @@ signal_closure_free (SignalClosure *signal_closure)
 	g_slice_free (SignalClosure, signal_closure);
 }
 
+static GWeakRef *
+weak_ref_new (gpointer object)
+{
+	GWeakRef *weak_ref;
+
+	weak_ref = g_slice_new0 (GWeakRef);
+	g_weak_ref_set (weak_ref, object);
+
+	return weak_ref;
+}
+
+static void
+weak_ref_free (GWeakRef *weak_ref)
+{
+	g_weak_ref_set (weak_ref, NULL);
+	g_slice_free (GWeakRef, weak_ref);
+}
+
 static GMainContext *
 cal_client_view_ref_main_context (ECalClientView *client_view)
 {
@@ -297,153 +315,204 @@ cal_client_view_emit_complete_idle_cb (gpointer user_data)
 static void
 cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
                                   const gchar * const *objects,
-                                  ECalClientView *client_view)
+                                  GWeakRef *client_view_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	ECalClientView *client_view;
 
-	if (!client_view->priv->running)
-		return;
+	client_view = g_weak_ref_get (client_view_weak_ref);
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
-	signal_closure->component_list = build_object_list (objects);
+	if (client_view != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	main_context = cal_client_view_ref_main_context (client_view);
+		if (!client_view->priv->running) {
+			g_object_unref (client_view);
+			return;
+		}
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		cal_client_view_emit_objects_added_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client_view, client_view);
+		signal_closure->component_list = build_object_list (objects);
 
-	g_main_context_unref (main_context);
+		main_context = cal_client_view_ref_main_context (client_view);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_view_emit_objects_added_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client_view);
+	}
 }
 
 static void
 cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
                                      const gchar * const *objects,
-                                     ECalClientView *client_view)
+                                     GWeakRef *client_view_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	ECalClientView *client_view;
 
-	if (!client_view->priv->running)
-		return;
+	client_view = g_weak_ref_get (client_view_weak_ref);
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
-	signal_closure->component_list = build_object_list (objects);
+	if (client_view != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	main_context = cal_client_view_ref_main_context (client_view);
+		if (!client_view->priv->running) {
+			g_object_unref (client_view);
+			return;
+		}
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		cal_client_view_emit_objects_modified_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client_view, client_view);
+		signal_closure->component_list = build_object_list (objects);
 
-	g_main_context_unref (main_context);
+		main_context = cal_client_view_ref_main_context (client_view);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_view_emit_objects_modified_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client_view);
+	}
 }
 
 static void
 cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
                                     const gchar * const *uids,
-                                    ECalClientView *client_view)
+                                    GWeakRef *client_view_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	ECalClientView *client_view;
 
-	if (!client_view->priv->running)
-		return;
+	client_view = g_weak_ref_get (client_view_weak_ref);
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
-	signal_closure->component_id_list = build_id_list (uids);
+	if (client_view != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	main_context = cal_client_view_ref_main_context (client_view);
+		if (!client_view->priv->running) {
+			g_object_unref (client_view);
+			return;
+		}
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		cal_client_view_emit_objects_removed_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client_view, client_view);
+		signal_closure->component_id_list = build_id_list (uids);
 
-	g_main_context_unref (main_context);
+		main_context = cal_client_view_ref_main_context (client_view);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_view_emit_objects_removed_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client_view);
+	}
 }
 
 static void
 cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
                              guint percent,
                              const gchar *message,
-                             ECalClientView *client_view)
+                             GWeakRef *client_view_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	ECalClientView *client_view;
 
-	if (!client_view->priv->running)
-		return;
+	client_view = g_weak_ref_get (client_view_weak_ref);
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
-	signal_closure->message = g_strdup (message);
-	signal_closure->percent = percent;
+	if (client_view != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	main_context = cal_client_view_ref_main_context (client_view);
+		if (!client_view->priv->running) {
+			g_object_unref (client_view);
+			return;
+		}
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		cal_client_view_emit_progress_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client_view, client_view);
+		signal_closure->message = g_strdup (message);
+		signal_closure->percent = percent;
 
-	g_main_context_unref (main_context);
+		main_context = cal_client_view_ref_main_context (client_view);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_view_emit_progress_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client_view);
+	}
 }
 
 static void
 cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
                              const gchar * const *arg_error,
-                             ECalClientView *client_view)
+                             GWeakRef *client_view_weak_ref)
 {
-	GSource *idle_source;
-	GMainContext *main_context;
-	SignalClosure *signal_closure;
+	ECalClientView *client_view;
 
-	if (!client_view->priv->running)
-		return;
+	client_view = g_weak_ref_get (client_view_weak_ref);
 
-	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
-	e_gdbus_templates_decode_error (arg_error, &signal_closure->error);
+	if (client_view != NULL) {
+		GSource *idle_source;
+		GMainContext *main_context;
+		SignalClosure *signal_closure;
 
-	main_context = cal_client_view_ref_main_context (client_view);
+		if (!client_view->priv->running) {
+			g_object_unref (client_view);
+			return;
+		}
 
-	idle_source = g_idle_source_new ();
-	g_source_set_callback (
-		idle_source,
-		cal_client_view_emit_complete_idle_cb,
-		signal_closure,
-		(GDestroyNotify) signal_closure_free);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->client_view, client_view);
+		e_gdbus_templates_decode_error (
+			arg_error, &signal_closure->error);
 
-	g_main_context_unref (main_context);
+		main_context = cal_client_view_ref_main_context (client_view);
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			cal_client_view_emit_complete_idle_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+		g_source_attach (idle_source, main_context);
+		g_source_unref (idle_source);
+
+		g_main_context_unref (main_context);
+
+		g_object_unref (client_view);
+	}
 }
 
 static void
@@ -644,29 +713,39 @@ cal_client_view_initable_init (GInitable *initable,
 
 	priv->dbus_proxy = G_DBUS_PROXY (gdbus_calview);
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "objects-added",
-		G_CALLBACK (cal_client_view_objects_added_cb), initable);
+		G_CALLBACK (cal_client_view_objects_added_cb),
+		weak_ref_new (initable),
+		(GClosureNotify) weak_ref_free, 0);
 	priv->objects_added_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "objects-modified",
-		G_CALLBACK (cal_client_view_objects_modified_cb), initable);
+		G_CALLBACK (cal_client_view_objects_modified_cb),
+		weak_ref_new (initable),
+		(GClosureNotify) weak_ref_free, 0);
 	priv->objects_modified_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "objects-removed",
-		G_CALLBACK (cal_client_view_objects_removed_cb), initable);
+		G_CALLBACK (cal_client_view_objects_removed_cb),
+		weak_ref_new (initable),
+		(GClosureNotify) weak_ref_free, 0);
 	priv->objects_removed_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "progress",
-		G_CALLBACK (cal_client_view_progress_cb), initable);
+		G_CALLBACK (cal_client_view_progress_cb),
+		weak_ref_new (initable),
+		(GClosureNotify) weak_ref_free, 0);
 	priv->progress_handler_id = handler_id;
 
-	handler_id = g_signal_connect (
+	handler_id = g_signal_connect_data (
 		priv->dbus_proxy, "complete",
-		G_CALLBACK (cal_client_view_complete_cb), initable);
+		G_CALLBACK (cal_client_view_complete_cb),
+		weak_ref_new (initable),
+		(GClosureNotify) weak_ref_free, 0);
 	priv->complete_handler_id = handler_id;
 
 	return TRUE;
