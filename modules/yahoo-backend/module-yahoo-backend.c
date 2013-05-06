@@ -308,19 +308,28 @@ yahoo_backend_child_added (ECollectionBackend *backend,
 	if (is_mail && e_source_has_extension (child_source, extension_name)) {
 		ESourceAuthentication *auth_child_extension;
 		ESourceCollection *collection_extension;
+		const gchar *collection_identity;
+		const gchar *auth_child_user;
 
 		extension_name = E_SOURCE_EXTENSION_COLLECTION;
 		collection_extension = e_source_get_extension (
 			collection_source, extension_name);
+		collection_identity = e_source_collection_get_identity (
+			collection_extension);
 
 		extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 		auth_child_extension = e_source_get_extension (
 			child_source, extension_name);
+		auth_child_user = e_source_authentication_get_user (
+			auth_child_extension);
 
-		g_object_bind_property (
-			collection_extension, "identity",
-			auth_child_extension, "user",
-			G_BINDING_SYNC_CREATE);
+		/* XXX Do not override an existing user name setting.
+		 *     The IMAP or (especially) SMTP configuration may
+		 *     have been modified to use a non-Yahoo! server. */
+		if (auth_child_user == NULL)
+			e_source_authentication_set_user (
+				auth_child_extension,
+				collection_identity);
 	}
 
 	/* Chain up to parent's child_added() method. */
