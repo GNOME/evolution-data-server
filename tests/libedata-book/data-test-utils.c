@@ -228,6 +228,7 @@ void
 e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 				 gconstpointer       user_data)
 {
+	ETestServerFixture *base_fixture = (ETestServerFixture *)fixture;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
 	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
 	EBookClient *book_client;
@@ -235,6 +236,12 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 	GError *error = NULL;
 	gint i;
 	gchar *sexp = NULL;
+	const gchar *source_name;
+
+	/* Support the migration tests */
+	source_name = g_getenv ("MIGRATION_TEST_SOURCE_NAME");
+	if (source_name != NULL)
+		base_fixture->source_name = g_strdup (source_name);
 
 	e_sqlitedb_fixture_setup ((ESqliteDBFixture *)fixture, user_data);
 
@@ -254,8 +261,17 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 		fixture->contacts[i] = contact;
 	}
 
-	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error))
-		g_error ("Failed to add test contacts");
+	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error)) { 
+
+		/* Dont complain here, we re-use the same addressbook for multiple tests
+		 * and we can't add the same contacts twice
+		 */
+		if (g_error_matches (error, E_BOOK_CLIENT_ERROR,
+				     E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS))
+			g_clear_error (&error);
+		else
+			g_error ("Failed to add test contacts: %s", error->message);
+	}
 
 	g_slist_free (contacts);
 
@@ -269,7 +285,6 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 	fixture->cursor = e_book_backend_sqlitedb_cursor_new (((ESqliteDBFixture *) fixture)->ebsdb,
 							      SQLITEDB_FOLDER_ID,
 							      sexp, sort_fields, sort_types, 2, &error);
-
 
 	g_free (sexp);
 
@@ -395,6 +410,10 @@ move_by_test_new_internal (const gchar *test_path,
 	data->parent.phonebook_order = phonebook_order;
 	data->path = g_strdup (test_path);
 	data->struct_size = struct_size;
+
+	/* Keep the work dir for migration tests */
+	if (g_getenv ("MIGRATION_TEST_SOURCE_NAME") != NULL)
+	    data->parent.parent.keep_work_directory = TRUE;
 
 	return data;
 }

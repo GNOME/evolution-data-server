@@ -18,15 +18,15 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("EDS_COLLATE", "POSIX", TRUE));
+	g_assert (g_setenv ("EDS_COLLATE", "fr_CA.UTF-8", TRUE));
 	g_assert (g_setenv ("MIGRATION_TEST_SOURCE_NAME", "migration-test-source", TRUE));
 
 	/* Assert the whole set of contacts */
-	data = move_by_test_new ("/EbSdbCursor/Locale/POSIX/Migrated", FALSE);
-	move_by_test_add_assertion (data, 5, 11, 2,  6,  3,  8);
-	move_by_test_add_assertion (data, 5, 10, 19, 20, 1,  5);
-	move_by_test_add_assertion (data, 5, 4,  7,  15, 17, 16);
-	move_by_test_add_assertion (data, 5, 18, 14, 12, 13, 9);
+	data = move_by_test_new ("/EbSdbCursor/Locale/fr_CA/Migrated", FALSE);
+	move_by_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
+	move_by_test_add_assertion (data, 5, 4,  3,  7,  8,  15);
+	move_by_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
+	move_by_test_add_assertion (data, 5, 13, 12, 9,  19, 20);
 	move_by_test_add (data, FALSE);
 
 	/* On this case, we are using the migrated addressbook, don't delete it first */
