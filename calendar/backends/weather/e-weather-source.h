@@ -53,18 +53,11 @@ typedef void (*EWeatherSourceFinished)(GWeatherInfo *result, gpointer data);
 
 typedef struct _EWeatherSource EWeatherSource;
 typedef struct _EWeatherSourceClass EWeatherSourceClass;
+typedef struct _EWeatherSourcePrivate EWeatherSourcePrivate;
 
-/* This class is an abstract base-class for any weather data source.
- * All the URL fetching is handled outside of this, and all this has
- * to know how to do is parse the specific format. */
 struct _EWeatherSource {
 	GObject parent;
-
-	GWeatherLocation *location;
-	GWeatherInfo *info;
-
-	EWeatherSourceFinished done;
-	gpointer finished_data;
+	EWeatherSourcePrivate *priv;
 };
 
 struct _EWeatherSourceClass {

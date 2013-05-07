@@ -22,65 +22,53 @@
 
 #include <string.h>
 
+#define E_WEATHER_SOURCE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_WEATHER_SOURCE, EWeatherSourcePrivate))
+
+struct _EWeatherSourcePrivate {
+	GWeatherLocation *location;
+	GWeatherInfo *info;
+
+	EWeatherSourceFinished done;
+	gpointer finished_data;
+};
+
 G_DEFINE_TYPE (EWeatherSource, e_weather_source, G_TYPE_OBJECT)
 
 static void
-parse_done (GWeatherInfo *info,
-            gpointer data)
+weather_source_dispose (GObject *object)
 {
-	EWeatherSource *source = (EWeatherSource *) data;
+	EWeatherSourcePrivate *priv;
 
-	if (!source)
-		return;
+	priv = E_WEATHER_SOURCE_GET_PRIVATE (object);
 
-	if (!info || !gweather_info_is_valid (info)) {
-		source->done (NULL, source->finished_data);
-		return;
+	if (priv->location != NULL) {
+		gweather_location_unref (priv->location);
+		priv->location = NULL;
 	}
 
-	source->done (info, source->finished_data);
-}
+	g_clear_object (&priv->info);
 
-void
-e_weather_source_parse (EWeatherSource *source,
-                        EWeatherSourceFinished done,
-                        gpointer data)
-{
-	source->finished_data = data;
-	source->done = done;
-
-	if (!source->info) {
-		source->info = gweather_info_new (source->location, GWEATHER_FORECAST_LIST);
-		g_signal_connect (source->info, "updated", G_CALLBACK (parse_done), source);
-	} else {
-		gweather_info_update (source->info);
-	}
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_weather_source_parent_class)->dispose (object);
 }
 
 static void
-e_weather_source_finalize (GObject *object)
+e_weather_source_class_init (EWeatherSourceClass *class)
 {
-	EWeatherSource *self = (EWeatherSource *) object;
+	GObjectClass *object_class;
 
-	if (self->location)
-		gweather_location_unref (self->location);
-	g_clear_object (&self->info);
+	g_type_class_add_private (class, sizeof (EWeatherSourcePrivate));
 
-	G_OBJECT_CLASS (e_weather_source_parent_class)->finalize (object);
-}
-
-static void
-e_weather_source_class_init (EWeatherSourceClass *klass)
-{
-	GObjectClass *gobject_class;
-
-	gobject_class = G_OBJECT_CLASS (klass);
-	gobject_class->finalize = e_weather_source_finalize;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = weather_source_dispose;
 }
 
 static void
 e_weather_source_init (EWeatherSource *source)
 {
+	source->priv = E_WEATHER_SOURCE_GET_PRIVATE (source);
 }
 
 EWeatherSource *
@@ -90,15 +78,17 @@ e_weather_source_new (const gchar *location)
 	EWeatherSource *source;
 	gchar **tokens;
 
-	/* Old location is formatted as ccf/AAA[/BBB] - AAA is the 3-letter station
-	 * code for identifying the providing station (subdirectory within the crh data
-	 * repository). BBB is an optional additional station ID for the station within
-	 * the CCF file. If not present, BBB is assumed to be the same station as AAA.
+	/* Old location is formatted as ccf/AAA[/BBB] - AAA is the 3-letter
+	 * station code for identifying the providing station (subdirectory
+	 * within the crh data repository).  BBB is an optional additional
+	 * station ID for the station within the CCF file. If not present,
+	 * BBB is assumed to be the same station as AAA.
+	 *
 	 * But the new location is code/name, where code is 4-letter code.
-	 * So if got the old format, then migrate to the new one, if possible.
-	 */
+	 * So if we got the old format, then migrate to the new one if
+	 * possible. */
 
-	if (!location)
+	if (location == NULL)
 		return NULL;
 
 	world = gweather_location_new_world (FALSE);
@@ -109,18 +99,58 @@ e_weather_source_new (const gchar *location)
 	tokens = g_strsplit (location, "/", 2);
 
 	glocation = gweather_location_find_by_station_code (world, tokens[0]);
-	if (glocation)
+	if (glocation != NULL)
 		gweather_location_ref (glocation);
 
 	gweather_location_unref (world);
 	g_strfreev (tokens);
 
-	if (!glocation)
+	if (glocation == NULL)
 		return NULL;
 
-	source = E_WEATHER_SOURCE (g_object_new (e_weather_source_get_type (), NULL));
-	source->location = glocation;
-	source->info = NULL;
+	source = g_object_new (E_TYPE_WEATHER_SOURCE, NULL);
+	source->priv->location = gweather_location_ref (glocation);
 
 	return source;
 }
+
+static void
+weather_source_updated_cb (GWeatherInfo *info,
+                           EWeatherSource *source)
+{
+	g_return_if_fail (E_IS_WEATHER_SOURCE (source));
+	g_return_if_fail (source->priv->done != NULL);
+
+	/* An invalid GWeatherInfo is as good as NULL. */
+	if (info != NULL && !gweather_info_is_valid (info))
+		info = NULL;
+
+	source->priv->done (info, source->priv->finished_data);
+}
+
+void
+e_weather_source_parse (EWeatherSource *source,
+                        EWeatherSourceFinished done,
+                        gpointer data)
+{
+	g_return_if_fail (E_IS_WEATHER_SOURCE (source));
+	g_return_if_fail (done != NULL);
+
+	/* FIXME Take a GAsyncReadyCallback instead of a custom callback,
+	 *       and write an e_weather_source_parse_finish() function. */
+
+	source->priv->finished_data = data;
+	source->priv->done = done;
+
+	if (source->priv->info == NULL) {
+		source->priv->info = gweather_info_new (
+			source->priv->location,
+			GWEATHER_FORECAST_LIST);
+		g_signal_connect (
+			source->priv->info, "updated",
+			G_CALLBACK (weather_source_updated_cb), source);
+	} else {
+		gweather_info_update (source->priv->info);
+	}
+}
+
