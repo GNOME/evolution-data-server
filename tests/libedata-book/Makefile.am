@@ -55,6 +55,8 @@ TESTS =						\
 	test-sqlite-cursor-set-sexp		\
 	test-sqlite-cursor-posix-initial	\
 	test-sqlite-cursor-en-US-migrated	\
+	test-sqlite-cursor-fr-CA-migrated	\
+	test-sqlite-cursor-de-DE-migrated	\
 	test-sqlite-cursor-posix-migrated
 
 
@@ -94,6 +96,10 @@ test_sqlite_cursor_posix_initial_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_posix_initial_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_en_US_migrated_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_en_US_migrated_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_fr_CA_migrated_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_fr_CA_migrated_CPPFLAGS=$(TEST_CPPFLAGS)
+test_sqlite_cursor_de_DE_migrated_LDADD=$(TEST_LIBS)
+test_sqlite_cursor_de_DE_migrated_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_posix_migrated_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_posix_migrated_CPPFLAGS=$(TEST_CPPFLAGS)
 
