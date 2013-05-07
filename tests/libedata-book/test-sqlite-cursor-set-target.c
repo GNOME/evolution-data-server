@@ -6,106 +6,13 @@
 
 #include "data-test-utils.h"
 
-/* Optimize queries, just so we can run with BOOKSQL_DEBUG=2 and check the
- * indexes are properly leverage for cursor queries
- */
-static void
-setup_custom_book (ESource            *scratch,
-		   ETestServerClosure *closure)
-{
-	ESourceBackendSummarySetup *setup;
-
-	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP));
-	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
-	e_source_backend_summary_setup_set_summary_fields (setup,
-							   E_CONTACT_FAMILY_NAME,
-							   E_CONTACT_GIVEN_NAME,
-							   E_CONTACT_EMAIL,
-							   0);
-	e_source_backend_summary_setup_set_indexed_fields (setup,
-							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_GIVEN_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_EMAIL, E_BOOK_INDEX_PREFIX,
-							   0);
-}
-
-static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0 };
-
-typedef struct {
-	ESqliteDBFixture parent_fixture;
-
-	EbSdbCursor  *cursor;
-
-	EContact *contacts[11];
-} CursorFixture;
-
-static void
-cursor_fixture_setup (CursorFixture *fixture,
-		      gconstpointer  user_data)
-{
-	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
-	GError       *error = NULL;
-	EBookClient  *book_client;
-	EContact    **it = fixture->contacts;
-
-	e_sqlitedb_fixture_setup ((ESqliteDBFixture *)fixture, user_data);
-
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-
-	/* Add contacts... */
-	if (/* N:Jackson;Micheal */
-	    !add_contact_from_test_case_verify (book_client, "sorted-1", it++) ||
-	    /* N:Jackson;Janet */
-	    !add_contact_from_test_case_verify (book_client, "sorted-2", it++) ||
-	    /* N:Brown;Bobby */
-	    !add_contact_from_test_case_verify (book_client, "sorted-3", it++) ||
-	    /* N:Brown;Big Bobby */
-	    !add_contact_from_test_case_verify (book_client, "sorted-4", it++) ||
-	    /* N:Brown;James */
-	    !add_contact_from_test_case_verify (book_client, "sorted-5", it++) ||
-	    /* N:%Strange Name;Mister */
-	    !add_contact_from_test_case_verify (book_client, "sorted-6", it++) ||
-	    /* N:Goose;Purple */
-	    !add_contact_from_test_case_verify (book_client, "sorted-7", it++) ||
-	    /* N:Pony;Purple */
-	    !add_contact_from_test_case_verify (book_client, "sorted-8", it++) ||
-	    /* N:Pony;Pink */
-	    !add_contact_from_test_case_verify (book_client, "sorted-9", it++) ||
-	    /* N:J;Mister */
-	    !add_contact_from_test_case_verify (book_client, "sorted-10", it++) ||
-	    /* FN:Ye Nameless One */
-	    !add_contact_from_test_case_verify (book_client, "sorted-11", it++)) {
-		g_error ("Failed to add contacts");
-	}
-
-	fixture->cursor = e_book_backend_sqlitedb_cursor_new (((ESqliteDBFixture *) fixture)->ebsdb,
-							      SQLITEDB_FOLDER_ID,
-							      NULL, sort_fields, sort_types, 2, &error);
-
-	g_assert (fixture->cursor != NULL);
-}
-
-static void
-cursor_fixture_teardown (CursorFixture *fixture,
-			 gconstpointer  user_data)
-{
-	gint i;
-
-	for (i = 0; i < G_N_ELEMENTS (fixture->contacts); ++i) {
-		if (fixture->contacts[i])
-			g_object_unref (fixture->contacts[i]);
-	}
-
-	e_book_backend_sqlitedb_cursor_free (((ESqliteDBFixture *) fixture)->ebsdb, fixture->cursor);
-	e_sqlitedb_fixture_teardown ((ESqliteDBFixture *)fixture, user_data);
-}
+static EbSdbCursorClosure book_closure = { { E_TEST_SERVER_ADDRESS_BOOK, e_sqlitedb_cursor_fixture_setup_book, 0 }, FALSE };
 
 /*****************************************************
  *          Expect the same results twice            *
  *****************************************************/
 static void
-test_cursor_set_target_reset_cursor (CursorFixture *fixture,
+test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 				     gconstpointer  user_data)
 {
 	GSList *results;
@@ -120,17 +27,14 @@ test_cursor_set_target_reset_cursor (CursorFixture *fixture,
 
 	print_results (results);
 
+	/* Assert the first 5 contacts in en_US order */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-
-	/* Assert that we got the results ordered as:
-	 *   "Big Bobby Brown"
-	 *   "Bobby Brown"
-	 *   "James Brown"
-	 */
 	assert_contacts_order (results,
-			       e_contact_get_const (fixture->contacts[3], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[2], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[4], E_CONTACT_UID),
+			       "sorted-11",
+			       "sorted-1",
+			       "sorted-2",
+			       "sorted-5",
+			       "sorted-6",
 			       NULL);
 
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
@@ -138,8 +42,7 @@ test_cursor_set_target_reset_cursor (CursorFixture *fixture,
 
 	/* Reset cursor */
 	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor,
-						   NULL);
+						   fixture->cursor, NULL);
 
 	/* Second batch */
 	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -150,17 +53,14 @@ test_cursor_set_target_reset_cursor (CursorFixture *fixture,
 
 	print_results (results);
 
+	/* Assert the first 5 contacts in en_US order again */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-
-	/* Assert that we got the results ordered as:
-	 *   "Big Bobby Brown"
-	 *   "Bobby Brown"
-	 *   "James Brown"
-	 */
 	assert_contacts_order (results,
-			       e_contact_get_const (fixture->contacts[3], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[2], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[4], E_CONTACT_UID),
+			       "sorted-11",
+			       "sorted-1",
+			       "sorted-2",
+			       "sorted-5",
+			       "sorted-6",
 			       NULL);
 
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
@@ -168,97 +68,18 @@ test_cursor_set_target_reset_cursor (CursorFixture *fixture,
 }
 
 /*****************************************************
- * Expect results with family name starting with 'J' *
+ * Expect results with family name starting with 'C' *
  *****************************************************/
 static void
-test_cursor_set_target_j_next_results (CursorFixture *fixture,
+test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 				       gconstpointer  user_data)
 {
 	GSList *results;
 	GError *error = NULL;
 
-	/* Set the cursor at the start of family names beginning with 'J' */
+	/* Set the cursor at the start of family names beginning with 'C' */
 	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, "J", NULL);
-
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor, 3, &error);
-
-	if (error)
-		g_error ("Error fetching cursor results: %s", error->message);
-
-	print_results (results);
-
-	g_assert_cmpint (g_slist_length (results), ==, 3);
-
-	/* Assert that we got the results ordered as:
-	 *   "Mister J"
-	 *   "Janet Jackson"
-	 *   "Micheal Jackson"
-	 */
-	assert_contacts_order (results,
-			       e_contact_get_const (fixture->contacts[9], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[1], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[0], E_CONTACT_UID),
-			       NULL);
-
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
-	g_slist_free (results);
-}
-
-/*****************************************************
- *       Expect results before the letter 'J'        *
- *****************************************************/
-static void
-test_cursor_set_target_j_prev_results (CursorFixture *fixture,
-				       gconstpointer  user_data)
-{
-	GSList *results;
-	GError *error = NULL;
-
-	/* Set the cursor at the start of family names beginning with 'J' */
-	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, "J", NULL);
-
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor, -5, &error);
-
-	if (error)
-		g_error ("Error fetching cursor results: %s", error->message);
-
-	print_results (results);
-
-	g_assert_cmpint (g_slist_length (results), ==, 5);
-
-	/* Assert that we got the results ordered as:
-	 *   "James Brown"
-	 *   "Bobby Brown"
-	 *   "Big Bobby Brown"
-	 */
-	assert_contacts_order (results,
-			       e_contact_get_const (fixture->contacts[4], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[2], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[3], E_CONTACT_UID),
-			       NULL);
-
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
-	g_slist_free (results);
-}
-
-/*****************************************************
- *       Expect results after Bobby Brown            *
- *****************************************************/
-static void
-test_cursor_set_target_bobby_brown_next_results (CursorFixture *fixture,
-						 gconstpointer  user_data)
-{
-	GSList *results;
-	GError *error = NULL;
-
-	/* Set the cursor to point exactly to Bobby Brown */
-	e_book_backend_sqlitedb_cursor_set_target_contact (((ESqliteDBFixture *) fixture)->ebsdb,
-							   fixture->cursor,
-							   fixture->contacts[2]);
+						   fixture->cursor, "C", NULL);
 
 	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
 							  fixture->cursor, 5, &error);
@@ -268,21 +89,14 @@ test_cursor_set_target_bobby_brown_next_results (CursorFixture *fixture,
 
 	print_results (results);
 
+	/* Assert that we got the results starting at C */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-
-	/* Assert that we got the results ordered as:
-	 *   "James Brown"
-	 *   "Purple Goose"
-	 *   "Mister J"
-	 *   "Janet Jackson"
-	 *   "Micheal Jackson"
-	 */
 	assert_contacts_order (results,
-			       e_contact_get_const (fixture->contacts[4], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[6], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[9], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[1], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[0], E_CONTACT_UID),
+			       "sorted-10",
+			       "sorted-14",
+			       "sorted-12",
+			       "sorted-13",
+			       "sorted-9",
 			       NULL);
 
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
@@ -290,19 +104,18 @@ test_cursor_set_target_bobby_brown_next_results (CursorFixture *fixture,
 }
 
 /*****************************************************
- *       Expect results before Bobby Brown           *
+ *       Expect results before the letter 'C'        *
  *****************************************************/
 static void
-test_cursor_set_target_bobby_brown_prev_results (CursorFixture *fixture,
-						 gconstpointer  user_data)
+test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
+				       gconstpointer  user_data)
 {
 	GSList *results;
 	GError *error = NULL;
 
-	/* Set the cursor to point exactly to Bobby Brown */
-	e_book_backend_sqlitedb_cursor_set_target_contact (((ESqliteDBFixture *) fixture)->ebsdb,
-							   fixture->cursor,
-							   fixture->contacts[2]);
+	/* Set the cursor at the start of family names beginning with 'J' */
+	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
+						   fixture->cursor, "C", NULL);
 
 	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
 							  fixture->cursor, -5, &error);
@@ -312,15 +125,86 @@ test_cursor_set_target_bobby_brown_prev_results (CursorFixture *fixture,
 
 	print_results (results);
 
-	g_assert_cmpint (g_slist_length (results), ==, 2);
-
-	/* Assert that we got the results ordered as:
-	 *   "Big Bobby Brown"
-	 *   "Ye Nameless One"
-	 */
+	/* Assert that we got the results before C */
+	g_assert_cmpint (g_slist_length (results), ==, 5);
 	assert_contacts_order (results,
-			       e_contact_get_const (fixture->contacts[3], E_CONTACT_UID),
-			       e_contact_get_const (fixture->contacts[10], E_CONTACT_UID),
+			       "sorted-18",
+			       "sorted-16",
+			       "sorted-17",
+			       "sorted-15",
+			       "sorted-8",
+			       NULL);
+
+	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_free (results);
+}
+
+/*****************************************************
+ *       Expect results after 'blackbird'            *
+ *****************************************************/
+static void
+test_cursor_set_target_blackbird_next_results (EbSdbCursorFixture *fixture,
+					       gconstpointer  user_data)
+{
+	GSList *results;
+	GError *error = NULL;
+
+	/* Set the cursor to point exactly to Bobby Brown */
+	e_book_backend_sqlitedb_cursor_set_target_contact (((ESqliteDBFixture *) fixture)->ebsdb,
+							   fixture->cursor, fixture->contacts[16 -1]);
+
+	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+							  fixture->cursor, 5, &error);
+
+	if (error)
+		g_error ("Error fetching cursor results: %s", error->message);
+
+	print_results (results);
+
+	/* Assert that we got the results after blackbird */
+	g_assert_cmpint (g_slist_length (results), ==, 5);
+	assert_contacts_order (results,
+			       "sorted-18",
+			       "sorted-10",
+			       "sorted-14",
+			       "sorted-12",
+			       "sorted-13",
+			       NULL);
+
+	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_free (results);
+}
+
+/*****************************************************
+ *       Expect results before 'blackbird'           *
+ *****************************************************/
+static void
+test_cursor_set_target_blackbird_prev_results (EbSdbCursorFixture *fixture,
+					       gconstpointer  user_data)
+{
+	GSList *results;
+	GError *error = NULL;
+
+	/* Set the cursor to point exactly to Bobby Brown */
+	e_book_backend_sqlitedb_cursor_set_target_contact (((ESqliteDBFixture *) fixture)->ebsdb,
+							   fixture->cursor, fixture->contacts[16 -1]);
+
+	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+							  fixture->cursor, -5, &error);
+
+	if (error)
+		g_error ("Error fetching cursor results: %s", error->message);
+
+	print_results (results);
+
+	/* Assert that we got the results before blackbird */
+	g_assert_cmpint (g_slist_length (results), ==, 5);
+	assert_contacts_order (results,
+			       "sorted-17",
+			       "sorted-15",
+			       "sorted-8",
+			       "sorted-7",
+			       "sorted-3",
 			       NULL);
 
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
@@ -337,19 +221,28 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
-	setlocale (LC_ALL, "");
+	g_assert (g_setenv ("EDS_COLLATE", "en_US.UTF-8", TRUE));
 
-	g_test_add ("/EbSdbCursor/SetTarget/ResetCursor", CursorFixture, &book_closure,
-		    cursor_fixture_setup, test_cursor_set_target_reset_cursor, cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetTarget/Partial-J/NextResults", CursorFixture, &book_closure,
-		    cursor_fixture_setup, test_cursor_set_target_j_next_results, cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetTarget/Partial-J/PreviousResults", CursorFixture, &book_closure,
-		    cursor_fixture_setup, test_cursor_set_target_j_prev_results, cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetTarget/Exactly-Bobby-Brown/NextResults", CursorFixture, &book_closure,
-		    cursor_fixture_setup, test_cursor_set_target_bobby_brown_next_results, cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetTarget/Exactly-Bobby-Brown/PreviousResults", CursorFixture, &book_closure,
-		    cursor_fixture_setup, test_cursor_set_target_bobby_brown_prev_results, cursor_fixture_teardown);
+	g_test_add ("/EbSdbCursor/SetTarget/ResetCursor", EbSdbCursorFixture, &book_closure,
+		    e_sqlitedb_cursor_fixture_setup,
+		    test_cursor_set_target_reset_cursor,
+		    e_sqlitedb_cursor_fixture_teardown);
+	g_test_add ("/EbSdbCursor/SetTarget/Partial/C/NextResults", EbSdbCursorFixture, &book_closure,
+		    e_sqlitedb_cursor_fixture_setup,
+		    test_cursor_set_target_c_next_results,
+		    e_sqlitedb_cursor_fixture_teardown);
+	g_test_add ("/EbSdbCursor/SetTarget/Partial/C/PreviousResults", EbSdbCursorFixture, &book_closure,
+		    e_sqlitedb_cursor_fixture_setup,
+		    test_cursor_set_target_c_prev_results,
+		    e_sqlitedb_cursor_fixture_teardown);
+	g_test_add ("/EbSdbCursor/SetTarget/Exact/blackbird/NextResults", EbSdbCursorFixture, &book_closure,
+		    e_sqlitedb_cursor_fixture_setup,
+		    test_cursor_set_target_blackbird_next_results,
+		    e_sqlitedb_cursor_fixture_teardown);
+	g_test_add ("/EbSdbCursor/SetTarget/Exact/blackbird/PreviousResults", EbSdbCursorFixture, &book_closure,
+		    e_sqlitedb_cursor_fixture_setup,
+		    test_cursor_set_target_blackbird_prev_results,
+		    e_sqlitedb_cursor_fixture_teardown);
 
 	return e_test_server_utils_run ();
 }
