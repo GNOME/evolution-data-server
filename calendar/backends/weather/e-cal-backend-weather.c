@@ -248,6 +248,13 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 
 		location = e_source_weather_dup_location (extension);
 		priv->source = e_weather_source_new (location);
+		if (priv->source == NULL) {
+			g_warning (
+				"Invalid weather location '%s' "
+				"for calendar '%s'",
+				location,
+				e_source_get_display_name (e_source));
+		}
 		g_free (location);
 	}
 
@@ -256,14 +263,13 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 	if (priv->begin_retrival_id == g_source_get_id (source))
 		priv->begin_retrival_id = 0;
 
-	if (priv->is_loading)
-		return FALSE;
+	if (!priv->is_loading && priv->source != NULL) {
+		priv->is_loading = TRUE;
 
-	priv->is_loading = TRUE;
-
-	e_weather_source_parse (
-		priv->source, (EWeatherSourceFinished)
-		finished_retrieval_cb, cbw);
+		e_weather_source_parse (
+			priv->source, (EWeatherSourceFinished)
+			finished_retrieval_cb, cbw);
+	}
 
 	return FALSE;
 }
