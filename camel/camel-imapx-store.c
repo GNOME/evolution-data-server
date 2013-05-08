@@ -953,7 +953,7 @@ add_folders_to_summary (CamelIMAPXStore *istore,
 		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) |
 						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 
-		if (server->cinfo && !(server->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE))
+		if (CAMEL_IMAPX_LACK_CAPABILITY (server->cinfo, NAMESPACE))
 			istore->dir_sep = li->separator;
 
 		if (si->info.flags != new_flags) {
@@ -1080,7 +1080,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore,
 			if (sync)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 
-			if (server->cinfo && (server->cinfo->capa & IMAPX_CAPABILITY_LIST_EXTENDED) != 0)
+			if (CAMEL_IMAPX_HAVE_CAPABILITY (server->cinfo, LIST_EXTENDED))
 				list_ext = "RETURN (SUBSCRIBED)";
 
 			flags |= CAMEL_STORE_FOLDER_INFO_RECURSIVE;
