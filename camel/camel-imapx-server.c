@@ -3463,7 +3463,7 @@ imapx_in_idle (CamelIMAPXServer *is)
 static gboolean
 imapx_idle_supported (CamelIMAPXServer *is)
 {
-	return (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_IDLE) != 0 && is->use_idle);
+	return CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, IDLE) && is->use_idle;
 }
 
 // end IDLE
@@ -4062,7 +4062,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 
-		if (is->cinfo && !(is->cinfo->capa & IMAPX_CAPABILITY_STARTTLS)) {
+		if (CAMEL_IMAPX_LACK_CAPABILITY (is->cinfo, STARTTLS)) {
 			g_set_error (
 				&local_error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
@@ -4333,7 +4333,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		imapx_init_idle (is);
 
 	/* Fetch namespaces */
-	if (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE) != 0) {
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, NAMESPACE)) {
 		ic = camel_imapx_command_new (
 			is, "NAMESPACE", NULL, "NAMESPACE");
 		if (!imapx_command_run (is, ic, cancellable, error)) {
@@ -4344,7 +4344,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		camel_imapx_command_unref (ic);
 	}
 
-	if (use_qresync && is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) != 0) {
+	if (use_qresync && CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, QRESYNC)) {
 		ic = camel_imapx_command_new (
 			is, "ENABLE", NULL, "ENABLE CONDSTORE QRESYNC");
 		if (!imapx_command_run (is, ic, cancellable, error)) {
@@ -5784,7 +5784,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		} else
 		#endif
 		{
-			if (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_CONDSTORE) != 0)
+			if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, CONDSTORE))
 				ic = camel_imapx_command_new (
 					is, "STATUS", NULL,
 					"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT HIGHESTMODSEQ)", folder);
@@ -8364,7 +8364,7 @@ camel_imapx_server_update_quota_info (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (folder_name != NULL, FALSE);
 
-	if (is->cinfo && (is->cinfo->capa & IMAPX_CAPABILITY_QUOTA) == 0) {
+	if (CAMEL_IMAPX_LACK_CAPABILITY (is->cinfo, QUOTA)) {
 		g_set_error_literal (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 			_("IMAP server does not support quotas"));

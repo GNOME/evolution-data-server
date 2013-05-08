@@ -504,7 +504,7 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	if (type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
 		g_string_append_c (buffer, '{');
 		g_string_append_printf (buffer, "%u", ob_size);
-		if (ic->is->cinfo && ic->is->cinfo->capa & IMAPX_CAPABILITY_LITERALPLUS) {
+		if (CAMEL_IMAPX_HAVE_CAPABILITY (ic->is->cinfo, LITERALPLUS)) {
 			g_string_append_c (buffer, '+');
 		} else {
 			type &= ~CAMEL_IMAPX_COMMAND_LITERAL_PLUS;

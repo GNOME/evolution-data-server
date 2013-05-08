@@ -156,6 +156,14 @@ void		imapx_set_message_info_flags_for_new_message
 void		imapx_update_store_summary	(CamelFolder *folder);
 
 /* ********************************************************************** */
+
+/* Handy server capability test macros.
+ * Both return FALSE if capabilities are unknown. */
+#define CAMEL_IMAPX_HAVE_CAPABILITY(info, name) \
+	((info) != NULL && ((info)->capa & IMAPX_CAPABILITY_##name) != 0)
+#define CAMEL_IMAPX_LACK_CAPABILITY(info, name) \
+	((info) != NULL && ((info)->capa & IMAPX_CAPABILITY_##name) == 0)
+
 enum {
 	IMAPX_CAPABILITY_IMAP4			= (1 << 0),
 	IMAPX_CAPABILITY_IMAP4REV1		= (1 << 1),
