@@ -1531,7 +1531,8 @@ e_gdbus_proxy_call_sync (GDBusProxy *proxy,
 	sync_data_hash = g_object_get_data (G_OBJECT (proxy), SYNC_DATA_HASH_KEY);
 	if (!sync_data_hash) {
 		sync_data_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
-		g_object_set_data_full (G_OBJECT (proxy), SYNC_DATA_HASH_KEY, sync_data_hash,
+		g_object_set_data_full (
+			G_OBJECT (proxy), SYNC_DATA_HASH_KEY, sync_data_hash,
 			(GDestroyNotify) g_hash_table_destroy);
 	}
 	sync_opid_ident = GINT_TO_POINTER (sync_opid);

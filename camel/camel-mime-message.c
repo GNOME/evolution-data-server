@@ -1289,10 +1289,12 @@ camel_mime_message_has_attachment (CamelMimeMessage *message)
 }
 
 static void
-dumpline (const char *indent, guint8 *data, gsize data_len)
+dumpline (const gchar *indent,
+          guint8 *data,
+          gsize data_len)
 {
-	int j;
-	char *gutter;
+	gint j;
+	gchar *gutter;
 	guint gutter_size;
 
 	g_return_if_fail (data_len <= 16);

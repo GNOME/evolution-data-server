@@ -1143,9 +1143,9 @@ sync_folders (CamelIMAPXStore *istore,
 	}
 
 	/* In certain situations can happen that the function returns data,
-	   even either the operation was cancelled or an error was set,
-	   thus check for this and do not update local list of folders
-	   with incomplete data
+	 * even either the operation was cancelled or an error was set,
+	 * thus check for this and do not update local list of folders
+	 * with incomplete data
 	*/
 	if (g_cancellable_is_cancelled (cancellable) || local_error) {
 		g_hash_table_foreach (folders_from_server, imapx_get_folders_free, NULL);

@@ -950,9 +950,9 @@ camel_imapx_stream_skip (CamelIMAPXStream *is,
 
 gboolean
 camel_imapx_stream_skip_until (CamelIMAPXStream *is,
-				const gchar *delimiters,
-				GCancellable *cancellable,
-				GError **error)
+                                const gchar *delimiters,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	register guchar c;
 	guchar *p, *e;
