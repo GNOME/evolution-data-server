@@ -93,7 +93,7 @@ client_test_data_free (gpointer p)
 
 static void
 client_test_setup_custom (ClientTestFixture *fixture,
-			  gconstpointer user_data)
+                          gconstpointer user_data)
 {
 	fixture->parent.source_name = g_strdup ("custom-book");
 	e_test_server_utils_setup (&fixture->parent, user_data);
@@ -101,7 +101,7 @@ client_test_setup_custom (ClientTestFixture *fixture,
 
 static void
 client_test_setup_default (ClientTestFixture *fixture,
-			   gconstpointer user_data)
+                           gconstpointer user_data)
 {
 	fixture->parent.source_name = g_strdup ("default-book");
 	e_test_server_utils_setup (&fixture->parent, user_data);
@@ -136,13 +136,15 @@ add_client_test_sexp (const gchar *prefix,
 	data->phone_number_query = phone_number_query;
 
 	if (custom)
-		g_test_add (path, ClientTestFixture, data,
-			    client_test_setup_custom, func,
-			    client_test_teardown);
+		g_test_add (
+			path, ClientTestFixture, data,
+			client_test_setup_custom, func,
+			client_test_teardown);
 	else
-		g_test_add (path, ClientTestFixture, data,
-			    client_test_setup_default, func,
-			    client_test_teardown);
+		g_test_add (
+			path, ClientTestFixture, data,
+			client_test_setup_default, func,
+			client_test_teardown);
 
 	g_free (path);
 }
@@ -189,12 +191,12 @@ setup_book (ClientTestFixture *fixture)
 	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error))
 		g_error ("Failed to add test contacts");
 
-	g_slist_free_full (contacts, (GDestroyNotify)g_object_unref);
+	g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 }
 
 static void
 setup_test (ClientTestFixture *fixture,
-	    gconstpointer user_data)
+            gconstpointer user_data)
 {
 	setup_book (fixture);
 }
@@ -328,10 +330,12 @@ main (gint argc,
 	/* Before beginning, setup two books and populate them with contacts, one with
 	 * a customized summary and another without a customized summary
 	 */
-	g_test_add ("/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
-		    client_test_setup_default, setup_test, client_test_teardown);
-	g_test_add ("/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
-		    client_test_setup_custom, setup_test, client_test_teardown);
+	g_test_add (
+		"/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
+		client_test_setup_default, setup_test, client_test_teardown);
+	g_test_add (
+		"/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
+		client_test_setup_custom, setup_test, client_test_teardown);
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
 	 */

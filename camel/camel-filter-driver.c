@@ -1158,7 +1158,8 @@ close_folder (gpointer key,
 		/* FIXME Pass a GCancellable */
 		if (camel_folder_synchronize_sync (folder, FALSE, NULL,
 			(driver->priv->error != NULL) ? NULL : &driver->priv->error))
-			camel_folder_refresh_info_sync (folder, NULL,
+			camel_folder_refresh_info_sync (
+				folder, NULL,
 				(driver->priv->error != NULL) ? NULL : &driver->priv->error);
 		camel_folder_thaw (folder);
 		g_object_unref (folder);

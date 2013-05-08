@@ -66,9 +66,9 @@ offline_store_constructed (GObject *object)
 
 static void
 offline_store_get_property (GObject *object,
-			    guint property_id,
-			    GValue *value,
-			    GParamSpec *pspec)
+                            guint property_id,
+                            GValue *value,
+                            GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_ONLINE:

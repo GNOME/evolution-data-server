@@ -78,7 +78,7 @@ imapx_message_info_clone (CamelFolderSummary *s,
 
 static void
 imapx_message_info_free (CamelFolderSummary *summary,
-			 CamelMessageInfo *mi)
+                         CamelMessageInfo *mi)
 {
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) mi;
 

@@ -700,9 +700,9 @@ collect_columns_cb (gpointer ref,
 
 static gint
 get_count_cb (gpointer ref,
-	      gint n_cols,
-	      gchar **cols,
-	      gchar **name)
+              gint n_cols,
+              gchar **cols,
+              gchar **name)
 {
 	gint64 count = 0;
 	gint *ret = ref;
@@ -721,9 +721,9 @@ get_count_cb (gpointer ref,
 
 static gboolean
 check_folderid_exists (EBookBackendSqliteDB *ebsdb,
-		       const gchar *folderid,
-		       gboolean *exists,
-		       GError **error)
+                       const gchar *folderid,
+                       gboolean *exists,
+                       GError **error)
 {
 	gboolean success;
 	gint count = 0;
@@ -991,7 +991,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 				folderid);
 			stmt = sqlite3_mprintf (
 				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)", tmp, folderid,
-						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 			g_free (tmp);
@@ -1007,7 +1007,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 				folderid);
 			stmt = sqlite3_mprintf (
 				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_reverse)", tmp, folderid,
-						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 			g_free (tmp);
@@ -1016,11 +1016,13 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		if ((ebsdb->priv->summary_fields[i].index & INDEX_PHONE) != 0 &&
 		    ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
 			/* Derive index name from field & folder */
-			tmp = g_strdup_printf ("PINDEX_%s_%s",
-					       summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
-					       folderid);
-			stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_phone)", tmp, folderid,
-						summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+			tmp = g_strdup_printf (
+				"PINDEX_%s_%s",
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+				folderid);
+			stmt = sqlite3_mprintf (
+				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_phone)", tmp, folderid,
+				summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
 			success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 			sqlite3_free (stmt);
 			g_free (tmp);
@@ -1859,7 +1861,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 static void
 update_e164_attribute_params (EVCard *vcard,
-			      const gchar *default_region)
+                              const gchar *default_region)
 {
 	GList *attr_list;
 
@@ -3054,10 +3056,10 @@ extract_digits (const gchar *normal)
 
 static gchar *
 convert_string_value (EBookBackendSqliteDB *ebsdb,
-		      const gchar          *value,
-		      const gchar          *region,
-		      ConvertFlags          flags,
-		      MatchType             match)
+                      const gchar *value,
+                      const gchar *region,
+                      ConvertFlags flags,
+                      MatchType match)
 {
 	GString *str;
 	size_t len;
@@ -3145,14 +3147,14 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 
 static gchar *
 field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
-			   const gchar          *folderid,
-			   const gchar          *field_name_input,
-			   const gchar          *query_term_input,
-			   const gchar          *region,
-			   MatchType             match,
-			   gboolean             *is_list_attr,
-			   gchar               **query_term,
-			   gchar               **extra_term)
+                           const gchar *folderid,
+                           const gchar *field_name_input,
+                           const gchar *query_term_input,
+                           const gchar *region,
+                           MatchType match,
+                           gboolean *is_list_attr,
+                           gchar **query_term,
+                           gchar **extra_term)
 {
 	gint summary_index;
 	gchar *field_name = NULL;

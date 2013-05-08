@@ -1642,7 +1642,7 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 		/* Output debug XML */
 		if (__e_book_backend_google_debug__) {
 			gchar *xml;
-	
+
 			xml = gdata_parsable_get_xml (
 				GDATA_PARSABLE (updated_entry));
 			__debug__ ("After re-querying:\n%s", xml);
@@ -1856,7 +1856,7 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 		/* Output debug XML */
 		if (__e_book_backend_google_debug__) {
 			gchar *xml;
-	
+
 			xml = gdata_parsable_get_xml (
 				GDATA_PARSABLE (updated_entry));
 			__debug__ ("After re-querying:\n%s", xml);

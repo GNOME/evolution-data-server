@@ -286,8 +286,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 			 * previous test case).
 			 */
 			if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-				ESource *source = e_source_registry_ref_source (pair->fixture->registry,
-										pair->fixture->source_name);
+				ESource *source = e_source_registry_ref_source (
+					pair->fixture->registry,
+					pair->fixture->source_name);
 
 				g_clear_error (&error);
 
