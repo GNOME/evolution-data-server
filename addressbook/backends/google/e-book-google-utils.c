@@ -904,7 +904,6 @@ static const struct RelTypeMap rel_type_map_phone[] = {
 	{ "callback", { EVC_X_CALLBACK, NULL }},
 	{ "car", { "CAR", NULL }},
 	{ "company_main", {EVC_X_COMPANY, NULL }},
-	{ "fax", { "FAX", NULL }},
 	{ "isdn", { "ISDN", NULL }},
 	{ "main", { "PREF", NULL }},
 	{ "mobile", { "CELL", NULL }},
@@ -913,7 +912,12 @@ static const struct RelTypeMap rel_type_map_phone[] = {
 	{ "pager", { "PAGER", NULL }},
 	{ "radio", { EVC_X_RADIO, NULL }},
 	{ "telex", { EVC_X_TELEX, NULL }},
-	{ "tty_tdd", { EVC_X_TTYTDD, NULL }}
+	{ "tty_tdd", { EVC_X_TTYTDD, NULL }},
+
+	/* XXX This has no clear mapping to an EContact field.
+	 *     It's listed here for completeness, but ordered
+	 *     last so that "other_fax" is preferred. */
+	{ "fax", { "FAX", NULL }}
 };
 
 static const struct RelTypeMap rel_type_map_im[] = {
