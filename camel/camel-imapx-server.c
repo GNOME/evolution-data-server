@@ -142,6 +142,7 @@ struct _CopyMessagesData {
 	CamelFolder *dest;
 	GPtrArray *uids;
 	gboolean delete_originals;
+	gboolean use_move_command;
 	gint index;
 	gint last_index;
 	struct _uidset_state uidset;
@@ -4717,7 +4718,10 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
 
 	uids = data->uids;
 
-	ic = camel_imapx_command_new (is, "COPY", folder, "UID COPY ");
+	if (data->use_move_command)
+		ic = camel_imapx_command_new (is, "MOVE", folder, "UID MOVE ");
+	else
+		ic = camel_imapx_command_new (is, "COPY", folder, "UID COPY ");
 	ic->complete = imapx_command_copy_messages_step_done;
 	camel_imapx_command_set_job (ic, job);
 	ic->pri = job->pri;
@@ -7564,6 +7568,14 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	data->dest = g_object_ref (dest);
 	data->uids = g_ptr_array_new ();
 	data->delete_originals = delete_originals;
+
+	/* If we're moving messages, prefer "UID MOVE" if supported. */
+	if (data->delete_originals) {
+		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, MOVE)) {
+			data->delete_originals = FALSE;
+			data->use_move_command = TRUE;
+		}
+	}
 
 	for (ii = 0; ii < uids->len; ii++)
 		g_ptr_array_add (data->uids, g_strdup (uids->pdata[ii]));

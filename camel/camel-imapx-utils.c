@@ -373,7 +373,8 @@ struct {
 	{ "QRESYNC", IMAPX_CAPABILITY_QRESYNC },
 	{ "LIST-EXTENDED", IMAPX_CAPABILITY_LIST_EXTENDED },
 	{ "LIST-STATUS", IMAPX_CAPABILITY_LIST_STATUS },
-	{ "QUOTA", IMAPX_CAPABILITY_QUOTA }
+	{ "QUOTA", IMAPX_CAPABILITY_QUOTA },
+	{ "MOVE", IMAPX_CAPABILITY_MOVE }
 };
 
 static GMutex capa_htable_lock;         /* capabilities lookup table lock */
