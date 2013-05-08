@@ -4,7 +4,7 @@ ebook_backend_LTLIBRARIES = libebookbackendgoogle.la
 
 libebookbackendgoogle_la_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
-	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" \
+	-DG_LOG_DOMAIN=\"e-book-backend-google\" \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-I$(top_srcdir)/addressbook \

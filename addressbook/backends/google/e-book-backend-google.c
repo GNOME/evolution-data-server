@@ -78,9 +78,6 @@ struct _EBookBackendGooglePrivate {
 	GHashTable *cancellables;
 };
 
-gboolean __e_book_backend_google_debug__;
-#define __debug__(...) (__e_book_backend_google_debug__ ? g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, __VA_ARGS__) : (void) 0)
-
 static void
 data_book_error_from_gdata_error (GError **error,
                                   const GError *gdata_error)
@@ -446,7 +443,7 @@ finish_operation (EBookBackend *backend,
 
 	if (gdata_error != NULL) {
 		data_book_error_from_gdata_error (&book_error, gdata_error);
-		__debug__ ("Book view query failed: %s", book_error->message);
+		g_debug ("Book view query failed: %s", book_error->message);
 	}
 
 	if (g_hash_table_remove (priv->cancellables, GUINT_TO_POINTER (opid))) {
@@ -467,7 +464,7 @@ process_contact_finish (EBookBackend *backend,
 	EContact *new_contact;
 	gboolean was_cached;
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	was_cached = cache_has_contact (backend, gdata_entry_get_id (entry));
 	new_contact = cache_add_contact (backend, entry);
@@ -494,17 +491,17 @@ typedef struct {
 static void
 check_get_new_contacts_finished (GetContactsData *data)
 {
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* Are we finished yet? */
 	if (data->update_complete == FALSE || data->num_contacts_pending_photos > 0) {
-		__debug__ (
+		g_debug (
 			"Bailing from check_get_new_contacts_finished(): update_complete: %u, num_contacts_pending_photos: %u, data: %p",
 			data->update_complete, data->num_contacts_pending_photos, data);
 		return;
 	}
 
-	__debug__ ("Proceeding with check_get_new_contacts_finished() for data: %p.", data);
+	g_debug ("Proceeding with check_get_new_contacts_finished() for data: %p.", data);
 
 	finish_operation (data->backend, -1, data->gdata_error);
 
@@ -527,7 +524,7 @@ static void
 process_contact_photo_cancelled_cb (GCancellable *parent_cancellable,
                                     GCancellable *photo_cancellable)
 {
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	g_cancellable_cancel (photo_cancellable);
 }
@@ -543,7 +540,7 @@ process_contact_photo_cb (GDataContactsContact *gdata_contact,
 	gchar *photo_content_type = NULL;
 	GError *error = NULL;
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* Finish downloading the photo */
 	photo_data = gdata_contacts_contact_get_photo_finish (gdata_contact, async_result, &photo_length, &photo_content_type, &error);
@@ -564,7 +561,7 @@ process_contact_photo_cb (GDataContactsContact *gdata_contact,
 		photo_content_type = NULL;
 	} else {
 		/* Error. */
-		__debug__ ("Downloading contact photo for '%s' failed: %s", gdata_entry_get_id (GDATA_ENTRY (gdata_contact)), error->message);
+		g_debug ("Downloading contact photo for '%s' failed: %s", gdata_entry_get_id (GDATA_ENTRY (gdata_contact)), error->message);
 		g_error_free (error);
 	}
 
@@ -596,7 +593,7 @@ process_contact_cb (GDataEntry *entry,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	uid = gdata_entry_get_id (entry);
 	is_deleted = gdata_contacts_contact_is_deleted (GDATA_CONTACTS_CONTACT (entry));
 
@@ -684,11 +681,11 @@ get_new_contacts_cb (GDataService *service,
 	GDataFeed *feed;
 	GError *gdata_error = NULL;
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	feed = gdata_service_query_finish (service, result, &gdata_error);
-	if (__e_book_backend_google_debug__ && feed) {
+	if (feed != NULL) {
 		GList *entries = gdata_feed_get_entries (feed);
-		__debug__ ("Feed has %d entries", g_list_length (entries));
+		g_debug ("Feed has %d entries", g_list_length (entries));
 	}
 
 	if (feed != NULL)
@@ -723,7 +720,7 @@ get_new_contacts (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	g_return_if_fail (backend_is_authorized (backend));
 
 	/* Sort out update times */
@@ -778,7 +775,7 @@ process_group (GDataEntry *entry,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	uid = gdata_entry_get_id (entry);
 	name = e_contact_sanitise_google_group_name (entry);
 
@@ -786,7 +783,7 @@ process_group (GDataEntry *entry,
 	is_deleted = gdata_contacts_group_is_deleted (GDATA_CONTACTS_GROUP (entry));
 
 	if (system_group_id) {
-		__debug__ ("Processing %ssystem group %s, %s", is_deleted ? "(deleted) " : "", system_group_id, uid);
+		g_debug ("Processing %ssystem group %s, %s", is_deleted ? "(deleted) " : "", system_group_id, uid);
 
 		if (is_deleted) {
 			gchar *entry_id = g_hash_table_lookup (priv->system_groups_by_id, system_group_id);
@@ -813,11 +810,11 @@ process_group (GDataEntry *entry,
 	}
 
 	if (is_deleted) {
-		__debug__ ("Processing (deleting) group %s, %s", uid, name);
+		g_debug ("Processing (deleting) group %s, %s", uid, name);
 		g_hash_table_remove (priv->groups_by_id, uid);
 		g_hash_table_remove (priv->groups_by_name, name);
 	} else {
-		__debug__ ("Processing group %s, %s", uid, name);
+		g_debug ("Processing group %s, %s", uid, name);
 		g_hash_table_replace (priv->groups_by_id, e_contact_sanitise_google_group_id (uid), g_strdup (name));
 		g_hash_table_replace (priv->groups_by_name, g_strdup (name), e_contact_sanitise_google_group_id (uid));
 	}
@@ -836,11 +833,11 @@ get_groups_cb (GDataService *service,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	feed = gdata_service_query_finish (service, result, &gdata_error);
-	if (__e_book_backend_google_debug__ && feed) {
+	if (feed != NULL) {
 		GList *entries = gdata_feed_get_entries (feed);
-		__debug__ ("Group feed has %d entries", g_list_length (entries));
+		g_debug ("Group feed has %d entries", g_list_length (entries));
 	}
 
 	if (feed != NULL)
@@ -866,7 +863,7 @@ get_groups (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	g_return_if_fail (backend_is_authorized (backend));
 
 	/* Build our query */
@@ -904,7 +901,7 @@ get_groups_sync (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 	g_return_if_fail (backend_is_authorized (backend));
 
 	/* Build our query, always fetch all of them */
@@ -949,7 +946,7 @@ create_group (EBookBackend *backend,
 	group = GDATA_ENTRY (gdata_contacts_group_new (NULL));
 
 	gdata_entry_set_title (group, category_name);
-	__debug__ ("Creating group %s", category_name);
+	g_debug ("Creating group %s", category_name);
 
 	/* Insert the new group */
 	new_group = GDATA_ENTRY (
@@ -968,7 +965,7 @@ create_group (EBookBackend *backend,
 	g_hash_table_replace (priv->groups_by_name, g_strdup (category_name), e_contact_sanitise_google_group_id (uid));
 	g_object_unref (new_group);
 
-	__debug__ ("...got UID %s", uid);
+	g_debug ("...got UID %s", uid);
 
 	return uid;
 }
@@ -987,7 +984,7 @@ refresh_local_cache_cb (ESource *source,
 {
 	EBookBackend *backend = user_data;
 
-	__debug__ ("Invoking cache refresh");
+	g_debug ("Invoking cache refresh");
 
 	get_groups (backend);
 	get_new_contacts (backend);
@@ -1001,12 +998,12 @@ cache_refresh_if_needed (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	is_online = e_backend_get_online (E_BACKEND (backend));
 
 	if (!is_online || !backend_is_authorized (backend)) {
-		__debug__ ("We are not connected to Google%s.", (!is_online) ? " (offline mode)" : "");
+		g_debug ("We are not connected to Google%s.", (!is_online) ? " (offline mode)" : "");
 		return;
 	}
 
@@ -1228,7 +1225,7 @@ google_cancel_all_operations (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	if (!priv->cancellables)
 		return;
@@ -1249,7 +1246,7 @@ e_book_backend_google_notify_online_cb (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	is_online = e_backend_get_online (E_BACKEND (backend));
 
@@ -1279,7 +1276,7 @@ book_backend_google_dispose (GObject *object)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (object);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* Cancel all outstanding operations */
 	google_cancel_all_operations (E_BOOK_BACKEND (object));
@@ -1310,7 +1307,7 @@ book_backend_google_finalize (GObject *object)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (object);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	if (priv->cancellables) {
 		g_hash_table_destroy (priv->groups_by_id);
@@ -1328,7 +1325,7 @@ static gchar *
 book_backend_google_get_backend_property (EBookBackend *backend,
                                             const gchar *prop_name)
 {
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
@@ -1481,7 +1478,7 @@ book_backend_google_open_sync (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	if (priv->cancellables && backend_is_authorized (backend))
 		return TRUE;
@@ -1568,9 +1565,9 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 		return FALSE;
 	}
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
-	__debug__ ("Creating: %s", vcards[0]);
+	g_debug ("Creating: %s", vcards[0]);
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 		g_set_error_literal (
@@ -1598,7 +1595,7 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 
 	/* Debug XML output */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-	__debug__ ("new entry with xml: %s", xml);
+	g_debug ("new entry with xml: %s", xml);
 	g_free (xml);
 
 	new_contact = gdata_contacts_service_insert_contact (
@@ -1617,6 +1614,7 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 	photo = g_object_steal_data (G_OBJECT (entry), "photo");
 	if (photo != NULL) {
 		GDataEntry *updated_entry;
+		gchar *xml;
 
 		updated_entry = update_contact_photo (
 			new_contact,
@@ -1630,7 +1628,7 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 			FALSE);
 
 		if (gdata_error != NULL) {
-			__debug__ (
+			g_debug (
 				"Uploading contact photo "
 				"for '%s' failed: %s",
 				gdata_entry_get_id (GDATA_ENTRY (new_contact)),
@@ -1640,14 +1638,10 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 		}
 
 		/* Output debug XML */
-		if (__e_book_backend_google_debug__) {
-			gchar *xml;
-
-			xml = gdata_parsable_get_xml (
-				GDATA_PARSABLE (updated_entry));
-			__debug__ ("After re-querying:\n%s", xml);
-			g_free (xml);
-		}
+		xml = gdata_parsable_get_xml (
+			GDATA_PARSABLE (updated_entry));
+		g_debug ("After re-querying:\n%s", xml);
+		g_free (xml);
 
 		g_object_unref (new_contact);
 		new_contact = GDATA_CONTACTS_CONTACT (updated_entry);
@@ -1696,6 +1690,7 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 	GDataEntry *new_contact;
 	const gchar *uid;
 	gboolean success = TRUE;
+	gchar *xml;
 	GError *gdata_error = NULL;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
@@ -1703,9 +1698,9 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 	authorization_domain =
 		gdata_contacts_service_get_primary_authorization_domain ();
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
-	__debug__ ("Updating: %s", vcards[0]);
+	g_debug ("Updating: %s", vcards[0]);
 
 	/* We make the assumption that the vCard list we're passed is
 	 * always exactly one element long, since we haven't specified
@@ -1739,7 +1734,7 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 	cached_contact = cache_get_contact (backend, uid, &entry);
 
 	if (cached_contact == NULL) {
-		__debug__ (
+		g_debug (
 			"Modifying contact failed: "
 			"Contact with uid %s not found in cache.", uid);
 		g_object_unref (contact);
@@ -1764,11 +1759,9 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 		_create_group, backend);
 
 	/* Output debug XML */
-	if (__e_book_backend_google_debug__) {
-		gchar *xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
-		__debug__ ("Before:\n%s", xml);
-		g_free (xml);
-	}
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+	g_debug ("Before:\n%s", xml);
+	g_free (xml);
 
 	photo = g_object_steal_data (G_OBJECT (entry), "photo");
 
@@ -1810,7 +1803,7 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 		cancellable, &gdata_error);
 
 	if (new_contact == NULL) {
-		__debug__ (
+		g_debug (
 			"Modifying contact failed: %s",
 			gdata_error->message);
 		success = FALSE;
@@ -1818,13 +1811,9 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 	}
 
 	/* Output debug XML */
-	if (__e_book_backend_google_debug__) {
-		gchar *xml;
-
-		xml = gdata_parsable_get_xml (GDATA_PARSABLE (new_contact));
-		__debug__ ("After:\n%s", xml);
-		g_free (xml);
-	}
+	xml = gdata_parsable_get_xml (GDATA_PARSABLE (new_contact));
+	g_debug ("After:\n%s", xml);
+	g_free (xml);
 
 	/* Add a photo for the new contact, if appropriate. This has to be
 	 * done before we respond to the contact creation operation so that
@@ -1844,7 +1833,7 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 			FALSE);
 
 		if (gdata_error != NULL) {
-			__debug__ (
+			g_debug (
 				"Uploading contact photo "
 				"for '%s' failed: %s",
 				gdata_entry_get_id (new_contact),
@@ -1854,14 +1843,10 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 		}
 
 		/* Output debug XML */
-		if (__e_book_backend_google_debug__) {
-			gchar *xml;
-
-			xml = gdata_parsable_get_xml (
-				GDATA_PARSABLE (updated_entry));
-			__debug__ ("After re-querying:\n%s", xml);
-			g_free (xml);
-		}
+		xml = gdata_parsable_get_xml (
+			GDATA_PARSABLE (updated_entry));
+		g_debug ("After re-querying:\n%s", xml);
+		g_free (xml);
 
 		g_object_unref (new_contact);
 		new_contact = updated_entry;
@@ -1916,7 +1901,7 @@ book_backend_google_remove_contacts_sync (EBookBackend *backend,
 	authorization_domain =
 		gdata_contacts_service_get_primary_authorization_domain ();
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* We make the assumption that the ID list we're passed is always
 	 * exactly one element long, since we haven't specified "bulk-removes"
@@ -1981,7 +1966,7 @@ book_backend_google_get_contact_sync (EBookBackend *backend,
 {
 	EContact *contact;
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* Get the contact */
 	contact = cache_get_contact (backend, uid, NULL);
@@ -2006,7 +1991,7 @@ book_backend_google_get_contact_list_sync (EBookBackend *backend,
 	EBookBackendSExp *sexp;
 	GQueue queue = G_QUEUE_INIT;
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	sexp = e_book_backend_sexp_new (query);
 
@@ -2046,7 +2031,7 @@ book_backend_google_start_view (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	priv->bookviews = g_list_append (priv->bookviews, bookview);
 
@@ -2058,7 +2043,7 @@ book_backend_google_start_view (EBookBackend *backend,
 
 	/* Get the contacts */
 	cache_get_contacts (backend, &queue);
-	__debug__ (
+	g_debug (
 		"%d contacts found in cache",
 		g_queue_get_length (&queue));
 
@@ -2084,7 +2069,7 @@ book_backend_google_stop_view (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* Remove the view from the list of active views */
 	if ((view = g_list_find (priv->bookviews, bookview)) != NULL) {
@@ -2107,7 +2092,7 @@ book_backend_google_try_password_sync (ESourceAuthenticator *authenticator,
 	gchar *user;
 	GError *local_error = NULL;
 
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	/* We should not have gotten here if we're offline. */
 	g_return_val_if_fail (
@@ -2172,8 +2157,6 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 	backend_class->get_contact_list_sync = book_backend_google_get_contact_list_sync;
 	backend_class->start_view = book_backend_google_start_view;
 	backend_class->stop_view = book_backend_google_stop_view;
-
-	__e_book_backend_google_debug__ = g_getenv ("GOOGLE_BACKEND_DEBUG") ? TRUE : FALSE;
 }
 
 static void
@@ -2185,7 +2168,7 @@ e_book_backend_google_source_authenticator_init (ESourceAuthenticatorInterface *
 static void
 e_book_backend_google_init (EBookBackendGoogle *backend)
 {
-	__debug__ (G_STRFUNC);
+	g_debug (G_STRFUNC);
 
 	backend->priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
