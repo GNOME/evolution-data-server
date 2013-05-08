@@ -4649,9 +4649,14 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	i = data->index;
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
-		g_prefix_error (
-			error, "%s: ",
-			_("Error copying messages"));
+		if (data->use_move_command)
+			g_prefix_error (
+				error, "%s: ",
+				_("Error moving messages"));
+		else
+			g_prefix_error (
+				error, "%s: ",
+				_("Error copying messages"));
 		success = FALSE;
 		goto exit;
 	}
