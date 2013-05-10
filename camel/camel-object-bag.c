@@ -87,39 +87,6 @@ key_reservation_free (CamelObjectBag *bag,
 }
 
 static void
-object_bag_toggle_notify (gpointer user_data,
-                          GObject *object,
-                          gboolean is_last_ref)
-{
-	CamelObjectBag *bag = user_data;
-	gpointer key;
-
-	if (is_last_ref) {
-		g_mutex_lock (&bag->mutex);
-
-		/* first remove from bag */
-		key = g_hash_table_lookup (bag->key_table, object);
-		if (key != NULL) {
-			g_hash_table_remove (bag->key_table, object);
-			g_hash_table_remove (bag->object_table, key);
-		}
-
-		g_mutex_unlock (&bag->mutex);
-
-		/* then free the object */
-		g_object_remove_toggle_ref (object, object_bag_toggle_notify, bag);
-	}
-}
-
-static void
-object_bag_toggle_unref (gpointer key,
-                         GObject *object,
-                         CamelObjectBag *bag)
-{
-	g_object_remove_toggle_ref (object, object_bag_toggle_notify, bag);
-}
-
-static void
 object_bag_unreserve (CamelObjectBag *bag,
                       gconstpointer key)
 {
@@ -134,6 +101,53 @@ object_bag_unreserve (CamelObjectBag *bag,
 		g_cond_signal (&reservation->cond);
 	} else
 		key_reservation_free (bag, reservation);
+}
+
+/* Ick. We need to store the original gobject pointer too, since that's
+   used as the key in one of the hash tables. So to clean up after the
+   object dies and the GWeakRef starts returning NULL, we'll need to
+   know where it *was*. This is safe because we'll always check and
+   avoid adding a duplicate. But still, ick. */
+typedef struct {
+	GWeakRef ref;
+	gpointer obj;
+	CamelObjectBag *bag;
+} ObjRef;
+
+static void
+object_bag_notify (CamelObjectBag *bag,
+		   GObject *where_the_object_was)
+{
+	gconstpointer key;
+
+	g_mutex_lock (&bag->mutex);
+
+	key = g_hash_table_lookup (bag->key_table, where_the_object_was);
+	if (key != NULL) {
+		g_hash_table_remove (bag->key_table, where_the_object_was);
+		g_hash_table_remove (bag->object_table, key);
+	}
+
+	g_mutex_unlock (&bag->mutex);
+}
+
+/* Properly destroy an ObjRef as it's freed from the hash table */
+static void
+wref_free_func (gpointer p)
+{
+	ObjRef *ref = p;
+	GObject *obj = g_weak_ref_get (&ref->ref);
+
+	if (obj) {
+		/* The object is being removed from the bag while it's
+		   still alive, e.g. by camel_object_bag_remove()
+		   or camel_object_bag_destroy(). Drop the weak_ref. */
+		g_object_weak_unref (obj, (GWeakNotify) object_bag_notify,
+				     ref->bag);
+		g_object_unref (obj);
+	}
+	g_weak_ref_clear (&ref->ref);
+	g_slice_free (ObjRef, ref);
 }
 
 /**
@@ -172,7 +186,7 @@ camel_object_bag_new (GHashFunc key_hash_func,
 	object_table = g_hash_table_new_full (
 		key_hash_func, key_equal_func,
 		(GDestroyNotify) key_free_func,
-		(GDestroyNotify) NULL);
+		(GDestroyNotify) wref_free_func);
 
 	bag = g_slice_new0 (CamelObjectBag);
 	bag->key_table = key_table;
@@ -202,7 +216,8 @@ camel_object_bag_get (CamelObjectBag *bag,
                       gconstpointer key)
 {
 	KeyReservation *reservation;
-	gpointer object;
+	ObjRef *ref;
+	gpointer object = NULL;
 
 	g_return_val_if_fail (bag != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
@@ -210,11 +225,17 @@ camel_object_bag_get (CamelObjectBag *bag,
 	g_mutex_lock (&bag->mutex);
 
 	/* Look for the key in the bag. */
-	object = g_hash_table_lookup (bag->object_table, key);
-	if (object != NULL) {
-		g_object_ref (object);
-		g_mutex_unlock (&bag->mutex);
-		return object;
+	ref = g_hash_table_lookup (bag->object_table, key);
+	if (ref != NULL) {
+		object = g_weak_ref_get (&ref->ref);
+		if (object != NULL) {
+			g_mutex_unlock (&bag->mutex);
+			return object;
+		}
+
+		/* Remove stale reference to dead object. */
+		g_hash_table_remove (bag->key_table, ref->obj);
+		g_hash_table_remove (bag->object_table, key);
 	}
 
 	/* Check if the key has been reserved. */
@@ -232,9 +253,15 @@ camel_object_bag_get (CamelObjectBag *bag,
 	reservation->waiters--;
 
 	/* Check if an object was added by another thread. */
-	object = g_hash_table_lookup (bag->object_table, key);
-	if (object != NULL)
-		g_object_ref (object);
+	ref = g_hash_table_lookup (bag->object_table, key);
+	if (ref != NULL) {
+		object = g_weak_ref_get (&ref->ref);
+		if (object == NULL) {
+			/* Remove stale reference to dead object. */
+			g_hash_table_remove (bag->key_table, ref->obj);
+			g_hash_table_remove (bag->object_table, key);
+		}
+	}
 
 	/* We're not reserving it. */
 	reservation->owner = g_thread_self ();
@@ -263,16 +290,17 @@ gpointer
 camel_object_bag_peek (CamelObjectBag *bag,
                        gconstpointer key)
 {
-	gpointer object;
+	gpointer object = NULL;
+	ObjRef *ref;
 
 	g_return_val_if_fail (bag != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
 	g_mutex_lock (&bag->mutex);
 
-	object = g_hash_table_lookup (bag->object_table, key);
-	if (object != NULL)
-		g_object_ref (object);
+	ref = g_hash_table_lookup (bag->object_table, key);
+	if (ref != NULL)
+		object = g_weak_ref_get (&ref->ref);
 
 	g_mutex_unlock (&bag->mutex);
 
@@ -299,7 +327,8 @@ camel_object_bag_reserve (CamelObjectBag *bag,
                           gconstpointer key)
 {
 	KeyReservation *reservation;
-	gpointer object;
+	ObjRef *ref;
+	gpointer object = NULL;
 
 	g_return_val_if_fail (bag != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
@@ -307,11 +336,17 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 	g_mutex_lock (&bag->mutex);
 
 	/* If object for key already exists, return it immediately. */
-	object = g_hash_table_lookup (bag->object_table, key);
-	if (object != NULL) {
-		g_object_ref (object);
-		g_mutex_unlock (&bag->mutex);
-		return object;
+	ref = g_hash_table_lookup (bag->object_table, key);
+	if (ref != NULL) {
+		object = g_weak_ref_get (&ref->ref);
+		if (object != NULL) {
+			g_mutex_unlock (&bag->mutex);
+			return object;
+		}
+
+		/* Remove stale reference to dead object. */
+		g_hash_table_remove (bag->key_table, ref->obj);
+		g_hash_table_remove (bag->object_table, key);
 	}
 
 	/* If no such key exists in the bag, create a reservation. */
@@ -330,16 +365,49 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 	reservation->waiters--;
 
 	/* Check if the object was added by another thread. */
-	object = g_hash_table_lookup (bag->object_table, key);
-	if (object != NULL) {
-		/* We have an object; no need to reserve the key. */
-		object_bag_unreserve (bag, key);
-		g_object_ref (object);
+	ref = g_hash_table_lookup (bag->object_table, key);
+	if (ref != NULL) {
+		object = g_weak_ref_get (&ref->ref);
+		if (object != NULL) {
+			/* We have an object; no need to reserve the key. */
+			object_bag_unreserve (bag, key);
+		} else {
+			/* Remove stale reference to dead object. */
+			g_hash_table_remove (bag->key_table, ref->obj);
+			g_hash_table_remove (bag->object_table, key);
+		}
 	}
 
 	g_mutex_unlock (&bag->mutex);
 
 	return object;
+}
+
+static gboolean
+object_in_bag (CamelObjectBag *bag, gpointer object)
+{
+	gconstpointer key;
+	ObjRef *ref;
+	GObject *obj2;
+
+	key = g_hash_table_lookup (bag->key_table, object);
+	if (key == NULL)
+		return FALSE;
+
+	ref = g_hash_table_lookup (bag->object_table, key);
+	if (ref == NULL)
+		return FALSE;
+
+	obj2 = g_weak_ref_get (&ref->ref);
+	if (obj2 == NULL) {
+		/* Remove stale reference to dead object. */
+		g_hash_table_remove (bag->key_table, object);
+		g_hash_table_remove (bag->object_table, key);
+	} else {
+		g_object_unref (obj2);
+	}
+
+	return obj2 == object;
 }
 
 /**
@@ -362,17 +430,24 @@ camel_object_bag_add (CamelObjectBag *bag,
 
 	g_mutex_lock (&bag->mutex);
 
-	if (g_hash_table_lookup (bag->key_table, object) == NULL) {
+	/* Check it's the *same* object, not an old one at the same address */
+	if (!object_in_bag (bag, object)) {
+		ObjRef *ref;
 		gpointer copied_key;
 
+		ref = g_slice_new (ObjRef);
+		ref->bag = bag;
+		/* We need to stash a 'raw' pointer since that's the key we use
+		   in the key_table */
+		ref->obj = object;
+		g_weak_ref_init (&ref->ref, object);
 		copied_key = bag->key_copy_func (key);
 		g_hash_table_insert (bag->key_table, object, copied_key);
-		g_hash_table_insert (bag->object_table, copied_key, object);
+		g_hash_table_insert (bag->object_table, copied_key, ref);
 		object_bag_unreserve (bag, key);
 
-		g_object_add_toggle_ref (
-			G_OBJECT (object),
-			object_bag_toggle_notify, bag);
+		g_object_weak_ref (G_OBJECT (object),
+				   (GWeakNotify) object_bag_notify, bag);
 	}
 
 	g_mutex_unlock (&bag->mutex);
@@ -416,6 +491,7 @@ camel_object_bag_rekey (CamelObjectBag *bag,
                         gconstpointer new_key)
 {
 	gpointer key;
+	ObjRef *ref;
 
 	g_return_if_fail (bag != NULL);
 	g_return_if_fail (G_IS_OBJECT (object));
@@ -426,12 +502,13 @@ camel_object_bag_rekey (CamelObjectBag *bag,
 	key = g_hash_table_lookup (bag->key_table, object);
 	if (key != NULL) {
 		/* Remove the old key. */
-		g_hash_table_remove (bag->object_table, key);
+		ref = g_hash_table_lookup (bag->object_table, key);
+		g_hash_table_steal (bag->object_table, key);
 		g_hash_table_remove (bag->key_table, object);
 
 		/* Insert the new key. */
 		key = bag->key_copy_func (new_key);
-		g_hash_table_insert (bag->object_table, key, object);
+		g_hash_table_insert (bag->object_table, key, ref);
 		g_hash_table_insert (bag->key_table, object, key);
 	} else
 		g_warn_if_reached ();
@@ -471,7 +548,10 @@ camel_object_bag_list (CamelObjectBag *bag)
 
 	values = g_hash_table_get_values (bag->object_table);
 	while (values != NULL) {
-		g_ptr_array_add (array, g_object_ref (values->data));
+		ObjRef *ref = values->data;
+		GObject *obj = g_weak_ref_get (&ref->ref);
+		if (obj)
+			g_ptr_array_add (array, obj);
 		values = g_list_delete_link (values, values);
 	}
 
@@ -500,7 +580,6 @@ camel_object_bag_remove (CamelObjectBag *bag,
 
 	key = g_hash_table_lookup (bag->key_table, object);
 	if (key != NULL) {
-		object_bag_toggle_unref (key, object, bag);
 		g_hash_table_remove (bag->key_table, object);
 		g_hash_table_remove (bag->object_table, key);
 	}
@@ -520,11 +599,6 @@ camel_object_bag_destroy (CamelObjectBag *bag)
 {
 	g_return_if_fail (bag != NULL);
 	g_return_if_fail (bag->reserved == NULL);
-
-	/* Drop remaining toggle references. */
-	g_hash_table_foreach (
-		bag->object_table, (GHFunc)
-		object_bag_toggle_unref, bag);
 
 	g_hash_table_destroy (bag->key_table);
 	g_hash_table_destroy (bag->object_table);
