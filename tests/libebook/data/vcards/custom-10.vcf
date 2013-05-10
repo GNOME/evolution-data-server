@@ -1,0 +1,5 @@
+BEGIN:VCARD
+N:Morrison;Jim
+TEL;HOME:1 800 ELEPHANT
+EMAIL;TYPE=home,work:jim@morrison.com
+END:VCARD
