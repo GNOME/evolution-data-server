@@ -69,7 +69,7 @@ static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, 
 #  define CHECK_UNSUPPORTED_ERROR(data) (((ClientTestData *)(data))->phone_number_query != FALSE)
 #endif
 
-#define N_CONTACTS 9
+#define N_CONTACTS 12
 
 typedef struct {
 	ETestServerClosure parent;
@@ -387,7 +387,7 @@ main (gint argc,
 				E_CONTACT_FULL_NAME,
 				E_BOOK_QUERY_BEGINS_WITH,
 				"B"),
-			2,
+			3,
 			suites[i].direct,
 			suites[i].custom,
 			FALSE);
@@ -626,6 +626,103 @@ main (gint argc,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
+
+
+
+		/*********************************************
+		 *             REGEX QUERIES FOLLOW          *
+		 *********************************************/
+		add_client_test (
+			suites[i].prefix,
+			"/Regex/Normal/.*jack.*",
+			suites[i].func,
+			e_book_query_field_test (
+			        E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_REGEX_NORMAL,
+				".*jack.*"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Regex/Normal/Keypad/^[jkl5][ghi4][mno6].*",
+			suites[i].func,
+			e_book_query_field_test (
+			        E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_REGEX_NORMAL,
+				"^[jkl5][ghi4][mno6].*"),
+			3,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Regex/Normal/Fuzzy/VanityNumber/ELEPHANT",
+			suites[i].func,
+			e_book_query_field_test (
+			        E_CONTACT_TEL,
+				E_BOOK_QUERY_REGEX_NORMAL,
+				".*[def3]"           /* E */
+				"[^\\da-z]*[jkl5]"    /* L */
+				"[^\\da-z]*[def3]"    /* E */
+				"[^\\da-z]*[pqrs7]"   /* P */
+				"[^\\da-z]*[ghi4]"    /* H */
+				"[^\\da-z]*[abc2]"    /* A */
+				"[^\\da-z]*[mno6]"    /* N */
+				"[^\\da-z]*[tuv8].*"),/* T */
+			3,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Regex/Raw/.*Jack.*",
+			suites[i].func,
+			e_book_query_field_test (
+			        E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_REGEX_RAW,
+				".*Jack.*"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Regex/Raw/Keypad/^[jkl5][ghi4][mno6].*",
+			suites[i].func,
+			e_book_query_field_test (
+                                E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_REGEX_RAW,
+				"^[jklJKL5][ghiGHI4][mnoMNO6].*"),
+			3,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Regex/Raw/Fuzzy/VanityNumber/ELEPHANT",
+			suites[i].func,
+			e_book_query_field_test (
+		                E_CONTACT_TEL,
+				E_BOOK_QUERY_REGEX_RAW,
+				".*[defDEF3]"            /* E */
+				"[^\\da-z]*[jklJKL5]"    /* L */
+				"[^\\da-z]*[defDEF3]"    /* E */
+				"[^\\da-z]*[pqrsPQRS7]"  /* P */
+				"[^\\da-z]*[ghiGHI4]"    /* H */
+				"[^\\da-z]*[abcABC2]"    /* A */
+				"[^\\da-z]*[mnoMNO6]"    /* N */
+				"[^\\da-z]*[tuvTUV8].*"),/* T */
+			3,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
 	}
 
 	ret = e_test_server_utils_run ();
