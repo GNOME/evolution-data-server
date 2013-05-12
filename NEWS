@@ -1,3 +1,46 @@
+Evolution-Data-Server 3.8.2 2013-05-12
+--------------------------------------
+
+Bug Fixes:
+	Bug 691939 - Password prompt has "save password" always checked
+	             (Milan Crha)
+	Bug 698261 - Skip invalid flags in imapx_parse_flags() (Milan Crha)
+	Bug 698726 - Handle goa-daemon crashes/restarts gracefully
+	             (Matthew Barnes)
+	Bug 699027 - Crash in e_cal_backend_file_get_backend_property()
+	             (Frederic Peters)
+	Bug 699461 - Accept any 2xx HTTP code as successful DELETE
+	             (Matthew Barnes)
+	Bug 698725 - ESourceRegistry: Handle service restarts gracefully
+	             (Matthew Barnes)
+	Bug 699223 - Emit view signals from context where view was started
+	             (Matthew Barnes)
+	Bug 699160 - IMAPX: Always flush debugging messages (Matthew Barnes)
+	Bug 699024 - [google/yahoo] Don't override username (Matthew Barnes)
+	Bug 697859 - Google: "Other Fax" is saved as "Business Fax"
+	             (Matthew Barnes)
+
+Other Changes:
+	* Automatically strip D-Bus info from error messages. (Matthew Barnes)
+	* LC_ADDRESS is a GNU extension. Treat it as such. (Matthew Barnes)
+	* CamelStoreSettings::filter-inbox: Change default to TRUE (Milan Crha)
+	* Do not consider PGP and S/MIME subparts as attachments (Milan Crha)
+	* Improve error handling in imapx_server_get_message(). (Matthew Barnes)
+	* Make camel_mime_message_dump() dump message contents (Dan Williams)
+	* IMAPX: Recognize RFC 5530 response codes. (Matthew Barnes)
+	* EBookClientView/ECalClientView: Make D-Bus signal handlers
+	  thread-safe. (Matthew Barnes)
+	* IMAPX: Support IMAP MOVE extension. (Matthew Barnes)
+
+Translations:
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Sweta Kothari (gu)
+	Rajesh Ranjan (hi)
+	A S Alam (pa)
+	Shantha kumar (ta)
+
+
 Evolution-Data-Server 3.8.1 2013-04-14
 --------------------------------------
 
