@@ -461,6 +461,7 @@ static CamelFolderInfo *
 imapx_build_folder_info (CamelIMAPXStore *imapx_store,
                          const gchar *folder_name)
 {
+	CamelStore *store = (CamelStore *) imapx_store;
 	CamelFolderInfo *fi;
 	const gchar *name;
 
@@ -487,6 +488,30 @@ imapx_build_folder_info (CamelIMAPXStore *imapx_store,
 		fi->display_name = g_strdup (_("Trash"));*/
 	else
 		fi->display_name = g_strdup (name);
+
+	if ((store->flags & CAMEL_STORE_VTRASH) == 0) {
+		CamelIMAPXSettings *imapx_settings;
+		const gchar *trash_path;
+
+		imapx_settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (store)));
+		trash_path = camel_imapx_settings_get_real_trash_path (imapx_settings);
+		if (g_strcmp0 (trash_path, folder_name) == 0)
+			fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
+
+		g_object_unref (imapx_settings);
+	}
+
+	if ((store->flags & CAMEL_STORE_REAL_JUNK_FOLDER) != 0) {
+		CamelIMAPXSettings *imapx_settings;
+		const gchar *junk_path;
+
+		imapx_settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (store)));
+		junk_path = camel_imapx_settings_get_real_junk_path (imapx_settings);
+		if (g_strcmp0 (junk_path, folder_name) == 0)
+			fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
+
+		g_object_unref (imapx_settings);
+	}
 
 	return fi;
 }
@@ -889,7 +914,10 @@ get_folder_info_offline (CamelStore *store,
 			fi = imapx_build_folder_info (imapx_store, camel_store_info_path ((CamelStoreSummary *) imapx_store->summary, si));
 			fi->unread = si->unread;
 			fi->total = si->total;
-			fi->flags = si->flags;
+			if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) != 0)
+				fi->flags = (fi->flags & CAMEL_FOLDER_TYPE_MASK) | (si->flags & ~CAMEL_FOLDER_TYPE_MASK);
+			else
+				fi->flags = si->flags;
 			/* HACK: some servers report noinferiors for all folders (uw-imapd)
 			 * We just translate this into nochildren, and let the imap layer enforce
 			 * it.  See create folder */
@@ -974,7 +1002,7 @@ add_folders_to_summary (CamelIMAPXStore *istore,
 		 * it.  See create folder */
 		if (li->flags & CAMEL_FOLDER_NOINFERIORS)
 			li->flags = (li->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
-		fi->flags = li->flags;
+		fi->flags |= li->flags;
 
 		fi->total = -1;
 		fi->unread = -1;
