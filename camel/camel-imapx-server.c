@@ -6674,10 +6674,15 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 			if (!xinfo)
 				continue;
 
-			if (data->remove_deleted_flags)
-				xinfo->info.flags &= ~CAMEL_MESSAGE_DELETED;
 			xinfo->server_flags = xinfo->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
-			xinfo->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+			if (!data->remove_deleted_flags ||
+			    !(xinfo->info.flags & CAMEL_MESSAGE_DELETED)) {
+				xinfo->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+			} else {
+				/* to stare back the \Deleted flag */
+				xinfo->server_flags &= ~CAMEL_MESSAGE_DELETED;
+				xinfo->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+			}
 			xinfo->info.dirty = TRUE;
 			camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
 
