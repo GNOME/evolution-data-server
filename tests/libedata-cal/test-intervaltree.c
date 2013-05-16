@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <libical/icalcomponent.h>
+#include <libical/ical.h>
 #include <libedata-cal/libedata-cal.h>
 
 #define NUM_INTERVALS_CLOSED  100
