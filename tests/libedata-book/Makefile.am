@@ -1,3 +1,4 @@
+
 noinst_LTLIBRARIES = libdata-test-utils.la
 
 libdata_test_utils_la_SOURCES =					\
@@ -17,11 +18,14 @@ libdata_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)/tests/libedataserver   		\
 	-I$(top_srcdir)/tests/test-server-utils     		\
 	-I$(top_builddir)/tests/test-server-utils   		\
+	-I$(top_srcdir)/private					\
+	-I$(top_builddir)/private				\
 	-DBACKENDDIR=\"$(ebook_backenddir)\"			\
 	-DDATADIR=\"$(datadir)\"				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	-DBUILDDIR=\""$(abs_topbuilddir)"\"			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
+	$(GIO_UNIX_CFLAGS) 					\
 	$(CAMEL_CFLAGS)						\
 	$(NULL)
 
@@ -30,7 +34,9 @@ libdata_test_utils_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
+	$(top_builddir)/private/libedbus-private.la		\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+	$(GIO_UNIX_LIBS) 					\
 	$(CAMEL_LIBS)						\
 	$(NULL)
 

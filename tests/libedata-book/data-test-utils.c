@@ -202,7 +202,6 @@ e_sqlitedb_cursor_fixture_setup_book (ESource            *scratch,
 				      ETestServerClosure *closure)
 {
 	ESourceBackendSummarySetup *setup;
-	EbSdbCursorClosure *data = (EbSdbCursorClosure *)closure;
 
 	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP));
 	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
@@ -223,6 +222,8 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 				 gconstpointer       user_data)
 {
 	ETestServerFixture *base_fixture = (ETestServerFixture *)fixture;
+	ESqliteDBFixture *ebsdb_fixture = (ESqliteDBFixture *)fixture;
+	EbSdbCursorClosure *data = (EbSdbCursorClosure *)user_data;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
 	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
 	EBookClient *book_client;
@@ -237,9 +238,20 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 	if (source_name != NULL)
 		base_fixture->source_name = g_strdup (source_name);
 
-	e_sqlitedb_fixture_setup ((ESqliteDBFixture *)fixture, user_data);
-
+	/* Setup the EBookClient, but don't open the EBookBackendSqliteDB until after
+	 * we've specified the locale
+	 */
+	e_test_server_utils_setup ((ETestServerFixture *)fixture, user_data);
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (data->locale)
+		e_sqlitedb_cursor_fixture_set_locale (fixture, data->locale);
+	else
+		e_sqlitedb_cursor_fixture_set_locale (fixture, "en_US.UTF-8");
+
+	/* Now open the EBookBackendSqliteDB */
+	ebsdb_fixture->ebsdb = open_sqlitedb (((ETestServerFixture *)fixture)->registry,
+					      e_client_get_source (E_CLIENT (book_client)));
 
 	for (i = 0; i < N_SORTED_CONTACTS; i++) {
 		gchar *case_name = g_strdup_printf ("sorted-%d", i + 1);
@@ -305,8 +317,89 @@ e_sqlitedb_cursor_fixture_teardown (EbSdbCursorFixture *fixture,
 			g_object_unref (fixture->contacts[i]);
 	}
 
+	if (fixture->locale1)
+		g_object_unref (fixture->locale1);
+
+	if (fixture->own_id > 0)
+		g_bus_unown_name (fixture->own_id);
+
 	e_book_backend_sqlitedb_cursor_free (((ESqliteDBFixture *) fixture)->ebsdb, fixture->cursor);
 	e_sqlitedb_fixture_teardown ((ESqliteDBFixture *)fixture, user_data);
+}
+
+typedef struct {
+	EbSdbCursorFixture *fixture;
+	const gchar *locale;
+} ChangeLocaleData;
+
+static void
+book_client_locale_change (EBookClient *book,
+			   GParamSpec  *pspec,
+			   ChangeLocaleData *data)
+{
+	ETestServerFixture *base_fixture = (ETestServerFixture *)data->fixture;
+
+	if (!g_strcmp0 (e_book_client_get_locale (book), data->locale))
+		g_main_loop_quit (base_fixture->loop);
+}
+
+void
+e_sqlitedb_cursor_fixture_set_locale (EbSdbCursorFixture *fixture,
+				      const gchar        *locale)
+{
+	ETestServerFixture *base_fixture = (ETestServerFixture *)fixture;
+	EBookClient *book_client;
+	ChangeLocaleData data = { fixture, locale };
+	gulong handler_id;
+	gchar *strv[2] = { NULL, NULL };
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	/* We're already in the right locale */
+	if (g_strcmp0 (locale, e_book_client_get_locale (book_client)) == 0)
+		return;
+
+	if (!fixture->locale1) {
+		GDBusConnection *bus;
+		GError *error = NULL;
+
+		/* We use the 'org.freedesktop.locale1 on the session bus instead
+		 * of the system bus only for testing purposes... in real life
+		 * this service is on the system bus.
+		 */
+		bus = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+		if (!bus)
+			g_error ("Failed to get system bus: %s", error->message);
+
+		fixture->locale1 = e_dbus_locale1_skeleton_new ();
+
+		/* Set initial locale before exporting on the bus */
+		strv[0] = g_strdup_printf ("LANG=%s", locale);
+		e_dbus_locale1_set_locale (fixture->locale1, (const gchar * const *)strv);
+		g_free (strv[0]);
+
+		if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fixture->locale1),
+						       bus, "/org/freedesktop/locale1", &error))
+			g_error ("Failed to export org.freedesktop.locale1: %s", error->message);
+
+		fixture->own_id =
+			g_bus_own_name_on_connection (bus,
+						      "org.freedesktop.locale1",
+						      G_BUS_NAME_OWNER_FLAGS_REPLACE,
+						      NULL, NULL, NULL, NULL);
+
+		g_object_unref (bus);
+	} else {
+		/* Send locale change message */
+		strv[0] = g_strdup_printf ("LANG=%s", locale);
+		e_dbus_locale1_set_locale (fixture->locale1, (const gchar * const *)strv);
+		g_free (strv[0]);
+	}
+
+	handler_id = g_signal_connect (book_client, "notify::locale",
+				       G_CALLBACK (book_client_locale_change), &data);
+	g_main_loop_run (base_fixture->loop);
+	g_signal_handler_disconnect (book_client, handler_id);
 }
 
 static gint
@@ -393,6 +486,7 @@ print_results (GSList      *results)
 
 static MoveByData *
 move_by_test_new_internal (const gchar *test_path,
+			   const gchar *locale,
 			   gsize        struct_size)
 {
 	MoveByData *data;
@@ -400,6 +494,7 @@ move_by_test_new_internal (const gchar *test_path,
 	data = g_slice_alloc0 (struct_size);
 	data->parent.parent.type = E_TEST_SERVER_ADDRESS_BOOK;
 	data->parent.parent.customize = e_sqlitedb_cursor_fixture_setup_book;
+	data->parent.locale = g_strdup (locale);
 	data->path = g_strdup (test_path);
 	data->struct_size = struct_size;
 
@@ -414,13 +509,15 @@ static void
 move_by_test_free (MoveByData *data)
 {
 	g_free (data->path);
+	g_free ((gchar *)data->parent.locale);
 	g_slice_free1 (data->struct_size, data);
 }
 
 MoveByData *
-move_by_test_new (const gchar *test_path)
+move_by_test_new (const gchar *test_path,
+		  const gchar *locale)
 {
-	return move_by_test_new_internal (test_path, sizeof (MoveByData));
+	return move_by_test_new_internal (test_path, locale, sizeof (MoveByData));
 }
 
 static void

@@ -25,7 +25,7 @@
 #include <libebook/libebook.h>
 #include <libedata-book/libedata-book.h>
 #include "e-test-server-utils.h"
-
+#include "e-dbus-localed.h"
 
 /* This legend shows the add order, and various sort order of the sorted
  * vcards. The UIDs of these contacts are formed as 'sorted-1', 'sorted-2' etc
@@ -82,11 +82,15 @@ typedef struct {
 	EbSdbCursor     *cursor;
 	EContact        *contacts[N_SORTED_CONTACTS];
 	EBookQuery      *query;
+
+	EDBusLocale1    *locale1;
+	guint            own_id;
 } EbSdbCursorFixture;
 
 typedef struct {
 	ETestServerClosure parent;
 
+	const gchar *locale;
 } EbSdbCursorClosure;
 
 typedef struct {
@@ -114,6 +118,8 @@ void     e_sqlitedb_cursor_fixture_setup    (EbSdbCursorFixture *fixture,
 					     gconstpointer       user_data);
 void     e_sqlitedb_cursor_fixture_teardown (EbSdbCursorFixture *fixture,
 					     gconstpointer       user_data);
+void     e_sqlitedb_cursor_fixture_set_locale (EbSdbCursorFixture *fixture,
+					       const gchar        *locale);
 
 /* Filters contacts with E_CONTACT_EMAIL ending with '.com' */
 void     e_sqlitedb_cursor_fixture_filtered_setup (EbSdbCursorFixture *fixture,
@@ -139,7 +145,8 @@ void     print_results                     (GSList      *results);
 void        move_by_test_add_assertion     (MoveByData  *data,
 					    gint         count,
 					    ...);
-MoveByData *move_by_test_new               (const gchar *test_path);
+MoveByData *move_by_test_new               (const gchar *test_path,
+					    const gchar *locale);
 void        move_by_test_add               (MoveByData  *data,
 					    gboolean     filtered);
 
