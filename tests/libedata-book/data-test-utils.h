@@ -87,7 +87,6 @@ typedef struct {
 typedef struct {
 	ETestServerClosure parent;
 
-	gboolean phonebook_order;
 } EbSdbCursorClosure;
 
 typedef struct {
@@ -140,8 +139,7 @@ void     print_results                     (GSList      *results);
 void        move_by_test_add_assertion     (MoveByData  *data,
 					    gint         count,
 					    ...);
-MoveByData *move_by_test_new               (const gchar *test_path,
-					    gboolean     phonebook_order);
+MoveByData *move_by_test_new               (const gchar *test_path);
 void        move_by_test_add               (MoveByData  *data,
 					    gboolean     filtered);
 

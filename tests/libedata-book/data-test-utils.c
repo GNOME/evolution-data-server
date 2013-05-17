@@ -216,12 +216,6 @@ e_sqlitedb_cursor_fixture_setup_book (ESource            *scratch,
 							   E_CONTACT_GIVEN_NAME, E_BOOK_INDEX_PREFIX,
 							   E_CONTACT_EMAIL, E_BOOK_INDEX_PREFIX,
 							   0);
-
-	if (data->phonebook_order)
-		e_source_backend_summary_setup_set_collations (setup,
-							       E_CONTACT_FAMILY_NAME, "phonebook",
-							       E_CONTACT_GIVEN_NAME, "phonebook",
-							       0);
 }
 
 void
@@ -399,7 +393,6 @@ print_results (GSList      *results)
 
 static MoveByData *
 move_by_test_new_internal (const gchar *test_path,
-			   gboolean     phonebook_order,
 			   gsize        struct_size)
 {
 	MoveByData *data;
@@ -407,7 +400,6 @@ move_by_test_new_internal (const gchar *test_path,
 	data = g_slice_alloc0 (struct_size);
 	data->parent.parent.type = E_TEST_SERVER_ADDRESS_BOOK;
 	data->parent.parent.customize = e_sqlitedb_cursor_fixture_setup_book;
-	data->parent.phonebook_order = phonebook_order;
 	data->path = g_strdup (test_path);
 	data->struct_size = struct_size;
 
@@ -426,12 +418,9 @@ move_by_test_free (MoveByData *data)
 }
 
 MoveByData *
-move_by_test_new (const gchar *test_path,
-		  gboolean     phonebook_order)
+move_by_test_new (const gchar *test_path)
 {
-	return move_by_test_new_internal (test_path,
-					  phonebook_order,
-					  sizeof (MoveByData));
+	return move_by_test_new_internal (test_path, sizeof (MoveByData));
 }
 
 static void
