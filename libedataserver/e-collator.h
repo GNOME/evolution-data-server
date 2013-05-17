@@ -69,7 +69,6 @@ typedef struct _ECollator ECollator;
 GType		e_collator_get_type        (void);
 GQuark		e_collator_error_quark	   (void);
 ECollator      *e_collator_new             (const gchar     *locale,
-					    const gchar     *collation_type,
 					    GError         **error);
 ECollator      *e_collator_ref             (ECollator       *collator);
 void            e_collator_unref           (ECollator       *collator);

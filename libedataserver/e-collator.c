@@ -100,15 +100,15 @@ print_available_locales (void)
 
 static gchar *
 canonicalize_locale (const gchar  *posix_locale,
-		     const gchar  *collation_type,
 		     GError      **error)
 {
 	UErrorCode status = U_ZERO_ERROR;
 	gchar  locale_buffer[LOCALE_BUFFER_LEN];
+	gchar  language_buffer[8];
 	gchar *icu_locale;
 	gchar *final_locale;
 	gint   len;
-	gboolean skip_collation = FALSE;
+	const gchar *collation_type = NULL;
 
 	len = uloc_canonicalize (posix_locale, locale_buffer, LOCALE_BUFFER_LEN, &status);
 
@@ -128,38 +128,29 @@ canonicalize_locale (const gchar  *posix_locale,
 	} else {
 		icu_locale = g_strndup (locale_buffer, len);
 	}
-	
-	/* Check the language code explicitly, phonebook collations are
-	 * only available for { de, fi } languages.
-	 *
-	 * Rely on the default fallbacks for anything else for now, this
-	 * workaround is for a probably fallback bug in ICU:
-	 *    http://bugs.icu-project.org/trac/ticket/10149
-	 */
-	if (g_strcmp0 (collation_type, "phonebook") == 0) {
-		gchar  language_buffer[8];
 
-		status = U_ZERO_ERROR;
-		len = uloc_getLanguage (icu_locale, language_buffer, 8, &status);
+	status = U_ZERO_ERROR;
+	len = uloc_getLanguage (icu_locale, language_buffer, 8, &status);
 
-		if (U_FAILURE (status)) {
-			g_set_error (error, E_COLLATOR_ERROR,
-				     E_COLLATOR_ERROR_INVALID_LOCALE,
-				     "Failed to interpret language for locale '%s': %s",
-				     icu_locale,
-				     u_errorName (status));
-			g_free (icu_locale);
-			return NULL;
-		}
-
-		if (len > 8 ||
-		    (strcmp (language_buffer, "de") != 0 &&
-		     strcmp (language_buffer, "fi") != 0))
-			/* Skip phonebook order for anything that is not 'de' or 'fi' */
-			skip_collation = TRUE;
+	if (U_FAILURE (status)) {
+		g_set_error (error, E_COLLATOR_ERROR,
+			     E_COLLATOR_ERROR_INVALID_LOCALE,
+			     "Failed to interpret language for locale '%s': %s",
+			     icu_locale,
+			     u_errorName (status));
+		g_free (icu_locale);
+		return NULL;
 	}
 
-	if (skip_collation == FALSE && collation_type != NULL)
+	/* Add 'phonebook' tailoring to certain locales */
+	if (len < 8 &&
+	    (strcmp (language_buffer, "de") == 0 ||
+	     strcmp (language_buffer, "fi") == 0)) {
+
+		collation_type = "phonebook";
+	}
+
+	if (collation_type != NULL)
 		final_locale = g_strconcat (icu_locale, "@collation=", collation_type, NULL);
 	else {
 		final_locale = icu_locale;
@@ -251,16 +242,10 @@ convert_to_ustring (const gchar  *string,
 /**
  * e_collator_new:
  * @locale: The locale under which to sort
- * @collation_type: (allow none): The type of collation to use for @locale, or %NULL for the default
  * @error: (allow none): A location to store a #GError from the #E_COLLATOR_ERROR domain
  *
- * Creates a new #ECollator for the given @locale and @collation_type,
+ * Creates a new #ECollator for the given @locale,
  * the returned collator should be freed with e_collator_unref().
- *
- * @collation_type indicates a value for the 'collation' keyword to be specified
- * in the ICU locale name. Some possible names for the @collation_type can be
- * 'phonebook', 'search', 'phonetic'. A list of possible collation names
- * can be found here: http://www.unicode.org/reports/tr35/
  *
  * Returns: (transfer full): A newly created #ECollator.
  *
@@ -268,7 +253,6 @@ convert_to_ustring (const gchar  *string,
  */
 ECollator *
 e_collator_new (const gchar     *locale,
-		const gchar     *collation_type,
 		GError         **error)
 {
 	ECollator *collator;
@@ -282,7 +266,7 @@ e_collator_new (const gchar     *locale,
 	print_available_locales ();
 #endif
 
-	icu_locale = canonicalize_locale (locale, collation_type, error);
+	icu_locale = canonicalize_locale (locale, error);
 	if (!icu_locale)
 		return NULL;
 
@@ -291,8 +275,7 @@ e_collator_new (const gchar     *locale,
 	if (U_FAILURE (status)) {
 		g_set_error (error, E_COLLATOR_ERROR,
 			     E_COLLATOR_ERROR_OPEN,
-			     "Unable to open collator of type '%s' for locale '%s' (%s)",
-			     collation_type ? collation_type : "default",
+			     "Unable to open collator for locale '%s' (%s)",
 			     icu_locale,
 			     u_errorName (status));
 
