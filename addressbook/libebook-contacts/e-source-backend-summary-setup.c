@@ -57,14 +57,12 @@ struct _ESourceBackendSummarySetupPrivate {
 	GMutex  property_lock;
 	gchar  *summary_fields;
 	gchar  *indexed_fields;
-	gchar  *collation_fields;
 };
 
 enum {
 	PROP_0,
 	PROP_SUMMARY_FIELDS,
-	PROP_INDEXED_FIELDS,
-	PROP_COLLATION_FIELDS
+	PROP_INDEXED_FIELDS
 };
 
 G_DEFINE_TYPE (
@@ -86,9 +84,6 @@ source_backend_summary_setup_dup_literal_fields (ESourceBackendSummarySetup *ext
 			break;
 		case PROP_INDEXED_FIELDS:
 			duplicate = g_strdup (extension->priv->indexed_fields);
-			break;
-		case PROP_COLLATION_FIELDS:
-			duplicate = g_strdup (extension->priv->collation_fields);
 			break;
 		default:
 			g_assert_not_reached ();
@@ -116,10 +111,6 @@ source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *ext
 		case PROP_INDEXED_FIELDS:
 			target = &(extension->priv->indexed_fields);
 			property_name = "indexed-fields";
-			break;
-		case PROP_COLLATION_FIELDS:
-			target = &(extension->priv->collation_fields);
-			property_name = "collation-fields";
 			break;
 		default:
 			g_assert_not_reached ();
@@ -150,7 +141,6 @@ source_backend_summary_setup_set_property (GObject *object,
 	switch (property_id) {
 		case PROP_SUMMARY_FIELDS:
 		case PROP_INDEXED_FIELDS:
-		case PROP_COLLATION_FIELDS:
 			source_backend_summary_setup_set_literal_fields (
 				E_SOURCE_BACKEND_SUMMARY_SETUP (object),
 				g_value_get_string (value), property_id);
@@ -169,7 +159,6 @@ source_backend_summary_setup_get_property (GObject *object,
 	switch (property_id) {
 		case PROP_SUMMARY_FIELDS:
 		case PROP_INDEXED_FIELDS:
-		case PROP_COLLATION_FIELDS:
 			g_value_take_string (
 				value,
 				source_backend_summary_setup_dup_literal_fields (
@@ -191,7 +180,6 @@ source_backend_summary_setup_finalize (GObject *object)
 	g_mutex_clear (&priv->property_lock);
 	g_free (priv->summary_fields);
 	g_free (priv->indexed_fields);
-	g_free (priv->collation_fields);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_backend_summary_setup_parent_class)->
@@ -236,20 +224,6 @@ e_source_backend_summary_setup_class_init (ESourceBackendSummarySetupClass *clas
 			"Indexed Fields",
 			"The list of summary fields which are to be "
 			"given indexes in the underlying database",
-			NULL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_STATIC_STRINGS |
-			E_SOURCE_PARAM_SETTING));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_COLLATION_FIELDS,
-		g_param_spec_string (
-			"collation-fields",
-			"Collation Fields",
-			"The list of summary fields which are to be "
-			"given specialized collation rules in the underlying database",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -558,7 +532,7 @@ e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup *e
  * @types: The array of #EBookIndexTypes defining what types of indexes to create
  * @n_fields: The number elements in the passed @fields, @rule_types and @rules arrays.
  *
- * Defines indexes for quick reference for the given #EContactFields in the addressbook.
+ * Defines indexes for quick reference for the given given #EContactFields in the addressbook.
  *
  * The same #EContactField may be specified multiple times to create multiple indexes
  * with different characteristics. If an #E_BOOK_INDEX_PREFIX index is created it will
@@ -622,7 +596,7 @@ e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup *
 /**
  * e_source_backend_summary_setup_set_indexed_fields:
  * @extension: An #ESourceBackendSummarySetup
- * @...: A list of #EContactField, #EBookIndexType pairs terminated by 0.
+ * @...: A list of #EContactFields, #EBookIndexType pairs terminated by 0.
  *
  * Like e_source_backend_summary_setup_set_indexed_fieldsv(), but takes a literal list of
  * of indexes.
@@ -696,231 +670,6 @@ e_source_backend_summary_setup_set_indexed_fields (ESourceBackendSummarySetup *e
 
 	if (!malformed)
 		source_backend_summary_setup_set_literal_fields (extension, string->str, PROP_INDEXED_FIELDS);
-
-	g_string_free (string, TRUE);
-}
-
-
-/**
- * e_source_backend_summary_setup_get_collations:
- * @extension: An #ESourceBackendSummarySetup
- * @collations: (out) (transfer full): A return location for the set of collation rules corresponding
- *                                to each returned field, should be freed with g_strfreev() when no longer needed.
- * @n_fields: (out): The number of elements in the returned arrays.
- *
- * Fetches the #EContactFields configured with custom collation rules from ICU, with thier respective rule
- * idendifiers in @collations.
- *
- * Returns: (transfer full): The array of indexed #EContactFields.
- *
- * Since: 3.10
- */
-EContactField  *
-e_source_backend_summary_setup_get_collations (ESourceBackendSummarySetup    *extension,
-					       gchar                       ***collations,
-					       gint                          *n_fields)
-{
-	EContactField *ret_fields;
-	gchar  **ret_collations;
-	gboolean malformed = FALSE;
-	gchar **split, **index_split;
-	gchar *literal_indexes;
-	gint ret_n_fields;
-	gint i;
-
-	g_return_val_if_fail (E_IS_SOURCE_BACKEND_SUMMARY_SETUP (extension), NULL);
-	g_return_val_if_fail (collations != NULL, NULL);
-	g_return_val_if_fail (n_fields != NULL, NULL);
-
-	literal_indexes = source_backend_summary_setup_dup_literal_fields (extension, PROP_COLLATION_FIELDS);
-	if (!literal_indexes) {
-		*collations = NULL;
-		*n_fields = 0;
-		return NULL;
-	}
-
-	split = g_strsplit (literal_indexes, ":", 0);
-	ret_n_fields = g_strv_length (split);
-
-	ret_fields     = g_new0 (EContactField, ret_n_fields);
-	ret_collations = g_new0 (gchar *, ret_n_fields + 1);
-
-	for (i = 0; i < ret_n_fields && malformed == FALSE; i++) {
-
-		index_split = g_strsplit (split[i], ",", 2);
-
-		if (index_split[0] && index_split[1]) {
-
-			ret_fields[i] = e_contact_field_id (index_split[0]);
-
-			if (ret_fields[i] <= 0 || ret_fields[i] >= E_CONTACT_FIELD_LAST) {
-				g_warning ("Unknown contact field '%s' encountered in indexed fields", index_split[0]);
-				malformed = TRUE;
-			}
-
-			ret_collations[i] = g_strdup (index_split[1]);
-		} else {
-			g_warning ("Malformed index definition '%s'", split[i]);
-			malformed = TRUE;
-		}
-
-		g_strfreev (index_split);
-	}
-
-	if (malformed) {
-		g_free (ret_fields);
-		g_strfreev (ret_collations);
-
-		ret_n_fields = 0;
-		ret_fields = NULL;
-		ret_collations = NULL;
-	}
-
-	g_strfreev (split);
-	g_free (literal_indexes);
-
-	*n_fields = ret_n_fields;
-	*collations = ret_collations;
-
-	return ret_fields;
-}
-
-/**
- * e_source_backend_summary_setup_set_collationsv:
- * @extension: An #ESourceBackendSummarySetup
- * @fields: The array of #EContactFields to set indexes for
- * @collations: The array of collation names defining what rules to use when sorting the respective @fields
- * @n_fields: The number elements in the passed @fields, @rule_types and @rules arrays.
- *
- * Defines any specialized ICU collation rules used to sort the given #EContactFields in the addressbook.
- *
- * <note><para>The specified collation names must also be a part of the summary, any collation rules
- * specified that are not already a part of the summary will be ignored.</para></note>
- *
- * Since: 3.10
- */
-void
-e_source_backend_summary_setup_set_collationsv (ESourceBackendSummarySetup *extension,
-						EContactField              *fields,
-						const gchar               **collations,
-						gint                        n_fields)
-{
-	GString *string;
-	gboolean malformed = FALSE;
-	gint i;
-
-	g_return_if_fail (E_IS_SOURCE_BACKEND_SUMMARY_SETUP (extension));
-	g_return_if_fail (collations != NULL || n_fields <= 0);
-	g_return_if_fail (fields != NULL || n_fields <= 0);
-
-	if (n_fields <= 0) {
-		source_backend_summary_setup_set_literal_fields (extension, NULL, PROP_COLLATION_FIELDS);
-		return;
-	}
-
-	string = g_string_new (NULL);
-
-	for (i = 0; i < n_fields && malformed == FALSE; i++) {
-		const gchar *field;
-		const gchar *collation;
-
-		field     = e_contact_field_name (fields[i]);
-		collation = g_strdup (collations[i]);
-
-		if (!field) {
-			g_warning ("Invalid contact field specified in collation fields");
-			malformed = TRUE;
-		} else if (!collation) {
-			g_warning ("Missing collation type specified in collation fields");
-			malformed = TRUE;
-		} else {
-			if (i > 0)
-				g_string_append_c (string, ':');
-			g_string_append_printf (string, "%s,%s", field, collation);
-		}
-	}
-
-	if (!malformed)
-		source_backend_summary_setup_set_literal_fields (extension, string->str, PROP_COLLATION_FIELDS);
-
-	g_string_free (string, TRUE);
-}
-
-
-/**
- * e_source_backend_summary_setup_set_collations:
- * @extension: An #ESourceBackendSummarySetup
- * @...: A list of #EContactFields, collation name pairs terminated by 0.
- *
- * Like e_source_backend_summary_setup_set_collationsv(), but takes a literal list of
- * of indexes.
- *
- * To sort the 'fullname' field in the specialized 'phonebook' sort order:
- *
- * |[
- *   #include <libebook/libebook.h>
- *
- *   ESourceBackendSummarySetup *extension;
- *
- *   extension = e_source_get_extension (source, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
- *
- *   e_source_backend_summary_setup_set_collations (extension,
- *                                                  E_CONTACT_FULL_NAME, "phonebook",
- *                                                  0);
- * ]|
- *
- * Since: 3.10
- */
-void
-e_source_backend_summary_setup_set_collations (ESourceBackendSummarySetup *extension,
-					       ...)
-{
-	GString *string;
-	gboolean malformed = FALSE, first = TRUE;
-	va_list var_args;
-	EContactField field_in;
-
-	g_return_if_fail (E_IS_SOURCE_BACKEND_SUMMARY_SETUP (extension));
-
-	string = g_string_new (NULL);
-
-	va_start (var_args, extension);
-
-	field_in = va_arg (var_args, EContactField);
-	while (field_in > 0 && malformed == FALSE) {
-		const gchar *field;
-		const gchar *collation;
-
-		field = e_contact_field_name (field_in);
-		if (field == NULL) {
-			g_warning ("Invalid contact field specified in "
-				"e_source_backend_summary_setup_set_collations()");
-			malformed = TRUE;
-			break;
-		}
-
-		collation = va_arg (var_args, const gchar *);
-		if (collation == NULL) {
-			g_warning ("Missing collation "
-				"e_source_backend_summary_setup_set_collations()");
-			malformed = TRUE;
-			break;
-		}
-
-		if (!first)
-			g_string_append_c (string, ':');
-		else
-			first = FALSE;
-
-		g_string_append_printf (string, "%s,%s", field, collation);
-
-		/* Continue loop until first 0 found... */
-		field_in = va_arg (var_args, EContactField);
-	}
-	va_end (var_args);
-
-	if (!malformed)
-		source_backend_summary_setup_set_literal_fields (extension, string->str, PROP_COLLATION_FIELDS);
 
 	g_string_free (string, TRUE);
 }
