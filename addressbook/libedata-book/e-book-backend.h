@@ -170,6 +170,9 @@ struct _EBookBackendClass {
 	EDataBookDirect *
 	        (* get_direct_book)             (EBookBackend *backend);
 	void    (* configure_direct)            (EBookBackend *backend, const gchar *config);
+	void            (*set_locale)           (EBookBackend *backend,
+						 const gchar  *locale);
+	const gchar    *(*get_locale)           (EBookBackend *backend);
 
 	/* Notification signals */
 	void	(* sync)			(EBookBackend *backend);
@@ -224,6 +227,9 @@ EDataBookDirect *
 void            e_book_backend_configure_direct (EBookBackend *backend, const gchar *config);
 
 void		e_book_backend_sync		(EBookBackend *backend);
+void            e_book_backend_set_locale       (EBookBackend *backend,
+						 const gchar  *locale);
+const gchar    *e_book_backend_get_locale       (EBookBackend *backend);
 
 /* protected functions for subclasses */
 void		e_book_backend_set_is_removed	(EBookBackend *backend, gboolean is_removed);

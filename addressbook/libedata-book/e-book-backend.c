@@ -1110,6 +1110,56 @@ e_book_backend_sync (EBookBackend *backend)
 }
 
 /**
+ * e_book_backend_set_locale:
+ * @backend: an #EBookbackend
+ * @locale: the new locale for the addressbook
+ *
+ * Notify the addressbook backend that the current locale has
+ * changed, this is important for backends which support
+ * ordered result lists which are locale sensitive.
+ *
+ * Since: 3.10
+ */
+void
+e_book_backend_set_locale (EBookBackend *backend,
+			   const gchar  *locale)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale)
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale);
+
+	g_object_unref (backend);
+}
+
+/**
+ * e_book_backend_get_locale:
+ * @backend: an #EBookbackend
+ *
+ * Fetch the currently configured locale for the addressbook
+ *
+ * Since: 3.10
+ */
+const gchar *
+e_book_backend_get_locale (EBookBackend *backend)
+{
+	const gchar *locale = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->get_locale)
+		locale = (* E_BOOK_BACKEND_GET_CLASS (backend)->get_locale) (backend);
+
+	g_object_unref (backend);
+
+	return locale;
+}
+
+/**
  * e_book_backend_notify_update:
  * @backend: an #EBookBackend
  * @contact: a new or modified contact
