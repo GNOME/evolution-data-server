@@ -21,16 +21,11 @@ main (gint argc,
 	g_assert (g_setenv ("EDS_COLLATE", "POSIX", TRUE));
 	g_assert (g_setenv ("MIGRATION_TEST_SOURCE_NAME", "migration-test-source", TRUE));
 
-	/* When creating the addressbook, declare it with collation_type = "phonebook",
-	 * note that other tests dont specify this, however the de_DE needs phonebook collation.
-	 *
-	 * In this way, we also assert that the SQLite introspection works properly after
-	 * a migration, and the recorded SQLite collation names are used instead of the
-	 * parameters when opening the addressbook.
+	/* This test actually creates the addressbook, subsequent migration tests dont
+	 * recreate the contacts but rely on the addressbook to have migrated the sort keys
+	 * into the new locales
 	 */
-	data = move_by_test_new ("/EbSdbCursor/Locale/POSIX/Initial", TRUE);
-
-	/* Assert the whole set of contacts */
+	data = move_by_test_new ("/EbSdbCursor/Locale/POSIX/Initial");
 	move_by_test_add_assertion (data, 5, 11, 2,  6,  3,  8);
 	move_by_test_add_assertion (data, 5, 10, 19, 20, 1,  5);
 	move_by_test_add_assertion (data, 5, 4,  7,  15, 17, 16);

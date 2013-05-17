@@ -22,8 +22,7 @@ main (gint argc,
 	g_assert (g_setenv ("EDS_COLLATE", "en_US.UTF-8", TRUE));
 	g_assert (g_setenv ("MIGRATION_TEST_SOURCE_NAME", "migration-test-source", TRUE));
 
-	/* Try them all once in the normal base locale */
-	data = move_by_test_new ("/EbSdbCursor/Locale/en_US/Migrated", FALSE);
+	data = move_by_test_new ("/EbSdbCursor/Locale/en_US/Migrated");
 	move_by_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
 	move_by_test_add_assertion (data, 5, 4,  3,  7,  8,  15);
 	move_by_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
