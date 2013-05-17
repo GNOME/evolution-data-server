@@ -3118,6 +3118,56 @@ e_book_backend_sync (EBookBackend *backend)
 }
 
 /**
+ * e_book_backend_set_locale:
+ * @backend: an #EBookbackend
+ * @locale: the new locale for the addressbook
+ *
+ * Notify the addressbook backend that the current locale has
+ * changed, this is important for backends which support
+ * ordered result lists which are locale sensitive.
+ *
+ * Since: 3.12
+ */
+void
+e_book_backend_set_locale (EBookBackend *backend,
+			   const gchar  *locale)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale)
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale);
+
+	g_object_unref (backend);
+}
+
+/**
+ * e_book_backend_dup_locale:
+ * @backend: an #EBookbackend
+ *
+ * Fetches a copy of the currently configured locale for the addressbook
+ *
+ * Since: 3.12
+ */
+gchar *
+e_book_backend_dup_locale (EBookBackend *backend)
+{
+	gchar *locale = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->dup_locale)
+		locale = (* E_BOOK_BACKEND_GET_CLASS (backend)->dup_locale) (backend);
+
+	g_object_unref (backend);
+
+	return locale;
+}
+
+/**
  * e_book_backend_notify_update:
  * @backend: an #EBookBackend
  * @contact: a new or modified contact
@@ -3305,3 +3355,90 @@ e_book_backend_prepare_for_completion (EBookBackend *backend,
 	return simple;
 }
 
+/**
+ * e_book_backend_create_cursor:
+ * @backend: an #EBookBackend
+ * @sort_fields: the #EContactFields to sort by
+ * @sort_types: the #EBookCursorSortTypes for the sorted fields
+ * @n_fields: the number of fields in the @sort_fields and @sort_types
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #EDataBookCursor for the given backend if the backend
+ * has cursor support. If the backend does not support cursors then
+ * an %E_CLIENT_ERROR_NOT_SUPPORTED error will be set in @error.
+ *
+ * Backends can also refuse to create cursors for some values of @sort_fields
+ * and report more specific errors.
+ *
+ * The returned cursor belongs to @backend and should be destroyed
+ * with e_book_backend_delete_cursor() when no longer needed.
+ *
+ * Returns: (transfer none): A newly created cursor, the cursor belongs
+ * to the backend and should not be unreffed, or %NULL
+ *
+ * Since: 3.12
+ */
+EDataBookCursor *
+e_book_backend_create_cursor (EBookBackend *backend,
+			      EContactField *sort_fields,
+			      EBookCursorSortType *sort_types,
+			      guint n_fields,
+			      GError **error)
+{
+	EDataBookCursor *cursor = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->create_cursor)
+		cursor = (* E_BOOK_BACKEND_GET_CLASS (backend)->create_cursor) (backend,
+										sort_fields,
+										sort_types,
+										n_fields,
+										error);
+	else
+		g_set_error (error,
+			     E_CLIENT_ERROR,
+			     E_CLIENT_ERROR_NOT_SUPPORTED,
+			     "Addressbook backend does not support cursors");
+
+	g_object_unref (backend);
+
+	return cursor;
+}
+
+/**
+ * e_book_backend_delete_cursor:
+ * @backend: an #EBookBackend
+ * @cursor: the #EDataBookCursor to destroy
+ * @error: return location for a #GError, or %NULL
+ *
+ * Requests @backend to release and destroy @cursor, this
+ * will trigger an %E_CLIENT_ERROR_INVALID_ARG error if @cursor
+ * is not owned by @backend.
+ *
+ * Returns: Whether @cursor was successfully deleted.
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_backend_delete_cursor (EBookBackend *backend,
+			      EDataBookCursor *cursor,
+			      GError **error)
+{
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor)
+		success = (* E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor) (backend, cursor, error);
+	else
+		g_warning ("Backend asked to delete a cursor, but does not support cursors");
+
+	g_object_unref (backend);
+
+	return success;
+}
