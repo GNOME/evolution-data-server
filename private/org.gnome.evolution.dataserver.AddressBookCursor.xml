@@ -1,0 +1,100 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.AddressBookCursor:
+    @short_description: Address book cursor objects
+    @since: 3.10
+
+    This interface allows for interaction with an address book cursor backend.
+-->
+<interface name="org.gnome.evolution.dataserver.AddressBookCursor">
+
+  <!--
+      Total:
+
+      The total number of contacts for this cursor query
+  -->
+  <property name="Total" type="u" access="read"/>
+
+  <!--
+      Position:
+
+      The current cursor position in the cursor query
+  -->
+  <property name="Position" type="u" access="read"/>
+
+  <!--
+      Step:
+      @revision_guard: The expected revision of the addressbook
+      @flags: The #EBookCursorStepFlags
+      @origin: The #EBookCursorOrigin
+      @count: The number of contacts to try and fetch, negative values step the cursor in reverse
+      @n_results: The number contacts actually traversed in this step.
+      @vcards: The returned contact list
+      @new_total: The total amount of contacts after moving the cursor
+      @new_position: The cursor position after moving
+
+      Step the cursor by @count contacts from @origin
+
+      This will also result in changes of the Position and Total properties
+
+      The @revision_guard will be checked against the current addressbook
+      revision, if the revisions differ then %E_CLIENT_ERROR_OUT_OF_SYNC
+      will be reported.
+  -->
+  <method name="Step">
+    <arg name="revision_guard" direction="in" type="s"/>
+    <arg name="flags" direction="in" type="i"/>
+    <arg name="origin" direction="in" type="i"/>
+    <arg name="count" direction="in" type="i"/>
+    <arg name="n_results" direction="out" type="i"/>
+    <arg name="vcards" direction="out" type="as"/>
+    <arg name="new_total" direction="out" type="u"/>
+    <arg name="new_position" direction="out" type="u"/>
+  </method>
+
+  <!--
+      SetAlphabeticIndex:
+      @index: The alphabetic index to set
+      @locale: The locale for which @index is known to be valid
+
+      Sets the cursor's alphabetic index, the index must be valid for @locale
+      and @locale is expected to be the current locale of the addressbook.
+
+      If the addressbook's locale has changed and doesnt match the @locale
+      argument then an error will be returned and the call should be retried.
+
+      This will also result in changes of the Position and Total properties
+  -->
+  <method name="SetAlphabeticIndex">
+    <arg name="index" direction="in" type="u"/>
+    <arg name="locale" direction="in" type="s"/>
+    <arg name="new_total" direction="out" type="u"/>
+    <arg name="new_position" direction="out" type="u"/>
+  </method>
+
+  <!--
+      SetQuery:
+      @query: The new query for this cursor
+
+      Changes the query for the given cursor
+
+      This will also result in changes of the Position and Total properties
+  -->
+  <method name="SetQuery">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="new_total" direction="out" type="u"/>
+    <arg name="new_position" direction="out" type="u"/>
+  </method>
+
+  <!--
+      Dispose
+
+      Delete the server side resources for this cursor
+  -->
+  <method name="Dispose"/>
+
+</interface>

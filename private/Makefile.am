@@ -1,5 +1,13 @@
 NULL =
 
+$(GENERATED_DBUS_LOCALE) : Makefile.am org.freedesktop.locale1.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.freedesktop. \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-localed \
+	$(top_srcdir)/private/org.freedesktop.locale1.xml \
+	$(NULL)
+
 $(GENERATED_DBUS_SOURCE) : Makefile.am org.gnome.evolution.dataserver.Source.xml
 	$(AM_V_GEN) gdbus-codegen \
 	--interface-prefix org.gnome.evolution.dataserver. \
@@ -35,6 +43,15 @@ $(GENERATED_DBUS_ADDRESS_BOOK) : Makefile.am org.gnome.evolution.dataserver.Addr
 	--generate-c-code e-dbus-address-book \
 	--generate-docbook e-dbus-address-book \
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.AddressBook.xml \
+	$(NULL)
+
+$(GENERATED_DBUS_ADDRESS_BOOK_CURSOR) : Makefile.am org.gnome.evolution.dataserver.AddressBookCursor.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-address-book-cursor \
+	--generate-docbook e-dbus-address-book-cursor \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.AddressBookCursor.xml \
 	$(NULL)
 
 $(GENERATED_DBUS_DIRECT_BOOK) : Makefile.am org.gnome.evolution.dataserver.DirectBook.xml
@@ -82,6 +99,11 @@ $(GENERATED_DBUS_USER_PROMPTER) : Makefile.am org.gnome.evolution.dataserver.Use
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
+GENERATED_DBUS_LOCALE = \
+	e-dbus-localed.c \
+	e-dbus-localed.h \
+	$(NULL)
+
 GENERATED_DBUS_SOURCE = \
 	e-dbus-source.c \
 	e-dbus-source.h \
@@ -117,6 +139,12 @@ GENERATED_DBUS_ADDRESS_BOOK = \
 	e-dbus-address-book-org.gnome.evolution.dataserver.AddressBook.xml \
 	$(NULL)
 
+GENERATED_DBUS_ADDRESS_BOOK_CURSOR = \
+	e-dbus-address-book-cursor.c \
+	e-dbus-address-book-cursor.h \
+	e-dbus-address-book-cursor-org.gnome.evolution.dataserver.AddressBookCursor.xml \
+	$(NULL)
+
 GENERATED_DBUS_DIRECT_BOOK = \
 	e-dbus-direct-book.c \
 	e-dbus-direct-book.h \
@@ -142,10 +170,12 @@ GENERATED_DBUS_CALENDAR_FACTORY = \
 	$(NULL)
 
 BUILT_SOURCES = \
+	$(GENERATED_DBUS_LOCALE) \
 	$(GENERATED_DBUS_SOURCE) \
 	$(GENERATED_DBUS_SOURCE_MANAGER) \
 	$(GENERATED_DBUS_AUTHENTICATOR) \
 	$(GENERATED_DBUS_ADDRESS_BOOK) \
+	$(GENERATED_DBUS_ADDRESS_BOOK_CURSOR) \
 	$(GENERATED_DBUS_DIRECT_BOOK) \
 	$(GENERATED_DBUS_ADDRESS_BOOK_FACTORY) \
 	$(GENERATED_DBUS_CALENDAR) \
@@ -183,10 +213,12 @@ libedbus_private_la_LDFLAGS = \
 	$(NULL)
 
 EXTRA_DIST = \
+	org.freedesktop.locale1.xml	\
 	org.gnome.evolution.dataserver.Source.xml \
 	org.gnome.evolution.dataserver.SourceManager.xml \
 	org.gnome.evolution.dataserver.Authenticator.xml \
 	org.gnome.evolution.dataserver.AddressBook.xml \
+	org.gnome.evolution.dataserver.AddressBookCursor.xml \
 	org.gnome.evolution.dataserver.DirectBook.xml \
 	org.gnome.evolution.dataserver.AddressBookFactory.xml \
 	org.gnome.evolution.dataserver.Calendar.xml \

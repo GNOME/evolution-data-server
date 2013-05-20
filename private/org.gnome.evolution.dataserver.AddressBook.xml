@@ -14,6 +14,7 @@
 
   <property name="Online" type="b" access="read"/>
   <property name="Revision" type="s" access="read"/>
+  <property name="Locale" type="s" access="read"/>
   <property name="Writable" type="b" access="read"/>
 
   <!-- These properties are static. -->
@@ -63,6 +64,13 @@
 
   <method name="GetView">
     <arg name="query" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="o"/>
+  </method>
+
+  <method name="GetCursor">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="sort_keys" direction="in" type="as"/>
+    <arg name="sort_types" direction="in" type="as"/>
     <arg name="object_path" direction="out" type="o"/>
   </method>
 
