@@ -1,0 +1,17 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+  <!--
+      Here we generate a proxy to handle the 'localed' system entity,
+      we only generate the 'Locale' property as that's all we're interested in.
+      the object should be present at the path '/org/freedesktop/locale1'
+
+      See: http://www.freedesktop.org/wiki/Software/systemd/localed
+  -->
+<interface name="org.freedesktop.locale1">
+
+  <property name="Locale" type="as" access="read"/>
+
+</interface>
