@@ -58,9 +58,6 @@ typedef struct _CamelPOP3StorePrivate CamelPOP3StorePrivate;
 struct _CamelPOP3Store {
 	CamelStore parent;
 	CamelPOP3StorePrivate *priv;
-
-	CamelPOP3Engine *engine; /* pop processing engine */
-	CamelDataCache *cache;
 };
 
 struct _CamelPOP3StoreClass {
@@ -68,6 +65,10 @@ struct _CamelPOP3StoreClass {
 };
 
 GType		camel_pop3_store_get_type	(void);
+CamelDataCache *
+		camel_pop3_store_ref_cache	(CamelPOP3Store *store);
+CamelPOP3Engine *
+		camel_pop3_store_ref_engine	(CamelPOP3Store *store);
 gboolean	camel_pop3_store_expunge	(CamelPOP3Store *store,
 						 GCancellable *cancellable,
 						 GError **error);
