@@ -1,5 +1,13 @@
 NULL =
 
+$(GENERATED_DBUS_LOCALE) : Makefile.am org.freedesktop.locale1.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.freedesktop. \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-localed \
+	$(top_srcdir)/private/org.freedesktop.locale1.xml \
+	$(NULL)
+
 $(GENERATED_DBUS_SOURCE) : Makefile.am org.gnome.evolution.dataserver.Source.xml
 	$(AM_V_GEN) gdbus-codegen \
 	--interface-prefix org.gnome.evolution.dataserver. \
@@ -82,6 +90,11 @@ $(GENERATED_DBUS_USER_PROMPTER) : Makefile.am org.gnome.evolution.dataserver.Use
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
+GENERATED_DBUS_LOCALE = \
+	e-dbus-localed.c \
+	e-dbus-localed.h \
+	$(NULL)
+
 GENERATED_DBUS_SOURCE = \
 	e-dbus-source.c \
 	e-dbus-source.h \
@@ -142,6 +155,7 @@ GENERATED_DBUS_CALENDAR_FACTORY = \
 	$(NULL)
 
 BUILT_SOURCES = \
+	$(GENERATED_DBUS_LOCALE) \
 	$(GENERATED_DBUS_SOURCE) \
 	$(GENERATED_DBUS_SOURCE_MANAGER) \
 	$(GENERATED_DBUS_AUTHENTICATOR) \
