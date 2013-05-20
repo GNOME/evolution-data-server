@@ -3616,7 +3616,7 @@ convert_match_exp (struct _ESExp *f,
 				if (is_list) {
 					gchar *tmp;
 
-					tmp = sqlite3_mprintf ("summary.uid = multi.uid AND multi.field = %Q", field);
+					tmp = sqlite3_mprintf ("multi.field = %Q", field);
 					str = g_strdup_printf (
 						"(%s AND (%s %s %s%s))",
 						tmp, field_name, oper, query_term,
@@ -3833,7 +3833,8 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
 				stmt = sqlite3_mprintf (
-					"%s FROM %Q AS summary, %Q AS multi WHERE %s",
+					"%s FROM %Q AS summary "
+					"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid WHERE %s",
 					select_portion, folderid, list_table, sql);
 				g_free (list_table);
 			} else {
@@ -3866,8 +3867,8 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
 				stmt = sqlite3_mprintf (
-					"SELECT DISTINCT summary.uid, vcard, bdata "
-					"FROM %Q AS summary, %Q AS multi WHERE %s",
+					"SELECT DISTINCT summary.uid, vcard, bdata FROM %Q AS summary "
+					"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid WHERE %s",
 					folderid, list_table, sql);
 				g_free (list_table);
 			} else {
@@ -4126,7 +4127,8 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 				gchar *list_table = g_strconcat (folderid, "_lists", NULL);
 
 				stmt = sqlite3_mprintf (
-					"SELECT DISTINCT summary.uid FROM %Q AS summary, %Q AS multi WHERE %s",
+					"SELECT DISTINCT summary.uid FROM %Q AS summary "
+					"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid WHERE %s",
 					folderid, list_table, sql_query);
 
 				g_free (list_table);
