@@ -4414,7 +4414,6 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 	GetMessageData *data;
 	CamelIMAPXFolder *ifolder;
 	gboolean success = TRUE;
-	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
@@ -4431,11 +4430,12 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	job->commands--;
 
-	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
-			&local_error, "%s: ",
+			error, "%s: ",
 			_("Error fetching message"));
 		data->body_len = -1;
+		success = FALSE;
 
 	} else if (data->use_multi_fetch) {
 		gsize really_fetched = g_seekable_tell (G_SEEKABLE (data->stream));
@@ -4478,60 +4478,55 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	ifolder = CAMEL_IMAPX_FOLDER (folder);
 
-	/* return the exception from last command */
-	if (local_error != NULL) {
-		if (data->stream != NULL) {
-			g_object_unref (data->stream);
-			data->stream = NULL;
-		}
+	if (success) {
+		success = camel_stream_flush (
+			data->stream, cancellable, error) == 0;
+		g_prefix_error (
+			error, "%s: ",
+			_("Failed to close the tmp stream"));
+	}
 
-		g_propagate_error (error, local_error);
-		local_error = NULL;
-		success = FALSE;
+	if (success) {
+		success = camel_stream_close (
+			data->stream, cancellable, error) == 0;
+		g_prefix_error (
+			error, "%s: ",
+			_("Failed to close the tmp stream"));
+	}
 
-	} else if (data->stream != NULL) {
-		success =
-			(camel_stream_flush (
-			data->stream, cancellable, error) == 0) &&
-			(camel_stream_close (
-			data->stream, cancellable, error) == 0);
+	if (success) {
+		gchar *cur_filename;
+		gchar *tmp_filename;
+		gchar *dirname;
 
-		if (success) {
-			gchar *cur_filename;
-			gchar *tmp_filename;
-			gchar *dirname;
+		cur_filename = camel_data_cache_get_filename (
+			ifolder->cache, "cur", data->uid);
 
-			cur_filename = camel_data_cache_get_filename (
-				ifolder->cache, "cur", data->uid);
+		tmp_filename = camel_data_cache_get_filename (
+			ifolder->cache, "tmp", data->uid);
 
-			tmp_filename = camel_data_cache_get_filename (
-				ifolder->cache, "tmp", data->uid);
+		dirname = g_path_get_dirname (cur_filename);
+		g_mkdir_with_parents (dirname, 0700);
+		g_free (dirname);
 
-			dirname = g_path_get_dirname (cur_filename);
-			g_mkdir_with_parents (dirname, 0700);
-			g_free (dirname);
-
-			if (g_rename (tmp_filename, cur_filename) != 0)
-				g_set_error (
-					error, G_FILE_ERROR,
-					g_file_error_from_errno (errno),
-					"%s: %s",
-					_("Failed to copy the tmp file"),
-					g_strerror (errno));
-
-			g_free (cur_filename);
-			g_free (tmp_filename);
-
+		if (g_rename (tmp_filename, cur_filename) == 0) {
 			/* Exchange the "tmp" stream for the "cur" stream. */
-			g_object_unref (data->stream);
+			g_clear_object (&data->stream);
 			data->stream = camel_data_cache_get (
 				ifolder->cache, "cur", data->uid, error);
 			success = (data->stream != NULL);
 		} else {
-			g_prefix_error (
-				error, "%s: ",
-				_("Failed to close the tmp stream"));
+			g_set_error (
+				error, G_FILE_ERROR,
+				g_file_error_from_errno (errno),
+				"%s: %s",
+				_("Failed to copy the tmp file"),
+				g_strerror (errno));
+			success = FALSE;
 		}
+
+		g_free (cur_filename);
+		g_free (tmp_filename);
 	}
 
 	camel_data_cache_remove (ifolder->cache, "tmp", data->uid, NULL);
@@ -4541,8 +4536,6 @@ exit:
 	g_object_unref (folder);
 
 	camel_imapx_command_unref (ic);
-
-	g_clear_error (&local_error);
 
 	return success;
 }
