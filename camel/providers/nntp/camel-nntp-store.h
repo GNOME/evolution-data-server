@@ -47,15 +47,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_NNTP_STORE, CamelNNTPStoreClass))
 
-#define CAMEL_NNTP_EXT_SEARCH     (1 << 0)
-#define CAMEL_NNTP_EXT_SETGET     (1 << 1)
-#define CAMEL_NNTP_EXT_OVER       (1 << 2)
-#define CAMEL_NNTP_EXT_XPATTEXT   (1 << 3)
-#define CAMEL_NNTP_EXT_XACTIVE    (1 << 4)
-#define CAMEL_NNTP_EXT_LISTMOTD   (1 << 5)
-#define CAMEL_NNTP_EXT_LISTSUBSCR (1 << 6)
-#define CAMEL_NNTP_EXT_LISTPNAMES (1 << 7)
-
 G_BEGIN_DECLS
 
 struct _CamelNNTPFolder;
@@ -86,8 +77,6 @@ enum nntp_capabilities {
 struct _CamelNNTPStore {
 	CamelDiscoStore parent;
 	CamelNNTPStorePrivate *priv;
-
-	guint32 extensions;
 
 	guint posting_allowed : 1;
 	gboolean password_reprompt;
