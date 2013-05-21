@@ -582,6 +582,7 @@ camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
                                          GError **error)
 {
 	CamelIMAPXJob *job;
+	GCancellable *cancellable = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
@@ -610,10 +611,10 @@ camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
 	}
 
 	job = camel_imapx_command_get_job (ic);
-	if (job && g_cancellable_set_error_if_cancelled (camel_imapx_job_get_cancellable (job), error))
-		return TRUE;
+	if (job != NULL)
+		cancellable = camel_imapx_job_get_cancellable (job);
 
-	return FALSE;
+	return g_cancellable_set_error_if_cancelled (cancellable, error);
 }
 
 CamelIMAPXCommandQueue *
