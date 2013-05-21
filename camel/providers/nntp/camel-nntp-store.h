@@ -78,7 +78,6 @@ struct _CamelNNTPStore {
 	CamelDiscoStore parent;
 	CamelNNTPStorePrivate *priv;
 
-	guint posting_allowed : 1;
 	gboolean password_reprompt;
 
 	struct _CamelNNTPStoreSummary *summary;
