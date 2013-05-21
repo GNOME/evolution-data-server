@@ -143,11 +143,6 @@ nntp_store_dispose (GObject *object)
 		nntp_store->summary = NULL;
 	}
 
-	if (nntp_store->mem != NULL) {
-		g_object_unref (nntp_store->mem);
-		nntp_store->mem = NULL;
-	}
-
 	if (nntp_store->stream != NULL) {
 		g_object_unref (nntp_store->stream);
 		nntp_store->stream = NULL;
@@ -1596,8 +1591,6 @@ camel_subscribable_init (CamelSubscribableInterface *interface)
 static void
 camel_nntp_store_init (CamelNNTPStore *nntp_store)
 {
-	nntp_store->mem = (CamelStreamMem *) camel_stream_mem_new ();
-
 	/* Clear the default flags.  We don't want a virtual Junk or Trash
 	 * folder and the user can't create/delete/rename newsgroup folders. */
 	CAMEL_STORE (nntp_store)->flags = 0;
@@ -1612,8 +1605,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
                          const gchar *fmt,
                          va_list ap)
 {
-	CamelStream *stream;
-	GByteArray *byte_array;
+	GString *buffer;
 	const guchar *p, *ps;
 	guchar c;
 	gchar *s;
@@ -1627,7 +1619,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
 	p = (const guchar *) fmt;
 	ps = (const guchar *) p;
 
-	stream = CAMEL_STREAM (store->mem);
+	buffer = g_string_sized_new (256);
 
 	while ((c = *p++)) {
 		gchar *strval = NULL;
@@ -1635,62 +1627,54 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
 		switch (c) {
 		case '%':
 			c = *p++;
-			camel_stream_write (
-				stream, (const gchar *) ps,
-				p - ps - (c == '%' ? 1 : 2),
-				NULL, NULL);
+			g_string_append_len (
+				buffer, (const gchar *) ps,
+				p - ps - (c == '%' ? 1 : 2));
 			ps = p;
 			switch (c) {
 			case 's':
 				s = va_arg (ap, gchar *);
-				strval = g_strdup (s);
+				g_string_append (buffer, s);
 				break;
 			case 'd':
 				d = va_arg (ap, gint);
-				strval = g_strdup_printf ("%d", d);
+				g_string_append_printf (buffer, "%d", d);
 				break;
 			case 'u':
 				u = va_arg (ap, guint);
-				strval = g_strdup_printf ("%u", u);
+				g_string_append_printf (buffer, "%u", u);
 				break;
 			case 'm':
 				s = va_arg (ap, gchar *);
-				strval = g_strdup_printf ("<%s>", s);
+				g_string_append_printf (buffer, "<%s>", s);
 				break;
 			case 'r':
 				u = va_arg (ap, guint);
 				u2 = va_arg (ap, guint);
 				if (u == u2)
-					strval = g_strdup_printf ("%u", u);
+					g_string_append_printf (
+						buffer, "%u", u);
 				else
-					strval = g_strdup_printf ("%u-%u", u, u2);
+					g_string_append_printf (
+						buffer, "%u-%u", u, u2);
 				break;
 			default:
 				g_warning ("Passing unknown format to nntp_command: %c\n", c);
-				g_assert (0);
 			}
-
-			camel_stream_write_string (stream, strval, NULL, NULL);
 
 			g_free (strval);
 			strval = NULL;
 		}
 	}
 
-	camel_stream_write (stream, (const gchar *) ps, p - ps - 1, NULL, NULL);
-	camel_stream_write (stream, "\r\n", 2, NULL, NULL);
-
-	byte_array = camel_stream_mem_get_byte_array (store->mem);
+	g_string_append_len (buffer, (const gchar *) ps, p - ps - 1);
+	g_string_append_len (buffer, "\r\n", 2);
 
 	if (camel_stream_write (
-		(CamelStream *) store->stream,
-		(const gchar *) byte_array->data,
-		byte_array->len, cancellable, error) == -1)
+		CAMEL_STREAM (store->stream),
+		buffer->str, buffer->len,
+		cancellable, error) == -1)
 		goto ioerror;
-
-	/* FIXME: hack */
-	g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
-	g_byte_array_set_size (byte_array, 0);
 
 	if (camel_nntp_stream_line (store->stream, (guchar **) line, &u, cancellable, error) == -1)
 		goto ioerror;

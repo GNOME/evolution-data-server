@@ -95,7 +95,6 @@ struct _CamelNNTPStore {
 	struct _CamelNNTPStoreSummary *summary;
 
 	struct _CamelNNTPStream *stream;
-	struct _CamelStreamMem *mem;
 
 	struct _CamelDataCache *cache;
 
