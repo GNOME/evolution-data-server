@@ -78,8 +78,6 @@ struct _CamelNNTPStore {
 	CamelDiscoStore parent;
 	CamelNNTPStorePrivate *priv;
 
-	gboolean password_reprompt;
-
 	struct _CamelNNTPStoreSummary *summary;
 
 	struct _CamelNNTPStream *stream;
