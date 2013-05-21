@@ -111,17 +111,22 @@ nntp_folder_get_property (GObject *object,
 static void
 nntp_folder_dispose (GObject *object)
 {
-	CamelStore *parent_store;
-	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
+	CamelFolder *folder;
+	CamelStore *store;
 
-	camel_folder_summary_save_to_db (
-		CAMEL_FOLDER (nntp_folder)->summary, NULL);
+	folder = CAMEL_FOLDER (object);
+	camel_folder_summary_save_to_db (folder->summary, NULL);
 
-	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (nntp_folder));
-	if (parent_store) {
+	store = camel_folder_get_parent_store (folder);
+	if (store != NULL) {
+		CamelNNTPStoreSummary *nntp_store_summary;
+
+		nntp_store_summary = camel_nntp_store_ref_summary (
+			CAMEL_NNTP_STORE (store));
 		camel_store_summary_disconnect_folder_summary (
-			(CamelStoreSummary *) ((CamelNNTPStore *) parent_store)->summary,
-			CAMEL_FOLDER (nntp_folder)->summary);
+			CAMEL_STORE_SUMMARY (nntp_store_summary),
+			folder->summary);
+		g_clear_object (&nntp_store_summary);
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -263,8 +268,10 @@ nntp_get_filename (CamelFolder *folder,
                    GError **error)
 {
 	CamelStore *parent_store;
+	CamelDataCache *nntp_cache;
 	CamelNNTPStore *nntp_store;
 	gchar *article, *msgid;
+	gchar *filename;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
@@ -280,7 +287,11 @@ nntp_get_filename (CamelFolder *folder,
 	}
 	*msgid++ = 0;
 
-	return camel_data_cache_get_filename (nntp_store->cache, "cache", msgid);
+	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
+	filename = camel_data_cache_get_filename (nntp_cache, "cache", msgid);
+	g_clear_object (&nntp_cache);
+
+	return filename;
 }
 
 static CamelStream *
@@ -292,25 +303,34 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 {
 	CamelFolder *folder;
 	CamelStore *parent_store;
+	CamelDataCache *nntp_cache;
 	CamelNNTPStore *nntp_store;
+	CamelNNTPStream *nntp_stream;
 	CamelStream *stream = NULL;
 	gint ret;
 	gchar *line;
 
 	folder = CAMEL_FOLDER (nntp_folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	ret = camel_nntp_command (nntp_store, cancellable, error, nntp_folder, &line, "article %s", id);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
+	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
+	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
+
+	ret = camel_nntp_command (
+		nntp_store, cancellable, error,
+		nntp_folder, &line, "article %s", id);
+
 	if (ret == 220) {
-		stream = camel_data_cache_add (nntp_store->cache, "cache", msgid, NULL);
-		if (stream) {
+		stream = camel_data_cache_add (
+			nntp_cache, "cache", msgid, NULL);
+		if (stream != NULL) {
 			gboolean success;
 
-			if (camel_stream_write_to_stream ((CamelStream *) nntp_store->stream, stream, cancellable, error) == -1)
-				goto fail;
-
-			if ((error && *error) || g_cancellable_set_error_if_cancelled (cancellable, error))
+			success = (camel_stream_write_to_stream (
+				CAMEL_STREAM (nntp_stream),
+				stream, cancellable, error) != -1);
+			if (!success)
 				goto fail;
 
 			success = g_seekable_seek (
@@ -319,26 +339,34 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 			if (!success)
 				goto fail;
 		} else {
-			stream = g_object_ref (nntp_store->stream);
+			stream = g_object_ref (nntp_stream);
 		}
+
 	} else if (ret == 423 || ret == 430) {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_UID,
 			_("Cannot get message %s: %s"), msgid, line);
+
 	} else if (ret != -1) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot get message %s: %s"), msgid, line);
 	}
 
-	return stream;
+	goto exit;
 
 fail:
-	camel_data_cache_remove (nntp_store->cache, "cache", msgid, NULL);
+	camel_data_cache_remove (nntp_cache, "cache", msgid, NULL);
 	g_prefix_error (error, _("Cannot get message %s: "), msgid);
 
-	return NULL;
+	g_clear_object (&stream);
+
+exit:
+	g_clear_object (&nntp_cache);
+	g_clear_object (&nntp_stream);
+
+	return stream;
 }
 
 static gboolean
@@ -461,6 +489,7 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 {
 	CamelStore *parent_store;
 	CamelMimeMessage *message = NULL;
+	CamelDataCache *nntp_cache;
 	CamelNNTPStore *nntp_store;
 	CamelFolderChangeInfo *changes;
 	CamelNNTPFolder *nntp_folder;
@@ -484,7 +513,10 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 	*msgid++ = 0;
 
 	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
-	stream = camel_data_cache_get (nntp_store->cache, "cache", msgid, NULL);
+	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
+	stream = camel_data_cache_get (nntp_cache, "cache", msgid, NULL);
+	g_clear_object (&nntp_cache);
+
 	if (stream == NULL) {
 		if (camel_disco_store_status ((CamelDiscoStore *) nntp_store) == CAMEL_DISCO_STORE_OFFLINE) {
 			g_set_error (
@@ -533,8 +565,8 @@ nntp_folder_append_message_online (CamelFolder *folder,
 {
 	CamelStore *parent_store;
 	CamelNNTPStore *nntp_store;
+	CamelNNTPStream *nntp_stream;
 	CamelStream *filtered_stream;
-	CamelStream *stream;
 	CamelMimeFilter *crlffilter;
 	gint ret;
 	guint u;
@@ -542,15 +574,17 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	const gchar *full_name;
 	gchar *group, *line;
 	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
-	stream = CAMEL_STREAM (nntp_store->stream);
+	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 	/* send 'POST' command */
-	ret = camel_nntp_command (nntp_store, cancellable, error, NULL, &line, "post");
+	ret = camel_nntp_command (
+		nntp_store, cancellable, error, NULL, &line, "post");
 	if (ret != 340) {
 		if (ret == 440) {
 			g_set_error (
@@ -565,15 +599,17 @@ nntp_folder_append_message_online (CamelFolder *folder,
 				_("Posting failed: %s"), line);
 			success = FALSE;
 		}
-		return success;
+		goto exit;
 	}
 
 	/* the 'Newsgroups: ' header */
 	group = g_strdup_printf ("Newsgroups: %s\r\n", full_name);
 
 	/* setup stream filtering */
-	crlffilter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
-	filtered_stream = camel_stream_filter_new (stream);
+	filtered_stream = camel_stream_filter_new (CAMEL_STREAM (nntp_stream));
+	crlffilter = camel_mime_filter_crlf_new (
+		CAMEL_MIME_FILTER_CRLF_ENCODE,
+		CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
 	camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filtered_stream), crlffilter);
 	g_object_unref (crlffilter);
@@ -598,23 +634,43 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	}
 
 	/* write the message */
-	if (camel_stream_write (stream, group, strlen (group), cancellable, error) == -1
-	    || camel_data_wrapper_write_to_stream_sync (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, cancellable, error) == -1
-	    || camel_stream_flush (filtered_stream, cancellable, error) == -1
-	    || camel_stream_write (stream, "\r\n.\r\n", 5, cancellable, error) == -1
-	    || camel_nntp_stream_line (nntp_store->stream, (guchar **) &line, &u, cancellable, error) == -1) {
-		g_prefix_error (error, _("Posting failed: "));
-		success = FALSE;
-	} else if (atoi (line) != 240) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Posting failed: %s"), line);
+	if (local_error == NULL)
+		camel_stream_write (
+			CAMEL_STREAM (nntp_stream),
+			group, strlen (group),
+			cancellable, &local_error);
+	if (local_error == NULL)
+		camel_data_wrapper_write_to_stream_sync (
+			CAMEL_DATA_WRAPPER (mime_message),
+			filtered_stream, cancellable, &local_error);
+	if (local_error == NULL)
+		camel_stream_flush (
+			filtered_stream, cancellable, &local_error);
+	if (local_error == NULL)
+		camel_stream_write (
+			CAMEL_STREAM (nntp_stream),
+			"\r\n.\r\n", 5,
+			cancellable, &local_error);
+	if (local_error == NULL)
+		camel_nntp_stream_line (
+			nntp_stream, (guchar **) &line,
+			&u, cancellable, &local_error);
+	if (local_error == NULL && atoi (line) != 240)
+		local_error = g_error_new_literal (
+			CAMEL_ERROR, CAMEL_ERROR_GENERIC, line);
+
+	if (local_error != NULL) {
+		g_propagate_prefixed_error (
+			error, local_error, _("Posting failed: "));
 		success = FALSE;
 	}
 
 	g_object_unref (filtered_stream);
 	g_free (group);
 	header->next = savedhdrs;
+
+exit:
+	g_clear_object (&nntp_stream);
 
 	return success;
 }
@@ -759,6 +815,8 @@ camel_nntp_folder_new (CamelStore *parent,
 {
 	CamelFolder *folder;
 	CamelNNTPFolder *nntp_folder;
+	CamelNNTPStore *nntp_store;
+	CamelNNTPStoreSummary *nntp_store_summary;
 	gchar *root;
 	CamelService *service;
 	CamelSettings *settings;
@@ -803,15 +861,23 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	camel_folder_summary_load_from_db (folder->summary, NULL);
 
-	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary, folder_name);
-	if (si) {
-		subscribed = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary, si);
+	nntp_store = CAMEL_NNTP_STORE (parent);
+	nntp_store_summary = camel_nntp_store_ref_summary (nntp_store);
+
+	si = camel_store_summary_path (
+		CAMEL_STORE_SUMMARY (nntp_store_summary), folder_name);
+	if (si != NULL) {
+		subscribed =
+			(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
+		camel_store_summary_info_free (
+			CAMEL_STORE_SUMMARY (nntp_store_summary), si);
 	}
 
 	camel_store_summary_connect_folder_summary (
-		(CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary,
+		CAMEL_STORE_SUMMARY (nntp_store_summary),
 		folder_name, folder->summary);
+
+	g_clear_object (&nntp_store_summary);
 
 	if (subscribed && !camel_folder_refresh_info_sync (
 			folder, cancellable, error)) {

@@ -246,23 +246,15 @@ camel_nntp_stream_init (CamelNNTPStream *is)
 	is->mode = CAMEL_NNTP_STREAM_LINE;
 }
 
-/**
- * camel_nntp_stream_new:
- *
- * Returns a NULL stream.  A null stream is always at eof, and
- * always returns success for all reads and writes.
- *
- * Returns: the stream
- **/
-CamelStream *
+CamelNNTPStream *
 camel_nntp_stream_new (CamelStream *source)
 {
-	CamelNNTPStream *is;
+	CamelNNTPStream *nntp_stream;
 
-	is = g_object_new (CAMEL_TYPE_NNTP_STREAM, NULL);
-	is->source = g_object_ref (source);
+	nntp_stream = g_object_new (CAMEL_TYPE_NNTP_STREAM, NULL);
+	nntp_stream->source = g_object_ref (source);
 
-	return (CamelStream *) is;
+	return nntp_stream;
 }
 
 /* Get one line from the nntp stream */

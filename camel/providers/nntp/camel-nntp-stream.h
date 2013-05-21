@@ -70,9 +70,8 @@ struct _CamelNNTPStreamClass {
 };
 
 GType		camel_nntp_stream_get_type	(void);
-
-CamelStream *	camel_nntp_stream_new		(CamelStream *source);
-
+CamelNNTPStream *
+		camel_nntp_stream_new		(CamelStream *source);
 void		camel_nntp_stream_set_mode	(CamelNNTPStream *is,
 						 camel_nntp_stream_mode_t mode);
 gint		camel_nntp_stream_line		(CamelNNTPStream *is,
