@@ -282,6 +282,7 @@ gboolean	e_book_client_get_view_sync	(EBookClient *client,
 						 EBookClientView **out_view,
 						 GCancellable *cancellable,
 						 GError **error);
+const gchar    *e_book_client_get_locale        (EBookClient *client);
 
 #ifndef EDS_DISABLE_DEPRECATED
 /**

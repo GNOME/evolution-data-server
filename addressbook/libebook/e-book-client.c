@@ -59,6 +59,8 @@ struct _EBookClientPrivate {
 
 	gulong dbus_proxy_error_handler_id;
 	gulong dbus_proxy_notify_handler_id;
+
+	gchar *locale;
 };
 
 struct _AsyncContext {
@@ -73,6 +75,7 @@ struct _AsyncContext {
 struct _SignalClosure {
 	GWeakRef client;
 	gchar *property_name;
+	gchar *property_value;
 	gchar *error_message;
 };
 
@@ -92,6 +95,14 @@ static void	e_book_client_initable_init
 					(GInitableIface *interface);
 static void	e_book_client_async_initable_init
 					(GAsyncInitableIface *interface);
+static void     book_client_set_locale  (EBookClient *client,
+					 const gchar *locale);
+
+
+enum {
+	PROP_0,
+	PROP_LOCALE
+};
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookClient,
@@ -133,6 +144,7 @@ signal_closure_free (SignalClosure *signal_closure)
 	g_weak_ref_set (&signal_closure->client, NULL);
 
 	g_free (signal_closure->property_name);
+	g_free (signal_closure->property_value);
 	g_free (signal_closure->error_message);
 
 	g_slice_free (SignalClosure, signal_closure);
@@ -331,19 +343,29 @@ book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 	if (client != NULL) {
 		gchar *prop_value = NULL;
 
-		/* XXX Despite appearances, this function does not block. */
-		e_client_get_backend_property_sync (
-			client,
-			signal_closure->property_name,
-			&prop_value, NULL, NULL);
+		/* Notify that the "locale" property has changed in the calling thread 
+		 */
+		if (g_str_equal (signal_closure->property_name, "locale")) {
+			EBookClient *book_client = E_BOOK_CLIENT (client);
 
-		if (prop_value != NULL) {
-			g_signal_emit_by_name (
-				client,
-				"backend-property-changed",
+			book_client_set_locale (book_client, signal_closure->property_value);
+
+		} else {
+
+			/* XXX Despite appearances, this function does not block. */
+			e_client_get_backend_property_sync (
+			        client,
 				signal_closure->property_name,
-				prop_value);
-			g_free (prop_value);
+				&prop_value, NULL, NULL);
+
+			if (prop_value != NULL) {
+				g_signal_emit_by_name (
+				        client,
+					"backend-property-changed",
+					signal_closure->property_name,
+					prop_value);
+				g_free (prop_value);
+			}
 		}
 
 		g_object_unref (client);
@@ -435,6 +457,10 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		e_client_set_readonly (client, !writable);
 	}
 
+	if (g_str_equal (pspec->name, "locale")) {
+		backend_prop_name = "locale";
+	}
+
 	if (backend_prop_name != NULL) {
 		GSource *idle_source;
 		GMainContext *main_context;
@@ -443,6 +469,13 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_set (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
+
+		/* The 'locale' is not an EClient property, so just transport
+		 * the value directly on the SignalClosure
+		 */
+		if (g_str_equal (backend_prop_name, "locale"))
+			signal_closure->property_value =
+				e_dbus_address_book_dup_locale (dbus_proxy);
 
 		main_context = e_client_ref_main_context (client);
 
@@ -543,6 +576,8 @@ book_client_finalize (GObject *object)
 
 	if (priv->name_watcher_id > 0)
 		g_bus_unwatch_name (priv->name_watcher_id);
+
+	g_free (priv->locale);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
@@ -838,6 +873,9 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_object_notify (G_OBJECT (proxy), "writable");
 	g_object_notify (G_OBJECT (proxy), "capabilities");
 
+	book_client_set_locale (E_BOOK_CLIENT (client),
+				e_dbus_address_book_get_locale (priv->dbus_proxy));
+
 	g_object_unref (connection);
 }
 
@@ -908,6 +946,28 @@ book_client_initable_init_finish (GAsyncInitable *initable,
 }
 
 static void
+book_client_get_property (GObject *object,
+			  guint property_id,
+			  GValue *value,
+			  GParamSpec *pspec)
+{
+	EBookClient *book_client;
+
+	book_client = E_BOOK_CLIENT (object);
+
+	switch (property_id) {
+		case PROP_LOCALE:
+			g_value_set_string (
+				value,
+				book_client->priv->locale);
+			return;
+
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 e_book_client_class_init (EBookClientClass *class)
 {
 	GObjectClass *object_class;
@@ -918,6 +978,7 @@ e_book_client_class_init (EBookClientClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_dispose;
 	object_class->finalize = book_client_finalize;
+	object_class->get_property = book_client_get_property;
 
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy = book_client_get_dbus_proxy;
@@ -925,6 +986,17 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->set_backend_property_sync = book_client_set_backend_property_sync;
 	client_class->open_sync = book_client_open_sync;
 	client_class->refresh_sync = book_client_refresh_sync;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LOCALE,
+		g_param_spec_string (
+			"locale",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -943,7 +1015,12 @@ e_book_client_async_initable_init (GAsyncInitableIface *interface)
 static void
 e_book_client_init (EBookClient *client)
 {
+	const gchar *default_locale;
+
 	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+
+	default_locale = setlocale (LC_COLLATE, NULL);
+	client->priv->locale = g_strdup (default_locale);
 }
 
 /**
@@ -3476,3 +3553,39 @@ e_book_client_get_view_sync (EBookClient *client,
 	return success;
 }
 
+static void
+book_client_set_locale (EBookClient *client,
+			const gchar *locale)
+{
+	if (g_strcmp0 (client->priv->locale, locale) != 0) {
+		g_free (client->priv->locale);
+		client->priv->locale = g_strdup (locale);
+		
+		g_object_notify (G_OBJECT (client), "locale");
+	}
+}
+
+/**
+ * e_book_client_get_locale:
+ * @client: an #EBookClient
+ *
+ * Reports the locale in use for @client. The addressbook might sort contacts
+ * in different orders, or store and compare phone numbers in different ways
+ * depending on the currently set locale.
+ *
+ * Locales can change dynamically if systemd decides to change the locale, so
+ * it's important to listen for notifications on the #EBookClient:locale property
+ * if you depend on sorted result lists. Ordered results should be reloaded
+ * after a locale change is detected.
+ *
+ * Returns: (transfer none): The currently set locale for @client
+ *
+ * Since: 3.10
+ */
+const gchar *
+e_book_client_get_locale (EBookClient *client)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), NULL);
+
+	return client->priv->locale;
+}
