@@ -136,28 +136,14 @@ static SummaryField * append_summary_field (GArray         *array,
 					    gboolean       *have_attr_list,
 					    GError        **error);
 
-static gboolean upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
-					 const gchar           *folderid,
-					 const gchar           *region,
-					 GError               **error);
-
-
-static const gchar *
-get_current_collation_locale (void)
-{
-	const gchar *lc_collate;
-
-	/* Allow overriding the locale name explicitly, this is mainly
-	 * for test cases since we support locales with ICU that
-	 * may not be supported by a given system's setlocale()
-	 */
-	lc_collate = g_getenv ("EDS_COLLATE");
-
-	if (!lc_collate)
-		lc_collate = setlocale (LC_COLLATE, NULL);
-
-	return lc_collate;
-}
+static gboolean upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
+					const gchar          *folderid,
+					const gchar          *region,
+					const gchar          *lc_collate,
+					GError              **error);
+static gboolean sqlitedb_set_locale_internal (EBookBackendSqliteDB *ebsdb,
+					      const gchar          *locale,
+					      GError              **error);
 
 static const gchar *
 summary_dbname_from_field (EBookBackendSqliteDB *ebsdb,
@@ -246,7 +232,8 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 	g_free (priv->path);
 	g_free (priv->summary_fields);
 
-	e_collator_unref (priv->collator);
+	if (priv->collator)
+		e_collator_unref (priv->collator);
 
 	g_mutex_clear (&priv->lock);
 	g_mutex_clear (&priv->updates_lock);
@@ -787,13 +774,17 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 		goto rollback;
 
 	if (!exists) {
+		const gchar *lc_collate;
+
 		multivalues = format_multivalues (ebsdb);
+
+		lc_collate = setlocale (LC_COLLATE, NULL);
 
 		stmt = sqlite3_mprintf (
 			"INSERT OR IGNORE INTO "
-			"folders ( folder_id, folder_name, version, multivalues ) "
-			"VALUES ( %Q, %Q, %d, %Q ) ",
-			folderid, folder_name, FOLDER_VERSION, multivalues);
+			"folders ( folder_id, folder_name, version, multivalues, lc_collate ) "
+			"VALUES ( %Q, %Q, %d, %Q, %Q ) ",
+			folderid, folder_name, FOLDER_VERSION, multivalues, lc_collate);
 		success = book_backend_sql_exec (
 			ebsdb->priv->db, stmt, NULL, NULL, error);
 		sqlite3_free (stmt);
@@ -998,6 +989,8 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	GString *string;
 	gchar *current_region = NULL;
 	gboolean relocalized = FALSE;
+	const gchar *lc_collate = NULL;
+	gchar *stored_lc_collate = NULL;
 
 	if (e_phone_number_is_supported ())
 		current_region = e_phone_number_get_default_region ();
@@ -1180,9 +1173,27 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		}
 	}
 
+	/* Get the locale setting for this addressbook */
+	if (success && already_exists) {
+		stmt = sqlite3_mprintf ("SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
+		sqlite3_free (stmt);
+
+		lc_collate = stored_lc_collate;
+
+	} else if (success) {
+		/* When creating a new addressbook, default to system locale */
+		lc_collate = setlocale (LC_COLLATE, NULL);
+	}
+
+	/* Before touching any data, make sure we have a valid ECollator */
+	if (success) {
+		success = sqlitedb_set_locale_internal (ebsdb, lc_collate, error);
+	}
+
 	/* Need to relocalize the whole thing if the schema has been upgraded to version 7 */
 	if (success && previous_schema >= 1 && previous_schema < 7) {
-		success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
+		success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
 		relocalized = TRUE;
 	}
 
@@ -1195,33 +1206,15 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 
 		if (success && g_strcmp0 (current_region, stored_region) != 0) {
-			success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
+			success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
 			relocalized = TRUE;
 		}
 
 		g_free (stored_region);
 	}
 
-	/* We may need to relocalize for an LC_COLLATE locale change */
-	if (success && relocalized == FALSE) {
-		const gchar *lc_collate = NULL;
-		gchar *stored_lc_collate;
-
-		stmt = sqlite3_mprintf ("SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
-		success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
-		sqlite3_free (stmt);
-
-		lc_collate = get_current_collation_locale ();
-
-		if (success && g_strcmp0 (stored_lc_collate, lc_collate) != 0) {
-			success = upgrade_contacts_table (ebsdb, folderid, current_region, error);
-			relocalized = TRUE;
-		}
-
-		g_free (stored_lc_collate);
-	}
-
 	g_free (current_region);
+	g_free (stored_lc_collate);
 
 	return success;
 }
@@ -1562,8 +1555,6 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	gchar *hash_key, *filename;
 	gint previous_schema = 0;
 	gboolean already_exists = FALSE;
-	const gchar *lc_collate;
-	ECollator *collator;
 
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (emailid != NULL, NULL);
@@ -1583,13 +1574,6 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 		}
 	}
 
-	lc_collate = get_current_collation_locale ();
-	collator = e_collator_new (lc_collate, error);
-	if (!collator) {
-		g_mutex_unlock (&dbcon_lock);
-		return NULL;
-	}
-
 	ebsdb = g_object_new (E_TYPE_BOOK_BACKEND_SQLITEDB, NULL);
 	ebsdb->priv->path = g_strdup (path);
 	ebsdb->priv->summary_fields = fields;
@@ -1597,7 +1581,6 @@ e_book_backend_sqlitedb_new_internal (const gchar *path,
 	ebsdb->priv->have_attr_list = have_attr_list;
 	ebsdb->priv->attr_list_indexes = attr_list_indexes;
 	ebsdb->priv->store_vcard = store_vcard;
-	ebsdb->priv->collator = collator;
 
 	if (g_mkdir_with_parents (path, 0777) < 0) {
 		g_mutex_unlock (&dbcon_lock);
@@ -4997,13 +4980,13 @@ e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
 }
 
 static gboolean
-upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
-			 const gchar          *folderid,
-			 const gchar          *region,
-			 GError              **error)
+upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
+			const gchar          *folderid,
+			const gchar          *region,
+			const gchar          *lc_collate,
+			GError              **error)
 {
 	gchar *stmt;
-	const gchar *lc_collate;
 	gboolean success = FALSE;
 	GSList *vcard_data = NULL;
 	GSList *l;
@@ -5012,9 +4995,6 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, addto_vcard_list_cb, &vcard_data, error);
 	sqlite3_free (stmt);
-
-	if (vcard_data == NULL)
-		return TRUE;
 
 	for (l = vcard_data; success && l; l = l->next) {
 		EbSdbSearchData *const s_data = l->data;
@@ -5031,7 +5011,6 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 	g_slist_free_full (vcard_data, destroy_search_data);
 
 	if (success) {
-		lc_collate = get_current_collation_locale ();
 
 		stmt = sqlite3_mprintf (
 			"UPDATE folders SET countrycode = %Q WHERE folder_id = %Q",
@@ -5047,6 +5026,145 @@ upgrade_contacts_table (EBookBackendSqliteDB  *ebsdb,
 			ebsdb->priv->db, stmt, NULL, NULL, error);
 		sqlite3_free (stmt);
 	}
+
+	return success;
+}
+
+static gboolean
+sqlitedb_set_locale_internal (EBookBackendSqliteDB *ebsdb,
+			      const gchar          *locale,
+			      GError              **error)
+{
+	ECollator *collator;
+
+	collator = e_collator_new (locale, error);
+	if (!collator)
+		return FALSE;
+
+	if (ebsdb->priv->collator)
+		e_collator_unref (ebsdb->priv->collator);
+
+	ebsdb->priv->collator = collator;
+
+	return TRUE;
+}
+
+/**
+ * e_book_backend_sqlitedb_set_locale:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @lc_collate: The new locale for the addressbook
+ * @error: A location to store any error that may have occurred
+ *
+ * Relocalizes any locale specific data in the specified
+ * new @lc_collate locale.
+ *
+ * The @lc_collate locale setting is stored and remembered on
+ * subsequent accesses of the addressbook, changing the locale
+ * will store the new locale and will modify sort keys and any
+ * locale specific data in the addressbook.
+ *
+ * Returns: Whether the new locale was successfully set.
+ *
+ * Since: 3.10
+ */
+gboolean
+e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
+				    const gchar          *folderid,
+				    const gchar          *lc_collate,
+				    GError              **error)
+{
+	gboolean success;
+	gchar *stmt;
+	gchar *stored_lc_collate;
+	gchar *current_region = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid && folderid[0], FALSE);
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	if (e_phone_number_is_supported ())
+		current_region = e_phone_number_get_default_region ();
+
+	if (!sqlitedb_set_locale_internal (ebsdb, lc_collate, error))
+		return FALSE;
+
+	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		g_free (current_region);
+		return FALSE;
+	}
+
+	stmt = sqlite3_mprintf ("SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+	success = book_backend_sql_exec (ebsdb->priv->db, stmt, get_string_cb, &stored_lc_collate, error);
+	sqlite3_free (stmt);
+
+	if (success && g_strcmp0 (stored_lc_collate, lc_collate) != 0)
+		success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
+
+	/* If for some reason we failed, then reset the collator to use the old locale */
+	if (!success)
+		sqlitedb_set_locale_internal (ebsdb, stored_lc_collate, NULL);
+
+	g_free (stored_lc_collate);
+	g_free (current_region);
+
+	if (!success)
+		goto rollback;
+
+	success = book_backend_sqlitedb_commit_transaction (ebsdb, error);
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return success;
+
+ rollback:
+	/* The GError is already set. */
+	book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	return FALSE;
+}
+
+/**
+ * e_book_backend_sqlitedb_get_locale:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: folder id of the address-book
+ * @revision_out: (out) (transfer full): The location to return the current locale
+ * @error: A location to store any error that may have occurred
+ *
+ * Fetches the current locale setting for the address-book indicated by @folderid.
+ *
+ * Upon success, @lc_collate_out will hold the returned locale setting,
+ * otherwise %FALSE will be returned and @error will be updated accordingly.
+ *
+ * Returns: Whether the locale was successfully fetched.
+ *
+ * Since: 3.10
+ */
+gboolean
+e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
+				    const gchar          *folderid,
+				    gchar               **lc_collate_out,
+				    GError              **error)
+{
+	gchar *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (folderid && folderid[0], FALSE);
+	g_return_val_if_fail (lc_collate_out != NULL && *lc_collate_out == NULL, FALSE);
+
+	LOCK_MUTEX (&ebsdb->priv->lock);
+
+	stmt = sqlite3_mprintf (
+		"SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
+	success = book_backend_sql_exec (
+		ebsdb->priv->db, stmt, get_string_cb, lc_collate_out, error);
+	sqlite3_free (stmt);
+
+	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return success;
 }
