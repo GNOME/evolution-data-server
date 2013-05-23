@@ -148,6 +148,8 @@ void		e_book_client_get_view				(EBookClient *client, const gchar *sexp, GCancel
 gboolean	e_book_client_get_view_finish			(EBookClient *client, GAsyncResult *result, EBookClientView **view, GError **error);
 gboolean	e_book_client_get_view_sync			(EBookClient *client, const gchar *sexp, EBookClientView **view, GCancellable *cancellable, GError **error);
 
+const gchar    *e_book_client_get_locale                        (EBookClient *client);
+
 G_END_DECLS
 
 #endif /* E_BOOK_CLIENT_H */

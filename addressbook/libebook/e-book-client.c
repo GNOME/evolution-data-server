@@ -50,6 +50,12 @@ struct _EBookClientPrivate {
 	guint gone_signal_id;
 
 	EDataBook    *direct_book;
+	gchar *locale;
+};
+
+enum {
+	PROP_0,
+	PROP_LOCALE
 };
 
 G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
@@ -137,6 +143,7 @@ static GStaticRecMutex book_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 #define LOCK_FACTORY()   g_static_rec_mutex_lock (&book_factory_proxy_lock)
 #define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&book_factory_proxy_lock)
 
+static void book_client_set_locale (EBookClient *client, const gchar *locale);
 static void gdbus_book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
 
 
@@ -448,6 +455,14 @@ backend_property_changed_cb (EGdbusBook *object,
 	g_free (prop_value);
 }
 
+static void
+locale_changed_cb (EGdbusBook *object,
+		   const gchar *locale,
+		   EBookClient *client)
+{
+	book_client_set_locale (client, locale);	
+}
+
 /*
  * Converts a GSList of EContact objects into a NULL-terminated array of
  * valid UTF-8 vcard strings, suitable for sending over DBus.
@@ -565,6 +580,7 @@ e_book_client_new (ESource *source,
 	g_signal_connect (client->priv->gdbus_book, "online", G_CALLBACK (online_cb), client);
 	g_signal_connect (client->priv->gdbus_book, "opened", G_CALLBACK (opened_cb), client);
 	g_signal_connect (client->priv->gdbus_book, "backend-property-changed", G_CALLBACK (backend_property_changed_cb), client);
+	g_signal_connect (client->priv->gdbus_book, "locale-changed", G_CALLBACK (locale_changed_cb), client);
 
 	return client;
 }
@@ -1042,6 +1058,8 @@ book_client_open_finish (EClient *client,
                          GError **error)
 {
 	EBookClient *book_client;
+	GError *local_error = NULL;
+	gchar *locale = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
@@ -1067,6 +1085,16 @@ book_client_open_finish (EClient *client,
 				    FALSE /* only_if_exists */, NULL /* cancellable */, error))
 		return FALSE;
 
+	/* More cheating... quick fix for back port to 3.6 branch */
+	if (!e_client_proxy_call_sync_void__string (client, &locale, NULL, &local_error,
+						    e_gdbus_book_call_get_locale_sync)) {
+		g_warning ("Failed to fetch initial locale: %s", local_error->message);
+		g_error_free (local_error);
+	} else {
+		book_client_set_locale (book_client, locale);
+		g_free (locale);
+	}
+
 	return TRUE;
 }
 
@@ -1077,6 +1105,8 @@ book_client_open_sync (EClient *client,
                        GError **error)
 {
 	EBookClient *book_client;
+	gchar *locale = NULL;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
@@ -1094,6 +1124,15 @@ book_client_open_sync (EClient *client,
 	    !e_data_book_open_sync (book_client->priv->direct_book,
 				    only_if_exists, cancellable, error))
 		return FALSE;
+
+	if (!e_client_proxy_call_sync_void__string (client, &locale, cancellable, &local_error,
+						    e_gdbus_book_call_get_locale_sync)) {
+		g_warning ("Failed to fetch initial locale: %s", local_error->message);
+		g_error_free (local_error);
+	} else {
+		book_client_set_locale (book_client, locale);
+		g_free (locale);
+	}
 
 	return TRUE;
 }
@@ -2646,6 +2685,10 @@ book_client_dispose (GObject *object)
 static void
 book_client_finalize (GObject *object)
 {
+	EBookClient *book_client = E_BOOK_CLIENT (object);
+
+	g_free (book_client->priv->locale);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
 
@@ -2654,6 +2697,28 @@ book_client_finalize (GObject *object)
 	if (!active_book_clients)
 		gdbus_book_factory_proxy_disconnect (NULL);
 	UNLOCK_FACTORY ();
+}
+
+static void
+book_client_get_property (GObject *object,
+			  guint property_id,
+			  GValue *value,
+			  GParamSpec *pspec)
+{
+	EBookClient *book_client;
+
+	book_client = E_BOOK_CLIENT (object);
+
+	switch (property_id) {
+		case PROP_LOCALE:
+			g_value_set_string (
+				value,
+				book_client->priv->locale);
+			return;
+
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -2667,6 +2732,7 @@ e_book_client_class_init (EBookClientClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_dispose;
 	object_class->finalize = book_client_finalize;
+	object_class->get_property = book_client_get_property;
 
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy			= book_client_get_dbus_proxy;
@@ -2686,4 +2752,52 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->refresh				= book_client_refresh;
 	client_class->refresh_finish			= book_client_refresh_finish;
 	client_class->refresh_sync			= book_client_refresh_sync;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LOCALE,
+		g_param_spec_string (
+			"locale",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+}
+
+static void
+book_client_set_locale (EBookClient *client,
+			const gchar *locale)
+{
+	if (g_strcmp0 (client->priv->locale, locale) != 0) {
+		g_free (client->priv->locale);
+		client->priv->locale = g_strdup (locale);
+		
+		g_object_notify (G_OBJECT (client), "locale");
+	}
+}
+
+/**
+ * e_book_client_get_locale:
+ * @client: an #EBookClient
+ *
+ * Reports the locale in use for @client. The addressbook might sort contacts
+ * in different orders, or store and compare phone numbers in different ways
+ * depending on the currently set locale.
+ *
+ * Locales can change dynamically if systemd decides to change the locale, so
+ * it's important to listen for notifications on the #EBookClient:locale property
+ * if you depend on sorted result lists. Ordered results should be reloaded
+ * after a locale change is detected.
+ *
+ * Returns: (transfer none): The currently set locale for @client
+ *
+ * Since: 3.10
+ */
+const gchar *
+e_book_client_get_locale (EBookClient *client)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), NULL);
+
+	return client->priv->locale;
 }
