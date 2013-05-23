@@ -14,6 +14,7 @@
 
   <property name="Online" type="b" access="read"/>
   <property name="Revision" type="s" access="read"/>
+  <property name="Locale" type="s" access="read"/>
   <property name="Writable" type="b" access="read"/>
 
   <!-- These properties are static. -->
