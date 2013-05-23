@@ -76,6 +76,7 @@ struct _EBookBackendFilePrivate {
 	gchar     *base_directory;
 	gchar     *photo_dirname;
 	gchar     *revision;
+	gchar     *locale;
 	gint       rev_counter;
 	gboolean   revision_guards;
 	GRWLock    lock;
@@ -672,6 +673,22 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
+}
+
+static void
+e_book_backend_file_load_locale (EBookBackendFile *bf)
+{
+	GError *error = NULL;
+
+	if (!e_book_backend_sqlitedb_get_locale (bf->priv->sqlitedb,
+						 SQLITEDB_FOLDER_ID,
+						 &bf->priv->locale,
+						 &error)) {
+		g_warning (
+			G_STRLOC ": Error loading database locale setting: %s",
+			error ? error->message : "Unknown error");
+		g_clear_error (&error);
+	}
 }
 
 static void
@@ -1555,6 +1572,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		return;
 	bf->priv->photo_dirname = dirname;
 
+	e_book_backend_file_load_locale (bf);
 	e_book_backend_file_load_revision (bf);
 
 	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
@@ -1701,6 +1719,7 @@ e_book_backend_file_finalize (GObject *object)
 
 	g_free (priv->photo_dirname);
 	g_free (priv->revision);
+	g_free (priv->locale);
 	g_free (priv->base_directory);
 	g_rw_lock_clear (&(priv->lock));
 
@@ -1750,6 +1769,33 @@ e_book_backend_file_configure_direct (EBookBackend *backend,
 }
 
 static void
+e_book_backend_file_set_locale (EBookBackend *backend,
+				const gchar  *locale)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	GError *error = NULL;
+
+	if (!e_book_backend_sqlitedb_set_locale (bf->priv->sqlitedb,
+						 SQLITEDB_FOLDER_ID,
+						 locale,
+						 &error)) {
+		g_free (bf->priv->locale);
+		bf->priv->locale = g_strdup (locale);
+
+		g_warning ("Failed to set locale on SQLiteDB: %s", error->message);
+		g_error_free (error);
+	}
+}
+
+static const gchar *
+e_book_backend_file_get_locale (EBookBackend *backend)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+
+	return bf->priv->locale;
+}
+
+static void
 e_book_backend_file_class_init (EBookBackendFileClass *class)
 {
 	GObjectClass    *object_class = G_OBJECT_CLASS (class);
@@ -1768,6 +1814,8 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->notify_update            = e_book_backend_file_notify_update;
 	backend_class->get_direct_book          = e_book_backend_file_get_direct_book;
 	backend_class->configure_direct         = e_book_backend_file_configure_direct;
+	backend_class->set_locale               = e_book_backend_file_set_locale;
+	backend_class->get_locale               = e_book_backend_file_get_locale;
 
 	sync_class->open_sync			= e_book_backend_file_open;
 	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
