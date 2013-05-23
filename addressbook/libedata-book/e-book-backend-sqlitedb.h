@@ -285,6 +285,16 @@ gboolean        e_book_backend_sqlitedb_check_summary_query
 gboolean        e_book_backend_sqlitedb_check_summary_fields
                                                 (EBookBackendSqliteDB *ebsdb,
 						 GHashTable *fields_of_interest);
+gboolean        e_book_backend_sqlitedb_set_locale
+                                                (EBookBackendSqliteDB *ebsdb,
+						 const gchar          *folderid,
+						 const gchar          *lc_collate,
+						 GError              **error);
+gboolean        e_book_backend_sqlitedb_get_locale
+                                                (EBookBackendSqliteDB *ebsdb,
+						 const gchar          *folderid,
+						 gchar               **lc_collate_out,
+						 GError              **error);
 
 /* Cursor API */
 EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
