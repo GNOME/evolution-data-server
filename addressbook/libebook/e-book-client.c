@@ -61,20 +61,28 @@ struct _EBookClientPrivate {
 
 	gulong dbus_proxy_error_handler_id;
 	gulong dbus_proxy_notify_handler_id;
+
+	gchar *locale;
 };
 
 struct _AsyncContext {
 	EContact *contact;
 	EBookClientView *client_view;
+	EBookClientCursor *client_cursor;
 	GSList *object_list;
 	GSList *string_list;
+	EContactField *sort_fields;
+	EBookCursorSortType *sort_types;
+	guint n_sort_fields;
 	gchar *sexp;
 	gchar *uid;
+	GMainContext *context;
 };
 
 struct _SignalClosure {
 	GWeakRef client;
 	gchar *property_name;
+	gchar *property_value;
 	gchar *error_message;
 };
 
@@ -94,6 +102,14 @@ static void	e_book_client_initable_init
 					(GInitableIface *interface);
 static void	e_book_client_async_initable_init
 					(GAsyncInitableIface *interface);
+static void     book_client_set_locale  (EBookClient *client,
+					 const gchar *locale);
+
+
+enum {
+	PROP_0,
+	PROP_LOCALE
+};
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookClient,
@@ -115,6 +131,12 @@ async_context_free (AsyncContext *async_context)
 	if (async_context->client_view != NULL)
 		g_object_unref (async_context->client_view);
 
+	if (async_context->client_cursor != NULL)
+		g_object_unref (async_context->client_cursor);
+
+	if (async_context->context)
+		g_main_context_unref (async_context->context);
+
 	g_slist_free_full (
 		async_context->object_list,
 		(GDestroyNotify) g_object_unref);
@@ -122,6 +144,9 @@ async_context_free (AsyncContext *async_context)
 	g_slist_free_full (
 		async_context->string_list,
 		(GDestroyNotify) g_free);
+
+	g_free (async_context->sort_fields);
+	g_free (async_context->sort_types);
 
 	g_free (async_context->sexp);
 	g_free (async_context->uid);
@@ -135,6 +160,7 @@ signal_closure_free (SignalClosure *signal_closure)
 	g_weak_ref_set (&signal_closure->client, NULL);
 
 	g_free (signal_closure->property_name);
+	g_free (signal_closure->property_value);
 	g_free (signal_closure->error_message);
 
 	g_slice_free (SignalClosure, signal_closure);
@@ -424,19 +450,29 @@ book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 	if (client != NULL) {
 		gchar *prop_value = NULL;
 
-		/* XXX Despite appearances, this function does not block. */
-		e_client_get_backend_property_sync (
-			client,
-			signal_closure->property_name,
-			&prop_value, NULL, NULL);
+		/* Notify that the "locale" property has changed in the calling thread 
+		 */
+		if (g_str_equal (signal_closure->property_name, "locale")) {
+			EBookClient *book_client = E_BOOK_CLIENT (client);
 
-		if (prop_value != NULL) {
-			g_signal_emit_by_name (
-				client,
-				"backend-property-changed",
+			book_client_set_locale (book_client, signal_closure->property_value);
+
+		} else {
+
+			/* XXX Despite appearances, this function does not block. */
+			e_client_get_backend_property_sync (
+			        client,
 				signal_closure->property_name,
-				prop_value);
-			g_free (prop_value);
+				&prop_value, NULL, NULL);
+
+			if (prop_value != NULL) {
+				g_signal_emit_by_name (
+				        client,
+					"backend-property-changed",
+					signal_closure->property_name,
+					prop_value);
+				g_free (prop_value);
+			}
 		}
 
 		g_object_unref (client);
@@ -541,6 +577,10 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		e_client_set_readonly (client, !writable);
 	}
 
+	if (g_str_equal (pspec->name, "locale")) {
+		backend_prop_name = "locale";
+	}
+
 	if (backend_prop_name != NULL) {
 		GSource *idle_source;
 		GMainContext *main_context;
@@ -549,6 +589,13 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_set (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
+
+		/* The 'locale' is not an EClient property, so just transport
+		 * the value directly on the SignalClosure
+		 */
+		if (g_str_equal (backend_prop_name, "locale"))
+			signal_closure->property_value =
+				e_dbus_address_book_dup_locale (dbus_proxy);
 
 		main_context = e_client_ref_main_context (client);
 
@@ -650,6 +697,8 @@ book_client_finalize (GObject *object)
 
 	if (priv->name_watcher_id > 0)
 		g_bus_unwatch_name (priv->name_watcher_id);
+
+	g_free (priv->locale);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
@@ -945,6 +994,9 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_object_notify (G_OBJECT (proxy), "writable");
 	g_object_notify (G_OBJECT (proxy), "capabilities");
 
+	book_client_set_locale (E_BOOK_CLIENT (client),
+				e_dbus_address_book_get_locale (priv->dbus_proxy));
+
 	g_object_unref (connection);
 }
 
@@ -1015,6 +1067,28 @@ book_client_initable_init_finish (GAsyncInitable *initable,
 }
 
 static void
+book_client_get_property (GObject *object,
+			  guint property_id,
+			  GValue *value,
+			  GParamSpec *pspec)
+{
+	EBookClient *book_client;
+
+	book_client = E_BOOK_CLIENT (object);
+
+	switch (property_id) {
+		case PROP_LOCALE:
+			g_value_set_string (
+				value,
+				book_client->priv->locale);
+			return;
+
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 e_book_client_class_init (EBookClientClass *class)
 {
 	GObjectClass *object_class;
@@ -1025,6 +1099,7 @@ e_book_client_class_init (EBookClientClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_dispose;
 	object_class->finalize = book_client_finalize;
+	object_class->get_property = book_client_get_property;
 
 	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy = book_client_get_dbus_proxy;
@@ -1032,6 +1107,24 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->set_backend_property_sync = book_client_set_backend_property_sync;
 	client_class->open_sync = book_client_open_sync;
 	client_class->refresh_sync = book_client_refresh_sync;
+
+	/**
+	 * EBookClient:locale:
+	 *
+	 * The currently active locale for this addressbook.
+	 *
+	 * Since: 3.12
+	 */
+	g_object_class_install_property (
+		object_class,
+		PROP_LOCALE,
+		g_param_spec_string (
+			"locale",
+			NULL,
+			NULL,
+			NULL,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -1050,7 +1143,12 @@ e_book_client_async_initable_init (GAsyncInitableIface *interface)
 static void
 e_book_client_init (EBookClient *client)
 {
+	const gchar *default_locale;
+
 	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
+
+	default_locale = setlocale (LC_COLLATE, NULL);
+	client->priv->locale = g_strdup (default_locale);
 }
 
 /**
@@ -1456,7 +1554,7 @@ exit:
  * When the operation is finished, @callback will be called.  You can then
  * call e_book_client_connect_direct_finish() to get the result of the operation.
  *
- * Since: 3.10
+ * Since: 3.12
  **/
 void
 e_book_client_connect_direct (ESource *source,
@@ -1519,7 +1617,7 @@ e_book_client_connect_direct (ESource *source,
  *
  * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
  *
- * Since: 3.10
+ * Since: 3.12
  **/
 EClient *
 e_book_client_connect_direct_finish (GAsyncResult *result,
@@ -3614,3 +3712,393 @@ e_book_client_get_view_sync (EBookClient *client,
 	return success;
 }
 
+/* Helper for e_book_client_get_cursor() */
+static const gchar **
+sort_param_to_strv (gpointer param,
+		    gint     n_fields,
+		    gboolean keys)
+{
+	const gchar **array;
+	gint i;
+
+	array = (const gchar **)g_new0 (gchar *, n_fields + 1);
+
+	/* string arrays are shallow allocated, the strings themselves
+	 * are intern strings and don't need to be dupped.
+	 */
+	for (i = 0; i < n_fields; i++) {
+
+		if (keys) {
+			EContactField *fields = (EContactField *)param;
+
+			array[i] = e_contact_field_name (fields[i]);
+		} else {
+			EBookCursorSortType *types = (EBookCursorSortType *)param;
+
+			array[i] = e_enum_to_string (E_TYPE_BOOK_CURSOR_SORT_TYPE,
+						     types[i]);
+		}
+	}
+
+	return array;
+}
+
+static void
+book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
+				       GObject *source_object,
+				       GCancellable *cancellable)
+{
+	EBookClient *client = E_BOOK_CLIENT (source_object);
+	AsyncContext *async_context;
+	gchar *utf8_sexp;
+	gchar *object_path = NULL;
+	GError *local_error = NULL;
+	const gchar **sort_fields;
+	const gchar **sort_types;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	sort_fields   = sort_param_to_strv (async_context->sort_fields, async_context->n_sort_fields, TRUE);
+	sort_types    = sort_param_to_strv (async_context->sort_types, async_context->n_sort_fields, FALSE);
+
+	/* Direct Read Access cursor don't need any
+	 * D-Bus connection themselves, just give them
+	 * an EDataBookCursor directly
+	 */
+	if (client->priv->direct_backend) {
+		EDataBookCursor *cursor;
+
+		cursor = e_book_backend_create_cursor (client->priv->direct_backend,
+						       async_context->sort_fields,
+						       async_context->sort_types,
+						       async_context->n_sort_fields,
+						       &local_error);
+
+		if (cursor) {
+			if (!e_data_book_cursor_set_sexp (cursor,
+							  async_context->sexp,
+							  &local_error)) {
+				e_book_backend_delete_cursor (client->priv->direct_backend,
+							      cursor,
+							      NULL);
+				cursor = NULL;
+			}
+		}
+
+		if (cursor != NULL) {
+			EBookClientCursor *client_cursor;
+
+			/* The client cursor will take a ref, but 
+			 * e_book_backend_create_cursor() returns
+			 * a pointer to a cursor owned by the backend,
+			 * don't unref the returned pointer here.
+			 */
+			client_cursor = g_initable_new (
+				E_TYPE_BOOK_CLIENT_CURSOR,
+				cancellable, &local_error,
+				"sort-fields", sort_fields,
+				"client", client,
+				"context", async_context->context,
+				"direct-cursor", cursor,
+				NULL);
+
+			/* Sanity check. */
+			g_return_if_fail (
+					  ((client_cursor != NULL) && (local_error == NULL)) ||
+					  ((client_cursor == NULL) && (local_error != NULL)));
+
+			async_context->client_cursor = client_cursor;
+		}
+
+	} else {
+		utf8_sexp = e_util_utf8_make_valid (async_context->sexp);
+
+		e_dbus_address_book_call_get_cursor_sync (
+			client->priv->dbus_proxy, utf8_sexp,
+			(const gchar *const *)sort_fields,
+			(const gchar *const *)sort_types,
+			&object_path, cancellable, &local_error);
+
+		g_free (utf8_sexp);
+
+		/* Sanity check. */
+		g_return_if_fail (
+			  ((object_path != NULL) && (local_error == NULL)) ||
+			  ((object_path == NULL) && (local_error != NULL)));
+
+		if (object_path != NULL) {
+			GDBusConnection *connection;
+			EBookClientCursor *client_cursor;
+
+			connection = g_dbus_proxy_get_connection (
+				G_DBUS_PROXY (client->priv->dbus_proxy));
+
+			client_cursor = g_initable_new (
+				E_TYPE_BOOK_CLIENT_CURSOR,
+				cancellable, &local_error,
+				"sort-fields", sort_fields,
+				"client", client,
+				"context", async_context->context,
+				"connection", connection,
+				"object-path", object_path,
+				NULL);
+
+			/* Sanity check. */
+			g_return_if_fail (
+					  ((client_cursor != NULL) && (local_error == NULL)) ||
+					  ((client_cursor == NULL) && (local_error != NULL)));
+
+			async_context->client_cursor = client_cursor;
+
+			g_free (object_path);
+		}
+	}
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
+	}
+
+	g_free (sort_fields);
+	g_free (sort_types);
+}
+
+/* Need to catch the GMainContext of the actual caller,
+ * we do this dance because e_async_closure_new ()
+ * steps on the thread default main context (so we
+ * can use this in the sync call as well).
+ */
+static void
+e_book_client_get_cursor_with_context (EBookClient *client,
+				       const gchar *sexp,
+				       EContactField *sort_fields,
+				       EBookCursorSortType *sort_types,
+				       guint n_fields,
+				       GMainContext *context,
+				       GCancellable *cancellable,
+				       GAsyncReadyCallback callback,
+				       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (sort_fields != NULL);
+	g_return_if_fail (sort_types != NULL);
+	g_return_if_fail (n_fields > 0);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->sexp = g_strdup (sexp);
+	async_context->sort_fields = g_memdup (sort_fields, sizeof (EContactField) * n_fields);
+	async_context->sort_types = g_memdup (sort_types, sizeof (EBookCursorSortType) * n_fields);
+	async_context->n_sort_fields = n_fields;
+	async_context->context = g_main_context_ref (context);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_get_cursor);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_client_run_in_dbus_thread (
+		simple, book_client_get_cursor_in_dbus_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_client_get_cursor:
+ * @client: an #EBookClient
+ * @sexp: an S-expression representing the query
+ * @sort_fields: an array of #EContactFields to sort the cursor with
+ * @sort_types: an array of #EBookCursorSortTypes to complement @sort_fields
+ * @n_fields: the length of the input @sort_fields and @sort_types arrays
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Create an #EBookClientCursor.
+ * The call is finished by e_book_client_get_view_finish()
+ * from the @callback.
+ *
+ * Note: @sexp can be obtained through #EBookQuery, by converting it
+ * to a string with e_book_query_to_string().
+ *
+ * Since: 3.12
+ */
+void
+e_book_client_get_cursor (EBookClient *client,
+			  const gchar *sexp,
+			  EContactField *sort_fields,
+			  EBookCursorSortType *sort_types,
+			  guint n_fields,
+			  GCancellable *cancellable,
+			  GAsyncReadyCallback callback,
+			  gpointer user_data)
+{
+	GMainContext *context;
+
+	context = g_main_context_ref_thread_default ();
+	e_book_client_get_cursor_with_context (client, sexp,
+					       sort_fields,
+					       sort_types,
+					       n_fields,
+					       context,
+					       cancellable,
+					       callback,
+					       user_data);
+	g_main_context_unref (context);
+}
+
+/**
+ * e_book_client_get_cursor_finish:
+ * @client: an #EBookClient
+ * @result: a #GAsyncResult
+ * @out_cursor: (out): return location for an #EBookClientCursor
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_book_client_get_cursor().
+ * If successful, then the @out_cursor is set to newly create
+ * #EBookClientCursor, the cursor should be freed with g_object_unref()
+ * when no longer needed.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_client_get_cursor_finish (EBookClient *client,
+				 GAsyncResult *result,
+				 EBookClientCursor **out_cursor,
+				 GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_get_cursor), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->client_cursor != NULL, FALSE);
+
+	if (out_cursor != NULL)
+		*out_cursor = g_object_ref (async_context->client_cursor);
+
+	return TRUE;
+}
+
+/**
+ * e_book_client_get_cursor_sync:
+ * @client: an #EBookClient
+ * @sexp: an S-expression representing the query
+ * @sort_fields: an array of #EContactFields to sort the cursor with
+ * @sort_types: an array of #EBookCursorSortTypes to complement @sort_fields
+ * @n_fields: the length of the input @sort_fields and @sort_types arrays
+ * @out_cursor: (out): return location for an #EBookClientCursor
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Create an #EBookClientCursor. If successful, then the @out_cursor is set
+ * to newly allocated #EBookClientCursor, the cursor should be freed with g_object_unref()
+ * when no longer needed.
+ *
+ * Note: @sexp can be obtained through #EBookQuery, by converting it
+ * to a string with e_book_query_to_string().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.12
+ */
+gboolean
+e_book_client_get_cursor_sync (EBookClient *client,
+			       const gchar *sexp,
+			       EContactField *sort_fields,
+			       EBookCursorSortType *sort_types,
+			       guint n_fields,
+			       EBookClientCursor **out_cursor,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+	GMainContext *context;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (sort_fields != NULL, FALSE);
+	g_return_val_if_fail (sort_types != NULL, FALSE);
+	g_return_val_if_fail (n_fields > 0, FALSE);
+	g_return_val_if_fail (out_cursor != NULL, FALSE);
+
+	/* Get the main context before e_async_closure_new () steps on it */
+	context = g_main_context_ref_thread_default ();
+
+	closure = e_async_closure_new ();
+
+	e_book_client_get_cursor_with_context (client, sexp,
+					       sort_fields,
+					       sort_types,
+					       n_fields,
+					       context,
+					       cancellable,
+					       e_async_closure_callback, closure);
+
+	g_main_context_unref (context);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_client_get_cursor_finish (
+		client, result, out_cursor, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+static void
+book_client_set_locale (EBookClient *client,
+			const gchar *locale)
+{
+	if (g_strcmp0 (client->priv->locale, locale) != 0) {
+		g_free (client->priv->locale);
+		client->priv->locale = g_strdup (locale);
+		
+		g_object_notify (G_OBJECT (client), "locale");
+	}
+}
+
+/**
+ * e_book_client_get_locale:
+ * @client: an #EBookClient
+ *
+ * Reports the locale in use for @client. The addressbook might sort contacts
+ * in different orders, or store and compare phone numbers in different ways
+ * depending on the currently set locale.
+ *
+ * Locales can change dynamically if systemd decides to change the locale, so
+ * it's important to listen for notifications on the #EBookClient:locale property
+ * if you depend on sorted result lists. Ordered results should be reloaded
+ * after a locale change is detected.
+ *
+ * Returns: (transfer none): The currently set locale for @client
+ *
+ * Since: 3.12
+ */
+const gchar *
+e_book_client_get_locale (EBookClient *client)
+{
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), NULL);
+
+	return client->priv->locale;
+}

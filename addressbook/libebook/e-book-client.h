@@ -30,6 +30,7 @@
 #include <libedataserver/libedataserver.h>
 
 #include <libebook/e-book-client-view.h>
+#include <libebook/e-book-client-cursor.h>
 #include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
@@ -283,6 +284,28 @@ gboolean	e_book_client_get_view_sync	(EBookClient *client,
 						 EBookClientView **out_view,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_book_client_get_cursor	(EBookClient *client,
+						 const gchar *sexp,
+						 EContactField *sort_fields,
+						 EBookCursorSortType *sort_types,
+						 guint n_fields,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_client_get_cursor_finish	(EBookClient *client,
+						 GAsyncResult *result,
+						 EBookClientCursor **out_cursor,
+						 GError **error);
+gboolean	e_book_client_get_cursor_sync	(EBookClient *client,
+						 const gchar *sexp,
+						 EContactField *sort_fields,
+						 EBookCursorSortType *sort_types,
+						 guint n_fields,
+						 EBookClientCursor **out_cursor,
+						 GCancellable *cancellable,
+						 GError **error);
+const gchar    *e_book_client_get_locale        (EBookClient *client);
+
 
 #ifndef EDS_DISABLE_DEPRECATED
 /**
