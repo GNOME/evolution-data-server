@@ -76,9 +76,11 @@ struct _EBookBackendFilePrivate {
 	gchar     *base_directory;
 	gchar     *photo_dirname;
 	gchar     *revision;
+	gchar     *locale;
 	gint       rev_counter;
 	gboolean   revision_guards;
 	GRWLock    lock;
+	GList     *cursors;
 
 	EBookBackendSqliteDB *sqlitedb;
 };
@@ -636,27 +638,37 @@ e_book_backend_file_new_revision (EBookBackendFile *bf)
  * its unclear so far if bumping the revision string for 
  * every DB modification is going to really be an overhead.
  */
-static void
-e_book_backend_file_bump_revision (EBookBackendFile *bf)
+static gboolean
+e_book_backend_file_bump_revision (EBookBackendFile *bf,
+				   GError **error)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
+	gchar *new_revision;
+	gboolean success;
 
-	g_free (bf->priv->revision);
-	bf->priv->revision = e_book_backend_file_new_revision (bf);
+	new_revision = e_book_backend_file_new_revision (bf);
 
-	if (!e_book_backend_sqlitedb_set_revision (bf->priv->sqlitedb,
-						   SQLITEDB_FOLDER_ID,
-						   bf->priv->revision,
-						   &error)) {
+	success = e_book_backend_sqlitedb_set_revision (bf->priv->sqlitedb,
+							SQLITEDB_FOLDER_ID,
+							new_revision,
+							&local_error);
+
+	if (success) {
+		g_free (bf->priv->revision);
+		bf->priv->revision = new_revision;
+
+		e_book_backend_notify_property_changed (E_BOOK_BACKEND (bf),
+							BOOK_BACKEND_PROPERTY_REVISION,
+							bf->priv->revision);
+	} else {
+		g_free (new_revision);
 		g_warning (
 			G_STRLOC ": Error setting database revision: %s",
-			error->message);
-		g_error_free (error);
+			local_error->message);
+		g_propagate_error (error, local_error);
 	}
 
-	e_book_backend_notify_property_changed (E_BOOK_BACKEND (bf),
-						BOOK_BACKEND_PROPERTY_REVISION,
-						bf->priv->revision);
+	return success;
 }
 
 static void
@@ -673,7 +685,23 @@ e_book_backend_file_load_revision (EBookBackendFile *bf)
 			error ? error->message : "Unknown error");
 		g_clear_error (&error);
 	} else if (bf->priv->revision == NULL) {
-		e_book_backend_file_bump_revision (bf);
+		e_book_backend_file_bump_revision (bf, NULL);
+	}
+}
+
+static void
+e_book_backend_file_load_locale (EBookBackendFile *bf)
+{
+	GError *error = NULL;
+
+	if (!e_book_backend_sqlitedb_get_locale (bf->priv->sqlitedb,
+						 SQLITEDB_FOLDER_ID,
+						 &bf->priv->locale,
+						 &error)) {
+		g_warning (
+			G_STRLOC ": Error loading database locale setting: %s",
+			error ? error->message : "Unknown error");
+		g_clear_error (&error);
 	}
 }
 
@@ -686,6 +714,52 @@ set_revision (EBookBackendFile *bf,
 	rev = e_book_backend_file_new_revision (bf);
 	e_contact_set (contact, E_CONTACT_REV, rev);
 	g_free (rev);
+}
+
+
+/****************************************************************
+ *                   Dealing with cursor updates                *
+ ****************************************************************/
+static void
+cursors_locale_changed (EBookBackendFile *bf)
+{
+	GList *l;
+
+	for (l = bf->priv->cursors; l; l = l->next) {
+		EDataBookCursor *cursor = l->data;
+		GError *error = NULL;
+
+		if (!e_data_book_cursor_load_locale (cursor, NULL, &error)) {
+			g_warning ("Error loading cursor locale: %s", error->message);
+			g_clear_error (&error);
+		}
+	}
+}
+
+static void
+cursors_contact_added (EBookBackendFile *bf,
+		       EContact         *contact)
+{
+	GList *l;
+
+	for (l = bf->priv->cursors; l; l = l->next) {
+		EDataBookCursor *cursor = l->data;
+
+		e_data_book_cursor_contact_added (cursor, contact);
+	}
+}
+
+static void
+cursors_contact_removed (EBookBackendFile *bf,
+			 EContact         *contact)
+{
+	GList *l;
+
+	for (l = bf->priv->cursors; l; l = l->next) {
+		EDataBookCursor *cursor = l->data;
+
+		e_data_book_cursor_contact_removed (cursor, contact);
+	}
 }
 
 /****************************************************************
@@ -750,7 +824,7 @@ do_create (EBookBackendFile *bf,
 
 	if (status != STATUS_ERROR) {
 		GList *tail, *link;
-		GSList *slist = NULL;
+		GSList *slist = NULL, *l;
 
 		/* XXX EBookBackendSqliteDB still uses GSList. */
 		tail = g_queue_peek_tail_link (&queue);
@@ -776,6 +850,11 @@ do_create (EBookBackendFile *bf,
 				g_propagate_error (error, local_error);
 
 			status = STATUS_ERROR;
+		}
+
+		/* After adding any contacts, notify any cursors that the new contacts are added */
+		for (l = slist; l; l = l->next) {
+			cursors_contact_added (bf, E_CONTACT (l->data));
 		}
 
 		g_slist_free (slist);
@@ -977,10 +1056,19 @@ book_backend_file_dispose (GObject *object)
 
 	bf = E_BOOK_BACKEND_FILE (object);
 
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
+	if (bf->priv->cursors) {
+		g_list_free_full (bf->priv->cursors, g_object_unref);
+		bf->priv->cursors = NULL;
+	}
+
 	if (bf->priv->sqlitedb) {
 		g_object_unref (bf->priv->sqlitedb);
 		bf->priv->sqlitedb = NULL;
 	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->dispose (object);
 }
@@ -994,6 +1082,7 @@ book_backend_file_finalize (GObject *object)
 
 	g_free (priv->photo_dirname);
 	g_free (priv->revision);
+	g_free (priv->locale);
 	g_free (priv->base_directory);
 	g_rw_lock_clear (&(priv->lock));
 
@@ -1069,6 +1158,7 @@ book_backend_file_open_sync (EBookBackend *backend,
 							BOOK_BACKEND_PROPERTY_REVISION,
 							bf->priv->revision);
 	}
+
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	e_backend_set_online (E_BACKEND (backend), TRUE);
@@ -1085,13 +1175,30 @@ book_backend_file_create_contacts_sync (EBookBackend *backend,
                                         GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	gboolean success = FALSE;
+	gboolean success;
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	if (do_create (bf, vcards, out_contacts, error)) {
-		e_book_backend_file_bump_revision (bf);
-		success = TRUE;
+	success = e_book_backend_sqlitedb_lock_updates (bf->priv->sqlitedb, error);
+
+	if (success)
+		success = do_create (bf, vcards, out_contacts, error);
+
+	if (success)
+		success = e_book_backend_file_bump_revision (bf, error);
+
+	if (success)
+		success = e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb,
+								  TRUE, error);
+	else {
+		GError *local_error = NULL;
+
+		/* Rollback transaction */
+		if (!e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb, FALSE, &local_error)) {
+			g_warning ("Failed to rollback transaction after failing to add contacts: %s",
+				   local_error->message);
+			g_clear_error (&local_error);
+		}
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
@@ -1118,7 +1225,10 @@ book_backend_file_modify_contacts_sync (EBookBackend *backend,
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	for (ii = 0; ii < length; ii++) {
+	if (!e_book_backend_sqlitedb_lock_updates (bf->priv->sqlitedb, error))
+		status = STATUS_ERROR;
+
+	for (ii = 0; ii < length && status != STATUS_ERROR; ii++) {
 		gchar *id;
 		EContact *mod_contact, *old_contact;
 		const gchar *mod_contact_rev, *old_contact_rev;
@@ -1144,6 +1254,7 @@ book_backend_file_modify_contacts_sync (EBookBackend *backend,
 		if (!old_contact) {
 			g_warning (G_STRLOC ": Failed to load contact %s: %s", id, local_error->message);
 			g_propagate_error (error, local_error);
+			local_error = NULL;
 
 			status = STATUS_ERROR;
 
@@ -1178,6 +1289,7 @@ book_backend_file_modify_contacts_sync (EBookBackend *backend,
 		if (status == STATUS_ERROR) {
 			g_warning (G_STRLOC ": Error transforming contact %s: %s", id, local_error->message);
 			g_propagate_error (error, local_error);
+			local_error = NULL;
 
 			g_free (id);
 			g_object_unref (old_contact);
@@ -1227,6 +1339,7 @@ book_backend_file_modify_contacts_sync (EBookBackend *backend,
 							   &local_error)) {
 			g_warning ("Failed to modify contacts: %s", local_error->message);
 			g_propagate_error (error, local_error);
+			local_error = NULL;
 
 			status = STATUS_ERROR;
 		}
@@ -1234,13 +1347,48 @@ book_backend_file_modify_contacts_sync (EBookBackend *backend,
 		g_slist_free (slist);
 	}
 
-	if (status != STATUS_ERROR)
-		e_book_backend_file_bump_revision (bf);
+	/* Bump the revision atomically in the same transaction */
+	if (status != STATUS_ERROR) {
+		if (!e_book_backend_file_bump_revision (bf, error))
+			status = STATUS_ERROR;
+	}
 
-	g_rw_lock_writer_unlock (&(bf->priv->lock));
+	/* Commit or rollback transaction */
+	if (status != STATUS_ERROR) {
+
+		if (!e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb,
+							     TRUE, error))
+			status = STATUS_ERROR;
+
+	} else {
+		/* Rollback transaction */
+		if (!e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb, FALSE, &local_error)) {
+			g_warning ("Failed to rollback transaction after failing to modify contacts: %s",
+				   local_error->message);
+			g_clear_error (&local_error);
+		}
+	}
 
 	if (status != STATUS_ERROR)
 		e_queue_transfer (&mod_contact_queue, out_contacts);
+
+	/* Now that we've modified the contact(s), notify cursors of the changes
+	 */
+	if (status != STATUS_ERROR) {
+		GList *l;
+
+		for (l = g_queue_peek_head_link (&old_contact_queue);
+		     l; l = l->next) {
+			cursors_contact_removed (bf, E_CONTACT (l->data));
+		}
+
+		for (l = g_queue_peek_head_link (&mod_contact_queue);
+		     l; l = l->next) {
+			cursors_contact_added (bf, E_CONTACT (l->data));
+		}
+	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	while (!g_queue_is_empty (&old_contact_queue))
 		g_object_unref (g_queue_pop_head (&old_contact_queue));
@@ -1270,7 +1418,9 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
-	for (ii = 0; ii < length; ii++) {
+	success = e_book_backend_sqlitedb_lock_updates (bf->priv->sqlitedb, error);
+
+	for (ii = 0; ii < length && success; ii++) {
 		EContact *contact;
 
 		/* First load the EContacts which need to be removed, we might delete some
@@ -1299,9 +1449,10 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 					E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
 					_("Contact '%s' not found"), uids[ii]);
 				g_error_free (local_error);
-			} else
+			} else {
 				g_propagate_error (error, local_error);
-
+				local_error = NULL;
+			}
 			/* Abort as soon as missing contact is to be deleted */
 			success = FALSE;
 			break;
@@ -1323,7 +1474,27 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 			g_propagate_error (error, local_error);
 		}
 
-		e_book_backend_file_bump_revision (bf);
+		e_book_backend_file_bump_revision (bf, NULL);
+	}
+
+	/* Commit or rollback transaction */
+	if (success) {
+		success = e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb,
+								  TRUE, error);
+	} else {
+		/* Rollback transaction */
+		if (!e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb, FALSE, &local_error)) {
+			g_warning ("Failed to rollback transaction after failing to modify contacts: %s",
+				   local_error->message);
+			g_clear_error (&local_error);
+		}
+	}
+
+	/* After removing any contacts, notify any cursors that the new contacts are added */
+	if (success) {
+		for (l = removed_contacts; l; l = l->next) {
+			cursors_contact_removed (bf, E_CONTACT (l->data));
+		}
 	}
 
 	g_rw_lock_writer_unlock (&(bf->priv->lock));
@@ -1606,6 +1777,144 @@ book_backend_file_sync (EBookBackend *backend)
 	/* FIXME: Tell sqlite to dump NOW ! */
 }
 
+static void
+book_backend_file_set_locale (EBookBackend *backend,
+			      const gchar  *locale)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	gboolean success;
+	GError *error = NULL;
+
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
+	success = e_book_backend_sqlitedb_lock_updates (bf->priv->sqlitedb,
+							&error);
+
+	if (!success) {
+		g_warning ("Failed to start SQLite transaction: %s", error->message);
+		g_clear_error (&error);
+	}
+
+	if (success) {
+		success = e_book_backend_sqlitedb_set_locale (bf->priv->sqlitedb,
+							      SQLITEDB_FOLDER_ID,
+							      locale,
+							      &error);
+		if (!success) {
+			g_warning ("Failed to set locale on SQLiteDB: %s", error->message);
+			g_clear_error (&error);
+		}
+	}
+
+	if (success) {
+		success = e_book_backend_file_bump_revision (bf, &error);
+
+		if (!success) {
+			g_warning ("Failed to set locale on SQLiteDB: %s", error->message);
+			g_clear_error (&error);
+		}
+	}
+
+	if (success) {
+		success = e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb,
+								  TRUE, &error);
+
+		if (!success) {
+			g_warning ("Failed to commit SQLite transaction: %s", error->message);
+			g_clear_error (&error);
+		}
+
+	} else {
+		GError *error = NULL;
+
+		/* Rollback transaction */
+		if (!e_book_backend_sqlitedb_unlock_updates (bf->priv->sqlitedb, FALSE, &error)) {
+			g_warning ("Failed to rollback transaction after failing to add contacts: %s",
+				   error->message);
+			g_clear_error (&error);
+		}
+	}
+
+	cursors_locale_changed (bf);
+
+	/* We set the new locale, now update our local variable */
+	if (success) {
+		g_free (bf->priv->locale);
+		bf->priv->locale = g_strdup (locale);
+	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+}
+
+static gchar *
+book_backend_file_dup_locale (EBookBackend *backend)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	gchar *locale;
+
+	g_rw_lock_reader_lock (&(bf->priv->lock));
+	locale = g_strdup (bf->priv->locale);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
+
+	return locale;
+}
+
+static EDataBookCursor *
+book_backend_file_create_cursor (EBookBackend *backend,
+				 EContactField *sort_fields,
+				 EBookCursorSortType *sort_types,
+				 guint n_fields,
+				 GError **error)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	EDataBookCursor  *cursor;
+
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
+	cursor = e_data_book_cursor_sqlite_new (backend,
+						bf->priv->sqlitedb,
+						SQLITEDB_FOLDER_ID,
+						sort_fields,
+						sort_types,
+						n_fields,
+						error);
+
+	if (cursor)
+		bf->priv->cursors =
+			g_list_prepend (bf->priv->cursors, cursor);
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
+	return cursor;
+}
+
+static gboolean
+book_backend_file_delete_cursor (EBookBackend *backend,
+				 EDataBookCursor *cursor,
+				 GError **error)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	GList *link;
+
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
+	link = g_list_find (bf->priv->cursors, cursor);
+
+	if (link != NULL) {
+		bf->priv->cursors = g_list_delete_link (bf->priv->cursors, link);
+		g_object_unref (cursor);
+	} else {
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_INVALID_ARG,
+				     _("Requested to delete an unrelated cursor"));
+	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
+	return link != NULL;
+}
+
 static gboolean
 book_backend_file_initable_init (GInitable *initable,
                                  GCancellable *cancellable,
@@ -1726,6 +2035,9 @@ book_backend_file_initable_init (GInitable *initable,
 		}
 	}
 
+	/* Load the locale */
+	e_book_backend_file_load_locale (E_BOOK_BACKEND_FILE (initable));
+
 	/* Resolve the photo directory here. */
 	priv->photo_dirname =
 		e_book_backend_file_extract_path_from_source (
@@ -1767,6 +2079,10 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->get_direct_book = book_backend_file_get_direct_book;
 	backend_class->configure_direct = book_backend_file_configure_direct;
 	backend_class->sync = book_backend_file_sync;
+	backend_class->set_locale = book_backend_file_set_locale;
+	backend_class->dup_locale = book_backend_file_dup_locale;
+	backend_class->create_cursor = book_backend_file_create_cursor;
+	backend_class->delete_cursor = book_backend_file_delete_cursor;
 }
 
 static void
