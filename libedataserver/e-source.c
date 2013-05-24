@@ -2828,7 +2828,7 @@ e_source_remote_create_sync (ESource *source,
  * possibly a server-side path or ID for the resource.
  *
  * When the operation is finished, @callback will be called.  You can then
- * call 3_source_remote_create_finish() to get the result of the operation.
+ * call e_source_remote_create_finish() to get the result of the operation.
  *
  * Since: 3.6
  **/
@@ -2985,8 +2985,7 @@ e_source_remote_delete_finish (ESource *source,
  * @error: return location for a #GError, or %NULL
  *
  * Obtains the OAuth 2.0 access token for @source along with its expiry
- * in seconds from the current time (or 0 if unknown).  The @source must
- * have #ESource:supports-oauth2 set for this to work.
+ * in seconds from the current time (or 0 if unknown).
  *
  * Free the returned access token with g_free() when finished with it.
  * If an error occurs, the function will set @error and return %FALSE.
@@ -3024,7 +3023,6 @@ e_source_get_oauth2_access_token_sync (ESource *source,
  *
  * Asynchronously obtains the OAuth 2.0 access token for @source along
  * with its expiry in seconds from the current time (or 0 if unknown).
- * The @source must have #ESource:supports-oauth2 set for this to work.
  *
  * When the operation is finished, @callback will be called.  You can then
  * call e_source_get_oauth2_access_token_finish() to get the result of the

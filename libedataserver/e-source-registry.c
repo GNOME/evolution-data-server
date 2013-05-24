@@ -3564,7 +3564,7 @@ e_source_registry_ref_default_mail_identity (ESourceRegistry *registry)
  *
  * Sets @default_source as the default mail identity.  If @default_source
  * is %NULL, the next request for the default mail identity will use the
- * fallbacks described in e_source_registry_get_default_mail_identity().
+ * fallbacks described in e_source_registry_ref_default_mail_identity().
  *
  * Since: 3.6
  **/
