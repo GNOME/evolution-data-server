@@ -1,3 +1,47 @@
+Evolution-Data-Server 3.9.2 2013-05-27
+--------------------------------------
+
+Bug Fixes:
+	Bug 697859 - Google: "Other Fax" is saved as "Business Fax"
+	             (Matthew Barnes)
+	Bug 698725 - ESourceRegistry: Handle service restarts gracefully
+	             (Matthew Barnes)
+	Bug 699024 - [google/yahoo] Don't override username (Matthew Barnes)
+	Bug 699160 - IMAPX: Always flush debugging messages (Matthew Barnes)
+	Bug 699223 - Emit view signals from context where view was started
+	             (Matthew Barnes)
+	Bug 699461 - Accept any 2xx HTTP code as successful DELETE
+	             (Matthew Barnes)
+	Bug 699597 - Autocomplete using GAL is slow (David Woodhouse)
+	Bug 699811 - Moved IMAPx messages reappear (Milan Crha)
+	Bug 699909 — Do not use toggle_refs in CamelObjectBag (David Woodhouse)
+
+Other Changes:
+	* Make camel_mime_message_dump() dump message contents (Dan Williams)
+	* IMAPX: Recognize RFC 5530 response codes. (Matthew Barnes)
+	* EBookClientView/ECalClientView: Make D-Bus signal handlers
+	  thread-safe. (Matthew Barnes)
+	* ECalBackendWeather: e_weather_source_new() is failable.
+	  (Matthew Barnes)
+	* google: Remove environment variable check for debugging.
+	  (Matthew Barnes)
+	* IMAPX: Support IMAP MOVE extension. (Matthew Barnes)
+	* IMAPX: Set real Trash/Junk folder type as expected (Milan Crha)
+	* Camel MH provider can deadlock on folder creation (Milan Crha)
+	* CamelGpgContext: Report decrypt error only if no data was decrypted
+	  (Milan Crha)
+	* Make CamelPOP3Store a bit more thread-safe. (Matthew Barnes)
+	* Make CamelNNTPStore a bit more thread-safe. (Matthew Barnes)
+	* Improve error handling in imapx_command_fetch_message_done().
+	  (Matthew Barnes)
+
+Translations:
+	Daniel Mustieles (es)
+	Shankar Prasad (kn)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.9.1 2013-04-29
 --------------------------------------
 
