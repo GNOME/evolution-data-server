@@ -17,15 +17,13 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("EDS_COLLATE", "POSIX", TRUE));
 	g_assert (g_setenv ("MIGRATION_TEST_SOURCE_NAME", "migration-test-source", TRUE));
 
 	/* This test actually creates the addressbook, subsequent migration tests dont
 	 * recreate the contacts but rely on the addressbook to have migrated the sort keys
 	 * into the new locales
 	 */
-	data = move_by_test_new ("/EbSdbCursor/Locale/POSIX/Initial");
+	data = move_by_test_new ("/EbSdbCursor/Locale/POSIX/Initial", "POSIX");
 	move_by_test_add_assertion (data, 5, 11, 2,  6,  3,  8);
 	move_by_test_add_assertion (data, 5, 10, 19, 20, 1,  5);
 	move_by_test_add_assertion (data, 5, 4,  7,  15, 17, 16);

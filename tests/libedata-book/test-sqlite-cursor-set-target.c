@@ -220,9 +220,6 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("EDS_COLLATE", "en_US.UTF-8", TRUE));
-
 	g_test_add ("/EbSdbCursor/SetTarget/ResetCursor", EbSdbCursorFixture, &book_closure,
 		    e_sqlitedb_cursor_fixture_setup,
 		    test_cursor_set_target_reset_cursor,
