@@ -4959,12 +4959,12 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 	if (query_with_list_attrs) {
 		gchar *list_table = g_strconcat (cursor->folderid, "_lists", NULL);
 
-		stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid, vcard, bdata "
-					"FROM %Q AS summary, %Q AS multi",
+		stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid, vcard, bdata FROM %Q AS summary "
+					"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
 					cursor->folderid, list_table);
 
-		count_stmt = sqlite3_mprintf ("SELECT count(DISTINCT summary.uid) "
-					      "FROM %Q AS summary, %Q AS multi",
+		count_stmt = sqlite3_mprintf ("SELECT count(DISTINCT summary.uid), vcard, bdata FROM %Q AS summary "
+					      "LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
 					      cursor->folderid, list_table);
 		g_free (list_table);
 	} else {
