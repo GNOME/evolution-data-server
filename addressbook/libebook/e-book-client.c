@@ -1202,6 +1202,74 @@ e_book_client_new (ESource *source,
 		"source", source, NULL);
 }
 
+/* Direct Read Access connect helper */
+static void
+connect_direct (EBookClient     *client,
+		GCancellable    *cancellable,
+		ESourceRegistry *registry)
+{
+	EBookClientPrivate *priv;
+	EDBusDirectBook *direct_config;
+	const gchar *backend_name, *backend_path, *config;
+	GError *local_error = NULL;
+
+	priv = client->priv;
+
+       if (registry)
+               g_object_ref (registry);
+       else
+               registry = e_source_registry_new_sync (NULL, &local_error);
+
+	direct_config = e_dbus_direct_book_proxy_new_sync (
+		g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->dbus_proxy)),
+		G_DBUS_PROXY_FLAGS_NONE,
+		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		g_dbus_proxy_get_object_path (G_DBUS_PROXY (priv->dbus_proxy)),
+		NULL, NULL);
+
+	backend_path = e_dbus_direct_book_get_backend_path (direct_config);
+	backend_name = e_dbus_direct_book_get_backend_name (direct_config);
+	config = e_dbus_direct_book_get_backend_config (direct_config);
+
+	if (backend_path && backend_path[0] &&
+	    backend_name && backend_name[0]) {
+		priv->direct_book = e_data_book_new_direct (
+			registry, e_client_get_source (E_CLIENT (client)),
+			backend_path,
+			backend_name,
+			config, &local_error);
+		if (!priv->direct_book) {
+			g_warning (
+				"Failed to open addressbook in direct read "
+				"access mode, falling back to normal read "
+				"access mode. Reason: %s",
+				local_error->message);
+			g_error_free (local_error);
+		}
+
+	} else {
+		g_warning (
+			"Direct read access mode not supported by the given "
+			"backend, falling back to normal read access mode");
+	}
+
+	g_object_unref (direct_config);
+	g_object_unref (registry);
+
+	/* We have to perform the opeining of the direct book separately
+	 * from the EClient->open() implementation, because the direct
+	 * book does not exist yet
+	 */
+	if (priv->direct_book &&
+	    !e_data_book_open_sync (priv->direct_book, cancellable, &local_error)) {
+		g_warning (
+			"Unable to open direct read access book, "
+			"falling back to normal read access mode");
+		g_clear_object (&priv->direct_book);
+		g_error_free (local_error);
+	}
+}
+
 /**
  * e_book_client_connect_direct_sync:
  * @registry: an #ESourceRegistry
@@ -1223,67 +1291,167 @@ e_book_client_connect_direct_sync (ESourceRegistry *registry,
                                    GError **error)
 {
 	EClient *client;
-	EBookClientPrivate *priv;
-	EDBusDirectBook *direct_config;
-	const gchar *backend_name, *backend_path, *config;
-	GError *local_error = NULL;
 
 	client = e_book_client_connect_sync (source, cancellable, error);
 
 	if (!client)
 		return NULL;
 
-	priv = E_BOOK_CLIENT_GET_PRIVATE (client);
-
-	direct_config = e_dbus_direct_book_proxy_new_sync (
-		g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->dbus_proxy)),
-		G_DBUS_PROXY_FLAGS_NONE,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
-		g_dbus_proxy_get_object_path (G_DBUS_PROXY (priv->dbus_proxy)),
-		NULL, NULL);
-
-	backend_path = e_dbus_direct_book_get_backend_path (direct_config);
-	backend_name = e_dbus_direct_book_get_backend_name (direct_config);
-	config = e_dbus_direct_book_get_backend_config (direct_config);
-
-	if (backend_path && backend_path[0] &&
-	    backend_name && backend_name[0]) {
-		priv->direct_book = e_data_book_new_direct (
-			registry, source,
-			backend_path,
-			backend_name,
-			config, &local_error);
-		if (!priv->direct_book) {
-			g_warning (
-				"Failed to open addressbook in direct read "
-				"access mode, falling back to normal read "
-				"access mode. Reason: %s",
-				local_error->message);
-			g_error_free (local_error);
-		}
-
-	} else {
-		g_warning (
-			"Direct read access mode not supported by the given "
-			"backend, falling back to normal read access mode");
-	}
-
-	g_object_unref (direct_config);
-
-	/* We have to perform the opeining of the direct book separately
-	 * from the EClient->open() implementation, because the direct
-	 * book does not exist yet
-	 */
-	if (priv->direct_book &&
-	    !e_data_book_open_sync (priv->direct_book, cancellable, error)) {
-		g_warning (
-			"Unable to open direct read access book, "
-			"falling back to normal read access mode");
-		g_clear_object (&priv->direct_book);
-	}
+	connect_direct (E_BOOK_CLIENT (client), cancellable, registry);
 
 	return client;
+}
 
+
+/* Helper for e_book_client_connect_direct() */
+static void
+book_client_connect_direct_init_cb (GObject *source_object,
+				    GAsyncResult *result,
+				    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	EBookClientPrivate *priv;
+	ConnectClosure *closure;
+	GError *local_error = NULL;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	g_async_initable_init_finish (
+		G_ASYNC_INITABLE (source_object), result, &local_error);
+
+	if (local_error != NULL) {
+		g_simple_async_result_take_error (simple, local_error);
+		g_simple_async_result_complete (simple);
+		goto exit;
+	}
+
+	/* Note, we're repurposing some function parameters. */
+
+	result = G_ASYNC_RESULT (simple);
+	source_object = g_async_result_get_source_object (result);
+	closure = g_simple_async_result_get_op_res_gpointer (simple);
+
+	priv = E_BOOK_CLIENT_GET_PRIVATE (source_object);
+
+	e_dbus_address_book_call_open (
+		priv->dbus_proxy,
+		closure->cancellable,
+		book_client_connect_open_cb,
+		g_object_ref (simple));
+
+	/* Make the DRA connection */
+	connect_direct (E_BOOK_CLIENT (source_object), closure->cancellable, NULL);
+
+	g_object_unref (source_object);
+
+exit:
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_client_connect_direct:
+ * @source: an #ESource
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * Like e_book_client_connect(), except creates the book client for
+ * direct read access to the underlying addressbook.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_book_client_connect_direct_finish() to get the result of the operation.
+ *
+ * Since: 3.10
+ **/
+void
+e_book_client_connect_direct (ESource *source,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	ConnectClosure *closure;
+	EBookClient *client;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	/* Two things with this: 1) instantiate the client object
+	 * immediately to make sure the thread-default GMainContext
+	 * gets plucked, and 2) do not call the D-Bus open() method
+	 * from our designated D-Bus thread -- it may take a long
+	 * time and block other clients from receiving signals. */
+
+	closure = g_slice_new0 (ConnectClosure);
+	closure->source = g_object_ref (source);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		closure->cancellable = g_object_ref (cancellable);
+
+	client = g_object_new (
+		E_TYPE_BOOK_CLIENT,
+		"source", source, NULL);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback,
+		user_data, e_book_client_connect_direct);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, closure, (GDestroyNotify) connect_closure_free);
+
+	g_async_initable_init_async (
+		G_ASYNC_INITABLE (client),
+		G_PRIORITY_DEFAULT, cancellable,
+		book_client_connect_direct_init_cb,
+		g_object_ref (simple));
+
+	g_object_unref (simple);
+	g_object_unref (client);
+}
+
+/**
+ * e_book_client_connect_direct_finish:
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_book_client_connect_direct().
+ * If an error occurs in connecting to the D-Bus service, the function sets
+ * @error and returns %NULL.
+ *
+ * For error handling convenience, any error message returned by this
+ * function will have a descriptive prefix that includes the display
+ * name of the #ESource passed to e_book_client_connect_direct().
+ *
+ * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
+ *
+ * Since: 3.10
+ **/
+EClient *
+e_book_client_connect_direct_finish (GAsyncResult *result,
+                                    GError **error)
+{
+	GSimpleAsyncResult *simple;
+	ConnectClosure *closure;
+	gpointer source_tag;
+
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	closure = g_simple_async_result_get_op_res_gpointer (simple);
+
+	source_tag = g_simple_async_result_get_source_tag (simple);
+	g_return_val_if_fail (source_tag == e_book_client_connect_direct, NULL);
+
+	if (g_simple_async_result_propagate_error (simple, error)) {
+		g_prefix_error (
+			error, _("Unable to connect to '%s': "),
+			e_source_get_display_name (closure->source));
+		return NULL;
+	}
+
+	return E_CLIENT (g_async_result_get_source_object (result));
 }
 
 #define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"

@@ -106,6 +106,13 @@ EClient *       e_book_client_connect_direct_sync
 						 ESource *source,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_book_client_connect_direct	(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+EClient *	e_book_client_connect_direct_finish
+                                                (GAsyncResult *result,
+						 GError **error);
 gboolean	e_book_client_get_self		(ESourceRegistry *registry,
 						 EContact **out_contact,
 						 EBookClient **out_client,
