@@ -103,16 +103,6 @@ void            e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBacke
 void            e_source_backend_summary_setup_set_indexed_fields  (ESourceBackendSummarySetup *extension,
 								    ...);
 
-EContactField  *e_source_backend_summary_setup_get_collations      (ESourceBackendSummarySetup *extension,
-								    gchar                    ***collations,
-								    gint                       *n_fields);
-void            e_source_backend_summary_setup_set_collationsv     (ESourceBackendSummarySetup *extension,
-								    EContactField              *fields,
-								    const gchar               **collations,
-								    gint                        n_fields);
-void            e_source_backend_summary_setup_set_collations      (ESourceBackendSummarySetup *extension,
-								    ...);
-
 G_END_DECLS
 
 #endif /* E_SOURCE_BACKEND_SUMMARY_SETUP_H */
