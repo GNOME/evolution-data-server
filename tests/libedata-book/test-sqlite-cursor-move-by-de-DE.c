@@ -17,30 +17,27 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("EDS_COLLATE", "de_DE.UTF-8", TRUE));
-
-	data = move_by_test_new ("/EbSdbCursor/de_DE/Move/Forward");
+	data = move_by_test_new ("/EbSdbCursor/de_DE/Move/Forward", "de_DE.UTF-8");
 	move_by_test_add_assertion (data, 5, 11, 1, 2, 5, 6);
 	move_by_test_add_assertion (data, 6, 7, 8, 4, 3, 15, 17);
 	move_by_test_add (data, FALSE);
 
-	data = move_by_test_new ("/EbSdbCursor/de_DE/Move/ForwardOnNameless");
+	data = move_by_test_new ("/EbSdbCursor/de_DE/Move/ForwardOnNameless", "de_DE.UTF-8");
 	move_by_test_add_assertion (data, 1, 11);
 	move_by_test_add_assertion (data, 3, 1, 2, 5);
 	move_by_test_add (data, FALSE);
 
-	data = move_by_test_new ("/EbSdbCursor/de_DE/Move/Backwards");
+	data = move_by_test_new ("/EbSdbCursor/de_DE/Move/Backwards", "de_DE.UTF-8");
 	move_by_test_add_assertion (data, -5, 19, 20, 9, 13, 12);
 	move_by_test_add_assertion (data, -8, 14, 10, 18, 16, 17, 15, 3, 4);
 	move_by_test_add (data, FALSE);
 
-	data = move_by_test_new ("/EbSdbCursor/de_DE/Filtered/Move/Forward");
+	data = move_by_test_new ("/EbSdbCursor/de_DE/Filtered/Move/Forward", "de_DE.UTF-8");
 	move_by_test_add_assertion (data, 5, 11, 1, 2, 5, 8);
 	move_by_test_add_assertion (data, 8, 3, 17, 16, 18, 10, 14, 12, 9);
 	move_by_test_add (data, TRUE);
 
-	data = move_by_test_new ("/EbSdbCursor/de_DE/Filtered/Move/Backwards");
+	data = move_by_test_new ("/EbSdbCursor/de_DE/Filtered/Move/Backwards", "de_DE.UTF-8");
 	move_by_test_add_assertion (data, -5, 9, 12, 14, 10, 18);
 	move_by_test_add_assertion (data, -8, 16, 17, 3, 8, 5, 2, 1, 11);
 	move_by_test_add (data, TRUE);

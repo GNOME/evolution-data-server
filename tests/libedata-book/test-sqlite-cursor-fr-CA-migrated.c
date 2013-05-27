@@ -18,10 +18,9 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 
 	/* Ensure that the client and server get the same locale */
-	g_assert (g_setenv ("EDS_COLLATE", "fr_CA.UTF-8", TRUE));
 	g_assert (g_setenv ("MIGRATION_TEST_SOURCE_NAME", "migration-test-source", TRUE));
 
-	data = move_by_test_new ("/EbSdbCursor/Locale/fr_CA/Migrated");
+	data = move_by_test_new ("/EbSdbCursor/Locale/fr_CA/Migrated", "fr_CA.UTF-8");
 	move_by_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
 	move_by_test_add_assertion (data, 5, 4,  3,  7,  8,  15);
 	move_by_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
