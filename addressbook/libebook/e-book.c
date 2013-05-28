@@ -2343,7 +2343,7 @@ e_book_open (EBook *book,
 	e_return_error_if_fail (
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
-	if (!e_gdbus_book_call_open_sync (book->priv->gdbus_book, only_if_exists, NULL, &err)) {
+	if (!e_gdbus_book_call_open_sync (book->priv->gdbus_book, only_if_exists, NULL, NULL, &err)) {
 
 		unwrap_gerror (err, error);
 
@@ -2366,7 +2366,7 @@ open_reply (GObject *gdbus_book,
 	EBookAsyncCallback excb = data->excallback;
 	EBookCallback cb = data->callback;
 
-	e_gdbus_book_call_open_finish (G_DBUS_PROXY (gdbus_book), res, &error);
+	e_gdbus_book_call_open_finish (G_DBUS_PROXY (gdbus_book), res, NULL, &error);
 
 	unwrap_gerror (error, &err);
 

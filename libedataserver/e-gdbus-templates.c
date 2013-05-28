@@ -1743,6 +1743,22 @@ e_gdbus_proxy_call_sync_boolean__void (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_BOOLEAN, &in_boolean, E_GDBUS_TYPE_VOID, NULL);
 }
 
+gboolean
+e_gdbus_proxy_call_sync_boolean__string (GDBusProxy *proxy,
+					 gboolean in_boolean,
+					 gchar **out_string,
+					 GCancellable *cancellable,
+					 GError **error,
+					 EGdbusCallStartBoolean start_func,
+					 EGdbusCallFinishString finish_func)
+{
+	g_return_val_if_fail (proxy != NULL, FALSE);
+	g_return_val_if_fail (start_func != NULL, FALSE);
+	g_return_val_if_fail (finish_func != NULL, FALSE);
+
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_BOOLEAN, &in_boolean, E_GDBUS_TYPE_STRING, out_string);
+}
+
 /**
  * e_gdbus_proxy_call_sync_string__void:
  * @proxy:

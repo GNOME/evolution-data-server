@@ -129,8 +129,8 @@ E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_INTERFACE_NAME,
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRING (GDBUS_BOOK_INTERFACE_NAME,
 					     locale_changed)
 
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
-                                                      open)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_BOOK_INTERFACE_NAME,
+							open)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
                                                       remove)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
@@ -198,7 +198,7 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 		__LOCALE_CHANGED_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
-	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID (
+	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__STRING (
 		EGdbusBookIface,
 		"open",
 		open,
@@ -306,19 +306,21 @@ e_gdbus_book_call_open (GDBusProxy *proxy,
 gboolean
 e_gdbus_book_call_open_finish (GDBusProxy *proxy,
                                GAsyncResult *result,
+			       gchar **out_locale,
                                GError **error)
 {
-	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_book_call_open);
+	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_locale, error, e_gdbus_book_call_open);
 }
 
 gboolean
 e_gdbus_book_call_open_sync (GDBusProxy *proxy,
                              gboolean in_only_if_exists,
+			     gchar **out_locale,
                              GCancellable *cancellable,
                              GError **error)
 {
-	return e_gdbus_proxy_call_sync_boolean__void (
-		proxy, in_only_if_exists, cancellable, error,
+	return e_gdbus_proxy_call_sync_boolean__string (
+		proxy, in_only_if_exists, out_locale, cancellable, error,
 		e_gdbus_book_call_open,
 		e_gdbus_book_call_open_finish);
 }
@@ -799,8 +801,9 @@ e_gdbus_book_emit_ ## _mname ## _done (EGdbusBook *object, guint arg_opid, const
 	g_signal_emit (object, signals[_sig_id], 0, arg_opid, arg_error, out_par);					\
 }
 
-DECLARE_EMIT_DONE_SIGNAL_0 (open,
-                            __OPEN_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_1 (open,
+                            __OPEN_DONE_SIGNAL,
+			    const gchar *)
 DECLARE_EMIT_DONE_SIGNAL_0 (remove,
                             __REMOVE_DONE_SIGNAL)
 DECLARE_EMIT_DONE_SIGNAL_0 (refresh,
@@ -903,10 +906,12 @@ E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
                                  name_value,
                                  "s")
 
-E_DECLARE_GDBUS_ASYNC_METHOD_1 (book,
-                                  open,
-                                  only_if_exists,
-                                  "b")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+					    open,
+					    only_if_exists,
+					    "b",
+                                            locale,
+                                            "s")
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (book,
                                 remove)
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (book,
@@ -1229,7 +1234,7 @@ e_gdbus_book_proxy_init (EGdbusBookProxy *proxy)
 	proxy->priv = E_GDBUS_BOOK_PROXY_GET_PRIVATE (proxy);
 	proxy->priv->pending_ops = e_gdbus_async_op_keeper_create_pending_ops (E_GDBUS_ASYNC_OP_KEEPER (proxy));
 
-	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (open);
+	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (open);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (remove);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (refresh);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_contact);

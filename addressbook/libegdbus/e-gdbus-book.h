@@ -121,7 +121,7 @@ struct _EGdbusBookIface
 
 	/* Signal handlers for handling D-Bus method calls: */
 	gboolean (*handle_open)			(EGdbusBook *object, GDBusMethodInvocation *invocation, gboolean in_only_if_exists);
-	void	 (*open_done)			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
+	void	 (*open_done)			(EGdbusBook *object, guint arg_opid, const GError *arg_error, gchar **out_locale);
 
 	gboolean (*handle_remove)		(EGdbusBook *object, GDBusMethodInvocation *invocation);
 	void	 (*remove_done)			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
@@ -168,8 +168,8 @@ struct _EGdbusBookIface
 
 /* D-Bus Methods */
 void		e_gdbus_book_call_open (GDBusProxy *proxy, gboolean in_only_if_exists, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_gdbus_book_call_open_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error);
-gboolean	e_gdbus_book_call_open_sync (GDBusProxy *proxy, gboolean in_only_if_exists, GCancellable *cancellable, GError **error);
+gboolean	e_gdbus_book_call_open_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_locale, GError **error);
+gboolean	e_gdbus_book_call_open_sync (GDBusProxy *proxy, gboolean in_only_if_exists, gchar **out_locale, GCancellable *cancellable, GError **error);
 
 void		e_gdbus_book_call_remove (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_book_call_remove_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error);
@@ -251,7 +251,7 @@ gboolean	e_gdbus_book_call_get_locale_sync (GDBusProxy *proxy, gchar **out_local
 #define e_gdbus_book_complete_close				e_gdbus_complete_sync_method_void
 #define e_gdbus_book_complete_get_locale			e_gdbus_complete_async_method
 
-void e_gdbus_book_emit_open_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
+void e_gdbus_book_emit_open_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_locale);
 void e_gdbus_book_emit_remove_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_book_emit_refresh_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_book_emit_get_contact_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_vcard);

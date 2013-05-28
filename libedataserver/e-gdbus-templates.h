@@ -521,6 +521,10 @@ enum {
 	E_INIT_GDBUS_METHOD_CALL_BOOLEAN (_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
 	E_INIT_GDBUS_METHOD_DONE_VOID    (_iface_struct, _sig_name_var, _done_sig_id)
 
+#define E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__STRING(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id, _done_sig_id) \
+	E_INIT_GDBUS_METHOD_CALL_BOOLEAN (_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
+	E_INIT_GDBUS_METHOD_DONE_STRING (_iface_struct, _sig_name_var, _done_sig_id)
+
 #define E_INIT_GDBUS_METHOD_ASYNC_UINT__VOID(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id, _done_sig_id)	\
 	E_INIT_GDBUS_METHOD_CALL_UINT (_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
 	E_INIT_GDBUS_METHOD_DONE_VOID (_iface_struct, _sig_name_var, _done_sig_id)
@@ -719,6 +723,7 @@ gboolean e_gdbus_proxy_call_sync_void__string	(GDBusProxy *proxy, gchar **out_st
 gboolean e_gdbus_proxy_call_sync_void__strv	(GDBusProxy *proxy, gchar ***out_strv, GCancellable *cancellable, GError **error, EGdbusCallStartVoid start_func, EGdbusCallFinishStrv finish_func);
 gboolean e_gdbus_proxy_call_sync_void__uint	(GDBusProxy *proxy, guint *out_uint, GCancellable *cancellable, GError **error, EGdbusCallStartVoid start_func, EGdbusCallFinishUint finish_func);
 gboolean e_gdbus_proxy_call_sync_boolean__void	(GDBusProxy *proxy, gboolean in_boolean, GCancellable *cancellable, GError **error, EGdbusCallStartBoolean start_func, EGdbusCallFinishVoid finish_func);
+gboolean e_gdbus_proxy_call_sync_boolean__string(GDBusProxy *proxy, gboolean in_boolean, gchar **out_string, GCancellable *cancellable, GError **error, EGdbusCallStartBoolean start_func, EGdbusCallFinishString finish_func);
 gboolean e_gdbus_proxy_call_sync_string__void	(GDBusProxy *proxy, const gchar *in_string, GCancellable *cancellable, GError **error, EGdbusCallStartString start_func, EGdbusCallFinishVoid finish_func);
 gboolean e_gdbus_proxy_call_sync_strv__void	(GDBusProxy *proxy, const gchar * const *in_strv, GCancellable *cancellable, GError **error, EGdbusCallStartStrv start_func, EGdbusCallFinishVoid finish_func);
 gboolean e_gdbus_proxy_call_sync_uint__void	(GDBusProxy *proxy, guint in_uint, GCancellable *cancellable, GError **error, EGdbusCallStartUint start_func, EGdbusCallFinishVoid finish_func);

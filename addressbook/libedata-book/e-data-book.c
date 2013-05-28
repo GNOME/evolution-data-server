@@ -1175,8 +1175,12 @@ e_data_book_respond_open (EDataBook *book,
 
 		/* Deliver the result to the caller */
 		direct_operation_complete (data);
-	} else
-		e_gdbus_book_emit_open_done (book->priv->gdbus_object, opid, error);
+	} else {
+		/* XXX Hack to propagate the initial locale through the 'open' call response */
+		const gchar *locale = e_book_backend_get_locale (book->priv->backend);
+
+		e_gdbus_book_emit_open_done (book->priv->gdbus_object, opid, error, locale);
+	}
 
 	if (error)
 		g_error_free (error);

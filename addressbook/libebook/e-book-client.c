@@ -1048,8 +1048,8 @@ book_client_open (EClient *client,
                   gpointer user_data)
 {
 	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, book_client_open,
-					     e_gdbus_book_call_open,
-					     e_gdbus_book_call_open_finish, NULL, NULL, NULL, NULL);
+				     e_gdbus_book_call_open, NULL, NULL,
+				     e_gdbus_book_call_open_finish, NULL, NULL);
 }
 
 static gboolean
@@ -1058,14 +1058,13 @@ book_client_open_finish (EClient *client,
                          GError **error)
 {
 	EBookClient *book_client;
-	GError *local_error = NULL;
 	gchar *locale = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
 
-	if (!e_client_proxy_call_finish_void (client, result, error, book_client_open))
+	if (!e_client_proxy_call_finish_string (client, result, &locale, error, book_client_open))
 		return FALSE;
 
 	/**
@@ -1082,18 +1081,13 @@ book_client_open_finish (EClient *client,
 	 */
 	if (book_client->priv->direct_book &&
 	    !e_data_book_open_sync (book_client->priv->direct_book,
-				    FALSE /* only_if_exists */, NULL /* cancellable */, error))
-		return FALSE;
-
-	/* More cheating... quick fix for back port to 3.6 branch */
-	if (!e_client_proxy_call_sync_void__string (client, &locale, NULL, &local_error,
-						    e_gdbus_book_call_get_locale_sync)) {
-		g_warning ("Failed to fetch initial locale: %s", local_error->message);
-		g_error_free (local_error);
-	} else {
-		book_client_set_locale (book_client, locale);
+				    FALSE /* only_if_exists */, NULL /* cancellable */, error)) {
 		g_free (locale);
+		return FALSE;
 	}
+
+	book_client_set_locale (book_client, locale);
+	g_free (locale);
 
 	return TRUE;
 }
@@ -1106,7 +1100,6 @@ book_client_open_sync (EClient *client,
 {
 	EBookClient *book_client;
 	gchar *locale = NULL;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
@@ -1117,22 +1110,19 @@ book_client_open_sync (EClient *client,
 		return FALSE;
 	}
 
-	if (!e_client_proxy_call_sync_boolean__void (client, only_if_exists, cancellable, error, e_gdbus_book_call_open_sync))
+	if (!e_client_proxy_call_sync_boolean__string (client, only_if_exists, &locale, cancellable, error,
+						       e_gdbus_book_call_open_sync))
 		return FALSE;
 
 	if (book_client->priv->direct_book &&
 	    !e_data_book_open_sync (book_client->priv->direct_book,
-				    only_if_exists, cancellable, error))
-		return FALSE;
-
-	if (!e_client_proxy_call_sync_void__string (client, &locale, cancellable, &local_error,
-						    e_gdbus_book_call_get_locale_sync)) {
-		g_warning ("Failed to fetch initial locale: %s", local_error->message);
-		g_error_free (local_error);
-	} else {
-		book_client_set_locale (book_client, locale);
+				    only_if_exists, cancellable, error)) {
 		g_free (locale);
+		return FALSE;
 	}
+
+	book_client_set_locale (book_client, locale);
+	g_free (locale);
 
 	return TRUE;
 }
