@@ -197,6 +197,7 @@ libedbus_private_la_LDFLAGS = \
 	$(NULL)
 
 EXTRA_DIST = \
+	org.freedesktop.locale1.xml	\
 	org.gnome.evolution.dataserver.Source.xml \
 	org.gnome.evolution.dataserver.SourceManager.xml \
 	org.gnome.evolution.dataserver.Authenticator.xml \
