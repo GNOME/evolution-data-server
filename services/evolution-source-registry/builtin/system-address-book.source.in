@@ -7,3 +7,7 @@ Parent=local-stub
 [Address Book]
 BackendName=local
 Color=#becedd
+
+[Backend Summary Setup]
+SummaryFields=full_name:family_name:nickname:given_name:phone
+IndexedFields=full_name,prefix:family_name,prefix:nickname,prefix:given_name,prefix:phone,prefix:phone,phone
