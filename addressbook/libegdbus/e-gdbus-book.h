@@ -117,6 +117,7 @@ struct _EGdbusBookIface
 	void	(*online)			(EGdbusBook *object, gboolean arg_is_online);
 	void	(*opened)			(EGdbusBook *object, const gchar * const *arg_error);
 	void	(*backend_property_changed)	(EGdbusBook *object, const gchar * const *arg_name_value);
+	void    (*locale_changed)               (EGdbusBook *object, const gchar *locale);
 
 	/* Signal handlers for handling D-Bus method calls: */
 	gboolean (*handle_open)			(EGdbusBook *object, GDBusMethodInvocation *invocation, gboolean in_only_if_exists);
@@ -159,6 +160,8 @@ struct _EGdbusBookIface
 	gboolean (*handle_cancel_all)		(EGdbusBook *object, GDBusMethodInvocation *invocation);
 	gboolean (*handle_close)		(EGdbusBook *object, GDBusMethodInvocation *invocation);
 
+	gboolean (*handle_get_locale)		(EGdbusBook *object, GDBusMethodInvocation *invocation);
+	void	 (*get_locale_done)		(EGdbusBook *object, guint arg_opid, const GError *arg_error, gchar **out_locale);
 };
 
 /* C Bindings for properties */
@@ -226,6 +229,10 @@ void		e_gdbus_book_call_close (GDBusProxy *proxy, GCancellable *cancellable, GAs
 gboolean	e_gdbus_book_call_close_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_book_call_close_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error);
 
+void		e_gdbus_book_call_get_locale (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_gdbus_book_call_get_locale_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_locale, GError **error);
+gboolean	e_gdbus_book_call_get_locale_sync (GDBusProxy *proxy, gchar **out_locale, GCancellable *cancellable, GError **error);
+
 /* D-Bus Methods Completion Helpers */
 #define e_gdbus_book_complete_open				e_gdbus_complete_async_method
 #define e_gdbus_book_complete_remove				e_gdbus_complete_async_method
@@ -242,6 +249,7 @@ gboolean	e_gdbus_book_call_close_sync (GDBusProxy *proxy, GCancellable *cancella
 #define e_gdbus_book_complete_cancel_operation			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_complete_cancel_all			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_complete_close				e_gdbus_complete_sync_method_void
+#define e_gdbus_book_complete_get_locale			e_gdbus_complete_async_method
 
 void e_gdbus_book_emit_open_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_book_emit_remove_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
@@ -255,6 +263,7 @@ void e_gdbus_book_emit_modify_contacts_done		(EGdbusBook *object, guint arg_opid
 void e_gdbus_book_emit_get_backend_property_done	(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_prop_value);
 void e_gdbus_book_emit_set_backend_property_done	(EGdbusBook *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_book_emit_get_view_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_view);
+void e_gdbus_book_emit_get_locale_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_locale);
 
 /* D-Bus Signal Emission Helpers */
 void e_gdbus_book_emit_backend_error	(EGdbusBook *object, const gchar *arg_message);
@@ -262,6 +271,7 @@ void e_gdbus_book_emit_readonly		(EGdbusBook *object, gboolean arg_is_readonly);
 void e_gdbus_book_emit_online		(EGdbusBook *object, gboolean arg_is_online);
 void e_gdbus_book_emit_opened		(EGdbusBook *object, const gchar * const *arg_error);
 void e_gdbus_book_emit_backend_property_changed	(EGdbusBook *object, const gchar * const *arg_name_value);
+void e_gdbus_book_emit_locale_changed	(EGdbusBook *object, const gchar *locale);
 
 G_END_DECLS
 

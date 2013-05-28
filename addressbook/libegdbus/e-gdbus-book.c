@@ -41,6 +41,7 @@ enum
 	__ONLINE_SIGNAL,
 	__OPENED_SIGNAL,
 	__BACKEND_PROPERTY_CHANGED_SIGNAL,
+	__LOCALE_CHANGED_SIGNAL,
 	__OPEN_METHOD,
 	__OPEN_DONE_SIGNAL,
 	__REMOVE_METHOD,
@@ -68,6 +69,8 @@ enum
 	__CANCEL_OPERATION_METHOD,
 	__CANCEL_ALL_METHOD,
 	__CLOSE_METHOD,
+	__GET_LOCALE_METHOD,
+	__GET_LOCALE_DONE_SIGNAL,
 	__LAST_SIGNAL
 };
 
@@ -123,6 +126,8 @@ E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_INTERFACE_NAME,
                                            opened)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_INTERFACE_NAME,
                                            backend_property_changed)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRING (GDBUS_BOOK_INTERFACE_NAME,
+					     locale_changed)
 
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
                                                       open)
@@ -148,6 +153,8 @@ E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
                                                       set_backend_property)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_BOOK_INTERFACE_NAME,
                                                         get_view)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_BOOK_INTERFACE_NAME,
+                                                        get_locale)
 
 static void
 e_gdbus_book_default_init (EGdbusBookIface *iface)
@@ -184,6 +191,11 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 		"backend_property_changed",
 		backend_property_changed,
 		__BACKEND_PROPERTY_CHANGED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRING (
+		EGdbusBookIface,
+		"locale_changed",
+		locale_changed,
+		__LOCALE_CHANGED_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
 	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID (
@@ -273,6 +285,12 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 		"close",
 		close,
 		__CLOSE_METHOD)
+	E_INIT_GDBUS_METHOD_ASYNC_VOID__STRING (
+		EGdbusBookIface,
+		"get_locale",
+		get_locale,
+		__GET_LOCALE_METHOD,
+		__GET_LOCALE_DONE_SIGNAL)
 }
 
 void
@@ -737,6 +755,36 @@ e_gdbus_book_call_close_sync (GDBusProxy *proxy,
 	return e_gdbus_proxy_method_call_sync_void__void ("close", proxy, cancellable, error);
 }
 
+void
+e_gdbus_book_call_get_locale (GDBusProxy *proxy,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data)
+{
+	e_gdbus_proxy_call_void ("get_locale", e_gdbus_book_call_get_locale, E_GDBUS_ASYNC_OP_KEEPER (proxy), cancellable, callback, user_data);
+}
+
+gboolean
+e_gdbus_book_call_get_locale_finish (GDBusProxy *proxy,
+				     GAsyncResult *result,
+				     gchar **out_locale,
+				     GError **error)
+{
+	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_locale, error, e_gdbus_book_call_get_locale);
+}
+
+gboolean
+e_gdbus_book_call_get_locale_sync (GDBusProxy *proxy,
+				   gchar **out_locale,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	return e_gdbus_proxy_call_sync_void__string (
+		proxy, out_locale, cancellable, error,
+		e_gdbus_book_call_get_locale,
+		e_gdbus_book_call_get_locale_finish);
+}
+
 #define DECLARE_EMIT_DONE_SIGNAL_0(_mname, _sig_id)									\
 void															\
 e_gdbus_book_emit_ ## _mname ## _done (EGdbusBook *object, guint arg_opid, const GError *arg_error)			\
@@ -781,6 +829,9 @@ DECLARE_EMIT_DONE_SIGNAL_0 (set_backend_property,
 DECLARE_EMIT_DONE_SIGNAL_1 (get_view,
                             __GET_VIEW_DONE_SIGNAL,
                             const gchar *)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_locale,
+                            __GET_LOCALE_DONE_SIGNAL,
+                            const gchar *)
 
 void
 e_gdbus_book_emit_backend_error (EGdbusBook *object,
@@ -820,6 +871,13 @@ e_gdbus_book_emit_backend_property_changed (EGdbusBook *object,
 	g_signal_emit (object, signals[__BACKEND_PROPERTY_CHANGED_SIGNAL], 0, arg_name_value);
 }
 
+void
+e_gdbus_book_emit_locale_changed (EGdbusBook *object,
+				  const gchar *arg_locale)
+{
+	g_signal_emit (object, signals[__LOCALE_CHANGED_SIGNAL], 0, arg_locale);
+}
+
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
                                  backend_error,
                                  message,
@@ -840,6 +898,10 @@ E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
                                  backend_property_changed,
                                  name_value,
                                  "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
+                                 locale_changed,
+                                 name_value,
+                                 "s")
 
 E_DECLARE_GDBUS_ASYNC_METHOD_1 (book,
                                   open,
@@ -907,6 +969,11 @@ E_DECLARE_GDBUS_SYNC_METHOD_0 (book,
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book,
                                close)
 
+E_DECLARE_GDBUS_ASYNC_METHOD_0_WITH_RETURN (book,
+                                            get_locale,
+                                            locale,
+                                            "s")
+
 static const GDBusMethodInfo * const e_gdbus_book_method_info_pointers[] =
 {
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, open),
@@ -924,6 +991,7 @@ static const GDBusMethodInfo * const e_gdbus_book_method_info_pointers[] =
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancel_operation),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancel_all),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, close),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_locale),
 	NULL
 };
 
@@ -934,6 +1002,7 @@ static const GDBusSignalInfo * const e_gdbus_book_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, online),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, opened),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, backend_property_changed),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, locale_changed),
 
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, open_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, remove_done),
@@ -947,6 +1016,7 @@ static const GDBusSignalInfo * const e_gdbus_book_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_backend_property_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, set_backend_property_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_view_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_locale_done),
 	NULL
 };
 
@@ -1171,6 +1241,7 @@ e_gdbus_book_proxy_init (EGdbusBookProxy *proxy)
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_backend_property);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID	  (set_backend_property);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_view);
+	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_locale);
 }
 
 static void
