@@ -349,6 +349,33 @@ imapx_update_store_summary (CamelFolder *folder)
 	}
 }
 
+gchar *
+camel_imapx_dup_uid_from_summary_index (CamelFolder *folder,
+                                        guint summary_index)
+{
+	CamelFolderSummary *summary;
+	GPtrArray *array;
+	gchar *uid = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+
+	summary = folder->summary;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
+
+	array = camel_folder_summary_get_array (summary);
+	g_return_val_if_fail (array != NULL, NULL);
+
+	if (summary_index < array->len) {
+		folder = camel_folder_summary_get_folder (summary);
+		camel_folder_sort_uids (folder, array);
+		uid = g_strdup (g_ptr_array_index (array, summary_index));
+	}
+
+	camel_folder_summary_free_array (array);
+
+	return uid;
+}
+
 /*
  * capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
  *                     [SPACE 1#capability]

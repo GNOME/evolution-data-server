@@ -155,6 +155,10 @@ void		imapx_set_message_info_flags_for_new_message
 						 CamelFolder *folder);
 void		imapx_update_store_summary	(CamelFolder *folder);
 
+gchar *		camel_imapx_dup_uid_from_summary_index
+						(CamelFolder *folder,
+						 guint summary_index);
+
 /* ********************************************************************** */
 
 /* Handy server capability test macros.

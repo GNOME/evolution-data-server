@@ -1456,28 +1456,6 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	g_object_unref (folder);
 }
 
-static gchar *
-imapx_get_uid_from_index (CamelFolderSummary *summary,
-                          guint id)
-{
-	GPtrArray *array;
-	gchar *uid = NULL;
-
-	g_return_val_if_fail (summary != NULL, NULL);
-
-	array = camel_folder_summary_get_array (summary);
-	g_return_val_if_fail (array != NULL, NULL);
-
-	if (id < array->len) {
-		camel_folder_sort_uids (camel_folder_summary_get_folder (summary), array);
-		uid = g_strdup (g_ptr_array_index (array, id));
-	}
-
-	camel_folder_summary_free_array (array);
-
-	return uid;
-}
-
 static void
 invalidate_local_cache (CamelIMAPXFolder *ifolder,
                         guint64 new_uidvalidity)
@@ -1564,7 +1542,7 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	if (folder != NULL) {
 		gchar *uid;
 
-		uid = imapx_get_uid_from_index (folder->summary, expunge - 1);
+		uid = camel_imapx_dup_uid_from_summary_index (folder, expunge - 1);
 
 		if (uid != NULL)
 			imapx_expunge_uid_from_summary (is, uid, TRUE);
@@ -1843,8 +1821,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				uid = finfo->uid;
 				finfo->uid = NULL;
 			} else {
-				uid = imapx_get_uid_from_index (
-					select_folder->summary,
+				uid = camel_imapx_dup_uid_from_summary_index (
+					select_folder,
 					is->priv->context->id - 1);
 			}
 
@@ -3690,8 +3668,8 @@ imapx_select (CamelIMAPXServer *is,
 
 		if (total && isum->modseq && ifolder->uidvalidity_on_server) {
 
-			firstuid = imapx_get_uid_from_index (folder->summary, 0);
-			lastuid = imapx_get_uid_from_index (folder->summary, total - 1);
+			firstuid = camel_imapx_dup_uid_from_summary_index (folder, 0);
+			lastuid = camel_imapx_dup_uid_from_summary_index (folder, total - 1);
 
 			c (
 				is->tagprefix, "SELECT QRESYNC %" G_GUINT64_FORMAT
@@ -3738,7 +3716,7 @@ imapx_select (CamelIMAPXServer *is,
 					 * the summary starts from zero. */
 					sprintf (buf, "%d", total - i + 1);
 					g_string_prepend (seqs, buf);
-					uid = imapx_get_uid_from_index (folder->summary, total - i);
+					uid = camel_imapx_dup_uid_from_summary_index (folder, total - i);
 					g_string_prepend (uids, uid);
 					g_free (uid);
 				} while (i < total);
@@ -5077,8 +5055,8 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	}
 
 	if (camel_folder_summary_count (folder->summary)) {
-		gchar *uid = imapx_get_uid_from_index (
-			folder->summary,
+		gchar *uid = camel_imapx_dup_uid_from_summary_index (
+			folder,
 			camel_folder_summary_count (folder->summary) - 1);
 		guint64 uidl = strtoull (uid, NULL, 10);
 		g_free (uid);
@@ -5352,7 +5330,7 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	g_object_unref (settings);
 
 	if (mobile_mode)
-		uid = imapx_get_uid_from_index (folder->summary, 0);
+		uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
 
 	job->pop_operation_msg = TRUE;
 
@@ -5424,8 +5402,8 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 	}
 
 	if (camel_folder_summary_count (folder->summary)) {
-		gchar *uid = imapx_get_uid_from_index (
-			folder->summary,
+		gchar *uid = camel_imapx_dup_uid_from_summary_index (
+			folder,
 			camel_folder_summary_count (folder->summary) - 1);
 		guint64 uidl = strtoull (uid, NULL, 10);
 		g_free (uid);
@@ -5511,7 +5489,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 
 	if (total > 0) {
 		guint64 uidl;
-		uid = imapx_get_uid_from_index (folder->summary, total - 1);
+		uid = camel_imapx_dup_uid_from_summary_index (folder, total - 1);
 		uidl = strtoull (uid, NULL, 10);
 		g_free (uid);
 		uid = g_strdup_printf ("%" G_GUINT64_FORMAT, uidl + 1);
@@ -5659,7 +5637,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 
 	} else if (ftype == CAMEL_FETCH_OLD_MESSAGES && total > 0) {
 		guint64 uidl;
-		start_uid = imapx_get_uid_from_index (folder->summary, 0);
+		start_uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
 		uidl = strtoull (start_uid, NULL, 10);
 		end_uid = g_strdup_printf ("%" G_GINT64_MODIFIER "d", (((gint) uidl) - fetch_limit > 0) ? (uidl - fetch_limit) : 1);
 
@@ -8273,7 +8251,7 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 	gint old_len;
 
 	old_len = camel_folder_summary_count (folder->summary);
-	uid = imapx_get_uid_from_index (folder->summary, 0);
+	uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
 	firstuid = strtoull (uid, NULL, 10);
 	g_free (uid);
 
@@ -8316,7 +8294,7 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 	if (success && camel_folder_change_info_changed (data->changes) && camel_folder_change_info_changed (data->changes))
 		camel_folder_changed (folder, data->changes);
 
-	uid = imapx_get_uid_from_index (folder->summary, 0);
+	uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
 	newfirstuid = strtoull (uid, NULL, 10);
 	g_free (uid);
 
