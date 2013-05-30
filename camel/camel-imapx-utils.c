@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <string.h>
 
+#include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-stream.h"
@@ -2042,6 +2043,131 @@ imapx_free_list (struct _list_info *linfo)
 		g_free (linfo->name);
 		g_free (linfo);
 	}
+}
+
+gboolean
+camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
+                                           CamelFolder *folder)
+{
+	/* See RFC 5162 Section 3.1 */
+
+	CamelIMAPXFolder *imapx_folder;
+	CamelIMAPXSummary *imapx_summary;
+	guint64 last_known_uidvalidity;
+	guint64 last_known_modsequence;
+	guint32 last_known_message_cnt;
+	guint32 sequence_limit;
+	gchar *known_uid_set = NULL;
+	gint summary_total;
+	gboolean parameter_added = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
+
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+	imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
+
+	last_known_uidvalidity = imapx_folder->uidvalidity_on_server;
+	last_known_modsequence = imapx_summary->modseq;
+	last_known_message_cnt = imapx_folder->exists_on_server;
+
+	/* XXX This should return an unsigned integer to
+	 *     avoid the possibility of a negative count. */
+	summary_total = camel_folder_summary_count (folder->summary);
+	g_return_val_if_fail (summary_total >= 0, FALSE);
+
+	if (summary_total > 0) {
+		guint last = summary_total - 1;
+		gchar *begin, *end;
+
+		begin = camel_imapx_dup_uid_from_summary_index (folder, 0);
+		end = camel_imapx_dup_uid_from_summary_index (folder, last);
+
+		if (begin != NULL && end != NULL)
+			known_uid_set = g_strconcat (begin, ":", end, NULL);
+
+		g_free (begin);
+		g_free (end);
+	}
+
+	/* Make sure we have valid QRESYNC arguments. */
+
+	if (last_known_uidvalidity == 0)
+		goto exit;
+
+	if (last_known_modsequence == 0)
+		goto exit;
+
+	if (known_uid_set == NULL)
+		goto exit;
+
+	camel_imapx_command_add (
+		ic, " (QRESYNC (%"
+		G_GUINT64_FORMAT " %"
+		G_GUINT64_FORMAT " %s",
+		last_known_uidvalidity,
+		last_known_modsequence,
+		known_uid_set);
+
+	/* Add message sequence match data if we have enough messages. */
+
+	/* XXX Some IMAP servers like Zimbra can't handle invalid sequence
+	 *     numbers in the optional seq/uid list.  So limit the list to
+	 *     the lesser of the last known message count according to the
+	 *     server and our own summary count. */
+	sequence_limit = MIN (last_known_message_cnt, summary_total);
+
+	if (sequence_limit > 10) {
+		GString *seqs;
+		GString *uids;
+		guint32 ii = 3;
+
+		seqs = g_string_sized_new (256);
+		uids = g_string_sized_new (256);
+
+		/* Include some seq/uid pairs to avoid a huge VANISHED list.
+		 * Work backwards exponentially from the end of the mailbox,
+		 * starting with message 9 from the end, then 27 from the
+		 * end, then 81 from the end, etc. */
+		do {
+			guint32 summary_index;
+			gchar buf[10];
+			gchar *uid;
+
+			ii = MIN (ii * 3, sequence_limit);
+			summary_index = sequence_limit - ii;
+
+			if (seqs->len > 0)
+				g_string_prepend_c (seqs, ',');
+
+			if (uids->len > 0)
+				g_string_prepend_c (uids, ',');
+
+			/* IMAP sequence numbers are 1-based,
+			 * but our folder summary is 0-based. */
+			sprintf (buf, "%" G_GUINT32_FORMAT, summary_index + 1);
+
+			uid = camel_imapx_dup_uid_from_summary_index (
+				folder, summary_index);
+			if (uid != NULL) {
+				g_string_prepend (seqs, buf);
+				g_string_prepend (uids, uid);
+				g_free (uid);
+			}
+		} while (ii < sequence_limit);
+
+		camel_imapx_command_add (
+			ic, " (%s %s)", seqs->str, uids->str);
+	}
+
+	camel_imapx_command_add (ic, "))");
+
+	parameter_added = TRUE;
+
+exit:
+	g_free (known_uid_set);
+
+	return parameter_added;
 }
 
 gboolean

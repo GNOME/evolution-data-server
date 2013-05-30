@@ -3660,80 +3660,8 @@ imapx_select (CamelIMAPXServer *is,
 	ic = camel_imapx_command_new (
 		is, "SELECT", NULL, "SELECT %f", folder);
 
-	if (is->use_qresync) {
-		CamelIMAPXSummary *isum = (CamelIMAPXSummary *) folder->summary;
-		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-		gint total = camel_folder_summary_count (folder->summary);
-		gchar *firstuid, *lastuid;
-
-		if (total && isum->modseq && ifolder->uidvalidity_on_server) {
-
-			firstuid = camel_imapx_dup_uid_from_summary_index (folder, 0);
-			lastuid = camel_imapx_dup_uid_from_summary_index (folder, total - 1);
-
-			c (
-				is->tagprefix, "SELECT QRESYNC %" G_GUINT64_FORMAT
-				" %" G_GUINT64_FORMAT "\n",
-				ifolder->uidvalidity_on_server, isum->modseq);
-
-			camel_imapx_command_add (
-				ic, " (QRESYNC (%"
-				G_GUINT64_FORMAT " %"
-				G_GUINT64_FORMAT " %s:%s",
-				ifolder->uidvalidity_on_server,
-				isum->modseq,
-				firstuid, lastuid);
-
-			g_free (firstuid);
-			g_free (lastuid);
-
-			if (total > 10) {
-				gint i;
-				GString *seqs, *uids;
-
-				seqs = g_string_new (" ");
-				uids = g_string_new (")");
-
-				/* Include some seq/uid pairs to avoid a huge VANISHED list
-				 * (see RFC5162 §3.1). Work backwards exponentially from the
-				 * end of the mailbox, starting with the message 9 from the
-				 * end, then 27 from the end, then 81 from the end... */
-				i = 3;
-				do {
-					gchar buf[10];
-					gchar *uid;
-					i *= 3;
-					if (i > total)
-						i = total;
-
-					if (i != 9) { /* If not the first time */
-						g_string_prepend (seqs, ",");
-						g_string_prepend (uids, ",");
-					}
-
-					/* IMAP sequence numbers are one higher than the corresponding
-					 * indices in our folder summary -- they start from one, while
-					 * the summary starts from zero. */
-					sprintf (buf, "%d", total - i + 1);
-					g_string_prepend (seqs, buf);
-					uid = camel_imapx_dup_uid_from_summary_index (folder, total - i);
-					g_string_prepend (uids, uid);
-					g_free (uid);
-				} while (i < total);
-
-				g_string_prepend (seqs, " (");
-
-				c (is->tagprefix, "adding QRESYNC seq/uidset %s%s\n", seqs->str, uids->str);
-				camel_imapx_command_add (ic, seqs->str);
-				camel_imapx_command_add (ic, uids->str);
-
-				g_string_free (seqs, TRUE);
-				g_string_free (uids, TRUE);
-
-			}
-			camel_imapx_command_add (ic, "))");
-		}
-	}
+	if (is->use_qresync)
+		camel_imapx_command_add_qresync_parameter (ic, folder);
 
 	ic->complete = imapx_command_select_done;
 	imapx_command_start (is, ic, cancellable, error);
