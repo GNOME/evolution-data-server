@@ -28,6 +28,10 @@
 
 G_BEGIN_DECLS
 
+/* FIXME Split off a camel-imapx-types.h file with supplemental
+ *       enum/struct definitions and helper macros, so we don't
+ *       have these conflicting header dependencies. */
+struct _CamelIMAPXCommand;
 struct _CamelIMAPXStream;
 struct _CamelFlag;
 struct _CamelIMAPXNamespaceList;
@@ -340,6 +344,12 @@ struct _list_info *
 						 GError **error);
 gchar *		imapx_list_get_path		(struct _list_info *linfo);
 void		imapx_free_list			(struct _list_info *linfo);
+
+/* ********************************************************************** */
+
+gboolean	camel_imapx_command_add_qresync_parameter
+						(struct _CamelIMAPXCommand *ic,
+						 CamelFolder *folder);
 
 /* ********************************************************************** */
 
