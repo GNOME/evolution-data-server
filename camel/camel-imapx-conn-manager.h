@@ -65,7 +65,7 @@ struct _CamelIMAPXConnManagerClass {
 GType		camel_imapx_conn_manager_get_type (void);
 CamelIMAPXConnManager *
 		camel_imapx_conn_manager_new	(CamelStore *store);
-CamelStore *	camel_imapx_conn_manager_get_store
+CamelStore *	camel_imapx_conn_manager_ref_store
 						(CamelIMAPXConnManager *con_man);
 CamelIMAPXServer *
 		camel_imapx_conn_manager_get_connection

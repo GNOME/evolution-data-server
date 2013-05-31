@@ -45,7 +45,7 @@ struct _CamelIMAPXConnManagerPrivate {
 	/* XXX Might be easier for this to be a hash table,
 	 *     with CamelIMAPXServer pointers as the keys. */
 	GList *connections;
-	gpointer store;  /* weak pointer */
+	GWeakRef store;
 	GRWLock rw_lock;
 };
 
@@ -312,12 +312,8 @@ imapx_conn_manager_set_store (CamelIMAPXConnManager *con_man,
                               CamelStore *store)
 {
 	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (con_man->priv->store == NULL);
 
-	con_man->priv->store = store;
-
-	g_object_add_weak_pointer (
-		G_OBJECT (store), &con_man->priv->store);
+	g_weak_ref_set (&con_man->priv->store, store);
 }
 
 static void
@@ -345,9 +341,9 @@ imapx_conn_manager_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_STORE:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				camel_imapx_conn_manager_get_store (
+				camel_imapx_conn_manager_ref_store (
 				CAMEL_IMAPX_CONN_MANAGER (object)));
 			return;
 	}
@@ -367,11 +363,7 @@ imapx_conn_manager_dispose (GObject *object)
 		(GDestroyNotify) connection_info_unref);
 	priv->connections = NULL;
 
-	if (priv->store != NULL) {
-		g_object_remove_weak_pointer (
-			G_OBJECT (priv->store), &priv->store);
-		priv->store = NULL;
-	}
+	g_weak_ref_set (&priv->store, NULL);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->dispose (object);
@@ -481,7 +473,7 @@ static CamelIMAPXServer *
 imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
                                 const gchar *folder_name)
 {
-	CamelService *service;
+	CamelStore *store;
 	CamelSettings *settings;
 	CamelIMAPXServer *is = NULL;
 	ConnectionInfo *cinfo = NULL;
@@ -491,9 +483,10 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 
 	/* Caller must be holding CON_WRITE_LOCK. */
 
-	service = CAMEL_SERVICE (con_man->priv->store);
+	store = camel_imapx_conn_manager_ref_store (con_man);
+	g_return_val_if_fail (store != NULL, NULL);
 
-	settings = camel_service_ref_settings (service);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	concurrent_connections =
 		camel_imapx_settings_get_concurrent_connections (
@@ -562,6 +555,8 @@ exit:
 	if (camel_debug_flag (conman))
 		g_assert (!(concurrent_connections == g_list_length (con_man->priv->connections) && is == NULL));
 
+	g_object_unref (store);
+
 	return is;
 }
 
@@ -571,6 +566,7 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
                                       GCancellable *cancellable,
                                       GError **error)
 {
+	CamelStore *store;
 	CamelIMAPXServer *is = NULL;
 	CamelIMAPXStore *imapx_store;
 	ConnectionInfo *cinfo = NULL;
@@ -578,11 +574,14 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 
 	/* Caller must be holding CON_WRITE_LOCK. */
 
-	imapx_store = CAMEL_IMAPX_STORE (con_man->priv->store);
-
 	/* Check if we got cancelled while we were waiting. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return NULL;
+
+	store = camel_imapx_conn_manager_ref_store (con_man);
+	g_return_val_if_fail (store != NULL, NULL);
+
+	imapx_store = CAMEL_IMAPX_STORE (store);
 
 	is = camel_imapx_server_new (imapx_store);
 
@@ -607,8 +606,8 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 	imapx_store->authenticating_server = NULL;
 
 	if (!success) {
-		g_object_unref (is);
-		return NULL;
+		g_clear_object (&is);
+		goto exit;
 	}
 
 	g_signal_connect (
@@ -629,6 +628,9 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 
 	c (is->tagprefix, "Created new connection for %s and total connections %d \n", folder_name, g_list_length (con_man->priv->connections));
 
+exit:
+	g_object_unref (store);
+
 	return is;
 }
 
@@ -644,11 +646,11 @@ camel_imapx_conn_manager_new (CamelStore *store)
 }
 
 CamelStore *
-camel_imapx_conn_manager_get_store (CamelIMAPXConnManager *con_man)
+camel_imapx_conn_manager_ref_store (CamelIMAPXConnManager *con_man)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
 
-	return CAMEL_STORE (con_man->priv->store);
+	return g_weak_ref_get (&con_man->priv->store);
 }
 
 CamelIMAPXServer *
