@@ -569,14 +569,16 @@ pop3_store_disconnect_sync (CamelService *service,
 
 		pop3_engine = camel_pop3_store_ref_engine (store);
 
-		pc = camel_pop3_engine_command_new (
-			pop3_engine, 0, NULL, NULL,
-			cancellable, error, "QUIT\r\n");
-		while (camel_pop3_engine_iterate (pop3_engine, NULL, cancellable, NULL) > 0)
-			;
-		camel_pop3_engine_command_free (pop3_engine, pc);
+		if (pop3_engine) {
+			pc = camel_pop3_engine_command_new (
+				pop3_engine, 0, NULL, NULL,
+				cancellable, error, "QUIT\r\n");
+			while (camel_pop3_engine_iterate (pop3_engine, NULL, cancellable, NULL) > 0)
+				;
+			camel_pop3_engine_command_free (pop3_engine, pc);
 
-		g_clear_object (&pop3_engine);
+			g_clear_object (&pop3_engine);
+		}
 	}
 
 	/* Chain up to parent's disconnect() method. */

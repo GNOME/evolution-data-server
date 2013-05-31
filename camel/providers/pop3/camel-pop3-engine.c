@@ -458,6 +458,8 @@ void
 camel_pop3_engine_command_free (CamelPOP3Engine *pe,
                                 CamelPOP3Command *pc)
 {
+	g_return_if_fail (pc != NULL);
+
 	if (pe && pe->current != pc)
 		g_queue_remove (&pe->done, pc);
 	g_free (pc->error_str);
