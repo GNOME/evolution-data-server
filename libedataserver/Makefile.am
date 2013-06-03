@@ -1,4 +1,4 @@
-ENUM_TYPES = e-source-enums.h e-collator.h
+ENUM_TYPES = e-source-enums.h
 
 e-source-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
 	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
