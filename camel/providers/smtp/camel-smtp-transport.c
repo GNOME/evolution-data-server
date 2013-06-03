@@ -47,9 +47,7 @@
 #undef MIN
 #undef MAX
 
-extern gint camel_verbose_debug;
-
-#define d(x) (camel_verbose_debug ? (x) : 0)
+#define d(x) (camel_debug ("smtp") ? (x) : 0)
 
 /* Specified in RFC 821 */
 #define SMTP_PORT  25
