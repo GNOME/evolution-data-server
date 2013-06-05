@@ -143,6 +143,8 @@
 
 #define TV_TO_MILLIS(timeval) ((timeval).tv_sec * 1000 + (timeval).tv_usec / 1000)
 
+#define LDAP_SEARCH_OP_IDENT "EBookBackendLDAP.BookView::search_op"
+
 /* the objectClasses we need */
 #define TOP                  "top"
 #define PERSON               "person"
@@ -4887,7 +4889,7 @@ ldap_search_dtor (LDAPOp *op)
 	d (printf ("ldap_search_dtor (%p)\n", search_op->view));
 
 	/* unhook us from our EDataBookView */
-	g_object_set_data (G_OBJECT (search_op->view), "EBookBackendLDAP.BookView::search_op", NULL);
+	g_object_set_data (G_OBJECT (search_op->view), LDAP_SEARCH_OP_IDENT, NULL);
 
 	g_object_unref (search_op->view);
 
@@ -5006,7 +5008,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 				printf ("and took  %ld.%03ld seconds\n", diff / 1000,diff % 1000);
 			}
 
-			g_object_set_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op", op);
+			g_object_set_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT, op);
 		}
 		return;
 	} else {
@@ -5036,10 +5038,13 @@ e_book_backend_ldap_stop_view (EBookBackend *backend,
 
 	d (printf ("stop_view (%p)\n", view));
 
-	op = g_object_get_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op");
+	op = g_object_get_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT);
 	if (op) {
 		op->aborted = TRUE;
 		ldap_op_finished ((LDAPOp *) op);
+
+		g_object_set_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT, NULL);
+
 		g_free (op);
 	}
 }
