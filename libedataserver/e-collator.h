@@ -66,20 +66,30 @@ typedef enum {
  */
 typedef struct _ECollator ECollator;
 
-GType		e_collator_get_type        (void);
-GQuark		e_collator_error_quark	   (void);
-ECollator      *e_collator_new             (const gchar     *locale,
-					    GError         **error);
-ECollator      *e_collator_ref             (ECollator       *collator);
-void            e_collator_unref           (ECollator       *collator);
-gchar          *e_collator_generate_key    (ECollator       *collator,
-					    const gchar     *str,
-					    GError         **error);
-gboolean        e_collator_collate         (ECollator       *collator,
-					    const gchar     *str_a,
-					    const gchar     *str_b,
-					    gint            *result,
-					    GError         **error);
+GType                e_collator_get_type         (void);
+GQuark               e_collator_error_quark      (void);
+ECollator           *e_collator_new              (const gchar     *locale,
+						  GError         **error);
+ECollator           *e_collator_ref              (ECollator       *collator);
+void                 e_collator_unref            (ECollator       *collator);
+gchar               *e_collator_generate_key     (ECollator       *collator,
+						  const gchar     *str,
+						  GError         **error);
+gchar               *e_collator_generate_key_for_index
+                                                 (ECollator       *collator,
+						  gint             index);
+gboolean             e_collator_collate          (ECollator       *collator,
+						  const gchar     *str_a,
+						  const gchar     *str_b,
+						  gint            *result,
+						  GError         **error);
+const gchar *const  *e_collator_get_index_labels (ECollator       *collator,
+						  gint            *n_labels,
+						  gint            *underflow,
+						  gint            *inflow,
+						  gint            *overflow);
+gint                 e_collator_get_index        (ECollator       *collator,
+						  const gchar     *str);
 
 G_END_DECLS
 

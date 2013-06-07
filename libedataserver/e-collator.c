@@ -19,10 +19,23 @@
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+/**
+ * SECTION: e-collator
+ * @include: libedataserver/libedataserver.h
+ * @short_description: Collation services for locale sensitive sorting
+ *
+ * The #ECollator is a wrapper object around ICU collation services and
+ * provides features to sort words in locale specific ways. The collator
+ * also provides some API for determining features of the active alphabet
+ * in the user's locale, and which words should be sorted under which
+ * letter in the user's alphabet.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+#include <stdio.h>
 #include <string.h>
 
 /* ICU includes */
@@ -31,6 +44,7 @@
 #include <unicode/ustring.h>
 
 #include "e-collator.h"
+#include "e-alphabet-index-private.h"
 
 #define CONVERT_BUFFER_LEN        512
 #define COLLATION_KEY_BUFFER_LEN  1024
@@ -47,9 +61,16 @@ G_DEFINE_BOXED_TYPE (ECollator,
 
 struct _ECollator
 {
-	UCollator *coll;
+	UCollator       *coll;
 
-	gint       ref_count;
+	EAlphabetIndex  *alpha_index;
+	gchar          **labels;
+	gint             n_labels;
+	gint             underflow;
+	gint             inflow;
+	gint             overflow;
+
+	gint             ref_count;
 };
 
 /*****************************************************
@@ -100,6 +121,7 @@ print_available_locales (void)
 
 static gchar *
 canonicalize_locale (const gchar  *posix_locale,
+		     gchar       **language_code,
 		     GError      **error)
 {
 	UErrorCode status = U_ZERO_ERROR;
@@ -158,6 +180,9 @@ canonicalize_locale (const gchar  *posix_locale,
 	}
 
 	g_free (icu_locale);
+
+	if (language_code)
+		*language_code = g_strdup (language_buffer);
 
 	return final_locale;
 }
@@ -259,6 +284,7 @@ e_collator_new (const gchar     *locale,
 	UCollator *coll;
 	UErrorCode status = U_ZERO_ERROR;
 	gchar     *icu_locale;
+	gchar     *language_code = NULL;
 
 	g_return_val_if_fail (locale && locale[0], NULL);
 
@@ -266,7 +292,7 @@ e_collator_new (const gchar     *locale,
 	print_available_locales ();
 #endif
 
-	icu_locale = canonicalize_locale (locale, error);
+	icu_locale = canonicalize_locale (locale, &language_code, error);
 	if (!icu_locale)
 		return NULL;
 
@@ -279,6 +305,7 @@ e_collator_new (const gchar     *locale,
 			     icu_locale,
 			     u_errorName (status));
 
+		g_free (language_code);
 		g_free (icu_locale);
 		ucol_close (coll);
 		return NULL;
@@ -291,6 +318,16 @@ e_collator_new (const gchar     *locale,
 	collator = g_slice_new0 (ECollator);
 	collator->coll = coll;
 	collator->ref_count = 1;
+
+	/* Setup the AlphabeticIndex */
+	collator->alpha_index = _e_alphabet_index_cxx_new_for_language (language_code);
+	collator->labels = _e_alphabet_index_cxx_get_labels (collator->alpha_index,
+							     &collator->n_labels,
+							     &collator->underflow,
+							     &collator->inflow,
+							     &collator->overflow);
+
+	g_free (language_code);
 
 	return collator;
 }
@@ -339,6 +376,9 @@ e_collator_unref (ECollator *collator)
 		if (collator->coll)
 			ucol_close (collator->coll);
 
+		_e_alphabet_index_cxx_free (collator->alpha_index);
+		g_strfreev (collator->labels);
+
 		g_slice_free (ECollator, collator);
 	}
 }
@@ -370,6 +410,7 @@ e_collator_generate_key (ECollator    *collator,
 	gchar stack_buffer[COLLATION_KEY_BUFFER_LEN];
 	gchar *collation_key;
 	gint key_len, source_len = 0;
+	gint alphabet_index;
 
 	g_return_val_if_fail (collator != NULL, NULL);
 	g_return_val_if_fail (str != NULL, NULL);
@@ -384,6 +425,9 @@ e_collator_generate_key (ECollator    *collator,
 	if (!source)
 		return NULL;
 
+	/* Get the numerical index for this string */
+	alphabet_index = _e_alphabet_index_cxx_get_index (collator->alpha_index, str);
+
 	/* First try to generate a key in a predefined buffer size */
 	key_len = ucol_getSortKey (collator->coll, source, source_len,
 				   (guchar *)stack_buffer, COLLATION_KEY_BUFFER_LEN);
@@ -392,24 +436,71 @@ e_collator_generate_key (ECollator    *collator,
 
 		/* Stack buffer wasn't large enough, regenerate into a new buffer
 		 * (add a byte for a trailing NULL char)
+		 *
+		 * Note we allocate 4 extra chars to hold the prefixed alphabetic
+		 * index into the first 4 charachters (the 5th extra char is the trailing
+		 * null character).
 		 */
-		collation_key = g_malloc (key_len + 1);
+		collation_key = g_malloc (key_len + 5);
 
+		/* Format the alphabetic index into the first 4 chars */
+		snprintf (collation_key, 4, "%03d-", alphabet_index);
+
+		/* Get the sort key and put it in &collation_key[4] */
 		ucol_getSortKey (collator->coll, source, source_len,
-				 (guchar *)collation_key, key_len);
+				 (guchar *)(collation_key + 4), key_len);
 
 		/* Just being paranoid, make sure we're null terminated since the API
 		 * doesn't specify if the result length is null character inclusive
 		 */
-		collation_key[key_len] = '\0';
+		collation_key[key_len + 4] = '\0';
 	} else {
-		/* Make a duplicate of the generated key on the heap */
-		collation_key = g_strndup (stack_buffer, key_len);
+		GString *string = g_string_new (NULL);
+
+		/* Format the alphabetic index into the first 4 chars */
+		g_string_append_printf (string, "%03d-", alphabet_index);
+
+		/* Insert the rest of the sort key from the stack buffer into the allocated buffer */
+		g_string_insert_len (string, 4, stack_buffer, key_len);
+
+		collation_key = g_string_free (string, FALSE);
 	}
 
 	g_free (free_me);
 
 	return (gchar *)collation_key;
+}
+
+/**
+ * e_collator_generate_key_for_index:
+ * @collator: An #ECollator
+ * @index: An index into the alphabetic labels
+ *
+ * Generates a sort key for the given alphabetic @index.
+ *
+ * The generated sort key is guaranteed to sort below
+ * any sort keys for words beginning with any variant of
+ * the given letter.
+ *
+ * For instance, a sort key generated for the index 5 of
+ * a latin alphabet, where the fifth index is 'E' will sort
+ * below any sort keys generated for words starting with
+ * the characters 'e', 'E', 'é', 'É', 'è' or 'È'. It will also
+ * sort above any sort keys generated for words starting with
+ * the characters 'd' or 'D'.
+ *
+ * Returns: (transfer full): A sort key for the given index
+ *
+ * Since: 3.10
+ */
+gchar *
+e_collator_generate_key_for_index (ECollator       *collator,
+				   gint             index)
+{
+	g_return_val_if_fail (collator != NULL, NULL);
+	g_return_val_if_fail (index >= 0 && index < collator->n_labels, NULL);
+
+	return g_strdup_printf ("%03d", index);
 }
 
 /**
@@ -428,6 +519,8 @@ e_collator_generate_key (ECollator    *collator,
  * This function will first ensure that both strings are valid UTF-8.
  *
  * Returns: %TRUE on success, otherwise if %FALSE is returned then @error will be set.
+ *
+ * Since: 3.10
  */
 gboolean
 e_collator_collate (ECollator    *collator,
@@ -436,55 +529,85 @@ e_collator_collate (ECollator    *collator,
 		    gint         *result,
 		    GError      **error)
 {
-	UCollationResult ucol_result = UCOL_EQUAL;
-	UChar  buffer_a[CONVERT_BUFFER_LEN], buffer_b[CONVERT_BUFFER_LEN];
-	UChar *free_me_a = NULL, *free_me_b = NULL;
-	const UChar *ustr_a, *ustr_b;
-	gint len_a = 0, len_b = 0;
-	gboolean success = TRUE;
+	gchar *sort_key_a, *sort_key_b;
 
 	g_return_val_if_fail (collator != NULL, -1);
 	g_return_val_if_fail (str_a != NULL, -1);
 	g_return_val_if_fail (str_b != NULL, -1);
 	g_return_val_if_fail (result != NULL, -1);
 
-	ustr_a = convert_to_ustring (str_a,
-				     buffer_a, CONVERT_BUFFER_LEN,
-				     &len_a,
-				     &free_me_a,
-				     error);
+	sort_key_a = e_collator_generate_key (collator, str_a, error);
+	if (!sort_key_a)
+		return FALSE;
 
-	if (!ustr_a) {
-		success = FALSE;
-		goto out;
+	sort_key_b = e_collator_generate_key (collator, str_b, error);
+	if (!sort_key_b) {
+		g_free (sort_key_a);
+		return FALSE;
 	}
 
-	ustr_b = convert_to_ustring (str_b,
-				     buffer_b, CONVERT_BUFFER_LEN,
-				     &len_b,
-				     &free_me_b,
-				     error);
+	*result = strcmp (sort_key_a, sort_key_b);
 
-	if (!ustr_b) {
-		success = FALSE;
-		goto out;
-	}
+	g_free (sort_key_a);
+	g_free (sort_key_b);
 
-	ucol_result = ucol_strcoll (collator->coll, ustr_a, len_a, ustr_b, len_b);
+	return TRUE;
+}
 
- out:
-	g_free (free_me_a);
-	g_free (free_me_b);
+/**
+ * e_collator_get_index_labels:
+ * @collator: An #ECollator
+ * @n_labels: (out): The number of labels/indexes available for @collator
+ * @underflow: (allow-none) (out): The underflow index, for any words which sort below the active alphabet(s)
+ * @inflow: (allow-none) (out): The inflow index, for any words which sort between the active alphabets (if there is more than one)
+ * @overflow: (allow-none) (out): The overflow index, for any words which sort above the active alphabet(s)
+ *
+ * Fetches the displayable labels and index positions for the active alphabet.
+ *
+ * Returns: (array zero-terminated=1) (element-type utf8) (transfer none):
+ *   The array of displayable labels for each index in the active alphabet(s).
+ *
+ * Since: 3.10
+ */
+const gchar *const  *
+e_collator_get_index_labels (ECollator       *collator,
+			     gint            *n_labels,
+			     gint            *underflow,
+			     gint            *inflow,
+			     gint            *overflow)
+{
+	g_return_val_if_fail (collator != NULL, NULL);
 
-	if (success) {
+	if (n_labels)
+		*n_labels = collator->n_labels;
+	if (underflow)
+		*underflow = collator->underflow;
+	if (inflow)
+		*inflow = collator->inflow;
+	if (overflow)
+		*overflow = collator->overflow;
 
-		switch (ucol_result) {
-		case UCOL_GREATER: *result = 1;  break;
-		case UCOL_LESS:    *result = -1; break;
-		case UCOL_EQUAL:   *result = 0;  break;
-		}
+	return (const gchar *const  *)collator->labels;
+}
 
-	}
+/**
+ * e_collator_get_index:
+ * @collator: An #ECollator
+ * @str: A string
+ *
+ * Checks which index, as determined by e_collator_get_index_labels(),
+ * that @str should sort under.
+ *
+ * Returns: The alphabetic index under which @str would sort
+ *
+ * Since: 3.10
+ */
+gint
+e_collator_get_index (ECollator       *collator,
+		      const gchar     *str)
+{
+	g_return_val_if_fail (collator != NULL, -1);
+	g_return_val_if_fail (str != NULL, -1);
 
-	return success;
+	return _e_alphabet_index_cxx_get_index (collator->alpha_index, str);
 }
