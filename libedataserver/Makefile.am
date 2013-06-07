@@ -26,6 +26,7 @@ BUILT_SOURCES = \
 	$(MARSHAL_GENERATED)
 
 lib_LTLIBRARIES = libedataserver-1.2.la
+noinst_LTLIBRARIES = libealphabetindex-private.la
 
 libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
@@ -51,6 +52,7 @@ libedataserver_1_2_la_CPPFLAGS = \
 
 libedataserver_1_2_la_SOURCES =		\
 	$(BUILT_SOURCES)		\
+	e-alphabet-index-private.h	\
 	e-cancellable-locks.c		\
 	e-categories.c			\
 	e-client.c			\
@@ -182,6 +184,12 @@ libedataserverinclude_HEADERS =		\
 	e-xml-utils.h			\
 	e-xml-hash-utils.h		\
 	eds-version.h
+
+# We put the C++ code into a separate static library, so that we can use
+# the C linker for libebook-contacts.
+libealphabetindex_private_la_SOURCES = e-alphabet-index-private.cpp
+libealphabetindex_private_la_CPPFLAGS = $(libedataserver_1_2_la_CPPFLAGS)
+libedataserver_1_2_la_LIBADD += @predeps_CXX@ libealphabetindex-private.la @postdeps_CXX@
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
