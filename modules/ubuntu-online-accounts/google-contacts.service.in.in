@@ -13,14 +13,10 @@
       <group name="oauth2">
         <group name="web_server">
           <setting name="Host">accounts.google.com</setting>
-          <setting name="AuthPath">o/oauth2/auth</setting>
           <setting name="TokenPath">o/oauth2/token</setting>
           <setting name="RedirectUri">https://live.gnome.org/Evolution</setting>
           <setting name="ClientId">796629365126.apps.googleusercontent.com</setting>
           <setting name="ClientSecret">3NbR94RM-DTnA81BWjiJe4TP</setting>
-          <!-- HACK: access_type is non standard, but Google requires it in
-               order to return a refresh token -->
-          <setting name="ResponseType">code&amp;access_type=offline</setting>
           <setting type="as" name="Scope">['https://www.googleapis.com/auth/userinfo.email','https://mail.google.com/','https://www.google.com/m8/feeds/','https://www.googleapis.com/auth/calendar']</setting>
         </group>
       </group>
