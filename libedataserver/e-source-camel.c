@@ -70,6 +70,11 @@ typedef struct {
 	GBindingTransformFunc settings_to_extension;
 } BindingData;
 
+typedef struct {
+	GType settings_type;
+	const gchar *extension_name;
+} SubclassData;
+
 static gboolean
 transform_none_to_null (GBinding *binding,
                         const GValue *source_value,
@@ -244,15 +249,55 @@ static void
 subclass_class_init (gpointer g_class,
                      gpointer class_data)
 {
+	ESourceCamelClass *class;
+	GObjectClass *settings_class;
 	GObjectClass *object_class;
+	SubclassData *data = class_data;
+	GParamSpec **properties;
+	guint ii, n_properties;
+	guint prop_id = 1;
 
-	/* e_source_camel_generate_subtype() does all the
-	 * dynamic class initialization.  We just do what static
-	 * initialization we can here. */
+	class = E_SOURCE_CAMEL_CLASS (g_class);
+	settings_class = g_type_class_ref (data->settings_type);
 
 	object_class = G_OBJECT_CLASS (g_class);
 	object_class->set_property = subclass_set_property;
 	object_class->get_property = subclass_get_property;
+
+	/* For each property in the CamelSettings class, register
+	 * an equivalent GObject property in this class and add an
+	 * E_SOURCE_PARAM_SETTING flag so the value gets written to
+	 * the ESource's key file. */
+	properties = g_object_class_list_properties (
+		settings_class, &n_properties);
+
+	for (ii = 0; ii < n_properties; ii++) {
+		GParamSpec *pspec;
+
+		/* Some properties in CamelSettings may be covered
+		 * by other ESourceExtensions.  Skip them here. */
+		if (subclass_get_binding_index (properties[ii]) >= 0)
+			continue;
+
+		pspec = param_spec_clone (properties[ii]);
+		pspec->flags |= E_SOURCE_PARAM_SETTING;
+
+		/* Clear the G_PARAM_CONSTRUCT flag.  We apply default
+		 * property values to our GValue array during instance
+		 * initialization. */
+		pspec->flags &= ~G_PARAM_CONSTRUCT;
+
+		g_object_class_install_property (
+			G_OBJECT_CLASS (class), prop_id++, pspec);
+	}
+
+	g_free (properties);
+
+	/* Initialize more class members. */
+	class->settings_type = G_OBJECT_CLASS_TYPE (settings_class);
+	class->parent_class.name = data->extension_name;
+
+	g_type_class_unref (settings_class);
 }
 
 static void
@@ -543,14 +588,9 @@ GType
 e_source_camel_generate_subtype (const gchar *protocol,
                                  GType settings_type)
 {
-	ESourceCamelClass *class;
-	GObjectClass *settings_class;
-	GParamSpec **properties;
-	guint ii, n_properties;
-	guint prop_id = 1;
 	GTypeInfo type_info;
-	GType parent_type;
 	GType type;
+	SubclassData *subclass_data;
 	const gchar *type_name;
 	const gchar *extension_name;
 
@@ -572,59 +612,19 @@ e_source_camel_generate_subtype (const gchar *protocol,
 		return G_TYPE_INVALID;
 	}
 
+	subclass_data = g_slice_new0 (SubclassData);
+	subclass_data->settings_type = settings_type;
+	subclass_data->extension_name = g_intern_string (extension_name);
+
 	memset (&type_info, 0, sizeof (GTypeInfo));
 	type_info.class_size = sizeof (ESourceCamelClass);
 	type_info.class_init = subclass_class_init;
+	type_info.class_data = subclass_data;
 	type_info.instance_size = sizeof (ESourceCamel);
 	type_info.instance_init = subclass_instance_init;
 
-	parent_type = E_TYPE_SOURCE_CAMEL;
-	type = g_type_register_static (parent_type, type_name, &type_info, 0);
-
-	/* Since we have first access to the newly registered GType, and
-	 * because initializing its class structure requires some of the
-	 * arguments we were passed, we'll complete class initialization
-	 * here rather than trying to do it all in subclass_init(). */
-
-	class = g_type_class_ref (type);
-	settings_class = g_type_class_ref (settings_type);
-
-	/* Initialize more class members. */
-	class->settings_type = G_OBJECT_CLASS_TYPE (settings_class);
-	class->parent_class.name = g_intern_string (extension_name);
-
-	/* For each property in the CamelSettings class, register
-	 * an equivalent GObject property in this class and add an
-	 * E_SOURCE_PARAM_SETTING flag so the value gets written to
-	 * the ESource's key file. */
-
-	properties = g_object_class_list_properties (
-		settings_class, &n_properties);
-
-	for (ii = 0; ii < n_properties; ii++) {
-		GParamSpec *pspec;
-
-		/* Some properties in CamelSettings may be covered
-		 * by other ESourceExtensions.  Skip them here. */
-		if (subclass_get_binding_index (properties[ii]) >= 0)
-			continue;
-
-		pspec = param_spec_clone (properties[ii]);
-		pspec->flags |= E_SOURCE_PARAM_SETTING;
-
-		/* Clear the G_PARAM_CONSTRUCT flag.  We apply default
-		 * property values to our GValue array during instance
-		 * initialization. */
-		pspec->flags &= ~G_PARAM_CONSTRUCT;
-
-		g_object_class_install_property (
-			G_OBJECT_CLASS (class), prop_id++, pspec);
-	}
-
-	g_free (properties);
-
-	g_type_class_unref (class);
-	g_type_class_unref (settings_class);
+	type = g_type_register_static (
+		E_TYPE_SOURCE_CAMEL, type_name, &type_info, 0);
 
 	return type;
 }
