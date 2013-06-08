@@ -45,21 +45,21 @@
  * | 3   | Yes   | Bat         | Bäd         6  | Bad         2  | Bad         2  | Bad         2  |
  * | 4   | No    | bat         | Bat         3  | bäd         5  | bäd         5  | bäd         5  |
  * | 5   | Yes   | bäd         | Bät         8  | Bäd         6  | Bäd         6  | Bäd         6  |
- * | 6   | No    | Bäd         | C           10 | bat         4  | bat         4  | bät         7  |
- * | 7   | No    | bät         | Muffler     19 | Bat         3  | Bat         3  | Bät         8  |
- * | 8   | Yes   | Bät         | Müller      20 | bät         7  | bät         7  | bat         4  |
- * | 9   | Yes   | côté        | bad         1  | Bät         8  | Bät         8  | Bat         3  |
- * | 10  | Yes   | C           | bäd         5  | black-bird  15 | black-bird  15 | black-bird  15 |
- * | 11  | Yes   |             | bat         4  | black-birds 17 | black-birds 17 | black-birds 17 |
- * | 12  | Yes   | coté        | bät         7  | blackbird   16 | blackbird   16 | blackbird   16 |
- * | 13  | No    | côte        | black-bird  15 | blackbirds  18 | blackbirds  18 | blackbirds  18 |
- * | 14  | Yes   | cote        | black-birds 17 | C           10 | C           10 | C           10 |
- * | 15  | No    | black-bird  | blackbird   16 | cote        14 | cote        14 | cote        14 |
- * | 16  | Yes   | blackbird   | blackbirds  18 | coté        12 | côte        13 | coté        12 | 
- * | 17  | Yes   | black-birds | cote        14 | côte        13 | coté        12 | côte        13 | 
- * | 18  | Yes   | blackbirds  | coté        12 | côté        9  | côté        9  | côté        9  | 
- * | 19  | No    | Muffler     | côte        13 | Muffler     19 | Muffler     19 | Müller      20 | 
- * | 20  | No    | Müller      | côté        9  | Müller      20 | Müller      20 | Muffler     19 |
+ * | 6   | No    | Bäd         | bad         1  | bat         4  | bat         4  | bät         7  |
+ * | 7   | No    | bät         | bäd         5  | Bat         3  | Bat         3  | Bät         8  |
+ * | 8   | Yes   | Bät         | bat         4  | bät         7  | bät         7  | bat         4  |
+ * | 9   | Yes   | côté        | bät         7  | Bät         8  | Bät         8  | Bat         3  |
+ * | 10  | Yes   | C           | black-bird  15 | black-bird  15 | black-bird  15 | black-bird  15 |
+ * | 11  | Yes   |             | black-birds 17 | black-birds 17 | black-birds 17 | black-birds 17 |
+ * | 12  | Yes   | coté        | blackbird   16 | blackbird   16 | blackbird   16 | blackbird   16 |
+ * | 13  | No    | côte        | blackbirds  18 | blackbirds  18 | blackbirds  18 | blackbirds  18 |
+ * | 14  | Yes   | cote        | C           10 | C           10 | C           10 | C           10 |
+ * | 15  | No    | black-bird  | cote        14 | cote        14 | cote        14 | cote        14 |
+ * | 16  | Yes   | blackbird   | coté        12 | coté        12 | côte        13 | coté        12 | 
+ * | 17  | Yes   | black-birds | côte        13 | côte        13 | coté        12 | côte        13 | 
+ * | 18  | Yes   | blackbirds  | côté        9  | côté        9  | côté        9  | côté        9  | 
+ * | 19  | No    | Muffler     | Muffler     19 | Muffler     19 | Muffler     19 | Müller      20 | 
+ * | 20  | No    | Müller      | Müller      20 | Müller      20 | Müller      20 | Muffler     19 |
  * +-----------------------------------------------------------------------------------------------+
  *
  * See this ICU demo to check additional sort ordering by ICU in various locales:

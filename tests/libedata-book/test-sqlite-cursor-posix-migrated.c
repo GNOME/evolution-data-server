@@ -22,9 +22,9 @@ main (gint argc,
 
 	data = move_by_test_new ("/EbSdbCursor/Locale/POSIX/Migrated", "POSIX");
 	move_by_test_add_assertion (data, 5, 11, 2,  6,  3,  8);
-	move_by_test_add_assertion (data, 5, 10, 19, 20, 1,  5);
-	move_by_test_add_assertion (data, 5, 4,  7,  15, 17, 16);
-	move_by_test_add_assertion (data, 5, 18, 14, 12, 13, 9);
+	move_by_test_add_assertion (data, 5, 1,  5,  4,  7,  15);
+	move_by_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
+	move_by_test_add_assertion (data, 5, 12, 13, 9,  19, 20);
 	move_by_test_add (data, FALSE);
 
 	/* On this case, we are using the migrated addressbook, don't delete it first */
