@@ -26,7 +26,7 @@ BUILT_SOURCES = \
 	$(MARSHAL_GENERATED)
 
 lib_LTLIBRARIES = libedataserver-1.2.la
-noinst_LTLIBRARIES = libealphabetindex-private.la
+noinst_LTLIBRARIES = libedataserver-private.la
 
 libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
@@ -100,6 +100,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-source-webdav.c		\
 	e-debug-log.c			\
 	e-time-utils.c			\
+	e-transliterator-private.h	\
 	e-uid.c				\
 	e-url.c				\
 	e-data-server-util.c		\
@@ -187,9 +188,9 @@ libedataserverinclude_HEADERS =		\
 
 # We put the C++ code into a separate static library, so that we can use
 # the C linker for libebook-contacts.
-libealphabetindex_private_la_SOURCES = e-alphabet-index-private.cpp
-libealphabetindex_private_la_CPPFLAGS = $(libedataserver_1_2_la_CPPFLAGS)
-libedataserver_1_2_la_LIBADD += @predeps_CXX@ libealphabetindex-private.la @postdeps_CXX@
+libedataserver_private_la_SOURCES = e-alphabet-index-private.cpp e-transliterator-private.cpp
+libedataserver_private_la_CPPFLAGS = $(libedataserver_1_2_la_CPPFLAGS)
+libedataserver_1_2_la_LIBADD += @predeps_CXX@ libedataserver-private.la @postdeps_CXX@
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
