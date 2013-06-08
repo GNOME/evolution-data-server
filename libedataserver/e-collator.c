@@ -45,6 +45,7 @@
 
 #include "e-collator.h"
 #include "e-alphabet-index-private.h"
+#include "e-transliterator-private.h"
 
 #define CONVERT_BUFFER_LEN        512
 #define COLLATION_KEY_BUFFER_LEN  1024
@@ -69,6 +70,8 @@ struct _ECollator
 	gint             underflow;
 	gint             inflow;
 	gint             overflow;
+
+	ETransliterator *transliterator;
 
 	gint             ref_count;
 };
@@ -319,7 +322,12 @@ e_collator_new (const gchar     *locale,
 	collator->coll = coll;
 	collator->ref_count = 1;
 
-	/* Setup the AlphabeticIndex */
+	/* In Chinese we use transliteration services to sort latin 
+	 * names interleaved with Chinese names in a latin AlphabeticIndex
+	 */
+	if (g_strcmp0 (language_code, "zh") == 0)
+		collator->transliterator = _e_transliterator_cxx_new ("Han-Latin");
+
 	collator->alpha_index = _e_alphabet_index_cxx_new_for_language (language_code);
 	collator->labels = _e_alphabet_index_cxx_get_labels (collator->alpha_index,
 							     &collator->n_labels,
@@ -379,6 +387,12 @@ e_collator_unref (ECollator *collator)
 		_e_alphabet_index_cxx_free (collator->alpha_index);
 		g_strfreev (collator->labels);
 
+		/* The transliterator is only used for specialized sorting in some locales,
+		 * notably Chinese locales
+		 */
+		if (collator->transliterator)
+			_e_transliterator_cxx_free (collator->transliterator);
+
 		g_slice_free (ECollator, collator);
 	}
 }
@@ -411,22 +425,34 @@ e_collator_generate_key (ECollator    *collator,
 	gchar *collation_key;
 	gint key_len, source_len = 0;
 	gint alphabet_index;
+	gchar *translit_str = NULL;
+	const gchar *input_str;
 
 	g_return_val_if_fail (collator != NULL, NULL);
 	g_return_val_if_fail (str != NULL, NULL);
 
-	source = convert_to_ustring (str,
+	/* We may need to perform a conversion before generating the sort key */
+	if (collator->transliterator) {
+		translit_str = _e_transliterator_cxx_transliterate (collator->transliterator, str);
+		input_str = translit_str;
+	} else {
+		input_str = str;
+	}
+
+	source = convert_to_ustring (input_str,
 				     source_buffer,
 				     CONVERT_BUFFER_LEN,
 				     &source_len,
 				     &free_me,
 				     error);
 
-	if (!source)
+	if (!source) {
+		g_free (translit_str);
 		return NULL;
+	}
 
 	/* Get the numerical index for this string */
-	alphabet_index = _e_alphabet_index_cxx_get_index (collator->alpha_index, str);
+	alphabet_index = _e_alphabet_index_cxx_get_index (collator->alpha_index, input_str);
 
 	/* First try to generate a key in a predefined buffer size */
 	key_len = ucol_getSortKey (collator->coll, source, source_len,
@@ -467,6 +493,7 @@ e_collator_generate_key (ECollator    *collator,
 	}
 
 	g_free (free_me);
+	g_free (translit_str);
 
 	return (gchar *)collation_key;
 }
@@ -606,8 +633,24 @@ gint
 e_collator_get_index (ECollator       *collator,
 		      const gchar     *str)
 {
+	gint index;
+	gchar *translit_str = NULL;
+	const gchar *input_str;
+
 	g_return_val_if_fail (collator != NULL, -1);
 	g_return_val_if_fail (str != NULL, -1);
 
-	return _e_alphabet_index_cxx_get_index (collator->alpha_index, str);
+	/* We may need to perform a conversion before generating the sort key */
+	if (collator->transliterator) {
+		translit_str = _e_transliterator_cxx_transliterate (collator->transliterator, str);
+		input_str = translit_str;
+	} else {
+		input_str = str;
+	}
+
+	index = _e_alphabet_index_cxx_get_index (collator->alpha_index, input_str);
+
+	g_free (translit_str);
+
+	return index;
 }
