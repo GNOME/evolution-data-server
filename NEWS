@@ -1,3 +1,38 @@
+Evolution-Data-Server 3.8.3 2013-06-10
+--------------------------------------
+
+Bug Fixes:
+	Bug 649420 - Work around QRESYNC bug in Zimbra's IMAP server
+	             (Matthew Barnes)
+	Bug 672837 - Crash in camel_pop3_engine_command_free (Milan Crha)
+	Bug 699448 - Crash under e_book_backend_ldap_stop_view() (Milan Crha)
+	Bug 699597 - Autocomplete using GAL is slow (David Woodhouse)
+	Bug 699811 - Moved IMAPx messages reappear (Milan Crha)
+	Bug 699909 — Do not use toggle_refs in CamelObjectBag (David Woodhouse)
+	Bug 701797 - UOA: Remove ResponseType and AuthPath from service files
+	             (Ken VanDine)
+	Bug 701838 - Work around a semantic API break in GObject
+	             (Tristan Van Berkom)
+
+Other Changes:
+	* Avoid deadlock on MH folder creation (Milan Crha)
+	* CamelGpgContext: Report decrypt error only if no data was
+	  decrypted (Milan Crha)
+	* Make CamelPOP3Store a bit more thread-safe. (Matthew Barnes)
+	* Make CamelNNTPStore a bit more thread-safe. (Matthew Barnes)
+	* Improve error handling in imapx_command_fetch_message_done().
+	  (Matthew Barnes)
+	* Support CAMEL_DEBUG=smtp for SMTP debugging. (Milan Crha)
+
+Translations:
+	Shankar Prasad (kn)
+	Sandeep Sheshrao Shedmake (mr)
+	Kjartan Maraas (nb)
+	ManojKumar Giri (or)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+
+
 Evolution-Data-Server 3.8.2 2013-05-12
 --------------------------------------
 
