@@ -170,6 +170,35 @@ test_ja_JP (CollatorFixture *fixture,
 }
 
 static void
+test_zh_CN (CollatorFixture *fixture,
+	    gconstpointer    data)
+{
+  gint n_labels, underflow, inflow, overflow;
+  const gchar *const *labels;
+
+  labels = e_collator_get_index_labels (fixture->collator,
+					&n_labels, &underflow, &inflow, &overflow);
+
+  g_assert_cmpint (n_labels, ==, 28);
+  g_assert_cmpint (underflow, ==, 0);
+  g_assert_cmpint (overflow, ==, 27);
+  g_assert_cmpint (inflow, ==, -1);
+
+  /* Chinese and Latin words end up in the 'D' bucket */
+  g_assert_cmpstr (labels[4], ==, "D");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "东"), ==, 4);
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "david"), ==, 4);
+
+  g_assert_cmpstr (labels[10], ==, "J");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "今天"), ==, 10);
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "Jeffry"), ==, 10);
+
+  g_assert_cmpstr (labels[26], ==, "Z");
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "早上"), ==, 26);
+  g_assert_cmpint (e_collator_get_index (fixture->collator, "Zack"), ==, 26);
+}
+
+static void
 test_ko_KR (CollatorFixture *fixture,
 	    gconstpointer    data)
 {
@@ -244,6 +273,10 @@ main (gint argc,
 	g_test_add (
 		"/ECollator/ja_JP", CollatorFixture, "ja_JP.UTF-8",
 		collator_test_setup, test_ja_JP, collator_test_teardown);
+
+	g_test_add (
+		"/ECollator/zh_CN", CollatorFixture, "zh_CN.UTF-8",
+		collator_test_setup, test_zh_CN, collator_test_teardown);
 
 	g_test_add (
 		"/ECollator/ko_KR", CollatorFixture, "ko_KR.UTF-8",
