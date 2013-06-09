@@ -148,6 +148,8 @@ gboolean	e_book_backend_sqlitedb_unlock_updates
 						(EBookBackendSqliteDB *ebsdb,
 						 gboolean do_commit,
 						 GError **error);
+ECollator      *e_book_backend_sqlitedb_ref_collator
+                                                 (EBookBackendSqliteDB *ebsdb);
 gboolean	e_book_backend_sqlitedb_new_contact
 						(EBookBackendSqliteDB *ebsdb,
 						 const gchar *folderid,
@@ -313,19 +315,14 @@ GSList         *e_book_backend_sqlitedb_cursor_move_by
 						 EbSdbCursor          *cursor,
 						 gint                  count,
 						 GError              **error);
-void            e_book_backend_sqlitedb_cursor_set_targetv
-                                                (EBookBackendSqliteDB *ebsdb,
-						 EbSdbCursor          *cursor,
-						 const gchar         **values,
-						 gint                  n_values);
-void            e_book_backend_sqlitedb_cursor_set_target
-                                                (EBookBackendSqliteDB *ebsdb,
-						 EbSdbCursor          *cursor,
-						 ...) G_GNUC_NULL_TERMINATED;
 void            e_book_backend_sqlitedb_cursor_set_target_contact
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
 						 EContact             *contact);
+void            e_book_backend_sqlitedb_cursor_set_target_alphabetic_index
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 gint                  index);
 gboolean        e_book_backend_sqlitedb_cursor_set_sexp
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,

@@ -1943,6 +1943,25 @@ e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
 	return success;
 }
 
+/**
+ * e_book_backend_sqlitedb_ref_collator:
+ * @ebsdb: An #EBookBackendSqliteDB
+ *
+ * References the currently active #ECollator for @ebsdb,
+ * use e_collator_unref() when finished using the returned collator.
+ *
+ * Note that the active collator will change with the active locale setting.
+ *
+ * Returns: (transfer full): A reference to the active collator.
+ */
+ECollator *
+e_book_backend_sqlitedb_ref_collator(EBookBackendSqliteDB *ebsdb)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
+
+	return e_collator_ref (ebsdb->priv->collator);
+}
+
 static gchar *
 mprintf_suffix (const gchar *normal)
 {
@@ -5785,109 +5804,20 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 }
 
 /**
- * e_book_backend_sqlitedb_cursor_set_targetv:
- * @ebsdb: An #EBookBackendSqliteDB
- * @cursor: The #EbSdbCursor to modify
- * @values: (allow-none) (array length=n_values): An array of values to set the cursor position with
- * @n_values: The length of the passed @values
- *
- * Set's the current cursor target position.
- *
- * The passed values set the relative @cursor position in it's result set
- * with the passed @values. Each member of the passed @values represents
- * a target position for it's corresponding sort field which the cursor
- * was created for (See the @sort_fields argument of e_book_backend_sqlitedb_cursor_new()).
- *
- * The @values array passed to this function need not be as long as
- * the array of @sort_fields originally passed to e_book_backend_sqlitedb_cursor_new().
- * A shorter array of @values indicates that the cursor's target is set with
- * less specificity.
- *
- * In addition to the @cursor's @sort_fields, a single extra value can
- * be passed which is an %E_CONTACT_UID. If the uid is given as an additional
- * value in @values, it will be used to specify exactly which contact the
- * cursor should currently point to.
- *
- * Note that if the final %E_CONTACT_UID is not specified, then the cursor
- * is said to be in an 'incomplete state' or a 'partial state'. If the cursor
- * is in a partial state, then the next call to e_book_backend_sqlitedb_cursor_move_by()
- * with a positive @count will include any exact matches for the given values.
- *
- * A %NULL value for @values resets the internal state of @cursor completely,
- * so that any further calls to e_book_backend_sqlitedb_cursor_move_by() will
- * report results from the beginning or ending of the @cursor's query.
- *
- * Since: 3.10
- */
-void
-e_book_backend_sqlitedb_cursor_set_targetv (EBookBackendSqliteDB *ebsdb,
-					    EbSdbCursor          *cursor,
-					    const gchar         **values,
-					    gint                  n_values)
-{
-	gint i;
-
-	g_return_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb));
-	g_return_if_fail (cursor != NULL);
-	g_return_if_fail (n_values <= cursor->n_sort_fields + 1);
-
-	ebsdb_cursor_clear_state (cursor);
-
-	for (i = 0; i < MIN (cursor->n_sort_fields, n_values); i++) {
-		cursor->values[i] = e_collator_generate_key (ebsdb->priv->collator, values[i], NULL);
-	}
-
-	if (n_values > cursor->n_sort_fields)
-		cursor->last_uid = g_strdup (values[n_values - 1]);
-}
-
-/**
- * e_book_backend_sqlitedb_cursor_set_target:
- * @ebsdb: An #EBookBackendSqliteDB
- * @cursor: The #EbSdbCursor to modify
- * @...: A null terminated list of values
- *
- * A convenience function for calling e_book_backend_sqlitedb_cursor_set_targetv().
- *
- * Since: 3.10
- */
-void
-e_book_backend_sqlitedb_cursor_set_target (EBookBackendSqliteDB *ebsdb,
-					   EbSdbCursor          *cursor,
-					   ...)
-{
-	GArray *array;
-	gchar *value = NULL;
-	va_list args;
-
-	g_return_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb));
-	g_return_if_fail (cursor != NULL);
-
-	array = g_array_new (FALSE, FALSE, sizeof (gchar *));
-
-	va_start (args, cursor);
-	value = va_arg (args, gchar*);
-	while (value) {
-		g_array_append_val (array, value);
-		value = va_arg (args, gchar*);
-	}
-	va_end (args);
-
-	e_book_backend_sqlitedb_cursor_set_targetv (ebsdb, cursor,
-						    (const gchar **)array->data,
-						    array->len);
-	g_array_free (array, TRUE);
-}
-
-/**
  * e_book_backend_sqlitedb_cursor_set_target_contact:
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor to modify
  * @contact: (allow-none): An #EContact
  *
- * A convenience function for calling e_book_backend_sqlitedb_cursor_set_targetv(),
+ * Sets the current cursor position to @contact.
  *
- * This function will set the cursor values automatically from @contact.
+ * After setting the target to a specific contact position,
+ * calls to e_book_backend_sqlitedb_cursor_move_by() will return
+ * results after @contact (or before @contact, if moving the cursor
+ * with a negative @count).
+ *
+ * If @contact is %NULL, then the cursor position will be reset
+ * to initial values (i.e. the beginning or end of the results).
  *
  * Since: 3.10
  */
@@ -5904,6 +5834,50 @@ e_book_backend_sqlitedb_cursor_set_target_contact (EBookBackendSqliteDB *ebsdb,
 		ebsdb_cursor_set_state_from_contact (ebsdb, cursor, contact);
 	else
 		ebsdb_cursor_clear_state (cursor);
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_set_target_alphabetic_index:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor to modify
+ * @index: The alphabetic index
+ *
+ * Sets the current cursor position to point to an index into the
+ * alphabet active in the current locale.
+ *
+ * After setting the target to an alphabetic index, for example the
+ * index for letter 'E', then further calls to e_book_backend_sqlitedb_cursor_move_by()
+ * will return results starting with the letter 'E' (or results starting
+ * with the last result in 'D', if moving in a negative direction).
+ *
+ * The passed index must be a valid index in the active locale, knowlege
+ * on the currently active alphabet index must be obtained using #ECollator
+ * APIs.
+ *
+ * Use e_book_backend_sqlitedb_ref_collator() to obtain the active collator for @ebsdb.
+ *
+ * Since: 3.10
+ */
+void
+e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB *ebsdb,
+							    EbSdbCursor          *cursor,
+							    gint                  index)
+{
+	gint n_labels = 0;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb));
+	g_return_if_fail (cursor != NULL);
+	g_return_if_fail (index >= 0);
+
+	e_collator_get_index_labels (ebsdb->priv->collator, &n_labels,
+				     NULL, NULL, NULL);
+	g_return_if_fail (index < n_labels);
+
+	ebsdb_cursor_clear_state (cursor);
+	if (cursor->n_sort_fields > 0)
+		cursor->values[0] =
+			e_collator_generate_key_for_index (ebsdb->priv->collator,
+							   index);
 }
 
 /**
