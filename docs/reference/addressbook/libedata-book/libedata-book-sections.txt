@@ -54,6 +54,10 @@ e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_get_direct_book
 e_book_backend_configure_direct
+e_book_backend_set_locale
+e_book_backend_get_locale
+e_book_backend_create_cursor
+e_book_backend_delete_cursor
 <SUBSECTION Standard>
 E_BOOK_BACKEND
 E_IS_BOOK_BACKEND
@@ -176,6 +180,9 @@ e_book_backend_sqlitedb_get_is_populated
 e_book_backend_sqlitedb_set_is_populated
 e_book_backend_sqlitedb_get_revision
 e_book_backend_sqlitedb_set_revision
+e_book_backend_sqlitedb_get_locale
+e_book_backend_sqlitedb_set_locale
+e_book_backend_sqlitedb_ref_collator
 e_book_backend_sqlitedb_get_sync_data
 e_book_backend_sqlitedb_set_sync_data
 e_book_backend_sqlitedb_get_key_value
@@ -190,6 +197,15 @@ e_book_backend_sqlitedb_remove
 e_book_backend_sqlitedb_search_data_free
 e_book_backend_sqlitedb_check_summary_query
 e_book_backend_sqlitedb_check_summary_fields
+EbSdbCursor
+e_book_backend_sqlitedb_cursor_new
+e_book_backend_sqlitedb_cursor_free
+EbSdbCurorOrigin
+e_book_backend_sqlitedb_cursor_move_by
+e_book_backend_sqlitedb_cursor_set_target_alphabetic_index
+e_book_backend_sqlitedb_cursor_set_sexp
+e_book_backend_sqlitedb_cursor_calculate
+e_book_backend_sqlitedb_cursor_compare
 <SUBSECTION Deprecated>
 e_book_backend_sqlitedb_is_summary_query
 e_book_backend_sqlitedb_is_summary_fields
@@ -278,6 +294,56 @@ e_data_book_status_get_type
 <SUBSECTION Private>
 EDataBookPrivate
 e_data_book_error_quark
+</SECTION>
+
+<SECTION>
+<FILE>e-data-book-cursor</FILE>
+<TITLE>EDataBookCursor</TITLE>
+EDataBookCursor
+EDataBookCursorClass
+EDataBookCursorSetSexpFunc
+EDataBookCursorMoveByFunc
+EDataBookCursorSetAlphabetIndexFunc
+EDataBookCursorGetPositionFunc
+EDataBookCursorCompareFunc
+EDataBookCursorLoadLocaleFunc
+e_data_book_cursor_get_backend
+e_data_book_cursor_get_total
+e_data_book_cursor_get_position
+e_data_book_cursor_set_sexp
+e_data_book_cursor_move_by
+e_data_book_cursor_set_alphabetic_index
+e_data_book_cursor_recalculate
+e_data_book_cursor_load_locale
+e_data_book_cursor_contact_added
+e_data_book_cursor_contact_removed
+e_data_book_cursor_register_gdbus_object
+<SUBSECTION Standard>
+EDataBookCursorPrivate
+E_DATA_BOOK_CURSOR
+E_DATA_BOOK_CURSOR_CLASS
+E_DATA_BOOK_CURSOR_GET_CLASS
+E_IS_DATA_BOOK_CURSOR
+E_IS_DATA_BOOK_CURSOR_CLASS
+E_TYPE_DATA_BOOK_CURSOR
+e_data_book_cursor_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-data-book-cursor-sqlite</FILE>
+<TITLE>EDataBookCursorSqlite</TITLE>
+EDataBookCursorSqlite
+EDataBookCursorSqliteClass
+e_data_book_cursor_sqlite_new
+<SUBSECTION Standard>
+EDataBookCursorSqlitePrivate
+E_DATA_BOOK_CURSOR_SQLITE
+E_DATA_BOOK_CURSOR_SQLITE_CLASS
+E_DATA_BOOK_CURSOR_SQLITE_GET_CLASS
+E_IS_DATA_BOOK_CURSOR_SQLITE
+E_IS_DATA_BOOK_CURSOR_SQLITE_CLASS
+E_TYPE_DATA_BOOK_CURSOR_SQLITE
+e_data_book_cursor_sqlite_get_type
 </SECTION>
 
 <SECTION>

@@ -6,5 +6,7 @@ e_book_backend_factory_get_type
 e_book_backend_sexp_get_type
 e_book_backend_summary_get_type
 e_data_book_get_type
+e_data_book_cursor_get_type
+e_data_book_cursor_sqlite_get_type
 e_data_book_direct_get_type
 e_data_book_view_get_type
