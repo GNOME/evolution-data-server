@@ -41,8 +41,8 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 	g_slist_free (results);
 
 	/* Reset cursor */
-	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, NULL);
+	e_book_backend_sqlitedb_cursor_set_target_contact (((ESqliteDBFixture *) fixture)->ebsdb,
+							   fixture->cursor, NULL);
 
 	/* Second batch */
 	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -76,10 +76,19 @@ test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 {
 	GSList *results;
 	GError *error = NULL;
+	ECollator *collator;
+	gint n_labels;
+	const gchar *const *labels;
+
+	/* First verify our test... in en_US locale the label 'C' should exist with the index 3 */
+	collator = e_book_backend_sqlitedb_ref_collator (((ESqliteDBFixture *) fixture)->ebsdb);
+	labels = e_collator_get_index_labels (collator, &n_labels, NULL, NULL, NULL);
+	g_assert_cmpstr (labels[3], ==, "C");
+	e_collator_unref (collator);
 
 	/* Set the cursor at the start of family names beginning with 'C' */
-	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, "C", NULL);
+	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
+								    fixture->cursor, 3);
 
 	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
 							  fixture->cursor, 5, &error);
@@ -112,10 +121,19 @@ test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
 {
 	GSList *results;
 	GError *error = NULL;
+	ECollator *collator;
+	gint n_labels;
+	const gchar *const *labels;
 
-	/* Set the cursor at the start of family names beginning with 'J' */
-	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, "C", NULL);
+	/* First verify our test... in en_US locale the label 'C' should exist with the index 3 */
+	collator = e_book_backend_sqlitedb_ref_collator (((ESqliteDBFixture *) fixture)->ebsdb);
+	labels = e_collator_get_index_labels (collator, &n_labels, NULL, NULL, NULL);
+	g_assert_cmpstr (labels[3], ==, "C");
+	e_collator_unref (collator);
+
+	/* Set the cursor at the start of family names beginning with 'C' */
+	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
+								    fixture->cursor, 3);
 
 	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
 							  fixture->cursor, -5, &error);

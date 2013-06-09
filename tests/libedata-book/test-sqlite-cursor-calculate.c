@@ -193,10 +193,19 @@ test_cursor_calculate_partial_target (EbSdbCursorFixture *fixture,
 {
 	GError *error = NULL;
 	gint    position = 0, total = 0;
+	ECollator *collator;
+	gint n_labels;
+	const gchar *const *labels;
 
-	/* Set the cursor to point to the beginning of "C" */
-	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, "C", NULL);
+	/* First verify our test... in en_US locale the label 'C' should exist with the index 3 */
+	collator = e_book_backend_sqlitedb_ref_collator (((ESqliteDBFixture *) fixture)->ebsdb);
+	labels = e_collator_get_index_labels (collator, &n_labels, NULL, NULL, NULL);
+	g_assert_cmpstr (labels[3], ==, "C");
+	e_collator_unref (collator);
+
+	/* Set the cursor at the start of family names beginning with 'C' */
+	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
+								    fixture->cursor, 3);
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -353,10 +362,19 @@ test_cursor_calculate_filtered_partial_target (EbSdbCursorFixture *fixture,
 {
 	GError *error = NULL;
 	gint    position = 0, total = 0;
+	ECollator *collator;
+	gint n_labels;
+	const gchar *const *labels;
 
-	/* Set the cursor to point to the beginning of "C" */
-	e_book_backend_sqlitedb_cursor_set_target (((ESqliteDBFixture *) fixture)->ebsdb,
-						   fixture->cursor, "C", NULL);
+	/* First verify our test... in en_US locale the label 'C' should exist with the index 3 */
+	collator = e_book_backend_sqlitedb_ref_collator (((ESqliteDBFixture *) fixture)->ebsdb);
+	labels = e_collator_get_index_labels (collator, &n_labels, NULL, NULL, NULL);
+	g_assert_cmpstr (labels[3], ==, "C");
+	e_collator_unref (collator);
+
+	/* Set the cursor at the start of family names beginning with 'C' */
+	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
+								    fixture->cursor, 3);
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
