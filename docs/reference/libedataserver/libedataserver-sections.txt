@@ -103,6 +103,26 @@ e_client_error_quark
 </SECTION>
 
 <SECTION>
+<FILE>e-collator</FILE>
+<TITLE>ECollator</TITLE>
+E_COLLATOR_ERROR
+ECollatorError
+e_collator_error_quark
+ECollator
+e_collator_new
+e_collator_ref
+e_collator_unref
+e_collator_generate_key
+e_collator_generate_key_for_index
+e_collator_collate
+e_collator_get_index_labels
+e_collator_get_index
+<SUBSECTION Standard>
+E_TYPE_COLLATOR
+e_collator_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-credentials</FILE>
 <TITLE>ECredentials</TITLE>
 ECredentials
