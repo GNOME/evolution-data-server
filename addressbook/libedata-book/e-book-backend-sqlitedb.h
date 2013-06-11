@@ -121,6 +121,25 @@ typedef struct {
  */
 typedef struct _EbSdbCursor EbSdbCursor;
 
+/**
+ * EbSdbCurorOrigin:
+ * @EBSDB_CURSOR_ORIGIN_CURRENT:  The current cursor position
+ * @EBSDB_CURSOR_ORIGIN_PREVIOUS: The previously recorded cursor position, this can be used to repeat the previous query
+ * @EBSDB_CURSOR_ORIGIN_RESET:    The beginning of the cursor results (or end of the results, if navigating in reverse).
+ *
+ * Defines the behaviour of e_book_backend_sqlitedb_cursor_move_by().
+ *
+ * The cursor always saves the previous cursor position as well as
+ * the new cursor position after performing a move. This allows
+ * cursor queries to be repeated in the case where content may have
+ * changed but the same content window should be refreshed in a UI.
+ */
+typedef enum {
+	EBSDB_CURSOR_ORIGIN_CURRENT,
+	EBSDB_CURSOR_ORIGIN_PREVIOUS,
+	EBSDB_CURSOR_ORIGIN_RESET
+} EbSdbCurorOrigin;
+
 GType		e_book_backend_sqlitedb_get_type
 						(void) G_GNUC_CONST;
 GQuark          e_book_backend_sqlitedb_error_quark
@@ -313,12 +332,9 @@ void            e_book_backend_sqlitedb_cursor_free
 GSList         *e_book_backend_sqlitedb_cursor_move_by
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
+						 EbSdbCurorOrigin      origin,
 						 gint                  count,
 						 GError              **error);
-void            e_book_backend_sqlitedb_cursor_set_target_contact
-                                                (EBookBackendSqliteDB *ebsdb,
-						 EbSdbCursor          *cursor,
-						 EContact             *contact);
 void            e_book_backend_sqlitedb_cursor_set_target_alphabetic_index
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
