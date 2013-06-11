@@ -532,54 +532,94 @@ test_cursor_move_teardown (EbSdbCursorFixture *fixture,
 }
 
 static void
+assert_move_by (EbSdbCursorFixture *fixture,
+		MoveByData *data,
+		gint i,
+		GSList *results)
+{
+	GSList *uids = NULL;
+	gint j;
+
+	/* Assert the exact amount of requested results */
+	g_assert_cmpint (g_slist_length (results), ==, ABS (data->counts[i]));
+
+#if DEBUG_FIXTURE
+	g_print ("%s: Constructing expected result list for a fetch of %d: ",
+		 data->path, data->counts[i]);
+#endif
+	for (j = 0; j < ABS (data->counts[i]); j++) {
+		gint index = data->expected[i][j];
+		gchar *uid;
+
+		uid = (gchar *)e_contact_get_const (fixture->contacts[index], E_CONTACT_UID);
+		uids = g_slist_append (uids, uid);
+
+#if DEBUG_FIXTURE
+		g_print ("%s ", uid);
+#endif
+
+	}
+#if DEBUG_FIXTURE
+	g_print ("\n");
+#endif
+
+	assert_contacts_order_slist (results, uids);
+	g_slist_free (uids);
+}
+
+static void
 test_move_by (EbSdbCursorFixture *fixture,
 	      gconstpointer  user_data)
 {
 	MoveByData *data = (MoveByData *)user_data;
 	GSList *results;
 	GError *error = NULL;
-	gint i, j;
+	gint i;
 
 	for (i = 0; i < MAX_MOVE_BY_COUNTS && data->counts[i] != 0; i++) {
-		GSList *uids = NULL;
 
+		/* Try normal order */
 		results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-								  fixture->cursor, data->counts[i], &error);
+								  fixture->cursor,
+								  EBSDB_CURSOR_ORIGIN_CURRENT,
+								  data->counts[i], &error);
 		if (error)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
+		assert_move_by (fixture, data, i, results);
 
-		/* Assert the exact amount of requested results */
-		g_assert_cmpint (g_slist_length (results), ==, ABS (data->counts[i]));
+		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		g_slist_free (results);
 
-#if DEBUG_FIXTURE
-		g_print ("%s: Constructing expected result list for a fetch of %d: ",
-			 data->path, data->counts[i]);
-#endif
+		/* Try repeat last query */
+		results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+								  fixture->cursor,
+								  EBSDB_CURSOR_ORIGIN_PREVIOUS,
+								  data->counts[i], &error);
+		if (error)
+			g_error ("Error fetching cursor results: %s", error->message);
 
-		for (j = 0; j < ABS (data->counts[i]); j++) {
-			gint index = data->expected[i][j];
-			gchar *uid;
-
-			uid = (gchar *)e_contact_get_const (fixture->contacts[index], E_CONTACT_UID);
-			uids = g_slist_append (uids, uid);
-
-#if DEBUG_FIXTURE
-			g_print ("%s ", uid);
-#endif
-
-		}
-#if DEBUG_FIXTURE
-		g_print ("\n");
-#endif
-
-		assert_contacts_order_slist (results, uids);
-		g_slist_free (uids);
+		print_results (results);
+		assert_move_by (fixture, data, i, results);
 
 		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (results);
 	}
+
+	/* One more, test reset API, the first batch from the beginning */
+	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+							  fixture->cursor,
+							  EBSDB_CURSOR_ORIGIN_RESET,
+							  data->counts[0], &error);
+	if (error)
+		g_error ("Error fetching cursor results: %s", error->message);
+
+	print_results (results);
+	assert_move_by (fixture, data, 0, results);
+
+	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_free (results);
 }
 
 static void
