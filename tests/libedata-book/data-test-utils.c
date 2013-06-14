@@ -225,7 +225,7 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 	ESqliteDBFixture *ebsdb_fixture = (ESqliteDBFixture *)fixture;
 	EbSdbCursorClosure *data = (EbSdbCursorClosure *)user_data;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
+	EBookSortType sort_types[] = { data->sort_type, data->sort_type };
 	EBookClient *book_client;
 	GSList *contacts = NULL;
 	GError *error = NULL;
@@ -495,6 +495,7 @@ move_by_test_new_internal (const gchar *test_path,
 	data->parent.parent.type = E_TEST_SERVER_ADDRESS_BOOK;
 	data->parent.parent.customize = e_sqlitedb_cursor_fixture_setup_book;
 	data->parent.locale = g_strdup (locale);
+	data->parent.sort_type = E_BOOK_SORT_ASCENDING;
 	data->path = g_strdup (test_path);
 	data->struct_size = struct_size;
 
@@ -520,6 +521,19 @@ move_by_test_new (const gchar *test_path,
 	return move_by_test_new_internal (test_path, locale, sizeof (MoveByData));
 }
 
+MoveByData *
+move_by_test_new_full (const gchar   *test_path,
+		       const gchar   *locale,
+		       EBookSortType  sort_type)
+{
+	MoveByData *data;
+
+	data = move_by_test_new_internal (test_path, locale, sizeof (MoveByData));
+	data->parent.sort_type = sort_type;
+
+	return data;
+}
+
 static void
 test_cursor_move_teardown (EbSdbCursorFixture *fixture,
 			   gconstpointer  user_data)
@@ -538,10 +552,20 @@ assert_move_by (EbSdbCursorFixture *fixture,
 		GSList *results)
 {
 	GSList *uids = NULL;
-	gint j;
+	gint j, expected = 0;
+
+	/* Count the number of really expected results */
+	for (j = 0; j < ABS (data->counts[i]); j++) {
+		gint index = data->expected[i][j];
+
+		if (index < 0)
+			break;
+
+		expected++;
+	}
 
 	/* Assert the exact amount of requested results */
-	g_assert_cmpint (g_slist_length (results), ==, ABS (data->counts[i]));
+	g_assert_cmpint (g_slist_length (results), ==, expected);
 
 #if DEBUG_FIXTURE
 	g_print ("%s: Constructing expected result list for a fetch of %d: ",
@@ -550,6 +574,9 @@ assert_move_by (EbSdbCursorFixture *fixture,
 	for (j = 0; j < ABS (data->counts[i]); j++) {
 		gint index = data->expected[i][j];
 		gchar *uid;
+
+		if (index < 0)
+			break;
 
 		uid = (gchar *)e_contact_get_const (fixture->contacts[index], E_CONTACT_UID);
 		uids = g_slist_append (uids, uid);
