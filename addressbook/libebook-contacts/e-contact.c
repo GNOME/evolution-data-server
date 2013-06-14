@@ -651,7 +651,7 @@ fileas_setter (EContact *contact,
 {
 	/* Default implementation */
 	const gchar *file_as = data;
-	e_vcard_attribute_add_value (attr, file_as ? : "");
+	e_vcard_attribute_add_value (attr, file_as ? file_as : "");
 }
 
 
