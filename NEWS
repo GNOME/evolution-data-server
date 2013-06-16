@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.9.3 2013-06-17
+--------------------------------------
+
+Bug Fixes:
+	Bug 649420 - Work around QRESYNC bug in Zimbra's IMAP server
+	             (Matthew Barnes)
+	Bug 672837 - Crash in camel_pop3_engine_command_free (Milan Crha)
+	Bug 699448 - Crash under e_book_backend_ldap_stop_view() (Milan Crha)
+	Bug 701797 - UOA: Remove ResponseType and AuthPath from service files
+	             (Ken VanDine)
+	Bug 701838 - Work around a semantic API break in GObject
+	             (Tristan Van Berkom)
+
+Other Changes:
+	* EBookQuery: Added regex query API (Tristan Van Berkom)
+	* Be able to debug SMTP provider separately (Milan Crha)
+	* Make the statements explicit when using ternary if (Fabiano Fidêncio)
+
+Translations:
+	Marek Černocký (cs)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	ManojKumar Giri (or)
+	Marián Čavojský (sk)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.9.2 2013-05-27
 --------------------------------------
 
