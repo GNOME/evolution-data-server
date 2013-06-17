@@ -82,6 +82,8 @@ static void
 data_book_error_from_gdata_error (GError **error,
                                   const GError *gdata_error)
 {
+	gboolean use_fallback = FALSE;
+
 	g_return_if_fail (gdata_error != NULL);
 
 	/* Authentication errors */
@@ -113,6 +115,7 @@ data_book_error_from_gdata_error (GError **error,
 				E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 			break;
 		default:
+			use_fallback = TRUE;
 			break;
 		}
 
@@ -174,17 +177,22 @@ data_book_error_from_gdata_error (GError **error,
 				gdata_error->message);
 			break;
 		default:
+			use_fallback = TRUE;
 			break;
 		}
 
-	/* Generic fallback */
 	} else {
+		use_fallback = TRUE;
+	}
+
+	/* Generic fallback */
+	if (use_fallback)
 		g_set_error_literal (
 			error, E_CLIENT_ERROR,
 			E_CLIENT_ERROR_OTHER_ERROR,
 			gdata_error->message);
-	}
 }
+
 static void
 migrate_cache (EBookBackendCache *cache)
 {
