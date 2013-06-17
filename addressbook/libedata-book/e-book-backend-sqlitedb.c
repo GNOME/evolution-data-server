@@ -5735,6 +5735,8 @@ e_book_backend_sqlitedb_cursor_free (EBookBackendSqliteDB *ebsdb,
  * @cursor: The #EbSdbCursor to use
  * @origin: The #EbSdbCurorOrigin for this move
  * @count: A positive or negative amount of contacts to try and fetch
+ * @results: (out) (allow-none) (element-type EbSdbSearchData) (transfer full):
+ *   A return location to store the results, or %NULL to move the cursor without retrieving any results.
  * @error: A return location to story any error that might be reported.
  *
  * Moves @cursor through the @ebsdb by @count and fetch a maximum of @count contacts.
@@ -5747,28 +5749,34 @@ e_book_backend_sqlitedb_cursor_free (EBookBackendSqliteDB *ebsdb,
  *
  * If @cursor reaches the beginning or end of the query results, then the
  * returned list might not contain the amount of desired contacts, or might
- * return no results. This is not considered an error condition.
+ * return no results if the cursor currently points to the last contact.
+ * This is not considered an error condition.
  *
- * Returns: (element-type EbSdbSearchData) (transfer full):
- *   A list of #EbSdbSearchData, the list should be freed with g_slist_free()
- *   and all elements freed with e_book_backend_sqlitedb_search_data_free().
+ * If @results is specified, it should be a pointer to a %NULL #GSList,
+ * the result list will be stored to @results and should be freed with g_slist_free()
+ * and all elements freed with e_book_backend_sqlitedb_search_data_free().
+ *
+ * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
+ * and @error is set to reflect the error which occurred.
  *
  * Since: 3.10
  */
-GSList *
+gboolean
 e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 					EbSdbCursor          *cursor,
 					EbSdbCurorOrigin      origin,
 					gint                  count,
+					GSList              **results,
 					GError              **error)
 {
-	GSList *results = NULL;
+	GSList *local_results = NULL;
 	GString *query;
 	gboolean success;
 
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
-	g_return_val_if_fail (cursor != NULL, NULL);
-	g_return_val_if_fail (count != 0, NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (cursor != NULL, FALSE);
+	g_return_val_if_fail (count != 0 || origin == EBSDB_CURSOR_ORIGIN_RESET, FALSE);
+	g_return_val_if_fail (results == NULL || *results == NULL, FALSE);
 
 	/* Every query starts with the STATE_CURRENT position, first
 	 * fix up the cursor state according to 'origin'
@@ -5786,6 +5794,12 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 		ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
 		break;
 	}
+
+	/* Count can be 0 only for the sake of resetting the current
+	 * cursor state without fetching any results
+	 */
+	if (count == 0)
+		return TRUE;
 
 	query = g_string_new (cursor->select_vcards);
 
@@ -5829,7 +5843,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	/* Execute the query */
 	LOCK_MUTEX (&ebsdb->priv->lock);
 	success = book_backend_sql_exec (ebsdb->priv->db, query->str,
-					 addto_vcard_list_cb , &results,
+					 addto_vcard_list_cb , &local_results,
 					 error);
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
@@ -5838,26 +5852,37 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	/* Correct the order of results, since
 	 * addto_vcard_list_cb() prepends them (as it should)
 	 */
-	results = g_slist_reverse (results);
+	local_results = g_slist_reverse (local_results);
 
 	/* If there was no error, update the internal cursor state */
 	if (success) {
 
-		if (g_slist_length (results) < ABS (count)) {
+		if (g_slist_length (local_results) < ABS (count)) {
 			/* We've reached the end, clear the current state, allow
 			 * a repeat query from the previously recorded position */
 			ebsdb_cursor_swap_state (cursor);
 			ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
 		} else {
 			/* Set the cursor state to the last result */
-			GSList *last = g_slist_last (results);
+			GSList *last = g_slist_last (local_results);
 			EbSdbSearchData *data = last->data;
 
 			ebsdb_cursor_set_state (ebsdb, cursor, data->vcard);
 		}
 	}
 
-	return results;
+	if (results) {
+		*results = local_results;
+	} else {
+		/* Even if we are not returning the results, we have to fetch them
+		 * so that we can store the state of the last returned result as the
+		 * new cursor state.
+		 */
+		g_slist_free_full (local_results,
+				   (GDestroyNotify)e_book_backend_sqlitedb_search_data_free);
+	}
+
+	return success;
 }
 
 /**

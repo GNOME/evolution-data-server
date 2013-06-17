@@ -329,11 +329,12 @@ EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
 void            e_book_backend_sqlitedb_cursor_free
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor);
-GSList         *e_book_backend_sqlitedb_cursor_move_by
+gboolean        e_book_backend_sqlitedb_cursor_move_by
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
 						 EbSdbCurorOrigin      origin,
 						 gint                  count,
+						 GSList              **results,
 						 GError              **error);
 void            e_book_backend_sqlitedb_cursor_set_target_alphabetic_index
                                                 (EBookBackendSqliteDB *ebsdb,
