@@ -5426,8 +5426,8 @@ ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
 
 #define GREATER_OR_LESS(cursor, index, reverse)				\
 	(reverse ?							\
-	 (((EbSdbCursor *)cursor)->sort_types[index == E_BOOK_SORT_ASCENDING] ? '>' : '<') : \
-	 (((EbSdbCursor *)cursor)->sort_types[index == E_BOOK_SORT_ASCENDING] ? '<' : '>'))
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_SORT_ASCENDING ? '<' : '>') : \
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_SORT_ASCENDING ? '>' : '<'))
 
 static gchar *
 ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
