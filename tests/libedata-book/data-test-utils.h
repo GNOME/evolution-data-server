@@ -70,6 +70,10 @@
 #define N_SORTED_CONTACTS    20
 #define MAX_MOVE_BY_COUNTS   5
 
+/* 13 contacts in the test data have an email address ending with ".com" */
+#define N_FILTERED_CONTACTS  13
+
+
 typedef struct {
 	ETestServerFixture parent_fixture;
 
@@ -103,6 +107,9 @@ typedef struct {
 
 	/* For each move_by() command, an array of 'ABS (counts[i])' expected contacts */
 	gint expected[MAX_MOVE_BY_COUNTS][N_SORTED_CONTACTS];
+
+	/* Whether this is a filtered test */
+	gboolean filtered;
 
 	/* Private detail */
 	gsize struct_size;

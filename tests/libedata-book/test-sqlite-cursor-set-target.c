@@ -15,16 +15,14 @@ static void
 test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 				     gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 
 	/* First batch */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     5, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -41,14 +39,13 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Second batch reset (same results) */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_RESET,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_RESET,
+						     5, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -74,7 +71,7 @@ static void
 test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 				       gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	ECollator *collator;
 	gint n_labels;
@@ -90,12 +87,10 @@ test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
 								    fixture->cursor, 3);
 
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     5, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -121,7 +116,7 @@ static void
 test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
 				       gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	ECollator *collator;
 	gint n_labels;
@@ -137,12 +132,10 @@ test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
 	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
 								    fixture->cursor, 3);
 
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor, 
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  -5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor, 
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     -5, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);

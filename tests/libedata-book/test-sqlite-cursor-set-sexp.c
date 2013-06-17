@@ -36,14 +36,15 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 	EBookQuery *query;
 	gint    position = 0, total = 0;
 	gchar *sexp = NULL;
-	GSList *results, *node;
+	GSList *results = NULL, *node;
 	EbSdbSearchData *data;
 
 	/* Set the cursor to point exactly to 'blackbirds', which is the 12th contact in en_US */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_RESET,
-							  12, &error);
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_RESET,
+						     12, &results, &error))
+		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Ensure we moved to the right contact */
 	node = g_slist_last (results);

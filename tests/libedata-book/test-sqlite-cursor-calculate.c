@@ -37,17 +37,16 @@ static void
 test_cursor_calculate_move_forward (EbSdbCursorFixture *fixture,
 				    gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     5,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Assert the first 5 contacts in en_US order */
@@ -76,17 +75,16 @@ static void
 test_cursor_calculate_move_backwards (EbSdbCursorFixture *fixture,
 				      gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  -5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     -5,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Assert the last 5 contacts in en_US order */
@@ -115,22 +113,22 @@ static void
 test_cursor_calculate_back_and_forth (EbSdbCursorFixture *fixture,
 				      gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor, 
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  7, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor, 
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     7,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 7);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -142,17 +140,17 @@ test_cursor_calculate_back_and_forth (EbSdbCursorFixture *fixture,
 	g_assert_cmpint (total, ==, 20);
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  -4, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     -4,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 4);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -164,17 +162,17 @@ test_cursor_calculate_back_and_forth (EbSdbCursorFixture *fixture,
 	g_assert_cmpint (total, ==, 20);
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     5,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 5);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -223,20 +221,15 @@ test_cursor_calculate_after_modification (EbSdbCursorFixture *fixture,
 	EBookClient  *book_client;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
-	GSList *results;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
 	/* Set the cursor to point exactly 'blackbird' (which is the 12th contact) */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  12, &error);
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     12, NULL, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
-
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
-	g_slist_free (results);
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -288,22 +281,21 @@ static void
 test_cursor_calculate_filtered_move_forward (EbSdbCursorFixture *fixture,
 					     gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     5, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 5);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -319,22 +311,22 @@ static void
 test_cursor_calculate_filtered_move_backwards (EbSdbCursorFixture *fixture,
 					       gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  -5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     -5,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 5);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -383,20 +375,15 @@ test_cursor_calculate_filtered_after_modification (EbSdbCursorFixture *fixture,
 	EBookClient  *book_client;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
-	GSList *results;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
 	/* Set the cursor to point exactly 'blackbird' (which is the 8th contact when filtered) */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  8, &error);
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     8, NULL, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
-
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
-	g_slist_free (results);
 
 	/* 'blackbirds' -> Jacob Appelbaum */
 	e_contact_set (fixture->contacts[18 - 1], E_CONTACT_FAMILY_NAME, "Appelbaum");
@@ -424,17 +411,16 @@ static void
 test_cursor_calculate_descending_move_forward (EbSdbCursorFixture *fixture,
 					       gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     5,
+						     &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Assert the first 5 contacts in en_US order */
@@ -448,6 +434,7 @@ test_cursor_calculate_descending_move_forward (EbSdbCursorFixture *fixture,
 			       NULL);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -463,17 +450,15 @@ static void
 test_cursor_calculate_descending_move_backwards (EbSdbCursorFixture *fixture,
 						 gconstpointer  user_data)
 {
-	GSList *results;
+	GSList *results = NULL;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
 
 	/* Move cursor */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  -5, &error);
-
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     -5, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Assert the last 5 contacts in en_US order */
@@ -487,6 +472,7 @@ test_cursor_calculate_descending_move_backwards (EbSdbCursorFixture *fixture,
 			       NULL);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
+	results = NULL;
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
@@ -536,20 +522,15 @@ test_cursor_calculate_descending_after_modification (EbSdbCursorFixture *fixture
 	EBookClient  *book_client;
 	GError *error = NULL;
 	gint    position = 0, total = 0;
-	GSList *results;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
 	/* Set the cursor to point exactly 'Bät' (which is the 12th contact in descending order) */
-	results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							  fixture->cursor,
-							  EBSDB_CURSOR_ORIGIN_CURRENT,
-							  12, &error);
-	if (error)
+	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						     fixture->cursor,
+						     EBSDB_CURSOR_ORIGIN_CURRENT,
+						     12, NULL, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
-
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
-	g_slist_free (results);
 
 	/* Check new position */
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
