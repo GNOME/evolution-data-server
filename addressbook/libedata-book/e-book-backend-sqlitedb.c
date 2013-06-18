@@ -5287,6 +5287,11 @@ ebsdb_cursor_order_by_fragment (EBookBackendSqliteDB *ebsdb,
 					(sort_types[i] == E_BOOK_SORT_ASCENDING ? "ASC"  : "DESC"));
 	}
 
+	/* Also order the UID, since it's our tie breaker, we must also order the UID field */
+	if (n_sort_fields > 0)
+		g_string_append (string, ", ");
+	g_string_append_printf (string, "summary.uid %s", reverse ? "DESC" : "ASC");
+
 	return g_string_free (string, FALSE);
 }
 
