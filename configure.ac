@@ -182,13 +182,13 @@ dnl Compiler Warning Flags
 dnl ******************************
 proposed_warning_flags="-Wall -Wextra
 	-Wdeprecated-declarations
-	-Werror-implicit-function-declaration
 	-Wformat-security -Winit-self
 	-Wmissing-declarations -Wmissing-include-dirs
 	-Wmissing-noreturn -Wpointer-arith
 	-Wredundant-decls -Wundef -Wwrite-strings"
 
 proposed_c_warning_flags="$proposed_warning_flags
+	-Werror-implicit-function-declaration
 	-Wdeclaration-after-statement
 	-Wno-missing-field-initializers
 	-Wno-sign-compare
@@ -196,7 +196,7 @@ proposed_c_warning_flags="$proposed_warning_flags
 	-Wnested-externs"
 
 proposed_cxx_warning_flags="$proposed_warning_flags
-	-Wabi -Wnoexcept"
+	-Wabi"
 
 AS_COMPILER_FLAGS(WARNING_FLAGS, [$proposed_c_warning_flags])
 AC_SUBST(WARNING_FLAGS)
