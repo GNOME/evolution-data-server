@@ -55,6 +55,9 @@ typedef struct _SignalClosure SignalClosure;
 
 struct _CamelStorePrivate {
 	GRecMutex folder_lock;	/* for locking folder operations */
+
+	GMutex signal_emission_lock;
+	gboolean folder_info_stale_scheduled;
 };
 
 struct _AsyncContext {
@@ -79,6 +82,7 @@ struct _SignalClosure {
 enum {
 	FOLDER_CREATED,
 	FOLDER_DELETED,
+	FOLDER_INFO_STALE,
 	FOLDER_OPENED,
 	FOLDER_RENAMED,
 	LAST_SIGNAL
@@ -196,6 +200,27 @@ store_emit_folder_renamed_cb (gpointer user_data)
 			signals[FOLDER_RENAMED], 0,
 			signal_closure->folder_name,
 			signal_closure->folder_info);
+		g_object_unref (store);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+store_emit_folder_info_stale_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+	CamelStore *store;
+
+	store = g_weak_ref_get (&signal_closure->store);
+
+	if (store != NULL) {
+		g_mutex_lock (&store->priv->signal_emission_lock);
+		store->priv->folder_info_stale_scheduled = FALSE;
+		g_mutex_unlock (&store->priv->signal_emission_lock);
+
+		g_signal_emit (store, signals[FOLDER_INFO_STALE], 0);
+
 		g_object_unref (store);
 	}
 
@@ -1218,6 +1243,31 @@ camel_store_class_init (CamelStoreClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
+	/**
+	 * CamelStore::folder-info-stale:
+	 * @store: the #CamelStore that received the signal
+	 *
+	 * This signal indicates significant changes have occurred to
+	 * the folder hierarchy of @store, and that previously fetched
+	 * #CamelFolderInfo data should be considered stale.
+	 *
+	 * Applications should handle this signal by replacing cached
+	 * #CamelFolderInfo data for @store with fresh data by way of
+	 * camel_store_get_folder_info().
+	 *
+	 * More often than not this signal will be emitted as a result of
+	 * user preference changes rather than actual server-side changes.
+	 * For example, a user may change a preference that reveals a set
+	 * of folders previously hidden from view, or that alters whether
+	 * to augment the @store with virtual Junk and Trash folders. */
+	signals[FOLDER_INFO_STALE] = g_signal_new (
+		"folder-info-stale",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelStoreClass, folder_info_stale),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 0);
+
 	signals[FOLDER_OPENED] = g_signal_new (
 		"folder-opened",
 		G_OBJECT_CLASS_TYPE (class),
@@ -1421,6 +1471,54 @@ camel_store_folder_renamed (CamelStore *store,
 		store_emit_folder_renamed_cb,
 		signal_closure,
 		(GDestroyNotify) signal_closure_free);
+
+	g_object_unref (session);
+}
+
+/**
+ * camel_store_folder_info_stale:
+ * @store: a #CamelStore
+ *
+ * Emits the #CamelStore::folder-info-stale signal from an idle source
+ * on the main loop.  The idle source's priority is #G_PRIORITY_LOW.
+ *
+ * See the #CamelStore::folder-info-stale documentation for details on
+ * when to use this signal.
+ *
+ * This function is only intended for Camel providers.
+ *
+ * Since: 3.10
+ **/
+void
+camel_store_folder_info_stale (CamelStore *store)
+{
+	CamelSession *session;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
+
+	g_mutex_lock (&store->priv->signal_emission_lock);
+
+	/* Handling this signal is probably going to be expensive for
+	 * applications so try and accumulate multiple calls into one
+	 * signal emission if we can.  Hence the G_PRIORITY_LOW. */
+	if (!store->priv->folder_info_stale_scheduled) {
+		SignalClosure *signal_closure;
+
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_set (&signal_closure->store, store);
+
+		camel_session_idle_add (
+			session, G_PRIORITY_LOW,
+			store_emit_folder_info_stale_cb,
+			signal_closure,
+			(GDestroyNotify) signal_closure_free);
+
+		store->priv->folder_info_stale_scheduled = TRUE;
+	}
+
+	g_mutex_unlock (&store->priv->signal_emission_lock);
 
 	g_object_unref (session);
 }

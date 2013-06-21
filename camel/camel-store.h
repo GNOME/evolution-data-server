@@ -306,6 +306,7 @@ struct _CamelStoreClass {
 	void		(*folder_renamed)	(CamelStore *store,
 						 const gchar *old_name,
 						 CamelFolderInfo *folder_info);
+	void		(*folder_info_stale)	(CamelStore *store);
 };
 
 GType		camel_store_get_type		(void);
@@ -319,6 +320,7 @@ void		camel_store_folder_opened	(CamelStore *store,
 void		camel_store_folder_renamed	(CamelStore *store,
 						 const gchar *old_name,
 						 CamelFolderInfo *folder_info);
+void		camel_store_folder_info_stale	(CamelStore *store);
 void		camel_store_free_folder_info	(CamelStore *store,
 						 CamelFolderInfo *fi);
 void		camel_store_free_folder_info_full
