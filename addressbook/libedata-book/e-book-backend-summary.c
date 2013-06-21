@@ -900,6 +900,7 @@ func_check (struct _ESExp *f,
 {
 	ESExpResult *r;
 	gint truth = FALSE;
+	gboolean *pretval = data;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -917,6 +918,9 @@ func_check (struct _ESExp *f,
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 	r->value.boolean = truth;
 
+	if (pretval)
+		*pretval = (*pretval) && truth;
+
 	return r;
 }
 
@@ -931,7 +935,8 @@ static const struct {
 	{ "is", func_check, 0 },
 	{ "beginswith", func_check, 0 },
 	{ "endswith", func_check, 0 },
-	{ "exists", func_check, 0 }
+	{ "exists", func_check, 0 },
+	{ "exists_vcard", func_check, 0 }
 };
 
 /**
@@ -950,7 +955,7 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
 {
 	ESExp *sexp;
 	ESExpResult *r;
-	gboolean retval;
+	gboolean retval = TRUE;
 	gint i;
 	gint esexp_error;
 
@@ -961,11 +966,11 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
 	for (i = 0; i < G_N_ELEMENTS (check_symbols); i++) {
 		if (check_symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
-					     (ESExpIFunc *) check_symbols[i].func, summary);
+					     (ESExpIFunc *) check_symbols[i].func, &retval);
 		} else {
 			e_sexp_add_function (
 				sexp, 0, check_symbols[i].name,
-				check_symbols[i].func, summary);
+				check_symbols[i].func, &retval);
 		}
 	}
 
@@ -973,12 +978,13 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
 	esexp_error = e_sexp_parse (sexp);
 
 	if (esexp_error == -1) {
+		e_sexp_unref (sexp);
 		return FALSE;
 	}
 
 	r = e_sexp_eval (sexp);
 
-	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
+	retval = retval && (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
 	e_sexp_result_free (sexp, r);
 
