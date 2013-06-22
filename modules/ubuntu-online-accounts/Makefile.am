@@ -65,6 +65,12 @@ service_DATA = \
 	yahoo-calendar.service \
 	$(NULL)
 
+desktopdir = $(datadir)/applications
+desktop_in_files = evolution-data-server-uoa.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+@INTLTOOL_DESKTOP_RULE@
+
 EXTRA_DIST = \
 	evolution-data-server.application.in.in \
 	mail.service-type.in.in \
@@ -75,10 +81,12 @@ EXTRA_DIST = \
 	google-contacts.service.in.in \
 	yahoo-mail.service.in.in \
 	yahoo-calendar.service.in.in \
+	$(desktop_DATA) \
 	$(NULL)
 
 DISTCLEANFILES = \
 	$(application_DATA) \
+	$(desktop_DATA) \
 	$(servicetype_DATA) \
 	$(service_DATA) \
 	$(NULL)

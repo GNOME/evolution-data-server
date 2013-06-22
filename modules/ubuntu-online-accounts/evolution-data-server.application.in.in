@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <application id="evolution-data-server">
-  <description>Evolution-Data-Server</description>
+  <description>Evolution Data Server</description>
+  <desktop-entry>evolution-data-server-uoa.desktop</desktop-entry>
   <translations>@GETTEXT_PACKAGE@</translations>
   <service-types>
     <service-type id="mail"/>
