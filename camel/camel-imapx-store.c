@@ -59,6 +59,10 @@
 struct _CamelIMAPXStorePrivate {
 	GHashTable *quota_info;
 	GMutex quota_info_lock;
+
+	GMutex settings_lock;
+	CamelSettings *settings;
+	gulong settings_notify_handler_id;
 };
 
 enum {
@@ -117,11 +121,6 @@ imapx_store_update_store_flags (CamelStore *store)
 	CamelSettings *settings;
 	CamelIMAPXSettings *imapx_settings;
 
-	/* XXX This only responds to the service's entire settings object
-	 *     being replaced, not when individual settings change.  When
-	 *     individual settings change, a restart is required for them
-	 *     to take effect. */
-
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_ref_settings (service);
 	imapx_settings = CAMEL_IMAPX_SETTINGS (settings);
@@ -138,6 +137,68 @@ imapx_store_update_store_flags (CamelStore *store)
 		store->flags &= ~CAMEL_STORE_VTRASH;
 	else
 		store->flags |= CAMEL_STORE_VTRASH;
+
+	g_object_unref (settings);
+}
+
+static void
+imapx_store_settings_notify_cb (CamelSettings *settings,
+                                GParamSpec *pspec,
+                                CamelStore *store)
+{
+	if (g_str_equal (pspec->name, "use-real-junk-path")) {
+		imapx_store_update_store_flags (store);
+		camel_store_folder_info_stale (store);
+	}
+
+	if (g_str_equal (pspec->name, "use-real-trash-path")) {
+		imapx_store_update_store_flags (store);
+		camel_store_folder_info_stale (store);
+	}
+
+	if (g_str_equal (pspec->name, "use-subscriptions")) {
+		camel_store_folder_info_stale (store);
+	}
+}
+
+static void
+imapx_store_connect_to_settings (CamelStore *store)
+{
+	CamelIMAPXStorePrivate *priv;
+	CamelSettings *settings;
+	gulong handler_id;
+
+	/* XXX I considered calling camel_store_folder_info_stale()
+	 *     here, but I suspect it would create unnecessary extra
+	 *     work for applications during startup since the signal
+	 *     is not emitted immediately.
+	 *
+	 *     Let's just say whomever replaces the settings object
+	 *     in a CamelService is reponsible for deciding whether
+	 *     camel_store_folder_info_stale() should be called. */
+
+	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+
+	g_mutex_lock (&priv->settings_lock);
+
+	if (priv->settings != NULL) {
+		g_signal_handler_disconnect (
+			priv->settings,
+			priv->settings_notify_handler_id);
+		priv->settings_notify_handler_id = 0;
+		g_clear_object (&priv->settings);
+	}
+
+	priv->settings = g_object_ref (settings);
+
+	handler_id = g_signal_connect (
+		settings, "notify",
+		G_CALLBACK (imapx_store_settings_notify_cb), store);
+	priv->settings_notify_handler_id = handler_id;
+
+	g_mutex_unlock (&priv->settings_lock);
 
 	g_object_unref (settings);
 }
@@ -194,19 +255,20 @@ imapx_store_dispose (GObject *object)
 	if (imapx_store->con_man != NULL) {
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (imapx_store), TRUE, NULL, NULL);
-		g_object_unref (imapx_store->con_man);
-		imapx_store->con_man = NULL;
 	}
 
-	if (imapx_store->authenticating_server != NULL) {
-		g_object_unref (imapx_store->authenticating_server);
-		imapx_store->authenticating_server = NULL;
+	if (imapx_store->priv->settings_notify_handler_id > 0) {
+		g_signal_handler_disconnect (
+			imapx_store->priv->settings,
+			imapx_store->priv->settings_notify_handler_id);
+		imapx_store->priv->settings_notify_handler_id = 0;
 	}
 
-	if (imapx_store->summary != NULL) {
-		g_object_unref (imapx_store->summary);
-		imapx_store->summary = NULL;
-	}
+	g_clear_object (&imapx_store->con_man);
+	g_clear_object (&imapx_store->authenticating_server);
+	g_clear_object (&imapx_store->summary);
+
+	g_clear_object (&imapx_store->priv->settings);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->dispose (object);
@@ -222,8 +284,24 @@ imapx_store_finalize (GObject *object)
 	g_hash_table_destroy (imapx_store->priv->quota_info);
 	g_mutex_clear (&imapx_store->priv->quota_info_lock);
 
+	g_mutex_clear (&imapx_store->priv->settings_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
+}
+
+static void
+imapx_store_notify (GObject *object,
+                    GParamSpec *pspec)
+{
+	if (g_str_equal (pspec->name, "settings")) {
+		imapx_store_connect_to_settings (CAMEL_STORE (object));
+		imapx_store_update_store_flags (CAMEL_STORE (object));
+	}
+
+	/* Do not chain up.  None of our ancestor classes implement the
+	 * notify() method.  (XXX Though one of them should so we don't
+	 * have to know this.) */
 }
 
 static gchar *
@@ -1987,6 +2065,7 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	object_class->get_property = imapx_store_get_property;
 	object_class->dispose = imapx_store_dispose;
 	object_class->finalize = imapx_store_finalize;
+	object_class->notify = imapx_store_notify;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_IMAPX_SETTINGS;
@@ -2062,6 +2141,8 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) camel_folder_quota_info_free);
 	g_mutex_init (&store->priv->quota_info_lock);
+
+	g_mutex_init (&store->priv->settings_lock);
 
 	imapx_utils_init ();
 
