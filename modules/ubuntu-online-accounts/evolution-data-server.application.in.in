@@ -3,9 +3,21 @@
   <description>Evolution Data Server</description>
   <desktop-entry>evolution-data-server-uoa.desktop</desktop-entry>
   <translations>@GETTEXT_PACKAGE@</translations>
-  <service-types>
-    <service-type id="mail"/>
-    <service-type id="calendar"/>
-    <service-type id="contacts"/>
-  </service-types>
+  <services>
+    <service id="google-gmail">
+      <_description>Access your GMail</_description>
+    </service>
+    <service id="google-calendar">
+      <_description>Access your Google Calendar</_description>
+    </service>
+    <service id="google-contacts">
+      <_description>Access your Google Contacts</_description>
+    </service>
+    <service id="yahoo-mail">
+      <_description>Access your Yahoo! Mail</_description>
+    </service>
+    <service id="yahoo-calendar">
+      <_description>Access your Yahoo! Calendar</_description>
+    </service>
+  </services>
 </application>
