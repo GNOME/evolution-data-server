@@ -432,13 +432,15 @@ AC_ARG_ENABLE([gtk],
 AC_MSG_CHECKING([if GTK+ support is enabled])
 AC_MSG_RESULT([$enable_gtk])
 if test "x$enable_gtk" = xyes; then
-	PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= gdk_minimum_version],,
-	[AC_MSG_ERROR([
+	PKG_CHECK_MODULES(
+		[GTK], [gtk+-3.0 >= gdk_minimum_version],,
+		[AC_MSG_ERROR([
 
 	gtk+-3.0 not found (or version < gdk_minimum_version)
 
 	If you want to disable GTK+ support,
 	please append --disable-gtk to configure.
+
 	])])
 
 	AC_DEFINE(HAVE_GTK, 1, [Define to 1 if you have the gtk+-3.0 package.])
@@ -455,13 +457,15 @@ AC_ARG_ENABLE([goa],
 AC_MSG_CHECKING([if GNOME Online Accounts support is enabled])
 AC_MSG_RESULT([$enable_goa])
 if test "x$enable_goa" = xyes; then
-	PKG_CHECK_MODULES([GOA], [goa-1.0 >= goa_minimum_version],,
-	[AC_MSG_ERROR([
+	PKG_CHECK_MODULES(
+		[GOA], [goa-1.0 >= goa_minimum_version],,
+		[AC_MSG_ERROR([
 
 	goa-1.0 not found (or version < goa_minimum_version)
 
 	If you want to disable GNOME Online Accounts support,
 	please append --disable-goa to configure.
+
 	])])
 
 	AC_DEFINE(HAVE_GOA, 1, [Define to 1 if you have the goa-1.0 package.])
@@ -478,7 +482,8 @@ AC_ARG_ENABLE([uoa],
 AC_MSG_CHECKING([if Ubuntu Online Accounts support is enabled])
 AC_MSG_RESULT([$enable_uoa])
 if test "x$enable_uoa" = xyes; then
-	PKG_CHECK_MODULES([LIBACCOUNTS_GLIB],
+	PKG_CHECK_MODULES(
+		[LIBACCOUNTS_GLIB],
 		[libaccounts-glib >= libaccounts_glib_minimum_version],,
 		[AC_MSG_ERROR([
 
@@ -486,9 +491,11 @@ if test "x$enable_uoa" = xyes; then
 
 	If you want to disable Ubuntu Online Accounts support,
 	please append --disable-uoa to configure.
+
 	])])
 
-	PKG_CHECK_MODULES([LIBSIGNON_GLIB],
+	PKG_CHECK_MODULES(
+		[LIBSIGNON_GLIB],
 		[libsignon-glib >= libsignon_glib_minimum_version],,
 		[AC_MSG_ERROR([
 
@@ -496,24 +503,29 @@ if test "x$enable_uoa" = xyes; then
 
 	If you want to disable Ubuntu Online Accounts support,
 	please append --disable-uoa to configure.
+
 	])])
 
-	PKG_CHECK_MODULES([JSON_GLIB], [json-glib-1.0],,
+	PKG_CHECK_MODULES(
+		[JSON_GLIB], [json-glib-1.0],,
 		[AC_MSG_ERROR([
 
 	json-glib-1.0 not found
 
 	If you want to disable Ubuntu Online Accounts support,
 	please append --disable-uoa to configure.
+
 	])])
 
-	PKG_CHECK_MODULES([REST], [rest-0.7],,
+	PKG_CHECK_MODULES(
+		[REST], [rest-0.7],,
 		[AC_MSG_ERROR([
 
 	librest-0.7 not found
 
 	If you want to disable Ubuntu Online Accounts support,
 	please append --disable-uoa to configure.
+
 	])])
 
 	AC_DEFINE(HAVE_UOA, 1, [Have libaccounts-glib])
@@ -1222,8 +1234,16 @@ AC_ARG_ENABLE([weather],
 
 AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
-	PKG_CHECK_MODULES([LIBGWEATHER], [gweather-3.0 >= gweather_minimum_version],[],
-	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --disable-weather as a configure option to avoid building the backend.])])
+	PKG_CHECK_MODULES(
+		[LIBGWEATHER], [gweather-3.0 >= gweather_minimum_version],[],
+		[AC_MSG_ERROR([
+
+	gweather-3.0 not found (or version < gweather_minimum_version)
+
+	If you want to disable weather calendar support,
+	please append --disable-weather to configure.
+
+	])])
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
