@@ -1758,13 +1758,6 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				driver, FILTER_LOG_START,
 				"%s", rule->name);
 
-			if (camel_debug (":filter"))
-				printf (
-					"filtering '%s' applying rule %s\n",
-					camel_message_info_subject (info) ?
-					camel_message_info_subject (info) :
-					"?no subject?", rule->name);
-
 			/* perform necessary filtering actions */
 			camel_sexp_input_text (
 				driver->priv->eval,
@@ -1825,12 +1818,6 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		camel_filter_driver_log (
 			driver, FILTER_LOG_ACTION,
 			"Copy to default folder");
-
-		if (camel_debug (":filter"))
-			printf (
-				"filtering '%s' copy %s to default folder\n",
-				camel_message_info_subject (info) ? camel_message_info_subject (info):"?no subject?",
-				driver->priv->modified?"modified message":"");
 
 		if (!driver->priv->modified && driver->priv->uid && driver->priv->source && camel_folder_has_summary_capability (driver->priv->source)) {
 			GPtrArray *uids;
