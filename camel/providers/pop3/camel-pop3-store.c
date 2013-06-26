@@ -284,6 +284,15 @@ try_sasl (CamelPOP3Store *store,
 	g_object_unref (settings);
 
 	pop3_engine = camel_pop3_store_ref_engine (store);
+	if (!pop3_engine) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		result = CAMEL_AUTHENTICATION_ERROR;
+		goto exit;
+	}
+
 	pop3_stream = pop3_engine->stream;
 
 	sasl = camel_sasl_new ("pop", mechanism, service);
@@ -540,10 +549,18 @@ pop3_store_connect_sync (CamelService *service,
 	/* Now that we are in the TRANSACTION state,
 	 * try regetting the capabilities */
 	pop3_engine = camel_pop3_store_ref_engine (store);
-	pop3_engine->state = CAMEL_POP3_ENGINE_TRANSACTION;
-	if (!camel_pop3_engine_reget_capabilities (pop3_engine, cancellable, error))
+	if (pop3_engine) {
+		pop3_engine->state = CAMEL_POP3_ENGINE_TRANSACTION;
+		if (!camel_pop3_engine_reget_capabilities (pop3_engine, cancellable, error))
+			success = FALSE;
+		g_clear_object (&pop3_engine);
+	} else {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
 		success = FALSE;
-	g_clear_object (&pop3_engine);
+	}
 
 exit:
 	g_free (mechanism);
@@ -622,6 +639,14 @@ pop3_store_authenticate_sync (CamelService *service,
 	g_object_unref (settings);
 
 	pop3_engine = camel_pop3_store_ref_engine (store);
+	if (!pop3_engine) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		result = CAMEL_AUTHENTICATION_ERROR;
+		goto exit;
+	}
 
 	if (mechanism == NULL) {
 		if (password == NULL) {
@@ -780,10 +805,12 @@ pop3_store_query_auth_types_sync (CamelService *service,
 
 		pop3_engine = camel_pop3_store_ref_engine (store);
 
-		types = g_list_concat (types, g_list_copy (pop3_engine->auth));
-		pop3_store_disconnect_sync (service, TRUE, cancellable, NULL);
+		if (pop3_engine) {
+			types = g_list_concat (types, g_list_copy (pop3_engine->auth));
+			pop3_store_disconnect_sync (service, TRUE, cancellable, NULL);
 
-		g_clear_object (&pop3_engine);
+			g_clear_object (&pop3_engine);
+		}
 	}
 
 	return types;
