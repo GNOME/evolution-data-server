@@ -169,6 +169,8 @@ cmd_list (CamelPOP3Engine *pe,
 	CamelSettings *settings;
 	gint batch_fetch_count;
 
+	g_return_if_fail (pe != NULL);
+
 	parent_store = camel_folder_get_parent_store (folder);
 	pop3_folder = (CamelPOP3Folder *) folder;
 	service = (CamelService *) parent_store;
@@ -754,7 +756,7 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 		cmd_list, folder,
 		cancellable, &local_error,
 		"LIST\r\n");
-	if (!local_error && (pop3_engine->capa & CAMEL_POP3_CAP_UIDL) != 0)
+	if (!local_error && pop3_engine && (pop3_engine->capa & CAMEL_POP3_CAP_UIDL) != 0)
 		pcu = camel_pop3_engine_command_new (
 			pop3_engine,
 			CAMEL_POP3_COMMAND_MULTI,
