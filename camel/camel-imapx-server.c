@@ -6963,11 +6963,11 @@ imapx_parser_thread (gpointer d)
 	return NULL;
 }
 
-static gboolean
+static gpointer
 join_helper (gpointer thread)
 {
 	g_thread_join (thread);
-	return FALSE;
+	return NULL;
 }
 
 static void
@@ -7039,12 +7039,12 @@ imapx_server_dispose (GObject *object)
 	QUEUE_UNLOCK (server);
 
 	if (server->parser_thread) {
-		if (server->parser_thread == g_thread_self ())
-			/* Prioritize ahead of GTK+ redraws. */
-			g_idle_add_full (
-				G_PRIORITY_HIGH_IDLE,
-				&join_helper, server->parser_thread, NULL);
-		else
+		if (server->parser_thread == g_thread_self ()) {
+			GThread *thread;
+
+			thread = g_thread_new (NULL, join_helper, server->parser_thread);
+			g_thread_unref (thread);
+		} else
 			g_thread_join (server->parser_thread);
 		server->parser_thread = NULL;
 	}
