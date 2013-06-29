@@ -104,6 +104,15 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
 #define CAL_STATIC_CAPABILITY_NO_TRANSPARENCY		"no-transparency"
 
 /**
+ * CAL_STATIC_CAPABILITY_NO_ALARM_DESCRIPTION:
+ *
+ * Flag indicating that the backend does not support alarm description
+ *
+ * Since: 3.8
+ */
+#define CAL_STATIC_CAPABILITY_NO_ALARM_DESCRIPTION	"no-alarm-description"
+
+/**
  * CAL_STATIC_CAPABILITY_NO_ALARM_AFTER_START:
  *
  * Flag indicating that the backend does not support alarm after start the event
