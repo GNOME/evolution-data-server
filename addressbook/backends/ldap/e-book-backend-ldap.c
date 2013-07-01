@@ -237,11 +237,7 @@ struct _EBookBackendLDAPPrivate {
 	gboolean is_summary_ready;
 	EBookBackendSummary *summary;
 
-	/* for future use */
-	gpointer reserved1;
-	gpointer reserved2;
-	gpointer reserved3;
-	gpointer reserved4;
+	gboolean generate_cache_in_progress; /* set to TRUE, when updating local cache for offline */
 };
 
 typedef void (*LDAPOpHandler)(LDAPOp *op, LDAPMessage *res);
@@ -456,7 +452,7 @@ can_browse (EBookBackend *backend)
 	ESourceLDAP *extension;
 	const gchar *extension_name;
 
-	if (E_IS_BOOK_BACKEND (backend))
+	if (!E_IS_BOOK_BACKEND (backend))
 		return FALSE;
 
 	source = e_backend_get_source (E_BACKEND (backend));
@@ -464,6 +460,23 @@ can_browse (EBookBackend *backend)
 	extension = e_source_get_extension (source, extension_name);
 
 	return e_source_ldap_get_can_browse (extension);
+}
+
+/* because the priv->marked_for_offline is populated only after open,
+   thus get the actual value directy from the source */
+static gboolean
+get_marked_for_offline (EBookBackend *backend)
+{
+	ESource *source;
+	ESourceOffline *extension;
+
+	if (!E_IS_BOOK_BACKEND (backend))
+		return FALSE;
+
+	source = e_backend_get_source (E_BACKEND (backend));
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_OFFLINE);
+
+	return e_source_offline_get_stay_synchronized (extension);
 }
 
 static EDataBookView *
@@ -4918,7 +4931,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 	sexp = e_data_book_view_get_sexp (view);
 	query = e_book_backend_sexp_text (sexp);
 
-	if (!e_backend_get_online (E_BACKEND (bl))) {
+	if (!e_backend_get_online (E_BACKEND (bl)) || (bl->priv->marked_for_offline && bl->priv->cache)) {
 		if (!(bl->priv->marked_for_offline && bl->priv->cache)) {
 			GError *edb_err = EDB_ERROR (REPOSITORY_OFFLINE);
 			e_data_book_view_notify_complete (view, edb_err);
@@ -5100,6 +5113,8 @@ generate_cache_handler (LDAPOp *op,
 		GSList *l;
 		gint contact_num = 0;
 		gchar *status_msg;
+		GTimeVal now;
+		gchar *update_str;
 
 		e_file_cache_clean (E_FILE_CACHE (bl->priv->cache));
 
@@ -5116,11 +5131,15 @@ generate_cache_handler (LDAPOp *op,
 				g_free (status_msg);
 			}
 			e_book_backend_cache_add_contact (bl->priv->cache, contact);
+			e_book_backend_notify_update (op->backend, contact);
 		}
 		e_book_backend_cache_set_populated (bl->priv->cache);
+		g_get_current_time (&now);
+		update_str = g_time_val_to_iso8601 (&now);
+		e_book_backend_cache_set_time (bl->priv->cache, update_str);
+		g_free (update_str);
 		e_file_cache_thaw_changes (E_FILE_CACHE (bl->priv->cache));
-		if (book_view)
-			e_data_book_view_notify_complete (book_view, NULL /* Success */);
+		e_book_backend_notify_complete (op->backend);
 		ldap_op_finished (op);
 		if (enable_debug) {
 			g_get_current_time (&end);
@@ -5137,6 +5156,7 @@ static void
 generate_cache_dtor (LDAPOp *op)
 {
 	LDAPGetContactListOp *contact_list_op = (LDAPGetContactListOp *) op;
+	EBookBackendLDAP *ldap_backend = E_BOOK_BACKEND_LDAP (op->backend);
 	GSList *l;
 
 	for (l = contact_list_op->contacts; l; l = g_slist_next (l)) {
@@ -5145,6 +5165,11 @@ generate_cache_dtor (LDAPOp *op)
 
 	g_slist_free (contact_list_op->contacts);
 	g_free (contact_list_op);
+
+	g_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (ldap_backend && ldap_backend->priv)
+		ldap_backend->priv->generate_cache_in_progress = FALSE;
+	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 }
 
 static void
@@ -5155,6 +5180,7 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	gint contact_list_msgid;
 	gint ldap_error;
 	GTimeVal start, end;
+	gchar *last_update_str;
 	gulong diff;
 
 	if (enable_debug) {
@@ -5165,13 +5191,45 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	priv = book_backend_ldap->priv;
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
-	if (!priv->ldap) {
+	if (!priv->ldap || !priv->cache) {
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 		g_free (contact_list_op);
 		if (enable_debug)
-			printf ("generating offline cache failed ... ldap handler is NULL\n");
+			printf ("generating offline cache failed ... ldap handler is NULL or no cache set\n");
 		return;
 	}
+
+	if (priv->generate_cache_in_progress) {
+		g_rec_mutex_unlock (&eds_ldap_handler_lock);
+		g_free (contact_list_op);
+		if (enable_debug)
+			printf ("LDAP generating offline cache skipped: Another request in progress\n");
+		return;
+	}
+
+	last_update_str = e_book_backend_cache_get_time (priv->cache);
+	if (last_update_str) {
+		GTimeVal now, last_update;
+
+		if (g_time_val_from_iso8601 (last_update_str, &last_update)) {
+			g_get_current_time (&now);
+
+			/* update up to once a week */
+			if (now.tv_sec <= last_update.tv_sec + 7 * 24 * 60 * 60) {
+				g_rec_mutex_unlock (&eds_ldap_handler_lock);
+				g_free (contact_list_op);
+				g_free (last_update_str);
+				if (enable_debug)
+					printf ("LDAP generating offline cache skipped: it's not 7 days since the last check yet\n");
+				return;
+			}
+		}
+
+		g_free (last_update_str);
+	}
+
+	priv->generate_cache_in_progress = TRUE;
+
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	do {
@@ -5202,6 +5260,28 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	} else {
 		generate_cache_dtor ((LDAPOp *) contact_list_op);
 	}
+}
+
+static void
+book_backend_ldap_refresh (EBookBackend *backend,
+			   EDataBook *book,
+			   guint32 opid,
+			   GCancellable *cancellable)
+{
+	EBookBackendLDAP *ldap_backend = E_BOOK_BACKEND_LDAP (backend);
+
+	g_return_if_fail (ldap_backend != NULL);
+	g_return_if_fail (ldap_backend->priv != NULL);
+
+	/* stop immediately, nothing to report here */
+	e_data_book_respond_refresh (book, opid, NULL);
+
+	if (!ldap_backend->priv->cache || !ldap_backend->priv->marked_for_offline ||
+	    ldap_backend->priv->generate_cache_in_progress)
+		return;
+
+	e_book_backend_cache_set_time (ldap_backend->priv->cache, "");
+	generate_cache (ldap_backend);
 }
 
 static void
@@ -5360,15 +5440,13 @@ e_book_backend_ldap_get_backend_property (EBookBackend *backend,
                                           GCancellable *cancellable,
                                           const gchar *prop_name)
 {
-	EBookBackendLDAPPrivate *priv;
-
 	g_return_if_fail (prop_name != NULL);
 
-	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
-
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		if (can_browse (backend) || priv->marked_for_offline)
-			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query");
+		if (get_marked_for_offline (backend))
+			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query,refresh-supported");
+		else if (can_browse (backend))
+ 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query");
 		else
 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists");
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
@@ -5764,6 +5842,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;
 	parent_class->start_view		= e_book_backend_ldap_start_view;
 	parent_class->stop_view			= e_book_backend_ldap_stop_view;
+	parent_class->refresh			= book_backend_ldap_refresh;
 
 	object_class->finalize = e_book_backend_ldap_finalize;
 
