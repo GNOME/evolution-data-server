@@ -246,7 +246,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 		if (error != NULL) {
 			g_warn_if_fail (source == NULL);
 			g_warning ("%s: %s", G_STRFUNC, error->message);
-			g_error_free (error);
+			g_clear_error (&error);
 			continue;
 		}
 
