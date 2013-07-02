@@ -147,6 +147,25 @@ typedef enum {
 	E_BOOK_SORT_DESCENDING
 } EBookSortType;
 
+/**
+ * EBookCursorOrigin:
+ * @E_BOOK_CURSOR_ORIGIN_CURRENT:  The current cursor position
+ * @E_BOOK_CURSOR_ORIGIN_PREVIOUS: The previously recorded cursor position, this can be used to repeat the previous query
+ * @E_BOOK_CURSOR_ORIGIN_RESET:    The beginning of the cursor results (or end of the results, if navigating in reverse).
+ *
+ * Defines the behaviour of e_book_client_cursor_move_by().
+ *
+ * The cursor always saves the previous cursor position as well as
+ * the new cursor position after performing a move. This allows
+ * cursor queries to be repeated in the case where content may have
+ * changed but the same content window should be refreshed in a UI.
+ */
+typedef enum {
+	E_BOOK_CURSOR_ORIGIN_CURRENT,
+	E_BOOK_CURSOR_ORIGIN_PREVIOUS,
+	E_BOOK_CURSOR_ORIGIN_RESET
+} EBookCursorOrigin;
+
 GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_book_client_error_to_string	(EBookClientError code);
 
