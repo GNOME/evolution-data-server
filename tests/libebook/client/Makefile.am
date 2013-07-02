@@ -48,6 +48,7 @@ TESTS =								\
 	test-client-revision-view				\
 	test-client-view-operations		 		\
 	test-client-suppress-notifications			\
+	test-client-cursor-create				\
 	$(NULL)
 
 # The noinst tests are functional tests, not unit tests.
@@ -114,5 +115,7 @@ test_client_write_write_LDADD=$(TEST_LIBS)
 test_client_write_write_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_self_LDADD=$(TEST_LIBS)
 test_client_self_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_cursor_create_LDADD=$(TEST_LIBS)
+test_client_cursor_create_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
