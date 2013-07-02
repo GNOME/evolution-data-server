@@ -67,4 +67,11 @@
     <arg name="object_path" direction="out" type="o"/>
   </method>
 
+  <method name="GetCursor">
+    <arg name="query" direction="in" type="s"/>
+    <arg name="sort_keys" direction="in" type="as"/>
+    <arg name="sort_types" direction="in" type="as"/>
+    <arg name="object_path" direction="out" type="o"/>
+  </method>
+
 </interface>
