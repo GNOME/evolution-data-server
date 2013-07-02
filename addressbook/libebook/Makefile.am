@@ -41,6 +41,7 @@ libebook_1_2_la_CPPFLAGS = \
 libebook_1_2_la_SOURCES =				\
 	$(ENUM_GENERATED)				\
 	e-book-client.c					\
+	e-book-client-cursor.c				\
 	e-book-client-view.c				\
 	e-book-view-private.h				\
 	e-book-view.c					\
@@ -69,6 +70,7 @@ libebookincludedir = $(privincludedir)/libebook
 libebookinclude_HEADERS =				\
 	libebook.h					\
 	e-book-client.h					\
+	e-book-client-cursor.h				\
 	e-book-client-view.h				\
 	e-book-enumtypes.h				\
 	e-book-view.h					\
