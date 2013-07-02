@@ -5211,6 +5211,7 @@ typedef enum {
 struct _EbSdbCursor {
 	gchar         *folderid;      /* The folderid for this cursor */
 
+	EBookBackendSExp *sexp;       /* An EBookBackendSExp based on the query, used by e_book_backend_sqlitedb_cursor_compare() */
 	gchar         *select_vcards; /* The first fragment when querying results */
 	gchar         *select_count;  /* The first fragment when querying contact counts */
 	gchar         *query;         /* The SQL query expression derived from the passed search expression */
@@ -5236,6 +5237,7 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 	g_free (cursor->select_vcards);
 	g_free (cursor->select_count);
 	g_free (cursor->query);
+	g_clear_object (&(cursor->sexp));
 
 	if (query_with_list_attrs) {
 		gchar *list_table = g_strconcat (cursor->folderid, "_lists", NULL);
@@ -5258,7 +5260,13 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 	sqlite3_free (stmt);
 	sqlite3_free (count_stmt);
 
-	cursor->query = sexp ? sexp_to_sql_query (ebsdb, cursor->folderid, sexp) : NULL;
+	if (sexp) {
+		cursor->query = sexp_to_sql_query (ebsdb, cursor->folderid, sexp);
+		cursor->sexp  = e_book_backend_sexp_new (sexp);
+	} else {
+		cursor->query = NULL;
+		cursor->sexp  = NULL;
+	}
 }
 
 static gchar *
@@ -5377,6 +5385,7 @@ ebsdb_cursor_free (EbSdbCursor *cursor)
 			g_free (cursor->state[i].values);
 		}
 
+		g_clear_object (&(cursor->sexp));
 		g_free (cursor->folderid);
 		g_free (cursor->select_vcards);
 		g_free (cursor->select_count);
@@ -5679,6 +5688,10 @@ e_book_backend_sqlitedb_cursor_new (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
 	g_return_val_if_fail (folderid && folderid[0], NULL);
 
+	/* We don't like '\0' sexps, prefer NULL */
+	if (sexp && !sexp[0])
+		sexp = NULL;
+
 	/* We only support cursors for summary fields in the query */
 	if (sexp && !e_book_backend_sqlitedb_check_summary_query (ebsdb, sexp, &query_with_list_attrs)) {
 		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
@@ -5960,6 +5973,10 @@ e_book_backend_sqlitedb_cursor_set_sexp (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (cursor != NULL, FALSE);
 
+	/* We don't like '\0' sexps, prefer NULL */
+	if (sexp && !sexp[0])
+		sexp = NULL;
+
 	/* We only support cursors for summary fields in the query */
 	if (sexp && !e_book_backend_sqlitedb_check_summary_query (ebsdb, sexp, &query_with_list_attrs)) {
 		g_set_error (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY,
@@ -6036,4 +6053,82 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	return success;
+}
+
+/**
+ * e_book_backend_sqlitedb_cursor_compare:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @cursor: The #EbSdbCursor
+ * @contact: The #EContact to compare
+ * @matches_sexp: (out) (allow-none): Whether the contact matches the cursor's search expression
+ *
+ * Compares @contact with @cursor and returns whether @contact is less than, equal to, or greater
+ * than @cursor.
+ *
+ * Returns: A value that is less than, equal to, or greater than zero if @contact is found,
+ * respectively, to be less than, to match, or be greater than the current value of @cursor.
+ */
+gint
+e_book_backend_sqlitedb_cursor_compare (EBookBackendSqliteDB *ebsdb,
+					EbSdbCursor          *cursor,
+					EContact             *contact,
+					gboolean             *matches_sexp)
+{
+	EBookBackendSqliteDBPrivate *priv;
+	gint i;
+	gint comparison = 0;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
+	g_return_val_if_fail (cursor != NULL, FALSE);
+
+	priv = ebsdb->priv;
+
+	if (matches_sexp) {
+		if (cursor->sexp == NULL)
+			*matches_sexp = TRUE;
+		else
+			*matches_sexp =
+				e_book_backend_sexp_match_contact (cursor->sexp, contact);
+	}
+
+	for (i = 0; i < cursor->n_sort_fields && comparison == 0; i++) {
+
+		/* Empty state sorts below any contact value, which means the contact sorts above cursor */
+		if (cursor->state[STATE_CURRENT].values[i] == NULL) {
+			comparison = 1;
+		} else {
+			const gchar *field_value;
+
+			field_value = (const gchar *)
+				e_contact_get_const (contact, cursor->sort_fields[i]);
+
+			/* Empty contact state sorts below any cursor value */
+			if (field_value == NULL)
+				comparison = -1;
+			else {
+				gchar *collation_key;
+
+				/* Check of contact sorts below, equal to, or above the cursor */
+				collation_key = e_collator_generate_key (priv->collator, field_value, NULL);
+				comparison = strcmp (collation_key, cursor->state[STATE_CURRENT].values[i]);
+				g_free (collation_key);
+			}
+		}
+	}
+
+	/* UID tie-breaker */
+	if (comparison == 0) {
+		const gchar *uid;
+
+		uid = (const gchar *)e_contact_get_const (contact, E_CONTACT_UID);
+
+		if (cursor->state[STATE_CURRENT].last_uid == NULL)
+			comparison = 1;
+		else if (uid == NULL)
+			comparison = -1;
+		else
+			comparison = strcmp (uid, cursor->state[STATE_CURRENT].last_uid);
+	}
+
+	return comparison;
 }

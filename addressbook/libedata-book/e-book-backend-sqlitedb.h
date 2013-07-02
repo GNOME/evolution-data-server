@@ -351,6 +351,11 @@ gboolean        e_book_backend_sqlitedb_cursor_calculate
 						 gint                 *total,
 						 gint                 *position,
 						 GError              **error);
+gint            e_book_backend_sqlitedb_cursor_compare
+                                                (EBookBackendSqliteDB *ebsdb,
+						 EbSdbCursor          *cursor,
+						 EContact             *contact,
+						 gboolean             *matches_sexp);
 
 #ifndef EDS_DISABLE_DEPRECATED
 gboolean	e_book_backend_sqlitedb_is_summary_query
