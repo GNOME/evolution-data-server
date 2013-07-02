@@ -1504,3 +1504,81 @@ e_book_backend_respond_opened (EBookBackend *backend,
 
 	e_data_book_respond_open (book, opid, error);
 }
+
+/**
+ * e_book_backend_create_cursor:
+ * @backend: an #EBookBackend
+ * @sort_fields: the #EContactFields to sort by
+ * @sort_types: the #EBookSortTypes for the sorted fields
+ * @n_fields: the number of fields in the @sort_fields and @sort_types
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #EDataBookCursor for the given backend if the backend
+ * has cursor support. If the backend does not support cursors then
+ * a %E_CLIENT_ERROR_NOT_SUPPORTED error will be set in @error.
+ *
+ * Backends can also refuse to create cursors for some values of @sort_fields
+ * and report more specific errors.
+ *
+ * The returned cursor belongs to @backend and should be destroyed
+ * with e_book_backend_delete_cursor() when no longer needed.
+ *
+ * Returns: (transfer none): A newly created cursor, the cursor belongs
+ * to the backend and should not be unreffed, or %NULL
+ *
+ * Since: 3.10
+ */
+EDataBookCursor *
+e_book_backend_create_cursor (EBookBackend *backend,
+			      EContactField *sort_fields,
+			      EBookSortType *sort_types,
+			      guint n_fields,
+			      GError **error)
+{
+	EDataBookCursor *cursor = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->create_cursor)
+		cursor = (* E_BOOK_BACKEND_GET_CLASS (backend)->create_cursor) (backend,
+										sort_fields,
+										sort_types,
+										n_fields,
+										error);
+	else
+		g_set_error (error,
+			     E_CLIENT_ERROR,
+			     E_CLIENT_ERROR_NOT_SUPPORTED,
+			     "Addressbook backend does not support cursors");
+
+	g_object_unref (backend);
+
+	return cursor;
+}
+
+/**
+ * e_book_backend_delete_cursor:
+ * @backend: an #EBookBackend
+ * @cursor: the #EDataBookCursor to destroy
+ *
+ * Destroys @cursor
+ *
+ * Since: 3.10
+ */
+void
+e_book_backend_delete_cursor (EBookBackend *backend,
+			      EDataBookCursor *cursor)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+
+	g_object_ref (backend);
+
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor)
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor) (backend, cursor);
+	else
+		g_warning ("Backend asked to delete a cursor, but does not support cursors");
+
+	g_object_unref (backend);
+}
