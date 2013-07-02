@@ -66,10 +66,15 @@ struct _EBookClientPrivate {
 struct _AsyncContext {
 	EContact *contact;
 	EBookClientView *client_view;
+	EBookClientCursor *client_cursor;
 	GSList *object_list;
 	GSList *string_list;
+	EContactField *sort_fields;
+	EBookSortType *sort_types;
+	guint n_sort_fields;
 	gchar *sexp;
 	gchar *uid;
+	GMainContext *context;
 };
 
 struct _SignalClosure {
@@ -124,6 +129,12 @@ async_context_free (AsyncContext *async_context)
 	if (async_context->client_view != NULL)
 		g_object_unref (async_context->client_view);
 
+	if (async_context->client_cursor != NULL)
+		g_object_unref (async_context->client_cursor);
+
+	if (async_context->context)
+		g_main_context_unref (async_context->context);
+
 	g_slist_free_full (
 		async_context->object_list,
 		(GDestroyNotify) g_object_unref);
@@ -131,6 +142,9 @@ async_context_free (AsyncContext *async_context)
 	g_slist_free_full (
 		async_context->string_list,
 		(GDestroyNotify) g_free);
+
+	g_free (async_context->sort_fields);
+	g_free (async_context->sort_types);
 
 	g_free (async_context->sexp);
 	g_free (async_context->uid);
@@ -987,6 +1001,13 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->open_sync = book_client_open_sync;
 	client_class->refresh_sync = book_client_refresh_sync;
 
+	/**
+	 * EBookClient:locale:
+	 *
+	 * The currently active locale for this addressbook.
+	 *
+	 * Since: 3.10
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_LOCALE,
@@ -3547,6 +3568,362 @@ e_book_client_get_view_sync (EBookClient *client,
 
 	success = e_book_client_get_view_finish (
 		client, result, out_view, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/* Helper for e_book_client_get_cursor() */
+static const gchar **
+sort_param_to_strv (gpointer param,
+		    gint     n_fields,
+		    gboolean keys)
+{
+	const gchar **array;
+	gint i;
+
+	array = (const gchar **)g_new0 (gchar *, n_fields + 1);
+
+	/* string arrays are shallow allocated, the strings themselves
+	 * are intern strings and don't need to be dupped.
+	 */
+	for (i = 0; i < n_fields; i++) {
+
+		if (keys) {
+			EContactField *fields = (EContactField *)param;
+
+			array[i] = e_contact_field_name (fields[i]);
+		} else {
+			EBookSortType *types = (EBookSortType *)param;
+
+			array[i] = e_enum_to_string (E_TYPE_BOOK_SORT_TYPE,
+						     types[i]);
+		}
+	}
+
+	return array;
+}
+
+static void
+book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
+				       GObject *source_object,
+				       GCancellable *cancellable)
+{
+	EBookClient *client = E_BOOK_CLIENT (source_object);
+	AsyncContext *async_context;
+	gchar *utf8_sexp;
+	gchar *object_path = NULL;
+	GError *local_error = NULL;
+	const gchar **sort_fields;
+	const gchar **sort_types;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	sort_fields   = sort_param_to_strv (async_context->sort_fields, async_context->n_sort_fields, TRUE);
+	sort_types    = sort_param_to_strv (async_context->sort_types, async_context->n_sort_fields, FALSE);
+
+	/* Direct Read Access cursor don't need any
+	 * D-Bus connection themselves, just give them
+	 * an EDataBookCursor directly
+	 */
+	if (client->priv->direct_book) {
+		EBookBackend *backend;
+		EDataBookCursor *cursor;
+
+		backend = e_data_book_get_backend (client->priv->direct_book);
+
+		cursor = e_book_backend_create_cursor (backend,
+						       async_context->sort_fields,
+						       async_context->sort_types,
+						       async_context->n_sort_fields,
+						       &local_error);
+
+		if (cursor) {
+			if (!e_data_book_cursor_set_sexp (cursor,
+							  async_context->sexp,
+							  &local_error)) {
+				e_book_backend_delete_cursor (backend,
+							      cursor);
+				cursor = NULL;
+			}
+		}
+
+		if (cursor != NULL) {
+			EBookClientCursor *client_cursor;
+
+			/* The client cursor will take a ref, but 
+			 * e_book_backend_create_cursor() returns
+			 * a pointer to a cursor owned by the backend,
+			 * don't unref the returned pointer here.
+			 */
+			client_cursor = g_initable_new (
+				E_TYPE_BOOK_CLIENT_CURSOR,
+				cancellable, &local_error,
+				"sort-fields", sort_fields,
+				"client", client,
+				"context", async_context->context,
+				"direct-cursor", cursor,
+				NULL);
+
+			/* Sanity check. */
+			g_return_if_fail (
+					  ((client_cursor != NULL) && (local_error == NULL)) ||
+					  ((client_cursor == NULL) && (local_error != NULL)));
+
+			async_context->client_cursor = client_cursor;
+		}
+
+	} else {
+		utf8_sexp = e_util_utf8_make_valid (async_context->sexp);
+
+		e_dbus_address_book_call_get_cursor_sync (
+			client->priv->dbus_proxy, utf8_sexp,
+			(const gchar *const *)sort_fields,
+			(const gchar *const *)sort_types,
+			&object_path, cancellable, &local_error);
+
+		g_free (utf8_sexp);
+
+		/* Sanity check. */
+		g_return_if_fail (
+			  ((object_path != NULL) && (local_error == NULL)) ||
+			  ((object_path == NULL) && (local_error != NULL)));
+
+		if (object_path != NULL) {
+			GDBusConnection *connection;
+			EBookClientCursor *client_cursor;
+
+			connection = g_dbus_proxy_get_connection (
+				G_DBUS_PROXY (client->priv->dbus_proxy));
+
+			client_cursor = g_initable_new (
+				E_TYPE_BOOK_CLIENT_CURSOR,
+				cancellable, &local_error,
+				"sort-fields", sort_fields,
+				"client", client,
+				"context", async_context->context,
+				"connection", connection,
+				"object-path", object_path,
+				NULL);
+
+			/* Sanity check. */
+			g_return_if_fail (
+					  ((client_cursor != NULL) && (local_error == NULL)) ||
+					  ((client_cursor == NULL) && (local_error != NULL)));
+
+			async_context->client_cursor = client_cursor;
+
+			g_free (object_path);
+		}
+	}
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_simple_async_result_take_error (simple, local_error);
+	}
+
+	g_free (sort_fields);
+	g_free (sort_types);
+}
+
+/* Need to catch the GMainContext of the actual caller,
+ * we do this dance because e_async_closure_new ()
+ * steps on the thread default main context (so we
+ * can use this in the sync call as well).
+ */
+static void
+e_book_client_get_cursor_with_context (EBookClient *client,
+				       const gchar *sexp,
+				       EContactField *sort_fields,
+				       EBookSortType *sort_types,
+				       guint n_fields,
+				       GMainContext *context,
+				       GCancellable *cancellable,
+				       GAsyncReadyCallback callback,
+				       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (sort_fields != NULL);
+	g_return_if_fail (sort_types != NULL);
+	g_return_if_fail (n_fields > 0);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->sexp = g_strdup (sexp);
+	async_context->sort_fields = g_memdup (sort_fields, sizeof (EContactField) * n_fields);
+	async_context->sort_types = g_memdup (sort_types, sizeof (EBookSortType) * n_fields);
+	async_context->n_sort_fields = n_fields;
+	async_context->context = g_main_context_ref (context);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data,
+		e_book_client_get_cursor);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	book_client_run_in_dbus_thread (
+		simple, book_client_get_cursor_in_dbus_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_book_client_get_cursor:
+ * @client: an #EBookClient
+ * @sexp: an S-expression representing the query
+ * @sort_fields: an array of #EContactFields to sort the cursor with
+ * @sort_types: an array of #EBookSortTypes to complement @sort_fields
+ * @n_fields: the length of the input @sort_fields and @sort_types arrays
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Create an #EBookClientCursor.
+ * The call is finished by e_book_client_get_view_finish()
+ * from the @callback.
+ *
+ * Note: @sexp can be obtained through #EBookQuery, by converting it
+ * to a string with e_book_query_to_string().
+ *
+ * Since: 3.10
+ */
+void
+e_book_client_get_cursor (EBookClient *client,
+			  const gchar *sexp,
+			  EContactField *sort_fields,
+			  EBookSortType *sort_types,
+			  guint n_fields,
+			  GCancellable *cancellable,
+			  GAsyncReadyCallback callback,
+			  gpointer user_data)
+{
+	GMainContext *context;
+
+	context = g_main_context_ref_thread_default ();
+	e_book_client_get_cursor_with_context (client, sexp,
+					       sort_fields,
+					       sort_types,
+					       n_fields,
+					       context,
+					       cancellable,
+					       callback,
+					       user_data);
+	g_main_context_unref (context);
+}
+
+/**
+ * e_book_client_get_cursor_finish:
+ * @client: an #EBookClient
+ * @result: a #GAsyncResult
+ * @out_cursor: (out): return location for an #EBookClientCursor
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_book_client_get_cursor().
+ * If successful, then the @out_cursor is set to newly create
+ * #EBookClientCursor, the cursor should be freed with g_object_unref()
+ * when no longer needed.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.10
+ */
+gboolean
+e_book_client_get_cursor_finish (EBookClient *client,
+				 GAsyncResult *result,
+				 EBookClientCursor **out_cursor,
+				 GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client),
+		e_book_client_get_cursor), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	g_return_val_if_fail (async_context->client_cursor != NULL, FALSE);
+
+	if (out_cursor != NULL)
+		*out_cursor = g_object_ref (async_context->client_cursor);
+
+	return TRUE;
+}
+
+/**
+ * e_book_client_get_cursor_sync:
+ * @client: an #EBookClient
+ * @sexp: an S-expression representing the query
+ * @sort_fields: an array of #EContactFields to sort the cursor with
+ * @sort_types: an array of #EBookSortTypes to complement @sort_fields
+ * @n_fields: the length of the input @sort_fields and @sort_types arrays
+ * @out_cursor: (out): return location for an #EBookClientCursor
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Create an #EBookClientCursor. If successful, then the @out_cursor is set
+ * to newly allocated #EBookClientCursor, the cursor should be freed with g_object_unref()
+ * when no longer needed.
+ *
+ * Note: @sexp can be obtained through #EBookQuery, by converting it
+ * to a string with e_book_query_to_string().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.10
+ */
+gboolean
+e_book_client_get_cursor_sync (EBookClient *client,
+			       const gchar *sexp,
+			       EContactField *sort_fields,
+			       EBookSortType *sort_types,
+			       guint n_fields,
+			       EBookClientCursor **out_cursor,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+	GMainContext *context;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (sort_fields != NULL, FALSE);
+	g_return_val_if_fail (sort_types != NULL, FALSE);
+	g_return_val_if_fail (n_fields > 0, FALSE);
+	g_return_val_if_fail (out_cursor != NULL, FALSE);
+
+	/* Get the main context before e_async_closure_new () steps on it */
+	context = g_main_context_ref_thread_default ();
+
+	closure = e_async_closure_new ();
+
+	e_book_client_get_cursor_with_context (client, sexp,
+					       sort_fields,
+					       sort_types,
+					       n_fields,
+					       context,
+					       cancellable,
+					       e_async_closure_callback, closure);
+
+	g_main_context_unref (context);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_book_client_get_cursor_finish (
+		client, result, out_cursor, error);
 
 	e_async_closure_free (closure);
 
