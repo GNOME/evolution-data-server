@@ -32,8 +32,10 @@
 #include <libedata-book/e-book-backend-summary.h>
 #include <libedata-book/e-book-backend-sync.h>
 #include <libedata-book/e-book-backend.h>
-#include <libedata-book/e-data-book-factory.h>
+#include <libedata-book/e-data-book-cursor.h>
+#include <libedata-book/e-data-book-cursor-sqlite.h>
 #include <libedata-book/e-data-book-direct.h>
+#include <libedata-book/e-data-book-factory.h>
 #include <libedata-book/e-data-book-view.h>
 #include <libedata-book/e-data-book.h>
 
