@@ -1216,9 +1216,14 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 
 	priv = E_CAL_CLIENT_GET_PRIVATE (cache);
 
-	g_mutex_lock (&priv->zone_cache_lock);
-
+	/* XXX Apparently this function can sometimes return NULL.
+	 *     I'm not sure when or why that happens, but we can't
+	 *     cache the icaltimezone if it has no tzid string. */
 	tzid = icaltimezone_get_tzid (zone);
+	if (tzid == NULL)
+		return;
+
+	g_mutex_lock (&priv->zone_cache_lock);
 
 	/* Avoid replacing an existing cache entry.  We don't want to
 	 * invalidate any icaltimezone pointers that may have already
