@@ -2298,21 +2298,15 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
 	return success;
 }
 
-struct _contact_info {
-	gboolean exists;
-	gboolean partial_content;
-};
-
 static gint
 contact_found_cb (gpointer ref,
                   gint col,
                   gchar **cols,
                   gchar **name)
 {
-	struct _contact_info *cinfo = ref;
+	gboolean *exists = ref;
 
-	cinfo->exists = TRUE;
-	cinfo->partial_content = cols[0] ? strtoul (cols[0], NULL, 10) : 0;
+	*exists = TRUE;
 
 	return 0;
 }
@@ -2321,6 +2315,8 @@ contact_found_cb (gpointer ref,
  * e_book_backend_sqlitedb_has_contact:
  *
  * FIXME: Document me.
+ *
+ * Note: The @partial_content is unused here.
  *
  * Since: 3.2
  **/
@@ -2331,7 +2327,7 @@ e_book_backend_sqlitedb_has_contact (EBookBackendSqliteDB *ebsdb,
                                      gboolean *partial_content,
                                      GError **error)
 {
-	struct _contact_info cinfo;
+	gboolean exists = FALSE;
 	gboolean success;
 	gchar *stmt;
 
@@ -2339,26 +2335,23 @@ e_book_backend_sqlitedb_has_contact (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (folderid != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	cinfo.exists = FALSE;
-	cinfo.partial_content = FALSE;
-
 	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
-		"SELECT partial_content FROM %Q WHERE uid = %Q",
+		"SELECT uid FROM %Q WHERE uid = %Q",
 		folderid, uid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, contact_found_cb , &cinfo, error);
+		ebsdb->priv->db, stmt, contact_found_cb, &exists, error);
 	sqlite3_free (stmt);
 
-	if (success)
-		*partial_content = cinfo.partial_content;
+	if (partial_content)
+		*partial_content = FALSE;
 
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	/* FIXME Returning FALSE can mean either "contact not found" or
 	 *       "error occurred".  Add a boolean (out) "exists" parameter. */
-	return success && cinfo.exists;
+	return success && exists;
 }
 
 static gint
@@ -4502,6 +4495,8 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_get_partially_cached_ids:
  *
  * FIXME: Document me.
+ *
+ * Note: Obsolete, do not use, it always ends with an error
  *
  * Since: 3.2
  **/
