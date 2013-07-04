@@ -320,11 +320,11 @@ imapx_search_by_uids (CamelFolder *folder,
 		CAMEL_OFFLINE_STORE (parent_store));
 
 	if (online) {
+		/* do not panic when the server cannot be reached for whatever reason,
+		   show offline data at least */
 		server = camel_imapx_store_get_server (
 			CAMEL_IMAPX_STORE (parent_store),
-			folder_name, cancellable, error);
-		if (server == NULL)
-			return NULL;
+			folder_name, cancellable, NULL);
 	}
 
 	g_mutex_lock (&ifolder->search_lock);
@@ -369,11 +369,11 @@ imapx_count_by_expression (CamelFolder *folder,
 		CAMEL_OFFLINE_STORE (parent_store));
 
 	if (online) {
+		/* do not panic when the server cannot be reached for whatever reason,
+		   show offline data at least */
 		server = camel_imapx_store_get_server (
 			CAMEL_IMAPX_STORE (parent_store),
-			folder_name, cancellable, error);
-		if (server == NULL)
-			return 0;
+			folder_name, cancellable, NULL);
 	}
 
 	g_mutex_lock (&ifolder->search_lock);
@@ -418,11 +418,11 @@ imapx_search_by_expression (CamelFolder *folder,
 		CAMEL_OFFLINE_STORE (parent_store));
 
 	if (online) {
+		/* do not panic when the server cannot be reached for whatever reason,
+		   show offline data at least */
 		server = camel_imapx_store_get_server (
 			CAMEL_IMAPX_STORE (parent_store),
-			folder_name, cancellable, error);
-		if (server == NULL)
-			return NULL;
+			folder_name, cancellable, NULL);
 	}
 
 	g_mutex_lock (&ifolder->search_lock);
