@@ -1911,7 +1911,7 @@ data_book_localed_appeared (GDBusConnection *connection,
 	book->priv->localed_cancel = g_cancellable_new ();
 
 	e_dbus_locale1_proxy_new (connection,
-				  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+				  G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
 				  "org.freedesktop.locale1",
 				  "/org/freedesktop/locale1",
 				  book->priv->localed_cancel,
