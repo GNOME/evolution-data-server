@@ -12,6 +12,8 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)/calendar   				\
 	-I$(top_srcdir)/tests/test-server-utils     		\
 	-I$(top_builddir)/tests/test-server-utils   		\
+	-I$(top_srcdir)/private					\
+	-I$(top_builddir)/private				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
@@ -20,6 +22,7 @@ libclient_test_utils_la_CPPFLAGS =				\
 libclient_test_utils_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
+	$(top_builddir)/private/libedbus-private.la		\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
@@ -49,6 +52,7 @@ TESTS =								\
 	test-client-view-operations		 		\
 	test-client-suppress-notifications			\
 	test-client-cursor-create				\
+	test-client-cursor-operations				\
 	$(NULL)
 
 # The noinst tests are functional tests, not unit tests.
@@ -117,5 +121,7 @@ test_client_self_LDADD=$(TEST_LIBS)
 test_client_self_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_cursor_create_LDADD=$(TEST_LIBS)
 test_client_cursor_create_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_cursor_operations_LDADD=$(TEST_LIBS)
+test_client_cursor_operations_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
