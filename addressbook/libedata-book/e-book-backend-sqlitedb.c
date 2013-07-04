@@ -90,7 +90,8 @@ struct _EBookBackendSqliteDBPrivate {
 	guint           have_attr_list : 1;
 	IndexFlags      attr_list_indexes;
 
-	ECollator    *collator;/* The ECollator to create sort keys for all fields */
+	ECollator      *collator; /* The ECollator to create sort keys for all fields */
+	gchar          *locale;   /* The current locale */
 };
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
@@ -231,6 +232,7 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 
 	g_free (priv->path);
 	g_free (priv->summary_fields);
+	g_free (priv->locale);
 
 	if (priv->collator)
 		e_collator_unref (priv->collator);
@@ -5056,16 +5058,23 @@ sqlitedb_set_locale_internal (EBookBackendSqliteDB *ebsdb,
 			      const gchar          *locale,
 			      GError              **error)
 {
+	EBookBackendSqliteDBPrivate *priv = ebsdb->priv;
 	ECollator *collator;
 
-	collator = e_collator_new (locale, error);
-	if (!collator)
-		return FALSE;
+	if (g_strcmp0 (priv->locale, locale) != 0) {
 
-	if (ebsdb->priv->collator)
-		e_collator_unref (ebsdb->priv->collator);
+		collator = e_collator_new (locale, error);
+		if (!collator)
+			return FALSE;
 
-	ebsdb->priv->collator = collator;
+		g_free (priv->locale);
+		priv->locale = g_strdup (locale);
+
+		if (ebsdb->priv->collator)
+			e_collator_unref (ebsdb->priv->collator);
+
+		ebsdb->priv->collator = collator;
+	}
 
 	return TRUE;
 }
@@ -5176,6 +5185,7 @@ e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
 {
 	gchar *stmt;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid && folderid[0], FALSE);
@@ -5188,6 +5198,11 @@ e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
 	success = book_backend_sql_exec (
 		ebsdb->priv->db, stmt, get_string_cb, lc_collate_out, error);
 	sqlite3_free (stmt);
+
+	if (!sqlitedb_set_locale_internal (ebsdb, *lc_collate_out, &local_error)) {
+		g_warning ("Error loading new locale: %s", local_error->message);
+		g_clear_error (&local_error);
+	}
 
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
