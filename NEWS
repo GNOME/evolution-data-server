@@ -1,3 +1,34 @@
+Evolution-Data-Server 3.9.4 2013-07-08
+--------------------------------------
+
+Bug Fixes:
+	Bug 682322 - SIGSEGV in pop3_folder_refresh_info_sync (Milan Crha)
+	Bug 697598 - [imapx] Freeze due to calling thread join from main thread
+	             (Milan Crha)
+	Bug 700894 - LDAP 'Copy for offline' blocks online searches (Milan Crha)
+	Bug 703053 - Error on setting reminder 'after start of appointment'
+	             (Fabiano Fidêncio)
+	Bug 703194 - Custom alarm message is REMINDER (Fabiano Fidêncio)
+
+Other Changes:
+	* CamelStore: Add a "folder-info-stale" signal. (Matthew Barnes)
+	* CamelIMAPXStore: Try harder to track settings. (Matthew Barnes)
+	* Add a desktop file for Ubuntu Online Accounts. (Iain Lane)
+	* UOA: Add service-specific descriptions for E-D-S. (Matthew Barnes)
+	* Allow automatic NTLM authentication unconditionally (David Woodhouse)
+	* GError instance use-after-free in collection_backend_load_resources()
+	  (Milan Crha)
+	* [IMAPX] Server connection is not mandatory when searching folder
+	  content (Milan Crha)
+	* e_book_backend_sqlitedb_has_contact() used nonexistent column
+	  (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Aurimas Černius (lt)
+	Kjartan Maraas (nb)
+
+
 Evolution-Data-Server 3.9.3 2013-06-17
 --------------------------------------
 
