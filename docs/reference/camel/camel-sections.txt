@@ -1039,6 +1039,7 @@ camel_imapx_stream_nstring_stream
 camel_imapx_stream_text
 camel_imapx_stream_number
 camel_imapx_stream_skip
+camel_imapx_stream_skip_until
 <SUBSECTION Standard>
 CAMEL_IMAPX_STREAM
 CAMEL_IS_IMAPX_STREAM
