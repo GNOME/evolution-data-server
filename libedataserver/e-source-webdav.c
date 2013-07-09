@@ -108,15 +108,39 @@ source_webdav_user_to_method (GBinding *binding,
                               GValue *target_value,
                               gpointer user_data)
 {
+	GObject *target_object;
+	ESourceAuthentication *extension;
 	const gchar *user;
+	gchar *method;
+	gboolean success = TRUE;
+
+	target_object = g_binding_get_target (binding);
+	extension = E_SOURCE_AUTHENTICATION (target_object);
+	method = e_source_authentication_dup_method (extension);
+	g_return_val_if_fail (method != NULL, FALSE);
+
+	/* Be careful not to stomp on a custom method name.
+	 * Only change it under the following conditions:
+	 *
+	 * 1) If "user" is empty, set "method" to "none".
+	 * 2) If "user" is not empty and "method" is "none",
+	 *    set "method" to "plain/password" (corresponds
+	 *    to HTTP Basic authentication).
+	 * 3) Otherwise preserve the current "method" value.
+	 */
 
 	user = g_value_get_string (source_value);
-	if (user == NULL || *user == '\0')
+	if (user == NULL || *user == '\0') {
 		g_value_set_string (target_value, "none");
-	else
+	} else if (g_str_equal (method, "none")) {
 		g_value_set_string (target_value, "plain/password");
+	} else {
+		success = FALSE;
+	}
 
-	return TRUE;
+	g_free (method);
+
+	return success;
 }
 
 static void
