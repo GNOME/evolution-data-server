@@ -15,6 +15,7 @@ e_module_get_type
 e_oauth2_support_get_type
 e_offline_listener_get_type
 e_server_side_source_get_type
+e_soup_auth_bearer_get_type
 e_source_registry_server_get_type
 e_user_prompter_get_type
 e_user_prompter_server_get_type

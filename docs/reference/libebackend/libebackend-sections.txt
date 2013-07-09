@@ -397,6 +397,24 @@ EServerSideSourcePrivate
 </SECTION>
 
 <SECTION>
+<FILE>e-soup-auth-bearer</FILE>
+<TITLE>ESoupAuthBearer</TITLE>
+ESoupAuthBearer
+e_soup_auth_bearer_set_access_token
+<SUBSECTION Standard>
+E_SOUP_AUTH_BEARER
+E_IS_SOUP_AUTH_BEARER
+E_TYPE_SOUP_AUTH_BEARER
+E_SOUP_AUTH_BEARER_CLASS
+E_IS_SOUP_AUTH_BEARER_CLASS
+E_SOUP_AUTH_BEARER_GET_CLASS
+ESoupAuthBearerClass
+e_soup_auth_bearer_get_type
+<SUBSECTION Private>
+ESoupAuthBearerPrivate
+</SECTION>
+
+<SECTION>
 <FILE>e-source-registry-server</FILE>
 <TITLE>ESourceRegistryServer</TITLE>
 E_SOURCE_REGISTRY_SERVER_OBJECT_PATH

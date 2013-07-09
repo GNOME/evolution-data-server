@@ -35,6 +35,7 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(E_BACKEND_CFLAGS)					\
 	$(GCR_BASE_CFLAGS)					\
 	$(GIO_UNIX_CFLAGS)					\
+	$(SOUP_CFLAGS)						\
 	$(CODE_COVERAGE_CFLAGS)					\
 	$(NULL)
 
@@ -56,6 +57,7 @@ libebackend_1_2_la_SOURCES =		\
 	e-db3-utils.c			\
 	e-module.c			\
 	e-server-side-source.c		\
+	e-soup-auth-bearer.c		\
 	e-source-registry-server.c	\
 	e-sqlite3-vfs.c			\
 	e-user-prompter.c		\
@@ -71,6 +73,7 @@ libebackend_1_2_la_LIBADD = 				\
 	$(SQLITE3_LIBS)					\
 	$(GCR_BASE_LIBS)				\
 	$(GIO_UNIX_LIBS)				\
+	$(SOUP_LIBS)					\
 	$(DB_LIBS)
 
 libebackend_1_2_la_LDFLAGS = \
@@ -100,6 +103,7 @@ libebackendinclude_HEADERS =		\
 	e-dbhash.h			\
 	e-module.h			\
 	e-server-side-source.h		\
+	e-soup-auth-bearer.h		\
 	e-source-registry-server.h	\
 	e-sqlite3-vfs.h			\
 	e-user-prompter.h		\
