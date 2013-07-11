@@ -144,7 +144,6 @@
 #include <camel/camel-vtrash-folder.h>
 #include <camel/camel-imapx-command.h>
 #include <camel/camel-imapx-job.h>
-#include <camel/camel-imapx-conn-manager.h>
 #include <camel/camel-imapx-folder.h>
 #include <camel/camel-imapx-search.h>
 #include <camel/camel-imapx-server.h>

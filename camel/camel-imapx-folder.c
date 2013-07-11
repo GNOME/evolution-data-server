@@ -303,30 +303,21 @@ imapx_search_by_uids (CamelFolder *folder,
                       GCancellable *cancellable,
                       GError **error)
 {
+	CamelIMAPXStore *imapx_store;
 	CamelIMAPXFolder *imapx_folder;
 	CamelIMAPXSearch *imapx_search;
-	CamelIMAPXServer *imapx_server = NULL;
+	CamelIMAPXServer *imapx_server;
 	CamelStore *store;
 	GPtrArray *matches;
-	const gchar *folder_name;
-	gboolean online;
 
 	if (uids->len == 0)
 		return g_ptr_array_new ();
 
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
 
-	online = camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store));
-
-	if (online) {
-		/* do not panic when the server cannot be reached for whatever reason,
-		   show offline data at least */
-		imapx_server = camel_imapx_store_get_server (
-			CAMEL_IMAPX_STORE (store),
-			folder_name, cancellable, NULL);
-	}
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL);
 
 	g_mutex_lock (&imapx_folder->search_lock);
 
@@ -353,27 +344,18 @@ imapx_count_by_expression (CamelFolder *folder,
                            GCancellable *cancellable,
                            GError **error)
 {
+	CamelIMAPXStore *imapx_store;
 	CamelIMAPXFolder *imapx_folder;
 	CamelIMAPXSearch *imapx_search;
-	CamelIMAPXServer *imapx_server = NULL;
+	CamelIMAPXServer *imapx_server;
 	CamelStore *store;
-	const gchar *folder_name;
-	gboolean online;
 	guint32 matches;
 
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
 
-	online = camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store));
-
-	if (online) {
-		/* do not panic when the server cannot be reached for whatever reason,
-		   show offline data at least */
-		imapx_server = camel_imapx_store_get_server (
-			CAMEL_IMAPX_STORE (store),
-			folder_name, cancellable, NULL);
-	}
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL);
 
 	g_mutex_lock (&imapx_folder->search_lock);
 
@@ -400,27 +382,18 @@ imapx_search_by_expression (CamelFolder *folder,
                             GCancellable *cancellable,
                             GError **error)
 {
+	CamelIMAPXStore *imapx_store;
 	CamelIMAPXFolder *imapx_folder;
 	CamelIMAPXSearch *imapx_search;
-	CamelIMAPXServer *imapx_server = NULL;
+	CamelIMAPXServer *imapx_server;
 	CamelStore *store;
 	GPtrArray *matches;
-	const gchar *folder_name;
-	gboolean online;
 
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
 
-	online = camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store));
-
-	if (online) {
-		/* do not panic when the server cannot be reached for whatever reason,
-		   show offline data at least */
-		imapx_server = camel_imapx_store_get_server (
-			CAMEL_IMAPX_STORE (store),
-			folder_name, cancellable, NULL);
-	}
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL);
 
 	g_mutex_lock (&imapx_folder->search_lock);
 
@@ -468,21 +441,13 @@ imapx_append_message_sync (CamelFolder *folder,
 	gboolean success = FALSE;
 
 	store = camel_folder_get_parent_store (folder);
-	imapx_store = CAMEL_IMAPX_STORE (store);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (appended_uid != NULL)
 		*appended_uid = NULL;
 
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, NULL, cancellable, error);
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_append_message (
 			imapx_server, folder, message, info,
@@ -502,28 +467,16 @@ imapx_expunge_sync (CamelFolder *folder,
 	CamelStore *store;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *folder_name;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, folder_name, cancellable, error);
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_expunge (
 			imapx_server, folder, cancellable, error);
-		camel_imapx_store_op_done (
-			imapx_store, imapx_server, folder_name);
 	}
 
 	g_clear_object (&imapx_server);
@@ -538,36 +491,19 @@ imapx_fetch_messages_sync (CamelFolder *folder,
                            GCancellable *cancellable,
                            GError **error)
 {
-	CamelService *service;
 	CamelStore *store;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *folder_name;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
-	service = CAMEL_SERVICE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	if (!camel_service_connect_sync (service, cancellable, error))
-		return FALSE;
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, folder_name, cancellable, error);
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_fetch_messages (
 			imapx_server, folder, type, limit, cancellable, error);
-		camel_imapx_store_op_done (
-			imapx_store, imapx_server, folder_name);
 	}
 
 	g_clear_object (&imapx_server);
@@ -584,16 +520,12 @@ imapx_get_message_sync (CamelFolder *folder,
 	CamelMimeMessage *msg = NULL;
 	CamelStream *stream = NULL;
 	CamelStore *store;
-	CamelIMAPXStore *imapx_store;
 	CamelIMAPXFolder *imapx_folder;
-	const gchar *folder_name;
 	const gchar *path = NULL;
 	gboolean offline_message = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 	store = camel_folder_get_parent_store (folder);
-	imapx_store = CAMEL_IMAPX_STORE (store);
 
 	if (!strchr (uid, '-'))
 		path = "cur";
@@ -614,21 +546,12 @@ imapx_get_message_sync (CamelFolder *folder,
 			return NULL;
 		}
 
-		if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("You must be working online to complete this operation"));
-			return NULL;
-		}
+		imapx_server = camel_imapx_store_ref_server (
+			CAMEL_IMAPX_STORE (store), error);
 
-		imapx_server = camel_imapx_store_get_server (
-			imapx_store, folder_name, cancellable, error);
 		if (imapx_server != NULL) {
 			stream = camel_imapx_server_get_message (
 				imapx_server, folder, uid, cancellable, error);
-			camel_imapx_store_op_done (
-				imapx_store, imapx_server, folder_name);
 		}
 
 		g_clear_object (&imapx_server);
@@ -680,18 +603,18 @@ imapx_get_quota_info_sync (CamelFolder *folder,
                            GError **error)
 {
 	CamelStore *store;
+	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
 	CamelFolderQuotaInfo *quota_info = NULL;
 	const gchar *folder_name;
 	gchar **quota_root_names;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
+	folder_name = camel_folder_get_full_name (folder);
 
-	imapx_server = camel_imapx_store_get_server (
-		CAMEL_IMAPX_STORE (store),
-		folder_name, cancellable, error);
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_update_quota_info (
@@ -739,36 +662,19 @@ imapx_refresh_info_sync (CamelFolder *folder,
                          GCancellable *cancellable,
                          GError **error)
 {
-	CamelService *service;
 	CamelStore *store;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *folder_name;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
-	service = CAMEL_SERVICE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	if (!camel_service_connect_sync (service, cancellable, error))
-		return FALSE;
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, folder_name, cancellable, error);
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_refresh_info (
 			imapx_server, folder, cancellable, error);
-		camel_imapx_store_op_done (
-			imapx_store, imapx_server, folder_name);
 	}
 
 	g_clear_object (&imapx_server);
@@ -933,23 +839,13 @@ imapx_synchronize_sync (CamelFolder *folder,
 	CamelStore *store;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *folder_name;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, folder_name, cancellable, error);
 	if (imapx_server != NULL) {
 		gboolean need_to_expunge;
 
@@ -976,9 +872,6 @@ imapx_synchronize_sync (CamelFolder *folder,
 		if (success && expunge)
 			success = camel_imapx_server_expunge (
 				imapx_server, folder, cancellable, error);
-
-		camel_imapx_store_op_done (
-			imapx_store, imapx_server, folder_name);
 	}
 
 	g_clear_object (&imapx_server);
@@ -995,28 +888,16 @@ imapx_synchronize_message_sync (CamelFolder *folder,
 	CamelStore *store;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *folder_name;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (folder);
 	store = camel_folder_get_parent_store (folder);
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, folder_name, cancellable, error);
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_sync_message (
 			imapx_server, folder, uid, cancellable, error);
-		camel_imapx_store_op_done (
-			imapx_store, imapx_server, folder_name);
 	}
 
 	g_clear_object (&imapx_server);
@@ -1036,29 +917,17 @@ imapx_transfer_messages_to_sync (CamelFolder *source,
 	CamelStore *store;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *folder_name;
 	gboolean success = FALSE;
 
-	folder_name = camel_folder_get_full_name (source);
 	store = camel_folder_get_parent_store (source);
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, folder_name, cancellable, error);
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_copy_message (
 			imapx_server, source, dest, uids,
 			delete_originals, cancellable, error);
-		camel_imapx_store_op_done (
-			imapx_store, imapx_server, folder_name);
 
 		/* Update destination folder only if it's not frozen,
 		 * to avoid updating for each "move" action on a single

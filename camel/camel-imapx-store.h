@@ -32,7 +32,6 @@
 
 #include "camel-imapx-server.h"
 #include "camel-imapx-store-summary.h"
-#include "camel-imapx-conn-manager.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_STORE \
@@ -63,9 +62,6 @@ struct _CamelIMAPXStore {
 	CamelOfflineStore parent;
 	CamelIMAPXStorePrivate *priv;
 
-	CamelIMAPXConnManager *con_man;
-	CamelIMAPXServer *authenticating_server;
-
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar dir_sep;
 
@@ -91,13 +87,8 @@ struct _CamelIMAPXStoreClass {
 
 GType		camel_imapx_store_get_type	(void);
 CamelIMAPXServer *
-		camel_imapx_store_get_server	(CamelIMAPXStore *store,
-						 const gchar *folder_name,
-						 GCancellable *cancellable,
+		camel_imapx_store_ref_server	(CamelIMAPXStore *store,
 						 GError **error);
-void		camel_imapx_store_op_done	(CamelIMAPXStore *istore,
-						 CamelIMAPXServer *server,
-						 const gchar *folder_name);
 CamelFolderQuotaInfo *
 		camel_imapx_store_dup_quota_info
 						(CamelIMAPXStore *store,

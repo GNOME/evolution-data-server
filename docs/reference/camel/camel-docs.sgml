@@ -202,7 +202,6 @@
     <chapter id="IMAP">
       <title>Extensible IMAP</title>
       <xi:include href="xml/camel-imapx-command.xml"/>
-      <xi:include href="xml/camel-imapx-conn-manager.xml"/>
       <xi:include href="xml/camel-imapx-folder.xml"/>
       <xi:include href="xml/camel-imapx-job.xml"/>
       <xi:include href="xml/camel-imapx-search.xml"/>

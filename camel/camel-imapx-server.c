@@ -351,14 +351,6 @@ enum {
 	PROP_STORE
 };
 
-enum {
-	SELECT_CHANGED,
-	SHUTDOWN,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
 static void	imapx_uidset_init		(struct _uidset_state *ss,
 						 gint total,
 						 gint limit);
@@ -2297,6 +2289,7 @@ imapx_untagged_bye (CamelIMAPXServer *is,
                     GCancellable *cancellable,
                     GError **error)
 {
+	CamelIMAPXStore *store;
 	guchar *token = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -2313,6 +2306,12 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 	g_free (token);
 
 	is->state = IMAPX_SHUTDOWN;
+
+	/* Disconnect the CamelIMAPXStore. */
+	store = camel_imapx_server_ref_store (is);
+	camel_service_disconnect_sync (
+		CAMEL_SERVICE (store), FALSE, NULL, NULL);
+	g_object_unref (store);
 
 	return FALSE;
 }
@@ -3453,7 +3452,6 @@ imapx_command_select_done (CamelIMAPXServer *is,
                            GCancellable *cancellable,
                            GError **error)
 {
-	const gchar *selected_folder = NULL;
 	gboolean success = TRUE;
 	GError *local_error = NULL;
 
@@ -3564,7 +3562,6 @@ imapx_command_select_done (CamelIMAPXServer *is,
 			;
 		}
 		ifolder->uidvalidity_on_server = is->uidvalidity;
-		selected_folder = camel_folder_get_full_name (folder);
 
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *) folder->summary)->validity)
 			invalidate_local_cache (ifolder, is->uidvalidity);
@@ -3582,8 +3579,6 @@ imapx_command_select_done (CamelIMAPXServer *is,
 	}
 
 	camel_imapx_command_unref (ic);
-
-	g_signal_emit (is, signals[SELECT_CHANGED], 0, selected_folder);
 
 	return success;
 }
@@ -6861,6 +6856,7 @@ imapx_parser_thread (gpointer d)
 {
 	CamelIMAPXServer *is = d;
 	CamelIMAPXStream *stream;
+	CamelIMAPXStore *store;
 	GCancellable *cancellable;
 	gboolean have_stream;
 	GError *local_error = NULL;
@@ -6952,8 +6948,6 @@ imapx_parser_thread (gpointer d)
 
 	cancel_all_jobs (is, local_error);
 
-	g_clear_error (&local_error);
-
 	QUEUE_LOCK (is);
 	if (is->cancellable != NULL) {
 		g_object_unref (is->cancellable);
@@ -6963,7 +6957,14 @@ imapx_parser_thread (gpointer d)
 	QUEUE_UNLOCK (is);
 
 	is->parser_quit = FALSE;
-	g_signal_emit (is, signals[SHUTDOWN], 0);
+
+	/* Disconnect the CamelService. */
+	store = camel_imapx_server_ref_store (is);
+	camel_service_disconnect_sync (
+		CAMEL_SERVICE (store), FALSE, NULL, NULL);
+	g_object_unref (store);
+
+	g_clear_error (&local_error);
 
 	g_object_unref (is);
 
@@ -7117,9 +7118,6 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 	object_class->dispose = imapx_server_dispose;
 	object_class->constructed = imapx_server_constructed;
 
-	class->select_changed = NULL;
-	class->shutdown = NULL;
-
 	g_object_class_install_property (
 		object_class,
 		PROP_STREAM,
@@ -7142,30 +7140,6 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * CamelIMAPXServer::select_changed
-	 * @server: the #CamelIMAPXServer which emitted the signal
-	 **/
-	signals[SELECT_CHANGED] = g_signal_new (
-		"select_changed",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelIMAPXServerClass, select_changed),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 1, G_TYPE_STRING);
-
-	/**
-	 * CamelIMAPXServer::shutdown
-	 * @server: the #CamelIMAPXServer which emitted the signal
-	 **/
-	signals[SHUTDOWN] = g_signal_new (
-		"shutdown",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelIMAPXServerClass, shutdown),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 0);
 
 	class->tagprefix = 'A';
 }

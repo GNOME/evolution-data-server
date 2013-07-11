@@ -16,7 +16,6 @@ camel_folder_search_get_type
 camel_folder_summary_get_type
 camel_gpg_context_get_type
 camel_html_parser_get_type
-camel_imapx_conn_manager_get_type
 camel_imapx_folder_get_type
 camel_imapx_search_get_type
 camel_imapx_server_get_type

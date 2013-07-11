@@ -770,29 +770,6 @@ camel_imapx_command_queue_delete_link
 </SECTION>
 
 <SECTION>
-<FILE>camel-imapx-conn-manager</FILE>
-<TITLE>CamelIMAPXConnManager</TITLE>
-CamelIMAPXConnManager
-camel_imapx_conn_manager_new
-camel_imapx_conn_manager_ref_store
-camel_imapx_conn_manager_get_connection
-camel_imapx_conn_manager_close_connections
-camel_imapx_conn_manager_get_connections
-camel_imapx_conn_manager_update_con_info
-<SUBSECTION Standard>
-CAMEL_IMAPX_CONN_MANAGER
-CAMEL_IS_IMAPX_CONN_MANAGER
-CAMEL_TYPE_IMAPX_CONN_MANAGER
-CAMEL_IMAPX_CONN_MANAGER_CLASS
-CAMEL_IS_IMAPX_CONN_MANAGER_CLASS
-CAMEL_IMAPX_CONN_MANAGER_GET_CLASS
-CamelIMAPXConnManagerClass
-camel_imapx_conn_manager_get_type
-<SUBSECTION Private>
-CamelIMAPXConnManagerPrivate
-</SECTION>
-
-<SECTION>
 <FILE>camel-imapx-folder</FILE>
 <TITLE>CamelIMAPXFolder</TITLE>
 CamelIMAPXFolder
@@ -970,8 +947,7 @@ CamelIMAPXSettingsPrivate
 <FILE>camel-imapx-store</FILE>
 <TITLE>CamelIMAPXStore</TITLE>
 CamelIMAPXStore
-camel_imapx_store_get_server
-camel_imapx_store_op_done
+camel_imapx_store_ref_server
 camel_imapx_store_dup_quota_info
 camel_imapx_store_set_quota_info
 <SUBSECTION Standard>

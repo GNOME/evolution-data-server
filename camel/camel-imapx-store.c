@@ -57,6 +57,10 @@
 	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStorePrivate))
 
 struct _CamelIMAPXStorePrivate {
+	CamelIMAPXServer *connected_server;
+	CamelIMAPXServer *connecting_server;
+	GMutex server_lock;
+
 	GHashTable *quota_info;
 	GMutex quota_info_lock;
 
@@ -250,13 +254,6 @@ imapx_store_dispose (GObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
-	/* Force disconnect so we dont have it run later,
-	 * after we've cleaned up some stuff. */
-	if (imapx_store->con_man != NULL) {
-		camel_service_disconnect_sync (
-			CAMEL_SERVICE (imapx_store), TRUE, NULL, NULL);
-	}
-
 	if (imapx_store->priv->settings_notify_handler_id > 0) {
 		g_signal_handler_disconnect (
 			imapx_store->priv->settings,
@@ -264,10 +261,10 @@ imapx_store_dispose (GObject *object)
 		imapx_store->priv->settings_notify_handler_id = 0;
 	}
 
-	g_clear_object (&imapx_store->con_man);
-	g_clear_object (&imapx_store->authenticating_server);
 	g_clear_object (&imapx_store->summary);
 
+	g_clear_object (&imapx_store->priv->connected_server);
+	g_clear_object (&imapx_store->priv->connecting_server);
 	g_clear_object (&imapx_store->priv->settings);
 
 	/* Chain up to parent's dispose() method. */
@@ -280,6 +277,8 @@ imapx_store_finalize (GObject *object)
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
 	g_mutex_clear (&imapx_store->get_finfo_lock);
+
+	g_mutex_clear (&imapx_store->priv->server_lock);
 
 	g_hash_table_destroy (imapx_store->priv->quota_info);
 	g_mutex_clear (&imapx_store->priv->quota_info_lock);
@@ -335,45 +334,48 @@ imapx_get_name (CamelService *service,
 	return name;
 }
 
-CamelIMAPXServer *
-camel_imapx_store_get_server (CamelIMAPXStore *imapx_store,
-                              const gchar *folder_name,
-                              GCancellable *cancellable,
-                              GError **error)
-{
-	return camel_imapx_conn_manager_get_connection (
-		imapx_store->con_man, folder_name, cancellable, error);
-}
-
-void
-camel_imapx_store_op_done (CamelIMAPXStore *imapx_store,
-                           CamelIMAPXServer *server,
-                           const gchar *folder_name)
-{
-	g_return_if_fail (server != NULL);
-
-	camel_imapx_conn_manager_update_con_info (
-		imapx_store->con_man, server, folder_name);
-}
-
 static gboolean
 imapx_connect_sync (CamelService *service,
                     GCancellable *cancellable,
                     GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *server;
+	CamelIMAPXServer *imapx_server;
+	gboolean success;
 
 	imapx_store = CAMEL_IMAPX_STORE (service);
+	imapx_server = camel_imapx_server_new (imapx_store);
 
-	server = camel_imapx_store_get_server (
-		imapx_store, NULL, cancellable, error);
-	if (server != NULL) {
-		g_object_unref (server);
-		return TRUE;
+	g_mutex_lock (&imapx_store->priv->server_lock);
+
+	/* We need to share the CamelIMAPXServer instance with the
+	 * authenticate_sync() method, but we don't want other parts
+	 * getting at it just yet.  So stash it in a special private
+	 * variable while connecting to the IMAP server. */
+	g_warn_if_fail (imapx_store->priv->connecting_server == NULL);
+	imapx_store->priv->connecting_server = g_object_ref (imapx_server);
+
+	g_mutex_unlock (&imapx_store->priv->server_lock);
+
+	success = camel_imapx_server_connect (
+		imapx_server, cancellable, error);
+
+	g_mutex_lock (&imapx_store->priv->server_lock);
+
+	g_warn_if_fail (imapx_store->priv->connecting_server == imapx_server);
+	g_clear_object (&imapx_store->priv->connecting_server);
+
+	if (success) {
+		g_clear_object (&imapx_store->priv->connected_server);
+		imapx_store->priv->connected_server = imapx_server;
+		g_object_ref (imapx_server);
 	}
 
-	return FALSE;
+	g_mutex_unlock (&imapx_store->priv->server_lock);
+
+	g_clear_object (&imapx_server);
+
+	return success;
 }
 
 static gboolean
@@ -383,16 +385,15 @@ imapx_disconnect_sync (CamelService *service,
                        GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	CamelServiceClass *service_class;
 
 	imapx_store = CAMEL_IMAPX_STORE (service);
 
-	service_class = CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class);
-	if (!service_class->disconnect_sync (service, clean, cancellable, error))
-		return FALSE;
+	g_mutex_lock (&imapx_store->priv->server_lock);
 
-	if (imapx_store->con_man != NULL)
-		camel_imapx_conn_manager_close_connections (imapx_store->con_man);
+	g_warn_if_fail (imapx_store->priv->connecting_server == NULL);
+	g_clear_object (&imapx_store->priv->connected_server);
+
+	g_mutex_unlock (&imapx_store->priv->server_lock);
 
 	return TRUE;
 }
@@ -404,24 +405,22 @@ imapx_authenticate_sync (CamelService *service,
                          GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *server;
+	CamelIMAPXServer *imapx_server;
+	CamelAuthenticationResult result;
 
 	imapx_store = CAMEL_IMAPX_STORE (service);
 
-	/* CamelIMAPXConnManager sets this before calling
-	 * camel_imapx_server_connect()(), and then clears it
-	 * immediately after, all while holding the recursive
-	 * connection lock (CAMEL_SERVICE_REC_CONNECT_LOCK).
-	 * Otherwise we'd have no way of knowing which server
-	 * is trying to authenticate. */
-	server = imapx_store->authenticating_server;
+	/* This should have been set for us by connect_sync(). */
+	g_mutex_lock (&imapx_store->priv->server_lock);
+	imapx_server = g_object_ref (imapx_store->priv->connecting_server);
+	g_mutex_unlock (&imapx_store->priv->server_lock);
 
-	g_return_val_if_fail (
-		CAMEL_IS_IMAPX_SERVER (server),
-		CAMEL_AUTHENTICATION_REJECTED);
+	result = camel_imapx_server_authenticate (
+		imapx_server, mechanism, cancellable, error);
 
-	return camel_imapx_server_authenticate (
-		server, mechanism, cancellable, error);
+	g_clear_object (&imapx_server);
+
+	return result;
 }
 
 CamelServiceAuthType camel_imapx_password_authtype = {
@@ -780,12 +779,7 @@ imapx_subscribe_folder (CamelStore *store,
 	gboolean success = FALSE;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
-
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
-		return TRUE;
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, NULL, cancellable, error);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (folder_name != NULL && *folder_name == '/')
 		folder_name++;
@@ -817,12 +811,7 @@ imapx_unsubscribe_folder (CamelStore *store,
 	gboolean success = FALSE;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
-
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
-		return TRUE;
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, NULL, cancellable, error);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (folder_name != NULL && *folder_name == '/')
 		folder_name++;
@@ -1210,8 +1199,8 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 	GHashTable *folders = NULL;
 	GList *namespaces = NULL, *l;
 
-	server = camel_imapx_store_get_server (
-		imapx_store, NULL, cancellable, error);
+	server = camel_imapx_store_ref_server (imapx_store, error);
+
 	if (server == NULL)
 		return NULL;
 
@@ -1762,17 +1751,8 @@ imapx_store_create_folder_sync (CamelStore *store,
 	gboolean success;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return NULL;
-	}
-
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, NULL, cancellable, error);
 	if (imapx_server == NULL)
 		return NULL;
 
@@ -1862,21 +1842,7 @@ imapx_store_delete_folder_sync (CamelStore *store,
 	gboolean success = FALSE;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
-
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
-
-	/* Use INBOX connection as the implementation would try to select
-	 * inbox to ensure we are not selected on the folder being deleted. */
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, "INBOX", cancellable, error);
-	if (imapx_server == NULL)
-		return FALSE;
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (imapx_server != NULL) {
 		success = camel_imapx_server_delete_folder (
@@ -1919,18 +1885,9 @@ imapx_store_rename_folder_sync (CamelStore *store,
 
 	g_object_unref (settings);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return FALSE;
-	}
+	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
-	/* Use INBOX connection as the implementation would try to select
-	 * inbox to ensure we are not selected on the folder being renamed. */
-	imapx_server = camel_imapx_store_get_server (
-		imapx_store, "INBOX", cancellable, error);
 	if (imapx_server != NULL) {
 		gchar *oldpath;
 		gchar *newpath;
@@ -1986,26 +1943,20 @@ imapx_store_noop_sync (CamelStore *store,
                        GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	GList *list, *link;
+	CamelIMAPXServer *imapx_server;
 	gboolean success = TRUE;
 
+	/* If we're not connected then this truly is a no-op. */
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL);
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
-		return TRUE;
-
-	list = camel_imapx_conn_manager_get_connections (imapx_store->con_man);
-
-	for (link = list; link != NULL; link = g_list_next (link)) {
-		CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (link->data);
-
-		/* we just return last noops value, technically not correct though */
-		success = camel_imapx_server_noop (server, NULL, cancellable, error);
-		if (!success)
-			break;
+	if (imapx_server != NULL) {
+		success = camel_imapx_server_noop (
+			imapx_server, NULL, cancellable, error);
 	}
 
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	g_clear_object (&imapx_server);
 
 	return success;
 }
@@ -2240,7 +2191,8 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 	g_mutex_init (&store->get_finfo_lock);
 	store->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
 	store->dir_sep = '/';
-	store->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
+
+	g_mutex_init (&store->priv->server_lock);
 
 	store->priv->quota_info = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -2256,6 +2208,50 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 	g_signal_connect (
 		store, "notify::settings",
 		G_CALLBACK (imapx_store_update_store_flags), NULL);
+}
+
+/**
+ * camel_imapx_store_ref_server:
+ * @store: a #CamelIMAPXStore
+ * @error: return location for a #GError, or %NULL
+ *
+ * Returns the #CamelIMAPXServer for @store, if available.
+ *
+ * As a convenience, if the @store is not currently connected to an IMAP
+ * server, the function sets @error to %CAMEL_SERVER_ERROR_UNAVAILABLE and
+ * returns %NULL.  If an operation can possibly be executed while offline,
+ * pass %NULL for @error.
+ *
+ * The returned #CamelIMAPXServer is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #CamelIMAPXServer, or %NULL
+ *
+ * Since: 3.10
+ **/
+CamelIMAPXServer *
+camel_imapx_store_ref_server (CamelIMAPXStore *store,
+                              GError **error)
+{
+	CamelIMAPXServer *server = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), NULL);
+
+	g_mutex_lock (&store->priv->server_lock);
+
+	if (store->priv->connected_server != NULL) {
+		server = g_object_ref (store->priv->connected_server);
+	} else {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online "
+			"to complete this operation"));
+	}
+
+	g_mutex_unlock (&store->priv->server_lock);
+
+	return server;
 }
 
 CamelFolderQuotaInfo *
