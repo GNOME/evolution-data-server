@@ -6965,13 +6965,8 @@ imapx_parser_thread (gpointer d)
 	is->parser_quit = FALSE;
 	g_signal_emit (is, signals[SHUTDOWN], 0);
 
-	return NULL;
-}
+	g_object_unref (is);
 
-static gpointer
-join_helper (gpointer thread)
-{
-	g_thread_join (thread);
 	return NULL;
 }
 
@@ -7043,14 +7038,8 @@ imapx_server_dispose (GObject *object)
 	}
 	QUEUE_UNLOCK (server);
 
-	if (server->parser_thread) {
-		if (server->parser_thread == g_thread_self ()) {
-			GThread *thread;
-
-			thread = g_thread_new (NULL, join_helper, server->parser_thread);
-			g_thread_unref (thread);
-		} else
-			g_thread_join (server->parser_thread);
+	if (server->parser_thread != NULL) {
+		g_thread_unref (server->parser_thread);
 		server->parser_thread = NULL;
 	}
 
@@ -7317,7 +7306,8 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
 
-	is->parser_thread = g_thread_new (NULL, (GThreadFunc) imapx_parser_thread, is);
+	is->parser_thread = g_thread_new (
+		NULL, (GThreadFunc) imapx_parser_thread, g_object_ref (is));
 
 	return TRUE;
 }
