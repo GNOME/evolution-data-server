@@ -4222,12 +4222,20 @@ camel_folder_synchronize_sync (CamelFolder *folder,
                                GError **error)
 {
 	CamelFolderClass *class;
-	gboolean success = TRUE;
+	CamelStore *parent_store;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
+
+	/* Need to connect the service before we can synchronize. */
+	parent_store = camel_folder_get_parent_store (folder);
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (parent_store), cancellable, error);
+	if (!success)
+		return FALSE;
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
