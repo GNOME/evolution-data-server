@@ -4101,6 +4101,7 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
                                 GError **error)
 {
 	CamelFolderClass *class;
+	CamelStore *parent_store;
 	const gchar *display_name;
 	const gchar *message;
 	gboolean success;
@@ -4109,6 +4110,13 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->refresh_info_sync != NULL, FALSE);
+
+	/* Need to connect the service before we can refresh. */
+	parent_store = camel_folder_get_parent_store (folder);
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (parent_store), cancellable, error);
+	if (!success)
+		return FALSE;
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
