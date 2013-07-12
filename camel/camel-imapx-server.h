@@ -156,7 +156,6 @@ struct _CamelIMAPXServer {
 
 	/* Idle */
 	CamelIMAPXIdle *idle;
-	gboolean use_idle;
 
 	gboolean use_qresync;
 };

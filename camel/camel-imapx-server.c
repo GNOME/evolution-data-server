@@ -501,7 +501,7 @@ typedef enum {
 } CamelIMAPXIdleStopResult;
 
 static gboolean	imapx_in_idle			(CamelIMAPXServer *is);
-static gboolean	imapx_idle_supported		(CamelIMAPXServer *is);
+static gboolean	imapx_use_idle		(CamelIMAPXServer *is);
 static void	imapx_start_idle		(CamelIMAPXServer *is);
 static void	imapx_exit_idle			(CamelIMAPXServer *is);
 static void	imapx_init_idle			(CamelIMAPXServer *is);
@@ -1025,10 +1025,20 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		return success;
 	}
 
-	if (imapx_idle_supported (is) && is->state == IMAPX_SELECTED) {
-		gboolean empty = imapx_is_command_queue_empty (is);
+	if (is->state == IMAPX_SELECTED) {
+		gboolean stop_idle;
+		gboolean start_idle;
 
-		if (imapx_in_idle (is) && !camel_imapx_command_queue_is_empty (is->queue)) {
+		stop_idle =
+			imapx_in_idle (is) &&
+			!camel_imapx_command_queue_is_empty (is->queue);
+
+		start_idle =
+			imapx_use_idle (is) &&
+			!imapx_in_idle (is) &&
+			imapx_is_command_queue_empty (is);
+
+		if (stop_idle) {
 			CamelIMAPXIdleStopResult stop_result;
 			CamelIMAPXStream *stream;
 
@@ -1058,7 +1068,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 					return FALSE;
 			}
 
-		} else if (empty && !imapx_in_idle (is)) {
+		} else if (start_idle) {
 			imapx_start_idle (is);
 			c (is->tagprefix, "starting idle \n");
 			return TRUE;
@@ -1434,7 +1444,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 
 	camel_folder_change_info_remove_uid (is->changes, uid);
 
-	if (imapx_idle_supported (is) && imapx_in_idle (is)) {
+	if (imapx_in_idle (is)) {
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		imapx_update_store_summary (folder);
 		camel_folder_changed (folder, is->changes);
@@ -1675,7 +1685,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 		CAMEL_IMAPX_FOLDER (folder)->exists_on_server =
 			is->priv->context->id;
 
-		if (imapx_idle_supported (is) && imapx_in_idle (is)) {
+		if (imapx_in_idle (is)) {
 			guint count;
 
 			count = camel_folder_summary_count (folder->summary);
@@ -1846,7 +1856,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				g_free (uid);
 			}
 
-			if (imapx_idle_supported (is) && changed && imapx_in_idle (is)) {
+			if (changed && imapx_in_idle (is)) {
 				camel_folder_summary_save_to_db (
 					select_folder->summary, NULL);
 				imapx_update_store_summary (select_folder);
@@ -2584,7 +2594,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	 * can write while we have it ... so we dont need any
 	 * ohter lock here.  All other writes go through
 	 * queue-lock */
-	if (imapx_idle_supported (is) && imapx_in_idle (is)) {
+	if (imapx_in_idle (is)) {
 		camel_imapx_stream_skip (stream, cancellable, error);
 
 		c (is->tagprefix, "Got continuation response for IDLE \n");
@@ -3428,20 +3438,32 @@ imapx_start_idle (CamelIMAPXServer *is)
 static gboolean
 imapx_in_idle (CamelIMAPXServer *is)
 {
-	gboolean ret = FALSE;
 	CamelIMAPXIdle *idle = is->idle;
+	gboolean in_idle = FALSE;
 
-	IDLE_LOCK (idle);
-	ret = (idle->state > IMAPX_IDLE_OFF);
-	IDLE_UNLOCK (idle);
+	if (idle != NULL) {
+		IDLE_LOCK (idle);
+		in_idle = (idle->state > IMAPX_IDLE_OFF);
+		IDLE_UNLOCK (idle);
+	}
 
-	return ret;
+	return in_idle;
 }
 
 static gboolean
-imapx_idle_supported (CamelIMAPXServer *is)
+imapx_use_idle (CamelIMAPXServer *is)
 {
-	return CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, IDLE) && is->use_idle;
+	gboolean use_idle = FALSE;
+
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, IDLE)) {
+		CamelIMAPXSettings *settings;
+
+		settings = camel_imapx_server_ref_settings (is);
+		use_idle = camel_imapx_settings_get_use_idle (settings);
+		g_object_unref (settings);
+	}
+
+	return use_idle;
 }
 
 // end IDLE
@@ -4182,7 +4204,6 @@ imapx_reconnect (CamelIMAPXServer *is,
 	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	gchar *mechanism;
-	gboolean use_idle;
 	gboolean use_qresync;
 	gboolean success = FALSE;
 
@@ -4195,9 +4216,6 @@ imapx_reconnect (CamelIMAPXServer *is,
 
 	mechanism = camel_network_settings_dup_auth_mechanism (
 		CAMEL_NETWORK_SETTINGS (settings));
-
-	use_idle = camel_imapx_settings_get_use_idle (
-		CAMEL_IMAPX_SETTINGS (settings));
 
 	use_qresync = camel_imapx_settings_get_use_qresync (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -4228,10 +4246,8 @@ imapx_reconnect (CamelIMAPXServer *is,
 
 	is->state = IMAPX_AUTHENTICATED;
 
- preauthed:
-	is->use_idle = use_idle;
-
-	if (imapx_idle_supported (is))
+preauthed:
+	if (imapx_use_idle (is))
 		imapx_init_idle (is);
 
 	/* Fetch namespaces */
@@ -5670,7 +5686,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		if (is_selected) {
 			/* We may not issue STATUS on the current folder. Use SELECT or NOOP instead. */
 			if (0 /* server needs SELECT not just NOOP */) {
-				if (imapx_idle_supported (is) && imapx_in_idle (is))
+				if (imapx_in_idle (is))
 					if (!imapx_stop_idle (is, error))
 						goto done;
 				/* This doesn't work -- this is an immediate command, not queued */
@@ -5679,7 +5695,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 					goto done;
 			} else {
 				/* Or maybe just NOOP, unless we're in IDLE in which case do nothing */
-				if (!imapx_idle_supported (is) || !imapx_in_idle (is)) {
+				if (!imapx_in_idle (is)) {
 					if (!camel_imapx_server_noop (is, folder, cancellable, error))
 						goto done;
 				}
@@ -6920,7 +6936,7 @@ imapx_parser_thread (gpointer d)
 			is_empty = camel_imapx_command_queue_is_empty (is->active);
 			QUEUE_UNLOCK (is);
 
-			if (is_empty || (imapx_idle_supported (is) && imapx_in_idle (is))) {
+			if (is_empty || imapx_in_idle (is)) {
 				g_cancellable_reset (cancellable);
 				g_clear_error (&local_error);
 			} else {
@@ -7044,7 +7060,7 @@ imapx_server_dispose (GObject *object)
 		server->parser_thread = NULL;
 	}
 
-	if (server->cinfo && imapx_idle_supported (server))
+	if (server->cinfo && imapx_use_idle (server))
 		imapx_exit_idle (server);
 
 	imapx_disconnect (server);
