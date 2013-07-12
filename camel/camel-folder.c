@@ -3531,14 +3531,22 @@ camel_folder_expunge_sync (CamelFolder *folder,
                            GError **error)
 {
 	CamelFolderClass *class;
+	CamelStore *parent_store;
 	const gchar *display_name;
 	const gchar *message;
-	gboolean success = TRUE;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->expunge_sync != NULL, FALSE);
+
+	/* Need to connect the service before we can expunge. */
+	parent_store = camel_folder_get_parent_store (folder);
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (parent_store), cancellable, error);
+	if (!success)
+		return FALSE;
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
