@@ -3406,6 +3406,7 @@ camel_folder_append_message_sync (CamelFolder *folder,
                                   GError **error)
 {
 	CamelFolderClass *class;
+	CamelStore *parent_store;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -3413,6 +3414,13 @@ camel_folder_append_message_sync (CamelFolder *folder,
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->append_message_sync != NULL, FALSE);
+
+	/* Need to connect the service before we can append. */
+	parent_store = camel_folder_get_parent_store (folder);
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (parent_store), cancellable, error);
+	if (!success)
+		return FALSE;
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
