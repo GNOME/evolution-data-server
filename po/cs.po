@@ -2463,7 +2463,7 @@ msgstr "Složka %s neexistuje"
 #: ../camel/providers/local/camel-maildir-store.c:840
 #: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
-msgstr "Příchozí"
+msgstr "Přijatá"
 
 #: ../camel/camel-imapx-store.c:1259
 #, c-format
@@ -3394,7 +3394,7 @@ msgstr "Použít _filtry na nové zprávy ve všech složkách"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:63
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr "_Použít filtry na nové zprávy ve složce Příchozí na tomto serveru"
+msgstr "_Použít filtry na nové zprávy ve složce Přijatá na tomto serveru"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:65
 msgid "Check new messages for _Junk contents"
@@ -3402,7 +3402,7 @@ msgstr "Hledat n_evyžádanou poštu v nových zprávách"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr "Hledat nevyžádané zprávy jen ve složce _Příchozí"
+msgstr "Hledat nevyžádané zprávy jen ve složce _Přijatá"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:69
 msgid "Automatically synchroni_ze remote mail locally"
@@ -3480,7 +3480,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:83
 #: ../camel/providers/local/camel-local-provider.c:103
 msgid "_Apply filters to new messages in Inbox"
-msgstr "_Použít filtry na nové zprávy v Příchozích"
+msgstr "_Použít filtry na nové zprávy v Přijaté"
 
 #: ../camel/providers/local/camel-local-provider.c:90
 msgid "Maildir-format mail directories"
@@ -3547,7 +3547,7 @@ msgstr "Nelze získat složku: %s: %s"
 #: ../camel/providers/local/camel-local-store.c:291
 #, c-format
 msgid "Local stores do not have an inbox"
-msgstr "Lokální ukládání nemá složku pro příchozí poštu"
+msgstr "Lokální ukládání nemá složku pro přijatou poštu"
 
 #: ../camel/providers/local/camel-local-store.c:456
 #: ../camel/providers/local/camel-mbox-store.c:748
@@ -3929,7 +3929,7 @@ msgstr "„%s“ není soubor schránky."
 #: ../camel/providers/local/camel-spool-store.c:596
 #, c-format
 msgid "Store does not support an INBOX"
-msgstr "Úložiště nepodporuje příchozí schránku INBOX"
+msgstr "Úložiště nepodporuje schránku INBOX pro přijatou poštu"
 
 #: ../camel/providers/local/camel-spool-store.c:615
 #, c-format
@@ -4208,7 +4208,7 @@ msgstr "_Odstranit po %s dnech"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 msgid "Delete _expunged from local Inbox"
-msgstr "Odstranit _vymazané zprávy z místní složky Příchozí"
+msgstr "Odstranit _vymazané zprávy z místní složky Přijatá"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:49
 msgid "Disable _support for all POP3 extensions"
