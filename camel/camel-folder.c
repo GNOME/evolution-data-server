@@ -4538,6 +4538,8 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
                                         GError **error)
 {
 	CamelFolderClass *class;
+	CamelStore *source_store;
+	CamelStore *destination_store;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (source), FALSE);
@@ -4547,7 +4549,19 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 	if (source == destination || message_uids->len == 0)
 		return TRUE;
 
-	if (source->priv->parent_store == destination->priv->parent_store) {
+	source_store = camel_folder_get_parent_store (source);
+	destination_store = camel_folder_get_parent_store (destination);
+
+	/* Need to connect both services before we can transfer. */
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (destination_store), cancellable, error);
+	if (success && source_store != destination_store)
+		success = camel_service_connect_sync (
+			CAMEL_SERVICE (source_store), cancellable, error);
+	if (!success)
+		return FALSE;
+
+	if (source_store == destination_store) {
 		/* If either folder is a vtrash, we need to use the
 		 * vtrash transfer method. */
 		if (CAMEL_IS_VTRASH_FOLDER (destination))
@@ -4557,10 +4571,11 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 		success = class->transfer_messages_to_sync (
 			source, message_uids, destination, delete_originals,
 			transferred_uids, cancellable, error);
-	} else
+	} else {
 		success = folder_transfer_messages_to_sync (
 			source, message_uids, destination, delete_originals,
 			transferred_uids, cancellable, error);
+	}
 
 	return success;
 }
