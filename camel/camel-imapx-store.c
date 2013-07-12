@@ -390,8 +390,8 @@ imapx_disconnect_sync (CamelService *service,
 
 	g_mutex_lock (&priv->server_lock);
 
-	g_warn_if_fail (priv->connecting_server == NULL);
 	g_clear_object (&priv->connected_server);
+	g_clear_object (&priv->connecting_server);
 
 	g_mutex_unlock (&priv->server_lock);
 
