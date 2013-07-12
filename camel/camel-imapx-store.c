@@ -363,7 +363,10 @@ imapx_connect_sync (CamelService *service,
 
 	g_mutex_lock (&priv->server_lock);
 
-	g_warn_if_fail (priv->connecting_server == imapx_server);
+	g_warn_if_fail (
+		priv->connecting_server == NULL ||
+		priv->connecting_server == imapx_server);
+
 	g_clear_object (&priv->connecting_server);
 
 	if (success) {
