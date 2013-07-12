@@ -339,39 +339,39 @@ imapx_connect_sync (CamelService *service,
                     GCancellable *cancellable,
                     GError **error)
 {
-	CamelIMAPXStore *imapx_store;
+	CamelIMAPXStorePrivate *priv;
 	CamelIMAPXServer *imapx_server;
 	gboolean success;
 
-	imapx_store = CAMEL_IMAPX_STORE (service);
-	imapx_server = camel_imapx_server_new (imapx_store);
+	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
 
-	g_mutex_lock (&imapx_store->priv->server_lock);
+	imapx_server = camel_imapx_server_new (CAMEL_IMAPX_STORE (service));
+
+	g_mutex_lock (&priv->server_lock);
 
 	/* We need to share the CamelIMAPXServer instance with the
 	 * authenticate_sync() method, but we don't want other parts
 	 * getting at it just yet.  So stash it in a special private
 	 * variable while connecting to the IMAP server. */
-	g_warn_if_fail (imapx_store->priv->connecting_server == NULL);
-	imapx_store->priv->connecting_server = g_object_ref (imapx_server);
+	g_warn_if_fail (priv->connecting_server == NULL);
+	priv->connecting_server = g_object_ref (imapx_server);
 
-	g_mutex_unlock (&imapx_store->priv->server_lock);
+	g_mutex_unlock (&priv->server_lock);
 
 	success = camel_imapx_server_connect (
 		imapx_server, cancellable, error);
 
-	g_mutex_lock (&imapx_store->priv->server_lock);
+	g_mutex_lock (&priv->server_lock);
 
-	g_warn_if_fail (imapx_store->priv->connecting_server == imapx_server);
-	g_clear_object (&imapx_store->priv->connecting_server);
+	g_warn_if_fail (priv->connecting_server == imapx_server);
+	g_clear_object (&priv->connecting_server);
 
 	if (success) {
-		g_clear_object (&imapx_store->priv->connected_server);
-		imapx_store->priv->connected_server = imapx_server;
-		g_object_ref (imapx_server);
+		g_clear_object (&priv->connected_server);
+		priv->connected_server = g_object_ref (imapx_server);
 	}
 
-	g_mutex_unlock (&imapx_store->priv->server_lock);
+	g_mutex_unlock (&priv->server_lock);
 
 	g_clear_object (&imapx_server);
 
@@ -384,16 +384,16 @@ imapx_disconnect_sync (CamelService *service,
                        GCancellable *cancellable,
                        GError **error)
 {
-	CamelIMAPXStore *imapx_store;
+	CamelIMAPXStorePrivate *priv;
 
-	imapx_store = CAMEL_IMAPX_STORE (service);
+	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
 
-	g_mutex_lock (&imapx_store->priv->server_lock);
+	g_mutex_lock (&priv->server_lock);
 
-	g_warn_if_fail (imapx_store->priv->connecting_server == NULL);
-	g_clear_object (&imapx_store->priv->connected_server);
+	g_warn_if_fail (priv->connecting_server == NULL);
+	g_clear_object (&priv->connected_server);
 
-	g_mutex_unlock (&imapx_store->priv->server_lock);
+	g_mutex_unlock (&priv->server_lock);
 
 	return TRUE;
 }
@@ -404,16 +404,16 @@ imapx_authenticate_sync (CamelService *service,
                          GCancellable *cancellable,
                          GError **error)
 {
-	CamelIMAPXStore *imapx_store;
+	CamelIMAPXStorePrivate *priv;
 	CamelIMAPXServer *imapx_server;
 	CamelAuthenticationResult result;
 
-	imapx_store = CAMEL_IMAPX_STORE (service);
+	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
 
 	/* This should have been set for us by connect_sync(). */
-	g_mutex_lock (&imapx_store->priv->server_lock);
-	imapx_server = g_object_ref (imapx_store->priv->connecting_server);
-	g_mutex_unlock (&imapx_store->priv->server_lock);
+	g_mutex_lock (&priv->server_lock);
+	imapx_server = g_object_ref (priv->connecting_server);
+	g_mutex_unlock (&priv->server_lock);
 
 	result = camel_imapx_server_authenticate (
 		imapx_server, mechanism, cancellable, error);
