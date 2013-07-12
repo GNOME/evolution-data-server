@@ -329,7 +329,7 @@ read_from_prfd (PRFileDesc *fd,
 			PR_GetCurrentThread (), (GDestroyNotify) NULL);
 
 	do {
-		bytes_read = PR_Recv (fd, buffer, n, 0, IO_TIMEOUT);
+		bytes_read = PR_Read (fd, buffer, n);
 	} while (bytes_read == -1 && PR_GetError () == PR_IO_PENDING_ERROR);
 
 	if (cancel_id > 0)
