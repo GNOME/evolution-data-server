@@ -4232,16 +4232,19 @@ imapx_reconnect (CamelIMAPXServer *is,
 		session, service, mechanism, cancellable, error))
 		goto exception;
 
-	/* After login we re-capa unless the server already told us */
-	if (!is->cinfo) {
+	/* After login we re-capa unless the server already told us. */
+	if (is->cinfo == NULL) {
+		GError *local_error = NULL;
+
 		ic = camel_imapx_command_new (
 			is, "CAPABILITY", NULL, "CAPABILITY");
-		if (!imapx_command_run (is, ic, cancellable, error)) {
-			camel_imapx_command_unref (ic);
+		imapx_command_run (is, ic, cancellable, &local_error);
+		camel_imapx_command_unref (ic);
+
+		if (local_error != NULL) {
+			g_propagate_error (error, local_error);
 			goto exception;
 		}
-
-		camel_imapx_command_unref (ic);
 	}
 
 	is->state = IMAPX_AUTHENTICATED;
@@ -4250,31 +4253,39 @@ preauthed:
 	if (imapx_use_idle (is))
 		imapx_init_idle (is);
 
-	/* Fetch namespaces */
+	/* Fetch namespaces (if supported). */
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, NAMESPACE)) {
+		GError *local_error = NULL;
+
 		ic = camel_imapx_command_new (
 			is, "NAMESPACE", NULL, "NAMESPACE");
-		if (!imapx_command_run (is, ic, cancellable, error)) {
-			camel_imapx_command_unref (ic);
+		imapx_command_run (is, ic, cancellable, &local_error);
+		camel_imapx_command_unref (ic);
+
+		if (local_error != NULL) {
+			g_propagate_error (error, local_error);
 			goto exception;
 		}
-
-		camel_imapx_command_unref (ic);
 	}
 
+	/* Enable quick mailbox resynchronization (if supported). */
 	if (use_qresync && CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, QRESYNC)) {
+		GError *local_error = NULL;
+
 		ic = camel_imapx_command_new (
 			is, "ENABLE", NULL, "ENABLE CONDSTORE QRESYNC");
-		if (!imapx_command_run (is, ic, cancellable, error)) {
-			camel_imapx_command_unref (ic);
+		imapx_command_run (is, ic, cancellable, &local_error);
+		camel_imapx_command_unref (ic);
+
+		if (local_error != NULL) {
+			g_propagate_error (error, local_error);
 			goto exception;
 		}
 
-		camel_imapx_command_unref (ic);
-
 		is->use_qresync = TRUE;
-	} else
+	} else {
 		is->use_qresync = FALSE;
+	}
 
 	if (store->summary->namespaces == NULL) {
 		CamelIMAPXNamespaceList *nsl = NULL;
@@ -4301,7 +4312,6 @@ preauthed:
 	goto exit;
 
 exception:
-
 	imapx_disconnect (is);
 
 	if (is->cinfo) {
