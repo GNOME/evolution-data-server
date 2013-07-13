@@ -3892,6 +3892,10 @@ imapx_use_idle (CamelIMAPXServer *is)
 {
 	gboolean use_idle = FALSE;
 
+	/* No need for IDLE if the server supports NOTIFY. */
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, NOTIFY))
+		return FALSE;
+
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, IDLE)) {
 		CamelIMAPXSettings *settings;
 
@@ -4723,6 +4727,31 @@ preauthed:
 		is->use_qresync = TRUE;
 	} else {
 		is->use_qresync = FALSE;
+	}
+
+	/* Set NOTIFY options after enabling QRESYNC (if supported). */
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, NOTIFY)) {
+		GError *local_error = NULL;
+
+		/* XXX The list of FETCH attributes is negotiable. */
+		ic = camel_imapx_command_new (
+			is, "NOTIFY", NULL, "NOTIFY SET "
+			"(selected "
+			"(MessageNew (UID RFC822.SIZE RFC822.HEADER FLAGS)"
+			" MessageExpunge"
+			" FlagChange)) "
+			"(personal "
+			"(MessageNew"
+			" MessageExpunge"
+			" MailboxName"
+			" SubscriptionChange))");
+		imapx_command_run (is, ic, cancellable, &local_error);
+		camel_imapx_command_unref (ic);
+
+		if (local_error != NULL) {
+			g_propagate_error (error, local_error);
+			goto exception;
+		}
 	}
 
 	if (store->summary->namespaces == NULL) {
