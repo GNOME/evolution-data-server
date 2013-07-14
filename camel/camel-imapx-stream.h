@@ -58,7 +58,6 @@ typedef struct _CamelIMAPXStreamClass CamelIMAPXStreamClass;
 typedef struct _CamelIMAPXStreamPrivate CamelIMAPXStreamPrivate;
 
 typedef enum {
-	IMAPX_TOK_PROTOCOL = -2,
 	IMAPX_TOK_ERROR = -1,
 	IMAPX_TOK_TOKEN = 256,
 	IMAPX_TOK_STRING,

@@ -2200,7 +2200,7 @@ imapx_untagged_search (CamelIMAPXServer *is,
 			stream, &token, &len, cancellable, error);
 		if (tok == '\n')
 			break;
-		if (tok == IMAPX_TOK_ERROR || tok == IMAPX_TOK_PROTOCOL)
+		if (tok == IMAPX_TOK_ERROR)
 			goto exit;
 		camel_imapx_stream_ungettoken (stream, tok, token, len);
 
@@ -2877,7 +2877,6 @@ imapx_step (CamelIMAPXServer *is,
 		stream, &token, &len, cancellable, error);
 
 	switch (tok) {
-		case IMAPX_TOK_PROTOCOL:
 		case IMAPX_TOK_ERROR:
 			/* GError is already set. */
 			break;

@@ -411,7 +411,7 @@ camel_imapx_stream_atom (CamelIMAPXStream *is,
 		else
 			g_propagate_error (error, local_error);
 		io (is->tagprefix, "expecting atom!\n");
-		return IMAPX_TOK_PROTOCOL;
+		return IMAPX_TOK_ERROR;
 	}
 }
 
@@ -461,7 +461,7 @@ camel_imapx_stream_astring (CamelIMAPXStream *is,
 		else
 			g_propagate_error (error, local_error);
 		io (is->tagprefix, "expecting astring!\n");
-		return IMAPX_TOK_PROTOCOL;
+		return IMAPX_TOK_ERROR;
 	}
 }
 
@@ -509,7 +509,7 @@ camel_imapx_stream_nstring (CamelIMAPXStream *is,
 			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting nstring");
 		else
 			g_propagate_error (error, local_error);
-		return IMAPX_TOK_PROTOCOL;
+		return IMAPX_TOK_ERROR;
 	case IMAPX_TOK_ERROR:
 		/* we'll never get this unless there are no exception  handlers anyway */
 		if (local_error != NULL)
@@ -822,7 +822,7 @@ protocol_error:
 		is->priv->ptr = p;
 
 	g_set_error (error, CAMEL_IMAPX_ERROR, 1, "protocol error");
-	return IMAPX_TOK_PROTOCOL;
+	return IMAPX_TOK_ERROR;
 }
 
 void

@@ -2205,7 +2205,6 @@ camel_imapx_parse_quota (CamelIMAPXStream *is,
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 	switch (tok) {
 		case IMAPX_TOK_ERROR:
-		case IMAPX_TOK_PROTOCOL:
 			goto fail;
 		case '(':
 			break;
@@ -2247,7 +2246,6 @@ quota_resource:
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 	switch (tok) {
 		case IMAPX_TOK_ERROR:
-		case IMAPX_TOK_PROTOCOL:
 			goto fail;
 		case ')':
 			break;
@@ -2320,7 +2318,7 @@ camel_imapx_parse_quotaroot (CamelIMAPXStream *is,
 			is, &token, &len, cancellable, error);
 		if (tok == '\n')
 			break;
-		if (tok == IMAPX_TOK_ERROR || tok == IMAPX_TOK_PROTOCOL)
+		if (tok == IMAPX_TOK_ERROR)
 			goto fail;
 		camel_imapx_stream_ungettoken (is, tok, token, len);
 
