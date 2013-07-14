@@ -107,40 +107,41 @@ gint		 camel_imapx_stream_getl	(CamelIMAPXStream *is,
 						 GError **error);
 
 /* gets an atom, upper-cases */
-gint		camel_imapx_stream_atom		(CamelIMAPXStream *is,
+gboolean	camel_imapx_stream_atom		(CamelIMAPXStream *is,
 						 guchar **start,
 						 guint *len,
 						 GCancellable *cancellable,
 						 GError **error);
 /* gets an atom or string */
-gint		camel_imapx_stream_astring	(CamelIMAPXStream *is,
+gboolean	camel_imapx_stream_astring	(CamelIMAPXStream *is,
 						 guchar **start,
 						 GCancellable *cancellable,
 						 GError **error);
 /* gets a NIL or a string, start==NULL if NIL */
-gint		camel_imapx_stream_nstring	(CamelIMAPXStream *is,
+gboolean	camel_imapx_stream_nstring	(CamelIMAPXStream *is,
 						 guchar **start,
 						 GCancellable *cancellable,
 						 GError **error);
 /* gets a NIL or string into a stream, stream==NULL if NIL */
-gint		camel_imapx_stream_nstring_stream
+gboolean	camel_imapx_stream_nstring_stream
 						(CamelIMAPXStream *is,
 						 CamelStream **stream,
 						 GCancellable *cancellable,
 						 GError **error);
 /* gets 'text' */
-gint		camel_imapx_stream_text		(CamelIMAPXStream *is,
+gboolean	camel_imapx_stream_text		(CamelIMAPXStream *is,
 						 guchar **text,
 						 GCancellable *cancellable,
 						 GError **error);
 
 /* gets a 'number' */
-guint64		 camel_imapx_stream_number	(CamelIMAPXStream *is,
+gboolean	 camel_imapx_stream_number	(CamelIMAPXStream *is,
+						 guint64 *number,
 						 GCancellable *cancellable,
 						 GError **error);
 
 /* skips the rest of a line, including literals, etc */
-gint		camel_imapx_stream_skip		(CamelIMAPXStream *is,
+gboolean	camel_imapx_stream_skip		(CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
 

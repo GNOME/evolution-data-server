@@ -2189,7 +2189,6 @@ imapx_untagged_search (CamelIMAPXServer *is,
 	guchar *token;
 	guint64 number;
 	gboolean success = FALSE;
-	GError *local_error = NULL;
 
 	search_results = g_array_new (FALSE, FALSE, sizeof (guint64));
 
@@ -2204,17 +2203,11 @@ imapx_untagged_search (CamelIMAPXServer *is,
 			goto exit;
 		camel_imapx_stream_ungettoken (stream, tok, token, len);
 
-		/* XXX camel_imapx_stream_number() should return the
-		 *     number as an out parameter, so we can more easily
-		 *     distinguish between a real '0' and an error. */
-		number = camel_imapx_stream_number (
-			stream, cancellable, &local_error);
-		if (local_error == NULL) {
-			g_array_append_val (search_results, number);
-		} else {
-			g_propagate_error (error, local_error);
+		if (!camel_imapx_stream_number (
+			stream, &number, cancellable, error))
 			goto exit;
-		}
+
+		g_array_append_val (search_results, number);
 	}
 
 	g_mutex_lock (&is->priv->search_results_lock);
@@ -2306,7 +2299,7 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	if (camel_imapx_stream_text (stream, &token, cancellable, NULL)) {
+	if (camel_imapx_stream_text (stream, &token, cancellable, error)) {
 		c (is->tagprefix, "BYE: %s\n", token);
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
@@ -2567,7 +2560,8 @@ imapx_untagged (CamelIMAPXServer *is,
 			goto exit;
 	}
 
-	ok = (camel_imapx_stream_skip (stream, cancellable, error) == 0);
+	ok = camel_imapx_stream_skip (stream, cancellable, error);
+
  exit:
 	g_free (is->priv->context);
 	is->priv->context = NULL;
@@ -2595,7 +2589,8 @@ imapx_continuation (CamelIMAPXServer *is,
 	 * ohter lock here.  All other writes go through
 	 * queue-lock */
 	if (imapx_in_idle (is)) {
-		camel_imapx_stream_skip (stream, cancellable, error);
+		if (!camel_imapx_stream_skip (stream, cancellable, error))
+			return FALSE;
 
 		c (is->tagprefix, "Got continuation response for IDLE \n");
 		IDLE_LOCK (is->idle);
@@ -2631,9 +2626,9 @@ imapx_continuation (CamelIMAPXServer *is,
 	ic = is->literal;
 	if (!litplus) {
 		if (ic == NULL) {
-			camel_imapx_stream_skip (stream, cancellable, error);
 			c (is->tagprefix, "got continuation response with no outstanding continuation requests?\n");
-			return TRUE;
+			return camel_imapx_stream_skip (
+				stream, cancellable, error);
 		}
 		c (is->tagprefix, "got continuation response for data\n");
 	} else {
@@ -2667,7 +2662,8 @@ imapx_continuation (CamelIMAPXServer *is,
 		gchar *resp;
 		guchar *token;
 
-		if (camel_imapx_stream_text (stream, &token, cancellable, error))
+		if (!camel_imapx_stream_text (
+			stream, &token, cancellable, error))
 			return FALSE;
 
 		resp = camel_sasl_challenge_base64_sync (
@@ -2729,7 +2725,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	}
 
 	if (!litplus) {
-		if (camel_imapx_stream_skip (stream, cancellable, error) == -1)
+		if (!camel_imapx_stream_skip (stream, cancellable, error))
 			return FALSE;
 	}
 

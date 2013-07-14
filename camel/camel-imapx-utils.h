@@ -138,7 +138,7 @@ enum {
 GPtrArray *	imapx_parse_uids		(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
-void		imapx_parse_flags		(struct _CamelIMAPXStream *is,
+gboolean	imapx_parse_flags		(struct _CamelIMAPXStream *is,
 						 guint32 *flagsp,
 						 struct _CamelFlag **user_flagsp,
 						 GCancellable *cancellable,
@@ -239,13 +239,13 @@ struct _fetch_info {
 	CamelStream *body;	/* BODY[.*](<.*>)? */
 	CamelStream *text;	/* RFC822.TEXT */
 	CamelStream *header;	/* RFC822.HEADER */
-	struct _CamelMessageInfo *minfo; /* ENVELOPE */
-	struct _CamelMessageContentInfo *cinfo;	/* BODYSTRUCTURE,BODY */
+	CamelMessageInfo *minfo;	/* ENVELOPE */
+	CamelMessageContentInfo *cinfo;	/* BODYSTRUCTURE,BODY */
 	guint32 size;		/* RFC822.SIZE */
 	guint32 offset;		/* start offset of a BODY[]<offset.length> request */
 	guint32 flags;		/* FLAGS */
 	guint64 modseq;		/* MODSEQ */
-	struct _CamelFlag *user_flags;
+	CamelFlag *user_flags;
 	gchar *date;		/* INTERNALDATE */
 	gchar *section;		/* section for a BODY[section] request */
 	gchar *uid;		/* UID */
