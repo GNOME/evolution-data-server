@@ -425,46 +425,48 @@ camel_imapx_stream_astring (CamelIMAPXStream *is,
                             GCancellable *cancellable,
                             GError **error)
 {
+	camel_imapx_token_t tok;
 	guchar *p, *start;
 	guint len, inlen;
 	gint ret;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
 	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
 
-	switch (camel_imapx_stream_token (is, data, &len, cancellable, &local_error)) {
-	case IMAPX_TOK_TOKEN:
-	case IMAPX_TOK_INT:
-	case IMAPX_TOK_STRING:
-		return 0;
-	case IMAPX_TOK_LITERAL:
-		if (len >= is->priv->bufsize)
-			camel_imapx_stream_grow (is, len, NULL, NULL);
-		p = is->priv->tokenbuf;
-		camel_imapx_stream_set_literal (is, len);
-		do {
-			ret = camel_imapx_stream_getl (is, &start, &inlen, cancellable, error);
-			if (ret < 0)
-				return ret;
-			memcpy (p, start, inlen);
-			p += inlen;
-		} while (ret > 0);
-		*p = 0;
-		*data = is->priv->tokenbuf;
-		return 0;
-	case IMAPX_TOK_ERROR:
-		/* wont get unless no exception hanlder*/
-		if (local_error != NULL)
-			g_propagate_error (error, local_error);
-		return IMAPX_TOK_ERROR;
-	default:
-		if (local_error == NULL)
-			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting astring");
-		else
-			g_propagate_error (error, local_error);
-		io (is->tagprefix, "expecting astring!\n");
-		return IMAPX_TOK_ERROR;
+	tok = camel_imapx_stream_token (is, data, &len, cancellable, error);
+
+	switch (tok) {
+		case IMAPX_TOK_ERROR:
+			return IMAPX_TOK_ERROR;
+
+		case IMAPX_TOK_TOKEN:
+		case IMAPX_TOK_STRING:
+		case IMAPX_TOK_INT:
+			return 0;
+
+		case IMAPX_TOK_LITERAL:
+			if (len >= is->priv->bufsize)
+				camel_imapx_stream_grow (is, len, NULL, NULL);
+			p = is->priv->tokenbuf;
+			camel_imapx_stream_set_literal (is, len);
+			do {
+				ret = camel_imapx_stream_getl (
+					is, &start, &inlen, cancellable, error);
+				if (ret < 0)
+					return IMAPX_TOK_ERROR;
+				memcpy (p, start, inlen);
+				p += inlen;
+			} while (ret > 0);
+			*p = 0;
+			*data = is->priv->tokenbuf;
+			return 0;
+
+		default:
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"expecting astring");
+			io (is->tagprefix, "expecting astring!\n");
+			return IMAPX_TOK_ERROR;
 	}
 }
 
