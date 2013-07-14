@@ -2544,40 +2544,6 @@ camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl)
 	nsl = NULL;
 }
 
-static CamelIMAPXStoreNamespace *
-imapx_namespace_copy (const CamelIMAPXStoreNamespace *ns)
-{
-	CamelIMAPXStoreNamespace *list, *node, *tail;
-
-	list = NULL;
-	tail = (CamelIMAPXStoreNamespace *) &list;
-
-	while (ns != NULL) {
-		tail->next = node = g_malloc (sizeof (CamelIMAPXStoreNamespace));
-		node->path = g_strdup (ns->path);
-		node->sep = ns->sep;
-		ns = ns->next;
-		tail = node;
-	}
-
-	tail->next = NULL;
-
-	return list;
-}
-
-struct _CamelIMAPXNamespaceList *
-camel_imapx_namespace_list_copy (const struct _CamelIMAPXNamespaceList *nsl)
-{
-	CamelIMAPXNamespaceList *new;
-
-	new = g_malloc (sizeof (CamelIMAPXNamespaceList));
-	new->personal = imapx_namespace_copy (nsl->personal);
-	new->other = imapx_namespace_copy (nsl->other);
-	new->shared = imapx_namespace_copy (nsl->shared);
-
-	return new;
-}
-
 gchar *
 imapx_get_temp_uid (void)
 {

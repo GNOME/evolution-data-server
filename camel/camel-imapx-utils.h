@@ -443,8 +443,6 @@ struct _CamelIMAPXNamespaceList *
 		imapx_parse_namespace_list	(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
-struct _CamelIMAPXNamespaceList *
-		camel_imapx_namespace_list_copy	(const struct _CamelIMAPXNamespaceList *nsl);
 
 G_END_DECLS
 
