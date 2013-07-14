@@ -1093,7 +1093,7 @@ add_folders_to_summary (CamelIMAPXStore *imapx_store,
 		if (!si)
 			continue;
 
-		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) |
+		new_flags = (si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) |
 						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 
 		if (CAMEL_IMAPX_LACK_CAPABILITY (server->cinfo, NAMESPACE))
@@ -1458,21 +1458,6 @@ imapx_can_refresh_folder (CamelStore *store,
 
 	res = store_class->can_refresh_folder (store, info, &local_error) ||
 		check_all || (check_subscribed && subscribed);
-
-	if (!res && local_error == NULL && CAMEL_IS_IMAPX_STORE (store)) {
-		CamelStoreInfo *si;
-		CamelStoreSummary *sm = CAMEL_STORE_SUMMARY (((CamelIMAPXStore *)(store))->summary);
-
-		if (!sm)
-			return FALSE;
-
-		si = camel_store_summary_path (sm, info->full_name);
-		if (si) {
-			res = (si->flags & CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW) != 0 ? TRUE : FALSE;
-
-			camel_store_summary_info_free (sm, si);
-		}
-	}
 
 	if (local_error != NULL)
 		g_propagate_error (error, local_error);

@@ -127,7 +127,7 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_TYPE_MEMOS    = 8 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_TASKS    = 9 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_READONLY      = 1 << 16,
-	CAMEL_FOLDER_CHECK_FOR_NEW = 1 << 17,
+	/* empty gap from unused flag removal */
 	CAMEL_FOLDER_FLAGGED       = 1 << 18,
 
 	CAMEL_FOLDER_FLAGS_LAST    = 1 << 24  /*< skip >*/
@@ -194,7 +194,7 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_INFO_FOLDER_SHARED_TO_ME  = 1 << 8,
 	CAMEL_STORE_INFO_FOLDER_SHARED_BY_ME  = 1 << 9,
 	CAMEL_STORE_INFO_FOLDER_READONLY      = 1 << 16,
-	CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW = 1 << 17,
+	/* empty gap from unused flag removal */
 	CAMEL_STORE_INFO_FOLDER_FLAGGED       = 1 << 18,
 
 	CAMEL_STORE_INFO_FOLDER_LAST          = 1 << 24  /*< skip >*/
