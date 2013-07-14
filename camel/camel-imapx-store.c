@@ -551,8 +551,12 @@ imapx_build_folder_info (CamelIMAPXStore *imapx_store,
                          const gchar *folder_name)
 {
 	CamelStore *store = (CamelStore *) imapx_store;
+	CamelSettings *settings;
 	CamelFolderInfo *fi;
 	const gchar *name;
+
+	store = CAMEL_STORE (imapx_store);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
@@ -564,43 +568,31 @@ imapx_build_folder_info (CamelIMAPXStore *imapx_store,
 		name = fi->full_name;
 	else
 		name++;
+
 	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
 		fi->display_name = g_strdup (_("Inbox"));
-	/* Do not localize the rest, these are from a server, thus shouldn't be localized */
-	/*else if (!g_ascii_strcasecmp (fi->full_name, "Drafts"))
-		fi->display_name = g_strdup (_("Drafts"));
-	else if (!g_ascii_strcasecmp (fi->full_name, "Sent"))
-		fi->display_name = g_strdup (_("Sent"));
-	else if (!g_ascii_strcasecmp (fi->full_name, "Templates"))
-		fi->display_name = g_strdup (_("Templates"));
-	else if (!g_ascii_strcasecmp (fi->full_name, "Trash"))
-		fi->display_name = g_strdup (_("Trash"));*/
 	else
 		fi->display_name = g_strdup (name);
 
 	if ((store->flags & CAMEL_STORE_VTRASH) == 0) {
-		CamelIMAPXSettings *imapx_settings;
 		const gchar *trash_path;
 
-		imapx_settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (store)));
-		trash_path = camel_imapx_settings_get_real_trash_path (imapx_settings);
+		trash_path = camel_imapx_settings_get_real_trash_path (
+			CAMEL_IMAPX_SETTINGS (settings));
 		if (g_strcmp0 (trash_path, folder_name) == 0)
 			fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
-
-		g_object_unref (imapx_settings);
 	}
 
 	if ((store->flags & CAMEL_STORE_REAL_JUNK_FOLDER) != 0) {
-		CamelIMAPXSettings *imapx_settings;
 		const gchar *junk_path;
 
-		imapx_settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (store)));
-		junk_path = camel_imapx_settings_get_real_junk_path (imapx_settings);
+		junk_path = camel_imapx_settings_get_real_junk_path (
+			CAMEL_IMAPX_SETTINGS (settings));
 		if (g_strcmp0 (junk_path, folder_name) == 0)
 			fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
-
-		g_object_unref (imapx_settings);
 	}
+
+	g_object_unref (settings);
 
 	return fi;
 }
@@ -660,8 +652,8 @@ folder_hash (gconstpointer ap)
 }
 
 static gint
-folder_eq (gconstpointer ap,
-           gconstpointer bp)
+folder_equal (gconstpointer ap,
+              gconstpointer bp)
 {
 	const gchar *a = ap;
 	const gchar *b = bp;
@@ -713,20 +705,19 @@ imapx_unmark_folder_subscribed (CamelIMAPXStore *imapx_store,
                                 const gchar *folder_name,
                                 gboolean emit_signal)
 {
+	CamelStoreSummary *store_summary;
 	CamelStoreInfo *si;
 
-	si = camel_store_summary_path (
-		(CamelStoreSummary *) imapx_store->summary, folder_name);
-	if (si) {
+	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
+
+	si = camel_store_summary_path (store_summary, folder_name);
+	if (si != NULL) {
 		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
 			si->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch (
-				(CamelStoreSummary *) imapx_store->summary);
-			camel_store_summary_save (
-				(CamelStoreSummary *) imapx_store->summary);
+			camel_store_summary_touch (store_summary);
+			camel_store_summary_save (store_summary);
 		}
-		camel_store_summary_info_free (
-			(CamelStoreSummary *) imapx_store->summary, si);
+		camel_store_summary_info_free (store_summary, si);
 	}
 
 	if (emit_signal) {
@@ -744,20 +735,19 @@ imapx_mark_folder_subscribed (CamelIMAPXStore *imapx_store,
                               const gchar *folder_name,
                               gboolean emit_signal)
 {
+	CamelStoreSummary *store_summary;
 	CamelStoreInfo *si;
 
-	si = camel_store_summary_path (
-		(CamelStoreSummary *) imapx_store->summary, folder_name);
-	if (si) {
+	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
+
+	si = camel_store_summary_path (store_summary, folder_name);
+	if (si != NULL) {
 		if ((si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0) {
 			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch (
-				(CamelStoreSummary *) imapx_store->summary);
-			camel_store_summary_save (
-				(CamelStoreSummary *) imapx_store->summary);
+			camel_store_summary_touch (store_summary);
+			camel_store_summary_save (store_summary);
 		}
-		camel_store_summary_info_free (
-			(CamelStoreSummary *) imapx_store->summary, si);
+		camel_store_summary_info_free (store_summary, si);
 	}
 
 	if (emit_signal) {
@@ -1062,113 +1052,112 @@ get_folder_info_offline (CamelStore *store,
 }
 
 static void
-add_folders_to_summary (CamelIMAPXStore *imapx_store,
-                        CamelIMAPXServer *server,
-                        GPtrArray *folders,
-                        GHashTable *table,
-                        gboolean subscribed)
+add_folder_to_summary (CamelIMAPXStore *imapx_store,
+                       CamelIMAPXServer *server,
+                       struct _list_info *li,
+                       GHashTable *table,
+                       gboolean update_for_lsub)
 {
-	gint i = 0;
+	CamelIMAPXStoreInfo *si;
+	guint32 new_flags;
+	CamelFolderInfo *fi;
 
-	for (i = 0; i < folders->len; i++) {
-		struct _list_info *li = folders->pdata[i];
-		CamelIMAPXStoreInfo *si;
-		guint32 new_flags;
-		CamelFolderInfo *fi, *sfi;
-		gchar *path;
+	if (update_for_lsub) {
+		gchar *full_name;
 
-		if (subscribed) {
-			path = camel_imapx_store_summary_path_to_full (
-				imapx_store->summary, li->name, li->separator);
-			sfi = g_hash_table_lookup (table, path);
-			if (sfi)
-				sfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-
-			g_free (path);
-			continue;
-		}
-
-		si = camel_imapx_store_summary_add_from_full (
+		full_name = camel_imapx_store_summary_path_to_full (
 			imapx_store->summary, li->name, li->separator);
-		if (!si)
-			continue;
+		fi = g_hash_table_lookup (table, full_name);
+		if (fi != NULL)
+			fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+		g_free (full_name);
 
-		new_flags = (si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) |
-						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
-
-		if (CAMEL_IMAPX_LACK_CAPABILITY (server->cinfo, NAMESPACE))
-			imapx_store->dir_sep = li->separator;
-
-		if (si->info.flags != new_flags) {
-			si->info.flags = new_flags;
-			camel_store_summary_touch (
-				(CamelStoreSummary *) imapx_store->summary);
-		}
-
-		fi = camel_folder_info_new ();
-		fi->full_name = g_strdup (camel_store_info_path (
-			imapx_store->summary, si));
-		if (!g_ascii_strcasecmp (fi->full_name, "inbox")) {
-			li->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
-			fi->display_name = g_strdup (_("Inbox"));
-		} else
-			fi->display_name = g_strdup (
-				camel_store_info_name (
-				imapx_store->summary, si));
-
-		/* HACK: some servers report noinferiors for all folders (uw-imapd)
-		 * We just translate this into nochildren, and let the imap layer enforce
-		 * it.  See create folder */
-		if (li->flags & CAMEL_FOLDER_NOINFERIORS)
-			li->flags = (li->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
-		fi->flags |= li->flags;
-
-		fi->total = -1;
-		fi->unread = -1;
-
-		g_hash_table_insert (table, fi->full_name, fi);
+		return;
 	}
-}
 
-static void
-free_list (gpointer data,
-           gpointer user_data)
-{
-	struct _list_info *li = data;
-	imapx_free_list (li);
-}
+	si = camel_imapx_store_summary_add_from_full (
+		imapx_store->summary, li->name, li->separator);
+	if (si == NULL)
+		return;
 
-static void
-imapx_get_folders_free (gpointer k,
-                        gpointer v,
-                        gpointer d)
-{
-	camel_folder_info_free (v);
+	new_flags =
+		(si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) |
+		(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
+
+	if (CAMEL_IMAPX_LACK_CAPABILITY (server->cinfo, NAMESPACE))
+		imapx_store->dir_sep = li->separator;
+
+	if (si->info.flags != new_flags) {
+		si->info.flags = new_flags;
+		camel_store_summary_touch (
+			(CamelStoreSummary *) imapx_store->summary);
+	}
+
+	fi = camel_folder_info_new ();
+	fi->full_name = g_strdup (camel_store_info_path (
+		imapx_store->summary, si));
+	if (g_ascii_strcasecmp (fi->full_name, "inbox") == 0) {
+		li->flags |= CAMEL_FOLDER_SYSTEM;
+		li->flags |= CAMEL_FOLDER_TYPE_INBOX;
+		fi->display_name = g_strdup (_("Inbox"));
+	} else {
+		fi->display_name = g_strdup (
+			camel_store_info_name (
+			imapx_store->summary, si));
+	}
+
+	/* HACK: Some servers report noinferiors for all folders (uw-imapd).
+	 *       We just translate this into nochildren, and let the imap
+	 *       layer enforce it.  See create folder. */
+	if (li->flags & CAMEL_FOLDER_NOINFERIORS) {
+		li->flags &= ~CAMEL_FOLDER_NOINFERIORS;
+		li->flags |= CAMEL_FOLDER_NOCHILDREN;
+	}
+
+	fi->flags |= li->flags;
+
+	fi->total = -1;
+	fi->unread = -1;
+
+	g_hash_table_insert (table, fi->full_name, fi);
 }
 
 static gboolean
 fetch_folders_for_pattern (CamelIMAPXStore *imapx_store,
                            CamelIMAPXServer *server,
                            const gchar *pattern,
-                           guint32 flags,
+                           CamelStoreGetFolderInfoFlags flags,
                            const gchar *ext,
                            GHashTable *table,
                            GCancellable *cancellable,
                            GError **error)
 {
 	GPtrArray *folders;
+	gboolean update_for_lsub;
+	guint ii;
 
 	folders = camel_imapx_server_list (
 		server, pattern, flags, ext, cancellable, error);
 	if (folders == NULL)
 		return FALSE;
 
-	add_folders_to_summary (
-		imapx_store, server, folders, table,
-		(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED));
+	/* Indicates we had to issue a separate LSUB command after the
+	 * LIST command and we're just processing subscription results. */
+	if (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)
+		update_for_lsub = TRUE;
+	else
+		update_for_lsub = FALSE;
 
-	g_ptr_array_foreach (folders, free_list, folders);
-	g_ptr_array_free (folders, TRUE);
+	for (ii = 0; ii < folders->len; ii++) {
+		struct _list_info *li;
+
+		li = g_ptr_array_index (folders, ii);
+
+		add_folder_to_summary (
+			imapx_store, server, li, table, update_for_lsub);
+	}
+
+	g_ptr_array_unref (folders);
 
 	return TRUE;
 }
@@ -1181,11 +1170,11 @@ get_namespaces (CamelIMAPXStore *imapx_store)
 
 	/* Add code to return the namespaces from preference else all of them */
 	nsl = imapx_store->summary->namespaces;
-	if (nsl->personal)
+	if (nsl->personal != NULL)
 		namespaces = g_list_append (namespaces, nsl->personal);
-	if (nsl->other)
+	if (nsl->other != NULL)
 		namespaces = g_list_append (namespaces, nsl->other);
-	if (nsl->shared)
+	if (nsl->shared != NULL)
 		namespaces = g_list_append (namespaces, nsl->shared);
 
 	return namespaces;
@@ -1201,74 +1190,78 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 	CamelIMAPXServer *server;
 	GHashTable *folders = NULL;
 	GList *namespaces = NULL, *l;
+	const gchar *list_ext = NULL;
 
 	server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (server == NULL)
 		return NULL;
 
-	folders = g_hash_table_new (folder_hash, folder_eq);
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (server->cinfo, LIST_EXTENDED))
+		list_ext = "RETURN (SUBSCRIBED)";
+
+	folders = g_hash_table_new_full (
+		(GHashFunc) folder_hash,
+		(GEqualFunc) folder_equal,
+		(GDestroyNotify) NULL,
+		(GDestroyNotify) camel_folder_info_free);
+
 	namespaces = get_namespaces (imapx_store);
 
 	for (l = namespaces; l != NULL; l = g_list_next (l)) {
 		CamelIMAPXStoreNamespace *ns = l->data;
 
-		while (ns) {
-			guint32 flags = 0;
-			gchar *pat = NULL;
-			const gchar *list_ext = NULL;
+		while (ns != NULL) {
+			CamelStoreGetFolderInfoFlags flags = 0;
+			gboolean success;
+			gchar *pat;
 
-			if (!pattern) {
-				if (!*ns->path)
-					pat = g_strdup ("");
-				else
-					pat = g_strdup_printf ("%s%c", ns->path, ns->sep);
-			} else
+			if (pattern != NULL)
 				pat = g_strdup (pattern);
+			else if (*ns->path != '\0')
+				pat = g_strdup_printf (
+					"%s%c", ns->path, ns->sep);
+			else
+				pat = g_strdup ("");
 
 			if (sync)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 
-			if (CAMEL_IMAPX_HAVE_CAPABILITY (server->cinfo, LIST_EXTENDED))
-				list_ext = "RETURN (SUBSCRIBED)";
-
 			flags |= CAMEL_STORE_FOLDER_INFO_RECURSIVE;
-			if (!fetch_folders_for_pattern (
+			success = fetch_folders_for_pattern (
 				imapx_store, server, pat, flags, list_ext,
-				folders, cancellable, error)) {
-				g_free (pat);
-				goto exception;
-			}
-			if (!list_ext) {
-				/* If the server doesn't support LIST-EXTENDED then we have to
-				 * issue LSUB to list the subscribed folders separately */
+				folders, cancellable, error);
+
+			if (success && list_ext == NULL) {
+				/* If the server doesn't support LIST-EXTENDED
+				 * then we have to issue the LSUB command to
+				 * list the subscribed folders separately. */
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
-				if (!fetch_folders_for_pattern (
+				success = fetch_folders_for_pattern (
 					imapx_store, server, pat, flags, NULL,
-					folders, cancellable, error)) {
-					g_free (pat);
-					goto exception;
-				}
+					folders, cancellable, error);
 			}
+
 			g_free (pat);
 
-			if (pattern)
-				goto out;
+			if (!success) {
+				g_hash_table_destroy (folders);
+				folders = NULL;
+				goto exit;
+			}
+
+			if (pattern != NULL)
+				goto exit;
 
 			ns = ns->next;
 		}
 	}
 
-out:
+exit:
 	g_list_free (namespaces);
 	g_object_unref (server);
-	return folders;
 
-exception:
-	g_list_free (namespaces);
-	g_object_unref (server);
-	g_hash_table_destroy (folders);
-	return NULL;
+	return folders;
 }
 
 static gboolean
@@ -1279,93 +1272,99 @@ sync_folders (CamelIMAPXStore *imapx_store,
               GError **error)
 {
 	CamelSettings *settings;
+	CamelStoreSummary *store_summary;
 	GHashTable *folders_from_server;
 	gboolean notify_all;
-	gint i, total;
+	gint ii, total;
 	GError *local_error = NULL;
+
+	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
 	folders_from_server = fetch_folders_for_namespaces (
 		imapx_store, pattern, sync, cancellable, &local_error);
-	if (folders_from_server == NULL) {
-		if (local_error)
-			g_propagate_error (error, local_error);
-		return FALSE;
-	}
 
-	/* In certain situations can happen that the function returns data,
-	 * even either the operation was cancelled or an error was set,
-	 * thus check for this and do not update local list of folders
-	 * with incomplete data
-	*/
-	if (g_cancellable_is_cancelled (cancellable) || local_error) {
-		g_hash_table_foreach (
-			folders_from_server, imapx_get_folders_free, NULL);
-		g_hash_table_destroy (folders_from_server);
-
-		if (local_error)
-			g_propagate_error (error, local_error);
-
-		return FALSE;
-	}
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((folders_from_server != NULL) && (local_error == NULL)) ||
+		((folders_from_server == NULL) && (local_error != NULL)),
+		FALSE);
 
 	settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
 	notify_all = !camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
 	g_object_unref (settings);
 
-	total = camel_store_summary_count (
-		(CamelStoreSummary *) imapx_store->summary);
-	for (i = 0; i < total; i++) {
+	total = camel_store_summary_count (store_summary);
+
+	for (ii = 0; ii < total; ii++) {
 		CamelStoreInfo *si;
-		const gchar *full_name;
 		CamelFolderInfo *fi;
+		CamelIMAPXStoreNamespace *ns;
+		const gchar *full_name;
+		const gchar *si_path;
+		gboolean pattern_match;
 
-		si = camel_store_summary_index (
-			(CamelStoreSummary *) imapx_store->summary, i);
-		if (!si)
+		si = camel_store_summary_index (store_summary, ii);
+		if (si == NULL)
 			continue;
 
-		full_name = camel_imapx_store_info_full_name (
-			imapx_store->summary, si);
-		if (!full_name || !*full_name) {
-			camel_store_summary_info_free (
-				(CamelStoreSummary *) imapx_store->summary, si);
-			continue;
-		}
+		full_name =
+			camel_imapx_store_info_full_name (store_summary, si);
+		if (full_name == NULL || *full_name == '\0')
+			goto endloop;
 
-		if (!pattern || !*pattern || imapx_match_pattern (camel_imapx_store_summary_namespace_find_full (imapx_store->summary, full_name), pattern, full_name)) {
-			if ((fi = g_hash_table_lookup (folders_from_server, camel_store_info_path (imapx_store->summary, si))) != NULL) {
-				gboolean do_notify = notify_all;
+		ns = camel_imapx_store_summary_namespace_find_full (
+			imapx_store->summary, full_name);
 
-				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
-					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
-					camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
-					do_notify = TRUE;
-				}
+		pattern_match =
+			(pattern == NULL) || (*pattern == '\0') ||
+			imapx_match_pattern (ns, pattern, full_name);
+		if (!pattern_match)
+			goto endloop;
 
-				if (do_notify) {
-					camel_store_folder_created (CAMEL_STORE (imapx_store), fi);
-					camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
-				}
-			} else {
-				gchar *dup_folder_name = g_strdup (camel_store_info_path (imapx_store->summary, si));
+		si_path = camel_store_info_path (store_summary, si);
+		fi = g_hash_table_lookup (folders_from_server, si_path);
 
-				if (dup_folder_name) {
-					imapx_unmark_folder_subscribed (imapx_store,dup_folder_name, TRUE);
-					imapx_delete_folder_from_cache (imapx_store, dup_folder_name);
-					g_free (dup_folder_name);
-				} else {
-					camel_store_summary_remove ((CamelStoreSummary *) imapx_store->summary, si);
-				}
+		if (fi != NULL) {
+			gboolean do_notify = notify_all;
 
-				total--;
-				i--;
+			/* Check if the SUBSCRIBED flags in the
+			 * folder info and store info disagree.
+			 * The folder info is authoritative. */
+			if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
+				si->flags &= ~CAMEL_FOLDER_SUBSCRIBED;
+				si->flags |= fi->flags & CAMEL_FOLDER_SUBSCRIBED;
+				camel_store_summary_touch (store_summary);
+				do_notify = TRUE;
 			}
+
+			if (do_notify) {
+				camel_store_folder_created (
+					CAMEL_STORE (imapx_store), fi);
+				camel_subscribable_folder_subscribed (
+					CAMEL_SUBSCRIBABLE (imapx_store), fi);
+			}
+		} else {
+			gchar *dup_folder_name = g_strdup (si_path);
+
+			if (dup_folder_name != NULL) {
+				imapx_unmark_folder_subscribed (
+					imapx_store, dup_folder_name, TRUE);
+				imapx_delete_folder_from_cache (
+					imapx_store, dup_folder_name);
+				g_free (dup_folder_name);
+			} else {
+				camel_store_summary_remove (store_summary, si);
+			}
+
+			total--;
+			ii--;
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
+
+endloop:
+		camel_store_summary_info_free (store_summary, si);
 	}
 
-	g_hash_table_foreach (folders_from_server, imapx_get_folders_free, NULL);
 	g_hash_table_destroy (folders_from_server);
 
 	return TRUE;

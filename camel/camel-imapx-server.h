@@ -188,7 +188,7 @@ CamelAuthenticationResult
 						 GError **error);
 GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *top,
-						 guint32 flags,
+						 CamelStoreGetFolderInfoFlags flags,
 						 const gchar *ext,
 						 GCancellable *cancellable,
 						 GError **error);

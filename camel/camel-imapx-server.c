@@ -150,7 +150,7 @@ struct _CopyMessagesData {
 
 struct _ListData {
 	gchar *pattern;
-	guint32 flags;
+	CamelStoreGetFolderInfoFlags flags;
 	gchar *ext;
 	GHashTable *folders;
 };
@@ -8012,7 +8012,7 @@ imapx_list_cmp (gconstpointer ap,
 GPtrArray *
 camel_imapx_server_list (CamelIMAPXServer *is,
                          const gchar *top,
-                         guint32 flags,
+                         CamelStoreGetFolderInfoFlags flags,
                          const gchar *ext,
                          GCancellable *cancellable,
                          GError **error)
@@ -8048,9 +8048,11 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 		job->pri += 300;
 
 	if (imapx_submit_job (is, job, error)) {
-		folders = g_ptr_array_new ();
-		g_hash_table_foreach (data->folders, imapx_list_flatten, folders);
-		qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), imapx_list_cmp);
+		folders = g_ptr_array_new_with_free_func (
+			(GDestroyNotify) imapx_free_list);
+		g_hash_table_foreach (
+			data->folders, imapx_list_flatten, folders);
+		g_ptr_array_sort (folders, imapx_list_cmp);
 	}
 
 	g_free (encoded_name);
