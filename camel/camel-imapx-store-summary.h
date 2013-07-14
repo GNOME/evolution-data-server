@@ -102,9 +102,6 @@ CamelIMAPXStoreNamespace *
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *full_name,
 						 gchar dir_sep);
-void		camel_imapx_store_summary_namespace_set
-						(CamelIMAPXStoreSummary *s,
-						 CamelIMAPXStoreNamespace *ns);
 CamelIMAPXStoreNamespace *
 		camel_imapx_store_summary_namespace_find_path
 						(CamelIMAPXStoreSummary *s,

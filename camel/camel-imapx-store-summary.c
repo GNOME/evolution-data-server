@@ -341,14 +341,6 @@ camel_imapx_store_summary_namespace_new (CamelIMAPXStoreSummary *s,
 	return ns;
 }
 
-void camel_imapx_store_summary_namespace_set (CamelIMAPXStoreSummary *s, CamelIMAPXStoreNamespace *ns)
-{
-	d ("Setting namesapce to '%s' '%c' -> '%s'\n", ns->full_name, ns->sep, ns->path);
-
-	/* CHEN not needed  */
-	camel_store_summary_touch ((CamelStoreSummary *) s);
-}
-
 CamelIMAPXStoreNamespace *
 camel_imapx_store_summary_namespace_find_path (CamelIMAPXStoreSummary *s,
                                                const gchar *path)
