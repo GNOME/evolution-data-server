@@ -599,21 +599,27 @@ camel_imapx_stream_number (CamelIMAPXStream *is,
                            GCancellable *cancellable,
                            GError **error)
 {
+	camel_imapx_token_t tok;
 	guchar *token;
 	guint len;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), 0);
 
-	if (camel_imapx_stream_token (is, &token, &len, cancellable, &local_error) != IMAPX_TOK_INT) {
-		if (local_error == NULL)
-			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting number");
-		else
-			g_propagate_error (error, local_error);
-		return 0;
-	}
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 
-	return strtoull ((gchar *) token, 0, 10);
+	switch (tok) {
+		case IMAPX_TOK_ERROR:
+			return 0;
+
+		case IMAPX_TOK_INT:
+			return strtoull ((gchar *) token, 0, 10);
+
+		default:
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"expecting number");
+			return 0;
+	}
 }
 
 gint
