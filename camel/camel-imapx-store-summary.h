@@ -136,10 +136,6 @@ gchar *		camel_imapx_store_summary_full_from_path
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path);
 
-void		camel_imapx_store_summary_set_namespaces
-						(CamelIMAPXStoreSummary *summary,
-						 const CamelIMAPXNamespaceList *nsl);
-
 /* helpe macro's */
 #define camel_imapx_store_info_full_name(s, i) \
 	(camel_store_info_string ( \
