@@ -386,32 +386,35 @@ camel_imapx_stream_atom (CamelIMAPXStream *is,
                          GCancellable *cancellable,
                          GError **error)
 {
+	camel_imapx_token_t tok;
 	guchar *p, c;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
 	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
 	g_return_val_if_fail (lenp != NULL, IMAPX_TOK_ERROR);
 
 	/* this is only 'approximate' atom */
-	switch (camel_imapx_stream_token (is, data, lenp, cancellable, &local_error)) {
-	case IMAPX_TOK_TOKEN:
-		p = *data;
-		while ((c = *p))
-			*p++ = toupper(c);
-	case IMAPX_TOK_INT:
-		return 0;
-	case IMAPX_TOK_ERROR:
-		if (local_error != NULL)
-			g_propagate_error (error, local_error);
-		return IMAPX_TOK_ERROR;
-	default:
-		if (local_error == NULL)
-			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting atom");
-		else
-			g_propagate_error (error, local_error);
-		io (is->tagprefix, "expecting atom!\n");
-		return IMAPX_TOK_ERROR;
+	tok = camel_imapx_stream_token (is, data, lenp, cancellable, error);
+
+	switch (tok) {
+		case IMAPX_TOK_ERROR:
+			return IMAPX_TOK_ERROR;
+
+		case IMAPX_TOK_TOKEN:
+			p = *data;
+			while ((c = *p))
+				*p++ = toupper(c);
+			return 0;
+
+		case IMAPX_TOK_INT:
+			return 0;
+
+		default:
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"expecting atom");
+			io (is->tagprefix, "expecting atom!\n");
+			return IMAPX_TOK_ERROR;
 	}
 }
 
