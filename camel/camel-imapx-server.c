@@ -1504,15 +1504,16 @@ imapx_untagged_capability (CamelIMAPXServer *is,
                            GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	if (is->cinfo)
+	if (is->cinfo != NULL)
 		imapx_free_capability (is->cinfo);
+
 	is->cinfo = imapx_parse_capability (stream, cancellable, error);
 	if (is->cinfo == NULL)
 		return FALSE;
+
 	c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
+
 	return TRUE;
 }
 
@@ -1527,14 +1528,12 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	guint32 expunge = 0;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	expunge = is->priv->context->id;
 	job = imapx_match_active_job (is, IMAPX_JOB_EXPUNGE, NULL);
 
 	/* If there is a job running, let it handle the deletion */
-	if (job)
+	if (job != NULL)
 		return TRUE;
 
 	c (is->tagprefix, "expunged: %d\n", is->priv->context->id);
@@ -1565,28 +1564,29 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	GPtrArray *uids = NULL;
 	GList *uid_list = NULL;
 	gboolean unsolicited = TRUE;
-	gint i = 0;
+	guint ii = 0;
 	guint len = 0;
 	guchar *token = NULL;
 	gint tok = 0;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	tok = camel_imapx_stream_token (stream, &token, &len, cancellable, error);
+	tok = camel_imapx_stream_token (
+		stream, &token, &len, cancellable, error);
 	if (tok < 0)
 		return FALSE;
 	if (tok == '(') {
 		unsolicited = FALSE;
 		while (tok != ')') {
 			/* We expect this to be 'EARLIER' */
-			tok = camel_imapx_stream_token (stream, &token, &len, cancellable, error);
+			tok = camel_imapx_stream_token (
+				stream, &token, &len, cancellable, error);
 			if (tok < 0)
 				return FALSE;
 		}
-	} else
+	} else {
 		camel_imapx_stream_ungettoken (stream, tok, token, len);
+	}
 
 	uids = imapx_parse_uids (stream, cancellable, error);
 	if (uids == NULL)
@@ -1609,14 +1609,19 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	if (is->changes == NULL)
 		is->changes = camel_folder_change_info_new ();
 
-	for (i = 0; i < uids->len; i++) {
-		gchar *uid = g_strdup_printf ("%u", GPOINTER_TO_UINT (g_ptr_array_index (uids, i)));
+	for (ii = 0; ii < uids->len; ii++) {
+		gpointer data;
+		gchar *uid;
+
+		data = g_ptr_array_index (uids, ii);
+		uid = g_strdup_printf ("%u", GPOINTER_TO_UINT (data));
 
 		c (is->tagprefix, "vanished: %s\n", uid);
 
 		uid_list = g_list_prepend (uid_list, uid);
 		camel_folder_change_info_remove_uid (is->changes, uid);
 	}
+
 	uid_list = g_list_reverse (uid_list);
 	camel_folder_summary_remove_uids (folder->summary, uid_list);
 	is->expunged = g_list_concat (is->expunged, uid_list);
@@ -1638,8 +1643,6 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 	CamelIMAPXStore *store;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	nsl = imapx_parse_namespace_list (stream, cancellable, error);
 	if (nsl == NULL)
@@ -1710,19 +1713,17 @@ imapx_untagged_flags (CamelIMAPXServer *is,
                       GCancellable *cancellable,
                       GError **error)
 {
-	guint32 flags;
-	GError *local_error = NULL;
+	guint32 flags = 0;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	imapx_parse_flags (stream, &flags, NULL, cancellable, &local_error);
-	c (is->tagprefix, "flags: %08x %s%s\n", flags, local_error ? "error: " : "", local_error ? local_error->message : "");
+	success = imapx_parse_flags (
+		stream, &flags, NULL, cancellable, error);
 
-	g_clear_error (&local_error);
+	c (is->tagprefix, "flags: %08x\n", flags);
 
-	return TRUE;
+	return success;
 }
 
 static gboolean
@@ -1734,8 +1735,6 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	struct _fetch_info *finfo;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	finfo = imapx_parse_fetch (stream, cancellable, error);
 	if (finfo == NULL) {
@@ -2015,8 +2014,6 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
                      GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	is->priv->context->lsub = TRUE;
 
@@ -2034,12 +2031,10 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	ListData *data = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	linfo = imapx_parse_list (stream, cancellable, error);
-	if (!linfo)
-		return TRUE;
+	if (linfo == NULL)
+		return FALSE;
 
 	job = imapx_match_active_job (is, IMAPX_JOB_LIST, linfo->name);
 
@@ -2168,8 +2163,6 @@ imapx_untagged_recent (CamelIMAPXServer *is,
                        GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	c (is->tagprefix, "recent: %d\n", is->priv->context->id);
 	is->recent = is->priv->context->id;
@@ -2233,55 +2226,67 @@ imapx_untagged_status (CamelIMAPXServer *is,
                        GCancellable *cancellable,
                        GError **error)
 {
+	CamelIMAPXStoreNamespace *ns;
 	CamelIMAPXStore *store;
+	CamelFolder *folder = NULL;
 	struct _state_info *sinfo = NULL;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	sinfo = imapx_parse_status_info (stream, cancellable, error);
+	if (sinfo == NULL)
+		return FALSE;
 
 	store = camel_imapx_server_ref_store (is);
 
-	sinfo = imapx_parse_status_info (stream, cancellable, error);
+	ns = camel_imapx_store_summary_namespace_find_full (
+		store->summary, sinfo->name);
 
-	if (sinfo) {
-		CamelIMAPXStoreSummary *s = store->summary;
-		CamelIMAPXStoreNamespace *ns;
-		CamelFolder *folder = NULL;
+	if (ns != NULL) {
+		gchar *path_name;
 
-		ns = camel_imapx_store_summary_namespace_find_full (s, sinfo->name);
-		if (ns) {
-			gchar *path_name;
-
-			path_name = camel_imapx_store_summary_full_to_path (s, sinfo->name, ns->sep);
-			c (is->tagprefix, "Got folder path '%s' for full '%s'\n", path_name, sinfo->name);
-			if (path_name) {
-				folder = camel_store_get_folder_sync (
-					CAMEL_STORE (store),
-					path_name, 0, cancellable, error);
-				g_free (path_name);
-			}
+		path_name = camel_imapx_store_summary_full_to_path (
+			store->summary, sinfo->name, ns->sep);
+		c (is->tagprefix, "Got folder path '%s' for full '%s'\n", path_name, sinfo->name);
+		if (path_name != NULL) {
+			folder = camel_store_get_folder_sync (
+				CAMEL_STORE (store), path_name,
+				0, cancellable, &local_error);
+			g_free (path_name);
 		}
-		if (folder != NULL) {
-			CamelIMAPXFolder *ifolder;
-
-			ifolder = CAMEL_IMAPX_FOLDER (folder);
-			ifolder->unread_on_server = sinfo->unseen;
-			ifolder->exists_on_server = sinfo->messages;
-			ifolder->modseq_on_server = sinfo->highestmodseq;
-			ifolder->uidnext_on_server = sinfo->uidnext;
-			ifolder->uidvalidity_on_server = sinfo->uidvalidity;
-			if (sinfo->uidvalidity && sinfo->uidvalidity != ((CamelIMAPXSummary *) folder->summary)->validity)
-				invalidate_local_cache (ifolder, sinfo->uidvalidity);
-		} else {
-			c (is->tagprefix, "Received STATUS for unknown folder '%s'\n", sinfo->name);
-		}
-
-		g_free (sinfo->name);
-		g_free (sinfo);
 	}
 
 	g_object_unref (store);
+
+	if (folder != NULL) {
+		CamelIMAPXSummary *imapx_summary;
+		CamelIMAPXFolder *imapx_folder;
+
+		imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
+
+		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+		imapx_folder->unread_on_server = sinfo->unseen;
+		imapx_folder->exists_on_server = sinfo->messages;
+		imapx_folder->modseq_on_server = sinfo->highestmodseq;
+		imapx_folder->uidnext_on_server = sinfo->uidnext;
+		imapx_folder->uidvalidity_on_server = sinfo->uidvalidity;
+		if (sinfo->uidvalidity != 0 &&
+		    sinfo->uidvalidity != imapx_summary->validity) {
+			invalidate_local_cache (
+				imapx_folder, sinfo->uidvalidity);
+		}
+	} else {
+		c (is->tagprefix, "Received STATUS for unknown folder '%s'\n", sinfo->name);
+	}
+
+	g_free (sinfo->name);
+	g_free (sinfo);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -2296,8 +2301,6 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 	guchar *token = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	if (camel_imapx_stream_text (stream, &token, cancellable, error)) {
 		c (is->tagprefix, "BYE: %s\n", token);
@@ -2326,8 +2329,6 @@ imapx_untagged_preauth (CamelIMAPXServer *is,
                         GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	c (is->tagprefix, "preauthenticated\n");
 	if (is->state < IMAPX_AUTHENTICATED)
@@ -2343,8 +2344,6 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
                           GError **error)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	/* cancellable may be NULL */
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* TODO: validate which ones of these can happen as unsolicited responses */
 	/* TODO: handle bye/preauth differently */
@@ -2353,10 +2352,12 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 		is->priv->context->tok,
 		is->priv->context->token,
 		is->priv->context->len);
+
 	is->priv->context->sinfo =
 		imapx_parse_status (stream, cancellable, error);
 	if (is->priv->context->sinfo == NULL)
 		return FALSE;
+
 	switch (is->priv->context->sinfo->condition) {
 	case IMAPX_CLOSED:
 		c (is->tagprefix, "previously selected folder is now closed\n");
@@ -2453,6 +2454,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 	default:
 		break;
 	}
+
 	imapx_free_status (is->priv->context->sinfo);
 
 	return TRUE;
@@ -2469,7 +2471,7 @@ imapx_untagged (CamelIMAPXServer *is,
 	CamelSortType fetch_order;
 	guchar *p = NULL, c;
 	const gchar *token = NULL;
-	gboolean ok = FALSE;
+	gboolean success = FALSE;
 
 	/* If is->priv->context is not NULL here, it basically means
 	 * that imapx_untagged() got called concurrently for the same
@@ -2537,8 +2539,8 @@ imapx_untagged (CamelIMAPXServer *is,
 		}
 
 		/* call the handler function */
-		ok = desc->handler (is, stream, cancellable, error);
-		if (!ok)
+		success = desc->handler (is, stream, cancellable, error);
+		if (!success)
 			goto exit;
 
 		/* is there another handler next-in-line? */
@@ -2560,13 +2562,13 @@ imapx_untagged (CamelIMAPXServer *is,
 			goto exit;
 	}
 
-	ok = camel_imapx_stream_skip (stream, cancellable, error);
+	success = camel_imapx_stream_skip (stream, cancellable, error);
 
- exit:
+exit:
 	g_free (is->priv->context);
 	is->priv->context = NULL;
 
-	return ok;
+	return success;
 }
 
 /* handle any continuation requests
