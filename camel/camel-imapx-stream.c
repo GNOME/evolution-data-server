@@ -538,52 +538,60 @@ camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
                                    GCancellable *cancellable,
                                    GError **error)
 {
+	camel_imapx_token_t tok;
 	guchar *token;
 	guint len;
-	gint ret = 0;
-	CamelStream * mem = NULL;
-	GError *local_error = NULL;
+	CamelStream *mem = NULL;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
-	g_return_val_if_fail (stream != NULL, -1);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
+	g_return_val_if_fail (stream != NULL, IMAPX_TOK_ERROR);
 
 	*stream = NULL;
 
-	switch (camel_imapx_stream_token (is, &token, &len, cancellable, &local_error)) {
+	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
+
+	switch (tok) {
+		case IMAPX_TOK_ERROR:
+			return IMAPX_TOK_ERROR;
+
 		case IMAPX_TOK_STRING:
-			mem = camel_stream_mem_new_with_buffer ((gchar *) token, len);
+			mem = camel_stream_mem_new_with_buffer (
+				(gchar *) token, len);
 			*stream = mem;
-			break;
+			return 0;
+
 		case IMAPX_TOK_LITERAL:
-			/* if len is big, we could automatically use a file backing */
+			/* If len is big, we could
+			 * automatically use a file backing. */
 			camel_imapx_stream_set_literal (is, len);
 			mem = camel_stream_mem_new ();
 			if (camel_stream_write_to_stream ((CamelStream *) is, mem, cancellable, error) == -1) {
 				g_object_unref (mem);
-				ret = -1;
-				break;
+				return IMAPX_TOK_ERROR;
 			}
 
 			g_seekable_seek (
 				G_SEEKABLE (mem), 0,
 				G_SEEK_SET, NULL, NULL);
-
 			*stream = mem;
-			break;
-		case IMAPX_TOK_TOKEN:
-			if (toupper (token[0]) == 'N' && toupper (token[1]) == 'I' && toupper (token[2]) == 'L' && token[3] == 0) {
-				*stream = NULL;
-				break;
-			}
-		default:
-			ret = -1;
-			if (local_error == NULL)
-				g_set_error (error, CAMEL_IMAPX_ERROR, 1, "nstring: token not string");
-			else
-				g_propagate_error (error, local_error);
-	}
+			return 0;
 
-	return ret;
+		case IMAPX_TOK_TOKEN:
+			if (toupper (token[0]) == 'N' &&
+			    toupper (token[1]) == 'I' &&
+			    toupper (token[2]) == 'L' &&
+			    token[3] == 0) {
+				*stream = NULL;
+				return 0;
+			}
+			/* fall through */
+
+		default:
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"nstring: token not string");
+			return IMAPX_TOK_ERROR;
+	}
 }
 
 guint64
