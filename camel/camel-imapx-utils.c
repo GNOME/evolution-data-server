@@ -159,9 +159,8 @@ imapx_parse_flags (CamelIMAPXStream *stream,
 			}
 
 			g_free (upper);
-		}
 
-		if (tok != ')') {
+		} else if (tok != ')') {
 			gboolean success;
 
 			success = camel_imapx_stream_skip_until (
