@@ -1601,17 +1601,17 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_get_objects_sync:
+ * e_cal_backend_get_object_sync:
  * @backend: an #ECalBackend
  * @uid: a unique ID for an iCalendar object
  * @rid: a recurrence ID, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Obtains an #ECalComponent by its @uid and, optionally, @rid.
+ * Obtains an iCalendar string for an object identified by its @uid and,
+ * optionally, @rid.
  *
- * The returned #ECalComponent is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
+ * The returned string should be freed with g_free() when finished with it.
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
@@ -1619,7 +1619,7 @@ e_cal_backend_refresh_finish (ECalBackend *backend,
  *
  * Since: 3.10
  **/
-ECalComponent *
+gchar *
 e_cal_backend_get_object_sync (ECalBackend *backend,
                                const gchar *uid,
                                const gchar *rid,
@@ -1628,7 +1628,7 @@ e_cal_backend_get_object_sync (ECalBackend *backend,
 {
 	EAsyncClosure *closure;
 	GAsyncResult *result;
-	ECalComponent *component;
+	gchar *calobj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -1642,11 +1642,11 @@ e_cal_backend_get_object_sync (ECalBackend *backend,
 
 	result = e_async_closure_wait (closure);
 
-	component = e_cal_backend_get_object_finish (backend, result, error);
+	calobj = e_cal_backend_get_object_finish (backend, result, error);
 
 	e_async_closure_free (closure);
 
-	return component;
+	return calobj;
 }
 
 /* Helper for e_cal_backend_get_object() */
@@ -1753,8 +1753,9 @@ e_cal_backend_get_object (ECalBackend *backend,
  *
  * Finishes the operation started with e_cal_backend_get_object().
  *
- * The returned #ECalComponent is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
+ * The returned string is an iCalendar object describing either single component
+ * or a vCalendar object, which includes also detached instances. It should be
+ * freed when no longer needed.
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
@@ -1762,14 +1763,14 @@ e_cal_backend_get_object (ECalBackend *backend,
  *
  * Since: 3.10
  **/
-ECalComponent *
+gchar *
 e_cal_backend_get_object_finish (ECalBackend *backend,
                                  GAsyncResult *result,
                                  GError **error)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	ECalComponent *component;
+	gchar *calobj;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -1784,12 +1785,11 @@ e_cal_backend_get_object_finish (ECalBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return FALSE;
 
-	component = g_queue_pop_head (&async_context->result_queue);
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
+	calobj = g_queue_pop_head (&async_context->result_queue);
 
 	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
 
-	return component;
+	return calobj;
 }
 
 /**
@@ -1800,11 +1800,10 @@ e_cal_backend_get_object_finish (ECalBackend *backend,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Obtains a set of #ECalComponent instances which satisfy the criteria
+ * Obtains a set of iCalendar string instances which satisfy the criteria
  * specified in @query, and deposits them in @out_objects.
  *
- * The returned #ECalComponent instances are referenced for thread-safety
- * and must be unreferenced with g_object_unref() when finished with them.
+ * The returned instances should be freed with g_free() when finished with them.
  *
  * If an error occurs, the function will set @error and return %FALSE.
  * Note that an empty result set does not necessarily imply an error.
@@ -1893,7 +1892,7 @@ cal_backend_get_object_list_thread (GSimpleAsyncResult *simple,
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
- * Asynchronously obtains a set of #ECalComponent instances which satisfy
+ * Asynchronously obtains a set of iCalendar instances which satisfy
  * the criteria specified in @query.
  *
  * When the operation in finished, @callback will be called.  You can then
@@ -1945,9 +1944,8 @@ e_cal_backend_get_object_list (ECalBackend *backend,
  *
  * Finishes the operation started with e_cal_backend_get_object_list().
  *
- * The matching #ECalComponent instances are deposited in @out_objects.
- * The returned #ECalComponent instances are referenced for thread-safety
- * and must be unreferenced with g_object_unref() when finished with them.
+ * The matching iCalendar instances are deposited in @out_objects.
+ * The returned instances should be freed with g_free() when finished with them.
  *
  * If an error occurred, the function will set @error and return %FALSE.
  * Note that an empty result set does not necessarily imply an error.

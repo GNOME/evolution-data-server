@@ -583,31 +583,29 @@ data_cal_complete_get_object_cb (GObject *source_object,
                                  gpointer user_data)
 {
 	AsyncContext *async_context = user_data;
-	ECalComponent *component;
+	gchar *calobj;
 	GError *error = NULL;
 
-	component = e_cal_backend_get_object_finish (
+	calobj = e_cal_backend_get_object_finish (
 		E_CAL_BACKEND (source_object), result, &error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((component != NULL) && (error == NULL)) ||
-		((component == NULL) && (error != NULL)));
+		((calobj != NULL) && (error == NULL)) ||
+		((calobj == NULL) && (error != NULL)));
 
 	if (error == NULL) {
-		gchar *string;
-		gchar *utf8_string;
+		gchar *utf8_calobj;
 
-		string = e_cal_component_get_as_string (component);
-		utf8_string = e_util_utf8_make_valid (string);
+		utf8_calobj = e_util_utf8_make_valid (calobj);
 
 		e_dbus_calendar_complete_get_object (
 			async_context->interface,
 			async_context->invocation,
-			utf8_string);
+			utf8_calobj);
 
-		g_free (utf8_string);
-		g_free (string);
+		g_free (utf8_calobj);
+		g_free (calobj);
 	} else {
 		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
@@ -668,16 +666,13 @@ data_cal_complete_get_object_list_cb (GObject *source_object,
 		strv = g_new0 (gchar *, queue.length + 1);
 
 		while (!g_queue_is_empty (&queue)) {
-			ECalComponent *component;
-			gchar *string;
+			gchar *calobj;
 
-			component = g_queue_pop_head (&queue);
+			calobj = g_queue_pop_head (&queue);
 
-			string = e_cal_component_get_as_string (component);
-			strv[ii++] = e_util_utf8_make_valid (string);
-			g_free (string);
+			strv[ii++] = e_util_utf8_make_valid (calobj);
 
-			g_object_unref (component);
+			g_free (calobj);
 		}
 
 		e_dbus_calendar_complete_get_object_list (
@@ -1578,11 +1573,8 @@ e_data_cal_respond_get_object (EDataCal *cal,
 	g_prefix_error (&error, "%s", _("Cannot retrieve calendar object path: "));
 
 	if (error == NULL) {
-		ECalComponent *component;
-
-		component = e_cal_component_new_from_string (object);
-		if (component != NULL) {
-			g_queue_push_tail (queue, component);
+		if (object != NULL) {
+			g_queue_push_tail (queue, g_strdup (object));
 		} else {
 			g_simple_async_result_set_error (
 				simple, E_CAL_CLIENT_ERROR,
@@ -1638,15 +1630,10 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
 		list = (GSList *) objects;
 
 		for (link = list; link != NULL; link = g_slist_next (link)) {
-			ECalComponent *component;
-			gchar *string = link->data;
+			const gchar *calobj = link->data;
 
-			component = e_cal_component_new_from_string (string);
-			if (component != NULL) {
-				g_queue_push_tail (
-					queue, g_object_ref (component));
-				g_object_unref (component);
-			}
+			if (calobj != NULL)
+				g_queue_push_tail (queue, g_strdup (calobj));
 		}
 
 	} else {

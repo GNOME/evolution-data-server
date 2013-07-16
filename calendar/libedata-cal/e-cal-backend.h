@@ -263,7 +263,7 @@ void		e_cal_backend_refresh		(ECalBackend *backend,
 gboolean	e_cal_backend_refresh_finish	(ECalBackend *backend,
 						 GAsyncResult *result,
 						 GError **error);
-ECalComponent *	e_cal_backend_get_object_sync	(ECalBackend *backend,
+gchar *		e_cal_backend_get_object_sync	(ECalBackend *backend,
 						 const gchar *uid,
 						 const gchar *rid,
 						 GCancellable *cancellable,
@@ -274,7 +274,7 @@ void		e_cal_backend_get_object	(ECalBackend *backend,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
-ECalComponent *	e_cal_backend_get_object_finish	(ECalBackend *backend,
+gchar *		e_cal_backend_get_object_finish	(ECalBackend *backend,
 						 GAsyncResult *result,
 						 GError **error);
 gboolean	e_cal_backend_get_object_list_sync
