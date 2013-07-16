@@ -1075,22 +1075,21 @@ data_cal_complete_send_objects_cb (GObject *source_object,
                                    gpointer user_data)
 {
 	AsyncContext *async_context = user_data;
-	ECalComponent *component;
+	gchar *calobj;
 	GQueue queue = G_QUEUE_INIT;
 	GError *error = NULL;
 
-	component = e_cal_backend_send_objects_finish (
+	calobj = e_cal_backend_send_objects_finish (
 		E_CAL_BACKEND (source_object), result, &queue, &error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((component != NULL) && (error == NULL)) ||
-		((component == NULL) && (error != NULL)));
+		((calobj != NULL) && (error == NULL)) ||
+		((calobj == NULL) && (error != NULL)));
 
-	if (component != NULL) {
+	if (calobj != NULL) {
 		gchar **strv;
-		gchar *string;
-		gchar *utf8_string;
+		gchar *utf8_calobj;
 		gint ii = 0;
 
 		strv = g_new0 (gchar *, queue.length + 1);
@@ -1103,17 +1102,16 @@ data_cal_complete_send_objects_cb (GObject *source_object,
 			g_free (user);
 		}
 
-		string = e_cal_component_get_as_string (component);
-		utf8_string = e_util_utf8_make_valid (string);
+		utf8_calobj = e_util_utf8_make_valid (calobj);
 
 		e_dbus_calendar_complete_send_objects (
 			async_context->interface,
 			async_context->invocation,
 			(const gchar * const *) strv,
-			utf8_string);
+			utf8_calobj);
 
-		g_free (utf8_string);
-		g_free (string);
+		g_free (utf8_calobj);
+		g_free (calobj);
 
 		g_strfreev (strv);
 	} else {
@@ -2003,13 +2001,9 @@ e_data_cal_respond_send_objects (EDataCal *cal,
 	g_prefix_error (&error, "%s", _("Cannot send calendar objects: "));
 
 	if (error == NULL) {
-		ECalComponent *component;
 		GSList *list, *link;
 
-		component = e_cal_component_new_from_string (calobj);
-		g_return_if_fail (component != NULL);
-		g_queue_push_tail (queue, g_object_ref (component));
-		g_object_unref (component);
+		g_queue_push_tail (queue, g_strdup (calobj));
 
 		list = (GSList *) users;
 

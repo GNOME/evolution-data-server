@@ -3058,19 +3058,18 @@ e_cal_backend_receive_objects_finish (ECalBackend *backend,
  *
  * Sends meeting information in @calobj.  The @backend may modify @calobj
  * and send meeting information only to particular users.  The function
- * returns the sent #ECalComponent and deposits the list of users the
- * meeting information was sent to in @out_users.
+ * returns the (maybe) modified @calobj and deposits the list of users the
+ * meeting information was sent (to be send) to in @out_users.
  *
- * The returned #ECalComponent is referenced for thread-safety and must
- * be unrefenced with g_object_unref() when finished with it.
+ * The returned pointer should be freed with g_free(), when no londer needed.
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: an #ECalComponent, or %NULL
+ * Returns: a vCalendar string, or %NULL
  *
  * Since: 3.10
  **/
-ECalComponent *
+gchar *
 e_cal_backend_send_objects_sync (ECalBackend *backend,
                                  const gchar *calobj,
                                  GQueue *out_users,
@@ -3079,7 +3078,7 @@ e_cal_backend_send_objects_sync (ECalBackend *backend,
 {
 	EAsyncClosure *closure;
 	GAsyncResult *result;
-	ECalComponent *component;
+	gchar *out_calobj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (calobj != NULL, NULL);
@@ -3092,12 +3091,12 @@ e_cal_backend_send_objects_sync (ECalBackend *backend,
 
 	result = e_async_closure_wait (closure);
 
-	component = e_cal_backend_send_objects_finish (
+	out_calobj = e_cal_backend_send_objects_finish (
 		backend, result, out_users, error);
 
 	e_async_closure_free (closure);
 
-	return component;
+	return out_calobj;
 }
 
 /* Helper for e_cal_backend_send_objects() */
@@ -3201,19 +3200,19 @@ e_cal_backend_send_objects (ECalBackend *backend,
  *
  * Finishes the operation started with e_cal_backend_send_objects().
  *
- * The function returns the sent #ECalComponent and deposits the list of
- * users the meeting information was sent to in @out_users.
+ * The function returns a string representation of a sent, or to be send,
+ * vCalendar and deposits the list of users the meeting information was sent
+ * to, or to be send to, in @out_users.
  *
- * The returned #ECalComponent is referenced for thread-safety and must
- * be unreferenced with g_object_unref() when finished with it.
+ * Free the returned pointer with g_free(), when no longer needed.
  *
  * If an error occurs, the function will set @error and return %NULL.
  *
- * Returns: an #ECalComponent, or %NULL
+ * Returns: a newly allocated vCalendar string, or %NULL
  *
  * Since: 3.10
  **/
-ECalComponent *
+gchar *
 e_cal_backend_send_objects_finish (ECalBackend *backend,
                                    GAsyncResult *result,
                                    GQueue *out_users,
@@ -3221,7 +3220,7 @@ e_cal_backend_send_objects_finish (ECalBackend *backend,
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	ECalComponent *component;
+	gchar *calobj;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -3237,12 +3236,11 @@ e_cal_backend_send_objects_finish (ECalBackend *backend,
 	if (g_simple_async_result_propagate_error (simple, error))
 		return NULL;
 
-	component = g_queue_pop_head (&async_context->result_queue);
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
+	calobj = g_queue_pop_head (&async_context->result_queue);
 
 	e_queue_transfer (&async_context->result_queue, out_users);
 
-	return component;
+	return calobj;
 }
 
 /**

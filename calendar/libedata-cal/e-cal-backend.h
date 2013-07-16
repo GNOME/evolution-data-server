@@ -373,7 +373,7 @@ gboolean	e_cal_backend_receive_objects_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
 						 GError **error);
-ECalComponent *	e_cal_backend_send_objects_sync	(ECalBackend *backend,
+gchar *		e_cal_backend_send_objects_sync	(ECalBackend *backend,
 						 const gchar *calobj,
 						 GQueue *out_users,
 						 GCancellable *cancellable,
@@ -383,7 +383,7 @@ void		e_cal_backend_send_objects	(ECalBackend *backend,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
-ECalComponent *	e_cal_backend_send_objects_finish
+gchar *		e_cal_backend_send_objects_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
 						 GQueue *out_users,
