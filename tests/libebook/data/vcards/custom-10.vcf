@@ -1,4 +1,5 @@
 BEGIN:VCARD
+UID:custom-10
 N:Morrison;Jim
 TEL;HOME:1 800 ELEPHANT
 EMAIL;TYPE=home,work:jim@morrison.com
