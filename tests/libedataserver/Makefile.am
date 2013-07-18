@@ -5,6 +5,7 @@ NULL =
 TESTS = \
 	e-source-test \
 	e-source-registry-test \
+	e-collator-test	\
 	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)
@@ -39,6 +40,13 @@ e_source_test_SOURCES = \
 
 e_source_test_CPPFLAGS = $(test_CPPFLAGS)
 e_source_test_LDADD = $(test_LDADD)
+
+e_collator_test_SOURCES = \
+	e-collator-test.c \
+	$(NULL)
+
+e_collator_test_CPPFLAGS = $(test_CPPFLAGS)
+e_collator_test_LDADD = $(test_LDADD)
 
 e_source_registry_test_SOURCE = \
 	e-source-registry-test.c \

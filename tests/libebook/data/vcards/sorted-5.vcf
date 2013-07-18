@@ -1,6 +1,6 @@
 BEGIN:VCARD
-UID:custom-5
-FN:James Brown
+UID:sorted-5
+N:bäd;First Name
 TEL;HOME:+6666666
 EMAIL;TYPE=home,work:james@brown.com
 END:VCARD
