@@ -56,6 +56,7 @@ struct _EBookBackendGooglePrivate {
 	GList *bookviews;
 
 	EBookBackendCache *cache;
+	GMutex cache_lock;
 
 	/* Mapping from group ID to (human readable) group name */
 	GHashTable *groups_by_id;
@@ -218,12 +219,16 @@ cache_init (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
+	g_mutex_lock (&priv->cache_lock);
+
 	cache_dir = e_book_backend_get_cache_dir (backend);
 	filename = g_build_filename (cache_dir, "cache.xml", NULL);
 	priv->cache = e_book_backend_cache_new (filename);
 	g_free (filename);
 
 	migrate_cache (priv->cache);
+
+	g_mutex_unlock (&priv->cache_lock);
 }
 
 static EContact *
@@ -237,7 +242,9 @@ cache_add_contact (EBookBackend *backend,
 
 	contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
 	e_contact_add_gdata_entry_xml (contact, entry);
+	g_mutex_lock (&priv->cache_lock);
 	e_book_backend_cache_add_contact (priv->cache, contact);
+	g_mutex_unlock (&priv->cache_lock);
 	e_contact_remove_gdata_entry_xml (contact);
 
 	return contact;
@@ -248,10 +255,15 @@ cache_remove_contact (EBookBackend *backend,
                       const gchar *uid)
 {
 	EBookBackendGooglePrivate *priv;
+	gboolean removed;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	return e_book_backend_cache_remove_contact (priv->cache, uid);
+	g_mutex_lock (&priv->cache_lock);
+	removed = e_book_backend_cache_remove_contact (priv->cache, uid);
+	g_mutex_unlock (&priv->cache_lock);
+
+	return removed;
 }
 
 static gboolean
@@ -259,10 +271,15 @@ cache_has_contact (EBookBackend *backend,
                    const gchar *uid)
 {
 	EBookBackendGooglePrivate *priv;
+	gboolean has_contact;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	return e_book_backend_cache_check_contact (priv->cache, uid);
+	g_mutex_lock (&priv->cache_lock);
+	has_contact = e_book_backend_cache_check_contact (priv->cache, uid);
+	g_mutex_unlock (&priv->cache_lock);
+
+	return has_contact;
 }
 
 static EContact *
@@ -275,7 +292,10 @@ cache_get_contact (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
+	g_mutex_lock (&priv->cache_lock);
 	contact = e_book_backend_cache_get_contact (priv->cache, uid);
+	g_mutex_unlock (&priv->cache_lock);
+
 	if (contact) {
 		if (entry) {
 			const gchar *entry_xml, *edit_uri = NULL;
@@ -305,8 +325,10 @@ cache_get_contacts (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
+	g_mutex_lock (&priv->cache_lock);
 	list = e_book_backend_cache_get_contacts (
 		priv->cache, "(contains \"x-evolution-any-field\" \"\")");
+	g_mutex_unlock (&priv->cache_lock);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		EContact *contact = E_CONTACT (link->data);
@@ -342,10 +364,15 @@ static gchar *
 cache_get_last_update (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
+	gchar *last_update;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	return e_book_backend_cache_get_time (priv->cache);
+	g_mutex_lock (&priv->cache_lock);
+	last_update = e_book_backend_cache_get_time (priv->cache);
+	g_mutex_unlock (&priv->cache_lock);
+
+	return last_update;
 }
 
 static void
@@ -358,7 +385,9 @@ cache_set_last_update (EBookBackend *backend,
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	_time = g_time_val_to_iso8601 (tv);
+	g_mutex_lock (&priv->cache_lock);
 	e_book_backend_cache_set_time (priv->cache, _time);
+	g_mutex_unlock (&priv->cache_lock);
 	g_free (_time);
 }
 
@@ -1325,6 +1354,8 @@ book_backend_google_finalize (GObject *object)
 		g_hash_table_destroy (priv->cancellables);
 	}
 
+	g_mutex_clear (&priv->cache_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_google_parent_class)->finalize (object);
 }
@@ -2179,6 +2210,8 @@ e_book_backend_google_init (EBookBackendGoogle *backend)
 	g_debug (G_STRFUNC);
 
 	backend->priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
+
+	g_mutex_init (&backend->priv->cache_lock);
 
 	g_signal_connect (
 		backend, "notify::online",
