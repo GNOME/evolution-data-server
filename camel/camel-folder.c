@@ -240,9 +240,13 @@ folder_emit_renamed_cb (gpointer user_data)
 	return FALSE;
 }
 
-static void
-folder_filter_data_free (FolderFilterData *data)
+static gpointer
+folder_filter_data_free_thread (gpointer user_data)
 {
+	FolderFilterData *data = user_data;
+
+	g_return_val_if_fail (data != NULL, NULL);
+
 	if (data->driver != NULL)
 		g_object_unref (data->driver);
 	if (data->recents != NULL)
@@ -259,6 +263,21 @@ folder_filter_data_free (FolderFilterData *data)
 	g_object_unref (data->folder);
 
 	g_slice_free (FolderFilterData, data);
+
+	return NULL;
+}
+
+static void
+prepare_folder_filter_data_free (FolderFilterData *data)
+{
+	GThread *thread;
+
+	/* Do the actual free in a dedicated thread, because the driver or
+	   folder unref can do network/blocking I/O operations, but this
+	   function is called in the main (UI) thread.
+	*/
+	thread = g_thread_new (NULL, folder_filter_data_free_thread, data);
+	g_thread_unref (thread);
 }
 
 static void
@@ -1790,7 +1809,7 @@ folder_changed (CamelFolder *folder,
 
 		camel_session_submit_job (
 			session, (CamelSessionCallback) folder_filter,
-			data, (GDestroyNotify) folder_filter_data_free);
+			data, (GDestroyNotify) prepare_folder_filter_data_free);
 
 		g_signal_stop_emission (folder, signals[CHANGED], 0);
 	}
