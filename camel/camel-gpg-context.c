@@ -439,6 +439,33 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 	g_free (gpg);
 }
 
+static const gchar *
+gpg_ctx_get_executable_name (void)
+{
+	static gint index = -1;
+	const gchar *names[] = {
+		"gpg",
+		"gpg2",
+		NULL
+	};
+
+	if (index == -1) {
+		for (index = 0; names[index]; index++) {
+			gchar *path = g_find_program_in_path (names[index]);
+
+			if (path) {
+				g_free (path);
+				break;
+			}
+		}
+
+		if (!names[index])
+			index = 0;
+	}
+
+	return names[index];
+}
+
 #ifndef G_OS_WIN32
 
 static const gchar *
@@ -477,7 +504,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 	gint i;
 
 	argv = g_ptr_array_new ();
-	g_ptr_array_add (argv, (guint8 *) "gpg");
+	g_ptr_array_add (argv, (guint8 *) gpg_ctx_get_executable_name ());
 
 	g_ptr_array_add (argv, (guint8 *) "--verbose");
 	g_ptr_array_add (argv, (guint8 *) "--no-secmem-warning");
@@ -623,7 +650,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		}
 
 		/* run gpg */
-		execvp ("gpg", (gchar **) argv->pdata);
+		execvp (gpg_ctx_get_executable_name (), (gchar **) argv->pdata);
 		_exit (255);
 	} else if (gpg->pid < 0) {
 		g_ptr_array_free (argv, TRUE);
