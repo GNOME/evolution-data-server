@@ -495,7 +495,7 @@ service_shared_disconnect_cb (GObject *source_object,
 	if (service->priv->connection_op == op) {
 		connection_op_unref (service->priv->connection_op);
 		service->priv->connection_op = NULL;
-		if (success)
+		if (success || service->priv->status == CAMEL_SERVICE_CONNECTING)
 			service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 		else
 			service->priv->status = CAMEL_SERVICE_CONNECTED;
@@ -1899,8 +1899,14 @@ camel_service_disconnect (CamelService *service,
 			op = connection_op_new (simple, cancellable);
 			service->priv->connection_op = op;
 
-			service->priv->status = CAMEL_SERVICE_DISCONNECTING;
-			service_queue_notify_connection_status (service);
+			/* Do not change the status if "Connecting" - in case a provider calls
+			   "Disconnect" during the connection phase, which confuses the other
+			   logic here, effectively makes the service's connection state "Connected",
+			   instead of "Disconnected", at the end. */
+			if (service->priv->status != CAMEL_SERVICE_CONNECTING) {
+				service->priv->status = CAMEL_SERVICE_DISCONNECTING;
+				service_queue_notify_connection_status (service);
+			}
 
 			class->disconnect (
 				service, clean,

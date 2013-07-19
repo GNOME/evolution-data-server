@@ -184,9 +184,6 @@ connect_to_server (CamelService *service,
 		transport->flags &= ~CAMEL_SMTP_TRANSPORT_IS_ESMTP;
 
 		if (!smtp_helo (transport, cancellable, error)) {
-			camel_service_disconnect_sync (
-				CAMEL_SERVICE (transport),
-				TRUE, cancellable, NULL);
 			success = FALSE;
 			goto exit;
 		}
@@ -250,9 +247,6 @@ connect_to_server (CamelService *service,
 	/* We are supposed to re-EHLO after a successful STARTTLS to
 	 * re-fetch any supported extensions. */
 	if (!smtp_helo (transport, cancellable, error)) {
-		camel_service_disconnect_sync (
-			CAMEL_SERVICE (transport),
-			TRUE, cancellable, NULL);
 		success = FALSE;
 	}
 
@@ -266,12 +260,13 @@ exception_cleanup:
 	g_object_unref (transport->ostream);
 	transport->ostream = NULL;
 
-	transport->connected = FALSE;
-
 	success = FALSE;
 
 exit:
 	g_free (host);
+
+	if (!success)
+		transport->connected = FALSE;
 
 	return success;
 }
@@ -429,8 +424,7 @@ smtp_transport_connect_sync (CamelService *service,
 		g_object_unref (session);
 
 		if (!success)
-			camel_service_disconnect_sync (
-				service, TRUE, cancellable, NULL);
+			transport->connected = FALSE;
 	}
 
 exit:
@@ -1202,10 +1196,6 @@ smtp_helo (CamelSmtpTransport *transport,
 		g_free (cmdbuf);
 		g_prefix_error (error, _("HELO command failed: "));
 		camel_operation_pop_message (cancellable);
-
-		camel_service_disconnect_sync (
-			CAMEL_SERVICE (transport),
-			FALSE, cancellable, NULL);
 
 		return FALSE;
 	}
