@@ -152,8 +152,6 @@ disco_store_connect_sync (CamelService *service,
 			return FALSE;
 		}
 
-		if (!camel_service_disconnect_sync (service, TRUE, cancellable, error))
-			return FALSE;
 		return camel_service_connect_sync (service, cancellable, error);
 
 	case CAMEL_DISCO_STORE_OFFLINE:
@@ -359,10 +357,12 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 			FALSE, cancellable, NULL);
 	}
 
-	if (!camel_service_disconnect_sync (
-		CAMEL_SERVICE (disco_store),
-		network_available, cancellable, error))
-		return FALSE;
+	if (camel_service_get_connection_status (CAMEL_SERVICE (disco_store)) != CAMEL_SERVICE_CONNECTING) {
+		if (!camel_service_disconnect_sync (
+			CAMEL_SERVICE (disco_store),
+			network_available, cancellable, error))
+			return FALSE;
+	}
 
 	disco_store->status = status;
 

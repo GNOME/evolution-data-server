@@ -314,6 +314,8 @@ try_sasl (CamelPOP3Store *store,
 		goto ioerror;
 
 	while (1) {
+		GError *local_error = NULL;
+
 		if (camel_pop3_stream_line (pop3_stream, &line, &len, cancellable, error) == -1)
 			goto ioerror;
 
@@ -332,10 +334,17 @@ try_sasl (CamelPOP3Store *store,
 		 * so fail, and try reset the server. */
 		if (strncmp ((gchar *) line, "+ ", 2) != 0
 		    || camel_sasl_get_authenticated (sasl)
-		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, NULL)) == NULL) {
+		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, &local_error)) == NULL) {
 			camel_stream_write_string (
 				CAMEL_STREAM (pop3_stream), "*\r\n", cancellable, NULL);
 			camel_pop3_stream_line (pop3_stream, &line, &len, cancellable, NULL);
+
+			if (local_error) {
+				g_propagate_error (error, local_error);
+				local_error = NULL;
+				goto ioerror;
+			}
+
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -540,11 +549,8 @@ pop3_store_connect_sync (CamelService *service,
 	success = camel_session_authenticate_sync (
 		session, service, mechanism, cancellable, error);
 
-	if (!success) {
-		camel_service_disconnect_sync (
-			service, TRUE, cancellable, NULL);
+	if (!success)
 		goto exit;
-	}
 
 	/* Now that we are in the TRANSACTION state,
 	 * try regetting the capabilities */
