@@ -2297,6 +2297,9 @@ imapx_untagged_bye (CamelIMAPXServer *is,
                     GCancellable *cancellable,
                     GError **error)
 {
+	CamelIMAPXStore *imapx_store;
+	CamelService *service;
+	CamelServiceConnectionStatus status;
 	guchar *token = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -2313,6 +2316,19 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 	g_free (token);
 
 	is->state = IMAPX_SHUTDOWN;
+
+	imapx_store = camel_imapx_server_ref_store (is);
+	service = CAMEL_SERVICE (imapx_store);
+	status = camel_service_get_connection_status (service);
+
+	/* Do not disconnect the service if we're still connecting.
+	 * camel_service_disconnect_sync() will cancel the connect
+	 * operation and the server message will get replaced with
+	 * a generic "Operation was cancelled" message. */
+	if (status == CAMEL_SERVICE_CONNECTED)
+		camel_service_disconnect_sync (service, FALSE, NULL, NULL);
+
+	g_object_unref (imapx_store);
 
 	return FALSE;
 }
@@ -3927,9 +3943,11 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		}
 
 		if (tok == '*') {
-			imapx_untagged (
+			success = imapx_untagged (
 				is, CAMEL_IMAPX_STREAM (imapx_stream),
 				cancellable, error);
+			if (!success)
+				goto exit;
 			break;
 		}
 		camel_imapx_stream_ungettoken (
