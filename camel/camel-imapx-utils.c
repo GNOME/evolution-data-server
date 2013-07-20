@@ -2708,6 +2708,9 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 		camel_imapx_command_add (
 			ic, " (%s %s)", seqs->str, uids->str);
+
+		g_string_free (seqs, TRUE);
+		g_string_free (uids, TRUE);
 	}
 
 	camel_imapx_command_add (ic, "))");
