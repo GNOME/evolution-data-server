@@ -1803,7 +1803,8 @@ e_cal_backend_notify_component_modified (ECalBackend *backend,
 	GList *list, *link;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_IS_CAL_COMPONENT (old_component));
+	if (old_component)
+		g_return_if_fail (E_IS_CAL_COMPONENT (old_component));
 	g_return_if_fail (E_IS_CAL_COMPONENT (new_component));
 
 	if (backend->priv->notification_proxy != NULL) {
