@@ -482,7 +482,11 @@ e_cal_backend_file_get_backend_property (ECalBackendSync *backend,
 					CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
 					CAL_STATIC_CAPABILITY_BULK_ADDS ","
 					CAL_STATIC_CAPABILITY_BULK_MODIFIES ","
-					CAL_STATIC_CAPABILITY_BULK_REMOVES);
+					CAL_STATIC_CAPABILITY_BULK_REMOVES ","
+					/*
+					 * This capability was added after the 3.8.0 release
+					 */
+					"alarm-description");
 	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
 		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
 		/* A file backend has no particular email address associated
