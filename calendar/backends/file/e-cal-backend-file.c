@@ -471,7 +471,7 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		return g_strjoin (
-			","
+			",",
 			CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS,
 			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
 			CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED,
