@@ -41,6 +41,7 @@
 #endif
 #include "camel-object.h"
 #include "camel-operation.h"
+#include "camel-service.h"
 
 #define d(x)
 
@@ -728,11 +729,11 @@ camel_getaddrinfo (const gchar *name,
 
 		if (msg->result == EAI_NONAME || msg->result == EAI_FAIL) {
 			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_URL_INVALID,
 				_("Host lookup '%s' failed. Check your host name for spelling errors."), name);
 		} else if (msg->result != 0) {
 			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_URL_INVALID,
 				_("Host lookup '%s' failed: %s"),
 				name, gai_strerror (msg->result));
 		}
@@ -881,11 +882,11 @@ camel_getnameinfo (const struct sockaddr *sa,
 	result = msg->result;
 	if (result == EAI_NONAME || result == EAI_FAIL) {
 		g_set_error_literal (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_URL_INVALID,
 			_("Name lookup failed. Check your host name for spelling errors."));
 	} else if (result) {
 		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_URL_INVALID,
 			_("Name lookup failed: %s"), gai_strerror (result));
 	} else {
 		if (host)
