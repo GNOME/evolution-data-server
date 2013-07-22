@@ -2,6 +2,7 @@
 
 e_book_get_type
 e_book_client_get_type
+e_book_client_cursor_get_type
 e_book_client_view_get_type
 e_book_view_get_type
 e_destination_get_type

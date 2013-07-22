@@ -12,6 +12,7 @@
     <title>Evolution-Data-Server Manual: Address Book Client (libebook)</title>
     <xi:include href="xml/e-book-client.xml"/>
     <xi:include href="xml/e-book-client-view.xml"/>
+    <xi:include href="xml/e-book-client-cursor.xml"/>
     <xi:include href="xml/e-book-types.xml"/>
     <xi:include href="xml/e-destination.xml"/>
   </chapter>

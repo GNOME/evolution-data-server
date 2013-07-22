@@ -117,9 +117,12 @@ e_book_client_connect_sync
 e_book_client_connect
 e_book_client_connect_finish
 e_book_client_connect_direct_sync
+e_book_client_connect_direct
+e_book_client_connect_direct_finish
 e_book_client_get_self
 e_book_client_set_self
 e_book_client_is_self
+e_book_client_get_locale
 e_book_client_add_contact
 e_book_client_add_contact_finish
 e_book_client_add_contact_sync
@@ -153,6 +156,9 @@ e_book_client_get_contacts_uids_sync
 e_book_client_get_view
 e_book_client_get_view_finish
 e_book_client_get_view_sync
+e_book_client_get_cursor
+e_book_client_get_cursor_finish
+e_book_client_get_cursor_sync
 <SUBSECTION Deprecated>
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 e_book_client_new
@@ -168,6 +174,36 @@ e_book_client_get_type
 <SUBSECTION Private>
 EBookClientPrivate
 e_book_client_error_quark
+</SECTION>
+
+<SECTION>
+<FILE>e-book-client-cursor</FILE>
+<TITLE>EBookClientCursor</TITLE>
+EBookClientCursor
+EBookClientCursorClass
+e_book_client_cursor_ref_client
+e_book_client_cursor_get_alphabet
+e_book_client_cursor_get_total
+e_book_client_cursor_get_position
+e_book_client_cursor_set_sexp
+e_book_client_cursor_set_sexp_finish
+e_book_client_cursor_set_sexp_sync
+e_book_client_cursor_move_by
+e_book_client_cursor_move_by_finish
+e_book_client_cursor_move_by_sync
+e_book_client_cursor_set_alphabetic_index
+e_book_client_cursor_set_alphabetic_index_finish
+e_book_client_cursor_set_alphabetic_index_sync
+e_book_client_cursor_get_contact_alpabetic_index
+<SUBSECTION Standard>
+EBookClientCursorPrivate
+E_BOOK_CLIENT_CURSOR
+E_BOOK_CLIENT_CURSOR_CLASS
+E_BOOK_CLIENT_CURSOR_GET_CLASS
+E_IS_BOOK_CLIENT_CURSOR
+E_IS_BOOK_CLIENT_CURSOR_CLASS
+E_TYPE_BOOK_CLIENT_CURSOR
+e_book_client_cursor_get_type
 </SECTION>
 
 <SECTION>
