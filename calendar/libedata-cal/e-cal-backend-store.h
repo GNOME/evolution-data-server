@@ -138,6 +138,9 @@ gboolean	e_cal_backend_store_set_default_timezone
 GSList *	e_cal_backend_store_get_components_by_uid
 						(ECalBackendStore *store,
 						 const gchar *uid);
+gchar *		e_cal_backend_store_get_components_by_uid_as_ical_string
+						(ECalBackendStore *store,
+						 const gchar *uid);
 GSList *	e_cal_backend_store_get_components
 						(ECalBackendStore *store);
 GSList *	e_cal_backend_store_get_components_occuring_in_range

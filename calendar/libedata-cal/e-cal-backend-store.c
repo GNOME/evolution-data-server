@@ -1313,6 +1313,58 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store,
 }
 
 /**
+ * e_cal_backend_store_get_components_by_uid_as_ical_string:
+ * @store: an #ECalBackendStore
+ * @uid: a component UID
+ *
+ * Returns: Newly allocated ical string containing all
+ *   instances with given @uid. Free returned pointer with g_free(),
+ *   when no longer needed.
+ *
+ * Since: 3.10
+ **/
+gchar *
+e_cal_backend_store_get_components_by_uid_as_ical_string (ECalBackendStore *store,
+							  const gchar *uid)
+{
+	GSList *comps;
+	gchar *ical_string = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	comps = e_cal_backend_store_get_components_by_uid (store, uid);
+	if (!comps)
+		return NULL;
+
+	if (!comps->next) {
+		ical_string = e_cal_component_get_as_string (comps->data);
+	} else {
+		GSList *citer;
+		icalcomponent *icalcomp;
+
+		/* if we have detached recurrences, return a VCALENDAR */
+		icalcomp = e_cal_util_new_top_level ();
+
+		for (citer = comps; citer; citer = g_slist_next (citer)) {
+			ECalComponent *comp = citer->data;
+
+			icalcomponent_add_component (
+				icalcomp,
+				icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+		}
+
+		ical_string = icalcomponent_as_ical_string_r (icalcomp);
+
+		icalcomponent_free (icalcomp);
+	}
+
+	g_slist_free_full (comps, g_object_unref);
+
+	return ical_string;
+}
+
+/**
  * e_cal_backend_store_get_components:
  *
  * Since: 2.28
