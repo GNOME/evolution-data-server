@@ -39,7 +39,7 @@ m4_define([glib_minimum_version], [2.34])
 m4_define([glib_encoded_version], [GLIB_VERSION_2_34])
 
 dnl Keep these two definitions in agreement.
-m4_define([gdk_minimum_version], [3.2])
+m4_define([gdk_minimum_version], [3.9])
 m4_define([gdk_encoded_version], [GDK_VERSION_3_2])
 
 dnl Keep these two definitions in agreement.
@@ -1780,6 +1780,7 @@ tests/test-server-utils/services/Makefile
 tests/test-server-utils/services/org.gnome.evolution.dataserver.AddressBook.service
 tests/test-server-utils/services/org.gnome.evolution.dataserver.Calendar.service
 tests/test-server-utils/services/org.gnome.evolution.dataserver.Sources.service
+tests/cursor-example/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile

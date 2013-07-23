@@ -8,3 +8,6 @@ camel/providers/nntp/test-newsrc.c
 modules/ubuntu-online-accounts/google-contacts.service.in
 modules/ubuntu-online-accounts/google-gmail.service.in
 servers/exchange/lib/e2k-user-dialog.c
+tests/cursor-example/cursor-example.ui
+tests/cursor-example/cursor-search.ui
+tests/cursor-example/cursor-slot.ui

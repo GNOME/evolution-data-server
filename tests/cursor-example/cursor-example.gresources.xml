@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/evolution/cursor-example">
+    <file compressed="true" preprocess="xml-stripblanks">cursor-example.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">cursor-search.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">cursor-slot.ui</file>
+  </gresource>
+</gresources>

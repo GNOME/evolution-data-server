@@ -1685,7 +1685,10 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 			tmp = g_slist_prepend (tmp, contact);
 		}
 
-		*out_contacts = g_slist_reverse (tmp);
+		if (out_contacts)
+			*out_contacts = g_slist_reverse (tmp);
+		else
+			g_slist_free_full (tmp, (GDestroyNotify)g_object_unref);
 
 		g_strfreev (vcards);
 	}
@@ -2291,6 +2294,12 @@ e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
  * Sets the current cursor position to point to an <link linkend="cursor-alphabet">Alphabetic Index</link>.
  *
  * See: e_book_client_cursor_set_alphabetic_index_sync().
+ *
+ * If this method is called from the same thread context in which
+ * the cursor was created, then the updates to the #EBookClientCursor:position
+ * property are guaranteed to be delivered synchonously upon successful completion
+ * of moving the cursor. Otherwise, notifications will be delivered asynchronously
+ * in the cursor's original thread context.
  *
  * This asynchronous call is completed with a call to
  * e_book_client_cursor_set_alphabetic_index_finish() from the specified @callback.

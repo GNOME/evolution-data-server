@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.10 -->
+  <template class="CursorSearch" parent="GtkSearchEntry">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="primary_icon_name">edit-find-symbolic</property>
+    <signal name="changed" handler="cursor_search_entry_changed" swapped="yes"/>
+    <signal name="icon-press" handler="cursor_search_icon_press" swapped="yes"/>
+  </template>
+  <object class="GtkMenu" id="popup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkRadioMenuItem" id="name_radio">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Name</property>
+        <property name="use_underline">True</property>
+        <property name="active">True</property>
+        <property name="draw_as_radio">True</property>
+        <signal name="toggled" handler="cursor_search_option_toggled" swapped="yes"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkRadioMenuItem" id="phone_radio">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Phonenumber</property>
+        <property name="use_underline">True</property>
+        <property name="draw_as_radio">True</property>
+        <property name="group">name_radio</property>
+        <signal name="toggled" handler="cursor_search_option_toggled" swapped="yes"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkRadioMenuItem" id="email_radio">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Email</property>
+        <property name="use_underline">True</property>
+        <property name="draw_as_radio">True</property>
+        <property name="group">name_radio</property>
+        <signal name="toggled" handler="cursor_search_option_toggled" swapped="yes"/>
+      </object>
+    </child>
+  </object>
+</interface>
