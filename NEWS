@@ -1,3 +1,44 @@
+Evolution-Data-Server 3.8.4 2013-07-23
+--------------------------------------
+
+Bug Fixes:
+	Bug 386113 - Show custom alarm message in pop-up alerts
+	             (Fabiano Fidêncio)
+	Bug 682322 - SIGSEGV in pop3_folder_refresh_info_sync (Milan Crha)
+	Bug 691526 - Memory corruption under
+	             e_book_backend_google_start_book_view() (Milan Crha)
+	Bug 692904 - Do not call camel_service_disconnect during connection
+	             phase (Milan Crha)
+	Bug 697598 - [imapx] Freeze due to calling thread join from main
+	             thread (Milan Crha)
+	Bug 700894 - LDAP 'Copy for offline' blocks online searches
+	             (Milan Crha)
+	Bug 703053 - Error on setting reminder 'after start of appointment'
+	             (Fabiano Fidêncio)
+	Bug 703194 - Custom alarm message is REMINDER (Fabiano Fidêncio)
+	Bug 704003 - IMAPX: Untagged BYE message while connecting is lost
+	             (Matthew Barnes)
+	Bug 704181 - Froze while filtering messages (Milan Crha)
+	Bug 704618 - Missing detached instances in get_object() response
+	             (Milan Crha)
+
+Other Changes:
+	* Allow automatic NTLM authentication unconditionally (David Woodhouse)
+	* Fix GError use-after-free in collection_backend_load_resources()
+	  (Milan Crha)
+	* Avoid a crash in cal_backend_add_cached_timezone(). (Matthew Barnes)
+	* [IMAPX] Server connection is not mandatory when searching folder
+	  content (Milan Crha)
+	* e_book_backend_sqlitedb_has_contact() used nonexistent column
+	  (Milan Crha)
+	* CamelGpgContext: Be aware of gpg2 (Milan Crha)
+	* CamelGpgContext: Enclose email addresses in brackets. (Matthew Barnes)
+	* Fix memory leak in camel_imapx_command_add_qresync_parameter().
+	  (Matthew Barnes)
+	* Do not use generic error codes in camel_getaddrinfo() /
+	  camel_getnameinfo() (Milan Crha)
+
+
 Evolution-Data-Server 3.8.3 2013-06-10
 --------------------------------------
 
