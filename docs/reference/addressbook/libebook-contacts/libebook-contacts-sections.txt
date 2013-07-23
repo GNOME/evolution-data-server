@@ -154,6 +154,7 @@ e_phone_number_get_country_code
 e_phone_number_get_national_number
 e_phone_number_compare
 e_phone_number_compare_strings
+e_phone_number_compare_strings_with_region
 e_phone_number_copy
 e_phone_number_free
 <SUBSECTION Standard>
