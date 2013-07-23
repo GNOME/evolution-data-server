@@ -1900,9 +1900,9 @@ camel_service_disconnect (CamelService *service,
 			service->priv->connection_op = op;
 
 			/* Do not change the status if "Connecting" - in case a provider calls
-			   "Disconnect" during the connection phase, which confuses the other
-			   logic here, effectively makes the service's connection state "Connected",
-			   instead of "Disconnected", at the end. */
+			 * "Disconnect" during the connection phase, which confuses the other
+			 * logic here, effectively makes the service's connection state "Connected",
+			 * instead of "Disconnected", at the end. */
 			if (service->priv->status != CAMEL_SERVICE_CONNECTING) {
 				service->priv->status = CAMEL_SERVICE_DISCONNECTING;
 				service_queue_notify_connection_status (service);

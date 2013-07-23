@@ -272,8 +272,8 @@ prepare_folder_filter_data_free (FolderFilterData *data)
 	GThread *thread;
 
 	/* Do the actual free in a dedicated thread, because the driver or
-	   folder unref can do network/blocking I/O operations, but this
-	   function is called in the main (UI) thread.
+	 * folder unref can do network/blocking I/O operations, but this
+	 * function is called in the main (UI) thread.
 	*/
 	thread = g_thread_new (NULL, folder_filter_data_free_thread, data);
 	g_thread_unref (thread);

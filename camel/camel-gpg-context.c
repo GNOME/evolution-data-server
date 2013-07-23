@@ -2166,8 +2166,8 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	}
 
 	/* Report errors only if nothing was decrypted; missing sender's key used
-	   for signature of a signed and encrypted messages causes GPG to return
-	   failure, thus count with it.
+	 * for signature of a signed and encrypted messages causes GPG to return
+	 * failure, thus count with it.
 	 */
 	if (gpg_ctx_op_wait (gpg) != 0 && gpg->nodata) {
 		const gchar *diagnostics;

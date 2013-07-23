@@ -321,7 +321,7 @@ imapx_search_by_uids (CamelFolder *folder,
 
 	if (online) {
 		/* do not panic when the server cannot be reached for whatever reason,
-		   show offline data at least */
+		 * show offline data at least */
 		server = camel_imapx_store_get_server (
 			CAMEL_IMAPX_STORE (parent_store),
 			folder_name, cancellable, NULL);
@@ -370,7 +370,7 @@ imapx_count_by_expression (CamelFolder *folder,
 
 	if (online) {
 		/* do not panic when the server cannot be reached for whatever reason,
-		   show offline data at least */
+		 * show offline data at least */
 		server = camel_imapx_store_get_server (
 			CAMEL_IMAPX_STORE (parent_store),
 			folder_name, cancellable, NULL);
@@ -419,7 +419,7 @@ imapx_search_by_expression (CamelFolder *folder,
 
 	if (online) {
 		/* do not panic when the server cannot be reached for whatever reason,
-		   show offline data at least */
+		 * show offline data at least */
 		server = camel_imapx_store_get_server (
 			CAMEL_IMAPX_STORE (parent_store),
 			folder_name, cancellable, NULL);

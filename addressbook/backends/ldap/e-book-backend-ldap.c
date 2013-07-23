@@ -463,7 +463,7 @@ can_browse (EBookBackend *backend)
 }
 
 /* because the priv->marked_for_offline is populated only after open,
-   thus get the actual value directy from the source */
+ * thus get the actual value directy from the source */
 static gboolean
 get_marked_for_offline (EBookBackend *backend)
 {
@@ -5264,9 +5264,9 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 
 static void
 book_backend_ldap_refresh (EBookBackend *backend,
-			   EDataBook *book,
-			   guint32 opid,
-			   GCancellable *cancellable)
+                           EDataBook *book,
+                           guint32 opid,
+                           GCancellable *cancellable)
 {
 	EBookBackendLDAP *ldap_backend = E_BOOK_BACKEND_LDAP (backend);
 
@@ -5446,7 +5446,7 @@ e_book_backend_ldap_get_backend_property (EBookBackend *backend,
 		if (get_marked_for_offline (backend))
 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query,refresh-supported");
 		else if (can_browse (backend))
- 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query");
+			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query");
 		else
 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists");
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
