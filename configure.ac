@@ -479,6 +479,31 @@ if test "x$enable_gtk" = xyes; then
 fi
 AM_CONDITIONAL(HAVE_GTK, [test x$enable_gtk = xyes])
 
+
+dnl ******************************************
+dnl Check whether to build examples/demos
+dnl ******************************************
+AC_ARG_ENABLE([examples],
+	[AS_HELP_STRING([--enable-examples],
+	[enable the building examples (default=yes)])],
+	[enable_examples=$enableval], [enable_examples=yes])
+AC_MSG_CHECKING([if examples should be built])
+AC_MSG_RESULT([$enable_examples])
+if test "x$enable_examples" = xyes; then
+	PKG_CHECK_MODULES([EXAMPLES],
+		[gtk+-3.0 >= 3.10 glib-2.0 >= 2.38],,
+	[AC_MSG_ERROR([
+	Some packages were not available to build the example program(s).
+
+	If you want to disable examples, please
+	append --disable-examples to configure.
+	])])
+
+	AC_DEFINE(BUILD_EXAMPLES, 1, [Define to 1 if the examples should be built.])
+fi
+AM_CONDITIONAL(BUILD_EXAMPLES, [test x$enable_examples = xyes])
+
+
 dnl *******************************
 dnl Check for GNOME Online Accounts
 dnl *******************************
@@ -1805,6 +1830,7 @@ tests/test-server-utils/services/Makefile
 tests/test-server-utils/services/org.gnome.evolution.dataserver.AddressBook.service
 tests/test-server-utils/services/org.gnome.evolution.dataserver.Calendar.service
 tests/test-server-utils/services/org.gnome.evolution.dataserver.Sources.service
+tests/cursor-example/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
@@ -1843,6 +1869,7 @@ echo "
 	Ubuntu Online Accounts	$enable_uoa
 	Google Contacts		$enable_google
 	GTK+:  			$enable_gtk
+	Examples:  		$enable_examples
 	Code coverage (gcov):	$enable_code_coverage
 	Strict building:	$enable_strict
 "
