@@ -5825,6 +5825,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	case EBSDB_CURSOR_ORIGIN_RESET:
 		/* Clear the current state before executing the query */
 		ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
+		ebsdb_cursor_clear_state (cursor, STATE_PREVIOUS);
 		break;
 	}
 
@@ -5955,10 +5956,14 @@ e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB
 				     NULL, NULL, NULL);
 	g_return_if_fail (index < n_labels);
 
+	ebsdb_cursor_clear_state (cursor, STATE_PREVIOUS);
 	ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
-	if (cursor->n_sort_fields > 0)
+	if (cursor->n_sort_fields > 0) {
+		cursor->state[STATE_PREVIOUS].values[0] =
+			e_collator_generate_key_for_index (ebsdb->priv->collator, index);
 		cursor->state[STATE_CURRENT].values[0] =
 			e_collator_generate_key_for_index (ebsdb->priv->collator, index);
+	}
 }
 
 /**
