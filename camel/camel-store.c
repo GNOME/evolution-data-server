@@ -2180,6 +2180,10 @@ camel_store_get_folder_info_sync (CamelStore *store,
 {
 	CamelStoreClass *class;
 	CamelFolderInfo *info;
+	gboolean allow_virtual;
+	gboolean start_at_root;
+	gboolean store_has_vtrash;
+	gboolean store_has_vjunk;
 	gchar *name;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
@@ -2194,13 +2198,19 @@ camel_store_get_folder_info_sync (CamelStore *store,
 
 	info = class->get_folder_info_sync (
 		store, top, flags, cancellable, error);
-	if (!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED))
+	if ((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0)
 		CAMEL_CHECK_GERROR (
 			store, get_folder_info_sync, info != NULL, error);
 
-	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
-		if (store->flags & CAMEL_STORE_VTRASH)
-			/* the name of the Trash folder, used for deleted messages */
+	/* For readability. */
+	allow_virtual = ((flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0);
+	start_at_root = (top == NULL || *top == '\0');
+	store_has_vtrash = ((store->flags & CAMEL_STORE_VTRASH) != 0);
+	store_has_vjunk = ((store->flags & CAMEL_STORE_VJUNK) != 0);
+
+	if (info != NULL && start_at_root && allow_virtual) {
+		if (store_has_vtrash) {
+			/* Add the virtual Trash folder. */
 			add_special_info (
 				store,
 				info,
@@ -2211,8 +2221,10 @@ camel_store_get_folder_info_sync (CamelStore *store,
 				CAMEL_FOLDER_SYSTEM |
 				CAMEL_FOLDER_VTRASH |
 				CAMEL_FOLDER_TYPE_TRASH);
-		if (store->flags & CAMEL_STORE_VJUNK)
-			/* the name of the Junk folder, used for spam messages */
+		}
+
+		if (store_has_vjunk) {
+			/* Add the virtual Junk folder. */
 			add_special_info (
 				store,
 				info,
@@ -2223,10 +2235,22 @@ camel_store_get_folder_info_sync (CamelStore *store,
 				CAMEL_FOLDER_SYSTEM |
 				CAMEL_FOLDER_VTRASH |
 				CAMEL_FOLDER_TYPE_JUNK);
-	} else if (!info && top && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
-		CamelFolderInfo *root_info = NULL;
+		}
 
-		if ((store->flags & CAMEL_STORE_VTRASH) != 0 && g_str_equal (top, CAMEL_VTRASH_NAME)) {
+	} else if (info == NULL && !start_at_root && allow_virtual) {
+		CamelFolderInfo *root_info = NULL;
+		gboolean start_at_vtrash;
+		gboolean start_at_vjunk;
+
+		start_at_vtrash =
+			store_has_vtrash &&
+			g_str_equal (top, CAMEL_VTRASH_NAME);
+
+		start_at_vjunk =
+			store_has_vjunk &&
+			g_str_equal (top, CAMEL_VJUNK_NAME);
+
+		if (start_at_vtrash) {
 			root_info = class->get_folder_info_sync (
 				store, NULL,
 				flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE),
@@ -2242,7 +2266,8 @@ camel_store_get_folder_info_sync (CamelStore *store,
 					CAMEL_FOLDER_SYSTEM |
 					CAMEL_FOLDER_VTRASH |
 					CAMEL_FOLDER_TYPE_TRASH);
-		} else if ((store->flags & CAMEL_STORE_VJUNK) != 0 && g_str_equal (top, CAMEL_VJUNK_NAME)) {
+
+		} else if (start_at_vjunk) {
 			root_info = class->get_folder_info_sync (
 				store, NULL,
 				flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE),
@@ -2260,7 +2285,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
 					CAMEL_FOLDER_TYPE_JUNK);
 		}
 
-		if (root_info) {
+		if (root_info != NULL) {
 			info = root_info->next;
 			root_info->next = NULL;
 			info->next = NULL;
