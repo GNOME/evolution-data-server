@@ -1,3 +1,52 @@
+Evolution-Data-Server 3.9.5 2013-07-29
+--------------------------------------
+
+* E-D-S now uses Google's OAuth2-based CalDAV v2 interface for Google
+  accounts added through GNOME Online Accounts or Ubuntu Online Accounts,
+  which means no more password prompts.
+
+Bug Fixes:
+	Bug 386113 - show custom alarm message in pop-up alerts
+	             (Fabiano Fidêncio)
+	Bug 691526 - Memory corruption under
+	             e_book_backend_google_start_book_view() (Milan Crha)
+	Bug 692904 - Do not call camel_service_disconnect during connection
+	             phase (Milan Crha)
+	Bug 704003 - IMAPX: Untagged BYE message while connecting is lost
+	             (Matthew Barnes)
+	Bug 704181 - Froze while filtering messages (Milan Crha)
+	Bug 704220 - Incorrect runtime check in
+	             e_data_cal_respond_send_objects() (Milan Crha)
+	Bug 704618 - Missing detached instances in get_object() response
+	             (Milan Crha)
+	Bug 704740 - WebDAV - Do not store ETag into REV attribute (Milan Crha)
+
+Other Changes:
+	* IMAPX: Improve error handling in parser. (Matthew Barnes)
+	* IMAPX: Remove CamelIMAPXConnManager, just use a single connection.
+	  (Matthew Barnes)
+	* CamelTcpStreamRaw: Don't timeout on reads. (Matthew Barnes)
+	* CalDAV: Add support for OAuth 2.0 authentication. (Matthew Barnes)
+	* google: Use CalDAV v2 if OAuth 2.0 support is available.
+	  (Matthew Barnes)
+	* Insufficient return values from e_cal_backend_get_object/_list().
+	  (Milan Crha)
+	* CamelGpgContext: Be aware of gpg2 (Milan Crha)
+	* CamelGpgContext: Enclose email addresses in brackets.
+	  (Matthew Barnes)
+	* Fix memory leak in camel_imapx_command_add_qresync_parameter().
+	  (Matthew Barnes)
+	* Do not use generic error codes in camel_getaddrinfo() /
+	  camel_getnameinfo(). (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Christian Kirbach (de)
+	Andika Triwidada (id)
+	Kjartan Maraas (nb)
+	Wylmer Wang (zh_CN)
+
+
 Evolution-Data-Server 3.9.4 2013-07-08
 --------------------------------------
 
