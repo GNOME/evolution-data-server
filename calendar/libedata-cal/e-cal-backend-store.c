@@ -1325,7 +1325,7 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store,
  **/
 gchar *
 e_cal_backend_store_get_components_by_uid_as_ical_string (ECalBackendStore *store,
-							  const gchar *uid)
+                                                          const gchar *uid)
 {
 	GSList *comps;
 	gchar *ical_string = NULL;

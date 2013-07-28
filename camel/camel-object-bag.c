@@ -104,10 +104,10 @@ object_bag_unreserve (CamelObjectBag *bag,
 }
 
 /* Ick. We need to store the original gobject pointer too, since that's
-   used as the key in one of the hash tables. So to clean up after the
-   object dies and the GWeakRef starts returning NULL, we'll need to
-   know where it *was*. This is safe because we'll always check and
-   avoid adding a duplicate. But still, ick. */
+ * used as the key in one of the hash tables. So to clean up after the
+ * object dies and the GWeakRef starts returning NULL, we'll need to
+ * know where it *was*. This is safe because we'll always check and
+ * avoid adding a duplicate. But still, ick. */
 typedef struct {
 	GWeakRef ref;
 	gpointer obj;
@@ -116,7 +116,7 @@ typedef struct {
 
 static void
 object_bag_notify (CamelObjectBag *bag,
-		   GObject *where_the_object_was)
+                   GObject *where_the_object_was)
 {
 	gconstpointer key;
 
@@ -140,10 +140,11 @@ wref_free_func (gpointer p)
 
 	if (obj) {
 		/* The object is being removed from the bag while it's
-		   still alive, e.g. by camel_object_bag_remove()
-		   or camel_object_bag_destroy(). Drop the weak_ref. */
-		g_object_weak_unref (obj, (GWeakNotify) object_bag_notify,
-				     ref->bag);
+		 * still alive, e.g. by camel_object_bag_remove()
+		 * or camel_object_bag_destroy(). Drop the weak_ref. */
+		g_object_weak_unref (
+			obj, (GWeakNotify) object_bag_notify,
+			ref->bag);
 		g_object_unref (obj);
 	}
 	g_weak_ref_clear (&ref->ref);
@@ -384,7 +385,8 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 }
 
 static gboolean
-object_in_bag (CamelObjectBag *bag, gpointer object)
+object_in_bag (CamelObjectBag *bag,
+               gpointer object)
 {
 	gconstpointer key;
 	ObjRef *ref;
@@ -438,7 +440,7 @@ camel_object_bag_add (CamelObjectBag *bag,
 		ref = g_slice_new (ObjRef);
 		ref->bag = bag;
 		/* We need to stash a 'raw' pointer since that's the key we use
-		   in the key_table */
+		 * in the key_table */
 		ref->obj = object;
 		g_weak_ref_init (&ref->ref, object);
 		copied_key = bag->key_copy_func (key);
@@ -446,8 +448,9 @@ camel_object_bag_add (CamelObjectBag *bag,
 		g_hash_table_insert (bag->object_table, copied_key, ref);
 		object_bag_unreserve (bag, key);
 
-		g_object_weak_ref (G_OBJECT (object),
-				   (GWeakNotify) object_bag_notify, bag);
+		g_object_weak_ref (
+			G_OBJECT (object),
+			(GWeakNotify) object_bag_notify, bag);
 	}
 
 	g_mutex_unlock (&bag->mutex);

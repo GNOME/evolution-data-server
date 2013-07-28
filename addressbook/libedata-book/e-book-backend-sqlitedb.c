@@ -1267,9 +1267,9 @@ create_collation (gpointer data,
 }
 
 static void
-ebsdb_regexp (sqlite3_context *context, 
-	      int argc, 
-	      sqlite3_value **argv)
+ebsdb_regexp (sqlite3_context *context,
+              gint argc,
+              sqlite3_value **argv)
 {
 	GRegex *regex;
 	const gchar *expression;
@@ -1280,26 +1280,27 @@ ebsdb_regexp (sqlite3_context *context,
 	if (!regex) {
 		GError *error = NULL;
 
-		expression = (const gchar *)sqlite3_value_text (argv[0]);
+		expression = (const gchar *) sqlite3_value_text (argv[0]);
 
 		regex = g_regex_new (expression, 0, 0, &error);
 
 		if (!regex) {
-			sqlite3_result_error (context,
-					      error ?
-					      error->message :
-					      _("Error parsing regular expression"),
-					      -1);
+			sqlite3_result_error (
+				context,
+				error ?
+				error->message :
+				_("Error parsing regular expression"),
+				-1);
 			g_clear_error (&error);
 			return;
 		}
 
 		/* SQLite will take care of freeing the GRegex when we're done with the query */
-		sqlite3_set_auxdata (context, 0, regex, (void(*)(void*))g_regex_unref);
+		sqlite3_set_auxdata (context, 0, regex, (void (*)(gpointer)) g_regex_unref);
 	}
 
 	/* Now perform the comparison */
-	text = (const gchar *)sqlite3_value_text (argv[1]);
+	text = (const gchar *) sqlite3_value_text (argv[1]);
 	if (text != NULL) {
 		gboolean match;
 
@@ -1324,8 +1325,9 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 		ret = sqlite3_collation_needed (ebsdb->priv->db, ebsdb, create_collation);
 
 	if (ret == SQLITE_OK)
-		ret = sqlite3_create_function (ebsdb->priv->db, "regexp", 2, SQLITE_UTF8, ebsdb,
-					       ebsdb_regexp, NULL, NULL);
+		ret = sqlite3_create_function (
+			ebsdb->priv->db, "regexp", 2, SQLITE_UTF8, ebsdb,
+			ebsdb_regexp, NULL, NULL);
 
 	if (ret != SQLITE_OK) {
 		if (!ebsdb->priv->db) {
@@ -2861,10 +2863,10 @@ func_check_phone (struct _ESExp *f,
 }
 
 static ESExpResult *
-func_check_regex_raw (struct _ESExp         *f,
-		      gint                  argc,
-		      struct _ESExpResult **argv,
-		      gpointer              data)
+func_check_regex_raw (struct _ESExp *f,
+                      gint argc,
+                      struct _ESExpResult **argv,
+                      gpointer data)
 {
 	/* Raw REGEX queries are not in the summary, we only keep
 	 * normalized data in the summary
@@ -3567,13 +3569,12 @@ func_eqphone_short (struct _ESExp *f,
 
 static ESExpResult *
 func_regex (struct _ESExp *f,
-	    gint argc,
-	    struct _ESExpResult **argv,
-	    gpointer data)
+            gint argc,
+            struct _ESExpResult **argv,
+            gpointer data)
 {
 	return convert_match_exp (f, argc, argv, data, MATCH_REGEX);
 }
-
 
 /* 'builtin' functions */
 static struct {

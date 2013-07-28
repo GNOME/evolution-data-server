@@ -111,7 +111,7 @@ webdav_debug_setup (SoupSession *session)
 
 static void
 webdav_contact_set_etag (EContact *contact,
-			 const gchar *etag)
+                         const gchar *etag)
 {
 	EVCardAttribute *attr;
 
@@ -717,7 +717,7 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 				stored_version = e_file_cache_get_object (E_FILE_CACHE (priv->cache), WEBDAV_CACHE_VERSION_KEY);
 
 				/* The ETag was moved from REV to its own attribute, thus
-				   if the cache version is too low, update it. */
+				 * if the cache version is too low, update it. */
 				old_version = !stored_version || atoi (stored_version) < atoi (WEBDAV_CACHE_VERSION);
 				g_mutex_unlock (&priv->cache_lock);
 
@@ -752,7 +752,8 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 					if (!e_file_cache_replace_object (E_FILE_CACHE (priv->cache),
 						WEBDAV_CACHE_VERSION_KEY,
 						WEBDAV_CACHE_VERSION))
-						e_file_cache_add_object (E_FILE_CACHE (priv->cache),
+						e_file_cache_add_object (
+							E_FILE_CACHE (priv->cache),
 							WEBDAV_CACHE_VERSION_KEY,
 							WEBDAV_CACHE_VERSION);
 

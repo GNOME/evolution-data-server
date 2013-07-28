@@ -621,18 +621,18 @@ func_eqphone_short (struct _ESExp *f,
 
 static ESExpResult *
 func_regex_normal (struct _ESExp *f,
-		   gint argc,
-		   struct _ESExpResult **argv,
-		   gpointer data)
+                   gint argc,
+                   struct _ESExpResult **argv,
+                   gpointer data)
 {
 	return func_field_test (E_BOOK_QUERY_REGEX_NORMAL, f, argc, argv, data);
 }
 
 static ESExpResult *
 func_regex_raw (struct _ESExp *f,
-		gint argc,
-		struct _ESExpResult **argv,
-		gpointer data)
+                gint argc,
+                struct _ESExpResult **argv,
+                gpointer data)
 {
 	return func_field_test (E_BOOK_QUERY_REGEX_RAW, f, argc, argv, data);
 }

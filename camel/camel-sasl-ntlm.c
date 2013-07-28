@@ -976,7 +976,6 @@ exit:
 	return ret;
 }
 
-
 static void
 sasl_ntlm_finalize (GObject *object)
 {

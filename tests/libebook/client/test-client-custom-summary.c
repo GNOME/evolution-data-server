@@ -627,8 +627,6 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
-
-
 		/*********************************************
 		 *             REGEX QUERIES FOLLOW          *
 		 *********************************************/
@@ -637,7 +635,7 @@ main (gint argc,
 			"/Regex/Normal/.*jack.*",
 			suites[i].func,
 			e_book_query_field_test (
-			        E_CONTACT_FULL_NAME,
+				E_CONTACT_FULL_NAME,
 				E_BOOK_QUERY_REGEX_NORMAL,
 				".*jack.*"),
 			2,
@@ -650,7 +648,7 @@ main (gint argc,
 			"/Regex/Normal/Keypad/^[jkl5][ghi4][mno6].*",
 			suites[i].func,
 			e_book_query_field_test (
-			        E_CONTACT_FULL_NAME,
+				E_CONTACT_FULL_NAME,
 				E_BOOK_QUERY_REGEX_NORMAL,
 				"^[jkl5][ghi4][mno6].*"),
 			3,
@@ -663,7 +661,7 @@ main (gint argc,
 			"/Regex/Normal/Fuzzy/VanityNumber/ELEPHANT",
 			suites[i].func,
 			e_book_query_field_test (
-			        E_CONTACT_TEL,
+				E_CONTACT_TEL,
 				E_BOOK_QUERY_REGEX_NORMAL,
 				".*[def3]"           /* E */
 				"[^\\da-z]*[jkl5]"    /* L */
@@ -683,7 +681,7 @@ main (gint argc,
 			"/Regex/Raw/.*Jack.*",
 			suites[i].func,
 			e_book_query_field_test (
-			        E_CONTACT_FULL_NAME,
+				E_CONTACT_FULL_NAME,
 				E_BOOK_QUERY_REGEX_RAW,
 				".*Jack.*"),
 			2,
@@ -696,7 +694,7 @@ main (gint argc,
 			"/Regex/Raw/Keypad/^[jkl5][ghi4][mno6].*",
 			suites[i].func,
 			e_book_query_field_test (
-                                E_CONTACT_FULL_NAME,
+				E_CONTACT_FULL_NAME,
 				E_BOOK_QUERY_REGEX_RAW,
 				"^[jklJKL5][ghiGHI4][mnoMNO6].*"),
 			3,
@@ -709,7 +707,7 @@ main (gint argc,
 			"/Regex/Raw/Fuzzy/VanityNumber/ELEPHANT",
 			suites[i].func,
 			e_book_query_field_test (
-		                E_CONTACT_TEL,
+				E_CONTACT_TEL,
 				E_BOOK_QUERY_REGEX_RAW,
 				".*[defDEF3]"            /* E */
 				"[^\\da-z]*[jklJKL5]"    /* L */

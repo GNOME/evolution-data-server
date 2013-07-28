@@ -852,9 +852,9 @@ func_eqphone_short (struct _ESExp *f,
 
 static gboolean
 regex_helper (const gchar *ps1,
-	      const gchar *ps2,
-	      const gchar *region,
-	      gboolean     normalize)
+              const gchar *ps2,
+              const gchar *region,
+              gboolean normalize)
 {
 	const gchar *field_data = ps1;
 	const gchar *expression = ps2;
@@ -864,8 +864,9 @@ regex_helper (const gchar *ps1,
 
 	regex = g_regex_new (expression, 0, 0, &error);
 	if (!regex) {
-		g_warning ("Failed to parse regular expression '%s': %s",
-			   expression, error ? error->message : _("Unknown error"));
+		g_warning (
+			"Failed to parse regular expression '%s': %s",
+			expression, error ? error->message : _("Unknown error"));
 		g_clear_error (&error);
 		return FALSE;
 	}
@@ -886,25 +887,25 @@ regex_helper (const gchar *ps1,
 
 static gboolean
 regex_normal_helper (const gchar *ps1,
-		     const gchar *ps2,
-		     const gchar *region)
+                     const gchar *ps2,
+                     const gchar *region)
 {
 	return regex_helper (ps1, ps2, region, TRUE);
 }
 
 static gboolean
 regex_raw_helper (const gchar *ps1,
-		  const gchar *ps2,
-		  const gchar *region)
+                  const gchar *ps2,
+                  const gchar *region)
 {
 	return regex_helper (ps1, ps2, region, FALSE);
 }
 
 static ESExpResult *
 func_regex_normal (struct _ESExp *f,
-		   gint argc,
-		   struct _ESExpResult **argv,
-		   gpointer data)
+                   gint argc,
+                   struct _ESExpResult **argv,
+                   gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -913,9 +914,9 @@ func_regex_normal (struct _ESExp *f,
 
 static ESExpResult *
 func_regex_raw (struct _ESExp *f,
-		gint argc,
-		struct _ESExpResult **argv,
-		gpointer data)
+                gint argc,
+                struct _ESExpResult **argv,
+                gpointer data)
 {
 	SearchContext *ctx = data;
 
