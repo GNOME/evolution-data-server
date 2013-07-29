@@ -16,6 +16,8 @@ EBookViewStatus
 EBookChangeType
 EBookChange
 EBookIndexType
+EBookSortType
+EBookCursorOrigin
 e_book_client_error_quark
 e_book_client_error_to_string
 e_book_client_error_create
