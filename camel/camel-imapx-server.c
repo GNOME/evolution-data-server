@@ -2026,17 +2026,22 @@ imapx_untagged_list (CamelIMAPXServer *is,
                      GCancellable *cancellable,
                      GError **error)
 {
-	struct _list_info *linfo = NULL;
+	CamelIMAPXListResponse *response;
 	CamelIMAPXJob *job = NULL;
 	ListData *data = NULL;
+	const gchar *mailbox;
+	gchar separator;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	linfo = imapx_parse_list (stream, cancellable, error);
-	if (linfo == NULL)
+	response = camel_imapx_list_response_new (stream, cancellable, error);
+	if (response == NULL)
 		return FALSE;
 
-	job = imapx_match_active_job (is, IMAPX_JOB_LIST, linfo->name);
+	mailbox = camel_imapx_list_response_get_mailbox (response);
+	separator = camel_imapx_list_response_get_separator (response);
+
+	job = imapx_match_active_job (is, IMAPX_JOB_LIST, mailbox);
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -2044,19 +2049,21 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	// TODO: we want to make sure the names match?
 
 	if (data->flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
-		c (is->tagprefix, "lsub: '%s' (%c)\n", linfo->name, linfo->separator);
+		c (is->tagprefix, "lsub: '%s' (%c)\n", mailbox, separator);
 	} else {
-		c (is->tagprefix, "list: '%s' (%c)\n", linfo->name, linfo->separator);
+		c (is->tagprefix, "list: '%s' (%c)\n", mailbox, separator);
 	}
 
-	if (job && g_hash_table_lookup (data->folders, linfo->name) == NULL) {
+	if (job && !g_hash_table_contains (data->folders, response)) {
 		if (is->priv->context->lsub)
-			linfo->flags |= CAMEL_FOLDER_SUBSCRIBED;
-		g_hash_table_insert (data->folders, linfo->name, linfo);
+			camel_imapx_list_response_add_attribute (
+				response, CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED);
+		g_hash_table_add (data->folders, g_object_ref (response));
 	} else {
 		g_warning ("got list response but no current listing job happening?\n");
-		imapx_free_list (linfo);
 	}
+
+	g_object_unref (response);
 
 	return TRUE;
 }
@@ -7976,48 +7983,6 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	return success;
 }
 
-static guint
-imapx_name_hash (gconstpointer key)
-{
-	if (g_ascii_strcasecmp (key, "INBOX") == 0)
-		return g_str_hash ("INBOX");
-	else
-		return g_str_hash (key);
-}
-
-static gint
-imapx_name_equal (gconstpointer a,
-                  gconstpointer b)
-{
-	gconstpointer aname = a, bname = b;
-
-	if (g_ascii_strcasecmp (a, "INBOX") == 0)
-		aname = "INBOX";
-	if (g_ascii_strcasecmp (b, "INBOX") == 0)
-		bname = "INBOX";
-	return g_str_equal (aname, bname);
-}
-
-static void
-imapx_list_flatten (gpointer k,
-                    gpointer v,
-                    gpointer d)
-{
-	GPtrArray *folders = d;
-
-	g_ptr_array_add (folders, v);
-}
-
-static gint
-imapx_list_cmp (gconstpointer ap,
-                gconstpointer bp)
-{
-	struct _list_info *a = ((struct _list_info **) ap)[0];
-	struct _list_info *b = ((struct _list_info **) bp)[0];
-
-	return strcmp (a->name, b->name);
-}
-
 GPtrArray *
 camel_imapx_server_list (CamelIMAPXServer *is,
                          const gchar *top,
@@ -8036,7 +8001,11 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 	data = g_slice_new0 (ListData);
 	data->flags = flags;
 	data->ext = g_strdup (ext);
-	data->folders = g_hash_table_new (imapx_name_hash, imapx_name_equal);
+	data->folders = g_hash_table_new_full (
+		(GHashFunc) camel_imapx_list_response_hash,
+		(GEqualFunc) camel_imapx_list_response_equal,
+		(GDestroyNotify) g_object_unref,
+		(GDestroyNotify) NULL);
 
 	if (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
 		data->pattern = g_strdup_printf ("%s*", encoded_name);
@@ -8057,11 +8026,18 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 		job->pri += 300;
 
 	if (imapx_submit_job (is, job, error)) {
+		GList *list, *link;
+
+		/* Transfer LIST responses from a GHashTable
+		 * to a sorted GPtrArray by way of a GList. */
 		folders = g_ptr_array_new_with_free_func (
-			(GDestroyNotify) imapx_free_list);
-		g_hash_table_foreach (
-			data->folders, imapx_list_flatten, folders);
-		g_ptr_array_sort (folders, imapx_list_cmp);
+			(GDestroyNotify) g_object_unref);
+		list = g_list_sort (
+			g_hash_table_get_keys (data->folders),
+			(GCompareFunc) camel_imapx_list_response_compare);
+		for (link = list; link != NULL; link = g_list_next (link))
+			g_ptr_array_add (folders, g_object_ref (link->data));
+		g_list_free (list);
 	}
 
 	g_free (encoded_name);

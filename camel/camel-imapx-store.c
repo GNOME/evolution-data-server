@@ -1054,19 +1054,30 @@ get_folder_info_offline (CamelStore *store,
 static void
 add_folder_to_summary (CamelIMAPXStore *imapx_store,
                        CamelIMAPXServer *server,
-                       struct _list_info *li,
+                       CamelIMAPXListResponse *response,
                        GHashTable *table,
                        gboolean update_for_lsub)
 {
 	CamelIMAPXStoreInfo *si;
-	guint32 new_flags;
 	CamelFolderInfo *fi;
+	const gchar *mailbox;
+	gchar separator;
+	CamelStoreInfoFlags flags;
+	CamelStoreInfoFlags new_flags;
+
+	mailbox = camel_imapx_list_response_get_mailbox (response);
+	separator = camel_imapx_list_response_get_separator (response);
+
+	/* XXX The flags type transforms from CamelStoreInfoFlags
+	 *     to CamelFolderInfoFlags about half-way through this.
+	 *     We should really eliminate the confusing redundancy. */
+	flags = camel_imapx_list_response_get_summary_flags (response);
 
 	if (update_for_lsub) {
 		gchar *full_name;
 
 		full_name = camel_imapx_store_summary_path_to_full (
-			imapx_store->summary, li->name, li->separator);
+			imapx_store->summary, mailbox, separator);
 		fi = g_hash_table_lookup (table, full_name);
 		if (fi != NULL)
 			fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
@@ -1076,16 +1087,16 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	}
 
 	si = camel_imapx_store_summary_add_from_full (
-		imapx_store->summary, li->name, li->separator);
+		imapx_store->summary, mailbox, separator);
 	if (si == NULL)
 		return;
 
 	new_flags =
 		(si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) |
-		(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
+		(flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 
 	if (CAMEL_IMAPX_LACK_CAPABILITY (server->cinfo, NAMESPACE))
-		imapx_store->dir_sep = li->separator;
+		imapx_store->dir_sep = separator;
 
 	if (si->info.flags != new_flags) {
 		si->info.flags = new_flags;
@@ -1097,8 +1108,8 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	fi->full_name = g_strdup (camel_store_info_path (
 		imapx_store->summary, si));
 	if (g_ascii_strcasecmp (fi->full_name, "inbox") == 0) {
-		li->flags |= CAMEL_FOLDER_SYSTEM;
-		li->flags |= CAMEL_FOLDER_TYPE_INBOX;
+		flags |= CAMEL_FOLDER_SYSTEM;
+		flags |= CAMEL_FOLDER_TYPE_INBOX;
 		fi->display_name = g_strdup (_("Inbox"));
 	} else {
 		fi->display_name = g_strdup (
@@ -1109,12 +1120,12 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	/* HACK: Some servers report noinferiors for all folders (uw-imapd).
 	 *       We just translate this into nochildren, and let the imap
 	 *       layer enforce it.  See create folder. */
-	if (li->flags & CAMEL_FOLDER_NOINFERIORS) {
-		li->flags &= ~CAMEL_FOLDER_NOINFERIORS;
-		li->flags |= CAMEL_FOLDER_NOCHILDREN;
+	if (flags & CAMEL_FOLDER_NOINFERIORS) {
+		flags &= ~CAMEL_FOLDER_NOINFERIORS;
+		flags |= CAMEL_FOLDER_NOCHILDREN;
 	}
 
-	fi->flags |= li->flags;
+	fi->flags |= flags;
 
 	fi->total = -1;
 	fi->unread = -1;
@@ -1149,12 +1160,13 @@ fetch_folders_for_pattern (CamelIMAPXStore *imapx_store,
 		update_for_lsub = FALSE;
 
 	for (ii = 0; ii < folders->len; ii++) {
-		struct _list_info *li;
+		CamelIMAPXListResponse *response;
 
-		li = g_ptr_array_index (folders, ii);
+		response = g_ptr_array_index (folders, ii);
 
 		add_folder_to_summary (
-			imapx_store, server, li, table, update_for_lsub);
+			imapx_store, server, response,
+			table, update_for_lsub);
 	}
 
 	g_ptr_array_unref (folders);

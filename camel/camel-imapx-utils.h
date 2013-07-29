@@ -330,23 +330,6 @@ struct _state_info *
 
 /* ********************************************************************** */
 
-/* should this just return a FolderInfo?
- * should this just return the name & flags & separator by reference? */
-struct _list_info {
-	guint32 flags : 24;
-	gchar separator;
-	gchar *name;
-};
-
-struct _list_info *
-		imapx_parse_list		(struct _CamelIMAPXStream *is,
-						 GCancellable *cancellable,
-						 GError **error);
-gchar *		imapx_list_get_path		(struct _list_info *linfo);
-void		imapx_free_list			(struct _list_info *linfo);
-
-/* ********************************************************************** */
-
 gboolean	camel_imapx_command_add_qresync_parameter
 						(struct _CamelIMAPXCommand *ic,
 						 CamelFolder *folder);

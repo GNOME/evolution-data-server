@@ -204,6 +204,7 @@
       <xi:include href="xml/camel-imapx-command.xml"/>
       <xi:include href="xml/camel-imapx-folder.xml"/>
       <xi:include href="xml/camel-imapx-job.xml"/>
+      <xi:include href="xml/camel-imapx-list-response.xml"/>
       <xi:include href="xml/camel-imapx-search.xml"/>
       <xi:include href="xml/camel-imapx-server.xml"/>
       <xi:include href="xml/camel-imapx-settings.xml"/>

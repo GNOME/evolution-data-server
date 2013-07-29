@@ -816,6 +816,41 @@ uidset_state
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-list-response</FILE>
+<TITLE>CamelIMAPXListResponse</TITLE>
+CamelIMAPXListResponse
+camel_imapx_list_response_new
+camel_imapx_list_response_hash
+camel_imapx_list_response_equal
+camel_imapx_list_response_compare
+camel_imapx_list_response_get_mailbox
+camel_imapx_list_response_get_separator
+CAMEL_IMAPX_LIST_ATTR_NOINFERIORS
+CAMEL_IMAPX_LIST_ATTR_NOSELECT
+CAMEL_IMAPX_LIST_ATTR_MARKED
+CAMEL_IMAPX_LIST_ATTR_UNMARKED
+CAMEL_IMAPX_LIST_ATTR_NONEXISTENT
+CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED
+CAMEL_IMAPX_LIST_ATTR_REMOTE
+CAMEL_IMAPX_LIST_ATTR_HASCHILDREN
+CAMEL_IMAPX_LIST_ATTR_HASNOCHILDREN
+camel_imapx_list_response_add_attribute
+camel_imapx_list_response_has_attribute
+camel_imapx_list_response_get_summary_flags
+<SUBSECTION Standard>
+CAMEL_IMAPX_LIST_RESPONSE
+CAMEL_IS_IMAPX_LIST_RESPONSE
+CAMEL_TYPE_IMAPX_LIST_RESPONSE
+CAMEL_IMAPX_LIST_RESPONSE_CLASS
+CAMEL_IS_IMAPX_LIST_RESPONSE_CLASS
+CAMEL_IMAPX_LIST_RESPONSE_GET_CLASS
+CamelIMAPXListResponseClass
+camel_imapx_list_response_get_type
+<SUBSECTION Private>
+CamelIMAPXListResponsePrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-search</FILE>
 <TITLE>CamelIMAPXSearch</TITLE>
 CamelIMAPXSearch
