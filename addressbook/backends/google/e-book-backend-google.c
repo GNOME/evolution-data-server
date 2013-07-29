@@ -77,6 +77,9 @@ struct _EBookBackendGooglePrivate {
 
 	/* Map of active opids to GCancellables */
 	GHashTable *cancellables;
+
+	/* Did the server-side groups change? If so, re-download the book */
+	gboolean groups_changed;
 };
 
 static void
@@ -384,11 +387,62 @@ cache_set_last_update (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	_time = g_time_val_to_iso8601 (tv);
+	if (tv)
+		_time = g_time_val_to_iso8601 (tv);
+	else
+		_time = NULL;
+
 	g_mutex_lock (&priv->cache_lock);
-	e_book_backend_cache_set_time (priv->cache, _time);
+	if (tv)
+		e_book_backend_cache_set_time (priv->cache, _time);
+	else
+		e_file_cache_remove_object (E_FILE_CACHE (priv->cache), "last_update_time");
 	g_mutex_unlock (&priv->cache_lock);
 	g_free (_time);
+}
+
+/* returns whether group changed from the one stored in the cache;
+   returns FALSE, if the group was not in the cache yet;
+   also adds the group into the cache;
+   use group_name = NULL to remove it from the cache.
+ */
+static gboolean
+cache_update_group (EBookBackend *backend,
+		    const gchar *group_id,
+		    const gchar *group_name)
+{
+	EBookBackendGooglePrivate *priv;
+	EFileCache *file_cache;
+	gboolean changed;
+	gchar *key;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend), FALSE);
+	g_return_val_if_fail (group_id != NULL, FALSE);
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
+	key = g_strconcat ("google-group", ":", group_id, NULL);
+
+	g_mutex_lock (&priv->cache_lock);
+
+	file_cache = E_FILE_CACHE (priv->cache);
+
+	if (group_name) {
+		const gchar *old_value;
+
+		old_value = e_file_cache_get_object (file_cache, key);
+		changed = old_value && g_strcmp0 (old_value, group_name) != 0;
+
+		if (!e_file_cache_replace_object (file_cache, key, group_name))
+			e_file_cache_add_object (file_cache, key, group_name);
+	} else {
+		changed = e_file_cache_remove_object (file_cache, key);
+	}
+
+	g_mutex_unlock (&priv->cache_lock);
+
+	g_free (key);
+
+	return changed;
 }
 
 static gboolean
@@ -850,10 +904,14 @@ process_group (GDataEntry *entry,
 		g_debug ("Processing (deleting) group %s, %s", uid, name);
 		g_hash_table_remove (priv->groups_by_id, uid);
 		g_hash_table_remove (priv->groups_by_name, name);
+
+		priv->groups_changed = cache_update_group (backend, uid, NULL) || priv->groups_changed;
 	} else {
 		g_debug ("Processing group %s, %s", uid, name);
 		g_hash_table_replace (priv->groups_by_id, e_contact_sanitise_google_group_id (uid), g_strdup (name));
 		g_hash_table_replace (priv->groups_by_name, g_strdup (name), e_contact_sanitise_google_group_id (uid));
+
+		priv->groups_changed = cache_update_group (backend, uid, name) || priv->groups_changed;
 	}
 
 	g_free (name);
@@ -886,6 +944,15 @@ get_groups_cb (GDataService *service,
 	}
 
 	finish_operation (backend, -2, gdata_error);
+
+	if (priv->groups_changed) {
+		priv->groups_changed = FALSE;
+
+		/* do the update for all contacts, like with an empty cache */
+		cache_set_last_update (backend, NULL);
+		get_new_contacts (backend);
+	}
+
 	g_object_unref (backend);
 
 	g_clear_error (&gdata_error);
@@ -911,6 +978,8 @@ get_groups (EBookBackend *backend)
 	}
 
 	g_object_ref (backend);
+
+	priv->groups_changed = FALSE;
 
 	/* Run the query asynchronously */
 	cancellable = start_operation (backend, -2, NULL, _("Querying for updated groups…"));
