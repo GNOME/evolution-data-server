@@ -353,6 +353,12 @@ gboolean	camel_imapx_command_add_qresync_parameter
 
 /* ********************************************************************** */
 
+gchar *		camel_imapx_parse_mailbox	(struct _CamelIMAPXStream *is,
+						 GCancellable *cancellable,
+						 GError **error);
+
+/* ********************************************************************** */
+
 gboolean	camel_imapx_parse_quota		(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 gchar **out_quota_root_name,

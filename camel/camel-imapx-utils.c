@@ -2723,6 +2723,46 @@ exit:
 	return parameter_added;
 }
 
+/**
+ * camel_imapx_parse_mailbox:
+ * @is: a #CamelIMAPXStream
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Parses a "mailbox" token from @is, with the special case for "INBOX" as
+ * described in <ulink url="http://tools.ietf.org/html/rfc3501#section-5.1">
+ * RFC 3501 section 5.1</ulink>.
+ *
+ * Since: 3.10
+ **/
+gchar *
+camel_imapx_parse_mailbox (CamelIMAPXStream *is,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	guchar *token;
+	gchar *mailbox;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), NULL);
+
+	/* mailbox ::= "INBOX" / astring
+	 *             INBOX is case-insensitive.  All case variants of
+	 *             INBOX (e.g., "iNbOx") MUST be interpreted as INBOX
+	 *             not as an astring.  An astring which consists of
+	 *             the case-insensitive sequence "I" "N" "B" "O" "X"
+	 *             is considered to be INBOX and not an astring. */
+
+	if (!camel_imapx_stream_astring (is, &token, cancellable, error))
+		return NULL;
+
+	if (g_ascii_strcasecmp ((gchar *) token, "INBOX") == 0)
+		mailbox = g_strdup ("INBOX");
+	else
+		mailbox = camel_utf7_utf8 ((gchar *) token);
+
+	return mailbox;
+}
+
 gboolean
 camel_imapx_parse_quota (CamelIMAPXStream *is,
                          GCancellable *cancellable,
