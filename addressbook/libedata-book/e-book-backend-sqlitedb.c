@@ -5165,7 +5165,7 @@ e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_get_locale:
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id of the address-book
- * @revision_out: (out) (transfer full): The location to return the current locale
+ * @locale_out: (out) (transfer full): The location to return the current locale
  * @error: A location to store any error that may have occurred
  *
  * Fetches the current locale setting for the address-book indicated by @folderid.
@@ -5180,7 +5180,7 @@ e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
 gboolean
 e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
 				    const gchar          *folderid,
-				    gchar               **lc_collate_out,
+				    gchar               **locale_out,
 				    GError              **error)
 {
 	gchar *stmt;
@@ -5189,17 +5189,17 @@ e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (folderid && folderid[0], FALSE);
-	g_return_val_if_fail (lc_collate_out != NULL && *lc_collate_out == NULL, FALSE);
+	g_return_val_if_fail (locale_out != NULL && *locale_out == NULL, FALSE);
 
 	LOCK_MUTEX (&ebsdb->priv->lock);
 
 	stmt = sqlite3_mprintf (
 		"SELECT lc_collate FROM folders WHERE folder_id = %Q", folderid);
 	success = book_backend_sql_exec (
-		ebsdb->priv->db, stmt, get_string_cb, lc_collate_out, error);
+		ebsdb->priv->db, stmt, get_string_cb, locale_out, error);
 	sqlite3_free (stmt);
 
-	if (!sqlitedb_set_locale_internal (ebsdb, *lc_collate_out, &local_error)) {
+	if (!sqlitedb_set_locale_internal (ebsdb, *locale_out, &local_error)) {
 		g_warning ("Error loading new locale: %s", local_error->message);
 		g_clear_error (&local_error);
 	}

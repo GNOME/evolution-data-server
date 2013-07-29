@@ -314,7 +314,7 @@ gboolean        e_book_backend_sqlitedb_set_locale
 gboolean        e_book_backend_sqlitedb_get_locale
                                                 (EBookBackendSqliteDB *ebsdb,
 						 const gchar          *folderid,
-						 gchar               **lc_collate_out,
+						 gchar               **locale_out,
 						 GError              **error);
 
 /* Cursor API */
