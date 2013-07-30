@@ -1161,7 +1161,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	CamelNNTPStream *nntp_stream;
+	CamelNNTPStream *nntp_stream = NULL;
 	CamelNNTPStoreSummary *nntp_store_summary;
 	CamelNNTPStoreInfo *si;
 	guint len;
@@ -1169,7 +1169,6 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 	gint ret = -1;
 	CamelFolderInfo *fi = NULL;
 
-	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 	nntp_store_summary = camel_nntp_store_ref_summary (nntp_store);
 
 	if (top == NULL)
@@ -1197,6 +1196,8 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 				goto do_complete_list;
 			}
 
+			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
+
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0)
 				nntp_store_info_update (nntp_store, (gchar *) line);
 		} else {
@@ -1222,6 +1223,8 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			all = g_hash_table_new (g_str_hash, g_str_equal);
 			for (i = 0; (si = (CamelNNTPStoreInfo *) camel_store_summary_index (CAMEL_STORE_SUMMARY (nntp_store_summary), i)); i++)
 				g_hash_table_insert (all, si->info.path, si);
+
+			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0) {
 				si = nntp_store_info_update (nntp_store, (gchar *) line);
