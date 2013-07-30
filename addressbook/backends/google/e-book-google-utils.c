@@ -198,7 +198,7 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 
 	/* Nickname */
 	nickname = e_contact_get (contact, E_CONTACT_NICKNAME);
-	gdata_contacts_contact_set_nickname (GDATA_CONTACTS_CONTACT (entry), nickname);
+	gdata_contacts_contact_set_nickname (GDATA_CONTACTS_CONTACT (entry), nickname && *nickname ? nickname : NULL);
 	g_free (nickname);
 
 	/* Clear out all the old attributes */
