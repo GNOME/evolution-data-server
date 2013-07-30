@@ -1438,7 +1438,7 @@ book_backend_google_get_backend_property (EBookBackend *backend,
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		return g_strdup ("net,do-initial-query,contact-lists");
+		return g_strdup ("net,do-initial-query,contact-lists,refresh-supported");
 
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		return g_strdup ("");
@@ -2187,6 +2187,21 @@ book_backend_google_stop_view (EBookBackend *backend,
 	}
 }
 
+static void
+book_backend_google_refresh (EBookBackend *backend,
+			     EDataBook *book,
+			     guint32 opid,
+			     GCancellable *cancellable)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend));
+
+	/* stop immediately, nothing to report here */
+	e_data_book_respond_refresh (book, opid, NULL);
+
+	/* get only changes, it's not needed to redownload whole cache */
+	get_new_contacts (backend);
+}
+
 static ESourceAuthenticationResult
 book_backend_google_try_password_sync (ESourceAuthenticator *authenticator,
                                        const GString *password,
@@ -2266,6 +2281,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 	backend_class->get_contact_list_sync = book_backend_google_get_contact_list_sync;
 	backend_class->start_view = book_backend_google_start_view;
 	backend_class->stop_view = book_backend_google_stop_view;
+	backend_class->refresh = book_backend_google_refresh;
 }
 
 static void
