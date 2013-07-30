@@ -396,6 +396,8 @@ connect_to_server (CamelService *service,
 		goto fail;
 	}
 
+	nntp_store_reset_state (nntp_store, nntp_stream);
+
 	/* backward compatibility, empty 'mechanism' is a non-migrated account */
 	if ((user != NULL && *user != '\0' && (!mechanism || !*mechanism)) ||
 	    (mechanism && *mechanism && g_strcmp0 (mechanism, "ANONYMOUS") != 0)) {
@@ -413,8 +415,6 @@ connect_to_server (CamelService *service,
 			session, service, NULL, cancellable, error))
 			goto fail;
 	}
-
-	nntp_store_reset_state (nntp_store, nntp_stream);
 
 	/* set 'reader' mode & ignore return code, also ping the server, inn goes offline very quickly otherwise */
 	if (camel_nntp_raw_command_auth (nntp_store, cancellable, error, (gchar **) &buf, "mode reader") == -1
