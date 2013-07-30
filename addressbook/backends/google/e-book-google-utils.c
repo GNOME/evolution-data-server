@@ -134,7 +134,7 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 	gboolean have_postal_primary = FALSE;
 	gboolean have_org_primary = FALSE;
 	gboolean have_uri_primary = FALSE;
-	const gchar *title, *role, *note;
+	gchar *title, *role, *note, *nickname;
 	EContactDate *bdate;
 	const gchar *url;
 
@@ -194,6 +194,12 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		gdata_entry_set_content (entry, note);
 	else
 		gdata_entry_set_content (entry, NULL);
+	g_free (note);
+
+	/* Nickname */
+	nickname = e_contact_get (contact, E_CONTACT_NICKNAME);
+	gdata_contacts_contact_set_nickname (GDATA_CONTACTS_CONTACT (entry), nickname);
+	g_free (nickname);
 
 	/* Clear out all the old attributes */
 	gdata_contacts_contact_remove_all_email_addresses (GDATA_CONTACTS_CONTACT (entry));
@@ -233,9 +239,9 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		    0 == g_ascii_strcasecmp (name, EVC_NOTE) ||
 		    0 == g_ascii_strcasecmp (name, EVC_CATEGORIES) ||
 		    0 == g_ascii_strcasecmp (name, EVC_PHOTO) ||
-		    0 == g_ascii_strcasecmp (name, GOOGLE_SYSTEM_GROUP_ATTR)) {
-			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE, NOTE, CATEGORIES, PHOTO,
- *                                X-GOOGLE-SYSTEM-GROUP-IDS */
+		    0 == g_ascii_strcasecmp (name, GOOGLE_SYSTEM_GROUP_ATTR) ||
+		    0 == g_ascii_strcasecmp (name, e_contact_field_name (E_CONTACT_NICKNAME))) {
+			/* Ignore attributes which are treated separately */
 		} else if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
 			/* EMAIL */
 			GDataGDEmailAddress *email;
@@ -341,6 +347,9 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		if (org != NULL && role != NULL && *role != '\0')
 			gdata_gd_organization_set_job_description (org, role);
 	}
+
+	g_free (title);
+	g_free (role);
 
 	url = e_contact_get_const (contact, E_CONTACT_HOMEPAGE_URL);
 	if (url && *url) {
@@ -557,7 +566,7 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	EContactPhoto *photo;
 	const gchar *photo_etag;
 	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs, *category_names, *category_ids;
-	const gchar *uid, *note;
+	const gchar *uid, *note, *nickname;
 	GList *itr;
 	GDataGDName *name;
 	GDataGDEmailAddress *email;
@@ -622,6 +631,11 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	note = gdata_entry_get_content (entry);
 	if (note)
 		e_contact_set (E_CONTACT (vcard), E_CONTACT_NOTE, note);
+
+	/* Nickname */
+	nickname = gdata_contacts_contact_get_nickname (GDATA_CONTACTS_CONTACT (entry));
+	if (nickname)
+		e_contact_set (E_CONTACT (vcard), E_CONTACT_NICKNAME, nickname);
 
 	/* EMAIL - primary first */
 	email = gdata_contacts_contact_get_primary_email_address (GDATA_CONTACTS_CONTACT (entry));

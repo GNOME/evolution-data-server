@@ -1567,6 +1567,7 @@ book_backend_google_get_backend_property (EBookBackend *backend,
 #else
 			e_contact_field_name (E_CONTACT_CATEGORY_LIST),
 #endif
+			e_contact_field_name (E_CONTACT_NICKNAME),
 			NULL);
 	}
 
