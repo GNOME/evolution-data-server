@@ -186,7 +186,7 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 	widget = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (grid));
 
-	widget = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_DIALOG);
+	widget = gtk_image_new_from_icon_name ("dialog-warning", GTK_ICON_SIZE_DIALOG);
 	g_object_set (
 		G_OBJECT (widget),
 		"vexpand", FALSE,

@@ -572,7 +572,7 @@ certificate_viewer_new (GtkWindow *parent,
 	dialog = gtk_dialog_new_with_buttons (
 		title, parent,
 		GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+		_("_Close"), GTK_RESPONSE_CLOSE,
 		NULL);
 
 	g_free (title);
