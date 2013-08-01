@@ -202,14 +202,16 @@ connect_to_server (CamelService *service,
 			_("Failed to connect to SMTP server %s in secure mode: %s"),
 			host, _("STARTTLS not supported"));
 
-		goto exception_cleanup;
+		success = FALSE;
+		goto exit;
 	}
 
 	d (fprintf (stderr, "sending : STARTTLS\r\n"));
 	if (camel_stream_write (
 		tcp_stream, "STARTTLS\r\n", 10, cancellable, error) == -1) {
 		g_prefix_error (error, _("STARTTLS command failed: "));
-		goto exception_cleanup;
+		success = FALSE;
+		goto exit;
 	}
 
 	respbuf = NULL;
@@ -223,14 +225,16 @@ connect_to_server (CamelService *service,
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("STARTTLS command failed: "));
 			transport->connected = FALSE;
-			goto exception_cleanup;
+			success = FALSE;
+			goto exit;
 		}
 		if (strncmp (respbuf, "220", 3) != 0) {
 			smtp_set_error (
 				transport, respbuf, cancellable, error);
 			g_prefix_error (error, _("STARTTLS command failed: "));
 			g_free (respbuf);
-			goto exception_cleanup;
+			success = FALSE;
+			goto exit;
 		}
 	} while (*(respbuf+3) == '-'); /* if we got "220-" then loop again */
 
@@ -241,7 +245,8 @@ connect_to_server (CamelService *service,
 			error,
 			_("Failed to connect to SMTP server %s in secure mode: "),
 			host);
-		goto exception_cleanup;
+		success = FALSE;
+		goto exit;
 	}
 
 	/* We are supposed to re-EHLO after a successful STARTTLS to
@@ -250,23 +255,14 @@ connect_to_server (CamelService *service,
 		success = FALSE;
 	}
 
-	goto exit;
-
-exception_cleanup:
-
-	g_object_unref (transport->istream);
-	transport->istream = NULL;
-
-	g_object_unref (transport->ostream);
-	transport->ostream = NULL;
-
-	success = FALSE;
-
 exit:
 	g_free (host);
 
-	if (!success)
+	if (!success) {
 		transport->connected = FALSE;
+		g_clear_object (&transport->istream);
+		g_clear_object (&transport->ostream);
+	}
 
 	return success;
 }

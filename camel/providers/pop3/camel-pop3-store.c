@@ -573,6 +573,13 @@ exit:
 
 	g_object_unref (session);
 
+	if (!success) {
+		/* to not leak possible connection to the server */
+		g_mutex_lock (&store->priv->property_lock);
+		g_clear_object (&store->priv->engine);
+		g_mutex_unlock (&store->priv->property_lock);
+	}
+
 	return success;
 }
 
