@@ -581,9 +581,6 @@ gboolean
 camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
                                          GError **error)
 {
-	CamelIMAPXJob *job;
-	GCancellable *cancellable = NULL;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
 	if (ic->status != NULL && ic->status->result != IMAPX_OK) {
@@ -610,11 +607,7 @@ camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
 		return TRUE;
 	}
 
-	job = camel_imapx_command_get_job (ic);
-	if (job != NULL)
-		cancellable = camel_imapx_job_get_cancellable (job);
-
-	return g_cancellable_set_error_if_cancelled (cancellable, error);
+	return FALSE;
 }
 
 CamelIMAPXCommandQueue *
