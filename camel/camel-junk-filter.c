@@ -18,6 +18,11 @@
 
 #include "camel-junk-filter.h"
 
+#include <config.h>
+#include <glib/gi18n-lib.h>
+
+#include "camel-operation.h"
+
 G_DEFINE_INTERFACE (CamelJunkFilter, camel_junk_filter, G_TYPE_OBJECT)
 
 static void
@@ -158,9 +163,15 @@ camel_junk_filter_synchronize (CamelJunkFilter *junk_filter,
 	/* This method is optional. */
 	interface = CAMEL_JUNK_FILTER_GET_INTERFACE (junk_filter);
 
-	if (interface->synchronize != NULL)
+	if (interface->synchronize != NULL) {
+		camel_operation_push_message (
+			cancellable, _("Synchronizing junk database"));
+
 		success = interface->synchronize (
 			junk_filter, cancellable, error);
+
+		camel_operation_pop_message (cancellable);
+	}
 
 	return success;
 }
