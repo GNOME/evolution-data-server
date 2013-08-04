@@ -1021,11 +1021,6 @@ get_folder_info_offline (CamelStore *store,
 				fi->flags = (fi->flags & CAMEL_FOLDER_TYPE_MASK) | (si->flags & ~CAMEL_FOLDER_TYPE_MASK);
 			else
 				fi->flags = si->flags;
-			/* HACK: some servers report noinferiors for all folders (uw-imapd)
-			 * We just translate this into nochildren, and let the imap layer enforce
-			 * it.  See create folder */
-			if (fi->flags & CAMEL_FOLDER_NOINFERIORS)
-				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
 			if (!g_ascii_strcasecmp (fi->full_name, "inbox")) {
@@ -1115,14 +1110,6 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 		fi->display_name = g_strdup (
 			camel_store_info_name (
 			imapx_store->summary, si));
-	}
-
-	/* HACK: Some servers report noinferiors for all folders (uw-imapd).
-	 *       We just translate this into nochildren, and let the imap
-	 *       layer enforce it.  See create folder. */
-	if (flags & CAMEL_FOLDER_NOINFERIORS) {
-		flags &= ~CAMEL_FOLDER_NOINFERIORS;
-		flags |= CAMEL_FOLDER_NOCHILDREN;
 	}
 
 	fi->flags |= flags;
