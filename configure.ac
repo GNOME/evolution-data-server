@@ -1505,7 +1505,7 @@ dnl Checks for large file support
 dnl ******************************
 AC_ARG_ENABLE([largefile],
 	AS_HELP_STRING([--enable-largefile],
-	[enable support for large files [[default=no]]]),
+	[enable support for large files [[default=yes]]]),
 	[],[enable_largefile="yes"])
 
 if test "x$enable_largefile" != "xno"; then
