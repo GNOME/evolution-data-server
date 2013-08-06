@@ -99,23 +99,28 @@ G_DEFINE_TYPE_WITH_CODE (
 static guint
 imapx_name_hash (gconstpointer key)
 {
-	if (g_ascii_strcasecmp (key, "INBOX") == 0)
-		return g_str_hash ("INBOX");
-	else
-		return g_str_hash (key);
+	const gchar *mailbox = key;
+
+	if (camel_imapx_mailbox_is_inbox (mailbox))
+		mailbox = "INBOX";
+
+	return g_str_hash (mailbox);
 }
 
 static gboolean
 imapx_name_equal (gconstpointer a,
                   gconstpointer b)
 {
-	gconstpointer aname = a, bname = b;
+	const gchar *mailbox_a = a;
+	const gchar *mailbox_b = b;
 
-	if (g_ascii_strcasecmp (a, "INBOX") == 0)
-		aname = "INBOX";
-	if (g_ascii_strcasecmp (b, "INBOX") == 0)
-		bname = "INBOX";
-	return g_str_equal (aname, bname);
+	if (camel_imapx_mailbox_is_inbox (mailbox_a))
+		mailbox_a = "INBOX";
+
+	if (camel_imapx_mailbox_is_inbox (mailbox_b))
+		mailbox_b = "INBOX";
+
+	return g_str_equal (mailbox_a, mailbox_b);
 }
 
 static void
@@ -507,7 +512,7 @@ get_folder_offline (CamelStore *store,
 
 	summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 	si = camel_store_summary_path (summary, folder_name);
-	is_inbox = (g_ascii_strcasecmp (folder_name, "INBOX") == 0);
+	is_inbox = camel_imapx_mailbox_is_inbox (folder_name);
 
 	if (si == NULL && is_inbox)
 		si = (CamelStoreInfo *) camel_imapx_store_summary_full_name (
@@ -569,7 +574,7 @@ imapx_build_folder_info (CamelIMAPXStore *imapx_store,
 	else
 		name++;
 
-	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
+	if (camel_imapx_mailbox_is_inbox (fi->full_name))
 		fi->display_name = g_strdup (_("Inbox"));
 	else
 		fi->display_name = g_strdup (name);
@@ -636,34 +641,6 @@ fill_fi (CamelStore *store,
 			g_object_unref (ims);
 		g_object_unref (folder);
 	}
-}
-
-/* imap needs to treat inbox case insensitive */
-/* we'll assume the names are normalized already */
-static guint
-folder_hash (gconstpointer ap)
-{
-	const gchar *a = ap;
-
-	if (g_ascii_strcasecmp (a, "INBOX") == 0)
-		a = "INBOX";
-
-	return g_str_hash (a);
-}
-
-static gint
-folder_equal (gconstpointer ap,
-              gconstpointer bp)
-{
-	const gchar *a = ap;
-	const gchar *b = bp;
-
-	if (g_ascii_strcasecmp (a, "INBOX") == 0)
-		a = "INBOX";
-	if (g_ascii_strcasecmp (b, "INBOX") == 0)
-		b = "INBOX";
-
-	return g_str_equal (a, b);
 }
 
 static gboolean
@@ -1008,7 +985,7 @@ get_folder_info_offline (CamelStore *store,
 		/* Modify the checks to see match the namespaces from preferences */
 		if ((g_str_equal (name, full_name)
 		     || imapx_match_pattern (ns, pattern, full_name)
-		     || (include_inbox && !g_ascii_strcasecmp (full_name, "INBOX")))
+		     || (include_inbox && camel_imapx_mailbox_is_inbox (full_name)))
 		    && ( (!use_subscriptions
 			    || (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0)
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
@@ -1200,8 +1177,8 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 		list_ext = "RETURN (SUBSCRIBED)";
 
 	folders = g_hash_table_new_full (
-		(GHashFunc) folder_hash,
-		(GEqualFunc) folder_equal,
+		(GHashFunc) imapx_name_hash,
+		(GEqualFunc) imapx_name_equal,
 		(GDestroyNotify) NULL,
 		(GDestroyNotify) camel_folder_info_free);
 

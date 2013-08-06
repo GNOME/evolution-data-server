@@ -124,7 +124,9 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 {
 	gint count, i;
 	CamelIMAPXStoreInfo *info;
-	gboolean is_inbox = g_ascii_strcasecmp (full_name, "INBOX") == 0;
+	gboolean is_inbox;
+
+	is_inbox = camel_imapx_mailbox_is_inbox (full_name);
 
 	count = camel_store_summary_count ((CamelStoreSummary *) s);
 	for (i = 0; i < count; i++) {

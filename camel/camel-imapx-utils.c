@@ -2625,7 +2625,7 @@ exit:
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Parses a "mailbox" token from @is, with the special case for "INBOX" as
+ * Parses a "mailbox" token from @is, with the special case for INBOX as
  * described in <ulink url="http://tools.ietf.org/html/rfc3501#section-5.1">
  * RFC 3501 section 5.1</ulink>.
  *
@@ -2657,6 +2657,25 @@ camel_imapx_parse_mailbox (CamelIMAPXStream *is,
 		mailbox = camel_utf7_utf8 ((gchar *) token);
 
 	return mailbox;
+}
+
+/**
+ * camel_imapx_mailbox_is_inbox:
+ * @mailbox: a mailbox name
+ *
+ * Returns whether @mailbox is the special mailbox INBOX.  The function just
+ * performs a case-insensitive string comparsion; it's more for readability.
+ *
+ * Returns: %TRUE if @mailbox is INBOX, %FALSE if not
+ *
+ * Since: 3.10
+ **/
+gboolean
+camel_imapx_mailbox_is_inbox (const gchar *mailbox)
+{
+	g_return_val_if_fail (mailbox != NULL, FALSE);
+
+	return (g_ascii_strcasecmp (mailbox, "INBOX") == 0);
 }
 
 gboolean

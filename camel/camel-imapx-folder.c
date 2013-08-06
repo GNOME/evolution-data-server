@@ -1148,7 +1148,7 @@ camel_imapx_folder_new (CamelStore *store,
 	if (filter_all)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
-	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
+	if (camel_imapx_mailbox_is_inbox (folder_name)) {
 		if (filter_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
