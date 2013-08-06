@@ -44,15 +44,19 @@ static void
 disco_store_update_status (CamelDiscoStore *disco)
 {
 	CamelService *service = CAMEL_SERVICE (disco);
+	CamelServiceConnectionStatus status;
 
-	switch (camel_service_get_connection_status (service)) {
-		case CAMEL_SERVICE_CONNECTED:
-			disco->status = CAMEL_DISCO_STORE_ONLINE;
-			break;
-		default:
-			disco->status = CAMEL_DISCO_STORE_OFFLINE;
-			break;
-	}
+	status = camel_service_get_connection_status (service);
+
+	/* Do not set CAMEL_DISCO_STORE_OFFLINE when the CamelService reports
+	 * something other than CAMEL_SERVICE_CONNECTED.  That would lock the
+	 * store into offline mode such that further connection attempts will
+	 * simply invoke connect_offline() and never actually establish a new
+	 * server connection. */
+	if (status == CAMEL_SERVICE_CONNECTED)
+		disco->status = CAMEL_DISCO_STORE_ONLINE;
+
+	g_object_notify (G_OBJECT (disco), "online");
 }
 
 static void
