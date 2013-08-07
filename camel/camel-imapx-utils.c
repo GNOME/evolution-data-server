@@ -340,41 +340,51 @@ void
 imapx_update_store_summary (CamelFolder *folder)
 {
 	CamelStoreInfo *si;
-	CamelStore *parent_store;
-	const gchar *full_name;
 	CamelService *service;
+	CamelStore *parent_store;
+	CamelStoreSummary *store_summary;
 	CamelSettings *settings;
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXFolder *imapx_folder;
+	const gchar *full_name;
 	gboolean mobile_mode;
+	guint32 total;
+	guint32 unread;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 	service = CAMEL_SERVICE (parent_store);
 
 	settings = camel_service_ref_settings (service);
-
 	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
-
 	g_object_unref (settings);
 
-	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary, full_name);
-	if (si) {
-		guint32 unread, total;
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+	imapx_store = CAMEL_IMAPX_STORE (parent_store);
 
-		total = camel_folder_summary_count (folder->summary);
-		unread = camel_folder_summary_get_unread_count (folder->summary);
+	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
-		if (si->unread != unread || si->total != total) {
+	si = camel_store_summary_path (store_summary, full_name);
+	if (si == NULL)
+		return;
 
-			if (!mobile_mode)
-				si->unread = unread;
-			else
-				si->unread =  ((CamelIMAPXFolder *) folder)->unread_on_server;
-			si->total = total;
+	total = camel_folder_summary_count (folder->summary);
+	unread = camel_folder_summary_get_unread_count (folder->summary);
 
-			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
-			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
-		}
+	if (si->unread != unread || si->total != total) {
+
+		/* XXX Why is this different for mobile mode? */
+		if (mobile_mode)
+			si->unread = imapx_folder->unread_on_server;
+		else
+			si->unread = unread;
+		si->total = total;
+
+		camel_store_summary_touch (store_summary);
+		camel_store_summary_save (store_summary);
 	}
 }
 
