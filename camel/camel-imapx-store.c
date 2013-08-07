@@ -895,6 +895,40 @@ rename_folder_info (CamelIMAPXStore *imapx_store,
 	}
 }
 
+static void
+rename_storage_path (CamelIMAPXStore *imapx_store,
+                     const gchar *old_mailbox,
+                     const gchar *new_mailbox)
+{
+	CamelService *service;
+	const gchar *user_cache_dir;
+	gchar *root_storage_path;
+	gchar *old_storage_path;
+	gchar *new_storage_path;
+
+	service = CAMEL_SERVICE (imapx_store);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
+	root_storage_path = g_build_filename (user_cache_dir, "folders", NULL);
+
+	old_storage_path =
+		imapx_path_to_physical (root_storage_path, old_mailbox);
+	new_storage_path =
+		imapx_path_to_physical (root_storage_path, new_mailbox);
+
+	if (g_rename (old_storage_path, new_storage_path) == -1) {
+		g_warning (
+			"Could not rename message cache "
+			"'%s' to '%s: %s: cache reset",
+			old_storage_path,
+			new_storage_path,
+			g_strerror (errno));
+	}
+
+	g_free (root_storage_path);
+	g_free (old_storage_path);
+	g_free (new_storage_path);
+}
+
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store,
                          const gchar *top,
@@ -1832,14 +1866,11 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	CamelSettings *settings;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	const gchar *user_cache_dir;
 	gboolean use_subscriptions;
 	gboolean success = FALSE;
 
-	imapx_store = CAMEL_IMAPX_STORE (store);
-
 	service = CAMEL_SERVICE (store);
-	user_cache_dir = camel_service_get_user_cache_dir (service);
+	imapx_store = CAMEL_IMAPX_STORE (store);
 
 	settings = camel_service_ref_settings (service);
 
@@ -1852,10 +1883,6 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (imapx_server != NULL) {
-		gchar *oldpath;
-		gchar *newpath;
-		gchar *storage_path;
-
 		if (use_subscriptions)
 			imapx_unsubscribe_folder (
 				store, old, FALSE, cancellable, NULL);
@@ -1876,22 +1903,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 			success = imapx_subscribe_folder (
 				store, new, FALSE, cancellable, error);
 
-		storage_path = g_build_filename (
-			user_cache_dir, "folders", NULL);
-		oldpath = imapx_path_to_physical (storage_path, old);
-		newpath = imapx_path_to_physical (storage_path, new);
-
-		/* So do we care if this didn't work?  Its just a cache? */
-		if (g_rename (oldpath, newpath) == -1) {
-			g_warning (
-				"Could not rename message cache "
-				"'%s' to '%s': %s: cache reset",
-				oldpath, newpath, g_strerror (errno));
-		}
-
-		g_free (storage_path);
-		g_free (oldpath);
-		g_free (newpath);
+		rename_storage_path (imapx_store, old, new);
 	}
 
 exit:
