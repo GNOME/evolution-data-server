@@ -330,6 +330,7 @@ static struct prop_info {
 #define PROP_EVOLVE         0x10
 #define PROP_WRITE_ONLY     0x20
 #define PROP_TYPE_GROUP     0x40
+#define PROP_TYPE_CONTACT   0x80 /* is ignored for contact lists */
 	gint prop_type;
 
 	/* the remaining items are only used for the TYPE_COMPLEX props */
@@ -353,12 +354,13 @@ static struct prop_info {
 #define E_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_EVOLVE}
 #define GROUP_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_GROUP, ctor, ber, cmp}
 #define ADDRESS_STRING_PROP(fid,a, ctor) {fid, a, PROP_TYPE_COMPLEX, ctor}
+#define CONTACT_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT}
 
 	/* name fields */
 	STRING_PROP (E_CONTACT_FULL_NAME,   "cn" ),
 	/* WRITE_ONLY_STRING_PROP (E_CONTACT_FAMILY_NAME, "sn" ), */
-	STRING_PROP (E_CONTACT_GIVEN_NAME, "givenName"),
-	STRING_PROP (E_CONTACT_FAMILY_NAME, "sn" ),
+	CONTACT_STRING_PROP (E_CONTACT_GIVEN_NAME, "givenName"),
+	CONTACT_STRING_PROP (E_CONTACT_FAMILY_NAME, "sn" ),
 
 	/* email addresses */
 	COMPLEX_PROP   (E_CONTACT_EMAIL, "mail", email_populate, email_ber, email_compare),
@@ -368,14 +370,14 @@ static struct prop_info {
 	E_STRING_PROP (E_CONTACT_PHONE_PRIMARY,      "primaryPhone"),
 	COMPLEX_PROP  (E_CONTACT_PHONE_BUSINESS,     "telephoneNumber", business_populate, business_ber, business_compare),
 	COMPLEX_PROP  (E_CONTACT_PHONE_HOME,         "homePhone", homephone_populate, homephone_ber, homephone_compare),
-	STRING_PROP   (E_CONTACT_PHONE_MOBILE,       "mobile"),
+	CONTACT_STRING_PROP   (E_CONTACT_PHONE_MOBILE,       "mobile"),
 	E_STRING_PROP (E_CONTACT_PHONE_CAR,          "carPhone"),
-	STRING_PROP   (E_CONTACT_PHONE_BUSINESS_FAX, "facsimileTelephoneNumber"),
+	CONTACT_STRING_PROP   (E_CONTACT_PHONE_BUSINESS_FAX, "facsimileTelephoneNumber"),
 	E_STRING_PROP (E_CONTACT_PHONE_HOME_FAX,     "homeFacsimileTelephoneNumber"),
 	E_STRING_PROP (E_CONTACT_PHONE_OTHER,        "otherPhone"),
 	E_STRING_PROP (E_CONTACT_PHONE_OTHER_FAX,    "otherFacsimileTelephoneNumber"),
-	STRING_PROP   (E_CONTACT_PHONE_ISDN,         "internationaliSDNNumber"),
-	STRING_PROP   (E_CONTACT_PHONE_PAGER,        "pager"),
+	CONTACT_STRING_PROP   (E_CONTACT_PHONE_ISDN,         "internationaliSDNNumber"),
+	CONTACT_STRING_PROP   (E_CONTACT_PHONE_PAGER,        "pager"),
 	E_STRING_PROP (E_CONTACT_PHONE_RADIO,        "radio"),
 	E_STRING_PROP (E_CONTACT_PHONE_TELEX,        "telex"),
 	E_STRING_PROP (E_CONTACT_PHONE_ASSISTANT,    "assistantPhone"),
@@ -384,10 +386,10 @@ static struct prop_info {
 	E_STRING_PROP (E_CONTACT_PHONE_TTYTDD,       "tty"),
 
 	/* org information */
-	STRING_PROP   (E_CONTACT_ORG,       "o"),
-	STRING_PROP   (E_CONTACT_ORG_UNIT,  "ou"),
-	STRING_PROP   (E_CONTACT_OFFICE,    "roomNumber"),
-	STRING_PROP   (E_CONTACT_TITLE,     "title"),
+	CONTACT_STRING_PROP   (E_CONTACT_ORG,       "o"),
+	CONTACT_STRING_PROP   (E_CONTACT_ORG_UNIT,  "ou"),
+	CONTACT_STRING_PROP   (E_CONTACT_OFFICE,    "roomNumber"),
+	CONTACT_STRING_PROP   (E_CONTACT_TITLE,     "title"),
 	E_STRING_PROP (E_CONTACT_ROLE,      "businessRole"),
 	E_STRING_PROP (E_CONTACT_MANAGER,   "managerName"),
 	E_STRING_PROP (E_CONTACT_ASSISTANT, "assistantName"),
@@ -421,9 +423,9 @@ static struct prop_info {
 #endif
 
 	/* misc fields */
-	STRING_PROP    (E_CONTACT_HOMEPAGE_URL,  "labeledURI"),
+	CONTACT_STRING_PROP    (E_CONTACT_HOMEPAGE_URL,  "labeledURI"),
 	/* map nickname to displayName */
-	STRING_PROP    (E_CONTACT_NICKNAME,    "displayName"),
+	CONTACT_STRING_PROP    (E_CONTACT_NICKNAME,    "displayName"),
 	E_STRING_PROP  (E_CONTACT_SPOUSE,      "spouseName"),
 	E_STRING_PROP  (E_CONTACT_NOTE,        "note"),
 	E_COMPLEX_PROP (E_CONTACT_ANNIVERSARY, "anniversary", anniversary_populate, anniversary_ber, anniversary_compare),
@@ -434,15 +436,16 @@ static struct prop_info {
 
 	E_COMPLEX_PROP (E_CONTACT_CATEGORY_LIST,  "category", category_populate, category_ber, category_compare),
 
-	STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
-	STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
-	STRING_PROP (E_CONTACT_ICS_CALENDAR,   "icsCalendar"),
+	CONTACT_STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
+	CONTACT_STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
+	CONTACT_STRING_PROP (E_CONTACT_ICS_CALENDAR,   "icsCalendar"),
 
 #undef E_STRING_PROP
 #undef STRING_PROP
 #undef E_COMPLEX_PROP
 #undef COMPLEX_PROP
 #undef GROUP_PROP
+#undef CONTACT_STRING_PROP
 };
 
 static gboolean
@@ -1238,12 +1241,14 @@ ldap_error_to_response (gint ldap_error)
 }
 
 static const gchar *
-get_dn_attribute_name (gchar *rootdn)
+get_dn_attribute_name (gchar *rootdn,
+		       EContact *contact)
 {
 	/* Use 'uid' is already used in root DN,
 	 * then use the 'description' field. */
-	if (!strncmp (rootdn, "uid=", 4) ||
-	    strstr (rootdn, ",uid="))
+	if (strncmp (rootdn, "uid=", 4) == 0 ||
+	    strstr (rootdn, ",uid=") ||
+	    (contact && e_contact_get (contact, E_CONTACT_IS_LIST)))
 		return "description";
 
 	/* Use 'uid' field */
@@ -1258,6 +1263,14 @@ create_dn_from_contact (EContact *contact,
 	gchar *dn;
 
 	cn = e_contact_get (contact, E_CONTACT_FAMILY_NAME);
+	if (!cn || e_contact_get (contact, E_CONTACT_IS_LIST)) {
+		g_free (cn);
+
+		cn = e_contact_get (contact, E_CONTACT_FILE_AS);
+		if (!cn)
+			cn = e_contact_get (contact, E_CONTACT_FULL_NAME);
+	}
+
 	if (cn) {
 		gint pos = 0;
 		cn_part = g_malloc0 (strlen (cn) + 1);
@@ -1271,12 +1284,13 @@ create_dn_from_contact (EContact *contact,
 
 	dn = g_strdup_printf (
 		"%s=%s%s%lu",
-		get_dn_attribute_name (rootdn),
+		get_dn_attribute_name (rootdn, contact),
 		(cn_part && *cn_part) ? cn_part : "",
 		(cn_part && *cn_part) ? "." : "",
 		time (NULL));
 
 	g_free (cn_part);
+	g_free (cn);
 
 	g_print ("generated dn: %s\n", dn);
 
@@ -1382,6 +1396,9 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 		 * update it -- if adding is TRUE, short circuit the
 		 * check. */
 		if (prop_info[i].prop_type & PROP_TYPE_STRING) {
+			if (is_list && (prop_info[i].prop_type & PROP_TYPE_CONTACT) != 0)
+				continue;
+
 			new_prop = e_contact_get (new, prop_info[i].field_id);
 			new_prop_present = (new_prop != NULL);
 		}
@@ -1658,6 +1675,7 @@ e_book_backend_ldap_create_contacts (EBookBackend *backend,
 	LDAPMod **ldap_mods;
 	gchar *new_uid;
 	const gchar *vcard = (const gchar *) vcards->data;
+	gboolean is_list;
 
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
 	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
@@ -1695,18 +1713,17 @@ e_book_backend_ldap_create_contacts (EBookBackend *backend,
 
 	e_contact_set (create_op->new_contact, E_CONTACT_UID, create_op->dn);
 
+	is_list = e_contact_get (create_op->new_contact, E_CONTACT_IS_LIST) != NULL;
+
 	/* build our mods */
-	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, new_uid);
+	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, is_list ? NULL : new_uid);
 	g_free (new_uid);
 
 	/* remove the NULL at the end */
 	g_ptr_array_remove (mod_array, NULL);
 
 	/* add our objectclass(es) */
-	if (e_contact_get (create_op->new_contact, E_CONTACT_IS_LIST))
-		add_objectclass_mod (bl, mod_array, NULL, TRUE, FALSE);
-	else
-		add_objectclass_mod (bl, mod_array, NULL, FALSE, FALSE);
+	add_objectclass_mod (bl, mod_array, NULL, is_list, FALSE);
 
 	/* then put the NULL back */
 	g_ptr_array_add (mod_array, NULL);
@@ -2083,7 +2100,7 @@ modify_contact_search_handler (LDAPOp *op,
 
 			if (modify_op->ldap_uid)
 				new_uid = g_strdup_printf (
-					"%s=%s", get_dn_attribute_name (bl->priv->ldap_rootdn),
+					"%s=%s", get_dn_attribute_name (bl->priv->ldap_rootdn, NULL),
 					modify_op->ldap_uid);
 			else
 				new_uid = create_dn_from_contact (modify_op->contact, bl->priv->ldap_rootdn);
