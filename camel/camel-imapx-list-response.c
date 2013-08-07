@@ -634,6 +634,39 @@ camel_imapx_list_response_has_attribute (CamelIMAPXListResponse *response,
 }
 
 /**
+ * camel_imapx_list_response_ref_extended_item:
+ * @response: a #CamelIMAPXListResponse
+ * @extended_item_tag: an extended item tag
+ *
+ * Returns the extended item value for @extended_item_tag as a #GVariant.
+ * The type of the #GVariant depends on the extended item.  If no value
+ * for @extended_item_tag exists, the function returns %NULL.
+ *
+ * The returned #GVariant is referenced for thread-safety and should
+ * be unreferenced with g_variant_unref() when finished with it.
+ *
+ * Returns: a #GVariant, or %NULL
+ *
+ * Since: 3.10
+ **/
+GVariant *
+camel_imapx_list_response_ref_extended_item (CamelIMAPXListResponse *response,
+                                             const gchar *extended_item_tag)
+{
+	GHashTable *extended_items;
+	GVariant *value;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response), NULL);
+	g_return_val_if_fail (extended_item_tag != NULL, NULL);
+
+	extended_items = response->priv->extended_items;
+
+	value = g_hash_table_lookup (extended_items, extended_item_tag);
+
+	return (value != NULL) ? g_variant_ref (value) : NULL;
+}
+
+/**
  * camel_imapx_list_response_get_summary_flags:
  * @response: a #CamelIMAPXListResponse
  *
