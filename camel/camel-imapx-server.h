@@ -145,10 +145,6 @@ struct _CamelIMAPXServer {
 	guint32 recent;
 	guint32 mode;
 
-	/* any expunges that happened from the last command, they are
-	 * processed after the command completes. */
-	GList *expunged;
-
 	GThread *parser_thread;
 	/* Used for canceling operations as well as signaling parser thread to disconnnect/quit */
 	GCancellable *cancellable;

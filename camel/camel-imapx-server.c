@@ -1440,17 +1440,12 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 		camel_folder_summary_remove_uid (folder->summary, uid);
 	}
 
-	is->expunged = g_list_prepend (is->expunged, uid);
-
 	camel_folder_change_info_remove_uid (is->changes, uid);
 
 	if (imapx_in_idle (is)) {
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		imapx_update_store_summary (folder);
 		camel_folder_changed (folder, is->changes);
-
-		g_list_free_full (is->expunged, (GDestroyNotify) g_free);
-		is->expunged = NULL;
 
 		camel_folder_change_info_clear (is->changes);
 	}
@@ -1624,7 +1619,8 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 	uid_list = g_list_reverse (uid_list);
 	camel_folder_summary_remove_uids (folder->summary, uid_list);
-	is->expunged = g_list_concat (is->expunged, uid_list);
+
+	g_list_free_full (uid_list, (GDestroyNotify) g_free);
 	g_ptr_array_free (uids, TRUE);
 
 	g_object_unref (folder);
@@ -2824,9 +2820,6 @@ imapx_completion (CamelIMAPXServer *is,
 		g_return_val_if_fail (folder != NULL, FALSE);
 
 		camel_folder_summary_save_to_db (folder->summary, NULL);
-
-		g_list_free_full (is->expunged, (GDestroyNotify) g_free);
-		is->expunged = NULL;
 
 		imapx_update_store_summary (folder);
 		camel_folder_changed (folder, is->changes);
@@ -7211,7 +7204,6 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	is->state = IMAPX_DISCONNECTED;
 
-	is->expunged = NULL;
 	is->changes = camel_folder_change_info_new ();
 	is->parser_quit = FALSE;
 
