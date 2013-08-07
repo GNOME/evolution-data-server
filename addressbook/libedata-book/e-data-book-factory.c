@@ -592,6 +592,7 @@ e_data_book_factory_init (EDataBookFactory *factory)
 		(GDestroyNotify) g_ptr_array_unref);
 
 	g_mutex_init (&factory->priv->connections_lock);
+	g_mutex_init (&factory->priv->watched_names_lock);
 
 	factory->priv->watched_names = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
