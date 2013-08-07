@@ -57,7 +57,6 @@ static void camel_imapx_set_debug_flags (void)
 	debug_set_flag (io);
 	debug_set_flag (token);
 	debug_set_flag (parse);
-	debug_set_flag (conman);
 }
 
 #include "camel-imapx-tokenise.h"

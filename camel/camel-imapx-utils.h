@@ -399,7 +399,6 @@ extern gint camel_imapx_debug_flags;
 #define CAMEL_IMAPX_DEBUG_io		(1 << 3)
 #define CAMEL_IMAPX_DEBUG_token		(1 << 4)
 #define CAMEL_IMAPX_DEBUG_parse		(1 << 5)
-#define CAMEL_IMAPX_DEBUG_conman	(1 << 6)
 
 /* Set this to zero to remove all debug output at build time */
 #define CAMEL_IMAPX_DEBUG_ALL		((1 << 7)-1)
