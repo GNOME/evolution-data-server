@@ -1620,6 +1620,15 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	uid_list = g_list_reverse (uid_list);
 	camel_folder_summary_remove_uids (folder->summary, uid_list);
 
+	/* If the response is truly unsolicited (e.g. via NOTIFY)
+	 * then go ahead and emit the change notification now. */
+	if (camel_imapx_command_queue_is_empty (is->queue)) {
+		camel_folder_summary_save_to_db (folder->summary, NULL);
+		imapx_update_store_summary (folder);
+		camel_folder_changed (folder, is->changes);
+		camel_folder_change_info_clear (is->changes);
+	}
+
 	g_list_free_full (uid_list, (GDestroyNotify) g_free);
 	g_ptr_array_free (uids, TRUE);
 
