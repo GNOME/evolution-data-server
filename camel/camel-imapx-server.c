@@ -134,9 +134,6 @@ struct _CopyMessagesData {
 
 struct _ListData {
 	gchar *pattern;
-	CamelStoreGetFolderInfoFlags flags;
-	gchar *ext;
-	GHashTable *folders;
 };
 
 struct _MailboxData {
@@ -323,6 +320,10 @@ struct _CamelIMAPXServerPrivate {
 	/* Data items to request in STATUS commands:
 	 * STATUS $mailbox_name ($status_data_items) */
 	gchar *status_data_items;
+
+	/* Return options for extended LIST commands:
+	 * LIST "" $pattern RETURN ($list_return_opts) */
+	gchar *list_return_opts;
 
 	/* Untagged SEARCH data gets deposited here.
 	 * The search command should claim the results
@@ -663,9 +664,6 @@ static void
 list_data_free (ListData *data)
 {
 	g_free (data->pattern);
-	g_free (data->ext);
-
-	g_hash_table_destroy (data->folders);
 
 	g_slice_free (ListData, data);
 }
@@ -829,6 +827,14 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 		g_string_append (buffer, " HIGHESTMODSEQ");
 	g_free (is->priv->status_data_items);
 	is->priv->status_data_items = g_string_free (buffer, FALSE);
+
+	g_free (is->priv->list_return_opts);
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, LIST_EXTENDED)) {
+		buffer = g_string_new ("CHILDREN SUBSCRIBED");
+		is->priv->list_return_opts = g_string_free (buffer, FALSE);
+	} else {
+		is->priv->list_return_opts = NULL;
+	}
 }
 
 static void
@@ -2417,8 +2423,6 @@ imapx_untagged_list (CamelIMAPXServer *is,
 {
 	CamelIMAPXListResponse *response;
 	CamelIMAPXMailbox *mailbox = NULL;
-	CamelIMAPXJob *job = NULL;
-	ListData *data = NULL;
 	gboolean emit_mailbox_created = FALSE;
 	gboolean emit_mailbox_renamed = FALSE;
 	gboolean emit_mailbox_updated = FALSE;
@@ -2485,30 +2489,7 @@ imapx_untagged_list (CamelIMAPXServer *is,
 		g_signal_emit (is, signals[MAILBOX_UPDATED], 0, mailbox);
 
 	g_clear_object (&mailbox);
-
-	job = imapx_match_active_job (is, IMAPX_JOB_LIST, mailbox_name);
-
-	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
-
-	// TODO: we want to make sure the names match?
-
-	if (data->flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
-		c (is->tagprefix, "lsub: '%s' (%c)\n", mailbox_name, separator);
-	} else {
-		c (is->tagprefix, "list: '%s' (%c)\n", mailbox_name, separator);
-	}
-
-	if (job && !g_hash_table_contains (data->folders, response)) {
-		if (is->priv->context->lsub)
-			camel_imapx_list_response_add_attribute (
-				response, CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED);
-		g_hash_table_add (data->folders, g_object_ref (response));
-	} else {
-		g_warning ("got list response but no current listing job happening?\n");
-	}
-
-	g_object_unref (response);
+	g_clear_object (&response);
 
 	return TRUE;
 }
@@ -6533,6 +6514,43 @@ imapx_command_list_done (CamelIMAPXServer *is,
 	imapx_unregister_job (is, job);
 }
 
+static void
+imapx_command_list_lsub (CamelIMAPXServer *is,
+                         CamelIMAPXCommand *ic)
+{
+	CamelIMAPXJob *job;
+	ListData *data;
+	GError *local_error = NULL;
+
+	job = camel_imapx_command_get_job (ic);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
+		g_prefix_error (
+			&local_error, "%s: ",
+			_("Error fetching folders"));
+		camel_imapx_job_take_error (job, local_error);
+		imapx_unregister_job (is, job);
+
+	} else {
+		ic = camel_imapx_command_new (
+			is, "LIST", NULL,
+			"LSUB \"\" %s",
+			data->pattern);
+
+		ic->pri = job->pri;
+		camel_imapx_command_set_job (ic, job);
+		ic->complete = imapx_command_list_done;
+
+		imapx_command_queue (is, ic);
+
+		camel_imapx_command_unref (ic);
+	}
+}
+
 static gboolean
 imapx_job_list_start (CamelIMAPXJob *job,
                       CamelIMAPXServer *is,
@@ -6545,20 +6563,23 @@ imapx_job_list_start (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	ic = camel_imapx_command_new (
-		is, "LIST", NULL,
-		"%s \"\" %s",
-		(data->flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ?
-			"LSUB" : "LIST",
-		data->pattern);
-	if (data->ext) {
-		/* Hm, we need a way to add atoms _without_ quoting or using literals */
-		camel_imapx_command_add (ic, " ");
-		camel_imapx_command_add (ic, data->ext);
+	if (is->priv->list_return_opts != NULL) {
+		ic = camel_imapx_command_new (
+			is, "LIST", NULL,
+			"LIST \"\" %s RETURN (%t)",
+			data->pattern,
+			is->priv->list_return_opts);
+		ic->complete = imapx_command_list_done;
+	} else {
+		ic = camel_imapx_command_new (
+			is, "LIST", NULL,
+			"LIST \"\" %s",
+			data->pattern);
+		ic->complete = imapx_command_list_lsub;
 	}
+
 	ic->pri = job->pri;
 	camel_imapx_command_set_job (ic, job);
-	ic->complete = imapx_command_list_done;
 
 	imapx_command_queue (is, ic);
 
@@ -7656,6 +7677,7 @@ imapx_server_finalize (GObject *object)
 	g_mutex_clear (&is->priv->mailboxes_lock);
 
 	g_free (is->priv->status_data_items);
+	g_free (is->priv->list_return_opts);
 
 	if (is->priv->search_results != NULL)
 		g_array_unref (is->priv->search_results);
@@ -8866,30 +8888,22 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	return success;
 }
 
-GPtrArray *
+gboolean
 camel_imapx_server_list (CamelIMAPXServer *is,
                          const gchar *pattern,
                          CamelStoreGetFolderInfoFlags flags,
-                         const gchar *ext,
                          GCancellable *cancellable,
                          GError **error)
 {
 	CamelIMAPXJob *job;
-	GPtrArray *folders = NULL;
 	ListData *data;
+	gboolean success;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
-	g_return_val_if_fail (pattern != NULL, NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (pattern != NULL, FALSE);
 
 	data = g_slice_new0 (ListData);
 	data->pattern = g_strdup (pattern);
-	data->flags = flags;
-	data->ext = g_strdup (ext);
-	data->folders = g_hash_table_new_full (
-		(GHashFunc) camel_imapx_list_response_hash,
-		(GEqualFunc) camel_imapx_list_response_equal,
-		(GDestroyNotify) g_object_unref,
-		(GDestroyNotify) NULL);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_LIST;
@@ -8904,24 +8918,11 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 	if (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST)
 		job->pri += 300;
 
-	if (imapx_submit_job (is, job, error)) {
-		GList *list, *link;
-
-		/* Transfer LIST responses from a GHashTable
-		 * to a sorted GPtrArray by way of a GList. */
-		folders = g_ptr_array_new_with_free_func (
-			(GDestroyNotify) g_object_unref);
-		list = g_list_sort (
-			g_hash_table_get_keys (data->folders),
-			(GCompareFunc) camel_imapx_list_response_compare);
-		for (link = list; link != NULL; link = g_list_next (link))
-			g_ptr_array_add (folders, g_object_ref (link->data));
-		g_list_free (list);
-	}
+	success = imapx_submit_job (is, job, error);
 
 	camel_imapx_job_unref (job);
 
-	return folders;
+	return success;
 }
 
 gboolean
