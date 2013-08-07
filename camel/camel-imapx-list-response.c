@@ -42,6 +42,7 @@ struct _CamelIMAPXListResponsePrivate {
 	gchar *mailbox;
 	gchar separator;
 	GQueue attributes;
+	GHashTable *extended_items;
 };
 
 G_DEFINE_TYPE (
@@ -60,6 +61,8 @@ imapx_list_response_finalize (GObject *object)
 
 	/* Flag strings are interned, so don't free them. */
 	g_queue_clear (&priv->attributes);
+
+	g_hash_table_destroy (priv->extended_items);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_list_response_parent_class)->
@@ -81,7 +84,169 @@ camel_imapx_list_response_class_init (CamelIMAPXListResponseClass *class)
 static void
 camel_imapx_list_response_init (CamelIMAPXListResponse *response)
 {
+	GHashTable *extended_items;
+
+	extended_items = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_variant_unref);
+
 	response->priv = CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE (response);
+	response->priv->extended_items = extended_items;
+}
+
+/* Helper for camel_imapx_list_response_new() */
+static GVariant *
+imapx_list_response_parse_childinfo (CamelIMAPXStream *stream,
+                                     CamelIMAPXListResponse *response,
+                                     GCancellable *cancellable,
+                                     GError **error)
+{
+	GVariantBuilder builder;
+	GVariant *value;
+	camel_imapx_token_t tok;
+	guchar *token;
+	guint len;
+
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_STRING_ARRAY);
+
+	tok = camel_imapx_stream_token (
+		stream, &token, &len, cancellable, error);
+	if (tok == IMAPX_TOK_ERROR)
+		goto fail;
+	if (tok != '(') {
+		g_set_error (
+			error, CAMEL_IMAPX_ERROR, 1,
+			"list childinfo: expecting ')'");
+		goto fail;
+	}
+
+repeat:
+	if (!camel_imapx_stream_astring (stream, &token, cancellable, error))
+		goto fail;
+
+	value = g_variant_new_string ((gchar *) token);
+	g_variant_builder_add_value (&builder, value);
+
+	tok = camel_imapx_stream_token (
+		stream, &token, &len, cancellable, error);
+	if (tok == IMAPX_TOK_ERROR)
+		goto fail;
+	if (tok != ')') {
+		camel_imapx_stream_ungettoken (stream, tok, token, len);
+		goto repeat;
+	}
+
+	return g_variant_builder_end (&builder);
+
+fail:
+	g_variant_builder_clear (&builder);
+
+	return NULL;
+}
+
+/* Helper for camel_imapx_list_response_new() */
+static GVariant *
+imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
+                                   CamelIMAPXListResponse *response,
+                                   GCancellable *cancellable,
+                                   GError **error)
+{
+	camel_imapx_token_t tok;
+	guchar *token;
+	guint len;
+	gchar *mailbox = NULL;
+
+	tok = camel_imapx_stream_token (
+		stream, &token, &len, cancellable, error);
+	if (tok == IMAPX_TOK_ERROR)
+		goto fail;
+	if (tok != '(') {
+		g_set_error (
+			error, CAMEL_IMAPX_ERROR, 1,
+			"list oldname: expecting ')'");
+		goto fail;
+	}
+
+	mailbox = camel_imapx_parse_mailbox (stream, cancellable, error);
+	if (mailbox == NULL)
+		goto fail;
+
+	tok = camel_imapx_stream_token (
+		stream, &token, &len, cancellable, error);
+	if (tok == IMAPX_TOK_ERROR)
+		goto fail;
+	if (tok != ')') {
+		g_set_error (
+			error, CAMEL_IMAPX_ERROR, 1,
+			"list oldname: expecting ')'");
+		goto fail;
+	}
+
+	return g_variant_new_string (mailbox);
+
+fail:
+	g_free (mailbox);
+
+	return NULL;
+}
+
+/* Helper for camel_imapx_list_response_new() */
+static gboolean
+imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
+                                         CamelIMAPXListResponse *response,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	guchar *token;
+	gchar *item_tag;
+	GVariant *item_value = NULL;
+	gboolean success;
+
+	/* Parse the extended item tag. */
+
+	if (!camel_imapx_stream_astring (stream, &token, cancellable, error))
+		return FALSE;
+
+	item_tag = g_strdup ((gchar *) token);
+
+	/* Parse the extended item value if we recognize the tag,
+	 * otherwise skip to the end.  This is easier than trying
+	 * to anticipate all possible extensions ahead of time.
+	 *
+	 * XXX If we had a real LALR(1) parser then we could at
+	 *     least parse it into an abstract syntax tree, and
+	 *     pick out the items we support.  Alas, our ad-hoc
+	 *     IMAP parser makes this more difficult. */
+
+	/* RFC 5258 "LIST-EXTENDED" */
+	if (g_strcmp0 (item_tag, "CHILDINFO")) {
+		item_value = imapx_list_response_parse_childinfo (
+			stream, response, cancellable, error);
+		success = (item_value != NULL);
+
+	/* RFC 5465 "NOTIFY" */
+	} else if (g_strcmp0 (item_tag, "OLDNAME")) {
+		item_value = imapx_list_response_parse_oldname (
+			stream, response, cancellable, error);
+		success = (item_value != NULL);
+
+	} else {
+		success = camel_imapx_stream_skip_until (
+			stream, ")", cancellable, error);
+	}
+
+	if (item_value != NULL) {
+		/* Takes ownership of the item_tag string. */
+		g_hash_table_insert (
+			response->priv->extended_items,
+			item_tag, g_variant_ref_sink (item_value));
+	} else {
+		g_free (item_tag);
+	}
+
+	return success;
 }
 
 /**
@@ -179,7 +344,38 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 
 	/* Parse extended info (optional). */
 
-	/* FIXME Actually implement this. */
+	tok = camel_imapx_stream_token (
+		stream, &token, &len, cancellable, error);
+	if (tok == IMAPX_TOK_ERROR)
+		goto fail;
+	if (tok == '(') {
+		gboolean success;
+
+extended_item_repeat:
+		success = imapx_list_response_parse_extended_item (
+			stream, response, cancellable, error);
+		if (!success)
+			goto fail;
+
+		tok = camel_imapx_stream_token (
+			stream, &token, &len, cancellable, error);
+		if (tok == IMAPX_TOK_ERROR)
+			goto fail;
+		if (tok != ')') {
+			camel_imapx_stream_ungettoken (
+				stream, tok, token, len);
+			goto extended_item_repeat;
+		}
+
+	} else if (tok == '\n') {
+		camel_imapx_stream_ungettoken (stream, tok, token, len);
+
+	} else {
+		g_set_error (
+			error, CAMEL_IMAPX_ERROR, 1,
+			"list: expecting '(' or NEWLINE");
+		goto fail;
+	}
 
 	return response;
 
