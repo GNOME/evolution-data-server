@@ -2339,9 +2339,9 @@ camel_db_get_column_name (const gchar *raw_name)
 		return g_strdup ("attachment");
 	else if (!g_ascii_strcasecmp (raw_name, "x-camel-mlist"))
 		return g_strdup ("mlist");
-	else
-		return g_strdup (raw_name);
 
+	/* indicate the header name is not part of the summary */
+	return NULL;
 }
 
 /**

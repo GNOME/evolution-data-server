@@ -377,6 +377,12 @@ check_header (struct _CamelSExp *f,
 
 		/* only a subset of headers are supported .. */
 		headername = camel_db_get_column_name (argv[0]->value.string);
+		if (!headername) {
+			gboolean *pcontains_unknown_column = (gboolean *) data;
+			*pcontains_unknown_column = TRUE;
+
+			headername = g_strdup ("unknown");
+		}
 
 		/* performs an OR of all words */
 		for (i = 1; i < argc; i++) {
@@ -482,9 +488,17 @@ header_exists (struct _CamelSExp *f,
 	d (printf ("executing header-exists: %d", argc));
 
 	headername = camel_db_get_column_name (argv[0]->value.string);
+	if (!headername) {
+		gboolean *pcontains_unknown_column = (gboolean *) data;
+		*pcontains_unknown_column = TRUE;
+
+		headername = g_strdup ("unknown");
+	}
+
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 	r->value.string = g_strdup_printf ("(%s NOTNULL)", headername);
 	g_free (headername);
+
 	return r;
 }
 
@@ -553,6 +567,13 @@ system_flag (struct _CamelSExp *f,
 		r->value.string = g_strdup ("(0)");
 	} else {
 		tstr = camel_db_get_column_name (argv[0]->value.string);
+		if (!tstr) {
+			gboolean *pcontains_unknown_column = (gboolean *) data;
+			*pcontains_unknown_column = TRUE;
+
+			tstr = g_strdup ("unknown");
+		}
+
 		r->value.string = g_strdup_printf ("(%s = 1)", tstr);
 		g_free (tstr);
 	}
@@ -716,17 +737,18 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	CamelSExpResult *r;
 	gint i;
 	gchar *res = NULL;
+	gboolean contains_unknown_column = FALSE;
 
 	sexp = camel_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].immediate)
 			camel_sexp_add_ifunction (sexp, 0, symbols[i].name,
-					     (CamelSExpIFunc) symbols[i].func, NULL);
+					     (CamelSExpIFunc) symbols[i].func, &contains_unknown_column);
 		else
 			camel_sexp_add_function (
 				sexp, 0, symbols[i].name,
-				symbols[i].func, NULL);
+				symbols[i].func, &contains_unknown_column);
 	}
 
 	camel_sexp_input_text (sexp, sql, strlen (sql));
@@ -741,10 +763,9 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 		return NULL;
 	}
 
-	if (r->type == CAMEL_SEXP_RES_STRING) {
+	if (!contains_unknown_column && r->type == CAMEL_SEXP_RES_STRING) {
 		res = g_strdup (r->value.string);
-	} else
-		g_assert (0);
+	}
 
 	camel_sexp_result_free (sexp, r);
 	g_object_unref (sexp);
