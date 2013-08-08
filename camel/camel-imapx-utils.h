@@ -311,24 +311,6 @@ struct _status_info *
 void		imapx_free_status		(struct _status_info *sinfo);
 
 /* ********************************************************************** */
-/* parses the response from the status command */
-struct _state_info {
-	gchar *name;
-	guint32 messages;
-	guint32 recent;
-	guint32 uidnext;
-	guint32 unseen;
-	guint64 uidvalidity;
-	guint64 highestmodseq;
-};
-
-/* use g_free to free the return value */
-struct _state_info *
-		imapx_parse_status_info		(struct _CamelIMAPXStream *is,
-						 GCancellable *cancellable,
-						 GError **error);
-
-/* ********************************************************************** */
 
 gboolean	camel_imapx_command_add_qresync_parameter
 						(struct _CamelIMAPXCommand *ic,

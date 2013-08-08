@@ -148,6 +148,7 @@
 #include <camel/camel-imapx-list-response.h>
 #include <camel/camel-imapx-search.h>
 #include <camel/camel-imapx-server.h>
+#include <camel/camel-imapx-status-response.h>
 #include <camel/camel-imapx-store-summary.h>
 #include <camel/camel-imapx-store.h>
 #include <camel/camel-imapx-stream.h>

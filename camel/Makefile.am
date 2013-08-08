@@ -182,6 +182,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-imapx-search.c			\
 	camel-imapx-server.c			\
 	camel-imapx-settings.c			\
+	camel-imapx-status-response.c		\
 	camel-imapx-store-summary.c		\
 	camel-imapx-store.c			\
 	camel-imapx-stream.c			\
@@ -317,6 +318,7 @@ libcamelinclude_HEADERS =			\
 	camel-imapx-search.h			\
 	camel-imapx-server.h			\
 	camel-imapx-settings.h			\
+	camel-imapx-status-response.h		\
 	camel-imapx-store-summary.h		\
 	camel-imapx-store.h			\
 	camel-imapx-stream.h			\

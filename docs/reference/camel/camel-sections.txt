@@ -978,6 +978,31 @@ CamelIMAPXSettingsPrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-status-response</FILE>
+<TITLE>CamelIMAPXStatusResponse</TITLE>
+CamelIMAPXStatusResponse
+camel_imapx_status_response_new
+camel_imapx_status_response_get_mailbox
+camel_imapx_status_response_get_messages
+camel_imapx_status_response_get_recent
+camel_imapx_status_response_get_unseen
+camel_imapx_status_response_get_uidnext
+camel_imapx_status_response_get_uidvalidity
+camel_imapx_status_response_get_highestmodseq
+<SUBSECTION Standard>
+CAMEL_IMAPX_STATUS_RESPONSE
+CAMEL_IS_IMAPX_STATUS_RESPONSE
+CAMEL_TYPE_IMAPX_STATUS_RESPONSE
+CAMEL_IMAPX_STATUS_RESPONSE_CLASS
+CAMEL_IS_IMAPX_STATUS_RESPONSE_CLASS
+CAMEL_IMAPX_STATUS_RESPONSE_GET_CLASS
+CamelIMAPXStatusResponseClass
+camel_imapx_status_response_get_type
+<SUBSECTION Private>
+CamelIMAPXStatusResponsePrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-store</FILE>
 <TITLE>CamelIMAPXStore</TITLE>
 CamelIMAPXStore
