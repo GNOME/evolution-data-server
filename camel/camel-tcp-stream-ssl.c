@@ -544,6 +544,7 @@ enable_ssl (CamelTcpStreamSSL *ssl,
             PRFileDesc *fd)
 {
 	PRFileDesc *ssl_fd;
+	static gchar v2_enabled = -1;
 
 	g_assert (fd != NULL);
 
@@ -553,7 +554,11 @@ enable_ssl (CamelTcpStreamSSL *ssl,
 
 	SSL_OptionSet (ssl_fd, SSL_SECURITY, PR_TRUE);
 
-	if (ssl->priv->flags & CAMEL_TCP_STREAM_SSL_ENABLE_SSL2) {
+	/* check camel.c for the same "CAMEL_SSL_V2_ENABLE" */
+	if (v2_enabled == -1)
+		v2_enabled = g_strcmp0 (g_getenv ("CAMEL_SSL_V2_ENABLE"), "1") == 0 ? 1 : 0;
+
+	if (v2_enabled && (ssl->priv->flags & CAMEL_TCP_STREAM_SSL_ENABLE_SSL2) != 0) {
 		static gchar v2_hello = -1;
 
 		/* Zarafa server with disabled SSL v2 rejects connection when
