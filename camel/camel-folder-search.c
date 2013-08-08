@@ -1765,7 +1765,8 @@ camel_folder_search_set_body_index (CamelFolderSearch *search,
 
 static gboolean
 do_search_in_memory (CamelFolder *search_in_folder,
-                     const gchar *expr)
+                     const gchar *expr,
+		     gchar **psql_query)
 {
 	/* if the expression contains any of these tokens, then perform a memory search, instead of the SQL one */
 	const gchar *in_memory_tokens[] = {
@@ -1794,7 +1795,11 @@ do_search_in_memory (CamelFolder *search_in_folder,
 			return TRUE;
 	}
 
-	return FALSE;
+	*psql_query = camel_sexp_to_sql_sexp (expr);
+
+	/* unknown column can cause NULL sql_query, then an in-memory
+	   search is required */
+	return !*psql_query;
 }
 
 /**
@@ -1822,7 +1827,7 @@ camel_folder_search_count (CamelFolderSearch *search,
 	GPtrArray *summary_set;
 	gint i;
 	CamelDB *cdb;
-	gchar *sql_query, *tmp, *tmp1;
+	gchar *sql_query = NULL, *tmp, *tmp1;
 	GHashTable *results;
 	guint32 count = 0;
 
@@ -1844,7 +1849,7 @@ camel_folder_search_count (CamelFolderSearch *search,
 	p->error = error;
 
 	/* We route body-contains search and thread based search through memory and not via db. */
-	if (do_search_in_memory (search->folder, expr)) {
+	if (do_search_in_memory (search->folder, expr, &sql_query)) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary (search->folder);
 		if (search->folder->summary)
@@ -1909,9 +1914,8 @@ camel_folder_search_count (CamelFolderSearch *search,
 		camel_folder_summary_save_to_db (search->folder->summary, error);
 
 		dd (printf ("sexp is : [%s]\n", expr));
-		sql_query = camel_sexp_to_sql_sexp (expr);
 		tmp1 = camel_db_sqlize_string (full_name);
-		tmp = g_strdup_printf ("SELECT COUNT (*) FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query ? sql_query:"");
+		tmp = g_strdup_printf ("SELECT COUNT (*) FROM %s %s %s", tmp1, sql_query ? "WHERE" : "", sql_query ? sql_query : "");
 		camel_db_free_sqlized_string (tmp1);
 		g_free (sql_query);
 		dd (printf ("Equivalent sql %s\n", tmp));
@@ -1978,7 +1982,7 @@ camel_folder_search_search (CamelFolderSearch *search,
 	GPtrArray *matches = NULL, *summary_set;
 	gint i;
 	CamelDB *cdb;
-	gchar *sql_query, *tmp, *tmp1;
+	gchar *sql_query = NULL, *tmp, *tmp1;
 	GHashTable *results;
 
 	CamelFolderSearchPrivate *p;
@@ -1999,7 +2003,7 @@ camel_folder_search_search (CamelFolderSearch *search,
 	p->error = error;
 
 	/* We route body-contains / thread based search and uid search through memory and not via db. */
-	if (uids || do_search_in_memory (search->folder, expr)) {
+	if (uids || do_search_in_memory (search->folder, expr, &sql_query)) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary (search->folder);
 
@@ -2078,7 +2082,6 @@ camel_folder_search_search (CamelFolderSearch *search,
 		camel_folder_summary_save_to_db (search->folder->summary, error);
 
 		dd (printf ("sexp is : [%s]\n", expr));
-		sql_query = camel_sexp_to_sql_sexp (expr);
 		tmp1 = camel_db_sqlize_string (full_name);
 		tmp = g_strdup_printf ("SELECT uid FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query ? sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
