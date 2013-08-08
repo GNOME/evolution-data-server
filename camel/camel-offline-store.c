@@ -142,8 +142,11 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	/* Returning to online mode is the simpler case. */
 	if (!store_is_online) {
 		store->priv->online = online;
-		return camel_service_connect_sync (
-			service, cancellable, error);
+
+		if (camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTING)
+			return TRUE;
+
+		return camel_service_connect_sync (service, cancellable, error);
 	}
 
 	/* network available -> network unavailable */
@@ -178,8 +181,10 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 			CAMEL_STORE (store), FALSE, cancellable, NULL);
 	}
 
-	success = camel_service_disconnect_sync (
-		service, network_available, cancellable, error);
+	if (camel_service_get_connection_status (service) == CAMEL_SERVICE_DISCONNECTING)
+		success = TRUE;
+	else
+		success = camel_service_disconnect_sync (service, network_available, cancellable, error);
 
 	store->priv->online = online;
 
