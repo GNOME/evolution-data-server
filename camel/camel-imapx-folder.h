@@ -33,6 +33,8 @@
 #include <camel/camel-folder-search.h>
 #include <camel/camel-store.h>
 
+#include <camel/camel-imapx-status-response.h>
+
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_FOLDER \
 	(camel_imapx_folder_get_type ())
@@ -101,6 +103,9 @@ void		camel_imapx_folder_add_move_to_real_junk
 void		camel_imapx_folder_add_move_to_real_trash
 						(CamelIMAPXFolder *folder,
 						 const gchar *message_uid);
+void		camel_imapx_folder_process_status_response
+						(CamelIMAPXFolder *folder,
+						 CamelIMAPXStatusResponse *response);
 
 G_END_DECLS
 

@@ -2243,11 +2243,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	CamelIMAPXStore *store;
 	CamelFolder *folder = NULL;
 	const gchar *mailbox;
-	guint32 messages;
-	guint32 uidnext;
 	guint32 uidvalidity;
-	guint32 unseen;
-	guint64 highestmodseq;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -2258,11 +2254,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 		return FALSE;
 
 	mailbox = camel_imapx_status_response_get_mailbox (response);
-	messages = camel_imapx_status_response_get_messages (response);
-	uidnext = camel_imapx_status_response_get_uidnext (response);
 	uidvalidity = camel_imapx_status_response_get_uidvalidity (response);
-	unseen = camel_imapx_status_response_get_unseen (response);
-	highestmodseq = camel_imapx_status_response_get_highestmodseq (response);
 
 	store = camel_imapx_server_ref_store (is);
 
@@ -2294,11 +2286,8 @@ imapx_untagged_status (CamelIMAPXServer *is,
 		imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
 
 		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-		imapx_folder->exists_on_server = messages;
-		imapx_folder->unread_on_server = unseen;
-		imapx_folder->modseq_on_server = highestmodseq;
-		imapx_folder->uidvalidity_on_server = uidvalidity;
-		imapx_folder->uidnext_on_server = uidnext;
+		camel_imapx_folder_process_status_response (
+			imapx_folder, response);
 
 		if (uidvalidity > 0 && uidvalidity != imapx_summary->validity)
 			invalidate_local_cache (imapx_folder, uidvalidity);
