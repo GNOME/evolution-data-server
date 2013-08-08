@@ -27,6 +27,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libsoup/soup.h>
+#include <libedata-cal/libedata-cal.h>
 #include "e-cal-backend-http.h"
 
 #define E_CAL_BACKEND_HTTP_GET_PRIVATE(obj) \
