@@ -577,9 +577,15 @@ cal_backend_http_load (ECalBackendHttp *backend,
 
 	/* check status code */
 	if (!SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
-		g_set_error (
-			error, SOUP_HTTP_ERROR, status_code,
-			"%s", soup_message->reason_phrase);
+		/* because evolution knows only G_IO_ERROR_CANCELLED */
+		if (status_code == SOUP_STATUS_CANCELLED)
+			g_set_error (
+				error, G_IO_ERROR, G_IO_ERROR_CANCELLED,
+				"%s", soup_message->reason_phrase);
+		else
+			g_set_error (
+				error, SOUP_HTTP_ERROR, status_code,
+				"%s", soup_message->reason_phrase);
 		g_object_unref (soup_message);
 		empty_cache (backend);
 		return FALSE;
@@ -872,11 +878,9 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
 	ESourceRegistry *registry;
-	ESourceAuthentication *auth_extension;
 	ESourceWebdav *webdav_extension;
 	const gchar *extension_name;
 	const gchar *cache_dir;
-	gboolean auth_required;
 	gboolean opened = TRUE;
 	gchar *tmp;
 	GError *local_error = NULL;
@@ -892,10 +896,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
 
 	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
-
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	auth_extension = e_source_get_extension (source, extension_name);
-	auth_required = e_source_authentication_required (auth_extension);
 
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	webdav_extension = e_source_get_extension (source, extension_name);
@@ -936,16 +936,11 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 
 		uri = cal_backend_http_ensure_uri (cbhttp);
 
-		if (!auth_required) {
-			opened = cal_backend_http_load (
-				cbhttp, cancellable,
-				uri, &local_error);
-			auth_required = g_error_matches (
-				local_error, SOUP_HTTP_ERROR,
-				SOUP_STATUS_UNAUTHORIZED);
-		}
+		opened = cal_backend_http_load (
+			cbhttp, cancellable,
+			uri, &local_error);
 
-		if (auth_required) {
+		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			g_clear_error (&local_error);
 			opened = e_source_registry_authenticate_sync (
 				registry, source,
