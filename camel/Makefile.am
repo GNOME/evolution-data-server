@@ -126,7 +126,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-object-bag.c			\
 	camel-object.c				\
 	camel-offline-folder.c			\
-	camel-offline-journal.c			\
 	camel-offline-settings.c		\
 	camel-offline-store.c			\
 	camel-operation.c			\
@@ -261,7 +260,6 @@ libcamelinclude_HEADERS =			\
 	camel-object-bag.h			\
 	camel-object.h				\
 	camel-offline-folder.h			\
-	camel-offline-journal.h			\
 	camel-offline-settings.h		\
 	camel-offline-store.h			\
 	camel-operation.h			\

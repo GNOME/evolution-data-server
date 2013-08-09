@@ -116,7 +116,6 @@
       <xi:include href="xml/camel-folder-summary.xml"/>
       <xi:include href="xml/camel-folder-thread.xml"/>
       <xi:include href="xml/camel-offline-folder.xml"/>
-      <xi:include href="xml/camel-offline-journal.xml"/>
     </chapter>
 
     <chapter id="Virtual-Folders">

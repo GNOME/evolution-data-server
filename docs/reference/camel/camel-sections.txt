@@ -1964,26 +1964,6 @@ CamelOfflineFolderPrivate
 </SECTION>
 
 <SECTION>
-<FILE>camel-offline-journal</FILE>
-<TITLE>CamelOfflineJournal</TITLE>
-CamelOfflineJournal
-CamelOfflineJournalEntry
-camel_offline_journal_construct
-camel_offline_journal_set_filename
-camel_offline_journal_write
-camel_offline_journal_replay
-<SUBSECTION Standard>
-CAMEL_OFFLINE_JOURNAL
-CAMEL_IS_OFFLINE_JOURNAL
-CAMEL_TYPE_OFFLINE_JOURNAL
-CAMEL_OFFLINE_JOURNAL_CLASS
-CAMEL_IS_OFFLINE_JOURNAL_CLASS
-CAMEL_OFFLINE_JOURNAL_GET_CLASS
-CamelOfflineJournalClass
-camel_offline_journal_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-offline-settings</FILE>
 <TITLE>CamelOfflineSettings</TITLE>
 CamelOfflineSettings
