@@ -100,7 +100,6 @@ camel/camel-net-utils.c
 camel/camel-network-service.c
 camel/camel-object.c
 camel/camel-offline-folder.c
-camel/camel-offline-journal.c
 camel/camel-offline-store.c
 camel/camel-operation.c
 camel/camel-partition-table.c
