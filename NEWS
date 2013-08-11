@@ -1,3 +1,34 @@
+Evolution-Data-Server 3.8.5 2013-08-12
+--------------------------------------
+
+Bug Fixes:
+	Bug 672899 - Renaming Google book group doesn't propagate to category
+	             (Milan Crha)
+	Bug 700895 - Decode header's value before comparing with RegEx
+	             (Milan Crha)
+	Bug 704688 - HTTP Backend: Don't authenticate unnecessarily (Milan Crha)
+	Bug 704740 - WebDAV - Do not store ETag into REV attribute (Milan Crha)
+	Bug 704871 - Fails to manage subscription on an NNTP account
+	             (Matthew Barnes)
+	Bug 705206 - Stale "Retrieving message xxx" in preview panel
+	             (Matthew Barnes)
+	Bug 705273 - Leaked sockets after failed authentication (Milan Crha)
+	Bug 705288 - Custom header search produces error (Milan Crha)
+	Bug 705444 - Can not create contact lists in LDAP address book
+	             (Milan Crha)
+	Bug 705446 - Old POP3 mails can be removed before getting them
+	             (Milan Crha)
+	Bug 705493 - Wrong default in configure help for --enable-largefile
+	             (Matthew Barnes)
+	Bug 705617 - Failed connection hides offline data in online mode
+	             (Milan Crha)
+
+Other Changes:
+	* CamelDiscoStore: Fix CamelServiceConnectionStatus tracking.
+	  (Matthew Barnes)
+	* [Camel] Disable SSL v2 and weak ciphers by default (Milan Crha)
+
+
 Evolution-Data-Server 3.8.4 2013-07-23
 --------------------------------------
 
