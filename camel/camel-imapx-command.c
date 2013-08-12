@@ -42,6 +42,9 @@ struct _CamelIMAPXRealCommand {
 	/* For building the part. */
 	GString *buffer;
 
+	/* For network/parse errors. */
+	GError *error;
+
 	/* Used for running some commands synchronously. */
 	GCond done_sync_cond;
 	GMutex done_sync_mutex;
@@ -140,6 +143,8 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 			camel_imapx_job_unref (real_ic->job);
 
 		g_string_free (real_ic->buffer, TRUE);
+
+		g_clear_error (&real_ic->error);
 
 		g_cond_clear (&real_ic->done_sync_cond);
 		g_mutex_clear (&real_ic->done_sync_mutex);
@@ -577,12 +582,50 @@ camel_imapx_command_done (CamelIMAPXCommand *ic)
 	g_mutex_unlock (&real_ic->done_sync_mutex);
 }
 
+/**
+ * camel_imapx_command_failed:
+ * @ic: a #CamelIMAPXCommand
+ * @error: the error which caused the failure
+ *
+ * Copies @error to be returned in camel_imapx_command_set_error_if_failed().
+ * Call this function if a networking or parsing error occurred to force all
+ * active IMAP commands to abort processing.
+ *
+ * Since: 3.10
+ **/
+void
+camel_imapx_command_failed (CamelIMAPXCommand *ic,
+                            const GError *error)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
+	g_return_if_fail (error != NULL);
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+	g_return_if_fail (real_ic->error == NULL);
+
+	real_ic->error = g_error_copy (error);
+}
+
 gboolean
 camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
                                          GError **error)
 {
+	CamelIMAPXRealCommand *real_ic;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	/* Check for a networking or parsing error. */
+	if (real_ic->error != NULL) {
+		g_propagate_error (error, real_ic->error);
+		real_ic->error = NULL;
+		return TRUE;
+	}
+
+	/* Check if the IMAP server rejected the command. */
 	if (ic->status != NULL && ic->status->result != IMAPX_OK) {
 
 		/* FIXME Map IMAP response codes to more

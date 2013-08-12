@@ -120,6 +120,8 @@ void		camel_imapx_command_add_part	(CamelIMAPXCommand *ic,
 void		camel_imapx_command_close	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_wait	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_done	(CamelIMAPXCommand *ic);
+void		camel_imapx_command_failed	(CamelIMAPXCommand *ic,
+						 const GError *error);
 gboolean	camel_imapx_command_set_error_if_failed
 						(CamelIMAPXCommand *ic,
 						 GError **error);

@@ -754,6 +754,7 @@ camel_imapx_command_add_part
 camel_imapx_command_close
 camel_imapx_command_wait
 camel_imapx_command_done
+camel_imapx_command_failed
 camel_imapx_command_set_error_if_failed
 CamelIMAPXCommandQueue
 camel_imapx_command_queue_new
