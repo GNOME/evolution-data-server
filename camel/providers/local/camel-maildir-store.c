@@ -506,9 +506,11 @@ scan_fi (CamelStore *store,
 	cur = g_build_filename (path, dir_name, "cur", NULL);
 	new = g_build_filename (path, dir_name, "new", NULL);
 
-	if (!(g_stat (tmp, &st) == 0 && S_ISDIR (st.st_mode)
-	      && g_stat (cur, &st) == 0 && S_ISDIR (st.st_mode)
-	      && g_stat (new, &st) == 0 && S_ISDIR (st.st_mode)))
+	if (!(g_stat (cur, &st) == 0 && S_ISDIR (st.st_mode)
+	      && g_stat (new, &st) == 0 && S_ISDIR (st.st_mode)
+	      /* Create 'tmp' dir on demand, if other directories are there,
+		 because some backup tools can drop the 'tmp' directory. */
+	      && ((g_stat (tmp, &st) == 0 && S_ISDIR (st.st_mode)) || g_mkdir (tmp, 0700) == 0)))
 		fi->flags |= CAMEL_FOLDER_NOSELECT;
 
 	g_free (new);
