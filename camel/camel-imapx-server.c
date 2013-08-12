@@ -6825,10 +6825,9 @@ imapx_job_sync_changes_matches (CamelIMAPXJob *job,
 	return camel_imapx_job_has_folder (job, folder);
 }
 
-/* we cancel all the commands and their jobs, so associated jobs will be notified */
 static void
-cancel_all_jobs (CamelIMAPXServer *is,
-                 GError *error)
+imapx_abort_all_commands (CamelIMAPXServer *is,
+                          const GError *error)
 {
 	CamelIMAPXCommandQueue *queue;
 	GList *head, *link;
@@ -6849,7 +6848,6 @@ cancel_all_jobs (CamelIMAPXServer *is,
 
 	for (link = head; link != NULL; link = g_list_next (link)) {
 		CamelIMAPXCommand *ic = link->data;
-		CamelIMAPXJob *job;
 
 		/* Sanity check the CamelIMAPXCommand before proceeding.
 		 * XXX We are actually getting reports of crashes here...
@@ -6857,17 +6855,15 @@ cancel_all_jobs (CamelIMAPXServer *is,
 		if (ic == NULL)
 			continue;
 
-		/* Similarly with the CamelIMAPXJob contained within. */
-		job = camel_imapx_command_get_job (ic);
-		if (!CAMEL_IS_IMAPX_JOB (job))
-			continue;
+		/* Insert an error into the CamelIMAPXCommand to be
+		 * propagated when the completion callback function
+		 * calls camel_imapx_command_set_error_if_failed(). */
+		camel_imapx_command_failed (ic, error);
 
-		camel_imapx_job_cancel (job);
-
-		/* Send a NULL GError since we already cancelled
-		 * the job and we're not interested in individual
-		 * command errors. */
-		ic->complete (is, ic, camel_imapx_job_get_cancellable (job), NULL);
+		/* Invoke the completion callback function so it can
+		 * perform any cleanup processing and unregister its
+		 * CamelIMAPXJob. */
+		ic->complete (is, ic, NULL, NULL);
 	}
 
 	camel_imapx_command_queue_free (queue);
@@ -6976,7 +6972,7 @@ imapx_parser_thread (gpointer d)
 	is->state = IMAPX_SHUTDOWN;
 	QUEUE_UNLOCK (is);
 
-	cancel_all_jobs (is, local_error);
+	imapx_abort_all_commands (is, local_error);
 
 	QUEUE_LOCK (is);
 	if (is->cancellable != NULL) {
