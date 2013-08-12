@@ -4782,7 +4782,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 
 			g_free (cur);
 		} else {
-			g_message ("but uidvalidity changed \n");
+			c (is->tagprefix, "but uidvalidity changed \n");
 		}
 	}
 
