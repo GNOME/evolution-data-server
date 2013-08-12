@@ -2881,16 +2881,14 @@ imapx_completion (CamelIMAPXServer *is,
 
 static gboolean
 imapx_step (CamelIMAPXServer *is,
+            CamelIMAPXStream *stream,
             GCancellable *cancellable,
             GError **error)
 {
-	CamelIMAPXStream *stream;
 	guint len;
 	guchar *token;
 	gint tok;
 	gboolean success = FALSE;
-
-	stream = camel_imapx_server_ref_stream (is);
 
 	// poll ?  wait for other stuff? loop?
 	tok = camel_imapx_stream_token (
@@ -2919,8 +2917,6 @@ imapx_step (CamelIMAPXServer *is,
 			break;
 	}
 
-	g_object_unref (stream);
-
 	return success;
 }
 
@@ -2931,9 +2927,12 @@ imapx_command_run (CamelIMAPXServer *is,
                    CamelIMAPXCommand *ic,
                    GCancellable *cancellable,
                    GError **error)
-/* throws IO,PARSE exception */
 {
+	CamelIMAPXStream *stream;
 	gboolean success = TRUE;
+
+	stream = camel_imapx_server_ref_stream (is);
+	g_return_val_if_fail (stream != NULL, FALSE);
 
 	camel_imapx_command_close (ic);
 
@@ -2942,7 +2941,7 @@ imapx_command_run (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 
 	while (success && ic->status == NULL)
-		success = imapx_step (is, cancellable, error);
+		success = imapx_step (is, stream, cancellable, error);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -2950,6 +2949,8 @@ imapx_command_run (CamelIMAPXServer *is,
 	QUEUE_LOCK (is);
 	camel_imapx_command_queue_remove (is->active, ic);
 	QUEUE_UNLOCK (is);
+
+	g_object_unref (stream);
 
 	return success;
 }
@@ -6880,7 +6881,7 @@ imapx_parse_contents (CamelIMAPXServer *is,
                       GCancellable *cancellable,
                       GError **error)
 {
-	while (imapx_step (is, cancellable, error))
+	while (imapx_step (is, stream, cancellable, error))
 		if (camel_imapx_stream_buffered (stream) == 0)
 			break;
 }
