@@ -768,6 +768,7 @@ camel_imapx_command_queue_peek_head
 camel_imapx_command_queue_peek_head_link
 camel_imapx_command_queue_remove
 camel_imapx_command_queue_delete_link
+camel_imapx_command_queue_ref_by_tag
 </SECTION>
 
 <SECTION>

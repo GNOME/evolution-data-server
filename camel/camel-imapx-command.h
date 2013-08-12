@@ -159,6 +159,10 @@ gboolean	camel_imapx_command_queue_remove
 void		camel_imapx_command_queue_delete_link
 						(CamelIMAPXCommandQueue *queue,
 						 GList *link);
+CamelIMAPXCommand *
+		camel_imapx_command_queue_ref_by_tag
+						(CamelIMAPXCommandQueue *queue,
+						 guint32 tag);
 
 G_END_DECLS
 

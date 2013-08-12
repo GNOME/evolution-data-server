@@ -777,3 +777,39 @@ camel_imapx_command_queue_delete_link (CamelIMAPXCommandQueue *queue,
 	g_queue_delete_link ((GQueue *) queue, link);
 }
 
+/**
+ * camel_imapx_command_queue_ref_by_tag:
+ * @queue: a #CamelIMAPXCommandQueue
+ * @tag: a #CamelIMAPXCommand tag
+ *
+ * Returns the #CamelIMAPXCommand in @queue with a matching @tag, or %NULL
+ * if no match is found.
+ *
+ * The returned #CamelIMAPXCommand is referenced for thread-safety and should
+ * be unreferenced with camel_imapx_command_unref() when finished with it.
+ *
+ * Since: 3.10
+ **/
+CamelIMAPXCommand *
+camel_imapx_command_queue_ref_by_tag (CamelIMAPXCommandQueue *queue,
+                                      guint32 tag)
+{
+	CamelIMAPXCommand *match = NULL;
+	GList *head, *link;
+
+	g_return_val_if_fail (queue != NULL, NULL);
+
+	head = camel_imapx_command_queue_peek_head_link (queue);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		CamelIMAPXCommand *command = link->data;
+
+		if (command->tag == tag) {
+			match = camel_imapx_command_ref (command);
+			break;
+		}
+	}
+
+	return match;
+}
+
