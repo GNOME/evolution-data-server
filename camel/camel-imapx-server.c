@@ -1304,38 +1304,6 @@ imapx_command_queue (CamelIMAPXServer *is,
 	return success;
 }
 
-/* Must have QUEUE lock */
-static CamelIMAPXCommand *
-imapx_find_command_tag (CamelIMAPXServer *is,
-                        guint tag)
-{
-	CamelIMAPXCommand *ic = NULL;
-	GList *head, *link;
-
-	QUEUE_LOCK (is);
-
-	if (is->literal != NULL && is->literal->tag == tag) {
-		ic = is->literal;
-		goto exit;
-	}
-
-	head = camel_imapx_command_queue_peek_head_link (is->active);
-
-	for (link = head; link != NULL; link = g_list_next (link)) {
-		CamelIMAPXCommand *candidate = link->data;
-
-		if (candidate->tag == tag) {
-			ic = candidate;
-			break;
-		}
-	}
-
-exit:
-	QUEUE_UNLOCK (is);
-
-	return ic;
-}
-
 /* Must not have QUEUE lock */
 static CamelIMAPXJob *
 imapx_match_active_job (CamelIMAPXServer *is,
@@ -2803,7 +2771,7 @@ imapx_completion (CamelIMAPXServer *is,
                   GError **error)
 {
 	CamelIMAPXCommand *ic;
-	gboolean success;
+	gboolean success = FALSE;
 	guint tag;
 
 	/* Given "A0001 ...", 'A' = tag prefix, '0001' = tag. */
@@ -2817,7 +2785,16 @@ imapx_completion (CamelIMAPXServer *is,
 
 	tag = strtoul ((gchar *) token + 1, NULL, 10);
 
-	if ((ic = imapx_find_command_tag (is, tag)) == NULL) {
+	QUEUE_LOCK (is);
+
+	if (is->literal != NULL && is->literal->tag == tag)
+		ic = camel_imapx_command_ref (is->literal);
+	else
+		ic = camel_imapx_command_queue_ref_by_tag (is->active, tag);
+
+	QUEUE_UNLOCK (is);
+
+	if (ic == NULL) {
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"got response tag unexpectedly: %s", token);
@@ -2843,10 +2820,11 @@ imapx_completion (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	camel_imapx_command_ref (ic);
+	/* Move the command from the active queue to the done queue.
+	 * We're holding our own reference to the command so there's
+	 * no risk of accidentally finalizing it here. */
 	camel_imapx_command_queue_remove (is->active, ic);
 	camel_imapx_command_queue_push_tail (is->done, ic);
-	camel_imapx_command_unref (ic);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -2856,7 +2834,7 @@ imapx_completion (CamelIMAPXServer *is,
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"command still has unsent parts? %s", ic->name);
-		return FALSE;
+		goto exit;
 	}
 
 	camel_imapx_command_queue_remove (is->done, ic);
@@ -2866,15 +2844,18 @@ imapx_completion (CamelIMAPXServer *is,
 	ic->status = imapx_parse_status (stream, cancellable, error);
 
 	if (ic->status == NULL)
-		return FALSE;
+		goto exit;
 
 	if (ic->complete != NULL)
 		if (!ic->complete (is, ic, cancellable, error))
-			return FALSE;
+			goto exit;
 
 	QUEUE_LOCK (is);
 	success = imapx_command_start_next (is, cancellable, error);
 	QUEUE_UNLOCK (is);
+
+exit:
+	camel_imapx_command_unref (ic);
 
 	return success;
 }
