@@ -6875,20 +6875,14 @@ cancel_all_jobs (CamelIMAPXServer *is,
 /* ********************************************************************** */
 
 static void
-parse_contents (CamelIMAPXServer *is,
-                GCancellable *cancellable,
-                GError **error)
+imapx_parse_contents (CamelIMAPXServer *is,
+                      CamelIMAPXStream *stream,
+                      GCancellable *cancellable,
+                      GError **error)
 {
-	CamelIMAPXStream *stream;
-
-	stream = camel_imapx_server_ref_stream (is);
-	g_return_if_fail (stream != NULL);
-
 	while (imapx_step (is, cancellable, error))
 		if (camel_imapx_stream_buffered (stream) == 0)
 			break;
-
-	g_object_unref (stream);
 }
 
 /*
@@ -6944,14 +6938,16 @@ imapx_parser_thread (gpointer d)
 			else if (res == 0)
 				/* timed out */;
 			else if (fds[0].revents & G_IO_IN)
-				parse_contents (is, cancellable, &local_error);
+				imapx_parse_contents (
+					is, stream, cancellable, &local_error);
 			g_cancellable_release_fd (cancellable);
 
 			g_object_unref (source);
 		} else
 #endif
 		{
-			parse_contents (is, cancellable, &local_error);
+			imapx_parse_contents (
+				is, stream, cancellable, &local_error);
 		}
 
 		if (is->parser_quit)
