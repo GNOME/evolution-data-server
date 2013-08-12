@@ -6902,10 +6902,8 @@ static gpointer
 imapx_parser_thread (gpointer d)
 {
 	CamelIMAPXServer *is = d;
-	CamelIMAPXStream *stream;
 	CamelIMAPXStore *store;
 	GCancellable *cancellable;
-	gboolean have_stream;
 	GError *local_error = NULL;
 
 	QUEUE_LOCK (is);
@@ -6913,19 +6911,19 @@ imapx_parser_thread (gpointer d)
 	is->cancellable = g_object_ref (cancellable);
 	QUEUE_UNLOCK (is);
 
-	stream = camel_imapx_server_ref_stream (is);
-	if (stream != NULL) {
-		have_stream = TRUE;
-		g_object_unref (stream);
-	} else {
-		have_stream = FALSE;
-	}
+	while (local_error == NULL) {
+		CamelIMAPXStream *stream;
 
-	/* FIXME This should really be a GMainLoop instead of a 'while' loop.
-	 *       Testing for a stream on each loop iteration is pretty hokey.
-	 *       Disconnecting the stream could just terminate the parser
-	 *       thread's main loop. */
-	while (local_error == NULL && have_stream) {
+		/* Reacquire the stream on every loop iteration. */
+		stream = camel_imapx_server_ref_stream (is);
+		if (stream == NULL) {
+			local_error = g_error_new_literal (
+				CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_NOT_CONNECTED,
+				_("Lost connection to IMAP server"));
+			break;
+		}
+
 		g_cancellable_reset (cancellable);
 
 #ifndef G_OS_WIN32
@@ -6934,7 +6932,6 @@ imapx_parser_thread (gpointer d)
 			CamelStream *source;
 			gint res;
 
-			stream = camel_imapx_server_ref_stream (is);
 			source = camel_imapx_stream_ref_source (stream);
 
 			fds[0].fd = CAMEL_STREAM_PROCESS (source)->sockfd;
@@ -6951,7 +6948,6 @@ imapx_parser_thread (gpointer d)
 			g_cancellable_release_fd (cancellable);
 
 			g_object_unref (source);
-			g_object_unref (stream);
 		} else
 #endif
 		{
@@ -6976,17 +6972,7 @@ imapx_parser_thread (gpointer d)
 			}
 		}
 
-		/* Jump out of the loop if an error occurred. */
-		if (local_error != NULL)
-			break;
-
-		stream = camel_imapx_server_ref_stream (is);
-		if (stream != NULL) {
-			have_stream = TRUE;
-			g_object_unref (stream);
-		} else {
-			have_stream = FALSE;
-		}
+		g_clear_object (&stream);
 	}
 
 	QUEUE_LOCK (is);
