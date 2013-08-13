@@ -30,6 +30,10 @@ struct _CamelIMAPXRealJob {
 
 	GCancellable *cancellable;
 
+	/* This is set by camel_imapx_job_take_error(),
+	 * and propagated through camel_imapx_job_wait(). */
+	GError *error;
+
 	/* Used for running some jobs synchronously. */
 	GCond done_cond;
 	GMutex done_mutex;
@@ -111,6 +115,8 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 		if (real_job->cancellable != NULL)
 			g_object_unref (real_job->cancellable);
 
+		g_clear_error (&real_job->error);
+
 		g_cond_clear (&real_job->done_cond);
 		g_mutex_clear (&real_job->done_mutex);
 
@@ -156,14 +162,32 @@ camel_imapx_job_cancel (CamelIMAPXJob *job)
 	g_cancellable_cancel (real_job->cancellable);
 }
 
-void
-camel_imapx_job_wait (CamelIMAPXJob *job)
+/**
+ * camel_imapx_job_wait:
+ * @job: a #CamelIMAPXJob
+ * @error: return location for a #GError, or %NULL
+ *
+ * Blocks until @job completes by way of camel_imapx_job_done().  If @job
+ * completed successfully, the function returns %TRUE.  If @job was given
+ * a #GError by way of camel_imapx_job_take_error(), or its #GCancellable
+ * was cancelled, the function sets @error and returns %FALSE.
+ *
+ * Returns: whether @job completed successfully
+ *
+ * Since: 3.10
+ **/
+gboolean
+camel_imapx_job_wait (CamelIMAPXJob *job,
+                      GError **error)
 {
 	CamelIMAPXRealJob *real_job;
+	GCancellable *cancellable;
+	gboolean success = TRUE;
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
 
 	real_job = (CamelIMAPXRealJob *) job;
+	cancellable = camel_imapx_job_get_cancellable (job);
 
 	g_mutex_lock (&real_job->done_mutex);
 	while (!real_job->done_flag)
@@ -171,6 +195,21 @@ camel_imapx_job_wait (CamelIMAPXJob *job)
 			&real_job->done_cond,
 			&real_job->done_mutex);
 	g_mutex_unlock (&real_job->done_mutex);
+
+	/* Cancellation takes priority over other errors. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		success = FALSE;
+	} else if (real_job->error != NULL) {
+		/* Copy the error, don't propagate it.
+		 * We want our GError to remain intact. */
+		if (error != NULL) {
+			g_warn_if_fail (*error == NULL);
+			*error = g_error_copy (real_job->error);
+		}
+		success = FALSE;
+	}
+
+	return success;
 }
 
 void
@@ -216,7 +255,7 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 	success = job->start (job, is, cancellable, error);
 
 	if (success && !job->noreply)
-		camel_imapx_job_wait (job);
+		success = camel_imapx_job_wait (job, error);
 
 	if (cancel_id > 0)
 		g_cancellable_disconnect (cancellable, cancel_id);
@@ -348,3 +387,34 @@ camel_imapx_job_get_cancellable (CamelIMAPXJob *job)
 
 	return real_job->cancellable;
 }
+
+/**
+ * camel_imapx_job_take_error:
+ * @job: a #CamelIMAPXJob
+ * @error: a #GError
+ *
+ * Takes over the caller's ownership of @error, so the caller does not
+ * need to free it any more.  Call this when a #CamelIMAPXCommand fails
+ * and the @job is to be aborted.
+ *
+ * The @error will be returned to callers of camel_imapx_job_wait() or
+ * camel_imapx_job_run().
+ *
+ * Since: 3.10
+ **/
+void
+camel_imapx_job_take_error (CamelIMAPXJob *job,
+                            GError *error)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+	g_return_if_fail (error != NULL);
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	g_clear_error (&real_job->error);
+
+	real_job->error = error;  /* takes ownership */
+}
+

@@ -63,7 +63,8 @@ CamelIMAPXJob *	camel_imapx_job_ref		(CamelIMAPXJob *job);
 void		camel_imapx_job_unref		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_check		(CamelIMAPXJob *job);
 void		camel_imapx_job_cancel		(CamelIMAPXJob *job);
-void		camel_imapx_job_wait		(CamelIMAPXJob *job);
+gboolean	camel_imapx_job_wait		(CamelIMAPXJob *job,
+						 GError **error);
 void		camel_imapx_job_done		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
 						 CamelIMAPXServer *is,
@@ -81,6 +82,8 @@ CamelFolder *	camel_imapx_job_ref_folder	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_folder	(CamelIMAPXJob *job,
 						 CamelFolder *folder);
 GCancellable *	camel_imapx_job_get_cancellable	(CamelIMAPXJob *job);
+void		camel_imapx_job_take_error	(CamelIMAPXJob *job,
+						 GError *error);
 
 G_END_DECLS
 

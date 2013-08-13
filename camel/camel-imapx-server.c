@@ -7318,7 +7318,8 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	if ((job = imapx_is_job_in_queue (is, folder, IMAPX_JOB_GET_MESSAGE, uid))) {
+	job = imapx_is_job_in_queue (is, folder, IMAPX_JOB_GET_MESSAGE, uid);
+	if (job != NULL) {
 		/* Promote the existing GET_MESSAGE
 		 * job's priority if ours is higher. */
 		if (pri > job->pri)
@@ -7327,7 +7328,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		QUEUE_UNLOCK (is);
 
 		/* Wait for the job to finish. */
-		camel_imapx_job_wait (job);
+		camel_imapx_job_wait (job, NULL);
 
 		/* Disregard errors here.  If we failed to retreive the
 		 * message from cache (implying the job we were waiting

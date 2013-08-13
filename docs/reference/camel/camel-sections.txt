@@ -814,6 +814,7 @@ camel_imapx_job_has_folder
 camel_imapx_job_ref_folder
 camel_imapx_job_set_folder
 camel_imapx_job_get_cancellable
+camel_imapx_job_take_error
 <SUBSECTION Private>
 uidset_state
 </SECTION>
