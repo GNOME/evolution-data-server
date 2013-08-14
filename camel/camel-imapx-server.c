@@ -511,7 +511,6 @@ static void	imapx_init_idle			(CamelIMAPXServer *is);
 static CamelIMAPXIdleStopResult
 		imapx_stop_idle			(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
-						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	camel_imapx_server_idle		(CamelIMAPXServer *is,
 						 CamelFolder *folder,
@@ -1047,8 +1046,8 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			stream = camel_imapx_server_ref_stream (is);
 
 			if (stream != NULL) {
-				stop_result = imapx_stop_idle (
-					is, stream, cancellable, error);
+				stop_result =
+					imapx_stop_idle (is, stream, error);
 				g_object_unref (stream);
 			}
 
@@ -1667,8 +1666,8 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 			if (count < is->priv->context->id) {
 				CamelIMAPXIdleStopResult stop_result;
 
-				stop_result = imapx_stop_idle (
-					is, stream, cancellable, error);
+				stop_result =
+					imapx_stop_idle (is, stream, error);
 				success = (stop_result != IMAPX_IDLE_STOP_ERROR);
 			}
 		}
@@ -3315,7 +3314,6 @@ imapx_idle_thread (gpointer data)
 static CamelIMAPXIdleStopResult
 imapx_stop_idle (CamelIMAPXServer *is,
                  CamelIMAPXStream *stream,
-                 GCancellable *cancellable,
                  GError **error)
 {
 	CamelIMAPXIdleStopResult result = IMAPX_IDLE_STOP_NOOP;
