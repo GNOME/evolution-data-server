@@ -824,11 +824,11 @@ imapx_uidset_add (struct _uidset_state *ss,
 static gboolean
 imapx_command_start (CamelIMAPXServer *is,
                      CamelIMAPXCommand *ic,
-                     GCancellable *cancellable,
                      GError **error)
 {
-	CamelIMAPXStream *stream = NULL;
+	CamelIMAPXStream *stream;
 	CamelIMAPXCommandPart *cp;
+	GCancellable *cancellable;
 	gboolean cp_continuation;
 	gboolean cp_literal_plus;
 	GList *head;
@@ -855,6 +855,7 @@ imapx_command_start (CamelIMAPXServer *is,
 	camel_imapx_command_queue_push_tail (is->active, ic);
 
 	stream = camel_imapx_server_ref_stream (is);
+	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
 	if (stream == NULL) {
 		g_set_error (
@@ -910,8 +911,8 @@ err:
 		ic->complete (is, ic, NULL, NULL);
 
 exit:
-	if (stream != NULL)
-		g_object_unref (stream);
+	g_clear_object (&stream);
+	g_clear_object (&cancellable);
 
 	return success;
 }
@@ -1013,8 +1014,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
 
-			success = imapx_command_start (
-				is, ic, cancellable, error);
+			success = imapx_command_start (is, ic, error);
 
 			camel_imapx_command_unref (ic);
 
@@ -1157,8 +1157,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
 
-			success = imapx_command_start (
-				is, ic, cancellable, error);
+			success = imapx_command_start (is, ic, error);
 
 			camel_imapx_command_unref (ic);
 
@@ -1230,8 +1229,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
 
-			success = imapx_command_start (
-				is, ic, cancellable, error);
+			success = imapx_command_start (is, ic, error);
 
 			camel_imapx_command_unref (ic);
 
@@ -2922,7 +2920,7 @@ imapx_command_run (CamelIMAPXServer *is,
 	camel_imapx_command_close (ic);
 
 	QUEUE_LOCK (is);
-	imapx_command_start (is, ic, cancellable, error);
+	imapx_command_start (is, ic, error);
 	QUEUE_UNLOCK (is);
 
 	while (success && ic->status == NULL)
@@ -3142,7 +3140,7 @@ imapx_job_idle_start (CamelIMAPXJob *job,
 	/* Don't issue it if the idle was cancelled already */
 	if (is->idle->state == IMAPX_IDLE_PENDING) {
 		is->idle->state = IMAPX_IDLE_ISSUED;
-		success = imapx_command_start (is, ic, cancellable, error);
+		success = imapx_command_start (is, ic, error);
 	} else {
 		imapx_unregister_job (is, job);
 	}
@@ -3688,7 +3686,7 @@ imapx_select (CamelIMAPXServer *is,
 		camel_imapx_command_add_qresync_parameter (ic, folder);
 
 	ic->complete = imapx_command_select_done;
-	success = imapx_command_start (is, ic, cancellable, error);
+	success = imapx_command_start (is, ic, error);
 
 	camel_imapx_command_unref (ic);
 
