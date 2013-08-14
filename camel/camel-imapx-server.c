@@ -5906,7 +5906,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 		parent_store = camel_folder_get_parent_store (folder);
 
 		camel_folder_summary_save_to_db (folder->summary, NULL);
-		uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, error);
+		uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, NULL);
 
 		if (uids && uids->len)	{
 			CamelFolderChangeInfo *changes;
@@ -6654,7 +6654,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 			}
 		}
 
-		camel_folder_summary_save_to_db (folder->summary, error);
+		camel_folder_summary_save_to_db (folder->summary, NULL);
 		camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 
 		imapx_unregister_job (is, job);
