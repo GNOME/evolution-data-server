@@ -366,7 +366,6 @@ static gint	imapx_uidset_add		(struct _uidset_state *ss,
 
 static gboolean	imapx_command_idle_stop		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
-						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_continuation		(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
@@ -2596,8 +2595,7 @@ imapx_continuation (CamelIMAPXServer *is,
 			/* IDLE got cancelled after we sent the command, while
 			 * we were waiting for this continuation. Send DONE
 			 * immediately. */
-			success = imapx_command_idle_stop (
-				is, stream, cancellable, error);
+			success = imapx_command_idle_stop (is, stream, error);
 			if (!success) {
 				IDLE_UNLOCK (is->idle);
 				return FALSE;
@@ -3058,13 +3056,15 @@ imapx_submit_job (CamelIMAPXServer *is,
 static gboolean
 imapx_command_idle_stop (CamelIMAPXServer *is,
                          CamelIMAPXStream *stream,
-                         GCancellable *cancellable,
                          GError **error)
 {
+	GCancellable *cancellable;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (stream), FALSE);
+
+	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
 	success = (camel_stream_write_string (
 		CAMEL_STREAM (stream),
@@ -3076,6 +3076,8 @@ imapx_command_idle_stop (CamelIMAPXServer *is,
 		is->state = IMAPX_SHUTDOWN;
 		is->priv->parser_quit = TRUE;
 	}
+
+	g_clear_object (&cancellable);
 
 	return success;
 }
@@ -3335,7 +3337,7 @@ imapx_stop_idle (CamelIMAPXServer *is,
 
 		case IMAPX_IDLE_STARTED:
 			success = imapx_command_idle_stop (
-				is, stream, cancellable, error);
+				is, stream, error);
 			if (success) {
 				result = IMAPX_IDLE_STOP_SUCCESS;
 			} else {
