@@ -526,6 +526,7 @@ enum {
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
 static void	imapx_select			(CamelIMAPXServer *is,
+						 CamelIMAPXJob *job,
 						 CamelFolder *folder);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
@@ -895,11 +896,8 @@ fail:
 	/* Hand the error off to the command that we failed to start. */
 	camel_imapx_command_failed (ic, local_error);
 
-	/* Send a NULL GError since we've already set a
-	 * GError to get here, and we're not interested
-	 * in individual command errors. */
 	if (ic->complete != NULL)
-		ic->complete (is, ic, NULL);
+		ic->complete (is, ic);
 
 	g_error_free (local_error);
 
@@ -1168,11 +1166,19 @@ imapx_command_start_next (CamelIMAPXServer *is)
 	/* If we need to select a folder for the first command, do it now,
 	 * once it is complete it will re-call us if it succeeded. */
 	if (first_ic->select) {
+		CamelIMAPXJob *job;
+
 		c (
 			is->tagprefix, "Selecting folder '%s' for command '%s'(%p)\n",
 			camel_folder_get_full_name (first_ic->select),
 			first_ic->name, first_ic);
-		imapx_select (is, first_ic->select);
+
+		/* Associate the SELECT command with the CamelIMAPXJob
+		 * that triggered it.  Then if the SELECT command fails
+		 * we have some destination to propagate the GError to. */
+		job = camel_imapx_command_get_job (first_ic);
+		imapx_select (is, job, first_ic->select);
+
 	} else {
 		GQueue start = G_QUEUE_INIT;
 		GList *head, *link;
@@ -1273,11 +1279,8 @@ imapx_command_queue (CamelIMAPXServer *is,
 
 		QUEUE_UNLOCK (is);
 
-		/* Send a NULL GError since we've already set the
-		 * GError, and we're not interested in individual
-		 * command errors at this point. */
 		if (ic->complete != NULL)
-			ic->complete (is, ic, NULL);
+			ic->complete (is, ic);
 
 		return;
 	}
@@ -2829,8 +2832,7 @@ imapx_completion (CamelIMAPXServer *is,
 		goto exit;
 
 	if (ic->complete != NULL)
-		if (!ic->complete (is, ic, error))
-			goto exit;
+		ic->complete (is, ic);
 
 	QUEUE_LOCK (is);
 	imapx_command_start_next (is);
@@ -2920,15 +2922,12 @@ imapx_command_run (CamelIMAPXServer *is,
 	return success;
 }
 
-static gboolean
+static void
 imapx_command_complete (CamelIMAPXServer *is,
-                        CamelIMAPXCommand *ic,
-                        GError **error)
+                        CamelIMAPXCommand *ic)
 {
 	camel_imapx_command_done (ic);
 	camel_imapx_command_unref (ic);
-
-	return TRUE;
 }
 
 static void
@@ -3066,23 +3065,22 @@ imapx_command_idle_stop (CamelIMAPXServer *is,
 	return success;
 }
 
-static gboolean
+static void
 imapx_command_idle_done (CamelIMAPXServer *is,
-                         CamelIMAPXCommand *ic,
-                         GError **error)
+                         CamelIMAPXCommand *ic)
 {
 	CamelIMAPXIdle *idle = is->idle;
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error performing IDLE"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	IDLE_LOCK (idle);
@@ -3090,8 +3088,6 @@ imapx_command_idle_done (CamelIMAPXServer *is,
 	IDLE_UNLOCK (idle);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -3456,13 +3452,15 @@ imapx_use_idle (CamelIMAPXServer *is)
 
 // end IDLE
 /* ********************************************************************** */
-static gboolean
+static void
 imapx_command_select_done (CamelIMAPXServer *is,
-                           CamelIMAPXCommand *ic,
-                           GError **error)
+                           CamelIMAPXCommand *ic)
 {
-	gboolean success = TRUE;
+	CamelIMAPXJob *job;
 	GError *local_error = NULL;
+
+	job = camel_imapx_command_get_job (ic);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		GQueue failed = G_QUEUE_INIT;
@@ -3508,26 +3506,26 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 		while (!g_queue_is_empty (&failed)) {
 			CamelIMAPXCommand *cw;
-			CamelIMAPXJob *job;
+			CamelIMAPXJob *failed_job;
 
 			cw = g_queue_pop_head (&failed);
-			job = camel_imapx_command_get_job (cw);
+			failed_job = camel_imapx_command_get_job (cw);
 
-			if (!CAMEL_IS_IMAPX_JOB (job)) {
+			if (!CAMEL_IS_IMAPX_JOB (failed_job)) {
 				g_warn_if_reached ();
 				continue;
 			}
 
-			camel_imapx_job_cancel (job);
+			camel_imapx_job_cancel (failed_job);
 
 			if (ic->status)
 				cw->status = imapx_copy_status (ic->status);
 
-			cw->complete (is, cw, NULL);
+			cw->complete (is, cw);
 		}
 
-		g_propagate_error (error, local_error);
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
+		imapx_unregister_job (is, job);
 
 	} else {
 		CamelFolder *folder;
@@ -3544,7 +3542,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 		/* We should have a strong reference
 		 * on the newly-selected CamelFolder. */
-		g_return_val_if_fail (folder != NULL, FALSE);
+		g_return_if_fail (folder != NULL);
 		ifolder = CAMEL_IMAPX_FOLDER (folder);
 
 		ifolder->exists_on_server = is->exists;
@@ -3586,13 +3584,12 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 		g_object_unref (folder);
 	}
-
-	return success;
 }
 
 /* Should have a queue lock. TODO Change the way select is written */
 static void
 imapx_select (CamelIMAPXServer *is,
+              CamelIMAPXJob *job,
               CamelFolder *folder)
 {
 	CamelIMAPXCommand *ic;
@@ -3663,6 +3660,8 @@ imapx_select (CamelIMAPXServer *is,
 		camel_imapx_command_add_qresync_parameter (ic, folder);
 
 	ic->complete = imapx_command_select_done;
+	camel_imapx_command_set_job (ic, job);
+
 	imapx_command_start (is, ic);
 
 	camel_imapx_command_unref (ic);
@@ -4311,29 +4310,28 @@ exit:
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_fetch_message_done (CamelIMAPXServer *is,
-                                  CamelIMAPXCommand *ic,
-                                  GError **error)
+                                  CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelFolder *folder;
 	GetMessageData *data;
 	CamelIMAPXFolder *ifolder;
 	GCancellable *cancellable;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	/* This is only for pushing status messages. */
 	cancellable = camel_imapx_job_get_cancellable (job);
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	/* We either have more to fetch (partial mode?), we are complete,
 	 * or we failed.  Failure is handled in the fetch code, so
@@ -4341,12 +4339,12 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	job->commands--;
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error fetching message"));
+		camel_imapx_job_take_error (job, local_error);
 		data->body_len = -1;
-		success = FALSE;
 
 	} else if (data->use_multi_fetch) {
 		gsize really_fetched = g_seekable_tell (G_SEEKABLE (data->stream));
@@ -4390,23 +4388,21 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	ifolder = CAMEL_IMAPX_FOLDER (folder);
 
-	if (success) {
-		success = camel_stream_flush (
-			data->stream, cancellable, error) == 0;
+	if (local_error == NULL) {
+		camel_stream_flush (data->stream, cancellable, &local_error);
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Failed to close the tmp stream"));
 	}
 
-	if (success) {
-		success = camel_stream_close (
-			data->stream, cancellable, error) == 0;
+	if (local_error == NULL) {
+		camel_stream_close (data->stream, cancellable, &local_error);
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Failed to close the tmp stream"));
 	}
 
-	if (success) {
+	if (local_error == NULL) {
 		gchar *cur_filename;
 		gchar *tmp_filename;
 		gchar *dirname;
@@ -4425,29 +4421,29 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			/* Exchange the "tmp" stream for the "cur" stream. */
 			g_clear_object (&data->stream);
 			data->stream = camel_data_cache_get (
-				ifolder->cache, "cur", data->uid, error);
-			success = (data->stream != NULL);
+				ifolder->cache, "cur",
+				data->uid, &local_error);
 		} else {
 			g_set_error (
-				error, G_FILE_ERROR,
+				&local_error, G_FILE_ERROR,
 				g_file_error_from_errno (errno),
 				"%s: %s",
 				_("Failed to copy the tmp file"),
 				g_strerror (errno));
-			success = FALSE;
 		}
 
 		g_free (cur_filename);
 		g_free (tmp_filename);
 	}
 
+	if (local_error != NULL)
+		camel_imapx_job_take_error (job, local_error);
+
 	camel_data_cache_remove (ifolder->cache, "tmp", data->uid, NULL);
 	imapx_unregister_job (is, job);
 
 exit:
 	g_object_unref (folder);
-
-	return success;
 }
 
 static gboolean
@@ -4530,40 +4526,39 @@ imapx_job_get_message_matches (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
-                                       CamelIMAPXCommand *ic,
-                                       GError **error)
+                                       CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelFolder *folder;
 	CopyMessagesData *data;
 	GPtrArray *uids;
 	gint i;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	uids = data->uids;
 	i = data->index;
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		if (data->use_move_command)
 			g_prefix_error (
-				error, "%s: ",
+				&local_error, "%s: ",
 				_("Error moving messages"));
 		else
 			g_prefix_error (
-				error, "%s: ",
+				&local_error, "%s: ",
 				_("Error copying messages"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 		goto exit;
 	}
 
@@ -4591,18 +4586,17 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	}
 
 	if (i < uids->len) {
-		g_object_unref (folder);
+		imapx_command_copy_messages_step_start (
+			is, job, i, &local_error);
 
-		return imapx_command_copy_messages_step_start (
-			is, job, i, error);
+		if (local_error != NULL)
+			camel_imapx_job_take_error (job, local_error);
 	}
 
 exit:
 	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -4695,10 +4689,9 @@ imapx_job_copy_messages_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_append_message_done (CamelIMAPXServer *is,
-                                   CamelIMAPXCommand *ic,
-                                   GError **error)
+                                   CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelIMAPXFolder *ifolder;
@@ -4706,16 +4699,16 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	CamelMessageInfo *mi;
 	AppendMessageData *data;
 	gchar *cur, *old_uid;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	ifolder = CAMEL_IMAPX_FOLDER (folder);
 
@@ -4728,11 +4721,11 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	mi = camel_message_info_clone (data->info);
 	old_uid = g_strdup (data->info->uid);
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error appending message"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 
 	} else if (ic->status && ic->status->condition == IMAPX_APPENDUID) {
 		c (is->tagprefix, "Got appenduid %d %d\n", (gint) ic->status->u.appenduid.uidvalidity, (gint) ic->status->u.appenduid.uid);
@@ -4769,8 +4762,6 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -4891,10 +4882,9 @@ imapx_index_next (GPtrArray *uids,
 	return index;
 }
 
-static gboolean
+static void
 imapx_command_step_fetch_done (CamelIMAPXServer *is,
-                               CamelIMAPXCommand *ic,
-                               GError **error)
+                               CamelIMAPXCommand *ic)
 {
 	CamelIMAPXFolder *ifolder;
 	CamelIMAPXSummary *isum;
@@ -4902,19 +4892,19 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	CamelFolder *folder;
 	RefreshInfoData *data;
 	gint i;
-	gboolean success = TRUE;
 	CamelIMAPXSettings *settings;
 	guint batch_count;
 	gboolean mobile_mode;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	data->scan_changes = FALSE;
 
@@ -4928,12 +4918,11 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 	i = data->index;
 
-	//printf ("%s: Mobile mode: %d Fetch Count %d\n", camel_folder_get_display_name (folder), mobile_mode, batch_count);
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error fetching message headers"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 		goto exit;
 	}
 
@@ -4982,7 +4971,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 					g_object_unref (folder);
 
-					return TRUE;
+					return;
 				}
 			}
 		}
@@ -4998,7 +4987,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 			g_object_unref (folder);
 
-			return TRUE;
+			return;
 		}
 
 		/* XXX What fate for our newly-created but unsubmitted
@@ -5033,8 +5022,6 @@ exit:
 	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gint
@@ -5062,10 +5049,9 @@ imapx_uid_cmp (gconstpointer ap,
 	return strcmp (ae, be);
 }
 
-static gboolean
+static void
 imapx_job_scan_changes_done (CamelIMAPXServer *is,
-                             CamelIMAPXCommand *ic,
-                             GError **error)
+                             CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelIMAPXSettings *settings;
@@ -5073,20 +5059,20 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	RefreshInfoData *data;
 	GCancellable *cancellable;
 	guint uidset_size;
-	gboolean success = TRUE;
 	gboolean mobile_mode;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	/* This is only for pushing status messages. */
 	cancellable = camel_imapx_job_get_cancellable (job);
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	data->scan_changes = FALSE;
 
@@ -5095,11 +5081,11 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error retrieving message"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 
 	} else {
 		GCompareDataFunc uid_cmp = imapx_uid_cmp;
@@ -5239,7 +5225,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 			g_object_unref (folder);
 
-			return imapx_command_step_fetch_done (is, ic, error);
+			return imapx_command_step_fetch_done (is, ic);
 		}
 	}
 
@@ -5257,8 +5243,6 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -5320,35 +5304,34 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	return TRUE;
 }
 
-static gboolean
+static void
 imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
-                                       CamelIMAPXCommand *ic,
-                                       GError **error)
+                                       CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelIMAPXSummary *isum;
 	CamelIMAPXFolder *ifolder;
 	CamelFolder *folder;
 	RefreshInfoData *data;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	ifolder = CAMEL_IMAPX_FOLDER (folder);
 	isum = CAMEL_IMAPX_SUMMARY (folder->summary);
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error fetching new messages"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 		goto exit;
 	}
 
@@ -5382,23 +5365,20 @@ exit:
 	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
-static gboolean
+static void
 imapx_command_fetch_new_uids_done (CamelIMAPXServer *is,
-                                   CamelIMAPXCommand *ic,
-                                   GError **error)
+                                   CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	RefreshInfoData *data;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	data->scan_changes = FALSE;
 
@@ -5408,7 +5388,7 @@ imapx_command_fetch_new_uids_done (CamelIMAPXServer *is,
 		sizeof (struct _refresh_info),
 		imapx_refresh_info_cmp_descending);
 
-	return imapx_command_step_fetch_done (is, ic, error);
+	imapx_command_step_fetch_done (is, ic);
 }
 
 static gboolean
@@ -5876,26 +5856,25 @@ imapx_job_refresh_info_matches (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_expunge_done (CamelIMAPXServer *is,
-                            CamelIMAPXCommand *ic,
-                            GError **error)
+                            CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelFolder *folder;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error expunging message"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 
 	} else {
 		GPtrArray *uids;
@@ -5908,7 +5887,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, NULL);
 
-		if (uids && uids->len)	{
+		if (uids && uids->len) {
 			CamelFolderChangeInfo *changes;
 			GList *removed = NULL;
 			gint i;
@@ -5943,8 +5922,6 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 	g_object_unref (folder);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -5991,28 +5968,25 @@ imapx_job_expunge_matches (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_list_done (CamelIMAPXServer *is,
-                         CamelIMAPXCommand *ic,
-                         GError **error)
+                         CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error fetching folders"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	e (is->tagprefix, "==== list or lsub completed ==== \n");
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6075,27 +6049,24 @@ imapx_encode_folder_name (CamelIMAPXStore *istore,
 	return encoded;
 }
 
-static gboolean
+static void
 imapx_command_subscription_done (CamelIMAPXServer *is,
-                                 CamelIMAPXCommand *ic,
-                                 GError **error)
+                                 CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error subscribing to folder"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6140,27 +6111,24 @@ imapx_job_manage_subscription_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_create_folder_done (CamelIMAPXServer *is,
-                                  CamelIMAPXCommand *ic,
-                                  GError **error)
+                                  CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error creating folder"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6196,27 +6164,24 @@ imapx_job_create_folder_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_delete_folder_done (CamelIMAPXServer *is,
-                                  CamelIMAPXCommand *ic,
-                                  GError **error)
+                                  CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error deleting folder"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6270,27 +6235,24 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_rename_folder_done (CamelIMAPXServer *is,
-                                  CamelIMAPXCommand *ic,
-                                  GError **error)
+                                  CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error renaming folder"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6347,27 +6309,24 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_update_quota_info_done (CamelIMAPXServer *is,
-                                      CamelIMAPXCommand *ic,
-                                      GError **error)
+                                      CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error retrieving quota information"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6406,24 +6365,23 @@ imapx_job_update_quota_info_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_uid_search_done (CamelIMAPXServer *is,
-                               CamelIMAPXCommand *ic,
-                               GError **error)
+                               CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	SearchData *data;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
-		g_prefix_error (error, "%s: ", _("Search failed"));
-		success = FALSE;
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
+		g_prefix_error (&local_error, "%s: ", _("Search failed"));
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	/* Don't worry about the success state and presence of search
@@ -6435,8 +6393,6 @@ imapx_command_uid_search_done (CamelIMAPXServer *is,
 	g_mutex_unlock (&is->priv->search_results_lock);
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6473,27 +6429,24 @@ imapx_job_uid_search_start (CamelIMAPXJob *job,
 
 /* ********************************************************************** */
 
-static gboolean
+static void
 imapx_command_noop_done (CamelIMAPXServer *is,
-                         CamelIMAPXCommand *ic,
-                         GError **error)
+                         CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error performing NOOP"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
 	}
 
 	imapx_unregister_job (is, job);
-
-	return success;
 }
 
 static gboolean
@@ -6553,10 +6506,9 @@ static struct {
  * &flags 00100000
  */
 
-static gboolean
+static void
 imapx_command_sync_changes_done (CamelIMAPXServer *is,
-                                 CamelIMAPXCommand *ic,
-                                 GError **error)
+                                 CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
 	CamelFolder *folder;
@@ -6565,16 +6517,16 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	const gchar *full_name;
 	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
-	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_if_fail (data != NULL);
 
 	folder = camel_imapx_job_ref_folder (job);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_if_fail (folder != NULL);
 
 	settings = camel_imapx_server_ref_settings (is);
 	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
@@ -6595,11 +6547,13 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	 * that what we just set is actually what is on the server now .. but
 	 * if it isn't, i guess we'll fix up next refresh */
 
-	if (camel_imapx_command_set_error_if_failed (ic, error)) {
+	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
-			error, "%s: ",
+			&local_error, "%s: ",
 			_("Error syncing changes"));
-		success = FALSE;
+		camel_imapx_job_take_error (job, local_error);
+		imapx_unregister_job (is, job);
+		goto exit;
 
 	/* lock cache ? */
 	} else {
@@ -6660,9 +6614,8 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 		imapx_unregister_job (is, job);
 	}
 
+exit:
 	g_object_unref (folder);
-
-	return success;
 }
 
 static gboolean
@@ -6849,7 +6802,7 @@ imapx_abort_all_commands (CamelIMAPXServer *is,
 		/* Invoke the completion callback function so it can
 		 * perform any cleanup processing and unregister its
 		 * CamelIMAPXJob. */
-		ic->complete (is, ic, NULL);
+		ic->complete (is, ic);
 	}
 
 	camel_imapx_command_queue_free (queue);
