@@ -525,9 +525,8 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
-static gboolean	imapx_select			(CamelIMAPXServer *is,
-						 CamelFolder *folder,
-						 GError **error);
+static void	imapx_select			(CamelIMAPXServer *is,
+						 CamelFolder *folder);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
 
@@ -1176,7 +1175,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			is->tagprefix, "Selecting folder '%s' for command '%s'(%p)\n",
 			camel_folder_get_full_name (first_ic->select),
 			first_ic->name, first_ic);
-		imapx_select (is, first_ic->select, error);
+		imapx_select (is, first_ic->select);
 	} else {
 		GQueue start = G_QUEUE_INIT;
 		GList *head, *link;
@@ -3602,16 +3601,14 @@ imapx_command_select_done (CamelIMAPXServer *is,
 }
 
 /* Should have a queue lock. TODO Change the way select is written */
-static gboolean
+static void
 imapx_select (CamelIMAPXServer *is,
-              CamelFolder *folder,
-              GError **error)
+              CamelFolder *folder)
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *select_folder;
 	CamelFolder *select_pending;
 	gboolean nothing_to_do = FALSE;
-	gboolean success = TRUE;
 
 	/* Select is complicated by the fact we may have commands
 	 * active on the server for a different selection.
@@ -3667,7 +3664,7 @@ imapx_select (CamelIMAPXServer *is,
 	g_mutex_unlock (&is->select_lock);
 
 	if (nothing_to_do)
-		return TRUE;
+		return;
 
 	ic = camel_imapx_command_new (
 		is, "SELECT", NULL, "SELECT %f", folder);
@@ -3679,8 +3676,6 @@ imapx_select (CamelIMAPXServer *is,
 	imapx_command_start (is, ic);
 
 	camel_imapx_command_unref (ic);
-
-	return success;
 }
 
 #ifndef G_OS_WIN32
@@ -5734,8 +5729,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 					if (!imapx_stop_idle (is, error))
 						goto done;
 				/* This doesn't work -- this is an immediate command, not queued */
-				if (!imapx_select (is, folder, error))
-					goto done;
+				imapx_select (is, folder)
 			} else {
 				/* Or maybe just NOOP, unless we're in IDLE in which case do nothing */
 				if (!imapx_in_idle (is)) {
