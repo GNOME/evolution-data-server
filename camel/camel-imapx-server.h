@@ -145,11 +145,6 @@ struct _CamelIMAPXServer {
 	guint32 recent;
 	guint32 mode;
 
-	GThread *parser_thread;
-	/* Used for canceling operations as well as signaling parser thread to disconnnect/quit */
-	GCancellable *cancellable;
-	gboolean parser_quit;
-
 	/* Idle */
 	CamelIMAPXIdle *idle;
 

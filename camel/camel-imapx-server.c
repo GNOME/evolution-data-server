@@ -335,6 +335,10 @@ struct _CamelIMAPXServerPrivate {
 	CamelIMAPXStream *stream;
 	GMutex stream_lock;
 
+	GThread *parser_thread;
+	GWeakRef parser_cancellable;
+	gboolean parser_quit;
+
 	/* Untagged SEARCH data gets deposited here.
 	 * The search command should claim the results
 	 * when finished and reset the pointer to NULL. */
@@ -3074,9 +3078,7 @@ imapx_command_idle_stop (CamelIMAPXServer *is,
 		g_prefix_error (error, "Unable to issue DONE: ");
 		c (is->tagprefix, "Failed to issue DONE to terminate IDLE\n");
 		is->state = IMAPX_SHUTDOWN;
-		is->parser_quit = TRUE;
-		if (is->cancellable)
-			g_cancellable_cancel (is->cancellable);
+		is->priv->parser_quit = TRUE;
 	}
 
 	return success;
@@ -3223,7 +3225,10 @@ static gpointer
 imapx_idle_thread (gpointer data)
 {
 	CamelIMAPXServer *is = (CamelIMAPXServer *) data;
+	GCancellable *cancellable;
 	GError *local_error = NULL;
+
+	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
 	while (TRUE) {
 		g_mutex_lock (&is->idle->start_watch_mutex);
@@ -3264,7 +3269,7 @@ imapx_idle_thread (gpointer data)
 			IDLE_UNLOCK (is->idle);
 
 			camel_imapx_server_idle (
-				is, folder, is->cancellable, &local_error);
+				is, folder, cancellable, &local_error);
 
 			new_messages_on_server =
 				CAMEL_IMAPX_FOLDER (folder)->exists_on_server >
@@ -3275,7 +3280,7 @@ imapx_idle_thread (gpointer data)
 			    imapx_is_command_queue_empty (is)) {
 				imapx_server_fetch_new_messages (
 					is, folder, TRUE, TRUE,
-					is->cancellable, &local_error);
+					cancellable, &local_error);
 			}
 
 			if (local_error != NULL) {
@@ -3301,6 +3306,8 @@ imapx_idle_thread (gpointer data)
 		if (is->idle->idle_exit)
 			break;
 	}
+
+	g_object_unref (cancellable);
 
 	g_clear_error (&local_error);
 	is->idle->idle_thread = NULL;
@@ -3928,7 +3935,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 
 	while (1) {
 		// poll ?  wait for other stuff? loop?
-		if (camel_application_is_exiting || is->parser_quit) {
+		if (camel_application_is_exiting || is->priv->parser_quit) {
 			g_set_error (
 				error, G_IO_ERROR,
 				G_IO_ERROR_CANCELLED,
@@ -6934,17 +6941,17 @@ imapx_parse_contents (CamelIMAPXServer *is,
  * the jobs queue, the active queue, the queue
  * queue. */
 static gpointer
-imapx_parser_thread (gpointer d)
+imapx_parser_thread (gpointer user_data)
 {
-	CamelIMAPXServer *is = d;
+	CamelIMAPXServer *is;
 	CamelIMAPXStore *store;
 	GCancellable *cancellable;
 	GError *local_error = NULL;
 
-	QUEUE_LOCK (is);
+	is = CAMEL_IMAPX_SERVER (user_data);
+
 	cancellable = camel_operation_new ();
-	is->cancellable = g_object_ref (cancellable);
-	QUEUE_UNLOCK (is);
+	g_weak_ref_set (&is->priv->parser_cancellable, cancellable);
 
 	while (local_error == NULL) {
 		CamelIMAPXStream *stream;
@@ -6962,7 +6969,7 @@ imapx_parser_thread (gpointer d)
 		g_cancellable_reset (cancellable);
 
 #ifndef G_OS_WIN32
-		if (is->is_process_stream)	{
+		if (is->is_process_stream) {
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
 			CamelStream *source;
 			gint res;
@@ -6991,16 +6998,17 @@ imapx_parser_thread (gpointer d)
 				is, stream, cancellable, &local_error);
 		}
 
-		if (is->parser_quit)
+		if (is->priv->parser_quit)
 			g_cancellable_cancel (cancellable);
 		else if (g_cancellable_is_cancelled (cancellable)) {
-			gint is_empty;
+			gboolean active_queue_is_empty;
 
 			QUEUE_LOCK (is);
-			is_empty = camel_imapx_command_queue_is_empty (is->active);
+			active_queue_is_empty =
+				camel_imapx_command_queue_is_empty (is->active);
 			QUEUE_UNLOCK (is);
 
-			if (is_empty || imapx_in_idle (is)) {
+			if (active_queue_is_empty || imapx_in_idle (is)) {
 				g_cancellable_reset (cancellable);
 				g_clear_error (&local_error);
 			} else {
@@ -7018,15 +7026,9 @@ imapx_parser_thread (gpointer d)
 
 	imapx_abort_all_commands (is, local_error);
 
-	QUEUE_LOCK (is);
-	if (is->cancellable != NULL) {
-		g_object_unref (is->cancellable);
-		is->cancellable = NULL;
-	}
-	g_object_unref (cancellable);
-	QUEUE_UNLOCK (is);
+	g_clear_object (&cancellable);
 
-	is->parser_quit = FALSE;
+	is->priv->parser_quit = FALSE;
 
 	/* Disconnect the CamelService. */
 	store = camel_imapx_server_ref_store (is);
@@ -7096,22 +7098,24 @@ static void
 imapx_server_dispose (GObject *object)
 {
 	CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (object);
+	GCancellable *cancellable;
 
 	QUEUE_LOCK (server);
 	server->state = IMAPX_SHUTDOWN;
 
-	server->parser_quit = TRUE;
+	server->priv->parser_quit = TRUE;
 
-	if (server->cancellable != NULL) {
-		g_cancellable_cancel (server->cancellable);
-		g_object_unref (server->cancellable);
-		server->cancellable = NULL;
-	}
+	cancellable = g_weak_ref_get (&server->priv->parser_cancellable);
+	g_weak_ref_set (&server->priv->parser_cancellable, NULL);
+
+	g_cancellable_cancel (cancellable);
+	g_clear_object (&cancellable);
+
 	QUEUE_UNLOCK (server);
 
-	if (server->parser_thread != NULL) {
-		g_thread_unref (server->parser_thread);
-		server->parser_thread = NULL;
+	if (server->priv->parser_thread != NULL) {
+		g_thread_unref (server->priv->parser_thread);
+		server->priv->parser_thread = NULL;
 	}
 
 	if (server->cinfo && imapx_use_idle (server))
@@ -7241,9 +7245,12 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->state = IMAPX_DISCONNECTED;
 
 	is->changes = camel_folder_change_info_new ();
-	is->parser_quit = FALSE;
 
-	is->priv->known_alerts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	is->priv->known_alerts = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
 }
 
 CamelIMAPXServer *
@@ -7339,7 +7346,10 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
                             GError **error)
 {
 	if (is->state == IMAPX_SHUTDOWN) {
-		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE, "Shutting down");
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			"Shutting down");
 		return FALSE;
 	}
 
@@ -7349,7 +7359,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
 
-	is->parser_thread = g_thread_new (
+	is->priv->parser_thread = g_thread_new (
 		NULL, (GThreadFunc) imapx_parser_thread, g_object_ref (is));
 
 	return TRUE;
