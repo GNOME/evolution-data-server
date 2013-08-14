@@ -955,7 +955,6 @@ duplicate_fetch_or_refresh (CamelIMAPXServer *is,
 
 static gboolean
 imapx_command_start_next (CamelIMAPXServer *is,
-                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelIMAPXCommand *first_ic;
@@ -1295,7 +1294,7 @@ imapx_command_queue (CamelIMAPXServer *is,
 
 	camel_imapx_command_queue_insert_sorted (is->queue, ic);
 
-	success = imapx_command_start_next (is, cancellable, error);
+	success = imapx_command_start_next (is, error);
 
 	QUEUE_UNLOCK (is);
 
@@ -2609,7 +2608,7 @@ imapx_continuation (CamelIMAPXServer *is,
 
 		QUEUE_LOCK (is);
 		is->literal = NULL;
-		success = imapx_command_start_next (is, cancellable, error);
+		success = imapx_command_start_next (is, error);
 		QUEUE_UNLOCK (is);
 
 		return success;
@@ -2752,7 +2751,7 @@ noskip:
 	is->literal = newliteral;
 
 	if (!litplus)
-		success = imapx_command_start_next (is, cancellable, error);
+		success = imapx_command_start_next (is, error);
 	QUEUE_UNLOCK (is);
 
 	return success;
@@ -2848,7 +2847,7 @@ imapx_completion (CamelIMAPXServer *is,
 			goto exit;
 
 	QUEUE_LOCK (is);
-	success = imapx_command_start_next (is, cancellable, error);
+	success = imapx_command_start_next (is, error);
 	QUEUE_UNLOCK (is);
 
 exit:
