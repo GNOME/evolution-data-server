@@ -909,25 +909,32 @@ exit:
 }
 
 static gboolean
-duplicate_fetch_or_refresh (CamelIMAPXServer *is,
-                            CamelIMAPXCommand *ic)
+imapx_is_duplicate_fetch_or_refresh (CamelIMAPXServer *is,
+                                     CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
+	guint32 job_types;
+
+	/* Job types to match. */
+	job_types =
+		IMAPX_JOB_FETCH_NEW_MESSAGES |
+		IMAPX_JOB_REFRESH_INFO |
+		IMAPX_JOB_FETCH_MESSAGES;
 
 	job = camel_imapx_command_get_job (ic);
 
 	if (job == NULL)
 		return FALSE;
 
-	if (!(job->type & (IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES)))
+	if ((job->type && job_types) == 0)
 		return FALSE;
 
-	if (imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL)) {
-		c (is->tagprefix, "Not yet sending duplicate fetch/refresh %s command\n", ic->name);
-		return TRUE;
-	}
+	if (imapx_match_active_job (is, job_types, NULL) == NULL)
+		return FALSE;
 
-	return FALSE;
+	c (is->tagprefix, "Not yet sending duplicate fetch/refresh %s command\n", ic->name);
+
+	return TRUE;
 }
 
 /* See if we can start another task yet.
@@ -1113,7 +1120,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			c (is->tagprefix, "-- %3d '%s'?\n", (gint) ic->pri, ic->name);
 
 			if (!ic->select || ((ic->select == folder) &&
-					    !duplicate_fetch_or_refresh (is, ic))) {
+					    !imapx_is_duplicate_fetch_or_refresh (is, ic))) {
 				c (is->tagprefix, "--> starting '%s'\n", ic->name);
 				min_pri = ic->pri;
 				g_queue_push_tail (&start, link);
@@ -1187,7 +1194,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 				break;
 
 			if (!ic->select || (ic->select == folder &&
-					    !duplicate_fetch_or_refresh (is, ic))) {
+					    !imapx_is_duplicate_fetch_or_refresh (is, ic))) {
 				c (is->tagprefix, "* queueing job %3d '%s'\n", (gint) ic->pri, ic->name);
 				min_pri = ic->pri;
 				g_queue_push_tail (&start, link);
