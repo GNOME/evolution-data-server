@@ -530,7 +530,6 @@ enum {
 
 static gboolean	imapx_select			(CamelIMAPXServer *is,
 						 CamelFolder *folder,
-						 gboolean force,
 						 GError **error);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
@@ -1182,7 +1181,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			is->tagprefix, "Selecting folder '%s' for command '%s'(%p)\n",
 			camel_folder_get_full_name (first_ic->select),
 			first_ic->name, first_ic);
-		imapx_select (is, first_ic->select, FALSE, error);
+		imapx_select (is, first_ic->select, error);
 	} else {
 		GQueue start = G_QUEUE_INIT;
 		GList *head, *link;
@@ -3612,7 +3611,6 @@ imapx_command_select_done (CamelIMAPXServer *is,
 static gboolean
 imapx_select (CamelIMAPXServer *is,
               CamelFolder *folder,
-              gboolean forced,
               GError **error)
 {
 	CamelIMAPXCommand *ic;
@@ -3640,7 +3638,7 @@ imapx_select (CamelIMAPXServer *is,
 
 	if (select_pending != NULL) {
 		nothing_to_do = TRUE;
-	} else if (select_folder == folder && !forced) {
+	} else if (select_folder == folder) {
 		nothing_to_do = TRUE;
 	} else if (!camel_imapx_command_queue_is_empty (is->active)) {
 		nothing_to_do = TRUE;
@@ -5747,7 +5745,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 					if (!imapx_stop_idle (is, error))
 						goto done;
 				/* This doesn't work -- this is an immediate command, not queued */
-				if (!imapx_select (is, folder, TRUE, error))
+				if (!imapx_select (is, folder, error))
 					goto done;
 			} else {
 				/* Or maybe just NOOP, unless we're in IDLE in which case do nothing */
