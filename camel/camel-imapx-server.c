@@ -1231,19 +1231,17 @@ imapx_is_command_queue_empty (CamelIMAPXServer *is)
 	return TRUE;
 }
 
-static gboolean
+static void
 imapx_command_queue (CamelIMAPXServer *is,
-                     CamelIMAPXCommand *ic,
-                     GError **error)
+                     CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job;
-	gboolean success = TRUE;
 
 	/* We enqueue in priority order, new messages have
 	 * higher priority than older messages with the same priority */
 
 	job = camel_imapx_command_get_job (ic);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	camel_imapx_command_close (ic);
 
@@ -1256,10 +1254,15 @@ imapx_command_queue (CamelIMAPXServer *is,
 	QUEUE_LOCK (is);
 
 	if (is->state == IMAPX_SHUTDOWN) {
+		GError *local_error = NULL;
+
 		c (is->tagprefix, "refuse to queue job on disconnected server\n");
-		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+
+		local_error = g_error_new (
+			CAMEL_IMAPX_ERROR, 1,
 			"%s", _("Server disconnected"));
+		camel_imapx_command_failed (ic, local_error);
+		g_error_free (local_error);
 
 		QUEUE_UNLOCK (is);
 
@@ -1269,7 +1272,7 @@ imapx_command_queue (CamelIMAPXServer *is,
 		if (ic->complete != NULL)
 			ic->complete (is, ic, NULL);
 
-		return FALSE;
+		return;
 	}
 
 	camel_imapx_command_queue_insert_sorted (is->queue, ic);
@@ -1277,8 +1280,6 @@ imapx_command_queue (CamelIMAPXServer *is,
 	imapx_command_start_next (is);
 
 	QUEUE_UNLOCK (is);
-
-	return success;
 }
 
 /* Must not have QUEUE lock */
@@ -2943,7 +2944,7 @@ imapx_command_run_sync (CamelIMAPXServer *is,
                         GError **error)
 {
 	guint cancel_id = 0;
-	gboolean success;
+	gboolean success = TRUE;
 
 	/* FIXME The only caller of this function currently does not set
 	 *       a "complete" callback function, so we can get away with
@@ -2966,10 +2967,9 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	/* Unref'ed in imapx_command_complete(). */
 	camel_imapx_command_ref (ic);
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
-	if (success)
-		camel_imapx_command_wait (ic);
+	camel_imapx_command_wait (ic);
 
 	if (cancel_id > 0)
 		g_cancellable_disconnect (cancellable, cancel_id);
@@ -4367,7 +4367,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			data->fetch_offset += MULTI_SIZE;
 			job->commands++;
 
-			success = imapx_command_queue (is, new_ic, error);
+			imapx_command_queue (is, new_ic);
 
 			camel_imapx_command_unref (new_ic);
 
@@ -4475,7 +4475,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 			data->fetch_offset += MULTI_SIZE;
 			job->commands++;
 
-			success = imapx_command_queue (is, ic, error);
+			imapx_command_queue (is, ic);
 
 			camel_imapx_command_unref (ic);
 
@@ -4492,7 +4492,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 		ic->pri = job->pri;
 		job->commands++;
 
-		success = imapx_command_queue (is, ic, error);
+		imapx_command_queue (is, ic);
 
 		camel_imapx_command_unref (ic);
 	}
@@ -4638,7 +4638,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
 		if (res == 1) {
 			camel_imapx_command_add (ic, " %f", data->dest);
 			data->index = i + 1;
-			success = imapx_command_queue (is, ic, error);
+			imapx_command_queue (is, ic);
 			goto exit;
 		}
 	}
@@ -4646,7 +4646,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
 	data->index = i;
 	if (imapx_uidset_done (&data->uidset, ic)) {
 		camel_imapx_command_add (ic, " %f", data->dest);
-		success = imapx_command_queue (is, ic, error);
+		imapx_command_queue (is, ic);
 		goto exit;
 	}
 
@@ -4775,7 +4775,6 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
 	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	AppendMessageData *data;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -4795,13 +4794,13 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
 	ic->pri = job->pri;
 	job->commands++;
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
 	g_object_unref (folder);
 
-	return success;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -4967,19 +4966,16 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 			if (!r->exists) {
 				res = imapx_uidset_add (&data->uidset, ic, r->uid);
 				if (res == 1) {
-					gboolean success;
-
 					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
 					data->index = i + 1;
 
-					success = imapx_command_queue (
-						is, ic, error);
+					imapx_command_queue (is, ic);
 
 					camel_imapx_command_unref (ic);
 
 					g_object_unref (folder);
 
-					return success;
+					return TRUE;
 				}
 			}
 		}
@@ -4987,17 +4983,15 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		//printf ("Existing : %d Gonna fetch in %s for %d/%d\n", total, camel_folder_get_full_name (folder), i, data->infos->len);
 		data->index = data->infos->len;
 		if (imapx_uidset_done (&data->uidset, ic)) {
-			gboolean success;
-
 			camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
 
-			success = imapx_command_queue (is, ic, error);
+			imapx_command_queue (is, ic);
 
 			camel_imapx_command_unref (ic);
 
 			g_object_unref (folder);
 
-			return success;
+			return TRUE;
 		}
 
 		/* XXX What fate for our newly-created but unsubmitted
@@ -5272,7 +5266,6 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
 	gchar *uid = NULL;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -5309,7 +5302,7 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	refresh_info_data_infos_free (data);
 	data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
@@ -5317,7 +5310,7 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 
 	g_object_unref (folder);
 
-	return success;
+	return TRUE;
 }
 
 static gboolean
@@ -5426,7 +5419,6 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	guint32 total, diff;
 	guint uidset_size;
 	gchar *uid = NULL;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -5486,7 +5478,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 
 	camel_imapx_command_set_job (ic, job);
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
@@ -5494,7 +5486,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 
 	g_object_unref (folder);
 
-	return success;
+	return TRUE;
 }
 
 static gboolean
@@ -5513,7 +5505,6 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 	CamelIMAPXSettings *settings;
 	guint uidset_size;
 	RefreshInfoData *data;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -5626,13 +5617,13 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 
 	camel_imapx_command_set_job (ic, job);
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
 	g_object_unref (folder);
 
-	return success;
+	return TRUE;
 }
 
 static gboolean
@@ -5973,7 +5964,7 @@ imapx_job_expunge_start (CamelIMAPXJob *job,
 		ic->pri = job->pri;
 		ic->complete = imapx_command_expunge_done;
 
-		success = imapx_command_queue (is, ic, error);
+		imapx_command_queue (is, ic);
 
 		camel_imapx_command_unref (ic);
 	}
@@ -6025,7 +6016,6 @@ imapx_job_list_start (CamelIMAPXJob *job,
 {
 	CamelIMAPXCommand *ic;
 	ListData *data;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -6045,11 +6035,11 @@ imapx_job_list_start (CamelIMAPXJob *job,
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_command_list_done;
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
-	return success;
+	return TRUE;
 }
 
 static gboolean
@@ -6111,7 +6101,6 @@ imapx_job_manage_subscription_start (CamelIMAPXJob *job,
 	CamelIMAPXStore *store;
 	ManageSubscriptionsData *data;
 	gchar *encoded_fname = NULL;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -6132,14 +6121,14 @@ imapx_job_manage_subscription_start (CamelIMAPXJob *job,
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_command_subscription_done;
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
 	g_free (encoded_fname);
 	g_object_unref (store);
 
-	return success;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -6176,7 +6165,6 @@ imapx_job_create_folder_start (CamelIMAPXJob *job,
 	CamelIMAPXCommand *ic;
 	CreateFolderData *data;
 	gchar *encoded_fname = NULL;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -6190,13 +6178,13 @@ imapx_job_create_folder_start (CamelIMAPXJob *job,
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_command_create_folder_done;
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
 	g_free (encoded_fname);
 
-	return success;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -6258,11 +6246,13 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
 		camel_imapx_command_set_job (ic, job);
 		ic->complete = imapx_command_delete_folder_done;
 
-		success = imapx_command_queue (is, ic, error);
+		imapx_command_queue (is, ic);
 
 		camel_imapx_command_unref (ic);
 
 		g_object_unref (folder);
+
+		success = TRUE;
 	}
 
 	g_free (encoded_fname);
@@ -6331,11 +6321,13 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
 		camel_imapx_command_set_job (ic, job);
 		ic->complete = imapx_command_rename_folder_done;
 
-		success = imapx_command_queue (is, ic, error);
+		imapx_command_queue (is, ic);
 
 		camel_imapx_command_unref (ic);
 
 		g_object_unref (folder);
+
+		success = TRUE;
 	}
 
 	g_free (en_ofname);
@@ -6381,7 +6373,6 @@ imapx_job_update_quota_info_start (CamelIMAPXJob *job,
 	CamelIMAPXStore *store;
 	QuotaData *data;
 	gchar *encoded_fname;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -6396,14 +6387,14 @@ imapx_job_update_quota_info_start (CamelIMAPXJob *job,
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_command_update_quota_info_done;
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
 	g_free (encoded_fname);
 	g_object_unref (store);
 
-	return success;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -6450,7 +6441,6 @@ imapx_job_uid_search_start (CamelIMAPXJob *job,
 	CamelFolder *folder;
 	CamelIMAPXCommand *ic;
 	SearchData *data;
-	gboolean success;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -6465,13 +6455,13 @@ imapx_job_uid_search_start (CamelIMAPXJob *job,
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_command_uid_search_done;
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
 	g_object_unref (folder);
 
-	return success;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -6507,7 +6497,6 @@ imapx_job_noop_start (CamelIMAPXJob *job,
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder;
-	gboolean success;
 
 	folder = camel_imapx_job_ref_folder (job);
 
@@ -6523,11 +6512,11 @@ imapx_job_noop_start (CamelIMAPXJob *job,
 		ic->pri = IMAPX_PRIORITY_NOOP;
 	}
 
-	success = imapx_command_queue (is, ic, error);
+	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
 
-	return success;
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -6681,7 +6670,6 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 	struct _uidset_state ss;
 	GPtrArray *uids;
 	gint on;
-	gboolean success = TRUE;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -6749,14 +6737,9 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 				if (send == 1 || (i == uids->len - 1 && imapx_uidset_done (&ss, ic))) {
 					job->commands++;
 					camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on?"+":"-", flags_table[j].name);
-					success = imapx_command_queue (is, ic, error);
+					imapx_command_queue (is, ic);
 					camel_imapx_command_unref (ic);
 					ic = NULL;
-
-					if (!success) {
-						camel_message_info_free (info);
-						goto exit;
-					}
 				}
 				if (flag == CAMEL_MESSAGE_SEEN) {
 					/* Remember how the server's unread count will change if this
@@ -6793,19 +6776,15 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 					    || (i == c->infos->len - 1 && imapx_uidset_done (&ss, ic))) {
 						job->commands++;
 						camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on?"+":"-", c->name);
-						success = imapx_command_queue (is, ic, error);
+						imapx_command_queue (is, ic);
 						camel_imapx_command_unref (ic);
 						ic = NULL;
-
-						if (!success)
-							goto exit;
 					}
 				}
 			}
 		}
 	}
 
-exit:
 	g_object_unref (folder);
 
 	/* Since this may start in another thread ... we need to
@@ -6814,7 +6793,7 @@ exit:
 	if (job->commands == 0)
 		imapx_unregister_job (is, job);
 
-	return success;
+	return TRUE;
 }
 
 static gboolean
