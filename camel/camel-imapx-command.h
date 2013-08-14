@@ -40,7 +40,6 @@ typedef struct _CamelIMAPXCommandPart CamelIMAPXCommandPart;
 typedef gboolean
 		(*CamelIMAPXCommandFunc)	(struct _CamelIMAPXServer *is,
 						 CamelIMAPXCommand *ic,
-						 GCancellable *cancellable,
 						 GError **error);
 
 typedef enum {
