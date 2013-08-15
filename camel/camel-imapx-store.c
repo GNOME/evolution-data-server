@@ -1286,18 +1286,14 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	GHashTable *folders_from_server;
 	gboolean notify_all;
 	gint ii, total;
-	GError *local_error = NULL;
 
 	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
 	folders_from_server = fetch_folders_for_namespaces (
-		imapx_store, pattern, sync, cancellable, &local_error);
+		imapx_store, pattern, sync, cancellable, error);
 
-	/* Sanity check. */
-	g_return_val_if_fail (
-		((folders_from_server != NULL) && (local_error == NULL)) ||
-		((folders_from_server == NULL) && (local_error != NULL)),
-		FALSE);
+	if (folders_from_server == NULL)
+		return FALSE;
 
 	settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
 	notify_all = !camel_imapx_settings_get_use_subscriptions (
