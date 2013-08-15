@@ -91,6 +91,7 @@ enum {
 
 enum {
 	CLOSED,
+	SHUTDOWN,
 	LAST_SIGNAL
 };
 
@@ -536,6 +537,19 @@ book_backend_notify_update (EBookBackend *backend,
 }
 
 static void
+book_backend_shutdown (EBookBackend *backend)
+{
+	ESource *source;
+
+	source = e_backend_get_source (E_BACKEND (backend));
+
+	g_print (
+		"The %s instance for \"%s\" is shutting down.\n",
+		G_OBJECT_TYPE_NAME (backend),
+		e_source_get_display_name (source));
+}
+
+static void
 e_book_backend_class_init (EBookBackendClass *class)
 {
 	GObjectClass *object_class;
@@ -556,6 +570,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 	class->get_backend_property = book_backend_get_backend_property;
 	class->get_contact_list_uids_sync = book_backend_get_contact_list_uids_sync;
 	class->notify_update = book_backend_notify_update;
+	class->shutdown = book_backend_shutdown;
 
 	g_object_class_install_property (
 		object_class,
@@ -608,6 +623,24 @@ e_book_backend_class_init (EBookBackendClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
+
+	/**
+	 * EBookBackend::shutdown:
+	 * @backend: the #EBookBackend which emitted the signal
+	 *
+	 * Emitted when the last client destroys its #EBookClient for
+	 * @backend.  This signals the @backend to begin final cleanup
+	 * tasks such as synchronizing data to permanent storage.
+	 *
+	 * Since: 3.10
+	 **/
+	signals[SHUTDOWN] = g_signal_new (
+		"shutdown",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookBackendClass, shutdown),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 0);
 }
 
 static void

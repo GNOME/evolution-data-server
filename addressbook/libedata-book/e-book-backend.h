@@ -214,6 +214,7 @@ struct _EBookBackendClass {
 	/* Signals */
 	void		(*closed)		(EBookBackend *backend,
 						 const gchar *sender);
+	void		(*shutdown)		(EBookBackend *backend);
 };
 
 GType		e_book_backend_get_type		(void) G_GNUC_CONST;
