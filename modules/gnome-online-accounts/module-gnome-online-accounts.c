@@ -36,6 +36,7 @@
 #define CAMEL_IMAP_PROVIDER_NAME    "imapx"
 #define CAMEL_SMTP_PROVIDER_NAME    "smtp"
 
+#define CAMEL_SMTP_MECHANISM_NAME   "LOGIN"
 #define CAMEL_OAUTH_MECHANISM_NAME  "XOAUTH"
 #define CAMEL_OAUTH2_MECHANISM_NAME "XOAUTH2"
 
@@ -480,6 +481,12 @@ gnome_online_accounts_config_smtp (EGnomeOnlineAccounts *extension,
 	camel_network_settings_set_user (
 		CAMEL_NETWORK_SETTINGS (settings),
 		goa_mail_get_smtp_user_name (goa_mail));
+
+	/* If not using auth, leave the auth mechanism NULL. */
+	if (goa_mail_get_smtp_use_auth (goa_mail))
+		camel_network_settings_set_auth_mechanism (
+			CAMEL_NETWORK_SETTINGS (settings),
+			CAMEL_SMTP_MECHANISM_NAME);
 
 	/* Prefer "use_tls" over "use_ssl" if both are set. */
 	camel_network_settings_set_security_method (
