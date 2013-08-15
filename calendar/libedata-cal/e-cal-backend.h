@@ -208,6 +208,7 @@ struct _ECalBackendClass {
 	/* Signals */
 	void		(*closed)		(ECalBackend *backend,
 						 const gchar *sender);
+	void		(*shutdown)		(ECalBackend *backend);
 };
 
 GType		e_cal_backend_get_type		(void) G_GNUC_CONST;

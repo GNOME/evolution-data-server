@@ -106,6 +106,7 @@ enum {
 
 enum {
 	CLOSED,
+	SHUTDOWN,
 	LAST_SIGNAL
 };
 
@@ -592,6 +593,19 @@ cal_backend_authenticate_sync (EBackend *backend,
 }
 
 static void
+cal_backend_shutdown (ECalBackend *backend)
+{
+	ESource *source;
+
+	source = e_backend_get_source (E_BACKEND (backend));
+
+	g_print (
+		"The %s instance for \"%s\" is shutting down.\n",
+		G_OBJECT_TYPE_NAME (backend),
+		e_source_get_display_name (source));
+}
+
+static void
 cal_backend_add_cached_timezone (ETimezoneCache *cache,
                                  icaltimezone *zone)
 {
@@ -767,6 +781,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	backend_class->authenticate_sync = cal_backend_authenticate_sync;
 
 	class->get_backend_property = cal_backend_get_backend_property;
+	class->shutdown = cal_backend_shutdown;
 
 	g_object_class_install_property (
 		object_class,
@@ -834,6 +849,24 @@ e_cal_backend_class_init (ECalBackendClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
+
+	/**
+	 * ECalBackend::shutdown:
+	 * @backend: the #ECalBackend which emitted the signal
+	 *
+	 * Emitted when the last client destroys its #ECalClient for
+	 * @backend.  This signals the @backend to begin final cleanup
+	 * tasks such as synchronizing data to permanent storage.
+	 *
+	 * Since: 3.10
+	 **/
+	signals[SHUTDOWN] = g_signal_new (
+		"shutdown",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ECalBackendClass, shutdown),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 0);
 }
 
 static void

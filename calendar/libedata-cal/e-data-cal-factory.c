@@ -85,6 +85,25 @@ watched_names_value_free (gpointer value)
 }
 
 static void
+data_cal_factory_toggle_notify_cb (gpointer data,
+                                   GObject *backend,
+                                   gboolean is_last_ref)
+{
+	if (is_last_ref) {
+		/* Take a strong reference before removing the
+		 * toggle reference, to keep the backend alive. */
+		g_object_ref (backend);
+
+		g_object_remove_toggle_ref (
+			backend, data_cal_factory_toggle_notify_cb, data);
+
+		g_signal_emit_by_name (backend, "shutdown");
+
+		g_object_unref (backend);
+	}
+}
+
+static void
 data_cal_factory_connections_add (EDataCalFactory *factory,
                                   const gchar *name,
                                   ECalBackend *backend)
@@ -349,6 +368,14 @@ data_cal_factory_open (EDataCalFactory *factory,
 			connection, object_path, error);
 
 		if (data_cal != NULL) {
+			/* Install a toggle reference on the backend
+			 * so we can signal it to shut down once all
+			 * client connections are closed. */
+			g_object_add_toggle_ref (
+				G_OBJECT (backend),
+				data_cal_factory_toggle_notify_cb,
+				NULL);
+
 			g_signal_connect_object (
 				backend, "closed",
 				G_CALLBACK (data_cal_factory_closed_cb),
