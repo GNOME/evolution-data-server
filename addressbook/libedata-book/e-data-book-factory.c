@@ -175,11 +175,19 @@ data_book_factory_name_vanished_cb (GDBusConnection *connection,
 	factory = g_weak_ref_get (weak_ref);
 
 	if (factory != NULL) {
+		data_book_factory_connections_remove (factory, name, NULL);
+
+		/* Unwatching the bus name from here will corrupt the
+		 * 'name' argument, and possibly also the 'user_data'.
+		 *
+		 * This is a GDBus bug.  Work around it by unwatching
+		 * the bus name last.
+		 *
+		 * See: https://bugzilla.gnome.org/706088
+		 */
 		g_mutex_lock (&factory->priv->watched_names_lock);
 		g_hash_table_remove (factory->priv->watched_names, name);
 		g_mutex_unlock (&factory->priv->watched_names_lock);
-
-		data_book_factory_connections_remove (factory, name, NULL);
 
 		g_object_unref (factory);
 	}
