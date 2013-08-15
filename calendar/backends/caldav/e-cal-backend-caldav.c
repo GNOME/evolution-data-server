@@ -102,9 +102,6 @@ struct _ECalBackendCalDAVPrivate {
 	gchar *password;
 	gboolean auth_required;
 
-	/* object cleanup */
-	gboolean disposed;
-
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
 	gchar *ctag_to_store;
@@ -2708,6 +2705,46 @@ caldav_get_backend_property (ECalBackend *backend,
 }
 
 static void
+caldav_shutdown (ECalBackend *backend)
+{
+	ECalBackendCalDAVPrivate *priv;
+	ESource *source;
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (backend);
+
+	/* Chain up to parent's shutdown() method. */
+	E_CAL_BACKEND_CLASS (e_cal_backend_caldav_parent_class)->shutdown (backend);
+
+	/* tell the slave to stop before acquiring a lock,
+	 * as it can work at the moment, and lock can be locked */
+	update_slave_cmd (priv, SLAVE_SHOULD_DIE);
+
+	g_mutex_lock (&priv->busy_lock);
+
+	/* XXX Not sure if this really needs to be part of
+	 *     shutdown or if we can just do it in dispose(). */
+	source = e_backend_get_source (E_BACKEND (backend));
+	if (source) {
+		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, backend);
+
+		if (priv->refresh_id) {
+			e_source_refresh_remove_timeout (source, priv->refresh_id);
+			priv->refresh_id = 0;
+		}
+	}
+
+	/* stop the slave  */
+	while (priv->synch_slave) {
+		g_cond_signal (&priv->cond);
+
+		/* wait until the slave died */
+		g_cond_wait (&priv->slave_gone_cond, &priv->busy_lock);
+	}
+
+	g_mutex_unlock (&priv->busy_lock);
+}
+
+static void
 proxy_settings_changed (EProxy *proxy,
                         gpointer user_data)
 {
@@ -5148,51 +5185,12 @@ static void
 e_cal_backend_caldav_dispose (GObject *object)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ESource *source;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (object);
 
-	/* tell the slave to stop before acquiring a lock,
-	 * as it can work at the moment, and lock can be locked */
-	update_slave_cmd (priv, SLAVE_SHOULD_DIE);
-
-	g_mutex_lock (&priv->busy_lock);
-
-	if (priv->disposed) {
-		g_mutex_unlock (&priv->busy_lock);
-		return;
-	}
-
-	source = e_backend_get_source (E_BACKEND (object));
-	if (source) {
-		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, object);
-
-		if (priv->refresh_id) {
-			e_source_refresh_remove_timeout (source, priv->refresh_id);
-			priv->refresh_id = 0;
-		}
-	}
-
-	/* stop the slave  */
-	while (priv->synch_slave) {
-		g_cond_signal (&priv->cond);
-
-		/* wait until the slave died */
-		g_cond_wait (&priv->slave_gone_cond, &priv->busy_lock);
-	}
-
-	g_object_unref (priv->session);
-	g_object_unref (priv->proxy);
-
-	g_free (priv->uri);
-	g_free (priv->schedule_outbox_url);
-
-	if (priv->store != NULL) {
-		g_object_unref (priv->store);
-	}
-
-	priv->disposed = TRUE;
-	g_mutex_unlock (&priv->busy_lock);
+	g_clear_object (&priv->store);
+	g_clear_object (&priv->session);
+	g_clear_object (&priv->proxy);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -5209,7 +5207,9 @@ e_cal_backend_caldav_finalize (GObject *object)
 	g_cond_clear (&priv->cond);
 	g_cond_clear (&priv->slave_gone_cond);
 
+	g_free (priv->uri);
 	g_free (priv->password);
+	g_free (priv->schedule_outbox_url);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -5254,7 +5254,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (cbdav->priv->session);
 
-	cbdav->priv->disposed = FALSE;
 	cbdav->priv->loaded   = FALSE;
 	cbdav->priv->opened = FALSE;
 
@@ -5304,6 +5303,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	object_class->constructed = cal_backend_caldav_constructed;
 
 	backend_class->get_backend_property = caldav_get_backend_property;
+	backend_class->shutdown = caldav_shutdown;
 
 	sync_class->open_sync			= caldav_do_open;
 	sync_class->refresh_sync		= caldav_refresh;
