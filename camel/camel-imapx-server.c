@@ -525,7 +525,7 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
-static void	imapx_select			(CamelIMAPXServer *is,
+static void	imapx_maybe_select		(CamelIMAPXServer *is,
 						 CamelIMAPXJob *job,
 						 CamelFolder *folder);
 
@@ -1177,7 +1177,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		 * that triggered it.  Then if the SELECT command fails
 		 * we have some destination to propagate the GError to. */
 		job = camel_imapx_command_get_job (first_ic);
-		imapx_select (is, job, first_ic->select);
+		imapx_maybe_select (is, job, first_ic->select);
 
 	} else {
 		GQueue start = G_QUEUE_INIT;
@@ -3588,9 +3588,9 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 /* Should have a queue lock. TODO Change the way select is written */
 static void
-imapx_select (CamelIMAPXServer *is,
-              CamelIMAPXJob *job,
-              CamelFolder *folder)
+imapx_maybe_select (CamelIMAPXServer *is,
+                    CamelIMAPXJob *job,
+                    CamelFolder *folder)
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *select_folder;
@@ -5690,7 +5690,7 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 					if (!imapx_stop_idle (is, error))
 						goto done;
 				/* This doesn't work -- this is an immediate command, not queued */
-				imapx_select (is, folder)
+				imapx_maybe_select (is, folder)
 			} else {
 				/* Or maybe just NOOP, unless we're in IDLE in which case do nothing */
 				if (!imapx_in_idle (is)) {
