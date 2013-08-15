@@ -341,9 +341,6 @@ data_cal_factory_open (EDataCalFactory *factory,
 			connection, object_path, error);
 
 		if (data_cal != NULL) {
-			data_cal_factory_watched_names_add (
-				factory, connection, sender);
-
 			g_signal_connect_object (
 				backend, "closed",
 				G_CALLBACK (data_cal_factory_closed_cb),
@@ -356,6 +353,11 @@ data_cal_factory_open (EDataCalFactory *factory,
 	}
 
 	if (data_cal != NULL) {
+		/* Watch the sender's bus name so we can clean
+		 * up its connections if the bus name vanishes. */
+		data_cal_factory_watched_names_add (
+			factory, connection, sender);
+
 		/* A client may create multiple EClient instances for the
 		 * same ESource, each of which calls close() individually.
 		 * So we must track each and every connection made. */
