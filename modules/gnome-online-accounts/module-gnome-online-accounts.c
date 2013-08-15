@@ -649,21 +649,11 @@ gnome_online_accounts_config_mail_account (EGnomeOnlineAccounts *extension,
 {
 	EServerSideSource *server_side_source;
 
+	gnome_online_accounts_config_imap (extension, source, goa_object);
+
 	/* Only one or the other should be present, not both. */
 	gnome_online_accounts_config_oauth (extension, source, goa_object);
 	gnome_online_accounts_config_oauth2 (extension, source, goa_object);
-
-	/* XXX Need to defer the network security settings to the
-	 *     provider-specific module since "imap-use-tls" tells
-	 *     us neither the port number, nor whether to use IMAP
-	 *     over SSL versus STARTTLS.  The module will know.
-	 *
-	 *     Addendum: This got fixed in GOA 3.8.  There's now both
-	 *               "imap-use-tls" and "imap-use-ssl" properties.
-	 *               Go ahead and set up IMAP details here if we
-	 *               have GOA 3.8, otherwise continue deferring
-	 *               to provider-specific modules. */
-	gnome_online_accounts_config_imap (extension, source, goa_object);
 
 	/* Clients may change the source by may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
@@ -707,21 +697,11 @@ gnome_online_accounts_config_mail_transport (EGnomeOnlineAccounts *extension,
 {
 	EServerSideSource *server_side_source;
 
+	gnome_online_accounts_config_smtp (extension, source, goa_object);
+
 	/* Only one or the other should be present, not both. */
 	gnome_online_accounts_config_oauth (extension, source, goa_object);
 	gnome_online_accounts_config_oauth2 (extension, source, goa_object);
-
-	/* XXX Need to defer the network security settings to the
-	 *     provider-specific module since "smtp-use-tls" tells
-	 *     us neither the port number, nor whether to use SMTP
-	 *     over SSL versus STARTTLS.  The module will know.
-	 *
-	 *     Addendum: This got fixed in GOA 3.8.  There's now both
-	 *               "smtp-use-tls" and "smtp-use-ssl" properties.
-	 *               Go ahead and set up SMTP details here if we
-	 *               have GOA 3.8, otherwise continue deferring
-	 *               to provider-specific modules. */
-	gnome_online_accounts_config_smtp (extension, source, goa_object);
 
 	/* Clients may change the source by may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
