@@ -240,31 +240,6 @@ store_summary_store_info_free (CamelStoreSummary *summary,
 	g_slice_free1 (summary->store_info_size, info);
 }
 
-static const gchar *
-store_summary_store_info_string (CamelStoreSummary *summary,
-                                 const CamelStoreInfo *info,
-                                 gint type)
-{
-	const gchar *p;
-
-	/* FIXME: Locks? */
-
-	g_assert (info != NULL);
-
-	switch (type) {
-	case CAMEL_STORE_INFO_PATH:
-		return info->path;
-	case CAMEL_STORE_INFO_NAME:
-		p = strrchr (info->path, '/');
-		if (p)
-			return p + 1;
-		else
-			return info->path;
-	}
-
-	return "";
-}
-
 static void
 store_summary_store_info_set_string (CamelStoreSummary *summary,
                                      CamelStoreInfo *info,
@@ -324,7 +299,6 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 	class->store_info_load = store_summary_store_info_load;
 	class->store_info_save = store_summary_store_info_save;
 	class->store_info_free = store_summary_store_info_free;
-	class->store_info_string = store_summary_store_info_string;
 	class->store_info_set_string = store_summary_store_info_set_string;
 }
 
@@ -880,32 +854,6 @@ camel_store_summary_info_new (CamelStoreSummary *summary)
 	info->refcount = 1;
 
 	return info;
-}
-
-/**
- * camel_store_info_string:
- * @summary: a #CamelStoreSummary object
- * @info: a #CamelStoreInfo
- * @type: specific string being requested
- *
- * Get a specific string from the @info.
- *
- * Returns: the string value
- **/
-const gchar *
-camel_store_info_string (CamelStoreSummary *summary,
-                         const CamelStoreInfo *info,
-                         gint type)
-{
-	CamelStoreSummaryClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
-	g_return_val_if_fail (info != NULL, NULL);
-
-	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
-	g_return_val_if_fail (class->store_info_string != NULL, NULL);
-
-	return class->store_info_string (summary, info, type);
 }
 
 /**

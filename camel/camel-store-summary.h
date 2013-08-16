@@ -132,9 +132,6 @@ struct _CamelStoreSummaryClass {
 						 CamelStoreInfo *info);
 
 	/* virtualise access methods */
-	const gchar *	(*store_info_string)	(CamelStoreSummary *summary,
-						 const CamelStoreInfo *info,
-						 gint type);
 	void		(*store_info_set_string)
 						(CamelStoreSummary *summary,
 						 CamelStoreInfo *info,
@@ -198,9 +195,6 @@ GPtrArray *	camel_store_summary_array	(CamelStoreSummary *summary);
 void		camel_store_summary_array_free	(CamelStoreSummary *summary,
 						 GPtrArray *array);
 
-const gchar *	camel_store_info_string		(CamelStoreSummary *summary,
-						 const CamelStoreInfo *info,
-						 gint type);
 void		camel_store_info_set_string	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info,
 						 gint type,
