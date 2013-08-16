@@ -29,7 +29,6 @@
 #include <stdio.h>
 
 #include <camel/camel-enums.h>
-#include <camel/camel-memchunk.h>
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
 
@@ -105,9 +104,6 @@ struct _CamelStoreSummary {
 
 	/* sizes of memory objects */
 	guint32 store_info_size;
-
-	/* memory allocators (setup automatically) */
-	CamelMemChunk *store_info_chunks;
 
 	gchar *summary_path;
 

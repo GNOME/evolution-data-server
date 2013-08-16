@@ -78,9 +78,6 @@ store_summary_finalize (GObject *object)
 
 	g_free (summary->summary_path);
 
-	if (summary->store_info_chunks != NULL)
-		camel_memchunk_destroy (summary->store_info_chunks);
-
 	g_rec_mutex_clear (&summary->priv->summary_lock);
 	g_rec_mutex_clear (&summary->priv->io_lock);
 	g_rec_mutex_clear (&summary->priv->ref_lock);
@@ -333,8 +330,6 @@ camel_store_summary_init (CamelStoreSummary *summary)
 {
 	summary->priv = CAMEL_STORE_SUMMARY_GET_PRIVATE (summary);
 	summary->store_info_size = sizeof (CamelStoreInfo);
-
-	summary->store_info_chunks = NULL;
 
 	summary->version = CAMEL_STORE_SUMMARY_VERSION;
 	summary->flags = 0;
