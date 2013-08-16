@@ -100,12 +100,11 @@ camel_nntp_store_summary_new (void)
  *
  * Retrieve a summary item by full name.
  *
- * A referenced to the summary item is returned, which may be
- * ref'd or free'd as appropriate.
+ * The returned #CamelNNTPStoreInfo is referenced for thread-safety and should
+ * be unreferenced with camel_store_summary_info_unref() when finished with it.
  *
  * Returns: The summary item, or NULL if the @full_name name
  * is not available.
- * It must be freed using camel_store_summary_info_free().
  **/
 CamelNNTPStoreInfo *
 camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s,
@@ -120,7 +119,7 @@ camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s,
 		if (info) {
 			if (strcmp (info->full_name, full_name) == 0)
 				return info;
-			camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+			camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		}
 	}
 
@@ -192,7 +191,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
 		f = g_strdup (camel_nntp_store_info_full_name (s, si));
-		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
+		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		return f;
 	}
 
@@ -231,7 +230,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 	if (si) {
 		full = g_strdup_printf ("%s%s", camel_nntp_store_info_full_name (s, si), f);
 		g_free (f);
-		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
+		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		f = full;
 	}
 
@@ -258,7 +257,7 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 
 	info = camel_nntp_store_summary_full_name (s, full_name);
 	if (info) {
-		camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+		camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		d (printf ("  already there\n"));
 		return info;
 	}
@@ -325,13 +324,13 @@ store_info_load (CamelStoreSummary *s,
 	ni = (CamelNNTPStoreInfo *) CAMEL_STORE_SUMMARY_CLASS (camel_nntp_store_summary_parent_class)->store_info_load (s, in);
 	if (ni) {
 		if (camel_file_util_decode_string (in, &ni->full_name) == -1) {
-			camel_store_summary_info_free (s, (CamelStoreInfo *) ni);
+			camel_store_summary_info_unref (s, (CamelStoreInfo *) ni);
 			return NULL;
 		}
 		if (((CamelNNTPStoreSummary *) s)->version >= CAMEL_NNTP_STORE_SUMMARY_VERSION_1) {
 			if (camel_file_util_decode_uint32 (in, &ni->first) == -1
 			    || camel_file_util_decode_uint32 (in, &ni->last) == -1) {
-				camel_store_summary_info_free (s, (CamelStoreInfo *) ni);
+				camel_store_summary_info_unref (s, (CamelStoreInfo *) ni);
 				return NULL;
 			}
 		}

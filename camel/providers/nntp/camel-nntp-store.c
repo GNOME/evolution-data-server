@@ -796,7 +796,7 @@ nntp_store_info_update (CamelNNTPStore *nntp_store,
 	si->first = first;
 
 	if (fsi != NULL)
-		camel_store_summary_info_free (store_summary, &fsi->info);
+		camel_store_summary_info_unref (store_summary, &fsi->info);
 	else /* TODO see if we really did touch it */
 		camel_store_summary_touch (store_summary);
 
@@ -883,7 +883,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *nntp_store,
 				first = fi;
 			last = fi;
 		}
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	g_clear_object (&nntp_store_summary);
@@ -1084,11 +1084,11 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 			}
 		} else if (subscribed_or_flag && first) {
 			/* we have already added subitems, but this item is no longer a subitem */
-			camel_store_summary_info_free (store_summary, si);
+			camel_store_summary_info_unref (store_summary, si);
 			break;
 		}
 
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	g_hash_table_destroy (known);
@@ -1544,7 +1544,7 @@ nntp_store_folder_is_subscribed (CamelSubscribable *subscribable,
 
 	if (si != NULL) {
 		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	g_clear_object (&nntp_store_summary);
@@ -1611,7 +1611,7 @@ nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 			camel_folder_info_free (fi);
 		}
 
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	g_clear_object (&nntp_store_summary);
@@ -1674,7 +1674,7 @@ nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 			camel_folder_info_free (fi);
 		}
 
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	g_clear_object (&nntp_store_summary);

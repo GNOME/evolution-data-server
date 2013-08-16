@@ -539,7 +539,7 @@ get_folder_offline (CamelStore *store,
 		g_free (folder_dir);
 		g_free (base_dir);
 
-		camel_store_summary_info_free (summary, si);
+		camel_store_summary_info_unref (summary, si);
 	} else {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
@@ -694,7 +694,7 @@ imapx_unmark_folder_subscribed (CamelIMAPXStore *imapx_store,
 			camel_store_summary_touch (store_summary);
 			camel_store_summary_save (store_summary);
 		}
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	if (emit_signal) {
@@ -724,7 +724,7 @@ imapx_mark_folder_subscribed (CamelIMAPXStore *imapx_store,
 			camel_store_summary_touch (store_summary);
 			camel_store_summary_save (store_summary);
 		}
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	if (emit_signal) {
@@ -890,7 +890,7 @@ rename_folder_info (CamelIMAPXStore *imapx_store,
 			g_free (npath);
 		}
 
-		camel_store_summary_info_free (
+		camel_store_summary_info_unref (
 			(CamelStoreSummary *) imapx_store->summary, si);
 	}
 }
@@ -1010,7 +1010,7 @@ get_folder_info_offline (CamelStore *store,
 
 		full_name = camel_imapx_store_info_full_name (imapx_store->summary, si);
 		if (!full_name || !*full_name) {
-			camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
+			camel_store_summary_info_unref ((CamelStoreSummary *) imapx_store->summary, si);
 			continue;
 		}
 
@@ -1046,7 +1046,7 @@ get_folder_info_offline (CamelStore *store,
 				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
 			g_ptr_array_add (folders, fi);
 		}
-		camel_store_summary_info_free ((CamelStoreSummary *) imapx_store->summary, si);
+		camel_store_summary_info_unref ((CamelStoreSummary *) imapx_store->summary, si);
 	}
 	g_free (pattern);
 
@@ -1368,7 +1368,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		}
 
 endloop:
-		camel_store_summary_info_free (store_summary, si);
+		camel_store_summary_info_unref (store_summary, si);
 	}
 
 	g_hash_table_destroy (folders_from_server);
@@ -1426,7 +1426,7 @@ discover_inbox (CamelStore *store,
 				TRUE, cancellable, NULL);
 
 		if (si)
-			camel_store_summary_info_free (
+			camel_store_summary_info_unref (
 				(CamelStoreSummary *) imapx_store->summary, si);
 	}
 }
@@ -1790,7 +1790,7 @@ imapx_store_create_folder_sync (CamelStore *store,
 	}
 
 	if (si)
-		camel_store_summary_info_free (
+		camel_store_summary_info_unref (
 			(CamelStoreSummary *) imapx_store->summary, si);
 
 	real_name = camel_imapx_store_summary_path_to_full (
@@ -2051,7 +2051,7 @@ imapx_store_folder_is_subscribed (CamelSubscribable *subscribable,
 		(CamelStoreSummary *) imapx_store->summary, folder_name);
 	if (si) {
 		is_subscribed = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free (
+		camel_store_summary_info_unref (
 			(CamelStoreSummary *) imapx_store->summary, si);
 	}
 

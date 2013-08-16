@@ -181,8 +181,13 @@ CamelStoreInfo *
 CamelStoreInfo *
 		camel_store_summary_info_ref	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
-void		camel_store_summary_info_free	(CamelStoreSummary *summary,
+void		camel_store_summary_info_unref	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
+
+/* Temporary backward-compatible alias. */
+#ifndef CAMEL_DISABLE_DEPRECATED
+#define camel_store_summary_info_free camel_store_summary_info_unref
+#endif /* CAMEL_DISABLE_DEPRECATED */
 
 /* removes a summary item */
 void		camel_store_summary_remove	(CamelStoreSummary *summary,

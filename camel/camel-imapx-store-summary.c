@@ -116,7 +116,7 @@ camel_imapx_store_summary_new (void)
  *
  * Returns: The summary item, or NULL if the @full_name name
  * is not available.
- * It must be freed using camel_store_summary_info_free().
+ * It must be freed using camel_store_summary_info_unref().
  **/
 CamelIMAPXStoreInfo *
 camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
@@ -135,7 +135,7 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 			if (strcmp (info->full_name, full_name) == 0 ||
 			    (is_inbox && g_ascii_strcasecmp (info->full_name, full_name) == 0))
 				return info;
-			camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+			camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		}
 	}
 
@@ -189,7 +189,7 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
 		f = g_strdup (camel_imapx_store_info_full_name (s, si));
-		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
+		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		return f;
 	}
 
@@ -218,7 +218,7 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 	if (si) {
 		full = g_strdup_printf ("%s%s", camel_imapx_store_info_full_name (s, si), f);
 		g_free (f);
-		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
+		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		f = full;
 	} else if (ns) {
 		full = g_strdup_printf ("%s%s", ns->full_name, f);
@@ -250,7 +250,7 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 
 	info = camel_imapx_store_summary_full_name (s, full_name);
 	if (info) {
-		camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+		camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		d ("  already there\n");
 		return info;
 	}
@@ -567,7 +567,7 @@ store_info_load (CamelStoreSummary *s,
 	mi = (CamelIMAPXStoreInfo *) store_summary_class->store_info_load (s, in);
 	if (mi) {
 		if (camel_file_util_decode_string (in, &mi->full_name) == -1) {
-			camel_store_summary_info_free (s, (CamelStoreInfo *) mi);
+			camel_store_summary_info_unref (s, (CamelStoreInfo *) mi);
 			mi = NULL;
 		} else {
 			/* NB: this is done again for compatability */

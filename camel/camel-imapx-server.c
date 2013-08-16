@@ -6604,7 +6604,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 				}
 
-				camel_store_summary_info_free ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary, si);
+				camel_store_summary_info_unref ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary, si);
 			}
 		}
 

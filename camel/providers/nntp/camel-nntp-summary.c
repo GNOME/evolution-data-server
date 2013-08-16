@@ -568,7 +568,7 @@ update:
 			camel_store_summary_touch (store_summary);
 			camel_store_summary_save (store_summary);
 		}
-		camel_store_summary_info_free (
+		camel_store_summary_info_unref (
 			store_summary, (CamelStoreInfo *) si);
 
 	} else if (folder != NULL) {
