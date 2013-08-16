@@ -76,10 +76,6 @@ struct _CamelStoreInfo {
 	guint32 total;
 };
 
-typedef enum _CamelStoreSummaryFlags {
-	CAMEL_STORE_SUMMARY_DIRTY = 1 << 0,
-} CamelStoreSummaryFlags;
-
 struct _CamelStoreSummary {
 	CamelObject parent;
 	CamelStoreSummaryPrivate *priv;

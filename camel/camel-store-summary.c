@@ -58,9 +58,10 @@ struct _CamelStoreSummaryPrivate {
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
 	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
 
+	gboolean dirty;		/* summary has unsaved changes */
+
 	/* header info */
 	guint32 version;	/* version of base part of file */
-	guint32 flags;		/* flags */
 	guint32 count;		/* how many were saved/loaded */
 	time_t time;		/* timestamp for this summary (for implementors to use) */
 
@@ -126,6 +127,7 @@ store_summary_summary_header_load (CamelStoreSummary *summary,
 
 	io (printf ("Loading header\n"));
 
+	/* XXX The flags value is legacy; not used for anything. */
 	if (camel_file_util_decode_fixed_int32 (in, &version) == -1
 	    || camel_file_util_decode_fixed_int32 (in, &flags) == -1
 	    || camel_file_util_decode_time_t (in, &time) == -1
@@ -133,7 +135,6 @@ store_summary_summary_header_load (CamelStoreSummary *summary,
 		return -1;
 	}
 
-	summary->priv->flags = flags;
 	summary->priv->time = time;
 	summary->priv->count = count;
 	summary->priv->version = version;
@@ -156,7 +157,7 @@ store_summary_summary_header_save (CamelStoreSummary *summary,
 
 	/* always write latest version */
 	camel_file_util_encode_fixed_int32 (out, CAMEL_STORE_SUMMARY_VERSION);
-	camel_file_util_encode_fixed_int32 (out, summary->priv->flags);
+	camel_file_util_encode_fixed_int32 (out, 0);  /* flags (unused) */
 	camel_file_util_encode_time_t (out, summary->priv->time);
 
 	return camel_file_util_encode_fixed_int32 (
@@ -183,35 +184,20 @@ store_summary_store_info_load (CamelStoreSummary *summary,
                                FILE *in)
 {
 	CamelStoreInfo *info;
+	guint32 flags;
 
 	info = camel_store_summary_info_new (summary);
 
 	io (printf ("Loading folder info\n"));
 
+	/* XXX The flags value is legacy; not used for anything. */
 	if (camel_file_util_decode_string (in, &info->path) == -1 ||
-	    camel_file_util_decode_uint32 (in, &info->flags) == -1 ||
+	    camel_file_util_decode_uint32 (in, &flags) == -1 ||
 	    camel_file_util_decode_uint32 (in, &info->unread) == -1 ||
 	    camel_file_util_decode_uint32 (in, &info->total) == -1) {
 		camel_store_summary_info_unref (summary, info);
 
 		return NULL;
-	}
-
-	/* Ok, brown paper bag bug - prior to version 2 of the file, flags are
-	 * stored using the bit number, not the bit. Try to recover as best we can */
-	if (summary->priv->version < CAMEL_STORE_SUMMARY_VERSION_2) {
-		guint32 flags = 0;
-
-		if (info->flags & 1)
-			flags |= CAMEL_STORE_INFO_FOLDER_NOSELECT;
-		if (info->flags & 2)
-			flags |= CAMEL_STORE_INFO_FOLDER_READONLY;
-		if (info->flags & 3)
-			flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-		if (info->flags & 4)
-			flags |= CAMEL_STORE_INFO_FOLDER_FLAGGED;
-
-		info->flags = flags;
 	}
 
 	if (!ferror (in))
@@ -230,7 +216,7 @@ store_summary_store_info_save (CamelStoreSummary *summary,
 	io (printf ("Saving folder info\n"));
 
 	if (camel_file_util_encode_string (out, camel_store_info_path (summary, info)) == -1 ||
-	    camel_file_util_encode_uint32 (out, info->flags) == -1 ||
+	    camel_file_util_encode_uint32 (out, 0) == -1 ||
 	    camel_file_util_encode_uint32 (out, info->unread) == -1 ||
 	    camel_file_util_encode_uint32 (out, info->total) == -1)
 		return -1;
@@ -258,7 +244,7 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 		g_free (info->path);
 		info->path = g_strdup (str);
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
-		summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+		summary->priv->dirty = TRUE;
 		break;
 	}
 }
@@ -486,7 +472,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 	if (fclose (in) != 0)
 		return -1;
 
-	summary->priv->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->dirty = FALSE;
 
 	return 0;
 
@@ -495,7 +481,7 @@ error:
 	g_warning ("Cannot load summary file: %s", g_strerror (ferror (in)));
 	g_rec_mutex_unlock (&summary->priv->io_lock);
 	fclose (in);
-	summary->priv->flags |= ~CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->dirty = FALSE;
 	errno = i;
 
 	return -1;
@@ -528,7 +514,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 
 	io (printf ("** saving summary\n"));
 
-	if ((summary->priv->flags & CAMEL_STORE_SUMMARY_DIRTY) == 0) {
+	if (!summary->priv->dirty) {
 		io (printf ("**  summary clean no save\n"));
 		return 0;
 	}
@@ -582,7 +568,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 	if (fclose (out) != 0)
 		return -1;
 
-	summary->priv->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->dirty = FALSE;
 
 	return 0;
 }
@@ -618,7 +604,7 @@ camel_store_summary_add (CamelStoreSummary *summary,
 
 	g_ptr_array_add (summary->folders, info);
 	g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
-	summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->dirty = TRUE;
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
@@ -657,7 +643,7 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 
 		g_ptr_array_add (summary->folders, info);
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
-		summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+		summary->priv->dirty = TRUE;
 	}
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
@@ -724,7 +710,7 @@ camel_store_summary_touch (CamelStoreSummary *summary)
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
-	summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->dirty = TRUE;
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
 
@@ -745,7 +731,7 @@ camel_store_summary_remove (CamelStoreSummary *summary,
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 	g_hash_table_remove (summary->folders_path, camel_store_info_path (summary, info));
 	g_ptr_array_remove (summary->folders, info);
-	summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->dirty = TRUE;
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 
 	camel_store_summary_info_unref (summary, info);
