@@ -57,7 +57,6 @@
 struct _CamelStoreSummaryPrivate {
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
 	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
-	GRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CAMEL_STORE_SUMMARY_SUMMARY_LOCK */
 
 	GHashTable *folder_summaries; /* CamelFolderSummary->path; doesn't add reference to CamelFolderSummary */
 
@@ -80,7 +79,6 @@ store_summary_finalize (GObject *object)
 
 	g_rec_mutex_clear (&summary->priv->summary_lock);
 	g_rec_mutex_clear (&summary->priv->io_lock);
-	g_rec_mutex_clear (&summary->priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_summary_parent_class)->finalize (object);
@@ -91,7 +89,6 @@ store_summary_dispose (GObject *object)
 {
 	CamelStoreSummary *summary = CAMEL_STORE_SUMMARY (object);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	if (summary->priv->scheduled_save_id != 0) {
@@ -101,7 +98,6 @@ store_summary_dispose (GObject *object)
 	}
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	G_OBJECT_CLASS (camel_store_summary_parent_class)->dispose (object);
 }
@@ -343,7 +339,6 @@ camel_store_summary_init (CamelStoreSummary *summary)
 
 	g_rec_mutex_init (&summary->priv->summary_lock);
 	g_rec_mutex_init (&summary->priv->io_lock);
-	g_rec_mutex_init (&summary->priv->ref_lock);
 }
 
 /**
@@ -418,18 +413,15 @@ camel_store_summary_index (CamelStoreSummary *summary,
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	if (i < summary->folders->len)
 		info = g_ptr_array_index (summary->folders, i);
 
+	if (info != NULL)
+		camel_store_summary_info_ref (summary, info);
+
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-
-	if (info)
-		info->refcount++;
-
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	return info;
 }
@@ -454,18 +446,16 @@ camel_store_summary_array (CamelStoreSummary *summary)
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
-	res = g_ptr_array_new ();
-	g_ptr_array_set_size (res, summary->folders->len);
+	res = g_ptr_array_sized_new (summary->folders->len);
 	for (i = 0; i < summary->folders->len; i++) {
-		info = res->pdata[i] = g_ptr_array_index (summary->folders, i);
-		info->refcount++;
+		info = g_ptr_array_index (summary->folders, i);
+		camel_store_summary_info_ref (summary, info);
+		g_ptr_array_add (res, info);
 	}
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	return res;
 }
@@ -516,17 +506,14 @@ camel_store_summary_path (CamelStoreSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
 	g_return_val_if_fail (path != NULL, NULL);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	info = g_hash_table_lookup (summary->folders_path, path);
 
+	if (info != NULL)
+		camel_store_summary_info_ref (summary, info);
+
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-
-	if (info)
-		info->refcount++;
-
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	return info;
 }
@@ -822,25 +809,18 @@ void
 camel_store_summary_info_free (CamelStoreSummary *summary,
                                CamelStoreInfo *info)
 {
-	CamelStoreSummaryClass *class;
-
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-	g_return_if_fail (info != NULL && info->refcount >= 1);
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (info->refcount > 0);
 
-	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
-	g_return_if_fail (class->store_info_free != NULL);
+	if (g_atomic_int_dec_and_test (&info->refcount)) {
+		CamelStoreSummaryClass *class;
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
+		class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+		g_return_if_fail (class->store_info_free != NULL);
 
-	info->refcount--;
-	if (info->refcount > 0) {
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
-		return;
+		class->store_info_free (summary, info);
 	}
-
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
-
-	class->store_info_free (summary, info);
 }
 
 /**
@@ -849,17 +829,19 @@ camel_store_summary_info_free (CamelStoreSummary *summary,
  * @info: a #CamelStoreInfo
  *
  * Add an extra reference to @info.
+ *
+ * Returns: the @info argument
  **/
-void
+CamelStoreInfo *
 camel_store_summary_info_ref (CamelStoreSummary *summary,
                               CamelStoreInfo *info)
 {
-	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-	g_return_if_fail (info != NULL && info->refcount >= 1);
+	g_return_val_if_fail (info != NULL, NULL);
+	g_return_val_if_fail (info->refcount > 0, NULL);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
-	info->refcount++;
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
+	g_atomic_int_inc (&info->refcount);
+
+	return info;
 }
 
 /**
@@ -948,18 +930,15 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 	g_return_if_fail (path != NULL);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 	if (g_hash_table_lookup_extended (summary->folders_path, path, (gpointer) &oldpath, (gpointer) &oldinfo)) {
 		/* make sure it doesn't vanish while we're removing it */
-		oldinfo->refcount++;
+		camel_store_summary_info_ref (summary, oldinfo);
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 		camel_store_summary_remove (summary, oldinfo);
 		camel_store_summary_info_free (summary, oldinfo);
 	} else {
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	}
 }
 
@@ -1087,9 +1066,6 @@ camel_store_summary_lock (CamelStoreSummary *summary,
 		case CAMEL_STORE_SUMMARY_IO_LOCK:
 			g_rec_mutex_lock (&summary->priv->io_lock);
 			break;
-		case CAMEL_STORE_SUMMARY_REF_LOCK:
-			g_rec_mutex_lock (&summary->priv->ref_lock);
-			break;
 		default:
 			g_return_if_reached ();
 	}
@@ -1117,9 +1093,6 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 		case CAMEL_STORE_SUMMARY_IO_LOCK:
 			g_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
-		case CAMEL_STORE_SUMMARY_REF_LOCK:
-			g_rec_mutex_unlock (&summary->priv->ref_lock);
-			break;
 		default:
 			g_return_if_reached ();
 	}
@@ -1132,7 +1105,6 @@ store_summary_save_timeout (gpointer user_data)
 
 	g_return_val_if_fail (summary != NULL, FALSE);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	if (summary->priv->scheduled_save_id) {
@@ -1141,7 +1113,6 @@ store_summary_save_timeout (gpointer user_data)
 	}
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	return FALSE;
 }
@@ -1173,12 +1144,10 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
 	path = g_hash_table_lookup (summary->priv->folder_summaries, folder_summary);
 	g_return_if_fail (path != NULL);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 	si = camel_store_summary_path (summary, path);
 	if (!si) {
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 		g_warning ("%s: Store summary %p doesn't hold path '%s'", G_STRFUNC, summary, path);
 		return;
 	}
@@ -1204,7 +1173,6 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
 	camel_store_summary_info_free (summary, si);
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 }
 
 /**
@@ -1235,13 +1203,11 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
 	g_return_val_if_fail (path != NULL, FALSE);
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (folder_summary), FALSE);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	si = camel_store_summary_path (summary, path);
 	if (!si) {
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 		g_warning ("%s: Store summary %p doesn't hold path '%s'", G_STRFUNC, summary, path);
 		return FALSE;
 	}
@@ -1250,7 +1216,6 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
 
 	if (g_hash_table_lookup (summary->priv->folder_summaries, folder_summary)) {
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 		g_warning ("%s: Store summary %p already listens on folder summary %p", G_STRFUNC, summary, folder_summary);
 		return FALSE;
 	}
@@ -1260,7 +1225,6 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
 	g_signal_connect (folder_summary, "notify::unread-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	return TRUE;
 }
@@ -1285,12 +1249,10 @@ camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (folder_summary), FALSE);
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	if (!g_hash_table_lookup (summary->priv->folder_summaries, folder_summary)) {
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 		g_warning ("%s: Store summary %p is not connected to folder summary %p", G_STRFUNC, summary, folder_summary);
 		return FALSE;
 	}
@@ -1306,7 +1268,6 @@ camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary,
 	camel_store_summary_save (summary);
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 
 	return TRUE;
 }

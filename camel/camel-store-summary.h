@@ -70,7 +70,7 @@ enum {
 };
 
 struct _CamelStoreInfo {
-	guint32 refcount;
+	volatile gint refcount;
 	gchar *path;
 	guint32 flags;
 	guint32 unread;
@@ -89,7 +89,6 @@ typedef enum _CamelStoreSummaryFlags {
 typedef enum {
 	CAMEL_STORE_SUMMARY_SUMMARY_LOCK,
 	CAMEL_STORE_SUMMARY_IO_LOCK,
-	CAMEL_STORE_SUMMARY_REF_LOCK
 } CamelStoreSummaryLock;
 
 struct _CamelStoreSummary {
@@ -179,7 +178,8 @@ CamelStoreInfo *
 						(CamelStoreSummary *summary,
 						 const gchar *path);
 
-void		camel_store_summary_info_ref	(CamelStoreSummary *summary,
+CamelStoreInfo *
+		camel_store_summary_info_ref	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
 void		camel_store_summary_info_free	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
