@@ -185,9 +185,6 @@ void		camel_store_summary_remove_path	(CamelStoreSummary *summary,
 /* lookup functions */
 gint		camel_store_summary_count	(CamelStoreSummary *summary);
 CamelStoreInfo *
-		camel_store_summary_index	(CamelStoreSummary *summary,
-						 gint index);
-CamelStoreInfo *
 		camel_store_summary_path	(CamelStoreSummary *summary,
 						 const gchar *path);
 GPtrArray *	camel_store_summary_array	(CamelStoreSummary *summary);

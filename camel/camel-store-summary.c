@@ -350,39 +350,6 @@ camel_store_summary_count (CamelStoreSummary *summary)
 }
 
 /**
- * camel_store_summary_index:
- * @summary: a #CamelStoreSummary object
- * @index: record index
- *
- * Retrieve a summary item by index number.
- *
- * The returned #CamelStoreInfo is referenced for thread-safety and should be
- * unreferenced with camel_store_summary_info_unref() when finished with it.
- *
- * Returns: the summary item, or %NULL if @index is out of range
- **/
-CamelStoreInfo *
-camel_store_summary_index (CamelStoreSummary *summary,
-                           gint i)
-{
-	CamelStoreInfo *info = NULL;
-
-	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
-
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-
-	if (i < summary->folders->len)
-		info = g_ptr_array_index (summary->folders, i);
-
-	if (info != NULL)
-		camel_store_summary_info_ref (summary, info);
-
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-
-	return info;
-}
-
-/**
  * camel_store_summary_array:
  * @summary: a #CamelStoreSummary object
  *
