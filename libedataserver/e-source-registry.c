@@ -2037,6 +2037,8 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	if (local_error != NULL)
 		goto exit;
 
+	e_dbus_authenticator_set_without_password (dbus_auth, e_source_authenticator_get_without_password (auth));
+
 	auth_context = g_slice_new0 (AuthContext);
 	auth_context->auth = g_object_ref (auth);
 	auth_context->dbus_auth = dbus_auth;  /* takes ownership */

@@ -63,6 +63,8 @@ struct _ESourceAuthenticatorInterface {
 						 gchar **prompt_message,
 						 gchar **prompt_description);
 
+	gboolean	(*get_without_password)	(ESourceAuthenticator *auth);
+
 	/* Synchronous I/O Methods */
 	ESourceAuthenticationResult
 			(*try_password_sync)	(ESourceAuthenticator *auth,
@@ -89,6 +91,8 @@ void		e_source_authenticator_get_prompt_strings
 						 gchar **prompt_title,
 						 gchar **prompt_message,
 						 gchar **prompt_description);
+gboolean	e_source_authenticator_get_without_password
+						(ESourceAuthenticator *auth);
 ESourceAuthenticationResult
 		e_source_authenticator_try_password_sync
 						(ESourceAuthenticator *auth,

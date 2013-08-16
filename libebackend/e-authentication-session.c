@@ -435,6 +435,32 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	source_uid = e_authentication_session_get_source_uid (session);
 	authenticator = e_authentication_session_get_authenticator (session);
 
+	if (e_source_authenticator_get_without_password (authenticator)) {
+		password_string = g_string_new ("");
+
+		auth_result = e_source_authenticator_try_password_sync (
+			authenticator, password_string, cancellable, &local_error);
+
+		g_string_free (password_string, TRUE);
+		password_string = NULL;
+
+		if (auth_result == E_SOURCE_AUTHENTICATION_ERROR &&
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			g_propagate_error (error, local_error);
+			session_result = E_AUTHENTICATION_SESSION_ERROR;
+			goto exit;
+		}
+
+		g_clear_error (&local_error);
+
+		if (auth_result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
+			session_result = E_AUTHENTICATION_SESSION_SUCCESS;
+			goto exit;
+		}
+
+		/* if an empty password fails, then ask a user for it */
+	}
+
 	success = e_authentication_session_lookup_password_sync (
 		session, cancellable, &stored_password, error);
 

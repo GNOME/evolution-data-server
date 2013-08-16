@@ -774,6 +774,16 @@ authentication_mediator_initable_init (GInitable *initable,
 	return TRUE;
 }
 
+static gboolean
+authentication_mediator_get_without_password (ESourceAuthenticator *auth)
+{
+	EAuthenticationMediator *mediator;
+
+	mediator = E_AUTHENTICATION_MEDIATOR (auth);
+
+	return e_dbus_authenticator_get_without_password (mediator->priv->interface);
+}
+
 static ESourceAuthenticationResult
 authentication_mediator_try_password_sync (ESourceAuthenticator *auth,
                                            const GString *password,
@@ -959,12 +969,10 @@ e_authentication_mediator_initable_init (GInitableIface *interface)
 static void
 e_authentication_mediator_interface_init (ESourceAuthenticatorInterface *interface)
 {
-	interface->try_password_sync =
-		authentication_mediator_try_password_sync;
-	interface->try_password =
-		authentication_mediator_try_password;
-	interface->try_password_finish =
-		authentication_mediator_try_password_finish;
+	interface->get_without_password = authentication_mediator_get_without_password;
+	interface->try_password_sync = authentication_mediator_try_password_sync;
+	interface->try_password = authentication_mediator_try_password;
+	interface->try_password_finish = authentication_mediator_try_password_finish;
 }
 
 static void

@@ -10,6 +10,9 @@
     Interface for an authentication session.
 -->
 <interface name="org.gnome.evolution.dataserver.Authenticator">
+  <!-- WithoutPassword: Whether to try to authenticate without a password first. -->
+  <property name="WithoutPassword" type="b" access="readwrite"/>
+
   <!--
       Ready:
       @encryption_key: Implementation defined encryption key

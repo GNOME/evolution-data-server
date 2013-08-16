@@ -246,6 +246,13 @@ source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
 	g_free (user_name);
 }
 
+static gboolean
+source_authenticator_get_without_password (ESourceAuthenticator *auth)
+{
+	/* require password by default */
+	return FALSE;
+}
+
 /* Helper for source_authenticator_try_password() */
 static void
 source_authenticator_try_password_thread (GSimpleAsyncResult *simple,
@@ -323,6 +330,7 @@ static void
 e_source_authenticator_default_init (ESourceAuthenticatorInterface *interface)
 {
 	interface->get_prompt_strings = source_authenticator_get_prompt_strings;
+	interface->get_without_password = source_authenticator_get_without_password;
 	interface->try_password = source_authenticator_try_password;
 	interface->try_password_finish = source_authenticator_try_password_finish;
 }
@@ -374,6 +382,33 @@ e_source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
 		prompt_title,
 		prompt_message,
 		prompt_description);
+}
+
+/**
+ * e_source_authenticator_get_without_password:
+ * @auth: an #ESourceAuthenticator
+ *
+ * Returns whether the used authentication method can be used without
+ * a password prompt. If so, then user is not asked for the password,
+ * only if the authentication fails. The default implementation returns
+ * #FALSE, which means always asks for the password (or read it from
+ * a keyring).
+ *
+ * Returns: Whether may try to authenticate without asking for the password.
+ *
+ * Since: 3.10
+ **/
+gboolean
+e_source_authenticator_get_without_password (ESourceAuthenticator *auth)
+{
+	ESourceAuthenticatorInterface *interface;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth), FALSE);
+
+	interface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
+	g_return_val_if_fail (interface->get_without_password, FALSE);
+
+	return interface->get_without_password (auth);
 }
 
 /**
