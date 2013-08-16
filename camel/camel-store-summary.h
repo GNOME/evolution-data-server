@@ -208,13 +208,8 @@ void		camel_store_info_set_string	(CamelStoreSummary *summary,
 
 const gchar *	camel_store_info_path		(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
-
-/* helper macro's */
-#define camel_store_info_name(summary, info) \
-	(camel_store_info_string ( \
-		(CamelStoreSummary *) summary, \
-		(const CamelStoreInfo *) info, \
-		CAMEL_STORE_INFO_NAME))
+const gchar *	camel_store_info_name		(CamelStoreSummary *summary,
+						 CamelStoreInfo *info);
 
 void		camel_store_summary_lock	(CamelStoreSummary *summary,
 						 CamelStoreSummaryLock lock);

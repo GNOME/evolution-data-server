@@ -955,6 +955,30 @@ camel_store_info_path (CamelStoreSummary *summary,
 }
 
 /**
+ * camel_store_info_name:
+ * @summary: a #CamelStoreSummary
+ * @info: a #CamelStoreInfo
+ *
+ * Returns the last segment of the path string from @info.
+ *
+ * Returns: the last segment of the path string from @info
+ **/
+const gchar *
+camel_store_info_name (CamelStoreSummary *summary,
+                       CamelStoreInfo *info)
+{
+	const gchar *cp;
+
+	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
+	g_return_val_if_fail (info != NULL, NULL);
+
+	cp = strrchr (info->path, '/');
+
+	/* XXX Not thread-safe; should return a duplicate. */
+	return (cp != NULL) ? cp + 1 : info->path;
+}
+
+/**
  * camel_store_summary_lock:
  * @summary: a #CamelStoreSummary
  * @lock: lock type to lock

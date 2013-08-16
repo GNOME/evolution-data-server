@@ -1120,7 +1120,8 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	} else {
 		fi->display_name = g_strdup (
 			camel_store_info_name (
-			imapx_store->summary, si));
+			CAMEL_STORE_SUMMARY (imapx_store->summary),
+			(CamelStoreInfo *) si));
 	}
 
 	fi->flags |= flags;
