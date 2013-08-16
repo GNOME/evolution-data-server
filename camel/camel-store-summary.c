@@ -883,34 +883,6 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 }
 
 /**
- * camel_store_summary_remove_index:
- * @summary: a #CamelStoreSummary object
- * @index: item index
- *
- * Remove a specific info record from the summary, by index.
- **/
-void
-camel_store_summary_remove_index (CamelStoreSummary *summary,
-                                  gint index)
-{
-	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	if (index < summary->folders->len) {
-		CamelStoreInfo *info = summary->folders->pdata[index];
-
-		g_hash_table_remove (summary->folders_path, camel_store_info_path (summary, info));
-		g_ptr_array_remove_index (summary->folders, index);
-		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
-
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		camel_store_summary_info_unref (summary, info);
-	} else {
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	}
-}
-
-/**
  * camel_store_summary_info_new:
  * @summary: a #CamelStoreSummary object
  *
