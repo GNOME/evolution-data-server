@@ -80,15 +80,6 @@ typedef enum _CamelStoreSummaryFlags {
 	CAMEL_STORE_SUMMARY_DIRTY = 1 << 0,
 } CamelStoreSummaryFlags;
 
-/**
- * CamelStoreSummaryLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_STORE_SUMMARY_SUMMARY_LOCK,
-} CamelStoreSummaryLock;
-
 struct _CamelStoreSummary {
 	CamelObject parent;
 	CamelStoreSummaryPrivate *priv;
@@ -200,11 +191,6 @@ const gchar *	camel_store_info_path		(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
 const gchar *	camel_store_info_name		(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
-
-void		camel_store_summary_lock	(CamelStoreSummary *summary,
-						 CamelStoreSummaryLock lock);
-void		camel_store_summary_unlock	(CamelStoreSummary *summary,
-						 CamelStoreSummaryLock lock);
 
 gboolean	camel_store_summary_connect_folder_summary
 						(CamelStoreSummary *summary,

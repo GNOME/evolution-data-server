@@ -2602,9 +2602,6 @@ camel_store_summary_array_free
 camel_store_info_set_string
 camel_store_info_path
 camel_store_info_name
-CamelStoreSummaryLock
-camel_store_summary_lock
-camel_store_summary_unlock
 camel_store_summary_connect_folder_summary
 camel_store_summary_disconnect_folder_summary
 <SUBSECTION Standard>
