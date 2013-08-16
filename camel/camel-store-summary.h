@@ -83,8 +83,6 @@ struct _CamelStoreSummary {
 	/* sizes of memory objects */
 	guint32 store_info_size;
 
-	gchar *summary_path;
-
 	GPtrArray *folders;	/* CamelStoreInfo's */
 	GHashTable *folders_path; /* CamelStoreInfo's by path name */
 };

@@ -60,6 +60,8 @@ struct _CamelStoreSummaryPrivate {
 
 	gboolean dirty;		/* summary has unsaved changes */
 
+	gchar *summary_path;
+
 	/* header info */
 	guint32 version;	/* version of base part of file */
 	guint32 count;		/* how many were saved/loaded */
@@ -89,7 +91,7 @@ store_summary_finalize (GObject *object)
 	g_hash_table_destroy (summary->folders_path);
 	g_hash_table_destroy (summary->priv->folder_summaries);
 
-	g_free (summary->summary_path);
+	g_free (summary->priv->summary_path);
 
 	g_rec_mutex_clear (&summary->priv->summary_lock);
 	g_rec_mutex_clear (&summary->priv->io_lock);
@@ -314,8 +316,8 @@ camel_store_summary_set_filename (CamelStoreSummary *summary,
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 
-	g_free (summary->summary_path);
-	summary->summary_path = g_strdup (name);
+	g_free (summary->priv->summary_path);
+	summary->priv->summary_path = g_strdup (name);
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
@@ -443,12 +445,12 @@ camel_store_summary_load (CamelStoreSummary *summary)
 	gint i;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), -1);
-	g_return_val_if_fail (summary->summary_path != NULL, -1);
+	g_return_val_if_fail (summary->priv->summary_path != NULL, -1);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
 	g_return_val_if_fail (class->store_info_load != NULL, -1);
 
-	in = g_fopen (summary->summary_path, "rb");
+	in = g_fopen (summary->priv->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 
@@ -507,7 +509,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 	guint32 count;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), -1);
-	g_return_val_if_fail (summary->summary_path != NULL, -1);
+	g_return_val_if_fail (summary->priv->summary_path != NULL, -1);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
 	g_return_val_if_fail (class->summary_header_save != NULL, -1);
@@ -519,7 +521,9 @@ camel_store_summary_save (CamelStoreSummary *summary)
 		return 0;
 	}
 
-	fd = g_open (summary->summary_path, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
+	fd = g_open (
+		summary->priv->summary_path,
+		O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
 		io (printf ("**  open error: %s\n", g_strerror (errno)));
 		return -1;
