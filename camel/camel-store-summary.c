@@ -186,15 +186,13 @@ store_summary_store_info_load (CamelStoreSummary *summary,
                                FILE *in)
 {
 	CamelStoreInfo *info;
-	guint32 flags;
 
 	info = camel_store_summary_info_new (summary);
 
 	io (printf ("Loading folder info\n"));
 
-	/* XXX The flags value is legacy; not used for anything. */
 	if (camel_file_util_decode_string (in, &info->path) == -1 ||
-	    camel_file_util_decode_uint32 (in, &flags) == -1 ||
+	    camel_file_util_decode_uint32 (in, &info->flags) == -1 ||
 	    camel_file_util_decode_uint32 (in, &info->unread) == -1 ||
 	    camel_file_util_decode_uint32 (in, &info->total) == -1) {
 		camel_store_summary_info_unref (summary, info);
