@@ -84,12 +84,6 @@ struct _CamelStoreSummary {
 	CamelObject parent;
 	CamelStoreSummaryPrivate *priv;
 
-	/* header info */
-	guint32 version;	/* version of base part of file */
-	guint32 flags;		/* flags */
-	guint32 count;		/* how many were saved/loaded */
-	time_t time;		/* timestamp for this summary (for implementors to use) */
-
 	/* sizes of memory objects */
 	guint32 store_info_size;
 

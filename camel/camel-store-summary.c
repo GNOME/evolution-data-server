@@ -58,6 +58,12 @@ struct _CamelStoreSummaryPrivate {
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
 	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
 
+	/* header info */
+	guint32 version;	/* version of base part of file */
+	guint32 flags;		/* flags */
+	guint32 count;		/* how many were saved/loaded */
+	time_t time;		/* timestamp for this summary (for implementors to use) */
+
 	GHashTable *folder_summaries; /* CamelFolderSummary->path; doesn't add reference to CamelFolderSummary */
 
 	guint scheduled_save_id;
@@ -127,10 +133,10 @@ store_summary_summary_header_load (CamelStoreSummary *summary,
 		return -1;
 	}
 
-	summary->flags = flags;
-	summary->time = time;
-	summary->count = count;
-	summary->version = version;
+	summary->priv->flags = flags;
+	summary->priv->time = time;
+	summary->priv->count = count;
+	summary->priv->version = version;
 
 	if (version < CAMEL_STORE_SUMMARY_VERSION_0) {
 		g_warning ("Store summary header version too low");
@@ -150,8 +156,8 @@ store_summary_summary_header_save (CamelStoreSummary *summary,
 
 	/* always write latest version */
 	camel_file_util_encode_fixed_int32 (out, CAMEL_STORE_SUMMARY_VERSION);
-	camel_file_util_encode_fixed_int32 (out, summary->flags);
-	camel_file_util_encode_time_t (out, summary->time);
+	camel_file_util_encode_fixed_int32 (out, summary->priv->flags);
+	camel_file_util_encode_time_t (out, summary->priv->time);
 
 	return camel_file_util_encode_fixed_int32 (
 		out, camel_store_summary_count (summary));
@@ -193,7 +199,7 @@ store_summary_store_info_load (CamelStoreSummary *summary,
 
 	/* Ok, brown paper bag bug - prior to version 2 of the file, flags are
 	 * stored using the bit number, not the bit. Try to recover as best we can */
-	if (summary->version < CAMEL_STORE_SUMMARY_VERSION_2) {
+	if (summary->priv->version < CAMEL_STORE_SUMMARY_VERSION_2) {
 		guint32 flags = 0;
 
 		if (info->flags & 1)
@@ -252,7 +258,7 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 		g_free (info->path);
 		info->path = g_strdup (str);
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
-		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+		summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 		break;
 	}
 }
@@ -283,10 +289,7 @@ camel_store_summary_init (CamelStoreSummary *summary)
 	summary->priv = CAMEL_STORE_SUMMARY_GET_PRIVATE (summary);
 	summary->store_info_size = sizeof (CamelStoreInfo);
 
-	summary->version = CAMEL_STORE_SUMMARY_VERSION;
-	summary->flags = 0;
-	summary->count = 0;
-	summary->time = 0;
+	summary->priv->version = CAMEL_STORE_SUMMARY_VERSION;
 
 	summary->folders = g_ptr_array_new ();
 	summary->folders_path = g_hash_table_new (g_str_hash, g_str_equal);
@@ -469,7 +472,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 		goto error;
 
 	/* now read in each message ... */
-	for (i = 0; i < summary->count; i++) {
+	for (i = 0; i < summary->priv->count; i++) {
 		info = class->store_info_load (summary, in);
 
 		if (info == NULL)
@@ -483,7 +486,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 	if (fclose (in) != 0)
 		return -1;
 
-	summary->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
 
 	return 0;
 
@@ -492,7 +495,7 @@ error:
 	g_warning ("Cannot load summary file: %s", g_strerror (ferror (in)));
 	g_rec_mutex_unlock (&summary->priv->io_lock);
 	fclose (in);
-	summary->flags |= ~CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->flags |= ~CAMEL_STORE_SUMMARY_DIRTY;
 	errno = i;
 
 	return -1;
@@ -525,7 +528,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 
 	io (printf ("** saving summary\n"));
 
-	if ((summary->flags & CAMEL_STORE_SUMMARY_DIRTY) == 0) {
+	if ((summary->priv->flags & CAMEL_STORE_SUMMARY_DIRTY) == 0) {
 		io (printf ("**  summary clean no save\n"));
 		return 0;
 	}
@@ -579,7 +582,8 @@ camel_store_summary_save (CamelStoreSummary *summary)
 	if (fclose (out) != 0)
 		return -1;
 
-	summary->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
+
 	return 0;
 }
 
@@ -614,7 +618,7 @@ camel_store_summary_add (CamelStoreSummary *summary,
 
 	g_ptr_array_add (summary->folders, info);
 	g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
-	summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
@@ -653,7 +657,7 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 
 		g_ptr_array_add (summary->folders, info);
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
-		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+		summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	}
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
@@ -720,7 +724,7 @@ camel_store_summary_touch (CamelStoreSummary *summary)
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
-	summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
 
@@ -741,7 +745,7 @@ camel_store_summary_remove (CamelStoreSummary *summary,
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 	g_hash_table_remove (summary->folders_path, camel_store_info_path (summary, info));
 	g_ptr_array_remove (summary->folders, info);
-	summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
+	summary->priv->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 
 	camel_store_summary_info_unref (summary, info);
