@@ -88,7 +88,6 @@ typedef enum _CamelStoreSummaryFlags {
  **/
 typedef enum {
 	CAMEL_STORE_SUMMARY_SUMMARY_LOCK,
-	CAMEL_STORE_SUMMARY_IO_LOCK,
 } CamelStoreSummaryLock;
 
 struct _CamelStoreSummary {

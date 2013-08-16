@@ -540,7 +540,8 @@ camel_store_summary_load (CamelStoreSummary *summary)
 	if (in == NULL)
 		return -1;
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_lock (&summary->priv->io_lock);
+
 	if (class->summary_header_load (summary, in) == -1)
 		goto error;
 
@@ -554,7 +555,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 		camel_store_summary_add (summary, info);
 	}
 
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_unlock (&summary->priv->io_lock);
 
 	if (fclose (in) != 0)
 		return -1;
@@ -566,7 +567,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 error:
 	i = ferror (in);
 	g_warning ("Cannot load summary file: %s", g_strerror (ferror (in)));
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_unlock (&summary->priv->io_lock);
 	fclose (in);
 	summary->flags |= ~CAMEL_STORE_SUMMARY_DIRTY;
 	errno = i;
@@ -623,12 +624,12 @@ camel_store_summary_save (CamelStoreSummary *summary)
 
 	io (printf ("saving header\n"));
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_lock (&summary->priv->io_lock);
 
 	if (class->summary_header_save (summary, out) == -1) {
 		i = errno;
 		fclose (out);
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+		g_rec_mutex_unlock (&summary->priv->io_lock);
 		errno = i;
 		return -1;
 	}
@@ -643,7 +644,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 		class->store_info_save (summary, out, info);
 	}
 
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_unlock (&summary->priv->io_lock);
 
 	if (fflush (out) != 0 || fsync (fileno (out)) == -1) {
 		i = errno;
@@ -686,9 +687,9 @@ camel_store_summary_header_load (CamelStoreSummary *summary)
 	if (in == NULL)
 		return -1;
 
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_lock (&summary->priv->io_lock);
 	ret = class->summary_header_load (summary, in);
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_IO_LOCK);
+	g_rec_mutex_unlock (&summary->priv->io_lock);
 
 	fclose (in);
 	summary->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
@@ -1058,9 +1059,6 @@ camel_store_summary_lock (CamelStoreSummary *summary,
 		case CAMEL_STORE_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
-		case CAMEL_STORE_SUMMARY_IO_LOCK:
-			g_rec_mutex_lock (&summary->priv->io_lock);
-			break;
 		default:
 			g_return_if_reached ();
 	}
@@ -1084,9 +1082,6 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 	switch (lock) {
 		case CAMEL_STORE_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_unlock (&summary->priv->summary_lock);
-			break;
-		case CAMEL_STORE_SUMMARY_IO_LOCK:
-			g_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
 		default:
 			g_return_if_reached ();
