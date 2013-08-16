@@ -170,11 +170,6 @@ CamelStoreInfo *
 CamelStoreInfo *
 		camel_store_summary_info_new	(CamelStoreSummary *summary);
 CamelStoreInfo *
-		camel_store_summary_info_new_from_path
-						(CamelStoreSummary *summary,
-						 const gchar *path);
-
-CamelStoreInfo *
 		camel_store_summary_info_ref	(CamelStoreSummary *summary,
 						 CamelStoreInfo *info);
 void		camel_store_summary_info_unref	(CamelStoreSummary *summary,

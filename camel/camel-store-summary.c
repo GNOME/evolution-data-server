@@ -721,7 +721,13 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 		g_warning ("Trying to add folder '%s' to summary that already has it", path);
 		info = NULL;
 	} else {
-		info = camel_store_summary_info_new_from_path (summary, path);
+		CamelStoreSummaryClass *class;
+
+		class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+		g_return_val_if_fail (class->store_info_new != NULL, NULL);
+
+		info = class->store_info_new (summary, path);
+
 		g_ptr_array_add (summary->folders, info);
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
@@ -730,32 +736,6 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 
 	return info;
-}
-
-/**
- * camel_store_summary_info_new_from_path:
- * @summary: a #CamelStoreSummary object
- * @path: item path
- *
- * Create a new info record from a name.
- *
- * Unreference the returned #CamelStoreInfo with
- * camel_store_summary_info_unref() when finished with it.
- *
- * Returns: the #CamelStoreInfo associated with @path
- **/
-CamelStoreInfo *
-camel_store_summary_info_new_from_path (CamelStoreSummary *summary,
-                                        const gchar *path)
-{
-	CamelStoreSummaryClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
-
-	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
-	g_return_val_if_fail (class->store_info_new != NULL, NULL);
-
-	return class->store_info_new (summary, path);
 }
 
 /**
