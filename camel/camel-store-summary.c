@@ -935,6 +935,26 @@ camel_store_info_set_string (CamelStoreSummary *summary,
 }
 
 /**
+ * camel_store_info_path:
+ * @summary: a #CamelStoreSummary
+ * @info: a #CamelStoreInfo
+ *
+ * Returns the path string from @info.
+ *
+ * Returns: the path string from @info
+ **/
+const gchar *
+camel_store_info_path (CamelStoreSummary *summary,
+                       CamelStoreInfo *info)
+{
+	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
+	g_return_val_if_fail (info != NULL, NULL);
+
+	/* XXX Not thread-safe; should return a duplicate. */
+	return info->path;
+}
+
+/**
  * camel_store_summary_lock:
  * @summary: a #CamelStoreSummary
  * @lock: lock type to lock
