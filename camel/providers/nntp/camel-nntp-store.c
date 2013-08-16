@@ -736,7 +736,7 @@ nntp_folder_info_from_name (CamelNNTPStore *store,
 }
 
 /* handle list/newgroups response */
-static CamelNNTPStoreInfo *
+static CamelStoreInfo *
 nntp_store_info_update (CamelNNTPStore *nntp_store,
                         gchar *line)
 {
@@ -802,7 +802,7 @@ nntp_store_info_update (CamelNNTPStore *nntp_store,
 
 	g_clear_object (&nntp_store_summary);
 
-	return si;
+	return (CamelStoreInfo *) si;
 }
 
 static CamelFolderInfo *
@@ -817,8 +817,9 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *nntp_store,
 	CamelService *service;
 	CamelSettings *settings;
 	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
+	GPtrArray *array;
 	gboolean short_folder_names;
-	guint ii, store_summary_count;
+	guint ii;
 
 	/* since we do not do a tree, any request that is not for root is sure to give no results */
 	if (top != NULL && top[0] != 0)
@@ -836,55 +837,59 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *nntp_store,
 	nntp_store_summary = camel_nntp_store_ref_summary (nntp_store);
 
 	store_summary = CAMEL_STORE_SUMMARY (nntp_store_summary);
-	store_summary_count = camel_store_summary_count (store_summary);
 
-	for (ii = 0; ii < store_summary_count; ii++) {
+	array = camel_store_summary_array (store_summary);
+
+	for (ii = 0; ii < array->len; ii++) {
 		CamelStoreInfo *si;
 
-		si = camel_store_summary_index (store_summary, ii);
-		if (si == NULL)
+		si = g_ptr_array_index (array, ii);
+
+		if ((si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0)
 			continue;
 
-		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
-			/* slow mode?  open and update the folder, always! this will implictly update
-			 * our storeinfo too; in a very round-about way */
-			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0) {
-				CamelNNTPFolder *folder;
-				gchar *line;
+		/* slow mode?  open and update the folder, always! this will
+		 * implictly update our storeinfo too; in a very round-about
+		 * way */
+		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0) {
+			CamelNNTPFolder *folder;
+			gchar *line;
 
-				folder = (CamelNNTPFolder *)
-					camel_store_get_folder_sync (
-					(CamelStore *) nntp_store, si->path,
-					0, cancellable, NULL);
-				if (folder) {
-					CamelFolderChangeInfo *changes = NULL;
+			folder = (CamelNNTPFolder *)
+				camel_store_get_folder_sync (
+				(CamelStore *) nntp_store, si->path,
+				0, cancellable, NULL);
+			if (folder) {
+				CamelFolderChangeInfo *changes = NULL;
 
-					if (camel_nntp_command (nntp_store, cancellable, NULL, folder, &line, NULL) != -1) {
-						if (camel_folder_change_info_changed (folder->changes)) {
-							changes = folder->changes;
-							folder->changes = camel_folder_change_info_new ();
-						}
+				if (camel_nntp_command (nntp_store, cancellable, NULL, folder, &line, NULL) != -1) {
+					if (camel_folder_change_info_changed (folder->changes)) {
+						changes = folder->changes;
+						folder->changes = camel_folder_change_info_new ();
 					}
-					if (changes) {
-						camel_folder_changed (CAMEL_FOLDER (folder), changes);
-						camel_folder_change_info_free (changes);
-					}
-					g_object_unref (folder);
 				}
+				if (changes) {
+					camel_folder_changed (CAMEL_FOLDER (folder), changes);
+					camel_folder_change_info_free (changes);
+				}
+				g_object_unref (folder);
 			}
-			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, si);
-			fi->flags |=
-				CAMEL_FOLDER_NOINFERIORS |
-				CAMEL_FOLDER_NOCHILDREN |
-				CAMEL_FOLDER_SYSTEM;
-			if (last)
-				last->next = fi;
-			else
-				first = fi;
-			last = fi;
 		}
-		camel_store_summary_info_unref (store_summary, si);
+
+		fi = nntp_folder_info_from_store_info (
+			nntp_store, short_folder_names, si);
+		fi->flags |=
+			CAMEL_FOLDER_NOINFERIORS |
+			CAMEL_FOLDER_NOCHILDREN |
+			CAMEL_FOLDER_SYSTEM;
+		if (last)
+			last->next = fi;
+		else
+			first = fi;
+		last = fi;
 	}
+
+	camel_store_summary_array_free (store_summary, array);
 
 	g_clear_object (&nntp_store_summary);
 
@@ -983,6 +988,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	CamelSettings *settings;
 	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
 	GHashTable *known; /* folder name to folder info */
+	GPtrArray *array;
 	gboolean folder_hierarchy_relative;
 	gchar *tmpname;
 	gchar *top = g_strconcat (orig_top ? orig_top:"", ".", NULL);
@@ -991,7 +997,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	gint root_or_flag;
 	gint recursive_flag;
 	gint is_folder_list;
-	guint ii, store_summary_count;
+	guint ii;
 
 	subscribed_or_flag =
 		(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ? 0 : 1;
@@ -1017,14 +1023,13 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	known = g_hash_table_new (g_str_hash, g_str_equal);
 
 	store_summary = CAMEL_STORE_SUMMARY (nntp_store_summary);
-	store_summary_count = camel_store_summary_count (store_summary);
 
-	for (ii = 0; ii < store_summary_count; ii++) {
+	array = camel_store_summary_array (store_summary);
+
+	for (ii = 0; ii < array->len; ii++) {
 		CamelStoreInfo *si;
 
-		si = camel_store_summary_index (store_summary, ii);
-		if (si == NULL)
-			continue;
+		si = g_ptr_array_index (array, ii);
 
 		if ((subscribed_or_flag || (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))
 		    && (root_or_flag || strncmp (si->path, top, toplen) == 0)) {
@@ -1084,12 +1089,11 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 			}
 		} else if (subscribed_or_flag && first) {
 			/* we have already added subitems, but this item is no longer a subitem */
-			camel_store_summary_info_unref (store_summary, si);
 			break;
 		}
-
-		camel_store_summary_info_unref (store_summary, si);
 	}
+
+	camel_store_summary_array_free (store_summary, array);
 
 	g_hash_table_destroy (known);
 	g_free (top);
@@ -1163,7 +1167,6 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 {
 	CamelNNTPStream *nntp_stream = NULL;
 	CamelNNTPStoreSummary *nntp_store_summary;
-	CamelNNTPStoreInfo *si;
 	guint len;
 	guchar *line;
 	gint ret = -1;
@@ -1201,8 +1204,11 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0)
 				nntp_store_info_update (nntp_store, (gchar *) line);
 		} else {
+			CamelStoreSummary *store_summary;
+			CamelStoreInfo *si;
+			GPtrArray *array;
 			GHashTable *all;
-			gint i;
+			guint ii;
 
 		do_complete_list:
 			/* seems we do need a complete list */
@@ -1221,14 +1227,23 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			}
 
 			all = g_hash_table_new (g_str_hash, g_str_equal);
-			for (i = 0; (si = (CamelNNTPStoreInfo *) camel_store_summary_index (CAMEL_STORE_SUMMARY (nntp_store_summary), i)); i++)
-				g_hash_table_insert (all, si->info.path, si);
+
+			store_summary = CAMEL_STORE_SUMMARY (nntp_store_summary);
+			array = camel_store_summary_array (store_summary);
+
+			for (ii = 0; ii < array->len; ii++) {
+				si = g_ptr_array_index (array, ii);
+				camel_store_summary_info_ref (store_summary, si);
+				g_hash_table_insert (all, si->path, si);
+			}
+
+			camel_store_summary_array_free (store_summary, array);
 
 			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0) {
 				si = nntp_store_info_update (nntp_store, (gchar *) line);
-				g_hash_table_remove (all, si->info.path);
+				g_hash_table_remove (all, si->path);
 			}
 
 			g_hash_table_foreach (

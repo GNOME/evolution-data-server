@@ -108,20 +108,28 @@ CamelNNTPStoreInfo *
 camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s,
                                     const gchar *full_name)
 {
-	gint count, i;
-	CamelNNTPStoreInfo *info;
+	CamelStoreInfo *match = NULL;
+	GPtrArray *array;
+	guint ii;
 
-	count = camel_store_summary_count ((CamelStoreSummary *) s);
-	for (i = 0; i < count; i++) {
-		info = (CamelNNTPStoreInfo *) camel_store_summary_index ((CamelStoreSummary *) s, i);
-		if (info) {
-			if (strcmp (info->full_name, full_name) == 0)
-				return info;
-			camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+	array = camel_store_summary_array (CAMEL_STORE_SUMMARY (s));
+
+	for (ii = 0; ii < array->len; ii++) {
+		CamelNNTPStoreInfo *info;
+
+		info = g_ptr_array_index (array, ii);
+
+		if (g_str_equal (info->full_name, full_name)) {
+			match = camel_store_summary_info_ref (
+				CAMEL_STORE_SUMMARY (s),
+				(CamelStoreInfo *) info);
+			break;
 		}
 	}
 
-	return NULL;
+	camel_store_summary_array_free (CAMEL_STORE_SUMMARY (s), array);
+
+	return (CamelNNTPStoreInfo *) match;
 }
 
 gchar *

@@ -120,24 +120,40 @@ CamelIMAPXStoreInfo *
 camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
                                      const gchar *full_name)
 {
-	gint count, i;
-	CamelIMAPXStoreInfo *info;
-	gboolean is_inbox;
+	CamelStoreInfo *match = NULL;
+	GPtrArray *array;
+	gboolean find_inbox;
+	guint ii;
 
-	is_inbox = camel_imapx_mailbox_is_inbox (full_name);
+	find_inbox = camel_imapx_mailbox_is_inbox (full_name);
 
-	count = camel_store_summary_count ((CamelStoreSummary *) s);
-	for (i = 0; i < count; i++) {
-		info = (CamelIMAPXStoreInfo *) camel_store_summary_index ((CamelStoreSummary *) s, i);
-		if (info) {
-			if (strcmp (info->full_name, full_name) == 0 ||
-			    (is_inbox && g_ascii_strcasecmp (info->full_name, full_name) == 0))
-				return info;
-			camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
+	array = camel_store_summary_array (CAMEL_STORE_SUMMARY (s));
+
+	for (ii = 0; ii < array->len; ii++) {
+		CamelIMAPXStoreInfo *info;
+		gboolean is_inbox;
+
+		info = g_ptr_array_index (array, ii);
+		is_inbox = camel_imapx_mailbox_is_inbox (info->full_name);
+
+		if (find_inbox && is_inbox) {
+			match = camel_store_summary_info_ref (
+				CAMEL_STORE_SUMMARY (s),
+				(CamelStoreInfo *) info);
+			break;
+		}
+
+		if (g_str_equal (info->full_name, full_name)) {
+			match = camel_store_summary_info_ref (
+				CAMEL_STORE_SUMMARY (s),
+				(CamelStoreInfo *) info);
+			break;
 		}
 	}
 
-	return NULL;
+	camel_store_summary_array_free (CAMEL_STORE_SUMMARY (s), array);
+
+	return (CamelIMAPXStoreInfo *) match;
 }
 
 gchar *
