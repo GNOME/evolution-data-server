@@ -186,9 +186,6 @@ void		camel_store_summary_remove	(CamelStoreSummary *summary,
 void		camel_store_summary_remove_path	(CamelStoreSummary *summary,
 						 const gchar *path);
 
-/* remove all items */
-void		camel_store_summary_clear	(CamelStoreSummary *summary);
-
 /* lookup functions */
 gint		camel_store_summary_count	(CamelStoreSummary *summary);
 CamelStoreInfo *

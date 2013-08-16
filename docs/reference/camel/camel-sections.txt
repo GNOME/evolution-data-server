@@ -2596,7 +2596,6 @@ camel_store_summary_info_unref
 camel_store_summary_info_free
 camel_store_summary_remove
 camel_store_summary_remove_path
-camel_store_summary_clear
 camel_store_summary_count
 camel_store_summary_index
 camel_store_summary_path

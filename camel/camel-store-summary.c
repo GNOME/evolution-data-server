@@ -69,8 +69,15 @@ static void
 store_summary_finalize (GObject *object)
 {
 	CamelStoreSummary *summary = CAMEL_STORE_SUMMARY (object);
+	guint ii;
 
-	camel_store_summary_clear (summary);
+	for (ii = 0; ii < summary->folders->len; ii++) {
+		CamelStoreInfo *info;
+
+		info = g_ptr_array_index (summary->folders, ii);
+		camel_store_summary_info_unref (summary, info);
+	}
+
 	g_ptr_array_free (summary->folders, TRUE);
 	g_hash_table_destroy (summary->folders_path);
 	g_hash_table_destroy (summary->priv->folder_summaries);
@@ -797,35 +804,6 @@ camel_store_summary_touch (CamelStoreSummary *summary)
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-}
-
-/**
- * camel_store_summary_clear:
- * @summary: a #CamelStoreSummary object
- *
- * Empty the summary contents.
- **/
-void
-camel_store_summary_clear (CamelStoreSummary *summary)
-{
-	gint i;
-
-	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	if (camel_store_summary_count (summary) == 0) {
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		return;
-	}
-
-	for (i = 0; i < summary->folders->len; i++)
-		camel_store_summary_info_unref (summary, summary->folders->pdata[i]);
-
-	g_ptr_array_set_size (summary->folders, 0);
-	g_hash_table_destroy (summary->folders_path);
-	summary->folders_path = g_hash_table_new (g_str_hash, g_str_equal);
 	summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 }
