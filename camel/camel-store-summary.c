@@ -246,12 +246,6 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
                                      gint type,
                                      const gchar *str)
 {
-	const gchar *p;
-	gchar *v;
-	gint len;
-
-	g_assert (info != NULL);
-
 	switch (type) {
 	case CAMEL_STORE_INFO_PATH:
 		camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
@@ -260,23 +254,6 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 		info->path = g_strdup (str);
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		summary->flags |= CAMEL_STORE_SUMMARY_DIRTY;
-		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		break;
-	case CAMEL_STORE_INFO_NAME:
-		camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		g_hash_table_remove (summary->folders_path, (gchar *) camel_store_info_path (summary, info));
-		p = strrchr (info->path, '/');
-		if (p) {
-			len = p - info->path + 1;
-			v = g_malloc (len + strlen (str) + 1);
-			memcpy (v, info->path, len);
-			strcpy (v + len, str);
-		} else {
-			v = g_strdup (str);
-		}
-		g_free (info->path);
-		info->path = v;
-		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		break;
 	}

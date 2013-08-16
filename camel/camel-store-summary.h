@@ -65,7 +65,6 @@ typedef struct _CamelStoreInfo CamelStoreInfo;
 
 enum {
 	CAMEL_STORE_INFO_PATH = 0,
-	CAMEL_STORE_INFO_NAME,
 	CAMEL_STORE_INFO_LAST
 };
 
