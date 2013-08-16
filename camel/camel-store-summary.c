@@ -661,42 +661,6 @@ camel_store_summary_save (CamelStoreSummary *summary)
 }
 
 /**
- * camel_store_summary_header_load:
- * @summary: a #CamelStoreSummary object
- *
- * Only load the header information from the summary,
- * keep the rest on disk.  This should only be done on
- * a fresh summary object.
- *
- * Returns: %0 on success or %-1 on fail
- **/
-gint
-camel_store_summary_header_load (CamelStoreSummary *summary)
-{
-	CamelStoreSummaryClass *class;
-	FILE *in;
-	gint ret;
-
-	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), -1);
-	g_return_val_if_fail (summary->summary_path != NULL, -1);
-
-	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
-	g_return_val_if_fail (class->summary_header_load != NULL, -1);
-
-	in = g_fopen (summary->summary_path, "rb");
-	if (in == NULL)
-		return -1;
-
-	g_rec_mutex_lock (&summary->priv->io_lock);
-	ret = class->summary_header_load (summary, in);
-	g_rec_mutex_unlock (&summary->priv->io_lock);
-
-	fclose (in);
-	summary->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
-	return ret;
-}
-
-/**
  * camel_store_summary_add:
  * @summary: a #CamelStoreSummary object
  * @info: a #CamelStoreInfo

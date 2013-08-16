@@ -153,9 +153,6 @@ void		camel_store_summary_set_filename
 gint		camel_store_summary_load	(CamelStoreSummary *summary);
 gint		camel_store_summary_save	(CamelStoreSummary *summary);
 
-/* only load the header */
-gint		camel_store_summary_header_load	(CamelStoreSummary *summary);
-
 /* set the dirty bit on the summary */
 void		camel_store_summary_touch	(CamelStoreSummary *summary);
 

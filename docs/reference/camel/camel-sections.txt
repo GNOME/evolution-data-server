@@ -2587,7 +2587,6 @@ camel_store_summary_new
 camel_store_summary_set_filename
 camel_store_summary_load
 camel_store_summary_save
-camel_store_summary_header_load
 camel_store_summary_touch
 camel_store_summary_add
 camel_store_summary_add_from_path
