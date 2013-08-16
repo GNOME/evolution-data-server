@@ -136,12 +136,6 @@ gchar *		camel_imapx_store_summary_full_from_path
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path);
 
-/* helpe macro's */
-#define camel_imapx_store_info_full_name(s, i) \
-	(camel_store_info_string ( \
-		(CamelStoreSummary *) s, (const CamelStoreInfo *) i, \
-		CAMEL_IMAPX_STORE_INFO_FULL_NAME))
-
 G_END_DECLS
 
 #endif /* CAMEL_IMAP_STORE_SUMMARY_H */

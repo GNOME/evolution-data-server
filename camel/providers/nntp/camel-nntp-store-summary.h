@@ -85,13 +85,6 @@ GType		camel_nntp_store_summary_get_type
 CamelNNTPStoreSummary *
 		camel_nntp_store_summary_new	(void);
 
-/* helper macro's */
-#define camel_nntp_store_info_full_name(s, i) \
-	(camel_store_info_string ( \
-		(CamelStoreSummary *) s, \
-		(const CamelStoreInfo *) i, \
-		CAMEL_NNTP_STORE_INFO_FULL_NAME))
-
 /* converts to/from utf8 canonical nasmes */
 gchar *		camel_nntp_store_summary_full_to_path
 						(CamelNNTPStoreSummary *s,

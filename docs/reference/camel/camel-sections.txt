@@ -1042,7 +1042,6 @@ camel_imapx_store_summary_path_to_full
 camel_imapx_store_summary_full_name
 camel_imapx_store_summary_add_from_full
 camel_imapx_store_summary_full_from_path
-camel_imapx_store_info_full_name
 <SUBSECTION Standard>
 CAMEL_IMAPX_STORE_SUMMARY
 CAMEL_IS_IMAPX_STORE_SUMMARY

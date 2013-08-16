@@ -1007,7 +1007,7 @@ get_folder_info_offline (CamelStore *store,
 		if (si == NULL)
 			continue;
 
-		full_name = camel_imapx_store_info_full_name (imapx_store->summary, si);
+		full_name = ((CamelIMAPXStoreInfo *) si)->full_name;
 		if (!full_name || !*full_name) {
 			camel_store_summary_info_unref ((CamelStoreSummary *) imapx_store->summary, si);
 			continue;
@@ -1315,8 +1315,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		if (si == NULL)
 			continue;
 
-		full_name =
-			camel_imapx_store_info_full_name (store_summary, si);
+		full_name = ((CamelIMAPXStoreInfo *) si)->full_name;
 		if (full_name == NULL || *full_name == '\0')
 			goto endloop;
 

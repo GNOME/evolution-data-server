@@ -45,7 +45,6 @@ static CamelStoreInfo * store_info_load (CamelStoreSummary *, FILE *);
 static gint		 store_info_save (CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free (CamelStoreSummary *, CamelStoreInfo *);
 
-static const gchar *store_info_string (CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string (CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 G_DEFINE_TYPE (CamelNNTPStoreSummary, camel_nntp_store_summary, CAMEL_TYPE_STORE_SUMMARY)
@@ -61,7 +60,6 @@ camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *class)
 	store_summary_class->store_info_load = store_info_load;
 	store_summary_class->store_info_save = store_info_save;
 	store_summary_class->store_info_free = store_info_free;
-	store_summary_class->store_info_string = store_info_string;
 	store_summary_class->store_info_set_string = store_info_set_string;
 }
 
@@ -190,7 +188,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
-		f = g_strdup (camel_nntp_store_info_full_name (s, si));
+		f = g_strdup (((CamelNNTPStoreInfo *) si)->full_name);
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		return f;
 	}
@@ -228,7 +226,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 	/* merge old path part if required */
 	f = camel_utf8_utf7 (full);
 	if (si) {
-		full = g_strdup_printf ("%s%s", camel_nntp_store_info_full_name (s, si), f);
+		full = g_strdup_printf ("%s%s", ((CamelNNTPStoreInfo *) si)->full_name, f);
 		g_free (f);
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		f = full;
@@ -364,25 +362,6 @@ store_info_free (CamelStoreSummary *s,
 
 	g_free (nsi->full_name);
 	CAMEL_STORE_SUMMARY_CLASS (camel_nntp_store_summary_parent_class)->store_info_free (s, mi);
-}
-
-static const gchar *
-store_info_string (CamelStoreSummary *s,
-                   const CamelStoreInfo *mi,
-                   gint type)
-{
-	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
-
-	/* FIXME: Locks? */
-
-	g_assert (mi != NULL);
-
-	switch (type) {
-	case CAMEL_NNTP_STORE_INFO_FULL_NAME:
-		return nsi->full_name;
-	default:
-		return CAMEL_STORE_SUMMARY_CLASS (camel_nntp_store_summary_parent_class)->store_info_string (s, mi, type);
-	}
 }
 
 static void
