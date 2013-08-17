@@ -1598,13 +1598,18 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		goto exit;
 	}
 
-	if (camel_store_summary_count (store_summary) == 0)
+	if (imapx_store->priv->last_refresh_time == 0) {
+		imapx_store->priv->last_refresh_time = time (NULL);
 		initial_setup = TRUE;
+	}
 
 	if (!initial_setup && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
-		time_t now = time (NULL);
+		time_t time_since_last_refresh;
 
-		if (now - imapx_store->priv->last_refresh_time > FINFO_REFRESH_INTERVAL) {
+		time_since_last_refresh =
+			time (NULL) - imapx_store->priv->last_refresh_time;
+
+		if (time_since_last_refresh > FINFO_REFRESH_INTERVAL) {
 			CamelSession *session;
 
 			imapx_store->priv->last_refresh_time = time (NULL);
