@@ -1563,15 +1563,17 @@ imapx_store_get_folder_info_sync (CamelStore *store,
                                   GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	CamelFolderInfo * fi= NULL;
+	CamelFolderInfo *fi = NULL;
 	CamelService *service;
 	CamelSettings *settings;
+	CamelStoreSummary *store_summary;
 	gboolean initial_setup = FALSE;
 	gboolean use_subscriptions;
 	gchar *pattern;
 
 	service = CAMEL_SERVICE (store);
 	imapx_store = CAMEL_IMAPX_STORE (store);
+	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
 	settings = camel_service_ref_settings (service);
 
@@ -1587,12 +1589,10 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		fi = get_folder_info_offline (store, top, flags, error);
-
-		g_mutex_unlock (&imapx_store->get_finfo_lock);
-		return fi;
+		goto exit;
 	}
 
-	if (camel_store_summary_count ((CamelStoreSummary *) imapx_store->summary) == 0)
+	if (camel_store_summary_count (store_summary) == 0)
 		initial_setup = TRUE;
 
 	if (!initial_setup && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
@@ -1615,14 +1615,12 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		}
 
 		fi = get_folder_info_offline (store, top, flags, error);
-		g_mutex_unlock (&imapx_store->get_finfo_lock);
-		return fi;
+		goto exit;
 	}
 
 	if (*top && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) {
 		fi = get_folder_info_offline (store, top, flags, error);
-		g_mutex_unlock (&imapx_store->get_finfo_lock);
-		return fi;
+		goto exit;
 	}
 
 	if (*top) {
@@ -1645,12 +1643,10 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		pattern[0] = '\0';
 	}
 
-	if (!sync_folders (imapx_store, pattern, TRUE, cancellable, error)) {
-		g_mutex_unlock (&imapx_store->get_finfo_lock);
-		return NULL;
-	}
+	if (!sync_folders (imapx_store, pattern, TRUE, cancellable, error))
+		goto exit;
 
-	camel_store_summary_save ((CamelStoreSummary *) imapx_store->summary);
+	camel_store_summary_save (store_summary);
 
 	/* ensure the INBOX is subscribed if lsub was preferred*/
 	if (initial_setup && use_subscriptions)
@@ -1658,6 +1654,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 	fi = get_folder_info_offline (store, top, flags, error);
 
+exit:
 	g_mutex_unlock (&imapx_store->get_finfo_lock);
 
 	return fi;
