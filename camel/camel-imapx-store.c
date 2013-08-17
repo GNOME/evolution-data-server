@@ -67,6 +67,10 @@ struct _CamelIMAPXStorePrivate {
 	GMutex settings_lock;
 	CamelSettings *settings;
 	gulong settings_notify_handler_id;
+
+	/* Used for synchronizing get_folder_info_sync(). */
+	GMutex get_finfo_lock;
+	time_t last_refresh_time;
 };
 
 enum {
@@ -279,16 +283,18 @@ imapx_store_dispose (GObject *object)
 static void
 imapx_store_finalize (GObject *object)
 {
-	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
+	CamelIMAPXStorePrivate *priv;
 
-	g_mutex_clear (&imapx_store->get_finfo_lock);
+	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (object);
 
-	g_mutex_clear (&imapx_store->priv->server_lock);
+	g_mutex_clear (&priv->get_finfo_lock);
 
-	g_hash_table_destroy (imapx_store->priv->quota_info);
-	g_mutex_clear (&imapx_store->priv->quota_info_lock);
+	g_mutex_clear (&priv->server_lock);
 
-	g_mutex_clear (&imapx_store->priv->settings_lock);
+	g_hash_table_destroy (priv->quota_info);
+	g_mutex_clear (&priv->quota_info_lock);
+
+	g_mutex_clear (&priv->settings_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
@@ -1585,7 +1591,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	if (top == NULL)
 		top = "";
 
-	g_mutex_lock (&imapx_store->get_finfo_lock);
+	g_mutex_lock (&imapx_store->priv->get_finfo_lock);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		fi = get_folder_info_offline (store, top, flags, error);
@@ -1598,10 +1604,10 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	if (!initial_setup && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
 		time_t now = time (NULL);
 
-		if (now - imapx_store->last_refresh_time > FINFO_REFRESH_INTERVAL) {
+		if (now - imapx_store->priv->last_refresh_time > FINFO_REFRESH_INTERVAL) {
 			CamelSession *session;
 
-			imapx_store->last_refresh_time = time (NULL);
+			imapx_store->priv->last_refresh_time = time (NULL);
 
 			session = camel_service_ref_session (service);
 
@@ -1655,7 +1661,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	fi = get_folder_info_offline (store, top, flags, error);
 
 exit:
-	g_mutex_unlock (&imapx_store->get_finfo_lock);
+	g_mutex_unlock (&imapx_store->priv->get_finfo_lock);
 
 	return fi;
 }
@@ -2158,8 +2164,8 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 {
 	store->priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
 
-	g_mutex_init (&store->get_finfo_lock);
-	store->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
+	g_mutex_init (&store->priv->get_finfo_lock);
+	store->priv->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
 	store->dir_sep = '/';
 
 	g_mutex_init (&store->priv->server_lock);

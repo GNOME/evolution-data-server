@@ -64,11 +64,6 @@ struct _CamelIMAPXStore {
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar dir_sep;
-
-	/* Used for syncronizing get_folder_info. Check for re-use of any other lock. At the
-	 * moment, could not find anything suitable for this */
-	GMutex get_finfo_lock;
-	time_t last_refresh_time;
 };
 
 struct _CamelIMAPXStoreClass {
