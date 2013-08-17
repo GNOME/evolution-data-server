@@ -216,7 +216,7 @@ store_summary_store_info_save (CamelStoreSummary *summary,
 	io (printf ("Saving folder info\n"));
 
 	if (camel_file_util_encode_string (out, camel_store_info_path (summary, info)) == -1 ||
-	    camel_file_util_encode_uint32 (out, 0) == -1 ||
+	    camel_file_util_encode_uint32 (out, info->flags) == -1 ||
 	    camel_file_util_encode_uint32 (out, info->unread) == -1 ||
 	    camel_file_util_encode_uint32 (out, info->total) == -1)
 		return -1;
