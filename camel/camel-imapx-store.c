@@ -1619,12 +1619,6 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		return fi;
 	}
 
-	if (!camel_service_connect_sync (
-		CAMEL_SERVICE (store), cancellable, error)) {
-		g_mutex_unlock (&imapx_store->get_finfo_lock);
-		return NULL;
-	}
-
 	if (*top && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) {
 		fi = get_folder_info_offline (store, top, flags, error);
 		g_mutex_unlock (&imapx_store->get_finfo_lock);

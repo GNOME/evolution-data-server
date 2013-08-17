@@ -37,6 +37,7 @@
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-folder.h"
+#include "camel-offline-store.h"
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-store-settings.h"
@@ -298,6 +299,39 @@ store_get_special (CamelStore *store,
 	g_ptr_array_free (folders, TRUE);
 
 	return folder;
+}
+
+static gboolean
+store_maybe_connect_sync (CamelStore *store,
+                          GCancellable *cancellable,
+                          GError **error)
+{
+	CamelService *service;
+	CamelServiceConnectionStatus status;
+	gboolean connect = FALSE;
+	gboolean success = TRUE;
+
+	/* This is meant to recover from dropped connections
+	 * when the CamelService is online but disconnected. */
+
+	service = CAMEL_SERVICE (store);
+	status = camel_service_get_connection_status (service);
+	connect = (status != CAMEL_SERVICE_CONNECTED);
+
+	if (CAMEL_IS_OFFLINE_STORE (store)) {
+		CamelOfflineStore *offline_store;
+
+		offline_store = CAMEL_OFFLINE_STORE (store);
+		if (!camel_offline_store_get_online (offline_store))
+			connect = FALSE;
+	}
+
+	if (connect) {
+		success = camel_service_connect_sync (
+			service, cancellable, error);
+	}
+
+	return success;
 }
 
 static void
@@ -2195,6 +2229,12 @@ camel_store_get_folder_info_sync (CamelStore *store,
 	camel_operation_push_message (
 		cancellable, _("Scanning folders in '%s'"), name);
 	g_free (name);
+
+	/* Recover from a dropped connection, unless we're offline. */
+	if (!store_maybe_connect_sync (store, cancellable, error)) {
+		camel_operation_pop_message (cancellable);
+		return NULL;
+	}
 
 	info = class->get_folder_info_sync (
 		store, top, flags, cancellable, error);

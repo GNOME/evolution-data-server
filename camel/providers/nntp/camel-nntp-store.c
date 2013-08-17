@@ -1307,17 +1307,8 @@ nntp_get_folder_info_online (CamelStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	CamelService *service;
-	CamelFolderInfo *info = NULL;
-
-	service = CAMEL_SERVICE (store);
-
-	/* Reconnect if necessary. */
-	if (camel_service_connect_sync (service, cancellable, error))
-		info = nntp_get_folder_info (
-			store, top, flags, TRUE, cancellable, error);
-
-	return info;
+	return nntp_get_folder_info (
+		store, top, flags, TRUE, cancellable, error);
 }
 
 static CamelFolderInfo *
