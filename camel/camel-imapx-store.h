@@ -65,20 +65,10 @@ struct _CamelIMAPXStore {
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar dir_sep;
 
-	guint32 rec_options;
-
 	/* Used for syncronizing get_folder_info. Check for re-use of any other lock. At the
 	 * moment, could not find anything suitable for this */
 	GMutex get_finfo_lock;
 	time_t last_refresh_time;
-
-	/* hash table of UIDs to ignore as recent when updating folder */
-	GHashTable *ignore_recent;
-
-	/* if we had a login error, what to show to user */
-	gchar *login_error;
-
-	GPtrArray *pending_list;
 };
 
 struct _CamelIMAPXStoreClass {
