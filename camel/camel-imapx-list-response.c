@@ -221,13 +221,13 @@ imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
 	 *     IMAP parser makes this more difficult. */
 
 	/* RFC 5258 "LIST-EXTENDED" */
-	if (g_strcmp0 (item_tag, "CHILDINFO")) {
+	if (g_strcmp0 (item_tag, "CHILDINFO") == 0) {
 		item_value = imapx_list_response_parse_childinfo (
 			stream, response, cancellable, error);
 		success = (item_value != NULL);
 
 	/* RFC 5465 "NOTIFY" */
-	} else if (g_strcmp0 (item_tag, "OLDNAME")) {
+	} else if (g_strcmp0 (item_tag, "OLDNAME") == 0) {
 		item_value = imapx_list_response_parse_oldname (
 			stream, response, cancellable, error);
 		success = (item_value != NULL);
