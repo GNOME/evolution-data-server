@@ -1,3 +1,66 @@
+Evolution-Data-Server 3.9.90 2013-08-19
+---------------------------------------
+
+Bug Fixes:
+	Bug 672899 - Renaming Google book group doesn't propagate to category
+	             (Milan Crha)
+	Bug 700895 - Decode header's value before comparing with RegEx
+	             (Milan Crha)
+	Bug 703181 - Book/calendar backends can authenticate without password
+	             (Milan Crha)
+	Bug 704688 - HTTP Backend: Don't authenticate unnecessarily
+	             (Milan Crha)
+	Bug 704871 - Fails to manage subscription on an NNTP account
+	             (Matthew Barnes)
+	Bug 704885 - "Unknown background operation" when syncing spamassassin
+	             (Matthew Barnes)
+	Bug 704895 - Nicknames for Google Contacts not synced (Milan Crha)
+	Bug 705206 - Stale "Retrieving message xxx" in preview panel
+	             (Matthew Barnes)
+	Bug 705273 - Leaked sockets after failed authentication (Milan Crha)
+	Bug 705288 - Custom header search produces error (Milan Crha)
+	Bug 705444 - Can not create contact lists in LDAP address book
+	             (Milan Crha)
+	Bug 705446 - Old POP3 mails can be removed before getting them
+	             (Milan Crha)
+	Bug 705493 - Wrong default in configure help for --enable-largefile
+	             (Matthew Barnes)
+	Bug 705617 - Failed connection hides offline data in online mode
+	             (Milan Crha)
+	Bug 705814 - Crash in certificate_viewer_new() (Milan Crha)
+
+Other Changes:
+	* [Google] Implement EBookBackend::refresh and advertise its support
+	  (Milan Crha)
+	* [NNTP] Fails to get list of folders, if not connected already
+	  (Milan Crha)
+	* NNTP: Authentication requires nntp_stream set (Milan Crha)
+	* CamelDiscoStore: Fix CamelServiceConnectionStatus tracking.
+	  (Matthew Barnes)
+	* [Camel] Disable SSL v2 and weak ciphers by default (Milan Crha)
+	* IMAPX: Add classes to model LIST and STATUS responses, with more to
+	  follow. (Matthew Barnes)
+	* IMAPX: More refactoring of error handling, this time drastically
+	  simplifying it. (Matthew Barnes)
+	* Remove unused CamelOfflineJournal. (Matthew Barnes)
+	* [Maildir] Create the 'tmp' directory, if missing (Milan Crha)
+	* GOA: Honor GoaMail's "smtp-use-auth" setting. (Matthew Barnes)
+	* EDataBook/CalFactory: Work around a GDBus name watching bug.
+	  (Matthew Barnes)
+	* EBook/CalBackend: Add a "shutdown" signal. (Matthew Barnes)
+	* Tighten up the CamelStoreSummary API and keep mutexes internal.
+	  (Matthew Barnes)
+	* IMAPX: Obtain a fresh folder list on startup. (Matthew Barnes)
+
+Translations:
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+	Victor Ibragimov (tg)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.9.5 2013-07-29
 --------------------------------------
 
