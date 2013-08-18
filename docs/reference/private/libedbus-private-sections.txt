@@ -156,6 +156,8 @@ EDBusAddressBookFactorySkeletonPrivate
 <FILE>e-dbus-authenticator</FILE>
 <TITLE>EDBusAuthenticator</TITLE>
 EDBusAuthenticator
+e_dbus_authenticator_get_without_password
+e_dbus_authenticator_set_without_password
 e_dbus_authenticator_call_ready_sync
 e_dbus_authenticator_call_ready
 e_dbus_authenticator_call_ready_finish
