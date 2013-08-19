@@ -482,7 +482,7 @@ camel_imapx_list_response_get_mailbox (CamelIMAPXListResponse *response)
  *
  * Returns the mailbox path separator character for @response.
  *
- * Returns: the mailbox patch separator character
+ * Returns: the mailbox path separator character
  *
  * Since: 3.10
  **/
