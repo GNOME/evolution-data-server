@@ -865,6 +865,29 @@ CamelIMAPXListResponsePrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-namespace</FILE>
+<TITLE>CamelIMAPXNamespace</TITLE>
+CamelIMAPXNamespace
+CamelIMAPXNamespaceCategory
+camel_imapx_namespace_new
+camel_imapx_namespace_equal
+camel_imapx_namespace_get_category
+camel_imapx_namespace_get_prefix
+camel_imapx_namespace_get_separator
+<SUBSECTION Standard>
+CAMEL_IMAPX_NAMESPACE
+CAMEL_IS_IMAPX_NAMESPACE
+CAMEL_TYPE_IMAPX_NAMESPACE
+CAMEL_IMAPX_NAMESPACE_CLASS
+CAMEL_IS_IMAPX_NAMESPACE_CLASS
+CAMEL_IMAPX_NAMESPACE_GET_CLASS
+CamelIMAPXNamespaceClass
+camel_imapx_namespace_get_type
+<SUBSECTION Private>
+CamelIMAPXNamespacePrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-search</FILE>
 <TITLE>CamelIMAPXSearch</TITLE>
 CamelIMAPXSearch
