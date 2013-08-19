@@ -837,17 +837,18 @@ do_create (EBookBackendFile *bf,
 		}
 	}
 
-	if (status != STATUS_ERROR && contacts != NULL) {
-		*contacts = g_slist_reverse (slist);
-	} else {
-
-		if (contacts)
-			*contacts = NULL;
-
-		/* After adding any contacts, notify any cursors that the new contacts are added */
+	/* After adding any contacts, notify any cursors that the new contacts are added */
+	if (status != STATUS_ERROR) {
 		for (l = slist; l; l = l->next) {
 			cursors_contact_added (bf, E_CONTACT (l->data));
 		}
+	}
+
+	if (status != STATUS_ERROR && contacts != NULL) {
+		*contacts = g_slist_reverse (slist);
+	} else {
+		if (contacts)
+			*contacts = NULL;
 
 		e_util_free_object_slist (slist);
 	}
