@@ -111,7 +111,7 @@ struct _CursorExamplePrivate {
 	TimeoutActivity       activity;
 };
 
-G_DEFINE_TYPE (CursorExample, cursor_example, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE_WITH_PRIVATE (CursorExample, cursor_example, GTK_TYPE_WINDOW);
 
 /************************************************************************
  *                          GObjectClass                                *
@@ -129,30 +129,26 @@ cursor_example_class_init (CursorExampleClass *klass)
 	/* Bind to template */
 	widget_class = GTK_WIDGET_CLASS (klass);
 	gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/evolution/cursor-example/cursor-example.ui");
-
-	gtk_widget_class_bind_child (widget_class, CursorExamplePrivate, navigator);
-	gtk_widget_class_bind_child (widget_class, CursorExamplePrivate, browse_up_button);
-	gtk_widget_class_bind_child (widget_class, CursorExamplePrivate, browse_down_button);
-	gtk_widget_class_bind_child (widget_class, CursorExamplePrivate, alphabet_label);
-	gtk_widget_class_bind_child (widget_class, CursorExamplePrivate, total_label);
-	gtk_widget_class_bind_child (widget_class, CursorExamplePrivate, position_label);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, navigator);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, browse_up_button);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, browse_down_button);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, alphabet_label);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, total_label);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, position_label);
 
 	for (i = 0; i < N_SLOTS; i++) {
 		gchar *name = g_strdup_printf ("contact_slot_%d", i + 1);
 
-		/* XXX Watchout... this GTK+ API will change name soon */
-		gtk_widget_class_automate_child (widget_class, name, FALSE, -1);
+		gtk_widget_class_bind_template_child_full (widget_class, name, FALSE, 0);
 		g_free (name);
 	}
 
-	gtk_widget_class_bind_callback (widget_class, cursor_example_navigator_changed);
-	gtk_widget_class_bind_callback (widget_class, cursor_example_up_button_press);
-	gtk_widget_class_bind_callback (widget_class, cursor_example_up_button_release);
-	gtk_widget_class_bind_callback (widget_class, cursor_example_down_button_press);
-	gtk_widget_class_bind_callback (widget_class, cursor_example_down_button_release);
-	gtk_widget_class_bind_callback (widget_class, cursor_example_sexp_changed);
-
-	g_type_class_add_private (object_class, sizeof (CursorExamplePrivate));
+	gtk_widget_class_bind_template_callback (widget_class, cursor_example_navigator_changed);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_example_up_button_press);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_example_up_button_release);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_example_down_button_press);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_example_down_button_release);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_example_sexp_changed);
 }
 
 static void
@@ -161,23 +157,20 @@ cursor_example_init (CursorExample *example)
 	CursorExamplePrivate *priv;
 	gint i;
 
+	example->priv = priv =
+		cursor_example_get_instance_private (example);
+
 	g_type_ensure (CURSOR_TYPE_NAVIGATOR);
 	g_type_ensure (CURSOR_TYPE_SEARCH);
-
-	example->priv = priv = 
-		G_TYPE_INSTANCE_GET_PRIVATE (example,
-				 CURSOR_TYPE_EXAMPLE,
-				 CursorExamplePrivate);
 
 	gtk_widget_init_template (GTK_WIDGET (example));
 
 	for (i = 0; i < N_SLOTS; i++) {
 
-		/* XXX Watchout... this GTK+ API will change name soon */
 		gchar *name = g_strdup_printf ("contact_slot_%d", i + 1);
-		priv->slots[i] = (GtkWidget *)gtk_widget_get_automated_child (GTK_WIDGET (example),
-									      CURSOR_TYPE_EXAMPLE,
-									      name);
+		priv->slots[i] = (GtkWidget *)gtk_widget_get_template_child (GTK_WIDGET (example),
+									     CURSOR_TYPE_EXAMPLE,
+									     name);
 		g_free (name);
 	}
 }

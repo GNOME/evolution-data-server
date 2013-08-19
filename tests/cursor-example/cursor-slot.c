@@ -35,7 +35,7 @@ struct _CursorSlotPrivate {
 	GtkLabel  *telephones_label;
 };
 
-G_DEFINE_TYPE (CursorSlot, cursor_slot, GTK_TYPE_GRID);
+G_DEFINE_TYPE_WITH_PRIVATE (CursorSlot, cursor_slot, GTK_TYPE_GRID);
 
 /************************************************************************
  *                          GObjectClass                                *
@@ -43,30 +43,21 @@ G_DEFINE_TYPE (CursorSlot, cursor_slot, GTK_TYPE_GRID);
 static void
 cursor_slot_class_init (CursorSlotClass *klass)
 {
-	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
 	/* Bind to template */
 	widget_class = GTK_WIDGET_CLASS (klass);
 	gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/evolution/cursor-example/cursor-slot.ui");
-	gtk_widget_class_bind_child (widget_class, CursorSlotPrivate, area);
-	gtk_widget_class_bind_child (widget_class, CursorSlotPrivate, name_label);
-	gtk_widget_class_bind_child (widget_class, CursorSlotPrivate, emails_label);
-	gtk_widget_class_bind_child (widget_class, CursorSlotPrivate, telephones_label);
-
-	object_class = G_OBJECT_CLASS (klass);
-	g_type_class_add_private (object_class, sizeof (CursorSlotPrivate));
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSlot, area);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSlot, name_label);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSlot, emails_label);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSlot, telephones_label);
 }
 
 static void
 cursor_slot_init (CursorSlot *slot)
 {
-	CursorSlotPrivate *priv;
-
-	slot->priv = priv = 
-		G_TYPE_INSTANCE_GET_PRIVATE (slot,
-				 CURSOR_TYPE_SLOT,
-				 CursorSlotPrivate);
+	slot->priv = cursor_slot_get_instance_private (slot);
 
 	gtk_widget_init_template (GTK_WIDGET (slot));
 }

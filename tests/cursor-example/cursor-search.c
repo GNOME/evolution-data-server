@@ -63,7 +63,7 @@ enum {
 	PROP_SEXP,
 };
 
-G_DEFINE_TYPE (CursorSearch, cursor_search, GTK_TYPE_SEARCH_ENTRY);
+G_DEFINE_TYPE_WITH_PRIVATE (CursorSearch, cursor_search, GTK_TYPE_SEARCH_ENTRY);
 
 /************************************************************************
  *                          GObjectClass                                *
@@ -77,7 +77,6 @@ cursor_search_class_init (CursorSearchClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cursor_search_finalize;
 	object_class->get_property = cursor_search_get_property;
-
 
 	g_object_class_install_property (
 		object_class,
@@ -93,15 +92,13 @@ cursor_search_class_init (CursorSearchClass *klass)
 	/* Bind to template */
 	widget_class = GTK_WIDGET_CLASS (klass);
 	gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/evolution/cursor-example/cursor-search.ui");
-	gtk_widget_class_bind_child (widget_class, CursorSearchPrivate, popup);
-	gtk_widget_class_bind_child (widget_class, CursorSearchPrivate, name_radio);
-	gtk_widget_class_bind_child (widget_class, CursorSearchPrivate, phone_radio);
-	gtk_widget_class_bind_child (widget_class, CursorSearchPrivate, email_radio);
-	gtk_widget_class_bind_callback (widget_class, cursor_search_option_toggled);
-	gtk_widget_class_bind_callback (widget_class, cursor_search_entry_changed);
-	gtk_widget_class_bind_callback (widget_class, cursor_search_icon_press);
-
-	g_type_class_add_private (object_class, sizeof (CursorSearchPrivate));
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, popup);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, name_radio);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, phone_radio);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, email_radio);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_search_option_toggled);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_search_entry_changed);
+	gtk_widget_class_bind_template_callback (widget_class, cursor_search_icon_press);
 }
 
 static void
@@ -109,10 +106,7 @@ cursor_search_init (CursorSearch *search)
 {
 	CursorSearchPrivate *priv;
 
-	search->priv = priv = 
-		G_TYPE_INSTANCE_GET_PRIVATE (search,
-				 CURSOR_TYPE_SEARCH,
-				 CursorSearchPrivate);
+	search->priv = priv = cursor_search_get_instance_private (search);
 
 	gtk_widget_init_template (GTK_WIDGET (search));
 

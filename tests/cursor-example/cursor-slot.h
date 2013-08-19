@@ -40,14 +40,14 @@ typedef struct _CursorSlotClass    CursorSlotClass;
 
 struct _CursorSlot
 {
-	GtkWindow parent_instance;
+	GtkGrid parent_instance;
 
 	CursorSlotPrivate *priv;
 };
 
 struct _CursorSlotClass
 {
-	GtkWindowClass parent_class;
+	GtkGridClass parent_class;
 };
 
 GType       cursor_slot_get_type         (void) G_GNUC_CONST;
