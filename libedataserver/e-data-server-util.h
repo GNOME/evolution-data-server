@@ -117,6 +117,9 @@ void		e_async_closure_callback	(GObject *object,
 						 GAsyncResult *result,
 						 gpointer closure);
 
+GWeakRef       *e_weak_ref_new                  (gpointer object);
+void            e_weak_ref_free                 (GWeakRef *weak_ref);
+
 #ifdef G_OS_WIN32
 const gchar *	e_util_get_prefix		(void) G_GNUC_CONST;
 const gchar *	e_util_get_cp_prefix		(void) G_GNUC_CONST;
