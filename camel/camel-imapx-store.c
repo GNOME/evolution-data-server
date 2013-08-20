@@ -994,7 +994,7 @@ get_folder_info_offline (CamelStore *store,
 
 		if (namespace != NULL) {
 			name = g_strdup (imapx_store->summary->namespaces->personal->full_name);
-			top = imapx_store->summary->namespaces->personal->path;
+			top = imapx_store->summary->namespaces->personal->prefix;
 		} else
 			name = g_strdup ("");
 
@@ -1246,9 +1246,9 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 
 			if (pattern != NULL)
 				pat = g_strdup (pattern);
-			else if (*ns->path != '\0')
+			else if (*ns->prefix != '\0')
 				pat = g_strdup_printf (
-					"%s%c", ns->path, ns->sep);
+					"%s%c", ns->prefix, ns->sep);
 			else
 				pat = g_strdup ("");
 

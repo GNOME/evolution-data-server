@@ -68,9 +68,9 @@ typedef struct _CamelIMAPXStoreNamespace CamelIMAPXStoreNamespace;
 
 struct _CamelIMAPXStoreNamespace {
 	CamelIMAPXStoreNamespace *next;
-	gchar *path;		/* display path */
+	gchar *prefix;		/* mailbox prefix, no trailing separator */
 	gchar *full_name;	/* real name */
-	gchar sep;		/* directory separator */
+	gchar sep;		/* mailbox separator */
 };
 
 typedef struct _CamelIMAPXNamespaceList {

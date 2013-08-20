@@ -212,7 +212,7 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 	if (si)
 		p = path + strlen (subpath);
 	else if (ns)
-		p = path + strlen (ns->path);
+		p = path + strlen (ns->prefix);
 	else
 		p = path;
 
@@ -271,17 +271,17 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 
 	ns = camel_imapx_store_summary_namespace_find_full (s, full_name);
 	if (ns) {
-		d ("(found namespace for '%s' ns '%s') ", full_name, ns->path);
+		d ("(found namespace for '%s' ns '%s') ", full_name, ns->prefix);
 		len = strlen (ns->full_name);
 		if (len >= strlen (full_name)) {
-			pathu8 = g_strdup (ns->path);
+			pathu8 = g_strdup (ns->prefix);
 		} else {
 			if (full_name[len] == ns->sep)
 				len++;
 
 			prefix = camel_imapx_store_summary_full_to_path (s, full_name + len, ns->sep);
-			if (*ns->path) {
-				pathu8 = g_strdup_printf ("%s/%s", ns->path, prefix);
+			if (*ns->prefix) {
+				pathu8 = g_strdup_printf ("%s/%s", ns->prefix, prefix);
 				g_free (prefix);
 			} else {
 				pathu8 = prefix;
@@ -344,7 +344,7 @@ camel_imapx_store_summary_namespace_new (CamelIMAPXStoreSummary *s,
 		ns->full_name[len] = 0;
 	ns->sep = dir_sep;
 
-	o = p = ns->path = camel_imapx_store_summary_full_to_path (s, ns->full_name, dir_sep);
+	o = p = ns->prefix = camel_imapx_store_summary_full_to_path (s, ns->full_name, dir_sep);
 	while ((c = *p++)) {
 		if (c != '#') {
 			if (c == '/')
@@ -368,9 +368,9 @@ camel_imapx_store_summary_namespace_find_path (CamelIMAPXStoreSummary *s,
 	/* CHEN TODO */
 	ns = s->namespaces->personal;
 	while (ns) {
-		len = strlen (ns->path);
+		len = strlen (ns->prefix);
 		if (len == 0
-		    || (strncmp (ns->path, path, len) == 0
+		    || (strncmp (ns->prefix, path, len) == 0
 			&& (path[len] == '/' || path[len] == 0)))
 			break;
 		ns = NULL;
@@ -437,26 +437,26 @@ namespace_load (CamelStoreSummary *s,
 
 		for (i = 0; i < n; i++) {
 			guint32 sep;
-			gchar *path;
+			gchar *prefix;
 			gchar *full_name;
 
-			if (camel_file_util_decode_string (in, &path) == -1)
+			if (camel_file_util_decode_string (in, &prefix) == -1)
 				goto exception;
 
 			if (camel_file_util_decode_string (in, &full_name) == -1) {
-				g_free (path);
+				g_free (prefix);
 				goto exception;
 			}
 
 			if (camel_file_util_decode_uint32 (in, &sep) == -1) {
-				g_free (path);
+				g_free (prefix);
 				g_free (full_name);
 				goto exception;
 			}
 
 			tail->next = ns = g_malloc (sizeof (CamelIMAPXStoreNamespace));
 			ns->sep = sep;
-			ns->path = path;
+			ns->prefix = prefix;
 			ns->full_name = full_name;
 			ns->next = NULL;
 			tail = ns;
@@ -499,7 +499,7 @@ namespace_save (CamelStoreSummary *s,
 
 		ns = cur;
 		while (ns != NULL) {
-			if (camel_file_util_encode_string (out, ns->path) == -1)
+			if (camel_file_util_encode_string (out, ns->prefix) == -1)
 				return -1;
 
 			if (camel_file_util_encode_string (out, ns->full_name) == -1)

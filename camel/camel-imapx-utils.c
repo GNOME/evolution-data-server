@@ -632,13 +632,13 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream,
 			while (tok == '(') {
 				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 				if (tok != IMAPX_TOK_STRING) {
-					g_set_error (error, 1, CAMEL_IMAPX_ERROR, "namespace: expected a string path name");
+					g_set_error (error, 1, CAMEL_IMAPX_ERROR, "namespace: expected a prefix string");
 					goto exception;
 				}
 
 				node = g_new0 (CamelIMAPXStoreNamespace, 1);
 				node->next = NULL;
-				node->path = g_strdup ((gchar *) token);
+				node->prefix = g_strdup ((gchar *) token);
 
 				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 
@@ -647,7 +647,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream,
 						node->sep = *token;
 					} else {
 						if (*token)
-							node->sep = node->path[strlen (node->path) - 1];
+							node->sep = node->prefix[strlen (node->prefix) - 1];
 						else
 							node->sep = '\0';
 					}
@@ -656,7 +656,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream,
 					node->sep = '\0';
 				} else {
 					g_set_error (error, CAMEL_IMAPX_ERROR, 1, "namespace: expected a string separtor");
-					g_free (node->path);
+					g_free (node->prefix);
 					g_free (node);
 					goto exception;
 				}
@@ -664,15 +664,15 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream,
 				tail->next = node;
 				tail = node;
 
-				if (*node->path && node->path[strlen (node->path) -1] == node->sep)
-					node->path[strlen (node->path) - 1] = '\0';
+				if (*node->prefix && node->prefix[strlen (node->prefix) -1] == node->sep)
+					node->prefix[strlen (node->prefix) - 1] = '\0';
 
-				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&
-						(node->path[6] == '\0' || node->path[6] == node->sep ))
-					memcpy (node->path, "INBOX", 5);
+				if (!g_ascii_strncasecmp (node->prefix, "INBOX", 5) &&
+						(node->prefix[6] == '\0' || node->prefix[6] == node->sep ))
+					memcpy (node->prefix, "INBOX", 5);
 
 				/* TODO remove full_name later. not required */
-				node->full_name = g_strdup (node->path);
+				node->full_name = g_strdup (node->prefix);
 
 				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 				if (tok != ')') {
@@ -2910,7 +2910,7 @@ imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
 	while (node != NULL) {
 		next = node->next;
 		g_free (node->full_name);
-		g_free (node->path);
+		g_free (node->prefix);
 		g_free (node);
 		node = next;
 	}
