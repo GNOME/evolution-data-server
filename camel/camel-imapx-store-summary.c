@@ -327,36 +327,6 @@ camel_imapx_store_summary_full_from_path (CamelIMAPXStoreSummary *s,
 	return name;
 }
 
-/* TODO: this api needs some more work */
-CamelIMAPXStoreNamespace *
-camel_imapx_store_summary_namespace_new (CamelIMAPXStoreSummary *s,
-                                         const gchar *full_name,
-                                         gchar dir_sep)
-{
-	CamelIMAPXStoreNamespace *ns;
-	gchar *p, *o, c;
-	gint len;
-
-	ns = g_malloc0 (sizeof (*ns));
-	ns->full_name = g_strdup (full_name);
-	len = strlen (ns->full_name) - 1;
-	if (len >= 0 && ns->full_name[len] == dir_sep)
-		ns->full_name[len] = 0;
-	ns->sep = dir_sep;
-
-	o = p = ns->prefix = camel_imapx_store_summary_full_to_path (s, ns->full_name, dir_sep);
-	while ((c = *p++)) {
-		if (c != '#') {
-			if (c == '/')
-				c = '.';
-			*o++ = c;
-		}
-	}
-	*o = 0;
-
-	return ns;
-}
-
 CamelIMAPXStoreNamespace *
 camel_imapx_store_summary_namespace_find_path (CamelIMAPXStoreSummary *s,
                                                const gchar *path)

@@ -98,11 +98,6 @@ CamelIMAPXStoreSummary *
 
 /* TODO: this api needs some more work, needs to support lists */
 CamelIMAPXStoreNamespace *
-		camel_imapx_store_summary_namespace_new
-						(CamelIMAPXStoreSummary *s,
-						 const gchar *full_name,
-						 gchar dir_sep);
-CamelIMAPXStoreNamespace *
 		camel_imapx_store_summary_namespace_find_path
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path);
