@@ -494,7 +494,7 @@ summary_header_load (CamelStoreSummary *s,
 {
 	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
 	CamelStoreSummaryClass *store_summary_class;
-	gint32 version, capabilities;
+	gint32 version, unused;
 
 	camel_imapx_namespace_list_clear (is->namespaces);
 
@@ -511,10 +511,8 @@ summary_header_load (CamelStoreSummary *s,
 	}
 
 	/* note file format can be expanded to contain more namespaces, but only 1 at the moment */
-	if (camel_file_util_decode_fixed_int32 (in, &capabilities) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, &unused) == -1)
 		return -1;
-
-	is->capabilities = capabilities;
 
 	/* namespaces */
 	if ((is->namespaces = namespace_load (s, in)) == NULL)
@@ -534,7 +532,7 @@ summary_header_save (CamelStoreSummary *s,
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
 	if (store_summary_class->summary_header_save ((CamelStoreSummary *) s, out) == -1
 	    || camel_file_util_encode_fixed_int32 (out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1
-	    || camel_file_util_encode_fixed_int32 (out, is->capabilities) == -1)
+	    || camel_file_util_encode_fixed_int32 (out, 0) == -1)
 		return -1;
 
 	if (is->namespaces && namespace_save (s, out, is->namespaces) == -1)

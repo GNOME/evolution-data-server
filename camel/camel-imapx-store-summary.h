@@ -83,7 +83,6 @@ struct _CamelIMAPXStoreSummary {
 
 	/* header info */
 	guint32 version;	/* version of base part of file */
-	guint32 capabilities;
 	CamelIMAPXNamespaceList *namespaces; /* eventually to be a list */
 };
 
