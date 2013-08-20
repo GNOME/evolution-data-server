@@ -520,9 +520,12 @@ get_folder_offline (CamelStore *store,
 	si = camel_store_summary_path (store_summary, folder_name);
 	is_inbox = camel_imapx_mailbox_is_inbox (folder_name);
 
-	if (si == NULL && is_inbox)
-		si = (CamelStoreInfo *) camel_imapx_store_summary_full_name (
+	if (si == NULL && is_inbox) {
+		/* XXX This function takes a mailbox name but we're passing
+		 *     a folder path.  Are they always identical for INBOX? */
+		si = (CamelStoreInfo *) camel_imapx_store_summary_mailbox (
 			imapx_store->summary, folder_name);
+	}
 
 	if (si != NULL) {
 		gchar *base_dir;
@@ -885,7 +888,7 @@ rename_folder_info (CamelIMAPXStore *imapx_store,
 				"%s/%s", new_name, path + olen + 1);
 		else
 			new_path = g_strdup (new_name);
-		new_mailbox = camel_imapx_store_summary_path_to_full (
+		new_mailbox = camel_imapx_store_summary_path_to_mailbox (
 			imapx_store->summary, new_path,
 			imapx_store->dir_sep);
 
@@ -1000,9 +1003,11 @@ get_folder_info_offline (CamelStore *store,
 
 		g_free (namespace);
 	} else {
-		name = camel_imapx_store_summary_full_from_path (imapx_store->summary, top);
+		name = camel_imapx_store_summary_mailbox_from_path (
+			imapx_store->summary, top);
 		if (name == NULL)
-			name = camel_imapx_store_summary_path_to_full (imapx_store->summary, top, imapx_store->dir_sep);
+			name = camel_imapx_store_summary_path_to_mailbox (
+				imapx_store->summary, top, imapx_store->dir_sep);
 	}
 
 	pattern = imapx_concat (imapx_store, name, "*");
@@ -1027,7 +1032,7 @@ get_folder_info_offline (CamelStore *store,
 		if (mailbox == NULL || *mailbox == '\0')
 			continue;
 
-		ns = camel_imapx_store_summary_namespace_find_full (
+		ns = camel_imapx_store_summary_namespace_find_by_mailbox (
 			imapx_store->summary, mailbox);
 
 		/* Modify the checks to see match the namespaces from preferences */
@@ -1096,19 +1101,13 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	flags = camel_imapx_list_response_get_summary_flags (response);
 
 	if (update_for_lsub) {
-		gchar *full_name;
-
-		full_name = camel_imapx_store_summary_path_to_full (
-			imapx_store->summary, mailbox, separator);
-		fi = g_hash_table_lookup (table, full_name);
+		fi = g_hash_table_lookup (table, mailbox);
 		if (fi != NULL)
 			fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-		g_free (full_name);
-
 		return;
 	}
 
-	si = camel_imapx_store_summary_add_from_full (
+	si = camel_imapx_store_summary_add_from_mailbox (
 		imapx_store->summary, mailbox, separator);
 	if (si == NULL)
 		return;
@@ -1335,7 +1334,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		if (mailbox == NULL || *mailbox == '\0')
 			continue;
 
-		ns = camel_imapx_store_summary_namespace_find_full (
+		ns = camel_imapx_store_summary_namespace_find_by_mailbox (
 			imapx_store->summary, mailbox);
 
 		pattern_match =
@@ -1635,20 +1634,20 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	}
 
 	if (*top) {
-		gchar *name;
+		gchar *mailbox;
 		gint i;
 
-		name = camel_imapx_store_summary_full_from_path (
+		mailbox = camel_imapx_store_summary_mailbox_from_path (
 			imapx_store->summary, top);
-		if (name == NULL)
-			name = camel_imapx_store_summary_path_to_full (
+		if (mailbox == NULL)
+			mailbox = camel_imapx_store_summary_path_to_mailbox (
 				imapx_store->summary, top,
 				imapx_store->dir_sep);
 
-		i = strlen (name);
+		i = strlen (mailbox);
 		pattern = g_alloca (i + 5);
-		strcpy (pattern, name);
-		g_free (name);
+		strcpy (pattern, mailbox);
+		g_free (mailbox);
 	} else {
 		pattern = g_alloca (1);
 		pattern[0] = '\0';
@@ -1746,7 +1745,9 @@ imapx_store_create_folder_sync (CamelStore *store,
 	CamelIMAPXStoreNamespace *ns;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
-	gchar *real_name, *full_name, *parent_real;
+	gchar *mailbox;
+	gchar *child_mailbox;
+	gchar *parent_mailbox;
 	CamelFolderInfo *fi = NULL;
 	gchar dir_sep = 0;
 	gboolean success;
@@ -1760,7 +1761,7 @@ imapx_store_create_folder_sync (CamelStore *store,
 	if (parent_name == NULL)
 		parent_name = "";
 
-	ns = camel_imapx_store_summary_namespace_find_path (
+	ns = camel_imapx_store_summary_namespace_find_by_path (
 		imapx_store->summary, parent_name);
 	if (ns)
 		dir_sep = ns->sep;
@@ -1777,9 +1778,9 @@ imapx_store_create_folder_sync (CamelStore *store,
 		goto exit;
 	}
 
-	parent_real = camel_imapx_store_summary_full_from_path (
+	parent_mailbox = camel_imapx_store_summary_mailbox_from_path (
 		imapx_store->summary, parent_name);
-	if (parent_real == NULL) {
+	if (parent_mailbox == NULL) {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_STATE,
@@ -1801,13 +1802,13 @@ imapx_store_create_folder_sync (CamelStore *store,
 		camel_store_summary_info_unref (
 			(CamelStoreSummary *) imapx_store->summary, si);
 
-	real_name = camel_imapx_store_summary_path_to_full (
+	child_mailbox = camel_imapx_store_summary_path_to_mailbox (
 		imapx_store->summary, folder_name, dir_sep);
-	full_name = imapx_concat (imapx_store, parent_real, real_name);
-	g_free (real_name);
+	mailbox = imapx_concat (imapx_store, parent_mailbox, child_mailbox);
+	g_free (child_mailbox);
 
 	success = camel_imapx_server_create_folder (
-		imapx_server, full_name, cancellable, error);
+		imapx_server, mailbox, cancellable, error);
 
 	if (success) {
 		CamelStoreSummary *summary;
@@ -1816,8 +1817,8 @@ imapx_store_create_folder_sync (CamelStore *store,
 
 		summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
-		si = camel_imapx_store_summary_add_from_full (
-			imapx_store->summary, full_name, dir_sep);
+		si = camel_imapx_store_summary_add_from_mailbox (
+			imapx_store->summary, mailbox, dir_sep);
 		camel_store_summary_save (summary);
 		path = camel_store_info_path (summary, (CamelStoreInfo *) si);
 		fi = imapx_build_folder_info (imapx_store, path);
@@ -1825,8 +1826,8 @@ imapx_store_create_folder_sync (CamelStore *store,
 		camel_store_folder_created (store, fi);
 	}
 
-	g_free (full_name);
-	g_free (parent_real);
+	g_free (mailbox);
+	g_free (parent_mailbox);
 
 exit:
 	g_clear_object (&imapx_server);

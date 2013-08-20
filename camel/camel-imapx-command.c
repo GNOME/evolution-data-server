@@ -261,7 +261,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	CamelFolder *folder;
 	CamelStore *parent_store;
 	GString *buffer;
-	gchar *fname = NULL, *encoded = NULL;
+	gchar *mailbox = NULL, *encoded = NULL;
 	const gchar *full_name;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
@@ -373,10 +373,11 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				full_name = camel_folder_get_full_name (folder);
 				c (ic->is->tagprefix, "got folder '%s'\n", full_name);
 				parent_store = camel_folder_get_parent_store (folder);
-				fname = camel_imapx_store_summary_full_from_path (((CamelIMAPXStore *) parent_store)->summary, full_name);
-				if (fname) {
-					encoded = camel_utf8_utf7 (fname);
-					g_free (fname);
+				mailbox = camel_imapx_store_summary_mailbox_from_path (
+					((CamelIMAPXStore *) parent_store)->summary, full_name);
+				if (mailbox != NULL) {
+					encoded = camel_utf8_utf7 (mailbox);
+					g_free (mailbox);
 				} else
 					encoded = camel_utf8_utf7 (full_name);
 

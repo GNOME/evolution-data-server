@@ -96,36 +96,36 @@ CamelIMAPXStoreSummary *
 
 /* TODO: this api needs some more work, needs to support lists */
 CamelIMAPXStoreNamespace *
-		camel_imapx_store_summary_namespace_find_path
+		camel_imapx_store_summary_namespace_find_by_path
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path);
 CamelIMAPXStoreNamespace *
-		camel_imapx_store_summary_namespace_find_full
+		camel_imapx_store_summary_namespace_find_by_mailbox
 						(CamelIMAPXStoreSummary *s,
-						 const gchar *full_name);
+						 const gchar *mailbox);
 
 /* converts to/from utf8 canonical nasmes */
-gchar *		camel_imapx_store_summary_full_to_path
+gchar *		camel_imapx_store_summary_mailbox_to_path
 						(CamelIMAPXStoreSummary *s,
-						 const gchar *full_name,
+						 const gchar *mailbox,
 						 gchar dir_sep);
-gchar *		camel_imapx_store_summary_path_to_full
+gchar *		camel_imapx_store_summary_path_to_mailbox
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path,
 						 gchar dir_sep);
 
 CamelIMAPXStoreInfo *
-		camel_imapx_store_summary_full_name
+		camel_imapx_store_summary_mailbox
 						(CamelIMAPXStoreSummary *s,
-						 const gchar *full_name);
+						 const gchar *mailbox);
 CamelIMAPXStoreInfo *
-		camel_imapx_store_summary_add_from_full
+		camel_imapx_store_summary_add_from_mailbox
 						(CamelIMAPXStoreSummary *s,
-						 const gchar *full_name,
+						 const gchar *mailbox,
 						 gchar dir_sep);
 
 /* a convenience lookup function. always use this if path known */
-gchar *		camel_imapx_store_summary_full_from_path
+gchar *		camel_imapx_store_summary_mailbox_from_path
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path);
 

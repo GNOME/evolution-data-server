@@ -2071,31 +2071,31 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	CamelIMAPXStore *store;
 	CamelIMAPXStoreNamespace *ns;
 	CamelFolder *folder = NULL;
-	gchar *mailbox_name = NULL;
+	gchar *mailbox = NULL;
 	gchar **quota_root_names = NULL;
 	gboolean success;
 	GError *local_error = NULL;
 
 	success = camel_imapx_parse_quotaroot (
-		stream, cancellable, &mailbox_name, &quota_root_names, error);
+		stream, cancellable, &mailbox, &quota_root_names, error);
 
 	/* Sanity check */
 	g_return_val_if_fail (
-		(success && (mailbox_name != NULL)) ||
-		(!success && (mailbox_name == NULL)), FALSE);
+		(success && (mailbox != NULL)) ||
+		(!success && (mailbox == NULL)), FALSE);
 
 	if (!success)
 		return FALSE;
 
 	store = camel_imapx_server_ref_store (is);
 
-	ns = camel_imapx_store_summary_namespace_find_full (
-		store->summary, mailbox_name);
+	ns = camel_imapx_store_summary_namespace_find_by_mailbox (
+		store->summary, mailbox);
 	if (ns != NULL) {
 		gchar *folder_path;
 
-		folder_path = camel_imapx_store_summary_full_to_path (
-			store->summary, mailbox_name, ns->sep);
+		folder_path = camel_imapx_store_summary_mailbox_to_path (
+			store->summary, mailbox, ns->sep);
 		if (folder_path != NULL) {
 			folder = camel_store_get_folder_sync (
 				CAMEL_STORE (store), folder_path, 0,
@@ -2114,11 +2114,11 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	if (local_error != NULL) {
 		g_warning (
 			"%s: Failed to get folder '%s': %s",
-			G_STRFUNC, mailbox_name, local_error->message);
+			G_STRFUNC, mailbox, local_error->message);
 		g_error_free (local_error);
 	}
 
-	g_free (mailbox_name);
+	g_free (mailbox);
 	g_strfreev (quota_root_names);
 
 	return TRUE;
@@ -2214,13 +2214,13 @@ imapx_untagged_status (CamelIMAPXServer *is,
 
 	store = camel_imapx_server_ref_store (is);
 
-	ns = camel_imapx_store_summary_namespace_find_full (
+	ns = camel_imapx_store_summary_namespace_find_by_mailbox (
 		store->summary, mailbox);
 
 	if (ns != NULL) {
 		gchar *path_name;
 
-		path_name = camel_imapx_store_summary_full_to_path (
+		path_name = camel_imapx_store_summary_mailbox_to_path (
 			store->summary, mailbox, ns->sep);
 		c (is->tagprefix,
 			"Got folder path '%s' for full '%s'\n",
@@ -6036,12 +6036,14 @@ static gchar *
 imapx_encode_folder_name (CamelIMAPXStore *istore,
                           const gchar *folder_name)
 {
-	gchar *fname, *encoded;
+	gchar *mailbox;
+	gchar *encoded;
 
-	fname = camel_imapx_store_summary_full_from_path (istore->summary, folder_name);
-	if (fname) {
-		encoded = camel_utf8_utf7 (fname);
-		g_free (fname);
+	mailbox = camel_imapx_store_summary_mailbox_from_path (
+		istore->summary, folder_name);
+	if (mailbox != NULL) {
+		encoded = camel_utf8_utf7 (mailbox);
+		g_free (mailbox);
 	} else
 		encoded = camel_utf8_utf7 (folder_name);
 

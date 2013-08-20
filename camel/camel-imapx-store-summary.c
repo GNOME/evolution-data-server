@@ -103,29 +103,29 @@ camel_imapx_store_summary_new (void)
 }
 
 /**
- * camel_imapx_store_summary_full_name:
+ * camel_imapx_store_summary_mailbox:
  * @s:
- * @full_name:
+ * @mailbox:
  *
- * Retrieve a summary item by full name.
+ * Retrieve a summary item by mailbox name.
  *
  * A referenced to the summary item is returned, which may be
  * ref'd or free'd as appropriate.
  *
- * Returns: The summary item, or NULL if the @full_name name
+ * Returns: The summary item, or NULL if the @mailbox name
  * is not available.
  * It must be freed using camel_store_summary_info_unref().
  **/
 CamelIMAPXStoreInfo *
-camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
-                                     const gchar *full_name)
+camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
+                                   const gchar *mailbox)
 {
 	CamelStoreInfo *match = NULL;
 	GPtrArray *array;
 	gboolean find_inbox;
 	guint ii;
 
-	find_inbox = camel_imapx_mailbox_is_inbox (full_name);
+	find_inbox = camel_imapx_mailbox_is_inbox (mailbox);
 
 	array = camel_store_summary_array (CAMEL_STORE_SUMMARY (s));
 
@@ -143,7 +143,7 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 			break;
 		}
 
-		if (g_str_equal (info->mailbox, full_name)) {
+		if (g_str_equal (info->mailbox, mailbox)) {
 			match = camel_store_summary_info_ref (
 				CAMEL_STORE_SUMMARY (s),
 				(CamelStoreInfo *) info);
@@ -157,13 +157,13 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 }
 
 gchar *
-camel_imapx_store_summary_full_to_path (CamelIMAPXStoreSummary *s,
-                                        const gchar *full_name,
-                                        gchar dir_sep)
+camel_imapx_store_summary_mailbox_to_path (CamelIMAPXStoreSummary *s,
+                                           const gchar *mailbox,
+                                           gchar dir_sep)
 {
 	gchar *path, *p;
 
-	p = path = g_strdup (full_name);
+	p = path = g_strdup (mailbox);
 
 	if (dir_sep && dir_sep != '/') {
 		while (*p) {
@@ -178,11 +178,12 @@ camel_imapx_store_summary_full_to_path (CamelIMAPXStoreSummary *s,
 }
 
 gchar *
-camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
-                                        const gchar *path,
-                                        gchar dir_sep)
+camel_imapx_store_summary_path_to_mailbox (CamelIMAPXStoreSummary *s,
+                                           const gchar *path,
+                                           gchar dir_sep)
 {
-	gchar *full, *f;
+	gchar *full;
+	gchar *mailbox;
 	const gchar *p;
 	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
@@ -202,12 +203,12 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
-		f = g_strdup (((CamelIMAPXStoreInfo *) si)->mailbox);
+		mailbox = g_strdup (((CamelIMAPXStoreInfo *) si)->mailbox);
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
-		return f;
+		return mailbox;
 	}
 
-	ns = camel_imapx_store_summary_namespace_find_path (s, path);
+	ns = camel_imapx_store_summary_namespace_find_by_path (s, path);
 
 	if (si)
 		p = path + strlen (subpath);
@@ -216,70 +217,71 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 	else
 		p = path;
 
-	f = full = g_strdup (p);
+	mailbox = full = g_strdup (p);
 	if (dir_sep != '/') {
-		while (*f) {
-			if (*f == '/')
-				*f = dir_sep;
-			else if (*f == dir_sep)
-				*f = '/';
-			f++;
+		while (*mailbox) {
+			if (*mailbox == '/')
+				*mailbox = dir_sep;
+			else if (*mailbox == dir_sep)
+				*mailbox = '/';
+			mailbox++;
 		}
 	}
 
 	/* merge old path part if required */
-	f = full;
+	mailbox = full;
 	if (si) {
-		full = g_strdup_printf ("%s%s", ((CamelIMAPXStoreInfo *) si)->mailbox, f);
-		g_free (f);
+		full = g_strdup_printf ("%s%s", ((CamelIMAPXStoreInfo *) si)->mailbox, mailbox);
+		g_free (mailbox);
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
-		f = full;
+		mailbox = full;
 	} else if (ns) {
-		full = g_strdup_printf ("%s%s", ns->prefix, f);
-		g_free (f);
-		f = full;
+		full = g_strdup_printf ("%s%s", ns->prefix, mailbox);
+		g_free (mailbox);
+		mailbox = full;
 	}
 
-	return f;
+	return mailbox;
 }
 
 CamelIMAPXStoreInfo *
-camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
-                                         const gchar *full,
-                                         gchar dir_sep)
+camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
+                                            const gchar *mailbox,
+                                            gchar dir_sep)
 {
 	CamelIMAPXStoreInfo *info;
 	gchar *pathu8, *prefix;
 	gint len;
-	gchar *mailbox;
+	gchar *mailbox_copy;
 	CamelIMAPXStoreNamespace *ns;
 
-	d ("adding full name '%s' '%c'\n", full, dir_sep);
+	d ("adding mailbox '%s' '%c'\n", mailbox, dir_sep);
 
-	len = strlen (full);
-	mailbox = alloca (len + 1);
-	strcpy (mailbox, full);
-	if (mailbox[len - 1] == dir_sep)
-		mailbox[len - 1] = 0;
+	len = strlen (mailbox);
+	mailbox_copy = alloca (len + 1);
+	strcpy (mailbox_copy, mailbox);
+	if (mailbox_copy[len - 1] == dir_sep)
+		mailbox_copy[len - 1] = 0;
 
-	info = camel_imapx_store_summary_full_name (s, mailbox);
+	info = camel_imapx_store_summary_mailbox (s, mailbox_copy);
 	if (info) {
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		d ("  already there\n");
 		return info;
 	}
 
-	ns = camel_imapx_store_summary_namespace_find_full (s, mailbox);
+	ns = camel_imapx_store_summary_namespace_find_by_mailbox (s, mailbox_copy);
 	if (ns) {
-		d ("(found namespace for '%s' ns '%s') ", mailbox, ns->prefix);
+		d ("(found namespace for '%s' ns '%s') ", mailbox_copy, ns->prefix);
 		len = strlen (ns->prefix);
-		if (len >= strlen (mailbox)) {
+		if (len >= strlen (mailbox_copy)) {
 			pathu8 = g_strdup (ns->prefix);
 		} else {
-			if (mailbox[len] == ns->sep)
+			if (mailbox_copy[len] == ns->sep)
 				len++;
 
-			prefix = camel_imapx_store_summary_full_to_path (s, mailbox + len, ns->sep);
+			prefix = camel_imapx_store_summary_mailbox_to_path (
+				s, mailbox_copy + len, ns->sep);
 			if (*ns->prefix) {
 				pathu8 = g_strdup_printf ("%s/%s", ns->prefix, prefix);
 				g_free (prefix);
@@ -289,16 +291,17 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 		}
 		d (" (pathu8 = '%s')", pathu8);
 	} else {
-		d ("(Cannot find namespace for '%s')\n", mailbox);
-		pathu8 = camel_imapx_store_summary_full_to_path (s, mailbox, dir_sep);
+		d ("(Cannot find namespace for '%s')\n", mailbox_copy);
+		pathu8 = camel_imapx_store_summary_mailbox_to_path (
+			s, mailbox_copy, dir_sep);
 	}
 
 	info = (CamelIMAPXStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
-		d ("  '%s' -> '%s'\n", pathu8, mailbox);
-		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_MAILBOX, mailbox);
+		d ("  '%s' -> '%s'\n", pathu8, mailbox_copy);
+		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_MAILBOX, mailbox_copy);
 
-		if (!g_ascii_strcasecmp (mailbox, "inbox"))
+		if (!g_ascii_strcasecmp (mailbox_copy, "inbox"))
 			info->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		d ("  failed\n");
@@ -310,26 +313,27 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 }
 
 /* should this be const? */
-/* TODO: deprecate/merge this function with path_to_full */
+/* TODO: deprecate/merge this function with path_to_mailbox */
 gchar *
-camel_imapx_store_summary_full_from_path (CamelIMAPXStoreSummary *s,
-                                          const gchar *path)
+camel_imapx_store_summary_mailbox_from_path (CamelIMAPXStoreSummary *s,
+                                             const gchar *path)
 {
 	CamelIMAPXStoreNamespace *ns;
-	gchar *name = NULL;
+	gchar *mailbox = NULL;
 
-	ns = camel_imapx_store_summary_namespace_find_path (s, path);
+	ns = camel_imapx_store_summary_namespace_find_by_path (s, path);
 	if (ns)
-		name = camel_imapx_store_summary_path_to_full (s, path, ns->sep);
+		mailbox = camel_imapx_store_summary_path_to_mailbox (
+			s, path, ns->sep);
 
-	d ("looking up path %s -> %s\n", path, name ? name:"not found");
+	d ("looking up path %s -> %s\n", path, mailbox ? mailbox:"not found");
 
-	return name;
+	return mailbox;
 }
 
 CamelIMAPXStoreNamespace *
-camel_imapx_store_summary_namespace_find_path (CamelIMAPXStoreSummary *s,
-                                               const gchar *path)
+camel_imapx_store_summary_namespace_find_by_path (CamelIMAPXStoreSummary *s,
+                                                  const gchar *path)
 {
 	gint len;
 	CamelIMAPXStoreNamespace *ns;
@@ -351,8 +355,8 @@ camel_imapx_store_summary_namespace_find_path (CamelIMAPXStoreSummary *s,
 }
 
 CamelIMAPXStoreNamespace *
-camel_imapx_store_summary_namespace_find_full (CamelIMAPXStoreSummary *s,
-                                               const gchar *full)
+camel_imapx_store_summary_namespace_find_by_mailbox (CamelIMAPXStoreSummary *s,
+                                                     const gchar *mailbox)
 {
 	gint len = 0;
 	CamelIMAPXStoreNamespace *ns;
@@ -363,10 +367,9 @@ camel_imapx_store_summary_namespace_find_full (CamelIMAPXStoreSummary *s,
 	while (ns) {
 		if (ns->prefix)
 			len = strlen (ns->prefix);
-		d ("find_full: comparing namespace '%s' to name '%s'\n", ns->prefix, full);
 		if (len == 0
-		    || (strncmp (ns->prefix, full, len) == 0
-			&& (full[len] == ns->sep || full[len] == 0)))
+		    || (strncmp (ns->prefix, mailbox, len) == 0
+			&& (mailbox[len] == ns->sep || mailbox[len] == 0)))
 			break;
 		ns = NULL;
 	}
