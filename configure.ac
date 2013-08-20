@@ -1,7 +1,7 @@
 
 dnl Evolution-Data-Server version
 m4_define([eds_major_version], [3])
-m4_define([eds_minor_version], [9])
+m4_define([eds_minor_version], [11])
 m4_define([eds_micro_version], [90])
 
 m4_define([eds_version],
