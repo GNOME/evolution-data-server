@@ -4276,7 +4276,6 @@ preauthed:
 		ns = g_new0 (CamelIMAPXStoreNamespace, 1);
 		ns->next = NULL;
 		ns->prefix = g_strdup ("");
-		ns->full_name = g_strdup ("");
 		ns->sep = '/';
 		nsl->personal = ns;
 

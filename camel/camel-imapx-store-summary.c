@@ -235,7 +235,7 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		f = full;
 	} else if (ns) {
-		full = g_strdup_printf ("%s%s", ns->full_name, f);
+		full = g_strdup_printf ("%s%s", ns->prefix, f);
 		g_free (f);
 		f = full;
 	}
@@ -272,7 +272,7 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 	ns = camel_imapx_store_summary_namespace_find_full (s, full_name);
 	if (ns) {
 		d ("(found namespace for '%s' ns '%s') ", full_name, ns->prefix);
-		len = strlen (ns->full_name);
+		len = strlen (ns->prefix);
 		if (len >= strlen (full_name)) {
 			pathu8 = g_strdup (ns->prefix);
 		} else {
@@ -361,11 +361,11 @@ camel_imapx_store_summary_namespace_find_full (CamelIMAPXStoreSummary *s,
 	/* CHEN TODO */
 	ns = s->namespaces->personal;
 	while (ns) {
-		if (ns->full_name)
-			len = strlen (ns->full_name);
-		d ("find_full: comparing namespace '%s' to name '%s'\n", ns->full_name, full);
+		if (ns->prefix)
+			len = strlen (ns->prefix);
+		d ("find_full: comparing namespace '%s' to name '%s'\n", ns->prefix, full);
 		if (len == 0
-		    || (strncmp (ns->full_name, full, len) == 0
+		    || (strncmp (ns->prefix, full, len) == 0
 			&& (full[len] == ns->sep || full[len] == 0)))
 			break;
 		ns = NULL;
@@ -408,26 +408,28 @@ namespace_load (CamelStoreSummary *s,
 		for (i = 0; i < n; i++) {
 			guint32 sep;
 			gchar *prefix;
-			gchar *full_name;
+			gchar *unused;
 
 			if (camel_file_util_decode_string (in, &prefix) == -1)
 				goto exception;
 
-			if (camel_file_util_decode_string (in, &full_name) == -1) {
+			/* XXX This string is just a duplicate of 'prefix',
+			 *     retained only for backward-compatibility. */
+			if (camel_file_util_decode_string (in, &unused) == -1) {
 				g_free (prefix);
 				goto exception;
 			}
 
+			g_free (unused);
+
 			if (camel_file_util_decode_uint32 (in, &sep) == -1) {
 				g_free (prefix);
-				g_free (full_name);
 				goto exception;
 			}
 
 			tail->next = ns = g_malloc (sizeof (CamelIMAPXStoreNamespace));
 			ns->sep = sep;
 			ns->prefix = prefix;
-			ns->full_name = full_name;
 			ns->next = NULL;
 			tail = ns;
 		}
@@ -472,7 +474,8 @@ namespace_save (CamelStoreSummary *s,
 			if (camel_file_util_encode_string (out, ns->prefix) == -1)
 				return -1;
 
-			if (camel_file_util_encode_string (out, ns->full_name) == -1)
+			/* XXX This redundancy is for backward-compatibility. */
+			if (camel_file_util_encode_string (out, ns->prefix) == -1)
 				return -1;
 
 			if (camel_file_util_encode_uint32 (out, ns->sep) == -1)

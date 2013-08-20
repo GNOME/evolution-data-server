@@ -993,7 +993,7 @@ get_folder_info_offline (CamelStore *store,
 		}
 
 		if (namespace != NULL) {
-			name = g_strdup (imapx_store->summary->namespaces->personal->full_name);
+			name = g_strdup (imapx_store->summary->namespaces->personal->prefix);
 			top = imapx_store->summary->namespaces->personal->prefix;
 		} else
 			name = g_strdup ("");

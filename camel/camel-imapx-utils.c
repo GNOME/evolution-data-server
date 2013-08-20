@@ -671,9 +671,6 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream,
 						(node->prefix[6] == '\0' || node->prefix[6] == node->sep ))
 					memcpy (node->prefix, "INBOX", 5);
 
-				/* TODO remove full_name later. not required */
-				node->full_name = g_strdup (node->prefix);
-
 				tok = camel_imapx_stream_token (stream, &token, &len, cancellable, NULL);
 				if (tok != ')') {
 					g_set_error (error, CAMEL_IMAPX_ERROR, 1, "namespace: expected a ')'");
@@ -2909,7 +2906,6 @@ imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
 	node = *ns;
 	while (node != NULL) {
 		next = node->next;
-		g_free (node->full_name);
 		g_free (node->prefix);
 		g_free (node);
 		node = next;
