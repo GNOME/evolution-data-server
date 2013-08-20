@@ -687,7 +687,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
                                    GError **error)
 {
 #ifndef G_OS_WIN32
-	CamelStream *stream = camel_stream_process_new ();
+	CamelStream *stream;
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
 	CamelService *service;
@@ -733,6 +733,8 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 			"--use-cached-creds --username '%s'",
 			NTLM_AUTH_HELPER, user);
 	}
+
+	stream = camel_stream_process_new ();
 
 	ret = camel_stream_process_connect (
 		CAMEL_STREAM_PROCESS (stream), command, NULL, error);
