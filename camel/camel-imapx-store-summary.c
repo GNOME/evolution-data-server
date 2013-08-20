@@ -134,7 +134,7 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 		gboolean is_inbox;
 
 		info = g_ptr_array_index (array, ii);
-		is_inbox = camel_imapx_mailbox_is_inbox (info->full_name);
+		is_inbox = camel_imapx_mailbox_is_inbox (info->mailbox);
 
 		if (find_inbox && is_inbox) {
 			match = camel_store_summary_info_ref (
@@ -143,7 +143,7 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 			break;
 		}
 
-		if (g_str_equal (info->full_name, full_name)) {
+		if (g_str_equal (info->mailbox, full_name)) {
 			match = camel_store_summary_info_ref (
 				CAMEL_STORE_SUMMARY (s),
 				(CamelStoreInfo *) info);
@@ -202,7 +202,7 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 
 	/* path is already present, use the raw version we have */
 	if (si && strlen (subpath) == strlen (path)) {
-		f = g_strdup (((CamelIMAPXStoreInfo *) si)->full_name);
+		f = g_strdup (((CamelIMAPXStoreInfo *) si)->mailbox);
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		return f;
 	}
@@ -230,7 +230,7 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 	/* merge old path part if required */
 	f = full;
 	if (si) {
-		full = g_strdup_printf ("%s%s", ((CamelIMAPXStoreInfo *) si)->full_name, f);
+		full = g_strdup_printf ("%s%s", ((CamelIMAPXStoreInfo *) si)->mailbox, f);
 		g_free (f);
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
 		f = full;
@@ -251,35 +251,35 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 	CamelIMAPXStoreInfo *info;
 	gchar *pathu8, *prefix;
 	gint len;
-	gchar *full_name;
+	gchar *mailbox;
 	CamelIMAPXStoreNamespace *ns;
 
 	d ("adding full name '%s' '%c'\n", full, dir_sep);
 
 	len = strlen (full);
-	full_name = alloca (len + 1);
-	strcpy (full_name, full);
-	if (full_name[len - 1] == dir_sep)
-		full_name[len - 1] = 0;
+	mailbox = alloca (len + 1);
+	strcpy (mailbox, full);
+	if (mailbox[len - 1] == dir_sep)
+		mailbox[len - 1] = 0;
 
-	info = camel_imapx_store_summary_full_name (s, full_name);
+	info = camel_imapx_store_summary_full_name (s, mailbox);
 	if (info) {
 		camel_store_summary_info_unref ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		d ("  already there\n");
 		return info;
 	}
 
-	ns = camel_imapx_store_summary_namespace_find_full (s, full_name);
+	ns = camel_imapx_store_summary_namespace_find_full (s, mailbox);
 	if (ns) {
-		d ("(found namespace for '%s' ns '%s') ", full_name, ns->prefix);
+		d ("(found namespace for '%s' ns '%s') ", mailbox, ns->prefix);
 		len = strlen (ns->prefix);
-		if (len >= strlen (full_name)) {
+		if (len >= strlen (mailbox)) {
 			pathu8 = g_strdup (ns->prefix);
 		} else {
-			if (full_name[len] == ns->sep)
+			if (mailbox[len] == ns->sep)
 				len++;
 
-			prefix = camel_imapx_store_summary_full_to_path (s, full_name + len, ns->sep);
+			prefix = camel_imapx_store_summary_full_to_path (s, mailbox + len, ns->sep);
 			if (*ns->prefix) {
 				pathu8 = g_strdup_printf ("%s/%s", ns->prefix, prefix);
 				g_free (prefix);
@@ -289,16 +289,16 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 		}
 		d (" (pathu8 = '%s')", pathu8);
 	} else {
-		d ("(Cannot find namespace for '%s')\n", full_name);
-		pathu8 = camel_imapx_store_summary_full_to_path (s, full_name, dir_sep);
+		d ("(Cannot find namespace for '%s')\n", mailbox);
+		pathu8 = camel_imapx_store_summary_full_to_path (s, mailbox, dir_sep);
 	}
 
 	info = (CamelIMAPXStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
-		d ("  '%s' -> '%s'\n", pathu8, full_name);
-		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_FULL_NAME, full_name);
+		d ("  '%s' -> '%s'\n", pathu8, mailbox);
+		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_MAILBOX, mailbox);
 
-		if (!g_ascii_strcasecmp (full_name, "inbox"))
+		if (!g_ascii_strcasecmp (mailbox, "inbox"))
 			info->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		d ("  failed\n");
@@ -551,12 +551,12 @@ store_info_load (CamelStoreSummary *s,
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
 	mi = (CamelIMAPXStoreInfo *) store_summary_class->store_info_load (s, in);
 	if (mi) {
-		if (camel_file_util_decode_string (in, &mi->full_name) == -1) {
+		if (camel_file_util_decode_string (in, &mi->mailbox) == -1) {
 			camel_store_summary_info_unref (s, (CamelStoreInfo *) mi);
 			mi = NULL;
 		} else {
 			/* NB: this is done again for compatability */
-			if (g_ascii_strcasecmp (mi->full_name, "inbox") == 0)
+			if (g_ascii_strcasecmp (mi->mailbox, "inbox") == 0)
 				mi->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 		}
 	}
@@ -574,7 +574,7 @@ store_info_save (CamelStoreSummary *s,
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
 	if (store_summary_class->store_info_save (s, out, mi) == -1
-	    || camel_file_util_encode_string (out, isi->full_name) == -1)
+	    || camel_file_util_encode_string (out, isi->mailbox) == -1)
 		return -1;
 
 	return 0;
@@ -587,7 +587,7 @@ store_info_free (CamelStoreSummary *s,
 	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *) mi;
 	CamelStoreSummaryClass *store_summary_class;
 
-	g_free (isi->full_name);
+	g_free (isi->mailbox);
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
 	store_summary_class->store_info_free (s, mi);
@@ -607,10 +607,10 @@ store_info_set_string (CamelStoreSummary *s,
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
 
 	switch (type) {
-	case CAMEL_IMAPX_STORE_INFO_FULL_NAME:
-		d ("Set full name %s -> %s\n", isi->full_name, str);
-		g_free (isi->full_name);
-		isi->full_name = g_strdup (str);
+	case CAMEL_IMAPX_STORE_INFO_MAILBOX:
+		d ("Set full name %s -> %s\n", isi->mailbox, str);
+		g_free (isi->mailbox);
+		isi->mailbox = g_strdup (str);
 		break;
 	default:
 		store_summary_class->store_info_set_string (s, mi, type, str);
