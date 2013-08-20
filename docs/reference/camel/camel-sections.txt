@@ -888,6 +888,28 @@ CamelIMAPXNamespacePrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-namespace-response</FILE>
+<TITLE>CamelIMAPXNamespaceResponse</TITLE>
+CamelIMAPXNamespaceResponse
+camel_imapx_namespace_response_new
+camel_imapx_namespace_response_faux_new
+camel_imapx_namespace_response_list
+camel_imapx_namespace_response_lookup
+camel_imapx_namespace_response_lookup_for_path
+<SUBSECTION Standard>
+CAMEL_IMAPX_NAMESPACE_RESPONSE
+CAMEL_IS_IMAPX_NAMESPACE_RESPONSE
+CAMEL_TYPE_IMAPX_NAMESPACE_RESPONSE
+CAMEL_IMAPX_NAMESPACE_RESPONSE_CLASS
+CAMEL_IS_IMAPX_NAMESPACE_RESPONSE_CLASS
+CAMEL_IMAPX_NAMESPACE_RESPONSE_GET_CLASS
+CamelIMAPXNamespaceResponseClass
+camel_imapx_namespace_response_get_type
+<SUBSECTION Private>
+CamelIMAPXNamespaceResponsePrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-search</FILE>
 <TITLE>CamelIMAPXSearch</TITLE>
 CamelIMAPXSearch
