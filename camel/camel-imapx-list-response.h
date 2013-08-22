@@ -107,6 +107,8 @@ void		camel_imapx_list_response_add_attribute
 gboolean	camel_imapx_list_response_has_attribute
 					(CamelIMAPXListResponse *response,
 					 const gchar *attribute);
+GHashTable *	camel_imapx_list_response_dup_attributes
+					(CamelIMAPXListResponse *response);
 GVariant *	camel_imapx_list_response_ref_extended_item
 					(CamelIMAPXListResponse *response,
 					 const gchar *extended_item_tag);

@@ -43,7 +43,7 @@
 struct _CamelIMAPXListResponsePrivate {
 	gchar *mailbox_name;
 	gchar separator;
-	GQueue attributes;
+	GHashTable *attributes;
 	GHashTable *extended_items;
 };
 
@@ -51,6 +51,19 @@ G_DEFINE_TYPE (
 	CamelIMAPXListResponse,
 	camel_imapx_list_response,
 	G_TYPE_OBJECT)
+
+/* These are internalized on class initialization. */
+static const gchar *known_attributes[] = {
+	CAMEL_IMAPX_LIST_ATTR_MARKED,
+	CAMEL_IMAPX_LIST_ATTR_NOINFERIORS,
+	CAMEL_IMAPX_LIST_ATTR_NOSELECT,
+	CAMEL_IMAPX_LIST_ATTR_UNMARKED,
+	CAMEL_IMAPX_LIST_ATTR_HASCHILDREN,
+	CAMEL_IMAPX_LIST_ATTR_HASNOCHILDREN,
+	CAMEL_IMAPX_LIST_ATTR_NONEXISTENT,
+	CAMEL_IMAPX_LIST_ATTR_REMOTE,
+	CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED
+};
 
 static void
 imapx_list_response_finalize (GObject *object)
@@ -61,9 +74,7 @@ imapx_list_response_finalize (GObject *object)
 
 	g_free (priv->mailbox_name);
 
-	/* Flag strings are interned, so don't free them. */
-	g_queue_clear (&priv->attributes);
-
+	g_hash_table_destroy (priv->attributes);
 	g_hash_table_destroy (priv->extended_items);
 
 	/* Chain up to parent's finalize() method. */
@@ -75,18 +86,31 @@ static void
 camel_imapx_list_response_class_init (CamelIMAPXListResponseClass *class)
 {
 	GObjectClass *object_class;
+	gint ii;
 
 	g_type_class_add_private (
 		class, sizeof (CamelIMAPXListResponsePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_list_response_finalize;
+
+	/* Internalize known mailbox attribute names. */
+	for (ii = 0; ii < G_N_ELEMENTS (known_attributes); ii++) {
+		const gchar *string = known_attributes[ii];
+		known_attributes[ii] = g_intern_static_string (string);
+	}
 }
 
 static void
 camel_imapx_list_response_init (CamelIMAPXListResponse *response)
 {
+	GHashTable *attributes;
 	GHashTable *extended_items;
+
+	/* Set of internalized attribute strings. */
+	attributes = g_hash_table_new (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal);
 
 	extended_items = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -95,6 +119,7 @@ camel_imapx_list_response_init (CamelIMAPXListResponse *response)
 		(GDestroyNotify) g_variant_unref);
 
 	response->priv = CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE (response);
+	response->priv->attributes = attributes;
 	response->priv->extended_items = extended_items;
 }
 
@@ -595,16 +620,25 @@ void
 camel_imapx_list_response_add_attribute (CamelIMAPXListResponse *response,
                                          const gchar *attribute)
 {
+	const gchar *canonical = NULL;
+	gint ii;
+
 	g_return_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response));
 	g_return_if_fail (attribute != NULL);
 
-	/* Avoid duplicates. */
-	if (camel_imapx_list_response_has_attribute (response, attribute))
-		return;
+	/* Try normalizing the attribute to match one of our
+	 * pre-defined macros. */
+	for (ii = 0; ii < G_N_ELEMENTS (known_attributes); ii++) {
+		if (g_ascii_strcasecmp (attribute, known_attributes[ii]) == 0) {
+			canonical = known_attributes[ii];
+			break;
+		}
+	}
 
-	g_queue_push_tail (
-		&response->priv->attributes,
-		(gpointer) g_intern_string (attribute));
+	if (canonical == NULL)
+		canonical = g_intern_string (attribute);
+
+	g_hash_table_add (response->priv->attributes, (gpointer) canonical);
 }
 
 /**
@@ -623,16 +657,47 @@ gboolean
 camel_imapx_list_response_has_attribute (CamelIMAPXListResponse *response,
                                          const gchar *attribute)
 {
-	GList *match;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response), FALSE);
 	g_return_val_if_fail (attribute != NULL, FALSE);
 
-	match = g_queue_find_custom (
-		&response->priv->attributes, attribute,
-		(GCompareFunc) g_ascii_strcasecmp);
+	return g_hash_table_contains (response->priv->attributes, attribute);
+}
 
-	return (match != NULL);
+/**
+ * camel_imapx_list_response_dup_attributes:
+ * @response: a #CamelIMAPXListResponse
+ *
+ * Returns a #GHashTable of mailbox attributes to be used as a set.
+ * Use g_hash_table_contains() and g_hash_table_get_keys() to query
+ * for and list all mailbox attributes, respectively.
+ *
+ * The hash table keys are all internalized strings and must not be freed.
+ * Free the returned #GHashTable with g_hash_table_destroy() when finished
+ * with it.
+ *
+ * Returns: a newly-created #GHashTable
+ *
+ * Since: 3.10
+ **/
+GHashTable *
+camel_imapx_list_response_dup_attributes (CamelIMAPXListResponse *response)
+{
+	GHashTable *hash_table;
+	GHashTableIter iter;
+	gpointer key;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response), NULL);
+
+	hash_table = g_hash_table_new (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal);
+
+	g_hash_table_iter_init (&iter, response->priv->attributes);
+
+	while (g_hash_table_iter_next (&iter, &key, NULL))
+		g_hash_table_add (hash_table, key);
+
+	return hash_table;
 }
 
 /**
