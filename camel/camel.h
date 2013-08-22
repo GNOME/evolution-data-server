@@ -142,6 +142,7 @@
 #include <camel/camel-imapx-job.h>
 #include <camel/camel-imapx-folder.h>
 #include <camel/camel-imapx-list-response.h>
+#include <camel/camel-imapx-mailbox.h>
 #include <camel/camel-imapx-namespace.h>
 #include <camel/camel-imapx-namespace-response.h>
 #include <camel/camel-imapx-search.h>
