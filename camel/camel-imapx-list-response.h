@@ -23,7 +23,9 @@
 #ifndef CAMEL_IMAPX_LIST_RESPONSE_H
 #define CAMEL_IMAPX_LIST_RESPONSE_H
 
-#include <camel/camel.h>
+#include <gio/gio.h>
+#include <camel/camel-enums.h>
+#include <camel/camel-imapx-stream.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_LIST_RESPONSE \

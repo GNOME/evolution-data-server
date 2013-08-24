@@ -34,6 +34,8 @@
 
 #include "camel-imapx-list-response.h"
 
+#include <camel/camel-imapx-utils.h>
+
 #define CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_IMAPX_LIST_RESPONSE, CamelIMAPXListResponsePrivate))
