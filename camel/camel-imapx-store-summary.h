@@ -54,11 +54,6 @@ typedef struct _CamelIMAPXStoreSummaryClass CamelIMAPXStoreSummaryClass;
 
 typedef struct _CamelIMAPXStoreInfo CamelIMAPXStoreInfo;
 
-enum {
-	CAMEL_IMAPX_STORE_INFO_MAILBOX = CAMEL_STORE_INFO_LAST,
-	CAMEL_IMAPX_STORE_INFO_LAST
-};
-
 struct _CamelIMAPXStoreInfo {
 	CamelStoreInfo info;
 	gchar *mailbox_name;

@@ -314,32 +314,6 @@ imapx_store_summary_store_info_free (CamelStoreSummary *s,
 }
 
 static void
-imapx_store_summary_store_info_set_string (CamelStoreSummary *s,
-                                           CamelStoreInfo *si,
-                                           gint type,
-                                           const gchar *str)
-{
-	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *) si;
-	CamelStoreSummaryClass *store_summary_class;
-
-	store_summary_class =
-		CAMEL_STORE_SUMMARY_CLASS (
-		camel_imapx_store_summary_parent_class);
-
-	switch (type) {
-	case CAMEL_IMAPX_STORE_INFO_MAILBOX:
-		d ("Set full name %s -> %s\n", isi->mailbox_name, str);
-		g_free (isi->mailbox_name);
-		isi->mailbox_name = g_strdup (str);
-		break;
-	default:
-		/* Chain up to parent's store_info_set_string() method. */
-		store_summary_class->store_info_set_string (s, si, type, str);
-		break;
-	}
-}
-
-static void
 camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 {
 	GObjectClass *object_class;
@@ -354,7 +328,6 @@ camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 	store_summary_class->store_info_load = imapx_store_summary_store_info_load;
 	store_summary_class->store_info_save = imapx_store_summary_store_info_save;
 	store_summary_class->store_info_free = imapx_store_summary_store_info_free;
-	store_summary_class->store_info_set_string = imapx_store_summary_store_info_set_string;
 }
 
 static void
@@ -584,7 +557,7 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 	info = (CamelIMAPXStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
 		d ("  '%s' -> '%s'\n", pathu8, mailbox_copy);
-		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_MAILBOX, mailbox_copy);
+		info->mailbox_name = g_strdup (mailbox_copy);
 
 		if (camel_imapx_mailbox_is_inbox (mailbox_copy))
 			info->info.flags |=

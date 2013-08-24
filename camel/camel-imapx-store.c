@@ -895,13 +895,13 @@ rename_folder_info (CamelIMAPXStore *imapx_store,
 		camel_store_info_set_string (
 			store_summary, si,
 			CAMEL_STORE_INFO_PATH, new_path);
-		camel_store_info_set_string (
-			store_summary, si,
-			CAMEL_IMAPX_STORE_INFO_MAILBOX, new_mailbox);
+
+		/* Takes ownership of new_mailbox. */
+		g_free (((CamelIMAPXStoreInfo *) si)->mailbox_name);
+		((CamelIMAPXStoreInfo *) si)->mailbox_name = new_mailbox;
 
 		camel_store_summary_touch (store_summary);
 
-		g_free (new_mailbox);
 		g_free (new_path);
 	}
 
