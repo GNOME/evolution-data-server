@@ -61,7 +61,7 @@ enum {
 
 struct _CamelIMAPXStoreInfo {
 	CamelStoreInfo info;
-	gchar *mailbox;
+	gchar *mailbox_name;
 };
 
 typedef struct _CamelIMAPXStoreNamespace CamelIMAPXStoreNamespace;
@@ -117,7 +117,7 @@ gchar *		camel_imapx_store_summary_path_to_mailbox
 CamelIMAPXStoreInfo *
 		camel_imapx_store_summary_mailbox
 						(CamelIMAPXStoreSummary *s,
-						 const gchar *mailbox);
+						 const gchar *mailbox_name);
 CamelIMAPXStoreInfo *
 		camel_imapx_store_summary_add_from_mailbox
 						(CamelIMAPXStoreSummary *s,

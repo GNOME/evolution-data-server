@@ -1028,7 +1028,7 @@ get_folder_info_offline (CamelStore *store,
 
 		si = g_ptr_array_index (array, ii);
 
-		mailbox = ((CamelIMAPXStoreInfo *) si)->mailbox;
+		mailbox = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
 		if (mailbox == NULL || *mailbox == '\0')
 			continue;
 
@@ -1330,7 +1330,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 
 		si = g_ptr_array_index (array, ii);
 
-		mailbox = ((CamelIMAPXStoreInfo *) si)->mailbox;
+		mailbox = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
 		if (mailbox == NULL || *mailbox == '\0')
 			continue;
 

@@ -39,17 +39,125 @@
 
 #define CAMEL_IMAPX_STORE_SUMMARY_VERSION (0)
 
-static gint summary_header_load (CamelStoreSummary *, FILE *);
-static gint summary_header_save (CamelStoreSummary *, FILE *);
+G_DEFINE_TYPE (
+	CamelIMAPXStoreSummary,
+	camel_imapx_store_summary,
+	CAMEL_TYPE_STORE_SUMMARY)
 
-/*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);*/
-static CamelStoreInfo * store_info_load (CamelStoreSummary *, FILE *);
-static gint		 store_info_save (CamelStoreSummary *, FILE *, CamelStoreInfo *);
-static void		 store_info_free (CamelStoreSummary *, CamelStoreInfo *);
 
-static void store_info_set_string (CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
+static CamelIMAPXNamespaceList *
+namespace_load (CamelStoreSummary *s,
+                FILE *in)
+{
+	CamelIMAPXStoreNamespace *ns, *tail;
+	CamelIMAPXNamespaceList *nsl;
+	guint32 i, j;
+	gint32 n;
 
-G_DEFINE_TYPE (CamelIMAPXStoreSummary, camel_imapx_store_summary, CAMEL_TYPE_STORE_SUMMARY)
+	nsl = g_malloc0 (sizeof (CamelIMAPXNamespaceList));
+	nsl->personal = NULL;
+	nsl->shared = NULL;
+	nsl->other = NULL;
+
+	for (j = 0; j < 3; j++) {
+		switch (j) {
+		case 0:
+			tail = (CamelIMAPXStoreNamespace *) &nsl->personal;
+			break;
+		case 1:
+			tail = (CamelIMAPXStoreNamespace *) &nsl->shared;
+			break;
+		case 2:
+			tail = (CamelIMAPXStoreNamespace *) &nsl->other;
+			break;
+		}
+
+		if (camel_file_util_decode_fixed_int32 (in, &n) == -1)
+			goto fail;
+
+		for (i = 0; i < n; i++) {
+			guint32 sep;
+			gchar *prefix;
+			gchar *unused;
+
+			if (camel_file_util_decode_string (in, &prefix) == -1)
+				goto fail;
+
+			/* XXX This string is just a duplicate of 'prefix',
+			 *     retained only for backward-compatibility. */
+			if (camel_file_util_decode_string (in, &unused) == -1) {
+				g_free (prefix);
+				goto fail;
+			}
+
+			g_free (unused);
+
+			if (camel_file_util_decode_uint32 (in, &sep) == -1) {
+				g_free (prefix);
+				goto fail;
+			}
+
+			tail->next = ns = g_malloc (sizeof (CamelIMAPXStoreNamespace));
+			ns->sep = sep;
+			ns->prefix = prefix;
+			ns->next = NULL;
+			tail = ns;
+		}
+	}
+
+	return nsl;
+
+fail:
+	camel_imapx_namespace_list_clear (nsl);
+
+	return NULL;
+}
+
+static gint
+namespace_save (CamelStoreSummary *s,
+                FILE *out,
+                CamelIMAPXNamespaceList *nsl)
+{
+	CamelIMAPXStoreNamespace *ns, *cur = NULL;
+	guint32 i, n;
+
+	for (i = 0; i < 3; i++) {
+		switch (i) {
+		case 0:
+			cur = nsl->personal;
+			break;
+		case 1:
+			cur = nsl->shared;
+			break;
+		case 2:
+			cur = nsl->other;
+			break;
+		}
+
+		for (ns = cur, n = 0; ns; n++)
+			ns = ns->next;
+
+		if (camel_file_util_encode_fixed_int32 (out, n) == -1)
+			return -1;
+
+		ns = cur;
+		while (ns != NULL) {
+			if (camel_file_util_encode_string (out, ns->prefix) == -1)
+				return -1;
+
+			/* XXX This redundancy is for backward-compatibility. */
+			if (camel_file_util_encode_string (out, ns->prefix) == -1)
+				return -1;
+
+			if (camel_file_util_encode_uint32 (out, ns->sep) == -1)
+				return -1;
+
+			ns = ns->next;
+		}
+	}
+
+	return 0;
+}
 
 static void
 imapx_store_summary_finalize (GObject *object)
@@ -61,7 +169,174 @@ imapx_store_summary_finalize (GObject *object)
 	camel_imapx_namespace_list_clear (summary->namespaces);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_imapx_store_summary_parent_class)->finalize (object);
+	G_OBJECT_CLASS (camel_imapx_store_summary_parent_class)->
+		finalize (object);
+}
+
+static gint
+imapx_store_summary_summary_header_load (CamelStoreSummary *s,
+                                         FILE *in)
+{
+	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
+	CamelStoreSummaryClass *store_summary_class;
+	gint32 version, unused;
+
+	camel_imapx_namespace_list_clear (is->namespaces);
+
+	store_summary_class =
+		CAMEL_STORE_SUMMARY_CLASS (
+		camel_imapx_store_summary_parent_class);
+
+	/* Chain up to parent's summary_header_load() method. */
+	if (store_summary_class->summary_header_load (s, in) == -1)
+		return -1;
+
+	if (camel_file_util_decode_fixed_int32 (in, &version) == -1)
+		return -1;
+
+	is->version = version;
+
+	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION_0) {
+		g_warning ("Store summary header version too low");
+		return -1;
+	}
+
+	/* note file format can be expanded to contain more namespaces, but only 1 at the moment */
+	if (camel_file_util_decode_fixed_int32 (in, &unused) == -1)
+		return -1;
+
+	/* namespaces */
+	if ((is->namespaces = namespace_load (s, in)) == NULL)
+		return -1;
+
+	return 0;
+}
+
+static gint
+imapx_store_summary_summary_header_save (CamelStoreSummary *s,
+                                         FILE *out)
+{
+	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
+	CamelStoreSummaryClass *store_summary_class;
+
+	store_summary_class =
+		CAMEL_STORE_SUMMARY_CLASS (
+		camel_imapx_store_summary_parent_class);
+
+	/* Chain up to parent's summary_header_save() method. */
+	if (store_summary_class->summary_header_save (s, out) == -1)
+		return -1;
+
+	/* always write as latest version */
+	if (camel_file_util_encode_fixed_int32 (out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1)
+		return -1;
+
+	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
+		return -1;
+
+	if (is->namespaces && namespace_save (s, out, is->namespaces) == -1)
+		return -1;
+
+	return 0;
+}
+
+static CamelStoreInfo *
+imapx_store_summary_store_info_load (CamelStoreSummary *s,
+                                     FILE *in)
+{
+	CamelStoreSummaryClass *store_summary_class;
+	CamelStoreInfo *si;
+	gchar *mailbox_name = NULL;
+
+	store_summary_class =
+		CAMEL_STORE_SUMMARY_CLASS (
+		camel_imapx_store_summary_parent_class);
+
+	/* Chain up to parent's store_info_load() method. */
+	si = store_summary_class->store_info_load (s, in);
+	if (si == NULL)
+		return NULL;
+
+	if (camel_file_util_decode_string (in, &mailbox_name) == -1) {
+		camel_store_summary_info_unref (s, si);
+		return NULL;
+	}
+
+	/* NB: this is done again for compatability */
+	if (camel_imapx_mailbox_is_inbox (mailbox_name))
+		si->flags |=
+			CAMEL_FOLDER_SYSTEM |
+			CAMEL_FOLDER_TYPE_INBOX;
+
+	((CamelIMAPXStoreInfo *) si)->mailbox_name = mailbox_name;
+
+	return si;
+}
+
+static gint
+imapx_store_summary_store_info_save (CamelStoreSummary *s,
+                                     FILE *out,
+                                     CamelStoreInfo *si)
+{
+	CamelStoreSummaryClass *store_summary_class;
+	const gchar *mailbox_name;
+
+	store_summary_class =
+		CAMEL_STORE_SUMMARY_CLASS (
+		camel_imapx_store_summary_parent_class);
+
+	mailbox_name = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
+
+	/* Chain up to parent's store_info_save() method. */
+	if (store_summary_class->store_info_save (s, out, si) == -1)
+		return -1;
+
+	if (camel_file_util_encode_string (out, mailbox_name) == -1)
+		return -1;
+
+	return 0;
+}
+
+static void
+imapx_store_summary_store_info_free (CamelStoreSummary *s,
+                                     CamelStoreInfo *si)
+{
+	CamelStoreSummaryClass *store_summary_class;
+
+	store_summary_class =
+		CAMEL_STORE_SUMMARY_CLASS (
+		camel_imapx_store_summary_parent_class);
+
+	g_free (((CamelIMAPXStoreInfo *) si)->mailbox_name);
+
+	/* Chain up to parent's store_info_free() method. */
+	store_summary_class->store_info_free (s, si);
+}
+
+static void
+imapx_store_summary_store_info_set_string (CamelStoreSummary *s,
+                                           CamelStoreInfo *si,
+                                           gint type,
+                                           const gchar *str)
+{
+	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *) si;
+	CamelStoreSummaryClass *store_summary_class;
+
+	store_summary_class =
+		CAMEL_STORE_SUMMARY_CLASS (
+		camel_imapx_store_summary_parent_class);
+
+	switch (type) {
+	case CAMEL_IMAPX_STORE_INFO_MAILBOX:
+		d ("Set full name %s -> %s\n", isi->mailbox_name, str);
+		g_free (isi->mailbox_name);
+		isi->mailbox_name = g_strdup (str);
+		break;
+	default:
+		/* Chain up to parent's store_info_set_string() method. */
+		store_summary_class->store_info_set_string (s, si, type, str);
+		break;
+	}
 }
 
 static void
@@ -74,12 +349,12 @@ camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 	object_class->finalize = imapx_store_summary_finalize;
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
-	store_summary_class->summary_header_load = summary_header_load;
-	store_summary_class->summary_header_save = summary_header_save;
-	store_summary_class->store_info_load = store_info_load;
-	store_summary_class->store_info_save = store_info_save;
-	store_summary_class->store_info_free = store_info_free;
-	store_summary_class->store_info_set_string = store_info_set_string;
+	store_summary_class->summary_header_load =imapx_store_summary_summary_header_load;
+	store_summary_class->summary_header_save = imapx_store_summary_summary_header_save;
+	store_summary_class->store_info_load = imapx_store_summary_store_info_load;
+	store_summary_class->store_info_save = imapx_store_summary_store_info_save;
+	store_summary_class->store_info_free = imapx_store_summary_store_info_free;
+	store_summary_class->store_info_set_string = imapx_store_summary_store_info_set_string;
 }
 
 static void
@@ -105,27 +380,27 @@ camel_imapx_store_summary_new (void)
 /**
  * camel_imapx_store_summary_mailbox:
  * @s:
- * @mailbox:
+ * @mailbox_name:
  *
  * Retrieve a summary item by mailbox name.
  *
  * A referenced to the summary item is returned, which may be
  * ref'd or free'd as appropriate.
  *
- * Returns: The summary item, or NULL if the @mailbox name
+ * Returns: The summary item, or NULL if the @mailbox_name
  * is not available.
  * It must be freed using camel_store_summary_info_unref().
  **/
 CamelIMAPXStoreInfo *
 camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
-                                   const gchar *mailbox)
+                                   const gchar *mailbox_name)
 {
 	CamelStoreInfo *match = NULL;
 	GPtrArray *array;
 	gboolean find_inbox;
 	guint ii;
 
-	find_inbox = camel_imapx_mailbox_is_inbox (mailbox);
+	find_inbox = camel_imapx_mailbox_is_inbox (mailbox_name);
 
 	array = camel_store_summary_array (CAMEL_STORE_SUMMARY (s));
 
@@ -134,7 +409,7 @@ camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
 		gboolean is_inbox;
 
 		info = g_ptr_array_index (array, ii);
-		is_inbox = camel_imapx_mailbox_is_inbox (info->mailbox);
+		is_inbox = camel_imapx_mailbox_is_inbox (info->mailbox_name);
 
 		if (find_inbox && is_inbox) {
 			match = camel_store_summary_info_ref (
@@ -143,7 +418,7 @@ camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
 			break;
 		}
 
-		if (g_str_equal (info->mailbox, mailbox)) {
+		if (g_str_equal (info->mailbox_name, mailbox_name)) {
 			match = camel_store_summary_info_ref (
 				CAMEL_STORE_SUMMARY (s),
 				(CamelStoreInfo *) info);
@@ -182,66 +457,76 @@ camel_imapx_store_summary_path_to_mailbox (CamelIMAPXStoreSummary *s,
                                            const gchar *path,
                                            gchar dir_sep)
 {
-	gchar *full;
-	gchar *mailbox;
-	const gchar *p;
+	CamelStoreSummary *store_summary;
+	gchar *mailbox_name;
 	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 	CamelIMAPXStoreNamespace *ns;
+	const gchar *si_mailbox_name = NULL;
+
+	store_summary = CAMEL_STORE_SUMMARY (s);
 
 	/* check to see if we have a subpath of path already defined */
 	subpath = alloca (strlen (path) + 1);
 	strcpy (subpath, path);
 	do {
-		si = camel_store_summary_path ((CamelStoreSummary *) s, subpath);
+		si = camel_store_summary_path (store_summary, subpath);
 		if (si == NULL) {
 			last = strrchr (subpath, '/');
-			if (last)
+			if (last != NULL)
 				*last = 0;
 		}
-	} while (si == NULL && last);
+	} while (si == NULL && last != NULL);
+
+	if (si != NULL)
+		si_mailbox_name = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
 
 	/* path is already present, use the raw version we have */
-	if (si && strlen (subpath) == strlen (path)) {
-		mailbox = g_strdup (((CamelIMAPXStoreInfo *) si)->mailbox);
-		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
-		return mailbox;
+	if (si != NULL && strlen (subpath) == strlen (path)) {
+		mailbox_name = g_strdup (si_mailbox_name);
+		camel_store_summary_info_unref (store_summary, si);
+		return mailbox_name;
 	}
 
 	ns = camel_imapx_store_summary_namespace_find_by_path (s, path);
 
-	if (si)
-		p = path + strlen (subpath);
-	else if (ns)
-		p = path + strlen (ns->prefix);
+	if (si != NULL)
+		mailbox_name = g_strdup (path + strlen (subpath));
+	else if (ns != NULL)
+		mailbox_name = g_strdup (path + strlen (ns->prefix));
 	else
-		p = path;
+		mailbox_name = g_strdup (path);
 
-	mailbox = full = g_strdup (p);
 	if (dir_sep != '/') {
-		while (*mailbox) {
-			if (*mailbox == '/')
-				*mailbox = dir_sep;
-			else if (*mailbox == dir_sep)
-				*mailbox = '/';
-			mailbox++;
+		gchar *cp = mailbox_name;
+
+		while (*cp != '\0') {
+			if (*cp == '/')
+				*cp = dir_sep;
+			else if (*cp == dir_sep)
+				*cp = '/';
+			cp++;
 		}
 	}
 
 	/* merge old path part if required */
-	mailbox = full;
-	if (si) {
-		full = g_strdup_printf ("%s%s", ((CamelIMAPXStoreInfo *) si)->mailbox, mailbox);
-		g_free (mailbox);
-		camel_store_summary_info_unref ((CamelStoreSummary *) s, si);
-		mailbox = full;
-	} else if (ns) {
-		full = g_strdup_printf ("%s%s", ns->prefix, mailbox);
-		g_free (mailbox);
-		mailbox = full;
+	if (si != NULL) {
+		gchar *temp;
+
+		temp = g_strdup_printf ("%s%s", si_mailbox_name, mailbox_name);
+		g_free (mailbox_name);
+		camel_store_summary_info_unref (store_summary, si);
+		mailbox_name = temp;
+
+	} else if (ns != NULL) {
+		gchar *temp;
+
+		temp = g_strdup_printf ("%s%s", ns->prefix, mailbox_name);
+		g_free (mailbox_name);
+		mailbox_name = temp;
 	}
 
-	return mailbox;
+	return mailbox_name;
 }
 
 CamelIMAPXStoreInfo *
@@ -301,8 +586,10 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 		d ("  '%s' -> '%s'\n", pathu8, mailbox_copy);
 		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_MAILBOX, mailbox_copy);
 
-		if (!g_ascii_strcasecmp (mailbox_copy, "inbox"))
-			info->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
+		if (camel_imapx_mailbox_is_inbox (mailbox_copy))
+			info->info.flags |=
+				CAMEL_FOLDER_SYSTEM |
+				CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		d ("  failed\n");
 	}
@@ -377,247 +664,3 @@ camel_imapx_store_summary_namespace_find_by_mailbox (CamelIMAPXStoreSummary *s,
 	/* have a default? */
 	return ns;
 }
-
-static CamelIMAPXNamespaceList *
-namespace_load (CamelStoreSummary *s,
-                FILE *in)
-{
-	CamelIMAPXStoreNamespace *ns, *tail;
-	CamelIMAPXNamespaceList *nsl;
-	guint32 i, j;
-	gint32 n;
-
-	nsl = g_malloc0 (sizeof (CamelIMAPXNamespaceList));
-	nsl->personal = NULL;
-	nsl->shared = NULL;
-	nsl->other = NULL;
-
-	for (j = 0; j < 3; j++) {
-		switch (j) {
-		case 0:
-			tail = (CamelIMAPXStoreNamespace *) &nsl->personal;
-			break;
-		case 1:
-			tail = (CamelIMAPXStoreNamespace *) &nsl->shared;
-			break;
-		case 2:
-			tail = (CamelIMAPXStoreNamespace *) &nsl->other;
-			break;
-		}
-
-		if (camel_file_util_decode_fixed_int32 (in, &n) == -1)
-			goto exception;
-
-		for (i = 0; i < n; i++) {
-			guint32 sep;
-			gchar *prefix;
-			gchar *unused;
-
-			if (camel_file_util_decode_string (in, &prefix) == -1)
-				goto exception;
-
-			/* XXX This string is just a duplicate of 'prefix',
-			 *     retained only for backward-compatibility. */
-			if (camel_file_util_decode_string (in, &unused) == -1) {
-				g_free (prefix);
-				goto exception;
-			}
-
-			g_free (unused);
-
-			if (camel_file_util_decode_uint32 (in, &sep) == -1) {
-				g_free (prefix);
-				goto exception;
-			}
-
-			tail->next = ns = g_malloc (sizeof (CamelIMAPXStoreNamespace));
-			ns->sep = sep;
-			ns->prefix = prefix;
-			ns->next = NULL;
-			tail = ns;
-		}
-	}
-
-	return nsl;
-exception:
-	camel_imapx_namespace_list_clear (nsl);
-
-	return NULL;
-}
-
-static gint
-namespace_save (CamelStoreSummary *s,
-                FILE *out,
-                CamelIMAPXNamespaceList *nsl)
-{
-	CamelIMAPXStoreNamespace *ns, *cur = NULL;
-	guint32 i, n;
-
-	for (i = 0; i < 3; i++) {
-		switch (i) {
-		case 0:
-			cur = nsl->personal;
-			break;
-		case 1:
-			cur = nsl->shared;
-			break;
-		case 2:
-			cur = nsl->other;
-			break;
-		}
-
-		for (ns = cur, n = 0; ns; n++)
-			ns = ns->next;
-
-		if (camel_file_util_encode_fixed_int32 (out, n) == -1)
-			return -1;
-
-		ns = cur;
-		while (ns != NULL) {
-			if (camel_file_util_encode_string (out, ns->prefix) == -1)
-				return -1;
-
-			/* XXX This redundancy is for backward-compatibility. */
-			if (camel_file_util_encode_string (out, ns->prefix) == -1)
-				return -1;
-
-			if (camel_file_util_encode_uint32 (out, ns->sep) == -1)
-				return -1;
-
-			ns = ns->next;
-		}
-	}
-
-	return 0;
-}
-
-static gint
-summary_header_load (CamelStoreSummary *s,
-                     FILE *in)
-{
-	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
-	CamelStoreSummaryClass *store_summary_class;
-	gint32 version, unused;
-
-	camel_imapx_namespace_list_clear (is->namespaces);
-
-	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
-	if (store_summary_class->summary_header_load ((CamelStoreSummary *) s, in) == -1
-	    || camel_file_util_decode_fixed_int32 (in, &version) == -1)
-		return -1;
-
-	is->version = version;
-
-	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION_0) {
-		g_warning ("Store summary header version too low");
-		return -1;
-	}
-
-	/* note file format can be expanded to contain more namespaces, but only 1 at the moment */
-	if (camel_file_util_decode_fixed_int32 (in, &unused) == -1)
-		return -1;
-
-	/* namespaces */
-	if ((is->namespaces = namespace_load (s, in)) == NULL)
-		return -1;
-
-	return 0;
-}
-
-static gint
-summary_header_save (CamelStoreSummary *s,
-                     FILE *out)
-{
-	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
-	CamelStoreSummaryClass *store_summary_class;
-
-	/* always write as latest version */
-	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
-	if (store_summary_class->summary_header_save ((CamelStoreSummary *) s, out) == -1
-	    || camel_file_util_encode_fixed_int32 (out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1
-	    || camel_file_util_encode_fixed_int32 (out, 0) == -1)
-		return -1;
-
-	if (is->namespaces && namespace_save (s, out, is->namespaces) == -1)
-		return -1;
-
-	return 0;
-}
-
-static CamelStoreInfo *
-store_info_load (CamelStoreSummary *s,
-                 FILE *in)
-{
-	CamelIMAPXStoreInfo *mi;
-	CamelStoreSummaryClass *store_summary_class;
-
-	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
-	mi = (CamelIMAPXStoreInfo *) store_summary_class->store_info_load (s, in);
-	if (mi) {
-		if (camel_file_util_decode_string (in, &mi->mailbox) == -1) {
-			camel_store_summary_info_unref (s, (CamelStoreInfo *) mi);
-			mi = NULL;
-		} else {
-			/* NB: this is done again for compatability */
-			if (g_ascii_strcasecmp (mi->mailbox, "inbox") == 0)
-				mi->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
-		}
-	}
-
-	return (CamelStoreInfo *) mi;
-}
-
-static gint
-store_info_save (CamelStoreSummary *s,
-                 FILE *out,
-                 CamelStoreInfo *mi)
-{
-	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *) mi;
-	CamelStoreSummaryClass *store_summary_class;
-
-	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
-	if (store_summary_class->store_info_save (s, out, mi) == -1
-	    || camel_file_util_encode_string (out, isi->mailbox) == -1)
-		return -1;
-
-	return 0;
-}
-
-static void
-store_info_free (CamelStoreSummary *s,
-                 CamelStoreInfo *mi)
-{
-	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *) mi;
-	CamelStoreSummaryClass *store_summary_class;
-
-	g_free (isi->mailbox);
-
-	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
-	store_summary_class->store_info_free (s, mi);
-}
-
-static void
-store_info_set_string (CamelStoreSummary *s,
-                       CamelStoreInfo *mi,
-                       gint type,
-                       const gchar *str)
-{
-	CamelIMAPXStoreInfo *isi = (CamelIMAPXStoreInfo *) mi;
-	CamelStoreSummaryClass *store_summary_class;
-
-	g_assert (mi != NULL);
-
-	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (camel_imapx_store_summary_parent_class);
-
-	switch (type) {
-	case CAMEL_IMAPX_STORE_INFO_MAILBOX:
-		d ("Set full name %s -> %s\n", isi->mailbox, str);
-		g_free (isi->mailbox);
-		isi->mailbox = g_strdup (str);
-		break;
-	default:
-		store_summary_class->store_info_set_string (s, mi, type, str);
-		break;
-	}
-}
-
