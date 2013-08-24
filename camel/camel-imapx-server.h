@@ -112,8 +112,6 @@ struct _CamelIMAPXServer {
 	struct _capability_info *cinfo;
 	gboolean is_process_stream;
 
-	CamelIMAPXNamespaceList *nsl;
-
 	/* incoming jobs */
 	GQueue jobs;
 
