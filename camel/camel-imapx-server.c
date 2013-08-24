@@ -2198,7 +2198,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	CamelIMAPXStoreNamespace *ns;
 	CamelIMAPXStore *store;
 	CamelFolder *folder = NULL;
-	const gchar *mailbox;
+	const gchar *mailbox_name;
 	guint32 uidvalidity;
 	GError *local_error = NULL;
 
@@ -2209,22 +2209,22 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	if (response == NULL)
 		return FALSE;
 
-	mailbox = camel_imapx_status_response_get_mailbox (response);
+	mailbox_name = camel_imapx_status_response_get_mailbox_name (response);
 	uidvalidity = camel_imapx_status_response_get_uidvalidity (response);
 
 	store = camel_imapx_server_ref_store (is);
 
 	ns = camel_imapx_store_summary_namespace_find_by_mailbox (
-		store->summary, mailbox);
+		store->summary, mailbox_name);
 
 	if (ns != NULL) {
 		gchar *path_name;
 
 		path_name = camel_imapx_store_summary_mailbox_to_path (
-			store->summary, mailbox, ns->sep);
+			store->summary, mailbox_name, ns->sep);
 		c (is->tagprefix,
 			"Got folder path '%s' for full '%s'\n",
-			path_name, mailbox);
+			path_name, mailbox_name);
 		if (path_name != NULL) {
 			folder = camel_store_get_folder_sync (
 				CAMEL_STORE (store), path_name,
@@ -2250,7 +2250,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	} else {
 		c (is->tagprefix,
 			"Received STATUS for unknown folder '%s'\n",
-			mailbox);
+			mailbox_name);
 	}
 
 	g_object_unref (response);

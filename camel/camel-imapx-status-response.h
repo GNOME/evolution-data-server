@@ -75,7 +75,7 @@ CamelIMAPXStatusResponse *
 					(CamelIMAPXStream *stream,
 					 GCancellable *cancellable,
 					 GError **error);
-const gchar *	camel_imapx_status_response_get_mailbox
+const gchar *	camel_imapx_status_response_get_mailbox_name
 					(CamelIMAPXStatusResponse *response);
 guint32		camel_imapx_status_response_get_messages
 					(CamelIMAPXStatusResponse *response);

@@ -35,7 +35,7 @@
 	((obj), CAMEL_TYPE_IMAPX_STATUS_RESPONSE, CamelIMAPXStatusResponsePrivate))
 
 struct _CamelIMAPXStatusResponsePrivate {
-	gchar *mailbox;
+	gchar *mailbox_name;
 	guint32 messages;
 	guint32 recent;
 	guint32 unseen;
@@ -56,7 +56,7 @@ imapx_status_response_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_STATUS_RESPONSE_GET_PRIVATE (object);
 
-	g_free (priv->mailbox);
+	g_free (priv->mailbox_name);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_status_response_parent_class)->
@@ -109,11 +109,11 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 
 	response = g_object_new (CAMEL_TYPE_IMAPX_STATUS_RESPONSE, NULL);
 
-	/* Parse mailbox. */
+	/* Parse mailbox name. */
 
-	response->priv->mailbox =
+	response->priv->mailbox_name =
 		camel_imapx_parse_mailbox (stream, cancellable, error);
-	if (response->priv->mailbox == NULL)
+	if (response->priv->mailbox_name == NULL)
 		goto fail;
 
 	/* Parse status attributes. */
@@ -208,7 +208,7 @@ fail:
 }
 
 /**
- * camel_imapx_status_response_get_mailbox:
+ * camel_imapx_status_response_get_mailbox_name:
  * @response: a #CamelIMAPXStatusResponse
  *
  * Returns the mailbox name for @response.
@@ -218,11 +218,11 @@ fail:
  * Since: 3.10
  **/
 const gchar *
-camel_imapx_status_response_get_mailbox (CamelIMAPXStatusResponse *response)
+camel_imapx_status_response_get_mailbox_name (CamelIMAPXStatusResponse *response)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), NULL);
 
-	return response->priv->mailbox;
+	return response->priv->mailbox_name;
 }
 
 /**
