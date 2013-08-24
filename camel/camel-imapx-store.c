@@ -1087,12 +1087,12 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 {
 	CamelIMAPXStoreInfo *si;
 	CamelFolderInfo *fi;
-	const gchar *mailbox;
+	const gchar *mailbox_name;
 	gchar separator;
 	CamelStoreInfoFlags flags;
 	CamelStoreInfoFlags new_flags;
 
-	mailbox = camel_imapx_list_response_get_mailbox (response);
+	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
 	separator = camel_imapx_list_response_get_separator (response);
 
 	/* XXX The flags type transforms from CamelStoreInfoFlags
@@ -1101,14 +1101,14 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	flags = camel_imapx_list_response_get_summary_flags (response);
 
 	if (update_for_lsub) {
-		fi = g_hash_table_lookup (table, mailbox);
+		fi = g_hash_table_lookup (table, mailbox_name);
 		if (fi != NULL)
 			fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
 		return;
 	}
 
 	si = camel_imapx_store_summary_add_from_mailbox (
-		imapx_store->summary, mailbox, separator);
+		imapx_store->summary, mailbox_name, separator);
 	if (si == NULL)
 		return;
 

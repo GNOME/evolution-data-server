@@ -39,7 +39,7 @@
 	((obj), CAMEL_TYPE_IMAPX_LIST_RESPONSE, CamelIMAPXListResponsePrivate))
 
 struct _CamelIMAPXListResponsePrivate {
-	gchar *mailbox;
+	gchar *mailbox_name;
 	gchar separator;
 	GQueue attributes;
 	GHashTable *extended_items;
@@ -57,7 +57,7 @@ imapx_list_response_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_LIST_RESPONSE_GET_PRIVATE (object);
 
-	g_free (priv->mailbox);
+	g_free (priv->mailbox_name);
 
 	/* Flag strings are interned, so don't free them. */
 	g_queue_clear (&priv->attributes);
@@ -156,7 +156,7 @@ imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
 	camel_imapx_token_t tok;
 	guchar *token;
 	guint len;
-	gchar *mailbox = NULL;
+	gchar *mailbox_name = NULL;
 
 	tok = camel_imapx_stream_token (
 		stream, &token, &len, cancellable, error);
@@ -169,8 +169,8 @@ imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
 		goto fail;
 	}
 
-	mailbox = camel_imapx_parse_mailbox (stream, cancellable, error);
-	if (mailbox == NULL)
+	mailbox_name = camel_imapx_parse_mailbox (stream, cancellable, error);
+	if (mailbox_name == NULL)
 		goto fail;
 
 	tok = camel_imapx_stream_token (
@@ -184,10 +184,10 @@ imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
 		goto fail;
 	}
 
-	return g_variant_new_string (mailbox);
+	return g_variant_new_string (mailbox_name);
 
 fail:
-	g_free (mailbox);
+	g_free (mailbox_name);
 
 	return NULL;
 }
@@ -335,11 +335,11 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 	else
 		response->priv->separator = '\0';
 
-	/* Parse mailbox. */
+	/* Parse mailbox name. */
 
-	response->priv->mailbox =
+	response->priv->mailbox_name =
 		camel_imapx_parse_mailbox (stream, cancellable, error);
-	if (response->priv->mailbox == NULL)
+	if (response->priv->mailbox_name == NULL)
 		goto fail;
 
 	/* Parse extended info (optional). */
@@ -400,11 +400,11 @@ fail:
 guint
 camel_imapx_list_response_hash (CamelIMAPXListResponse *response)
 {
-	const gchar *mailbox;
+	const gchar *mailbox_name;
 
-	mailbox = camel_imapx_list_response_get_mailbox (response);
+	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
 
-	return g_str_hash (mailbox);
+	return g_str_hash (mailbox_name);
 }
 
 /**
@@ -426,8 +426,8 @@ camel_imapx_list_response_equal (CamelIMAPXListResponse *response_a,
 	const gchar *mailbox_a;
 	const gchar *mailbox_b;
 
-	mailbox_a = camel_imapx_list_response_get_mailbox (response_a);
-	mailbox_b = camel_imapx_list_response_get_mailbox (response_b);
+	mailbox_a = camel_imapx_list_response_get_mailbox_name (response_a);
+	mailbox_b = camel_imapx_list_response_get_mailbox_name (response_b);
 
 	return g_str_equal (mailbox_a, mailbox_b);
 }
@@ -452,14 +452,14 @@ camel_imapx_list_response_compare (CamelIMAPXListResponse *response_a,
 	const gchar *mailbox_a;
 	const gchar *mailbox_b;
 
-	mailbox_a = camel_imapx_list_response_get_mailbox (response_a);
-	mailbox_b = camel_imapx_list_response_get_mailbox (response_b);
+	mailbox_a = camel_imapx_list_response_get_mailbox_name (response_a);
+	mailbox_b = camel_imapx_list_response_get_mailbox_name (response_b);
 
 	return g_strcmp0 (mailbox_a, mailbox_b);
 }
 
 /**
- * camel_imapx_list_response_get_mailbox:
+ * camel_imapx_list_response_get_mailbox_name:
  * @response: a #CamelIMAPXListResponse
  *
  * Returns the mailbox name for @response.
@@ -469,11 +469,11 @@ camel_imapx_list_response_compare (CamelIMAPXListResponse *response_a,
  * Since: 3.10
  **/
 const gchar *
-camel_imapx_list_response_get_mailbox (CamelIMAPXListResponse *response)
+camel_imapx_list_response_get_mailbox_name (CamelIMAPXListResponse *response)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response), NULL);
 
-	return response->priv->mailbox;
+	return response->priv->mailbox_name;
 }
 
 /**

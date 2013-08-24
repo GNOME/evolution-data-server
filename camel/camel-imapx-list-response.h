@@ -95,7 +95,7 @@ gboolean	camel_imapx_list_response_equal
 gint		camel_imapx_list_response_compare
 					(CamelIMAPXListResponse *response_a,
 					 CamelIMAPXListResponse *response_b);
-const gchar *	camel_imapx_list_response_get_mailbox
+const gchar *	camel_imapx_list_response_get_mailbox_name
 					(CamelIMAPXListResponse *response);
 gchar		camel_imapx_list_response_get_separator
 					(CamelIMAPXListResponse *response);

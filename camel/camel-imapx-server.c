@@ -1990,7 +1990,7 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	CamelIMAPXListResponse *response;
 	CamelIMAPXJob *job = NULL;
 	ListData *data = NULL;
-	const gchar *mailbox;
+	const gchar *mailbox_name;
 	gchar separator;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -1999,10 +1999,10 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	if (response == NULL)
 		return FALSE;
 
-	mailbox = camel_imapx_list_response_get_mailbox (response);
+	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
 	separator = camel_imapx_list_response_get_separator (response);
 
-	job = imapx_match_active_job (is, IMAPX_JOB_LIST, mailbox);
+	job = imapx_match_active_job (is, IMAPX_JOB_LIST, mailbox_name);
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -2010,9 +2010,9 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	// TODO: we want to make sure the names match?
 
 	if (data->flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
-		c (is->tagprefix, "lsub: '%s' (%c)\n", mailbox, separator);
+		c (is->tagprefix, "lsub: '%s' (%c)\n", mailbox_name, separator);
 	} else {
-		c (is->tagprefix, "list: '%s' (%c)\n", mailbox, separator);
+		c (is->tagprefix, "list: '%s' (%c)\n", mailbox_name, separator);
 	}
 
 	if (job && !g_hash_table_contains (data->folders, response)) {
