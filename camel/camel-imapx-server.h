@@ -117,9 +117,6 @@ struct _CamelIMAPXServer {
 	/* incoming jobs */
 	GQueue jobs;
 
-	/* in micro seconds */
-	guint job_timeout;
-
 	gchar tagprefix;
 	gint state : 4;
 

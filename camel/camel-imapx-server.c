@@ -7124,9 +7124,6 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	g_queue_init (&is->jobs);
 
-	/* not used at the moment. Use it in future */
-	is->job_timeout = 29 * 60 * 1000 * 1000;
-
 	g_rec_mutex_init (&is->queue_lock);
 
 	g_mutex_init (&is->select_lock);
