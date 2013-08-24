@@ -57,6 +57,7 @@ typedef struct _CamelIMAPXStoreInfo CamelIMAPXStoreInfo;
 struct _CamelIMAPXStoreInfo {
 	CamelStoreInfo info;
 	gchar *mailbox_name;
+	gchar separator;
 };
 
 typedef struct _CamelIMAPXStoreNamespace CamelIMAPXStoreNamespace;

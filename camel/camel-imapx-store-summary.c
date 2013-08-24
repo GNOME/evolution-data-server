@@ -35,9 +35,13 @@
 
 #define d(...) camel_imapx_debug(debug, '?', __VA_ARGS__)
 
+/* Version 0: Original IMAPX file format. */
 #define CAMEL_IMAPX_STORE_SUMMARY_VERSION_0 (0)
 
-#define CAMEL_IMAPX_STORE_SUMMARY_VERSION (0)
+/* Version 1: (3.10) Store the hierarchy separator. */
+#define CAMEL_IMAPX_STORE_SUMMARY_VERSION_1 (1);
+
+#define CAMEL_IMAPX_STORE_SUMMARY_VERSION (1)
 
 G_DEFINE_TYPE (
 	CamelIMAPXStoreSummary,
@@ -196,8 +200,12 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *s,
 
 	is->version = version;
 
-	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION_0) {
-		g_warning ("Store summary header version too low");
+	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION) {
+		g_warning (
+			"Unable to load store summary: "
+			"Expected version (%d), got (%d)",
+			CAMEL_IMAPX_STORE_SUMMARY_VERSION,
+			version);
 		return -1;
 	}
 
@@ -247,6 +255,7 @@ imapx_store_summary_store_info_load (CamelStoreSummary *s,
 	CamelStoreSummaryClass *store_summary_class;
 	CamelStoreInfo *si;
 	gchar *mailbox_name = NULL;
+	gchar *separator = NULL;
 
 	store_summary_class =
 		CAMEL_STORE_SUMMARY_CLASS (
@@ -256,6 +265,11 @@ imapx_store_summary_store_info_load (CamelStoreSummary *s,
 	si = store_summary_class->store_info_load (s, in);
 	if (si == NULL)
 		return NULL;
+
+	if (camel_file_util_decode_string (in, &separator) == -1) {
+		camel_store_summary_info_unref (s, si);
+		return NULL;
+	}
 
 	if (camel_file_util_decode_string (in, &mailbox_name) == -1) {
 		camel_store_summary_info_unref (s, si);
@@ -269,6 +283,9 @@ imapx_store_summary_store_info_load (CamelStoreSummary *s,
 			CAMEL_FOLDER_TYPE_INBOX;
 
 	((CamelIMAPXStoreInfo *) si)->mailbox_name = mailbox_name;
+	((CamelIMAPXStoreInfo *) si)->separator = *separator;
+
+	g_free (separator);
 
 	return si;
 }
@@ -279,6 +296,7 @@ imapx_store_summary_store_info_save (CamelStoreSummary *s,
                                      CamelStoreInfo *si)
 {
 	CamelStoreSummaryClass *store_summary_class;
+	gchar separator[] = { '\0', '\0' };
 	const gchar *mailbox_name;
 
 	store_summary_class =
@@ -286,9 +304,13 @@ imapx_store_summary_store_info_save (CamelStoreSummary *s,
 		camel_imapx_store_summary_parent_class);
 
 	mailbox_name = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
+	separator[0] = ((CamelIMAPXStoreInfo *) si)->separator;
 
 	/* Chain up to parent's store_info_save() method. */
 	if (store_summary_class->store_info_save (s, out, si) == -1)
+		return -1;
+
+	if (camel_file_util_encode_string (out, separator) == -1)
 		return -1;
 
 	if (camel_file_util_encode_string (out, mailbox_name) == -1)
@@ -531,6 +553,7 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 	ns = camel_imapx_store_summary_namespace_find_by_mailbox (s, mailbox_copy);
 	if (ns) {
 		d ("(found namespace for '%s' ns '%s') ", mailbox_copy, ns->prefix);
+		dir_sep = ns->sep;
 		len = strlen (ns->prefix);
 		if (len >= strlen (mailbox_copy)) {
 			pathu8 = g_strdup (ns->prefix);
@@ -558,6 +581,7 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 	if (info) {
 		d ("  '%s' -> '%s'\n", pathu8, mailbox_copy);
 		info->mailbox_name = g_strdup (mailbox_copy);
+		info->separator = dir_sep;
 
 		if (camel_imapx_mailbox_is_inbox (mailbox_copy))
 			info->info.flags |=
