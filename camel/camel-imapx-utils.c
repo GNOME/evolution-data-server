@@ -2549,21 +2549,23 @@ camel_imapx_parse_mailbox (CamelIMAPXStream *is,
 
 /**
  * camel_imapx_mailbox_is_inbox:
- * @mailbox: a mailbox name
+ * @mailbox_name: a mailbox name
  *
- * Returns whether @mailbox is the special mailbox INBOX.  The function just
- * performs a case-insensitive string comparsion; it's more for readability.
+ * Returns whether @mailbox_name is the special mailbox INBOX.
  *
- * Returns: %TRUE if @mailbox is INBOX, %FALSE if not
+ * The function just performs a case-insensitive string comparsion; it's
+ * more for readability.
+ *
+ * Returns: %TRUE if @mailbox_name is INBOX, %FALSE if not
  *
  * Since: 3.10
  **/
 gboolean
-camel_imapx_mailbox_is_inbox (const gchar *mailbox)
+camel_imapx_mailbox_is_inbox (const gchar *mailbox_name)
 {
-	g_return_val_if_fail (mailbox != NULL, FALSE);
+	g_return_val_if_fail (mailbox_name != NULL, FALSE);
 
-	return (g_ascii_strcasecmp (mailbox, "INBOX") == 0);
+	return (g_ascii_strcasecmp (mailbox_name, "INBOX") == 0);
 }
 
 gboolean
