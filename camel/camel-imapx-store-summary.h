@@ -101,10 +101,6 @@ CamelIMAPXStoreNamespace *
 						 const gchar *mailbox);
 
 /* converts to/from utf8 canonical nasmes */
-gchar *		camel_imapx_store_summary_mailbox_to_path
-						(CamelIMAPXStoreSummary *s,
-						 const gchar *mailbox,
-						 gchar dir_sep);
 gchar *		camel_imapx_store_summary_path_to_mailbox
 						(CamelIMAPXStoreSummary *s,
 						 const gchar *path,

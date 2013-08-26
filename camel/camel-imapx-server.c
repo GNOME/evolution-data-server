@@ -2071,18 +2071,18 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	CamelIMAPXStore *store;
 	CamelIMAPXStoreNamespace *ns;
 	CamelFolder *folder = NULL;
-	gchar *mailbox = NULL;
+	gchar *mailbox_name = NULL;
 	gchar **quota_root_names = NULL;
 	gboolean success;
 	GError *local_error = NULL;
 
 	success = camel_imapx_parse_quotaroot (
-		stream, cancellable, &mailbox, &quota_root_names, error);
+		stream, cancellable, &mailbox_name, &quota_root_names, error);
 
 	/* Sanity check */
 	g_return_val_if_fail (
-		(success && (mailbox != NULL)) ||
-		(!success && (mailbox == NULL)), FALSE);
+		(success && (mailbox_name != NULL)) ||
+		(!success && (mailbox_name == NULL)), FALSE);
 
 	if (!success)
 		return FALSE;
@@ -2090,12 +2090,12 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	store = camel_imapx_server_ref_store (is);
 
 	ns = camel_imapx_store_summary_namespace_find_by_mailbox (
-		store->summary, mailbox);
+		store->summary, mailbox_name);
 	if (ns != NULL) {
 		gchar *folder_path;
 
-		folder_path = camel_imapx_store_summary_mailbox_to_path (
-			store->summary, mailbox, ns->sep);
+		folder_path = camel_imapx_mailbox_to_folder_path (
+			mailbox_name, ns->sep);
 		if (folder_path != NULL) {
 			folder = camel_store_get_folder_sync (
 				CAMEL_STORE (store), folder_path, 0,
@@ -2114,11 +2114,11 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	if (local_error != NULL) {
 		g_warning (
 			"%s: Failed to get folder '%s': %s",
-			G_STRFUNC, mailbox, local_error->message);
+			G_STRFUNC, mailbox_name, local_error->message);
 		g_error_free (local_error);
 	}
 
-	g_free (mailbox);
+	g_free (mailbox_name);
 	g_strfreev (quota_root_names);
 
 	return TRUE;
@@ -2218,18 +2218,18 @@ imapx_untagged_status (CamelIMAPXServer *is,
 		store->summary, mailbox_name);
 
 	if (ns != NULL) {
-		gchar *path_name;
+		gchar *folder_path;
 
-		path_name = camel_imapx_store_summary_mailbox_to_path (
-			store->summary, mailbox_name, ns->sep);
+		folder_path = camel_imapx_mailbox_to_folder_path (
+			mailbox_name, ns->sep);
 		c (is->tagprefix,
-			"Got folder path '%s' for full '%s'\n",
-			path_name, mailbox_name);
-		if (path_name != NULL) {
+			"Got folder path '%s' for mailbox '%s'\n",
+			folder_path, mailbox_name);
+		if (folder_path != NULL) {
 			folder = camel_store_get_folder_sync (
-				CAMEL_STORE (store), path_name,
+				CAMEL_STORE (store), folder_path,
 				0, cancellable, &local_error);
-			g_free (path_name);
+			g_free (folder_path);
 		}
 	}
 

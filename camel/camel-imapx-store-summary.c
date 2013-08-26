@@ -427,27 +427,6 @@ camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
 }
 
 gchar *
-camel_imapx_store_summary_mailbox_to_path (CamelIMAPXStoreSummary *s,
-                                           const gchar *mailbox,
-                                           gchar dir_sep)
-{
-	gchar *path, *p;
-
-	p = path = g_strdup (mailbox);
-
-	if (dir_sep && dir_sep != '/') {
-		while (*p) {
-			if (*p == '/')
-				*p = dir_sep;
-			else if (*p == dir_sep)
-				*p = '/';
-			p++;
-		}
-	}
-	return path;
-}
-
-gchar *
 camel_imapx_store_summary_path_to_mailbox (CamelIMAPXStoreSummary *s,
                                            const gchar *path,
                                            gchar dir_sep)
@@ -561,8 +540,8 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 			if (mailbox_copy[len] == ns->sep)
 				len++;
 
-			prefix = camel_imapx_store_summary_mailbox_to_path (
-				s, mailbox_copy + len, ns->sep);
+			prefix = camel_imapx_mailbox_to_folder_path (
+				mailbox_copy + len, ns->sep);
 			if (*ns->prefix) {
 				pathu8 = g_strdup_printf ("%s/%s", ns->prefix, prefix);
 				g_free (prefix);
@@ -573,8 +552,8 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 		d (" (pathu8 = '%s')", pathu8);
 	} else {
 		d ("(Cannot find namespace for '%s')\n", mailbox_copy);
-		pathu8 = camel_imapx_store_summary_mailbox_to_path (
-			s, mailbox_copy, dir_sep);
+		pathu8 = camel_imapx_mailbox_to_folder_path (
+			mailbox_copy, dir_sep);
 	}
 
 	info = (CamelIMAPXStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);

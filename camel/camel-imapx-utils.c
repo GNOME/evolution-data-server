@@ -2568,6 +2568,44 @@ camel_imapx_mailbox_is_inbox (const gchar *mailbox_name)
 	return (g_ascii_strcasecmp (mailbox_name, "INBOX") == 0);
 }
 
+/**
+ * camel_imapx_mailbox_to_folder_path:
+ * @mailbox_name: a mailbox name
+ * @separator: mailbox separator character
+ *
+ * Converts @mailbox_name to a Camel folder path, which just replaces all
+ * @separator characters with '/'.  If '/' appears in @mailbox_name, it is
+ * replaced with @separator.  Free the returned string with g_free().
+ *
+ * Returns: a newly-allocated Camel folder path
+ *
+ * Since: 3.10
+ **/
+gchar *
+camel_imapx_mailbox_to_folder_path (const gchar *mailbox_name,
+                                    gchar separator)
+{
+	gchar *folder_path;
+
+	g_return_val_if_fail (mailbox_name != NULL, NULL);
+
+	folder_path = g_strdup (mailbox_name);
+
+	if (separator != '\0' && separator != '/') {
+		gchar *cp = folder_path;
+
+		while (*cp != '\0') {
+			if (*cp == '/')
+				*cp = separator;
+			else if (*cp == separator)
+				*cp = '/';
+			cp++;
+		}
+	}
+
+	return folder_path;
+}
+
 gboolean
 camel_imapx_parse_quota (CamelIMAPXStream *is,
                          GCancellable *cancellable,

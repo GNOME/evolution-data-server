@@ -322,6 +322,9 @@ gchar *		camel_imapx_parse_mailbox	(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_mailbox_is_inbox	(const gchar *mailbox_name);
+gchar *		camel_imapx_mailbox_to_folder_path
+						(const gchar *mailbox_name,
+						 gchar separator);
 
 /* ********************************************************************** */
 
