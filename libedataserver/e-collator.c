@@ -71,7 +71,7 @@ struct _ECollator
 	gint             inflow;
 	gint             overflow;
 
-	ETransliterator *transliterator;
+	ECxxTransliterator *transliterator;
 
 	gint             ref_count;
 };
