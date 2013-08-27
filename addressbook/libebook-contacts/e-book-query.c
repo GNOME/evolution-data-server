@@ -638,6 +638,42 @@ func_regex_raw (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_translit_contains (struct _ESExp *f,
+			gint argc,
+			struct _ESExpResult **argv,
+			gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_TRANSLIT_CONTAINS, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_translit_is (struct _ESExp *f,
+		  gint argc,
+		  struct _ESExpResult **argv,
+		  gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_TRANSLIT_IS, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_translit_beginswith (struct _ESExp *f,
+			  gint argc,
+			  struct _ESExpResult **argv,
+			  gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_TRANSLIT_BEGINS_WITH, f, argc, argv, data);
+}
+
+static ESExpResult *
+func_translit_endswith (struct _ESExp *f,
+			gint argc,
+			struct _ESExpResult **argv,
+			gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_TRANSLIT_ENDS_WITH, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_exists (struct _ESExp *f,
              gint argc,
              struct _ESExpResult **argv,
@@ -702,6 +738,10 @@ static const struct {
 	{ "eqphone_short", func_eqphone_short, 0 },
 	{ "regex_normal", func_regex_normal, 0 },
 	{ "regex_raw", func_regex_raw, 0 },
+	{ "translit_is", func_translit_is, 0 },
+	{ "translit_contains", func_translit_contains, 0 },
+	{ "translit_beginswith", func_translit_beginswith, 0 },
+	{ "translit_endswith", func_translit_endswith, 0 },
 	{ "exists", func_exists, 0 },
 	{ "exists_vcard", func_exists_vcard, 0 }
 };
@@ -782,6 +822,14 @@ field_test_name (EBookQueryTest field_test)
 		return "regex_normal";
 	case E_BOOK_QUERY_REGEX_RAW:
 		return "regex_raw";
+	case E_BOOK_QUERY_TRANSLIT_IS:
+		return "translit_is";
+	case E_BOOK_QUERY_TRANSLIT_CONTAINS:
+		return "translit_contains";
+	case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:
+		return "translit_beginswith";
+	case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
+		return "translit_endswith";
 	}
 
 	return NULL;
@@ -802,6 +850,10 @@ is_phone_test (EBookQueryTest field_test)
 	case E_BOOK_QUERY_ENDS_WITH:
 	case E_BOOK_QUERY_REGEX_NORMAL:
 	case E_BOOK_QUERY_REGEX_RAW:
+	case E_BOOK_QUERY_TRANSLIT_IS:
+	case E_BOOK_QUERY_TRANSLIT_CONTAINS:
+	case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:
+	case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
 		break;
 	}
 
