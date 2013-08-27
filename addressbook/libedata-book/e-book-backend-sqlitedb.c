@@ -3152,6 +3152,22 @@ func_check_regex_raw (struct _ESExp         *f,
 	return r;
 }
 
+static ESExpResult *
+func_check_translit (struct _ESExp *f,
+		     gint argc,
+		     struct _ESExpResult **argv,
+		     gpointer data)
+{
+	/* Transliterated strings are not in the summary
+	 */
+	ESExpResult *r;
+
+	r = e_sexp_result_new (f, ESEXP_RES_INT);
+	r->value.number = 0;
+
+	return r;
+}
+
 /* 'builtin' functions */
 static const struct {
 	const gchar *name;
@@ -3172,6 +3188,10 @@ static const struct {
 	{ "eqphone_short", func_check_phone, 0 },
 	{ "regex_normal", func_check, 0 },
 	{ "regex_raw", func_check_regex_raw, 0 },
+	{ "translit_contains", func_check_translit, 0 },
+	{ "translit_is", func_check_translit, 0 },
+	{ "translit_beginswith", func_check_translit, 0 },
+	{ "translit_endswith", func_check_translit, 0 },
 };
 
 static gboolean
