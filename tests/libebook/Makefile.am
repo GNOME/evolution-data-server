@@ -97,6 +97,7 @@ EXTRA_DIST = \
 	$(srcdir)/data/vcards/custom-13.vcf	\
 	$(srcdir)/data/vcards/custom-14.vcf	\
 	$(srcdir)/data/vcards/custom-15.vcf	\
+	$(srcdir)/data/vcards/custom-16.vcf	\
 	$(NULL)
 
 test_ebook_commit_contact_LDADD=$(TEST_LIBS)

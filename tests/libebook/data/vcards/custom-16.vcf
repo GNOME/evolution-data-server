@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:custom-16
+N:警察;懂吗
+TEL;HOME:1.800 555 PONY
+EMAIL;TYPE=home,work:警察@china.net
+END:VCARD

@@ -69,8 +69,7 @@ static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, 
 #  define CHECK_UNSUPPORTED_ERROR(data) (((ClientTestData *)(data))->phone_number_query != FALSE)
 #endif
 
-#define N_CONTACTS 15
-
+#define N_CONTACTS 16
 
 typedef struct {
 	ETestServerClosure parent;
@@ -758,6 +757,104 @@ main (gint argc,
 			suites[i].direct,
 			suites[i].custom,
 			FALSE);
+
+		/*********************************************
+		 *      TRANSLITERATION QUERIES FOLLOW       *
+		 *********************************************/
+
+		/* We have one contact that is "Jim Morrison" and
+		 * another which is "警察 懂吗" (which transliterates
+		 * to "Jing cha Dong ma", which means "Police do you understand").
+		 *
+		 * This test tries to fetch 2 contacts beginning with '几' which
+		 * transliterates to 'jǐ'.
+		 *
+		 * So here we assert that when searching for contacts which begin
+		 * with a transliterated "几" match both "Jim Morrison" and
+		 * "警察 懂吗"
+		 */
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Prefix/FullName/几",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+				"几"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		/* Same results as above, only the query input is provided in Latin script */
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Prefix/FullName/Ji",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+				"Ji"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		/* Check if anything contains "Ma", this should
+		 * only find one match for "警察 懂吗" */
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Contains/FullName/Ma",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_TRANSLIT_CONTAINS,
+				"Ma"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Contains/FullName/Ma",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_TRANSLIT_CONTAINS,
+				"Ma"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Suffix/FullName/Cha",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_TRANSLIT_ENDS_WITH,
+				"Cha"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Prefix/Email/几",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_EMAIL,
+				E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+				"几"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 	}
 
 	ret = e_test_server_utils_run ();
