@@ -408,10 +408,6 @@ gchar *		imapx_get_temp_uid		(void);
 
 void		camel_imapx_namespace_list_clear
 						(struct _CamelIMAPXNamespaceList *nsl);
-struct _CamelIMAPXNamespaceList *
-		imapx_parse_namespace_list	(struct _CamelIMAPXStream *is,
-						 GCancellable *cancellable,
-						 GError **error);
 
 G_END_DECLS
 

@@ -28,6 +28,8 @@
 #include <camel/camel-store.h>
 
 #include "camel-imapx-command.h"
+#include "camel-imapx-mailbox.h"
+#include "camel-imapx-namespace-response.h"
 #include "camel-imapx-stream.h"
 #include "camel-imapx-store-summary.h"
 
@@ -132,6 +134,19 @@ struct _CamelIMAPXServerClass {
 	CamelObjectClass parent_class;
 
 	gchar tagprefix;
+
+	/* Signals */
+	void		(*mailbox_select)	(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox);
+	void		(*mailbox_closed)	(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox);
+	void		(*mailbox_created)	(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox);
+	void		(*mailbox_renamed)	(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox,
+						 const gchar *oldname);
+	void		(*mailbox_updated)	(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox);
 };
 
 GType		camel_imapx_server_get_type	(void);
@@ -143,6 +158,18 @@ struct _CamelIMAPXSettings *
 		camel_imapx_server_ref_settings	(CamelIMAPXServer *is);
 CamelIMAPXStream *
 		camel_imapx_server_ref_stream	(CamelIMAPXServer *is);
+CamelIMAPXNamespaceResponse *
+		camel_imapx_server_ref_namespaces
+						(CamelIMAPXServer *is);
+CamelIMAPXMailbox *
+		camel_imapx_server_ref_mailbox	(CamelIMAPXServer *is,
+						 const gchar *mailbox_name);
+CamelIMAPXMailbox *
+		camel_imapx_server_ref_selected	(CamelIMAPXServer *is);
+GList *		camel_imapx_server_list_mailboxes
+						(CamelIMAPXServer *is,
+						 CamelIMAPXNamespace *namespace_,
+						 const gchar *pattern);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
 						 GCancellable *cancellable,
 						 GError **error);
