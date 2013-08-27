@@ -1244,17 +1244,16 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 			gchar *pat;
 
 			if (pattern != NULL)
-				pat = g_strdup (pattern);
+				pat = g_strdup_printf ("%s*", pattern);
 			else if (*ns->prefix != '\0')
 				pat = g_strdup_printf (
-					"%s%c", ns->prefix, ns->sep);
+					"%s%c*", ns->prefix, ns->sep);
 			else
-				pat = g_strdup ("");
+				pat = g_strdup ("*");
 
 			if (sync)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 
-			flags |= CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 			success = fetch_folders_for_pattern (
 				imapx_store, server, pat, flags, list_ext,
 				folders, cancellable, error);
@@ -1574,7 +1573,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	CamelStoreSummary *store_summary;
 	gboolean initial_setup = FALSE;
 	gboolean use_subscriptions;
-	gchar *pattern;
+	gchar *pattern = NULL;
 
 	service = CAMEL_SERVICE (store);
 	imapx_store = CAMEL_IMAPX_STORE (store);
@@ -1635,7 +1634,6 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 	if (*top) {
 		gchar *mailbox;
-		gint i;
 
 		mailbox = camel_imapx_store_summary_mailbox_from_path (
 			imapx_store->summary, top);
@@ -1643,14 +1641,10 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 			mailbox = camel_imapx_store_summary_path_to_mailbox (
 				imapx_store->summary, top,
 				imapx_store->dir_sep);
-
-		i = strlen (mailbox);
-		pattern = g_alloca (i + 5);
-		strcpy (pattern, mailbox);
+		pattern = camel_utf8_utf7 (mailbox);
 		g_free (mailbox);
 	} else {
-		pattern = g_alloca (1);
-		pattern[0] = '\0';
+		pattern = g_strdup ("");
 	}
 
 	if (!sync_folders (imapx_store, pattern, TRUE, cancellable, error))
@@ -1666,6 +1660,8 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 exit:
 	g_mutex_unlock (&imapx_store->priv->get_finfo_lock);
+
+	g_free (pattern);
 
 	return fi;
 }

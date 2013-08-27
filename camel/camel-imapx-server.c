@@ -7910,7 +7910,7 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 
 GPtrArray *
 camel_imapx_server_list (CamelIMAPXServer *is,
-                         const gchar *top,
+                         const gchar *pattern,
                          CamelStoreGetFolderInfoFlags flags,
                          const gchar *ext,
                          GCancellable *cancellable,
@@ -7919,11 +7919,9 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 	CamelIMAPXJob *job;
 	GPtrArray *folders = NULL;
 	ListData *data;
-	gchar *encoded_name;
-
-	encoded_name = camel_utf8_utf7 (top);
 
 	data = g_slice_new0 (ListData);
+	data->pattern = g_strdup (pattern);
 	data->flags = flags;
 	data->ext = g_strdup (ext);
 	data->folders = g_hash_table_new_full (
@@ -7931,11 +7929,6 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 		(GEqualFunc) camel_imapx_list_response_equal,
 		(GDestroyNotify) g_object_unref,
 		(GDestroyNotify) NULL);
-
-	if (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
-		data->pattern = g_strdup_printf ("%s*", encoded_name);
-	else
-		data->pattern = g_strdup (encoded_name);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_LIST;
@@ -7965,7 +7958,6 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 		g_list_free (list);
 	}
 
-	g_free (encoded_name);
 	camel_imapx_job_unref (job);
 
 	return folders;

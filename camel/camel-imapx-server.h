@@ -173,7 +173,7 @@ CamelAuthenticationResult
 						 GCancellable *cancellable,
 						 GError **error);
 GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
-						 const gchar *top,
+						 const gchar *pattern,
 						 CamelStoreGetFolderInfoFlags flags,
 						 const gchar *ext,
 						 GCancellable *cancellable,
