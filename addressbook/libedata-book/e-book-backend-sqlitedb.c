@@ -90,8 +90,9 @@ struct _EBookBackendSqliteDBPrivate {
 	guint           have_attr_list : 1;
 	IndexFlags      attr_list_indexes;
 
-	ECollator      *collator; /* The ECollator to create sort keys for all fields */
-	gchar          *locale;   /* The current locale */
+	ETransliterator *transliterator;
+	ECollator       *collator; /* The ECollator to create sort keys for all fields */
+	gchar           *locale;   /* The current locale */
 };
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
@@ -261,6 +262,7 @@ e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 {
 	ebsdb->priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (ebsdb);
 
+	ebsdb->priv->transliterator = e_transliterator_new ("Any-Latin");
 	ebsdb->priv->store_vcard = TRUE;
 
 	ebsdb->priv->in_transaction = 0;
@@ -865,8 +867,9 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		gchar *p;
 		IndexFlags computed = 0;
 
-		/* Ignore the 'localized' columns */
-		if (g_str_has_suffix (col, "_localized"))
+		/* Ignore the 'localized' & 'translit' columns */
+		if (g_str_has_suffix (col, "_localized") ||
+		    g_str_has_suffix (col, "_translit"))
 			continue;
 
 		/* Check if we're parsing a reverse field */
@@ -1017,6 +1020,14 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 				g_string_append  (string, "_localized TEXT, ");
 			}
 
+			/* For any string columns, also create a transliterated data column
+			 * for transliterated queries
+			 */
+			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				g_string_append  (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append  (string, "_translit TEXT, ");
+			}
+
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 			g_string_append (string, " INTEGER, ");
@@ -1059,6 +1070,9 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 				g_string_append (string, "_localized TEXT, ");
+
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_translit TEXT, ");
 
 				success = book_backend_sql_exec (
 				        ebsdb->priv->db, string->str, NULL, NULL , error);
@@ -1135,14 +1149,27 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 			sqlite3_free (stmt);
 			g_free (tmp);
 
-			/* For any indexed column, also index the localized column */
-			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+			/* For any indexed column, also index the localized & transliterated columns  */
+			if (success && ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
 				tmp = g_strdup_printf (
 				        "INDEX_%s_localized_%s",
 					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
 					folderid);
 				stmt = sqlite3_mprintf (
 				        "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_localized)", tmp, folderid,
+					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
+				success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
+				sqlite3_free (stmt);
+				g_free (tmp);
+			}
+
+			if (success && ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				tmp = g_strdup_printf (
+				        "INDEX_%s_translit_%s",
+					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field),
+					folderid);
+				stmt = sqlite3_mprintf (
+				        "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s_translit)", tmp, folderid,
 					summary_dbname_from_field (ebsdb, ebsdb->priv->summary_fields[i].field));
 				success = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error);
 				sqlite3_free (stmt);
@@ -2078,6 +2105,10 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 				g_string_append (string, ", ");
 				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
 				g_string_append (string, "_localized");
+
+				g_string_append (string, ", ");
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_translit");
 			}
 
 			if ((ebsdb->priv->summary_fields[i].index & INDEX_SUFFIX) != 0) {
@@ -2104,6 +2135,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			gchar *val;
 			gchar *normal;
 			gchar *localized = NULL;
+			gchar *transliterated = NULL, *tmp;
 
 			if (i > 0)
 				g_string_append (string, ", ");
@@ -2113,12 +2145,20 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			/* Special exception, never normalize/localize the UID or REV string */
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
 			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+
 				normal = e_util_utf8_normalize (val);
 
-				if (val)
+				if (val) {
 					localized = e_collator_generate_key (ebsdb->priv->collator, val, NULL);
-				else
+
+					tmp = e_transliterator_transliterate (ebsdb->priv->transliterator, val);
+					transliterated = e_util_utf8_normalize (tmp);
+					g_free (tmp);
+
+				} else {
 					localized = g_strdup ("");
+					transliterated = g_strdup ("");
+				}
 			} else
 				normal = g_strdup (val);
 
@@ -2129,6 +2169,11 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
 			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
 				str = sqlite3_mprintf ("%Q", localized);
+				g_string_append (string, ", ");
+				g_string_append (string, str);
+				sqlite3_free (str);
+
+				str = sqlite3_mprintf ("%Q", transliterated);
 				g_string_append (string, ", ");
 				g_string_append (string, str);
 				sqlite3_free (str);
@@ -2151,6 +2196,7 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			g_free (normal);
 			g_free (val);
 			g_free (localized);
+			g_free (transliterated);
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			gboolean val;
 
@@ -3158,12 +3204,13 @@ func_check_translit (struct _ESExp *f,
 		     struct _ESExpResult **argv,
 		     gpointer data)
 {
-	/* Transliterated strings are not in the summary
-	 */
-	ESExpResult *r;
+	ESExpResult *const r = func_check (f, argc, argv, data);
 
-	r = e_sexp_result_new (f, ESEXP_RES_INT);
-	r->value.number = 0;
+	/* Currently we don't support transliterated queries
+	 * for multi-valued fields
+	 */
+	if ((r->value.number & CHECK_IS_LIST_ATTR) != 0)
+		r->value.number = 0;
 
 	return r;
 }
@@ -3374,14 +3421,19 @@ typedef enum {
 	MATCH_PHONE_NUMBER,
 	MATCH_NATIONAL_PHONE_NUMBER,
 	MATCH_SHORT_PHONE_NUMBER,
-	MATCH_REGEX
+	MATCH_REGEX,
+	MATCH_TRANSLIT_CONTAINS,
+	MATCH_TRANSLIT_IS,
+	MATCH_TRANSLIT_BEGINS_WITH,
+	MATCH_TRANSLIT_ENDS_WITH,
 } MatchType;
 
 typedef enum {
 	CONVERT_NOTHING   =  0,
 	CONVERT_NORMALIZE = (1 << 0),
 	CONVERT_REVERSE   = (1 << 1),
-	CONVERT_PHONE     = (1 << 2)
+	CONVERT_PHONE     = (1 << 2),
+	CONVERT_TRANSLIT  = (1 << 3)
 } ConvertFlags;
 
 static gchar *
@@ -3421,15 +3473,23 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	gboolean escape_modifier_needed = FALSE;
 	const gchar *escape_modifier = " ESCAPE '^'";
 	gchar *computed = NULL;
-	gchar *normal;
+	gchar *normal, *tmp;
 	const gchar *ptr;
 
 	g_return_val_if_fail (value != NULL, NULL);
 
-	if ((flags & CONVERT_NORMALIZE) && match != MATCH_REGEX)
+	/* This is getting to be a mess, if we are transliterating,
+	 * then we wont be normalizing as well, or regexing either
+	 */
+	if ((flags & CONVERT_TRANSLIT) != 0) {
+		tmp = e_transliterator_transliterate (ebsdb->priv->transliterator, value);
+		normal = e_util_utf8_normalize (tmp);
+		g_free (tmp);
+	} else if ((flags & CONVERT_NORMALIZE) && match != MATCH_REGEX) {
 		normal = e_util_utf8_normalize (value);
-	else
+	} else {
 		normal = g_strdup (value);
+	}
 
 	/* Just assume each character must be escaped. The result of this function
 	 * is discarded shortly after calling this function. Therefore it's
@@ -3442,12 +3502,16 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	switch (match) {
 	case MATCH_CONTAINS:
 	case MATCH_ENDS_WITH:
+	case MATCH_TRANSLIT_CONTAINS:
+	case MATCH_TRANSLIT_ENDS_WITH:
 	case MATCH_SHORT_PHONE_NUMBER:
 		g_string_append_c (str, '%');
 		break;
 
 	case MATCH_BEGINS_WITH:
 	case MATCH_IS:
+	case MATCH_TRANSLIT_BEGINS_WITH:
+	case MATCH_TRANSLIT_IS:
 	case MATCH_PHONE_NUMBER:
 	case MATCH_NATIONAL_PHONE_NUMBER:
 	case MATCH_REGEX:
@@ -3478,11 +3542,15 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 	switch (match) {
 	case MATCH_CONTAINS:
 	case MATCH_BEGINS_WITH:
+	case MATCH_TRANSLIT_CONTAINS:
+	case MATCH_TRANSLIT_BEGINS_WITH:
 		g_string_append_c (str, '%');
 		break;
 
 	case MATCH_ENDS_WITH:
 	case MATCH_IS:
+	case MATCH_TRANSLIT_ENDS_WITH:
+	case MATCH_TRANSLIT_IS:
 	case MATCH_PHONE_NUMBER:
 	case MATCH_NATIONAL_PHONE_NUMBER:
 	case MATCH_SHORT_PHONE_NUMBER:
@@ -3529,6 +3597,7 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 	} else {
 		gboolean suffix_search = FALSE;
 		gboolean phone_search = FALSE;
+		gboolean translit_search = FALSE;
 
 		/* If its a suffix search and we have reverse data to search... */
 		if (match == MATCH_ENDS_WITH &&
@@ -3548,6 +3617,13 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			 (ebsdb->priv->summary_fields[summary_index].index & INDEX_SUFFIX) != 0 &&
 			 (ebsdb->priv->summary_fields[summary_index].index & INDEX_PREFIX) == 0)
 			suffix_search = TRUE;
+
+		/* Or perhaps we are doing a transliterated search, if none of the above apply */
+		else if (match == MATCH_TRANSLIT_CONTAINS ||
+			 match == MATCH_TRANSLIT_IS ||
+			 match == MATCH_TRANSLIT_BEGINS_WITH ||
+			 match == MATCH_TRANSLIT_ENDS_WITH)
+			translit_search = TRUE;
 
 		if (suffix_search) {
 			/* Special case for suffix matching:
@@ -3616,6 +3692,29 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 				}
 
 			}
+
+		} else if (translit_search) {
+
+			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
+				/* We havent yet supported transliterated multivalue queries, this
+				 * should not be reached
+				 */
+				g_warn_if_reached ();
+			} else
+				field_name = g_strconcat (
+					"summary.",
+					ebsdb->priv->summary_fields[summary_index].dbname,
+					"_translit", NULL);
+
+			if (ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_UID ||
+			    ebsdb->priv->summary_fields[summary_index].field == E_CONTACT_REV)
+				/* We should not be supporting transliteration queries on UID & REV */
+				g_warn_if_reached ();
+			else
+				value = convert_string_value (
+					ebsdb, query_term_input, region,
+					CONVERT_TRANSLIT, match);
+
 		} else {
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
 				field_name = g_strdup ("multi.value");
@@ -3659,6 +3758,7 @@ field_oper (MatchType match)
 {
 	switch (match) {
 	case MATCH_IS:
+	case MATCH_TRANSLIT_IS:
 	case MATCH_PHONE_NUMBER:
 	case MATCH_NATIONAL_PHONE_NUMBER:
 		return "=";
@@ -3669,6 +3769,9 @@ field_oper (MatchType match)
 	case MATCH_CONTAINS:
 	case MATCH_BEGINS_WITH:
 	case MATCH_ENDS_WITH:
+	case MATCH_TRANSLIT_CONTAINS:
+	case MATCH_TRANSLIT_BEGINS_WITH:
+	case MATCH_TRANSLIT_ENDS_WITH:
 	case MATCH_SHORT_PHONE_NUMBER:
 		break;
 	}
@@ -3869,6 +3972,41 @@ func_regex (struct _ESExp *f,
 	return convert_match_exp (f, argc, argv, data, MATCH_REGEX);
 }
 
+static ESExpResult *
+func_translit_contains (struct _ESExp *f,
+			gint argc,
+			struct _ESExpResult **argv,
+			gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_TRANSLIT_CONTAINS);
+}
+
+static ESExpResult *
+func_translit_is (struct _ESExp *f,
+		  gint argc,
+		  struct _ESExpResult **argv,
+		  gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_TRANSLIT_IS);
+}
+
+static ESExpResult *
+func_translit_beginswith (struct _ESExp *f,
+			  gint argc,
+			  struct _ESExpResult **argv,
+			  gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_TRANSLIT_BEGINS_WITH);
+}
+
+static ESExpResult *
+func_translit_endswith (struct _ESExp *f,
+			gint argc,
+			struct _ESExpResult **argv,
+			gpointer data)
+{
+	return convert_match_exp (f, argc, argv, data, MATCH_TRANSLIT_ENDS_WITH);
+}
 
 /* 'builtin' functions */
 static struct {
@@ -3886,7 +4024,11 @@ static struct {
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
-	{ "regex_normal", func_regex, 0 }
+	{ "regex_normal", func_regex, 0 },
+	{ "translit_contains", func_translit_contains, 0 },
+	{ "translit_is", func_translit_is, 0 },
+	{ "translit_beginswith", func_translit_beginswith, 0 },
+	{ "translit_endswith", func_translit_endswith, 0 }
 };
 
 static gchar *
