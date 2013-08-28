@@ -258,9 +258,6 @@ GPtrArray *	camel_imapx_server_uid_search	(CamelIMAPXServer *is,
 						 const gchar *criteria,
 						 GCancellable *cancellable,
 						 GError **error);
-struct _IMAPXJobQueueInfo *
-		camel_imapx_server_get_job_queue_info
-						(CamelIMAPXServer *is);
 const CamelIMAPXUntaggedRespHandlerDesc *
 		camel_imapx_server_register_untagged_handler
 						(CamelIMAPXServer *is,

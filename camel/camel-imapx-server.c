@@ -8259,57 +8259,6 @@ camel_imapx_server_uid_search (CamelIMAPXServer *is,
 	return results;
 }
 
-IMAPXJobQueueInfo *
-camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
-{
-	IMAPXJobQueueInfo *jinfo = g_new0 (IMAPXJobQueueInfo, 1);
-	CamelFolder *select_folder;
-	CamelIMAPXJob *job = NULL;
-	GList *head, *link;
-
-	QUEUE_LOCK (is);
-
-	jinfo->queue_len = g_queue_get_length (&is->jobs);
-	jinfo->folders = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) NULL);
-
-	head = g_queue_peek_head_link (&is->jobs);
-
-	for (link = head; link != NULL; link = g_list_next (link)) {
-		CamelFolder *folder;
-
-		job = (CamelIMAPXJob *) link->data;
-		folder = camel_imapx_job_ref_folder (job);
-
-		if (folder != NULL) {
-			gchar *folder_name;
-
-			folder_name = camel_folder_dup_full_name (folder);
-			g_hash_table_add (jinfo->folders, folder_name);
-
-			g_object_unref (folder);
-		}
-	}
-
-	select_folder = g_weak_ref_get (&is->select_folder);
-
-	if (select_folder != NULL) {
-		gchar *folder_name;
-
-		folder_name = camel_folder_dup_full_name (select_folder);
-		g_hash_table_add (jinfo->folders, folder_name);
-
-		g_object_unref (select_folder);
-	}
-
-	QUEUE_UNLOCK (is);
-
-	return jinfo;
-}
-
 /**
  * camel_imapx_server_register_untagged_handler:
  * @is: a #CamelIMAPXServer instance
