@@ -64,7 +64,6 @@ typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
 
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
-struct _IMAPXJobQueueInfo;
 
 /* untagged response handling */
 typedef gboolean

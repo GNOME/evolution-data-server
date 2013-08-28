@@ -340,14 +340,6 @@ gboolean	camel_imapx_parse_quotaroot	(struct _CamelIMAPXStream *is,
 						 GError **error);
 
 /* ********************************************************************** */
-typedef struct _IMAPXJobQueueInfo {
-	guint queue_len;
-
-	/* list of folders for which jobs are in the queue */
-	GHashTable *folders;
-} IMAPXJobQueueInfo;
-
-/* ********************************************************************** */
 
 extern guchar imapx_specials[256];
 
