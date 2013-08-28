@@ -26,9 +26,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-// fixme, use own type funcs
-#include <ctype.h>
-
 #include "camel-imapx-server.h"
 
 #include "camel-imapx-command.h"
@@ -2446,7 +2443,7 @@ imapx_untagged (CamelIMAPXServer *is,
 	e (is->tagprefix, "Have token '%s' id %d\n", is->priv->context->token, is->priv->context->id);
 	p = is->priv->context->token;
 	while ((c = *p))
-		*p++ = toupper((gchar) c);
+		*p++ = g_ascii_toupper ((gchar) c);
 
 	token = (const gchar *) is->priv->context->token; /* FIXME need 'guchar *token' here */
 	while (token != NULL) {
