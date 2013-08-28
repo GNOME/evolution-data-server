@@ -1293,7 +1293,8 @@ camel_store_class_init (CamelStoreClass *class)
 	 * user preference changes rather than actual server-side changes.
 	 * For example, a user may change a preference that reveals a set
 	 * of folders previously hidden from view, or that alters whether
-	 * to augment the @store with virtual Junk and Trash folders. */
+	 * to augment the @store with virtual Junk and Trash folders.
+	 **/
 	signals[FOLDER_INFO_STALE] = g_signal_new (
 		"folder-info-stale",
 		G_OBJECT_CLASS_TYPE (class),
