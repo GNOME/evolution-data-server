@@ -262,10 +262,6 @@ const CamelIMAPXUntaggedRespHandlerDesc *
 						(CamelIMAPXServer *is,
 						 const gchar *untagged_response,
 						 const CamelIMAPXUntaggedRespHandlerDesc *desc);
-gboolean	camel_imapx_server_command_run	(CamelIMAPXServer *is,
-						 CamelIMAPXCommand *ic,
-						 GCancellable *cancellable,
-						 GError **error);
 
 G_END_DECLS
 

@@ -903,7 +903,6 @@ camel_imapx_server_update_quota_info
 camel_imapx_server_uid_search
 CamelIMAPXUntaggedRespHandlerDesc
 camel_imapx_server_register_untagged_handler
-camel_imapx_server_command_run
 <SUBSECTION Standard>
 CAMEL_IMAPX_SERVER
 CAMEL_IS_IMAPX_SERVER
