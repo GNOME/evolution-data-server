@@ -1409,43 +1409,6 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	g_object_unref (folder);
 }
 
-static void
-invalidate_local_cache (CamelIMAPXFolder *ifolder,
-                        guint64 new_uidvalidity)
-{
-	CamelFolder *cfolder;
-	CamelFolderChangeInfo *changes;
-	GPtrArray *uids;
-	gint ii;
-
-	g_return_if_fail (ifolder != NULL);
-
-	cfolder = CAMEL_FOLDER (ifolder);
-	g_return_if_fail (cfolder != NULL);
-
-	changes = camel_folder_change_info_new ();
-
-	uids = camel_folder_summary_get_array (cfolder->summary);
-	for (ii = 0; uids && ii < uids->len; ii++) {
-		const gchar *uid = uids->pdata[ii];
-
-		if (uid)
-			camel_folder_change_info_change_uid (changes, uid);
-	}
-
-	camel_folder_summary_free_array (uids);
-
-	CAMEL_IMAPX_SUMMARY (cfolder->summary)->validity = new_uidvalidity;
-	camel_folder_summary_touch (cfolder->summary);
-	camel_folder_summary_save_to_db (cfolder->summary, NULL);
-
-	camel_data_cache_clear (ifolder->cache, "cache");
-	camel_data_cache_clear (ifolder->cache, "cur");
-
-	camel_folder_changed (cfolder, changes);
-	camel_folder_change_info_free (changes);
-}
-
 /* untagged response handler functions */
 
 static gboolean
@@ -2246,7 +2209,8 @@ imapx_untagged_status (CamelIMAPXServer *is,
 			imapx_folder, response);
 
 		if (uidvalidity > 0 && uidvalidity != imapx_summary->validity)
-			invalidate_local_cache (imapx_folder, uidvalidity);
+			camel_imapx_folder_invalidate_local_cache (
+				imapx_folder, uidvalidity);
 	} else {
 		c (is->tagprefix,
 			"Received STATUS for unknown folder '%s'\n",
@@ -3571,7 +3535,8 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		ifolder->uidvalidity_on_server = is->uidvalidity;
 
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *) folder->summary)->validity)
-			invalidate_local_cache (ifolder, is->uidvalidity);
+			camel_imapx_folder_invalidate_local_cache (
+				ifolder, is->uidvalidity);
 
 #if 0  /* see comment for disabled bits in imapx_job_refresh_info_start() */
 		/* This should trigger a new messages scan */
@@ -5657,7 +5622,8 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 	total = camel_folder_summary_count (folder->summary);
 
 	if (ifolder->uidvalidity_on_server && isum->validity && isum->validity != ifolder->uidvalidity_on_server) {
-		invalidate_local_cache (ifolder, ifolder->uidvalidity_on_server);
+		camel_imapx_folder_invalidate_local_cache (
+			ifolder, ifolder->uidvalidity_on_server);
 		need_rescan = TRUE;
 	}
 

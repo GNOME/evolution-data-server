@@ -1261,6 +1261,55 @@ camel_imapx_folder_add_move_to_real_trash (CamelIMAPXFolder *folder,
 }
 
 /**
+ * camel_imapx_folder_invalidate_local_cache:
+ * @folder: a #CamelIMAPXFolder
+ * @new_uidvalidity: the new UIDVALIDITY value
+ *
+ * Call this function when the IMAP server reports a different UIDVALIDITY
+ * value than what is presently cached.  This means all cached message UIDs
+ * are now invalid and must be discarded.
+ *
+ * The local cache for @folder is reset and the @new_uidvalidity value is
+ * recorded in the newly-reset cache.
+ *
+ * Since: 3.10
+ **/
+void
+camel_imapx_folder_invalidate_local_cache (CamelIMAPXFolder *folder,
+                                           guint64 new_uidvalidity)
+{
+	CamelFolderSummary *summary;
+	CamelFolderChangeInfo *changes;
+	GPtrArray *array;
+	guint ii;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+	g_return_if_fail (new_uidvalidity > 0);
+
+	summary = CAMEL_FOLDER (folder)->summary;
+
+	changes = camel_folder_change_info_new ();
+	array = camel_folder_summary_get_array (summary);
+
+	for (ii = 0; ii < array->len; ii++) {
+		const gchar *uid = array->pdata[ii];
+		camel_folder_change_info_change_uid (changes, uid);
+	}
+
+	CAMEL_IMAPX_SUMMARY (summary)->validity = new_uidvalidity;
+	camel_folder_summary_touch (summary);
+	camel_folder_summary_save_to_db (summary, NULL);
+
+	camel_data_cache_clear (folder->cache, "cache");
+	camel_data_cache_clear (folder->cache, "cur");
+
+	camel_folder_changed (CAMEL_FOLDER (folder), changes);
+
+	camel_folder_change_info_free (changes);
+	camel_folder_summary_free_array (array);
+}
+
+/**
  * camel_imapx_folder_process_status_response:
  * @folder: a #CamelIMAPXFolder
  * @response: a #CamelIMAPXStatusResponse
