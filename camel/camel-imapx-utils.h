@@ -347,9 +347,6 @@ typedef struct _IMAPXJobQueueInfo {
 	GHashTable *folders;
 } IMAPXJobQueueInfo;
 
-void		camel_imapx_destroy_job_queue_info
-						(IMAPXJobQueueInfo *jinfo);
-
 /* ********************************************************************** */
 
 extern guchar imapx_specials[256];
