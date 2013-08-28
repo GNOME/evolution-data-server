@@ -1107,9 +1107,6 @@ camel_imapx_folder_new (CamelStore *store,
 		"full_name", folder_name,
 		"parent-store", store, NULL);
 
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-	imapx_folder->raw_name = g_strdup (folder_name);
-
 	folder->summary = camel_imapx_summary_new (folder);
 	if (folder->summary == NULL) {
 		g_set_error (
@@ -1119,6 +1116,7 @@ camel_imapx_folder_new (CamelStore *store,
 		return NULL;
 	}
 
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 	imapx_folder->cache = camel_data_cache_new (folder_dir, error);
 	if (imapx_folder->cache == NULL) {
 		g_prefix_error (

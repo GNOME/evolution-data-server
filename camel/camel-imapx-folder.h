@@ -64,7 +64,6 @@ struct _CamelIMAPXFolder {
 	CamelOfflineFolder parent;
 	CamelIMAPXFolderPrivate *priv;
 
-	gchar *raw_name;
 	CamelDataCache *cache;
 	CamelFolderSearch *search;
 
