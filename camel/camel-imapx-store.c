@@ -59,6 +59,11 @@
 struct _CamelIMAPXStorePrivate {
 	CamelIMAPXServer *connected_server;
 	CamelIMAPXServer *connecting_server;
+	gulong mailbox_select_handler_id;
+	gulong mailbox_closed_handler_id;
+	gulong mailbox_created_handler_id;
+	gulong mailbox_renamed_handler_id;
+	gulong mailbox_updated_handler_id;
 	GMutex server_lock;
 
 	GHashTable *quota_info;
@@ -325,6 +330,42 @@ imapx_store_rename_storage_path (CamelIMAPXStore *imapx_store,
 }
 
 static void
+imapx_store_mailbox_select_cb (CamelIMAPXServer *server,
+                               CamelIMAPXMailbox *mailbox,
+                               CamelIMAPXStore *store)
+{
+}
+
+static void
+imapx_store_mailbox_closed_cb (CamelIMAPXServer *server,
+                               CamelIMAPXMailbox *mailbox,
+                               CamelIMAPXStore *store)
+{
+}
+
+static void
+imapx_store_mailbox_created_cb (CamelIMAPXServer *server,
+                                CamelIMAPXMailbox *mailbox,
+                                CamelIMAPXStore *store)
+{
+}
+
+static void
+imapx_store_mailbox_renamed_cb (CamelIMAPXServer *server,
+                                CamelIMAPXMailbox *mailbox,
+                                const gchar *oldname,
+                                CamelIMAPXStore *store)
+{
+}
+
+static void
+imapx_store_mailbox_updated_cb (CamelIMAPXServer *server,
+                                CamelIMAPXMailbox *mailbox,
+                                CamelIMAPXStore *store)
+{
+}
+
+static void
 imapx_store_connect_to_settings (CamelStore *store)
 {
 	CamelIMAPXStorePrivate *priv;
@@ -412,6 +453,41 @@ static void
 imapx_store_dispose (GObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
+
+	if (imapx_store->priv->mailbox_select_handler_id > 0) {
+		g_signal_handler_disconnect (
+			imapx_store->priv->connected_server,
+			imapx_store->priv->mailbox_select_handler_id);
+		imapx_store->priv->mailbox_select_handler_id = 0;
+	}
+
+	if (imapx_store->priv->mailbox_closed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			imapx_store->priv->connected_server,
+			imapx_store->priv->mailbox_closed_handler_id);
+		imapx_store->priv->mailbox_closed_handler_id = 0;
+	}
+
+	if (imapx_store->priv->mailbox_created_handler_id > 0) {
+		g_signal_handler_disconnect (
+			imapx_store->priv->connected_server,
+			imapx_store->priv->mailbox_created_handler_id);
+		imapx_store->priv->mailbox_created_handler_id = 0;
+	}
+
+	if (imapx_store->priv->mailbox_renamed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			imapx_store->priv->connected_server,
+			imapx_store->priv->mailbox_renamed_handler_id);
+		imapx_store->priv->mailbox_renamed_handler_id = 0;
+	}
+
+	if (imapx_store->priv->mailbox_updated_handler_id > 0) {
+		g_signal_handler_disconnect (
+			imapx_store->priv->connected_server,
+			imapx_store->priv->mailbox_updated_handler_id);
+		imapx_store->priv->mailbox_updated_handler_id = 0;
+	}
 
 	if (imapx_store->priv->settings_notify_handler_id > 0) {
 		g_signal_handler_disconnect (
@@ -531,8 +607,75 @@ imapx_connect_sync (CamelService *service,
 	g_clear_object (&priv->connecting_server);
 
 	if (success) {
+		gulong handler_id;
+
+		if (priv->mailbox_select_handler_id > 0) {
+			g_signal_handler_disconnect (
+				priv->connected_server,
+				priv->mailbox_select_handler_id);
+			priv->mailbox_select_handler_id = 0;
+		}
+
+		if (priv->mailbox_closed_handler_id > 0) {
+			g_signal_handler_disconnect (
+				priv->connected_server,
+				priv->mailbox_closed_handler_id);
+			priv->mailbox_closed_handler_id = 0;
+		}
+
+		if (priv->mailbox_created_handler_id > 0) {
+			g_signal_handler_disconnect (
+				priv->connected_server,
+				priv->mailbox_created_handler_id);
+			priv->mailbox_created_handler_id = 0;
+		}
+
+		if (priv->mailbox_renamed_handler_id > 0) {
+			g_signal_handler_disconnect (
+				priv->connected_server,
+				priv->mailbox_renamed_handler_id);
+			priv->mailbox_renamed_handler_id = 0;
+		}
+
+		if (priv->mailbox_updated_handler_id > 0) {
+			g_signal_handler_disconnect (
+				priv->connected_server,
+				priv->mailbox_updated_handler_id);
+			priv->mailbox_updated_handler_id = 0;
+		}
+
 		g_clear_object (&priv->connected_server);
 		priv->connected_server = g_object_ref (imapx_server);
+
+		handler_id = g_signal_connect (
+			priv->connected_server, "mailbox-select",
+			G_CALLBACK (imapx_store_mailbox_select_cb),
+			service);
+		priv->mailbox_select_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			priv->connected_server, "mailbox-closed",
+			G_CALLBACK (imapx_store_mailbox_closed_cb),
+			service);
+		priv->mailbox_closed_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			priv->connected_server, "mailbox-created",
+			G_CALLBACK (imapx_store_mailbox_created_cb),
+			service);
+		priv->mailbox_created_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			priv->connected_server, "mailbox-renamed",
+			G_CALLBACK (imapx_store_mailbox_renamed_cb),
+			service);
+		priv->mailbox_renamed_handler_id = handler_id;
+
+		handler_id = g_signal_connect (
+			priv->connected_server, "mailbox-updated",
+			G_CALLBACK (imapx_store_mailbox_updated_cb),
+			service);
+		priv->mailbox_updated_handler_id = handler_id;
 	}
 
 	g_mutex_unlock (&priv->server_lock);
@@ -553,6 +696,41 @@ imapx_disconnect_sync (CamelService *service,
 	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
 
 	g_mutex_lock (&priv->server_lock);
+
+	if (priv->mailbox_select_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->connected_server,
+			priv->mailbox_select_handler_id);
+		priv->mailbox_select_handler_id = 0;
+	}
+
+	if (priv->mailbox_closed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->connected_server,
+			priv->mailbox_closed_handler_id);
+		priv->mailbox_closed_handler_id = 0;
+	}
+
+	if (priv->mailbox_created_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->connected_server,
+			priv->mailbox_created_handler_id);
+		priv->mailbox_created_handler_id = 0;
+	}
+
+	if (priv->mailbox_renamed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->connected_server,
+			priv->mailbox_renamed_handler_id);
+		priv->mailbox_renamed_handler_id = 0;
+	}
+
+	if (priv->mailbox_updated_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->connected_server,
+			priv->mailbox_updated_handler_id);
+		priv->mailbox_updated_handler_id = 0;
+	}
 
 	g_clear_object (&priv->connected_server);
 	g_clear_object (&priv->connecting_server);
