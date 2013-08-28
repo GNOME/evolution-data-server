@@ -29,11 +29,6 @@
 // fixme, use own type funcs
 #include <ctype.h>
 
-#include <nspr.h>
-#include <prio.h>
-#include <prerror.h>
-#include <prerr.h>
-
 #include "camel-imapx-server.h"
 
 #include "camel-imapx-command.h"
@@ -44,11 +39,6 @@
 #include "camel-imapx-stream.h"
 #include "camel-imapx-summary.h"
 #include "camel-imapx-utils.h"
-
-#ifdef G_OS_WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#endif
 
 #define CAMEL_IMAPX_SERVER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -515,15 +505,6 @@ static gboolean	camel_imapx_server_idle		(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
-
-enum {
-	USE_SSL_NEVER,
-	USE_SSL_ALWAYS,
-	USE_SSL_WHEN_POSSIBLE
-};
-
-#define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
-#define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
 static void	imapx_maybe_select		(CamelIMAPXServer *is,
 						 CamelIMAPXJob *job,
