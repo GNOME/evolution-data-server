@@ -45,6 +45,7 @@
 
 struct _CamelIMAPXFolderPrivate {
 	GMutex property_lock;
+	GWeakRef mailbox;
 	gchar **quota_root_names;
 
 	GMutex move_to_hash_table_lock;
@@ -56,6 +57,7 @@ struct _CamelIMAPXFolderPrivate {
  * It still identifies the property in state files. */
 enum {
 	PROP_0,
+	PROP_MAILBOX,
 	PROP_QUOTA_ROOT_NAMES,
 	PROP_APPLY_FILTERS = 0x2501
 };
@@ -139,6 +141,12 @@ imapx_folder_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_MAILBOX:
+			camel_imapx_folder_set_mailbox (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_QUOTA_ROOT_NAMES:
 			camel_imapx_folder_set_quota_root_names (
 				CAMEL_IMAPX_FOLDER (object),
@@ -160,6 +168,13 @@ imapx_folder_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				imapx_folder_get_apply_filters (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+
+		case PROP_MAILBOX:
+			g_value_take_object (
+				value,
+				camel_imapx_folder_ref_mailbox (
 				CAMEL_IMAPX_FOLDER (object)));
 			return;
 
@@ -196,6 +211,8 @@ imapx_folder_dispose (GObject *object)
 			(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
 			CAMEL_FOLDER (folder)->summary);
 	}
+
+	g_weak_ref_set (&folder->priv->mailbox, NULL);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->dispose (object);
@@ -1012,6 +1029,17 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_MAILBOX,
+		g_param_spec_object (
+			"mailbox",
+			"Mailbox",
+			"IMAP mailbox for this folder",
+			CAMEL_TYPE_IMAPX_MAILBOX,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_QUOTA_ROOT_NAMES,
 		g_param_spec_boxed (
 			"quota-root-names",
@@ -1165,6 +1193,53 @@ camel_imapx_folder_new (CamelStore *store,
 		folder_name, folder->summary);
 
 	return folder;
+}
+
+/**
+ * camel_imapx_folder_ref_mailbox:
+ * @folder: a #CamelIMAPXFolder
+ *
+ * Returns the #CamelIMAPXMailbox for @folder from the current IMAP server
+ * connection, or %NULL if @folder's #CamelFolder:parent-store is disconnected
+ * from the IMAP server.
+ *
+ * The returned #CamelIMAPXMailbox is referenced for thread-safety and
+ * should be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #CamelIMAPXMailbox, or %NULL
+ *
+ * Since: 3.12
+ **/
+CamelIMAPXMailbox *
+camel_imapx_folder_ref_mailbox (CamelIMAPXFolder *folder)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
+
+	return g_weak_ref_get (&folder->priv->mailbox);
+}
+
+/**
+ * camel_imapx_folder_set_mailbox:
+ * @folder: a #CamelIMAPXFolder
+ * @mailbox: a #CamelIMAPXMailbox
+ *
+ * Sets the #CamelIMAPXMailbox for @folder from the current IMAP server
+ * connection.  Note that #CamelIMAPXFolder only holds a weak reference
+ * on its #CamelIMAPXMailbox so that when the IMAP server connection is
+ * lost, all mailbox instances are automatically destroyed.
+ *
+ * Since: 3.12
+ **/
+void
+camel_imapx_folder_set_mailbox (CamelIMAPXFolder *folder,
+                                CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	g_weak_ref_set (&folder->priv->mailbox, mailbox);
+
+	g_object_notify (G_OBJECT (folder), "mailbox");
 }
 
 gchar **

@@ -33,6 +33,7 @@
 #include <camel/camel-folder-search.h>
 #include <camel/camel-store.h>
 
+#include <camel/camel-imapx-mailbox.h>
 #include <camel/camel-imapx-status-response.h>
 
 /* Standard GObject macros */
@@ -91,6 +92,10 @@ CamelFolder *	camel_imapx_folder_new		(CamelStore *parent,
 						 const gchar *path,
 						 const gchar *raw,
 						 GError **error);
+CamelIMAPXMailbox *
+		camel_imapx_folder_ref_mailbox	(CamelIMAPXFolder *folder);
+void		camel_imapx_folder_set_mailbox	(CamelIMAPXFolder *folder,
+						 CamelIMAPXMailbox *mailbox);
 gchar **	camel_imapx_folder_dup_quota_root_names
 						(CamelIMAPXFolder *folder);
 void		camel_imapx_folder_set_quota_root_names
