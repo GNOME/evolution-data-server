@@ -16,6 +16,7 @@
  *
  *
  * Copyright (C) 2011 Red Hat, Inc. (www.redhat.com)
+ * Copyright (C) 2012 Intel Corporation
  *
  */
 
