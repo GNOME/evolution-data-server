@@ -356,6 +356,183 @@ imapx_store_add_mailbox_to_folder (CamelIMAPXStore *store,
 	g_free (folder_path);
 }
 
+static CamelStoreInfoFlags
+imapx_store_mailbox_attributes_to_flags (CamelIMAPXMailbox *mailbox)
+{
+	CamelStoreInfoFlags store_info_flags = 0;
+	const gchar *attribute;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_NOSELECT;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_NOSELECT;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_NOINFERIORS;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_NOINFERIORS;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_HASCHILDREN;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_CHILDREN;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_HASNOCHILDREN;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_NOCHILDREN;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+
+	/* XXX Does "\Marked" mean CAMEL_STORE_INFO_FOLDER_FLAGGED?
+	 *     Who the heck knows; the enum value is undocumented. */
+
+	return store_info_flags;
+}
+
+static void
+imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
+                                        CamelIMAPXMailbox *mailbox,
+                                        const gchar *oldname)
+{
+	CamelFolderInfo *fi;
+	CamelIMAPXStoreInfo *si;
+	CamelStoreInfoFlags flags;
+	CamelStoreSummary *summary;
+	CamelSettings *settings;
+	gboolean use_subscriptions;
+	gboolean mailbox_is_subscribed;
+	gboolean mailbox_is_nonexistent;
+	gboolean mailbox_was_in_summary;
+	gboolean mailbox_was_subscribed;
+	gboolean emit_folder_created_subscribed = FALSE;
+	gboolean emit_folder_unsubscribed_deleted = FALSE;
+	gboolean emit_folder_renamed = FALSE;
+	const gchar *folder_path;
+	const gchar *mailbox_name;
+	gchar separator;
+
+	summary = CAMEL_STORE_SUMMARY (store->summary);
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
+		CAMEL_IMAPX_SETTINGS (settings));
+	g_object_unref (settings);
+
+	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
+	separator = camel_imapx_mailbox_get_separator (mailbox);
+
+	mailbox_is_subscribed =
+		camel_imapx_mailbox_has_attribute (
+		mailbox, CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED) ||
+		camel_imapx_mailbox_is_inbox (mailbox_name);
+
+	mailbox_is_nonexistent =
+		camel_imapx_mailbox_has_attribute (
+		mailbox, CAMEL_IMAPX_LIST_ATTR_NONEXISTENT);
+
+	/* XXX The flags type transforms from CamelStoreInfoFlags
+	 *     to CamelFolderInfoFlags about half-way through this.
+	 *     We should really eliminate the confusing redundancy. */
+	flags = imapx_store_mailbox_attributes_to_flags (mailbox);
+
+	/* Summary retains ownership of the returned CamelStoreInfo. */
+	si = camel_imapx_store_summary_mailbox (store->summary, mailbox_name);
+	if (si != NULL) {
+		mailbox_was_in_summary = TRUE;
+		if (si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
+			mailbox_was_subscribed = TRUE;
+		else
+			mailbox_was_subscribed = FALSE;
+	} else {
+		/* XXX Shouldn't this take a GError if it can fail? */
+		si = camel_imapx_store_summary_add_from_mailbox (
+			store->summary, mailbox_name, separator);
+		g_return_if_fail (si != NULL);
+		mailbox_was_in_summary = FALSE;
+		mailbox_was_subscribed = FALSE;
+	}
+
+	/* Check if the SUBSCRIBED flags disagree. */
+	if ((flags ^ si->info.flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
+		si->info.flags &= ~CAMEL_FOLDER_SUBSCRIBED;
+		si->info.flags |= flags & CAMEL_FOLDER_SUBSCRIBED;
+		camel_store_summary_touch (summary);
+	}
+
+	folder_path = camel_store_info_path (summary, (CamelStoreInfo *) si);
+	fi = imapx_store_build_folder_info (store, folder_path, flags);
+
+	/* Figure out which signals to emit, if any. */
+	if (use_subscriptions) {
+		/* If we are honoring folder subscriptions, then
+		 * subscription changes are equivalent to folder
+		 * creation / deletion as far as we're concerned. */
+		if (mailbox_is_subscribed && !mailbox_is_nonexistent) {
+			if (oldname != NULL) {
+				emit_folder_renamed = TRUE;
+			} else if (!mailbox_was_subscribed) {
+				emit_folder_created_subscribed = TRUE;
+			}
+		}
+		if (!mailbox_is_subscribed && mailbox_was_subscribed)
+			emit_folder_unsubscribed_deleted = TRUE;
+		if (mailbox_is_nonexistent && mailbox_was_subscribed)
+			emit_folder_unsubscribed_deleted = TRUE;
+	} else {
+		if (!mailbox_is_nonexistent) {
+			if (oldname != NULL) {
+				emit_folder_renamed = TRUE;
+			} else if (!mailbox_was_in_summary) {
+				emit_folder_created_subscribed = TRUE;
+			}
+		}
+		if (mailbox_is_nonexistent && mailbox_was_in_summary)
+			emit_folder_unsubscribed_deleted = TRUE;
+	}
+
+	/* At most one signal emission flag should be set. */
+	g_warn_if_fail (
+		(emit_folder_created_subscribed ? 1 : 0) +
+		(emit_folder_unsubscribed_deleted ? 1 : 0) +
+		(emit_folder_renamed ? 1 : 0) <= 1);
+
+	if (emit_folder_created_subscribed) {
+		camel_store_folder_created (
+			CAMEL_STORE (store), fi);
+		camel_subscribable_folder_subscribed (
+			CAMEL_SUBSCRIBABLE (store), fi);
+	}
+
+	if (emit_folder_unsubscribed_deleted) {
+		camel_subscribable_folder_unsubscribed (
+			CAMEL_SUBSCRIBABLE (store), fi);
+		camel_store_folder_deleted (
+			CAMEL_STORE (store), fi);
+	}
+
+	if (emit_folder_renamed) {
+		gchar *old_folder_path;
+		gchar *new_folder_path;
+
+		old_folder_path = camel_imapx_mailbox_to_folder_path (
+			oldname, separator);
+		new_folder_path = camel_imapx_mailbox_to_folder_path (
+			mailbox_name, separator);
+
+		imapx_store_rename_folder_info (
+			store, old_folder_path, new_folder_path);
+		imapx_store_rename_storage_path (
+			store, old_folder_path, new_folder_path);
+
+		camel_store_folder_renamed (
+			CAMEL_STORE (store), old_folder_path, fi);
+
+		g_free (old_folder_path);
+		g_free (new_folder_path);
+	}
+
+	camel_folder_info_free (fi);
+}
+
 static void
 imapx_store_mailbox_select_cb (CamelIMAPXServer *server,
                                CamelIMAPXMailbox *mailbox,
@@ -376,6 +553,7 @@ imapx_store_mailbox_created_cb (CamelIMAPXServer *server,
                                 CamelIMAPXStore *store)
 {
 	imapx_store_add_mailbox_to_folder (store, mailbox);
+	imapx_store_process_mailbox_attributes (store, mailbox, NULL);
 }
 
 static void
@@ -384,6 +562,7 @@ imapx_store_mailbox_renamed_cb (CamelIMAPXServer *server,
                                 const gchar *oldname,
                                 CamelIMAPXStore *store)
 {
+	imapx_store_process_mailbox_attributes (store, mailbox, oldname);
 }
 
 static void
@@ -391,6 +570,7 @@ imapx_store_mailbox_updated_cb (CamelIMAPXServer *server,
                                 CamelIMAPXMailbox *mailbox,
                                 CamelIMAPXStore *store)
 {
+	imapx_store_process_mailbox_attributes (store, mailbox, NULL);
 }
 
 static void
