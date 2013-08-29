@@ -24,7 +24,6 @@
 #define CAMEL_IMAPX_LIST_RESPONSE_H
 
 #include <gio/gio.h>
-#include <camel/camel-enums.h>
 #include <camel/camel-imapx-stream.h>
 
 /* Standard GObject macros */
@@ -122,9 +121,6 @@ GVariant *	camel_imapx_list_response_ref_extended_item
 					(CamelIMAPXListResponse *response,
 					 const gchar *extended_item_tag);
 const gchar *	camel_imapx_list_response_get_oldname
-					(CamelIMAPXListResponse *response);
-CamelStoreInfoFlags
-		camel_imapx_list_response_get_summary_flags
 					(CamelIMAPXListResponse *response);
 
 G_END_DECLS
