@@ -330,6 +330,33 @@ imapx_store_rename_storage_path (CamelIMAPXStore *imapx_store,
 }
 
 static void
+imapx_store_add_mailbox_to_folder (CamelIMAPXStore *store,
+                                   CamelIMAPXMailbox *mailbox)
+{
+	CamelIMAPXFolder *folder;
+	const gchar *name;
+	gchar *folder_path;
+	gchar separator;
+
+	/* Add the CamelIMAPXMailbox to a cached CamelIMAPXFolder. */
+
+	name = camel_imapx_mailbox_get_name (mailbox);
+	separator = camel_imapx_mailbox_get_separator (mailbox);
+
+	folder_path = camel_imapx_mailbox_to_folder_path (name, separator);
+
+	folder = camel_object_bag_get (
+		CAMEL_STORE (store)->folders, folder_path);
+
+	if (folder != NULL) {
+		camel_imapx_folder_set_mailbox (folder, mailbox);
+		g_object_unref (folder);
+	}
+
+	g_free (folder_path);
+}
+
+static void
 imapx_store_mailbox_select_cb (CamelIMAPXServer *server,
                                CamelIMAPXMailbox *mailbox,
                                CamelIMAPXStore *store)
@@ -348,6 +375,7 @@ imapx_store_mailbox_created_cb (CamelIMAPXServer *server,
                                 CamelIMAPXMailbox *mailbox,
                                 CamelIMAPXStore *store)
 {
+	imapx_store_add_mailbox_to_folder (store, mailbox);
 }
 
 static void
