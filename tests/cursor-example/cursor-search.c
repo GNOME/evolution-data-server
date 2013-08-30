@@ -44,6 +44,7 @@ static void  cursor_search_icon_press     (CursorSearch         *search,
 
 typedef enum {
 	SEARCH_NAME,
+	SEARCH_TRANSLIT,
 	SEARCH_PHONE,
 	SEARCH_EMAIL
 } SearchType;
@@ -51,6 +52,7 @@ typedef enum {
 struct _CursorSearchPrivate {
 	GtkWidget   *popup;
 	GtkWidget   *name_radio;
+	GtkWidget   *translit_radio;
 	GtkWidget   *phone_radio;
 	GtkWidget   *email_radio;
 
@@ -94,6 +96,7 @@ cursor_search_class_init (CursorSearchClass *klass)
 	gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/evolution/cursor-example/cursor-search.ui");
 	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, popup);
 	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, name_radio);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, translit_radio);
 	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, phone_radio);
 	gtk_widget_class_bind_template_child_private (widget_class, CursorSearch, email_radio);
 	gtk_widget_class_bind_template_callback (widget_class, cursor_search_option_toggled);
@@ -162,6 +165,8 @@ cursor_search_option_toggled (CursorSearch         *search,
 
 		if (item == priv->name_radio)
 			priv->type = SEARCH_NAME;
+		else if (item == priv->translit_radio)
+			priv->type = SEARCH_TRANSLIT;
 		else if (item == priv->phone_radio)
 			priv->type = SEARCH_PHONE;
 		else if (item == priv->email_radio)
@@ -191,6 +196,16 @@ cursor_search_entry_changed (CursorSearch         *search,
 							 text),
 				e_book_query_field_test (E_CONTACT_GIVEN_NAME,
 							 E_BOOK_QUERY_CONTAINS,
+							 text),
+				NULL);
+			break;
+		case SEARCH_TRANSLIT:
+			query = e_book_query_orv (
+				e_book_query_field_test (E_CONTACT_FAMILY_NAME,
+							 E_BOOK_QUERY_TRANSLIT_CONTAINS,
+							 text),
+				e_book_query_field_test (E_CONTACT_GIVEN_NAME,
+							 E_BOOK_QUERY_TRANSLIT_CONTAINS,
 							 text),
 				NULL);
 			break;

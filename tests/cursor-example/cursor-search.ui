@@ -23,6 +23,17 @@
       </object>
     </child>
     <child>
+      <object class="GtkRadioMenuItem" id="translit_radio">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Script Insensitive Name</property>
+        <property name="use_underline">True</property>
+        <property name="draw_as_radio">True</property>
+        <property name="group">name_radio</property>
+        <signal name="toggled" handler="cursor_search_option_toggled" swapped="yes"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkRadioMenuItem" id="phone_radio">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
