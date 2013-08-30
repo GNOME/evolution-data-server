@@ -197,6 +197,17 @@
  * you have reached in the active alphabet.
  * </para>
  * </refsect2>
+ *
+ * <refsect2 id="cursor-example">
+ * <title>Example contact browser</title>
+ * <para>
+ * EDS includes a fully functional example contact browser as an
+ * example of how to use the cursor API. The most relevant part of
+ * this example program is listed below.
+ *
+ * <example id="example-contact-browser"><title>Example Contact Browser</title><programlisting><xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../../tests/cursor-example/cursor-example.c"><xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback></xi:include></programlisting></example>
+ * </para>
+ * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
 #include <config.h>
