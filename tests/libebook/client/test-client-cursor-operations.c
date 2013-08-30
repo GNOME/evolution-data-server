@@ -2259,6 +2259,47 @@ main (gint argc,
 		cursor_closure_position (closure, 13, 6, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/EffectsPosition%s", base_params[i].base_path);
 
+		/* Supports transliterated queries */
+		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		cursor_closure_position (closure, 20, 0, TRUE);
+		cursor_closure_move_by (closure,
+					E_BOOK_CURSOR_ORIGIN_CURRENT,
+					10, /* Count */
+					10, /* Expected results */
+					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_position (closure, 20, 10, TRUE);
+		cursor_closure_set_sexp (closure,
+					 e_book_query_field_test (
+						E_CONTACT_EMAIL,
+						E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+						"几"),
+					 TRUE);
+
+		/* In POSIX Locale, the 10th contact out of 20 becomes the 2nd out of 3 contacts
+		 * which start with the transliterated '几' sound (which transliterates to 'ji').
+		 *
+		 * Our three matching contacts are:
+		 *   sorted-9: jim@morrison.com
+		 *   sorted-4: 警察@brown.org (transliterates to "jing cha@brown.org")
+		 *   sorted-5: 救命@brown.com (transliterates to "jiu ming@brown.com")
+		 *
+		 * All of these emails begin with 'ji'
+		 */
+		cursor_closure_position (closure, 3, 2, TRUE);
+
+		cursor_closure_set_sexp (closure,
+					 e_book_query_field_test (
+						E_CONTACT_EMAIL,
+						E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+						"ji"),
+					 TRUE);
+
+		/* The '几' sound transliterates to 'ji', so we should have the same results & position.
+		 */
+		cursor_closure_position (closure, 3, 2, TRUE);
+		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/Translit/Email/Prefix/ji%s",
+				    base_params[i].base_path);
+
 		/****************************************************
 		 *             Address Book Modifications           *
 		 ****************************************************/
