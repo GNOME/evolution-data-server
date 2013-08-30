@@ -736,6 +736,36 @@ camel_imapx_list_response_ref_extended_item (CamelIMAPXListResponse *response,
 }
 
 /**
+ * camel_imapx_list_response_get_oldname:
+ * @response: a #CamelIMAPXListResponse
+ *
+ * Convenience function returns the value of the "OLDNAME" extended data
+ * item, or %NULL if no such extended data item is present.
+ *
+ * The presence of this extended data item indicates the mailbox has been
+ * renamed.  See <ulink url="http://tools.ietf.org/html/rfc5465#section-5.4">
+ * RFC 5465 Section 5.4</ulink> for further details.
+ *
+ * Returns: the old mailbox name, or %NULL
+ *
+ * Since: 3.12
+ **/
+const gchar *
+camel_imapx_list_response_get_oldname (CamelIMAPXListResponse *response)
+{
+	GHashTable *extended_items;
+	GVariant *value;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response), NULL);
+
+	extended_items = response->priv->extended_items;
+
+	value = g_hash_table_lookup (extended_items, "OLDNAME");
+
+	return (value != NULL) ? g_variant_get_string (value, NULL) : NULL;
+}
+
+/**
  * camel_imapx_list_response_get_summary_flags:
  * @response: a #CamelIMAPXListResponse
  *
