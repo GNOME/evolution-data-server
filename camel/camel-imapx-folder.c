@@ -1622,32 +1622,3 @@ camel_imapx_folder_invalidate_local_cache (CamelIMAPXFolder *folder,
 	camel_folder_summary_free_array (array);
 }
 
-/**
- * camel_imapx_folder_process_status_response:
- * @folder: a #CamelIMAPXFolder
- * @response: a #CamelIMAPXStatusResponse
- *
- * Updates @folder's local status information from @response.
- *
- * Since: 3.10
- **/
-void
-camel_imapx_folder_process_status_response (CamelIMAPXFolder *folder,
-                                            CamelIMAPXStatusResponse *response)
-{
-	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
-	g_return_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response));
-
-	/* XXX Should be using some sort of locking here. */
-
-	folder->exists_on_server =
-		camel_imapx_status_response_get_messages (response);
-	folder->unread_on_server =
-		camel_imapx_status_response_get_unseen (response);
-	folder->uidnext_on_server =
-		camel_imapx_status_response_get_uidnext (response);
-	folder->uidvalidity_on_server =
-		camel_imapx_status_response_get_uidvalidity (response);
-	folder->modseq_on_server =
-		camel_imapx_status_response_get_highestmodseq (response);
-}

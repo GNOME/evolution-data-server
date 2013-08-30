@@ -34,7 +34,6 @@
 #include <camel/camel-store.h>
 
 #include <camel/camel-imapx-mailbox.h>
-#include <camel/camel-imapx-status-response.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_FOLDER \
@@ -108,9 +107,6 @@ void		camel_imapx_folder_add_move_to_real_trash
 void		camel_imapx_folder_invalidate_local_cache
 						(CamelIMAPXFolder *folder,
 						 guint64 new_uidvalidity);
-void		camel_imapx_folder_process_status_response
-						(CamelIMAPXFolder *folder,
-						 CamelIMAPXStatusResponse *response);
 
 G_END_DECLS
 
