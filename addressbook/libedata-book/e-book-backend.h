@@ -13,10 +13,12 @@
  * 2. A PASBook, when a client has requested an operation on the
  *    GNOME_Evolution_Addressbook_Book interface.
  *
- * Author:
+ * Authors:
  *   Nat Friedman (nat@ximian.com)
+ *   Tristan Van Berkom <tristanvb@openismus.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
  */
 
 #if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)

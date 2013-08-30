@@ -2,6 +2,7 @@
 /* e-contact.c
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -17,7 +18,9 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- * Author: Chris Toshok (toshok@ximian.com)
+ * Authors:
+ *   Chris Toshok (toshok@ximian.com)
+ *   Tristan Van Berkom <tristanvb@openismus.com>
  */
 
 #if HAVE_CONFIG_H

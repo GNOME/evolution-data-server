@@ -2,8 +2,11 @@
 /* e-book-backend-sqlitedb.c
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
  *
- * Authors: Chenthill Palanisamy <pchenthill@novell.com>
+ * Authors:
+ *     Chenthill Palanisamy <pchenthill@novell.com>
+ *     Tristan Van Berkom <tristanvb@openismus.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public

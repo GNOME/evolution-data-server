@@ -2,6 +2,11 @@
 /*
  * pas-backend-card-sexp.c
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
+ *
+ * Authors:
+ *   Chris Lahey <clahey@ximian.com>
+ *   Tristan Van Berkom <tristanvb@openismus.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

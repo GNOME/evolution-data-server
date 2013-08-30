@@ -2,8 +2,10 @@
 /*
  * Author:
  *   Nat Friedman (nat@ximian.com)
+ *   Tristan Van Berkom <tristanvb@openismus.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
  */
 
 #include <config.h>

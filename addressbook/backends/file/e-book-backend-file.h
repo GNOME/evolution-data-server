@@ -3,6 +3,7 @@
 /* e-book-backend-file.h - File contact backend.
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -21,6 +22,7 @@
  * Authors: Nat Friedman <nat@novell.com>
  *          Chris Toshok <toshok@ximian.com>
  *          Hans Petter Jansson <hpj@novell.com>
+ *          Tristan Van Berkom <tristanvb@openismus.com>
  */
 
 #ifndef E_BOOK_BACKEND_FILE_H

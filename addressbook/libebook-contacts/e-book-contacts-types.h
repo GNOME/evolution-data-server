@@ -1,12 +1,12 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * A client-side GObject which exposes the
- * Evolution:BookListener interface.
  *
- * Author:
+ * Authors:
  *   Nat Friedman (nat@ximian.com)
+ *   Tristan Van Berkom <tristanvb@openismus.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2012 Intel Corporation
  */
 
 #if !defined (__LIBEBOOK_CONTACTS_H_INSIDE__) && !defined (LIBEBOOK_CONTACTS_COMPILATION)
