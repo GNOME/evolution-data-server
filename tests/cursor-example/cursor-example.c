@@ -27,10 +27,8 @@
 #include "cursor-data.h"
 
 #define N_SLOTS         10
-
 #define INITIAL_TIMEOUT 600
 #define TICK_TIMEOUT    100
-
 #define d(x)
 
 typedef enum _TimeoutActivity TimeoutActivity;
@@ -160,11 +158,18 @@ cursor_example_init (CursorExample *example)
 	example->priv = priv =
 		cursor_example_get_instance_private (example);
 
+	/* Initialize the template, we use 2 private types in
+	 * our GtkBuilder xml, the CursorNavigator is used to
+	 * display the locale specific alphabet navigator and
+	 * the CursorSearch object controls the query expression.
+	 */
 	g_type_ensure (CURSOR_TYPE_NAVIGATOR);
 	g_type_ensure (CURSOR_TYPE_SEARCH);
-
 	gtk_widget_init_template (GTK_WIDGET (example));
 
+	/* Pick up our dynamic 'slot' widgets, the CursorSlot widgets
+	 * are used to display results (contacts).
+	 */
 	for (i = 0; i < N_SLOTS; i++) {
 
 		gchar *name = g_strdup_printf ("contact_slot_%d", i + 1);
