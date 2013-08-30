@@ -59,7 +59,7 @@
 #endif
 
 #define DB_FILENAME "contacts.db"
-#define FOLDER_VERSION 7
+#define FOLDER_VERSION 8
 
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
@@ -614,7 +614,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	 * create_contacts_table() as we need introspection details for doing
 	 * that.
 	 */
-	if (version >= 3 && version < FOLDER_VERSION) {
+	if (version >= 3 && version < 7) {
 		stmt = "UPDATE folders SET "
 				"multivalues = REPLACE(RTRIM(REPLACE("
 					"multivalues || ':', ':', "
@@ -1069,10 +1069,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 				string = g_string_new (tmp);
 
 				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
-				g_string_append (string, "_localized TEXT, ");
-
-				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
-				g_string_append (string, "_translit TEXT, ");
+				g_string_append (string, "_localized TEXT");
 
 				success = book_backend_sql_exec (
 				        ebsdb->priv->db, string->str, NULL, NULL , error);
@@ -1083,10 +1080,40 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (tmp);
 	}
 
+	/* If we're upgrading from < version 8, we need to add the _translit columns */
+	if (success && previous_schema >= 1 && previous_schema < 8) {
+
+		tmp = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN ", folderid);
+
+		for (i = 1; i < ebsdb->priv->n_summary_fields && success; i++) {
+
+			if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING &&
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+				string = g_string_new (tmp);
+
+				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
+				g_string_append (string, "_translit TEXT");
+
+				success = book_backend_sql_exec (
+				        ebsdb->priv->db, string->str, NULL, NULL , error);
+
+				g_string_free (string, TRUE);
+			}
+		}
+		sqlite3_free (tmp);
+
+		if (ebsdb->priv->have_attr_list) {
+			tmp = g_strdup_printf ("%s_lists", folderid);
+			stmt = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN value_translit TEXT", tmp);
+			g_free (tmp);
+			sqlite3_free (stmt);
+		}
+	}
+
 	/* Construct the create statement from the attribute list summary table */
 	if (success && ebsdb->priv->have_attr_list) {
 		string = g_string_new ("CREATE TABLE IF NOT EXISTS %Q ( uid TEXT NOT NULL REFERENCES %Q(uid), "
-			"field TEXT, value TEXT");
+			"field TEXT, value TEXT, value_translit TEXT");
 
 		if ((ebsdb->priv->attr_list_indexes & INDEX_SUFFIX) != 0)
 			g_string_append (string, ", value_reverse TEXT");
@@ -1227,8 +1254,13 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		success = sqlitedb_set_locale_internal (ebsdb, lc_collate, error);
 	}
 
-	/* Need to relocalize the whole thing if the schema has been upgraded to version 7 */
-	if (success && previous_schema >= 1 && previous_schema < 7) {
+	/* Need to relocalize the whole thing if the schema has been upgraded to version 7,
+	 * also we need to enter all of the transliterated data for the '_translit' columns
+	 * for any version below 8.
+	 *
+	 * So just re-enter all of the contacts if there is any upgrade to version 8.
+	 */
+	if (success && previous_schema >= 1 && previous_schema < 8) {
 		success = upgrade_contacts_table (ebsdb, folderid, current_region, lc_collate, error);
 		relocalized = TRUE;
 	}
@@ -2001,6 +2033,45 @@ mprintf_suffix (const gchar *normal)
 	return stmt;
 }
 
+static gchar *
+mprintf_translit (EBookBackendSqliteDB *ebsdb,
+		  const gchar          *str)
+{
+	gchar *tmp = NULL;
+	gchar *translit = NULL;
+	gchar *stmt;
+
+	if (str) {
+		tmp = e_transliterator_transliterate (ebsdb->priv->transliterator, str);
+		translit = e_util_utf8_normalize (tmp);
+		g_free (tmp);
+	}
+
+	stmt = sqlite3_mprintf ("%Q", translit);
+	g_free (translit);
+
+	return stmt;
+}
+
+static gchar *
+mprintf_sort_key (EBookBackendSqliteDB *ebsdb,
+		  const gchar          *str)
+{
+	gchar *localized = NULL;
+	gchar *stmt;
+
+	if (str)
+		localized = e_collator_generate_key (ebsdb->priv->collator, str, NULL);
+	else
+		localized = g_strdup ("");
+
+	stmt = sqlite3_mprintf ("%Q", localized);
+	g_free (localized);
+
+	return stmt;
+}
+
+
 static EPhoneNumber *
 phone_number_from_string (const gchar *normal,
                           const gchar *default_region)
@@ -2134,8 +2205,6 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 			gchar *val;
 			gchar *normal;
-			gchar *localized = NULL;
-			gchar *transliterated = NULL, *tmp;
 
 			if (i > 0)
 				g_string_append (string, ", ");
@@ -2144,22 +2213,9 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 			/* Special exception, never normalize/localize the UID or REV string */
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
-			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
-
+			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV)
 				normal = e_util_utf8_normalize (val);
-
-				if (val) {
-					localized = e_collator_generate_key (ebsdb->priv->collator, val, NULL);
-
-					tmp = e_transliterator_transliterate (ebsdb->priv->transliterator, val);
-					transliterated = e_util_utf8_normalize (tmp);
-					g_free (tmp);
-
-				} else {
-					localized = g_strdup ("");
-					transliterated = g_strdup ("");
-				}
-			} else
+			else
 				normal = g_strdup (val);
 
 			str = sqlite3_mprintf ("%Q", normal);
@@ -2168,12 +2224,12 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 			if (ebsdb->priv->summary_fields[i].field != E_CONTACT_UID &&
 			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
-				str = sqlite3_mprintf ("%Q", localized);
+				str = mprintf_sort_key (ebsdb, val);
 				g_string_append (string, ", ");
 				g_string_append (string, str);
 				sqlite3_free (str);
 
-				str = sqlite3_mprintf ("%Q", transliterated);
+				str = mprintf_translit (ebsdb, val);
 				g_string_append (string, ", ");
 				g_string_append (string, str);
 				sqlite3_free (str);
@@ -2195,8 +2251,6 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 
 			g_free (normal);
 			g_free (val);
-			g_free (localized);
-			g_free (transliterated);
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			gboolean val;
 
@@ -2337,6 +2391,7 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 				gchar *normal = e_util_utf8_normalize (value);
 				gchar *stmt_suffix = NULL;
 				gchar *stmt_phone = NULL;
+				gchar *stmt_translit = NULL;
 
 				if ((priv->attr_list_indexes & INDEX_SUFFIX) != 0
 					&& (priv->summary_fields[i].index & INDEX_SUFFIX) != 0)
@@ -2346,13 +2401,16 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 					&& (priv->summary_fields[i].index & INDEX_PHONE) != 0)
 					stmt_phone = mprintf_phone (normal, default_region);
 
+				stmt_translit = mprintf_translit (ebsdb, value);
+
 				stmt = sqlite3_mprintf (
-					"INSERT INTO %Q (uid, field, value%s%s) "
-					"VALUES (%Q, %Q, %Q%s%s%s%s)",
+					"INSERT INTO %Q (uid, field, value, value_translit%s%s) "
+					"VALUES (%Q, %Q, %Q, %s%s%s%s%s)",
 					list_folder,
 					stmt_suffix ? ", value_reverse" : "",
 					stmt_phone ? ", value_phone" : "",
 					uid, priv->summary_fields[i].dbname, normal,
+					stmt_translit,
 					stmt_suffix ? ", " : "",
 					stmt_suffix ? stmt_suffix : "",
 					stmt_phone ? ", " : "",
@@ -2362,6 +2420,8 @@ insert_contact (EBookBackendSqliteDB *ebsdb,
 					sqlite3_free (stmt_suffix);
 				if (stmt_phone)
 					sqlite3_free (stmt_phone);
+
+				sqlite3_free (stmt_translit);
 
 				success = book_backend_sql_exec (priv->db, stmt, NULL, NULL, error);
 				sqlite3_free (stmt);
@@ -3198,23 +3258,6 @@ func_check_regex_raw (struct _ESExp         *f,
 	return r;
 }
 
-static ESExpResult *
-func_check_translit (struct _ESExp *f,
-		     gint argc,
-		     struct _ESExpResult **argv,
-		     gpointer data)
-{
-	ESExpResult *const r = func_check (f, argc, argv, data);
-
-	/* Currently we don't support transliterated queries
-	 * for multi-valued fields
-	 */
-	if ((r->value.number & CHECK_IS_LIST_ATTR) != 0)
-		r->value.number = 0;
-
-	return r;
-}
-
 /* 'builtin' functions */
 static const struct {
 	const gchar *name;
@@ -3235,10 +3278,10 @@ static const struct {
 	{ "eqphone_short", func_check_phone, 0 },
 	{ "regex_normal", func_check, 0 },
 	{ "regex_raw", func_check_regex_raw, 0 },
-	{ "translit_contains", func_check_translit, 0 },
-	{ "translit_is", func_check_translit, 0 },
-	{ "translit_beginswith", func_check_translit, 0 },
-	{ "translit_endswith", func_check_translit, 0 },
+	{ "translit_contains", func_check, 0 },
+	{ "translit_is", func_check, 0 },
+	{ "translit_beginswith", func_check, 0 },
+	{ "translit_endswith", func_check, 0 },
 };
 
 static gboolean
@@ -3696,10 +3739,8 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 		} else if (translit_search) {
 
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
-				/* We havent yet supported transliterated multivalue queries, this
-				 * should not be reached
-				 */
-				g_warn_if_reached ();
+				field_name = g_strdup ("multi.value_translit");
+				list_attr = TRUE;	
 			} else
 				field_name = g_strconcat (
 					"summary.",
