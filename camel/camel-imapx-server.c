@@ -2634,12 +2634,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 {
 	CamelIMAPXStatusResponse *response;
 	CamelIMAPXMailbox *mailbox;
-	CamelIMAPXStoreNamespace *ns;
-	CamelIMAPXStore *store;
-	CamelFolder *folder = NULL;
 	const gchar *mailbox_name;
-	guint32 uidvalidity;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
@@ -2649,7 +2644,6 @@ imapx_untagged_status (CamelIMAPXServer *is,
 		return FALSE;
 
 	mailbox_name = camel_imapx_status_response_get_mailbox_name (response);
-	uidvalidity = camel_imapx_status_response_get_uidvalidity (response);
 
 	mailbox = camel_imapx_server_ref_mailbox (is, mailbox_name);
 
@@ -2659,56 +2653,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 		g_object_unref (mailbox);
 	}
 
-	store = camel_imapx_server_ref_store (is);
-
-	ns = camel_imapx_store_summary_namespace_find_by_mailbox (
-		store->summary, mailbox_name);
-
-	if (ns != NULL) {
-		gchar *folder_path;
-
-		folder_path = camel_imapx_mailbox_to_folder_path (
-			mailbox_name, ns->sep);
-		c (
-			is->tagprefix,
-			"Got folder path '%s' for mailbox '%s'\n",
-			folder_path, mailbox_name);
-		if (folder_path != NULL) {
-			folder = camel_store_get_folder_sync (
-				CAMEL_STORE (store), folder_path,
-				0, cancellable, &local_error);
-			g_free (folder_path);
-		}
-	}
-
-	g_object_unref (store);
-
-	if (folder != NULL) {
-		CamelIMAPXSummary *imapx_summary;
-		CamelIMAPXFolder *imapx_folder;
-
-		imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
-
-		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-		camel_imapx_folder_process_status_response (
-			imapx_folder, response);
-
-		if (uidvalidity > 0 && uidvalidity != imapx_summary->validity)
-			camel_imapx_folder_invalidate_local_cache (
-				imapx_folder, uidvalidity);
-	} else {
-		c (
-			is->tagprefix,
-			"Received STATUS for unknown folder '%s'\n",
-			mailbox_name);
-	}
-
 	g_object_unref (response);
-
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
 
 	return TRUE;
 }

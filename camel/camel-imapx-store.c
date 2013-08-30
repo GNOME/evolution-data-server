@@ -534,6 +534,69 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 }
 
 static void
+imapx_store_process_mailbox_status (CamelIMAPXStore *store,
+                                    CamelIMAPXMailbox *mailbox)
+{
+	CamelFolder *folder = NULL;
+	const gchar *mailbox_name;
+	guint32 messages;
+	guint32 unseen;
+	guint32 uidnext;
+	guint32 uidvalidity;
+	guint64 highestmodseq;
+	gchar *folder_path;
+	gchar separator;
+	GError *local_error = NULL;
+
+	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
+	separator = camel_imapx_mailbox_get_separator (mailbox);
+
+	messages = camel_imapx_mailbox_get_messages (mailbox);
+	unseen = camel_imapx_mailbox_get_unseen (mailbox);
+	uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
+	uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
+	highestmodseq = camel_imapx_mailbox_get_highestmodseq (mailbox);
+
+	folder_path = camel_imapx_mailbox_to_folder_path (
+		mailbox_name, separator);
+
+	folder = camel_store_get_folder_sync (
+		CAMEL_STORE (store), folder_path, 0, NULL, &local_error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((folder != NULL) && (local_error == NULL)) ||
+		((folder == NULL) && (local_error != NULL)));
+
+	if (folder != NULL) {
+		CamelIMAPXFolder *imapx_folder;
+		CamelIMAPXSummary *imapx_summary;
+
+		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+		imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
+
+		imapx_folder->exists_on_server = messages;
+		imapx_folder->unread_on_server = unseen;
+		imapx_folder->uidnext_on_server = uidnext;
+		imapx_folder->uidvalidity_on_server = uidvalidity;
+		imapx_folder->modseq_on_server = highestmodseq;
+
+		if (uidvalidity > 0 && uidvalidity != imapx_summary->validity)
+			camel_imapx_folder_invalidate_local_cache (
+				imapx_folder, uidvalidity);
+
+		g_object_unref (folder);
+	} else {
+		g_warning (
+			"%s: Failed to get folder '%s': %s",
+			G_STRFUNC, folder_path, local_error->message);
+		g_error_free (local_error);
+	}
+
+	g_free (folder_path);
+}
+
+static void
 imapx_store_mailbox_select_cb (CamelIMAPXServer *server,
                                CamelIMAPXMailbox *mailbox,
                                CamelIMAPXStore *store)
@@ -563,6 +626,7 @@ imapx_store_mailbox_renamed_cb (CamelIMAPXServer *server,
                                 CamelIMAPXStore *store)
 {
 	imapx_store_process_mailbox_attributes (store, mailbox, oldname);
+	imapx_store_process_mailbox_status (store, mailbox);
 }
 
 static void
@@ -571,6 +635,7 @@ imapx_store_mailbox_updated_cb (CamelIMAPXServer *server,
                                 CamelIMAPXStore *store)
 {
 	imapx_store_process_mailbox_attributes (store, mailbox, NULL);
+	imapx_store_process_mailbox_status (store, mailbox);
 }
 
 static void
