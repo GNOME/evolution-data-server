@@ -20,6 +20,23 @@
  *
  */
 
+/**
+ * SECTION: e-book-client
+ * @include: libebook/libebook.h
+ * @short_description: The addressbook client
+ * @See_Also: #EBookClientView, #EBookClientCursor
+ *
+ * The #EBookClient is the main API used to interact with the Evolution Data Server's
+ * addressbook.
+ *
+ * In order to create an #EBookClient, you must first obtain the addressbook #ESource
+ * describing which addressbook you wish to connect to. #ESources can be obtained
+ * and created using the #ESourceRegistry API.
+ *
+ * Once you have obtained the #ESource describing your addressbook, use e_book_client_connect()
+ * or e_book_client_connect_direct() to interact with the selected addressbook.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

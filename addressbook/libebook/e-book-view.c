@@ -20,6 +20,15 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+/**
+ * SECTION:e-book-view
+ * @short_description: The deprecated addressbook view API
+ *
+ * This deprecated API was replaced with #EBookClientView.
+ *
+ * Deprecated: 3.2: Use #EBookClientView instead.
+ */
+
 #include "e-book.h"
 #include "e-book-view.h"
 #include "e-book-view-private.h"

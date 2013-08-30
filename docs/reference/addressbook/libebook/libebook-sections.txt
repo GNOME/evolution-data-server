@@ -21,6 +21,8 @@ EBookViewPrivate
 <SECTION>
 <FILE>e-book</FILE>
 <TITLE>EBook</TITLE>
+E_BOOK_ERROR
+EBookStatus
 EBook
 e_book_new
 e_book_remove
@@ -105,6 +107,7 @@ E_BOOK_GET_CLASS
 e_book_get_type
 <SUBSECTION Private>
 EBookPrivate
+e_book_error_quark
 </SECTION>
 
 <SECTION>
@@ -233,11 +236,7 @@ EBookClientViewPrivate
 
 <SECTION>
 <FILE>e-book-types</FILE>
-E_BOOK_ERROR
-e_book_error_quark
-EBookStatus
 <SUBSECTION Deprecated>
-E_BOOK_ERROR_CORBA_EXCEPTION
 </SECTION>
 
 <SECTION>

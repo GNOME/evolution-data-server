@@ -20,10 +20,19 @@
 
 G_BEGIN_DECLS
 
+/**
+ * E_BOOK_ERROR:
+ *
+ * Deprecated: 3.2: Use #EBookClient apis instead
+ */
 #define E_BOOK_ERROR e_book_error_quark()
-
 GQuark e_book_error_quark (void) G_GNUC_CONST;
 
+/**
+ * EBookStatus:
+ *
+ * Deprecated: 3.2: Use #EBookClient apis instead
+ */
 typedef enum {
 	E_BOOK_ERROR_OK,
 	E_BOOK_ERROR_INVALID_ARG,
@@ -52,6 +61,11 @@ typedef enum {
 	E_BOOK_ERROR_NOT_SUPPORTED
 } EBookStatus;
 
+/**
+ * E_BOOK_ERROR_CORBA_EXCEPTION:
+ *
+ * Deprecated: 3.2: Use #EBookClient apis instead
+ */
 #ifndef E_BOOK_DISABLE_DEPRECATED
 #define E_BOOK_ERROR_CORBA_EXCEPTION E_BOOK_ERROR_DBUS_EXCEPTION
 #endif

@@ -20,6 +20,33 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+/**
+ * SECTION: e-book-client-view
+ * @include: libebook/libebook.h
+ * @short_description: An addressbook view
+ * @See_Also: #EBookClient, #EBookClientCursor
+ *
+ * The #EBookClientView is a view for receiving change notifications for a
+ * given addressbook. Just use e_book_client_get_view() to obtain a filtered
+ * view of the addressbook.
+ *
+ * The view can be started and stopped with e_book_client_view_start() and
+ * e_book_client_view_stop(). After starting the view, notifications will be
+ * delivered for any changes in the contacts matching the specified filter via
+ * the #EBookClientView::objects-added, #EBookClientView::objects-modified and
+ * #EBookClientView::objects-removed signals.
+ *
+ * When initially starting the view, existing contacts which match the specified
+ * search expression will be added to the view and a series of #EBookClientView::objects-added
+ * signals and #EBookClientView::progress signals will be delivered during that time,
+ * until all of the matching contacts have been added to the view and the #EBookClientView::complete
+ * signal is fired.
+ *
+ * If you wish to avoid receiving the initial #EBookClientView::objects-added notifications
+ * at view startup time, then you can unset the %E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL
+ * flag using e_book_client_view_set_flags() before starting up the view.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -988,6 +1015,13 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EBookClientView::objects-added:
+	 * @view: The #EBookClientView emitting the signal
+	 * @objects: A #GSList of #EContacts
+	 *
+	 * Notification signal that contacts have been added to the view
+	 */
 	signals[OBJECTS_ADDED] = g_signal_new (
 		"objects-added",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -998,6 +1032,13 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
+	/**
+	 * EBookClientView::objects-modified:
+	 * @view: The #EBookClientView emitting the signal
+	 * @objects: A #GSList of #EContacts
+	 *
+	 * Notification signal that contacts have been modified in the view
+	 */
 	signals[OBJECTS_MODIFIED] = g_signal_new (
 		"objects-modified",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -1008,6 +1049,13 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
+	/**
+	 * EBookClientView::objects-removed:
+	 * @view: The #EBookClientView emitting the signal
+	 * @objects: A #GSList of #EContacts
+	 *
+	 * Notification signal that contacts have been removed from the view
+	 */
 	signals[OBJECTS_REMOVED] = g_signal_new (
 		"objects-removed",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -1018,6 +1066,19 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 
+	/**
+	 * EBookClientView::progress:
+	 * @view: The #EBookClientView emitting the signal
+	 * @percent: The current percentage
+	 * @message: A message about what is currently loading
+	 *
+	 * This notification signal is emitted periodically
+	 * while loading the contacts in the specified view at
+	 * view creation time.
+	 *
+	 * These progress messages are terminated with a
+	 * #EBookClientView::complete signal.
+	 */
 	signals[PROGRESS] = g_signal_new (
 		"progress",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -1029,6 +1090,14 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 		G_TYPE_UINT,
 		G_TYPE_STRING);
 
+	/**
+	 * EBookClientView::complete:
+	 * @view: The #EBookClientView emitting the signal
+	 * @error: The error which occurred, if any
+	 *
+	 * This signal is emitted after loading the initial
+	 * contacts when the view is created.
+	 */
 	signals[COMPLETE] = g_signal_new (
 		"complete",
 		G_OBJECT_CLASS_TYPE (object_class),

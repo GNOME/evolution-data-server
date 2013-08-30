@@ -24,6 +24,9 @@
 
 /**
  * SECTION:e-book
+ * @short_description: The deprecated addressbook API
+ *
+ * This deprecated API was replaced with #EBookClient.
  *
  * The old asynchronous API was deprecated since 3.0 and is replaced with
  * their an equivalent version which has a detailed #GError

@@ -22,6 +22,7 @@
  * SECTION: e-book-client-cursor
  * @include: libebook/libebook.h
  * @short_description: An addressbook cursor
+ * @See_Also: #EBookClient, #EBookClientView
  *
  * The #EBookClientCursor is an iteration based interface for browsing
  * a sorted list of contacts in the addressbook.
