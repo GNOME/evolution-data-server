@@ -804,6 +804,19 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
+		add_client_test (
+			suites[i].prefix,
+			"/Transliterated/Prefix/Email/几",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_EMAIL,
+				E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+				"几"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 	}
 
 	ret = e_test_server_utils_run ();
