@@ -915,8 +915,6 @@ CAMEL_IMAPX_SERVER_GET_CLASS
 CamelIMAPXServerClass
 camel_imapx_server_get_type
 <SUBSECTION Private>
-IMAPX_MODE_READ
-IMAPX_MODE_WRITE
 CamelIMAPXIdle
 CamelIMAPXServerPrivate
 imapx_connect_to_server

@@ -338,7 +338,6 @@ struct _CamelIMAPXServerPrivate {
 	guint32 uidnext;
 	guint32 exists;
 	guint32 recent;
-	guint32 mode;
 
 	/* Untagged SEARCH data gets deposited here.
 	 * The search command should claim the results
@@ -2323,14 +2322,6 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			g_mutex_unlock (&is->priv->select_lock);
 		}
 		break;
-	case IMAPX_READ_WRITE:
-		is->priv->mode = IMAPX_MODE_READ | IMAPX_MODE_WRITE;
-		c (is->tagprefix, "folder is read-write\n");
-		break;
-	case IMAPX_READ_ONLY:
-		is->priv->mode = IMAPX_MODE_READ;
-		c (is->tagprefix, "folder is read-only\n");
-		break;
 	case IMAPX_UIDVALIDITY:
 		is->priv->uidvalidity =
 			is->priv->context->sinfo->u.uidvalidity;
@@ -3605,7 +3596,6 @@ imapx_maybe_select (CamelIMAPXServer *is,
 		is->priv->permanentflags = 0;
 		is->priv->exists = 0;
 		is->priv->recent = 0;
-		is->priv->mode = 0;
 		is->priv->uidnext = 0;
 
 		/* Hrm, what about reconnecting? */
