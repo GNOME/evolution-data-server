@@ -2539,13 +2539,10 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
                           GCancellable *cancellable,
                           GError **error)
 {
-	CamelIMAPXStore *store;
-	CamelIMAPXStoreNamespace *ns;
-	CamelFolder *folder = NULL;
+	CamelIMAPXMailbox *mailbox;
 	gchar *mailbox_name = NULL;
 	gchar **quota_roots = NULL;
 	gboolean success;
-	GError *local_error = NULL;
 
 	success = camel_imapx_parse_quotaroot (
 		stream, cancellable, &mailbox_name, &quota_roots, error);
@@ -2558,35 +2555,16 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	if (!success)
 		return FALSE;
 
-	store = camel_imapx_server_ref_store (is);
+	mailbox = camel_imapx_server_ref_mailbox (is, mailbox_name);
 
-	ns = camel_imapx_store_summary_namespace_find_by_mailbox (
-		store->summary, mailbox_name);
-	if (ns != NULL) {
-		gchar *folder_path;
-
-		folder_path = camel_imapx_mailbox_to_folder_path (
-			mailbox_name, ns->sep);
-		if (folder_path != NULL) {
-			folder = camel_store_get_folder_sync (
-				CAMEL_STORE (store), folder_path, 0,
-				cancellable, &local_error);
-			g_free (folder_path);
-		}
-	}
-
-	if (folder != NULL) {
-		camel_imapx_folder_set_quota_root_names (
-			CAMEL_IMAPX_FOLDER (folder),
-			(const gchar **) quota_roots);
-		g_object_unref (folder);
-	}
-
-	if (local_error != NULL) {
+	if (mailbox != NULL) {
+		camel_imapx_mailbox_set_quota_roots (
+			mailbox, (const gchar **) quota_roots);
+		g_object_unref (mailbox);
+	} else {
 		g_warning (
-			"%s: Failed to get folder '%s': %s",
-			G_STRFUNC, mailbox_name, local_error->message);
-		g_error_free (local_error);
+			"%s: Unknown mailbox '%s'",
+			G_STRFUNC, mailbox_name);
 	}
 
 	g_free (mailbox_name);

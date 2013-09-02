@@ -97,11 +97,6 @@ CamelIMAPXMailbox *
 		camel_imapx_folder_list_mailbox	(CamelIMAPXFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
-gchar **	camel_imapx_folder_dup_quota_root_names
-						(CamelIMAPXFolder *folder);
-void		camel_imapx_folder_set_quota_root_names
-						(CamelIMAPXFolder *folder,
-						 const gchar **quota_root_names);
 GSequence *	camel_imapx_folder_copy_message_map
 						(CamelIMAPXFolder *folder);
 void		camel_imapx_folder_add_move_to_real_junk

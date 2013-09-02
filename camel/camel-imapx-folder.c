@@ -46,7 +46,6 @@
 struct _CamelIMAPXFolderPrivate {
 	GMutex property_lock;
 	GWeakRef mailbox;
-	gchar **quota_root_names;
 
 	GMutex move_to_hash_table_lock;
 	GHashTable *move_to_real_junk_uids;
@@ -58,7 +57,6 @@ struct _CamelIMAPXFolderPrivate {
 enum {
 	PROP_0,
 	PROP_MAILBOX,
-	PROP_QUOTA_ROOT_NAMES,
 	PROP_APPLY_FILTERS = 0x2501
 };
 
@@ -146,12 +144,6 @@ imapx_folder_set_property (GObject *object,
 				CAMEL_IMAPX_FOLDER (object),
 				g_value_get_object (value));
 			return;
-
-		case PROP_QUOTA_ROOT_NAMES:
-			camel_imapx_folder_set_quota_root_names (
-				CAMEL_IMAPX_FOLDER (object),
-				g_value_get_boxed (value));
-			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -175,13 +167,6 @@ imapx_folder_get_property (GObject *object,
 			g_value_take_object (
 				value,
 				camel_imapx_folder_ref_mailbox (
-				CAMEL_IMAPX_FOLDER (object)));
-			return;
-
-		case PROP_QUOTA_ROOT_NAMES:
-			g_value_take_boxed (
-				value,
-				camel_imapx_folder_dup_quota_root_names (
 				CAMEL_IMAPX_FOLDER (object)));
 			return;
 	}
@@ -227,7 +212,6 @@ imapx_folder_finalize (GObject *object)
 	g_mutex_clear (&folder->stream_lock);
 
 	g_mutex_clear (&folder->priv->property_lock);
-	g_strfreev (folder->priv->quota_root_names);
 
 	g_mutex_clear (&folder->priv->move_to_hash_table_lock);
 	g_hash_table_destroy (folder->priv->move_to_real_junk_uids);
@@ -695,8 +679,7 @@ imapx_get_quota_info_sync (CamelFolder *folder,
 	if (!success)
 		goto exit;
 
-	quota_roots = camel_imapx_folder_dup_quota_root_names (
-		CAMEL_IMAPX_FOLDER (folder));
+	quota_roots = camel_imapx_mailbox_dup_quota_roots (mailbox);
 
 	/* XXX Just return info for the first quota root, I guess. */
 	if (quota_roots != NULL && quota_roots[0] != NULL) {
@@ -1188,17 +1171,6 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 			CAMEL_TYPE_IMAPX_MAILBOX,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_QUOTA_ROOT_NAMES,
-		g_param_spec_boxed (
-			"quota-root-names",
-			"Quota Root Names",
-			"Quota root names for this folder",
-			G_TYPE_STRV,
-			G_PARAM_READWRITE |
-			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -1500,39 +1472,6 @@ exit:
 	g_free (mailbox_name);
 
 	return mailbox;
-}
-
-gchar **
-camel_imapx_folder_dup_quota_root_names (CamelIMAPXFolder *folder)
-{
-	gchar **duplicate;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
-
-	g_mutex_lock (&folder->priv->property_lock);
-
-	duplicate = g_strdupv (folder->priv->quota_root_names);
-
-	g_mutex_unlock (&folder->priv->property_lock);
-
-	return duplicate;
-}
-
-void
-camel_imapx_folder_set_quota_root_names (CamelIMAPXFolder *folder,
-                                         const gchar **quota_root_names)
-{
-	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
-
-	g_mutex_lock (&folder->priv->property_lock);
-
-	g_strfreev (folder->priv->quota_root_names);
-	folder->priv->quota_root_names =
-		g_strdupv ((gchar **) quota_root_names);
-
-	g_mutex_unlock (&folder->priv->property_lock);
-
-	g_object_notify (G_OBJECT (folder), "quota-root-names");
 }
 
 /**
