@@ -258,11 +258,10 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar literal_format[16];
-	CamelFolder *folder;
-	CamelStore *parent_store;
+	CamelIMAPXMailbox *mailbox;
 	GString *buffer;
-	gchar *mailbox = NULL, *encoded = NULL;
-	const gchar *full_name;
+	gchar *utf7_name = NULL;
+	const gchar *name;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
@@ -363,31 +362,15 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				} else {
 					g_string_append (buffer, "\"\"");
 				}
-				if (encoded) {
-					g_free (encoded);
-					encoded = NULL;
-				}
+				g_free (utf7_name);
+				utf7_name = NULL;
 				break;
-			case 'f': /* imap folder name */
-				folder = va_arg (ap, CamelFolder *);
-				full_name = camel_folder_get_full_name (folder);
-				c (ic->is->tagprefix, "got folder '%s'\n", full_name);
-				parent_store = camel_folder_get_parent_store (folder);
-				mailbox = camel_imapx_store_summary_mailbox_from_path (
-					((CamelIMAPXStore *) parent_store)->summary, full_name);
-				if (mailbox != NULL) {
-					encoded = camel_utf8_utf7 (mailbox);
-					g_free (mailbox);
-				} else
-					encoded = camel_utf8_utf7 (full_name);
-
-				if (encoded) {
-					s = encoded;
-					goto output_string;
-				} else
-					g_string_append (buffer, "\"\"");
-
-				break;
+			case 'M': /* CamelIMAPXMailbox */
+				mailbox = va_arg (ap, CamelIMAPXMailbox *);
+				name = camel_imapx_mailbox_get_name (mailbox);
+				utf7_name = camel_utf8_utf7 (name);
+				s = utf7_name;
+				goto output_string;
 			case 'F': /* IMAP flags set */
 				f = va_arg (ap, guint32);
 				F = va_arg (ap, CamelFlag *);
