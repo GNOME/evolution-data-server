@@ -1242,6 +1242,96 @@ camel_imapx_folder_set_mailbox (CamelIMAPXFolder *folder,
 	g_object_notify (G_OBJECT (folder), "mailbox");
 }
 
+/**
+ * camel_imapx_folder_list_mailbox:
+ * @folder: a #CamelIMAPXFolder
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Ensures that @folder's #CamelIMAPXFolder:mailbox property is set,
+ * going so far as to issue a LIST command if necessary (but should
+ * be a rarely needed last resort).
+ *
+ * If @folder's #CamelFolder:parent-store is disconnected from the IMAP
+ * server or an error occurs during the LIST command, the function sets
+ * @error and returns %NULL.
+ *
+ * The returned #CamelIMAPXMailbox is referenced for thread-safety and
+ * should be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #CamelIMAPXMailbox, or %NULL
+ *
+ * Since: 3.12
+ **/
+CamelIMAPXMailbox *
+camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXServer *server = NULL;
+	CamelIMAPXMailbox *mailbox;
+	CamelStore *parent_store;
+	CamelStoreSummary *store_summary;
+	CamelStoreInfo *store_info;
+	CamelIMAPXStoreInfo *imapx_store_info;
+	gchar *folder_path = NULL;
+	gchar *mailbox_name = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
+
+	/* First check if we already have a mailbox. */
+
+	mailbox = camel_imapx_folder_ref_mailbox (folder);
+	if (mailbox != NULL)
+		goto exit;
+
+	/* Obtain the mailbox name from the store summary. */
+
+	folder_path = camel_folder_dup_full_name (CAMEL_FOLDER (folder));
+	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
+
+	imapx_store = CAMEL_IMAPX_STORE (parent_store);
+	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
+
+	store_info = camel_store_summary_path (store_summary, folder_path);
+
+	/* This should never fail.  We needed the CamelStoreInfo
+	 * to instantiate the CamelIMAPXFolder in the first place. */
+	g_return_val_if_fail (store_info != NULL, FALSE);
+
+	imapx_store_info = (CamelIMAPXStoreInfo *) store_info;
+	mailbox_name = g_strdup (imapx_store_info->mailbox_name);
+
+	camel_store_summary_info_unref (store_summary, store_info);
+
+	/* See if the CamelIMAPXServer already has the mailbox. */
+
+	server = camel_imapx_store_ref_server (imapx_store, error);
+
+	if (server == NULL)
+		goto exit;
+
+	mailbox = camel_imapx_server_ref_mailbox (server, mailbox_name);
+	if (mailbox != NULL) {
+		camel_imapx_folder_set_mailbox (folder, mailbox);
+		goto exit;
+	}
+
+	/* Last resort is to issue a LIST command.  Maintainer should
+	 * monitor IMAP logs to make sure this is rarely if ever used. */
+
+	g_warn_if_reached ();  /* FIXME Implement this. */
+
+exit:
+	g_clear_object (&server);
+
+	g_free (folder_path);
+	g_free (mailbox_name);
+
+	return mailbox;
+}
+
 gchar **
 camel_imapx_folder_dup_quota_root_names (CamelIMAPXFolder *folder)
 {

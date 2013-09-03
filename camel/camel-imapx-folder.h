@@ -96,6 +96,10 @@ CamelIMAPXMailbox *
 		camel_imapx_folder_ref_mailbox	(CamelIMAPXFolder *folder);
 void		camel_imapx_folder_set_mailbox	(CamelIMAPXFolder *folder,
 						 CamelIMAPXMailbox *mailbox);
+CamelIMAPXMailbox *
+		camel_imapx_folder_list_mailbox	(CamelIMAPXFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
 gchar **	camel_imapx_folder_dup_quota_root_names
 						(CamelIMAPXFolder *folder);
 void		camel_imapx_folder_set_quota_root_names
