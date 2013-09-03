@@ -831,6 +831,10 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 	g_free (is->priv->list_return_opts);
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, LIST_EXTENDED)) {
 		buffer = g_string_new ("CHILDREN SUBSCRIBED");
+		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, LIST_STATUS))
+			g_string_append_printf (
+				buffer, " STATUS (%s)",
+				is->priv->status_data_items);
 		is->priv->list_return_opts = g_string_free (buffer, FALSE);
 	} else {
 		is->priv->list_return_opts = NULL;
