@@ -49,7 +49,7 @@ struct _CamelIMAPXJob {
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*matches)		(CamelIMAPXJob *job,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 const gchar *uid);
 
 	guint noreply:1;	/* dont wait for reply */
@@ -70,17 +70,18 @@ gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
 						 CamelIMAPXServer *is,
 						 GError **error);
 gboolean	camel_imapx_job_matches		(CamelIMAPXJob *job,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 const gchar *uid);
 gpointer	camel_imapx_job_get_data	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_data	(CamelIMAPXJob *job,
 						 gpointer data,
 						 GDestroyNotify destroy_data);
-gboolean	camel_imapx_job_has_folder	(CamelIMAPXJob *job,
-						 CamelFolder *folder);
-CamelFolder *	camel_imapx_job_ref_folder	(CamelIMAPXJob *job);
-void		camel_imapx_job_set_folder	(CamelIMAPXJob *job,
-						 CamelFolder *folder);
+gboolean	camel_imapx_job_has_mailbox	(CamelIMAPXJob *job,
+						 CamelIMAPXMailbox *mailbox);
+CamelIMAPXMailbox *
+		camel_imapx_job_ref_mailbox	(CamelIMAPXJob *job);
+void		camel_imapx_job_set_mailbox	(CamelIMAPXJob *job,
+						 CamelIMAPXMailbox *mailbox);
 GCancellable *	camel_imapx_job_get_cancellable	(CamelIMAPXJob *job);
 void		camel_imapx_job_take_error	(CamelIMAPXJob *job,
 						 GError *error);

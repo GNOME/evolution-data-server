@@ -339,14 +339,10 @@ void
 imapx_update_store_summary (CamelFolder *folder)
 {
 	CamelStoreInfo *si;
-	CamelService *service;
 	CamelStore *parent_store;
 	CamelStoreSummary *store_summary;
-	CamelSettings *settings;
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXFolder *imapx_folder;
 	const gchar *full_name;
-	gboolean mobile_mode;
 	guint32 total;
 	guint32 unread;
 
@@ -354,16 +350,8 @@ imapx_update_store_summary (CamelFolder *folder)
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	service = CAMEL_SERVICE (parent_store);
 
-	settings = camel_service_ref_settings (service);
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-	g_object_unref (settings);
-
-	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 	imapx_store = CAMEL_IMAPX_STORE (parent_store);
-
 	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
 	si = camel_store_summary_path (store_summary, full_name);
@@ -374,12 +362,7 @@ imapx_update_store_summary (CamelFolder *folder)
 	unread = camel_folder_summary_get_unread_count (folder->summary);
 
 	if (si->unread != unread || si->total != total) {
-
-		/* XXX Why is this different for mobile mode? */
-		if (mobile_mode)
-			si->unread = imapx_folder->unread_on_server;
-		else
-			si->unread = unread;
+		si->unread = unread;
 		si->total = total;
 
 		camel_store_summary_touch (store_summary);
@@ -1961,7 +1944,7 @@ imapx_parse_status_copyuid (CamelIMAPXStream *is,
 
 static gboolean
 imapx_parse_status_highestmodseq (CamelIMAPXStream *is,
-                                  struct _status_info *sinfo,
+                                  CamelIMAPXMailbox *mailbox,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -1970,7 +1953,7 @@ imapx_parse_status_highestmodseq (CamelIMAPXStream *is,
 	if (!camel_imapx_stream_number (is, &number, cancellable, error))
 		return FALSE;
 
-	sinfo->u.highestmodseq = number;
+	camel_imapx_mailbox_set_highestmodseq (mailbox, number);
 
 	return TRUE;
 }
@@ -2017,7 +2000,7 @@ imapx_parse_status_permanentflags (CamelIMAPXStream *is,
 
 static gboolean
 imapx_parse_status_uidnext (CamelIMAPXStream *is,
-                            struct _status_info *sinfo,
+                            CamelIMAPXMailbox *mailbox,
                             GCancellable *cancellable,
                             GError **error)
 {
@@ -2026,14 +2009,14 @@ imapx_parse_status_uidnext (CamelIMAPXStream *is,
 	if (!camel_imapx_stream_number (is, &number, cancellable, error))
 		return FALSE;
 
-	sinfo->u.uidnext = (guint32) number;
+	camel_imapx_mailbox_set_uidnext (mailbox, (guint32) number);
 
 	return TRUE;
 }
 
 static gboolean
 imapx_parse_status_uidvalidity (CamelIMAPXStream *is,
-                                struct _status_info *sinfo,
+                                CamelIMAPXMailbox *mailbox,
                                 GCancellable *cancellable,
                                 GError **error)
 {
@@ -2042,14 +2025,14 @@ imapx_parse_status_uidvalidity (CamelIMAPXStream *is,
 	if (!camel_imapx_stream_number (is, &number, cancellable, error))
 		return FALSE;
 
-	sinfo->u.uidvalidity = number;
+	camel_imapx_mailbox_set_uidvalidity (mailbox, (guint32) number);
 
 	return TRUE;
 }
 
 static gboolean
 imapx_parse_status_unseen (CamelIMAPXStream *is,
-                           struct _status_info *sinfo,
+                           CamelIMAPXMailbox *mailbox,
                            GCancellable *cancellable,
                            GError **error)
 {
@@ -2058,7 +2041,7 @@ imapx_parse_status_unseen (CamelIMAPXStream *is,
 	if (!camel_imapx_stream_number (is, &number, cancellable, error))
 		return FALSE;
 
-	sinfo->u.unseen = (guint32) number;
+	camel_imapx_mailbox_set_unseen (mailbox, (guint32) number);
 
 	return TRUE;
 }
@@ -2067,6 +2050,7 @@ imapx_parse_status_unseen (CamelIMAPXStream *is,
 /* should this start after [ or before the [? token_unget anyone? */
 struct _status_info *
 imapx_parse_status (CamelIMAPXStream *is,
+                    CamelIMAPXMailbox *mailbox,
                     GCancellable *cancellable,
                     GError **error)
 {
@@ -2146,7 +2130,7 @@ imapx_parse_status (CamelIMAPXStream *is,
 
 			case IMAPX_HIGHESTMODSEQ:
 				success = imapx_parse_status_highestmodseq (
-					is, sinfo, cancellable, error);
+					is, mailbox, cancellable, error);
 				break;
 
 			case IMAPX_NEWNAME:
@@ -2161,17 +2145,17 @@ imapx_parse_status (CamelIMAPXStream *is,
 
 			case IMAPX_UIDNEXT:
 				success = imapx_parse_status_uidnext (
-					is, sinfo, cancellable, error);
+					is, mailbox, cancellable, error);
 				break;
 
 			case IMAPX_UIDVALIDITY:
 				success = imapx_parse_status_uidvalidity (
-					is, sinfo, cancellable, error);
+					is, mailbox, cancellable, error);
 				break;
 
 			case IMAPX_UNSEEN:
 				success = imapx_parse_status_unseen (
-					is, sinfo, cancellable, error);
+					is, mailbox, cancellable, error);
 				break;
 
 			/* RFC 5530 Response Codes */
@@ -2282,6 +2266,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 	CamelIMAPXFolder *imapx_folder;
 	CamelIMAPXSummary *imapx_summary;
+	CamelIMAPXMailbox *mailbox;
 	guint64 last_known_uidvalidity;
 	guint64 last_known_modsequence;
 	guint32 last_known_message_cnt;
@@ -2296,9 +2281,11 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 	imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
 
-	last_known_uidvalidity = imapx_folder->uidvalidity_on_server;
+	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
+
+	last_known_uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
 	last_known_modsequence = imapx_summary->modseq;
-	last_known_message_cnt = imapx_folder->exists_on_server;
+	last_known_message_cnt = camel_imapx_mailbox_get_messages (mailbox);
 
 	/* XXX This should return an unsigned integer to
 	 *     avoid the possibility of a negative count. */
@@ -2401,6 +2388,8 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 exit:
 	g_free (known_uid_set);
+
+	g_object_unref (mailbox);
 
 	return parameter_added;
 }
@@ -2691,7 +2680,7 @@ gboolean
 camel_imapx_parse_quotaroot (CamelIMAPXStream *is,
                              GCancellable *cancellable,
                              gchar **out_mailbox_name,
-                             gchar ***out_quota_root_names,
+                             gchar ***out_quota_roots,
                              GError **error)
 {
 	GQueue queue = G_QUEUE_INIT;
@@ -2699,12 +2688,12 @@ camel_imapx_parse_quotaroot (CamelIMAPXStream *is,
 	guint len;
 	guchar *token;
 	gchar *mailbox_name = NULL;
-	gchar **quota_root_names = NULL;
+	gchar **quota_roots = NULL;
 	gint ii = 0;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), FALSE);
 	g_return_val_if_fail (out_mailbox_name != NULL, FALSE);
-	g_return_val_if_fail (out_quota_root_names != NULL, FALSE);
+	g_return_val_if_fail (out_quota_roots != NULL, FALSE);
 
 	/* quotaroot_response ::= "QUOTAROOT" SP astring *(SP astring) */
 
@@ -2731,12 +2720,12 @@ camel_imapx_parse_quotaroot (CamelIMAPXStream *is,
 		g_queue_push_tail (&queue, g_strdup ((gchar *) token));
 	}
 
-	quota_root_names = g_new0 (gchar *, queue.length + 1);
+	quota_roots = g_new0 (gchar *, queue.length + 1);
 	while (!g_queue_is_empty (&queue))
-		quota_root_names[ii++] = g_queue_pop_head (&queue);
+		quota_roots[ii++] = g_queue_pop_head (&queue);
 
 	*out_mailbox_name = mailbox_name;
-	*out_quota_root_names = quota_root_names;
+	*out_quota_roots = quota_roots;
 
 	return TRUE;
 

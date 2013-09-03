@@ -42,6 +42,9 @@ struct _CamelIMAPXRealCommand {
 	/* For building the part. */
 	GString *buffer;
 
+	/* Mailbox to select before running command. */
+	GWeakRef mailbox;
+
 	/* For network/parse errors. */
 	GError *error;
 
@@ -59,7 +62,7 @@ struct _CamelIMAPXCommandQueue {
 CamelIMAPXCommand *
 camel_imapx_command_new (CamelIMAPXServer *is,
                          const gchar *name,
-                         CamelFolder *select,
+                         CamelIMAPXMailbox *mailbox,
                          const gchar *format,
                          ...)
 {
@@ -72,6 +75,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	/* Initialize private bits. */
 	real_ic->ref_count = 1;
 	real_ic->buffer = g_string_sized_new (512);
+	g_weak_ref_set (&real_ic->mailbox, mailbox);
 	g_cond_init (&real_ic->done_sync_cond);
 	g_mutex_init (&real_ic->done_sync_mutex);
 
@@ -79,7 +83,6 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	real_ic->public.is = is;
 	real_ic->public.tag = tag++;
 	real_ic->public.name = name;
-	real_ic->public.select = select;
 	g_queue_init (&real_ic->public.parts);
 
 	if (format != NULL && *format != '\0') {
@@ -143,6 +146,8 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 			camel_imapx_job_unref (real_ic->job);
 
 		g_string_free (real_ic->buffer, TRUE);
+
+		g_weak_ref_set (&real_ic->mailbox, NULL);
 
 		g_clear_error (&real_ic->error);
 
@@ -220,6 +225,18 @@ camel_imapx_command_set_job (CamelIMAPXCommand *ic,
 		camel_imapx_job_unref (real_ic->job);
 
 	real_ic->job = job;
+}
+
+CamelIMAPXMailbox *
+camel_imapx_command_ref_mailbox (CamelIMAPXCommand *ic)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), NULL);
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	return g_weak_ref_get (&real_ic->mailbox);
 }
 
 void

@@ -24,6 +24,7 @@
 #ifndef CAMEL_IMAPX_SERVER_H
 #define CAMEL_IMAPX_SERVER_H
 
+#include <camel/camel-data-cache.h>
 #include <camel/camel-session.h>
 #include <camel/camel-store.h>
 
@@ -187,83 +188,95 @@ GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *ext,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_refresh_info	(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+CamelFolderChangeInfo *
+		camel_imapx_server_refresh_info	(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_sync_changes	(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_expunge	(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_fetch_messages
+CamelFolderChangeInfo *
+		camel_imapx_server_fetch_messages
 						(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 CamelFetchType type,
 						 gint limit,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_noop		(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
 CamelStream *	camel_imapx_server_get_message	(CamelIMAPXServer *is,
-						 CamelFolder *folder,
-						 const gchar *uid,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelFolderSummary *summary,
+						 CamelDataCache *message_cache,
+						 const gchar *message_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_copy_message	(CamelIMAPXServer *is,
-						 CamelFolder *source,
-						 CamelFolder *dest,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelIMAPXMailbox *destination,
 						 GPtrArray *uids,
 						 gboolean delete_originals,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_append_message
 						(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelFolderSummary *summary,
+						 CamelDataCache *message_cache,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *mi,
 						 gchar **append_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_sync_message	(CamelIMAPXServer *is,
-						 CamelFolder *folder,
-						 const gchar *uid,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelFolderSummary *summary,
+						 CamelDataCache *message_cache,
+						 const gchar *message_uid,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_manage_subscription
+gboolean	camel_imapx_server_create_mailbox
 						(CamelIMAPXServer *is,
-						 const gchar *folder_name,
-						 gboolean subscribe,
+						 const gchar *mailbox_name,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_create_folder
+gboolean	camel_imapx_server_delete_mailbox
 						(CamelIMAPXServer *is,
-						 const gchar *folder_name,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_delete_folder
+gboolean	camel_imapx_server_rename_mailbox
 						(CamelIMAPXServer *is,
-						 const gchar *folder_name,
+						 CamelIMAPXMailbox *mailbox,
+						 const gchar *new_mailbox_name,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_rename_folder
+gboolean	camel_imapx_server_subscribe_mailbox
 						(CamelIMAPXServer *is,
-						 const gchar *old_name,
-						 const gchar *new_name,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_server_unsubscribe_mailbox
+						(CamelIMAPXServer *is,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_update_quota_info
 						(CamelIMAPXServer *is,
-						 const gchar *folder_name,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
 GPtrArray *	camel_imapx_server_uid_search	(CamelIMAPXServer *is,
-						 CamelFolder *folder,
+						 CamelIMAPXMailbox *mailbox,
 						 const gchar *criteria,
 						 GCancellable *cancellable,
 						 GError **error);

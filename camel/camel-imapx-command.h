@@ -23,7 +23,8 @@
 #ifndef CAMEL_IMAPX_COMMAND_H
 #define CAMEL_IMAPX_COMMAND_H
 
-#include "camel-imapx-utils.h"
+#include <camel/camel-imapx-mailbox.h>
+#include <camel/camel-imapx-utils.h>
 
 #define CAMEL_IS_IMAPX_COMMAND(command) \
 	(camel_imapx_command_check (command))
@@ -74,9 +75,6 @@ struct _CamelIMAPXCommand {
 	/* Command name/type (e.g. FETCH) */
 	const gchar *name;
 
-	/* Folder to select */
-	CamelFolder *select;
-
 	/* Status for command, indicates it is complete if != NULL. */
 	struct _status_info *status;
 
@@ -92,7 +90,7 @@ struct _CamelIMAPXCommand {
 CamelIMAPXCommand *
 		camel_imapx_command_new		(struct _CamelIMAPXServer *is,
 						 const gchar *name,
-						 CamelFolder *select,
+						 CamelIMAPXMailbox *mailbox,
 						 const gchar *format,
 						 ...);
 CamelIMAPXCommand *
@@ -105,6 +103,8 @@ struct _CamelIMAPXJob *
 		camel_imapx_command_get_job	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_set_job	(CamelIMAPXCommand *ic,
 						 struct _CamelIMAPXJob *job);
+CamelIMAPXMailbox *
+		camel_imapx_command_ref_mailbox	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_add		(CamelIMAPXCommand *ic,
 						 const gchar *format,
 						 ...);

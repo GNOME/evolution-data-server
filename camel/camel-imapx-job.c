@@ -20,6 +20,8 @@
 
 #include <string.h>
 
+#include <camel/camel-imapx-folder.h>
+
 typedef struct _CamelIMAPXRealJob CamelIMAPXRealJob;
 
 /* CamelIMAPXJob + some private bits */
@@ -43,8 +45,8 @@ struct _CamelIMAPXRealJob {
 	gpointer data;
 	GDestroyNotify destroy_data;
 
-	CamelFolder *folder;
-	GMutex folder_lock;
+	CamelIMAPXMailbox *mailbox;
+	GMutex mailbox_lock;
 };
 
 static void
@@ -75,7 +77,7 @@ camel_imapx_job_new (GCancellable *cancellable)
 		g_object_ref (cancellable);
 	real_job->cancellable = cancellable;
 
-	g_mutex_init (&real_job->folder_lock);
+	g_mutex_init (&real_job->mailbox_lock);
 
 	return (CamelIMAPXJob *) real_job;
 }
@@ -123,9 +125,8 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 		if (real_job->destroy_data != NULL)
 			real_job->destroy_data (real_job->data);
 
-		if (real_job->folder != NULL)
-			g_object_unref (real_job->folder);
-		g_mutex_clear (&real_job->folder_lock);
+		g_clear_object (&real_job->mailbox);
+		g_mutex_clear (&real_job->mailbox_lock);
 
 		/* Fill the memory with a bit pattern before releasing
 		 * it back to the slab allocator, so we can more easily
@@ -265,21 +266,21 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 
 gboolean
 camel_imapx_job_matches (CamelIMAPXJob *job,
-                         CamelFolder *folder,
+                         CamelIMAPXMailbox *mailbox,
                          const gchar *uid)
 {
-	/* XXX CamelFolder can be NULL.  I'm less sure about the
-	 *     message UID but let's assume that can be NULL too. */
+	/* XXX CamelIMAPXMailbox can be NULL.  I'm less sure about
+	 *     the message UID but let's assume that can be NULL too. */
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
 
-	if (folder != NULL)
-		g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	if (mailbox != NULL)
+		g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
 	if (job->matches == NULL)
 		return FALSE;
 
-	return job->matches (job, folder, uid);
+	return job->matches (job, mailbox, uid);
 }
 
 gpointer
@@ -313,47 +314,47 @@ camel_imapx_job_set_data (CamelIMAPXJob *job,
 }
 
 gboolean
-camel_imapx_job_has_folder (CamelIMAPXJob *job,
-                            CamelFolder *folder)
+camel_imapx_job_has_mailbox (CamelIMAPXJob *job,
+                             CamelIMAPXMailbox *mailbox)
 {
 	CamelIMAPXRealJob *real_job;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
 
-	if (folder != NULL)
-		g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	if (mailbox != NULL)
+		g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
 	real_job = (CamelIMAPXRealJob *) job;
 
 	/* Not necessary to lock the mutex since
 	 * we're just comparing memory addresses. */
 
-	return (folder == real_job->folder);
+	return (mailbox == real_job->mailbox);
 }
 
-CamelFolder *
-camel_imapx_job_ref_folder (CamelIMAPXJob *job)
+CamelIMAPXMailbox *
+camel_imapx_job_ref_mailbox (CamelIMAPXJob *job)
 {
 	CamelIMAPXRealJob *real_job;
-	CamelFolder *folder = NULL;
+	CamelIMAPXMailbox *mailbox = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
 
 	real_job = (CamelIMAPXRealJob *) job;
 
-	g_mutex_lock (&real_job->folder_lock);
+	g_mutex_lock (&real_job->mailbox_lock);
 
-	if (real_job->folder != NULL)
-		folder = g_object_ref (real_job->folder);
+	if (real_job->mailbox != NULL)
+		mailbox = g_object_ref (real_job->mailbox);
 
-	g_mutex_unlock (&real_job->folder_lock);
+	g_mutex_unlock (&real_job->mailbox_lock);
 
-	return folder;
+	return mailbox;
 }
 
 void
-camel_imapx_job_set_folder (CamelIMAPXJob *job,
-                            CamelFolder *folder)
+camel_imapx_job_set_mailbox (CamelIMAPXJob *job,
+                             CamelIMAPXMailbox *mailbox)
 {
 	CamelIMAPXRealJob *real_job;
 
@@ -361,19 +362,17 @@ camel_imapx_job_set_folder (CamelIMAPXJob *job,
 
 	real_job = (CamelIMAPXRealJob *) job;
 
-	if (folder != NULL) {
-		g_return_if_fail (CAMEL_IS_FOLDER (folder));
-		g_object_ref (folder);
+	if (mailbox != NULL) {
+		g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+		g_object_ref (mailbox);
 	}
 
-	g_mutex_lock (&real_job->folder_lock);
+	g_mutex_lock (&real_job->mailbox_lock);
 
-	if (real_job->folder != NULL)
-		g_object_unref (real_job->folder);
+	g_clear_object (&real_job->mailbox);
+	real_job->mailbox = mailbox;
 
-	real_job->folder = folder;
-
-	g_mutex_unlock (&real_job->folder_lock);
+	g_mutex_unlock (&real_job->mailbox_lock);
 }
 
 GCancellable *

@@ -25,6 +25,7 @@
 #define CAMEL_IMAPX_UTILS_H
 
 #include <camel/camel-store.h>
+#include <camel/camel-imapx-mailbox.h>
 
 G_BEGIN_DECLS
 
@@ -283,10 +284,6 @@ struct _status_info {
 			gchar *newname;
 		} newname;
 		guint32 permanentflags;
-		guint64 uidvalidity;
-		guint32 uidnext;
-		guint32 unseen;
-		guint64 highestmodseq;
 		struct {
 			guint64 uidvalidity;
 			guint32 uid;
@@ -304,6 +301,7 @@ struct _status_info {
 
 struct _status_info *
 		imapx_parse_status		(struct _CamelIMAPXStream *is,
+						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _status_info *
@@ -342,7 +340,7 @@ gboolean	camel_imapx_parse_quota		(struct _CamelIMAPXStream *is,
 gboolean	camel_imapx_parse_quotaroot	(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 gchar **out_mailbox_name,
-						 gchar ***out_quota_root_names,
+						 gchar ***out_quota_roots,
 						 GError **error);
 
 /* ********************************************************************** */

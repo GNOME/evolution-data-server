@@ -94,10 +94,11 @@ imapx_search_body_contains (CamelSExp *sexp,
                             CamelFolderSearch *search)
 {
 	CamelIMAPXServer *server;
+	CamelIMAPXMailbox *mailbox;
 	CamelSExpResult *result;
 	CamelSExpResultType type;
 	GString *criteria;
-	GPtrArray *uids;
+	GPtrArray *uids = NULL;
 	gint ii, jj;
 	GError *error = NULL;
 
@@ -157,8 +158,19 @@ imapx_search_body_contains (CamelSExp *sexp,
 		}
 	}
 
-	uids = camel_imapx_server_uid_search (
-		server, search->folder, criteria->str, NULL, &error);
+	mailbox = camel_imapx_folder_list_mailbox (
+		CAMEL_IMAPX_FOLDER (search->folder), NULL, &error);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((mailbox != NULL) && (error == NULL)) ||
+		((mailbox == NULL) && (error != NULL)), NULL);
+
+	if (mailbox != NULL) {
+		uids = camel_imapx_server_uid_search (
+			server, mailbox, criteria->str, NULL, &error);
+		g_object_unref (mailbox);
+	}
 
 	/* Sanity check. */
 	g_return_val_if_fail (
