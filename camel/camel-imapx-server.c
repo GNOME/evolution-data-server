@@ -339,6 +339,10 @@ struct _CamelIMAPXServerPrivate {
 	guint32 exists;
 	guint32 recent;
 
+	/* Data items to request in STATUS commands:
+	 * STATUS $mailbox_name ($status_data_items) */
+	gchar *status_data_items;
+
 	/* Untagged SEARCH data gets deposited here.
 	 * The search command should claim the results
 	 * when finished and reset the pointer to NULL. */
@@ -1447,6 +1451,8 @@ imapx_untagged_capability (CamelIMAPXServer *is,
                            GCancellable *cancellable,
                            GError **error)
 {
+	GString *buffer;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	if (is->cinfo != NULL)
@@ -1457,6 +1463,14 @@ imapx_untagged_capability (CamelIMAPXServer *is,
 		return FALSE;
 
 	c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
+
+	/* Stash some reusable capability-based command arguments. */
+
+	buffer = g_string_new ("MESSAGES UNSEEN UIDVALIDITY UIDNEXT");
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, CONDSTORE))
+		g_string_append (buffer, " HIGHESTMODSEQ");
+	g_free (is->priv->status_data_items);
+	is->priv->status_data_items = g_string_free (buffer, FALSE);
 
 	return TRUE;
 }
@@ -5528,8 +5542,8 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 
 			/* We need to issue Status command to get the total unread count */
 			ic = camel_imapx_command_new (
-				is, "STATUS", NULL,
-				"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+				is, "STATUS", NULL, "STATUS %f (%t)",
+				folder, is->priv->status_data_items);
 			camel_imapx_command_set_job (ic, job);
 			ic->pri = job->pri;
 
@@ -5701,14 +5715,9 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		} else
 		#endif
 		{
-			if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, CONDSTORE))
-				ic = camel_imapx_command_new (
-					is, "STATUS", NULL,
-					"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT HIGHESTMODSEQ)", folder);
-			else
-				ic = camel_imapx_command_new (
-					is, "STATUS", NULL,
-					"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+			ic = camel_imapx_command_new (
+				is, "STATUS", NULL, "STATUS %f (%t)",
+				folder, is->priv->status_data_items);
 
 			camel_imapx_command_set_job (ic, job);
 			ic->pri = job->pri;
@@ -5738,8 +5747,8 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		CamelIMAPXCommand *ic;
 
 		ic = camel_imapx_command_new (
-			is, "STATUS", NULL,
-			"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+			is, "STATUS", NULL, "STATUS %f (%t)",
+			folder, is->priv->status_data_items);
 		camel_imapx_command_set_job (ic, job);
 		ic->pri = job->pri;
 
@@ -7041,6 +7050,8 @@ imapx_server_finalize (GObject *object)
 
 	g_free (is->priv->context);
 	g_hash_table_destroy (is->priv->untagged_handlers);
+
+	g_free (is->priv->status_data_items);
 
 	if (is->priv->search_results != NULL)
 		g_array_unref (is->priv->search_results);
