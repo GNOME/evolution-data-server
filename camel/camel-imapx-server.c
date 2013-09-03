@@ -8115,7 +8115,7 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 
 	success = registered && camel_imapx_job_run (job, is, error);
 
-	if (success && camel_folder_change_info_changed (data->changes) && camel_folder_change_info_changed (data->changes))
+	if (success && camel_folder_change_info_changed (data->changes))
 		camel_folder_changed (folder, data->changes);
 
 	uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
