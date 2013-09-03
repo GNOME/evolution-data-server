@@ -489,9 +489,13 @@ read_attribute_params (EVCardAttribute *attr,
 			}
 			if (colon)
 				break;
-		}
-		else {
-			g_warning ("invalid character found in parameter spec");
+		} else if (param) {
+			/* reading param value, which is SAFE-CHAR, aka
+			   any character except CTLs, DQUOTE, ";", ":", "," */
+			g_string_append_unichar (str, g_utf8_get_char (lp));
+			lp = g_utf8_next_char (lp);
+		} else {
+			g_warning ("invalid character (%c/0x%02x) found in parameter spec (%s)", *lp, *lp, lp);
 			g_string_assign (str, "");
 			/*			skip_until (&lp, ":;"); */
 
