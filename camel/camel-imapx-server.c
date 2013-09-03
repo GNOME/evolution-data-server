@@ -190,7 +190,7 @@ typedef struct _CamelIMAPXServerUntaggedContext CamelIMAPXServerUntaggedContext;
 
 struct _CamelIMAPXServerUntaggedContext {
 	CamelSortType fetch_order;
-	guint id;
+	gulong id;
 	guint len;
 	guchar *token;
 	gint tok;
@@ -953,7 +953,10 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 	c (is->tagprefix, "** Starting next command\n");
 	if (is->literal) {
-		c (is->tagprefix, "* no; waiting for literal '%s'\n", is->literal->name);
+		c (
+			is->tagprefix,
+			"* no; waiting for literal '%s'\n",
+			is->literal->name);
 		return;
 	}
 
@@ -962,7 +965,9 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		GQueue start = G_QUEUE_INIT;
 		GList *head, *link;
 
-		c (is->tagprefix, "-- Checking job queue for non-folder jobs\n");
+		c (
+			is->tagprefix,
+			"-- Checking job queue for non-folder jobs\n");
 
 		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
@@ -973,9 +978,15 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			if (ic->pri < min_pri)
 				break;
 
-			c (is->tagprefix, "-- %3d '%s'?\n", (gint) ic->pri, ic->name);
+			c (
+				is->tagprefix,
+				"-- %3d '%s'?\n",
+				(gint) ic->pri, ic->name);
 			if (!ic->select) {
-				c (is->tagprefix, "--> starting '%s'\n", ic->name);
+				c (
+					is->tagprefix,
+					"--> starting '%s'\n",
+					ic->name);
 				min_pri = ic->pri;
 				g_queue_push_tail (&start, link);
 			}
@@ -985,7 +996,10 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		}
 
 		if (g_queue_is_empty (&start))
-			c (is->tagprefix, "* no, waiting for pending select '%s'\n", camel_folder_get_full_name (folder));
+			c (
+				is->tagprefix,
+				"* no, waiting for pending select '%s'\n",
+				camel_folder_get_full_name (folder));
 
 		/* Start the tagged commands.
 		 *
@@ -1073,7 +1087,8 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		gboolean commands_started = FALSE;
 
 		c (
-			is->tagprefix, "- we're selected on '%s', current jobs?\n",
+			is->tagprefix,
+			"- we're selected on '%s', current jobs?\n",
 			camel_folder_get_full_name (folder));
 
 		head = camel_imapx_command_queue_peek_head_link (is->active);
@@ -1083,11 +1098,17 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			CamelIMAPXCommand *ic = link->data;
 
 			min_pri = MAX (min_pri, ic->pri);
-			c (is->tagprefix, "-  %3d '%s'\n", (gint) ic->pri, ic->name);
+			c (
+				is->tagprefix,
+				"-  %3d '%s'\n",
+				(gint) ic->pri, ic->name);
 		}
 
 		if (camel_imapx_command_queue_get_length (is->active) >= MAX_COMMANDS) {
-			c (is->tagprefix, "** too many jobs busy, waiting for results for now\n");
+			c (
+				is->tagprefix,
+				"** too many jobs busy, "
+				"waiting for results for now\n");
 			g_object_unref (folder);
 			return;
 		}
@@ -1099,6 +1120,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		/* Tag which commands in the queue to start. */
 		for (link = head; link != NULL; link = g_list_next (link)) {
 			CamelIMAPXCommand *ic = link->data;
+			gboolean okay_to_start;
 
 			if (is->literal != NULL)
 				break;
@@ -1106,16 +1128,27 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			if (ic->pri < min_pri)
 				break;
 
-			c (is->tagprefix, "-- %3d '%s'?\n", (gint) ic->pri, ic->name);
+			c (
+				is->tagprefix,
+				"-- %3d '%s'?\n",
+				(gint) ic->pri, ic->name);
 
-			if (!ic->select || ((ic->select == folder) &&
-					    !imapx_is_duplicate_fetch_or_refresh (is, ic))) {
-				c (is->tagprefix, "--> starting '%s'\n", ic->name);
+			okay_to_start =
+				(ic->select == NULL) ||
+				(ic->select == folder &&
+				!imapx_is_duplicate_fetch_or_refresh (is, ic));
+
+			if (okay_to_start) {
+				c (
+					is->tagprefix,
+					"--> starting '%s'\n",
+					ic->name);
 				min_pri = ic->pri;
 				g_queue_push_tail (&start, link);
 			} else {
-				/* This job isn't for the selected folder, but we don't want to
-				 * consider jobs with _lower_ priority than this, even if they
+				/* This job isn't for the selected folder,
+				 * but we don't want to consider jobs with
+				 * lower priority than this, even if they
 				 * are for the selected folder. */
 				min_pri = ic->pri;
 			}
@@ -1154,13 +1187,14 @@ imapx_command_start_next (CamelIMAPXServer *is)
 	/* This won't be NULL because we checked for an empty queue above. */
 	first_ic = camel_imapx_command_queue_peek_head (is->queue);
 
-	/* If we need to select a folder for the first command, do it now,
-	 * once it is complete it will re-call us if it succeeded. */
+	/* If we need to select a folder for the first command, do
+	 * so now.  It will re-call us if it completes successfully. */
 	if (first_ic->select) {
 		CamelIMAPXJob *job;
 
 		c (
-			is->tagprefix, "Selecting folder '%s' for command '%s'(%p)\n",
+			is->tagprefix,
+			"Selecting folder '%s' for command '%s'(%p)\n",
 			camel_folder_get_full_name (first_ic->select),
 			first_ic->name, first_ic);
 
@@ -1183,6 +1217,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		/* Tag which commands in the queue to start. */
 		for (link = head; link != NULL; link = g_list_next (link)) {
 			CamelIMAPXCommand *ic = link->data;
+			gboolean okay_to_start;
 
 			if (is->literal != NULL)
 				break;
@@ -1190,9 +1225,16 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			if (ic->pri < min_pri)
 				break;
 
-			if (!ic->select || (ic->select == folder &&
-					    !imapx_is_duplicate_fetch_or_refresh (is, ic))) {
-				c (is->tagprefix, "* queueing job %3d '%s'\n", (gint) ic->pri, ic->name);
+			okay_to_start =
+				(ic->select == NULL) ||
+				(ic->select == folder &&
+				!imapx_is_duplicate_fetch_or_refresh (is, ic));
+
+			if (okay_to_start) {
+				c (
+					is->tagprefix,
+					"* queueing job %3d '%s'\n",
+					(gint) ic->pri, ic->name);
 				min_pri = ic->pri;
 				g_queue_push_tail (&start, link);
 			}
@@ -1353,10 +1395,7 @@ imapx_is_job_in_queue (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	if (found)
-		return job;
-	else
-		return NULL;
+	return found ? job : NULL;
 }
 
 static void
@@ -1441,7 +1480,7 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	if (job != NULL)
 		return TRUE;
 
-	c (is->tagprefix, "expunged: %d\n", is->priv->context->id);
+	c (is->tagprefix, "expunged: %lu\n", is->priv->context->id);
 
 	folder = g_weak_ref_get (&is->priv->select_folder);
 
@@ -1505,8 +1544,11 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 		if (ifolder->exists_on_server < uids->len) {
 			c (
-				is->tagprefix, "Error: exists_on_folder %d is fewer than vanished %d\n",
-				ifolder->exists_on_server, uids->len);
+				is->tagprefix,
+				"Error: exists_on_folder %d is "
+				"fewer than vanished %d\n",
+				ifolder->exists_on_server,
+				uids->len);
 			ifolder->exists_on_server = 0;
 		} else
 			ifolder->exists_on_server -= uids->len;
@@ -1594,7 +1636,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	c (is->tagprefix, "exists: %d\n", is->priv->context->id);
+	c (is->tagprefix, "exists: %lu\n", is->priv->context->id);
 	is->priv->exists = is->priv->context->id;
 
 	folder = g_weak_ref_get (&is->priv->select_folder);
@@ -1731,7 +1773,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			gboolean changed = FALSE;
 			gchar *uid = NULL;
 
-			c (is->tagprefix, "flag changed: %d\n", is->priv->context->id);
+			c (is->tagprefix, "flag changed: %lu\n", is->priv->context->id);
 
 			if (finfo->got & FETCH_UID) {
 				uid = finfo->uid;
@@ -2089,7 +2131,7 @@ imapx_untagged_recent (CamelIMAPXServer *is,
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	c (is->tagprefix, "recent: %d\n", is->priv->context->id);
+	c (is->tagprefix, "recent: %lu\n", is->priv->context->id);
 	is->priv->recent = is->priv->context->id;
 
 	return TRUE;
@@ -2299,7 +2341,9 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 
 	switch (is->priv->context->sinfo->condition) {
 	case IMAPX_CLOSED:
-		c (is->tagprefix, "previously selected folder is now closed\n");
+		c (
+			is->tagprefix,
+			"previously selected folder is now closed\n");
 		{
 			CamelFolder *select_folder;
 			CamelFolder *select_pending;
@@ -2454,7 +2498,7 @@ imapx_untagged (CamelIMAPXServer *is,
 		goto exit;
 	}
 
-	e (is->tagprefix, "Have token '%s' id %d\n", is->priv->context->token, is->priv->context->id);
+	e (is->tagprefix, "Have token '%s' id %lu\n", is->priv->context->token, is->priv->context->id);
 	p = is->priv->context->token;
 	while ((c = *p))
 		*p++ = g_ascii_toupper ((gchar) c);
@@ -3443,8 +3487,11 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 				if (cw->select && cw->select == folder) {
 					c (
-						is->tagprefix, "Cancelling command '%s'(%p) for folder '%s'\n",
-						cw->name, cw, camel_folder_get_full_name (cw->select));
+						is->tagprefix,
+						"Cancelling command '%s'(%p) "
+						"for folder '%s'\n",
+						cw->name, cw,
+						camel_folder_get_full_name (cw->select));
 					g_queue_push_tail (&trash, link);
 				}
 			}
@@ -3513,14 +3560,14 @@ imapx_command_select_done (CamelIMAPXServer *is,
 				RefreshInfoData *data = camel_imapx_job_get_data (job);
 
 				if (data->scan_changes) {
-					c (is->tagprefix, "Will not fetch_new_messages when already in scan_changes\n");
+					c (
+						is->tagprefix,
+						"Will not fetch_new_messages "
+						"when already in scan_changes\n");
 					goto no_fetch_new;
 				}
 			}
 			imapx_server_fetch_new_messages (is, folder, TRUE, TRUE, NULL, NULL);
-			/* We don't do this right now because we want the new messages to
-			 * update the unseen count. */
-			//ifolder->uidnext_on_server = is->uidnext;
 		no_fetch_new:
 			;
 		}
@@ -3560,12 +3607,8 @@ imapx_maybe_select (CamelIMAPXServer *is,
 	 *
 	 * So this waits for any commands to complete, selects the
 	 * new folder, and halts the queuing of any new commands.
-	 * It is assumed whomever called is us about to issue
-	 * a high-priority command anyway */
-
-	/* TODO check locking here, pending_select will do
-	 * most of the work for normal commands, but not
-	 * for another select */
+	 * It is assumed whomever called is us about to issue a
+	 * high-priority command anyway */
 
 	g_mutex_lock (&is->priv->select_lock);
 
