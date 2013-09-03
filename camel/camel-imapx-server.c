@@ -810,6 +810,20 @@ imapx_uidset_add (struct _uidset_state *ss,
 	return 0;
 }
 
+static void
+imapx_server_stash_command_arguments (CamelIMAPXServer *is)
+{
+	GString *buffer;
+
+	/* Stash some reusable capability-based command arguments. */
+
+	buffer = g_string_new ("MESSAGES UNSEEN UIDVALIDITY UIDNEXT");
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, CONDSTORE))
+		g_string_append (buffer, " HIGHESTMODSEQ");
+	g_free (is->priv->status_data_items);
+	is->priv->status_data_items = g_string_free (buffer, FALSE);
+}
+
 /* Must hold QUEUE_LOCK */
 static void
 imapx_command_start (CamelIMAPXServer *is,
@@ -1451,8 +1465,6 @@ imapx_untagged_capability (CamelIMAPXServer *is,
                            GCancellable *cancellable,
                            GError **error)
 {
-	GString *buffer;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	if (is->cinfo != NULL)
@@ -1464,13 +1476,7 @@ imapx_untagged_capability (CamelIMAPXServer *is,
 
 	c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
 
-	/* Stash some reusable capability-based command arguments. */
-
-	buffer = g_string_new ("MESSAGES UNSEEN UIDVALIDITY UIDNEXT");
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, CONDSTORE))
-		g_string_append (buffer, " HIGHESTMODSEQ");
-	g_free (is->priv->status_data_items);
-	is->priv->status_data_items = g_string_free (buffer, FALSE);
+	imapx_server_stash_command_arguments (is);
 
 	return TRUE;
 }
@@ -2444,6 +2450,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			if (cinfo)
 				imapx_free_capability (cinfo);
 			c (is->tagprefix, "got capability flags %08x\n", is->cinfo ? is->cinfo->capa : 0xFFFFFFFF);
+			imapx_server_stash_command_arguments (is);
 		}
 		break;
 	default:
@@ -4013,6 +4020,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 				is->cinfo = ic->status->u.cinfo;
 				ic->status->u.cinfo = NULL;
 				c (is->tagprefix, "got capability flags %08x\n", is->cinfo ? is->cinfo->capa : 0xFFFFFFFF);
+				imapx_server_stash_command_arguments (is);
 			}
 		}
 
@@ -4170,6 +4178,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 			is->cinfo = ic->status->u.cinfo;
 			ic->status->u.cinfo = NULL;
 			c (is->tagprefix, "got capability flags %08x\n", is->cinfo ? is->cinfo->capa : 0xFFFFFFFF);
+			imapx_server_stash_command_arguments (is);
 		}
 	}
 
