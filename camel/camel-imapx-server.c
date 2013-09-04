@@ -835,6 +835,8 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 			g_string_append_printf (
 				buffer, " STATUS (%s)",
 				is->priv->status_data_items);
+		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->cinfo, SPECIAL_USE))
+			g_string_append_printf (buffer, " SPECIAL-USE");
 		is->priv->list_return_opts = g_string_free (buffer, FALSE);
 	} else {
 		is->priv->list_return_opts = NULL;

@@ -62,7 +62,14 @@ static const gchar *known_attributes[] = {
 	CAMEL_IMAPX_LIST_ATTR_HASNOCHILDREN,
 	CAMEL_IMAPX_LIST_ATTR_NONEXISTENT,
 	CAMEL_IMAPX_LIST_ATTR_REMOTE,
-	CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED
+	CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED,
+	CAMEL_IMAPX_LIST_ATTR_ALL,
+	CAMEL_IMAPX_LIST_ATTR_ARCHIVE,
+	CAMEL_IMAPX_LIST_ATTR_DRAFTS,
+	CAMEL_IMAPX_LIST_ATTR_FLAGGED,
+	CAMEL_IMAPX_LIST_ATTR_JUNK,
+	CAMEL_IMAPX_LIST_ATTR_SENT,
+	CAMEL_IMAPX_LIST_ATTR_TRASH
 };
 
 static void
@@ -606,6 +613,69 @@ camel_imapx_list_response_get_separator (CamelIMAPXListResponse *response)
  * RFC 5258 section 4</ulink>.
  *
  * Since: 3.10
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_ALL:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_ARCHIVE:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_DRAFTS:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_FLAGGED:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_JUNK:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_SENT:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * CAMEL_IMAPX_LIST_ATTR_TRASH:
+ *
+ * Refer to <ulink url="http://tools.ietf.org/html/rfc6154#section-2">
+ * RFC 6154 section 2</ulink>.
+ *
+ * Since: 3.12
  **/
 
 /**

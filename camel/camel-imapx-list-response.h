@@ -59,6 +59,15 @@
 #define CAMEL_IMAPX_LIST_ATTR_REMOTE		"\\Remote"
 #define CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED	"\\Subscribed"
 
+/* RFC 6154 "SPECIAL-USE" Flags */
+#define CAMEL_IMAPX_LIST_ATTR_ALL		"\\All"
+#define CAMEL_IMAPX_LIST_ATTR_ARCHIVE		"\\Archive"
+#define CAMEL_IMAPX_LIST_ATTR_DRAFTS		"\\Drafts"
+#define CAMEL_IMAPX_LIST_ATTR_FLAGGED		"\\Flagged"
+#define CAMEL_IMAPX_LIST_ATTR_JUNK		"\\Junk"
+#define CAMEL_IMAPX_LIST_ATTR_SENT		"\\Sent"
+#define CAMEL_IMAPX_LIST_ATTR_TRASH		"\\Trash"
+
 G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXListResponse CamelIMAPXListResponse;

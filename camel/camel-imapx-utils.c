@@ -423,7 +423,8 @@ struct {
 	{ "LIST-STATUS", IMAPX_CAPABILITY_LIST_STATUS },
 	{ "QUOTA", IMAPX_CAPABILITY_QUOTA },
 	{ "MOVE", IMAPX_CAPABILITY_MOVE },
-	{ "NOTIFY", IMAPX_CAPABILITY_NOTIFY }
+	{ "NOTIFY", IMAPX_CAPABILITY_NOTIFY },
+	{ "SPECIAL-USE", IMAPX_CAPABILITY_SPECIAL_USE }
 };
 
 static GMutex capa_htable_lock;         /* capabilities lookup table lock */
