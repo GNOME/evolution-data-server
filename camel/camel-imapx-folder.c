@@ -1423,6 +1423,8 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	CamelIMAPXStoreInfo *imapx_store_info;
 	gchar *folder_path = NULL;
 	gchar *mailbox_name = NULL;
+	gchar *pattern;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
 
@@ -1467,7 +1469,29 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	/* Last resort is to issue a LIST command.  Maintainer should
 	 * monitor IMAP logs to make sure this is rarely if ever used. */
 
-	g_warn_if_reached ();  /* FIXME Implement this. */
+	pattern = camel_utf8_utf7 (mailbox_name);
+
+	/* This creates a mailbox instance from the LIST response. */
+	success = camel_imapx_server_list (
+		server, pattern, 0, cancellable, error);
+
+	g_free (pattern);
+
+	if (!success)
+		goto exit;
+
+	/* This might still return NULL if the mailbox has a
+	 * /NonExistent attribute.  Otherwise this should work. */
+	mailbox = camel_imapx_server_ref_mailbox (server, mailbox_name);
+	if (mailbox != NULL) {
+		camel_imapx_folder_set_mailbox (folder, mailbox);
+	} else {
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID_STATE,
+			_("No IMAP mailbox available for folder '%s'"),
+			camel_folder_get_display_name (CAMEL_FOLDER (folder)));
+	}
 
 exit:
 	g_clear_object (&server);
