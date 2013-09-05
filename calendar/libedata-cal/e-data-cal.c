@@ -1796,10 +1796,13 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
 
 		list = (GSList *) old_components;
 
-		for (link = list; link != NULL; link = g_slist_next (link))
+		for (link = list; link != NULL; link = g_slist_next (link)) {
+			if (link->data)
+				g_object_ref (link->data);
 			g_queue_push_tail (
 				inner_queue,
-				g_object_ref (link->data));
+				link->data);
+		}
 
 		g_queue_push_tail (queue, inner_queue);
 
@@ -1882,10 +1885,13 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
 
 		list = (GSList *) old_components;
 
-		for (link = list; link != NULL; link = g_slist_next (link))
+		for (link = list; link != NULL; link = g_slist_next (link)) {
+			if (link->data)
+				g_object_ref (link->data);
 			g_queue_push_tail (
 				inner_queue,
-				g_object_ref (link->data));
+				link->data);
+		}
 
 		g_queue_push_tail (queue, inner_queue);
 
@@ -1899,8 +1905,8 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
 			for (link = list; link != NULL; link = g_slist_next (link)) {
 				if (link->data != NULL)
 					g_object_ref (link->data);
-					g_queue_push_tail (
-						inner_queue, link->data);
+				g_queue_push_tail (
+					inner_queue, link->data);
 			}
 
 			g_queue_push_tail (queue, inner_queue);

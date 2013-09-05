@@ -2654,8 +2654,8 @@ e_cal_backend_modify_objects_finish (ECalBackend *backend,
 		e_cal_backend_notify_component_modified (
 			backend, old_component, new_component);
 
-		g_object_unref (old_component);
-		g_object_unref (new_component);
+		g_clear_object (&old_component);
+		g_clear_object (&new_component);
 	}
 
 	g_warn_if_fail (g_queue_is_empty (old_component_queue));
@@ -4147,7 +4147,7 @@ e_cal_backend_notify_component_modified (ECalBackend *backend,
 	GList *list, *link;
 
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_IS_CAL_COMPONENT (old_component));
+	g_return_if_fail (!old_component || E_IS_CAL_COMPONENT (old_component));
 	g_return_if_fail (E_IS_CAL_COMPONENT (new_component));
 
 	list = e_cal_backend_list_views (backend);
