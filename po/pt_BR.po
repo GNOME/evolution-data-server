@@ -20,8 +20,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-08-20 19:08+0000\n"
-"PO-Revision-Date: 2013-08-05 04:26-0300\n"
+"POT-Creation-Date: 2013-09-03 19:28+0000\n"
+"PO-Revision-Date: 2013-09-07 13:23-0300\n"
 "Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -32,65 +32,65 @@ msgstr ""
 "X-Generator: Poedit 1.5.7\n"
 "X-Project-Style: gnome\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:114
+#: ../addressbook/backends/file/e-book-backend-file.c:115
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Falha ao remover o arquivo \"%s\": %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:142
+#: ../addressbook/backends/file/e-book-backend-file.c:143
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Falha ao criar o diretório %s: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:393
+#: ../addressbook/backends/file/e-book-backend-file.c:394
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Falha ao criar o hardlink para o recurso \"%s\": %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:498
-#: ../addressbook/backends/file/e-book-backend-file.c:1134
+#: ../addressbook/backends/file/e-book-backend-file.c:499
+#: ../addressbook/backends/file/e-book-backend-file.c:1135
 msgid "No UID in the contact"
 msgstr "Não há UID no contato"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:772
+#: ../addressbook/backends/file/e-book-backend-file.c:773
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Encontrados UIDs conflitantes em contatos adicionados"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:880
+#: ../addressbook/backends/file/e-book-backend-file.c:881
 msgid "Loading..."
 msgstr "Carregando..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:882
+#: ../addressbook/backends/file/e-book-backend-file.c:883
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4419
 msgid "Searching..."
 msgstr "Pesquisando..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1163
+#: ../addressbook/backends/file/e-book-backend-file.c:1164
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr "Foi tentado modificar o contato \"%s\" com revisão sem sincronia"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1299
-#: ../addressbook/backends/file/e-book-backend-file.c:1368
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2704
+#: ../addressbook/backends/file/e-book-backend-file.c:1300
+#: ../addressbook/backends/file/e-book-backend-file.c:1369
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2707
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "O contato \"%s\" não foi encontrado"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1410
-#: ../addressbook/backends/file/e-book-backend-file.c:1477
+#: ../addressbook/backends/file/e-book-backend-file.c:1411
+#: ../addressbook/backends/file/e-book-backend-file.c:1478
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "Não há suporte à consulta \"%s\""
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1419
-#: ../addressbook/backends/file/e-book-backend-file.c:1486
+#: ../addressbook/backends/file/e-book-backend-file.c:1420
+#: ../addressbook/backends/file/e-book-backend-file.c:1487
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "Consulta \"%s\" inválida"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1670
+#: ../addressbook/backends/file/e-book-backend-file.c:1671
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr ""
@@ -103,7 +103,7 @@ msgstr ""
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:826
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
-#: ../addressbook/libedata-book/e-book-backend-sexp.c:869
+#: ../addressbook/libedata-book/e-book-backend-sexp.c:874
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:568
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
@@ -304,7 +304,7 @@ msgid "No space"
 msgstr "Sem espaço"
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook-contacts/e-contact.c:120
+#: ../addressbook/libebook-contacts/e-contact.c:123
 msgid "Unique ID"
 msgstr "ID único"
 
@@ -312,12 +312,12 @@ msgstr "ID único"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../addressbook/libebook-contacts/e-contact.c:125
+#: ../addressbook/libebook-contacts/e-contact.c:128
 msgid "File Under"
 msgstr "Arquivar como"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook-contacts/e-contact.c:127
+#: ../addressbook/libebook-contacts/e-contact.c:130
 msgid "Book UID"
 msgstr "UID do catálogo"
 
@@ -325,434 +325,434 @@ msgstr "UID do catálogo"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook-contacts/e-contact.c:133
+#: ../addressbook/libebook-contacts/e-contact.c:136
 msgid "Full Name"
 msgstr "Nome completo"
 
-#: ../addressbook/libebook-contacts/e-contact.c:134
+#: ../addressbook/libebook-contacts/e-contact.c:137
 msgid "Given Name"
 msgstr "Primeiro nome"
 
-#: ../addressbook/libebook-contacts/e-contact.c:135
+#: ../addressbook/libebook-contacts/e-contact.c:138
 msgid "Family Name"
 msgstr "Sobrenome"
 
-#: ../addressbook/libebook-contacts/e-contact.c:136
+#: ../addressbook/libebook-contacts/e-contact.c:139
 msgid "Nickname"
 msgstr "Apelido"
 
 #. Email fields
-#: ../addressbook/libebook-contacts/e-contact.c:139
+#: ../addressbook/libebook-contacts/e-contact.c:142
 msgid "Email 1"
 msgstr "E-mail 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:140
+#: ../addressbook/libebook-contacts/e-contact.c:143
 msgid "Email 2"
 msgstr "E-mail 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:141
+#: ../addressbook/libebook-contacts/e-contact.c:144
 msgid "Email 3"
 msgstr "E-mail 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:142
+#: ../addressbook/libebook-contacts/e-contact.c:145
 msgid "Email 4"
 msgstr "E-mail 4"
 
-#: ../addressbook/libebook-contacts/e-contact.c:144
+#: ../addressbook/libebook-contacts/e-contact.c:147
 msgid "Mailer"
 msgstr "Programa de correio"
 
 #. Address Labels
-#: ../addressbook/libebook-contacts/e-contact.c:147
+#: ../addressbook/libebook-contacts/e-contact.c:150
 msgid "Home Address Label"
 msgstr "Rótulo do endereço residencial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:148
+#: ../addressbook/libebook-contacts/e-contact.c:151
 msgid "Work Address Label"
 msgstr "Rótulo do endereço comercial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:149
+#: ../addressbook/libebook-contacts/e-contact.c:152
 msgid "Other Address Label"
 msgstr "Rótulo de outros endereços"
 
 #. Phone fields
-#: ../addressbook/libebook-contacts/e-contact.c:152
+#: ../addressbook/libebook-contacts/e-contact.c:155
 msgid "Assistant Phone"
 msgstr "Telefone do assistente"
 
-#: ../addressbook/libebook-contacts/e-contact.c:153
+#: ../addressbook/libebook-contacts/e-contact.c:156
 msgid "Business Phone"
 msgstr "Telefone comercial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:154
+#: ../addressbook/libebook-contacts/e-contact.c:157
 msgid "Business Phone 2"
 msgstr "Telefone comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:155
+#: ../addressbook/libebook-contacts/e-contact.c:158
 msgid "Business Fax"
 msgstr "Fax comercial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:156
+#: ../addressbook/libebook-contacts/e-contact.c:159
 msgid "Callback Phone"
 msgstr "Telefone de retorno"
 
-#: ../addressbook/libebook-contacts/e-contact.c:157
+#: ../addressbook/libebook-contacts/e-contact.c:160
 msgid "Car Phone"
 msgstr "Telefone do carro"
 
-#: ../addressbook/libebook-contacts/e-contact.c:158
+#: ../addressbook/libebook-contacts/e-contact.c:161
 msgid "Company Phone"
 msgstr "Telefone da empresa"
 
-#: ../addressbook/libebook-contacts/e-contact.c:159
+#: ../addressbook/libebook-contacts/e-contact.c:162
 msgid "Home Phone"
 msgstr "Telefone residencial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:160
+#: ../addressbook/libebook-contacts/e-contact.c:163
 msgid "Home Phone 2"
 msgstr "Telefone residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:161
+#: ../addressbook/libebook-contacts/e-contact.c:164
 msgid "Home Fax"
 msgstr "Fax residencial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:162
+#: ../addressbook/libebook-contacts/e-contact.c:165
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook-contacts/e-contact.c:163
+#: ../addressbook/libebook-contacts/e-contact.c:166
 msgid "Mobile Phone"
 msgstr "Telefone celular"
 
-#: ../addressbook/libebook-contacts/e-contact.c:164
+#: ../addressbook/libebook-contacts/e-contact.c:167
 msgid "Other Phone"
 msgstr "Outro telefone"
 
-#: ../addressbook/libebook-contacts/e-contact.c:165
+#: ../addressbook/libebook-contacts/e-contact.c:168
 msgid "Other Fax"
 msgstr "Outro fax"
 
-#: ../addressbook/libebook-contacts/e-contact.c:166
+#: ../addressbook/libebook-contacts/e-contact.c:169
 msgid "Pager"
 msgstr "Pager"
 
-#: ../addressbook/libebook-contacts/e-contact.c:167
+#: ../addressbook/libebook-contacts/e-contact.c:170
 msgid "Primary Phone"
 msgstr "Telefone principal"
 
-#: ../addressbook/libebook-contacts/e-contact.c:168
+#: ../addressbook/libebook-contacts/e-contact.c:171
 msgid "Radio"
 msgstr "Rádio"
 
-#: ../addressbook/libebook-contacts/e-contact.c:169
+#: ../addressbook/libebook-contacts/e-contact.c:172
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook-contacts/e-contact.c:171
+#: ../addressbook/libebook-contacts/e-contact.c:174
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook-contacts/e-contact.c:174
+#: ../addressbook/libebook-contacts/e-contact.c:177
 msgid "Organization"
 msgstr "Empresa"
 
-#: ../addressbook/libebook-contacts/e-contact.c:175
+#: ../addressbook/libebook-contacts/e-contact.c:178
 msgid "Organizational Unit"
 msgstr "Unidade organizacional"
 
-#: ../addressbook/libebook-contacts/e-contact.c:176
+#: ../addressbook/libebook-contacts/e-contact.c:179
 msgid "Office"
 msgstr "Escritório"
 
-#: ../addressbook/libebook-contacts/e-contact.c:177
+#: ../addressbook/libebook-contacts/e-contact.c:180
 msgid "Title"
 msgstr "Tratamento"
 
-#: ../addressbook/libebook-contacts/e-contact.c:178
+#: ../addressbook/libebook-contacts/e-contact.c:181
 msgid "Role"
 msgstr "Papel"
 
-#: ../addressbook/libebook-contacts/e-contact.c:179
+#: ../addressbook/libebook-contacts/e-contact.c:182
 msgid "Manager"
 msgstr "Gerente"
 
-#: ../addressbook/libebook-contacts/e-contact.c:180
+#: ../addressbook/libebook-contacts/e-contact.c:183
 msgid "Assistant"
 msgstr "Assistente"
 
 #. Web fields
-#: ../addressbook/libebook-contacts/e-contact.c:183
+#: ../addressbook/libebook-contacts/e-contact.c:186
 msgid "Homepage URL"
 msgstr "URL da página na Web"
 
-#: ../addressbook/libebook-contacts/e-contact.c:184
+#: ../addressbook/libebook-contacts/e-contact.c:187
 msgid "Weblog URL"
 msgstr "URL do blog"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:187
+#: ../addressbook/libebook-contacts/e-contact.c:190
 msgid "Categories"
 msgstr "Categorias"
 
 #. Collaboration fields
-#: ../addressbook/libebook-contacts/e-contact.c:190
+#: ../addressbook/libebook-contacts/e-contact.c:193
 msgid "Calendar URI"
 msgstr "URI da agenda"
 
-#: ../addressbook/libebook-contacts/e-contact.c:191
+#: ../addressbook/libebook-contacts/e-contact.c:194
 msgid "Free/Busy URL"
 msgstr "URL de disponibilidade"
 
-#: ../addressbook/libebook-contacts/e-contact.c:192
+#: ../addressbook/libebook-contacts/e-contact.c:195
 msgid "ICS Calendar"
 msgstr "Agenda ICS"
 
-#: ../addressbook/libebook-contacts/e-contact.c:193
+#: ../addressbook/libebook-contacts/e-contact.c:196
 msgid "Video Conferencing URL"
 msgstr "URL de vídeo conferência"
 
 #. Misc fields
-#: ../addressbook/libebook-contacts/e-contact.c:196
+#: ../addressbook/libebook-contacts/e-contact.c:199
 msgid "Spouse's Name"
 msgstr "Nome do cônjuge"
 
-#: ../addressbook/libebook-contacts/e-contact.c:197
+#: ../addressbook/libebook-contacts/e-contact.c:200
 msgid "Note"
 msgstr "Nota"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:200
+#: ../addressbook/libebook-contacts/e-contact.c:203
 msgid "AIM Home Screen Name 1"
 msgstr "Nome de tela do AIM residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:201
+#: ../addressbook/libebook-contacts/e-contact.c:204
 msgid "AIM Home Screen Name 2"
 msgstr "Nome de tela do AIM residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:202
+#: ../addressbook/libebook-contacts/e-contact.c:205
 msgid "AIM Home Screen Name 3"
 msgstr "Nome de tela do AIM residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:203
+#: ../addressbook/libebook-contacts/e-contact.c:206
 msgid "AIM Work Screen Name 1"
 msgstr "Nome de tela do AIM comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:204
+#: ../addressbook/libebook-contacts/e-contact.c:207
 msgid "AIM Work Screen Name 2"
 msgstr "Nome de tela do AIM comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:205
+#: ../addressbook/libebook-contacts/e-contact.c:208
 msgid "AIM Work Screen Name 3"
 msgstr "Nome de tela do AIM comercial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:206
+#: ../addressbook/libebook-contacts/e-contact.c:209
 msgid "GroupWise Home Screen Name 1"
 msgstr "Nome de tela do GroupWise residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:207
+#: ../addressbook/libebook-contacts/e-contact.c:210
 msgid "GroupWise Home Screen Name 2"
 msgstr "Nome de tela do GroupWise residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:208
+#: ../addressbook/libebook-contacts/e-contact.c:211
 msgid "GroupWise Home Screen Name 3"
 msgstr "Nome de tela do GroupWise residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:209
+#: ../addressbook/libebook-contacts/e-contact.c:212
 msgid "GroupWise Work Screen Name 1"
 msgstr "Nome de tela do GroupWise comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:210
+#: ../addressbook/libebook-contacts/e-contact.c:213
 msgid "GroupWise Work Screen Name 2"
 msgstr "Nome de tela do GroupWise comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:211
+#: ../addressbook/libebook-contacts/e-contact.c:214
 msgid "GroupWise Work Screen Name 3"
 msgstr "Nome de tela do GroupWise comercial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:212
+#: ../addressbook/libebook-contacts/e-contact.c:215
 msgid "Jabber Home ID 1"
 msgstr "ID do Jabber residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:213
+#: ../addressbook/libebook-contacts/e-contact.c:216
 msgid "Jabber Home ID 2"
 msgstr "ID do Jabber residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:214
+#: ../addressbook/libebook-contacts/e-contact.c:217
 msgid "Jabber Home ID 3"
 msgstr "ID do Jabber residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:215
+#: ../addressbook/libebook-contacts/e-contact.c:218
 msgid "Jabber Work ID 1"
 msgstr "ID do Jabber comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:216
+#: ../addressbook/libebook-contacts/e-contact.c:219
 msgid "Jabber Work ID 2"
 msgstr "ID do Jabber comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:217
+#: ../addressbook/libebook-contacts/e-contact.c:220
 msgid "Jabber Work ID 3"
 msgstr "ID do Jabber comercial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:218
+#: ../addressbook/libebook-contacts/e-contact.c:221
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Nome de tela do Yahoo! residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:219
+#: ../addressbook/libebook-contacts/e-contact.c:222
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Nome de tela do Yahoo! residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:220
+#: ../addressbook/libebook-contacts/e-contact.c:223
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Nome de tela do Yahoo! residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:221
+#: ../addressbook/libebook-contacts/e-contact.c:224
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Nome de tela do Yahoo! comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:222
+#: ../addressbook/libebook-contacts/e-contact.c:225
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Nome de tela do Yahoo! comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:223
+#: ../addressbook/libebook-contacts/e-contact.c:226
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Nome de tela do Yahoo! comercial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:224
+#: ../addressbook/libebook-contacts/e-contact.c:227
 msgid "MSN Home Screen Name 1"
 msgstr "Nome de tela do MSN residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:225
+#: ../addressbook/libebook-contacts/e-contact.c:228
 msgid "MSN Home Screen Name 2"
 msgstr "Nome de tela do MSN residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:226
+#: ../addressbook/libebook-contacts/e-contact.c:229
 msgid "MSN Home Screen Name 3"
 msgstr "Nome de tela do MSN residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:227
+#: ../addressbook/libebook-contacts/e-contact.c:230
 msgid "MSN Work Screen Name 1"
 msgstr "Nome de tela do MSN comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:228
+#: ../addressbook/libebook-contacts/e-contact.c:231
 msgid "MSN Work Screen Name 2"
 msgstr "Nome de tela do MSN comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:229
+#: ../addressbook/libebook-contacts/e-contact.c:232
 msgid "MSN Work Screen Name 3"
 msgstr "Nome de tela do MSN comercial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:230
+#: ../addressbook/libebook-contacts/e-contact.c:233
 msgid "ICQ Home ID 1"
 msgstr "ID do ICQ residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:231
+#: ../addressbook/libebook-contacts/e-contact.c:234
 msgid "ICQ Home ID 2"
 msgstr "ID do ICQ residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:232
+#: ../addressbook/libebook-contacts/e-contact.c:235
 msgid "ICQ Home ID 3"
 msgstr "ID do ICQ residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:233
+#: ../addressbook/libebook-contacts/e-contact.c:236
 msgid "ICQ Work ID 1"
 msgstr "ID do ICQ comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:234
+#: ../addressbook/libebook-contacts/e-contact.c:237
 msgid "ICQ Work ID 2"
 msgstr "ID do ICQ comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:235
+#: ../addressbook/libebook-contacts/e-contact.c:238
 msgid "ICQ Work ID 3"
 msgstr "ID do ICQ comercial 3"
 
 #. Last modified time
-#: ../addressbook/libebook-contacts/e-contact.c:238
+#: ../addressbook/libebook-contacts/e-contact.c:241
 msgid "Last Revision"
 msgstr "Última revisão"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../addressbook/libebook-contacts/e-contact.c:242
+#: ../addressbook/libebook-contacts/e-contact.c:245
 msgid "Name or Org"
 msgstr "Nome ou org"
 
 #. Address fields
-#: ../addressbook/libebook-contacts/e-contact.c:245
+#: ../addressbook/libebook-contacts/e-contact.c:248
 msgid "Address List"
 msgstr "Lista de endereços"
 
-#: ../addressbook/libebook-contacts/e-contact.c:246
+#: ../addressbook/libebook-contacts/e-contact.c:249
 msgid "Home Address"
 msgstr "Endereço residencial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:247
+#: ../addressbook/libebook-contacts/e-contact.c:250
 msgid "Work Address"
 msgstr "Endereço comercial"
 
-#: ../addressbook/libebook-contacts/e-contact.c:248
+#: ../addressbook/libebook-contacts/e-contact.c:251
 msgid "Other Address"
 msgstr "Outro endereço"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:251
+#: ../addressbook/libebook-contacts/e-contact.c:254
 msgid "Category List"
 msgstr "Lista de categorias"
 
 #. Photo/Logo
-#: ../addressbook/libebook-contacts/e-contact.c:254
+#: ../addressbook/libebook-contacts/e-contact.c:257
 msgid "Photo"
 msgstr "Foto"
 
-#: ../addressbook/libebook-contacts/e-contact.c:255
+#: ../addressbook/libebook-contacts/e-contact.c:258
 msgid "Logo"
 msgstr "Logo"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../addressbook/libebook-contacts/e-contact.c:259
+#: ../addressbook/libebook-contacts/e-contact.c:262
 msgid "Name"
 msgstr "Nome"
 
-#: ../addressbook/libebook-contacts/e-contact.c:260
+#: ../addressbook/libebook-contacts/e-contact.c:263
 msgid "Email List"
 msgstr "Lista de e-mails"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:263
+#: ../addressbook/libebook-contacts/e-contact.c:266
 msgid "AIM Screen Name List"
 msgstr "Lista de nomes de tela do AIM"
 
-#: ../addressbook/libebook-contacts/e-contact.c:264
+#: ../addressbook/libebook-contacts/e-contact.c:267
 msgid "GroupWise ID List"
 msgstr "Lista de IDs do GroupWise"
 
-#: ../addressbook/libebook-contacts/e-contact.c:265
+#: ../addressbook/libebook-contacts/e-contact.c:268
 msgid "Jabber ID List"
 msgstr "Lista de IDs Jabber"
 
-#: ../addressbook/libebook-contacts/e-contact.c:266
+#: ../addressbook/libebook-contacts/e-contact.c:269
 msgid "Yahoo! Screen Name List"
 msgstr "Lista de nomes de tela do Yahoo!"
 
-#: ../addressbook/libebook-contacts/e-contact.c:267
+#: ../addressbook/libebook-contacts/e-contact.c:270
 msgid "MSN Screen Name List"
 msgstr "Lista de nomes de tela do MSN"
 
-#: ../addressbook/libebook-contacts/e-contact.c:268
+#: ../addressbook/libebook-contacts/e-contact.c:271
 msgid "ICQ ID List"
 msgstr "Lista de IDs do ICQ"
 
-#: ../addressbook/libebook-contacts/e-contact.c:270
+#: ../addressbook/libebook-contacts/e-contact.c:273
 msgid "Wants HTML Mail"
 msgstr "Deseja correio HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../addressbook/libebook-contacts/e-contact.c:275
+#: ../addressbook/libebook-contacts/e-contact.c:278
 msgid "List"
 msgstr "Lista"
 
@@ -760,126 +760,126 @@ msgstr "Lista"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../addressbook/libebook-contacts/e-contact.c:280
+#: ../addressbook/libebook-contacts/e-contact.c:283
 msgid "List Shows Addresses"
 msgstr "Listar endereços de exibição"
 
-#: ../addressbook/libebook-contacts/e-contact.c:282
+#: ../addressbook/libebook-contacts/e-contact.c:285
 msgid "Birth Date"
 msgstr "Data de nascimento"
 
-#: ../addressbook/libebook-contacts/e-contact.c:283
+#: ../addressbook/libebook-contacts/e-contact.c:286
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:887
 msgid "Anniversary"
 msgstr "Bodas"
 
 #. Security fields
-#: ../addressbook/libebook-contacts/e-contact.c:286
+#: ../addressbook/libebook-contacts/e-contact.c:289
 msgid "X.509 Certificate"
 msgstr "Certificado X.509"
 
-#: ../addressbook/libebook-contacts/e-contact.c:288
+#: ../addressbook/libebook-contacts/e-contact.c:291
 msgid "Gadu-Gadu Home ID 1"
 msgstr "ID do Gadu-Gadu residencial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:289
+#: ../addressbook/libebook-contacts/e-contact.c:292
 msgid "Gadu-Gadu Home ID 2"
 msgstr "ID do Gadu-Gadu residencial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:290
+#: ../addressbook/libebook-contacts/e-contact.c:293
 msgid "Gadu-Gadu Home ID 3"
 msgstr "ID do Gadu-Gadu residencial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:291
+#: ../addressbook/libebook-contacts/e-contact.c:294
 msgid "Gadu-Gadu Work ID 1"
 msgstr "ID do Gadu-Gadu comercial 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:292
+#: ../addressbook/libebook-contacts/e-contact.c:295
 msgid "Gadu-Gadu Work ID 2"
 msgstr "ID do Gadu-Gadu comercial 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:293
+#: ../addressbook/libebook-contacts/e-contact.c:296
 msgid "Gadu-Gadu Work ID 3"
 msgstr "ID do Gadu-Gadu comercial 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:294
+#: ../addressbook/libebook-contacts/e-contact.c:297
 msgid "Gadu-Gadu ID List"
 msgstr "Lista de identificadores do Gadu-Gadu"
 
 #. Geo information
-#: ../addressbook/libebook-contacts/e-contact.c:297
+#: ../addressbook/libebook-contacts/e-contact.c:300
 msgid "Geographic Information"
 msgstr "Informações geográficas"
 
-#: ../addressbook/libebook-contacts/e-contact.c:299
+#: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Telephone"
 msgstr "Telefone"
 
-#: ../addressbook/libebook-contacts/e-contact.c:301
+#: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Skype Home Name 1"
 msgstr "Nome residencial Skype 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:302
+#: ../addressbook/libebook-contacts/e-contact.c:305
 msgid "Skype Home Name 2"
 msgstr "Nome residencial Skype 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:303
+#: ../addressbook/libebook-contacts/e-contact.c:306
 msgid "Skype Home Name 3"
 msgstr "Nome residencial Skype 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:304
+#: ../addressbook/libebook-contacts/e-contact.c:307
 msgid "Skype Work Name 1"
 msgstr "Nome do trabalho Skype 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:305
+#: ../addressbook/libebook-contacts/e-contact.c:308
 msgid "Skype Work Name 2"
 msgstr "Nome do trabalho Skype 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:306
+#: ../addressbook/libebook-contacts/e-contact.c:309
 msgid "Skype Work Name 3"
 msgstr "Nome do trabalho Skype 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:307
+#: ../addressbook/libebook-contacts/e-contact.c:310
 msgid "Skype Name List"
 msgstr "Lista de nomes do Skype"
 
-#: ../addressbook/libebook-contacts/e-contact.c:309
+#: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "SIP address"
 msgstr "Endereço SIP"
 
-#: ../addressbook/libebook-contacts/e-contact.c:311
+#: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Google Talk Home Name 1"
 msgstr "Nome residencial Google Talk 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:312
+#: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Google Talk Home Name 2"
 msgstr "Nome residencial Google Talk 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:313
+#: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Google Talk Home Name 3"
 msgstr "Nome residencial Google Talk 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:314
+#: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Google Talk Work Name 1"
 msgstr "Nome do trabalho Google Talk 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:315
+#: ../addressbook/libebook-contacts/e-contact.c:318
 msgid "Google Talk Work Name 2"
 msgstr "Nome do trabalho Google Talk 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:316
+#: ../addressbook/libebook-contacts/e-contact.c:319
 msgid "Google Talk Work Name 3"
 msgstr "Nome do trabalho Google Talk 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:317
+#: ../addressbook/libebook-contacts/e-contact.c:320
 msgid "Google Talk Name List"
 msgstr "Lista de nomes do Google Talk"
 
-#: ../addressbook/libebook-contacts/e-contact.c:319
+#: ../addressbook/libebook-contacts/e-contact.c:322
 msgid "Twitter Name List"
 msgstr "Lista de nomes do Twitter"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1624
+#: ../addressbook/libebook-contacts/e-contact.c:1627
 #: ../addressbook/libebook/e-destination.c:883
 msgid "Unnamed List"
 msgstr "Lista sem nome"
@@ -917,45 +917,45 @@ msgstr "Texto muito curto para ser um número de telefone"
 msgid "Text is too long for a phone number"
 msgstr "Texto muito longo para ser um número de telefone"
 
-#: ../addressbook/libebook/e-book-client.c:748
+#: ../addressbook/libebook/e-book-client.c:749
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Propriedade desconhecida do catálogo \"%s\""
 
-#: ../addressbook/libebook/e-book-client.c:763
+#: ../addressbook/libebook/e-book-client.c:764
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Não é possível modificar o valor da propriedade do catálogo \"%s\""
 
-#: ../addressbook/libebook/e-book-client.c:1098
-#: ../addressbook/libebook/e-book-client.c:1273
+#: ../addressbook/libebook/e-book-client.c:1099
+#: ../addressbook/libebook/e-book-client.c:1274
 #: ../calendar/libecal/e-cal-client.c:1522
 #: ../calendar/libecal/e-cal-client.c:1704
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Não é possível conectar-se a \"%s\": "
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:793
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:796
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Ocorreu erro ao inspecionar campo de resumo \"%s\" desconhecido"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1292
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1295
 msgid "Error parsing regular expression"
 msgstr "Erro ao analisar expressão regular"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1337
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1340
 #: ../camel/camel-db.c:544
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memória insuficiente"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1470
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1473
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo de contato \"%d\" inválido especificado no resumo"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1507
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -964,8 +964,8 @@ msgstr ""
 "Campo de contato \"%s\" do tipo \"%s\" especificado no resumo, porém apenas "
 "campos de tipo booleano, string e string list são suportados"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2692
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3769
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2695
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3772
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -973,18 +973,18 @@ msgstr ""
 "Os \"search_contacts\" completos não são armazenados em cache. vcards não "
 "podem ser retornados."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3895
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3976
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3898
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3979
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "A consulta contém elementos não suportados"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3899
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3902
 #, c-format
 msgid "Invalid Query"
 msgstr "Consulta inválida"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3923
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3926
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -993,7 +993,7 @@ msgstr ""
 "Os \"search_contacts\" completos não são armazenados em cache. Uma vez que "
 "so há suporte a consulta do resumo."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3980
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3983
 #: ../addressbook/libedata-book/e-data-book.c:358
 #: ../addressbook/libedata-book/e-data-book.c:992
 #: ../calendar/libedata-cal/e-data-cal.c:412
@@ -1002,7 +1002,7 @@ msgstr ""
 msgid "Invalid query"
 msgstr "Consulta inválida"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4023
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4026
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1010,7 +1010,7 @@ msgstr ""
 "Os vcards completos não são armazenados em cache. Uma vez que so há suporte "
 "a consulta do resumo."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4726
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4729
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Não é possível remover o arquivo db: erro de número %d"
@@ -1870,8 +1870,8 @@ msgstr "Preparando a pasta \"%s\" para modo desconectado"
 msgid "Copy folder content locally for _offline operation"
 msgstr "Copia o conteúdo da pasta localmente para funcionamento desconectado"
 
-#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:468
-#: ../camel/camel-imapx-store.c:2233
+#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:609
+#: ../camel/camel-imapx-store.c:2240
 #: ../camel/providers/pop3/camel-pop3-folder.c:596
 #: ../camel/providers/pop3/camel-pop3-folder.c:746
 #: ../camel/providers/pop3/camel-pop3-folder.c:987
@@ -2126,7 +2126,7 @@ msgid ""
 "SmartCard: \"%s\""
 msgstr ""
 "Você precisa de um PIN para desbloquear a chave\n"
-"para o seu smartcard: \"%s\""
+"para o seu cartão inteligente: \"%s\""
 
 #: ../camel/camel-gpg-context.c:901
 #, c-format
@@ -2246,21 +2246,21 @@ msgstr "Não é possível mover mensagens excluídas"
 msgid "Apply message _filters to this folder"
 msgstr "Aplicar os _filtros de mensagens nesta pasta"
 
-#: ../camel/camel-imapx-folder.c:1117
+#: ../camel/camel-imapx-folder.c:1114
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Não foi possível criar pasta de resumo para %s"
 
-#: ../camel/camel-imapx-folder.c:1125
+#: ../camel/camel-imapx-folder.c:1123
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Não foi possível criar cache para %s:"
 
-#: ../camel/camel-imapx-server.c:1276
+#: ../camel/camel-imapx-server.c:1309
 msgid "Server disconnected"
 msgstr "Servidor desconectado"
 
-#: ../camel/camel-imapx-server.c:1734
+#: ../camel/camel-imapx-server.c:1730
 msgid "Error writing to cache stream"
 msgstr "Erro ao escrever em fluxo de cache"
 
@@ -2380,99 +2380,73 @@ msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Obtendo resumo para %d nova mensagem em \"%s\""
 msgstr[1] "Obtendo resumo para %d novas mensagens em \"%s\""
 
-#: ../camel/camel-imapx-server.c:5723 ../camel/camel-imapx-server.c:5753
+#: ../camel/camel-imapx-server.c:5724 ../camel/camel-imapx-server.c:5754
 msgid "Error refreshing folder"
 msgstr "Erro ao atualizar a pasta"
 
-#: ../camel/camel-imapx-server.c:5875
+#: ../camel/camel-imapx-server.c:5876
 msgid "Error expunging message"
 msgstr "Erro ao excluir a mensagem"
 
-#: ../camel/camel-imapx-server.c:5983
+#: ../camel/camel-imapx-server.c:5984
 msgid "Error fetching folders"
 msgstr "Erro recuperando as pastas"
 
-#: ../camel/camel-imapx-server.c:6066
+#: ../camel/camel-imapx-server.c:6067
 msgid "Error subscribing to folder"
 msgstr "Erro ao se inscrever na pasta"
 
-#: ../camel/camel-imapx-server.c:6128
+#: ../camel/camel-imapx-server.c:6129
 msgid "Error creating folder"
 msgstr "Erro ao criar a pasta"
 
-#: ../camel/camel-imapx-server.c:6181
+#: ../camel/camel-imapx-server.c:6182
 msgid "Error deleting folder"
 msgstr "Erro ao apagar a pasta"
 
-#: ../camel/camel-imapx-server.c:6252
+#: ../camel/camel-imapx-server.c:6253
 msgid "Error renaming folder"
 msgstr "Erro ao renomear a pasta"
 
-#: ../camel/camel-imapx-server.c:6326
+#: ../camel/camel-imapx-server.c:6327
 msgid "Error retrieving quota information"
 msgstr "Erro ao recuperar informações de cota"
 
-#: ../camel/camel-imapx-server.c:6384
+#: ../camel/camel-imapx-server.c:6385
 msgid "Search failed"
 msgstr "A pesquisa falhou"
 
-#: ../camel/camel-imapx-server.c:6446
+#: ../camel/camel-imapx-server.c:6447
 msgid "Error performing NOOP"
 msgstr "Erro ao executar NOOP"
 
-#: ../camel/camel-imapx-server.c:6554
+#: ../camel/camel-imapx-server.c:6555
 msgid "Error syncing changes"
 msgstr "Erro ao sincronizar as mudanças"
 
-#: ../camel/camel-imapx-server.c:6854
+#: ../camel/camel-imapx-server.c:6855
 msgid "Lost connection to IMAP server"
 msgstr "Conexão perdida com o servidor IMAP"
 
-#: ../camel/camel-imapx-server.c:7303
+#: ../camel/camel-imapx-server.c:7300
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Não foi possível obter mensagem com ID %s: %s"
 
-#: ../camel/camel-imapx-server.c:7304
+#: ../camel/camel-imapx-server.c:7301
 msgid "No such message available."
 msgstr "Não existe tal mensagem."
 
-#: ../camel/camel-imapx-server.c:7465 ../camel/camel-imapx-server.c:7480
+#: ../camel/camel-imapx-server.c:7462 ../camel/camel-imapx-server.c:7477
 msgid "Cannot create spool file: "
 msgstr "Não foi possível criar arquivo de fila:"
 
-#: ../camel/camel-imapx-server.c:8193
+#: ../camel/camel-imapx-server.c:8182
 msgid "IMAP server does not support quotas"
 msgstr "O servidor IMAP não suporta cotas"
 
-#: ../camel/camel-imapx-store.c:337
-#, c-format
-msgid "IMAP server %s"
-msgstr "Servidor IMAP %s"
-
-#: ../camel/camel-imapx-store.c:340
-#, c-format
-msgid "IMAP service for %s on %s"
-msgstr "Serviço IMAP para %s em %s"
-
-#: ../camel/camel-imapx-store.c:441
-#: ../camel/providers/nntp/camel-nntp-provider.c:95
-#: ../camel/providers/pop3/camel-pop3-provider.c:83
-msgid "Password"
-msgstr "Senha"
-
-#: ../camel/camel-imapx-store.c:443
-msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"Esta opção conectará com o servidor IMAP usando uma senha em texto aberto."
-
-#: ../camel/camel-imapx-store.c:556
-#, c-format
-msgid "No such folder %s"
-msgstr "Não existe a pasta %s"
-
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:587 ../camel/camel-imapx-store.c:1135
+#: ../camel/camel-imapx-store.c:203 ../camel/camel-imapx-store.c:1144
 #: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:316
 #: ../camel/providers/local/camel-maildir-store.c:752
@@ -2482,23 +2456,49 @@ msgstr "Não existe a pasta %s"
 msgid "Inbox"
 msgstr "Entrada"
 
-#: ../camel/camel-imapx-store.c:1403
+#: ../camel/camel-imapx-store.c:478
+#, c-format
+msgid "IMAP server %s"
+msgstr "Servidor IMAP %s"
+
+#: ../camel/camel-imapx-store.c:481
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "Serviço IMAP para %s em %s"
+
+#: ../camel/camel-imapx-store.c:582
+#: ../camel/providers/nntp/camel-nntp-provider.c:95
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
+msgid "Password"
+msgstr "Senha"
+
+#: ../camel/camel-imapx-store.c:584
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr ""
+"Esta opção conectará com o servidor IMAP usando uma senha em texto aberto."
+
+#: ../camel/camel-imapx-store.c:697
+#, c-format
+msgid "No such folder %s"
+msgstr "Não existe a pasta %s"
+
+#: ../camel/camel-imapx-store.c:1411
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Recuperando a lista de pastas para %s"
 
-#: ../camel/camel-imapx-store.c:1776
+#: ../camel/camel-imapx-store.c:1781
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "O nome de pasta \"%s\" é inválido pois ele contém o caractere \"%c\""
 
-#: ../camel/camel-imapx-store.c:1787
+#: ../camel/camel-imapx-store.c:1792
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Pasta pai desconhecida: %s"
 
-#: ../camel/camel-imapx-store.c:1797
+#: ../camel/camel-imapx-store.c:1802
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "A pasta pai não pode conter subpastas"
@@ -3162,48 +3162,48 @@ msgstr "Falha ao adicionar dados ao codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descriptografia S/MIME: Não foi localizado conteúdo criptografado"
 
-#: ../camel/camel-store.c:1998
+#: ../camel/camel-store.c:1999
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Não foi possível criar a pasta \"%s\": pasta existe"
 
-#: ../camel/camel-store.c:2041
+#: ../camel/camel-store.c:2042
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Abrindo pasta \"%s\""
 
-#: ../camel/camel-store.c:2230
+#: ../camel/camel-store.c:2231
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Procurando por pastas em \"%s\""
 
-#: ../camel/camel-store.c:2258 ../camel/camel-store.c:2303
+#: ../camel/camel-store.c:2259 ../camel/camel-store.c:2304
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Lixeira"
 
-#: ../camel/camel-store.c:2272 ../camel/camel-store.c:2320
+#: ../camel/camel-store.c:2273 ../camel/camel-store.c:2321
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Spam"
 
-#: ../camel/camel-store.c:2773
+#: ../camel/camel-store.c:2774
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Não foi possível criar pasta: %s: pasta existe"
 
-#: ../camel/camel-store.c:2787
+#: ../camel/camel-store.c:2788
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Criando pasta \"%s\""
 
-#: ../camel/camel-store.c:2905 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2906 ../camel/camel-vee-store.c:416
 #: ../camel/providers/local/camel-maildir-store.c:315
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Não foi possível excluir pasta: %s: Operação inválida"
 
-#: ../camel/camel-store.c:3048 ../camel/camel-vee-store.c:466
+#: ../camel/camel-store.c:3049 ../camel/camel-vee-store.c:466
 #: ../camel/providers/local/camel-maildir-store.c:841
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
