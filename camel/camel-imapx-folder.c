@@ -1284,10 +1284,6 @@ camel_imapx_folder_new (CamelStore *store,
 	imapx_folder->search = camel_imapx_search_new ();
 	g_mutex_init (&imapx_folder->search_lock);
 	g_mutex_init (&imapx_folder->stream_lock);
-	imapx_folder->exists_on_server = 0;
-	imapx_folder->unread_on_server = 0;
-	imapx_folder->modseq_on_server = 0;
-	imapx_folder->uidnext_on_server = 0;
 
 	if (filter_all)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
