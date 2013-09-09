@@ -321,6 +321,8 @@ gboolean	camel_imapx_command_add_qresync_parameter
 gchar *		camel_imapx_parse_mailbox	(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_imapx_normalize_mailbox	(gchar *mailbox_name,
+						 gchar separator);
 gboolean	camel_imapx_mailbox_is_inbox	(const gchar *mailbox_name);
 gchar *		camel_imapx_mailbox_to_folder_path
 						(const gchar *mailbox_name,

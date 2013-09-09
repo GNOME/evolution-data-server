@@ -2555,6 +2555,47 @@ camel_imapx_parse_mailbox (CamelIMAPXStream *is,
 }
 
 /**
+ * camel_imapx_normalize_mailbox:
+ * @mailbox_name: a mailbox name
+ * @separator: a mailbox separator character
+ *
+ * Converts the special INBOX mailbox to all caps, if it appears at the
+ * beginning of @mailbox_name.  The @mailbox_name string is modified in
+ * place.  The @separator character helps reliably identify descendants
+ * of INBOX.
+ *
+ * Since: 3.10
+ **/
+void
+camel_imapx_normalize_mailbox (gchar *mailbox_name,
+                               gchar separator)
+{
+	gboolean normalize_inbox;
+
+	g_return_if_fail (mailbox_name != NULL);
+
+	/* mailbox ::= "INBOX" / astring
+	 *             INBOX is case-insensitive.  All case variants of
+	 *             INBOX (e.g., "iNbOx") MUST be interpreted as INBOX
+	 *             not as an astring.  An astring which consists of
+	 *             the case-insensitive sequence "I" "N" "B" "O" "X"
+	 *             is considered to be INBOX and not an astring.
+	 */
+
+	normalize_inbox =
+		(g_ascii_strncasecmp (mailbox_name, "INBOX", 5) == 0) &&
+		(mailbox_name[5] == separator || mailbox_name[5] == '\0');
+
+	if (normalize_inbox) {
+		mailbox_name[0] = 'I';
+		mailbox_name[1] = 'N';
+		mailbox_name[2] = 'B';
+		mailbox_name[3] = 'O';
+		mailbox_name[4] = 'X';
+	}
+}
+
+/**
  * camel_imapx_mailbox_is_inbox:
  * @mailbox_name: a mailbox name
  *
