@@ -351,6 +351,12 @@ struct _CamelIMAPXServerPrivate {
 
 	GHashTable *known_alerts;
 	GMutex known_alerts_lock;
+
+	/* INBOX separator character, so we can correctly normalize
+	 * INBOX and descendants of INBOX in IMAP responses that do
+	 * not include a separator character with the mailbox name,
+	 * such as STATUS.  Used for camel_imapx_parse_mailbox(). */
+	gchar inbox_separator;
 };
 
 enum {
@@ -2021,6 +2027,10 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
 	separator = camel_imapx_list_response_get_separator (response);
 
+	/* Record the INBOX separator character once we know it. */
+	if (camel_imapx_mailbox_is_inbox (mailbox_name))
+		is->priv->inbox_separator = separator;
+
 	job = imapx_match_active_job (is, IMAPX_JOB_LIST, mailbox_name);
 
 	data = camel_imapx_job_get_data (job);
@@ -2224,7 +2234,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	response = camel_imapx_status_response_new (
-		stream, cancellable, error);
+		stream, is->priv->inbox_separator, cancellable, error);
 	if (response == NULL)
 		return FALSE;
 

@@ -2517,6 +2517,7 @@ exit:
 /**
  * camel_imapx_parse_mailbox:
  * @is: a #CamelIMAPXStream
+ * @separator: the mailbox separator character
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2524,34 +2525,38 @@ exit:
  * described in <ulink url="http://tools.ietf.org/html/rfc3501#section-5.1">
  * RFC 3501 section 5.1</ulink>.
  *
+ * The @separator character is used to identify INBOX and convert its name
+ * to all caps, both for INBOX itself and its descendants.  If a separator
+ * character was provided in the server response being parsed (such as for
+ * LIST or LSUB), pass that for @separator.  If no separator character was
+ * provided in the server response being parsed (such as for STATUS), then
+ * pass the separator character specifically for INBOX.
+ *
+ * If an error occurs, the function sets @error and returns %NULL.
+ *
+ * Returns: a newly-allocated mailbox name, or %NULL
+ *
  * Since: 3.10
  **/
 gchar *
 camel_imapx_parse_mailbox (CamelIMAPXStream *is,
+                           gchar separator,
                            GCancellable *cancellable,
                            GError **error)
 {
 	guchar *token;
-	gchar *mailbox;
+	gchar *mailbox_name;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), NULL);
-
-	/* mailbox ::= "INBOX" / astring
-	 *             INBOX is case-insensitive.  All case variants of
-	 *             INBOX (e.g., "iNbOx") MUST be interpreted as INBOX
-	 *             not as an astring.  An astring which consists of
-	 *             the case-insensitive sequence "I" "N" "B" "O" "X"
-	 *             is considered to be INBOX and not an astring. */
 
 	if (!camel_imapx_stream_astring (is, &token, cancellable, error))
 		return NULL;
 
-	if (g_ascii_strcasecmp ((gchar *) token, "INBOX") == 0)
-		mailbox = g_strdup ("INBOX");
-	else
-		mailbox = camel_utf7_utf8 ((gchar *) token);
+	mailbox_name = camel_utf7_utf8 ((gchar *) token);
 
-	return mailbox;
+	camel_imapx_normalize_mailbox (mailbox_name, separator);
+
+	return mailbox_name;
 }
 
 /**

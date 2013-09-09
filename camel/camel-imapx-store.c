@@ -652,38 +652,19 @@ get_folder_offline (CamelStore *store,
 	CamelService *service;
 	CamelStoreSummary *store_summary;
 	const gchar *user_cache_dir;
-	gboolean is_inbox;
 
 	service = CAMEL_SERVICE (store);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 	si = camel_store_summary_path (store_summary, folder_name);
-	is_inbox = camel_imapx_mailbox_is_inbox (folder_name);
-
-	if (si == NULL && is_inbox) {
-		/* XXX This function takes a mailbox name but we're passing
-		 *     a folder path.  Are they always identical for INBOX? */
-		si = (CamelStoreInfo *) camel_imapx_store_summary_mailbox (
-			imapx_store->summary, folder_name);
-	}
 
 	if (si != NULL) {
 		gchar *base_dir;
 		gchar *folder_dir;
 
-		/* Note: Although the INBOX is defined to be case-insensitive
-		 *       in the IMAP RFC, it is still up to the server how to
-		 *       acutally name it in a LIST response. Since we stored
-		 *       the name as the server provided it us in the summary
-		 *       we take that name to look up the folder.
-		 *
-		 *       But for the on-disk cache we always capitalize the
-		 *       Inbox no matter what the server provided.
-		 */
 		base_dir = g_build_filename (user_cache_dir, "folders", NULL);
-		folder_dir = imapx_path_to_physical (
-			base_dir, is_inbox ? "INBOX" : folder_name);
+		folder_dir = imapx_path_to_physical (base_dir, folder_name);
 		new_folder = camel_imapx_folder_new (
 			store, folder_dir, folder_name, error);
 		g_free (folder_dir);

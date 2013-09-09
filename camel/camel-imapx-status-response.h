@@ -73,6 +73,7 @@ GType		camel_imapx_status_response_get_type
 CamelIMAPXStatusResponse *
 		camel_imapx_status_response_new
 					(CamelIMAPXStream *stream,
+					 gchar inbox_separator,
 					 GCancellable *cancellable,
 					 GError **error);
 const gchar *	camel_imapx_status_response_get_mailbox_name

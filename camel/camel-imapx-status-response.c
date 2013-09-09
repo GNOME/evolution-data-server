@@ -84,6 +84,7 @@ camel_imapx_status_response_init (CamelIMAPXStatusResponse *response)
 /**
  * camel_imapx_status_response_new:
  * @stream: a #CamelIMAPXStream
+ * @inbox_separator: the separator character for INBOX
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
@@ -97,6 +98,7 @@ camel_imapx_status_response_init (CamelIMAPXStatusResponse *response)
  **/
 CamelIMAPXStatusResponse *
 camel_imapx_status_response_new (CamelIMAPXStream *stream,
+                                 gchar inbox_separator,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -111,8 +113,8 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 
 	/* Parse mailbox name. */
 
-	response->priv->mailbox_name =
-		camel_imapx_parse_mailbox (stream, cancellable, error);
+	response->priv->mailbox_name = camel_imapx_parse_mailbox (
+		stream, inbox_separator, cancellable, error);
 	if (response->priv->mailbox_name == NULL)
 		goto fail;
 

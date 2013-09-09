@@ -196,7 +196,9 @@ imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
 		goto fail;
 	}
 
-	mailbox_name = camel_imapx_parse_mailbox (stream, cancellable, error);
+	/* The separator character should be known by now. */
+	mailbox_name = camel_imapx_parse_mailbox (
+		stream, response->priv->separator, cancellable, error);
 	if (mailbox_name == NULL)
 		goto fail;
 
@@ -364,8 +366,8 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 
 	/* Parse mailbox name. */
 
-	response->priv->mailbox_name =
-		camel_imapx_parse_mailbox (stream, cancellable, error);
+	response->priv->mailbox_name = camel_imapx_parse_mailbox (
+		stream, response->priv->separator, cancellable, error);
 	if (response->priv->mailbox_name == NULL)
 		goto fail;
 

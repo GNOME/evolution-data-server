@@ -276,6 +276,8 @@ imapx_store_summary_store_info_load (CamelStoreSummary *s,
 		return NULL;
 	}
 
+	camel_imapx_normalize_mailbox (mailbox_name, *separator);
+
 	/* NB: this is done again for compatability */
 	if (camel_imapx_mailbox_is_inbox (mailbox_name))
 		si->flags |=

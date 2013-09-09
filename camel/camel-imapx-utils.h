@@ -319,6 +319,7 @@ gboolean	camel_imapx_command_add_qresync_parameter
 /* ********************************************************************** */
 
 gchar *		camel_imapx_parse_mailbox	(struct _CamelIMAPXStream *is,
+						 gchar separator,
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_imapx_normalize_mailbox	(gchar *mailbox_name,
