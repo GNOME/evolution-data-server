@@ -1136,7 +1136,7 @@ add_mailbox_to_summary (CamelIMAPXStore *imapx_store,
 	fi->unread = -1;
 
 	/* Takes ownership of the CamelFolderInfo. */
-	g_hash_table_insert (mailboxes, fi->full_name, fi);
+	g_hash_table_insert (mailboxes, g_strdup (mailbox_name), fi);
 }
 
 static gboolean
@@ -1221,7 +1221,7 @@ fetch_mailboxes_for_namespaces (CamelIMAPXStore *imapx_store,
 	mailboxes = g_hash_table_new_full (
 		(GHashFunc) imapx_name_hash,
 		(GEqualFunc) imapx_name_equal,
-		(GDestroyNotify) NULL,
+		(GDestroyNotify) g_free,
 		(GDestroyNotify) camel_folder_info_free);
 
 	namespaces = get_namespaces (imapx_store);
@@ -1315,7 +1315,6 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		CamelFolderInfo *fi;
 		CamelIMAPXStoreNamespace *ns;
 		const gchar *mailbox_name;
-		const gchar *si_path;
 		gboolean pattern_match;
 
 		si = g_ptr_array_index (array, ii);
@@ -1333,8 +1332,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		if (!pattern_match)
 			continue;
 
-		si_path = camel_store_info_path (store_summary, si);
-		fi = g_hash_table_lookup (mailboxes, si_path);
+		fi = g_hash_table_lookup (mailboxes, mailbox_name);
 
 		if (fi != NULL) {
 			gboolean do_notify = notify_all;
@@ -1357,7 +1355,9 @@ sync_folders (CamelIMAPXStore *imapx_store,
 			}
 		} else {
 			gchar *dup_folder_path;
+			const gchar *si_path;
 
+			si_path = camel_store_info_path (store_summary, si);
 			dup_folder_path = g_strdup (si_path);
 
 			if (dup_folder_path != NULL) {
