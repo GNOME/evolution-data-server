@@ -1069,11 +1069,11 @@ get_folder_info_offline (CamelStore *store,
 }
 
 static void
-add_folder_to_summary (CamelIMAPXStore *imapx_store,
-                       CamelIMAPXServer *server,
-                       CamelIMAPXListResponse *response,
-                       GHashTable *table,
-                       gboolean update_for_lsub)
+add_mailbox_to_summary (CamelIMAPXStore *imapx_store,
+                        CamelIMAPXServer *server,
+                        CamelIMAPXListResponse *response,
+                        GHashTable *mailboxes,
+                        gboolean update_for_lsub)
 {
 	CamelIMAPXStoreInfo *si;
 	CamelFolderInfo *fi;
@@ -1091,7 +1091,7 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	flags = camel_imapx_list_response_get_summary_flags (response);
 
 	if (update_for_lsub) {
-		fi = g_hash_table_lookup (table, mailbox_name);
+		fi = g_hash_table_lookup (mailboxes, mailbox_name);
 		if (fi != NULL)
 			fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
 		return;
@@ -1135,18 +1135,19 @@ add_folder_to_summary (CamelIMAPXStore *imapx_store,
 	fi->total = -1;
 	fi->unread = -1;
 
-	g_hash_table_insert (table, fi->full_name, fi);
+	/* Takes ownership of the CamelFolderInfo. */
+	g_hash_table_insert (mailboxes, fi->full_name, fi);
 }
 
 static gboolean
-fetch_folders_for_pattern (CamelIMAPXStore *imapx_store,
-                           CamelIMAPXServer *server,
-                           const gchar *pattern,
-                           CamelStoreGetFolderInfoFlags flags,
-                           const gchar *ext,
-                           GHashTable *table,
-                           GCancellable *cancellable,
-                           GError **error)
+fetch_mailboxes_for_pattern (CamelIMAPXStore *imapx_store,
+                             CamelIMAPXServer *server,
+                             const gchar *pattern,
+                             CamelStoreGetFolderInfoFlags flags,
+                             const gchar *ext,
+                             GHashTable *mailboxes,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	GPtrArray *folders;
 	gboolean update_for_lsub;
@@ -1169,9 +1170,9 @@ fetch_folders_for_pattern (CamelIMAPXStore *imapx_store,
 
 		response = g_ptr_array_index (folders, ii);
 
-		add_folder_to_summary (
+		add_mailbox_to_summary (
 			imapx_store, server, response,
-			table, update_for_lsub);
+			mailboxes, update_for_lsub);
 	}
 
 	g_ptr_array_unref (folders);
@@ -1198,14 +1199,14 @@ get_namespaces (CamelIMAPXStore *imapx_store)
 }
 
 static GHashTable *
-fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
-                              const gchar *pattern,
-                              gboolean sync,
-                              GCancellable *cancellable,
-                              GError **error)
+fetch_mailboxes_for_namespaces (CamelIMAPXStore *imapx_store,
+                                const gchar *pattern,
+                                gboolean sync,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelIMAPXServer *server;
-	GHashTable *folders = NULL;
+	GHashTable *mailboxes = NULL;
 	GList *namespaces = NULL, *l;
 	const gchar *list_ext = NULL;
 
@@ -1217,7 +1218,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (server->cinfo, LIST_EXTENDED))
 		list_ext = "RETURN (SUBSCRIBED)";
 
-	folders = g_hash_table_new_full (
+	mailboxes = g_hash_table_new_full (
 		(GHashFunc) imapx_name_hash,
 		(GEqualFunc) imapx_name_equal,
 		(GDestroyNotify) NULL,
@@ -1244,25 +1245,25 @@ fetch_folders_for_namespaces (CamelIMAPXStore *imapx_store,
 			if (sync)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST;
 
-			success = fetch_folders_for_pattern (
+			success = fetch_mailboxes_for_pattern (
 				imapx_store, server, pat, flags, list_ext,
-				folders, cancellable, error);
+				mailboxes, cancellable, error);
 
 			if (success && list_ext == NULL) {
 				/* If the server doesn't support LIST-EXTENDED
 				 * then we have to issue the LSUB command to
-				 * list the subscribed folders separately. */
+				 * list the subscribed mailboxes separately. */
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
-				success = fetch_folders_for_pattern (
+				success = fetch_mailboxes_for_pattern (
 					imapx_store, server, pat, flags, NULL,
-					folders, cancellable, error);
+					mailboxes, cancellable, error);
 			}
 
 			g_free (pat);
 
 			if (!success) {
-				g_hash_table_destroy (folders);
-				folders = NULL;
+				g_hash_table_destroy (mailboxes);
+				mailboxes = NULL;
 				goto exit;
 			}
 
@@ -1277,7 +1278,7 @@ exit:
 	g_list_free (namespaces);
 	g_object_unref (server);
 
-	return folders;
+	return mailboxes;
 }
 
 static gboolean
@@ -1289,17 +1290,17 @@ sync_folders (CamelIMAPXStore *imapx_store,
 {
 	CamelSettings *settings;
 	CamelStoreSummary *store_summary;
-	GHashTable *folders_from_server;
+	GHashTable *mailboxes;
 	GPtrArray *array;
 	gboolean notify_all;
 	guint ii;
 
 	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
-	folders_from_server = fetch_folders_for_namespaces (
+	mailboxes = fetch_mailboxes_for_namespaces (
 		imapx_store, pattern, sync, cancellable, error);
 
-	if (folders_from_server == NULL)
+	if (mailboxes == NULL)
 		return FALSE;
 
 	settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
@@ -1313,27 +1314,27 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		CamelStoreInfo *si;
 		CamelFolderInfo *fi;
 		CamelIMAPXStoreNamespace *ns;
-		const gchar *mailbox;
+		const gchar *mailbox_name;
 		const gchar *si_path;
 		gboolean pattern_match;
 
 		si = g_ptr_array_index (array, ii);
 
-		mailbox = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
-		if (mailbox == NULL || *mailbox == '\0')
+		mailbox_name = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
+		if (mailbox_name == NULL || *mailbox_name == '\0')
 			continue;
 
 		ns = camel_imapx_store_summary_namespace_find_by_mailbox (
-			imapx_store->summary, mailbox);
+			imapx_store->summary, mailbox_name);
 
 		pattern_match =
 			(pattern == NULL) || (*pattern == '\0') ||
-			imapx_match_pattern (ns, pattern, mailbox);
+			imapx_match_pattern (ns, pattern, mailbox_name);
 		if (!pattern_match)
 			continue;
 
 		si_path = camel_store_info_path (store_summary, si);
-		fi = g_hash_table_lookup (folders_from_server, si_path);
+		fi = g_hash_table_lookup (mailboxes, si_path);
 
 		if (fi != NULL) {
 			gboolean do_notify = notify_all;
@@ -1355,7 +1356,9 @@ sync_folders (CamelIMAPXStore *imapx_store,
 					CAMEL_SUBSCRIBABLE (imapx_store), fi);
 			}
 		} else {
-			gchar *dup_folder_path = g_strdup (si_path);
+			gchar *dup_folder_path;
+
+			dup_folder_path = g_strdup (si_path);
 
 			if (dup_folder_path != NULL) {
 				imapx_unmark_folder_subscribed (
@@ -1371,7 +1374,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 
 	camel_store_summary_array_free (store_summary, array);
 
-	g_hash_table_destroy (folders_from_server);
+	g_hash_table_destroy (mailboxes);
 
 	return TRUE;
 }
