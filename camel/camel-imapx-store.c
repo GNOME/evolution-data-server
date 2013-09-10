@@ -1182,40 +1182,6 @@ fill_fi (CamelStore *store,
 	}
 }
 
-static gboolean
-imapx_match_pattern (CamelIMAPXStoreNamespace *ns,
-                     const gchar *pattern,
-                     const gchar *name)
-{
-	gchar p, n, dir_sep;
-
-	if (!ns)
-		return TRUE;
-
-	dir_sep = ns->sep;
-	if (!dir_sep)
-		dir_sep = '/';
-	p = *pattern++;
-	n = *name++;
-	while (n && p) {
-		if (n == p) {
-			p = *pattern++;
-			n = *name++;
-		} else if (p == '%') {
-			if (n != dir_sep) {
-				n = *name++;
-			} else {
-				p = *pattern++;
-			}
-		} else if (p == '*') {
-			return TRUE;
-		} else
-			return FALSE;
-	}
-
-	return n == 0 && (p == '%' || p == 0);
-}
-
 static void
 imapx_unmark_folder_subscribed (CamelIMAPXStore *imapx_store,
                                 const gchar *folder_path,
@@ -1308,17 +1274,12 @@ get_folder_info_offline (CamelStore *store,
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	GPtrArray *array;
-	gchar *pattern, *name;
-	gboolean use_namespace;
 	gboolean use_subscriptions;
 	guint ii;
 
 	service = CAMEL_SERVICE (store);
 
 	settings = camel_service_ref_settings (service);
-
-	use_namespace = camel_imapx_settings_get_use_namespace (
-		CAMEL_IMAPX_SETTINGS (settings));
 
 	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -1334,46 +1295,6 @@ get_folder_info_offline (CamelStore *store,
 		top = "";
 	}
 
-	/* get starting point */
-	if (top[0] == 0) {
-		CamelIMAPXNamespaceList *namespace_list;
-		gboolean have_personal_prefix;
-		gchar *namespace = NULL;
-
-		if (use_namespace) {
-			settings = camel_service_ref_settings (service);
-
-			namespace = camel_imapx_settings_dup_namespace (
-				CAMEL_IMAPX_SETTINGS (settings));
-
-			g_object_unref (settings);
-		}
-
-		namespace_list = imapx_store->summary->namespaces;
-
-		have_personal_prefix =
-			(namespace_list != NULL) &&
-			(namespace_list->personal != NULL) &&
-			(namespace_list->personal->prefix != NULL);
-
-		if (namespace != NULL && have_personal_prefix) {
-			name = g_strdup (namespace_list->personal->prefix);
-			top = namespace_list->personal->prefix;
-		} else {
-			name = g_strdup ("");
-		}
-
-		g_free (namespace);
-	} else {
-		name = camel_imapx_store_summary_mailbox_from_path (
-			imapx_store->summary, top);
-		if (name == NULL)
-			name = camel_imapx_store_summary_path_to_mailbox (
-				imapx_store->summary, top, imapx_store->dir_sep);
-	}
-
-	pattern = imapx_concat (imapx_store, name, "*");
-
 	/* folder_info_build will insert parent nodes as necessary and mark
 	 * them as noselect, which is information we actually don't have at
 	 * the moment. So let it do the right thing by bailing out if it's
@@ -1385,60 +1306,76 @@ get_folder_info_offline (CamelStore *store,
 
 	for (ii = 0; ii < array->len; ii++) {
 		CamelStoreInfo *si;
-		const gchar *mailbox;
-		CamelIMAPXStoreNamespace *ns;
+		const gchar *folder_path;
+		gboolean si_is_inbox;
+		gboolean si_is_match;
 
 		si = g_ptr_array_index (array, ii);
+		folder_path = camel_store_info_path (store_summary, si);
+		si_is_inbox = (g_ascii_strcasecmp (folder_path, "INBOX") == 0);
 
-		mailbox = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
-		if (mailbox == NULL || *mailbox == '\0')
+		/* Filter by folder path. */
+		si_is_match =
+			(include_inbox && si_is_inbox) ||
+			g_str_has_prefix (folder_path, top);
+
+		if (!si_is_match)
 			continue;
 
-		ns = camel_imapx_store_summary_namespace_find_by_mailbox (
-			imapx_store->summary, mailbox);
+		/* Filter by subscription flags.
+		 *
+		 * Skip the folder if:
+		 *   The user only wants to see subscribed folders
+		 *   AND the folder is not subscribed
+		 *   AND the caller only wants SUBSCRIBED folder info
+		 *   AND the caller does NOT want a SUBSCRIPTION_LIST
+		 *
+		 * Note that having both SUBSCRIBED and SUBSCRIPTION_LIST
+		 * flags set is contradictory.  SUBSCRIPTION_LIST wins in
+		 * that case.
+		 */
+		si_is_match =
+			!use_subscriptions ||
+			(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) ||
+			!(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ||
+			(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST);
 
-		/* Modify the checks to see match the namespaces from preferences */
-		if ((g_str_equal (name, mailbox)
-		     || imapx_match_pattern (ns, pattern, mailbox)
-		     || (include_inbox && camel_imapx_mailbox_is_inbox (mailbox)))
-		    && ( (!use_subscriptions
-			    || (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0)
-			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
-			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0)) {
-			const gchar *folder_path;
+		if (!si_is_match)
+			continue;
 
-			folder_path = camel_store_info_path (store_summary, si);
-			fi = imapx_store_build_folder_info (
-				imapx_store, folder_path, 0);
-			fi->unread = si->unread;
-			fi->total = si->total;
-			if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) != 0)
-				fi->flags = (fi->flags & CAMEL_FOLDER_TYPE_MASK) | (si->flags & ~CAMEL_FOLDER_TYPE_MASK);
-			else
-				fi->flags = si->flags;
+		fi = imapx_store_build_folder_info (
+			imapx_store, folder_path, 0);
+		fi->unread = si->unread;
+		fi->total = si->total;
+		if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) != 0)
+			fi->flags =
+				(fi->flags & CAMEL_FOLDER_TYPE_MASK) |
+				(si->flags & ~CAMEL_FOLDER_TYPE_MASK);
+		else
+			fi->flags = si->flags;
 
-			/* blah, this gets lost somewhere, i can't be bothered finding out why */
-			if (!g_ascii_strcasecmp (fi->full_name, "inbox")) {
-				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
-				fi->flags |= CAMEL_FOLDER_SYSTEM;
-			}
-
-			if (!(si->flags & CAMEL_FOLDER_NOSELECT))
-				fill_fi ((CamelStore *) imapx_store, fi);
-
-			if (!fi->child)
-				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
-			g_ptr_array_add (folders, fi);
+		/* blah, this gets lost somewhere, i can't be bothered finding out why */
+		if (si_is_inbox) {
+			fi->flags =
+				(fi->flags & ~CAMEL_FOLDER_TYPE_MASK) |
+				CAMEL_FOLDER_TYPE_INBOX;
+			fi->flags |= CAMEL_FOLDER_SYSTEM;
 		}
+
+		if (!(si->flags & CAMEL_FOLDER_NOSELECT))
+			fill_fi ((CamelStore *) imapx_store, fi);
+
+		if (!fi->child)
+			fi->flags |= CAMEL_FOLDER_NOCHILDREN;
+
+		g_ptr_array_add (folders, fi);
 	}
 
 	camel_store_summary_array_free (store_summary, array);
 
-	g_free (pattern);
-
 	fi = camel_folder_info_build (folders, top, '/', TRUE);
+
 	g_ptr_array_free (folders, TRUE);
-	g_free (name);
 
 	return fi;
 }
