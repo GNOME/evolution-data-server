@@ -2884,24 +2884,6 @@ imapx_path_to_physical (const gchar *prefix,
 	return res;
 }
 
-gchar *
-imapx_concat (CamelIMAPXStore *imapx_store,
-              const gchar *prefix,
-              const gchar *suffix)
-{
-	gsize len;
-	gchar dir_sep = imapx_store->dir_sep;
-
-	if (!dir_sep)
-		dir_sep = '/';
-
-	len = strlen (prefix);
-	if (len == 0 || prefix[len - 1] == dir_sep)
-		return g_strdup_printf ("%s%s", prefix, suffix);
-	else
-		return g_strdup_printf ("%s%c%s", prefix, dir_sep, suffix);
-}
-
 static void
 imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
 {
