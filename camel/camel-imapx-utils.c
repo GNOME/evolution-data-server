@@ -2659,6 +2659,35 @@ camel_imapx_mailbox_to_folder_path (const gchar *mailbox_name,
 	return folder_path;
 }
 
+/**
+ * camel_imapx_folder_path_to_mailbox:
+ * @folder_path: a Camel folder path
+ * @separator: mailbox separator character
+ *
+ * Converts @folder_path to an IMAP mailbox name, which just replaces
+ * all slash ('/') characters with @separator.  If @separator appears
+ * in @folder_path, it is replaced with '/'.  Free the returned string
+ * with g_free().
+ *
+ * Returns: a newly-allocated IMAP mailbox name
+ *
+ * Since: 3.10
+ **/
+gchar *
+camel_imapx_folder_path_to_mailbox (const gchar *folder_path,
+                                    gchar separator)
+{
+	g_return_val_if_fail (folder_path != NULL, NULL);
+
+	/* XXX For now, all we're really doing in these conversions is
+	 *     flip-flopping separator characters.  So we can just call
+	 *     camel_imapx_mailbox_to_folder_path() on a folder path to
+	 *     get the mailbox name.  But it is better to have separate
+	 *     functions: 1) for readability, and 2) so we don't become
+	 *     too dependent on this flip-flopping behavior. */
+	return camel_imapx_mailbox_to_folder_path (folder_path, separator);
+}
+
 gboolean
 camel_imapx_parse_quota (CamelIMAPXStream *is,
                          GCancellable *cancellable,

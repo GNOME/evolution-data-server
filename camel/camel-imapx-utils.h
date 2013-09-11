@@ -328,6 +328,9 @@ gboolean	camel_imapx_mailbox_is_inbox	(const gchar *mailbox_name);
 gchar *		camel_imapx_mailbox_to_folder_path
 						(const gchar *mailbox_name,
 						 gchar separator);
+gchar *		camel_imapx_folder_path_to_mailbox
+						(const gchar *folder_path,
+						 gchar separator);
 
 /* ********************************************************************** */
 
