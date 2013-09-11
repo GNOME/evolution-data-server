@@ -446,7 +446,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	} else {
 		/* XXX Shouldn't this take a GError if it can fail? */
 		si = camel_imapx_store_summary_add_from_mailbox (
-			store->summary, mailbox_name, separator);
+			store->summary, mailbox);
 		g_return_if_fail (si != NULL);
 		mailbox_was_in_summary = FALSE;
 		mailbox_was_subscribed = FALSE;

@@ -27,6 +27,7 @@
 #define CAMEL_IMAPX_STORE_SUMMARY_H
 
 #include <camel/camel-store-summary.h>
+#include <camel/camel-imapx-mailbox.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_STORE_SUMMARY \
@@ -113,8 +114,7 @@ CamelIMAPXStoreInfo *
 CamelIMAPXStoreInfo *
 		camel_imapx_store_summary_add_from_mailbox
 						(CamelIMAPXStoreSummary *s,
-						 const gchar *mailbox,
-						 gchar dir_sep);
+						 CamelIMAPXMailbox *mailbox);
 
 /* a convenience lookup function. always use this if path known */
 gchar *		camel_imapx_store_summary_mailbox_from_path
