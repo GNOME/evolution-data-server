@@ -1882,84 +1882,6 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	return TRUE;
 }
 
-static void
-imapx_fabricate_old_namespace_list (CamelIMAPXServer *is,
-                                    CamelIMAPXNamespaceResponse *response)
-{
-	CamelIMAPXStore *store;
-	CamelIMAPXNamespaceList *nsl;
-	CamelIMAPXStoreNamespace *ns;
-	GList *list, *link;
-
-	/* XXX This is all a temporary hack to be deleted ASAP. */
-
-	store = camel_imapx_server_ref_store (is);
-
-	if (store->summary->namespaces != NULL)
-		camel_imapx_namespace_list_clear (store->summary->namespaces);
-
-	nsl = g_new0 (CamelIMAPXNamespaceList, 1);
-
-	list = camel_imapx_namespace_response_list (response);
-
-	for (link = list; link != NULL; link = g_list_next (link)) {
-		CamelIMAPXNamespace *namespace;
-		CamelIMAPXNamespaceCategory category;
-		const gchar *prefix;
-		gchar separator;
-
-		namespace = CAMEL_IMAPX_NAMESPACE (link->data);
-		category = camel_imapx_namespace_get_category (namespace);
-		prefix = camel_imapx_namespace_get_prefix (namespace);
-		separator = camel_imapx_namespace_get_separator (namespace);
-
-		/* We only supported one namespace per category. */
-		switch (category) {
-			case CAMEL_IMAPX_NAMESPACE_PERSONAL:
-				if (nsl->personal != NULL)
-					continue;
-				nsl->personal = g_new0 (
-					CamelIMAPXStoreNamespace, 1);
-				nsl->personal->prefix = g_strdup (prefix);
-				nsl->personal->sep = separator;
-				break;
-			case CAMEL_IMAPX_NAMESPACE_OTHER_USERS:
-				if (nsl->other != NULL)
-					continue;
-				nsl->other = g_new0 (
-					CamelIMAPXStoreNamespace, 1);
-				nsl->other->prefix = g_strdup (prefix);
-				nsl->other->sep = separator;
-				break;
-			case CAMEL_IMAPX_NAMESPACE_SHARED:
-				if (nsl->shared != NULL)
-					continue;
-				nsl->shared = g_new0 (
-					CamelIMAPXStoreNamespace, 1);
-				nsl->shared->prefix = g_strdup (prefix);
-				nsl->shared->sep = separator;
-				break;
-			default:
-				continue;
-		}
-	}
-
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-
-	store->summary->namespaces = nsl;
-	camel_store_summary_touch (CAMEL_STORE_SUMMARY (store->summary));
-
-	/* TODO Need to remove store->dir_sep to support multiple namespaces */
-	ns = nsl->personal;
-	if (ns) {
-		store->dir_sep = ns->sep;
-		if (!store->dir_sep)
-			store->dir_sep = '/';
-	}
-
-	g_object_unref (store);
-}
-
 static gboolean
 imapx_untagged_namespace (CamelIMAPXServer *is,
                           CamelIMAPXStream *stream,
@@ -1981,10 +1903,6 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 	is->priv->namespaces = g_object_ref (response);
 
 	g_mutex_unlock (&is->priv->namespaces_lock);
-
-	/* XXX This is a temporary stop-gap until we can
-	 *     fully migrate to CamelIMAPXNamespaceResponse. */
-	imapx_fabricate_old_namespace_list (is, response);
 
 	g_object_unref (response);
 
@@ -4736,23 +4654,6 @@ preauthed:
 			g_propagate_error (error, local_error);
 			goto exception;
 		}
-	}
-
-	if (store->summary->namespaces == NULL) {
-		CamelIMAPXNamespaceList *nsl = NULL;
-		CamelIMAPXStoreNamespace *ns = NULL;
-
-		/* set a default namespace */
-		nsl = g_malloc0 (sizeof (CamelIMAPXNamespaceList));
-		ns = g_new0 (CamelIMAPXStoreNamespace, 1);
-		ns->next = NULL;
-		ns->prefix = g_strdup ("");
-		ns->sep = '/';
-		nsl->personal = ns;
-
-		store->summary->namespaces = nsl;
-		/* FIXME needs to be identified from list response */
-		store->dir_sep = ns->sep;
 	}
 
 	is->state = IMAPX_INITIALISED;

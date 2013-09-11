@@ -94,29 +94,12 @@ exit:
 	return success;
 }
 
-static void
-imapx_store_summary_finalize (GObject *object)
-{
-	CamelIMAPXStoreSummary *summary;
-
-	summary = CAMEL_IMAPX_STORE_SUMMARY (object);
-
-	camel_imapx_namespace_list_clear (summary->namespaces);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_imapx_store_summary_parent_class)->
-		finalize (object);
-}
-
 static gint
 imapx_store_summary_summary_header_load (CamelStoreSummary *s,
                                          FILE *in)
 {
-	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
 	CamelStoreSummaryClass *store_summary_class;
 	gint32 version, unused;
-
-	camel_imapx_namespace_list_clear (is->namespaces);
 
 	store_summary_class =
 		CAMEL_STORE_SUMMARY_CLASS (
@@ -128,8 +111,6 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *s,
 
 	if (camel_file_util_decode_fixed_int32 (in, &version) == -1)
 		return -1;
-
-	is->version = version;
 
 	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION) {
 		g_warning (
@@ -279,11 +260,7 @@ imapx_store_summary_store_info_free (CamelStoreSummary *s,
 static void
 camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 {
-	GObjectClass *object_class;
 	CamelStoreSummaryClass *store_summary_class;
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = imapx_store_summary_finalize;
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
 	store_summary_class->store_info_size = sizeof (CamelIMAPXStoreInfo);
@@ -297,7 +274,6 @@ camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 static void
 camel_imapx_store_summary_init (CamelIMAPXStoreSummary *s)
 {
-	s->version = CAMEL_IMAPX_STORE_SUMMARY_VERSION;
 }
 
 /**

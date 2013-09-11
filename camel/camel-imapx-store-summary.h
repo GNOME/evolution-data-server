@@ -77,10 +77,6 @@ typedef struct _CamelIMAPXNamespaceList {
 
 struct _CamelIMAPXStoreSummary {
 	CamelStoreSummary parent;
-
-	/* header info */
-	guint32 version;	/* version of base part of file */
-	CamelIMAPXNamespaceList *namespaces; /* eventually to be a list */
 };
 
 struct _CamelIMAPXStoreSummaryClass {
