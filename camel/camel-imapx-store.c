@@ -2072,25 +2072,16 @@ check_separator:
 		goto exit;
 	}
 
+	/* This also LISTs the mailbox after creating it, which
+	 * triggers the CamelIMAPXServer::mailbox-created signal
+	 * and all the local processing that goes along with it. */
 	success = camel_imapx_server_create_mailbox (
 		imapx_server, mailbox_name, cancellable, error);
 
 	if (success) {
-		CamelStoreSummary *summary;
-		CamelIMAPXStoreInfo *si;
-		const gchar *folder_path;
-
-		summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
-
-		si = camel_imapx_store_summary_add_from_mailbox (
-			imapx_store->summary, mailbox_name, separator);
-		camel_store_summary_save (summary);
-		folder_path = camel_store_info_path (
-			summary, (CamelStoreInfo *) si);
 		fi = imapx_store_build_folder_info (
-			imapx_store, folder_path,
+			imapx_store, folder_name,
 			CAMEL_FOLDER_NOCHILDREN);
-		camel_store_folder_created (store, fi);
 	}
 
 exit:

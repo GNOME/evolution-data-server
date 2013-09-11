@@ -8951,6 +8951,21 @@ camel_imapx_server_create_mailbox (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
+	if (success) {
+		gchar *utf7_pattern;
+
+		utf7_pattern = camel_utf8_utf7 (mailbox_name);
+
+		/* List the new mailbox so we trigger our untagged
+		 * LIST handler.  This simulates being notified of
+		 * a newly-created mailbox, so we can just let the
+		 * callback functions handle the bookkeeping. */
+		success = camel_imapx_server_list (
+			is, utf7_pattern, 0, cancellable, error);
+
+		g_free (utf7_pattern);
+	}
+
 	camel_imapx_job_unref (job);
 
 	return success;
