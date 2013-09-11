@@ -246,9 +246,10 @@ imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
 
 	for (ii = 0; ii < array->len; ii++) {
 		CamelStoreInfo *si;
+		CamelIMAPXStoreInfo *imapx_si;
 		const gchar *path;
 		gchar *new_path;
-		gchar *new_mailbox;
+		gchar *new_mailbox_name;
 
 		si = g_ptr_array_index (array, ii);
 		path = camel_store_info_path (store_summary, si);
@@ -266,17 +267,20 @@ imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
 		else
 			new_path = g_strdup (new_folder_path);
 
-		new_mailbox = camel_imapx_store_summary_path_to_mailbox (
-			imapx_store->summary, new_path,
-			imapx_store->dir_sep);
-
 		camel_store_info_set_string (
 			store_summary, si,
 			CAMEL_STORE_INFO_PATH, new_path);
 
-		/* Takes ownership of new_mailbox. */
-		g_free (((CamelIMAPXStoreInfo *) si)->mailbox_name);
-		((CamelIMAPXStoreInfo *) si)->mailbox_name = new_mailbox;
+		imapx_si = (CamelIMAPXStoreInfo *) si;
+		g_warn_if_fail (imapx_si->separator != '\0');
+
+		new_mailbox_name =
+			camel_imapx_folder_path_to_mailbox (
+			new_path, imapx_si->separator);
+
+		/* Takes ownership of new_mailbox_name. */
+		g_free (imapx_si->mailbox_name);
+		imapx_si->mailbox_name = new_mailbox_name;
 
 		camel_store_summary_touch (store_summary);
 
