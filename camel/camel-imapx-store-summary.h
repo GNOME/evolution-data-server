@@ -61,14 +61,6 @@ struct _CamelIMAPXStoreInfo {
 	gchar separator;
 };
 
-typedef struct _CamelIMAPXStoreNamespace CamelIMAPXStoreNamespace;
-
-struct _CamelIMAPXStoreNamespace {
-	CamelIMAPXStoreNamespace *next;
-	gchar *prefix;		/* mailbox prefix, no trailing separator */
-	gchar sep;		/* mailbox separator */
-};
-
 struct _CamelIMAPXStoreSummary {
 	CamelStoreSummary parent;
 };

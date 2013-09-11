@@ -1142,7 +1142,6 @@ CamelIMAPXStorePrivate
 <FILE>camel-imapx-store-summary</FILE>
 <TITLE>CamelIMAPXStoreSummary</TITLE>
 CamelIMAPXStoreInfo
-CamelIMAPXStoreNamespace
 CamelIMAPXStoreSummary
 camel_imapx_store_summary_new
 camel_imapx_store_summary_mailbox
