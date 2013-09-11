@@ -63,7 +63,6 @@ struct _CamelIMAPXStore {
 	CamelIMAPXStorePrivate *priv;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
-	gchar dir_sep;
 };
 
 struct _CamelIMAPXStoreClass {

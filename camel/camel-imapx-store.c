@@ -2555,7 +2555,6 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 	store->priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
 
 	g_mutex_init (&store->priv->get_finfo_lock);
-	store->dir_sep = '/';
 
 	/* Initialize to zero to ensure we always obtain fresh folder
 	 * info on startup.  See imapx_store_get_folder_info_sync(). */
