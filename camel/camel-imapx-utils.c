@@ -76,7 +76,6 @@ imapx_tokenise (register const gchar *str,
 	return 0;
 }
 
-static void imapx_namespace_clear (CamelIMAPXStoreNamespace **ns);
 static const gchar * rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo);
 
 /* flag table */
@@ -2882,36 +2881,6 @@ imapx_path_to_physical (const gchar *prefix,
 	g_string_free (out, FALSE);
 
 	return res;
-}
-
-static void
-imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
-{
-	CamelIMAPXStoreNamespace *node, *next;
-
-	node = *ns;
-	while (node != NULL) {
-		next = node->next;
-		g_free (node->prefix);
-		g_free (node);
-		node = next;
-	}
-
-	*ns = NULL;
-}
-
-void
-camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl)
-{
-	if (!nsl)
-		return;
-
-	imapx_namespace_clear (&nsl->personal);
-	imapx_namespace_clear (&nsl->shared);
-	imapx_namespace_clear (&nsl->other);
-
-	g_free (nsl);
-	nsl = NULL;
 }
 
 gchar *

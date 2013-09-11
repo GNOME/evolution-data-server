@@ -35,7 +35,6 @@ G_BEGIN_DECLS
 struct _CamelIMAPXCommand;
 struct _CamelIMAPXStream;
 struct _CamelFlag;
-struct _CamelIMAPXNamespaceList;
 struct _CamelIMAPXStore;
 
 /* list of strings we know about that can be *quickly* tokenised */
@@ -402,9 +401,6 @@ void imapx_utils_init (void);
 gchar *		imapx_path_to_physical		(const gchar *prefix,
 						 const gchar *vpath);
 gchar *		imapx_get_temp_uid		(void);
-
-void		camel_imapx_namespace_list_clear
-						(struct _CamelIMAPXNamespaceList *nsl);
 
 G_END_DECLS
 
