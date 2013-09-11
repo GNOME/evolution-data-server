@@ -232,12 +232,12 @@ imapx_store_build_folder_info (CamelIMAPXStore *imapx_store,
 
 static void
 imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
-                                const gchar *old_name,
-                                const gchar *new_name)
+                                const gchar *old_folder_path,
+                                const gchar *new_folder_path)
 {
 	CamelStoreSummary *store_summary;
 	GPtrArray *array;
-	gint olen = strlen (old_name);
+	gint olen = strlen (old_folder_path);
 	guint ii;
 
 	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
@@ -253,14 +253,19 @@ imapx_store_rename_folder_info (CamelIMAPXStore *imapx_store,
 		si = g_ptr_array_index (array, ii);
 		path = camel_store_info_path (store_summary, si);
 
-		if (strncmp (path, old_name, olen) != 0)
+		/* We need to adjust not only the entry for the renamed
+		 * folder, but also the entries for all the descendants
+		 * of the renamed folder. */
+
+		if (!g_str_has_prefix (path, old_folder_path))
 			continue;
 
 		if (strlen (path) > olen)
 			new_path = g_strdup_printf (
-				"%s/%s", new_name, path + olen + 1);
+				"%s/%s", new_folder_path, path + olen + 1);
 		else
-			new_path = g_strdup (new_name);
+			new_path = g_strdup (new_folder_path);
+
 		new_mailbox = camel_imapx_store_summary_path_to_mailbox (
 			imapx_store->summary, new_path,
 			imapx_store->dir_sep);
