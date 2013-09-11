@@ -413,29 +413,6 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 }
 
 CamelIMAPXStoreNamespace *
-camel_imapx_store_summary_namespace_find_by_path (CamelIMAPXStoreSummary *s,
-                                                  const gchar *path)
-{
-	gint len;
-	CamelIMAPXStoreNamespace *ns;
-
-	/* NB: this currently only compares against 1 namespace, in future compare against others */
-	/* CHEN TODO */
-	ns = s->namespaces->personal;
-	while (ns) {
-		len = strlen (ns->prefix);
-		if (len == 0
-		    || (strncmp (ns->prefix, path, len) == 0
-			&& (path[len] == '/' || path[len] == 0)))
-			break;
-		ns = NULL;
-	}
-
-	/* have a default? */
-	return ns;
-}
-
-CamelIMAPXStoreNamespace *
 camel_imapx_store_summary_namespace_find_by_mailbox (CamelIMAPXStoreSummary *s,
                                                      const gchar *mailbox)
 {
