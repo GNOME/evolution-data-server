@@ -90,13 +90,6 @@ struct _CamelIMAPXStoreSummaryClass {
 GType		camel_imapx_store_summary_get_type (void);
 CamelIMAPXStoreSummary *
 		camel_imapx_store_summary_new	(void);
-
-/* TODO: this api needs some more work, needs to support lists */
-CamelIMAPXStoreNamespace *
-		camel_imapx_store_summary_namespace_find_by_mailbox
-						(CamelIMAPXStoreSummary *s,
-						 const gchar *mailbox);
-
 CamelIMAPXStoreInfo *
 		camel_imapx_store_summary_mailbox
 						(CamelIMAPXStoreSummary *s,
