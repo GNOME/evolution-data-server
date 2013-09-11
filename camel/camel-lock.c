@@ -128,7 +128,7 @@ camel_lock_dot (const gchar *path,
 		/* check for stale lock, kill it */
 		if (g_stat (lock, &st) == 0) {
 			time_t now = time (NULL);
-			(printf ("There is an existing lock %ld seconds old\n", now - st.st_ctime));
+			printf ("There is an existing lock %" G_GINT64_FORMAT "seconds old\n", (gint64) now - (gint64) st.st_ctime);
 			if (st.st_ctime < now - CAMEL_LOCK_DOT_STALE) {
 				d (printf ("Removing it now\n"));
 				unlink (lock);

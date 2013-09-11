@@ -613,7 +613,7 @@ e_book_backend_file_create_unique_id (void)
 	 * it's doubtful 2^32 id's will be created in a second, so we
 	 * should be okay. */
 	static guint c = 0;
-	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time (NULL), c++);
+	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", (glong) time (NULL), c++);
 }
 
 static gchar *

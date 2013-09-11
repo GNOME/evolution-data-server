@@ -1268,8 +1268,8 @@ camel_pop3_delete_old (CamelFolder *folder,
 			gint day_lag = time_diff / (60 * 60 * 24);
 
 			d (printf (
-				"%s(%d): message_time= [%ld]\n",
-				__FILE__, __LINE__, message_time));
+				"%s(%d): message_time= [%" G_GINT64_FORMAT "]\n",
+				__FILE__, __LINE__, (gint64) message_time));
 			d (printf (
 				"%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
 				__FILE__, __LINE__, day_lag, days_to_delete));

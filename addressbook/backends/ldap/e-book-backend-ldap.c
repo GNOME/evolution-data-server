@@ -1283,11 +1283,11 @@ create_dn_from_contact (EContact *contact,
 	}
 
 	dn = g_strdup_printf (
-		"%s=%s%s%lu",
+		"%s=%s%s%" G_GINT64_FORMAT,
 		get_dn_attribute_name (rootdn, contact),
 		(cn_part && *cn_part) ? cn_part : "",
 		(cn_part && *cn_part) ? "." : "",
-		time (NULL));
+		(gint64) time (NULL));
 
 	g_free (cn_part);
 	g_free (cn);

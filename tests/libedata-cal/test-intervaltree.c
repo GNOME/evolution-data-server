@@ -166,7 +166,7 @@ create_test_component (time_t start,
 	e_cal_component_set_dtend (comp, &dtend);
 	*/
 
-	summary.value = g_strdup_printf ("%ld - %ld", start, end);
+	summary.value = g_strdup_printf ("%" G_GINT64_FORMAT "- %" G_GINT64_FORMAT, (gint64) start, (gint64) end);
 	summary.altrep = NULL;
 
 	e_cal_component_set_summary (comp, &summary);

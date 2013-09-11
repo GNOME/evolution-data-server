@@ -761,8 +761,8 @@ e_intervaltree_node_dump (EIntervalTree *tree,
 	*/
 	if (node != tree->priv->nil) {
 		g_print (
-			"%*s[%ld - %ld] [%ld - %ld] red %d\n", indent, "", node->start,
-			node->end, node->min, node->max, node->red);
+			"%*s[%" G_GINT64_FORMAT "- %" G_GINT64_FORMAT "] [%" G_GINT64_FORMAT "- %" G_GINT64_FORMAT "] red %d\n", indent, "", (gint64) node->start,
+			(gint64) node->end, (gint64) node->min, (gint64) node->max, node->red);
 	} else {
 		g_print ("%*s[ - ]\n", indent, "");
 		return;

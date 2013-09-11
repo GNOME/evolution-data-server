@@ -419,7 +419,7 @@ static gchar *maildir_summary_next_uid_string (CamelFolderSummary *s)
 				g_free (uid);
 				g_usleep (2 * G_USEC_PER_SEC);
 			}
-			uid = g_strdup_printf ("%ld.%d_%u.%s", time (NULL), getpid (), nextuid, mds->priv->hostname);
+			uid = g_strdup_printf ("%" G_GINT64_FORMAT ".%d_%u.%s", (gint64) time (NULL), getpid (), nextuid, mds->priv->hostname);
 			name = g_strdup_printf ("%s/tmp/%s", cls->folder_path, uid);
 			retry++;
 		} while (g_stat (name, &st) == 0 && retry < 3);

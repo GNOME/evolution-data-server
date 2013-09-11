@@ -9,7 +9,7 @@ test_query (const gchar *query)
 	gboolean generator = e_cal_backend_sexp_evaluate_occur_times (sexp, &start, &end);
 
 	if (generator) {
-		printf ("%s: %ld - %ld\n", query, start, end);
+		printf ("%s: %" G_GINT64_FORMAT "- %" G_GINT64_FORMAT "\n", query, (gint64) start, (gint64) end);
 	} else {
 		printf ("%s: no time prunning possible\n", query);
 	}
