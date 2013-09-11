@@ -643,7 +643,7 @@ imapx_query_auth_types_sync (CamelService *service,
 static CamelFolder *
 get_folder_offline (CamelStore *store,
                     const gchar *folder_name,
-                    guint32 flags,
+                    CamelStoreGetFolderFlags flags,
                     GError **error)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (store);
@@ -683,8 +683,7 @@ get_folder_offline (CamelStore *store,
 
 static void
 fill_fi (CamelStore *store,
-         CamelFolderInfo *fi,
-         guint32 flags)
+         CamelFolderInfo *fi)
 {
 	CamelFolder *folder;
 	CamelService *service = (CamelService *) store;
@@ -932,7 +931,7 @@ event:
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store,
                          const gchar *top,
-                         guint32 flags,
+                         CamelStoreGetFolderInfoFlags flags,
                          GError **error)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (store);
@@ -1049,7 +1048,7 @@ get_folder_info_offline (CamelStore *store,
 			}
 
 			if (!(si->flags & CAMEL_FOLDER_NOSELECT))
-				fill_fi ((CamelStore *) imapx_store, fi, 0);
+				fill_fi ((CamelStore *) imapx_store, fi);
 
 			if (!fi->child)
 				fi->flags |= CAMEL_FOLDER_NOCHILDREN;
