@@ -440,7 +440,7 @@ enum {
 	IMAPX_PRIORITY_NOOP = 0,
 	IMAPX_PRIORITY_NEW_MESSAGES = 0,
 	IMAPX_PRIORITY_APPEND_MESSAGE = -60,
-	IMAPX_PRIIORITY_COPY_MESSAGE = -60,
+	IMAPX_PRIORITY_COPY_MESSAGE = -60,
 	IMAPX_PRIORITY_LIST = -80,
 	IMAPX_PRIORITY_IDLE = -100,
 	IMAPX_PRIORITY_SYNC_MESSAGE = -120,
@@ -7448,7 +7448,7 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 		g_ptr_array_add (data->uids, g_strdup (uids->pdata[ii]));
 
 	job = camel_imapx_job_new (cancellable);
-	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
+	job->pri = IMAPX_PRIORITY_COPY_MESSAGE;
 	job->type = IMAPX_JOB_COPY_MESSAGE;
 	job->start = imapx_job_copy_messages_start;
 
