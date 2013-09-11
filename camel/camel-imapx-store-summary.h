@@ -116,11 +116,6 @@ CamelIMAPXStoreInfo *
 						(CamelIMAPXStoreSummary *s,
 						 CamelIMAPXMailbox *mailbox);
 
-/* a convenience lookup function. always use this if path known */
-gchar *		camel_imapx_store_summary_mailbox_from_path
-						(CamelIMAPXStoreSummary *s,
-						 const gchar *path);
-
 G_END_DECLS
 
 #endif /* CAMEL_IMAP_STORE_SUMMARY_H */

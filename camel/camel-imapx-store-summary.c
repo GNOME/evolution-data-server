@@ -489,25 +489,6 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 	return info;
 }
 
-/* should this be const? */
-/* TODO: deprecate/merge this function with path_to_mailbox */
-gchar *
-camel_imapx_store_summary_mailbox_from_path (CamelIMAPXStoreSummary *s,
-                                             const gchar *path)
-{
-	CamelIMAPXStoreNamespace *ns;
-	gchar *mailbox = NULL;
-
-	ns = camel_imapx_store_summary_namespace_find_by_path (s, path);
-	if (ns)
-		mailbox = camel_imapx_store_summary_path_to_mailbox (
-			s, path, ns->sep);
-
-	d ("looking up path %s -> %s\n", path, mailbox ? mailbox:"not found");
-
-	return mailbox;
-}
-
 CamelIMAPXStoreNamespace *
 camel_imapx_store_summary_namespace_find_by_path (CamelIMAPXStoreSummary *s,
                                                   const gchar *path)
