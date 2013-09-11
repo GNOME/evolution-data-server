@@ -48,118 +48,50 @@ G_DEFINE_TYPE (
 	camel_imapx_store_summary,
 	CAMEL_TYPE_STORE_SUMMARY)
 
-static CamelIMAPXNamespaceList *
-namespace_load (CamelStoreSummary *s,
-                FILE *in)
-{
-	CamelIMAPXStoreNamespace *ns, *tail;
-	CamelIMAPXNamespaceList *nsl;
-	guint32 i, j;
-	gint32 n;
 
-	nsl = g_malloc0 (sizeof (CamelIMAPXNamespaceList));
-	nsl->personal = NULL;
-	nsl->shared = NULL;
-	nsl->other = NULL;
+static gboolean
+namespace_load (FILE *in)
+{
+	gchar *unused = NULL;
+	gboolean success;
+	guint32 j;
+
+	/* XXX This eats through the old namespace data for backward
+	 *     compatibility.  Next time we bump the summary version,
+	 *     delete all this cruft. */
 
 	for (j = 0; j < 3; j++) {
-		switch (j) {
-		case 0:
-			tail = (CamelIMAPXStoreNamespace *) &nsl->personal;
-			break;
-		case 1:
-			tail = (CamelIMAPXStoreNamespace *) &nsl->shared;
-			break;
-		case 2:
-			tail = (CamelIMAPXStoreNamespace *) &nsl->other;
-			break;
-		}
+		gint32 i, n;
 
 		if (camel_file_util_decode_fixed_int32 (in, &n) == -1)
-			goto fail;
+			goto exit;
 
 		for (i = 0; i < n; i++) {
 			guint32 sep;
-			gchar *prefix;
-			gchar *unused;
 
-			if (camel_file_util_decode_string (in, &prefix) == -1)
-				goto fail;
-
-			/* XXX This string is just a duplicate of 'prefix',
-			 *     retained only for backward-compatibility. */
-			if (camel_file_util_decode_string (in, &unused) == -1) {
-				g_free (prefix);
-				goto fail;
-			}
+			if (camel_file_util_decode_string (in, &unused) == -1)
+				goto exit;
 
 			g_free (unused);
+			unused = NULL;
 
-			if (camel_file_util_decode_uint32 (in, &sep) == -1) {
-				g_free (prefix);
-				goto fail;
-			}
+			if (camel_file_util_decode_string (in, &unused) == -1)
+				goto exit;
 
-			tail->next = ns = g_malloc (sizeof (CamelIMAPXStoreNamespace));
-			ns->sep = sep;
-			ns->prefix = prefix;
-			ns->next = NULL;
-			tail = ns;
+			g_free (unused);
+			unused = NULL;
+
+			if (camel_file_util_decode_uint32 (in, &sep) == -1)
+				goto exit;
 		}
 	}
 
-	return nsl;
+	success = TRUE;
 
-fail:
-	camel_imapx_namespace_list_clear (nsl);
+exit:
+	g_free (unused);
 
-	return NULL;
-}
-
-static gint
-namespace_save (CamelStoreSummary *s,
-                FILE *out,
-                CamelIMAPXNamespaceList *nsl)
-{
-	CamelIMAPXStoreNamespace *ns, *cur = NULL;
-	guint32 i, n;
-
-	for (i = 0; i < 3; i++) {
-		switch (i) {
-		case 0:
-			cur = nsl->personal;
-			break;
-		case 1:
-			cur = nsl->shared;
-			break;
-		case 2:
-			cur = nsl->other;
-			break;
-		}
-
-		for (ns = cur, n = 0; ns; n++)
-			ns = ns->next;
-
-		if (camel_file_util_encode_fixed_int32 (out, n) == -1)
-			return -1;
-
-		ns = cur;
-		while (ns != NULL) {
-			if (camel_file_util_encode_string (out, ns->prefix) == -1)
-				return -1;
-
-			/* XXX This redundancy is for backward-compatibility. */
-			if (camel_file_util_encode_string (out, ns->prefix) == -1)
-				return -1;
-
-			if (camel_file_util_encode_uint32 (out, ns->sep) == -1)
-				return -1;
-
-			ns = ns->next;
-		}
-	}
-
-	return 0;
+	return success;
 }
 
 static void
@@ -208,12 +140,11 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *s,
 		return -1;
 	}
 
-	/* note file format can be expanded to contain more namespaces, but only 1 at the moment */
 	if (camel_file_util_decode_fixed_int32 (in, &unused) == -1)
 		return -1;
 
-	/* namespaces */
-	if ((is->namespaces = namespace_load (s, in)) == NULL)
+	/* XXX This just eats old data that we no longer use. */
+	if (!namespace_load (in))
 		return -1;
 
 	return 0;
@@ -223,7 +154,6 @@ static gint
 imapx_store_summary_summary_header_save (CamelStoreSummary *s,
                                          FILE *out)
 {
-	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *) s;
 	CamelStoreSummaryClass *store_summary_class;
 
 	store_summary_class =
@@ -241,7 +171,17 @@ imapx_store_summary_summary_header_save (CamelStoreSummary *s,
 	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
 		return -1;
 
-	if (is->namespaces && namespace_save (s, out, is->namespaces) == -1)
+	/* XXX This just saves zero-count namespace placeholders for
+	 *     backward compatibility.  Next time we bump the summary
+	 *     version, delete all this cruft. */
+
+	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
+		return -1;
+
+	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
+		return -1;
+
+	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
 		return -1;
 
 	return 0;
