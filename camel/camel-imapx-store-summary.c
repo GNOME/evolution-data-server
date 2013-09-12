@@ -1,22 +1,19 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- *
- * Authors: Michael Zucchi <notzed@ximian.com>
+ * camel-imapx-store-summary.c
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
- * License as published by the Free Software Foundation.
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -47,7 +44,6 @@ G_DEFINE_TYPE (
 	CamelIMAPXStoreSummary,
 	camel_imapx_store_summary,
 	CAMEL_TYPE_STORE_SUMMARY)
-
 
 static gboolean
 namespace_load (FILE *in)
@@ -95,7 +91,7 @@ exit:
 }
 
 static gint
-imapx_store_summary_summary_header_load (CamelStoreSummary *s,
+imapx_store_summary_summary_header_load (CamelStoreSummary *summary,
                                          FILE *in)
 {
 	CamelStoreSummaryClass *store_summary_class;
@@ -106,7 +102,7 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *s,
 		camel_imapx_store_summary_parent_class);
 
 	/* Chain up to parent's summary_header_load() method. */
-	if (store_summary_class->summary_header_load (s, in) == -1)
+	if (store_summary_class->summary_header_load (summary, in) == -1)
 		return -1;
 
 	if (camel_file_util_decode_fixed_int32 (in, &version) == -1)
@@ -132,7 +128,7 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *s,
 }
 
 static gint
-imapx_store_summary_summary_header_save (CamelStoreSummary *s,
+imapx_store_summary_summary_header_save (CamelStoreSummary *summary,
                                          FILE *out)
 {
 	CamelStoreSummaryClass *store_summary_class;
@@ -142,11 +138,12 @@ imapx_store_summary_summary_header_save (CamelStoreSummary *s,
 		camel_imapx_store_summary_parent_class);
 
 	/* Chain up to parent's summary_header_save() method. */
-	if (store_summary_class->summary_header_save (s, out) == -1)
+	if (store_summary_class->summary_header_save (summary, out) == -1)
 		return -1;
 
 	/* always write as latest version */
-	if (camel_file_util_encode_fixed_int32 (out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1)
+	if (camel_file_util_encode_fixed_int32 (
+		out, CAMEL_IMAPX_STORE_SUMMARY_VERSION) == -1)
 		return -1;
 
 	if (camel_file_util_encode_fixed_int32 (out, 0) == -1)
@@ -169,7 +166,7 @@ imapx_store_summary_summary_header_save (CamelStoreSummary *s,
 }
 
 static CamelStoreInfo *
-imapx_store_summary_store_info_load (CamelStoreSummary *s,
+imapx_store_summary_store_info_load (CamelStoreSummary *summary,
                                      FILE *in)
 {
 	CamelStoreSummaryClass *store_summary_class;
@@ -182,17 +179,17 @@ imapx_store_summary_store_info_load (CamelStoreSummary *s,
 		camel_imapx_store_summary_parent_class);
 
 	/* Chain up to parent's store_info_load() method. */
-	si = store_summary_class->store_info_load (s, in);
+	si = store_summary_class->store_info_load (summary, in);
 	if (si == NULL)
 		return NULL;
 
 	if (camel_file_util_decode_string (in, &separator) == -1) {
-		camel_store_summary_info_unref (s, si);
+		camel_store_summary_info_unref (summary, si);
 		return NULL;
 	}
 
 	if (camel_file_util_decode_string (in, &mailbox_name) == -1) {
-		camel_store_summary_info_unref (s, si);
+		camel_store_summary_info_unref (summary, si);
 		return NULL;
 	}
 
@@ -213,7 +210,7 @@ imapx_store_summary_store_info_load (CamelStoreSummary *s,
 }
 
 static gint
-imapx_store_summary_store_info_save (CamelStoreSummary *s,
+imapx_store_summary_store_info_save (CamelStoreSummary *summary,
                                      FILE *out,
                                      CamelStoreInfo *si)
 {
@@ -229,7 +226,7 @@ imapx_store_summary_store_info_save (CamelStoreSummary *s,
 	separator[0] = ((CamelIMAPXStoreInfo *) si)->separator;
 
 	/* Chain up to parent's store_info_save() method. */
-	if (store_summary_class->store_info_save (s, out, si) == -1)
+	if (store_summary_class->store_info_save (summary, out, si) == -1)
 		return -1;
 
 	if (camel_file_util_encode_string (out, separator) == -1)
@@ -242,7 +239,7 @@ imapx_store_summary_store_info_save (CamelStoreSummary *s,
 }
 
 static void
-imapx_store_summary_store_info_free (CamelStoreSummary *s,
+imapx_store_summary_store_info_free (CamelStoreSummary *summary,
                                      CamelStoreInfo *si)
 {
 	CamelStoreSummaryClass *store_summary_class;
@@ -254,7 +251,7 @@ imapx_store_summary_store_info_free (CamelStoreSummary *s,
 	g_free (((CamelIMAPXStoreInfo *) si)->mailbox_name);
 
 	/* Chain up to parent's store_info_free() method. */
-	store_summary_class->store_info_free (s, si);
+	store_summary_class->store_info_free (summary, si);
 }
 
 static void
@@ -272,39 +269,25 @@ camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 }
 
 static void
-camel_imapx_store_summary_init (CamelIMAPXStoreSummary *s)
+camel_imapx_store_summary_init (CamelIMAPXStoreSummary *summary)
 {
-}
-
-/**
- * camel_imapx_store_summary_new:
- *
- * Create a new CamelIMAPXStoreSummary object.
- *
- * Returns: A new CamelIMAPXStoreSummary widget.
- **/
-CamelIMAPXStoreSummary *
-camel_imapx_store_summary_new (void)
-{
-	return g_object_new (CAMEL_TYPE_IMAPX_STORE_SUMMARY, NULL);
 }
 
 /**
  * camel_imapx_store_summary_mailbox:
- * @s:
- * @mailbox_name:
+ * @summary: a #CamelStoreSummary
+ * @mailbox_name: a mailbox name
  *
  * Retrieve a summary item by mailbox name.
  *
- * A referenced to the summary item is returned, which may be
- * ref'd or free'd as appropriate.
+ * The returned #CamelIMAPXStoreInfo is referenced for thread-safety
+ * and should be unreferenced with camel_store_summary_info_unref()
+ * when finished with it.
  *
- * Returns: The summary item, or NULL if the @mailbox_name
- * is not available.
- * It must be freed using camel_store_summary_info_unref().
+ * Returns: a #CamelIMAPXStoreInfo, or %NULL
  **/
 CamelIMAPXStoreInfo *
-camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
+camel_imapx_store_summary_mailbox (CamelStoreSummary *summary,
                                    const gchar *mailbox_name)
 {
 	CamelStoreInfo *match = NULL;
@@ -312,9 +295,12 @@ camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
 	gboolean find_inbox;
 	guint ii;
 
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE_SUMMARY (summary), NULL);
+	g_return_val_if_fail (mailbox_name != NULL, NULL);
+
 	find_inbox = camel_imapx_mailbox_is_inbox (mailbox_name);
 
-	array = camel_store_summary_array (CAMEL_STORE_SUMMARY (s));
+	array = camel_store_summary_array (summary);
 
 	for (ii = 0; ii < array->len; ii++) {
 		CamelIMAPXStoreInfo *info;
@@ -325,26 +311,24 @@ camel_imapx_store_summary_mailbox (CamelIMAPXStoreSummary *s,
 
 		if (find_inbox && is_inbox) {
 			match = camel_store_summary_info_ref (
-				CAMEL_STORE_SUMMARY (s),
-				(CamelStoreInfo *) info);
+				summary, (CamelStoreInfo *) info);
 			break;
 		}
 
 		if (g_str_equal (info->mailbox_name, mailbox_name)) {
 			match = camel_store_summary_info_ref (
-				CAMEL_STORE_SUMMARY (s),
-				(CamelStoreInfo *) info);
+				summary, (CamelStoreInfo *) info);
 			break;
 		}
 	}
 
-	camel_store_summary_array_free (CAMEL_STORE_SUMMARY (s), array);
+	camel_store_summary_array_free (summary, array);
 
 	return (CamelIMAPXStoreInfo *) match;
 }
 
 CamelIMAPXStoreInfo *
-camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
+camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
                                             CamelIMAPXMailbox *mailbox)
 {
 	CamelIMAPXStoreInfo *info;
@@ -352,17 +336,16 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 	gchar *folder_path;
 	gchar separator;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE_SUMMARY (s), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE_SUMMARY (summary), NULL);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), NULL);
 
 	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
 	separator = camel_imapx_mailbox_get_separator (mailbox);
 
-	info = camel_imapx_store_summary_mailbox (s, mailbox_name);
+	info = camel_imapx_store_summary_mailbox (summary, mailbox_name);
 	if (info != NULL) {
 		camel_store_summary_info_unref (
-			CAMEL_STORE_SUMMARY (s),
-			(CamelStoreInfo *) info);
+			summary, (CamelStoreInfo *) info);
 		return info;
 	}
 
@@ -370,8 +353,7 @@ camel_imapx_store_summary_add_from_mailbox (CamelIMAPXStoreSummary *s,
 		mailbox_name, separator);
 
 	info = (CamelIMAPXStoreInfo *)
-		camel_store_summary_add_from_path (
-		CAMEL_STORE_SUMMARY (s), folder_path);
+		camel_store_summary_add_from_path (summary, folder_path);
 
 	g_free (folder_path);
 

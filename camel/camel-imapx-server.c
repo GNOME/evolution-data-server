@@ -7130,7 +7130,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 			CamelStoreInfo *si;
 
 			/* ... and store's summary when folder's summary is dirty */
-			si = camel_store_summary_path ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary, full_name);
+			si = camel_store_summary_path (CAMEL_IMAPX_STORE (parent_store)->summary, full_name);
 			if (si) {
 				if (si->total != camel_folder_summary_get_saved_count (folder->summary) ||
 				    si->unread != camel_folder_summary_get_unread_count (folder->summary)) {
@@ -7140,15 +7140,15 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 					 * have downloaded is little. */
 					if (!mobile_mode)
 						si->unread = camel_folder_summary_get_unread_count (folder->summary);
-					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
+					camel_store_summary_touch (CAMEL_IMAPX_STORE (parent_store)->summary);
 				}
 
-				camel_store_summary_info_unref ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary, si);
+				camel_store_summary_info_unref (CAMEL_IMAPX_STORE (parent_store)->summary, si);
 			}
 		}
 
 		camel_folder_summary_save_to_db (folder->summary, NULL);
-		camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
+		camel_store_summary_save (CAMEL_IMAPX_STORE (parent_store)->summary);
 
 		imapx_unregister_job (is, job);
 	}

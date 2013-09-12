@@ -193,7 +193,7 @@ imapx_folder_dispose (GObject *object)
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
 	if (store != NULL) {
 		camel_store_summary_disconnect_folder_summary (
-			(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
+			CAMEL_IMAPX_STORE (store)->summary,
 			CAMEL_FOLDER (folder)->summary);
 	}
 
@@ -1104,8 +1104,7 @@ imapx_rename (CamelFolder *folder,
 	imapx_store = CAMEL_IMAPX_STORE (store);
 
 	camel_store_summary_disconnect_folder_summary (
-		CAMEL_STORE_SUMMARY (imapx_store->summary),
-		folder->summary);
+		imapx_store->summary, folder->summary);
 
 	/* Chain up to parent's rename() method. */
 	CAMEL_FOLDER_CLASS (camel_imapx_folder_parent_class)->
@@ -1114,8 +1113,7 @@ imapx_rename (CamelFolder *folder,
 	folder_name = camel_folder_get_full_name (folder);
 
 	camel_store_summary_connect_folder_summary (
-		CAMEL_STORE_SUMMARY (imapx_store->summary),
-		folder_name, folder->summary);
+		imapx_store->summary, folder_name, folder->summary);
 }
 
 static void
@@ -1303,7 +1301,7 @@ camel_imapx_folder_new (CamelStore *store,
 	}
 
 	camel_store_summary_connect_folder_summary (
-		(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
+		CAMEL_IMAPX_STORE (store)->summary,
 		folder_name, folder->summary);
 
 	return folder;
@@ -1386,7 +1384,6 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	CamelIMAPXServer *server = NULL;
 	CamelIMAPXMailbox *mailbox;
 	CamelStore *parent_store;
-	CamelStoreSummary *store_summary;
 	CamelStoreInfo *store_info;
 	CamelIMAPXStoreInfo *imapx_store_info;
 	gchar *folder_path = NULL;
@@ -1408,9 +1405,9 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
 
 	imapx_store = CAMEL_IMAPX_STORE (parent_store);
-	store_summary = CAMEL_STORE_SUMMARY (imapx_store->summary);
 
-	store_info = camel_store_summary_path (store_summary, folder_path);
+	store_info = camel_store_summary_path (
+		imapx_store->summary, folder_path);
 
 	/* This should never fail.  We needed the CamelStoreInfo
 	 * to instantiate the CamelIMAPXFolder in the first place. */
@@ -1419,7 +1416,7 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	imapx_store_info = (CamelIMAPXStoreInfo *) store_info;
 	mailbox_name = g_strdup (imapx_store_info->mailbox_name);
 
-	camel_store_summary_info_unref (store_summary, store_info);
+	camel_store_summary_info_unref (imapx_store->summary, store_info);
 
 	/* See if the CamelIMAPXServer already has the mailbox. */
 

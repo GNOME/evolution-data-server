@@ -31,7 +31,6 @@
 #include <camel/camel.h>
 
 #include "camel-imapx-server.h"
-#include "camel-imapx-store-summary.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_STORE \
@@ -62,7 +61,7 @@ struct _CamelIMAPXStore {
 	CamelOfflineStore parent;
 	CamelIMAPXStorePrivate *priv;
 
-	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
+	CamelStoreSummary *summary; /* in-memory list of folders */
 };
 
 struct _CamelIMAPXStoreClass {

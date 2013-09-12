@@ -1,22 +1,19 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- *
- * Authors: Michael Zucchi <notzed@ximian.com>
+ * camel-imapx-store-summary.h
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU Lesser General Public
- * License as published by the Free Software Foundation.
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
  */
 
 #if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
@@ -69,16 +66,15 @@ struct _CamelIMAPXStoreSummaryClass {
 	CamelStoreSummaryClass parent_class;
 };
 
-GType		camel_imapx_store_summary_get_type (void);
-CamelIMAPXStoreSummary *
-		camel_imapx_store_summary_new	(void);
+GType		camel_imapx_store_summary_get_type
+						(void) G_GNUC_CONST;
 CamelIMAPXStoreInfo *
 		camel_imapx_store_summary_mailbox
-						(CamelIMAPXStoreSummary *s,
+						(CamelStoreSummary *summary,
 						 const gchar *mailbox_name);
 CamelIMAPXStoreInfo *
 		camel_imapx_store_summary_add_from_mailbox
-						(CamelIMAPXStoreSummary *s,
+						(CamelStoreSummary *summary,
 						 CamelIMAPXMailbox *mailbox);
 
 G_END_DECLS
