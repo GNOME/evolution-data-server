@@ -1446,6 +1446,36 @@ fetch_folder_info_for_pattern (CamelIMAPXServer *server,
 }
 
 static gboolean
+fetch_folder_info_for_inbox (CamelIMAPXServer *server,
+                             CamelStoreGetFolderInfoFlags flags,
+                             GHashTable *folder_info_results,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	gboolean success;
+
+	success = camel_imapx_server_list (
+		server, "INBOX", flags, cancellable, error);
+
+	if (success) {
+		CamelIMAPXStore *imapx_store;
+		CamelIMAPXMailbox *mailbox;
+
+		mailbox = camel_imapx_server_ref_mailbox (server, "INBOX");
+		g_return_val_if_fail (mailbox != NULL, FALSE);
+
+		imapx_store = camel_imapx_server_ref_store (server);
+
+		collect_folder_info_for_list (
+			imapx_store, mailbox, folder_info_results);
+
+		g_object_unref (imapx_store);
+	}
+
+	return success;
+}
+
+static gboolean
 fetch_folder_info_for_namespace_category (CamelIMAPXServer *server,
                                           CamelIMAPXNamespaceCategory category,
                                           CamelStoreGetFolderInfoFlags flags,
@@ -1583,10 +1613,23 @@ sync_folders (CamelIMAPXStore *imapx_store,
 			server, root_folder_path, flags,
 			folder_info_results, cancellable, error);
 	} else {
+		gboolean have_folder_info_for_inbox;
+
 		/* XXX We only fetch personal mailboxes at this time. */
 		success = fetch_folder_info_for_namespace_category (
 			server, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags,
 			folder_info_results, cancellable, error);
+
+		have_folder_info_for_inbox =
+			g_hash_table_contains (folder_info_results, "INBOX");
+
+		/* XXX Slight hack, mainly for Courier servers.  If INBOX
+		 *     is not included in any defined personal namespaces,
+		 *     then LIST it explicitly. */
+		if (success && !have_folder_info_for_inbox)
+			success = fetch_folder_info_for_inbox (
+				server, flags, folder_info_results,
+				cancellable, error);
 	}
 
 	/* Don't need to test for zero, just decrement atomically. */

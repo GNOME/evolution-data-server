@@ -970,6 +970,17 @@ imapx_server_create_mailbox_unlocked (CamelIMAPXServer *is,
 		mailbox = camel_imapx_mailbox_new (response, namespace);
 		imapx_server_add_mailbox_unlocked (is, mailbox);
 		g_object_unref (namespace);
+
+	/* XXX Slight hack, mainly for Courier servers.  If INBOX does
+	 *     not match any defined namespace, just create one for it
+	 *     on the fly.  The namespace response won't know about it. */
+	} else if (camel_imapx_mailbox_is_inbox (mailbox_name)) {
+		namespace = camel_imapx_namespace_new (
+			CAMEL_IMAPX_NAMESPACE_PERSONAL, "", separator);
+		mailbox = camel_imapx_mailbox_new (response, namespace);
+		imapx_server_add_mailbox_unlocked (is, mailbox);
+		g_object_unref (namespace);
+
 	} else {
 		g_warning (
 			"%s: No matching namespace for \"%c\" %s",
