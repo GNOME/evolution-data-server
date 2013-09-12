@@ -166,7 +166,7 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 			case IMAPX_UIDVALIDITY:
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
-				response->priv->unseen = (guint32) number;
+				response->priv->uidvalidity = (guint32) number;
 				break;
 
 			/* See RFC 4551 section 3.6 */
