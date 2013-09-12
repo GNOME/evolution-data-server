@@ -36,12 +36,20 @@
 
 struct _CamelIMAPXStatusResponsePrivate {
 	gchar *mailbox_name;
+
 	guint32 messages;
 	guint32 recent;
 	guint32 unseen;
 	guint32 uidnext;
 	guint32 uidvalidity;
 	guint64 highestmodseq;
+
+	gboolean have_messages;
+	gboolean have_recent;
+	gboolean have_unseen;
+	gboolean have_uidnext;
+	gboolean have_uidvalidity;
+	gboolean have_highestmodseq;
 };
 
 G_DEFINE_TYPE (
@@ -143,30 +151,35 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
 				response->priv->messages = (guint32) number;
+				response->priv->have_messages = TRUE;
 				break;
 
 			case IMAPX_RECENT:
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
 				response->priv->recent = (guint32) number;
+				response->priv->have_recent = TRUE;
 				break;
 
 			case IMAPX_UNSEEN:
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
 				response->priv->unseen = (guint32) number;
+				response->priv->have_unseen = TRUE;
 				break;
 
 			case IMAPX_UIDNEXT:
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
 				response->priv->uidnext = (guint32) number;
+				response->priv->have_uidnext = TRUE;
 				break;
 
 			case IMAPX_UIDVALIDITY:
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
 				response->priv->uidvalidity = (guint32) number;
+				response->priv->have_uidvalidity = TRUE;
 				break;
 
 			/* See RFC 4551 section 3.6 */
@@ -174,6 +187,7 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 				success = camel_imapx_stream_number (
 					stream, &number, cancellable, error);
 				response->priv->highestmodseq = number;
+				response->priv->have_highestmodseq = TRUE;
 				break;
 
 			default:
@@ -230,110 +244,192 @@ camel_imapx_status_response_get_mailbox_name (CamelIMAPXStatusResponse *response
 /**
  * camel_imapx_status_response_get_messages:
  * @response: a #CamelIMAPXStatusResponse
+ * @out_messages: return location for the status value, or %NULL
  *
- * Returns the number of messages in the mailbox.
+ * If @response includes an updated "MESSAGES" value, write the value to
+ * @out_messages and return %TRUE.  Otherwise leave @out_messages unset
+ * and return %FALSE.
  *
- * Returns: the "MESSAGES" status value
+ * The "MESSAGES" value refers to the number of messages in the mailbox.
+ *
+ * The @out_messages argument can be %NULL, in which case the function
+ * simply returns whether an updated "MESSAGES" value is present.
+ *
+ * Returns: whether @out_messages was set
  *
  * Since: 3.10
  **/
-guint32
-camel_imapx_status_response_get_messages (CamelIMAPXStatusResponse *response)
+gboolean
+camel_imapx_status_response_get_messages (CamelIMAPXStatusResponse *response,
+                                          guint32 *out_messages)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), 0);
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_STATUS_RESPONSE (response), FALSE);
 
-	return response->priv->messages;
+	if (out_messages != NULL && response->priv->have_messages)
+		*out_messages = response->priv->messages;
+
+	return response->priv->have_messages;
 }
 
 /**
  * camel_imapx_status_response_get_recent:
  * @response: a #CamelIMAPXStatusResponse
+ * @out_recent: return location for the status value, or %NULL
  *
- * Returns the number of messages with the \Recent flag set.
+ * If @response includes an updated "RECENT" value, write the value to
+ * @out_recent and return %TRUE.  Otherwise leave @out_recent unset and
+ * return %FALSE.
  *
- * Returns: the "RECENT" status valud
+ * The "RECENT" value refers to the number of messages with the \Recent
+ * flag set.
+ *
+ * The @out_recent argument can be %NULL, in which case the function
+ * simply returns whether an updated "RECENT" value is present.
+ *
+ * Returns: whether @out_recent was set
  *
  * Since: 3.10
  **/
-guint32
-camel_imapx_status_response_get_recent (CamelIMAPXStatusResponse *response)
+gboolean
+camel_imapx_status_response_get_recent (CamelIMAPXStatusResponse *response,
+                                        guint32 *out_recent)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), 0);
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_STATUS_RESPONSE (response), FALSE);
 
-	return response->priv->recent;
+	if (out_recent != NULL && response->priv->have_recent)
+		*out_recent = response->priv->recent;
+
+	return response->priv->have_recent;
 }
 
 /**
  * camel_imapx_status_response_get_unseen:
  * @response: a #CamelIMAPXStatusResponse
+ * @out_unseen: return location for the status value, or %NULL
  *
- * Returns the number of messages which do no have the \Seen flag set.
+ * If @response includes an updated "UNSEEN" value, write the value to
+ * @out_unseen and return %TRUE.  Otherwise leave @out_unseen unset and
+ * return %FALSE.
  *
- * Returns: the "UNSEEN" status value
+ * The "UNSEEN" value refers to the number of messages which do not have
+ * the \Seen flag set.
+ *
+ * The @out_unseen argument can be %NULL, in which case the function
+ * simply returns whether an updated "UNSEEN" value is present.
+ *
+ * Returns: whether @out_unseen was set
  *
  * Since: 3.10
  **/
-guint32
-camel_imapx_status_response_get_unseen (CamelIMAPXStatusResponse *response)
+gboolean
+camel_imapx_status_response_get_unseen (CamelIMAPXStatusResponse *response,
+                                        guint32 *out_unseen)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), 0);
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_STATUS_RESPONSE (response), FALSE);
 
-	return response->priv->unseen;
+	if (out_unseen != NULL && response->priv->have_unseen)
+		*out_unseen = response->priv->unseen;
+
+	return response->priv->have_unseen;
 }
 
 /**
  * camel_imapx_status_response_get_uidnext:
  * @response: a #CamelIMAPXStatusResponse
+ * @out_uidnext: return location for the status value, or %NULL
  *
- * Return the next unique identifier value of the mailbox.
+ * If @response includes an updated "UIDNEXT" value, write the value to
+ * @out_uidnext and return %TRUE.  Otherwise leave @out_uidnext unset and
+ * return %FALSE.
  *
- * Returns: the "UIDNEXT" status value
+ * The "UIDNEXT" value refers to the next unique identifier value of the
+ * mailbox.
+ *
+ * The @out_uidnext argument can be %NULL, in which case the function
+ * simply returns whether an updated "UIDNEXT" value is present.
+ *
+ * Returns: whether @out_uidnext was set
  *
  * Since: 3.10
  **/
-guint32
-camel_imapx_status_response_get_uidnext (CamelIMAPXStatusResponse *response)
+gboolean
+camel_imapx_status_response_get_uidnext (CamelIMAPXStatusResponse *response,
+                                         guint32 *out_uidnext)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), 0);
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_STATUS_RESPONSE (response), FALSE);
 
-	return response->priv->uidnext;
+	if (out_uidnext != NULL && response->priv->have_uidnext)
+		*out_uidnext = response->priv->uidnext;
+
+	return response->priv->have_uidnext;
 }
 
 /**
  * camel_imapx_status_response_get_uidvalidity:
  * @response: a #CamelIMAPXStatusResponse
+ * @out_uidvalidity: return location for the status value, or %NULL
  *
- * Returns the unique identifier validity value of the mailbox.
+ * If @response includes an updated "UIDVALIDITY" value, write the value to
+ * @out_uidvalidity and return %TRUE.  Otherwise leave @out_uidvalidity unset
+ * and return %FALSE.
  *
- * Returns: the "UIDVALIDITY" status value
+ * The "UIDVALIDITY" value refers to the unique identifier validity of the
+ * mailbox.
+ *
+ * The @out_uidvalidity argument can be %NULL, in which case the function
+ * simply returns whether an updated "UIDVALIDITY" value is present.
+ *
+ * Returns: whether @out_uidvalidity was set
  *
  * Since: 3.10
  **/
-guint32
-camel_imapx_status_response_get_uidvalidity (CamelIMAPXStatusResponse *response)
+gboolean
+camel_imapx_status_response_get_uidvalidity (CamelIMAPXStatusResponse *response,
+                                             guint32 *out_uidvalidity)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), 0);
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_STATUS_RESPONSE (response), FALSE);
 
-	return response->priv->uidvalidity;
+	if (out_uidvalidity != NULL && response->priv->have_uidvalidity)
+		*out_uidvalidity = response->priv->uidvalidity;
+
+	return response->priv->have_uidvalidity;
 }
 
 /**
  * camel_imapx_status_response_get_highestmodseq:
  * @response: a #CamelIMAPXStatusResponse
+ * @out_highestmodseq: return location for the status value, or %NULL
  *
- * Returns the highest mod-sequence value of all messages in the mailbox, or
- * zero if the server does not support the persistent storage of mod-sequences
- * for the mailbox.
+ * If @response includes an updated "HIGHESTMODSEQ" value, write the value to
+ * @out_highestmodseq and return %TRUE.  Otherwise leave @out_highestmodseq
+ * unset and return %FALSE.
  *
- * Returns: the "HIGHESTMODSEQ" status value
+ * The "HIGHESTMODSEQ" value refers to the the highest mod-sequence value of
+ * all messages in the mailbox, assuming the server supports the persistent
+ * storage of mod-sequences.
+ *
+ * The @out_highestmodseq argument can be %NULL, in which case the function
+ * simply returns whether an updated "HIGHESTMODSEQ" value is present.
+ *
+ * Returns: whether @out_highestmodseq was set
  *
  * Since: 3.10
  **/
-guint64
-camel_imapx_status_response_get_highestmodseq (CamelIMAPXStatusResponse *response)
+gboolean
+camel_imapx_status_response_get_highestmodseq (CamelIMAPXStatusResponse *response,
+                                               guint64 *out_highestmodseq)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response), 0);
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_STATUS_RESPONSE (response), FALSE);
 
-	return response->priv->highestmodseq;
+	if (out_highestmodseq != NULL && response->priv->have_highestmodseq)
+		*out_highestmodseq = response->priv->highestmodseq;
+
+	return response->priv->have_highestmodseq;
 }
 

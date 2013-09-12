@@ -78,18 +78,24 @@ CamelIMAPXStatusResponse *
 					 GError **error);
 const gchar *	camel_imapx_status_response_get_mailbox_name
 					(CamelIMAPXStatusResponse *response);
-guint32		camel_imapx_status_response_get_messages
-					(CamelIMAPXStatusResponse *response);
-guint32		camel_imapx_status_response_get_recent
-					(CamelIMAPXStatusResponse *response);
-guint32		camel_imapx_status_response_get_unseen
-					(CamelIMAPXStatusResponse *response);
-guint32		camel_imapx_status_response_get_uidnext
-					(CamelIMAPXStatusResponse *response);
-guint32		camel_imapx_status_response_get_uidvalidity
-					(CamelIMAPXStatusResponse *response);
-guint64		camel_imapx_status_response_get_highestmodseq
-					(CamelIMAPXStatusResponse *response);
+gboolean	camel_imapx_status_response_get_messages
+					(CamelIMAPXStatusResponse *response,
+					 guint32 *out_messages);
+gboolean	camel_imapx_status_response_get_recent
+					(CamelIMAPXStatusResponse *response,
+					 guint32 *out_recent);
+gboolean	camel_imapx_status_response_get_unseen
+					(CamelIMAPXStatusResponse *response,
+					 guint32 *out_unseen);
+gboolean	camel_imapx_status_response_get_uidnext
+					(CamelIMAPXStatusResponse *response,
+					 guint32 *out_uidnext);
+gboolean	camel_imapx_status_response_get_uidvalidity
+					(CamelIMAPXStatusResponse *response,
+					 guint32 *out_uidvalidity);
+gboolean	camel_imapx_status_response_get_highestmodseq
+					(CamelIMAPXStatusResponse *response,
+					 guint64 *out_highestmodseq);
 
 G_END_DECLS
 

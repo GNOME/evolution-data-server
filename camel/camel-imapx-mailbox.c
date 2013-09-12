@@ -1065,20 +1065,28 @@ void
 camel_imapx_mailbox_handle_status_response (CamelIMAPXMailbox *mailbox,
                                             CamelIMAPXStatusResponse *response)
 {
+	guint32 value32;
+	guint64 value64;
+
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 	g_return_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response));
 
-	mailbox->priv->messages =
-		camel_imapx_status_response_get_messages (response);
-	mailbox->priv->recent =
-		camel_imapx_status_response_get_recent (response);
-	mailbox->priv->unseen =
-		camel_imapx_status_response_get_unseen (response);
-	mailbox->priv->uidnext =
-		camel_imapx_status_response_get_uidnext (response);
-	mailbox->priv->uidvalidity =
-		camel_imapx_status_response_get_uidvalidity (response);
-	mailbox->priv->highestmodseq =
-		camel_imapx_status_response_get_highestmodseq (response);
+	if (camel_imapx_status_response_get_messages (response, &value32))
+		mailbox->priv->messages = value32;
+
+	if (camel_imapx_status_response_get_recent (response, &value32))
+		mailbox->priv->recent = value32;
+
+	if (camel_imapx_status_response_get_unseen (response, &value32))
+		mailbox->priv->unseen = value32;
+
+	if (camel_imapx_status_response_get_uidnext (response, &value32))
+		mailbox->priv->uidnext = value32;
+
+	if (camel_imapx_status_response_get_uidvalidity (response, &value32))
+		mailbox->priv->uidvalidity = value32;
+
+	if (camel_imapx_status_response_get_highestmodseq (response, &value64))
+		mailbox->priv->highestmodseq = value64;
 }
 
