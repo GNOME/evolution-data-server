@@ -371,6 +371,11 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				utf7_name = camel_utf8_utf7 (name);
 				s = utf7_name;
 				goto output_string;
+			case 'm': /* UTF-8 mailbox name */
+				name = va_arg (ap, gchar *);
+				utf7_name = camel_utf8_utf7 (name);
+				s = utf7_name;
+				goto output_string;
 			case 'F': /* IMAP flags set */
 				f = va_arg (ap, guint32);
 				F = va_arg (ap, CamelFlag *);
