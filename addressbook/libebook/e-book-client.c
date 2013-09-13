@@ -24,6 +24,7 @@
 #include <config.h>
 #endif
 
+#include <locale.h>
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
