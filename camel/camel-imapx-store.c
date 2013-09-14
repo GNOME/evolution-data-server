@@ -979,6 +979,8 @@ get_folder_info_offline (CamelStore *store,
 
 	/* get starting point */
 	if (top[0] == 0) {
+		CamelIMAPXNamespaceList *namespace_list;
+		gboolean have_personal_prefix;
 		gchar *namespace = NULL;
 
 		if (use_namespace) {
@@ -990,11 +992,19 @@ get_folder_info_offline (CamelStore *store,
 			g_object_unref (settings);
 		}
 
-		if (namespace != NULL) {
-			name = g_strdup (imapx_store->summary->namespaces->personal->prefix);
-			top = imapx_store->summary->namespaces->personal->prefix;
-		} else
+		namespace_list = imapx_store->summary->namespaces;
+
+		have_personal_prefix =
+			(namespace_list != NULL) &&
+			(namespace_list->personal != NULL) &&
+			(namespace_list->personal->prefix != NULL);
+
+		if (namespace != NULL && have_personal_prefix) {
+			name = g_strdup (namespace_list->personal->prefix);
+			top = namespace_list->personal->prefix;
+		} else {
 			name = g_strdup ("");
+		}
 
 		g_free (namespace);
 	} else {
