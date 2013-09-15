@@ -1,8 +1,36 @@
+Evolution-Data-Server 3.9.92 2013-09-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 707034 - vCard param value parsing too strict (Milan Crha)
+	Bug 707116 - IMAPX: Normalize descendants of INBOX (Matthew Barnes)
+	Bug 707520 - New detached instance notification not send to clients
+	             (Milan Crha)
+	Bug 707736 - IMAPX: LSUB response handling broken (Matthew Barnes)
+	Bug 708016 - CamelIMAPXStore: Crash when no namespace info present
+	             (Matthew Barnes)
+
+Other Changes:
+	* More preliminary IMAPX refactoring. (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Timo Jyrinki (fi)
+	Claude Paroz (fr)
+	Andika Triwidada (id)
+	Luca Ferretti (it)
+	Changwoo Ryu (ko)
+	Rūdolfs Mazurs (lv)
+	Rafael Ferreira (pt_BR)
+	Мирослав Николић (sr)
+
+
 Evolution-Data-Server 3.9.91 2013-09-02
 ---------------------------------------
 
 Miscellaneous Changes:
-	* Preliminary IMAPX refactoring for 2.12 features. (Matthew Barnes)
+	* Preliminary IMAPX refactoring for 3.12 features. (Matthew Barnes)
 	* Fix a possible memory leak in sasl_ntlm_try_empty_password_sync()
 	  (Milan Crha)
 
