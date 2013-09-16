@@ -39,7 +39,6 @@ void camel_string_list_free (GList *string_list);
 gchar *camel_strstrcase (const gchar *haystack, const gchar *needle);
 
 const gchar *camel_strdown (gchar *str);
-gchar camel_tolower (gchar c);
 gchar camel_toupper (gchar c);
 
 const gchar *camel_pstring_add (gchar *string, gboolean own);

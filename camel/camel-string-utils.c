@@ -109,22 +109,6 @@ camel_strdown (gchar *str)
 }
 
 /**
- * camel_tolower:
- * @c:
- *
- * ASCII to-lower function.
- *
- * Returns:
- **/
-gchar camel_tolower (gchar c)
-{
-	if (c >= 'A' && c <= 'Z')
-		c |= 0x20;
-
-	return c;
-}
-
-/**
  * camel_toupper:
  * @c:
  *

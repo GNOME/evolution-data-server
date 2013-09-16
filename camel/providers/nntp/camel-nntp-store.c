@@ -325,7 +325,7 @@ xover_setup (CamelNNTPStore *nntp_store,
 				}
 				break;
 			} else {
-				p[-1] = camel_tolower (c);
+				p[-1] = g_ascii_tolower (c);
 			}
 		}
 
