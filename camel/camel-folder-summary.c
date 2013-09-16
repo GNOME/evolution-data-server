@@ -221,45 +221,14 @@ folder_summary_dispose (GObject *object)
 		priv->timeout_handle = 0;
 	}
 
-	if (priv->filter_index != NULL) {
-		g_object_unref (priv->filter_index);
-		priv->filter_index = NULL;
-	}
-
-	if (priv->filter_64 != NULL) {
-		g_object_unref (priv->filter_64);
-		priv->filter_64 = NULL;
-	}
-
-	if (priv->filter_qp != NULL) {
-		g_object_unref (priv->filter_qp);
-		priv->filter_qp = NULL;
-	}
-
-	if (priv->filter_uu != NULL) {
-		g_object_unref (priv->filter_uu);
-		priv->filter_uu = NULL;
-	}
-
-	if (priv->filter_save != NULL) {
-		g_object_unref (priv->filter_save);
-		priv->filter_save = NULL;
-	}
-
-	if (priv->filter_html != NULL) {
-		g_object_unref (priv->filter_html);
-		priv->filter_html = NULL;
-	}
-
-	if (priv->filter_stream != NULL) {
-		g_object_unref (priv->filter_stream);
-		priv->filter_stream = NULL;
-	}
-
-	if (priv->index != NULL) {
-		g_object_unref (priv->index);
-		priv->index = NULL;
-	}
+	g_clear_object (&priv->filter_index);
+	g_clear_object (&priv->filter_64);
+	g_clear_object (&priv->filter_qp);
+	g_clear_object (&priv->filter_uu);
+	g_clear_object (&priv->filter_save);
+	g_clear_object (&priv->filter_html);
+	g_clear_object (&priv->filter_stream);
+	g_clear_object (&priv->filter_index);
 
 	if (priv->folder) {
 		g_object_weak_unref (G_OBJECT (priv->folder), (GWeakNotify) g_nullify_pointer, &priv->folder);
@@ -299,7 +268,6 @@ static void
 folder_summary_set_folder (CamelFolderSummary *summary,
                            CamelFolder *folder)
 {
-	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 	g_return_if_fail (summary->priv->folder == NULL);
 	/* folder can be NULL in certain cases, see maildir-store */
 
@@ -346,55 +314,64 @@ folder_summary_get_property (GObject *object,
 	switch (property_id) {
 		case PROP_FOLDER:
 			g_value_set_object (
-				value, camel_folder_summary_get_folder (
+				value,
+				camel_folder_summary_get_folder (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_SAVED_COUNT:
 			g_value_set_uint (
-				value, camel_folder_summary_get_saved_count (
+				value,
+				camel_folder_summary_get_saved_count (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_UNREAD_COUNT:
 			g_value_set_uint (
-				value, camel_folder_summary_get_unread_count (
+				value,
+				camel_folder_summary_get_unread_count (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_DELETED_COUNT:
 			g_value_set_uint (
-				value, camel_folder_summary_get_deleted_count (
+				value,
+				camel_folder_summary_get_deleted_count (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_JUNK_COUNT:
 			g_value_set_uint (
-				value, camel_folder_summary_get_junk_count (
+				value,
+				camel_folder_summary_get_junk_count (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_JUNK_NOT_DELETED_COUNT:
 			g_value_set_uint (
-				value, camel_folder_summary_get_junk_not_deleted_count (
+				value,
+				camel_folder_summary_get_junk_not_deleted_count (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_VISIBLE_COUNT:
 			g_value_set_uint (
-				value, camel_folder_summary_get_visible_count (
+				value,
+				camel_folder_summary_get_visible_count (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_BUILD_CONTENT:
 			g_value_set_boolean (
-				value, camel_folder_summary_get_build_content (
+				value,
+				camel_folder_summary_get_build_content (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 
 		case PROP_NEED_PREVIEW:
 			g_value_set_boolean (
-				value, camel_folder_summary_get_need_preview (
+				value,
+				camel_folder_summary_get_need_preview (
 				CAMEL_FOLDER_SUMMARY (object)));
 			return;
 	}
@@ -3220,7 +3197,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
 
 /**
  * camel_folder_summary_info_new_from_message:
- * @summary: a #CamelFodlerSummary object
+ * @summary: a #CamelFolderSummary object
  * @message: a #CamelMimeMessage object
  * @bodystructure: a bodystructure or NULL
  *
