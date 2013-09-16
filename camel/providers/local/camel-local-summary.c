@@ -319,7 +319,7 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		for (i = 0; i < camel_folder_summary_count (s); i++) {
 			CamelMessageInfo *info = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 			do_stat_mi (cls, &stats, info);
-			camel_message_info_free (info);
+			camel_message_info_unref (info);
 		}
 		camel_folder_summary_free_array (known_uids);
 

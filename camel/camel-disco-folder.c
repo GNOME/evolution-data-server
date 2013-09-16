@@ -284,7 +284,7 @@ disco_expunge_sync (CamelFolder *folder,
 		info = camel_folder_summary_get (folder->summary, uid);
 		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED)
 			g_ptr_array_add (uids, (gpointer) uid);
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 	}
 
 	success = disco_expunge_uids (folder, uids, cancellable, error);

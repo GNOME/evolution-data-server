@@ -544,7 +544,7 @@ CamelMessageInfo *
 		camel_message_info_new_from_header
 						(CamelFolderSummary *summary,
 						 struct _camel_header_raw *header);
-void		camel_message_info_free		(gpointer info);
+void		camel_message_info_unref	(gpointer info);
 gpointer	camel_message_info_clone	(gconstpointer info);
 
 /* accessors */

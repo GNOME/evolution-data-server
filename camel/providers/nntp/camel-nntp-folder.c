@@ -227,7 +227,7 @@ unset_flagged_flag (const gchar *uid,
 			base->dirty = TRUE;
 		}
 
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 	}
 }
 
@@ -731,7 +731,7 @@ nntp_folder_expunge_uids_offline (CamelFolder *folder,
 		CamelMessageInfo *mi = camel_folder_summary_peek_loaded (folder->summary, uids->pdata[ii]);
 		if (mi) {
 			camel_folder_summary_remove (folder->summary, mi);
-			camel_message_info_free (mi);
+			camel_message_info_unref (mi);
 		} else {
 			camel_folder_summary_remove_uid (folder->summary, uids->pdata[ii]);
 		}

@@ -63,8 +63,8 @@ maildir_folder_cmp_uids (CamelFolder *folder,
 	tma = camel_message_info_date_received (a);
 	tmb = camel_message_info_date_received (b);
 
-	camel_message_info_free (a);
-	camel_message_info_free (b);
+	camel_message_info_unref (a);
+	camel_message_info_unref (b);
 
 	return tma < tmb ? -1 : tma == tmb ? 0 : 1;
 }
@@ -140,7 +140,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 
 	res = g_strdup_printf ("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 
 	return res;
 }
@@ -352,7 +352,7 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 						g_io_error_from_errno (errno),
 						_("Cannot transfer message to destination folder: %s"),
 						g_strerror (errno));
-					camel_message_info_free (info);
+					camel_message_info_unref (info);
 					g_free (s_filename);
 					g_free (d_filename);
 					g_free (new_filename);
@@ -386,7 +386,7 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 				camel_folder_summary_remove (source->summary, info);
 			}
 
-			camel_message_info_free (info);
+			camel_message_info_unref (info);
 			g_free (s_filename);
 			g_free (d_filename);
 			g_free (new_filename);

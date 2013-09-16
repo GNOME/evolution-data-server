@@ -934,7 +934,7 @@ folder_search_match_all (CamelSExp *sexp,
 		} else {
 			g_ptr_array_add (r->value.ptrarray, (gchar *) uid);
 		}
-		camel_message_info_free (search->current);
+		camel_message_info_unref (search->current);
 	}
 	search->current = NULL;
 	return r;

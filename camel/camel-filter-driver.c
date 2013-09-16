@@ -1449,7 +1449,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 			report_status (
 				driver, CAMEL_FILTER_STATUS_END,
 				100, _("Failed on message %d"), i);
-			camel_message_info_free (info);
+			camel_message_info_unref (info);
 			g_propagate_error (error, local_error);
 			goto fail;
 		}
@@ -1459,7 +1459,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		/* skip over the FROM_END state */
 		camel_mime_parser_step (mp, NULL, NULL);
 
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 	}
 
 	camel_operation_progress (cancellable, 100);
@@ -1849,7 +1849,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		g_object_unref (driver->priv->message);
 
 	if (freeinfo)
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 
 	return 0;
 
@@ -1861,7 +1861,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		g_object_unref (driver->priv->message);
 
 	if (freeinfo)
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 
 	g_propagate_error (error, driver->priv->error);
 	driver->priv->error = NULL;

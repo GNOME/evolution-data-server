@@ -150,7 +150,7 @@ vee_folder_note_added_uid (CamelVeeFolder *vfolder,
 		if (vmi) {
 			if (changes)
 				camel_folder_change_info_add_uid (changes, vuid);
-			camel_message_info_free (vmi);
+			camel_message_info_unref (vmi);
 
 			if (vfolder->priv->parent_vee_store)
 				camel_vee_store_note_vuid_used (vfolder->priv->parent_vee_store, added_mi_data, vfolder);
@@ -880,7 +880,7 @@ vee_folder_get_message_sync (CamelFolder *folder,
 		msg = camel_folder_get_message_sync (
 			camel_folder_summary_get_folder (mi->orig_summary), camel_message_info_uid (mi) + 8,
 			cancellable, error);
-		camel_message_info_free ((CamelMessageInfo *) mi);
+		camel_message_info_unref (mi);
 	} else {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,

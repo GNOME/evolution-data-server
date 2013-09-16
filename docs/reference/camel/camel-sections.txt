@@ -640,7 +640,7 @@ camel_tag_list_free
 camel_message_info_new
 camel_message_info_ref
 camel_message_info_new_from_header
-camel_message_info_free
+camel_message_info_unref
 camel_message_info_clone
 camel_message_info_ptr
 camel_message_info_uint32

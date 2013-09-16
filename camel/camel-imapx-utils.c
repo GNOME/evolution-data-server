@@ -1147,7 +1147,7 @@ imapx_parse_envelope (CamelIMAPXStream *is,
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok != '(') {
 		g_clear_error (&local_error);
-		camel_message_info_free (minfo);
+		camel_message_info_unref (minfo);
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "envelope: expecting '('");
 		return NULL;
 	}
@@ -1228,7 +1228,7 @@ imapx_parse_envelope (CamelIMAPXStream *is,
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok != ')') {
 		g_clear_error (&local_error);
-		camel_message_info_free (minfo);
+		camel_message_info_unref (minfo);
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting ')'");
 		return NULL;
 	}
@@ -1335,7 +1335,7 @@ imapx_parse_body (CamelIMAPXStream *is,
 			minfo = imapx_parse_envelope (is, cancellable, &local_error);
 			/* what do we do with the message content info?? */
 			//((CamelMessageInfoBase *) minfo)->content = imapx_parse_body (is);
-			camel_message_info_free (minfo);
+			camel_message_info_unref (minfo);
 			minfo = NULL;
 			d (is->tagprefix, "Scanned envelope - what do i do with it?\n");
 		}
@@ -1519,7 +1519,7 @@ imapx_free_fetch (struct _fetch_info *finfo)
 	if (finfo->header)
 		g_object_unref (finfo->header);
 	if (finfo->minfo)
-		camel_message_info_free (finfo->minfo);
+		camel_message_info_unref (finfo->minfo);
 	if (finfo->cinfo)
 		imapx_free_body (finfo->cinfo);
 	camel_flag_list_free (&finfo->user_flags);

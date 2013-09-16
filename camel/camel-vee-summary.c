@@ -92,7 +92,7 @@ vee_info_ptr (const CamelMessageInfo *mi,
 	rmi = camel_folder_summary_get (vmi->orig_summary, mi->uid + 8);
 	HANDLE_NULL_INFO (NULL);
 	p = (gpointer) camel_message_info_ptr (rmi, id);
-	camel_message_info_free (rmi);
+	camel_message_info_unref (rmi);
 
 	return p;
 }
@@ -106,7 +106,7 @@ vee_info_uint32 (const CamelMessageInfo *mi,
 
 	HANDLE_NULL_INFO (0);
 	ret = camel_message_info_uint32 (rmi, id);
-	camel_message_info_free (rmi);
+	camel_message_info_unref (rmi);
 
 	return ret;
 
@@ -121,7 +121,7 @@ vee_info_time (const CamelMessageInfo *mi,
 
 	HANDLE_NULL_INFO (0);
 	ret = camel_message_info_time (rmi, id);
-	camel_message_info_free (rmi);
+	camel_message_info_unref (rmi);
 
 	return ret;
 }
@@ -135,7 +135,7 @@ vee_info_user_flag (const CamelMessageInfo *mi,
 
 	HANDLE_NULL_INFO (FALSE);
 	ret =	camel_message_info_user_flag (rmi, id);
-	camel_message_info_free (rmi);
+	camel_message_info_unref (rmi);
 
 	return ret;
 }
@@ -149,7 +149,7 @@ vee_info_user_tag (const CamelMessageInfo *mi,
 
 	HANDLE_NULL_INFO ("");
 	ret = camel_message_info_user_tag (rmi, id);
-	camel_message_info_free (rmi);
+	camel_message_info_unref (rmi);
 
 	return ret;
 }
@@ -191,7 +191,7 @@ vee_info_set_user_flag (CamelMessageInfo *mi,
 
 		res = camel_message_info_set_user_flag (rmi, name, value);
 
-		camel_message_info_free (rmi);
+		camel_message_info_unref (rmi);
 
 		if (ignore_changes)
 			vee_summary_notify_mi_changed (vf, mi);
@@ -220,7 +220,7 @@ vee_info_set_user_tag (CamelMessageInfo *mi,
 			camel_vee_folder_ignore_next_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
 
 		res = camel_message_info_set_user_tag (rmi, name, value);
-		camel_message_info_free (rmi);
+		camel_message_info_unref (rmi);
 
 		if (ignore_changes)
 			vee_summary_notify_mi_changed (vf, mi);
@@ -258,7 +258,7 @@ vee_info_set_flags (CamelMessageInfo *mi,
 			camel_folder_summary_replace_flags (mi->summary, mi);
 		}
 
-		camel_message_info_free (rmi);
+		camel_message_info_unref (rmi);
 
 		if (ignore_changes)
 			vee_summary_notify_mi_changed (vf, mi);
@@ -437,7 +437,7 @@ camel_vee_summary_get_uids_for_subfolder (CamelVeeSummary *summary,
 	return known_uids;
 }
 
-/* free returned pointer with camel_message_info_free() */
+/* unref returned pointer with camel_message_info_unref() */
 CamelVeeMessageInfo *
 camel_vee_summary_add (CamelVeeSummary *s,
                        CamelVeeMessageInfoData *mi_data)
@@ -525,8 +525,8 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
 	if (mi) {
 		/* under twice, the first for camel_folder_summary_peek_loaded(),
 		 * the second to actually free the mi */
-		camel_message_info_free (mi);
-		camel_message_info_free (mi);
+		camel_message_info_unref (mi);
+		camel_message_info_unref (mi);
 	}
 
 	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -561,7 +561,7 @@ camel_vee_summary_replace_flags (CamelVeeSummary *summary,
 	}
 
 	camel_folder_summary_replace_flags (&summary->summary, mi);
-	camel_message_info_free (mi);
+	camel_message_info_unref (mi);
 
 	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }

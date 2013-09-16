@@ -201,7 +201,7 @@ remove_summary (gchar *key,
 	if (cls->index)
 		camel_index_delete_name (cls->index, camel_message_info_uid (info));
 	camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static gint
@@ -265,11 +265,11 @@ mh_summary_check (CamelLocalSummary *cls,
 
 					if (old) {
 						g_hash_table_remove (left, camel_message_info_uid (info));
-						camel_message_info_free (old);
+						camel_message_info_unref (old);
 					}
 
 					camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
-					camel_message_info_free (info);
+					camel_message_info_unref (info);
 				}
 				camel_mh_summary_add (cls, d->d_name, forceindex, cancellable);
 			} else {
@@ -278,9 +278,9 @@ mh_summary_check (CamelLocalSummary *cls,
 
 				if (old) {
 					g_hash_table_remove (left, uid);
-					camel_message_info_free (old);
+					camel_message_info_unref (old);
 				}
-				camel_message_info_free (info);
+				camel_message_info_unref (info);
 			}
 		}
 	}
@@ -341,7 +341,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 		} else if (info->info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			info->info.flags &= 0xffff;
 		}
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 	}
 
 	camel_folder_summary_free_array (known_uids);

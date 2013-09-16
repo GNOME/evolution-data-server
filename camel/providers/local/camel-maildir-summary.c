@@ -317,7 +317,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 		info = camel_folder_summary_peek_loaded (s, uid);
 		if (info) {
 			d (printf ("already seen uid '%s', just summarising instead\n", uid));
-			camel_message_info_free (mi);
+			camel_message_info_unref (mi);
 			mdi = (CamelMaildirMessageInfo *)(mi = info);
 		}
 
@@ -555,7 +555,7 @@ remove_summary (gchar *key,
 	if (rd->changes)
 		camel_folder_change_info_remove_uid (rd->changes, key);
 	camel_folder_summary_remove ((CamelFolderSummary *) rd->cls, info);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static gint
@@ -643,7 +643,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 		info = g_hash_table_lookup (left, uid);
 		if (info) {
-			camel_message_info_free (info);
+			camel_message_info_unref (info);
 			g_hash_table_remove (left, uid);
 		}
 
@@ -668,7 +668,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 				g_free (mdi->filename);
 				mdi->filename = g_strdup (d->d_name);
 			}
-			camel_message_info_free (info);
+			camel_message_info_unref (info);
 		}
 		g_free (uid);
 	}
@@ -704,7 +704,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 			/* already in summary?  shouldn't happen, but just incase ... */
 			if ((info = camel_folder_summary_get ((CamelFolderSummary *) cls, name))) {
-				camel_message_info_free (info);
+				camel_message_info_unref (info);
 				newname = destname = camel_folder_summary_next_uid_string (s);
 			} else {
 				gchar *nm;
@@ -827,7 +827,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 			/* strip FOLDER_MESSAGE_FLAGED, etc */
 			mdi->info.info.flags &= 0xffff;
 		}
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 	}
 
 	camel_folder_summary_free_array (known_uids);

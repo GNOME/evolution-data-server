@@ -161,7 +161,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	/* we only need it to check the message exists */
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 
 	name = g_strdup_printf ("%s/%s", lf->folder_path, uid);
 	message_stream = camel_stream_fs_new_with_name (

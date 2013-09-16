@@ -505,7 +505,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 					mi = camel_folder_summary_peek_loaded (s, uid);
 					if (mi) {
 						camel_folder_summary_remove (s, mi);
-						camel_message_info_free (mi);
+						camel_message_info_unref (mi);
 					} else {
 						camel_folder_summary_remove_uid (s, uid);
 					}

@@ -328,12 +328,12 @@ message_info_new_from_header (CamelFolderSummary *s,
 			if (info) {
 				if ((info->info.info.flags & CAMEL_MESSAGE_FOLDER_NOTSEEN)) {
 					info->info.info.flags &= ~CAMEL_MESSAGE_FOLDER_NOTSEEN;
-					camel_message_info_free (mi);
+					camel_message_info_unref (mi);
 					mi = info;
 				} else {
 					add = 7;
 					d (printf ("seen '%s' before, adding anew\n", uid));
-					camel_message_info_free (info);
+					camel_message_info_unref (info);
 				}
 			} else {
 				add = 2;
@@ -494,7 +494,7 @@ summary_update (CamelLocalSummary *cls,
 			mi->info.info.flags |= CAMEL_MESSAGE_FOLDER_NOTSEEN;
 		else
 			mi->info.info.flags &= ~CAMEL_MESSAGE_FOLDER_NOTSEEN;
-		camel_message_info_free (mi);
+		camel_message_info_unref (mi);
 	}
 	camel_folder_summary_free_array (known_uids);
 	mbs->changes = changeinfo;
@@ -534,7 +534,7 @@ summary_update (CamelLocalSummary *cls,
 		}
 
 		if (mi)
-			camel_message_info_free (mi);
+			camel_message_info_unref (mi);
 	}
 
 	if (known_uids)
@@ -608,7 +608,7 @@ mbox_summary_check (CamelLocalSummary *cls,
 
 			if (info) {
 				camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
-				camel_message_info_free (info);
+				camel_message_info_unref (info);
 			}
 		}
 		camel_folder_summary_free_array (known_uids);
@@ -781,8 +781,8 @@ cms_sort_frompos (gconstpointer a,
 		ret = -1;
 	else
 		ret = 0;
-	camel_message_info_free (info1);
-	camel_message_info_free (info2);
+	camel_message_info_unref (info1);
+	camel_message_info_unref (info2);
 
 	return ret;
 
@@ -860,7 +860,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		d (printf ("Checking message %s %08x\n", camel_message_info_uid (info), ((CamelMessageInfoBase *) info)->flags));
 
 		if ((info->info.info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) == 0) {
-			camel_message_info_free ((CamelMessageInfo *) info);
+			camel_message_info_unref (info);
 			info = NULL;
 			continue;
 		}
@@ -925,7 +925,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 
 		info->info.info.flags &= 0xffff;
 		info->info.info.dirty = TRUE;
-		camel_message_info_free ((CamelMessageInfo *) info);
+		camel_message_info_unref (info);
 		info = NULL;
 	}
 
@@ -958,7 +958,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 	if (mp)
 		g_object_unref (mp);
 	if (info)
-		camel_message_info_free ((CamelMessageInfo *) info);
+		camel_message_info_unref (info);
 
 	camel_operation_pop_message (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -1005,7 +1005,7 @@ mbox_summary_sync (CamelLocalSummary *cls,
 			quick = FALSE;
 		else
 			work |= (info->info.info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0;
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 	}
 
 	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
@@ -1170,7 +1170,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 			camel_folder_change_info_remove_uid (changeinfo, uid);
 			camel_folder_summary_remove (s, (CamelMessageInfo *) info);
 			del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
-			camel_message_info_free ((CamelMessageInfo *) info);
+			camel_message_info_unref (info);
 			info = NULL;
 			lastdel = TRUE;
 			touched = TRUE;
@@ -1252,7 +1252,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 				(gint) camel_mime_parser_tell (mp),
 				(gint) camel_mime_parser_tell_start_from (mp)));
 			camel_mime_parser_unstep (mp);
-			camel_message_info_free ((CamelMessageInfo *) info);
+			camel_message_info_unref (info);
 			info = NULL;
 		}
 	}
@@ -1282,7 +1282,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 				((CamelMessageInfo *) info)->dirty = TRUE;
 				camel_folder_summary_touch (s);
 			}
-			camel_message_info_free ((CamelMessageInfo *) info);
+			camel_message_info_unref (info);
 			info = NULL;
 		}
 	}
@@ -1300,7 +1300,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 	g_object_unref (mp);
 
 	if (info)
-		camel_message_info_free ((CamelMessageInfo *) info);
+		camel_message_info_unref (info);
 
 	camel_folder_summary_free_array (known_uids);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);

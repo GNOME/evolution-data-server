@@ -181,7 +181,7 @@ remove_all_loaded (CamelFolderSummary *summary)
 
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, remove_each_item, &to_remove_infos);
 
-	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_free, NULL);
+	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_unref, NULL);
 	g_slist_free (to_remove_infos);
 
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -2051,7 +2051,7 @@ remove_cache (CamelSession *session,
 
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, (GHRFunc) remove_item, &to_remove_infos);
 
-	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_free, NULL);
+	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_unref, NULL);
 	g_slist_free (to_remove_infos);
 
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -2155,7 +2155,7 @@ msg_update_preview (const gchar *uid,
 				camel_db_write_preview_record (parent_store->cdb_w, full_name, info->uid, info->preview, NULL);
 		}
 	}
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static void
@@ -2522,7 +2522,7 @@ camel_read_mir_callback (gpointer ref,
 			/* FIXME: this should be done differently, how i don't know */
 			((CamelMessageInfoBase *) info)->content = perform_content_info_load_from_db (summary, mir);
 			if (((CamelMessageInfoBase *) info)->content == NULL) {
-				camel_message_info_free (info);
+				camel_message_info_unref (info);
 				info = NULL;
 			}
 			mir->cinfo = tmp;
@@ -2981,8 +2981,8 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
  *
  * Create a new info record from a header.
  *
- * Returns: the newly allocated record which must be freed with
- * camel_message_info_free()
+ * Returns: the newly allocated record which must be unreferenced with
+ *          camel_message_info_unref()
  **/
 CamelMessageInfo *
 camel_folder_summary_info_new_from_header (CamelFolderSummary *summary,
@@ -3016,8 +3016,8 @@ camel_folder_summary_info_new_from_header (CamelFolderSummary *summary,
  * Once complete, the parser will be positioned at the end of
  * the message.
  *
- * Returns: the newly allocated record which must be freed with
- * camel_message_info_free()
+ * Returns: the newly allocated record which must be unreferenced with
+ *          camel_message_info_unref()
  **/
 CamelMessageInfo *
 camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
@@ -3078,8 +3078,8 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
  *
  * Create a summary item from a message.
  *
- * Returns: the newly allocated record which must be freed using
- * camel_message_info_free()
+ * Returns: the newly allocated record which must be unreferenced with
+ *          camel_message_info_unref()
  **/
 CamelMessageInfo *
 camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
@@ -3244,7 +3244,7 @@ camel_folder_summary_remove (CamelFolderSummary *summary,
 	g_return_val_if_fail (info != NULL, FALSE);
 
 	if (camel_folder_summary_remove_uid (summary, camel_message_info_uid (info))) {
-		camel_message_info_free (info);
+		camel_message_info_unref (info);
 		return TRUE;
 	}
 
@@ -3339,7 +3339,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 			g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
 
 			if (mi)
-				camel_message_info_free (mi);
+				camel_message_info_unref (mi);
 			camel_pstring_free (uid_copy);
 		}
 	}
@@ -4437,13 +4437,13 @@ camel_message_info_new_from_header (CamelFolderSummary *summary,
 }
 
 /**
- * camel_message_info_free:
+ * camel_message_info_unref:
  * @info: a #CamelMessageInfo
  *
  * Unref's and potentially frees a #CamelMessageInfo and its contents.
  **/
 void
-camel_message_info_free (gpointer o)
+camel_message_info_unref (gpointer o)
 {
 	CamelMessageInfo *mi = o;
 

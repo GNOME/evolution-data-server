@@ -67,8 +67,8 @@ mbox_folder_cmp_uids (CamelFolder *folder,
 
 	res = a->frompos < b->frompos ? -1 : a->frompos == b->frompos ? 0 : 1;
 
-	camel_message_info_free ((CamelMessageInfo *) a);
-	camel_message_info_free ((CamelMessageInfo *) b);
+	camel_message_info_unref (a);
+	camel_message_info_unref (b);
 
 	return res;
 }
@@ -119,12 +119,12 @@ mbox_folder_get_filename (CamelFolder *folder,
 	}
 
 	if (info->frompos == -1) {
-		camel_message_info_free ((CamelMessageInfo *) info);
+		camel_message_info_unref (info);
 		goto fail;
 	}
 
 	frompos = info->frompos;
-	camel_message_info_free ((CamelMessageInfo *) info);
+	camel_message_info_unref (info);
 
 	filename = g_strdup_printf ("%s%s!%" PRId64, lf->folder_path, G_DIR_SEPARATOR_S, (gint64) frompos);
 
@@ -331,12 +331,12 @@ retry:
 	}
 
 	if (info->frompos == -1) {
-		camel_message_info_free ((CamelMessageInfo *) info);
+		camel_message_info_unref (info);
 		goto fail;
 	}
 
 	frompos = info->frompos;
-	camel_message_info_free ((CamelMessageInfo *) info);
+	camel_message_info_unref (info);
 
 	/* we use an fd instead of a normal stream here - the reason is subtle, camel_mime_part will cache
 	 * the whole message in memory if the stream is non-seekable (which it is when built from a parser

@@ -590,7 +590,7 @@ imapx_get_message_sync (CamelFolder *folder,
 					has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
 			}
 
-			camel_message_info_free (mi);
+			camel_message_info_unref (mi);
 		}
 	}
 

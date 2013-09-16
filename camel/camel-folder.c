@@ -139,10 +139,8 @@ async_context_free (AsyncContext *async_context)
 	if (async_context->message != NULL)
 		g_object_unref (async_context->message);
 
-	/* XXX This is actually an unref.  Good god, no wonder we
-	 *     have so many crashes involving CamelMessageInfos! */
 	if (async_context->info != NULL)
-		camel_message_info_free (async_context->info);
+		camel_message_info_unref (async_context->info);
 
 	if (async_context->destination != NULL)
 		g_object_unref (async_context->destination);
@@ -495,7 +493,7 @@ folder_transfer_message_to (CamelFolder *source,
 			source, uid, CAMEL_MESSAGE_DELETED |
 			CAMEL_MESSAGE_SEEN, ~0);
 
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static gboolean
@@ -693,7 +691,7 @@ folder_get_message_flags (CamelFolder *folder,
 		return 0;
 
 	flags = camel_message_info_flags (info);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 
 	return flags;
 }
@@ -714,7 +712,7 @@ folder_set_message_flags (CamelFolder *folder,
 		return FALSE;
 
 	res = camel_message_info_set_flags (info, flags, set);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 
 	return res;
 }
@@ -734,7 +732,7 @@ folder_get_message_user_flag (CamelFolder *folder,
 		return FALSE;
 
 	ret = camel_message_info_user_flag (info, name);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 
 	return ret;
 }
@@ -754,7 +752,7 @@ folder_set_message_user_flag (CamelFolder *folder,
 		return;
 
 	camel_message_info_set_user_flag (info, name, value);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static const gchar *
@@ -772,7 +770,7 @@ folder_get_message_user_tag (CamelFolder *folder,
 		return NULL;
 
 	ret = camel_message_info_user_tag (info, name);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 
 	return ret;
 }
@@ -792,7 +790,7 @@ folder_set_message_user_tag (CamelFolder *folder,
 		return;
 
 	camel_message_info_set_user_tag (info, name, value);
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static GPtrArray *
@@ -898,7 +896,7 @@ folder_free_message_info (CamelFolder *folder,
 {
 	g_return_if_fail (folder->summary != NULL);
 
-	camel_message_info_free (info);
+	camel_message_info_unref (info);
 }
 
 static void
