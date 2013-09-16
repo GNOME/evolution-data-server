@@ -52,23 +52,6 @@ camel_strcase_hash (gconstpointer v)
 	return h;
 }
 
-static void
-free_string (gpointer string,
-             gpointer user_data)
-{
-	g_free (string);
-}
-
-void
-camel_string_list_free (GList *string_list)
-{
-	if (string_list == NULL)
-		return;
-
-	g_list_foreach (string_list, free_string, NULL);
-	g_list_free (string_list);
-}
-
 gchar *
 camel_strstrcase (const gchar *haystack,
                   const gchar *needle)

@@ -409,7 +409,7 @@ mime_part_finalize (GObject *object)
 	g_free (priv->content_md5);
 	g_free (priv->content_location);
 
-	camel_string_list_free (priv->content_languages);
+	g_list_free_full (priv->content_languages, (GDestroyNotify) g_free);
 	camel_content_disposition_unref (priv->disposition);
 
 	camel_header_raw_clear (&CAMEL_MIME_PART (object)->headers);
@@ -1159,8 +1159,9 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part,
 {
 	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
 
-	if (mime_part->priv->content_languages)
-		camel_string_list_free (mime_part->priv->content_languages);
+	g_list_free_full (
+		mime_part->priv->content_languages,
+		(GDestroyNotify) g_free);
 
 	mime_part->priv->content_languages = content_languages;
 

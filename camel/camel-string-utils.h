@@ -34,8 +34,6 @@ G_BEGIN_DECLS
 gint   camel_strcase_equal (gconstpointer a, gconstpointer b);
 guint camel_strcase_hash  (gconstpointer v);
 
-void camel_string_list_free (GList *string_list);
-
 gchar *camel_strstrcase (const gchar *haystack, const gchar *needle);
 
 const gchar *camel_strdown (gchar *str);

@@ -3384,7 +3384,6 @@ camel_movemail
 <FILE>camel-string-utils</FILE>
 camel_strcase_equal
 camel_strcase_hash
-camel_string_list_free
 camel_strstrcase
 camel_strdown
 camel_pstring_add
