@@ -235,7 +235,6 @@ typedef enum _CamelFolderSummaryLock {
 	CAMEL_FOLDER_SUMMARY_IO_LOCK,
 	CAMEL_FOLDER_SUMMARY_FILTER_LOCK,
 	CAMEL_FOLDER_SUMMARY_ALLOC_LOCK,
-	CAMEL_FOLDER_SUMMARY_REF_LOCK
 } CamelFolderSummaryLock;
 
 struct _CamelFolderSummary {

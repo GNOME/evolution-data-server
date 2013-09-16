@@ -84,7 +84,6 @@ struct _CamelFolderSummaryPrivate {
 	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
 	GRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
 	GRecMutex alloc_lock;	/* for setting up and using allocators */
-	GRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 
 	gboolean need_preview;
 	GHashTable *preview_updates;
@@ -182,9 +181,7 @@ remove_all_loaded (CamelFolderSummary *summary)
 
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, remove_each_item, &to_remove_infos);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
 
 	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_free, NULL);
 	g_slist_free (to_remove_infos);
@@ -252,7 +249,6 @@ folder_summary_finalize (GObject *object)
 	g_rec_mutex_clear (&priv->io_lock);
 	g_rec_mutex_clear (&priv->filter_lock);
 	g_rec_mutex_clear (&priv->alloc_lock);
-	g_rec_mutex_clear (&priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->finalize (object);
@@ -1354,7 +1350,6 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 	g_rec_mutex_init (&summary->priv->io_lock);
 	g_rec_mutex_init (&summary->priv->filter_lock);
 	g_rec_mutex_init (&summary->priv->alloc_lock);
-	g_rec_mutex_init (&summary->priv->ref_lock);
 
 	summary->priv->cache_load_time = 0;
 	summary->priv->timeout_handle = 0;
@@ -2060,9 +2055,7 @@ remove_cache (CamelSession *session,
 
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, (GHRFunc) remove_item, &to_remove_infos);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
 
 	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_free, NULL);
 	g_slist_free (to_remove_infos);
@@ -4811,9 +4804,6 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
 		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
 			g_rec_mutex_lock (&summary->priv->alloc_lock);
 			break;
-		case CAMEL_FOLDER_SUMMARY_REF_LOCK:
-			g_rec_mutex_lock (&summary->priv->ref_lock);
-			break;
 		default:
 			g_return_if_reached ();
 	}
@@ -4846,9 +4836,6 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 			break;
 		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
 			g_rec_mutex_unlock (&summary->priv->alloc_lock);
-			break;
-		case CAMEL_FOLDER_SUMMARY_REF_LOCK:
-			g_rec_mutex_unlock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();
