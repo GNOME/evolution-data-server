@@ -81,7 +81,6 @@ struct _CamelFolderSummaryPrivate {
 	struct _CamelIndex *index;
 
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
-	GRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
 	GRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
 	GRecMutex alloc_lock;	/* for setting up and using allocators */
 
@@ -246,7 +245,6 @@ folder_summary_finalize (GObject *object)
 	g_hash_table_destroy (priv->preview_updates);
 
 	g_rec_mutex_clear (&priv->summary_lock);
-	g_rec_mutex_clear (&priv->io_lock);
 	g_rec_mutex_clear (&priv->filter_lock);
 	g_rec_mutex_clear (&priv->alloc_lock);
 
@@ -1347,7 +1345,6 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 	summary->priv->loaded_infos = g_hash_table_new (g_str_hash, g_str_equal);
 
 	g_rec_mutex_init (&summary->priv->summary_lock);
-	g_rec_mutex_init (&summary->priv->io_lock);
 	g_rec_mutex_init (&summary->priv->filter_lock);
 	g_rec_mutex_init (&summary->priv->alloc_lock);
 
@@ -4795,9 +4792,6 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
-		case CAMEL_FOLDER_SUMMARY_IO_LOCK:
-			g_rec_mutex_lock (&summary->priv->io_lock);
-			break;
 		case CAMEL_FOLDER_SUMMARY_FILTER_LOCK:
 			g_rec_mutex_lock (&summary->priv->filter_lock);
 			break;
@@ -4827,9 +4821,6 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 	switch (lock) {
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_unlock (&summary->priv->summary_lock);
-			break;
-		case CAMEL_FOLDER_SUMMARY_IO_LOCK:
-			g_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_FILTER_LOCK:
 			g_rec_mutex_unlock (&summary->priv->filter_lock);
