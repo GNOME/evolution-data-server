@@ -228,8 +228,12 @@ static void
 store_summary_store_info_free (CamelStoreSummary *summary,
                                CamelStoreInfo *info)
 {
+	CamelStoreSummaryClass *class;
+
+	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+
 	g_free (info->path);
-	g_slice_free1 (summary->store_info_size, info);
+	g_slice_free1 (class->store_info_size, info);
 }
 
 static void
@@ -260,6 +264,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 	object_class->dispose = store_summary_dispose;
 	object_class->finalize = store_summary_finalize;
 
+	class->store_info_size = sizeof (CamelStoreInfo);
 	class->summary_header_load = store_summary_summary_header_load;
 	class->summary_header_save = store_summary_summary_header_save;
 	class->store_info_new  = store_summary_store_info_new;
@@ -273,7 +278,6 @@ static void
 camel_store_summary_init (CamelStoreSummary *summary)
 {
 	summary->priv = CAMEL_STORE_SUMMARY_GET_PRIVATE (summary);
-	summary->store_info_size = sizeof (CamelStoreInfo);
 
 	summary->priv->version = CAMEL_STORE_SUMMARY_VERSION;
 
@@ -780,11 +784,15 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 CamelStoreInfo *
 camel_store_summary_info_new (CamelStoreSummary *summary)
 {
+	CamelStoreSummaryClass *class;
 	CamelStoreInfo *info;
 
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
 
-	info = g_slice_alloc0 (summary->store_info_size);
+	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+	g_return_val_if_fail (class->store_info_size > 0, NULL);
+
+	info = g_slice_alloc0 (class->store_info_size);
 	info->refcount = 1;
 
 	return info;

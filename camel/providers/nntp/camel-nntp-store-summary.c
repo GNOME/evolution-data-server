@@ -55,6 +55,7 @@ camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *class)
 	CamelStoreSummaryClass *store_summary_class;
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
+	store_summary_class->store_info_size = sizeof (CamelNNTPStoreInfo);
 	store_summary_class->summary_header_load = summary_header_load;
 	store_summary_class->summary_header_save = summary_header_save;
 	store_summary_class->store_info_load = store_info_load;
@@ -66,11 +67,6 @@ camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *class)
 static void
 camel_nntp_store_summary_init (CamelNNTPStoreSummary *nntp_store_summary)
 {
-	CamelStoreSummary *store_summary;
-
-	store_summary = CAMEL_STORE_SUMMARY (nntp_store_summary);
-	store_summary->store_info_size = sizeof (CamelNNTPStoreInfo);
-
 	nntp_store_summary->version = CAMEL_NNTP_STORE_SUMMARY_VERSION;
 
 	memset (

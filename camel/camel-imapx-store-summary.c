@@ -347,6 +347,7 @@ camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 	object_class->finalize = imapx_store_summary_finalize;
 
 	store_summary_class = CAMEL_STORE_SUMMARY_CLASS (class);
+	store_summary_class->store_info_size = sizeof (CamelIMAPXStoreInfo);
 	store_summary_class->summary_header_load =imapx_store_summary_summary_header_load;
 	store_summary_class->summary_header_save = imapx_store_summary_summary_header_save;
 	store_summary_class->store_info_load = imapx_store_summary_store_info_load;
@@ -357,7 +358,6 @@ camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *class)
 static void
 camel_imapx_store_summary_init (CamelIMAPXStoreSummary *s)
 {
-	((CamelStoreSummary *) s)->store_info_size = sizeof (CamelIMAPXStoreInfo);
 	s->version = CAMEL_IMAPX_STORE_SUMMARY_VERSION;
 }
 

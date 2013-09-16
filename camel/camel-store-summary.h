@@ -80,15 +80,15 @@ struct _CamelStoreSummary {
 	CamelObject parent;
 	CamelStoreSummaryPrivate *priv;
 
-	/* sizes of memory objects */
-	guint32 store_info_size;
-
 	GPtrArray *folders;	/* CamelStoreInfo's */
 	GHashTable *folders_path; /* CamelStoreInfo's by path name */
 };
 
 struct _CamelStoreSummaryClass {
 	CamelObjectClass parent_class;
+
+	/* size of memory objects */
+	gsize store_info_size;
 
 	/* load/save the global info */
 	gint		(*summary_header_load)	(CamelStoreSummary *summary,
