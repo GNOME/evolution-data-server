@@ -232,7 +232,6 @@ typedef enum {
  **/
 typedef enum _CamelFolderSummaryLock {
 	CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK,
-	CAMEL_FOLDER_SUMMARY_FILTER_LOCK,
 	CAMEL_FOLDER_SUMMARY_ALLOC_LOCK,
 } CamelFolderSummaryLock;
 

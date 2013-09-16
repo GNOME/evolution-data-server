@@ -3046,7 +3046,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
 		if (p->index)
 			summary_assign_uid (summary, info);
 
-		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+		g_rec_mutex_lock (&summary->priv->filter_lock);
 
 		if (p->index) {
 			if (p->filter_index == NULL)
@@ -3066,7 +3066,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
 				CAMEL_MIME_FILTER_INDEX (p->filter_index), NULL);
 		}
 
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+		g_rec_mutex_unlock (&summary->priv->filter_lock);
 
 		((CamelMessageInfoBase *) info)->size = camel_mime_parser_tell (mp) - start;
 	}
@@ -3100,7 +3100,7 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
 	if (p->index)
 		summary_assign_uid (summary, info);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+	g_rec_mutex_lock (&summary->priv->filter_lock);
 
 	if (p->index) {
 		if (p->filter_index == NULL)
@@ -3127,7 +3127,7 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
 			CAMEL_MIME_FILTER_INDEX (p->filter_index), NULL);
 	}
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+	g_rec_mutex_unlock (&summary->priv->filter_lock);
 
 	return info;
 }
@@ -4792,9 +4792,6 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
-		case CAMEL_FOLDER_SUMMARY_FILTER_LOCK:
-			g_rec_mutex_lock (&summary->priv->filter_lock);
-			break;
 		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
 			g_rec_mutex_lock (&summary->priv->alloc_lock);
 			break;
@@ -4821,9 +4818,6 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 	switch (lock) {
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_unlock (&summary->priv->summary_lock);
-			break;
-		case CAMEL_FOLDER_SUMMARY_FILTER_LOCK:
-			g_rec_mutex_unlock (&summary->priv->filter_lock);
 			break;
 		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
 			g_rec_mutex_unlock (&summary->priv->alloc_lock);
