@@ -82,7 +82,6 @@ struct _CamelFolderSummaryPrivate {
 
 	GRecMutex summary_lock;	/* for the summary hashtable/array */
 	GRecMutex filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
-	GRecMutex alloc_lock;	/* for setting up and using allocators */
 
 	gboolean need_preview;
 	GHashTable *preview_updates;
@@ -246,7 +245,6 @@ folder_summary_finalize (GObject *object)
 
 	g_rec_mutex_clear (&priv->summary_lock);
 	g_rec_mutex_clear (&priv->filter_lock);
-	g_rec_mutex_clear (&priv->alloc_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->finalize (object);
@@ -1346,7 +1344,6 @@ camel_folder_summary_init (CamelFolderSummary *summary)
 
 	g_rec_mutex_init (&summary->priv->summary_lock);
 	g_rec_mutex_init (&summary->priv->filter_lock);
-	g_rec_mutex_init (&summary->priv->alloc_lock);
 
 	summary->priv->cache_load_time = 0;
 	summary->priv->timeout_handle = 0;
@@ -3522,15 +3519,11 @@ CamelMessageContentInfo *
 camel_folder_summary_content_info_new (CamelFolderSummary *summary)
 {
 	CamelFolderSummaryClass *class;
-	CamelMessageContentInfo *ci;
 
 	class = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
+	g_return_val_if_fail (class->content_info_size > 0, NULL);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
-	ci = g_slice_alloc0 (class->content_info_size);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
-
-	return ci;
+	return g_slice_alloc0 (class->content_info_size);
 }
 
 static CamelMessageInfo *
@@ -4383,16 +4376,17 @@ camel_message_info_new (CamelFolderSummary *summary)
 {
 	CamelFolderSummaryClass *class;
 	CamelMessageInfo *info;
+	gsize message_info_size;
 
-	if (summary) {
-		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
+	if (summary != NULL) {
 		class = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
-		info = g_slice_alloc0 (class->message_info_size);
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
+		g_return_val_if_fail (class->message_info_size > 0, NULL);
+		message_info_size = class->message_info_size;
 	} else {
-		info = g_slice_alloc0 (sizeof (CamelMessageInfoBase));
+		message_info_size = sizeof (CamelMessageInfoBase);
 	}
 
+	info = g_slice_alloc0 (message_info_size);
 	info->refcount = 1;
 	info->summary = summary;
 
@@ -4792,9 +4786,6 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
-		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
-			g_rec_mutex_lock (&summary->priv->alloc_lock);
-			break;
 		default:
 			g_return_if_reached ();
 	}
@@ -4818,9 +4809,6 @@ camel_folder_summary_unlock (CamelFolderSummary *summary,
 	switch (lock) {
 		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
 			g_rec_mutex_unlock (&summary->priv->summary_lock);
-			break;
-		case CAMEL_FOLDER_SUMMARY_ALLOC_LOCK:
-			g_rec_mutex_unlock (&summary->priv->alloc_lock);
 			break;
 		default:
 			g_return_if_reached ();
