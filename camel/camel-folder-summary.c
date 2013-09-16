@@ -107,12 +107,6 @@ struct _CamelFolderSummaryPrivate {
 	guint timeout_handle;
 };
 
-static GMutex info_lock;
-
-/* this lock is ONLY for the standalone messageinfo stuff */
-#define GLOBAL_INFO_LOCK(i) g_mutex_lock(&info_lock)
-#define GLOBAL_INFO_UNLOCK(i) g_mutex_unlock(&info_lock)
-
 /* this should probably be conditional on it existing */
 #define USE_BSEARCH
 
@@ -4429,17 +4423,10 @@ camel_message_info_ref (gpointer o)
 {
 	CamelMessageInfo *mi = o;
 
-	if (mi->summary) {
-		camel_folder_summary_lock (mi->summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-		g_assert (mi->refcount >= 1);
-		mi->refcount++;
-		camel_folder_summary_unlock (mi->summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-	} else {
-		GLOBAL_INFO_LOCK (info);
-		g_assert (mi->refcount >= 1);
-		mi->refcount++;
-		GLOBAL_INFO_UNLOCK (info);
-	}
+	g_return_val_if_fail (mi != NULL, NULL);
+	g_return_val_if_fail (mi->refcount > 0, NULL);
+
+	g_atomic_int_inc (&mi->refcount);
 
 	return o;
 }
@@ -4477,37 +4464,29 @@ camel_message_info_free (gpointer o)
 	CamelMessageInfo *mi = o;
 
 	g_return_if_fail (mi != NULL);
+	g_return_if_fail (mi->refcount > 0);
 
-	if (mi->summary) {
-		camel_folder_summary_lock (mi->summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+	if (g_atomic_int_dec_and_test (&mi->refcount)) {
+		if (mi->summary != NULL) {
+			CamelFolderSummaryClass *class;
 
-		if (mi->refcount >= 1)
-			mi->refcount--;
-		if (mi->refcount > 0) {
-			camel_folder_summary_unlock (mi->summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-			return;
+			/* FIXME This is kinda busted, should really
+			 *       be handled by message_info_free(). */
+			if (mi->summary->priv->build_content
+			    && ((CamelMessageInfoBase *) mi)->content) {
+				camel_folder_summary_content_info_free (
+					mi->summary,
+					((CamelMessageInfoBase *) mi)->content);
+				((CamelMessageInfoBase *) mi)->content = NULL;
+			}
+
+			class = CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary);
+			g_return_if_fail (class->message_info_free != NULL);
+
+			class->message_info_free (mi->summary, mi);
+		} else {
+			message_info_free (NULL, mi);
 		}
-
-		camel_folder_summary_unlock (mi->summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
-
-		/* FIXME: this is kinda busted, should really be handled by message info free */
-		if (mi->summary->priv->build_content
-		    && ((CamelMessageInfoBase *) mi)->content) {
-			camel_folder_summary_content_info_free (mi->summary, ((CamelMessageInfoBase *) mi)->content);
-			((CamelMessageInfoBase *) mi)->content = NULL;
-		}
-
-		CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->message_info_free (mi->summary, mi);
-	} else {
-		GLOBAL_INFO_LOCK (info);
-		mi->refcount--;
-		if (mi->refcount > 0) {
-			GLOBAL_INFO_UNLOCK (info);
-			return;
-		}
-		GLOBAL_INFO_UNLOCK (info);
-
-		message_info_free (NULL, mi);
 	}
 }
 

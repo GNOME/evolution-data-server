@@ -170,7 +170,7 @@ enum {
 struct _CamelMessageInfo {
 	CamelFolderSummary *summary;
 
-	guint32 refcount;	/* ??? */
+	volatile gint refcount;
 	const gchar *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
 	guint dirty : 1;
@@ -182,7 +182,7 @@ struct _CamelMessageInfo {
 struct _CamelMessageInfoBase {
 	CamelFolderSummary *summary;
 
-	guint32 refcount;	/* ??? */
+	volatile gint refcount;
 	const gchar *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
 	guint dirty : 1;
