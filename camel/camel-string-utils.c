@@ -108,22 +108,6 @@ camel_strdown (gchar *str)
 	return str;
 }
 
-/**
- * camel_toupper:
- * @c:
- *
- * ASCII to-upper function.
- *
- * Returns:
- **/
-gchar camel_toupper (gchar c)
-{
-	if (c >= 'a' && c <= 'z')
-		c &= ~0x20;
-
-	return c;
-}
-
 /* working stuff for pstrings */
 static GMutex string_pool_lock;
 static GHashTable *string_pool = NULL;

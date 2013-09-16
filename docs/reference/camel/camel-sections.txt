@@ -3387,7 +3387,6 @@ camel_strcase_hash
 camel_string_list_free
 camel_strstrcase
 camel_strdown
-camel_toupper
 camel_pstring_add
 camel_pstring_strdup
 camel_pstring_free
