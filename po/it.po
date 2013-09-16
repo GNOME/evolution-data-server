@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-16 14:36+0200\n"
+"POT-Creation-Date: 2013-09-16 14:37+0200\n"
 "PO-Revision-Date: 2013-09-15 18:44+0200\n"
 "Last-Translator: Luca Ferretti <lferrett@gnome.org>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
@@ -34,121 +34,136 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:115
+#: ../addressbook/backends/file/e-book-backend-file.c:114
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Rimozione del file «%s» non riuscita: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:143
+#: ../addressbook/backends/file/e-book-backend-file.c:138
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Creazione della directory %s non riuscita: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:394
+#: ../addressbook/backends/file/e-book-backend-file.c:385
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Creazione collegamento fisico per la risorsa «%s» non riuscito: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:499
-#: ../addressbook/backends/file/e-book-backend-file.c:1135
+#: ../addressbook/backends/file/e-book-backend-file.c:487
+#: ../addressbook/backends/file/e-book-backend-file.c:911
 msgid "No UID in the contact"
 msgstr "Nessun UID nel contatto"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:773
+#: ../addressbook/backends/file/e-book-backend-file.c:757
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Trovati UID in conflitto tra i contatti aggiunti"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:881
-msgid "Loading..."
-msgstr "Caricamento..."
+#: ../addressbook/backends/file/e-book-backend-file.c:844
+#: ../addressbook/backends/file/e-book-backend-file.c:1038
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2656
+#, c-format
+msgid "Contact '%s' not found"
+msgstr "Contatto «%s» non trovato"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:883
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4419
-msgid "Searching..."
-msgstr "Ricerca..."
-
-#: ../addressbook/backends/file/e-book-backend-file.c:1164
+#: ../addressbook/backends/file/e-book-backend-file.c:940
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr ""
 "Tentato di modificare il contatto «%s» con una revisione non sincronizzata"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1300
-#: ../addressbook/backends/file/e-book-backend-file.c:1369
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2707
-#, c-format
-msgid "Contact '%s' not found"
-msgstr "Contatto «%s» non trovato"
-
-#: ../addressbook/backends/file/e-book-backend-file.c:1411
-#: ../addressbook/backends/file/e-book-backend-file.c:1478
+#: ../addressbook/backends/file/e-book-backend-file.c:1089
+#: ../addressbook/backends/file/e-book-backend-file.c:1139
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "Interrogazione \"%s\" non supportata"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1420
-#: ../addressbook/backends/file/e-book-backend-file.c:1487
+#: ../addressbook/backends/file/e-book-backend-file.c:1098
+#: ../addressbook/backends/file/e-book-backend-file.c:1148
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "Interrogazione \"%s\" non valida"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1671
+#: ../addressbook/backends/file/e-book-backend-file.c:1248
+msgid "Loading..."
+msgstr "Caricamento..."
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1250
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4995
+msgid "Searching..."
+msgstr "Ricerca..."
+
+#: ../addressbook/backends/file/e-book-backend-file.c:1568
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Impossibile rinominare il vecchio database da «%s» a «%s»: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:149
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1240
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4314
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:383
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:826
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4890
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:386
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1108
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
-#: ../addressbook/libedata-book/e-book-backend-sexp.c:874
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:568
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
-#: ../calendar/libecal/e-cal.c:2335 ../calendar/libecal/e-cal-client.c:268
-#: ../camel/camel-imapx-command.c:650 ../libedataserver/e-client.c:177
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:562
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:592
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:604
+#: ../calendar/libecal/e-cal.c:2339 ../calendar/libecal/e-cal-client.c:275
+#: ../camel/camel-imapx-command.c:606 ../libedataserver/e-client.c:179
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
 # infedele, ma meglio di "Interrogazione"
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:833
+#: ../addressbook/backends/google/e-book-backend-google.c:733
 msgid "Querying for updated contacts…"
 msgstr "Verifica dei contatti aggiornati..."
 
 # infedele, ma meglio di "Interrogazione"<
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:985
+#: ../addressbook/backends/google/e-book-backend-google.c:885
 msgid "Querying for updated groups…"
 msgstr "Verifica dei gruppi aggiornati..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1673
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5050
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1293
+#: ../addressbook/backends/google/e-book-backend-google.c:1334
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1686
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:437
 msgid "The backend does not support bulk additions"
 msgstr "Il backend non supporta le aggiunte in serie"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1822
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5186
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1395
-msgid "The backend does not support bulk modifications"
-msgstr "Il backend non supporta le modifiche in serie"
+# infedele, ma meglio di "Interrogazione"
+#. Insert the entry on the server asynchronously
+#: ../addressbook/backends/google/e-book-backend-google.c:1366
+#, fuzzy
+msgid "Creating new contact…"
+msgstr "Verifica dei contatti aggiornati..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2022
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1487
+#: ../addressbook/backends/google/e-book-backend-google.c:1457
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:557
 msgid "The backend does not support bulk removals"
 msgstr "Il backend non supporta le rimozioni in serie"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2148
+#: ../addressbook/backends/google/e-book-backend-google.c:1485
+msgid "Deleting contact…"
+msgstr ""
+
+#: ../addressbook/backends/google/e-book-backend-google.c:1739
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2351
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:618
+msgid "The backend does not support bulk modifications"
+msgstr "Il backend non supporta le modifiche in serie"
+
+#. Update the contact on the server asynchronously
+#: ../addressbook/backends/google/e-book-backend-google.c:1777
+msgid "Modifying contact…"
+msgstr ""
+
+#: ../addressbook/backends/google/e-book-backend-google.c:1948
 msgid "Loading…"
 msgstr "Caricamento..."
 
 #. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1620
+#: ../addressbook/backends/google/e-book-google-utils.c:1606
 #: ../services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -157,17 +172,17 @@ msgid "Personal"
 msgstr "Personale"
 
 #. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1622
+#: ../addressbook/backends/google/e-book-google-utils.c:1608
 msgid "Friends"
 msgstr "Amici"
 
 #. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1624
+#: ../addressbook/backends/google/e-book-google-utils.c:1610
 msgid "Family"
 msgstr "Famiglia"
 
 #. System Group: Coworkers
-#: ../addressbook/backends/google/e-book-google-utils.c:1626
+#: ../addressbook/backends/google/e-book-google-utils.c:1612
 msgid "Coworkers"
 msgstr "Collaboratori"
 
@@ -190,112 +205,112 @@ msgid "Invalid DN syntax"
 msgstr "Sintassi DN non valida"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1237
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4313
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4889
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Errore LDAP 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1849
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2172
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1769
+msgid "Adding contact to LDAP server..."
+msgstr "Aggiunta contatto al server LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1907
+msgid "Removing contact from LDAP server..."
+msgstr "Rimozione del contatto dal server LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2051
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2448
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: restituito NULL da ldap_first_entry"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2102
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2230
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2304
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2506
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: restituito tipo di risultato %d non gestito"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2363
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2490
+# o "sul server" ? -Luca
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2373
+msgid "Modifying contact from LDAP server..."
+msgstr "Modifica contatto dal server LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2735
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2967
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: restituito tipo di risultato di ricerca %d non gestito"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4262
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4838
 msgid "Receiving LDAP search results..."
 msgstr "Ricezione risultati della ricerca LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4441
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5017
 msgid "Error performing search"
 msgstr "Errore nell'eseguire la ricerca"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4569
-#, c-format
-msgid "Downloading contacts (%d)..."
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5145
+#, fuzzy, c-format
+msgid "Downloading contacts (%d)... "
 msgstr "Scaricamento contatti (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5133
-msgid "Adding contact to LDAP server..."
-msgstr "Aggiunta contatto al server LDAP..."
-
-# o "sul server" ? -Luca
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5208
-msgid "Modifying contact from LDAP server..."
-msgstr "Modifica contatto dal server LDAP..."
-
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5274
-msgid "Removing contact from LDAP server..."
-msgstr "Rimozione del contatto dal server LDAP..."
-
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5663
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5671
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Recupero del DN per l'utente \"%s\" non riuscito"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:805
-msgid "Loading Addressbook summary..."
-msgstr "Caricamento sommario rubrica..."
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:823
-#, c-format
-msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr "PROPFIND su webdav non riuscita con stato HTTP %d (%s)"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:842
-msgid "No response body in webdav PROPFIND result"
-msgstr "Nessun corpo della risposta nel risultato webdav PROPFIND"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:884
-#, c-format
-msgid "Loading Contacts (%d%%)"
-msgstr "Caricamento contatti (%d%%)..."
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1215
-msgid "Cannot transform SoupURI to string"
-msgstr "Impossibile trasformare il SoupURI in stringa"
-
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1326
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:468
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "Creazione della risorsa «%s» non riuscita con stato HTTP %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1424
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:573
+#, c-format
+msgid "DELETE failed with HTTP status %d"
+msgstr "DELETE non riuscita con stato HTTP %d"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:639
 msgid "Contact on server changed -> not modifying"
 msgstr "Contatto sul server cambiato → non modificato"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1432
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:648
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "Modifica del contatto non riuscita con stato HTTP %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1508
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1086
+msgid "Loading Addressbook summary..."
+msgstr "Caricamento sommario rubrica..."
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1105
 #, c-format
-msgid "DELETE failed with HTTP status %d"
-msgstr "DELETE non riuscita con stato HTTP %d"
+msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
+msgstr "PROPFIND su webdav non riuscita con stato HTTP %d (%s)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1130
+msgid "No response body in webdav PROPFIND result"
+msgstr "Nessun corpo della risposta nel risultato webdav PROPFIND"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1162
+#, c-format
+msgid "Loading Contacts (%d%%)"
+msgstr "Caricamento contatti (%d%%)..."
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1498
+msgid "Cannot transform SoupURI to string"
+msgstr "Impossibile trasformare il SoupURI in stringa"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:24
 msgid "No such book"
 msgstr "Rubric inesistente"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:26
-#: ../addressbook/libedata-book/e-data-book.c:346
+#: ../addressbook/libedata-book/e-data-book.c:797
 msgid "Contact not found"
 msgstr "Contatto non trovato"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:28
-#: ../addressbook/libedata-book/e-data-book.c:347
+#: ../addressbook/libedata-book/e-data-book.c:798
 msgid "Contact ID already exists"
 msgstr "L'ID del contatto esiste già"
 
@@ -305,12 +320,12 @@ msgstr "Sorgente inesistente"
 
 # almeno credo... (NdT)
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:32
-#: ../addressbook/libedata-book/e-data-book.c:363
+#: ../addressbook/libedata-book/e-data-book.c:814
 msgid "No space"
 msgstr "Spazio non sufficiente"
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook-contacts/e-contact.c:123
+#: ../addressbook/libebook-contacts/e-contact.c:120
 msgid "Unique ID"
 msgstr "ID univoco"
 
@@ -318,12 +333,12 @@ msgstr "ID univoco"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../addressbook/libebook-contacts/e-contact.c:128
+#: ../addressbook/libebook-contacts/e-contact.c:125
 msgid "File Under"
 msgstr "Registra come"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook-contacts/e-contact.c:130
+#: ../addressbook/libebook-contacts/e-contact.c:127
 msgid "Book UID"
 msgstr "UID rubrica"
 
@@ -335,210 +350,210 @@ msgstr "UID rubrica"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook-contacts/e-contact.c:136
+#: ../addressbook/libebook-contacts/e-contact.c:133
 msgid "Full Name"
 msgstr "Nome completo"
 
 # dal dizionario given name (americ.) nome di battesimo -Luca
 # Solo che non sono affatto sicuro sia politicamente
 # corretto mettere "battesimo"...
-#: ../addressbook/libebook-contacts/e-contact.c:137
+#: ../addressbook/libebook-contacts/e-contact.c:134
 msgid "Given Name"
 msgstr "Nome"
 
-#: ../addressbook/libebook-contacts/e-contact.c:138
+#: ../addressbook/libebook-contacts/e-contact.c:135
 msgid "Family Name"
 msgstr "Cognome"
 
-#: ../addressbook/libebook-contacts/e-contact.c:139
+#: ../addressbook/libebook-contacts/e-contact.c:136
 msgid "Nickname"
 msgstr "Soprannome"
 
 #. Email fields
-#: ../addressbook/libebook-contacts/e-contact.c:142
+#: ../addressbook/libebook-contacts/e-contact.c:139
 msgid "Email 1"
 msgstr "Email 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:143
+#: ../addressbook/libebook-contacts/e-contact.c:140
 msgid "Email 2"
 msgstr "Email 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:144
+#: ../addressbook/libebook-contacts/e-contact.c:141
 msgid "Email 3"
 msgstr "Email 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:145
+#: ../addressbook/libebook-contacts/e-contact.c:142
 msgid "Email 4"
 msgstr "Email 4"
 
-#: ../addressbook/libebook-contacts/e-contact.c:147
+#: ../addressbook/libebook-contacts/e-contact.c:144
 msgid "Mailer"
 msgstr "Gestore di posta"
 
 #. Address Labels
-#: ../addressbook/libebook-contacts/e-contact.c:150
+#: ../addressbook/libebook-contacts/e-contact.c:147
 msgid "Home Address Label"
 msgstr "Etichetta indirizzo abitazione"
 
-#: ../addressbook/libebook-contacts/e-contact.c:151
+#: ../addressbook/libebook-contacts/e-contact.c:148
 msgid "Work Address Label"
 msgstr "Etichetta indirizzo lavoro"
 
-#: ../addressbook/libebook-contacts/e-contact.c:152
+#: ../addressbook/libebook-contacts/e-contact.c:149
 msgid "Other Address Label"
 msgstr "Etichetta altro indirizzo"
 
 #. Phone fields
-#: ../addressbook/libebook-contacts/e-contact.c:155
+#: ../addressbook/libebook-contacts/e-contact.c:152
 msgid "Assistant Phone"
 msgstr "Telefono assistente"
 
-#: ../addressbook/libebook-contacts/e-contact.c:156
+#: ../addressbook/libebook-contacts/e-contact.c:153
 msgid "Business Phone"
 msgstr "Telefono ufficio"
 
-#: ../addressbook/libebook-contacts/e-contact.c:157
+#: ../addressbook/libebook-contacts/e-contact.c:154
 msgid "Business Phone 2"
 msgstr "Telefono ufficio 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:158
+#: ../addressbook/libebook-contacts/e-contact.c:155
 msgid "Business Fax"
 msgstr "Fax ufficio"
 
-#: ../addressbook/libebook-contacts/e-contact.c:159
+#: ../addressbook/libebook-contacts/e-contact.c:156
 msgid "Callback Phone"
 msgstr "Telefono a cui richiamare"
 
-#: ../addressbook/libebook-contacts/e-contact.c:160
+#: ../addressbook/libebook-contacts/e-contact.c:157
 msgid "Car Phone"
 msgstr "Telefono auto"
 
-#: ../addressbook/libebook-contacts/e-contact.c:161
+#: ../addressbook/libebook-contacts/e-contact.c:158
 msgid "Company Phone"
 msgstr "Telefono ditta"
 
-#: ../addressbook/libebook-contacts/e-contact.c:162
+#: ../addressbook/libebook-contacts/e-contact.c:159
 msgid "Home Phone"
 msgstr "Telefono abitazione"
 
-#: ../addressbook/libebook-contacts/e-contact.c:163
+#: ../addressbook/libebook-contacts/e-contact.c:160
 msgid "Home Phone 2"
 msgstr "Telefono abitazione 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:164
+#: ../addressbook/libebook-contacts/e-contact.c:161
 msgid "Home Fax"
 msgstr "Fax abitazione"
 
-#: ../addressbook/libebook-contacts/e-contact.c:165
+#: ../addressbook/libebook-contacts/e-contact.c:162
 msgid "ISDN"
 msgstr "ISDN"
 
 # credo questo sia il risultato di una recente
 # discussione su tp -Luca
-#: ../addressbook/libebook-contacts/e-contact.c:166
+#: ../addressbook/libebook-contacts/e-contact.c:163
 msgid "Mobile Phone"
 msgstr "Telefono cellulare"
 
-#: ../addressbook/libebook-contacts/e-contact.c:167
+#: ../addressbook/libebook-contacts/e-contact.c:164
 msgid "Other Phone"
 msgstr "Altro telefono"
 
-#: ../addressbook/libebook-contacts/e-contact.c:168
+#: ../addressbook/libebook-contacts/e-contact.c:165
 msgid "Other Fax"
 msgstr "Altro fax"
 
-#: ../addressbook/libebook-contacts/e-contact.c:169
+#: ../addressbook/libebook-contacts/e-contact.c:166
 msgid "Pager"
 msgstr "Cercapersone"
 
-#: ../addressbook/libebook-contacts/e-contact.c:170
+#: ../addressbook/libebook-contacts/e-contact.c:167
 msgid "Primary Phone"
 msgstr "Telefono principale"
 
-#: ../addressbook/libebook-contacts/e-contact.c:171
+#: ../addressbook/libebook-contacts/e-contact.c:168
 msgid "Radio"
 msgstr "Radio"
 
-#: ../addressbook/libebook-contacts/e-contact.c:172
+#: ../addressbook/libebook-contacts/e-contact.c:169
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook-contacts/e-contact.c:174
+#: ../addressbook/libebook-contacts/e-contact.c:171
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook-contacts/e-contact.c:177
+#: ../addressbook/libebook-contacts/e-contact.c:174
 msgid "Organization"
 msgstr "Organizzazione"
 
-#: ../addressbook/libebook-contacts/e-contact.c:178
+#: ../addressbook/libebook-contacts/e-contact.c:175
 msgid "Organizational Unit"
 msgstr "Unità organizzativa"
 
-#: ../addressbook/libebook-contacts/e-contact.c:179
+#: ../addressbook/libebook-contacts/e-contact.c:176
 msgid "Office"
 msgstr "Ufficio"
 
 # I titoli (dott, prof, ing) di una persona sono diversi
 # dalle qualifiche (responsabile delle risorse umane,
 # megadirigente naturale...) -Luca
-#: ../addressbook/libebook-contacts/e-contact.c:180
+#: ../addressbook/libebook-contacts/e-contact.c:177
 msgid "Title"
 msgstr "Titolo"
 
 # magari qui si potrebbe usare quel qualifica
 # tolto sopra al posto di Ruolo
-#: ../addressbook/libebook-contacts/e-contact.c:181
+#: ../addressbook/libebook-contacts/e-contact.c:178
 msgid "Role"
 msgstr "Qualifica"
 
-#: ../addressbook/libebook-contacts/e-contact.c:182
+#: ../addressbook/libebook-contacts/e-contact.c:179
 msgid "Manager"
 msgstr "Manager"
 
-#: ../addressbook/libebook-contacts/e-contact.c:183
+#: ../addressbook/libebook-contacts/e-contact.c:180
 msgid "Assistant"
 msgstr "Assistente"
 
 #. Web fields
-#: ../addressbook/libebook-contacts/e-contact.c:186
+#: ../addressbook/libebook-contacts/e-contact.c:183
 msgid "Homepage URL"
 msgstr "URL della homepage"
 
-#: ../addressbook/libebook-contacts/e-contact.c:187
+#: ../addressbook/libebook-contacts/e-contact.c:184
 msgid "Weblog URL"
 msgstr "URL del blog"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:190
+#: ../addressbook/libebook-contacts/e-contact.c:187
 msgid "Categories"
 msgstr "Categorie"
 
 #. Collaboration fields
-#: ../addressbook/libebook-contacts/e-contact.c:193
+#: ../addressbook/libebook-contacts/e-contact.c:190
 msgid "Calendar URI"
 msgstr "URI del calendario"
 
-#: ../addressbook/libebook-contacts/e-contact.c:194
+#: ../addressbook/libebook-contacts/e-contact.c:191
 msgid "Free/Busy URL"
 msgstr "URL per libero/occupato"
 
-#: ../addressbook/libebook-contacts/e-contact.c:195
+#: ../addressbook/libebook-contacts/e-contact.c:192
 msgid "ICS Calendar"
 msgstr "Calendario ICS"
 
-#: ../addressbook/libebook-contacts/e-contact.c:196
+#: ../addressbook/libebook-contacts/e-contact.c:193
 msgid "Video Conferencing URL"
 msgstr "URL per video conferenza"
 
 #. Misc fields
-#: ../addressbook/libebook-contacts/e-contact.c:199
+#: ../addressbook/libebook-contacts/e-contact.c:196
 msgid "Spouse's Name"
 msgstr "Nome del coniuge"
 
-#: ../addressbook/libebook-contacts/e-contact.c:200
+#: ../addressbook/libebook-contacts/e-contact.c:197
 msgid "Note"
 msgstr "Annotazione"
 
@@ -548,237 +563,237 @@ msgstr "Annotazione"
 # o mettiamo nominativo pubblico che è l'unica traduzione
 # che centra il significato
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:203
+#: ../addressbook/libebook-contacts/e-contact.c:200
 msgid "AIM Home Screen Name 1"
 msgstr "Nominativo pubblico AIM personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:204
+#: ../addressbook/libebook-contacts/e-contact.c:201
 msgid "AIM Home Screen Name 2"
 msgstr "Nominativo pubblico AIM personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:205
+#: ../addressbook/libebook-contacts/e-contact.c:202
 msgid "AIM Home Screen Name 3"
 msgstr "Nominativo pubblico AIM personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:206
+#: ../addressbook/libebook-contacts/e-contact.c:203
 msgid "AIM Work Screen Name 1"
 msgstr "Nominativo pubblico AIM lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:207
+#: ../addressbook/libebook-contacts/e-contact.c:204
 msgid "AIM Work Screen Name 2"
 msgstr "Nominativo pubblico AIM lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:208
+#: ../addressbook/libebook-contacts/e-contact.c:205
 msgid "AIM Work Screen Name 3"
 msgstr "Nominativo pubblico AIM lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:209
+#: ../addressbook/libebook-contacts/e-contact.c:206
 msgid "GroupWise Home Screen Name 1"
 msgstr "Nominativo pubblico GroupWise personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:210
+#: ../addressbook/libebook-contacts/e-contact.c:207
 msgid "GroupWise Home Screen Name 2"
 msgstr "Nominativo pubblico GroupWise personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:211
+#: ../addressbook/libebook-contacts/e-contact.c:208
 msgid "GroupWise Home Screen Name 3"
 msgstr "Nominativo pubblico GroupWise personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:212
+#: ../addressbook/libebook-contacts/e-contact.c:209
 msgid "GroupWise Work Screen Name 1"
 msgstr "Nominativo pubblico GroupWise lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:213
+#: ../addressbook/libebook-contacts/e-contact.c:210
 msgid "GroupWise Work Screen Name 2"
 msgstr "Nominativo pubblico GroupWise lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:214
+#: ../addressbook/libebook-contacts/e-contact.c:211
 msgid "GroupWise Work Screen Name 3"
 msgstr "Nominativo pubblico GroupWise lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:215
+#: ../addressbook/libebook-contacts/e-contact.c:212
 msgid "Jabber Home ID 1"
 msgstr "ID Jabber personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:216
+#: ../addressbook/libebook-contacts/e-contact.c:213
 msgid "Jabber Home ID 2"
 msgstr "ID Jabber personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:217
+#: ../addressbook/libebook-contacts/e-contact.c:214
 msgid "Jabber Home ID 3"
 msgstr "ID Jabber personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:218
+#: ../addressbook/libebook-contacts/e-contact.c:215
 msgid "Jabber Work ID 1"
 msgstr "ID Jabber lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:219
+#: ../addressbook/libebook-contacts/e-contact.c:216
 msgid "Jabber Work ID 2"
 msgstr "ID Jabber lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:220
+#: ../addressbook/libebook-contacts/e-contact.c:217
 msgid "Jabber Work ID 3"
 msgstr "ID Jabber lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:221
+#: ../addressbook/libebook-contacts/e-contact.c:218
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Nominativo pubblico Yahoo! personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:222
+#: ../addressbook/libebook-contacts/e-contact.c:219
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Nominativo pubblico Yahoo! personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:223
+#: ../addressbook/libebook-contacts/e-contact.c:220
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Nominativo pubblico Yahoo! personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:224
+#: ../addressbook/libebook-contacts/e-contact.c:221
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Nominativo pubblico Yahoo! lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:225
+#: ../addressbook/libebook-contacts/e-contact.c:222
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Nominativo pubblico Yahoo! lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:226
+#: ../addressbook/libebook-contacts/e-contact.c:223
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Nominativo pubblico Yahoo! lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:227
+#: ../addressbook/libebook-contacts/e-contact.c:224
 msgid "MSN Home Screen Name 1"
 msgstr "Nominativo pubblico MSN personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:228
+#: ../addressbook/libebook-contacts/e-contact.c:225
 msgid "MSN Home Screen Name 2"
 msgstr "Nominativo pubblico MSN personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:229
+#: ../addressbook/libebook-contacts/e-contact.c:226
 msgid "MSN Home Screen Name 3"
 msgstr "Nominativo pubblico MSN personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:230
+#: ../addressbook/libebook-contacts/e-contact.c:227
 msgid "MSN Work Screen Name 1"
 msgstr "Nominativo pubblico MSN lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:231
+#: ../addressbook/libebook-contacts/e-contact.c:228
 msgid "MSN Work Screen Name 2"
 msgstr "Nominativo pubblico MSN lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:232
+#: ../addressbook/libebook-contacts/e-contact.c:229
 msgid "MSN Work Screen Name 3"
 msgstr "Nominativo pubblico MSN lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:233
+#: ../addressbook/libebook-contacts/e-contact.c:230
 msgid "ICQ Home ID 1"
 msgstr "ID ICQ personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:234
+#: ../addressbook/libebook-contacts/e-contact.c:231
 msgid "ICQ Home ID 2"
 msgstr "ID ICQ personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:235
+#: ../addressbook/libebook-contacts/e-contact.c:232
 msgid "ICQ Home ID 3"
 msgstr "ID ICQ personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:236
+#: ../addressbook/libebook-contacts/e-contact.c:233
 msgid "ICQ Work ID 1"
 msgstr "ID ICQ lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:237
+#: ../addressbook/libebook-contacts/e-contact.c:234
 msgid "ICQ Work ID 2"
 msgstr "ID ICQ lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:238
+#: ../addressbook/libebook-contacts/e-contact.c:235
 msgid "ICQ Work ID 3"
 msgstr "ID ICQ lavoro 3"
 
 #. Last modified time
-#: ../addressbook/libebook-contacts/e-contact.c:241
+#: ../addressbook/libebook-contacts/e-contact.c:238
 msgid "Last Revision"
 msgstr "Ultima revisione"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../addressbook/libebook-contacts/e-contact.c:245
+#: ../addressbook/libebook-contacts/e-contact.c:242
 msgid "Name or Org"
 msgstr "Nome od org."
 
 #. Address fields
-#: ../addressbook/libebook-contacts/e-contact.c:248
+#: ../addressbook/libebook-contacts/e-contact.c:245
 msgid "Address List"
 msgstr "Elenco indirizzi"
 
-#: ../addressbook/libebook-contacts/e-contact.c:249
+#: ../addressbook/libebook-contacts/e-contact.c:246
 msgid "Home Address"
 msgstr "Indirizzo abitazione"
 
-#: ../addressbook/libebook-contacts/e-contact.c:250
+#: ../addressbook/libebook-contacts/e-contact.c:247
 msgid "Work Address"
 msgstr "Indirizzo lavoro"
 
-#: ../addressbook/libebook-contacts/e-contact.c:251
+#: ../addressbook/libebook-contacts/e-contact.c:248
 msgid "Other Address"
 msgstr "Altro indirizzo"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:254
+#: ../addressbook/libebook-contacts/e-contact.c:251
 msgid "Category List"
 msgstr "Elenco delle categorie"
 
 #. Photo/Logo
-#: ../addressbook/libebook-contacts/e-contact.c:257
+#: ../addressbook/libebook-contacts/e-contact.c:254
 msgid "Photo"
 msgstr "Fotografia"
 
-#: ../addressbook/libebook-contacts/e-contact.c:258
+#: ../addressbook/libebook-contacts/e-contact.c:255
 msgid "Logo"
 msgstr "Logo"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../addressbook/libebook-contacts/e-contact.c:262
+#: ../addressbook/libebook-contacts/e-contact.c:259
 msgid "Name"
 msgstr "Nome"
 
-#: ../addressbook/libebook-contacts/e-contact.c:263
+#: ../addressbook/libebook-contacts/e-contact.c:260
 msgid "Email List"
 msgstr "Elenco delle email"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:266
+#: ../addressbook/libebook-contacts/e-contact.c:263
 msgid "AIM Screen Name List"
 msgstr "Elenco dei nominativi pubblici AIM"
 
 # FIXME: prima usa screen name... da segnalare
-#: ../addressbook/libebook-contacts/e-contact.c:267
+#: ../addressbook/libebook-contacts/e-contact.c:264
 msgid "GroupWise ID List"
 msgstr "Elenco degli ID GroupWise"
 
-#: ../addressbook/libebook-contacts/e-contact.c:268
+#: ../addressbook/libebook-contacts/e-contact.c:265
 msgid "Jabber ID List"
 msgstr "Elenco degli ID Jabber"
 
-#: ../addressbook/libebook-contacts/e-contact.c:269
+#: ../addressbook/libebook-contacts/e-contact.c:266
 msgid "Yahoo! Screen Name List"
 msgstr "Elenco dei nominativi pubblici Yahoo!"
 
-#: ../addressbook/libebook-contacts/e-contact.c:270
+#: ../addressbook/libebook-contacts/e-contact.c:267
 msgid "MSN Screen Name List"
 msgstr "Elenco dei nominativi pubblici MSN"
 
-#: ../addressbook/libebook-contacts/e-contact.c:271
+#: ../addressbook/libebook-contacts/e-contact.c:268
 msgid "ICQ ID List"
 msgstr "Elenco degli ID ICQ"
 
-#: ../addressbook/libebook-contacts/e-contact.c:273
+#: ../addressbook/libebook-contacts/e-contact.c:270
 msgid "Wants HTML Mail"
 msgstr "Vuole posta in HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../addressbook/libebook-contacts/e-contact.c:278
+#: ../addressbook/libebook-contacts/e-contact.c:275
 msgid "List"
 msgstr "Elenco"
 
@@ -786,127 +801,127 @@ msgstr "Elenco"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../addressbook/libebook-contacts/e-contact.c:283
+#: ../addressbook/libebook-contacts/e-contact.c:280
 msgid "List Shows Addresses"
 msgstr "Elenco mostra indirizzi"
 
-#: ../addressbook/libebook-contacts/e-contact.c:285
+#: ../addressbook/libebook-contacts/e-contact.c:282
 msgid "Birth Date"
 msgstr "Data di nascita"
 
-#: ../addressbook/libebook-contacts/e-contact.c:286
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:887
+#: ../addressbook/libebook-contacts/e-contact.c:283
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:875
 msgid "Anniversary"
 msgstr "Anniversario"
 
 #. Security fields
-#: ../addressbook/libebook-contacts/e-contact.c:289
+#: ../addressbook/libebook-contacts/e-contact.c:286
 msgid "X.509 Certificate"
 msgstr "Certificato X.509"
 
-#: ../addressbook/libebook-contacts/e-contact.c:291
+#: ../addressbook/libebook-contacts/e-contact.c:288
 msgid "Gadu-Gadu Home ID 1"
 msgstr "ID Gadu-Gadu personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:292
+#: ../addressbook/libebook-contacts/e-contact.c:289
 msgid "Gadu-Gadu Home ID 2"
 msgstr "ID Gadu-Gadu personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:293
+#: ../addressbook/libebook-contacts/e-contact.c:290
 msgid "Gadu-Gadu Home ID 3"
 msgstr "ID Gadu-Gadu personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:294
+#: ../addressbook/libebook-contacts/e-contact.c:291
 msgid "Gadu-Gadu Work ID 1"
 msgstr "ID Gadu-Gadu lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:295
+#: ../addressbook/libebook-contacts/e-contact.c:292
 msgid "Gadu-Gadu Work ID 2"
 msgstr "ID Gadu-Gadu lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:296
+#: ../addressbook/libebook-contacts/e-contact.c:293
 msgid "Gadu-Gadu Work ID 3"
 msgstr "ID Gadu-Gadu lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:297
+#: ../addressbook/libebook-contacts/e-contact.c:294
 msgid "Gadu-Gadu ID List"
 msgstr "Elenco degli ID Gadu-Gadu"
 
 #. Geo information
-#: ../addressbook/libebook-contacts/e-contact.c:300
+#: ../addressbook/libebook-contacts/e-contact.c:297
 msgid "Geographic Information"
 msgstr "Informazioni geografiche"
 
-#: ../addressbook/libebook-contacts/e-contact.c:302
+#: ../addressbook/libebook-contacts/e-contact.c:299
 msgid "Telephone"
 msgstr "Telefono"
 
-#: ../addressbook/libebook-contacts/e-contact.c:304
+#: ../addressbook/libebook-contacts/e-contact.c:301
 msgid "Skype Home Name 1"
 msgstr "Nominativo Skype personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:305
+#: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Skype Home Name 2"
 msgstr "Nominativo Skype personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:306
+#: ../addressbook/libebook-contacts/e-contact.c:303
 msgid "Skype Home Name 3"
 msgstr "Nominativo Skype personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:307
+#: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Skype Work Name 1"
 msgstr "Nominativo Skype lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:308
+#: ../addressbook/libebook-contacts/e-contact.c:305
 msgid "Skype Work Name 2"
 msgstr "Nominativo Skype lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:309
+#: ../addressbook/libebook-contacts/e-contact.c:306
 msgid "Skype Work Name 3"
 msgstr "Nominativo Skype lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:310
+#: ../addressbook/libebook-contacts/e-contact.c:307
 msgid "Skype Name List"
 msgstr "Elenco dei nominativi Skype"
 
-#: ../addressbook/libebook-contacts/e-contact.c:312
+#: ../addressbook/libebook-contacts/e-contact.c:309
 msgid "SIP address"
 msgstr "Indirizzo SIP"
 
-#: ../addressbook/libebook-contacts/e-contact.c:314
+#: ../addressbook/libebook-contacts/e-contact.c:311
 msgid "Google Talk Home Name 1"
 msgstr "Nominativo Google Talk personale 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:315
+#: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "Google Talk Home Name 2"
 msgstr "Nominativo Google Talk personale 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:316
+#: ../addressbook/libebook-contacts/e-contact.c:313
 msgid "Google Talk Home Name 3"
 msgstr "Nominativo Google Talk personale 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:317
+#: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Google Talk Work Name 1"
 msgstr "Nominativo Google Talk lavoro 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:318
+#: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Google Talk Work Name 2"
 msgstr "Nominativo Google Talk lavoro 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:319
+#: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Google Talk Work Name 3"
 msgstr "Nominativo Google Talk lavoro 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:320
+#: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Google Talk Name List"
 msgstr "Elenco dei nominativi Google Talk"
 
-#: ../addressbook/libebook-contacts/e-contact.c:322
+#: ../addressbook/libebook-contacts/e-contact.c:319
 msgid "Twitter Name List"
 msgstr "Elenco dei nominativi Twitter"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1627
-#: ../addressbook/libebook/e-destination.c:883
+#: ../addressbook/libebook-contacts/e-contact.c:1624
+#: ../addressbook/libebook/e-destination.c:884
 msgid "Unnamed List"
 msgstr "Elenco senza nome"
 
@@ -943,45 +958,42 @@ msgstr "Testo troppo corto per essere un numero di telefono"
 msgid "Text is too long for a phone number"
 msgstr "Testo troppo lungo per essere un numero di telefono"
 
-#: ../addressbook/libebook/e-book-client.c:749
+#: ../addressbook/libebook/e-book-client.c:643
+#: ../addressbook/libedata-book/e-book-backend.c:120
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Proprietà di rubrica «%s» sconosciuta"
 
-#: ../addressbook/libebook/e-book-client.c:764
+#: ../addressbook/libebook/e-book-client.c:658
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Impossibile cambiare valore della proprietà di rubrica «%s»"
 
-#: ../addressbook/libebook/e-book-client.c:1099
-#: ../addressbook/libebook/e-book-client.c:1274
-#: ../calendar/libecal/e-cal-client.c:1522
-#: ../calendar/libecal/e-cal-client.c:1704
+#: ../addressbook/libebook/e-book-client.c:993
+#: ../addressbook/libebook/e-book-client.c:1168
+#: ../calendar/libecal/e-cal-client.c:1515
+#: ../calendar/libecal/e-cal-client.c:1697
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Impossibile connettersi a «%s»: "
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:796
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:793
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Errore nell'eseguire l'introspezione del campo di riepilogo «%s»"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1295
-msgid "Error parsing regular expression"
-msgstr "Errore nell'analizzare l'espressione regolare"
-
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1340
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1289
 #: ../camel/camel-db.c:544
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memoria non sufficiente"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1473
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1422
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo «%d» del contatto specificato nel riepilogo non valido"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1507
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1456
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -990,8 +1002,8 @@ msgstr ""
 "Nel sommario è specificato il campo di contatto \"%s\" di tipo \"%s\", ma "
 "sono supportati solo campi di tipo booleano, stringa e lista di stringhe"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2695
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3772
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2644
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3686
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -999,18 +1011,18 @@ msgstr ""
 "Nella cache non sono memorizzati i search_contacts completi. Impossibile "
 "restituire vcards."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3898
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3979
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3812
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3893
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "La query conteneva elementi non supportati"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3902
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3816
 #, c-format
 msgid "Invalid Query"
 msgstr "Interrogazione non valida"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3926
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3840
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -1019,16 +1031,16 @@ msgstr ""
 "Nella cache non sono memorizzati i search_contacts completi. Sono supportate "
 "solo query per summary."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3983
-#: ../addressbook/libedata-book/e-data-book.c:358
-#: ../addressbook/libedata-book/e-data-book.c:992
-#: ../calendar/libedata-cal/e-data-cal.c:412
-#: ../calendar/libedata-cal/e-data-cal.c:1299 ../libedataserver/e-client.c:164
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3897
+#: ../addressbook/libedata-book/e-data-book.c:669
+#: ../addressbook/libedata-book/e-data-book.c:809
+#: ../calendar/libedata-cal/e-data-cal.c:612
+#: ../calendar/libedata-cal/e-data-cal.c:771 ../libedataserver/e-client.c:166
 #, c-format
 msgid "Invalid query"
 msgstr "Interrogazione non valida"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4026
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3940
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1036,216 +1048,224 @@ msgstr ""
 "Nella cache non sono memorizzati i vcards completi. Sono supportate solo "
 "query per summary."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4729
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4643
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Impossibile rimuovere il file del database: errore numero %d"
 
-#: ../addressbook/libedata-book/e-data-book.c:342
-#: ../calendar/libedata-cal/e-data-cal.c:393
+#: ../addressbook/libedata-book/e-book-backend-sync.c:179
+#: ../calendar/libedata-cal/e-cal-backend-sync.c:182
+msgid "Clients cannot set backend properties"
+msgstr ""
+
+#. Translators: This is prefix to a detailed error message
+#. Translators: This is a prefix to a detailed error message *
+#.
+#: ../addressbook/libedata-book/e-data-book.c:691
+#: ../calendar/libedata-cal/e-data-cal.c:635
+msgid "Invalid query: "
+msgstr "Interrogazione non valida: "
+
+#: ../addressbook/libedata-book/e-data-book.c:793
+#: ../calendar/libedata-cal/e-data-cal.c:752
 msgid "Success"
 msgstr "Riuscito"
 
-#: ../addressbook/libedata-book/e-data-book.c:343
-#: ../calendar/libecal/e-cal.c:2303 ../calendar/libedata-cal/e-data-cal.c:394
-#: ../libedataserver/e-client.c:131
+#: ../addressbook/libedata-book/e-data-book.c:794
+#: ../calendar/libecal/e-cal.c:2307 ../calendar/libedata-cal/e-data-cal.c:753
+#: ../libedataserver/e-client.c:133
 msgid "Backend is busy"
 msgstr "Il backend è occupato"
 
-#: ../addressbook/libedata-book/e-data-book.c:344
-#: ../calendar/libedata-cal/e-data-cal.c:395 ../libedataserver/e-client.c:141
+#: ../addressbook/libedata-book/e-data-book.c:795
+#: ../calendar/libedata-cal/e-data-cal.c:754 ../libedataserver/e-client.c:143
 msgid "Repository offline"
 msgstr "Repository fuori rete"
 
-#: ../addressbook/libedata-book/e-data-book.c:345
-#: ../calendar/libecal/e-cal.c:2317 ../calendar/libedata-cal/e-data-cal.c:396
-#: ../libedataserver/e-client.c:148
+#: ../addressbook/libedata-book/e-data-book.c:796
+#: ../calendar/libecal/e-cal.c:2321 ../calendar/libedata-cal/e-data-cal.c:755
+#: ../libedataserver/e-client.c:150
 msgid "Permission denied"
 msgstr "Permesso negato"
 
-#: ../addressbook/libedata-book/e-data-book.c:348
-#: ../calendar/libedata-cal/e-data-cal.c:401
+#: ../addressbook/libedata-book/e-data-book.c:799
+#: ../calendar/libedata-cal/e-data-cal.c:760
 msgid "Authentication Failed"
 msgstr "Autenticazione non riuscita"
 
-#: ../addressbook/libedata-book/e-data-book.c:349
-#: ../calendar/libedata-cal/e-data-cal.c:402
+#: ../addressbook/libedata-book/e-data-book.c:800
+#: ../calendar/libedata-cal/e-data-cal.c:761
 msgid "Authentication Required"
 msgstr "Autenticazione richiesta"
 
-#: ../addressbook/libedata-book/e-data-book.c:350
-#: ../calendar/libedata-cal/e-data-cal.c:403
+#: ../addressbook/libedata-book/e-data-book.c:801
+#: ../calendar/libedata-cal/e-data-cal.c:762
 msgid "Unsupported field"
 msgstr "Campo non supportato"
 
-#: ../addressbook/libedata-book/e-data-book.c:351
-#: ../calendar/libedata-cal/e-data-cal.c:405 ../libedataserver/e-client.c:156
+#: ../addressbook/libedata-book/e-data-book.c:802
+#: ../calendar/libedata-cal/e-data-cal.c:764 ../libedataserver/e-client.c:158
 msgid "Unsupported authentication method"
 msgstr "Metodo di autenticazione non supportato"
 
-#: ../addressbook/libedata-book/e-data-book.c:352
-#: ../calendar/libedata-cal/e-data-cal.c:406 ../libedataserver/e-client.c:158
+#: ../addressbook/libedata-book/e-data-book.c:803
+#: ../calendar/libedata-cal/e-data-cal.c:765 ../libedataserver/e-client.c:160
 msgid "TLS not available"
 msgstr "TLS non disponibile"
 
-#: ../addressbook/libedata-book/e-data-book.c:353
+#: ../addressbook/libedata-book/e-data-book.c:804
 msgid "Address book does not exist"
 msgstr "La rubrica non esiste"
 
-#: ../addressbook/libedata-book/e-data-book.c:354
+#: ../addressbook/libedata-book/e-data-book.c:805
 msgid "Book removed"
 msgstr "Rubrica rimossa"
 
-#: ../addressbook/libedata-book/e-data-book.c:355
-#: ../calendar/libedata-cal/e-data-cal.c:409
+#: ../addressbook/libedata-book/e-data-book.c:806
+#: ../calendar/libedata-cal/e-data-cal.c:768
 msgid "Not available in offline mode"
 msgstr "Non è disponibile in modalità fuori rete"
 
-#: ../addressbook/libedata-book/e-data-book.c:356
-#: ../calendar/libedata-cal/e-data-cal.c:410 ../libedataserver/e-client.c:160
+#: ../addressbook/libedata-book/e-data-book.c:807
+#: ../calendar/libedata-cal/e-data-cal.c:769 ../libedataserver/e-client.c:162
 msgid "Search size limit exceeded"
 msgstr "Limite dimensione ricerca superato"
 
-#: ../addressbook/libedata-book/e-data-book.c:357
-#: ../calendar/libedata-cal/e-data-cal.c:411 ../libedataserver/e-client.c:162
+#: ../addressbook/libedata-book/e-data-book.c:808
+#: ../calendar/libedata-cal/e-data-cal.c:770 ../libedataserver/e-client.c:164
 msgid "Search time limit exceeded"
 msgstr "Limite tempo ricerca superato"
 
-#: ../addressbook/libedata-book/e-data-book.c:359
-#: ../calendar/libedata-cal/e-data-cal.c:413 ../libedataserver/e-client.c:166
+#: ../addressbook/libedata-book/e-data-book.c:810
+#: ../calendar/libedata-cal/e-data-cal.c:772 ../libedataserver/e-client.c:168
 msgid "Query refused"
 msgstr "Interrogazione rifiutata"
 
-#: ../addressbook/libedata-book/e-data-book.c:360
-#: ../calendar/libedata-cal/e-data-cal.c:414 ../libedataserver/e-client.c:152
+#: ../addressbook/libedata-book/e-data-book.c:811
+#: ../calendar/libedata-cal/e-data-cal.c:773 ../libedataserver/e-client.c:154
 msgid "Could not cancel"
 msgstr "Impossibile annullare"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:362
-#: ../calendar/libedata-cal/e-data-cal.c:416
+#: ../addressbook/libedata-book/e-data-book.c:813
+#: ../calendar/libedata-cal/e-data-cal.c:775
 msgid "Invalid server version"
 msgstr "Versione del server non valida"
 
-#: ../addressbook/libedata-book/e-data-book.c:364
-#: ../calendar/libecal/e-cal.c:2301 ../calendar/libedata-cal/e-data-cal.c:417
-#: ../libedataserver/e-client.c:129
+#: ../addressbook/libedata-book/e-data-book.c:815
+#: ../calendar/libecal/e-cal.c:2305 ../calendar/libedata-cal/e-data-cal.c:776
+#: ../libedataserver/e-client.c:131
 msgid "Invalid argument"
 msgstr "Argomento non valido"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:366
-#: ../calendar/libecal/e-cal.c:1060 ../calendar/libecal/e-cal.c:1428
-#: ../calendar/libecal/e-cal.c:1908 ../calendar/libecal/e-cal.c:2340
-#: ../calendar/libedata-cal/e-data-cal.c:419 ../libedataserver/e-client.c:154
+#: ../addressbook/libedata-book/e-data-book.c:817
+#: ../calendar/libecal/e-cal.c:1064 ../calendar/libecal/e-cal.c:1432
+#: ../calendar/libecal/e-cal.c:1912 ../calendar/libecal/e-cal.c:2344
+#: ../calendar/libedata-cal/e-data-cal.c:778 ../libedataserver/e-client.c:156
 #, c-format
 msgid "Not supported"
 msgstr "Non supportato"
 
-#: ../addressbook/libedata-book/e-data-book.c:367
-#: ../calendar/libedata-cal/e-data-cal.c:420 ../libedataserver/e-client.c:172
+#: ../addressbook/libedata-book/e-data-book.c:818
+#: ../calendar/libedata-cal/e-data-cal.c:779 ../libedataserver/e-client.c:174
 msgid "Backend is not opened yet"
 msgstr "Il backend non è ancora aperto"
 
-#: ../addressbook/libedata-book/e-data-book.c:368
-#: ../libedataserver/e-client.c:174
+#: ../addressbook/libedata-book/e-data-book.c:819
+#: ../libedataserver/e-client.c:176
 msgid "Object is out of sync"
 msgstr "Oggetto non sincronizzato"
 
-#: ../addressbook/libedata-book/e-data-book.c:376
-#: ../calendar/libedata-cal/e-data-cal.c:428 ../libedataserver/e-client.c:170
+#: ../addressbook/libedata-book/e-data-book.c:827
+#: ../calendar/libedata-cal/e-data-cal.c:787 ../libedataserver/e-client.c:172
 msgid "Other error"
 msgstr "Altro errore"
 
-#: ../addressbook/libedata-book/e-data-book.c:1017
-#: ../calendar/libedata-cal/e-data-cal.c:1324
-msgid "Invalid query: "
-msgstr "Interrogazione non valida: "
-
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1069
+#: ../addressbook/libedata-book/e-data-book.c:1133
 msgid "Cannot open book: "
 msgstr "Impossibile aprire la rubrica: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1106
+#: ../addressbook/libedata-book/e-data-book.c:1217
 msgid "Cannot refresh address book: "
 msgstr "Impossibile aggiornare il calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1137
+#: ../addressbook/libedata-book/e-data-book.c:1298
 msgid "Cannot get contact: "
 msgstr "Impossibile ottenere il contatto: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1175
+#: ../addressbook/libedata-book/e-data-book.c:1364
 msgid "Cannot get contact list: "
 msgstr "Impossibile ottenere l'elenco di contatti: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1227
+#: ../addressbook/libedata-book/e-data-book.c:1456
 msgid "Cannot get contact list uids: "
 msgstr "Impossibile ottenere gli UID dell'elenco di contatti: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1274
+#: ../addressbook/libedata-book/e-data-book.c:1536
 msgid "Cannot add contact: "
 msgstr "Impossibile aggiungere il contatto: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1323
+#: ../addressbook/libedata-book/e-data-book.c:1599
 msgid "Cannot modify contacts: "
 msgstr "Impossibile modificare i contatti: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1365
+#: ../addressbook/libedata-book/e-data-book.c:1640
 msgid "Cannot remove contacts: "
 msgstr "Impossibile rimuovere i contatti: "
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:273
-#: ../calendar/libedata-cal/e-data-cal-factory.c:276
+#: ../addressbook/libedata-book/e-data-book-factory.c:94
+#: ../calendar/libedata-cal/e-data-cal-factory.c:97
 #, c-format
 msgid "No backend name in source '%s'"
 msgstr "Nessun nome di backend nella sorgente \"%s\""
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:324
-#: ../calendar/libedata-cal/e-data-cal-factory.c:330
+#: ../addressbook/libedata-book/e-data-book-factory.c:185
+#: ../calendar/libedata-cal/e-data-cal-factory.c:191
 #, c-format
 msgid "Missing source UID"
 msgstr "UID sorgente mancante"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:335
-#: ../calendar/libedata-cal/e-data-cal-factory.c:340
+#: ../addressbook/libedata-book/e-data-book-factory.c:196
+#: ../calendar/libedata-cal/e-data-cal-factory.c:201
 #, c-format
 msgid "No such source for UID '%s'"
 msgstr "Nessuna sorgente per l'UID \"%s\""
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:566
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:560
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Il server è irragiungibile (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:590
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Connessione a un server usando SSL non riuscita: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:608
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:601
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Restituito codice di stato HTTP %d inatteso (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:627
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:620
 msgid "CalDAV backend is not loaded yet"
 msgstr "Il backend CalDAV non è ancora caricato"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1048
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1009
 msgid "Invalid Redirect URL"
 msgstr "URL di redirezione non valida"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2525
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2917
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2491
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2849
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1255,80 +1275,80 @@ msgstr ""
 "lettura.\n"
 "Messaggio d'errore: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2869
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2801
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Impossibile creare la cartella cache locale «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3957
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3893
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV non supporta le aggiunte in serie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4060
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3996
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV non supporta le modifiche in serie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4236
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4165
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV non supporta le rimozioni in serie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4903
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4837
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Il calendario non supporta libero/occupato"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4912
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4846
 msgid "Schedule outbox url not found"
 msgstr "URL schedule outbox non trovato"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5009
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4945
 msgid "Unexpected result in schedule-response"
 msgstr "Risultato inatteso in schedule-response"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:889
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:877
 msgid "Birthday"
 msgstr "Compleanno"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:925
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:913
 #, c-format
 msgid "Birthday: %s"
 msgstr "Compleanno: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:956
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:944
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Anniversario: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:245
+#: ../calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Impossibile salvare i dati del calendario: URI malformato."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:252
-#: ../calendar/backends/file/e-cal-backend-file.c:258
+#: ../calendar/backends/file/e-cal-backend-file.c:250
+#: ../calendar/backends/file/e-cal-backend-file.c:256
 msgid "Cannot save calendar data"
 msgstr "Impossibile salvare i dati del calendario"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:479
+#: ../calendar/backends/http/e-cal-backend-http.c:477
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "URI malformato: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:570
+#: ../calendar/backends/http/e-cal-backend-http.c:568
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Rediretto a un URI non valido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:613
+#: ../calendar/backends/http/e-cal-backend-http.c:611
 #, c-format
 msgid "Bad file format."
 msgstr "Formato di file errato."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:623
+#: ../calendar/backends/http/e-cal-backend-http.c:621
 #, c-format
 msgid "Not a calendar."
 msgstr "Non è un calendario."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:927
-#: ../calendar/backends/weather/e-cal-backend-weather.c:514
+#: ../calendar/backends/http/e-cal-backend-http.c:926
+#: ../calendar/backends/weather/e-cal-backend-weather.c:520
 msgid "Could not create cache file"
 msgstr "Impossibile creare il file cache"
 
@@ -1378,87 +1398,88 @@ msgstr "Meteo: temporali"
 msgid "Forecast"
 msgstr "Previsioni meteo"
 
-#: ../calendar/libecal/e-cal.c:2305
+#: ../calendar/libecal/e-cal.c:2309
 msgid "Repository is offline"
 msgstr "Il repository è fuori rete"
 
-#: ../calendar/libecal/e-cal.c:2307 ../calendar/libecal/e-cal-client.c:255
+#: ../calendar/libecal/e-cal.c:2311 ../calendar/libecal/e-cal-client.c:262
 msgid "No such calendar"
 msgstr "Calendario inesistente"
 
-#: ../calendar/libecal/e-cal.c:2309 ../calendar/libecal/e-cal-client.c:257
-#: ../calendar/libedata-cal/e-data-cal.c:398
+#: ../calendar/libecal/e-cal.c:2313 ../calendar/libecal/e-cal-client.c:264
+#: ../calendar/libedata-cal/e-data-cal.c:757
 msgid "Object not found"
 msgstr "Oggetto non trovato"
 
-#: ../calendar/libecal/e-cal.c:2311 ../calendar/libecal/e-cal-client.c:259
-#: ../calendar/libedata-cal/e-data-cal.c:399
+#: ../calendar/libecal/e-cal.c:2315 ../calendar/libecal/e-cal-client.c:266
+#: ../calendar/libedata-cal/e-data-cal.c:758
 msgid "Invalid object"
 msgstr "Oggetto non valido"
 
-#: ../calendar/libecal/e-cal.c:2313
+#: ../calendar/libecal/e-cal.c:2317
 msgid "URI not loaded"
 msgstr "URI non caricato"
 
-#: ../calendar/libecal/e-cal.c:2315
+#: ../calendar/libecal/e-cal.c:2319
 msgid "URI already loaded"
 msgstr "URI già caricato"
 
-#: ../calendar/libecal/e-cal.c:2319
+#: ../calendar/libecal/e-cal.c:2323
 msgid "Unknown User"
 msgstr "Utente sconosciuto"
 
-#: ../calendar/libecal/e-cal.c:2321 ../calendar/libecal/e-cal-client.c:263
-#: ../calendar/libedata-cal/e-data-cal.c:400
+#: ../calendar/libecal/e-cal.c:2325 ../calendar/libecal/e-cal-client.c:270
+#: ../calendar/libedata-cal/e-data-cal.c:759
 msgid "Object ID already exists"
 msgstr "L'ID dell'oggetto esiste già"
 
-#: ../calendar/libecal/e-cal.c:2323
+#: ../calendar/libecal/e-cal.c:2327
 msgid "Protocol not supported"
 msgstr "Protocollo non supportato"
 
-#: ../calendar/libecal/e-cal.c:2325
+#: ../calendar/libecal/e-cal.c:2329
 msgid "Operation has been canceled"
 msgstr "L'operazione è stata annullata"
 
-#: ../calendar/libecal/e-cal.c:2327
+#: ../calendar/libecal/e-cal.c:2331
 msgid "Could not cancel operation"
 msgstr "Impossibile annullare l'operazione"
 
-#: ../calendar/libecal/e-cal.c:2329 ../libedataserver/e-client.c:137
+#: ../calendar/libecal/e-cal.c:2333 ../libedataserver/e-client.c:139
 msgid "Authentication failed"
 msgstr "Autenticazione non riuscita"
 
-#: ../calendar/libecal/e-cal.c:2331
+#: ../calendar/libecal/e-cal.c:2335
 #: ../camel/providers/smtp/camel-smtp-transport.c:911
-#: ../libedataserver/e-client.c:139
+#: ../libedataserver/e-client.c:141
 msgid "Authentication required"
 msgstr "Autenticazione richiesta"
 
-#: ../calendar/libecal/e-cal.c:2333
+#: ../calendar/libecal/e-cal.c:2337
 msgid "A D-Bus exception has occurred"
 msgstr "È occorsa un'eccezione D-Bus"
 
-#: ../calendar/libecal/e-cal.c:2337
+#: ../calendar/libecal/e-cal.c:2341
 msgid "No error"
 msgstr "Nessun errore"
 
-#: ../calendar/libecal/e-cal-client.c:261
-#: ../calendar/libedata-cal/e-data-cal.c:408
+#: ../calendar/libecal/e-cal-client.c:268
+#: ../calendar/libedata-cal/e-data-cal.c:767
 msgid "Unknown user"
 msgstr "Utente sconosciuto"
 
-#: ../calendar/libecal/e-cal-client.c:265
-#: ../calendar/libedata-cal/e-data-cal.c:397
+#: ../calendar/libecal/e-cal-client.c:272
+#: ../calendar/libedata-cal/e-data-cal.c:756
 msgid "Invalid range"
 msgstr "Intervallo non valido"
 
-#: ../calendar/libecal/e-cal-client.c:928
+#: ../calendar/libecal/e-cal-client.c:920
+#: ../calendar/libedata-cal/e-cal-backend.c:204
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Proprietà di calendario «%s» sconosciuta"
 
-#: ../calendar/libecal/e-cal-client.c:943
+#: ../calendar/libecal/e-cal-client.c:935
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Impossibile cambiare valore della proprietà di caledario «%s»"
@@ -1724,81 +1745,93 @@ msgstr ""
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" prevede che il secondo argomento sia un intero"
 
-#: ../calendar/libedata-cal/e-data-cal.c:404
+#: ../calendar/libedata-cal/e-data-cal.c:763
 msgid "Unsupported method"
 msgstr "Metodo non supportato"
 
-#: ../calendar/libedata-cal/e-data-cal.c:407
+#: ../calendar/libedata-cal/e-data-cal.c:766
 msgid "Calendar does not exist"
 msgstr "Il calendario non esiste"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1495
+#: ../calendar/libedata-cal/e-data-cal.c:1237
 msgid "Cannot open calendar: "
 msgstr "Impossibile aprire il calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1532
+#: ../calendar/libedata-cal/e-data-cal.c:1298
 msgid "Cannot refresh calendar: "
 msgstr "Impossibile aggiornare il calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1573
+#: ../calendar/libedata-cal/e-data-cal.c:1337
+#, fuzzy
+msgid "Cannot retrieve backend property: "
+msgstr "Impossibile recuperare il percorso dell'oggetto di calendario: "
+
+#. Translators: This is prefix to a detailed error message
+#: ../calendar/libedata-cal/e-data-cal.c:1395
 msgid "Cannot retrieve calendar object path: "
 msgstr "Impossibile recuperare il percorso dell'oggetto di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1625
+#: ../calendar/libedata-cal/e-data-cal.c:1441
 msgid "Cannot retrieve calendar object list: "
 msgstr "Impossibile recuperare l'elenco degli oggetti di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1676
+#: ../calendar/libedata-cal/e-data-cal.c:1494
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Impossibile recuperare l'elenco libero/occupato del calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1719
+#: ../calendar/libedata-cal/e-data-cal.c:1535
 msgid "Cannot create calendar object: "
 msgstr "Impossibile creare l'oggetto di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1787
+#: ../calendar/libedata-cal/e-data-cal.c:1604
 msgid "Cannot modify calendar object: "
 msgstr "Impossibile modificare l'oggetto di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1865
+#: ../calendar/libedata-cal/e-data-cal.c:1666
 msgid "Cannot remove calendar object: "
 msgstr "Impossibile rimuovere l'oggetto di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1951
+#: ../calendar/libedata-cal/e-data-cal.c:1727
 msgid "Cannot receive calendar objects: "
 msgstr "Impossibile ricevere oggetti di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1994
+#: ../calendar/libedata-cal/e-data-cal.c:1768
 msgid "Cannot send calendar objects: "
 msgstr "Impossibile inviare oggetti di calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2046
+#: ../calendar/libedata-cal/e-data-cal.c:1828
 msgid "Could not retrieve attachment uris: "
 msgstr "Impossibile recuperare gli URI degli allegati: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2091
+#: ../calendar/libedata-cal/e-data-cal.c:1878
 msgid "Could not discard reminder: "
 msgstr "Impossibile scartare il promemoria: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2132
+#: ../calendar/libedata-cal/e-data-cal.c:1917
+#, fuzzy
+msgid "Could not get calendar view path: "
+msgstr "Impossibile recuperare il fuso orario del calendario: "
+
+#. Translators: This is prefix to a detailed error message
+#: ../calendar/libedata-cal/e-data-cal.c:1963
 msgid "Could not retrieve calendar time zone: "
 msgstr "Impossibile recuperare il fuso orario del calendario: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2172
+#: ../calendar/libedata-cal/e-data-cal.c:2007
 msgid "Could not add calendar time zone: "
 msgstr "Impossibile aggiungere il fuso orario del calendario: "
 
@@ -1902,8 +1935,13 @@ msgstr ""
 # Umoristica: se in linea --> i ciccioni non possono completare
 # questa operazione :-) -Luca
 #
-#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:618
-#: ../camel/camel-imapx-store.c:2242
+#: ../camel/camel-disco-store.c:479 ../camel/camel-imapx-folder.c:478
+#: ../camel/camel-imapx-folder.c:514 ../camel/camel-imapx-folder.c:553
+#: ../camel/camel-imapx-folder.c:613 ../camel/camel-imapx-folder.c:748
+#: ../camel/camel-imapx-folder.c:933 ../camel/camel-imapx-folder.c:993
+#: ../camel/camel-imapx-folder.c:1032 ../camel/camel-imapx-store.c:368
+#: ../camel/camel-imapx-store.c:1592 ../camel/camel-imapx-store.c:1681
+#: ../camel/camel-imapx-store.c:1730
 #: ../camel/providers/pop3/camel-pop3-folder.c:596
 #: ../camel/providers/pop3/camel-pop3-folder.c:746
 #: ../camel/providers/pop3/camel-pop3-folder.c:987
@@ -1984,17 +2022,17 @@ msgstr "Ricezione del messaggio %d di %d"
 msgid "Failed at message %d of %d"
 msgstr "Non riuscito al messaggio %d di %d"
 
-#: ../camel/camel-filter-driver.c:1752 ../camel/camel-filter-driver.c:1779
+#: ../camel/camel-filter-driver.c:1752 ../camel/camel-filter-driver.c:1786
 #, c-format
 msgid "Execution of filter '%s' failed: "
 msgstr "Esecuzione del filtro «%s» non riuscita: "
 
-#: ../camel/camel-filter-driver.c:1769
+#: ../camel/camel-filter-driver.c:1776
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "Errore nell'analizzare il filtro «%s»: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1788
+#: ../camel/camel-filter-driver.c:1795
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
 msgstr "Errore nell'eseguire il filtro «%s»: %s: %s"
@@ -2016,57 +2054,57 @@ msgstr "Argomenti non validi per (user-tag)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Errore nell'eseguire la ricerca nei filtri: %s: %s"
 
-#: ../camel/camel-folder.c:311
+#: ../camel/camel-folder.c:310
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "Apprendimento nuovo messaggio indesiderato in «%s»"
 msgstr[1] "Apprendimento nuovi messaggi indesiderati in «%s»"
 
-#: ../camel/camel-folder.c:351
+#: ../camel/camel-folder.c:350
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "Apprendimento nuovo messaggio attendibile in «%s»"
 msgstr[1] "Apprendimento nuovi messaggi attendibili in «%s»"
 
-#: ../camel/camel-folder.c:399
+#: ../camel/camel-folder.c:398
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Filtraggio nuovo messaggio in «%s»"
 msgstr[1] "Filtraggio nuovi messaggi in «%s»"
 
-#: ../camel/camel-folder.c:1009
+#: ../camel/camel-folder.c:972
 #: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "Spostamento messaggi"
 
-#: ../camel/camel-folder.c:1012
+#: ../camel/camel-folder.c:975
 msgid "Copying messages"
 msgstr "Copia messaggi"
 
-#: ../camel/camel-folder.c:1332
+#: ../camel/camel-folder.c:1295
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Informazioni sulla quota non supportate per la cartella «%s»"
 
-#: ../camel/camel-folder.c:3578
+#: ../camel/camel-folder.c:3528
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Svuotamento cartella «%s»"
 
-#: ../camel/camel-folder.c:3810
+#: ../camel/camel-folder.c:3760
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Ricezione messaggio «%s» in %s"
 
-#: ../camel/camel-folder.c:3965
+#: ../camel/camel-folder.c:3911
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Recupero informazioni di quota per «%s»"
 
-#: ../camel/camel-folder.c:4205
+#: ../camel/camel-folder.c:4143
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Aggiornamento cartella «%s»"
@@ -2186,7 +2224,7 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:950 ../camel/camel-net-utils.c:524
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:402
-#: ../libedataserver/e-client.c:150
+#: ../libedataserver/e-client.c:152
 #, c-format
 msgid "Cancelled"
 msgstr "Annullato"
@@ -2254,48 +2292,48 @@ msgstr "Decifratura della parte MIME non riuscita: errore di protocollo"
 msgid "Encrypted content"
 msgstr "Contenuto cifrato"
 
-#: ../camel/camel-imapx-folder.c:643
+#: ../camel/camel-imapx-folder.c:710
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "Informazioni sulla quota non disponibile per la cartella «%s»"
 
-#: ../camel/camel-imapx-folder.c:727 ../camel/camel-imapx-folder.c:801
+#: ../camel/camel-imapx-folder.c:809 ../camel/camel-imapx-folder.c:882
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nessuna cartella di destinazione specificata"
 
-#: ../camel/camel-imapx-folder.c:747
+#: ../camel/camel-imapx-folder.c:828
 msgid "Unable to move junk messages"
 msgstr "Impossibile spostare i messaggi spazzatura"
 
-#: ../camel/camel-imapx-folder.c:821
+#: ../camel/camel-imapx-folder.c:901
 msgid "Unable to move deleted messages"
 msgstr "Impossibile spostare i messaggi eliminati"
 
-#: ../camel/camel-imapx-folder.c:1008
+#: ../camel/camel-imapx-folder.c:1119
 #: ../camel/providers/nntp/camel-nntp-folder.c:794
 msgid "Apply message _filters to this folder"
 msgstr "_Applicare i filtri di messaggio a questa cartella"
 
-#: ../camel/camel-imapx-folder.c:1114
+#: ../camel/camel-imapx-folder.c:1228
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Impossibile l'indice di cartella per %s"
 
-#: ../camel/camel-imapx-folder.c:1123
+#: ../camel/camel-imapx-folder.c:1236
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Impossibile creare la cache per %s: "
 
-#: ../camel/camel-imapx-server.c:1333
+#: ../camel/camel-imapx-server.c:1283
 msgid "Server disconnected"
 msgstr "Server disconnesso"
 
-#: ../camel/camel-imapx-server.c:1756
+#: ../camel/camel-imapx-server.c:1772
 msgid "Error writing to cache stream"
 msgstr "Errore nello scrivere sullo stream di cache"
 
-#: ../camel/camel-imapx-server.c:2439
+#: ../camel/camel-imapx-server.c:2441
 #, c-format
 msgid ""
 "Alert from IMAP server %s:\n"
@@ -2304,36 +2342,36 @@ msgstr ""
 "Allerta dal server IMAP %s:\n"
 "%s"
 
-#: ../camel/camel-imapx-server.c:3035
+#: ../camel/camel-imapx-server.c:3029
 #, c-format
 msgid "Not authenticated"
 msgstr "Non autenticato"
 
-#: ../camel/camel-imapx-server.c:3113
+#: ../camel/camel-imapx-server.c:3107
 msgid "Error performing IDLE"
 msgstr "Errore nell'eseguire IDLE"
 
-#: ../camel/camel-imapx-server.c:4005
+#: ../camel/camel-imapx-server.c:3994
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Connessione al server IMAP %s in modalità sicura non riuscita: %s"
 
-#: ../camel/camel-imapx-server.c:4006
+#: ../camel/camel-imapx-server.c:3995
 #: ../camel/providers/smtp/camel-smtp-transport.c:203
 msgid "STARTTLS not supported"
 msgstr "STARTTLS non supportato"
 
-#: ../camel/camel-imapx-server.c:4047
+#: ../camel/camel-imapx-server.c:4034
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Connessione al server IMAP %s in modalità sicura non riuscita: "
 
-#: ../camel/camel-imapx-server.c:4125
+#: ../camel/camel-imapx-server.c:4114
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Il server IMAP %s non supporta l'autenticazione %s"
 
-#: ../camel/camel-imapx-server.c:4136 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:4125 ../camel/camel-session.c:495
 #: ../camel/providers/pop3/camel-pop3-store.c:303
 #: ../camel/providers/pop3/camel-pop3-store.c:744
 #: ../camel/providers/smtp/camel-smtp-transport.c:505
@@ -2341,147 +2379,165 @@ msgstr "Il server IMAP %s non supporta l'autenticazione %s"
 msgid "No support for %s authentication"
 msgstr "Nessun supporto per l'autenticazione %s"
 
-#: ../camel/camel-imapx-server.c:4155
+#: ../camel/camel-imapx-server.c:4144
 #: ../camel/providers/nntp/camel-nntp-store.c:409
 #: ../camel/providers/nntp/camel-nntp-store.c:595
 msgid "Cannot authenticate without a username"
 msgstr "Impossibile effettuare l'autenticazione senza un nome utente"
 
-#: ../camel/camel-imapx-server.c:4164
+#: ../camel/camel-imapx-server.c:4153
 #: ../camel/providers/nntp/camel-nntp-store.c:604
 #: ../camel/providers/pop3/camel-pop3-store.c:669
 #: ../camel/providers/pop3/camel-pop3-store.c:689
 msgid "Authentication password not available"
 msgstr "Password di autenticazione non disponibile"
 
-#: ../camel/camel-imapx-server.c:4377
+#: ../camel/camel-imapx-server.c:4360
 msgid "Error fetching message"
 msgstr "Errore nel recuperare il messaggio"
 
-#: ../camel/camel-imapx-server.c:4427 ../camel/camel-imapx-server.c:4434
+#: ../camel/camel-imapx-server.c:4410 ../camel/camel-imapx-server.c:4418
 msgid "Failed to close the tmp stream"
 msgstr "Chiusura dello stream tmp non riuscita"
 
-#: ../camel/camel-imapx-server.c:4463
+#: ../camel/camel-imapx-server.c:4447
 msgid "Failed to copy the tmp file"
 msgstr "Copia del file tmp non riuscito"
 
-#: ../camel/camel-imapx-server.c:4588
-msgid "Error moving messages"
-msgstr "Errore nello spostare i messaggi"
-
-#: ../camel/camel-imapx-server.c:4592
+#: ../camel/camel-imapx-server.c:4571
 msgid "Error copying messages"
 msgstr "Errore nel copiare i messaggi"
 
-#: ../camel/camel-imapx-server.c:4759
+#: ../camel/camel-imapx-server.c:4740
 msgid "Error appending message"
 msgstr "Errore nell'accodare il messaggio"
 
-#: ../camel/camel-imapx-server.c:4956
+#: ../camel/camel-imapx-server.c:4939
 msgid "Error fetching message headers"
 msgstr "Errore nel recuperare le intestazioni di messaggio"
 
 # chiesto su #evolution, solo una svista sul termine, è == fetch
-#: ../camel/camel-imapx-server.c:5119
+#: ../camel/camel-imapx-server.c:5090
 msgid "Error retrieving message"
 msgstr "Errore nel recuperare il messaggio"
 
-#: ../camel/camel-imapx-server.c:5250 ../camel/camel-imapx-server.c:5471
+#: ../camel/camel-imapx-server.c:5221 ../camel/camel-imapx-server.c:5449
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Recupero informazioni di indice per nuovi messaggi in «%s»"
 
-#: ../camel/camel-imapx-server.c:5310
+#: ../camel/camel-imapx-server.c:5285
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Scansione per messaggi cambiati in «%s»"
 
-#: ../camel/camel-imapx-server.c:5365
+#: ../camel/camel-imapx-server.c:5338
 msgid "Error fetching new messages"
 msgstr "Errore nel recuperare i nuovi messaggi"
 
-#: ../camel/camel-imapx-server.c:5577
+#: ../camel/camel-imapx-server.c:5551
 msgid "Error while fetching messages"
 msgstr "Errore durante il recupero dei messaggi"
 
-#: ../camel/camel-imapx-server.c:5585 ../camel/camel-imapx-server.c:5618
+#: ../camel/camel-imapx-server.c:5559 ../camel/camel-imapx-server.c:5592
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Recupero informazioni di indice per %d messaggio in «%s»"
 msgstr[1] "Recupero informazioni di indice per %d messaggi in «%s»"
 
-#: ../camel/camel-imapx-server.c:5752 ../camel/camel-imapx-server.c:5782
+#: ../camel/camel-imapx-server.c:5728 ../camel/camel-imapx-server.c:5758
 msgid "Error refreshing folder"
 msgstr "Errore nell'aggiornare la cartella"
 
 # prima era "ripulire"
-#: ../camel/camel-imapx-server.c:5904
+#: ../camel/camel-imapx-server.c:5882
 msgid "Error expunging message"
 msgstr "Errore nel rimuovere il messaggio"
 
-#: ../camel/camel-imapx-server.c:6012
+#: ../camel/camel-imapx-server.c:5993
 msgid "Error fetching folders"
 msgstr "Errore nel recuperare le cartelle"
 
-#: ../camel/camel-imapx-server.c:6095
+#: ../camel/camel-imapx-server.c:6075
 msgid "Error subscribing to folder"
 msgstr "Errore nell'eseguire la sottoscrizione alla cartella"
 
-#: ../camel/camel-imapx-server.c:6157
+#: ../camel/camel-imapx-server.c:6140
 msgid "Error creating folder"
 msgstr "Errore nel creare la cartella"
 
-#: ../camel/camel-imapx-server.c:6210
+#: ../camel/camel-imapx-server.c:6194
 msgid "Error deleting folder"
 msgstr "Errore nell'eliminare la cartella"
 
-#: ../camel/camel-imapx-server.c:6281
+#: ../camel/camel-imapx-server.c:6268
 msgid "Error renaming folder"
 msgstr "Errore nel rinominare la cartelle"
 
-#: ../camel/camel-imapx-server.c:6355
+#: ../camel/camel-imapx-server.c:6343
 msgid "Error retrieving quota information"
 msgstr "Errore nel recuperare le informazioni sulla quota"
 
-#: ../camel/camel-imapx-server.c:6413
+#: ../camel/camel-imapx-server.c:6408
 msgid "Search failed"
 msgstr "Ricerca non riuscita"
 
-#: ../camel/camel-imapx-server.c:6475
+#: ../camel/camel-imapx-server.c:6471
 msgid "Error performing NOOP"
 msgstr "Errore nell'eseguire NOOP"
 
-#: ../camel/camel-imapx-server.c:6583
+#: ../camel/camel-imapx-server.c:6580
 msgid "Error syncing changes"
 msgstr "Errore nel sincronizzare le modifiche"
 
-#: ../camel/camel-imapx-server.c:6883
-msgid "Lost connection to IMAP server"
-msgstr "Connessione al server LDAP persa..."
-
-#: ../camel/camel-imapx-server.c:7330
+#: ../camel/camel-imapx-server.c:7385
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Impossibile ottenere il messaggio avente ID %s: %s"
 
 # eeeeeeeehhh????
 # che ci sta a fare il such?
-#: ../camel/camel-imapx-server.c:7331
+#: ../camel/camel-imapx-server.c:7386
 msgid "No such message available."
 msgstr "Nessun messaggio disponibile."
 
-#: ../camel/camel-imapx-server.c:7492 ../camel/camel-imapx-server.c:7507
+#: ../camel/camel-imapx-server.c:7547 ../camel/camel-imapx-server.c:7562
 msgid "Cannot create spool file: "
 msgstr "Impossibile creare il file di spool: "
 
-#: ../camel/camel-imapx-server.c:8212
+#: ../camel/camel-imapx-server.c:8304
 msgid "IMAP server does not support quotas"
 msgstr "Il server IMAP non supporta le quote"
 
+#: ../camel/camel-imapx-store.c:249
+#, c-format
+msgid "IMAP server %s"
+msgstr "Server IMAP %s"
+
+#: ../camel/camel-imapx-store.c:252
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "Servizio IMAP per %s su %s"
+
+#: ../camel/camel-imapx-store.c:343
+#: ../camel/providers/nntp/camel-nntp-provider.c:95
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
+msgid "Password"
+msgstr "Password"
+
+#: ../camel/camel-imapx-store.c:345
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr ""
+"Opzione per connessioni al server IMAP usando una password di testo semplice."
+
+#: ../camel/camel-imapx-store.c:453
+#, c-format
+msgid "No such folder %s"
+msgstr "Cartella %s inesistente"
+
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:203 ../camel/camel-imapx-store.c:1143
+#: ../camel/camel-imapx-store.c:478 ../camel/camel-imapx-store.c:968
 #: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:316
 #: ../camel/providers/local/camel-maildir-store.c:752
@@ -2491,50 +2547,24 @@ msgstr "Il server IMAP non supporta le quote"
 msgid "Inbox"
 msgstr "In arrivo"
 
-#: ../camel/camel-imapx-store.c:487
-#, c-format
-msgid "IMAP server %s"
-msgstr "Server IMAP %s"
-
-#: ../camel/camel-imapx-store.c:490
-#, c-format
-msgid "IMAP service for %s on %s"
-msgstr "Servizio IMAP per %s su %s"
-
-#: ../camel/camel-imapx-store.c:591
-#: ../camel/providers/nntp/camel-nntp-provider.c:95
-#: ../camel/providers/pop3/camel-pop3-provider.c:83
-msgid "Password"
-msgstr "Password"
-
-#: ../camel/camel-imapx-store.c:593
-msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"Opzione per connessioni al server IMAP usando una password di testo semplice."
-
-#: ../camel/camel-imapx-store.c:687
-#, c-format
-msgid "No such folder %s"
-msgstr "Cartella %s inesistente"
-
-#: ../camel/camel-imapx-store.c:1413
+#: ../camel/camel-imapx-store.c:1231
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Recupero elenco cartelle per %s"
 
-#: ../camel/camel-imapx-store.c:1783
+#: ../camel/camel-imapx-store.c:1614
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 "Il nome della cartella «%s» non è valido perché contiene il carattere '%c'"
 
-#: ../camel/camel-imapx-store.c:1794
+#: ../camel/camel-imapx-store.c:1625
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Cartella di livello superiore sconosciuta: %s"
 
-#: ../camel/camel-imapx-store.c:1804
+#: ../camel/camel-imapx-store.c:1635
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr ""
@@ -2549,10 +2579,6 @@ msgstr "Lo stream sorgente non ha restituito alcun dato"
 #, c-format
 msgid "Source stream unavailable"
 msgstr "Stream sorgente non disponibile"
-
-#: ../camel/camel-junk-filter.c:168
-msgid "Synchronizing junk database"
-msgstr "Sincronizzazione database spam"
 
 #: ../camel/camel-lock.c:102
 #, c-format
@@ -2715,6 +2741,11 @@ msgstr "Impossibile connettersi a «%s:%s»: "
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Sincronizzazione dei messaggi nella cartella «%s» su disco"
 
+#: ../camel/camel-offline-journal.c:145 ../camel/camel-offline-journal.c:177
+#, fuzzy, c-format
+msgid "Cannot write offline journal for folder '%s': %s"
+msgstr "Impossibile creare la cartella «%s»: %s"
+
 #: ../camel/camel-provider.c:58
 msgid "Virtual folder email provider"
 msgstr "Fornitore di cartelle email virtuali"
@@ -2741,7 +2772,7 @@ msgstr "Impossibile caricare %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Impossibile caricare %s: nessun codice di inizializzazione nel modulo."
 
-#: ../camel/camel-provider.c:429 ../camel/camel-session.c:406
+#: ../camel/camel-provider.c:429 ../camel/camel-session.c:407
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Nessun fornitore disponibile per il protocollo «%s»"
@@ -2980,24 +3011,24 @@ msgstr "Tentata autenticazione POP prima di SMTP con un servizio %s"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Compilazione dell'espressione regolare non riuscita: %s: %s"
 
-#: ../camel/camel-session.c:415
+#: ../camel/camel-session.c:416
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "GType non valido registato per il protocollo «%s»"
 
-#: ../camel/camel-session.c:509
+#: ../camel/camel-session.c:510
 #, c-format
 msgid "%s authentication failed"
 msgstr "Autenticazione %s non riuscita"
 
-#: ../camel/camel-session.c:645
+#: ../camel/camel-session.c:646
 msgid "Forwarding messages is not supported"
 msgstr "Inoltro dei messaggi non supportato"
 
 #. Translators: The first argument is the account type
 #. * (e.g. "IMAP"), the second is the user name, and the
 #. * third is the host name.
-#: ../camel/camel-session.c:1420
+#: ../camel/camel-session.c:1423
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Inserire la password %s per %s sull'host %s."
@@ -3201,48 +3232,48 @@ msgstr "Aggiunta dei dati al codificatore non riuscita"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Decifratura S/MIME: non è stato trovato alcun contenuto cifrato"
 
-#: ../camel/camel-store.c:1999
+#: ../camel/camel-store.c:1871
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Impossibile creare la cartella «%s»: la cartella esiste"
 
-#: ../camel/camel-store.c:2042
+#: ../camel/camel-store.c:1914
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Apertura cartella «%s»"
 
-#: ../camel/camel-store.c:2231
+#: ../camel/camel-store.c:2099
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Scansione cartelle in «%s»"
 
-#: ../camel/camel-store.c:2259 ../camel/camel-store.c:2304
+#: ../camel/camel-store.c:2115 ../camel/camel-store.c:2146
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Cestino"
 
-#: ../camel/camel-store.c:2273 ../camel/camel-store.c:2321
+#: ../camel/camel-store.c:2127 ../camel/camel-store.c:2162
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Indesiderata"
 
-#: ../camel/camel-store.c:2774
+#: ../camel/camel-store.c:2615
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Impossibile creare la cartella «%s»: la cartella esiste già"
 
-#: ../camel/camel-store.c:2788
+#: ../camel/camel-store.c:2629
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Creazione cartella «%s»"
 
-#: ../camel/camel-store.c:2906 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2747 ../camel/camel-vee-store.c:416
 #: ../camel/providers/local/camel-maildir-store.c:315
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Impossibile eliminare la cartella: %s: operazione non valida"
 
-#: ../camel/camel-store.c:3049 ../camel/camel-vee-store.c:466
+#: ../camel/camel-store.c:2890 ../camel/camel-vee-store.c:466
 #: ../camel/providers/local/camel-maildir-store.c:841
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3268,12 +3299,12 @@ msgstr "Connessione annullata"
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Impossibile connettersi con il comando «%s»: %s"
 
-#: ../camel/camel-subscribable.c:395
+#: ../camel/camel-subscribable.c:397
 #, c-format
 msgid "Subscribing to folder '%s'"
 msgstr "Sottoscrizione alla cartella «%s»"
 
-#: ../camel/camel-subscribable.c:527
+#: ../camel/camel-subscribable.c:529
 #, c-format
 msgid "Unsubscribing from folder '%s'"
 msgstr "Annullamento sottoscrizione alla cartella «%s»"
@@ -4179,7 +4210,7 @@ msgid "USENET News via %s"
 msgstr "News USENET via %s"
 
 # usato . invece di :
-#: ../camel/providers/nntp/camel-nntp-store.c:1225
+#: ../camel/providers/nntp/camel-nntp-store.c:1219
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4190,19 +4221,19 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1337
+#: ../camel/providers/nntp/camel-nntp-store.c:1331
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Impossibile creare una cartella in un archivio di news: piuttosto effettuare "
 "una sottoscrizione."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1353
+#: ../camel/providers/nntp/camel-nntp-store.c:1347
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Impossibile rinominare una cartella in un archivio di news."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1376
+#: ../camel/providers/nntp/camel-nntp-store.c:1370
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
@@ -4210,7 +4241,7 @@ msgstr ""
 "annullare la sottoscrizione."
 
 # usato . invece di :
-#: ../camel/providers/nntp/camel-nntp-store.c:1595
+#: ../camel/providers/nntp/camel-nntp-store.c:1589
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4223,7 +4254,7 @@ msgstr ""
 "di livello superiore."
 
 # usato . invece di :
-#: ../camel/providers/nntp/camel-nntp-store.c:1662
+#: ../camel/providers/nntp/camel-nntp-store.c:1656
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4234,16 +4265,16 @@ msgstr ""
 "\n"
 "Il newsgroup non esiste!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2099
+#: ../camel/providers/nntp/camel-nntp-store.c:2093
 msgid "NNTP Command failed: "
 msgstr "Comando NNTP non riuscito: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2196
+#: ../camel/providers/nntp/camel-nntp-store.c:2190
 #, c-format
 msgid "Not connected."
 msgstr "Non connesso."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2290
+#: ../camel/providers/nntp/camel-nntp-store.c:2284
 #, c-format
 msgid "No such folder: %s"
 msgstr "Cartella inesistente: %s"
@@ -4479,51 +4510,41 @@ msgstr "sendmail"
 msgid "Mail delivery via the sendmail program"
 msgstr "Consegna della posta attraverso il programma sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
-#, c-format
-msgid "Failed to read From address"
-msgstr "Lettura dell'indirizzo \"Da\" non riuscita"
-
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:157
-#, c-format
-msgid "Message send in offline mode is disabled"
-msgstr "L'invio di messaggi in modalità offline è disabilitata"
-
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:185
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:165
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Impossibile analizzare l'elenco dei destinatari"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:202
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:182
 #, c-format
 msgid "Could not parse arguments"
 msgstr "Impossibile analizzare i parametri"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:233
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:213
 #, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
 msgstr "Impossibile creare la pipe verso «%s»: %s: posta non inviata"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:258
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:238
 #, c-format
 msgid "Could not fork '%s': %s: mail not sent"
 msgstr "Impossibile effettuare il fork di «%s»: %s: posta non inviata"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:307
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:287
 msgid "Could not send message: "
 msgstr "Impossibile inviare il messaggio: "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:337
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:317
 #, c-format
 msgid "'%s' exited with signal %s: mail not sent."
 msgstr "«%s» uscito con segnale %s: posta non inviata."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:347
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:327
 #, c-format
 msgid "Could not execute '%s': mail not sent."
 msgstr "Impossibile eseguire «%s»: posta non inviata."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:352
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:332
 #, c-format
 msgid "'%s' exited with status %d: mail not sent."
 msgstr "«%s» uscito con stato %d: posta non inviata."
@@ -4800,8 +4821,8 @@ msgstr ""
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
-#: ../libebackend/e-authentication-mediator.c:862
-#: ../libebackend/e-authentication-mediator.c:1193
+#: ../libebackend/e-authentication-mediator.c:852
+#: ../libebackend/e-authentication-mediator.c:1185
 msgid "Bus name vanished (client terminated?)"
 msgstr "Nome del bus scomparso (client terminato?)"
 
@@ -4811,8 +4832,8 @@ msgstr "Nessuna risposta dal client"
 
 #: ../libebackend/e-authentication-mediator.c:334
 #: ../libebackend/e-authentication-mediator.c:345
-#: ../libebackend/e-authentication-mediator.c:856
-#: ../libebackend/e-authentication-mediator.c:1187
+#: ../libebackend/e-authentication-mediator.c:846
+#: ../libebackend/e-authentication-mediator.c:1179
 msgid "Client cancelled the operation"
 msgstr "Il client ha annullato l'operazione"
 
@@ -4820,11 +4841,11 @@ msgstr "Il client ha annullato l'operazione"
 msgid "Client reports password was rejected"
 msgstr "Il client riporta che la password è stata rifiutata"
 
-#: ../libebackend/e-authentication-session.c:569
+#: ../libebackend/e-authentication-session.c:543
 msgid "Add this password to your keyring"
 msgstr "Aggiungere questa password al proprio portachiavi"
 
-#: ../libebackend/e-authentication-session.c:674
+#: ../libebackend/e-authentication-session.c:648
 msgid "Password was incorrect"
 msgstr "La password non era corretta"
 
@@ -4843,7 +4864,7 @@ msgstr "%s non supporta la creazione di risorse remote"
 msgid "%s does not support deleting remote resources"
 msgstr "%s non supporta l'eliminazione di risorse remote"
 
-#: ../libebackend/e-data-factory.c:304
+#: ../libebackend/e-data-factory.c:320
 #, c-format
 msgid "No backend factory for hash key '%s'"
 msgstr "Nessuna factory di backend per la chiave hash \"%s\""
@@ -4893,17 +4914,17 @@ msgstr "La sorgente dati «%s» non supporta l'autenticazione OAuth 2.0"
 msgid "File must have a '.source' extension"
 msgstr "Il file deve avere una estensione \".source\""
 
-#: ../libebackend/e-source-registry-server.c:521
-#: ../libedataserver/e-source-registry.c:1876
+#: ../libebackend/e-source-registry-server.c:523
+#: ../libedataserver/e-source-registry.c:1882
 msgid "The user declined to authenticate"
 msgstr "L'utente ha rifiutato l'autenticazione"
 
-#: ../libebackend/e-source-registry-server.c:790
+#: ../libebackend/e-source-registry-server.c:792
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "L'UID «%s» è già in uso"
 
-#: ../libebackend/e-user-prompter-server.c:301
+#: ../libebackend/e-user-prompter-server.c:303
 #, c-format
 msgid "Extension dialog '%s' not found."
 msgstr "Finestra di estensione «%s» non trovata."
@@ -5020,22 +5041,22 @@ msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "In attesa"
 
-#: ../libedataserver/e-client.c:133
+#: ../libedataserver/e-client.c:135
 msgid "Source not loaded"
 msgstr "Sorgente non caricata"
 
-#: ../libedataserver/e-client.c:135
+#: ../libedataserver/e-client.c:137
 msgid "Source already loaded"
 msgstr "Sorgente già caricata"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
-#: ../libedataserver/e-client.c:146
+#: ../libedataserver/e-client.c:148
 msgid "Offline unavailable"
 msgstr "Fuori rete non disponibile"
 
-#: ../libedataserver/e-client.c:168
+#: ../libedataserver/e-client.c:170
 msgid "D-Bus error"
 msgstr "errore D-Bus"
 
@@ -5116,7 +5137,7 @@ msgstr "Senza nome"
 msgid "Signature script must be a local file"
 msgstr "Lo script della firma deve essere un file locale"
 
-#: ../libedataserver/e-source-webdav.c:1553
+#: ../libedataserver/e-source-webdav.c:1529
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
@@ -5125,7 +5146,7 @@ msgstr ""
 "Il certificato SSL per l'host «%s», usato dalla rubrica «%s», non è fidato. "
 "Accettarlo?"
 
-#: ../libedataserver/e-source-webdav.c:1562
+#: ../libedataserver/e-source-webdav.c:1538
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
@@ -5134,7 +5155,7 @@ msgstr ""
 "Il certificato SSL per l'host «%s», usato dal calendario «%s», non è fidato. "
 "Accettarlo?"
 
-#: ../libedataserver/e-source-webdav.c:1571
+#: ../libedataserver/e-source-webdav.c:1547
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
@@ -5143,7 +5164,7 @@ msgstr ""
 "Il certificato SSL per l'host «%s», usato dall'elenco memo «%s», non è "
 "fidato. Accettarlo?"
 
-#: ../libedataserver/e-source-webdav.c:1580
+#: ../libedataserver/e-source-webdav.c:1556
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5390,13 +5411,13 @@ msgstr "URL configurazione automatica proxy"
 msgid "Where to read automatic proxy configuration from."
 msgstr "Indica da dove leggere la configurazione automatica del proxy."
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:129
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:132
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
 #, c-format
 msgid "No such data source for UID '%s'"
 msgstr "Nessuna sorgente dati per l'UID «%s»"
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:141
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:144
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5405,48 +5426,48 @@ msgstr ""
 "Impossibile trovare nel servizio org.gnome.OnlineAccounts un account "
 "corrispondente da cui ottenere una password per \"%s\""
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:213
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:216
 #, c-format
 msgid "Invalid password for '%s'"
 msgstr "Password non valida per «%s»"
 
 #. TODO: more specific
-#: ../modules/gnome-online-accounts/goaewsclient.c:222
+#: ../modules/gnome-online-accounts/goaewsclient.c:223
 #, c-format
 msgid "Code: %u - Unexpected response from server"
 msgstr "Codice: %u - Risposta inattesa dal server"
 
 #. TODO: more specific
-#: ../modules/gnome-online-accounts/goaewsclient.c:243
+#: ../modules/gnome-online-accounts/goaewsclient.c:244
 #, c-format
 msgid "Failed to parse autodiscover response XML"
 msgstr "Analisi XML risposta autodiscover non riuscita"
 
 #. TODO: more specific
-#: ../modules/gnome-online-accounts/goaewsclient.c:252
+#: ../modules/gnome-online-accounts/goaewsclient.c:253
 #, c-format
 msgid "Failed to find Autodiscover element"
 msgstr "Ricerca elemento Autodiscover non riuscita"
 
 #. TODO: more specific
-#: ../modules/gnome-online-accounts/goaewsclient.c:264
+#: ../modules/gnome-online-accounts/goaewsclient.c:265
 #, c-format
 msgid "Failed to find Response element"
 msgstr "Ricerca elemento Response non riuscita"
 
 #. TODO: more specific
-#: ../modules/gnome-online-accounts/goaewsclient.c:276
+#: ../modules/gnome-online-accounts/goaewsclient.c:277
 #, c-format
 msgid "Failed to find Account element"
 msgstr "Ricerca elemento Account non riuscita"
 
 #. TODO: more specific
-#: ../modules/gnome-online-accounts/goaewsclient.c:290
+#: ../modules/gnome-online-accounts/goaewsclient.c:291
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Ricerca di ASUrl e OABUrl nella risposta autodiscover non riuscita"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1238
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1271
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5455,18 +5476,18 @@ msgstr ""
 "Impossibile trovare nel servizio org.gnome.OnlineAccounts un account "
 "corrispondente da cui ottenere una token d'accesso per \"%s\""
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1265
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1298
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Recupero del token di accesso per «%s» non riuscito: "
 
-#: ../modules/google-backend/module-google-backend.c:192
+#: ../modules/google-backend/module-google-backend.c:140
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
 #: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
 msgstr "Calendario"
 
-#: ../modules/google-backend/module-google-backend.c:261
+#: ../modules/google-backend/module-google-backend.c:217
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5475,10 +5496,6 @@ msgstr "Contatti"
 #: ../modules/trust-prompt/certificate-viewer.c:292
 msgid "Not part of certificate"
 msgstr "Non fa parte del certificato"
-
-#: ../modules/trust-prompt/certificate-viewer.c:575
-msgid "_Close"
-msgstr "_Chiudi"
 
 #: ../modules/trust-prompt/certificate-viewer.c:600
 msgid "This certificate has been verified for the following uses:"
@@ -5849,14 +5866,6 @@ msgstr "Integra i propri contatti"
 msgid "Signon service did not return a secret"
 msgstr "Il servizio di sign-on non ha restituito un segreto"
 
-#: ../modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:1
-msgid "Evolution Data Server"
-msgstr "Evolution Data Server"
-
-#: ../modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
-msgid "Required to have EDS appear in UOA"
-msgstr "È necessario affiché EDS appaia in UOA"
-
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
 msgid "Google Calendar"
 msgstr "Calendario Google"
@@ -5963,3 +5972,30 @@ msgstr "WebDAV"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
 msgstr "A_nnulla"
+
+#~ msgid "Error parsing regular expression"
+#~ msgstr "Errore nell'analizzare l'espressione regolare"
+
+#~ msgid "Error moving messages"
+#~ msgstr "Errore nello spostare i messaggi"
+
+#~ msgid "Lost connection to IMAP server"
+#~ msgstr "Connessione al server LDAP persa..."
+
+#~ msgid "Synchronizing junk database"
+#~ msgstr "Sincronizzazione database spam"
+
+#~ msgid "Failed to read From address"
+#~ msgstr "Lettura dell'indirizzo \"Da\" non riuscita"
+
+#~ msgid "Message send in offline mode is disabled"
+#~ msgstr "L'invio di messaggi in modalità offline è disabilitata"
+
+#~ msgid "_Close"
+#~ msgstr "_Chiudi"
+
+#~ msgid "Evolution Data Server"
+#~ msgstr "Evolution Data Server"
+
+#~ msgid "Required to have EDS appear in UOA"
+#~ msgstr "È necessario affiché EDS appaia in UOA"
