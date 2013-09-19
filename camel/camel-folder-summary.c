@@ -2994,34 +2994,6 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_add_from_header:
- * @summary: a #CamelFolderSummary object
- * @headers: rfc822 headers
- *
- * Build a new info record based on a set of headers, and add it to
- * the summary.
- *
- * Note that this function should not be used if build_content_info
- * has been specified for this summary.
- *
- * Returns: the newly added record
- **/
-CamelMessageInfo *
-camel_folder_summary_add_from_header (CamelFolderSummary *summary,
-                                      struct _camel_header_raw *h)
-{
-	CamelMessageInfo *info;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
-
-	info = camel_folder_summary_info_new_from_header (summary, h);
-
-	camel_folder_summary_add (summary, info);
-
-	return info;
-}
-
-/**
  * camel_folder_summary_add_from_parser:
  * @summary: a #CamelFolderSummary object
  * @parser: a #CamelMimeParser object

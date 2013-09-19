@@ -173,7 +173,6 @@ add_range_xover (CamelNNTPSummary *cns,
 	CamelSettings *settings;
 	CamelService *service;
 	CamelFolderSummary *s;
-	CamelMessageInfoBase *mi;
 	struct _camel_header_raw *headers = NULL;
 	gchar *line, *tab;
 	gchar *host;
@@ -270,15 +269,16 @@ add_range_xover (CamelNNTPSummary *cns,
 		/* truncated line? ignore? */
 		if (xover == NULL) {
 			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
-				mi = (CamelMessageInfoBase *)
-					camel_folder_summary_add_from_header (s, headers);
-				if (mi) {
-					mi->size = size;
-					cns->high = n;
-					camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
-					if (folder_filter_recent)
-						camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
-				}
+				CamelMessageInfo *mi;
+
+				mi = camel_folder_summary_info_new_from_header (s, headers);
+				((CamelMessageInfoBase *) mi)->size = size;
+				camel_folder_summary_add (s, mi);
+
+				cns->high = n;
+				camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
+				if (folder_filter_recent)
+					camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
 			}
 		}
 
