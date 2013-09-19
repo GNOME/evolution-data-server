@@ -343,15 +343,3 @@ content_info_to_db (CamelFolderSummary *s,
 	}
 }
 
-void
-camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary,
-                                          const gchar *uid,
-                                          const CamelMessageInfo *info)
-{
-	CamelIMAPXMessageInfo *mi;
-
-	mi = camel_message_info_clone (info);
-	mi->info.uid = camel_pstring_strdup (uid);
-
-	camel_folder_summary_add (summary, (CamelMessageInfo *) mi);
-}
