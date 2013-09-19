@@ -2994,26 +2994,6 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_add_from_message:
- * @summary: a #CamelFolderSummary object
- * @message: a #CamelMimeMessage object
- *
- * Add a summary item from an existing message.
- *
- * Returns: the newly added record
- **/
-CamelMessageInfo *
-camel_folder_summary_add_from_message (CamelFolderSummary *summary,
-                                       CamelMimeMessage *msg)
-{
-	CamelMessageInfo *info = camel_folder_summary_info_new_from_message (summary, msg, NULL);
-
-	camel_folder_summary_add (summary, info);
-
-	return info;
-}
-
-/**
  * camel_folder_summary_info_new_from_header:
  * @summary: a #CamelFolderSummary object
  * @headers: rfc822 headers

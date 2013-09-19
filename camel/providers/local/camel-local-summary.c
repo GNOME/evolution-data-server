@@ -518,55 +518,57 @@ local_summary_add (CamelLocalSummary *cls,
                    CamelFolderChangeInfo *ci,
                    GError **error)
 {
-	CamelLocalMessageInfo *mi;
+	CamelFolderSummary *summary;
+	CamelMessageInfo *mi;
+	CamelMessageInfoBase *mi_base;
 	gchar *xev;
 
 	d (printf ("Adding message to summary\n"));
 
-	mi = (CamelLocalMessageInfo *) camel_folder_summary_add_from_message ((CamelFolderSummary *) cls, msg);
-	if (mi) {
-		/*d(printf("Added, uid = %s\n", mi->uid));*/
-		if (info) {
-			const CamelTag *tag = camel_message_info_user_tags (info);
-			const CamelFlag *flag = camel_message_info_user_flags (info);
+	summary = CAMEL_FOLDER_SUMMARY (cls);
 
-			while (flag) {
-				camel_message_info_set_user_flag ((CamelMessageInfo *) mi, flag->name, TRUE);
-				flag = flag->next;
-			}
+	mi = camel_folder_summary_info_new_from_message (summary, msg, NULL);
+	camel_folder_summary_add (summary, mi);
 
-			while (tag) {
-				camel_message_info_set_user_tag ((CamelMessageInfo *) mi, tag->name, tag->value);
-				tag = tag->next;
-			}
+	mi_base = (CamelMessageInfoBase *) mi;
 
-			camel_message_info_set_flags ((CamelMessageInfo *) mi, 0xffff, camel_message_info_flags (info));
-			mi->info.size = camel_message_info_size (info);
+	if (info) {
+		const CamelTag *tag = camel_message_info_user_tags (info);
+		const CamelFlag *flag = camel_message_info_user_flags (info);
+
+		while (flag) {
+			camel_message_info_set_user_flag (mi, flag->name, TRUE);
+			flag = flag->next;
 		}
 
-		/* we need to calculate the size ourselves */
-		if (mi->info.size == 0) {
-			CamelStreamNull *sn = (CamelStreamNull *) camel_stream_null_new ();
-
-			camel_data_wrapper_write_to_stream_sync (
-				(CamelDataWrapper *) msg,
-				(CamelStream *) sn, NULL, NULL);
-			mi->info.size = sn->written;
-			g_object_unref (sn);
+		while (tag) {
+			camel_message_info_set_user_tag (mi, tag->name, tag->value);
+			tag = tag->next;
 		}
 
-		mi->info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV);
-		xev = camel_local_summary_encode_x_evolution (cls, mi);
-		camel_medium_set_header ((CamelMedium *) msg, "X-Evolution", xev);
-		g_free (xev);
-		camel_folder_change_info_add_uid (ci, camel_message_info_uid (mi));
-	} else {
-		d (printf ("Failed!\n"));
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Unable to add message to summary: unknown reason"));
+		camel_message_info_set_flags (mi, 0xffff, camel_message_info_flags (info));
+		mi_base->size = camel_message_info_size (info);
 	}
-	return (CamelMessageInfo *) mi;
+
+	/* we need to calculate the size ourselves */
+	if (camel_message_info_size (mi) == 0) {
+		CamelStreamNull *sn = (CamelStreamNull *) camel_stream_null_new ();
+
+		camel_data_wrapper_write_to_stream_sync (
+			(CamelDataWrapper *) msg,
+			(CamelStream *) sn, NULL, NULL);
+		mi_base->size = sn->written;
+		g_object_unref (sn);
+	}
+
+	mi_base->flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV);
+	xev = camel_local_summary_encode_x_evolution (
+		cls, (CamelLocalMessageInfo *) mi);
+	camel_medium_set_header ((CamelMedium *) msg, "X-Evolution", xev);
+	g_free (xev);
+	camel_folder_change_info_add_uid (ci, camel_message_info_uid (mi));
+
+	return mi;
 }
 
 static gchar *

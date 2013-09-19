@@ -454,12 +454,6 @@ void		camel_folder_summary_add_preview
 						(CamelFolderSummary *summary,
 						 CamelMessageInfo *info);
 
-/* build/add raw summary items */
-CamelMessageInfo *
-		camel_folder_summary_add_from_message
-						(CamelFolderSummary *summary,
-						 CamelMimeMessage *message);
-
 /* add a new raw summary item */
 void		camel_folder_summary_add	(CamelFolderSummary *summary,
 						 CamelMessageInfo *info);
