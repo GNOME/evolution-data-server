@@ -142,7 +142,7 @@ static CamelMessageContentInfo * content_info_new_from_parser (CamelFolderSummar
 static CamelMessageContentInfo * content_info_new_from_message (CamelFolderSummary *summary, CamelMimePart *mp);
 static void			 content_info_free (CamelFolderSummary *, CamelMessageContentInfo *);
 
-static gint save_message_infos_to_db (CamelFolderSummary *summary, gboolean fresh_mir, GError **error);
+static gint save_message_infos_to_db (CamelFolderSummary *summary, GError **error);
 static gint camel_read_mir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name);
 
 static gchar *next_uid_string (CamelFolderSummary *summary);
@@ -2595,31 +2595,24 @@ perform_content_info_save_to_db (CamelFolderSummary *summary,
 	return TRUE;
 }
 
-typedef struct {
-	GError **error;
-	gboolean migration;
-	gint progress;
-} SaveToDBArgs;
-
 static void
 save_to_db_cb (gpointer key,
                gpointer value,
                gpointer data)
 {
-	SaveToDBArgs *args = (SaveToDBArgs *) data;
-	GError **error = args->error;
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *) value;
 	CamelFolderSummary *summary = (CamelFolderSummary *) mi->summary;
 	CamelStore *parent_store;
 	const gchar *full_name;
 	CamelDB *cdb;
 	CamelMIRecord *mir;
+	GError **error = data;
 
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
-	if (!args->migration && !mi->dirty)
+	if (!mi->dirty)
 		return;
 
 	mir = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_to_db (summary, (CamelMessageInfo *) mi);
@@ -2635,25 +2628,9 @@ save_to_db_cb (gpointer key,
 
 	g_return_if_fail (mir != NULL);
 
-	if (!args->migration) {
-		if (camel_db_write_message_info_record (cdb, full_name, mir, error) != 0) {
-			camel_db_camel_mir_free (mir);
-			return;
-		}
-	} else {
-		if (camel_db_write_fresh_message_info_record (cdb, CAMEL_DB_IN_MEMORY_TABLE, mir, error) != 0) {
-			camel_db_camel_mir_free (mir);
-			return;
-		}
-
-		if (args->progress > CAMEL_DB_IN_MEMORY_TABLE_LIMIT) {
-		    g_print ("BULK INsert limit reached \n");
-			camel_db_flush_in_memory_transactions (cdb, full_name, error);
-			camel_db_start_in_memory_transactions (cdb, error);
-			args->progress = 0;
-		} else {
-			args->progress++;
-		}
+	if (camel_db_write_message_info_record (cdb, full_name, mir, error) != 0) {
+		camel_db_camel_mir_free (mir);
+		return;
 	}
 
 	/* Reset the dirty flag which decides if the changes are synced to the DB or not.
@@ -2666,20 +2643,14 @@ save_to_db_cb (gpointer key,
 
 static gint
 save_message_infos_to_db (CamelFolderSummary *summary,
-                          gboolean fresh_mirs,
                           GError **error)
 {
 	CamelStore *parent_store;
 	CamelDB *cdb;
 	const gchar *full_name;
-	SaveToDBArgs args;
 
 	if (is_in_memory_summary (summary))
 		return 0;
-
-	args.error = error;
-	args.migration = fresh_mirs;
-	args.progress = 0;
 
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
@@ -2692,7 +2663,7 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 
 	/* Push MessageInfo-es */
 	camel_db_begin_transaction (cdb, NULL);
-	g_hash_table_foreach (summary->priv->loaded_infos, save_to_db_cb, &args);
+	g_hash_table_foreach (summary->priv->loaded_infos, save_to_db_cb, error);
 	camel_db_end_transaction (cdb, NULL);
 
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -2758,7 +2729,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		return res;
 	}
 
-	ret = save_message_infos_to_db (summary, FALSE, error);
+	ret = save_message_infos_to_db (summary, error);
 	if (ret != 0) {
 		/* Failed, so lets reset the flag */
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
@@ -2780,7 +2751,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		camel_db_reset_folder_version (cdb, full_name, 0, NULL);
 		camel_db_end_transaction (cdb, NULL);
 
-		ret = save_message_infos_to_db (summary, FALSE, error);
+		ret = save_message_infos_to_db (summary, error);
 		if (ret != 0) {
 			summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
