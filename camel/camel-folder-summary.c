@@ -2994,35 +2994,6 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 }
 
 /**
- * camel_folder_summary_add_from_parser:
- * @summary: a #CamelFolderSummary object
- * @parser: a #CamelMimeParser object
- *
- * Build a new info record based on the current position of a #CamelMimeParser.
- *
- * The parser should be positioned before the start of the message to summarise.
- * This function may be used if build_contnet_info or an index has been
- * specified for the summary.
- *
- * Returns: the newly added record
- **/
-CamelMessageInfo *
-camel_folder_summary_add_from_parser (CamelFolderSummary *summary,
-                                      CamelMimeParser *mp)
-{
-	CamelMessageInfo *info;
-
-	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
-	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), NULL);
-
-	info = camel_folder_summary_info_new_from_parser (summary, mp);
-
-	camel_folder_summary_add (summary, info);
-
-	return info;
-}
-
-/**
  * camel_folder_summary_add_from_message:
  * @summary: a #CamelFolderSummary object
  * @message: a #CamelMimeMessage object

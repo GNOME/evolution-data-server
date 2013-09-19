@@ -373,7 +373,8 @@ add_range_head (CamelNNTPSummary *cns,
 			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
 				if (camel_mime_parser_init_with_stream (mp, CAMEL_STREAM (nntp_stream), error) == -1)
 					goto error;
-				mi = camel_folder_summary_add_from_parser (s, mp);
+				mi = camel_folder_summary_info_new_from_parser (s, mp);
+				camel_folder_summary_add (s, mi);
 				while (camel_mime_parser_step (mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_EOF)
 					;
 				if (mi == NULL) {

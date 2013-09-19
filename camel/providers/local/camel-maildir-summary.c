@@ -501,12 +501,16 @@ camel_maildir_summary_add (CamelLocalSummary *cls,
                            gint forceindex,
                            GCancellable *cancellable)
 {
+	CamelMessageInfo *info;
+	CamelFolderSummary *summary;
 	CamelMaildirSummary *maildirs = (CamelMaildirSummary *) cls;
 	gchar *filename = g_strdup_printf ("%s/cur/%s", cls->folder_path, name);
 	gint fd;
 	CamelMimeParser *mp;
 
 	d (printf ("summarising: %s\n", name));
+
+	summary = CAMEL_FOLDER_SUMMARY (cls);
 
 	fd = open (filename, O_RDONLY | O_LARGEFILE);
 	if (fd == -1) {
@@ -519,15 +523,18 @@ camel_maildir_summary_add (CamelLocalSummary *cls,
 	camel_mime_parser_init_with_fd (mp, fd);
 	if (cls->index && (forceindex || !camel_index_has_name (cls->index, name))) {
 		d (printf ("forcing indexing of message content\n"));
-		camel_folder_summary_set_index ((CamelFolderSummary *) maildirs, cls->index);
+		camel_folder_summary_set_index (summary, cls->index);
 	} else {
-		camel_folder_summary_set_index ((CamelFolderSummary *) maildirs, NULL);
+		camel_folder_summary_set_index (summary, NULL);
 	}
 	maildirs->priv->current_file = (gchar *) name;
-	camel_folder_summary_add_from_parser ((CamelFolderSummary *) maildirs, mp);
+
+	info = camel_folder_summary_info_new_from_parser (summary, mp);
+	camel_folder_summary_add (summary, info);
+
 	g_object_unref (mp);
 	maildirs->priv->current_file = NULL;
-	camel_folder_summary_set_index ((CamelFolderSummary *) maildirs, NULL);
+	camel_folder_summary_set_index (summary, NULL);
 	g_free (filename);
 	return 0;
 }
