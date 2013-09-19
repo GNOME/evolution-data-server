@@ -63,7 +63,6 @@ typedef struct _CamelVeeMessageInfo CamelVeeMessageInfo;
 struct _CamelVeeMessageInfo {
 	CamelMessageInfoBase info;
 	CamelFolderSummary *orig_summary;
-	guint32 old_flags;  /* These are just for identifying changed flags */
 };
 
 struct _CamelVeeSummary {

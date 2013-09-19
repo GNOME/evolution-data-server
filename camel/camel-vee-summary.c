@@ -251,7 +251,6 @@ vee_info_set_flags (CamelMessageInfo *mi,
 
 		camel_folder_freeze (camel_folder_summary_get_folder (rmi->summary));
 		res = camel_message_info_set_flags (rmi, flags, set);
-		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 		camel_folder_thaw (camel_folder_summary_get_folder (rmi->summary));
 
 		if (res) {
@@ -444,8 +443,7 @@ camel_vee_summary_add (CamelVeeSummary *s,
                        CamelVeeMessageInfoData *mi_data)
 {
 	CamelVeeMessageInfo *vmi;
-	CamelMessageInfo *rmi;
-	const gchar *uid, *vuid;
+	const gchar *vuid;
 	CamelVeeSubfolderData *sf_data;
 	CamelFolder *orig_folder;
 	GHashTable *vuids;
@@ -456,7 +454,6 @@ camel_vee_summary_add (CamelVeeSummary *s,
 	camel_folder_summary_lock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	sf_data = camel_vee_message_info_data_get_subfolder_data (mi_data);
-	uid = camel_vee_message_info_data_get_orig_message_uid (mi_data);
 	vuid = camel_vee_message_info_data_get_vee_message_uid (mi_data);
 	orig_folder = camel_vee_subfolder_data_get_folder (sf_data);
 
@@ -477,13 +474,6 @@ camel_vee_summary_add (CamelVeeSummary *s,
 	vmi->info.uid = (gchar *) camel_pstring_strdup (vuid);
 
 	camel_message_info_ref (vmi);
-
-	/* Get actual flags and store it */
-	rmi = camel_folder_summary_get (orig_folder->summary, uid);
-	if (rmi) {
-		vmi->old_flags = camel_message_info_flags (rmi);
-		camel_message_info_free (rmi);
-	}
 
 	vuids = g_hash_table_lookup (s->priv->vuids_by_subfolder, orig_folder);
 	if (vuids) {
@@ -558,7 +548,6 @@ camel_vee_summary_replace_flags (CamelVeeSummary *summary,
                                  const gchar *uid)
 {
 	CamelMessageInfo *mi;
-	CamelVeeMessageInfo *vmi;
 
 	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
 	g_return_if_fail (uid != NULL);
@@ -570,9 +559,6 @@ camel_vee_summary_replace_flags (CamelVeeSummary *summary,
 		camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return;
 	}
-
-	vmi = (CamelVeeMessageInfo *) mi;
-	vmi->old_flags = camel_message_info_flags (mi);
 
 	camel_folder_summary_replace_flags (&summary->summary, mi);
 	camel_message_info_free (mi);
