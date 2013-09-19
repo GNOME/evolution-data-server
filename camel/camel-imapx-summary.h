@@ -93,10 +93,6 @@ struct _CamelIMAPXSummaryClass {
 GType		camel_imapx_summary_get_type	(void);
 CamelFolderSummary *
 		camel_imapx_summary_new		(CamelFolder *folder);
-void		camel_imapx_summary_add_offline	(CamelFolderSummary *summary,
-						 const gchar *uid,
-						 CamelMimeMessage *message,
-						 const CamelMessageInfo *info);
 void		camel_imapx_summary_add_offline_uncached
 						(CamelFolderSummary *summary,
 						 const gchar *uid,

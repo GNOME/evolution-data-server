@@ -1093,7 +1093,6 @@ CamelIMAPXMessageInfo
 CamelIMAPXMessageContentInfo
 CamelIMAPXSummary
 camel_imapx_summary_new
-camel_imapx_summary_add_offline
 camel_imapx_summary_add_offline_uncached
 <SUBSECTION Standard>
 CAMEL_IMAPX_SUMMARY

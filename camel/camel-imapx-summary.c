@@ -344,39 +344,6 @@ content_info_to_db (CamelFolderSummary *s,
 }
 
 void
-camel_imapx_summary_add_offline (CamelFolderSummary *summary,
-                                 const gchar *uid,
-                                 CamelMimeMessage *message,
-                                 const CamelMessageInfo *info)
-{
-	CamelIMAPXMessageInfo *mi;
-	const CamelFlag *flag;
-	const CamelTag *tag;
-
-	/* Create summary entry */
-	mi = (CamelIMAPXMessageInfo *) camel_folder_summary_info_new_from_message (summary, message, NULL);
-
-	/* Copy flags 'n' tags */
-	mi->info.flags = camel_message_info_flags (info);
-
-	flag = camel_message_info_user_flags (info);
-	while (flag) {
-		camel_message_info_set_user_flag ((CamelMessageInfo *) mi, flag->name, TRUE);
-		flag = flag->next;
-	}
-	tag = camel_message_info_user_tags (info);
-	while (tag) {
-		camel_message_info_set_user_tag ((CamelMessageInfo *) mi, tag->name, tag->value);
-		tag = tag->next;
-	}
-
-	mi->info.size = camel_message_info_size (info);
-	mi->info.uid = camel_pstring_strdup (uid);
-
-	camel_folder_summary_add (summary, (CamelMessageInfo *) mi);
-}
-
-void
 camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary,
                                           const gchar *uid,
                                           const CamelMessageInfo *info)
