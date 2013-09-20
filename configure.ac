@@ -36,7 +36,7 @@ dnl Required Package Versions
 
 dnl Keep these two definitions in agreement.
 m4_define([glib_minimum_version], [2.34])
-m4_define([glib_encoded_version], [GLIB_VERSION_2_38])
+m4_define([glib_encoded_version], [GLIB_VERSION_2_34])
 
 dnl Keep these two definitions in agreement.
 m4_define([gdk_minimum_version], [3.9])
