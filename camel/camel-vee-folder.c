@@ -62,7 +62,6 @@ struct _CamelVeeFolderPrivate {
 	GAsyncQueue *change_queue;
 	gboolean change_queue_busy;
 
-	GRecMutex summary_lock;	/* for locking vfolder summary */
 	GRecMutex subfolder_lock;	/* for locking the subfolder list */
 	GRecMutex changed_lock;	/* for locking the folders-changed list */
 
@@ -593,7 +592,6 @@ vee_folder_finalize (GObject *object)
 
 	g_hash_table_foreach (vf->priv->skipped_changes, free_change_info_cb, NULL);
 
-	g_rec_mutex_clear (&vf->priv->summary_lock);
 	g_rec_mutex_clear (&vf->priv->subfolder_lock);
 	g_rec_mutex_clear (&vf->priv->changed_lock);
 	g_hash_table_destroy (vf->priv->ignore_changed);
@@ -1190,7 +1188,6 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 		CAMEL_MESSAGE_FLAGGED |
 		CAMEL_MESSAGE_SEEN;
 
-	g_rec_mutex_init (&vee_folder->priv->summary_lock);
 	g_rec_mutex_init (&vee_folder->priv->subfolder_lock);
 	g_rec_mutex_init (&vee_folder->priv->changed_lock);
 
