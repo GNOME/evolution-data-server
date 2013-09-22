@@ -101,11 +101,6 @@ struct _CamelCertDBClass {
 	gint		(*cert_save)		(CamelCertDB *certdb,
 						 CamelCert *cert,
 						 FILE *ostream);
-
-	void		(*cert_set_string)	(CamelCertDB *certdb,
-						 CamelCert *cert,
-						 gint string,
-						 const gchar *value);
 };
 
 CamelCert *	camel_cert_new			(void);

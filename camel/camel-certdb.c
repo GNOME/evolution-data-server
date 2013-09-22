@@ -229,34 +229,6 @@ certdb_cert_save (CamelCertDB *certdb,
 }
 
 static void
-certdb_cert_set_string (CamelCertDB *certdb,
-                        CamelCert *cert,
-                        gint string,
-                        const gchar *value)
-{
-	switch (string) {
-		case CAMEL_CERT_STRING_ISSUER:
-			g_free (cert->issuer);
-			cert->issuer = g_strdup (value);
-			break;
-		case CAMEL_CERT_STRING_SUBJECT:
-			g_free (cert->subject);
-			cert->subject = g_strdup (value);
-			break;
-		case CAMEL_CERT_STRING_HOSTNAME:
-			g_free (cert->hostname);
-			cert->hostname = g_strdup (value);
-			break;
-		case CAMEL_CERT_STRING_FINGERPRINT:
-			g_free (cert->fingerprint);
-			cert->fingerprint = g_strdup (value);
-			break;
-		default:
-			break;
-	}
-}
-
-static void
 camel_certdb_class_init (CamelCertDBClass *class)
 {
 	GObjectClass *object_class;
@@ -270,7 +242,6 @@ camel_certdb_class_init (CamelCertDBClass *class)
 	class->header_save = certdb_header_save;
 	class->cert_load = certdb_cert_load;
 	class->cert_save = certdb_cert_save;
-	class->cert_set_string = certdb_cert_set_string;
 }
 
 static void
