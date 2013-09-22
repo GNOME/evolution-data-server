@@ -111,7 +111,6 @@ camel_cert_set_hostname
 camel_cert_set_fingerprint
 camel_cert_get_trust
 camel_cert_set_trust
-CamelCertDBLock
 <SUBSECTION Standard>
 CAMEL_CERTDB
 CAMEL_IS_CERTDB
