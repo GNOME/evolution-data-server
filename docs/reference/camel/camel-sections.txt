@@ -232,7 +232,6 @@ camel_data_wrapper_decode_to_stream_finish
 camel_data_wrapper_construct_from_stream_sync
 camel_data_wrapper_construct_from_stream
 camel_data_wrapper_construct_from_stream_finish
-CamelDataWrapperLock
 <SUBSECTION Standard>
 CAMEL_DATA_WRAPPER
 CAMEL_IS_DATA_WRAPPER
