@@ -47,7 +47,6 @@
 struct _CamelCertDBPrivate {
 	GMutex db_lock;		/* for the db hashtable/array */
 	GMutex io_lock;		/* load/save lock, for access to saved_count, etc */
-	GMutex alloc_lock;	/* for setting up and using allocators */
 };
 
 static gint certdb_header_load (CamelCertDB *certdb, FILE *istream);
@@ -146,7 +145,6 @@ certdb_finalize (GObject *object)
 
 	g_mutex_clear (&priv->db_lock);
 	g_mutex_clear (&priv->io_lock);
-	g_mutex_clear (&priv->alloc_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_certdb_parent_class)->finalize (object);
@@ -185,7 +183,6 @@ camel_certdb_init (CamelCertDB *certdb)
 
 	g_mutex_init (&certdb->priv->db_lock);
 	g_mutex_init (&certdb->priv->io_lock);
-	g_mutex_init (&certdb->priv->alloc_lock);
 }
 
 CamelCertDB *
@@ -596,12 +593,8 @@ camel_certdb_cert_new (CamelCertDB *certdb)
 
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
 
-	g_mutex_lock (&certdb->priv->alloc_lock);
-
 	cert = g_slice_new0 (CamelCert);
 	cert->refcount = 1;
-
-	g_mutex_unlock (&certdb->priv->alloc_lock);
 
 	return cert;
 }
