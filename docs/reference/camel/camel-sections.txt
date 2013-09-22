@@ -2920,7 +2920,6 @@ CamelTextIndexNamePrivate
 <FILE>camel-transport</FILE>
 <TITLE>CamelTransport</TITLE>
 CamelTransport
-CamelTransportLock
 camel_transport_send_to_sync
 camel_transport_send_to
 camel_transport_send_to_finish

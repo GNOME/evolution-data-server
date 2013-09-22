@@ -59,15 +59,6 @@ typedef struct _CamelTransport CamelTransport;
 typedef struct _CamelTransportClass CamelTransportClass;
 typedef struct _CamelTransportPrivate CamelTransportPrivate;
 
-/**
- * CamelTransportLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_TRANSPORT_SEND_LOCK
-} CamelTransportLock;
-
 struct _CamelTransport {
 	CamelService parent;
 	CamelTransportPrivate *priv;
