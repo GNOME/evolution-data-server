@@ -1705,36 +1705,6 @@ camel_vee_folder_ignore_next_changed_event (CamelVeeFolder *vfolder,
 }
 
 /**
- * camel_vee_folder_lock:
- * @folder: a #CamelVeeFolder
- * @lock: lock type to lock
- *
- * Locks @folder's @lock. Unlock it with camel_vee_folder_unlock().
- *
- * Since: 2.32
- **/
-void
-camel_vee_folder_lock (CamelVeeFolder *folder,
-                       CamelVeeFolderLock lock)
-{
-	g_return_if_fail (CAMEL_IS_VEE_FOLDER (folder));
-
-	switch (lock) {
-		case CAMEL_VEE_FOLDER_SUMMARY_LOCK:
-			g_rec_mutex_lock (&folder->priv->summary_lock);
-			break;
-		case CAMEL_VEE_FOLDER_SUBFOLDER_LOCK:
-			g_rec_mutex_lock (&folder->priv->subfolder_lock);
-			break;
-		case CAMEL_VEE_FOLDER_CHANGED_LOCK:
-			g_rec_mutex_lock (&folder->priv->changed_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
-}
-
-/**
  * camel_vee_folder_unlock:
  * @folder: a #CamelVeeFolder
  * @lock: lock type to unlock
