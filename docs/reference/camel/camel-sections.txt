@@ -516,7 +516,6 @@ camel_folder_change_info_add_uid
 camel_folder_change_info_remove_uid
 camel_folder_change_info_change_uid
 camel_folder_change_info_recent_uid
-CamelFolderLock
 camel_folder_lock
 camel_folder_unlock
 <SUBSECTION Standard>

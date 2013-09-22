@@ -96,15 +96,6 @@ typedef enum {
 	CAMEL_FETCH_NEW_MESSAGES
 } CamelFetchType;
 
-/**
- * CamelFolderLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_FOLDER_REC_LOCK
-} CamelFolderLock;
-
 struct _CamelFolderChangeInfo {
 	GPtrArray *uid_added;
 	GPtrArray *uid_removed;
