@@ -532,7 +532,7 @@ ssl_bad_cert (gpointer data,
 		accept = ccert->trust != CAMEL_CERT_TRUST_NEVER;
 	}
 
-	camel_certdb_cert_unref (certdb, ccert);
+	camel_cert_unref (ccert);
 	camel_certdb_save (certdb);
 	g_object_unref (certdb);
 

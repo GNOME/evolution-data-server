@@ -141,7 +141,7 @@ void camel_certdb_remove_host (CamelCertDB *certdb, const gchar *hostname, const
 
 CamelCert *camel_cert_new (void);
 void camel_cert_ref (CamelCert *cert);
-void camel_certdb_cert_unref (CamelCertDB *certdb, CamelCert *cert);
+void camel_cert_unref (CamelCert *cert);
 
 void camel_certdb_clear (CamelCertDB *certdb);
 

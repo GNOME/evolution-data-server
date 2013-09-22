@@ -279,9 +279,8 @@ certdb_cert_load (CamelCertDB *certdb,
 
 	return cert;
 
- error:
-
-	camel_certdb_cert_unref (certdb, cert);
+error:
+	camel_cert_unref (cert);
 
 	return NULL;
 }
@@ -536,10 +535,10 @@ camel_certdb_put (CamelCertDB *certdb,
 
 	/* Replace an existing entry with the same hostname. */
 	old_cert = g_hash_table_lookup (certdb->cert_hash, key);
-	if (old_cert) {
+	if (old_cert != NULL) {
 		g_hash_table_remove (certdb->cert_hash, key);
 		g_ptr_array_remove (certdb->certs, old_cert);
-		camel_certdb_cert_unref (certdb, old_cert);
+		camel_cert_unref (old_cert);
 	}
 
 	camel_cert_ref (cert);
@@ -573,10 +572,10 @@ camel_certdb_remove_host (CamelCertDB *certdb,
 
 	key = certdb_key_new (hostname, fingerprint);
 	cert = g_hash_table_lookup (certdb->cert_hash, key);
-	if (cert) {
+	if (cert != NULL) {
 		g_hash_table_remove (certdb->cert_hash, key);
 		g_ptr_array_remove (certdb->certs, cert);
-		camel_certdb_cert_unref (certdb, cert);
+		camel_cert_unref (cert);
 
 		certdb->flags |= CAMEL_CERTDB_DIRTY;
 	}
@@ -607,10 +606,8 @@ camel_cert_ref (CamelCert *cert)
 }
 
 void
-camel_certdb_cert_unref (CamelCertDB *certdb,
-                         CamelCert *cert)
+camel_cert_unref (CamelCert *cert)
 {
-	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
 	g_return_if_fail (cert->refcount > 0);
 
@@ -648,7 +645,7 @@ camel_certdb_clear (CamelCertDB *certdb)
 	g_hash_table_foreach_remove (certdb->cert_hash, cert_remove, NULL);
 	for (i = 0; i < certdb->certs->len; i++) {
 		cert = (CamelCert *) certdb->certs->pdata[i];
-		camel_certdb_cert_unref (certdb, cert);
+		camel_cert_unref (cert);
 	}
 
 	certdb->saved_certs = 0;
