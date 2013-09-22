@@ -228,25 +228,6 @@ certdb_cert_save (CamelCertDB *certdb,
 	return 0;
 }
 
-static const gchar *
-certdb_cert_get_string (CamelCertDB *certdb,
-                        CamelCert *cert,
-                        gint string)
-{
-	switch (string) {
-		case CAMEL_CERT_STRING_ISSUER:
-			return cert->issuer;
-		case CAMEL_CERT_STRING_SUBJECT:
-			return cert->subject;
-		case CAMEL_CERT_STRING_HOSTNAME:
-			return cert->hostname;
-		case CAMEL_CERT_STRING_FINGERPRINT:
-			return cert->fingerprint;
-		default:
-			return NULL;
-	}
-}
-
 static void
 certdb_cert_set_string (CamelCertDB *certdb,
                         CamelCert *cert,
@@ -289,7 +270,6 @@ camel_certdb_class_init (CamelCertDBClass *class)
 	class->header_save = certdb_header_save;
 	class->cert_load = certdb_cert_load;
 	class->cert_save = certdb_cert_save;
-	class->cert_get_string = certdb_cert_get_string;
 	class->cert_set_string = certdb_cert_set_string;
 }
 
