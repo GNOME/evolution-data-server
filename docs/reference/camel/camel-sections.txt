@@ -81,7 +81,6 @@ CamelKeyFilePrivate
 <SECTION>
 <FILE>camel-certdb</FILE>
 <TITLE>CamelCertDB</TITLE>
-CamelCertDBFlags
 CamelCertDB
 CamelCertTrust
 CamelCert

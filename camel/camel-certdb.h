@@ -55,10 +55,6 @@ typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
 typedef struct _CamelCertDBPrivate CamelCertDBPrivate;
 
-typedef enum {
-	CAMEL_CERTDB_DIRTY = 1 << 0
-} CamelCertDBFlags;
-
 enum {
 	CAMEL_CERT_STRING_ISSUER,
 	CAMEL_CERT_STRING_SUBJECT,
