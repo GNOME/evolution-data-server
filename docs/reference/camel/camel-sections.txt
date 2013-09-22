@@ -2921,7 +2921,6 @@ CamelTextIndexNamePrivate
 <TITLE>CamelTransport</TITLE>
 CamelTransport
 CamelTransportLock
-camel_transport_lock
 camel_transport_unlock
 camel_transport_send_to_sync
 camel_transport_send_to

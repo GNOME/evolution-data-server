@@ -99,8 +99,6 @@ struct _CamelTransportClass {
 };
 
 GType		camel_transport_get_type	(void);
-void		camel_transport_lock		(CamelTransport *transport,
-						 CamelTransportLock lock);
 void		camel_transport_unlock		(CamelTransport *transport,
 						 CamelTransportLock lock);
 
