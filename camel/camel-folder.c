@@ -188,10 +188,10 @@ folder_emit_changed_cb (gpointer user_data)
 	if (folder != NULL) {
 		CamelFolderChangeInfo *changes;
 
-		camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+		g_mutex_lock (&folder->priv->change_lock);
 		changes = folder->priv->pending_changes;
 		folder->priv->pending_changes = NULL;
-		camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+		g_mutex_unlock (&folder->priv->change_lock);
 
 		g_signal_emit (folder, signals[CHANGED], 0, changes);
 
@@ -925,14 +925,14 @@ folder_freeze (CamelFolder *folder)
 {
 	g_return_if_fail (folder->priv->frozen >= 0);
 
-	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_lock (&folder->priv->change_lock);
 
 	folder->priv->frozen++;
 	if (folder->summary)
 		g_object_freeze_notify (G_OBJECT (folder->summary));
 
 	d (printf ("freeze (%p '%s') = %d\n", folder, folder->full_name, folder->priv->frozen));
-	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_unlock (&folder->priv->change_lock);
 }
 
 static void
@@ -942,7 +942,7 @@ folder_thaw (CamelFolder *folder)
 
 	g_return_if_fail (folder->priv->frozen > 0);
 
-	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_lock (&folder->priv->change_lock);
 
 	folder->priv->frozen--;
 	if (folder->summary)
@@ -956,7 +956,7 @@ folder_thaw (CamelFolder *folder)
 		folder->priv->changed_frozen = camel_folder_change_info_new ();
 	}
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_unlock (&folder->priv->change_lock);
 
 	if (info) {
 		camel_folder_changed (folder, info);
@@ -1735,14 +1735,14 @@ folder_changed (CamelFolder *folder,
 
 	g_return_if_fail (info != NULL);
 
-	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_lock (&folder->priv->change_lock);
 	if (folder->priv->frozen) {
 		camel_folder_change_info_cat (folder->priv->changed_frozen, info);
-		camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+		g_mutex_unlock (&folder->priv->change_lock);
 		g_signal_stop_emission (folder, signals[CHANGED], 0);
 		return;
 	}
-	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_unlock (&folder->priv->change_lock);
 
 	parent_store = camel_folder_get_parent_store (folder);
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
@@ -1800,10 +1800,10 @@ folder_changed (CamelFolder *folder,
 
 		/* Copy changes back to changed_frozen list to retain
 		 * them while we are filtering */
-		camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+		g_mutex_lock (&folder->priv->change_lock);
 		camel_folder_change_info_cat (
 			folder->priv->changed_frozen, info);
-		camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+		g_mutex_unlock (&folder->priv->change_lock);
 
 		camel_session_submit_job (
 			session, (CamelSessionCallback) folder_filter,
@@ -3095,7 +3095,7 @@ camel_folder_changed (CamelFolder *folder,
 	 * down on the frequency of signal emissions so virtual folders
 	 * won't have to work so hard. */
 
-	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_lock (&folder->priv->change_lock);
 
 	pending_changes = folder->priv->pending_changes;
 
@@ -3127,7 +3127,7 @@ camel_folder_changed (CamelFolder *folder,
 
 	camel_folder_change_info_cat (pending_changes, changes);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
+	g_mutex_unlock (&folder->priv->change_lock);
 }
 
 /**
