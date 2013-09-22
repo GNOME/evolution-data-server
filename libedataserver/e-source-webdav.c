@@ -1463,7 +1463,6 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 	gchar *old_hash = NULL;
 	gchar *cert_errs_str;
 	gchar *markup = NULL;
-	gint issuer_count;
 
 	g_return_val_if_fail (
 		E_IS_SOURCE_WEBDAV (extension),
@@ -1598,42 +1597,6 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 	g_byte_array_unref (bytes);
 	g_free (cert_errs_str);
 	g_free (markup);
-
-	issuer_count = 0;
-	while (cert) {
-		GTlsCertificate *issuer = NULL;
-		g_object_get (cert, "issuer", &issuer, NULL);
-
-		cert = issuer;
-
-		if (cert) {
-			bytes = NULL;
-			g_object_get (cert, "certificate", &bytes, NULL);
-
-			if (bytes) {
-				base64 = g_base64_encode (bytes->data, bytes->len);
-				if (issuer_count == 0) {
-					e_named_parameters_set (
-					parameters, "issuer", base64);
-				} else {
-					gchar *name;
-
-					name = g_strdup_printf (
-						"issuer-%d", issuer_count);
-					e_named_parameters_set (
-						parameters, name, base64);
-					g_free (name);
-				}
-
-				g_free (base64);
-				g_byte_array_unref (bytes);
-			} else {
-				break;
-			}
-		}
-
-		issuer_count++;
-	}
 
 	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
 }

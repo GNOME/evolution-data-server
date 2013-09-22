@@ -19,7 +19,10 @@
 #ifndef TRUST_PROMPT_H
 #define TRUST_PROMPT_H
 
-#include <cert.h>
+/* XXX Yeah, yeah... */
+#define GCR_API_SUBJECT_TO_CHANGE
+
+#include <gcr/gcr.h>
 #include <libebackend/libebackend.h>
 
 /* This shows a trust-prompt. The function may not block and returns whether
@@ -37,9 +40,7 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 		   gint prompt_id,
 		   const gchar *host,
 		   const gchar *markup,
-		   const CERTCertificate *pcert,
-		   const gchar *cert_fingerprint,
-		   const gchar *reason,
-		   const GSList *pissuers);
+		   GcrParsed *parsed,
+		   const gchar *reason);
 
 #endif /* TRUST_PROMPT_H */

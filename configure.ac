@@ -443,6 +443,17 @@ if test "x$enable_gtk" = xyes; then
 
 	])])
 
+	PKG_CHECK_MODULES(
+		[GCR], [gcr-3 >= gcr_minimum_version],,
+		[AC_MSG_ERROR([
+
+	gcr-3.0 not found (or version < gcr_minimum_version)
+
+	If you want to disable gcr-3.0's GTK+ widgets,
+	please append --disable-gtk to configure.
+
+	])])
+
 	AC_DEFINE(HAVE_GTK, 1, [Define to 1 if you have the gtk+-3.0 package.])
 fi
 AM_CONDITIONAL(HAVE_GTK, [test x$enable_gtk = xyes])

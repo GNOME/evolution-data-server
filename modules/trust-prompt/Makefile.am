@@ -1,10 +1,8 @@
 NULL =
 
-TRUST_PROMPT_SOURCES = trust-prompt-gtk.c \
-			  certificate-viewer.c \
-			  certificate-viewer.h
-TRUST_PROMPT_CFLAGS = $(GNOME_PLATFORM_CFLAGS) $(GTK_CFLAGS)
-TRUST_PROMPT_LIBS = $(GNOME_PLATFORM_LIBS) $(GTK_LIBS)
+TRUST_PROMPT_SOURCES = trust-prompt-gtk.c
+TRUST_PROMPT_CFLAGS = $(GNOME_PLATFORM_CFLAGS) $(GTK_CFLAGS) $(GCR_CFLAGS)
+TRUST_PROMPT_LIBS = $(GNOME_PLATFORM_LIBS) $(GTK_LIBS) $(GCR_LIBS)
 
 module_LTLIBRARIES = module-trust-prompt.la
 
@@ -19,8 +17,6 @@ module_trust_prompt_la_CPPFLAGS = \
 	$(NULL)
 
 module_trust_prompt_la_SOURCES = \
-	e-asn1-object.c \
-	e-asn1-object.h \
 	module-trust-prompt.c \
 	trust-prompt.h \
 	$(TRUST_PROMPT_SOURCES) \
