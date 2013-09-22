@@ -170,30 +170,6 @@ camel_transport_init (CamelTransport *transport)
 }
 
 /**
- * camel_transport_unlock:
- * @transport: a #CamelTransport
- * @lock: lock type to unlock
- *
- * Unlocks %transport's %lock, previously locked with camel_transport_lock().
- *
- * Since: 2.32
- **/
-void
-camel_transport_unlock (CamelTransport *transport,
-                        CamelTransportLock lock)
-{
-	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
-
-	switch (lock) {
-		case CAMEL_TRANSPORT_SEND_LOCK:
-			g_mutex_unlock (&transport->priv->send_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
-}
-
-/**
  * camel_transport_send_to_sync:
  * @transport: a #CamelTransport
  * @message: a #CamelMimeMessage to send

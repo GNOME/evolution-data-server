@@ -99,9 +99,6 @@ struct _CamelTransportClass {
 };
 
 GType		camel_transport_get_type	(void);
-void		camel_transport_unlock		(CamelTransport *transport,
-						 CamelTransportLock lock);
-
 gboolean	camel_transport_send_to_sync	(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
