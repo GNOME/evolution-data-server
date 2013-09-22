@@ -142,9 +142,6 @@ void		camel_vee_folder_ignore_next_changed_event
 							(CamelVeeFolder *vfolder,
 							 CamelFolder *subfolder);
 
-void		camel_vee_folder_unlock			(CamelVeeFolder *folder,
-							 CamelVeeFolderLock lock);
-
 G_END_DECLS
 
 #endif /* CAMEL_VEE_FOLDER_H */
