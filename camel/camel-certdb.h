@@ -96,8 +96,6 @@ struct _CamelCertDB {
 	guint32 saved_certs;
 	CamelCertDBFlags flags;
 
-	guint32 cert_size;
-
 	GPtrArray *certs;
 	GHashTable *cert_hash;
 };
@@ -110,9 +108,6 @@ struct _CamelCertDBClass {
 
 	CamelCert * (*cert_load) (CamelCertDB *certdb, FILE *istream);
 	gint (*cert_save) (CamelCertDB *certdb, CamelCert *cert, FILE *ostream);
-
-	CamelCert *  (*cert_new) (CamelCertDB *certdb);
-	void        (*cert_free) (CamelCertDB *certdb, CamelCert *cert);
 
 	const gchar * (*cert_get_string) (CamelCertDB *certdb, CamelCert *cert, gint string);
 	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
