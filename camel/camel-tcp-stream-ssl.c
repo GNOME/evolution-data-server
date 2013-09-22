@@ -235,7 +235,7 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 	if (ccert->rawcert->len != cert->derCert.len
 	    || memcmp (ccert->rawcert->data, cert->derCert.data, cert->derCert.len) != 0) {
 		g_warning ("rawcert != derCer");
-		camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+		ccert->trust = CAMEL_CERT_TRUST_UNKNOWN;
 		camel_certdb_touch (certdb);
 	}
 
@@ -248,18 +248,12 @@ camel_certdb_nss_cert_convert (CamelCertDB *certdb,
                                CERTCertificate *cert)
 {
 	CamelCert *ccert;
-	gchar *fingerprint;
-
-	fingerprint = cert_fingerprint (cert);
 
 	ccert = camel_cert_new ();
-	camel_cert_set_issuer (certdb, ccert, CERT_NameToAscii (&cert->issuer));
-	camel_cert_set_subject (certdb, ccert, CERT_NameToAscii (&cert->subject));
-	/* hostname is set in caller */
-	/*camel_cert_set_hostname(certdb, ccert, ssl->priv->expected_host);*/
-	camel_cert_set_fingerprint (certdb, ccert, fingerprint);
-	camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
-	g_free (fingerprint);
+	ccert->issuer = g_strdup (CERT_NameToAscii (&cert->issuer));
+	ccert->subject = g_strdup (CERT_NameToAscii (&cert->subject));
+	ccert->fingerprint = cert_fingerprint (cert);
+	ccert->trust = CAMEL_CERT_TRUST_UNKNOWN;
 
 	return ccert;
 }
@@ -338,7 +332,8 @@ ssl_bad_cert (gpointer data,
 	ccert = camel_certdb_nss_cert_get (certdb, cert, ssl->priv->expected_host);
 	if (ccert == NULL) {
 		ccert = camel_certdb_nss_cert_convert (certdb, cert);
-		camel_cert_set_hostname (certdb, ccert, ssl->priv->expected_host);
+		ccert->hostname = g_strdup (ssl->priv->expected_host);
+
 		/* Don't put in the certdb yet.  Since we can only store one
 		 * entry per hostname, we'd rather not ruin any existing entry
 		 * for this hostname if the user rejects the new certificate. */
@@ -407,7 +402,7 @@ ssl_bad_cert (gpointer data,
 		}
 
 		if (trust_response != CAMEL_CERT_TRUST_UNKNOWN)
-			camel_cert_set_trust (certdb, ccert, trust_response);
+			ccert->trust = trust_response;
 
 		camel_certdb_touch (certdb);
 	} else {
