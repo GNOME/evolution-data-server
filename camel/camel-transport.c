@@ -253,11 +253,11 @@ camel_transport_send_to_sync (CamelTransport *transport,
 	class = CAMEL_TRANSPORT_GET_CLASS (transport);
 	g_return_val_if_fail (class->send_to_sync != NULL, FALSE);
 
-	camel_transport_lock (transport, CAMEL_TRANSPORT_SEND_LOCK);
+	g_mutex_lock (&transport->priv->send_lock);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_transport_unlock (transport, CAMEL_TRANSPORT_SEND_LOCK);
+		g_mutex_unlock (&transport->priv->send_lock);
 		return FALSE;
 	}
 
@@ -265,7 +265,7 @@ camel_transport_send_to_sync (CamelTransport *transport,
 		transport, message, from, recipients, cancellable, error);
 	CAMEL_CHECK_GERROR (transport, send_to_sync, success, error);
 
-	camel_transport_unlock (transport, CAMEL_TRANSPORT_SEND_LOCK);
+	g_mutex_unlock (&transport->priv->send_lock);
 
 	return success;
 }
