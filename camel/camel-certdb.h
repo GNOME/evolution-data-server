@@ -77,7 +77,7 @@ typedef enum {
 } CamelCertTrust;
 
 typedef struct {
-	guint32 refcount;
+	volatile gint refcount;
 
 	gchar *issuer;
 	gchar *subject;

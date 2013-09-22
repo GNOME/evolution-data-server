@@ -645,10 +645,9 @@ camel_certdb_cert_ref (CamelCertDB *certdb,
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
+	g_return_if_fail (cert->refcount > 0);
 
-	g_mutex_lock (&certdb->priv->ref_lock);
-	cert->refcount++;
-	g_mutex_unlock (&certdb->priv->ref_lock);
+	g_atomic_int_inc (&cert->refcount);
 }
 
 static void
@@ -671,23 +670,18 @@ camel_certdb_cert_unref (CamelCertDB *certdb,
 
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
+	g_return_if_fail (cert->refcount > 0);
 
 	class = CAMEL_CERTDB_GET_CLASS (certdb);
 	g_return_if_fail (class->cert_free != NULL);
 
-	g_mutex_lock (&certdb->priv->ref_lock);
-
-	if (cert->refcount <= 1) {
+	if (g_atomic_int_dec_and_test (&cert->refcount)) {
 		class->cert_free (certdb, cert);
 		if (certdb->cert_chunks)
 			camel_memchunk_free (certdb->cert_chunks, cert);
 		else
 			g_free (cert);
-	} else {
-		cert->refcount--;
 	}
-
-	g_mutex_unlock (&certdb->priv->ref_lock);
 }
 
 static gboolean
