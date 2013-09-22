@@ -826,35 +826,3 @@ camel_cert_set_trust (CamelCertDB *certdb,
 	cert->trust = trust;
 }
 
-/**
- * camel_certdb_unlock:
- * @certdb: a #CamelCertDB
- * @lock: lock type to unlock
- *
- * Unlocks @certdb's @lock, previously locked with camel_certdb_lock().
- *
- * Since: 2.32
- **/
-void
-camel_certdb_unlock (CamelCertDB *certdb,
-                     CamelCertDBLock lock)
-{
-	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
-
-	switch (lock) {
-	case CAMEL_CERTDB_DB_LOCK:
-		g_mutex_unlock (&certdb->priv->db_lock);
-		break;
-	case CAMEL_CERTDB_IO_LOCK:
-		g_mutex_unlock (&certdb->priv->io_lock);
-		break;
-	case CAMEL_CERTDB_ALLOC_LOCK:
-		g_mutex_unlock (&certdb->priv->alloc_lock);
-		break;
-	case CAMEL_CERTDB_REF_LOCK:
-		g_mutex_unlock (&certdb->priv->ref_lock);
-		break;
-	default:
-		g_return_if_reached ();
-	}
-}

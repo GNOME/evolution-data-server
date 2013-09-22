@@ -181,8 +181,6 @@ void camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, c
 CamelCertTrust camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert);
 void camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust);
 
-void camel_certdb_unlock (CamelCertDB *certdb, CamelCertDBLock lock);
-
 G_END_DECLS
 
 #endif /* CAMEL_CERTDB_H */
