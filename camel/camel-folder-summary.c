@@ -177,14 +177,14 @@ remove_all_loaded (CamelFolderSummary *summary)
 
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, remove_each_item, &to_remove_infos);
 
 	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_unref, NULL);
 	g_slist_free (to_remove_infos);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 }
 
 static void
@@ -857,7 +857,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 
 	summary_object = G_OBJECT (summary);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	g_object_freeze_notify (summary_object);
 
 	old_flags = GPOINTER_TO_UINT (g_hash_table_lookup (summary->priv->uids, camel_message_info_uid (info)));
@@ -865,7 +865,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 
 	if ((old_flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED) == (new_flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 		g_object_thaw_notify (summary_object);
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
@@ -909,7 +909,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 		GUINT_TO_POINTER (new_flags));
 
 	g_object_thaw_notify (summary_object);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return changed;
 }
@@ -1110,7 +1110,7 @@ info_set_flags (CamelMessageInfo *info,
 	}
 
 	if (mi->summary) {
-		camel_folder_summary_lock (mi->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_lock (mi->summary);
 		g_object_freeze_notify (G_OBJECT (mi->summary));
 		counts_changed = camel_folder_summary_replace_flags (mi->summary, info);
 	}
@@ -1118,14 +1118,14 @@ info_set_flags (CamelMessageInfo *info,
 	if (!counts_changed && ((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) && !((set & CAMEL_MESSAGE_JUNK_LEARN) && !(set & CAMEL_MESSAGE_JUNK))) {
 		if (mi->summary) {
 			g_object_thaw_notify (G_OBJECT (mi->summary));
-			camel_folder_summary_unlock (mi->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (mi->summary);
 		}
 		return FALSE;
 	}
 
 	if (mi->summary) {
 		g_object_thaw_notify (G_OBJECT (mi->summary));
-		camel_folder_summary_unlock (mi->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (mi->summary);
 	}
 
 	if (mi->summary && mi->summary->priv->folder && mi->uid) {
@@ -1596,12 +1596,12 @@ camel_folder_summary_next_uid (CamelFolderSummary *summary)
 {
 	guint32 uid;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	uid = summary->priv->nextuid++;
 	camel_folder_summary_touch (summary);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return uid;
 }
@@ -1619,12 +1619,12 @@ void
 camel_folder_summary_set_next_uid (CamelFolderSummary *summary,
                                    guint32 uid)
 {
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	summary->priv->nextuid = MAX (summary->priv->nextuid, uid);
 	camel_folder_summary_touch (summary);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 }
 
 /**
@@ -1644,11 +1644,11 @@ camel_folder_summary_get_next_uid (CamelFolderSummary *summary)
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	res = summary->priv->nextuid;
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return res;
 }
@@ -1712,11 +1712,11 @@ camel_folder_summary_check_uid (CamelFolderSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	ret = g_hash_table_lookup_extended (summary->priv->uids, uid, NULL, NULL);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return ret;
 }
@@ -1749,12 +1749,12 @@ camel_folder_summary_get_array (CamelFolderSummary *summary)
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	res = g_ptr_array_sized_new (g_hash_table_size (summary->priv->uids));
 	g_hash_table_foreach (summary->priv->uids, folder_summary_dupe_uids_to_array, res);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return res;
 }
@@ -1807,13 +1807,13 @@ camel_folder_summary_get_hash (CamelFolderSummary *summary)
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	/* using direct hash because of strings being from the string pool */
 	uids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
 	g_hash_table_foreach (summary->priv->uids, cfs_copy_uids_cb, uids);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return uids;
 }
@@ -1852,7 +1852,7 @@ message_info_from_uid (CamelFolderSummary *summary,
 	CamelMessageInfo *info;
 	gint ret;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	info = g_hash_table_lookup (summary->priv->loaded_infos, uid);
 
@@ -1865,8 +1865,7 @@ message_info_from_uid (CamelFolderSummary *summary,
 		folder_name = camel_folder_get_full_name (summary->priv->folder);
 
 		if (is_in_memory_summary (summary)) {
-			camel_folder_summary_unlock (
-				summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (summary);
 			g_warning (
 				"%s: Tried to load uid '%s' "
 				"from DB on in-memory summary of '%s'",
@@ -1889,8 +1888,7 @@ message_info_from_uid (CamelFolderSummary *summary,
 			g_hash_table_destroy (data.columns_hash);
 
 		if (ret != 0) {
-			camel_folder_summary_unlock (
-				summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (summary);
 			return NULL;
 		}
 
@@ -1903,7 +1901,7 @@ message_info_from_uid (CamelFolderSummary *summary,
 	if (info)
 		camel_message_info_ref (info);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return info;
 }
@@ -1993,9 +1991,9 @@ camel_folder_summary_get_changed (CamelFolderSummary *summary)
 	 * We need to have collate or something to get the modified ones
 	 * from DB and merge */
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	g_hash_table_foreach (summary->priv->loaded_infos, (GHFunc) append_changed_uids, res);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return res;
 }
@@ -2014,9 +2012,9 @@ cfs_count_dirty (CamelFolderSummary *summary)
 {
 	gint count = 0;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	g_hash_table_foreach (summary->priv->loaded_infos, (GHFunc) count_changed_uids, &count);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return count;
 }
@@ -2047,14 +2045,14 @@ remove_cache (CamelSession *session,
 	if (time (NULL) - summary->priv->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, (GHRFunc) remove_item, &to_remove_infos);
 
 	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_unref, NULL);
 	g_slist_free (to_remove_infos);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	summary->priv->cache_load_time = time (NULL);
 }
@@ -2220,9 +2218,9 @@ preview_update (CamelSession *session,
 		g_hash_table_destroy (preview_data);
 	}
 
-	camel_folder_summary_lock (folder->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (folder->summary);
 	g_hash_table_foreach (folder->summary->priv->loaded_infos, (GHFunc) pick_uids, uids_uncached);
-	camel_folder_summary_unlock (folder->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (folder->summary);
 
 	for (i = 0; i < uids_uncached->len; i++) {
 		g_hash_table_remove (uids_hash, uids_uncached->pdata[i]);
@@ -2298,10 +2296,10 @@ void
 camel_folder_summary_add_preview (CamelFolderSummary *summary,
                                   CamelMessageInfo *info)
 {
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	g_hash_table_insert (summary->priv->preview_updates, (gchar *) info->uid, ((CamelMessageInfoBase *) info)->preview);
 	camel_folder_summary_touch (summary);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 }
 
 /**
@@ -2328,9 +2326,9 @@ camel_folder_summary_prepare_fetch_all (CamelFolderSummary *summary,
 	known = camel_folder_summary_count (summary);
 
 	if (known - loaded > 50) {
-		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_lock (summary);
 		cfs_reload_from_db (summary, error);
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 	}
 
 	/* update also cache load time, even when not loaded anything */
@@ -2357,7 +2355,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 	if (is_in_memory_summary (summary))
 		return TRUE;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	camel_folder_summary_save_to_db (summary, NULL);
 
 	/* struct _db_pass_data data; */
@@ -2366,7 +2364,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	if (!camel_folder_summary_header_load_from_db (summary, parent_store, full_name, error)) {
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
@@ -2385,7 +2383,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 	} else if (local_error != NULL)
 		g_propagate_error (error, local_error);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return ret == 0;
 }
@@ -2503,14 +2501,14 @@ camel_read_mir_callback (gpointer ref,
 	mir = g_new0 (CamelMIRecord , 1);
 	mir_from_cols (mir, summary, &data->columns_hash, ncol, cols, name);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	if (!mir->uid || g_hash_table_lookup (summary->priv->loaded_infos, mir->uid)) {
 		/* Unlock and better return */
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		camel_db_camel_mir_free (mir);
 		return ret;
 	}
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_from_db (summary, mir);
 
@@ -2640,14 +2638,14 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 	if (camel_db_prepare_message_info_table (cdb, full_name, error) != 0)
 		return -1;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	/* Push MessageInfo-es */
 	camel_db_begin_transaction (cdb, NULL);
 	g_hash_table_foreach (summary->priv->loaded_infos, save_to_db_cb, error);
 	camel_db_end_transaction (cdb, NULL);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 	cfs_schedule_info_release_timer (summary);
 
 	return 0;
@@ -2691,7 +2689,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	d (printf ("\ncamel_folder_summary_save_to_db called \n"));
 	if (summary->priv->need_preview && g_hash_table_size (summary->priv->preview_updates)) {
@@ -2706,7 +2704,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	count = cfs_count_dirty (summary);
 	if (!count) {
 		gboolean res = camel_folder_summary_header_save_to_db (summary, error);
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return res;
 	}
 
@@ -2714,7 +2712,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	if (ret != 0) {
 		/* Failed, so lets reset the flag */
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
@@ -2735,7 +2733,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		ret = save_message_infos_to_db (summary, error);
 		if (ret != 0) {
 			summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (summary);
 			return FALSE;
 		}
 	}
@@ -2743,7 +2741,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
@@ -2756,12 +2754,12 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, NULL);
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
 	camel_db_end_transaction (cdb, NULL);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return ret == 0;
 }
@@ -2785,13 +2783,13 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	d (printf ("\ncamel_folder_summary_header_save_to_db called \n"));
 
 	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
@@ -2803,12 +2801,12 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
 
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, NULL);
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
 	camel_db_end_transaction (cdb, NULL);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return ret == 0;
 }
@@ -2833,7 +2831,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
 	if (is_in_memory_summary (summary))
 		return TRUE;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	camel_folder_summary_save_to_db (summary, NULL);
 
 	cdb = store->cdb_r;
@@ -2843,7 +2841,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
 
 	ret = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_from_db (summary, record);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	g_free (record->folder_name);
 	g_free (record->bdata);
@@ -2866,10 +2864,10 @@ summary_assign_uid (CamelFolderSummary *summary,
 		uid = info->uid = (gchar *) camel_pstring_add (camel_folder_summary_next_uid_string (summary), TRUE);
 	}
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	while ((mi = g_hash_table_lookup (summary->priv->loaded_infos, uid))) {
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 
 		if (mi == info)
 			return FALSE;
@@ -2880,10 +2878,10 @@ summary_assign_uid (CamelFolderSummary *summary,
 		uid = info->uid = camel_pstring_add (camel_folder_summary_next_uid_string (summary), TRUE);
 		camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_FLAGGED, CAMEL_MESSAGE_FOLDER_FLAGGED);
 
-		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_lock (summary);
 	}
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return TRUE;
 }
@@ -2912,9 +2910,9 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 	if (info == NULL)
 		return;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	if (!summary_assign_uid (summary, info)) {
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return;
 	}
 
@@ -2933,7 +2931,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 
 	camel_folder_summary_touch (summary);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 }
 
 /**
@@ -2951,7 +2949,7 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 	if (info == NULL)
 		return;
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	if (!load) {
 		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
@@ -2971,7 +2969,7 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 	/* Summary always holds a ref for the loaded infos */
 	g_hash_table_insert (summary->priv->loaded_infos, (gchar *) camel_message_info_uid (info), info);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 }
 
 /**
@@ -3161,9 +3159,9 @@ camel_folder_summary_content_info_free (CamelFolderSummary *summary,
 void
 camel_folder_summary_touch (CamelFolderSummary *summary)
 {
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 }
 
 /**
@@ -3184,9 +3182,9 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	if (camel_folder_summary_count (summary) == 0) {
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return TRUE;
 	}
 
@@ -3222,7 +3220,7 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	g_object_notify (summary_object, "visible-count");
 	g_object_thaw_notify (summary_object);
 
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return res;
 }
@@ -3273,9 +3271,9 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 	if (!g_hash_table_lookup_extended (summary->priv->uids, uid, &ptr_uid, &ptr_flags)) {
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
 
@@ -3295,7 +3293,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	camel_pstring_free (uid_copy);
 
 	camel_folder_summary_touch (summary);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 
 	return res;
 }
@@ -3324,7 +3322,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	g_return_val_if_fail (uids != NULL, FALSE);
 
 	g_object_freeze_notify (G_OBJECT (summary));
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary);
 
 	for (l = g_list_first (uids); l; l = g_list_next (l)) {
 		gpointer ptr_uid = NULL, ptr_flags = NULL;
@@ -3352,7 +3350,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	}
 
 	camel_folder_summary_touch (summary);
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary);
 	g_object_thaw_notify (G_OBJECT (summary));
 
 	return res;
@@ -3644,11 +3642,11 @@ message_info_free (CamelFolderSummary *summary,
 
 	if (mi->uid) {
 		if (summary) {
-			camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_lock (summary);
 			if (g_hash_table_lookup (summary->priv->loaded_infos, mi->uid) == mi) {
 				g_hash_table_remove (summary->priv->loaded_infos, mi->uid);
 			}
-			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (summary);
 		}
 		camel_pstring_free (mi->uid);
 	}
@@ -4770,49 +4768,33 @@ camel_folder_summary_guess_content_info (CamelMessageInfo *mi,
 /**
  * camel_folder_summary_lock:
  * @summary: a #CamelFolderSummary
- * @lock: lock type to lock
  *
- * Locks @summary's @lock. Unlock it with camel_folder_summary_unlock().
+ * Locks @summary. Unlock it with camel_folder_summary_unlock().
  *
  * Since: 2.32
  **/
 void
-camel_folder_summary_lock (CamelFolderSummary *summary,
-                           CamelFolderSummaryLock lock)
+camel_folder_summary_lock (CamelFolderSummary *summary)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	switch (lock) {
-		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
-			g_rec_mutex_lock (&summary->priv->summary_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
+	g_rec_mutex_lock (&summary->priv->summary_lock);
 }
 
 /**
  * camel_folder_summary_unlock:
  * @summary: a #CamelFolderSummary
- * @lock: lock type to unlock
  *
- * Unlocks @summary's @lock, previously locked with camel_folder_summary_lock().
+ * Unlocks @summary, previously locked with camel_folder_summary_lock().
  *
  * Since: 2.32
  **/
 void
-camel_folder_summary_unlock (CamelFolderSummary *summary,
-                             CamelFolderSummaryLock lock)
+camel_folder_summary_unlock (CamelFolderSummary *summary)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	switch (lock) {
-		case CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK:
-			g_rec_mutex_unlock (&summary->priv->summary_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
+	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
 
 gint

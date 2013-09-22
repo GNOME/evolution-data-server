@@ -422,7 +422,7 @@ camel_vee_summary_get_uids_for_subfolder (CamelVeeSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_VEE_SUMMARY (summary), NULL);
 	g_return_val_if_fail (CAMEL_IS_FOLDER (subfolder), NULL);
 
-	camel_folder_summary_lock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (&summary->summary);
 
 	/* uses direct hash, because strings are supposed to be from the string pool */
 	known_uids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
@@ -432,7 +432,7 @@ camel_vee_summary_get_uids_for_subfolder (CamelVeeSummary *summary,
 		g_hash_table_foreach (vuids, get_uids_for_subfolder, known_uids);
 	}
 
-	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (&summary->summary);
 
 	return known_uids;
 }
@@ -451,7 +451,7 @@ camel_vee_summary_add (CamelVeeSummary *s,
 	g_return_val_if_fail (CAMEL_IS_VEE_SUMMARY (s), NULL);
 	g_return_val_if_fail (CAMEL_IS_VEE_MESSAGE_INFO_DATA (mi_data), NULL);
 
-	camel_folder_summary_lock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (&s->summary);
 
 	sf_data = camel_vee_message_info_data_get_subfolder_data (mi_data);
 	vuid = camel_vee_message_info_data_get_vee_message_uid (mi_data);
@@ -464,7 +464,7 @@ camel_vee_summary_add (CamelVeeSummary *s,
 		if (!vmi->orig_summary)
 			vmi->orig_summary = g_object_ref (orig_folder->summary);
 
-		camel_folder_summary_unlock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (&s->summary);
 
 		return vmi;
 	}
@@ -485,7 +485,7 @@ camel_vee_summary_add (CamelVeeSummary *s,
 	}
 
 	camel_folder_summary_insert (&s->summary, (CamelMessageInfo *) vmi, FALSE);
-	camel_folder_summary_unlock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (&s->summary);
 
 	return vmi;
 }
@@ -509,7 +509,7 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
 	g_return_if_fail (vuid != NULL);
 	g_return_if_fail (subfolder != NULL);
 
-	camel_folder_summary_lock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (&summary->summary);
 
 	vuids = g_hash_table_lookup (summary->priv->vuids_by_subfolder, subfolder);
 	if (vuids) {
@@ -529,7 +529,7 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
 		camel_message_info_unref (mi);
 	}
 
-	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (&summary->summary);
 }
 
 /**
@@ -552,16 +552,16 @@ camel_vee_summary_replace_flags (CamelVeeSummary *summary,
 	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
 	g_return_if_fail (uid != NULL);
 
-	camel_folder_summary_lock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (&summary->summary);
 
 	mi = camel_folder_summary_get (&summary->summary, uid);
 	if (!mi) {
-		camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (&summary->summary);
 		return;
 	}
 
 	camel_folder_summary_replace_flags (&summary->summary, mi);
 	camel_message_info_unref (mi);
 
-	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (&summary->summary);
 }

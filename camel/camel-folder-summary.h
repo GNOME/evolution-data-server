@@ -504,10 +504,8 @@ void		camel_folder_summary_prepare_fetch_all
 						 GError **error);
 
 /* summary locking */
-void		camel_folder_summary_lock	(CamelFolderSummary *summary,
-						 CamelFolderSummaryLock lock);
-void		camel_folder_summary_unlock	(CamelFolderSummary *summary,
-						 CamelFolderSummaryLock lock);
+void		camel_folder_summary_lock	(CamelFolderSummary *summary);
+void		camel_folder_summary_unlock	(CamelFolderSummary *summary);
 
 /* message flag operations */
 gboolean	camel_flag_get			(CamelFlag **list,

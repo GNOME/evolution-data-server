@@ -214,7 +214,6 @@ mh_summary_check (CamelLocalSummary *cls,
 	struct dirent *d;
 	gchar *p, c;
 	CamelMessageInfo *info;
-	CamelFolderSummary *s = (CamelFolderSummary *) cls;
 	GHashTable *left;
 	gint i;
 	gboolean forceindex;
@@ -287,10 +286,6 @@ mh_summary_check (CamelLocalSummary *cls,
 	closedir (dir);
 	g_hash_table_foreach (left, (GHFunc) remove_summary, cls);
 	g_hash_table_destroy (left);
-
-	/* sort the summary based on message number (uid), since the directory order is not useful */
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return 0;
 }
