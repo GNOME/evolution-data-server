@@ -90,14 +90,6 @@ typedef struct {
 struct _CamelCertDB {
 	CamelObject parent;
 	CamelCertDBPrivate *priv;
-
-	gchar *filename;
-	guint32 version;
-	guint32 saved_certs;
-	CamelCertDBFlags flags;
-
-	GPtrArray *certs;
-	GHashTable *cert_hash;
 };
 
 struct _CamelCertDBClass {

@@ -45,6 +45,14 @@
 	((obj), CAMEL_TYPE_CERTDB, CamelCertDBPrivate))
 
 struct _CamelCertDBPrivate {
+	gchar *filename;
+	guint32 version;
+	guint32 saved_certs;
+	gboolean dirty;
+
+	GPtrArray *certs;
+	GHashTable *cert_hash;
+
 	GMutex db_lock;		/* for the db hashtable/array */
 	GMutex io_lock;		/* load/save lock, for access to saved_count, etc */
 };
@@ -134,14 +142,14 @@ certdb_finalize (GObject *object)
 
 	priv = CAMEL_CERTDB_GET_PRIVATE (object);
 
-	if (certdb->flags & CAMEL_CERTDB_DIRTY)
+	if (certdb->priv->dirty)
 		camel_certdb_save (certdb);
 
-	camel_certdb_clear (certdb);
-	g_ptr_array_free (certdb->certs, TRUE);
-	g_hash_table_destroy (certdb->cert_hash);
+	camel_certdb_clear (CAMEL_CERTDB (object));
+	g_ptr_array_free (priv->certs, TRUE);
+	g_hash_table_destroy (priv->cert_hash);
 
-	g_free (certdb->filename);
+	g_free (priv->filename);
 
 	g_mutex_clear (&priv->db_lock);
 	g_mutex_clear (&priv->io_lock);
@@ -174,12 +182,14 @@ camel_certdb_init (CamelCertDB *certdb)
 {
 	certdb->priv = CAMEL_CERTDB_GET_PRIVATE (certdb);
 
-	certdb->filename = NULL;
-	certdb->version = CAMEL_CERTDB_VERSION;
-	certdb->saved_certs = 0;
+	certdb->priv->version = CAMEL_CERTDB_VERSION;
 
-	certdb->certs = g_ptr_array_new ();
-	certdb->cert_hash = g_hash_table_new_full (certdb_key_hash, certdb_key_equal, certdb_key_free, NULL);
+	certdb->priv->certs = g_ptr_array_new ();
+	certdb->priv->cert_hash = g_hash_table_new_full (
+		(GHashFunc) certdb_key_hash,
+		(GEqualFunc) certdb_key_equal,
+		(GDestroyNotify) certdb_key_free,
+		(GDestroyNotify) NULL);
 
 	g_mutex_init (&certdb->priv->db_lock);
 	g_mutex_init (&certdb->priv->io_lock);
@@ -236,8 +246,8 @@ camel_certdb_set_filename (CamelCertDB *certdb,
 
 	g_mutex_lock (&certdb->priv->db_lock);
 
-	g_free (certdb->filename);
-	certdb->filename = g_strdup (filename);
+	g_free (certdb->priv->filename);
+	certdb->priv->filename = g_strdup (filename);
 
 	g_mutex_unlock (&certdb->priv->db_lock);
 }
@@ -246,9 +256,11 @@ static gint
 certdb_header_load (CamelCertDB *certdb,
                     FILE *istream)
 {
-	if (camel_file_util_decode_uint32 (istream, &certdb->version) == -1)
+	if (camel_file_util_decode_uint32 (
+		istream, &certdb->priv->version) == -1)
 		return -1;
-	if (camel_file_util_decode_uint32 (istream, &certdb->saved_certs) == -1)
+	if (camel_file_util_decode_uint32 (
+		istream, &certdb->priv->saved_certs) == -1)
 		return -1;
 
 	return 0;
@@ -294,9 +306,9 @@ camel_certdb_load (CamelCertDB *certdb)
 	gint i;
 
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), -1);
-	g_return_val_if_fail (certdb->filename, -1);
+	g_return_val_if_fail (certdb->priv->filename != NULL, -1);
 
-	in = g_fopen (certdb->filename, "rb");
+	in = g_fopen (certdb->priv->filename, "rb");
 	if (in == NULL)
 		return -1;
 
@@ -312,7 +324,7 @@ camel_certdb_load (CamelCertDB *certdb)
 	if (class->header_load (certdb, in) == -1)
 		goto error;
 
-	for (i = 0; i < certdb->saved_certs; i++) {
+	for (i = 0; i < certdb->priv->saved_certs; i++) {
 		cert = class->cert_load (certdb, in);
 
 		if (cert == NULL)
@@ -332,7 +344,7 @@ camel_certdb_load (CamelCertDB *certdb)
 	if (fclose (in) != 0)
 		return -1;
 
-	certdb->flags &= ~CAMEL_CERTDB_DIRTY;
+	certdb->priv->dirty = FALSE;
 
 	return 0;
 
@@ -351,9 +363,11 @@ static gint
 certdb_header_save (CamelCertDB *certdb,
                     FILE *ostream)
 {
-	if (camel_file_util_encode_uint32 (ostream, certdb->version) == -1)
+	if (camel_file_util_encode_uint32 (
+		ostream, certdb->priv->version) == -1)
 		return -1;
-	if (camel_file_util_encode_uint32 (ostream, certdb->saved_certs) == -1)
+	if (camel_file_util_encode_uint32 (
+		ostream, certdb->priv->saved_certs) == -1)
 		return -1;
 
 	return 0;
@@ -388,14 +402,14 @@ camel_certdb_save (CamelCertDB *certdb)
 	FILE *out;
 
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), -1);
-	g_return_val_if_fail (certdb->filename, -1);
+	g_return_val_if_fail (certdb->priv->filename != NULL, -1);
 
 	/* no change, nothing new to save, simply return success */
-	if ((certdb->flags & CAMEL_CERTDB_DIRTY) == 0)
+	if (!certdb->priv->dirty)
 		return 0;
 
-	filename = alloca (strlen (certdb->filename) + 4);
-	sprintf (filename, "%s~", certdb->filename);
+	filename = alloca (strlen (certdb->priv->filename) + 4);
+	sprintf (filename, "%s~", certdb->priv->filename);
 
 	fd = g_open (filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1)
@@ -420,12 +434,12 @@ camel_certdb_save (CamelCertDB *certdb)
 
 	g_mutex_lock (&certdb->priv->io_lock);
 
-	certdb->saved_certs = certdb->certs->len;
+	certdb->priv->saved_certs = certdb->priv->certs->len;
 	if (class->header_save (certdb, out) == -1)
 		goto error;
 
-	for (i = 0; i < certdb->saved_certs; i++) {
-		cert = (CamelCert *) certdb->certs->pdata[i];
+	for (i = 0; i < certdb->priv->saved_certs; i++) {
+		cert = (CamelCert *) certdb->priv->certs->pdata[i];
 
 		if (class->cert_save (certdb, cert, out) == -1)
 			goto error;
@@ -448,14 +462,14 @@ camel_certdb_save (CamelCertDB *certdb)
 		return -1;
 	}
 
-	if (g_rename (filename, certdb->filename) == -1) {
+	if (g_rename (filename, certdb->priv->filename) == -1) {
 		i = errno;
 		g_unlink (filename);
 		errno = i;
 		return -1;
 	}
 
-	certdb->flags &= ~CAMEL_CERTDB_DIRTY;
+	certdb->priv->dirty = FALSE;
 
 	return 0;
 
@@ -478,7 +492,7 @@ camel_certdb_touch (CamelCertDB *certdb)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
-	certdb->flags |= CAMEL_CERTDB_DIRTY;
+	certdb->priv->dirty = TRUE;
 }
 
 /**
@@ -502,7 +516,7 @@ camel_certdb_get_host (CamelCertDB *certdb,
 
 	key = certdb_key_new (hostname, fingerprint);
 
-	cert = g_hash_table_lookup (certdb->cert_hash, key);
+	cert = g_hash_table_lookup (certdb->priv->cert_hash, key);
 	if (cert != NULL)
 		camel_cert_ref (cert);
 
@@ -534,19 +548,19 @@ camel_certdb_put (CamelCertDB *certdb,
 	key = certdb_key_new (cert->hostname, cert->fingerprint);
 
 	/* Replace an existing entry with the same hostname. */
-	old_cert = g_hash_table_lookup (certdb->cert_hash, key);
+	old_cert = g_hash_table_lookup (certdb->priv->cert_hash, key);
 	if (old_cert != NULL) {
-		g_hash_table_remove (certdb->cert_hash, key);
-		g_ptr_array_remove (certdb->certs, old_cert);
+		g_hash_table_remove (certdb->priv->cert_hash, key);
+		g_ptr_array_remove (certdb->priv->certs, old_cert);
 		camel_cert_unref (old_cert);
 	}
 
 	camel_cert_ref (cert);
-	g_ptr_array_add (certdb->certs, cert);
+	g_ptr_array_add (certdb->priv->certs, cert);
 	/* takes ownership of 'key' */
-	g_hash_table_insert (certdb->cert_hash, key, cert);
+	g_hash_table_insert (certdb->priv->cert_hash, key, cert);
 
-	certdb->flags |= CAMEL_CERTDB_DIRTY;
+	certdb->priv->dirty = TRUE;
 
 	g_mutex_unlock (&certdb->priv->db_lock);
 }
@@ -571,13 +585,13 @@ camel_certdb_remove_host (CamelCertDB *certdb,
 	g_mutex_lock (&certdb->priv->db_lock);
 
 	key = certdb_key_new (hostname, fingerprint);
-	cert = g_hash_table_lookup (certdb->cert_hash, key);
+	cert = g_hash_table_lookup (certdb->priv->cert_hash, key);
 	if (cert != NULL) {
-		g_hash_table_remove (certdb->cert_hash, key);
-		g_ptr_array_remove (certdb->certs, cert);
+		g_hash_table_remove (certdb->priv->cert_hash, key);
+		g_ptr_array_remove (certdb->priv->certs, cert);
 		camel_cert_unref (cert);
 
-		certdb->flags |= CAMEL_CERTDB_DIRTY;
+		certdb->priv->dirty = TRUE;
 	}
 
 	certdb_key_free (key);
@@ -642,15 +656,15 @@ camel_certdb_clear (CamelCertDB *certdb)
 
 	g_mutex_lock (&certdb->priv->db_lock);
 
-	g_hash_table_foreach_remove (certdb->cert_hash, cert_remove, NULL);
-	for (i = 0; i < certdb->certs->len; i++) {
-		cert = (CamelCert *) certdb->certs->pdata[i];
+	g_hash_table_foreach_remove (certdb->priv->cert_hash, cert_remove, NULL);
+	for (i = 0; i < certdb->priv->certs->len; i++) {
+		cert = (CamelCert *) certdb->priv->certs->pdata[i];
 		camel_cert_unref (cert);
 	}
 
-	certdb->saved_certs = 0;
-	g_ptr_array_set_size (certdb->certs, 0);
-	certdb->flags |= CAMEL_CERTDB_DIRTY;
+	certdb->priv->saved_certs = 0;
+	g_ptr_array_set_size (certdb->priv->certs, 0);
+	certdb->priv->dirty = TRUE;
 
 	g_mutex_unlock (&certdb->priv->db_lock);
 }
