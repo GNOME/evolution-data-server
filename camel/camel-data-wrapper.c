@@ -141,13 +141,11 @@ data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	CamelStream *memory_stream;
 	gssize ret;
 
-	camel_data_wrapper_lock (
-		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+	g_mutex_lock (&data_wrapper->priv->stream_lock);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_data_wrapper_unlock (
-			data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+		g_mutex_unlock (&data_wrapper->priv->stream_lock);
 		return -1;
 	}
 
@@ -163,8 +161,7 @@ data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 
 	g_object_unref (memory_stream);
 
-	camel_data_wrapper_unlock (
-		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+	g_mutex_unlock (&data_wrapper->priv->stream_lock);
 
 	return ret;
 }
@@ -227,19 +224,17 @@ data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 	CamelStream *memory_stream;
 	gssize bytes_written;
 
-	camel_data_wrapper_lock (
-		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+	g_mutex_lock (&data_wrapper->priv->stream_lock);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_data_wrapper_unlock (
-			data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+		g_mutex_unlock (&data_wrapper->priv->stream_lock);
 		return FALSE;
 	}
 
 	if (G_IS_SEEKABLE (stream)) {
 		if (!g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, cancellable, error)) {
-			camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+			g_mutex_unlock (&data_wrapper->priv->stream_lock);
 			return FALSE;
 		}
 	}
@@ -260,8 +255,7 @@ data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 
 	g_object_unref (memory_stream);
 
-	camel_data_wrapper_unlock (
-		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+	g_mutex_unlock (&data_wrapper->priv->stream_lock);
 
 	return (bytes_written >= 0);
 }
