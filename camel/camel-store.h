@@ -343,10 +343,8 @@ CamelFolderInfo *
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 GError **error);
-void		camel_store_lock		(CamelStore *store,
-						 CamelStoreLock lock);
-void		camel_store_unlock		(CamelStore *store,
-						 CamelStoreLock lock);
+void		camel_store_lock		(CamelStore *store);
+void		camel_store_unlock		(CamelStore *store);
 
 CamelFolder *	camel_store_get_folder_sync	(CamelStore *store,
 						 const gchar *folder_name,

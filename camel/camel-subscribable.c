@@ -333,16 +333,12 @@ camel_subscribable_folder_is_subscribed (CamelSubscribable *subscribable,
 	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
 	g_return_val_if_fail (interface->folder_is_subscribed != NULL, FALSE);
 
-	camel_store_lock (
-		CAMEL_STORE (subscribable),
-		CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (CAMEL_STORE (subscribable));
 
 	is_subscribed = interface->folder_is_subscribed (
 		subscribable, folder_name);
 
-	camel_store_unlock (
-		CAMEL_STORE (subscribable),
-		CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (CAMEL_STORE (subscribable));
 
 	return is_subscribed;
 }
@@ -376,9 +372,7 @@ camel_subscribable_subscribe_folder_sync (CamelSubscribable *subscribable,
 	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
 	g_return_val_if_fail (interface->subscribe_folder_sync != NULL, FALSE);
 
-	camel_store_lock (
-		CAMEL_STORE (subscribable),
-		CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (CAMEL_STORE (subscribable));
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
@@ -403,9 +397,7 @@ camel_subscribable_subscribe_folder_sync (CamelSubscribable *subscribable,
 	camel_operation_pop_message (cancellable);
 
 exit:
-	camel_store_unlock (
-		CAMEL_STORE (subscribable),
-		CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (CAMEL_STORE (subscribable));
 
 	return success;
 }
@@ -508,9 +500,7 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	g_return_val_if_fail (
 		interface->unsubscribe_folder_sync != NULL, FALSE);
 
-	camel_store_lock (
-		CAMEL_STORE (subscribable),
-		CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (CAMEL_STORE (subscribable));
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
@@ -539,9 +529,7 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	camel_operation_pop_message (cancellable);
 
 exit:
-	camel_store_unlock (
-		CAMEL_STORE (subscribable),
-		CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (CAMEL_STORE (subscribable));
 
 	return success;
 }

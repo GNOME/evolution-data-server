@@ -1912,49 +1912,33 @@ camel_store_can_refresh_folder (CamelStore *store,
 /**
  * camel_store_lock:
  * @store: a #CamelStore
- * @lock: lock type to lock
  *
- * Locks @store's @lock. Unlock it with camel_store_unlock().
+ * Locks @store. Unlock it with camel_store_unlock().
  *
  * Since: 2.32
  **/
 void
-camel_store_lock (CamelStore *store,
-                  CamelStoreLock lock)
+camel_store_lock (CamelStore *store)
 {
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
-	switch (lock) {
-		case CAMEL_STORE_FOLDER_LOCK:
-			g_rec_mutex_lock (&store->priv->folder_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
+	g_rec_mutex_lock (&store->priv->folder_lock);
 }
 
 /**
  * camel_store_unlock:
  * @store: a #CamelStore
- * @lock: lock type to unlock
  *
- * Unlocks @store's @lock, previously locked with camel_store_lock().
+ * Unlocks @store, previously locked with camel_store_lock().
  *
  * Since: 2.32
  **/
 void
-camel_store_unlock (CamelStore *store,
-                    CamelStoreLock lock)
+camel_store_unlock (CamelStore *store)
 {
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
-	switch (lock) {
-		case CAMEL_STORE_FOLDER_LOCK:
-			g_rec_mutex_unlock (&store->priv->folder_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
+	g_rec_mutex_unlock (&store->priv->folder_lock);
 }
 
 /**
@@ -2449,11 +2433,11 @@ camel_store_get_inbox_folder_sync (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->get_inbox_folder_sync != NULL, NULL);
 
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (store);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		camel_store_unlock (store);
 		return NULL;
 	}
 
@@ -2461,7 +2445,7 @@ camel_store_get_inbox_folder_sync (CamelStore *store,
 	CAMEL_CHECK_GERROR (
 		store, get_inbox_folder_sync, folder != NULL, error);
 
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (store);
 
 	return folder;
 }
@@ -2776,11 +2760,11 @@ camel_store_create_folder_sync (CamelStore *store,
 		return NULL;
 	}
 
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (store);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		camel_store_unlock (store);
 		return NULL;
 	}
 
@@ -2793,7 +2777,7 @@ camel_store_create_folder_sync (CamelStore *store,
 
 	camel_operation_pop_message (cancellable);
 
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (store);
 
 	return fi;
 }
@@ -2908,11 +2892,11 @@ camel_store_delete_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (store);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		camel_store_unlock (store);
 		return FALSE;
 	}
 
@@ -2932,7 +2916,7 @@ camel_store_delete_folder_sync (CamelStore *store,
 	else
 		g_propagate_error (error, local_error);
 
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (store);
 
 	return success;
 }
@@ -3055,11 +3039,11 @@ camel_store_rename_folder_sync (CamelStore *store,
 	old_name = g_strdup (old_namein);
 	oldlen = strlen (old_name);
 
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_lock (store);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+		camel_store_unlock (store);
 		return FALSE;
 	}
 
@@ -3138,7 +3122,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 		}
 	}
 
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
+	camel_store_unlock (store);
 
 	g_ptr_array_free (folders, TRUE);
 	g_free (old_name);
