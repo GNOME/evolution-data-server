@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-09-14 17:15+0000\n"
-"PO-Revision-Date: 2013-08-27 08:25+0200\n"
+"POT-Creation-Date: 2013-09-17 16:39+0000\n"
+"PO-Revision-Date: 2013-09-19 20:25+0200\n"
 "Last-Translator: Marián Čavojský <cavo+gnomel10n@cavo.sk>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -5863,12 +5863,9 @@ msgstr "Služba signon nevrátila tajnosť"
 msgid "Evolution Data Server"
 msgstr "Server údajov Evolution (EDS)"
 
-# MČ: netuším, či je „ubuntu-online-accounts“ nejako v ubuntu preložené.
-# PM: toto by mal byť popis programu niečo ako Mať EDS v UOA je nevyhnutnosť
 #: ../modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
-#, fuzzy
 msgid "Required to have EDS appear in UOA"
-msgstr "Je zjavne vyžadované mať EDS v UOA"
+msgstr "Mať EDS v UOA je nevyhnutnosť"
 
 #: ../modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
 msgid "Google Calendar"
