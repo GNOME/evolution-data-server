@@ -28,7 +28,7 @@
 #define CAMEL_CERTDB_H
 
 #include <stdio.h>
-#include <camel/camel-object.h>
+#include <glib-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_CERTDB \
@@ -84,12 +84,12 @@ typedef struct {
 } CamelCert;
 
 struct _CamelCertDB {
-	CamelObject parent;
+	GObject parent;
 	CamelCertDBPrivate *priv;
 };
 
 struct _CamelCertDBClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	gint (*header_load) (CamelCertDB *certdb, FILE *istream);
 	gint (*header_save) (CamelCertDB *certdb, FILE *ostream);

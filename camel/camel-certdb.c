@@ -64,7 +64,7 @@ static gint certdb_cert_save (CamelCertDB *certdb, CamelCert *cert, FILE *ostrea
 static const gchar *cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string);
 static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 
-G_DEFINE_TYPE (CamelCertDB, camel_certdb, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelCertDB, camel_certdb, G_TYPE_OBJECT)
 
 typedef struct {
 	gchar *hostname;
