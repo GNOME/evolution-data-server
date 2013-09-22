@@ -77,15 +77,6 @@ typedef enum {
 	CAMEL_STORE_ERROR_NO_FOLDER
 } CamelStoreError;
 
-/**
- * CamelStoreLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_STORE_FOLDER_LOCK
-} CamelStoreLock;
-
 typedef struct _CamelFolderInfo {
 	struct _CamelFolderInfo *next;
 	struct _CamelFolderInfo *parent;

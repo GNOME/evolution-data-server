@@ -2495,7 +2495,6 @@ camel_folder_info_free
 camel_folder_info_build
 camel_folder_info_clone
 camel_store_can_refresh_folder
-CamelStoreLock
 camel_store_lock
 camel_store_unlock
 camel_store_get_folder_sync
