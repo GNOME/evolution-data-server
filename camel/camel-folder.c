@@ -3356,9 +3356,6 @@ camel_folder_lock (CamelFolder *folder,
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	switch (lock) {
-		case CAMEL_FOLDER_CHANGE_LOCK:
-			g_mutex_lock (&folder->priv->change_lock);
-			break;
 		case CAMEL_FOLDER_REC_LOCK:
 			if (folder->priv->skip_folder_lock == FALSE)
 				g_rec_mutex_lock (&folder->priv->lock);
@@ -3384,9 +3381,6 @@ camel_folder_unlock (CamelFolder *folder,
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	switch (lock) {
-		case CAMEL_FOLDER_CHANGE_LOCK:
-			g_mutex_unlock (&folder->priv->change_lock);
-			break;
 		case CAMEL_FOLDER_REC_LOCK:
 			if (folder->priv->skip_folder_lock == FALSE)
 				g_rec_mutex_unlock (&folder->priv->lock);

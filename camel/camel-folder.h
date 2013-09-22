@@ -102,7 +102,6 @@ typedef enum {
  * Since: 2.32
  **/
 typedef enum {
-	CAMEL_FOLDER_CHANGE_LOCK,
 	CAMEL_FOLDER_REC_LOCK
 } CamelFolderLock;
 
