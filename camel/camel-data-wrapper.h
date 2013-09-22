@@ -158,8 +158,6 @@ void		camel_data_wrapper_set_mime_type_field
 						(CamelDataWrapper *data_wrapper,
 						 CamelContentType *mime_type);
 gboolean	camel_data_wrapper_is_offline	(CamelDataWrapper *data_wrapper);
-void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper,
-						 CamelDataWrapperLock lock);
 void		camel_data_wrapper_unlock	(CamelDataWrapper *data_wrapper,
 						 CamelDataWrapperLock lock);
 

@@ -657,30 +657,6 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 }
 
 /**
- * camel_data_wrapper_lock:
- * @data_wrapper: a #CamelDataWrapper
- * @lock: lock type to lock
- *
- * Locks @data_wrapper's @lock. Unlock it with camel_data_wrapper_unlock().
- *
- * Since: 2.32
- **/
-void
-camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
-                         CamelDataWrapperLock lock)
-{
-	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
-
-	switch (lock) {
-	case CAMEL_DATA_WRAPPER_STREAM_LOCK:
-		g_mutex_lock (&data_wrapper->priv->stream_lock);
-		break;
-	default:
-		g_return_if_reached ();
-	}
-}
-
-/**
  * camel_data_wrapper_unlock:
  * @data_wrapper: a #CamelDataWrapper
  * @lock: lock type to unlock
