@@ -370,7 +370,7 @@ camel_certdb_nss_cert_convert (CamelCertDB *certdb,
 
 	fingerprint = cert_fingerprint (cert);
 
-	ccert = camel_certdb_cert_new (certdb);
+	ccert = camel_cert_new ();
 	camel_cert_set_issuer (certdb, ccert, CERT_NameToAscii (&cert->issuer));
 	camel_cert_set_subject (certdb, ccert, CERT_NameToAscii (&cert->subject));
 	/* hostname is set in caller */

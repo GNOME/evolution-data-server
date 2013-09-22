@@ -260,7 +260,7 @@ certdb_cert_load (CamelCertDB *certdb,
 {
 	CamelCert *cert;
 
-	cert = camel_certdb_cert_new (certdb);
+	cert = camel_cert_new ();
 
 	if (camel_file_util_decode_string (istream, &cert->issuer) == -1)
 		goto error;
@@ -587,11 +587,9 @@ camel_certdb_remove_host (CamelCertDB *certdb,
 }
 
 CamelCert *
-camel_certdb_cert_new (CamelCertDB *certdb)
+camel_cert_new (void)
 {
 	CamelCert *cert;
-
-	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
 
 	cert = g_slice_new0 (CamelCert);
 	cert->refcount = 1;

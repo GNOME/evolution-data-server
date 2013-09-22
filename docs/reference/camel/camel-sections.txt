@@ -95,7 +95,7 @@ camel_certdb_touch
 camel_certdb_get_host
 camel_certdb_put
 camel_certdb_remove_host
-camel_certdb_cert_new
+camel_cert_new
 camel_certdb_cert_ref
 camel_certdb_cert_unref
 camel_certdb_clear
