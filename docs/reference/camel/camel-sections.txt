@@ -577,7 +577,6 @@ CamelTag
 CamelSummaryMessageID
 CamelSummaryReferences
 CamelFolderSummaryFlags
-CamelFolderSummaryLock
 camel_folder_summary_new
 camel_folder_summary_get_folder
 camel_folder_summary_get_saved_count

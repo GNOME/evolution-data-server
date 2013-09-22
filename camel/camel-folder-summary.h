@@ -225,15 +225,6 @@ typedef enum {
 	CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY	= 1 << 1
 } CamelFolderSummaryFlags;
 
-/**
- * CamelFolderSummaryLock:
- *
- * Since: 2.32
- **/
-typedef enum _CamelFolderSummaryLock {
-	CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK,
-} CamelFolderSummaryLock;
-
 struct _CamelFolderSummary {
 	CamelObject parent;
 	CamelFolderSummaryPrivate *priv;
