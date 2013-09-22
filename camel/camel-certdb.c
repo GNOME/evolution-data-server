@@ -504,8 +504,8 @@ camel_certdb_get_host (CamelCertDB *certdb,
 	key = certdb_key_new (hostname, fingerprint);
 
 	cert = g_hash_table_lookup (certdb->cert_hash, key);
-	if (cert)
-		camel_certdb_cert_ref (certdb, cert);
+	if (cert != NULL)
+		camel_cert_ref (cert);
 
 	certdb_key_free (key);
 
@@ -542,7 +542,7 @@ camel_certdb_put (CamelCertDB *certdb,
 		camel_certdb_cert_unref (certdb, old_cert);
 	}
 
-	camel_certdb_cert_ref (certdb, cert);
+	camel_cert_ref (cert);
 	g_ptr_array_add (certdb->certs, cert);
 	/* takes ownership of 'key' */
 	g_hash_table_insert (certdb->cert_hash, key, cert);
@@ -598,10 +598,8 @@ camel_cert_new (void)
 }
 
 void
-camel_certdb_cert_ref (CamelCertDB *certdb,
-                       CamelCert *cert)
+camel_cert_ref (CamelCert *cert)
 {
-	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
 	g_return_if_fail (cert->refcount > 0);
 
