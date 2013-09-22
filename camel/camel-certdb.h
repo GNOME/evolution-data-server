@@ -144,38 +144,6 @@ void		camel_certdb_remove_host	(CamelCertDB *certdb,
 
 void		camel_certdb_clear		(CamelCertDB *certdb);
 
-const gchar *	camel_cert_get_string		(CamelCertDB *certdb,
-						 CamelCert *cert,
-						 gint string);
-void		camel_cert_set_string		(CamelCertDB *certdb,
-						 CamelCert *cert,
-						 gint string,
-						 const gchar *value);
-
-#define camel_cert_get_issuer(certdb, cert) \
-	camel_cert_get_string (certdb, cert, CAMEL_CERT_STRING_ISSUER)
-#define camel_cert_get_subject(certdb, cert) \
-	camel_cert_get_string (certdb, cert, CAMEL_CERT_STRING_SUBJECT)
-#define camel_cert_get_hostname(certdb, cert) \
-	camel_cert_get_string (certdb, cert, CAMEL_CERT_STRING_HOSTNAME)
-#define camel_cert_get_fingerprint(certdb, cert) \
-	camel_cert_get_string (certdb, cert, CAMEL_CERT_STRING_FINGERPRINT)
-
-#define camel_cert_set_issuer(certdb, cert, issuer) \
-	camel_cert_set_string (certdb, cert, CAMEL_CERT_STRING_ISSUER, issuer)
-#define camel_cert_set_subject(certdb, cert, subject) \
-	camel_cert_set_string (certdb, cert, CAMEL_CERT_STRING_SUBJECT, subject)
-#define camel_cert_set_hostname(certdb, cert, hostname) \
-	camel_cert_set_string (certdb, cert, CAMEL_CERT_STRING_HOSTNAME, hostname)
-#define camel_cert_set_fingerprint(certdb, cert, fingerprint) \
-	camel_cert_set_string (certdb, cert, CAMEL_CERT_STRING_FINGERPRINT, fingerprint)
-
-CamelCertTrust	camel_cert_get_trust		(CamelCertDB *certdb,
-						 CamelCert *cert);
-void		camel_cert_set_trust		(CamelCertDB *certdb,
-						 CamelCert *cert,
-						 CamelCertTrust trust);
-
 G_END_DECLS
 
 #endif /* CAMEL_CERTDB_H */

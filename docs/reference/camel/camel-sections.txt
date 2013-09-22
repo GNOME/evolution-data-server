@@ -98,18 +98,6 @@ camel_certdb_get_host
 camel_certdb_put
 camel_certdb_remove_host
 camel_certdb_clear
-camel_cert_get_string
-camel_cert_set_string
-camel_cert_get_issuer
-camel_cert_get_subject
-camel_cert_get_hostname
-camel_cert_get_fingerprint
-camel_cert_set_issuer
-camel_cert_set_subject
-camel_cert_set_hostname
-camel_cert_set_fingerprint
-camel_cert_get_trust
-camel_cert_set_trust
 <SUBSECTION Standard>
 CAMEL_CERTDB
 CAMEL_IS_CERTDB
