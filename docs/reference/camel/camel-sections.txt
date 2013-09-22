@@ -81,9 +81,12 @@ CamelKeyFilePrivate
 <SECTION>
 <FILE>camel-certdb</FILE>
 <TITLE>CamelCertDB</TITLE>
-CamelCertDB
 CamelCertTrust
 CamelCert
+camel_cert_new
+camel_cert_ref
+camel_cert_unref
+CamelCertDB
 camel_certdb_new
 camel_certdb_set_default
 camel_certdb_get_default
@@ -94,9 +97,6 @@ camel_certdb_touch
 camel_certdb_get_host
 camel_certdb_put
 camel_certdb_remove_host
-camel_cert_new
-camel_cert_ref
-camel_cert_unref
 camel_certdb_clear
 camel_cert_get_string
 camel_cert_set_string

@@ -57,13 +57,6 @@ struct _CamelCertDBPrivate {
 	GMutex io_lock;		/* load/save lock, for access to saved_count, etc */
 };
 
-static gint certdb_header_load (CamelCertDB *certdb, FILE *istream);
-static gint certdb_header_save (CamelCertDB *certdb, FILE *ostream);
-static CamelCert *certdb_cert_load (CamelCertDB *certdb, FILE *istream);
-static gint certdb_cert_save (CamelCertDB *certdb, CamelCert *cert, FILE *ostream);
-static const gchar *cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string);
-static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
-
 G_DEFINE_TYPE (CamelCertDB, camel_certdb, G_TYPE_OBJECT)
 
 typedef struct {
@@ -137,13 +130,12 @@ certdb_key_equal (gconstpointer ptr1,
 static void
 certdb_finalize (GObject *object)
 {
-	CamelCertDB *certdb = CAMEL_CERTDB (object);
 	CamelCertDBPrivate *priv;
 
 	priv = CAMEL_CERTDB_GET_PRIVATE (object);
 
-	if (certdb->priv->dirty)
-		camel_certdb_save (certdb);
+	if (priv->dirty)
+		camel_certdb_save (CAMEL_CERTDB (object));
 
 	camel_certdb_clear (CAMEL_CERTDB (object));
 	g_ptr_array_free (priv->certs, TRUE);
@@ -158,6 +150,131 @@ certdb_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_certdb_parent_class)->finalize (object);
 }
 
+static gint
+certdb_header_load (CamelCertDB *certdb,
+                    FILE *istream)
+{
+	if (camel_file_util_decode_uint32 (
+		istream, &certdb->priv->version) == -1)
+		return -1;
+	if (camel_file_util_decode_uint32 (
+		istream, &certdb->priv->saved_certs) == -1)
+		return -1;
+
+	return 0;
+}
+
+static gint
+certdb_header_save (CamelCertDB *certdb,
+                    FILE *ostream)
+{
+	if (camel_file_util_encode_uint32 (
+		ostream, certdb->priv->version) == -1)
+		return -1;
+	if (camel_file_util_encode_uint32 (
+		ostream, certdb->priv->saved_certs) == -1)
+		return -1;
+
+	return 0;
+}
+
+static CamelCert *
+certdb_cert_load (CamelCertDB *certdb,
+                  FILE *istream)
+{
+	CamelCert *cert;
+
+	cert = camel_cert_new ();
+
+	if (camel_file_util_decode_string (istream, &cert->issuer) == -1)
+		goto error;
+	if (camel_file_util_decode_string (istream, &cert->subject) == -1)
+		goto error;
+	if (camel_file_util_decode_string (istream, &cert->hostname) == -1)
+		goto error;
+	if (camel_file_util_decode_string (istream, &cert->fingerprint) == -1)
+		goto error;
+	if (camel_file_util_decode_uint32 (istream, &cert->trust) == -1)
+		goto error;
+
+	/* unset temporary trusts on load */
+	if (cert->trust == CAMEL_CERT_TRUST_TEMPORARY)
+		cert->trust = CAMEL_CERT_TRUST_UNKNOWN;
+
+	return cert;
+
+error:
+	camel_cert_unref (cert);
+
+	return NULL;
+}
+
+static gint
+certdb_cert_save (CamelCertDB *certdb,
+                  CamelCert *cert,
+                  FILE *ostream)
+{
+	if (camel_file_util_encode_string (ostream, cert->issuer) == -1)
+		return -1;
+	if (camel_file_util_encode_string (ostream, cert->subject) == -1)
+		return -1;
+	if (camel_file_util_encode_string (ostream, cert->hostname) == -1)
+		return -1;
+	if (camel_file_util_encode_string (ostream, cert->fingerprint) == -1)
+		return -1;
+	if (camel_file_util_encode_uint32 (ostream, cert->trust) == -1)
+		return -1;
+
+	return 0;
+}
+
+static const gchar *
+certdb_cert_get_string (CamelCertDB *certdb,
+                        CamelCert *cert,
+                        gint string)
+{
+	switch (string) {
+		case CAMEL_CERT_STRING_ISSUER:
+			return cert->issuer;
+		case CAMEL_CERT_STRING_SUBJECT:
+			return cert->subject;
+		case CAMEL_CERT_STRING_HOSTNAME:
+			return cert->hostname;
+		case CAMEL_CERT_STRING_FINGERPRINT:
+			return cert->fingerprint;
+		default:
+			return NULL;
+	}
+}
+
+static void
+certdb_cert_set_string (CamelCertDB *certdb,
+                        CamelCert *cert,
+                        gint string,
+                        const gchar *value)
+{
+	switch (string) {
+		case CAMEL_CERT_STRING_ISSUER:
+			g_free (cert->issuer);
+			cert->issuer = g_strdup (value);
+			break;
+		case CAMEL_CERT_STRING_SUBJECT:
+			g_free (cert->subject);
+			cert->subject = g_strdup (value);
+			break;
+		case CAMEL_CERT_STRING_HOSTNAME:
+			g_free (cert->hostname);
+			cert->hostname = g_strdup (value);
+			break;
+		case CAMEL_CERT_STRING_FINGERPRINT:
+			g_free (cert->fingerprint);
+			cert->fingerprint = g_strdup (value);
+			break;
+		default:
+			break;
+	}
+}
+
 static void
 camel_certdb_class_init (CamelCertDBClass *class)
 {
@@ -170,11 +287,10 @@ camel_certdb_class_init (CamelCertDBClass *class)
 
 	class->header_load = certdb_header_load;
 	class->header_save = certdb_header_save;
-
 	class->cert_load = certdb_cert_load;
 	class->cert_save = certdb_cert_save;
-	class->cert_get_string = cert_get_string;
-	class->cert_set_string = cert_set_string;
+	class->cert_get_string = certdb_cert_get_string;
+	class->cert_set_string = certdb_cert_set_string;
 }
 
 static void
@@ -193,6 +309,45 @@ camel_certdb_init (CamelCertDB *certdb)
 
 	g_mutex_init (&certdb->priv->db_lock);
 	g_mutex_init (&certdb->priv->io_lock);
+}
+
+CamelCert *
+camel_cert_new (void)
+{
+	CamelCert *cert;
+
+	cert = g_slice_new0 (CamelCert);
+	cert->refcount = 1;
+
+	return cert;
+}
+
+void
+camel_cert_ref (CamelCert *cert)
+{
+	g_return_if_fail (cert != NULL);
+	g_return_if_fail (cert->refcount > 0);
+
+	g_atomic_int_inc (&cert->refcount);
+}
+
+void
+camel_cert_unref (CamelCert *cert)
+{
+	g_return_if_fail (cert != NULL);
+	g_return_if_fail (cert->refcount > 0);
+
+	if (g_atomic_int_dec_and_test (&cert->refcount)) {
+		g_free (cert->issuer);
+		g_free (cert->subject);
+		g_free (cert->hostname);
+		g_free (cert->fingerprint);
+
+		if (cert->rawcert)
+			g_byte_array_free (cert->rawcert, TRUE);
+
+		g_slice_free (CamelCert, cert);
+	}
 }
 
 CamelCertDB *
@@ -250,51 +405,6 @@ camel_certdb_set_filename (CamelCertDB *certdb,
 	certdb->priv->filename = g_strdup (filename);
 
 	g_mutex_unlock (&certdb->priv->db_lock);
-}
-
-static gint
-certdb_header_load (CamelCertDB *certdb,
-                    FILE *istream)
-{
-	if (camel_file_util_decode_uint32 (
-		istream, &certdb->priv->version) == -1)
-		return -1;
-	if (camel_file_util_decode_uint32 (
-		istream, &certdb->priv->saved_certs) == -1)
-		return -1;
-
-	return 0;
-}
-
-static CamelCert *
-certdb_cert_load (CamelCertDB *certdb,
-                  FILE *istream)
-{
-	CamelCert *cert;
-
-	cert = camel_cert_new ();
-
-	if (camel_file_util_decode_string (istream, &cert->issuer) == -1)
-		goto error;
-	if (camel_file_util_decode_string (istream, &cert->subject) == -1)
-		goto error;
-	if (camel_file_util_decode_string (istream, &cert->hostname) == -1)
-		goto error;
-	if (camel_file_util_decode_string (istream, &cert->fingerprint) == -1)
-		goto error;
-	if (camel_file_util_decode_uint32 (istream, &cert->trust) == -1)
-		goto error;
-
-	/* unset temporary trusts on load */
-	if (cert->trust == CAMEL_CERT_TRUST_TEMPORARY)
-		cert->trust = CAMEL_CERT_TRUST_UNKNOWN;
-
-	return cert;
-
-error:
-	camel_cert_unref (cert);
-
-	return NULL;
 }
 
 gint
@@ -357,39 +467,6 @@ camel_certdb_load (CamelCertDB *certdb)
 	fclose (in);
 
 	return -1;
-}
-
-static gint
-certdb_header_save (CamelCertDB *certdb,
-                    FILE *ostream)
-{
-	if (camel_file_util_encode_uint32 (
-		ostream, certdb->priv->version) == -1)
-		return -1;
-	if (camel_file_util_encode_uint32 (
-		ostream, certdb->priv->saved_certs) == -1)
-		return -1;
-
-	return 0;
-}
-
-static gint
-certdb_cert_save (CamelCertDB *certdb,
-                  CamelCert *cert,
-                  FILE *ostream)
-{
-	if (camel_file_util_encode_string (ostream, cert->issuer) == -1)
-		return -1;
-	if (camel_file_util_encode_string (ostream, cert->subject) == -1)
-		return -1;
-	if (camel_file_util_encode_string (ostream, cert->hostname) == -1)
-		return -1;
-	if (camel_file_util_encode_string (ostream, cert->fingerprint) == -1)
-		return -1;
-	if (camel_file_util_encode_uint32 (ostream, cert->trust) == -1)
-		return -1;
-
-	return 0;
 }
 
 gint
@@ -599,45 +676,6 @@ camel_certdb_remove_host (CamelCertDB *certdb,
 	g_mutex_unlock (&certdb->priv->db_lock);
 }
 
-CamelCert *
-camel_cert_new (void)
-{
-	CamelCert *cert;
-
-	cert = g_slice_new0 (CamelCert);
-	cert->refcount = 1;
-
-	return cert;
-}
-
-void
-camel_cert_ref (CamelCert *cert)
-{
-	g_return_if_fail (cert != NULL);
-	g_return_if_fail (cert->refcount > 0);
-
-	g_atomic_int_inc (&cert->refcount);
-}
-
-void
-camel_cert_unref (CamelCert *cert)
-{
-	g_return_if_fail (cert != NULL);
-	g_return_if_fail (cert->refcount > 0);
-
-	if (g_atomic_int_dec_and_test (&cert->refcount)) {
-		g_free (cert->issuer);
-		g_free (cert->subject);
-		g_free (cert->hostname);
-		g_free (cert->fingerprint);
-
-		if (cert->rawcert)
-			g_byte_array_free (cert->rawcert, TRUE);
-
-		g_slice_free (CamelCert, cert);
-	}
-}
-
 static gboolean
 cert_remove (gpointer key,
              gpointer value,
@@ -669,25 +707,6 @@ camel_certdb_clear (CamelCertDB *certdb)
 	g_mutex_unlock (&certdb->priv->db_lock);
 }
 
-static const gchar *
-cert_get_string (CamelCertDB *certdb,
-                 CamelCert *cert,
-                 gint string)
-{
-	switch (string) {
-	case CAMEL_CERT_STRING_ISSUER:
-		return cert->issuer;
-	case CAMEL_CERT_STRING_SUBJECT:
-		return cert->subject;
-	case CAMEL_CERT_STRING_HOSTNAME:
-		return cert->hostname;
-	case CAMEL_CERT_STRING_FINGERPRINT:
-		return cert->fingerprint;
-	default:
-		return NULL;
-	}
-}
-
 const gchar *
 camel_cert_get_string (CamelCertDB *certdb,
                        CamelCert *cert,
@@ -704,34 +723,6 @@ camel_cert_get_string (CamelCertDB *certdb,
 	/* FIXME: do locking? */
 
 	return class->cert_get_string (certdb, cert, string);
-}
-
-static void
-cert_set_string (CamelCertDB *certdb,
-                 CamelCert *cert,
-                 gint string,
-                 const gchar *value)
-{
-	switch (string) {
-	case CAMEL_CERT_STRING_ISSUER:
-		g_free (cert->issuer);
-		cert->issuer = g_strdup (value);
-		break;
-	case CAMEL_CERT_STRING_SUBJECT:
-		g_free (cert->subject);
-		cert->subject = g_strdup (value);
-		break;
-	case CAMEL_CERT_STRING_HOSTNAME:
-		g_free (cert->hostname);
-		cert->hostname = g_strdup (value);
-		break;
-	case CAMEL_CERT_STRING_FINGERPRINT:
-		g_free (cert->fingerprint);
-		cert->fingerprint = g_strdup (value);
-		break;
-	default:
-		break;
-	}
 }
 
 void
