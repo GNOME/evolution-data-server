@@ -2226,13 +2226,13 @@ preview_update (CamelSession *session,
 		g_hash_table_remove (uids_hash, uids_uncached->pdata[i]);
 	}
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 	if (!is_in_memory)
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 	g_hash_table_foreach (uids_hash, (GHFunc) msg_update_preview, folder);
 	if (!is_in_memory)
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 	camel_folder_free_uids (folder, uids_uncached);
 	g_hash_table_destroy (uids_hash);
 }

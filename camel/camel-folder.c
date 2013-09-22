@@ -2976,9 +2976,9 @@ camel_folder_delete (CamelFolder *folder)
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_if_fail (class->delete_ != NULL);
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return;
 	}
 
@@ -2986,7 +2986,7 @@ camel_folder_delete (CamelFolder *folder)
 
 	class->delete_ (folder);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	/* Delete the references of the folder from the DB.*/
 	full_name = camel_folder_get_full_name (folder);
@@ -3343,51 +3343,35 @@ camel_folder_free_deep (CamelFolder *folder,
 /**
  * camel_folder_lock:
  * @folder: a #CamelFolder
- * @lock: lock type to lock
  *
- * Locks @folder's @lock. Unlock it with camel_folder_unlock().
+ * Locks @folder. Unlock it with camel_folder_unlock().
  *
  * Since: 2.32
  **/
 void
-camel_folder_lock (CamelFolder *folder,
-                   CamelFolderLock lock)
+camel_folder_lock (CamelFolder *folder)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	switch (lock) {
-		case CAMEL_FOLDER_REC_LOCK:
-			if (folder->priv->skip_folder_lock == FALSE)
-				g_rec_mutex_lock (&folder->priv->lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
+	if (folder->priv->skip_folder_lock == FALSE)
+		g_rec_mutex_lock (&folder->priv->lock);
 }
 
 /**
  * camel_folder_unlock:
  * @folder: a #CamelFolder
- * @lock: lock type to unlock
  *
- * Unlocks @folder's @lock, previously locked with camel_folder_lock().
+ * Unlocks @folder, previously locked with camel_folder_lock().
  *
  * Since: 2.32
  **/
 void
-camel_folder_unlock (CamelFolder *folder,
-                     CamelFolderLock lock)
+camel_folder_unlock (CamelFolder *folder)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	switch (lock) {
-		case CAMEL_FOLDER_REC_LOCK:
-			if (folder->priv->skip_folder_lock == FALSE)
-				g_rec_mutex_unlock (&folder->priv->lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
+	if (folder->priv->skip_folder_lock == FALSE)
+		g_rec_mutex_unlock (&folder->priv->lock);
 }
 
 /**
@@ -3433,11 +3417,11 @@ camel_folder_append_message_sync (CamelFolder *folder,
 	if (!success)
 		return FALSE;
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -3445,7 +3429,7 @@ camel_folder_append_message_sync (CamelFolder *folder,
 		folder, message, info, appended_uid, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, append_message_sync, success, error);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }
@@ -3559,11 +3543,11 @@ camel_folder_expunge_sync (CamelFolder *folder,
 	if (!success)
 		return FALSE;
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -3578,7 +3562,7 @@ camel_folder_expunge_sync (CamelFolder *folder,
 
 	camel_operation_pop_message (cancellable);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }
@@ -3679,11 +3663,11 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
 	if (class->fetch_messages_sync == NULL)
 		return FALSE;
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -3691,7 +3675,7 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
 		folder, type, limit, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, fetch_messages_sync, success, error);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }
@@ -3818,11 +3802,11 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		if (!folder_maybe_connect_sync (folder, cancellable, error))
 			return NULL;
 
-		camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_lock (folder);
 
 		/* Check for cancellation after locking. */
 		if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-			camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+			camel_folder_unlock (folder);
 			camel_operation_pop_message (cancellable);
 			return NULL;
 		}
@@ -3832,7 +3816,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		CAMEL_CHECK_GERROR (
 			folder, get_message_sync, message != NULL, error);
 
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 	}
 
 	if (message && camel_mime_message_get_source (message) == NULL) {
@@ -4067,11 +4051,11 @@ camel_folder_purge_message_cache_sync (CamelFolder *folder,
 	if (class->purge_message_cache_sync == NULL)
 		return FALSE;
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -4079,7 +4063,7 @@ camel_folder_purge_message_cache_sync (CamelFolder *folder,
 		folder, start_uid, end_uid, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, purge_message_cache_sync, success, error);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }
@@ -4186,11 +4170,11 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 	if (!success)
 		return FALSE;
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -4203,7 +4187,7 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 
 	camel_operation_pop_message (cancellable);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }
@@ -4305,11 +4289,11 @@ camel_folder_synchronize_sync (CamelFolder *folder,
 	if (!success)
 		return FALSE;
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -4319,7 +4303,7 @@ camel_folder_synchronize_sync (CamelFolder *folder,
 		CAMEL_CHECK_GERROR (folder, synchronize_sync, success, error);
 	}
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }
@@ -4419,11 +4403,11 @@ camel_folder_synchronize_message_sync (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->get_message_sync != NULL, FALSE);
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_lock (folder);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_folder_unlock (folder);
 		return FALSE;
 	}
 
@@ -4447,7 +4431,7 @@ camel_folder_synchronize_message_sync (CamelFolder *folder,
 		}
 	}
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	camel_folder_unlock (folder);
 
 	return success;
 }

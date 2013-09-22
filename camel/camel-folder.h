@@ -513,10 +513,8 @@ void		camel_folder_free_deep		(CamelFolder *folder,
 gchar *		camel_folder_get_filename	(CamelFolder *folder,
 						 const gchar *uid,
 						 GError **error);
-void		camel_folder_lock		(CamelFolder *folder,
-						 CamelFolderLock lock);
-void		camel_folder_unlock		(CamelFolder *folder,
-						 CamelFolderLock lock);
+void		camel_folder_lock		(CamelFolder *folder);
+void		camel_folder_unlock		(CamelFolder *folder);
 
 gboolean	camel_folder_append_message_sync
 						(CamelFolder *folder,

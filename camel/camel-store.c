@@ -3063,7 +3063,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 		    || ((namelen > oldlen)
 			&& strncmp (full_name, old_name, oldlen) == 0
 			&& full_name[oldlen] == '/')) {
-			camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+			camel_folder_lock (folder);
 		} else {
 			g_ptr_array_remove_index_fast (folders, i);
 			i--;
@@ -3096,7 +3096,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 				camel_folder_rename (folder, new);
 				g_free (new);
 
-				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+				camel_folder_unlock (folder);
 				g_object_unref (folder);
 			}
 
@@ -3116,7 +3116,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 			/* Failed, just unlock our folders for re-use */
 			for (i = 0; i < folders->len; i++) {
 				folder = folders->pdata[i];
-				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+				camel_folder_unlock (folder);
 				g_object_unref (folder);
 			}
 		}
