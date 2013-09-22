@@ -2991,7 +2991,6 @@ camel_vee_folder_rebuild_folder
 camel_vee_folder_set_expression
 camel_vee_folder_get_expression
 camel_vee_folder_ignore_next_changed_event
-CamelVeeFolderLock
 <SUBSECTION Standard>
 CAMEL_VEE_FOLDER
 CAMEL_IS_VEE_FOLDER

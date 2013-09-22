@@ -56,17 +56,6 @@ typedef struct _CamelVeeFolder CamelVeeFolder;
 typedef struct _CamelVeeFolderClass CamelVeeFolderClass;
 typedef struct _CamelVeeFolderPrivate CamelVeeFolderPrivate;
 
-/**
- * CamelVeeFolderLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_VEE_FOLDER_SUMMARY_LOCK,
-	CAMEL_VEE_FOLDER_SUBFOLDER_LOCK,
-	CAMEL_VEE_FOLDER_CHANGED_LOCK
-} CamelVeeFolderLock;
-
 struct _CamelVeeFolder {
 	CamelFolder parent;
 	CamelVeeFolderPrivate *priv;
