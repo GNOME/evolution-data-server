@@ -1668,20 +1668,6 @@ camel_store_free_folder_info_full (CamelStore *store,
 }
 
 /**
- * camel_store_free_folder_info_nop:
- * @store: a #CamelStore
- * @fi: a #CamelFolderInfo as gotten via camel_store_get_folder_info()
- *
- * An implementation for #CamelStore::free_folder_info. Does nothing.
- **/
-void
-camel_store_free_folder_info_nop (CamelStore *store,
-                                  CamelFolderInfo *fi)
-{
-	;
-}
-
-/**
  * camel_folder_info_free:
  * @fi: a #CamelFolderInfo
  *
