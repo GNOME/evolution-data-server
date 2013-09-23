@@ -1008,7 +1008,6 @@ camel_mbox_store_class_init (CamelMboxStoreClass *class)
 	CamelLocalStoreClass *local_store_class;
 
 	store_class = CAMEL_STORE_CLASS (class);
-	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = mbox_store_get_folder_sync;
 	store_class->get_folder_info_sync = mbox_store_get_folder_info_sync;
 	store_class->create_folder_sync = mbox_store_create_folder_sync;

@@ -2469,7 +2469,6 @@ camel_store_folder_opened
 camel_store_folder_renamed
 camel_store_folder_info_stale
 camel_store_free_folder_info
-camel_store_free_folder_info_full
 camel_folder_info_new
 camel_folder_info_free
 camel_folder_info_build

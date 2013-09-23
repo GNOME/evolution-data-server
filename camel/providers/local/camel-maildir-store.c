@@ -770,8 +770,7 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 	return fi;
 
 fail:
-	if (fi)
-		camel_store_free_folder_info_full (store, fi);
+	camel_folder_info_free (fi);
 
 	return NULL;
 }
@@ -894,7 +893,6 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 	store_class->hash_folder_name = maildir_store_hash_folder_name;
 	store_class->equal_folder_name = maildir_store_equal_folder_name;
 	store_class->create_folder_sync = maildir_store_create_folder_sync;
-	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = maildir_store_get_folder_sync;
 	store_class->get_folder_info_sync = maildir_store_get_folder_info_sync;
 	store_class->get_inbox_folder_sync = maildir_store_get_inbox_sync;

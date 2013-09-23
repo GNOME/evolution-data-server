@@ -383,6 +383,13 @@ store_can_refresh_folder (CamelStore *store,
 	return ((info->flags & CAMEL_FOLDER_TYPE_MASK) == CAMEL_FOLDER_TYPE_INBOX);
 }
 
+static void
+store_free_folder_info (CamelStore *store,
+                        CamelFolderInfo *fi)
+{
+	camel_folder_info_free (fi);
+}
+
 static CamelFolder *
 store_get_inbox_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
@@ -471,8 +478,7 @@ store_synchronize_sync (CamelStore *store,
 			fi = next;
 		}
 
-		if (root != NULL)
-			camel_store_free_folder_info_full (store, root);
+		camel_folder_info_free (root);
 	} else {
 		/* sync only folders opened until now */
 		folders = camel_object_bag_list (store->folders);
@@ -1231,6 +1237,7 @@ camel_store_class_init (CamelStoreClass *class)
 	class->hash_folder_name = g_str_hash;
 	class->equal_folder_name = g_str_equal;
 	class->can_refresh_folder = store_can_refresh_folder;
+	class->free_folder_info = store_free_folder_info;
 
 	class->get_inbox_folder_sync = store_get_inbox_folder_sync;
 	class->get_junk_folder_sync = store_get_junk_folder_sync;
@@ -1650,21 +1657,6 @@ camel_store_free_folder_info (CamelStore *store,
 	g_return_if_fail (class->free_folder_info != NULL);
 
 	class->free_folder_info (store, fi);
-}
-
-/**
- * camel_store_free_folder_info_full:
- * @store: a #CamelStore
- * @fi: a #CamelFolderInfo as gotten via camel_store_get_folder_info()
- *
- * An implementation for #CamelStore::free_folder_info. Frees all
- * of the data.
- **/
-void
-camel_store_free_folder_info_full (CamelStore *store,
-                                   CamelFolderInfo *fi)
-{
-	camel_folder_info_free (fi);
 }
 
 /**

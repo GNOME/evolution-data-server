@@ -314,9 +314,6 @@ void		camel_store_folder_renamed	(CamelStore *store,
 void		camel_store_folder_info_stale	(CamelStore *store);
 void		camel_store_free_folder_info	(CamelStore *store,
 						 CamelFolderInfo *fi);
-void		camel_store_free_folder_info_full
-						(CamelStore *store,
-						 CamelFolderInfo *fi);
 CamelFolderInfo *
 		camel_folder_info_new		(void);
 void		camel_folder_info_free		(CamelFolderInfo *fi);

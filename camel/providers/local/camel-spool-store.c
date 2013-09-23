@@ -362,7 +362,7 @@ get_folder_info_elm (CamelStore *store,
 	if (scan_dir (
 		store, visited, path, top, flags,
 		NULL, &fi, cancellable, error) == -1 && fi != NULL) {
-		camel_store_free_folder_info_full (store, fi);
+		camel_folder_info_free (fi);
 		fi = NULL;
 	}
 

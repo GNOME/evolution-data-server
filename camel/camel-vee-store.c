@@ -521,7 +521,6 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	service_class->get_name = vee_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
-	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = vee_store_get_folder_sync;
 	store_class->get_folder_info_sync = vee_store_get_folder_info_sync;
 	store_class->get_junk_folder_sync = vee_store_get_junk_folder_sync;

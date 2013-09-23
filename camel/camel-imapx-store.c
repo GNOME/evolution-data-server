@@ -2128,7 +2128,6 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->hash_folder_name = imapx_name_hash;
 	store_class->equal_folder_name = imapx_name_equal;
 	store_class->can_refresh_folder = imapx_can_refresh_folder;
-	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = imapx_store_get_folder_sync;
 	store_class->get_folder_info_sync = imapx_store_get_folder_info_sync;
 	store_class->get_junk_folder_sync = imapx_store_get_junk_folder_sync;

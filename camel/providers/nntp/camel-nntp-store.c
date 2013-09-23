@@ -1712,7 +1712,6 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->can_refresh_folder = nntp_can_refresh_folder;
-	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->create_folder_sync = nntp_store_create_folder_sync;
 	store_class->delete_folder_sync = nntp_store_delete_folder_sync;
 	store_class->rename_folder_sync = nntp_store_rename_folder_sync;
