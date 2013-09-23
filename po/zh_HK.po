@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.3.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-16 12:47+0800\n"
-"PO-Revision-Date: 2013-08-16 12:47+0800\n"
+"POT-Creation-Date: 2013-09-23 22:17+0800\n"
+"PO-Revision-Date: 2013-09-23 22:17+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "Language: zh_TW\n"
@@ -21,65 +21,65 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "X-Project-Style: gnome\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:114
+#: ../addressbook/backends/file/e-book-backend-file.c:115
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "移除鎖定檔「%s」失敗：%s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:142
+#: ../addressbook/backends/file/e-book-backend-file.c:143
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "無法建立目錄「%s」：%s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:393
+#: ../addressbook/backends/file/e-book-backend-file.c:394
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "無法建立資源「%s」的硬連結：%s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:498
-#: ../addressbook/backends/file/e-book-backend-file.c:1134
+#: ../addressbook/backends/file/e-book-backend-file.c:499
+#: ../addressbook/backends/file/e-book-backend-file.c:1135
 msgid "No UID in the contact"
 msgstr "在聯絡人中沒有 UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:772
+#: ../addressbook/backends/file/e-book-backend-file.c:773
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "在加入的聯絡人中發現衝突的 UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:880
+#: ../addressbook/backends/file/e-book-backend-file.c:881
 msgid "Loading..."
 msgstr "載入中…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:882
+#: ../addressbook/backends/file/e-book-backend-file.c:883
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4419
 msgid "Searching..."
 msgstr "搜尋中…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1163
+#: ../addressbook/backends/file/e-book-backend-file.c:1164
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr "嘗試不使用同步修訂來修改聯絡人「%s」"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1299
-#: ../addressbook/backends/file/e-book-backend-file.c:1368
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2704
+#: ../addressbook/backends/file/e-book-backend-file.c:1300
+#: ../addressbook/backends/file/e-book-backend-file.c:1369
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2707
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "找不到聯絡人「%s」"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1410
-#: ../addressbook/backends/file/e-book-backend-file.c:1477
+#: ../addressbook/backends/file/e-book-backend-file.c:1411
+#: ../addressbook/backends/file/e-book-backend-file.c:1478
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "查詢「%s」不支援"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1419
-#: ../addressbook/backends/file/e-book-backend-file.c:1486
+#: ../addressbook/backends/file/e-book-backend-file.c:1420
+#: ../addressbook/backends/file/e-book-backend-file.c:1487
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "無效的查詢「%s」"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1670
+#: ../addressbook/backends/file/e-book-backend-file.c:1671
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "無法將舊資料庫「%s」重新命名為「%s」： %s"
@@ -91,12 +91,12 @@ msgstr "無法將舊資料庫「%s」重新命名為「%s」： %s"
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:826
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
-#: ../addressbook/libedata-book/e-book-backend-sexp.c:869
+#: ../addressbook/libedata-book/e-book-backend-sexp.c:874
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:568
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
 #: ../calendar/libecal/e-cal.c:2335 ../calendar/libecal/e-cal-client.c:268
-#: ../camel/camel-imapx-command.c:649 ../libedataserver/e-client.c:177
+#: ../camel/camel-imapx-command.c:650 ../libedataserver/e-client.c:177
 msgid "Unknown error"
 msgstr "不明的錯誤"
 
@@ -292,7 +292,7 @@ msgid "No space"
 msgstr "沒有空間"
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook-contacts/e-contact.c:120
+#: ../addressbook/libebook-contacts/e-contact.c:123
 msgid "Unique ID"
 msgstr "獨特的 ID"
 
@@ -300,12 +300,12 @@ msgstr "獨特的 ID"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../addressbook/libebook-contacts/e-contact.c:125
+#: ../addressbook/libebook-contacts/e-contact.c:128
 msgid "File Under"
 msgstr "歸檔為"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook-contacts/e-contact.c:127
+#: ../addressbook/libebook-contacts/e-contact.c:130
 msgid "Book UID"
 msgstr "通訊錄 UID"
 
@@ -313,434 +313,434 @@ msgstr "通訊錄 UID"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook-contacts/e-contact.c:133
+#: ../addressbook/libebook-contacts/e-contact.c:136
 msgid "Full Name"
 msgstr "全名"
 
-#: ../addressbook/libebook-contacts/e-contact.c:134
+#: ../addressbook/libebook-contacts/e-contact.c:137
 msgid "Given Name"
 msgstr "名"
 
-#: ../addressbook/libebook-contacts/e-contact.c:135
+#: ../addressbook/libebook-contacts/e-contact.c:138
 msgid "Family Name"
 msgstr "姓"
 
-#: ../addressbook/libebook-contacts/e-contact.c:136
+#: ../addressbook/libebook-contacts/e-contact.c:139
 msgid "Nickname"
 msgstr "網名"
 
 #. Email fields
-#: ../addressbook/libebook-contacts/e-contact.c:139
+#: ../addressbook/libebook-contacts/e-contact.c:142
 msgid "Email 1"
 msgstr "電子郵件 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:140
+#: ../addressbook/libebook-contacts/e-contact.c:143
 msgid "Email 2"
 msgstr "電子郵件 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:141
+#: ../addressbook/libebook-contacts/e-contact.c:144
 msgid "Email 3"
 msgstr "電子郵件 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:142
+#: ../addressbook/libebook-contacts/e-contact.c:145
 msgid "Email 4"
 msgstr "電子郵件 4"
 
-#: ../addressbook/libebook-contacts/e-contact.c:144
+#: ../addressbook/libebook-contacts/e-contact.c:147
 msgid "Mailer"
 msgstr "寄件者"
 
 #. Address Labels
-#: ../addressbook/libebook-contacts/e-contact.c:147
+#: ../addressbook/libebook-contacts/e-contact.c:150
 msgid "Home Address Label"
 msgstr "住址標籤"
 
-#: ../addressbook/libebook-contacts/e-contact.c:148
+#: ../addressbook/libebook-contacts/e-contact.c:151
 msgid "Work Address Label"
 msgstr "工作地址標籤"
 
-#: ../addressbook/libebook-contacts/e-contact.c:149
+#: ../addressbook/libebook-contacts/e-contact.c:152
 msgid "Other Address Label"
 msgstr "其他地址標籤"
 
 #. Phone fields
-#: ../addressbook/libebook-contacts/e-contact.c:152
+#: ../addressbook/libebook-contacts/e-contact.c:155
 msgid "Assistant Phone"
 msgstr "助理電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:153
+#: ../addressbook/libebook-contacts/e-contact.c:156
 msgid "Business Phone"
 msgstr "商務電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:154
+#: ../addressbook/libebook-contacts/e-contact.c:157
 msgid "Business Phone 2"
 msgstr "商務電話 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:155
+#: ../addressbook/libebook-contacts/e-contact.c:158
 msgid "Business Fax"
 msgstr "商務傅真"
 
-#: ../addressbook/libebook-contacts/e-contact.c:156
+#: ../addressbook/libebook-contacts/e-contact.c:159
 msgid "Callback Phone"
 msgstr "回撥電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:157
+#: ../addressbook/libebook-contacts/e-contact.c:160
 msgid "Car Phone"
 msgstr "汽車電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:158
+#: ../addressbook/libebook-contacts/e-contact.c:161
 msgid "Company Phone"
 msgstr "公司電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:159
+#: ../addressbook/libebook-contacts/e-contact.c:162
 msgid "Home Phone"
 msgstr "家用電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:160
+#: ../addressbook/libebook-contacts/e-contact.c:163
 msgid "Home Phone 2"
 msgstr "家用電話 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:161
+#: ../addressbook/libebook-contacts/e-contact.c:164
 msgid "Home Fax"
 msgstr "家用傳真"
 
-#: ../addressbook/libebook-contacts/e-contact.c:162
+#: ../addressbook/libebook-contacts/e-contact.c:165
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook-contacts/e-contact.c:163
+#: ../addressbook/libebook-contacts/e-contact.c:166
 msgid "Mobile Phone"
 msgstr "流動電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:164
+#: ../addressbook/libebook-contacts/e-contact.c:167
 msgid "Other Phone"
 msgstr "其它電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:165
+#: ../addressbook/libebook-contacts/e-contact.c:168
 msgid "Other Fax"
 msgstr "其它傳真"
 
-#: ../addressbook/libebook-contacts/e-contact.c:166
+#: ../addressbook/libebook-contacts/e-contact.c:169
 msgid "Pager"
 msgstr "傳呼機"
 
-#: ../addressbook/libebook-contacts/e-contact.c:167
+#: ../addressbook/libebook-contacts/e-contact.c:170
 msgid "Primary Phone"
 msgstr "主要電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:168
+#: ../addressbook/libebook-contacts/e-contact.c:171
 msgid "Radio"
 msgstr "無線電電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:169
+#: ../addressbook/libebook-contacts/e-contact.c:172
 msgid "Telex"
 msgstr "電報"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook-contacts/e-contact.c:171
+#: ../addressbook/libebook-contacts/e-contact.c:174
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook-contacts/e-contact.c:174
+#: ../addressbook/libebook-contacts/e-contact.c:177
 msgid "Organization"
 msgstr "團體"
 
-#: ../addressbook/libebook-contacts/e-contact.c:175
+#: ../addressbook/libebook-contacts/e-contact.c:178
 msgid "Organizational Unit"
 msgstr "團體單位"
 
-#: ../addressbook/libebook-contacts/e-contact.c:176
+#: ../addressbook/libebook-contacts/e-contact.c:179
 msgid "Office"
 msgstr "辦公室"
 
-#: ../addressbook/libebook-contacts/e-contact.c:177
+#: ../addressbook/libebook-contacts/e-contact.c:180
 msgid "Title"
 msgstr "銜頭"
 
-#: ../addressbook/libebook-contacts/e-contact.c:178
+#: ../addressbook/libebook-contacts/e-contact.c:181
 msgid "Role"
 msgstr "角色"
 
-#: ../addressbook/libebook-contacts/e-contact.c:179
+#: ../addressbook/libebook-contacts/e-contact.c:182
 msgid "Manager"
 msgstr "主管"
 
-#: ../addressbook/libebook-contacts/e-contact.c:180
+#: ../addressbook/libebook-contacts/e-contact.c:183
 msgid "Assistant"
 msgstr "助理"
 
 #. Web fields
-#: ../addressbook/libebook-contacts/e-contact.c:183
+#: ../addressbook/libebook-contacts/e-contact.c:186
 msgid "Homepage URL"
 msgstr "首頁 URL"
 
-#: ../addressbook/libebook-contacts/e-contact.c:184
+#: ../addressbook/libebook-contacts/e-contact.c:187
 msgid "Weblog URL"
 msgstr "網誌 URL"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:187
+#: ../addressbook/libebook-contacts/e-contact.c:190
 msgid "Categories"
 msgstr "分類"
 
 #. Collaboration fields
-#: ../addressbook/libebook-contacts/e-contact.c:190
+#: ../addressbook/libebook-contacts/e-contact.c:193
 msgid "Calendar URI"
 msgstr "行事曆 URI"
 
-#: ../addressbook/libebook-contacts/e-contact.c:191
+#: ../addressbook/libebook-contacts/e-contact.c:194
 msgid "Free/Busy URL"
 msgstr "空閒/忙碌 URL"
 
-#: ../addressbook/libebook-contacts/e-contact.c:192
+#: ../addressbook/libebook-contacts/e-contact.c:195
 msgid "ICS Calendar"
 msgstr "ICS 行事曆"
 
-#: ../addressbook/libebook-contacts/e-contact.c:193
+#: ../addressbook/libebook-contacts/e-contact.c:196
 msgid "Video Conferencing URL"
 msgstr "視像會議 URL"
 
 #. Misc fields
-#: ../addressbook/libebook-contacts/e-contact.c:196
+#: ../addressbook/libebook-contacts/e-contact.c:199
 msgid "Spouse's Name"
 msgstr "配偶姓名"
 
-#: ../addressbook/libebook-contacts/e-contact.c:197
+#: ../addressbook/libebook-contacts/e-contact.c:200
 msgid "Note"
 msgstr "備註"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:200
+#: ../addressbook/libebook-contacts/e-contact.c:203
 msgid "AIM Home Screen Name 1"
 msgstr "AIM 家用螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:201
+#: ../addressbook/libebook-contacts/e-contact.c:204
 msgid "AIM Home Screen Name 2"
 msgstr "AIM 家用螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:202
+#: ../addressbook/libebook-contacts/e-contact.c:205
 msgid "AIM Home Screen Name 3"
 msgstr "AIM 家用螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:203
+#: ../addressbook/libebook-contacts/e-contact.c:206
 msgid "AIM Work Screen Name 1"
 msgstr "AIM 工作螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:204
+#: ../addressbook/libebook-contacts/e-contact.c:207
 msgid "AIM Work Screen Name 2"
 msgstr "AIM 工作螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:205
+#: ../addressbook/libebook-contacts/e-contact.c:208
 msgid "AIM Work Screen Name 3"
 msgstr "AIM 工作螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:206
+#: ../addressbook/libebook-contacts/e-contact.c:209
 msgid "GroupWise Home Screen Name 1"
 msgstr "GroupWise 家用螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:207
+#: ../addressbook/libebook-contacts/e-contact.c:210
 msgid "GroupWise Home Screen Name 2"
 msgstr "GroupWise 家用螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:208
+#: ../addressbook/libebook-contacts/e-contact.c:211
 msgid "GroupWise Home Screen Name 3"
 msgstr "GroupWise 家用螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:209
+#: ../addressbook/libebook-contacts/e-contact.c:212
 msgid "GroupWise Work Screen Name 1"
 msgstr "GroupWise 工作螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:210
+#: ../addressbook/libebook-contacts/e-contact.c:213
 msgid "GroupWise Work Screen Name 2"
 msgstr "GroupWise 工作螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:211
+#: ../addressbook/libebook-contacts/e-contact.c:214
 msgid "GroupWise Work Screen Name 3"
 msgstr "GroupWise 工作螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:212
+#: ../addressbook/libebook-contacts/e-contact.c:215
 msgid "Jabber Home ID 1"
 msgstr "Jabber 家用 ID 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:213
+#: ../addressbook/libebook-contacts/e-contact.c:216
 msgid "Jabber Home ID 2"
 msgstr "Jabber 家用 ID 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:214
+#: ../addressbook/libebook-contacts/e-contact.c:217
 msgid "Jabber Home ID 3"
 msgstr "Jabber 家用 ID 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:215
+#: ../addressbook/libebook-contacts/e-contact.c:218
 msgid "Jabber Work ID 1"
 msgstr "Jabber 工作 ID 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:216
+#: ../addressbook/libebook-contacts/e-contact.c:219
 msgid "Jabber Work ID 2"
 msgstr "Jabber 工作 ID 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:217
+#: ../addressbook/libebook-contacts/e-contact.c:220
 msgid "Jabber Work ID 3"
 msgstr "Jabber 工作 ID 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:218
+#: ../addressbook/libebook-contacts/e-contact.c:221
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Yahoo!家用螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:219
+#: ../addressbook/libebook-contacts/e-contact.c:222
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Yahoo!家用螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:220
+#: ../addressbook/libebook-contacts/e-contact.c:223
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Yahoo!家用螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:221
+#: ../addressbook/libebook-contacts/e-contact.c:224
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Yahoo!工作螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:222
+#: ../addressbook/libebook-contacts/e-contact.c:225
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Yahoo!工作螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:223
+#: ../addressbook/libebook-contacts/e-contact.c:226
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Yahoo!工作螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:224
+#: ../addressbook/libebook-contacts/e-contact.c:227
 msgid "MSN Home Screen Name 1"
 msgstr "MSN 家用螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:225
+#: ../addressbook/libebook-contacts/e-contact.c:228
 msgid "MSN Home Screen Name 2"
 msgstr "MSN 家用螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:226
+#: ../addressbook/libebook-contacts/e-contact.c:229
 msgid "MSN Home Screen Name 3"
 msgstr "MSN 家用螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:227
+#: ../addressbook/libebook-contacts/e-contact.c:230
 msgid "MSN Work Screen Name 1"
 msgstr "MSN 工作螢幕名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:228
+#: ../addressbook/libebook-contacts/e-contact.c:231
 msgid "MSN Work Screen Name 2"
 msgstr "MSN 工作螢幕名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:229
+#: ../addressbook/libebook-contacts/e-contact.c:232
 msgid "MSN Work Screen Name 3"
 msgstr "MSN 工作螢幕名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:230
+#: ../addressbook/libebook-contacts/e-contact.c:233
 msgid "ICQ Home ID 1"
 msgstr "ICQ 家用 ID 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:231
+#: ../addressbook/libebook-contacts/e-contact.c:234
 msgid "ICQ Home ID 2"
 msgstr "ICQ 家用 ID 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:232
+#: ../addressbook/libebook-contacts/e-contact.c:235
 msgid "ICQ Home ID 3"
 msgstr "ICQ 家用 ID 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:233
+#: ../addressbook/libebook-contacts/e-contact.c:236
 msgid "ICQ Work ID 1"
 msgstr "ICQ 工作 ID 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:234
+#: ../addressbook/libebook-contacts/e-contact.c:237
 msgid "ICQ Work ID 2"
 msgstr "ICQ 工作 ID 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:235
+#: ../addressbook/libebook-contacts/e-contact.c:238
 msgid "ICQ Work ID 3"
 msgstr "ICQ 工作 ID 3"
 
 #. Last modified time
-#: ../addressbook/libebook-contacts/e-contact.c:238
+#: ../addressbook/libebook-contacts/e-contact.c:241
 msgid "Last Revision"
 msgstr "上次改版"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../addressbook/libebook-contacts/e-contact.c:242
+#: ../addressbook/libebook-contacts/e-contact.c:245
 msgid "Name or Org"
 msgstr "姓名或組織"
 
 #. Address fields
-#: ../addressbook/libebook-contacts/e-contact.c:245
+#: ../addressbook/libebook-contacts/e-contact.c:248
 msgid "Address List"
 msgstr "地址清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:246
+#: ../addressbook/libebook-contacts/e-contact.c:249
 msgid "Home Address"
 msgstr "住址"
 
-#: ../addressbook/libebook-contacts/e-contact.c:247
+#: ../addressbook/libebook-contacts/e-contact.c:250
 msgid "Work Address"
 msgstr "工作地址"
 
-#: ../addressbook/libebook-contacts/e-contact.c:248
+#: ../addressbook/libebook-contacts/e-contact.c:251
 msgid "Other Address"
 msgstr "其它地址"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:251
+#: ../addressbook/libebook-contacts/e-contact.c:254
 msgid "Category List"
 msgstr "分類清單"
 
 #. Photo/Logo
-#: ../addressbook/libebook-contacts/e-contact.c:254
+#: ../addressbook/libebook-contacts/e-contact.c:257
 msgid "Photo"
 msgstr "相片"
 
-#: ../addressbook/libebook-contacts/e-contact.c:255
+#: ../addressbook/libebook-contacts/e-contact.c:258
 msgid "Logo"
 msgstr "標誌"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../addressbook/libebook-contacts/e-contact.c:259
+#: ../addressbook/libebook-contacts/e-contact.c:262
 msgid "Name"
 msgstr "名稱"
 
-#: ../addressbook/libebook-contacts/e-contact.c:260
+#: ../addressbook/libebook-contacts/e-contact.c:263
 msgid "Email List"
 msgstr "電子郵件清單"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:263
+#: ../addressbook/libebook-contacts/e-contact.c:266
 msgid "AIM Screen Name List"
 msgstr "AIM 螢幕名稱清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:264
+#: ../addressbook/libebook-contacts/e-contact.c:267
 msgid "GroupWise ID List"
 msgstr "GroupWise ID 清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:265
+#: ../addressbook/libebook-contacts/e-contact.c:268
 msgid "Jabber ID List"
 msgstr "Jabber ID 清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:266
+#: ../addressbook/libebook-contacts/e-contact.c:269
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo!螢幕名稱清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:267
+#: ../addressbook/libebook-contacts/e-contact.c:270
 msgid "MSN Screen Name List"
 msgstr "MSN 螢幕名稱清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:268
+#: ../addressbook/libebook-contacts/e-contact.c:271
 msgid "ICQ ID List"
 msgstr "ICQ ID 清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:270
+#: ../addressbook/libebook-contacts/e-contact.c:273
 msgid "Wants HTML Mail"
 msgstr "需要 HTML 郵件"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../addressbook/libebook-contacts/e-contact.c:275
+#: ../addressbook/libebook-contacts/e-contact.c:278
 msgid "List"
 msgstr "清單"
 
@@ -748,126 +748,126 @@ msgstr "清單"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../addressbook/libebook-contacts/e-contact.c:280
+#: ../addressbook/libebook-contacts/e-contact.c:283
 msgid "List Shows Addresses"
 msgstr "清單顯示位址"
 
-#: ../addressbook/libebook-contacts/e-contact.c:282
+#: ../addressbook/libebook-contacts/e-contact.c:285
 msgid "Birth Date"
 msgstr "出生日期"
 
-#: ../addressbook/libebook-contacts/e-contact.c:283
+#: ../addressbook/libebook-contacts/e-contact.c:286
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:887
 msgid "Anniversary"
 msgstr "週年紀念日"
 
 #. Security fields
-#: ../addressbook/libebook-contacts/e-contact.c:286
+#: ../addressbook/libebook-contacts/e-contact.c:289
 msgid "X.509 Certificate"
 msgstr "X.509 證書"
 
-#: ../addressbook/libebook-contacts/e-contact.c:288
+#: ../addressbook/libebook-contacts/e-contact.c:291
 msgid "Gadu-Gadu Home ID 1"
 msgstr "Gadu-Gadu 家用 ID 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:289
+#: ../addressbook/libebook-contacts/e-contact.c:292
 msgid "Gadu-Gadu Home ID 2"
 msgstr "Gadu-Gadu 家用 ID 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:290
+#: ../addressbook/libebook-contacts/e-contact.c:293
 msgid "Gadu-Gadu Home ID 3"
 msgstr "Gadu-Gadu 家用 ID 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:291
+#: ../addressbook/libebook-contacts/e-contact.c:294
 msgid "Gadu-Gadu Work ID 1"
 msgstr "Gadu-Gadu 工作 ID 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:292
+#: ../addressbook/libebook-contacts/e-contact.c:295
 msgid "Gadu-Gadu Work ID 2"
 msgstr "Gadu-Gadu 工作 ID 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:293
+#: ../addressbook/libebook-contacts/e-contact.c:296
 msgid "Gadu-Gadu Work ID 3"
 msgstr "Gadu-Gadu 工作 ID 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:294
+#: ../addressbook/libebook-contacts/e-contact.c:297
 msgid "Gadu-Gadu ID List"
 msgstr "Gadu-Gadu ID 清單"
 
 #. Geo information
-#: ../addressbook/libebook-contacts/e-contact.c:297
+#: ../addressbook/libebook-contacts/e-contact.c:300
 msgid "Geographic Information"
 msgstr "地理資訊"
 
-#: ../addressbook/libebook-contacts/e-contact.c:299
+#: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Telephone"
 msgstr "電話"
 
-#: ../addressbook/libebook-contacts/e-contact.c:301
+#: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Skype Home Name 1"
 msgstr "Skype 住家名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:302
+#: ../addressbook/libebook-contacts/e-contact.c:305
 msgid "Skype Home Name 2"
 msgstr "Skype 住家名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:303
+#: ../addressbook/libebook-contacts/e-contact.c:306
 msgid "Skype Home Name 3"
 msgstr "Skype 住家名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:304
+#: ../addressbook/libebook-contacts/e-contact.c:307
 msgid "Skype Work Name 1"
 msgstr "Skype 工作名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:305
+#: ../addressbook/libebook-contacts/e-contact.c:308
 msgid "Skype Work Name 2"
 msgstr "Skype 工作名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:306
+#: ../addressbook/libebook-contacts/e-contact.c:309
 msgid "Skype Work Name 3"
 msgstr "Skype 工作名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:307
+#: ../addressbook/libebook-contacts/e-contact.c:310
 msgid "Skype Name List"
 msgstr "Skype 名稱清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:309
+#: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "SIP address"
 msgstr "SIP 位址"
 
-#: ../addressbook/libebook-contacts/e-contact.c:311
+#: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Google Talk Home Name 1"
 msgstr "Google Talk 住家名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:312
+#: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Google Talk Home Name 2"
 msgstr "Google Talk 住家名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:313
+#: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Google Talk Home Name 3"
 msgstr "Google Talk 住家名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:314
+#: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Google Talk Work Name 1"
 msgstr "Google Talk 工作名稱 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:315
+#: ../addressbook/libebook-contacts/e-contact.c:318
 msgid "Google Talk Work Name 2"
 msgstr "Google Talk 工作名稱 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:316
+#: ../addressbook/libebook-contacts/e-contact.c:319
 msgid "Google Talk Work Name 3"
 msgstr "Google Talk 工作名稱 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:317
+#: ../addressbook/libebook-contacts/e-contact.c:320
 msgid "Google Talk Name List"
 msgstr "Google Talk 名稱清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:319
+#: ../addressbook/libebook-contacts/e-contact.c:322
 msgid "Twitter Name List"
 msgstr "Twitter 名稱清單"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1624
+#: ../addressbook/libebook-contacts/e-contact.c:1627
 #: ../addressbook/libebook/e-destination.c:883
 msgid "Unnamed List"
 msgstr "未命名的清單"
@@ -901,77 +901,77 @@ msgstr "文字太短，不符合電話號碼格式"
 msgid "Text is too long for a phone number"
 msgstr "文字太長，不符合電話號碼格式"
 
-#: ../addressbook/libebook/e-book-client.c:748
+#: ../addressbook/libebook/e-book-client.c:749
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "不明的通訊錄屬性「%s」"
 
-#: ../addressbook/libebook/e-book-client.c:763
+#: ../addressbook/libebook/e-book-client.c:764
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "不能改變通訊錄屬性「%s」的數值"
 
-#: ../addressbook/libebook/e-book-client.c:1098
-#: ../addressbook/libebook/e-book-client.c:1273
+#: ../addressbook/libebook/e-book-client.c:1099
+#: ../addressbook/libebook/e-book-client.c:1274
 #: ../calendar/libecal/e-cal-client.c:1522
 #: ../calendar/libecal/e-cal-client.c:1704
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "無法連線至「%s」："
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:793
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:796
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "插補不明的摘要欄位「%s」時發生錯誤"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1292
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1295
 msgid "Error parsing regular expression"
 msgstr "解析正規表示式時發生錯誤"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1337
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1340
 #: ../camel/camel-db.c:544
 #, c-format
 msgid "Insufficient memory"
 msgstr "記憶體不足"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1470
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1473
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "在摘要中指定了無效的聯絡人欄位「%d」"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1507
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr "在摘要中指定了類型「%2$s」的聯絡人欄位「%1$s」，但是只支援邏輯值、字串及字串清單欄位類型"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2692
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3769
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:2695
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3772
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr "完整搜尋聯絡人未儲存於快取。不能傳回 vcard。"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3895
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3976
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3898
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3979
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "查詢包含了不支援的元素"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3899
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3902
 #, c-format
 msgid "Invalid Query"
 msgstr "無效的查詢"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3923
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3926
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr "完整搜尋聯絡人未儲存於快取。因此只支援摘要查詢。"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3980
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3983
 #: ../addressbook/libedata-book/e-data-book.c:358
 #: ../addressbook/libedata-book/e-data-book.c:992
 #: ../calendar/libedata-cal/e-data-cal.c:412
@@ -980,13 +980,13 @@ msgstr "完整搜尋聯絡人未儲存於快取。因此只支援摘要查詢。
 msgid "Invalid query"
 msgstr "無效的查詢"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4023
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4026
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr "完整 vcard 未儲存於快取。因此只支援摘要查詢。"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4726
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4729
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "無法移除 db 檔案：錯誤 %d"
@@ -1016,12 +1016,12 @@ msgstr "權限不足"
 #: ../addressbook/libedata-book/e-data-book.c:348
 #: ../calendar/libedata-cal/e-data-cal.c:401
 msgid "Authentication Failed"
-msgstr "驗證失敗"
+msgstr "核對失敗"
 
 #: ../addressbook/libedata-book/e-data-book.c:349
 #: ../calendar/libedata-cal/e-data-cal.c:402
 msgid "Authentication Required"
-msgstr "要求驗證"
+msgstr "要求核對"
 
 #: ../addressbook/libedata-book/e-data-book.c:350
 #: ../calendar/libedata-cal/e-data-cal.c:403
@@ -1031,7 +1031,7 @@ msgstr "不支援的欄位"
 #: ../addressbook/libedata-book/e-data-book.c:351
 #: ../calendar/libedata-cal/e-data-cal.c:405 ../libedataserver/e-client.c:156
 msgid "Unsupported authentication method"
-msgstr "不支援的驗證方法"
+msgstr "不支援的核對方法"
 
 #: ../addressbook/libedata-book/e-data-book.c:352
 #: ../calendar/libedata-cal/e-data-cal.c:406 ../libedataserver/e-client.c:158
@@ -1374,13 +1374,13 @@ msgstr "無法取消操作"
 
 #: ../calendar/libecal/e-cal.c:2329 ../libedataserver/e-client.c:137
 msgid "Authentication failed"
-msgstr "驗證失敗"
+msgstr "核對失敗"
 
 #: ../calendar/libecal/e-cal.c:2331
 #: ../camel/providers/smtp/camel-smtp-transport.c:911
 #: ../libedataserver/e-client.c:139
 msgid "Authentication required"
-msgstr "要求驗證"
+msgstr "要求核對"
 
 #: ../calendar/libecal/e-cal.c:2333
 msgid "A D-Bus exception has occurred"
@@ -1709,37 +1709,37 @@ msgid "Cannot modify calendar object: "
 msgstr "不能修改行事曆物件："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1862
+#: ../calendar/libedata-cal/e-data-cal.c:1865
 msgid "Cannot remove calendar object: "
 msgstr "不能移除行事曆物件："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1945
+#: ../calendar/libedata-cal/e-data-cal.c:1951
 msgid "Cannot receive calendar objects: "
 msgstr "不能取得行事曆物件："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1988
+#: ../calendar/libedata-cal/e-data-cal.c:1994
 msgid "Cannot send calendar objects: "
 msgstr "不能傳送行事曆物件："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2040
+#: ../calendar/libedata-cal/e-data-cal.c:2046
 msgid "Could not retrieve attachment uris: "
 msgstr "無法取得附件 URI："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2085
+#: ../calendar/libedata-cal/e-data-cal.c:2091
 msgid "Could not discard reminder: "
 msgstr "無法取消提醒："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2126
+#: ../calendar/libedata-cal/e-data-cal.c:2132
 msgid "Could not retrieve calendar time zone: "
 msgstr "無法取得行事曆時區："
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2166
+#: ../calendar/libedata-cal/e-data-cal.c:2172
 msgid "Could not add calendar time zone: "
 msgstr "無法加入行事曆時區："
 
@@ -1838,8 +1838,8 @@ msgstr "準備資料夾「%s」供離線使用"
 msgid "Copy folder content locally for _offline operation"
 msgstr "複製資料夾內容至本地用於離線作業(_O)"
 
-#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:462
-#: ../camel/camel-imapx-store.c:2219
+#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:618
+#: ../camel/camel-imapx-store.c:2242
 #: ../camel/providers/pop3/camel-pop3-folder.c:596
 #: ../camel/providers/pop3/camel-pop3-folder.c:746
 #: ../camel/providers/pop3/camel-pop3-folder.c:987
@@ -2204,25 +2204,25 @@ msgstr "無法移動刪除的郵件"
 msgid "Apply message _filters to this folder"
 msgstr "將郵件過濾條件套用到這個資料夾(_F)"
 
-#: ../camel/camel-imapx-folder.c:1117
+#: ../camel/camel-imapx-folder.c:1114
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "無法建立 %s 的資料夾摘要"
 
-#: ../camel/camel-imapx-folder.c:1125
+#: ../camel/camel-imapx-folder.c:1123
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "無法建立 %s 的快取："
 
-#: ../camel/camel-imapx-server.c:1276
+#: ../camel/camel-imapx-server.c:1333
 msgid "Server disconnected"
 msgstr "伺服器斷線"
 
-#: ../camel/camel-imapx-server.c:1734
+#: ../camel/camel-imapx-server.c:1756
 msgid "Error writing to cache stream"
 msgstr "寫入快取串流時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:2409
+#: ../camel/camel-imapx-server.c:2439
 #, c-format
 msgid ""
 "Alert from IMAP server %s:\n"
@@ -2231,204 +2231,179 @@ msgstr ""
 "來自 IMAP 伺服器 %s 的警示：\n"
 "%s"
 
-#: ../camel/camel-imapx-server.c:3004
+#: ../camel/camel-imapx-server.c:3035
 #, c-format
 msgid "Not authenticated"
-msgstr "尚未驗證"
+msgstr "尚未核對"
 
-#: ../camel/camel-imapx-server.c:3082
+#: ../camel/camel-imapx-server.c:3113
 msgid "Error performing IDLE"
 msgstr "進行 IDLE 時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:3974
+#: ../camel/camel-imapx-server.c:4005
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "以安全模式連線到 IMAP 伺服器 %s 時失敗了： %s"
 
-#: ../camel/camel-imapx-server.c:3975
+#: ../camel/camel-imapx-server.c:4006
 #: ../camel/providers/smtp/camel-smtp-transport.c:203
 msgid "STARTTLS not supported"
 msgstr "不支援 STARTTLS"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4047
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "以安全模式連線到 IMAP 伺服器 %s 時失敗了： "
 
-#: ../camel/camel-imapx-server.c:4093
+#: ../camel/camel-imapx-server.c:4125
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
-msgstr "IMAP 伺服器 %s 不支援 %s 驗證"
+msgstr "IMAP 伺服器 %s 不支援 %s 核對"
 
-#: ../camel/camel-imapx-server.c:4104 ../camel/camel-session.c:494
+#: ../camel/camel-imapx-server.c:4136 ../camel/camel-session.c:494
 #: ../camel/providers/pop3/camel-pop3-store.c:303
 #: ../camel/providers/pop3/camel-pop3-store.c:744
 #: ../camel/providers/smtp/camel-smtp-transport.c:505
 #, c-format
 msgid "No support for %s authentication"
-msgstr "不支援 %s 驗證"
+msgstr "不支援 %s 核對"
 
-#: ../camel/camel-imapx-server.c:4123
+#: ../camel/camel-imapx-server.c:4155
 #: ../camel/providers/nntp/camel-nntp-store.c:409
 #: ../camel/providers/nntp/camel-nntp-store.c:595
 msgid "Cannot authenticate without a username"
-msgstr "驗證不能沒有使用者名稱"
+msgstr "不能核對沒有使用者名稱"
 
-#: ../camel/camel-imapx-server.c:4132
+#: ../camel/camel-imapx-server.c:4164
 #: ../camel/providers/nntp/camel-nntp-store.c:604
 #: ../camel/providers/pop3/camel-pop3-store.c:669
 #: ../camel/providers/pop3/camel-pop3-store.c:689
 msgid "Authentication password not available"
-msgstr "沒有驗證的密碼"
+msgstr "沒有核對的密碼"
 
-#: ../camel/camel-imapx-server.c:4345
+#: ../camel/camel-imapx-server.c:4377
 msgid "Error fetching message"
 msgstr "取回郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:4395 ../camel/camel-imapx-server.c:4402
+#: ../camel/camel-imapx-server.c:4427 ../camel/camel-imapx-server.c:4434
 msgid "Failed to close the tmp stream"
 msgstr "無法關閉 tmp 的串流"
 
-#: ../camel/camel-imapx-server.c:4431
+#: ../camel/camel-imapx-server.c:4463
 msgid "Failed to copy the tmp file"
 msgstr "無法複製 tmp 檔案"
 
-#: ../camel/camel-imapx-server.c:4556
+#: ../camel/camel-imapx-server.c:4588
 msgid "Error moving messages"
 msgstr "移動郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:4560
+#: ../camel/camel-imapx-server.c:4592
 msgid "Error copying messages"
 msgstr "複製郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:4727
+#: ../camel/camel-imapx-server.c:4759
 msgid "Error appending message"
 msgstr "附加郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:4924
+#: ../camel/camel-imapx-server.c:4956
 msgid "Error fetching message headers"
 msgstr "取回郵件檔頭時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:5087
+#: ../camel/camel-imapx-server.c:5119
 msgid "Error retrieving message"
 msgstr "取回郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:5218 ../camel/camel-imapx-server.c:5439
+#: ../camel/camel-imapx-server.c:5250 ../camel/camel-imapx-server.c:5471
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "正取得「%s」中新郵件的摘要資訊"
 
-#: ../camel/camel-imapx-server.c:5278
+#: ../camel/camel-imapx-server.c:5310
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "掃描「%s」中更改過的郵件"
 
-#: ../camel/camel-imapx-server.c:5333
+#: ../camel/camel-imapx-server.c:5365
 msgid "Error fetching new messages"
 msgstr "取回新郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:5545
+#: ../camel/camel-imapx-server.c:5577
 msgid "Error while fetching messages"
 msgstr "當取回郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:5553 ../camel/camel-imapx-server.c:5586
+#: ../camel/camel-imapx-server.c:5585 ../camel/camel-imapx-server.c:5618
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "正取得「%2$s」中 %1$d 封郵件的摘要資訊"
 
-#: ../camel/camel-imapx-server.c:5724 ../camel/camel-imapx-server.c:5754
+#: ../camel/camel-imapx-server.c:5752 ../camel/camel-imapx-server.c:5782
 msgid "Error refreshing folder"
 msgstr "重新整理資料夾時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:5876
+#: ../camel/camel-imapx-server.c:5904
 msgid "Error expunging message"
 msgstr "清空郵件時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:5984
+#: ../camel/camel-imapx-server.c:6012
 msgid "Error fetching folders"
 msgstr "取回資料夾時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6065
+#: ../camel/camel-imapx-server.c:6095
 msgid "Error subscribing to folder"
 msgstr "訂閱到資料夾時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6127
+#: ../camel/camel-imapx-server.c:6157
 msgid "Error creating folder"
 msgstr "建立資料夾時發生錯誤。"
 
-#: ../camel/camel-imapx-server.c:6180
+#: ../camel/camel-imapx-server.c:6210
 msgid "Error deleting folder"
 msgstr "刪除資料夾時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6251
+#: ../camel/camel-imapx-server.c:6281
 msgid "Error renaming folder"
 msgstr "重新命名資料夾時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6325
+#: ../camel/camel-imapx-server.c:6355
 msgid "Error retrieving quota information"
 msgstr "取得用量限額資訊時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6383
+#: ../camel/camel-imapx-server.c:6413
 msgid "Search failed"
 msgstr "搜尋失敗"
 
-#: ../camel/camel-imapx-server.c:6445
+#: ../camel/camel-imapx-server.c:6475
 msgid "Error performing NOOP"
 msgstr "進行 NOOP 時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6553
+#: ../camel/camel-imapx-server.c:6583
 msgid "Error syncing changes"
 msgstr "同步更改時發生錯誤"
 
-#: ../camel/camel-imapx-server.c:6853
+#: ../camel/camel-imapx-server.c:6883
 msgid "Lost connection to IMAP server"
 msgstr "失去 IMAP 伺服器的連線"
 
-#: ../camel/camel-imapx-server.c:7302
+#: ../camel/camel-imapx-server.c:7330
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "無法取得郵件 ID 為 %s 的郵件： %s"
 
-#: ../camel/camel-imapx-server.c:7303
+#: ../camel/camel-imapx-server.c:7331
 msgid "No such message available."
 msgstr "沒有這個郵件。"
 
-#: ../camel/camel-imapx-server.c:7464 ../camel/camel-imapx-server.c:7479
+#: ../camel/camel-imapx-server.c:7492 ../camel/camel-imapx-server.c:7507
 msgid "Cannot create spool file: "
 msgstr "不能建立排程器檔案："
 
-#: ../camel/camel-imapx-server.c:8192
+#: ../camel/camel-imapx-server.c:8212
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 伺服器不支援限額"
 
-#: ../camel/camel-imapx-store.c:331
-#, c-format
-msgid "IMAP server %s"
-msgstr "IMAP 伺服器 %s"
-
-#: ../camel/camel-imapx-store.c:334
-#, c-format
-msgid "IMAP service for %s on %s"
-msgstr "%s 的 IMAP 服務於 %s"
-
-#: ../camel/camel-imapx-store.c:435
-#: ../camel/providers/nntp/camel-nntp-provider.c:95
-#: ../camel/providers/pop3/camel-pop3-provider.c:83
-msgid "Password"
-msgstr "密碼"
-
-#: ../camel/camel-imapx-store.c:437
-msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "這個選項將會使用簡易的密碼連線至 IMAP 伺服器。"
-
-#: ../camel/camel-imapx-store.c:547
-#, c-format
-msgid "No such folder %s"
-msgstr "沒有這個資料夾 %s"
-
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:578 ../camel/camel-imapx-store.c:1119
+#: ../camel/camel-imapx-store.c:203 ../camel/camel-imapx-store.c:1143
 #: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:316
 #: ../camel/providers/local/camel-maildir-store.c:752
@@ -2438,23 +2413,48 @@ msgstr "沒有這個資料夾 %s"
 msgid "Inbox"
 msgstr "收件匣"
 
-#: ../camel/camel-imapx-store.c:1392
+#: ../camel/camel-imapx-store.c:487
+#, c-format
+msgid "IMAP server %s"
+msgstr "IMAP 伺服器 %s"
+
+#: ../camel/camel-imapx-store.c:490
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "%s 的 IMAP 服務於 %s"
+
+#: ../camel/camel-imapx-store.c:591
+#: ../camel/providers/nntp/camel-nntp-provider.c:95
+#: ../camel/providers/pop3/camel-pop3-provider.c:83
+msgid "Password"
+msgstr "密碼"
+
+#: ../camel/camel-imapx-store.c:593
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr "這個選項將會使用簡易的密碼連線至 IMAP 伺服器。"
+
+#: ../camel/camel-imapx-store.c:687
+#, c-format
+msgid "No such folder %s"
+msgstr "沒有這個資料夾 %s"
+
+#: ../camel/camel-imapx-store.c:1413
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "取得 %s 的資料夾清單"
 
-#: ../camel/camel-imapx-store.c:1767
+#: ../camel/camel-imapx-store.c:1783
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "資料夾名稱「%s」無效，因為它包括字符「%c」"
 
-#: ../camel/camel-imapx-store.c:1778
+#: ../camel/camel-imapx-store.c:1794
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "不明的母資料夾： %s"
 
-#: ../camel/camel-imapx-store.c:1788
+#: ../camel/camel-imapx-store.c:1804
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "母資料夾並不允許包含子資料夾"
@@ -2668,7 +2668,7 @@ msgstr "這個選項將會使用匿名登入至伺服器。"
 #: ../camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
-msgstr "驗證失敗。"
+msgstr "核對失敗。"
 
 #: ../camel/camel-sasl-anonymous.c:81
 #, c-format
@@ -2753,7 +2753,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:93
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "這個選項將會使用 Kerberos 5 驗證連線至伺服器。"
+msgstr "這個選項將會使用 Kerberos 5 核對連線至伺服器。"
 
 #: ../camel/camel-sasl-gssapi.c:134
 msgid ""
@@ -2838,7 +2838,7 @@ msgstr "NTLM / SPA"
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr "這個選項將會使用 NTLM / 安全密碼驗證連線至基於 Windows 的伺服器。"
+msgstr "這個選項將會使用 NTLM / 安全密碼核對連線至基於 Windows 的伺服器。"
 
 #: ../camel/camel-sasl-plain.c:44
 msgid "PLAIN"
@@ -2864,7 +2864,7 @@ msgstr "POP 先於 SMTP 允許使用未知的傳輸"
 #: ../camel/camel-sasl-popb4smtp.c:110 ../camel/camel-sasl-popb4smtp.c:119
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
-msgstr "以 %s 服務嘗試 POP 先於 SMTP 驗證"
+msgstr "以 %s 服務嘗試 POP 先於 SMTP 核對"
 
 #: ../camel/camel-search-private.c:116
 #, c-format
@@ -2879,7 +2879,7 @@ msgstr "通訊協定「%s」註冊了無效的 GType"
 #: ../camel/camel-session.c:509
 #, c-format
 msgid "%s authentication failed"
-msgstr "%s 驗證失敗"
+msgstr "%s 核對失敗"
 
 #: ../camel/camel-session.c:645
 msgid "Forwarding messages is not supported"
@@ -3083,48 +3083,48 @@ msgstr "無法新增資料至編碼器"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME 解密：找不到加密內容"
 
-#: ../camel/camel-store.c:1964
+#: ../camel/camel-store.c:1999
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "不能建立資料夾「%s」：資料夾已存在"
 
-#: ../camel/camel-store.c:2007
+#: ../camel/camel-store.c:2042
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "開啟資料夾「%s」"
 
-#: ../camel/camel-store.c:2196
+#: ../camel/camel-store.c:2231
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "掃描「%s」內的資料夾"
 
-#: ../camel/camel-store.c:2218 ../camel/camel-store.c:2263
+#: ../camel/camel-store.c:2259 ../camel/camel-store.c:2304
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "回收筒"
 
-#: ../camel/camel-store.c:2232 ../camel/camel-store.c:2280
+#: ../camel/camel-store.c:2273 ../camel/camel-store.c:2321
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "垃圾郵件"
 
-#: ../camel/camel-store.c:2733
+#: ../camel/camel-store.c:2774
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "無法建立資料夾：%s：資料夾已存在"
 
-#: ../camel/camel-store.c:2747
+#: ../camel/camel-store.c:2788
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "正在建立資料夾「%s」"
 
-#: ../camel/camel-store.c:2865 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2906 ../camel/camel-vee-store.c:416
 #: ../camel/providers/local/camel-maildir-store.c:315
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "不能刪除資料夾： %s ：無效的操作"
 
-#: ../camel/camel-store.c:3008 ../camel/camel-vee-store.c:466
+#: ../camel/camel-store.c:3049 ../camel/camel-vee-store.c:466
 #: ../camel/providers/local/camel-maildir-store.c:841
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3181,7 +3181,7 @@ msgstr "代理伺服器主機不支援 SOCKS5"
 #: ../camel/camel-tcp-stream-raw.c:789
 #, c-format
 msgid "Could not find a suitable authentication type: code 0x%x"
-msgstr "找不到合適的驗證類型：代碼 0x%x"
+msgstr "找不到合適的核對類型：代碼 0x%x"
 
 #: ../camel/camel-tcp-stream-raw.c:801
 msgid "General SOCKS server failure"
@@ -3993,13 +3993,13 @@ msgstr "這是讀取與發信至 USENET 新聞羣組的供應者。"
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
-msgstr "這個選項將會匿名連線至 NNTP 伺服器，不使用任何驗證。"
+msgstr "這個選項將會匿名連線至 NNTP 伺服器，不使用任何核對。"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr "這個選項將會使用純文字的密碼驗證 NNTP 伺服器。"
+msgstr "這個選項將會使用純文字的密碼核對 NNTP 伺服器。"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:386
 #, c-format
@@ -4016,7 +4016,7 @@ msgstr "NNTP 伺服器 %s 傳回錯誤代碼 %d ： %s"
 msgid "USENET News via %s"
 msgstr "經由 %s 的 USENET 新聞"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1219
+#: ../camel/providers/nntp/camel-nntp-store.c:1225
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4027,22 +4027,22 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1331
+#: ../camel/providers/nntp/camel-nntp-store.c:1337
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "你無法在「新聞」儲存區建立資料夾：改以訂閱。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1347
+#: ../camel/providers/nntp/camel-nntp-store.c:1353
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "你無法在「新聞」儲存區重新命名資料夾。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1370
+#: ../camel/providers/nntp/camel-nntp-store.c:1376
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "你無法在「新聞」儲存區移除資料夾：改以取消訂閱。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1589
+#: ../camel/providers/nntp/camel-nntp-store.c:1595
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4053,7 +4053,7 @@ msgstr ""
 "\n"
 "沒有類似的新聞羣組。選取的項目可能是父代資料夾。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1656
+#: ../camel/providers/nntp/camel-nntp-store.c:1662
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4064,16 +4064,16 @@ msgstr ""
 "\n"
 "新聞羣組不存在！"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2093
+#: ../camel/providers/nntp/camel-nntp-store.c:2099
 msgid "NNTP Command failed: "
 msgstr "NNTP 指令失敗："
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2190
+#: ../camel/providers/nntp/camel-nntp-store.c:2196
 #, c-format
 msgid "Not connected."
 msgstr "未連線。"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2284
+#: ../camel/providers/nntp/camel-nntp-store.c:2290
 #, c-format
 msgid "No such folder: %s"
 msgstr "沒有這個資料夾： %s"
@@ -4225,7 +4225,7 @@ msgstr "不能登入 POP 伺服器 %s： SASL 通訊協定錯誤"
 #: ../camel/providers/pop3/camel-pop3-store.c:373
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr "無法驗證 POP 伺服器 %s："
+msgstr "無法核對 POP 伺服器 %s："
 
 #: ../camel/providers/pop3/camel-pop3-store.c:481
 #, c-format
@@ -4396,7 +4396,7 @@ msgstr "經由 %s 傳送 SMTP 郵件"
 #: ../camel/providers/smtp/camel-smtp-transport.c:415
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
-msgstr "SMTP 伺服器 %s 不支援 %s 驗證"
+msgstr "SMTP 伺服器 %s 不支援 %s 核對"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:496
 #, c-format
@@ -4519,15 +4519,15 @@ msgstr "需要密碼傳送"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:905
 msgid "Authentication mechanism is too weak"
-msgstr "驗證機制太弱了"
+msgstr "核對機制太弱了"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:907
 msgid "Encryption required for requested authentication mechanism"
-msgstr "所要求的驗證機制必須加密處理"
+msgstr "所要求的核對機制必須加密處理"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:909
 msgid "Temporary authentication failure"
-msgstr "臨時驗證失敗"
+msgstr "臨時核對失敗"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1166
 msgid "SMTP Greeting"
@@ -4609,8 +4609,8 @@ msgstr "生日和週年紀念日提醒的單位，「minutes」(分鐘)、「hou
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
-#: ../libebackend/e-authentication-mediator.c:852
-#: ../libebackend/e-authentication-mediator.c:1185
+#: ../libebackend/e-authentication-mediator.c:862
+#: ../libebackend/e-authentication-mediator.c:1193
 msgid "Bus name vanished (client terminated?)"
 msgstr "匯流排名稱消失了 (客戶端終止？)"
 
@@ -4620,8 +4620,8 @@ msgstr "客戶端沒有回應"
 
 #: ../libebackend/e-authentication-mediator.c:334
 #: ../libebackend/e-authentication-mediator.c:345
-#: ../libebackend/e-authentication-mediator.c:846
-#: ../libebackend/e-authentication-mediator.c:1179
+#: ../libebackend/e-authentication-mediator.c:856
+#: ../libebackend/e-authentication-mediator.c:1187
 msgid "Client cancelled the operation"
 msgstr "客戶端已取消操作"
 
@@ -4629,18 +4629,18 @@ msgstr "客戶端已取消操作"
 msgid "Client reports password was rejected"
 msgstr "客戶端回報密碼被拒絕"
 
-#: ../libebackend/e-authentication-session.c:543
+#: ../libebackend/e-authentication-session.c:569
 msgid "Add this password to your keyring"
 msgstr "將密碼加入你的密碼匙圈"
 
-#: ../libebackend/e-authentication-session.c:648
+#: ../libebackend/e-authentication-session.c:674
 msgid "Password was incorrect"
 msgstr "密碼是不正確的"
 
 #: ../libebackend/e-backend.c:428
 #, c-format
 msgid "%s does not support authentication"
-msgstr "%s 不支援驗證"
+msgstr "%s 不支援核對"
 
 #: ../libebackend/e-collection-backend.c:800
 #, c-format
@@ -4691,7 +4691,7 @@ msgstr "資料來源「%s」沒有用來刪除遠端資料的收集後端"
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:990
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
-msgstr "資料來源「%s」不支援 OAuth 2.0 驗證"
+msgstr "資料來源「%s」不支援 OAuth 2.0 核對"
 
 #: ../libebackend/e-server-side-source.c:1438
 #, c-format
@@ -4701,7 +4701,7 @@ msgstr "檔案必須以「.source」做為延伸檔名"
 #: ../libebackend/e-source-registry-server.c:521
 #: ../libedataserver/e-source-registry.c:1876
 msgid "The user declined to authenticate"
-msgstr "使用者拒絕驗證"
+msgstr "使用者拒絕核對"
 
 #: ../libebackend/e-source-registry-server.c:790
 #, c-format
@@ -4846,20 +4846,20 @@ msgstr "D-Bus 錯誤"
 
 #: ../libedataserver/e-source-authenticator.c:166
 msgid "Address book authentication request"
-msgstr "通訊錄驗證要求"
+msgstr "通訊錄核對要求"
 
 #: ../libedataserver/e-source-authenticator.c:171
 msgid "Calendar authentication request"
-msgstr "行事曆驗證要求"
+msgstr "行事曆核對要求"
 
 #: ../libedataserver/e-source-authenticator.c:175
 msgid "Mail authentication request"
-msgstr "郵件驗證要求"
+msgstr "郵件核對要求"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
 msgid "Authentication request"
-msgstr "驗證要求"
+msgstr "核對要求"
 
 #: ../libedataserver/e-source-authenticator.c:188
 #, c-format
@@ -5097,11 +5097,11 @@ msgstr "對 HTTP 要求是否使用代理伺服器。"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
 msgid "Whether proxy server requires authentication"
-msgstr "代理伺服器是否要求驗證"
+msgstr "代理伺服器是否要求核對"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
 msgid "Whether authentication is required to access proxy server."
-msgstr "存取代理伺服器是否要求驗證。"
+msgstr "存取代理伺服器是否要求核對。"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
 msgid "Host name for HTTP requests"
@@ -5121,19 +5121,19 @@ msgstr "對 HTTP 要求使用的連接埠號。"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
 msgid "Proxy authentication user name"
-msgstr "代理伺服器驗證使用者名稱"
+msgstr "代理伺服器核對使用者名稱"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
 msgid "User name to use to authenticate against proxy server."
-msgstr "用來驗證代理伺服器的使用者名稱。"
+msgstr "用來核對代理伺服器的使用者名稱。"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
 msgid "Proxy authentication password"
-msgstr "代理伺服器驗證密碼"
+msgstr "代理伺服器核對密碼"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
 msgid "Password to use to authenticate against proxy server."
-msgstr "用來驗證代理伺服器的密碼。"
+msgstr "用來核對代理伺服器的密碼。"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:15
 msgid "List of hosts to connect to without proxy"
@@ -6094,7 +6094,7 @@ msgstr "解除(_D)"
 #~ msgstr "更新 %s 資料夾"
 
 #~ msgid "Authenticating with the server…"
-#~ msgstr "與伺服器驗證…"
+#~ msgstr "與伺服器核對…"
 
 #~ msgid "%s: there was no source for UID '%s' stored in GConf."
 #~ msgstr "%s：沒有儲存於 GConf 中的 UID「%s」來源。"
@@ -6109,7 +6109,7 @@ msgstr "解除(_D)"
 #~ msgstr "沒有儲存於來源清單中的 UID「%s」來源。"
 
 #~ msgid "Cannot authenticate user: "
-#~ msgstr "不能驗證使用者："
+#~ msgstr "不能核對使用者："
 
 #~ msgid "Empty URI"
 #~ msgstr "空的 URI"
@@ -6149,7 +6149,7 @@ msgstr "解除(_D)"
 #~ msgstr "無法關閉 tmp 串流："
 
 #~ msgid "SMTP Authentication"
-#~ msgstr "SMTP 驗證"
+#~ msgstr "SMTP 核對"
 
 #~ msgid "Accessing LDAP Server anonymously"
 #~ msgstr "正以匿名方式存取 LDAP 伺服器"
