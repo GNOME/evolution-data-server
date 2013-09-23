@@ -882,15 +882,6 @@ folder_get_message_info (CamelFolder *folder,
 }
 
 static void
-folder_ref_message_info (CamelFolder *folder,
-                         CamelMessageInfo *info)
-{
-	g_return_if_fail (folder->summary != NULL);
-
-	camel_message_info_ref (info);
-}
-
-static void
 folder_free_message_info (CamelFolder *folder,
                           CamelMessageInfo *info)
 {
@@ -1845,7 +1836,6 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->free_summary = folder_free_summary;
 	class->search_free = folder_search_free;
 	class->get_message_info = folder_get_message_info;
-	class->ref_message_info = folder_ref_message_info;
 	class->free_message_info = folder_free_message_info;
 	class->delete_ = folder_delete;
 	class->rename = folder_rename;
@@ -2602,31 +2592,6 @@ camel_folder_free_message_info (CamelFolder *folder,
 	g_return_if_fail (class->free_message_info != NULL);
 
 	class->free_message_info (folder, info);
-}
-
-/**
- * camel_folder_ref_message_info:
- * @folder: a #CamelFolder
- * @info: a #CamelMessageInfo
- *
- * DEPRECATED: Use camel_message_info_ref() directly.
- *
- * Ref a #CamelMessageInfo, previously obtained with
- * camel_folder_get_message_info().
- **/
-void
-camel_folder_ref_message_info (CamelFolder *folder,
-                               CamelMessageInfo *info)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (info != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->ref_message_info != NULL);
-
-	class->ref_message_info (folder, info);
 }
 
 /* TODO: is this function required anyway? */

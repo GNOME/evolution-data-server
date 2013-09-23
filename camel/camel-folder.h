@@ -187,8 +187,6 @@ struct _CamelFolderClass {
 	CamelMessageInfo *
 			(*get_message_info)	(CamelFolder *folder,
 						 const gchar *uid);
-	void		(*ref_message_info)	(CamelFolder *folder,
-						 CamelMessageInfo *info);
 	void		(*free_message_info)	(CamelFolder *folder,
 						 CamelMessageInfo *info);
 	void		(*delete_)		(CamelFolder *folder);
@@ -475,10 +473,6 @@ CamelMessageInfo *
 						 const gchar *uid);
 void		camel_folder_free_message_info	(CamelFolder *folder,
 						 CamelMessageInfo *info);
-#ifndef CAMEL_DISABLE_DEPRECATED
-void		camel_folder_ref_message_info	(CamelFolder *folder,
-						 CamelMessageInfo *info);
-#endif
 void		camel_folder_delete		(CamelFolder *folder);
 void		camel_folder_rename		(CamelFolder *folder,
 						 const gchar *new_name);
