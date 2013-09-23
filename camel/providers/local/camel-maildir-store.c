@@ -710,7 +710,7 @@ scan_dirs (CamelStore *store,
 			CamelFolderInfo *old_topfi = *topfi;
 
 			*topfi = camel_folder_info_build (folders, (*topfi)->full_name, '/', TRUE);
-			camel_store_free_folder_info (store, old_topfi);
+			camel_folder_info_free (old_topfi);
 		}
 
 		res = 0;
@@ -872,7 +872,7 @@ maildir_store_rename_folder_sync (CamelStore *store,
 				old, new,
 				cancellable, error);
 
-		camel_store_free_folder_info (store, subfolders);
+		camel_folder_info_free (subfolders);
 	}
 
 	g_free (old_dir);

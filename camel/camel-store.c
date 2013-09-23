@@ -383,13 +383,6 @@ store_can_refresh_folder (CamelStore *store,
 	return ((info->flags & CAMEL_FOLDER_TYPE_MASK) == CAMEL_FOLDER_TYPE_INBOX);
 }
 
-static void
-store_free_folder_info (CamelStore *store,
-                        CamelFolderInfo *fi)
-{
-	camel_folder_info_free (fi);
-}
-
 static CamelFolder *
 store_get_inbox_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
@@ -1237,7 +1230,6 @@ camel_store_class_init (CamelStoreClass *class)
 	class->hash_folder_name = g_str_hash;
 	class->equal_folder_name = g_str_equal;
 	class->can_refresh_folder = store_can_refresh_folder;
-	class->free_folder_info = store_free_folder_info;
 
 	class->get_inbox_folder_sync = store_get_inbox_folder_sync;
 	class->get_junk_folder_sync = store_get_junk_folder_sync;
@@ -1632,31 +1624,6 @@ dump_fi (CamelFolderInfo *fi,
 		dump_fi (fi->child, depth + 2);
 		fi = fi->next;
 	}
-}
-
-/**
- * camel_store_free_folder_info:
- * @store: a #CamelStore
- * @fi: a #CamelFolderInfo as gotten via camel_store_get_folder_info()
- *
- * Frees the data returned by camel_store_get_folder_info(). If @fi is %NULL,
- * nothing is done, the routine simply returns.
- **/
-void
-camel_store_free_folder_info (CamelStore *store,
-                              CamelFolderInfo *fi)
-{
-	CamelStoreClass *class;
-
-	g_return_if_fail (CAMEL_IS_STORE (store));
-
-	if (fi == NULL)
-		return;
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->free_folder_info != NULL);
-
-	class->free_folder_info (store, fi);
 }
 
 /**
@@ -2157,7 +2124,7 @@ camel_store_get_folder_finish (CamelStore *store,
  * folders (such as vTrash or vJunk).
  *
  * The returned #CamelFolderInfo tree should be freed with
- * camel_store_free_folder_info().
+ * camel_folder_info_free().
  *
  * The CAMEL_STORE_FOLDER_INFO_FAST flag should be considered
  * deprecated; most backends will behave the same whether it is
@@ -2294,7 +2261,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
 			info->next = NULL;
 			info->parent = NULL;
 
-			camel_store_free_folder_info (store, root_info);
+			camel_folder_info_free (root_info);
 		}
 	}
 
@@ -2363,7 +2330,7 @@ camel_store_get_folder_info (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_folder_info().
  * The returned #CamelFolderInfo tree should be freed with
- * camel_store_free_folder_info().
+ * camel_folder_info_free().
  *
  * Returns: a #CamelFolderInfo tree, or %NULL on error
  *
@@ -2705,7 +2672,7 @@ camel_store_get_trash_folder_finish (CamelStore *store,
  * Creates a new folder as a child of an existing folder.
  * @parent_name can be %NULL to create a new top-level folder.
  * The returned #CamelFolderInfo struct should be freed with
- * camel_store_free_folder_info().
+ * camel_folder_info_free().
  *
  * Returns: info about the created folder, or %NULL on error
  *
@@ -2808,7 +2775,7 @@ camel_store_create_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_create_folder().
  * The returned #CamelFolderInfo struct should be freed with
- * camel_store_free_folder_info().
+ * camel_folder_info_free().
  *
  * Returns: info about the created folder, or %NULL on error
  *
@@ -3088,7 +3055,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 
 			if (folder_info != NULL) {
 				camel_store_folder_renamed (store, old_name, folder_info);
-				class->free_folder_info (store, folder_info);
+				camel_folder_info_free (folder_info);
 			}
 		} else {
 			/* Failed, just unlock our folders for re-use */

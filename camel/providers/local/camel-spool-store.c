@@ -438,17 +438,6 @@ spool_store_get_name (CamelService *service,
 	return name;
 }
 
-static void
-spool_store_free_folder_info (CamelStore *store,
-                              CamelFolderInfo *fi)
-{
-	if (fi) {
-		g_free (fi->full_name);
-		g_free (fi->display_name);
-		g_slice_free (CamelFolderInfo, fi);
-	}
-}
-
 static CamelFolder *
 spool_store_get_folder_sync (CamelStore *store,
                              const gchar *folder_name,
@@ -706,7 +695,6 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	service_class->get_name = spool_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
-	store_class->free_folder_info = spool_store_free_folder_info;
 	store_class->get_folder_sync = spool_store_get_folder_sync;
 	store_class->get_folder_info_sync = spool_store_get_folder_info_sync;
 	store_class->get_inbox_folder_sync = spool_store_get_inbox_folder_sync;

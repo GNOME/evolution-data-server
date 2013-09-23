@@ -140,8 +140,6 @@ struct _CamelStoreClass {
 	gboolean	(*can_refresh_folder)	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 GError **error);
-	void		(*free_folder_info)	(CamelStore *store,
-						 CamelFolderInfo *fi);
 
 	/* Synchronous I/O Methods */
 	CamelFolder *	(*get_folder_sync)	(CamelStore *store,
@@ -312,8 +310,6 @@ void		camel_store_folder_renamed	(CamelStore *store,
 						 const gchar *old_name,
 						 CamelFolderInfo *folder_info);
 void		camel_store_folder_info_stale	(CamelStore *store);
-void		camel_store_free_folder_info	(CamelStore *store,
-						 CamelFolderInfo *fi);
 CamelFolderInfo *
 		camel_folder_info_new		(void);
 void		camel_folder_info_free		(CamelFolderInfo *fi);
