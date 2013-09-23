@@ -672,13 +672,18 @@ add_present_rec (CamelFolderThread *thread,
                  CamelFolderThreadNode *node)
 {
 	while (node) {
-		const gchar *uid = camel_message_info_uid (node->message);
+		CamelMessageInfo *info;
+		const gchar *uid;
 
-		if (g_hash_table_lookup (have, (gchar *) uid)) {
-			g_hash_table_remove (have, (gchar *) camel_message_info_uid (node->message));
-			g_ptr_array_add (summary, (gpointer) node->message);
+		/* XXX Casting away const. */
+		info = (CamelMessageInfo *) node->message;
+		uid = camel_message_info_uid (info);
+
+		if (g_hash_table_lookup (have, uid)) {
+			g_hash_table_remove (have, uid);
+			g_ptr_array_add (summary, info);
 		} else {
-			camel_folder_free_message_info (thread->folder, (CamelMessageInfo *) node->message);
+			camel_message_info_unref (info);
 		}
 
 		if (node->child)
@@ -743,7 +748,7 @@ camel_folder_thread_messages_unref (CamelFolderThread *thread)
 		gint i;
 
 		for (i = 0; i < thread->summary->len; i++)
-			camel_folder_free_message_info (thread->folder, thread->summary->pdata[i]);
+			camel_message_info_unref (thread->summary->pdata[i]);
 		g_ptr_array_free (thread->summary, TRUE);
 		g_object_unref (thread->folder);
 	}

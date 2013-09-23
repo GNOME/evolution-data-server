@@ -439,7 +439,6 @@ camel_folder_search_by_uids
 camel_folder_search_free
 camel_folder_count_by_expression
 camel_folder_get_message_info
-camel_folder_free_message_info
 camel_folder_delete
 camel_folder_rename
 camel_folder_changed

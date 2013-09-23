@@ -84,7 +84,7 @@ transfer_messages (CamelFolder *folder,
 		CamelMessageInfo *mi = camel_folder_get_message_info (md->source_folder, md->source_uids->pdata[i]);
 		if (mi) {
 			camel_message_info_set_flags (mi, md->sbit, md->sbit);
-			camel_folder_free_message_info (md->source_folder, mi);
+			camel_message_info_unref (mi);
 		}
 	}
 
@@ -204,7 +204,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 			g_ptr_array_add (md->uids, g_strdup (tuid));
 			g_ptr_array_add (md->source_uids, uids->pdata[i]);
 		}
-		camel_folder_free_message_info (source, (CamelMessageInfo *) mi);
+		camel_message_info_unref (mi);
 	}
 
 	if (batch) {

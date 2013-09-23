@@ -1548,7 +1548,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			store_uid, store_uid, cancellable, &local_error);
 
 		if (camel_folder_has_summary_capability (folder))
-			camel_folder_free_message_info (folder, info);
+			camel_message_info_unref (info);
 
 		if (local_error != NULL || status == -1) {
 			report_status (

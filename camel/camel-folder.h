@@ -187,8 +187,6 @@ struct _CamelFolderClass {
 	CamelMessageInfo *
 			(*get_message_info)	(CamelFolder *folder,
 						 const gchar *uid);
-	void		(*free_message_info)	(CamelFolder *folder,
-						 CamelMessageInfo *info);
 	void		(*delete_)		(CamelFolder *folder);
 	void		(*rename)		(CamelFolder *folder,
 						 const gchar *newname);
@@ -471,8 +469,6 @@ guint32		camel_folder_count_by_expression (CamelFolder *folder,
 CamelMessageInfo *
 		camel_folder_get_message_info	(CamelFolder *folder,
 						 const gchar *uid);
-void		camel_folder_free_message_info	(CamelFolder *folder,
-						 CamelMessageInfo *info);
 void		camel_folder_delete		(CamelFolder *folder);
 void		camel_folder_rename		(CamelFolder *folder,
 						 const gchar *new_name);

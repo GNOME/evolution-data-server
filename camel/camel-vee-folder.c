@@ -1598,7 +1598,7 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
 
 		vfinfo = (CamelVeeMessageInfo *) camel_folder_get_message_info (folder, camel_message_info_uid (vinfo) + 8);
 		res = camel_vee_folder_get_location ((CamelVeeFolder *) folder, vfinfo, realuid);
-		camel_folder_free_message_info (folder, (CamelMessageInfo *) vfinfo);
+		camel_message_info_unref ((CamelMessageInfo *) vinfo);
 		return res;
 	} else {
 		if (realuid)

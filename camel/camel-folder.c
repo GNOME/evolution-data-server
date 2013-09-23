@@ -420,7 +420,7 @@ folder_filter (CamelSession *session,
 				data->driver, NULL, info, uid, data->folder,
 				store_uid, store_uid, cancellable, error);
 
-			camel_folder_free_message_info (data->folder, info);
+			camel_message_info_unref (info);
 		}
 
 		camel_operation_pop_message (cancellable);
@@ -470,7 +470,7 @@ folder_transfer_message_to (CamelFolder *source,
 	if ((source->folder_flags & CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY)
 			&& (minfo = camel_folder_get_message_info (source, uid))) {
 		info = camel_message_info_clone (minfo);
-		camel_folder_free_message_info (source, minfo);
+		camel_message_info_unref (minfo);
 	} else
 		info = camel_message_info_new_from_header (NULL, ((CamelMimePart *) msg)->headers);
 
@@ -879,15 +879,6 @@ folder_get_message_info (CamelFolder *folder,
 	g_return_val_if_fail (folder->summary != NULL, NULL);
 
 	return camel_folder_summary_get (folder->summary, uid);
-}
-
-static void
-folder_free_message_info (CamelFolder *folder,
-                          CamelMessageInfo *info)
-{
-	g_return_if_fail (folder->summary != NULL);
-
-	camel_message_info_unref (info);
 }
 
 static void
@@ -1836,7 +1827,6 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->free_summary = folder_free_summary;
 	class->search_free = folder_search_free;
 	class->get_message_info = folder_get_message_info;
-	class->free_message_info = folder_free_message_info;
 	class->delete_ = folder_delete;
 	class->rename = folder_rename;
 	class->freeze = folder_freeze;
@@ -2551,7 +2541,7 @@ camel_folder_set_message_user_tag (CamelFolder *folder,
  * @uid: the uid of a message
  *
  * Retrieve the #CamelMessageInfo for the specified @uid.  This return
- * must be freed using camel_folder_free_message_info().
+ * must be freed using camel_message_info_unref().
  *
  * Returns: the summary information for the indicated message, or %NULL
  * if the uid does not exist
@@ -2569,29 +2559,6 @@ camel_folder_get_message_info (CamelFolder *folder,
 	g_return_val_if_fail (class->get_message_info != NULL, NULL);
 
 	return class->get_message_info (folder, uid);
-}
-
-/**
- * camel_folder_free_message_info:
- * @folder: a #CamelFolder
- * @info: a #CamelMessageInfo
- *
- * Free (unref) a #CamelMessageInfo, previously obtained with
- * camel_folder_get_message_info().
- **/
-void
-camel_folder_free_message_info (CamelFolder *folder,
-                                CamelMessageInfo *info)
-{
-	CamelFolderClass *class;
-
-	g_return_if_fail (CAMEL_IS_FOLDER (folder));
-	g_return_if_fail (info != NULL);
-
-	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->free_message_info != NULL);
-
-	class->free_message_info (folder, info);
 }
 
 /* TODO: is this function required anyway? */

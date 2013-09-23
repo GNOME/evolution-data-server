@@ -376,12 +376,14 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 				g_free (uid);
 				continue;
 			}
+
 			info = camel_folder_get_message_info (folder, uid);
 
 			camel_folder_append_message_sync (
 				folder, message, info, &ret_uid,
 				cancellable, &local_error);
-			camel_folder_free_message_info (folder, info);
+
+			camel_message_info_unref (info);
 
 			if (ret_uid) {
 				camel_disco_diary_uidmap_add (diary, uid, ret_uid);
