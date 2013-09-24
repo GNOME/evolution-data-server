@@ -196,8 +196,6 @@ modules/gnome-online-accounts/e-goa-password-based.c
 modules/gnome-online-accounts/goaewsclient.c
 modules/gnome-online-accounts/module-gnome-online-accounts.c
 modules/google-backend/module-google-backend.c
-modules/trust-prompt/certificate-viewer.c
-modules/trust-prompt/e-asn1-object.c
 modules/trust-prompt/module-trust-prompt.c
 modules/trust-prompt/trust-prompt-gtk.c
 [type: gettext/xml]modules/ubuntu-online-accounts/calendar.service-type.in.in
