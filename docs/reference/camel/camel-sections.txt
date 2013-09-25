@@ -2722,25 +2722,6 @@ camel_stream_process_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-stream-vfs</FILE>
-<TITLE>CamelStreamVFS</TITLE>
-CamelStreamVFS
-CamelStreamVFSOpenMethod
-camel_stream_vfs_new_with_uri
-camel_stream_vfs_new_with_stream
-camel_stream_vfs_is_writable
-<SUBSECTION Standard>
-CAMEL_STREAM_VFS
-CAMEL_IS_STREAM_VFS
-CAMEL_TYPE_STREAM_VFS
-CAMEL_STREAM_VFS_CLASS
-CAMEL_IS_STREAM_VFS_CLASS
-CAMEL_STREAM_VFS_GET_CLASS
-CamelStreamVFSClass
-camel_stream_vfs_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-subscribable</FILE>
 <TITLE>CamelSubscribable</TITLE>
 CamelSubscribable

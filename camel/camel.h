@@ -123,7 +123,6 @@
 #include <camel/camel-stream-mem.h>
 #include <camel/camel-stream-null.h>
 #include <camel/camel-stream-process.h>
-#include <camel/camel-stream-vfs.h>
 #include <camel/camel-string-utils.h>
 #include <camel/camel-subscribable.h>
 #include <camel/camel-tcp-stream.h>
