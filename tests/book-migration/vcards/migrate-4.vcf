@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:sorted-4
+N:bat;First Name
+TEL;TYPE=work,pref:+9999999
+EMAIL:警察@brown.org
+END:VCARD

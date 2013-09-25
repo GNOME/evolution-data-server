@@ -630,6 +630,19 @@ AC_SUBST(DB_CFLAGS)
 AC_SUBST(DB_LIBS)
 
 dnl ******************************
+dnl db_load checking
+dnl ******************************
+have_db_load=no
+AC_PATH_PROG(DB_LOAD, [db_load])
+if test -z "$DB_LOAD"; then
+   AC_MSG_WARN([db_load not found, some unit tests will not be run.])
+else
+   have_db_load=yes
+fi
+
+AM_CONDITIONAL(HAVE_DB_LOAD, test x"$have_db_load" = "xyes")
+
+dnl ******************************
 dnl iconv checking
 dnl ******************************
 have_iconv="no"
@@ -1796,6 +1809,8 @@ tests/libebook/Makefile
 tests/libebook-contacts/Makefile
 tests/libebook/client/Makefile
 tests/libebook/vcard/Makefile
+tests/book-migration/Makefile
+tests/book-migration/db/Makefile
 tests/libecal/Makefile
 tests/libecal/client/Makefile
 tests/libedata-cal/Makefile
