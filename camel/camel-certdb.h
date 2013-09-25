@@ -55,13 +55,6 @@ typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
 typedef struct _CamelCertDBPrivate CamelCertDBPrivate;
 
-enum {
-	CAMEL_CERT_STRING_ISSUER,
-	CAMEL_CERT_STRING_SUBJECT,
-	CAMEL_CERT_STRING_HOSTNAME,
-	CAMEL_CERT_STRING_FINGERPRINT
-};
-
 typedef enum {
 	CAMEL_CERT_TRUST_UNKNOWN,
 	CAMEL_CERT_TRUST_NEVER,
