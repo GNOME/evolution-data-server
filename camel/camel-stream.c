@@ -32,7 +32,83 @@
 #include "camel-debug.h"
 #include "camel-stream.h"
 
-G_DEFINE_ABSTRACT_TYPE (CamelStream, camel_stream, CAMEL_TYPE_OBJECT)
+#define CAMEL_STREAM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STREAM, CamelStreamPrivate))
+
+struct _CamelStreamPrivate {
+	GIOStream *base_stream;
+};
+
+enum {
+	PROP_0,
+	PROP_BASE_STREAM
+};
+
+G_DEFINE_TYPE (CamelStream, camel_stream, CAMEL_TYPE_OBJECT)
+
+static void
+stream_set_base_stream (CamelStream *stream,
+                        GIOStream *base_stream)
+{
+	g_return_if_fail (stream->priv->base_stream == NULL);
+
+	/* This will be NULL for CamelStream subclasses. */
+	if (base_stream != NULL) {
+		g_return_if_fail (G_IS_IO_STREAM (base_stream));
+		g_object_ref (base_stream);
+	}
+
+	stream->priv->base_stream = base_stream;
+}
+
+static void
+stream_set_property (GObject *object,
+                     guint property_id,
+                     const GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BASE_STREAM:
+			stream_set_base_stream (
+				CAMEL_STREAM (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+stream_get_property (GObject *object,
+                     guint property_id,
+                     GValue *value,
+                     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BASE_STREAM:
+			g_value_set_object (
+				value,
+				camel_stream_get_base_stream (
+				CAMEL_STREAM (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+stream_dispose (GObject *object)
+{
+	CamelStreamPrivate *priv;
+
+	priv = CAMEL_STREAM_GET_PRIVATE (object);
+
+	g_clear_object (&priv->base_stream);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_stream_parent_class)->dispose (object);
+}
 
 static gssize
 stream_read (CamelStream *stream,
@@ -41,7 +117,18 @@ stream_read (CamelStream *stream,
              GCancellable *cancellable,
              GError **error)
 {
-	return 0;
+	GIOStream *base_stream;
+	GInputStream *input_stream;
+
+	base_stream = camel_stream_get_base_stream (stream);
+
+	if (base_stream == NULL)
+		return 0;
+
+	input_stream = g_io_stream_get_input_stream (base_stream);
+
+	return g_input_stream_read (
+		input_stream, buffer, n, cancellable, error);
 }
 
 static gssize
@@ -51,7 +138,18 @@ stream_write (CamelStream *stream,
               GCancellable *cancellable,
               GError **error)
 {
-	return n;
+	GIOStream *base_stream;
+	GOutputStream *output_stream;
+
+	base_stream = camel_stream_get_base_stream (stream);
+
+	if (base_stream == NULL)
+		return n;
+
+	output_stream = g_io_stream_get_output_stream (base_stream);
+
+	return g_output_stream_write (
+		output_stream, buffer, n, cancellable, error);
 }
 
 static gint
@@ -59,7 +157,18 @@ stream_close (CamelStream *stream,
               GCancellable *cancellable,
               GError **error)
 {
-	return 0;
+	GIOStream *base_stream;
+	gboolean success;
+
+	base_stream = camel_stream_get_base_stream (stream);
+
+	if (base_stream == NULL)
+		return 0;
+
+	success = g_io_stream_close (
+		stream->priv->base_stream, cancellable, error);
+
+	return success ? 0 : -1;
 }
 
 static gint
@@ -67,7 +176,20 @@ stream_flush (CamelStream *stream,
               GCancellable *cancellable,
               GError **error)
 {
-	return 0;
+	GIOStream *base_stream;
+	GOutputStream *output_stream;
+	gboolean success;
+
+	base_stream = camel_stream_get_base_stream (stream);
+
+	if (base_stream == NULL)
+		return 0;
+
+	output_stream = g_io_stream_get_output_stream (base_stream);
+
+	success = g_output_stream_flush (output_stream, cancellable, error);
+
+	return success ? 0 : -1;
 }
 
 static gboolean
@@ -79,16 +201,77 @@ stream_eos (CamelStream *stream)
 static void
 camel_stream_class_init (CamelStreamClass *class)
 {
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelStreamPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = stream_set_property;
+	object_class->get_property = stream_get_property;
+	object_class->dispose = stream_dispose;
+
 	class->read = stream_read;
 	class->write = stream_write;
 	class->close = stream_close;
 	class->flush = stream_flush;
 	class->eos = stream_eos;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_BASE_STREAM,
+		g_param_spec_object (
+			"base-stream",
+			"Base Stream",
+			"The base GIOStream",
+			G_TYPE_IO_STREAM,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_stream_init (CamelStream *stream)
 {
+	stream->priv = CAMEL_STREAM_GET_PRIVATE (stream);
+}
+
+/**
+ * camel_stream_new:
+ * @base_stream: a #GIOStream
+ *
+ * Creates a #CamelStream as a thin wrapper for @base_stream.
+ *
+ * Returns: a #CamelStream
+ *
+ * Since: 3.12
+ **/
+CamelStream *
+camel_stream_new (GIOStream *base_stream)
+{
+	g_return_val_if_fail (G_IS_IO_STREAM (base_stream), NULL);
+
+	return g_object_new (
+		CAMEL_TYPE_STREAM, "base-stream", base_stream, NULL);
+}
+
+/**
+ * camel_stream_get_base_stream:
+ * @stream: a #CamelStream
+ *
+ * Returns the #GIOStream for @stream.  This is only valid if @stream was
+ * created with camel_stream_new().  For all other #CamelStream subclasses
+ * this function returns %NULL.
+ *
+ * Returns: a #GIOStream, or %NULL
+ *
+ * Since: 3.12
+ **/
+GIOStream *
+camel_stream_get_base_stream (CamelStream *stream)
+{
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
+
+	return stream->priv->base_stream;
 }
 
 /**

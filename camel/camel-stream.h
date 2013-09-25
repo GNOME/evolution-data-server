@@ -56,9 +56,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelStream CamelStream;
 typedef struct _CamelStreamClass CamelStreamClass;
+typedef struct _CamelStreamPrivate CamelStreamPrivate;
 
 struct _CamelStream {
 	CamelObject parent;
+	CamelStreamPrivate *priv;
 
 	gboolean eos;
 };
@@ -86,6 +88,8 @@ struct _CamelStreamClass {
 };
 
 GType		camel_stream_get_type		(void);
+CamelStream *	camel_stream_new		(GIOStream *base_stream);
+GIOStream *	camel_stream_get_base_stream	(CamelStream *stream);
 gssize		camel_stream_read		(CamelStream *stream,
 						 gchar *buffer,
 						 gsize n,
