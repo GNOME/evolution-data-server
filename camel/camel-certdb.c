@@ -294,8 +294,8 @@ camel_cert_unref (CamelCert *cert)
 		g_free (cert->hostname);
 		g_free (cert->fingerprint);
 
-		if (cert->rawcert)
-			g_byte_array_free (cert->rawcert, TRUE);
+		if (cert->rawcert != NULL)
+			g_bytes_unref (cert->rawcert);
 
 		g_slice_free (CamelCert, cert);
 	}

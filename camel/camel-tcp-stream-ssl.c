@@ -187,6 +187,7 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 {
 	gchar *fingerprint;
 	CamelCert *ccert;
+	GBytes *bytes;
 
 	fingerprint = cert_fingerprint (cert);
 
@@ -197,7 +198,6 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 	}
 
 	if (ccert->rawcert == NULL) {
-		GByteArray *array;
 		gchar *filename;
 		gchar *contents;
 		gsize length;
@@ -224,20 +224,20 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 		}
 		g_free (filename);
 
-		array = g_byte_array_sized_new (length);
-		g_byte_array_append (array, (guint8 *) contents, length);
-		g_free (contents);
-
-		ccert->rawcert = array;
+		ccert->rawcert = g_bytes_new_take (contents, length);
 	}
 
 	g_free (fingerprint);
-	if (ccert->rawcert->len != cert->derCert.len
-	    || memcmp (ccert->rawcert->data, cert->derCert.data, cert->derCert.len) != 0) {
+
+	bytes = g_bytes_new_static (cert->derCert.data, cert->derCert.len);
+
+	if (g_bytes_compare (bytes, ccert->rawcert) != 0) {
 		g_warning ("rawcert != derCer");
 		ccert->trust = CAMEL_CERT_TRUST_UNKNOWN;
 		camel_certdb_touch (certdb);
 	}
+
+	g_bytes_unref (bytes);
 
 	return ccert;
 }
@@ -270,11 +270,10 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb,
 
 	fingerprint = ccert->fingerprint;
 
-	if (ccert->rawcert == NULL)
-		ccert->rawcert = g_byte_array_new ();
+	if (ccert->rawcert != NULL)
+		g_bytes_unref (ccert->rawcert);
 
-	g_byte_array_set_size (ccert->rawcert, cert->derCert.len);
-	memcpy (ccert->rawcert->data, cert->derCert.data, cert->derCert.len);
+	ccert->rawcert = g_bytes_new (cert->derCert.data, cert->derCert.len);
 
 	cert_dir = tcp_stream_ssl_get_cert_dir ();
 	filename = g_build_filename (cert_dir, fingerprint, NULL);
@@ -283,8 +282,10 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb,
 		filename, O_WRONLY | O_CREAT | O_TRUNC, 0600, NULL);
 	if (stream != NULL) {
 		if (camel_stream_write (
-			stream, (const gchar *) ccert->rawcert->data,
-			ccert->rawcert->len, NULL, NULL) == -1) {
+			stream,
+			g_bytes_get_data (ccert->rawcert, NULL),
+			g_bytes_get_size (ccert->rawcert),
+			NULL, NULL) == -1) {
 			g_warning (
 				"Could not save cert: %s: %s",
 				filename, g_strerror (errno));

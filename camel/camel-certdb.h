@@ -80,7 +80,7 @@ typedef struct {
 	gchar *fingerprint;
 
 	CamelCertTrust trust;
-	GByteArray *rawcert;
+	GBytes *rawcert;
 } CamelCert;
 
 struct _CamelCertDB {
