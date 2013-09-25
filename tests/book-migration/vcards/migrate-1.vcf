@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:sorted-1
+N:bad;First Name
+TEL;HOME:+1-221-5423789
+EMAIL;TYPE=home,work:micheal@jackson.com
+END:VCARD

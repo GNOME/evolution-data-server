@@ -1,0 +1,7 @@
+BEGIN:VCARD
+UID:sorted-3
+N:Bat;First Name
+TEL;HOME:+9999999
+EMAIL;TYPE=work:bobby@brown.org
+EMAIL;TYPE=home,work:bobby@brown.com
+END:VCARD

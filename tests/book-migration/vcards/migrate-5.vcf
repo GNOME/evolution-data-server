@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:sorted-5
+N:bäd;First Name
+TEL;HOME:+6666666
+EMAIL;TYPE=home,work:救命@brown.com
+END:VCARD

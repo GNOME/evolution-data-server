@@ -1,4 +1,4 @@
-SUBDIRS = test-server-utils libedataserver libebook-contacts libebook libecal libedata-cal
+SUBDIRS = test-server-utils libedataserver libebook-contacts libebook book-migration libecal libedata-cal
 
 @GNOME_CODE_COVERAGE_RULES@
 
