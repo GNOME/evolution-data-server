@@ -89,7 +89,7 @@ struct _CamelStreamClass {
 
 GType		camel_stream_get_type		(void);
 CamelStream *	camel_stream_new		(GIOStream *base_stream);
-GIOStream *	camel_stream_get_base_stream	(CamelStream *stream);
+GIOStream *	camel_stream_ref_base_stream	(CamelStream *stream);
 void		camel_stream_set_base_stream	(CamelStream *stream,
 						 GIOStream *base_stream);
 gssize		camel_stream_read		(CamelStream *stream,

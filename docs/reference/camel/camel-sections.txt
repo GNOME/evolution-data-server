@@ -2584,7 +2584,7 @@ CamelStoreSummaryPrivate
 <TITLE>CamelStream</TITLE>
 CamelStream
 camel_stream_new
-camel_stream_get_base_stream
+camel_stream_ref_base_stream
 camel_stream_set_base_stream
 camel_stream_read
 camel_stream_write

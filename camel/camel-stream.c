@@ -73,9 +73,9 @@ stream_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_BASE_STREAM:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				camel_stream_get_base_stream (
+				camel_stream_ref_base_stream (
 				CAMEL_STREAM (object)));
 			return;
 	}
@@ -117,17 +117,22 @@ stream_read (CamelStream *stream,
              GError **error)
 {
 	GIOStream *base_stream;
-	GInputStream *input_stream;
+	gssize n_bytes_read = 0;
 
-	base_stream = camel_stream_get_base_stream (stream);
+	base_stream = camel_stream_ref_base_stream (stream);
 
-	if (base_stream == NULL)
-		return 0;
+	if (base_stream != NULL) {
+		GInputStream *input_stream;
 
-	input_stream = g_io_stream_get_input_stream (base_stream);
+		input_stream = g_io_stream_get_input_stream (base_stream);
 
-	return g_input_stream_read (
-		input_stream, buffer, n, cancellable, error);
+		n_bytes_read = g_input_stream_read (
+			input_stream, buffer, n, cancellable, error);
+
+		g_object_unref (base_stream);
+	}
+
+	return n_bytes_read;
 }
 
 static gssize
@@ -138,17 +143,22 @@ stream_write (CamelStream *stream,
               GError **error)
 {
 	GIOStream *base_stream;
-	GOutputStream *output_stream;
+	gssize n_bytes_written = (gssize) n;
 
-	base_stream = camel_stream_get_base_stream (stream);
+	base_stream = camel_stream_ref_base_stream (stream);
 
-	if (base_stream == NULL)
-		return n;
+	if (base_stream != NULL) {
+		GOutputStream *output_stream;
 
-	output_stream = g_io_stream_get_output_stream (base_stream);
+		output_stream = g_io_stream_get_output_stream (base_stream);
 
-	return g_output_stream_write (
-		output_stream, buffer, n, cancellable, error);
+		n_bytes_written = g_output_stream_write (
+			output_stream, buffer, n, cancellable, error);
+
+		g_object_unref (base_stream);
+	}
+
+	return n_bytes_written;
 }
 
 static gint
@@ -157,15 +167,16 @@ stream_close (CamelStream *stream,
               GError **error)
 {
 	GIOStream *base_stream;
-	gboolean success;
+	gboolean success = TRUE;
 
-	base_stream = camel_stream_get_base_stream (stream);
+	base_stream = camel_stream_ref_base_stream (stream);
 
-	if (base_stream == NULL)
-		return 0;
+	if (base_stream != NULL) {
+		success = g_io_stream_close (
+			base_stream, cancellable, error);
 
-	success = g_io_stream_close (
-		stream->priv->base_stream, cancellable, error);
+		g_object_unref (base_stream);
+	}
 
 	return success ? 0 : -1;
 }
@@ -176,17 +187,20 @@ stream_flush (CamelStream *stream,
               GError **error)
 {
 	GIOStream *base_stream;
-	GOutputStream *output_stream;
-	gboolean success;
+	gboolean success = TRUE;
 
-	base_stream = camel_stream_get_base_stream (stream);
+	base_stream = camel_stream_ref_base_stream (stream);
 
-	if (base_stream == NULL)
-		return 0;
+	if (base_stream != NULL) {
+		GOutputStream *output_stream;
 
-	output_stream = g_io_stream_get_output_stream (base_stream);
+		output_stream = g_io_stream_get_output_stream (base_stream);
 
-	success = g_output_stream_flush (output_stream, cancellable, error);
+		success = g_output_stream_flush (
+			output_stream, cancellable, error);
+
+		g_object_unref (base_stream);
+	}
 
 	return success ? 0 : -1;
 }
@@ -256,23 +270,35 @@ camel_stream_new (GIOStream *base_stream)
 }
 
 /**
- * camel_stream_get_base_stream:
+ * camel_stream_ref_base_stream:
  * @stream: a #CamelStream
  *
  * Returns the #GIOStream for @stream.  This is only valid if @stream was
  * created with camel_stream_new().  For all other #CamelStream subclasses
  * this function returns %NULL.
  *
+ * The returned #GIOStream is referenced for thread-safety and should be
+ * unreferenced with g_object_unref() when finished with it.
+ *
  * Returns: a #GIOStream, or %NULL
  *
  * Since: 3.12
  **/
 GIOStream *
-camel_stream_get_base_stream (CamelStream *stream)
+camel_stream_ref_base_stream (CamelStream *stream)
 {
+	GIOStream *base_stream = NULL;
+
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 
-	return stream->priv->base_stream;
+	g_mutex_lock (&stream->priv->base_stream_lock);
+
+	if (stream->priv->base_stream != NULL)
+		base_stream = g_object_ref (stream->priv->base_stream);
+
+	g_mutex_unlock (&stream->priv->base_stream_lock);
+
+	return base_stream;
 }
 
 /**
