@@ -96,6 +96,10 @@ CamelStream *	camel_network_service_connect_sync
 					(CamelNetworkService *service,
 					 GCancellable *cancellable,
 					 GError **error);
+gboolean	camel_network_service_starttls
+					(CamelNetworkService *service,
+					 CamelStream *stream,
+					 GError **error);
 
 G_END_DECLS
 

@@ -67,13 +67,12 @@ struct _CamelSmtpTransport {
 	CamelTransport parent;
 
 	CamelStream *istream, *ostream;
+	GSocketAddress *local_address;
 
 	guint32 flags;
 
 	gboolean need_rset;
 	gboolean connected;
-	struct sockaddr *localaddr;
-	socklen_t localaddrlen;
 
 	GHashTable *authtypes;
 };

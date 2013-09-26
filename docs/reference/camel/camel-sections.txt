@@ -1814,6 +1814,7 @@ camel_network_service_ref_connectable
 camel_network_service_set_connectable
 camel_network_service_get_host_reachable
 camel_network_service_connect_sync
+camel_network_service_starttls
 <SUBSECTION Standard>
 CAMEL_NETWORK_SERVICE
 CAMEL_IS_NETWORK_SERVICE

@@ -19,15 +19,13 @@
 #include "camel-network-service.h"
 
 #include <config.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include <camel/camel-enumtypes.h>
 #include <camel/camel-network-settings.h>
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
-#include <camel/camel-tcp-stream-raw.h>
-
-#include <camel/camel-tcp-stream-ssl.h>
 
 #define PRIVATE_KEY "CamelNetworkService:private"
 
@@ -64,6 +62,340 @@ G_DEFINE_INTERFACE (
 	CamelNetworkService,
 	camel_network_service,
 	CAMEL_TYPE_SERVICE)
+
+static const gchar *
+network_service_get_cert_dir (void)
+{
+	static gchar *cert_dir = NULL;
+
+	if (G_UNLIKELY (cert_dir == NULL)) {
+		const gchar *data_dir;
+		const gchar *home_dir;
+		gchar *old_dir;
+
+		home_dir = g_get_home_dir ();
+		data_dir = g_get_user_data_dir ();
+
+		cert_dir = g_build_filename (data_dir, "camel_certs", NULL);
+
+		/* Move the old certificate directory if present. */
+		old_dir = g_build_filename (home_dir, ".camel_certs", NULL);
+		if (g_file_test (old_dir, G_FILE_TEST_IS_DIR))
+			g_rename (old_dir, cert_dir);
+		g_free (old_dir);
+
+		g_mkdir_with_parents (cert_dir, 0700);
+	}
+
+	return cert_dir;
+}
+
+static gchar *
+network_service_generate_fingerprint (GTlsCertificate *certificate)
+{
+	GChecksum *checksum;
+	GString *fingerprint;
+	GByteArray *der;
+	guint8 *digest;
+	gsize length, ii;
+	const gchar tohex[16] = "0123456789abcdef";
+
+	/* XXX No accessor function for this property. */
+	g_object_get (certificate, "certificate", &der, NULL);
+	g_return_val_if_fail (der != NULL, NULL);
+
+	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
+	digest = g_alloca (length);
+
+	checksum = g_checksum_new (G_CHECKSUM_MD5);
+	g_checksum_update (checksum, der->data, der->len);
+	g_checksum_get_digest (checksum, digest, &length);
+	g_checksum_free (checksum);
+
+	g_byte_array_unref (der);
+
+	fingerprint = g_string_sized_new (50);
+
+	for (ii = 0; ii < length; ii++) {
+		guint8 byte = digest[ii];
+
+		g_string_append_c (fingerprint, tohex[(byte >> 4) & 0xf]);
+		g_string_append_c (fingerprint, tohex[byte & 0xf]);
+#ifndef G_OS_WIN32
+		g_string_append_c (fingerprint, ':');
+#else
+		/* The fingerprint is used as a filename, but can't have
+		 * colons in filenames on Win32.  Use underscore instead. */
+		g_string_append_c (fingerprint, '_');
+#endif
+	}
+
+	return g_string_free (fingerprint, FALSE);
+}
+
+static GBytes *
+network_service_load_cert_file (const gchar *fingerprint,
+                                GError **error)
+{
+	GBytes *bytes = NULL;
+	gchar *contents = NULL;
+	gchar *filename;
+	gsize length;
+	const gchar *cert_dir;
+
+	cert_dir = network_service_get_cert_dir ();
+	filename = g_build_filename (cert_dir, fingerprint, NULL);
+
+	if (g_file_get_contents (filename, &contents, &length, error))
+		bytes = g_bytes_new_take (contents, length);
+
+	g_free (filename);
+
+	return bytes;
+}
+
+static GBytes *
+network_service_save_cert_file (GTlsCertificate *certificate,
+                                GError **error)
+{
+	GByteArray *der;
+	GBytes *bytes = NULL;
+	GFile *file;
+	GFileOutputStream *output_stream;
+	gchar *filename;
+	gchar *fingerprint;
+	const gchar *cert_dir;
+
+	/* XXX No accessor function for this property. */
+	g_object_get (certificate, "certificate", &der, NULL);
+	g_return_val_if_fail (der != NULL, NULL);
+
+	fingerprint = network_service_generate_fingerprint (certificate);
+	g_return_val_if_fail (fingerprint != NULL, NULL);
+
+	cert_dir = network_service_get_cert_dir ();
+	filename = g_build_filename (cert_dir, fingerprint, NULL);
+	file = g_file_new_for_path (filename);
+
+	output_stream = g_file_replace (
+		file, NULL, FALSE,
+		G_FILE_CREATE_REPLACE_DESTINATION,
+		NULL, error);
+
+	g_object_unref (file);
+	g_free (filename);
+
+	if (output_stream != NULL) {
+		gssize n_written;
+
+		/* XXX Treat GByteArray as though its data is owned by
+		 *     GTlsCertificate.  That means avoiding functions
+		 *     like g_byte_array_free_to_bytes() that alter or
+		 *     reset the GByteArray. */
+		bytes = g_bytes_new (der->data, der->len);
+
+		/* XXX Not handling partial writes, but GIO does not make
+		 *     it easy.  Need a g_output_stream_write_all_bytes().
+		 *     (see: https://bugzilla.gnome.org/708838) */
+		n_written = g_output_stream_write_bytes (
+			G_OUTPUT_STREAM (output_stream),
+			bytes, NULL, error);
+
+		if (n_written < 0) {
+			g_bytes_unref (bytes);
+			bytes = NULL;
+		}
+	}
+
+	g_byte_array_unref (der);
+	g_free (fingerprint);
+
+	return bytes;
+}
+
+static CamelCert *
+network_service_certdb_lookup (CamelCertDB *certdb,
+                               GTlsCertificate *certificate,
+                               const gchar *expected_host)
+{
+	CamelCert *cert = NULL;
+	GBytes *bytes;
+	GByteArray *der;
+	gchar *fingerprint;
+
+	fingerprint = network_service_generate_fingerprint (certificate);
+	g_return_val_if_fail (fingerprint != NULL, NULL);
+
+	cert = camel_certdb_get_host (certdb, expected_host, fingerprint);
+	if (cert == NULL)
+		goto exit;
+
+	if (cert->rawcert == NULL) {
+		GError *local_error = NULL;
+
+		cert->rawcert = network_service_load_cert_file (
+			fingerprint, &local_error);
+
+		/* Sanity check. */
+		g_warn_if_fail (
+			((cert->rawcert != NULL) && (local_error == NULL)) ||
+			((cert->rawcert == NULL) && (local_error != NULL)));
+
+		if (local_error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_error_free (local_error);
+		}
+
+		if (cert->rawcert == NULL) {
+			camel_certdb_remove_host (
+				certdb, expected_host, fingerprint);
+			camel_certdb_touch (certdb);
+			goto exit;
+		}
+	}
+
+	/* XXX No accessor function for this property. */
+	g_object_get (certificate, "certificate", &der, NULL);
+	g_return_val_if_fail (der != NULL, cert);
+
+	bytes = g_bytes_new_static (der->data, der->len);
+
+	if (g_bytes_compare (bytes, cert->rawcert) != 0) {
+		cert->trust = CAMEL_CERT_TRUST_UNKNOWN;
+		camel_certdb_touch (certdb);
+	}
+
+	g_byte_array_unref (der);
+	g_bytes_unref (bytes);
+
+exit:
+	g_free (fingerprint);
+
+	return cert;
+}
+
+static void
+network_service_certdb_store (CamelCertDB *certdb,
+                              CamelCert *cert,
+                              GTlsCertificate *certificate)
+{
+	GError *local_error = NULL;
+
+	cert->rawcert = network_service_save_cert_file (
+		certificate, &local_error);
+
+	/* Sanity check. */
+	g_warn_if_fail (
+		((cert->rawcert != NULL) && (local_error == NULL)) ||
+		((cert->rawcert == NULL) && (local_error != NULL)));
+
+	if (cert->rawcert != NULL)
+		camel_certdb_put (certdb, cert);
+
+	if (local_error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_error_free (local_error);
+	}
+}
+
+static gboolean
+network_service_accept_certificate_cb (GTlsConnection *connection,
+                                       GTlsCertificate *peer_certificate,
+                                       GTlsCertificateFlags errors,
+                                       CamelNetworkService *service)
+{
+	CamelCert *cert;
+	CamelCertDB *certdb;
+	CamelSession *session;
+	CamelSettings *settings;
+	CamelNetworkSettings *network_settings;
+	gboolean new_cert = FALSE;
+	gboolean accept;
+	gchar *host;
+
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
+	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_dup_host (network_settings);
+
+	certdb = camel_certdb_get_default ();
+	cert = network_service_certdb_lookup (certdb, peer_certificate, host);
+
+	if (cert == NULL) {
+		cert = camel_cert_new ();
+		cert->fingerprint =
+			network_service_generate_fingerprint (
+			peer_certificate);
+		cert->hostname = g_strdup (host);
+		cert->trust = CAMEL_CERT_TRUST_UNKNOWN;
+
+		/* Don't put() in the CamelCertDB yet.  Since we can only
+		 * store one entry per hostname, we'd rather not ruin any
+		 * existing entry for this hostname if the user rejects
+		 * the new certificate. */
+		new_cert = TRUE;
+	}
+
+	if (cert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
+		GByteArray *der;
+		gchar *base64;
+
+		/* XXX No accessor function for this property. */
+		g_object_get (peer_certificate, "certificate", &der, NULL);
+		g_return_val_if_fail (der != NULL, FALSE);
+
+		base64 = g_base64_encode (der->data, der->len);
+
+		cert->trust = camel_session_trust_prompt (
+			session, host, base64, errors, 0, NULL);
+
+		if (new_cert)
+			network_service_certdb_store (
+				certdb, cert, peer_certificate);
+
+		camel_certdb_touch (certdb);
+
+		g_free (base64);
+		g_byte_array_unref (der);
+	}
+
+	switch (cert->trust) {
+		case CAMEL_CERT_TRUST_MARGINAL:
+		case CAMEL_CERT_TRUST_FULLY:
+		case CAMEL_CERT_TRUST_ULTIMATE:
+		case CAMEL_CERT_TRUST_TEMPORARY:
+			accept = TRUE;
+			break;
+		default:
+			accept = FALSE;
+			break;
+	}
+
+	camel_cert_unref (cert);
+	camel_certdb_save (certdb);
+
+	g_clear_object (&certdb);
+	g_clear_object (&session);
+	g_clear_object (&settings);
+
+	return accept;
+}
+
+static void
+network_service_client_event_cb (GSocketClient *client,
+                                 GSocketClientEvent event,
+                                 GSocketConnectable *connectable,
+                                 GIOStream *connection,
+                                 CamelNetworkService *service)
+{
+	if (event == G_SOCKET_CLIENT_TLS_HANDSHAKING) {
+		g_signal_connect (
+			connection, "accept-certificate",
+			G_CALLBACK (network_service_accept_certificate_cb),
+			service);
+	}
+}
 
 static void
 network_service_set_host_reachable (CamelNetworkService *service,
@@ -274,63 +606,47 @@ network_service_connect_sync (CamelNetworkService *service,
                               GCancellable *cancellable,
                               GError **error)
 {
+	GSocketClient *client;
+	GSocketConnection *connection;
+	GSocketConnectable *connectable;
 	CamelNetworkSecurityMethod method;
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
-	CamelSession *session;
-	CamelStream *stream;
-	const gchar *service_name;
-	guint16 default_port;
-	guint16 port;
+	CamelStream *stream = NULL;
+#if 0
 	gchar *socks_host;
 	gint socks_port;
-	gchar *host;
-	gint status;
+#endif
 
-	session = camel_service_ref_session (CAMEL_SERVICE (service));
 	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	method = camel_network_settings_get_security_method (network_settings);
-	host = camel_network_settings_dup_host (network_settings);
-	port = camel_network_settings_get_port (network_settings);
 
 	g_object_unref (settings);
 
-	service_name = camel_network_service_get_service_name (service, method);
-	default_port = camel_network_service_get_default_port (service, method);
+	connectable = camel_network_service_ref_connectable (service);
+	g_return_val_if_fail (connectable != NULL, NULL);
 
-	/* If the URL explicitly gives a port number, make
-	 * it override the service name and default port. */
-	if (port > 0) {
-		service_name = g_alloca (16);
-		sprintf ((gchar *) service_name, "%u", port);
-		default_port = 0;
+	client = g_socket_client_new ();
+
+	g_signal_connect (
+		client, "event",
+		G_CALLBACK (network_service_client_event_cb), service);
+
+	if (method == CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT)
+		g_socket_client_set_tls (client, TRUE);
+
+	connection = g_socket_client_connect (
+		client, connectable, cancellable, error);
+
+	if (connection != NULL) {
+		stream = camel_stream_new (G_IO_STREAM (connection));
+		g_object_unref (connection);
 	}
 
-	switch (method) {
-		case CAMEL_NETWORK_SECURITY_METHOD_NONE:
-			stream = camel_tcp_stream_raw_new ();
-			break;
-
-		case CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT:
-			stream = camel_tcp_stream_ssl_new_raw (
-				session, host,
-				CAMEL_TCP_STREAM_SSL_ENABLE_TLS);
-			break;
-
-		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
-			stream = camel_tcp_stream_ssl_new (
-				session, host,
-				CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 |
-				CAMEL_TCP_STREAM_SSL_ENABLE_SSL3);
-			break;
-
-		default:
-			g_return_val_if_reached (NULL);
-	}
-
+#if 0
 	camel_session_get_socks_proxy (session, host, &socks_host, &socks_port);
 
 	if (socks_host != NULL) {
@@ -339,22 +655,10 @@ network_service_connect_sync (CamelNetworkService *service,
 			socks_host, socks_port);
 		g_free (socks_host);
 	}
+#endif
 
-	status = camel_tcp_stream_connect (
-		CAMEL_TCP_STREAM (stream), host,
-		service_name, default_port, cancellable, error);
-
-	if (status == -1) {
-		/* Translators: The first '%s' is replaced with a host name, the second '%s' with service name or port number */
-		g_prefix_error (
-			error, _("Could not connect to '%s:%s': "), host, service_name ? service_name : "???");
-		g_object_unref (stream);
-		stream = NULL;
-	}
-
-	g_free (host);
-
-	g_object_unref (session);
+	g_object_unref (connectable);
+	g_object_unref (client);
 
 	return stream;
 }
@@ -630,3 +934,60 @@ camel_network_service_connect_sync (CamelNetworkService *service,
 
 	return interface->connect_sync (service, cancellable, error);
 }
+
+/**
+ * camel_network_service_starttls:
+ * @service: a #CamelNetworkService
+ * @stream: a #CamelStream
+ * @error: return location for a #GError, or %NULL
+ *
+ * Replaces @stream's #CamelStream:base-stream with a #GTlsClientConnection
+ * wrapping #CamelStream:base-stream, which is assumed to communicate with
+ * the server identified by @service's #CamelNetworkService:connectable.
+ *
+ * This should typically be called after issuing a STARTTLS command to a
+ * server to initiate a Transport Layer Security handshake.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.12
+ **/
+gboolean
+camel_network_service_starttls (CamelNetworkService *service,
+                                CamelStream *stream,
+                                GError **error)
+{
+	GSocketConnectable *connectable;
+	GIOStream *tls_client_connection;
+	GIOStream *base_stream;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), FALSE);
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), FALSE);
+
+	base_stream = camel_stream_ref_base_stream (stream);
+	g_return_val_if_fail (base_stream != NULL, FALSE);
+
+	connectable = camel_network_service_ref_connectable (service);
+	g_return_val_if_fail (connectable != NULL, FALSE);
+
+	tls_client_connection = g_tls_client_connection_new (
+		base_stream, connectable, error);
+
+	if (tls_client_connection != NULL) {
+		g_signal_connect (
+			tls_client_connection, "accept-certificate",
+			G_CALLBACK (network_service_accept_certificate_cb),
+			service);
+
+		camel_stream_set_base_stream (stream, tls_client_connection);
+		g_object_unref (tls_client_connection);
+		success = TRUE;
+	}
+
+	g_object_unref (base_stream);
+	g_object_unref (connectable);
+
+	return success;
+}
+

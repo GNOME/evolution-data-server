@@ -202,10 +202,9 @@ connect_to_server (CamelService *service,
 	}
 
 	/* Okay, now toggle SSL/TLS mode */
-	ret = camel_tcp_stream_ssl_enable_ssl (
-		CAMEL_TCP_STREAM_SSL (tcp_stream), cancellable, error);
-
-	if (ret == -1) {
+	success = camel_network_service_starttls (
+		CAMEL_NETWORK_SERVICE (service), tcp_stream, error);
+	if (!success) {
 		g_prefix_error (
 			error,
 			_("Failed to connect to POP server %s in secure mode: "),

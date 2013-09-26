@@ -109,6 +109,7 @@ connect_to_server (CamelService *service,
 	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
 	CamelStream *tcp_stream;
+	GIOStream *base_stream;
 	gchar *respbuf = NULL;
 	gboolean success = TRUE;
 	gchar *host;
@@ -140,8 +141,10 @@ connect_to_server (CamelService *service,
 	transport->connected = TRUE;
 
 	/* get the localaddr - needed later by smtp_helo */
-	transport->localaddr = camel_tcp_stream_get_local_address (
-		CAMEL_TCP_STREAM (tcp_stream), &transport->localaddrlen);
+	base_stream = camel_stream_ref_base_stream (tcp_stream);
+	transport->local_address = g_socket_connection_get_local_address (
+		G_SOCKET_CONNECTION (base_stream), NULL);
+	g_object_unref (base_stream);
 
 	transport->ostream = tcp_stream;
 	transport->istream = camel_stream_buffer_new (
@@ -239,13 +242,13 @@ connect_to_server (CamelService *service,
 	} while (*(respbuf+3) == '-'); /* if we got "220-" then loop again */
 
 	/* Okay, now toggle SSL/TLS mode */
-	if (camel_tcp_stream_ssl_enable_ssl (
-		CAMEL_TCP_STREAM_SSL (tcp_stream), cancellable, error) == -1) {
+	success = camel_network_service_starttls (
+		CAMEL_NETWORK_SERVICE (service), tcp_stream, error);
+	if (!success) {
 		g_prefix_error (
 			error,
 			_("Failed to connect to SMTP server %s in secure mode: "),
 			host);
-		success = FALSE;
 		goto exit;
 	}
 
@@ -459,18 +462,9 @@ smtp_transport_disconnect_sync (CamelService *service,
 		transport->authtypes = NULL;
 	}
 
-	if (transport->istream) {
-		g_object_unref (transport->istream);
-		transport->istream = NULL;
-	}
-
-	if (transport->ostream) {
-		g_object_unref (transport->ostream);
-		transport->ostream = NULL;
-	}
-
-	g_free (transport->localaddr);
-	transport->localaddr = NULL;
+	g_clear_object (&transport->istream);
+	g_clear_object (&transport->ostream);
+	g_clear_object (&transport->local_address);
 
 	transport->connected = FALSE;
 
@@ -1147,9 +1141,10 @@ smtp_helo (CamelSmtpTransport *transport,
            GError **error)
 {
 	gchar *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
-	const gchar *token, *numeric = NULL;
-	struct sockaddr *addr;
-	socklen_t addrlen;
+	const gchar *token;
+	GResolver *resolver;
+	GInetAddress *address;
+	GError *local_error = NULL;
 
 	/* these are flags that we set, so unset them in case we
 	 * are being called a second time (ie, after a STARTTLS) */
@@ -1163,27 +1158,40 @@ smtp_helo (CamelSmtpTransport *transport,
 		transport->authtypes = NULL;
 	}
 
-	camel_operation_push_message (cancellable, _("SMTP Greeting"));
+	resolver = g_resolver_get_default ();
+	address = g_inet_socket_address_get_address (
+		G_INET_SOCKET_ADDRESS (transport->local_address));
 
-	addr = transport->localaddr;
-	addrlen = transport->localaddrlen;
+	name = g_resolver_lookup_by_address (
+		resolver, address, cancellable, &local_error);
 
-	if (camel_getnameinfo (
-		addr, addrlen, &name, NULL,
-		NI_NUMERICHOST, cancellable, NULL) != 0) {
-		name = g_strdup ("localhost.localdomain");
-	} else {
-		if (addr->sa_family == AF_INET6)
-			numeric = "IPv6:";
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((name != NULL) && (local_error == NULL)) ||
+		((name == NULL) && (local_error != NULL)), FALSE);
+
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+		return FALSE;
+
+	g_clear_error (&local_error);
+
+	if (name == NULL) {
+		GSocketFamily family;
+		gchar *string;
+
+		string = g_inet_address_to_string (address);
+		family = g_inet_address_get_family (address);
+		if (family == G_SOCKET_FAMILY_IPV6)
+			name = g_strdup_printf ("[IPv6:%s]", string);
 		else
-			numeric = "";
+			name = g_strdup_printf ("[%s]", string);
+		g_free (string);
 	}
 
+	camel_operation_push_message (cancellable, _("SMTP Greeting"));
+
 	token = (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) ? "EHLO" : "HELO";
-	if (numeric)
-		cmdbuf = g_strdup_printf ("%s [%s%s]\r\n", token, numeric, name);
-	else
-		cmdbuf = g_strdup_printf ("%s %s\r\n", token, name);
+	cmdbuf = g_strdup_printf ("%s %s\r\n", token, name);
 	g_free (name);
 
 	d (fprintf (stderr, "sending : %s", cmdbuf));

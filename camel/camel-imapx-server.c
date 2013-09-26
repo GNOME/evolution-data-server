@@ -3851,7 +3851,6 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	CamelNetworkSecurityMethod method;
 	CamelStream *tcp_stream = NULL;
 	CamelStream *imapx_stream = NULL;
-	CamelSockOptData sockopt;
 	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	guint len;
@@ -3907,18 +3906,6 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		success = FALSE;
 		goto exit;
 	}
-
-	/* Disable Nagle
-	 * We send a lot of small requests which nagle slows down. */
-	sockopt.option = CAMEL_SOCKOPT_NODELAY;
-	sockopt.value.no_delay = TRUE;
-	camel_tcp_stream_setsockopt (CAMEL_TCP_STREAM (tcp_stream), &sockopt);
-
-	/* Set Keepalive
-	 * Needed for some hosts/router configurations, we're idle a lot. */
-	sockopt.option = CAMEL_SOCKOPT_KEEPALIVE;
-	sockopt.value.keep_alive = TRUE;
-	camel_tcp_stream_setsockopt (CAMEL_TCP_STREAM (tcp_stream), &sockopt);
 
 	imapx_stream = camel_imapx_stream_new (tcp_stream);
 
@@ -4039,15 +4026,16 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		if (!success)
 			goto exit;
 
-		if (camel_tcp_stream_ssl_enable_ssl (
-			CAMEL_TCP_STREAM_SSL (tcp_stream),
-			cancellable, &local_error) == -1) {
+		success = camel_network_service_starttls (
+			CAMEL_NETWORK_SERVICE (store), tcp_stream, error);
+		if (!success) {
 			g_prefix_error (
-				&local_error,
+				error,
 				_("Failed to connect to IMAP server %s in secure mode: "),
 				host);
 			goto exit;
 		}
+
 		/* Get new capabilities if they weren't already given */
 		if (is->cinfo == NULL) {
 			ic = camel_imapx_command_new (
