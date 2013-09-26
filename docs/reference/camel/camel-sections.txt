@@ -2775,27 +2775,6 @@ camel_proxy_error_quark
 </SECTION>
 
 <SECTION>
-<FILE>camel-tcp-stream-ssl</FILE>
-<TITLE>CamelTcpStreamSSL</TITLE>
-CamelTcpStreamSSL
-CamelTcpStreamSSLFlags
-camel_tcp_stream_ssl_new
-camel_tcp_stream_ssl_new_raw
-camel_tcp_stream_ssl_enable_ssl
-<SUBSECTION Standard>
-CAMEL_TCP_STREAM_SSL
-CAMEL_IS_TCP_STREAM_SSL
-CAMEL_TYPE_TCP_STREAM_SSL
-CAMEL_TCP_STREAM_SSL_CLASS
-CAMEL_IS_TCP_STREAM_SSL_CLASS
-CAMEL_TCP_STREAM_SSL_GET_CLASS
-CamelTcpStreamSSLClass
-camel_tcp_stream_ssl_get_type
-<SUBSECTION Private>
-CamelTcpStreamSSLPrivate
-</SECTION>
-
-<SECTION>
 <FILE>camel-tcp-stream</FILE>
 <TITLE>CamelTcpStream</TITLE>
 CamelTcpStream

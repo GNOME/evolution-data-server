@@ -439,12 +439,6 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_WRITE = 1 << 1
 } CamelStorePermissionFlags;
 
-typedef enum { /*< flags >*/
-	CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 = 1 << 0,
-	CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 = 1 << 1,
-	CAMEL_TCP_STREAM_SSL_ENABLE_TLS  = 1 << 2
-} CamelTcpStreamSSLFlags;
-
 /* Note: If you change this, make sure you change the
  *       'encodings' array in camel-mime-part.c. */
 typedef enum {

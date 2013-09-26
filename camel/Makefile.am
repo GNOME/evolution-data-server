@@ -159,7 +159,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-string-utils.c			\
 	camel-subscribable.c			\
 	camel-tcp-stream-raw.c			\
-	camel-tcp-stream-ssl.c			\
 	camel-tcp-stream.c			\
 	camel-text-index.c			\
 	camel-transport.c			\
@@ -293,7 +292,6 @@ libcamelinclude_HEADERS =			\
 	camel-string-utils.h			\
 	camel-subscribable.h			\
 	camel-tcp-stream-raw.h			\
-	camel-tcp-stream-ssl.h			\
 	camel-tcp-stream.h			\
 	camel-text-index.h			\
 	camel-transport.h			\

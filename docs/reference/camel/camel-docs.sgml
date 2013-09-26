@@ -58,7 +58,6 @@
       <xi:include href="xml/camel-stream-process.xml"/>
       <xi:include href="xml/camel-tcp-stream.xml"/>
       <xi:include href="xml/camel-tcp-stream-raw.xml"/>
-      <xi:include href="xml/camel-tcp-stream-ssl.xml"/>
     </chapter>
 
     <chapter id="Stream-Filters">
