@@ -129,7 +129,6 @@ camel/camel-stream-process.c
 camel/camel-string-utils.c
 camel/camel-subscribable.c
 camel/camel-tcp-stream.c
-camel/camel-tcp-stream-raw.c
 camel/camel-text-index.c
 camel/camel-transport.c
 camel/camel-uid-cache.c

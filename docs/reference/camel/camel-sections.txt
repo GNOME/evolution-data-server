@@ -2752,29 +2752,6 @@ camel_subscribable_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-tcp-stream-raw</FILE>
-<TITLE>CamelTcpStreamRaw</TITLE>
-CamelTcpStreamRaw
-CAMEL_PROXY_ERROR
-CamelProxyError
-camel_tcp_stream_raw_new
-<SUBSECTION Standard>
-CAMEL_TCP_STREAM_RAW
-CAMEL_IS_TCP_STREAM_RAW
-CAMEL_TYPE_TCP_STREAM_RAW
-CAMEL_TCP_STREAM_RAW_CLASS
-CAMEL_IS_TCP_STREAM_RAW_CLASS
-CAMEL_TCP_STREAM_RAW_GET_CLASS
-CamelTcpStreamRawClass
-camel_tcp_stream_raw_get_type
-<SUBSECTION Private>
-addrinfo
-sockaddr
-socklen_t
-camel_proxy_error_quark
-</SECTION>
-
-<SECTION>
 <FILE>camel-tcp-stream</FILE>
 <TITLE>CamelTcpStream</TITLE>
 CamelTcpStream
