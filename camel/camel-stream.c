@@ -38,6 +38,7 @@
 
 struct _CamelStreamPrivate {
 	GIOStream *base_stream;
+	GMutex base_stream_lock;
 };
 
 enum {
@@ -48,21 +49,6 @@ enum {
 G_DEFINE_TYPE (CamelStream, camel_stream, CAMEL_TYPE_OBJECT)
 
 static void
-stream_set_base_stream (CamelStream *stream,
-                        GIOStream *base_stream)
-{
-	g_return_if_fail (stream->priv->base_stream == NULL);
-
-	/* This will be NULL for CamelStream subclasses. */
-	if (base_stream != NULL) {
-		g_return_if_fail (G_IS_IO_STREAM (base_stream));
-		g_object_ref (base_stream);
-	}
-
-	stream->priv->base_stream = base_stream;
-}
-
-static void
 stream_set_property (GObject *object,
                      guint property_id,
                      const GValue *value,
@@ -70,7 +56,7 @@ stream_set_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_BASE_STREAM:
-			stream_set_base_stream (
+			camel_stream_set_base_stream (
 				CAMEL_STREAM (object),
 				g_value_get_object (value));
 			return;
@@ -108,6 +94,19 @@ stream_dispose (GObject *object)
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_stream_parent_class)->dispose (object);
+}
+
+static void
+stream_finalize (GObject *object)
+{
+	CamelStreamPrivate *priv;
+
+	priv = CAMEL_STREAM_GET_PRIVATE (object);
+
+	g_mutex_clear (&priv->base_stream_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_stream_parent_class)->finalize (object);
 }
 
 static gssize
@@ -209,6 +208,7 @@ camel_stream_class_init (CamelStreamClass *class)
 	object_class->set_property = stream_set_property;
 	object_class->get_property = stream_get_property;
 	object_class->dispose = stream_dispose;
+	object_class->finalize = stream_finalize;
 
 	class->read = stream_read;
 	class->write = stream_write;
@@ -225,7 +225,6 @@ camel_stream_class_init (CamelStreamClass *class)
 			"The base GIOStream",
 			G_TYPE_IO_STREAM,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 }
 
@@ -233,6 +232,8 @@ static void
 camel_stream_init (CamelStream *stream)
 {
 	stream->priv = CAMEL_STREAM_GET_PRIVATE (stream);
+
+	g_mutex_init (&stream->priv->base_stream_lock);
 }
 
 /**
@@ -272,6 +273,34 @@ camel_stream_get_base_stream (CamelStream *stream)
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 
 	return stream->priv->base_stream;
+}
+
+/**
+ * camel_stream_set_base_stream:
+ * @stream: a #CamelStream
+ * @base_stream: a #GIOStream
+ *
+ * Replaces the #GIOStream passed to camel_stream_new() with @base_stream.
+ * The new @base_stream should wrap the original #GIOStream, such as when
+ * adding Transport Layer Security after issuing a STARTTLS command.
+ *
+ * Since: 3.12
+ **/
+void
+camel_stream_set_base_stream (CamelStream *stream,
+                              GIOStream *base_stream)
+{
+	g_return_if_fail (CAMEL_IS_STREAM (stream));
+	g_return_if_fail (G_IS_IO_STREAM (base_stream));
+
+	g_mutex_lock (&stream->priv->base_stream_lock);
+
+	g_clear_object (&stream->priv->base_stream);
+	stream->priv->base_stream = g_object_ref (base_stream);
+
+	g_mutex_unlock (&stream->priv->base_stream_lock);
+
+	g_object_notify (G_OBJECT (stream), "base-stream");
 }
 
 /**

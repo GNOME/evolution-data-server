@@ -2585,6 +2585,7 @@ CamelStoreSummaryPrivate
 CamelStream
 camel_stream_new
 camel_stream_get_base_stream
+camel_stream_set_base_stream
 camel_stream_read
 camel_stream_write
 camel_stream_flush
