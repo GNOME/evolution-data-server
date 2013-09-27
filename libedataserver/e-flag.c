@@ -27,13 +27,11 @@ struct _EFlag {
 
 /* This is to keep e_flag_timed_wait() building, since
  * it relies on g_cond_timed_wait() which is deprecated. */
-#if GLIB_CHECK_VERSION(2,35,6)
 #ifdef G_DISABLE_DEPRECATED
 gboolean	g_cond_timed_wait		(GCond *cond,
 						 GMutex *mutex,
 						 GTimeVal *timeval);
 #endif /* G_DISABLE_DEPRECATED */
-#endif /* GLIB_CHECK_VERSION */
 
 /**
  * e_flag_new:

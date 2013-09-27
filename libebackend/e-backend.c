@@ -152,25 +152,6 @@ backend_update_online_state_idle_cb (gpointer user_data)
 		cancellable = NULL;
 	}
 
-#if !GLIB_CHECK_VERSION (2, 35, 9)
-	if (connectable && G_IS_NETWORK_ADDRESS (connectable)) {
-		GNetworkAddress *network_address = G_NETWORK_ADDRESS (connectable);
-
-		/* Create a copy of the backend's connectable, because once
-		 * the connectable reaches its destination it caches the value
-		 * and doesn't retry after network changes.
-		 *
-		 * This is fixed since GLib 2.35.9, see:
-		 * https://bugzilla.gnome.org/show_bug.cgi?id=694181
-		*/
-		connectable = g_network_address_new (
-			g_network_address_get_hostname (network_address),
-			g_network_address_get_port (network_address));
-
-		g_object_unref (network_address);
-	}
-#endif
-
 	if (!connectable) {
 		gchar *host = NULL;
 		guint16 port = 0;
