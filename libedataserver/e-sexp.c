@@ -1794,8 +1794,6 @@ gint main (gint argc, gchar **argv)
 	gchar *t = "(+ \"foo\" \"\\\"\" \"bar\" \"\\\\ blah \\x \")";
 	ESExpResult *r;
 
-	g_type_init ();
-
 	f = e_sexp_new ();
 
 	e_sexp_add_variable (f, 0, "test", NULL);

@@ -193,8 +193,6 @@ gint
 main (gint argc,
       gchar *argv[])
 {
-	g_type_init ();
-
 	if (argc != 2) {
 		g_print ("Please enter a path to store the cache \n");
 		return -1;

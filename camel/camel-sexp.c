@@ -1833,8 +1833,6 @@ main (gint argc,
 	gchar *t = "(+ \"foo\" \"\\\"\" \"bar\" \"\\\\ blah \\x \")";
 	CamelSExpResult *result;
 
-	g_type_init ();
-
 	sexp = camel_sexp_new ();
 
 	camel_sexp_add_variable (sexp, 0, "test", NULL);

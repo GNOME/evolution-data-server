@@ -15,10 +15,9 @@ test_query (const gchar *query)
 	}
 }
 
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	g_type_init ();
-
 	/* e_sexp_add_variable(f, 0, "test", NULL); */
 
 	if (argc < 2 || !argv[1])

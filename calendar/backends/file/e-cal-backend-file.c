@@ -3909,8 +3909,6 @@ main (gint argc,
 	GOptionContext *context;
 	FILE * fin = NULL;
 
-	g_type_init ();
-
 	context = g_option_context_new ("- test utility for e-d-s file backend");
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
 	if (!g_option_context_parse (context, &argc, &argv, &error))

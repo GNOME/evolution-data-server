@@ -463,8 +463,6 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	g_type_init ();
-
 	myrand = g_rand_new ();
 	mem_test ();
 	random_test ();

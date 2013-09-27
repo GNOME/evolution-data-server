@@ -101,10 +101,6 @@ main (gint argc,
 		/* This is only to load gtk-modules, like
 		 * bug-buddy's gnomesegvhandler, if possible */
 		gtk_init_check (&argc, &argv);
-	else
-		g_type_init ();
-#else
-	g_type_init ();
 #endif
 
 	context = g_option_context_new (NULL);
