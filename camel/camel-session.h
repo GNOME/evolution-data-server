@@ -119,11 +119,9 @@ struct _CamelSessionClass {
 						 GList *button_captions,
 						 GCancellable *cancellable);
 	CamelCertTrust	(*trust_prompt)		(CamelSession *session,
-						 const gchar *host,
-						 const gchar *certificate,
-						 guint32 certificate_errors,
-						 GList *issuers,
-						 GCancellable *cancellable);
+						 CamelService *service,
+						 GTlsCertificate *certificate,
+						 GTlsCertificateFlags errors);
 	CamelFilterDriver *
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
@@ -219,11 +217,9 @@ gint		camel_session_alert_user	(CamelSession *session,
 						 GList *button_captions,
 						 GCancellable *cancellable);
 CamelCertTrust	camel_session_trust_prompt	(CamelSession *session,
-						 const gchar *host,
-						 const gchar *certificate,
-						 guint32 certificate_errors,
-						 GList *issuers,
-						 GCancellable *cancellable);
+						 CamelService *service,
+						 GTlsCertificate *certificate,
+						 GTlsCertificateFlags errors);
 gchar *		camel_session_build_password_prompt
 						(const gchar *type,
 						 const gchar *user,

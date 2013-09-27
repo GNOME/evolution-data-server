@@ -337,27 +337,18 @@ network_service_accept_certificate_cb (GTlsConnection *connection,
 		new_cert = TRUE;
 	}
 
+	g_free (host);
+
 	if (cert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
-		GByteArray *der;
-		gchar *base64;
-
-		/* XXX No accessor function for this property. */
-		g_object_get (peer_certificate, "certificate", &der, NULL);
-		g_return_val_if_fail (der != NULL, FALSE);
-
-		base64 = g_base64_encode (der->data, der->len);
-
 		cert->trust = camel_session_trust_prompt (
-			session, host, base64, errors, 0, NULL);
+			session, CAMEL_SERVICE (service),
+			peer_certificate, errors);
 
 		if (new_cert)
 			network_service_certdb_store (
 				certdb, cert, peer_certificate);
 
 		camel_certdb_touch (certdb);
-
-		g_free (base64);
-		g_byte_array_unref (der);
 	}
 
 	switch (cert->trust) {

@@ -1324,40 +1324,42 @@ camel_session_alert_user (CamelSession *session,
 /**
  * camel_session_trust_prompt:
  * @session: a #CamelSession
- * @host: host name, to which the @certificate belongs
- * @certificate: base64-encoded DER certificate on which to ask
- * @certificate_errors: errors found with the certificate; a bit-OR of a #GTlsCertificateFlags
- * @issuers: (allow-none): chain of issuers, or %NULL
- * @cancellable: (allow-non): optional #GCancellable object, or %NULL
+ * @service: a #CamelService
+ * @certificate: the peer's #GTlsCertificate
+ * @errors: the problems with @certificate
  *
- * Prompts user about trust of a certificate. The @certificate is not
- * considered trusted, due to reasons set in @certificate_errors.
- * There can be passed a list of @issuers, which has as items also base64-encoded
- * DER certificates. The first item in the list is an issuer of the @certificate,
- * the second item is an issuer of the first item, and so on.
+ * Prompts the user whether to accept @certificate for @service.  The
+ * set of flags given in @errors indicate why the @certificate failed
+ * validation.
  *
- * Returns: What trust level should be used for this certificate. It returns
- *   #CAMEL_CERT_TRUST_UNKNOWN on error or if user cancelled the dialog prompt.
+ * If an error occurs during prompting or if the user declines to respond,
+ * the function returns #CAMEL_CERT_TRUST_UNKNOWN and the certificate will
+ * be rejected.
+ *
+ * Returns: the user's trust level for @certificate
  *
  * Since: 3.8
  **/
 CamelCertTrust
 camel_session_trust_prompt (CamelSession *session,
-                            const gchar *host,
-                            const gchar *certificate,
-                            guint32 certificate_errors,
-                            GList *issuers,
-                            GCancellable *cancellable)
+                            CamelService *service,
+                            GTlsCertificate *certificate,
+                            GTlsCertificateFlags errors)
 {
 	CamelSessionClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), CAMEL_CERT_TRUST_UNKNOWN);
-	g_return_val_if_fail (certificate != NULL, CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (
+		CAMEL_IS_SESSION (session), CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (
+		CAMEL_IS_SERVICE (service), CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (
+		G_IS_TLS_CERTIFICATE (certificate), CAMEL_CERT_TRUST_UNKNOWN);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (
+		class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
 
-	return class->trust_prompt (session, host, certificate, certificate_errors, issuers, cancellable);
+	return class->trust_prompt (session, service, certificate, errors);
 }
 
 /**
