@@ -125,7 +125,6 @@
 #include <camel/camel-stream-process.h>
 #include <camel/camel-string-utils.h>
 #include <camel/camel-subscribable.h>
-#include <camel/camel-tcp-stream.h>
 #include <camel/camel-text-index.h>
 #include <camel/camel-transport.h>
 #include <camel/camel-trie.h>

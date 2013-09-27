@@ -2752,34 +2752,6 @@ camel_subscribable_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-tcp-stream</FILE>
-<TITLE>CamelTcpStream</TITLE>
-CamelTcpStream
-CamelSockOpt
-CamelLinger
-CamelSockOptData
-camel_tcp_stream_connect
-camel_tcp_stream_getsockopt
-camel_tcp_stream_setsockopt
-camel_tcp_stream_get_file_desc
-camel_tcp_stream_set_socks_proxy
-camel_tcp_stream_peek_socks_proxy
-camel_tcp_stream_get_local_address
-camel_tcp_stream_get_remote_address
-<SUBSECTION Standard>
-CAMEL_TCP_STREAM
-CAMEL_IS_TCP_STREAM
-CAMEL_TYPE_TCP_STREAM
-CAMEL_TCP_STREAM_CLASS
-CAMEL_IS_TCP_STREAM_CLASS
-CAMEL_TCP_STREAM_GET_CLASS
-CamelTcpStreamClass
-camel_tcp_stream_get_type
-<SUBSECTION Private>
-CamelTcpStreamPrivate
-</SECTION>
-
-<SECTION>
 <FILE>camel-text-index</FILE>
 <TITLE>CamelTextIndex</TITLE>
 <TITLE>CamelTextIndexCursor</TITLE>
@@ -3401,5 +3373,9 @@ NI_DGRAM
 camel_getaddrinfo
 camel_freeaddrinfo
 camel_getnameinfo
+<SUBSECTION Private>
+addrinfo
+sockaddr
+socklen_t
 </SECTION>
 
