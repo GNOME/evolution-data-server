@@ -96,13 +96,6 @@ struct addrinfo *
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_freeaddrinfo		(struct addrinfo *host);
-gint		camel_getnameinfo		(const struct sockaddr *sa,
-						 socklen_t salen,
-						 gchar **host,
-						 gchar **serv,
-						 gint flags,
-						 GCancellable *cancellable,
-						 GError **error);
 
 G_END_DECLS
 

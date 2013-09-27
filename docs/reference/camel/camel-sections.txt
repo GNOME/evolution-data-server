@@ -3372,7 +3372,6 @@ NI_NAMEREQD
 NI_DGRAM
 camel_getaddrinfo
 camel_freeaddrinfo
-camel_getnameinfo
 <SUBSECTION Private>
 addrinfo
 sockaddr
