@@ -4771,7 +4771,17 @@ upgrade_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		for (l = vcard_data; success && l; l = l->next) {
 			EbSdbSearchData *const s_data = l->data;
-			EContact *contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
+			EContact *contact = NULL;
+
+			/* It can be we're opening a light summary which was created without
+			 * storing the vcards, such as was used in EDS versions 3.2 to 3.6.
+			 *
+			 * In this case we just want to skip the contacts we can't load
+			 * and leave them as is in the SQLite, they will be added from
+			 * the old BDB in the case of a migration anyway.
+			 */
+			if (s_data->vcard)
+				contact = e_contact_new_from_vcard_with_uid (s_data->vcard, s_data->uid);
 
 			if (contact == NULL)
 				continue;
