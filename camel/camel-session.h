@@ -122,16 +122,15 @@ struct _CamelSessionClass {
 						 CamelService *service,
 						 GTlsCertificate *certificate,
 						 GTlsCertificateFlags errors);
+	GProxyResolver *
+			(*ref_proxy_resolver)	(CamelSession *session,
+						 CamelService *service);
 	CamelFilterDriver *
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
 						 GError **error);
 	gboolean	(*lookup_addressbook)	(CamelSession *session,
 						 const gchar *name);
-	void		(*get_socks_proxy)	(CamelSession *session,
-						 const gchar *for_host,
-						 gchar **host_ret,
-						 gint *port_ret);
 
 	/* Synchronous I/O Methods */
 	gboolean	(*authenticate_sync)	(CamelSession *session,
@@ -182,10 +181,6 @@ GMainContext *	camel_session_ref_main_context	(CamelSession *session);
 const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
 const gchar *	camel_session_get_user_cache_dir
 						(CamelSession *session);
-void            camel_session_get_socks_proxy   (CamelSession *session,
-						 const gchar *for_host,
-						 gchar **host_ret,
-						 gint *port_ret);
 CamelService *	camel_session_add_service	(CamelSession *session,
 						 const gchar *uid,
 						 const gchar *protocol,
@@ -220,6 +215,10 @@ CamelCertTrust	camel_session_trust_prompt	(CamelSession *session,
 						 CamelService *service,
 						 GTlsCertificate *certificate,
 						 GTlsCertificateFlags errors);
+GProxyResolver *
+		camel_session_ref_proxy_resolver
+						(CamelSession *session,
+						 CamelService *service);
 gchar *		camel_session_build_password_prompt
 						(const gchar *type,
 						 const gchar *user,

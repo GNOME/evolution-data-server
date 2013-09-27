@@ -450,14 +450,18 @@ session_remove_service (CamelSession *session,
 	g_mutex_unlock (&session->priv->services_lock);
 }
 
-static void
-session_get_socks_proxy (CamelSession *session,
-                         const gchar *for_host,
-                         gchar **host_ret,
-                         gint *port_ret)
+static GProxyResolver *
+session_ref_proxy_resolver (CamelSession *session,
+                            CamelService *service)
 {
-	*host_ret = NULL;
-	*port_ret = 0;
+	GProxyResolver *proxy_resolver;
+
+	proxy_resolver = g_proxy_resolver_get_default ();
+
+	if (proxy_resolver != NULL)
+		g_object_ref (proxy_resolver);
+
+	return proxy_resolver;
 }
 
 static gboolean
@@ -732,7 +736,7 @@ camel_session_class_init (CamelSessionClass *class)
 
 	class->add_service = session_add_service;
 	class->remove_service = session_remove_service;
-	class->get_socks_proxy = session_get_socks_proxy;
+	class->ref_proxy_resolver = session_ref_proxy_resolver;
 
 	class->authenticate_sync = session_authenticate_sync;
 	class->forward_to_sync = session_forward_to_sync;
@@ -1363,6 +1367,35 @@ camel_session_trust_prompt (CamelSession *session,
 }
 
 /**
+ * camel_session_ref_proxy_resolver:
+ * @session: a #CamelSession
+ * @service: a #CamelService
+ *
+ * Returns the #GProxyResolver for @service.
+ *
+ * The returned #GProxyResolver is referenced for thread-safety and should
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GProxyResolver
+ *
+ * Since: 3.12
+ **/
+GProxyResolver *
+camel_session_ref_proxy_resolver (CamelSession *session,
+                                  CamelService *service)
+{
+	CamelSessionClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->ref_proxy_resolver != NULL, NULL);
+
+	return class->ref_proxy_resolver (session, service);
+}
+
+/**
  * camel_session_lookup_addressbook:
  *
  * Since: 2.22
@@ -1757,38 +1790,6 @@ camel_session_get_junk_headers (CamelSession *session)
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return session->priv->junk_headers;
-}
-
-/**
- * camel_session_get_socks_proxy:
- * @session: A #CamelSession
- * @for_host: Host name to which the connection will be requested
- * @host_ret: Location to return the SOCKS proxy hostname
- * @port_ret: Location to return the SOCKS proxy port
- *
- * Queries the SOCKS proxy that is configured for a @session.  This will
- * put %NULL in @hosts_ret if there is no proxy configured or when
- * the @for_host is listed in proxy ignore list.
- *
- * Since: 2.32
- */
-void
-camel_session_get_socks_proxy (CamelSession *session,
-                               const gchar *for_host,
-                               gchar **host_ret,
-                               gint *port_ret)
-{
-	CamelSessionClass *class;
-
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (for_host != NULL);
-	g_return_if_fail (host_ret != NULL);
-	g_return_if_fail (port_ret != NULL);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_if_fail (class->get_socks_proxy != NULL);
-
-	class->get_socks_proxy (session, for_host, host_ret, port_ret);
 }
 
 /**

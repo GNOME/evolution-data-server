@@ -600,22 +600,18 @@ network_service_connect_sync (CamelNetworkService *service,
 	GSocketClient *client;
 	GSocketConnection *connection;
 	GSocketConnectable *connectable;
+	GProxyResolver *proxy_resolver;
 	CamelNetworkSecurityMethod method;
 	CamelNetworkSettings *network_settings;
+	CamelSession *session;
 	CamelSettings *settings;
 	CamelStream *stream = NULL;
-#if 0
-	gchar *socks_host;
-	gint socks_port;
-#endif
 
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
 	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
-	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	method = camel_network_settings_get_security_method (network_settings);
-
-	g_object_unref (settings);
 
 	connectable = camel_network_service_ref_connectable (service);
 	g_return_val_if_fail (connectable != NULL, NULL);
@@ -629,6 +625,13 @@ network_service_connect_sync (CamelNetworkService *service,
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT)
 		g_socket_client_set_tls (client, TRUE);
 
+	proxy_resolver = camel_session_ref_proxy_resolver (
+		session, CAMEL_SERVICE (service));
+	if (proxy_resolver != NULL) {
+		g_socket_client_set_proxy_resolver (client, proxy_resolver);
+		g_object_unref (proxy_resolver);
+	}
+
 	connection = g_socket_client_connect (
 		client, connectable, cancellable, error);
 
@@ -637,19 +640,11 @@ network_service_connect_sync (CamelNetworkService *service,
 		g_object_unref (connection);
 	}
 
-#if 0
-	camel_session_get_socks_proxy (session, host, &socks_host, &socks_port);
-
-	if (socks_host != NULL) {
-		camel_tcp_stream_set_socks_proxy (
-			CAMEL_TCP_STREAM (stream),
-			socks_host, socks_port);
-		g_free (socks_host);
-	}
-#endif
-
 	g_object_unref (connectable);
 	g_object_unref (client);
+
+	g_object_unref (session);
+	g_object_unref (settings);
 
 	return stream;
 }

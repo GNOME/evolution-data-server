@@ -2316,7 +2316,6 @@ CamelSessionAlertType
 camel_session_ref_main_context
 camel_session_get_user_data_dir
 camel_session_get_user_cache_dir
-camel_session_get_socks_proxy
 camel_session_add_service
 camel_session_remove_service
 camel_session_ref_service
@@ -2327,6 +2326,7 @@ camel_session_get_password
 camel_session_forget_password
 camel_session_alert_user
 camel_session_trust_prompt
+camel_session_ref_proxy_resolver
 camel_session_build_password_prompt
 camel_session_get_online
 camel_session_set_online
