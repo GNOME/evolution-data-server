@@ -1376,7 +1376,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
-	gboolean writable;
+	gboolean writable = FALSE;
 	GError *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
@@ -3624,7 +3624,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 {
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
-	gboolean writable;
+	gboolean writable = FALSE;
 	GError *err = NULL;
 
 	priv = cbfile->priv;
