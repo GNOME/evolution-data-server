@@ -122,6 +122,14 @@ struct _ECalBackendCalDAVPrivate {
 	gboolean updating_source;
 
 	guint refresh_id;
+
+	/* If we fail to obtain an OAuth2 access token,
+	 * soup_authenticate_bearer() stashes an error
+	 * here to be claimed in caldav_authenticate().
+	 * This lets us propagate a more useful error
+	 * message than a generic 401 description. */
+	GError *bearer_auth_error;
+	GMutex bearer_auth_error_lock;
 };
 
 /* Forward Declarations */
@@ -968,11 +976,14 @@ static void
 soup_authenticate_bearer (SoupSession *session,
                           SoupMessage *message,
                           SoupAuth *auth,
-                          ESource *source)
+                          ECalBackendCalDAV *cbdav)
 {
+	ESource *source;
 	gchar *access_token = NULL;
 	gint expires_in_seconds = -1;
 	GError *local_error = NULL;
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
 
 	e_source_get_oauth2_access_token_sync (
 		source, NULL, &access_token,
@@ -982,9 +993,22 @@ soup_authenticate_bearer (SoupSession *session,
 		E_SOUP_AUTH_BEARER (auth),
 		access_token, expires_in_seconds);
 
+	/* Stash the error to be picked up by caldav_authenticate().
+	 * There's no way to explicitly propagate a GError directly
+	 * through libsoup, so we have to work around it. */
 	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-		g_error_free (local_error);
+		g_mutex_lock (&cbdav->priv->bearer_auth_error_lock);
+
+		/* Warn about an unclaimed error before we clear it.
+		 * This is just to verify the errors we set here are
+		 * actually making it back to the user. */
+		g_warn_if_fail (cbdav->priv->bearer_auth_error == NULL);
+		g_clear_error (&cbdav->priv->bearer_auth_error);
+
+		g_propagate_error (
+			&cbdav->priv->bearer_auth_error, local_error);
+
+		g_mutex_unlock (&cbdav->priv->bearer_auth_error_lock);
 	}
 
 	g_free (access_token);
@@ -1012,7 +1036,7 @@ soup_authenticate (SoupSession *session,
 		return;
 
 	if (E_IS_SOUP_AUTH_BEARER (auth)) {
-		soup_authenticate_bearer (session, msg, auth, source);
+		soup_authenticate_bearer (session, msg, auth, cbdav);
 
 	/* do not send same password twice, but keep it for later use */
 	} else if (cbdav->priv->password != NULL) {
@@ -1249,15 +1273,29 @@ caldav_authenticate (ECalBackendCalDAV *cbdav,
                      GCancellable *cancellable,
                      GError **error)
 {
-	gboolean success;
+	gboolean success = TRUE;
 
 	if (ref_cbdav)
 		g_object_ref (cbdav);
 
-	success = e_backend_authenticate_sync (
-		E_BACKEND (cbdav),
-		E_SOURCE_AUTHENTICATOR (cbdav),
-		cancellable, error);
+	/* This function is called when we receive a 4xx response code for
+	 * authentication failures.  If we're using Bearer authentication,
+	 * there should be a GError available.  Return the GError to avoid
+	 * inappropriately prompting for a password. */
+	g_mutex_lock (&cbdav->priv->bearer_auth_error_lock);
+	if (cbdav->priv->bearer_auth_error != NULL) {
+		g_propagate_error (error, cbdav->priv->bearer_auth_error);
+		cbdav->priv->bearer_auth_error = NULL;
+		success = FALSE;
+	}
+	g_mutex_unlock (&cbdav->priv->bearer_auth_error_lock);
+
+	if (success) {
+		success = e_backend_authenticate_sync (
+			E_BACKEND (cbdav),
+			E_SOURCE_AUTHENTICATOR (cbdav),
+			cancellable, error);
+	}
 
 	if (ref_cbdav)
 		caldav_unref_in_thread (cbdav);
@@ -5211,6 +5249,9 @@ e_cal_backend_caldav_finalize (GObject *object)
 	g_free (priv->password);
 	g_free (priv->schedule_outbox_url);
 
+	g_clear_error (&priv->bearer_auth_error);
+	g_mutex_clear (&priv->bearer_auth_error_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -5246,6 +5287,7 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	/* Add the "Bearer" auth type to support OAuth 2.0. */
 	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+	g_mutex_init (&cbdav->priv->bearer_auth_error_lock);
 
 	cbdav->priv->proxy = e_proxy_new ();
 	e_proxy_setup_proxy (cbdav->priv->proxy);
