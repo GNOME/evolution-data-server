@@ -671,7 +671,7 @@ e_cal_open (ECal *ecal,
             gboolean only_if_exists,
             GError **error)
 {
-	ECalendarStatus status;
+	ECalendarStatus status = E_CALENDAR_STATUS_OK;
 	GError *err = NULL;
 	gboolean result;
 

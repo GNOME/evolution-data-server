@@ -1653,7 +1653,7 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
                                           GError **error)
 {
 	EBookBackendGooglePrivate *priv;
-	EContactPhoto *photo;
+	EContactPhoto *photo = NULL;
 	EContact *contact;
 	GDataEntry *entry;
 	GDataContactsContact *new_contact;
