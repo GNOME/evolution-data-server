@@ -114,6 +114,8 @@ struct _CamelSaslGssapiPrivate {
 	gint state;
 	gss_ctx_id_t ctx;
 	gss_name_t target;
+	gchar *override_host;
+	gchar *override_user;
 };
 
 #endif /* HAVE_KRB5 */
@@ -194,6 +196,9 @@ sasl_gssapi_finalize (GObject *object)
 	if (sasl->priv->target != GSS_C_NO_NAME)
 		gss_release_name (&status, &sasl->priv->target);
 
+	g_free (sasl->priv->override_host);
+	g_free (sasl->priv->override_user);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_sasl_gssapi_parent_class)->finalize (object);
 }
@@ -271,9 +276,6 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
                             GError **error)
 {
 	CamelSaslGssapiPrivate *priv;
-	CamelNetworkSettings *network_settings;
-	CamelSettings *settings;
-	CamelService *service;
 	OM_uint32 major, minor, flags, time;
 	gss_buffer_desc inbuf, outbuf;
 	GByteArray *challenge = NULL;
@@ -284,22 +286,34 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	gchar *str;
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
-	gchar *host;
-	gchar *user;
+	gchar *host = NULL;
+	gchar *user = NULL;
 
 	priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 
-	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
 
-	settings = camel_service_ref_settings (service);
-	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+	if (priv->override_host && priv->override_user) {
+		host = g_strdup (priv->override_host);
+		user = g_strdup (priv->override_user);
+	}
 
-	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_dup_host (network_settings);
-	user = camel_network_settings_dup_user (network_settings);
+	if (!host || !user) {
+		CamelNetworkSettings *network_settings;
+		CamelSettings *settings;
+		CamelService *service;
 
-	g_object_unref (settings);
+		service = camel_sasl_get_service (sasl);
+
+		settings = camel_service_ref_settings (service);
+		g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+		network_settings = CAMEL_NETWORK_SETTINGS (settings);
+		host = camel_network_settings_dup_host (network_settings);
+		user = camel_network_settings_dup_user (network_settings);
+
+		g_object_unref (settings);
+	}
 
 	g_return_val_if_fail (user != NULL, NULL);
 
@@ -489,5 +503,58 @@ camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;
+	sasl->priv->override_host = NULL;
+	sasl->priv->override_user = NULL;
+#endif /* HAVE_KRB5 */
+}
+
+/**
+ * camel_sasl_gssapi_is_available:
+ *
+ * Returns: Whether the GSSAPI/KRB5 sasl authentication mechanism is available,
+ *    which means whether Camel was built with KRB5 enabled.
+ *
+ * Since: 3.12
+ **/
+gboolean
+camel_sasl_gssapi_is_available (void)
+{
+#ifdef HAVE_KRB5
+	return TRUE;
+#else /* HAVE_KRB5 */
+	return FALSE;
+#endif /* HAVE_KRB5 */
+}
+
+/**
+ * camel_sasl_gssapi_override_host_and_user:
+ * @override_host: Host name to use during challenge processing; can be %NULL
+ * @override_user: User name to use during challenge processing; can be %NULL
+ *
+ * Set host and user to use, instead of those in CamelService's settings.
+ * It's both or none, aka either set both, or the settings values are used.
+ * This is used to not require CamelService instance at all.
+ *
+ * Since: 3.12
+ **/
+void
+camel_sasl_gssapi_override_host_and_user (CamelSaslGssapi *sasl,
+					  const gchar *override_host,
+					  const gchar *override_user)
+{
+	g_return_if_fail (CAMEL_IS_SASL_GSSAPI (sasl));
+
+#ifdef HAVE_KRB5
+	if (sasl->priv->override_host != override_host) {
+		g_free (sasl->priv->override_host);
+		sasl->priv->override_host = g_strdup (override_host);
+	}
+
+	if (sasl->priv->override_user != override_user) {
+		g_free (sasl->priv->override_user);
+		sasl->priv->override_user = g_strdup (override_user);
+	}
+#else /* HAVE_KRB5 */
+	g_warning ("%s: KRB5 not available", G_STRFUNC);
 #endif /* HAVE_KRB5 */
 }
