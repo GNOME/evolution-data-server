@@ -617,7 +617,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	 * create_contacts_table() as we need introspection details for doing
 	 * that.
 	 */
-	if (version >= 3 && version < 7) {
+	if (version >= 3 && version < 5) {
 		stmt = "UPDATE folders SET "
 				"multivalues = REPLACE(RTRIM(REPLACE("
 					"multivalues || ':', ':', "
@@ -845,7 +845,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
                     GError **error)
 {
-	gboolean success;
+	gboolean success, have_attr_list;
 	gchar *stmt;
 	GList *summary_columns = NULL, *l;
 	GArray *summary_fields = NULL;
@@ -933,6 +933,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		goto introspect_summary_finish;
 
 	ebsdb->priv->attr_list_indexes = 0;
+	ebsdb->priv->have_attr_list = have_attr_list = FALSE;
 
 	if (multivalues) {
 		gchar **fields = g_strsplit (multivalues, ":", 0);
@@ -944,7 +945,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 
 			params = g_strsplit (fields[i], ";", 0);
 			field = e_contact_field_id (params[0]);
-			iter = append_summary_field (summary_fields, field, NULL, NULL);
+			iter = append_summary_field (summary_fields, field, &have_attr_list, NULL);
 
 			if (iter) {
 				for (j = 1; params[j]; ++j) {
@@ -962,6 +963,8 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 
 			g_strfreev (params);
 		}
+
+		ebsdb->priv->have_attr_list = have_attr_list;
 
 		g_strfreev (fields);
 	}
@@ -1060,6 +1063,10 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 	sqlite3_free (stmt);
 
+	/* Dont introspect the summary if the table did not yet exist */
+	if (success && already_exists)
+		success = introspect_summary (ebsdb, folderid, error);
+
 	/* Now, if we're upgrading from < version 7, we need to add the _localized columns */
 	if (success && previous_schema >= 1 && previous_schema < 7) {
 
@@ -1105,9 +1112,13 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		}
 		sqlite3_free (tmp);
 
-		if (ebsdb->priv->have_attr_list) {
+		if (success && ebsdb->priv->have_attr_list) {
 			tmp = g_strdup_printf ("%s_lists", folderid);
 			stmt = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN value_translit TEXT", tmp);
+
+			success = book_backend_sql_exec (
+			        ebsdb->priv->db, stmt, NULL, NULL , error);
+
 			g_free (tmp);
 			sqlite3_free (stmt);
 		}
@@ -1158,10 +1169,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		g_free (tmp);
 	}
-
-	/* Dont introspect the summary if the table did not yet exist */
-	if (success && already_exists)
-		success = introspect_summary (ebsdb, folderid, error);
 
 	/* Create indexes on the summary fields configured for indexing */
 	for (i = 0; success && i < ebsdb->priv->n_summary_fields; i++) {
@@ -1247,10 +1254,13 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		lc_collate = stored_lc_collate;
 
-	} else if (success) {
-		/* When creating a new addressbook, default to system locale */
-		lc_collate = setlocale (LC_COLLATE, NULL);
 	}
+
+	if (!lc_collate)
+		/* When creating a new addressbook, or upgrading from a version
+		 * where we did not have any locale setting; default to system locale
+		 */
+		lc_collate = setlocale (LC_COLLATE, NULL);
 
 	/* Before touching any data, make sure we have a valid ECollator */
 	if (success) {
