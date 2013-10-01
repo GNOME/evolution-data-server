@@ -396,6 +396,25 @@ CamelFilterDriverPrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-filter-input-stream</FILE>
+<TITLE>CamelFilterInputStream</TITLE>
+CamelFilterInputStream
+camel_filter_input_stream_new
+camel_filter_input_stream_get_filter
+<SUBSECTION Standard>
+CAMEL_FILTER_INPUT_STREAM
+CAMEL_IS_FILTER_INPUT_STREAM
+CAMEL_TYPE_FILTER_INPUT_STREAM
+CAMEL_FILTER_INPUT_STREAM_CLASS
+CAMEL_IS_FILTER_INPUT_STREAM_CLASS
+CAMEL_FILTER_INPUT_STREAM_GET_CLASS
+CamelFilterInputStreamClass
+camel_filter_input_stream_get_type
+<SUBSECTION Private>
+CamelFilterInputStreamPrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-folder</FILE>
 <TITLE>CamelFolder</TITLE>
 CamelFolderFlags

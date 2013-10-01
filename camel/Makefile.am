@@ -75,6 +75,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-disco-store.c			\
 	camel-file-utils.c			\
 	camel-filter-driver.c			\
+	camel-filter-input-stream.c		\
 	camel-filter-search.c			\
 	camel-folder-search.c			\
 	camel-folder-summary.c			\
@@ -203,6 +204,7 @@ libcamelinclude_HEADERS =			\
 	camel-enumtypes.h			\
 	camel-file-utils.h			\
 	camel-filter-driver.h			\
+	camel-filter-input-stream.h		\
 	camel-filter-search.h			\
 	camel-folder-search.h			\
 	camel-folder-summary.h			\

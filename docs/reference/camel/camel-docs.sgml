@@ -61,6 +61,7 @@
     <chapter id="Stream-Filters">
       <title>Stream Filters</title>
       <xi:include href="xml/camel-mime-filter.xml"/>
+      <xi:include href="xml/camel-filter-input-stream.xml"/>
       <xi:include href="xml/camel-mime-filter-basic.xml"/>
       <xi:include href="xml/camel-mime-filter-bestenc.xml"/>
       <xi:include href="xml/camel-mime-filter-canon.xml"/>
