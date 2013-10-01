@@ -15,8 +15,13 @@ cursor_example_SOURCES =	\
 	cursor-slot.h		\
 	main.c
 
+# Here we intentionally leave out $(AM_CPPFLAGS) from
+# $(cursor_example_CPPFLAGS), this is because we're
+# compiling the example with a newer GTK+ than the soft
+# dependency EDS has on GTK+, and we dont want the
+# -DGDK_VERSION_MAX_ALLOWED and -DGLIB_VERSION_MAX_ALLOWED
+# flags passed in.
 cursor_example_CPPFLAGS =					\
-	$(AM_CPPFLAGS)						\
 	-DG_LOG_DOMAIN=\"cursor-example\"			\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
@@ -26,7 +31,7 @@ cursor_example_CPPFLAGS =					\
 	-I$(top_builddir)/calendar   				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
-	$(GTK_CFLAGS) $(CAMEL_CFLAGS)				\
+	$(EXAMPLES_CFLAGS) $(CAMEL_CFLAGS)			\
 	$(CODE_COVERAGE_CFLAGS)					\
 	$(NULL)
 cursor_example_CFLAGS   = 
@@ -35,7 +40,7 @@ cursor_example_LDFLAGS  = \
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(top_builddir)/private/libedbus-private.la		\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
-	$(GTK_LIBS) $(CAMEL_LIBS)				\
+	$(EXAMPLES_LIBS) $(CAMEL_LIBS)				\
 	$(NULL)
 cursor_example_LDADD =
 

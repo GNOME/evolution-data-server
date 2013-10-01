@@ -1,6 +1,6 @@
 SUBDIRS = test-server-utils libedataserver libebook-contacts libedata-book libebook libecal libedata-cal
 
-if HAVE_GTK
+if BUILD_EXAMPLES
 SUBDIRS += cursor-example
 endif
 
