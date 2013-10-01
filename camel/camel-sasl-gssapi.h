@@ -64,12 +64,12 @@ struct _CamelSaslGssapiClass {
 	CamelSaslClass parent_class;
 };
 
-GType		camel_sasl_gssapi_get_type			(void);
-
-gboolean	camel_sasl_gssapi_is_available			(void);
-void		camel_sasl_gssapi_override_host_and_user	(CamelSaslGssapi *sasl,
-								 const gchar *override_host,
-								 const gchar *override_user);
+GType		camel_sasl_gssapi_get_type	(void);
+gboolean	camel_sasl_gssapi_is_available	(void);
+void		camel_sasl_gssapi_override_host_and_user
+						(CamelSaslGssapi *sasl,
+						 const gchar *override_host,
+						 const gchar *override_user);
 
 G_END_DECLS
 

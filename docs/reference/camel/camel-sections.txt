@@ -2136,6 +2136,8 @@ CamelSaslDigestMd5Private
 <FILE>camel-sasl-gssapi</FILE>
 <TITLE>CamelSaslGssapi</TITLE>
 CamelSaslGssapi
+camel_sasl_gssapi_is_available
+camel_sasl_gssapi_override_host_and_user
 <SUBSECTION Standard>
 CAMEL_SASL_GSSAPI
 CAMEL_IS_SASL_GSSAPI

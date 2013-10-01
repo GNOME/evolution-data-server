@@ -4493,7 +4493,7 @@ camel_message_info_clone (gconstpointer o)
 
 /**
  * camel_message_info_ptr:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: info to get
  *
  * Generic accessor method for getting pointer data.
@@ -4501,18 +4501,18 @@ camel_message_info_clone (gconstpointer o)
  * Returns: the pointer data
  **/
 gconstpointer
-camel_message_info_ptr (const CamelMessageInfo *mi,
+camel_message_info_ptr (const CamelMessageInfo *info,
                         gint id)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_ptr (mi, id);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_ptr (info, id);
 	else
-		return info_ptr (mi, id);
+		return info_ptr (info, id);
 }
 
 /**
  * camel_message_info_uint32:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: info to get
  *
  * Generic accessor method for getting 32bit gint data.
@@ -4520,18 +4520,18 @@ camel_message_info_ptr (const CamelMessageInfo *mi,
  * Returns: the gint data
  **/
 guint32
-camel_message_info_uint32 (const CamelMessageInfo *mi,
+camel_message_info_uint32 (const CamelMessageInfo *info,
                            gint id)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_uint32 (mi, id);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_uint32 (info, id);
 	else
-		return info_uint32 (mi, id);
+		return info_uint32 (info, id);
 }
 
 /**
  * camel_message_info_time:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: info to get
  *
  * Generic accessor method for getting time_t data.
@@ -4539,18 +4539,18 @@ camel_message_info_uint32 (const CamelMessageInfo *mi,
  * Returns: the time_t data
  **/
 time_t
-camel_message_info_time (const CamelMessageInfo *mi,
+camel_message_info_time (const CamelMessageInfo *info,
                          gint id)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_time (mi, id);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_time (info, id);
 	else
-		return info_time (mi, id);
+		return info_time (info, id);
 }
 
 /**
  * camel_message_info_user_flag:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: user flag to get
  *
  * Get the state of a user flag named @id.
@@ -4558,18 +4558,18 @@ camel_message_info_time (const CamelMessageInfo *mi,
  * Returns: the state of the user flag
  **/
 gboolean
-camel_message_info_user_flag (const CamelMessageInfo *mi,
+camel_message_info_user_flag (const CamelMessageInfo *info,
                               const gchar *id)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_user_flag (mi, id);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_user_flag (info, id);
 	else
-		return info_user_flag (mi, id);
+		return info_user_flag (info, id);
 }
 
 /**
  * camel_message_info_user_tag:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: user tag to get
  *
  * Get the value of a user tag named @id.
@@ -4577,18 +4577,18 @@ camel_message_info_user_flag (const CamelMessageInfo *mi,
  * Returns: the value of the user tag
  **/
 const gchar *
-camel_message_info_user_tag (const CamelMessageInfo *mi,
+camel_message_info_user_tag (const CamelMessageInfo *info,
                              const gchar *id)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_user_tag (mi, id);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_user_tag (info, id);
 	else
-		return info_user_tag (mi, id);
+		return info_user_tag (info, id);
 }
 
 /**
  * camel_message_info_set_flags:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @flags: mask of flags to change
  * @set: state the flags should be changed to
  *
@@ -4597,19 +4597,19 @@ camel_message_info_user_tag (const CamelMessageInfo *mi,
  * Returns: %TRUE if any of the flags changed or %FALSE otherwise
  **/
 gboolean
-camel_message_info_set_flags (CamelMessageInfo *mi,
+camel_message_info_set_flags (CamelMessageInfo *info,
                               CamelMessageFlags flags,
                               guint32 set)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_set_flags (mi, flags, set);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_set_flags (info, flags, set);
 	else
-		return info_set_flags (mi, flags, set);
+		return info_set_flags (info, flags, set);
 }
 
 /**
  * camel_message_info_set_user_flag:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: name of the user flag to set
  * @state: state to set the flag to
  *
@@ -4618,19 +4618,19 @@ camel_message_info_set_flags (CamelMessageInfo *mi,
  * Returns: %TRUE if the state changed or %FALSE otherwise
  **/
 gboolean
-camel_message_info_set_user_flag (CamelMessageInfo *mi,
+camel_message_info_set_user_flag (CamelMessageInfo *info,
                                   const gchar *id,
                                   gboolean state)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_set_user_flag (mi, id, state);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_set_user_flag (info, id, state);
 	else
-		return info_set_user_flag (mi, id, state);
+		return info_set_user_flag (info, id, state);
 }
 
 /**
  * camel_message_info_set_user_tag:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @id: name of the user tag to set
  * @val: value to set
  *
@@ -4639,14 +4639,14 @@ camel_message_info_set_user_flag (CamelMessageInfo *mi,
  * Returns: %TRUE if the value changed or %FALSE otherwise
  **/
 gboolean
-camel_message_info_set_user_tag (CamelMessageInfo *mi,
+camel_message_info_set_user_tag (CamelMessageInfo *info,
                                  const gchar *id,
                                  const gchar *val)
 {
-	if (mi->summary)
-		return CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->info_set_user_tag (mi, id, val);
+	if (info->summary)
+		return CAMEL_FOLDER_SUMMARY_GET_CLASS (info->summary)->info_set_user_tag (info, id, val);
 	else
-		return info_set_user_tag (mi, id, val);
+		return info_set_user_tag (info, id, val);
 }
 
 void
@@ -4686,21 +4686,21 @@ camel_content_info_dump (CamelMessageContentInfo *ci,
 }
 
 void
-camel_message_info_dump (CamelMessageInfo *mi)
+camel_message_info_dump (CamelMessageInfo *info)
 {
-	if (mi == NULL) {
+	if (info == NULL) {
 		printf ("No message?\n");
 		return;
 	}
 
-	printf ("Subject: %s\n", camel_message_info_subject (mi));
-	printf ("To: %s\n", camel_message_info_to (mi));
-	printf ("Cc: %s\n", camel_message_info_cc (mi));
-	printf ("mailing list: %s\n", camel_message_info_mlist (mi));
-	printf ("From: %s\n", camel_message_info_from (mi));
-	printf ("UID: %s\n", camel_message_info_uid (mi));
-	printf ("Flags: %04x\n", camel_message_info_flags (mi));
-	camel_content_info_dump (((CamelMessageInfoBase *) mi)->content, 0);
+	printf ("Subject: %s\n", camel_message_info_subject (info));
+	printf ("To: %s\n", camel_message_info_to (info));
+	printf ("Cc: %s\n", camel_message_info_cc (info));
+	printf ("mailing list: %s\n", camel_message_info_mlist (info));
+	printf ("From: %s\n", camel_message_info_from (info));
+	printf ("UID: %s\n", camel_message_info_uid (info));
+	printf ("Flags: %04x\n", camel_message_info_flags (info));
+	camel_content_info_dump (((CamelMessageInfoBase *) info)->content, 0);
 }
 
 static gboolean
@@ -4736,7 +4736,7 @@ match_content_type (CamelContentType *info_ctype,
 
 /**
  * camel_folder_summary_guess_content_info:
- * @mi: a #CamelMessageInfo
+ * @info: a #CamelMessageInfo
  * @ctype: a #CamelContentType
  *
  * FIXME Document me!
@@ -4744,10 +4744,10 @@ match_content_type (CamelContentType *info_ctype,
  * Since: 2.30
  **/
 const CamelMessageContentInfo *
-camel_folder_summary_guess_content_info (CamelMessageInfo *mi,
+camel_folder_summary_guess_content_info (CamelMessageInfo *info,
                                          CamelContentType *ctype)
 {
-	const CamelMessageContentInfo *ci = camel_message_info_content (mi);
+	const CamelMessageContentInfo *ci = camel_message_info_content (info);
 
 	while (ci) {
 		const CamelMessageContentInfo *child = ci;
