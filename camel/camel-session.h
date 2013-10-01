@@ -219,10 +219,6 @@ GProxyResolver *
 		camel_session_ref_proxy_resolver
 						(CamelSession *session,
 						 CamelService *service);
-gchar *		camel_session_build_password_prompt
-						(const gchar *type,
-						 const gchar *user,
-						 const gchar *host);
 gboolean	camel_session_get_online	(CamelSession *session);
 void		camel_session_set_online	(CamelSession *session,
 						 gboolean online);
