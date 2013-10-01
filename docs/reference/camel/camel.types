@@ -12,6 +12,7 @@ camel_disco_folder_get_type
 camel_disco_store_get_type
 camel_filter_driver_get_type
 camel_filter_input_stream_get_type
+camel_filter_output_stream_get_type
 camel_folder_get_type
 camel_folder_search_get_type
 camel_folder_summary_get_type

@@ -415,6 +415,25 @@ CamelFilterInputStreamPrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-filter-output-stream</FILE>
+<TITLE>CamelFilterOutputStream</TITLE>
+CamelFilterOutputStream
+camel_filter_output_stream_new
+camel_filter_output_stream_get_filter
+<SUBSECTION Standard>
+CAMEL_FILTER_OUTPUT_STREAM
+CAMEL_IS_FILTER_OUTPUT_STREAM
+CAMEL_TYPE_FILTER_OUTPUT_STREAM
+CAMEL_FILTER_OUTPUT_STREAM_CLASS
+CAMEL_IS_FILTER_OUTPUT_STREAM_CLASS
+CAMEL_FILTER_OUTPUT_STREAM_GET_CLASS
+CamelFilterOutputStreamClass
+camel_filter_output_stream_get_type
+<SUBSECTION Private>
+CamelFilterOutputStreamPrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-folder</FILE>
 <TITLE>CamelFolder</TITLE>
 CamelFolderFlags

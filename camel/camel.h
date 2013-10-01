@@ -43,6 +43,7 @@
 #include <camel/camel-file-utils.h>
 #include <camel/camel-filter-driver.h>
 #include <camel/camel-filter-input-stream.h>
+#include <camel/camel-filter-output-stream.h>
 #include <camel/camel-filter-search.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-folder-search.h>
