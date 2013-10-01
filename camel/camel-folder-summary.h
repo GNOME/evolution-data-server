@@ -627,11 +627,6 @@ gboolean	camel_message_info_set_user_tag	(CamelMessageInfo *info,
 						 const gchar *id,
 						 const gchar *val);
 
-const CamelMessageContentInfo *
-		camel_folder_summary_guess_content_info
-						(CamelMessageInfo *info,
-						 CamelContentType *ctype);
-
 /* debugging functions */
 void		camel_content_info_dump		(CamelMessageContentInfo *ci,
 						 gint depth);

@@ -4703,68 +4703,6 @@ camel_message_info_dump (CamelMessageInfo *info)
 	camel_content_info_dump (((CamelMessageInfoBase *) info)->content, 0);
 }
 
-static gboolean
-compare_strings (const gchar *str1,
-                 const gchar *str2)
-{
-	if (str1 && str2 && !g_ascii_strcasecmp (str1, str2))
-		return TRUE;
-	else if (!str1 && !str2)
-		return TRUE;
-	else
-		return FALSE;
-}
-
-static gboolean
-match_content_type (CamelContentType *info_ctype,
-                    CamelContentType *ctype)
-{
-	const gchar *name1, *name2;
-
-	if (!compare_strings (info_ctype->type, ctype->type))
-		return FALSE;
-	if (!compare_strings (info_ctype->subtype, ctype->subtype))
-		return FALSE;
-
-	name1 = camel_content_type_param (info_ctype, "name");
-	name2 = camel_content_type_param (ctype, "name");
-	if (!compare_strings (name1, name2))
-		return FALSE;
-
-	return TRUE;
-}
-
-/**
- * camel_folder_summary_guess_content_info:
- * @info: a #CamelMessageInfo
- * @ctype: a #CamelContentType
- *
- * FIXME Document me!
- *
- * Since: 2.30
- **/
-const CamelMessageContentInfo *
-camel_folder_summary_guess_content_info (CamelMessageInfo *info,
-                                         CamelContentType *ctype)
-{
-	const CamelMessageContentInfo *ci = camel_message_info_content (info);
-
-	while (ci) {
-		const CamelMessageContentInfo *child = ci;
-
-		do {
-			if (child->type && match_content_type (child->type, ctype))
-				return child;
-
-			child = child->next;
-		} while (child != NULL);
-
-		ci = ci->childs;
-	}
-
-	return NULL;
-}
-
 /**
  * camel_folder_summary_lock:
  * @summary: a #CamelFolderSummary
