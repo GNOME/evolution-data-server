@@ -35,7 +35,6 @@
 
 #include "camel-data-cache.h"
 #include "camel-object-bag.h"
-#include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"
 
@@ -378,7 +377,9 @@ camel_data_cache_add (CamelDataCache *cdc,
                       GError **error)
 {
 	gchar *real;
-	CamelStream *stream;
+	CamelStream *stream = NULL;
+	GFileIOStream *base_stream;
+	GFile *file;
 
 	real = data_cache_path (cdc, TRUE, path, key);
 	/* need to loop 'cause otherwise we can call bag_add/bag_abort
@@ -393,12 +394,18 @@ camel_data_cache_add (CamelDataCache *cdc,
 		}
 	} while (stream != NULL);
 
-	stream = camel_stream_fs_new_with_name (
-		real, O_RDWR | O_CREAT | O_TRUNC, 0600, error);
-	if (stream)
+	file = g_file_new_for_path (real);
+	base_stream = g_file_replace_readwrite (
+		file, NULL, FALSE, G_FILE_CREATE_PRIVATE, NULL, error);
+	g_object_unref (file);
+
+	if (base_stream != NULL) {
+		stream = camel_stream_new (G_IO_STREAM (base_stream));
 		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
-	else
+		g_object_unref (base_stream);
+	} else {
 		camel_object_bag_abort (cdc->priv->busy_bag, real);
+	}
 
 	g_free (real);
 
@@ -425,29 +432,38 @@ camel_data_cache_get (CamelDataCache *cdc,
                       const gchar *key,
                       GError **error)
 {
-	gchar *real;
 	CamelStream *stream;
+	GFileIOStream *base_stream = NULL;
+	GFile *file;
+	struct stat st;
+	gchar *real;
 
 	real = data_cache_path (cdc, FALSE, path, key);
 	stream = camel_object_bag_reserve (cdc->priv->busy_bag, real);
-	if (stream == NULL) {
-		struct stat st;
+	if (stream != NULL)
+		goto exit;
 
-		/* An empty cache file is useless.  Return an error. */
-		if (g_stat (real, &st) == 0 && st.st_size == 0) {
-			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				"%s: %s", _("Empty cache file"), real);
-		} else {
-			stream = camel_stream_fs_new_with_name (
-				real, O_RDWR, 0600, error);
-		}
-
-		if (stream != NULL)
-			camel_object_bag_add (cdc->priv->busy_bag, real, stream);
-		else
-			camel_object_bag_abort (cdc->priv->busy_bag, real);
+	/* An empty cache file is useless.  Return an error. */
+	if (g_stat (real, &st) == 0 && st.st_size == 0) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			"%s: %s", _("Empty cache file"), real);
+		goto exit;
 	}
+
+	file = g_file_new_for_path (real);
+	base_stream = g_file_open_readwrite (file, NULL, error);
+	g_object_unref (file);
+
+	if (base_stream != NULL) {
+		stream = camel_stream_new (G_IO_STREAM (base_stream));
+		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
+		g_object_unref (base_stream);
+	} else {
+		camel_object_bag_abort (cdc->priv->busy_bag, real);
+	}
+
+exit:
 	g_free (real);
 
 	return stream;
