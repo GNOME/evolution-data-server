@@ -15,131 +15,181 @@
 
 #define CHUNK_SIZE 4096
 
+static void
+test_case (const gchar *basename)
+{
+	GFileInputStream *source_stream;
+	GFileInputStream *correct_stream;
+	GInputStream *filter_stream;
+	CamelMimeFilter *filter;
+	GFile *file;
+	gssize comp_progress, comp_correct_chunk, comp_filter_chunk;
+	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
+	gchar *filename, *charset, *work;
+	const gchar *ext;
+	gint i, test = 0;
+	GError *local_error = NULL;
+
+	ext = strrchr (basename, '.');
+	if (ext == NULL)
+		return;
+
+	if (!g_str_has_prefix (basename, "charset-"))
+		return;
+
+	if (!g_str_has_suffix (basename, ".in"))
+		return;
+
+	work = g_strdup_printf (
+		"Charset filter, test case %d (%s)", test++, basename);
+	camel_test_start (work);
+	g_free (work);
+
+	filename = g_strdup_printf ("%s/%s", SOURCEDIR, basename);
+
+	file = g_file_new_for_path (filename);
+	source_stream = g_file_read (file, NULL, &local_error);
+	g_object_unref (file);
+
+	/* Sanity check. */
+	g_warn_if_fail (
+		((source_stream != NULL) && (local_error == NULL)) ||
+		((source_stream == NULL) && (local_error != NULL)));
+
+	if (local_error != NULL) {
+		camel_test_fail (
+			"Failed to open input case in \"%s\": %s",
+			filename, local_error->message);
+		g_error_free (local_error);
+		g_free (filename);
+		return;
+	}
+	g_free (filename);
+
+	filename = g_strdup_printf (
+		"%s/%.*s.out", SOURCEDIR, ext - basename, basename);
+
+	file = g_file_new_for_path (filename);
+	correct_stream = g_file_read (file, NULL, &local_error);
+	g_object_unref (file);
+
+	/* Sanity check. */
+	g_warn_if_fail (
+		((correct_stream != NULL) && (local_error == NULL)) ||
+		((correct_stream == NULL) && (local_error != NULL)));
+
+	if (local_error != NULL) {
+		camel_test_fail (
+			"Failed to open correct output in \"%s\": %s",
+			filename, local_error->message);
+		g_error_free (local_error);
+		g_free (filename);
+		return;
+	}
+	g_free (filename);
+
+	charset = g_strdup (basename + 8);
+	ext = strchr (charset, '.');
+	*((gchar *) ext) = '\0';
+
+	filter = camel_mime_filter_charset_new (charset, "UTF-8");
+	if (filter == NULL) {
+		camel_test_fail ("Couldn't create CamelMimeFilterCharset??");
+		g_free (charset);
+		return;
+	}
+	filter_stream = camel_filter_input_stream_new (
+		G_INPUT_STREAM (source_stream), filter);
+	g_clear_object (&filter);
+
+	g_free (charset);
+
+	camel_test_push ("Running filter and comparing to correct result");
+
+	comp_progress = 0;
+
+	while (1) {
+		comp_correct_chunk = g_input_stream_read (
+			G_INPUT_STREAM (correct_stream),
+			comp_correct, CHUNK_SIZE, NULL, NULL);
+		comp_filter_chunk = 0;
+
+		if (comp_correct_chunk == 0)
+			break;
+
+		while (comp_filter_chunk < comp_correct_chunk) {
+			gssize delta;
+
+			delta = g_input_stream_read (
+				filter_stream,
+				comp_filter + comp_filter_chunk,
+				CHUNK_SIZE - comp_filter_chunk,
+				NULL, NULL);
+
+			if (delta == 0) {
+				camel_test_fail (
+					"Chunks are different sizes: "
+					"correct is %d, "
+					"filter is %d, "
+					"%d bytes into stream",
+					comp_correct_chunk,
+					comp_filter_chunk,
+					comp_progress);
+			}
+
+			comp_filter_chunk += delta;
+		}
+
+		for (i = 0; i < comp_filter_chunk; i++) {
+			if (comp_correct[i] != comp_filter[i]) {
+				camel_test_fail ("Difference: correct is %c, filter is %c, "
+					"%d bytes into stream",
+					comp_correct[i],
+					comp_filter[i],
+					comp_progress + i);
+			}
+		}
+
+		comp_progress += comp_filter_chunk;
+	}
+
+	camel_test_pull ();
+
+	camel_test_push ("Cleaning up");
+	g_object_unref (correct_stream);
+	g_object_unref (source_stream);
+	g_object_unref (filter_stream);
+	camel_test_pull ();
+
+	camel_test_end ();
+}
+
 gint
 main (gint argc,
       gchar **argv)
 {
-	gssize comp_progress, comp_correct_chunk, comp_filter_chunk;
-	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
-	CamelStream *source;
-	CamelStream *correct;
-	CamelStream *stream;
-	CamelMimeFilter *f;
-	struct dirent *dent;
-	gint i, test = 0;
-	DIR *dir;
+	GDir *dir;
+	const gchar *basename;
+	GError *local_error = NULL;
 
 	camel_test_init (argc, argv);
 
-	dir = opendir (SOURCEDIR);
-	if (!dir)
-		return 1;
+	dir = g_dir_open (SOURCEDIR, 0, &local_error);
 
-	while ((dent = readdir (dir))) {
-		gchar *infile, *outfile, *charset, *work;
-		const gchar *ext;
+	/* Sanity check. */
+	g_warn_if_fail (
+		((dir != NULL) && (local_error == NULL)) ||
+		((dir == NULL) && (local_error != NULL)));
 
-		ext = strrchr (dent->d_name, '.');
-		if (!(!strncmp (dent->d_name, "charset-", 8) && ext && !strcmp (ext, ".in")))
-			continue;
-
-		work = g_strdup_printf ("Charset filter, test case %d (%s)", test++, dent->d_name);
-		camel_test_start (work);
-		g_free (work);
-
-		infile = g_strdup_printf ("%s/%s", SOURCEDIR, dent->d_name);
-		if (!(source = camel_stream_fs_new_with_name (infile, 0, O_RDONLY, NULL))) {
-			camel_test_fail ("Failed to open input case in \"%s\"", infile);
-			g_free (outfile);
-			continue;
-		}
-		g_free (infile);
-
-		outfile = g_strdup_printf ("%s/%.*s.out", SOURCEDIR, ext - dent->d_name, dent->d_name);
-
-		if (!(correct = camel_stream_fs_new_with_name (outfile, 0, O_RDONLY, NULL))) {
-			camel_test_fail ("Failed to open correct output in \"%s\"", outfile);
-			g_free (outfile);
-			continue;
-		}
-		g_free (outfile);
-
-		if (!(stream = camel_stream_filter_new (CAMEL_STREAM (source)))) {
-			camel_test_fail ("Couldn't create CamelStreamFilter??");
-			continue;
-		}
-
-		charset = g_strdup (dent->d_name + 8);
-		ext = strchr (charset, '.');
-		*((gchar *) ext) = '\0';
-
-		if (!(f = camel_mime_filter_charset_new (charset, "UTF-8"))) {
-			camel_test_fail ("Couldn't create CamelMimeFilterCharset??");
-			g_free (charset);
-			continue;
-		}
-		g_free (charset);
-
-		camel_stream_filter_add (CAMEL_STREAM_FILTER (stream), f);
-		g_object_unref (f);
-
-		camel_test_push ("Running filter and comparing to correct result");
-
-		comp_progress = 0;
-
-		while (1) {
-			comp_correct_chunk = camel_stream_read (
-				correct, comp_correct,
-				CHUNK_SIZE, NULL, NULL);
-			comp_filter_chunk = 0;
-
-			if (comp_correct_chunk == 0)
-				break;
-
-			while (comp_filter_chunk < comp_correct_chunk) {
-				gssize delta;
-
-				delta = camel_stream_read (
-					stream,
-					comp_filter + comp_filter_chunk,
-					CHUNK_SIZE - comp_filter_chunk,
-					NULL, NULL);
-
-				if (delta == 0) {
-					camel_test_fail ("Chunks are different sizes: correct is %d, "
-						"filter is %d, %d bytes into stream",
-						comp_correct_chunk, comp_filter_chunk, comp_progress);
-				}
-
-				comp_filter_chunk += delta;
-			}
-
-			for (i = 0; i < comp_filter_chunk; i++) {
-				if (comp_correct[i] != comp_filter[i]) {
-					camel_test_fail ("Difference: correct is %c, filter is %c, "
-						"%d bytes into stream",
-						comp_correct[i],
-						comp_filter[i],
-						comp_progress + i);
-				}
-			}
-
-			comp_progress += comp_filter_chunk;
-		}
-
-		camel_test_pull ();
-
-		/* inefficient */
-		camel_test_push ("Cleaning up");
-		g_object_unref (stream);
-		g_object_unref (correct);
-		g_object_unref (source);
-		camel_test_pull ();
-
-		camel_test_end ();
+	if (local_error != NULL) {
+		g_error ("%s", local_error->message);
+		g_assert_not_reached ();
 	}
 
-	closedir (dir);
+	while ((basename = g_dir_read_name (dir)) != NULL)
+		test_case (basename);
+
+	g_dir_close (dir);
 
 	return 0;
 }
