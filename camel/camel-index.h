@@ -133,7 +133,6 @@ struct _CamelIndexName {
 struct _CamelIndexNameClass {
 	CamelObjectClass parent;
 
-	gint (*sync)(CamelIndexName *name);
 	void (*add_word)(CamelIndexName *name, const gchar *word);
 	gsize (*add_buffer)(CamelIndexName *name, const gchar *buffer, gsize len);
 };
