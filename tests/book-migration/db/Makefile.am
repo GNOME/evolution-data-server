@@ -4,7 +4,7 @@ EXTRA_DIST = \
 	3.2/addressbook.dump 3.2/contacts.db		\
 	3.4/addressbook.dump 3.4/contacts.db		\
 	3.6/addressbook.dump 3.6/contacts.db		\
-	3.8/contacts.db
+	3.8/contacts.db 3.10/contacts.db
 
 # Use db_load with our BDB dump text file
 if HAVE_DB_LOAD
