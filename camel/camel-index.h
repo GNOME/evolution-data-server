@@ -115,9 +115,6 @@ struct _CamelIndexCursorClass {
 };
 
 GType           camel_index_cursor_get_type (void);
-
-CamelIndexCursor  *camel_index_cursor_new (CamelIndex *index, const gchar *name);
-
 const gchar        *camel_index_cursor_next (CamelIndexCursor *idc);
 void               camel_index_cursor_reset (CamelIndexCursor *idc);
 

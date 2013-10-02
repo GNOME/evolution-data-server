@@ -460,18 +460,6 @@ camel_index_cursor_init (CamelIndexCursor *index_cursor)
 {
 }
 
-CamelIndexCursor *
-camel_index_cursor_new (CamelIndex *idx,
-                        const gchar *name)
-{
-	CamelIndexCursor *idc;
-
-	idc = g_object_new (CAMEL_TYPE_INDEX_CURSOR, NULL);
-	idc->index = g_object_ref (idx);
-
-	return idc;
-}
-
 const gchar *
 camel_index_cursor_next (CamelIndexCursor *idc)
 {

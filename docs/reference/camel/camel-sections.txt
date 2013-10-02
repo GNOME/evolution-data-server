@@ -1123,7 +1123,6 @@ camel_imapx_summary_get_type
 CamelIndex
 CamelIndexNorm
 CamelIndexCursor
-camel_index_cursor_new
 camel_index_cursor_next
 camel_index_cursor_reset
 CamelIndexName
