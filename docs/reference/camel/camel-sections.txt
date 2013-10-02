@@ -1776,6 +1776,8 @@ CamelMultipartEncryptedPrivate
 CamelMultipartSigned
 camel_multipart_signed_new
 camel_multipart_signed_get_content_stream
+camel_multipart_signed_set_content_stream
+camel_multipart_signed_set_signature
 <SUBSECTION Standard>
 CAMEL_MULTIPART_SIGNED
 CAMEL_IS_MULTIPART_SIGNED
@@ -1785,6 +1787,8 @@ CAMEL_IS_MULTIPART_SIGNED_CLASS
 CAMEL_MULTIPART_SIGNED_GET_CLASS
 CamelMultipartSignedClass
 camel_multipart_signed_get_type
+<SUBSECTION Private>
+CamelMultipartSignedPrivate
 </SECTION>
 
 <SECTION>

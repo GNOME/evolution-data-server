@@ -61,41 +61,30 @@ enum {
 };
 
 typedef struct _CamelMultipartSigned CamelMultipartSigned;
+typedef struct _CamelMultipartSignedClass CamelMultipartSignedClass;
+typedef struct _CamelMultipartSignedPrivate CamelMultipartSignedPrivate;
 
-struct _CamelMultipartSigned
-{
+struct _CamelMultipartSigned {
 	CamelMultipart parent;
-
-	/* these are the client visible parts, decoded forms of our data wrapper content */
-	CamelMimePart *content;
-	CamelMimePart *signature;
-
-	/* the raw content which must go over the wire, if we have generated it */
-	/* perhaps this should jsut set data_wrapper->stream and update start1/end1 accordingly, as it is done
-	 * for other parts, or visa versa? */
-	CamelStream *contentraw;
-
-	/*int state;*/
-
-	/* just cache some info we use */
-	gchar *protocol;
-	gchar *micalg;
-
-	/* offset pointers of start of boundary in content object */
-	goffset start1, end1;
-	goffset start2, end2;
+	CamelMultipartSignedPrivate *priv;
 };
 
-typedef struct {
+struct _CamelMultipartSignedClass {
 	CamelMultipartClass parent_class;
-} CamelMultipartSignedClass;
+};
 
-GType camel_multipart_signed_get_type (void);
-
-/* public methods */
-CamelMultipartSigned *camel_multipart_signed_new           (void);
-
-CamelStream *camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps, GError **error);
+GType		camel_multipart_signed_get_type (void) G_GNUC_CONST;
+CamelMultipartSigned *
+		camel_multipart_signed_new	(void);
+CamelStream *	camel_multipart_signed_get_content_stream
+						(CamelMultipartSigned *mps,
+						 GError **error);
+void		camel_multipart_signed_set_content_stream
+						(CamelMultipartSigned *mps,
+						 CamelStream *content_stream);
+void		camel_multipart_signed_set_signature
+						(CamelMultipartSigned *mps,
+						 CamelMimePart *signature);
 
 G_END_DECLS
 

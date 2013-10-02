@@ -902,8 +902,10 @@ smime_context_sign_sync (CamelCipherContext *context,
 		camel_content_type_unref (ct);
 		camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
 
-		mps->signature = sigpart;
-		mps->contentraw = g_object_ref (istream);
+		camel_multipart_signed_set_signature (mps, sigpart);
+		camel_multipart_signed_set_content_stream (mps, istream);
+
+		g_object_unref (sigpart);
 
 		g_seekable_seek (
 			G_SEEKABLE (istream), 0,
