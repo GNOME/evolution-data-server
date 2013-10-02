@@ -270,6 +270,8 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	CamelMultipart *mp = (CamelMultipart *) mps;
 	GByteArray *byte_array;
 	const gchar *boundary;
+	const gchar *preface;
+	const gchar *postface;
 	gssize total = 0;
 	gssize count;
 	gchar *content;
@@ -280,7 +282,7 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	 * 1. constructed, we write out the data wrapper stream we got
 	 * 2. signed content, we create and write out a new stream
 	 * 3. invalid
-	*/
+	 */
 
 	/* 1 */
 	/* FIXME: locking? */
@@ -306,11 +308,14 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 		return -1;
 	}
 
-	/* 2 */
 	boundary = camel_multipart_get_boundary (mp);
-	if (mp->preface) {
+	preface = camel_multipart_get_preface (mp);
+	postface = camel_multipart_get_postface (mp);
+
+	/* 2 */
+	if (preface != NULL) {
 		count = camel_stream_write_string (
-			stream, mp->preface, cancellable, error);
+			stream, preface, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;
@@ -363,9 +368,9 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* and finally the postface */
-	if (mp->postface) {
+	if (postface != NULL) {
 		count = camel_stream_write_string (
-			stream, mp->postface, cancellable, error);
+			stream, postface, cancellable, error);
 		if (count == -1)
 			return -1;
 		total += count;

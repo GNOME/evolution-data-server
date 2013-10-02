@@ -31,6 +31,8 @@
 #define CAMEL_MULTIPART_H
 
 #include <camel/camel-data-wrapper.h>
+#include <camel/camel-mime-parser.h>
+#include <camel/camel-mime-part.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_MULTIPART \
@@ -53,50 +55,51 @@
 
 G_BEGIN_DECLS
 
-struct _CamelMimeParser;
-
 typedef struct _CamelMultipart CamelMultipart;
 typedef struct _CamelMultipartClass CamelMultipartClass;
+typedef struct _CamelMultipartPrivate CamelMultipartPrivate;
 
 struct _CamelMultipart {
 	CamelDataWrapper parent;
-
-	GList *parts;
-	gchar *preface;
-	gchar *postface;
+	CamelMultipartPrivate *priv;
 };
 
 struct _CamelMultipartClass {
 	CamelDataWrapperClass parent_class;
 
-	/* Virtual methods */
-	void (*add_part) (CamelMultipart *multipart, CamelMimePart *part);
-	CamelMimePart * (*get_part) (CamelMultipart *multipart, guint index);
-	guint (*get_number) (CamelMultipart *multipart);
-	void (*set_boundary) (CamelMultipart *multipart, const gchar *boundary);
-	const gchar * (*get_boundary) (CamelMultipart *multipart);
-
-	gint (*construct_from_parser)(CamelMultipart *, struct _CamelMimeParser *);
-	/*int (*construct_from_stream)(CamelMultipart *, CamelStream *);*/
+	void		(*add_part)		(CamelMultipart *multipart,
+						 CamelMimePart *part);
+	CamelMimePart *	(*get_part)		(CamelMultipart *multipart,
+						 guint index);
+	guint		(*get_number)		(CamelMultipart *multipart);
+	const gchar *	(*get_boundary)		(CamelMultipart *multipart);
+	void		(*set_boundary)		(CamelMultipart *multipart,
+						 const gchar *boundary);
+	gint		(*construct_from_parser)
+						(CamelMultipart *multipart,
+						 CamelMimeParser *parser);
 };
 
-GType camel_multipart_get_type (void);
-
-/* public methods */
-CamelMultipart *    camel_multipart_new            (void);
-void                camel_multipart_add_part       (CamelMultipart *multipart,
-						    CamelMimePart *part);
-CamelMimePart *     camel_multipart_get_part       (CamelMultipart *multipart,
-						    guint index);
-guint               camel_multipart_get_number     (CamelMultipart *multipart);
-void                camel_multipart_set_boundary   (CamelMultipart *multipart,
-						    const gchar *boundary);
-const gchar *        camel_multipart_get_boundary   (CamelMultipart *multipart);
-
-void		    camel_multipart_set_preface	   (CamelMultipart *multipart, const gchar *preface);
-void		    camel_multipart_set_postface   (CamelMultipart *multipart, const gchar *postface);
-
-gint		    camel_multipart_construct_from_parser (CamelMultipart *multipart, struct _CamelMimeParser *parser);
+GType		camel_multipart_get_type	(void) G_GNUC_CONST;
+CamelMultipart *
+		camel_multipart_new		(void);
+void		camel_multipart_add_part	(CamelMultipart *multipart,
+						 CamelMimePart *part);
+CamelMimePart *	camel_multipart_get_part	(CamelMultipart *multipart,
+						 guint index);
+guint		camel_multipart_get_number	(CamelMultipart *multipart);
+const gchar *	camel_multipart_get_boundary	(CamelMultipart *multipart);
+void		camel_multipart_set_boundary	(CamelMultipart *multipart,
+						 const gchar *boundary);
+const gchar *	camel_multipart_get_preface	(CamelMultipart *multipart);
+void		camel_multipart_set_preface	(CamelMultipart *multipart,
+						 const gchar *preface);
+const gchar *	camel_multipart_get_postface	(CamelMultipart *multipart);
+void		camel_multipart_set_postface	(CamelMultipart *multipart,
+						 const gchar *postface);
+gint		camel_multipart_construct_from_parser
+						(CamelMultipart *multipart,
+						 CamelMimeParser *parser);
 
 G_END_DECLS
 

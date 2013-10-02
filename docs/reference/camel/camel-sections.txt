@@ -1793,9 +1793,11 @@ camel_multipart_new
 camel_multipart_add_part
 camel_multipart_get_part
 camel_multipart_get_number
-camel_multipart_set_boundary
 camel_multipart_get_boundary
+camel_multipart_set_boundary
+camel_multipart_get_preface
 camel_multipart_set_preface
+camel_multipart_get_postface
 camel_multipart_set_postface
 camel_multipart_construct_from_parser
 <SUBSECTION Standard>
@@ -1807,6 +1809,8 @@ CAMEL_IS_MULTIPART_CLASS
 CAMEL_MULTIPART_GET_CLASS
 CamelMultipartClass
 camel_multipart_get_type
+<SUBSECTION Private>
+CamelMultipartPrivate
 </SECTION>
 
 <SECTION>
