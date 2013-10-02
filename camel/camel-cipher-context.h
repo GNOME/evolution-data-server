@@ -161,10 +161,6 @@ struct _CamelCipherContextClass {
 						 CamelMimePart *opart,
 						 GCancellable *cancellable,
 						 GError **error);
-	gboolean	(*import_keys_sync)	(CamelCipherContext *context,
-						 CamelStream *istream,
-						 GCancellable *cancellable,
-						 GError **error);
 	gboolean	(*export_keys_sync)	(CamelCipherContext *context,
 						 GPtrArray *keys,
 						 CamelStream *ostream,
@@ -215,15 +211,6 @@ struct _CamelCipherContextClass {
 						 gpointer user_data);
 	CamelCipherValidity *
 			(*decrypt_finish)	(CamelCipherContext *context,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*import_keys)		(CamelCipherContext *context,
-						 CamelStream *istream,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*import_keys_finish)	(CamelCipherContext *context,
 						 GAsyncResult *result,
 						 GError **error);
 	void		(*export_keys)		(CamelCipherContext *context,
@@ -335,22 +322,6 @@ CamelCipherValidity *
 						 GError **error);
 
 /* key/certificate routines */
-gboolean	camel_cipher_context_import_keys_sync
-						(CamelCipherContext *context,
-						 CamelStream *istream,
-						 GCancellable *cancellable,
-						 GError **error);
-void		camel_cipher_context_import_keys
-						(CamelCipherContext *context,
-						 CamelStream *istream,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	camel_cipher_context_import_keys_finish
-						(CamelCipherContext *context,
-						 GAsyncResult *result,
-						 GError **error);
 gboolean	camel_cipher_context_export_keys_sync
 						(CamelCipherContext *context,
 						 GPtrArray *keys,

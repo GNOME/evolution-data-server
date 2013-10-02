@@ -93,7 +93,6 @@ enum _GpgCtxMode {
 	GPG_CTX_MODE_VERIFY,
 	GPG_CTX_MODE_ENCRYPT,
 	GPG_CTX_MODE_DECRYPT,
-	GPG_CTX_MODE_IMPORT,
 	GPG_CTX_MODE_EXPORT
 };
 
@@ -596,10 +595,6 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 	case GPG_CTX_MODE_DECRYPT:
 		g_ptr_array_add (argv, (guint8 *) "--decrypt");
 		g_ptr_array_add (argv, (guint8 *) "--output");
-		g_ptr_array_add (argv, (guint8 *) "-");
-		break;
-	case GPG_CTX_MODE_IMPORT:
-		g_ptr_array_add (argv, (guint8 *) "--import");
 		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_EXPORT:
@@ -1115,9 +1110,6 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 					_("Failed to encrypt: No valid recipients specified."));
 				return -1;
 			}
-			break;
-		case GPG_CTX_MODE_IMPORT:
-			/* noop */
 			break;
 		case GPG_CTX_MODE_EXPORT:
 			/* noop */
@@ -2255,47 +2247,6 @@ gpg_decrypt_sync (CamelCipherContext *context,
 }
 
 static gboolean
-gpg_import_keys_sync (CamelCipherContext *context,
-                      CamelStream *istream,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	struct _GpgCtx *gpg;
-	gboolean success = FALSE;
-
-	gpg = gpg_ctx_new (context);
-	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_IMPORT);
-	gpg_ctx_set_istream (gpg, istream);
-
-	if (!gpg_ctx_op_start (gpg, error))
-		goto fail;
-
-	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
-			gpg_ctx_op_cancel (gpg);
-			goto fail;
-		}
-	}
-
-	if (gpg_ctx_op_wait (gpg) != 0) {
-		const gchar *diagnostics;
-
-		diagnostics = gpg_ctx_get_diagnostics (gpg);
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
-			(diagnostics != NULL && *diagnostics != '\0') ?
-			diagnostics : _("Failed to execute gpg."));
-		goto fail;
-	}
-
-	success = TRUE;
-fail:
-	gpg_ctx_free (gpg);
-
-	return success;
-}
-
-static gboolean
 gpg_export_keys_sync (CamelCipherContext *context,
                       GPtrArray *keys,
                       CamelStream *ostream,
@@ -2365,7 +2316,6 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	cipher_context_class->verify_sync = gpg_verify_sync;
 	cipher_context_class->encrypt_sync = gpg_encrypt_sync;
 	cipher_context_class->decrypt_sync = gpg_decrypt_sync;
-	cipher_context_class->import_keys_sync = gpg_import_keys_sync;
 	cipher_context_class->export_keys_sync = gpg_export_keys_sync;
 
 	g_object_class_install_property (
