@@ -1791,7 +1791,6 @@ camel_multipart_signed_get_type
 CamelMultipart
 camel_multipart_new
 camel_multipart_add_part
-camel_multipart_remove_part
 camel_multipart_remove_part_at
 camel_multipart_get_part
 camel_multipart_get_number

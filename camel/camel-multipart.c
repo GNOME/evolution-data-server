@@ -167,18 +167,6 @@ multipart_add_part (CamelMultipart *multipart,
 		multipart->parts, g_object_ref (part));
 }
 
-static void
-multipart_remove_part (CamelMultipart *multipart,
-                       CamelMimePart *part)
-{
-	/* Make sure we don't unref a part we don't have. */
-	if (g_list_find (multipart->parts, part) == NULL)
-		return;
-
-	multipart->parts = g_list_remove (multipart->parts, part);
-	g_object_unref (part);
-}
-
 static CamelMimePart *
 multipart_remove_part_at (CamelMultipart *multipart,
                           guint index)
@@ -338,7 +326,6 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	data_wrapper_class->decode_to_stream_sync = multipart_write_to_stream_sync;
 
 	class->add_part = multipart_add_part;
-	class->remove_part = multipart_remove_part;
 	class->remove_part_at = multipart_remove_part_at;
 	class->get_part = multipart_get_part;
 	class->get_number = multipart_get_number;
@@ -396,28 +383,6 @@ camel_multipart_add_part (CamelMultipart *multipart,
 	g_return_if_fail (class->add_part != NULL);
 
 	class->add_part (multipart, part);
-}
-
-/**
- * camel_multipart_remove_part:
- * @multipart: a #CamelMultipart object
- * @part: a #CamelMimePart to remove
- *
- * Removes @part from @multipart.
- **/
-void
-camel_multipart_remove_part (CamelMultipart *multipart,
-                             CamelMimePart *part)
-{
-	CamelMultipartClass *class;
-
-	g_return_if_fail (CAMEL_IS_MULTIPART (multipart));
-	g_return_if_fail (CAMEL_IS_MIME_PART (part));
-
-	class = CAMEL_MULTIPART_GET_CLASS (multipart);
-	g_return_if_fail (class->remove_part != NULL);
-
-	class->remove_part (multipart, part);
 }
 
 /**
