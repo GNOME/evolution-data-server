@@ -1141,7 +1141,6 @@ camel_index_find_name
 camel_index_delete_name
 camel_index_find
 camel_index_words
-camel_index_names
 <SUBSECTION Standard>
 CAMEL_INDEX
 CAMEL_IS_INDEX

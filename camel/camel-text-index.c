@@ -811,14 +811,6 @@ text_index_words (CamelIndex *idx)
 	return (CamelIndexCursor *) camel_text_index_key_cursor_new ((CamelTextIndex *) idx, p->word_index);
 }
 
-static CamelIndexCursor *
-text_index_names (CamelIndex *idx)
-{
-	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
-
-	return (CamelIndexCursor *) camel_text_index_key_cursor_new ((CamelTextIndex *) idx, p->name_index);
-}
-
 static void
 camel_text_index_class_init (CamelTextIndexClass *class)
 {
@@ -843,7 +835,6 @@ camel_text_index_class_init (CamelTextIndexClass *class)
 	index_class->delete_name = text_index_delete_name;
 	index_class->find = text_index_find;
 	index_class->words = text_index_words;
-	index_class->names = text_index_names;
 }
 
 static void

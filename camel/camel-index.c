@@ -316,22 +316,6 @@ camel_index_words (CamelIndex *idx)
 		return NULL;
 }
 
-CamelIndexCursor *
-camel_index_names (CamelIndex *idx)
-{
-	CamelIndexClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
-
-	class = CAMEL_INDEX_GET_CLASS (idx);
-	g_return_val_if_fail (class->names != NULL, NULL);
-
-	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return class->names (idx);
-	else
-		return NULL;
-}
-
 /* ********************************************************************** */
 /* CamelIndexName */
 /* ********************************************************************** */

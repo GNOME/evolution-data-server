@@ -180,8 +180,6 @@ struct _CamelIndexClass {
 						 const gchar *word);
 	CamelIndexCursor *
 			(*words)		(CamelIndex *index);
-	CamelIndexCursor *
-			(*names)		(CamelIndex *index);
 };
 
 /* flags, stored in 'state', set with set_state */
@@ -215,8 +213,6 @@ CamelIndexCursor *
 						 const gchar *word);
 CamelIndexCursor *
 		camel_index_words		(CamelIndex *index);
-CamelIndexCursor *
-		camel_index_names		(CamelIndex *index);
 
 G_END_DECLS
 
