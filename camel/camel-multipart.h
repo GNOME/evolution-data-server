@@ -71,7 +71,6 @@ struct _CamelMultipartClass {
 
 	/* Virtual methods */
 	void (*add_part) (CamelMultipart *multipart, CamelMimePart *part);
-	void (*add_part_at) (CamelMultipart *multipart, CamelMimePart *part, guint index);
 	void (*remove_part) (CamelMultipart *multipart, CamelMimePart *part);
 	CamelMimePart * (*remove_part_at) (CamelMultipart *multipart, guint index);
 	CamelMimePart * (*get_part) (CamelMultipart *multipart, guint index);
@@ -89,9 +88,6 @@ GType camel_multipart_get_type (void);
 CamelMultipart *    camel_multipart_new            (void);
 void                camel_multipart_add_part       (CamelMultipart *multipart,
 						    CamelMimePart *part);
-void                camel_multipart_add_part_at    (CamelMultipart *multipart,
-						    CamelMimePart *part,
-						    guint index);
 void                camel_multipart_remove_part    (CamelMultipart *multipart,
 						    CamelMimePart *part);
 CamelMimePart *     camel_multipart_remove_part_at (CamelMultipart *multipart,

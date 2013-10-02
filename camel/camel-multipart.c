@@ -168,15 +168,6 @@ multipart_add_part (CamelMultipart *multipart,
 }
 
 static void
-multipart_add_part_at (CamelMultipart *multipart,
-                       CamelMimePart *part,
-                       guint index)
-{
-	multipart->parts = g_list_insert (
-		multipart->parts, g_object_ref (part), index);
-}
-
-static void
 multipart_remove_part (CamelMultipart *multipart,
                        CamelMimePart *part)
 {
@@ -347,7 +338,6 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	data_wrapper_class->decode_to_stream_sync = multipart_write_to_stream_sync;
 
 	class->add_part = multipart_add_part;
-	class->add_part_at = multipart_add_part_at;
 	class->remove_part = multipart_remove_part;
 	class->remove_part_at = multipart_remove_part_at;
 	class->get_part = multipart_get_part;
@@ -406,32 +396,6 @@ camel_multipart_add_part (CamelMultipart *multipart,
 	g_return_if_fail (class->add_part != NULL);
 
 	class->add_part (multipart, part);
-}
-
-/**
- * camel_multipart_add_part_at:
- * @multipart: a #CamelMultipart object
- * @part: a #CamelMimePart to add
- * @index: index to add the multipart at
- *
- * Adds the part to the multipart object after the @index'th
- * element. If @index is greater than the number of parts, it is
- * equivalent to camel_multipart_add_part().
- **/
-void
-camel_multipart_add_part_at (CamelMultipart *multipart,
-                             CamelMimePart *part,
-                             guint index)
-{
-	CamelMultipartClass *class;
-
-	g_return_if_fail (CAMEL_IS_MULTIPART (multipart));
-	g_return_if_fail (CAMEL_IS_MIME_PART (part));
-
-	class = CAMEL_MULTIPART_GET_CLASS (multipart);
-	g_return_if_fail (class->add_part_at != NULL);
-
-	class->add_part_at (multipart, part, index);
 }
 
 /**
