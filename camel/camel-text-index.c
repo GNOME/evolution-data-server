@@ -1683,20 +1683,6 @@ text_index_cursor_next (CamelIndexCursor *idc)
 }
 
 static void
-text_index_cursor_reset (CamelIndexCursor *idc)
-{
-	CamelTextIndexCursorPrivate *p = CAMEL_TEXT_INDEX_CURSOR_GET_PRIVATE (idc);
-
-	g_free (p->records);
-	p->records = NULL;
-	g_free (p->current);
-	p->current = NULL;
-	p->record_count = 0;
-	p->record_index = 0;
-	p->next = p->first;
-}
-
-static void
 camel_text_index_cursor_class_init (CamelTextIndexCursorClass *class)
 {
 	GObjectClass *object_class;
@@ -1709,7 +1695,6 @@ camel_text_index_cursor_class_init (CamelTextIndexCursorClass *class)
 
 	index_cursor_class = CAMEL_INDEX_CURSOR_CLASS (class);
 	index_cursor_class->next = text_index_cursor_next;
-	index_cursor_class->reset = text_index_cursor_reset;
 }
 
 static void
@@ -1794,18 +1779,6 @@ text_index_key_cursor_next (CamelIndexCursor *idc)
 }
 
 static void
-text_index_key_cursor_reset (CamelIndexCursor *idc)
-{
-	CamelTextIndexKeyCursorPrivate *p = CAMEL_TEXT_INDEX_KEY_CURSOR_GET_PRIVATE (idc);
-
-	p->keyid = 0;
-	p->flags = 0;
-	p->data = 0;
-	g_free (p->current);
-	p->current = NULL;
-}
-
-static void
 camel_text_index_key_cursor_class_init (CamelTextIndexKeyCursorClass *class)
 {
 	GObjectClass *object_class;
@@ -1819,7 +1792,6 @@ camel_text_index_key_cursor_class_init (CamelTextIndexKeyCursorClass *class)
 
 	index_cursor_class = CAMEL_INDEX_CURSOR_CLASS (class);
 	index_cursor_class->next = text_index_key_cursor_next;
-	index_cursor_class->reset = text_index_key_cursor_reset;
 }
 
 static void

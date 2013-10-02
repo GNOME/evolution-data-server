@@ -1124,7 +1124,6 @@ CamelIndex
 CamelIndexNorm
 CamelIndexCursor
 camel_index_cursor_next
-camel_index_cursor_reset
 CamelIndexName
 camel_index_name_new
 camel_index_name_add_word

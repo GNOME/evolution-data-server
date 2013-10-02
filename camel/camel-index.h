@@ -111,12 +111,10 @@ struct _CamelIndexCursorClass {
 	CamelObjectClass parent;
 
 	const gchar * (*next) (CamelIndexCursor *idc);
-	void         (*reset) (CamelIndexCursor *idc);
 };
 
 GType           camel_index_cursor_get_type (void);
 const gchar        *camel_index_cursor_next (CamelIndexCursor *idc);
-void               camel_index_cursor_reset (CamelIndexCursor *idc);
 
 /* ********************************************************************** */
 

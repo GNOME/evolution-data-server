@@ -473,15 +473,3 @@ camel_index_cursor_next (CamelIndexCursor *idc)
 	return class->next (idc);
 }
 
-void
-camel_index_cursor_reset (CamelIndexCursor *idc)
-{
-	CamelIndexCursorClass *class;
-
-	g_return_if_fail (CAMEL_IS_INDEX_CURSOR (idc));
-
-	class = CAMEL_INDEX_CURSOR_GET_CLASS (idc);
-	g_return_if_fail (class->reset != NULL);
-
-	class->reset (idc);
-}
