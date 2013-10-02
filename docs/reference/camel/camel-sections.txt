@@ -1486,24 +1486,6 @@ CamelMimeFilterPgpPrivate
 </SECTION>
 
 <SECTION>
-<FILE>camel-mime-filter-save</FILE>
-<TITLE>CamelMimeFilterSave</TITLE>
-CamelMimeFilterSave
-camel_mime_filter_save_new
-<SUBSECTION Standard>
-CAMEL_MIME_FILTER_SAVE
-CAMEL_IS_MIME_FILTER_SAVE
-CAMEL_TYPE_MIME_FILTER_SAVE
-CAMEL_MIME_FILTER_SAVE_CLASS
-CAMEL_IS_MIME_FILTER_SAVE_CLASS
-CAMEL_MIME_FILTER_SAVE_GET_CLASS
-CamelMimeFilterSaveClass
-camel_mime_filter_save_get_type
-<SUBSECTION Private>
-CamelMimeFilterSavePrivate
-</SECTION>
-
-<SECTION>
 <FILE>camel-mime-filter-tohtml</FILE>
 <TITLE>CamelMimeFilterToHTML</TITLE>
 CamelMimeFilterToHTML

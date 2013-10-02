@@ -37,7 +37,6 @@
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-crlf.h"
-#include "camel-mime-filter-save.h"
 #include "camel-mime-message.h"
 #include "camel-mime-part-utils.h"
 #include "camel-multipart-encrypted.h"

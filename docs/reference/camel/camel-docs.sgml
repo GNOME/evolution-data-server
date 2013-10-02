@@ -76,7 +76,6 @@
       <xi:include href="xml/camel-mime-filter-linewrap.xml"/>
       <xi:include href="xml/camel-mime-filter-pgp.xml"/>
       <xi:include href="xml/camel-mime-filter-progress.xml"/>
-      <xi:include href="xml/camel-mime-filter-save.xml"/>
       <xi:include href="xml/camel-mime-filter-tohtml.xml"/>
       <xi:include href="xml/camel-mime-filter-windows.xml"/>
       <xi:include href="xml/camel-mime-filter-yenc.xml"/>

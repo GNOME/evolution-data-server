@@ -83,7 +83,6 @@ camel/camel-mime-filter-gzip.c
 camel/camel-mime-filter-html.c
 camel/camel-mime-filter-index.c
 camel/camel-mime-filter-linewrap.c
-camel/camel-mime-filter-save.c
 camel/camel-mime-filter-tohtml.c
 camel/camel-mime-filter-windows.c
 camel/camel-mime-filter-yenc.c

@@ -106,7 +106,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-mime-filter-linewrap.c		\
 	camel-mime-filter-pgp.c			\
 	camel-mime-filter-progress.c		\
-	camel-mime-filter-save.c		\
 	camel-mime-filter-tohtml.c		\
 	camel-mime-filter-windows.c		\
 	camel-mime-filter-yenc.c		\
@@ -238,7 +237,6 @@ libcamelinclude_HEADERS =			\
 	camel-mime-filter-linewrap.h		\
 	camel-mime-filter-pgp.h			\
 	camel-mime-filter-progress.h		\
-	camel-mime-filter-save.h		\
 	camel-mime-filter-tohtml.h		\
 	camel-mime-filter-windows.h		\
 	camel-mime-filter-yenc.h		\
