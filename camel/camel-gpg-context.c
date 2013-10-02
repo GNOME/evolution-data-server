@@ -92,8 +92,7 @@ enum _GpgCtxMode {
 	GPG_CTX_MODE_SIGN,
 	GPG_CTX_MODE_VERIFY,
 	GPG_CTX_MODE_ENCRYPT,
-	GPG_CTX_MODE_DECRYPT,
-	GPG_CTX_MODE_EXPORT
+	GPG_CTX_MODE_DECRYPT
 };
 
 enum _GpgTrustMetric {
@@ -312,7 +311,7 @@ gpg_ctx_add_recipient (struct _GpgCtx *gpg,
 {
 	gchar *safe_keyid;
 
-	if (gpg->mode != GPG_CTX_MODE_ENCRYPT && gpg->mode != GPG_CTX_MODE_EXPORT)
+	if (gpg->mode != GPG_CTX_MODE_ENCRYPT)
 		return;
 
 	if (!gpg->recipients)
@@ -596,13 +595,6 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 		g_ptr_array_add (argv, (guint8 *) "--decrypt");
 		g_ptr_array_add (argv, (guint8 *) "--output");
 		g_ptr_array_add (argv, (guint8 *) "-");
-		break;
-	case GPG_CTX_MODE_EXPORT:
-		if (gpg->armor)
-			g_ptr_array_add (argv, (guint8 *) "--armor");
-		g_ptr_array_add (argv, (guint8 *) "--export");
-		for (i = 0; i < gpg->recipients->len; i++)
-			g_ptr_array_add (argv, gpg->recipients->pdata[i]);
 		break;
 	}
 
@@ -1110,9 +1102,6 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 					_("Failed to encrypt: No valid recipients specified."));
 				return -1;
 			}
-			break;
-		case GPG_CTX_MODE_EXPORT:
-			/* noop */
 			break;
 		}
 	}
@@ -2246,54 +2235,6 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	return valid;
 }
 
-static gboolean
-gpg_export_keys_sync (CamelCipherContext *context,
-                      GPtrArray *keys,
-                      CamelStream *ostream,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	struct _GpgCtx *gpg;
-	gboolean success = FALSE;
-	gint i;
-
-	gpg = gpg_ctx_new (context);
-	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_EXPORT);
-	gpg_ctx_set_armor (gpg, TRUE);
-	gpg_ctx_set_ostream (gpg, ostream);
-
-	for (i = 0; i < keys->len; i++) {
-		gpg_ctx_add_recipient (gpg, keys->pdata[i]);
-	}
-
-	if (!gpg_ctx_op_start (gpg, error))
-		goto fail;
-
-	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
-			gpg_ctx_op_cancel (gpg);
-			goto fail;
-		}
-	}
-
-	if (gpg_ctx_op_wait (gpg) != 0) {
-		const gchar *diagnostics;
-
-		diagnostics = gpg_ctx_get_diagnostics (gpg);
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
-			(diagnostics != NULL && *diagnostics != '\0') ?
-			diagnostics : _("Failed to execute gpg."));
-		goto fail;
-	}
-
-	success = TRUE;
-fail:
-	gpg_ctx_free (gpg);
-
-	return success;
-}
-
 static void
 camel_gpg_context_class_init (CamelGpgContextClass *class)
 {
@@ -2316,7 +2257,6 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	cipher_context_class->verify_sync = gpg_verify_sync;
 	cipher_context_class->encrypt_sync = gpg_encrypt_sync;
 	cipher_context_class->decrypt_sync = gpg_decrypt_sync;
-	cipher_context_class->export_keys_sync = gpg_export_keys_sync;
 
 	g_object_class_install_property (
 		object_class,

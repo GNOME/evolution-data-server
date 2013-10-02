@@ -253,20 +253,6 @@ cipher_context_decrypt_sync (CamelCipherContext *context,
 	return NULL;
 }
 
-static gint
-cipher_context_export_keys_sync (CamelCipherContext *context,
-                                 GPtrArray *keys,
-                                 CamelStream *ostream,
-                                 GCancellable *cancellable,
-                                 GError **error)
-{
-	g_set_error (
-		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		_("You may not export keys with this cipher"));
-
-	return FALSE;
-}
-
 static void
 cipher_context_sign_thread (GSimpleAsyncResult *simple,
                             GObject *object,
@@ -566,80 +552,6 @@ cipher_context_decrypt_finish (CamelCipherContext *context,
 }
 
 static void
-cipher_context_export_keys_thread (GSimpleAsyncResult *simple,
-                                   GObject *object,
-                                   GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_cipher_context_export_keys_sync (
-		CAMEL_CIPHER_CONTEXT (object), async_context->strings,
-		async_context->stream, cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-cipher_context_export_keys (CamelCipherContext *context,
-                            GPtrArray *keys,
-                            CamelStream *ostream,
-                            gint io_priority,
-                            GCancellable *cancellable,
-                            GAsyncReadyCallback callback,
-                            gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	guint ii;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->strings = g_ptr_array_new ();
-	async_context->stream = g_object_ref (ostream);
-
-	for (ii = 0; ii < keys->len; ii++)
-		g_ptr_array_add (
-			async_context->strings,
-			g_strdup (keys->pdata[ii]));
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (context), callback,
-		user_data, cipher_context_export_keys);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, cipher_context_export_keys_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-cipher_context_export_keys_finish (CamelCipherContext *context,
-                                   GAsyncResult *result,
-                                   GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (context),
-		cipher_context_export_keys), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
 camel_cipher_context_class_init (CamelCipherContextClass *class)
 {
 	GObjectClass *object_class;
@@ -659,7 +571,6 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 	class->verify_sync = cipher_context_verify_sync;
 	class->encrypt_sync = cipher_context_encrypt_sync;
 	class->decrypt_sync = cipher_context_decrypt_sync;
-	class->export_keys_sync = cipher_context_export_keys_sync;
 
 	class->sign = cipher_context_sign;
 	class->sign_finish = cipher_context_sign_finish;
@@ -669,8 +580,6 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 	class->encrypt_finish = cipher_context_encrypt_finish;
 	class->decrypt = cipher_context_decrypt;
 	class->decrypt_finish = cipher_context_decrypt_finish;
-	class->export_keys = cipher_context_export_keys;
-	class->export_keys_finish = cipher_context_export_keys_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1182,115 +1091,6 @@ camel_cipher_context_decrypt_finish (CamelCipherContext *context,
 	g_return_val_if_fail (class->decrypt_finish != NULL, NULL);
 
 	return class->decrypt_finish (context, result, error);
-}
-
-/**
- * camel_cipher_context_export_keys_sync:
- * @context: a #CamelCipherContext
- * @keys: an array of key IDs
- * @ostream: an output stream
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Exports the keys/certificates in @keys to the stream @ostream from
- * the key/certificate database controlled by @context.
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_cipher_context_export_keys_sync (CamelCipherContext *context,
-                                       GPtrArray *keys,
-                                       CamelStream *ostream,
-                                       GCancellable *cancellable,
-                                       GError **error)
-{
-	CamelCipherContextClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), FALSE);
-	g_return_val_if_fail (keys != NULL, FALSE);
-	g_return_val_if_fail (CAMEL_IS_STREAM (ostream), FALSE);
-
-	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
-	g_return_val_if_fail (class->export_keys_sync != NULL, FALSE);
-
-	success = class->export_keys_sync (
-		context, keys, ostream, cancellable, error);
-	CAMEL_CHECK_GERROR (context, export_keys_sync, success, error);
-
-	return success;
-}
-
-/**
- * camel_cipher_context_export_keys:
- * @context: a #CamelCipherContext
- * @keys: an array of key IDs
- * @ostream: an output stream
- * @io_priority: the I/O priority of the request
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Asynchronously exports the keys/certificates in @keys to the stream
- * @ostream from the key/certificate database controlled by @context.
- *
- * When the operation is finished, @callback will be called.  You can then
- * call camel_cipher_context_export_keys_finish() to get the result of the
- * operation.
- *
- * Since: 3.0
- **/
-void
-camel_cipher_context_export_keys (CamelCipherContext *context,
-                                  GPtrArray *keys,
-                                  CamelStream *ostream,
-                                  gint io_priority,
-                                  GCancellable *cancellable,
-                                  GAsyncReadyCallback callback,
-                                  gpointer user_data)
-{
-	CamelCipherContextClass *class;
-
-	g_return_if_fail (CAMEL_IS_CIPHER_CONTEXT (context));
-	g_return_if_fail (keys != NULL);
-	g_return_if_fail (CAMEL_IS_STREAM (ostream));
-
-	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
-	g_return_if_fail (class->export_keys != NULL);
-
-	class->export_keys (
-		context, keys, ostream, io_priority,
-		cancellable, callback, user_data);
-}
-
-/**
- * camel_cipher_context_export_keys_finish:
- * @context: a #CamelCipherContext
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with camel_cipher_context_export_keys().
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_cipher_context_export_keys_finish (CamelCipherContext *context,
-                                         GAsyncResult *result,
-                                         GError **error)
-{
-	CamelCipherContextClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
-	g_return_val_if_fail (class->export_keys_finish != NULL, FALSE);
-
-	return class->export_keys_finish (context, result, error);
 }
 
 /* a couple of util functions */
