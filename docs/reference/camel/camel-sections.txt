@@ -1128,7 +1128,6 @@ CamelIndexName
 camel_index_name_add_word
 camel_index_name_add_buffer
 CAMEL_INDEX_DELETED
-camel_index_new
 camel_index_construct
 camel_index_rename
 camel_index_set_normalize

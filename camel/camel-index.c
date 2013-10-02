@@ -82,18 +82,6 @@ camel_index_init (CamelIndex *index)
 	index->version = CAMEL_INDEX_VERSION;
 }
 
-CamelIndex *
-camel_index_new (const gchar *path,
-                 gint flags)
-{
-	CamelIndex *idx;
-
-	idx = g_object_new (CAMEL_TYPE_INDEX, NULL);
-	camel_index_construct (idx, path, flags);
-
-	return idx;
-}
-
 void
 camel_index_construct (CamelIndex *idx,
                        const gchar *path,

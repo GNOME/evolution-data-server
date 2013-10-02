@@ -188,8 +188,6 @@ struct _CamelIndexClass {
 #define CAMEL_INDEX_DELETED (1 << 0)
 
 GType		camel_index_get_type		(void);
-CamelIndex *	camel_index_new			(const gchar *path,
-						 gint flags);
 void		camel_index_construct		(CamelIndex *index,
 						 const gchar *path,
 						 gint flags);
