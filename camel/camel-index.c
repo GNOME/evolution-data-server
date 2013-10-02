@@ -378,18 +378,6 @@ camel_index_name_init (CamelIndexName *index_name)
 {
 }
 
-CamelIndexName *
-camel_index_name_new (CamelIndex *idx,
-                      const gchar *name)
-{
-	CamelIndexName *idn;
-
-	idn = g_object_new (CAMEL_TYPE_INDEX_NAME, NULL);
-	idn->index = g_object_ref (idx);
-
-	return idn;
-}
-
 void
 camel_index_name_add_word (CamelIndexName *idn,
                            const gchar *word)

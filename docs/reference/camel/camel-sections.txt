@@ -1125,7 +1125,6 @@ CamelIndexNorm
 CamelIndexCursor
 camel_index_cursor_next
 CamelIndexName
-camel_index_name_new
 camel_index_name_add_word
 camel_index_name_add_buffer
 CAMEL_INDEX_DELETED

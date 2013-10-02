@@ -139,9 +139,6 @@ struct _CamelIndexNameClass {
 };
 
 GType           camel_index_name_get_type	(void);
-
-CamelIndexName    *camel_index_name_new (CamelIndex *index, const gchar *name);
-
 void               camel_index_name_add_word (CamelIndexName *name, const gchar *word);
 gsize             camel_index_name_add_buffer (CamelIndexName *name, const gchar *buffer, gsize len);
 
