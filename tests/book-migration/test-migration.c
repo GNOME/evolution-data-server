@@ -290,7 +290,7 @@ list_migration_sandboxes (void)
 			 * is the case then we skip the migration tests from versions of EDS where we
 			 * used Berkeley DB
 			 */
-			gchar *old_bdb = g_build_filename (EDS_TEST_BOOKS, filename, "addressbook.dump", NULL);
+			gchar *old_bdb = g_build_filename (EDS_TEST_SQLITE_BOOKS, filename, "addressbook.dump", NULL);
 
 			if (!g_file_test (old_bdb, G_FILE_TEST_EXISTS))
 				sandboxes = g_list_prepend (sandboxes, g_strdup (filename));
