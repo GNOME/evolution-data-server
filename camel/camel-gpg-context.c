@@ -2055,8 +2055,6 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	camel_content_type_unref (ct);
 	camel_multipart_set_boundary ((CamelMultipart *) mpe, NULL);
 
-	mpe->decrypted = g_object_ref (ipart);
-
 	camel_multipart_add_part ((CamelMultipart *) mpe, verpart);
 	g_object_unref (verpart);
 	camel_multipart_add_part ((CamelMultipart *) mpe, encpart);

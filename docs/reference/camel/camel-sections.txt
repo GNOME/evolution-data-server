@@ -1766,6 +1766,8 @@ CAMEL_IS_MULTIPART_ENCRYPTED_CLASS
 CAMEL_MULTIPART_ENCRYPTED_GET_CLASS
 CamelMultipartEncryptedClass
 camel_multipart_encrypted_get_type
+<SUBSECTION Private>
+CamelMultipartEncryptedPrivate
 </SECTION>
 
 <SECTION>

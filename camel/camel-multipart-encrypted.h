@@ -52,6 +52,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMultipartEncrypted CamelMultipartEncrypted;
 typedef struct _CamelMultipartEncryptedClass CamelMultipartEncryptedClass;
+typedef struct _CamelMultipartEncryptedPrivate CamelMultipartEncryptedPrivate;
 
 /* 'handy' enums for getting the internal parts of the multipart */
 enum {
@@ -61,12 +62,7 @@ enum {
 
 struct _CamelMultipartEncrypted {
 	CamelMultipart parent;
-
-	CamelMimePart *version;
-	CamelMimePart *content;
-	CamelMimePart *decrypted;
-
-	gchar *protocol;
+	CamelMultipartEncryptedPrivate *priv;
 };
 
 struct _CamelMultipartEncryptedClass {
@@ -74,9 +70,9 @@ struct _CamelMultipartEncryptedClass {
 
 };
 
-GType camel_multipart_encrypted_get_type (void);
-
-CamelMultipartEncrypted *camel_multipart_encrypted_new (void);
+GType		camel_multipart_encrypted_get_type	(void) G_GNUC_CONST;
+CamelMultipartEncrypted *
+		camel_multipart_encrypted_new		(void);
 
 G_END_DECLS
 
