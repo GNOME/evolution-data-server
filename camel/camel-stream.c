@@ -22,15 +22,12 @@
  * USA
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <errno.h>
-#include <string.h>
-
-#include "camel-debug.h"
 #include "camel-stream.h"
+
+#include <config.h>
+#include <glib/gi18n-lib.h>
+
+#include <camel/camel-debug.h>
 
 #define CAMEL_STREAM_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -46,7 +43,16 @@ enum {
 	PROP_BASE_STREAM
 };
 
-G_DEFINE_TYPE (CamelStream, camel_stream, CAMEL_TYPE_OBJECT)
+/* Forward Declarations */
+static void	camel_stream_seekable_init	(GSeekableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	CamelStream,
+	camel_stream,
+	CAMEL_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_SEEKABLE,
+		camel_stream_seekable_init))
 
 static void
 stream_set_property (GObject *object,
@@ -211,6 +217,131 @@ stream_eos (CamelStream *stream)
 	return stream->eos;
 }
 
+static goffset
+stream_tell (GSeekable *seekable)
+{
+	CamelStream *stream;
+	GIOStream *base_stream;
+	goffset position = 0;
+
+	stream = CAMEL_STREAM (seekable);
+	base_stream = camel_stream_ref_base_stream (stream);
+
+	if (G_IS_SEEKABLE (base_stream)) {
+		position = g_seekable_tell (G_SEEKABLE (base_stream));
+	} else if (base_stream != NULL) {
+		g_critical (
+			"Stream type '%s' is not seekable",
+			G_OBJECT_TYPE_NAME (base_stream));
+	}
+
+	g_clear_object (&base_stream);
+
+	return position;
+}
+
+static gboolean
+stream_can_seek (GSeekable *seekable)
+{
+	CamelStream *stream;
+	GIOStream *base_stream;
+	gboolean can_seek = FALSE;
+
+	stream = CAMEL_STREAM (seekable);
+	base_stream = camel_stream_ref_base_stream (stream);
+
+	if (G_IS_SEEKABLE (base_stream))
+		can_seek = g_seekable_can_seek (G_SEEKABLE (base_stream));
+
+	g_clear_object (&base_stream);
+
+	return can_seek;
+}
+
+static gboolean
+stream_seek (GSeekable *seekable,
+             goffset offset,
+             GSeekType type,
+             GCancellable *cancellable,
+             GError **error)
+{
+	CamelStream *stream;
+	GIOStream  *base_stream;
+	gboolean success = FALSE;
+
+	stream = CAMEL_STREAM (seekable);
+	base_stream = camel_stream_ref_base_stream (stream);
+
+	if (G_IS_SEEKABLE (base_stream)) {
+		success = g_seekable_seek (
+			G_SEEKABLE (base_stream),
+			offset, type, cancellable, error);
+	} else if (base_stream != NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Stream type '%s' is not seekable"),
+			G_OBJECT_TYPE_NAME (base_stream));
+	} else {
+		g_warn_if_reached ();
+	}
+
+	g_clear_object (&base_stream);
+
+	return success;
+}
+
+static gboolean
+stream_can_truncate (GSeekable *seekable)
+{
+	CamelStream *stream;
+	GIOStream *base_stream;
+	gboolean can_truncate = FALSE;
+
+	stream = CAMEL_STREAM (seekable);
+	base_stream = camel_stream_ref_base_stream (stream);
+
+	if (G_IS_SEEKABLE (base_stream))
+		can_truncate = g_seekable_can_truncate (
+			G_SEEKABLE (base_stream));
+
+	g_clear_object (&base_stream);
+
+	return can_truncate;
+}
+
+static gboolean
+stream_truncate (GSeekable *seekable,
+                 goffset offset,
+                 GCancellable *cancellable,
+                 GError **error)
+{
+	CamelStream *stream;
+	GIOStream *base_stream;
+	gboolean success = FALSE;
+
+	stream = CAMEL_STREAM (seekable);
+	base_stream = camel_stream_ref_base_stream (stream);
+
+	if (G_IS_SEEKABLE (base_stream)) {
+		success = g_seekable_truncate (
+			G_SEEKABLE (base_stream),
+			offset, cancellable, error);
+	} else if (base_stream != NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Stream type '%s' is not seekable"),
+			G_OBJECT_TYPE_NAME (base_stream));
+	} else {
+		g_warn_if_reached ();
+	}
+
+	g_clear_object (&base_stream);
+
+	return success;
+}
+
 static void
 camel_stream_class_init (CamelStreamClass *class)
 {
@@ -240,6 +371,16 @@ camel_stream_class_init (CamelStreamClass *class)
 			G_TYPE_IO_STREAM,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+}
+
+static void
+camel_stream_seekable_init (GSeekableIface *interface)
+{
+	interface->tell = stream_tell;
+	interface->can_seek = stream_can_seek;
+	interface->seek = stream_seek;
+	interface->can_truncate = stream_can_truncate;
+	interface->truncate_fn = stream_truncate;
 }
 
 static void
