@@ -87,11 +87,6 @@ struct _CamelStreamBufferClass {
 GType		camel_stream_buffer_get_type	(void);
 CamelStream *	camel_stream_buffer_new		(CamelStream *stream,
 						 CamelStreamBufferMode mode);
-CamelStream *	camel_stream_buffer_new_with_vbuf
-						(CamelStream *stream,
-						 CamelStreamBufferMode mode,
-						 gchar *buf,
-						 guint32 size);
 gint		camel_stream_buffer_gets	(CamelStreamBuffer *sbf,
 						 gchar *buf,
 						 guint max,

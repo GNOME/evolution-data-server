@@ -48,14 +48,9 @@ struct _CamelStreamBufferPrivate {
 	gint linesize;
 
 	CamelStreamBufferMode mode;
-	guint flags;
 };
 
 G_DEFINE_TYPE (CamelStreamBuffer, camel_stream_buffer, CAMEL_TYPE_STREAM)
-
-enum {
-	BUF_USER = 1 << 0	/* user-supplied buffer, do not free */
-};
 
 #define BUF_SIZE 1024
 
@@ -83,28 +78,18 @@ stream_write_all (CamelStream *stream,
 
 static void
 set_vbuf (CamelStreamBuffer *stream,
-          gchar *buf,
-          CamelStreamBufferMode mode,
-          gint size)
+          CamelStreamBufferMode mode)
 {
 	CamelStreamBufferPrivate *priv;
 
 	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
-	if (priv->buf && !(priv->flags & BUF_USER))
-		g_free (priv->buf);
+	g_free (priv->buf);
 
-	if (buf) {
-		priv->buf = (guchar *) buf;
-		priv->flags |= BUF_USER;
-	} else {
-		priv->buf = g_malloc (size);
-		priv->flags &= ~BUF_USER;
-	}
-
+	priv->buf = g_malloc (BUF_SIZE);
 	priv->ptr = priv->buf;
 	priv->end = priv->buf;
-	priv->size = size;
+	priv->size = BUF_SIZE;
 	priv->mode = mode;
 }
 
@@ -131,9 +116,7 @@ stream_buffer_finalize (GObject *object)
 
 	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (object);
 
-	if (!(priv->flags & BUF_USER))
-		g_free (priv->buf);
-
+	g_free (priv->buf);
 	g_free (priv->linebuf);
 
 	/* Chain up to parent's finalize() method. */
@@ -317,30 +300,20 @@ stream_buffer_eos (CamelStream *stream)
 }
 
 static void
-stream_buffer_init_vbuf (CamelStreamBuffer *stream,
-                         CamelStream *other_stream,
-                         CamelStreamBufferMode mode,
-                         gchar *buf,
-                         guint32 size)
+stream_buffer_init_method (CamelStreamBuffer *stream,
+                           CamelStream *other_stream,
+                           CamelStreamBufferMode mode)
 {
 	CamelStreamBufferPrivate *priv;
 
 	priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
 
-	set_vbuf (stream, buf, mode, size);
+	set_vbuf (stream, mode);
 
 	if (priv->stream != NULL)
 		g_object_unref (priv->stream);
 
 	priv->stream = g_object_ref (other_stream);
-}
-
-static void
-stream_buffer_init_method (CamelStreamBuffer *stream,
-                           CamelStream *other_stream,
-                           CamelStreamBufferMode mode)
-{
-	stream_buffer_init_vbuf (stream, other_stream, mode, NULL, BUF_SIZE);
 }
 
 static void
@@ -363,14 +336,12 @@ camel_stream_buffer_class_init (CamelStreamBufferClass *class)
 	stream_class->eos = stream_buffer_eos;
 
 	class->init = stream_buffer_init_method;
-	class->init_vbuf = stream_buffer_init_vbuf;
 }
 
 static void
 camel_stream_buffer_init (CamelStreamBuffer *stream)
 {
 	stream->priv = CAMEL_STREAM_BUFFER_GET_PRIVATE (stream);
-	stream->priv->flags = 0;
 	stream->priv->size = BUF_SIZE;
 	stream->priv->buf = g_malloc (BUF_SIZE);
 	stream->priv->ptr = stream->priv->buf;
@@ -392,39 +363,6 @@ camel_stream_buffer_init (CamelStreamBuffer *stream)
  * buffer size (1024 bytes), automatically managed will be used
  * for buffering.
  *
- * See camel_stream_buffer_new_with_vbuf() for details on the
- * @mode parameter.
- *
- * Returns: a newly created buffered stream.
- **/
-CamelStream *
-camel_stream_buffer_new (CamelStream *stream,
-                         CamelStreamBufferMode mode)
-{
-	CamelStreamBuffer *sbf;
-	CamelStreamBufferClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
-
-	sbf = g_object_new (CAMEL_TYPE_STREAM_BUFFER, NULL);
-
-	class = CAMEL_STREAM_BUFFER_GET_CLASS (sbf);
-	g_return_val_if_fail (class->init != NULL, NULL);
-
-	class->init (sbf, stream, mode);
-
-	return CAMEL_STREAM (sbf);
-}
-
-/**
- * camel_stream_buffer_new_with_vbuf:
- * @stream: An existing stream to buffer.
- * @mode: Mode to buffer in.
- * @buf: Memory to use for buffering.
- * @size: Size of buffer to use.
- *
- * Create a new stream which buffers another stream, @stream.
- *
  * The following values are available for @mode:
  *
  * #CAMEL_STREAM_BUFFER_BUFFER, Buffer the input/output in blocks.
@@ -443,32 +381,23 @@ camel_stream_buffer_new (CamelStream *stream,
  * Buffering can only be done in one direction for any
  * buffer instance.
  *
- * If @buf is non-NULL, then use the memory pointed to
- * (for upto @size bytes) as the buffer for all buffering
- * operations.  It is upto the application to free this buffer.
- * If @buf is NULL, then allocate and manage @size bytes
- * for all buffering.
- *
- * Returns: A new stream with buffering applied.
+ * Returns: a newly created buffered stream.
  **/
 CamelStream *
-camel_stream_buffer_new_with_vbuf (CamelStream *stream,
-                                   CamelStreamBufferMode mode,
-                                   gchar *buf,
-                                   guint32 size)
+camel_stream_buffer_new (CamelStream *stream,
+                         CamelStreamBufferMode mode)
 {
 	CamelStreamBuffer *sbf;
 	CamelStreamBufferClass *class;
 
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
-	g_return_val_if_fail (buf != NULL, NULL);
 
 	sbf = g_object_new (CAMEL_TYPE_STREAM_BUFFER, NULL);
 
 	class = CAMEL_STREAM_BUFFER_GET_CLASS (sbf);
-	g_return_val_if_fail (class->init_vbuf != NULL, NULL);
+	g_return_val_if_fail (class->init != NULL, NULL);
 
-	class->init_vbuf (sbf, stream, mode, buf, size);
+	class->init (sbf, stream, mode);
 
 	return CAMEL_STREAM (sbf);
 }

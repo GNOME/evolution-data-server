@@ -2622,7 +2622,6 @@ CamelStreamPrivate
 CamelStreamBuffer
 CamelStreamBufferMode
 camel_stream_buffer_new
-camel_stream_buffer_new_with_vbuf
 camel_stream_buffer_gets
 camel_stream_buffer_read_line
 <SUBSECTION Standard>
