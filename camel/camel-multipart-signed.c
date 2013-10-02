@@ -419,15 +419,6 @@ multipart_signed_add_part (CamelMultipart *multipart,
 }
 
 static CamelMimePart *
-multipart_signed_remove_part_at (CamelMultipart *multipart,
-                                 guint index)
-{
-	g_warning ("Cannot remove parts from a signed part using remove_part");
-
-	return NULL;
-}
-
-static CamelMimePart *
 multipart_signed_get_part (CamelMultipart *multipart,
                            guint index)
 {
@@ -591,7 +582,6 @@ camel_multipart_signed_class_init (CamelMultipartSignedClass *class)
 
 	multipart_class = CAMEL_MULTIPART_CLASS (class);
 	multipart_class->add_part = multipart_signed_add_part;
-	multipart_class->remove_part_at = multipart_signed_remove_part_at;
 	multipart_class->get_part = multipart_signed_get_part;
 	multipart_class->get_number = multipart_signed_get_number;
 	multipart_class->construct_from_parser = multipart_signed_construct_from_parser;

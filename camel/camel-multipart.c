@@ -168,33 +168,6 @@ multipart_add_part (CamelMultipart *multipart,
 }
 
 static CamelMimePart *
-multipart_remove_part_at (CamelMultipart *multipart,
-                          guint index)
-{
-	CamelMimePart *removed_part;
-	GList *link;
-
-	if (!(multipart->parts))
-		return NULL;
-
-	link = g_list_nth (multipart->parts, index);
-	if (link == NULL) {
-		g_warning (
-			"CamelMultipart::remove_part_at: "
-			"part to remove is NULL\n");
-		return NULL;
-	}
-	removed_part = CAMEL_MIME_PART (link->data);
-
-	multipart->parts = g_list_remove_link (multipart->parts, link);
-	if (link->data)
-		g_object_unref (link->data);
-	g_list_free_1 (link);
-
-	return removed_part;
-}
-
-static CamelMimePart *
 multipart_get_part (CamelMultipart *multipart,
                     guint index)
 {
@@ -326,7 +299,6 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	data_wrapper_class->decode_to_stream_sync = multipart_write_to_stream_sync;
 
 	class->add_part = multipart_add_part;
-	class->remove_part_at = multipart_remove_part_at;
 	class->get_part = multipart_get_part;
 	class->get_number = multipart_get_number;
 	class->set_boundary = multipart_set_boundary;
@@ -383,30 +355,6 @@ camel_multipart_add_part (CamelMultipart *multipart,
 	g_return_if_fail (class->add_part != NULL);
 
 	class->add_part (multipart, part);
-}
-
-/**
- * camel_multipart_remove_part_at:
- * @multipart: a #CamelMultipart object
- * @index: a zero-based index indicating the part to remove
- *
- * Remove the indicated part from the multipart object.
- *
- * Returns: the removed part. Note that it is g_object_unref()'ed
- * before being returned, which may cause it to be destroyed.
- **/
-CamelMimePart *
-camel_multipart_remove_part_at (CamelMultipart *multipart,
-                                guint index)
-{
-	CamelMultipartClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_MULTIPART (multipart), NULL);
-
-	class = CAMEL_MULTIPART_GET_CLASS (multipart);
-	g_return_val_if_fail (class->remove_part_at != NULL, NULL);
-
-	return class->remove_part_at (multipart, index);
 }
 
 /**
