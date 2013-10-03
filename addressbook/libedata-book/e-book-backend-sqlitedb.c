@@ -1468,7 +1468,7 @@ ixphone_compare_national (gpointer data,
 			if (sep2 != str2)
 				cmp = e_strcmp2n (country_code, strlen (country_code), str2, sep2 - str2);
 		} else if (sep2 == str2) {
-			cmp = e_strcmp2n (str1, sep1 - str1, country_code, 2);
+			cmp = e_strcmp2n (str1, sep1 - str1, country_code, strlen (country_code));
 		} else {
 			/* Also compare the country code if the national number
 			 * matches and both numbers have a country code. */
