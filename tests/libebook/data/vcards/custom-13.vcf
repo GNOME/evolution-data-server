@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:custom-13
+N:Murphey;Eddie
+TEL;HOME:408 765-5050
+EMAIL;TYPE=home,work:eddie@murphey.usa
+END:VCARD

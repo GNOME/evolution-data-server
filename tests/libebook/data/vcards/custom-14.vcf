@@ -1,0 +1,6 @@
+BEGIN:VCARD
+UID:custom-14
+N:Turner;Tina
+TEL;HOME:+1 408 765-5050
+EMAIL;TYPE=home,work:tina@turner.net
+END:VCARD
