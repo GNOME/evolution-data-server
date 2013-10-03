@@ -69,7 +69,7 @@ static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, 
 #  define CHECK_UNSUPPORTED_ERROR(data) (((ClientTestData *)(data))->phone_number_query != FALSE)
 #endif
 
-#define N_CONTACTS 13
+#define N_CONTACTS 16
 
 typedef struct {
 	ETestServerClosure parent;
@@ -533,6 +533,45 @@ main (gint argc,
 		/*********************************************
 		 * E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER *
 		 *********************************************/
+
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/National/WithoutCountry",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"408 765-5050"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/National/en_US",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"+1 408 765-5050"),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/National/de_DE",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"+49 408 765-5050"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
 
 		/* Test that a query term with no specified country returns
 		 * all vCards that have the same national number regardless
