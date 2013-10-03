@@ -43,9 +43,12 @@ test_query_LDADD=$(TEST_LIBS)
 test_query_CPPFLAGS=$(TEST_CPPFLAGS)
 test_phone_number_LDADD=$(TEST_LIBS)
 test_phone_number_CPPFLAGS=$(TEST_CPPFLAGS)
+compare_phone_number_LDADD=$(TEST_LIBS)
+compare_phone_number_CPPFLAGS=$(TEST_CPPFLAGS)
 
 noinst_PROGRAMS =	\
 	$(TESTS)	\
+	compare-phone-number	\
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
