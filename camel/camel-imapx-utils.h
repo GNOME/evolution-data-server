@@ -135,7 +135,7 @@ enum {
 
 /* ********************************************************************** */
 
-GPtrArray *	imapx_parse_uids		(struct _CamelIMAPXStream *is,
+GArray *	imapx_parse_uids		(struct _CamelIMAPXStream *is,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	imapx_parse_flags		(struct _CamelIMAPXStream *is,
@@ -293,8 +293,8 @@ struct _status_info {
 		} appenduid;
 		struct {
 			guint64 uidvalidity;
-			GPtrArray *uids;
-			GPtrArray *copied_uids;
+			GArray *uids;
+			GArray *copied_uids;
 		} copyuid;
 		struct _capability_info *cinfo;
 	} u;

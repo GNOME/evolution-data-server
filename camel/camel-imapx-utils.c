@@ -1961,53 +1961,46 @@ exit:
 	return finfo;
 }
 
-static void
-generate_uids_from_sequence (GPtrArray *uids,
-                             guint32 begin_uid,
-                             guint32 end_uid)
-{
-	guint32 i;
-
-	for (i = begin_uid; i <= end_uid; i++)
-		g_ptr_array_add (uids, GUINT_TO_POINTER (i));
-}
-
-GPtrArray *
+GArray *
 imapx_parse_uids (CamelIMAPXStream *is,
                   GCancellable *cancellable,
                   GError **error)
 {
-	GPtrArray *uids;
+	GArray *array;
 	guchar *token;
 	gchar **splits;
 	guint len, str_len;
-	gint tok, i;
+	gint tok, ii;
 
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 	if (tok < 0)
 		return NULL;
 
-	uids = g_ptr_array_new ();
+	array = g_array_new (FALSE, FALSE, sizeof (guint32));
 	splits = g_strsplit ((gchar *) token, ",", -1);
 	str_len = g_strv_length (splits);
 
-	for (i = 0; i < str_len; i++)	{
-		if (g_strstr_len (splits[i], -1, ":")) {
-			gchar **seq = g_strsplit (splits[i], ":", -1);
-			guint32 uid1 = strtoul ((gchar *) seq[0], NULL, 10);
-			guint32 uid2 = strtoul ((gchar *) seq[1], NULL, 10);
+	for (ii = 0; ii < str_len; ii++) {
+		guint32 uid;
 
-			generate_uids_from_sequence (uids, uid1, uid2);
+		if (g_strstr_len (splits[ii], -1, ":")) {
+			gchar **seq = g_strsplit (splits[ii], ":", -1);
+			guint32 first = strtoul (seq[0], NULL, 10);
+			guint32 last = strtoul (seq[1], NULL, 10);
+
+			for (uid = first; uid <= last; uid++)
+				g_array_append_val (array, uid);
+
 			g_strfreev (seq);
 		} else {
-			guint32 uid = strtoul ((gchar *) splits[i], NULL, 10);
-			g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
+			uid = strtoul (splits[ii], NULL, 10);
+			g_array_append_val (array, uid);
 		}
 	}
 
 	g_strfreev (splits);
 
-	return uids;
+	return array;
 }
 
 static gboolean
@@ -2048,7 +2041,7 @@ imapx_parse_status_copyuid (CamelIMAPXStream *is,
                             GCancellable *cancellable,
                             GError **error)
 {
-	GPtrArray *uids;
+	GArray *uids;
 	guint64 number;
 
 	if (!camel_imapx_stream_number (is, &number, cancellable, error))
@@ -2371,8 +2364,8 @@ imapx_free_status (struct _status_info *sinfo)
 		g_free (sinfo->u.newname.newname);
 		break;
 	case IMAPX_COPYUID:
-		g_ptr_array_free (sinfo->u.copyuid.uids, FALSE);
-		g_ptr_array_free (sinfo->u.copyuid.copied_uids, FALSE);
+		g_array_free (sinfo->u.copyuid.uids, TRUE);
+		g_array_free (sinfo->u.copyuid.copied_uids, TRUE);
 		break;
 	case IMAPX_CAPABILITY:
 		if (sinfo->u.cinfo)

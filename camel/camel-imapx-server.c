@@ -1531,7 +1531,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
                          GError **error)
 {
 	CamelFolder *folder;
-	GPtrArray *uids = NULL;
+	GArray *uids;
 	GList *uid_list = NULL;
 	gboolean unsolicited = TRUE;
 	guint ii = 0;
@@ -1583,16 +1583,16 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 		is->priv->changes = camel_folder_change_info_new ();
 
 	for (ii = 0; ii < uids->len; ii++) {
-		gpointer data;
-		gchar *uid;
+		guint32 uid;
+		gchar *str;
 
-		data = g_ptr_array_index (uids, ii);
-		uid = g_strdup_printf ("%u", GPOINTER_TO_UINT (data));
+		uid = g_array_index (uids, guint32, ii);
 
-		c (is->tagprefix, "vanished: %s\n", uid);
+		c (is->tagprefix, "vanished: %u\n", uid);
 
-		uid_list = g_list_prepend (uid_list, uid);
-		camel_folder_change_info_remove_uid (is->priv->changes, uid);
+		str = g_strdup_printf ("%u", uid);
+		uid_list = g_list_prepend (uid_list, str);
+		camel_folder_change_info_remove_uid (is->priv->changes, str);
 	}
 
 	uid_list = g_list_reverse (uid_list);
@@ -1608,7 +1608,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	}
 
 	g_list_free_full (uid_list, (GDestroyNotify) g_free);
-	g_ptr_array_free (uids, TRUE);
+	g_array_free (uids, TRUE);
 
 	g_object_unref (folder);
 
@@ -4593,14 +4593,23 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	 *      We might need a sorted insert to avoid refreshing the dest
 	 *      folder. */
 	if (ic->status && ic->status->condition == IMAPX_COPYUID) {
-		gint i;
+		CamelIMAPXFolder *dest;
+		GArray *array;
+		guint ii;
 
-		for (i = 0; i < ic->status->u.copyuid.copied_uids->len; i++) {
-			guint32 uid = GPOINTER_TO_UINT (g_ptr_array_index (ic->status->u.copyuid.copied_uids, i));
-			gchar *str = g_strdup_printf ("%d",uid);
-			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) data->dest;
+		dest = CAMEL_IMAPX_FOLDER (data->dest);
+		array = ic->status->u.copyuid.copied_uids;
 
-			g_hash_table_insert (ifolder->ignore_recent, str, GINT_TO_POINTER (1));
+		for (ii = 0; ii < array->len; ii++) {
+			guint32 uid;
+			gchar *str;
+
+			uid = g_array_index (array, guint32, ii);
+			str = g_strdup_printf ("%u", uid);
+
+			g_hash_table_insert (
+				dest->ignore_recent,
+				str, GINT_TO_POINTER (1));
 		}
 
 	}
