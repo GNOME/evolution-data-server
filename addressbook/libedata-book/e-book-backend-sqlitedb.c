@@ -4131,6 +4131,23 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 	return res;
 }
 
+static EbSdbSearchData *
+search_data_from_results (gchar **cols)
+{
+	EbSdbSearchData *data = g_slice_new0 (EbSdbSearchData);
+
+	if (cols[0])
+		data->uid = g_strdup (cols[0]);
+
+	if (cols[1])
+		data->vcard = g_strdup (cols[1]);
+
+	if (cols[2])
+		data->bdata = g_strdup (cols[2]);
+
+	return data;
+}
+
 static gint
 addto_vcard_list_cb (gpointer ref,
                      gint col,
@@ -4138,16 +4155,9 @@ addto_vcard_list_cb (gpointer ref,
                      gchar **name)
 {
 	GSList **vcard_data = ref;
-	EbSdbSearchData *s_data = g_slice_new0 (EbSdbSearchData);
+	EbSdbSearchData *s_data;
 
-	if (cols[0])
-		s_data->uid = g_strdup (cols[0]);
-
-	if (cols[1])
-		s_data->vcard = g_strdup (cols[1]);
-
-	if (cols[2])
-		s_data->bdata = g_strdup (cols[2]);
+	s_data = search_data_from_results (cols);
 
 	*vcard_data = g_slist_prepend (*vcard_data, s_data);
 
@@ -5343,12 +5353,17 @@ e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
 	if (e_phone_number_is_supported ()) {
 		current_region = e_phone_number_get_default_region (error);
 
-		if (current_region == NULL)
+		if (current_region == NULL) {
+			UNLOCK_MUTEX (&ebsdb->priv->lock);
 			return FALSE;
+		}
 	}
 
-	if (!sqlitedb_set_locale_internal (ebsdb, lc_collate, error))
+	if (!sqlitedb_set_locale_internal (ebsdb, lc_collate, error)) {
+		UNLOCK_MUTEX (&ebsdb->priv->lock);
+		g_free (current_region);
 		return FALSE;
+	}
 
 	if (!book_backend_sqlitedb_start_transaction (ebsdb, error)) {
 		UNLOCK_MUTEX (&ebsdb->priv->lock);
@@ -5459,9 +5474,9 @@ struct _EbSdbCursor {
 	gchar         *order;         /* The normal order SQL query fragment to append at the end, containing ORDER BY etc */
 	gchar         *reverse_order; /* The reverse order SQL query fragment to append at the end, containing ORDER BY etc */
 
-	EContactField *sort_fields;   /* The fields to sort in a query in the order or sort priority */
-	EBookSortType *sort_types;    /* The sort method to use for each field */
-	gint           n_sort_fields; /* The amound of sort fields */
+	EContactField       *sort_fields;   /* The fields to sort in a query in the order or sort priority */
+	EBookCursorSortType *sort_types;    /* The sort method to use for each field */
+	gint                 n_sort_fields; /* The amound of sort fields */
 
 	CursorState    state[N_CURSOR_STATES];
 };
@@ -5513,7 +5528,7 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 static gchar *
 ebsdb_cursor_order_by_fragment (EBookBackendSqliteDB *ebsdb,
 				EContactField        *sort_fields,
-				EBookSortType        *sort_types,
+				EBookCursorSortType  *sort_types,
 				guint                 n_sort_fields,
 				gboolean              reverse)
 {
@@ -5532,8 +5547,8 @@ ebsdb_cursor_order_by_fragment (EBookBackendSqliteDB *ebsdb,
 
 		g_string_append_printf (string, "summary.%s_localized %s", field_name,
 					reverse ?
-					(sort_types[i] == E_BOOK_SORT_ASCENDING ? "DESC" : "ASC") :
-					(sort_types[i] == E_BOOK_SORT_ASCENDING ? "ASC"  : "DESC"));
+					(sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "DESC" : "ASC") :
+					(sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "ASC"  : "DESC"));
 	}
 
 	/* Also order the UID, since it's our tie breaker, we must also order the UID field */
@@ -5550,7 +5565,7 @@ ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
 		  const gchar          *sexp,
 		  gboolean              query_with_list_attrs,
 		  EContactField        *sort_fields,
-		  EBookSortType        *sort_types,
+		  EBookCursorSortType  *sort_types,
 		  guint                 n_sort_fields)
 {
 	EbSdbCursor *cursor = g_slice_new0 (EbSdbCursor);
@@ -5574,7 +5589,7 @@ ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
 
 	cursor->n_sort_fields = n_sort_fields;
 	cursor->sort_fields   = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
-	cursor->sort_types    = g_memdup (sort_types,  sizeof (EBookSortType) * n_sort_fields);
+	cursor->sort_types    = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
 
 	for (i = 0; i < N_CURSOR_STATES; i++)
 		cursor->state[i].values = g_new0 (gchar *, n_sort_fields);
@@ -5681,8 +5696,8 @@ ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
 
 #define GREATER_OR_LESS(cursor, index, reverse)				\
 	(reverse ?							\
-	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_SORT_ASCENDING ? '<' : '>') : \
-	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_SORT_ASCENDING ? '>' : '<'))
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '<' : '>') : \
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '>' : '<'))
 
 static gchar *
 ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
@@ -5902,7 +5917,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
  * @folderid: folder id of the address-book
  * @sexp: search expression; use NULL or an empty string to get all stored contacts.
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
- * @sort_types: (array length=n_sort_fields): An array of #EBookSortTypes, one for each field in @sort_fields
+ * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by.
  * @error: A return location to story any error that might be reported.
  *
@@ -5919,7 +5934,7 @@ e_book_backend_sqlitedb_cursor_new (EBookBackendSqliteDB *ebsdb,
 				    const gchar          *folderid,
 				    const gchar          *sexp,
 				    EContactField        *sort_fields,
-				    EBookSortType        *sort_types,
+				    EBookCursorSortType  *sort_types,
 				    guint                 n_sort_fields,
 				    GError              **error)
 {
@@ -5988,6 +6003,43 @@ e_book_backend_sqlitedb_cursor_free (EBookBackendSqliteDB *ebsdb,
 	ebsdb_cursor_free (cursor);
 }
 
+typedef struct {
+	GSList *results;
+	gchar *alloc_vcard;
+	const gchar *last_vcard;
+
+	gboolean collect_results;
+	gint n_results;
+} CursorCollectData;
+
+static gint
+collect_results_for_cursor_cb (gpointer ref,
+			       gint col,
+			       gchar **cols,
+			       gchar **name)
+{
+	CursorCollectData *data = ref;
+
+	if (data->collect_results) {
+		EbSdbSearchData *search_data;
+
+		search_data = search_data_from_results (cols);
+
+		data->results = g_slist_prepend (data->results, search_data);
+
+		data->last_vcard = search_data->vcard;
+	} else {
+		g_free (data->alloc_vcard);
+		data->alloc_vcard = g_strdup (cols[1]);
+
+		data->last_vcard = data->alloc_vcard;
+	}
+
+	data->n_results++;
+
+	return 0;
+}
+
 /**
  * e_book_backend_sqlitedb_cursor_move_by:
  * @ebsdb: An #EBookBackendSqliteDB
@@ -6028,7 +6080,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 					GSList              **results,
 					GError              **error)
 {
-	GSList *local_results = NULL;
+	CursorCollectData data = { NULL, NULL, FALSE, 0 };
 	GString *query;
 	gboolean success;
 
@@ -6100,47 +6152,47 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	/* Add the limit */
 	g_string_append_printf (query, " LIMIT %d", ABS (count));
 
+	/* Specify whether we really want results or not */
+	data.collect_results = (results != NULL);
+
 	/* Execute the query */
 	LOCK_MUTEX (&ebsdb->priv->lock);
 	success = book_backend_sql_exec (ebsdb->priv->db, query->str,
-					 addto_vcard_list_cb , &local_results,
+					 collect_results_for_cursor_cb, &data,
 					 error);
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
 
 	g_string_free (query, TRUE);
 
-	/* Correct the order of results, since
-	 * addto_vcard_list_cb() prepends them (as it should)
-	 */
-	local_results = g_slist_reverse (local_results);
-
 	/* If there was no error, update the internal cursor state */
 	if (success) {
 
-		if (g_slist_length (local_results) < ABS (count)) {
+		if (data.n_results < ABS (count)) {
 			/* We've reached the end, clear the current state, allow
 			 * a repeat query from the previously recorded position */
 			ebsdb_cursor_swap_state (cursor);
 			ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
-		} else {
-			/* Set the cursor state to the last result */
-			GSList *last = g_slist_last (local_results);
-			EbSdbSearchData *data = last->data;
 
-			ebsdb_cursor_set_state (ebsdb, cursor, data->vcard);
+		} else if (data.last_vcard) {
+			/* Set the cursor state to the last result */
+			ebsdb_cursor_set_state (ebsdb, cursor, data.last_vcard);
+		} else
+			/* Should never get here */
+			g_warn_if_reached ();
+
+		/* Assign the results to return (if any) */
+		if (results) {
+			/* Correct the order of results at the last minute */
+			*results = g_slist_reverse (data.results);
+			data.results = NULL;
 		}
 	}
 
-	if (results) {
-		*results = local_results;
-	} else {
-		/* Even if we are not returning the results, we have to fetch them
-		 * so that we can store the state of the last returned result as the
-		 * new cursor state.
-		 */
-		g_slist_free_full (local_results,
+	/* Cleanup what was allocated by collect_results_for_cursor_cb() */
+	if (data.results)
+		g_slist_free_full (data.results,
 				   (GDestroyNotify)e_book_backend_sqlitedb_search_data_free);
-	}
+	g_free (data.alloc_vcard);
 
 	return success;
 }
@@ -6151,8 +6203,9 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
  * @cursor: The #EbSdbCursor to modify
  * @index: The alphabetic index
  *
- * Sets the current cursor position to point to an index into the
- * alphabet active in the current locale.
+ * Sets the @cursor position to an
+ * <link linkend="cursor-alphabet">Alphabetic Index</link>
+ * into the alphabet active in @ebsdb's locale.
  *
  * After setting the target to an alphabetic index, for example the
  * index for letter 'E', then further calls to e_book_backend_sqlitedb_cursor_move_by()
@@ -6302,7 +6355,7 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
 }
 
 /**
- * e_book_backend_sqlitedb_cursor_compare:
+ * e_book_backend_sqlitedb_cursor_compare_contact:
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor
  * @contact: The #EContact to compare
@@ -6313,12 +6366,14 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
  *
  * Returns: A value that is less than, equal to, or greater than zero if @contact is found,
  * respectively, to be less than, to match, or be greater than the current value of @cursor.
+ *
+ * Since: 3.10
  */
 gint
-e_book_backend_sqlitedb_cursor_compare (EBookBackendSqliteDB *ebsdb,
-					EbSdbCursor          *cursor,
-					EContact             *contact,
-					gboolean             *matches_sexp)
+e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
+						EbSdbCursor          *cursor,
+						EContact             *contact,
+						gboolean             *matches_sexp)
 {
 	EBookBackendSqliteDBPrivate *priv;
 	gint i;

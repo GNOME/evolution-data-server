@@ -326,7 +326,7 @@ EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
 						 const gchar          *folderid,
 						 const gchar          *sexp,
 						 EContactField        *sort_fields,
-						 EBookSortType        *sort_types,
+						 EBookCursorSortType  *sort_types,
 						 guint                 n_sort_fields,
 						 GError              **error);
 void            e_book_backend_sqlitedb_cursor_free
@@ -354,7 +354,7 @@ gboolean        e_book_backend_sqlitedb_cursor_calculate
 						 gint                 *total,
 						 gint                 *position,
 						 GError              **error);
-gint            e_book_backend_sqlitedb_cursor_compare
+gint            e_book_backend_sqlitedb_cursor_compare_contact
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
 						 EContact             *contact,
