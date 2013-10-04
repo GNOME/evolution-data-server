@@ -31,6 +31,8 @@
 #include <config.h>
 #endif
 
+#include <glib/gi18n.h>
+
 #include "e-data-book-cursor-sqlite.h"
 
 /* GObjectClass */
@@ -59,7 +61,7 @@ static gboolean e_data_book_cursor_sqlite_get_position         (EDataBookCursor 
 								gint                *total,
 								gint                *position,
 								GError             **error);
-static gint     e_data_book_cursor_sqlite_compare              (EDataBookCursor     *cursor,
+static gint     e_data_book_cursor_sqlite_compare_contact      (EDataBookCursor     *cursor,
 								EContact            *contact,
 								gboolean            *matches_sexp);
 static gboolean e_data_book_cursor_sqlite_load_locale          (EDataBookCursor     *cursor,
@@ -100,7 +102,7 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 	cursor_class->move_by = e_data_book_cursor_sqlite_move_by;
 	cursor_class->set_alphabetic_index = e_data_book_cursor_sqlite_set_alphabetic_index;
 	cursor_class->get_position = e_data_book_cursor_sqlite_get_position;
-	cursor_class->compare = e_data_book_cursor_sqlite_compare;
+	cursor_class->compare_contact = e_data_book_cursor_sqlite_compare_contact;
 	cursor_class->load_locale = e_data_book_cursor_sqlite_load_locale;
 
 	g_object_class_install_property (
@@ -258,10 +260,10 @@ convert_origin (EBookCursorOrigin    src_origin,
 		break;
 	default:
 		success = FALSE;
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_INVALID_ARG,
-			     "Unrecognized cursor origin");
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_INVALID_ARG,
+				     _("Unrecognized cursor origin"));
 		break;
 	}
 
@@ -307,10 +309,10 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	if (success && revision_guard &&
 	    g_strcmp0 (revision, revision_guard) != 0) {
 
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_OUT_OF_SYNC,
-			     "Out of sync revision while moving cursor");
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_OUT_OF_SYNC,
+				     _("Out of sync revision while moving cursor"));
 		success = FALSE;
 	}
 
@@ -375,10 +377,10 @@ e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor     *cursor,
 
 	/* Locale mismatch, need to report error */
 	if (g_strcmp0 (current_locale, locale) != 0) {
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_OUT_OF_SYNC,
-			     "Alphabetic index was set for incorrect locale");
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_OUT_OF_SYNC,
+				     _("Alphabetic index was set for incorrect locale"));
 		g_free (current_locale);
 		return FALSE;
 	}
@@ -409,9 +411,9 @@ e_data_book_cursor_sqlite_get_position (EDataBookCursor     *cursor,
 }
 
 static gint
-e_data_book_cursor_sqlite_compare (EDataBookCursor     *cursor,
-				   EContact            *contact,
-				   gboolean            *matches_sexp)
+e_data_book_cursor_sqlite_compare_contact (EDataBookCursor     *cursor,
+					   EContact            *contact,
+					   gboolean            *matches_sexp)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -419,10 +421,10 @@ e_data_book_cursor_sqlite_compare (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_backend_sqlitedb_cursor_compare (priv->ebsdb,
-						       priv->cursor,
-						       contact,
-						       matches_sexp);
+	return e_book_backend_sqlitedb_cursor_compare_contact (priv->ebsdb,
+							       priv->cursor,
+							       contact,
+							       matches_sexp);
 }
 
 static gboolean
@@ -451,7 +453,7 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
  * @ebsdb: the #EBookBackendSqliteDB object to base this cursor on
  * @folder_id: the folder identifier to be used in EBookBackendSqliteDB API calls
  * @sort_fields: (array length=n_fields): an array of #EContactFields as sort keys in order of priority
- * @sort_types: (array length=n_fields): an array of #EBookSortTypes, one for each field in @sort_fields
+ * @sort_types: (array length=n_fields): an array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_fields: the number of fields to sort results by.
  * @error: a return location to story any error that might be reported.
  *
@@ -468,7 +470,7 @@ e_data_book_cursor_sqlite_new (EBookBackend         *backend,
 			       EBookBackendSqliteDB *ebsdb,
 			       const gchar          *folder_id,
 			       EContactField        *sort_fields,
-			       EBookSortType        *sort_types,
+			       EBookCursorSortType  *sort_types,
 			       guint                 n_fields,
 			       GError              **error)
 {

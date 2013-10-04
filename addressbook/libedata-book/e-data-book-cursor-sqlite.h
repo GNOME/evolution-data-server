@@ -56,7 +56,7 @@ EDataBookCursor        *e_data_book_cursor_sqlite_new              (EBookBackend
 								    EBookBackendSqliteDB *ebsdb,
 								    const gchar          *folder_id,
 								    EContactField        *sort_fields,
-								    EBookSortType        *sort_types,
+								    EBookCursorSortType  *sort_types,
 								    guint                 n_fields,
 								    GError              **error);
 
