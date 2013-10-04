@@ -1227,24 +1227,24 @@ e_book_backend_set_locale (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_get_locale:
+ * e_book_backend_dup_locale:
  * @backend: an #EBookbackend
  *
- * Fetch the currently configured locale for the addressbook
+ * Fetches a copy of the currently configured locale for the addressbook
  *
  * Since: 3.10
  */
-const gchar *
-e_book_backend_get_locale (EBookBackend *backend)
+gchar *
+e_book_backend_dup_locale (EBookBackend *backend)
 {
-	const gchar *locale = NULL;
+	gchar *locale = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
 	g_object_ref (backend);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->get_locale)
-		locale = (* E_BOOK_BACKEND_GET_CLASS (backend)->get_locale) (backend);
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->dup_locale)
+		locale = (* E_BOOK_BACKEND_GET_CLASS (backend)->dup_locale) (backend);
 
 	g_object_unref (backend);
 
@@ -1511,7 +1511,7 @@ e_book_backend_respond_opened (EBookBackend *backend,
  * e_book_backend_create_cursor:
  * @backend: an #EBookBackend
  * @sort_fields: the #EContactFields to sort by
- * @sort_types: the #EBookSortTypes for the sorted fields
+ * @sort_types: the #EBookCursorSortTypes for the sorted fields
  * @n_fields: the number of fields in the @sort_fields and @sort_types
  * @error: return location for a #GError, or %NULL
  *
@@ -1533,7 +1533,7 @@ e_book_backend_respond_opened (EBookBackend *backend,
 EDataBookCursor *
 e_book_backend_create_cursor (EBookBackend *backend,
 			      EContactField *sort_fields,
-			      EBookSortType *sort_types,
+			      EBookCursorSortType *sort_types,
 			      guint n_fields,
 			      GError **error)
 {
@@ -1564,23 +1564,33 @@ e_book_backend_create_cursor (EBookBackend *backend,
  * e_book_backend_delete_cursor:
  * @backend: an #EBookBackend
  * @cursor: the #EDataBookCursor to destroy
+ * @error: return location for a #GError, or %NULL
  *
- * Destroys @cursor
+ * Requests @backend to release and destroy @cursor, this
+ * will trigger an %E_CLIENT_ERROR_INVALID_ARG error if @cursor
+ * is not owned by @backend.
+ *
+ * Returns: Whether @cursor was successfully deleted.
  *
  * Since: 3.10
  */
-void
+gboolean
 e_book_backend_delete_cursor (EBookBackend *backend,
-			      EDataBookCursor *cursor)
+			      EDataBookCursor *cursor,
+			      GError **error)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
 	g_object_ref (backend);
 
 	if (E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor)
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor) (backend, cursor);
+		success = (* E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor) (backend, cursor, error);
 	else
 		g_warning ("Backend asked to delete a cursor, but does not support cursors");
 
 	g_object_unref (backend);
+
+	return success;
 }

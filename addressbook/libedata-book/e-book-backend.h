@@ -205,15 +205,16 @@ struct _EBookBackendClass {
 						 const gchar *config);
 	void            (*set_locale)           (EBookBackend *backend,
 						 const gchar  *locale);
-	const gchar    *(*get_locale)           (EBookBackend *backend);
+	gchar          *(*dup_locale)           (EBookBackend *backend);
 	EDataBookCursor *
 	                (*create_cursor)	(EBookBackend *backend,
 						 EContactField *sort_fields,
-						 EBookSortType *sort_types,
+						 EBookCursorSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
-	void            (* delete_cursor)       (EBookBackend *backend,
-						 EDataBookCursor *cursor);
+	gboolean        (* delete_cursor)       (EBookBackend *backend,
+						 EDataBookCursor *cursor,
+						 GError **error);
 
 	/* Notification signals */
 	void		(*sync)			(EBookBackend *backend);
@@ -317,16 +318,17 @@ void            e_book_backend_configure_direct (EBookBackend *backend, const gc
 void		e_book_backend_sync		(EBookBackend *backend);
 void            e_book_backend_set_locale       (EBookBackend *backend,
 						 const gchar  *locale);
-const gchar    *e_book_backend_get_locale       (EBookBackend *backend);
+gchar          *e_book_backend_dup_locale       (EBookBackend *backend);
 
 EDataBookCursor *
                 e_book_backend_create_cursor    (EBookBackend *backend,
 						 EContactField *sort_fields,
-						 EBookSortType *sort_types,
+						 EBookCursorSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
-void            e_book_backend_delete_cursor    (EBookBackend *backend,
-						 EDataBookCursor *cursor);
+gboolean        e_book_backend_delete_cursor    (EBookBackend *backend,
+						 EDataBookCursor *cursor,
+						 GError **error);
 
 /* protected functions for subclasses */
 void		e_book_backend_set_is_removed	(EBookBackend *backend,
