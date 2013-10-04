@@ -178,12 +178,12 @@ typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
 						    GError             **error);
 
 /**
- * EDataBookCursorCompareFunc:
+ * EDataBookCursorCompareContactFunc:
  * @cursor: an #EDataBookCursor
  * @contact: the #EContact to compare with @cursor
  * @matches_sexp: (out) (allow-none): return location to set whether @contact matched @cursor's search expression
  *
- * Method type for #EDataBookCursorClass.compare()
+ * Method type for #EDataBookCursorClass.compare_contact()
  *
  * Cursor implementations should implement this in order to compare a
  * contact with the current cursor state.
@@ -200,9 +200,9 @@ typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
  *
  * Since: 3.10
  */
-typedef gint (*EDataBookCursorCompareFunc) (EDataBookCursor     *cursor,
-					    EContact            *contact,
-					    gboolean            *matches_sexp);
+typedef gint (*EDataBookCursorCompareContactFunc) (EDataBookCursor     *cursor,
+						   EContact            *contact,
+						   gboolean            *matches_sexp);
 
 /**
  * EDataBookCursorLoadLocaleFunc:
@@ -250,7 +250,7 @@ struct _EDataBookCursor {
  * @move_by: The #EDataBookCursorMoveByFunc delegate to navigate the cursor
  * @set_alphabetic_index: The #EDataBookCursorSetAlphabetIndexFunc delegate to set the alphabetic position
  * @get_position: The #EDataBookCursorGetPositionFunc delegate to calculate the current total and position values
- * @compare: The #EDataBookCursorCompareFunc delegate to compare an #EContact with the the cursor position
+ * @compare_contact: The #EDataBookCursorCompareContactFunc delegate to compare an #EContact with the the cursor position
  * @load_locale: The #EDataBookCursorLoadLocaleFunc delegate used to reload the locale setting
  *
  * Methods to implement on an #EDataBookCursor concrete class.
@@ -266,7 +266,7 @@ struct _EDataBookCursorClass {
 	EDataBookCursorMoveByFunc move_by;
 	EDataBookCursorSetAlphabetIndexFunc set_alphabetic_index;
 	EDataBookCursorGetPositionFunc get_position;
-	EDataBookCursorCompareFunc compare;
+	EDataBookCursorCompareContactFunc compare_contact;
 	EDataBookCursorLoadLocaleFunc load_locale;
 };
 

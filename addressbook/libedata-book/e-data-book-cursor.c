@@ -29,8 +29,10 @@
  * the org.gnome.evolution.dataserver.AddressBookCursor D-Bus interface
  * when instantiated by the addressbook server.
  *
- * Note that if you need to use the cursor API from EDS you should
- * be using the user facing APIs from #EBookClientCursor instead.
+ * <note><para>EDataBookCursor is an implementation detail for backends who wish
+ * to implement cursors. If you need to use the client API to iterate over contacts
+ * stored in Evolution Data Server; you should be using #EBookClientCursor instead.
+ * </para></note>
  *
  * <refsect2 id="cursor-implementing">
  * <title>Implementing Cursors</title>
@@ -172,6 +174,8 @@
 #include <config.h>
 #endif
 
+#include <glib/gi18n.h>
+
 #include "e-data-book-cursor.h"
 #include "e-book-backend.h"
 
@@ -192,17 +196,17 @@ static void e_data_book_cursor_set_property (GObject *object,
 					     GParamSpec *pspec);
 
 /* Private Functions */
-static void     data_book_cursor_set_values   (EDataBookCursor  *cursor,
-					       gint              total,
-					       gint              position);
-static gboolean data_book_cursor_compare      (EDataBookCursor  *cursor,
-					       EContact         *contact,
-					       gint             *result,
-					       gboolean         *matches_sexp);
-static void     calculate_move_by_position    (EDataBookCursor  *cursor,
-					       EBookCursorOrigin origin,
-					       gint              count,
-					       gint              results);
+static void     data_book_cursor_set_values      (EDataBookCursor  *cursor,
+						  gint              total,
+						  gint              position);
+static gboolean data_book_cursor_compare_contact (EDataBookCursor  *cursor,
+						  EContact         *contact,
+						  gint             *result,
+						  gboolean         *matches_sexp);
+static void     calculate_move_by_position       (EDataBookCursor  *cursor,
+						  EBookCursorOrigin origin,
+						  gint              count,
+						  gint              results);
 
 /* D-Bus callbacks */
 static gboolean data_book_cursor_handle_move_by              (EDBusAddressBookCursor *dbus_object,
@@ -422,18 +426,18 @@ data_book_cursor_set_values (EDataBookCursor *cursor,
 }
 
 static gboolean
-data_book_cursor_compare (EDataBookCursor     *cursor,
-			  EContact            *contact,
-			  gint                *result,
-			  gboolean            *matches_sexp)
+data_book_cursor_compare_contact (EDataBookCursor     *cursor,
+				  EContact            *contact,
+				  gint                *result,
+				  gboolean            *matches_sexp)
 {
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare)
+	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact)
 		return FALSE;
 
 	g_object_ref (cursor);
-	*result = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare) (cursor,
-								      contact,
-								      matches_sexp);
+	*result = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) (cursor,
+									      contact,
+									      matches_sexp);
 	g_object_unref (cursor);
 
 	return TRUE;
@@ -597,13 +601,23 @@ data_book_cursor_handle_dispose (EDBusAddressBookCursor *dbus_object,
 				 EDataBookCursor        *cursor)
 {
 	EDataBookCursorPrivate *priv = cursor->priv;
+	GError *error = NULL;
 
 	/* The backend will release the cursor, just make sure that
 	 * we survive long enough to complete this method call
 	 */
 	g_object_ref (cursor);
-	e_book_backend_delete_cursor (priv->backend, cursor);
+
+	/* This should never really happen, but if it does, there is no
+	 * we cannot expect the client to recover well from an error at
+	 * dispose time, so let's just log the warning.
+	 */
+	if (!e_book_backend_delete_cursor (priv->backend, cursor, &error)) {
+		g_warning ("Error trying to delete cursor: %s", error->message);
+		g_clear_error (&error);
+	}
 	e_dbus_address_book_cursor_complete_dispose (dbus_object, invocation);
+
 	g_object_unref (cursor);
 
 	return TRUE;
@@ -688,7 +702,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 			     GError             **error)
 {
 	GError *local_error = NULL;
-	gboolean success;
+	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
@@ -699,20 +713,22 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 									       sexp,
 									       error);
 
-		/* We already set the new search expression, we can't fail anymore so just fire a warning */
-		if (!e_data_book_cursor_recalculate (cursor, &local_error)) {
-			g_warning ("Failed to recalculate the cursor value "
-				   "after setting the search expression: %s",
-				   local_error->message);
-			g_clear_error (&local_error);
-		}
-
 	} else {
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_NOT_SUPPORTED,
-			     "Cursor does not support setting the search expression");
-		success = FALSE;
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_NOT_SUPPORTED,
+				     _("Cursor does not support setting the search expression"));
+	}
+
+	/* We already set the new search expression,
+	 * we can't fail anymore so just fire a warning
+	 */
+	if (success &&
+	    !e_data_book_cursor_recalculate (cursor, &local_error)) {
+		g_warning ("Failed to recalculate the cursor value "
+			   "after setting the search expression: %s",
+			   local_error->message);
+		g_clear_error (&local_error);
 	}
 
 	g_object_unref (cursor);
@@ -770,10 +786,10 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
 	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->move_by) {
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_NOT_SUPPORTED,
-			     "Cursor does not support moves");
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_NOT_SUPPORTED,
+				     _("Cursor does not support moves"));
 		return FALSE;
 	}
 
@@ -808,8 +824,9 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
  * @locale: the locale in which @index is expected to be a valid alphabetic index
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
- * Sets the current cursor position to point to an index into the
- * alphabet active in @locale.
+ * Sets the @cursor position to an
+ * <link linkend="cursor-alphabet">Alphabetic Index</link>
+ * into the alphabet active in the @locale of the addressbook.
  *
  * After setting the target to an alphabetic index, for example the
  * index for letter 'E', then further calls to e_data_book_cursor_move_by()
@@ -854,10 +871,10 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
 		}
 
 	} else {
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_NOT_SUPPORTED,
-			     "Cursor does not support alphabetic indexes");
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_NOT_SUPPORTED,
+				     _("Cursor does not support alphabetic indexes"));
 		success = FALSE;
 	}
 
@@ -967,10 +984,10 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 				   local_error->message);
 			g_clear_error (&local_error);
 		} else if (!e_data_book_cursor_recalculate (E_DATA_BOOK_CURSOR (cursor),
-							    error)) {
+							    &local_error)) {
 			g_warning ("Error recalculating cursor position after locale change: %s",
 				   local_error->message);
-			g_clear_object (&cursor);
+			g_clear_error (&local_error);
 		}
 	}
 
@@ -1006,7 +1023,7 @@ e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
 
 	priv = cursor->priv;
 
-	if (!data_book_cursor_compare (cursor, contact, &comparison, &matches_sexp)) {
+	if (!data_book_cursor_compare_contact (cursor, contact, &comparison, &matches_sexp)) {
 		GError *error = NULL;
 
 		/* Comparisons not supported, must recalculate entirely */
@@ -1064,7 +1081,7 @@ e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
 
 	priv = cursor->priv;
 
-	if (!data_book_cursor_compare (cursor, contact, &comparison, &matches_sexp)) {
+	if (!data_book_cursor_compare_contact (cursor, contact, &comparison, &matches_sexp)) {
 		GError *error = NULL;
 
 		/* Comparisons not supported, must recalculate entirely */
