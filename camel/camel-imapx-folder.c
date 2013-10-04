@@ -1201,6 +1201,45 @@ camel_imapx_folder_set_quota_root_names (CamelIMAPXFolder *folder,
 }
 
 /**
+ * camel_imapx_folder_copy_message_map:
+ * @folder: a #CamelIMAPXFolder
+ *
+ * Returns a #GSequence of 32-bit integers representing the locally cached
+ * mapping of message sequence numbers to unique identifiers.
+ *
+ * Free the returns #GSequence with g_sequence_free().
+ *
+ * Returns: a #GSequence
+ *
+ * Since: 3.12
+ **/
+GSequence *
+camel_imapx_folder_copy_message_map (CamelIMAPXFolder *folder)
+{
+	CamelFolderSummary *summary;
+	GSequence *message_map;
+	GPtrArray *array;
+	guint ii;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
+
+	summary = CAMEL_FOLDER (folder)->summary;
+	array = camel_folder_summary_get_array (summary);
+	camel_folder_sort_uids (CAMEL_FOLDER (folder), array);
+
+	message_map = g_sequence_new (NULL);
+
+	for (ii = 0; ii < array->len; ii++) {
+		guint32 uid = strtoul (array->pdata[ii], NULL, 10);
+		g_sequence_append (message_map, GUINT_TO_POINTER (uid));
+	}
+
+	camel_folder_summary_free_array (array);
+
+	return message_map;
+}
+
+/**
  * camel_imapx_folder_add_move_to_real_junk:
  * @folder: a #CamelIMAPXFolder
  * @message_uid: a message UID
