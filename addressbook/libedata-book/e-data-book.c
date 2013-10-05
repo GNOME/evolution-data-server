@@ -2070,7 +2070,7 @@ data_book_localed_ready (GObject *source_object,
 		g_signal_connect (book->priv->localed_proxy, "notify::locale",
 				  G_CALLBACK (data_book_locale_changed), book);
 
-		/* Initial refresh the locale */
+		/* Initial refresh of the locale */
 		data_book_locale_changed (G_OBJECT (book->priv->localed_proxy), NULL, book);
 	}
 }
