@@ -63,6 +63,7 @@ G_DEFINE_BOXED_TYPE (ECollator,
 struct _ECollator
 {
 	UCollator       *coll;
+	volatile gint    ref_count;
 
 	EAlphabetIndex  *alpha_index;
 	gchar          **labels;
@@ -72,8 +73,6 @@ struct _ECollator
 	gint             overflow;
 
 	ECxxTransliterator *transliterator;
-
-	gint             ref_count;
 };
 
 /*****************************************************
@@ -355,7 +354,7 @@ e_collator_ref (ECollator *collator)
 {
 	g_return_val_if_fail (collator != NULL, NULL);
 
-	collator->ref_count++;
+	g_atomic_int_inc (&collator->ref_count);
 
 	return collator;
 }
@@ -374,12 +373,7 @@ e_collator_unref (ECollator *collator)
 {
 	g_return_if_fail (collator != NULL);
 
-	collator->ref_count--;
-
-	if (collator->ref_count < 0)
-		g_warning ("Unbalanced reference count in ECollator");
-
-	if (collator->ref_count == 0) {
+	if (g_atomic_int_dec_and_test (&collator->ref_count)) {
 
 		if (collator->coll)
 			ucol_close (collator->coll);
