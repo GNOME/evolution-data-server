@@ -668,7 +668,7 @@ e_data_book_cursor_get_total (EDataBookCursor *cursor)
  * e_data_book_cursor_get_position:
  * @cursor: an #EDataBookCursor
  *
- * Fetch the current position of @cursor in it's result list.
+ * Fetch the current position of @cursor in its result list.
  *
  * Returns: the current position of @cursor
  *
@@ -691,8 +691,7 @@ e_data_book_cursor_get_position (EDataBookCursor *cursor)
  *
  * Sets the search expression for the cursor
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -767,8 +766,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
  * %E_CLIENT_ERROR_OUT_OF_SYNC error if the @revision_guard does not match
  * the current addressbook revision.
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -838,8 +836,7 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
  * call has been issued, an %E_CLIENT_ERROR_OUT_OF_SYNC error will be
  * issued indicating that there was a locale mismatch.
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -893,8 +890,7 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
  * recalculate the position and total values when the addressbook
  * revision has changed.
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -942,8 +938,7 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
  *
  * This will implicitly reset @cursor's state and position.
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -1037,7 +1032,7 @@ e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
 		return;
 	}
 
-	/* The added contact doesnt match the cursor search expression, no need
+	/* The added contact doesn't match the cursor search expression, no need
 	 * to change the position & total values
 	 */
 	if (!matches_sexp)
@@ -1124,8 +1119,7 @@ e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
  *
  * Places @cursor on the @connection at @object_path
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
