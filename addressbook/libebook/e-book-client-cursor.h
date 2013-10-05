@@ -136,7 +136,7 @@ gboolean             e_book_client_cursor_set_alphabetic_index_sync   (EBookClie
 								       gint                 index,
 								       GCancellable        *cancellable,
 								       GError             **error);
-gint                 e_book_client_cursor_get_contact_alpabetic_index (EBookClientCursor   *cursor,
+gint                 e_book_client_cursor_get_contact_alphabetic_index(EBookClientCursor   *cursor,
 								       EContact            *contact);
 
 G_END_DECLS

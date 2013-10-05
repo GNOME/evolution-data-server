@@ -186,14 +186,14 @@
  * <para>
  * This API can also result in an %E_CLIENT_ERROR_OUT_OF_SYNC error. This error will
  * occur at any time that the cursor tries to set the alphabetic index whilst the
- * addressbook is changing it's active locale setting. In the case of a dynamic locale
+ * addressbook is changing its active locale setting. In the case of a dynamic locale
  * change, a change notification will be delivered for the #EBookClientCursor:alphabet
  * property at which point the application should reload anything related to the
  * alphabet (a #EBookClientCursor::refresh signal will also be delivered at this point).
  * </para>
  * <para>
  * One can determine the appropriate index for a given #EContact by calling
- * e_book_client_cursor_get_contact_alpabetic_index(), this is useful to use
+ * e_book_client_cursor_get_contact_alphabetic_index(), this is useful to use
  * when updating any indicators in the user interface showing what letter
  * you have reached in the active alphabet.
  * </para>
@@ -639,7 +639,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * that the cursor results should be refreshed.
 	 *
 	 * This is normally done by calling e_book_client_cursor_move_by()
-	 * with a %E_BOOK_CURSOR_ORIGIN_PREVIOUS origin.
+	 * with an %E_BOOK_CURSOR_ORIGIN_PREVIOUS origin.
 	 *
 	 * This signal is guaranteed to be delivered in the #GMainContext
 	 * which was the thread default context at cursor creation time.
@@ -1171,7 +1171,7 @@ book_client_cursor_set_locale (EBookClientCursor *cursor,
 				     NULL, NULL, NULL);
 
 	/* The server side EDataBookCursor should have already
-	 * reset it's cursor values internally and notified
+	 * reset its cursor values internally and notified
 	 * a new total & position value, however we need to
 	 * explicitly load the new locale for DRA cursors.
 	 */
@@ -1658,7 +1658,8 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 			gchar *vcard = l->data;
 			EContact *contact = e_contact_new_from_vcard (vcard);
 
-			contacts = g_slist_prepend (contacts, contact);
+			if (contact)
+				contacts = g_slist_prepend (contacts, contact);
 		}
 
 		g_slist_free_full (results, (GDestroyNotify)g_free);
@@ -2010,7 +2011,7 @@ e_book_client_cursor_set_sexp (EBookClientCursor   *cursor,
  * Completes an asynchronous call initiated by e_book_client_cursor_set_sexp(), reporting
  * whether the new search expression was accepted.
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -2062,14 +2063,14 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor   *cursor,
  * If this method is called from the same thread context in which
  * the cursor was created, then the updates to the #EBookClientCursor:position
  * and #EBookClientCursor:total properties are guaranteed to be delivered
- * synchonously upon successful completion of setting the search expression.
+ * synchronously upon successful completion of setting the search expression.
  * Otherwise, notifications will be delivered asynchronously in the cursor's
  * original thread context.
  *
  * If the backend does not support the given search expression,
  * an %E_CLIENT_ERROR_INVALID_QUERY error will be set.
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -2171,7 +2172,7 @@ e_book_client_cursor_move_by (EBookClientCursor   *cursor,
  * Completes an asynchronous call initiated by e_book_client_cursor_move_by(), fetching
  * any contacts which might have been returned by the call.
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -2255,7 +2256,7 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
  *
  * If this method is called from the same thread context in which
  * the cursor was created, then the updates to the #EBookClientCursor:position
- * property are guaranteed to be delivered synchonously upon successful completion
+ * property are guaranteed to be delivered synchronously upon successful completion
  * of moving the cursor. Otherwise, notifications will be delivered asynchronously
  * in the cursor's original thread context.
  *
@@ -2265,7 +2266,7 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
  * to be followed by an #EBookClientCursor::refresh signal at which point any content
  * should be reloaded.
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -2313,7 +2314,7 @@ e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
  *
  * If this method is called from the same thread context in which
  * the cursor was created, then the updates to the #EBookClientCursor:position
- * property are guaranteed to be delivered synchonously upon successful completion
+ * property are guaranteed to be delivered synchronously upon successful completion
  * of moving the cursor. Otherwise, notifications will be delivered asynchronously
  * in the cursor's original thread context.
  *
@@ -2360,7 +2361,7 @@ e_book_client_cursor_set_alphabetic_index (EBookClientCursor   *cursor,
  *
  * Completes an asynchronous call initiated by e_book_client_cursor_set_alphabetic_index().
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  */
 gboolean
 e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
@@ -2414,7 +2415,7 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
  *
  * If this method is called from the same thread context in which
  * the cursor was created, then the updates to the #EBookClientCursor:position
- * property are guaranteed to be delivered synchonously upon successful completion
+ * property are guaranteed to be delivered synchronously upon successful completion
  * of moving the cursor. Otherwise, notifications will be delivered asynchronously
  * in the cursor's original thread context.
  *
@@ -2425,7 +2426,7 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
  * property change notification is delivered and then proceed to load the new
  * alphabet before trying to set any alphabetic index.
  *
- * Returns: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
@@ -2458,7 +2459,7 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
 }
 
 /**
- * e_book_client_cursor_get_contact_alpabetic_index:
+ * e_book_client_cursor_get_contact_alphabetic_index:
  * @cursor: an #EBookClientCursor
  * @contact: the #EContact to check
  *
@@ -2473,8 +2474,8 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
  * Since: 3.10
  */
 gint
-e_book_client_cursor_get_contact_alpabetic_index (EBookClientCursor   *cursor,
-						  EContact            *contact)
+e_book_client_cursor_get_contact_alphabetic_index (EBookClientCursor   *cursor,
+						   EContact            *contact)
 {
 	EBookClientCursorPrivate *priv;
 	EContactField field;
