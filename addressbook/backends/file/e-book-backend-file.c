@@ -991,14 +991,14 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		}
         }
 
-	g_rw_lock_writer_unlock (&(bf->priv->lock));
-
 	/* After removing any contacts, notify any cursors that the contacts are removed */
 	if (success) {
 		for (l = removed_contacts; l; l = l->next) {
 			cursors_contact_removed (bf, E_CONTACT (l->data));
 		}
 	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	e_util_free_object_slist (removed_contacts);
 }
@@ -1144,8 +1144,6 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		}
 	}
 
-	g_rw_lock_writer_unlock (&(bf->priv->lock));
-
 	/* Now that we've modified the contact(s), notify cursors of the changes
 	 */
 	if (status != STATUS_ERROR) {
@@ -1158,6 +1156,8 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			cursors_contact_added (bf, E_CONTACT (l->data));
 		}
 	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	if (status != STATUS_ERROR) {
 		*contacts = g_slist_reverse (modified_contacts);
@@ -1640,6 +1640,8 @@ e_book_backend_file_dispose (GObject *object)
 
 	bf = E_BOOK_BACKEND_FILE (object);
 
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
 	if (bf->priv->cursors) {
 		g_list_free_full (bf->priv->cursors, (GDestroyNotify)g_object_unref);
 		bf->priv->cursors = NULL;
@@ -1650,6 +1652,7 @@ e_book_backend_file_dispose (GObject *object)
 		bf->priv->sqlitedb = NULL;
 	}
 
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->dispose (object);
 }
@@ -1729,8 +1732,6 @@ e_book_backend_file_set_locale (EBookBackend *backend,
 		}
 	}
 
-	g_rw_lock_writer_unlock (&(bf->priv->lock));
-
 	cursors_locale_changed (bf);
 
 	/* We set the new locale, now update our local variable */
@@ -1738,25 +1739,34 @@ e_book_backend_file_set_locale (EBookBackend *backend,
 		g_free (bf->priv->locale);
 		bf->priv->locale = g_strdup (locale);
 	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
 }
 
-static const gchar *
-e_book_backend_file_get_locale (EBookBackend *backend)
+static gchar *
+e_book_backend_file_dup_locale (EBookBackend *backend)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	gchar *locale;
 
-	return bf->priv->locale;
+	g_rw_lock_reader_lock (&(bf->priv->lock));
+	locale = g_strdup (bf->priv->locale);
+	g_rw_lock_reader_unlock (&(bf->priv->lock));
+
+	return locale;
 }
 
 static EDataBookCursor *
 e_book_backend_file_create_cursor (EBookBackend *backend,
 				   EContactField *sort_fields,
-				   EBookSortType *sort_types,
+				   EBookCursorSortType *sort_types,
 				   guint n_fields,
 				   GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	EDataBookCursor  *cursor;
+
+	g_rw_lock_writer_lock (&(bf->priv->lock));
 
 	cursor = e_data_book_cursor_sqlite_new (backend,
 						bf->priv->sqlitedb,
@@ -1770,17 +1780,36 @@ e_book_backend_file_create_cursor (EBookBackend *backend,
 		bf->priv->cursors =
 			g_list_prepend (bf->priv->cursors, cursor);
 
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
 	return cursor;
 }
 
-static void
+static gboolean
 e_book_backend_file_delete_cursor (EBookBackend *backend,
-				   EDataBookCursor *cursor)
+				   EDataBookCursor *cursor,
+				   GError **error)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	GList *link;
 
-	bf->priv->cursors = g_list_remove (bf->priv->cursors, cursor);
-	g_object_unref (cursor);
+	g_rw_lock_writer_lock (&(bf->priv->lock));
+
+	link = g_list_find (bf->priv->cursors, cursor);
+
+	if (link != NULL) {
+		bf->priv->cursors = g_list_delete_link (bf->priv->cursors, link);
+		g_object_unref (cursor);
+	} else {
+		g_set_error_literal (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_INVALID_ARG,
+				     _("Requested to delete an unrelated cursor"));
+	}
+
+	g_rw_lock_writer_unlock (&(bf->priv->lock));
+
+	return link != NULL;
 }
 
 static gboolean
@@ -1980,7 +2009,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->get_direct_book          = e_book_backend_file_get_direct_book;
 	backend_class->configure_direct         = e_book_backend_file_configure_direct;
 	backend_class->set_locale               = e_book_backend_file_set_locale;
-	backend_class->get_locale               = e_book_backend_file_get_locale;
+	backend_class->dup_locale               = e_book_backend_file_dup_locale;
 	backend_class->create_cursor            = e_book_backend_file_create_cursor;
 	backend_class->delete_cursor            = e_book_backend_file_delete_cursor;
 
