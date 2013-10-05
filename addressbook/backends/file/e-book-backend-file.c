@@ -1643,7 +1643,7 @@ e_book_backend_file_dispose (GObject *object)
 	g_rw_lock_writer_lock (&(bf->priv->lock));
 
 	if (bf->priv->cursors) {
-		g_list_free_full (bf->priv->cursors, (GDestroyNotify)g_object_unref);
+		g_list_free_full (bf->priv->cursors, g_object_unref);
 		bf->priv->cursors = NULL;
 	}
 
