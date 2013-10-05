@@ -243,7 +243,7 @@ e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
 
 static gboolean
 convert_origin (EBookCursorOrigin    src_origin,
-		EbSdbCurorOrigin    *dest_origin,
+		EbSdbCursorOrigin   *dest_origin,
 		GError             **error)
 {
 	gboolean success = TRUE;
@@ -281,7 +281,7 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
 	GSList *local_results = NULL, *local_converted_results = NULL, *l;
-	EbSdbCurorOrigin sqlitedb_origin = 0;
+	EbSdbCursorOrigin sqlitedb_origin = 0;
 	gchar *revision = NULL;
 	gboolean success = FALSE;
 
@@ -296,7 +296,7 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	 * with the sqlite.
 	 *
 	 * The addressbook modifications and revision changes
-	 * are also atomically commit to the SQLite.
+	 * are also atomically committed to the SQLite.
 	 */
 	success = e_book_backend_sqlitedb_lock_updates (priv->ebsdb, error);
 
@@ -460,7 +460,7 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
  * Creates an #EDataBookCursor and implements all of the cursor methods
  * using the delegate @ebsdb object.
  *
- * This is a suitable cursor type for any backend which stores it's contacts
+ * This is a suitable cursor type for any backend which stores its contacts
  * using the #EBookBackendSqliteDB object.
  *
  * Returns: (transfer full): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
