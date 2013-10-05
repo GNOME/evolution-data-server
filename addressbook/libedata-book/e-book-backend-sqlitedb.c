@@ -1011,6 +1011,12 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	string = g_string_new (
 		"CREATE TABLE IF NOT EXISTS %Q ( uid TEXT PRIMARY KEY, ");
 
+	/* Add column creation statements for each summary field.
+	 *
+	 * Start looping over the summary fields only starting with the second element,
+	 * the first element (which is always the UID), is already specified in the
+	 * CREATE TABLE statement which we are building.
+	 */
 	for (i = 1; i < ebsdb->priv->n_summary_fields; i++) {
 		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 			g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
@@ -1070,10 +1076,13 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		tmp = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN ", folderid);
 
-		for (i = 1; i < ebsdb->priv->n_summary_fields && success; i++) {
+		/* UID and REV are always the first two summary fields, in this
+		 * case we want to localize all strings EXCEPT these two, so
+		 * we start iterating with the third element.
+		 */
+		for (i = 2; i < ebsdb->priv->n_summary_fields && success; i++) {
 
-			if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING &&
-			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
+			if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 				string = g_string_new (tmp);
 
 				g_string_append (string, ebsdb->priv->summary_fields[i].dbname);
@@ -1093,7 +1102,11 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		tmp = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN ", folderid);
 
-		for (i = 1; i < ebsdb->priv->n_summary_fields && success; i++) {
+		/* UID and REV are always the first two summary fields, in this
+		 * case we want to transliterate all strings EXCEPT these two, so
+		 * we start iterating with the third element.
+		 */
+		for (i = 2; i < ebsdb->priv->n_summary_fields && success; i++) {
 
 			if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING &&
 			    ebsdb->priv->summary_fields[i].field != E_CONTACT_REV) {
@@ -2174,6 +2187,10 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 		/* Multi values go into a separate table/statement */
 		if (ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
 
+			/* Only add a ", " before every field except the first,
+			 * this will not break because the first 2 fields (UID & REV)
+			 * are string fields.
+			 */
 			if (i > 0)
 				g_string_append (string, ", ");
 
@@ -2213,12 +2230,19 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 	 */
 	g_string_append (string, " VALUES (");
 	for (i = 0; i < ebsdb->priv->n_summary_fields; i++) {
+
+		if (ebsdb->priv->summary_fields[i].type != E_TYPE_CONTACT_ATTR_LIST) {
+			/* Only add a ", " before every field except the first,
+			 * this will not break because the first 2 fields (UID & REV)
+			 * are string fields.
+			 */
+			if (i > 0)
+				g_string_append (string, ", ");
+		}
+
 		if (ebsdb->priv->summary_fields[i].type == G_TYPE_STRING) {
 			gchar *val;
 			gchar *normal;
-
-			if (i > 0)
-				g_string_append (string, ", ");
 
 			val = e_contact_get (contact, ebsdb->priv->summary_fields[i].field);
 
@@ -2264,9 +2288,6 @@ insert_stmt_from_contact (EBookBackendSqliteDB *ebsdb,
 			g_free (val);
 		} else if (ebsdb->priv->summary_fields[i].type == G_TYPE_BOOLEAN) {
 			gboolean val;
-
-			if (i > 0)
-				g_string_append (string, ", ");
 
 			val = e_contact_get (contact, ebsdb->priv->summary_fields[i].field) ? TRUE : FALSE;
 			g_string_append_printf (string, "%d", val ? 1 : 0);
@@ -5684,8 +5705,6 @@ ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
 			const gchar          *vcard)
 {
 	EContact *contact;
-
-	g_assert (vcard);
 
 	contact = e_contact_new_from_vcard (vcard);
 	ebsdb_cursor_set_state_from_contact (ebsdb, cursor, contact);
