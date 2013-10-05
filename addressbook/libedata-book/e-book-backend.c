@@ -1517,7 +1517,7 @@ e_book_backend_respond_opened (EBookBackend *backend,
  *
  * Creates a new #EDataBookCursor for the given backend if the backend
  * has cursor support. If the backend does not support cursors then
- * a %E_CLIENT_ERROR_NOT_SUPPORTED error will be set in @error.
+ * an %E_CLIENT_ERROR_NOT_SUPPORTED error will be set in @error.
  *
  * Backends can also refuse to create cursors for some values of @sort_fields
  * and report more specific errors.
