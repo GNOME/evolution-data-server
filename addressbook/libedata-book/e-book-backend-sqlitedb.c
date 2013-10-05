@@ -4250,7 +4250,7 @@ book_backend_sqlitedb_search_query (EBookBackendSqliteDB *ebsdb,
 
 			success = book_backend_sql_exec (
 				ebsdb->priv->db, stmt,
-				addto_vcard_list_cb , &vcard_data, error);
+				addto_vcard_list_cb, &vcard_data, error);
 
 			sqlite3_free (stmt);
 		} else {
@@ -5882,7 +5882,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
 
 	/* Add the cursor constraints (if any) */
 	if (cursor->state[STATE_CURRENT].values[0] != NULL) {
-		gchar  *constraints = NULL;
+		gchar *constraints = NULL;
 
 		if (!cursor->query)
 			g_string_append (query, " WHERE ");
@@ -5919,7 +5919,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
  * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by.
- * @error: A return location to story any error that might be reported.
+ * @error: A return location to store any error that might be reported.
  *
  * Creates a new #EbSdbCursor.
  *
@@ -6044,11 +6044,11 @@ collect_results_for_cursor_cb (gpointer ref,
  * e_book_backend_sqlitedb_cursor_move_by:
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor to use
- * @origin: The #EbSdbCurorOrigin for this move
+ * @origin: The #EbSdbCursorOrigin for this move
  * @count: A positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type EbSdbSearchData) (transfer full):
  *   A return location to store the results, or %NULL to move the cursor without retrieving any results.
- * @error: A return location to story any error that might be reported.
+ * @error: A return location to store any error that might be reported.
  *
  * Moves @cursor through the @ebsdb by @count and fetch a maximum of @count contacts.
  *
@@ -6067,15 +6067,14 @@ collect_results_for_cursor_cb (gpointer ref,
  * the result list will be stored to @results and should be freed with g_slist_free()
  * and all elements freed with e_book_backend_sqlitedb_search_data_free().
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
  * Since: 3.10
  */
 gboolean
 e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 					EbSdbCursor          *cursor,
-					EbSdbCurorOrigin      origin,
+					EbSdbCursorOrigin     origin,
 					gint                  count,
 					GSList              **results,
 					GError              **error)
@@ -6126,7 +6125,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 
 	/* Add the cursor constraints (if any) */
 	if (cursor->state[STATE_CURRENT].values[0] != NULL) {
-		gchar  *constraints = NULL;
+		gchar *constraints = NULL;
 
 		if (!cursor->query)
 			g_string_append (query, " WHERE ");
@@ -6212,7 +6211,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
  * will return results starting with the letter 'E' (or results starting
  * with the last result in 'D', if moving in a negative direction).
  *
- * The passed index must be a valid index in the active locale, knowlege
+ * The passed index must be a valid index in the active locale, knowledge
  * on the currently active alphabet index must be obtained using #ECollator
  * APIs.
  *
@@ -6250,7 +6249,7 @@ e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor
  * @sexp: The new query expression for @cursor
- * @error: A return location to story any error that might be reported.
+ * @error: A return location to store any error that might be reported.
  *
  * Modifies the current query expression for @cursor. This will not
  * modify @cursor's state, but will change the outcome of any further
@@ -6294,7 +6293,7 @@ e_book_backend_sqlitedb_cursor_set_sexp (EBookBackendSqliteDB *ebsdb,
  * @cursor: The #EbSdbCursor
  * @total: (out) (allow-none): A return location to store the total result set for this cursor
  * @position: (out) (allow-none): A return location to store the total results before the cursor value
- * @error: (allow-none): A return location to story any error that might be reported.
+ * @error: (allow-none): A return location to store any error that might be reported.
  *
  * Calculates the @total amount of results for the @cursor's query expression,
  * as well as the current @position of @cursor in the results. @position is
