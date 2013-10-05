@@ -290,7 +290,7 @@ static EBookClientCursor *
 get_cursor (EBookClient *book_client)
 {
   EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-  EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
+  EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
   EBookClientCursor *cursor = NULL;
   GError *error = NULL;
 

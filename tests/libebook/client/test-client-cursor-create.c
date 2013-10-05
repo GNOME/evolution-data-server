@@ -31,11 +31,11 @@ static ETestServerClosure book_closure_direct_async = { E_TEST_SERVER_DIRECT_ADD
 
 #define N_VALID_SORT_FIELDS 2
 static EContactField valid_sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-static EBookSortType valid_sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
+static EBookCursorSortType valid_sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
 
 #define N_INVALID_SORT_FIELDS 1
 static EContactField invalid_sort_fields[] = { E_CONTACT_TEL };
-static EBookSortType invalid_sort_types[] = { E_BOOK_SORT_ASCENDING };
+static EBookCursorSortType invalid_sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING };
 
 static void
 test_cursor_create_empty_query_sync (ETestServerFixture *fixture,

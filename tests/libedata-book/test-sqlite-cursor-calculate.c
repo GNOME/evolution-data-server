@@ -9,13 +9,13 @@
 static EbSdbCursorClosure ascending_closure = {
 	{ E_TEST_SERVER_ADDRESS_BOOK, e_sqlitedb_cursor_fixture_setup_book, 0 },
 	NULL, 
-	E_BOOK_SORT_ASCENDING
+	E_BOOK_CURSOR_SORT_ASCENDING
 };
 
 static EbSdbCursorClosure descending_closure = {
 	{ E_TEST_SERVER_ADDRESS_BOOK, e_sqlitedb_cursor_fixture_setup_book, 0 },
 	NULL, 
-	E_BOOK_SORT_DESCENDING
+	E_BOOK_CURSOR_SORT_DESCENDING
 };
 
 static void

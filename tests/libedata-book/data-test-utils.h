@@ -92,10 +92,10 @@ typedef struct {
 } EbSdbCursorFixture;
 
 typedef struct {
-	ETestServerClosure parent;
+	ETestServerClosure  parent;
 
-	const gchar   *locale;
-	EBookSortType  sort_type;
+	const gchar        *locale;
+	EBookCursorSortType sort_type;
 } EbSdbCursorClosure;
 
 typedef struct {
@@ -157,7 +157,7 @@ MoveByData *move_by_test_new               (const gchar *test_path,
 					    const gchar *locale);
 MoveByData *move_by_test_new_full          (const gchar   *test_path,
 					    const gchar   *locale,
-					    EBookSortType  sort_type);
+					    EBookCursorSortType sort_type);
 void        move_by_test_add               (MoveByData  *data,
 					    gboolean     filtered);
 

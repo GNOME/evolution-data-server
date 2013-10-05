@@ -219,7 +219,7 @@ struct _CursorTest {
  ******************************************************/
 #define N_SORT_FIELDS 2
 static EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-static EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
+static EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
 
 static gboolean
 cursor_timeout (const gchar *error_message)
