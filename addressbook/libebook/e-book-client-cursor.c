@@ -883,9 +883,6 @@ book_client_cursor_set_client (EBookClientCursor *cursor,
 			g_signal_handler_disconnect (current_client, priv->locale_changed_id);
 			priv->revision_changed_id = 0;
 			priv->locale_changed_id = 0;
-
-			/* e_book_client_cursor_ref_client() gave us a ref */
-			g_object_unref (current_client);
 		}
 
 		/* Set the new client */
@@ -919,6 +916,9 @@ book_client_cursor_set_client (EBookClientCursor *cursor,
 			g_free (revision);
 		}
 	}
+
+	/* e_book_client_cursor_ref_client() gave us a ref */
+	g_clear_object (&current_client);
 }
 
 static void
@@ -1018,6 +1018,8 @@ book_client_cursor_set_context (EBookClientCursor *cursor,
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
+	g_mutex_lock (&cursor->priv->main_context_lock);
+
 	if (priv->main_context != context) {
 		if (priv->main_context)
 			g_main_context_unref (priv->main_context);
@@ -1027,6 +1029,8 @@ book_client_cursor_set_context (EBookClientCursor *cursor,
 		if (priv->main_context)
 			g_main_context_ref (priv->main_context);
 	}
+
+	g_mutex_unlock (&cursor->priv->main_context_lock);
 }
 
 static GMainContext *
