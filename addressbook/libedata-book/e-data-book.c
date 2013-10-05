@@ -1119,13 +1119,13 @@ static gboolean
 data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 			       const gchar * const *in_sort_types,
 			       EContactField **out_sort_keys,
-			       EBookSortType **out_sort_types,
+			       EBookCursorSortType **out_sort_types,
 			       gint *n_fields,
 			       GError **error)
 {
 	gint i, key_count = 0, type_count = 0;
 	EContactField *sort_keys;
-	EBookSortType *sort_types;
+	EBookCursorSortType *sort_types;
 	gboolean success = TRUE;
 
 	if (!in_sort_keys || !in_sort_types) {
@@ -1150,7 +1150,7 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 	}
 
 	sort_keys = g_new0 (EContactField, key_count);
-	sort_types = g_new0 (EBookSortType, type_count);
+	sort_types = g_new0 (EBookCursorSortType, type_count);
 
 	for (i = 0; success && i < key_count; i++) {
 
@@ -1169,7 +1169,7 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 	for (i = 0; success && i < type_count; i++) {
 		gint enum_value = 0;
 
-		if (!e_enum_from_string (E_TYPE_BOOK_SORT_TYPE,
+		if (!e_enum_from_string (E_TYPE_BOOK_CURSOR_SORT_TYPE,
 					 in_sort_types[i],
 					 &enum_value)) {
 			g_set_error (error,
@@ -1207,7 +1207,7 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	EDataBookCursor *cursor;
 	GDBusConnection *connection;
 	EContactField *sort_keys = NULL;
-	EBookSortType *sort_types = NULL;
+	EBookCursorSortType *sort_types = NULL;
 	gint n_fields = 0;
 	gchar *object_path;
 	GError *error = NULL;
@@ -1250,7 +1250,7 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	 */
 	if (!e_data_book_cursor_set_sexp (cursor, in_query, &error)) {
 
-		e_book_backend_delete_cursor (backend, cursor);
+		e_book_backend_delete_cursor (backend, cursor, NULL);
 		g_dbus_method_invocation_take_error (invocation, error);
 		return TRUE;
 	}
@@ -1262,7 +1262,7 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	 * Now export the object on the connection
 	 */
 	if (!e_data_book_cursor_register_gdbus_object (cursor, connection, object_path, &error)) {
-		e_book_backend_delete_cursor (backend, cursor);
+		e_book_backend_delete_cursor (backend, cursor, NULL);
 		g_dbus_method_invocation_take_error (invocation, error);
 		g_free (object_path);
 		return TRUE;
@@ -2000,13 +2000,13 @@ data_book_interpret_locale (const gchar * const * locale)
 
 		for (i = 0; locale[i] != NULL && interpreted_locale == NULL; i++) {
 
-			if (strncmp (locale[i], "LC_COLLATE", 10))
+			if (strncmp (locale[i], "LC_COLLATE", 10) == 0)
 				interpreted_locale = data_book_interpret_locale_value (locale[i]);
 		}
 
 		for (i = 0; locale[i] != NULL && interpreted_locale == NULL; i++) {
 
-			if (strncmp (locale[i], "LANG", 4))
+			if (strncmp (locale[i], "LANG", 4) == 0)
 				interpreted_locale = data_book_interpret_locale_value (locale[i]);
 		}
 	}
@@ -2291,7 +2291,7 @@ data_book_initable_init (GInitable *initable,
 {
 	EDataBook *book;
 	OperationData *op;
-	const gchar *locale;
+	gchar *locale;
 	GBusType bus_type = G_BUS_TYPE_SYSTEM;
 
 	book = E_DATA_BOOK (initable);
@@ -2401,8 +2401,9 @@ data_book_initable_init (GInitable *initable,
 		/* Fetch backend configured locale and set that as the initial
 		 * value on the dbus object
 		 */
-		locale = e_book_backend_get_locale (book->priv->backend);
+		locale = e_book_backend_dup_locale (book->priv->backend);
 		e_dbus_address_book_set_locale (book->priv->dbus_interface, locale);
+		g_free (locale);
 
 		/* When running tests, we pretend to be the "org.freedesktop.locale1" service
 		 * on the session bus instead of the real location on the system bus.
