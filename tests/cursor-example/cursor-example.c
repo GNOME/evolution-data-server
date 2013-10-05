@@ -541,11 +541,11 @@ cursor_example_update_current_index (CursorExample *example,
 	gint                  index;
 
 	/* Fetch the alphabetic index for this contact */
-	index = e_book_client_cursor_get_contact_alpabetic_index (priv->cursor, contact);
+	index = e_book_client_cursor_get_contact_alphabetic_index (priv->cursor, contact);
 
 	/* Refresh the current alphabet index indicator.
 	 *
-	 * The index returned by e_book_client_cursor_get_contact_alpabetic_index() is
+	 * The index returned by e_book_client_cursor_get_contact_alphabetic_index() is
 	 * a valid position into the array returned by e_book_client_cursor_get_alphabet().
 	 */
 	labels = e_book_client_cursor_get_alphabet (priv->cursor, NULL, NULL, NULL, NULL);
