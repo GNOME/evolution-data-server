@@ -649,10 +649,8 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 	if (!success)
 		goto rollback;
 
-	/* Adding countrycode column again to track the addressbook's country code.
-	 * Detecting presence of this column by reflection instead of assigning a
-	 * dedicated schema version number, because upstream is not going to accept
-	 * a locale bound addressbook database. See discussion in bug 689622.
+	/* Ensure countrycode column exists to track the addressbook's country code,
+	 * these statements are safe regardless of the previous schema version.
 	 */
 	stmt = "PRAGMA table_info(folders)";
 	success = book_backend_sql_exec (
