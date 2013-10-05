@@ -19,8 +19,8 @@
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
  
-#ifndef __CURSOR_NAVIGATOR_H__
-#define __CURSOR_NAVIGATOR_H__
+#ifndef CURSOR_NAVIGATOR_H
+#define CURSOR_NAVIGATOR_H
 
 #include <gtk/gtk.h>
 
@@ -60,4 +60,4 @@ gint                 cursor_navigator_get_index       (CursorNavigator     *navi
 
 G_END_DECLS
 
-#endif /* __CURSOR_NAVIGATOR_H__ */
+#endif /* CURSOR_NAVIGATOR_H */

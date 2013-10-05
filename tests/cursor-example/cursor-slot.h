@@ -19,8 +19,8 @@
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
  
-#ifndef __CURSOR_SLOT_H__
-#define __CURSOR_SLOT_H__
+#ifndef CURSOR_SLOT_H
+#define CURSOR_SLOT_H
 
 #include <gtk/gtk.h>
 #include <libebook/libebook.h>
@@ -57,4 +57,4 @@ void        cursor_slot_set_from_contact (CursorSlot *slot,
 
 G_END_DECLS
 
-#endif /* __CURSOR_SLOT_H__ */
+#endif /* CURSOR_SLOT_H */

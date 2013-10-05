@@ -19,8 +19,8 @@
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
  
-#ifndef __CURSOR_SEARCH_H__
-#define __CURSOR_SEARCH_H__
+#ifndef CURSOR_SEARCH_H
+#define CURSOR_SEARCH_H
 
 #include <gtk/gtk.h>
 
@@ -55,4 +55,4 @@ const gchar *cursor_search_get_sexp  (CursorSearch *search);
 
 G_END_DECLS
 
-#endif /* __CURSOR_SEARCH_H__ */
+#endif /* CURSOR_SEARCH_H */

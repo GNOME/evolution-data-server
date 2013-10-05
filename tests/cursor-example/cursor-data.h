@@ -18,12 +18,12 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
-#ifndef __CURSOR_DATA_H__
-#define __CURSOR_DATA_H__
+#ifndef CURSOR_DATA_H
+#define CURSOR_DATA_H
 
 #include <libebook/libebook.h>
 
 EBookClient *cursor_load_data (const gchar        *vcard_path,
 			       EBookClientCursor **ret_cursor);
 
-#endif /* __CURSOR_DATA_H__ */
+#endif /* CURSOR_DATA_H */

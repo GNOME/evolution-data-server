@@ -19,8 +19,8 @@
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
  
-#ifndef __CURSOR_EXAMPLE_H__
-#define __CURSOR_EXAMPLE_H__
+#ifndef CURSOR_EXAMPLE_H
+#define CURSOR_EXAMPLE_H
 
 #include <gtk/gtk.h>
 
@@ -54,4 +54,4 @@ GtkWidget  *cursor_example_new      (const gchar   *vcard_path);
 
 G_END_DECLS
 
-#endif /* __CURSOR_EXAMPLE_H__ */
+#endif /* CURSOR_EXAMPLE_H */
