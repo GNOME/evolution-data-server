@@ -12,12 +12,15 @@ addressbook/libebook-contacts/e-contact.c
 addressbook/libebook-contacts/e-phone-number.c
 addressbook/libebook/e-book.c
 addressbook/libebook/e-book-client.c
+addressbook/libebook/e-book-client-cursor.c
 addressbook/libebook/e-book-client-view.c
 addressbook/libebook/e-destination.c
 addressbook/libedata-book/e-book-backend.c
 addressbook/libedata-book/e-book-backend-sqlitedb.c
 addressbook/libedata-book/e-book-backend-sync.c
 addressbook/libedata-book/e-data-book.c
+addressbook/libedata-book/e-data-book-cursor.c
+addressbook/libedata-book/e-data-book-cursor-sqlite.c
 addressbook/libedata-book/e-data-book-factory.c
 calendar/backends/caldav/e-cal-backend-caldav.c
 calendar/backends/contacts/e-cal-backend-contacts.c
