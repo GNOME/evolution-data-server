@@ -91,6 +91,7 @@
 #include "e-source-mdn.h"
 #include "e-source-offline.h"
 #include "e-source-openpgp.h"
+#include "e-source-proxy.h"
 #include "e-source-refresh.h"
 #include "e-source-resource.h"
 #include "e-source-revision-guards.h"
@@ -1693,6 +1694,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_MEMO_LIST);
 	g_type_ensure (E_TYPE_SOURCE_OFFLINE);
 	g_type_ensure (E_TYPE_SOURCE_OPENPGP);
+	g_type_ensure (E_TYPE_SOURCE_PROXY);
 	g_type_ensure (E_TYPE_SOURCE_REFRESH);
 	g_type_ensure (E_TYPE_SOURCE_RESOURCE);
 	g_type_ensure (E_TYPE_SOURCE_REVISION_GUARDS);

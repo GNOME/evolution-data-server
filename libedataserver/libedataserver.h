@@ -58,6 +58,7 @@
 #include <libedataserver/e-source-mdn.h>
 #include <libedataserver/e-source-offline.h>
 #include <libedataserver/e-source-openpgp.h>
+#include <libedataserver/e-source-proxy.h>
 #include <libedataserver/e-source-refresh.h>
 #include <libedataserver/e-source-registry.h>
 #include <libedataserver/e-source-resource.h>

@@ -25,6 +25,7 @@ e_source_mdn_get_type
 e_source_memo_list_get_type
 e_source_offline_get_type
 e_source_openpgp_get_type
+e_source_proxy_get_type
 e_source_refresh_get_type
 e_source_registry_get_type
 e_source_resource_get_type

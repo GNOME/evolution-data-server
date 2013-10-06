@@ -45,6 +45,28 @@ typedef enum {
 } EMdnResponsePolicy;
 
 /**
+ * EProxyMethod:
+ * @E_PROXY_METHOD_DEFAULT:
+ *   Use the default #GProxyResolver (see g_proxy_resolver_get_default()).
+ * @E_PROXY_METHOD_MANUAL:
+ *   Use the FTP/HTTP/HTTPS/SOCKS settings defined in #ESourceProxy.
+ * @E_PROXY_METHOD_AUTO:
+ *   Use the autoconfiguration URL defined in #ESourceProxy.
+ * @E_PROXY_METHOD_NONE:
+ *   Direct connection; do not use a network proxy.
+ *
+ * Network proxy configuration methods.
+ *
+ * Since: 3.12
+ **/
+typedef enum {
+	E_PROXY_METHOD_DEFAULT,
+	E_PROXY_METHOD_MANUAL,
+	E_PROXY_METHOD_AUTO,
+	E_PROXY_METHOD_NONE
+} EProxyMethod;
+
+/**
  * ESourceAuthenticationResult:
  * @E_SOURCE_AUTHENTICATION_ERROR:
  *   An error occurred while authenticating.

@@ -79,6 +79,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-source-mdn.c			\
 	e-source-offline.c		\
 	e-source-openpgp.c		\
+	e-source-proxy.c		\
 	e-source-refresh.c		\
 	e-source-registry.c		\
 	e-source-resource.c		\
@@ -157,6 +158,7 @@ libedataserverinclude_HEADERS =		\
 	e-source-mdn.h			\
 	e-source-offline.h		\
 	e-source-openpgp.h		\
+	e-source-proxy.h		\
 	e-source-refresh.h		\
 	e-source-registry.h		\
 	e-source-resource.h		\
