@@ -647,6 +647,10 @@ service_dispose (GObject *object)
 
 	priv = CAMEL_SERVICE_GET_PRIVATE (object);
 
+	if (priv->status == CAMEL_SERVICE_CONNECTED)
+		CAMEL_SERVICE_GET_CLASS (object)->disconnect_sync (
+			CAMEL_SERVICE (object), TRUE, NULL, NULL);
+
 	g_weak_ref_set (&priv->session, NULL);
 
 	if (priv->settings != NULL) {
@@ -664,10 +668,6 @@ service_finalize (GObject *object)
 	CamelServicePrivate *priv;
 
 	priv = CAMEL_SERVICE_GET_PRIVATE (object);
-
-	if (priv->status == CAMEL_SERVICE_CONNECTED)
-		CAMEL_SERVICE_GET_CLASS (object)->disconnect_sync (
-			CAMEL_SERVICE (object), TRUE, NULL, NULL);
 
 	g_mutex_clear (&priv->settings_lock);
 
