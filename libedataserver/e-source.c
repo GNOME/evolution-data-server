@@ -58,6 +58,12 @@
  * to applications and shared libraries.  This is by design, to try and
  * keep backend-specific knowledge from creeping into places it doesn't
  * belong.
+ *
+ * As of 3.12, an #ESource with an #ESourceProxy extension can serve as a
+ * #GProxyResolver.  Calling g_proxy_resolver_is_supported() on an #ESource
+ * will reflect this constraint.  Attempting a proxy lookup operation on an
+ * #ESource for which g_proxy_resolver_is_supported() returns %FALSE will
+ * fail with %G_IO_ERROR_NOT_SUPPORTED.
  **/
 
 #include "e-source.h"
@@ -161,7 +167,9 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
-static void	e_source_initable_init		(GInitableIface *interface);
+static void	e_source_initable_init	(GInitableIface *interface);
+static void	e_source_proxy_resolver_init
+					(GProxyResolverInterface *interface);
 
 /* Private function shared only with ESourceRegistry. */
 void		__e_source_private_replace_dbus_object
@@ -174,7 +182,10 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
-		e_source_initable_init))
+		e_source_initable_init)
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_PROXY_RESOLVER,
+		e_source_proxy_resolver_init))
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -1508,6 +1519,101 @@ source_initable_init (GInitable *initable,
 	return success;
 }
 
+static gboolean
+source_proxy_resolver_is_supported (GProxyResolver *resolver)
+{
+	return e_source_has_extension (
+		E_SOURCE (resolver), E_SOURCE_EXTENSION_PROXY);
+}
+
+static gchar **
+source_proxy_resolver_lookup (GProxyResolver *resolver,
+                              const gchar *uri,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	return e_source_proxy_lookup_sync (
+		E_SOURCE (resolver), uri, cancellable, error);
+}
+
+/* Helper for source_proxy_resolver_lookup_async() */
+static void
+source_proxy_resolver_lookup_ready_cb (GObject *object,
+                                       GAsyncResult *result,
+                                       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	gchar **proxies;
+	GError *local_error = NULL;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	proxies = e_source_proxy_lookup_finish (
+		E_SOURCE (object), result, &local_error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((proxies != NULL) && (local_error == NULL)) ||
+		((proxies == NULL) && (local_error != NULL)));
+
+	if (proxies != NULL) {
+		g_simple_async_result_set_op_res_gpointer (
+			simple, proxies, (GDestroyNotify) g_strfreev);
+	} else {
+		g_simple_async_result_take_error (simple, local_error);
+	}
+
+	g_simple_async_result_complete (simple);
+
+	g_object_unref (simple);
+}
+
+static void
+source_proxy_resolver_lookup_async (GProxyResolver *resolver,
+                                    const gchar *uri,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (resolver), callback, user_data,
+		source_proxy_resolver_lookup_async);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	e_source_proxy_lookup (
+		E_SOURCE (resolver), uri, cancellable,
+		source_proxy_resolver_lookup_ready_cb,
+		g_object_ref (simple));
+
+	g_object_unref (simple);
+}
+
+static gchar **
+source_proxy_resolver_lookup_finish (GProxyResolver *resolver,
+                                     GAsyncResult *result,
+                                     GError **error)
+{
+	GSimpleAsyncResult *simple;
+	gchar **proxies;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (resolver),
+		source_proxy_resolver_lookup_async), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	proxies = g_simple_async_result_get_op_res_gpointer (simple);
+
+	return g_strdupv (proxies);
+}
+
 static void
 e_source_class_init (ESourceClass *class)
 {
@@ -1710,6 +1816,15 @@ static void
 e_source_initable_init (GInitableIface *interface)
 {
 	interface->init = source_initable_init;
+}
+
+static void
+e_source_proxy_resolver_init (GProxyResolverInterface *interface)
+{
+	interface->is_supported = source_proxy_resolver_is_supported;
+	interface->lookup = source_proxy_resolver_lookup;
+	interface->lookup_async = source_proxy_resolver_lookup_async;
+	interface->lookup_finish = source_proxy_resolver_lookup_finish;
 }
 
 static void
