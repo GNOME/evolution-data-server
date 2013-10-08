@@ -189,27 +189,15 @@ libedataserver_1_2_la_LIBADD += @predeps_CXX@ libedataserver-private.la @postdep
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserver-$(API_VERSION).pc
 
-gsettings_SCHEMAS =							\
-	org.gnome.evolution.shell.network-config.gschema.xml
+EXTRA_DIST = \
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
+	eds-version.h.in
 
-@INTLTOOL_XML_NOMERGE_RULE@
+CLEANFILES = $(BUILT_SOURCES)
 
-@GSETTINGS_RULES@
-
-convertdir = $(datadir)/GConf/gsettings
-convert_DATA = libedataserver.convert
-
-EXTRA_DIST = 						\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
-	eds-version.h.in				\
-	$(convert_DATA)					\
-	$(gsettings_SCHEMAS:.xml=.xml.in)
-
-CLEANFILES = $(BUILT_SOURCES) $(gsettings_SCHEMAS:.xml=.valid)
-
-DISTCLEANFILES = eds-version.h				\
-	$(pkgconfig_DATA)				\
-	$(gsettings_SCHEMAS)
+DISTCLEANFILES = \
+	eds-version.h \
+	$(pkgconfig_DATA)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =

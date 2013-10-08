@@ -40,6 +40,8 @@ gboolean	evolution_source_registry_migrate_imap_to_imapx
 						(ESourceRegistryServer *server,
 						 GKeyFile *key_file,
 						 const gchar *uid);
+void		evolution_source_registry_migrate_proxies
+						(ESourceRegistryServer *server);
 
 static void
 evolution_source_registry_load_error (ESourceRegistryServer *server,
@@ -99,6 +101,9 @@ evolution_source_registry_load_all (ESourceRegistryServer *server,
 
 	if (!success)
 		return FALSE;
+
+	/* Migrate proxy settings from Evolution. */
+	evolution_source_registry_migrate_proxies (server);
 
 	/* Signal that all files are now loaded.  One thing this
 	 * does is tell the cache-reaper module to start scanning
