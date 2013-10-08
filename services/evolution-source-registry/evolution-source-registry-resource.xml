@@ -17,6 +17,7 @@
     <file>system-address-book.source</file>
     <file>system-calendar.source</file>
     <file>system-memo-list.source</file>
+    <file>system-proxy.source</file>
     <file>system-task-list.source</file>
     <file>vfolder.source</file>
   </gresource>

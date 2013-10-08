@@ -15,6 +15,7 @@ builtin_sources_in_files = \
 	builtin/system-address-book.source.in \
 	builtin/system-calendar.source.in \
 	builtin/system-memo-list.source.in \
+	builtin/system-proxy.source.in \
 	builtin/system-task-list.source.in \
 	builtin/vfolder.source.in \
 	$(NULL)
