@@ -3233,6 +3233,126 @@ e_source_registry_ref_builtin_address_book (ESourceRegistry *registry)
 }
 
 /**
+ * e_source_registry_ref_builtin_calendar:
+ * @registry: an #ESourceRegistry
+ *
+ * Returns the built-in calendar #ESource.
+ *
+ * This #ESource is always present and makes for a safe fallback.
+ *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: (transfer full): the built-in calendar #ESource
+ *
+ * Since: 3.6
+ **/
+ESource *
+e_source_registry_ref_builtin_calendar (ESourceRegistry *registry)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	uid = E_SOURCE_BUILTIN_CALENDAR_UID;
+	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
+
+	return source;
+}
+
+/**
+ * e_source_registry_ref_builtin_mail_account:
+ * @registry: an #ESourceRegistry
+ *
+ * Returns the built-in mail account #ESource.
+ *
+ * This #ESource is always present and makes for a safe fallback.
+ *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: (transfer full): the built-in mail account #ESource
+ *
+ * Since: 3.6
+ **/
+ESource *
+e_source_registry_ref_builtin_mail_account (ESourceRegistry *registry)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	uid = E_SOURCE_BUILTIN_MAIL_ACCOUNT_UID;
+	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
+
+	return source;
+}
+
+/**
+ * e_source_registry_ref_builtin_memo_list:
+ * @registry: an #ESourceRegistry
+ *
+ * Returns the built-in memo list #ESource.
+ *
+ * This #ESource is always present and makes for a safe fallback.
+ *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: (transfer full): the built-in memo list #ESource
+ *
+ * Since: 3.6
+ **/
+ESource *
+e_source_registry_ref_builtin_memo_list (ESourceRegistry *registry)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	uid = E_SOURCE_BUILTIN_MEMO_LIST_UID;
+	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
+
+	return source;
+}
+
+/**
+ * e_source_registry_ref_builtin_task_list:
+ * @registry: an #ESourceRegistry
+ *
+ * Returns the built-in task list #ESource.
+ *
+ * This #ESource is always present and makes for a safe fallback.
+ *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: (transfer full): the built-in task list #ESource
+ *
+ * Since: 3.6
+ **/
+ESource *
+e_source_registry_ref_builtin_task_list (ESourceRegistry *registry)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	uid = E_SOURCE_BUILTIN_TASK_LIST_UID;
+	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
+
+	return source;
+}
+
+/**
  * e_source_registry_ref_default_address_book:
  * @registry: an #ESourceRegistry
  *
@@ -3305,36 +3425,6 @@ e_source_registry_set_default_address_book (ESourceRegistry *registry,
 }
 
 /**
- * e_source_registry_ref_builtin_calendar:
- * @registry: an #ESourceRegistry
- *
- * Returns the built-in calendar #ESource.
- *
- * This #ESource is always present and makes for a safe fallback.
- *
- * The returned #ESource is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
- *
- * Returns: (transfer full): the built-in calendar #ESource
- *
- * Since: 3.6
- **/
-ESource *
-e_source_registry_ref_builtin_calendar (ESourceRegistry *registry)
-{
-	ESource *source;
-	const gchar *uid;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
-
-	uid = E_SOURCE_BUILTIN_CALENDAR_UID;
-	source = e_source_registry_ref_source (registry, uid);
-	g_return_val_if_fail (source != NULL, NULL);
-
-	return source;
-}
-
-/**
  * e_source_registry_ref_default_calendar:
  * @registry: an #ESourceRegistry
  *
@@ -3404,36 +3494,6 @@ e_source_registry_set_default_calendar (ESourceRegistry *registry,
 
 	/* The GSettings::changed signal will trigger a "notify" signal
 	 * from the registry, so no need to call g_object_notify() here. */
-}
-
-/**
- * e_source_registry_ref_builtin_mail_account:
- * @registry: an #ESourceRegistry
- *
- * Returns the built-in mail account #ESource.
- *
- * This #ESource is always present and makes for a safe fallback.
- *
- * The returned #ESource is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
- *
- * Returns: (transfer full): the built-in mail account #ESource
- *
- * Since: 3.6
- **/
-ESource *
-e_source_registry_ref_builtin_mail_account (ESourceRegistry *registry)
-{
-	ESource *source;
-	const gchar *uid;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
-
-	uid = E_SOURCE_BUILTIN_MAIL_ACCOUNT_UID;
-	source = e_source_registry_ref_source (registry, uid);
-	g_return_val_if_fail (source != NULL, NULL);
-
-	return source;
 }
 
 /**
@@ -3637,36 +3697,6 @@ e_source_registry_set_default_mail_identity (ESourceRegistry *registry,
 }
 
 /**
- * e_source_registry_ref_builtin_memo_list:
- * @registry: an #ESourceRegistry
- *
- * Returns the built-in memo list #ESource.
- *
- * This #ESource is always present and makes for a safe fallback.
- *
- * The returned #ESource is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
- *
- * Returns: (transfer full): the built-in memo list #ESource
- *
- * Since: 3.6
- **/
-ESource *
-e_source_registry_ref_builtin_memo_list (ESourceRegistry *registry)
-{
-	ESource *source;
-	const gchar *uid;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
-
-	uid = E_SOURCE_BUILTIN_MEMO_LIST_UID;
-	source = e_source_registry_ref_source (registry, uid);
-	g_return_val_if_fail (source != NULL, NULL);
-
-	return source;
-}
-
-/**
  * e_source_registry_ref_default_memo_list:
  * @registry: an #ESourceRegistry
  *
@@ -3736,36 +3766,6 @@ e_source_registry_set_default_memo_list (ESourceRegistry *registry,
 
 	/* The GSettings::changed signal will trigger a "notify" signal
 	 * from the registry, so no need to call g_object_notify() here. */
-}
-
-/**
- * e_source_registry_ref_builtin_task_list:
- * @registry: an #ESourceRegistry
- *
- * Returns the built-in task list #ESource.
- *
- * This #ESource is always present and makes for a safe fallback.
- *
- * The returned #ESource is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
- *
- * Returns: (transfer full): the built-in task list #ESource
- *
- * Since: 3.6
- **/
-ESource *
-e_source_registry_ref_builtin_task_list (ESourceRegistry *registry)
-{
-	ESource *source;
-	const gchar *uid;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
-
-	uid = E_SOURCE_BUILTIN_TASK_LIST_UID;
-	source = e_source_registry_ref_source (registry, uid);
-	g_return_val_if_fail (source != NULL, NULL);
-
-	return source;
 }
 
 /**

@@ -159,26 +159,33 @@ gchar *		e_source_registry_dup_unique_display_name
 void		e_source_registry_debug_dump	(ESourceRegistry *registry,
 						 const gchar *extension_name);
 
+/* These built-in ESource objects are always available. */
+
+ESource *	e_source_registry_ref_builtin_address_book
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_builtin_calendar
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_builtin_mail_account
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_builtin_memo_list
+						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_builtin_task_list
+						(ESourceRegistry *registry);
+
 /* The following is a front-end for the "org.gnome.Evolution.DefaultSources"
  * GSettings schema, except that it gets and sets ESource objects instead of
  * ESource UID strings. */
 
-ESource *	e_source_registry_ref_builtin_address_book
-						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_default_address_book
 						(ESourceRegistry *registry);
 void		e_source_registry_set_default_address_book
 						(ESourceRegistry *registry,
 						 ESource *default_source);
-ESource *	e_source_registry_ref_builtin_calendar
-						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_default_calendar
 						(ESourceRegistry *registry);
 void		e_source_registry_set_default_calendar
 						(ESourceRegistry *registry,
 						 ESource *default_source);
-ESource *	e_source_registry_ref_builtin_mail_account
-						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_default_mail_account
 						(ESourceRegistry *registry);
 void		e_source_registry_set_default_mail_account
@@ -189,15 +196,11 @@ ESource *	e_source_registry_ref_default_mail_identity
 void		e_source_registry_set_default_mail_identity
 						(ESourceRegistry *registry,
 						 ESource *default_source);
-ESource *	e_source_registry_ref_builtin_memo_list
-						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_default_memo_list
 						(ESourceRegistry *registry);
 void		e_source_registry_set_default_memo_list
 						(ESourceRegistry *registry,
 						 ESource *default_source);
-ESource *	e_source_registry_ref_builtin_task_list
-						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_default_task_list
 						(ESourceRegistry *registry);
 void		e_source_registry_set_default_task_list
