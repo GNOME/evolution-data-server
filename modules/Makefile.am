@@ -15,6 +15,7 @@ endif
 SUBDIRS = \
 	cache-reaper \
 	google-backend \
+	outlook-backend \
 	owncloud-backend \
 	yahoo-backend \
 	$(TRUST_PROMPT_DIR) \

@@ -100,11 +100,14 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 	if (g_str_equal (goa_provider_type, "imap_smtp"))
 		eds_backend_name = "none";
 
-	if (g_str_equal (goa_provider_type, "yahoo"))
-		eds_backend_name = "yahoo";
-
 	if (g_str_equal (goa_provider_type, "owncloud"))
 		eds_backend_name = "owncloud";
+
+	if (g_str_equal (goa_provider_type, "windows_live"))
+		eds_backend_name = "outlook";
+
+	if (g_str_equal (goa_provider_type, "yahoo"))
+		eds_backend_name = "yahoo";
 
 	return eds_backend_name;
 }

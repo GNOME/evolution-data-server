@@ -1722,6 +1722,7 @@ modules/Makefile
 modules/cache-reaper/Makefile
 modules/gnome-online-accounts/Makefile
 modules/google-backend/Makefile
+modules/outlook-backend/Makefile
 modules/owncloud-backend/Makefile
 modules/ubuntu-online-accounts/Makefile
 modules/ubuntu-online-accounts/calendar.service-type.in
