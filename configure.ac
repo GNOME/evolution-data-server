@@ -43,8 +43,8 @@ m4_define([gdk_minimum_version], [3.2])
 m4_define([gdk_encoded_version], [GDK_VERSION_3_2])
 
 dnl Keep these two definitions in agreement.
-m4_define([soup_minimum_version], [2.40.3])
-m4_define([soup_encoded_version], [SOUP_VERSION_2_40])
+m4_define([soup_minimum_version], [2.42])
+m4_define([soup_encoded_version], [SOUP_VERSION_2_42])
 
 m4_define([gcr_minimum_version], [3.4])
 m4_define([libsecret_minimum_version], [0.5])
