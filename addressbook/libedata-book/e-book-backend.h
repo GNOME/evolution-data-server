@@ -246,6 +246,9 @@ void		e_book_backend_set_cache_dir	(EBookBackend *backend,
 EDataBook *	e_book_backend_ref_data_book	(EBookBackend *backend);
 void		e_book_backend_set_data_book	(EBookBackend *backend,
 						 EDataBook *data_book);
+GProxyResolver *
+		e_book_backend_ref_proxy_resolver
+						(EBookBackend *backend);
 ESourceRegistry *
 		e_book_backend_get_registry	(EBookBackend *backend);
 gboolean	e_book_backend_get_writable	(EBookBackend *backend);

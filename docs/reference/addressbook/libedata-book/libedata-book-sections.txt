@@ -11,6 +11,7 @@ e_book_backend_dup_cache_dir
 e_book_backend_set_cache_dir
 e_book_backend_ref_data_book
 e_book_backend_set_data_book
+e_book_backend_ref_proxy_resolver
 e_book_backend_get_registry
 e_book_backend_get_writable
 e_book_backend_set_writable
