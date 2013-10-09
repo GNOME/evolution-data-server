@@ -182,6 +182,11 @@ e_cal_backend_http_constructed (GObject *object)
 	backend = E_CAL_BACKEND_HTTP (object);
 	backend->priv->soup_session = soup_session;
 
+	g_object_bind_property (
+		backend, "proxy-resolver",
+		backend->priv->soup_session, "proxy-resolver",
+		G_BINDING_SYNC_CREATE);
+
 	g_signal_connect (
 		backend->priv->soup_session, "authenticate",
 		G_CALLBACK (soup_authenticate), backend);
@@ -719,7 +724,6 @@ cal_backend_http_ensure_uri (ECalBackendHttp *backend)
 	ESourceSecurity *security_extension;
 	ESourceWebdav *webdav_extension;
 	SoupURI *soup_uri;
-	EProxy *proxy;
 	gboolean secure_connection;
 	const gchar *extension_name;
 	gchar *uri_string;
@@ -745,22 +749,6 @@ cal_backend_http_ensure_uri (ECalBackendHttp *backend)
 		uri_string, secure_connection);
 
 	g_free (uri_string);
-
-	/* set the HTTP proxy, if configuration is set to do so */
-
-	proxy = e_proxy_new ();
-	e_proxy_setup_proxy (proxy);
-
-	if (e_proxy_require_proxy_for_uri (proxy, backend->priv->uri))
-		soup_uri = e_proxy_peek_uri_for (proxy, backend->priv->uri);
-	else
-		soup_uri = NULL;
-
-	g_object_set (
-		G_OBJECT (backend->priv->soup_session),
-		SOUP_SESSION_PROXY_URI, soup_uri, NULL);
-
-	g_object_unref (proxy);
 
 	return backend->priv->uri;
 }
