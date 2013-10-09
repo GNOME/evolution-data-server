@@ -67,7 +67,6 @@ G_DEFINE_TYPE_WITH_CODE (
 struct _EBookBackendWebdavPrivate {
 	gboolean           marked_for_offline;
 	SoupSession       *session;
-	EProxy		  *proxy;
 	gchar             *uri;
 	gchar              *username;
 	gchar              *password;
@@ -1058,24 +1057,6 @@ soup_authenticate (SoupSession *session,
 }
 
 static void
-proxy_settings_changed (EProxy *proxy,
-                        gpointer user_data)
-{
-	SoupURI *proxy_uri = NULL;
-	EBookBackendWebdavPrivate *priv = (EBookBackendWebdavPrivate *) user_data;
-
-	if (!priv || !priv->uri || !priv->session)
-		return;
-
-	/* use proxy if necessary */
-	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
-		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
-	}
-
-	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
-}
-
-static void
 e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
                                         GParamSpec *pspec)
 {
@@ -1099,7 +1080,6 @@ book_backend_webdav_dispose (GObject *object)
 	priv = E_BOOK_BACKEND_WEBDAV_GET_PRIVATE (object);
 
 	g_clear_object (&priv->session);
-	g_clear_object (&priv->proxy);
 	g_clear_object (&priv->cache);
 
 	/* Chain up to parent's dispose() method. */
@@ -1162,7 +1142,6 @@ book_backend_webdav_open_sync (EBookBackend *backend,
                                GError **error)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	ESourceAuthentication     *auth_extension;
 	ESourceOffline            *offline_extension;
 	ESourceWebdav             *webdav_extension;
@@ -1240,6 +1219,11 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
 		NULL);
 
+	g_object_bind_property (
+		backend, "proxy-resolver",
+		session, "proxy-resolver",
+		G_BINDING_SYNC_CREATE);
+
 	e_source_webdav_unset_temporary_ssl_trust (webdav_extension);
 
 	g_signal_connect (
@@ -1247,12 +1231,6 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 		G_CALLBACK (soup_authenticate), webdav);
 
 	webdav->priv->session = session;
-	webdav->priv->proxy = e_proxy_new ();
-	e_proxy_setup_proxy (webdav->priv->proxy);
-	g_signal_connect (
-		webdav->priv->proxy, "changed",
-		G_CALLBACK (proxy_settings_changed), priv);
-	proxy_settings_changed (webdav->priv->proxy, priv);
 	webdav_debug_setup (webdav->priv->session);
 
 	e_backend_set_online (E_BACKEND (backend), TRUE);
