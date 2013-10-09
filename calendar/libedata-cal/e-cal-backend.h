@@ -217,6 +217,9 @@ icalcomponent_kind
 EDataCal *	e_cal_backend_ref_data_cal	(ECalBackend *backend);
 void		e_cal_backend_set_data_cal	(ECalBackend *backend,
 						 EDataCal *data_cal);
+GProxyResolver *
+		e_cal_backend_ref_proxy_resolver
+						(ECalBackend *backend);
 ESourceRegistry *
 		e_cal_backend_get_registry	(ECalBackend *backend);
 gboolean	e_cal_backend_get_writable	(ECalBackend *backend);

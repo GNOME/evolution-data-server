@@ -44,8 +44,12 @@ struct _ECalBackendPrivate {
 	GList *views;
 
 	GMutex property_lock;
+	GProxyResolver *proxy_resolver;
 	gchar *cache_dir;
 	gboolean writable;
+
+	ESource *authentication_source;
+	gulong auth_source_changed_handler_id;
 
 	GHashTable *zone_cache;
 	GMutex zone_cache_lock;
@@ -100,6 +104,7 @@ enum {
 	PROP_0,
 	PROP_CACHE_DIR,
 	PROP_KIND,
+	PROP_PROXY_RESOLVER,
 	PROP_REGISTRY,
 	PROP_WRITABLE
 };
@@ -378,6 +383,72 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 	g_free (filename);
 }
 
+static void
+cal_backend_update_proxy_resolver (ECalBackend *backend)
+{
+	GProxyResolver *proxy_resolver = NULL;
+	ESourceAuthentication *extension;
+	ESource *source = NULL;
+	gboolean notify = FALSE;
+	gchar *uid;
+
+	extension = e_source_get_extension (
+		backend->priv->authentication_source,
+		E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	uid = e_source_authentication_dup_proxy_uid (extension);
+	if (uid != NULL) {
+		ESourceRegistry *registry;
+
+		registry = e_cal_backend_get_registry (backend);
+		source = e_source_registry_ref_source (registry, uid);
+		g_free (uid);
+	}
+
+	if (source != NULL) {
+		proxy_resolver = G_PROXY_RESOLVER (source);
+		if (!g_proxy_resolver_is_supported (proxy_resolver))
+			proxy_resolver = NULL;
+	}
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	/* Emitting a "notify" signal unnecessarily might have
+	 * unwanted side effects like cancelling a SoupMessage.
+	 * Only emit if we now have a different GProxyResolver. */
+
+	if (proxy_resolver != backend->priv->proxy_resolver) {
+		g_clear_object (&backend->priv->proxy_resolver);
+		backend->priv->proxy_resolver = proxy_resolver;
+
+		if (proxy_resolver != NULL)
+			g_object_ref (proxy_resolver);
+
+		notify = TRUE;
+	}
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	if (notify)
+		g_object_notify (G_OBJECT (backend), "proxy-resolver");
+
+	g_clear_object (&source);
+}
+
+static void
+cal_backend_auth_source_changed_cb (ESource *authentication_source,
+                                    GWeakRef *backend_weak_ref)
+{
+	ECalBackend *backend;
+
+	backend = g_weak_ref_get (backend_weak_ref);
+
+	if (backend != NULL) {
+		cal_backend_update_proxy_resolver (backend);
+		g_object_unref (backend);
+	}
+}
+
 static gchar *
 cal_backend_get_backend_property (ECalBackend *backend,
                                   const gchar *prop_name)
@@ -504,6 +575,12 @@ cal_backend_get_property (GObject *object,
 				E_CAL_BACKEND (object)));
 			return;
 
+		case PROP_PROXY_RESOLVER:
+			g_value_take_object (
+				value, e_cal_backend_ref_proxy_resolver (
+				E_CAL_BACKEND (object)));
+			return;
+
 		case PROP_REGISTRY:
 			g_value_set_object (
 				value, e_cal_backend_get_registry (
@@ -527,8 +604,17 @@ cal_backend_dispose (GObject *object)
 
 	priv = E_CAL_BACKEND_GET_PRIVATE (object);
 
+	if (priv->auth_source_changed_handler_id > 0) {
+		g_signal_handler_disconnect (
+			priv->authentication_source,
+			priv->auth_source_changed_handler_id);
+		priv->auth_source_changed_handler_id = 0;
+	}
+
 	g_clear_object (&priv->registry);
 	g_clear_object (&priv->data_cal);
+	g_clear_object (&priv->proxy_resolver);
+	g_clear_object (&priv->authentication_source);
 
 	g_hash_table_remove_all (priv->operation_ids);
 
@@ -567,11 +653,36 @@ cal_backend_finalize (GObject *object)
 static void
 cal_backend_constructed (GObject *object)
 {
+	ECalBackend *backend;
+	ESourceRegistry *registry;
+	ESource *source;
+
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->constructed (object);
 
+	backend = E_CAL_BACKEND (object);
+	registry = e_cal_backend_get_registry (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
+
 	/* Initialize the "cache-dir" property. */
-	cal_backend_set_default_cache_dir (E_CAL_BACKEND (object));
+	cal_backend_set_default_cache_dir (backend);
+
+	/* Track the proxy resolver for this backend. */
+	backend->priv->authentication_source =
+		e_source_registry_find_extension (
+		registry, source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	if (backend->priv->authentication_source != NULL) {
+		gulong handler_id;
+
+		handler_id = g_signal_connect_data (
+			backend->priv->authentication_source, "changed",
+			G_CALLBACK (cal_backend_auth_source_changed_cb),
+			e_weak_ref_new (backend),
+			(GClosureNotify) e_weak_ref_free, 0);
+		backend->priv->auth_source_changed_handler_id = handler_id;
+
+		cal_backend_update_proxy_resolver (backend);
+	}
 }
 
 static gboolean
@@ -811,6 +922,17 @@ e_cal_backend_class_init (ECalBackendClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_PROXY_RESOLVER,
+		g_param_spec_object (
+			"proxy-resolver",
+			"Proxy Resolver",
+			"The proxy resolver for this backend",
+			G_TYPE_PROXY_RESOLVER,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_REGISTRY,
 		g_param_spec_object (
 			"registry",
@@ -974,6 +1096,38 @@ e_cal_backend_set_data_cal (ECalBackend *backend,
 	g_warn_if_fail (backend->priv->data_cal == NULL);
 
 	backend->priv->data_cal = g_object_ref (data_cal);
+}
+
+/**
+ * e_cal_backend_ref_proxy_resolver:
+ * @backend: an #ECalBackend
+ *
+ * Returns the #GProxyResolver for @backend (if applicable), as indicated
+ * by the #ESourceAuthentication:proxy-uid of @backend's #EBackend:source
+ * or one of its ancestors.
+ *
+ * The returned #GProxyResolver is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GProxyResolver, or %NULL
+ *
+ * Since: 3.12
+ **/
+GProxyResolver *
+e_cal_backend_ref_proxy_resolver (ECalBackend *backend)
+{
+	GProxyResolver *proxy_resolver = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	if (backend->priv->proxy_resolver != NULL)
+		proxy_resolver = g_object_ref (backend->priv->proxy_resolver);
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	return proxy_resolver;
 }
 
 /**

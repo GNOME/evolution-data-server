@@ -10,6 +10,7 @@ CAL_BACKEND_PROPERTY_REVISION
 e_cal_backend_get_kind
 e_cal_backend_ref_data_cal
 e_cal_backend_set_data_cal
+e_cal_backend_ref_proxy_resolver
 e_cal_backend_get_registry
 e_cal_backend_get_writable
 e_cal_backend_set_writable
