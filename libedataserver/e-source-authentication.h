@@ -103,6 +103,13 @@ guint16		e_source_authentication_get_port
 void		e_source_authentication_set_port
 					(ESourceAuthentication *extension,
 					 guint16 port);
+const gchar *	e_source_authentication_get_proxy_uid
+					(ESourceAuthentication *extension);
+gchar *		e_source_authentication_dup_proxy_uid
+					(ESourceAuthentication *extension);
+void		e_source_authentication_set_proxy_uid
+					(ESourceAuthentication *extension,
+					 const gchar *proxy_uid);
 gboolean	e_source_authentication_get_remember_password
 					(ESourceAuthentication *extension);
 void		e_source_authentication_set_remember_password

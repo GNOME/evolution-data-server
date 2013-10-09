@@ -48,6 +48,7 @@ struct _ESourceAuthenticationPrivate {
 	gchar *host;
 	gchar *method;
 	guint16 port;
+	gchar *proxy_uid;
 	gboolean remember_password;
 	gchar *user;
 
@@ -63,6 +64,7 @@ enum {
 	PROP_HOST,
 	PROP_METHOD,
 	PROP_PORT,
+	PROP_PROXY_UID,
 	PROP_REMEMBER_PASSWORD,
 	PROP_USER
 };
@@ -117,6 +119,12 @@ source_authentication_set_property (GObject *object,
 				g_value_get_uint (value));
 			return;
 
+		case PROP_PROXY_UID:
+			e_source_authentication_set_proxy_uid (
+				E_SOURCE_AUTHENTICATION (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_REMEMBER_PASSWORD:
 			e_source_authentication_set_remember_password (
 				E_SOURCE_AUTHENTICATION (object),
@@ -168,6 +176,13 @@ source_authentication_get_property (GObject *object,
 				E_SOURCE_AUTHENTICATION (object)));
 			return;
 
+		case PROP_PROXY_UID:
+			g_value_take_string (
+				value,
+				e_source_authentication_dup_proxy_uid (
+				E_SOURCE_AUTHENTICATION (object)));
+			return;
+
 		case PROP_REMEMBER_PASSWORD:
 			g_value_set_boolean (
 				value,
@@ -210,6 +225,7 @@ source_authentication_finalize (GObject *object)
 
 	g_free (priv->host);
 	g_free (priv->method);
+	g_free (priv->proxy_uid);
 	g_free (priv->user);
 
 	/* Chain up to parent's finalize() method. */
@@ -279,6 +295,19 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			"Port",
 			"Port number for the remote account",
 			0, G_MAXUINT16, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_PROXY_UID,
+		g_param_spec_string (
+			"proxy-uid",
+			"Proxy UID",
+			"ESource UID of a proxy profile",
+			"system-proxy",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -605,6 +634,88 @@ e_source_authentication_set_port (ESourceAuthentication *extension,
 
 	/* Changing the port also changes the connectable. */
 	g_object_notify (G_OBJECT (extension), "connectable");
+}
+
+/**
+ * e_source_authentication_get_proxy_uid:
+ * @extension: an #ESourceAuthentication
+ *
+ * Returns the #ESource:uid of the #ESource that holds network proxy
+ * settings for use when connecting to a remote account.
+ *
+ * Returns: the proxy profile #ESource:uid
+ *
+ * Since: 3.12
+ **/
+const gchar *
+e_source_authentication_get_proxy_uid (ESourceAuthentication *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	return extension->priv->proxy_uid;
+}
+
+/**
+ * e_source_authentication_dup_proxy_uid:
+ * @extension: an #ESourceAuthentication
+ *
+ * Thread-safe variation of e_source_authentication_get_proxy_uid().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceAuthentication:proxy-uid
+ *
+ * Since: 3.12
+ **/
+gchar *
+e_source_authentication_dup_proxy_uid (ESourceAuthentication *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	protected = e_source_authentication_get_proxy_uid (extension);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
+ * e_source_authentication_set_proxy_uid:
+ * @extension: an #ESourceAuthentication
+ * @proxy_uid: the proxy profile #ESource:uid
+ *
+ * Sets the #ESource:uid of the #ESource that holds network proxy settings
+ * for use when connecting to a remote account.
+ *
+ * Since: 3.12
+ **/
+void
+e_source_authentication_set_proxy_uid (ESourceAuthentication *extension,
+                                       const gchar *proxy_uid)
+{
+	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
+	g_return_if_fail (proxy_uid != NULL);
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	if (g_strcmp0 (proxy_uid, extension->priv->proxy_uid) == 0) {
+		g_mutex_unlock (&extension->priv->property_lock);
+		return;
+	}
+
+	g_free (extension->priv->proxy_uid);
+	extension->priv->proxy_uid = g_strdup (proxy_uid);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	g_object_notify (G_OBJECT (extension), "proxy-uid");
 }
 
 /**
