@@ -76,6 +76,7 @@
 #define E_SOURCE_BUILTIN_CALENDAR_UID		"system-calendar"
 #define E_SOURCE_BUILTIN_MAIL_ACCOUNT_UID 	"local"
 #define E_SOURCE_BUILTIN_MEMO_LIST_UID		"system-memo-list"
+#define E_SOURCE_BUILTIN_PROXY_UID		"system-proxy"
 #define E_SOURCE_BUILTIN_TASK_LIST_UID		"system-task-list"
 
 /* GSettings keys for default data sources. */
@@ -3318,6 +3319,36 @@ e_source_registry_ref_builtin_memo_list (ESourceRegistry *registry)
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
 
 	uid = E_SOURCE_BUILTIN_MEMO_LIST_UID;
+	source = e_source_registry_ref_source (registry, uid);
+	g_return_val_if_fail (source != NULL, NULL);
+
+	return source;
+}
+
+/**
+ * e_source_registry_ref_builtin_proxy:
+ * @registry: an #ESourceRegistry
+ *
+ * Returns the built-in proxy profile #ESource.
+ *
+ * This #ESource is always present and makes for a safe fallback.
+ *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: (transfer full): the built-in proxy profile #ESource
+ *
+ * Since: 3.12
+ **/
+ESource *
+e_source_registry_ref_builtin_proxy (ESourceRegistry *registry)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	uid = E_SOURCE_BUILTIN_PROXY_UID;
 	source = e_source_registry_ref_source (registry, uid);
 	g_return_val_if_fail (source != NULL, NULL);
 

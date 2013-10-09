@@ -169,6 +169,8 @@ ESource *	e_source_registry_ref_builtin_mail_account
 						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_builtin_memo_list
 						(ESourceRegistry *registry);
+ESource *	e_source_registry_ref_builtin_proxy
+						(ESourceRegistry *registry);
 ESource *	e_source_registry_ref_builtin_task_list
 						(ESourceRegistry *registry);
 
