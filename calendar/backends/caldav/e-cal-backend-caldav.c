@@ -93,7 +93,6 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* The main soup session  */
 	SoupSession *session;
-	EProxy *proxy;
 
 	/* clandar uri */
 	gchar *uri;
@@ -2782,24 +2781,6 @@ caldav_shutdown (ECalBackend *backend)
 	g_mutex_unlock (&priv->busy_lock);
 }
 
-static void
-proxy_settings_changed (EProxy *proxy,
-                        gpointer user_data)
-{
-	SoupURI *proxy_uri = NULL;
-	ECalBackendCalDAVPrivate *priv = (ECalBackendCalDAVPrivate *) user_data;
-
-	if (!priv || !priv->uri || !priv->session)
-		return;
-
-	/* use proxy if necessary */
-	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
-		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
-	}
-
-	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
-}
-
 static gboolean
 initialize_backend (ECalBackendCalDAV *cbdav,
                     GError **perror)
@@ -2860,15 +2841,11 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		g_free (path);
 	}
 
-	g_signal_handlers_block_by_func (cbdav->priv->proxy, proxy_settings_changed, cbdav);
-
 	g_free (cbdav->priv->uri);
 	cbdav->priv->uri = soup_uri_to_string (soup_uri, FALSE);
 
 	soup_uri_free (soup_uri);
 
-	if (!cbdav->priv->uri)
-		g_signal_handlers_unblock_by_func (cbdav->priv->proxy, proxy_settings_changed, cbdav);
 	g_return_val_if_fail (cbdav->priv->uri != NULL, FALSE);
 
 	/* remove trailing slashes... */
@@ -2891,8 +2868,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 		g_free (tmp);
 	}
-
-	g_signal_handlers_unblock_by_func (cbdav->priv->proxy, proxy_settings_changed, cbdav);
 
 	if (cbdav->priv->store == NULL) {
 		/* remove the old cache while migrating to ECalBackendStore */
@@ -2936,9 +2911,6 @@ open_calendar (ECalBackendCalDAV *cbdav,
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
-
-	/* set forward proxy */
-	proxy_settings_changed (cbdav->priv->proxy, cbdav->priv);
 
 	success = caldav_server_open_calendar (
 		cbdav, &server_unreachable, cancellable, &local_error);
@@ -5228,7 +5200,6 @@ e_cal_backend_caldav_dispose (GObject *object)
 
 	g_clear_object (&priv->store);
 	g_clear_object (&priv->session);
-	g_clear_object (&priv->proxy);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -5278,6 +5249,11 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
 		NULL);
 
+	g_object_bind_property (
+		cbdav, "proxy-resolver",
+		cbdav->priv->session, "proxy-resolver",
+		G_BINDING_SYNC_CREATE);
+
 	/* XXX SoupAuthManager is public API as of libsoup 2.42, but
 	 *     this isn't worth bumping our libsoup requirement over.
 	 *     So get the SoupAuthManager GType by its type name. */
@@ -5288,10 +5264,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	/* Add the "Bearer" auth type to support OAuth 2.0. */
 	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
 	g_mutex_init (&cbdav->priv->bearer_auth_error_lock);
-
-	cbdav->priv->proxy = e_proxy_new ();
-	e_proxy_setup_proxy (cbdav->priv->proxy);
-	g_signal_connect (cbdav->priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), cbdav->priv);
 
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (cbdav->priv->session);
