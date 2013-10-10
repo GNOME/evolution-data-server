@@ -1210,7 +1210,7 @@ e_book_backend_sync (EBookBackend *backend)
  * changed, this is important for backends which support
  * ordered result lists which are locale sensitive.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_backend_set_locale (EBookBackend *backend,
@@ -1232,7 +1232,7 @@ e_book_backend_set_locale (EBookBackend *backend,
  *
  * Fetches a copy of the currently configured locale for the addressbook
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gchar *
 e_book_backend_dup_locale (EBookBackend *backend)
@@ -1528,7 +1528,7 @@ e_book_backend_respond_opened (EBookBackend *backend,
  * Returns: (transfer none): A newly created cursor, the cursor belongs
  * to the backend and should not be unreffed, or %NULL
  *
- * Since: 3.10
+ * Since: 3.12
  */
 EDataBookCursor *
 e_book_backend_create_cursor (EBookBackend *backend,
@@ -1572,7 +1572,7 @@ e_book_backend_create_cursor (EBookBackend *backend,
  *
  * Returns: Whether @cursor was successfully deleted.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_backend_delete_cursor (EBookBackend *backend,
