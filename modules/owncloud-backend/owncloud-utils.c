@@ -523,7 +523,6 @@ find_sources (ECollectionBackend *collection,
 	SoupSession *session;
 	SoupMessage *msg;
 	GString *url;
-	EProxy *proxy;
 	gboolean tested = FALSE;
 
 	g_return_val_if_fail (base_url && *base_url, FALSE);
@@ -556,17 +555,10 @@ find_sources (ECollectionBackend *collection,
 		session, "authenticate",
 		G_CALLBACK (authenticate_cb), authenticator);
 
-	proxy = e_proxy_new ();
-	e_proxy_setup_proxy (proxy);
-
-	if (e_proxy_require_proxy_for_uri (proxy, url->str)) {
-		SoupURI *proxy_uri;
-
-		proxy_uri = e_proxy_peek_uri_for (proxy, url->str);
-		g_object_set (session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
-	} else {
-		g_object_set (session, SOUP_SESSION_PROXY_URI, NULL, NULL);
-	}
+	g_object_bind_property (
+		collection, "proxy-resolver",
+		session, "proxy-resolver",
+		G_BINDING_SYNC_CREATE);
 
 	g_string_free (url, TRUE);
 
@@ -618,7 +610,6 @@ find_sources (ECollectionBackend *collection,
 	}
 
 	g_object_unref (msg);
-	g_object_unref (proxy);
 	g_object_unref (session);
 
 	return tested;
