@@ -25,6 +25,11 @@
 #error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_PROXY_H
 #define E_PROXY_H
 
@@ -86,3 +91,7 @@ gboolean	e_proxy_require_proxy_for_uri	(EProxy *proxy,
 G_END_DECLS
 
 #endif /* E_PROXY_H */
+
+#endif /* __GI_SCANNER__ */
+
+#endif /* EDS_DISABLE_DEPRECATED */
