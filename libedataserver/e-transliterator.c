@@ -76,7 +76,7 @@ struct _ETransliterator
  *
  * Returns: (transfer full): A newly created #ETransliterator.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 ETransliterator *
 e_transliterator_new (const gchar     *id)
@@ -98,7 +98,7 @@ e_transliterator_new (const gchar     *id)
  *
  * Returns: (transfer full): @transliterator
  *
- * Since: 3.10
+ * Since: 3.12
  */
 ETransliterator *
 e_transliterator_ref (ETransliterator *transliterator)
@@ -117,7 +117,7 @@ e_transliterator_ref (ETransliterator *transliterator)
  * Decreases the reference count of @transliterator.
  * If the reference count reaches 0 then the transliterator is freed
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_transliterator_unref (ETransliterator *transliterator)
@@ -148,7 +148,7 @@ e_transliterator_unref (ETransliterator *transliterator)
  *
  * Returns: (transfer full): The newly created transliteration of @str
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gchar *
 e_transliterator_transliterate (ETransliterator *transliterator,

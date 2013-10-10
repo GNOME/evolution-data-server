@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  *
  * An opaque object used for string transliterations.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef struct _ETransliterator ETransliterator;
 
