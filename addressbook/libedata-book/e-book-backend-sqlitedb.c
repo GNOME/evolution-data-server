@@ -5351,7 +5351,7 @@ sqlitedb_set_locale_internal (EBookBackendSqliteDB *ebsdb,
  *
  * Returns: Whether the new locale was successfully set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
@@ -5435,7 +5435,7 @@ e_book_backend_sqlitedb_set_locale (EBookBackendSqliteDB *ebsdb,
  *
  * Returns: Whether the locale was successfully fetched.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
@@ -5944,7 +5944,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
  *
  * Returns: (transfer full): A newly created #EbSdbCursor
  *
- * Since: 3.10
+ * Since: 3.12
  */
 EbSdbCursor *
 e_book_backend_sqlitedb_cursor_new (EBookBackendSqliteDB *ebsdb,
@@ -6009,7 +6009,7 @@ e_book_backend_sqlitedb_cursor_new (EBookBackendSqliteDB *ebsdb,
  *
  * Frees @cursor.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_backend_sqlitedb_cursor_free (EBookBackendSqliteDB *ebsdb,
@@ -6086,7 +6086,7 @@ collect_results_for_cursor_cb (gpointer ref,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
@@ -6234,7 +6234,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
  *
  * Use e_book_backend_sqlitedb_ref_collator() to obtain the active collator for @ebsdb.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB *ebsdb,
@@ -6275,7 +6275,7 @@ e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB
  *
  * Returns: %TRUE if the expression was valid and accepted by @ebsdb
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_backend_sqlitedb_cursor_set_sexp (EBookBackendSqliteDB *ebsdb,
@@ -6320,7 +6320,7 @@ e_book_backend_sqlitedb_cursor_set_sexp (EBookBackendSqliteDB *ebsdb,
  *
  * Returns: Whether @total and @position were successfully calculated.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
@@ -6383,7 +6383,7 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
  * Returns: A value that is less than, equal to, or greater than zero if @contact is found,
  * respectively, to be less than, to match, or be greater than the current value of @cursor.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,

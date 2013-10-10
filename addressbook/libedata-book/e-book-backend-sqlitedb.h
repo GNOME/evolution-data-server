@@ -120,7 +120,7 @@ typedef struct {
  *
  * An opaque cursor pointer
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef struct _EbSdbCursor EbSdbCursor;
 
@@ -136,6 +136,8 @@ typedef struct _EbSdbCursor EbSdbCursor;
  * the new cursor position after performing a move. This allows
  * cursor queries to be repeated in the case where content may have
  * changed but the same content window should be refreshed in a UI.
+ *
+ * Since: 3.12
  */
 typedef enum {
 	EBSDB_CURSOR_ORIGIN_CURRENT,
