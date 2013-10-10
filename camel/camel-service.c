@@ -596,43 +596,50 @@ service_get_property (GObject *object,
 	switch (property_id) {
 		case PROP_CONNECTION_STATUS:
 			g_value_set_enum (
-				value, camel_service_get_connection_status (
+				value,
+				camel_service_get_connection_status (
 				CAMEL_SERVICE (object)));
 			return;
 
 		case PROP_DISPLAY_NAME:
 			g_value_set_string (
-				value, camel_service_get_display_name (
+				value,
+				camel_service_get_display_name (
 				CAMEL_SERVICE (object)));
 			return;
 
 		case PROP_PASSWORD:
 			g_value_set_string (
-				value, camel_service_get_password (
+				value,
+				camel_service_get_password (
 				CAMEL_SERVICE (object)));
 			return;
 
 		case PROP_PROVIDER:
 			g_value_set_pointer (
-				value, camel_service_get_provider (
+				value,
+				camel_service_get_provider (
 				CAMEL_SERVICE (object)));
 			return;
 
 		case PROP_SESSION:
 			g_value_take_object (
-				value, camel_service_ref_session (
+				value,
+				camel_service_ref_session (
 				CAMEL_SERVICE (object)));
 			return;
 
 		case PROP_SETTINGS:
 			g_value_take_object (
-				value, camel_service_ref_settings (
+				value,
+				camel_service_ref_settings (
 				CAMEL_SERVICE (object)));
 			return;
 
 		case PROP_UID:
 			g_value_set_string (
-				value, camel_service_get_uid (
+				value,
+				camel_service_get_uid (
 				CAMEL_SERVICE (object)));
 			return;
 	}
@@ -653,10 +660,7 @@ service_dispose (GObject *object)
 
 	g_weak_ref_set (&priv->session, NULL);
 
-	if (priv->settings != NULL) {
-		g_object_unref (priv->settings);
-		priv->settings = NULL;
-	}
+	g_clear_object (&priv->settings);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_service_parent_class)->dispose (object);
