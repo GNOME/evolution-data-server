@@ -1024,7 +1024,7 @@ e_book_client_class_init (EBookClientClass *class)
 	 *
 	 * The currently active locale for this addressbook.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -1478,7 +1478,7 @@ exit:
  * When the operation is finished, @callback will be called.  You can then
  * call e_book_client_connect_direct_finish() to get the result of the operation.
  *
- * Since: 3.10
+ * Since: 3.12
  **/
 void
 e_book_client_connect_direct (ESource *source,
@@ -1542,7 +1542,7 @@ e_book_client_connect_direct (ESource *source,
  *
  * Returns: (transfer full) (type EBookClient): a new #EBookClient, or %NULL
  *
- * Since: 3.10
+ * Since: 3.12
  **/
 EClient *
 e_book_client_connect_direct_finish (GAsyncResult *result,
@@ -3810,7 +3810,7 @@ e_book_client_get_cursor_with_context (EBookClient *client,
  * Note: @sexp can be obtained through #EBookQuery, by converting it
  * to a string with e_book_query_to_string().
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_client_get_cursor (EBookClient *client,
@@ -3850,7 +3850,7 @@ e_book_client_get_cursor (EBookClient *client,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_get_cursor_finish (EBookClient *client,
@@ -3901,7 +3901,7 @@ e_book_client_get_cursor_finish (EBookClient *client,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_get_cursor_sync (EBookClient *client,
@@ -3976,7 +3976,7 @@ book_client_set_locale (EBookClient *client,
  *
  * Returns: (transfer none): The currently set locale for @client
  *
- * Since: 3.10
+ * Since: 3.12
  */
 const gchar *
 e_book_client_get_locale (EBookClient *client)
