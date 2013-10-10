@@ -1,4 +1,5 @@
 #include <libebook/libebook.h>
+#include <string.h>
 
 static gboolean
 compare_single_value (EVCard *vcard,
@@ -219,6 +220,163 @@ test_econtact (const gchar *vcard_str)
 	return TRUE;
 }
 
+static gboolean
+test_vcard_qp_2_1_parsing (const gchar *vcard_str,
+			   const gchar *expected_text)
+{
+	EVCard *vcard;
+	EVCardAttribute *attr;
+	gchar *value;
+
+	vcard = e_vcard_new_from_string (vcard_str);
+	g_return_val_if_fail (vcard != NULL, FALSE);
+
+	attr = e_vcard_get_attribute (vcard, "FN");
+	g_return_val_if_fail (attr != NULL, FALSE);
+
+	value = e_vcard_attribute_get_value (attr);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	g_return_val_if_fail (g_strcmp0 (value, expected_text) == 0, FALSE);
+
+	g_object_unref (vcard);
+	g_free (value);
+
+	return TRUE;
+}
+
+static gboolean
+test_vcard_qp_2_1_saving (const gchar *expected_text)
+{
+	EVCard *vcard;
+	EVCardAttribute *attr;
+	EVCardAttributeParam *param;
+	gchar *str, *encoded_value;
+	GString *decoded;
+
+	vcard = e_vcard_new ();
+	attr = e_vcard_attribute_new (NULL, "FN");
+	param = e_vcard_attribute_param_new ("ENCODING");
+	e_vcard_attribute_param_add_value (param, "quoted-printable");
+	e_vcard_attribute_add_param (attr, param);
+
+	e_vcard_attribute_add_value_decoded (attr, expected_text, strlen (expected_text));
+
+	decoded = e_vcard_attribute_get_value_decoded (attr);
+	g_return_val_if_fail (decoded != NULL, FALSE);
+	g_return_val_if_fail (g_strcmp0 (decoded->str, expected_text) == 0, FALSE);
+	g_string_free (decoded, TRUE);
+
+	encoded_value = e_vcard_attribute_get_value (attr);
+	g_return_val_if_fail (encoded_value != NULL, FALSE);
+	/* it's the encoded value, thus it cannot match */
+	g_return_val_if_fail (g_strcmp0 (encoded_value, expected_text) != 0, FALSE);
+	g_free (encoded_value);
+
+	e_vcard_add_attribute (vcard, attr);
+
+	str = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_21);
+	g_object_unref (vcard);
+
+	g_return_val_if_fail (str != NULL, FALSE);
+
+	vcard = e_vcard_new_from_string (str);
+	g_free (str);
+
+	g_return_val_if_fail (vcard != NULL, FALSE);
+
+	attr = e_vcard_get_attribute (vcard, "FN");
+	g_return_val_if_fail (attr != NULL, FALSE);
+
+	decoded = e_vcard_attribute_get_value_decoded (attr);
+	g_return_val_if_fail (decoded != NULL, FALSE);
+	g_return_val_if_fail (g_strcmp0 (decoded->str, expected_text) == 0, FALSE);
+	g_string_free (decoded, TRUE);
+
+	g_object_unref (vcard);
+
+	return TRUE;
+}
+
+static gboolean
+test_vcard_qp_3_0_saving (const gchar *expected_text)
+{
+	EVCard *vcard;
+	EVCardAttribute *attr;
+	EVCardAttributeParam *param;
+	gchar *str, *value, *encoded_value;
+	GString *decoded;
+
+	vcard = e_vcard_new ();
+	attr = e_vcard_attribute_new (NULL, "FN");
+	param = e_vcard_attribute_param_new ("ENCODING");
+	e_vcard_attribute_param_add_value (param, "quoted-printable");
+	e_vcard_attribute_add_param (attr, param);
+
+	e_vcard_attribute_add_value_decoded (attr, expected_text, strlen (expected_text));
+	e_vcard_add_attribute (vcard, attr);
+
+	decoded = e_vcard_attribute_get_value_decoded (attr);
+	g_return_val_if_fail (decoded != NULL, FALSE);
+	g_return_val_if_fail (g_strcmp0 (decoded->str, expected_text) == 0, FALSE);
+	g_string_free (decoded, TRUE);
+
+	encoded_value = e_vcard_attribute_get_value (attr);
+	g_return_val_if_fail (encoded_value != NULL, FALSE);
+	/* it's the encoded value, thus it cannot match */
+	g_return_val_if_fail (g_strcmp0 (encoded_value, expected_text) != 0, FALSE);
+
+	str = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
+
+	g_object_unref (vcard);
+
+	g_return_val_if_fail (str != NULL, FALSE);
+
+	vcard = e_vcard_new_from_string (str);
+	g_free (str);
+
+	g_return_val_if_fail (vcard != NULL, FALSE);
+
+	attr = e_vcard_get_attribute (vcard, "FN");
+	g_return_val_if_fail (attr != NULL, FALSE);
+
+	decoded = e_vcard_attribute_get_value_decoded (attr);
+	g_return_val_if_fail (decoded != NULL, FALSE);
+	g_return_val_if_fail (g_strcmp0 (decoded->str, expected_text) == 0, FALSE);
+	g_string_free (decoded, TRUE);
+
+	value = e_vcard_attribute_get_value (attr);
+	g_return_val_if_fail (value != NULL, FALSE);
+	/* either base64 or a free form, but not quoted-printable for sure */
+	g_return_val_if_fail (g_strcmp0 (value, encoded_value) != 0, FALSE);
+	g_free (value);
+
+	g_object_unref (vcard);
+	g_free (encoded_value);
+
+	return TRUE;
+}
+
+static void
+test_vcard_quoted_printable (void)
+{
+	const gchar *expected_text = "ActualValue ěščřžýáíéúůóöĚŠČŘŽÝÁÍÉÚŮÓÖ§ "
+				     "1234567890 1234567890 1234567890 1234567890 1234567890";
+	const gchar *vcard_2_1_str =
+		"BEGIN:VCARD\r\n"
+		"VERSION:2.1\r\n"
+		"FN;ENCODING=quoted-printable:ActualValue=20=C4=9B=C5=A1"
+		  "=C4=8D=C5=99=C5=BE=C3=BD=C3=A1=C3=AD=C3=A9=C3=BA=C5=AF=C3"
+		  "=B3=C3=B6=C4=9A=C5=A0=C4=8C=C5=98=C5=BD=C3=9D=C3=81=C3=8D"
+		  "=C3=89=C3=9A=C5=AE=C3=93=C3=96=C2=A7=201234567890=2012345"
+		  "67890=201234567890=201234567890=201234567890\r\n"
+		"END:VCARD\r\n";
+
+	g_assert (test_vcard_qp_2_1_parsing (vcard_2_1_str, expected_text));
+	g_assert (test_vcard_qp_2_1_saving (expected_text));
+	g_assert (test_vcard_qp_3_0_saving (expected_text));
+}
+
 static const gchar *test_vcard_no_uid_str =
 	"BEGIN:VCARD\r\n"
 	"VERSION:3.0\r\n"
@@ -271,6 +429,7 @@ main (gint argc,
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_vcard_without_uid);
 	g_test_add_func ("/Parsing/VCard/WithUID", test_contact_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_contact_without_uid);
+	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
 
 	return g_test_run ();
 }
