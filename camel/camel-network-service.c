@@ -600,14 +600,11 @@ network_service_connect_sync (CamelNetworkService *service,
 	GSocketClient *client;
 	GSocketConnection *connection;
 	GSocketConnectable *connectable;
-	GProxyResolver *proxy_resolver;
 	CamelNetworkSecurityMethod method;
 	CamelNetworkSettings *network_settings;
-	CamelSession *session;
 	CamelSettings *settings;
 	CamelStream *stream = NULL;
 
-	session = camel_service_ref_session (CAMEL_SERVICE (service));
 	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
@@ -625,12 +622,10 @@ network_service_connect_sync (CamelNetworkService *service,
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT)
 		g_socket_client_set_tls (client, TRUE);
 
-	proxy_resolver = camel_session_ref_proxy_resolver (
-		session, CAMEL_SERVICE (service));
-	if (proxy_resolver != NULL) {
-		g_socket_client_set_proxy_resolver (client, proxy_resolver);
-		g_object_unref (proxy_resolver);
-	}
+	g_object_bind_property (
+		service, "proxy-resolver",
+		client, "proxy-resolver",
+		G_BINDING_SYNC_CREATE);
 
 	connection = g_socket_client_connect (
 		client, connectable, cancellable, error);
@@ -643,7 +638,6 @@ network_service_connect_sync (CamelNetworkService *service,
 	g_object_unref (connectable);
 	g_object_unref (client);
 
-	g_object_unref (session);
 	g_object_unref (settings);
 
 	return stream;

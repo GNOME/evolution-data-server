@@ -60,6 +60,7 @@ struct _CamelServicePrivate {
 
 	GMutex property_lock;
 	CamelSettings *settings;
+	GProxyResolver *proxy_resolver;
 
 	CamelProvider *provider;
 
@@ -109,6 +110,7 @@ enum {
 	PROP_DISPLAY_NAME,
 	PROP_PASSWORD,
 	PROP_PROVIDER,
+	PROP_PROXY_RESOLVER,
 	PROP_SESSION,
 	PROP_SETTINGS,
 	PROP_UID
@@ -565,6 +567,12 @@ service_set_property (GObject *object,
 				g_value_get_pointer (value));
 			return;
 
+		case PROP_PROXY_RESOLVER:
+			camel_service_set_proxy_resolver (
+				CAMEL_SERVICE (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_SESSION:
 			service_set_session (
 				CAMEL_SERVICE (object),
@@ -622,6 +630,13 @@ service_get_property (GObject *object,
 				CAMEL_SERVICE (object)));
 			return;
 
+		case PROP_PROXY_RESOLVER:
+			g_value_take_object (
+				value,
+				camel_service_ref_proxy_resolver (
+				CAMEL_SERVICE (object)));
+			return;
+
 		case PROP_SESSION:
 			g_value_take_object (
 				value,
@@ -661,6 +676,7 @@ service_dispose (GObject *object)
 	g_weak_ref_set (&priv->session, NULL);
 
 	g_clear_object (&priv->settings);
+	g_clear_object (&priv->proxy_resolver);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_service_parent_class)->dispose (object);
@@ -1105,6 +1121,17 @@ camel_service_class_init (CamelServiceClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_PROXY_RESOLVER,
+		g_param_spec_object (
+			"proxy-resolver",
+			"Proxy Resolver",
+			"The proxy resolver for the service",
+			G_TYPE_PROXY_RESOLVER,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_SESSION,
 		g_param_spec_object (
 			"session",
@@ -1154,6 +1181,10 @@ camel_service_init (CamelService *service)
 	g_mutex_init (&service->priv->property_lock);
 	g_mutex_init (&service->priv->connection_lock);
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
+
+	service->priv->proxy_resolver = g_proxy_resolver_get_default ();
+	if (service->priv->proxy_resolver != NULL)
+		g_object_ref (service->priv->proxy_resolver);
 }
 
 G_DEFINE_QUARK (camel-service-error-quark, camel_service_error)
@@ -1452,6 +1483,83 @@ camel_service_get_provider (CamelService *service)
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	return service->priv->provider;
+}
+
+/**
+ * camel_service_ref_proxy_resolver:
+ * @service: a #CamelService
+ *
+ * Returns the #GProxyResolver for @service.  If an application needs to
+ * override this, it should do so prior to calling functions on @service
+ * that may require a network connection.
+ *
+ * The returned #GProxyResolver is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GProxyResolver, or %NULL
+ *
+ * Since: 3.12
+ **/
+GProxyResolver *
+camel_service_ref_proxy_resolver (CamelService *service)
+{
+	GProxyResolver *proxy_resolver = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	g_mutex_lock (&service->priv->property_lock);
+
+	if (service->priv->proxy_resolver != NULL)
+		proxy_resolver = g_object_ref (service->priv->proxy_resolver);
+
+	g_mutex_unlock (&service->priv->property_lock);
+
+	return proxy_resolver;
+}
+
+/**
+ * camel_service_set_proxy_resolver:
+ * @service: a #CamelService
+ * @proxy_resolver: a #GProxyResolver, or %NULL for the default
+ *
+ * Sets the #GProxyResolver for @service.  If an application needs to
+ * override this, it should do so prior to calling functions on @service
+ * that may require a network connection.
+ *
+ * Since: 3.12
+ **/
+void
+camel_service_set_proxy_resolver (CamelService *service,
+                                  GProxyResolver *proxy_resolver)
+{
+	gboolean notify = FALSE;
+
+	if (proxy_resolver == NULL)
+		proxy_resolver = g_proxy_resolver_get_default ();
+
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	g_return_if_fail (G_IS_PROXY_RESOLVER (proxy_resolver));
+
+	g_mutex_lock (&service->priv->property_lock);
+
+	/* Emitting a "notify" signal unnecessarily might have
+	 * unwanted side effects like cancelling a SoupMessage.
+	 * Only emit if we now have a different GProxyResolver. */
+
+	if (proxy_resolver != service->priv->proxy_resolver) {
+		g_clear_object (&service->priv->proxy_resolver);
+		service->priv->proxy_resolver = proxy_resolver;
+
+		if (proxy_resolver != NULL)
+			g_object_ref (proxy_resolver);
+
+		notify = TRUE;
+	}
+
+	g_mutex_unlock (&service->priv->property_lock);
+
+	if (notify)
+		g_object_notify (G_OBJECT (service), "proxy-resolver");
 }
 
 /**

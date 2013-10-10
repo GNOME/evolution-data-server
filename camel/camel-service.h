@@ -183,6 +183,12 @@ const gchar *	camel_service_get_user_cache_dir
 gchar *		camel_service_get_name		(CamelService *service,
 						 gboolean brief);
 CamelProvider *	camel_service_get_provider	(CamelService *service);
+GProxyResolver *
+		camel_service_ref_proxy_resolver
+						(CamelService *service);
+void		camel_service_set_proxy_resolver
+						(CamelService *service,
+						 GProxyResolver *proxy_resolver);
 struct _CamelSession *
 		camel_service_ref_session	(CamelService *service);
 CamelSettings *	camel_service_ref_settings	(CamelService *service);
