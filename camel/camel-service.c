@@ -58,8 +58,8 @@ typedef struct _ConnectionOp ConnectionOp;
 struct _CamelServicePrivate {
 	GWeakRef session;
 
+	GMutex property_lock;
 	CamelSettings *settings;
-	GMutex settings_lock;
 
 	CamelProvider *provider;
 
@@ -673,7 +673,7 @@ service_finalize (GObject *object)
 
 	priv = CAMEL_SERVICE_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->settings_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->display_name);
 	g_free (priv->user_data_dir);
@@ -1151,7 +1151,7 @@ camel_service_init (CamelService *service)
 {
 	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
 
-	g_mutex_init (&service->priv->settings_lock);
+	g_mutex_init (&service->priv->property_lock);
 	g_mutex_init (&service->priv->connection_lock);
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 }
@@ -1529,11 +1529,11 @@ camel_service_ref_settings (CamelService *service)
 	/* Every service should have a settings object. */
 	g_return_val_if_fail (service->priv->settings != NULL, NULL);
 
-	g_mutex_lock (&service->priv->settings_lock);
+	g_mutex_lock (&service->priv->property_lock);
 
 	settings = g_object_ref (service->priv->settings);
 
-	g_mutex_unlock (&service->priv->settings_lock);
+	g_mutex_unlock (&service->priv->property_lock);
 
 	return settings;
 }
@@ -1576,14 +1576,14 @@ camel_service_set_settings (CamelService *service,
 		settings = g_object_new (class->settings_type, NULL);
 	}
 
-	g_mutex_lock (&service->priv->settings_lock);
+	g_mutex_lock (&service->priv->property_lock);
 
 	if (service->priv->settings != NULL)
 		g_object_unref (service->priv->settings);
 
 	service->priv->settings = settings;  /* takes ownership */
 
-	g_mutex_unlock (&service->priv->settings_lock);
+	g_mutex_unlock (&service->priv->property_lock);
 
 	/* If the service is a CamelNetworkService, it needs to
 	 * replace its GSocketConnectable for the new settings. */
