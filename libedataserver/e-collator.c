@@ -276,7 +276,7 @@ convert_to_ustring (const gchar  *string,
  *
  * Returns: (transfer full): A newly created #ECollator.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 ECollator *
 e_collator_new (const gchar     *locale,
@@ -347,7 +347,7 @@ e_collator_new (const gchar     *locale,
  *
  * Returns: (transfer full): @collator
  *
- * Since: 3.10
+ * Since: 3.12
  */
 ECollator *
 e_collator_ref (ECollator *collator)
@@ -366,7 +366,7 @@ e_collator_ref (ECollator *collator)
  * Decreases the reference count of @collator.
  * If the reference count reaches 0 then the collator is freed
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_collator_unref (ECollator *collator)
@@ -405,7 +405,7 @@ e_collator_unref (ECollator *collator)
  *
  * Returns: (transfer full): A collation key for @str, or %NULL on failure with @error set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gchar *
 e_collator_generate_key (ECollator    *collator,
@@ -512,7 +512,7 @@ e_collator_generate_key (ECollator    *collator,
  *
  * Returns: (transfer full): A sort key for the given index
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gchar *
 e_collator_generate_key_for_index (ECollator       *collator,
@@ -541,7 +541,7 @@ e_collator_generate_key_for_index (ECollator       *collator,
  *
  * Returns: %TRUE on success, otherwise if %FALSE is returned then @error will be set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_collator_collate (ECollator    *collator,
@@ -588,7 +588,7 @@ e_collator_collate (ECollator    *collator,
  * Returns: (array zero-terminated=1) (element-type utf8) (transfer none):
  *   The array of displayable labels for each index in the active alphabet(s).
  *
- * Since: 3.10
+ * Since: 3.12
  */
 const gchar *const  *
 e_collator_get_index_labels (ECollator       *collator,
@@ -621,7 +621,7 @@ e_collator_get_index_labels (ECollator       *collator,
  *
  * Returns: The alphabetic index under which @str would sort
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_collator_get_index (ECollator       *collator,

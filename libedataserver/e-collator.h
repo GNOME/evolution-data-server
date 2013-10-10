@@ -34,7 +34,7 @@
  *
  * An error domain for collation errors
  *
- * Since: 3.10
+ * Since: 3.12
  */
 #define E_COLLATOR_ERROR (e_collator_error_quark ())
 
@@ -62,7 +62,7 @@ typedef enum {
  * An opaque object used for locale specific string comparisons
  * and sort ordering.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef struct _ECollator ECollator;
 
