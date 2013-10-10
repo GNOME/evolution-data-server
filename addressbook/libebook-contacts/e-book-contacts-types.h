@@ -141,6 +141,8 @@ typedef enum {
  * @E_BOOK_CURSOR_SORT_DESCENDING: Sort results in descending order
  *
  * Specifies the sort order of an ordered query
+ *
+ * Since: 3.12
  */
 typedef enum {
 	E_BOOK_CURSOR_SORT_ASCENDING = 0,
@@ -159,6 +161,8 @@ typedef enum {
  * the new cursor position after performing a move. This allows
  * cursor queries to be repeated in the case where content may have
  * changed but the same content window should be refreshed in a UI.
+ *
+ * Since: 3.12
  */
 typedef enum {
 	E_BOOK_CURSOR_ORIGIN_CURRENT,
