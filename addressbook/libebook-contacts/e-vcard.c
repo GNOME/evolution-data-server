@@ -254,27 +254,30 @@ read_attribute_value (EVCardAttribute *attr,
 
 		if (*lp == '=' && quoted_printable) {
 			gchar a, b;
-			if ((a = *(++lp)) == '\0') break;
-			if ((b = *(++lp)) == '\0') break;
+
+			/* it's for the '=' */
+			lp++;
+			lp = skip_newline (lp, quoted_printable);
+
+			if ((a = *(lp++)) == '\0') break;
+			lp = skip_newline (lp, quoted_printable);
+
+			if ((b = *(lp++)) == '\0') break;
 			if (isxdigit (a) && isxdigit (b)) {
 				gchar c;
 
 				a = tolower (a);
 				b = tolower (b);
 
-				c = (((a >= 'a' ? a - 'a' + 10 : a - '0') &0x0f) << 4)
-					| ((b >= 'a' ? b - 'a' + 10 : b - '0') &0x0f);
+				c = (((a >= 'a' ? a - 'a' + 10 : a - '0') & 0x0f) << 4)
+				   | ((b >= 'a' ? b - 'a' + 10 : b - '0') & 0x0f);
 
 				g_string_append_c (str, c); /* add decoded byte (this is not a unicode yet) */
+			} else {
+				g_string_append_c (str, '=');
+				g_string_append_c (str, a);
+				g_string_append_c (str, b);
 			}
-			else
-				{
-					g_string_append_c (str, a);
-					g_string_append_c (str, b);
-				}
-
-			lp++;
-
 		} else if (*lp == '\\') {
 			/* convert back to the non-escaped version of
 			 * the characters */
@@ -919,7 +922,8 @@ e_vcard_new_from_string (const gchar *str)
 }
 
 static gchar *
-e_vcard_qp_encode (const gchar *txt)
+e_vcard_qp_encode (const gchar *txt,
+		   gboolean can_wrap)
 {
 	const gchar *p = txt;
 	GString *escaped = g_string_new ("");
@@ -927,7 +931,7 @@ e_vcard_qp_encode (const gchar *txt)
 
 	while (*p != '\0') {
 		if ((*p >= 33 && *p <= 60) || (*p >= 62 && *p <= 126)) {
-			if (count == 75) {
+			if (can_wrap && count == 75) {
 				g_string_append (escaped, "=" CRLF " ");
 				count = 1; /* 1 for space needed for folding */
 			}
@@ -938,7 +942,7 @@ e_vcard_qp_encode (const gchar *txt)
 			continue;
 		}
 
-		if (count >= 73) {
+		if (count >= 73 && can_wrap) {
 			g_string_append (escaped, "=" CRLF " ");
 			count = 1; /* 1 for space needed for folding */
 		}
@@ -948,6 +952,52 @@ e_vcard_qp_encode (const gchar *txt)
 	}
 
 	return g_string_free (escaped, FALSE);
+}
+
+static gchar *
+e_vcard_qp_decode (const gchar *txt)
+{
+	const gchar *inptr;
+	gchar *decoded, *outptr;
+
+	if (!txt)
+		return NULL;
+
+	decoded = g_malloc (sizeof (gchar) * strlen (txt) + 1);
+
+	outptr = decoded;
+
+	for (inptr = txt; *inptr; inptr++) {
+		gchar c = *inptr;
+
+		if (c == '=' && (inptr[1] == '\r' || inptr[1] == '\n')) {
+			/* soft line-break */
+			if (inptr[2] == '\n')
+				inptr++;
+			inptr++;
+			continue;
+		}
+
+		if (c == '=' && inptr[1] && inptr[2]) {
+			guchar a = toupper (inptr[1]), b = toupper (inptr[2]);
+			if (isxdigit (a) && isxdigit (b)) {
+				*outptr++ = (((a >= 'A' ? a - 'A' + 10 : a - '0') & 0x0f) << 4)
+					   | ((b >= 'A' ? b - 'A' + 10 : b - '0') & 0x0f);
+			} else {
+				*outptr++ = '=';
+				*outptr++ = inptr[1];
+				*outptr++ = inptr[2];
+			}
+
+			inptr += 2;
+		} else {
+			*outptr++ = *inptr;
+		}
+	}
+
+	*outptr = '\0';
+
+	return decoded;
 }
 
 static GHashTable *
@@ -1075,7 +1125,7 @@ e_vcard_to_string_vcard_21 (EVCard *evc)
 			if (encode) {
 				gchar *escaped_value;
 
-				escaped_value = e_vcard_qp_encode (value);
+				escaped_value = e_vcard_qp_encode (value, TRUE);
 				g_string_append (attr_str, escaped_value);
 
 				g_free (escaped_value);
@@ -1121,6 +1171,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		EVCardAttribute *attr = l->data;
 		GString *attr_str;
 		glong len;
+		EVCardAttributeParam *quoted_printable_param = NULL;
 
 		if (!g_ascii_strcasecmp (attr->name, "VERSION"))
 			continue;
@@ -1141,6 +1192,18 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		/* handle the parameters */
 		for (list = attr->params; list; list = list->next) {
 			EVCardAttributeParam *param = list->data;
+
+			/* quoted-printable encoding was eliminated in 3.0,
+			   thus decode the value before saving and remove the param later */
+			if (!quoted_printable_param &&
+			    param->values && param->values->data && !param->values->next &&
+			    g_ascii_strcasecmp (param->name, "ENCODING") == 0 &&
+			    g_ascii_strcasecmp (param->values->data, "quoted-printable") == 0) {
+				quoted_printable_param = param;
+				/* do not store it */
+				continue;
+			}
+
 			/* 5.8.2:
 			 * param        = param-name "=" param-value *("," param-value)
 			 */
@@ -1148,6 +1211,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			g_string_append (attr_str, param->name);
 			if (param->values) {
 				g_string_append_c (attr_str, '=');
+
 				for (v = param->values; v; v = v->next) {
 					gchar *value = v->data;
 					gchar *pval = value;
@@ -1188,6 +1252,19 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 		for (v = attr->values; v; v = v->next) {
 			gchar *value = v->data;
 			gchar *escaped_value = NULL;
+
+			/* values are in quoted-printable encoding, but this cannot be used in vCard 3.0,
+			   thus it needs to be converted first */
+			if (quoted_printable_param) {
+				gchar *qp_decoded;
+
+				qp_decoded = e_vcard_qp_decode (value);
+
+				/* replace the actual value with the decoded */
+				g_free (value);
+				value = qp_decoded;
+				v->data = value;
+			}
 
 			escaped_value = e_vcard_escape_string (value);
 
@@ -1234,6 +1311,10 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 
 		g_string_append (str, attr_str->str);
 		g_string_free (attr_str, TRUE);
+
+		/* remove the encoding parameter, to not decode multiple times */
+		if (quoted_printable_param)
+			e_vcard_attribute_remove_param (attr, quoted_printable_param->name);
 	}
 
 	g_string_append (str, "END:VCARD");
@@ -1684,9 +1765,20 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr,
 		attr->decoded_values = g_list_append (attr->decoded_values, decoded);
 		break;
 	}
-	case EVC_ENCODING_QP:
-		g_warning ("need to implement quoted printable decoding");
+	case EVC_ENCODING_QP: {
+		GString *decoded = g_string_new_len (value, len);
+		gchar *qp_data = e_vcard_qp_encode (decoded->str, FALSE);
+
+		/* make sure the decoded list is up to date */
+		e_vcard_attribute_get_values_decoded (attr);
+
+		d (printf ("qp encoded value: %s\n", qp_data));
+		d (printf ("original length: %d\n", len));
+
+		attr->values = g_list_append (attr->values, qp_data);
+		attr->decoded_values = g_list_append (attr->decoded_values, decoded);
 		break;
+	}
 	}
 }
 
@@ -2319,7 +2411,14 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 			attr->decoded_values = g_list_reverse (attr->decoded_values);
 			break;
 		case EVC_ENCODING_QP:
-			g_warning ("need to implement quoted printable decoding");
+			for (l = attr->values; l; l = l->next) {
+				gchar *decoded;
+
+				decoded = e_vcard_qp_decode (l->data);
+				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new (decoded));
+				g_free (decoded);
+			}
+			attr->decoded_values = g_list_reverse (attr->decoded_values);
 			break;
 		}
 	}
