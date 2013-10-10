@@ -40,6 +40,12 @@
 
 #define URI_GET_CONTACTS "https://www.google.com/m8/feeds/contacts/default/full"
 
+/* This macro was introduced in libgdata 0.11,
+ * but we currently only require libgdata 0.10. */
+#ifndef GDATA_CHECK_VERSION
+#define GDATA_CHECK_VERSION(major,minor,micro) 0
+#endif
+
 /* Forward Declarations */
 static void	e_book_backend_google_source_authenticator_init
 				(ESourceAuthenticatorInterface *interface);
@@ -71,7 +77,6 @@ struct _EBookBackendGooglePrivate {
 
 	GDataAuthorizer *authorizer;
 	GDataService *service;
-	EProxy *proxy;
 
 	guint refresh_id;
 
@@ -1130,23 +1135,40 @@ cache_refresh_if_needed (EBookBackend *backend)
 	return;
 }
 
+#if !GDATA_CHECK_VERSION(0,15,0)
 static void
-proxy_settings_changed (EProxy *proxy,
-                        EBookBackend *backend)
+fallback_set_proxy_uri (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
-	SoupURI *proxy_uri = NULL;
+	GProxyResolver *proxy_resolver;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	if (!priv || !priv->service)
-		return;
+	proxy_resolver = e_book_backend_ref_proxy_resolver (backend);
 
-	/* use proxy if necessary */
-	if (e_proxy_require_proxy_for_uri (proxy, URI_GET_CONTACTS))
-		proxy_uri = e_proxy_peek_uri_for (proxy, URI_GET_CONTACTS);
-	gdata_service_set_proxy_uri (priv->service, proxy_uri);
+	if (proxy_resolver != NULL) {
+		SoupURI *proxy_uri = NULL;
+		gchar **proxies;
+
+		/* Don't worry about errors since this is a
+		 * fallback function.  It works if it works. */
+		proxies = g_proxy_resolver_lookup (
+			proxy_resolver, URI_GET_CONTACTS, NULL, NULL);
+
+		if (proxies != NULL && strcmp (proxies[0], "direct://") != 0) {
+			proxy_uri = soup_uri_new (proxies[0]);
+			g_strfreev (proxies);
+		}
+
+		if (proxy_uri != NULL) {
+			gdata_service_set_proxy_uri (priv->service, proxy_uri);
+			soup_uri_free (proxy_uri);
+		}
+
+		g_object_unref (proxy_resolver);
+	}
 }
+#endif
 
 static gboolean
 request_authorization (EBookBackend *backend,
@@ -1194,7 +1216,20 @@ request_authorization (EBookBackend *backend,
 		contacts_service =
 			gdata_contacts_service_new (priv->authorizer);
 		priv->service = GDATA_SERVICE (contacts_service);
-		proxy_settings_changed (priv->proxy, backend);
+
+#if GDATA_CHECK_VERSION(0,15,0)
+		/* proxy-resolver was added in 0.15.0.
+		 * (https://bugzilla.gnome.org/709758) */
+		g_object_bind_property (
+			backend, "proxy-resolver",
+			priv->service, "proxy-resolver",
+			G_BINDING_SYNC_CREATE);
+#else
+		/* XXX The fallback approach doesn't listen for proxy
+		 *     setting changes, but really how often do proxy
+		 *     settings change? */
+		fallback_set_proxy_uri (backend);
+#endif
 	}
 
 	/* If we're using OAuth tokens, then as far as the backend
@@ -1399,7 +1434,6 @@ book_backend_google_dispose (GObject *object)
 
 	g_clear_object (&priv->service);
 	g_clear_object (&priv->authorizer);
-	g_clear_object (&priv->proxy);
 	g_clear_object (&priv->cache);
 
 	/* Chain up to parent's dispose() method. */
@@ -2302,13 +2336,5 @@ e_book_backend_google_init (EBookBackendGoogle *backend)
 	g_signal_connect (
 		backend, "notify::online",
 		G_CALLBACK (e_book_backend_google_notify_online_cb), NULL);
-
-	/* Set up our EProxy. */
-	backend->priv->proxy = e_proxy_new ();
-	e_proxy_setup_proxy (backend->priv->proxy);
-
-	g_signal_connect (
-		backend->priv->proxy, "changed",
-		G_CALLBACK (proxy_settings_changed), backend);
 }
 
