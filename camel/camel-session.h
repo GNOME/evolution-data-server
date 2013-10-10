@@ -122,9 +122,6 @@ struct _CamelSessionClass {
 						 CamelService *service,
 						 GTlsCertificate *certificate,
 						 GTlsCertificateFlags errors);
-	GProxyResolver *
-			(*ref_proxy_resolver)	(CamelSession *session,
-						 CamelService *service);
 	CamelFilterDriver *
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
@@ -215,10 +212,6 @@ CamelCertTrust	camel_session_trust_prompt	(CamelSession *session,
 						 CamelService *service,
 						 GTlsCertificate *certificate,
 						 GTlsCertificateFlags errors);
-GProxyResolver *
-		camel_session_ref_proxy_resolver
-						(CamelSession *session,
-						 CamelService *service);
 gboolean	camel_session_get_online	(CamelSession *session);
 void		camel_session_set_online	(CamelSession *session,
 						 gboolean online);

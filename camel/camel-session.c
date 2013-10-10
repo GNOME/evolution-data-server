@@ -450,20 +450,6 @@ session_remove_service (CamelSession *session,
 	g_mutex_unlock (&session->priv->services_lock);
 }
 
-static GProxyResolver *
-session_ref_proxy_resolver (CamelSession *session,
-                            CamelService *service)
-{
-	GProxyResolver *proxy_resolver;
-
-	proxy_resolver = g_proxy_resolver_get_default ();
-
-	if (proxy_resolver != NULL)
-		g_object_ref (proxy_resolver);
-
-	return proxy_resolver;
-}
-
 static gboolean
 session_authenticate_sync (CamelSession *session,
                            CamelService *service,
@@ -736,7 +722,6 @@ camel_session_class_init (CamelSessionClass *class)
 
 	class->add_service = session_add_service;
 	class->remove_service = session_remove_service;
-	class->ref_proxy_resolver = session_ref_proxy_resolver;
 
 	class->authenticate_sync = session_authenticate_sync;
 	class->forward_to_sync = session_forward_to_sync;
@@ -1364,35 +1349,6 @@ camel_session_trust_prompt (CamelSession *session,
 		class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
 
 	return class->trust_prompt (session, service, certificate, errors);
-}
-
-/**
- * camel_session_ref_proxy_resolver:
- * @session: a #CamelSession
- * @service: a #CamelService
- *
- * Returns the #GProxyResolver for @service.
- *
- * The returned #GProxyResolver is referenced for thread-safety and should
- * be unreferenced with g_object_unref() when finished with it.
- *
- * Returns: a #GProxyResolver
- *
- * Since: 3.12
- **/
-GProxyResolver *
-camel_session_ref_proxy_resolver (CamelSession *session,
-                                  CamelService *service)
-{
-	CamelSessionClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->ref_proxy_resolver != NULL, NULL);
-
-	return class->ref_proxy_resolver (session, service);
 }
 
 /**
