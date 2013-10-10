@@ -42,11 +42,27 @@ typedef struct _EDataBookCursorSqlite EDataBookCursorSqlite;
 typedef struct _EDataBookCursorSqliteClass EDataBookCursorSqliteClass;
 typedef struct _EDataBookCursorSqlitePrivate EDataBookCursorSqlitePrivate;
 
+
+/**
+ * EDataBookCursorSqlite:
+ *
+ * An opaque handle for the SQLite cursor instance.
+ *
+ * Since: 3.12
+ */
 struct _EDataBookCursorSqlite {
 	EDataBookCursor parent;
 	EDataBookCursorSqlitePrivate *priv;
 };
 
+
+/**
+ * EDataBookCursorSqliteClass:
+ *
+ * The SQLite cursor class structure.
+ *
+ * Since: 3.12
+ */
 struct _EDataBookCursorSqliteClass {
 	EDataBookCursorClass parent;
 };

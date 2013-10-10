@@ -281,7 +281,7 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
 	GSList *local_results = NULL, *local_converted_results = NULL, *l;
-	EbSdbCursorOrigin sqlitedb_origin = 0;
+	EbSdbCursorOrigin sqlitedb_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
 	gchar *revision = NULL;
 	gboolean success = FALSE;
 
@@ -464,6 +464,8 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
  * using the #EBookBackendSqliteDB object.
  *
  * Returns: (transfer full): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
+ *
+ * Since: 3.12
  */
 EDataBookCursor *
 e_data_book_cursor_sqlite_new (EBookBackend         *backend,
