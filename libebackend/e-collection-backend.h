@@ -113,6 +113,9 @@ struct _ECollectionBackendClass {
 GType		e_collection_backend_get_type	(void) G_GNUC_CONST;
 ESource *	e_collection_backend_new_child	(ECollectionBackend *backend,
 						 const gchar *resource_id);
+GProxyResolver *
+		e_collection_backend_ref_proxy_resolver
+						(ECollectionBackend *backend);
 struct _ESourceRegistryServer *
 		e_collection_backend_ref_server	(ECollectionBackend *backend);
 const gchar *	e_collection_backend_get_cache_dir

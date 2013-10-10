@@ -59,7 +59,12 @@ struct _ECollectionBackendPrivate {
 	GHashTable *children;
 	GMutex children_lock;
 
+	GMutex property_lock;
+	GProxyResolver *proxy_resolver;
 	gchar *cache_dir;
+
+	ESource *authentication_source;
+	gulong auth_source_changed_handler_id;
 
 	/* Resource ID -> ESource */
 	GHashTable *unclaimed_resources;
@@ -71,6 +76,7 @@ struct _ECollectionBackendPrivate {
 
 enum {
 	PROP_0,
+	PROP_PROXY_RESOLVER,
 	PROP_SERVER
 };
 
@@ -490,6 +496,73 @@ collection_backend_populate_idle_cb (gpointer user_data)
 }
 
 static void
+collection_backend_update_proxy_resolver (ECollectionBackend *backend)
+{
+	GProxyResolver *proxy_resolver = NULL;
+	ESourceAuthentication *extension;
+	ESource *source = NULL;
+	gboolean notify = FALSE;
+	gchar *uid;
+
+	extension = e_source_get_extension (
+		backend->priv->authentication_source,
+		E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	uid = e_source_authentication_dup_proxy_uid (extension);
+	if (uid != NULL) {
+		ESourceRegistryServer *server;
+
+		server = e_collection_backend_ref_server (backend);
+		source = e_source_registry_server_ref_source (server, uid);
+		g_object_unref (server);
+		g_free (uid);
+	}
+
+	if (source != NULL) {
+		proxy_resolver = G_PROXY_RESOLVER (source);
+		if (!g_proxy_resolver_is_supported (proxy_resolver))
+			proxy_resolver = NULL;
+	}
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	/* Emitting a "notify" signal unnecessarily might have
+	 * unwanted side effects like cancelling a SoupMessage.
+	 * Only emit if we now have a different GProxyResolver. */
+
+	if (proxy_resolver != backend->priv->proxy_resolver) {
+		g_clear_object (&backend->priv->proxy_resolver);
+		backend->priv->proxy_resolver = proxy_resolver;
+
+		if (proxy_resolver != NULL)
+			g_object_ref (proxy_resolver);
+
+		notify = TRUE;
+	}
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	if (notify)
+		g_object_notify (G_OBJECT (backend), "proxy-resolver");
+
+	g_clear_object (&source);
+}
+
+static void
+collection_backend_auth_source_changed_cb (ESource *authentication_source,
+                                           GWeakRef *backend_weak_ref)
+{
+	ECollectionBackend *backend;
+
+	backend = g_weak_ref_get (backend_weak_ref);
+
+	if (backend != NULL) {
+		collection_backend_update_proxy_resolver (backend);
+		g_object_unref (backend);
+	}
+}
+
+static void
 collection_backend_set_server (ECollectionBackend *backend,
                                ESourceRegistryServer *server)
 {
@@ -555,6 +628,9 @@ collection_backend_dispose (GObject *object)
 	g_hash_table_remove_all (priv->children);
 	g_mutex_unlock (&priv->children_lock);
 
+	g_clear_object (&priv->proxy_resolver);
+	g_clear_object (&priv->authentication_source);
+
 	g_mutex_lock (&priv->unclaimed_resources_lock);
 	g_hash_table_remove_all (priv->unclaimed_resources);
 	g_mutex_unlock (&priv->unclaimed_resources_lock);
@@ -572,6 +648,8 @@ collection_backend_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->children);
 	g_mutex_clear (&priv->children_lock);
+
+	g_mutex_clear (&priv->property_lock);
 
 	g_hash_table_destroy (priv->unclaimed_resources);
 	g_mutex_clear (&priv->unclaimed_resources_lock);
@@ -597,6 +675,7 @@ collection_backend_constructed (GObject *object)
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->
 		constructed (object);
 
+	server = e_collection_backend_ref_server (backend);
 	source = e_backend_get_source (E_BACKEND (backend));
 
 	/* Determine the backend's cache directory. */
@@ -606,6 +685,23 @@ collection_backend_constructed (GObject *object)
 	backend->priv->cache_dir = g_build_filename (
 		user_cache_dir, "sources", collection_uid, NULL);
 	g_mkdir_with_parents (backend->priv->cache_dir, 0700);
+
+	/* Track the proxy resolver for this backend. */
+	backend->priv->authentication_source =
+		e_source_registry_server_find_extension (
+		server, source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	if (backend->priv->authentication_source != NULL) {
+		gulong handler_id;
+
+		handler_id = g_signal_connect_data (
+			backend->priv->authentication_source, "changed",
+			G_CALLBACK (collection_backend_auth_source_changed_cb),
+			e_weak_ref_new (backend),
+			(GClosureNotify) e_weak_ref_free, 0);
+		backend->priv->auth_source_changed_handler_id = handler_id;
+
+		collection_backend_update_proxy_resolver (backend);
+	}
 
 	/* This requires the cache directory to be set. */
 	collection_backend_load_resources (backend);
@@ -624,8 +720,6 @@ collection_backend_constructed (GObject *object)
 	/* Listen for "source-added" and "source-removed" signals
 	 * from the server, which may trigger our own "child-added"
 	 * and "child-removed" signals. */
-
-	server = e_collection_backend_ref_server (backend);
 
 	handler_id = g_signal_connect (
 		server, "source-added",
@@ -908,6 +1002,17 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_PROXY_RESOLVER,
+		g_param_spec_object (
+			"proxy-resolver",
+			"Proxy Resolver",
+			"The proxy resolver for this backend",
+			G_TYPE_PROXY_RESOLVER,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_SERVER,
 		g_param_spec_object (
 			"server",
@@ -984,6 +1089,7 @@ e_collection_backend_init (ECollectionBackend *backend)
 	backend->priv = E_COLLECTION_BACKEND_GET_PRIVATE (backend);
 	backend->priv->children = children;
 	g_mutex_init (&backend->priv->children_lock);
+	g_mutex_init (&backend->priv->property_lock);
 	backend->priv->unclaimed_resources = unclaimed_resources;
 	g_mutex_init (&backend->priv->unclaimed_resources_lock);
 }
@@ -1037,6 +1143,38 @@ e_collection_backend_new_child (ECollectionBackend *backend,
 		e_source_get_uid (child_source), resource_id);
 
 	return child_source;
+}
+
+/**
+ * e_collection_backend_ref_proxy_resolver:
+ * @backend: an #ECollectionBackend
+ *
+ * Returns the #GProxyResolver for @backend (if applicable), as indicated
+ * by the #ESourceAuthentication:proxy-uid of @backend's #EBackend:source
+ * or one of its ancestors.
+ *
+ * The returned #GProxyResolver is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GProxyResolver, or %NULL
+ *
+ * Since: 3.12
+ **/
+GProxyResolver *
+e_collection_backend_ref_proxy_resolver (ECollectionBackend *backend)
+{
+	GProxyResolver *proxy_resolver = NULL;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
+
+	g_mutex_lock (&backend->priv->property_lock);
+
+	if (backend->priv->proxy_resolver != NULL)
+		proxy_resolver = g_object_ref (backend->priv->proxy_resolver);
+
+	g_mutex_unlock (&backend->priv->property_lock);
+
+	return proxy_resolver;
 }
 
 /**

@@ -126,6 +126,7 @@ EBackendFactoryPrivate
 <TITLE>ECollectionBackend</TITLE>
 ECollectionBackend
 e_collection_backend_new_child
+e_collection_backend_ref_proxy_resolver
 e_collection_backend_ref_server
 e_collection_backend_get_cache_dir
 e_collection_backend_dup_resource_id
