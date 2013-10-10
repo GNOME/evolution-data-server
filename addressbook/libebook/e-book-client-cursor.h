@@ -60,7 +60,7 @@ struct _EBookClient;
  *
  * Contains only private data.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 struct _EBookClientCursor {
 	/*< private >*/
@@ -74,7 +74,7 @@ struct _EBookClientCursor {
  *
  * The cursor class structure.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 struct _EBookClientCursorClass {
 	/*< private >*/

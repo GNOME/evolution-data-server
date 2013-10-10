@@ -451,7 +451,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The #EContactField names to sort this cursor with
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -469,7 +469,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The #EBookClient which this cursor was created for
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -487,7 +487,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The #GMainContext in which the #EBookClient created this cursor.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -505,7 +505,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The #GDBusConnection to the addressbook server.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -524,7 +524,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The D-Bus object path to find the server side cursor object.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -544,7 +544,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The direct handle to the #EDataBookCursor for direct read access mode.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -576,7 +576,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * delivered in the #GMainContext which was the thread
 	 * default context at cursor creation time.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -598,7 +598,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * delivered in the #GMainContext which was the thread
 	 * default context at cursor creation time.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -619,7 +619,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * delivered in the #GMainContext which was the thread
 	 * default context at cursor creation time.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	g_object_class_install_property (
 		object_class,
@@ -644,7 +644,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * This signal is guaranteed to be delivered in the #GMainContext
 	 * which was the thread default context at cursor creation time.
 	 *
-	 * Since: 3.10
+	 * Since: 3.12
 	 */
 	signals[REFRESH] = g_signal_new (
 		"refresh",
@@ -1840,7 +1840,7 @@ alphabet_index_thread (GSimpleAsyncResult *simple,
  *
  * Returns: (transfer full): an #EBookClient
  *
- * Since: 3.10
+ * Since: 3.12
  */
 EBookClient *
 e_book_client_cursor_ref_client (EBookClientCursor *cursor)
@@ -1887,7 +1887,7 @@ e_book_client_cursor_ref_client (EBookClientCursor *cursor)
  * Returns: (array zero-terminated=1) (element-type utf8) (transfer none):
  *   The array of displayable labels for each index in the active alphabet.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 const gchar * const *
 e_book_client_cursor_get_alphabet (EBookClientCursor   *cursor,
@@ -1918,7 +1918,7 @@ e_book_client_cursor_get_alphabet (EBookClientCursor   *cursor,
  *
  * Returns: The total number of contacts matching @cursor's query
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_book_client_cursor_get_total (EBookClientCursor   *cursor)
@@ -1944,7 +1944,7 @@ e_book_client_cursor_get_total (EBookClientCursor   *cursor)
  *
  * Returns: The current cursor position
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_book_client_cursor_get_position (EBookClientCursor   *cursor)
@@ -1969,7 +1969,7 @@ e_book_client_cursor_get_position (EBookClientCursor   *cursor)
  * This asynchronous call is completed with a call to
  * e_book_client_cursor_set_sexp_finish() from the specified @callback.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_client_cursor_set_sexp (EBookClientCursor   *cursor,
@@ -2013,7 +2013,7 @@ e_book_client_cursor_set_sexp (EBookClientCursor   *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_cursor_set_sexp_finish (EBookClientCursor   *cursor,
@@ -2072,7 +2072,7 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor   *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_cursor_set_sexp_sync (EBookClientCursor   *cursor,
@@ -2127,7 +2127,7 @@ e_book_client_cursor_set_sexp_sync (EBookClientCursor   *cursor,
  * This asynchronous call is completed with a call to
  * e_book_client_cursor_move_by_finish() from the specified @callback.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_client_cursor_move_by (EBookClientCursor   *cursor,
@@ -2174,7 +2174,7 @@ e_book_client_cursor_move_by (EBookClientCursor   *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
@@ -2268,7 +2268,7 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
@@ -2321,7 +2321,7 @@ e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
  * This asynchronous call is completed with a call to
  * e_book_client_cursor_set_alphabetic_index_finish() from the specified @callback.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_book_client_cursor_set_alphabetic_index (EBookClientCursor   *cursor,
@@ -2428,7 +2428,7 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
@@ -2471,7 +2471,7 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
  *
  * Returns: The alphabetic index of @contact in @cursor.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_book_client_cursor_get_contact_alphabetic_index (EBookClientCursor   *cursor,
