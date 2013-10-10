@@ -68,7 +68,7 @@ typedef struct _EDataBookCursorPrivate EDataBookCursorPrivate;
  * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
  * and @error is set to reflect the error which occurred.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
 						const gchar         *sexp,
@@ -106,7 +106,7 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
  * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
  * and @error is set to reflect the error which occurred.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef gboolean (*EDataBookCursorMoveByFunc) (EDataBookCursor     *cursor,
 					       const gchar         *revision_guard,
@@ -134,7 +134,7 @@ typedef gboolean (*EDataBookCursorMoveByFunc) (EDataBookCursor     *cursor,
  * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
  * and @error is set to reflect the error which occurred.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cursor,
 							 gint                 index,
@@ -170,7 +170,7 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
  * and @error is set to reflect the error which occurred.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
 						    gint                *total,
@@ -198,7 +198,7 @@ typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
  * Returns: A value that is less than, equal to, or greater than zero if @contact is found,
  * respectively, to be less than, to match, or be greater than the current value of @cursor.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef gint (*EDataBookCursorCompareContactFunc) (EDataBookCursor     *cursor,
 						   EContact            *contact,
@@ -225,7 +225,7 @@ typedef gint (*EDataBookCursorCompareContactFunc) (EDataBookCursor     *cursor,
  * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
  * and @error is set to reflect the error which occurred.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 typedef gboolean (*EDataBookCursorLoadLocaleFunc) (EDataBookCursor     *cursor,
 						   gchar              **locale,
@@ -236,7 +236,7 @@ typedef gboolean (*EDataBookCursorLoadLocaleFunc) (EDataBookCursor     *cursor,
  *
  * An opaque handle for an addressbook cursor
  *
- * Since: 3.10
+ * Since: 3.12
  */
 struct _EDataBookCursor {
 	GObject parent;
@@ -255,7 +255,7 @@ struct _EDataBookCursor {
  *
  * Methods to implement on an #EDataBookCursor concrete class.
  *
- * Since 3.10
+ * Since: 3.12
  */
 struct _EDataBookCursorClass {
 	/*< private >*/

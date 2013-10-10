@@ -635,7 +635,7 @@ data_book_cursor_handle_dispose (EDBusAddressBookCursor *dbus_object,
  *
  * Returns: (transfer none): The #EBookBackend owning @cursor.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 struct _EBookBackend *
 e_data_book_cursor_get_backend (EDataBookCursor *cursor)
@@ -654,7 +654,7 @@ e_data_book_cursor_get_backend (EDataBookCursor *cursor)
  *
  * Returns: the total contacts for @cursor
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_data_book_cursor_get_total (EDataBookCursor *cursor)
@@ -672,7 +672,7 @@ e_data_book_cursor_get_total (EDataBookCursor *cursor)
  *
  * Returns: the current position of @cursor
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gint
 e_data_book_cursor_get_position (EDataBookCursor *cursor)
@@ -693,7 +693,7 @@ e_data_book_cursor_get_position (EDataBookCursor *cursor)
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
@@ -768,7 +768,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_data_book_cursor_move_by (EDataBookCursor     *cursor,
@@ -838,7 +838,7 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
@@ -892,7 +892,7 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
@@ -940,7 +940,7 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
@@ -1002,7 +1002,7 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
  * Should be called by addressbook backends whenever a contact
  * is added.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
@@ -1060,7 +1060,7 @@ e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
  * Should be called by addressbook backends whenever a contact
  * is removed.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 void
 e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
@@ -1121,7 +1121,7 @@ e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
  *
- * Since: 3.10
+ * Since: 3.12
  */
 gboolean
 e_data_book_cursor_register_gdbus_object (EDataBookCursor     *cursor,
