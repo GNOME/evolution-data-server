@@ -891,7 +891,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
                        GError **error)
 {
 	gint i;
-	gboolean success;
+	gboolean success = TRUE;
 	gchar *stmt, *tmp;
 	GString *string;
 	gboolean already_exists = FALSE;
@@ -899,6 +899,14 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	success = check_folderid_exists (ebsdb, folderid, &already_exists, error);
 	if (!success)
 		return FALSE;
+
+	/* Introspect the summary if the table already exists */
+	if (already_exists) {
+		success = introspect_summary (ebsdb, folderid, error);
+
+		if (!success)
+			return FALSE;
+	}
 
 	string = g_string_new (
 		"CREATE TABLE IF NOT EXISTS %Q ( uid TEXT PRIMARY KEY, ");
@@ -981,10 +989,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 
 		g_free (tmp);
 	}
-
-	/* Dont introspect the summary if the table did not yet exist */
-	if (success && already_exists)
-		success = introspect_summary (ebsdb, folderid, error);
 
 	/* Create indexes on the summary fields configured for indexing */
 	for (i = 0; success && i < ebsdb->priv->n_summary_fields; i++) {
