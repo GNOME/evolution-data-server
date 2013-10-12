@@ -747,7 +747,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
                     const gchar *folderid,
                     GError **error)
 {
-	gboolean success;
+	gboolean success, have_attr_list;
 	gchar *stmt;
 	GList *summary_columns = NULL, *l;
 	GArray *summary_fields = NULL;
@@ -830,6 +830,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		goto introspect_summary_finish;
 
 	ebsdb->priv->attr_list_indexes = 0;
+	ebsdb->priv->have_attr_list = have_attr_list = FALSE;
 
 	if (multivalues) {
 		gchar **fields = g_strsplit (multivalues, ":", 0);
@@ -841,7 +842,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 
 			params = g_strsplit (fields[i], ";", 0);
 			field = e_contact_field_id (params[0]);
-			iter = append_summary_field (summary_fields, field, NULL, NULL);
+			iter = append_summary_field (summary_fields, field, &have_attr_list, NULL);
 
 			if (iter) {
 				for (j = 1; params[j]; ++j) {
@@ -859,6 +860,8 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 
 			g_strfreev (params);
 		}
+
+		ebsdb->priv->have_attr_list = have_attr_list;
 
 		g_strfreev (fields);
 	}
