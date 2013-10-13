@@ -334,7 +334,7 @@ EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
 void            e_book_backend_sqlitedb_cursor_free
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor);
-gboolean        e_book_backend_sqlitedb_cursor_move_by
+gint            e_book_backend_sqlitedb_cursor_move_by
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
 						 EbSdbCursorOrigin     origin,
