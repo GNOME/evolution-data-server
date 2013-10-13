@@ -49,6 +49,7 @@
     <arg name="origin" direction="in" type="i"/>
     <arg name="count" direction="in" type="i"/>
     <arg name="fetch_results" direction="in" type="b"/>
+    <arg name="n_results" direction="out" type="i"/>
     <arg name="vcards" direction="out" type="as"/>
     <arg name="new_total" direction="out" type="u"/>
     <arg name="new_position" direction="out" type="u"/>
