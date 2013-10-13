@@ -103,17 +103,17 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
  *
  * See e_data_book_cursor_move_by() for more details on the expected behaviour of this method.
  *
- * Returns: %TRUE on Success, otherwise %FALSE is returned if any error occurred
- * and @error is set to reflect the error which occurred.
+ * Returns: The number of contacts which the cursor has moved by if successfull.
+ * Otherwise -1 is returned and @error is set.
  *
  * Since: 3.12
  */
-typedef gboolean (*EDataBookCursorMoveByFunc) (EDataBookCursor     *cursor,
-					       const gchar         *revision_guard,
-					       EBookCursorOrigin    origin,
-					       gint                 count,
-					       GSList             **results,
-					       GError             **error);
+typedef gint (*EDataBookCursorMoveByFunc) (EDataBookCursor     *cursor,
+					   const gchar         *revision_guard,
+					   EBookCursorOrigin    origin,
+					   gint                 count,
+					   GSList             **results,
+					   GError             **error);
 
 /**
  * EDataBookCursorSetAlphabetIndexFunc:
@@ -278,7 +278,7 @@ gint                    e_data_book_cursor_get_position          (EDataBookCurso
 gboolean                e_data_book_cursor_set_sexp              (EDataBookCursor     *cursor,
 								  const gchar         *sexp,
 								  GError             **error);
-gboolean                e_data_book_cursor_move_by               (EDataBookCursor     *cursor,
+gint                    e_data_book_cursor_move_by               (EDataBookCursor     *cursor,
 								  const gchar         *revision_guard,
 								  EBookCursorOrigin    origin,
 								  gint                 count,

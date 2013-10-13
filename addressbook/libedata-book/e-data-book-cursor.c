@@ -209,7 +209,7 @@ static void     calculate_move_by_position       (EDataBookCursor  *cursor,
 						  gint              results);
 
 /* D-Bus callbacks */
-static gboolean data_book_cursor_handle_move_by              (EDBusAddressBookCursor *dbus_object,
+static gint     data_book_cursor_handle_move_by              (EDBusAddressBookCursor *dbus_object,
 							      GDBusMethodInvocation  *invocation,
 							      const gchar            *revision,
 							      EBookCursorOrigin       origin,
@@ -510,10 +510,13 @@ data_book_cursor_handle_move_by (EDBusAddressBookCursor *dbus_object,
 {
 	GSList *results = NULL;
 	GError *error = NULL;
+	gint n_results;
 
-	if (!e_data_book_cursor_move_by (cursor, revision, origin, count,
-					 fetch_results ? &results : NULL,
-					 &error)) {
+	n_results = e_data_book_cursor_move_by (cursor, revision, origin, count,
+						fetch_results ? &results : NULL,
+						&error);
+
+	if (n_results < 0) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_clear_error (&error);
 	} else {
@@ -536,6 +539,7 @@ data_book_cursor_handle_move_by (EDBusAddressBookCursor *dbus_object,
 
 		e_dbus_address_book_cursor_complete_move_by (dbus_object,
 							     invocation,
+							     n_results,
 							     strv ? 
 							     (const gchar *const *)strv :
 							     empty_str,
@@ -766,11 +770,12 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
  * %E_CLIENT_ERROR_OUT_OF_SYNC error if the @revision_guard does not match
  * the current addressbook revision.
  *
- * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
+ * Returns: The number of contacts which the cursor has moved by if successfull.
+ * Otherwise -1 is returned and @error is set.
  *
  * Since: 3.12
  */
-gboolean
+gint
 e_data_book_cursor_move_by (EDataBookCursor     *cursor,
 			    const gchar         *revision_guard,
 			    EBookCursorOrigin    origin,
@@ -778,8 +783,7 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
 			    GSList             **results,
 			    GError             **error)
 {
-	GSList *local_results = NULL;
-	gboolean success;
+	gint retval;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
@@ -792,27 +796,20 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
 	}
 
 	g_object_ref (cursor);
-	success = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->move_by) (cursor,
+	retval = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->move_by) (cursor,
 								      revision_guard,
 								      origin,
 								      count,
-								      &local_results,
+								      results,
 								      error);
 	g_object_unref (cursor);
 
-	if (success) {
-
+	if (retval > 0) {
 		/* Calculate new cursor position and notify change */
-		calculate_move_by_position (cursor, origin, count,
-					    g_slist_length (local_results));
-
-		if (results)
-			*results = local_results;
-		else
-			g_slist_free_full (local_results, (GDestroyNotify)g_free);
+		calculate_move_by_position (cursor, origin, count, retval);
 	}
 
-	return success;
+	return retval;
 }
 
 /**
@@ -972,9 +969,9 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 		g_free (priv->locale);
 		priv->locale = g_strdup (local_locale);
 
-		if (!e_data_book_cursor_move_by (cursor, NULL,
-						 E_BOOK_CURSOR_ORIGIN_RESET,
-						 0, NULL, &local_error)) {
+		if (e_data_book_cursor_move_by (cursor, NULL,
+						E_BOOK_CURSOR_ORIGIN_RESET,
+						0, NULL, &local_error) < 0) {
 			g_warning ("Error resetting cursor position after locale change: %s",
 				   local_error->message);
 			g_clear_error (&local_error);
