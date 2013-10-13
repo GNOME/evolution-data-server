@@ -435,7 +435,7 @@ cursor_example_move_cursor (CursorExample     *example,
 	CursorExamplePrivate *priv = example->priv;
 	GError               *error = NULL;
 	GSList               *results = NULL, **results_arg = NULL;
-	gboolean              success;
+	gint                  n_results;
 
 	/* We don't ask EDS for results if we're not going to load the view */
 	g_assert (load_page == TRUE || full_results == NULL);
@@ -444,14 +444,13 @@ cursor_example_move_cursor (CursorExample     *example,
 	if (load_page)
 		results_arg = &results;
 
-	success = e_book_client_cursor_move_by_sync (priv->cursor,
-						     origin,
-						     count,
-						     results_arg,
-						     NULL, &error);
+	n_results = e_book_client_cursor_move_by_sync (priv->cursor,
+						       origin,
+						       count,
+						       results_arg,
+						       NULL, &error);
 
-	if (!success) {
-
+	if (n_results < 0) {
 		if (g_error_matches (error,
 				     E_CLIENT_ERROR,
 				     E_CLIENT_ERROR_OUT_OF_SYNC)) {
@@ -476,11 +475,11 @@ cursor_example_move_cursor (CursorExample     *example,
 	}
 
 	if (full_results)
-		*full_results = g_slist_length (results) == ABS (count);
+		*full_results = (n_results == ABS (count));
 
 	g_slist_free_full (results, (GDestroyNotify)g_object_unref);
 
-	return success;
+	return n_results >= 0;
 }
 
 static void
