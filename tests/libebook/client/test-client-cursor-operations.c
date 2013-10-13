@@ -713,7 +713,8 @@ move_by_print_results (GSList      *results,
 static void
 cursor_test_assert_results (CursorFixture    *fixture,
 			    CursorTestMoveBy *test,
-			    GSList           *results)
+			    GSList           *results,
+			    gint              n_reported_results)
 {
 	GSList *uids = NULL;
 	gint    i;
@@ -730,6 +731,7 @@ cursor_test_assert_results (CursorFixture    *fixture,
 
 	/* Assert the exact amount of requested results */
 	g_assert_cmpint (g_slist_length (results), ==, test->expected);
+	g_assert_cmpint (n_reported_results, ==, test->expected);
 	assert_contacts_order_slist (results, uids);
 	g_slist_free (uids);
 }
@@ -750,10 +752,14 @@ cursor_test_move_by_ready_cb (GObject      *source_object,
 	MoveByReadyData    *data = (MoveByReadyData *)user_data;
 	ETestServerFixture *server_fixture = (ETestServerFixture *)data->fixture;
 	GSList             *results = NULL;
+	gint                n_reported_results;
 	GError             *error = NULL;
 
-	if (!e_book_client_cursor_move_by_finish (E_BOOK_CLIENT_CURSOR (source_object),
-						  result, &results, &error)) {
+	n_reported_results =
+		e_book_client_cursor_move_by_finish (E_BOOK_CLIENT_CURSOR (source_object),
+						     result, &results, &error);
+
+	if (n_reported_results < 0) {
 		if (g_error_matches (error,
 				     E_CLIENT_ERROR,
 				     E_CLIENT_ERROR_OUT_OF_SYNC)) {
@@ -766,7 +772,7 @@ cursor_test_move_by_ready_cb (GObject      *source_object,
 	}
 
 	if (!data->out_of_sync)
-		cursor_test_assert_results (data->fixture, data->test, results);
+		cursor_test_assert_results (data->fixture, data->test, results, n_reported_results);
 
 	g_slist_free_full (results, (GDestroyNotify)g_object_unref);
 	g_main_loop_quit (server_fixture->loop);
@@ -800,13 +806,16 @@ cursor_test_try_move_by (CursorFixture *fixture,
 	} else {
 		GError *error = NULL;
 		GSList *results = NULL;
+		gint    n_reported_results;
 
-		if (!e_book_client_cursor_move_by_sync (fixture->cursor,
-							move_by->origin,
-							move_by->count,
-							&results,
-							NULL, &error)) {
+		n_reported_results =
+			e_book_client_cursor_move_by_sync (fixture->cursor,
+							   move_by->origin,
+							   move_by->count,
+							   &results,
+							   NULL, &error);
 
+		if (n_reported_results < 0) {
 			if (g_error_matches (error,
 					     E_CLIENT_ERROR,
 					     E_CLIENT_ERROR_OUT_OF_SYNC)) {
@@ -818,10 +827,10 @@ cursor_test_try_move_by (CursorFixture *fixture,
 			}
 
 		} else {
-			cursor_test_assert_results (fixture, move_by, results);
+			cursor_test_assert_results (fixture, move_by, results, n_reported_results);
 		}
 
-		g_slist_free_full (results, (GDestroyNotify)g_object_unref);
+		g_slist_free_full (results, g_object_unref);
 	}
 
 	return out_of_sync == FALSE;
@@ -1869,8 +1878,8 @@ move_by_loop_ready_cb (GObject      *source_object,
 	GSList         *results = NULL;
 	GError         *error = NULL;
 
-	if (!e_book_client_cursor_move_by_finish (E_BOOK_CLIENT_CURSOR (source_object),
-						  result, &results, &error)) {
+	if (e_book_client_cursor_move_by_finish (E_BOOK_CLIENT_CURSOR (source_object),
+						 result, &results, &error) < 0) {
 
 		if (g_error_matches (error,
 				     E_CLIENT_ERROR,
@@ -1914,11 +1923,11 @@ move_by_loop_iteration (MoveByLoopData *data)
 		cursor_thread_timeout_cancel (data->thread);
 	} else {
 
-		if (!e_book_client_cursor_move_by_sync (data->thread->cursor,
-							E_BOOK_CURSOR_ORIGIN_CURRENT,
-							3,
-							&results,
-							NULL, &error)) {
+		if (e_book_client_cursor_move_by_sync (data->thread->cursor,
+						       E_BOOK_CURSOR_ORIGIN_CURRENT,
+						       3,
+						       &results,
+						       NULL, &error) < 0) {
 
 			if (g_error_matches (error,
 					     E_CLIENT_ERROR,
