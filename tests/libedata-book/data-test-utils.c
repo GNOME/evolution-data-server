@@ -158,7 +158,7 @@ open_sqlitedb (ESourceRegistry *registry,
 	       ESource         *source)
 {
 	EBookBackendSqliteDB *ebsdb;
-	GError *error;
+	GError *error = NULL;
 	gchar *dirname;
 
 	dirname = get_addressbook_directory (registry, source);
@@ -549,10 +549,13 @@ static void
 assert_move_by (EbSdbCursorFixture *fixture,
 		MoveByData *data,
 		gint i,
-		GSList *results)
+		GSList *results,
+		gint n_results)
 {
 	GSList *uids = NULL;
 	gint j, expected = 0;
+
+	g_assert_cmpint (g_slist_length (results), ==, n_results);
 
 	/* Count the number of really expected results */
 	for (j = 0; j < ABS (data->counts[i]); j++) {
@@ -604,6 +607,7 @@ test_move_by (EbSdbCursorFixture *fixture,
 	gint i;
 	gint expected_position = 0, position;
 	gint total;
+	gint n_results;
 
 	total = data->filtered ? N_FILTERED_CONTACTS : N_SORTED_CONTACTS;
 
@@ -619,15 +623,16 @@ test_move_by (EbSdbCursorFixture *fixture,
 			expected_position = 0;
 
 		/* Try normal order */
-		if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							     fixture->cursor,
-							     EBSDB_CURSOR_ORIGIN_CURRENT,
-							     data->counts[i],
-							     &results, &error))
+		n_results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+								    fixture->cursor,
+								    EBSDB_CURSOR_ORIGIN_CURRENT,
+								    data->counts[i],
+								    &results, &error);
+		if (n_results < 0)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
-		assert_move_by (fixture, data, i, results);
+		assert_move_by (fixture, data, i, results, n_results);
 		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (results);
 		results = NULL;
@@ -638,15 +643,16 @@ test_move_by (EbSdbCursorFixture *fixture,
 		g_assert_cmpint (expected_position, ==, position);
 
 		/* Try repeat last query */
-		if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							     fixture->cursor,
-							     EBSDB_CURSOR_ORIGIN_PREVIOUS,
-							     data->counts[i],
-							     &results, &error))
+		n_results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+								    fixture->cursor,
+								    EBSDB_CURSOR_ORIGIN_PREVIOUS,
+								    data->counts[i],
+								    &results, &error);
+		if (n_results < 0)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
-		assert_move_by (fixture, data, i, results);
+		assert_move_by (fixture, data, i, results, n_results);
 		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (results);
 		results = NULL;
@@ -658,15 +664,16 @@ test_move_by (EbSdbCursorFixture *fixture,
 	}
 
 	/* One more, test reset API, the first batch from the beginning */
-	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor,
-						     EBSDB_CURSOR_ORIGIN_RESET,
-						     data->counts[0],
-						     &results, &error))
+	n_results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+							    fixture->cursor,
+							    EBSDB_CURSOR_ORIGIN_RESET,
+							    data->counts[0],
+							    &results, &error);
+	if (n_results < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
-	assert_move_by (fixture, data, 0, results);
+	assert_move_by (fixture, data, 0, results, n_results);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
 	results = NULL;

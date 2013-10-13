@@ -19,10 +19,10 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 	GError *error = NULL;
 
 	/* First batch */
-	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor,
-						     EBSDB_CURSOR_ORIGIN_CURRENT,
-						     5, &results, &error))
+	if (e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						    fixture->cursor,
+						    EBSDB_CURSOR_ORIGIN_CURRENT,
+						    5, &results, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -42,10 +42,10 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 	results = NULL;
 
 	/* Second batch reset (same results) */
-	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor,
-						     EBSDB_CURSOR_ORIGIN_RESET,
-						     5, &results, &error))
+	if (e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						    fixture->cursor,
+						    EBSDB_CURSOR_ORIGIN_RESET,
+						    5, &results, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -87,10 +87,10 @@ test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
 								    fixture->cursor, 3);
 
-	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor,
-						     EBSDB_CURSOR_ORIGIN_CURRENT,
-						     5, &results, &error))
+	if (e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						    fixture->cursor,
+						    EBSDB_CURSOR_ORIGIN_CURRENT,
+						    5, &results, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -132,10 +132,10 @@ test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
 	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
 								    fixture->cursor, 3);
 
-	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor, 
-						     EBSDB_CURSOR_ORIGIN_CURRENT,
-						     -5, &results, &error))
+	if (e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
+						    fixture->cursor, 
+						    EBSDB_CURSOR_ORIGIN_CURRENT,
+						    -5, &results, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
