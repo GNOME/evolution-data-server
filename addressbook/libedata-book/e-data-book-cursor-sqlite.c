@@ -47,7 +47,7 @@ static void e_data_book_cursor_sqlite_set_property (GObject *object,
 static gboolean e_data_book_cursor_sqlite_set_sexp             (EDataBookCursor     *cursor,
 								const gchar         *sexp,
 								GError             **error);
-static gboolean e_data_book_cursor_sqlite_move_by              (EDataBookCursor     *cursor,
+static gint     e_data_book_cursor_sqlite_move_by              (EDataBookCursor     *cursor,
 								const gchar         *revision_guard,
 								EBookCursorOrigin    origin,
 								gint                 count,
@@ -270,7 +270,7 @@ convert_origin (EBookCursorOrigin    src_origin,
 	return success;
 }
 
-static gboolean
+static gint
 e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 				   const gchar         *revision_guard,
 				   EBookCursorOrigin    origin,
@@ -284,6 +284,7 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	EbSdbCursorOrigin sqlitedb_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
 	gchar *revision = NULL;
 	gboolean success = FALSE;
+	gint n_results = -1;
 
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
@@ -316,13 +317,19 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 		success = FALSE;
 	}
 
-	if (success)
-		success = e_book_backend_sqlitedb_cursor_move_by (priv->ebsdb,
-								  priv->cursor,
-								  sqlitedb_origin,
-								  count,
-								  &local_results,
-								  error);
+	if (success) {
+
+		/* Only pass 'local_results' if the caller passed 'results'
+		 */
+		n_results = e_book_backend_sqlitedb_cursor_move_by (priv->ebsdb,
+								    priv->cursor,
+								    sqlitedb_origin,
+								    count,
+								    results ? &local_results : NULL,
+								    error);
+		if (n_results < 0)
+			success = FALSE;
+	}
 
 	if (success) {
 		success = e_book_backend_sqlitedb_unlock_updates (priv->ebsdb, TRUE, error);
@@ -355,7 +362,10 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 
 	g_free (revision);
 
-	return success;
+	if (success)
+		return n_results;
+
+	return -1;
 }
 
 static gboolean
