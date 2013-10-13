@@ -114,11 +114,11 @@ void                 e_book_client_cursor_move_by                     (EBookClie
 								       GCancellable        *cancellable,
 								       GAsyncReadyCallback  callback,
 								       gpointer             user_data);
-gboolean             e_book_client_cursor_move_by_finish              (EBookClientCursor   *cursor,
+gint                 e_book_client_cursor_move_by_finish              (EBookClientCursor   *cursor,
 								       GAsyncResult        *result,
 								       GSList             **out_contacts,
 								       GError             **error);
-gboolean             e_book_client_cursor_move_by_sync                (EBookClientCursor   *cursor,
+gint                 e_book_client_cursor_move_by_sync                (EBookClientCursor   *cursor,
 								       EBookCursorOrigin    origin,
 								       gint                 count,
 								       GSList             **out_contacts,

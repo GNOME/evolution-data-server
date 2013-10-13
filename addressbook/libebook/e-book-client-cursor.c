@@ -1500,6 +1500,7 @@ struct _MoveByContext {
 	GSList *contacts;
 	guint new_total;
 	guint new_position;
+	gint n_results;
 };
 
 struct _AlphabetIndexContext {
@@ -1611,6 +1612,7 @@ move_by_context_new (const gchar      *revision,
 	context->origin        = origin;
 	context->count         = count;
 	context->fetch_results = fetch_results;
+	context->n_results     = 0;
 
 	return context;
 }
@@ -1625,7 +1627,7 @@ move_by_context_free (MoveByContext *context)
 	}
 }
 
-static gboolean
+static gint
 move_by_sync_internal (EBookClientCursor   *cursor,
 		       const gchar         *revision,
 		       EBookCursorOrigin    origin,
@@ -1639,6 +1641,7 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 	EBookClientCursorPrivate *priv;
 	GError *local_error = NULL;
 	gchar **vcards = NULL;
+	gint n_results = -1;
 
 	priv = cursor->priv;
 
@@ -1646,13 +1649,14 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 		GSList *results = NULL, *l;
 		GSList *contacts = NULL;
 
-		if (!e_data_book_cursor_move_by (priv->direct_cursor,
-						 revision,
-						 origin,
-						 count,
-						 out_contacts ? &results : NULL,
-						 error))
-			return FALSE;
+		n_results = e_data_book_cursor_move_by (priv->direct_cursor,
+							revision,
+							origin,
+							count,
+							out_contacts ? &results : NULL,
+							error);
+		if (n_results < 0)
+			return n_results;
 
 		for (l = results; l; l = l->next) {
 			gchar *vcard = l->data;
@@ -1672,7 +1676,7 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 		*new_total = e_data_book_cursor_get_total (priv->direct_cursor);
 		*new_position = e_data_book_cursor_get_position (priv->direct_cursor);
 
-		return TRUE;
+		return n_results;
 	}
 
 	e_dbus_address_book_cursor_call_move_by_sync (
@@ -1680,6 +1684,7 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 		revision,
 		origin, count,
 		out_contacts != NULL,
+		&n_results,
 		&vcards,
 		new_total,
 		new_position,
@@ -1689,7 +1694,7 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
-		return FALSE;
+		return -1;
 	}
 
 	if (vcards != NULL) {
@@ -1710,7 +1715,7 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 		g_strfreev (vcards);
 	}
 
-	return TRUE;
+	return n_results;
 }
 
 static void
@@ -1723,14 +1728,15 @@ move_by_thread (GSimpleAsyncResult *simple,
 
 	context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	move_by_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
-			       context->revision,
-			       context->origin,
-			       context->count,
-			       context->fetch_results ? &(context->contacts) : NULL,
-			       &context->new_total,
-			       &context->new_position,
-			       cancellable, &local_error);
+	context->n_results = 
+		move_by_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
+				       context->revision,
+				       context->origin,
+				       context->count,
+				       context->fetch_results ? &(context->contacts) : NULL,
+				       &context->new_total,
+				       &context->new_position,
+				       cancellable, &local_error);
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2172,11 +2178,12 @@ e_book_client_cursor_move_by (EBookClientCursor   *cursor,
  * Completes an asynchronous call initiated by e_book_client_cursor_move_by(), fetching
  * any contacts which might have been returned by the call.
  *
- * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
+ * Returns: The number of contacts which the cursor has moved by if successfull.
+ * Otherwise -1 is returned and @error is set.
  *
  * Since: 3.12
  */
-gboolean
+gint
 e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
 				     GAsyncResult        *result,
 				     GSList             **out_contacts,
@@ -2194,7 +2201,7 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
 	context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
+		return -1;
 
 	if (out_contacts != NULL) {
 		*out_contacts = context->contacts;
@@ -2211,7 +2218,7 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
 		g_object_thaw_notify (G_OBJECT (cursor));
 	}
 
-	return TRUE;
+	return context->n_results;
 }
 
 /**
@@ -2266,11 +2273,12 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
  * to be followed by an #EBookClientCursor::refresh signal at which point any content
  * should be reloaded.
  *
- * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
+ * Returns: The number of contacts which the cursor has moved by if successfull.
+ * Otherwise -1 is returned and @error is set.
  *
  * Since: 3.12
  */
-gboolean
+gint
 e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
 				   EBookCursorOrigin    origin,
 				   gint                 count,
@@ -2279,25 +2287,25 @@ e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
 				   GError             **error)
 {
 	guint new_total = 0, new_position = 0;
-	gboolean success;
+	gint retval;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), FALSE);
 	g_return_val_if_fail (count != 0 || origin == E_BOOK_CURSOR_ORIGIN_RESET, FALSE);
 
-	success = move_by_sync_internal (cursor, cursor->priv->revision, origin, count, out_contacts,
-					 &new_total, &new_position, cancellable, error);
+	retval = move_by_sync_internal (cursor, cursor->priv->revision, origin, count, out_contacts,
+					&new_total, &new_position, cancellable, error);
 
 	/* If we are in the thread where the cursor was created, 
 	 * then synchronize the new total & position right away
 	 */
-	if (success && book_client_cursor_context_is_current (cursor)) {
+	if (retval >= 0 && book_client_cursor_context_is_current (cursor)) {
 		g_object_freeze_notify (G_OBJECT (cursor));
 		book_client_cursor_set_total (cursor, new_total);
 		book_client_cursor_set_position (cursor, new_position);
 		g_object_thaw_notify (G_OBJECT (cursor));
 	}
 
-	return success;
+	return retval;
 }
 
 /**
