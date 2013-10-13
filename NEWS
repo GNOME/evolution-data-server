@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.10.1 2013-10-14
+---------------------------------------
+
+Bug Fixes:
+	Bug 695232 - Finish EVCard quoted-printable handling (Milan Crha)
+	Bug 708627 - Use PLAIN instead of LOGIN for GOA SMTP accounts
+	             (Matthew Barnes)
+	Bug 708730 - CalDAV: Improve handling of invalid access tokens
+	             (Matthew Barnes)
+	Bug 709550 - CamelService: Do not call disconnect_sync from its
+	             finalize (Milan Crha)
+	Bug 709561 - Pick up Windows Live mail from GOA (Matthew Barnes)
+
+Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Duarte Loreto (pt)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.10.0 2013-09-23
 ---------------------------------------
 
