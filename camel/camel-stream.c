@@ -138,6 +138,8 @@ stream_read (CamelStream *stream,
 		g_object_unref (base_stream);
 	}
 
+	stream->eos = n_bytes_read <= 0;
+
 	return n_bytes_read;
 }
 
@@ -157,6 +159,7 @@ stream_write (CamelStream *stream,
 		GOutputStream *output_stream;
 
 		output_stream = g_io_stream_get_output_stream (base_stream);
+		stream->eos = FALSE;
 
 		n_bytes_written = g_output_stream_write (
 			output_stream, buffer, n, cancellable, error);
@@ -273,6 +276,7 @@ stream_seek (GSeekable *seekable,
 	base_stream = camel_stream_ref_base_stream (stream);
 
 	if (G_IS_SEEKABLE (base_stream)) {
+		stream->eos = FALSE;
 		success = g_seekable_seek (
 			G_SEEKABLE (base_stream),
 			offset, type, cancellable, error);
