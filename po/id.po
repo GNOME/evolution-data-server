@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-09-07 17:33+0000\n"
-"PO-Revision-Date: 2013-09-12 11:03+0700\n"
+"POT-Creation-Date: 2013-10-08 03:31+0000\n"
+"PO-Revision-Date: 2013-10-15 11:50+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -94,9 +94,9 @@ msgstr "Gagal mengubah nama basis data lama dari '%s' menjadi '%s': %s"
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:58
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:874
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:568
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:576
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:607
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
 #: ../calendar/libecal/e-cal.c:2335 ../calendar/libecal/e-cal-client.c:268
 #: ../camel/camel-imapx-command.c:650 ../libedataserver/e-client.c:177
 msgid "Unknown error"
@@ -1183,31 +1183,31 @@ msgstr "Kurang UID sumber"
 msgid "No such source for UID '%s'"
 msgstr "Tak ada sumber seperti itu bagi UID '%s'"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:566
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Server tak bisa dihubungi (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:605
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Gagal koneksi ke server memakai SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:608
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Dikembalikan kode status HTTP %d yang tak diharapkan (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:627
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
 msgid "CalDAV backend is not loaded yet"
 msgstr "Backend CalDAV belum dimuat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1048
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1072
 msgid "Invalid Redirect URL"
 msgstr "URL Redirect Tak Valid"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2525
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2917
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2563
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2955
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1216,32 +1216,32 @@ msgstr ""
 "Server tak bisa dihubungi, kalender dibuka dalam mode hanya-baca.\n"
 "Pesan galat: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2869
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2907
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Tidak dapat membuat folder singgahan '%s'"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3957
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3995
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV tak mendukung penambahan masal"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4060
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4098
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV tak mendukung pengubahan masal"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4236
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4274
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV tak mendukung penghapusan masal"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4903
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4941
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender tak mendukung Bebas/Sibuk"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4912
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4950
 msgid "Schedule outbox url not found"
 msgstr "URL outbox skedul tak ditemukan"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5009
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5047
 msgid "Unexpected result in schedule-response"
 msgstr "Hasil yang tak diharapkan dalam schedule-response"
 
@@ -1389,7 +1389,7 @@ msgid "Authentication failed"
 msgstr "Otentikasi gagal"
 
 #: ../calendar/libecal/e-cal.c:2331
-#: ../camel/providers/smtp/camel-smtp-transport.c:911
+#: ../camel/providers/smtp/camel-smtp-transport.c:905
 #: ../libedataserver/e-client.c:139
 msgid "Authentication required"
 msgstr "Otentikasi diperlukan"
@@ -1782,38 +1782,28 @@ msgstr "Enkripsi tidak didukung oleh cipher ini"
 msgid "Decryption is not supported by this cipher"
 msgstr "Dekripsi tidak didukung oleh cipher ini"
 
-#: ../camel/camel-cipher-context.c:264
-#, c-format
-msgid "You may not import keys with this cipher"
-msgstr "Anda tidak boleh mengimpor kunci enkripsi dengan cipher ini"
-
-#: ../camel/camel-cipher-context.c:278
-#, c-format
-msgid "You may not export keys with this cipher"
-msgstr "Anda tidak boleh mengekspor kunci enkripsi dengan cipher ini"
-
-#: ../camel/camel-cipher-context.c:819
+#: ../camel/camel-cipher-context.c:646
 msgid "Signing message"
 msgstr "Menandatangani pesan"
 
-#: ../camel/camel-cipher-context.c:1060
+#: ../camel/camel-cipher-context.c:887
 msgid "Encrypting message"
 msgstr "Menyandikan pesan"
 
-#: ../camel/camel-cipher-context.c:1187
+#: ../camel/camel-cipher-context.c:1014
 msgid "Decrypting message"
 msgstr "Mendekripsi pesan"
 
-#: ../camel/camel-data-cache.c:181
+#: ../camel/camel-data-cache.c:180
 #, c-format
 msgid "Unable to create cache path"
 msgstr "Tidak dapat membuat alur cache"
 
-#: ../camel/camel-data-cache.c:440
+#: ../camel/camel-data-cache.c:450
 msgid "Empty cache file"
 msgstr "Berkas singgahan kosong"
 
-#: ../camel/camel-data-cache.c:509
+#: ../camel/camel-data-cache.c:525
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Tidak dapat membuang isi cache: %s: %s"
@@ -1859,17 +1849,17 @@ msgstr ""
 msgid "Copy folder content locally for _offline operation"
 msgstr "Salin isi folder secara lokal untuk _operasi luring"
 
-#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:609
-#: ../camel/camel-imapx-store.c:2240
+#: ../camel/camel-disco-store.c:518 ../camel/camel-imapx-store.c:618
+#: ../camel/camel-imapx-store.c:2241
 #: ../camel/providers/pop3/camel-pop3-folder.c:596
 #: ../camel/providers/pop3/camel-pop3-folder.c:746
 #: ../camel/providers/pop3/camel-pop3-folder.c:987
 #: ../camel/providers/pop3/camel-pop3-folder.c:1216
-#: ../camel/providers/pop3/camel-pop3-store.c:291
-#: ../camel/providers/pop3/camel-pop3-store.c:519
-#: ../camel/providers/pop3/camel-pop3-store.c:567
-#: ../camel/providers/pop3/camel-pop3-store.c:659
-#: ../camel/providers/pop3/camel-pop3-store.c:1059
+#: ../camel/providers/pop3/camel-pop3-store.c:290
+#: ../camel/providers/pop3/camel-pop3-store.c:518
+#: ../camel/providers/pop3/camel-pop3-store.c:566
+#: ../camel/providers/pop3/camel-pop3-store.c:658
+#: ../camel/providers/pop3/camel-pop3-store.c:1058
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Anda tersambung ke jaringan untuk menuntaskan operasi ini"
@@ -1973,54 +1963,54 @@ msgstr "Argumen invalid untuk (user-tag)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Kesalahan saat mengeksekusi saringan pencarian: %s: %s"
 
-#: ../camel/camel-folder.c:311
+#: ../camel/camel-folder.c:309
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "Mempelajari pesan sampah baru dalam '%s'"
 
-#: ../camel/camel-folder.c:351
+#: ../camel/camel-folder.c:349
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "Mempelajari pesan ham baru di '%s'"
 
-#: ../camel/camel-folder.c:399
+#: ../camel/camel-folder.c:397
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Menyaring pesan baru dalam '%s'"
 
-#: ../camel/camel-folder.c:1009
+#: ../camel/camel-folder.c:989
 #: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "Memindahkan pesan"
 
-#: ../camel/camel-folder.c:1012
+#: ../camel/camel-folder.c:992
 msgid "Copying messages"
 msgstr "Menyalin pesan"
 
-#: ../camel/camel-folder.c:1332
+#: ../camel/camel-folder.c:1312
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Informasi kuota tidak didukung bagi folder '%s'"
 
-#: ../camel/camel-folder.c:3578
+#: ../camel/camel-folder.c:3486
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Membersihkan folder  '%s'"
 
-#: ../camel/camel-folder.c:3810
+#: ../camel/camel-folder.c:3718
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Mengambil pesan '%s' di %s"
 
-#: ../camel/camel-folder.c:3965
+#: ../camel/camel-folder.c:3873
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Mengambil informasi kuota untuk '%s'"
 
-#: ../camel/camel-folder.c:4205
+#: ../camel/camel-folder.c:4113
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Menyegarkan folder '%s'"
@@ -2073,18 +2063,18 @@ msgstr ""
 "Salah saat mengeksekusi ekspresi pencarian: %s:\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:730 ../camel/camel-gpg-context.c:735
-#: ../camel/camel-gpg-context.c:1398
+#: ../camel/camel-gpg-context.c:717 ../camel/camel-gpg-context.c:722
+#: ../camel/camel-gpg-context.c:1379
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Gagal mengeksekusi gpg: %s"
 
-#: ../camel/camel-gpg-context.c:735
-#: ../camel/providers/smtp/camel-smtp-transport.c:914
+#: ../camel/camel-gpg-context.c:722
+#: ../camel/providers/smtp/camel-smtp-transport.c:908
 msgid "Unknown"
 msgstr "Tidak dikenal"
 
-#: ../camel/camel-gpg-context.c:800
+#: ../camel/camel-gpg-context.c:787
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2095,17 +2085,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:836
+#: ../camel/camel-gpg-context.c:823
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Gagal mengurai petunjuk userid gpg."
 
-#: ../camel/camel-gpg-context.c:861 ../camel/camel-gpg-context.c:876
+#: ../camel/camel-gpg-context.c:848 ../camel/camel-gpg-context.c:863
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Gagal mengurai permintaan sandi gpg."
 
-#: ../camel/camel-gpg-context.c:897
+#: ../camel/camel-gpg-context.c:884
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2114,7 +2104,7 @@ msgstr ""
 "Anda butuh PIN untuk membuka kunci untuk\n"
 "SmartCard Anda: \"%s\""
 
-#: ../camel/camel-gpg-context.c:901
+#: ../camel/camel-gpg-context.c:888
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2123,12 +2113,12 @@ msgstr ""
 "Anda butuh sandi untuk membuka kunci untuk\n"
 "pengguna: \"%s\""
 
-#: ../camel/camel-gpg-context.c:907
+#: ../camel/camel-gpg-context.c:894
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Permintaan tak diharapkan dari GnuPG bagi '%s'"
 
-#: ../camel/camel-gpg-context.c:919
+#: ../camel/camel-gpg-context.c:906
 msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2136,71 +2126,69 @@ msgstr ""
 "Catat bahwa isi terenkripsi tak memuat informasi tentang penerima, sehingga "
 "akan ada permintaan sandi bagi setiap kunci privat yang disimpan."
 
-#: ../camel/camel-gpg-context.c:950 ../camel/camel-net-utils.c:524
-#: ../camel/camel-tcp-stream-raw.c:268
-#: ../camel/providers/nntp/camel-nntp-summary.c:402
+#: ../camel/camel-gpg-context.c:937 ../camel/camel-net-utils.c:524
+#: ../camel/providers/nntp/camel-nntp-summary.c:403
 #: ../libedataserver/e-client.c:150
 #, c-format
 msgid "Cancelled"
 msgstr "Dibatalkan"
 
-#: ../camel/camel-gpg-context.c:971
+#: ../camel/camel-gpg-context.c:958
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Gagal membuka kunci rahasia: 3 sandi yang dimasukkan semuanya salah."
 
-#: ../camel/camel-gpg-context.c:984
+#: ../camel/camel-gpg-context.c:971
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Respon tak diharapkan dari GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:1115
+#: ../camel/camel-gpg-context.c:1102
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Gagal menyandikan: Penerima yang disebutkan tidak valid."
 
-#: ../camel/camel-gpg-context.c:1665 ../camel/camel-smime-context.c:846
+#: ../camel/camel-gpg-context.c:1654 ../camel/camel-smime-context.c:846
 msgid "Could not generate signing data: "
 msgstr "Tidak dapat menjangkitkan data penandatanganan: "
 
-#: ../camel/camel-gpg-context.c:1714 ../camel/camel-gpg-context.c:1918
-#: ../camel/camel-gpg-context.c:2028 ../camel/camel-gpg-context.c:2179
-#: ../camel/camel-gpg-context.c:2279 ../camel/camel-gpg-context.c:2327
+#: ../camel/camel-gpg-context.c:1703 ../camel/camel-gpg-context.c:1911
+#: ../camel/camel-gpg-context.c:2021 ../camel/camel-gpg-context.c:2170
 msgid "Failed to execute gpg."
 msgstr "Gagal mengeksekusi gpg."
 
-#: ../camel/camel-gpg-context.c:1793 ../camel/camel-gpg-context.c:1801
-#: ../camel/camel-gpg-context.c:1809 ../camel/camel-gpg-context.c:1829
-#: ../camel/camel-smime-context.c:973 ../camel/camel-smime-context.c:987
-#: ../camel/camel-smime-context.c:996
+#: ../camel/camel-gpg-context.c:1786 ../camel/camel-gpg-context.c:1794
+#: ../camel/camel-gpg-context.c:1802 ../camel/camel-gpg-context.c:1822
+#: ../camel/camel-smime-context.c:975 ../camel/camel-smime-context.c:989
+#: ../camel/camel-smime-context.c:998
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Tidak bisa memverifikasi tandatangan pesan: Format pesan salah"
 
-#: ../camel/camel-gpg-context.c:1871
+#: ../camel/camel-gpg-context.c:1864
 msgid "Cannot verify message signature: "
 msgstr "Tidak dapat memverifikasi tanda tangan pesan: "
 
-#: ../camel/camel-gpg-context.c:1994
+#: ../camel/camel-gpg-context.c:1987
 msgid "Could not generate encrypting data: "
 msgstr "Tidak dapat menghasilkan data yang dienkripsi: "
 
-#: ../camel/camel-gpg-context.c:2047
+#: ../camel/camel-gpg-context.c:2040
 msgid "This is a digitally encrypted message part"
 msgstr "Ini adalah bagian pesan yang telah disandikan secara digital"
 
-#: ../camel/camel-gpg-context.c:2105 ../camel/camel-gpg-context.c:2114
-#: ../camel/camel-gpg-context.c:2137
+#: ../camel/camel-gpg-context.c:2096 ../camel/camel-gpg-context.c:2105
+#: ../camel/camel-gpg-context.c:2128
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Tidak bisa mendekripsi pesan: Format pesan salah"
 
-#: ../camel/camel-gpg-context.c:2125
+#: ../camel/camel-gpg-context.c:2116
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Gagal mendekripsikan bagian MIME: kesalahan protokol"
 
-#: ../camel/camel-gpg-context.c:2220 ../camel/camel-smime-context.c:1287
+#: ../camel/camel-gpg-context.c:2211 ../camel/camel-smime-context.c:1289
 msgid "Encrypted content"
 msgstr "Isi dalam bentuk sandi"
 
@@ -2237,15 +2225,15 @@ msgstr "Tidak bisa membuat ringkasan folder untuk %s"
 msgid "Could not create cache for %s: "
 msgstr "Tidak dapat membuat singgahan untuk %s: "
 
-#: ../camel/camel-imapx-server.c:1327
+#: ../camel/camel-imapx-server.c:1333
 msgid "Server disconnected"
 msgstr "Server terputus"
 
-#: ../camel/camel-imapx-server.c:1750
+#: ../camel/camel-imapx-server.c:1756
 msgid "Error writing to cache stream"
 msgstr "Galat saat menulis ke stream singgahan"
 
-#: ../camel/camel-imapx-server.c:2429
+#: ../camel/camel-imapx-server.c:2439
 #, c-format
 msgid ""
 "Alert from IMAP server %s:\n"
@@ -2254,231 +2242,231 @@ msgstr ""
 "Peringatan dari server IMAP %s:\n"
 "%s"
 
-#: ../camel/camel-imapx-server.c:3025
+#: ../camel/camel-imapx-server.c:3035
 #, c-format
 msgid "Not authenticated"
 msgstr "Tidak diotentikasi"
 
-#: ../camel/camel-imapx-server.c:3103
+#: ../camel/camel-imapx-server.c:3113
 msgid "Error performing IDLE"
 msgstr "Galat saat melakukan IDLE"
 
-#: ../camel/camel-imapx-server.c:3995
+#: ../camel/camel-imapx-server.c:3992
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Gagal konek ke server IMAP %s dalam mode aman: %s"
 
-#: ../camel/camel-imapx-server.c:3996
-#: ../camel/providers/smtp/camel-smtp-transport.c:203
+#: ../camel/camel-imapx-server.c:3993
+#: ../camel/providers/smtp/camel-smtp-transport.c:206
 msgid "STARTTLS not supported"
 msgstr "STARTTLS tidak didukung"
 
-#: ../camel/camel-imapx-server.c:4037
+#: ../camel/camel-imapx-server.c:4034
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Gagal menyambung ke server IMAP %s dalam mode aman: "
 
-#: ../camel/camel-imapx-server.c:4115
+#: ../camel/camel-imapx-server.c:4113
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s tidak mendukung otentikasi %s"
 
-#: ../camel/camel-imapx-server.c:4126 ../camel/camel-session.c:494
-#: ../camel/providers/pop3/camel-pop3-store.c:303
-#: ../camel/providers/pop3/camel-pop3-store.c:744
-#: ../camel/providers/smtp/camel-smtp-transport.c:505
+#: ../camel/camel-imapx-server.c:4124 ../camel/camel-session.c:498
+#: ../camel/providers/pop3/camel-pop3-store.c:302
+#: ../camel/providers/pop3/camel-pop3-store.c:743
+#: ../camel/providers/smtp/camel-smtp-transport.c:499
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Tak ada dukungan bagi otentikasi %s"
 
-#: ../camel/camel-imapx-server.c:4145
+#: ../camel/camel-imapx-server.c:4143
 #: ../camel/providers/nntp/camel-nntp-store.c:409
 #: ../camel/providers/nntp/camel-nntp-store.c:595
 msgid "Cannot authenticate without a username"
 msgstr "Tak bisa mengotentikasi tanpa nama pengguna"
 
-#: ../camel/camel-imapx-server.c:4154
+#: ../camel/camel-imapx-server.c:4152
 #: ../camel/providers/nntp/camel-nntp-store.c:604
-#: ../camel/providers/pop3/camel-pop3-store.c:669
-#: ../camel/providers/pop3/camel-pop3-store.c:689
+#: ../camel/providers/pop3/camel-pop3-store.c:668
+#: ../camel/providers/pop3/camel-pop3-store.c:688
 msgid "Authentication password not available"
 msgstr "Sandi otentikasi tak tersedia"
 
-#: ../camel/camel-imapx-server.c:4367
+#: ../camel/camel-imapx-server.c:4365
 msgid "Error fetching message"
 msgstr "Galat saat mengambil pesan"
 
-#: ../camel/camel-imapx-server.c:4417 ../camel/camel-imapx-server.c:4424
+#: ../camel/camel-imapx-server.c:4415 ../camel/camel-imapx-server.c:4422
 msgid "Failed to close the tmp stream"
 msgstr "Gagal menutup stream tmp"
 
-#: ../camel/camel-imapx-server.c:4453
+#: ../camel/camel-imapx-server.c:4451
 msgid "Failed to copy the tmp file"
 msgstr "Galat menyalin berkas tmp"
 
-#: ../camel/camel-imapx-server.c:4578
+#: ../camel/camel-imapx-server.c:4576
 msgid "Error moving messages"
 msgstr "Galat saat memindah pesan"
 
-#: ../camel/camel-imapx-server.c:4582
+#: ../camel/camel-imapx-server.c:4580
 msgid "Error copying messages"
 msgstr "Galat saat menyalin pesan"
 
-#: ../camel/camel-imapx-server.c:4749
+#: ../camel/camel-imapx-server.c:4756
 msgid "Error appending message"
 msgstr "Galat saat menambahkan pesan di belakang"
 
-#: ../camel/camel-imapx-server.c:4946
+#: ../camel/camel-imapx-server.c:4953
 msgid "Error fetching message headers"
 msgstr "Galat saat mengambil tajuk pesan"
 
-#: ../camel/camel-imapx-server.c:5109
+#: ../camel/camel-imapx-server.c:5116
 msgid "Error retrieving message"
 msgstr "Galat saat mengambil pesan"
 
-#: ../camel/camel-imapx-server.c:5240 ../camel/camel-imapx-server.c:5461
+#: ../camel/camel-imapx-server.c:5247 ../camel/camel-imapx-server.c:5468
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Mengambil ringkasan informasi untuk pesan baru dalam '%s'"
 
-#: ../camel/camel-imapx-server.c:5300
+#: ../camel/camel-imapx-server.c:5307
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Memindai pesan-pesan yang berubah dalam '%s'"
 
-#: ../camel/camel-imapx-server.c:5355
+#: ../camel/camel-imapx-server.c:5362
 msgid "Error fetching new messages"
 msgstr "Galat saat mengambil pesan baru"
 
-#: ../camel/camel-imapx-server.c:5567
+#: ../camel/camel-imapx-server.c:5574
 msgid "Error while fetching messages"
 msgstr "Galat saat mengambil pesan"
 
-#: ../camel/camel-imapx-server.c:5575 ../camel/camel-imapx-server.c:5608
+#: ../camel/camel-imapx-server.c:5582 ../camel/camel-imapx-server.c:5615
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Mengambil ringkasan informasi untuk %d pesan dalam '%s'"
 
-#: ../camel/camel-imapx-server.c:5742 ../camel/camel-imapx-server.c:5772
+#: ../camel/camel-imapx-server.c:5749 ../camel/camel-imapx-server.c:5779
 msgid "Error refreshing folder"
 msgstr "Galat saat menyegarkan folder"
 
-#: ../camel/camel-imapx-server.c:5894
+#: ../camel/camel-imapx-server.c:5901
 msgid "Error expunging message"
 msgstr "Galat saat menghapus pesan-pesan lama"
 
-#: ../camel/camel-imapx-server.c:6002
+#: ../camel/camel-imapx-server.c:6009
 msgid "Error fetching folders"
 msgstr "Galat saat mengambil folder"
 
-#: ../camel/camel-imapx-server.c:6085
+#: ../camel/camel-imapx-server.c:6092
 msgid "Error subscribing to folder"
 msgstr "Galat saat berlangganan ke folder"
 
-#: ../camel/camel-imapx-server.c:6147
+#: ../camel/camel-imapx-server.c:6154
 msgid "Error creating folder"
 msgstr "Galat saat membuat folder"
 
-#: ../camel/camel-imapx-server.c:6200
+#: ../camel/camel-imapx-server.c:6207
 msgid "Error deleting folder"
 msgstr "Galat saat menghapus folder"
 
-#: ../camel/camel-imapx-server.c:6271
+#: ../camel/camel-imapx-server.c:6278
 msgid "Error renaming folder"
 msgstr "Galat saat mengubah nama folder"
 
-#: ../camel/camel-imapx-server.c:6345
+#: ../camel/camel-imapx-server.c:6352
 msgid "Error retrieving quota information"
 msgstr "Galat saat mengambil informasi kuota"
 
-#: ../camel/camel-imapx-server.c:6403
+#: ../camel/camel-imapx-server.c:6410
 msgid "Search failed"
 msgstr "Pencarian gagal"
 
-#: ../camel/camel-imapx-server.c:6465
+#: ../camel/camel-imapx-server.c:6472
 msgid "Error performing NOOP"
 msgstr "Galat saat melaksanakan NOOP"
 
-#: ../camel/camel-imapx-server.c:6573
+#: ../camel/camel-imapx-server.c:6580
 msgid "Error syncing changes"
 msgstr "Galat saat menyelaraskan perubahan"
 
-#: ../camel/camel-imapx-server.c:6873
+#: ../camel/camel-imapx-server.c:6880
 msgid "Lost connection to IMAP server"
 msgstr "Kehilangan sambungan ke server IMAP"
 
-#: ../camel/camel-imapx-server.c:7320
+#: ../camel/camel-imapx-server.c:7327
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Tidak dapat memperoleh pesan dengan ID %s: %s"
 
-#: ../camel/camel-imapx-server.c:7321
+#: ../camel/camel-imapx-server.c:7328
 msgid "No such message available."
 msgstr "Tidak ada pesan yang tersedia."
 
-#: ../camel/camel-imapx-server.c:7482 ../camel/camel-imapx-server.c:7497
+#: ../camel/camel-imapx-server.c:7489 ../camel/camel-imapx-server.c:7504
 msgid "Cannot create spool file: "
 msgstr "Tidak bisa membuat berkas spool: "
 
-#: ../camel/camel-imapx-server.c:8202
+#: ../camel/camel-imapx-server.c:8209
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP tidak mendukung kuota"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:203 ../camel/camel-imapx-store.c:1144
+#: ../camel/camel-imapx-store.c:203 ../camel/camel-imapx-store.c:1143
 #: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:316
 #: ../camel/providers/local/camel-maildir-store.c:752
 #: ../camel/providers/local/camel-maildir-store.c:758
-#: ../camel/providers/local/camel-maildir-store.c:842
+#: ../camel/providers/local/camel-maildir-store.c:841
 #: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
 msgstr "Kotak Masuk"
 
-#: ../camel/camel-imapx-store.c:478
+#: ../camel/camel-imapx-store.c:487
 #, c-format
 msgid "IMAP server %s"
 msgstr "Server IMAP %s"
 
-#: ../camel/camel-imapx-store.c:481
+#: ../camel/camel-imapx-store.c:490
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Layanan IMAP untuk %s pada %s"
 
-#: ../camel/camel-imapx-store.c:582
+#: ../camel/camel-imapx-store.c:591
 #: ../camel/providers/nntp/camel-nntp-provider.c:95
 #: ../camel/providers/pop3/camel-pop3-provider.c:83
 msgid "Password"
 msgstr "Sandi"
 
-#: ../camel/camel-imapx-store.c:584
+#: ../camel/camel-imapx-store.c:593
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Opsi ini akan menghubungi server IMAP menggunakan kata-sandi teks biasa."
 
-#: ../camel/camel-imapx-store.c:697
+#: ../camel/camel-imapx-store.c:687
 #, c-format
 msgid "No such folder %s"
 msgstr "Tidak ada folder semacam %s"
 
-#: ../camel/camel-imapx-store.c:1411
+#: ../camel/camel-imapx-store.c:1413
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Mengambil daftar folder untuk %s"
 
-#: ../camel/camel-imapx-store.c:1781
+#: ../camel/camel-imapx-store.c:1783
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Folder bernama \"%s\" invalid karena berisi karakter \"%c\""
 
-#: ../camel/camel-imapx-store.c:1792
+#: ../camel/camel-imapx-store.c:1794
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Tidak mengenal folder induk: %s"
 
-#: ../camel/camel-imapx-store.c:1802
+#: ../camel/camel-imapx-store.c:1804
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Folder induk tidak diperkenankan berisi subfolder"
@@ -2592,17 +2580,17 @@ msgstr "Kesalahan saat menulis berkas surat sementara: %s"
 msgid "Error copying mail temp file: %s"
 msgstr "Kesalahan saat menyalin berkas surat sementara: %s"
 
-#: ../camel/camel-multipart-signed.c:297
+#: ../camel/camel-multipart-signed.c:274
 #, c-format
 msgid "No content available"
 msgstr "Tidak ada isi"
 
-#: ../camel/camel-multipart-signed.c:305
+#: ../camel/camel-multipart-signed.c:282
 #, c-format
 msgid "No signature available"
 msgstr "Tidak tersedia tanda tangan"
 
-#: ../camel/camel-multipart-signed.c:689
+#: ../camel/camel-multipart-signed.c:631
 #, c-format
 msgid "parse error"
 msgstr "kesalahan mengurai"
@@ -2625,28 +2613,6 @@ msgstr "Pencarian host '%s' gagal. Periksalah apakah nama host Anda salah eja."
 #, c-format
 msgid "Host lookup '%s' failed: %s"
 msgstr "Pencarian host '%s' gagal: %s"
-
-#: ../camel/camel-net-utils.c:858
-msgid "Resolving address"
-msgstr "Menentukan alamat"
-
-#: ../camel/camel-net-utils.c:879
-msgid "Name lookup failed"
-msgstr "Pencarian nama gagal"
-
-#: ../camel/camel-net-utils.c:886
-msgid "Name lookup failed. Check your host name for spelling errors."
-msgstr "Pencarian nama gagal. Periksalah apakah nama host Anda salah eja."
-
-#: ../camel/camel-net-utils.c:890
-#, c-format
-msgid "Name lookup failed: %s"
-msgstr "Pencarian nama gagal: %s"
-
-#: ../camel/camel-network-service.c:350
-#, c-format
-msgid "Could not connect to '%s:%s': "
-msgstr "Tak bisa menyambung ke '%s:%s': "
 
 #: ../camel/camel-offline-folder.c:212
 #, c-format
@@ -2785,7 +2751,7 @@ msgstr "GSSAPI"
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Opsi ini akan menghubungi server menggunakan otentifikasi Kerberos 5."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:136
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2793,11 +2759,11 @@ msgstr ""
 "Mekanisme yang diberikan tidak didukung oleh kredensial yang tersedia, atau "
 "tidak dikenali oleh implementasi."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:141
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Parameter target_name yang diberikan salah."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:144
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2805,7 +2771,7 @@ msgstr ""
 "Parameter target_name yang diberikan berisi tipe nama yang invalid atau "
 "tidak didukung"
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:148
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2813,7 +2779,7 @@ msgstr ""
 "input_token berisi pengikatan kanal berbeda pada yang telah ditentukan via "
 "parameter input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:153
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2821,7 +2787,7 @@ msgstr ""
 "input_token berisi tanda tangan invalid, atau tanda tangan tidak bisa "
 "diverifikasi."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:157
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2829,30 +2795,30 @@ msgstr ""
 "Credential yang diberikan invalid untuk inisiasi konteks, atau Credential "
 "handle tidak merujuk credential apapun."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:162
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Handle konteks yang diberikan tidak merujuk ke konteks yang valid."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:165
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Pengecekan konsistensi pada input_token gagal."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:168
 msgid "The consistency checks performed on the credential failed."
 msgstr "Pengecekan konsistensi pada data gagal."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:171
 msgid "The referenced credentials have expired."
 msgstr "Data acuan telah kadaluwarsa."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:340
-#: ../camel/camel-sasl-gssapi.c:388 ../camel/camel-sasl-gssapi.c:405
-#: ../camel/providers/smtp/camel-smtp-transport.c:612
+#: ../camel/camel-sasl-gssapi.c:177 ../camel/camel-sasl-gssapi.c:354
+#: ../camel/camel-sasl-gssapi.c:402 ../camel/camel-sasl-gssapi.c:419
+#: ../camel/providers/smtp/camel-smtp-transport.c:606
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Balasan otentifikasi dari server tidak benar."
 
-#: ../camel/camel-sasl-gssapi.c:417
+#: ../camel/camel-sasl-gssapi.c:431
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Lapisan keamanan tidak didukung."
@@ -2919,24 +2885,16 @@ msgstr "Kompilasi ekspresi reguler gagal:%s: %s"
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "GType yang tidak valid terdaftar untuk protokol '%s'"
 
-#: ../camel/camel-session.c:509
+#: ../camel/camel-session.c:513
 #, c-format
 msgid "%s authentication failed"
 msgstr "Otentikasi %s gagal"
 
-#: ../camel/camel-session.c:645
+#: ../camel/camel-session.c:649
 msgid "Forwarding messages is not supported"
 msgstr "Meneruskan pesan tidak didukung"
 
-#. Translators: The first argument is the account type
-#. * (e.g. "IMAP"), the second is the user name, and the
-#. * third is the host name.
-#: ../camel/camel-session.c:1420
-#, c-format
-msgid "Please enter the %s password for %s on host %s."
-msgstr "Masukkan sandi %s untuk %s pada host %s."
-
-#: ../camel/camel-smime-context.c:351 ../camel/camel-smime-context.c:1074
+#: ../camel/camel-smime-context.c:351 ../camel/camel-smime-context.c:1076
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Tidak bisa menemukan sertifikat '%s'"
@@ -3070,7 +3028,7 @@ msgstr "Tidak bisa menemukan digest tandatangan"
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Penandatangan: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:858 ../camel/camel-smime-context.c:1148
+#: ../camel/camel-smime-context.c:858 ../camel/camel-smime-context.c:1150
 msgid "Cannot create encoder context"
 msgstr "Tidak bisa membuat konteks encoder"
 
@@ -3078,100 +3036,105 @@ msgstr "Tidak bisa membuat konteks encoder"
 msgid "Failed to add data to CMS encoder"
 msgstr "Gagal menambahkan data ke CMS encoder"
 
-#: ../camel/camel-smime-context.c:869 ../camel/camel-smime-context.c:1165
+#: ../camel/camel-smime-context.c:869 ../camel/camel-smime-context.c:1167
 msgid "Failed to encode data"
 msgstr "Gagal mengkodekan data"
 
-#: ../camel/camel-smime-context.c:1013 ../camel/camel-smime-context.c:1262
+#: ../camel/camel-smime-context.c:1015 ../camel/camel-smime-context.c:1264
 msgid "Decoder failed"
 msgstr "Decoder gagal"
 
-#: ../camel/camel-smime-context.c:1082
+#: ../camel/camel-smime-context.c:1084
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Tidak bisa menemukan algoritma penyandian penyimpanan umum"
 
-#: ../camel/camel-smime-context.c:1090
+#: ../camel/camel-smime-context.c:1092
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Tidak bisa mengalokasikan slot untuk penyandian kunci penyimpanan"
 
-#: ../camel/camel-smime-context.c:1101
+#: ../camel/camel-smime-context.c:1103
 msgid "Cannot create CMS Message"
 msgstr "Tidak bisa membuat CMS Message"
 
-#: ../camel/camel-smime-context.c:1107
+#: ../camel/camel-smime-context.c:1109
 msgid "Cannot create CMS Enveloped data"
 msgstr "Tidak bisa membuat data CMS Enveloped"
 
-#: ../camel/camel-smime-context.c:1113
+#: ../camel/camel-smime-context.c:1115
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Tidak bisa memasang data CMS Enveloped"
 
-#: ../camel/camel-smime-context.c:1119
+#: ../camel/camel-smime-context.c:1121
 msgid "Cannot attach CMS data object"
 msgstr "Tidak bisa membuat data CMS Enveloped"
 
-#: ../camel/camel-smime-context.c:1128
+#: ../camel/camel-smime-context.c:1130
 msgid "Cannot create CMS Recipient information"
 msgstr "Tidak bisa membuat informasi CMS Recipient"
 
-#: ../camel/camel-smime-context.c:1133
+#: ../camel/camel-smime-context.c:1135
 msgid "Cannot add CMS Recipient information"
 msgstr "Tidak bisa menambah informasi CMS Recipient"
 
-#: ../camel/camel-smime-context.c:1159
+#: ../camel/camel-smime-context.c:1161
 msgid "Failed to add data to encoder"
 msgstr "Gagal menambahkan data ke encoder"
 
-#: ../camel/camel-smime-context.c:1269
+#: ../camel/camel-smime-context.c:1271
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Decrypt: Tidak ditemukan konten terenkripsi"
 
-#: ../camel/camel-store.c:1999
+#: ../camel/camel-store.c:1928
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Tidak dapat membuat folder '%s': sudah ada"
 
-#: ../camel/camel-store.c:2042
+#: ../camel/camel-store.c:1971
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Membuka folder  '%s'"
 
-#: ../camel/camel-store.c:2231
+#: ../camel/camel-store.c:2160
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Memindai folder di '%s'"
 
-#: ../camel/camel-store.c:2259 ../camel/camel-store.c:2304
+#: ../camel/camel-store.c:2188 ../camel/camel-store.c:2233
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Tempat Sampah"
 
-#: ../camel/camel-store.c:2273 ../camel/camel-store.c:2321
+#: ../camel/camel-store.c:2202 ../camel/camel-store.c:2250
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Sampah"
 
-#: ../camel/camel-store.c:2774
+#: ../camel/camel-store.c:2703
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Tidak bisa membuat folder: %s: folder sudah ada"
 
-#: ../camel/camel-store.c:2788
+#: ../camel/camel-store.c:2717
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Membuat folder '%s'"
 
-#: ../camel/camel-store.c:2906 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2835 ../camel/camel-vee-store.c:416
 #: ../camel/providers/local/camel-maildir-store.c:315
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Tidak bisa menghapus folder: %s: Operasi invalid"
 
-#: ../camel/camel-store.c:3049 ../camel/camel-vee-store.c:466
-#: ../camel/providers/local/camel-maildir-store.c:841
+#: ../camel/camel-store.c:2978 ../camel/camel-vee-store.c:466
+#: ../camel/providers/local/camel-maildir-store.c:840
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Tidak bisa menamai-ulang folder: %s: Operasi invalid"
+
+#: ../camel/camel-stream.c:283 ../camel/camel-stream.c:334
+#, c-format
+msgid "Stream type '%s' is not seekable"
+msgstr "Stream bertipe '%s' tak dapat di-seek"
 
 #: ../camel/camel-stream-filter.c:334
 msgid "Only reset to beginning is supported with CamelStreamFilter"
@@ -3191,125 +3154,42 @@ msgstr "Koneksi telah dibatalkan"
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Tidak bisa terhubung dengan perintah \"%s\": %s"
 
-#: ../camel/camel-subscribable.c:395
+#: ../camel/camel-subscribable.c:389
 #, c-format
 msgid "Subscribing to folder '%s'"
 msgstr "Berlangganan folder '%s'"
 
-#: ../camel/camel-subscribable.c:527
+#: ../camel/camel-subscribable.c:517
 #, c-format
 msgid "Unsubscribing from folder '%s'"
 msgstr "Berhenti berlangganan dari folder  '%s'"
-
-#: ../camel/camel-tcp-stream-raw.c:310
-#, c-format
-msgid "NSPR error code %d"
-msgstr "Kode galat NSPR %d"
-
-#: ../camel/camel-tcp-stream-raw.c:649 ../camel/camel-tcp-stream-raw.c:662
-#, c-format
-msgid "The proxy host does not support SOCKS4"
-msgstr "Host proksi tidak mendukung SOCKS4"
-
-#: ../camel/camel-tcp-stream-raw.c:675
-#, c-format
-msgid "The proxy host denied our request: code %d"
-msgstr "Host proksi menolak permintaan kita: kode %d"
-
-#: ../camel/camel-tcp-stream-raw.c:773 ../camel/camel-tcp-stream-raw.c:781
-#, c-format
-msgid "The proxy host does not support SOCKS5"
-msgstr "Host proksi tidak mendukung SOCKS5"
-
-#: ../camel/camel-tcp-stream-raw.c:789
-#, c-format
-msgid "Could not find a suitable authentication type: code 0x%x"
-msgstr "Tidak menemukan jenis otentitas yang cocok: kode 0x%x"
-
-#: ../camel/camel-tcp-stream-raw.c:801
-msgid "General SOCKS server failure"
-msgstr "Kegagalan umum server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:802
-msgid "SOCKS server's rules do not allow connection"
-msgstr "Aturan server SOCKS tak mengijinkan koneksi"
-
-#: ../camel/camel-tcp-stream-raw.c:803
-msgid "Network is unreachable from SOCKS server"
-msgstr "Jaringan tak bisa dicapai dari server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:804
-msgid "Host is unreachable from SOCKS server"
-msgstr "Host tak bisa dicapai dari server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:805
-msgid "Connection refused"
-msgstr "Koneksi ditolak"
-
-#: ../camel/camel-tcp-stream-raw.c:806
-msgid "Time-to-live expired"
-msgstr "Time-to-live kadaluarsa"
-
-#: ../camel/camel-tcp-stream-raw.c:807
-msgid "Command not supported by SOCKS server"
-msgstr "Perintah tidak didukung oleh server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:808
-msgid "Address type not supported by SOCKS server"
-msgstr "Jenis alamat tidak didukung oleh server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:809
-msgid "Unknown error from SOCKS server"
-msgstr "Galat tak dikenal dari server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:842
-#, c-format
-msgid "Got unknown address type from SOCKS server"
-msgstr "Mendapat jenis alamat tak dikenal dari server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:860
-#, c-format
-msgid "Incomplete reply from SOCKS server"
-msgstr "Balasan tidak lengkap dari server SOCKS"
-
-#: ../camel/camel-tcp-stream-raw.c:880
-#, c-format
-msgid "Hostname is too long (maximum is 255 characters)"
-msgstr "Nama host terlalu panjang (maksimal 255 karakter)"
-
-#. SOCKS5
-#. reserved - must be 0
-#: ../camel/camel-tcp-stream-raw.c:912 ../camel/camel-tcp-stream-raw.c:922
-#, c-format
-msgid "Invalid reply from proxy server"
-msgstr "Balasan tidak sah dari server proksi"
 
 #: ../camel/camel-url.c:331
 #, c-format
 msgid "Could not parse URL '%s'"
 msgstr "Tidak dapat mengurai URL '%s'"
 
-#: ../camel/camel-vee-folder.c:494
+#: ../camel/camel-vee-folder.c:493
 #, c-format
 msgid "Updating folder '%s'"
 msgstr "Memutakhirkan folder '%s'"
 
-#: ../camel/camel-vee-folder.c:855 ../camel/camel-vee-folder.c:965
+#: ../camel/camel-vee-folder.c:853 ../camel/camel-vee-folder.c:963
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Tidak bisa menyalin atau memindah pesan ke Folder Virtual"
 
-#: ../camel/camel-vee-folder.c:888
+#: ../camel/camel-vee-folder.c:886
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Tidak ada pesan seperti %s dalam %s"
 
-#: ../camel/camel-vee-folder.c:941
+#: ../camel/camel-vee-folder.c:939
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Galat ketika menyimpan '%s': "
 
-#: ../camel/camel-vee-folder.c:1171
+#: ../camel/camel-vee-folder.c:1169
 msgid "Automatically _update on change in source folders"
 msgstr "Secara otomatis m_utakhirkan pada perubahan di folder sumber"
 
@@ -3329,7 +3209,7 @@ msgstr "Tidak bisa menghapus folder: %s: Tidak ada folder semacam itu"
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Tidak bisa menamai-ulang folder: %s: Tidak ada folder semacam itu"
 
-#: ../camel/camel-vee-store.c:538
+#: ../camel/camel-vee-store.c:537
 msgid "Enable _Unmatched folder"
 msgstr "Aktifkan folder yang tak dicocokkan"
 
@@ -3566,11 +3446,6 @@ msgstr "Tidak dapat menghapus berkas meta folder '%s': %s"
 msgid "Could not rename '%s': %s"
 msgstr "Tidak bisa menamai-ulang  '%s': %s"
 
-#: ../camel/providers/local/camel-local-summary.c:567
-#, c-format
-msgid "Unable to add message to summary: unknown reason"
-msgstr "Tidak bisa menambahkan pesan ke ringkasan: alasan tak dikenal"
-
 #: ../camel/providers/local/camel-maildir-folder.c:100
 #: ../camel/providers/local/camel-maildir-folder.c:335
 #: ../camel/providers/local/camel-mbox-folder.c:117
@@ -3599,7 +3474,7 @@ msgid "Cannot transfer message to destination folder: %s"
 msgstr "Tidak dapat mengirim pesan menuju folder tujuan: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:125
-#: ../camel/providers/local/camel-maildir-store.c:850
+#: ../camel/providers/local/camel-maildir-store.c:849
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Folder %s sudah ada"
@@ -3650,7 +3525,7 @@ msgid "not a maildir directory"
 msgstr "bukan direktori maildir"
 
 #: ../camel/providers/local/camel-maildir-store.c:630
-#: ../camel/providers/local/camel-maildir-store.c:1065
+#: ../camel/providers/local/camel-maildir-store.c:1063
 #: ../camel/providers/local/camel-spool-store.c:212
 #: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
@@ -3658,23 +3533,23 @@ msgid "Could not scan folder '%s': %s"
 msgstr "Tidak dapat memindai folder '%s': %s"
 
 #: ../camel/providers/local/camel-maildir-summary.c:458
-#: ../camel/providers/local/camel-maildir-summary.c:591
+#: ../camel/providers/local/camel-maildir-summary.c:598
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Tidak bisa membuka lokasi direktori maildir: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:582
+#: ../camel/providers/local/camel-maildir-summary.c:589
 msgid "Checking folder consistency"
 msgstr "Mengecek konsistensi folder"
 
-#: ../camel/providers/local/camel-maildir-summary.c:675
+#: ../camel/providers/local/camel-maildir-summary.c:682
 msgid "Checking for new messages"
 msgstr "Mengecek pesan baru"
 
-#: ../camel/providers/local/camel-maildir-summary.c:770
+#: ../camel/providers/local/camel-maildir-summary.c:777
 #: ../camel/providers/local/camel-mbox-summary.c:450
-#: ../camel/providers/local/camel-mbox-summary.c:682
-#: ../camel/providers/local/camel-mbox-summary.c:830
+#: ../camel/providers/local/camel-mbox-summary.c:665
+#: ../camel/providers/local/camel-mbox-summary.c:813
 #: ../camel/providers/local/camel-spool-summary.c:141
 msgid "Storing folder"
 msgstr "Menyimpan folder"
@@ -3771,53 +3646,48 @@ msgstr "Tidak bisa menamai-ulang `%s' menjadi %s: %s"
 msgid "Could not open folder: %s: %s"
 msgstr "Tidak bisa membuka folder: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:522
-#, c-format
-msgid "Fatal mail parser error near position %s in folder %s"
-msgstr "Galat fatal pengurai surat dekat posisi %s dalam folder %s"
-
-#: ../camel/providers/local/camel-mbox-summary.c:607
+#: ../camel/providers/local/camel-mbox-summary.c:590
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Tidak bisa mengecek folder: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:695
-#: ../camel/providers/local/camel-mbox-summary.c:839
+#: ../camel/providers/local/camel-mbox-summary.c:678
+#: ../camel/providers/local/camel-mbox-summary.c:822
 #: ../camel/providers/local/camel-spool-summary.c:148
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Tidak bisa membuka berkas: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:709
+#: ../camel/providers/local/camel-mbox-summary.c:692
 #: ../camel/providers/local/camel-spool-summary.c:163
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Tidak bisa membuka mailbox sementara: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:726
-#: ../camel/providers/local/camel-mbox-summary.c:956
+#: ../camel/providers/local/camel-mbox-summary.c:709
+#: ../camel/providers/local/camel-mbox-summary.c:939
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Tidak bisa menutup folder sumber `%s': %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:739
+#: ../camel/providers/local/camel-mbox-summary.c:722
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Tidak dapat menutup folder temporer: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:758
+#: ../camel/providers/local/camel-mbox-summary.c:741
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Tidak bisa menamai-ulang folder: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:853
-#: ../camel/providers/local/camel-mbox-summary.c:1122
+#: ../camel/providers/local/camel-mbox-summary.c:836
+#: ../camel/providers/local/camel-mbox-summary.c:1105
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Tidak bisa menyimpan folder: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:892
-#: ../camel/providers/local/camel-mbox-summary.c:1162
+#: ../camel/providers/local/camel-mbox-summary.c:875
+#: ../camel/providers/local/camel-mbox-summary.c:1145
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
@@ -3826,25 +3696,25 @@ msgstr ""
 "Berkas MBOX rusak, silakan diperbaiki. (Berharap baris From, tapi tak "
 "memperolehnya.)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:902
-#: ../camel/providers/local/camel-mbox-summary.c:1174
+#: ../camel/providers/local/camel-mbox-summary.c:885
+#: ../camel/providers/local/camel-mbox-summary.c:1157
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Ringkasan dan folder tidak cocok, bahkan setelah sinkronisasi"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1067
+#: ../camel/providers/local/camel-mbox-summary.c:1050
 #: ../camel/providers/local/camel-spool-summary.c:356
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Kesalahan tidak dikenal: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1232
-#: ../camel/providers/local/camel-mbox-summary.c:1262
+#: ../camel/providers/local/camel-mbox-summary.c:1215
+#: ../camel/providers/local/camel-mbox-summary.c:1245
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Gagal menulis ke mailbox sementara: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1251
+#: ../camel/providers/local/camel-mbox-summary.c:1234
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Gagal menulis ke mailbox sementara: %s: %s"
@@ -3864,7 +3734,7 @@ msgstr "Tidak dapat membuat folder '%s': %s"
 msgid "Cannot get folder '%s': not a directory."
 msgstr "Tidak bisa mengambil folder '%s': bukan direktori."
 
-#: ../camel/providers/local/camel-mh-summary.c:227
+#: ../camel/providers/local/camel-mh-summary.c:233
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Tidak bisa membuka lokasi direktori MH: %s: %s"
@@ -3893,12 +3763,12 @@ msgstr "Spool pohon folder %s"
 msgid "Invalid spool"
 msgstr "Spool tak valid"
 
-#: ../camel/providers/local/camel-spool-store.c:492
+#: ../camel/providers/local/camel-spool-store.c:481
 #, c-format
 msgid "Folder '%s/%s' does not exist."
 msgstr "Folder '%s/%s' tidak ada."
 
-#: ../camel/providers/local/camel-spool-store.c:505
+#: ../camel/providers/local/camel-spool-store.c:494
 #, c-format
 msgid ""
 "Could not open folder '%s':\n"
@@ -3907,12 +3777,12 @@ msgstr ""
 "Tidak dapat membuka folder '%s':\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:511
+#: ../camel/providers/local/camel-spool-store.c:500
 #, c-format
 msgid "Folder '%s' does not exist."
 msgstr "Folder '%s' tidak ada."
 
-#: ../camel/providers/local/camel-spool-store.c:519
+#: ../camel/providers/local/camel-spool-store.c:508
 #, c-format
 msgid ""
 "Could not create folder '%s':\n"
@@ -3921,22 +3791,22 @@ msgstr ""
 "Tidak dapat membuat folder '%s':\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:532
+#: ../camel/providers/local/camel-spool-store.c:521
 #, c-format
 msgid "'%s' is not a mailbox file."
 msgstr "`%s' bukan berkas mailbox."
 
-#: ../camel/providers/local/camel-spool-store.c:596
+#: ../camel/providers/local/camel-spool-store.c:585
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Penyimpanan tidak mendukung INBOX"
 
-#: ../camel/providers/local/camel-spool-store.c:615
+#: ../camel/providers/local/camel-spool-store.c:604
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Folder spool tidak bisa dihapus"
 
-#: ../camel/providers/local/camel-spool-store.c:630
+#: ../camel/providers/local/camel-spool-store.c:619
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Folder spool tidak bisa dinamai-ulang"
@@ -4122,27 +3992,27 @@ msgstr ""
 "\n"
 "Tidak ada newsgroup semacam itu!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2099
+#: ../camel/providers/nntp/camel-nntp-store.c:2098
 msgid "NNTP Command failed: "
 msgstr "Perintah NNTP gagal: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2196
+#: ../camel/providers/nntp/camel-nntp-store.c:2195
 #, c-format
 msgid "Not connected."
 msgstr "Tidak terhubung."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2290
+#: ../camel/providers/nntp/camel-nntp-store.c:2289
 #, c-format
 msgid "No such folder: %s"
 msgstr "Tidak ada folder semacam ini: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:200
+#: ../camel/providers/nntp/camel-nntp-summary.c:199
 #: ../camel/providers/nntp/camel-nntp-summary.c:339
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Memindai pesan-pesan baru"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:222
+#: ../camel/providers/nntp/camel-nntp-summary.c:221
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Respon server tak diharapkan dari xover: %s"
@@ -4152,7 +4022,7 @@ msgstr "Respon server tak diharapkan dari xover: %s"
 msgid "Unexpected server response from head: %s"
 msgstr "Respon server tak diharapkan dari head: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:407
+#: ../camel/providers/nntp/camel-nntp-summary.c:408
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Operasi gagal:  %s"
@@ -4275,32 +4145,32 @@ msgstr "STLS tidak didukung oleh server"
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "Gagal menyambung ke server POP %s dalam mode aman%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:211
+#: ../camel/providers/pop3/camel-pop3-store.c:210
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr "Gagal menyambung ke server POP %s dalam moda aman: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:351
+#: ../camel/providers/pop3/camel-pop3-store.c:350
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Tidak bisa login ke server POP %s: SASL Protocol salah"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:373
+#: ../camel/providers/pop3/camel-pop3-store.c:372
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Gagal mengotentikasi pada server POP %s: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:481
+#: ../camel/providers/pop3/camel-pop3-store.c:480
 #, c-format
 msgid "POP3 server %s"
 msgstr "Server POP3 %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:484
+#: ../camel/providers/pop3/camel-pop3-store.c:483
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "Server POP3 untuk %s pada %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:703
+#: ../camel/providers/pop3/camel-pop3-store.c:702
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4309,7 +4179,7 @@ msgstr ""
 "Tidak dapat menyambung ke server POP %s\tMenerima ID APOP yang tidak valid. "
 "Diduga ada serangan pemalsuan. Silakan kontak admin Anda."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:755
+#: ../camel/providers/pop3/camel-pop3-store.c:754
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4320,7 +4190,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:770
+#: ../camel/providers/pop3/camel-pop3-store.c:769
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4329,12 +4199,12 @@ msgstr ""
 "Tidak bisa menyambung ke server POP %s.\n"
 "Galat saat mengirim nama pengguna%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:852
+#: ../camel/providers/pop3/camel-pop3-store.c:851
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Tidak ada folder '%s'."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:869
+#: ../camel/providers/pop3/camel-pop3-store.c:868
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "Penyimpanan POP3 tak punya hirarki folder"
@@ -4430,218 +4300,218 @@ msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 "Mengirimkan surat dengan cara menguhubungi server surel menggunakan SMTP."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:158
-#: ../camel/providers/smtp/camel-smtp-transport.c:166
+#: ../camel/providers/smtp/camel-smtp-transport.c:161
+#: ../camel/providers/smtp/camel-smtp-transport.c:169
 msgid "Welcome response error: "
 msgstr "Respon sambutan galat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:202
+#: ../camel/providers/smtp/camel-smtp-transport.c:205
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Gagal konek ke server SMTP %s dalam mode aman: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:212
-#: ../camel/providers/smtp/camel-smtp-transport.c:226
-#: ../camel/providers/smtp/camel-smtp-transport.c:234
+#: ../camel/providers/smtp/camel-smtp-transport.c:215
+#: ../camel/providers/smtp/camel-smtp-transport.c:229
+#: ../camel/providers/smtp/camel-smtp-transport.c:237
 msgid "STARTTLS command failed: "
 msgstr "Perintah STARTTLS gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:246
+#: ../camel/providers/smtp/camel-smtp-transport.c:250
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Gagal menyambung ke server SMTP %s dalam mode aman: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:338
+#: ../camel/providers/smtp/camel-smtp-transport.c:341
 #, c-format
 msgid "SMTP server %s"
 msgstr "Server SMTP %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:341
+#: ../camel/providers/smtp/camel-smtp-transport.c:344
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Penyerahan surat SMTP via %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:415
+#: ../camel/providers/smtp/camel-smtp-transport.c:418
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "Server SMTP %s tidak mendukung otentikasi %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:496
+#: ../camel/providers/smtp/camel-smtp-transport.c:490
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Tak ada mekanisme SASL yang dinyatakan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:526
-#: ../camel/providers/smtp/camel-smtp-transport.c:537
-#: ../camel/providers/smtp/camel-smtp-transport.c:550
+#: ../camel/providers/smtp/camel-smtp-transport.c:520
+#: ../camel/providers/smtp/camel-smtp-transport.c:531
+#: ../camel/providers/smtp/camel-smtp-transport.c:544
 msgid "AUTH command failed: "
 msgstr "Perintah AUTH gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:691
+#: ../camel/providers/smtp/camel-smtp-transport.c:685
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Tidak bisa mengirim pesan: layanan tidak terhubung."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:698
+#: ../camel/providers/smtp/camel-smtp-transport.c:692
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Tidak bisa mengirim pesan:  alamat pengirim salah."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:702
+#: ../camel/providers/smtp/camel-smtp-transport.c:696
 msgid "Sending message"
 msgstr "Mengirim pesan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:727
+#: ../camel/providers/smtp/camel-smtp-transport.c:721
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Tidak bisa mengirim pesan: penerima tidak disebutkan."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:740
+#: ../camel/providers/smtp/camel-smtp-transport.c:734
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Tidak bisa mengirim pesan: satu atau beberapa penerima salah"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:861
+#: ../camel/providers/smtp/camel-smtp-transport.c:855
 msgid "Syntax error, command unrecognized"
 msgstr "Salah sintaks, perintah tak dikenal"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:863
+#: ../camel/providers/smtp/camel-smtp-transport.c:857
 msgid "Syntax error in parameters or arguments"
 msgstr "Salah sintaks dalam parameter atau argumen"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:865
+#: ../camel/providers/smtp/camel-smtp-transport.c:859
 msgid "Command not implemented"
 msgstr "Perintah tidak diimplementasikan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:867
+#: ../camel/providers/smtp/camel-smtp-transport.c:861
 msgid "Command parameter not implemented"
 msgstr "Parameter perintah tidak diimplementasikan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:869
+#: ../camel/providers/smtp/camel-smtp-transport.c:863
 msgid "System status, or system help reply"
 msgstr "Status sistem, atau jawaban bantuan sistem"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:871
+#: ../camel/providers/smtp/camel-smtp-transport.c:865
 msgid "Help message"
 msgstr "Pesan bantuan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:873
+#: ../camel/providers/smtp/camel-smtp-transport.c:867
 msgid "Service ready"
 msgstr "Layanan siap"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:875
+#: ../camel/providers/smtp/camel-smtp-transport.c:869
 msgid "Service closing transmission channel"
 msgstr "Layanan kanal transmisi sedang ditutup"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:877
+#: ../camel/providers/smtp/camel-smtp-transport.c:871
 msgid "Service not available, closing transmission channel"
 msgstr "Layanan tidak tersedia, kanal transmisi sedang ditutup"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:879
+#: ../camel/providers/smtp/camel-smtp-transport.c:873
 msgid "Requested mail action okay, completed"
 msgstr "Aksi surat yang diminta berhasil, selesai"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:881
+#: ../camel/providers/smtp/camel-smtp-transport.c:875
 msgid "User not local; will forward to <forward-path>"
 msgstr "Pengguna tidak lokal; akan diteruskan ke <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:883
+#: ../camel/providers/smtp/camel-smtp-transport.c:877
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Tindakan yang diminta tidak dapat dipenuhi: kotak surat tidak tersedia"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:885
+#: ../camel/providers/smtp/camel-smtp-transport.c:879
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Tindakan yang diminta tidak dapat dipenuhi: kotak surat tidak tersedia"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:887
+#: ../camel/providers/smtp/camel-smtp-transport.c:881
 msgid "Requested action aborted: error in processing"
 msgstr "Tindakan yang diminta dibatalkan: kesalahan dalam pemrosesan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:889
+#: ../camel/providers/smtp/camel-smtp-transport.c:883
 msgid "User not local; please try <forward-path>"
 msgstr "Pengguna tidak berada pada sistem lokal; harap coba <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:891
+#: ../camel/providers/smtp/camel-smtp-transport.c:885
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Permintaan tidak dipenuhi: penyimpanan sistem tidak cukup"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:893
+#: ../camel/providers/smtp/camel-smtp-transport.c:887
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Permintaan surat dibatalkan: melebihi alokasi penyimpanan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:895
+#: ../camel/providers/smtp/camel-smtp-transport.c:889
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Permintaan tidak dipenuhi: nama kotak surat tidak diperkenankan"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:897
+#: ../camel/providers/smtp/camel-smtp-transport.c:891
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Awali input surat ; akhiri dengan <CRLF>.<CRLF>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:899
+#: ../camel/providers/smtp/camel-smtp-transport.c:893
 msgid "Transaction failed"
 msgstr "Transaksi gagal"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:903
+#: ../camel/providers/smtp/camel-smtp-transport.c:897
 msgid "A password transition is needed"
 msgstr "Diperlukan transisi kata-sandi"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:905
+#: ../camel/providers/smtp/camel-smtp-transport.c:899
 msgid "Authentication mechanism is too weak"
 msgstr "Mekanisme otentifikasi terlalu lemah"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:907
+#: ../camel/providers/smtp/camel-smtp-transport.c:901
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Penyandian diperlukan untuk mekanisme otentifikasi yang diminta"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:909
+#: ../camel/providers/smtp/camel-smtp-transport.c:903
 msgid "Temporary authentication failure"
 msgstr "Otentikasi temporer gagal"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1166
+#: ../camel/providers/smtp/camel-smtp-transport.c:1191
 msgid "SMTP Greeting"
 msgstr "Sambutan SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1193
-#: ../camel/providers/smtp/camel-smtp-transport.c:1207
+#: ../camel/providers/smtp/camel-smtp-transport.c:1201
 #: ../camel/providers/smtp/camel-smtp-transport.c:1215
+#: ../camel/providers/smtp/camel-smtp-transport.c:1223
 msgid "HELO command failed: "
 msgstr "Perintah HELO gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1290
-#: ../camel/providers/smtp/camel-smtp-transport.c:1305
-#: ../camel/providers/smtp/camel-smtp-transport.c:1315
+#: ../camel/providers/smtp/camel-smtp-transport.c:1298
+#: ../camel/providers/smtp/camel-smtp-transport.c:1313
+#: ../camel/providers/smtp/camel-smtp-transport.c:1323
 msgid "MAIL FROM command failed: "
 msgstr "Perintah MAIL FROM gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1342
+#: ../camel/providers/smtp/camel-smtp-transport.c:1350
 msgid "RCPT TO command failed: "
 msgstr "Perintah RCPT TO gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1359
-#: ../camel/providers/smtp/camel-smtp-transport.c:1369
+#: ../camel/providers/smtp/camel-smtp-transport.c:1367
+#: ../camel/providers/smtp/camel-smtp-transport.c:1377
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1412
-#: ../camel/providers/smtp/camel-smtp-transport.c:1423
-#: ../camel/providers/smtp/camel-smtp-transport.c:1434
-#: ../camel/providers/smtp/camel-smtp-transport.c:1493
-#: ../camel/providers/smtp/camel-smtp-transport.c:1513
-#: ../camel/providers/smtp/camel-smtp-transport.c:1527
-#: ../camel/providers/smtp/camel-smtp-transport.c:1536
+#: ../camel/providers/smtp/camel-smtp-transport.c:1420
+#: ../camel/providers/smtp/camel-smtp-transport.c:1431
+#: ../camel/providers/smtp/camel-smtp-transport.c:1442
+#: ../camel/providers/smtp/camel-smtp-transport.c:1501
+#: ../camel/providers/smtp/camel-smtp-transport.c:1521
+#: ../camel/providers/smtp/camel-smtp-transport.c:1535
+#: ../camel/providers/smtp/camel-smtp-transport.c:1544
 msgid "DATA command failed: "
 msgstr "Perintah DATA gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1561
-#: ../camel/providers/smtp/camel-smtp-transport.c:1576
-#: ../camel/providers/smtp/camel-smtp-transport.c:1585
+#: ../camel/providers/smtp/camel-smtp-transport.c:1569
+#: ../camel/providers/smtp/camel-smtp-transport.c:1584
+#: ../camel/providers/smtp/camel-smtp-transport.c:1593
 msgid "RSET command failed: "
 msgstr "Perintah RSET gagal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1610
-#: ../camel/providers/smtp/camel-smtp-transport.c:1624
-#: ../camel/providers/smtp/camel-smtp-transport.c:1631
+#: ../camel/providers/smtp/camel-smtp-transport.c:1618
+#: ../camel/providers/smtp/camel-smtp-transport.c:1632
+#: ../camel/providers/smtp/camel-smtp-transport.c:1639
 msgid "QUIT command failed: "
 msgstr "Perintah QUIT gagal: "
 
@@ -4709,7 +4579,7 @@ msgstr "Tambahkan sandi ini ke ring kunci Anda"
 msgid "Password was incorrect"
 msgstr "Sandi salah"
 
-#: ../libebackend/e-backend.c:428
+#: ../libebackend/e-backend.c:409
 #, c-format
 msgid "%s does not support authentication"
 msgstr "%s tidak mendukung otentikasi"
@@ -4994,7 +4864,7 @@ msgstr "Tanpa nama"
 msgid "Signature script must be a local file"
 msgstr "Skrip tanda tangan mesti berupa berkas lokal"
 
-#: ../libedataserver/e-source-webdav.c:1553
+#: ../libedataserver/e-source-webdav.c:1552
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
@@ -5003,7 +4873,7 @@ msgstr ""
 "Sertifikat SSL bagi host '%s', yang dipakai oleh buku alamat '%s', tak "
 "terpercaya. Apakah Anda hendak menerimanya?"
 
-#: ../libedataserver/e-source-webdav.c:1562
+#: ../libedataserver/e-source-webdav.c:1561
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
@@ -5012,7 +4882,7 @@ msgstr ""
 "Sertifikat SSL bagi host '%s', yang dipakai oleh kalender '%s', tak "
 "terpercaya. Apakah Anda hendak menerimanya?"
 
-#: ../libedataserver/e-source-webdav.c:1571
+#: ../libedataserver/e-source-webdav.c:1570
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
@@ -5021,7 +4891,7 @@ msgstr ""
 "Sertifikat SSL bagi host '%s', yang dipakai oleh daftar memo '%s', tak "
 "terpercaya. Apakah Anda hendak menerimanya?"
 
-#: ../libedataserver/e-source-webdav.c:1580
+#: ../libedataserver/e-source-webdav.c:1579
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5323,7 +5193,7 @@ msgstr "Gagal menemukan elemen Akun"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Gagal menemukan ASUrl dan OABUrl dalam respon autodiscover"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1238
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1241
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5332,7 +5202,7 @@ msgstr ""
 "Tak bisa temukan akun yang bersangkutan di layanan org.gnome.OnlineAccount "
 "tempat memperoleh suatu token akses bagi '%s'"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1265
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1268
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Gagal mendapat suatu token akses bagi '%s'"
@@ -5349,299 +5219,11 @@ msgstr "Kalender"
 msgid "Contacts"
 msgstr "Kontak"
 
-#: ../modules/trust-prompt/certificate-viewer.c:292
-msgid "Not part of certificate"
-msgstr "Bukan bagian dari sertifikat"
-
-#: ../modules/trust-prompt/certificate-viewer.c:575
-msgid "_Close"
-msgstr "_Tutup"
-
-#: ../modules/trust-prompt/certificate-viewer.c:600
-msgid "This certificate has been verified for the following uses:"
-msgstr "Sertifikat ini telah diverifikasi bagi pengguna berikut:"
-
-#: ../modules/trust-prompt/certificate-viewer.c:604
-#: ../modules/trust-prompt/e-asn1-object.c:387
-msgid "SSL Client Certificate"
-msgstr "Sertifikat Klien SSL"
-
-#: ../modules/trust-prompt/certificate-viewer.c:609
-#: ../modules/trust-prompt/e-asn1-object.c:391
-msgid "SSL Server Certificate"
-msgstr "Sertifikat Server SSL"
-
-#: ../modules/trust-prompt/certificate-viewer.c:614
-msgid "Email Signer Certificate"
-msgstr "Sertifikat Penandatangan Surel"
-
-#: ../modules/trust-prompt/certificate-viewer.c:619
-msgid "Email Recipient Certificate"
-msgstr "Sertifikat Penerima Surel"
-
-#: ../modules/trust-prompt/certificate-viewer.c:634
-msgid "Issued To"
-msgstr "Diterbitkan Untuk"
-
-#: ../modules/trust-prompt/certificate-viewer.c:635
-#: ../modules/trust-prompt/certificate-viewer.c:641
-msgid "Common Name (CN)"
-msgstr "Nama Umum (Common Name, CN)"
-
-#: ../modules/trust-prompt/certificate-viewer.c:636
-#: ../modules/trust-prompt/certificate-viewer.c:642
-msgid "Organization (O)"
-msgstr "Organisasi (O)"
-
-#: ../modules/trust-prompt/certificate-viewer.c:637
-#: ../modules/trust-prompt/certificate-viewer.c:643
-msgid "Organizational Unit (OU)"
-msgstr "Unit Organisasi (OU)"
-
-#: ../modules/trust-prompt/certificate-viewer.c:638
-#: ../modules/trust-prompt/e-asn1-object.c:134
-msgid "Serial Number"
-msgstr "Nomor Seri"
-
-#: ../modules/trust-prompt/certificate-viewer.c:640
-msgid "Issued By"
-msgstr "Diterbitkan Oleh"
-
-#: ../modules/trust-prompt/certificate-viewer.c:645
-msgid "Validity"
-msgstr "Validitas"
-
-#: ../modules/trust-prompt/certificate-viewer.c:646
-msgid "Issued On"
-msgstr "Diterbitkan Pada"
-
-#: ../modules/trust-prompt/certificate-viewer.c:647
-msgid "Expires On"
-msgstr "Kedaluarsa Pada"
-
-#: ../modules/trust-prompt/certificate-viewer.c:649
-msgid "Fingerprints"
-msgstr "Sidik Jari"
-
-#: ../modules/trust-prompt/certificate-viewer.c:650
-msgid "SHA1 Fingerprint"
-msgstr "Sidik Jari SHA1"
-
-#: ../modules/trust-prompt/certificate-viewer.c:651
-msgid "MD5 Fingerprint"
-msgstr "Sidik Jari MD5"
-
-#: ../modules/trust-prompt/certificate-viewer.c:653
-msgid "General"
-msgstr "Umum"
-
-#: ../modules/trust-prompt/certificate-viewer.c:672
-msgid "Certificate Hierarchy"
-msgstr "Hirarki Sertifikat"
-
-#: ../modules/trust-prompt/certificate-viewer.c:676
-msgid "Certificate Fields"
-msgstr "Ruas Sertifikat"
-
-#: ../modules/trust-prompt/certificate-viewer.c:680
-msgid "Field Value"
-msgstr "Nilai Ruas"
-
-#: ../modules/trust-prompt/certificate-viewer.c:682
-msgid "Details"
-msgstr "Rincian"
-
-#: ../modules/trust-prompt/e-asn1-object.c:95
-msgid "Version"
-msgstr "Versi"
-
-#: ../modules/trust-prompt/e-asn1-object.c:110
-msgid "Version 1"
-msgstr "Versi 1"
-
-#: ../modules/trust-prompt/e-asn1-object.c:113
-msgid "Version 2"
-msgstr "Versi 2"
-
-#: ../modules/trust-prompt/e-asn1-object.c:116
-msgid "Version 3"
-msgstr "Versi 3"
-
-#: ../modules/trust-prompt/e-asn1-object.c:192
-msgid "PKCS #1 MD2 With RSA Encryption"
-msgstr "PKCS #1 MD2 Dengan Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:195
-msgid "PKCS #1 MD5 With RSA Encryption"
-msgstr "PKCS #1 MD5 Dengan Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:198
-msgid "PKCS #1 SHA-1 With RSA Encryption"
-msgstr "PKCS #1 SHA-1 Dengan Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:201
-msgid "PKCS #1 SHA-256 With RSA Encryption"
-msgstr "PKCS #1 SHA-256 Dengan Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:204
-msgid "PKCS #1 SHA-384 With RSA Encryption"
-msgstr "PKCS #1 SHA-384 Dengan Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:207
-msgid "PKCS #1 SHA-512 With RSA Encryption"
-msgstr "PKCS #1 SHA-512 Dengan Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:234
-msgid "PKCS #1 RSA Encryption"
-msgstr "PKCS #1 Enkripsi RSA"
-
-#: ../modules/trust-prompt/e-asn1-object.c:237
-msgid "Certificate Key Usage"
-msgstr "Penggunaan Kunci Sertifikat"
-
-#: ../modules/trust-prompt/e-asn1-object.c:240
-msgid "Netscape Certificate Type"
-msgstr "Tipe Sertifikat Netscape"
-
-#: ../modules/trust-prompt/e-asn1-object.c:243
-msgid "Certificate Authority Key Identifier"
-msgstr "Identifier Kunci Otoritas Sertifikat (Certificate Authority)"
-
-#: ../modules/trust-prompt/e-asn1-object.c:255
-#, c-format
-msgid "Object Identifier (%s)"
-msgstr "Identifier Objek (%s)"
-
-#: ../modules/trust-prompt/e-asn1-object.c:306
-msgid "Algorithm Identifier"
-msgstr "Identifier Algoritma"
-
-#: ../modules/trust-prompt/e-asn1-object.c:314
-msgid "Algorithm Parameters"
-msgstr "Parameter Algoritma"
-
-#: ../modules/trust-prompt/e-asn1-object.c:336
-msgid "Subject Public Key Info"
-msgstr "Info Kunci Publik Subjek"
-
-#: ../modules/trust-prompt/e-asn1-object.c:341
-msgid "Subject Public Key Algorithm"
-msgstr "Algoritma Kunci Publik Subjek"
-
-#: ../modules/trust-prompt/e-asn1-object.c:356
-msgid "Subject's Public Key"
-msgstr "Kunci Publik Subjek"
-
-#: ../modules/trust-prompt/e-asn1-object.c:378
-#: ../modules/trust-prompt/e-asn1-object.c:428
-msgid "Error: Unable to process extension"
-msgstr "Galat: Tak bisa memroses ekstensi"
-
-#: ../modules/trust-prompt/e-asn1-object.c:395
-msgid "Email"
-msgstr "Surel"
-
-#: ../modules/trust-prompt/e-asn1-object.c:399
-#: ../modules/trust-prompt/e-asn1-object.c:411
-msgid "Object Signer"
-msgstr "Penanda Tangan Objek"
-
-#: ../modules/trust-prompt/e-asn1-object.c:403
-msgid "SSL Certificate Authority"
-msgstr "Certificate Authority SSL"
-
-#: ../modules/trust-prompt/e-asn1-object.c:407
-msgid "Email Certificate Authority"
-msgstr "Certificate Authority Surel"
-
-#: ../modules/trust-prompt/e-asn1-object.c:436
-msgid "Signing"
-msgstr "Menandatangani"
-
-#: ../modules/trust-prompt/e-asn1-object.c:440
-msgid "Non-repudiation"
-msgstr "Non-repudiation"
-
-#: ../modules/trust-prompt/e-asn1-object.c:444
-msgid "Key Encipherment"
-msgstr "Key Encipherment"
-
-#: ../modules/trust-prompt/e-asn1-object.c:448
-msgid "Data Encipherment"
-msgstr "Data Encipherment"
-
-#: ../modules/trust-prompt/e-asn1-object.c:452
-msgid "Key Agreement"
-msgstr "Perjanjian Kunci"
-
-#: ../modules/trust-prompt/e-asn1-object.c:456
-msgid "Certificate Signer"
-msgstr "Penandatangan Sertifikat"
-
-#: ../modules/trust-prompt/e-asn1-object.c:460
-msgid "CRL Signer"
-msgstr "Penandatangan CRL"
-
-#: ../modules/trust-prompt/e-asn1-object.c:509
-msgid "Critical"
-msgstr "Kritis"
-
-#: ../modules/trust-prompt/e-asn1-object.c:511
-#: ../modules/trust-prompt/e-asn1-object.c:514
-msgid "Not Critical"
-msgstr "Bukan Kritis"
-
-#: ../modules/trust-prompt/e-asn1-object.c:535
-msgid "Extensions"
-msgstr "Ekstensi"
-
-#. Translators: This string is used in Certificate
-#. * details for fields like Issuer or Subject, which
-#. * shows the field name on the left and its respective
-#. * value on the right, both as stored in the
-#. * certificate itself.  You probably do not need to
-#. * change this string, unless changing the order of
-#. * name and value.  As a result example:
-#. * "OU = VeriSign Trust Network"
-#: ../modules/trust-prompt/e-asn1-object.c:615
-#, c-format
-msgid "%s = %s"
-msgstr "%s = %s"
-
-#: ../modules/trust-prompt/e-asn1-object.c:658
-msgid "Certificate"
-msgstr "Sertifikat"
-
-#: ../modules/trust-prompt/e-asn1-object.c:674
-#: ../modules/trust-prompt/e-asn1-object.c:812
-msgid "Certificate Signature Algorithm"
-msgstr "Algoritma Tanda Tangan Sertifikat"
-
-#: ../modules/trust-prompt/e-asn1-object.c:683
-msgid "Issuer"
-msgstr "Penerbit"
-
-#: ../modules/trust-prompt/e-asn1-object.c:714
-msgid "Subject"
-msgstr "Subjek"
-
-#: ../modules/trust-prompt/e-asn1-object.c:738
-msgid "Issuer Unique ID"
-msgstr "ID Unik Penerbit"
-
-#: ../modules/trust-prompt/e-asn1-object.c:757
-msgid "Subject Unique ID"
-msgstr "ID Unik Subjek"
-
-#: ../modules/trust-prompt/e-asn1-object.c:818
-msgid "Certificate Signature Value"
-msgstr "Nilai Tanda Tangan Sertifikat"
-
-#: ../modules/trust-prompt/module-trust-prompt.c:201
+#: ../modules/trust-prompt/module-trust-prompt.c:83
 msgid "The signing certificate authority is not known."
 msgstr "Certificate authority yang menandatangani tak dikenal."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:203
+#: ../modules/trust-prompt/module-trust-prompt.c:85
 msgid ""
 "The certificate does not match the expected identity of the site that it was "
 "retrieved from."
@@ -5649,68 +5231,48 @@ msgstr ""
 "Sertifikat tak cocok dengan identitas yang diharapkan dari situs tempat "
 "diambilnya."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:205
+#: ../modules/trust-prompt/module-trust-prompt.c:87
 msgid "The certificate's activation time is still in the future."
 msgstr "Waktu aktivasi sertifikat masih di masa depan."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:207
+#: ../modules/trust-prompt/module-trust-prompt.c:89
 msgid "The certificate has expired."
 msgstr "Sertifikat telah kadaluarsa."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:209
+#: ../modules/trust-prompt/module-trust-prompt.c:91
 msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
 msgstr ""
 "Sertifikat telah dicabut menurut daftar pencabutan sertifikat milik koneksi."
 
-#: ../modules/trust-prompt/module-trust-prompt.c:211
+#: ../modules/trust-prompt/module-trust-prompt.c:93
 msgid "The certificate's algorithm is considered insecure."
 msgstr "Algoritma sertifikat dianggap tidak aman."
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:162
+#: ../modules/trust-prompt/trust-prompt-gtk.c:120
 msgid "Certificate trust..."
 msgstr "Kepercayaan sertifikat..."
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:163
-msgid "_View Certificate"
-msgstr "_Tilik Sertifikat"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:164
+#: ../modules/trust-prompt/trust-prompt-gtk.c:121
 msgid "_Reject"
 msgstr "_Tolak"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:165
+#: ../modules/trust-prompt/trust-prompt-gtk.c:122
 msgid "Accept _Temporarily"
 msgstr "_Terima Sementara"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:166
+#: ../modules/trust-prompt/trust-prompt-gtk.c:123
 msgid "_Accept Permanently"
 msgstr "Terim_a Seterusnya"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:203
+#: ../modules/trust-prompt/trust-prompt-gtk.c:161
 #, c-format
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
 msgstr ""
 "Sertifikat SSL bagi '%s' tak terpercaya. Apakah Anda hendak menerimanya?"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:209
-msgid "Detailed information about the certificate:"
-msgstr "Informasi terrinci tentang sertifikat:"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:223
-msgid "Issuer:"
-msgstr "Penerbit:"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:224
-msgid "Subject:"
-msgstr "Subjek:"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:225
-msgid "Fingerprint:"
-msgstr "Sidik jari:"
-
-#: ../modules/trust-prompt/trust-prompt-gtk.c:226
+#: ../modules/trust-prompt/trust-prompt-gtk.c:176
 msgid "Reason:"
 msgstr "Alasan:"
 
