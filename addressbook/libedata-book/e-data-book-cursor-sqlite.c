@@ -47,8 +47,9 @@ static void e_data_book_cursor_sqlite_set_property (GObject *object,
 static gboolean e_data_book_cursor_sqlite_set_sexp             (EDataBookCursor     *cursor,
 								const gchar         *sexp,
 								GError             **error);
-static gint     e_data_book_cursor_sqlite_move_by              (EDataBookCursor     *cursor,
+static gint     e_data_book_cursor_sqlite_step                 (EDataBookCursor     *cursor,
 								const gchar         *revision_guard,
+								EBookCursorStepFlags flags,
 								EBookCursorOrigin    origin,
 								gint                 count,
 								GSList             **results,
@@ -99,7 +100,7 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 
 	cursor_class = E_DATA_BOOK_CURSOR_CLASS (class);
 	cursor_class->set_sexp = e_data_book_cursor_sqlite_set_sexp;
-	cursor_class->move_by = e_data_book_cursor_sqlite_move_by;
+	cursor_class->step = e_data_book_cursor_sqlite_step;
 	cursor_class->set_alphabetic_index = e_data_book_cursor_sqlite_set_alphabetic_index;
 	cursor_class->get_position = e_data_book_cursor_sqlite_get_position;
 	cursor_class->compare_contact = e_data_book_cursor_sqlite_compare_contact;
@@ -252,11 +253,11 @@ convert_origin (EBookCursorOrigin    src_origin,
 	case E_BOOK_CURSOR_ORIGIN_CURRENT:
 		*dest_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
 		break;
-	case E_BOOK_CURSOR_ORIGIN_PREVIOUS:
-		*dest_origin = EBSDB_CURSOR_ORIGIN_PREVIOUS;
+	case E_BOOK_CURSOR_ORIGIN_BEGIN:
+		*dest_origin = EBSDB_CURSOR_ORIGIN_BEGIN;
 		break;
-	case E_BOOK_CURSOR_ORIGIN_RESET:
-		*dest_origin = EBSDB_CURSOR_ORIGIN_RESET;
+	case E_BOOK_CURSOR_ORIGIN_END:
+		*dest_origin = EBSDB_CURSOR_ORIGIN_END;
 		break;
 	default:
 		success = FALSE;
@@ -270,18 +271,31 @@ convert_origin (EBookCursorOrigin    src_origin,
 	return success;
 }
 
+static void
+convert_flags (EBookCursorStepFlags    src_flags,
+	       EbSdbCursorStepFlags   *dest_flags)
+{
+	if (src_flags & E_BOOK_CURSOR_STEP_MOVE)
+		*dest_flags |= EBSDB_CURSOR_STEP_MOVE;
+
+	if (src_flags & E_BOOK_CURSOR_STEP_FETCH)
+		*dest_flags |= EBSDB_CURSOR_STEP_FETCH;
+}
+
 static gint
-e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
-				   const gchar         *revision_guard,
-				   EBookCursorOrigin    origin,
-				   gint                 count,
-				   GSList             **results,
-				   GError             **error)
+e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
+				const gchar         *revision_guard,
+				EBookCursorStepFlags flags,
+				EBookCursorOrigin    origin,
+				gint                 count,
+				GSList             **results,
+				GError             **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
 	GSList *local_results = NULL, *local_converted_results = NULL, *l;
 	EbSdbCursorOrigin sqlitedb_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
+	EbSdbCursorStepFlags sqlitedb_flags = 0;
 	gchar *revision = NULL;
 	gboolean success = FALSE;
 	gint n_results = -1;
@@ -291,6 +305,8 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 
 	if (!convert_origin (origin, &sqlitedb_origin, error))
 		return FALSE;
+
+	convert_flags (flags, &sqlitedb_flags);
 
 	/* Here we check the EBookBackendSqliteDB revision
 	 * against the revision_guard with an atomic transaction
@@ -318,17 +334,31 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	}
 
 	if (success) {
+		GError *local_error = NULL;
 
-		/* Only pass 'local_results' if the caller passed 'results'
-		 */
-		n_results = e_book_backend_sqlitedb_cursor_move_by (priv->ebsdb,
-								    priv->cursor,
-								    sqlitedb_origin,
-								    count,
-								    results ? &local_results : NULL,
-								    error);
-		if (n_results < 0)
+		n_results = e_book_backend_sqlitedb_cursor_step (priv->ebsdb,
+								 priv->cursor,
+								 sqlitedb_flags,
+								 sqlitedb_origin,
+								 count,
+								 &local_results,
+								 &local_error);
+
+		if (n_results < 0) {
+
+			/* Convert the SQLite backend error to an EClient error */
+			if (g_error_matches (local_error,
+					     E_BOOK_SDB_ERROR,
+					     E_BOOK_SDB_ERROR_END_OF_LIST)) {
+				g_set_error_literal (error, E_CLIENT_ERROR,
+						     E_CLIENT_ERROR_END_OF_LIST,
+						     local_error->message);
+				g_clear_error (&local_error);
+			} else
+				g_propagate_error (error, local_error);
+
 			success = FALSE;
+		}
 	}
 
 	if (success) {
