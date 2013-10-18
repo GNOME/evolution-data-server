@@ -2155,7 +2155,7 @@ main (gint argc,
 				     11, /* Count */
 				     10, /* Expected results */
 				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
-		cursor_closure_position (closure, 20, 0, TRUE);
+		cursor_closure_position (closure, 20, 21, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/Overshoot%s", base_params[i].base_path);
 
 		/* Undershooting the contact list (in reverse) causes position to become
