@@ -27,16 +27,17 @@
   <property name="Position" type="u" access="read"/>
 
   <!--
-      MoveBy:
+      Step:
       @revision_guard: The expected revision of the addressbook
+      @flags: The #EBookCursorStepFlags
       @origin: The #EBookCursorOrigin
-      @count: The number of contacts to try and fetch, negative values move the cursor in reverse
-      @fetch_results: Whether this call should actually fetch results, or if it should only move the cursor position
+      @count: The number of contacts to try and fetch, negative values step the cursor in reverse
+      @n_results: The number contacts actually traversed in this step.
       @vcards: The returned contact list
       @new_total: The total amount of contacts after moving the cursor
       @new_position: The cursor position after moving
 
-      Move the cursor by @count contacts from @origin
+      Step the cursor by @count contacts from @origin
 
       This will also result in changes of the Position and Total properties
 
@@ -44,11 +45,11 @@
       revision, if the revisions differ then %E_CLIENT_ERROR_OUT_OF_SYNC
       will be reported.
   -->
-  <method name="MoveBy">
+  <method name="Step">
     <arg name="revision_guard" direction="in" type="s"/>
+    <arg name="flags" direction="in" type="i"/>
     <arg name="origin" direction="in" type="i"/>
     <arg name="count" direction="in" type="i"/>
-    <arg name="fetch_results" direction="in" type="b"/>
     <arg name="n_results" direction="out" type="i"/>
     <arg name="vcards" direction="out" type="as"/>
     <arg name="new_total" direction="out" type="u"/>
