@@ -149,7 +149,8 @@ typedef enum {
 	E_CLIENT_ERROR_DBUS_ERROR,
 	E_CLIENT_ERROR_OTHER_ERROR,
 	E_CLIENT_ERROR_NOT_OPENED,
-	E_CLIENT_ERROR_OUT_OF_SYNC
+	E_CLIENT_ERROR_OUT_OF_SYNC,
+	E_CLIENT_ERROR_END_OF_LIST
 } EClientError;
 
 const gchar *	e_client_error_to_string	(EClientError code);
