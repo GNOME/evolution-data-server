@@ -496,19 +496,21 @@ calculate_step_position (EDataBookCursor     *cursor,
 	gint new_position = priv->position;
 	gint offset = results;
 
-	/* The return value of the step() function is the number of contacts traversed,
-	 * but here we want the number of units which were successfuly traversed, i.e.
-	 * when move from the 1 position to the 0 position, or move from the last contact
-	 * off of the end of the list, the position is still effected by 1 even
-	 * though the step() function returns 0.
+	/* If we didnt get as many contacts as asked for, it indicates that
+	 * we've reached the end of the list (or beginning)... in this case
+	 * we add 1 to the offset
+	 * so that we land on the 0 position or the total + 1 position
+	 * respectively.
+	 */
+	if (offset < ABS (count)) {
+		offset += 1;
+	}
+
+	/* Convert our 'number of results' into a signed 'offset'
+	 * to add to the cursor position.
 	 */
 	if (count < 0)
 		offset = -offset;
-
-	if (offset == 0 && count > 0 && priv->position == priv->total)
-		offset = 1;
-	else if (offset == 0 && count < 0 && priv->position == 1)
-		offset = -1;
 
 	/* Don't assert the boundaries of values here, we
 	 * did that in e_data_book_cursor_step() already.
