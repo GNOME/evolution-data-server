@@ -107,18 +107,19 @@ gboolean             e_book_client_cursor_set_sexp_sync               (EBookClie
 								       const gchar         *sexp,
 								       GCancellable        *cancellable,
 								       GError             **error);
-void                 e_book_client_cursor_move_by                     (EBookClientCursor   *cursor,
+void                 e_book_client_cursor_step                        (EBookClientCursor   *cursor,
+								       EBookCursorStepFlags flags,
 								       EBookCursorOrigin    origin,
 								       gint                 count,
-								       gboolean             fetch_results,
 								       GCancellable        *cancellable,
 								       GAsyncReadyCallback  callback,
 								       gpointer             user_data);
-gint                 e_book_client_cursor_move_by_finish              (EBookClientCursor   *cursor,
+gint                 e_book_client_cursor_step_finish                 (EBookClientCursor   *cursor,
 								       GAsyncResult        *result,
 								       GSList             **out_contacts,
 								       GError             **error);
-gint                 e_book_client_cursor_move_by_sync                (EBookClientCursor   *cursor,
+gint                 e_book_client_cursor_step_sync                   (EBookClientCursor   *cursor,
+								       EBookCursorStepFlags flags,
 								       EBookCursorOrigin    origin,
 								       gint                 count,
 								       GSList             **out_contacts,

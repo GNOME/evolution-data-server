@@ -75,7 +75,7 @@
  * in memory.
  * </para>
  * <para>
- * Iterating through the contact list is done with e_book_client_cursor_move_by(), this
+ * Iterating through the contact list is done with e_book_client_cursor_step(), this
  * function allows one to move the cursor and fetch the results following the current
  * cursor position:
  * <informalexample>
@@ -83,12 +83,12 @@
  *     <![CDATA[GError *error = NULL;
  *     GSList *results;
  *
- *     if (!e_book_client_cursor_move_by_sync (cursor,
- *                                             E_BOOK_CURSOR_ORIGIN_CURRENT,
- *                                             10,
- *                                             &results,
- *                                             NULL,
- *                                             &error))
+ *     if (!e_book_client_cursor_step_sync (cursor,
+ *                                          E_BOOK_CURSOR_ORIGIN_CURRENT,
+ *                                          10,
+ *                                          &results,
+ *                                          NULL,
+ *                                          &error))
  *       {
  *         if (g_error_matches (error,
  *                              E_CLIENT_ERROR,
@@ -180,7 +180,7 @@
  *       }]]></programlisting>
  * </informalexample>
  * After setting the alphabetic index successfully, you can go ahead
- * and use e_book_client_cursor_move_by() to load some contacts at the
+ * and use e_book_client_cursor_step() to load some contacts at the
  * beginning of the given letter.
  * </para>
  * <para>
@@ -227,7 +227,7 @@
 
 /* Forward declarations */
 typedef struct _SetSexpContext        SetSexpContext;
-typedef struct _MoveByContext         MoveByContext;
+typedef struct _StepContext           StepContext;
 typedef struct _AlphabetIndexContext  AlphabetIndexContext;
 typedef enum   _NotificationType      NotificationType;
 typedef struct _Notification          Notification;
@@ -317,12 +317,12 @@ static void                  set_sexp_context_free         (SetSexpContext      
 static void                  set_sexp_thread               (GSimpleAsyncResult     *simple,
 							    GObject                *source_object,
 							    GCancellable           *cancellable);
-static MoveByContext        *move_by_context_new           (const gchar            *revision,
+static StepContext          *step_context_new              (const gchar            *revision,
+							    EBookCursorStepFlags    flags,
 							    EBookCursorOrigin       origin,
-							    gint                    count,
-							    gboolean                fetch_results);
-static void                  move_by_context_free          (MoveByContext          *context);
-static void                  move_by_thread                (GSimpleAsyncResult     *simple,
+							    gint                    count);
+static void                  step_context_free             (StepContext            *context);
+static void                  step_thread                   (GSimpleAsyncResult     *simple,
 							    GObject                *source_object,
 							    GCancellable           *cancellable);
 static AlphabetIndexContext *alphabet_index_context_new    (gint                    index,
@@ -638,7 +638,7 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * Indicates that the addressbook has been modified and
 	 * that the cursor results should be refreshed.
 	 *
-	 * This is normally done by calling e_book_client_cursor_move_by()
+	 * This is normally done by calling e_book_client_cursor_step()
 	 * with an %E_BOOK_CURSOR_ORIGIN_PREVIOUS origin.
 	 *
 	 * This signal is guaranteed to be delivered in the #GMainContext
@@ -1492,11 +1492,11 @@ dra_position_changed_cb (EDataBookCursor        *direct_cursor,
  * We choose this method of asynchronous D-Bus calls only
  * to be consistent with the rest of the libebook library.
  */
-struct _MoveByContext {
+struct _StepContext {
 	gchar *revision;
+	EBookCursorStepFlags flags;
 	EBookCursorOrigin origin;
 	gint count;
-	gboolean fetch_results;
 	GSList *contacts;
 	guint new_total;
 	guint new_position;
@@ -1600,43 +1600,44 @@ set_sexp_thread (GSimpleAsyncResult *simple,
 		g_simple_async_result_take_error (simple, local_error);
 }
 
-static MoveByContext *
-move_by_context_new (const gchar      *revision,
-		     EBookCursorOrigin origin,
-		     gint              count,
-		     gboolean          fetch_results)
+static StepContext *
+step_context_new (const gchar         *revision,
+		  EBookCursorStepFlags flags,
+		  EBookCursorOrigin    origin,
+		  gint                 count)
 {
-	MoveByContext *context = g_slice_new0 (MoveByContext);
+	StepContext *context = g_slice_new0 (StepContext);
 
 	context->revision      = g_strdup (revision);
+	context->flags         = flags;
 	context->origin        = origin;
 	context->count         = count;
-	context->fetch_results = fetch_results;
 	context->n_results     = 0;
 
 	return context;
 }
 
 static void
-move_by_context_free (MoveByContext *context)
+step_context_free (StepContext *context)
 {
 	if (context) {
 		g_free (context->revision);
 		g_slist_free_full (context->contacts, (GDestroyNotify)g_object_unref);
-		g_slice_free (MoveByContext, context);
+		g_slice_free (StepContext, context);
 	}
 }
 
 static gint
-move_by_sync_internal (EBookClientCursor   *cursor,
-		       const gchar         *revision,
-		       EBookCursorOrigin    origin,
-		       gint                 count,
-		       GSList             **out_contacts,
-		       guint               *new_total,
-		       guint               *new_position,
-		       GCancellable        *cancellable,
-		       GError             **error)
+step_sync_internal (EBookClientCursor   *cursor,
+		    const gchar         *revision,
+		    EBookCursorStepFlags flags,
+		    EBookCursorOrigin    origin,
+		    gint                 count,
+		    GSList             **out_contacts,
+		    guint               *new_total,
+		    guint               *new_position,
+		    GCancellable        *cancellable,
+		    GError             **error)
 {
 	EBookClientCursorPrivate *priv;
 	GError *local_error = NULL;
@@ -1649,12 +1650,13 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 		GSList *results = NULL, *l;
 		GSList *contacts = NULL;
 
-		n_results = e_data_book_cursor_move_by (priv->direct_cursor,
-							revision,
-							origin,
-							count,
-							out_contacts ? &results : NULL,
-							error);
+		n_results = e_data_book_cursor_step (priv->direct_cursor,
+						     revision,
+						     flags,
+						     origin,
+						     count,
+						     &results,
+						     error);
 		if (n_results < 0)
 			return n_results;
 
@@ -1679,11 +1681,12 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 		return n_results;
 	}
 
-	e_dbus_address_book_cursor_call_move_by_sync (
+	e_dbus_address_book_cursor_call_step_sync (
 		priv->dbus_proxy,
 		revision,
-		origin, count,
-		out_contacts != NULL,
+		flags,
+		origin,
+		count,
 		&n_results,
 		&vcards,
 		new_total,
@@ -1719,24 +1722,25 @@ move_by_sync_internal (EBookClientCursor   *cursor,
 }
 
 static void
-move_by_thread (GSimpleAsyncResult *simple,
-		GObject            *source_object,
-		GCancellable       *cancellable)
+step_thread (GSimpleAsyncResult *simple,
+	     GObject            *source_object,
+	     GCancellable       *cancellable)
 {
-	MoveByContext *context;
+	StepContext *context;
 	GError *local_error = NULL;
 
 	context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	context->n_results = 
-		move_by_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
-				       context->revision,
-				       context->origin,
-				       context->count,
-				       context->fetch_results ? &(context->contacts) : NULL,
-				       &context->new_total,
-				       &context->new_position,
-				       cancellable, &local_error);
+		step_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
+				    context->revision,
+				    context->flags,
+				    context->origin,
+				    context->count,
+				    &(context->contacts),
+				    &context->new_total,
+				    &context->new_position,
+				    cancellable, &local_error);
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2112,70 +2116,65 @@ e_book_client_cursor_set_sexp_sync (EBookClientCursor   *cursor,
 }
 
 /**
- * e_book_client_cursor_move_by:
+ * e_book_client_cursor_step:
  * @cursor: an #EBookClientCursor
- * @origin: the #EBookCursorOrigin for this move
+ * @flags: The #EBookCursorStepFlags for this step
+ * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
- * @fetch_results: whether to fetch the list of results, if %FALSE then only the position and cursor value is modified.
  * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
- * <link linkend="cursor-iteration">Moves the cursor through the results</link> by 
+ * <link linkend="cursor-iteration">Steps the cursor through the results</link> by 
  * a maximum of @count and fetch the results traversed.
  *
- * If @fetch_results is %FALSE, the cursor will be moved but no results will be
- * fetched from the addressbook, this can be useful to reduce D-Bus traffic
- * when the cursor must be moved but results are not needed.
- *
- * See: e_book_client_cursor_move_by_sync().
+ * See: e_book_client_cursor_step_sync().
  *
  * This asynchronous call is completed with a call to
- * e_book_client_cursor_move_by_finish() from the specified @callback.
+ * e_book_client_cursor_step_finish() from the specified @callback.
  *
  * Since: 3.12
  */
 void
-e_book_client_cursor_move_by (EBookClientCursor   *cursor,
-			      EBookCursorOrigin    origin,
-			      gint                 count,
-			      gboolean             fetch_results,
-			      GCancellable        *cancellable,
-			      GAsyncReadyCallback  callback,
-			      gpointer             user_data)
+e_book_client_cursor_step (EBookClientCursor   *cursor,
+			   EBookCursorStepFlags flags,
+			   EBookCursorOrigin    origin,
+			   gint                 count,
+			   GCancellable        *cancellable,
+			   GAsyncReadyCallback  callback,
+			   gpointer             user_data)
 {
 	GSimpleAsyncResult *simple;
-	MoveByContext *context;
+	StepContext *context;
 
 	g_return_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor));
-	g_return_if_fail (count != 0 || origin == E_BOOK_CURSOR_ORIGIN_RESET);
 	g_return_if_fail (callback != NULL);
 
-	context = move_by_context_new (cursor->priv->revision,
-				       origin, count, fetch_results);
+	context = step_context_new (cursor->priv->revision,
+				    flags, origin, count);
 	simple  = g_simple_async_result_new (G_OBJECT (cursor),
 					     callback, user_data,
-					     e_book_client_cursor_move_by);
+					     e_book_client_cursor_step);
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 	g_simple_async_result_set_op_res_gpointer (simple, context,
-						   (GDestroyNotify) move_by_context_free);
+						   (GDestroyNotify) step_context_free);
 
 	g_simple_async_result_run_in_thread (
-		simple, move_by_thread,
+		simple, step_thread,
 		G_PRIORITY_DEFAULT, cancellable);
 
 	g_object_unref (simple);
 }
 
 /**
- * e_book_client_cursor_move_by_finish:
+ * e_book_client_cursor_step_finish:
  * @cursor: an #EBookClientCursor
  * @result: a #GAsyncResult
  * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContacts
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
- * Completes an asynchronous call initiated by e_book_client_cursor_move_by(), fetching
+ * Completes an asynchronous call initiated by e_book_client_cursor_step(), fetching
  * any contacts which might have been returned by the call.
  *
  * Returns: The number of contacts which the cursor has moved by if successfull.
@@ -2184,18 +2183,18 @@ e_book_client_cursor_move_by (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
-				     GAsyncResult        *result,
-				     GSList             **out_contacts,
-				     GError             **error)
+e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
+				  GAsyncResult        *result,
+				  GSList             **out_contacts,
+				  GError             **error)
 {
 	GSimpleAsyncResult *simple;
-	MoveByContext *context;
+	StepContext *context;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
 		result, G_OBJECT (cursor),
-		e_book_client_cursor_move_by), FALSE);
+		e_book_client_cursor_step), FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -2222,41 +2221,29 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
 }
 
 /**
- * e_book_client_cursor_move_by_sync:
+ * e_book_client_cursor_step_sync:
  * @cursor: an #EBookClientCursor
- * @origin: the #EBookCursorOrigin for this move
+ * @flags: The #EBookCursorStepFlags for this step
+ * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
  * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContacts
  * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
- * <link linkend="cursor-iteration">Moves the cursor through the results</link> by 
+ * <link linkend="cursor-iteration">Steps the cursor through the results</link> by 
  * a maximum of @count and fetch the results traversed.
- *
- * If @out_contacts is %NULL, the cursor will be moved but no results will be
- * fetched from the addressbook, this can be useful to reduce D-Bus traffic
- * when the cursor must be moved but results are not needed.
  *
  * If @count is negative, then the cursor will move backwards.
  *
- * If @cursor's position is %0, or @origin is %E_BOOK_CURSOR_ORIGIN_RESET,
- * then @count contacts will be fetched from the beginning of the cursor's query
- * results, or from the ending of the query results for a negative value of @count.
- *
- * The #EBookCursorOrigin allows one to control the origin from where
- * the cursor should move from, this allows one to reset the cursor
- * position at any time, to move the cursor from the current position,
- * or to reuse the previously stored cursor position. The cursor implementation
- * stores a dual cursor state for the express purpose of allowing one
- * to query the cursor using the %E_BOOK_CURSOR_ORIGIN_PREVIOUS origin,
- * this is provided so that one can easily repeat the last cursor query
- * at any time the addressbook changes and results need to be reloaded.
- *
  * If @cursor reaches the beginning or end of the query results, then the
- * returned results might not contain the requested amount of contacts, or might
- * return no results at all if the cursor currently points to the last contact.
- * This is not considered an error condition, but will result in a cursor position
- * of %0.
+ * returned list might not contain the amount of desired contacts, or might
+ * return no results if the cursor currently points to the last contact. 
+ * Reaching the end of the list is not considered an error condition. Attempts
+ * to step beyond the end of the list after having reached the end of the list
+ * will however trigger an %E_CLIENT_ERROR_END_OF_LIST error.
+ *
+ * If %E_BOOK_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * a %NULL #GSList pointer should be provided for the @results parameter.
  *
  * A side effect of moving the cursor is that the #EBookClientCursor:position
  * property will be updated.
@@ -2279,21 +2266,23 @@ e_book_client_cursor_move_by_finish (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_move_by_sync (EBookClientCursor   *cursor,
-				   EBookCursorOrigin    origin,
-				   gint                 count,
-				   GSList             **out_contacts,
-				   GCancellable        *cancellable,
-				   GError             **error)
+e_book_client_cursor_step_sync (EBookClientCursor   *cursor,
+				EBookCursorStepFlags flags,
+				EBookCursorOrigin    origin,
+				gint                 count,
+				GSList             **out_contacts,
+				GCancellable        *cancellable,
+				GError             **error)
 {
 	guint new_total = 0, new_position = 0;
 	gint retval;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), FALSE);
-	g_return_val_if_fail (count != 0 || origin == E_BOOK_CURSOR_ORIGIN_RESET, FALSE);
 
-	retval = move_by_sync_internal (cursor, cursor->priv->revision, origin, count, out_contacts,
-					&new_total, &new_position, cancellable, error);
+	retval = step_sync_internal (cursor, cursor->priv->revision,
+				     flags, origin, count,
+				     out_contacts, &new_total, &new_position,
+				     cancellable, error);
 
 	/* If we are in the thread where the cursor was created, 
 	 * then synchronize the new total & position right away
@@ -2413,7 +2402,7 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
  * Sets the current cursor position to point to an <link linkend="cursor-alphabet">Alphabetic Index</link>.
  *
  * After setting the target alphabetic index, for example the
- * index for letter 'E', then further calls to e_book_client_cursor_move_by()
+ * index for letter 'E', then further calls to e_book_client_cursor_step()
  * will return results starting with the letter 'E' (or results starting
  * with the last result in 'D' when navigating through cursor results
  * in reverse).
