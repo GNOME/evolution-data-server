@@ -71,8 +71,8 @@ static void            cursor_example_status_changed          (EBookClientCursor
 static void            cursor_example_load_alphabet           (CursorExample      *example);
 static gboolean        cursor_example_move_cursor             (CursorExample      *example,
 							       EBookCursorOrigin   origin,
-							       gint                count,
-							       gboolean            load_page,
+							       gint                count);
+static gboolean        cursor_example_load_page               (CursorExample      *example,
 							       gboolean           *full_results);
 static void            cursor_example_update_status           (CursorExample      *example);
 static void            cursor_example_update_sensitivity      (CursorExample      *example);
@@ -94,8 +94,7 @@ struct _CursorExamplePrivate {
 	/* Screen widgets */
 	GtkWidget *browse_up_button;
 	GtkWidget *browse_down_button;
-	GtkWidget *total_label;
-	GtkWidget *position_label;
+	GtkWidget *progressbar;
 	GtkWidget *alphabet_label;
 	GtkWidget *slots[N_SLOTS];
 	CursorNavigator *navigator;
@@ -131,8 +130,7 @@ cursor_example_class_init (CursorExampleClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, browse_up_button);
 	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, browse_down_button);
 	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, alphabet_label);
-	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, total_label);
-	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, position_label);
+	gtk_widget_class_bind_template_child_private (widget_class, CursorExample, progressbar);
 
 	for (i = 0; i < N_SLOTS; i++) {
 		gchar *name = g_strdup_printf ("contact_slot_%d", i + 1);
@@ -211,9 +209,9 @@ cursor_example_up_button_press (CursorExample *example,
 {
 	d (g_print ("Browse up press\n"));
 
-	/* Move the cursor backwards by 'N_SLOTS + 1' and then refresh the page */
-	if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 0 - (N_SLOTS + 1), FALSE, NULL))
-		cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, N_SLOTS, TRUE, NULL);
+	/* Move the cursor backwards by 1 and then refresh the page */
+	if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 0 - 1))
+		cursor_example_load_page (example, NULL);
 
 	cursor_example_ensure_timeout (example, TIMEOUT_UP_INITIAL);
 
@@ -239,9 +237,9 @@ cursor_example_down_button_press (CursorExample *example,
 {
 	d (g_print ("Browse down press\n"));
 
-	/* Move the cursor backwards by 'N_SLOTS - 1' and then refresh the page */
-	if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 0 - (N_SLOTS - 1), FALSE, NULL))
-		cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, N_SLOTS, TRUE, NULL);
+	/* Move the cursor forward by 1 and then refresh the page */
+	if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 1))
+		cursor_example_load_page (example, NULL);
 
 	cursor_example_ensure_timeout (example, TIMEOUT_DOWN_INITIAL);
 
@@ -295,17 +293,15 @@ cursor_example_navigator_changed (CursorExample      *example,
 	}
 
 	/* And load one page full of results starting with this index */
-	if (!cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT,
-					 N_SLOTS, TRUE, &full_results))
+	if (!cursor_example_load_page (example, &full_results))
 		return;
 
 	/* If we hit the end of the results (less than a full page) then load the last page of results */
 	if (!full_results) {
-
-		if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_RESET,
-						0 - (N_SLOTS + 1), FALSE, NULL)) {
-			cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT,
-						    N_SLOTS, TRUE, NULL);
+		if (cursor_example_move_cursor (example,
+						E_BOOK_CURSOR_ORIGIN_END,
+						0 - (N_SLOTS + 1))) {
+			cursor_example_load_page (example, NULL);
 		}
 	}
 }
@@ -330,15 +326,16 @@ cursor_example_sexp_changed (CursorExample      *example,
 		g_clear_error (&error);
 	}
 
-	/* And re-load one page full of results, load from the previous index */
-	cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_PREVIOUS, N_SLOTS, TRUE, &full_results);
+	/* And load one page full of results */
+	if (!cursor_example_load_page (example, &full_results))
+		return;
 
 	/* If we hit the end of the results (less than a full page) then load the last page of results */
 	if (!full_results)
-		if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_RESET,
-						0 - (N_SLOTS + 1), FALSE, NULL)) {
-			cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT,
-						    N_SLOTS, TRUE, NULL);
+		if (cursor_example_move_cursor (example,
+						E_BOOK_CURSOR_ORIGIN_END,
+						0 - (N_SLOTS + 1))) {
+			cursor_example_load_page (example, NULL);
 	}
 }
 
@@ -351,10 +348,9 @@ cursor_example_refresh (EBookClientCursor  *cursor,
 {
 	d (g_print ("Cursor refreshed\n"));
 
-	/* Repeat our last query, by requesting that we move from the previous origin */
-	cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_PREVIOUS, N_SLOTS, TRUE, NULL);
-
-	cursor_example_update_status (example);
+	/* Refresh the page */
+	if (cursor_example_load_page (example, NULL))
+		cursor_example_update_status (example);
 }
 
 static void
@@ -367,7 +363,8 @@ cursor_example_alphabet_changed (EBookClientCursor *cursor,
 	cursor_example_load_alphabet (example);
 
 	/* Get the first page of contacts in the addressbook */
-	cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_RESET, N_SLOTS, TRUE, NULL);
+	if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_BEGIN, 0))
+		cursor_example_load_page (example, NULL);
 }
 
 static void
@@ -399,83 +396,120 @@ cursor_example_load_alphabet (CursorExample *example)
 	g_signal_handlers_unblock_by_func (priv->navigator, cursor_example_navigator_changed, example);
 }
 
-static void
-cursor_example_update_view (CursorExample     *example,
-			    GSList            *results)
-{
-	CursorExamplePrivate *priv = example->priv;
-	EContact             *contact;
-	gint                  i;
-
-	/* Fill the page with results for the current cursor position
-	 */
-	for (i = 0; i < N_SLOTS; i++) {
-		contact = g_slist_nth_data (results, i);
-
-		/* For the first contact, give some visual feedback about where we
-		 * are in the list, which alphabet character we're browsing right now.
-		 */
-		if (i == 0 && contact)
-			cursor_example_update_current_index (example, contact);
-
-		cursor_slot_set_from_contact (priv->slots[i], contact);
-	}
-}
-
-/* Returns whether a full page was loaded or if we reached 
- * the end of the results
- */
 static gboolean
 cursor_example_move_cursor (CursorExample     *example,
 			    EBookCursorOrigin  origin,
-			    gint               count,
-			    gboolean           load_page,
-			    gboolean          *full_results)
+			    gint               count)
 {
 	CursorExamplePrivate *priv = example->priv;
 	GError               *error = NULL;
-	GSList               *results = NULL, **results_arg = NULL;
 	gint                  n_results;
 
-	/* We don't ask EDS for results if we're not going to load the view */
-	g_assert (load_page == TRUE || full_results == NULL);
+	n_results = e_book_client_cursor_step_sync (priv->cursor,
+						    E_BOOK_CURSOR_STEP_MOVE,
+						    origin,
+						    count,
+						    NULL, /* Result list */
+						    NULL, /* GCancellable */
+						    &error);
 
-	/* Only fetch results if we will actually display them */
-	if (load_page)
-		results_arg = &results;
+	if (n_results < 0) {
 
-	n_results = e_book_client_cursor_move_by_sync (priv->cursor,
-						       origin,
-						       count,
-						       results_arg,
-						       NULL, &error);
+		if (g_error_matches (error,
+				     E_CLIENT_ERROR,
+				     E_CLIENT_ERROR_OUT_OF_SYNC)) {
+
+			/* The addressbook has very recently been modified,
+			 * very soon we will receive a "refresh" signal and
+			 * automatically reload the current page position.
+			 */
+			d (g_print ("Cursor was temporarily out of sync while moving\n"));
+
+		} else if (g_error_matches (error,
+					    E_CLIENT_ERROR,
+					    E_CLIENT_ERROR_END_OF_LIST)) {
+
+			d (g_print ("End of list was reached\n"));
+
+		} else
+			g_warning ("Failed to move the cursor: %s", error->message);
+
+
+
+		g_clear_error (&error);
+
+	}
+
+	return n_results >= 0;
+}
+
+/* Loads a page at the current cursor position, returns
+ * FALSE if there was an error.
+ */
+static gboolean
+cursor_example_load_page (CursorExample     *example,
+			  gboolean          *full_results)
+{
+	CursorExamplePrivate *priv = example->priv;
+	GError               *error = NULL;
+	GSList               *results = NULL;
+	gint                  n_results;
+
+	/* Fetch N_SLOTS contacts after the current cursor position,
+	 * without modifying the current cursor position
+	 */
+	n_results = e_book_client_cursor_step_sync (priv->cursor,
+						    E_BOOK_CURSOR_STEP_FETCH,
+						    E_BOOK_CURSOR_ORIGIN_CURRENT,
+						    N_SLOTS,
+						    &results,
+						    NULL, /* GCancellable */
+						    &error);
 
 	if (n_results < 0) {
 		if (g_error_matches (error,
 				     E_CLIENT_ERROR,
 				     E_CLIENT_ERROR_OUT_OF_SYNC)) {
 
-			/* Just ignore this error.
-			 *
-			 * The addressbook has very recently been modified,
+			/* The addressbook has very recently been modified,
 			 * very soon we will receive a "refresh" signal and
 			 * automatically reload the current page position.
 			 */
-			d (g_print ("Cursor was temporarily out of sync while moving\n"));
+			d (g_print ("Cursor was temporarily out of sync while loading page\n"));
+
+		} else if (g_error_matches (error,
+					    E_CLIENT_ERROR,
+					    E_CLIENT_ERROR_END_OF_LIST)) {
+
+			d (g_print ("End of list was reached\n"));
 
 		} else
 			g_warning ("Failed to move the cursor: %s", error->message);
 
 		g_clear_error (&error);
 
-	} else if (load_page) {
-
+	} else {
 		/* Display the results */
-		cursor_example_update_view (example, results);
+		EContact             *contact;
+		gint                  i;
+
+		/* Fill the page with results for the current cursor position
+		 */
+		for (i = 0; i < N_SLOTS; i++) {
+			contact = g_slist_nth_data (results, i);
+
+			/* For the first contact, give some visual feedback about where we
+			 * are in the list, which alphabet character we're browsing right now.
+			 */
+			if (i == 0 && contact)
+				cursor_example_update_current_index (example, contact);
+
+			cursor_slot_set_from_contact (priv->slots[i], contact);
+		}
 	}
 
 	if (full_results)
-		*full_results = (n_results == ABS (count));
+		*full_results = (n_results == N_SLOTS);
 
 	g_slist_free_full (results, (GDestroyNotify)g_object_unref);
 
@@ -491,19 +525,19 @@ cursor_example_update_status (CursorExample *example)
 	gchar                *txt;
 	gboolean              up_sensitive;
 	gboolean              down_sensitive;
+	gdouble               fraction;
 
 	total = e_book_client_cursor_get_total (priv->cursor);
 	position = e_book_client_cursor_get_position (priv->cursor);
 
-	/* Update total indicator label */
-	txt = g_strdup_printf ("%d", total);
-	gtk_label_set_text (GTK_LABEL (priv->total_label), txt);
+	/* Set the label showing the cursor position and total contacts */
+	txt = g_strdup_printf ("Position %d / Total %d", position, total);
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (priv->progressbar), txt);
 	g_free (txt);
 
-	/* Update position indicator label */
-	txt = g_strdup_printf ("%d", position);
-	gtk_label_set_text (GTK_LABEL (priv->position_label), txt);
-	g_free (txt);
+	/* Give visual feedback on how far we are into the contact list */
+	fraction = position * 1.0F / (total - N_SLOTS);
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (priv->progressbar), fraction);
 
 	/* Update sensitivity of buttons */
 	if (total <= N_SLOTS) {
@@ -513,15 +547,15 @@ cursor_example_update_status (CursorExample *example)
 		up_sensitive = FALSE;
 		down_sensitive = FALSE;
 	} else {
-		/* The cursor is always pointing to the last contact
-		 * visible in the view, so if the cursor is further
-		 * than N_SLOTS we can rewind.
+		/* The cursor is always pointing directly before
+		 * the first contact visible in the view, so if the
+		 * cursor is passed the first contact we can rewind.
 		 */
-		up_sensitive = (position > N_SLOTS);
+		up_sensitive = position > 0;
 
-		/* So long as we have not reached the last contact, we can move
-		 * the cursor down through the list */
-		down_sensitive = (position < total);
+		/* If more than N_SLOTS contacts remain, then
+		 * we can still scroll down */
+		down_sensitive = position < total - N_SLOTS;
 	}
 
 	gtk_widget_set_sensitive (priv->browse_up_button, up_sensitive);
@@ -563,53 +597,43 @@ static gboolean
 cursor_example_timeout (CursorExample *example)
 {
 	CursorExamplePrivate *priv = example->priv;
-	gboolean reschedule = FALSE;
+	gboolean can_move;
 
 	switch (priv->activity) {
 	case TIMEOUT_NONE:
 		break;
 
 	case TIMEOUT_UP_INITIAL:
-		cursor_example_ensure_timeout (example, TIMEOUT_UP_TICK);
-		break;
-	case TIMEOUT_DOWN_INITIAL:
-		cursor_example_ensure_timeout (example, TIMEOUT_DOWN_TICK);
-		break;
-
 	case TIMEOUT_UP_TICK:
 
-		/* Move the cursor backwards by 'N_SLOTS + 1' and then refresh the page */
-		if (gtk_widget_get_sensitive (priv->browse_up_button) &&
-		    cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 0 - (N_SLOTS + 1), FALSE, NULL)) {
-
-			if (gtk_widget_get_sensitive (priv->browse_up_button) &&
-			    cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, N_SLOTS, TRUE, NULL))
-				reschedule = TRUE;
-		}
-
-		if (!reschedule)
+		/* Move the cursor backwards by 1 and then refresh the page */
+		if (cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 0 - 1)) {
+			cursor_example_load_page (example, NULL);
+			cursor_example_ensure_timeout (example, TIMEOUT_UP_TICK);
+		} else
 			cursor_example_cancel_timeout (example);
 
 		break;
 
+	case TIMEOUT_DOWN_INITIAL:
 	case TIMEOUT_DOWN_TICK:
 
-		/* Move the cursor backwards by 'N_SLOTS - 1' and then refresh the page */
-		if (gtk_widget_get_sensitive (priv->browse_down_button) &&
-		    cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 0 - (N_SLOTS - 1), FALSE, NULL)) {
+		/* Avoid scrolling past the end of the list - N_SLOTS */
+		can_move = (e_book_client_cursor_get_position (priv->cursor) < 
+			    e_book_client_cursor_get_total (priv->cursor) - N_SLOTS);
 
-			if (gtk_widget_get_sensitive (priv->browse_down_button) &&
-			    cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, N_SLOTS, TRUE, NULL))
-				reschedule = TRUE;
-		}
-
-		if (!reschedule)
+		/* Move the cursor forwards by 1 and then refresh the page */
+		if (can_move &&
+		    cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_CURRENT, 1)) {
+			cursor_example_load_page (example, NULL);
+			cursor_example_ensure_timeout (example, TIMEOUT_DOWN_TICK);
+		} else
 			cursor_example_cancel_timeout (example);
 
 		break;
 	}
 
-	return reschedule;
+	return FALSE;
 }
 
 static void
@@ -662,7 +686,8 @@ cursor_example_new (const gchar *vcard_path)
 
   cursor_example_load_alphabet (example);
 
-  cursor_example_move_cursor (example, E_BOOK_CURSOR_ORIGIN_RESET, N_SLOTS, TRUE, NULL);
+  /* Load the first page of results */
+  cursor_example_load_page (example, NULL);
   cursor_example_update_status (example);
 
   g_signal_connect (priv->cursor, "refresh",
