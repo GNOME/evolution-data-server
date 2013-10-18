@@ -6424,16 +6424,26 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
 					  GError              **error)
 {
 	gboolean success = TRUE;
+	gint local_total = 0;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
 	g_return_val_if_fail (cursor != NULL, FALSE);
 
 	/* If we're in a clear cursor state, then the position is 0 */
 	if (position && cursor->state.values[0] == NULL) {
-		*position = 0;
 
-		/* Mark the local pointer NULL, no need to calculate this anymore */
-		position = NULL;
+		if (cursor->state.position == EBSDB_CURSOR_ORIGIN_BEGIN) {
+			/* Mark the local pointer NULL, no need to calculate this anymore */
+			*position = 0;
+			position = NULL;
+		} else if (cursor->state.position == EBSDB_CURSOR_ORIGIN_END) {
+
+			/* Make sure that we look up the total so we can
+			 * set the position to 'total + 1'
+			 */
+			if (!total)
+				total = &local_total;
+		}
 	}
 
 	/* Early return if there is nothing to do */
@@ -6459,7 +6469,15 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
 		/* The GError is already set. */
 		book_backend_sqlitedb_rollback_transaction (ebsdb, NULL);
 
+
 	UNLOCK_MUTEX (&ebsdb->priv->lock);
+
+	/* In the case we're at the end, we just set the position
+	 * to be the total + 1
+	 */
+	if (success && position && total &&
+	    cursor->state.position == EBSDB_CURSOR_ORIGIN_END)
+		*position = *total + 1;
 
 	return success;
 }
