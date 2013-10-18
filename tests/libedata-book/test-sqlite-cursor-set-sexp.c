@@ -40,10 +40,11 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 	EbSdbSearchData *data;
 
 	/* Set the cursor to point exactly to 'blackbirds', which is the 12th contact in en_US */
-	if (!e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor,
-						     EBSDB_CURSOR_ORIGIN_RESET,
-						     12, &results, &error))
+	if (!e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
+						  fixture->cursor,
+						  EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
+						  EBSDB_CURSOR_ORIGIN_BEGIN,
+						  12, &results, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Ensure we moved to the right contact */

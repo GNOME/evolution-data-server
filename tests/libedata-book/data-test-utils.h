@@ -68,7 +68,7 @@
 
 #define SQLITEDB_FOLDER_ID   "folder_id"
 #define N_SORTED_CONTACTS    20
-#define MAX_MOVE_BY_COUNTS   5
+#define MAX_STEP_COUNTS   5
 
 /* 13 contacts in the test data have an email address ending with ".com" */
 #define N_FILTERED_CONTACTS  13
@@ -103,17 +103,17 @@ typedef struct {
 	gchar *path;
 
 	/* array of counts to move by, terminated with 0 or MAX_COUNTS */
-	gint counts[MAX_MOVE_BY_COUNTS];
+	gint counts[MAX_STEP_COUNTS];
 
-	/* For each move_by() command, an array of 'ABS (counts[i])' expected contacts */
-	gint expected[MAX_MOVE_BY_COUNTS][N_SORTED_CONTACTS];
+	/* For each step() command, an array of 'ABS (counts[i])' expected contacts */
+	gint expected[MAX_STEP_COUNTS][N_SORTED_CONTACTS];
 
 	/* Whether this is a filtered test */
 	gboolean filtered;
 
 	/* Private detail */
 	gsize struct_size;
-} MoveByData;
+} StepData;
 
 void     e_sqlitedb_fixture_setup          (ESqliteDBFixture *fixture,
 					    gconstpointer     user_data);
@@ -149,16 +149,16 @@ void     assert_contacts_order             (GSList      *results,
 
 void     print_results                     (GSList      *results);
 
-/*  MoveBy test helpers */
-void        move_by_test_add_assertion     (MoveByData  *data,
+/*  Step test helpers */
+void      step_test_add_assertion          (StepData    *data,
 					    gint         count,
 					    ...);
-MoveByData *move_by_test_new               (const gchar *test_path,
+StepData *step_test_new                    (const gchar *test_path,
 					    const gchar *locale);
-MoveByData *move_by_test_new_full          (const gchar   *test_path,
-					    const gchar   *locale,
+StepData *step_test_new_full               (const gchar *test_path,
+					    const gchar *locale,
 					    EBookCursorSortType sort_type);
-void        move_by_test_add               (MoveByData  *data,
+void      step_test_add                    (StepData    *data,
 					    gboolean     filtered);
 
 #endif /* DATA_TEST_UTILS_H */

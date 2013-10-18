@@ -484,12 +484,12 @@ print_results (GSList      *results)
  ********************************************/
 #define DEBUG_FIXTURE        0
 
-static MoveByData *
-move_by_test_new_internal (const gchar *test_path,
-			   const gchar *locale,
-			   gsize        struct_size)
+static StepData *
+step_test_new_internal (const gchar *test_path,
+			const gchar *locale,
+			gsize        struct_size)
 {
-	MoveByData *data;
+	StepData *data;
 
 	data = g_slice_alloc0 (struct_size);
 	data->parent.parent.type = E_TEST_SERVER_ADDRESS_BOOK;
@@ -507,28 +507,28 @@ move_by_test_new_internal (const gchar *test_path,
 }
 
 static void
-move_by_test_free (MoveByData *data)
+step_test_free (StepData *data)
 {
 	g_free (data->path);
 	g_free ((gchar *)data->parent.locale);
 	g_slice_free1 (data->struct_size, data);
 }
 
-MoveByData *
-move_by_test_new (const gchar *test_path,
-		  const gchar *locale)
+StepData *
+step_test_new (const gchar *test_path,
+	       const gchar *locale)
 {
-	return move_by_test_new_internal (test_path, locale, sizeof (MoveByData));
+	return step_test_new_internal (test_path, locale, sizeof (StepData));
 }
 
-MoveByData *
-move_by_test_new_full (const gchar         *test_path,
-		       const gchar         *locale,
-		       EBookCursorSortType  sort_type)
+StepData *
+step_test_new_full (const gchar         *test_path,
+		    const gchar         *locale,
+		    EBookCursorSortType  sort_type)
 {
-	MoveByData *data;
+	StepData *data;
 
-	data = move_by_test_new_internal (test_path, locale, sizeof (MoveByData));
+	data = step_test_new_internal (test_path, locale, sizeof (StepData));
 	data->parent.sort_type = sort_type;
 
 	return data;
@@ -538,24 +538,23 @@ static void
 test_cursor_move_teardown (EbSdbCursorFixture *fixture,
 			   gconstpointer  user_data)
 {
-	MoveByData *data = (MoveByData *)user_data;
+	StepData *data = (StepData *)user_data;
 
 	e_sqlitedb_cursor_fixture_teardown (fixture, user_data);
 
-	move_by_test_free (data);
+	step_test_free (data);
 }
 
 static void
-assert_move_by (EbSdbCursorFixture *fixture,
-		MoveByData *data,
-		gint i,
-		GSList *results,
-		gint n_results)
+assert_step (EbSdbCursorFixture *fixture,
+	     StepData *data,
+	     gint i,
+	     GSList *results,
+	     gint n_results,
+	     gboolean expect_results)
 {
 	GSList *uids = NULL;
 	gint j, expected = 0;
-
-	g_assert_cmpint (g_slist_length (results), ==, n_results);
 
 	/* Count the number of really expected results */
 	for (j = 0; j < ABS (data->counts[i]); j++) {
@@ -565,6 +564,12 @@ assert_move_by (EbSdbCursorFixture *fixture,
 			break;
 
 		expected++;
+	}
+
+	g_assert_cmpint (n_results, ==, expected);
+	if (!expect_results) {
+		g_assert_cmpint (g_slist_length (results), ==, 0);
+		return;
 	}
 
 	/* Assert the exact amount of requested results */
@@ -598,22 +603,33 @@ assert_move_by (EbSdbCursorFixture *fixture,
 }
 
 static void
-test_move_by (EbSdbCursorFixture *fixture,
-	      gconstpointer  user_data)
+test_step (EbSdbCursorFixture *fixture,
+	   gconstpointer  user_data)
 {
-	MoveByData *data = (MoveByData *)user_data;
+	StepData *data = (StepData *)user_data;
 	GSList *results = NULL;
 	GError *error = NULL;
 	gint i;
-	gint expected_position = 0, position;
+	gint expected_position = 0, last_expected_position = 0, position;
 	gint total;
 	gint n_results;
+	EbSdbCursorOrigin origin;
 
 	total = data->filtered ? N_FILTERED_CONTACTS : N_SORTED_CONTACTS;
 
-	for (i = 0; i < MAX_MOVE_BY_COUNTS && data->counts[i] != 0; i++) {
+	for (i = 0; i < MAX_STEP_COUNTS && data->counts[i] != 0; i++) {
 
-		/* From the 0 position, a negative move starts from the end */
+		/* For the first call to e_book_backend_sqlitedb_cursor_step(),
+		 * set the origin accordingly.
+		 */
+		if (i == 0) {
+			if (data->counts[i] < 0)
+				origin = EBSDB_CURSOR_ORIGIN_END;
+			else
+				origin = EBSDB_CURSOR_ORIGIN_BEGIN;
+		} else
+			origin = EBSDB_CURSOR_ORIGIN_CURRENT;
+
 		if (expected_position == 0 && data->counts[i] < 0)
 			expected_position = (total + 1) - ABS (data->counts[i]);
 		else
@@ -622,17 +638,18 @@ test_move_by (EbSdbCursorFixture *fixture,
 		if (expected_position > total || expected_position < 1)
 			expected_position = 0;
 
-		/* Try normal order */
-		n_results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-								    fixture->cursor,
-								    EBSDB_CURSOR_ORIGIN_CURRENT,
-								    data->counts[i],
-								    &results, &error);
+		/* Try only fetching the contacts but not moving the cursor */
+		n_results = e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
+								 fixture->cursor,
+								 EBSDB_CURSOR_STEP_FETCH,
+								 origin,
+								 data->counts[i],
+								 &results, &error);
 		if (n_results < 0)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
-		assert_move_by (fixture, data, i, results, n_results);
+		assert_step (fixture, data, i, results, n_results, TRUE);
 		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (results);
 		results = NULL;
@@ -640,19 +657,26 @@ test_move_by (EbSdbCursorFixture *fixture,
 		if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
 							       fixture->cursor, NULL, &position, &error))
 			g_error ("Error calculating cursor: %s", error->message);
-		g_assert_cmpint (expected_position, ==, position);
 
-		/* Try repeat last query */
-		n_results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-								    fixture->cursor,
-								    EBSDB_CURSOR_ORIGIN_PREVIOUS,
-								    data->counts[i],
-								    &results, &error);
+		/* We only fetched but didn't move.
+		 *
+		 * Check that we are still at the previously expected position.
+		 */
+		g_assert_cmpint (last_expected_position, ==, position);
+		last_expected_position = expected_position;
+
+		/* Do it again, this time only moving the cursor */
+		n_results = e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
+								 fixture->cursor,
+								 EBSDB_CURSOR_STEP_MOVE,
+								 origin,
+								 data->counts[i],
+								 &results, &error);
 		if (n_results < 0)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
-		assert_move_by (fixture, data, i, results, n_results);
+		assert_step (fixture, data, i, results, n_results, FALSE);
 		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (results);
 		results = NULL;
@@ -660,29 +684,36 @@ test_move_by (EbSdbCursorFixture *fixture,
 		if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
 							       fixture->cursor, NULL, &position, &error))
 			g_error ("Error calculating cursor: %s", error->message);
+
+		/* This time we moved the cursor but did not fetch, let's assert the new position
+		 */
 		g_assert_cmpint (expected_position, ==, position);
 	}
 
-	/* One more, test reset API, the first batch from the beginning */
-	n_results = e_book_backend_sqlitedb_cursor_move_by (((ESqliteDBFixture *) fixture)->ebsdb,
-							    fixture->cursor,
-							    EBSDB_CURSOR_ORIGIN_RESET,
-							    data->counts[0],
-							    &results, &error);
+	if (data->counts[0] < 0) {
+		expected_position = (total + 1) - ABS (data->counts[0]);
+		origin = EBSDB_CURSOR_ORIGIN_END;
+	} else {
+		expected_position = data->counts[0];
+		origin = EBSDB_CURSOR_ORIGIN_BEGIN;
+	}
+
+	/* One more, test reset API, the first batch from the beginning, this time move & fetch results together */
+	n_results = e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
+							 fixture->cursor,
+							 EBSDB_CURSOR_STEP_MOVE |
+							 EBSDB_CURSOR_STEP_FETCH,
+							 origin,
+							 data->counts[0],
+							 &results, &error);
 	if (n_results < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
-	assert_move_by (fixture, data, 0, results, n_results);
+	assert_step (fixture, data, 0, results, n_results, TRUE);
 	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
 	g_slist_free (results);
 	results = NULL;
-
-	/* From the 0 position, a negative move starts from the end */
-	if (data->counts[0] < 0)
-		expected_position = (total + 1) - ABS (data->counts[0]);
-	else
-		expected_position = data->counts[0];
 
 	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
 						       fixture->cursor, NULL, &position, &error))
@@ -691,14 +722,14 @@ test_move_by (EbSdbCursorFixture *fixture,
 }
 
 static void
-move_by_test_add_assertion_va_list (MoveByData *data,
-				    gint        count,
-				    va_list     args)
+step_test_add_assertion_va_list (StepData *data,
+				 gint      count,
+				 va_list   args)
 {
 	gint i, j;
 	gint expected;
 
-	for (i = 0; i < MAX_MOVE_BY_COUNTS; i++) {
+	for (i = 0; i < MAX_STEP_COUNTS; i++) {
 
 		/* Find the next available test slot */
 		if (data->counts[i] == 0) {
@@ -724,7 +755,7 @@ move_by_test_add_assertion_va_list (MoveByData *data,
 		}
 	}
 
-	g_assert (i < MAX_MOVE_BY_COUNTS);
+	g_assert (i < MAX_STEP_COUNTS);
 }
 
 /* A positive of negative 'count' value
@@ -735,21 +766,21 @@ move_by_test_add_assertion_va_list (MoveByData *data,
  * in data-test-utils.h
  */
 void
-move_by_test_add_assertion (MoveByData *data,
-			    gint        count,
-			    ...)
+step_test_add_assertion (StepData *data,
+			 gint      count,
+			 ...)
 {
 
 	va_list args;
 
 	va_start (args, count);
-	move_by_test_add_assertion_va_list (data, count, args);
+	step_test_add_assertion_va_list (data, count, args);
 	va_end (args);
 }
 
 void
-move_by_test_add (MoveByData  *data,
-		  gboolean     filtered)
+step_test_add (StepData  *data,
+	       gboolean   filtered)
 {
 	data->filtered = filtered;
 
@@ -757,7 +788,7 @@ move_by_test_add (MoveByData  *data,
 		    filtered ?
 		    e_sqlitedb_cursor_fixture_filtered_setup :
 		    e_sqlitedb_cursor_fixture_setup,
-		    test_move_by,
+		    test_step,
 		    test_cursor_move_teardown);
 }
 
