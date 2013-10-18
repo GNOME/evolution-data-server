@@ -77,15 +77,16 @@ static void           cursor_closure_add              (CursorClosure      *closu
 						       ...) G_GNUC_PRINTF (2, 3);
 
 /* Move By Tests */
-static void           cursor_closure_move_by          (CursorClosure      *closure,
+static void           cursor_closure_step             (CursorClosure      *closure,
+						       EBookCursorStepFlags flags,
 						       EBookCursorOrigin   origin,
 						       gint                count,
 						       gint                expected,
 						       ...);
-static void           cursor_test_move_by             (CursorFixture      *fixture,
+static void           cursor_test_step                (CursorFixture      *fixture,
 						       CursorClosure      *closure,
 						       CursorTest         *test);
-static void           cursor_test_move_by_free        (CursorTest         *test);
+static void           cursor_test_step_free           (CursorTest         *test);
 
 /* Set Sexp Tests */
 static void           cursor_closure_set_sexp         (CursorClosure      *closure,
@@ -198,7 +199,7 @@ struct _CursorClosure {
 };
 
 enum _CursorTestType {
-	CURSOR_TEST_MOVE_BY,
+	CURSOR_TEST_STEP,
 	CURSOR_TEST_SET_SEXP,
 	CURSOR_TEST_POSITION,
 	CURSOR_TEST_ADD_REMOVE,
@@ -503,8 +504,8 @@ cursor_fixture_test (CursorFixture *fixture,
 		CursorTest *test = l->data;
 
 		switch (test->type) {
-		case CURSOR_TEST_MOVE_BY:
-			cursor_test_move_by (fixture, closure, test);
+		case CURSOR_TEST_STEP:
+			cursor_test_step (fixture, closure, test);
 			break;
 		case CURSOR_TEST_SET_SEXP:
 			cursor_test_set_sexp (fixture, closure, test);
@@ -544,8 +545,8 @@ static void
 cursor_test_free (CursorTest    *test)
 {
 	switch (test->type) {
-	case CURSOR_TEST_MOVE_BY:
-		cursor_test_move_by_free (test);
+	case CURSOR_TEST_STEP:
+		cursor_test_step_free (test);
 		break;
 	case CURSOR_TEST_SET_SEXP:
 		cursor_test_set_sexp_free (test);
@@ -630,22 +631,23 @@ cursor_closure_add (CursorClosure *closure,
 }
 
 /******************************************************
- *                     Move By Tests                  *
+ *                      Step Tests                    *
  ******************************************************/
 typedef struct {
 	CursorTestType    type;
 
-	EBookCursorOrigin origin;   /* The origin to move from */
-	gint              count;    /* The amount to move the cursor by (positive or negative) */
+	EBookCursorStepFlags flags;   /* The flags for this step */
+	EBookCursorOrigin origin;   /* The origin to step from */
+	gint              count;    /* The amount of contacts to step the cursor by (positive or negative) */
 	gint              expected; /* The amount of actual results expected */
 	gint              expected_order[N_SORTED_CONTACTS]; /* The expected results */
-} CursorTestMoveBy;
+} CursorTestStep;
 
 typedef struct {
 	CursorFixture    *fixture;
-	CursorTestMoveBy *test;
+	CursorTestStep   *test;
 	gboolean          out_of_sync;
-} MoveByReadyData;
+} StepReadyData;
 
 static gint
 find_contact_link (EContact        *contact,
@@ -683,8 +685,8 @@ assert_contacts_order_slist (GSList      *results,
 }
 
 static void
-move_by_print_results (GSList      *results,
-		       GSList      *uids)
+step_print_results (GSList      *results,
+		    GSList      *uids)
 {
 	GSList *l;
 
@@ -711,10 +713,10 @@ move_by_print_results (GSList      *results,
 }
 
 static void
-cursor_test_assert_results (CursorFixture    *fixture,
-			    CursorTestMoveBy *test,
-			    GSList           *results,
-			    gint              n_reported_results)
+cursor_test_assert_results (CursorFixture  *fixture,
+			    CursorTestStep *test,
+			    GSList         *results,
+			    gint            n_reported_results)
 {
 	GSList *uids = NULL;
 	gint    i;
@@ -727,7 +729,7 @@ cursor_test_assert_results (CursorFixture    *fixture,
 		uids = g_slist_append (uids, uid);
 	}
 
-	move_by_print_results (results, uids);
+	step_print_results (results, uids);
 
 	/* Assert the exact amount of requested results */
 	g_assert_cmpint (g_slist_length (results), ==, test->expected);
@@ -737,26 +739,26 @@ cursor_test_assert_results (CursorFixture    *fixture,
 }
 
 static void
-cursor_test_move_by_free (CursorTest *test)
+cursor_test_step_free (CursorTest *test)
 {
-	CursorTestMoveBy *move_by = (CursorTestMoveBy *)test;
+	CursorTestStep *step = (CursorTestStep *)test;
 
-	g_slice_free (CursorTestMoveBy, move_by);
+	g_slice_free (CursorTestStep, step);
 }
 
 static void
-cursor_test_move_by_ready_cb (GObject      *source_object,
+cursor_test_step_ready_cb (GObject      *source_object,
 			      GAsyncResult *result,
 			      gpointer      user_data)
 {
-	MoveByReadyData    *data = (MoveByReadyData *)user_data;
+	StepReadyData      *data = (StepReadyData *)user_data;
 	ETestServerFixture *server_fixture = (ETestServerFixture *)data->fixture;
 	GSList             *results = NULL;
 	gint                n_reported_results;
 	GError             *error = NULL;
 
 	n_reported_results =
-		e_book_client_cursor_move_by_finish (E_BOOK_CLIENT_CURSOR (source_object),
+		e_book_client_cursor_step_finish (E_BOOK_CLIENT_CURSOR (source_object),
 						     result, &results, &error);
 
 	if (n_reported_results < 0) {
@@ -766,7 +768,7 @@ cursor_test_move_by_ready_cb (GObject      *source_object,
 			data->out_of_sync = TRUE;
 			g_clear_error (&error);
 		} else {
-			g_error ("Error calling e_book_client_cursor_move_by_finish(): %s",
+			g_error ("Error calling e_book_client_cursor_step_finish(): %s",
 				 error->message);
 		}
 	}
@@ -779,24 +781,24 @@ cursor_test_move_by_ready_cb (GObject      *source_object,
 }
 
 static gboolean
-cursor_test_try_move_by (CursorFixture *fixture,
-			 CursorClosure *closure,
-			 CursorTest    *test)
+cursor_test_try_step (CursorFixture *fixture,
+		      CursorClosure *closure,
+		      CursorTest    *test)
 {
 	ETestServerFixture *server_fixture = (ETestServerFixture *)fixture;
-	CursorTestMoveBy   *move_by = (CursorTestMoveBy *)test;
+	CursorTestStep     *step = (CursorTestStep *)test;
 	gboolean            out_of_sync = FALSE;
 
 	if (closure->async) {
-		MoveByReadyData data = { fixture, move_by, FALSE };
+		StepReadyData data = { fixture, step, FALSE };
 
-		e_book_client_cursor_move_by (fixture->cursor,
-					      move_by->origin,
-					      move_by->count,
-					      TRUE,
-					      NULL,
-					      cursor_test_move_by_ready_cb,
-					      &data);
+		e_book_client_cursor_step (fixture->cursor,
+					   step->flags,
+					   step->origin,
+					   step->count,
+					   NULL,
+					   cursor_test_step_ready_cb,
+					   &data);
 
 		/* Wait for result with an error timeout */
 		cursor_fixture_timeout_start (fixture, "Timeout reached while moving the cursor");
@@ -809,11 +811,12 @@ cursor_test_try_move_by (CursorFixture *fixture,
 		gint    n_reported_results;
 
 		n_reported_results =
-			e_book_client_cursor_move_by_sync (fixture->cursor,
-							   move_by->origin,
-							   move_by->count,
-							   &results,
-							   NULL, &error);
+			e_book_client_cursor_step_sync (fixture->cursor,
+							step->flags,
+							step->origin,
+							step->count,
+							&results,
+							NULL, &error);
 
 		if (n_reported_results < 0) {
 			if (g_error_matches (error,
@@ -822,12 +825,12 @@ cursor_test_try_move_by (CursorFixture *fixture,
 				out_of_sync = TRUE;
 				g_clear_error (&error);
 			} else {
-				g_error ("Error calling e_book_client_cursor_move_by_sync(): %s",
+				g_error ("Error calling e_book_client_cursor_step_sync(): %s",
 					 error->message);
 			}
 
 		} else {
-			cursor_test_assert_results (fixture, move_by, results, n_reported_results);
+			cursor_test_assert_results (fixture, step, results, n_reported_results);
 		}
 
 		g_slist_free_full (results, g_object_unref);
@@ -837,16 +840,16 @@ cursor_test_try_move_by (CursorFixture *fixture,
 }
 
 static void
-move_by_refreshed (EBookClientCursor *cursor,
-		   GMainLoop         *loop)
+step_refreshed (EBookClientCursor *cursor,
+		GMainLoop         *loop)
 {
 	g_main_loop_quit (loop);
 }
 
 static void
-cursor_test_move_by (CursorFixture *fixture,
-		     CursorClosure *closure,
-		     CursorTest    *test)
+cursor_test_step (CursorFixture *fixture,
+		  CursorClosure *closure,
+		  CursorTest    *test)
 {
 	ETestServerFixture *server_fixture = (ETestServerFixture *)fixture;
 	gint                i;
@@ -854,17 +857,17 @@ cursor_test_move_by (CursorFixture *fixture,
 
 	/* Should only ever really be once, but in practice code
 	 * should be written to continually fallback until a synchronized
-	 * move_by() call passes */
+	 * step() call passes */
 	for (i = 0; i < 3 && success == FALSE; i++) {
 		gulong refresh_id;
 
 		/* Wait for a refresh which follows an out-of-sync move by */
 		refresh_id = g_signal_connect (fixture->cursor, "refresh",
-					       G_CALLBACK (move_by_refreshed),
+					       G_CALLBACK (step_refreshed),
 					       server_fixture->loop);
 
-		/* Stop trying after the first move_by() is not out-of-sync */
-		success = cursor_test_try_move_by (fixture, closure, test);
+		/* Stop trying after the first step() is not out-of-sync */
+		success = cursor_test_try_step (fixture, closure, test);
 
 		if (!success) {
 			cursor_fixture_timeout_start (fixture, "Timeout reached while waiting for refresh event");
@@ -877,20 +880,22 @@ cursor_test_move_by (CursorFixture *fixture,
 }
 
 static void
-cursor_closure_move_by (CursorClosure      *closure,
-			EBookCursorOrigin   origin,
-			gint                count,
-			gint                expected,
-			...)
+cursor_closure_step (CursorClosure        *closure,
+		     EBookCursorStepFlags  flags,
+		     EBookCursorOrigin     origin,
+		     gint                  count,
+		     gint                  expected,
+		     ...)
 {
-	CursorTestMoveBy *test = g_slice_new0 (CursorTestMoveBy);
+	CursorTestStep *test = g_slice_new0 (CursorTestStep);
 	va_list args;
 	gint i;
 
  	g_assert (expected <= N_SORTED_CONTACTS);
  	g_assert (ABS (count) <= N_SORTED_CONTACTS);
 
-	test->type     = CURSOR_TEST_MOVE_BY;
+	test->type     = CURSOR_TEST_STEP;
+	test->flags    = flags;
 	test->origin   = origin;
 	test->count    = count;
 	test->expected = expected;
@@ -1865,20 +1870,21 @@ typedef struct {
 	CursorClosure  *closure;
 	CursorThread   *thread;
 
-	gboolean        async;
-	gboolean        out_of_sync;
-} MoveByLoopData;
+	guint           async : 1;
+	guint           out_of_sync : 1;
+	guint           end_of_list : 1;
+} StepLoopData;
 
 static void
-move_by_loop_ready_cb (GObject      *source_object,
-		       GAsyncResult *result,
-		       gpointer      user_data)
+step_loop_ready_cb (GObject      *source_object,
+		    GAsyncResult *result,
+		    gpointer      user_data)
 {
-	MoveByLoopData *data = (MoveByLoopData *)user_data;
-	GSList         *results = NULL;
-	GError         *error = NULL;
+	StepLoopData *data = (StepLoopData *)user_data;
+	GSList       *results = NULL;
+	GError       *error = NULL;
 
-	if (e_book_client_cursor_move_by_finish (E_BOOK_CLIENT_CURSOR (source_object),
+	if (e_book_client_cursor_step_finish (E_BOOK_CLIENT_CURSOR (source_object),
 						 result, &results, &error) < 0) {
 
 		if (g_error_matches (error,
@@ -1886,8 +1892,13 @@ move_by_loop_ready_cb (GObject      *source_object,
 				     E_CLIENT_ERROR_OUT_OF_SYNC)) {
 			data->out_of_sync = TRUE;
 			g_clear_error (&error);
+		} else if (g_error_matches (error,
+					    E_CLIENT_ERROR,
+					    E_CLIENT_ERROR_END_OF_LIST)) {
+			data->end_of_list = TRUE;
+			g_clear_error (&error);
 		} else {
-			g_error ("Error calling e_book_client_cursor_move_by_finish(): %s",
+			g_error ("Error calling e_book_client_cursor_step_finish(): %s",
 				 error->message);
 		}
 	}
@@ -1897,45 +1908,58 @@ move_by_loop_ready_cb (GObject      *source_object,
 }
 
 static void
-move_by_loop_refreshed (EBookClientCursor *cursor,
-			MoveByLoopData    *data)
+step_loop_refreshed (EBookClientCursor *cursor,
+		     StepLoopData      *data)
 {
 	g_main_loop_quit (data->thread->loop);
 }
 
 static void
-move_by_loop_iteration (MoveByLoopData *data)
+step_loop_iteration (StepLoopData *data)
 {
+	EBookCursorOrigin origin = E_BOOK_CURSOR_ORIGIN_CURRENT;
 	GError *error = NULL;
 	GSList *results = NULL;
 
-	if (data->async) {
-		e_book_client_cursor_move_by (data->thread->cursor,
-					      E_BOOK_CURSOR_ORIGIN_CURRENT,
-					      3,
-					      TRUE,
-					      NULL,
-					      move_by_loop_ready_cb,
-					      data);
+	if (data->end_of_list) {
+		origin = E_BOOK_CURSOR_ORIGIN_BEGIN;
+		data->end_of_list = FALSE;
+	}
 
-		cursor_thread_timeout_start (data->thread, "Timeout reached waiting for move_by() reply in a thread");
+	if (data->async) {
+
+		e_book_client_cursor_step (data->thread->cursor,
+					   E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+					   origin,
+					   3,
+					   NULL,
+					   step_loop_ready_cb,
+					   data);
+
+		cursor_thread_timeout_start (data->thread, "Timeout reached waiting for step() reply in a thread");
 		g_main_loop_run (data->thread->loop);
 		cursor_thread_timeout_cancel (data->thread);
 	} else {
 
-		if (e_book_client_cursor_move_by_sync (data->thread->cursor,
-						       E_BOOK_CURSOR_ORIGIN_CURRENT,
-						       3,
-						       &results,
-						       NULL, &error) < 0) {
+		if (e_book_client_cursor_step_sync (data->thread->cursor,
+						    E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+						    origin,
+						    3,
+						    &results,
+						    NULL, &error) < 0) {
 
 			if (g_error_matches (error,
 					     E_CLIENT_ERROR,
 					     E_CLIENT_ERROR_OUT_OF_SYNC)) {
 				data->out_of_sync = TRUE;
 				g_clear_error (&error);
+			} else if (g_error_matches (error,
+						    E_CLIENT_ERROR,
+						    E_CLIENT_ERROR_END_OF_LIST)) {
+				data->end_of_list = TRUE;
+				g_clear_error (&error);
 			} else {
-				g_error ("Error calling e_book_client_cursor_move_by_sync(): %s",
+				g_error ("Error calling e_book_client_cursor_step_sync(): %s",
 					 error->message);
 			}
 		}
@@ -1947,13 +1971,13 @@ move_by_loop_iteration (MoveByLoopData *data)
 	if (data->out_of_sync) {
 
 		gulong refresh_id = g_signal_connect (data->thread->cursor, "refresh",
-						      G_CALLBACK (move_by_loop_refreshed),
+						      G_CALLBACK (step_loop_refreshed),
 						      data);
 
 
 		cursor_thread_timeout_start (data->thread,
 					     "Timeout reached waiting for a refresh "
-					     "event after an out-of-sync return by move_by()");
+					     "event after an out-of-sync return by step()");
 		g_main_loop_run (data->thread->loop);
 		cursor_thread_timeout_cancel (data->thread);
 
@@ -1964,17 +1988,17 @@ move_by_loop_iteration (MoveByLoopData *data)
 }
 
 static void
-move_by_loop (CursorFixture  *fixture,
+step_loop (CursorFixture  *fixture,
 	      CursorClosure  *closure,
 	      CursorThread   *thread,
 	      gpointer        user_data)
 {
-	gboolean  async = GPOINTER_TO_INT (user_data);
-	MoveByLoopData data = { fixture, closure, thread, async, FALSE };
-	gint      i;
+	gboolean async = GPOINTER_TO_INT (user_data);
+	StepLoopData data = { fixture, closure, thread, async, FALSE, FALSE };
+	gint i;
 
 	for (i = 0; i < THREAD_ITERATIONS; i++) {
-		move_by_loop_iteration (&data);
+		step_loop_iteration (&data);
 	}
 }
 
@@ -2035,17 +2059,19 @@ main (gint argc,
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
 		cursor_closure_position (closure, 20, 20, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Order/POSIX%s", base_params[i].base_path);
 
@@ -2053,17 +2079,19 @@ main (gint argc,
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "en_US.utf8");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
 		cursor_closure_position (closure, 20, 20, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Order/en_US%s", base_params[i].base_path);
 
@@ -2071,17 +2099,19 @@ main (gint argc,
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "fr_CA.utf8");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 13, 12, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 13, 12, 9,  19, 20);
 		cursor_closure_position (closure, 20, 20, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Order/fr_CA%s", base_params[i].base_path);
 
@@ -2089,17 +2119,19 @@ main (gint argc,
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "de_DE.utf8");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 1,  2,  5,  6, 7,  8,  4,  3,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 1,  2,  5,  6, 7,  8,  4,  3,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  20, 19);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  20, 19);
 		cursor_closure_position (closure, 20, 20, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Order/de_DE%s", base_params[i].base_path);
 
@@ -2110,17 +2142,19 @@ main (gint argc,
 		/* Overshooting the contact list causes position to become 0 */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					11, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     11, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/Overshoot%s", base_params[i].base_path);
 
@@ -2128,97 +2162,109 @@ main (gint argc,
 		 * (moving -20 should give us position 1) */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-10, /* Count */
-					10, /* Expected results */
-					20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-11, /* Count */
-					10, /* Expected results */
-					15, 7, 4, 5, 1, 8, 3, 6, 2, 11);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     -11, /* Count */
+				     10, /* Expected results */
+				     15, 7, 4, 5, 1, 8, 3, 6, 2, 11);
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/Undershoot%s", base_params[i].base_path);
 
 		/* Resetting query to get the beginning of the results */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_RESET,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/Reset/Forward%s", base_params[i].base_path);
 
 		/* Resetting query to get the ending of the results (backwards) */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-10, /* Count */
-					10, /* Expected results */
-					20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_RESET,
-					-10, /* Count */
-					10, /* Expected results */
-					20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/Reset/Backwards%s", base_params[i].base_path);
 
 		/* Move twice and then repeat query */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					5, /* Count */
-					5, /* Expected results */
-					17, 16, 18, 10, 14);
-		cursor_closure_position (closure, 20, 15, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_PREVIOUS,
-					5, /* Count */
-					5, /* Expected results */
-					17, 16, 18, 10, 14);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     5, /* Count */
+				     5, /* Expected results */
+				     17, 16, 18, 10, 14);
+		cursor_closure_position (closure, 20, 10, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     5, /* Count */
+				     5, /* Expected results */
+				     17, 16, 18, 10, 14);
 		cursor_closure_position (closure, 20, 15, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/RepeatPrevious/Forward%s", base_params[i].base_path);
 
 		/* Move twice and then repeat query */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-10, /* Count */
-					10, /* Expected results */
-					20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-5, /* Count */
-					5, /* Expected results */
-					15, 7, 4, 5, 1);
-		cursor_closure_position (closure, 20, 6, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_PREVIOUS,
-					-5, /* Count */
-					5, /* Expected results */
-					15, 7, 4, 5, 1);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     -5, /* Count */
+				     5, /* Expected results */
+				     15, 7, 4, 5, 1);
+		cursor_closure_position (closure, 20, 11, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     -5, /* Count */
+				     5, /* Expected results */
+				     15, 7, 4, 5, 1);
 		cursor_closure_position (closure, 20, 6, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Move/RepeatPrevious/Backwards%s", base_params[i].base_path);
 
@@ -2249,11 +2295,12 @@ main (gint argc,
 		/* Query Changes Position */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,	
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
 		cursor_closure_set_sexp (closure,
 					 e_book_query_field_test (
@@ -2316,11 +2363,12 @@ main (gint argc,
 		/* Test that adding a contact changes the total / position appropriately */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
 		cursor_closure_add_contact (closure, "custom-3");
 		cursor_closure_position (closure, 21, 11, FALSE);
@@ -2329,11 +2377,12 @@ main (gint argc,
 		/* Test that adding a contact changes the total / position appropriately after having moved from the end */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-10, /* Count */
-					10, /* Expected results */
-					20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
 		cursor_closure_add_contact (closure, "custom-3");
 		cursor_closure_position (closure, 21, 12, FALSE);
@@ -2342,11 +2391,12 @@ main (gint argc,
 		/* Test that removing a contact changes the total / position appropriately */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
 		cursor_closure_remove_contact (closure, "sorted-14");
 		cursor_closure_position (closure, 19, 10, FALSE);
@@ -2355,11 +2405,12 @@ main (gint argc,
 		/* Test that removing a contact changes the total / position appropriately after having moved from the end */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					-10, /* Count */
-					10, /* Expected results */
-					20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
 		cursor_closure_remove_contact (closure, "sorted-14");
 		cursor_closure_position (closure, 19, 11, FALSE);
@@ -2411,68 +2462,76 @@ main (gint argc,
 		/* Start in POSIX */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
 		cursor_closure_position (closure, 20, 20, TRUE);
 
 		/* Now in en_US */
 		cursor_closure_change_locale (closure, "en_US.utf8");
 		cursor_closure_spin_loop (closure, 0);
 		cursor_closure_position (closure, 20, 0, FALSE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
 		cursor_closure_position (closure, 20, 20, TRUE);
 
 		/* Now in fr_CA */
 		cursor_closure_change_locale (closure, "fr_CA.utf8");
 		cursor_closure_spin_loop (closure, 0);
 		cursor_closure_position (closure, 20, 0, FALSE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 1,  2,  5,  6, 4,  3,  7,  8,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 13, 12, 9,  19, 20);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 13, 12, 9,  19, 20);
 		cursor_closure_position (closure, 20, 20, TRUE);
 
 		/* Now in de_DE */
 		cursor_closure_change_locale (closure, "de_DE.utf8");
 		cursor_closure_spin_loop (closure, 0);
 		cursor_closure_position (closure, 20, 0, FALSE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 1,  2,  5,  6, 7,  8,  4,  3,  15);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 1,  2,  5,  6, 7,  8,  4,  3,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					17, 16, 18, 10, 14, 12, 13, 9,  20, 19);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  20, 19);
 		cursor_closure_position (closure, 20, 20, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Order%s", base_params[i].base_path);
 
@@ -2537,7 +2596,7 @@ main (gint argc,
 			 * This test performs a series of cursor moves in a dedicated
 			 * thread while the main thread is repeatedly modifying the addressbook
 			 *
-			 * The move_by_loop() will encounter races where it finds that the addressbook
+			 * The step_loop() will encounter races where it finds that the addressbook
 			 * has been modified, when E_CLIENT_ERROR_OUT_OF_SYNC is reported then it will
 			 * wait for a refresh and then continue.
 			 *
@@ -2547,7 +2606,7 @@ main (gint argc,
 			 */
 			closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 			thread = cursor_closure_thread (closure, thread_params[j].dedicated_cursor, "move-by-thread");
-			cursor_thread_add_test (thread, move_by_loop,
+			cursor_thread_add_test (thread, step_loop,
 						GINT_TO_POINTER (thread_params[j].async), NULL);
 
 			for (k = 0; k < THREAD_ITERATIONS; k++) {
@@ -2557,7 +2616,7 @@ main (gint argc,
 				cursor_closure_spin_loop (closure, 0);
 			}
 			cursor_closure_thread_join (closure, thread);
-			cursor_closure_add (closure, "/EBookClientCursor/Thread/MoveBy/AddingAndRemoving%s%s",
+			cursor_closure_add (closure, "/EBookClientCursor/Thread/Step/AddingAndRemoving%s%s",
 					    base_params[i].base_path,
 					    thread_params[j].base_path);
 
@@ -2566,7 +2625,7 @@ main (gint argc,
 			 */
 			closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 			thread = cursor_closure_thread (closure, thread_params[j].dedicated_cursor, "move-by-thread");
-			cursor_thread_add_test (thread, move_by_loop,
+			cursor_thread_add_test (thread, step_loop,
 						GINT_TO_POINTER (thread_params[j].async), NULL);
 
 			for (k = 0; k < THREAD_ITERATIONS; k++) {
@@ -2576,18 +2635,18 @@ main (gint argc,
 				cursor_closure_spin_loop (closure, 0);
 			}
 			cursor_closure_thread_join (closure, thread);
-			cursor_closure_add (closure, "/EBookClientCursor/Thread/MoveBy/ChangingLocale%s%s",
+			cursor_closure_add (closure, "/EBookClientCursor/Thread/Step/ChangingLocale%s%s",
 					    base_params[i].base_path,
 					    thread_params[j].base_path);
 
 
 
-			/* Add / Remove contacts with multiple threaded move_by() operations going on concurrently */
+			/* Add / Remove contacts with multiple threaded step() operations going on concurrently */
 			closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 
 			for (k = 0; k < CONCURRENT_THREADS; k++) {
 				threads[k] = cursor_closure_thread (closure, thread_params[j].dedicated_cursor, "move-by-thread");
-				cursor_thread_add_test (threads[k], move_by_loop,
+				cursor_thread_add_test (threads[k], step_loop,
 							GINT_TO_POINTER (thread_params[j].async), NULL);
 			}
 
@@ -2601,7 +2660,7 @@ main (gint argc,
 			for (k = 0; k < CONCURRENT_THREADS; k++)
 				cursor_closure_thread_join (closure, threads[k]);
 
-			cursor_closure_add (closure, "/EBookClientCursor/MultipleThreads/MoveBy/AddingAndRemoving%s%s",
+			cursor_closure_add (closure, "/EBookClientCursor/MultipleThreads/Step/AddingAndRemoving%s%s",
 					    base_params[i].base_path,
 					    thread_params[j].base_path);
 
