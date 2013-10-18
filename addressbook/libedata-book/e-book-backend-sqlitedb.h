@@ -74,6 +74,7 @@ typedef struct _EBookBackendSqliteDBPrivate EBookBackendSqliteDBPrivate;
  * @E_BOOK_SDB_ERROR_NOT_SUPPORTED: A query was not supported
  * @E_BOOK_SDB_ERROR_INVALID_QUERY: A query was invalid. This can happen if the sexp could not be parsed
  *                                  or if a phone number query contained non-phonenumber input.
+ * @E_BOOK_SDB_ERROR_END_OF_LIST: An attempt was made to fetch results past the end of a contact list
  *
  * Defines the types of possible errors reported by the #EBookBackendSqliteDB
  */
@@ -82,7 +83,8 @@ typedef enum {
 	E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND,
 	E_BOOK_SDB_ERROR_OTHER,
 	E_BOOK_SDB_ERROR_NOT_SUPPORTED,
-	E_BOOK_SDB_ERROR_INVALID_QUERY
+	E_BOOK_SDB_ERROR_INVALID_QUERY,
+	E_BOOK_SDB_ERROR_END_OF_LIST
 } EBookSDBError;
 
 /**
@@ -127,23 +129,36 @@ typedef struct _EbSdbCursor EbSdbCursor;
 /**
  * EbSdbCursorOrigin:
  * @EBSDB_CURSOR_ORIGIN_CURRENT:  The current cursor position
- * @EBSDB_CURSOR_ORIGIN_PREVIOUS: The previously recorded cursor position, this can be used to repeat the previous query
- * @EBSDB_CURSOR_ORIGIN_RESET:    The beginning of the cursor results (or end of the results, if navigating in reverse).
+ * @EBSDB_CURSOR_ORIGIN_BEGIN:    The beginning of the cursor results.
+ * @EBSDB_CURSOR_ORIGIN_END:      The ending of the cursor results.
  *
- * Defines the behaviour of e_book_backend_sqlitedb_cursor_move_by().
+ * Specifies the start position to in the list of traversed contacts
+ * in calls to e_book_backend_sqlitedb_cursor_step().
  *
- * The cursor always saves the previous cursor position as well as
- * the new cursor position after performing a move. This allows
- * cursor queries to be repeated in the case where content may have
- * changed but the same content window should be refreshed in a UI.
+ * When an #EbSdbCuror is created, the current position implied by %EBSDB_CURSOR_ORIGIN_CURRENT
+ * is the same as %EBSDB_CURSOR_ORIGIN_BEGIN.
  *
  * Since: 3.12
  */
 typedef enum {
-	EBSDB_CURSOR_ORIGIN_CURRENT,
-	EBSDB_CURSOR_ORIGIN_PREVIOUS,
-	EBSDB_CURSOR_ORIGIN_RESET
+	EBSDB_CURSOR_ORIGIN_CURRENT = 0,
+	EBSDB_CURSOR_ORIGIN_BEGIN,
+	EBSDB_CURSOR_ORIGIN_END
 } EbSdbCursorOrigin;
+
+/**
+ * EbSdbCursorStepFlags:
+ * @EBSDB_CURSOR_STEP_MOVE:  The cursor position should be modified while stepping
+ * @EBSDB_CURSOR_STEP_FETCH: Traversed contacts should be listed and returned while stepping.
+ *
+ * Defines the behaviour of e_book_backend_sqlitedb_cursor_step().
+ *
+ * Since: 3.12
+ */
+typedef enum {
+	EBSDB_CURSOR_STEP_MOVE  = (1 << 0),
+	EBSDB_CURSOR_STEP_FETCH = (1 << 1)
+} EbSdbCursorStepFlags;
 
 GType		e_book_backend_sqlitedb_get_type
 						(void) G_GNUC_CONST;
@@ -334,9 +349,10 @@ EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
 void            e_book_backend_sqlitedb_cursor_free
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor);
-gint            e_book_backend_sqlitedb_cursor_move_by
+gint            e_book_backend_sqlitedb_cursor_step
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
+						 EbSdbCursorStepFlags  flags,
 						 EbSdbCursorOrigin     origin,
 						 gint                  count,
 						 GSList              **results,

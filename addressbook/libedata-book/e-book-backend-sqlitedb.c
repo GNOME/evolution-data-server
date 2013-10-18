@@ -5473,18 +5473,19 @@ e_book_backend_sqlitedb_get_locale (EBookBackendSqliteDB *ebsdb,
 }
 
 /******************************************************************
- *                          EbSdbCursor apis                       *
+ *                          EbSdbCursor apis                      *
  ******************************************************************/
-typedef struct {
-	gchar        **values;        /* The cursor position, results will be returned after this position */
-	gchar         *last_uid;      /* The cursor contact UID position, used as a tie breaker */
-} CursorState;
+typedef struct _CursorState CursorState;
 
-typedef enum {
-	STATE_PREVIOUS,
-	STATE_CURRENT,
-	N_CURSOR_STATES
-} CursorStateType;
+struct _CursorState {
+	gchar            **values;    /* The current cursor position, results will be returned after this position */
+	gchar             *last_uid;  /* The current cursor contact UID position, used as a tie breaker */
+	EbSdbCursorOrigin  position;  /* The position is updated with the cursor state and is used to distinguish
+				       * between the beginning and the ending of the cursor's contact list.
+				       * While the cursor is in a non-null state, the position will be 
+				       * EBSDB_CURSOR_ORIGIN_CURRENT.
+				       */
+};
 
 struct _EbSdbCursor {
 	gchar         *folderid;      /* The folderid for this cursor */
@@ -5500,8 +5501,109 @@ struct _EbSdbCursor {
 	EBookCursorSortType *sort_types;    /* The sort method to use for each field */
 	gint                 n_sort_fields; /* The amound of sort fields */
 
-	CursorState    state[N_CURSOR_STATES];
+	CursorState          state;
 };
+
+static CursorState *cursor_state_copy             (EbSdbCursor          *cursor,
+						   CursorState          *state);
+static void         cursor_state_free             (EbSdbCursor          *cursor,
+						   CursorState          *state);
+static void         cursor_state_clear            (EbSdbCursor          *cursor,
+						   CursorState          *state,
+						   EbSdbCursorOrigin     position);
+static void         cursor_state_set_from_contact (EBookBackendSqliteDB *ebsdb,
+						   EbSdbCursor          *cursor,
+						   CursorState          *state,
+						   EContact             *contact);
+static void         cursor_state_set_from_vcard   (EBookBackendSqliteDB *ebsdb,
+						   EbSdbCursor          *cursor,
+						   CursorState          *state,
+						   const gchar          *vcard);
+
+static CursorState *
+cursor_state_copy (EbSdbCursor        *cursor,
+		   CursorState        *state)
+{
+	CursorState *copy;
+	gint i;
+
+	copy = g_slice_new0 (CursorState);
+	copy->values = g_new0 (gchar *, cursor->n_sort_fields);
+
+	for (i = 0; i < cursor->n_sort_fields; i++)
+		copy->values[i] = g_strdup (state->values[i]);
+
+	copy->last_uid = g_strdup (state->last_uid);
+	copy->position = state->position;
+
+	return copy;
+}
+
+static void
+cursor_state_free (EbSdbCursor  *cursor,
+		   CursorState  *state)
+{
+	if (state) {
+		cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_BEGIN);
+		g_free (state->values);
+		g_slice_free (CursorState, state);
+	}
+}
+
+static void
+cursor_state_clear (EbSdbCursor        *cursor,
+		    CursorState        *state,
+		    EbSdbCursorOrigin   position)
+{
+	gint i;
+
+	for (i = 0; i < cursor->n_sort_fields; i++) {
+		g_free (state->values[i]);
+		state->values[i] = NULL;
+	}
+
+	g_free (state->last_uid);
+	state->last_uid = NULL;
+	state->position = position;
+}
+
+static void
+cursor_state_set_from_contact (EBookBackendSqliteDB *ebsdb,
+			       EbSdbCursor          *cursor,
+			       CursorState          *state,
+			       EContact             *contact)
+{
+	gint i;
+
+	cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_BEGIN);
+
+	for (i = 0; i < cursor->n_sort_fields; i++) {
+		const gchar *string = e_contact_get_const (contact, cursor->sort_fields[i]);
+
+		if (string)
+			state->values[i] =
+				e_collator_generate_key (ebsdb->priv->collator,
+							 string, NULL);
+		else
+			state->values[i] = g_strdup ("");
+	}
+
+	state->last_uid = e_contact_get (contact, E_CONTACT_UID);
+	state->position = EBSDB_CURSOR_ORIGIN_CURRENT;
+}
+
+static void
+cursor_state_set_from_vcard (EBookBackendSqliteDB *ebsdb,
+			     EbSdbCursor          *cursor,
+			     CursorState          *state,
+			     const gchar          *vcard)
+{
+	EContact *contact;
+
+	contact = e_contact_new_from_vcard (vcard);
+	cursor_state_set_from_contact (ebsdb, cursor, state, contact);
+	g_object_unref (contact);
+}
 
 static void
 ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
@@ -5591,7 +5693,6 @@ ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
 		  guint                 n_sort_fields)
 {
 	EbSdbCursor *cursor = g_slice_new0 (EbSdbCursor);
-	gint i;
 
 	cursor->folderid = g_strdup (folderid);
 
@@ -5609,59 +5710,25 @@ ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
 								n_sort_fields,
 								TRUE);
 
-	cursor->n_sort_fields = n_sort_fields;
-	cursor->sort_fields   = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
-	cursor->sort_types    = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
+	/* Sort parameters */
+	cursor->n_sort_fields  = n_sort_fields;
+	cursor->sort_fields    = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
+	cursor->sort_types     = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
 
-	for (i = 0; i < N_CURSOR_STATES; i++)
-		cursor->state[i].values = g_new0 (gchar *, n_sort_fields);
+	/* Cursor state */
+	cursor->state.values   = g_new0 (gchar *, n_sort_fields);
+	cursor->state.last_uid = NULL;
+	cursor->state.position = EBSDB_CURSOR_ORIGIN_BEGIN;
 
 	return cursor;
 }
 
 static void
-ebsdb_cursor_clear_state (EbSdbCursor      *cursor,
-			  CursorStateType   state_type)
-{
-	gint i;
-
-	for (i = 0; i < cursor->n_sort_fields; i++) {
-		g_free (cursor->state[state_type].values[i]);
-		cursor->state[state_type].values[i] = NULL;
-	}
-
-	g_free (cursor->state[state_type].last_uid);
-	cursor->state[state_type].last_uid = NULL;
-}
-
-static void
-ebsdb_cursor_swap_state (EbSdbCursor      *cursor)
-{
-	gchar **tmp_values;
-	gchar  *tmp_last_uid;
-
-	/* Swap the current values and the previous values */
-	tmp_values = cursor->state[STATE_CURRENT].values;
-	cursor->state[STATE_CURRENT].values  = cursor->state[STATE_PREVIOUS].values;
-	cursor->state[STATE_PREVIOUS].values = tmp_values;
-
-	/* Swap the current uid and the previous uid */
-	tmp_last_uid = cursor->state[STATE_CURRENT].last_uid;
-	cursor->state[STATE_CURRENT].last_uid  = cursor->state[STATE_PREVIOUS].last_uid;
-	cursor->state[STATE_PREVIOUS].last_uid = tmp_last_uid;
-}
-
-static void
 ebsdb_cursor_free (EbSdbCursor *cursor)
 {
-	gint i;
-
 	if (cursor) {
-
-		for (i = 0; i < N_CURSOR_STATES; i++) {
-			ebsdb_cursor_clear_state (cursor, i);
-			g_free (cursor->state[i].values);
-		}
+		cursor_state_clear (cursor, &(cursor->state), EBSDB_CURSOR_ORIGIN_BEGIN);
+		g_free (cursor->state.values);
 
 		g_clear_object (&(cursor->sexp));
 		g_free (cursor->folderid);
@@ -5677,43 +5744,6 @@ ebsdb_cursor_free (EbSdbCursor *cursor)
 	}
 }
 
-static void
-ebsdb_cursor_set_state_from_contact (EBookBackendSqliteDB *ebsdb,
-				     EbSdbCursor          *cursor,
-				     EContact             *contact)
-{
-	gint i;
-
-	/* Push the current state into the previous state and clear the current state */
-	ebsdb_cursor_swap_state (cursor);
-	ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
-
-	for (i = 0; i < cursor->n_sort_fields; i++) {
-		const gchar *string = e_contact_get_const (contact, cursor->sort_fields[i]);
-
-		if (string)
-			cursor->state[STATE_CURRENT].values[i] =
-				e_collator_generate_key (ebsdb->priv->collator,
-							 string, NULL);
-		else
-			cursor->state[STATE_CURRENT].values[i] = g_strdup ("");
-	}
-
-	cursor->state[STATE_CURRENT].last_uid = e_contact_get (contact, E_CONTACT_UID);
-}
-
-static void
-ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
-			EbSdbCursor          *cursor,
-			const gchar          *vcard)
-{
-	EContact *contact;
-
-	contact = e_contact_new_from_vcard (vcard);
-	ebsdb_cursor_set_state_from_contact (ebsdb, cursor, contact);
-	g_object_unref (contact);
-}
-
 #define GREATER_OR_LESS(cursor, index, reverse)				\
 	(reverse ?							\
 	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '<' : '>') : \
@@ -5722,6 +5752,7 @@ ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
 static gchar *
 ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 			  EbSdbCursor          *cursor,
+			  CursorState          *state,
 			  gboolean              reverse,
 			  gboolean              include_current_uid)
 {
@@ -5752,12 +5783,12 @@ ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 
 	string = g_string_new (NULL);
 
-	for (i = 0; i < (cursor->n_sort_fields + 1); i++) {
+	for (i = 0; i <= cursor->n_sort_fields; i++) {
 		gchar   *stmt;
 
 		/* Break once we hit a NULL value */
-		if ((i  < cursor->n_sort_fields && cursor->state[STATE_CURRENT].values[i] == NULL) ||
-		    (i == cursor->n_sort_fields && cursor->state[STATE_CURRENT].last_uid  == NULL))
+		if ((i  < cursor->n_sort_fields && state->values[i] == NULL) ||
+		    (i == cursor->n_sort_fields && state->last_uid  == NULL))
 			break;
 
 		/* Between each qualifier, add an 'OR' */
@@ -5772,8 +5803,7 @@ ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 			field_name = summary_dbname_from_field (ebsdb, cursor->sort_fields[j]);
 
 			stmt = sqlite3_mprintf ("summary.%s_localized = %Q",
-						field_name,
-						cursor->state[STATE_CURRENT].values[j]);
+						field_name, state->values[j]);
 
 			g_string_append (string, stmt);
 			g_string_append (string, " AND ");
@@ -5794,13 +5824,13 @@ ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 			/* Append the UID tie breaker */
 			stmt = sqlite3_mprintf ("summary.uid %c %Q",
 						reverse ? '<' : '>',
-						cursor->state[STATE_CURRENT].last_uid);
+						state->last_uid);
 			g_string_append (string, stmt);
 			sqlite3_free (stmt);
 
 			if (include_current_uid) {
 				stmt = sqlite3_mprintf (" OR summary.uid = %Q",
-							cursor->state[STATE_CURRENT].last_uid);
+							state->last_uid);
 				g_string_append (string, stmt);
 				g_string_append_c (string, ')');
 				sqlite3_free (stmt);
@@ -5816,8 +5846,8 @@ ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 			 */
 			gboolean include_exact_match =
 				(reverse == FALSE &&
-				 ((i + 1 < cursor->n_sort_fields && cursor->state[STATE_CURRENT].values[i + 1] == NULL) ||
-				  (i + 1 == cursor->n_sort_fields && cursor->state[STATE_CURRENT].last_uid == NULL)));
+				 ((i + 1 < cursor->n_sort_fields && state->values[i + 1] == NULL) ||
+				  (i + 1 == cursor->n_sort_fields && state->last_uid == NULL)));
 
 			if (include_exact_match)
 				g_string_append_c (string, '(');
@@ -5828,7 +5858,7 @@ ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 			stmt = sqlite3_mprintf ("summary.%s_localized %c %Q",
 						field_name,
 						GREATER_OR_LESS (cursor, i, reverse),
-						cursor->state[STATE_CURRENT].values[i]);
+						state->values[i]);
 
 			g_string_append (string, stmt);
 			sqlite3_free (stmt);
@@ -5836,7 +5866,7 @@ ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
 			if (include_exact_match) {
 
 				stmt = sqlite3_mprintf (" OR summary.%s_localized = %Q",
-							field_name, cursor->state[STATE_CURRENT].values[i]);
+							field_name, state->values[i]);
 
 				g_string_append (string, stmt);
 				g_string_append_c (string, ')');
@@ -5901,7 +5931,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
 	}
 
 	/* Add the cursor constraints (if any) */
-	if (cursor->state[STATE_CURRENT].values[0] != NULL) {
+	if (cursor->state.values[0] != NULL) {
 		gchar *constraints = NULL;
 
 		if (!cursor->query)
@@ -5913,7 +5943,9 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
 		 * results leading up to the current cursor value, including
 		 * the cursor value
 		 */
-		constraints = ebsdb_cursor_constraints (ebsdb, cursor, TRUE, TRUE);
+		constraints = ebsdb_cursor_constraints (ebsdb, cursor,
+							&(cursor->state),
+							TRUE, TRUE);
 
 		g_string_append_c (query, '(');
 		g_string_append (query, constraints);
@@ -6061,53 +6093,93 @@ collect_results_for_cursor_cb (gpointer ref,
 }
 
 /**
- * e_book_backend_sqlitedb_cursor_move_by:
+ * e_book_backend_sqlitedb_cursor_step:
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor to use
- * @origin: The #EbSdbCursorOrigin for this move
+ * @flags: The #EbSdbCursorStepFlags for this step
+ * @origin: The #EbSdbCursorOrigin from whence to step
  * @count: A positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type EbSdbSearchData) (transfer full):
- *   A return location to store the results, or %NULL to move the cursor without retrieving any results.
+ *   A return location to store the results, or %NULL if %EBSDB_CURSOR_STEP_FETCH is not specified in %flags.
  * @error: A return location to store any error that might be reported.
  *
- * Moves @cursor through the @ebsdb by @count and fetch a maximum of @count contacts.
+ * Steps @cursor through it's sorted query by a maximum of @count contacts
+ * starting from @origin.
  *
- * If @count is negative, then the cursor will move backwards.
- *
- * If @cursor is in an empty state, or @origin is %EBSDB_CURSOR_ORIGIN_RESET,
- * then @count contacts will be fetched from the beginning of the cursor's query
- * results, or from the ending of the query results for a negative value of @count.
+ * If @count is negative, then the cursor will move through the list in reverse.
  *
  * If @cursor reaches the beginning or end of the query results, then the
  * returned list might not contain the amount of desired contacts, or might
- * return no results if the cursor currently points to the last contact.
- * This is not considered an error condition.
+ * return no results if the cursor currently points to the last contact. 
+ * Reaching the end of the list is not considered an error condition. Attempts
+ * to step beyond the end of the list after having reached the end of the list
+ * will however trigger an %E_BOOK_SDB_ERROR_END_OF_LIST error.
  *
- * If @results is specified, it should be a pointer to a %NULL #GSList,
- * the result list will be stored to @results and should be freed with g_slist_free()
+ * If %EBSDB_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * a %NULL #GSList pointer should be provided for the @results parameter.
+ *
+ * The result list will be stored to @results and should be freed with g_slist_free()
  * and all elements freed with e_book_backend_sqlitedb_search_data_free().
  *
- * Returns: The number of contacts which the cursor has moved by if successfull.
- * Otherwise -1 is returned and @error is set.
+ * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * returned and @error is set.
  *
  * Since: 3.12
  */
 gint
-e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
-					EbSdbCursor          *cursor,
-					EbSdbCursorOrigin     origin,
-					gint                  count,
-					GSList              **results,
-					GError              **error)
+e_book_backend_sqlitedb_cursor_step (EBookBackendSqliteDB *ebsdb,
+				     EbSdbCursor          *cursor,
+				     EbSdbCursorStepFlags  flags,
+				     EbSdbCursorOrigin     origin,
+				     gint                  count,
+				     GSList              **results,
+				     GError              **error)
 {
 	CursorCollectData data = { NULL, NULL, NULL, FALSE, 0 };
+	CursorState *state;
 	GString *query;
 	gboolean success;
+	EbSdbCursorOrigin try_position;
 
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
-	g_return_val_if_fail (cursor != NULL, FALSE);
-	g_return_val_if_fail (count != 0 || origin == EBSDB_CURSOR_ORIGIN_RESET, FALSE);
-	g_return_val_if_fail (results == NULL || *results == NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), -1);
+	g_return_val_if_fail (cursor != NULL, -1);
+	g_return_val_if_fail ((flags & EBSDB_CURSOR_STEP_FETCH) == 0 ||
+			      (results != NULL && *results == NULL), -1);
+
+
+	/* Check if this step should result in an end of list error first */
+	try_position = cursor->state.position;
+	if (origin != EBSDB_CURSOR_ORIGIN_CURRENT)
+		try_position = origin;
+
+	/* Report errors for requests to run off the end of the list */
+	if (try_position == EBSDB_CURSOR_ORIGIN_BEGIN && count < 0) {
+		g_set_error (error, E_BOOK_SDB_ERROR,
+			     E_BOOK_SDB_ERROR_END_OF_LIST,
+			     _("Tried to step a cursor in reverse, "
+			       "but cursor is already at the beginning of the contact list"));
+
+		return -1;
+	} else if (try_position == EBSDB_CURSOR_ORIGIN_END && count > 0) {
+		g_set_error (error, E_BOOK_SDB_ERROR,
+			     E_BOOK_SDB_ERROR_END_OF_LIST,
+			     _("Tried to step a cursor forwards, "
+			       "but cursor is already at the end of the contact list"));
+
+		return -1;
+	}
+
+	/* Nothing to do, silently return */
+	if (count == 0 && try_position == EBSDB_CURSOR_ORIGIN_CURRENT)
+		return 0;
+
+	/* If we're not going to modify the position, just use
+	 * a copy of the current cursor state.
+	 */
+	if ((flags & EBSDB_CURSOR_STEP_MOVE) != 0)
+		state = &(cursor->state);
+	else
+		state = cursor_state_copy (cursor, &(cursor->state));
 
 	/* Every query starts with the STATE_CURRENT position, first
 	 * fix up the cursor state according to 'origin'
@@ -6116,22 +6188,28 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	case EBSDB_CURSOR_ORIGIN_CURRENT:
 		/* Do nothing, normal operation */
 		break;
-	case EBSDB_CURSOR_ORIGIN_PREVIOUS:
-		/* Swap the previous state into the current state first */
-		ebsdb_cursor_swap_state (cursor);
-		break;
-	case EBSDB_CURSOR_ORIGIN_RESET:
-		/* Clear the current state before executing the query */
-		ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
-		ebsdb_cursor_clear_state (cursor, STATE_PREVIOUS);
+
+	case EBSDB_CURSOR_ORIGIN_BEGIN:
+	case EBSDB_CURSOR_ORIGIN_END:
+
+		/* Prepare the state before executing the query */
+		cursor_state_clear (cursor, state, origin);
 		break;
 	}
 
-	/* Count can be 0 only for the sake of resetting the current
-	 * cursor state without fetching any results
+	/* If count is 0 then there is no need to run any
+	 * query, however it can be useful if you just want
+	 * to move the cursor to the beginning or ending of
+	 * the list.
 	 */
-	if (count == 0)
-		return TRUE;
+	if (count == 0) {
+
+		/* Free the state copy if need be */
+		if ((flags & EBSDB_CURSOR_STEP_MOVE) == 0)
+			cursor_state_free (cursor, state);
+
+		return 0;
+	}
 
 	query = g_string_new (cursor->select_vcards);
 
@@ -6145,7 +6223,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	}
 
 	/* Add the cursor constraints (if any) */
-	if (cursor->state[STATE_CURRENT].values[0] != NULL) {
+	if (state->values[0] != NULL) {
 		gchar *constraints = NULL;
 
 		if (!cursor->query)
@@ -6153,7 +6231,11 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 		else
 			g_string_append (query, " AND ");
 
-		constraints = ebsdb_cursor_constraints (ebsdb, cursor, count < 0, FALSE);
+		constraints = ebsdb_cursor_constraints (ebsdb,
+							cursor,
+							state,
+							count < 0,
+							FALSE);
 
 		g_string_append_c (query, '(');
 		g_string_append (query, constraints);
@@ -6173,7 +6255,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	g_string_append_printf (query, " LIMIT %d", ABS (count));
 
 	/* Specify whether we really want results or not */
-	data.collect_results = (results != NULL);
+	data.collect_results = (flags & EBSDB_CURSOR_STEP_FETCH) != 0;
 
 	/* Execute the query */
 	LOCK_MUTEX (&ebsdb->priv->lock);
@@ -6188,14 +6270,17 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 	if (success) {
 
 		if (data.n_results < ABS (count)) {
-			/* We've reached the end, clear the current state, allow
-			 * a repeat query from the previously recorded position */
-			ebsdb_cursor_swap_state (cursor);
-			ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
+
+			/* We've reached the end, clear the current state */
+			if (count < 0)
+				cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_BEGIN);
+			else
+				cursor_state_clear (cursor, state, EBSDB_CURSOR_ORIGIN_END);
 
 		} else if (data.last_vcard) {
+
 			/* Set the cursor state to the last result */
-			ebsdb_cursor_set_state (ebsdb, cursor, data.last_vcard);
+			cursor_state_set_from_vcard (ebsdb, cursor, state, data.last_vcard);
 		} else
 			/* Should never get here */
 			g_warn_if_reached ();
@@ -6214,6 +6299,10 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 				   (GDestroyNotify)e_book_backend_sqlitedb_search_data_free);
 	g_free (data.alloc_vcard);
 
+	/* Free the copy state if we were working with a copy */
+	if ((flags & EBSDB_CURSOR_STEP_MOVE) == 0)
+		cursor_state_free (cursor, state);
+
 	if (success)
 		return data.n_results;
 
@@ -6231,7 +6320,7 @@ e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
  * into the alphabet active in @ebsdb's locale.
  *
  * After setting the target to an alphabetic index, for example the
- * index for letter 'E', then further calls to e_book_backend_sqlitedb_cursor_move_by()
+ * index for letter 'E', then further calls to e_book_backend_sqlitedb_cursor_step()
  * will return results starting with the letter 'E' (or results starting
  * with the last result in 'D', if moving in a negative direction).
  *
@@ -6258,13 +6347,11 @@ e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB
 				     NULL, NULL, NULL);
 	g_return_if_fail (index < n_labels);
 
-	ebsdb_cursor_clear_state (cursor, STATE_PREVIOUS);
-	ebsdb_cursor_clear_state (cursor, STATE_CURRENT);
+	cursor_state_clear (cursor, &(cursor->state), EBSDB_CURSOR_ORIGIN_CURRENT);
 	if (cursor->n_sort_fields > 0) {
-		cursor->state[STATE_PREVIOUS].values[0] =
-			e_collator_generate_key_for_index (ebsdb->priv->collator, index);
-		cursor->state[STATE_CURRENT].values[0] =
-			e_collator_generate_key_for_index (ebsdb->priv->collator, index);
+		cursor->state.values[0] =
+			e_collator_generate_key_for_index (ebsdb->priv->collator,
+							   index);
 	}
 }
 
@@ -6278,7 +6365,7 @@ e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (EBookBackendSqliteDB
  * Modifies the current query expression for @cursor. This will not
  * modify @cursor's state, but will change the outcome of any further
  * calls to e_book_backend_sqlitedb_cursor_calculate() or
- * e_book_backend_sqlitedb_cursor_move_by().
+ * e_book_backend_sqlitedb_cursor_step().
  *
  * Returns: %TRUE if the expression was valid and accepted by @ebsdb
  *
@@ -6342,7 +6429,7 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
 	g_return_val_if_fail (cursor != NULL, FALSE);
 
 	/* If we're in a clear cursor state, then the position is 0 */
-	if (position && cursor->state[STATE_CURRENT].values[0] == NULL) {
+	if (position && cursor->state.values[0] == NULL) {
 		*position = 0;
 
 		/* Mark the local pointer NULL, no need to calculate this anymore */
@@ -6402,8 +6489,9 @@ e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
 	gint i;
 	gint comparison = 0;
 
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), FALSE);
-	g_return_val_if_fail (cursor != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), -1);
+	g_return_val_if_fail (E_IS_CONTACT (contact), -1);
+	g_return_val_if_fail (cursor != NULL, -1);
 
 	priv = ebsdb->priv;
 
@@ -6418,7 +6506,7 @@ e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
 	for (i = 0; i < cursor->n_sort_fields && comparison == 0; i++) {
 
 		/* Empty state sorts below any contact value, which means the contact sorts above cursor */
-		if (cursor->state[STATE_CURRENT].values[i] == NULL) {
+		if (cursor->state.values[i] == NULL) {
 			comparison = 1;
 		} else {
 			const gchar *field_value;
@@ -6434,7 +6522,7 @@ e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
 
 				/* Check of contact sorts below, equal to, or above the cursor */
 				collation_key = e_collator_generate_key (priv->collator, field_value, NULL);
-				comparison = strcmp (collation_key, cursor->state[STATE_CURRENT].values[i]);
+				comparison = strcmp (collation_key, cursor->state.values[i]);
 				g_free (collation_key);
 			}
 		}
@@ -6446,12 +6534,12 @@ e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
 
 		uid = (const gchar *)e_contact_get_const (contact, E_CONTACT_UID);
 
-		if (cursor->state[STATE_CURRENT].last_uid == NULL)
+		if (cursor->state.last_uid == NULL)
 			comparison = 1;
 		else if (uid == NULL)
 			comparison = -1;
 		else
-			comparison = strcmp (uid, cursor->state[STATE_CURRENT].last_uid);
+			comparison = strcmp (uid, cursor->state.last_uid);
 	}
 
 	return comparison;
