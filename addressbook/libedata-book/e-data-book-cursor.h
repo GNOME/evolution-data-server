@@ -75,16 +75,17 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
 						GError             **error);
 
 /**
- * EDataBookCursorMoveByFunc:
+ * EDataBookCursorStepFunc:
  * @cursor: an #EDataBookCursor
  * @revision_guard: (allow-none): The expected current addressbook revision, or %NULL
- * @origin: the #EBookCursorOrigin for this move
+ * @flags: The #EBookCursorStepFlags for this step
+ * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type utf8) (transfer full):
- *   A return location to store the results, or %NULL to move the cursor without retrieving any results.
+ *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in %flags
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
- * Method type for #EDataBookCursorClass.move_by()
+ * Method type for #EDataBookCursorClass.step()
  *
  * As all cursor methods may be called either by the addressbook service or
  * directly by a client in Direct Read Access mode, it is important that the
@@ -101,19 +102,20 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
  * single atomic operation (the data read back from the store must be the correct
  * data for the given addressbook revision).</para></note>
  *
- * See e_data_book_cursor_move_by() for more details on the expected behaviour of this method.
+ * See e_data_book_cursor_step() for more details on the expected behaviour of this method.
  *
- * Returns: The number of contacts which the cursor has moved by if successfull.
- * Otherwise -1 is returned and @error is set.
+ * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * returned and @error is set.
  *
  * Since: 3.12
  */
-typedef gint (*EDataBookCursorMoveByFunc) (EDataBookCursor     *cursor,
-					   const gchar         *revision_guard,
-					   EBookCursorOrigin    origin,
-					   gint                 count,
-					   GSList             **results,
-					   GError             **error);
+typedef gint (*EDataBookCursorStepFunc) (EDataBookCursor     *cursor,
+					 const gchar         *revision_guard,
+					 EBookCursorStepFlags flags,
+					 EBookCursorOrigin    origin,
+					 gint                 count,
+					 GSList             **results,
+					 GError             **error);
 
 /**
  * EDataBookCursorSetAlphabetIndexFunc:
@@ -160,7 +162,7 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  * a position that is before and after the entire result set. The cursor
  * position should be %0 at creation time, and should start again from
  * the symbolic %0 position whenever %E_BOOK_CURSOR_ORIGIN_RESET is
- * specified in the #EDataBookCursorClass.move_by() method (or whenever
+ * specified in the #EDataBookCursorClass.step() method (or whenever
  * moving the cursor beyond the end of the result set).
  *
  * This method is called by e_data_book_cursor_recalculate() and in some
@@ -247,7 +249,7 @@ struct _EDataBookCursor {
 /**
  * EDataBookCursorClass:
  * @set_sexp: The #EDataBookCursorSetSexpFunc delegate to set the search expression
- * @move_by: The #EDataBookCursorMoveByFunc delegate to navigate the cursor
+ * @step: The #EDataBookCursorStepFunc delegate to navigate the cursor
  * @set_alphabetic_index: The #EDataBookCursorSetAlphabetIndexFunc delegate to set the alphabetic position
  * @get_position: The #EDataBookCursorGetPositionFunc delegate to calculate the current total and position values
  * @compare_contact: The #EDataBookCursorCompareContactFunc delegate to compare an #EContact with the the cursor position
@@ -263,7 +265,7 @@ struct _EDataBookCursorClass {
 
 	/*< public >*/
 	EDataBookCursorSetSexpFunc set_sexp;
-	EDataBookCursorMoveByFunc move_by;
+	EDataBookCursorStepFunc step;
 	EDataBookCursorSetAlphabetIndexFunc set_alphabetic_index;
 	EDataBookCursorGetPositionFunc get_position;
 	EDataBookCursorCompareContactFunc compare_contact;
@@ -278,8 +280,9 @@ gint                    e_data_book_cursor_get_position          (EDataBookCurso
 gboolean                e_data_book_cursor_set_sexp              (EDataBookCursor     *cursor,
 								  const gchar         *sexp,
 								  GError             **error);
-gint                    e_data_book_cursor_move_by               (EDataBookCursor     *cursor,
+gint                    e_data_book_cursor_step                  (EDataBookCursor     *cursor,
 								  const gchar         *revision_guard,
+								  EBookCursorStepFlags flags,
 								  EBookCursorOrigin    origin,
 								  gint                 count,
 								  GSList             **results,

@@ -69,28 +69,71 @@
  * #EBookBackendClass.create_cursor().
  * </para>
  * <para>
- * Cursor position is always set to last result which
- * was traversed in the most recent query. After moving the
- * cursor through the next batch of results, the last result
- * should always be saved as the new current cursor state, unless
- * the end of the contact list is reached and the requested amount
- * of contacts could not be returned, in which case the cursor
- * should reset itself to a null state (the cursor walks off the
- * end of the results into a reset state).
+ * Initially, the cursor state is assumed to be clear and
+ * positioned naturally at the beginning so that the first
+ * calls to #EDataBookCursorClass.step() using the
+ * %E_BOOK_CURSOR_ORIGIN_CURRENT origin would respond in the
+ * same way as the %E_BOOK_CURSOR_ORIGIN_BEGIN origin would.
  * </para>
  * <para>
- * The cursor must track two states at all times, one
- * state which is the current cursor position, and one
- * state which was the previous cursor position in order
- * to satisfy the %E_BOOK_CURSOR_ORIGIN_PREVIOUS origin
- * in a call to #EDataBookCursorClass.move_by().
+ * Unless the %E_BOOK_CURSOR_STEP_FETCH flag is not specified
+ * in calls to #EDataBookCursorClass.step(), the cursor state
+ * should be always be set to the last contact which was traversed
+ * in every call to #EDataBookCursorClass.step(). In the case
+ * that #EDataBookCursorClass.step() was asked to step beyond the
+ * bounderies of the list, i.e. when stepping passed the end
+ * of the list of before the beginning, then the cursor state
+ * can be cleared and the implementation must track whether
+ * the cursor is at the beginning or the end of the list.
  * </para>
  * <para>
- * Calls to #EDataBookCursorClass.move_by() with the
- * %E_BOOK_CURSOR_ORIGIN_RESET origin resets both current
- * and previous cursor states before proceeding to move.
- * Calls to #EDataBookCursorClass.set_alphabetic_index() also
- * effect both cursor states.
+ * The task of actually collecting the cursor state from a
+ * contact should be done using an #ECollator created for
+ * the locale in which your #EBookBackend is configured for.
+ * </para>
+ * <example>
+ * <title>Collecting sort keys for a given contact</title>
+ * <programlisting><![CDATA[
+ * static void
+ * update_state_from_contact (EBookBackendSmth        *smth,
+ *                            EBookBackendSmthCursor  *cursor,
+ *                            EContact                *contact)
+ * {
+ *      gint i;
+ *
+ *      clear_state (smth, cursor);
+ *
+ *      // For each sort key the cursor was created for
+ *      for (i = 0; i < cursor->n_sort_fields; i++) {
+ *
+ *              // Using an ECollator created for the locale
+ *              // set on your EBookBackend...
+ *              const gchar *string = e_contact_get_const (contact, cursor->sort_fields[i]);
+ *
+ *              // Generate a sort key for each value
+ *              if (string)
+ *                      cursor->state->values[i] =
+ *                              e_collator_generate_key (smth->collator,
+ *                                                       string, NULL);
+ *              else
+ *                      cursor->state->values[i] = g_strdup ("");
+ *      }
+ *
+ *      state->last_uid = e_contact_get (contact, E_CONTACT_UID);
+ * }
+ * ]]></programlisting>
+ * </example>
+ * <para>
+ * Using the strings collected above for a given contact,
+ * two contacts can easily be compared for equality in
+ * a locale sensitive way, using strcmp() directly on
+ * the generated sort keys.
+ * </para>
+ * <para>
+ * Calls to #EDataBookCursorClass.step() with the
+ * %E_BOOK_CURSOR_ORIGIN_BEGIN or %E_BOOK_CURSOR_ORIGIN_END reset
+ * the cursor state before fetching results from either the
+ * beginning or ending of the result list respectively.
  * </para>
  * </refsect2>
  *
@@ -203,18 +246,18 @@ static gboolean data_book_cursor_compare_contact (EDataBookCursor  *cursor,
 						  EContact         *contact,
 						  gint             *result,
 						  gboolean         *matches_sexp);
-static void     calculate_move_by_position       (EDataBookCursor  *cursor,
+static void     calculate_step_position          (EDataBookCursor  *cursor,
 						  EBookCursorOrigin origin,
 						  gint              count,
 						  gint              results);
 
 /* D-Bus callbacks */
-static gint     data_book_cursor_handle_move_by              (EDBusAddressBookCursor *dbus_object,
+static gint     data_book_cursor_handle_step                 (EDBusAddressBookCursor *dbus_object,
 							      GDBusMethodInvocation  *invocation,
 							      const gchar            *revision,
+							      EBookCursorStepFlags    flags,
 							      EBookCursorOrigin       origin,
 							      gint                    count,
-							      gboolean                fetch_results,
 							      EDataBookCursor        *cursor);
 static gboolean data_book_cursor_handle_set_alphabetic_index (EDBusAddressBookCursor *dbus_object,
 							      GDBusMethodInvocation  *invocation,
@@ -444,77 +487,73 @@ data_book_cursor_compare_contact (EDataBookCursor     *cursor,
 }
 
 static void
-calculate_move_by_position (EDataBookCursor     *cursor,
-			    EBookCursorOrigin    origin,
-			    gint                 count,
-			    gint                 results)
+calculate_step_position (EDataBookCursor     *cursor,
+			 EBookCursorOrigin    origin,
+			 gint                 count,
+			 gint                 results)
 {
 	EDataBookCursorPrivate *priv = cursor->priv;
-	GError *error = NULL;
-	gint new_position;
+	gint new_position = priv->position;
+	gint offset = results;
 
+	/* The return value of the step() function is the number of contacts traversed,
+	 * but here we want the number of units which were successfuly traversed, i.e.
+	 * when move from the 1 position to the 0 position, or move from the last contact
+	 * off of the end of the list, the position is still effected by 1 even
+	 * though the step() function returns 0.
+	 */
+	if (count < 0)
+		offset = -offset;
+
+	if (offset == 0 && count > 0 && priv->position == priv->total)
+		offset = 1;
+	else if (offset == 0 && count < 0 && priv->position == 1)
+		offset = -1;
+
+	/* Don't assert the boundaries of values here, we
+	 * did that in e_data_book_cursor_step() already.
+	 */
 	switch (origin) {
 	case E_BOOK_CURSOR_ORIGIN_CURRENT:
-
-		if (count < 0 && priv->position == 0)
-			new_position = (priv->total + 1) + count;
-		else
-			new_position = priv->position + count;
-
-		/* If we ran off the end of the total query, reset to 0 */
-		if (new_position < 0 || new_position > priv->total)
-			new_position = 0;
-
-		data_book_cursor_set_values (cursor, priv->total, new_position);
+		new_position = priv->position + offset;
 		break;
 
-	case E_BOOK_CURSOR_ORIGIN_PREVIOUS:
-		/* We don't manually track the previous position, so for now
-		 * we need to recalculate the position entirely
-		 */
-		if (!e_data_book_cursor_recalculate (cursor, &error)) {
-			g_warning ("Failed to recalculate the cursor value "
-				   "after moving the cursor: %s",
-				   error->message);
-			g_clear_error (&error);
-		}
-		break;
-	case E_BOOK_CURSOR_ORIGIN_RESET:
-
-		if (count < 0)
-			new_position = (priv->total + 1) + count;
-		else
-			new_position = count;
-
-		/* If we ran off the end of the total query, reset to 0 */
-		if (new_position < 0 || new_position > priv->total)
-			new_position = 0;
-
-		data_book_cursor_set_values (cursor, priv->total, new_position);
+	case E_BOOK_CURSOR_ORIGIN_BEGIN:
+		new_position = offset;
 		break;
 
+	case E_BOOK_CURSOR_ORIGIN_END:
+		new_position = (priv->total + 1) + offset;
+		break;
 	}
+
+	new_position = CLAMP (new_position, 0, priv->total + 1);
+	data_book_cursor_set_values (cursor, priv->total, new_position);
 }
 
 /************************************************
  *                D-Bus Callbacks               *
  ************************************************/
 static gboolean
-data_book_cursor_handle_move_by (EDBusAddressBookCursor *dbus_object,
-				 GDBusMethodInvocation  *invocation,
-				 const gchar            *revision,
-				 EBookCursorOrigin       origin,
-				 gint                    count,
-				 gboolean                fetch_results,
-				 EDataBookCursor        *cursor)
+data_book_cursor_handle_step (EDBusAddressBookCursor *dbus_object,
+			      GDBusMethodInvocation  *invocation,
+			      const gchar            *revision,
+			      EBookCursorStepFlags    flags,
+			      EBookCursorOrigin       origin,
+			      gint                    count,
+			      EDataBookCursor        *cursor)
 {
 	GSList *results = NULL;
 	GError *error = NULL;
 	gint n_results;
 
-	n_results = e_data_book_cursor_move_by (cursor, revision, origin, count,
-						fetch_results ? &results : NULL,
-						&error);
+	n_results = e_data_book_cursor_step (cursor,
+					     revision,
+					     flags,
+					     origin,
+					     count,
+					     &results,
+					     &error);
 
 	if (n_results < 0) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
@@ -537,14 +576,14 @@ data_book_cursor_handle_move_by (EDBusAddressBookCursor *dbus_object,
 
 		}
 
-		e_dbus_address_book_cursor_complete_move_by (dbus_object,
-							     invocation,
-							     n_results,
-							     strv ? 
-							     (const gchar *const *)strv :
-							     empty_str,
-							     cursor->priv->total,
-							     cursor->priv->position);
+		e_dbus_address_book_cursor_complete_step (dbus_object,
+							  invocation,
+							  n_results,
+							  strv ? 
+							  (const gchar *const *)strv :
+							  empty_str,
+							  cursor->priv->total,
+							  cursor->priv->position);
 
 
 		g_strfreev (strv);
@@ -740,73 +779,79 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 }
 
 /**
- * e_data_book_cursor_move_by:
+ * e_data_book_cursor_step:
  * @cursor: an #EDataBookCursor
  * @revision_guard: The expected current addressbook revision, or %NULL
- * @origin: the #EBookCursorOrigin for this move
+ * @flags: The #EBookCursorStepFlags for this step
+ * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type utf8) (transfer full):
- *   A return location to store the results, or %NULL to move the cursor without retrieving any results.
+ *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in %flags
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
- * Moves @cursor through the results by @count and fetch a maximum of @count contacts.
+ * Steps @cursor through it's sorted query by a maximum of @count contacts
+ * starting from @origin.
  *
- * If @count is negative, then the cursor will move backwards.
- *
- * If @cursor is in an empty state, or @origin is %E_BOOK_CURSOR_ORIGIN_RESET,
- * then @count contacts will be fetched from the beginning of the cursor's query
- * results, or from the ending of the query results for a negative value of @count.
+ * If @count is negative, then the cursor will move through the list in reverse.
  *
  * If @cursor reaches the beginning or end of the query results, then the
  * returned list might not contain the amount of desired contacts, or might
- * return no results if the cursor currently points to the last contact.
- * This is not considered an error condition.
+ * return no results if the cursor currently points to the last contact. 
+ * Reaching the end of the list is not considered an error condition. Attempts
+ * to step beyond the end of the list after having reached the end of the list
+ * will however trigger an %E_CLIENT_ERROR_END_OF_LIST error.
  *
- * If @results is specified, it should be a pointer to a %NULL #GSList,
- * the result list will be stored to @results and should be freed with g_slist_free()
+ * If %E_BOOK_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
+ * a %NULL #GSList pointer should be provided for the @results parameter.
+ *
+ * The result list will be stored to @results and should be freed with g_slist_free()
  * and all elements freed with g_free().
  *
  * If a @revision_guard is specified, the cursor implementation will issue an
  * %E_CLIENT_ERROR_OUT_OF_SYNC error if the @revision_guard does not match
  * the current addressbook revision.
  *
- * Returns: The number of contacts which the cursor has moved by if successfull.
- * Otherwise -1 is returned and @error is set.
+ * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * returned and @error is set.
  *
  * Since: 3.12
  */
 gint
-e_data_book_cursor_move_by (EDataBookCursor     *cursor,
-			    const gchar         *revision_guard,
-			    EBookCursorOrigin    origin,
-			    gint                 count,
-			    GSList             **results,
-			    GError             **error)
+e_data_book_cursor_step (EDataBookCursor     *cursor,
+			 const gchar         *revision_guard,
+			 EBookCursorStepFlags flags,
+			 EBookCursorOrigin    origin,
+			 gint                 count,
+			 GSList             **results,
+			 GError             **error)
 {
 	gint retval;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
+	g_return_val_if_fail ((flags & E_BOOK_CURSOR_STEP_FETCH) == 0 ||
+			      (results != NULL && *results == NULL), -1);
 
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->move_by) {
+	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->step) {
 		g_set_error_literal (error,
 				     E_CLIENT_ERROR,
 				     E_CLIENT_ERROR_NOT_SUPPORTED,
-				     _("Cursor does not support moves"));
+				     _("Cursor does not support step"));
 		return FALSE;
 	}
 
 	g_object_ref (cursor);
-	retval = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->move_by) (cursor,
-								      revision_guard,
-								      origin,
-								      count,
-								      results,
-								      error);
+	retval = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->step) (cursor,
+								  revision_guard,
+								  flags,
+								  origin,
+								  count,
+								  results,
+								  error);
 	g_object_unref (cursor);
 
-	if (retval > 0) {
-		/* Calculate new cursor position and notify change */
-		calculate_move_by_position (cursor, origin, count, retval);
+	if (retval >= 0 && (flags & E_BOOK_CURSOR_STEP_MOVE) != 0) {
+
+		calculate_step_position (cursor, origin, count, retval);
 	}
 
 	return retval;
@@ -824,7 +869,7 @@ e_data_book_cursor_move_by (EDataBookCursor     *cursor,
  * into the alphabet active in the @locale of the addressbook.
  *
  * After setting the target to an alphabetic index, for example the
- * index for letter 'E', then further calls to e_data_book_cursor_move_by()
+ * index for letter 'E', then further calls to e_data_book_cursor_step()
  * will return results starting with the letter 'E' (or results starting
  * with the last result in 'D', if moving in a negative direction).
  *
@@ -969,9 +1014,10 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 		g_free (priv->locale);
 		priv->locale = g_strdup (local_locale);
 
-		if (e_data_book_cursor_move_by (cursor, NULL,
-						E_BOOK_CURSOR_ORIGIN_RESET,
-						0, NULL, &local_error) < 0) {
+		if (e_data_book_cursor_step (cursor, NULL,
+					     E_BOOK_CURSOR_STEP_MOVE,
+					     E_BOOK_CURSOR_ORIGIN_BEGIN,
+					     0, NULL, &local_error) < 0) {
 			g_warning ("Error resetting cursor position after locale change: %s",
 				   local_error->message);
 			g_clear_error (&local_error);
@@ -1137,8 +1183,8 @@ e_data_book_cursor_register_gdbus_object (EDataBookCursor     *cursor,
 	if (!priv->dbus_object) {
 		priv->dbus_object = e_dbus_address_book_cursor_skeleton_new ();
 
-		g_signal_connect (priv->dbus_object, "handle-move-by",
-				  G_CALLBACK (data_book_cursor_handle_move_by), cursor);
+		g_signal_connect (priv->dbus_object, "handle-step",
+				  G_CALLBACK (data_book_cursor_handle_step), cursor);
 		g_signal_connect (priv->dbus_object, "handle-set-alphabetic-index",
 				  G_CALLBACK (data_book_cursor_handle_set_alphabetic_index), cursor);
 		g_signal_connect (priv->dbus_object, "handle-set-query",
