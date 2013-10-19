@@ -149,6 +149,40 @@ typedef enum {
 	E_BOOK_CURSOR_SORT_DESCENDING
 } EBookCursorSortType;
 
+/**
+ * EBookCursorOrigin:
+ * @E_BOOK_CURSOR_ORIGIN_CURRENT:  The current cursor position
+ * @E_BOOK_CURSOR_ORIGIN_BEGIN:    The beginning of the cursor results.
+ * @E_BOOK_CURSOR_ORIGIN_END:      The ending of the cursor results.
+ *
+ * Specifies the start position to in the list of traversed contacts
+ * in calls to e_book_client_cursor_step().
+ *
+ * When an #EBookClientCursor is created, the current position implied by %E_BOOK_CURSOR_ORIGIN_CURRENT
+ * is the same as %E_BOOK_CURSOR_ORIGIN_BEGIN.
+ *
+ * Since: 3.12
+ */
+typedef enum {
+	E_BOOK_CURSOR_ORIGIN_CURRENT,
+	E_BOOK_CURSOR_ORIGIN_BEGIN,
+	E_BOOK_CURSOR_ORIGIN_END
+} EBookCursorOrigin;
+
+/**
+ * EBookCursorStepFlags:
+ * @E_BOOK_CURSOR_STEP_MOVE:  The cursor position should be modified while stepping
+ * @E_BOOK_CURSOR_STEP_FETCH: Traversed contacts should be listed and returned while stepping.
+ *
+ * Defines the behaviour of e_book_client_cursor_step().
+ *
+ * Since: 3.12
+ */
+typedef enum {
+	E_BOOK_CURSOR_STEP_MOVE  = (1 << 0),
+	E_BOOK_CURSOR_STEP_FETCH = (1 << 1)
+} EBookCursorStepFlags;
+
 GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_book_client_error_to_string	(EBookClientError code);
 
