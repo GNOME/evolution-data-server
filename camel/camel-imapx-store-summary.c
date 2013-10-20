@@ -48,7 +48,6 @@ G_DEFINE_TYPE (
 	camel_imapx_store_summary,
 	CAMEL_TYPE_STORE_SUMMARY)
 
-
 static CamelIMAPXNamespaceList *
 namespace_load (CamelStoreSummary *s,
                 FILE *in)

@@ -402,14 +402,14 @@ cache_set_last_update (EBookBackend *backend,
 }
 
 /* returns whether group changed from the one stored in the cache;
-   returns FALSE, if the group was not in the cache yet;
-   also adds the group into the cache;
-   use group_name = NULL to remove it from the cache.
+ * returns FALSE, if the group was not in the cache yet;
+ * also adds the group into the cache;
+ * use group_name = NULL to remove it from the cache.
  */
 static gboolean
 cache_update_group (EBookBackend *backend,
-		    const gchar *group_id,
-		    const gchar *group_name)
+                    const gchar *group_id,
+                    const gchar *group_name)
 {
 	EBookBackendGooglePrivate *priv;
 	EFileCache *file_cache;
@@ -2189,9 +2189,9 @@ book_backend_google_stop_view (EBookBackend *backend,
 
 static void
 book_backend_google_refresh (EBookBackend *backend,
-			     EDataBook *book,
-			     guint32 opid,
-			     GCancellable *cancellable)
+                             EDataBook *book,
+                             guint32 opid,
+                             GCancellable *cancellable)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend));
 

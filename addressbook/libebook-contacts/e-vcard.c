@@ -494,7 +494,7 @@ read_attribute_params (EVCardAttribute *attr,
 				break;
 		} else if (param) {
 			/* reading param value, which is SAFE-CHAR, aka
-			   any character except CTLs, DQUOTE, ";", ":", "," */
+			 * any character except CTLs, DQUOTE, ";", ":", "," */
 			g_string_append_unichar (str, g_utf8_get_char (lp));
 			lp = g_utf8_next_char (lp);
 		} else {
@@ -923,7 +923,7 @@ e_vcard_new_from_string (const gchar *str)
 
 static gchar *
 e_vcard_qp_encode (const gchar *txt,
-		   gboolean can_wrap)
+                   gboolean can_wrap)
 {
 	const gchar *p = txt;
 	GString *escaped = g_string_new ("");
@@ -1194,7 +1194,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			EVCardAttributeParam *param = list->data;
 
 			/* quoted-printable encoding was eliminated in 3.0,
-			   thus decode the value before saving and remove the param later */
+			 * thus decode the value before saving and remove the param later */
 			if (!quoted_printable_param &&
 			    param->values && param->values->data && !param->values->next &&
 			    g_ascii_strcasecmp (param->name, "ENCODING") == 0 &&
@@ -1254,7 +1254,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			gchar *escaped_value = NULL;
 
 			/* values are in quoted-printable encoding, but this cannot be used in vCard 3.0,
-			   thus it needs to be converted first */
+			 * thus it needs to be converted first */
 			if (quoted_printable_param) {
 				gchar *qp_decoded;
 

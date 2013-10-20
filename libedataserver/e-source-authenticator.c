@@ -391,10 +391,10 @@ e_source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
  * Returns whether the used authentication method can be used without
  * a password prompt. If so, then user is not asked for the password,
  * only if the authentication fails. The default implementation returns
- * #FALSE, which means always asks for the password (or read it from
+ * %FALSE, which means always asks for the password (or read it from
  * a keyring).
  *
- * Returns: Whether may try to authenticate without asking for the password.
+ * Returns: whether to try to authenticate without asking for the password
  *
  * Since: 3.10
  **/
