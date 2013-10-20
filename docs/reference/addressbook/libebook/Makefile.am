@@ -42,6 +42,12 @@ GTKDOC_LIBS = \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(CAMEL_LIBS)
 
+HTML_IMAGES = \
+	cursor-positions.png		\
+	cursor-positions-filtered.png	\
+	cursor-positions-step.png	\
+	cursor-alphabetic-indexes.png
+
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
 
