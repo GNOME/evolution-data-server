@@ -1923,9 +1923,9 @@ e_time_parse_time (const gchar *value,
  *
  * Creates a string representation of the time value @date_tm and
  * stores it in @buffer.  @buffer_size should be at least 64 to be
- * safe. If @show_midnight is #FALSE, and the time is midnight, then
+ * safe. If @show_midnight is %FALSE, and the time is midnight, then
  * only the date is stored in @buffer. If @show_zero_seconds is
- * #FALSE, then if the time has zero seconds only the hour and minute
+ * %FALSE, then if the time has zero seconds only the hour and minute
  * of the time are stored in @buffer.
  **/
 void

@@ -539,8 +539,8 @@ camel_sasl_gssapi_is_available (void)
  **/
 void
 camel_sasl_gssapi_override_host_and_user (CamelSaslGssapi *sasl,
-					  const gchar *override_host,
-					  const gchar *override_user)
+                                          const gchar *override_host,
+                                          const gchar *override_user)
 {
 	g_return_if_fail (CAMEL_IS_SASL_GSSAPI (sasl));
 

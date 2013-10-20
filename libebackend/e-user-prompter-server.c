@@ -289,11 +289,16 @@ user_prompter_server_extension_prompt_cb (EDBusUserPrompter *dbus_prompter,
                                           const gchar *const *parameters,
                                           EUserPrompterServer *server)
 {
+	gboolean found_dialog;
 	gint id;
 
 	g_rec_mutex_lock (&server->priv->lock);
 
-	if (!dialog_name || !g_hash_table_lookup (server->priv->extensions, dialog_name)) {
+	found_dialog =
+		(dialog_name != NULL) &&
+		g_hash_table_contains (server->priv->extensions, dialog_name);
+
+	if (!found_dialog) {
 		g_rec_mutex_unlock (&server->priv->lock);
 
 		g_dbus_method_invocation_return_error (

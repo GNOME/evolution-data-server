@@ -118,7 +118,7 @@ e_book_query_and (gint nqs,
  * e_book_query_or:
  * @nqs: the number of queries to OR
  * @qs: pointer to an array of #EBookQuery items
- * @unref: if #TRUE, the new query takes ownership of the existing queries
+ * @unref: if %TRUE, the new query takes ownership of the existing queries
  *
  * Creates a new #EBookQuery which is the logical OR of the queries in #qs.
  *
@@ -201,7 +201,7 @@ e_book_query_orv (EBookQuery *q, ...)
 /**
  * e_book_query_not:
  * @q: an #EBookQuery
- * @unref: if #TRUE, the new query takes ownership of the existing queries
+ * @unref: if %TRUE, the new query takes ownership of the existing queries
  *
  * Creates a new #EBookQuery which is the opposite of #q.
  *

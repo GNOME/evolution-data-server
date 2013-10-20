@@ -908,7 +908,7 @@ e_destination_get_name (const EDestination *dest)
  *
  * Check if @dest is to be ignored.
  *
- * Returns: #TRUE if this destination should be ignored, else #FALSE.
+ * Returns: %TRUE if this destination should be ignored, else %FALSE.
  */
 gboolean
 e_destination_is_ignored (const EDestination *dest)
@@ -919,7 +919,7 @@ e_destination_is_ignored (const EDestination *dest)
 /**
  * e_destination_set_ignored:
  * @dest: an #EDestination
- * @ignored: #TRUE if this #EDestination should be ignored.
+ * @ignored: %TRUE if this #EDestination should be ignored.
  *
  * Set the ignore flag on a #EDestination.
  */

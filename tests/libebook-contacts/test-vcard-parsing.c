@@ -222,7 +222,7 @@ test_econtact (const gchar *vcard_str)
 
 static gboolean
 test_vcard_qp_2_1_parsing (const gchar *vcard_str,
-			   const gchar *expected_text)
+                           const gchar *expected_text)
 {
 	EVCard *vcard;
 	EVCardAttribute *attr;

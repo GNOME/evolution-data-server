@@ -911,7 +911,8 @@ e_authentication_mediator_class_init (EAuthenticationMediatorClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EAuthenticationMediatorPrivate));
+	g_type_class_add_private (
+		class, sizeof (EAuthenticationMediatorPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = authentication_mediator_set_property;
@@ -969,10 +970,14 @@ e_authentication_mediator_initable_init (GInitableIface *interface)
 static void
 e_authentication_mediator_interface_init (ESourceAuthenticatorInterface *interface)
 {
-	interface->get_without_password = authentication_mediator_get_without_password;
-	interface->try_password_sync = authentication_mediator_try_password_sync;
-	interface->try_password = authentication_mediator_try_password;
-	interface->try_password_finish = authentication_mediator_try_password_finish;
+	interface->get_without_password =
+		authentication_mediator_get_without_password;
+	interface->try_password_sync =
+		authentication_mediator_try_password_sync;
+	interface->try_password =
+		authentication_mediator_try_password;
+	interface->try_password_finish =
+		authentication_mediator_try_password_finish;
 }
 
 static void

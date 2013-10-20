@@ -445,8 +445,8 @@ pop3_folder_get_uids (CamelFolder *folder)
 
 static GPtrArray *
 pop3_get_uncached_uids (CamelFolder *folder,
-			GPtrArray *uids,
-			GError **error)
+                        GPtrArray *uids,
+                        GError **error)
 {
 	CamelPOP3Folder *pop3_folder;
 	CamelPOP3Store *pop3_store;

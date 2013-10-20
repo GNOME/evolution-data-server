@@ -1995,6 +1995,7 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	AuthContext *auth_context;
 	GMainContext *main_context;
 	EDBusAuthenticator *dbus_auth;
+	gboolean without_password;
 	gchar *encryption_key;
 	gchar *object_path = NULL;
 	GError *local_error = NULL;
@@ -2037,7 +2038,8 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	if (local_error != NULL)
 		goto exit;
 
-	e_dbus_authenticator_set_without_password (dbus_auth, e_source_authenticator_get_without_password (auth));
+	without_password = e_source_authenticator_get_without_password (auth);
+	e_dbus_authenticator_set_without_password (dbus_auth, without_password);
 
 	auth_context = g_slice_new0 (AuthContext);
 	auth_context->auth = g_object_ref (auth);

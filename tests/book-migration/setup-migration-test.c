@@ -121,10 +121,10 @@ typedef struct {
 
 static void
 source_added (ESourceRegistry *registry,
-	      ESource *source,
-	      gpointer data)
+              ESource *source,
+              gpointer data)
 {
-	SourceAddedData *added_data = (SourceAddedData *)data;
+	SourceAddedData *added_data = (SourceAddedData *) data;
 	GError *error = NULL;
 
 	if (g_strcmp0 (e_source_get_uid (source), added_data->book_id) != 0)
@@ -132,7 +132,7 @@ source_added (ESourceRegistry *registry,
 
 	/* Open the address book */
 #if EDS_CHECK_VERSION(3,8,0)
-	added_data->book = (EBookClient *)e_book_client_connect_sync (source, NULL, &error);
+	added_data->book = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
 #else
 	/* With 3.6 it's a bit more tricky */
 	added_data->book = e_book_client_new (source, &error);
@@ -175,8 +175,9 @@ create_book (const gchar *book_id)
 
 	/* Listen to the registry for our added source */
 	data.book_id = book_id;
-	g_signal_connect (registry, "source-added",
-			  G_CALLBACK (source_added), &data);
+	g_signal_connect (
+		registry, "source-added",
+		G_CALLBACK (source_added), &data);
 
 	/* Now create a scratch source for our addressbook */
 	scratch = e_source_new_with_uid (book_id, NULL, &error);
@@ -220,7 +221,7 @@ create_book (const gchar *book_id)
 	if (!book)
 		g_error ("Error creating book: %s", error->message);
 
-        if (!e_book_open (book, FALSE, &error))
+	if (!e_book_open (book, FALSE, &error))
 		g_error ("Error opening book: %s", error->message);
 
 	return book;
@@ -228,15 +229,14 @@ create_book (const gchar *book_id)
 
 #endif
 
-
 /********************************************************
  *                   Adding the Contacts                *
  ********************************************************/
 #if EDS_CHECK_VERSION(3,6,0)
 
 static void
-add_contacts (Book   *book,
-	      GSList *contacts)
+add_contacts (Book *book,
+              GSList *contacts)
 {
 	GError *error = NULL;
 
@@ -247,8 +247,8 @@ add_contacts (Book   *book,
 #else
 
 static void
-add_contacts (Book   *book,
-	      GSList *contacts)
+add_contacts (Book *book,
+              GSList *contacts)
 {
 	GError *error = NULL;
 	GSList *l;
@@ -276,7 +276,7 @@ static ETestServerClosure book_closure = {
 
 static void
 setup_migration_setup (ETestServerFixture *fixture,
-		       gconstpointer       user_data)
+                       gconstpointer user_data)
 {
 	fixture->source_name = g_strdup_printf ("%d.%d", EDS_MAJOR_VERSION, EDS_MINOR_VERSION);
 	e_test_server_utils_setup (fixture, user_data);
@@ -284,7 +284,7 @@ setup_migration_setup (ETestServerFixture *fixture,
 
 static void
 setup_migration_run (ETestServerFixture *fixture,
-		     gconstpointer       user_data)
+                     gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList      *contacts;
@@ -302,7 +302,8 @@ setup_migration_run (ETestServerFixture *fixture,
  *                        main()                        *
  ********************************************************/
 gint
-main (gint argc, gchar *argv[])
+main (gint argc,
+      gchar *argv[])
 {
 	GOptionContext *option_context;
 	GOptionGroup *option_group;
@@ -311,12 +312,14 @@ main (gint argc, gchar *argv[])
 	Book *book;
 
 	option_context = g_option_context_new (NULL);
-	g_option_context_set_summary (option_context,
-				      "Populate a database for migration tests.");
+	g_option_context_set_summary (
+		option_context,
+		"Populate a database for migration tests.");
 
-	option_group = g_option_group_new ("setup migration test",
-					   "Setup Migration options",
-					   "Setup Migration options", NULL, NULL);
+	option_group = g_option_group_new (
+		"setup migration test",
+		"Setup Migration options",
+		"Setup Migration options", NULL, NULL);
 	g_option_group_add_entries (option_group, option_entries);
 	g_option_context_set_main_group (option_context, option_group);
 
@@ -324,25 +327,27 @@ main (gint argc, gchar *argv[])
 		g_error ("Failed to parse program arguments: %s", error->message);
 
 	if (!book_id || !contacts_directory)
-		g_error ("Must provide the book identifier and contacts directory\n%s",
-			 g_option_context_get_help (option_context, TRUE, NULL));
-
+		g_error (
+			"Must provide the book identifier and contacts directory\n%s",
+			g_option_context_get_help (option_context, TRUE, NULL));
 
 	if (test_sandbox) {
 
 #if EDS_CHECK_VERSION(3,10,0)
 		g_test_init (&argc, &argv, NULL);
-		g_test_add ("/SettingUpMigrationTest",
-			    ETestServerFixture,
-			    &book_closure,
-			    setup_migration_setup,
-			    setup_migration_run,
-			    e_test_server_utils_teardown);
+		g_test_add (
+			"/SettingUpMigrationTest",
+			ETestServerFixture,
+			&book_closure,
+			setup_migration_setup,
+			setup_migration_run,
+			e_test_server_utils_teardown);
 
 		return e_test_server_utils_run ();
 #else
-		g_error ("Requested sandboxed setup but that is not available until EDS 3.10, current version is %d.%d",
-			 EDS_MAJOR_VERSION, EDS_MINOR_VERSION);
+		g_error (
+			"Requested sandboxed setup but that is not available until EDS 3.10, current version is %d.%d",
+			EDS_MAJOR_VERSION, EDS_MINOR_VERSION);
 #endif
 	} else {
 

@@ -1242,7 +1242,7 @@ ldap_error_to_response (gint ldap_error)
 
 static const gchar *
 get_dn_attribute_name (gchar *rootdn,
-		       EContact *contact)
+                       EContact *contact)
 {
 	/* Use 'uid' is already used in root DN,
 	 * then use the 'description' field. */

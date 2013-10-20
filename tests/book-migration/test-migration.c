@@ -39,7 +39,7 @@ typedef struct {
 typedef void ( *MigrationTestFunc) (MigrationFixture *fixture,
 				    gconstpointer     user_data);
 
-static const gchar *arbitrary_vcard = 
+static const gchar *arbitrary_vcard =
 	"BEGIN:VCARD\n"
 	"UID:arbitrary-vcard\n"
 	"FN:Bobby Brown\n"
@@ -78,8 +78,9 @@ setup_migration_sandbox (const gchar *version)
 				  G_FILE_COPY_OVERWRITE |
 				  G_FILE_COPY_TARGET_DEFAULT_PERMS,
 				  NULL, NULL, NULL, &error))
-			g_error ("Failed to setup sandbox for %s migration test: %s",
-				 version, error->message);
+			g_error (
+				"Failed to setup sandbox for %s migration test: %s",
+				version, error->message);
 
 		g_object_unref (src_file);
 		g_object_unref (dest_file);
@@ -94,8 +95,9 @@ setup_migration_sandbox (const gchar *version)
 				  G_FILE_COPY_OVERWRITE |
 				  G_FILE_COPY_TARGET_DEFAULT_PERMS,
 				  NULL, NULL, NULL, &error))
-			g_error ("Failed to setup sandbox for %s migration test: %s",
-				 version, error->message);
+			g_error (
+				"Failed to setup sandbox for %s migration test: %s",
+				version, error->message);
 
 		g_object_unref (src_file);
 		g_object_unref (dest_file);
@@ -111,39 +113,38 @@ setup_migration_sandbox (const gchar *version)
 
 static void
 migration_fixture_setup (MigrationFixture *fixture,
-			 gconstpointer     user_data)
+                         gconstpointer user_data)
 {
-	ETestServerFixture *parent = (ETestServerFixture *)fixture;
-	MigrationClosure   *closure = (MigrationClosure *)user_data;
+	ETestServerFixture *parent = (ETestServerFixture *) fixture;
+	MigrationClosure   *closure = (MigrationClosure *) user_data;
 
 	parent->source_name = g_strdup (closure->version);
 
 	setup_migration_sandbox (closure->version);
 
-	e_test_server_utils_setup ((ETestServerFixture *)parent, user_data);
+	e_test_server_utils_setup ((ETestServerFixture *) parent, user_data);
 }
 
 static void
 migration_fixture_teardown (MigrationFixture *fixture,
-			    gconstpointer     user_data)
+                            gconstpointer user_data)
 {
-	e_test_server_utils_teardown ((ETestServerFixture *)fixture, user_data);
+	e_test_server_utils_teardown ((ETestServerFixture *) fixture, user_data);
 }
-
 
 /***********************************************************
  *                          Tests                          *
  ***********************************************************/
 static void
 test_open (MigrationFixture *fixture,
-	   gconstpointer     user_data)
+           gconstpointer user_data)
 {
-	
+
 }
 
 static void
 test_fetch_contacts (MigrationFixture *fixture,
-		     gconstpointer     user_data)
+                     gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *contacts = NULL;
@@ -165,7 +166,7 @@ test_fetch_contacts (MigrationFixture *fixture,
 
 static void
 test_add_remove_contact (MigrationFixture *fixture,
-			 gconstpointer     user_data)
+                         gconstpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -186,8 +187,8 @@ test_add_remove_contact (MigrationFixture *fixture,
 
 static GSList *
 test_query (EBookClient *book_client,
-	    gint         expected_results,
-	    EBookQuery  *query)
+            gint expected_results,
+            EBookQuery *query)
 {
 	GSList *contacts = NULL;
 	GError *error = NULL;
@@ -209,54 +210,57 @@ test_query (EBookClient *book_client,
 
 static void
 test_query_email (MigrationFixture *fixture,
-		  gconstpointer     user_data)
+                  gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *contacts = NULL;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	contacts = test_query (book_client, 13,
-			       e_book_query_field_test (
-			               E_CONTACT_EMAIL,
-				       E_BOOK_QUERY_ENDS_WITH,
-				       ".com"));
+	contacts = test_query (
+		book_client, 13,
+		e_book_query_field_test (
+			E_CONTACT_EMAIL,
+			E_BOOK_QUERY_ENDS_WITH,
+			".com"));
 
 	g_slist_free_full (contacts, g_object_unref);
 }
 
 static void
 test_query_name (MigrationFixture *fixture,
-		  gconstpointer     user_data)
+                  gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *contacts = NULL;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	contacts = test_query (book_client, 4,
-			       e_book_query_field_test (
-			               E_CONTACT_FULL_NAME,
-				       E_BOOK_QUERY_CONTAINS,
-				       "cote"));
+	contacts = test_query (
+		book_client, 4,
+		e_book_query_field_test (
+			E_CONTACT_FULL_NAME,
+			E_BOOK_QUERY_CONTAINS,
+			"cote"));
 
 	g_slist_free_full (contacts, g_object_unref);
 }
 
 static void
 test_query_phone (MigrationFixture *fixture,
-		  gconstpointer     user_data)
+                  gconstpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *contacts = NULL;
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	contacts = test_query (book_client, 4,
-			       e_book_query_field_test (
-			               E_CONTACT_TEL,
-				       E_BOOK_QUERY_CONTAINS,
-				       "221"));
+	contacts = test_query (
+		book_client, 4,
+		e_book_query_field_test (
+			E_CONTACT_TEL,
+			E_BOOK_QUERY_CONTAINS,
+			"221"));
 
 	g_slist_free_full (contacts, g_object_unref);
 }
@@ -274,8 +278,9 @@ list_migration_sandboxes (void)
 
 	dir = g_dir_open (EDS_TEST_SQLITE_BOOKS, 0, &error);
 	if (!dir)
-		g_error ("Failed to open migration sandbox directory '%s': %s",
-			 EDS_TEST_SQLITE_BOOKS, error->message);
+		g_error (
+			"Failed to open migration sandbox directory '%s': %s",
+			EDS_TEST_SQLITE_BOOKS, error->message);
 
 	while ((filename = g_dir_read_name (dir)) != NULL) {
 
@@ -316,8 +321,8 @@ migration_closure_free (MigrationClosure *closure)
 
 static void
 add_test (const gchar *version,
-	  const gchar *test_name,
-	  MigrationTestFunc test_func)
+          const gchar *test_name,
+          MigrationTestFunc test_func)
 {
 	MigrationClosure *closure;
 	gchar *path;
@@ -325,17 +330,19 @@ add_test (const gchar *version,
 	closure = g_slice_new0 (MigrationClosure);
 
 	closure->parent.type = E_TEST_SERVER_ADDRESS_BOOK;
-	closure->parent.destroy_closure_func = (GDestroyNotify)migration_closure_free;
+	closure->parent.destroy_closure_func = (GDestroyNotify) migration_closure_free;
 	closure->parent.keep_work_directory = TRUE;
 	closure->version = g_strdup (version);
 
-	path = g_strdup_printf ("/Migration/From-%s/%s",
-				version, test_name);
+	path = g_strdup_printf (
+		"/Migration/From-%s/%s",
+		version, test_name);
 
-	g_test_add (path, MigrationFixture, closure,
-		    migration_fixture_setup,
-		    test_func,
-		    migration_fixture_teardown);
+	g_test_add (
+		path, MigrationFixture, closure,
+		migration_fixture_setup,
+		test_func,
+		migration_fixture_teardown);
 
 	g_free (path);
 }

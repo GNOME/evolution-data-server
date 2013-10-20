@@ -1310,9 +1310,9 @@ e_book_client_new (ESource *source,
 
 /* Direct Read Access connect helper */
 static void
-connect_direct (EBookClient     *client,
-		GCancellable    *cancellable,
-		ESourceRegistry *registry)
+connect_direct (EBookClient *client,
+                GCancellable *cancellable,
+                ESourceRegistry *registry)
 {
 	EBookClientPrivate *priv;
 	EDBusDirectBook *direct_config;
@@ -1400,8 +1400,8 @@ e_book_client_connect_direct_sync (ESourceRegistry *registry,
 /* Helper for e_book_client_connect_direct() */
 static void
 book_client_connect_direct_init_cb (GObject *source_object,
-				    GAsyncResult *result,
-				    gpointer user_data)
+                                    GAsyncResult *result,
+                                    gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	EBookClientPrivate *priv;
@@ -1459,9 +1459,9 @@ exit:
  **/
 void
 e_book_client_connect_direct (ESource *source,
-			      GCancellable *cancellable,
-			      GAsyncReadyCallback callback,
-			      gpointer user_data)
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	ConnectClosure *closure;
@@ -1522,7 +1522,7 @@ e_book_client_connect_direct (ESource *source,
  **/
 EClient *
 e_book_client_connect_direct_finish (GAsyncResult *result,
-				     GError **error)
+                                     GError **error)
 {
 	GSimpleAsyncResult *simple;
 	ConnectClosure *closure;

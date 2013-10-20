@@ -628,7 +628,7 @@ get_default_charset (CamelMimeMessage *msg)
 
 static gchar *
 get_header_decoded (const gchar *header_value,
-		    const gchar *default_charset)
+                    const gchar *default_charset)
 {
 	gchar *unfold, *decoded;
 
@@ -644,7 +644,7 @@ get_header_decoded (const gchar *header_value,
 
 static gchar *
 get_full_header (CamelMimeMessage *message,
-		 const gchar *default_charset)
+                 const gchar *default_charset)
 {
 	CamelMimePart *mp = CAMEL_MIME_PART (message);
 	GString *str = g_string_new ("");
@@ -1829,7 +1829,7 @@ camel_folder_search_set_body_index (CamelFolderSearch *search,
 static gboolean
 do_search_in_memory (CamelFolder *search_in_folder,
                      const gchar *expr,
-		     gchar **psql_query)
+                     gchar **psql_query)
 {
 	/* if the expression contains any of these tokens, then perform a memory search, instead of the SQL one */
 	const gchar *in_memory_tokens[] = {
@@ -1861,7 +1861,7 @@ do_search_in_memory (CamelFolder *search_in_folder,
 	*psql_query = camel_sexp_to_sql_sexp (expr);
 
 	/* unknown column can cause NULL sql_query, then an in-memory
-	   search is required */
+	 * search is required */
 	return !*psql_query;
 }
 

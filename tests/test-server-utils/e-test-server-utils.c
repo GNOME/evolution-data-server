@@ -138,10 +138,10 @@ client_weak_notify (gpointer data,
 
 static void
 e_test_server_utils_client_ready (GObject *source_object,
-				  GAsyncResult *res,
-				  gpointer user_data)
+                                  GAsyncResult *res,
+                                  gpointer user_data)
 {
-	FixturePair *pair = (FixturePair *)user_data;
+	FixturePair *pair = (FixturePair *) user_data;
 	GError *error = NULL;
 
 	switch (pair->closure->type) {
@@ -152,8 +152,9 @@ e_test_server_utils_client_ready (GObject *source_object,
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.book_client),
+			client_weak_notify, pair->fixture);
 		break;
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 		pair->fixture->service.book_client = (EBookClient *)
@@ -162,8 +163,9 @@ e_test_server_utils_client_ready (GObject *source_object,
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.book_client),
+			client_weak_notify, pair->fixture);
 		break;
 	case E_TEST_SERVER_CALENDAR:
 		pair->fixture->service.calendar_client = (ECalClient *)
@@ -172,8 +174,9 @@ e_test_server_utils_client_ready (GObject *source_object,
 		if (!pair->fixture->service.calendar_client)
 			g_error ("Unable to create the test calendar: %s", error->message);
 
-		g_object_weak_ref (G_OBJECT (pair->fixture->service.calendar_client),
-				   client_weak_notify, pair->fixture);
+		g_object_weak_ref (
+			G_OBJECT (pair->fixture->service.calendar_client),
+			client_weak_notify, pair->fixture);
 		break;
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
@@ -203,8 +206,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 				e_book_client_connect_direct (source, NULL, e_test_server_utils_client_ready, pair);
 			else
 				pair->fixture->service.book_client = (EBookClient *)
-					e_book_client_connect_direct_sync (pair->fixture->registry,
-									   source, NULL, &error);
+					e_book_client_connect_direct_sync (
+						pair->fixture->registry,
+						source, NULL, &error);
 		} else {
 
 			if (pair->closure->use_async_connect)
@@ -218,8 +222,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 			if (!pair->fixture->service.book_client)
 				g_error ("Unable to create the test book: %s", error->message);
 
-			g_object_weak_ref (G_OBJECT (pair->fixture->service.book_client),
-					   client_weak_notify, pair->fixture);
+			g_object_weak_ref (
+				G_OBJECT (pair->fixture->service.book_client),
+				client_weak_notify, pair->fixture);
 		}
 
 		break;
@@ -243,20 +248,22 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 	case E_TEST_SERVER_CALENDAR:
 
 		if (pair->closure->use_async_connect) {
-			e_cal_client_connect (source, pair->closure->calendar_source_type,
-					      NULL, e_test_server_utils_client_ready, pair);
+			e_cal_client_connect (
+				source, pair->closure->calendar_source_type,
+				NULL, e_test_server_utils_client_ready, pair);
 
 		} else {
 
 			pair->fixture->service.calendar_client = (ECalClient *)
 				e_cal_client_connect_sync (
-				        source,
+					source,
 					pair->closure->calendar_source_type, NULL, &error);
 			if (!pair->fixture->service.calendar_client)
 				g_error ("Unable to create the test calendar: %s", error->message);
 
-			g_object_weak_ref (G_OBJECT (pair->fixture->service.calendar_client),
-					   client_weak_notify, pair->fixture);
+			g_object_weak_ref (
+				G_OBJECT (pair->fixture->service.calendar_client),
+				client_weak_notify, pair->fixture);
 		}
 
 		break;

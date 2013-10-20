@@ -16,7 +16,8 @@ test_query (const gchar *query)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	/* e_sexp_add_variable(f, 0, "test", NULL); */
 

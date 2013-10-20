@@ -2251,7 +2251,8 @@ imapx_untagged_status (CamelIMAPXServer *is,
 
 		folder_path = camel_imapx_mailbox_to_folder_path (
 			mailbox_name, ns->sep);
-		c (is->tagprefix,
+		c (
+			is->tagprefix,
 			"Got folder path '%s' for mailbox '%s'\n",
 			folder_path, mailbox_name);
 		if (folder_path != NULL) {
@@ -2278,7 +2279,8 @@ imapx_untagged_status (CamelIMAPXServer *is,
 			camel_imapx_folder_invalidate_local_cache (
 				imapx_folder, uidvalidity);
 	} else {
-		c (is->tagprefix,
+		c (
+			is->tagprefix,
 			"Received STATUS for unknown folder '%s'\n",
 			mailbox_name);
 	}

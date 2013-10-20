@@ -3047,19 +3047,25 @@ e_book_backend_is_readonly (EBookBackend *backend)
  * Tries to create an #EDataBookDirect for @backend if
  * backend supports direct read access.
  *
- * Returns: (transfer full): A new #EDataBookDirect object, or %NULL if @backend does not support direct access
+ * Returns: (transfer full): A new #EDataBookDirect object, or %NULL if
+ *          @backend does not support direct access
  *
  * Since: 3.8
  */
 EDataBookDirect *
 e_book_backend_get_direct_book (EBookBackend *backend)
 {
+	EBookBackendClass *class;
+	EDataBookDirect *direct_book = NULL;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->get_direct_book)
-		return E_BOOK_BACKEND_GET_CLASS (backend)->get_direct_book (backend);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
 
-	return NULL;
+	if (class->get_direct_book != NULL)
+		direct_book = class->get_direct_book (backend);
+
+	return direct_book;
 }
 
 /**
