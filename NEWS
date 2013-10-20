@@ -1,3 +1,38 @@
+Evolution-Data-Server 3.11.1 2013-10-21
+---------------------------------------
+
+Bug Fixes:
+	Bug 695232 - Finish EVCard quoted-printable handling (Milan Crha)
+	Bug 704869 - Make CamelSaslGssapi usable out of Camel (Milan Crha)
+	Bug 708627 - Use PLAIN instead of LOGIN for GOA SMTP accounts
+	             (Matthew Barnes)
+	Bug 708730 - CalDAV: Improve handling of invalid access tokens
+	             (Matthew Barnes)
+	Bug 709198 - Add regression test for contacts database migrations
+	             (Tristan Van Berkom)
+	Bug 709550 - CamelService: Do not call disconnect_sync from its
+	             finalize (Milan Crha)
+	Bug 709561 - Pick up Windows Live mail from GOA (Matthew Barnes)
+
+Other Changes:
+	* Bump minimum GLib requirement to 2.36. (Matthew Barnes)
+	* Clean up some unused or just bad Camel APIs. (Matthew Barnes)
+	* Rework CamelStream to a GIOStream, and remove CamelTcpStream.
+	  Camel uses GTcpConnection now. (Matthew Barnes)
+	* Use GcrCertificateWidget in certificate prompts. (Matthew Barnes)
+
+Translations:
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Christian Kirbach (de)
+	Andika Triwidada (id)
+	Duarte Loreto (pt)
+	Enrico Nicoletto (pt_BR)
+	Yuri Myasoedov (ru)
+	Marián Čavojský (sk)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.10.0 2013-09-23
 ---------------------------------------
 
