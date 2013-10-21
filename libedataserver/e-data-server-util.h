@@ -40,6 +40,8 @@ const gchar *	e_get_user_cache_dir		(void);
 const gchar *	e_get_user_config_dir		(void);
 const gchar *	e_get_user_data_dir		(void);
 
+gboolean	e_util_strv_equal		(gconstpointer v1,
+						 gconstpointer v2);
 gchar *		e_util_strdup_strip		(const gchar *string);
 gchar *		e_util_strstrcase		(const gchar *haystack,
 						 const gchar *needle);

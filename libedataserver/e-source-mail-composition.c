@@ -317,23 +317,6 @@ e_source_mail_composition_dup_bcc (ESourceMailComposition *extension)
 	return duplicate;
 }
 
-static gboolean
-strv_equal (const gchar * const *strv1,
-            const gchar * const *strv2)
-{
-	gint ii;
-
-	if (!strv1 || !strv2)
-		return strv1 == strv2;
-
-	for (ii = 0; strv1[ii] && strv2[ii]; ii++) {
-		if (g_strcmp0 (strv1[ii], strv2[ii]) != 0)
-			return FALSE;
-	}
-
-	return !strv1[ii] && strv1[ii] == strv2[ii];
-}
-
 /**
  * e_source_mail_composition_set_bcc:
  * @extension: an #ESource
@@ -353,7 +336,7 @@ e_source_mail_composition_set_bcc (ESourceMailComposition *extension,
 
 	g_mutex_lock (&extension->priv->property_lock);
 
-	if (strv_equal ((const gchar * const *) extension->priv->bcc, bcc)) {
+	if (e_util_strv_equal (bcc, extension->priv->bcc)) {
 		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
@@ -440,7 +423,7 @@ e_source_mail_composition_set_cc (ESourceMailComposition *extension,
 
 	g_mutex_lock (&extension->priv->property_lock);
 
-	if (strv_equal ((const gchar * const *) extension->priv->cc, cc)) {
+	if (e_util_strv_equal (cc, extension->priv->cc)) {
 		g_mutex_unlock (&extension->priv->property_lock);
 		return;
 	}
