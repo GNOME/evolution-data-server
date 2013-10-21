@@ -748,18 +748,19 @@ cursor_test_step_free (CursorTest *test)
 
 static void
 cursor_test_step_ready_cb (GObject      *source_object,
-			      GAsyncResult *result,
-			      gpointer      user_data)
+			   GAsyncResult *result,
+			   gpointer      user_data)
 {
 	StepReadyData      *data = (StepReadyData *)user_data;
 	ETestServerFixture *server_fixture = (ETestServerFixture *)data->fixture;
 	GSList             *results = NULL;
 	gint                n_reported_results;
+	gboolean            end_of_list = FALSE;
 	GError             *error = NULL;
 
 	n_reported_results =
 		e_book_client_cursor_step_finish (E_BOOK_CLIENT_CURSOR (source_object),
-						     result, &results, &error);
+						  result, &results, &error);
 
 	if (n_reported_results < 0) {
 		if (g_error_matches (error,
@@ -767,14 +768,25 @@ cursor_test_step_ready_cb (GObject      *source_object,
 				     E_CLIENT_ERROR_OUT_OF_SYNC)) {
 			data->out_of_sync = TRUE;
 			g_clear_error (&error);
+		} else if (g_error_matches (error,
+					    E_CLIENT_ERROR,
+					    E_CLIENT_ERROR_END_OF_LIST)) {
+			end_of_list = TRUE;
+			g_clear_error (&error);
 		} else {
 			g_error ("Error calling e_book_client_cursor_step_finish(): %s",
 				 error->message);
 		}
 	}
 
-	if (!data->out_of_sync)
-		cursor_test_assert_results (data->fixture, data->test, results, n_reported_results);
+	if (!data->out_of_sync) {
+
+		if (data->test->expected < 0) {
+			g_assert_cmpint (n_reported_results, <, 0);
+			g_assert_cmpint (end_of_list, ==, TRUE);
+		} else
+			cursor_test_assert_results (data->fixture, data->test, results, n_reported_results);
+	}
 
 	g_slist_free_full (results, (GDestroyNotify)g_object_unref);
 	g_main_loop_quit (server_fixture->loop);
@@ -788,6 +800,7 @@ cursor_test_try_step (CursorFixture *fixture,
 	ETestServerFixture *server_fixture = (ETestServerFixture *)fixture;
 	CursorTestStep     *step = (CursorTestStep *)test;
 	gboolean            out_of_sync = FALSE;
+	gboolean            end_of_list = FALSE;
 
 	if (closure->async) {
 		StepReadyData data = { fixture, step, FALSE };
@@ -824,14 +837,23 @@ cursor_test_try_step (CursorFixture *fixture,
 					     E_CLIENT_ERROR_OUT_OF_SYNC)) {
 				out_of_sync = TRUE;
 				g_clear_error (&error);
+			} else if (g_error_matches (error,
+						    E_CLIENT_ERROR,
+						    E_CLIENT_ERROR_END_OF_LIST)) {
+				end_of_list = TRUE;
+				g_clear_error (&error);
 			} else {
 				g_error ("Error calling e_book_client_cursor_step_sync(): %s",
 					 error->message);
 			}
-
-		} else {
-			cursor_test_assert_results (fixture, step, results, n_reported_results);
 		}
+
+		if (step->expected < 0) {
+			g_assert_cmpint (n_reported_results, <, 0);
+			g_assert_cmpint (end_of_list, ==, TRUE);
+		} else
+			cursor_test_assert_results (fixture, step, results, n_reported_results);
+
 
 		g_slist_free_full (results, g_object_unref);
 	}
@@ -879,6 +901,13 @@ cursor_test_step (CursorFixture *fixture,
 	}
 }
 
+/* Expected is the number of expected results,
+ * the var args are the result indexes as
+ * listed in data-test-utils.h
+ *
+ * If expected is -1, then E_CLIENT_ERROR_END_OF_LIST
+ * is expected to be triggered by this step.
+ */
 static void
 cursor_closure_step (CursorClosure        *closure,
 		     EBookCursorStepFlags  flags,
@@ -2136,10 +2165,10 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Order/de_DE%s", base_params[i].base_path);
 
 		/****************************************************
-		 *                Move By / Origins Test            *
+		 *                  Step / Origins Test             *
 		 ****************************************************/
 
-		/* Overshooting the contact list causes position to become 0 */
+		/* Overshooting the contact list causes position to become total + 1 */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2156,10 +2185,9 @@ main (gint argc,
 				     10, /* Expected results */
 				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
 		cursor_closure_position (closure, 20, 21, TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/Move/Overshoot%s", base_params[i].base_path);
+		cursor_closure_add (closure, "/EBookClientCursor/Step/Overshoot%s", base_params[i].base_path);
 
-		/* Undershooting the contact list (in reverse) causes position to become
-		 * (moving -20 should give us position 1) */
+		/* Undershooting the contact list (in reverse) causes position to become 0 */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2176,7 +2204,55 @@ main (gint argc,
 				     10, /* Expected results */
 				     15, 7, 4, 5, 1, 8, 3, 6, 2, 11);
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/Move/Undershoot%s", base_params[i].base_path);
+		cursor_closure_add (closure, "/EBookClientCursor/Step/Undershoot%s", base_params[i].base_path);
+
+		/* Stepping past the end position causes an E_CLIENT_ERROR_END_OF_LIST */
+		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		cursor_closure_position (closure, 20, 0, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_BEGIN,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+		cursor_closure_position (closure, 20, 10, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     11, /* Count */
+				     10, /* Expected results */
+				     17, 16, 18, 10, 14, 12, 13, 9,  19, 20);
+		cursor_closure_position (closure, 20, 21, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     1,   /* Count */
+				     -1); /* Expect E_CLIENT_ERROR_END_OF_LIST */
+		cursor_closure_add (closure, "/EBookClientCursor/Step/EndOfListError/End%s", base_params[i].base_path);
+
+		/* Stepping backwards past the beginning position causes an E_CLIENT_ERROR_END_OF_LIST */
+		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		cursor_closure_position (closure, 20, 0, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_END,
+				     -10, /* Count */
+				     10, /* Expected results */
+				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
+		cursor_closure_position (closure, 20, 11, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     -11, /* Count */
+				     10, /* Expected results */
+				     15, 7, 4, 5, 1, 8, 3, 6, 2, 11);
+		cursor_closure_position (closure, 20, 0, TRUE);
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     -1,  /* Count */
+				     -1); /* Expect E_CLIENT_ERROR_END_OF_LIST */
+		cursor_closure_add (closure, "/EBookClientCursor/Step/EndOfListError/Begin%s", base_params[i].base_path);
 
 		/* Resetting query to get the beginning of the results */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
@@ -2195,7 +2271,7 @@ main (gint argc,
 				     10, /* Expected results */
 				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/Move/Reset/Forward%s", base_params[i].base_path);
+		cursor_closure_add (closure, "/EBookClientCursor/Step/Reset/Forward%s", base_params[i].base_path);
 
 		/* Resetting query to get the ending of the results (backwards) */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
@@ -2214,7 +2290,7 @@ main (gint argc,
 				     10, /* Expected results */
 				     20, 19, 9, 13, 12, 14, 10, 18, 16, 17);
 		cursor_closure_position (closure, 20, 11, TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/Move/Reset/Backwards%s", base_params[i].base_path);
+		cursor_closure_add (closure, "/EBookClientCursor/Step/Reset/Backwards%s", base_params[i].base_path);
 
 		/* Move twice and then repeat query */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
@@ -2240,7 +2316,7 @@ main (gint argc,
 				     5, /* Expected results */
 				     17, 16, 18, 10, 14);
 		cursor_closure_position (closure, 20, 15, TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/Move/RepeatPrevious/Forward%s", base_params[i].base_path);
+		cursor_closure_add (closure, "/EBookClientCursor/Step/RepeatPrevious/Forward%s", base_params[i].base_path);
 
 		/* Move twice and then repeat query */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
@@ -2266,7 +2342,7 @@ main (gint argc,
 				     5, /* Expected results */
 				     15, 7, 4, 5, 1);
 		cursor_closure_position (closure, 20, 6, TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/Move/RepeatPrevious/Backwards%s", base_params[i].base_path);
+		cursor_closure_add (closure, "/EBookClientCursor/Step/RepeatPrevious/Backwards%s", base_params[i].base_path);
 
 		/****************************************************
 		 *           BASIC SEARCH EXPRESSION TESTS          *
