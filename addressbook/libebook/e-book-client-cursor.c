@@ -31,16 +31,48 @@
  * <title>Sort Keys</title>
  * <para>
  * When creating the cursor initially with e_book_client_get_cursor(),
- * a list of sort keys must be provided to define the behavior
- * of the newly created cursor. Only summary #EContactFields are
- * supported for usage as sort keys. Whether a sort key is valid in
- * your addressbook can be verified by checking with
+ * a list of #EContactFields must be provided to define the sort order for
+ * the newly created cursor. Only contact fields of type %G_TYPE_STRING
+ * can potentially be used to define a cursor's sort order.
+ * </para>
+ * <para>
+ * Backends which support cursors may refuse to create a cursor based
+ * on the fields specified as sort keys,  if this happens then an
+ * %E_CLIENT_ERROR_INVALID_QUERY error will be reported by
+ * e_book_client_get_cursor().
+ * </para>
+ * <para>
+ * The default SQLite backend provided with Evolution Data Server
+ * only supports #EContactFields that are specified as summary information
+ * to be used as sort keys. Whether a contact field is configured to
+ * be part of the summary for your addressbook can be verified with
  * e_source_backend_summary_setup_get_summary_fields().
  * </para>
  * <para>
- * Any string type #EContactField in the summary can be used as a sort key,
- * the keys are provided in order of precedence, the primary sort
- * key is first followed by any secondary or tertiary sort keys.
+ * The order of sort keys given to e_book_client_get_cursor() defines
+ * which sort key will be the primary sort key and which keys will
+ * serve as tie breakers where the previous sort keys are exact matches.
+ * In the following example we create a typical cursor sorted with
+ * %E_CONTACT_FAMILY_NAME as the primary sort key and %E_CONTACT_GIVEN_NAME
+ * as a tie breaker.
+ * <informalexample>
+ *   <programlisting>
+ *     <![CDATA[EBookClientCursor *cursor = NULL;
+ *     EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
+ *     EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
+ *     GError *error = NULL;
+ *
+ *     if (e_book_client_get_cursor_sync (book_client, // EBookClient
+ *                                        NULL,        // Search Expression
+ *                                        sort_fields, // Sort Keys
+ *                                        sort_types,  // Ascending / Descending
+ *                                        2,           // Number of keys
+ *                                        &cursor,     // Return location for cursor
+ *                                        NULL,        // GCancellable
+ *                                        &error)) {
+ *             // Now we have a cursor ...
+ *     }]]></programlisting>
+ * </informalexample>
  * </para>
  * <para>
  * Sort order is immutable, if you need to browse content in a different
@@ -48,23 +80,145 @@
  * </para>
  * </refsect2>
  *
+ * <refsect2 id="cursor-state">
+ * <title>Understanding cursor state</title>
+ * <para>
+ * At any given time in a cursor's life cycle, a cursor's internal state will refer to a
+ * relative position in a sorted list.
+ * </para>
+ * <para>
+ * There are three basic varieties of cursor states:
+ * <itemizedlist>
+ *   <listitem>
+ *     <para>
+ *       Virtual states referring to the beginnng and end of the list.
+ *     </para>
+ *     <para>
+ *       The beginning state is positioned before any contact in the addressbook.
+ *       When the cursor is in this state, a call to e_book_client_cursor_step()
+ *       will always start reporting contacts from the beginning of the list.
+ *       Similarly when in the end state, stepping in reverse will start
+ *       reporting contacts from the end of the list.
+ *     </para>
+ *     <para>
+ *       The beginning and end states can be reached by stepping off the
+ *       end of the list, or by specifying the %E_BOOK_CURSOR_ORIGIN_BEGIN or
+ *       %E_BOOK_CURSOR_ORIGIN_END origins to e_book_client_cursor_step(). The
+ *       cursor is also initially positioned before the contact list.
+ *     </para>
+ *   </listitem>
+ *   <listitem>
+ *     <para>
+ *       States referring to a specific contact.
+ *     </para>
+ *     <para>
+ *       A state which refers to a specific contact in the list of
+ *       contacts associated with a given cursor. At the end of any
+ *       successful call to e_book_client_cursor_step() with
+ *       the %E_BOOK_CURSOR_STEP_MOVE flag specified; the cursor
+ *       state is updated with the value of the last result.
+ *     </para>
+ *   </listitem>
+ *   <listitem>
+ *     <para>
+ *       States referring to an alphabetic position.
+ *     </para>
+ *     <para>
+ *       When a state refers to an
+ *       <link linkend="cursor-alphabet">Alphabetic Index</link>,
+ *       it refers to a position which is in between contacts.
+ *       For instance the alphabetic position "E" refers to a
+ *       position after contacts starting with "D" and before contacts
+ *       starting with "E".
+ *     </para>
+ *   </listitem>
+ * </itemizedlist>
+ * </para>
+ * </refsect2>
+ *
+ * <refsect2 id="cursor-pos-total">
+ * <title>Cursor position and total</title>
+ * <para>
+ * The #EBookClientCursor:position and #EBookClientCursor:total attributes
+ * provide feedback about a cursor's position in relation to the addressbook
+ * provided the cursor's sort order.
+ * </para>
+ * <para>
+ * The total reflects that total amount of contacts in the addressbook given
+ * the cursor's <link linkend="cursor-search">Search Expression</link>. The position
+ * is defined as the number of contacts leading up to the cursor position inclusive
+ * of the cursor position.
+ * </para>
+ * <para>
+ * To help illustrate how the total and position attributes relate to a sorted list
+ * of contacts, we've provided the diagram below. 
+ * </para>
+ * <inlinegraphic fileref="cursor-positions.png" format="PNG" align="center"></inlinegraphic>
+ * <para>
+ * The above diagram shows two representations of a sorted contact list, using
+ * %E_CONTACT_FAMILY_NAME as the primary sort key and %E_CONTACT_GIVEN_NAME as
+ * a secondary sort key. On either side we can see the symbolic positions
+ * %E_BOOK_CURSOR_ORIGIN_BEGIN and %E_BOOK_CURSOR_ORIGIN_END.
+ * </para>
+ * <para>
+ * For a given cursor state, the position value will be equal to the total
+ * number of contacts leading up to the current cursor state inclusive of the
+ * cursor state itself. In the left hand side of the above diagram the cursor
+ * points to the fourth contact and the cursor position is also 4. An exception
+ * to this is when the cursor state refers to the %E_BOOK_CURSOR_ORIGIN_END position.
+ * When the cursor state refers to the end of list, the position property
+ * will have a value of (total + 1).
+ * </para>
+ * <para>
+ * Another thing the above diagram illustrates is the effect that an
+ * asynchronous addressbook modification has on the cursor. The right
+ * hand side of the diagram portrays the result of deleting "Mickey Mouse"
+ * from the original list on the left.
+ * </para>
+ * <para>
+ * The cursor state at this time still litteraly refers to "Mickey Mouse",
+ * however the number of contacts leading up to "Mickey Mouse" is now 3 
+ * instead of 4. As one might have guessed, any addition of a contact
+ * which is considered to be less than or equal to "Mickey Mouse" at this point,
+ * will cause the position to increase again. In this way, asynchronous
+ * addressbook modification might cause the cursor's position and total
+ * values to change, but never effect the cursor's state and it's
+ * actual position in relation to other contacts in the sorted list.
+ * </para>
+ * <para>
+ * These total and position values are guaranteed to always be coherent, they are
+ * updated synchronously upon successful completion of any of the asynchronous
+ * cursor API calls, and also updated asynchronously whenever the addressbook
+ * changes and a #EBookClientCursor::refresh signal is delivered.
+ * </para>
+ * <para>
+ * Change notifications are guaranteed to only ever be delivered in the #GMainContext which
+ * was the thread default main context at cursor creation time.
+ * </para>
+ * </refsect2>
+ *
  * <refsect2 id="cursor-search">
  * <title>Search Expressions</title>
  * <para>
  * The list of contacts associated to a given cursor can be filtered
- * with a search expression generated by e_book_query_to_string(). This
- * however comes with the same limitation as sort keys, only #EContactFields
- * which are stored in the addressbook summary can be referred to in
- * search expressions provided to e_book_client_cursor_set_sexp().
+ * with a search expression generated by e_book_query_to_string(). Since
+ * this effects how the data will be traversed in the backend, seach
+ * expressions come with the same limitation as sort keys. Backends
+ * will report %E_CLIENT_ERROR_INVALID_QUERY for contact fields which
+ * are not supported. For the default local addressbook, any fields
+ * which are configured in the summary can be used to filter cursor
+ * results.
  * </para>
  * <para>
  * Changing the search expression can be done at any time using
- * e_book_client_cursor_set_sexp() The <link linkend="cursor-stats">cursor status</link>
- * will be updated synchronously after successfully setting the
+ * e_book_client_cursor_set_sexp().
+ * The cursor <link linkend="cursor-pos-total">position and total</link>
+ * values will be updated synchronously after successfully setting the
  * search expression at which time you might refresh the current
  * view, displaying the new filtered list of contacts at the same
  * cursor position.
  * </para>
+ * <inlinegraphic fileref="cursor-positions-filtered.png" format="PNG" align="center"></inlinegraphic>
  * </refsect2>
  *
  * <refsect2 id="cursor-iteration">
@@ -84,6 +238,8 @@
  *     GSList *results;
  *
  *     if (!e_book_client_cursor_step_sync (cursor,
+ *                                          E_BOOK_CURSOR_STEP_MOVE |
+ *                                          E_BOOK_CURSOR_STEP_FETCH,
  *                                          E_BOOK_CURSOR_ORIGIN_CURRENT,
  *                                          10,
  *                                          &results,
@@ -93,22 +249,39 @@
  *         if (g_error_matches (error,
  *                              E_CLIENT_ERROR,
  *                              E_CLIENT_ERROR_OUT_OF_SYNC))
+ *           // The addressbook has been modified at the same time as
+ *           // we asked to step. The appropriate thing to do is wait
+ *           // for the "refresh" signal before trying again.
  *           handle_out_of_sync_condition (cursor);
+ *         else if (g_error_matches (error,
+ *                                   E_CLIENT_ERROR,
+ *                                   E_CLIENT_ERROR_END_OF_LIST))
+ *           // We asked for 10 contacts but were already positioned
+ *           // at the end of the list (or we asked for -10 contacts
+ *           // and were positioned at the beginning).
+ *           handle_end_of_list_condition (cursor);
  *         else
+ *           // Some error actually occurred
  *           handle_error_condition (cursor, error);
  *
  *         g_clear_error (&error);
  *       }]]></programlisting>
  * </informalexample>
  * In the above example we chose %E_BOOK_CURSOR_ORIGIN_CURRENT as our #EBookCursorOrigin so the above
- * call will fetch 10 contacts after the cursor's current position and reposition the current cursor
- * location 10 contacts further into the results. We could have chosen the %E_BOOK_CURSOR_ORIGIN_RESET
- * origin to start at the beginning of the results or the %E_BOOK_CURSOR_ORIGIN_PREVIOUS
- * origin to start the query from the previous position. The cursor keeps a record of the last
- * known cursor position for the purpose of repeating queries when the addressbook is modified.
+ * call will traverse 10 contacts following the cursor's current position. One can also choose the
+ * %E_BOOK_CURSOR_ORIGIN_BEGIN or %E_BOOK_CURSOR_ORIGIN_END origin to start at the beginning or end
+ * of the results at any time.
  * </para>
  * <para>
- * Because Evolution's addressbook might be modified at any time by another application,
+ * We also specified both of the flags %E_BOOK_CURSOR_STEP_MOVE and %E_BOOK_CURSOR_STEP_FETCH,
+ * this means we want to receive results from the addressbook and we also want to modify
+ * the current cursor state (move the cursor), these operations can however be done
+ * completely independantly of eachother, which is often what is desired for a contact
+ * browsing user interface. It is however recommended to move and fetch
+ * results in a single pass wherever that makes sense in your application.
+ * </para>
+ * <para>
+ * Because the addressbook might be modified at any time by another application,
  * it's important to handle the %E_CLIENT_ERROR_OUT_OF_SYNC error. This error will occur
  * at any time that the cursor detects an addressbook change while trying to move.
  * Whenever an out of sync condition arises, the cursor should be left alone until the
@@ -117,42 +290,40 @@
  * loaded content, it is also guaranteed to be triggered after any %E_CLIENT_ERROR_OUT_OF_SYNC
  * error.
  * </para>
+ * <para>
+ * The diagram below illustrates some scenarios of how the cursor state is updated
+ * in calls to e_book_client_cursor_step().
+ * </para>
+ * <inlinegraphic fileref="cursor-positions-step.png" format="PNG" align="center"></inlinegraphic>
  * </refsect2>
  *
- * <refsect2 id="cursor-stats">
- * <title>Cursor Status</title>
- * <para>
- * The cursor's current status is available through the #EBookClientCursor:total and
- * #EBookClientCursor:position properties. These values are guaranteed to always
- * be coherent, they are updated synchronously upon successful completion of any
- * of the asynchronous cursor API calls, and also updated asynchronously whenever
- * the addressbook changes and a #EBookClientCursor::refresh signal is delivered.
- * </para>
- * <para>
- * Change notifications are guaranteed to only ever be delivered in the #GMainContext which
- * was the thread default main context at cursor creation time.
- * </para>
- * </refsect2>
- * 
  * <refsect2 id="cursor-alphabet">
  * <title>Alphabetic Indexes</title>
  * <para>
- * The cursor implementation uses ICU libraries to provide a rich locale sensitive
- * featureset, this ensures that results are always sorted in the expected addressbook
- * sort order (as opposed to dictionary order or phonetic order) and in the expected
- * order according to the user's locale.
+ * The cursor permits navigation of the sorted contact list in terms of alphabetic
+ * positions in the list, allowing one to jump from one letter to the next in
+ * the active alphabet.
  * </para>
  * <para>
- * One of the more interesting features this allows for, is support for locale
- * specific language scripts, i.e. Alphabetic Indexes.
+ * The active alphabet itself is represented as an array of UTF-8 strings which are
+ * suitable to display a given glyph or alphabetic position in the user's active alphabet.
+ * This array of alphabetic position labels is exposed via the #EBookClientCursor:alphabet
+ * property and can always be fetched with e_book_client_cursor_get_alphabet().
  * </para>
  * <para>
- * The cursor exposes the active alphabet via the #EBookClientCursor:alphabet property.
- * which is a null terminated array of strings. The strings are appropriate to display
- * to represent positions (letters / characters) in the active alphabet, for instance
- * for a Latin alphabet the array will contain <emphasis>"A", "B", "C", ...</emphasis>.
- * The full information on the active alphabet can always be fetched with
- * e_book_client_cursor_get_alphabet().
+ * As shown below, each index in the active alphabet array is a potential cursor state
+ * which refers to a position before, after or in between contacts in the sorted contact list.
+ * Most of the positions in the active alphabet array refer to alphabetic glyhps or positions,
+ * however the the 'underflow', 'inflow' and 'overflow' positions represent positions for
+ * contacts which sort outside the bounderies of the active alphabet.
+ * </para>
+ * <inlinegraphic fileref="cursor-alphabetic-indexes.png" format="PNG" align="center"></inlinegraphic>
+ * <para>
+ * The active alphabet is dynamically resolved from the system locale at startup time and
+ * whenever a system locale change notification is delivered to Evolution Data Server. If
+ * ever the system locale changes at runtime then a change notification will be delivered
+ * for the #EBookClientCursor:alphabet property, this is a good time to refresh the list
+ * of alphabetic positions available in a user interface.
  * </para>
  * <para>
  * Using the active alphabet, one can build a user interface which allows the user
@@ -164,6 +335,9 @@
  *     <![CDATA[GError *error = NULL;
  *     gint index = currently_selected_index (user_interface);
  *
+ *     // At this point 'index' must be a numeric value corresponding
+ *     // to one of the positions in the array returned by
+ *     // e_book_client_cursor_get_alphabet().
  *     if (!e_book_client_cursor_set_alphabetic_index_sync (cursor,
  *                                                          index,
  *                                                          NULL,
@@ -172,6 +346,8 @@
  *         if (g_error_matches (error,
  *                              E_CLIENT_ERROR,
  *                              E_CLIENT_ERROR_OUT_OF_SYNC))
+ *           // The system locale has changed at the same time
+ *           // as we were setting an alphabetic cursor position.
  *           handle_out_of_sync_condition (cursor);
  *         else
  *           handle_error_condition (cursor, error);
@@ -184,7 +360,7 @@
  * beginning of the given letter.
  * </para>
  * <para>
- * This API can also result in an %E_CLIENT_ERROR_OUT_OF_SYNC error. This error will
+ * This API can result in an %E_CLIENT_ERROR_OUT_OF_SYNC error. This error will
  * occur at any time that the cursor tries to set the alphabetic index whilst the
  * addressbook is changing its active locale setting. In the case of a dynamic locale
  * change, a change notification will be delivered for the #EBookClientCursor:alphabet
@@ -208,6 +384,24 @@
  *
  * <example id="example-contact-browser"><title>Example Contact Browser</title><programlisting><xi:include xmlns:xi="http://www.w3.org/2001/XInclude" parse="text" href="../../../../../tests/cursor-example/cursor-example.c"><xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback></xi:include></programlisting></example>
  * </para>
+ * </refsect2>
+ *
+ * <refsect2 id="cursor-example-program">
+ * <title>Example Contact Browser</title>
+ * <para>
+ * Evolution Data Server comes with an example implementation of a
+ * contact browser using the cursor features, the main portion of
+ * this example is included here below.
+ * </para>
+ * <informalexample>
+ *   <programlisting>
+ *     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+ *                 parse="text"
+ *                 href="../../../../../tests/cursor-example/cursor-example.c">
+ *       <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+ *     </xi:include>
+ *   </programlisting>
+ * </informalexample>
  * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
@@ -451,6 +645,10 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The #EContactField names to sort this cursor with
 	 *
+	 * <note><para>This is an internal parameter for constructing the
+	 * cursor, to construct the cursor use e_book_client_get_cursor().
+	 * </para></note>
+	 *
 	 * Since: 3.12
 	 */
 	g_object_class_install_property (
@@ -487,6 +685,10 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The #GMainContext in which the #EBookClient created this cursor.
 	 *
+	 * <note><para>This is an internal parameter for constructing the
+	 * cursor, to construct the cursor use e_book_client_get_cursor().
+	 * </para></note>
+	 *
 	 * Since: 3.12
 	 */
 	g_object_class_install_property (
@@ -504,6 +706,10 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * EBookClientCursor:connection:
 	 *
 	 * The #GDBusConnection to the addressbook server.
+	 *
+	 * <note><para>This is an internal parameter for constructing the
+	 * cursor, to construct the cursor use e_book_client_get_cursor().
+	 * </para></note>
 	 *
 	 * Since: 3.12
 	 */
@@ -523,6 +729,10 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * EBookClientCursor:object-path:
 	 *
 	 * The D-Bus object path to find the server side cursor object.
+	 *
+	 * <note><para>This is an internal parameter for constructing the
+	 * cursor, to construct the cursor use e_book_client_get_cursor().
+	 * </para></note>
 	 *
 	 * Since: 3.12
 	 */
@@ -544,6 +754,10 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The direct handle to the #EDataBookCursor for direct read access mode.
 	 *
+	 * <note><para>This is an internal parameter for constructing the
+	 * cursor, to construct the cursor use e_book_client_get_cursor().
+	 * </para></note>
+	 *
 	 * Since: 3.12
 	 */
 	g_object_class_install_property (
@@ -560,8 +774,8 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	/**
 	 * EBookClientCursor:alphabet:
 	 *
-	 * The active alphabet.
-	 *
+	 * The currently <link linkend="cursor-alphabet">active alphabet</link>.
+	 * 
 	 * The value is a %NULL terminated array of strings,
 	 * each string is suitable to display a specific letter
 	 * in the active alphabet.
@@ -615,6 +829,16 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 *
 	 * The current cursor position in the cursor's result list.
 	 *
+	 * More specifically, the cursor position is defined as
+	 * the number of contacts leading up to the current
+	 * cursor position, inclusive of the current cursor
+	 * position.
+	 *
+	 * If the position value is %0, then the cursor is positioned
+	 * before the contact list. Conversely, if the position value
+	 * is greater than #EBookClientCursor:total, this indicates
+	 * that the cursor is positioned after the contact list.
+	 *
 	 * Property change notifications are guaranteed to be
 	 * delivered in the #GMainContext which was the thread
 	 * default context at cursor creation time.
@@ -636,10 +860,8 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * @cursor: The #EBookClientCursor which needs to be refreshed
 	 *
 	 * Indicates that the addressbook has been modified and
-	 * that the cursor results should be refreshed.
-	 *
-	 * This is normally done by calling e_book_client_cursor_step()
-	 * with an %E_BOOK_CURSOR_ORIGIN_PREVIOUS origin.
+	 * that any content currently being displayed from the current
+	 * cursor position should be reloaded.
 	 *
 	 * This signal is guaranteed to be delivered in the #GMainContext
 	 * which was the thread default context at cursor creation time.
@@ -1868,7 +2090,7 @@ e_book_client_cursor_ref_client (EBookClientCursor *cursor)
  * @inflow: (allow-none) (out): The inflow index, for any words which sort between the active alphabets (if there is more than one)
  * @overflow: (allow-none) (out): The overflow index, for any words which sort above the active alphabet
  *
- * Fetches the array of displayable labels for the active alphabet.
+ * Fetches the array of displayable labels for the <link linkend="cursor-alphabet">active alphabet</link>.
  *
  * The active alphabet is based on the current locale configuration of the
  * addressbook, and can be a different alphabet for locales requiring non-Latin
@@ -1876,23 +2098,17 @@ e_book_client_cursor_ref_client (EBookClientCursor *cursor)
  * interface to represent the alphabetic position of the cursor in the user's
  * native alphabet.
  *
- * The positions of these labels in the returned array can later be used
- * with e_book_client_cursor_set_alphabetic_index() to explicitly set the
- * cursor position to a given index in the active alphabet. This allows
- * one to construct a user interface which allows the user to jump to
- * a given letter in the ordered cursor results.
- *
- * The alphabet can periodically change when the system locale changes, change
- * notifications will be delivered asynchronously to the #EBookClientCursor:alphabet
- * property at any time the system locale changes and the active alphabet is updated.
- *
  * The @underflow, @inflow and @overflow parameters allow one to observe which
  * indexes Evolution Data Server is using to store words which sort outside
  * of the alphabet, for instance words from foreign language scripts and
- * words which start with numeric characters, or other types of character
- * (the @inflow index is currently unused, but can be used for words which
- * sort between the active alphabets, if more than one alphabet is displayed
- * for a given locale).
+ * words which start with numeric characters, or other types of character.
+ *
+ * While the @underflow and @overflow are for words which sort below or
+ * above the active alphabets, the @inflow index is for words which sort
+ * in between multiple concurrently active alphabets. The active alphabet
+ * array might contain more than one alphabet for locales where it is
+ * very common or expected to have names in Latin script as well as names
+ * in another script.
  *
  * Returns: (array zero-terminated=1) (element-type utf8) (transfer none):
  *   The array of displayable labels for each index in the active alphabet.
@@ -1942,15 +2158,16 @@ e_book_client_cursor_get_total (EBookClientCursor   *cursor)
  * e_book_client_cursor_get_position:
  * @cursor: an #EBookClientCursor
  *
- * Fetches the current cursor position within @cursor's
- * query results.
+ * Fetches the number of contacts leading up to the current
+ * cursor position, inclusive of the current cursor position.
  *
- * The position value can be any where from 0 to the total
- * number of contacts at any given time, a value of 0 indicates
- * that the cursor is positioned before the contact list, if
- * the position is equal to the total, as returned by
- * e_book_client_cursor_get_total(), then the cursor points
- * to the last contact in @cursor's query results.
+ * The position value can be anywhere from 0 to the total
+ * number of contacts plus one. A value of 0 indicates
+ * that the cursor is positioned before the contact list in
+ * the symbolic %E_BOOK_CURSOR_ORIGIN_BEGIN state. If
+ * the position is greater than the total, as returned by
+ * e_book_client_cursor_get_total(), then the cursor is positioned
+ * after the last contact in the symbolic %E_BOOK_CURSOR_ORIGIN_END position.
  *
  * Returns: The current cursor position
  *
@@ -2067,7 +2284,7 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor   *cursor,
  * Sets the <link linkend="cursor-search">Search Expression</link> for the cursor.
  *
  * A side effect of setting the search expression is that the
- * #EBookClientCursor:position and #EBookClientCursor:total
+ * <link linkend="cursor-pos-total">position and total</link>
  * properties will be updated.
  *
  * If this method is called from the same thread context in which
@@ -2177,8 +2394,8 @@ e_book_client_cursor_step (EBookClientCursor   *cursor,
  * Completes an asynchronous call initiated by e_book_client_cursor_step(), fetching
  * any contacts which might have been returned by the call.
  *
- * Returns: The number of contacts which the cursor has moved by if successfull.
- * Otherwise -1 is returned and @error is set.
+ * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * returned and @error is set.
  *
  * Since: 3.12
  */
@@ -2245,8 +2462,9 @@ e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
  * If %E_BOOK_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
  * a %NULL #GSList pointer should be provided for the @results parameter.
  *
- * A side effect of moving the cursor is that the #EBookClientCursor:position
- * property will be updated.
+ * If %E_BOOK_CURSOR_STEP_MOVE is specified in %flags, then the cursor's
+ * state will be modified and the <link linkend="cursor-pos-total">position</link>
+ * property will be updated as a result.
  *
  * If this method is called from the same thread context in which
  * the cursor was created, then the updates to the #EBookClientCursor:position
@@ -2260,8 +2478,8 @@ e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
  * to be followed by an #EBookClientCursor::refresh signal at which point any content
  * should be reloaded.
  *
- * Returns: The number of contacts which the cursor has moved by if successfull.
- * Otherwise -1 is returned and @error is set.
+ * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * returned and @error is set.
  *
  * Since: 3.12
  */
@@ -2359,6 +2577,8 @@ e_book_client_cursor_set_alphabetic_index (EBookClientCursor   *cursor,
  * Completes an asynchronous call initiated by e_book_client_cursor_set_alphabetic_index().
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set.
+ *
+ * Since: 3.12
  */
 gboolean
 e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
@@ -2399,9 +2619,9 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
  * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
- * Sets the current cursor position to point to an <link linkend="cursor-alphabet">Alphabetic Index</link>.
+ * Sets the cursor to point to an <link linkend="cursor-alphabet">Alphabetic Index</link>.
  *
- * After setting the target alphabetic index, for example the
+ * After setting the alphabetic index, for example the
  * index for letter 'E', then further calls to e_book_client_cursor_step()
  * will return results starting with the letter 'E' (or results starting
  * with the last result in 'D' when navigating through cursor results
