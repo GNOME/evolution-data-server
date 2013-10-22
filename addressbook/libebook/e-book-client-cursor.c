@@ -255,7 +255,7 @@
  *           handle_out_of_sync_condition (cursor);
  *         else if (g_error_matches (error,
  *                                   E_CLIENT_ERROR,
- *                                   E_CLIENT_ERROR_END_OF_LIST))
+ *                                   E_CLIENT_ERROR_QUERY_REFUSED))
  *           // We asked for 10 contacts but were already positioned
  *           // at the end of the list (or we asked for -10 contacts
  *           // and were positioned at the beginning).
@@ -2459,7 +2459,7 @@ e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
  * return no results if the cursor currently points to the last contact. 
  * Reaching the end of the list is not considered an error condition. Attempts
  * to step beyond the end of the list after having reached the end of the list
- * will however trigger an %E_CLIENT_ERROR_END_OF_LIST error.
+ * will however trigger an %E_CLIENT_ERROR_QUERY_REFUSED error.
  *
  * If %E_BOOK_CURSOR_STEP_FETCH is specified in %flags, a pointer to 
  * a %NULL #GSList pointer should be provided for the @results parameter.
