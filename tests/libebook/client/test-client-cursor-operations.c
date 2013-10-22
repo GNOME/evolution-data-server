@@ -770,7 +770,7 @@ cursor_test_step_ready_cb (GObject      *source_object,
 			g_clear_error (&error);
 		} else if (g_error_matches (error,
 					    E_CLIENT_ERROR,
-					    E_CLIENT_ERROR_END_OF_LIST)) {
+					    E_CLIENT_ERROR_QUERY_REFUSED)) {
 			end_of_list = TRUE;
 			g_clear_error (&error);
 		} else {
@@ -839,7 +839,7 @@ cursor_test_try_step (CursorFixture *fixture,
 				g_clear_error (&error);
 			} else if (g_error_matches (error,
 						    E_CLIENT_ERROR,
-						    E_CLIENT_ERROR_END_OF_LIST)) {
+						    E_CLIENT_ERROR_QUERY_REFUSED)) {
 				end_of_list = TRUE;
 				g_clear_error (&error);
 			} else {
@@ -905,7 +905,7 @@ cursor_test_step (CursorFixture *fixture,
  * the var args are the result indexes as
  * listed in data-test-utils.h
  *
- * If expected is -1, then E_CLIENT_ERROR_END_OF_LIST
+ * If expected is -1, then E_CLIENT_ERROR_QUERY_REFUSED
  * is expected to be triggered by this step.
  */
 static void
@@ -1923,7 +1923,7 @@ step_loop_ready_cb (GObject      *source_object,
 			g_clear_error (&error);
 		} else if (g_error_matches (error,
 					    E_CLIENT_ERROR,
-					    E_CLIENT_ERROR_END_OF_LIST)) {
+					    E_CLIENT_ERROR_QUERY_REFUSED)) {
 			data->end_of_list = TRUE;
 			g_clear_error (&error);
 		} else {
@@ -1984,7 +1984,7 @@ step_loop_iteration (StepLoopData *data)
 				g_clear_error (&error);
 			} else if (g_error_matches (error,
 						    E_CLIENT_ERROR,
-						    E_CLIENT_ERROR_END_OF_LIST)) {
+						    E_CLIENT_ERROR_QUERY_REFUSED)) {
 				data->end_of_list = TRUE;
 				g_clear_error (&error);
 			} else {
@@ -2206,7 +2206,7 @@ main (gint argc,
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/Step/Undershoot%s", base_params[i].base_path);
 
-		/* Stepping past the end position causes an E_CLIENT_ERROR_END_OF_LIST */
+		/* Stepping past the end position causes an E_CLIENT_ERROR_QUERY_REFUSED */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2227,10 +2227,10 @@ main (gint argc,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
 				     E_BOOK_CURSOR_ORIGIN_CURRENT,
 				     1,   /* Count */
-				     -1); /* Expect E_CLIENT_ERROR_END_OF_LIST */
+				     -1); /* Expect E_CLIENT_ERROR_QUERY_REFUSED */
 		cursor_closure_add (closure, "/EBookClientCursor/Step/EndOfListError/End%s", base_params[i].base_path);
 
-		/* Stepping backwards past the beginning position causes an E_CLIENT_ERROR_END_OF_LIST */
+		/* Stepping backwards past the beginning position causes an E_CLIENT_ERROR_QUERY_REFUSED */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2251,7 +2251,7 @@ main (gint argc,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
 				     E_BOOK_CURSOR_ORIGIN_CURRENT,
 				     -1,  /* Count */
-				     -1); /* Expect E_CLIENT_ERROR_END_OF_LIST */
+				     -1); /* Expect E_CLIENT_ERROR_QUERY_REFUSED */
 		cursor_closure_add (closure, "/EBookClientCursor/Step/EndOfListError/Begin%s", base_params[i].base_path);
 
 		/* Resetting query to get the beginning of the results */
