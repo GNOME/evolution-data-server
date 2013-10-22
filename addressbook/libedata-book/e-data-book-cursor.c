@@ -813,7 +813,10 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
  * %E_CLIENT_ERROR_OUT_OF_SYNC error if the @revision_guard does not match
  * the current addressbook revision.
  *
- * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * An explanation of how stepping is expected to behave can be found
+ * in the <link linkend="cursor-iteration">user facing reference documentation</link>.
+ *
+ * Returns: The number of contacts traversed if successful, otherwise -1 is
  * returned and @error is set.
  *
  * Since: 3.12

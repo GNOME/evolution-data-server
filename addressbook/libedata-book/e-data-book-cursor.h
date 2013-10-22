@@ -126,8 +126,8 @@ typedef gint (*EDataBookCursorStepFunc) (EDataBookCursor     *cursor,
  *
  * Method type for #EDataBookCursorClass.set_alphabetic_index()
  *
- * Sets the current cursor position to point to an index into the
- * active alphabet.
+ * Sets the cursor state to point to an 
+ * <link linkend="cursor-alphabet">index into the active alphabet</link>.
  *
  * The implementing class must check that @locale matches the current
  * locale setting of the underlying database and report an %E_CLIENT_ERROR_OUT_OF_SYNC
@@ -161,9 +161,13 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  * contact). A position of %0 indicates that the cursor is situated in
  * a position that is before and after the entire result set. The cursor
  * position should be %0 at creation time, and should start again from
- * the symbolic %0 position whenever %E_BOOK_CURSOR_ORIGIN_RESET is
+ * the symbolic %0 position whenever %E_BOOK_CURSOR_ORIGIN_BEGIN is
  * specified in the #EDataBookCursorClass.step() method (or whenever
  * moving the cursor beyond the end of the result set).
+ *
+ * If the cursor is positioned beyond the end of the list, then
+ * the position should be the total amount of contacts available
+ * in the list (as returned through the @total argument) plus one.
  *
  * This method is called by e_data_book_cursor_recalculate() and in some
  * other cases where @cursor's current position and total must be
