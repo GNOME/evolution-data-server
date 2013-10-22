@@ -6121,7 +6121,7 @@ collect_results_for_cursor_cb (gpointer ref,
  * The result list will be stored to @results and should be freed with g_slist_free()
  * and all elements freed with e_book_backend_sqlitedb_search_data_free().
  *
- * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * Returns: The number of contacts traversed if successful, otherwise -1 is
  * returned and @error is set.
  *
  * Since: 3.12
