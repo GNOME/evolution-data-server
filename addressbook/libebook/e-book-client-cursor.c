@@ -835,9 +835,11 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 	 * position.
 	 *
 	 * If the position value is %0, then the cursor is positioned
-	 * before the contact list. Conversely, if the position value
-	 * is greater than #EBookClientCursor:total, this indicates
-	 * that the cursor is positioned after the contact list.
+	 * before the contact list in the symbolic %E_BOOK_CURSOR_ORIGIN_BEGIN
+	 * position. If the position value is greater than 
+	 * #EBookClientCursor:total, this indicates that the cursor is
+	 * positioned after the contact list in the symbolic
+	 * %E_BOOK_CURSOR_ORIGIN_END position.
 	 *
 	 * Property change notifications are guaranteed to be
 	 * delivered in the #GMainContext which was the thread
