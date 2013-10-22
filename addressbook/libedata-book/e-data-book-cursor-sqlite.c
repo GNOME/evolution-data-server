@@ -351,7 +351,7 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_END_OF_LIST)) {
 				g_set_error_literal (error, E_CLIENT_ERROR,
-						     E_CLIENT_ERROR_END_OF_LIST,
+						     E_CLIENT_ERROR_QUERY_REFUSED,
 						     local_error->message);
 				g_clear_error (&local_error);
 			} else
