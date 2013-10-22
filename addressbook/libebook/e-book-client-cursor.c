@@ -2396,7 +2396,7 @@ e_book_client_cursor_step (EBookClientCursor   *cursor,
  * Completes an asynchronous call initiated by e_book_client_cursor_step(), fetching
  * any contacts which might have been returned by the call.
  *
- * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * Returns: The number of contacts traversed if successful, otherwise -1 is
  * returned and @error is set.
  *
  * Since: 3.12
@@ -2480,7 +2480,7 @@ e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
  * to be followed by an #EBookClientCursor::refresh signal at which point any content
  * should be reloaded.
  *
- * Returns: The number of contacts traversed if successfull, otherwise -1 is
+ * Returns: The number of contacts traversed if successful, otherwise -1 is
  * returned and @error is set.
  *
  * Since: 3.12
