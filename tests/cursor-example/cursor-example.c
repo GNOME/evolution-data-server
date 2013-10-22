@@ -427,7 +427,7 @@ cursor_example_move_cursor (CursorExample     *example,
 
 		} else if (g_error_matches (error,
 					    E_CLIENT_ERROR,
-					    E_CLIENT_ERROR_END_OF_LIST)) {
+					    E_CLIENT_ERROR_QUERY_REFUSED)) {
 
 			d (g_print ("End of list was reached\n"));
 
@@ -479,7 +479,7 @@ cursor_example_load_page (CursorExample     *example,
 
 		} else if (g_error_matches (error,
 					    E_CLIENT_ERROR,
-					    E_CLIENT_ERROR_END_OF_LIST)) {
+					    E_CLIENT_ERROR_QUERY_REFUSED)) {
 
 			d (g_print ("End of list was reached\n"));
 
