@@ -1,0 +1,201 @@
+NOTE: This information is currently stored as a README
+since it does not really have a home in the API reference
+documentation and it should be kept close to the actual
+test implementation.
+
+Addressbook Contact Data Migration Test
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This test subdirectory contains a few components
+which make up the Addressbook Data Migration test.
+
+This test is here to ensure that regressions
+are not silently introduced where bugs might
+occur due to database schema upgrades and
+data migrations.
+
+Adding a new version to the migration test
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+It's recommended to add a new version routinely
+as a step in releasing any new stable release
+of EDS.
+
+To simply add a new version, follow these
+instructions:
+
+  o EDS must first be built
+
+  o Create new contacts.db using currently built EDS
+
+    Use the 'setup-migration' target:
+      cd evolution-data-server/tests/book-migration
+      make setup-migration
+
+    This will create a new directory with a new contacts.db
+    file. The created directory will be named:
+      $(EDS_MAJOR_VERSION).$(EDS_MINOR_VERSION)
+
+    For version 3.12 EDS for example this file will be created:
+      evolution-data-server/tests/book-migration/db/3.12/contacts.db
+
+  o Remember to add the new contacts.db:
+
+    git add db/3.12/contacts.db
+
+  o Remember to add contacts.db to EXTRA_DIST
+
+    Edit evolution-data-server/tests/book-migration/Makefile.am
+    and add the new "$(EDS_MAJOR_VERSION).$(EDS_MINOR_VERSION)/contacts.db"
+    to EXTRA_DIST.
+
+Adding a new condition to pass the tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The test suite which runs for every migrated version of EDS
+is defined in test-migration.c, simply add tests to the loop
+found in that file and those tests will be run for each
+version.
+
+
+Adding new data to the tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In some corner cases it might be impossible to
+reproduce a migration bug only by adding a
+test case to test-migration.c, if there is
+not the right kind of data in the vcards to
+reproduce the case.
+
+Please avoid creating bugs which are hard
+to track like this... if you need to add
+or change the vcards in all of the sandboxes,
+it will take you all afternoon.
+
+Instructions to rebuild the sandboxes:
+
+  o With a recent version of EDS master, copy
+    the setup-migration-test.c file and all of
+    the .vcf files from the vcards/ directory
+    into some location.
+
+  o Modify the .vcf files so they have the
+    data you need.
+
+  o For every major point version from
+    EDS version 3.0 to $(EDS_MAJOR_VERSION).$(EDS_MINOR_VERSION),
+    do the following:
+
+    o Build and install the given EDS version,
+      have fun building older versions on newer installations.
+
+    o Build the setup-migration-test tool against the newly
+      installed EDS:
+
+      gcc -o setup-migration-test setup-migration-test.c `pkg-config --cflags --libs libebook-1.2`
+
+    o Cleanup sandbox where EDS dumps data (this location might vary,
+      from 3.6 and above you can control it with XDG variables)
+
+    o Setup environment:
+
+        export XDG_CONFIG_HOME=~/temp_eds
+        export XDG_DATA_HOME=~/temp_eds
+        export XDG_CACHE_HOME=~/temp_eds
+
+    o Manually run EDS under the new environment:
+
+        $(prefix)/libexec/evolution-source-registry &
+        $(prefix)/libexec/evolution-addressbook-factory -r &
+
+      Some versions have differently named daemons, versions
+      starting from 3.6 have the source registry daemon while
+      older versions dont have the registry.
+
+    o Collect data from ~/temp_eds/evolution/addressbook/...
+
+      Pick up the newly created contacts.db and stash it
+      somewhere so you remember what version it was for
+      (better just accumulate a directory with 3.0, 3.2, etc
+      subdirectories where you can collect the data).
+
+      For versions 3.0 to 3.6, you need to also collect the
+      BDB data as well as the sqlite contacts.db.
+
+      Instead of holding on to the addressbook.db, use
+      the db_dump tool to save the addressbook.dump.
+
+      Our build scripts will later take care of recreating
+      an addressbook.db automatically before ever running
+      the test cases.
+
+Hopefully, you will never have to recreate the history
+of addressbooks.
+
+Migration test directory explanation:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    + book-migration/
+     \
+      + vcards/
+      |
+      + db/
+      |\
+      | + 3.0/ 3.2/ 3.4/ 3.6/ ...
+      |
+      + Makefile.am
+      |
+      + setup-migration-test.c
+      |
+      + test-migration.c
+
+  o vcards/
+
+    The directory containing the vcards which are expected
+    to be found in the migrated sandboxes.
+
+  o db/
+
+    The base directory for sandboxes of previous versions,
+    for each stable version since 3.0 there is a directory
+    containing either a contacts.db or a both a contacts.db
+    and an addressbook.dump file.
+
+    The contacts.db is the portable SQLite binary blob created
+    by inserting the contacts from the vcards/ directory after
+    having built a given stable version of EDS.
+
+    The addressbook.dump files exist for versions 3.6 and 
+    below, those are portable Berkeley DB dump files created
+    using the db_dump tool from the old addressbook.db files.
+
+  o Makefile.am
+
+    This makefile includes a 'setup-migration' rule which creates
+    a new sandbox using the vcards in the vcards/ directory.
+
+    This rule is available since the test was added in 3.11
+
+  o setup-migration-test.c
+
+    A simple stand alone program which creates an addressbook
+    and inserts some contacts.
+
+    This program can be compiled with versions of EDS dating
+    back to 3.0, so it can potentially be used to repopulate
+    all of the migration sandboxes from scratch.
+
+    While this is a rather painful operation (building each
+    stable version of EDS), it's possible that we will need
+    to recreate all of the older sandboxes in the case that
+    we fix a migration bug but are unable to reproduce the
+    bug using the data migrated from our set of vcards.
+
+  o test-migration.c
+
+    The book migration test case. This includes a suite of
+    basic tests which test EBookClient apis on a freshly
+    upgraded/migrated addressbook.
+
+    As a part of the test fixture for each test, the sandbox
+    is prepared using the sandboxes in db/.
+
+    This test expects that all of the contacts listed in
+    the vcards/ directory to be present in the freshly
+    opened and migrated addressbook.
