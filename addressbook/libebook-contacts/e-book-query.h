@@ -60,6 +60,10 @@ typedef struct _EBookQuery EBookQuery;
  * @E_BOOK_QUERY_REGEX_RAW: A regular expression query against raw contact data, this is usually slower than
  * a %E_BOOK_QUERY_REGEX_NORMAL as it implies that #EVCards must be parsed in order to get the raw data
  * for comparison.
+ * @E_BOOK_QUERY_TRANSLIT_IS: Like %E_BOOK_QUERY_IS, but transliterates text to Latin script before the comparison
+ * @E_BOOK_QUERY_TRANSLIT_CONTAINS: Like %E_BOOK_QUERY_CONTAINS, but transliterates text to Latin script before the comparison
+ * @E_BOOK_QUERY_TRANSLIT_BEGINS_WITH: Like %E_BOOK_QUERY_BEGINS_WITH, but transliterates text to Latin script before the comparison
+ * @E_BOOK_QUERY_TRANSLIT_ENDS_WITH: Like %E_BOOK_QUERY_ENDS_WITH, but transliterates text to Latin script before the comparison
  *
  * The kind of test a query created by e_book_query_field_test() shall perform.
  *
@@ -76,7 +80,12 @@ typedef enum {
   E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
 
   E_BOOK_QUERY_REGEX_NORMAL,
-  E_BOOK_QUERY_REGEX_RAW
+  E_BOOK_QUERY_REGEX_RAW,
+
+  E_BOOK_QUERY_TRANSLIT_IS,
+  E_BOOK_QUERY_TRANSLIT_CONTAINS,
+  E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
+  E_BOOK_QUERY_TRANSLIT_ENDS_WITH
 
   /*
     Consider these "coming soon".
