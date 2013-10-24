@@ -241,6 +241,9 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 	if (priv->collator)
 		e_collator_unref (priv->collator);
 
+	if (priv->transliterator)
+		e_transliterator_unref (priv->transliterator);
+
 	g_mutex_clear (&priv->lock);
 	g_mutex_clear (&priv->updates_lock);
 
