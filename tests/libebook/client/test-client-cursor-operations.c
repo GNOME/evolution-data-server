@@ -2394,11 +2394,13 @@ main (gint argc,
 		/* Supports transliterated queries */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
-		cursor_closure_move_by (closure,
-					E_BOOK_CURSOR_ORIGIN_CURRENT,
-					10, /* Count */
-					10, /* Expected results */
-					11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
+
+		cursor_closure_step (closure,
+				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,	
+				     E_BOOK_CURSOR_ORIGIN_CURRENT,
+				     10, /* Count */
+				     10, /* Expected results */
+				     11, 2,  6,  3,  8, 1,  5,  4,  7,  15);
 		cursor_closure_position (closure, 20, 10, TRUE);
 		cursor_closure_set_sexp (closure,
 					 e_book_query_field_test (
