@@ -50,7 +50,7 @@ struct _ETransliterator
 {
 	ECxxTransliterator *transliterator;
 
-	gint                ref_count;
+	volatile gint       ref_count;
 };
 
 /*****************************************************
@@ -105,7 +105,7 @@ e_transliterator_ref (ETransliterator *transliterator)
 {
 	g_return_val_if_fail (transliterator != NULL, NULL);
 
-	transliterator->ref_count++;
+	g_atomic_int_inc (&transliterator->ref_count);
 
 	return transliterator;
 }
@@ -124,12 +124,7 @@ e_transliterator_unref (ETransliterator *transliterator)
 {
 	g_return_if_fail (transliterator != NULL);
 
-	transliterator->ref_count--;
-
-	if (transliterator->ref_count < 0)
-		g_warning ("Unbalanced reference count in ETransliterator");
-
-	if (transliterator->ref_count == 0) {
+	if (g_atomic_int_dec_and_test (&transliterator->ref_count)) {
 
 		if (transliterator->transliterator)
 			_e_transliterator_cxx_free (transliterator->transliterator);
