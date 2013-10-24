@@ -18,39 +18,38 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
-
 #if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
 #error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
-#ifndef E_TRANSLITERATOR_PRIVATE_H
-#define E_TRANSLITERATOR_PRIVATE_H
+#include <glib.h>
+#include <libedataserver/e-source-enumtypes.h>
+#include <libedataserver/e-data-server-util.h>
 
-#include <glib-object.h>
+#ifndef E_TRANSLITERATOR_H
+#define E_TRANSLITERATOR_H
+
+#define E_TYPE_TRANSLITERATOR (e_transliterator_get_type ())
 
 G_BEGIN_DECLS
 
-#if __GNUC__ >= 4
-#  define E_TRANSLITERATOR_LOCAL __attribute__ ((visibility ("hidden")))
-#else
-#  define E_TRANSLITERATOR_LOCAL
-#endif
-
 /**
- * ECxxTransliterator:
+ * ETransliterator:
  *
- * A private opaque type describing an alphabetic index
+ * An opaque object used for string transliterations.
  *
  * Since: 3.12
- **/
-typedef struct _ECxxTransliterator ECxxTransliterator;
+ */
+typedef struct _ETransliterator ETransliterator;
 
-/* defined in e-transliterator-private.cpp, and used by by e-collator.c */
-E_TRANSLITERATOR_LOCAL ECxxTransliterator *_e_transliterator_cxx_new             (const gchar        *transliterator_id);
-E_TRANSLITERATOR_LOCAL void                _e_transliterator_cxx_free            (ECxxTransliterator *transliterator);
-E_TRANSLITERATOR_LOCAL gchar              *_e_transliterator_cxx_transliterate   (ECxxTransliterator *transliterator,
-										  const gchar        *str);
+GType                e_transliterator_get_type         (void);
+ETransliterator     *e_transliterator_new              (const gchar     *id);
+ETransliterator     *e_transliterator_ref              (ETransliterator *transliterator);
+void                 e_transliterator_unref            (ETransliterator *transliterator);
+gchar               *e_transliterator_transliterate    (ETransliterator *transliterator,
+							const gchar     *str);
+
 
 G_END_DECLS
 
-#endif /* E_TRANSLITERATOR_PRIVATE_H */
+#endif /* E_TRANSLITERATOR_H */

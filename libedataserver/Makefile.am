@@ -91,6 +91,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-source-webdav.c		\
 	e-debug-log.c			\
 	e-time-utils.c			\
+	e-transliterator.c		\
 	e-transliterator-private.h	\
 	e-uid.c				\
 	e-url.c				\
@@ -170,6 +171,7 @@ libedataserverinclude_HEADERS =		\
 	e-source-webdav.h		\
 	e-debug-log.h			\
 	e-time-utils.h			\
+	e-transliterator.h		\
 	e-uid.h				\
 	e-url.h				\
 	e-data-server-util.h		\

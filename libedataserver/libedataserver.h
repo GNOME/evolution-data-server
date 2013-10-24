@@ -70,6 +70,7 @@
 #include <libedataserver/e-source-webdav.h>
 #include <libedataserver/e-source.h>
 #include <libedataserver/e-time-utils.h>
+#include <libedataserver/e-transliterator.h>
 #include <libedataserver/e-uid.h>
 #include <libedataserver/e-url.h>
 #include <libedataserver/e-xml-hash-utils.h>
