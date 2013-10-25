@@ -191,7 +191,6 @@ libedataserver/e-source-proxy.c
 libedataserver/e-source-registry.c
 libedataserver/e-source-webdav.c
 libedataserver/e-time-utils.c
-libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in
 modules/gnome-online-accounts/e-goa-password-based.c
 modules/gnome-online-accounts/goaewsclient.c
 modules/gnome-online-accounts/module-gnome-online-accounts.c
@@ -229,5 +228,6 @@ services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]services/evolution-source-registry/builtin/weather-stub.source.in
 [type: gettext/ini]services/evolution-source-registry/builtin/webcal-stub.source.in
 [type: gettext/ini]services/evolution-source-registry/builtin/webdav-stub.source.in
+services/evolution-source-registry/org.gnome.evolution.shell.network-config.gschema.xml.in
 services/evolution-user-prompter/evolution-user-prompter.c
 services/evolution-user-prompter/prompt-user-gtk.c
