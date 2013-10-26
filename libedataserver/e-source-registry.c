@@ -838,17 +838,10 @@ source_registry_object_removed_idle_cb (gpointer user_data)
 	registry = g_weak_ref_get (&closure->registry);
 
 	if (registry != NULL) {
-		ESource *source = closure->source;
-
-		/* Removing the ESource won't finalize it because the
-		 * SourceClosure itself still holds a reference on it. */
-		if (source_registry_sources_remove (registry, source)) {
-			g_signal_emit (
-				registry,
-				signals[SOURCE_REMOVED], 0,
-				source);
-		}
-
+		g_signal_emit (
+			registry,
+			signals[SOURCE_REMOVED], 0,
+			closure->source);
 		g_object_unref (registry);
 	}
 
@@ -873,6 +866,15 @@ source_registry_object_removed_by_owner (ESourceRegistry *registry,
 
 	/* Remove the ESource from the object path table immediately. */
 	source_registry_object_path_table_remove (registry, object_path);
+
+	/* Also remove the ESource from the sources table immediately. */
+	if (!source_registry_sources_remove (registry, source)) {
+		g_object_unref (source);
+		g_return_if_reached ();
+	}
+
+	/* Strip the ESource of its GDBusObject. */
+	__e_source_private_replace_dbus_object (source, NULL);
 
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 

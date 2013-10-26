@@ -114,6 +114,7 @@
 #define PRIMARY_GROUP_NAME	"Data Source"
 
 typedef struct _AsyncContext AsyncContext;
+typedef struct _RemoveContext RemoveContext;
 
 struct _ESourcePrivate {
 	GDBusObject *dbus_object;
@@ -143,6 +144,12 @@ struct _AsyncContext {
 	ESource *scratch_source;
 	gchar *access_token;
 	gint expires_in;
+};
+
+/* Used in e_source_remove_sync() */
+struct _RemoveContext {
+	GMainContext *main_context;
+	GMainLoop *main_loop;
 };
 
 enum {
@@ -196,6 +203,30 @@ async_context_free (AsyncContext *async_context)
 	g_free (async_context->access_token);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static RemoveContext *
+remove_context_new (void)
+{
+	RemoveContext *remove_context;
+
+	remove_context = g_slice_new0 (RemoveContext);
+
+	remove_context->main_context = g_main_context_new ();
+
+	remove_context->main_loop = g_main_loop_new (
+		remove_context->main_context, FALSE);
+
+	return remove_context;
+}
+
+static void
+remove_context_free (RemoveContext *remove_context)
+{
+	g_main_loop_unref (remove_context->main_loop);
+	g_main_context_unref (remove_context->main_context);
+
+	g_slice_free (RemoveContext, remove_context);
 }
 
 static void
@@ -937,6 +968,45 @@ source_notify (GObject *object,
 		e_source_changed (E_SOURCE (object));
 }
 
+/* Helper for source_remove_sync() */
+static gboolean
+source_remove_main_loop_quit_cb (gpointer user_data)
+{
+	GMainLoop *main_loop = user_data;
+
+	g_main_loop_quit (main_loop);
+
+	return FALSE;
+}
+
+/* Helper for e_source_remove_sync() */
+static void
+source_remove_notify_dbus_object_cb (ESource *source,
+                                     GParamSpec *pspec,
+                                     RemoveContext *remove_context)
+{
+	GDBusObject *dbus_object;
+
+	dbus_object = e_source_ref_dbus_object (source);
+
+	/* The GDBusObject will be NULL once the ESourceRegistry
+	 * receives an "object-removed" signal for this ESource. */
+	if (dbus_object == NULL) {
+		GSource *idle_source;
+
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			source_remove_main_loop_quit_cb,
+			g_main_loop_ref (remove_context->main_loop),
+			(GDestroyNotify) g_main_loop_unref);
+		g_source_attach (idle_source, remove_context->main_context);
+		g_source_unref (idle_source);
+	}
+
+	g_clear_object (&dbus_object);
+}
+
 static gboolean
 source_remove_sync (ESource *source,
                     GCancellable *cancellable,
@@ -944,6 +1014,8 @@ source_remove_sync (ESource *source,
 {
 	EDBusSourceRemovable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
+	RemoveContext *remove_context;
+	gulong notify_dbus_object_id;
 	GError *local_error = NULL;
 
 	dbus_object = e_source_ref_dbus_object (source);
@@ -963,8 +1035,39 @@ source_remove_sync (ESource *source,
 		return FALSE;
 	}
 
+	remove_context = remove_context_new ();
+	g_main_context_push_thread_default (remove_context->main_context);
+
+	notify_dbus_object_id = g_signal_connect (
+		source, "notify::dbus-object",
+		G_CALLBACK (source_remove_notify_dbus_object_cb),
+		remove_context);
+
 	e_dbus_source_removable_call_remove_sync (
 		dbus_interface, cancellable, &local_error);
+
+	/* Wait for the ESourceRegistry to remove our GDBusObject while
+	 * handling an "object-removed" signal from the registry service.
+	 * But also set a short timeout to avoid getting deadlocked here. */
+	if (local_error == NULL) {
+		GSource *timeout_source;
+
+		timeout_source = g_timeout_source_new_seconds (2);
+		g_source_set_callback (
+			timeout_source,
+			source_remove_main_loop_quit_cb,
+			g_main_loop_ref (remove_context->main_loop),
+			(GDestroyNotify) g_main_loop_unref);
+		g_source_attach (timeout_source, remove_context->main_context);
+		g_source_unref (timeout_source);
+
+		g_main_loop_run (remove_context->main_loop);
+	}
+
+	g_signal_handler_disconnect (source, notify_dbus_object_id);
+
+	g_main_context_pop_thread_default (remove_context->main_context);
+	remove_context_free (remove_context);
 
 	g_object_unref (dbus_interface);
 
@@ -1857,17 +1960,23 @@ __e_source_private_replace_dbus_object (ESource *source,
                                         GDBusObject *dbus_object)
 {
 	/* XXX This function is only ever called by ESourceRegistry
-	 *     when recovering from a registry service restart.  It
-	 *     replaces the defunct proxy object with an equivalent
-	 *     proxy object for the newly-started registry service. */
+	 *     either when the registry service reported an ESource
+	 *     removal, or while recovering from a registry service
+	 *     restart.  In the first case the GDBusObject is NULL,
+	 *     in the second case the GDBusObject is an equivalent
+	 *     proxy for the newly-started registry service. */
 
 	g_return_if_fail (E_IS_SOURCE (source));
-	g_return_if_fail (E_DBUS_IS_OBJECT (dbus_object));
+
+	if (dbus_object != NULL) {
+		g_return_if_fail (E_DBUS_IS_OBJECT (dbus_object));
+		dbus_object = g_object_ref (dbus_object);
+	}
 
 	g_mutex_lock (&source->priv->property_lock);
 
 	g_clear_object (&source->priv->dbus_object);
-	source->priv->dbus_object = g_object_ref (dbus_object);
+	source->priv->dbus_object = dbus_object;
 
 	g_mutex_unlock (&source->priv->property_lock);
 
@@ -2232,15 +2341,23 @@ e_source_set_enabled (ESource *source,
 gboolean
 e_source_get_writable (ESource *source)
 {
-	EDBusObject *dbus_object;
-	EDBusSourceWritable *dbus_source;
+	GDBusObject *dbus_object;
+	gboolean writable = FALSE;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
-	dbus_source = e_dbus_object_peek_source_writable (dbus_object);
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		EDBusSourceWritable *dbus_interface;
 
-	return (dbus_source != NULL);
+		dbus_interface =
+			e_dbus_object_peek_source_writable (
+			E_DBUS_OBJECT (dbus_object));
+		writable = (dbus_interface != NULL);
+		g_object_unref (dbus_object);
+	}
+
+	return writable;
 }
 
 /**
@@ -2257,15 +2374,23 @@ e_source_get_writable (ESource *source)
 gboolean
 e_source_get_removable (ESource *source)
 {
-	EDBusObject *dbus_object;
-	EDBusSourceRemovable *dbus_source;
+	GDBusObject *dbus_object;
+	gboolean removable = FALSE;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
-	dbus_source = e_dbus_object_peek_source_removable (dbus_object);
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		EDBusSourceRemovable *dbus_interface;
 
-	return (dbus_source != NULL);
+		dbus_interface =
+			e_dbus_object_peek_source_removable (
+			E_DBUS_OBJECT (dbus_object));
+		removable = (dbus_interface != NULL);
+		g_object_unref (dbus_object);
+	}
+
+	return removable;
 }
 
 /**
@@ -2287,15 +2412,23 @@ e_source_get_removable (ESource *source)
 gboolean
 e_source_get_remote_creatable (ESource *source)
 {
-	EDBusObject *dbus_object;
-	EDBusSourceRemoteCreatable *dbus_source;
+	GDBusObject *dbus_object;
+	gboolean remote_creatable = FALSE;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
-	dbus_source = e_dbus_object_peek_source_remote_creatable (dbus_object);
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		EDBusSourceRemoteCreatable *dbus_interface;
 
-	return (dbus_source != NULL);
+		dbus_interface =
+			e_dbus_object_peek_source_remote_creatable (
+			E_DBUS_OBJECT (dbus_object));
+		remote_creatable = (dbus_interface != NULL);
+		g_object_unref (dbus_object);
+	}
+
+	return remote_creatable;
 }
 
 /**
@@ -2318,15 +2451,23 @@ e_source_get_remote_creatable (ESource *source)
 gboolean
 e_source_get_remote_deletable (ESource *source)
 {
-	EDBusObject *dbus_object;
-	EDBusSourceRemoteDeletable *dbus_source;
+	GDBusObject *dbus_object;
+	gboolean remote_deletable = FALSE;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
-	dbus_source = e_dbus_object_peek_source_remote_deletable (dbus_object);
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		EDBusSourceRemoteDeletable *dbus_interface;
 
-	return (dbus_source != NULL);
+		dbus_interface =
+			e_dbus_object_peek_source_remote_deletable (
+			E_DBUS_OBJECT (dbus_object));
+		remote_deletable = (dbus_interface != NULL);
+		g_object_unref (dbus_object);
+	}
+
+	return remote_deletable;
 }
 
 /**
