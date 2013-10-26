@@ -186,6 +186,33 @@
  * actual position in relation to other contacts in the sorted list.
  * </para>
  * <para>
+ * The position and total can be useful for various tasks
+ * such as determining "Forward" / "Back" button sensitivity
+ * in a browser interface, or displaying some indication
+ * of the view window's position in the full contact list.
+ * <informalexample>
+ *   <programlisting>
+ *     <![CDATA[gint position, total;
+ *     gdouble percent;
+ *
+ *     // Fetch the position & total
+ *     position = e_book_client_cursor_get_position (cursor);
+ *     total    = e_book_client_cursor_get_total (cursor);
+ *
+ *     // The position can be total + 1 if we're at the end of the
+ *     // list, let's ignore that for this calculation.
+ *     position = CLAMP (position, 0, total);
+ *
+ *     // Calculate the percentage.
+ *     percent = position * 1.0F / (total - N_DISPLAY_CONTACTS);
+ *
+ *     // Let the user know the percentage of contacts in the list
+ *     // which are positioned before the view position (the
+ *     // percentage of the addressbook which the user has seen so far).
+ *     update_percentage_of_list_browsed (user_interface, percent);]]></programlisting>
+ * </informalexample>
+ * </para>
+ * <para>
  * These total and position values are guaranteed to always be coherent, they are
  * updated synchronously upon successful completion of any of the asynchronous
  * cursor API calls, and also updated asynchronously whenever the addressbook
@@ -231,40 +258,59 @@
  * <para>
  * Iterating through the contact list is done with e_book_client_cursor_step(), this
  * function allows one to move the cursor and fetch the results following the current
- * cursor position:
+ * cursor position.
  * <informalexample>
  *   <programlisting>
  *     <![CDATA[GError *error = NULL;
- *     GSList *results;
+ *     GSList *results = NULL;
+ *     gint n_results;
  *
- *     if (!e_book_client_cursor_step_sync (cursor,
- *                                          E_BOOK_CURSOR_STEP_MOVE |
- *                                          E_BOOK_CURSOR_STEP_FETCH,
- *                                          E_BOOK_CURSOR_ORIGIN_CURRENT,
- *                                          10,
- *                                          &results,
- *                                          NULL,
- *                                          &error))
+ *     // Move the cursor forward by 10 contacts and fetch the results.
+ *     n_results = e_book_client_cursor_step_sync (cursor,
+ *                                                 E_BOOK_CURSOR_STEP_MOVE |
+ *                                                 E_BOOK_CURSOR_STEP_FETCH,
+ *                                                 E_BOOK_CURSOR_ORIGIN_CURRENT,
+ *                                                 10,
+ *                                                 &results,
+ *                                                 NULL,
+ *                                                 &error);
+ *
+ *     if (n_results < 0)
  *       {
  *         if (g_error_matches (error,
  *                              E_CLIENT_ERROR,
  *                              E_CLIENT_ERROR_OUT_OF_SYNC))
- *           // The addressbook has been modified at the same time as
- *           // we asked to step. The appropriate thing to do is wait
- *           // for the "refresh" signal before trying again.
- *           handle_out_of_sync_condition (cursor);
+ *           {
+ *             // The addressbook has been modified at the same time as
+ *             // we asked to step. The appropriate thing to do is wait
+ *             // for the "refresh" signal before trying again.
+ *             handle_out_of_sync_condition (cursor);
+ *           }
  *         else if (g_error_matches (error,
  *                                   E_CLIENT_ERROR,
  *                                   E_CLIENT_ERROR_QUERY_REFUSED))
- *           // We asked for 10 contacts but were already positioned
- *           // at the end of the list (or we asked for -10 contacts
- *           // and were positioned at the beginning).
- *           handle_end_of_list_condition (cursor);
+ *           {
+ *             // We asked for 10 contacts but were already positioned
+ *             // at the end of the list (or we asked for -10 contacts
+ *             // and were positioned at the beginning).
+ *             handle_end_of_list_condition (cursor);
+ *           }
  *         else
- *           // Some error actually occurred
- *           handle_error_condition (cursor, error);
+ *           {
+ *             // Some error actually occurred
+ *             handle_error_condition (cursor, error);
+ *           }
  *
  *         g_clear_error (&error);
+ *       }
+ *     else if (n_results < 10)
+ *       {
+ *         // Cursor did not traverse as many contacts as requested.
+ *         //
+ *         // This is not an error but rather an indication that
+ *         // the end of the list was reached. The next attempt to
+ *         // move the cursor in the same direction will result in
+ *         // an E_CLIENT_ERROR_QUERY_REFUSED error.
  *       }]]></programlisting>
  * </informalexample>
  * In the above example we chose %E_BOOK_CURSOR_ORIGIN_CURRENT as our #EBookCursorOrigin so the above
@@ -283,7 +329,7 @@
  * <para>
  * Because the addressbook might be modified at any time by another application,
  * it's important to handle the %E_CLIENT_ERROR_OUT_OF_SYNC error. This error will occur
- * at any time that the cursor detects an addressbook change while trying to move.
+ * at any time that the cursor detects an addressbook change while trying to step.
  * Whenever an out of sync condition arises, the cursor should be left alone until the
  * next #EBookClientCursor::refresh signal. The #EBookClientCursor::refresh signal is triggered
  * any time that the addressbook changes and is the right place to refresh the currently
@@ -329,7 +375,7 @@
  * Using the active alphabet, one can build a user interface which allows the user
  * to navigate to a specific letter in the results. To set the cursor's position
  * directly before any results starting with a specific letter, one can use
- * e_book_client_cursor_set_alphabetic_index():
+ * e_book_client_cursor_set_alphabetic_index().
  * <informalexample>
  *   <programlisting>
  *     <![CDATA[GError *error = NULL;
@@ -346,11 +392,16 @@
  *         if (g_error_matches (error,
  *                              E_CLIENT_ERROR,
  *                              E_CLIENT_ERROR_OUT_OF_SYNC))
- *           // The system locale has changed at the same time
- *           // as we were setting an alphabetic cursor position.
- *           handle_out_of_sync_condition (cursor);
+ *           {
+ *             // The system locale has changed at the same time
+ *             // as we were setting an alphabetic cursor position.
+ *             handle_out_of_sync_condition (cursor);
+ *           }
  *         else
- *           handle_error_condition (cursor, error);
+ *           {
+ *             // Some error actually occurred
+ *             handle_error_condition (cursor, error);
+ *           }
  *
  *         g_clear_error (&error);
  *       }]]></programlisting>
@@ -368,10 +419,35 @@
  * alphabet (a #EBookClientCursor::refresh signal will also be delivered at this point).
  * </para>
  * <para>
+ * While moving through the cursor results using e_book_client_cursor_step(),
+ * it can be useful to know which alphabetic position a given contact sorts
+ * under. This can be useful if your user interface displays an alphabetic
+ * label indicating where the first contact in your view is positioned in
+ * the alphabet.
+ * </para>
+ * <para>
  * One can determine the appropriate index for a given #EContact by calling
- * e_book_client_cursor_get_contact_alphabetic_index(), this is useful to use
- * when updating any indicators in the user interface showing what letter
- * you have reached in the active alphabet.
+ * e_book_client_cursor_get_contact_alphabetic_index() after refreshing
+ * the currently displayed contacts in a view.
+ * <informalexample>
+ *   <programlisting>
+ *     <![CDATA[EContact *contact;
+ *     const gchar * const *alphabet;
+ *     gint index;
+ *
+ *     // Fetch the first displayed EContact in the view
+ *     contact = first_contact_in_the_list (user_interface);
+ *
+ *     // Calculate the position in the alphabet for this contact
+ *     index = e_book_client_cursor_get_contact_alphabetic_index (cursor, contact);
+ *
+ *     // Fetch the alphabet labels
+ *     alphabet = e_book_client_cursor_get_alphabet (cursor, &n_labels,
+ *                                                   NULL, NULL, NULL);
+ *
+ *     // Update label in user interface
+ *     set_alphabetic_position_feedback_text (user_interface, alphabet[index]);]]></programlisting>
+ * </informalexample>
  * </para>
  * </refsect2>
  *
@@ -2685,8 +2761,13 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
  * Checks which alphabetic index @contact would be sorted
  * into according to @cursor.
  *
- * The returned index will be a valid position in the array
- * of labels returned by e_book_client_cursor_get_alphabet().
+ * So long as the active #EBookClientCursor:alphabet does
+ * not change, the returned index will be a valid position
+ * in the array of labels returned by e_book_client_cursor_get_alphabet().
+ *
+ * If the index returned by this function is needed for
+ * any extended period of time, it should be recalculated
+ * whenever the #EBookClientCursor:alphabet changes.
  *
  * Returns: The alphabetic index of @contact in @cursor.
  *
