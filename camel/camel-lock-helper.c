@@ -241,11 +241,13 @@ static void
 lock_touch (const gchar *path)
 {
 	gchar *name;
+	gsize name_len;
 
 	/* we could also check that we haven't had our lock stolen from us here */
 
-	name = alloca (strlen (path) + 10);
-	sprintf (name, "%s.lock", path);
+	name_len = strlen (path) + 10;
+	name = alloca (name_len);
+	g_snprintf (name, name_len, "%s.lock", path);
 
 	d (fprintf (stderr, "Updating lock %s\n", name));
 	utime (name, NULL);

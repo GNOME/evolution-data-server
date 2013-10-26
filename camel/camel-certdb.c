@@ -403,6 +403,7 @@ camel_certdb_save (CamelCertDB *certdb)
 	CamelCertDBClass *class;
 	CamelCert *cert;
 	gchar *filename;
+	gsize filename_len;
 	gint fd, i;
 	FILE *out;
 
@@ -413,8 +414,9 @@ camel_certdb_save (CamelCertDB *certdb)
 	if ((certdb->flags & CAMEL_CERTDB_DIRTY) == 0)
 		return 0;
 
-	filename = alloca (strlen (certdb->filename) + 4);
-	sprintf (filename, "%s~", certdb->filename);
+	filename_len = strlen (certdb->filename) + 4;
+	filename = alloca (filename_len);
+	g_snprintf (filename, filename_len, "%s~", certdb->filename);
 
 	fd = g_open (filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1)

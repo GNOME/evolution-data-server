@@ -190,6 +190,7 @@ scan_dir (CamelStore *store,
 	DIR *dir;
 	struct dirent *d;
 	gchar *name, *tmp, *fname;
+	gsize name_len;
 	CamelFolderInfo *fi = NULL;
 	struct stat st;
 	CamelFolder *folder;
@@ -200,8 +201,9 @@ scan_dir (CamelStore *store,
 
 	/* look for folders matching the right structure, recursively */
 	if (path) {
-		name = alloca (strlen (root) + strlen (path) + 2);
-		sprintf (name, "%s/%s", root, path);
+		name_len = strlen (root) + strlen (path) + 2;
+		name = alloca (name_len);
+		g_snprintf (name, name_len, "%s/%s", root, path);
 	} else
 		name = (gchar *) root;  /* XXX casting away const */
 

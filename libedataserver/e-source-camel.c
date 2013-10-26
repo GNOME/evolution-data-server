@@ -671,11 +671,13 @@ const gchar *
 e_source_camel_get_type_name (const gchar *protocol)
 {
 	gchar *buffer;
+	gsize buffer_len;
 
 	g_return_val_if_fail (protocol != NULL, NULL);
 
-	buffer = g_alloca (strlen (protocol) + 16);
-	g_sprintf (buffer, "ESourceCamel%s", protocol);
+	buffer_len = strlen (protocol) + 16;
+	buffer = g_alloca (buffer_len);
+	g_snprintf (buffer, buffer_len, "ESourceCamel%s", protocol);
 	buffer[12] = g_ascii_toupper (buffer[12]);
 
 	return g_intern_string (buffer);
@@ -700,13 +702,15 @@ const gchar *
 e_source_camel_get_extension_name (const gchar *protocol)
 {
 	gchar *buffer;
+	gsize buffer_len;
 
 	g_return_val_if_fail (protocol != NULL, NULL);
 
 	/* Use the term "backend" for consistency with other
 	 * calendar and address book backend extension names. */
-	buffer = g_alloca (strlen (protocol) + 16);
-	g_sprintf (buffer, "%s Backend", protocol);
+	buffer_len = strlen (protocol) + 16;
+	buffer = g_alloca (buffer_len);
+	g_snprintf (buffer, buffer_len, "%s Backend", protocol);
 	buffer[0] = g_ascii_toupper (buffer[0]);
 
 	return g_intern_string (buffer);

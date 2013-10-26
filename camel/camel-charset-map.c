@@ -226,7 +226,7 @@ gint main (gint argc, gchar **argv)
 			if (!has_bits)
 				continue;
 
-			sprintf (name, "m%02x%x", i, k);
+			g_snprintf (name, sizeof (name), "m%02x%x", i, k);
 
 			if ((alias = g_hash_table_lookup (table_hash, block))) {
 				/* this block is identical to an earlier block, just alias it */

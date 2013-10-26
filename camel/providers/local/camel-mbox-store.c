@@ -979,15 +979,17 @@ mbox_store_get_meta_path (CamelLocalStore *ls,
 /*#define USE_HIDDEN_META_FILES*/
 #ifdef USE_HIDDEN_META_FILES
 	gchar *name, *slash;
+	gsize name_len;
 
-	name = g_alloca (strlen (full_name) + strlen (ext) + 2);
+	name_len = strlen (full_name) + strlen (ext) + 2;
+	name = g_alloca (name_len);
 	if ((slash = strrchr (full_name, '/')))
-		sprintf (
-			name, "%.*s.%s%s",
+		g_snprintf (
+			name, name_len, "%.*s.%s%s",
 			slash - full_name + 1,
 			full_name, slash + 1, ext);
 	else
-		sprintf (name, ".%s%s", full_name, ext);
+		g_snprintf (name, name_len, ".%s%s", full_name, ext);
 
 	return mbox_store_get_full_path (ls, name);
 #else

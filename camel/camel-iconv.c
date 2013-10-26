@@ -379,6 +379,7 @@ camel_iconv_open (const gchar *oto,
 {
 	const gchar *to, *from;
 	gchar *tofrom;
+	gsize tofrom_len;
 	struct _iconv_cache *ic;
 	struct _iconv_cache_node *in;
 	gint errnosav;
@@ -391,8 +392,9 @@ camel_iconv_open (const gchar *oto,
 
 	to = camel_iconv_charset_name (oto);
 	from = camel_iconv_charset_name (ofrom);
-	tofrom = g_alloca (strlen (to) + strlen (from) + 2);
-	sprintf (tofrom, "%s%%%s", to, from);
+	tofrom_len = strlen (to) + strlen (from) + 2;
+	tofrom = g_alloca (tofrom_len);
+	g_snprintf (tofrom, tofrom_len, "%s%%%s", to, from);
 
 	G_LOCK (iconv);
 

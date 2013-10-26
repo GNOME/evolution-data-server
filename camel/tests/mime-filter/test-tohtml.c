@@ -117,8 +117,8 @@ main (gint argc,
 		CamelMimeFilter *f;
 		struct stat st;
 
-		sprintf (inname, "data/html.%d.in", i);
-		sprintf (outname, "data/html.%d.out", i);
+		g_snprintf (inname, sizeof (inname), "data/html.%d.in", i);
+		g_snprintf (outname, sizeof (outname), "data/html.%d.out", i);
 
 		if (g_stat (inname, &st) == -1)
 			break;

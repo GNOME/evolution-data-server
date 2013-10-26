@@ -57,22 +57,28 @@ folders_update (const gchar *root,
                 GCancellable *cancellable)
 {
 	gchar *tmp, *tmpnew, *line = NULL;
+	gsize tmpnew_len = 0;
 	CamelStream *stream, *in = NULL, *out = NULL;
 	gchar *folder_newline;
 	gint flen = strlen (folder);
 
 	folder_newline = g_strdup_printf ("%s\n", folder);
 
-	tmpnew = g_alloca (strlen (root) + 16);
-	sprintf (tmpnew, "%s" G_DIR_SEPARATOR_S ".folders~", root);
+	tmpnew_len = strlen (root) + 16;
+	tmpnew = g_alloca (tmpnew_len);
+	g_snprintf (
+		tmpnew, tmpnew_len,
+		"%s" G_DIR_SEPARATOR_S ".folders~", root);
 
 	out = camel_stream_fs_new_with_name (
 		tmpnew, O_WRONLY | O_CREAT | O_TRUNC, 0666, NULL);
 	if (out == NULL)
 		goto fail;
 
-	tmp = g_alloca (strlen (root) + 16);
-	sprintf (tmp, "%s" G_DIR_SEPARATOR_S ".folders", root);
+	tmp = g_alloca (tmpnew_len);
+	g_snprintf (
+		tmp, tmpnew_len,
+		"%s" G_DIR_SEPARATOR_S ".folders", root);
 	stream = camel_stream_fs_new_with_name (tmp, O_RDONLY, 0, NULL);
 	if (stream) {
 		in = camel_stream_buffer_new (stream, CAMEL_STREAM_BUFFER_READ);
@@ -280,6 +286,7 @@ recursive_scan (CamelStore *store,
                 GCancellable *cancellable)
 {
 	gchar *fullpath, *tmp;
+	gsize fullpath_len;
 	DIR *dp;
 	struct dirent *d;
 	struct stat st;
@@ -288,8 +295,9 @@ recursive_scan (CamelStore *store,
 
 	/* Open the specified directory. */
 	if (path[0]) {
-		fullpath = alloca (strlen (root) + strlen (path) + 2);
-		sprintf (fullpath, "%s/%s", root, path);
+		fullpath_len = strlen (root) + strlen (path) + 2;
+		fullpath = alloca (fullpath_len);
+		g_snprintf (fullpath, fullpath_len, "%s/%s", root, path);
 	} else
 		fullpath = (gchar *) root;
 
@@ -361,14 +369,16 @@ folders_scan (CamelStore *store,
 {
 	CamelFolderInfo *fi;
 	gchar  line[512], *path, *tmp;
+	gsize tmp_len;
 	CamelStream *stream, *in;
 	struct stat st;
 	GPtrArray *folders;
 	GHashTable *visited;
 	gint len;
 
-	tmp = g_alloca (strlen (root) + 16);
-	sprintf (tmp, "%s/.folders", root);
+	tmp_len = strlen (root) + 16;
+	tmp = g_alloca (tmp_len);
+	g_snprintf (tmp, tmp_len, "%s/.folders", root);
 	stream = camel_stream_fs_new_with_name (tmp, 0, O_RDONLY, NULL);
 	if (stream == NULL)
 		return;

@@ -401,7 +401,10 @@ text_index_sync (CamelIndex *idx)
 	return ret;
 }
 
-static void tmp_name (const gchar *in, gchar *o)
+static void
+tmp_name (const gchar *in,
+          gchar *o,
+          gsize o_len)
 {
 	gchar *s;
 
@@ -411,7 +414,7 @@ static void tmp_name (const gchar *in, gchar *o)
 		memcpy (o + (s - in + 1), ".#", 2);
 		strcpy (o + (s - in + 3), s + 1);
 	} else {
-		sprintf (o, ".#%s", in);
+		g_snprintf (o, o_len, ".#%s", in);
 	}
 }
 
@@ -457,8 +460,8 @@ text_index_compress_nosync (CamelIndex *idx)
 	strcpy (oldpath, idx->path);
 	oldpath[strlen (oldpath) - strlen (".index")] = 0;
 
-	tmp_name (oldpath, newpath);
-	sprintf (savepath, "%s~", oldpath);
+	tmp_name (oldpath, newpath, i);
+	g_snprintf (savepath, i, "%s~", oldpath);
 
 	d (printf ("Old index: %s\n", idx->path));
 	d (printf ("Old path: %s\n", oldpath));
@@ -600,9 +603,9 @@ fail:
 	g_hash_table_destroy (remap);
 
 	/* clean up temp files always */
-	sprintf (savepath, "%s~.index", oldpath);
+	g_snprintf (savepath, i, "%s~.index", oldpath);
 	g_unlink (savepath);
-	sprintf (newpath, "%s.data", savepath);
+	g_snprintf (newpath, i, "%s.data", savepath);
 	g_unlink (newpath);
 
 	return ret;
@@ -628,20 +631,23 @@ text_index_rename (CamelIndex *idx,
 {
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
 	gchar *newlink, *newblock;
+	gsize newlink_len, newblock_len;
 	gint err, ret;
 
 	CAMEL_TEXT_INDEX_LOCK (idx, lock);
 
-	newblock = alloca (strlen (path) + 8);
-	sprintf (newblock, "%s.index", path);
+	newblock_len = strlen (path) + 8;
+	newblock = alloca (newblock_len);
+	g_snprintf (newblock, newblock_len, "%s.index", path);
 	ret = camel_block_file_rename (p->blocks, newblock);
 	if (ret == -1) {
 		CAMEL_TEXT_INDEX_UNLOCK (idx, lock);
 		return -1;
 	}
 
-	newlink = alloca (strlen (path) + 16);
-	sprintf (newlink, "%s.index.data", path);
+	newlink_len = strlen (path) + 16;
+	newlink = alloca (newlink_len);
+	g_snprintf (newlink, newlink_len, "%s.index.data", path);
 	ret = camel_key_file_rename (p->links, newlink);
 	if (ret == -1) {
 		err = errno;
@@ -884,6 +890,7 @@ camel_text_index_new (const gchar *path,
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX_GET_PRIVATE (idx);
 	struct _CamelTextIndexRoot *rb;
 	gchar *link;
+	gsize link_len;
 	CamelBlock *bl;
 
 	camel_index_construct ((CamelIndex *) idx, path, flags);
@@ -894,8 +901,9 @@ camel_text_index_new (const gchar *path,
 	if (p->blocks == NULL)
 		goto fail;
 
-	link = alloca (strlen (idx->parent.path) + 7);
-	sprintf (link, "%s.data", idx->parent.path);
+	link_len = strlen (idx->parent.path) + 7;
+	link = alloca (link_len);
+	g_snprintf (link, link_len, "%s.data", idx->parent.path);
 	p->links = camel_key_file_new (link, flags, CAMEL_TEXT_INDEX_KEY_VERSION);
 
 	if (p->links == NULL)
@@ -970,18 +978,21 @@ gint
 camel_text_index_check (const gchar *path)
 {
 	gchar *block, *key;
+	gsize block_len, key_len;
 	CamelBlockFile *blocks;
 	CamelKeyFile *keys;
 
-	block = alloca (strlen (path) + 7);
-	sprintf (block, "%s.index", path);
+	block_len = strlen (path) + 7;
+	block = alloca (block_len);
+	g_snprintf (block, block_len, "%s.index", path);
 	blocks = camel_block_file_new (block, O_RDONLY, CAMEL_TEXT_INDEX_VERSION, CAMEL_BLOCK_SIZE);
 	if (blocks == NULL) {
 		io (printf ("Check failed: No block file: %s\n", g_strerror (errno)));
 		return -1;
 	}
-	key = alloca (strlen (path) + 12);
-	sprintf (key, "%s.index.data", path);
+	key_len = strlen (path) + 12;
+	key = alloca (key_len);
+	g_snprintf (key, key_len, "%s.index.data", path);
 	keys = camel_key_file_new (key, O_RDONLY, CAMEL_TEXT_INDEX_KEY_VERSION);
 	if (keys == NULL) {
 		io (printf ("Check failed: No key file: %s\n", g_strerror (errno)));
@@ -1000,25 +1011,28 @@ camel_text_index_rename (const gchar *old,
                          const gchar *new)
 {
 	gchar *oldname, *newname;
+	gsize oldname_len, newname_len;
 	gint err;
 
 	/* TODO: camel_text_index_rename should find out if we have an active index and use that instead */
 
-	oldname = alloca (strlen (old) + 12);
-	newname = alloca (strlen (new) + 12);
-	sprintf (oldname, "%s.index", old);
-	sprintf (newname, "%s.index", new);
+	oldname_len = strlen (old) + 12;
+	newname_len = strlen (new) + 12;
+	oldname = alloca (oldname_len);
+	newname = alloca (newname_len);
+	g_snprintf (oldname, oldname_len, "%s.index", old);
+	g_snprintf (newname, newname_len, "%s.index", new);
 
 	if (g_rename (oldname, newname) == -1 && errno != ENOENT)
 		return -1;
 
-	sprintf (oldname, "%s.index.data", old);
-	sprintf (newname, "%s.index.data", new);
+	g_snprintf (oldname, oldname_len, "%s.index.data", old);
+	g_snprintf (newname, newname_len, "%s.index.data", new);
 
 	if (g_rename (oldname, newname) == -1 && errno != ENOENT) {
 		err = errno;
-		sprintf (oldname, "%s.index", old);
-		sprintf (newname, "%s.index", new);
+		g_snprintf (oldname, oldname_len, "%s.index", old);
+		g_snprintf (newname, newname_len, "%s.index", new);
 		g_rename (newname, oldname);
 		errno = err;
 		return -1;
@@ -1031,14 +1045,17 @@ gint
 camel_text_index_remove (const gchar *old)
 {
 	gchar *block, *key;
+	gsize block_len, key_len;
 	gint ret = 0;
 
 	/* TODO: needs to poke any active indices to remain unlinked */
 
-	block = alloca (strlen (old) + 12);
-	key = alloca (strlen (old) + 12);
-	sprintf (block, "%s.index", old);
-	sprintf (key, "%s.index.data", old);
+	block_len = strlen (old) + 12;
+	block = alloca (block_len);
+	key_len = strlen (old) + 12;
+	key = alloca (key_len);
+	g_snprintf (block, block_len, "%s.index", old);
+	g_snprintf (key, key_len, "%s.index.data", old);
 
 	if (g_unlink (block) == -1 && errno != ENOENT && errno != ENOTDIR)
 		ret = -1;
@@ -1234,7 +1251,7 @@ dump_raw (GHashTable *map,
 		len = 1024;
 		p = buf;
 		do {
-			sprintf (line, "%08x:                                                                      ", total);
+			g_snprintf (line, sizeof (line), "%08x:                                                                      ", total);
 			total += 16;
 			o = line + 10;
 			a = o + 16 * 2 + 2;
@@ -1905,7 +1922,7 @@ main (gint argc,
 	for (i = 0; i < 100; i++) {
 		gchar name[16];
 
-		sprintf (name, "%d", i);
+		g_snprintf (name, sizeof (name), "%d", i);
 		printf ("Adding words to name '%s'\n", name);
 		idn = camel_index_add_name (idx, name);
 		camel_index_name_add_buffer (idn, wordbuffer, sizeof (wordbuffer) - 1);

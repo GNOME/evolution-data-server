@@ -142,8 +142,8 @@ gint main (gint argc, gchar **argv)
 	push ("Test add many");
 	for (i = 1; i < 10; i++) {
 		gchar name[16], a[32];
-		sprintf (name, "Zed %d", i);
-		sprintf (a, "nowhere@here-%d.com.au", i);
+		g_snprintf (name, sizeof (name), "Zed %d", i);
+		g_snprintf (a, sizeof (a), "nowhere@here-%d.com.au", i);
 		camel_internet_address_add (addr, name, a);
 		check (camel_address_length (CAMEL_ADDRESS (addr)) == i + 1);
 		check (camel_internet_address_get (addr, i, &real, &where) == TRUE);
