@@ -744,6 +744,7 @@ nntp_store_info_update (CamelNNTPStore *nntp_store,
 	CamelStoreSummary *store_summary;
 	CamelNNTPStoreInfo *si, *fsi;
 	gchar *relpath, *tmp;
+	gsize relpath_len = 0;
 	guint32 last = 0, first = 0, new = 0;
 
 	tmp = strchr (line, ' ');
@@ -759,8 +760,9 @@ nntp_store_info_update (CamelNNTPStore *nntp_store,
 		si = (CamelNNTPStoreInfo *)
 			camel_store_summary_info_new (store_summary);
 
-		relpath = g_alloca (strlen (line) + 2);
-		sprintf (relpath, "/%s", line);
+		relpath_len = strlen (line) + 2;
+		relpath = g_alloca (relpath_len);
+		g_snprintf (relpath, relpath_len, "/%s", line);
 
 		si->info.path = g_strdup (line);
 		si->full_name = g_strdup (line); /* why do we keep this? */

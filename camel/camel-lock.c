@@ -74,6 +74,8 @@ camel_lock_dot (const gchar *path,
 {
 #ifdef USE_DOT
 	gchar *locktmp, *lock;
+	gsize lock_len = 0;
+	gsize locktmp_len = 0;
 	gint retry = 0;
 	gint fdtmp;
 	struct stat st;
@@ -82,9 +84,11 @@ camel_lock_dot (const gchar *path,
 	 * Does it matter?  We will normally also use fcntl too ... */
 
 	/* use alloca, save cleaning up afterwards */
-	lock = alloca (strlen (path) + strlen (".lock") + 1);
-	sprintf (lock, "%s.lock", path);
-	locktmp = alloca (strlen (path) + strlen ("XXXXXX") + 1);
+	lock_len = strlen (path) + strlen (".lock") + 1;
+	lock = alloca (lock_len);
+	g_snprintf (lock, lock_len, "%s.lock", path);
+	locktmp_len = strlen (path) + strlen ("XXXXXX") + 1;
+	locktmp = alloca (locktmp_len);
 
 	while (retry < CAMEL_LOCK_DOT_RETRY) {
 
@@ -93,7 +97,8 @@ camel_lock_dot (const gchar *path,
 		if (retry > 0)
 			sleep (CAMEL_LOCK_DOT_DELAY);
 
-		sprintf (locktmp, "%sXXXXXX", path);
+
+		g_snprintf (locktmp, locktmp_len, "%sXXXXXX", path);
 		fdtmp = g_mkstemp (locktmp);
 		if (fdtmp == -1) {
 			g_set_error (
@@ -161,9 +166,11 @@ camel_unlock_dot (const gchar *path)
 {
 #ifdef USE_DOT
 	gchar *lock;
+	gsize lock_len;
 
-	lock = alloca (strlen (path) + strlen (".lock") + 1);
-	sprintf (lock, "%s.lock", path);
+	lock_len = strlen (path) + strlen (".lock") + 1;
+	lock = alloca (lock_len);
+	g_snprintf (lock, lock_len, "%s.lock", path);
 	d (printf ("unlocking %s\n", lock));
 	(void) unlink (lock);
 #endif

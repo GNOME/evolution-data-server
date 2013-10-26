@@ -657,6 +657,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	CamelFolderSummary *s = CAMEL_FOLDER_SUMMARY (mbs);
 	gint fd = -1, fdout = -1;
 	gchar *tmpname = NULL;
+	gsize tmpname_len = 0;
 	guint32 flags = (expunge ? 1 : 0), filemode = 0600;
 	struct stat st;
 
@@ -681,8 +682,9 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 		return -1;
 	}
 
-	tmpname = g_alloca (strlen (cls->folder_path) + 5);
-	sprintf (tmpname, "%s.tmp", cls->folder_path);
+	tmpname_len = strlen (cls->folder_path) + 5;
+	tmpname = g_alloca (tmpname_len);
+	g_snprintf (tmpname, tmpname_len, "%s.tmp", cls->folder_path);
 	d (printf ("Writing temporary file to %s\n", tmpname));
 	fdout = g_open (tmpname, O_LARGEFILE | O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, filemode);
 	if (fdout == -1) {

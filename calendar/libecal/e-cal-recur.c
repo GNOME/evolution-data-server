@@ -3810,11 +3810,13 @@ cal_obj_time_to_string (CalObjTime *cotime)
 
 	weekday = cal_obj_time_weekday (cotime);
 
-	sprintf (
-		buffer, "%s %02i/%02i/%04i %02i:%02i:%02i",
+	g_snprintf (
+		buffer, sizeof (buffer),
+		"%s %02i/%02i/%04i %02i:%02i:%02i",
 		weekdays[weekday],
 		cotime->day, cotime->month + 1, cotime->year,
 		cotime->hour, cotime->minute, cotime->second);
+
 	return buffer;
 }
 #endif

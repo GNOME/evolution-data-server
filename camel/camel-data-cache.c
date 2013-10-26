@@ -324,12 +324,14 @@ data_cache_path (CamelDataCache *cdc,
                  const gchar *key)
 {
 	gchar *dir, *real, *tmp;
+	gsize dir_len;
 	guint32 hash;
 
 	hash = g_str_hash (key);
 	hash = (hash >> 5) &CAMEL_DATA_CACHE_MASK;
-	dir = alloca (strlen (cdc->priv->path) + strlen (path) + 8);
-	sprintf (dir, "%s/%s/%02x", cdc->priv->path, path, hash);
+	dir_len = strlen (cdc->priv->path) + strlen (path) + 8;
+	dir = alloca (dir_len);
+	g_snprintf (dir, dir_len, "%s/%s/%02x", cdc->priv->path, path, hash);
 
 	if (g_access (dir, F_OK) == -1) {
 		if (create)

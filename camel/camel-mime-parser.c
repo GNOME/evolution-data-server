@@ -843,12 +843,14 @@ camel_mime_parser_push_state (CamelMimeParser *mp,
 {
 	struct _header_scan_stack *h;
 	struct _header_scan_state *s = _PRIVATE (mp);
+	gsize boundary_len;
 
 	h = g_malloc0 (sizeof (*h));
 	h->boundarylen = strlen (boundary) + 2;
 	h->boundarylenfinal = h->boundarylen + 2;
-	h->boundary = g_malloc (h->boundarylen + 3);
-	sprintf (h->boundary, "--%s--", boundary);
+	boundary_len = h->boundarylen + 3;
+	h->boundary = g_malloc (boundary_len);
+	g_snprintf (h->boundary, boundary_len, "--%s--", boundary);
 	folder_push_part (s, h);
 	s->state = newstate;
 }
@@ -1567,6 +1569,7 @@ folder_scan_step (struct _header_scan_state *s,
 	CamelContentType *ct = NULL;
 	struct _header_scan_filter *f;
 	gsize presize;
+	gulong boundary_len;
 
 /*	printf("\nSCAN PASS: state = %d '%s'\n", s->state, states[s->state]);*/
 
@@ -1654,8 +1657,9 @@ tail_recurse:
 					d (printf ("multipart, boundary = %s\n", bound));
 					h->boundarylen = strlen (bound) + 2;
 					h->boundarylenfinal = h->boundarylen + 2;
-					h->boundary = g_malloc (h->boundarylen + 3);
-					sprintf (h->boundary, "--%s--", bound);
+					boundary_len = h->boundarylen + 3;
+					h->boundary = g_malloc (boundary_len);
+					g_snprintf (h->boundary, boundary_len, "--%s--", bound);
 					type = CAMEL_MIME_PARSER_STATE_MULTIPART;
 				} else {
 					/*camel_content_type_unref(ct);

@@ -2479,7 +2479,10 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 			/* IMAP sequence numbers are 1-based,
 			 * but our folder summary is 0-based. */
-			sprintf (buf, "%" G_GUINT32_FORMAT, summary_index + 1);
+			g_snprintf (
+				buf, sizeof (buf),
+				"%" G_GUINT32_FORMAT,
+				summary_index + 1);
 
 			uid = camel_imapx_dup_uid_from_summary_index (
 				folder, summary_index);

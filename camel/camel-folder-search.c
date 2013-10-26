@@ -300,7 +300,9 @@ check_header (CamelSExp *sexp,
 			header = camel_message_info_subject (search->current);
 		} else if (!g_ascii_strcasecmp (headername, "date")) {
 			/* FIXME: not a very useful form of the date */
-			sprintf (strbuf, "%d", (gint) camel_message_info_date_sent (search->current));
+			g_snprintf (
+				strbuf, sizeof (strbuf), "%d",
+				(gint) camel_message_info_date_sent (search->current));
 			header = strbuf;
 		} else if (!g_ascii_strcasecmp (headername, "from")) {
 			header = camel_message_info_from (search->current);

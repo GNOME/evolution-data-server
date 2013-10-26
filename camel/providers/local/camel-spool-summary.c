@@ -152,7 +152,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 		return -1;
 	}
 
-	sprintf (tmpname, "/tmp/spool.camel.XXXXXX");
+	g_snprintf (tmpname, sizeof (tmpname), "/tmp/spool.camel.XXXXXX");
 	fdout = g_mkstemp (tmpname);
 
 	d (printf ("Writing tmp file to %s\n", tmpname));

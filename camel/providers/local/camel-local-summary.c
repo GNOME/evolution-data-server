@@ -646,7 +646,7 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 	if (header && strlen (header) == strlen ("00000000-0000")
 	    && sscanf (header, "%08x-%04x", &uid, &flags) == 2) {
 		if (mi)
-			sprintf (uidstr, "%u", uid);
+			g_snprintf (uidstr, sizeof (uidstr), "%u", uid);
 	} else {
 		g_free (header);
 		return -1;

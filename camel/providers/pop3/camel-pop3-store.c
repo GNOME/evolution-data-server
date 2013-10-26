@@ -680,6 +680,7 @@ pop3_store_authenticate_sync (CamelService *service,
 
 	} else if (strcmp (mechanism, "+APOP") == 0 && pop3_engine->apop) {
 		gchar *secret, *md5asc, *d;
+		gsize secret_len;
 
 		if (password == NULL) {
 			g_set_error_literal (
@@ -710,10 +711,13 @@ pop3_store_authenticate_sync (CamelService *service,
 			d++;
 		}
 
-		secret = g_alloca (
+		secret_len =
 			strlen (pop3_engine->apop) +
-			strlen (password) + 1);
-		sprintf (secret, "%s%s", pop3_engine->apop, password);
+			strlen (password) + 1;
+		secret = g_alloca (secret_len);
+		g_snprintf (
+			secret, secret_len, "%s%s",
+			pop3_engine->apop, password);
 		md5asc = g_compute_checksum_for_string (
 			G_CHECKSUM_MD5, secret, -1);
 		pcp = camel_pop3_engine_command_new (
