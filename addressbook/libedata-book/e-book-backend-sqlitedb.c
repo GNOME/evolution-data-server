@@ -1314,236 +1314,6 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	return success;
 }
 
-typedef struct {
-	sqlite3 *db;
-	const gchar *collation;
-	const gchar *table;
-} CollationInfo;
-
-static gint
-create_phone_indexes_for_columns (gpointer data,
-                                  gint n_cols,
-                                  gchar **cols,
-                                  gchar **name)
-{
-	const gchar *column_name = cols[1];
-	CollationInfo *info = data;
-
-	if (g_str_has_suffix (column_name, "_phone")) {
-		gchar *index_name, *stmt;
-		GError *error = NULL;
-
-		index_name = g_strdup_printf (
-			"PINDEX_%s_ON_%s_WITH_%s", column_name, info->table, info->collation);
-		stmt = sqlite3_mprintf (
-			"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s COLLATE %Q)",
-			index_name, info->table, column_name, info->collation);
-
-		if (!book_backend_sql_exec (info->db, stmt, NULL, NULL, &error)) {
-			g_warning ("%s: %s", G_STRFUNC, error->message);
-			g_error_free (error);
-		}
-
-		sqlite3_free (stmt);
-		g_free (index_name);
-	}
-
-	return 0;
-}
-
-static gint
-create_phone_indexes_for_tables (gpointer data,
-                                 gint n_cols,
-                                 gchar **cols,
-                                 gchar **name)
-{
-	CollationInfo *info = data;
-	GError *error = NULL;
-	gchar *tmp, *stmt;
-
-	info->table = cols[0];
-	stmt = sqlite3_mprintf ("PRAGMA table_info(%Q)", info->table);
-
-	if (!book_backend_sql_exec (
-		info->db, stmt, create_phone_indexes_for_columns, info, &error)) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_clear_error (&error);
-	}
-
-	sqlite3_free (stmt);
-
-	info->table = tmp = g_strconcat (info->table, "_lists", NULL);
-	stmt = sqlite3_mprintf ("PRAGMA table_info(%Q)", info->table);
-
-	if (!book_backend_sql_exec (
-		info->db, stmt, create_phone_indexes_for_columns, info, &error)) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_clear_error (&error);
-	}
-
-	sqlite3_free (stmt);
-	g_free (tmp);
-
-	return 0;
-}
-
-static GString *
-ixphone_str (gint country_code,
-             const gchar *const national_str,
-             gint national_len)
-{
-	GString *const str = g_string_sized_new (6 + national_len);
-	g_string_append_printf (str, "+%d|", country_code);
-	g_string_append_len (str, national_str, national_len);
-	return str;
-}
-
-static gint
-e_strcmp2n (const gchar *str1,
-            size_t len1,
-            const gchar *str2,
-            size_t len2)
-{
-	const gint cmp = memcmp (str1, str2, MIN (len1, len2));
-
-	return (cmp != 0 ? cmp :
-		len1 == len2 ? 0 :
-		len1 < len2 ? -1 : 1);
-}
-
-static gint
-ixphone_compare_for_country (gpointer data,
-                             gint len1,
-                             gconstpointer arg1,
-                             gint len2,
-                             gconstpointer arg2)
-{
-	const gchar *const str1 = arg1;
-	const gchar *const str2 = arg2;
-	const gchar *const sep1 = memchr (str1, '|', len1);
-	const gchar *const sep2 = memchr (str2, '|', len2);
-	const gint country_code = GPOINTER_TO_INT (data);
-
-	g_return_val_if_fail (sep1 != NULL, 0);
-	g_return_val_if_fail (sep2 != NULL, 0);
-
-	if ((str1 == sep1) == (str2 == sep2))
-		return e_strcmp2n (str1, len1, str2, len2);
-
-	if (str1 == sep1) {
-		GString *const tmp = ixphone_str (country_code, str1, len1);
-		const gint cmp = e_strcmp2n (tmp->str, tmp->len, str2, len2);
-		g_string_free (tmp, TRUE);
-		return cmp;
-	} else {
-		GString *const tmp = ixphone_str (country_code, str2, len2);
-		const gint cmp = e_strcmp2n (str1, len1, tmp->str, tmp->len);
-		g_string_free (tmp, TRUE);
-		return cmp;
-	}
-}
-
-static gint
-ixphone_compare_national (gpointer data,
-                          gint len1,
-                          gconstpointer arg1,
-                          gint len2,
-                          gconstpointer arg2)
-{
-	const gchar *const country_code = data;
-	const gchar *const str1 = arg1;
-	const gchar *const str2 = arg2;
-	const gchar *sep1 = memchr (str1, '|', len1);
-	const gchar *sep2 = memchr (str2, '|', len2);
-
-	gint cmp;
-
-	g_return_val_if_fail (sep1 != NULL, 0);
-	g_return_val_if_fail (sep2 != NULL, 0);
-
-	/* First only check national portions */
-	cmp = e_strcmp2n (
-		sep1 + 1, len1 - (sep1 + 1 - str1),
-		sep2 + 1, len2 - (sep2 + 1 - str2));
-
-	/* On match we also have to check for potential country codes.
-	 * Note that we can't just compare the full phone number string
-	 * in the case that both numbers have a country code, because
-	 * this would break the collations sorting order. As a result
-	 * the binary search performed on the index would miss matches.
-	 * Consider the index contains "|2215423789" and "+31|2215423789"
-	 * while we look for "+1|2215423789". By performing full string
-	 * compares in case of fully qualified numbers, we might check
-	 * "+31|2215423789" first and then miss "|2215423789" because
-	 * we traverse the binary tree in wrong direction.
-	 */
-	if (cmp == 0) {
-		if (sep1 == str1) {
-			if (sep2 != str2)
-				cmp = e_strcmp2n (country_code, strlen (country_code), str2, sep2 - str2);
-		} else if (sep2 == str2) {
-			cmp = e_strcmp2n (str1, sep1 - str1, country_code, strlen (country_code));
-		} else {
-			/* Also compare the country code if the national number
-			 * matches and both numbers have a country code. */
-			cmp = e_strcmp2n (str1, sep1 - str1, str2, sep2 - str2);
-		}
-	}
-
-	if (booksql_debug ()) {
-		gchar *const tmp1 = g_strndup (str1, len1);
-		gchar *const tmp2 = g_strndup (str2, len2);
-
-		g_printerr
-			("  DEBUG %s('%s', '%s') = %d\n",
-			 G_STRFUNC, tmp1, tmp2, cmp);
-
-		g_free (tmp2);
-		g_free (tmp1);
-	}
-
-	return cmp;
-}
-
-static void
-create_collation (gpointer data,
-                  sqlite3 *db,
-                  gint encoding,
-                  const gchar *name)
-{
-	gint ret = SQLITE_DONE;
-	gint country_code;
-
-	g_warn_if_fail (encoding == SQLITE_UTF8);
-
-	if  (1 == sscanf (name, "ixphone_%d", &country_code)) {
-		ret = sqlite3_create_collation (
-			db, name, SQLITE_UTF8, GINT_TO_POINTER (country_code),
-			ixphone_compare_for_country);
-	} else if (strcmp (name, "ixphone_national") == 0) {
-		country_code = e_phone_number_get_country_code_for_region (NULL, NULL);
-
-		ret = sqlite3_create_collation_v2 (
-			db, name, SQLITE_UTF8,
-			g_strdup_printf ("+%d", country_code),
-			ixphone_compare_national, g_free);
-	}
-
-	if (ret == SQLITE_OK) {
-		CollationInfo info = { db, name };
-		GError *error = NULL;
-
-		if (!book_backend_sql_exec (
-			db, "SELECT folder_id FROM folders",
-			create_phone_indexes_for_tables, &info, &error)) {
-			g_warning ("%s(%s): %s", G_STRFUNC, name, error->message);
-			g_error_free (error);
-		}
-	} else if (ret != SQLITE_DONE) {
-		g_warning ("%s(%s): %s", G_STRFUNC, name, sqlite3_errmsg (db));
-	}
-}
-
 static void
 ebsdb_regexp (sqlite3_context *context, 
 	      int argc, 
@@ -1593,9 +1363,6 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 	e_sqlite3_vfs_init ();
 
 	ret = sqlite3_open (filename, &ebsdb->priv->db);
-
-	if (ret == SQLITE_OK)
-		ret = sqlite3_collation_needed (ebsdb->priv->db, ebsdb, create_collation);
 
 	if (ret == SQLITE_OK)
 		ret = sqlite3_create_function (ebsdb->priv->db, "regexp", 2, SQLITE_UTF8, ebsdb,
@@ -2117,7 +1884,8 @@ phone_number_from_string (const gchar *normal,
 
 static gchar *
 convert_phone (const gchar *normal,
-               const gchar *default_region)
+               const gchar *default_region,
+	       gboolean with_country_code)
 {
 	EPhoneNumber *number = phone_number_from_string (normal, default_region);
 	gchar *indexed_phone_number = NULL;
@@ -2136,11 +1904,15 @@ convert_phone (const gchar *normal,
 	}
 
 	if (national_number) {
-		indexed_phone_number = country_code
-			? g_strdup_printf ("+%d|%s", country_code, national_number)
-			: g_strconcat ("|", national_number, NULL);
+		if (with_country_code) {
+			indexed_phone_number = country_code
+				? g_strdup_printf ("+%d|%s", country_code, national_number)
+				: g_strconcat ("|", national_number, NULL);
 
-		g_free (national_number);
+			g_free (national_number);
+		} else {
+			indexed_phone_number = national_number;
+		}
 	}
 
 	return indexed_phone_number;
@@ -2150,7 +1922,7 @@ static gchar *
 mprintf_phone (const gchar *normal,
                const gchar *default_region)
 {
-	gchar *phone = convert_phone (normal, default_region);
+	gchar *phone = convert_phone (normal, default_region, FALSE);
 	gchar *stmt = NULL;
 
 	if (phone) {
@@ -2330,7 +2102,7 @@ update_e164_attribute_params (EVCard *vcard,
 		values = e_vcard_attribute_get_values (attr);
 
 		e164 = values && values->data
-			? convert_phone (values->data, default_region)
+			? convert_phone (values->data, default_region, TRUE)
 			: NULL;
 
 		if (e164 == NULL) {
@@ -3277,13 +3049,14 @@ func_check_phone (struct _ESExp *f,
 }
 
 static ESExpResult *
-func_check_regex_raw (struct _ESExp         *f,
-		      gint                  argc,
-		      struct _ESExpResult **argv,
-		      gpointer              data)
+func_unsupported (struct _ESExp         *f,
+		  gint                  argc,
+		  struct _ESExpResult **argv,
+		  gpointer              data)
 {
-	/* Raw REGEX queries are not in the summary, we only keep
-	 * normalized data in the summary
+	/* Some query types are explicitly unsupported,
+	 * this way we force a fallback to a full
+	 * table scan and match using EBookBackendSexp.
 	 */
 	ESExpResult *r;
 
@@ -3308,11 +3081,11 @@ static const struct {
 	{ "beginswith", func_check, 0 },
 	{ "endswith", func_check, 0 },
 	{ "exists", func_check, 0 },
-	{ "eqphone", func_check_phone, 0 },
+	{ "eqphone", func_unsupported, 0 },
 	{ "eqphone_national", func_check_phone, 0 },
-	{ "eqphone_short", func_check_phone, 0 },
+	{ "eqphone_short", func_unsupported, 0 },
 	{ "regex_normal", func_check, 0 },
-	{ "regex_raw", func_check_regex_raw, 0 },
+	{ "regex_raw", func_unsupported, 0 },
 	{ "translit_contains", func_check, 0 },
 	{ "translit_is", func_check, 0 },
 	{ "translit_beginswith", func_check, 0 },
@@ -3600,7 +3373,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 		computed = g_utf8_strreverse (normal, -1);
 		ptr = computed;
 	} else if (flags & CONVERT_PHONE) {
-		computed = convert_phone (normal, region);
+		computed = convert_phone (normal, region, FALSE);
 		ptr = computed;
 	} else {
 		ptr = normal;
@@ -3661,7 +3434,7 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 	gint summary_index;
 	gchar *field_name = NULL;
 	gchar *value = NULL;
-	gchar *extra = NULL;
+	/* gchar *extra = NULL; */
 	gboolean list_attr = FALSE;
 
 	summary_index = summary_index_from_field_name (ebsdb, field_name_input);
@@ -3733,7 +3506,7 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 			 *  o Normalize the string
 			 *  o Check the E.164 column instead
 			 */
-			const gint country_code = e_phone_number_get_country_code_for_region (region, NULL);
+			/* const gint country_code = e_phone_number_get_country_code_for_region (region, NULL); */
 
 			if (ebsdb->priv->summary_fields[summary_index].type == E_TYPE_CONTACT_ATTR_LIST) {
 				field_name = g_strdup ("multi.value_phone");
@@ -3749,14 +3522,14 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 					ebsdb, query_term_input, region,
 					CONVERT_NORMALIZE | CONVERT_PHONE, match);
 
-				extra = sqlite3_mprintf (" COLLATE ixphone_%d", country_code);
+				/* extra = sqlite3_mprintf (" COLLATE ixphone_%d", country_code); */
 			} else {
 				if (match == MATCH_NATIONAL_PHONE_NUMBER) {
 					value = convert_string_value (
 						ebsdb, query_term_input, region,
 						CONVERT_PHONE, MATCH_NATIONAL_PHONE_NUMBER);
 
-					extra = sqlite3_mprintf (" COLLATE ixphone_national");
+					/* extra = sqlite3_mprintf (" COLLATE ixphone_national"); */
 				} else {
 					gchar *const digits = extract_digits (query_term_input);
 					value = convert_string_value (
@@ -3764,9 +3537,9 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 						CONVERT_NOTHING, MATCH_ENDS_WITH);
 					g_free (digits);
 
-					extra = sqlite3_mprintf (
-						" AND (%q LIKE '|%%' OR %q LIKE '+%d|%%')",
-						field_name, field_name, country_code);
+					/* extra = sqlite3_mprintf ( */
+					/* 	" AND (%q LIKE '|%%' OR %q LIKE '+%d|%%')", */
+					/* 	field_name, field_name, country_code); */
 				}
 
 			}
@@ -3819,7 +3592,7 @@ field_name_and_query_term (EBookBackendSqliteDB *ebsdb,
 	*query_term = value;
 
 	if (extra_term)
-		*extra_term = extra;
+		*extra_term = NULL/* extra */;
 
 	return field_name;
 }
