@@ -62,7 +62,10 @@ static uid_t lock_real_uid = -1;
 
 /* utility functions */
 
-static gint read_n (gint fd, gpointer buffer, gint inlen)
+static gint
+read_n (gint fd,
+        gpointer buffer,
+        gint inlen)
 {
 	gchar *p = buffer;
 	gint len, left = inlen;
@@ -81,7 +84,10 @@ static gint read_n (gint fd, gpointer buffer, gint inlen)
 	return inlen - left;
 }
 
-static gint write_n (gint fd, gpointer buffer, gint inlen)
+static gint
+write_n (gint fd,
+         gpointer buffer,
+         gint inlen)
 {
 	gchar *p = buffer;
 	gint len, left = inlen;
@@ -108,7 +114,9 @@ gettext (const gchar *msgid)
 	return NULL;
 }
 
-static gint lock_path (const gchar *path, guint32 *lockid)
+static gint
+lock_path (const gchar *path,
+           guint32 *lockid)
 {
 	struct _lock_info *info = NULL;
 	gint res = CAMEL_LOCK_HELPER_STATUS_OK;
@@ -192,7 +200,8 @@ fail:
 	return res;
 }
 
-static gint unlock_id (guint32 lockid)
+static gint
+unlock_id (guint32 lockid)
 {
 	struct _lock_info *info, *p;
 
@@ -228,7 +237,8 @@ static gint unlock_id (guint32 lockid)
 	return CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 }
 
-static void lock_touch (const gchar *path)
+static void
+lock_touch (const gchar *path)
 {
 	gchar *name;
 
@@ -241,7 +251,8 @@ static void lock_touch (const gchar *path)
 	utime (name, NULL);
 }
 
-static void setup_process (void)
+static void
+setup_process (void)
 {
 	struct sigaction sa;
 	sigset_t sigset;
@@ -271,7 +282,9 @@ static void setup_process (void)
 #endif
 }
 
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc,
+      gchar **argv)
 {
 	struct _CamelLockHelperMsg msg;
 	gint len;
