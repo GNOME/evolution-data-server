@@ -1511,7 +1511,7 @@ e_book_backend_respond_opened (EBookBackend *backend,
  * e_book_backend_create_cursor:
  * @backend: an #EBookBackend
  * @sort_fields: the #EContactFields to sort by
- * @sort_types: the #EBookCursorSortTypes for the sorted fields
+ * @sort_types: the #EBookSortTypes for the sorted fields
  * @n_fields: the number of fields in the @sort_fields and @sort_types
  * @error: return location for a #GError, or %NULL
  *
@@ -1533,7 +1533,7 @@ e_book_backend_respond_opened (EBookBackend *backend,
 EDataBookCursor *
 e_book_backend_create_cursor (EBookBackend *backend,
 			      EContactField *sort_fields,
-			      EBookCursorSortType *sort_types,
+			      EBookSortType *sort_types,
 			      guint n_fields,
 			      GError **error)
 {

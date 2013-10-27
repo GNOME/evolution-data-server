@@ -88,7 +88,7 @@ struct _AsyncContext {
 	GSList *object_list;
 	GSList *string_list;
 	EContactField *sort_fields;
-	EBookCursorSortType *sort_types;
+	EBookSortType *sort_types;
 	guint n_sort_fields;
 	gchar *sexp;
 	gchar *uid;
@@ -3613,9 +3613,9 @@ sort_param_to_strv (gpointer param,
 
 			array[i] = e_contact_field_name (fields[i]);
 		} else {
-			EBookCursorSortType *types = (EBookCursorSortType *)param;
+			EBookSortType *types = (EBookSortType *)param;
 
-			array[i] = e_enum_to_string (E_TYPE_BOOK_CURSOR_SORT_TYPE,
+			array[i] = e_enum_to_string (E_TYPE_BOOK_SORT_TYPE,
 						     types[i]);
 		}
 	}
@@ -3754,7 +3754,7 @@ static void
 e_book_client_get_cursor_with_context (EBookClient *client,
 				       const gchar *sexp,
 				       EContactField *sort_fields,
-				       EBookCursorSortType *sort_types,
+				       EBookSortType *sort_types,
 				       guint n_fields,
 				       GMainContext *context,
 				       GCancellable *cancellable,
@@ -3772,7 +3772,7 @@ e_book_client_get_cursor_with_context (EBookClient *client,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->sexp = g_strdup (sexp);
 	async_context->sort_fields = g_memdup (sort_fields, sizeof (EContactField) * n_fields);
-	async_context->sort_types = g_memdup (sort_types, sizeof (EBookCursorSortType) * n_fields);
+	async_context->sort_types = g_memdup (sort_types, sizeof (EBookSortType) * n_fields);
 	async_context->n_sort_fields = n_fields;
 	async_context->context = g_main_context_ref (context);
 
@@ -3797,7 +3797,7 @@ e_book_client_get_cursor_with_context (EBookClient *client,
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
  * @sort_fields: an array of #EContactFields to sort the cursor with
- * @sort_types: an array of #EBookCursorSortTypes to complement @sort_fields
+ * @sort_types: an array of #EBookSortTypes to complement @sort_fields
  * @n_fields: the length of the input @sort_fields and @sort_types arrays
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
@@ -3816,7 +3816,7 @@ void
 e_book_client_get_cursor (EBookClient *client,
 			  const gchar *sexp,
 			  EContactField *sort_fields,
-			  EBookCursorSortType *sort_types,
+			  EBookSortType *sort_types,
 			  guint n_fields,
 			  GCancellable *cancellable,
 			  GAsyncReadyCallback callback,
@@ -3886,7 +3886,7 @@ e_book_client_get_cursor_finish (EBookClient *client,
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
  * @sort_fields: an array of #EContactFields to sort the cursor with
- * @sort_types: an array of #EBookCursorSortTypes to complement @sort_fields
+ * @sort_types: an array of #EBookSortTypes to complement @sort_fields
  * @n_fields: the length of the input @sort_fields and @sort_types arrays
  * @out_cursor: (out): return location for an #EBookClientCursor
  * @cancellable: a #GCancellable; can be %NULL
@@ -3907,7 +3907,7 @@ gboolean
 e_book_client_get_cursor_sync (EBookClient *client,
 			       const gchar *sexp,
 			       EContactField *sort_fields,
-			       EBookCursorSortType *sort_types,
+			       EBookSortType *sort_types,
 			       guint n_fields,
 			       EBookClientCursor **out_cursor,
 			       GCancellable *cancellable,

@@ -193,7 +193,7 @@
  * </para>
  * <para>
  * One can determine the appropriate index for a given #EContact by calling
- * e_book_client_cursor_get_contact_alphabetic_index(), this is useful to use
+ * e_book_client_cursor_get_contact_alpabetic_index(), this is useful to use
  * when updating any indicators in the user interface showing what letter
  * you have reached in the active alphabet.
  * </para>
@@ -2459,7 +2459,7 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
 }
 
 /**
- * e_book_client_cursor_get_contact_alphabetic_index:
+ * e_book_client_cursor_get_contact_alpabetic_index:
  * @cursor: an #EBookClientCursor
  * @contact: the #EContact to check
  *
@@ -2474,8 +2474,8 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_get_contact_alphabetic_index (EBookClientCursor   *cursor,
-						   EContact            *contact)
+e_book_client_cursor_get_contact_alpabetic_index (EBookClientCursor   *cursor,
+						  EContact            *contact)
 {
 	EBookClientCursorPrivate *priv;
 	EContactField field;

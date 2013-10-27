@@ -95,7 +95,7 @@ typedef struct {
 	ETestServerClosure  parent;
 
 	const gchar        *locale;
-	EBookCursorSortType sort_type;
+	EBookSortType       sort_type;
 } EbSdbCursorClosure;
 
 typedef struct {
@@ -157,7 +157,7 @@ MoveByData *move_by_test_new               (const gchar *test_path,
 					    const gchar *locale);
 MoveByData *move_by_test_new_full          (const gchar   *test_path,
 					    const gchar   *locale,
-					    EBookCursorSortType sort_type);
+					    EBookSortType sort_type);
 void        move_by_test_add               (MoveByData  *data,
 					    gboolean     filtered);
 

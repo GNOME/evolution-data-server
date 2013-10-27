@@ -1759,7 +1759,7 @@ e_book_backend_file_dup_locale (EBookBackend *backend)
 static EDataBookCursor *
 e_book_backend_file_create_cursor (EBookBackend *backend,
 				   EContactField *sort_fields,
-				   EBookCursorSortType *sort_types,
+				   EBookSortType *sort_types,
 				   guint n_fields,
 				   GError **error)
 {

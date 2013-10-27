@@ -209,7 +209,7 @@ struct _EBookBackendClass {
 	EDataBookCursor *
 	                (*create_cursor)	(EBookBackend *backend,
 						 EContactField *sort_fields,
-						 EBookCursorSortType *sort_types,
+						 EBookSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
 	gboolean        (* delete_cursor)       (EBookBackend *backend,
@@ -323,7 +323,7 @@ gchar          *e_book_backend_dup_locale       (EBookBackend *backend);
 EDataBookCursor *
                 e_book_backend_create_cursor    (EBookBackend *backend,
 						 EContactField *sort_fields,
-						 EBookCursorSortType *sort_types,
+						 EBookSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
 gboolean        e_book_backend_delete_cursor    (EBookBackend *backend,

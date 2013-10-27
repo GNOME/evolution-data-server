@@ -136,18 +136,18 @@ typedef enum {
 } EBookIndexType;
 
 /**
- * EBookCursorSortType:
- * @E_BOOK_CURSOR_SORT_ASCENDING: Sort results in ascending order
- * @E_BOOK_CURSOR_SORT_DESCENDING: Sort results in descending order
+ * EBookSortType:
+ * @E_BOOK_SORT_ASCENDING: Sort results in ascending order
+ * @E_BOOK_SORT_DESCENDING: Sort results in descending order
  *
  * Specifies the sort order of an ordered query
  *
  * Since: 3.12
  */
 typedef enum {
-	E_BOOK_CURSOR_SORT_ASCENDING = 0,
-	E_BOOK_CURSOR_SORT_DESCENDING
-} EBookCursorSortType;
+	E_BOOK_SORT_ASCENDING = 0,
+	E_BOOK_SORT_DESCENDING
+} EBookSortType;
 
 /**
  * EBookCursorOrigin:

@@ -243,7 +243,7 @@ e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
 
 static gboolean
 convert_origin (EBookCursorOrigin    src_origin,
-		EbSdbCursorOrigin   *dest_origin,
+		EbSdbCurorOrigin    *dest_origin,
 		GError             **error)
 {
 	gboolean success = TRUE;
@@ -281,7 +281,7 @@ e_data_book_cursor_sqlite_move_by (EDataBookCursor     *cursor,
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
 	GSList *local_results = NULL, *local_converted_results = NULL, *l;
-	EbSdbCursorOrigin sqlitedb_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
+	EbSdbCurorOrigin sqlitedb_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
 	gchar *revision = NULL;
 	gboolean success = FALSE;
 
@@ -421,10 +421,10 @@ e_data_book_cursor_sqlite_compare_contact (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_backend_sqlitedb_cursor_compare_contact (priv->ebsdb,
-							       priv->cursor,
-							       contact,
-							       matches_sexp);
+	return e_book_backend_sqlitedb_cursor_compare (priv->ebsdb,
+						       priv->cursor,
+						       contact,
+						       matches_sexp);
 }
 
 static gboolean
@@ -453,7 +453,7 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
  * @ebsdb: the #EBookBackendSqliteDB object to base this cursor on
  * @folder_id: the folder identifier to be used in EBookBackendSqliteDB API calls
  * @sort_fields: (array length=n_fields): an array of #EContactFields as sort keys in order of priority
- * @sort_types: (array length=n_fields): an array of #EBookCursorSortTypes, one for each field in @sort_fields
+ * @sort_types: (array length=n_fields): an array of #EBookSortTypes, one for each field in @sort_fields
  * @n_fields: the number of fields to sort results by.
  * @error: a return location to story any error that might be reported.
  *
@@ -472,7 +472,7 @@ e_data_book_cursor_sqlite_new (EBookBackend         *backend,
 			       EBookBackendSqliteDB *ebsdb,
 			       const gchar          *folder_id,
 			       EContactField        *sort_fields,
-			       EBookCursorSortType  *sort_types,
+			       EBookSortType        *sort_types,
 			       guint                 n_fields,
 			       GError              **error)
 {

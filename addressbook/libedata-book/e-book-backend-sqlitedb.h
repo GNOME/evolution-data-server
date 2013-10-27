@@ -125,7 +125,7 @@ typedef struct {
 typedef struct _EbSdbCursor EbSdbCursor;
 
 /**
- * EbSdbCursorOrigin:
+ * EbSdbCurorOrigin:
  * @EBSDB_CURSOR_ORIGIN_CURRENT:  The current cursor position
  * @EBSDB_CURSOR_ORIGIN_PREVIOUS: The previously recorded cursor position, this can be used to repeat the previous query
  * @EBSDB_CURSOR_ORIGIN_RESET:    The beginning of the cursor results (or end of the results, if navigating in reverse).
@@ -143,7 +143,7 @@ typedef enum {
 	EBSDB_CURSOR_ORIGIN_CURRENT,
 	EBSDB_CURSOR_ORIGIN_PREVIOUS,
 	EBSDB_CURSOR_ORIGIN_RESET
-} EbSdbCursorOrigin;
+} EbSdbCurorOrigin;
 
 GType		e_book_backend_sqlitedb_get_type
 						(void) G_GNUC_CONST;
@@ -328,7 +328,7 @@ EbSdbCursor    *e_book_backend_sqlitedb_cursor_new
 						 const gchar          *folderid,
 						 const gchar          *sexp,
 						 EContactField        *sort_fields,
-						 EBookCursorSortType  *sort_types,
+						 EBookSortType        *sort_types,
 						 guint                 n_sort_fields,
 						 GError              **error);
 void            e_book_backend_sqlitedb_cursor_free
@@ -337,7 +337,7 @@ void            e_book_backend_sqlitedb_cursor_free
 gboolean        e_book_backend_sqlitedb_cursor_move_by
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
-						 EbSdbCursorOrigin     origin,
+						 EbSdbCurorOrigin      origin,
 						 gint                  count,
 						 GSList              **results,
 						 GError              **error);
@@ -356,7 +356,7 @@ gboolean        e_book_backend_sqlitedb_cursor_calculate
 						 gint                 *total,
 						 gint                 *position,
 						 GError              **error);
-gint            e_book_backend_sqlitedb_cursor_compare_contact
+gint            e_book_backend_sqlitedb_cursor_compare
                                                 (EBookBackendSqliteDB *ebsdb,
 						 EbSdbCursor          *cursor,
 						 EContact             *contact,

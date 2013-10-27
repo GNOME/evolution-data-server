@@ -541,7 +541,7 @@ cursor_example_update_current_index (CursorExample *example,
 	gint                  index;
 
 	/* Fetch the alphabetic index for this contact */
-	index = e_book_client_cursor_get_contact_alphabetic_index (priv->cursor, contact);
+	index = e_book_client_cursor_get_contact_alpabetic_index (priv->cursor, contact);
 
 	/* Refresh the current alphabet index indicator.
 	 *

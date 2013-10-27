@@ -225,7 +225,7 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 	ESqliteDBFixture *ebsdb_fixture = (ESqliteDBFixture *)fixture;
 	EbSdbCursorClosure *data = (EbSdbCursorClosure *)user_data;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-	EBookCursorSortType sort_types[] = { data->sort_type, data->sort_type };
+	EBookSortType sort_types[] = { data->sort_type, data->sort_type };
 	EBookClient *book_client;
 	GSList *contacts = NULL;
 	GError *error = NULL;
@@ -495,7 +495,7 @@ move_by_test_new_internal (const gchar *test_path,
 	data->parent.parent.type = E_TEST_SERVER_ADDRESS_BOOK;
 	data->parent.parent.customize = e_sqlitedb_cursor_fixture_setup_book;
 	data->parent.locale = g_strdup (locale);
-	data->parent.sort_type = E_BOOK_CURSOR_SORT_ASCENDING;
+	data->parent.sort_type = E_BOOK_SORT_ASCENDING;
 	data->path = g_strdup (test_path);
 	data->struct_size = struct_size;
 
@@ -524,7 +524,7 @@ move_by_test_new (const gchar *test_path,
 MoveByData *
 move_by_test_new_full (const gchar         *test_path,
 		       const gchar         *locale,
-		       EBookCursorSortType  sort_type)
+		       EBookSortType        sort_type)
 {
 	MoveByData *data;
 

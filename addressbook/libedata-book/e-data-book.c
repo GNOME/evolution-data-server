@@ -1119,13 +1119,13 @@ static gboolean
 data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 			       const gchar * const *in_sort_types,
 			       EContactField **out_sort_keys,
-			       EBookCursorSortType **out_sort_types,
+			       EBookSortType **out_sort_types,
 			       gint *n_fields,
 			       GError **error)
 {
 	gint i, key_count = 0, type_count = 0;
 	EContactField *sort_keys;
-	EBookCursorSortType *sort_types;
+	EBookSortType *sort_types;
 	gboolean success = TRUE;
 
 	if (!in_sort_keys || !in_sort_types) {
@@ -1150,7 +1150,7 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 	}
 
 	sort_keys = g_new0 (EContactField, key_count);
-	sort_types = g_new0 (EBookCursorSortType, type_count);
+	sort_types = g_new0 (EBookSortType, type_count);
 
 	for (i = 0; success && i < key_count; i++) {
 
@@ -1169,7 +1169,7 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 	for (i = 0; success && i < type_count; i++) {
 		gint enum_value = 0;
 
-		if (!e_enum_from_string (E_TYPE_BOOK_CURSOR_SORT_TYPE,
+		if (!e_enum_from_string (E_TYPE_BOOK_SORT_TYPE,
 					 in_sort_types[i],
 					 &enum_value)) {
 			g_set_error (error,
@@ -1207,7 +1207,7 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	EDataBookCursor *cursor;
 	GDBusConnection *connection;
 	EContactField *sort_keys = NULL;
-	EBookCursorSortType *sort_types = NULL;
+	EBookSortType *sort_types = NULL;
 	gint n_fields = 0;
 	gchar *object_path;
 	GError *error = NULL;

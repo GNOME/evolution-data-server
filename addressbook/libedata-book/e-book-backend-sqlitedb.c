@@ -5270,7 +5270,7 @@ struct _EbSdbCursor {
 	gchar         *reverse_order; /* The reverse order SQL query fragment to append at the end, containing ORDER BY etc */
 
 	EContactField       *sort_fields;   /* The fields to sort in a query in the order or sort priority */
-	EBookCursorSortType *sort_types;    /* The sort method to use for each field */
+	EBookSortType       *sort_types;    /* The sort method to use for each field */
 	gint                 n_sort_fields; /* The amound of sort fields */
 
 	CursorState    state[N_CURSOR_STATES];
@@ -5323,7 +5323,7 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 static gchar *
 ebsdb_cursor_order_by_fragment (EBookBackendSqliteDB *ebsdb,
 				EContactField        *sort_fields,
-				EBookCursorSortType  *sort_types,
+				EBookSortType        *sort_types,
 				guint                 n_sort_fields,
 				gboolean              reverse)
 {
@@ -5342,8 +5342,8 @@ ebsdb_cursor_order_by_fragment (EBookBackendSqliteDB *ebsdb,
 
 		g_string_append_printf (string, "summary.%s_localized %s", field_name,
 					reverse ?
-					(sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "DESC" : "ASC") :
-					(sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "ASC"  : "DESC"));
+					(sort_types[i] == E_BOOK_SORT_ASCENDING ? "DESC" : "ASC") :
+					(sort_types[i] == E_BOOK_SORT_ASCENDING ? "ASC"  : "DESC"));
 	}
 
 	/* Also order the UID, since it's our tie breaker, we must also order the UID field */
@@ -5360,7 +5360,7 @@ ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
 		  const gchar          *sexp,
 		  gboolean              query_with_list_attrs,
 		  EContactField        *sort_fields,
-		  EBookCursorSortType  *sort_types,
+		  EBookSortType        *sort_types,
 		  guint                 n_sort_fields)
 {
 	EbSdbCursor *cursor = g_slice_new0 (EbSdbCursor);
@@ -5384,7 +5384,7 @@ ebsdb_cursor_new (EBookBackendSqliteDB *ebsdb,
 
 	cursor->n_sort_fields = n_sort_fields;
 	cursor->sort_fields   = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
-	cursor->sort_types    = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
+	cursor->sort_types    = g_memdup (sort_types,  sizeof (EBookSortType) * n_sort_fields);
 
 	for (i = 0; i < N_CURSOR_STATES; i++)
 		cursor->state[i].values = g_new0 (gchar *, n_sort_fields);
@@ -5489,8 +5489,8 @@ ebsdb_cursor_set_state (EBookBackendSqliteDB *ebsdb,
 
 #define GREATER_OR_LESS(cursor, index, reverse)				\
 	(reverse ?							\
-	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '<' : '>') : \
-	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_CURSOR_SORT_ASCENDING ? '>' : '<'))
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_SORT_ASCENDING ? '<' : '>') : \
+	 (((EbSdbCursor *)cursor)->sort_types[index] == E_BOOK_SORT_ASCENDING ? '>' : '<'))
 
 static gchar *
 ebsdb_cursor_constraints (EBookBackendSqliteDB *ebsdb,
@@ -5710,7 +5710,7 @@ cursor_count_position_locked (EBookBackendSqliteDB *ebsdb,
  * @folderid: folder id of the address-book
  * @sexp: search expression; use NULL or an empty string to get all stored contacts.
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
- * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
+ * @sort_types: (array length=n_sort_fields): An array of #EBookSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by.
  * @error: A return location to store any error that might be reported.
  *
@@ -5727,7 +5727,7 @@ e_book_backend_sqlitedb_cursor_new (EBookBackendSqliteDB *ebsdb,
 				    const gchar          *folderid,
 				    const gchar          *sexp,
 				    EContactField        *sort_fields,
-				    EBookCursorSortType  *sort_types,
+				    EBookSortType        *sort_types,
 				    guint                 n_sort_fields,
 				    GError              **error)
 {
@@ -5837,7 +5837,7 @@ collect_results_for_cursor_cb (gpointer ref,
  * e_book_backend_sqlitedb_cursor_move_by:
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor to use
- * @origin: The #EbSdbCursorOrigin for this move
+ * @origin: The #EbSdbCurorOrigin for this move
  * @count: A positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type EbSdbSearchData) (transfer full):
  *   A return location to store the results, or %NULL to move the cursor without retrieving any results.
@@ -5867,7 +5867,7 @@ collect_results_for_cursor_cb (gpointer ref,
 gboolean
 e_book_backend_sqlitedb_cursor_move_by (EBookBackendSqliteDB *ebsdb,
 					EbSdbCursor          *cursor,
-					EbSdbCursorOrigin     origin,
+					EbSdbCurorOrigin      origin,
 					gint                  count,
 					GSList              **results,
 					GError              **error)
@@ -6147,7 +6147,7 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
 }
 
 /**
- * e_book_backend_sqlitedb_cursor_compare_contact:
+ * e_book_backend_sqlitedb_cursor_compare:
  * @ebsdb: An #EBookBackendSqliteDB
  * @cursor: The #EbSdbCursor
  * @contact: The #EContact to compare
@@ -6162,10 +6162,10 @@ e_book_backend_sqlitedb_cursor_calculate (EBookBackendSqliteDB *ebsdb,
  * Since: 3.12
  */
 gint
-e_book_backend_sqlitedb_cursor_compare_contact (EBookBackendSqliteDB *ebsdb,
-						EbSdbCursor          *cursor,
-						EContact             *contact,
-						gboolean             *matches_sexp)
+e_book_backend_sqlitedb_cursor_compare (EBookBackendSqliteDB *ebsdb,
+					EbSdbCursor          *cursor,
+					EContact             *contact,
+					gboolean             *matches_sexp)
 {
 	EBookBackendSqliteDBPrivate *priv;
 	gint i;

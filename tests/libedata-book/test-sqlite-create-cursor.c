@@ -14,7 +14,7 @@ test_create_cursor_empty_query (ESqliteDBFixture *fixture,
 {
 	EbSdbCursor  *cursor;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-	EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
+	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
 	GError       *error = NULL;
 
 	cursor = e_book_backend_sqlitedb_cursor_new (fixture->ebsdb, SQLITEDB_FOLDER_ID, NULL,
@@ -30,7 +30,7 @@ test_create_cursor_valid_query (ESqliteDBFixture *fixture,
 {
 	EbSdbCursor  *cursor;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-	EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
+	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
 	EBookQuery   *query;
 	gchar        *sexp;
 	GError       *error = NULL;
@@ -53,7 +53,7 @@ test_create_cursor_invalid_query (ESqliteDBFixture *fixture,
 {
 	EbSdbCursor  *cursor;
 	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
-	EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
+	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING, E_BOOK_SORT_ASCENDING };
 	EBookQuery   *query;
 	gchar        *sexp;
 	GError       *error = NULL;
@@ -78,7 +78,7 @@ test_create_cursor_invalid_sort (ESqliteDBFixture *fixture,
 {
 	EbSdbCursor  *cursor;
 	EContactField sort_fields[] = { E_CONTACT_TEL };
-	EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING };
+	EBookSortType sort_types[] = { E_BOOK_SORT_ASCENDING };
 	GError       *error = NULL;
 
 	cursor = e_book_backend_sqlitedb_cursor_new (fixture->ebsdb, SQLITEDB_FOLDER_ID, NULL,

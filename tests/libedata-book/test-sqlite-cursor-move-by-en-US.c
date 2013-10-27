@@ -43,7 +43,7 @@ main (gint argc,
 	move_by_test_add (data, TRUE);
 
 	data = move_by_test_new_full ("/EbSdbCursor/en_US/Move/Descending/Forward", "en_US.UTF-8",
-				      E_BOOK_CURSOR_SORT_DESCENDING);
+				      E_BOOK_SORT_DESCENDING);
 	move_by_test_add_assertion (data, 5, 20, 19, 9,  13, 12);
 	move_by_test_add_assertion (data, 5, 14, 10, 18, 16, 17);
 	move_by_test_add_assertion (data, 5, 15, 8,  7,  3,  4);
@@ -51,7 +51,7 @@ main (gint argc,
 	move_by_test_add (data, FALSE);
 
 	data = move_by_test_new_full ("/EbSdbCursor/en_US/Move/Descending/Forward/Loop", "en_US.UTF-8",
-				      E_BOOK_CURSOR_SORT_DESCENDING);
+				      E_BOOK_SORT_DESCENDING);
 	move_by_test_add_assertion (data, 10, 20, 19, 9,  13, 12, 14, 10, 18, 16, 17);
 	move_by_test_add_assertion (data, 11, 15, 8,  7,  3,  4, 6,  5,  2,  1,  11, 0);
 
