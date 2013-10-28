@@ -165,7 +165,10 @@ static const SecretSchema e_passwords_schema = {
 };
 
 /* Forward Declarations */
-void evolution_source_registry_migrate_sources (void);
+void		evolution_source_registry_migrate_sources (void);
+gboolean	evolution_source_registry_migrate_gconf_tree_xml
+						(const gchar *filename,
+						 GError **error);
 
 static ParseData *
 parse_data_new (ParseType parse_type)
@@ -185,6 +188,8 @@ parse_data_free (ParseData *parse_data)
 	/* Normally the allocated data in ParseData is freed and the
 	 * pointers are cleared before we get here.  But if an error
 	 * occurred we may leave data behind.  This cleans it up. */
+
+	g_return_if_fail (parse_data != NULL);
 
 	if (parse_data->file != NULL)
 		g_object_unref (parse_data->file);
@@ -3187,6 +3192,10 @@ migrate_parse_gconf_xml_start_element (GMarkupParseContext *context,
 {
 	ParseData *parse_data = user_data;
 
+	/* Only seen in merged XML files. */
+	if (g_strcmp0 (element_name, "dir") == 0)
+		return;
+
 	if (g_strcmp0 (element_name, "gconf") == 0) {
 		if (parse_data->state != PARSE_STATE_INITIAL)
 			goto invalid_content;
@@ -3385,8 +3394,156 @@ migrate_parse_gconf_xml (ParseType parse_type,
 	return success;
 }
 
+static gboolean
+migrate_parse_gconf_tree_xml_in_evolution (GQueue *dir_stack)
+{
+	if (g_strcmp0 (g_queue_peek_nth (dir_stack, 0), "apps") != 0)
+		return FALSE;
+
+	if (g_strcmp0 (g_queue_peek_nth (dir_stack, 1), "evolution") != 0)
+		return FALSE;
+
+	return TRUE;
+}
+
 static void
-migrate_remove_gconf_xml (const gchar *gconf_key,
+migrate_parse_gconf_tree_xml_start_element (GMarkupParseContext *context,
+                                            const gchar *element_name,
+                                            const gchar **attribute_names,
+                                            const gchar **attribute_values,
+                                            gpointer user_data,
+                                            GError **error)
+{
+	GQueue *dir_stack = user_data;
+
+	if (g_strcmp0 (element_name, "dir") == 0) {
+		ParseData *parse_data = NULL;
+		gchar *dir_name = NULL;
+
+		g_markup_collect_attributes (
+			element_name,
+			attribute_names,
+			attribute_values,
+			error,
+			G_MARKUP_COLLECT_STRDUP,
+			"name", &dir_name,
+			G_MARKUP_COLLECT_INVALID);
+
+		if (dir_name != NULL) {
+			/* Takes ownership of the string. */
+			g_queue_push_tail (dir_stack, dir_name);
+			dir_name = NULL;
+		}
+
+		/* Push a sub-parser to handle the <entry> tag. */
+
+		if (migrate_parse_gconf_tree_xml_in_evolution (dir_stack))
+			dir_name = g_queue_peek_tail (dir_stack);
+
+		if (g_strcmp0 (dir_name, "mail") == 0)
+			parse_data = parse_data_new (PARSE_TYPE_MAIL);
+
+		if (g_strcmp0 (dir_name, "addressbook") == 0)
+			parse_data = parse_data_new (PARSE_TYPE_ADDRESSBOOK);
+
+		if (g_strcmp0 (dir_name, "calendar") == 0)
+			parse_data = parse_data_new (PARSE_TYPE_CALENDAR);
+
+		if (g_strcmp0 (dir_name, "tasks") == 0)
+			parse_data = parse_data_new (PARSE_TYPE_TASKS);
+
+		if (g_strcmp0 (dir_name, "memos") == 0)
+			parse_data = parse_data_new (PARSE_TYPE_MEMOS);
+
+		if (parse_data != NULL) {
+			/* Pretend like we saw a <gconf> tag. */
+			parse_data->state = PARSE_STATE_IN_GCONF;
+
+			g_markup_parse_context_push (
+				context, &gconf_xml_parser, parse_data);
+		}
+	}
+}
+
+static void
+migrate_parse_gconf_tree_xml_end_element (GMarkupParseContext *context,
+                                          const gchar *element_name,
+                                          gpointer user_data,
+                                          GError **error)
+{
+	GQueue *dir_stack = user_data;
+
+	if (g_strcmp0 (element_name, "dir") == 0) {
+		gboolean pop_parse_context = FALSE;
+
+		/* Figure out if we need to pop the parse context. */
+
+		if (migrate_parse_gconf_tree_xml_in_evolution (dir_stack)) {
+			const gchar *dir_name;
+
+			dir_name = g_queue_peek_tail (dir_stack);
+
+			if (g_strcmp0 (dir_name, "mail") == 0)
+				pop_parse_context = TRUE;
+
+			if (g_strcmp0 (dir_name, "addressbook") == 0)
+				pop_parse_context = TRUE;
+
+			if (g_strcmp0 (dir_name, "calendar") == 0)
+				pop_parse_context = TRUE;
+
+			if (g_strcmp0 (dir_name, "tasks") == 0)
+				pop_parse_context = TRUE;
+
+			if (g_strcmp0 (dir_name, "memos") == 0)
+				pop_parse_context = TRUE;
+		}
+
+		if (pop_parse_context) {
+			ParseData *parse_data;
+
+			parse_data = g_markup_parse_context_pop (context);
+			parse_data_free (parse_data);
+		}
+
+		g_free (g_queue_pop_tail (dir_stack));
+	}
+}
+
+static GMarkupParser gconf_tree_xml_parser = {
+	migrate_parse_gconf_tree_xml_start_element,
+	migrate_parse_gconf_tree_xml_end_element,
+	NULL,  /* text */
+	NULL,  /* passthrough */
+	NULL   /* error */
+};
+
+static gboolean
+migrate_parse_gconf_tree_xml (const gchar *contents,
+                              gsize length,
+                              GError **error)
+{
+	GMarkupParseContext *context;
+	GQueue dir_stack = G_QUEUE_INIT;
+	gboolean success = FALSE;
+
+	context = g_markup_parse_context_new (
+		&gconf_tree_xml_parser, 0,
+		&dir_stack, (GDestroyNotify) NULL);
+
+	if (g_markup_parse_context_parse (context, contents, length, error))
+		if (g_markup_parse_context_end_parse (context, error))
+			success = TRUE;
+
+	g_markup_parse_context_free (context);
+
+	g_warn_if_fail (g_queue_is_empty (&dir_stack));
+
+	return success;
+}
+
+static void
+migrate_remove_gconf_key (const gchar *gconf_key,
                           const gchar *gconf_xml)
 {
 	/* Remove the GConf string list so the user is not haunted by
@@ -3425,11 +3582,14 @@ migrate_remove_gconf_xml (const gchar *gconf_key,
 		g_free (command_line);
 	}
 
-	if (g_file_test (gconf_xml, G_FILE_TEST_IS_REGULAR)) {
-		if (g_remove (gconf_xml) == -1) {
-			g_printerr (
-				"Failed to remove '%s': %s\n",
-				gconf_xml, g_strerror (errno));
+	/* This will be NULL when parsing a merged XML tree. */
+	if (gconf_xml != NULL) {
+		if (g_file_test (gconf_xml, G_FILE_TEST_IS_REGULAR)) {
+			if (g_remove (gconf_xml) == -1) {
+				g_printerr (
+					"Failed to remove '%s': %s\n",
+					gconf_xml, g_strerror (errno));
+			}
 		}
 	}
 }
@@ -3443,8 +3603,45 @@ migrate_handle_error (const GError *error)
 		g_printerr ("  FAILED: %s\n", error->message);
 }
 
-void
-evolution_source_registry_migrate_sources (void)
+static void
+migrate_merged_gconf_tree (const gchar *gconf_tree_xml)
+{
+	gchar *contents;
+	gsize length;
+	GError *error = NULL;
+
+	g_file_get_contents (gconf_tree_xml, &contents, &length, &error);
+
+	if (error == NULL) {
+		migrate_parse_gconf_tree_xml (contents, length, &error);
+		g_free (contents);
+	}
+
+	if (error == NULL) {
+		const gchar *gconf_key;
+
+		gconf_key = "/apps/evolution/mail/accounts";
+		migrate_remove_gconf_key (gconf_key, NULL);
+
+		gconf_key = "/apps/evolution/addressbook/sources";
+		migrate_remove_gconf_key (gconf_key, NULL);
+
+		gconf_key = "/apps/evolution/calendar/sources";
+		migrate_remove_gconf_key (gconf_key, NULL);
+
+		gconf_key = "/apps/evolution/tasks/sources";
+		migrate_remove_gconf_key (gconf_key, NULL);
+
+		gconf_key = "/apps/evolution/memos/sources";
+		migrate_remove_gconf_key (gconf_key, NULL);
+	} else {
+		migrate_handle_error (error);
+		g_clear_error (&error);
+	}
+}
+
+static void
+migrate_normal_gconf_tree (const gchar *gconf_base_dir)
 {
 	gchar *base_dir;
 	gchar *contents;
@@ -3454,7 +3651,7 @@ evolution_source_registry_migrate_sources (void)
 	GError *error = NULL;
 
 	base_dir = g_build_filename (
-		g_get_home_dir (), ".gconf", "apps", "evolution", NULL);
+		gconf_base_dir, "apps", "evolution", NULL);
 
 	/* ------------------------------------------------------------------*/
 
@@ -3473,7 +3670,7 @@ evolution_source_registry_migrate_sources (void)
 
 	if (error == NULL) {
 		gconf_key = "/apps/evolution/mail/accounts";
-		migrate_remove_gconf_xml (gconf_key, gconf_xml);
+		migrate_remove_gconf_key (gconf_key, gconf_xml);
 	} else {
 		migrate_handle_error (error);
 		g_clear_error (&error);
@@ -3498,7 +3695,7 @@ evolution_source_registry_migrate_sources (void)
 
 	if (error == NULL) {
 		gconf_key = "/apps/evolution/addressbook/sources";
-		migrate_remove_gconf_xml (gconf_key, gconf_xml);
+		migrate_remove_gconf_key (gconf_key, gconf_xml);
 	} else {
 		migrate_handle_error (error);
 		g_clear_error (&error);
@@ -3523,7 +3720,7 @@ evolution_source_registry_migrate_sources (void)
 
 	if (error == NULL) {
 		gconf_key = "/apps/evolution/calendar/sources";
-		migrate_remove_gconf_xml (gconf_key, gconf_xml);
+		migrate_remove_gconf_key (gconf_key, gconf_xml);
 	} else {
 		migrate_handle_error (error);
 		g_clear_error (&error);
@@ -3548,7 +3745,7 @@ evolution_source_registry_migrate_sources (void)
 
 	if (error == NULL) {
 		gconf_key = "/apps/evolution/tasks/sources";
-		migrate_remove_gconf_xml (gconf_key, gconf_xml);
+		migrate_remove_gconf_key (gconf_key, gconf_xml);
 	} else {
 		migrate_handle_error (error);
 		g_clear_error (&error);
@@ -3573,7 +3770,7 @@ evolution_source_registry_migrate_sources (void)
 
 	if (error == NULL) {
 		gconf_key = "/apps/evolution/memos/sources";
-		migrate_remove_gconf_xml (gconf_key, gconf_xml);
+		migrate_remove_gconf_key (gconf_key, gconf_xml);
 	} else {
 		migrate_handle_error (error);
 		g_clear_error (&error);
@@ -3585,3 +3782,45 @@ evolution_source_registry_migrate_sources (void)
 
 	g_free (base_dir);
 }
+
+void
+evolution_source_registry_migrate_sources (void)
+{
+	gchar *gconf_base_dir;
+	gchar *gconf_tree_xml;
+
+	gconf_base_dir =
+		g_build_filename (g_get_home_dir (), ".gconf", NULL);
+	gconf_tree_xml =
+		g_build_filename (gconf_base_dir, "%gconf-tree.xml", NULL);
+
+	/* Handle a merged GConf tree file if present (mainly for
+	 * Debian), otherwise assume a normal GConf directory tree. */
+	if (g_file_test (gconf_tree_xml, G_FILE_TEST_IS_REGULAR))
+		migrate_merged_gconf_tree (gconf_tree_xml);
+	else
+		migrate_normal_gconf_tree (gconf_base_dir);
+
+	g_free (gconf_base_dir);
+	g_free (gconf_tree_xml);
+}
+
+gboolean
+evolution_source_registry_migrate_gconf_tree_xml (const gchar *filename,
+                                                  GError **error)
+{
+	gchar *contents;
+	gsize length;
+	gboolean success = FALSE;
+
+	/* Extracts account info from an arbitrary merged XML file. */
+
+	if (g_file_get_contents (filename, &contents, &length, error)) {
+		success = migrate_parse_gconf_tree_xml (
+			contents, length, error);
+		g_free (contents);
+	}
+
+	return success;
+}
+

@@ -40,7 +40,10 @@ EXTRA_DIST = \
 	$(service_in_files) \
 	$(NULL)
 
-libexec_PROGRAMS = evolution-source-registry
+libexec_PROGRAMS = \
+	evolution-source-registry \
+	evolution-scan-gconf-tree-xml \
+	$(NULL)
 
 evolution_source_registry_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
@@ -69,6 +72,33 @@ evolution_source_registry_LDADD = \
 	$(top_builddir)/camel/libcamel-1.2.la \
 	$(E_DATA_SERVER_LIBS) \
 	$(FACTORY_GTK_LIBS) \
+	$(LIBSECRET_LIBS) \
+	$(CAMEL_LIBS) \
+	$(SOUP_LIBS) \
+	$(NULL)
+
+evolution_scan_gconf_tree_xml_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-DG_LOG_DOMAIN=\"evolution-scan-gconf-tree-xml\" \
+	-DLOCALEDIR=\"$(localedir)\" \
+	$(E_DATA_SERVER_CFLAGS) \
+	$(LIBSECRET_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(SOUP_CFLAGS) \
+	$(NULL)
+
+evolution_scan_gconf_tree_xml_SOURCES = \
+	evolution-scan-gconf-tree-xml.c \
+	evolution-source-registry-migrate-sources.c \
+	$(NULL)
+
+evolution_scan_gconf_tree_xml_LDADD = \
+	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(top_builddir)/camel/libcamel-1.2.la \
+	$(E_DATA_SERVER_LIBS) \
 	$(LIBSECRET_LIBS) \
 	$(CAMEL_LIBS) \
 	$(SOUP_LIBS) \
