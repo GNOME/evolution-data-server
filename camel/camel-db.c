@@ -288,6 +288,9 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile,
 	cFile->timeout_id = g_timeout_add_seconds (
 		SYNC_TIMEOUT_SECONDS, (GSourceFunc)
 		sync_push_request_timeout, cFile);
+	g_source_set_name_by_id (
+		cFile->timeout_id,
+		"[camel] sync_push_request_timeout");
 
 	g_rec_mutex_unlock (&cFile->sync_mutex);
 

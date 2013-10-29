@@ -41,7 +41,7 @@
 
 G_DEFINE_TYPE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYNC)
 
-static gboolean	reload_cb			(ECalBackendWeather *cbw);
+static gboolean	reload_cb			(gpointer user_data);
 static gboolean	begin_retrieval_cb		(ECalBackendWeather *cbw);
 static ECalComponent *
 		create_weather			(ECalBackendWeather *cbw,
@@ -79,18 +79,19 @@ struct _ECalBackendWeatherPrivate {
 };
 
 static gboolean
-reload_cb (ECalBackendWeather *cbw)
+reload_cb (gpointer user_data)
 {
-	ECalBackendWeatherPrivate *priv;
+	ECalBackendWeather *cbw;
 
-	priv = cbw->priv;
+	cbw = E_CAL_BACKEND_WEATHER (user_data);
 
-	if (priv->is_loading)
+	if (cbw->priv->is_loading)
 		return TRUE;
 
-	priv->reload_timeout_id = 0;
-	priv->opened = TRUE;
+	cbw->priv->reload_timeout_id = 0;
+	cbw->priv->opened = TRUE;
 	begin_retrieval_cb (cbw);
+
 	return FALSE;
 }
 
@@ -124,10 +125,10 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 			interval_in_minutes = 240;
 	}
 
-	if (interval_in_minutes > 0)
-		priv->reload_timeout_id = g_timeout_add_seconds (
-			interval_in_minutes * 60,
-			(GSourceFunc) reload_cb, cbw);
+	if (interval_in_minutes > 0) {
+		priv->reload_timeout_id = e_named_timeout_add_seconds (
+			interval_in_minutes * 60, reload_cb, cbw);
+	}
 }
 
 /* TODO Do not replicate this in every backend */
@@ -547,7 +548,8 @@ e_cal_backend_weather_refresh (ECalBackendSync *backend,
 	priv->reload_timeout_id = 0;
 
 	/* wait a second, then start reloading */
-	priv->reload_timeout_id = g_timeout_add (1000, (GSourceFunc) reload_cb, cbw);
+	priv->reload_timeout_id =
+		e_named_timeout_add_seconds (1, reload_cb, cbw);
 }
 
 static void

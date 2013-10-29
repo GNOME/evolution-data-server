@@ -2113,6 +2113,9 @@ cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 				SUMMARY_CACHE_DROP,
 				(GSourceFunc) cfs_try_release_memory,
 				g_object_ref (summary));
+			g_source_set_name_by_id (
+				summary->priv->timeout_handle,
+				"[camel] cfs_try_release_memory");
 		}
 	}
 

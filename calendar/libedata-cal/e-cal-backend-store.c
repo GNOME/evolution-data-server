@@ -416,7 +416,7 @@ cal_backend_store_save_cache (ECalBackendStore *store)
 	if (store->priv->save_timeout_id > 0)
 		g_source_remove (store->priv->save_timeout_id);
 
-	store->priv->save_timeout_id = g_timeout_add_seconds (
+	store->priv->save_timeout_id = e_named_timeout_add_seconds (
 		IDLE_SAVE_TIMEOUT_SECONDS,
 		cal_backend_store_save_cache_timeout_cb, store);
 

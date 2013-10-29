@@ -125,8 +125,10 @@ sync_push_request (ESqlite3File *cFile,
 }
 
 static gboolean
-sync_push_request_timeout (ESqlite3File *cFile)
+sync_push_request_timeout (gpointer user_data)
 {
+	ESqlite3File *cFile = user_data;
+
 	g_rec_mutex_lock (&cFile->sync_mutex);
 
 	if (cFile->timeout_id != 0) {
@@ -242,9 +244,8 @@ e_sqlite3_file_xSync (sqlite3_file *pFile,
 		g_source_remove (cFile->timeout_id);
 
 	/* Wait SYNC_TIMEOUT_SECONDS before we actually sync. */
-	cFile->timeout_id = g_timeout_add_seconds (
-		SYNC_TIMEOUT_SECONDS, (GSourceFunc)
-		sync_push_request_timeout, cFile);
+	cFile->timeout_id = e_named_timeout_add_seconds (
+		SYNC_TIMEOUT_SECONDS, sync_push_request_timeout, cFile);
 
 	g_rec_mutex_unlock (&cFile->sync_mutex);
 

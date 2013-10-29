@@ -260,7 +260,7 @@ static void     ldap_op_add (LDAPOp *op, EBookBackend *backend, EDataBook *book,
 			     EDataBookView *view, gint opid, gint msgid, LDAPOpHandler handler, LDAPOpDtor dtor);
 static void     ldap_op_finished (LDAPOp *op);
 
-static gboolean poll_ldap (EBookBackendLDAP *bl);
+static gboolean poll_ldap (gpointer user_data);
 
 static EContact *build_contact_from_entry (EBookBackendLDAP *bl, LDAPMessage *e, GList **existing_objectclasses, gchar **ldap_uid);
 
@@ -1154,10 +1154,11 @@ ldap_op_add (LDAPOp *op,
 
 	bl->priv->active_ops++;
 
-	if (bl->priv->poll_timeout == 0)
-		bl->priv->poll_timeout = g_timeout_add (
-			LDAP_POLL_INTERVAL,
-			(GSourceFunc) poll_ldap, bl);
+	if (bl->priv->poll_timeout == 0) {
+		bl->priv->poll_timeout = e_named_timeout_add (
+			LDAP_POLL_INTERVAL, poll_ldap, bl);
+	}
+
 	g_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 }
@@ -4157,13 +4158,16 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 }
 
 static gboolean
-poll_ldap (EBookBackendLDAP *bl)
+poll_ldap (gpointer user_data)
 {
-	gint            rc;
-	LDAPMessage    *res;
+	EBookBackendLDAP *bl;
+	gint rc;
+	LDAPMessage *res;
 	struct timeval timeout;
 	const gchar *ldap_timeout_string;
 	gboolean again;
+
+	bl = E_BOOK_BACKEND_LDAP (user_data);
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap || !bl->priv->poll_timeout) {

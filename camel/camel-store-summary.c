@@ -899,7 +899,11 @@ store_summary_schedule_save (CamelStoreSummary *summary)
 	if (summary->priv->scheduled_save_id != 0)
 		g_source_remove (summary->priv->scheduled_save_id);
 
-	summary->priv->scheduled_save_id = g_timeout_add_seconds (5, store_summary_save_timeout, summary);
+	summary->priv->scheduled_save_id = g_timeout_add_seconds (
+		5, store_summary_save_timeout, summary);
+	g_source_set_name_by_id (
+		summary->priv->scheduled_save_id,
+		"[camel] store_summary_save_timeout");
 }
 
 static void

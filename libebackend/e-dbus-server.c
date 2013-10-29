@@ -30,6 +30,8 @@
 #include <glib-unix.h>
 #endif
 
+#include <libedataserver/libedataserver.h>
+
 #include <libebackend/e-module.h>
 #include <libebackend/e-extensible.h>
 #include <libebackend/e-backend-enumtypes.h>
@@ -95,8 +97,10 @@ dbus_server_name_lost_cb (GDBusConnection *connection,
 }
 
 static gboolean
-dbus_server_inactivity_timeout_cb (EDBusServer *server)
+dbus_server_inactivity_timeout_cb (gpointer user_data)
 {
+	EDBusServer *server = E_DBUS_SERVER (user_data);
+
 	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 
 	return FALSE;
@@ -104,8 +108,10 @@ dbus_server_inactivity_timeout_cb (EDBusServer *server)
 
 #ifdef G_OS_UNIX
 static gboolean
-dbus_server_hang_up_cb (EDBusServer *server)
+dbus_server_hang_up_cb (gpointer user_data)
 {
+	EDBusServer *server = E_DBUS_SERVER (user_data);
+
 	g_print ("Received hang up signal.\n");
 	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
 
@@ -113,8 +119,10 @@ dbus_server_hang_up_cb (EDBusServer *server)
 }
 
 static gboolean
-dbus_server_terminate_cb (EDBusServer *server)
+dbus_server_terminate_cb (gpointer user_data)
 {
+	EDBusServer *server = E_DBUS_SERVER (user_data);
+
 	g_print ("Received terminate signal.\n");
 	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 
@@ -162,12 +170,13 @@ static void
 dbus_server_bus_acquired (EDBusServer *server,
                           GDBusConnection *connection)
 {
-	if (server->priv->use_count == 0 && !server->priv->wait_for_client)
+	if (server->priv->use_count == 0 && !server->priv->wait_for_client) {
 		server->priv->inactivity_timeout_id =
-			g_timeout_add_seconds (
+			e_named_timeout_add_seconds (
 				INACTIVITY_TIMEOUT, (GSourceFunc)
 				dbus_server_inactivity_timeout_cb,
 				server);
+	}
 }
 
 static void
@@ -367,9 +376,9 @@ e_dbus_server_init (EDBusServer *server)
 
 #ifdef G_OS_UNIX
 	server->priv->hang_up_id = g_unix_signal_add (
-		SIGHUP, (GSourceFunc) dbus_server_hang_up_cb, server);
+		SIGHUP, dbus_server_hang_up_cb, server);
 	server->priv->terminate_id = g_unix_signal_add (
-		SIGTERM, (GSourceFunc) dbus_server_terminate_cb, server);
+		SIGTERM, dbus_server_terminate_cb, server);
 #endif
 }
 
@@ -479,12 +488,13 @@ e_dbus_server_release (EDBusServer *server)
 
 	server->priv->use_count--;
 
-	if (server->priv->use_count == 0)
+	if (server->priv->use_count == 0) {
 		server->priv->inactivity_timeout_id =
-			g_timeout_add_seconds (
+			e_named_timeout_add_seconds (
 				INACTIVITY_TIMEOUT, (GSourceFunc)
 				dbus_server_inactivity_timeout_cb,
 				server);
+	}
 }
 
 /**

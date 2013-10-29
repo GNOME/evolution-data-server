@@ -108,8 +108,9 @@ status_node_unref (StatusNode *node)
 }
 
 static gboolean
-operation_emit_status_cb (StatusNode *node)
+operation_emit_status_cb (gpointer user_data)
 {
+	StatusNode *node = user_data;
 	StatusNode *head_node;
 	gboolean emit_status;
 
@@ -271,18 +272,22 @@ camel_operation_push_message (GCancellable *cancellable,
 	node->message = g_strdup_vprintf (format, ap);
 	node->operation = g_object_ref (operation);
 
-	if (g_queue_is_empty (&operation->priv->status_stack))
+	if (g_queue_is_empty (&operation->priv->status_stack)) {
 		node->source_id = g_idle_add_full (
 			G_PRIORITY_DEFAULT_IDLE,
-			(GSourceFunc) operation_emit_status_cb,
+			operation_emit_status_cb,
 			status_node_ref (node),
 			(GDestroyNotify) status_node_unref);
-	else
+	} else {
 		node->source_id = g_timeout_add_full (
 			G_PRIORITY_DEFAULT, TRANSIENT_DELAY,
-			(GSourceFunc) operation_emit_status_cb,
+			operation_emit_status_cb,
 			status_node_ref (node),
 			(GDestroyNotify) status_node_unref);
+		g_source_set_name_by_id (
+			node->source_id,
+			"[camel] operation_emit_status_cb");
+	}
 
 	g_queue_push_head (&operation->priv->status_stack, node);
 
@@ -336,9 +341,12 @@ camel_operation_pop_message (GCancellable *cancellable)
 
 		node->source_id = g_timeout_add_full (
 			G_PRIORITY_DEFAULT, POP_MESSAGE_DELAY,
-			(GSourceFunc) operation_emit_status_cb,
+			operation_emit_status_cb,
 			status_node_ref (node),
 			(GDestroyNotify) status_node_unref);
+		g_source_set_name_by_id (
+			node->source_id,
+			"[camel] operation_emit_status_cb");
 	}
 
 	UNLOCK ();
@@ -380,12 +388,16 @@ camel_operation_progress (GCancellable *cancellable,
 		node->percent = percent;
 
 		/* Rate limit progress updates. */
-		if (node->source_id == 0)
+		if (node->source_id == 0) {
 			node->source_id = g_timeout_add_full (
 				G_PRIORITY_DEFAULT, PROGRESS_DELAY,
-				(GSourceFunc) operation_emit_status_cb,
+				operation_emit_status_cb,
 				status_node_ref (node),
 				(GDestroyNotify) status_node_unref);
+			g_source_set_name_by_id (
+				node->source_id,
+				"[camel] operation_emit_status_cb");
+		}
 	}
 
 	UNLOCK ();

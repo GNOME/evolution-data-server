@@ -862,10 +862,11 @@ e_book_backend_summary_touch (EBookBackendSummary *summary)
 
 	summary->priv->dirty = TRUE;
 	if (!summary->priv->flush_timeout
-	    && summary->priv->flush_timeout_millis)
-		summary->priv->flush_timeout = g_timeout_add (
+	    && summary->priv->flush_timeout_millis) {
+		summary->priv->flush_timeout = e_named_timeout_add (
 			summary->priv->flush_timeout_millis,
 			summary_flush_func, summary);
+	}
 }
 
 /**

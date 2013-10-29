@@ -844,7 +844,7 @@ authentication_mediator_try_password (ESourceAuthenticator *auth,
 			simple, (GDestroyNotify) NULL);
 	}
 
-	async_context->timeout_id = g_timeout_add_seconds (
+	async_context->timeout_id = e_named_timeout_add_seconds (
 		INACTIVITY_TIMEOUT,
 		authentication_mediator_timeout_cb, simple);
 
@@ -1178,8 +1178,9 @@ e_authentication_mediator_wait_for_client (EAuthenticationMediator *mediator,
 			simple, (GDestroyNotify) NULL);
 	}
 
-	async_context->timeout_id = g_timeout_add_seconds (
-		INACTIVITY_TIMEOUT, authentication_mediator_timeout_cb, simple);
+	async_context->timeout_id = e_named_timeout_add_seconds (
+		INACTIVITY_TIMEOUT,
+		authentication_mediator_timeout_cb, simple);
 
 	g_mutex_lock (&mediator->priv->shared_data_lock);
 

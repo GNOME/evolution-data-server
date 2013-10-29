@@ -185,7 +185,7 @@ cache_reaper_reap_trash_directories (gpointer user_data)
 	/* Always explicitly reschedule since the initial
 	 * interval is different than the regular interval. */
 	extension->reaping_timeout_id =
-		g_timeout_add_seconds (
+		e_named_timeout_add_seconds (
 			REGULAR_INTERVAL_SECONDS,
 			cache_reaper_reap_trash_directories,
 			extension);
@@ -414,12 +414,13 @@ cache_reaper_files_loaded_cb (ESourceRegistryServer *server,
 	cache_reaper_scan_cache_directories (extension);
 
 	/* Schedule the initial reaping. */
-	if (extension->reaping_timeout_id == 0)
+	if (extension->reaping_timeout_id == 0) {
 		extension->reaping_timeout_id =
-			g_timeout_add_seconds (
+			e_named_timeout_add_seconds (
 				INITIAL_INTERVAL_SECONDS,
 				cache_reaper_reap_trash_directories,
 				extension);
+	}
 }
 
 static void

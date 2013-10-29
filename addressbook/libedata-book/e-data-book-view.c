@@ -203,7 +203,7 @@ ensure_pending_flush_timeout (EDataBookView *view)
 	if (view->priv->flush_id > 0)
 		return;
 
-	view->priv->flush_id = g_timeout_add_seconds (
+	view->priv->flush_id = e_named_timeout_add_seconds (
 		THRESHOLD_SECONDS, pending_flush_timeout_cb, view);
 }
 
