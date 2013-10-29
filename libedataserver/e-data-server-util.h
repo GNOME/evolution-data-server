@@ -173,7 +173,7 @@ gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
 	(e_timeout_add_with_name ( \
 		(priority), (interval), \
 		"[" PACKAGE "] " G_STRINGIFY (function), \
-		(function), (data), (notify))
+		(function), (data), (notify)))
 
 #define e_named_timeout_add_seconds(interval, function, data) \
 	(e_timeout_add_seconds_with_name ( \
@@ -185,7 +185,7 @@ gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
 	(e_timeout_add_seconds_with_name ( \
 		(priority), (interval), \
 		"[" PACKAGE "] " G_STRINGIFY (function), \
-		(function), (data), (notify))
+		(function), (data), (notify)))
 
 guint		e_timeout_add_with_name		(gint priority,
 						 guint interval,
