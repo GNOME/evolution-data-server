@@ -2107,3 +2107,153 @@ G_DEFINE_BOXED_TYPE (
 	e_named_parameters,
 	e_named_parameters_ref,
 	e_named_parameters_unref);
+
+/**
+ * e_named_timeout_add:
+ * @interval: the time between calls to the function, in milliseconds
+ *            (1/1000ths of a second)
+ * @function: function to call
+ * @data: data to pass to @function
+ *
+ * Similar to g_timeout_add(), but also names the #GSource for use in
+ * debugging and profiling.  The name is formed from @function and the
+ * <literal>PACKAGE</literal> definintion from a &lt;config.h&gt; file.
+ *
+ * Returns: the ID (greater than 0) of the event source
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * e_named_timeout_add_full:
+ * @priority: the priority of the timeout source, typically in the
+ *            range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH
+ * @interval: the time between calls to the function, in milliseconds
+ *            (1/1000ths of a second)
+ * @function: function to call
+ * @data: data to pass to @function
+ * @notify: function to call when the timeout is removed, or %NULL
+ *
+ * Similar to g_timeout_add_full(), but also names the #GSource for use
+ * in debugging and profiling.  The name is formed from @function and the
+ * <literal>PACKAGE</literal> definition from a &lt;config.h&gt; file.
+ *
+ * Returns: the ID (greater than 0) of the event source
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * e_named_timeout_add_seconds:
+ * @interval: the time between calls to the function, in seconds
+ * @function: function to call
+ * @data: data to pass to @function
+ *
+ * Similar to g_timeout_add_seconds(), but also names the #GSource for use
+ * in debugging and profiling.  The name is formed from @function and the
+ * <literal>PACKAGE</literal> definition from a &lt;config.h&gt; file.
+ *
+ * Returns: the ID (greater than 0) of the event source
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * e_named_timeout_add_seconds_full:
+ * @priority: the priority of the timeout source, typically in the
+ *            range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH
+ * @interval: the time between calls to the function, in seconds
+ * @function: function to call
+ * @data: data to pass to @function
+ * @notify: function to call when the timeout is removed, or %NULL
+ *
+ * Similar to g_timeout_add_seconds_full(), but also names the #GSource for
+ * use in debugging and profiling.  The name is formed from @function and the
+ * <literal>PACKAGE</literal> definition from a &lt;config.h&gt; file.
+ *
+ * Returns: the ID (greater than 0) of the event source
+ *
+ * Since: 3.12
+ **/
+
+/**
+ * e_timeout_add_with_name:
+ * @priority: the priority of the timeout source, typically in the
+ *            range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH
+ * @interval: the time between calls to the function, in milliseconds
+ *            (1/1000ths of a second)
+ * @name: (allow-none): debug name for the source
+ * @function: function to call
+ * @data: data to pass to @function
+ * @notify: (allow-none): function to call when the timeout is removed,
+ *          or %NULL
+ *
+ * Similar to g_timeout_add_full(), but also names the #GSource as @name.
+ *
+ * You might find e_named_timeout_add() or e_named_timeout_add_full() more
+ * convenient.  Those macros name the #GSource implicitly.
+ *
+ * Returns: the ID (greather than 0) of the event source
+ *
+ * Since: 3.12
+ **/
+guint
+e_timeout_add_with_name (gint priority,
+                         guint interval,
+                         const gchar *name,
+                         GSourceFunc function,
+                         gpointer data,
+                         GDestroyNotify notify)
+{
+	guint tag;
+
+	g_return_val_if_fail (function != NULL, 0);
+
+	tag = g_timeout_add_full (
+		priority, interval, function, data, notify);
+	g_source_set_name_by_id (tag, name);
+
+	return tag;
+}
+
+/**
+ * e_timeout_add_seconds_with_name:
+ * @priority: the priority of the timeout source, typically in the
+ *            range between #G_PRIORITY_DEFAULT and #G_PRIORITY_HIGH
+ * @interval: the time between calls to the function, in seconds
+ * @name: (allow-none): debug name for the source
+ * @function: function to call
+ * @data: data to pass to @function
+ * @notify: (allow-none): function to call when the timeout is removed,
+ *          or %NULL
+ *
+ * Similar to g_timeout_add_seconds_full(), but also names the #GSource as
+ * %name.
+ *
+ * You might find e_named_timeout_add_seconds() or
+ * e_named_timeout_add_seconds_full() more convenient.  Those macros name
+ * the #GSource implicitly.
+ *
+ * Returns: the ID (greater than 0) of the event source
+ *
+ * Since: 3.12
+ **/
+guint
+e_timeout_add_seconds_with_name (gint priority,
+                                 guint interval,
+                                 const gchar *name,
+                                 GSourceFunc function,
+                                 gpointer data,
+                                 GDestroyNotify notify)
+{
+	guint tag;
+
+	g_return_val_if_fail (function != NULL, 0);
+
+	tag = g_timeout_add_seconds_full (
+		priority, interval, function, data, notify);
+	g_source_set_name_by_id (tag, name);
+
+	return tag;
+}
+

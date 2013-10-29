@@ -1335,6 +1335,12 @@ e_named_parameters_set
 e_named_parameters_get
 e_named_parameters_to_strv
 e_named_parameters_test
+e_named_timeout_add
+e_named_timeout_add_full
+e_named_timeout_add_seconds
+e_named_timeout_add_seconds_full
+e_timeout_add_with_name
+e_timeout_add_seconds_with_name
 <SUBSECTION Deprecated>
 e_util_free_string_slist
 e_util_free_object_slist
