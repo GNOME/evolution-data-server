@@ -30,6 +30,8 @@
 #include <camel/camel.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-imapx-store.h"
+
 static guint imapx_url_hash (gconstpointer key);
 static gint  imapx_url_equal (gconstpointer a, gconstpointer b);
 

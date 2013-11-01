@@ -17,15 +17,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
-#error "Only <camel/camel.h> can be included directly."
-#endif
-
 #ifndef CAMEL_IMAPX_UTILS_H
 #define CAMEL_IMAPX_UTILS_H
 
-#include <camel/camel-store.h>
-#include <camel/camel-imapx-mailbox.h>
+#include <camel/camel.h>
+
+#include "camel-imapx-mailbox.h"
 
 G_BEGIN_DECLS
 

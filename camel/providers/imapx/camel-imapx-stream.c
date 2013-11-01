@@ -31,7 +31,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-stream-mem.h>
+#include <camel/camel.h>
 
 #include "camel-imapx-utils.h"
 #include "camel-imapx-stream.h"

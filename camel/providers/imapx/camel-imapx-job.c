@@ -20,7 +20,7 @@
 
 #include <string.h>
 
-#include <camel/camel-imapx-folder.h>
+#include "camel-imapx-folder.h"
 
 typedef struct _CamelIMAPXRealJob CamelIMAPXRealJob;
 

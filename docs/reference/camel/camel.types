@@ -1,4 +1,17 @@
 #include <camel/camel.h>
+#include <imapx/camel-imapx-folder.h>
+#include <imapx/camel-imapx-list-response.h>
+#include <imapx/camel-imapx-mailbox.h>
+#include <imapx/camel-imapx-namespace.h>
+#include <imapx/camel-imapx-namespace-response.h>
+#include <imapx/camel-imapx-search.h>
+#include <imapx/camel-imapx-server.h>
+#include <imapx/camel-imapx-settings.h>
+#include <imapx/camel-imapx-status-response.h>
+#include <imapx/camel-imapx-store.h>
+#include <imapx/camel-imapx-store-summary.h>
+#include <imapx/camel-imapx-stream.h>
+#include <imapx/camel-imapx-summary.h>
 
 camel_address_get_type
 camel_block_file_get_type

@@ -16,15 +16,12 @@
  *
  */
 
-#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
-#error "Only <camel/camel.h> can be included directly."
-#endif
-
 #ifndef CAMEL_IMAPX_SEARCH_H
 #define CAMEL_IMAPX_SEARCH_H
 
-#include <camel/camel-folder-search.h>
-#include <camel/camel-imapx-server.h>
+#include <camel/camel.h>
+
+#include "camel-imapx-server.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_SEARCH \

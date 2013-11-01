@@ -16,15 +16,12 @@
  *
  */
 
-#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
-#error "Only <camel/camel.h> can be included directly."
-#endif
-
 #ifndef CAMEL_IMAPX_LIST_RESPONSE_H
 #define CAMEL_IMAPX_LIST_RESPONSE_H
 
 #include <gio/gio.h>
-#include <camel/camel-imapx-stream.h>
+
+#include "camel-imapx-stream.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_LIST_RESPONSE \

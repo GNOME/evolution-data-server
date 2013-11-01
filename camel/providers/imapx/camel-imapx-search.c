@@ -18,8 +18,10 @@
 
 #include "camel-imapx-search.h"
 
-#include "camel-offline-store.h"
-#include "camel-search-private.h"
+#include <camel/camel.h>
+#include <camel/camel-search-private.h>
+
+#include "camel-imapx-folder.h"
 
 #define CAMEL_IMAPX_SEARCH_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

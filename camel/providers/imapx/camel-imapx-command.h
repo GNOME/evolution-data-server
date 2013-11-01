@@ -16,15 +16,11 @@
  *
  */
 
-#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
-#error "Only <camel/camel.h> can be included directly."
-#endif
-
 #ifndef CAMEL_IMAPX_COMMAND_H
 #define CAMEL_IMAPX_COMMAND_H
 
-#include <camel/camel-imapx-mailbox.h>
-#include <camel/camel-imapx-utils.h>
+#include "camel-imapx-mailbox.h"
+#include "camel-imapx-utils.h"
 
 #define CAMEL_IS_IMAPX_COMMAND(command) \
 	(camel_imapx_command_check (command))

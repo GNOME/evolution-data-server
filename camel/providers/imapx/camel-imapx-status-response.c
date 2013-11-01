@@ -28,7 +28,7 @@
 
 #include "camel-imapx-status-response.h"
 
-#include <camel/camel-imapx-utils.h>
+#include "camel-imapx-utils.h"
 
 #define CAMEL_IMAPX_STATUS_RESPONSE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

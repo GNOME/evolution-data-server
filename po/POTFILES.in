@@ -61,11 +61,6 @@ camel/camel-folder-summary.c
 camel/camel-folder-thread.c
 camel/camel-gpg-context.c
 camel/camel-html-parser.c
-camel/camel-imapx-command.c
-camel/camel-imapx-folder.c
-camel/camel-imapx-server.c
-camel/camel-imapx-store.c
-camel/camel-imapx-stream.c
 camel/camel-index.c
 camel/camel-index-control.c
 camel/camel-internet-address.c
@@ -140,7 +135,12 @@ camel/camel-vee-folder.c
 camel/camel-vee-store.c
 camel/camel-vee-summary.c
 camel/camel-vtrash-folder.c
+camel/providers/imapx/camel-imapx-command.c
+camel/providers/imapx/camel-imapx-folder.c
 camel/providers/imapx/camel-imapx-provider.c
+camel/providers/imapx/camel-imapx-server.c
+camel/providers/imapx/camel-imapx-store.c
+camel/providers/imapx/camel-imapx-stream.c
 camel/providers/local/camel-local-folder.c
 camel/providers/local/camel-local-provider.c
 camel/providers/local/camel-local-store.c
