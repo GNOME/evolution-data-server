@@ -236,7 +236,7 @@ camel_gethostbyname_r (const gchar *name,
 		return ERANGE;
 
 	/* h_name */
-	strcpy (buf, res->ai_canonname);
+	g_strlcpy (buf, res->ai_canonname, buflen);
 	host->h_name = buf;
 	buf += len;
 

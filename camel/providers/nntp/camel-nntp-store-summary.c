@@ -180,11 +180,13 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
 	const gchar *p;
 	gint state = 0;
 	gchar *subpath, *last = NULL;
+	gsize subpath_len = 0;
 	CamelStoreInfo *si;
 
 	/* check to see if we have a subpath of path already defined */
-	subpath = g_alloca (strlen (path) + 1);
-	strcpy (subpath, path);
+	subpath_len = strlen (path) + 1;
+	subpath = g_alloca (subpath_len);
+	g_strlcpy (subpath, path, subpath_len);
 	do {
 		si = camel_store_summary_path ((CamelStoreSummary *) s, subpath);
 		if (si == NULL) {
@@ -257,7 +259,7 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 
 	len = strlen (full);
 	full_name = g_alloca (len + 1);
-	strcpy (full_name, full);
+	g_strlcpy (full_name, full, len + 1);
 	if (full_name[len - 1] == dir_sep)
 		full_name[len - 1] = 0;
 

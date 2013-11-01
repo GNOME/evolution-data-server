@@ -150,9 +150,11 @@ camel_mempool_strdup (CamelMemPool *pool,
                       const gchar *str)
 {
 	gchar *out;
+	gsize out_len;
 
-	out = camel_mempool_alloc (pool, strlen (str) + 1);
-	strcpy (out, str);
+	out_len = strlen (str) + 1;
+	out = camel_mempool_alloc (pool, out_len);
+	g_strlcpy (out, str, out_len);
 
 	return out;
 }

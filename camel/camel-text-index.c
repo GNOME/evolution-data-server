@@ -457,7 +457,7 @@ text_index_compress_nosync (CamelIndex *idx)
 	newpath = alloca (i);
 	savepath = alloca (i);
 
-	strcpy (oldpath, idx->path);
+	g_strlcpy (oldpath, idx->path, i);
 	oldpath[strlen (oldpath) - strlen (".index")] = 0;
 
 	tmp_name (oldpath, newpath, i);

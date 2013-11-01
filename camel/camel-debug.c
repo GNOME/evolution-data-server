@@ -98,6 +98,7 @@ gboolean camel_debug (const gchar *mode)
 	if (debug_table) {
 		gchar *colon;
 		gchar *fallback;
+		gsize fallback_len;
 
 		if (g_hash_table_lookup (debug_table, mode))
 			return TRUE;
@@ -105,8 +106,9 @@ gboolean camel_debug (const gchar *mode)
 		/* Check for fully qualified debug */
 		colon = strchr (mode, ':');
 		if (colon) {
-			fallback = g_alloca (strlen (mode) + 1);
-			strcpy (fallback, mode);
+			fallback_len = strlen (mode) + 1;
+			fallback = g_alloca (fallback_len);
+			g_strlcpy (fallback, mode, fallback_len);
 			colon = (colon - mode) + fallback;
 			/* Now check 'module[:*]' */
 			*colon = 0;
