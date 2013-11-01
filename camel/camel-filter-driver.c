@@ -170,7 +170,7 @@ static struct {
 	{ "only-once",         (CamelSExpFunc) do_only_once, 0 }
 };
 
-G_DEFINE_TYPE (CamelFilterDriver, camel_filter_driver, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelFilterDriver, camel_filter_driver, G_TYPE_OBJECT)
 
 static void
 free_hash_strings (gpointer key,

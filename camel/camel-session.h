@@ -71,7 +71,7 @@ enum {
 };
 
 struct _CamelSession {
-	CamelObject parent;
+	GObject parent;
 	CamelSessionPrivate *priv;
 };
 
@@ -94,7 +94,7 @@ typedef void	(*CamelSessionCallback)		(CamelSession *session,
 						 GError **error);
 
 struct _CamelSessionClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	CamelService *	(*add_service)		(CamelSession *session,
 						 const gchar *uid,

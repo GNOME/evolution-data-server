@@ -72,7 +72,7 @@ enum {
 	PROP_SERVICE_NAME
 };
 
-G_DEFINE_ABSTRACT_TYPE (CamelSasl, camel_sasl, CAMEL_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE (CamelSasl, camel_sasl, G_TYPE_OBJECT)
 
 static void
 async_context_free (AsyncContext *async_context)

@@ -69,7 +69,7 @@ static gint block_file_threshhold = 10;
 static gint sync_nolock (CamelBlockFile *bs);
 static gint sync_block_nolock (CamelBlockFile *bs, CamelBlock *bl);
 
-G_DEFINE_TYPE (CamelBlockFile, camel_block_file, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelBlockFile, camel_block_file, G_TYPE_OBJECT)
 
 static gint
 block_file_validate_root (CamelBlockFile *bs)
@@ -856,7 +856,7 @@ static GQueue key_file_active_list = G_QUEUE_INIT;
 static gint key_file_count = 0;
 static const gint key_file_threshhold = 10;
 
-G_DEFINE_TYPE (CamelKeyFile, camel_key_file, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelKeyFile, camel_key_file, G_TYPE_OBJECT)
 
 static void
 key_file_finalize (GObject *object)

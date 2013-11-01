@@ -156,7 +156,7 @@ enum {
 	PROP_NEED_PREVIEW
 };
 
-G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
 static gboolean
 remove_each_item (gpointer uid,

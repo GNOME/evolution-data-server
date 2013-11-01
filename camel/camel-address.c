@@ -20,7 +20,7 @@
 
 #include "camel-address.h"
 
-G_DEFINE_TYPE (CamelAddress, camel_address, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelAddress, camel_address, G_TYPE_OBJECT)
 
 static void
 address_finalize (GObject *object)

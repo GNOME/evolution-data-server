@@ -30,7 +30,6 @@
 
 #include <camel/camel-enums.h>
 #include <camel/camel-mime-parser.h>
-#include <camel/camel-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STORE_SUMMARY \
@@ -77,7 +76,7 @@ struct _CamelStoreInfo {
 };
 
 struct _CamelStoreSummary {
-	CamelObject parent;
+	GObject parent;
 	CamelStoreSummaryPrivate *priv;
 
 	GPtrArray *folders;	/* CamelStoreInfo's */
@@ -85,7 +84,7 @@ struct _CamelStoreSummary {
 };
 
 struct _CamelStoreSummaryClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* size of memory objects */
 	gsize store_info_size;

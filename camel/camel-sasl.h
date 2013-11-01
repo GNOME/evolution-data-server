@@ -27,7 +27,6 @@
 #ifndef CAMEL_SASL_H
 #define CAMEL_SASL_H
 
-#include <camel/camel-object.h>
 #include <camel/camel-service.h>
 
 /* Standard GObject macros */
@@ -56,12 +55,12 @@ typedef struct _CamelSaslClass CamelSaslClass;
 typedef struct _CamelSaslPrivate CamelSaslPrivate;
 
 struct _CamelSasl {
-	CamelObject parent;
+	GObject parent;
 	CamelSaslPrivate *priv;
 };
 
 struct _CamelSaslClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Auth Mechanism Details */
 	CamelServiceAuthType *auth_type;

@@ -31,8 +31,9 @@
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H
 
+#include <glib-object.h>
+
 #include <camel/camel-enums.h>
-#include <camel/camel-object.h>
 #include <camel/camel-object-bag.h>
 #include <camel/camel-url.h>
 

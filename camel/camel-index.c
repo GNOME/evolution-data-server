@@ -51,7 +51,7 @@ struct _CamelIndexPrivate {
 /* CamelIndex */
 /* ********************************************************************** */
 
-G_DEFINE_TYPE (CamelIndex, camel_index, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelIndex, camel_index, G_TYPE_OBJECT)
 
 static void
 index_finalize (GObject *object)
@@ -320,7 +320,7 @@ camel_index_words (CamelIndex *idx)
 /* CamelIndexName */
 /* ********************************************************************** */
 
-G_DEFINE_TYPE (CamelIndexName, camel_index_name, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelIndexName, camel_index_name, G_TYPE_OBJECT)
 
 static void
 index_name_dispose (GObject *object)
@@ -390,7 +390,7 @@ camel_index_name_add_buffer (CamelIndexName *idn,
 /* CamelIndexCursor */
 /* ********************************************************************** */
 
-G_DEFINE_TYPE (CamelIndexCursor, camel_index_cursor, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelIndexCursor, camel_index_cursor, G_TYPE_OBJECT)
 
 static void
 index_cursor_dispose (GObject *object)

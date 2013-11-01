@@ -26,7 +26,7 @@
 #ifndef CAMEL_ADDRESS_H
 #define CAMEL_ADDRESS_H
 
-#include <camel/camel-object.h>
+#include <glib-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_ADDRESS \
@@ -54,7 +54,7 @@ typedef struct _CamelAddressClass CamelAddressClass;
 typedef struct _CamelAddressPrivate CamelAddressPrivate;
 
 struct _CamelAddress {
-	CamelObject parent;
+	GObject parent;
 
 	GPtrArray *addresses;
 
@@ -62,7 +62,7 @@ struct _CamelAddress {
 };
 
 struct _CamelAddressClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	gint		(*decode)		(CamelAddress *addr,
 						 const gchar *raw);

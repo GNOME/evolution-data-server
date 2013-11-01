@@ -522,7 +522,7 @@ static void	imapx_maybe_select		(CamelIMAPXServer *is,
 						 CamelIMAPXJob *job,
 						 CamelIMAPXMailbox *mailbox);
 
-G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, G_TYPE_OBJECT)
 
 static const CamelIMAPXUntaggedRespHandlerDesc *
 replace_untagged_descriptor (GHashTable *untagged_handlers,

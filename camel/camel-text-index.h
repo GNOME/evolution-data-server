@@ -26,8 +26,7 @@
 #ifndef CAMEL_TEXT_INDEX_H
 #define CAMEL_TEXT_INDEX_H
 
-#include <camel/camel-object.h>
-#include "camel-index.h"
+#include <camel/camel-index.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_TEXT_INDEX \

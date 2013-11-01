@@ -200,7 +200,7 @@ static struct {
 	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
 };
 
-G_DEFINE_TYPE (CamelFolderSearch, camel_folder_search, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelFolderSearch, camel_folder_search, G_TYPE_OBJECT)
 
 /* this is just to OR results together */
 struct IterData {

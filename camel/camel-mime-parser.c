@@ -180,7 +180,7 @@ static gchar *states[] = {
 };
 #endif
 
-G_DEFINE_TYPE (CamelMimeParser, camel_mime_parser, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelMimeParser, camel_mime_parser, G_TYPE_OBJECT)
 
 static void
 mime_parser_finalize (GObject *object)

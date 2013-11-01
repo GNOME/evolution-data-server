@@ -55,7 +55,7 @@ struct _CamelPartitionTablePrivate {
 	GMutex lock;	/* for locking partition */
 };
 
-G_DEFINE_TYPE (CamelPartitionTable, camel_partition_table, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelPartitionTable, camel_partition_table, G_TYPE_OBJECT)
 
 static void
 partition_table_finalize (GObject *object)
@@ -630,7 +630,7 @@ struct _CamelKeyTablePrivate {
 	GMutex lock;	/* for locking key */
 };
 
-G_DEFINE_TYPE (CamelKeyTable, camel_key_table, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelKeyTable, camel_key_table, G_TYPE_OBJECT)
 
 static void
 key_table_finalize (GObject *object)

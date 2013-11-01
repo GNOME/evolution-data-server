@@ -25,7 +25,7 @@
 #ifndef CAMEL_INDEX_H
 #define CAMEL_INDEX_H
 
-#include <camel/camel-object.h>
+#include <glib-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_INDEX \
@@ -101,14 +101,14 @@ typedef gchar * (*CamelIndexNorm)(CamelIndex *index, const gchar *word, gpointer
 /* ********************************************************************** */
 
 struct _CamelIndexCursor {
-	CamelObject parent;
+	GObject parent;
 	CamelIndexCursorPrivate *priv;
 
 	CamelIndex *index;
 };
 
 struct _CamelIndexCursorClass {
-	CamelObjectClass parent;
+	GObjectClass parent;
 
 	const gchar * (*next) (CamelIndexCursor *idc);
 };
@@ -119,7 +119,7 @@ const gchar        *camel_index_cursor_next (CamelIndexCursor *idc);
 /* ********************************************************************** */
 
 struct _CamelIndexName {
-	CamelObject parent;
+	GObject parent;
 	CamelIndexNamePrivate *priv;
 
 	CamelIndex *index;
@@ -131,7 +131,7 @@ struct _CamelIndexName {
 };
 
 struct _CamelIndexNameClass {
-	CamelObjectClass parent;
+	GObjectClass parent;
 
 	void (*add_word)(CamelIndexName *name, const gchar *word);
 	gsize (*add_buffer)(CamelIndexName *name, const gchar *buffer, gsize len);
@@ -144,7 +144,7 @@ gsize             camel_index_name_add_buffer (CamelIndexName *name, const gchar
 /* ********************************************************************** */
 
 struct _CamelIndex {
-	CamelObject parent;
+	GObject parent;
 	CamelIndexPrivate *priv;
 
 	gchar *path;
@@ -157,7 +157,7 @@ struct _CamelIndex {
 };
 
 struct _CamelIndexClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	gint		(*sync)			(CamelIndex *index);
 	gint		(*compress)		(CamelIndex *index);

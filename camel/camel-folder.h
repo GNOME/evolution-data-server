@@ -31,6 +31,7 @@
 
 #include <camel/camel-enums.h>
 #include <camel/camel-folder-summary.h>
+#include <camel/camel-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_FOLDER \

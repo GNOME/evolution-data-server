@@ -34,6 +34,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-data-cache.h"
+#include "camel-object.h"
 #include "camel-object-bag.h"
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"
@@ -68,7 +69,7 @@ enum {
 	PROP_PATH
 };
 
-G_DEFINE_TYPE (CamelDataCache, camel_data_cache, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelDataCache, camel_data_cache, G_TYPE_OBJECT)
 
 static void
 data_cache_set_property (GObject *object,

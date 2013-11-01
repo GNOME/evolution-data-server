@@ -32,7 +32,7 @@
 #ifndef CAMEL_HTML_PARSER_H
 #define CAMEL_HTML_PARSER_H
 
-#include <camel/camel-object.h>
+#include <glib-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_HTML_PARSER \
@@ -78,12 +78,12 @@ typedef enum _camel_html_parser_t {
 } camel_html_parser_t;
 
 struct _CamelHTMLParser {
-	CamelObject parent;
+	GObject parent;
 	CamelHTMLParserPrivate *priv;
 };
 
 struct _CamelHTMLParserClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 GType		camel_html_parser_get_type	(void);

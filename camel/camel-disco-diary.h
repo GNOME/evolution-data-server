@@ -68,7 +68,7 @@ typedef enum {
 } CamelDiscoDiaryAction;
 
 struct _CamelDiscoDiary {
-	CamelObject parent;
+	GObject parent;
 
 	CamelDiscoStore *store;
 	FILE *file;
@@ -76,7 +76,7 @@ struct _CamelDiscoDiary {
 };
 
 struct _CamelDiscoDiaryClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 GType		camel_disco_diary_get_type	(void);

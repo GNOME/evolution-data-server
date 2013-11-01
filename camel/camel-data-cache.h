@@ -55,12 +55,12 @@ typedef struct _CamelDataCacheClass CamelDataCacheClass;
 typedef struct _CamelDataCachePrivate CamelDataCachePrivate;
 
 struct _CamelDataCache {
-	CamelObject parent;
+	GObject parent;
 	CamelDataCachePrivate *priv;
 };
 
 struct _CamelDataCacheClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 GType		camel_data_cache_get_type	(void);

@@ -41,7 +41,7 @@ struct _CamelMimeFilterPrivate {
 #define PRE_HEAD (64)
 #define BACK_HEAD (64)
 
-G_DEFINE_ABSTRACT_TYPE (CamelMimeFilter, camel_mime_filter, CAMEL_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE (CamelMimeFilter, camel_mime_filter, G_TYPE_OBJECT)
 
 static void
 mime_filter_finalize (GObject *object)

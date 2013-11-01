@@ -110,7 +110,7 @@ struct _CamelPOP3Command {
 };
 
 struct _CamelPOP3Engine {
-	CamelObject parent;
+	GObject parent;
 
 	guint32 flags;
 
@@ -136,7 +136,7 @@ struct _CamelPOP3Engine {
 };
 
 struct _CamelPOP3EngineClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 GType		camel_pop3_engine_get_type	(void);

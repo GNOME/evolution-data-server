@@ -55,6 +55,8 @@ struct _AsyncContext {
 	gssize bytes_written;
 };
 
+G_DEFINE_TYPE (CamelDataWrapper, camel_data_wrapper, G_TYPE_OBJECT)
+
 static void
 async_context_free (AsyncContext *async_context)
 {
@@ -63,8 +65,6 @@ async_context_free (AsyncContext *async_context)
 
 	g_slice_free (AsyncContext, async_context);
 }
-
-G_DEFINE_TYPE (CamelDataWrapper, camel_data_wrapper, CAMEL_TYPE_OBJECT)
 
 static void
 data_wrapper_dispose (GObject *object)

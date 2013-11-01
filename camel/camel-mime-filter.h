@@ -29,7 +29,8 @@
 #define CAMEL_MIME_FILTER_H
 
 #include <sys/types.h>
-#include <camel/camel-object.h>
+
+#include <glib-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_MIME_FILTER \
@@ -57,7 +58,7 @@ typedef struct _CamelMimeFilterClass CamelMimeFilterClass;
 typedef struct _CamelMimeFilterPrivate CamelMimeFilterPrivate;
 
 struct _CamelMimeFilter {
-	CamelObject parent;
+	GObject parent;
 	CamelMimeFilterPrivate *priv;
 
 	gchar *outreal;		/* real malloc'd buffer */
@@ -72,7 +73,7 @@ struct _CamelMimeFilter {
 };
 
 struct _CamelMimeFilterClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void		(*filter)		(CamelMimeFilter *filter,
 						 const gchar *in,

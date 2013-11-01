@@ -31,7 +31,8 @@
 
 #include <stdarg.h>
 #include <unistd.h>
-#include <camel/camel-object.h>
+
+#include <gio/gio.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STREAM \
@@ -59,14 +60,14 @@ typedef struct _CamelStreamClass CamelStreamClass;
 typedef struct _CamelStreamPrivate CamelStreamPrivate;
 
 struct _CamelStream {
-	CamelObject parent;
+	GObject parent;
 	CamelStreamPrivate *priv;
 
 	gboolean eos;
 };
 
 struct _CamelStreamClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	gssize		(*read)			(CamelStream *stream,
 						 gchar *buffer,

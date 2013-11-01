@@ -49,7 +49,7 @@ static void	camel_stream_seekable_init	(GSeekableIface *interface);
 G_DEFINE_TYPE_WITH_CODE (
 	CamelStream,
 	camel_stream,
-	CAMEL_TYPE_OBJECT,
+	G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_SEEKABLE,
 		camel_stream_seekable_init))

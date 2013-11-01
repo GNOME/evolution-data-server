@@ -43,7 +43,7 @@
 
 #define d(x)
 
-G_DEFINE_TYPE (CamelDiscoDiary, camel_disco_diary, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelDiscoDiary, camel_disco_diary, G_TYPE_OBJECT)
 
 static void
 unref_folder (gpointer key,

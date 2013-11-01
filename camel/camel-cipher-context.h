@@ -117,12 +117,12 @@ struct _CamelCipherValidity {
 };
 
 struct _CamelCipherContext {
-	CamelObject parent;
+	GObject parent;
 	CamelCipherContextPrivate *priv;
 };
 
 struct _CamelCipherContextClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* these MUST be set by implementors */
 	const gchar *sign_protocol;

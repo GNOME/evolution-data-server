@@ -60,7 +60,7 @@ typedef struct _CamelDataWrapperClass CamelDataWrapperClass;
 typedef struct _CamelDataWrapperPrivate CamelDataWrapperPrivate;
 
 struct _CamelDataWrapper {
-	CamelObject parent;
+	GObject parent;
 	CamelDataWrapperPrivate *priv;
 
 	CamelTransferEncoding encoding;
@@ -71,7 +71,7 @@ struct _CamelDataWrapper {
 };
 
 struct _CamelDataWrapperClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Non-Blocking Methods */
 	void		(*set_mime_type)	(CamelDataWrapper *data_wrapper,

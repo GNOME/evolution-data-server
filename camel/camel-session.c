@@ -112,7 +112,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelSession, camel_session, G_TYPE_OBJECT)
 
 static void
 async_context_free (AsyncContext *async_context)

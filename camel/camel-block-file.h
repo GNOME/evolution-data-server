@@ -25,9 +25,10 @@
 #ifndef CAMEL_BLOCK_FILE_H
 #define CAMEL_BLOCK_FILE_H
 
-#include <camel/camel-object.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+#include <glib-object.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_BLOCK_FILE \
@@ -111,7 +112,7 @@ struct _CamelBlock {
 };
 
 struct _CamelBlockFile {
-	CamelObject parent;
+	GObject parent;
 	CamelBlockFilePrivate *priv;
 
 	gchar version[8];
@@ -132,7 +133,7 @@ struct _CamelBlockFile {
 };
 
 struct _CamelBlockFileClass {
-	CamelObjectClass parent;
+	GObjectClass parent_class;
 
 	gint (*validate_root)(CamelBlockFile *);
 	gint (*init_root)(CamelBlockFile *);
@@ -170,7 +171,7 @@ typedef struct _CamelKeyFileClass CamelKeyFileClass;
 typedef struct _CamelKeyFilePrivate CamelKeyFilePrivate;
 
 struct _CamelKeyFile {
-	CamelObject parent;
+	GObject parent;
 	CamelKeyFilePrivate *priv;
 
 	FILE *fp;
@@ -180,7 +181,7 @@ struct _CamelKeyFile {
 };
 
 struct _CamelKeyFileClass {
-	CamelObjectClass parent;
+	GObjectClass parent_class;
 };
 
 GType      camel_key_file_get_type (void);

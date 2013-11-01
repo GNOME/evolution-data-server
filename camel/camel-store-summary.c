@@ -72,7 +72,7 @@ struct _CamelStoreSummaryPrivate {
 	guint scheduled_save_id;
 };
 
-G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, G_TYPE_OBJECT)
 
 static void
 store_summary_finalize (GObject *object)

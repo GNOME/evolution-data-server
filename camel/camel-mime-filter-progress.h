@@ -27,6 +27,8 @@
 #ifndef CAMEL_MIME_FILTER_PROGRESS_H
 #define CAMEL_MIME_FILTER_PROGRESS_H
 
+#include <gio/gio.h>
+
 #include <camel/camel-mime-filter.h>
 
 /* Standard GObject macros */

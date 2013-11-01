@@ -56,7 +56,7 @@ typedef struct _CamelFolderSearchClass CamelFolderSearchClass;
 typedef struct _CamelFolderSearchPrivate CamelFolderSearchPrivate;
 
 struct _CamelFolderSearch {
-	CamelObject parent;
+	GObject parent;
 	CamelFolderSearchPrivate *priv;
 
 	CamelSExp *sexp;		/* s-exp evaluator */
@@ -72,7 +72,7 @@ struct _CamelFolderSearch {
 };
 
 struct _CamelFolderSearchClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* General bool/comparison options.  Usually these won't need
 	 * to be set, unless it is compiling into another language. */

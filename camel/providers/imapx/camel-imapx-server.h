@@ -98,7 +98,7 @@ struct _CamelIMAPXUntaggedRespHandlerDesc {
 };
 
 struct _CamelIMAPXServer {
-	CamelObject parent;
+	GObject parent;
 	CamelIMAPXServerPrivate *priv;
 
 	/* Info about the current connection */
@@ -126,7 +126,7 @@ struct _CamelIMAPXServer {
 };
 
 struct _CamelIMAPXServerClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	gchar tagprefix;
 

@@ -43,7 +43,7 @@ extern CamelServiceAuthType camel_pop3_apop_authtype;
 
 static gboolean get_capabilities (CamelPOP3Engine *pe, GCancellable *cancellable, GError **error);
 
-G_DEFINE_TYPE (CamelPOP3Engine, camel_pop3_engine, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelPOP3Engine, camel_pop3_engine, G_TYPE_OBJECT)
 
 static void
 pop3_engine_dispose (GObject *object)

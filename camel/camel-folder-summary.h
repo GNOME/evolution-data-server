@@ -226,7 +226,7 @@ typedef enum {
 } CamelFolderSummaryFlags;
 
 struct _CamelFolderSummary {
-	CamelObject parent;
+	GObject parent;
 	CamelFolderSummaryPrivate *priv;
 
 	/* header info */
@@ -245,7 +245,7 @@ struct _CamelMIRecord;
 struct _CamelFIRecord;
 
 struct _CamelFolderSummaryClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* sizes of memory objects */
 	gsize message_info_size;

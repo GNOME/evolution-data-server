@@ -27,6 +27,7 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "camel-html-parser.h"
@@ -58,7 +59,7 @@ static CamelHTMLParserPrivate *tokenize_init (void);
 static void tokenize_free (CamelHTMLParserPrivate *p);
 static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp);
 
-G_DEFINE_TYPE (CamelHTMLParser, camel_html_parser, CAMEL_TYPE_OBJECT)
+G_DEFINE_TYPE (CamelHTMLParser, camel_html_parser, G_TYPE_OBJECT)
 
 /* ********************************************************************** */
 

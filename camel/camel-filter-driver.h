@@ -57,12 +57,12 @@ typedef struct _CamelFilterDriverClass CamelFilterDriverClass;
 typedef struct _CamelFilterDriverPrivate CamelFilterDriverPrivate;
 
 struct _CamelFilterDriver {
-	CamelObject parent;
+	GObject parent;
 	CamelFilterDriverPrivate *priv;
 };
 
 struct _CamelFilterDriverClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 /* FIXME: this maybe should change... */

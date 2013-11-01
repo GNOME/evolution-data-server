@@ -26,8 +26,6 @@
 #ifndef CAMEL_MIME_PARSER_H
 #define CAMEL_MIME_PARSER_H
 
-#include <camel/camel-object.h>
-
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-stream.h>
@@ -83,12 +81,12 @@ typedef enum _camel_mime_parser_state_t {
 } camel_mime_parser_state_t;
 
 struct _CamelMimeParser {
-	CamelObject parent;
+	GObject parent;
 	CamelMimeParserPrivate *priv;
 };
 
 struct _CamelMimeParserClass {
-	CamelObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void (*message) (CamelMimeParser *parser, gpointer headers);
 	void (*part) (CamelMimeParser *parser);
