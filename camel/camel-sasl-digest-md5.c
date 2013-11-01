@@ -614,7 +614,7 @@ generate_response (struct _DigestChallenge *challenge,
 	resp->cnonce = g_base64_encode ((guchar *) digest, 8);
 
 	/* we don't support re-auth so the nonce count is always 1 */
-	strcpy (resp->nc, "00000001");
+	g_strlcpy (resp->nc, "00000001", sizeof (resp->nc));
 
 	/* choose the QOP */
 	/* FIXME: choose - probably choose "auth" ??? */

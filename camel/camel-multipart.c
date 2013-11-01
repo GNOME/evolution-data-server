@@ -233,7 +233,7 @@ multipart_set_boundary (CamelMultipart *multipart,
 		g_checksum_free (checksum);
 
 		g_free (bgen);
-		strcpy (bbuf, "=-");
+		g_strlcpy (bbuf, "=-", sizeof (bbuf));
 		p = bbuf + 2;
 		state = save = 0;
 		p += g_base64_encode_step (

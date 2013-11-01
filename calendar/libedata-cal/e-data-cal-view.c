@@ -762,6 +762,7 @@ notify_remove (EDataCalView *view,
                ECalComponentId *id)
 {
 	gchar *ids;
+ 	gsize ids_len, ids_offset;
 	gchar *uid, *rid;
 	gsize uid_len, rid_len;
 
@@ -792,12 +793,13 @@ notify_remove (EDataCalView *view,
 		uid = NULL;
 	} else {
 		/* concatenate */
-		ids = g_malloc (uid_len + rid_len + (rid_len ? 2 : 1));
+		ids_len = uid_len + rid_len + (rid_len ? 2 : 1);
+		ids = g_malloc (ids_len);
 		if (uid_len)
-			strcpy (ids, uid);
+			g_strlcpy (ids, uid, ids_len);
 		if (rid_len) {
-			ids[uid_len] = '\n';
-			strcpy (ids + uid_len + 1, rid);
+			ids_offset = uid_len + 1;
+			g_strlcpy (ids + ids_offset, rid, ids_len - ids_offset);
 		}
 	}
 	g_array_append_val (view->priv->removes, ids);

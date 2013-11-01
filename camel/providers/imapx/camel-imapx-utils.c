@@ -741,6 +741,7 @@ imapx_parse_param_list (CamelIMAPXStream *is,
 	guint len;
 	guchar *token;
 	gchar *param;
+	gsize param_len;
 
 	p (is->tagprefix, "body_fld_param\n");
 
@@ -754,8 +755,9 @@ imapx_parse_param_list (CamelIMAPXStream *is,
 			camel_imapx_stream_ungettoken (is, tok, token, len);
 
 			camel_imapx_stream_astring (is, &token, cancellable, NULL);
-			param = alloca (strlen ((gchar *) token) + 1);
-			strcpy (param, (gchar *) token);
+			param_len = strlen ((gchar *) token) + 1;
+			param = alloca (param_len);
+			g_strlcpy (param, (gchar *) token, param_len);
 			camel_imapx_stream_astring (is, &token, cancellable, NULL);
 			camel_header_set_param (plist, param, (gchar *) token);
 		}
@@ -864,6 +866,7 @@ imapx_parse_body_fields (CamelIMAPXStream *is,
 {
 	guchar *token;
 	gchar  *type;
+	gsize type_len;
 	guint64 number;
 	struct _CamelMessageContentInfo *cinfo;
 
@@ -878,8 +881,9 @@ imapx_parse_body_fields (CamelIMAPXStream *is,
 	/* this should be string not astring */
 	if (!camel_imapx_stream_astring (is, &token, cancellable, error))
 		goto error;
-	type = alloca (strlen ((gchar *) token) + 1);
-	strcpy (type, (gchar *) token);
+	type_len = strlen ((gchar *) token) + 1;
+	type = alloca (type_len);
+	g_strlcpy (type, (gchar *) token, type_len);
 	if (!camel_imapx_stream_astring (is, &token, cancellable, error))
 		goto error;
 	cinfo->type = camel_content_type_new (type, (gchar *) token);

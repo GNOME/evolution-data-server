@@ -282,12 +282,14 @@ const gchar *
 camel_iconv_charset_name (const gchar *charset)
 {
 	gchar *name, *ret, *tmp;
+	gsize name_len;
 
 	if (charset == NULL)
 		return NULL;
 
-	name = g_alloca (strlen (charset) + 1);
-	strcpy (name, charset);
+	name_len = strlen (charset) + 1;
+	name = g_alloca (name_len);
+	g_strlcpy (name, charset, name_len);
 	e_strdown (name);
 
 	iconv_init (TRUE);

@@ -4035,6 +4035,7 @@ camel_flag_set (CamelFlag **list,
                 gboolean value)
 {
 	CamelFlag *flag, *tmp;
+	gsize tmp_len = 0;
 
 	if (!name)
 		return TRUE;
@@ -4054,8 +4055,9 @@ camel_flag_set (CamelFlag **list,
 	}
 
 	if (value) {
-		tmp = g_malloc (sizeof (*tmp) + strlen (name));
-		strcpy (tmp->name, name);
+		tmp_len = sizeof (*tmp) + strlen (name);
+		tmp = g_malloc (tmp_len);
+		g_strlcpy (tmp->name, name, tmp_len);
 		tmp->next = NULL;
 		flag->next = tmp;
 	}
@@ -4208,7 +4210,7 @@ camel_tag_set (CamelTag **list,
 
 	if (value) {
 		tmp = g_malloc (sizeof (*tmp) + strlen (name));
-		strcpy (tmp->name, name);
+		g_strlcpy (tmp->name, name, sizeof (tmp->name));
 		tmp->value = g_strdup (value);
 		tmp->next = NULL;
 		tag->next = tmp;

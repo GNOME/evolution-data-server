@@ -456,13 +456,16 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	l = strtoul (line, &line, 10);
 	if (line[0] == ' ') {
 		gchar *tmp;
+		gsize tmp_len;
 
 		folder = line + 1;
 		tmp = strchr (folder, ' ');
 		if (tmp)
 			*tmp = 0;
-		tmp = g_alloca (strlen (folder) + 1);
-		strcpy (tmp, folder);
+
+		tmp_len = strlen (folder) + 1;
+		tmp = g_alloca (tmp_len);
+		g_strlcpy (tmp, folder, tmp_len);
 		folder = tmp;
 	}
 

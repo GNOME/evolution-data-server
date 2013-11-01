@@ -98,7 +98,7 @@ print_available_locales (void)
 
 		uloc_getDisplayName(uloc_getAvailable(i), NULL, result, 100, &status);
 
-		u_austrcpy (printable, result);
+		u_austrncpy (printable, result, sizeof (printable));
 
 		/* print result */
 		g_printerr ("\t%s - %s", uloc_getAvailable(i), printable);

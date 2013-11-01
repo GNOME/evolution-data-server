@@ -271,13 +271,15 @@ nntp_get_filename (CamelFolder *folder,
 	CamelDataCache *nntp_cache;
 	CamelNNTPStore *nntp_store;
 	gchar *article, *msgid;
+	gsize article_len;
 	gchar *filename;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca (strlen (uid) + 1);
-	strcpy (article, uid);
+	article_len = strlen (uid) + 1;
+	article = alloca (article_len);
+	g_strlcpy (article, uid, article_len);
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
 		g_set_error (
@@ -377,10 +379,12 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 {
 	CamelStream *stream;
 	gchar *article, *msgid;
+	gsize article_len;
 	gboolean success = TRUE;
 
-	article = alloca (strlen (uid) + 1);
-	strcpy (article, uid);
+	article_len = strlen (uid) + 1;
+	article = alloca (article_len);
+	g_strlcpy (article, uid, article_len);
 	msgid = strchr (article, ',');
 	if (!msgid) {
 		g_set_error (
@@ -495,14 +499,16 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 	CamelNNTPFolder *nntp_folder;
 	CamelStream *stream = NULL;
 	gchar *article, *msgid;
+	gsize article_len;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
 	nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca (strlen (uid) + 1);
-	strcpy (article, uid);
+	article_len = strlen (uid) + 1;
+	article = alloca (article_len);
+	g_strlcpy (article, uid, article_len);
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
 		g_set_error (

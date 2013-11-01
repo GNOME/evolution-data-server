@@ -209,6 +209,7 @@ vee_store_get_folder_sync (CamelStore *store,
 	CamelVeeFolder *vf;
 	CamelFolder *folder;
 	gchar *name, *p;
+	gsize name_len;
 
 	vf = (CamelVeeFolder *) camel_vee_folder_new (store, folder_name, flags);
 	if (vf && ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0)) {
@@ -217,8 +218,9 @@ vee_store_get_folder_sync (CamelStore *store,
 		full_name = camel_folder_get_full_name (CAMEL_FOLDER (vf));
 
 		/* Check that parents exist, if not, create dummy ones */
-		name = alloca (strlen (full_name) + 1);
-		strcpy (name, full_name);
+		name_len = strlen (full_name) + 1;
+		name = alloca (name_len);
+		g_strlcpy (name, full_name, name_len);
 		p = name;
 		while ( (p = strchr (p, '/'))) {
 			*p = 0;
@@ -456,6 +458,7 @@ vee_store_rename_folder_sync (CamelStore *store,
 {
 	CamelFolder *folder, *oldfolder;
 	gchar *p, *name;
+	gsize name_len;
 
 	d (printf ("vee rename folder '%s' '%s'\n", old, new));
 
@@ -478,8 +481,9 @@ vee_store_rename_folder_sync (CamelStore *store,
 	}
 
 	/* Check that new parents exist, if not, create dummy ones */
-	name = alloca (strlen (new) + 1);
-	strcpy (name, new);
+	name_len = strlen (new) + 1;
+	name = alloca (name_len);
+	g_strlcpy (name, new, name_len);
 	p = name;
 	while ( (p = strchr (p, '/'))) {
 		*p = 0;
