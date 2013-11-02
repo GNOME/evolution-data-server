@@ -556,9 +556,10 @@ imapx_get_message_sync (CamelFolder *folder,
                         GError **error)
 {
 	CamelMimeMessage *msg = NULL;
-	CamelStream *stream = NULL;
+	CamelStream *stream;
 	CamelStore *store;
 	CamelIMAPXFolder *imapx_folder;
+	GIOStream *base_stream;
 	const gchar *path = NULL;
 	gboolean offline_message = FALSE;
 
@@ -572,8 +573,11 @@ imapx_get_message_sync (CamelFolder *folder,
 		offline_message = TRUE;
 	}
 
-	stream = camel_data_cache_get (imapx_folder->cache, path, uid, NULL);
-	if (stream == NULL) {
+	base_stream = camel_data_cache_get (
+		imapx_folder->cache, path, uid, NULL);
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+	} else {
 		CamelIMAPXServer *imapx_server;
 		CamelIMAPXMailbox *mailbox;
 

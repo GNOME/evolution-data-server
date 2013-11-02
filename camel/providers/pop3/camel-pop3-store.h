@@ -72,6 +72,14 @@ CamelPOP3Engine *
 gboolean	camel_pop3_store_expunge	(CamelPOP3Store *store,
 						 GCancellable *cancellable,
 						 GError **error);
+CamelStream *	camel_pop3_store_cache_add	(CamelPOP3Store *store,
+						 const gchar *uid,
+						 GError **error);
+CamelStream *	camel_pop3_store_cache_get	(CamelPOP3Store *store,
+						 const gchar *uid,
+						 GError **error);
+gboolean	camel_pop3_store_cache_has	(CamelPOP3Store *store,
+						 const gchar *uid);
 
 G_END_DECLS
 

@@ -66,6 +66,7 @@ free_fi (CamelPOP3Folder *pop3_folder,
 	g_free (fi);
 
 }
+
 static void
 cmd_uidl (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
@@ -450,7 +451,6 @@ pop3_get_uncached_uids (CamelFolder *folder,
 {
 	CamelPOP3Folder *pop3_folder;
 	CamelPOP3Store *pop3_store;
-	CamelDataCache *pop3_cache;
 	GPtrArray *uncached_uids;
 	gint ii;
 
@@ -459,27 +459,27 @@ pop3_get_uncached_uids (CamelFolder *folder,
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (camel_folder_get_parent_store (folder));
-	pop3_cache = camel_pop3_store_ref_cache (pop3_store);
 
 	uncached_uids = g_ptr_array_new ();
 
 	for (ii = 0; ii < uids->len; ii++) {
 		const gchar *uid = uids->pdata[ii];
-		CamelStream *stream = NULL;
 		CamelPOP3FolderInfo *fi;
-		gchar buffer[1];
+		gboolean uid_is_cached = FALSE;
 
 		fi = g_hash_table_lookup (pop3_folder->uids_fi, uid);
-		if (!fi || !pop3_cache ||
-		    (stream = camel_data_cache_get (pop3_cache, "cache", fi->uid, NULL)) == NULL ||
-		    camel_stream_read (stream, buffer, 1, NULL, NULL) != 1 ||
-		    buffer[0] != '#')
-			g_ptr_array_add (uncached_uids, (gpointer) camel_pstring_strdup (uid));
 
-		g_clear_object (&stream);
+		if (fi != NULL) {
+			uid_is_cached = camel_pop3_store_cache_has (
+				pop3_store, fi->uid);
+		}
+
+		if (!uid_is_cached) {
+			g_ptr_array_add (
+				uncached_uids, (gpointer)
+				camel_pstring_strdup (uid));
+		}
 	}
-
-	g_clear_object (&pop3_cache);
 
 	return uncached_uids;
 }
@@ -551,7 +551,6 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	CamelMimeMessage *message = NULL;
 	CamelPOP3Store *pop3_store;
 	CamelPOP3Folder *pop3_folder;
-	CamelDataCache *pop3_cache;
 	CamelPOP3Engine *pop3_engine;
 	CamelPOP3Command *pcr;
 	CamelPOP3FolderInfo *fi;
@@ -603,7 +602,6 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	camel_operation_push_message (
 		cancellable, _("Retrieving POP message %d"), fi->id);
 
-	pop3_cache = camel_pop3_store_ref_cache (pop3_store);
 	pop3_engine = camel_pop3_store_ref_engine (pop3_store);
 
 	/* If we have an oustanding retrieve message running, wait for that to complete
@@ -626,14 +624,10 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	/* check to see if we have safely written flag set */
-	if (pop3_cache == NULL
-	    || (stream = camel_data_cache_get (pop3_cache, "cache", fi->uid, NULL)) == NULL
-	    || camel_stream_read (stream, buffer, 1, cancellable, NULL) != 1
-	    || buffer[0] != '#') {
-
+	if (!camel_pop3_store_cache_has (pop3_store, fi->uid)) {
 		/* Initiate retrieval, if disk backing fails, use a memory backing */
-		if (pop3_cache == NULL
-		    || (stream = camel_data_cache_add (pop3_cache, "cache", fi->uid, NULL)) == NULL)
+		stream = camel_pop3_store_cache_add (pop3_store, fi->uid, NULL);
+		if (stream == NULL)
 			stream = camel_stream_mem_new ();
 
 		/* ref it, the cache storage routine unref's when done */
@@ -647,7 +641,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 
 		/* Also initiate retrieval of some of the following
 		 * messages, assume we'll be receiving them. */
-		if (auto_fetch && pop3_cache != NULL) {
+		if (auto_fetch) {
 			/* This should keep track of the last one retrieved,
 			 * also how many are still oustanding incase of random
 			 * access on large folders. */
@@ -657,10 +651,9 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 				CamelPOP3FolderInfo *pfi = pop3_folder->uids->pdata[i];
 
 				if (pfi->uid && pfi->cmd == NULL) {
-					pfi->stream = camel_data_cache_add (
-						pop3_cache,
-						"cache", pfi->uid, NULL);
-					if (pfi->stream) {
+					pfi->stream = camel_pop3_store_cache_add (
+						pop3_store, pfi->uid, NULL);
+					if (pfi->stream != NULL) {
 						pfi->cmd = camel_pop3_engine_command_new (
 							pop3_engine,
 							CAMEL_POP3_COMMAND_MULTI,
@@ -714,7 +707,6 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 done:
 	g_object_unref (stream);
 fail:
-	g_clear_object (&pop3_cache);
 	g_clear_object (&pop3_engine);
 
 	camel_operation_pop_message (cancellable);
@@ -1145,9 +1137,7 @@ pop3_get_message_time_from_cache (CamelFolder *folder,
 {
 	CamelStore *parent_store;
 	CamelPOP3Store *pop3_store;
-	CamelDataCache *pop3_cache;
 	CamelStream *stream = NULL;
-	gchar buffer[1];
 	gboolean res = FALSE;
 
 	g_return_val_if_fail (folder != NULL, FALSE);
@@ -1157,12 +1147,8 @@ pop3_get_message_time_from_cache (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
-	pop3_cache = camel_pop3_store_ref_cache (pop3_store);
-	g_return_val_if_fail (pop3_cache != NULL, FALSE);
-
-	if ((stream = camel_data_cache_get (pop3_cache, "cache", uid, NULL)) != NULL
-	    && camel_stream_read (stream, buffer, 1, NULL, NULL) == 1
-	    && buffer[0] == '#') {
+	stream = camel_pop3_store_cache_get (pop3_store, uid, NULL);
+	if (stream != NULL) {
 		CamelMimeMessage *message;
 		GError *error = NULL;
 
@@ -1183,10 +1169,9 @@ pop3_get_message_time_from_cache (CamelFolder *folder,
 
 			g_object_unref (message);
 		}
-	}
 
-	g_clear_object (&stream);
-	g_clear_object (&pop3_cache);
+		g_object_unref (stream);
+	}
 
 	return res;
 }

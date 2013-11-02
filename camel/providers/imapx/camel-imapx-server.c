@@ -4797,11 +4797,17 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_free (dirname);
 
 		if (g_rename (tmp_filename, cur_filename) == 0) {
+			GIOStream *base_stream;
+
 			/* Exchange the "tmp" stream for the "cur" stream. */
 			g_clear_object (&data->stream);
-			data->stream = camel_data_cache_get (
+			base_stream = camel_data_cache_get (
 				data->message_cache, "cur",
 				data->uid, &local_error);
+			if (base_stream != NULL) {
+				data->stream = camel_stream_new (base_stream);
+				g_object_unref (base_stream);
+			}
 		} else {
 			g_set_error (
 				&local_error, G_FILE_ERROR,
@@ -8106,6 +8112,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	CamelStream *stream = NULL;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *mi;
+	GIOStream *base_stream;
 	GetMessageData *data;
 	gboolean registered;
 
@@ -8128,10 +8135,13 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		/* Disregard errors here.  If we failed to retreive the
 		 * message from cache (implying the job we were waiting
 		 * on failed or got cancelled), we'll just re-fetch it. */
-		stream = camel_data_cache_get (
+		base_stream = camel_data_cache_get (
 			message_cache, "cur", message_uid, NULL);
-		if (stream != NULL)
+		if (base_stream != NULL) {
+			stream = camel_stream_new (base_stream);
+			g_object_unref (base_stream);
 			return stream;
+		}
 
 		QUEUE_LOCK (is);
 	}
@@ -8147,11 +8157,17 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		return NULL;
 	}
 
+	base_stream = camel_data_cache_add (
+		message_cache, "tmp", message_uid, error);
+	if (base_stream == NULL) {
+		QUEUE_UNLOCK (is);
+		return NULL;
+	}
+
 	data = g_slice_new0 (GetMessageData);
 	data->uid = g_strdup (message_uid);
 	data->message_cache = g_object_ref (message_cache);
-	data->stream = camel_data_cache_add (
-		message_cache, "tmp", message_uid, NULL);
+	data->stream = camel_stream_new (base_stream);
 	data->size = ((CamelMessageInfoBase *) mi)->size;
 	if (data->size > MULTI_SIZE)
 		data->use_multi_fetch = TRUE;
@@ -8167,7 +8183,9 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) get_message_data_free);
 
+	g_clear_object (&base_stream);
 	camel_message_info_unref (mi);
+
 	registered = imapx_register_job (is, job, error);
 
 	QUEUE_UNLOCK (is);
@@ -8308,6 +8326,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	CamelMimeFilter *canon;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *info;
+	GIOStream *base_stream;
 	AppendMessageData *data;
 	gint res;
 	gboolean success;
@@ -8327,8 +8346,11 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 
 	/* chen cleanup this later */
 	uid = imapx_get_temp_uid ();
-	stream = camel_data_cache_add (message_cache, "new", uid, error);
-	if (stream == NULL) {
+	base_stream = camel_data_cache_add (message_cache, "new", uid, error);
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	} else {
 		g_prefix_error (error, _("Cannot create spool file: "));
 		g_free (uid);
 		return FALSE;

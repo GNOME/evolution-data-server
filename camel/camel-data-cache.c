@@ -282,7 +282,7 @@ data_cache_expire (CamelDataCache *cdc,
 	GDir *dir;
 	const gchar *dname;
 	struct stat st;
-	CamelStream *stream;
+	GIOStream *stream;
 
 	dir = g_dir_open (path, 0, NULL);
 	if (dir == NULL)
@@ -362,26 +362,26 @@ data_cache_path (CamelDataCache *cdc,
  * @key: Key of item to add.
  * @error: return location for a #GError, or %NULL
  *
- * Add a new item to the cache.
+ * Add a new item to the cache, returning a #GIOStream to the new item.
  *
- * The key and the path combine to form a unique key used to store
- * the item.
+ * The key and the path combine to form a unique key used to store the item.
  *
- * Potentially, expiry processing will be performed while this call
- * is executing.
+ * Potentially, expiry processing will be performed while this call is
+ * executing.
  *
- * Returns: A CamelStream (file) opened in read-write mode.
- * The caller must unref this when finished.
+ * The returned #GIOStream is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GIOStream for the new cache item, or %NULL
  **/
-CamelStream *
+GIOStream *
 camel_data_cache_add (CamelDataCache *cdc,
                       const gchar *path,
                       const gchar *key,
                       GError **error)
 {
 	gchar *real;
-	CamelStream *stream = NULL;
-	GFileIOStream *base_stream;
+	GFileIOStream *stream;
 	GFile *file;
 
 	real = data_cache_path (cdc, TRUE, path, key);
@@ -398,21 +398,18 @@ camel_data_cache_add (CamelDataCache *cdc,
 	} while (stream != NULL);
 
 	file = g_file_new_for_path (real);
-	base_stream = g_file_replace_readwrite (
+	stream = g_file_replace_readwrite (
 		file, NULL, FALSE, G_FILE_CREATE_PRIVATE, NULL, error);
 	g_object_unref (file);
 
-	if (base_stream != NULL) {
-		stream = camel_stream_new (G_IO_STREAM (base_stream));
+	if (stream != NULL)
 		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
-		g_object_unref (base_stream);
-	} else {
+	else
 		camel_object_bag_abort (cdc->priv->busy_bag, real);
-	}
 
 	g_free (real);
 
-	return stream;
+	return G_IO_STREAM (stream);
 }
 
 /**
@@ -422,21 +419,22 @@ camel_data_cache_add (CamelDataCache *cdc,
  * @key: Key for the cache item.
  * @error: return location for a #GError, or %NULL
  *
- * Lookup an item in the cache.  If the item exists, a stream
- * is returned for the item.  The stream may be shared by
- * multiple callers, so ensure the stream is in a valid state
- * through external locking.
+ * Lookup an item in the cache.  If the item exists, a #GIOStream is returned
+ * for the item.  The stream may be shared by multiple callers, so ensure the
+ * stream is in a valid state through external locking.
  *
- * Returns: A cache item, or NULL if the cache item does not exist.
+ * The returned #GIOStream is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GIOStream for the requested cache item, or %NULL
  **/
-CamelStream *
+GIOStream *
 camel_data_cache_get (CamelDataCache *cdc,
                       const gchar *path,
                       const gchar *key,
                       GError **error)
 {
-	CamelStream *stream;
-	GFileIOStream *base_stream = NULL;
+	GFileIOStream *stream;
 	GFile *file;
 	struct stat st;
 	gchar *real;
@@ -455,21 +453,18 @@ camel_data_cache_get (CamelDataCache *cdc,
 	}
 
 	file = g_file_new_for_path (real);
-	base_stream = g_file_open_readwrite (file, NULL, error);
+	stream = g_file_open_readwrite (file, NULL, error);
 	g_object_unref (file);
 
-	if (base_stream != NULL) {
-		stream = camel_stream_new (G_IO_STREAM (base_stream));
+	if (stream != NULL)
 		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
-		g_object_unref (base_stream);
-	} else {
+	else
 		camel_object_bag_abort (cdc->priv->busy_bag, real);
-	}
 
 exit:
 	g_free (real);
 
-	return stream;
+	return G_IO_STREAM (stream);
 }
 
 /**
@@ -509,7 +504,7 @@ camel_data_cache_remove (CamelDataCache *cdc,
                          const gchar *key,
                          GError **error)
 {
-	CamelStream *stream;
+	GIOStream *stream;
 	gchar *real;
 	gint ret;
 

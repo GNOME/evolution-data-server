@@ -1077,3 +1077,124 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 
 	return TRUE;
 }
+
+/**
+ * camel_pop3_store_cache_add:
+ * @store: a #CamelPOP3Store
+ * @uid: a message UID
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a cache file for @uid in @store and returns a #CamelStream for it.
+ * If an error occurs in opening the cache file, the function sets @error and
+ * returns %NULL.
+ *
+ * The returned #CamelStream is referenced for thread-safety and must be
+ * unreferenced when finished with it.
+ *
+ * Returns: a #CamelStream, or %NULL
+ **/
+CamelStream *
+camel_pop3_store_cache_add (CamelPOP3Store *store,
+                            const gchar *uid,
+                            GError **error)
+{
+	CamelDataCache *cache;
+	GIOStream *base_stream;
+	CamelStream *stream = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_POP3_STORE (store), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	cache = camel_pop3_store_ref_cache (store);
+	g_return_val_if_fail (cache != NULL, NULL);
+
+	base_stream = camel_data_cache_add (cache, "cache", uid, error);
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	}
+
+	g_object_unref (cache);
+
+	return stream;
+}
+
+/**
+ * camel_pop3_store_cache_get:
+ * @store: a #CamelPOP3Store
+ * @uid: a message UID
+ * @error: return location for a #GError, or %NULL
+ *
+ * Opens the cache file for @uid in @store and returns a #CamelStream for it.
+ * If no matching cache file exists, the function returns %NULL.  If an error
+ * occurs in opening the cache file, the function sets @error and returns
+ * %NULL.
+ *
+ * The returned #CamelStream is referenced for thread-safety and must be
+ * unreferenced when finished with it.
+ *
+ * Returns: a #CamelStream, or %NULL
+ **/
+CamelStream *
+camel_pop3_store_cache_get (CamelPOP3Store *store,
+                            const gchar *uid,
+                            GError **error)
+{
+	CamelDataCache *cache;
+	GIOStream *base_stream;
+	CamelStream *stream = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_POP3_STORE (store), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	cache = camel_pop3_store_ref_cache (store);
+	g_return_val_if_fail (cache != NULL, NULL);
+
+	base_stream = camel_data_cache_get (cache, "cache", uid, error);
+	if (base_stream != NULL) {
+		GInputStream *input_stream;
+		gchar buffer[1];
+		gssize n_bytes;
+
+		input_stream = g_io_stream_get_input_stream (base_stream);
+
+		n_bytes = g_input_stream_read (
+			input_stream, buffer, 1, NULL, error);
+
+		if (n_bytes == 1 && buffer[0] == '#')
+			stream = camel_stream_new (base_stream);
+
+		g_object_unref (base_stream);
+	}
+
+	g_object_unref (cache);
+
+	return stream;
+}
+
+/**
+ * camel_pop3_store_cache_has:
+ * @store: a #CamelPOP3Store
+ * @uid: a message UID
+ *
+ * Returns whether @store has a cached message for @uid.
+ *
+ * Returns: whether @uid is cached
+ **/
+gboolean
+camel_pop3_store_cache_has (CamelPOP3Store *store,
+                            const gchar *uid)
+{
+	CamelStream *stream;
+	gboolean uid_is_cached;
+
+	g_return_val_if_fail (CAMEL_IS_POP3_STORE (store), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	stream = camel_pop3_store_cache_get (store, uid, NULL);
+	uid_is_cached = (stream != NULL);
+	g_clear_object (&stream);
+
+	return uid_is_cached;
+}
+

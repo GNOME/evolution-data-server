@@ -324,10 +324,15 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 		nntp_folder, &line, "article %s", id);
 
 	if (ret == 220) {
-		stream = camel_data_cache_add (
+		GIOStream *base_stream;
+
+		base_stream = camel_data_cache_add (
 			nntp_cache, "cache", msgid, NULL);
-		if (stream != NULL) {
+		if (base_stream != NULL) {
 			gboolean success;
+
+			stream = camel_stream_new (base_stream);
+			g_object_unref (base_stream);
 
 			success = (camel_stream_write_to_stream (
 				CAMEL_STREAM (nntp_stream),
@@ -498,6 +503,7 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 	CamelFolderChangeInfo *changes;
 	CamelNNTPFolder *nntp_folder;
 	CamelStream *stream = NULL;
+	GIOStream *base_stream;
 	gchar *article, *msgid;
 	gsize article_len;
 
@@ -520,10 +526,13 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 
 	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
 	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
-	stream = camel_data_cache_get (nntp_cache, "cache", msgid, NULL);
+	base_stream = camel_data_cache_get (nntp_cache, "cache", msgid, NULL);
 	g_clear_object (&nntp_cache);
 
-	if (stream == NULL) {
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	} else {
 		if (camel_disco_store_status ((CamelDiscoStore *) nntp_store) == CAMEL_DISCO_STORE_OFFLINE) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,

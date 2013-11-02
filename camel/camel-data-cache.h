@@ -74,11 +74,11 @@ void		camel_data_cache_set_expire_age	(CamelDataCache *cdc,
 void		camel_data_cache_set_expire_access
 						(CamelDataCache *cdc,
 						 time_t when);
-CamelStream *	camel_data_cache_add		(CamelDataCache *cdc,
+GIOStream *	camel_data_cache_add		(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
 						 GError **error);
-CamelStream *	camel_data_cache_get		(CamelDataCache *cdc,
+GIOStream *	camel_data_cache_get		(CamelDataCache *cdc,
 						 const gchar *path,
 						 const gchar *key,
 						 GError **error);
