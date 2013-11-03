@@ -1052,7 +1052,7 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 	/**
 	 * EBookClientView::objects-removed:
 	 * @view: The #EBookClientView emitting the signal
-	 * @objects: A #GSList of #EContacts
+	 * @uids: A #GSList of contact uids.
 	 *
 	 * Notification signal that contacts have been removed from the view
 	 */
