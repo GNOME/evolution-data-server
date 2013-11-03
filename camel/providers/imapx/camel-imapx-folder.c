@@ -577,6 +577,7 @@ imapx_get_message_sync (CamelFolder *folder,
 		imapx_folder->cache, path, uid, NULL);
 	if (base_stream != NULL) {
 		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
 	} else {
 		CamelIMAPXServer *imapx_server;
 		CamelIMAPXMailbox *mailbox;
