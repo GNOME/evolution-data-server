@@ -46,18 +46,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_SMTP_TRANSPORT, CamelSmtpTransportClass))
 
-#define CAMEL_SMTP_TRANSPORT_IS_ESMTP               (1 << 0)
-#define CAMEL_SMTP_TRANSPORT_8BITMIME               (1 << 1)
-#define CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES    (1 << 2)
-#define CAMEL_SMTP_TRANSPORT_STARTTLS               (1 << 3)
-
-/* set if we are using authtypes from a broken AUTH= */
-#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)
-
-#ifdef G_OS_WIN32
-#define socklen_t int
-#endif
-
 G_BEGIN_DECLS
 
 typedef struct _CamelSmtpTransport CamelSmtpTransport;
@@ -84,9 +72,5 @@ struct _CamelSmtpTransportClass {
 GType camel_smtp_transport_get_type (void);
 
 G_END_DECLS
-
-#ifdef G_OS_WIN32
-#undef socklen_t
-#endif
 
 #endif /* CAMEL_SMTP_TRANSPORT_H */

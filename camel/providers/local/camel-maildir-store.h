@@ -51,7 +51,6 @@ typedef struct _CamelMaildirStorePrivate CamelMaildirStorePrivate;
 
 struct _CamelMaildirStore {
 	CamelLocalStore parent;
-
 	CamelMaildirStorePrivate *priv;
 };
 

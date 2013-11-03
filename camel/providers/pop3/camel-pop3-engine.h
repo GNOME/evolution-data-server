@@ -149,8 +149,6 @@ gboolean	camel_pop3_engine_reget_capabilities
 						(CamelPOP3Engine *engine,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_pop3_engine_command_free	(CamelPOP3Engine *pe,
-						 CamelPOP3Command *pc);
 gint		camel_pop3_engine_iterate	(CamelPOP3Engine *pe,
 						 CamelPOP3Command *pc,
 						 GCancellable *cancellable,
@@ -164,6 +162,8 @@ CamelPOP3Command *
 						 GError **error,
 						 const gchar *fmt,
 						 ...);
+void		camel_pop3_engine_command_free	(CamelPOP3Engine *pe,
+						 CamelPOP3Command *pc);
 
 G_END_DECLS
 

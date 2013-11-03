@@ -72,7 +72,7 @@ struct _CamelPOP3StreamClass {
 	CamelStreamClass parent_class;
 };
 
-GType		 camel_pop3_stream_get_type	(void);
+GType		camel_pop3_stream_get_type	(void);
 CamelStream *	camel_pop3_stream_new		(CamelStream *source);
 void		camel_pop3_stream_set_mode	(CamelPOP3Stream *is,
 						 camel_pop3_stream_mode_t mode);

@@ -53,6 +53,14 @@
 #define SMTP_PORT  25
 #define SMTPS_PORT 465
 
+#define CAMEL_SMTP_TRANSPORT_IS_ESMTP               (1 << 0)
+#define CAMEL_SMTP_TRANSPORT_8BITMIME               (1 << 1)
+#define CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES    (1 << 2)
+#define CAMEL_SMTP_TRANSPORT_STARTTLS               (1 << 3)
+
+/* set if we are using authtypes from a broken AUTH= */
+#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)
+
 enum {
 	PROP_0,
 	PROP_CONNECTABLE,

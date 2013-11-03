@@ -23,9 +23,6 @@
 
 #include "camel-local-summary.h"
 
-/* Enable the use of elm/pine style "Status" & "X-Status" headers */
-#define STATUS_PINE
-
 /* Standard GObject macros */
 #define CAMEL_TYPE_MBOX_SUMMARY \
 	(camel_mbox_summary_get_type ())
@@ -49,10 +46,6 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMboxSummary CamelMboxSummary;
 typedef struct _CamelMboxSummaryClass CamelMboxSummaryClass;
-
-typedef struct _CamelMboxMessageContentInfo {
-	CamelMessageContentInfo info;
-} CamelMboxMessageContentInfo;
 
 typedef struct _CamelMboxMessageInfo {
 	CamelLocalMessageInfo info;

@@ -87,6 +87,8 @@ static gchar *	maildir_summary_encode_x_evolution
 						(CamelLocalSummary *cls,
 						 const CamelLocalMessageInfo *mi);
 
+typedef struct _CamelMaildirMessageContentInfo CamelMaildirMessageContentInfo;
+
 struct _CamelMaildirSummaryPrivate {
 	gchar *current_file;
 	gchar *hostname;
@@ -95,7 +97,14 @@ struct _CamelMaildirSummaryPrivate {
 	GMutex summary_lock;
 };
 
-G_DEFINE_TYPE (CamelMaildirSummary, camel_maildir_summary, CAMEL_TYPE_LOCAL_SUMMARY)
+struct _CamelMaildirMessageContentInfo {
+	CamelMessageContentInfo info;
+};
+
+G_DEFINE_TYPE (
+	CamelMaildirSummary,
+	camel_maildir_summary,
+	CAMEL_TYPE_LOCAL_SUMMARY)
 
 static void
 maildir_summary_finalize (GObject *object)

@@ -38,6 +38,18 @@
 
 #define d(x) if (camel_debug("pop3")) x;
 
+typedef struct _CamelPOP3FolderInfo CamelPOP3FolderInfo;
+
+struct _CamelPOP3FolderInfo {
+	guint32 id;
+	guint32 size;
+	guint32 flags;
+	guint32 index;		/* index of request */
+	gchar *uid;
+	struct _CamelPOP3Command *cmd;
+	struct _CamelStream *stream;
+};
+
 G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
 
 static void
@@ -957,7 +969,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 		camel_operation_push_message (
 			cancellable, _("Expunging old messages"));
 
-		camel_pop3_delete_old (
+		camel_pop3_folder_delete_old (
 			folder, delete_after_days, cancellable, error);
 
 		camel_operation_pop_message (cancellable);
@@ -1177,10 +1189,10 @@ pop3_get_message_time_from_cache (CamelFolder *folder,
 }
 
 gboolean
-camel_pop3_delete_old (CamelFolder *folder,
-                       gint days_to_delete,
-                       GCancellable *cancellable,
-                       GError **error)
+camel_pop3_folder_delete_old (CamelFolder *folder,
+                              gint days_to_delete,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	CamelStore *parent_store;
 	CamelPOP3Folder *pop3_folder;

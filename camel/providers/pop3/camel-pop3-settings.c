@@ -573,7 +573,7 @@ camel_pop3_settings_get_auto_fetch (CamelPOP3Settings *settings)
 /**
  * camel_pop3_settings_set_auto_fetch :
  * @settings: a #CamelPOP3Settings
- * @keep_on_server: whether to download additional mails
+ * @auto_fetch: whether to download additional mails
  *
  * Sets whether to download additional mails that may be downloaded later on
  *

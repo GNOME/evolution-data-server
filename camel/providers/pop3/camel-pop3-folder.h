@@ -51,17 +51,6 @@ G_BEGIN_DECLS
 
 typedef struct _CamelPOP3Folder CamelPOP3Folder;
 typedef struct _CamelPOP3FolderClass CamelPOP3FolderClass;
-typedef struct _CamelPOP3FolderInfo CamelPOP3FolderInfo;
-
-struct _CamelPOP3FolderInfo {
-	guint32 id;
-	guint32 size;
-	guint32 flags;
-	guint32 index;		/* index of request */
-	gchar *uid;
-	struct _CamelPOP3Command *cmd;
-	struct _CamelStream *stream;
-};
 
 struct _CamelPOP3Folder {
 	CamelFolder parent;
@@ -91,7 +80,7 @@ GType		camel_pop3_folder_get_type	(void);
 CamelFolder *	camel_pop3_folder_new		(CamelStore *parent,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_pop3_delete_old		(CamelFolder *folder,
+gboolean	camel_pop3_folder_delete_old	(CamelFolder *folder,
 						 gint days_to_delete,
 						 GCancellable *cancellable,
 						 GError **error);

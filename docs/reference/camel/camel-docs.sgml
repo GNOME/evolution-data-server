@@ -31,12 +31,8 @@
     </abstract>
   </bookinfo>
 
-  <part id="classes">
-    <title>Camel Classes</title>
-    <chapter id="ClassTree">
-      <title>Class Hierarchy</title>
-      <xi:include href="xml/tree_index.sgml"/>
-    </chapter>
+  <part id="api">
+    <title>API Reference</title>
 
     <chapter id="Fundamentals">
       <title>Fundamentals</title>
@@ -195,8 +191,41 @@
       <xi:include href="xml/camel-utf8.xml"/>
     </chapter>
 
+    <chapter id="Deprecated">
+      <title>Deprecated Objects</title>
+      <xi:include href="xml/camel-disco-diary.xml"/>
+      <xi:include href="xml/camel-disco-folder.xml"/>
+      <xi:include href="xml/camel-disco-store.xml"/>
+    </chapter>
+
+  </part>
+
+  <part id="services">
+    <title>Built-in Services</title>
+
+    <chapter id="Local">
+      <title>Local Services</title>
+      <xi:include href="xml/camel-local-folder.xml"/>
+      <xi:include href="xml/camel-local-store.xml"/>
+      <xi:include href="xml/camel-local-summary.xml"/>
+      <xi:include href="xml/camel-maildir-folder.xml"/>
+      <xi:include href="xml/camel-maildir-store.xml"/>
+      <xi:include href="xml/camel-maildir-summary.xml"/>
+      <xi:include href="xml/camel-mbox-folder.xml"/>
+      <xi:include href="xml/camel-mbox-store.xml"/>
+      <xi:include href="xml/camel-mbox-summary.xml"/>
+      <xi:include href="xml/camel-mh-folder.xml"/>
+      <xi:include href="xml/camel-mh-settings.xml"/>
+      <xi:include href="xml/camel-mh-store.xml"/>
+      <xi:include href="xml/camel-mh-summary.xml"/>
+      <xi:include href="xml/camel-spool-folder.xml"/>
+      <xi:include href="xml/camel-spool-settings.xml"/>
+      <xi:include href="xml/camel-spool-store.xml"/>
+      <xi:include href="xml/camel-spool-summary.xml"/>
+    </chapter>
+
     <chapter id="IMAP">
-      <title>Extensible IMAP</title>
+      <title>IMAP Service</title>
       <xi:include href="xml/camel-imapx-command.xml"/>
       <xi:include href="xml/camel-imapx-folder.xml"/>
       <xi:include href="xml/camel-imapx-job.xml"/>
@@ -214,75 +243,104 @@
       <xi:include href="xml/camel-imapx-status-response.xml"/>
     </chapter>
 
-    <chapter id="Deprecated">
-      <title>Deprecated Objects</title>
-      <xi:include href="xml/camel-disco-diary.xml"/>
-      <xi:include href="xml/camel-disco-folder.xml"/>
-      <xi:include href="xml/camel-disco-store.xml"/>
+    <chapter id="NNTP">
+      <title>NNTP Service</title>
+      <xi:include href="xml/camel-nntp-folder.xml"/>
+      <xi:include href="xml/camel-nntp-settings.xml"/>
+      <xi:include href="xml/camel-nntp-store.xml"/>
+      <xi:include href="xml/camel-nntp-store-summary.xml"/>
+      <xi:include href="xml/camel-nntp-stream.xml"/>
+      <xi:include href="xml/camel-nntp-summary.xml"/>
     </chapter>
 
-    <index id="api-index-full">
-      <title>Index</title>
-      <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-deprecated" role="deprecated">
-      <title>Index of deprecated symbols</title>
-      <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.12" role="3.12">
-      <title>Index of new symbols in 3.12</title>
-      <xi:include href="xml/api-index-3.12.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.10" role="3.10">
-      <title>Index of new symbols in 3.10</title>
-      <xi:include href="xml/api-index-3.10.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.8" role="3.8">
-      <title>Index of new symbols in 3.8</title>
-      <xi:include href="xml/api-index-3.8.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.6" role="3.6">
-      <title>Index of new symbols in 3.6</title>
-      <xi:include href="xml/api-index-3.6.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.4" role="3.4">
-      <title>Index of new symbols in 3.4</title>
-      <xi:include href="xml/api-index-3.4.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.2" role="3.2">
-      <title>Index of new symbols in 3.2</title>
-      <xi:include href="xml/api-index-3.2.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-3.0" role="3.0">
-      <title>Index of new symbols in 3.0</title>
-      <xi:include href="xml/api-index-3.0.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-2.32" role="2.32">
-      <title>Index of new symbols in 2.32</title>
-      <xi:include href="xml/api-index-2.32.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-2.30" role="2.30">
-      <title>Index of new symbols in 2.30</title>
-      <xi:include href="xml/api-index-2.30.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-2.28" role="2.28">
-      <title>Index of new symbols in 2.28</title>
-      <xi:include href="xml/api-index-2.28.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-2.26" role="2.26">
-      <title>Index of new symbols in 2.26</title>
-      <xi:include href="xml/api-index-2.26.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-2.24" role="2.24">
-      <title>Index of new symbols in 2.24</title>
-      <xi:include href="xml/api-index-2.24.xml"><xi:fallback /></xi:include>
-    </index>
-    <index id="api-index-2.22" role="2.22">
-      <title>Index of new symbols in 2.22</title>
-      <xi:include href="xml/api-index-2.22.xml"><xi:fallback /></xi:include>
-    </index>
+    <chapter id="POP">
+      <title>POP3 Service</title>
+      <xi:include href="xml/camel-pop3-engine.xml"/>
+      <xi:include href="xml/camel-pop3-folder.xml"/>
+      <xi:include href="xml/camel-pop3-settings.xml"/>
+      <xi:include href="xml/camel-pop3-store.xml"/>
+      <xi:include href="xml/camel-pop3-stream.xml"/>
+    </chapter>
 
-    <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+    <chapter id="Sendmail">
+      <title>Sendmail Service</title>
+      <xi:include href="xml/camel-sendmail-settings.xml"/>
+      <xi:include href="xml/camel-sendmail-transport.xml"/>
+    </chapter>
+
+    <chapter id="SMTP">
+      <title>SMTP Service</title>
+      <xi:include href="xml/camel-smtp-settings.xml"/>
+      <xi:include href="xml/camel-smtp-transport.xml"/>
+    </chapter>
 
   </part>
+
+  <chapter id="ClassTree">
+    <title>Class Hierarchy</title>
+    <xi:include href="xml/tree_index.sgml"/>
+  </chapter>
+  <index id="api-index-full">
+    <title>Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-deprecated" role="deprecated">
+    <title>Index of deprecated symbols</title>
+    <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.12" role="3.12">
+    <title>Index of new symbols in 3.12</title>
+    <xi:include href="xml/api-index-3.12.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.10" role="3.10">
+    <title>Index of new symbols in 3.10</title>
+    <xi:include href="xml/api-index-3.10.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.8" role="3.8">
+    <title>Index of new symbols in 3.8</title>
+    <xi:include href="xml/api-index-3.8.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.6" role="3.6">
+    <title>Index of new symbols in 3.6</title>
+    <xi:include href="xml/api-index-3.6.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.4" role="3.4">
+    <title>Index of new symbols in 3.4</title>
+    <xi:include href="xml/api-index-3.4.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.2" role="3.2">
+    <title>Index of new symbols in 3.2</title>
+    <xi:include href="xml/api-index-3.2.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.0" role="3.0">
+    <title>Index of new symbols in 3.0</title>
+    <xi:include href="xml/api-index-3.0.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.32" role="2.32">
+    <title>Index of new symbols in 2.32</title>
+    <xi:include href="xml/api-index-2.32.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.30" role="2.30">
+    <title>Index of new symbols in 2.30</title>
+    <xi:include href="xml/api-index-2.30.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.28" role="2.28">
+    <title>Index of new symbols in 2.28</title>
+    <xi:include href="xml/api-index-2.28.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.26" role="2.26">
+    <title>Index of new symbols in 2.26</title>
+    <xi:include href="xml/api-index-2.26.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.24" role="2.24">
+    <title>Index of new symbols in 2.24</title>
+    <xi:include href="xml/api-index-2.24.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.22" role="2.22">
+    <title>Index of new symbols in 2.22</title>
+    <xi:include href="xml/api-index-2.22.xml"><xi:fallback /></xi:include>
+  </index>
+
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+
 </book>

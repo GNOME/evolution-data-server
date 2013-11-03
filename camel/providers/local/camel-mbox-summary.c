@@ -41,7 +41,16 @@
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
+/* Enable the use of elm/pine style "Status" & "X-Status" headers */
+#define STATUS_PINE
+
 #define CAMEL_MBOX_SUMMARY_VERSION (1)
+
+typedef struct _CamelMboxMessageContentInfo CamelMboxMessageContentInfo;
+
+struct _CamelMboxMessageContentInfo {
+	CamelMessageContentInfo info;
+};
 
 static CamelFIRecord *
 		summary_header_to_db		(CamelFolderSummary *,
@@ -104,7 +113,10 @@ static void encode_status (guint32 flags, gchar status[8]);
 static guint32 decode_status (const gchar *status);
 #endif
 
-G_DEFINE_TYPE (CamelMboxSummary, camel_mbox_summary, CAMEL_TYPE_LOCAL_SUMMARY)
+G_DEFINE_TYPE (
+	CamelMboxSummary,
+	camel_mbox_summary,
+	CAMEL_TYPE_LOCAL_SUMMARY)
 
 static gboolean
 mbox_info_set_user_flag (CamelMessageInfo *mi,

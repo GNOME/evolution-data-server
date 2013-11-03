@@ -48,10 +48,6 @@ typedef struct _CamelMaildirSummary CamelMaildirSummary;
 typedef struct _CamelMaildirSummaryClass CamelMaildirSummaryClass;
 typedef struct _CamelMaildirSummaryPrivate CamelMaildirSummaryPrivate;
 
-typedef struct _CamelMaildirMessageContentInfo {
-	CamelMessageContentInfo info;
-} CamelMaildirMessageContentInfo;
-
 enum {
 	CAMEL_MAILDIR_INFO_FILENAME = CAMEL_MESSAGE_INFO_LAST,
 	CAMEL_MAILDIR_INFO_LAST
