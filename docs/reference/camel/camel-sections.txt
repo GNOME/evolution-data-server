@@ -2696,8 +2696,6 @@ camel_file_util_decode_fixed_string
 camel_file_util_safe_filename
 camel_read
 camel_write
-camel_read_socket
-camel_write_socket
 camel_file_util_savename
 </SECTION>
 
