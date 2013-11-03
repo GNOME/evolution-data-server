@@ -4203,10 +4203,12 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 {
 	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
-	CamelStream *tcp_stream = NULL;
+	CamelStream *stream = NULL;
 	CamelStream *imapx_stream = NULL;
 	CamelIMAPXStore *store;
 	CamelSettings *settings;
+	GIOStream *base_stream;
+	GIOStream *tls_stream;
 	guint len;
 	guchar *token;
 	gint tok;
@@ -4253,15 +4255,18 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	}
 #endif
 
-	tcp_stream = camel_network_service_connect_sync (
+	base_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (store), cancellable, error);
 
-	if (tcp_stream == NULL) {
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	} else {
 		success = FALSE;
 		goto exit;
 	}
 
-	imapx_stream = camel_imapx_stream_new (tcp_stream);
+	imapx_stream = camel_imapx_stream_new (stream);
 
 	/* CamelIMAPXServer takes ownership of the IMAPX stream.
 	 * We need to set this right away for imapx_command_run()
@@ -4272,7 +4277,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	is->priv->stream = CAMEL_IMAPX_STREAM (imapx_stream);
 	g_mutex_unlock (&is->priv->stream_lock);
 
-	g_object_unref (tcp_stream);
+	g_object_unref (stream);
 
  connected:
 	CAMEL_IMAPX_STREAM (imapx_stream)->tagprefix = is->tagprefix;
@@ -4380,13 +4385,20 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		if (!success)
 			goto exit;
 
-		success = camel_network_service_starttls (
-			CAMEL_NETWORK_SERVICE (store), tcp_stream, error);
-		if (!success) {
+		base_stream = camel_stream_ref_base_stream (stream);
+		tls_stream = camel_network_service_starttls (
+			CAMEL_NETWORK_SERVICE (store), base_stream, error);
+		g_object_unref (base_stream);
+
+		if (tls_stream != NULL) {
+			camel_stream_set_base_stream (stream, tls_stream);
+			g_object_unref (tls_stream);
+		} else {
 			g_prefix_error (
 				error,
 				_("Failed to connect to IMAP server %s in secure mode: "),
 				host);
+			success = FALSE;
 			goto exit;
 		}
 

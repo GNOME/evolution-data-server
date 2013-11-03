@@ -66,7 +66,7 @@ struct _CamelNetworkServiceInterface {
 					(CamelNetworkService *service,
 					 CamelNetworkSecurityMethod method);
 
-	CamelStream *	(*connect_sync)	(CamelNetworkService *service,
+	GIOStream *	(*connect_sync)	(CamelNetworkService *service,
 					 GCancellable *cancellable,
 					 GError **error);
 
@@ -92,13 +92,13 @@ void		camel_network_service_set_connectable
 					 GSocketConnectable *connectable);
 gboolean	camel_network_service_get_host_reachable
 					(CamelNetworkService *service);
-CamelStream *	camel_network_service_connect_sync
+GIOStream *	camel_network_service_connect_sync
 					(CamelNetworkService *service,
 					 GCancellable *cancellable,
 					 GError **error);
-gboolean	camel_network_service_starttls
+GIOStream *	camel_network_service_starttls
 					(CamelNetworkService *service,
-					 CamelStream *stream,
+					 GIOStream *base_stream,
 					 GError **error);
 
 G_END_DECLS

@@ -350,7 +350,8 @@ connect_to_server (CamelService *service,
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
 	CamelSession *session;
-	CamelStream *tcp_stream;
+	CamelStream *stream;
+	GIOStream *base_stream;
 	const gchar *user_cache_dir;
 	guchar *buf;
 	guint len;
@@ -371,14 +372,17 @@ connect_to_server (CamelService *service,
 
 	g_object_unref (settings);
 
-	tcp_stream = camel_network_service_connect_sync (
+	base_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
-	if (tcp_stream == NULL)
+	if (base_stream == NULL)
 		goto fail;
 
-	nntp_stream = camel_nntp_stream_new (tcp_stream);
-	g_object_unref (tcp_stream);
+	stream = camel_stream_new (base_stream);
+	nntp_stream = camel_nntp_stream_new (stream);
+	g_object_unref (stream);
+
+	g_object_unref (base_stream);
 
 	/* Read the greeting, if any. */
 	if (camel_nntp_stream_line (nntp_stream, &buf, &len, cancellable, error) == -1) {

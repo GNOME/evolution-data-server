@@ -116,8 +116,9 @@ connect_to_server (CamelService *service,
 	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
-	CamelStream *tcp_stream;
+	CamelStream *stream;
 	GIOStream *base_stream;
+	GIOStream *tls_stream;
 	gchar *respbuf = NULL;
 	gboolean success = TRUE;
 	gchar *host;
@@ -138,25 +139,27 @@ connect_to_server (CamelService *service,
 
 	g_object_unref (settings);
 
-	tcp_stream = camel_network_service_connect_sync (
+	base_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
-	if (tcp_stream == NULL) {
+	if (base_stream != NULL) {
+		/* get the localaddr - needed later by smtp_helo */
+		transport->local_address =
+			g_socket_connection_get_local_address (
+			G_SOCKET_CONNECTION (base_stream), NULL);
+
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	} else {
 		success = FALSE;
 		goto exit;
 	}
 
 	transport->connected = TRUE;
 
-	/* get the localaddr - needed later by smtp_helo */
-	base_stream = camel_stream_ref_base_stream (tcp_stream);
-	transport->local_address = g_socket_connection_get_local_address (
-		G_SOCKET_CONNECTION (base_stream), NULL);
-	g_object_unref (base_stream);
-
-	transport->ostream = tcp_stream;
+	transport->ostream = stream;
 	transport->istream = camel_stream_buffer_new (
-		tcp_stream, CAMEL_STREAM_BUFFER_READ);
+		stream, CAMEL_STREAM_BUFFER_READ);
 
 	/* Read the greeting, note whether the server is ESMTP or not. */
 	do {
@@ -219,7 +222,7 @@ connect_to_server (CamelService *service,
 
 	d (fprintf (stderr, "sending : STARTTLS\r\n"));
 	if (camel_stream_write (
-		tcp_stream, "STARTTLS\r\n", 10, cancellable, error) == -1) {
+		stream, "STARTTLS\r\n", 10, cancellable, error) == -1) {
 		g_prefix_error (error, _("STARTTLS command failed: "));
 		success = FALSE;
 		goto exit;
@@ -250,13 +253,20 @@ connect_to_server (CamelService *service,
 	} while (*(respbuf+3) == '-'); /* if we got "220-" then loop again */
 
 	/* Okay, now toggle SSL/TLS mode */
-	success = camel_network_service_starttls (
-		CAMEL_NETWORK_SERVICE (service), tcp_stream, error);
-	if (!success) {
+	base_stream = camel_stream_ref_base_stream (stream);
+	tls_stream = camel_network_service_starttls (
+		CAMEL_NETWORK_SERVICE (service), base_stream, error);
+	g_object_unref (base_stream);
+
+	if (tls_stream != NULL) {
+		camel_stream_set_base_stream (stream, tls_stream);
+		g_object_unref (tls_stream);
+	} else {
 		g_prefix_error (
 			error,
 			_("Failed to connect to SMTP server %s in secure mode: "),
 			host);
+		success = FALSE;
 		goto exit;
 	}
 

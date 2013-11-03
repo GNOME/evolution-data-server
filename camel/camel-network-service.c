@@ -592,7 +592,7 @@ network_service_private_free (CamelNetworkServicePrivate *priv)
 	g_slice_free (CamelNetworkServicePrivate, priv);
 }
 
-static CamelStream *
+static GIOStream *
 network_service_connect_sync (CamelNetworkService *service,
                               GCancellable *cancellable,
                               GError **error)
@@ -603,7 +603,6 @@ network_service_connect_sync (CamelNetworkService *service,
 	CamelNetworkSecurityMethod method;
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
-	CamelStream *stream = NULL;
 
 	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
 
@@ -630,17 +629,12 @@ network_service_connect_sync (CamelNetworkService *service,
 	connection = g_socket_client_connect (
 		client, connectable, cancellable, error);
 
-	if (connection != NULL) {
-		stream = camel_stream_new (G_IO_STREAM (connection));
-		g_object_unref (connection);
-	}
-
 	g_object_unref (connectable);
 	g_object_unref (client);
 
 	g_object_unref (settings);
 
-	return stream;
+	return (connection != NULL) ? G_IO_STREAM (connection) : NULL;
 }
 
 static GSocketConnectable *
@@ -896,11 +890,11 @@ camel_network_service_get_host_reachable (CamelNetworkService *service)
  * connection attempt is cancelled, the function sets @error and returns
  * %NULL.
  *
- * Returns: a #CamelStream, or %NULL
+ * Returns: a #GIOStream, or %NULL
  *
  * Since: 3.2
  **/
-CamelStream *
+GIOStream *
 camel_network_service_connect_sync (CamelNetworkService *service,
                                     GCancellable *cancellable,
                                     GError **error)
@@ -918,35 +912,30 @@ camel_network_service_connect_sync (CamelNetworkService *service,
 /**
  * camel_network_service_starttls:
  * @service: a #CamelNetworkService
- * @stream: a #CamelStream
+ * @base_stream: a #GIOStream
  * @error: return location for a #GError, or %NULL
  *
- * Replaces @stream's #CamelStream:base-stream with a #GTlsClientConnection
- * wrapping #CamelStream:base-stream, which is assumed to communicate with
- * the server identified by @service's #CamelNetworkService:connectable.
+ * Creates a #GTlsClientConnection wrapping @base_stream, which is
+ * assumed to communicate with the server identified by @service's
+ * #CamelNetworkService:connectable.
  *
- * This should typically be called after issuing a STARTTLS command to a
- * server to initiate a Transport Layer Security handshake.
+ * This should typically be called after issuing a STARTTLS command
+ * to a server to initiate a Transport Layer Security handshake.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: the new #GTlsClientConnection, or %NULL on error
  *
  * Since: 3.12
  **/
-gboolean
+GIOStream *
 camel_network_service_starttls (CamelNetworkService *service,
-                                CamelStream *stream,
+                                GIOStream *base_stream,
                                 GError **error)
 {
 	GSocketConnectable *connectable;
 	GIOStream *tls_client_connection;
-	GIOStream *base_stream;
-	gboolean success = FALSE;
 
-	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), FALSE);
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), FALSE);
-
-	base_stream = camel_stream_ref_base_stream (stream);
-	g_return_val_if_fail (base_stream != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), NULL);
+	g_return_val_if_fail (G_IS_IO_STREAM (base_stream), NULL);
 
 	connectable = camel_network_service_ref_connectable (service);
 	g_return_val_if_fail (connectable != NULL, FALSE);
@@ -959,15 +948,10 @@ camel_network_service_starttls (CamelNetworkService *service,
 			tls_client_connection, "accept-certificate",
 			G_CALLBACK (network_service_accept_certificate_cb),
 			service);
-
-		camel_stream_set_base_stream (stream, tls_client_connection);
-		g_object_unref (tls_client_connection);
-		success = TRUE;
 	}
 
-	g_object_unref (base_stream);
 	g_object_unref (connectable);
 
-	return success;
+	return tls_client_connection;
 }
 

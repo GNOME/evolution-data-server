@@ -111,9 +111,11 @@ connect_to_server (CamelService *service,
 	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
-	CamelStream *tcp_stream;
+	CamelStream *stream;
 	CamelPOP3Engine *pop3_engine = NULL;
 	CamelPOP3Command *pc;
+	GIOStream *base_stream;
+	GIOStream *tls_stream;
 	gboolean disable_extensions;
 	gboolean success = TRUE;
 	gchar *host;
@@ -132,10 +134,13 @@ connect_to_server (CamelService *service,
 
 	g_object_unref (settings);
 
-	tcp_stream = camel_network_service_connect_sync (
+	base_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
-	if (tcp_stream == NULL) {
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	} else {
 		success = FALSE;
 		goto exit;
 	}
@@ -143,7 +148,7 @@ connect_to_server (CamelService *service,
 	/* parent class connect initialization */
 	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->
 		connect_sync (service, cancellable, error) == FALSE) {
-		g_object_unref (tcp_stream);
+		g_object_unref (stream);
 		success = FALSE;
 		goto exit;
 	}
@@ -151,7 +156,7 @@ connect_to_server (CamelService *service,
 	if (disable_extensions)
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 
-	if (!(pop3_engine = camel_pop3_engine_new (tcp_stream, flags, cancellable, &local_error)) ||
+	if (!(pop3_engine = camel_pop3_engine_new (stream, flags, cancellable, &local_error)) ||
 	    local_error != NULL) {
 		if (local_error)
 			g_propagate_error (error, local_error);
@@ -160,13 +165,13 @@ connect_to_server (CamelService *service,
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Failed to read a valid greeting from POP server %s"),
 				host);
-		g_object_unref (tcp_stream);
+		g_object_unref (stream);
 		success = FALSE;
 		goto exit;
 	}
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
-		g_object_unref (tcp_stream);
+		g_object_unref (stream);
 		goto exit;
 	}
 
@@ -202,9 +207,15 @@ connect_to_server (CamelService *service,
 	}
 
 	/* Okay, now toggle SSL/TLS mode */
-	success = camel_network_service_starttls (
-		CAMEL_NETWORK_SERVICE (service), tcp_stream, error);
-	if (!success) {
+	base_stream = camel_stream_ref_base_stream (stream);
+	tls_stream = camel_network_service_starttls (
+		CAMEL_NETWORK_SERVICE (service), base_stream, error);
+	g_object_unref (base_stream);
+
+	if (tls_stream != NULL) {
+		camel_stream_set_base_stream (stream, tls_stream);
+		g_object_unref (tls_stream);
+	} else {
 		g_prefix_error (
 			error,
 			_("Failed to connect to POP server %s in secure mode: "),
@@ -212,7 +223,7 @@ connect_to_server (CamelService *service,
 		goto stls_exception;
 	}
 
-	g_object_unref (tcp_stream);
+	g_object_unref (stream);
 
 	/* rfc2595, section 4 states that after a successful STLS
 	 * command, the client MUST discard prior CAPA responses */
@@ -235,7 +246,7 @@ stls_exception:
 	}*/
 
 exception:
-	g_object_unref (tcp_stream);
+	g_object_unref (stream);
 
 	g_clear_object (&pop3_engine);
 
