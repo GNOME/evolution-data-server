@@ -21,6 +21,7 @@ common_cflags = \
 	-DEDS_TEST_REGISTRY_DIR=\""$(abs_top_builddir)/modules/cache-reaper/.libs"\" \
 	-DEDS_TEST_CAMEL_DIR=\""$(abs_top_builddir)/camel/providers/local/.libs"\" \
 	$(E_DATA_SERVER_CFLAGS) \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(GIO_UNIX_CFLAGS) \
 	$(NULL)
 
@@ -29,6 +30,7 @@ common_libs = \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la \
 	$(E_DATA_SERVER_LIBS) \
+	$(EVOLUTION_CALENDAR_LIBS) \
 	$(GIO_UNIX_LIBS) \
 	$(NULL)
 

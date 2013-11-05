@@ -23,6 +23,7 @@ TEST_CPPFLAGS =							\
 	-DEDS_TEST_SQLITE_BOOKS=\""$(abs_top_srcdir)/tests/book-migration/db"\" \
 	-DEDS_TEST_BUILT_BOOKS=\""$(abs_top_builddir)/tests/book-migration/db"\" \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
+	$(EVOLUTION_CALENDAR_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
 	$(NULL)
 
@@ -42,6 +43,7 @@ TEST_LIBS = 				\
 	$(top_builddir)/tests/libebook/client/libclient-test-utils.la	\
 	$(top_builddir)/private/libedbus-private.la		\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
 

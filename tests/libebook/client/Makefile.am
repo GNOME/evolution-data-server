@@ -16,6 +16,7 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)/private				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
+	$(EVOLUTION_CALENDAR_CFLAGS)				\
 	$(CAMEL_CFLAGS)						\
 	$(NULL)
 
@@ -24,6 +25,7 @@ libclient_test_utils_la_LIBADD = 				\
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(top_builddir)/private/libedbus-private.la		\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(CAMEL_LIBS)						\
 	$(NULL)
 

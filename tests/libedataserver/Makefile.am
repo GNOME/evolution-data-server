@@ -22,6 +22,7 @@ test_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"e-data-server\" \
 	-DDATADIR=\"$(datadir)\" \
 	$(E_DATA_SERVER_CFLAGS) \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(GIO_UNIX_CFLAGS) \
 	$(NULL)
 
@@ -31,6 +32,7 @@ test_LDADD = \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la \
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la \
 	$(E_DATA_SERVER_LIBS) \
+	$(EVOLUTION_CALENDAR_LIBS) \
 	$(GIO_UNIX_LIBS) \
 	$(NULL)
 

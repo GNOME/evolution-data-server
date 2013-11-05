@@ -25,6 +25,7 @@ libdata_test_utils_la_CPPFLAGS =				\
 	-DSRCDIR=\""$(abs_srcdir)"\"				\
 	-DBUILDDIR=\""$(abs_topbuilddir)"\"			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
+	$(EVOLUTION_CALENDAR_CFLAGS)				\
 	$(GIO_UNIX_CFLAGS) 					\
 	$(CAMEL_CFLAGS)						\
 	$(NULL)
@@ -36,6 +37,7 @@ libdata_test_utils_la_LIBADD = 				\
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(top_builddir)/private/libedbus-private.la		\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(GIO_UNIX_LIBS) 					\
 	$(CAMEL_LIBS)						\
 	$(NULL)

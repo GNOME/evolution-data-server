@@ -19,6 +19,7 @@ libebook_test_utils_la_CPPFLAGS = \
 	-I$(top_builddir)/tests/test-server-utils   \
 	-DSRCDIR=\""$(abs_srcdir)"\"    \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(NULL)
 
@@ -26,6 +27,7 @@ libebook_test_utils_la_LIBADD = \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)                           \
+	$(EVOLUTION_CALENDAR_LIBS)                           \
 	$(CAMEL_LIBS) \
 	$(NULL)
 
