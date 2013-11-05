@@ -172,6 +172,7 @@ CamelServiceConnectionStatus
 		camel_service_get_connection_status
 						(CamelService *service);
 const gchar *	camel_service_get_display_name	(CamelService *service);
+gchar *		camel_service_dup_display_name	(CamelService *service);
 void		camel_service_set_display_name	(CamelService *service,
 						 const gchar *display_name);
 const gchar *	camel_service_get_password	(CamelService *service);

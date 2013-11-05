@@ -610,9 +610,9 @@ service_get_property (GObject *object,
 			return;
 
 		case PROP_DISPLAY_NAME:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_service_get_display_name (
+				camel_service_dup_display_name (
 				CAMEL_SERVICE (object)));
 			return;
 
@@ -1325,6 +1325,37 @@ camel_service_get_display_name (CamelService *service)
 }
 
 /**
+ * camel_service_dup_display_name:
+ * @service: a #CamelService
+ *
+ * Thread-safe variation of camel_service_get_display_name().
+ * Use this function when accessing @service from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelService:display-name
+ *
+ * Since: 3.12
+ **/
+gchar *
+camel_service_dup_display_name (CamelService *service)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	g_mutex_lock (&service->priv->property_lock);
+
+	protected = camel_service_get_display_name (service);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&service->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_service_set_display_name:
  * @service: a #CamelService
  * @display_name: a valid UTF-8 string, or %NULL
@@ -1344,14 +1375,20 @@ camel_service_set_display_name (CamelService *service,
 {
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	if (g_strcmp0 (service->priv->display_name, display_name) == 0)
-		return;
-
 	if (display_name != NULL)
 		g_return_if_fail (g_utf8_validate (display_name, -1, NULL));
 
+	g_mutex_lock (&service->priv->property_lock);
+
+	if (g_strcmp0 (service->priv->display_name, display_name) == 0) {
+		g_mutex_unlock (&service->priv->property_lock);
+		return;
+	}
+
 	g_free (service->priv->display_name);
 	service->priv->display_name = g_strdup (display_name);
+
+	g_mutex_unlock (&service->priv->property_lock);
 
 	g_object_notify (G_OBJECT (service), "display-name");
 }
