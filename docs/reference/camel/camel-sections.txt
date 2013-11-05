@@ -1917,6 +1917,7 @@ camel_service_get_display_name
 camel_service_dup_display_name
 camel_service_set_display_name
 camel_service_get_password
+camel_service_dup_password
 camel_service_set_password
 camel_service_get_user_data_dir
 camel_service_get_user_cache_dir

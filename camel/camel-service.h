@@ -176,6 +176,7 @@ gchar *		camel_service_dup_display_name	(CamelService *service);
 void		camel_service_set_display_name	(CamelService *service,
 						 const gchar *display_name);
 const gchar *	camel_service_get_password	(CamelService *service);
+gchar *		camel_service_dup_password	(CamelService *service);
 void		camel_service_set_password	(CamelService *service,
 						 const gchar *password);
 const gchar *	camel_service_get_user_data_dir	(CamelService *service);

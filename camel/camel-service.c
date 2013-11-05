@@ -617,9 +617,9 @@ service_get_property (GObject *object,
 			return;
 
 		case PROP_PASSWORD:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_service_get_password (
+				camel_service_dup_password (
 				CAMEL_SERVICE (object)));
 			return;
 
@@ -1413,6 +1413,37 @@ camel_service_get_password (CamelService *service)
 }
 
 /**
+ * camel_service_dup_password:
+ * @service: a #CamelService
+ *
+ * Thread-safe variation of camel_service_get_password().
+ * Use this function when accessing @service from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelService:password
+ *
+ * Since: 3.12
+ **/
+gchar *
+camel_service_dup_password (CamelService *service)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	g_mutex_lock (&service->priv->property_lock);
+
+	protected = camel_service_get_password (service);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&service->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_service_set_password:
  * @service: a #CamelService
  * @password: the password for @service
@@ -1429,11 +1460,17 @@ camel_service_set_password (CamelService *service,
 {
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	if (g_strcmp0 (service->priv->password, password) == 0)
+	g_mutex_lock (&service->priv->property_lock);
+
+	if (g_strcmp0 (service->priv->password, password) == 0) {
+		g_mutex_unlock (&service->priv->property_lock);
 		return;
+	}
 
 	g_free (service->priv->password);
 	service->priv->password = g_strdup (password);
+
+	g_mutex_unlock (&service->priv->property_lock);
 
 	g_object_notify (G_OBJECT (service), "password");
 }
