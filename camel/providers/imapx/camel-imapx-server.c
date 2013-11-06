@@ -2253,7 +2253,6 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 				if (!camel_folder_summary_check_uid (folder->summary, mi->uid)) {
 					RefreshInfoData *data;
-					gint cnt;
 
 					data = camel_imapx_job_get_data (job);
 					g_return_val_if_fail (data != NULL, FALSE);
@@ -2264,8 +2263,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 					camel_folder_change_info_recent_uid (data->changes, mi->uid);
 
-					cnt = (camel_folder_summary_count (folder->summary) * 100 ) / messages;
-					camel_operation_progress (cancellable, cnt ? cnt : 1);
+					if (messages > 0) {
+						gint cnt = (camel_folder_summary_count (folder->summary) * 100) / messages;
+						camel_operation_progress (cancellable, cnt ? cnt : 1);
+					}
 				} else {
 					camel_message_info_unref (mi);
 				}
