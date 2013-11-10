@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.10.2 2013-11-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 710787 - Replace most uses of sprintf() with g_snprintf()
+	             (Murray Cumming)
+	Bug 710989 - Replace most uses of strcpy() (Murray Cumming)
+
+Other Changes:
+	* Support migrating merged GConf trees, mainly for Debian users.
+	  (Matthew Barnes)
+
+Translations:
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Efstathios Iosifidis (el)
+
+
 Evolution-Data-Server 3.10.1 2013-10-14
 ---------------------------------------
 
