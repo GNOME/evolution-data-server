@@ -83,6 +83,59 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 	g_assert_cmpint (total, ==, 13);
 }
 
+static void
+test_cursor_sexp_and_step (EbSdbCursorFixture *fixture,
+			   gconstpointer  user_data)
+{
+	GError *error = NULL;
+	EBookQuery *query;
+	gchar *sexp = NULL;
+	GSList *results = NULL, *node;
+	EbSdbSearchData *data;
+
+	/* Set new sexp, only contacts with .com email addresses */
+	query = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, ".com");
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+
+	if (!e_book_backend_sqlitedb_cursor_set_sexp (((ESqliteDBFixture *) fixture)->ebsdb,
+						      fixture->cursor, sexp, &error))
+		g_error ("Failed to set sexp: %s", error->message);
+
+	/* Step 6 results from the beginning of the filtered list, gets up to contact 'sorted-8' */
+	if (!e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
+						  fixture->cursor,
+						  EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
+						  EBSDB_CURSOR_ORIGIN_BEGIN,
+						  6, &results, &error))
+		g_error ("Error fetching cursor results: %s", error->message);
+
+	/* Ensure we moved to the right contact */
+	node = g_slist_last (results);
+	g_assert (node);
+	data = node->data;
+	g_assert_cmpstr (data->uid, ==, "sorted-8");
+	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_free (results);
+	results = NULL;
+
+	/* Step 6 results more, gets up to contact 'sorted-12' */
+	if (!e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
+						  fixture->cursor,
+						  EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
+						  EBSDB_CURSOR_ORIGIN_CURRENT,
+						  6, &results, &error))
+		g_error ("Error fetching cursor results: %s", error->message);
+
+	/* Ensure we moved to the right contact */
+	node = g_slist_last (results);
+	g_assert (node);
+	data = node->data;
+	g_assert_cmpstr (data->uid, ==, "sorted-12");
+	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_free (results);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -100,6 +153,11 @@ main (gint argc,
 		    e_sqlitedb_cursor_fixture_setup,
 		    test_cursor_sexp_calculate_position,
 		    e_sqlitedb_cursor_fixture_teardown);
+	g_test_add ("/EbSdbCursor/SetSexp/Step", EbSdbCursorFixture, &book_closure,
+		    e_sqlitedb_cursor_fixture_setup,
+		    test_cursor_sexp_and_step,
+		    e_sqlitedb_cursor_fixture_teardown);
+
 
 	return e_test_server_utils_run ();
 }
