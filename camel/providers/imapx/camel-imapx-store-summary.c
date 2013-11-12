@@ -50,7 +50,7 @@ static gboolean
 namespace_load (FILE *in)
 {
 	gchar *unused = NULL;
-	gboolean success;
+	gboolean success = FALSE;
 	guint32 j;
 
 	/* XXX This eats through the old namespace data for backward
