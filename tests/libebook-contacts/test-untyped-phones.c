@@ -2,13 +2,14 @@
 #include <string.h>
 #include <libebook/libebook.h>
 
-/* TEL;WORK:... should map to PHONE_BUSINESS
+/* TEL;WORK,VOICE:... should map to PHONE_BUSINESS
+ * TEL;VOICE:... should map to PHONE_OTHER
  * TEL;FAX:... should map to OTHER_FAX. */
 #define VCARD					\
   "BEGIN:VCARD\n"				\
   "FN:Janet Jackson\n"				\
   "N:Janet\n"					\
-  "TEL;WORK:123-123-1234\n"			\
+  "TEL;WORK,VOICE:123-123-1234\n"		\
   "TEL;VOICE:456-456-4567\n"			\
   "TEL;FAX:321-321-4321\n"			\
   "END:VCARD\n"
@@ -24,6 +25,21 @@ test_business (void)
 	phone = e_contact_get_const (contact, E_CONTACT_PHONE_BUSINESS);
 	g_assert (phone != NULL);
 	g_assert_cmpstr (phone, ==, "123-123-1234");
+
+	g_object_unref (contact);
+}
+
+static void
+test_other_phone (void)
+{
+	EContact *contact;
+	const gchar *phone;
+
+	contact = e_contact_new_from_vcard (VCARD);
+
+	phone = e_contact_get_const (contact, E_CONTACT_PHONE_OTHER);
+	g_assert (phone != NULL);
+	g_assert_cmpstr (phone, ==, "456-456-4567");
 
 	g_object_unref (contact);
 }
@@ -50,11 +66,8 @@ main (gint argc,
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/");
 
-#if 0   /* This is failing for some reason, somewhere in EDS history it broke,
-	 * for now I'm leaving the compiler warning in place intentionally
-	 */
 	g_test_add_func ("/Contact/UntypedPhones/Business", test_business);
-#endif
+	g_test_add_func ("/Contact/UntypedPhones/OtherPhone", test_other_phone);
 	g_test_add_func ("/Contact/UntypedPhones/OtherFax", test_other_fax);
 
 	return g_test_run ();
