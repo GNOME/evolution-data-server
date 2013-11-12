@@ -404,6 +404,7 @@ parse_oids (const gchar **sp, gint *code, const gint allow_quoted)
 			*code = LDAP_SCHERR_UNEXPTOKEN;
 			LDAP_FREE (sval);
 			LDAP_VFREE (res);
+			/* cppcheck-suppress memleak */
 			return NULL;
 		}
 		parse_whsp (sp);
