@@ -37,6 +37,10 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
+#define CAMEL_NNTP_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate))
+
 /* The custom property ID is a CamelArg artifact.
  * It still identifies the property in state files. */
 enum {
@@ -44,11 +48,10 @@ enum {
 	PROP_APPLY_FILTERS = 0x2501
 };
 
-#define CAMEL_NNTP_FOLDER_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate))
-
-G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)
+G_DEFINE_TYPE (
+	CamelNNTPFolder,
+	camel_nntp_folder,
+	CAMEL_TYPE_OFFLINE_FOLDER)
 
 static gboolean
 nntp_folder_get_apply_filters (CamelNNTPFolder *folder)
@@ -177,41 +180,6 @@ camel_nntp_folder_selected (CamelNNTPFolder *nntp_folder,
 	return res;
 }
 
-static gboolean
-nntp_folder_refresh_info_online (CamelFolder *folder,
-                                 GCancellable *cancellable,
-                                 GError **error)
-{
-	CamelStore *parent_store;
-	CamelNNTPStore *nntp_store;
-	CamelFolderChangeInfo *changes = NULL;
-	CamelNNTPFolder *nntp_folder;
-	gchar *line;
-	gboolean success;
-
-	parent_store = camel_folder_get_parent_store (folder);
-
-	nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	nntp_store = CAMEL_NNTP_STORE (parent_store);
-
-	/* When invoked with no fmt, camel_nntp_command() just selects the folder
-	 * and should return zero. */
-	success = !camel_nntp_command (
-		nntp_store, cancellable, error, nntp_folder, &line, NULL);
-
-	if (camel_folder_change_info_changed (nntp_folder->changes)) {
-		changes = nntp_folder->changes;
-		nntp_folder->changes = camel_folder_change_info_new ();
-	}
-
-	if (changes) {
-		camel_folder_changed (folder, changes);
-		camel_folder_change_info_free (changes);
-	}
-
-	return success;
-}
-
 static void
 unset_flagged_flag (const gchar *uid,
                     CamelFolderSummary *summary)
@@ -229,37 +197,6 @@ unset_flagged_flag (const gchar *uid,
 
 		camel_message_info_unref (info);
 	}
-}
-
-static gboolean
-nntp_folder_sync (CamelFolder *folder,
-                  GError **error)
-{
-	GPtrArray *changed;
-
-	changed = camel_folder_summary_get_changed (folder->summary);
-	if (changed) {
-		g_ptr_array_foreach (changed, (GFunc) unset_flagged_flag, folder->summary);
-		g_ptr_array_foreach (changed, (GFunc) camel_pstring_free, NULL);
-		g_ptr_array_free (changed, TRUE);
-		camel_folder_summary_touch (folder->summary);
-	}
-
-	return camel_folder_summary_save_to_db (folder->summary, error);
-}
-
-static gboolean
-nntp_folder_sync_online (CamelFolder *folder,
-                         GError **error)
-{
-	return nntp_folder_sync (folder, error);
-}
-
-static gboolean
-nntp_folder_sync_offline (CamelFolder *folder,
-                          GError **error)
-{
-	return nntp_folder_sync (folder, error);
 }
 
 static gchar *
@@ -376,39 +313,6 @@ exit:
 	return stream;
 }
 
-static gboolean
-nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
-                           const gchar *uid,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelStream *stream;
-	gchar *article, *msgid;
-	gsize article_len;
-	gboolean success = TRUE;
-
-	article_len = strlen (uid) + 1;
-	article = alloca (article_len);
-	g_strlcpy (article, uid, article_len);
-	msgid = strchr (article, ',');
-	if (!msgid) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Internal error: UID in invalid format: %s"), uid);
-		return FALSE;
-	}
-	*msgid++ = 0;
-
-	stream = nntp_folder_download_message (
-		(CamelNNTPFolder *) disco_folder, article, msgid, cancellable, error);
-	if (stream)
-		g_object_unref (stream);
-	else
-		success = FALSE;
-
-	return success;
-}
-
 static GPtrArray *
 nntp_folder_search_by_expression (CamelFolder *folder,
                                   const gchar *expression,
@@ -490,93 +394,13 @@ nntp_folder_search_free (CamelFolder *folder,
 	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
 }
 
-static CamelMimeMessage *
-nntp_folder_get_message_sync (CamelFolder *folder,
-                              const gchar *uid,
-                              GCancellable *cancellable,
-                              GError **error)
-{
-	CamelStore *parent_store;
-	CamelMimeMessage *message = NULL;
-	CamelDataCache *nntp_cache;
-	CamelNNTPStore *nntp_store;
-	CamelFolderChangeInfo *changes;
-	CamelNNTPFolder *nntp_folder;
-	CamelStream *stream = NULL;
-	GIOStream *base_stream;
-	gchar *article, *msgid;
-	gsize article_len;
-
-	parent_store = camel_folder_get_parent_store (folder);
-
-	nntp_folder = CAMEL_NNTP_FOLDER (folder);
-	nntp_store = CAMEL_NNTP_STORE (parent_store);
-
-	article_len = strlen (uid) + 1;
-	article = alloca (article_len);
-	g_strlcpy (article, uid, article_len);
-	msgid = strchr (article, ',');
-	if (msgid == NULL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Internal error: UID in invalid format: %s"), uid);
-		return NULL;
-	}
-	*msgid++ = 0;
-
-	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
-	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
-	base_stream = camel_data_cache_get (nntp_cache, "cache", msgid, NULL);
-	g_clear_object (&nntp_cache);
-
-	if (base_stream != NULL) {
-		stream = camel_stream_new (base_stream);
-		g_object_unref (base_stream);
-	} else {
-		if (camel_disco_store_status ((CamelDiscoStore *) nntp_store) == CAMEL_DISCO_STORE_OFFLINE) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("This message is not currently available"));
-			goto fail;
-		}
-
-		stream = nntp_folder_download_message (nntp_folder, article, msgid, cancellable, error);
-		if (stream == NULL)
-			goto fail;
-	}
-
-	message = camel_mime_message_new ();
-	if (!camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) message, stream, cancellable, error)) {
-		g_prefix_error (error, _("Cannot get message %s: "), uid);
-		g_object_unref (message);
-		message = NULL;
-	}
-
-	g_object_unref (stream);
-fail:
-	if (camel_folder_change_info_changed (nntp_folder->changes)) {
-		changes = nntp_folder->changes;
-		nntp_folder->changes = camel_folder_change_info_new ();
-	} else {
-		changes = NULL;
-	}
-
-	if (changes) {
-		camel_folder_changed (folder, changes);
-		camel_folder_change_info_free (changes);
-	}
-
-	return message;
-}
-
 static gboolean
-nntp_folder_append_message_online (CamelFolder *folder,
-                                   CamelMimeMessage *mime_message,
-                                   const CamelMessageInfo *info,
-                                   gchar **appended_uid,
-                                   GCancellable *cancellable,
-                                   GError **error)
+nntp_folder_append_message_sync (CamelFolder *folder,
+                                 CamelMimeMessage *message,
+                                 CamelMessageInfo *info,
+                                 gchar **appended_uid,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	CamelStore *parent_store;
 	CamelNNTPStore *nntp_store;
@@ -633,7 +457,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	savedhdrs = NULL;
 	tail = (struct _camel_header_raw *) &savedhdrs;
 
-	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (mime_message)->headers;
+	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (message)->headers;
 	n = header->next;
 	while (n != NULL) {
 		if (!g_ascii_strcasecmp (n->name, "To") || !g_ascii_strcasecmp (n->name, "Cc") || !g_ascii_strcasecmp (n->name, "Bcc")) {
@@ -656,7 +480,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 			cancellable, &local_error);
 	if (local_error == NULL)
 		camel_data_wrapper_write_to_stream_sync (
-			CAMEL_DATA_WRAPPER (mime_message),
+			CAMEL_DATA_WRAPPER (message),
 			filtered_stream, cancellable, &local_error);
 	if (local_error == NULL)
 		camel_stream_flush (
@@ -691,74 +515,213 @@ exit:
 }
 
 static gboolean
-nntp_folder_append_message_offline (CamelFolder *folder,
-                                    CamelMimeMessage *mime_message,
-                                    const CamelMessageInfo *info,
-                                    gchar **appended_uid,
-                                    GCancellable *cancellable,
-                                    GError **error)
+nntp_folder_expunge_sync (CamelFolder *folder,
+                          GCancellable *cancellable,
+                          GError **error)
 {
-	g_set_error (
-		error, CAMEL_SERVICE_ERROR,
-		CAMEL_SERVICE_ERROR_UNAVAILABLE,
-		_("You cannot post NNTP messages while working offline!"));
+	CamelFolderSummary *summary;
+	CamelFolderChangeInfo *changes;
+	GPtrArray *known_uids;
+	guint ii;
 
-	return FALSE;
+	summary = folder->summary;
+
+	camel_folder_summary_prepare_fetch_all (summary, NULL);
+	known_uids = camel_folder_summary_get_array (summary);
+
+	if (known_uids == NULL)
+		return TRUE;
+
+	changes = camel_folder_change_info_new ();
+
+	for (ii = 0; ii < known_uids->len; ii++) {
+		CamelMessageInfo *info;
+		const gchar *uid;
+
+		uid = g_ptr_array_index (known_uids, ii);
+		info = camel_folder_summary_get (summary, uid);
+
+		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED) {
+			camel_folder_change_info_remove_uid (changes, uid);
+			camel_folder_summary_remove (summary, info);
+		}
+
+		camel_message_info_unref (info);
+	}
+
+	camel_folder_summary_save_to_db (summary, NULL);
+	camel_folder_changed (folder, changes);
+
+	camel_folder_change_info_free (changes);
+	camel_folder_summary_free_array (known_uids);
+
+	return TRUE;
 }
 
-/* I do not know what to do this exactly. Looking at the IMAP implementation for this, it
- * seems to assume the message is copied to a folder on the same store. In that case, an
- * NNTP implementation doesn't seem to make any sense. */
-static gboolean
-nntp_folder_transfer_message (CamelFolder *source,
-                              GPtrArray *uids,
-                              CamelFolder *dest,
-                              GPtrArray **transferred_uids,
-                              gboolean delete_orig,
+static CamelMimeMessage *
+nntp_folder_get_message_sync (CamelFolder *folder,
+                              const gchar *uid,
                               GCancellable *cancellable,
                               GError **error)
 {
-	g_set_error (
-		error, CAMEL_SERVICE_ERROR,
-		CAMEL_SERVICE_ERROR_UNAVAILABLE,
-		_("You cannot copy messages from a NNTP folder!"));
+	CamelStore *parent_store;
+	CamelMimeMessage *message = NULL;
+	CamelDataCache *nntp_cache;
+	CamelNNTPStore *nntp_store;
+	CamelFolderChangeInfo *changes;
+	CamelNNTPFolder *nntp_folder;
+	CamelStream *stream = NULL;
+	GIOStream *base_stream;
+	gchar *article, *msgid;
+	gsize article_len;
 
-	return FALSE;
+	parent_store = camel_folder_get_parent_store (folder);
+
+	nntp_folder = CAMEL_NNTP_FOLDER (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
+
+	article_len = strlen (uid) + 1;
+	article = alloca (article_len);
+	g_strlcpy (article, uid, article_len);
+	msgid = strchr (article, ',');
+	if (msgid == NULL) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Internal error: UID in invalid format: %s"), uid);
+		return NULL;
+	}
+	*msgid++ = 0;
+
+	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
+	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
+	base_stream = camel_data_cache_get (nntp_cache, "cache", msgid, NULL);
+	g_clear_object (&nntp_cache);
+
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	} else {
+		CamelServiceConnectionStatus connection_status;
+
+		connection_status = camel_service_get_connection_status (
+			CAMEL_SERVICE (parent_store));
+
+		if (connection_status != CAMEL_SERVICE_CONNECTED) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("This message is not currently available"));
+			goto fail;
+		}
+
+		stream = nntp_folder_download_message (nntp_folder, article, msgid, cancellable, error);
+		if (stream == NULL)
+			goto fail;
+	}
+
+	message = camel_mime_message_new ();
+	if (!camel_data_wrapper_construct_from_stream_sync ((CamelDataWrapper *) message, stream, cancellable, error)) {
+		g_prefix_error (error, _("Cannot get message %s: "), uid);
+		g_object_unref (message);
+		message = NULL;
+	}
+
+	g_object_unref (stream);
+fail:
+	if (camel_folder_change_info_changed (nntp_folder->changes)) {
+		changes = nntp_folder->changes;
+		nntp_folder->changes = camel_folder_change_info_new ();
+	} else {
+		changes = NULL;
+	}
+
+	if (changes) {
+		camel_folder_changed (folder, changes);
+		camel_folder_change_info_free (changes);
+	}
+
+	return message;
 }
 
 static gboolean
-nntp_folder_expunge_uids_offline (CamelFolder *folder,
-                                  GPtrArray *uids,
-                                  GError **error)
+nntp_folder_refresh_info_sync (CamelFolder *folder,
+                               GCancellable *cancellable,
+                               GError **error)
 {
-	CamelFolderChangeInfo *changes;
-	gint ii;
+	CamelStore *parent_store;
+	CamelNNTPStore *nntp_store;
+	CamelFolderChangeInfo *changes = NULL;
+	CamelNNTPFolder *nntp_folder;
+	gchar *line;
+	gboolean success;
 
-	g_return_val_if_fail (folder != NULL, FALSE);
-	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (folder), FALSE);
-	g_return_val_if_fail (uids != NULL, FALSE);
-	g_return_val_if_fail (folder->summary != NULL, FALSE);
+	parent_store = camel_folder_get_parent_store (folder);
 
-	/* can only remove deleted messages from a local cache */
+	nntp_folder = CAMEL_NNTP_FOLDER (folder);
+	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	changes = camel_folder_change_info_new ();
-	for (ii = 0; ii < uids->len; ii++) {
-		CamelMessageInfo *mi = camel_folder_summary_peek_loaded (folder->summary, uids->pdata[ii]);
-		if (mi) {
-			camel_folder_summary_remove (folder->summary, mi);
-			camel_message_info_unref (mi);
-		} else {
-			camel_folder_summary_remove_uid (folder->summary, uids->pdata[ii]);
-		}
+	/* When invoked with no fmt, camel_nntp_command() just selects the folder
+	 * and should return zero. */
+	success = !camel_nntp_command (
+		nntp_store, cancellable, error, nntp_folder, &line, NULL);
 
-		camel_folder_change_info_remove_uid (changes, uids->pdata[ii]);
+	if (camel_folder_change_info_changed (nntp_folder->changes)) {
+		changes = nntp_folder->changes;
+		nntp_folder->changes = camel_folder_change_info_new ();
 	}
 
-	camel_folder_summary_save_to_db (folder->summary, NULL);
-	camel_folder_changed (folder, changes);
-	camel_folder_change_info_free (changes);
+	if (changes) {
+		camel_folder_changed (folder, changes);
+		camel_folder_change_info_free (changes);
+	}
 
-	return TRUE;
+	return success;
+}
+
+static gboolean
+nntp_folder_synchronize_sync (CamelFolder *folder,
+                              gboolean expunge,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelFolderSummary *summary;
+	GPtrArray *changed;
+
+	if (expunge) {
+		if (!camel_folder_expunge_sync (folder, cancellable, error))
+			return FALSE;
+	}
+
+	summary = folder->summary;
+
+	changed = camel_folder_summary_get_changed (summary);
+	if (changed != NULL) {
+		g_ptr_array_foreach (
+			changed, (GFunc) unset_flagged_flag, summary);
+		g_ptr_array_foreach (
+			changed, (GFunc) camel_pstring_free, NULL);
+		camel_folder_summary_touch (summary);
+		g_ptr_array_free (changed, TRUE);
+	}
+
+	return camel_folder_summary_save_to_db (summary, error);
+}
+
+static gboolean
+nntp_folder_transfer_messages_to_sync (CamelFolder *source,
+                                       GPtrArray *uids,
+                                       CamelFolder *dest,
+                                       gboolean delete_originals,
+                                       GPtrArray **transferred_uids,
+                                       GCancellable *cancellable,
+                                       GError **error)
+{
+	g_set_error (
+		error, CAMEL_SERVICE_ERROR,
+		CAMEL_SERVICE_ERROR_UNAVAILABLE,
+		_("You cannot copy messages from a NNTP folder"));
+
+	return FALSE;
 }
 
 static void
@@ -766,7 +729,6 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 {
 	GObjectClass *object_class;
 	CamelFolderClass *folder_class;
-	CamelDiscoFolderClass *disco_folder_class;
 
 	g_type_class_add_private (class, sizeof (CamelNNTPFolderPrivate));
 
@@ -782,23 +744,12 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	folder_class->search_by_uids = nntp_folder_search_by_uids;
 	folder_class->search_free = nntp_folder_search_free;
 	folder_class->get_filename = nntp_get_filename;
+	folder_class->append_message_sync = nntp_folder_append_message_sync;
+	folder_class->expunge_sync = nntp_folder_expunge_sync;
 	folder_class->get_message_sync = nntp_folder_get_message_sync;
-
-	disco_folder_class = CAMEL_DISCO_FOLDER_CLASS (class);
-	disco_folder_class->sync_online = nntp_folder_sync_online;
-	disco_folder_class->sync_resyncing = nntp_folder_sync_offline;
-	disco_folder_class->sync_offline = nntp_folder_sync_offline;
-	disco_folder_class->cache_message = nntp_folder_cache_message;
-	disco_folder_class->append_online = nntp_folder_append_message_online;
-	disco_folder_class->append_resyncing = nntp_folder_append_message_online;
-	disco_folder_class->append_offline = nntp_folder_append_message_offline;
-	disco_folder_class->transfer_online = nntp_folder_transfer_message;
-	disco_folder_class->transfer_resyncing = nntp_folder_transfer_message;
-	disco_folder_class->transfer_offline = nntp_folder_transfer_message;
-	disco_folder_class->refresh_info_online = nntp_folder_refresh_info_online;
-	disco_folder_class->expunge_uids_online = nntp_folder_expunge_uids_offline;
-	disco_folder_class->expunge_uids_offline = nntp_folder_expunge_uids_offline;
-	disco_folder_class->expunge_uids_resyncing = nntp_folder_expunge_uids_offline;
+	folder_class->refresh_info_sync = nntp_folder_refresh_info_sync;
+	folder_class->synchronize_sync = nntp_folder_synchronize_sync;
+	folder_class->transfer_messages_to_sync = nntp_folder_transfer_messages_to_sync;
 
 	g_object_class_install_property (
 		object_class,

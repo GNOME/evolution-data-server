@@ -53,8 +53,7 @@ typedef struct _CamelNNTPFolderClass CamelNNTPFolderClass;
 typedef struct _CamelNNTPFolderPrivate CamelNNTPFolderPrivate;
 
 struct _CamelNNTPFolder {
-	CamelDiscoFolder parent;
-
+	CamelOfflineFolder parent;
 	CamelNNTPFolderPrivate *priv;
 
 	struct _CamelFolderChangeInfo *changes;
@@ -63,7 +62,7 @@ struct _CamelNNTPFolder {
 };
 
 struct _CamelNNTPFolderClass {
-	CamelDiscoFolderClass parent;
+	CamelOfflineFolderClass parent;
 };
 
 GType		camel_nntp_folder_get_type	(void);

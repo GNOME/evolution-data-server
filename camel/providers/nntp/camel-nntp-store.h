@@ -75,14 +75,14 @@ typedef enum {
 } CamelNNTPCapabilities;
 
 struct _CamelNNTPStore {
-	CamelDiscoStore parent;
+	CamelOfflineStore parent;
 	CamelNNTPStorePrivate *priv;
 
 	struct _xover_header *xover;
 };
 
 struct _CamelNNTPStoreClass {
-	CamelDiscoStoreClass parent_class;
+	CamelOfflineStoreClass parent_class;
 };
 
 GType		camel_nntp_store_get_type	(void);
