@@ -47,6 +47,7 @@ setup_custom_book (ESource *scratch,
 		0);
 	e_source_backend_summary_setup_set_indexed_fields (
 		setup,
+		E_CONTACT_EMAIL, E_BOOK_INDEX_PREFIX,
 		E_CONTACT_TEL, E_BOOK_INDEX_SUFFIX,
 		E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
 		E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
@@ -456,6 +457,19 @@ main (gint argc,
 				E_BOOK_QUERY_ENDS_WITH,
 				"jackson.com"),
 			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Exact/Email",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_EMAIL,
+				E_BOOK_QUERY_IS,
+				"micheal@jackson.com"),
+			1,
 			suites[i].direct,
 			suites[i].custom,
 			FALSE);
