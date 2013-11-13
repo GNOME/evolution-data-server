@@ -595,6 +595,13 @@ collection_backend_get_property (GObject *object,
                                  GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_PROXY_RESOLVER:
+			g_value_take_object (
+				value,
+				e_collection_backend_ref_proxy_resolver (
+				E_COLLECTION_BACKEND (object)));
+			return;
+
 		case PROP_SERVER:
 			g_value_take_object (
 				value,
