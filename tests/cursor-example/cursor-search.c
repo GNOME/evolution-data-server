@@ -24,8 +24,6 @@
 #include "cursor-search.h"
 
 /* GObjectClass */
-static void  cursor_search_class_init     (CursorSearchClass *klass);
-static void  cursor_search_init           (CursorSearch      *search);
 static void  cursor_search_finalize       (GObject           *object);
 static void  cursor_search_get_property   (GObject           *object,
 					   guint              property_id,

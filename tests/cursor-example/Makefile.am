@@ -33,6 +33,7 @@ cursor_example_CPPFLAGS =					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
 	$(EXAMPLES_CFLAGS) $(CAMEL_CFLAGS)			\
 	$(CODE_COVERAGE_CFLAGS)					\
+	$(WARNING_FLAGS)					\
 	$(NULL)
 cursor_example_CFLAGS   = 
 cursor_example_LDFLAGS  = \
@@ -59,3 +60,7 @@ cursor-example-resources.c: cursor-example.gresources.xml $(UI_FILES)
 
 EXTRA_DIST = $(UI_FILES) cursor-example.gresources.xml
 CLEANFILES = $(BUILT_SOURCES)
+
+@GNOME_CODE_COVERAGE_RULES@
+
+-include $(top_srcdir)/git.mk
