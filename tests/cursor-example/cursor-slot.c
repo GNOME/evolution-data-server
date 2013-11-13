@@ -23,10 +23,6 @@
 
 #include "cursor-slot.h"
 
-/* GObjectClass */
-static void  cursor_slot_class_init  (CursorSlotClass *klass);
-static void  cursor_slot_init        (CursorSlot      *slot);
-
 struct _CursorSlotPrivate {
 	/* Screen widgets */
 	GtkWidget *area;

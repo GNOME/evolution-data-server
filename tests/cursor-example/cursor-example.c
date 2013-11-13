@@ -26,6 +26,7 @@
 #include "cursor-search.h"
 #include "cursor-slot.h"
 #include "cursor-data.h"
+#include "cursor-slot.h"
 
 #define N_SLOTS         10
 
@@ -37,8 +38,6 @@
 typedef enum _TimeoutActivity TimeoutActivity;
 
 /* GObjectClass */
-static void            cursor_example_class_init              (CursorExampleClass *klass);
-static void            cursor_example_init                    (CursorExample      *example);
 static void            cursor_example_dispose                 (GObject            *object);
 
 /* UI Callbacks */

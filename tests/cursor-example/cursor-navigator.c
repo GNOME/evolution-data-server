@@ -22,8 +22,6 @@
 #include "cursor-navigator.h"
 
 /* GObjectClass */
-static void            cursor_navigator_class_init      (CursorNavigatorClass *klass);
-static void            cursor_navigator_init            (CursorNavigator      *navigator);
 static void            cursor_navigator_constructed     (GObject              *object);
 static void            cursor_navigator_finalize        (GObject              *object);
 
