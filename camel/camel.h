@@ -35,9 +35,6 @@
 #include <camel/camel-data-wrapper.h>
 #include <camel/camel-db.h>
 #include <camel/camel-debug.h>
-#include <camel/camel-disco-diary.h>
-#include <camel/camel-disco-folder.h>
-#include <camel/camel-disco-store.h>
 #include <camel/camel-enums.h>
 #include <camel/camel-enumtypes.h>
 #include <camel/camel-file-utils.h>

@@ -67,9 +67,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-data-wrapper.c			\
 	camel-db.c				\
 	camel-debug.c				\
-	camel-disco-diary.c			\
-	camel-disco-folder.c			\
-	camel-disco-store.c			\
 	camel-file-utils.c			\
 	camel-filter-driver.c			\
 	camel-filter-input-stream.c		\
@@ -181,9 +178,6 @@ libcamelinclude_HEADERS =			\
 	camel-data-wrapper.h			\
 	camel-db.h				\
 	camel-debug.h				\
-	camel-disco-diary.h			\
-	camel-disco-folder.h			\
-	camel-disco-store.h			\
 	camel-enums.h				\
 	camel-enumtypes.h			\
 	camel-file-utils.h			\
