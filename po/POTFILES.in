@@ -174,6 +174,7 @@ camel/providers/smtp/camel-smtp-provider.c
 camel/providers/smtp/camel-smtp-transport.c
 data/org.gnome.evolution-data-server.addressbook.gschema.xml.in
 data/org.gnome.evolution-data-server.calendar.gschema.xml.in
+data/org.gnome.evolution.shell.network-config.gschema.xml.in
 libebackend/e-authentication-mediator.c
 libebackend/e-authentication-session.c
 libebackend/e-backend.c
@@ -228,6 +229,5 @@ services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]services/evolution-source-registry/builtin/weather-stub.source.in
 [type: gettext/ini]services/evolution-source-registry/builtin/webcal-stub.source.in
 [type: gettext/ini]services/evolution-source-registry/builtin/webdav-stub.source.in
-services/evolution-source-registry/org.gnome.evolution.shell.network-config.gschema.xml.in
 services/evolution-user-prompter/evolution-user-prompter.c
 services/evolution-user-prompter/prompt-user-gtk.c
