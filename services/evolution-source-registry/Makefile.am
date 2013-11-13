@@ -24,30 +24,20 @@ builtin_sources = $(builtin_sources_in_files:.source.in=.source)
 %.source: %.source.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po)
 	$(AM_V_GEN) $(MKDIR_P) builtin && LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 
-gsettings_SCHEMAS = org.gnome.evolution.shell.network-config.gschema.xml
-@INTLTOOL_XML_NOMERGE_RULE@
-@GSETTINGS_RULES@
-
 service_in_files = org.gnome.evolution.dataserver.Sources.service.in
 servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
 @EVO_SUBST_SERVICE_RULE@
 
-DISTCLEANFILES = \
-	$(gsettings_SCHEMAS) \
-	$(NULL)
-
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(builtin_sources) \
-	$(gsettings_SCHEMAS:.xml=.valid) \
 	$(service_DATA) \
 	$(NULL)
 
 EXTRA_DIST = \
 	evolution-source-registry-resource.xml \
 	$(builtin_sources_in_files) \
-	$(gsettings_SCHEMAS:.xml=.xml.in) \
 	$(service_in_files) \
 	$(NULL)
 
