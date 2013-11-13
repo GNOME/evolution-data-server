@@ -231,9 +231,6 @@ camel_imapx_namespace_response_new (CamelIMAPXStream *stream,
 			case 2:
 				category = CAMEL_IMAPX_NAMESPACE_SHARED;
 				break;
-			default:
-				g_warn_if_reached ();
-				goto fail;
 		}
 
 		success = imapx_namespace_response_parse_namespace (

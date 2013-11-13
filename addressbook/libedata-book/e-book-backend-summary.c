@@ -440,7 +440,10 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 			return FALSE;
 		}
 		else {
-			g_rename (new_filename, summary->priv->summary_path);
+			if (g_rename (new_filename, summary->priv->summary_path) == -1) {
+				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC,
+					   new_filename, summary->priv->summary_path, g_strerror (errno));
+			}
 			g_free (new_filename);
 		}
 	}
@@ -687,7 +690,10 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 
 	/* unlink the old summary and rename the new one */
 	g_unlink (summary->priv->summary_path);
-	g_rename (new_filename, summary->priv->summary_path);
+	if (g_rename (new_filename, summary->priv->summary_path) == -1) {
+		g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC,
+			   new_filename, summary->priv->summary_path, g_strerror (errno));
+	}
 
 	g_free (new_filename);
 

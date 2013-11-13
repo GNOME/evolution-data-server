@@ -1213,7 +1213,10 @@ camel_service_migrate_files (CamelService *service)
 	/* If the old data directory name exists, try renaming
 	 * it to the new data directory.  Failure is non-fatal. */
 	if (old_data_dir != NULL) {
-		g_rename (old_data_dir, new_data_dir);
+		if (g_rename (old_data_dir, new_data_dir) == -1) {
+			g_warning ("%s: Failed to rename '%s' to '%s': %s",
+				   G_STRFUNC, old_data_dir, new_data_dir, g_strerror (errno));
+		}
 		g_free (old_data_dir);
 	}
 }

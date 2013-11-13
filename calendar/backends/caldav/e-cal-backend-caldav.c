@@ -1868,7 +1868,8 @@ caldav_gen_file_from_uid_cal (ECalBackendCalDAV *cbdav,
 		     subcomp;
 		     subcomp = icalcomponent_get_next_component (icalcomp, my_kind)) {
 			uid = icalcomponent_get_uid (subcomp);
-			break;
+			if (uid && *uid)
+				break;
 		}
 	} else if (icalcomponent_isa (icalcomp) == my_kind) {
 		uid = icalcomponent_get_uid (icalcomp);

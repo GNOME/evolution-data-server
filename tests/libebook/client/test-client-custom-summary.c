@@ -317,7 +317,10 @@ main (gint argc,
 	g_test_bug_base ("http://bugzilla.gnome.org/");
 
 	/* Change environment so that the addressbook factory inherits this setting */
-	g_setenv ("LC_ALL", "en_US.UTF-8", TRUE);
+	if (!g_setenv ("LC_ALL", "en_US.UTF-8", TRUE)) {
+		g_warn_if_reached ();
+		return 1;
+	}
 	setlocale (LC_ALL, "");
 
 #if defined (LC_ADDRESS)

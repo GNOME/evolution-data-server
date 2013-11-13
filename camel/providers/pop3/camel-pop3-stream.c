@@ -426,6 +426,7 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 				}
 			}
 			state = 1;
+			break;
 		case 1:
 			/* Scan for sentinal */
 			while ((*p++) != '\n')

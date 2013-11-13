@@ -447,7 +447,8 @@ camel_object_state_write (CamelObject *object)
 		    && class->state_write (object, fp) == 0) {
 			if (fclose (fp) == 0) {
 				res = 0;
-				g_rename (savename, state_filename);
+				if (g_rename (savename, state_filename) == -1)
+					res = -1;
 			}
 		} else {
 			fclose (fp);

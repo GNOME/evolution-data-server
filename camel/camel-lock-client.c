@@ -149,8 +149,8 @@ lock_helper_init (GError **error)
 		close (lock_stdout_pipe[1]);
 
 		/* so the child knows when we vanish */
-		fcntl (lock_stdin_pipe[1], F_SETFD, FD_CLOEXEC);
-		fcntl (lock_stdout_pipe[0], F_SETFD, FD_CLOEXEC);
+		(void) fcntl (lock_stdin_pipe[1], F_SETFD, FD_CLOEXEC);
+		(void) fcntl (lock_stdout_pipe[0], F_SETFD, FD_CLOEXEC);
 	}
 
 	return 0;

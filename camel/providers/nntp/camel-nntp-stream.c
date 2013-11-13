@@ -462,6 +462,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 				}
 			}
 			state = 1;
+			break;
 		case 1:
 			/* Scan for sentinal */
 			while ((*p++) != '\n')

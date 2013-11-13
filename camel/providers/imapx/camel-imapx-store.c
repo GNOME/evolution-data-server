@@ -2186,7 +2186,6 @@ imapx_store_rename_folder_sync (CamelStore *store,
 
 	g_object_unref (settings);
 
-	imapx_store = CAMEL_IMAPX_STORE (store);
 	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
 
 	if (imapx_server == NULL)

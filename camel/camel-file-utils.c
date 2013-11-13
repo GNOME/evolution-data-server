@@ -454,7 +454,7 @@ camel_read (gint fd,
 		fd_set rdset;
 
 		flags = fcntl (fd, F_GETFL);
-		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
+		(void) fcntl (fd, F_SETFL, flags | O_NONBLOCK);
 
 		do {
 			struct timeval tv;
@@ -484,7 +484,7 @@ camel_read (gint fd,
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	failed:
 		errnosav = errno;
-		fcntl (fd, F_SETFL, flags);
+		(void) fcntl (fd, F_SETFL, flags);
 		errno = errnosav;
 #endif
 	}
@@ -550,7 +550,7 @@ camel_write (gint fd,
 		fd_set rdset, wrset;
 
 		flags = fcntl (fd, F_GETFL);
-		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
+		(void) fcntl (fd, F_SETFL, flags | O_NONBLOCK);
 
 		fdmax = MAX (fd, cancel_fd) + 1;
 		do {
@@ -587,7 +587,7 @@ camel_write (gint fd,
 		} while (w != -1 && written < n);
 
 		errnosav = errno;
-		fcntl (fd, F_SETFL, flags);
+		(void) fcntl (fd, F_SETFL, flags);
 		errno = errnosav;
 #endif
 	}

@@ -377,9 +377,10 @@ camel_certdb_load (CamelCertDB *certdb)
 	if (!class->header_load || !class->cert_load) {
 		fclose (in);
 		in = NULL;
+		g_warn_if_reached ();
+
+		return -1;
 	}
-	g_return_val_if_fail (class->header_load != NULL, -1);
-	g_return_val_if_fail (class->cert_load != NULL, -1);
 
 	g_mutex_lock (&certdb->priv->io_lock);
 	if (class->header_load (certdb, in) == -1)
@@ -458,9 +459,10 @@ camel_certdb_save (CamelCertDB *certdb)
 	if (!class->header_save || !class->cert_save) {
 		fclose (out);
 		out = NULL;
+		g_warn_if_reached ();
+
+		return -1;
 	}
-	g_return_val_if_fail (class->header_save != NULL, -1);
-	g_return_val_if_fail (class->cert_save != NULL, -1);
 
 	g_mutex_lock (&certdb->priv->io_lock);
 

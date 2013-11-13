@@ -99,7 +99,6 @@ static void
 cursor_navigator_constructed (GObject *object)
 {
 	CursorNavigator        *navigator = CURSOR_NAVIGATOR (object);
-	CursorNavigatorPrivate *priv = navigator->priv;
 	GtkAdjustment          *adj = NULL;
 
 	G_OBJECT_CLASS (cursor_navigator_parent_class)->constructed (object);

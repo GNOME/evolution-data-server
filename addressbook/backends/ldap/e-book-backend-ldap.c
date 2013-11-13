@@ -4075,8 +4075,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 							/* get the e-mail id for each member and add them to the list */
 
 							book_view = find_book_view (bl);
-							if (view_limit == -1 || view_limit > bl->priv->ldap_limit)
-								view_limit = bl->priv->ldap_limit;
+							view_limit = bl->priv->ldap_limit;
 
 							count = ldap_count_values (values);
 							member_info = g_new0 (gchar *, count + 1);

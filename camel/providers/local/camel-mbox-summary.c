@@ -927,11 +927,15 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		/* we write out the xevnew string, assuming its been folded identically to the original too! */
 
 		lastpos = lseek (fd, 0, SEEK_CUR);
-		lseek (fd, xevoffset + strlen ("X-Evolution: "), SEEK_SET);
+		(void) lseek (fd, xevoffset + strlen ("X-Evolution: "), SEEK_SET);
 		do {
 			len = write (fd, xevnew, strlen (xevnew));
 		} while (len == -1 && errno == EINTR);
-		lseek (fd, lastpos, SEEK_SET);
+
+		if (lastpos != -1 && lseek (fd, lastpos, SEEK_SET) == (off_t) -1) {
+			g_warning ("%s: Failed to rewind file to last position: %s",
+				   G_STRFUNC, g_strerror (errno));
+		}
 		g_free (xevnew);
 
 		camel_mime_parser_drop_step (mp);
@@ -967,10 +971,9 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
  error:
 	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
+	g_object_unref (mp);
 	if (fd != -1)
 		close (fd);
-	if (mp)
-		g_object_unref (mp);
 	if (info)
 		camel_message_info_unref (info);
 
@@ -1129,7 +1132,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 	camel_folder_summary_prepare_fetch_all (s, NULL);
 	known_uids = camel_folder_summary_get_array (s);
 	/* walk them in the same order as stored in the file */
-	if (known_uids->len)
+	if (known_uids && known_uids->len)
 		g_ptr_array_sort_with_data (known_uids, cms_sort_frompos, mbs);
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		gint pc = (i + 1) * 100 / known_uids->len;

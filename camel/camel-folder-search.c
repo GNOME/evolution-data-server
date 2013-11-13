@@ -1047,12 +1047,13 @@ folder_search_match_threads (CamelSExp *sexp,
 		} else {
 			if (type == 3) {
 				scan = node;
+				/* coverity[check_after_deref] */
 				while (scan && scan->parent) {
 					scan = scan->parent;
 					g_hash_table_insert (results, (gchar *) camel_message_info_uid (scan->message), GINT_TO_POINTER (1));
 				}
 			} else if (type == 1) {
-				while (node && node->parent)
+				while (node != NULL && node->parent)
 					node = node->parent;
 			}
 			g_hash_table_insert (results, (gchar *) camel_message_info_uid (node->message), GINT_TO_POINTER (1));

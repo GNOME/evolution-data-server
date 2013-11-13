@@ -2593,8 +2593,10 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				g_list_free (detached);
 			}
 			break;
+		/* coverity[dead_error_begin] */
 		case E_CAL_OBJ_MOD_ONLY_THIS:
 			/* not reached, keep compiler happy */
+			g_warn_if_reached ();
 			break;
 		}
 
@@ -2911,7 +2913,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			ECalComponent *old_component = NULL;
 			ECalComponent *new_component = NULL;
 
-			obj_data = remove_instance (
+			remove_instance (
 				cbfile, obj_data, id->uid, recur_id, mod,
 				&old_component, &new_component, error);
 

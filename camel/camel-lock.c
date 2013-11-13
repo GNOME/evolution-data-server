@@ -240,7 +240,7 @@ camel_unlock_fcntl (gint fd)
 
 	memset (&lock, 0, sizeof (lock));
 	lock.l_type = F_UNLCK;
-	fcntl (fd, F_SETLK, &lock);
+	(void) fcntl (fd, F_SETLK, &lock);
 #endif
 }
 

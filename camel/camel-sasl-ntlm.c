@@ -74,12 +74,6 @@ G_DEFINE_TYPE (CamelSaslNTLM, camel_sasl_ntlm, CAMEL_TYPE_SASL)
 
 #define NTLM_AUTH_HELPER "/usr/bin/ntlm_auth"
 
-static void ntlm_calc_response   (const guchar key[21],
-				  const guchar plaintext[8],
-				  guchar results[24]);
-static void ntlm_lanmanager_hash (const gchar *password, gchar hash[21]);
-static void ntlm_nt_hash         (const gchar *password, gchar hash[21]);
-
 typedef struct {
 	guint16 length;
 	guint16 allocated;
@@ -152,7 +146,7 @@ ntlm_lanmanager_hash (const gchar *password,
 	DES_KS ks;
 	gint i;
 
-	for (i = 0; i < 14 && password[i]; i++)
+	for (i = 0; i < 14 && password && password[i]; i++)
 		lm_password[i] = toupper ((guchar) password[i]);
 
 	for (; i < 15; i++)
@@ -172,6 +166,9 @@ ntlm_nt_hash (const gchar *password,
               gchar hash[21])
 {
 	guchar *buf, *p;
+
+	if (!password)
+		password = "";
 
 	p = buf = g_malloc (strlen (password) * 2);
 

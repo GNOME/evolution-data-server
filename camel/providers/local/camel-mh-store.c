@@ -128,7 +128,7 @@ folders_update (const gchar *root,
 				if (ret == -1)
 					goto fail;
 				mode = UPDATE_NONE;
-			} else if (tmp == NULL) {
+			} else if (cmp == 0) {
 				/* already there */
 				mode = UPDATE_NONE;
 			}
@@ -169,8 +169,9 @@ folders_update (const gchar *root,
 		goto fail;
 
 done:
-	/* should we care if this fails?  I suppose so ... */
-	g_rename (tmpnew, tmp);
+	if (g_rename (tmpnew, tmp) == -1) {
+		g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, tmpnew, tmp, g_strerror (errno));
+	}
 fail:
 	unlink (tmpnew);		/* remove it if its there */
 	g_free (line);

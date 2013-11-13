@@ -104,9 +104,7 @@ cursor_search_class_init (CursorSearchClass *klass)
 static void
 cursor_search_init (CursorSearch *search)
 {
-	CursorSearchPrivate *priv;
-
-	search->priv = priv = cursor_search_get_instance_private (search);
+	search->priv = cursor_search_get_instance_private (search);
 
 	gtk_widget_init_template (GTK_WIDGET (search));
 

@@ -744,6 +744,8 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 		if (dw->mime_type)
 			camel_content_type_unref (dw->mime_type);
 		dw->mime_type = camel_content_type_decode ("message/rfc822");
+		/* coverity[fallthrough] */
+
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		/* we have the headers, build them into 'us' */

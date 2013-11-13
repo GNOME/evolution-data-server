@@ -1062,7 +1062,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	}
 
 	/* Lookup all recipients certs, for later working */
-	recipient_certs = (CERTCertificate **) PORT_ArenaZAlloc (poolp, sizeof (*recipient_certs[0]) * (recipients->len + 1));
+	recipient_certs = (CERTCertificate **) PORT_ArenaZAlloc (poolp, sizeof (recipient_certs[0]) * (recipients->len + 1));
 	if (recipient_certs == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
 		goto fail;

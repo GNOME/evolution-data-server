@@ -296,8 +296,6 @@ upload_contact (EBookBackendWebdav *webdav,
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	webdav_extension = e_source_get_extension (source, extension_name);
 
-	source = e_backend_get_source (E_BACKEND (webdav));
-
 	uri = e_contact_get (contact, E_CONTACT_UID);
 	if (uri == NULL) {
 		g_warning ("can't upload contact without UID");
@@ -1626,7 +1624,7 @@ book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
 static void
 e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 {
-	GObjectClass      *object_class = G_OBJECT_CLASS (class);
+	GObjectClass *object_class;
 	EBookBackendClass *backend_class;
 
 	g_type_class_add_private (class, sizeof (EBookBackendWebdavPrivate));

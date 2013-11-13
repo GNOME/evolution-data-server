@@ -523,6 +523,11 @@ pop3_folder_get_filename (CamelFolder *folder,
 	}
 
 	pop3_cache = camel_pop3_store_ref_cache (pop3_store);
+	if (!pop3_cache) {
+		g_warn_if_reached ();
+		return NULL;
+	}
+
 	filename = camel_data_cache_get_filename (
 		pop3_cache, "cache", fi->uid);
 	g_clear_object (&pop3_cache);
@@ -977,7 +982,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 
 	if (g_cancellable_is_cancelled (cancellable)) {
 		if (error && !*error)
-			g_cancellable_set_error_if_cancelled (cancellable, error);
+			(void) g_cancellable_set_error_if_cancelled (cancellable, error);
 		return FALSE;
 	}
 

@@ -208,8 +208,9 @@ do_exec_command (gint fd,
 	 * leave it as it is. Perhaps we should close it and reopen /dev/null? */
 
 	maxopen = sysconf (_SC_OPEN_MAX);
-	for (i = 3; i < maxopen; i++)
-		fcntl (i, F_SETFD, FD_CLOEXEC);
+	for (i = 3; i < maxopen; i++) {
+		(void) fcntl (i, F_SETFD, FD_CLOEXEC);
+	}
 
 	setsid ();
 #ifdef TIOCNOTTY

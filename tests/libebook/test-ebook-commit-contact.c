@@ -32,7 +32,8 @@ verify_commit (EContact *contact)
 	EVCardAttribute *attr;
 	gchar *email_value;
 
-	g_assert ((attr = e_vcard_get_attribute (E_VCARD (contact), EVC_EMAIL)));
+	attr = e_vcard_get_attribute (E_VCARD (contact), EVC_EMAIL);
+	g_assert (attr != NULL);
 	g_assert (e_vcard_attribute_is_single_valued (attr));
 	email_value = e_vcard_attribute_get_value (attr);
 	g_assert (!g_strcmp0 (email_value, EMAIL_ADD));

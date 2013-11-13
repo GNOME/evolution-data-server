@@ -2007,7 +2007,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 		job = imapx_match_active_job (
 			is, IMAPX_JOB_GET_MESSAGE, finfo->uid);
-		g_return_val_if_fail (job != NULL, FALSE);
+		if (job == NULL) {
+			g_warn_if_reached ();
+			return FALSE;
+		}
 
 		data = camel_imapx_job_get_data (job);
 		g_return_val_if_fail (data != NULL, FALSE);
@@ -4879,9 +4882,6 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 			imapx_command_queue (is, ic);
 
 			camel_imapx_command_unref (ic);
-
-			if (!success)
-				break;
 		}
 	} else {
 		ic = camel_imapx_command_new (
@@ -5130,7 +5130,9 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			mi->uid = camel_pstring_add (data->appended_uid, FALSE);
 
 			cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid);
-			g_rename (data->path, cur);
+			if (g_rename (data->path, cur) == -1) {
+				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, data->path, cur, g_strerror (errno));
+			}
 
 			/* should we update the message count ? */
 			imapx_set_message_info_flags_for_new_message (
@@ -8401,7 +8403,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 
 			flag = camel_message_info_user_flags (mi);
 			while (flag != NULL) {
-				if (flag->name != NULL && *flag->name != '\0')
+				if (*flag->name != '\0')
 					camel_flag_set (
 						&base_info->user_flags,
 						flag->name, TRUE);
@@ -8410,7 +8412,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 
 			tag = camel_message_info_user_tags (mi);
 			while (tag != NULL) {
-				if (tag->name != NULL && *tag->name != '\0')
+				if (*tag->name != '\0')
 					camel_tag_set (
 						&base_info->user_tags,
 						tag->name, tag->value);

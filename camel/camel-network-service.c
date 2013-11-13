@@ -15,10 +15,13 @@
  * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
  */
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "camel-network-service.h"
 
-#include <config.h>
+#include <errno.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
@@ -80,8 +83,11 @@ network_service_get_cert_dir (void)
 
 		/* Move the old certificate directory if present. */
 		old_dir = g_build_filename (home_dir, ".camel_certs", NULL);
-		if (g_file_test (old_dir, G_FILE_TEST_IS_DIR))
-			g_rename (old_dir, cert_dir);
+		if (g_file_test (old_dir, G_FILE_TEST_IS_DIR)) {
+			if (g_rename (old_dir, cert_dir) == -1) {
+				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, old_dir, cert_dir, g_strerror (errno));
+			}
+		}
 		g_free (old_dir);
 
 		g_mkdir_with_parents (cert_dir, 0700);

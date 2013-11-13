@@ -1002,6 +1002,7 @@ vee_store_rebuild_unmatched_folder (CamelSession *session,
 		camel_folder_changed (unmatched_folder, changes);
 	camel_folder_change_info_free (changes);
 
+	/* coverity[unchecked_value] */
 	g_cancellable_set_error_if_cancelled (cancellable, error);
 }
 

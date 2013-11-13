@@ -711,6 +711,7 @@ exit:
 			authentication_session_msg (
 				session, "Complete (DISMISSED)");
 			break;
+		/* coverity[dead_error_begin] */
 		default:
 			g_warn_if_reached ();
 	}

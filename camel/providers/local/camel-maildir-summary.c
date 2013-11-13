@@ -816,7 +816,9 @@ maildir_summary_sync (CamelLocalSummary *cls,
 			if (strcmp (newname, camel_maildir_info_filename (mdi))) {
 				name = g_strdup_printf ("%s/cur/%s", cls->folder_path, camel_maildir_info_filename (mdi));
 				dest = g_strdup_printf ("%s/cur/%s", cls->folder_path, newname);
-				g_rename (name, dest);
+				if (g_rename (name, dest) == -1) {
+					g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, name, dest, g_strerror (errno));
+				}
 				if (g_stat (dest, &st) == -1) {
 					/* we'll assume it didn't work, but dont change anything else */
 					g_free (newname);

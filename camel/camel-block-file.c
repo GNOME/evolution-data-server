@@ -1165,7 +1165,9 @@ camel_key_file_write (CamelKeyFile *kf,
 
 	/* FIXME: Use io util functions? */
 	next = kf->last;
-	fseek (kf->fp, kf->last, SEEK_SET);
+	if (fseek (kf->fp, kf->last, SEEK_SET) == -1)
+		return -1;
+
 	fwrite (parent, sizeof (*parent), 1, kf->fp);
 	fwrite (&size, sizeof (size), 1, kf->fp);
 	fwrite (records, sizeof (records[0]), len, kf->fp);

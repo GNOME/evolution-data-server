@@ -257,11 +257,12 @@ fail_write:
 		gint fd;
 
 		fd = camel_stream_fs_get_fd (CAMEL_STREAM_FS (output_stream));
-
-		/* reset the file to original size */
-		do {
-			retval = ftruncate (fd, mbs->folder_size);
-		} while (retval == -1 && errno == EINTR);
+		if (fd != -1) {
+			/* reset the file to original size */
+			do {
+				retval = ftruncate (fd, mbs->folder_size);
+			} while (retval == -1 && errno == EINTR);
+		}
 
 		g_object_unref (output_stream);
 	}
@@ -457,8 +458,10 @@ mbox_folder_unlock (CamelLocalFolder *lf)
 	CamelMboxFolder *mf = (CamelMboxFolder *) lf;
 
 	g_assert (mf->lockfd != -1);
-	camel_unlock_folder (lf->folder_path, mf->lockfd);
-	close (mf->lockfd);
+	if (mf->lockfd != -1) {
+		camel_unlock_folder (lf->folder_path, mf->lockfd);
+		close (mf->lockfd);
+	}
 	mf->lockfd = -1;
 #endif
 }

@@ -261,8 +261,14 @@ book_record_get_view_thread (gpointer user_data)
 	query_sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	e_book_client_get_view_sync (
-		br->book_client, query_sexp, &book_view, NULL, &error);
+	if (!e_book_client_get_view_sync (
+		br->book_client, query_sexp, &book_view, NULL, &error)) {
+
+		if (!error)
+			error = g_error_new_literal (E_CLIENT_ERROR,
+						     E_CLIENT_ERROR_OTHER_ERROR,
+						     _("Unknown error"));
+	}
 
 	/* Sanity check. */
 	g_return_val_if_fail (

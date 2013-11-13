@@ -155,11 +155,15 @@ lock_path (const gchar *path,
 		if (lock_real_uid != lock_root_uid) {
 			if (seteuid (lock_root_uid) != -1) {
 				if (camel_lock_dot (path, NULL) == -1) {
-					seteuid (lock_real_uid);
+					if (seteuid (lock_real_uid) == -1) {
+						g_warn_if_reached ();
+					}
 					res = CAMEL_LOCK_HELPER_STATUS_SYSTEM;
 					goto fail;
 				}
-				seteuid (lock_real_uid);
+				if (seteuid (lock_real_uid) == -1) {
+					g_warn_if_reached ();
+				}
 			} else {
 				res = CAMEL_LOCK_HELPER_STATUS_SYSTEM;
 				goto fail;
@@ -216,9 +220,13 @@ unlock_id (guint32 lockid)
 			if (info->depth <= 0) {
 #ifdef SETEUID_SAVES
 				if (info->uid != lock_real_uid) {
-					seteuid (lock_root_uid);
+					if (seteuid (lock_root_uid) == -1) {
+						g_warn_if_reached ();
+					}
 					camel_unlock_dot (info->path);
-					seteuid (lock_real_uid);
+					if (seteuid (lock_real_uid) == -1) {
+						g_warn_if_reached ();
+					}
 				} else
 #endif
 					camel_unlock_dot (info->path);
@@ -279,8 +287,11 @@ setup_process (void)
 	 * portable so may need configure checks */
 	lock_real_uid = getuid ();
 	lock_root_uid = geteuid ();
-	if (lock_real_uid != lock_root_uid)
-		seteuid (lock_real_uid);
+	if (lock_real_uid != lock_root_uid) {
+		if (seteuid (lock_real_uid) == -1) {
+			g_warn_if_reached ();
+		}
+	}
 #endif
 }
 

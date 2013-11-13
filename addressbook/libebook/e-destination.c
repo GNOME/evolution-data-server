@@ -144,7 +144,7 @@ destination_finalize (GObject *object)
 static void
 e_destination_class_init (EDestinationClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	GObjectClass *object_class;
 
 	g_type_class_add_private (class, sizeof (EDestinationPrivate));
 
@@ -891,8 +891,8 @@ e_destination_get_name (const EDestination *dest)
 			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
 				const gchar *camel_name = NULL;
 
-				camel_internet_address_get (addr, 0, &camel_name, NULL);
-				priv->name = g_strdup (camel_name);
+				if (camel_internet_address_get (addr, 0, &camel_name, NULL))
+					priv->name = g_strdup (camel_name);
 			}
 
 			g_object_unref (addr);
@@ -967,8 +967,8 @@ e_destination_get_email (const EDestination *dest)
 
 			if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw)) {
 				const gchar *camel_email = NULL;
-				camel_internet_address_get (addr, 0, NULL, &camel_email);
-				priv->email = g_strdup (camel_email);
+				if (camel_internet_address_get (addr, 0, NULL, &camel_email))
+					priv->email = g_strdup (camel_email);
 			}
 
 			g_object_unref (addr);

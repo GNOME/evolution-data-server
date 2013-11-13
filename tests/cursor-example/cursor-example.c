@@ -24,6 +24,7 @@
 #include "cursor-example.h"
 #include "cursor-navigator.h"
 #include "cursor-search.h"
+#include "cursor-slot.h"
 #include "cursor-data.h"
 
 #define N_SLOTS         10
@@ -77,7 +78,6 @@ static gboolean        cursor_example_move_cursor             (CursorExample    
 static gboolean        cursor_example_load_page               (CursorExample      *example,
 							       gboolean           *full_results);
 static void            cursor_example_update_status           (CursorExample      *example);
-static void            cursor_example_update_sensitivity      (CursorExample      *example);
 static void            cursor_example_update_current_index    (CursorExample      *example,
 							       EContact           *contact);
 static void            cursor_example_ensure_timeout          (CursorExample      *example,
@@ -499,7 +499,7 @@ cursor_example_load_page (CursorExample     *example,
 			if (i == 0 && contact)
 				cursor_example_update_current_index (example, contact);
 
-			cursor_slot_set_from_contact (priv->slots[i], contact);
+			cursor_slot_set_from_contact (CURSOR_SLOT (priv->slots[i]), contact);
 		}
 	}
 
@@ -515,7 +515,6 @@ static void
 cursor_example_update_status (CursorExample *example)
 {
 	CursorExamplePrivate *priv = example->priv;
-	GError               *error = NULL;
 	gint                  total, position;
 	gchar                *txt;
 	gboolean              up_sensitive;

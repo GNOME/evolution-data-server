@@ -479,6 +479,7 @@ imapx_parse_capability (CamelIMAPXStream *stream,
 			case 43:
 				token = (guchar *) g_strconcat ((gchar *) token, "+", NULL);
 				free_token = TRUE;
+				/* coverity[fallthrough] */
 			case IMAPX_TOK_TOKEN:
 			case IMAPX_TOK_STRING:
 				p = token;
@@ -804,6 +805,7 @@ imapx_parse_ext_optional (CamelIMAPXStream *is,
 
 			dinfo->disposition = g_strdup ((gchar *) token);
 			imapx_parse_param_list (is, &dinfo->params, cancellable, NULL);
+			break;
 		case IMAPX_TOK_TOKEN:
 			d (is->tagprefix, "body_fld_dsp: NIL\n");
 			break;

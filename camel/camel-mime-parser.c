@@ -1603,6 +1603,7 @@ tail_recurse:
 			h->from_line = g_byte_array_new ();
 			folder_push_part (s, h);
 			s->state = CAMEL_MIME_PARSER_STATE_PRE_FROM;
+			goto scan_pre_from;
 		} else {
 			s->start_of_from = -1;
 			goto scan_header;
@@ -1610,6 +1611,7 @@ tail_recurse:
 
 	case CAMEL_MIME_PARSER_STATE_PRE_FROM:
 
+ scan_pre_from:
 		h = s->parts;
 		do {
 			hb = folder_scan_content (s, &state, databuffer, datalength);
@@ -1695,6 +1697,7 @@ tail_recurse:
 
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		s->state = CAMEL_MIME_PARSER_STATE_BODY;
+		/* coverity[fallthrough] */
 
 	case CAMEL_MIME_PARSER_STATE_BODY:
 		h = s->parts;

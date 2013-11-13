@@ -2343,6 +2343,17 @@ generate_instances (ECalClient *client,
 				end_zone = default_zone;
 			}
 
+			if (!dtstart.value) {
+				g_warn_if_reached ();
+
+				e_cal_component_free_datetime (&dtstart);
+				e_cal_component_free_datetime (&dtend);
+				g_object_unref (G_OBJECT (ci->comp));
+				g_free (ci);
+
+				continue;
+			}
+
 			ci->start = icaltime_as_timet_with_zone (
 				*dtstart.value, start_zone);
 
@@ -3206,10 +3217,16 @@ cal_client_get_default_object_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_default_object_sync (
+	if (!e_cal_client_get_default_object_sync (
 		E_CAL_CLIENT (source_object),
 		&async_context->out_comp,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -3370,12 +3387,18 @@ cal_client_get_object_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_object_sync (
+	if (!e_cal_client_get_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		async_context->rid,
 		&async_context->out_comp,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -3628,11 +3651,17 @@ cal_client_get_objects_for_uid_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_objects_for_uid_sync (
+	if (!e_cal_client_get_objects_for_uid_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		&async_context->object_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -3862,11 +3891,17 @@ cal_client_get_object_list_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_object_list_sync (
+	if (!e_cal_client_get_object_list_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->comp_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -4043,11 +4078,17 @@ cal_client_get_object_list_as_comps_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_object_list_as_comps_sync (
+	if (!e_cal_client_get_object_list_as_comps_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->object_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -4227,12 +4268,18 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_free_busy_sync (
+	if (!e_cal_client_get_free_busy_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->start,
 		async_context->end,
 		async_context->string_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -4391,11 +4438,17 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_create_object_sync (
+	if (!e_cal_client_create_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		&async_context->uid,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -4553,11 +4606,17 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_create_objects_sync (
+	if (!e_cal_client_create_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
 		&async_context->string_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -4749,11 +4808,17 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_modify_object_sync (
+	if (!e_cal_client_modify_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		async_context->mod,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -4892,11 +4957,17 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_modify_objects_sync (
+	if (!e_cal_client_modify_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->comp_list,
 		async_context->mod,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -5078,12 +5149,18 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_remove_object_sync (
+	if (!e_cal_client_remove_object_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		async_context->rid,
 		async_context->mod,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -5225,11 +5302,17 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_remove_objects_sync (
+	if (!e_cal_client_remove_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->string_list,
 		async_context->mod,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -5436,10 +5519,16 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_receive_objects_sync (
+	if (!e_cal_client_receive_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -5581,12 +5670,18 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_send_objects_sync (
+	if (!e_cal_client_send_objects_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->in_comp,
 		&async_context->string_list,
 		&async_context->out_comp,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -5800,12 +5895,18 @@ cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_attachment_uris_sync (
+	if (!e_cal_client_get_attachment_uris_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		async_context->rid,
 		&async_context->string_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -5989,12 +6090,18 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_discard_alarm_sync (
+	if (!e_cal_client_discard_alarm_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->uid,
 		async_context->rid,
 		async_context->auid,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -6346,11 +6453,17 @@ cal_client_get_timezone_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_get_timezone_sync (
+	if (!e_cal_client_get_timezone_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->tzid,
 		&async_context->zone,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -6554,10 +6667,16 @@ cal_client_add_timezone_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_cal_client_add_timezone_sync (
+	if (!e_cal_client_add_timezone_sync (
 		E_CAL_CLIENT (source_object),
 		async_context->zone,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);

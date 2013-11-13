@@ -17,7 +17,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#if HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#include <errno.h>
 #include <string.h>
 #include <libxml/parser.h>
 #include <glib/gstdio.h>
@@ -136,7 +140,9 @@ build_categories_filename (void)
 		old_filename = g_build_filename (
 			g_get_home_dir (), ".evolution",
 			"categories.xml", NULL);
-		g_rename (old_filename, filename);
+		if (g_rename (old_filename, filename) == -1) {
+			g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, old_filename, filename, g_strerror (errno));
+		}
 		g_free (old_filename);
 	}
 

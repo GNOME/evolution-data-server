@@ -1740,6 +1740,7 @@ e_book_client_get_self (ESourceRegistry *registry,
 	if (uid) {
 		/* Don't care about errors because
 		 * we'll create a new card on failure. */
+		/* coverity[unchecked_value] */
 		e_book_client_get_contact_sync (
 			book_client, uid, &contact, NULL, NULL);
 		g_free (uid);
@@ -1859,11 +1860,17 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_add_contact_sync (
+	if (!e_book_client_add_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
 		&async_context->uid,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2024,11 +2031,17 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_add_contacts_sync (
+	if (!e_book_client_add_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->object_list,
 		&async_context->string_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2231,10 +2244,16 @@ book_client_modify_contact_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_modify_contact_sync (
+	if (!e_book_client_modify_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2355,10 +2374,16 @@ book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_modify_contacts_sync (
+	if (!e_book_client_modify_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->object_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2507,10 +2532,16 @@ book_client_remove_contact_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_remove_contact_sync (
+	if (!e_book_client_remove_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->contact,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2634,10 +2665,16 @@ book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_remove_contact_by_uid_sync (
+	if (!e_book_client_remove_contact_by_uid_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->uid,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2758,10 +2795,16 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_remove_contacts_sync (
+	if (!e_book_client_remove_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->string_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2909,11 +2952,16 @@ book_client_get_contact_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_get_contact_sync (
+	if (!e_book_client_get_contact_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->uid,
 		&async_context->contact,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+			if (!local_error)
+				local_error = g_error_new_literal (E_CLIENT_ERROR,
+								   E_CLIENT_ERROR_OTHER_ERROR,
+								   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -3097,11 +3145,17 @@ book_client_get_contacts_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_get_contacts_sync (
+	if (!e_book_client_get_contacts_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->object_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -3308,11 +3362,17 @@ book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	e_book_client_get_contacts_uids_sync (
+	if (!e_book_client_get_contacts_uids_sync (
 		E_BOOK_CLIENT (source_object),
 		async_context->sexp,
 		&async_context->string_list,
-		cancellable, &local_error);
+		cancellable, &local_error)) {
+
+		if (!local_error)
+			local_error = g_error_new_literal (E_CLIENT_ERROR,
+							   E_CLIENT_ERROR_OTHER_ERROR,
+							   _("Unknown error"));
+	}
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);

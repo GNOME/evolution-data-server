@@ -1659,6 +1659,11 @@ write_mir (CamelDB *cdb,
 	/*char *del_query;*/
 	gchar *ins_query;
 
+	if (!record) {
+		g_warn_if_reached ();
+		return -1;
+	}
+
 	/* FIXME: We should migrate from this DELETE followed by INSERT model to an INSERT OR REPLACE model as pointed out by pvanhoof */
 
 	/* NB: UGLIEST Hack. We can't modify the schema now. We are using dirty (an unsed one to notify of FLAGGED/Dirty infos */

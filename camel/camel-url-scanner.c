@@ -456,6 +456,7 @@ camel_url_web_end (const gchar *in,
 			/* we have a '/' so there could be a path - fall through */
 		case '/': /* we've detected a path component to our url */
 			inptr++;
+			/* coverity[fallthrough] */
 		case '?':
 			while (inptr < inend && is_urlsafe (*inptr)) {
 				if (*inptr == open_brace) {

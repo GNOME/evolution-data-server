@@ -377,10 +377,10 @@ maildir_store_delete_folder_sync (CamelStore *store,
 
 		if (err != 0) {
 			/* easier just to mkdir all (and let them fail), than remember what we got to */
-			g_mkdir (name, 0700);
-			g_mkdir (cur, 0700);
-			g_mkdir (new, 0700);
-			g_mkdir (tmp, 0700);
+			(void) g_mkdir (name, 0700);
+			(void) g_mkdir (cur, 0700);
+			(void) g_mkdir (new, 0700);
+			(void) g_mkdir (tmp, 0700);
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (err),
@@ -639,7 +639,13 @@ scan_dirs (CamelStore *store,
 		CAMEL_MAILDIR_STORE (store)->priv->already_migrated = TRUE;
 		meta_path = maildir_get_meta_path ((CamelLocalStore *) store, "?", "maildir++");
 		ptr = strrchr (meta_path, '?');
-		g_return_val_if_fail (ptr != NULL, -1);
+		if (!ptr) {
+			g_warn_if_reached ();
+			closedir (dir);
+			res = -1;
+
+			goto exit;
+		}
 
 		/* cannot pass dot inside maildir_get_meta_path(), because it escapes it */
 		ptr[0] = '.';
@@ -1195,7 +1201,7 @@ maildir_version_requires_migrate (const gchar *meta_filename,
                                   gint *maildir_version)
 {
 	FILE *metafile;
-	gchar cc;
+	gint cc;
 	gint verpos = 0;
 	gboolean res = FALSE;
 

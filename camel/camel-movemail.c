@@ -151,7 +151,7 @@ camel_movemail (const gchar *source,
 	 */
 	if (res != -1) {
 		if (close (dfd) == 0) {
-			ftruncate (sfd, 0);
+			(void) ftruncate (sfd, 0);
 		} else {
 			g_set_error (
 				error, G_IO_ERROR,

@@ -107,8 +107,6 @@ cursor_load_data (const gchar        *vcard_path,
 	ESourceRegistry *registry;
 	ESource *scratch;
 	ESourceBackend *backend = NULL;
-	ESourceBackendSummarySetup *setup = NULL;
-	EBookClientCursor *cursor = NULL;
 	GMainLoop *loop;
 	GError  *error = NULL;
 	GSList *contacts = NULL;
@@ -254,36 +252,6 @@ load_contacts (EBookClient *client,
 			g_error ("Failed to add contacts");
 	} else
 		g_error ("No contacts found in vcard directory: %s", vcard_directory);
-}
-
-
-
-static gchar *
-get_addressbook_directory (ESourceRegistry *registry,
-			   ESource         *source)
-{
-	ESource *builtin_source;
-	const gchar *user_data_dir;
-	const gchar *uid;
-	gchar *filename = NULL;
-
-	uid = e_source_get_uid (source);
-	g_return_val_if_fail (uid != NULL, NULL);
-
-	user_data_dir = e_get_user_data_dir ();
-
-	builtin_source = e_source_registry_ref_builtin_address_book (registry);
-
-	/* Special case directory for the builtin addressbook source */
-	if (builtin_source != NULL && e_source_equal (source, builtin_source))
-		uid = "system";
-
-	filename = g_build_filename (user_data_dir, "addressbook", uid, NULL);
-
-	if (builtin_source)
-		g_object_unref (builtin_source);
-
-	return filename;
 }
 
 static EBookClientCursor *

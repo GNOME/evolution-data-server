@@ -645,7 +645,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		for (i = 3; i < maxfd; i++) {
 			/* don't close the status-fd or passwd-fd */
 			if (i != fds[7] && i != fds[8])
-				fcntl (i, F_SETFD, FD_CLOEXEC);
+				(void) fcntl (i, F_SETFD, FD_CLOEXEC);
 		}
 
 		/* run gpg */
@@ -676,20 +676,20 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		close (fds[8]);
 		gpg->passwd_fd = fds[9];
 		flags = fcntl (gpg->passwd_fd, F_GETFL);
-		fcntl (gpg->passwd_fd, F_SETFL, flags | O_NONBLOCK);
+		(void) fcntl (gpg->passwd_fd, F_SETFL, flags | O_NONBLOCK);
 	}
 
 	flags = fcntl (gpg->stdin_fd, F_GETFL);
-	fcntl (gpg->stdin_fd, F_SETFL, flags | O_NONBLOCK);
+	(void) fcntl (gpg->stdin_fd, F_SETFL, flags | O_NONBLOCK);
 
 	flags = fcntl (gpg->stdout_fd, F_GETFL);
-	fcntl (gpg->stdout_fd, F_SETFL, flags | O_NONBLOCK);
+	(void) fcntl (gpg->stdout_fd, F_SETFL, flags | O_NONBLOCK);
 
 	flags = fcntl (gpg->stderr_fd, F_GETFL);
-	fcntl (gpg->stderr_fd, F_SETFL, flags | O_NONBLOCK);
+	(void) fcntl (gpg->stderr_fd, F_SETFL, flags | O_NONBLOCK);
 
 	flags = fcntl (gpg->status_fd, F_GETFL);
-	fcntl (gpg->status_fd, F_SETFL, flags | O_NONBLOCK);
+	(void) fcntl (gpg->status_fd, F_SETFL, flags | O_NONBLOCK);
 
 	return TRUE;
 
@@ -798,7 +798,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 		status += 7;
 
-		status = (const guchar *) next_token ((gchar *) status, &key);
+		next_token ((gchar *) status, &key);
 		if (key) {
 			gboolean all_zero = *key == '0';
 			gint i = 0;
@@ -841,7 +841,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 		status += 16;
 
-		status = (const guchar *) next_token ((gchar *) status, &userid);
+		next_token ((gchar *) status, &userid);
 		if (!userid) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -856,7 +856,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 		status += 20;
 
-		status = (const guchar *) next_token ((gchar *) status, &userid);
+		next_token ((gchar *) status, &userid);
 		if (!userid) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,

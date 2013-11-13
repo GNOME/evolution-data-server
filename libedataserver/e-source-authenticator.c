@@ -115,10 +115,7 @@ source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
 
 	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 	if (e_source_has_extension (source, extension_name)) {
-		if (type == TYPE_UNKNOWN)
-			type = TYPE_ADDRESS_BOOK;
-		else
-			type = TYPE_AMBIGUOUS;
+		type = TYPE_ADDRESS_BOOK;
 	}
 
 	extension_name = E_SOURCE_EXTENSION_CALENDAR;

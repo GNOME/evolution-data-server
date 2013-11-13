@@ -294,7 +294,8 @@ camel_ustrcasecmp (const gchar *ps1,
 	/* end of one of the strings ? */
 	CAMEL_SEARCH_COMPARE (u1, u2, 0);
 
-	/* if we have invalid utf8 sequence ?  */
+	/* if we have invalid utf8 sequence ? */
+	/* coverity[dead_error_begin] */
 	CAMEL_SEARCH_COMPARE (s1, s2, NULL);
 
 	return 0;
@@ -391,7 +392,8 @@ camel_ustrncasecmp (const gchar *ps1,
 	/* end of one of the strings ? */
 	CAMEL_SEARCH_COMPARE (u1, u2, 0);
 
-	/* if we have invalid utf8 sequence ?  */
+	/* if we have invalid utf8 sequence ? */
+	/* coverity[dead_error_begin] */
 	CAMEL_SEARCH_COMPARE (s1, s2, NULL);
 
 	return 0;

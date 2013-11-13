@@ -1069,8 +1069,14 @@ get_contact_reply (GObject *source_object,
 	EContact *contact = NULL;
 	GError *error = NULL;
 
-	e_book_client_get_contact_finish (
-		E_BOOK_CLIENT (source_object), result, &contact, &error);
+	if (!e_book_client_get_contact_finish (
+		E_BOOK_CLIENT (source_object), result, &contact, &error)) {
+
+		if (!error)
+			error = g_error_new_literal (E_CLIENT_ERROR,
+						     E_CLIENT_ERROR_OTHER_ERROR,
+						     _("Unknown error"));
+	}
 
 	if (cb != NULL && error == NULL)
 		cb (data->book, E_BOOK_ERROR_OK, contact, data->closure);

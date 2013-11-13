@@ -193,7 +193,7 @@ imapx_search_body_contains (CamelSExp *sexp,
 	if (search->current != NULL) {
 		type = CAMEL_SEXP_RES_BOOL;
 		result = camel_sexp_result_new (sexp, type);
-		result->value.boolean = (uids->len > 0);
+		result->value.boolean = (uids && uids->len > 0);
 	} else {
 		type = CAMEL_SEXP_RES_ARRAY_PTR;
 		result = camel_sexp_result_new (sexp, type);

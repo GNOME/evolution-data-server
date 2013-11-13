@@ -151,7 +151,9 @@ session_finish_job_cb (CamelSession *session,
 	JobData *job_data;
 	GError *error = NULL;
 
-	g_simple_async_result_propagate_error (simple, &error);
+	if (!g_simple_async_result_propagate_error (simple, &error))
+		error = NULL;
+
 	job_data = g_simple_async_result_get_op_res_gpointer (simple);
 
 	g_signal_emit (
@@ -565,11 +567,15 @@ session_authenticate_thread (GSimpleAsyncResult *simple,
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	camel_session_authenticate_sync (
+	if (!camel_session_authenticate_sync (
 		CAMEL_SESSION (object),
 		async_context->service,
 		async_context->auth_mechanism,
-		cancellable, &error);
+		cancellable, &error)) {
+
+		if (!error)
+			error = g_error_new_literal (CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Unknown error"));
+	}
 
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
