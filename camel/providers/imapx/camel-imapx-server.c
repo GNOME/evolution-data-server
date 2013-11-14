@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
+#include <gio/gnetworking.h>
 
 #include "camel-imapx-server.h"
 
@@ -4213,6 +4214,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	CamelSettings *settings;
 	GIOStream *base_stream;
 	GIOStream *tls_stream;
+	GSocket *socket;
 	guint len;
 	guchar *token;
 	gint tok;
@@ -4268,6 +4270,19 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	} else {
 		success = FALSE;
 		goto exit;
+	}
+
+	/* Disable the Nagle algorithm with TCP_NODELAY, since IMAP
+	 * commands should be issued immediately even we've not yet
+	 * received a response to a previous command. */
+	socket = g_socket_connection_get_socket (
+		G_SOCKET_CONNECTION (base_stream));
+	g_socket_set_option (
+		socket, IPPROTO_TCP, TCP_NODELAY, 1, &local_error);
+	if (local_error != NULL) {
+		/* Failure to set the socket option is non-fatal. */
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_clear_error (&local_error);
 	}
 
 	imapx_stream = camel_imapx_stream_new (stream);
