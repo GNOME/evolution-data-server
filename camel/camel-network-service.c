@@ -415,6 +415,21 @@ network_service_set_host_reachable (CamelNetworkService *service,
 	g_mutex_unlock (&priv->property_lock);
 
 	g_object_notify (G_OBJECT (service), "host-reachable");
+
+	/* Disconnect immediately if the host is not reachable.
+	 * Then connect lazily when the host becomes reachable. */
+	if (!host_reachable) {
+		GError *local_error = NULL;
+
+		/* XXX Does this actually block in any providers?
+		 *     If so then we need to do it asynchronously. */
+		camel_service_disconnect_sync (
+			CAMEL_SERVICE (service), FALSE, NULL, &local_error);
+		if (local_error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_error_free (local_error);
+		}
+	}
 }
 
 static void
