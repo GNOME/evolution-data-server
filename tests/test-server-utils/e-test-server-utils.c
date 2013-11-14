@@ -379,7 +379,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 
 	if (pair->closure->type != E_TEST_SERVER_NONE)
 		pair->fixture->timeout_source_id =
-			g_timeout_add (20 * 1000, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
+			g_timeout_add_seconds (20, (GSourceFunc) e_test_server_utils_bootstrap_timeout, pair);
 	else
 		g_main_loop_quit (pair->fixture->loop);
 

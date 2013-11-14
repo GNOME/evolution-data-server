@@ -195,7 +195,7 @@ create_book (const gchar *book_id)
 	g_object_unref (scratch);
 
 	if (data.book == NULL) {
-		g_timeout_add (20 * 1000, create_source_timeout, NULL);
+		g_timeout_add_seconds (20, create_source_timeout, NULL);
 		g_main_loop_run (data.loop);
 
 		/* By now we aborted or we have an addressbook created */

@@ -156,7 +156,7 @@ cursor_load_data (const gchar        *vcard_path,
 	g_object_unref (scratch);
 
 	if (address_book == NULL) {
-		g_timeout_add (20 * 1000, cursor_data_source_timeout, NULL);
+		g_timeout_add_seconds (20, cursor_data_source_timeout, NULL);
 		g_main_loop_run (loop);
 
 		/* By now we aborted or we have an addressbook created */

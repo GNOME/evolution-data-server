@@ -68,7 +68,7 @@ test_refresh_async (ETestServerFixture *fixture,
 		return;
 
 	e_client_refresh (E_CLIENT (book_client), NULL, async_refresh_result_ready, fixture->loop);
-	g_timeout_add (5 * 1000, (GSourceFunc) main_loop_fail_timeout, NULL);
+	g_timeout_add_seconds (5, (GSourceFunc) main_loop_fail_timeout, NULL);
 	g_main_loop_run (fixture->loop);
 }
 

@@ -34,7 +34,7 @@
 
 #define PROGRESS_DELAY		250  /* milliseconds */
 #define TRANSIENT_DELAY		250  /* milliseconds */
-#define POP_MESSAGE_DELAY	999  /* milliseconds */
+#define POP_MESSAGE_DELAY	1    /* seconds */
 
 typedef struct _StatusNode StatusNode;
 
@@ -339,7 +339,7 @@ camel_operation_pop_message (GCancellable *cancellable)
 		if (node->source_id != 0)
 			g_source_remove (node->source_id);
 
-		node->source_id = g_timeout_add_full (
+		node->source_id = g_timeout_add_seconds_full (
 			G_PRIORITY_DEFAULT, POP_MESSAGE_DELAY,
 			operation_emit_status_cb,
 			status_node_ref (node),
