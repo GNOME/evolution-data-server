@@ -235,11 +235,6 @@ void		camel_session_submit_job	(CamelSession *session,
 						 CamelSessionCallback callback,
 						 gpointer user_data,
 						 GDestroyNotify notify);
-gboolean	camel_session_get_network_available
-						(CamelSession *session);
-void		camel_session_set_network_available
-						(CamelSession *session,
-						 gboolean network_available);
 const GHashTable *
 		camel_session_get_junk_headers	(CamelSession *session);
 void		camel_session_set_junk_headers	(CamelSession *session,

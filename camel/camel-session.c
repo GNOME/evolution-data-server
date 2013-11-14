@@ -73,7 +73,6 @@ struct _CamelSessionPrivate {
 	GMainContext *main_context;
 
 	guint check_junk        : 1;
-	guint network_available : 1;
 	guint online            : 1;
 };
 
@@ -98,7 +97,6 @@ enum {
 	PROP_CHECK_JUNK,
 	PROP_JUNK_FILTER,
 	PROP_MAIN_CONTEXT,
-	PROP_NETWORK_AVAILABLE,
 	PROP_ONLINE,
 	PROP_USER_DATA_DIR,
 	PROP_USER_CACHE_DIR
@@ -253,12 +251,6 @@ session_set_property (GObject *object,
 				g_value_get_object (value));
 			return;
 
-		case PROP_NETWORK_AVAILABLE:
-			camel_session_set_network_available (
-				CAMEL_SESSION (object),
-				g_value_get_boolean (value));
-			return;
-
 		case PROP_ONLINE:
 			camel_session_set_online (
 				CAMEL_SESSION (object),
@@ -303,12 +295,6 @@ session_get_property (GObject *object,
 		case PROP_MAIN_CONTEXT:
 			g_value_take_boxed (
 				value, camel_session_ref_main_context (
-				CAMEL_SESSION (object)));
-			return;
-
-		case PROP_NETWORK_AVAILABLE:
-			g_value_set_boolean (
-				value, camel_session_get_network_available (
 				CAMEL_SESSION (object)));
 			return;
 
@@ -770,18 +756,6 @@ camel_session_class_init (CamelSessionClass *class)
 			"which to attach event sources",
 			G_TYPE_MAIN_CONTEXT,
 			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_NETWORK_AVAILABLE,
-		g_param_spec_boolean (
-			"network-available",
-			"Network Available",
-			"Whether the network is available",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1634,38 +1608,6 @@ camel_session_set_check_junk (CamelSession *session,
 	session->priv->check_junk = check_junk;
 
 	g_object_notify (G_OBJECT (session), "check-junk");
-}
-
-/**
- * camel_session_get_network_available:
- * @session: a #CamelSession
- *
- * Since: 2.32
- **/
-gboolean
-camel_session_get_network_available (CamelSession *session)
-{
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-
-	return session->priv->network_available;
-}
-
-/**
- * camel_session_set_network_available:
- * @session: a #CamelSession
- * @network_available: whether a network is available
- *
- * Since: 2.32
- **/
-void
-camel_session_set_network_available (CamelSession *session,
-                                     gboolean network_available)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	session->priv->network_available = network_available;
-
-	g_object_notify (G_OBJECT (session), "network-available");
 }
 
 /**
