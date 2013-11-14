@@ -191,13 +191,6 @@
       <xi:include href="xml/camel-utf8.xml"/>
     </chapter>
 
-    <chapter id="Deprecated">
-      <title>Deprecated Objects</title>
-      <xi:include href="xml/camel-disco-diary.xml"/>
-      <xi:include href="xml/camel-disco-folder.xml"/>
-      <xi:include href="xml/camel-disco-store.xml"/>
-    </chapter>
-
   </part>
 
   <part id="services">
