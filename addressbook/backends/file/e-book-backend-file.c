@@ -836,8 +836,6 @@ do_create (EBookBackendFile *bf,
 							   slist, FALSE,
 							   &local_error)) {
 
-			g_warning ("Failed to add contacts: %s", local_error->message);
-
 			if (g_error_matches (local_error,
 					     E_BOOK_SDB_ERROR,
 					     E_BOOK_SDB_ERROR_CONSTRAINT)) {
@@ -846,8 +844,10 @@ do_create (EBookBackendFile *bf,
 					E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
 					_("Conflicting UIDs found in added contacts"));
 				g_clear_error (&local_error);
-			} else
+			} else {
+				g_warning ("Failed to add contacts: %s", local_error->message);
 				g_propagate_error (error, local_error);
+			}
 
 			status = STATUS_ERROR;
 		}
@@ -1439,7 +1439,6 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 			removed_ids      = g_slist_prepend (removed_ids, g_strdup (uids[ii]));
 			removed_contacts = g_slist_prepend (removed_contacts, contact);
 		} else {
-			g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
 
 			if (g_error_matches (local_error,
 					     E_BOOK_SDB_ERROR,
@@ -1450,6 +1449,7 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 					_("Contact '%s' not found"), uids[ii]);
 				g_error_free (local_error);
 			} else {
+				g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
 				g_propagate_error (error, local_error);
 				local_error = NULL;
 			}
