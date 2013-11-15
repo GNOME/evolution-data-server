@@ -49,9 +49,6 @@ camel/camel-data-cache.c
 camel/camel-data-wrapper.c
 camel/camel-db.c
 camel/camel-debug.c
-camel/camel-disco-diary.c
-camel/camel-disco-folder.c
-camel/camel-disco-store.c
 camel/camel-file-utils.c
 camel/camel-filter-driver.c
 camel/camel-filter-search.c
