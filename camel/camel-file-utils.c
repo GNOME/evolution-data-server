@@ -47,6 +47,12 @@
 
 #define IO_TIMEOUT (60*4)
 
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 /**
  * camel_file_util_encode_uint32:
  * @out: file to output to
@@ -454,7 +460,7 @@ camel_read (gint fd,
 		fd_set rdset;
 
 		flags = fcntl (fd, F_GETFL);
-		(void) fcntl (fd, F_SETFL, flags | O_NONBLOCK);
+		CHECK_CALL (fcntl (fd, F_SETFL, flags | O_NONBLOCK));
 
 		do {
 			struct timeval tv;
@@ -484,7 +490,7 @@ camel_read (gint fd,
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	failed:
 		errnosav = errno;
-		(void) fcntl (fd, F_SETFL, flags);
+		CHECK_CALL (fcntl (fd, F_SETFL, flags));
 		errno = errnosav;
 #endif
 	}
@@ -550,7 +556,7 @@ camel_write (gint fd,
 		fd_set rdset, wrset;
 
 		flags = fcntl (fd, F_GETFL);
-		(void) fcntl (fd, F_SETFL, flags | O_NONBLOCK);
+		CHECK_CALL (fcntl (fd, F_SETFL, flags | O_NONBLOCK));
 
 		fdmax = MAX (fd, cancel_fd) + 1;
 		do {
@@ -587,7 +593,7 @@ camel_write (gint fd,
 		} while (w != -1 && written < n);
 
 		errnosav = errno;
-		(void) fcntl (fd, F_SETFL, flags);
+		CHECK_CALL (fcntl (fd, F_SETFL, flags));
 		errno = errnosav;
 #endif
 	}

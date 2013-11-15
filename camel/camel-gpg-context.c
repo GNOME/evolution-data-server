@@ -73,6 +73,12 @@
 static gint logid;
 #endif
 
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 #define CAMEL_GPG_CONTEXT_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate))
@@ -645,7 +651,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		for (i = 3; i < maxfd; i++) {
 			/* don't close the status-fd or passwd-fd */
 			if (i != fds[7] && i != fds[8])
-				(void) fcntl (i, F_SETFD, FD_CLOEXEC);
+				CHECK_CALL (fcntl (i, F_SETFD, FD_CLOEXEC));
 		}
 
 		/* run gpg */
@@ -676,20 +682,20 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		close (fds[8]);
 		gpg->passwd_fd = fds[9];
 		flags = fcntl (gpg->passwd_fd, F_GETFL);
-		(void) fcntl (gpg->passwd_fd, F_SETFL, flags | O_NONBLOCK);
+		CHECK_CALL (fcntl (gpg->passwd_fd, F_SETFL, flags | O_NONBLOCK));
 	}
 
 	flags = fcntl (gpg->stdin_fd, F_GETFL);
-	(void) fcntl (gpg->stdin_fd, F_SETFL, flags | O_NONBLOCK);
+	CHECK_CALL (fcntl (gpg->stdin_fd, F_SETFL, flags | O_NONBLOCK));
 
 	flags = fcntl (gpg->stdout_fd, F_GETFL);
-	(void) fcntl (gpg->stdout_fd, F_SETFL, flags | O_NONBLOCK);
+	CHECK_CALL (fcntl (gpg->stdout_fd, F_SETFL, flags | O_NONBLOCK));
 
 	flags = fcntl (gpg->stderr_fd, F_GETFL);
-	(void) fcntl (gpg->stderr_fd, F_SETFL, flags | O_NONBLOCK);
+	CHECK_CALL (fcntl (gpg->stderr_fd, F_SETFL, flags | O_NONBLOCK));
 
 	flags = fcntl (gpg->status_fd, F_GETFL);
-	(void) fcntl (gpg->status_fd, F_SETFL, flags | O_NONBLOCK);
+	CHECK_CALL (fcntl (gpg->status_fd, F_SETFL, flags | O_NONBLOCK));
 
 	return TRUE;
 

@@ -112,8 +112,14 @@ multipart_signed_skip_content (CamelMimeParser *cmp)
 		break;
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 		/* message body part */
-		(void) camel_mime_parser_step (cmp, &buf, &len);
-		multipart_signed_skip_content (cmp);
+		state = camel_mime_parser_step (cmp, &buf, &len);
+		if (state != CAMEL_MIME_PARSER_STATE_EOF &&
+		    state != CAMEL_MIME_PARSER_STATE_FROM_END) {
+			multipart_signed_skip_content (cmp);
+		} else {
+			camel_mime_parser_unstep (cmp);
+			break;
+		}
 
 		/* clean up followon state if any, see camel-mime-message.c */
 		state = camel_mime_parser_step (cmp, &buf, &len);

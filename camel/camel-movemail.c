@@ -48,6 +48,12 @@
 
 #define d(x)
 
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 #ifdef MOVEMAIL_PATH
 #include <sys/wait.h>
 
@@ -151,7 +157,7 @@ camel_movemail (const gchar *source,
 	 */
 	if (res != -1) {
 		if (close (dfd) == 0) {
-			(void) ftruncate (sfd, 0);
+			CHECK_CALL (ftruncate (sfd, 0));
 		} else {
 			g_set_error (
 				error, G_IO_ERROR,

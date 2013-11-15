@@ -58,6 +58,12 @@
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 /**
  * camel_lock_dot:
  * @path:
@@ -172,7 +178,7 @@ camel_unlock_dot (const gchar *path)
 	lock = alloca (lock_len);
 	g_snprintf (lock, lock_len, "%s.lock", path);
 	d (printf ("unlocking %s\n", lock));
-	(void) unlink (lock);
+	CHECK_CALL (unlink (lock));
 #endif
 }
 
@@ -240,7 +246,7 @@ camel_unlock_fcntl (gint fd)
 
 	memset (&lock, 0, sizeof (lock));
 	lock.l_type = F_UNLCK;
-	(void) fcntl (fd, F_SETLK, &lock);
+	CHECK_CALL (fcntl (fd, F_SETLK, &lock));
 #endif
 }
 
@@ -296,7 +302,7 @@ camel_unlock_flock (gint fd)
 #ifdef USE_FLOCK
 	d (printf ("flock unlocking %d\n", fd));
 
-	(void) flock (fd, LOCK_UN);
+	CHECK_CALL (flock (fd, LOCK_UN));
 #endif
 }
 

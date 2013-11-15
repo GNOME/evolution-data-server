@@ -44,6 +44,12 @@
 #include "camel-file-utils.h"
 #include "camel-stream-process.h"
 
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 extern gint camel_verbose_debug;
 
 G_DEFINE_TYPE (CamelStreamProcess, camel_stream_process, CAMEL_TYPE_STREAM)
@@ -209,7 +215,7 @@ do_exec_command (gint fd,
 
 	maxopen = sysconf (_SC_OPEN_MAX);
 	for (i = 3; i < maxopen; i++) {
-		(void) fcntl (i, F_SETFD, FD_CLOEXEC);
+		CHECK_CALL (fcntl (i, F_SETFD, FD_CLOEXEC));
 	}
 
 	setsid ();

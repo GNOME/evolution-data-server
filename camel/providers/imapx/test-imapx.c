@@ -34,7 +34,9 @@ main (gint argc,
 	}
 
 	uri = argv[1];
-	system ("rm -rf /tmp/test-camel-imapx");
+	if (system ("rm -rf /tmp/test-camel-imapx") == -1) {
+		/* no big deal */
+	}
 	camel_init ("/tmp/test-camel-imapx", TRUE);
 	camel_provider_init ();
 

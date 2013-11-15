@@ -222,7 +222,9 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 			((CamelLocalSummary *) cls)->folder_path,
 			g_strerror (errno));
 		/* incase we ran out of room, remove any trailing space first */
-		ftruncate (fd, spoollen);
+		if (ftruncate (fd, spoollen) == -1) {
+			g_debug ("%s: Failed to call ftruncate: %s", G_STRFUNC, g_strerror (errno));
+		}
 		goto error;
 	}
 

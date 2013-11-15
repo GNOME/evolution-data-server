@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel-lock-client.h"
 #include "camel-lock-helper.h"
@@ -39,9 +40,11 @@
 
 #define d(x)
 
-/* dunno where this thing is got from */
-/* see also camel-lock.c */
-#define _(x) (x)
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
 
 static GMutex lock_lock;
 #define LOCK() g_mutex_lock(&lock_lock)
@@ -92,7 +95,7 @@ static gint write_n (gint fd, gpointer buffer, gint inlen)
 static gint
 lock_helper_init (GError **error)
 {
-	gint i;
+	gint i, dupfd1, dupfd2;
 
 	lock_stdin_pipe[0] = -1;
 	lock_stdin_pipe[1] = -1;
@@ -132,9 +135,9 @@ lock_helper_init (GError **error)
 		return -1;
 	case 0:
 		close (STDIN_FILENO);
-		dup (lock_stdin_pipe[0]);
+		dupfd1 = dup (lock_stdin_pipe[0]);
 		close (STDOUT_FILENO);
-		dup (lock_stdout_pipe[1]);
+		dupfd2 = dup (lock_stdout_pipe[1]);
 		close (lock_stdin_pipe[0]);
 		close (lock_stdin_pipe[1]);
 		close (lock_stdout_pipe[0]);
@@ -142,6 +145,12 @@ lock_helper_init (GError **error)
 		for (i = 3; i < 255; i++)
 			     close (i);
 		execl (CAMEL_LIBEXECDIR "/camel-lock-helper-" API_VERSION, "camel-lock-helper", NULL);
+
+		if (dupfd1 != -1)
+			close (dupfd1);
+		if (dupfd2 != -1)
+			close (dupfd2);
+
 		/* it'll pick this up when it tries to use us */
 		exit (255);
 	default:
@@ -149,8 +158,8 @@ lock_helper_init (GError **error)
 		close (lock_stdout_pipe[1]);
 
 		/* so the child knows when we vanish */
-		(void) fcntl (lock_stdin_pipe[1], F_SETFD, FD_CLOEXEC);
-		(void) fcntl (lock_stdout_pipe[0], F_SETFD, FD_CLOEXEC);
+		CHECK_CALL (fcntl (lock_stdin_pipe[1], F_SETFD, FD_CLOEXEC));
+		CHECK_CALL (fcntl (lock_stdout_pipe[0], F_SETFD, FD_CLOEXEC));
 	}
 
 	return 0;

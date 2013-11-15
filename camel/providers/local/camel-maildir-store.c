@@ -50,6 +50,13 @@
 #define HIER_SEP "."
 #define HIER_SEP_CHAR '.'
 
+#define CHECK_MKDIR(x,d) G_STMT_START { \
+	gint mkdir_ret = (x); \
+	if (mkdir_ret == -1 && errno != EEXIST) { \
+		g_debug ("%s: mkdir of '%s' failed: %s", G_STRFUNC, (d), g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 struct _CamelMaildirStorePrivate {
 	gboolean already_migrated;
 };
@@ -377,10 +384,10 @@ maildir_store_delete_folder_sync (CamelStore *store,
 
 		if (err != 0) {
 			/* easier just to mkdir all (and let them fail), than remember what we got to */
-			(void) g_mkdir (name, 0700);
-			(void) g_mkdir (cur, 0700);
-			(void) g_mkdir (new, 0700);
-			(void) g_mkdir (tmp, 0700);
+			CHECK_MKDIR (g_mkdir (name, 0700), name);
+			CHECK_MKDIR (g_mkdir (cur, 0700), cur);
+			CHECK_MKDIR (g_mkdir (new, 0700), new);
+			CHECK_MKDIR (g_mkdir (tmp, 0700), tmp);
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (err),

@@ -1009,7 +1009,9 @@ smime_context_verify_sync (CamelCipherContext *context,
 	camel_data_wrapper_decode_to_stream_sync (
 		camel_medium_get_content (
 			CAMEL_MEDIUM (sigpart)), mem, cancellable, NULL);
-	(void) NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len);
+	if (NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len) != SECSuccess) {
+		g_warning ("%s: Failed to call NSS_CMSDecoder_Update", G_STRFUNC);
+	}
 	cmsg = NSS_CMSDecoder_Finish (dec);
 	if (cmsg == NULL) {
 		set_nss_error (error, _("Decoder failed"));

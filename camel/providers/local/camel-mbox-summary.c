@@ -46,6 +46,12 @@
 
 #define CAMEL_MBOX_SUMMARY_VERSION (1)
 
+#define CHECK_CALL(x) G_STMT_START { \
+	if ((x) == -1) { \
+		g_debug ("%s: Call of '" #x "' failed: %s", G_STRFUNC, g_strerror (errno)); \
+	} \
+	} G_STMT_END
+
 typedef struct _CamelMboxMessageContentInfo CamelMboxMessageContentInfo;
 
 struct _CamelMboxMessageContentInfo {
@@ -927,7 +933,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		/* we write out the xevnew string, assuming its been folded identically to the original too! */
 
 		lastpos = lseek (fd, 0, SEEK_CUR);
-		(void) lseek (fd, xevoffset + strlen ("X-Evolution: "), SEEK_SET);
+		CHECK_CALL (lseek (fd, xevoffset + strlen ("X-Evolution: "), SEEK_SET));
 		do {
 			len = write (fd, xevnew, strlen (xevnew));
 		} while (len == -1 && errno == EINTR);
