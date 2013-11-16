@@ -797,9 +797,9 @@ imapx_store_notify (GObject *object,
 		imapx_store_update_store_flags (CAMEL_STORE (object));
 	}
 
-	/* Do not chain up.  None of our ancestor classes implement the
-	 * notify() method.  (XXX Though one of them should so we don't
-	 * have to know this.) */
+	/* Chain up to parent's notify() method. */
+	G_OBJECT_CLASS (camel_imapx_store_parent_class)->
+		notify (object, pspec);
 }
 
 static gchar *
