@@ -94,6 +94,10 @@ offline_store_notify (GObject *object,
 {
 	if (g_strcmp0 (pspec->name, "host-reachable") == 0)
 		g_object_notify (object, "online");
+
+	/* Chain up to parent's notify() method. */
+	G_OBJECT_CLASS (camel_offline_store_parent_class)->
+		notify (object, pspec);
 }
 
 static void
