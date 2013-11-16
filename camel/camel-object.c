@@ -139,6 +139,14 @@ object_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_object_parent_class)->finalize (object);
 }
 
+static void
+object_notify (GObject *object,
+               GParamSpec *pspec)
+{
+	/* Placeholder so subclasses can safely chain up, since
+	 * GObjectClass itself does not implement this method. */
+}
+
 static gint
 object_state_read (CamelObject *object,
                    FILE *fp)
@@ -344,6 +352,7 @@ camel_object_class_init (CamelObjectClass *class)
 	object_class->set_property = object_set_property;
 	object_class->get_property = object_get_property;
 	object_class->finalize = object_finalize;
+	object_class->notify = object_notify;
 
 	class->state_read = object_state_read;
 	class->state_write = object_state_write;
