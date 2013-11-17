@@ -16,7 +16,10 @@ DOC_SOURCE_DIR = $(top_srcdir)/private
 HFILE_GLOB = $(top_srcdir)/private/*.h
 CFILE_GLOB = $(top_srcdir)/private/*.c
 
-IGNORE_HFILES =
+# Ignore interfaces from freedesktop.org.
+IGNORE_HFILES = \
+	e-dbus-localed.h \
+	$(NULL)
 
 GTKDOC_CFLAGS = \
 	-I$(top_srcdir) \

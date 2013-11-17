@@ -2,6 +2,7 @@
 #include <private/e-dbus-source-manager.h>
 #include <private/e-dbus-authenticator.h>
 #include <private/e-dbus-address-book.h>
+#include <private/e-dbus-address-book-cursor.h>
 #include <private/e-dbus-address-book-factory.h>
 #include <private/e-dbus-calendar.h>
 #include <private/e-dbus-calendar-factory.h>
@@ -38,6 +39,9 @@ e_dbus_authenticator_skeleton_get_type
 e_dbus_address_book_get_type
 e_dbus_address_book_proxy_get_type
 e_dbus_address_book_skeleton_get_type
+e_dbus_address_book_cursor_get_type
+e_dbus_address_book_cursor_proxy_get_type
+e_dbus_address_book_cursor_skeleton_get_type
 e_dbus_address_book_factory_get_type
 e_dbus_address_book_factory_proxy_get_type
 e_dbus_address_book_factory_skeleton_get_type

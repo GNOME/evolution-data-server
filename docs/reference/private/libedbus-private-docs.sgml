@@ -21,6 +21,7 @@
     <xi:include href="xml/e-dbus-object-manager-client.xml"/>
     <xi:include href="xml/e-dbus-authenticator.xml"/>
     <xi:include href="xml/e-dbus-address-book.xml"/>
+    <xi:include href="xml/e-dbus-address-book-cursor.xml"/>
     <xi:include href="xml/e-dbus-address-book-factory.xml"/>
     <xi:include href="xml/e-dbus-calendar.xml"/>
     <xi:include href="xml/e-dbus-calendar-factory.xml"/>

@@ -20,9 +20,11 @@ HFILE_GLOB = $(top_srcdir)/libedataserver/*.h
 CFILE_GLOB = $(top_srcdir)/libedataserver/*.c
 
 IGNORE_HFILES = \
+	e-alphabet-index-private.h \
 	e-client-private.h \
 	e-gdbus-templates.h \
 	e-source-enumtypes.h \
+	e-transliterator-private.h \
 	libedataserver-private.h \
 	$(NULL)
 
