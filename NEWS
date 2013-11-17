@@ -1,3 +1,43 @@
+Evolution-Data-Server 3.11.2 2013-11-18
+---------------------------------------
+
+Highlights:
+	* New cursor API for address book clients. (Tristan Van Berkom)
+	* Partial support for the IMAP NOTIFY extension. (Matthew Barnes)
+	* Add VPN awareness to email accounts and transports. (Matthew Barnes)
+
+Bug Fixes:
+	Bug 710668 - ESource: Verify removal before returning (Matthew Barnes)
+	Bug 710787 - Replace most uses of sprintf() with g_snprintf()
+	             (Murray Cumming)
+	Bug 710808 - Name all the timeouts added with g_timeout_add()
+	             (Bastien Nocera)
+	Bug 710989 - Replace most uses of strcpy() (Murray Cumming)
+
+Other Changes:
+	* Bump minimum libsoup requirement to 2.42. (Matthew Barnes)
+	* Integrate network proxy support into the ESource framework, and
+	  deprecate the old EProxy API. (Matthew Barnes)
+	* Convert the IMAP APIs back into a loadable library module so it's
+	  no longer part of libcamel's public API.  It was originally made
+	  public to assist evolution-kolab, but that project is inactive.
+	  (Matthew Barnes)
+	* Support migrating merged GConf trees. (Matthew Barnes)
+	* Start converting libcamel's public API to favor GIO streams over
+	  CamelStream.  Still a work-in-progress. (Matthew Barnes)
+	* Fix potential issues found by static analysis tools.
+	  (Fabian Fidêncio, Milan Crha, Vadim Rutkovsky)
+	* Convert the NNTP backend to CamelOfflineStore and finally remove
+	  the long-deprecated "disco" (disconnected) classes from libcamel.
+	* Switch from g_timeout_add to g_timeout_add_seconds (Alexandre Franke)
+
+Translations:
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Anish A (ml)
+
+
 Evolution-Data-Server 3.11.1 2013-10-21
 ---------------------------------------
 
