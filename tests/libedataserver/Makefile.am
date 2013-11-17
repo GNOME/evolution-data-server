@@ -5,7 +5,7 @@ NULL =
 TESTS = \
 	e-source-test \
 	e-source-registry-test \
-	e-collator-test	\
+	e-collator-test \
 	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)
@@ -27,6 +27,7 @@ test_CPPFLAGS = \
 	$(NULL)
 
 test_LDADD = \
+	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la \
@@ -62,7 +63,7 @@ noinst_PROGRAMS += e-user-prompter-test
 
 e_user_prompter_test_SOURCES = e-user-prompter-test.c
 e_user_prompter_test_CPPFLAGS = $(test_CPPFLAGS) $(GTK_CFLAGS)
-e_user_prompter_test_LDADD = $(top_builddir)/libebackend/libebackend-1.2.la $(test_LDADD) $(GTK_LIBS)
+e_user_prompter_test_LDADD = $(test_LDADD) $(GTK_LIBS)
 endif
 
 -include $(top_srcdir)/git.mk

@@ -1,52 +1,52 @@
 
-TEST_CPPFLAGS=							\
-	$(AM_CPPFLAGS)						\
-	-I$(top_srcdir)						\
-	-I$(top_builddir)					\
-	-I$(top_srcdir)/addressbook     			\
-	-I$(top_builddir)/addressbook   			\
-	-I$(top_srcdir)/calendar				\
-	-I$(top_builddir)/calendar				\
-	-I$(top_srcdir)/tests/test-server-utils     		\
-	-I$(top_builddir)/tests/test-server-utils   		\
-	-DSRCDIR=\""$(abs_srcdir)"\"				\
-	$(EVOLUTION_CALENDAR_CFLAGS)				\
-	$(CAMEL_CFLAGS)						\
+TEST_CPPFLAGS= \
+	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir)/addressbook \
+	-I$(top_builddir)/addressbook \
+	-I$(top_srcdir)/calendar \
+	-I$(top_builddir)/calendar \
+	-I$(top_srcdir)/tests/test-server-utils \
+	-I$(top_builddir)/tests/test-server-utils \
+	-DSRCDIR=\""$(abs_srcdir)"\" \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(CAMEL_CFLAGS) \
 	$(NULL)
 
-TEST_LIBS =							\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
-	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
-	$(EVOLUTION_CALENDAR_LIBS)				\
-	$(CAMEL_LIBS)						\
+TEST_LIBS = \
+	$(top_builddir)/calendar/libecal/libecal-1.2.la \
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la \
+	$(EVOLUTION_CALENDAR_LIBS) \
+	$(CAMEL_LIBS) \
 	$(NULL)
 
 # ordered by relative complexity
-TESTS = 					\
-	test-client-refresh			\
-	test-client-add-timezone		\
-	test-client-create-object		\
-	test-client-remove-object		\
-	test-client-get-object-list		\
-	test-client-modify-object		\
-	test-client-send-objects		\
-	test-client-receive-objects		\
-        test-client-bulk-methods		\
-	test-client-get-attachment-uris		\
-	test-client-get-view			\
-	test-client-revision-view		\
-	test-client-get-revision		\
+TESTS = \
+	test-client-refresh \
+	test-client-add-timezone \
+	test-client-create-object \
+	test-client-remove-object \
+	test-client-get-object-list \
+	test-client-modify-object \
+	test-client-send-objects \
+	test-client-receive-objects \
+        test-client-bulk-methods \
+	test-client-get-attachment-uris \
+	test-client-get-view \
+	test-client-revision-view \
+	test-client-get-revision \
 	$(NULL)
 
 # test-client-get-free-busy:
 #   broken by design, the API needs to be fixed.
 #
-BROKEN_TESTS =		\
-	test-client-get-free-busy
+BROKEN_TESTS = \
+	test-client-get-free-busy \
+	$(NULL)
 
 # The test program
-noinst_PROGRAMS = $(TESTS) $(BROKEN_TESTS)	\
-	$(NULL)
+noinst_PROGRAMS = $(TESTS) $(BROKEN_TESTS)
 
 # ordered alphanumerically
 test_client_add_timezone_LDADD=$(TEST_LIBS)

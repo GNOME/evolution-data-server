@@ -1,26 +1,31 @@
+NULL =
+
 MISC_TESTS_CPPFLAGS= \
-	$(AM_CPPFLAGS)					\
-	-I$(includedir)					\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/camel				\
-	-I$(top_srcdir)/camel/tests/lib 		\
-	-DG_LOG_DOMAIN=\"evolution-tests\"		\
-	$(CAMEL_CFLAGS)
+	$(AM_CPPFLAGS) \
+	-I$(includedir) \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/camel \
+	-I$(top_srcdir)/camel/tests/lib \
+	-DG_LOG_DOMAIN=\"evolution-tests\" \
+	$(CAMEL_CFLAGS) \
+	$(NULL)
 
 MISC_TESTS_LDADD= \
-	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
-	$(top_builddir)/camel/tests/lib/libcameltest.a		\
-	$(INTLLIBS)						\
-	$(CAMEL_LIBS)
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la \
+	$(top_builddir)/camel/tests/lib/libcameltest.a \
+	$(INTLLIBS) \
+	$(CAMEL_LIBS) \
+	$(NULL)
 
-check_PROGRAMS =  	\
-	test1		\
-	test2		\
-	url		\
-	url-scan	\
-	utf7		\
-	split		\
-	rfc2047
+check_PROGRAMS = \
+	test1 \
+	test2 \
+	url \
+	url-scan \
+	utf7 \
+	split \
+	rfc2047 \
+	$(NULL)
 
 test1_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
 test1_LDADD = $(MISC_TESTS_LDADD)

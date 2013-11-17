@@ -1,4 +1,5 @@
-## Process this file with automake to produce Makefile.in
+NULL =
+
 # The name of the module.
 DOC_MODULE = libedata-cal
 
@@ -19,27 +20,30 @@ HFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.h
 CFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.c
 
 IGNORE_HFILES = \
-	e-data-cal-glue.h				\
-	e-data-cal-factory-glue.h			\
-	e-data-cal-view-glue.h				\
-	e-data-cal-types.h
+	e-data-cal-glue.h \
+	e-data-cal-factory-glue.h \
+	e-data-cal-view-glue.h \
+	e-data-cal-types.h \
+	$(NULL)
 
 GTKDOC_CFLAGS = \
-	-I$(top_srcdir) 				\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)				\
-	-I$(top_builddir)/calendar			\
-	$(EVOLUTION_CALENDAR_CFLAGS)			\
-	$(CAMEL_CFLAGS)
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/calendar \
+	-I$(top_builddir) \
+	-I$(top_builddir)/calendar \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(NULL)
 
 GTKDOC_LIBS = \
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(top_builddir)/libebackend/libebackend-1.2.la			\
-	$(EVOLUTION_CALENDAR_LIBS)					\
-	$(CAMEL_LIBS)							\
-	$(DB_LIBS)
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la \
+	$(top_builddir)/calendar/libecal/libecal-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(EVOLUTION_CALENDAR_LIBS) \
+	$(CAMEL_LIBS) \
+	$(DB_LIBS) \
+	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

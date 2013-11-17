@@ -1,3 +1,5 @@
+NULL =
+
 CLEANFILES=
 BUILT_SOURCES=
 
@@ -16,67 +18,69 @@ e-book-enumtypes.c: $(top_srcdir)/enumtypes.c.template $(ENUM_TYPES)
 
 ENUM_GENERATED = e-book-enumtypes.h e-book-enumtypes.c
 
-# The library
 lib_LTLIBRARIES = libebook-1.2.la
 
 libebook_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)					\
-	-DLIBEBOOK_COMPILATION				\
-	-DLOCALEDIR=\""$(localedir)"\"			\
-	-DG_LOG_DOMAIN=\"libebook\"			\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/addressbook			\
-	-I$(top_srcdir)/addressbook/libegdbus		\
-	-I$(top_srcdir)/private				\
-	-I$(top_builddir)				\
-	-I$(top_builddir)/addressbook			\
-	-I$(top_builddir)/addressbook/libegdbus		\
-	-I$(top_builddir)/addressbook/libebook		\
-	-I$(top_builddir)/private			\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
-	$(CAMEL_CFLAGS)					\
-	$(CODE_COVERAGE_CFLAGS)				\
+	$(AM_CPPFLAGS) \
+	-DLIBEBOOK_COMPILATION \
+	-DLOCALEDIR=\""$(localedir)"\" \
+	-DG_LOG_DOMAIN=\"libebook\" \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/addressbook \
+	-I$(top_srcdir)/addressbook/libegdbus \
+	-I$(top_srcdir)/private \
+	-I$(top_builddir) \
+	-I$(top_builddir)/addressbook \
+	-I$(top_builddir)/addressbook/libegdbus \
+	-I$(top_builddir)/addressbook/libebook \
+	-I$(top_builddir)/private \
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
-libebook_1_2_la_SOURCES =				\
-	$(ENUM_GENERATED)				\
-	e-book-client.c					\
-	e-book-client-cursor.c				\
-	e-book-client-view.c				\
-	e-book-view-private.h				\
-	e-book-view.c					\
-	e-book.c					\
-	e-destination.c					\
-	e-error.h
+libebook_1_2_la_SOURCES = \
+	$(ENUM_GENERATED) \
+	e-book-client.c \
+	e-book-client-cursor.c \
+	e-book-client-view.c \
+	e-book-view-private.h \
+	e-book-view.c \
+	e-book.c \
+	e-destination.c \
+	e-error.h \
+	$(NULL)
 
-libebook_1_2_la_LIBADD =					\
+libebook_1_2_la_LIBADD = \
 	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
-	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la	\
-	$(top_builddir)/camel/libcamel-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la \
+	$(top_builddir)/camel/libcamel-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
-	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la	\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
-	$(CAMEL_LIBS)
+	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
+	$(CAMEL_LIBS) \
+	$(NULL)
 
-libebook_1_2_la_LDFLAGS = 							\
+libebook_1_2_la_LDFLAGS = \
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE) $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
 libebookincludedir = $(privincludedir)/libebook
 
-libebookinclude_HEADERS =				\
-	libebook.h					\
-	e-book-client.h					\
-	e-book-client-cursor.h				\
-	e-book-client-view.h				\
-	e-book-enumtypes.h				\
-	e-book-view.h					\
-	e-book-types.h					\
-	e-destination.h					\
-	e-book.h
+libebookinclude_HEADERS = \
+	libebook.h \
+	e-book-client.h \
+	e-book-client-cursor.h \
+	e-book-client-view.h \
+	e-book-enumtypes.h \
+	e-book-view.h \
+	e-book-types.h \
+	e-destination.h \
+	e-book.h \
+	$(NULL)
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
@@ -148,8 +152,9 @@ BUILT_SOURCES += $(ENUM_GENERATED)
 CLEANFILES    += $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
-EXTRA_DIST = 						\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+EXTRA_DIST = \
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
+	$(NULL)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

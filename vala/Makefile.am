@@ -1,3 +1,5 @@
+NULL =
+
 vapidir = $(datarootdir)/vala/vapi
 vapi_DATA = \
 	libedataserver-1.2.vapi \

@@ -1,3 +1,5 @@
+NULL =
+
 CLEANFILES=
 BUILT_SOURCES=
 
@@ -25,56 +27,57 @@ noinst_LTLIBRARIES += libephonenumber-private.la
 endif # ENABLE_PHONENUMBER
 
 libebook_contacts_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)					\
-	-DLIBEBOOK_CONTACTS_COMPILATION			\
-	-DLOCALEDIR=\""$(localedir)"\"			\
-	-DG_LOG_DOMAIN=\"libebook-contacts\"		\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/addressbook			\
-	-I$(top_builddir)				\
-	-I$(top_builddir)/addressbook			\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
-	$(CAMEL_CFLAGS)					\
-	$(CODE_COVERAGE_CFLAGS)				\
+	$(AM_CPPFLAGS) \
+	-DLIBEBOOK_CONTACTS_COMPILATION \
+	-DLOCALEDIR=\""$(localedir)"\" \
+	-DG_LOG_DOMAIN=\"libebook-contacts\" \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/addressbook \
+	-I$(top_builddir) \
+	-I$(top_builddir)/addressbook \
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
-libebook_contacts_1_2_la_SOURCES =				\
-	$(ENUM_GENERATED)				\
-	e-address-western.c				\
-	e-name-western.c				\
-	e-name-western-tables.h                         \
-	e-book-query.c					\
-	e-contact.c					\
-	e-vcard.c					\
-	e-phone-number.c				\
-	e-phone-number-private.h			\
-	e-book-contacts-types.c				\
+libebook_contacts_1_2_la_SOURCES = \
+	$(ENUM_GENERATED) \
+	e-address-western.c \
+	e-name-western.c \
+	e-name-western-tables.h \
+	e-book-query.c \
+	e-contact.c \
+	e-vcard.c \
+	e-phone-number.c \
+	e-phone-number-private.h \
+	e-book-contacts-types.c \
 	e-source-backend-summary-setup.c
 
-libebook_contacts_1_2_la_LIBADD =					\
-	$(top_builddir)/camel/libcamel-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+libebook_contacts_1_2_la_LIBADD = \
+	$(top_builddir)/camel/libcamel-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(CAMEL_LIBS)
 
-libebook_contacts_1_2_la_LDFLAGS = 							\
+libebook_contacts_1_2_la_LDFLAGS = \
 	-version-info $(LIBEBOOK_CONTACTS_CURRENT):$(LIBEBOOK_CONTACTS_REVISION):$(LIBEBOOK_CONTACTS_AGE) $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
 libebookcontactsincludedir = $(privincludedir)/libebook-contacts
 
-libebookcontactsinclude_HEADERS =			\
-	libebook-contacts.h				\
-	e-book-contacts-enumtypes.h			\
-	e-book-contacts-types.h				\
-	e-book-query.h					\
-	e-address-western.h				\
-	e-name-western.h				\
-	e-contact.h					\
-	e-vcard.h					\
-	e-phone-number.h				\
-	e-source-backend-summary-setup.h
+libebookcontactsinclude_HEADERS = \
+	libebook-contacts.h \
+	e-book-contacts-enumtypes.h \
+	e-book-contacts-types.h \
+	e-book-query.h \
+	e-address-western.h \
+	e-name-western.h \
+	e-contact.h \
+	e-vcard.h \
+	e-phone-number.h \
+	e-source-backend-summary-setup.h \
+	$(NULL)
 
 if ENABLE_PHONENUMBER
 
@@ -129,7 +132,7 @@ EBookContacts_1_2_gir_CFLAGS = \
 	-I$(top_builddir)/addressbook/ \
 	-I$(top_srcdir)/addressbook/libebook-contacts \
 	-I$(top_builddir)/addressbook/libebook-contacts \
-	-DLIBEBOOK_CONTACTS_COMPILATION		\
+	-DLIBEBOOK_CONTACTS_COMPILATION \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(NULL)
@@ -158,10 +161,11 @@ BUILT_SOURCES += $(ENUM_GENERATED)
 CLEANFILES    += $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
-EXTRA_DIST = 						\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
-	e-name-western-tables.h.in                      \
-	gen-western-table.py
+EXTRA_DIST = \
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
+	e-name-western-tables.h.in \
+	gen-western-table.py \
+	$(NULL)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

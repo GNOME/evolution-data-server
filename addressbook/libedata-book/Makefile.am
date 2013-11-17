@@ -1,4 +1,5 @@
-# The library
+NULL =
+
 lib_LTLIBRARIES = libedata-book-1.2.la
 
 libedata_book_1_2_la_CPPFLAGS = \
@@ -34,7 +35,8 @@ libedata_book_1_2_la_SOURCES = \
 	e-data-book-direct.c \
 	e-data-book-factory.c \
 	e-data-book-view.c \
-	ximian-vcard.h
+	ximian-vcard.h \
+	$(NULL)
 
 libedata_book_1_2_la_LIBADD = \
 	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
@@ -44,7 +46,8 @@ libedata_book_1_2_la_LIBADD = \
 	$(DB_LIBS) \
 	$(CAMEL_LIBS) \
 	$(SQLITE3_LIBS) \
-	$(EVOLUTION_ADDRESSBOOK_LIBS)
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
+	$(NULL)
 
 libedata_book_1_2_la_LDFLAGS = \
 	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE) $(NO_UNDEFINED) \
@@ -67,7 +70,8 @@ libedata_bookinclude_HEADERS = \
 	e-data-book-direct.h \
 	e-book-backend-cache.h \
 	e-book-backend-sqlitedb.h \
-	e-book-backend-db-cache.h
+	e-book-backend-db-cache.h \
+	$(NULL)
 
 factorydir = $(libexecdir)
 
@@ -75,7 +79,7 @@ noinst_PROGRAMS = e-book-backend-sqlitedb-test
 
 e_book_backend_sqlitedb_test_CPPFLAGS = \
 	$(libedata_book_1_2_la_CPPFLAGS)
-e_book_backend_sqlitedb_test_SOURCES =	e-book-backend-sqlitedb-test.c
+e_book_backend_sqlitedb_test_SOURCES = e-book-backend-sqlitedb-test.c
 e_book_backend_sqlitedb_test_LDADD = \
 	libedata-book-1.2.la \
 	$(libedata_book_1_2_la_LIBADD)
@@ -90,6 +94,7 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = \
 	e-data-book-view.xml \
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

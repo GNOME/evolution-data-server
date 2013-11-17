@@ -1,4 +1,13 @@
-SUBDIRS = test-server-utils libedataserver libebook-contacts libedata-book libebook book-migration libecal libedata-cal
+SUBDIRS = \
+	test-server-utils \
+	libedataserver \
+	libebook-contacts \
+	libedata-book \
+	libebook \
+	book-migration \
+	libecal \
+	libedata-cal \
+	$(NULL)
 
 if BUILD_EXAMPLES
 SUBDIRS += cursor-example

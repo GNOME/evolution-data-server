@@ -1,3 +1,5 @@
+NULL =
+
 # The name of the module.
 DOC_MODULE = libedataserver
 
@@ -17,21 +19,24 @@ DOC_SOURCE_DIR = $(top_srcdir)/libedataserver
 HFILE_GLOB = $(top_srcdir)/libedataserver/*.h
 CFILE_GLOB = $(top_srcdir)/libedataserver/*.c
 
-IGNORE_HFILES = 					\
-	e-client-private.h				\
-	e-gdbus-templates.h				\
-	e-source-enumtypes.h				\
-	libedataserver-private.h
+IGNORE_HFILES = \
+	e-client-private.h \
+	e-gdbus-templates.h \
+	e-source-enumtypes.h \
+	libedataserver-private.h \
+	$(NULL)
 
-GTKDOC_CFLAGS  =					\
-	-I$(top_srcdir)/libedataserver			\
-	-I$(top_srcdir) 				\
-	-I$(top_builddir)				\
-	$(E_DATA_SERVER_CFLAGS)
+GTKDOC_CFLAGS  = \
+	-I$(top_srcdir)/libedataserver \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(E_DATA_SERVER_CFLAGS) \
+	$(NULL)
 
-GTKDOC_LIBS = 							\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_LIBS)
+GTKDOC_LIBS = \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(E_DATA_SERVER_LIBS) \
+	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

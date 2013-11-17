@@ -1,3 +1,5 @@
+NULL =
+
 camel_provider_LTLIBRARIES = libcamelimapx.la
 camel_provider_DATA = libcamelimapx.urls
 
@@ -54,7 +56,8 @@ libcamelimapx_la_SOURCES = \
 
 libcamelimapx_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la \
-	$(CAMEL_LIBS)
+	$(CAMEL_LIBS) \
+	$(NULL)
 
 libcamelimapx_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \
@@ -69,11 +72,13 @@ test_imapx_CPPFLAGS = \
 	-I$(top_srcdir)/camel \
 	-I$(top_srcdir) \
 	$(CAMEL_CFLAGS) \
-	-DG_LOG_DOMAIN=\"camel-imapx\"
+	-DG_LOG_DOMAIN=\"camel-imapx\" \
+	$(NULL)
 test_imapx_SOURCES = test-imapx.c
 test_imapx_LDADD = \
 	$(CAMEL_LIBS) \
-	$(top_builddir)/camel/libcamel-1.2.la
+	$(top_builddir)/camel/libcamel-1.2.la \
+	$(NULL)
 
 BUILT_SOURCES = camel-imapx-tokenise.h
 

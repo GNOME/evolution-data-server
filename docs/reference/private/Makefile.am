@@ -1,3 +1,5 @@
+NULL =
+
 # The name of the module.
 DOC_MODULE = libedbus-private
 
@@ -16,14 +18,16 @@ CFILE_GLOB = $(top_srcdir)/private/*.c
 
 IGNORE_HFILES =
 
-GTKDOC_CFLAGS  =					\
-	-I$(top_srcdir) 				\
-	-I$(top_builddir)				\
-	$(E_DATA_SERVER_CFLAGS)
+GTKDOC_CFLAGS = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(E_DATA_SERVER_CFLAGS) \
+	$(NULL)
 
-GTKDOC_LIBS = 						\
-	$(top_builddir)/private/libedbus-private.la	\
-	$(E_DATA_SERVER_LIBS)
+GTKDOC_LIBS = \
+	$(top_builddir)/private/libedbus-private.la \
+	$(E_DATA_SERVER_LIBS) \
+	$(NULL)
 
 # Extra options to supply to gtkdoc-mkdb
 # This is needed for cross-references to D-Bus interfaces to work.

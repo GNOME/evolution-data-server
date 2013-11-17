@@ -1,3 +1,5 @@
+NULL =
+
 phone_numbers_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-I$(top_srcdir) \
@@ -7,12 +9,14 @@ phone_numbers_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook/backends/google \
 	-DG_LOG_DOMAIN=\"evolution-tests\" \
 	$(NULL)
+
 phone_numbers_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(GDATA_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(NULL)
+
 LDADD = \
 	$(AM_LDADD) \
 	$(top_builddir)/addressbook/backends/google/libebook-google-utils.la \

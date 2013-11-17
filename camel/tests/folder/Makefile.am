@@ -1,24 +1,36 @@
+NULL =
+
 FOLDER_TESTS_CPPFLAGS= \
-	$(AM_CPPFLAGS)					\
-	-I$(includedir)					\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/camel				\
-	-I$(top_srcdir)/camel/tests/lib 		\
-	-DG_LOG_DOMAIN=\"evolution-tests\"		\
-	$(CAMEL_CFLAGS)
+	$(AM_CPPFLAGS) \
+	-I$(includedir) \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/camel \
+	-I$(top_srcdir)/camel/tests/lib \
+	-DG_LOG_DOMAIN=\"evolution-tests\" \
+	$(CAMEL_CFLAGS) \
+	$(NULL)
 
 FOLDER_TESTS_LDADD= \
-	$(top_builddir)/camel/tests/lib/libcameltest.a	\
-	$(top_builddir)/camel/tests/lib/libcameltest-provider.a	\
-	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
-	$(INTLLIBS)						\
-	$(CAMEL_LIBS)
+	$(top_builddir)/camel/tests/lib/libcameltest.a \
+	$(top_builddir)/camel/tests/lib/libcameltest-provider.a \
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la \
+	$(INTLLIBS) \
+	$(CAMEL_LIBS) \
+	$(NULL)
 
-check_PROGRAMS =  	\
-	test1	test2	test3	\
-	test4	test5	test6	\
-	test7	test8	test9	\
-	test10  test11
+check_PROGRAMS = \
+	test1 \
+	test2 \
+	test3 \
+	test4 \
+	test5 \
+	test6 \
+	test7 \
+	test8 \
+	test9 \
+	test10 \
+	test11 \
+	$(NULL)
 
 test1_CPPFLAGS = $(FOLDER_TESTS_CPPFLAGS)
 test2_CPPFLAGS = $(FOLDER_TESTS_CPPFLAGS)

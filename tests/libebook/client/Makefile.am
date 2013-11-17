@@ -1,80 +1,81 @@
 noinst_LTLIBRARIES = libclient-test-utils.la
 
-libclient_test_utils_la_SOURCES = client-test-utils.c client-test-utils.h
-
-libclient_test_utils_la_CPPFLAGS =				\
-	$(AM_CPPFLAGS)						\
-	-I$(top_srcdir)						\
-	-I$(top_builddir)					\
-	-I$(top_srcdir)/addressbook				\
-	-I$(top_builddir)/addressbook				\
-	-I$(top_srcdir)/calendar     				\
-	-I$(top_builddir)/calendar   				\
-	-I$(top_srcdir)/tests/test-server-utils     		\
-	-I$(top_builddir)/tests/test-server-utils   		\
-	-I$(top_srcdir)/private					\
-	-I$(top_builddir)/private				\
-	-DSRCDIR=\""$(abs_srcdir)"\"				\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)				\
-	$(EVOLUTION_CALENDAR_CFLAGS)				\
-	$(CAMEL_CFLAGS)						\
+libclient_test_utils_la_SOURCES = \
+	client-test-utils.c \
+	client-test-utils.h \
 	$(NULL)
 
-libclient_test_utils_la_LIBADD = 				\
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
-	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
-	$(top_builddir)/private/libedbus-private.la		\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
-	$(EVOLUTION_CALENDAR_LIBS)				\
-	$(CAMEL_LIBS)						\
+libclient_test_utils_la_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir)/addressbook \
+	-I$(top_builddir)/addressbook \
+	-I$(top_srcdir)/calendar \
+	-I$(top_builddir)/calendar \
+	-I$(top_srcdir)/tests/test-server-utils \
+	-I$(top_builddir)/tests/test-server-utils \
+	-I$(top_srcdir)/private \
+	-I$(top_builddir)/private \
+	-DSRCDIR=\""$(abs_srcdir)"\" \
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(NULL)
+
+libclient_test_utils_la_LIBADD = \
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la \
+	$(top_builddir)/private/libedbus-private.la \
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
+	$(EVOLUTION_CALENDAR_LIBS) \
+	$(CAMEL_LIBS) \
 	$(NULL)
 
 # Should be kept ordered approximately from least to most difficult/complex
-TESTS =								\
-	test-client-refresh					\
-	test-client-add-contact					\
-	test-client-get-contact					\
-	test-client-get-contact-uids				\
-	test-client-modify-contact				\
-	test-client-remove-contact				\
-	test-client-remove-contact-by-uid			\
-	test-client-remove-contacts				\
-	test-client-add-and-get-sync				\
-	test-client-add-and-get-async				\
-	test-client-self					\
-	test-client-preserve-uid				\
-	test-client-photo-is-uri				\
-	test-client-e164-param					\
-        test-client-custom-summary				\
-	test-client-get-revision				\
-	test-client-write-write					\
-	test-client-get-view					\
-	test-client-uid-only-view				\
-	test-client-revision-view				\
-	test-client-view-operations		 		\
-	test-client-suppress-notifications			\
-	test-client-cursor-create				\
-	test-client-cursor-operations				\
+TESTS = \
+	test-client-refresh \
+	test-client-add-contact \
+	test-client-get-contact \
+	test-client-get-contact-uids \
+	test-client-modify-contact \
+	test-client-remove-contact \
+	test-client-remove-contact-by-uid \
+	test-client-remove-contacts \
+	test-client-add-and-get-sync \
+	test-client-add-and-get-async \
+	test-client-self \
+	test-client-preserve-uid \
+	test-client-photo-is-uri \
+	test-client-e164-param \
+        test-client-custom-summary \
+	test-client-get-revision \
+	test-client-write-write \
+	test-client-get-view \
+	test-client-uid-only-view \
+	test-client-revision-view \
+	test-client-view-operations \
+	test-client-suppress-notifications \
+	test-client-cursor-create \
+	test-client-cursor-operations \
 	$(NULL)
 
 # The noinst tests are functional tests, not unit tests.
 #
 # Either they were designed as functional tests or have
 # not been ported to use ETestServerFixture yet.
-noinst_PROGRAMS =						\
-	$(TESTS)						\
+noinst_PROGRAMS = $(TESTS)
+
+TEST_CPPFLAGS = \
+	$(libclient_test_utils_la_CPPFLAGS) \
+	$(EVOLUTION_ADDRESSBOOK_CPPFLAGS) \
 	$(NULL)
 
-TEST_CPPFLAGS =							\
-	$(libclient_test_utils_la_CPPFLAGS)			\
-	$(EVOLUTION_ADDRESSBOOK_CPPFLAGS)			\
-	$(NULL)
-
-TEST_LIBS =							\
-	$(libclient_test_utils_la_LIBADD)			\
-	libclient-test-utils.la					\
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+TEST_LIBS = \
+	$(libclient_test_utils_la_LIBADD) \
+	libclient-test-utils.la \
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(NULL)
 
 test_client_add_and_get_sync_LDADD=$(TEST_LIBS)

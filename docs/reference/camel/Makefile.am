@@ -1,3 +1,5 @@
+NULL =
+
 # The name of the module.
 DOC_MODULE = camel
 
@@ -66,7 +68,7 @@ IGNORE_HFILES = \
 include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
-EXTRA_DIST +=  \
+EXTRA_DIST += \
 	$(content_files) \
 	$(DOC_MODULE)-docs.sgml \
 	$(DOC_MODULE)-sections.txt \

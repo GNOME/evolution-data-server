@@ -1,20 +1,24 @@
+NULL =
+
 SMIME_TESTS_CPPFLAGS= \
-	$(AM_CPPFLAGS)					\
-	-I$(includedir)					\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/camel				\
-	-I$(top_srcdir)/camel/tests/lib 		\
-	-DG_LOG_DOMAIN=\"evolution-tests\"		\
+	$(AM_CPPFLAGS) \
+	-I$(includedir) \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/camel \
+	-I$(top_srcdir)/camel/tests/lib \
+	-DG_LOG_DOMAIN=\"evolution-tests\" \
 	-DTEST_DATA_DIR=\"$(top_srcdir)/camel/tests/data\"\
-	$(CAMEL_CFLAGS)
+	$(CAMEL_CFLAGS) \
+	$(NULL)
 
 SMIME_TESTS_LDADD= \
-	$(top_builddir)/camel/tests/lib/libcameltest.a		\
-	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
-	$(INTLLIBS)						\
-	$(CAMEL_LIBS)
+	$(top_builddir)/camel/tests/lib/libcameltest.a \
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la \
+	$(INTLLIBS) \
+	$(CAMEL_LIBS) \
+	$(NULL)
 
-check_PROGRAMS =  	\
+check_PROGRAMS = \
 	pgp
 #	pgp-mime	
 #	pkcs7

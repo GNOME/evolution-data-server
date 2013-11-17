@@ -3,69 +3,73 @@ SUBDIRS = client
 @GNOME_CODE_COVERAGE_RULES@
 
 noinst_LTLIBRARIES = libecal-test-utils.la
-libecal_test_utils_la_SOURCES = ecal-test-utils.c ecal-test-utils.h
+libecal_test_utils_la_SOURCES = \
+	ecal-test-utils.c \
+	ecal-test-utils.h \
+	$(NULL)
 
 libecal_test_utils_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)					\
-	-DLOCALEDIR=\""$(localedir)"\"			\
-	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	-I$(top_srcdir)/addressbook     		\
-	-I$(top_builddir)/addressbook   		\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)/calendar			\
-	-I$(top_srcdir)/tests/test-server-utils     	\
-	-I$(top_builddir)/tests/test-server-utils   	\
-	$(EVOLUTION_CALENDAR_CFLAGS)                    \
-	$(CAMEL_CFLAGS)					\
+	$(AM_CPPFLAGS) \
+	-DLOCALEDIR=\""$(localedir)"\" \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(top_srcdir)/addressbook \
+	-I$(top_builddir)/addressbook \
+	-I$(top_srcdir)/calendar \
+	-I$(top_builddir)/calendar \
+	-I$(top_srcdir)/tests/test-server-utils \
+	-I$(top_builddir)/tests/test-server-utils \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(CAMEL_CFLAGS) \
 	$(NULL)
 
 libecal_test_utils_la_LIBADD = \
-	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
-	$(top_builddir)/tests/test-server-utils/libetestserverutils.la	\
-	$(EVOLUTION_CALENDAR_LIBS)				\
-	$(CAMEL_LIBS)						\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la \
+	$(top_builddir)/tests/test-server-utils/libetestserverutils.la \
+	$(EVOLUTION_CALENDAR_LIBS) \
+	$(CAMEL_LIBS) \
 	$(NULL)
 
 TEST_ECAL_LIBS = \
 	$(libecal_test_utils_la_LIBADD) \
-	libecal-test-utils.la           \
+	libecal-test-utils.la \
 	$(NULL)
 
 # ordered by relative complexity
 TESTS = \
-	test-ecal-get-timezone			\
-	test-ecal-add-timezone			\
-	test-ecal-set-default-timezone		\
-	test-ecal-get-alarm-email-address	\
-	test-ecal-get-cal-address		\
-	test-ecal-get-ldap-attribute		\
-	test-ecal-get-capabilities		\
-	test-ecal-get-default-object		\
-	test-ecal-create-object			\
-	test-ecal-create-object--2		\
-	test-ecal-get-objects-for-uid		\
-	test-ecal-remove-object			\
-	test-ecal-get-object-list		\
-	test-ecal-modify-object			\
-	test-ecal-send-objects			\
-	test-ecal-receive-objects		\
-	test-ecal-get-query			\
+	test-ecal-get-timezone \
+	test-ecal-add-timezone \
+	test-ecal-set-default-timezone \
+	test-ecal-get-alarm-email-address \
+	test-ecal-get-cal-address \
+	test-ecal-get-ldap-attribute \
+	test-ecal-get-capabilities \
+	test-ecal-get-default-object \
+	test-ecal-create-object \
+	test-ecal-create-object--2 \
+	test-ecal-get-objects-for-uid \
+	test-ecal-remove-object \
+	test-ecal-get-object-list \
+	test-ecal-modify-object \
+	test-ecal-send-objects \
+	test-ecal-receive-objects \
+	test-ecal-get-query \
 	$(NULL)
 
 # test-ecal-get-free-busy:
 #   broken by design, the API needs to be fixed.
 BROKEN_TESTS = \
-	test-ecal-get-free-busy
+	test-ecal-get-free-busy \
+	$(NULL)
 
 # The test program
-noinst_PROGRAMS = 		\
-	$(TESTS) 		\
-	$(BROKEN_TESTS)		\
+noinst_PROGRAMS =  \
+	$(TESTS) \
+	$(BROKEN_TESTS) \
 	$(NULL)
 
 
-TEST_ECAL_CPPFLAGS= \
+TEST_ECAL_CPPFLAGS = \
 	$(libecal_test_utils_la_CPPFLAGS) \
 	$(NULL)
 
