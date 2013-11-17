@@ -21,6 +21,7 @@ MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=camel
 # CFLAGS and LDFLAGS for compiling gtkdoc-scangobj with your library.
 GTKDOC_CFLAGS = \
 	-I$(top_srcdir) \
+	-I$(top_srcdir)/camel/providers \
 	-I$(top_builddir) \
 	-I$(top_builddir)/camel \
 	-I$(top_builddir)/camel/providers \
