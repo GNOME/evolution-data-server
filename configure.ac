@@ -1317,21 +1317,6 @@ if test "x$use_gweather" = "xyes"; then
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
-dnl ******************************
-dnl NNTP support.
-dnl ******************************
-AC_ARG_ENABLE([nntp],
-	AS_HELP_STRING([--enable-nntp],
-	[Build Usenet news (NNTP) backend]),
-	[enable_nntp=$enableval],[enable_nntp=yes])
-if test "x$enable_nntp" = "xyes"; then
-	AC_DEFINE(ENABLE_NNTP,1,[Build NNTP backend])
-	msg_nntp="yes"
-else
-	msg_nntp="no"
-fi
-AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
-
 AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 
 dnl ******************************
@@ -1854,7 +1839,6 @@ echo "
 	Weather calendar:	$use_gweather
 	Mail Directory:		$system_mail_dir, $system_mail_perm
 	LDAP support:		$msg_ldap
-	NNTP support:		$msg_nntp
 	Kerberos 5:		$msg_krb5
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6

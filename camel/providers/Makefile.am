@@ -1,12 +1,8 @@
-if ENABLE_NNTP
-NNTP_DIR=nntp
-endif
-
 if OS_WIN32
 else
 SENDMAIL_DIR=sendmail
 endif
 
-SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imapx $(NNTP_DIR) local
+SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imapx nntp local
 
 -include $(top_srcdir)/git.mk
