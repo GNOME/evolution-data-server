@@ -10,8 +10,6 @@ libcamelnntp_la_CPPFLAGS = \
 	-I$(top_srcdir)/camel \
 	-I$(top_srcdir) \
 	$(CAMEL_CFLAGS) \
-	$(GNOME_INCLUDEDIR) \
-	$(GTK_INCLUDEDIR) \
 	-DG_LOG_DOMAIN=\"camel-nntp-provider\" \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)

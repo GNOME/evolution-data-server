@@ -10,8 +10,6 @@ libcamelsendmail_la_CPPFLAGS = \
 	-I$(srcdir)/../../.. \
 	-I$(top_srcdir)/camel \
 	$(CAMEL_CFLAGS) \
-	$(GNOME_INCLUDEDIR) \
-	$(GTK_INCLUDEDIR) \
 	-DG_LOG_DOMAIN=\"camel-sendmail-provider\" \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
