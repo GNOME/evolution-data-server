@@ -69,9 +69,6 @@ struct _ECalBackendWeatherPrivate {
 	/* Flags */
 	gboolean opened;
 
-	/* City (for summary) */
-	gchar *city;
-
 	/* Weather source */
 	EWeatherSource *source;
 
@@ -313,7 +310,6 @@ create_weather (ECalBackendWeather *cbw,
                 GWeatherInfo *report,
                 gboolean is_forecast)
 {
-	ECalBackendWeatherPrivate *priv;
 	ECalComponent             *cal_comp;
 	ECalComponentText          comp_summary;
 	icalcomponent             *ical_comp;
@@ -322,18 +318,17 @@ create_weather (ECalBackendWeather *cbw,
 	gchar			  *uid;
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
-	gchar                     *tmp;
+	gchar                     *tmp, *city_name;
 	time_t			   update_time;
 	icaltimezone		  *update_zone = NULL;
 	const GWeatherLocation    *location;
 	const GWeatherTimezone    *w_timezone;
+	gdouble tmin = 0.0, tmax = 0.0;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
 
 	if (!gweather_info_get_value_update (report, &update_time))
 		return NULL;
-
-	priv = cbw->priv;
 
 	/* create the component and event object */
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
@@ -373,28 +368,27 @@ create_weather (ECalBackendWeather *cbw,
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
 	e_cal_component_set_dtend (cal_comp, &dt);
 
-	{
-		gdouble tmin = 0.0, tmax = 0.0;
+	city_name = gweather_info_get_location_name (report);
+	if (gweather_info_get_value_temp_min (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmin) &&
+	    gweather_info_get_value_temp_max (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmax) &&
+	    tmin != tmax) {
+		gchar *min, *max;
 
-		if (gweather_info_get_value_temp_min (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmin) &&
-		    gweather_info_get_value_temp_max (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmax) &&
-		    tmin != tmax) {
-			gchar *min, *max;
+		min = gweather_info_get_temp_min (report);
+		max = gweather_info_get_temp_max (report);
+		comp_summary.value = g_strdup_printf ("%s : %s / %s", city_name, min, max);
 
-			min = gweather_info_get_temp_min (report);
-			max = gweather_info_get_temp_max (report);
-			comp_summary.value = g_strdup_printf ("%s : %s / %s", priv->city, min, max);
+		g_free (min); g_free (max);
+	} else {
+		gchar *temp;
 
-			g_free (min); g_free (max);
-		} else {
-			gchar *temp;
+		temp = gweather_info_get_temp (report);
+		comp_summary.value = g_strdup_printf ("%s : %s", city_name, temp);
 
-			temp = gweather_info_get_temp (report);
-			comp_summary.value = g_strdup_printf ("%s : %s", priv->city, temp);
-
-			g_free (temp);
-		}
+		g_free (temp);
 	}
+	g_free (city_name);
+
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
 	g_free ((gchar *) comp_summary.value);
@@ -482,26 +476,12 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
-	ESource *source;
-	ESourceWeather *extension;
-	const gchar *extension_name;
 	const gchar *cache_dir;
-	gchar *location;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	source = e_backend_get_source (E_BACKEND (backend));
 	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
-
-	extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
-	extension = e_source_get_extension (source, extension_name);
-
-	g_free (priv->city);
-
-	location = e_source_weather_dup_location (extension);
-	priv->city = g_strdup (strrchr (location, '/') + 1);
-	g_free (location);
 
 	e_cal_backend_set_writable (E_CAL_BACKEND (backend), FALSE);
 
@@ -775,8 +755,6 @@ e_cal_backend_weather_finalize (GObject *object)
 		g_object_unref (priv->store);
 		priv->store = NULL;
 	}
-
-	g_free (priv->city);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->finalize (object);
