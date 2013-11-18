@@ -6,30 +6,10 @@
 
 #include "data-test-utils.h"
 
-static EbSdbCursorClosure book_closure = { { E_TEST_SERVER_ADDRESS_BOOK, e_sqlitedb_cursor_fixture_setup_book, 0 }, FALSE };
+static EbSqlCursorClosure book_closure = { { FALSE, NULL }, NULL, E_BOOK_CURSOR_SORT_ASCENDING };
 
 static void
-test_cursor_sexp_invalid (EbSdbCursorFixture *fixture,
-			  gconstpointer  user_data)
-{
-	GError *error = NULL;
-	EBookQuery *query;
-	gchar *sexp = NULL;
-
-	query = e_book_query_field_test (E_CONTACT_NICKNAME, E_BOOK_QUERY_BEGINS_WITH, "Kung Fu");
-	sexp = e_book_query_to_string (query);
-	e_book_query_unref (query);
-
-	if (e_book_backend_sqlitedb_cursor_set_sexp (((ESqliteDBFixture *) fixture)->ebsdb,
-						     fixture->cursor, sexp, &error))
-		g_error ("Succeeded in setting non-summarized field in the cursor query expression");
-
-	g_assert (error);
-	g_assert (g_error_matches (error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_INVALID_QUERY));
-}
-
-static void
-test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
+test_cursor_sexp_calculate_position (EbSqlCursorFixture *fixture,
 				     gconstpointer  user_data)
 {
 	GError *error = NULL;
@@ -37,14 +17,14 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 	gint    position = 0, total = 0;
 	gchar *sexp = NULL;
 	GSList *results = NULL, *node;
-	EbSdbSearchData *data;
+	EbSqlSearchData *data;
 
 	/* Set the cursor to point exactly to 'blackbirds', which is the 12th contact in en_US */
-	if (!e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						  fixture->cursor,
-						  EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						  EBSDB_CURSOR_ORIGIN_BEGIN,
-						  12, &results, &error))
+	if (!e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+					fixture->cursor,
+					EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+					EBSQL_CURSOR_ORIGIN_BEGIN,
+					12, &results, NULL, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Ensure we moved to the right contact */
@@ -52,12 +32,12 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-16");
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 
 	/* Check position */
-	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
-						       fixture->cursor, &total, &position, &error))
+	if (!e_book_sqlite_cursor_calculate (((EbSqlFixture *) fixture)->ebsql,
+					     fixture->cursor, &total, &position, NULL, &error))
 		g_error ("Error calculating cursor: %s", error->message);
 
 	/* blackbird is at position 12 in an unfiltered en_US locale */
@@ -69,13 +49,13 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	if (!e_book_backend_sqlitedb_cursor_set_sexp (((ESqliteDBFixture *) fixture)->ebsdb,
-						      fixture->cursor, sexp, &error))
+	if (!e_book_sqlite_cursor_set_sexp (((EbSqlFixture *) fixture)->ebsql,
+					    fixture->cursor, sexp, &error))
 		g_error ("Failed to set sexp: %s", error->message);
 
 	/* Check new position after modified sexp */
-	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
-						       fixture->cursor, &total, &position, &error))
+	if (!e_book_sqlite_cursor_calculate (((EbSqlFixture *) fixture)->ebsql,
+					     fixture->cursor, &total, &position, NULL, &error))
 		g_error ("Error calculating cursor: %s", error->message);
 
 	/* 'blackbird' is now at position 8 out of 13, with a filtered set of contacts in en_US locale */
@@ -84,30 +64,30 @@ test_cursor_sexp_calculate_position (EbSdbCursorFixture *fixture,
 }
 
 static void
-test_cursor_sexp_and_step (EbSdbCursorFixture *fixture,
+test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
 			   gconstpointer  user_data)
 {
 	GError *error = NULL;
 	EBookQuery *query;
 	gchar *sexp = NULL;
 	GSList *results = NULL, *node;
-	EbSdbSearchData *data;
+	EbSqlSearchData *data;
 
 	/* Set new sexp, only contacts with .com email addresses */
 	query = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, ".com");
 	sexp = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	if (!e_book_backend_sqlitedb_cursor_set_sexp (((ESqliteDBFixture *) fixture)->ebsdb,
-						      fixture->cursor, sexp, &error))
+	if (!e_book_sqlite_cursor_set_sexp (((EbSqlFixture *) fixture)->ebsql,
+					    fixture->cursor, sexp, &error))
 		g_error ("Failed to set sexp: %s", error->message);
 
 	/* Step 6 results from the beginning of the filtered list, gets up to contact 'sorted-8' */
-	if (!e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						  fixture->cursor,
-						  EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						  EBSDB_CURSOR_ORIGIN_BEGIN,
-						  6, &results, &error))
+	if (!e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+					fixture->cursor,
+					EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+					EBSQL_CURSOR_ORIGIN_BEGIN,
+					6, &results, NULL, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Ensure we moved to the right contact */
@@ -115,16 +95,16 @@ test_cursor_sexp_and_step (EbSdbCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-8");
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 	results = NULL;
 
 	/* Step 6 results more, gets up to contact 'sorted-12' */
-	if (!e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						  fixture->cursor,
-						  EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						  EBSDB_CURSOR_ORIGIN_CURRENT,
-						  6, &results, &error))
+	if (!e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+					fixture->cursor,
+					EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+					EBSQL_CURSOR_ORIGIN_CURRENT,
+					6, &results, NULL, &error))
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	/* Ensure we moved to the right contact */
@@ -132,7 +112,7 @@ test_cursor_sexp_and_step (EbSdbCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-12");
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -145,19 +125,15 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EbSdbCursor/SetSexp/Invalid", EbSdbCursorFixture, &book_closure,
-		    e_sqlitedb_cursor_fixture_setup,
-		    test_cursor_sexp_invalid,
-		    e_sqlitedb_cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetSexp/CalculatePosition", EbSdbCursorFixture, &book_closure,
-		    e_sqlitedb_cursor_fixture_setup,
+	g_test_add ("/EbSqlCursor/SetSexp/CalculatePosition", EbSqlCursorFixture, &book_closure,
+		    e_sqlite_cursor_fixture_setup,
 		    test_cursor_sexp_calculate_position,
-		    e_sqlitedb_cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetSexp/Step", EbSdbCursorFixture, &book_closure,
-		    e_sqlitedb_cursor_fixture_setup,
+		    e_sqlite_cursor_fixture_teardown);
+	g_test_add ("/EbSqlCursor/SetSexp/Step", EbSqlCursorFixture, &book_closure,
+		    e_sqlite_cursor_fixture_setup,
 		    test_cursor_sexp_and_step,
-		    e_sqlitedb_cursor_fixture_teardown);
+		    e_sqlite_cursor_fixture_teardown);
 
 
-	return e_test_server_utils_run ();
+	return g_test_run ();
 }

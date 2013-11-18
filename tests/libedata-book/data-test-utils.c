@@ -25,16 +25,6 @@
 
 #include "data-test-utils.h"
 
-/* This forces the GType to be registered in a way that
- * avoids a "statement with no effect" compiler warning.
- * FIXME Use g_type_ensure() once we require GLib 2.34. */
-#define REGISTER_TYPE(type) \
-	(g_type_class_unref (g_type_class_ref (type)))
-
-
-#define SQLITEDB_EMAIL_ID    "addressbook@localbackend.com"
-#define SQLITEDB_FOLDER_NAME "folder"
-
 gchar *
 new_vcard_from_test_case (const gchar *case_name)
 {
@@ -69,217 +59,233 @@ new_contact_from_test_case (const gchar *case_name)
 		contact = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
 
+	if (!contact)
+		g_error ("failed to construct contact from test case '%s'",
+			 case_name);
+
 	return contact;
 }
 
-static gboolean
-contacts_are_equal_shallow (EContact *a,
-                            EContact *b)
+void
+add_contact_from_test_case (EbSqlFixture *fixture,
+			    const gchar *case_name,
+			    EContact **ret_contact)
 {
-	const gchar *uid_a, *uid_b;
-
-        /* Avoid warnings if one or more are NULL, to make this function
-         * "NULL-friendly" */
-	if (!a && !b)
-		return TRUE;
-
-	if (!E_IS_CONTACT (a) || !E_IS_CONTACT (b))
-		return FALSE;
-
-	uid_a = e_contact_get_const (a, E_CONTACT_UID);
-	uid_b = e_contact_get_const (b, E_CONTACT_UID);
-
-	return g_strcmp0 (uid_a, uid_b) == 0;
-}
-
-gboolean
-add_contact_from_test_case_verify (EBookClient *book_client,
-                                   const gchar *case_name,
-                                   EContact **contact)
-{
-	EContact *contact_orig;
-	EContact *contact_final;
-	gchar *uid;
+	EContact *contact;
 	GError *error = NULL;
 
-	contact_orig = new_contact_from_test_case (case_name);
+	contact = new_contact_from_test_case (case_name);
 
-	if (!e_book_client_add_contact_sync (book_client, contact_orig, &uid, NULL, &error))
+	if (!e_book_sqlite_add_contact (fixture->ebsql,
+					contact, case_name,
+					FALSE, NULL, &error))
 		g_error ("Failed to add contact: %s", error->message);
 
-	e_contact_set (contact_orig, E_CONTACT_UID, uid);
+	if (ret_contact)
+		*ret_contact = g_object_ref (contact);
 
-	if (!e_book_client_get_contact_sync (book_client, uid, &contact_final, NULL, &error))
-		g_error ("Failed to get contact: %s", error->message);
+	/* Hold on to this so we can load vcards */
+	g_hash_table_insert (fixture->contacts, g_strdup (case_name), contact);
+}
 
-        /* verify the contact was added "successfully" (not thorough) */
-	g_assert (contacts_are_equal_shallow (contact_orig, contact_final));
+static void
+delete_work_directory (const gchar *filename)
+{
+	/* XXX Instead of complex error checking here, we should ideally use
+	 * a recursive GDir / g_unlink() function.
+	 *
+	 * We cannot use GFile and the recursive delete function without
+	 * corrupting our contained D-Bus environment with service files
+	 * from the OS.
+	 */
+	const gchar *argv[] = { "/bin/rm", "-rf", filename, NULL };
+	gboolean spawn_succeeded;
+	gint exit_status;
 
-	if (contact)
-                *contact = contact_final;
-	else
-		g_object_unref (contact_final);
-	g_object_unref (contact_orig);
-	g_free (uid);
+	spawn_succeeded = g_spawn_sync (
+		NULL, (gchar **) argv, NULL, 0, NULL, NULL,
+					NULL, NULL, &exit_status, NULL);
 
-	return TRUE;
+	g_assert (spawn_succeeded);
+	g_assert (WIFEXITED (exit_status));
+	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
+}
+
+ESourceBackendSummarySetup *
+setup_empty_book (void)
+{
+	ESourceBackendSummarySetup *setup;
+	ESource *scratch;
+	GError *error = NULL;
+
+	scratch = e_source_new_with_uid ("test-source", NULL, &error);
+	if (!scratch)
+		g_error ("Error creating scratch source");
+
+	/* This is a bit of a cheat */
+	setup = g_object_new (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP, "source", scratch, NULL);
+	e_source_backend_summary_setup_set_summary_fields (setup,
+							   /* We don't use this field in our tests anyway */
+							   E_CONTACT_FILE_AS,
+							   0);
+
+	g_object_unref (scratch);
+
+	return setup;
 }
 
 static gchar *
-get_addressbook_directory (ESourceRegistry *registry,
-			   ESource         *source)
+fetch_vcard_from_hash (const gchar *uid,
+		       const gchar *extra,
+		       gpointer     user_data)
 {
-	ESource *builtin_source;
-	const gchar *user_data_dir;
-	const gchar *uid;
-	gchar *filename = NULL;
+	EbSqlFixture *fixture = user_data;
+	EContact     *contact;
 
-	uid = e_source_get_uid (source);
-	g_return_val_if_fail (uid != NULL, NULL);
+	g_assert (extra && extra[0]);
 
-	user_data_dir = e_get_user_data_dir ();
+	/* vCards not stored in shallow addressbooks, instead loaded on the fly */
+	contact = g_hash_table_lookup (fixture->contacts, extra);
+	if (contact)
+		return e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
-	builtin_source = e_source_registry_ref_builtin_address_book (registry);
-
-	/* Special case directory for the builtin addressbook source */
-	if (builtin_source != NULL && e_source_equal (source, builtin_source))
-		uid = "system";
-
-	filename = g_build_filename (user_data_dir, "addressbook", uid, NULL);
-
-	if (builtin_source)
-		g_object_unref (builtin_source);
-
-	return filename;
+	return NULL;
 }
 
-static EBookBackendSqliteDB *
-open_sqlitedb (ESourceRegistry *registry,
-	       ESource         *source)
+static void 
+contact_change_cb (EbSqlChangeType     change_type,
+		   const gchar        *uid,
+		   const gchar        *extra,
+		   const gchar        *vcard,
+		   gpointer            user_data)
 {
-	EBookBackendSqliteDB *ebsdb;
+	EbSqlFixture *fixture = user_data;
+	EContact *contact;
+
+	if (change_type == EBSQL_CHANGE_LOCALE_CHANGED)
+		fixture->n_locale_changes++;
+	else if (change_type == EBSQL_CHANGE_CONTACT_ADDED)
+		fixture->n_add_changes++;
+
+	/* Replace the current contact with the new one */
+	contact = e_contact_new_from_vcard (vcard);
+	g_hash_table_insert (fixture->contacts, g_strdup (extra), contact);
+}
+
+void
+e_sqlite_fixture_setup (EbSqlFixture  *fixture,
+			gconstpointer  user_data)
+{
+	EbSqlClosure *closure = (EbSqlClosure *)user_data;
+	ESourceBackendSummarySetup *setup = NULL;
+	gchar  *filename, *directory;
 	GError *error = NULL;
-	gchar *dirname;
 
-	dirname = get_addressbook_directory (registry, source);
-	ebsdb   = e_book_backend_sqlitedb_new (dirname,
-					       SQLITEDB_EMAIL_ID,
-					       SQLITEDB_FOLDER_ID,
-					       SQLITEDB_FOLDER_NAME,
-					       TRUE, &error);
+	fixture->contacts =
+		g_hash_table_new_full (g_str_hash,
+				       g_str_equal,
+				       g_free,
+				       g_object_unref);
 
-	if (!ebsdb)
-		g_error ("Failed to open SQLite backend: %s", error->message);
+	/* Cleanup from last test */
+	directory  = g_build_filename (SRCDIR, "cache", NULL);
+	delete_work_directory (directory);
+	g_free (directory);
 
-	g_free (dirname);
+	filename = g_build_filename (SRCDIR, "cache", "contacts.db", NULL);
 
-	return ebsdb;
+	if (closure->setup_summary)
+		setup = closure->setup_summary ();
+
+	if (closure->without_vcards)
+		fixture->ebsql = e_book_sqlite_new_full (filename,
+							 setup,
+							 fetch_vcard_from_hash,
+							 contact_change_cb,
+							 fixture,
+							 NULL, NULL,
+							 &error);
+	else
+		fixture->ebsql = e_book_sqlite_new_full (filename,
+							 setup,
+							 NULL,
+							 contact_change_cb,
+							 fixture,
+							 NULL, NULL,
+							 &error);
+
+	g_clear_object (&setup);
+
+	if (!fixture->ebsql)
+		g_error ("Failed to create the SQLite: %s", error->message);
+
+	g_free (filename);
 }
 
 void
-e_sqlitedb_fixture_setup (ESqliteDBFixture *fixture,
-			  gconstpointer     user_data)
+e_sqlite_fixture_teardown (EbSqlFixture   *fixture,
+			   gconstpointer   user_data)
 {
-	EBookClient *book_client;
-
-	e_test_server_utils_setup ((ETestServerFixture *)fixture, user_data);
-
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-	fixture->ebsdb = open_sqlitedb (((ETestServerFixture *)fixture)->registry,
-					e_client_get_source (E_CLIENT (book_client)));
+	g_object_unref (fixture->ebsql);
+	g_hash_table_destroy (fixture->contacts);
 }
 
 void
-e_sqlitedb_fixture_teardown (ESqliteDBFixture *fixture,
-			     gconstpointer     user_data)
+e_sqlite_cursor_fixture_setup (EbSqlCursorFixture *fixture,
+			       gconstpointer       user_data)
 {
-	g_object_unref (fixture->ebsdb);
-	e_test_server_utils_teardown ((ETestServerFixture *)fixture, user_data);
-}
-
-void
-e_sqlitedb_cursor_fixture_setup_book (ESource            *scratch,
-				      ETestServerClosure *closure)
-{
-	ESourceBackendSummarySetup *setup;
-
-	g_type_class_unref (g_type_class_ref (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP));
-	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
-	e_source_backend_summary_setup_set_summary_fields (setup,
-							   E_CONTACT_FAMILY_NAME,
-							   E_CONTACT_GIVEN_NAME,
-							   E_CONTACT_EMAIL,
-							   0);
-	e_source_backend_summary_setup_set_indexed_fields (setup,
-							   E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_GIVEN_NAME, E_BOOK_INDEX_PREFIX,
-							   E_CONTACT_EMAIL, E_BOOK_INDEX_PREFIX,
-							   0);
-}
-
-void
-e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
-				 gconstpointer       user_data)
-{
-	ETestServerFixture *base_fixture = (ETestServerFixture *)fixture;
-	ESqliteDBFixture *ebsdb_fixture = (ESqliteDBFixture *)fixture;
-	EbSdbCursorClosure *data = (EbSdbCursorClosure *)user_data;
-	EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
+	EbSqlFixture       *base_fixture = (EbSqlFixture   *)fixture;
+	EbSqlCursorClosure *data = (EbSqlCursorClosure *)user_data;
+	EContactField       sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
 	EBookCursorSortType sort_types[] = { data->sort_type, data->sort_type };
-	EBookClient *book_client;
 	GSList *contacts = NULL;
+	GSList *extra_list = NULL;
 	GError *error = NULL;
 	gint i;
 	gchar *sexp = NULL;
-	const gchar *source_name;
 
-	/* Support the migration tests */
-	source_name = g_getenv ("MIGRATION_TEST_SOURCE_NAME");
-	if (source_name != NULL)
-		base_fixture->source_name = g_strdup (source_name);
-
-	/* Setup the EBookClient, but don't open the EBookBackendSqliteDB until after
-	 * we've specified the locale
-	 */
-	e_test_server_utils_setup ((ETestServerFixture *)fixture, user_data);
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+	e_sqlite_fixture_setup (base_fixture, user_data);
 
 	if (data->locale)
-		e_sqlitedb_cursor_fixture_set_locale (fixture, data->locale);
+		e_sqlite_cursor_fixture_set_locale (fixture, data->locale);
 	else
-		e_sqlitedb_cursor_fixture_set_locale (fixture, "en_US.UTF-8");
-
-	/* Now open the EBookBackendSqliteDB */
-	ebsdb_fixture->ebsdb = open_sqlitedb (((ETestServerFixture *)fixture)->registry,
-					      e_client_get_source (E_CLIENT (book_client)));
+		e_sqlite_cursor_fixture_set_locale (fixture, "en_US.UTF-8");
 
 	for (i = 0; i < N_SORTED_CONTACTS; i++) {
 		gchar *case_name = g_strdup_printf ("sorted-%d", i + 1);
 		gchar *vcard;
 		EContact *contact;
 
-		vcard    = new_vcard_from_test_case (case_name);
-		contact  = e_contact_new_from_vcard (vcard);
-		contacts = g_slist_prepend (contacts, contact);
+		vcard      = new_vcard_from_test_case (case_name);
+		contact    = e_contact_new_from_vcard (vcard);
+		contacts   = g_slist_prepend (contacts, contact);
+		extra_list = g_slist_prepend (extra_list, case_name);
+
 		g_free (vcard);
-		g_free (case_name);
 
 		fixture->contacts[i] = contact;
+
+		/* These need to be added to the hash as well */
+		g_hash_table_insert (base_fixture->contacts,
+				     g_strdup (case_name),
+				     g_object_ref (contact));
 	}
 
-	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error)) { 
-
+	if (!e_book_sqlite_add_contacts (base_fixture->ebsql,
+					 contacts, extra_list,
+					 FALSE, NULL, &error)) {
 		/* Dont complain here, we re-use the same addressbook for multiple tests
 		 * and we can't add the same contacts twice
 		 */
-		if (g_error_matches (error, E_BOOK_CLIENT_ERROR,
-				     E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS))
+		if (g_error_matches (error, E_BOOK_SQLITE_ERROR,
+				     E_BOOK_SQLITE_ERROR_CONSTRAINT))
 			g_clear_error (&error);
 		else
 			g_error ("Failed to add test contacts: %s", error->message);
 	}
 
 	g_slist_free (contacts);
+	g_slist_free_full (extra_list, g_free);
 
 	/* Allow a surrounding fixture setup to add a query here */
 	if (fixture->query) {
@@ -288,28 +294,29 @@ e_sqlitedb_cursor_fixture_setup (EbSdbCursorFixture *fixture,
 		fixture->query = NULL;
 	}
 
-	fixture->cursor = e_book_backend_sqlitedb_cursor_new (((ESqliteDBFixture *) fixture)->ebsdb,
-							      SQLITEDB_FOLDER_ID,
-							      sexp, sort_fields, sort_types, 2, &error);
+	fixture->cursor = e_book_sqlite_cursor_new (base_fixture->ebsql, sexp,
+						    sort_fields, sort_types, 2, &error);
+
+	if (!fixture->cursor)
+		g_error ("Failed to create cursor: %s\n", error->message);
 
 	g_free (sexp);
-
-	g_assert (fixture->cursor != NULL);
 }
 
 void
-e_sqlitedb_cursor_fixture_filtered_setup (EbSdbCursorFixture *fixture,
-					  gconstpointer  user_data)
+e_sqlite_cursor_fixture_filtered_setup (EbSqlCursorFixture *fixture,
+					gconstpointer  user_data)
 {
 	fixture->query = e_book_query_field_test (E_CONTACT_EMAIL, E_BOOK_QUERY_ENDS_WITH, ".com");
 
-	e_sqlitedb_cursor_fixture_setup (fixture, user_data);
+	e_sqlite_cursor_fixture_setup (fixture, user_data);
 }
 
 void
-e_sqlitedb_cursor_fixture_teardown (EbSdbCursorFixture *fixture,
+e_sqlite_cursor_fixture_teardown (EbSqlCursorFixture *fixture,
 				    gconstpointer       user_data)
 {
+	EbSqlFixture *base_fixture = (EbSqlFixture   *)fixture;
 	gint i;
 
 	for (i = 0; i < N_SORTED_CONTACTS; i++) {
@@ -317,93 +324,24 @@ e_sqlitedb_cursor_fixture_teardown (EbSdbCursorFixture *fixture,
 			g_object_unref (fixture->contacts[i]);
 	}
 
-	if (fixture->locale1)
-		g_object_unref (fixture->locale1);
-
-	if (fixture->own_id > 0)
-		g_bus_unown_name (fixture->own_id);
-
-	e_book_backend_sqlitedb_cursor_free (((ESqliteDBFixture *) fixture)->ebsdb, fixture->cursor);
-	e_sqlitedb_fixture_teardown ((ESqliteDBFixture *)fixture, user_data);
-}
-
-typedef struct {
-	EbSdbCursorFixture *fixture;
-	const gchar *locale;
-} ChangeLocaleData;
-
-static void
-book_client_locale_change (EBookClient *book,
-			   GParamSpec  *pspec,
-			   ChangeLocaleData *data)
-{
-	ETestServerFixture *base_fixture = (ETestServerFixture *)data->fixture;
-
-	if (!g_strcmp0 (e_book_client_get_locale (book), data->locale))
-		g_main_loop_quit (base_fixture->loop);
+	e_book_sqlite_cursor_free (base_fixture->ebsql, fixture->cursor);
+	e_sqlite_fixture_teardown (base_fixture, user_data);
 }
 
 void
-e_sqlitedb_cursor_fixture_set_locale (EbSdbCursorFixture *fixture,
-				      const gchar        *locale)
+e_sqlite_cursor_fixture_set_locale (EbSqlCursorFixture *fixture,
+				    const gchar        *locale)
 {
-	ETestServerFixture *base_fixture = (ETestServerFixture *)fixture;
-	EBookClient *book_client;
-	ChangeLocaleData data = { fixture, locale };
-	gulong handler_id;
-	gchar *strv[2] = { NULL, NULL };
+	EbSqlFixture *base_fixture = (EbSqlFixture   *)fixture;
+	GError *error = NULL;
 
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-
-	/* We're already in the right locale */
-	if (g_strcmp0 (locale, e_book_client_get_locale (book_client)) == 0)
-		return;
-
-	if (!fixture->locale1) {
-		GDBusConnection *bus;
-		GError *error = NULL;
-
-		/* We use the 'org.freedesktop.locale1 on the session bus instead
-		 * of the system bus only for testing purposes... in real life
-		 * this service is on the system bus.
-		 */
-		bus = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
-		if (!bus)
-			g_error ("Failed to get system bus: %s", error->message);
-
-		fixture->locale1 = e_dbus_locale1_skeleton_new ();
-
-		/* Set initial locale before exporting on the bus */
-		strv[0] = g_strdup_printf ("LANG=%s", locale);
-		e_dbus_locale1_set_locale (fixture->locale1, (const gchar * const *)strv);
-		g_free (strv[0]);
-
-		if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fixture->locale1),
-						       bus, "/org/freedesktop/locale1", &error))
-			g_error ("Failed to export org.freedesktop.locale1: %s", error->message);
-
-		fixture->own_id =
-			g_bus_own_name_on_connection (bus,
-						      "org.freedesktop.locale1",
-						      G_BUS_NAME_OWNER_FLAGS_REPLACE,
-						      NULL, NULL, NULL, NULL);
-
-		g_object_unref (bus);
-	} else {
-		/* Send locale change message */
-		strv[0] = g_strdup_printf ("LANG=%s", locale);
-		e_dbus_locale1_set_locale (fixture->locale1, (const gchar * const *)strv);
-		g_free (strv[0]);
-	}
-
-	handler_id = g_signal_connect (book_client, "notify::locale",
-				       G_CALLBACK (book_client_locale_change), &data);
-	g_main_loop_run (base_fixture->loop);
-	g_signal_handler_disconnect (book_client, handler_id);
+	if (!e_book_sqlite_set_locale (base_fixture->ebsql,
+				       locale, NULL, &error))
+		g_error ("Failed to set locale: %s", error->message);
 }
 
 static gint
-find_contact_data (EbSdbSearchData *data,
+find_contact_data (EbSqlSearchData *data,
 		   const gchar     *uid)
 {
 	return g_strcmp0 (data->uid, uid);
@@ -471,7 +409,7 @@ print_results (GSList      *results)
 	g_print ("\nPRINTING RESULTS:\n");
 
 	for (l = results; l; l = l->next) {
-		EbSdbSearchData *data = l->data;
+		EbSqlSearchData *data = l->data;
 
 		g_print ("\n%s\n", data->vcard);
 	}
@@ -487,21 +425,21 @@ print_results (GSList      *results)
 static StepData *
 step_test_new_internal (const gchar *test_path,
 			const gchar *locale,
-			gsize        struct_size)
+			gboolean     store_vcards,
+			gboolean     empty_book)
 {
 	StepData *data;
 
-	data = g_slice_alloc0 (struct_size);
-	data->parent.parent.type = E_TEST_SERVER_ADDRESS_BOOK;
-	data->parent.parent.customize = e_sqlitedb_cursor_fixture_setup_book;
+	data = g_slice_new0 (StepData);
+
 	data->parent.locale = g_strdup (locale);
 	data->parent.sort_type = E_BOOK_CURSOR_SORT_ASCENDING;
-	data->path = g_strdup (test_path);
-	data->struct_size = struct_size;
 
-	/* Keep the work dir for migration tests */
-	if (g_getenv ("MIGRATION_TEST_SOURCE_NAME") != NULL)
-	    data->parent.parent.keep_work_directory = TRUE;
+	data->parent.parent.without_vcards = (store_vcards == FALSE);
+	if (empty_book)
+		data->parent.parent.setup_summary = setup_empty_book;
+
+	data->path = g_strdup (test_path);
 
 	return data;
 }
@@ -509,56 +447,81 @@ step_test_new_internal (const gchar *test_path,
 static void
 step_test_free (StepData *data)
 {
+	GList *l;
+
 	g_free (data->path);
 	g_free ((gchar *)data->parent.locale);
-	g_slice_free1 (data->struct_size, data);
+
+	for (l = data->assertions; l; l = l->next) {
+		StepAssertion *assertion = l->data;
+
+		g_free (assertion->locale);
+		g_slice_free (StepAssertion, assertion);
+	}
+
+	g_slice_free (StepData, data);
 }
 
 StepData *
-step_test_new (const gchar *test_path,
-	       const gchar *locale)
+step_test_new (const gchar *test_prefix,
+	       const gchar *test_path,
+	       const gchar *locale,
+	       gboolean     store_vcards,
+	       gboolean     empty_book)
 {
-	return step_test_new_internal (test_path, locale, sizeof (StepData));
+	StepData *data;
+	gchar *path;
+
+	path = g_strconcat (test_prefix, test_path, NULL);
+	data = step_test_new_internal (path, locale, store_vcards, empty_book);
+	g_free (path);
+
+	return data;
 }
 
 StepData *
-step_test_new_full (const gchar         *test_path,
+step_test_new_full (const gchar         *test_prefix,
+		    const gchar         *test_path,
 		    const gchar         *locale,
+		    gboolean             store_vcards,
+		    gboolean             empty_book,
 		    EBookCursorSortType  sort_type)
 {
 	StepData *data;
+	gchar *path;
 
-	data = step_test_new_internal (test_path, locale, sizeof (StepData));
+	path = g_strconcat (test_prefix, test_path, NULL);
+	data = step_test_new_internal (path, locale, store_vcards, empty_book);
 	data->parent.sort_type = sort_type;
+	g_free (path);
 
 	return data;
 }
 
 static void
-test_cursor_move_teardown (EbSdbCursorFixture *fixture,
+test_cursor_move_teardown (EbSqlCursorFixture *fixture,
 			   gconstpointer  user_data)
 {
 	StepData *data = (StepData *)user_data;
 
-	e_sqlitedb_cursor_fixture_teardown (fixture, user_data);
-
+	e_sqlite_cursor_fixture_teardown (fixture, user_data);
 	step_test_free (data);
 }
 
 static void
-assert_step (EbSdbCursorFixture *fixture,
+assert_step (EbSqlCursorFixture *fixture,
 	     StepData *data,
-	     gint i,
+	     StepAssertion *assertion,
 	     GSList *results,
 	     gint n_results,
 	     gboolean expect_results)
 {
 	GSList *uids = NULL;
-	gint j, expected = 0;
+	gint i, expected = 0;
 
 	/* Count the number of really expected results */
-	for (j = 0; j < ABS (data->counts[i]); j++) {
-		gint index = data->expected[i][j];
+	for (i = 0; i < ABS (assertion->count); i++) {
+		gint index = assertion->expected[i];
 
 		if (index < 0)
 			break;
@@ -577,10 +540,10 @@ assert_step (EbSdbCursorFixture *fixture,
 
 #if DEBUG_FIXTURE
 	g_print ("%s: Constructing expected result list for a fetch of %d: ",
-		 data->path, data->counts[i]);
+		 data->path, assertion->count);
 #endif
-	for (j = 0; j < ABS (data->counts[i]); j++) {
-		gint index = data->expected[i][j];
+	for (i = 0; i < ABS (assertion->count); i++) {
+		gint index = assertion->expected[i];
 		gchar *uid;
 
 		if (index < 0)
@@ -603,122 +566,90 @@ assert_step (EbSdbCursorFixture *fixture,
 }
 
 static void
-test_step (EbSdbCursorFixture *fixture,
+test_step (EbSqlCursorFixture *fixture,
 	   gconstpointer  user_data)
 {
+	EbSqlFixture *base_fixture = (EbSqlFixture   *)fixture;
 	StepData *data = (StepData *)user_data;
 	GSList *results = NULL;
 	GError *error = NULL;
-	gint i;
-	gint expected_position = 0, last_expected_position = 0, position;
-	gint total;
 	gint n_results;
-	EbSdbCursorOrigin origin;
+	EbSqlCursorOrigin origin;
+	GList *l;
+	gboolean reset = TRUE;
 
-	total = data->filtered ? N_FILTERED_CONTACTS : N_SORTED_CONTACTS;
+	for (l = data->assertions; l; l = l->next) {
+		StepAssertion *assertion = l->data;
 
-	for (i = 0; i < MAX_STEP_COUNTS && data->counts[i] != 0; i++) {
+		if (assertion->locale) {
+			gint n_locale_changes = base_fixture->n_locale_changes;
 
-		/* For the first call to e_book_backend_sqlitedb_cursor_step(),
-		 * set the origin accordingly.
-		 */
-		if (i == 0) {
-			if (data->counts[i] < 0)
-				origin = EBSDB_CURSOR_ORIGIN_END;
-			else
-				origin = EBSDB_CURSOR_ORIGIN_BEGIN;
-		} else
-			origin = EBSDB_CURSOR_ORIGIN_CURRENT;
+			if (!e_book_sqlite_set_locale (base_fixture->ebsql,
+						       assertion->locale,
+						       NULL, &error))
+				g_error ("Failed to set locale: %s", error->message);
 
-		if (expected_position == 0 && data->counts[i] < 0)
-			expected_position = (total + 1) - ABS (data->counts[i]);
-		else
-			expected_position += data->counts[i];
+			n_locale_changes = (base_fixture->n_locale_changes - n_locale_changes);
 
-		if (expected_position > total || expected_position < 1)
-			expected_position = 0;
+			/* Only check for contact changes is phone numbers are supported,
+			 * contact changes only happen because of e164 number interpretations.
+			 */
+			if (e_phone_number_is_supported () &&
+			    assertion->count != n_locale_changes)
+				g_error ("Expected %d e164 numbers to change, %d actually changed.",
+					 assertion->count, n_locale_changes);
+
+			reset = TRUE;
+			continue;
+		}
+
+               /* For the first call to e_book_sqlite_cursor_step(),
+		* or the first reset after locale change, set the origin accordingly.
+                */
+               if (reset) {
+                       if (assertion->count < 0)
+                               origin = EBSQL_CURSOR_ORIGIN_END;
+                       else
+                               origin = EBSQL_CURSOR_ORIGIN_BEGIN;
+
+		       reset = FALSE;
+               } else
+                       origin = EBSQL_CURSOR_ORIGIN_CURRENT;
 
 		/* Try only fetching the contacts but not moving the cursor */
-		n_results = e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-								 fixture->cursor,
-								 EBSDB_CURSOR_STEP_FETCH,
-								 origin,
-								 data->counts[i],
-								 &results, &error);
+		n_results = e_book_sqlite_cursor_step (base_fixture->ebsql,
+						       fixture->cursor,
+						       EBSQL_CURSOR_STEP_FETCH,
+						       origin,
+						       assertion->count,
+						       &results,
+						       NULL, &error);
 		if (n_results < 0)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
-		assert_step (fixture, data, i, results, n_results, TRUE);
-		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		assert_step (fixture, data, assertion, results, n_results, TRUE);
+		g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 		g_slist_free (results);
 		results = NULL;
-
-		if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
-							       fixture->cursor, NULL, &position, &error))
-			g_error ("Error calculating cursor: %s", error->message);
-
-		/* We only fetched but didn't move.
-		 *
-		 * Check that we are still at the previously expected position.
-		 */
-		g_assert_cmpint (last_expected_position, ==, position);
-		last_expected_position = expected_position;
 
 		/* Do it again, this time only moving the cursor */
-		n_results = e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-								 fixture->cursor,
-								 EBSDB_CURSOR_STEP_MOVE,
-								 origin,
-								 data->counts[i],
-								 &results, &error);
+		n_results = e_book_sqlite_cursor_step (base_fixture->ebsql,
+						       fixture->cursor,
+						       EBSQL_CURSOR_STEP_MOVE,
+						       origin,
+						       assertion->count,
+						       &results,
+						       NULL, &error);
 		if (n_results < 0)
 			g_error ("Error fetching cursor results: %s", error->message);
 
 		print_results (results);
-		assert_step (fixture, data, i, results, n_results, FALSE);
-		g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		assert_step (fixture, data, assertion, results, n_results, FALSE);
+		g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 		g_slist_free (results);
 		results = NULL;
-
-		if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
-							       fixture->cursor, NULL, &position, &error))
-			g_error ("Error calculating cursor: %s", error->message);
-
-		/* This time we moved the cursor but did not fetch, let's assert the new position
-		 */
-		g_assert_cmpint (expected_position, ==, position);
 	}
-
-	if (data->counts[0] < 0) {
-		expected_position = (total + 1) - ABS (data->counts[0]);
-		origin = EBSDB_CURSOR_ORIGIN_END;
-	} else {
-		expected_position = data->counts[0];
-		origin = EBSDB_CURSOR_ORIGIN_BEGIN;
-	}
-
-	/* One more, test reset API, the first batch from the beginning, this time move & fetch results together */
-	n_results = e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-							 fixture->cursor,
-							 EBSDB_CURSOR_STEP_MOVE |
-							 EBSDB_CURSOR_STEP_FETCH,
-							 origin,
-							 data->counts[0],
-							 &results, &error);
-	if (n_results < 0)
-		g_error ("Error fetching cursor results: %s", error->message);
-
-	print_results (results);
-	assert_step (fixture, data, 0, results, n_results, TRUE);
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
-	g_slist_free (results);
-	results = NULL;
-
-	if (!e_book_backend_sqlitedb_cursor_calculate (((ESqliteDBFixture *) fixture)->ebsdb,
-						       fixture->cursor, NULL, &position, &error))
-		g_error ("Error calculating cursor: %s", error->message);
-	g_assert_cmpint (expected_position, ==, position);
 }
 
 static void
@@ -726,36 +657,28 @@ step_test_add_assertion_va_list (StepData *data,
 				 gint      count,
 				 va_list   args)
 {
-	gint i, j;
-	gint expected;
+	StepAssertion *assertion = g_slice_new0 (StepAssertion);
+	gint expected, i;
 
-	for (i = 0; i < MAX_STEP_COUNTS; i++) {
-
-		/* Find the next available test slot */
-		if (data->counts[i] == 0) {
-			data->counts[i] = count;
+	assertion->count = count;
 
 #if DEBUG_FIXTURE
-			g_print ("Adding assertion to test %d: %s\n", i + 1, data->path);
-			g_print ("  Test will move by %d and expect: ", count);
+	g_print ("Adding assertion to test %d: %s\n", i + 1, data->path);
+	g_print ("  Test will move by %d and expect: ", count);
 #endif
-			for (j = 0; j < ABS (count); j++) {
-				expected = va_arg (args, gint);
+	for (i = 0; i < ABS (count); i++) {
+		expected = va_arg (args, gint);
 
 #if DEBUG_FIXTURE
-				g_print ("%d ", expected);
+		g_print ("%d ", expected);
 #endif
-				data->expected[i][j] = expected - 1;
-			}
-#if DEBUG_FIXTURE
-			g_print ("\n");
-#endif
-
-			break;
-		}
+		assertion->expected[i] = expected - 1;
 	}
+#if DEBUG_FIXTURE
+	g_print ("\n");
+#endif
 
-	g_assert (i < MAX_STEP_COUNTS);
+	data->assertions = g_list_append (data->assertions, assertion);
 }
 
 /* A positive of negative 'count' value
@@ -770,7 +693,6 @@ step_test_add_assertion (StepData *data,
 			 gint      count,
 			 ...)
 {
-
 	va_list args;
 
 	va_start (args, count);
@@ -779,15 +701,27 @@ step_test_add_assertion (StepData *data,
 }
 
 void
+step_test_change_locale (StepData    *data,
+			 const gchar *locale,
+			 gint         expected_changes)
+{
+	StepAssertion *assertion = g_slice_new0 (StepAssertion);
+
+	assertion->locale = g_strdup (locale);
+	assertion->count  = expected_changes;
+	data->assertions  = g_list_append (data->assertions, assertion);
+}
+
+void
 step_test_add (StepData  *data,
 	       gboolean   filtered)
 {
 	data->filtered = filtered;
 
-	g_test_add (data->path, EbSdbCursorFixture, data,
+	g_test_add (data->path, EbSqlCursorFixture, data,
 		    filtered ?
-		    e_sqlitedb_cursor_fixture_filtered_setup :
-		    e_sqlitedb_cursor_fixture_setup,
+		    e_sqlite_cursor_fixture_filtered_setup :
+		    e_sqlite_cursor_fixture_setup,
 		    test_step,
 		    test_cursor_move_teardown);
 }

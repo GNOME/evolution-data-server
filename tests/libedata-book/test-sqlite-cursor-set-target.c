@@ -6,24 +6,22 @@
 
 #include "data-test-utils.h"
 
-static EbSdbCursorClosure book_closure = { { E_TEST_SERVER_ADDRESS_BOOK, e_sqlitedb_cursor_fixture_setup_book, 0 }, FALSE };
-
 /*****************************************************
  *          Expect the same results twice            *
  *****************************************************/
 static void
-test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
+test_cursor_set_target_reset_cursor (EbSqlCursorFixture *fixture,
 				     gconstpointer  user_data)
 {
 	GSList *results = NULL;
 	GError *error = NULL;
 
 	/* First batch */
-	if (e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						 fixture->cursor,
-						 EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						 EBSDB_CURSOR_ORIGIN_BEGIN,
-						 5, &results, &error) < 0)
+	if (e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+				       fixture->cursor,
+				       EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+				       EBSQL_CURSOR_ORIGIN_BEGIN,
+				       5, &results, NULL, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -38,16 +36,16 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 			       "sorted-6",
 			       NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 	results = NULL;
 
 	/* Second batch reset (same results) */
-	if (e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						 fixture->cursor,
-						 EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						 EBSDB_CURSOR_ORIGIN_BEGIN,
-						 5, &results, &error) < 0)
+	if (e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+				       fixture->cursor,
+				       EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+				       EBSQL_CURSOR_ORIGIN_BEGIN,
+				       5, &results, NULL, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -62,7 +60,7 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
 			       "sorted-6",
 			       NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -70,7 +68,7 @@ test_cursor_set_target_reset_cursor (EbSdbCursorFixture *fixture,
  * Expect results with family name starting with 'C' *
  *****************************************************/
 static void
-test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
+test_cursor_set_target_c_next_results (EbSqlCursorFixture *fixture,
 				       gconstpointer  user_data)
 {
 	GSList *results = NULL;
@@ -80,20 +78,20 @@ test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 	const gchar *const *labels;
 
 	/* First verify our test... in en_US locale the label 'C' should exist with the index 3 */
-	collator = e_book_backend_sqlitedb_ref_collator (((ESqliteDBFixture *) fixture)->ebsdb);
+	collator = e_book_sqlite_ref_collator (((EbSqlFixture *) fixture)->ebsql);
 	labels = e_collator_get_index_labels (collator, &n_labels, NULL, NULL, NULL);
 	g_assert_cmpstr (labels[3], ==, "C");
 	e_collator_unref (collator);
 
 	/* Set the cursor at the start of family names beginning with 'C' */
-	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
-								    fixture->cursor, 3);
+	e_book_sqlite_cursor_set_target_alphabetic_index (((EbSqlFixture *) fixture)->ebsql,
+							  fixture->cursor, 3);
 
-	if (e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						 fixture->cursor,
-						 EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						 EBSDB_CURSOR_ORIGIN_CURRENT,
-						 5, &results, &error) < 0)
+	if (e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+				       fixture->cursor,
+				       EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+				       EBSQL_CURSOR_ORIGIN_CURRENT,
+				       5, &results, NULL, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -108,7 +106,7 @@ test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
 			       "sorted-9",
 			       NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -116,7 +114,7 @@ test_cursor_set_target_c_next_results (EbSdbCursorFixture *fixture,
  *       Expect results before the letter 'C'        *
  *****************************************************/
 static void
-test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
+test_cursor_set_target_c_prev_results (EbSqlCursorFixture *fixture,
 				       gconstpointer  user_data)
 {
 	GSList *results = NULL;
@@ -126,20 +124,20 @@ test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
 	const gchar *const *labels;
 
 	/* First verify our test... in en_US locale the label 'C' should exist with the index 3 */
-	collator = e_book_backend_sqlitedb_ref_collator (((ESqliteDBFixture *) fixture)->ebsdb);
+	collator = e_book_sqlite_ref_collator (((EbSqlFixture *) fixture)->ebsql);
 	labels = e_collator_get_index_labels (collator, &n_labels, NULL, NULL, NULL);
 	g_assert_cmpstr (labels[3], ==, "C");
 	e_collator_unref (collator);
 
 	/* Set the cursor at the start of family names beginning with 'C' */
-	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (((ESqliteDBFixture *) fixture)->ebsdb,
-								    fixture->cursor, 3);
+	e_book_sqlite_cursor_set_target_alphabetic_index (((EbSqlFixture *) fixture)->ebsql,
+							  fixture->cursor, 3);
 
-	if (e_book_backend_sqlitedb_cursor_step (((ESqliteDBFixture *) fixture)->ebsdb,
-						 fixture->cursor, 
-						 EBSDB_CURSOR_STEP_MOVE | EBSDB_CURSOR_STEP_FETCH,
-						 EBSDB_CURSOR_ORIGIN_CURRENT,
-						 -5, &results, &error) < 0)
+	if (e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
+				       fixture->cursor, 
+				       EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
+				       EBSQL_CURSOR_ORIGIN_CURRENT,
+				       -5, &results, NULL, &error) < 0)
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	print_results (results);
@@ -154,31 +152,59 @@ test_cursor_set_target_c_prev_results (EbSdbCursorFixture *fixture,
 			       "sorted-8",
 			       NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
+
+static EbSqlCursorClosure closures[] = {
+	{ { FALSE, NULL }, NULL, E_BOOK_CURSOR_SORT_ASCENDING },
+	{ { TRUE, NULL }, NULL, E_BOOK_CURSOR_SORT_ASCENDING },
+	{ { FALSE, setup_empty_book }, NULL, E_BOOK_CURSOR_SORT_ASCENDING },
+	{ { TRUE, setup_empty_book }, NULL, E_BOOK_CURSOR_SORT_ASCENDING }
+};
+
+static const gchar *prefixes[] = {
+	"/EBookSqlite/DefaultSummary/StoreVCards",
+	"/EBookSqlite/DefaultSummary/NoVCards",
+	"/EBookSqlite/EmptySummary/StoreVCards",
+	"/EBookSqlite/EmptrySummary/NoVCards"
+};
 
 gint
 main (gint argc,
       gchar **argv)
 {
+	gint i;
+
 #if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EbSdbCursor/SetTarget/ResetCursor", EbSdbCursorFixture, &book_closure,
-		    e_sqlitedb_cursor_fixture_setup,
-		    test_cursor_set_target_reset_cursor,
-		    e_sqlitedb_cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetTarget/Alphabetic/C/NextResults", EbSdbCursorFixture, &book_closure,
-		    e_sqlitedb_cursor_fixture_setup,
-		    test_cursor_set_target_c_next_results,
-		    e_sqlitedb_cursor_fixture_teardown);
-	g_test_add ("/EbSdbCursor/SetTarget/Alphabetic/C/PreviousResults", EbSdbCursorFixture, &book_closure,
-		    e_sqlitedb_cursor_fixture_setup,
-		    test_cursor_set_target_c_prev_results,
-		    e_sqlitedb_cursor_fixture_teardown);
+	for (i = 0; i < G_N_ELEMENTS (closures); i++) {
+		gchar *path;
 
-	return e_test_server_utils_run ();
+		path = g_strconcat (prefixes[i], "/SetTarget/ResetCursor", NULL);
+		g_test_add (path, EbSqlCursorFixture, &closures[i],
+			    e_sqlite_cursor_fixture_setup,
+			    test_cursor_set_target_reset_cursor,
+			    e_sqlite_cursor_fixture_teardown);
+		g_free (path);
+
+		path = g_strconcat (prefixes[i], "/SetTarget/Alphabetic/C/NextResults", NULL);
+		g_test_add (path, EbSqlCursorFixture, &closures[i],
+			    e_sqlite_cursor_fixture_setup,
+			    test_cursor_set_target_c_next_results,
+			    e_sqlite_cursor_fixture_teardown);
+		g_free (path);
+
+		path = g_strconcat (prefixes[i], "/SetTarget/Alphabetic/C/PreviousResults", NULL);
+		g_test_add (path, EbSqlCursorFixture, &closures[i],
+			    e_sqlite_cursor_fixture_setup,
+			    test_cursor_set_target_c_prev_results,
+			    e_sqlite_cursor_fixture_teardown);
+		g_free (path);
+	}
+
+	return g_test_run ();
 }
