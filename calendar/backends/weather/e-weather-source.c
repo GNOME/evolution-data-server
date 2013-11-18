@@ -71,6 +71,37 @@ e_weather_source_init (EWeatherSource *source)
 	source->priv = E_WEATHER_SOURCE_GET_PRIVATE (source);
 }
 
+static GWeatherLocation *
+weather_source_find_location_by_coords (GWeatherLocation *start,
+					gdouble latitude,
+					gdouble longitude)
+{
+	GWeatherLocation *location, **children;
+	gint ii;
+
+	if (!start)
+		return NULL;
+
+	location = start;
+	if (gweather_location_has_coords (location)) {
+		gdouble lat, lon;
+
+		gweather_location_get_coords (location, &lat, &lon);
+
+		if (lat == latitude && lon == longitude)
+			return location;
+	}
+
+	children = gweather_location_get_children (location);
+	for (ii = 0; children[ii]; ii++) {
+		location = weather_source_find_location_by_coords (children[ii], latitude, longitude);
+		if (location)
+			return location;
+	}
+
+	return NULL;
+}
+
 EWeatherSource *
 e_weather_source_new (const gchar *location)
 {
@@ -99,6 +130,18 @@ e_weather_source_new (const gchar *location)
 	tokens = g_strsplit (location, "/", 2);
 
 	glocation = gweather_location_find_by_station_code (world, tokens[0]);
+
+	if (!glocation) {
+		gdouble latitude, longitude;
+		gchar *endptr = NULL;
+
+		latitude = g_ascii_strtod (location, &endptr);
+		if (endptr && *endptr == '/') {
+			longitude = g_ascii_strtod (endptr + 1, NULL);
+			glocation = weather_source_find_location_by_coords (world, latitude, longitude);
+		}
+	}
+
 	if (glocation != NULL)
 		gweather_location_ref (glocation);
 
@@ -109,7 +152,7 @@ e_weather_source_new (const gchar *location)
 		return NULL;
 
 	source = g_object_new (E_TYPE_WEATHER_SOURCE, NULL);
-	source->priv->location = gweather_location_ref (glocation);
+	source->priv->location = glocation;
 
 	return source;
 }
@@ -146,11 +189,12 @@ e_weather_source_parse (EWeatherSource *source,
 		source->priv->info = gweather_info_new (
 			source->priv->location,
 			GWEATHER_FORECAST_LIST);
+		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_ALL);
 		g_signal_connect (
 			source->priv->info, "updated",
 			G_CALLBACK (weather_source_updated_cb), source);
-	} else {
-		gweather_info_update (source->priv->info);
 	}
+
+	gweather_info_update (source->priv->info);
 }
 
