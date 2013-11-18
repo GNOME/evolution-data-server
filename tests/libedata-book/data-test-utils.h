@@ -22,10 +22,7 @@
 #ifndef DATA_TEST_UTILS_H
 #define DATA_TEST_UTILS_H
 
-#include <libebook/libebook.h>
 #include <libedata-book/libedata-book.h>
-#include "e-test-server-utils.h"
-#include "e-dbus-localed.h"
 
 /* This legend shows the add order, and various sort order of the sorted
  * vcards. The UIDs of these contacts are formed as 'sorted-1', 'sorted-2' etc
@@ -66,81 +63,91 @@
  *     http://demo.icu-project.org/icu-bin/locexp?_=en_US&d_=en&x=col
  */
 
-#define SQLITEDB_FOLDER_ID   "folder_id"
-#define N_SORTED_CONTACTS    20
-#define MAX_STEP_COUNTS   5
 
 /* 13 contacts in the test data have an email address ending with ".com" */
 #define N_FILTERED_CONTACTS  13
+#define N_SORTED_CONTACTS    20
 
-
-typedef struct {
-	ETestServerFixture parent_fixture;
-
-	EBookBackendSqliteDB *ebsdb;
-} ESqliteDBFixture;
+typedef ESourceBackendSummarySetup * (* EbSqlSetupSummary) (void);
 
 typedef struct {
-	ESqliteDBFixture parent_fixture;
+	EBookSqlite *ebsql;
 
-	EbSdbCursor     *cursor;
+	GHashTable  *contacts;
+	gint         n_add_changes;
+	gint         n_locale_changes;
+} EbSqlFixture;
+
+typedef struct {
+	gboolean           without_vcards;
+	EbSqlSetupSummary  setup_summary;
+} EbSqlClosure;
+
+typedef struct {
+	EbSqlFixture     parent_fixture;
+
+	EbSqlCursor     *cursor;
 	EContact        *contacts[N_SORTED_CONTACTS];
 	EBookQuery      *query;
 
-	EDBusLocale1    *locale1;
 	guint            own_id;
-} EbSdbCursorFixture;
+} EbSqlCursorFixture;
 
 typedef struct {
-	ETestServerClosure  parent;
+	EbSqlClosure          parent;
 
-	const gchar        *locale;
-	EBookCursorSortType sort_type;
-} EbSdbCursorClosure;
+	const gchar          *locale;
+	EBookCursorSortType   sort_type;
+} EbSqlCursorClosure;
 
 typedef struct {
-	EbSdbCursorClosure parent;
+	/* A locale change */
+	gchar *locale;
+
+	/* count argument for move */
+	gint count;
+
+	/* An array of 'ABS (counts[i])' expected contacts */
+	gint expected[N_SORTED_CONTACTS];
+} StepAssertion;
+
+typedef struct {
+	EbSqlCursorClosure parent;
 	gchar *path;
 
-	/* array of counts to move by, terminated with 0 or MAX_COUNTS */
-	gint counts[MAX_STEP_COUNTS];
-
-	/* For each step() command, an array of 'ABS (counts[i])' expected contacts */
-	gint expected[MAX_STEP_COUNTS][N_SORTED_CONTACTS];
+	GList *assertions;
 
 	/* Whether this is a filtered test */
 	gboolean filtered;
-
-	/* Private detail */
-	gsize struct_size;
 } StepData;
 
-void     e_sqlitedb_fixture_setup          (ESqliteDBFixture *fixture,
-					    gconstpointer     user_data);
-void     e_sqlitedb_fixture_teardown       (ESqliteDBFixture *fixture,
-					    gconstpointer     user_data);
+/* Base fixture */
+void     e_sqlite_fixture_setup              (EbSqlFixture     *fixture,
+					      gconstpointer     user_data);
+void     e_sqlite_fixture_teardown           (EbSqlFixture *fixture,
+					      gconstpointer     user_data);
+ESourceBackendSummarySetup *setup_empty_book (void);
 
-void     e_sqlitedb_cursor_fixture_setup_book (ESource            *scratch,
-					       ETestServerClosure *closure);
-void     e_sqlitedb_cursor_fixture_setup    (EbSdbCursorFixture *fixture,
-					     gconstpointer       user_data);
-void     e_sqlitedb_cursor_fixture_teardown (EbSdbCursorFixture *fixture,
-					     gconstpointer       user_data);
-void     e_sqlitedb_cursor_fixture_set_locale (EbSdbCursorFixture *fixture,
-					       const gchar        *locale);
+/* Cursor fixture */
+void     e_sqlite_cursor_fixture_setup       (EbSqlCursorFixture *fixture,
+					      gconstpointer       user_data);
+void     e_sqlite_cursor_fixture_teardown    (EbSqlCursorFixture *fixture,
+					      gconstpointer       user_data);
+void     e_sqlite_cursor_fixture_set_locale  (EbSqlCursorFixture *fixture,
+					      const gchar        *locale);
 
 /* Filters contacts with E_CONTACT_EMAIL ending with '.com' */
-void     e_sqlitedb_cursor_fixture_filtered_setup (EbSdbCursorFixture *fixture,
-						   gconstpointer  user_data);
-
+void     e_sqlite_cursor_fixture_filtered_setup (EbSqlCursorFixture *fixture,
+						 gconstpointer       user_data);
 
 gchar    *new_vcard_from_test_case         (const gchar *case_name);
 EContact *new_contact_from_test_case       (const gchar *case_name);
 
-gboolean add_contact_from_test_case_verify (EBookClient *book_client,
-					    const gchar *case_name,
-					    EContact   **contact);
 
+
+void      add_contact_from_test_case       (EbSqlFixture *fixture,
+					    const gchar *case_name,
+					    EContact **ret_contact);
 void     assert_contacts_order_slist       (GSList      *results,
 					    GSList      *uids);
 void     assert_contacts_order             (GSList      *results,
@@ -153,11 +160,22 @@ void     print_results                     (GSList      *results);
 void      step_test_add_assertion          (StepData    *data,
 					    gint         count,
 					    ...);
-StepData *step_test_new                    (const gchar *test_path,
-					    const gchar *locale);
-StepData *step_test_new_full               (const gchar *test_path,
+void      step_test_change_locale          (StepData    *data,
 					    const gchar *locale,
-					    EBookCursorSortType sort_type);
+					    gint         expected_changes);
+
+StepData *step_test_new                    (const gchar *test_prefix,
+					    const gchar *test_path,
+					    const gchar *locale,
+					    gboolean     store_vcards,
+					    gboolean     empty_book);
+StepData *step_test_new_full               (const gchar         *test_prefix,
+					    const gchar         *test_path,
+					    const gchar         *locale,
+					    gboolean             store_vcards,
+					    gboolean             empty_book,
+					    EBookCursorSortType  sort_type);
+
 void      step_test_add                    (StepData    *data,
 					    gboolean     filtered);
 

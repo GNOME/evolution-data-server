@@ -1,4 +1,5 @@
 BEGIN:VCARD
+UID:simple-1
 FN:Foo Bar
 EMAIL;INTERNET:foo.bar@example.org
 END:VCARD
