@@ -18,6 +18,7 @@ addressbook/libebook/e-destination.c
 addressbook/libedata-book/e-book-backend.c
 addressbook/libedata-book/e-book-backend-sexp.c
 addressbook/libedata-book/e-book-backend-sqlitedb.c
+addressbook/libedata-book/e-book-sqlite.c
 addressbook/libedata-book/e-data-book.c
 addressbook/libedata-book/e-data-book-cursor.c
 addressbook/libedata-book/e-data-book-cursor-sqlite.c

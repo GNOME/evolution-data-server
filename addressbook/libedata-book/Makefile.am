@@ -29,6 +29,7 @@ libedata_book_1_2_la_SOURCES = \
 	e-book-backend-db-cache.c \
 	e-book-backend-sqlitedb.c \
 	e-book-backend.c \
+	e-book-sqlite.c \
 	e-data-book.c \
 	e-data-book-cursor.c \
 	e-data-book-cursor-sqlite.c \
@@ -71,6 +72,7 @@ libedata_bookinclude_HEADERS = \
 	e-book-backend-cache.h \
 	e-book-backend-sqlitedb.h \
 	e-book-backend-db-cache.h \
+	e-book-sqlite.h \
 	$(NULL)
 
 factorydir = $(libexecdir)
