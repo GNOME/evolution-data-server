@@ -28,11 +28,11 @@
 
 G_BEGIN_DECLS
 
-gboolean e_book_backend_file_migrate_bdb (EBookBackendSqliteDB  *sqlitedb,
-					  const gchar           *sqlite_folder_id,
-					  const gchar           *dirname,
-					  const gchar           *filename,
-					  GError               **error);
+gboolean e_book_backend_file_migrate_bdb (EBookSqlite    *sqlitedb,
+					  const gchar    *dirname,
+					  const gchar    *filename,
+					  GCancellable   *cancellable,
+					  GError        **error);
 
 G_END_DECLS
 
