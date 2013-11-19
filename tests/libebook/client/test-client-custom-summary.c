@@ -191,7 +191,7 @@ setup_book (ClientTestFixture *fixture)
 	}
 
 	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error))
-		g_error ("Failed to add test contacts");
+		g_error ("Failed to add test contacts: %s", error->message);
 
 	g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
 }
