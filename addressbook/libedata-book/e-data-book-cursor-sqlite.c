@@ -24,7 +24,7 @@
  * @short_description: The SQLite cursor implementation
  *
  * This cursor implementation can be used with any backend which
- * stores contacts using #EBookBackendSqliteDB.
+ * stores contacts using #EBookSqlite.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -53,6 +53,7 @@ static gint     e_data_book_cursor_sqlite_step                 (EDataBookCursor 
 								EBookCursorOrigin    origin,
 								gint                 count,
 								GSList             **results,
+								GCancellable        *cancellable,
 								GError             **error);
 static gboolean e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor     *cursor,
 								gint                 index,
@@ -61,6 +62,7 @@ static gboolean e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor 
 static gboolean e_data_book_cursor_sqlite_get_position         (EDataBookCursor     *cursor,
 								gint                *total,
 								gint                *position,
+								GCancellable        *cancellable,
 								GError             **error);
 static gint     e_data_book_cursor_sqlite_compare_contact      (EDataBookCursor     *cursor,
 								EContact            *contact,
@@ -70,15 +72,15 @@ static gboolean e_data_book_cursor_sqlite_load_locale          (EDataBookCursor 
 								GError             **error);
 
 struct _EDataBookCursorSqlitePrivate {
-	EBookBackendSqliteDB *ebsdb;
-	EbSdbCursor          *cursor;
-	gchar                *folder_id;
+	EBookSqlite *ebsql;
+	EbSqlCursor *cursor;
+	gchar       *revision_key;
 };
 
 enum {
 	PROP_0,
-	PROP_EBSDB,
-	PROP_FOLDER_ID,
+	PROP_EBSQL,
+	PROP_REVISION_KEY,
 	PROP_CURSOR,
 };
 
@@ -108,29 +110,28 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_EBSDB,
+		PROP_EBSQL,
 		g_param_spec_object (
-			"ebsdb", "EBookBackendSqliteDB",
-			"The EBookBackendSqliteDB to use for queries",
-			E_TYPE_BOOK_BACKEND_SQLITEDB,
+			"ebsql", "EBookSqlite",
+			"The EBookSqlite to use for queries",
+			E_TYPE_BOOK_SQLITE,
 			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (
 		object_class,
-		PROP_FOLDER_ID,
+		PROP_REVISION_KEY,
 		g_param_spec_string (
-			"folder-id", "Folder ID",
-			"The folder identifier to use with the EBookBackendSqliteDB object",
+			"revision-key", "Revision Key",
+			"The key name to fetch the revision from the sqlite backend",
 			NULL,
-			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
+			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_object_class_install_property (
 		object_class,
 		PROP_CURSOR,
 		g_param_spec_pointer (
 			"cursor", "Cursor",
-			"The EbSdbCursor pointer",
+			"The EbSqlCursor pointer",
 			G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
 	g_type_class_add_private (class, sizeof (EDataBookCursorSqlitePrivate));
@@ -151,14 +152,14 @@ e_data_book_cursor_sqlite_dispose (GObject *object)
 	EDataBookCursorSqlite        *cursor = E_DATA_BOOK_CURSOR_SQLITE (object);
 	EDataBookCursorSqlitePrivate *priv = cursor->priv;
 
-	if (priv->ebsdb) {
+	if (priv->ebsql) {
 
 		if (priv->cursor)
-			e_book_backend_sqlitedb_cursor_free (priv->ebsdb,
-							     priv->cursor);
+			e_book_sqlite_cursor_free (priv->ebsql,
+						   priv->cursor);
 
-		g_object_unref (priv->ebsdb);
-		priv->ebsdb = NULL;
+		g_object_unref (priv->ebsql);
+		priv->ebsql = NULL;
 		priv->cursor = NULL;
 	}
 
@@ -171,7 +172,7 @@ e_data_book_cursor_sqlite_finalize (GObject *object)
 	EDataBookCursorSqlite        *cursor = E_DATA_BOOK_CURSOR_SQLITE (object);
 	EDataBookCursorSqlitePrivate *priv = cursor->priv;
 
-	g_free (priv->folder_id);
+	g_free (priv->revision_key);
 
 	G_OBJECT_CLASS (e_data_book_cursor_sqlite_parent_class)->finalize (object);
 }
@@ -186,13 +187,13 @@ e_data_book_cursor_sqlite_set_property (GObject *object,
 	EDataBookCursorSqlitePrivate *priv = cursor->priv;
 
 	switch (property_id) {
-	case PROP_EBSDB:
+	case PROP_EBSQL:
 		/* Construct-only, can only be set once */
-		priv->ebsdb = g_value_dup_object (value);
+		priv->ebsql = g_value_dup_object (value);
 		break;
-	case PROP_FOLDER_ID:
+	case PROP_REVISION_KEY:
 		/* Construct-only, can only be set once */
-		priv->folder_id = g_value_dup_string (value);
+		priv->revision_key = g_value_dup_string (value);
 		break;
 	case PROP_CURSOR:
 		/* Construct-only, can only be set once */
@@ -220,15 +221,15 @@ e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	success = e_book_backend_sqlitedb_cursor_set_sexp (priv->ebsdb,
-							   priv->cursor,
-							   sexp,
-							   &local_error);
+	success = e_book_sqlite_cursor_set_sexp (priv->ebsql,
+						 priv->cursor,
+						 sexp,
+						 &local_error);
 
 	if (!success) {
 		if (g_error_matches (local_error,
-				     E_BOOK_SDB_ERROR,
-				     E_BOOK_SDB_ERROR_INVALID_QUERY)) {
+				     E_BOOK_SQLITE_ERROR,
+				     E_BOOK_SQLITE_ERROR_INVALID_QUERY)) {
 			g_set_error_literal (error,
 					     E_CLIENT_ERROR,
 					     E_CLIENT_ERROR_INVALID_QUERY,
@@ -244,20 +245,20 @@ e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
 
 static gboolean
 convert_origin (EBookCursorOrigin    src_origin,
-		EbSdbCursorOrigin   *dest_origin,
+		EbSqlCursorOrigin   *dest_origin,
 		GError             **error)
 {
 	gboolean success = TRUE;
 
 	switch (src_origin) {
 	case E_BOOK_CURSOR_ORIGIN_CURRENT:
-		*dest_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
+		*dest_origin = EBSQL_CURSOR_ORIGIN_CURRENT;
 		break;
 	case E_BOOK_CURSOR_ORIGIN_BEGIN:
-		*dest_origin = EBSDB_CURSOR_ORIGIN_BEGIN;
+		*dest_origin = EBSQL_CURSOR_ORIGIN_BEGIN;
 		break;
 	case E_BOOK_CURSOR_ORIGIN_END:
-		*dest_origin = EBSDB_CURSOR_ORIGIN_END;
+		*dest_origin = EBSQL_CURSOR_ORIGIN_END;
 		break;
 	default:
 		success = FALSE;
@@ -273,13 +274,13 @@ convert_origin (EBookCursorOrigin    src_origin,
 
 static void
 convert_flags (EBookCursorStepFlags    src_flags,
-	       EbSdbCursorStepFlags   *dest_flags)
+	       EbSqlCursorStepFlags   *dest_flags)
 {
 	if (src_flags & E_BOOK_CURSOR_STEP_MOVE)
-		*dest_flags |= EBSDB_CURSOR_STEP_MOVE;
+		*dest_flags |= EBSQL_CURSOR_STEP_MOVE;
 
 	if (src_flags & E_BOOK_CURSOR_STEP_FETCH)
-		*dest_flags |= EBSDB_CURSOR_STEP_FETCH;
+		*dest_flags |= EBSQL_CURSOR_STEP_FETCH;
 }
 
 static gint
@@ -289,13 +290,14 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 				EBookCursorOrigin    origin,
 				gint                 count,
 				GSList             **results,
+				GCancellable        *cancellable,
 				GError             **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
 	GSList *local_results = NULL, *local_converted_results = NULL, *l;
-	EbSdbCursorOrigin sqlitedb_origin = EBSDB_CURSOR_ORIGIN_CURRENT;
-	EbSdbCursorStepFlags sqlitedb_flags = 0;
+	EbSqlCursorOrigin sqlite_origin = EBSQL_CURSOR_ORIGIN_CURRENT;
+	EbSqlCursorStepFlags sqlite_flags = 0;
 	gchar *revision = NULL;
 	gboolean success = FALSE;
 	gint n_results = -1;
@@ -303,25 +305,25 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	if (!convert_origin (origin, &sqlitedb_origin, error))
+	if (!convert_origin (origin, &sqlite_origin, error))
 		return FALSE;
 
-	convert_flags (flags, &sqlitedb_flags);
+	convert_flags (flags, &sqlite_flags);
 
-	/* Here we check the EBookBackendSqliteDB revision
+	/* Here we check the EBookSqlite revision
 	 * against the revision_guard with an atomic transaction
 	 * with the sqlite.
 	 *
 	 * The addressbook modifications and revision changes
 	 * are also atomically committed to the SQLite.
 	 */
-	success = e_book_backend_sqlitedb_lock_updates (priv->ebsdb, error);
+	success = e_book_sqlite_lock (priv->ebsql, EBSQL_LOCK_READ, cancellable, error);
 
 	if (success && revision_guard)
-		success = e_book_backend_sqlitedb_get_revision (priv->ebsdb,
-								priv->folder_id,
-								&revision,
-								error);
+		success = e_book_sqlite_get_key_value (priv->ebsql,
+						       priv->revision_key,
+						       &revision,
+						       error);
 
 	if (success && revision_guard &&
 	    g_strcmp0 (revision, revision_guard) != 0) {
@@ -336,20 +338,21 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 	if (success) {
 		GError *local_error = NULL;
 
-		n_results = e_book_backend_sqlitedb_cursor_step (priv->ebsdb,
-								 priv->cursor,
-								 sqlitedb_flags,
-								 sqlitedb_origin,
-								 count,
-								 &local_results,
-								 &local_error);
+		n_results = e_book_sqlite_cursor_step (priv->ebsql,
+						       priv->cursor,
+						       sqlite_flags,
+						       sqlite_origin,
+						       count,
+						       &local_results,
+						       cancellable,
+						       &local_error);
 
 		if (n_results < 0) {
 
 			/* Convert the SQLite backend error to an EClient error */
 			if (g_error_matches (local_error,
-					     E_BOOK_SDB_ERROR,
-					     E_BOOK_SDB_ERROR_END_OF_LIST)) {
+					     E_BOOK_SQLITE_ERROR,
+					     E_BOOK_SQLITE_ERROR_END_OF_LIST)) {
 				g_set_error_literal (error, E_CLIENT_ERROR,
 						     E_CLIENT_ERROR_QUERY_REFUSED,
 						     local_error->message);
@@ -362,28 +365,27 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 	}
 
 	if (success) {
-		success = e_book_backend_sqlitedb_unlock_updates (priv->ebsdb, TRUE, error);
+		success = e_book_sqlite_unlock (priv->ebsql, EBSQL_UNLOCK_NONE, error);
 
 	} else {
 		GError *local_error = NULL;
 
-		/* Rollback transaction */
-		if (!e_book_backend_sqlitedb_unlock_updates (priv->ebsdb, FALSE, &local_error)) {
-			g_warning ("Failed to rollback transaction after failing move cursor: %s",
+		if (!e_book_sqlite_unlock (priv->ebsql, EBSQL_UNLOCK_NONE, &local_error)) {
+			g_warning ("Error occurred while unlocking the SQLite: %s",
 				   local_error->message);
 			g_clear_error (&local_error);
 		}
 	}
 
 	for (l = local_results; l; l = l->next) {
-		EbSdbSearchData *data = l->data;
+		EbSqlSearchData *data = l->data;
 
 		local_converted_results =
 			g_slist_prepend (local_converted_results, data->vcard);
 		data->vcard = NULL;
 	}
 
-	g_slist_free_full (local_results, (GDestroyNotify)e_book_backend_sqlitedb_search_data_free);
+	g_slist_free_full (local_results, (GDestroyNotify)e_book_sqlite_search_data_free);
 
 	if (results)
 		*results = g_slist_reverse (local_converted_results);
@@ -411,8 +413,7 @@ e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	if (!e_book_backend_sqlitedb_get_locale (priv->ebsdb, priv->folder_id,
-						 &current_locale, error))
+	if (!e_book_sqlite_get_locale (priv->ebsql, &current_locale, error))
 		return FALSE;
 
 	/* Locale mismatch, need to report error */
@@ -425,9 +426,9 @@ e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor     *cursor,
 		return FALSE;
 	}
 
-	e_book_backend_sqlitedb_cursor_set_target_alphabetic_index (priv->ebsdb,
-								    priv->cursor,
-								    index);
+	e_book_sqlite_cursor_set_target_alphabetic_index (priv->ebsql,
+							  priv->cursor,
+							  index);
 	g_free (current_locale);
 	return TRUE;
 }
@@ -436,6 +437,7 @@ static gboolean
 e_data_book_cursor_sqlite_get_position (EDataBookCursor     *cursor,
 					gint                *total,
 					gint                *position,
+					GCancellable        *cancellable,
 					GError             **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
@@ -444,10 +446,11 @@ e_data_book_cursor_sqlite_get_position (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_backend_sqlitedb_cursor_calculate (priv->ebsdb,
-							 priv->cursor,
-							 total, position,
-							 error);
+	return e_book_sqlite_cursor_calculate (priv->ebsql,
+					       priv->cursor,
+					       total, position,
+					       cancellable,
+					       error);
 }
 
 static gint
@@ -461,10 +464,10 @@ e_data_book_cursor_sqlite_compare_contact (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_backend_sqlitedb_cursor_compare_contact (priv->ebsdb,
-							       priv->cursor,
-							       contact,
-							       matches_sexp);
+	return e_book_sqlite_cursor_compare_contact (priv->ebsql,
+						     priv->cursor,
+						     contact,
+						     matches_sexp);
 }
 
 static gboolean
@@ -478,10 +481,9 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_backend_sqlitedb_get_locale (priv->ebsdb,
-						   priv->folder_id,
-						   locale,
-						   error);
+	return e_book_sqlite_get_locale (priv->ebsql,
+					 locale,
+					 error);
 }
 
 /************************************************
@@ -490,62 +492,61 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
 /**
  * e_data_book_cursor_sqlite_new:
  * @backend: the #EBookBackend creating this cursor
- * @ebsdb: the #EBookBackendSqliteDB object to base this cursor on
- * @folder_id: the folder identifier to be used in EBookBackendSqliteDB API calls
+ * @ebsql: the #EBookSqlite object to base this cursor on
+ * @revision_key: The key name to consult for the current overall contacts database revision
  * @sort_fields: (array length=n_fields): an array of #EContactFields as sort keys in order of priority
  * @sort_types: (array length=n_fields): an array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_fields: the number of fields to sort results by.
  * @error: a return location to story any error that might be reported.
  *
  * Creates an #EDataBookCursor and implements all of the cursor methods
- * using the delegate @ebsdb object.
+ * using the delegate @ebsql object.
  *
  * This is a suitable cursor type for any backend which stores its contacts
- * using the #EBookBackendSqliteDB object.
+ * using the #EBookSqlite object.
  *
  * Returns: (transfer full): A newly created #EDataBookCursor, or %NULL if cursor creation failed.
  *
  * Since: 3.12
  */
 EDataBookCursor *
-e_data_book_cursor_sqlite_new (EBookBackend         *backend,
-			       EBookBackendSqliteDB *ebsdb,
-			       const gchar          *folder_id,
-			       EContactField        *sort_fields,
-			       EBookCursorSortType  *sort_types,
-			       guint                 n_fields,
-			       GError              **error)
+e_data_book_cursor_sqlite_new (EBookBackend              *backend,
+			       EBookSqlite               *ebsql,
+			       const gchar               *revision_key,
+			       const EContactField       *sort_fields,
+			       const EBookCursorSortType *sort_types,
+			       guint                      n_fields,
+			       GError                   **error)
 {
 	EDataBookCursor *cursor = NULL;
-	EbSdbCursor     *ebsdb_cursor;
+	EbSqlCursor     *ebsql_cursor;
 	GError          *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_SQLITEDB (ebsdb), NULL);
-	g_return_val_if_fail (folder_id && folder_id[0], NULL);
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), NULL);
 
-	ebsdb_cursor = e_book_backend_sqlitedb_cursor_new (ebsdb, folder_id, NULL,
-							   sort_fields,
-							   sort_types,
-							   n_fields,
-							   &local_error);
+	ebsql_cursor = e_book_sqlite_cursor_new (ebsql, NULL,
+						 sort_fields,
+						 sort_types,
+						 n_fields,
+						 &local_error);
 
-	if (ebsdb_cursor) {
+	if (ebsql_cursor) {
 		cursor = g_object_new (E_TYPE_DATA_BOOK_CURSOR_SQLITE,
 				       "backend", backend,
-				       "ebsdb", ebsdb,
-				       "folder-id", folder_id,
-				       "cursor", ebsdb_cursor,
+				       "ebsql", ebsql,
+				       "revision-key", revision_key,
+				       "cursor", ebsql_cursor,
 				       NULL);
 
 		/* Initially created cursors should have a position & total */
 		if (!e_data_book_cursor_load_locale (E_DATA_BOOK_CURSOR (cursor),
-						     NULL, error))
+						     NULL, NULL, error))
 			g_clear_object (&cursor);
 
 	} else if (g_error_matches (local_error,
-				  E_BOOK_SDB_ERROR,
-				  E_BOOK_SDB_ERROR_INVALID_QUERY)) {
+				    E_BOOK_SQLITE_ERROR,
+				    E_BOOK_SQLITE_ERROR_INVALID_QUERY)) {
 		g_set_error_literal (error,
 				     E_CLIENT_ERROR,
 				     E_CLIENT_ERROR_INVALID_QUERY,

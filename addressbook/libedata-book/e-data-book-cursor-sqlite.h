@@ -26,7 +26,7 @@
 #define E_DATA_BOOK_CURSOR_SQLITE_H
 
 #include <libedata-book/e-data-book-cursor.h>
-#include <libedata-book/e-book-backend-sqlitedb.h>
+#include <libedata-book/e-book-sqlite.h>
 #include <libedata-book/e-book-backend.h>
 
 #define E_TYPE_DATA_BOOK_CURSOR_SQLITE        (e_data_book_cursor_sqlite_get_type ())
@@ -41,7 +41,6 @@ G_BEGIN_DECLS
 typedef struct _EDataBookCursorSqlite EDataBookCursorSqlite;
 typedef struct _EDataBookCursorSqliteClass EDataBookCursorSqliteClass;
 typedef struct _EDataBookCursorSqlitePrivate EDataBookCursorSqlitePrivate;
-
 
 /**
  * EDataBookCursorSqlite:
@@ -68,13 +67,13 @@ struct _EDataBookCursorSqliteClass {
 };
 
 GType			e_data_book_cursor_sqlite_get_type         (void);
-EDataBookCursor        *e_data_book_cursor_sqlite_new              (EBookBackend         *backend,
-								    EBookBackendSqliteDB *ebsdb,
-								    const gchar          *folder_id,
-								    EContactField        *sort_fields,
-								    EBookCursorSortType  *sort_types,
-								    guint                 n_fields,
-								    GError              **error);
+EDataBookCursor        *e_data_book_cursor_sqlite_new              (EBookBackend              *backend,
+								    EBookSqlite               *ebsql,
+								    const gchar               *revision_key,
+								    const EContactField       *sort_fields,
+								    const EBookCursorSortType *sort_types,
+								    guint                      n_fields,
+								    GError                   **error);
 
 G_END_DECLS
 
