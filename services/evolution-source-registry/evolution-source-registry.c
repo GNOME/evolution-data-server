@@ -32,6 +32,14 @@
 #define RESOURCE_PATH_RO_SOURCES "/org/gnome/evolution-data-server/ro-sources"
 #define RESOURCE_PATH_RW_SOURCES "/org/gnome/evolution-data-server/rw-sources"
 
+static gboolean opt_disable_migration = FALSE;
+
+static GOptionEntry entries[] = {
+	{ "disable-migration", 'd', 0, G_OPTION_ARG_NONE, &opt_disable_migration,
+	  N_("Don't migrate user data from previous versions of Evolution"), NULL },
+	{ NULL }
+};
+
 /* Forward Declarations */
 void evolution_source_registry_migrate_basedir (void);
 void evolution_source_registry_migrate_sources (void);
@@ -103,7 +111,8 @@ evolution_source_registry_load_all (ESourceRegistryServer *server,
 		return FALSE;
 
 	/* Migrate proxy settings from Evolution. */
-	evolution_source_registry_migrate_proxies (server);
+	if (!opt_disable_migration)
+		evolution_source_registry_migrate_proxies (server);
 
 	/* Signal that all files are now loaded.  One thing this
 	 * does is tell the cache-reaper module to start scanning
@@ -117,6 +126,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	GOptionContext *context;
 	EDBusServer *server;
 	EDBusServerExitCode exit_code;
 	GError *error = NULL;
@@ -124,6 +134,16 @@ main (gint argc,
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+
+	context = g_option_context_new (NULL);
+	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+	g_option_context_parse (context, &argc, &argv, &error);
+	g_option_context_free (context);
+
+	if (error != NULL) {
+		g_printerr ("%s\n", error->message);
+		exit (EXIT_FAILURE);
+	}
 
 #if defined (ENABLE_MAINTAINER_MODE) && defined (HAVE_GTK)
 	if (g_getenv ("EDS_TESTING") == NULL)
@@ -135,13 +155,16 @@ main (gint argc,
 	e_gdbus_templates_init_main_thread ();
 
 reload:
-	/* Migrate user data from ~/.evolution to XDG base directories. */
-	evolution_source_registry_migrate_basedir ();
 
-	/* Migrate ESource data from GConf XML blobs to key files.
-	 * Do this AFTER XDG base directory migration since the key
-	 * files are saved according to XDG base directory settings. */
-	evolution_source_registry_migrate_sources ();
+	if (!opt_disable_migration) {
+		/* Migrate user data from ~/.evolution to XDG base directories. */
+		evolution_source_registry_migrate_basedir ();
+
+		/* Migrate ESource data from GConf XML blobs to key files.
+		 * Do this AFTER XDG base directory migration since the key
+		 * files are saved according to XDG base directory settings. */
+		evolution_source_registry_migrate_sources ();
+	}
 
 	server = e_source_registry_server_new ();
 
@@ -151,10 +174,11 @@ reload:
 		NULL);
 
 	/* Convert "imap" mail accounts to "imapx". */
-	g_signal_connect (
-		server, "tweak-key-file", G_CALLBACK (
-		evolution_source_registry_migrate_imap_to_imapx),
-		NULL);
+	if (!opt_disable_migration)
+		g_signal_connect (
+			server, "tweak-key-file", G_CALLBACK (
+			evolution_source_registry_migrate_imap_to_imapx),
+			NULL);
 
 	/* Failure here is fatal.  Don't even try to keep going. */
 	evolution_source_registry_load_all (
