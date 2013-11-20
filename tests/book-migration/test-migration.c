@@ -265,6 +265,60 @@ test_query_phone (MigrationFixture *fixture,
 	g_slist_free_full (contacts, g_object_unref);
 }
 
+static EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
+static EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
+
+/* For pre-cursor default summary configurations, the
+ * E_CONTACT_FAMILY_NAME and E_CONTACT_GIVEN_NAME fields should
+ * have been given an E_BOOK_INDEX_SORT_KEY during the upgrade
+ * process.
+ */
+static void
+test_cursor_step (MigrationFixture *fixture,
+                  gconstpointer user_data)
+{
+	EBookClient *book_client;
+	EBookClientCursor *cursor;
+	GError *error = NULL;
+	GSList *contacts = NULL;
+	gint    n_reported_results;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	if (!e_book_client_get_cursor_sync (book_client,
+					    NULL,
+					    sort_fields,
+					    sort_types,
+					    2,
+					    &cursor,
+					    NULL, &error))
+		g_error ("Failed to create a cursor from a migrated book: %s", error->message);
+
+	n_reported_results = e_book_client_cursor_step_sync (cursor,
+							     E_BOOK_CURSOR_STEP_MOVE |
+							     E_BOOK_CURSOR_STEP_FETCH,
+							     E_BOOK_CURSOR_ORIGIN_BEGIN,
+							     10,
+							     &contacts,
+							     NULL, &error);
+	g_assert_cmpint (n_reported_results, ==, g_slist_length (contacts));
+	g_assert_cmpint (e_book_client_cursor_get_position (cursor), ==, 10);
+	g_slist_free_full (contacts, g_object_unref);
+
+	n_reported_results = e_book_client_cursor_step_sync (cursor,
+							     E_BOOK_CURSOR_STEP_MOVE |
+							     E_BOOK_CURSOR_STEP_FETCH,
+							     E_BOOK_CURSOR_ORIGIN_CURRENT,
+							     10,
+							     &contacts,
+							     NULL, &error);
+	g_assert_cmpint (n_reported_results, ==, g_slist_length (contacts));
+	g_assert_cmpint (e_book_client_cursor_get_position (cursor), ==, 20);
+	g_slist_free_full (contacts, g_object_unref);
+
+	g_object_unref (cursor);
+}
+
 /***********************************************************
  *                          Main                           *
  ***********************************************************/
@@ -371,6 +425,7 @@ main (gint argc,
 		add_test (version, "Query/FullName", test_query_name);
 		add_test (version, "Query/Phone", test_query_phone);
 		add_test (version, "Query/Email", test_query_email);
+		add_test (version, "Cursor/Step", test_cursor_step);
 	}
 
 	g_list_free_full (sandboxes, g_free);
