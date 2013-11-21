@@ -27,6 +27,9 @@
 #define GOOGLE_USERINFO_URI \
 	"https://www.googleapis.com/oauth2/v2/userinfo"
 
+#define WINDOWS_LIVE_ME_URI \
+	"https://apis.live.net/v5.0/me"
+
 typedef struct _AsyncContext AsyncContext;
 
 struct _AsyncContext {
@@ -245,6 +248,213 @@ e_ag_account_collect_google_userinfo (GSimpleAsyncResult *simple,
 	g_object_unref (simple);
 }
 
+/*************************** Windows Live Provider ***************************/
+
+static void
+e_ag_account_windows_live_got_me_cb (RestProxyCall *call,
+                                     const GError *error,
+                                     GObject *weak_object,
+                                     gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	JsonParser *json_parser;
+	JsonObject *json_object;
+	JsonNode *json_node;
+	const gchar *json_string;
+	gchar *id;
+	gchar *email;
+	GError *local_error = NULL;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (simple, error);
+		goto exit;
+	}
+
+	/* This is shamelessly stolen from goawindowsliveprovider.c */
+
+	if (rest_proxy_call_get_status_code (call) != 200) {
+		g_simple_async_result_set_error (
+			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+			_("Expected status 200 when requesting your "
+			"identity, instead got status %d (%s)"),
+			rest_proxy_call_get_status_code (call),
+			rest_proxy_call_get_status_message (call));
+		goto exit;
+	}
+
+	json_parser = json_parser_new ();
+	json_parser_load_from_data (
+		json_parser,
+		rest_proxy_call_get_payload (call),
+		rest_proxy_call_get_payload_length (call),
+		&local_error);
+
+	if (local_error != NULL) {
+		g_prefix_error (
+			&local_error,
+			_("Error parsing response as JSON: "));
+		g_simple_async_result_take_error (simple, local_error);
+		g_object_unref (json_parser);
+		goto exit;
+	}
+
+	json_node = json_parser_get_root (json_parser);
+	json_object = json_node_get_object (json_node);
+	json_string = json_object_get_string_member (json_object, "id");
+	id = g_strdup (json_string);
+
+	json_object = json_object_get_object_member (json_object, "emails");
+	json_string = json_object_get_string_member (json_object, "account");
+	email = g_strdup (json_string);
+
+	if (id == NULL) {
+		g_simple_async_result_set_error (
+			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+			_("Didn't find 'id' in JSON data"));
+		g_free (email);
+	} else if (email == NULL) {
+		g_simple_async_result_set_error (
+			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
+			_("Didn't find 'emails.account' in JSON data"));
+	} else {
+		async_context->user_identity = id;
+		async_context->email_address = email;
+		async_context->imap_user_name = g_strdup (email);
+		async_context->smtp_user_name = g_strdup (email);
+	}
+
+	g_object_unref (json_parser);
+
+exit:
+	g_simple_async_result_complete (simple);
+
+	g_object_unref (simple);
+}
+
+static void
+e_ag_account_windows_live_session_process_cb (GObject *source_object,
+                                              GAsyncResult *result,
+                                              gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	GVariant *session_data;
+	GError *local_error = NULL;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	session_data = signon_auth_session_process_finish (
+		SIGNON_AUTH_SESSION (source_object), result, &local_error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((session_data != NULL) && (local_error == NULL)) ||
+		((session_data == NULL) && (local_error != NULL)));
+
+	/* Use the access token to obtain the user's email address. */
+
+	if (session_data != NULL) {
+		RestProxy *proxy;
+		RestProxyCall *call;
+		gchar *access_token = NULL;
+
+		g_variant_lookup (
+			session_data, "AccessToken", "s", &access_token);
+
+		g_variant_unref (session_data);
+
+		proxy = rest_proxy_new (WINDOWS_LIVE_ME_URI, FALSE);
+		call = rest_proxy_new_call (proxy);
+		rest_proxy_call_set_method (call, "GET");
+
+		/* XXX This should never be NULL, but if it is just let
+		 *     the call fail and pick up the resulting GError. */
+		if (access_token != NULL) {
+			rest_proxy_call_add_param (
+				call, "access_token", access_token);
+			g_free (access_token);
+		}
+
+		/* XXX The 3rd argument is supposed to be a GObject
+		 *     that RestProxyCall weakly references such that
+		 *     its disposal cancels the call.  This obviously
+		 *     predates GCancellable.  Too bizarre to bother. */
+		rest_proxy_call_async (
+			call, e_ag_account_windows_live_got_me_cb,
+			NULL, g_object_ref (simple), &local_error);
+
+		if (local_error != NULL) {
+			/* Undo the reference added to the async call. */
+			g_object_unref (simple);
+		}
+
+		g_object_unref (proxy);
+		g_object_unref (call);
+	}
+
+	if (local_error != NULL) {
+		g_simple_async_result_take_error (simple, local_error);
+		g_simple_async_result_complete (simple);
+	}
+
+	g_object_unref (simple);
+}
+
+static void
+e_ag_account_collect_windows_live_userinfo (GSimpleAsyncResult *simple,
+                                            AgAccount *ag_account,
+                                            GCancellable *cancellable)
+{
+	AgAccountService *ag_account_service = NULL;
+	SignonAuthSession *session;
+	AgAuthData *ag_auth_data;
+	GList *list;
+	GError *local_error = NULL;
+
+	/* First obtain an OAuth 2.0 access token. */
+
+	list = ag_account_list_services_by_type (ag_account, "mail");
+	if (list != NULL) {
+		ag_account_service = ag_account_service_new (
+			ag_account, (AgService *) list->data);
+		ag_service_list_free (list);
+	}
+
+	g_return_if_fail (ag_account_service != NULL);
+
+	ag_auth_data = ag_account_service_get_auth_data (ag_account_service);
+
+	session = signon_auth_session_new (
+		ag_auth_data_get_credentials_id (ag_auth_data),
+		ag_auth_data_get_method (ag_auth_data), &local_error);
+
+	/* Sanity check. */
+	g_return_if_fail (
+		((session != NULL) && (local_error == NULL)) ||
+		((session == NULL) && (local_error != NULL)));
+
+	if (session != NULL) {
+		signon_auth_session_process_async (
+			session,
+			ag_auth_data_get_login_parameters (ag_auth_data, NULL),
+			ag_auth_data_get_mechanism (ag_auth_data),
+			cancellable,
+			e_ag_account_windows_live_session_process_cb,
+			g_object_ref (simple));
+	} else {
+		g_simple_async_result_take_error (simple, local_error);
+		g_simple_async_result_complete_in_idle (simple);
+	}
+
+	ag_auth_data_unref (ag_auth_data);
+
+	g_object_unref (ag_account_service);
+	g_object_unref (simple);
+}
+
 /****************************** Yahoo! Provider ******************************/
 
 static void
@@ -319,6 +529,9 @@ e_ag_account_collect_userinfo (AgAccount *ag_account,
 
 	if (g_str_equal (provider_name, "google")) {
 		e_ag_account_collect_google_userinfo (
+			g_object_ref (simple), ag_account, cancellable);
+	} else if (g_str_equal (provider_name, "windows-live")) {
+		e_ag_account_collect_windows_live_userinfo (
 			g_object_ref (simple), ag_account, cancellable);
 	} else if (g_str_equal (provider_name, "yahoo")) {
 		e_ag_account_collect_yahoo_userinfo (

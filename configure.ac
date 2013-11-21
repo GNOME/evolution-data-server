@@ -1733,6 +1733,7 @@ modules/ubuntu-online-accounts/google-calendar.service.in
 modules/ubuntu-online-accounts/google-contacts.service.in
 modules/ubuntu-online-accounts/google-gmail.service.in
 modules/ubuntu-online-accounts/mail.service-type.in
+modules/ubuntu-online-accounts/windows-live-mail.service.in
 modules/ubuntu-online-accounts/yahoo-calendar.service.in
 modules/ubuntu-online-accounts/yahoo-mail.service.in
 modules/trust-prompt/Makefile
