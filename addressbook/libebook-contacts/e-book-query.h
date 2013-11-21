@@ -64,13 +64,14 @@ typedef struct _EBookQuery EBookQuery;
  * @E_BOOK_QUERY_TRANSLIT_CONTAINS: Like %E_BOOK_QUERY_CONTAINS, but transliterates text to Latin script before the comparison
  * @E_BOOK_QUERY_TRANSLIT_BEGINS_WITH: Like %E_BOOK_QUERY_BEGINS_WITH, but transliterates text to Latin script before the comparison
  * @E_BOOK_QUERY_TRANSLIT_ENDS_WITH: Like %E_BOOK_QUERY_ENDS_WITH, but transliterates text to Latin script before the comparison
+ * @E_BOOK_QUERY_LAST: End marker for the #EBookQueryTest enumeration, not a valid query test.
  *
  * The kind of test a query created by e_book_query_field_test() shall perform.
  *
  * See also: e_phone_number_compare_strings().
  **/
 typedef enum {
-  E_BOOK_QUERY_IS,
+  E_BOOK_QUERY_IS = 0,
   E_BOOK_QUERY_CONTAINS,
   E_BOOK_QUERY_BEGINS_WITH,
   E_BOOK_QUERY_ENDS_WITH,
@@ -85,7 +86,7 @@ typedef enum {
   E_BOOK_QUERY_TRANSLIT_IS,
   E_BOOK_QUERY_TRANSLIT_CONTAINS,
   E_BOOK_QUERY_TRANSLIT_BEGINS_WITH,
-  E_BOOK_QUERY_TRANSLIT_ENDS_WITH
+  E_BOOK_QUERY_TRANSLIT_ENDS_WITH,
 
   /*
     Consider these "coming soon".
@@ -96,6 +97,8 @@ typedef enum {
     E_BOOK_QUERY_GE,
     E_BOOK_QUERY_EQ,
   */
+
+  E_BOOK_QUERY_LAST
 } EBookQueryTest;
 
 EBookQuery * e_book_query_from_string  (const gchar *query_string);

@@ -854,6 +854,8 @@ field_test_name (EBookQueryTest field_test)
 		return "translit_beginswith";
 	case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
 		return "translit_endswith";
+	case E_BOOK_QUERY_LAST:
+		g_return_val_if_reached (NULL);
 	}
 
 	return NULL;
@@ -878,6 +880,7 @@ is_phone_test (EBookQueryTest field_test)
 	case E_BOOK_QUERY_TRANSLIT_CONTAINS:
 	case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:
 	case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
+	case E_BOOK_QUERY_LAST:
 		break;
 	}
 
