@@ -136,7 +136,7 @@ data_factory_constructed (GObject *object)
 				priv->backend_factories,
 				g_strdup (hash_key),
 				g_object_ref (backend_factory));
-			g_print (
+			g_debug (
 				"Registering %s ('%s')\n",
 				G_OBJECT_TYPE_NAME (backend_factory),
 				hash_key);
