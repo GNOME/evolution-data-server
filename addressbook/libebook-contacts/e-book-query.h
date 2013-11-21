@@ -60,13 +60,14 @@ typedef struct _EBookQuery EBookQuery;
  * @E_BOOK_QUERY_REGEX_RAW: A regular expression query against raw contact data, this is usually slower than
  * a %E_BOOK_QUERY_REGEX_NORMAL as it implies that #EVCards must be parsed in order to get the raw data
  * for comparison.
+ * @E_BOOK_QUERY_LAST: End marker for the #EBookQueryTest enumeration, not a valid query test.
  *
  * The kind of test a query created by e_book_query_field_test() shall perform.
  *
  * See also: e_phone_number_compare_strings().
  **/
 typedef enum {
-  E_BOOK_QUERY_IS,
+  E_BOOK_QUERY_IS = 0,
   E_BOOK_QUERY_CONTAINS,
   E_BOOK_QUERY_BEGINS_WITH,
   E_BOOK_QUERY_ENDS_WITH,
@@ -76,7 +77,7 @@ typedef enum {
   E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
 
   E_BOOK_QUERY_REGEX_NORMAL,
-  E_BOOK_QUERY_REGEX_RAW
+  E_BOOK_QUERY_REGEX_RAW,
 
   /*
     Consider these "coming soon".
@@ -87,6 +88,8 @@ typedef enum {
     E_BOOK_QUERY_GE,
     E_BOOK_QUERY_EQ,
   */
+
+  E_BOOK_QUERY_LAST
 } EBookQueryTest;
 
 EBookQuery * e_book_query_from_string  (const gchar *query_string);

@@ -806,6 +806,8 @@ field_test_name (EBookQueryTest field_test)
 		return "regex_normal";
 	case E_BOOK_QUERY_REGEX_RAW:
 		return "regex_raw";
+	case E_BOOK_QUERY_LAST:
+		g_return_val_if_reached (NULL);
 	}
 
 	return NULL;
@@ -826,6 +828,7 @@ is_phone_test (EBookQueryTest field_test)
 	case E_BOOK_QUERY_ENDS_WITH:
 	case E_BOOK_QUERY_REGEX_NORMAL:
 	case E_BOOK_QUERY_REGEX_RAW:
+	case E_BOOK_QUERY_LAST:
 		break;
 	}
 
