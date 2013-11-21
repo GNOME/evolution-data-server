@@ -8,9 +8,16 @@
   <!-- default settings (account settings have precedence over these) -->
   <template>
     <group name="auth">
+      <setting name="method">oauth2</setting>
+      <setting name="mechanism">web_server</setting>
       <group name="oauth2">
-        <group name="user_agent">
-          <setting type="as" name="Scope">["https://www.googleapis.com/auth/calendar"]</setting>
+        <group name="web_server">
+          <setting name="Host">accounts.google.com</setting>
+          <setting name="TokenPath">o/oauth2/token</setting>
+          <setting name="RedirectUri">https://live.gnome.org/Evolution</setting>
+          <setting name="ClientId">796629365126.apps.googleusercontent.com</setting>
+          <setting name="ClientSecret">3NbR94RM-DTnA81BWjiJe4TP</setting>
+          <setting type="as" name="Scope">['https://www.googleapis.com/auth/userinfo.email','https://mail.google.com/','https://www.google.com/m8/feeds/','https://www.googleapis.com/auth/calendar']</setting>
         </group>
       </group>
     </group>
