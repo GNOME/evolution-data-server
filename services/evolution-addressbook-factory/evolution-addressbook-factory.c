@@ -118,7 +118,7 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
-	g_print ("Server is up and running...\n");
+	g_debug ("Server is up and running...");
 
 	/* This SHOULD keep the server's use
 	 * count from ever reaching zero. */
@@ -129,7 +129,7 @@ main (gint argc,
 
 	g_object_unref (server);
 
-	g_print ("Bye.\n");
+	g_debug ("Bye.");
 
 	return 0;
 }

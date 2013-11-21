@@ -63,7 +63,7 @@ main (gint argc,
 		server, "prompt",
 		G_CALLBACK (prompt_user_show), NULL);
 
-	g_print ("Prompter is up and running...\n");
+	g_debug ("Prompter is up and running...");
 
 	/* This SHOULD keep the server's use
 	 * count from ever reaching zero. */
@@ -74,7 +74,7 @@ main (gint argc,
 
 	g_object_unref (server);
 
-	g_print ("Bye.\n");
+	g_debug ("Bye.");
 
 	return 0;
 }

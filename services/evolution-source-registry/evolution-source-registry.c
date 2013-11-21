@@ -190,7 +190,7 @@ reload:
 		exit (EXIT_FAILURE);
 	}
 
-	g_print ("Server is up and running...\n");
+	g_debug ("Server is up and running...");
 
 	/* Keep the server from quitting on its own.
 	 * We don't have a way of tracking number of
@@ -221,7 +221,7 @@ reload:
 		goto reload;
 	}
 
-	g_print ("Bye.\n");
+	g_debug ("Bye.");
 
 	return 0;
 }
