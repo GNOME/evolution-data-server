@@ -3594,49 +3594,107 @@ migrate_remove_gconf_key (const gchar *gconf_key,
 	}
 }
 
-static void
-migrate_handle_error (const GError *error)
+static gboolean
+migrate_get_file_contents_allow_noent (const gchar *path,
+                                       gchar **out_contents,
+                                       gsize *out_length,
+                                       GError **error)
 {
-	g_return_if_fail (error != NULL);
+	gboolean success;
+	GError *local_error = NULL;
 
-	if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
-		g_printerr ("  FAILED: %s\n", error->message);
+	success = g_file_get_contents (
+		path, out_contents, out_length, &local_error);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		(success && (local_error == NULL)) ||
+		(!success && (local_error != NULL)), FALSE);
+
+	if (g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+		g_clear_error (&local_error);
+		success = TRUE;
+	}
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 static void
 migrate_merged_gconf_tree (const gchar *gconf_tree_xml)
 {
-	gchar *contents;
+	const gchar *gconf_key;
+	gchar *contents = NULL;
 	gsize length;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	g_file_get_contents (gconf_tree_xml, &contents, &length, &error);
+	migrate_get_file_contents_allow_noent (
+		gconf_tree_xml, &contents, &length, &local_error);
 
-	if (error == NULL) {
-		migrate_parse_gconf_tree_xml (contents, length, &error);
+	if (contents != NULL) {
+		migrate_parse_gconf_tree_xml (
+			contents, length, &local_error);
+
+		if (local_error == NULL) {
+			gconf_key = "/apps/evolution/mail/accounts";
+			migrate_remove_gconf_key (gconf_key, NULL);
+
+			gconf_key = "/apps/evolution/addressbook/sources";
+			migrate_remove_gconf_key (gconf_key, NULL);
+
+			gconf_key = "/apps/evolution/calendar/sources";
+			migrate_remove_gconf_key (gconf_key, NULL);
+
+			gconf_key = "/apps/evolution/tasks/sources";
+			migrate_remove_gconf_key (gconf_key, NULL);
+
+			gconf_key = "/apps/evolution/memos/sources";
+			migrate_remove_gconf_key (gconf_key, NULL);
+		}
+
 		g_free (contents);
 	}
 
-	if (error == NULL) {
-		const gchar *gconf_key;
+	if (local_error != NULL) {
+		g_printerr (
+			"Migration of '%s' failed: %s",
+			gconf_tree_xml, local_error->message);
+		g_error_free (local_error);
+	}
+}
 
-		gconf_key = "/apps/evolution/mail/accounts";
-		migrate_remove_gconf_key (gconf_key, NULL);
+static void
+migrate_and_remove_key (const gchar *filename,
+                        const gchar *migrate_type_name,
+                        ParseType parse_type,
+                        const gchar *key_to_remove)
+{
+	gchar *contents = NULL;
+	gsize length;
+	GError *local_error = NULL;
 
-		gconf_key = "/apps/evolution/addressbook/sources";
-		migrate_remove_gconf_key (gconf_key, NULL);
+	migrate_get_file_contents_allow_noent (
+		filename, &contents, &length, &local_error);
 
-		gconf_key = "/apps/evolution/calendar/sources";
-		migrate_remove_gconf_key (gconf_key, NULL);
+	if (contents != NULL) {
+		g_print ("Migrating %s from GConf...\n", migrate_type_name);
 
-		gconf_key = "/apps/evolution/tasks/sources";
-		migrate_remove_gconf_key (gconf_key, NULL);
+		migrate_parse_gconf_xml (
+			parse_type, contents, length, &local_error);
 
-		gconf_key = "/apps/evolution/memos/sources";
-		migrate_remove_gconf_key (gconf_key, NULL);
-	} else {
-		migrate_handle_error (error);
-		g_clear_error (&error);
+		if (local_error == NULL)
+			migrate_remove_gconf_key (key_to_remove, filename);
+
+		g_free (contents);
+	}
+
+	if (local_error != NULL) {
+		g_printerr (
+			"Failed to migrate '%s': %s",
+			filename, local_error->message);
+		g_error_free (local_error);
 	}
 }
 
@@ -3644,138 +3702,59 @@ static void
 migrate_normal_gconf_tree (const gchar *gconf_base_dir)
 {
 	gchar *base_dir;
-	gchar *contents;
 	gchar *gconf_xml;
-	gsize length;
-	const gchar *gconf_key;
-	GError *error = NULL;
 
 	base_dir = g_build_filename (
 		gconf_base_dir, "apps", "evolution", NULL);
 
 	/* ------------------------------------------------------------------*/
 
-	g_print ("Migrating mail accounts from GConf...\n");
-
 	gconf_xml = g_build_filename (
 		base_dir, "mail", "%gconf.xml", NULL);
-	g_file_get_contents (gconf_xml, &contents, &length, &error);
-
-	if (error == NULL) {
-		migrate_parse_gconf_xml (
-			PARSE_TYPE_MAIL,
-			contents, length, &error);
-		g_free (contents);
-	}
-
-	if (error == NULL) {
-		gconf_key = "/apps/evolution/mail/accounts";
-		migrate_remove_gconf_key (gconf_key, gconf_xml);
-	} else {
-		migrate_handle_error (error);
-		g_clear_error (&error);
-	}
-
+	migrate_and_remove_key (
+		gconf_xml, "mail accounts",
+		PARSE_TYPE_MAIL,
+		"/apps/evolution/mail/accounts");
 	g_free (gconf_xml);
 
 	/* ------------------------------------------------------------------*/
-
-	g_print ("Migrating addressbook sources from GConf...\n");
 
 	gconf_xml = g_build_filename (
 		base_dir, "addressbook", "%gconf.xml", NULL);
-	g_file_get_contents (gconf_xml, &contents, &length, &error);
-
-	if (error == NULL) {
-		migrate_parse_gconf_xml (
-			PARSE_TYPE_ADDRESSBOOK,
-			contents, length, &error);
-		g_free (contents);
-	}
-
-	if (error == NULL) {
-		gconf_key = "/apps/evolution/addressbook/sources";
-		migrate_remove_gconf_key (gconf_key, gconf_xml);
-	} else {
-		migrate_handle_error (error);
-		g_clear_error (&error);
-	}
-
+	migrate_and_remove_key (
+		gconf_xml, "addressbook sources",
+		PARSE_TYPE_ADDRESSBOOK,
+		"/apps/evolution/addressbook/sources");
 	g_free (gconf_xml);
 
 	/* ------------------------------------------------------------------*/
-
-	g_print ("Migrating calendar sources from GConf...\n");
 
 	gconf_xml = g_build_filename (
 		base_dir, "calendar", "%gconf.xml", NULL);
-	g_file_get_contents (gconf_xml, &contents, &length, &error);
-
-	if (error == NULL) {
-		migrate_parse_gconf_xml (
-			PARSE_TYPE_CALENDAR,
-			contents, length, &error);
-		g_free (contents);
-	}
-
-	if (error == NULL) {
-		gconf_key = "/apps/evolution/calendar/sources";
-		migrate_remove_gconf_key (gconf_key, gconf_xml);
-	} else {
-		migrate_handle_error (error);
-		g_clear_error (&error);
-	}
-
+	migrate_and_remove_key (
+		gconf_xml, "calendar sources",
+		PARSE_TYPE_CALENDAR,
+		"/apps/evolution/calendar/sources");
 	g_free (gconf_xml);
 
 	/* ------------------------------------------------------------------*/
-
-	g_print ("Migrating task list sources from GConf...\n");
 
 	gconf_xml = g_build_filename (
 		base_dir, "tasks", "%gconf.xml", NULL);
-	g_file_get_contents (gconf_xml, &contents, &length, &error);
-
-	if (error == NULL) {
-		migrate_parse_gconf_xml (
-			PARSE_TYPE_TASKS,
-			contents, length, &error);
-		g_free (contents);
-	}
-
-	if (error == NULL) {
-		gconf_key = "/apps/evolution/tasks/sources";
-		migrate_remove_gconf_key (gconf_key, gconf_xml);
-	} else {
-		migrate_handle_error (error);
-		g_clear_error (&error);
-	}
-
+	migrate_and_remove_key (
+		gconf_xml, "task list sources",
+		PARSE_TYPE_TASKS,
+		"/apps/evolution/tasks/sources");
 	g_free (gconf_xml);
 
 	/* ------------------------------------------------------------------*/
 
-	g_print ("Migrating memo list sources from GConf...\n");
-
 	gconf_xml = g_build_filename (
 		base_dir, "memos", "%gconf.xml", NULL);
-	g_file_get_contents (gconf_xml, &contents, &length, &error);
-
-	if (error == NULL) {
-		migrate_parse_gconf_xml (
-			PARSE_TYPE_MEMOS,
-			contents, length, &error);
-		g_free (contents);
-	}
-
-	if (error == NULL) {
-		gconf_key = "/apps/evolution/memos/sources";
-		migrate_remove_gconf_key (gconf_key, gconf_xml);
-	} else {
-		migrate_handle_error (error);
-		g_clear_error (&error);
-	}
-
+	migrate_and_remove_key (
+		gconf_xml, "memo list sources",
+		PARSE_TYPE_MEMOS,
+		"/apps/evolution/memos/sources");
 	g_free (gconf_xml);
 
 	/* ------------------------------------------------------------------*/
