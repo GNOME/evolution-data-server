@@ -5392,16 +5392,81 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 	g_free (cursor->query);
 	g_clear_object (&(cursor->sexp));
 
+	if (sexp) {
+		cursor->query = sexp_to_sql_query (ebsdb, cursor->folderid, sexp);
+		cursor->sexp  = e_book_backend_sexp_new (sexp);
+	} else {
+		cursor->query = NULL;
+		cursor->sexp  = NULL;
+	}
+
 	if (query_with_list_attrs) {
 		gchar *list_table = g_strconcat (cursor->folderid, "_lists", NULL);
-
-		stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid, vcard, bdata FROM %Q AS summary "
+		if (NULL == cursor->query || strstr(cursor->query,"summary.")){
+		  	/*
+			 * In this condition we must expand a query that include a
+			 * combination of fields in both "multi" and "summary" tables
+			 *
+			 * i.e.
+			 *    ( 
+			 *         (multi.field = 'phone'          AND (multi.value_phone = '55510105555')) 
+			 *      OR 
+			 *         (multi.field = 'phone'          AND (multi.value_phone = '55510105455')) 
+			 *      OR 
+			 *         (summary.given_name IS NOT NULL AND (summary.given_name = 'test given name')) 
+			 *    )
+			 *
+			 * To keep it generic a simple
+			 * 	(summary table) LEFT OUTER JOIN (multi table)
+			 * Is used to perform the query
+			 */
+			stmt = sqlite3_mprintf ("SELECT DISTINCT summary.uid, vcard, bdata FROM %Q AS summary "
 					"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
 					cursor->folderid, list_table);
 
-		count_stmt = sqlite3_mprintf ("SELECT count(DISTINCT summary.uid), vcard, bdata FROM %Q AS summary "
-					      "LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
-					      cursor->folderid, list_table);
+			count_stmt = sqlite3_mprintf ("SELECT count(DISTINCT summary.uid), vcard, bdata FROM %Q AS summary "
+						"LEFT OUTER JOIN %Q AS multi ON summary.uid = multi.uid",
+						cursor->folderid, list_table);
+		}else{
+		  	/*
+			 * In this condition we must expand a query that include
+			 * only fields in the "multi" table
+			 *
+			 * i.e.
+			 *    ( 
+			 *         (multi.field = 'phone' AND (multi.value_phone = '55510105555')) 
+			 *      OR 
+			 *         (multi.field = 'phone' AND (multi.value_phone = '55510105455')) 
+			 *    )
+			 *
+			 * To increase the performance on this special case
+			 * a "LEFT OUTER JOIN" is performed between
+			 * the result of the query applied to the (multi table)
+			 * and the (symmary table)
+			 *      ( SELECT uid FROM (multi table) WHERE (condition) )
+			 *        LEFT OUTER JOIN
+			 * 	(summary table) 
+			 */
+			stmt = sqlite3_mprintf (	"SELECT DISTINCT summary.uid, vcard, bdata FROM "
+			    					"( SELECT DISTINCT multi.uid FROM %Q AS multi WHERE %s ) AS multi "
+							"LEFT OUTER JOIN "
+								"%Q AS summary "
+							"ON summary.uid = multi.uid",
+							list_table, cursor->query , cursor->folderid);
+
+			count_stmt = sqlite3_mprintf (	"SELECT count(DISTINCT summary.uid), vcard, bdata FROM "
+			    					"( SELECT DISTINCT multi.uid FROM %Q AS multi WHERE %s ) AS multi "
+							"LEFT OUTER JOIN "
+								"%Q AS summary "
+							"ON summary.uid = multi.uid",
+							list_table, cursor->query , cursor->folderid);
+			/* 
+			 * Since the statement include the search expression
+			 * we don't need it anymore in the cursor object
+			 */
+			g_free (cursor->query);
+			cursor->query = NULL;
+		}
 		g_free (list_table);
 	} else {
 		stmt = sqlite3_mprintf ("SELECT uid, vcard, bdata FROM %Q AS summary", cursor->folderid);
@@ -5412,14 +5477,6 @@ ebsdb_cursor_setup_query (EBookBackendSqliteDB *ebsdb,
 	cursor->select_count = g_strdup (count_stmt);
 	sqlite3_free (stmt);
 	sqlite3_free (count_stmt);
-
-	if (sexp) {
-		cursor->query = sexp_to_sql_query (ebsdb, cursor->folderid, sexp);
-		cursor->sexp  = e_book_backend_sexp_new (sexp);
-	} else {
-		cursor->query = NULL;
-		cursor->sexp  = NULL;
-	}
 }
 
 static gchar *
