@@ -106,6 +106,9 @@ ubuntu_online_accounts_get_backend_name (const gchar *uoa_provider_name)
 	if (g_strcmp0 (uoa_provider_name, "google") == 0)
 		eds_backend_name = "google";
 
+	if (g_strcmp0 (uoa_provider_name, "windows-live") == 0)
+		eds_backend_name = "outlook";
+
 	if (g_strcmp0 (uoa_provider_name, "yahoo") == 0)
 		eds_backend_name = "yahoo";
 

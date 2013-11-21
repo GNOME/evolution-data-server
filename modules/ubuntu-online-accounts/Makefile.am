@@ -61,6 +61,7 @@ service_DATA = \
 	google-gmail.service \
 	google-calendar.service \
 	google-contacts.service \
+	windows-live-mail.service \
 	yahoo-mail.service \
 	yahoo-calendar.service \
 	$(NULL)
@@ -79,6 +80,7 @@ EXTRA_DIST = \
 	google-gmail.service.in.in \
 	google-calendar.service.in.in \
 	google-contacts.service.in.in \
+	windows-live-mail.service.in.in \
 	yahoo-mail.service.in.in \
 	yahoo-calendar.service.in.in \
 	$(desktop_DATA) \
