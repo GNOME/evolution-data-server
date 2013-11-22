@@ -395,6 +395,30 @@ network_service_client_event_cb (GSocketClient *client,
 	}
 }
 
+static gboolean
+network_service_notify_host_reachable_cb (gpointer user_data)
+{
+	g_object_notify (G_OBJECT (user_data), "host-reachable");
+
+	return G_SOURCE_REMOVE;
+}
+
+static void
+network_service_notify_host_reachable (CamelNetworkService *service)
+{
+	CamelSession *session;
+
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
+
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		network_service_notify_host_reachable_cb,
+		g_object_ref (service),
+		(GDestroyNotify) g_object_unref);
+
+	g_object_unref (session);
+}
+
 static void
 network_service_set_host_reachable (CamelNetworkService *service,
                                     gboolean host_reachable)
@@ -420,7 +444,7 @@ network_service_set_host_reachable (CamelNetworkService *service,
 
 	g_mutex_unlock (&priv->property_lock);
 
-	g_object_notify (G_OBJECT (service), "host-reachable");
+	network_service_notify_host_reachable (service);
 
 	/* Disconnect immediately if the host is not reachable.
 	 * Then connect lazily when the host becomes reachable. */
@@ -438,48 +462,13 @@ network_service_set_host_reachable (CamelNetworkService *service,
 	}
 }
 
-static void
-network_service_can_reach_cb (GObject *source_object,
-                              GAsyncResult *result,
-                              gpointer user_data)
-{
-	CamelNetworkService *service;
-	GError *error = NULL;
-
-	service = CAMEL_NETWORK_SERVICE (user_data);
-
-	g_network_monitor_can_reach_finish (
-		G_NETWORK_MONITOR (source_object), result, &error);
-
-	if (error == NULL) {
-		network_service_set_host_reachable (service, TRUE);
-
-	} else if (G_IS_IO_ERROR (error, G_IO_ERROR_CANCELLED)) {
-		/* Ignore cancellations. */
-
-	} else if (G_IS_IO_ERROR (error, G_IO_ERROR_HOST_UNREACHABLE)) {
-		network_service_set_host_reachable (service, FALSE);
-
-	} else if (G_IS_RESOLVER_ERROR (error, G_RESOLVER_ERROR_NOT_FOUND)) {
-		network_service_set_host_reachable (service, FALSE);
-
-	} else {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-	}
-
-	if (error != NULL)
-		g_error_free (error);
-
-	g_object_unref (service);
-}
-
 static gboolean
 network_service_update_host_reachable_idle_cb (gpointer user_data)
 {
 	CamelNetworkService *service;
 	CamelNetworkServicePrivate *priv;
-	GSocketConnectable *connectable;
-	GCancellable *cancellable;
+	GCancellable *old_cancellable;
+	GCancellable *new_cancellable;
 
 	service = CAMEL_NETWORK_SERVICE (user_data);
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
@@ -490,37 +479,22 @@ network_service_update_host_reachable_idle_cb (gpointer user_data)
 	priv->update_host_reachable = NULL;
 	g_mutex_unlock (&priv->update_host_reachable_lock);
 
-	connectable = camel_network_service_ref_connectable (service);
+	new_cancellable = g_cancellable_new ();
 
 	g_mutex_lock (&priv->network_monitor_cancellable_lock);
-
-	cancellable = priv->network_monitor_cancellable;
-	priv->network_monitor_cancellable = NULL;
-
-	if (cancellable != NULL) {
-		g_cancellable_cancel (cancellable);
-		g_object_unref (cancellable);
-		cancellable = NULL;
-	}
-
-	if (connectable == NULL) {
-		network_service_set_host_reachable (service, FALSE);
-	} else {
-		cancellable = g_cancellable_new ();
-
-		g_network_monitor_can_reach_async (
-			priv->network_monitor,
-			connectable, cancellable,
-			network_service_can_reach_cb,
-			g_object_ref (service));
-	}
-
-	priv->network_monitor_cancellable = cancellable;
-
+	old_cancellable = priv->network_monitor_cancellable;
+	priv->network_monitor_cancellable = g_object_ref (new_cancellable);
 	g_mutex_unlock (&priv->network_monitor_cancellable_lock);
 
-	if (connectable != NULL)
-		g_object_unref (connectable);
+	g_cancellable_cancel (old_cancellable);
+
+	/* XXX This updates the "host-reachable" property on its own.
+	 *     There's nothing else to do with the result so omit the
+	 *     GAsyncReadyCallback; just needs to run asynchronously. */
+	camel_network_service_can_reach (service, new_cancellable, NULL, NULL);
+
+	g_clear_object (&old_cancellable);
+	g_clear_object (&new_cancellable);
 
 	return FALSE;
 }
@@ -980,5 +954,153 @@ camel_network_service_starttls (CamelNetworkService *service,
 	g_object_unref (connectable);
 
 	return tls_client_connection;
+}
+
+/**
+ * camel_network_service_can_reach_sync:
+ * @service: a #CamelNetworkService
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Attempts to determine whether or not the host described by @service's
+ * #CamelNetworkService:connectable property can be reached, without actually
+ * trying to connect to it.
+ *
+ * If @service believes an attempt to connect will succeed, the function
+ * returns %TRUE.  Otherwise the function returns %FALSE and sets @error
+ * to an appropriate error (such as %G_IO_ERROR_HOST_UNREACHABLE).
+ *
+ * The function will also update the @service's
+ * #CamelNetworkService:host-reachable property based on the result.
+ *
+ * Returns: whether the host for @service can be reached
+ *
+ * Since: 3.12
+ **/
+gboolean
+camel_network_service_can_reach_sync (CamelNetworkService *service,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	CamelNetworkServicePrivate *priv;
+	GSocketConnectable *connectable;
+	gboolean can_reach = FALSE;
+	gboolean update_property;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), FALSE);
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_val_if_fail (priv != NULL, FALSE);
+
+	connectable = camel_network_service_ref_connectable (service);
+
+	if (connectable != NULL) {
+		can_reach = g_network_monitor_can_reach (
+			priv->network_monitor, connectable,
+			cancellable, &local_error);
+	} else {
+		local_error = g_error_new_literal (
+			G_IO_ERROR,
+			G_IO_ERROR_HOST_UNREACHABLE,
+			_("No host information available"));
+	}
+
+	update_property =
+		can_reach ||
+		G_IS_IO_ERROR (local_error, G_IO_ERROR_HOST_UNREACHABLE) ||
+		G_IS_RESOLVER_ERROR (local_error, G_RESOLVER_ERROR_NOT_FOUND);
+
+	if (update_property)
+		network_service_set_host_reachable (service, can_reach);
+
+	g_clear_object (&connectable);
+
+	return can_reach;
+}
+
+/* Helper for camel_network_service_can_reach() */
+static void
+network_service_can_reach_thread (GSimpleAsyncResult *simple,
+                                  GObject *object,
+                                  GCancellable *cancellable)
+{
+	GError *local_error = NULL;
+
+	camel_network_service_can_reach_sync (
+		CAMEL_NETWORK_SERVICE (object), cancellable, &local_error);
+
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
+}
+
+/**
+ * camel_network_service_can_reach:
+ * @service: a #CamelNetworkService
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously attempts to determine whether or not the host described by
+ * @service's #CamelNetworkService:connectable property can be reached, without
+ * actually trying to connect to it.
+ *
+ * For more details, see camel_network_service_can_reach_sync().
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_network_service_can_reach_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.12
+ **/
+void
+camel_network_service_can_reach (CamelNetworkService *service,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (service), callback, user_data,
+		camel_network_service_can_reach);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_run_in_thread (
+		simple, network_service_can_reach_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * camel_network_service_can_reach_finish:
+ * @service: a #CamelNetworkService
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_network_service_can_reach().
+ *
+ * Returns: whether the host for @service can be reached
+ *
+ * Since: 3.12
+ **/
+gboolean
+camel_network_service_can_reach_finish (CamelNetworkService *service,
+                                        GAsyncResult *result,
+                                        GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (service),
+		camel_network_service_can_reach), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 

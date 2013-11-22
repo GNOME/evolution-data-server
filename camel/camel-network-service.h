@@ -100,6 +100,19 @@ GIOStream *	camel_network_service_starttls
 					(CamelNetworkService *service,
 					 GIOStream *base_stream,
 					 GError **error);
+gboolean	camel_network_service_can_reach_sync
+					(CamelNetworkService *service,
+					 GCancellable *cancellable,
+					 GError **error);
+void		camel_network_service_can_reach
+					(CamelNetworkService *service,
+					 GCancellable *cancellable,
+					 GAsyncReadyCallback callback,
+					 gpointer user_data);
+gboolean	camel_network_service_can_reach_finish
+					(CamelNetworkService *service,
+					 GAsyncResult *result,
+					 GError **error);
 
 G_END_DECLS
 
