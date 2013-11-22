@@ -37,6 +37,7 @@
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-folder.h"
+#include "camel-network-service.h"
 #include "camel-offline-store.h"
 #include "camel-session.h"
 #include "camel-store.h"
@@ -318,7 +319,14 @@ store_maybe_connect_sync (CamelStore *store,
 	status = camel_service_get_connection_status (service);
 	connect = (status != CAMEL_SERVICE_CONNECTED);
 
-	if (CAMEL_IS_OFFLINE_STORE (store)) {
+	if (connect && CAMEL_IS_NETWORK_SERVICE (store)) {
+		/* Disregard errors here.  Just want to
+		 * know whether to attempt a connection. */
+		connect = camel_network_service_can_reach_sync (
+			CAMEL_NETWORK_SERVICE (service), cancellable, NULL);
+	}
+
+	if (connect && CAMEL_IS_OFFLINE_STORE (store)) {
 		CamelOfflineStore *offline_store;
 
 		offline_store = CAMEL_OFFLINE_STORE (store);
