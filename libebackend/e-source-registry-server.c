@@ -900,14 +900,10 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 		ESource *source;
 		GError *error = NULL;
 
+		/* it can return NULL source for hidden files */
 		source = e_server_side_source_new (server, file, &error);
 
-		/* Sanity check. */
-		g_return_if_fail (
-			((source != NULL) && (error == NULL)) ||
-			((source == NULL) && (error != NULL)));
-
-		if (error == NULL) {
+		if (!error && source) {
 			/* File monitors are only placed on directories
 			 * where data sources are writable and removable,
 			 * so it should be safe to assume these flags. */
@@ -918,7 +914,7 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 
 			e_source_registry_server_add_source (server, source);
 			g_object_unref (source);
-		} else {
+		} else if (error) {
 			e_source_registry_server_load_error (
 				server, file, error);
 			g_error_free (error);

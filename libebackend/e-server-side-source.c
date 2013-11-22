@@ -1428,7 +1428,9 @@ e_server_side_source_uid_from_file (GFile *file,
 
 	basename = g_file_get_basename (file);
 
-	if (g_str_has_suffix (basename, ".source")) {
+	if (*basename == '.') {
+		/* ignore hidden files */
+	} else if (g_str_has_suffix (basename, ".source")) {
 		/* strlen(".source") --> 7 */
 		uid = g_strndup (basename, strlen (basename) - 7);
 	} else {
