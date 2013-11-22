@@ -47,6 +47,7 @@ struct _CamelNetworkServicePrivate {
 	GMutex property_lock;
 	GSocketConnectable *connectable;
 	gboolean host_reachable;
+	gboolean host_reachable_set;
 
 	GNetworkMonitor *network_monitor;
 	gulong network_changed_handler_id;
@@ -405,7 +406,12 @@ network_service_set_host_reachable (CamelNetworkService *service,
 
 	g_mutex_lock (&priv->property_lock);
 
-	if (host_reachable == priv->host_reachable) {
+	/* Host reachability is in an indeterminate state until the first
+	 * time this function is called.  Don't let our arbitrary default
+	 * value block the first notification signal. */
+	if (!priv->host_reachable_set) {
+		priv->host_reachable_set = TRUE;
+	} else if (host_reachable == priv->host_reachable) {
 		g_mutex_unlock (&priv->property_lock);
 		return;
 	}
