@@ -38,8 +38,7 @@ struct _AsyncContext {
 static void
 async_context_free (AsyncContext *async_context)
 {
-	if (async_context->cancellable != NULL)
-		g_object_unref (async_context->cancellable);
+	g_clear_object (&async_context->cancellable);
 
 	g_free (async_context->user_identity);
 	g_free (async_context->email_address);
@@ -76,8 +75,8 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
 	if (rest_proxy_call_get_status_code (call) != 200) {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
-			_("Expected status 200 when requesting guid, "
-			"instead got status %d (%s)"),
+			_("Expected status 200 when requesting your "
+			"identity, instead got status %d (%s)"),
 			rest_proxy_call_get_status_code (call),
 			rest_proxy_call_get_status_message (call));
 		goto exit;
@@ -109,7 +108,7 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
 	} else {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
-			_("Didn't find email member in JSON data"));
+			_("Didn't find 'email' in JSON data"));
 	}
 
 	g_object_unref (json_parser);
@@ -127,17 +126,17 @@ e_ag_account_google_session_process_cb (GObject *source_object,
 {
 	GSimpleAsyncResult *simple;
 	GVariant *session_data;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	session_data = signon_auth_session_process_finish (
-		SIGNON_AUTH_SESSION (source_object), result, &error);
+		SIGNON_AUTH_SESSION (source_object), result, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((session_data != NULL) && (error == NULL)) ||
-		((session_data == NULL) && (error != NULL)));
+		((session_data != NULL) && (local_error == NULL)) ||
+		((session_data == NULL) && (local_error != NULL)));
 
 	/* Use the access token to obtain the user's email address. */
 
@@ -169,9 +168,9 @@ e_ag_account_google_session_process_cb (GObject *source_object,
 		 *     predates GCancellable.  Too bizarre to bother. */
 		rest_proxy_call_async (
 			call, e_ag_account_google_got_userinfo_cb,
-			NULL, g_object_ref (simple), &error);
+			NULL, g_object_ref (simple), &local_error);
 
-		if (error != NULL) {
+		if (local_error != NULL) {
 			/* Undo the reference added to the async call. */
 			g_object_unref (simple);
 		}
@@ -180,8 +179,8 @@ e_ag_account_google_session_process_cb (GObject *source_object,
 		g_object_unref (call);
 	}
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_simple_async_result_take_error (simple, local_error);
 		g_simple_async_result_complete (simple);
 	}
 
@@ -197,7 +196,7 @@ e_ag_account_collect_google_userinfo (GSimpleAsyncResult *simple,
 	SignonAuthSession *session;
 	AgAuthData *ag_auth_data;
 	GList *list;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	/* First obtain an OAuth 2.0 access token. */
 
@@ -214,12 +213,12 @@ e_ag_account_collect_google_userinfo (GSimpleAsyncResult *simple,
 
 	session = signon_auth_session_new (
 		ag_auth_data_get_credentials_id (ag_auth_data),
-		ag_auth_data_get_method (ag_auth_data), &error);
+		ag_auth_data_get_method (ag_auth_data), &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((session != NULL) && (error == NULL)) ||
-		((session == NULL) && (error != NULL)));
+		((session != NULL) && (local_error == NULL)) ||
+		((session == NULL) && (local_error != NULL)));
 
 	if (session != NULL) {
 		signon_auth_session_process_async (
@@ -230,7 +229,7 @@ e_ag_account_collect_google_userinfo (GSimpleAsyncResult *simple,
 			e_ag_account_google_session_process_cb,
 			g_object_ref (simple));
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_simple_async_result_complete_in_idle (simple);
 	}
 
