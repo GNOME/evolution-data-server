@@ -392,12 +392,22 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 static void
 ubuntu_online_accounts_config_mail_account (EUbuntuOnlineAccounts *extension,
                                             ESource *source,
-                                            GHashTable *account_services)
+                                            GHashTable *account_services,
+                                            const gchar *imap_user_name)
 {
 	EServerSideSource *server_side_source;
 
 	ubuntu_online_accounts_config_oauth2 (
 		extension, source, account_services);
+
+	if (imap_user_name != NULL) {
+		ESourceAuthentication *source_extension;
+
+		source_extension = e_source_get_extension (
+			source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		e_source_authentication_set_user (
+			source_extension, imap_user_name);
+	}
 
 	/* Clients may change the source but may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
@@ -431,12 +441,22 @@ ubuntu_online_accounts_config_mail_identity (EUbuntuOnlineAccounts *extension,
 static void
 ubuntu_online_accounts_config_mail_transport (EUbuntuOnlineAccounts *extension,
                                               ESource *source,
-                                              GHashTable *account_services)
+                                              GHashTable *account_services,
+                                              const gchar *smtp_user_name)
 {
 	EServerSideSource *server_side_source;
 
 	ubuntu_online_accounts_config_oauth2 (
 		extension, source, account_services);
+
+	if (smtp_user_name != NULL) {
+		ESourceAuthentication *source_extension;
+
+		source_extension = e_source_get_extension (
+			source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		e_source_authentication_set_user (
+			source_extension, smtp_user_name);
+	}
 
 	/* Clients may change the source but may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
@@ -474,7 +494,7 @@ ubuntu_online_accounts_config_sources (EUbuntuOnlineAccounts *extension,
 		extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
 		if (e_source_has_extension (source, extension_name))
 			ubuntu_online_accounts_config_mail_account (
-				extension, source, account_services);
+				extension, source, account_services, NULL);
 
 		extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 		if (e_source_has_extension (source, extension_name))
@@ -484,7 +504,7 @@ ubuntu_online_accounts_config_sources (EUbuntuOnlineAccounts *extension,
 		extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
 		if (e_source_has_extension (source, extension_name))
 			ubuntu_online_accounts_config_mail_transport (
-				extension, source, account_services);
+				extension, source, account_services, NULL);
 	}
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
@@ -499,7 +519,9 @@ ubuntu_online_accounts_create_collection (EUbuntuOnlineAccounts *extension,
                                           EBackendFactory *backend_factory,
                                           AgAccount *ag_account,
                                           const gchar *user_identity,
-                                          const gchar *email_address)
+                                          const gchar *email_address,
+                                          const gchar *imap_user_name,
+                                          const gchar *smtp_user_name)
 {
 	ESourceRegistryServer *server;
 	ESource *collection_source;
@@ -543,12 +565,14 @@ ubuntu_online_accounts_create_collection (EUbuntuOnlineAccounts *extension,
 		extension, collection_source, ag_account,
 		account_services, user_identity);
 	ubuntu_online_accounts_config_mail_account (
-		extension, mail_account_source, account_services);
+		extension, mail_account_source,
+		account_services, imap_user_name);
 	ubuntu_online_accounts_config_mail_identity (
 		extension, mail_identity_source,
 		account_services, email_address);
 	ubuntu_online_accounts_config_mail_transport (
-		extension, mail_transport_source, account_services);
+		extension, mail_transport_source,
+		account_services, smtp_user_name);
 	g_hash_table_unref (account_services);
 
 	/* Export the new source collection. */
@@ -577,6 +601,8 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 	AsyncContext *async_context = user_data;
 	gchar *user_identity = NULL;
 	gchar *email_address = NULL;
+	gchar *imap_user_name = NULL;
+	gchar *smtp_user_name = NULL;
 	GError *local_error = NULL;
 
 	ag_account = AG_ACCOUNT (source_object);
@@ -585,6 +611,8 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 		ag_account, result,
 		&user_identity,
 		&email_address,
+		&imap_user_name,
+		&smtp_user_name,
 		&local_error);
 
 	if (local_error == NULL) {
@@ -593,7 +621,9 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 			async_context->backend_factory,
 			ag_account,
 			user_identity,
-			email_address);
+			email_address,
+			imap_user_name,
+			smtp_user_name);
 	} else {
 		g_warning (
 			"%s: Failed to create ESource "
@@ -606,6 +636,8 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 
 	g_free (user_identity);
 	g_free (email_address);
+	g_free (imap_user_name);
+	g_free (smtp_user_name);
 
 	async_context_free (async_context);
 }

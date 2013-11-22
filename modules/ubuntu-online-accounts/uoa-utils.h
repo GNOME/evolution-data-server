@@ -38,6 +38,8 @@ gboolean	e_ag_account_collect_userinfo_finish
 						 GAsyncResult *result,
 						 gchar **out_user_identity,
 						 gchar **out_email_address,
+						 gchar **out_imap_user_name,
+						 gchar **out_smtp_user_name,
 						 GError **error);
 const gchar *	e_source_get_ag_service_type	(ESource *source);
 

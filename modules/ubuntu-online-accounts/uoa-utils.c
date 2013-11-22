@@ -33,6 +33,8 @@ struct _AsyncContext {
 	GCancellable *cancellable;
 	gchar *user_identity;
 	gchar *email_address;
+	gchar *imap_user_name;
+	gchar *smtp_user_name;
 };
 
 static void
@@ -42,6 +44,8 @@ async_context_free (AsyncContext *async_context)
 
 	g_free (async_context->user_identity);
 	g_free (async_context->email_address);
+	g_free (async_context->imap_user_name);
+	g_free (async_context->smtp_user_name);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -105,6 +109,8 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
 	if (email != NULL) {
 		async_context->user_identity = g_strdup (email);
 		async_context->email_address = g_strdup (email);
+		async_context->imap_user_name = g_strdup (email);
+		async_context->smtp_user_name = g_strdup (email);
 	} else {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
@@ -270,6 +276,8 @@ e_ag_account_collect_yahoo_userinfo (GSimpleAsyncResult *simple,
 
 	async_context->user_identity = g_strdup (email_address->str);
 	async_context->email_address = g_strdup (email_address->str);
+	async_context->imap_user_name = g_strdup (email_address->str);
+	async_context->smtp_user_name = g_strdup (email_address->str);
 
 	g_simple_async_result_complete_in_idle (simple);
 
@@ -328,6 +336,8 @@ e_ag_account_collect_userinfo_finish (AgAccount *ag_account,
                                       GAsyncResult *result,
                                       gchar **out_user_identity,
                                       gchar **out_email_address,
+                                      gchar **out_imap_user_name,
+                                      gchar **out_smtp_user_name,
                                       GError **error)
 {
 	GSimpleAsyncResult *simple;
@@ -354,6 +364,16 @@ e_ag_account_collect_userinfo_finish (AgAccount *ag_account,
 	if (out_email_address != NULL) {
 		*out_email_address = async_context->email_address;
 		async_context->email_address = NULL;
+	}
+
+	if (out_imap_user_name != NULL) {
+		*out_imap_user_name = async_context->imap_user_name;
+		async_context->imap_user_name = NULL;
+	}
+
+	if (out_smtp_user_name != NULL) {
+		*out_smtp_user_name = async_context->smtp_user_name;
+		async_context->smtp_user_name = NULL;
 	}
 
 	return TRUE;
