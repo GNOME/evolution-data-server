@@ -226,5 +226,6 @@ services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]services/evolution-source-registry/builtin/weather-stub.source.in
 [type: gettext/ini]services/evolution-source-registry/builtin/webcal-stub.source.in
 [type: gettext/ini]services/evolution-source-registry/builtin/webdav-stub.source.in
+services/evolution-source-registry/evolution-source-registry.c
 services/evolution-user-prompter/evolution-user-prompter.c
 services/evolution-user-prompter/prompt-user-gtk.c
