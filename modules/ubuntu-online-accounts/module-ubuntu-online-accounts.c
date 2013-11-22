@@ -197,19 +197,19 @@ ubuntu_online_accounts_new_source (EUbuntuOnlineAccounts *extension)
 	ESourceRegistryServer *server;
 	ESource *source;
 	GFile *file;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	/* This being a brand new data source, creating the instance
 	 * should never fail but we'll check for errors just the same. */
 	server = ubuntu_online_accounts_get_server (extension);
 	file = e_server_side_source_new_user_file (NULL);
-	source = e_server_side_source_new (server, file, &error);
+	source = e_server_side_source_new (server, file, &local_error);
 	g_object_unref (file);
 
-	if (error != NULL) {
+	if (local_error != NULL) {
 		g_warn_if_fail (source == NULL);
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_error_free (local_error);
 	}
 
 	return source;
@@ -577,14 +577,17 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 	AsyncContext *async_context = user_data;
 	gchar *user_identity = NULL;
 	gchar *email_address = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	ag_account = AG_ACCOUNT (source_object);
 
 	e_ag_account_collect_userinfo_finish (
-		ag_account, result, &user_identity, &email_address, &error);
+		ag_account, result,
+		&user_identity,
+		&email_address,
+		&local_error);
 
-	if (error == NULL) {
+	if (local_error == NULL) {
 		ubuntu_online_accounts_create_collection (
 			async_context->extension,
 			async_context->backend_factory,
@@ -597,8 +600,8 @@ ubuntu_online_accounts_got_userinfo_cb (GObject *source_object,
 			"collection for AgAccount '%s': %s",
 			G_STRFUNC,
 			ag_account_get_display_name (ag_account),
-			error->message);
-		g_error_free (error);
+			local_error->message);
+		g_error_free (local_error);
 	}
 
 	g_free (user_identity);
@@ -632,15 +635,15 @@ static void
 ubuntu_online_accounts_remove_collection (EUbuntuOnlineAccounts *extension,
                                           ESource *source)
 {
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	/* This removes the entire subtree rooted at source.
 	 * Deletes the corresponding on-disk key files too. */
-	e_source_remove_sync (source, NULL, &error);
+	e_source_remove_sync (source, NULL, &local_error);
 
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
+	if (local_error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_error_free (local_error);
 	}
 }
 
@@ -903,18 +906,18 @@ ubuntu_online_accounts_session_process_cb (GObject *source_object,
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
 	GVariant *session_data;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	session_data = signon_auth_session_process_finish (
-		SIGNON_AUTH_SESSION (source_object), result, &error);
+		SIGNON_AUTH_SESSION (source_object), result, &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((session_data != NULL) && (error == NULL)) ||
-		((session_data == NULL) && (error != NULL)));
+		((session_data != NULL) && (local_error == NULL)) ||
+		((session_data == NULL) && (local_error != NULL)));
 
 	if (session_data != NULL) {
 		g_variant_lookup (
@@ -929,8 +932,8 @@ ubuntu_online_accounts_session_process_cb (GObject *source_object,
 		g_variant_unref (session_data);
 	}
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL)
+		g_simple_async_result_take_error (simple, local_error);
 
 	g_simple_async_result_complete (simple);
 
@@ -949,7 +952,7 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 	SignonAuthSession *session;
 	AgAccountService *ag_account_service;
 	AgAuthData *ag_auth_data;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	async_context = g_slice_new0 (AsyncContext);
 
@@ -999,12 +1002,12 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 
 	session = signon_auth_session_new (
 		ag_auth_data_get_credentials_id (ag_auth_data),
-		ag_auth_data_get_method (ag_auth_data), &error);
+		ag_auth_data_get_method (ag_auth_data), &local_error);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((session != NULL) && (error == NULL)) ||
-		((session == NULL) && (error != NULL)));
+		((session != NULL) && (local_error == NULL)) ||
+		((session == NULL) && (local_error != NULL)));
 
 	if (session != NULL) {
 		signon_auth_session_process_async (
@@ -1016,7 +1019,7 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 			g_object_ref (simple));
 		g_object_unref (session);
 	} else {
-		g_simple_async_result_take_error (simple, error);
+		g_simple_async_result_take_error (simple, local_error);
 		g_simple_async_result_complete_in_idle (simple);
 	}
 
