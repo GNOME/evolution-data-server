@@ -36,6 +36,7 @@
 #include "camel-folder.h"
 #include "camel-mempool.h"
 #include "camel-mime-message.h"
+#include "camel-network-service.h"
 #include "camel-offline-store.h"
 #include "camel-operation.h"
 #include "camel-session.h"
@@ -516,7 +517,15 @@ folder_maybe_connect_sync (CamelFolder *folder,
 	status = camel_service_get_connection_status (service);
 	connect = (status != CAMEL_SERVICE_CONNECTED);
 
-	if (CAMEL_IS_OFFLINE_STORE (parent_store)) {
+	if (connect && CAMEL_IS_NETWORK_SERVICE (parent_store)) {
+		/* Disregard errors here.  Just want to
+		 * know whether to attempt a connection. */
+		connect = camel_network_service_can_reach_sync (
+			CAMEL_NETWORK_SERVICE (parent_store),
+			cancellable, NULL);
+	}
+
+	if (connect && CAMEL_IS_OFFLINE_STORE (parent_store)) {
 		CamelOfflineStore *offline_store;
 
 		offline_store = CAMEL_OFFLINE_STORE (parent_store);
