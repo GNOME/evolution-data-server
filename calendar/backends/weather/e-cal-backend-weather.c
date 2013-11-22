@@ -46,6 +46,7 @@ static gboolean	begin_retrieval_cb		(ECalBackendWeather *cbw);
 static ECalComponent *
 		create_weather			(ECalBackendWeather *cbw,
 						 GWeatherInfo *report,
+						 GWeatherTemperatureUnit unit,
 						 gboolean is_forecast);
 static void	e_cal_backend_weather_add_timezone
 						(ECalBackendSync *backend,
@@ -164,6 +165,9 @@ finished_retrieval_cb (GWeatherInfo *info,
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent *comp;
 	GSList *comps, *l;
+	GWeatherTemperatureUnit unit;
+	ESource *source;
+	ESourceWeather *weather_extension;
 
 	priv = cbw->priv;
 
@@ -171,6 +175,16 @@ finished_retrieval_cb (GWeatherInfo *info,
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not retrieve weather data"));
 		return;
 	}
+
+	source = e_backend_get_source (E_BACKEND (cbw));
+	weather_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEATHER_BACKEND);
+
+	if (e_source_weather_get_units (weather_extension) == E_SOURCE_WEATHER_UNITS_CENTIGRADE)
+		unit = GWEATHER_TEMP_UNIT_CENTIGRADE;
+	else if (e_source_weather_get_units (weather_extension) == E_SOURCE_WEATHER_UNITS_KELVIN)
+		unit = GWEATHER_TEMP_UNIT_KELVIN;
+	else /* E_SOURCE_WEATHER_UNITS_FAHRENHEIT */
+		unit = GWEATHER_TEMP_UNIT_FAHRENHEIT;
 
 	/* update cache */
 	comps = e_cal_backend_store_get_components (priv->store);
@@ -189,7 +203,7 @@ finished_retrieval_cb (GWeatherInfo *info,
 	g_slist_free (comps);
 	e_cal_backend_store_clean (priv->store);
 
-	comp = create_weather (cbw, info, FALSE);
+	comp = create_weather (cbw, info, unit, FALSE);
 	if (comp) {
 		GSList *forecasts;
 
@@ -206,7 +220,7 @@ finished_retrieval_cb (GWeatherInfo *info,
 				GWeatherInfo *nfo = f->data;
 
 				if (nfo) {
-					comp = create_weather (cbw, nfo, TRUE);
+					comp = create_weather (cbw, nfo, unit, TRUE);
 					if (comp) {
 						put_component_to_store (cbw, comp);
 						e_cal_backend_notify_component_created (E_CAL_BACKEND (cbw), comp);
@@ -306,9 +320,32 @@ getCategory (GWeatherInfo *report)
 	return NULL;
 }
 
+static gchar *
+cal_backend_weather_get_temp (gdouble value,
+			      GWeatherTemperatureUnit unit)
+{
+	switch (unit) {
+	case GWEATHER_TEMP_UNIT_FAHRENHEIT:
+		/* TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN) */
+		return g_strdup_printf (_("%.1f \302\260F"), value);
+	case GWEATHER_TEMP_UNIT_CENTIGRADE:
+		/* TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN) */
+		return g_strdup_printf (_("%.1f \302\260C"), value);
+	case GWEATHER_TEMP_UNIT_KELVIN:
+		/* TRANSLATOR: This is the temperature in kelvin */
+		return g_strdup_printf (_("%.1f K"), value);
+	default:
+		g_warn_if_reached ();
+		break;
+	}
+
+	return g_strdup_printf (_("%.1f"), value);
+}
+
 static ECalComponent *
 create_weather (ECalBackendWeather *cbw,
                 GWeatherInfo *report,
+		GWeatherTemperatureUnit unit,
                 gboolean is_forecast)
 {
 	ECalComponent             *cal_comp;
@@ -324,7 +361,7 @@ create_weather (ECalBackendWeather *cbw,
 	icaltimezone		  *update_zone = NULL;
 	const GWeatherLocation    *location;
 	const GWeatherTimezone    *w_timezone;
-	gdouble tmin = 0.0, tmax = 0.0;
+	gdouble tmin = 0.0, tmax = 0.0, temp = 0.0;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
 
@@ -370,16 +407,21 @@ create_weather (ECalBackendWeather *cbw,
 	e_cal_component_set_dtend (cal_comp, &dt);
 
 	city_name = gweather_info_get_location_name (report);
-	if (gweather_info_get_value_temp_min (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmin) &&
-	    gweather_info_get_value_temp_max (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmax) &&
+	if (gweather_info_get_value_temp_min (report, unit, &tmin) &&
+	    gweather_info_get_value_temp_max (report, unit, &tmax) &&
 	    tmin != tmax) {
 		gchar *min, *max;
 
-		min = gweather_info_get_temp_min (report);
-		max = gweather_info_get_temp_max (report);
+		min = cal_backend_weather_get_temp (tmin, unit);
+		max = cal_backend_weather_get_temp (tmax, unit);
 		comp_summary.value = g_strdup_printf ("%s : %s / %s", city_name, min, max);
 
 		g_free (min); g_free (max);
+	} else if (gweather_info_get_value_temp (report, unit, &temp)) {
+		tmp = cal_backend_weather_get_temp (temp, unit);
+		comp_summary.value = g_strdup_printf ("%s : %s", city_name, tmp);
+
+		g_free (tmp);
 	} else {
 		gchar *temp;
 
