@@ -162,7 +162,7 @@ cache_reaper_reap_trash_directories (gpointer user_data)
 	ECacheReaper *extension = E_CACHE_REAPER (user_data);
 	guint ii;
 
-	g_message ("Reaping abandoned data directories");
+	g_debug ("Reaping abandoned data directories");
 
 	for (ii = 0; ii < extension->n_data_directories; ii++)
 		e_reap_trash_directory (
@@ -172,7 +172,7 @@ cache_reaper_reap_trash_directories (gpointer user_data)
 			cache_reaper_trash_directory_reaped,
 			NULL);
 
-	g_message ("Reaping abandoned cache directories");
+	g_debug ("Reaping abandoned cache directories");
 
 	for (ii = 0; ii < extension->n_cache_directories; ii++)
 		e_reap_trash_directory (
@@ -334,7 +334,7 @@ cache_reaper_scan_data_directories (ECacheReaper *extension)
 	 * their names to registered data sources and move any unrecognized
 	 * subdirectories to the "trash" subdirectory to be reaped later. */
 
-	g_message ("Scanning data directories");
+	g_debug ("Scanning data directories");
 
 	for (ii = 0; ii < extension->n_data_directories; ii++)
 		cache_reaper_scan_directory (
@@ -353,7 +353,7 @@ cache_reaper_scan_cache_directories (ECacheReaper *extension)
 	 * their names to registered data sources and move any unrecognized
 	 * subdirectories to the "trash" subdirectory to be reaped later. */
 
-	g_message ("Scanning cache directories");
+	g_debug ("Scanning cache directories");
 
 	for (ii = 0; ii < extension->n_cache_directories; ii++)
 		cache_reaper_scan_directory (
