@@ -205,7 +205,8 @@ e_sexp_result_free (struct _ESExp *f,
 
 	switch (t->type) {
 	case ESEXP_RES_ARRAY_PTR:
-		g_ptr_array_free (t->value.ptrarray, TRUE);
+		if (t->value.ptrarray)
+			g_ptr_array_free (t->value.ptrarray, TRUE);
 		break;
 	case ESEXP_RES_BOOL:
 	case ESEXP_RES_INT:
