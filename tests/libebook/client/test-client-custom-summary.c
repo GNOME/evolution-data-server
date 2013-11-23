@@ -60,6 +60,18 @@ setup_custom_book (ESource *scratch,
 static ETestServerClosure setup_custom_closure  = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0, TRUE, NULL };
 static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, TRUE, NULL };
 
+/* Filter which tests we want to try with a regexp */
+static GRegex *test_regex = NULL;
+static gchar  *test_filter = NULL;
+
+static GOptionEntry entries[] = {
+
+	{ "filter", 'f', 0, G_OPTION_ARG_STRING, &test_filter,
+	  "A regular expression to filter which tests should be added", NULL },
+	{ NULL }
+};
+
+
 /* Define this macro to expect E_CLIENT_ERROR_NOT_SUPPORTED
  * only on phone number queries when EDS is built with no
  * phone number support.
@@ -84,6 +96,51 @@ typedef struct {
 } ClientTestFixture;
 
 static void
+setup_book (ClientTestFixture *fixture)
+{
+	EBookClient *book_client;
+	GSList *contacts = NULL;
+	GError *error = NULL;
+	gint i;
+
+	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
+
+	for (i = 0; i < N_CONTACTS; i++) {
+		gchar *case_name = g_strdup_printf ("custom-%d", i + 1);
+		gchar *vcard;
+		EContact *contact;
+
+		vcard    = new_vcard_from_test_case (case_name);
+		contact  = e_contact_new_from_vcard (vcard);
+		contacts = g_slist_prepend (contacts, contact);
+		g_free (vcard);
+		g_free (case_name);
+	}
+
+	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error)) {
+
+		/* Dont complain here, we may re-use the same addressbook for multiple tests
+		 * and we can't add the same contacts twice
+		 */
+		if (g_error_matches (error, E_BOOK_CLIENT_ERROR,
+				     E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS))
+			g_clear_error (&error);
+		else
+			g_error ("Failed to add test contacts: %s", error->message);
+
+	}
+
+	g_slist_free_full (contacts, (GDestroyNotify) g_object_unref);
+}
+
+static void
+setup_test (ClientTestFixture *fixture,
+            gconstpointer user_data)
+{
+	setup_book (fixture);
+}
+
+static void
 client_test_data_free (gpointer p)
 {
 	ClientTestData *data = (ClientTestData *) p;
@@ -98,6 +155,9 @@ client_test_setup_custom (ClientTestFixture *fixture,
 {
 	fixture->parent.source_name = g_strdup ("custom-book");
 	e_test_server_utils_setup (&fixture->parent, user_data);
+
+	if (test_regex)
+		setup_book (fixture);
 }
 
 static void
@@ -106,6 +166,9 @@ client_test_setup_default (ClientTestFixture *fixture,
 {
 	fixture->parent.source_name = g_strdup ("default-book");
 	e_test_server_utils_setup (&fixture->parent, user_data);
+
+	if (test_regex)
+		setup_book (fixture);
 }
 
 static void
@@ -136,6 +199,15 @@ add_client_test_sexp (const gchar *prefix,
 	data->num_contacts = num_contacts;
 	data->phone_number_query = phone_number_query;
 
+	/* Filter out anything that was not specified in the test filter */
+	if (test_regex && !g_regex_match (test_regex, path, 0, NULL)) {
+		g_free (path);
+		return;
+	}
+
+	if (custom)
+		data->parent.customize = setup_custom_book;
+
 	if (custom)
 		g_test_add (path, ClientTestFixture, data,
 			    client_test_setup_custom, func,
@@ -163,41 +235,6 @@ add_client_test (const gchar *prefix,
 		e_book_query_to_string (query),
 		num_contacts, direct, custom, phone_number_query);
 	e_book_query_unref (query);
-}
-
-static void
-setup_book (ClientTestFixture *fixture)
-{
-	EBookClient *book_client;
-	GSList *contacts = NULL;
-	GError *error = NULL;
-	gint i;
-
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-
-	for (i = 0; i < N_CONTACTS; i++) {
-		gchar *case_name = g_strdup_printf ("custom-%d", i + 1);
-		gchar *vcard;
-		EContact *contact;
-
-		vcard    = new_vcard_from_test_case (case_name);
-		contact  = e_contact_new_from_vcard (vcard);
-		contacts = g_slist_prepend (contacts, contact);
-		g_free (vcard);
-		g_free (case_name);
-	}
-
-	if (!e_book_client_add_contacts_sync (book_client, contacts, NULL, NULL, &error))
-		g_error ("Failed to add test contacts");
-
-	g_slist_free_full (contacts, (GDestroyNotify)g_object_unref);
-}
-
-static void
-setup_test (ClientTestFixture *fixture,
-	    gconstpointer user_data)
-{
-	setup_book (fixture);
 }
 
 static void
@@ -299,6 +336,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	GOptionContext *context;
 	gint ret, i;
 	SuiteType suites[] = {
 		{ search_test, FALSE, FALSE, "/EBookClient/Default/Search" },
@@ -314,6 +352,16 @@ main (gint argc,
 #if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
 #endif
+
+	/* Parse our regex first */
+	context = g_option_context_new (NULL);
+	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+	g_option_context_parse (context, &argc, &argv, NULL);
+	g_option_context_free (context);
+
+	if (test_filter)
+		test_regex = g_regex_new (test_filter, 0, 0, NULL);
+
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/");
 
@@ -329,10 +377,12 @@ main (gint argc,
 	/* Before beginning, setup two books and populate them with contacts, one with
 	 * a customized summary and another without a customized summary
 	 */
-	g_test_add ("/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
-		    client_test_setup_default, setup_test, client_test_teardown);
-	g_test_add ("/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
-		    client_test_setup_custom, setup_test, client_test_teardown);
+	if (test_regex == NULL) {
+		g_test_add ("/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
+			    client_test_setup_default, setup_test, client_test_teardown);
+		g_test_add ("/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
+			    client_test_setup_custom, setup_test, client_test_teardown);
+	}
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
 	 */
@@ -402,6 +452,19 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
+		add_client_test (
+			suites[i].prefix,
+			"/Prefix/FullName/Underscore",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_FULL_NAME,
+				E_BOOK_QUERY_CONTAINS,
+				"ran_ge"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 		/* Query the E_CONTACT_TEL field for something that is not a
 		 * phone number, user is searching for all the contacts when
 		 * they noted they must ask Jenny for the phone number. */
@@ -463,6 +526,60 @@ main (gint argc,
 
 		add_client_test (
 			suites[i].prefix,
+			"/Or/SearchByUID",
+			suites[i].func,
+			e_book_query_orv (
+				e_book_query_field_test (
+					E_CONTACT_UID,
+					E_BOOK_QUERY_IS,
+					"custom-1"),
+				e_book_query_field_test (
+					E_CONTACT_UID,
+					E_BOOK_QUERY_IS,
+					"custom-2"),
+				e_book_query_field_test (
+					E_CONTACT_UID,
+					E_BOOK_QUERY_IS,
+					"custom-3"),
+				/* This one has a capital C, test will fail
+				 * if the backend mistakenly normalizes the
+				 * UID for comparison.
+				 */
+				e_book_query_field_test (
+					E_CONTACT_UID,
+					E_BOOK_QUERY_IS,
+					"Custom-4"),
+				e_book_query_field_test (
+					E_CONTACT_UID,
+					E_BOOK_QUERY_IS,
+					"custom-5"),
+				NULL),
+			5,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Or/TwoEmails",
+			suites[i].func,
+			e_book_query_orv (
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_ENDS_WITH,
+					"jackson.com"),
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_ENDS_WITH,
+					".org"),
+				NULL),
+			4,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
 			"/Exact/Email",
 			suites[i].func,
 			e_book_query_field_test (
@@ -474,8 +591,157 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
+		add_client_test (
+			suites[i].prefix,
+			"/Not/JacksonFamily",
+			suites[i].func,
+			e_book_query_not (
+				e_book_query_field_test (
+					E_CONTACT_FULL_NAME,
+					E_BOOK_QUERY_ENDS_WITH,
+					"jackson"),
+				TRUE),
+			/* There are 2 jackson contacts */
+			N_CONTACTS - 2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Not/DotComEmail",
+			suites[i].func,
+			e_book_query_not (
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_ENDS_WITH,
+					".com"),
+				TRUE),
+			/* There are 9 contacts with emails ending in ".com"  */
+			N_CONTACTS - 9,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/And/EmailFullName",
+			suites[i].func,
+			e_book_query_andv (
+				/* There are 9 contacts with emails ending in ".com"  */
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_ENDS_WITH,
+					".com"),
+				/* Contacts custom-1 and custom-2 have Jackson in the full name */
+				e_book_query_field_test (
+					E_CONTACT_FULL_NAME,
+					E_BOOK_QUERY_CONTAINS,
+					"Jackson"),
+				NULL),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/And/EmailEmail",
+			suites[i].func,
+			e_book_query_andv (
+				/* There are 9 contacts with emails ending in ".com"  */
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_ENDS_WITH,
+					".com"),
+				/* Contacts custom-1 and custom-2 have Jackson in the email */
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_CONTAINS,
+					"jackson"),
+				NULL),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/And/EmailPhone",
+			suites[i].func,
+			e_book_query_andv (
+				/* custom-13 begins with eddie */
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_BEGINS_WITH,
+					"eddie"),
+				/* custom-13, custom-14 & custom-15 end with 5050 */
+				e_book_query_field_test (
+					E_CONTACT_TEL,
+					E_BOOK_QUERY_ENDS_WITH,
+					"5050"),
+				NULL),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/And/EmailPhoneFamiliy",
+			suites[i].func,
+			e_book_query_andv (
+				/* custom-13 family name is Murphey */
+				e_book_query_field_test (
+					E_CONTACT_FAMILY_NAME,
+					E_BOOK_QUERY_IS,
+					"Murphey"),
+				/* custom-13 begins with eddie */
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_BEGINS_WITH,
+					"eddie"),
+				/* custom-13, custom-14 & custom-15 end with 5050 */
+				e_book_query_field_test (
+					E_CONTACT_TEL,
+					E_BOOK_QUERY_ENDS_WITH,
+					"5050"),
+				NULL),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/And/Familiy/Or/EmailEmail",
+			suites[i].func,
+			e_book_query_andv (
+				/* Contacts custom-1 and custom-2 have Jackson in the full name */
+				e_book_query_field_test (
+					E_CONTACT_FULL_NAME,
+					E_BOOK_QUERY_CONTAINS,
+					"Jackson"),
+				e_book_query_orv (
+					/* There are 9 contacts with emails ending in ".com"  */
+					e_book_query_field_test (
+						E_CONTACT_EMAIL,
+						E_BOOK_QUERY_ENDS_WITH,
+						".com"),
+					/* Contacts custom-1 and custom-2 have Jackson in the email */
+					e_book_query_field_test (
+						E_CONTACT_EMAIL,
+						E_BOOK_QUERY_CONTAINS,
+						"jackson"),
+					NULL),
+				NULL),
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 		/*********************************************
-		 *         PHONE NUMBER QUERIES FOLLOW       *
+		 *                PHONE NUMBERS              *
 		 *********************************************/
 
 		/* Expect E_CLIENT_ERROR_INVALID_QUERY, "ask Jenny for
@@ -495,29 +761,13 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
-		/* These queries will do an index lookup with a custom summary,
-		 * and a full table scan matching with EBookBackendSexp when
-		 * the default summary is used. */
-		add_client_test (
-			suites[i].prefix,
-			"/EqPhone/Exact/Common",
-			suites[i].func,
-			e_book_query_field_test (
-				E_CONTACT_TEL,
-				E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
-				"+1 221.542.3789"),
-			1,
-			suites[i].direct,
-			suites[i].custom,
-			TRUE);
-
 		/* This test checks that phone number matching works when
 		 * deeply nested into a query, when ENABLE_PHONENUMBER is
 		 * not defined, then it ensures that the query is refused
 		 * while being deeply nested. */
 		add_client_test (
 			suites[i].prefix,
-			"/EqPhone/Exact/Nested",
+			"/EqPhone/NestedQuery",
 			suites[i].func,
 			e_book_query_orv (
 				e_book_query_field_test (
@@ -545,9 +795,88 @@ main (gint argc,
 			TRUE);
 
 		/*********************************************
+		 *      E_BOOK_QUERY_EQUALS_PHONE_NUMBER     *
+		 *********************************************/
+		/* Only exact matches are returned.
+		 *
+		 * Query: +1 221.542.3789
+		 * +------------------------------+--------------------+
+		 * | vCard Data:   +1-221-5423789 | Matches: Exact     |
+		 * | vCard Data:  +31-221-5423789 | Matches: None      |
+		 * +------------------------------+--------------------+
+		 */
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/Exact",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+				"+1 221.542.3789"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+
+		/*
+		 * Query: +49 408.765.5050 (one exact match)
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     408 765-5050 | Matches: National  |
+		 * | vCard Data:  +1 408 765-5050 | Matches: None      |
+		 * | vCard Data: +49 408 765-5050 | Matches: Exact     |
+		 * +------------------------------+--------------------+
+		 */
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/Exact/Another",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+				"+49 408.765.5050"),
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+		/*
+		 * Query: 408.765.5050 (no exact match)
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     408 765-5050 | Matches: National  |
+		 * | vCard Data:  +1 408 765-5050 | Matches: National  |
+		 * | vCard Data: +49 408 765-5050 | Matches: National  |
+		 * +------------------------------+--------------------+
+		 */
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/Exact/MissingCountryInput",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_PHONE_NUMBER,
+				"408.765.5050"),
+			0,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+
+		/*********************************************
 		 * E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER *
 		 *********************************************/
-
+		/* Test that a query term with no specified country returns
+		 * all vCards that have the same national number regardless
+		 * of country codes (including contacts which have no
+		 * national number specified)
+		 *
+		 * Query: 408 765-5050
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     408 765-5050 | Matches: National  |
+		 * | vCard Data:  +1 408 765-5050 | Matches: National  |
+		 * | vCard Data: +49 408 765-5050 | Matches: National  |
+		 * +------------------------------+--------------------+
+		 */
 		add_client_test (
 			suites[i].prefix,
 			"/EqPhone/National/WithoutCountry",
@@ -556,11 +885,46 @@ main (gint argc,
 				E_CONTACT_TEL,
 				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
 				"408 765-5050"),
+			3,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+		/* Test that a query term with no specified country returns
+		 * all vCards that have the same national number regardless
+		 * of country codes.
+		 *
+		 * Query: 221.542.3789
+		 * +------------------------------+--------------------+
+		 * | vCard Data:   +1-221-5423789 | Matches: National  |
+		 * | vCard Data:  +31-221-5423789 | Matches: National  |
+		 * +------------------------------+--------------------+
+		 */
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/National/WithoutCountry2",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
+				"221.542.3789"),
 			2,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
 
+		/* Test that querying with an explicit country code reports
+		 * national number matches for numbers without a country
+		 * code, and not for numbers with explicitly different
+		 * country codes.
+		 *
+		 * Query: +1 408 765-5050
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     408 765-5050 | Matches: National  |
+		 * | vCard Data:  +1 408 765-5050 | Matches: Exact     |
+		 * | vCard Data: +49 408 765-5050 | Matches: None      |
+		 * +------------------------------+--------------------+
+		 */
 		add_client_test (
 			suites[i].prefix,
 			"/EqPhone/National/en_US",
@@ -574,6 +938,13 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
+		/* Query: +49 408 765-5050
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     408 765-5050 | Matches: National  |
+		 * | vCard Data:  +1 408 765-5050 | Matches: None      |
+		 * | vCard Data: +49 408 765-5050 | Matches: Exact     |
+		 * +------------------------------+--------------------+
+		 */
 		add_client_test (
 			suites[i].prefix,
 			"/EqPhone/National/de_DE",
@@ -582,37 +953,21 @@ main (gint argc,
 				E_CONTACT_TEL,
 				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
 				"+49 408 765-5050"),
-			1,
+			2,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
 
-		/* Test that a query term with no specified country returns
-		 * all vCards that have the same national number regardless
-		 * of country codes.
-		 *
-		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +1-221-5423789 | Matches: yes |
-		 * | Active Country Code: +1 | Query: 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no  |
-		 */
-		add_client_test (
-			suites[i].prefix,
-			"/EqPhone/National/Common",
-			suites[i].func,
-			e_book_query_field_test (
-				E_CONTACT_TEL,
-				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
-				"221.542.3789"),
-			1,
-			suites[i].direct,
-			suites[i].custom,
-			TRUE);
 
 		/* Test that a query term with a specified country returns
 		 * only vCards that are specifically in the specified country
 		 * code.
 		 *
-		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +1-221-5423789 | Matches: no |
-		 * | Active Country Code: +1 | Query: +49 221.542.3789 | vCard Data: +31-221-5423789 | Matches: no |
+		 * Query: +49 221.542.3789
+		 * +------------------------------+--------------------+
+		 * | vCard Data:   +1-221-5423789 | Matches: None      |
+		 * | vCard Data:  +31-221-5423789 | Matches: None      |
+		 * +------------------------------+--------------------+
 		 */
 		add_client_test (
 			suites[i].prefix,
@@ -627,10 +982,13 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
-		/* Test that a query term with the active country code
+		/* Test that a query term with a country code
 		 * specified returns a vCard with an unspecified country code.
 		 *
-		 * | Active Country Code: +1 | Query: +1 514-845-8436 | vCard Data: 514-845-8436 | Matches: yes |
+		 * Query: +1 514-845-8436
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     514-845-8436 | Matches: National  |
+		 * +------------------------------+--------------------+
 		 */
 		add_client_test (
 			suites[i].prefix,
@@ -645,10 +1003,18 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
-		/* Test that a query term with an arbitrary country code
-		 * specified returns a vCard with an unspecified country code.
+		/* Test that a query term with another country code
+		 * specified again returns a vCard with an unspecified
+		 * country code.
 		 *
-		 * | Active Country Code: +1 | Query: +49 514-845-8436 | vCard Data: 514-845-8436 | Matches: yes |
+		 * This test can help make sure that we are properly
+		 * ignoring whatever country code is active by default
+		 * in our locale.
+		 *
+		 * Query: +49 514-845-8436
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     514-845-8436 | Matches: National  |
+		 * +------------------------------+--------------------+
 		 */
 		add_client_test (
 			suites[i].prefix,
@@ -658,11 +1024,23 @@ main (gint argc,
 				E_CONTACT_TEL,
 				E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER,
 				"+49 514-845-8436"),
-			0,
+			1,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
 
+
+
+		/********************************************
+		 *  E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER  *
+		 ********************************************/
+		/*
+		 * Query: 5423789
+		 * +------------------------------+--------------------+
+		 * | vCard Data:   +1-221-5423789 | Matches: Short     |
+		 * | vCard Data:  +31-221-5423789 | Matches: Short     |
+		 * +------------------------------+--------------------+
+		 */
 		add_client_test (
 			suites[i].prefix,
 			"/EqPhone/Short",
@@ -671,7 +1049,28 @@ main (gint argc,
 				E_CONTACT_TEL,
 				E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
 				"5423789"),
-			1,
+			2,
+			suites[i].direct,
+			suites[i].custom,
+			TRUE);
+
+		/*
+		 * Query: 765-5050
+		 * +------------------------------+--------------------+
+		 * | vCard Data:     408 765-5050 | Matches: Short     |
+		 * | vCard Data:  +1 408 765-5050 | Matches: Short     |
+		 * | vCard Data: +49 408 765-5050 | Matches: Short     |
+		 * +------------------------------+--------------------+
+		 */
+		add_client_test (
+			suites[i].prefix,
+			"/EqPhone/Short/Another",
+			suites[i].func,
+			e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER,
+				"765-5050"),
+			3,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
