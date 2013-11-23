@@ -1575,7 +1575,8 @@ e_vcard_append_attribute (EVCard *evc,
 
 	/* Handle UID special case:
 	 * No need to parse the vcard to append an UID attribute */
-	if (evc->priv->vcard != NULL && g_strcmp0 (attr->name, EVC_UID) == 0) {
+	if (evc->priv->vcard != NULL && attr->name != NULL &&
+	    g_ascii_strcasecmp (attr->name, EVC_UID) == 0) {
 		evc->priv->attributes = g_list_append (evc->priv->attributes, attr);
 	} else {
 		evc->priv->attributes = g_list_append (e_vcard_ensure_attributes (evc), attr);
@@ -1655,7 +1656,8 @@ e_vcard_add_attribute (EVCard *evc,
 
 	/* Handle UID special case:
 	 * No need to parse the vcard to append an UID attribute */
-	if (evc->priv->vcard != NULL && g_strcmp0 (attr->name, EVC_UID) == 0) {
+	if (evc->priv->vcard != NULL && attr->name != NULL &&
+	    g_ascii_strcasecmp (attr->name, EVC_UID) == 0) {
 		evc->priv->attributes = g_list_prepend (evc->priv->attributes, attr);
 	} else {
 		evc->priv->attributes = g_list_prepend (e_vcard_ensure_attributes (evc), attr);
@@ -2220,7 +2222,7 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr,
 	for (l = params; l; l = l->next) {
 		param = l->data;
 		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param), param_name) == 0) {
-			l = g_list_find_custom (param->values, s, (GCompareFunc) strcmp);
+			l = g_list_find_custom (param->values, s, (GCompareFunc) g_ascii_strcasecmp);
 			if (l == NULL) {
 				return;
 			}
