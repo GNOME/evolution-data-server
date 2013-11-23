@@ -2,6 +2,7 @@
 /* e-vcard.c
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2013 Collabora Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -18,6 +19,88 @@
  * Boston, MA 02110-1301, USA.
  *
  * Author: Chris Toshok (toshok@ximian.com)
+ *         Philip Withnall <philip.withnall@collabora.co.uk>
+ */
+
+/**
+ * SECTION:e-vcard
+ * @short_description: vCard parsing and interpretation
+ * @stability: Stable
+ * @include: libebook-contacts/e-vcard.h
+ *
+ * #EVCard is a low-level representation of a vCard, as specified in RFCs
+ * 2425 and 2426 (for vCard version 3.0); this class only supports versions 2.1
+ * and 3.0 of the vCard standard.
+ *
+ * A vCard is an unordered set of attributes (otherwise known as properties),
+ * each with one or more values. The number of values an attribute has is
+ * determined by its type, and is given in the specification. Each attribute may
+ * also have zero or more named parameters, which provide metadata about its
+ * value.
+ *
+ * For example, the following line from a vCard:
+ * |[
+ * ADR;TYPE=WORK:;;100 Waters Edge;Baytown;LA;30314;United States of America
+ * ]|
+ * is an <code>ADR</code> attribute with 6 values giving the different
+ * components of the postal address. It has one parameter, <code>TYPE</code>,
+ * which specifies that it’s a work address rather than a home address.
+ *
+ * Using the #EVCard API, this data is accessible as follows:
+ * <example>
+ * <title>Accessing a Multi-Valued Attribute</title>
+ * <programlisting>
+ * EVCard *vcard;
+ * EVCardAttribute *attr;
+ * GList *param_values, *values;
+ *
+ * vcard = e_vcard_new_from_string (
+ *    "BEGIN:VCARD\n"
+ *    "VERSION:3.0\n"
+ *    "ADR;TYPE=WORK:;;100 Waters Edge;Baytown;LA;30314;United States of America\n"
+ *    "END:VCARD\n");
+ * attr = e_vcard_get_attribute (vcard, "ADR");
+ *
+ * g_assert_cmpstr (e_vcard_attribute_get_name (attr), ==, "ADR");
+ * g_assert (e_vcard_attribute_is_single_valued (attr) == FALSE);
+ *
+ * param_values = e_vcard_attribute_get_param (attr, "TYPE");
+ * g_assert_cmpuint (g_list_length (param_values), ==, 1);
+ * g_assert_cmpstr (param_values->data, ==, "WORK");
+ *
+ * values = e_vcard_attribute_get_values (attr);
+ * g_assert_cmpuint (g_list_length (values), ==, 6);
+ * g_assert_cmpstr (values->data, ==, "");
+ * g_assert_cmpstr (values->next->data, ==, "100 Waters Edge");
+ * g_assert_cmpstr (values->next->next->data, ==, "Baytown");
+ * /<!-- -->* etc. *<!-- -->/
+ *
+ * g_object_unref (vcard);
+ * </programlisting>
+ * </example>
+ *
+ * If a second <code>ADR</code> attribute was present in the vCard, the above
+ * example would only ever return the first attribute. To access the values of
+ * other attributes of the same type, the entire attribute list must be iterated
+ * over using e_vcard_get_attributes(), then matching on
+ * e_vcard_attribute_get_name().
+ *
+ * vCard attribute values may be encoded in the vCard source, using base-64 or
+ * quoted-printable encoding. Such encoded values are automatically decoded when
+ * parsing the vCard, so the values returned by e_vcard_attribute_get_value()
+ * do not need further decoding. The ‘decoded’ functions,
+ * e_vcard_attribute_get_value_decoded() and
+ * e_vcard_attribute_get_values_decoded() are only relevant when adding
+ * attributes which use pre-encoded values and have their <code>ENCODING</code>
+ * parameter set.
+ *
+ * String comparisons in #EVCard are almost universally case-insensitive.
+ * Attribute names, parameter names and parameter values are all compared
+ * case-insensitively. Only attribute values are case sensitive.
+ *
+ * #EVCard implements lazy parsing of its vCard data, so the first time its
+ * attributes are accessed may take slightly longer than normal to allow for the
+ * vCard to be parsed. This can be tested by calling e_vcard_is_parsed().
  */
 
 /* This file implements the decoding of the v-card format
@@ -758,7 +841,7 @@ e_vcard_escape_semicolons (const gchar *s)
  *
  * Escapes a string according to RFC2426, section 5.
  *
- * Returns: A newly allocated, escaped string.
+ * Returns: (transfer full): A newly allocated, escaped string.
  **/
 gchar *
 e_vcard_escape_string (const gchar *s)
@@ -803,7 +886,7 @@ e_vcard_escape_string (const gchar *s)
  *
  * Unescapes a string according to RFC2426, section 5.
  *
- * Returns: A newly allocated, unescaped string.
+ * Returns: (transfer full): A newly allocated, unescaped string.
  **/
 gchar *
 e_vcard_unescape_string (const gchar *s)
@@ -843,6 +926,15 @@ e_vcard_unescape_string (const gchar *s)
 	return g_string_free (str, FALSE);
 }
 
+/**
+ * e_vcard_construct:
+ * @evc: an existing #EVCard
+ * @str: a vCard string
+ *
+ * Constructs the existing #EVCard, @evc, setting its vCard data to @str.
+ *
+ * This modifies @evc.
+ */
 void
 e_vcard_construct (EVCard *evc,
                    const gchar *str)
@@ -852,11 +944,15 @@ e_vcard_construct (EVCard *evc,
 
 /**
  * e_vcard_construct_with_uid:
- * @evc: an #EVCard
+ * @evc: an existing #EVCard
  * @str: a vCard string
- * @uid: a unique ID string
+ * @uid: (allow-none): a unique ID string
  *
- * FIXME: Document me!
+ * Constructs the existing #EVCard, @evc, setting its vCard data to @str, and
+ * adding a new UID attribute with the value given in @uid (if @uid is
+ * non-%NULL).
+ *
+ * This modifies @evc.
  *
  * Since: 3.4
  **/
@@ -890,7 +986,7 @@ e_vcard_construct_with_uid (EVCard *evc,
  *
  * Creates a new, blank #EVCard.
  *
- * Returns: A new, blank #EVCard.
+ * Returns: (transfer full): A new, blank #EVCard.
  **/
 EVCard *
 e_vcard_new (void)
@@ -905,7 +1001,7 @@ e_vcard_new (void)
  * Creates a new #EVCard from the passed-in string
  * representation.
  *
- * Returns: A new #EVCard.
+ * Returns: (transfer full): A new #EVCard.
  **/
 EVCard *
 e_vcard_new_from_string (const gchar *str)
@@ -1330,7 +1426,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
  * Exports @evc to a string representation, specified
  * by the @format argument.
  *
- * Returns: A newly allocated string representing the vcard.
+ * Returns: (transfer full): A newly allocated string representing the vcard.
  **/
 gchar *
 e_vcard_to_string (EVCard *evc,
@@ -1411,7 +1507,7 @@ e_vcard_dump_structure (EVCard *evc)
  * Creates a new #EVCardAttribute with the specified group and
  * attribute names.
  *
- * Returns: A new #EVCardAttribute.
+ * Returns: (transfer full): A new #EVCardAttribute.
  **/
 EVCardAttribute *
 e_vcard_attribute_new (const gchar *attr_group,
@@ -1429,7 +1525,7 @@ e_vcard_attribute_new (const gchar *attr_group,
 
 /**
  * e_vcard_attribute_free:
- * @attr: attribute to free
+ * @attr: (transfer full): attribute to free
  *
  * Frees an attribute, its values and its parameters.
  **/
@@ -1454,7 +1550,7 @@ e_vcard_attribute_free (EVCardAttribute *attr)
  *
  * Makes a copy of @attr.
  *
- * Returns: A new #EVCardAttribute identical to @attr.
+ * Returns: (transfer full): A new #EVCardAttribute identical to @attr.
  **/
 EVCardAttribute *
 e_vcard_attribute_copy (EVCardAttribute *attr)
@@ -1500,7 +1596,7 @@ e_vcard_attribute_get_type (void)
  * @attr_group: (allow-none): group name of attributes to be removed
  * @attr_name: name of the arributes to be removed
  *
- * Removes all the attributes with group name and attribute name equal to
+ * Removes all the attributes with group name and attribute name equal to the
  * passed in values. If @attr_group is %NULL or an empty string,
  * it removes all the attributes with passed in name irrespective of
  * their group names.
@@ -1539,9 +1635,9 @@ e_vcard_remove_attributes (EVCard *evc,
 /**
  * e_vcard_remove_attribute:
  * @evc: an #EVCard
- * @attr: an #EVCardAttribute to remove
+ * @attr: (transfer full): an #EVCardAttribute to remove
  *
- * Removes @attr from @evc and frees it.
+ * Removes @attr from @evc and frees it. This takes ownership of @attr.
  **/
 void
 e_vcard_remove_attribute (EVCard *evc,
@@ -1562,7 +1658,8 @@ e_vcard_remove_attribute (EVCard *evc,
  * @evc: an #EVCard
  * @attr: (transfer full): an #EVCardAttribute to append
  *
- * Appends @attr to @evc to the end of a list of attributes.
+ * Appends @attr to @evc to the end of a list of attributes. This takes
+ * ownership of @attr.
  *
  * Since: 2.32
  **/
@@ -1589,8 +1686,11 @@ e_vcard_append_attribute (EVCard *evc,
  * @attr: (transfer full): an #EVCardAttribute to append
  * @value: a value to assign to the attribute
  *
- * Appends @attr to @evcard, setting it to @value.
- * For attribute addition is used e_vcard_append_attribute().
+ * Appends @attr to @evcard, setting it to @value. This takes ownership of
+ * @attr.
+ *
+ * This is a convenience wrapper around e_vcard_attribute_add_value() and
+ * e_vcard_append_attribute().
  *
  * Since: 2.32
  **/
@@ -1613,8 +1713,11 @@ e_vcard_append_attribute_with_value (EVCard *evcard,
  * @attr: (transfer full): an #EVCardAttribute to append
  * @...: a %NULL-terminated list of values to assign to the attribute
  *
- * Appends @attr to @evcard, assigning the list of values to it.
- * For attribute addition is used e_vcard_append_attribute().
+ * Appends @attr to @evcard, assigning the list of values to it. This takes
+ * ownership of @attr.
+ *
+ * This is a convenience wrapper around e_vcard_attribute_add_value() and
+ * e_vcard_append_attribute().
  *
  * Since: 2.32
  **/
@@ -1645,7 +1748,7 @@ e_vcard_append_attribute_with_values (EVCard *evcard,
  * @evc: an #EVCard
  * @attr: (transfer full): an #EVCardAttribute to add
  *
- * Adds @attr to @evc. It's added to the beginning of a list of attributes.
+ * Prepends @attr to @evc. This takes ownership of @attr.
  **/
 void
 e_vcard_add_attribute (EVCard *evc,
@@ -1670,8 +1773,11 @@ e_vcard_add_attribute (EVCard *evc,
  * @attr: (transfer full): an #EVCardAttribute to add
  * @value: a value to assign to the attribute
  *
- * Adds @attr to @evcard, setting it to @value. For attribute addition
- * is used e_vcard_add_attribute().
+ * Prepends @attr to @evcard, setting it to @value. This takes ownership of
+ * @attr.
+ *
+ * This is a convenience wrapper around e_vcard_attribute_add_value() and
+ * e_vcard_add_attribute().
  **/
 void
 e_vcard_add_attribute_with_value (EVCard *evcard,
@@ -1692,8 +1798,11 @@ e_vcard_add_attribute_with_value (EVCard *evcard,
  * @attr: (transfer full): an #EVCardAttribute to add
  * @...: a %NULL-terminated list of values to assign to the attribute
  *
- * Adds @attr to @evcard, assigning the list of values to it.
- * For attribute addition is used e_vcard_add_attribute().
+ * Prepends @attr to @evcard, assigning the list of values to it. This takes
+ * ownership of @attr.
+ *
+ * This is a convenience wrapper around e_vcard_attribute_add_value() and
+ * e_vcard_add_attribute().
  **/
 void
 e_vcard_add_attribute_with_values (EVCard *evcard,
@@ -1722,7 +1831,7 @@ e_vcard_add_attribute_with_values (EVCard *evcard,
  * @attr: an #EVCardAttribute
  * @value: a string value
  *
- * Adds @value to @attr's list of values.
+ * Appends @value to @attr's list of values.
  **/
 void
 e_vcard_attribute_add_value (EVCardAttribute *attr,
@@ -1739,8 +1848,11 @@ e_vcard_attribute_add_value (EVCardAttribute *attr,
  * @value: an encoded value
  * @len: the length of the encoded value, in bytes
  *
- * Decodes @value according to the encoding used for @attr, and
- * adds it to @attr's list of values.
+ * Encodes @value according to the encoding used for @attr, and appends it to
+ * @attr's list of values.
+ *
+ * This should only be used if the #EVCardAttribute has a non-raw encoding (i.e.
+ * if it’s encoded in base-64 or quoted-printable encoding).
  **/
 void
 e_vcard_attribute_add_value_decoded (EVCardAttribute *attr,
@@ -1789,7 +1901,7 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr,
  * @attr: an #EVCardAttribute
  * @...: a %NULL-terminated list of strings
  *
- * Adds a list of values to @attr.
+ * Appends a list of values to @attr.
  **/
 void
 e_vcard_attribute_add_values (EVCardAttribute *attr,
@@ -1819,7 +1931,7 @@ free_gstring (GString *str)
  * e_vcard_attribute_remove_values:
  * @attr: an #EVCardAttribute
  *
- * Removes all values from @attr.
+ * Removes and frees all values from @attr.
  **/
 void
 e_vcard_attribute_remove_values (EVCardAttribute *attr)
@@ -1838,9 +1950,9 @@ e_vcard_attribute_remove_values (EVCardAttribute *attr)
 /**
  * e_vcard_attribute_remove_value:
  * @attr: an #EVCardAttribute
- * @s: an value to remove
+ * @s: a value to remove
  *
- * Removes from the value list in @attr the value @s.
+ * Removes value @s from the value list in @attr. The value @s is not freed.
  **/
 void
 e_vcard_attribute_remove_value (EVCardAttribute *attr,
@@ -1864,7 +1976,9 @@ e_vcard_attribute_remove_value (EVCardAttribute *attr,
  * @attr: an #EVCardAttribute
  * @param_name: a parameter name
  *
- * Removes the parameter @param_name from the attribute @attr.
+ * Removes and frees parameter @param_name from the attribute @attr. Parameter
+ * names are guaranteed to be unique, so @attr is guaranteed to have no
+ * parameters named @param_name after this function returns.
  *
  * Since: 1.12
  */
@@ -1893,7 +2007,9 @@ e_vcard_attribute_remove_param (EVCardAttribute *attr,
  * e_vcard_attribute_remove_params:
  * @attr: an #EVCardAttribute
  *
- * Removes all parameters from @attr.
+ * Removes and frees all parameters from @attr.
+ *
+ * This also resets the #EVCardAttribute's encoding back to raw.
  **/
 void
 e_vcard_attribute_remove_params (EVCardAttribute *attr)
@@ -1934,7 +2050,7 @@ e_vcard_attribute_param_get_type (void)
  *
  * Creates a new parameter named @name.
  *
- * Returns: A new #EVCardAttributeParam.
+ * Returns: (transfer full): A new #EVCardAttributeParam.
  **/
 EVCardAttributeParam *
 e_vcard_attribute_param_new (const gchar *name)
@@ -1948,7 +2064,7 @@ e_vcard_attribute_param_new (const gchar *name)
 
 /**
  * e_vcard_attribute_param_free:
- * @param: an #EVCardAttributeParam
+ * @param: (transfer full): an #EVCardAttributeParam
  *
  * Frees @param and its values.
  **/
@@ -1968,9 +2084,9 @@ e_vcard_attribute_param_free (EVCardAttributeParam *param)
  * e_vcard_attribute_param_copy:
  * @param: an #EVCardAttributeParam
  *
- * Makes a copy of @param.
+ * Makes a copy of @param and all its values.
  *
- * Returns: a new #EVCardAttributeParam identical to @param.
+ * Returns: (transfer full): a new #EVCardAttributeParam identical to @param.
  **/
 EVCardAttributeParam *
 e_vcard_attribute_param_copy (EVCardAttributeParam *param)
@@ -1994,11 +2110,11 @@ e_vcard_attribute_param_copy (EVCardAttributeParam *param)
  * @attr: an #EVCardAttribute
  * @param: (transfer full): an #EVCardAttributeParam to add
  *
- * Adds @param to @attr's list of parameters.
- * It tests for duplicities, only new parameters are added,
- * when a new parameter already exists in attr, then those
- * values are merged, also without creating duplicities.
- * When we will not add whole param, then it's freed here.
+ * Prepends @param to @attr's list of parameters. This takes ownership of
+ * @param (and all its values).
+ *
+ * Duplicate parameters have their values merged, so that all parameter names
+ * in @attr are unique. Values are also merged so that uniqueness is preserved.
  **/
 void
 e_vcard_attribute_add_param (EVCardAttribute *attr,
@@ -2094,7 +2210,7 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
  * @param: an #EVCardAttributeParam
  * @value: a string value to add
  *
- * Adds @value to @param's list of values.
+ * Appends @value to @param's list of values.
  **/
 void
 e_vcard_attribute_param_add_value (EVCardAttributeParam *param,
@@ -2110,7 +2226,7 @@ e_vcard_attribute_param_add_value (EVCardAttributeParam *param,
  * @param: an #EVCardAttributeParam
  * @...: a %NULL-terminated list of strings
  *
- * Adds a list of values to @param.
+ * Appends a list of values to @param.
  **/
 void
 e_vcard_attribute_param_add_values (EVCardAttributeParam *param,
@@ -2136,7 +2252,11 @@ e_vcard_attribute_param_add_values (EVCardAttributeParam *param,
  * @param: (transfer full): an #EVCardAttributeParam
  * @value: a string value
  *
- * Adds @value to @param, then adds @param to @attr.
+ * Appends @value to @param, then prepends @param to @attr. This takes ownership
+ * of @param, but not of @value.
+ *
+ * This is a convenience method for e_vcard_attribute_param_add_value() and
+ * e_vcard_attribute_add_param().
  **/
 void
 e_vcard_attribute_add_param_with_value (EVCardAttribute *attr,
@@ -2157,8 +2277,11 @@ e_vcard_attribute_add_param_with_value (EVCardAttribute *attr,
  * @param: (transfer full): an #EVCardAttributeParam
  * @...: a %NULL-terminated list of strings
  *
- * Adds the list of values to @param, then adds @param
- * to @attr.
+ * Appends the list of values to @param, then prepends @param to @attr. This
+ * takes ownership of @param, but not of the list of values.
+ *
+ * This is a convenience method for e_vcard_attribute_param_add_value() and
+ * e_vcard_attribute_add_param().
  **/
 void
 e_vcard_attribute_add_param_with_values (EVCardAttribute *attr,
@@ -2204,6 +2327,8 @@ e_vcard_attribute_param_remove_values (EVCardAttributeParam *param)
  * @s: a value
  *
  * Removes the value @s from the parameter @param_name on the attribute @attr.
+ * If @s was the only value for parameter @param_name, that parameter is removed
+ * entirely from @attr and freed.
  **/
 void
 e_vcard_attribute_remove_param_value (EVCardAttribute *attr,
@@ -2244,7 +2369,7 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr,
  * e_vcard_get_attributes:
  * @evcard: an #EVCard
  *
- * Gets the list of attributes from @evcard. The list and its
+ * Gets the list of all attributes from @evcard. The list and its
  * contents are owned by @evcard, and must not be freed.
  *
  * Returns: (transfer none) (element-type EVCardAttribute): A list of attributes
@@ -2266,6 +2391,16 @@ e_vcard_get_attributes (EVCard *evcard)
  * Get the attribute @name from @evc.  The #EVCardAttribute is owned by
  * @evcard and should not be freed. If the attribute does not exist, %NULL is
  * returned.
+ *
+ * <note><para>This will only return the <emphasis>first</emphasis> attribute
+ * with the given @name. To get other attributes of that name (for example,
+ * other <code>TEL</code> attributes if a contact has multiple telephone
+ * numbers), use e_vcard_get_attributes() and iterate over the list searching
+ * for matching attributes.</para>
+ * <para>This method iterates over all attributes in the #EVCard, so should not
+ * be called often. If extracting a large number of attributes from a vCard, it
+ * is more efficient to iterate once over the list returned by
+ * e_vcard_get_attributes().</para></note>
  *
  * Returns: (transfer none) (allow-none): An #EVCardAttribute if found, or %NULL.
  **/
@@ -2304,7 +2439,7 @@ e_vcard_get_attribute (EVCard *evc,
  * @name: the name of the attribute to get
  *
  * Similar to e_vcard_get_attribute() but this method will not attempt to
- * parse the vcard if not already parsed.
+ * parse the vCard if it is not already parsed.
  *
  * Returns: (transfer none) (allow-none): An #EVCardAttribute if found, or %NULL.
  *
@@ -2365,8 +2500,16 @@ e_vcard_attribute_get_name (EVCardAttribute *attr)
  * e_vcard_attribute_get_values:
  * @attr: an #EVCardAttribute
  *
- * Gets the list of values from @attr. The list and its
+ * Gets the ordered list of values from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
+ *
+ * For example, for an <code>ADR</code> (postal address) attribute, this will
+ * return the components of the postal address.
+ *
+ * This may be called on a single-valued attribute (i.e. one for which
+ * e_vcard_attribute_is_single_valued() returns %TRUE) and will return a
+ * one-element list in that case. Alternatively, use
+ * e_vcard_attribute_get_value() in such cases.
  *
  * Returns: (transfer none) (element-type utf8): A list of string values. They
  * will all be non-%NULL, but may be empty strings. The list itself may be
@@ -2384,9 +2527,15 @@ e_vcard_attribute_get_values (EVCardAttribute *attr)
  * e_vcard_attribute_get_values_decoded:
  * @attr: an #EVCardAttribute
  *
- * Gets the list of values from @attr, decoding them if
- * necessary. The list and its contents are owned by @attr,
- * and must not be freed.
+ * Gets the ordered list of values from @attr, decoding them if
+ * necessary according to the encoding given in the vCard’s
+ * <code>ENCODING</code> attribute. The list and its contents are owned by
+ * @attr, and must not be freed.
+ *
+ * This may be called on a single-valued attribute (i.e. one for which
+ * e_vcard_attribute_is_single_valued() returns %TRUE) and will return a
+ * one-element list in that case. Alternatively, use
+ * e_vcard_attribute_get_value_decoded() in such cases.
  *
  * Returns: (transfer none) (element-type GString): A list of values of type #GString.
  **/
@@ -2456,7 +2605,15 @@ e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
  *
  * Gets the value of a single-valued #EVCardAttribute, @attr.
  *
- * Returns: (allow-none): A newly allocated string representing the value, or %NULL if the attribute has no value.
+ * For example, for a <code>FN</code> (full name) attribute, this will
+ * return the contact’s full name as a single string.
+ *
+ * This will print a warning if called on an #EVCardAttribute which is not
+ * single-valued (i.e. for which e_vcard_attribute_is_single_valued() returns
+ * %FALSE). Use e_vcard_attribute_get_values() in such cases instead.
+ *
+ * Returns: (allow-none) (transfer full): A newly allocated string representing
+ * the value, or %NULL if the attribute has no value.
  **/
 gchar *
 e_vcard_attribute_get_value (EVCardAttribute *attr)
@@ -2478,11 +2635,15 @@ e_vcard_attribute_get_value (EVCardAttribute *attr)
  * @attr: an #EVCardAttribute
  *
  * Gets the value of a single-valued #EVCardAttribute, @attr, decoding
- * it if necessary.
+ * it if necessary according to the encoding given in the vCard’s
+ * <code>ENCODING</code> attribute.
  *
- * Note: this function seems currently to be unused. Could be removed.
+ * This will print a warning if called on an #EVCardAttribute which is not
+ * single-valued (i.e. for which e_vcard_attribute_is_single_valued() returns
+ * %FALSE). Use e_vcard_attribute_get_values_decoded() in such cases instead.
  *
- * Returns: (allow-none): A newly allocated #GString representing the value, or %NULL if the attribute has no value.
+ * Returns: (allow-none) (transfer full): A newly allocated #GString
+ * representing the value, or %NULL if the attribute has no value.
  **/
 GString *
 e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
@@ -2508,7 +2669,21 @@ e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
  * @attr: an #EVCardAttribute
  * @typestr: a string representing the type
  *
- * Checks if @attr has an #EVCardAttributeParam of the specified type.
+ * Checks if @attr has an #EVCardAttributeParam with name %EVC_TYPE and @typestr
+ * as one of its values.
+ *
+ * For example, for the vCard attribute:
+ * |[
+ * TEL;TYPE=WORK,VOICE:(111) 555-1212
+ * ]|
+ * the following holds true:
+ * |[
+ * g_assert (e_vcard_attribute_has_type (attr, "WORK") == TRUE);
+ * g_assert (e_vcard_attribute_has_type (attr, "voice") == TRUE);
+ * g_assert (e_vcard_attribute_has_type (attr, "HOME") == FALSE);
+ * ]|
+ *
+ * Comparisons against @typestr are case-insensitive.
  *
  * Returns: %TRUE if such a parameter exists, %FALSE otherwise.
  **/
@@ -2545,8 +2720,8 @@ e_vcard_attribute_has_type (EVCardAttribute *attr,
  * e_vcard_attribute_get_params:
  * @attr: an #EVCardAttribute
  *
- * Gets the list of parameters from @attr. The list and its
- * contents are owned by @attr, and must not be freed.
+ * Gets the list of parameters (of type #EVCardAttributeParam) from @attr. The
+ * list and its contents are owned by @attr, and must not be freed.
  *
  * Returns: (transfer none) (element-type EVCardAttributeParam): A list of
  * elements of type #EVCardAttributeParam.
@@ -2565,10 +2740,11 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
  * @name: a parameter name
  *
  * Gets the list of values for the paramater @name from @attr. The list and its
- * contents are owned by @attr, and must not be freed.
+ * contents are owned by @attr, and must not be freed. If no parameter with the
+ * given @name exists, %NULL is returned.
  *
- * Returns: (transfer none) (element-type utf8): A list of string elements
- * representing the parameter's values.
+ * Returns: (transfer none) (element-type utf8) (allow-none): A list of string
+ * elements representing the parameter's values, or %NULL.
  **/
 GList *
 e_vcard_attribute_get_param (EVCardAttribute *attr,
@@ -2595,7 +2771,8 @@ e_vcard_attribute_get_param (EVCardAttribute *attr,
  * e_vcard_is_parsed:
  * @evc: an #EVCard
  *
- * Check if the @evc has been parsed already. Used for debugging.
+ * Check if the @evc has been parsed already, as #EVCard implements lazy parsing
+ * of its vCard data. Used for debugging.
  *
  * Return value: %TRUE if @evc has been parsed, %FALSE otherwise.
  *
@@ -2615,6 +2792,13 @@ e_vcard_is_parsed (EVCard *evc)
  *
  * Gets the name of @param.
  *
+ * For example, for the only parameter of the vCard attribute:
+ * |[
+ * TEL;TYPE=WORK,VOICE:(111) 555-1212
+ * ]|
+ * this would return <code>TYPE</code> (which is string-equivalent to
+ * %EVC_TYPE).
+ *
  * Returns: The name of the parameter.
  **/
 const gchar *
@@ -2631,6 +2815,12 @@ e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
  *
  * Gets the list of values from @param. The list and its
  * contents are owned by @param, and must not be freed.
+ *
+ * For example, for the <code>TYPE</code> parameter of the vCard attribute:
+ * |[
+ * TEL;TYPE=WORK,VOICE:(111) 555-1212
+ * ]|
+ * this would return the list <code>WORK</code>, <code>VOICE</code>.
  *
  * Returns: (transfer none) (element-type utf8): A list of string elements
  * representing the parameter's values.
