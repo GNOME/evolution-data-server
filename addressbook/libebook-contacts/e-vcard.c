@@ -2226,6 +2226,8 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr,
 			}
 
 			param->values = g_list_delete_link (param->values, l);
+			g_free (l->data);
+
 			if (param->values == NULL) {
 				e_vcard_attribute_param_free (param);
 				attr->params = g_list_remove (attr->params, param);
