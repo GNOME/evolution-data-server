@@ -285,24 +285,48 @@ e_phone_number_match (PhoneNumberUtil::MatchType match_type)
 }
 
 static EPhoneNumberMatch
-_e_phone_number_cxx_compare (const PhoneNumber &first_number,
-                             const PhoneNumber &second_number)
+_e_phone_number_cxx_compare (const PhoneNumber &first_number_in,
+                             const PhoneNumber &second_number_in)
 {
+	PhoneNumber first_number(first_number_in);
+	PhoneNumber second_number(second_number_in);
+	const EPhoneNumberCountrySource cs1 =
+		_e_phone_number_cxx_get_country_source (first_number);
+	const EPhoneNumberCountrySource cs2 =
+		_e_phone_number_cxx_get_country_source (second_number);
+
+	/* Must clear guessed country codes, otherwise libphonenumber
+	 * includes them in the comparison, leading to false
+	 * negatives. */
+	if (cs1 == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT)
+		first_number.clear_country_code();
+	if (cs2 == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT)
+		second_number.clear_country_code();
+
 	PhoneNumberUtil::MatchType match_type =
 		e_phone_number_util_get_instance ()->IsNumberMatch (
 			first_number, second_number);
 
-	/* Downgrade exact matches to national number matches
-	 * if one of the numbers had a guessed country code. */
-	if (match_type == PhoneNumberUtil::EXACT_MATCH) {
-		const EPhoneNumberCountrySource cs1 =
-			_e_phone_number_cxx_get_country_source (first_number);
-		const EPhoneNumberCountrySource cs2 =
-			_e_phone_number_cxx_get_country_source (second_number);
+	/* XXX Work around a bug in libphonenumber's C++ implementation
+	 *
+	 * If we got a short match and either of the numbers is missing
+	 * the country code, then make sure both of them have an arbitrary
+	 * country code specified... if that matches exactly, then we promote
+	 * the short number match to a national match.
+	 */
+	if (match_type == PhoneNumberUtil::SHORT_NSN_MATCH &&
+	    (first_number.country_code() == 0 ||
+	     second_number.country_code() == 0)) {
 
-		if (cs1 == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT
-			|| cs2 == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT)
-		match_type = PhoneNumberUtil::NSN_MATCH;
+		second_number.set_country_code (1);
+		first_number.set_country_code (1);
+
+		PhoneNumberUtil::MatchType second_match =
+			e_phone_number_util_get_instance ()->IsNumberMatch (
+				first_number, second_number);
+
+		if (second_match == PhoneNumberUtil::EXACT_MATCH)
+			match_type = PhoneNumberUtil::NSN_MATCH;
 	}
 
 	g_warn_if_fail (match_type != PhoneNumberUtil::INVALID_NUMBER);
