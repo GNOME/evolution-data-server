@@ -55,6 +55,7 @@ struct _ECalBackendPrivate {
 	GMutex zone_cache_lock;
 
 	GMutex operation_lock;
+	GThreadPool *thread_pool;
 	GHashTable *operation_ids;
 	GQueue pending_operations;
 	guint32 next_operation_id;
@@ -209,25 +210,19 @@ cal_backend_push_operation (ECalBackend *backend,
 	if (G_IS_CANCELLABLE (cancellable))
 		node->cancellable = g_object_ref (cancellable);
 
-	/* All operations block when using a serial dispatch queue. */
-	if (E_CAL_BACKEND_GET_CLASS (backend)->use_serial_dispatch_queue)
-		node->blocking_operation = TRUE;
-
 	g_queue_push_tail (&backend->priv->pending_operations, node);
 
 	g_mutex_unlock (&backend->priv->operation_lock);
 }
 
-static gboolean
-cal_backend_dispatch_thread (GIOSchedulerJob *job,
-                             GCancellable *cancellable,
-                             gpointer user_data)
+static void
+cal_backend_dispatch_thread (DispatchNode *node)
 {
-	DispatchNode *node = user_data;
-	GError *error = NULL;
+	GCancellable *cancellable = node->cancellable;
+	GError *local_error = NULL;
 
-	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
-		g_simple_async_result_take_error (node->simple, error);
+	if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
+		g_simple_async_result_take_error (node->simple, local_error);
 		g_simple_async_result_complete_in_idle (node->simple);
 	} else {
 		GAsyncResult *result;
@@ -239,7 +234,7 @@ cal_backend_dispatch_thread (GIOSchedulerJob *job,
 		g_object_unref (source_object);
 	}
 
-	return FALSE;
+	dispatch_node_free (node);
 }
 
 static gboolean
@@ -270,11 +265,9 @@ cal_backend_dispatch_next_operation (ECalBackend *backend)
 
 	g_mutex_unlock (&backend->priv->operation_lock);
 
-	g_io_scheduler_push_job (
-		cal_backend_dispatch_thread,
-		node, (GDestroyNotify) dispatch_node_free,
-		G_PRIORITY_DEFAULT,
-		node->cancellable);
+	/* An error here merely indicates a thread could not be
+	 * created, and so the node was queued.  We don't care. */
+	g_thread_pool_push (backend->priv->thread_pool, node, NULL);
 
 	return TRUE;
 }
@@ -646,6 +639,9 @@ cal_backend_finalize (GObject *object)
 	g_mutex_clear (&priv->operation_lock);
 	g_hash_table_destroy (priv->operation_ids);
 
+	/* Return immediately, do not wait. */
+	g_thread_pool_free (priv->thread_pool, TRUE, FALSE);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
 }
@@ -656,6 +652,8 @@ cal_backend_constructed (GObject *object)
 	ECalBackend *backend;
 	ESourceRegistry *registry;
 	ESource *source;
+	gint max_threads = -1;
+	gboolean exclusive = FALSE;
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->constructed (object);
@@ -663,6 +661,21 @@ cal_backend_constructed (GObject *object)
 	backend = E_CAL_BACKEND (object);
 	registry = e_cal_backend_get_registry (backend);
 	source = e_backend_get_source (E_BACKEND (backend));
+
+	/* If the backend specifies a serial dispatch queue, create
+	 * a thread pool with one exclusive thread.  The thread pool
+	 * will serialize operations for us. */
+	if (E_CAL_BACKEND_GET_CLASS (backend)->use_serial_dispatch_queue) {
+		max_threads = 1;
+		exclusive = TRUE;
+	}
+
+	/* XXX If creating an exclusive thread pool, technically there's
+	 *     a small chance of error here but we'll risk it since it's
+	 *     only for one exclusive thread. */
+	backend->priv->thread_pool = g_thread_pool_new (
+		(GFunc) cal_backend_dispatch_thread,
+		NULL, max_threads, exclusive, NULL);
 
 	/* Initialize the "cache-dir" property. */
 	cal_backend_set_default_cache_dir (backend);
