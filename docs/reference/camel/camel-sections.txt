@@ -1914,8 +1914,6 @@ camel_session_trust_prompt
 camel_session_get_online
 camel_session_set_online
 camel_session_get_filter_driver
-camel_session_get_check_junk
-camel_session_set_check_junk
 camel_session_get_junk_filter
 camel_session_set_junk_filter
 camel_session_idle_add

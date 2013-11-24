@@ -72,7 +72,6 @@ struct _CamelSessionPrivate {
 
 	GMainContext *main_context;
 
-	guint check_junk        : 1;
 	guint online            : 1;
 };
 
@@ -94,7 +93,6 @@ struct _JobData {
 
 enum {
 	PROP_0,
-	PROP_CHECK_JUNK,
 	PROP_JUNK_FILTER,
 	PROP_MAIN_CONTEXT,
 	PROP_ONLINE,
@@ -239,12 +237,6 @@ session_set_property (GObject *object,
                       GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_CHECK_JUNK:
-			camel_session_set_check_junk (
-				CAMEL_SESSION (object),
-				g_value_get_boolean (value));
-			return;
-
 		case PROP_JUNK_FILTER:
 			camel_session_set_junk_filter (
 				CAMEL_SESSION (object),
@@ -280,12 +272,6 @@ session_get_property (GObject *object,
                       GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_CHECK_JUNK:
-			g_value_set_boolean (
-				value, camel_session_get_check_junk (
-				CAMEL_SESSION (object)));
-			return;
-
 		case PROP_JUNK_FILTER:
 			g_value_set_object (
 				value, camel_session_get_junk_filter (
@@ -722,18 +708,6 @@ camel_session_class_init (CamelSessionClass *class)
 	class->authenticate_finish = session_authenticate_finish;
 	class->forward_to = session_forward_to;
 	class->forward_to_finish = session_forward_to_finish;
-
-	g_object_class_install_property (
-		object_class,
-		PROP_CHECK_JUNK,
-		g_param_spec_boolean (
-			"check-junk",
-			"Check Junk",
-			"Check incoming messages for junk",
-			FALSE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -1574,40 +1548,6 @@ camel_session_submit_job (CamelSession *session,
 		session, JOB_PRIORITY,
 		session_start_job_cb,
 		job_data, (GDestroyNotify) NULL);
-}
-
-/**
- * camel_session_get_check_junk:
- * @session: a #CamelSession
- *
- * Do we have to check incoming messages to be junk?
- *
- * Returns: whether or not we are checking incoming messages for junk
- **/
-gboolean
-camel_session_get_check_junk (CamelSession *session)
-{
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-
-	return session->priv->check_junk;
-}
-
-/**
- * camel_session_set_check_junk:
- * @session: a #CamelSession
- * @check_junk: whether to check incoming messages for junk
- *
- * Set check_junk flag, if set, incoming mail will be checked for being junk.
- **/
-void
-camel_session_set_check_junk (CamelSession *session,
-                              gboolean check_junk)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	session->priv->check_junk = check_junk;
-
-	g_object_notify (G_OBJECT (session), "check-junk");
 }
 
 /**
