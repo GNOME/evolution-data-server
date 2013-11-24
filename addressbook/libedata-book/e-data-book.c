@@ -849,6 +849,7 @@ data_book_complete_create_contacts_cb (GObject *source_object,
 			contact = g_queue_pop_head (&queue);
 			uid = e_contact_get_const (contact, E_CONTACT_UID);
 			strv[ii++] = e_util_utf8_make_valid (uid);
+			g_object_unref (contact);
 		}
 
 		e_dbus_address_book_complete_create_contacts (
