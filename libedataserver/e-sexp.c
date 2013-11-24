@@ -1481,6 +1481,8 @@ e_sexp_finalise (gpointer o)
 		s->tree = NULL;
 	}
 
+	g_free (s->error);
+
 	e_memchunk_destroy (s->term_chunks);
 	e_memchunk_destroy (s->result_chunks);
 
