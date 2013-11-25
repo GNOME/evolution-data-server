@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-11-22 16:07+0000\n"
-"PO-Revision-Date: 2013-11-22 17:24+0100\n"
+"POT-Creation-Date: 2013-11-23 17:14+0000\n"
+"PO-Revision-Date: 2013-11-25 10:42+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -1400,51 +1400,76 @@ msgid "Not a calendar."
 msgstr "No es un calendario."
 
 #: ../calendar/backends/http/e-cal-backend-http.c:915
-#: ../calendar/backends/weather/e-cal-backend-weather.c:495
+#: ../calendar/backends/weather/e-cal-backend-weather.c:537
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:171
+#: ../calendar/backends/weather/e-cal-backend-weather.c:175
 msgid "Could not retrieve weather data"
 msgstr "No se pudieron obtener los datos meteorológicos"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:282
+#: ../calendar/backends/weather/e-cal-backend-weather.c:296
 msgid "Weather: Fog"
 msgstr "Meteorología: Niebla"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:283
+#: ../calendar/backends/weather/e-cal-backend-weather.c:297
 msgid "Weather: Cloudy Night"
 msgstr "Meteorología: Noche nubosa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:284
+#: ../calendar/backends/weather/e-cal-backend-weather.c:298
 msgid "Weather: Cloudy"
 msgstr "Meteorología: Nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:285
+#: ../calendar/backends/weather/e-cal-backend-weather.c:299
 msgid "Weather: Overcast"
 msgstr "Meteorología: Cubierto"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:286
+#: ../calendar/backends/weather/e-cal-backend-weather.c:300
 msgid "Weather: Showers"
 msgstr "Meteorología: Chaparrón"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:287
+#: ../calendar/backends/weather/e-cal-backend-weather.c:301
 msgid "Weather: Snow"
 msgstr "Meteorología: Nieve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:288
+#: ../calendar/backends/weather/e-cal-backend-weather.c:302
 msgid "Weather: Clear Night"
 msgstr "Meteorología: Noche despejada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:289
+#: ../calendar/backends/weather/e-cal-backend-weather.c:303
 msgid "Weather: Sunny"
 msgstr "Meteorología: Soleado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:290
+#: ../calendar/backends/weather/e-cal-backend-weather.c:304
 msgid "Weather: Thunderstorms"
 msgstr "Meteorología: Tormenta"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:411
+#. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
+#: ../calendar/backends/weather/e-cal-backend-weather.c:330
+#, c-format
+#| msgid "%.1f°F - %s"
+msgid "%.1f °F"
+msgstr "%.1f °F"
+
+#. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
+#: ../calendar/backends/weather/e-cal-backend-weather.c:333
+#, c-format
+#| msgid "%.1f°C - %s"
+msgid "%.1f °C"
+msgstr "%.1f °C"
+
+#. TRANSLATOR: This is the temperature in kelvin
+#: ../calendar/backends/weather/e-cal-backend-weather.c:336
+#, c-format
+msgid "%.1f K"
+msgstr "%.1f K"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:342
+#, c-format
+msgid "%.1f"
+msgstr "%.1f"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:453
 msgid "Forecast"
 msgstr "Pronóstico"
 
@@ -2011,57 +2036,57 @@ msgstr "Argumentos no válidos a (user-tag)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
 
-#: ../camel/camel-folder.c:309
+#: ../camel/camel-folder.c:310
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "Aprendiendo del mensaje SPAM en «%s»"
 msgstr[1] "Aprendiendo de los mensajes SPAM en «%s»"
 
-#: ../camel/camel-folder.c:349
+#: ../camel/camel-folder.c:350
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "Aprendiendo del mensaje auténtico en «%s»"
 msgstr[1] "Aprendiendo de los mensajes auténtico en «%s»"
 
-#: ../camel/camel-folder.c:397
+#: ../camel/camel-folder.c:398
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Filtrando el mensaje nuevo en «%s»"
 msgstr[1] "Filtrando los mensajes nuevos en «%s»"
 
-#: ../camel/camel-folder.c:989
+#: ../camel/camel-folder.c:998
 #: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "Moviendo mensajes"
 
-#: ../camel/camel-folder.c:992
+#: ../camel/camel-folder.c:1001
 msgid "Copying messages"
 msgstr "Copiando mensajes"
 
-#: ../camel/camel-folder.c:1312
+#: ../camel/camel-folder.c:1321
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Información de cuota no soportada para la carpeta «%s»"
 
-#: ../camel/camel-folder.c:3486
+#: ../camel/camel-folder.c:3495
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Compactando la carpeta «%s»"
 
-#: ../camel/camel-folder.c:3718
+#: ../camel/camel-folder.c:3727
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Obteniendo mensaje «%s» en «%s»"
 
-#: ../camel/camel-folder.c:3873
+#: ../camel/camel-folder.c:3882
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Obteniendo la información de la cuota «%s»"
 
-#: ../camel/camel-folder.c:4113
+#: ../camel/camel-folder.c:4122
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Actualizando la carpeta «%s»"
@@ -2380,6 +2405,11 @@ msgstr ""
 #, c-format
 msgid "Host lookup '%s' failed: %s"
 msgstr "Falló al resolver el servidor %s: %s"
+
+#: ../camel/camel-network-service.c:1006
+#| msgid "No quota information available for folder '%s'"
+msgid "No host information available"
+msgstr "Información del equipo no disponible"
 
 #: ../camel/camel-offline-folder.c:93
 msgid "Downloading new messages for offline mode"
@@ -2874,48 +2904,48 @@ msgstr "Falló al añadir datos al codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descifrado S/MIME: No se ha encontrado contenido cifrado"
 
-#: ../camel/camel-store.c:1928
+#: ../camel/camel-store.c:1936
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "No se pudo crear la carpeta: «%s»: la carpeta existe"
 
-#: ../camel/camel-store.c:1971
+#: ../camel/camel-store.c:1979
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Abriendo carpeta «%s»"
 
-#: ../camel/camel-store.c:2160
+#: ../camel/camel-store.c:2168
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Analizando carpetas en «%s»"
 
-#: ../camel/camel-store.c:2188 ../camel/camel-store.c:2233
+#: ../camel/camel-store.c:2196 ../camel/camel-store.c:2241
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Papelera"
 
-#: ../camel/camel-store.c:2202 ../camel/camel-store.c:2250
+#: ../camel/camel-store.c:2210 ../camel/camel-store.c:2258
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "SPAM"
 
-#: ../camel/camel-store.c:2703
+#: ../camel/camel-store.c:2711
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "No se pudo crear la carpeta: %s: la carpeta existe"
 
-#: ../camel/camel-store.c:2717
+#: ../camel/camel-store.c:2725
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Creando carpeta «%s»"
 
-#: ../camel/camel-store.c:2835 ../camel/camel-vee-store.c:418
+#: ../camel/camel-store.c:2843 ../camel/camel-vee-store.c:418
 #: ../camel/providers/local/camel-maildir-store.c:322
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No se pudo eliminar la carpeta: %s: Operación no válida"
 
-#: ../camel/camel-store.c:2978 ../camel/camel-vee-store.c:469
+#: ../camel/camel-store.c:2986 ../camel/camel-vee-store.c:469
 #: ../camel/providers/local/camel-maildir-store.c:853
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -5389,7 +5419,6 @@ msgstr ""
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:85
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:282
 #, c-format
-#| msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
 msgid ""
 "Expected status 200 when requesting your identity, instead got status %d (%s)"
 msgstr ""
@@ -5402,19 +5431,21 @@ msgid "Error parsing response as JSON: "
 msgstr "Error al analizar la respuesta como JSON: "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:120
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'email' in JSON data"
 msgstr "No se ha encontrado «correo-e» en los datos JSON"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:317
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'id' in JSON data"
 msgstr "No se ha encontrado «id» en los datos JSON"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:322
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'emails.account' in JSON data"
 msgstr "No se ha encontrado «emails.account» en los datos JSON"
+
+#: ../modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
+#| msgid "Wants HTML Mail"
+msgid "Windows Live Mail"
+msgstr "Correo-e de Windows Live"
 
 #: ../modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
 msgid "Yahoo! Calendar"
@@ -7483,12 +7514,6 @@ msgstr "_Descartar"
 
 #~ msgid "Weather: Partly Cloudy"
 #~ msgstr "Meteorología: Parcialmente nuboso"
-
-#~ msgid "%.1f°C - %s"
-#~ msgstr "%.1f°C - %s"
-
-#~ msgid "%.1f°F - %s"
-#~ msgstr "%.1f°F - %s"
 
 #~ msgid "%.1f/%.1f°C - %s"
 #~ msgstr "%.1f/%.1f°C - %s"
