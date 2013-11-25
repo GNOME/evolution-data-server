@@ -449,6 +449,7 @@ camel_data_cache_get (CamelDataCache *cdc,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			"%s: %s", _("Empty cache file"), real);
+		camel_object_bag_abort (cdc->priv->busy_bag, real);
 		goto exit;
 	}
 
