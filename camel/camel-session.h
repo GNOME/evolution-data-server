@@ -223,9 +223,6 @@ CamelJunkFilter *
 		camel_session_get_junk_filter	(CamelSession *session);
 void		camel_session_set_junk_filter	(CamelSession *session,
 						 CamelJunkFilter *junk_filter);
-gboolean	camel_session_get_check_junk	(CamelSession *session);
-void		camel_session_set_check_junk	(CamelSession *session,
-						 gboolean check_junk);
 guint		camel_session_idle_add		(CamelSession *session,
 						 gint priority,
 						 GSourceFunc function,
