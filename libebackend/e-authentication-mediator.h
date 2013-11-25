@@ -97,6 +97,9 @@ gboolean	e_authentication_mediator_wait_for_client_finish
 					 GError **error);
 void		e_authentication_mediator_dismiss
 					(EAuthenticationMediator *mediator);
+void		e_authentication_mediator_server_error
+					(EAuthenticationMediator *mediator,
+					 const GError *error);
 
 G_END_DECLS
 

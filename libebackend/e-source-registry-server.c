@@ -492,8 +492,19 @@ source_registry_server_auth_session_cb (GObject *source_object,
 		session, result, &error);
 
 	if (error != NULL) {
+		ESourceAuthenticator *authenticator;
+
 		g_warn_if_fail (auth_result == E_AUTHENTICATION_SESSION_ERROR);
 		g_simple_async_result_take_error (request->simple, error);
+
+		/* If the authenticator is an EAuthenticationMediator,
+		 * have it emit a "server-error" signal to the client. */
+		authenticator =
+			e_authentication_session_get_authenticator (session);
+		if (E_IS_AUTHENTICATION_MEDIATOR (authenticator))
+			e_authentication_mediator_server_error (
+				E_AUTHENTICATION_MEDIATOR (authenticator),
+				error);
 	}
 
 	/* Authentication dismissals require additional handling. */

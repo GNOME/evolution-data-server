@@ -1264,3 +1264,28 @@ e_authentication_mediator_dismiss (EAuthenticationMediator *mediator)
 	e_dbus_authenticator_emit_dismissed (mediator->priv->interface);
 }
 
+/**
+ * e_authentication_mediator_server_error:
+ * @mediator: an #EAuthenticationMediator
+ *
+ * Signals to the authentication client that the authentication session has
+ * terminated with a server-side error.
+ *
+ * Since: 3.12
+ **/
+void
+e_authentication_mediator_server_error (EAuthenticationMediator *mediator,
+					const GError *error)
+{
+	gchar *name;
+
+	g_return_if_fail (E_IS_AUTHENTICATION_MEDIATOR (mediator));
+	g_return_if_fail (error != NULL);
+
+	name = g_dbus_error_encode_gerror (error);
+	g_return_if_fail (name != NULL);
+
+	e_dbus_authenticator_emit_server_error (mediator->priv->interface, name, error->message);
+
+	g_free (name);
+}
