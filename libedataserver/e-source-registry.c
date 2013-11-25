@@ -1881,6 +1881,26 @@ source_registry_authenticate_dismissed_cb (EDBusAuthenticator *dbus_auth,
 }
 
 /* Helper for e_source_registry_authenticate_sync() */
+static void
+source_registry_authenticate_server_error_cb (EDBusAuthenticator *dbus_auth,
+					      const gchar *name,
+					      const gchar *message,
+					      AuthContext *auth_context)
+{
+	/* Be careful not to overwrite an existing error */
+	if (auth_context->auth_result != E_SOURCE_AUTHENTICATION_ERROR) {
+		GError *error;
+
+		error = g_dbus_error_new_for_dbus_error (name, message);
+		g_propagate_error (auth_context->error, error);
+
+		auth_context->auth_result = E_SOURCE_AUTHENTICATION_ERROR;
+	}
+
+	g_main_loop_quit (auth_context->main_loop);
+}
+
+/* Helper for e_source_registry_authenticate_sync() */
 static gboolean
 source_registry_call_authenticate_for_source (ESourceRegistry *registry,
                                               ESourceAuthenticator *auth,
@@ -2066,6 +2086,11 @@ e_source_registry_authenticate_sync (ESourceRegistry *registry,
 	g_signal_connect (
 		dbus_auth, "dismissed",
 		G_CALLBACK (source_registry_authenticate_dismissed_cb),
+		auth_context);
+
+	g_signal_connect (
+		dbus_auth, "server-error",
+		G_CALLBACK (source_registry_authenticate_server_error_cb),
 		auth_context);
 
 	encryption_key = gcr_secret_exchange_begin (

@@ -116,6 +116,8 @@ e_goa_password_based_execute_sync (EAuthenticationSession *session,
 	goa_client = goa_client_new_sync (cancellable, error);
 	if (goa_client == NULL) {
 		session_result = E_AUTHENTICATION_SESSION_ERROR;
+		if (error && *error)
+			g_dbus_error_strip_remote_error (*error);
 		goto exit;
 	}
 
@@ -158,6 +160,8 @@ e_goa_password_based_execute_sync (EAuthenticationSession *session,
 		goa_account, NULL, cancellable, error);
 	if (!success) {
 		session_result = E_AUTHENTICATION_SESSION_ERROR;
+		if (error && *error)
+			g_dbus_error_strip_remote_error (*error);
 		goto exit;
 	}
 
@@ -185,6 +189,8 @@ e_goa_password_based_execute_sync (EAuthenticationSession *session,
 
 	if (password == NULL) {
 		session_result = E_AUTHENTICATION_SESSION_ERROR;
+		if (error && *error)
+			g_dbus_error_strip_remote_error (*error);
 		goto exit;
 	}
 
