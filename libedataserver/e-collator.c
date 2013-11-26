@@ -527,8 +527,8 @@ e_collator_generate_key_for_index (ECollator       *collator,
 /**
  * e_collator_collate:
  * @collator: An #ECollator
- * @str_a: A string to compare
- * @str_b: The string to compare with @str_a
+ * @str_a: (allow none): A string to compare
+ * @str_b: (allow none): The string to compare with @str_a
  * @result: (out): A location to store the comparison result
  * @error: (allow none): A location to store a #GError from the #E_COLLATOR_ERROR domain
  *
@@ -536,6 +536,8 @@ e_collator_generate_key_for_index (ECollator       *collator,
  *
  * The @result will be set to integer less than, equal to, or greater than zero if @str_a is found,
  * respectively, to be less than, to match, or be greater than @str_b.
+ *
+ * Either @str_a or @str_b can be %NULL, %NULL strings are considered to sort below other strings.
  *
  * This function will first ensure that both strings are valid UTF-8.
  *
@@ -553,9 +555,12 @@ e_collator_collate (ECollator    *collator,
 	gchar *sort_key_a, *sort_key_b;
 
 	g_return_val_if_fail (collator != NULL, -1);
-	g_return_val_if_fail (str_a != NULL, -1);
-	g_return_val_if_fail (str_b != NULL, -1);
 	g_return_val_if_fail (result != NULL, -1);
+
+	if (!str_a || !str_b) {
+		*result = g_strcmp0 (str_a, str_b);
+		return TRUE;
+	}
 
 	sort_key_a = e_collator_generate_key (collator, str_a, error);
 	if (!sort_key_a)
