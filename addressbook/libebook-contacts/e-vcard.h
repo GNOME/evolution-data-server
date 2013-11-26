@@ -241,6 +241,7 @@ GType   e_vcard_get_type                     (void);
 
 void    e_vcard_construct                    (EVCard *evc, const gchar *str);
 void    e_vcard_construct_with_uid           (EVCard *evc, const gchar *str, const gchar *uid);
+void    e_vcard_construct_full               (EVCard *evc, const gchar *str, gssize len, const gchar *uid);
 EVCard * e_vcard_new                          (void);
 EVCard * e_vcard_new_from_string              (const gchar *str);
 

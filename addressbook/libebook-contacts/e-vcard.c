@@ -961,14 +961,40 @@ e_vcard_construct_with_uid (EVCard *evc,
                             const gchar *str,
                             const gchar *uid)
 {
+	e_vcard_construct_full (evc, str, -1, uid);
+}
+
+/**
+ * e_vcard_construct_full:
+ * @evc: an existing #EVCard
+ * @str: a vCard string
+ * @len: length of @str, or -1 if @str is %NULL terminated
+ * @uid: (allow-none): a unique ID string
+ *
+ * Similar to e_vcard_construct_with_uid(), but can also
+ * be used with an @str that is not %NULL terminated.
+ *
+ * Since: 3.12
+ **/
+void
+e_vcard_construct_full (EVCard      *evc,
+			const gchar *str,
+			gssize       len,
+			const gchar *uid)
+{
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (str != NULL);
 	g_return_if_fail (evc->priv->vcard == NULL);
 	g_return_if_fail (evc->priv->attributes == NULL);
 
 	/* Lazy construction */
-	if (*str)
-		evc->priv->vcard = g_strdup (str);
+	if (*str) {
+
+		if (len < 0)
+			evc->priv->vcard = g_strdup (str);
+		else
+			evc->priv->vcard = g_strndup (str, len);
+	}
 
 	/* Add UID attribute */
 	if (uid) {
