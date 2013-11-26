@@ -18,12 +18,23 @@
  *
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
+#include <config.h>
+
 #include <libebook/libebook.h>
 
 #include "e-test-server-utils.h"
 #include "client-test-utils.h"
 #include "e-dbus-localed.h"
 
+/* Filter which tests we want to try with a regexp */
+static GRegex *test_regex = NULL;
+static gchar  *test_filter = NULL;
+static GOptionEntry entries[] = {
+
+	{ "filter", 'f', 0, G_OPTION_ARG_STRING, &test_filter,
+	  "A regular expression to filter which tests should be added", NULL },
+	{ NULL }
+};
 
 /* This is based on the sorted-%02d.vcf contacts from 1-20,
  * a full table describing the expected order under various
@@ -35,7 +46,7 @@
 #define N_FILTERED_CONTACTS  13
 
 /* How long to wait before aborting an async test */
-#define TIMEOUT              5 * 1000
+#define TIMEOUT              30 * 1000
 
 /* Standard number of iterations for a parallelized operation */
 #define THREAD_ITERATIONS    20
@@ -49,6 +60,7 @@ typedef enum   _CursorTestType   CursorTestType;
 typedef struct _CursorTest       CursorTest;
 typedef struct _CursorThread     CursorThread;
 typedef struct _CursorThreadTest CursorThreadTest;
+typedef struct _CursorParams     CursorParams;
 
 typedef void (*CursorThreadFunc) (CursorFixture    *fixture,
 				  CursorClosure    *closure,
@@ -67,8 +79,7 @@ static void           cursor_fixture_timeout_start    (CursorFixture      *fixtu
 static void           cursor_fixture_timeout_cancel   (CursorFixture      *fixture);
 
 /* Main Cursor Test Closure */
-static CursorClosure *cursor_closure_new              (gboolean            async,
-						       gboolean            dra,
+static CursorClosure *cursor_closure_new              (CursorParams       *params,
 						       const gchar        *locale);
 static void           cursor_closure_free             (CursorClosure      *closure);
 static void           cursor_test_free                (CursorTest         *test);
@@ -222,6 +233,13 @@ struct _CursorTest {
 static EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
 static EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
 
+struct _CursorParams {
+	const gchar *base_path;
+	gboolean     async;
+	gboolean     dra;
+	gboolean     empty_summary;
+};
+
 static gboolean
 cursor_timeout (const gchar *error_message)
 {
@@ -308,8 +326,6 @@ cursor_fixture_add_contacts (CursorFixture      *fixture,
 	}
 
 	g_slist_free (contacts);
-
-
 }
 
 static void
@@ -588,24 +604,44 @@ cursor_closure_free (CursorClosure *closure)
 	}
 }
 
+static void
+cursor_closure_setup_empty_summary (ESource            *scratch,
+				    ETestServerClosure *closure)
+{
+	ESourceBackendSummarySetup *setup;
+
+	/* Setup the book for fallback mode, make sure the
+	 * summary is empty to provoke the backend into enacting the fallback routines
+	 */
+	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
+	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
+	e_source_backend_summary_setup_set_summary_fields (
+		setup,
+		/* Just one boolean field */
+		E_CONTACT_WANTS_HTML,
+		0);
+}
+
 static CursorClosure *
-cursor_closure_new (gboolean       async,
-		    gboolean       dra,
+cursor_closure_new (CursorParams  *params,
 		    const gchar   *locale)
 {
 	CursorClosure *closure = g_slice_new0 (CursorClosure);
 	ETestServerClosure *server_closure = (ETestServerClosure *)closure;
 
-	if (dra)
+	if (params->dra)
 		server_closure->type = E_TEST_SERVER_DIRECT_ADDRESS_BOOK;
 	else
 		server_closure->type = E_TEST_SERVER_ADDRESS_BOOK;
 
-	server_closure->use_async_connect = async;
+	if (params->empty_summary)
+		server_closure->customize = cursor_closure_setup_empty_summary;
+
+	server_closure->use_async_connect = params->async;
 	server_closure->destroy_closure_func = (GDestroyNotify)cursor_closure_free;
 
 	closure->locale = g_strdup (locale);
-	closure->async  = async;
+	closure->async  = params->async;
 
 	return closure;
 }
@@ -622,10 +658,13 @@ cursor_closure_add (CursorClosure *closure,
 	test_path = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	g_test_add (test_path, CursorFixture, closure,
-		    cursor_fixture_setup,
-		    cursor_fixture_test,
-		    cursor_fixture_teardown);
+	/* Filter out anything that was not specified in the test filter */
+	if (test_regex == NULL ||
+	    g_regex_match (test_regex, test_path, 0, NULL))
+		g_test_add (test_path, CursorFixture, closure,
+			    cursor_fixture_setup,
+			    cursor_fixture_test,
+			    cursor_fixture_teardown);
 
 	g_free (test_path);
 }
@@ -1128,9 +1167,10 @@ cursor_test_position (CursorFixture *fixture,
 	PositionData        data = { fixture, position };
 
 	if (g_getenv ("TEST_DEBUG") != NULL) {
-		g_print ("Actual total: %d position: %d, Waiting for total: %d position: %d\n",
+		g_print ("Actual total: %d position: %d, %s for total: %d position: %d\n",
 			 e_book_client_cursor_get_total (fixture->cursor),
 			 e_book_client_cursor_get_position (fixture->cursor),
+			 position->immediate ? "Checking" : "Waiting",
 			 position->total,
 			 position->position);
 	}
@@ -2038,20 +2078,18 @@ step_loop (CursorFixture  *fixture,
 typedef struct {
 	const gchar *base_path;
 	gboolean     async;
-	gboolean     dra;
-} BaseParams;
-
-typedef struct {
-	const gchar *base_path;
-	gboolean     async;
 	gboolean     dedicated_cursor;
 } ThreadParams;
 
-static BaseParams base_params[] = {
-	{ "/Standard/Sync",         FALSE, FALSE },
-	{ "/Standard/Async",        TRUE,  FALSE },
-	{ "/Direct/Sync",  FALSE, TRUE },
-	{ "/Direct/Async", TRUE,  TRUE },
+static CursorParams base_params[] = {
+	{ "/FullSummary/Standard/Sync",    FALSE, FALSE, FALSE },
+	{ "/FullSummary/Standard/Async",   TRUE,  FALSE, FALSE },
+	{ "/FullSummary/Direct/Sync",      FALSE, TRUE,  FALSE },
+	{ "/FullSummary/Direct/Async",     TRUE,  TRUE,  FALSE },
+	{ "/EmptySummary/Standard/Sync",   FALSE, FALSE, TRUE },
+	{ "/EmptySummary/Standard/Async",  TRUE,  FALSE, TRUE },
+	{ "/EmptySummary/Direct/Sync",     FALSE, TRUE,  TRUE },
+	{ "/EmptySummary/Direct/Async",    TRUE,  TRUE,  TRUE },
 };
 
 static ThreadParams thread_params[] = {
@@ -2061,15 +2099,24 @@ static ThreadParams thread_params[] = {
 	{ "/DedicatedCursor/ThreadAsync",     TRUE, TRUE },
 };
 
-
 gint
 main (gint argc,
       gchar **argv)
 {
+	GOptionContext *context;
 	CursorClosure *closure;
 	CursorThread  *thread;
 	CursorThread  *threads[CONCURRENT_THREADS];
 	gint           i, j, k;
+
+	/* Parse our regex first */
+	context = g_option_context_new (NULL);
+	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+	g_option_context_parse (context, &argc, &argv, NULL);
+	g_option_context_free (context);
+
+	if (test_filter)
+		test_regex = g_regex_new (test_filter, 0, 0, NULL);
 
 	g_test_init (&argc, &argv, NULL);
 	g_test_bug_base ("http://bugzilla.gnome.org/");
@@ -2085,7 +2132,7 @@ main (gint argc,
 		 */
 
 		/* POSIX Order */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2105,7 +2152,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Order/POSIX%s", base_params[i].base_path);
 
 		/* en_US Order */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "en_US.utf8");
+		closure = cursor_closure_new (&base_params[i], "en_US.utf8");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2125,7 +2172,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Order/en_US%s", base_params[i].base_path);
 
 		/* fr_CA Order */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "fr_CA.utf8");
+		closure = cursor_closure_new (&base_params[i], "fr_CA.utf8");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2145,7 +2192,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Order/fr_CA%s", base_params[i].base_path);
 
 		/* de_DE Order */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "de_DE.utf8");
+		closure = cursor_closure_new (&base_params[i], "de_DE.utf8");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
@@ -2169,7 +2216,7 @@ main (gint argc,
 		 ****************************************************/
 
 		/* Overshooting the contact list causes position to become total + 1 */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2188,7 +2235,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/Overshoot%s", base_params[i].base_path);
 
 		/* Undershooting the contact list (in reverse) causes position to become 0 */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2207,7 +2254,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/Undershoot%s", base_params[i].base_path);
 
 		/* Stepping past the end position causes an E_CLIENT_ERROR_QUERY_REFUSED */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2231,7 +2278,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/EndOfListError/End%s", base_params[i].base_path);
 
 		/* Stepping backwards past the beginning position causes an E_CLIENT_ERROR_QUERY_REFUSED */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2255,7 +2302,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/EndOfListError/Begin%s", base_params[i].base_path);
 
 		/* Resetting query to get the beginning of the results */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2274,7 +2321,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/Reset/Forward%s", base_params[i].base_path);
 
 		/* Resetting query to get the ending of the results (backwards) */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2293,7 +2340,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/Reset/Backwards%s", base_params[i].base_path);
 
 		/* Move twice and then repeat query */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2319,7 +2366,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/Step/RepeatPrevious/Forward%s", base_params[i].base_path);
 
 		/* Move twice and then repeat query */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2349,27 +2396,17 @@ main (gint argc,
 		 ****************************************************/
 
 		/* Invalid Query */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_set_sexp (closure,
 					 e_book_query_field_test (
-						E_CONTACT_TEL,
-						E_BOOK_QUERY_BEGINS_WITH,
-						"1-800"),
+						E_CONTACT_WANTS_HTML,
+						E_BOOK_QUERY_IS,
+						"1"),
 					 FALSE);
 		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/Invalid%s", base_params[i].base_path);
 
-		/* Valid Query */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
-		cursor_closure_set_sexp (closure,
-					 e_book_query_field_test (
-						E_CONTACT_FULL_NAME,
-						E_BOOK_QUERY_BEGINS_WITH,
-						"Bubba"),
-					 TRUE);
-		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/Valid%s", base_params[i].base_path);
-
 		/* Query Changes Position */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,	
@@ -2396,7 +2433,7 @@ main (gint argc,
 		 ****************************************************/
 
 		/* Test that adding a contact changes the total / position appropriately */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2410,7 +2447,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/AddContact/TestForward%s", base_params[i].base_path);
 
 		/* Test that adding a contact changes the total / position appropriately after having moved from the end */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2424,7 +2461,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/AddContact/TestBackwards%s", base_params[i].base_path);
 
 		/* Test that removing a contact changes the total / position appropriately */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2438,7 +2475,7 @@ main (gint argc,
 		cursor_closure_add (closure, "/EBookClientCursor/RemoveContact/TestForward%s", base_params[i].base_path);
 
 		/* Test that removing a contact changes the total / position appropriately after having moved from the end */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2456,19 +2493,19 @@ main (gint argc,
 		 ****************************************************/
 
 		/* POSIX locale & Latin indexes */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_alphabet_index (closure, 2);
 		cursor_closure_position (closure, 20, 1, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/AlphabetIndex/Position/B%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_alphabet_index (closure, 3);
 		cursor_closure_position (closure, 20, 13, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/AlphabetIndex/Position/C%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_alphabet_index (closure, 13);
 		cursor_closure_position (closure, 20, 18, TRUE);
@@ -2495,7 +2532,7 @@ main (gint argc,
 		 */
 
 		/* Start in POSIX */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
 		cursor_closure_step (closure,
 				     E_BOOK_CURSOR_STEP_MOVE | E_BOOK_CURSOR_STEP_FETCH,
@@ -2578,44 +2615,44 @@ main (gint argc,
 		 * to the new expected alphabet for the new locale after dynamically changing
 		 * the locale (allow a timeout, alphabet changes are delivered only asynchronously).
 		 */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "en_US.utf8");
 		cursor_closure_alphabet (closure, FALSE, "A", "B", "C", "D", "E");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/en_US%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "el_GR.utf8");
 		cursor_closure_alphabet (closure, FALSE, "Α", "Β", "Γ", "Δ", "Ε");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/el_GR%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "ru_RU.utf8");
 		cursor_closure_alphabet (closure, FALSE, "А", "Б", "В", "Г", "Д");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/ru_RU%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "ja_JP.utf8");
 		cursor_closure_alphabet (closure, FALSE, "あ", "か", "さ", "た", "な");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/ja_JP%s", base_params[i].base_path);
 
 		/* The alphabet doesnt change for chinese */
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "zh_CN.utf8");
 		cursor_closure_alphabet (closure, FALSE, "A", "B", "C", "D", "E");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/zh_CN%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "ko_KR.utf8");
 		cursor_closure_alphabet (closure, FALSE, "ᄀ", "ᄂ", "ᄃ", "ᄅ", "ᄆ");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/ko_KR%s", base_params[i].base_path);
 
-		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "ar_TN.utf8");
 		cursor_closure_alphabet (closure, FALSE, "ا", "ب", "ت", "ث", "ج");
@@ -2639,7 +2676,7 @@ main (gint argc,
 			 * and it will fail if ever an out-of-sync error is not followed by an asynchronous
 			 * "refresh" signal.
 			 */
-			closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+			closure = cursor_closure_new (&base_params[i], "POSIX");
 			thread = cursor_closure_thread (closure, thread_params[j].dedicated_cursor, "move-by-thread");
 			cursor_thread_add_test (thread, step_loop,
 						GINT_TO_POINTER (thread_params[j].async), NULL);
@@ -2658,7 +2695,7 @@ main (gint argc,
 			/* The same test as above, except that the addressbook is changing locale instead
 			 * of adding / removing contacts
 			 */
-			closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+			closure = cursor_closure_new (&base_params[i], "POSIX");
 			thread = cursor_closure_thread (closure, thread_params[j].dedicated_cursor, "move-by-thread");
 			cursor_thread_add_test (thread, step_loop,
 						GINT_TO_POINTER (thread_params[j].async), NULL);
@@ -2677,7 +2714,7 @@ main (gint argc,
 
 
 			/* Add / Remove contacts with multiple threaded step() operations going on concurrently */
-			closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
+			closure = cursor_closure_new (&base_params[i], "POSIX");
 
 			for (k = 0; k < CONCURRENT_THREADS; k++) {
 				threads[k] = cursor_closure_thread (closure, thread_params[j].dedicated_cursor, "move-by-thread");
