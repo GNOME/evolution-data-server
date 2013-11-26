@@ -70,6 +70,10 @@ GType                e_collator_get_type         (void);
 GQuark               e_collator_error_quark      (void);
 ECollator           *e_collator_new              (const gchar     *locale,
 						  GError         **error);
+ECollator           *e_collator_new_interpret_country
+                                                 (const gchar     *locale,
+						  gchar          **country_code,
+						  GError         **error);
 ECollator           *e_collator_ref              (ECollator       *collator);
 void                 e_collator_unref            (ECollator       *collator);
 gchar               *e_collator_generate_key     (ECollator       *collator,

@@ -124,11 +124,13 @@ print_available_locales (void)
 static gchar *
 canonicalize_locale (const gchar  *posix_locale,
 		     gchar       **language_code,
+		     gchar       **country_code,
 		     GError      **error)
 {
 	UErrorCode status = U_ZERO_ERROR;
 	gchar  locale_buffer[LOCALE_BUFFER_LEN];
 	gchar  language_buffer[8];
+	gchar  country_buffer[8];
 	gchar *icu_locale;
 	gchar *final_locale;
 	gint   len;
@@ -155,11 +157,22 @@ canonicalize_locale (const gchar  *posix_locale,
 
 	status = U_ZERO_ERROR;
 	len = uloc_getLanguage (icu_locale, language_buffer, 8, &status);
-
 	if (U_FAILURE (status)) {
 		g_set_error (error, E_COLLATOR_ERROR,
 			     E_COLLATOR_ERROR_INVALID_LOCALE,
 			     "Failed to interpret language for locale '%s': %s",
+			     icu_locale,
+			     u_errorName (status));
+		g_free (icu_locale);
+		return NULL;
+	}
+
+	status = U_ZERO_ERROR;
+	len = uloc_getCountry (icu_locale, country_buffer, 8, &status);
+	if (U_FAILURE (status)) {
+		g_set_error (error, E_COLLATOR_ERROR,
+			     E_COLLATOR_ERROR_INVALID_LOCALE,
+			     "Failed to interpret country for locale '%s': %s",
 			     icu_locale,
 			     u_errorName (status));
 		g_free (icu_locale);
@@ -185,6 +198,9 @@ canonicalize_locale (const gchar  *posix_locale,
 
 	if (language_code)
 		*language_code = g_strdup (language_buffer);
+
+	if (country_code)
+		*country_code = g_strdup (country_buffer);
 
 	return final_locale;
 }
@@ -282,11 +298,36 @@ ECollator *
 e_collator_new (const gchar     *locale,
 		GError         **error)
 {
+	return e_collator_new_interpret_country (locale, NULL, error);
+}
+
+/**
+ * e_collator_new_interpret_country:
+ * @locale: The locale under which to sort
+ * @country_code: (allow-none) (out) (transfer full): A location to store the interpreted country code from @locale 
+ * @error: (allow-none): A location to store a #GError from the #E_COLLATOR_ERROR domain
+ *
+ * Creates a new #ECollator for the given @locale,
+ * the returned collator should be freed with e_collator_unref().
+ *
+ * In addition, this also reliably interprets the country
+ * code from the @locale string and stores it to @country_code.
+ *
+ * Returns: (transfer full): A newly created #ECollator.
+ *
+ * Since: 3.12
+ */
+ECollator *
+e_collator_new_interpret_country (const gchar     *locale,
+				  gchar          **country_code,
+				  GError         **error)
+{
 	ECollator *collator;
 	UCollator *coll;
 	UErrorCode status = U_ZERO_ERROR;
 	gchar     *icu_locale;
 	gchar     *language_code = NULL;
+	gchar     *local_country_code = NULL;
 
 	g_return_val_if_fail (locale && locale[0], NULL);
 
@@ -294,7 +335,10 @@ e_collator_new (const gchar     *locale,
 	print_available_locales ();
 #endif
 
-	icu_locale = canonicalize_locale (locale, &language_code, error);
+	icu_locale = canonicalize_locale (locale,
+					  &language_code,
+					  &local_country_code,
+					  error);
 	if (!icu_locale)
 		return NULL;
 
@@ -308,6 +352,7 @@ e_collator_new (const gchar     *locale,
 			     u_errorName (status));
 
 		g_free (language_code);
+		g_free (local_country_code);
 		g_free (icu_locale);
 		ucol_close (coll);
 		return NULL;
@@ -335,6 +380,11 @@ e_collator_new (const gchar     *locale,
 							     &collator->overflow);
 
 	g_free (language_code);
+
+	if (country_code)
+		*country_code = local_country_code;
+	else
+ 		g_free (local_country_code);
 
 	return collator;
 }
