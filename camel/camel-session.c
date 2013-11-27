@@ -38,6 +38,7 @@
 #include <glib/gstdio.h>
 
 #include "camel-debug.h"
+#include "camel-enumtypes.h"
 #include "camel-file-utils.h"
 #include "camel-folder.h"
 #include "camel-mime-message.h"
@@ -58,6 +59,7 @@
 #define d(x)
 
 typedef struct _AsyncContext AsyncContext;
+typedef struct _SignalClosure SignalClosure;
 typedef struct _JobData JobData;
 
 struct _CamelSessionPrivate {
@@ -83,6 +85,13 @@ struct _AsyncContext {
 	gchar *auth_mechanism;
 };
 
+struct _SignalClosure {
+	GWeakRef session;
+	CamelService *service;
+	CamelSessionAlertType alert_type;
+	gchar *alert_message;
+};
+
 struct _JobData {
 	CamelSession *session;
 	GCancellable *cancellable;
@@ -103,6 +112,7 @@ enum {
 enum {
 	JOB_STARTED,
 	JOB_FINISHED,
+	USER_ALERT,
 	LAST_SIGNAL
 };
 
@@ -126,6 +136,19 @@ async_context_free (AsyncContext *async_context)
 	g_free (async_context->auth_mechanism);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+signal_closure_free (SignalClosure *signal_closure)
+{
+	g_weak_ref_set (&signal_closure->session, NULL);
+
+	if (signal_closure->service != NULL)
+		g_object_unref (signal_closure->service);
+
+	g_free (signal_closure->alert_message);
+
+	g_slice_free (SignalClosure, signal_closure);
 }
 
 static void
@@ -208,6 +231,27 @@ session_start_job_cb (gpointer user_data)
 	g_object_unref (simple);
 
 	return FALSE;
+}
+
+static gboolean
+session_emit_user_alert_cb (gpointer user_data)
+{
+	SignalClosure *signal_closure = user_data;
+	CamelSession *session;
+
+	session = g_weak_ref_get (&signal_closure->session);
+
+	if (session != NULL) {
+		g_signal_emit (
+			session,
+			signals[USER_ALERT], 0,
+			signal_closure->service,
+			signal_closure->alert_type,
+			signal_closure->alert_message);
+		g_object_unref (session);
+	}
+
+	return G_SOURCE_REMOVE;
 }
 
 static void
@@ -786,6 +830,28 @@ camel_session_class_init (CamelSessionClass *class)
 		G_TYPE_NONE, 2,
 		G_TYPE_CANCELLABLE,
 		G_TYPE_POINTER);
+
+	/**
+	 * CamelSession::user-alert:
+	 * @session: the #CamelSession that received the signal
+	 * @service: the #CamelService issuing the alert
+	 * @type: the #CamelSessionAlertType
+	 * @message: the alert message
+	 *
+	 * This purpose of this signal is to propagate a server-issued alert
+	 * message from @service to a user interface.  The @type hints at the
+	 * severity of the alert message.
+	 **/
+	signals[USER_ALERT] = g_signal_new (
+		"user-alert",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (CamelSessionClass, user_alert),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 3,
+		CAMEL_TYPE_SERVICE,
+		CAMEL_TYPE_SESSION_ALERT_TYPE,
+		G_TYPE_STRING);
 }
 
 static void
@@ -1232,39 +1298,6 @@ camel_session_forget_password (CamelSession *session,
 }
 
 /**
- * camel_session_alert_user:
- * @session: a #CamelSession
- * @type: the type of alert (info, warning, or error)
- * @prompt: the message for the user
- * @button_captions: List of button captions to use. If NULL, only "Dismiss" button is shown.
- * @cancellable: (allow-non): optional #GCancellable object, or %NULL
- *
- * Presents the given @prompt to the user, in the style indicated by
- * @type. If @cancel is %TRUE, the user will be able to accept or
- * cancel. Otherwise, the message is purely informational.
- *
- * Returns: Index of pressed button from @button_captions, -1 if NULL.
- */
-gint
-camel_session_alert_user (CamelSession *session,
-                          CamelSessionAlertType type,
-                          const gchar *prompt,
-                          GList *button_captions,
-                          GCancellable *cancellable)
-{
-	CamelSessionClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), -1);
-	g_return_val_if_fail (prompt != NULL, -1);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->alert_user != NULL, -1);
-
-	return class->alert_user (
-		session, type, prompt, button_captions, cancellable);
-}
-
-/**
  * camel_session_trust_prompt:
  * @session: a #CamelSession
  * @service: a #CamelService
@@ -1303,6 +1336,47 @@ camel_session_trust_prompt (CamelSession *session,
 		class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
 
 	return class->trust_prompt (session, service, certificate, errors);
+}
+
+/**
+ * camel_session_user_alert:
+ * @session: a #CamelSession
+ * @service: a #CamelService
+ * @type: a #CamelSessionAlertType
+ * @message: the message for the user
+ *
+ * Emits a #CamelSession:user_alert signal from an idle source on the main
+ * loop.  The idle source's priority is #G_PRIORITY_LOW.
+ *
+ * The purpose of the signal is to propagate a server-issued alert message
+ * from @service to a user interface.  The @type hints at the nature of the
+ * alert message.
+ *
+ * Since: 3.12
+ */
+void
+camel_session_user_alert (CamelSession *session,
+                          CamelService *service,
+                          CamelSessionAlertType type,
+                          const gchar *message)
+{
+	SignalClosure *signal_closure;
+
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	g_return_if_fail (message != NULL);
+
+	signal_closure = g_slice_new0 (SignalClosure);
+	g_weak_ref_set (&signal_closure->session, session);
+	signal_closure->service = g_object_ref (service);
+	signal_closure->alert_type = type;
+	signal_closure->alert_message = g_strdup (message);
+
+	camel_session_idle_add (
+		session, G_PRIORITY_LOW,
+		session_emit_user_alert_cb,
+		signal_closure,
+		(GDestroyNotify) signal_closure_free);
 }
 
 /**

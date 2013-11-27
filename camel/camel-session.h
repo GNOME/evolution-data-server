@@ -113,11 +113,6 @@ struct _CamelSessionClass {
 						 CamelService *service,
 						 const gchar *item,
 						 GError **error);
-	gint		(*alert_user)		(CamelSession *session,
-						 CamelSessionAlertType type,
-						 const gchar *prompt,
-						 GList *button_captions,
-						 GCancellable *cancellable);
 	CamelCertTrust	(*trust_prompt)		(CamelSession *session,
 						 CamelService *service,
 						 GTlsCertificate *certificate,
@@ -171,6 +166,10 @@ struct _CamelSessionClass {
 	void		(*job_finished)		(CamelSession *session,
 						 GCancellable *cancellable,
 						 const GError *error);
+	void		(*user_alert)		(CamelSession *session,
+						 CamelService *service,
+						 CamelSessionAlertType type,
+						 const gchar *message);
 };
 
 GType		camel_session_get_type		(void);
@@ -203,15 +202,14 @@ gboolean	camel_session_forget_password	(CamelSession *session,
 						 CamelService *service,
 						 const gchar *item,
 						 GError **error);
-gint		camel_session_alert_user	(CamelSession *session,
-						 CamelSessionAlertType type,
-						 const gchar *prompt,
-						 GList *button_captions,
-						 GCancellable *cancellable);
 CamelCertTrust	camel_session_trust_prompt	(CamelSession *session,
 						 CamelService *service,
 						 GTlsCertificate *certificate,
 						 GTlsCertificateFlags errors);
+void		camel_session_user_alert	(CamelSession *session,
+						 CamelService *service,
+						 CamelSessionAlertType type,
+						 const gchar *message);
 gboolean	camel_session_get_online	(CamelSession *session);
 void		camel_session_set_online	(CamelSession *session,
 						 gboolean online);

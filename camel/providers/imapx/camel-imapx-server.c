@@ -2743,37 +2743,44 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 		break;
 	case IMAPX_ALERT:
 		c (is->tagprefix, "ALERT!: %s\n", is->priv->context->sinfo->text);
-		g_mutex_lock (&is->priv->known_alerts_lock);
+		{
+			const gchar *alert_message;
+			gboolean emit_alert = FALSE;
 
-		if (is->priv->context->sinfo->text &&
-		    !g_hash_table_lookup (is->priv->known_alerts, is->priv->context->sinfo->text)) {
-			CamelIMAPXStore *store;
+			g_mutex_lock (&is->priv->known_alerts_lock);
 
-			store = camel_imapx_server_ref_store (is);
-			if (store) {
-				const gchar *alert = is->priv->context->sinfo->text;
-				gchar *msg;
+			alert_message = is->priv->context->sinfo->text;
+
+			if (alert_message != NULL) {
+				emit_alert = !g_hash_table_contains (
+					is->priv->known_alerts,
+					alert_message);
+			}
+
+			if (emit_alert) {
+				CamelIMAPXStore *store;
 				CamelService *service;
 				CamelSession *session;
 
-				g_hash_table_insert (is->priv->known_alerts, g_strdup (alert), GINT_TO_POINTER (1));
+				store = camel_imapx_server_ref_store (is);
+
+				g_hash_table_add (
+					is->priv->known_alerts,
+					g_strdup (alert_message));
 
 				service = CAMEL_SERVICE (store);
 				session = camel_service_get_session (service);
 
-				msg = g_strdup_printf (
-					_("Alert from IMAP server %s:\n%s"),
-					camel_service_get_display_name (service), alert);
-				camel_session_alert_user (
-					session, CAMEL_SESSION_ALERT_WARNING,
-					msg, NULL, cancellable);
-				g_free (msg);
+				camel_session_user_alert (
+					session, service,
+					CAMEL_SESSION_ALERT_WARNING,
+					alert_message);
 
 				g_object_unref (store);
 			}
-		}
 
-		g_mutex_unlock (&is->priv->known_alerts_lock);
+			g_mutex_unlock (&is->priv->known_alerts_lock);
+		}
 		break;
 	case IMAPX_PARSE:
 		c (is->tagprefix, "PARSE: %s\n", is->priv->context->sinfo->text);

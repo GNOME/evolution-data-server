@@ -1909,8 +1909,8 @@ camel_session_list_services
 camel_session_remove_services
 camel_session_get_password
 camel_session_forget_password
-camel_session_alert_user
 camel_session_trust_prompt
+camel_session_user_alert
 camel_session_get_online
 camel_session_set_online
 camel_session_get_filter_driver
