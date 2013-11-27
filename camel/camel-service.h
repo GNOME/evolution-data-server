@@ -116,43 +116,8 @@ struct _CamelServiceClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*connect)		(CamelService *service,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*connect_finish)	(CamelService *service,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*disconnect)		(CamelService *service,
-						 gboolean clean,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*disconnect_finish)	(CamelService *service,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*authenticate)		(CamelService *service,
-						 const gchar *mechanism,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	CamelAuthenticationResult
-			(*authenticate_finish)	(CamelService *service,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*query_auth_types)	(CamelService *service,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	GList *		(*query_auth_types_finish)
-						(CamelService *service,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[8];
 };
 
 /* query_auth_types returns a GList of these */
