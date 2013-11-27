@@ -47,6 +47,7 @@
 
 static gint mh_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 static gint mh_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
+static gint mh_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *info);
 /*static gint mh_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);*/
 
 static gchar *mh_summary_next_uid_string (CamelFolderSummary *s);
@@ -71,6 +72,7 @@ camel_mh_summary_class_init (CamelMhSummaryClass *class)
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (class);
 	local_summary_class->check = mh_summary_check;
 	local_summary_class->sync = mh_summary_sync;
+	local_summary_class->decode_x_evolution = mh_summary_decode_x_evolution;
 }
 
 static void
@@ -176,8 +178,10 @@ camel_mh_summary_add (CamelLocalSummary *cls,
 	camel_mime_parser_init_with_fd (mp, fd);
 	if (cls->index && (forceindex || !camel_index_has_name (cls->index, name))) {
 		d (printf ("forcing indexing of message content\n"));
+		cls->index_force = TRUE;
 		camel_folder_summary_set_index (summary, cls->index);
 	} else {
+		cls->index_force = FALSE;
 		camel_folder_summary_set_index (summary, NULL);
 	}
 	mhs->priv->current_uid = (gchar *) name;
@@ -188,6 +192,7 @@ camel_mh_summary_add (CamelLocalSummary *cls,
 	g_object_unref (mp);
 	mhs->priv->current_uid = NULL;
 	camel_folder_summary_set_index (summary, NULL);
+	cls->index_force = FALSE;
 	g_free (filename);
 	return 0;
 }
@@ -344,4 +349,29 @@ mh_summary_sync (CamelLocalSummary *cls,
 	/* Chain up to parent's sync() method. */
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (camel_mh_summary_parent_class);
 	return local_summary_class->sync (cls, expunge, changes, cancellable, error);
+}
+
+static gint
+mh_summary_decode_x_evolution (CamelLocalSummary *cls,
+			       const gchar *xev,
+			       CamelLocalMessageInfo *info)
+{
+	CamelLocalSummaryClass *local_summary_class;
+	CamelMhSummary *mh_summary;
+	gint ret;
+
+	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (camel_mh_summary_parent_class);
+	ret = local_summary_class->decode_x_evolution (cls, xev, info);
+
+	if (ret == -1)
+		return ret;
+
+	/* do not use UID from the header, rather use the one provided, if any */
+	mh_summary = CAMEL_MH_SUMMARY (cls);
+	if (mh_summary->priv->current_uid) {
+		camel_pstring_free (info->info.uid);
+		info->info.uid = camel_pstring_strdup (mh_summary->priv->current_uid);
+	}
+
+	return ret;
 }
