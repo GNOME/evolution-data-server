@@ -65,7 +65,6 @@ struct _CamelPOP3Folder {
 	GHashTable *uids_id;
 
 	GKeyFile *key_file;
-	gboolean mobile_mode;
 	gint fetch_more;
 	CamelFetchType fetch_type;
 	gint first_id;

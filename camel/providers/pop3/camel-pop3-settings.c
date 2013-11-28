@@ -28,7 +28,6 @@ struct _CamelPOP3SettingsPrivate {
 	gboolean disable_extensions;
 	gboolean keep_on_server;
 	gboolean auto_fetch;
-	gboolean mobile_mode;
 	gint batch_fetch_count;
 };
 
@@ -44,7 +43,6 @@ enum {
 	PROP_SECURITY_METHOD,
 	PROP_USER,
 	PROP_AUTO_FETCH,
-	PROP_USE_MOBILE_MODE,
 	PROP_BATCH_FETCH_COUNT
 };
 
@@ -115,16 +113,13 @@ pop3_settings_set_property (GObject *object,
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
 			return;
+
 		case PROP_AUTO_FETCH:
 			camel_pop3_settings_set_auto_fetch  (
 				CAMEL_POP3_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
-		case PROP_USE_MOBILE_MODE:
-			camel_pop3_settings_set_mobile_mode (
-				CAMEL_POP3_SETTINGS (object),
-				g_value_get_boolean (value));
-			return;
+
 		case PROP_BATCH_FETCH_COUNT:
 			camel_pop3_settings_set_batch_fetch_count (
 				CAMEL_POP3_SETTINGS (object),
@@ -204,18 +199,14 @@ pop3_settings_get_property (GObject *object,
 				camel_network_settings_dup_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
+
 		case PROP_AUTO_FETCH:
 			g_value_set_boolean (
 				value,
 				camel_pop3_settings_get_auto_fetch (
 				CAMEL_POP3_SETTINGS (object)));
 			return;
-		case PROP_USE_MOBILE_MODE:
-			g_value_set_boolean (
-				value,
-				camel_pop3_settings_get_mobile_mode (
-				CAMEL_POP3_SETTINGS (object)));
-			return;
+
 		case PROP_BATCH_FETCH_COUNT:
 			g_value_set_int (
 				value,
@@ -311,18 +302,6 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			"Auto Fetch mails",
 			"Automatically fetch additional mails that may be downloaded later.",
 			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_USE_MOBILE_MODE,
-		g_param_spec_boolean (
-			"mobile-mode",
-			"Enable mobile mode",
-			"Optimized POP3 provider for mobile clients.",
-			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -591,47 +570,6 @@ camel_pop3_settings_set_auto_fetch (CamelPOP3Settings *settings,
 	settings->priv->auto_fetch = auto_fetch;
 
 	g_object_notify (G_OBJECT (settings), "auto-fetch");
-}
-
-/**
- * camel_pop3_settings_get_mobile_mode:
- * @settings: a #CamelPOP3Settings
- *
- * Returns whether the provider is operating in mobile mode.
- *
- * Returns: Whether the provider is operating in mobile mode.
- *
- * Since: 3.4
- **/
-gboolean
-camel_pop3_settings_get_mobile_mode (CamelPOP3Settings *settings)
-{
-	g_return_val_if_fail (CAMEL_IS_POP3_SETTINGS (settings), FALSE);
-
-	return settings->priv->mobile_mode;
-}
-
-/**
- * camel_pop3_settings_set_mobile_mode:
- * @settings: a #CamelPOP3Settings
- * @mobile_mode: whether the backend should operate in mobile mode.
- *
- * Sets whether the provider should operate in mobile mode.
- *
- * Since: 3.4
- **/
-void
-camel_pop3_settings_set_mobile_mode (CamelPOP3Settings *settings,
-                                        gboolean mobile_mode)
-{
-	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
-
-	if (settings->priv->mobile_mode == mobile_mode)
-		return;
-
-	settings->priv->mobile_mode = mobile_mode;
-
-	g_object_notify (G_OBJECT (settings), "mobile-mode");
 }
 
 /**
