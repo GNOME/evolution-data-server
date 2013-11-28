@@ -1609,7 +1609,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, [test "x$enable_largefile" = "xyes"])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, gio-2.0 gmodule-2.0 $mozilla_nss sqlite3 >= sqlite_minimum_version, $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $KRB5_LIBS $MANUAL_NSS_LIBS)
+EVO_SET_COMPILE_FLAGS(CAMEL, gio-2.0 gmodule-2.0 $mozilla_nss $mozilla_nspr sqlite3 >= sqlite_minimum_version, $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $MANUAL_NSPR_CFLAGS $LARGEFILE_CFLAGS, -lz $KRB5_LIBS $MANUAL_NSS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 
