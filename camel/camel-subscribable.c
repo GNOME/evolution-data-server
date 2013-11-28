@@ -145,147 +145,8 @@ subscribable_delete_cached_folder (CamelStore *store,
 }
 
 static void
-subscribable_subscribe_folder_thread (GSimpleAsyncResult *simple,
-                                      GObject *object,
-                                      GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_subscribable_subscribe_folder_sync (
-		CAMEL_SUBSCRIBABLE (object),
-		async_context->folder_name,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-subscribable_subscribe_folder (CamelSubscribable *subscribable,
-                               const gchar *folder_name,
-                               gint io_priority,
-                               GCancellable *cancellable,
-                               GAsyncReadyCallback callback,
-                               gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->folder_name = g_strdup (folder_name);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (subscribable), callback,
-		user_data, subscribable_subscribe_folder);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, subscribable_subscribe_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-subscribable_subscribe_folder_finish (CamelSubscribable *subscribable,
-                                      GAsyncResult *result,
-                                      GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (subscribable),
-		subscribable_subscribe_folder), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
-subscribable_unsubscribe_folder_thread (GSimpleAsyncResult *simple,
-                                        GObject *object,
-                                        GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_subscribable_unsubscribe_folder_sync (
-		CAMEL_SUBSCRIBABLE (object),
-		async_context->folder_name,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-subscribable_unsubscribe_folder (CamelSubscribable *subscribable,
-                                 const gchar *folder_name,
-                                 gint io_priority,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->folder_name = g_strdup (folder_name);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (subscribable), callback,
-		user_data, subscribable_unsubscribe_folder);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, subscribable_unsubscribe_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-subscribable_unsubscribe_folder_finish (CamelSubscribable *subscribable,
-                                        GAsyncResult *result,
-                                        GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (subscribable),
-		subscribable_unsubscribe_folder), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
 camel_subscribable_default_init (CamelSubscribableInterface *interface)
 {
-	interface->subscribe_folder = subscribable_subscribe_folder;
-	interface->subscribe_folder_finish = subscribable_subscribe_folder_finish;
-	interface->unsubscribe_folder = subscribable_unsubscribe_folder;
-	interface->unsubscribe_folder_finish = subscribable_unsubscribe_folder_finish;
-
 	signals[FOLDER_SUBSCRIBED] = g_signal_new (
 		"folder-subscribed",
 		G_OBJECT_CLASS_TYPE (interface),
@@ -402,6 +263,26 @@ exit:
 	return success;
 }
 
+/* Helper for camel_subscribable_subscribe_folder() */
+static void
+subscribable_subscribe_folder_thread (GSimpleAsyncResult *simple,
+                                      GObject *object,
+                                      GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_subscribable_subscribe_folder_sync (
+		CAMEL_SUBSCRIBABLE (object),
+		async_context->folder_name,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * camel_subscribable_subscribe_folder:
  * @subscribable: a #CamelSubscribable
@@ -427,17 +308,29 @@ camel_subscribable_subscribe_folder (CamelSubscribable *subscribable,
                                      GAsyncReadyCallback callback,
                                      gpointer user_data)
 {
-	CamelSubscribableInterface *interface;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable));
 	g_return_if_fail (folder_name != NULL);
 
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
-	g_return_if_fail (interface->subscribe_folder != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name = g_strdup (folder_name);
 
-	interface->subscribe_folder (
-		subscribable, folder_name, io_priority,
-		cancellable, callback, user_data);
+	simple = g_simple_async_result_new (
+		G_OBJECT (subscribable), callback, user_data,
+		camel_subscribable_subscribe_folder);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, subscribable_subscribe_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -457,17 +350,17 @@ camel_subscribable_subscribe_folder_finish (CamelSubscribable *subscribable,
                                             GAsyncResult *result,
                                             GError **error)
 {
-	CamelSubscribableInterface *interface;
+	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
 	g_return_val_if_fail (
-		interface->subscribe_folder_finish != NULL, FALSE);
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (subscribable),
+		camel_subscribable_subscribe_folder), FALSE);
 
-	return interface->subscribe_folder_finish (
-		subscribable, result, error);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**
@@ -534,6 +427,26 @@ exit:
 	return success;
 }
 
+/* Helper for camel_subscribable_unsubscribe_folder() */
+static void
+subscribable_unsubscribe_folder_thread (GSimpleAsyncResult *simple,
+                                        GObject *object,
+                                        GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_subscribable_unsubscribe_folder_sync (
+		CAMEL_SUBSCRIBABLE (object),
+		async_context->folder_name,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * camel_subscribable_unsubscribe_folder:
  * @subscribable: a #CamelSubscribable
@@ -559,17 +472,29 @@ camel_subscribable_unsubscribe_folder (CamelSubscribable *subscribable,
                                        GAsyncReadyCallback callback,
                                        gpointer user_data)
 {
-	CamelSubscribableInterface *interface;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable));
 	g_return_if_fail (folder_name != NULL);
 
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
-	g_return_if_fail (interface->unsubscribe_folder != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder_name = g_strdup (folder_name);
 
-	interface->unsubscribe_folder (
-		subscribable, folder_name, io_priority,
-		cancellable, callback, user_data);
+	simple = g_simple_async_result_new (
+		G_OBJECT (subscribable), callback, user_data,
+		camel_subscribable_unsubscribe_folder);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, subscribable_unsubscribe_folder_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -589,17 +514,17 @@ camel_subscribable_unsubscribe_folder_finish (CamelSubscribable *subscribable,
                                               GAsyncResult *result,
                                               GError **error)
 {
-	CamelSubscribableInterface *interface;
+	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
 	g_return_val_if_fail (
-		interface->unsubscribe_folder_finish != NULL, FALSE);
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (subscribable),
+		camel_subscribable_unsubscribe_folder), FALSE);
 
-	return interface->unsubscribe_folder_finish (
-		subscribable, result, error);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /**

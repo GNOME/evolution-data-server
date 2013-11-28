@@ -74,29 +74,8 @@ struct _CamelSubscribableInterface {
 					 GCancellable *cancellable,
 					 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*subscribe_folder)
-					(CamelSubscribable *subscribable,
-					 const gchar *folder_name,
-					 gint io_priority,
-					 GCancellable *cancellable,
-					 GAsyncReadyCallback callback,
-					 gpointer user_data);
-	gboolean	(*subscribe_folder_finish)
-					(CamelSubscribable *subscribable,
-					 GAsyncResult *result,
-					 GError **error);
-	void		(*unsubscribe_folder)
-					(CamelSubscribable *subscribable,
-					 const gchar *folder_name,
-					 gint io_priority,
-					 GCancellable *cancellable,
-					 GAsyncReadyCallback callback,
-					 gpointer user_data);
-	gboolean	(*unsubscribe_folder_finish)
-					(CamelSubscribable *subscribable,
-					 GAsyncResult *result,
-					 GError **error);
+	/* Reserved slots for methods. */
+	gpointer reserved_for_methods[4];
 
 	/* Signals */
 	void		(*folder_subscribed)
