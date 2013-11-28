@@ -5309,7 +5309,6 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	gint i;
 	CamelIMAPXSettings *settings;
 	guint batch_count;
-	gboolean mobile_mode;
 	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
@@ -5330,7 +5329,6 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 	settings = camel_imapx_server_ref_settings (is);
 	batch_count = camel_imapx_settings_get_batch_fetch_count (settings);
-	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
 
 	i = data->index;
@@ -5363,11 +5361,8 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 		data->last_index = i;
 
-		/* If its mobile client and when total=0 (new account setup)
-		 * fetch only one batch of mails, on futher attempts download
-		 * all new mails as per the limit. */
 		for (; i < data->infos->len &&
-			(!mobile_mode || (total && i == 0) ||
+			((total && i == 0) ||
 			((fetch_limit != -1 && i < fetch_limit) ||
 			(fetch_limit == -1 && i < batch_count))); i++) {
 
@@ -5486,7 +5481,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	RefreshInfoData *data;
 	GCancellable *cancellable;
 	guint uidset_size;
-	gboolean mobile_mode;
+	guint32 unseen;
 	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
@@ -5508,7 +5503,6 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	settings = camel_imapx_server_ref_settings (is);
 	uidset_size = camel_imapx_settings_get_batch_fetch_count (settings);
-	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
 
 	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
@@ -5661,17 +5655,10 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	refresh_info_data_infos_free (data);
 
-	/* There's no sane way to get the server-side unseen count on the
-	 * select mailbox. So just work it out from the flags if its not in
-	 * mobile mode. In mobile mode we would have this filled up already
-	 * with a STATUS command.
-	 **/
-	if (!mobile_mode) {
-		guint32 unseen;
-
-		unseen = camel_folder_summary_get_unread_count (folder->summary);
-		camel_imapx_mailbox_set_unseen (mailbox, unseen);
-	}
+	/* There's no sane way to get the server-side unseen count
+	 * on the select mailbox, so just work it out from the flags. */
+	unseen = camel_folder_summary_get_unread_count (folder->summary);
+	camel_imapx_mailbox_set_unseen (mailbox, unseen);
 
 	g_object_unref (folder);
 	g_object_unref (mailbox);
@@ -5689,9 +5676,6 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	CamelIMAPXCommand *ic;
 	CamelIMAPXMailbox *mailbox;
 	RefreshInfoData *data;
-	CamelIMAPXSettings *settings;
-	gboolean mobile_mode;
-	gchar *uid = NULL;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -5702,13 +5686,6 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
-	settings = camel_imapx_server_ref_settings (is);
-	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
-	g_object_unref (settings);
-
-	if (mobile_mode)
-		uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
-
 	job->pop_operation_msg = TRUE;
 
 	camel_operation_push_message (
@@ -5716,14 +5693,9 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 		_("Scanning for changed messages in '%s'"),
 		camel_folder_get_display_name (folder));
 
-	e (
-		'E', "Scanning from %s in %s\n",
-		uid ? uid : "start",
-		camel_imapx_mailbox_get_name (mailbox));
-
 	ic = camel_imapx_command_new (
 		is, "FETCH", mailbox,
-		"UID FETCH %s:* (UID FLAGS)", uid ? uid : "1");
+		"UID FETCH 1:* (UID FLAGS)");
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_job_scan_changes_done;
 
@@ -5735,8 +5707,6 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 	imapx_command_queue (is, ic);
 
 	camel_imapx_command_unref (ic);
-
-	g_free (uid);
 
 	g_object_unref (folder);
 	g_object_unref (mailbox);
@@ -5938,7 +5908,6 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
                               GCancellable *cancellable,
                               GError **error)
 {
-	CamelIMAPXSettings *settings;
 	CamelIMAPXSummary *isum;
 	CamelFolder *folder;
 	CamelIMAPXMailbox *mailbox;
@@ -5946,7 +5915,6 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 	gboolean need_rescan = FALSE;
 	gboolean is_selected = FALSE;
 	gboolean can_qresync = FALSE;
-	gboolean mobile_mode;
 	gboolean success;
 	guint32 messages;
 	guint32 unseen;
@@ -5960,10 +5928,6 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
-
-	settings = camel_imapx_server_ref_settings (is);
-	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
-	g_object_unref (settings);
 
 	isum = CAMEL_IMAPX_SUMMARY (folder->summary);
 
@@ -6063,28 +6027,6 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 		    camel_folder_summary_get_unread_count (folder->summary) != unseen ||
 		    (!is_selected && isum->modseq != highestmodseq))
 			need_rescan = TRUE;
-
-	} else if (mobile_mode) {
-		/* We need to issue Status command to get the total unread count */
-		CamelIMAPXCommand *ic;
-
-		ic = camel_imapx_command_new (
-			is, "STATUS", NULL, "STATUS %M (%t)",
-			mailbox, is->priv->status_data_items);
-		camel_imapx_command_set_job (ic, job);
-		ic->pri = job->pri;
-
-		success = imapx_command_run_sync (
-			is, ic, cancellable, error);
-
-		camel_imapx_command_unref (ic);
-
-		if (!success) {
-			g_prefix_error (
-				error, "%s: ",
-				_("Error refreshing folder"));
-			goto done;
-		}
 	}
 
 	messages = camel_imapx_mailbox_get_messages (mailbox);
@@ -6943,8 +6885,6 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	CamelStore *parent_store;
 	SyncChangesData *data;
 	const gchar *full_name;
-	CamelIMAPXSettings *settings;
-	gboolean mobile_mode;
 	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
@@ -6958,10 +6898,6 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_if_fail (folder != NULL);
-
-	settings = camel_imapx_server_ref_settings (is);
-	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
-	g_object_unref (settings);
 
 	job->commands--;
 
@@ -7031,11 +6967,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 				if (si->total != camel_folder_summary_get_saved_count (folder->summary) ||
 				    si->unread != camel_folder_summary_get_unread_count (folder->summary)) {
 					si->total = camel_folder_summary_get_saved_count (folder->summary);
-					/* Don't mess with server's unread
-					 * count in mobile mode, as what we
-					 * have downloaded is little. */
-					if (!mobile_mode)
-						si->unread = camel_folder_summary_get_unread_count (folder->summary);
+					si->unread = camel_folder_summary_get_unread_count (folder->summary);
 					camel_store_summary_touch (CAMEL_IMAPX_STORE (parent_store)->summary);
 				}
 

@@ -1133,16 +1133,6 @@ fill_fi (CamelStore *store,
          CamelFolderInfo *fi)
 {
 	CamelFolder *folder;
-	CamelService *service = (CamelService *) store;
-	CamelSettings *settings;
-	gboolean mobile_mode;
-
-	settings = camel_service_ref_settings (service);
-
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-
-	g_object_unref (settings);
 
 	folder = camel_object_bag_peek (store->folders, fi->full_name);
 	if (folder) {
@@ -1158,13 +1148,7 @@ fill_fi (CamelStore *store,
 		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 		mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
 
-		/* Mobile clients would still love to see the total unread of actual mails
-		 * than what they just have downloaded. So we override that information by giving 
-		 * what the server has instead of what we have downloaded. */
-		if (mobile_mode && mailbox != NULL)
-			fi->unread = camel_imapx_mailbox_get_unseen (mailbox);
-		else
-			fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) ims);
+		fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) ims);
 		fi->total = camel_folder_summary_get_saved_count ((CamelFolderSummary *) ims);
 
 		g_clear_object (&mailbox);
