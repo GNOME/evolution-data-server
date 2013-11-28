@@ -424,9 +424,6 @@ camel_folder_expunge_sync
 camel_folder_expunge
 camel_folder_expunge_finish
 CamelFetchType
-camel_folder_fetch_messages_sync
-camel_folder_fetch_messages
-camel_folder_fetch_messages_finish
 camel_folder_get_message_sync
 camel_folder_get_message
 camel_folder_get_message_finish
@@ -3552,7 +3549,6 @@ camel_imapx_server_list
 camel_imapx_server_refresh_info
 camel_imapx_server_sync_changes
 camel_imapx_server_expunge
-camel_imapx_server_fetch_messages
 camel_imapx_server_noop
 camel_imapx_server_get_message
 camel_imapx_server_copy_message

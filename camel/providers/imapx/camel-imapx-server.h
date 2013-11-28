@@ -194,14 +194,6 @@ gboolean	camel_imapx_server_expunge	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
-CamelFolderChangeInfo *
-		camel_imapx_server_fetch_messages
-						(CamelIMAPXServer *is,
-						 CamelIMAPXMailbox *mailbox,
-						 CamelFetchType type,
-						 gint limit,
-						 GCancellable *cancellable,
-						 GError **error);
 gboolean	camel_imapx_server_noop		(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,

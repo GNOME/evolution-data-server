@@ -219,11 +219,6 @@ struct _CamelFolderClass {
 	gboolean	(*expunge_sync)		(CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
-	gboolean	(*fetch_messages_sync)	(CamelFolder *folder,
-						 CamelFetchType type,
-						 gint limit,
-						 GCancellable *cancellable,
-						 GError **error);
 	CamelMimeMessage *
 			(*get_message_sync)	(CamelFolder *folder,
 						 const gchar *message_uid,
@@ -424,23 +419,6 @@ void		camel_folder_expunge		(CamelFolder *folder,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 gboolean	camel_folder_expunge_finish	(CamelFolder *folder,
-						 GAsyncResult *result,
-						 GError **error);
-gboolean	camel_folder_fetch_messages_sync
-						(CamelFolder *folder,
-						 CamelFetchType type,
-						 gint limit,
-						 GCancellable *cancellable,
-						 GError **error);
-void		camel_folder_fetch_messages	(CamelFolder *folder,
-						 CamelFetchType type,
-						 gint limit,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	camel_folder_fetch_messages_finish
-						(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
 CamelMimeMessage *

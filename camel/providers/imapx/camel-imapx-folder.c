@@ -504,51 +504,6 @@ exit:
 	return success;
 }
 
-static gboolean
-imapx_fetch_messages_sync (CamelFolder *folder,
-                           CamelFetchType type,
-                           gint limit,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelStore *store;
-	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
-	CamelIMAPXMailbox *mailbox = NULL;
-	CamelFolderChangeInfo *changes;
-	gboolean success = FALSE;
-
-	store = camel_folder_get_parent_store (folder);
-
-	imapx_store = CAMEL_IMAPX_STORE (store);
-	imapx_server = camel_imapx_store_ref_server (imapx_store, error);
-
-	if (imapx_server == NULL)
-		goto exit;
-
-	mailbox = camel_imapx_folder_list_mailbox (
-		CAMEL_IMAPX_FOLDER (folder), cancellable, error);
-
-	if (mailbox == NULL)
-		goto exit;
-
-	changes = camel_imapx_server_fetch_messages (
-		imapx_server, mailbox, type, limit, cancellable, error);
-
-	if (changes != NULL) {
-		if (camel_folder_change_info_changed (changes))
-			camel_folder_changed (folder, changes);
-		camel_folder_change_info_free (changes);
-		success = TRUE;
-	}
-
-exit:
-	g_clear_object (&mailbox);
-	g_clear_object (&imapx_server);
-
-	return success;
-}
-
 static CamelMimeMessage *
 imapx_get_message_sync (CamelFolder *folder,
                         const gchar *uid,
@@ -1145,7 +1100,6 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->get_filename = imapx_get_filename;
 	folder_class->append_message_sync = imapx_append_message_sync;
 	folder_class->expunge_sync = imapx_expunge_sync;
-	folder_class->fetch_messages_sync = imapx_fetch_messages_sync;
 	folder_class->get_message_sync = imapx_get_message_sync;
 	folder_class->get_quota_info_sync = imapx_get_quota_info_sync;
 	folder_class->purge_message_cache_sync = imapx_purge_message_cache_sync;

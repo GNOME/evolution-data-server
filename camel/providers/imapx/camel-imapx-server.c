@@ -416,9 +416,8 @@ enum {
 	IMAPX_JOB_RENAME_MAILBOX = 1 << 12,
 	IMAPX_JOB_SUBSCRIBE_MAILBOX = 1 << 13,
 	IMAPX_JOB_UNSUBSCRIBE_MAILBOX = 1 << 14,
-	IMAPX_JOB_FETCH_MESSAGES = 1 << 15,
-	IMAPX_JOB_UPDATE_QUOTA_INFO = 1 << 16,
-	IMAPX_JOB_UID_SEARCH = 1 << 17
+	IMAPX_JOB_UPDATE_QUOTA_INFO = 1 << 15,
+	IMAPX_JOB_UID_SEARCH = 1 << 16
 };
 
 /* Mailbox management operations have highest priority
@@ -1170,8 +1169,7 @@ imapx_is_duplicate_fetch_or_refresh (CamelIMAPXServer *is,
 	/* Job types to match. */
 	job_types =
 		IMAPX_JOB_FETCH_NEW_MESSAGES |
-		IMAPX_JOB_REFRESH_INFO |
-		IMAPX_JOB_FETCH_MESSAGES;
+		IMAPX_JOB_REFRESH_INFO;
 
 	job = camel_imapx_command_get_job (ic);
 
@@ -2047,8 +2045,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 		job = imapx_match_active_job (
 			is, IMAPX_JOB_FETCH_NEW_MESSAGES |
-			IMAPX_JOB_REFRESH_INFO |
-			IMAPX_JOB_FETCH_MESSAGES, NULL);
+			IMAPX_JOB_REFRESH_INFO, NULL);
 
 		if (job != NULL) {
 			data = camel_imapx_job_get_data (job);
@@ -2153,8 +2150,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 		job = imapx_match_active_job (
 			is, IMAPX_JOB_FETCH_NEW_MESSAGES |
-			IMAPX_JOB_REFRESH_INFO |
-			IMAPX_JOB_FETCH_MESSAGES, NULL);
+			IMAPX_JOB_REFRESH_INFO, NULL);
 
 		if (job != NULL) {
 			CamelIMAPXMailbox *mailbox;
@@ -5937,149 +5933,6 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 }
 
 static gboolean
-imapx_job_fetch_messages_start (CamelIMAPXJob *job,
-                                CamelIMAPXServer *is,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	CamelIMAPXCommand *ic;
-	CamelFolder *folder;
-	CamelIMAPXMailbox *mailbox;
-	guint32 total;
-	gchar *start_uid = NULL, *end_uid = NULL;
-	CamelFetchType ftype;
-	gint fetch_limit;
-	CamelSortType fetch_order;
-	CamelIMAPXSettings *settings;
-	guint uidset_size;
-	RefreshInfoData *data;
-
-	data = camel_imapx_job_get_data (job);
-	g_return_val_if_fail (data != NULL, FALSE);
-
-	mailbox = camel_imapx_job_ref_mailbox (job);
-	g_return_val_if_fail (mailbox != NULL, FALSE);
-
-	folder = imapx_server_ref_folder (is, mailbox);
-	g_return_val_if_fail (folder != NULL, FALSE);
-
-	settings = camel_imapx_server_ref_settings (is);
-	fetch_order = camel_imapx_settings_get_fetch_order (settings);
-	uidset_size = camel_imapx_settings_get_batch_fetch_count (settings);
-	g_object_unref (settings);
-
-	total = camel_folder_summary_count (folder->summary);
-
-	ftype = data->fetch_type;
-	fetch_limit = data->fetch_msg_limit;
-
-	if (ftype == CAMEL_FETCH_NEW_MESSAGES ||
-		(ftype ==  CAMEL_FETCH_OLD_MESSAGES && total <=0 )) {
-
-		gchar *uid;
-
-		if (total > 0) {
-			/* This means that we are fetching limited number of new mails */
-			uid = g_strdup_printf ("%d", total);
-		} else {
-			/* For empty accounts, we always fetch the specified number of new mails independent of
-			 * being asked to fetch old or new.
-			 */
-			uid = g_strdup ("1");
-		}
-
-		if (ftype == CAMEL_FETCH_NEW_MESSAGES) {
-			gboolean success;
-
-			/* We need to issue Status command to get the total unread count */
-			ic = camel_imapx_command_new (
-				is, "STATUS", NULL, "STATUS %M (%t)",
-				mailbox, is->priv->status_data_items);
-			camel_imapx_command_set_job (ic, job);
-			ic->pri = job->pri;
-
-			success = imapx_command_run_sync (
-				is, ic, cancellable, error);
-
-			camel_imapx_command_unref (ic);
-
-			if (!success) {
-				g_prefix_error (
-					error, "%s: ",
-					_("Error while fetching messages"));
-				g_object_unref (folder);
-				return FALSE;
-			}
-		}
-
-		camel_operation_push_message (
-			cancellable, dngettext (GETTEXT_PACKAGE,
-			"Fetching summary information for %d message in '%s'",
-			"Fetching summary information for %d messages in '%s'",
-			data->fetch_msg_limit),
-			data->fetch_msg_limit,
-			camel_folder_get_display_name (folder));
-
-		/* New account and fetching old messages, we would return just the limited number of newest messages */
-		ic = camel_imapx_command_new (
-			is, "FETCH", mailbox,
-			"UID FETCH %s:* (UID FLAGS)", uid);
-
-		imapx_uidset_init (&data->uidset, uidset_size, 0);
-		refresh_info_data_infos_free (data);
-		data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
-		ic->pri = job->pri;
-
-		data->scan_changes = TRUE;
-
-		if (fetch_order == CAMEL_SORT_DESCENDING)
-			ic->complete = imapx_command_fetch_new_uids_done;
-		else
-			ic->complete = imapx_command_step_fetch_done;
-
-		g_free (uid);
-
-	} else if (ftype == CAMEL_FETCH_OLD_MESSAGES && total > 0) {
-		guint64 uidl;
-		start_uid = camel_imapx_dup_uid_from_summary_index (folder, 0);
-		uidl = strtoull (start_uid, NULL, 10);
-		end_uid = g_strdup_printf ("%" G_GINT64_MODIFIER "d", (((gint) uidl) - fetch_limit > 0) ? (uidl - fetch_limit) : 1);
-
-		camel_operation_push_message (
-			cancellable, dngettext (GETTEXT_PACKAGE,
-			"Fetching summary information for %d message in '%s'",
-			"Fetching summary information for %d messages in '%s'",
-			data->fetch_msg_limit),
-			data->fetch_msg_limit,
-			camel_folder_get_display_name (folder));
-
-		ic = camel_imapx_command_new (
-			is, "FETCH", mailbox,
-			"UID FETCH %s:%s (RFC822.SIZE RFC822.HEADER FLAGS)",
-			start_uid, end_uid);
-		ic->pri = job->pri;
-		ic->complete = imapx_command_fetch_new_messages_done;
-
-		g_free (start_uid);
-		g_free (end_uid);
-
-	} else {
-		g_error ("Shouldn't reach here. Incorrect fetch type");
-	}
-
-	camel_imapx_command_set_job (ic, job);
-
-	imapx_command_queue (is, ic);
-
-	camel_imapx_command_unref (ic);
-
-	g_object_unref (folder);
-	g_object_unref (mailbox);
-
-	return TRUE;
-}
-
-static gboolean
 imapx_job_refresh_info_start (CamelIMAPXJob *job,
                               CamelIMAPXServer *is,
                               GCancellable *cancellable,
@@ -8521,12 +8374,11 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	/* Both RefreshInfo and Fetch messages can't operate simultaneously */
+	/* Don't run concurrent refreshes on the same mailbox.
+	 * If a refresh is already in progress, let it finish
+	 * and return no changes for this refresh request. */
 	job = imapx_is_job_in_queue (
 		is, mailbox, IMAPX_JOB_REFRESH_INFO, NULL);
-	if (job == NULL)
-		job = imapx_is_job_in_queue (
-			is, mailbox, IMAPX_JOB_FETCH_MESSAGES, NULL);
 
 	if (job != NULL) {
 		QUEUE_UNLOCK (is);
@@ -9092,80 +8944,6 @@ camel_imapx_server_unsubscribe_mailbox (CamelIMAPXServer *is,
 	camel_imapx_job_unref (job);
 
 	return success;
-}
-
-static gboolean
-imapx_job_fetch_messages_matches (CamelIMAPXJob *job,
-                                  CamelIMAPXMailbox *mailbox,
-                                  const gchar *uid)
-{
-	return camel_imapx_job_has_mailbox (job, mailbox);
-}
-
-CamelFolderChangeInfo *
-camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
-                                   CamelIMAPXMailbox *mailbox,
-                                   CamelFetchType type,
-                                   gint limit,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	CamelIMAPXJob *job;
-	RefreshInfoData *data;
-	CamelFolderChangeInfo *changes = NULL;
-	gboolean registered = TRUE;
-	const gchar *mailbox_name;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), NULL);
-
-	QUEUE_LOCK (is);
-
-	/* Both RefreshInfo and Fetch messages can't operate simultaneously */
-	job = imapx_is_job_in_queue (
-		is, mailbox, IMAPX_JOB_REFRESH_INFO, NULL);
-	if (job == NULL)
-		job = imapx_is_job_in_queue (
-			is, mailbox, IMAPX_JOB_FETCH_MESSAGES, NULL);
-
-	if (job != NULL) {
-		QUEUE_UNLOCK (is);
-		return camel_folder_change_info_new ();
-	}
-
-	data = g_slice_new0 (RefreshInfoData);
-	data->changes = camel_folder_change_info_new ();
-	data->fetch_msg_limit = limit;
-	data->fetch_type = type;
-
-	job = camel_imapx_job_new (cancellable);
-	job->type = IMAPX_JOB_FETCH_MESSAGES;
-	job->start = imapx_job_fetch_messages_start;
-	job->matches = imapx_job_fetch_messages_matches;
-	job->pri = IMAPX_PRIORITY_NEW_MESSAGES;
-
-	camel_imapx_job_set_mailbox (job, mailbox);
-
-	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
-
-	if (camel_imapx_mailbox_is_inbox (mailbox_name))
-		job->pri += 10;
-
-	camel_imapx_job_set_data (
-		job, data, (GDestroyNotify) refresh_info_data_free);
-
-	registered = imapx_register_job (is, job, error);
-
-	QUEUE_UNLOCK (is);
-
-	if (registered && camel_imapx_job_run (job, is, error)) {
-		changes = data->changes;
-		data->changes = NULL;
-	}
-
-	camel_imapx_job_unref (job);
-
-	return changes;
 }
 
 gboolean
