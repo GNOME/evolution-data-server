@@ -576,6 +576,7 @@ data_book_cursor_handle_step (EDBusAddressBookCursor *dbus_object,
 				strv[i++] = e_util_utf8_make_valid (vcard);
 			}
 
+			g_slist_free_full (results, g_free);
 		}
 
 		e_dbus_address_book_cursor_complete_step (dbus_object,
