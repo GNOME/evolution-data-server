@@ -75,18 +75,8 @@ struct _CamelTransportClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*send_to)		(CamelTransport *transport,
-						 CamelMimeMessage *message,
-						 CamelAddress *from,
-						 CamelAddress *recipients,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*send_to_finish)	(CamelTransport *transport,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[2];
 };
 
 GType		camel_transport_get_type	(void);
