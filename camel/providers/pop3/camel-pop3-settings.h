@@ -81,11 +81,6 @@ gboolean	camel_pop3_settings_get_auto_fetch
 void		camel_pop3_settings_set_auto_fetch
 						(CamelPOP3Settings *settings,
 						 gboolean auto_fetch);
-gboolean	camel_pop3_settings_get_batch_fetch_count
-						(CamelPOP3Settings *settings);
-void		camel_pop3_settings_set_batch_fetch_count
-						(CamelPOP3Settings *settings,
-						 gint batch_fetch_count);
 
 G_END_DECLS
 
