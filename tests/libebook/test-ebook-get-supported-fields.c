@@ -33,9 +33,9 @@ get_supported_fields_cb (EBookTestClosure *closure)
 			e_iterator_next (iter);
 		}
 		test_print ("----------------\n");
-	}
 
-	g_object_unref (closure->list);
+		g_object_unref (closure->list);
+	}
 
 	g_main_loop_quit ((GMainLoop *) (closure->user_data));
 }
