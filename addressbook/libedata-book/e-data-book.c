@@ -1248,7 +1248,7 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	/*
 	 * Set the query, if any (no query is allowed)
 	 */
-	if (!e_data_book_cursor_set_sexp (cursor, in_query, &error)) {
+	if (!e_data_book_cursor_set_sexp (cursor, in_query, NULL, &error)) {
 
 		e_book_backend_delete_cursor (backend, cursor, NULL);
 		g_dbus_method_invocation_take_error (invocation, error);
@@ -2038,7 +2038,10 @@ data_book_locale_changed (GObject *object,
 		locale = e_dbus_locale1_get_locale (locale_proxy);
 		interpreted_locale = data_book_interpret_locale (locale);
 
-		e_book_backend_set_locale (backend, interpreted_locale);
+		/* XXX This needs work, the whole handling should be done
+		 * by the singleton EDataBookFactory, and handle errors well
+		 */
+		e_book_backend_set_locale (backend, interpreted_locale, NULL, NULL);
 
 		e_dbus_address_book_set_locale (book->priv->dbus_interface, interpreted_locale);
 
