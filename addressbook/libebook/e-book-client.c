@@ -3836,7 +3836,7 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 		if (cursor) {
 			if (!e_data_book_cursor_set_sexp (cursor,
 							  async_context->sexp,
-							  &local_error)) {
+							  cancellable, &local_error)) {
 				e_book_backend_delete_cursor (client->priv->direct_backend,
 							      cursor,
 							      NULL);
