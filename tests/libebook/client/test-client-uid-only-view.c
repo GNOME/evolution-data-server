@@ -35,25 +35,11 @@ static UIDOnlyClosure book_closure_uids_only_async = { { E_TEST_SERVER_ADDRESS_B
 #  define PRINT_TIMER(timer, activity)
 #endif
 
-static gboolean loading_view = FALSE;
 static gboolean uids_only    = FALSE;
 
 /****************************************************************
  *                     Modify/Setup the EBook                   *
  ****************************************************************/
-static void
-add_contact (EBookClient *client)
-{
-	EContact *contact = e_contact_new ();
-
-	e_contact_set (contact, E_CONTACT_FULL_NAME, "Micheal Jackson");
-
-	if (!add_contact_verify (client, contact))
-		g_error ("Failed to add Micheal Jackson");
-
-	g_object_unref (contact);
-}
-
 static gboolean
 setup_book (EBookClient *book_client)
 {
@@ -152,7 +138,6 @@ objects_added (EBookClientView *view,
                gpointer user_data)
 {
 	const GSList *l;
-	GMainLoop *loop = (GMainLoop *) user_data;
 
 	for (l = contacts; l; l = l->next) {
 		EContact *contact = l->data;
@@ -168,10 +153,6 @@ objects_added (EBookClientView *view,
 		else if (!uids_only && e_contact_get_const (contact, E_CONTACT_FULL_NAME) == NULL)
 			g_error ("expected contact name missing");
 	}
-
-	if (!loading_view)
-		finish_test (view, loop);
-
 }
 
 static void
@@ -187,11 +168,12 @@ objects_removed (EBookClientView *view,
 
 static void
 complete (EBookClientView *view,
-          const GError *error)
+          const GError *error,
+	  gpointer user_data)
 {
-	/* Now add a contact and assert that we received notification */
-	loading_view = FALSE;
-	add_contact (e_book_client_view_get_client (view));
+	GMainLoop *loop = (GMainLoop *) user_data;
+
+	finish_test (view, loop);
 }
 
 static void
@@ -214,8 +196,6 @@ setup_and_start_view (EBookClientView *view,
 
 	if (error)
 		g_error ("set fields of interest: %s", error->message);
-
-	loading_view = TRUE;
 
 	e_book_client_view_start (view, &error);
 	if (error)
