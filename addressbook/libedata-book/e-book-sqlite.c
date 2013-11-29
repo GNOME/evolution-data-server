@@ -7877,7 +7877,7 @@ e_book_sqlite_cursor_calculate (EBookSqlite  *ebsql,
 	EBSQL_LOCK_OR_RETURN (ebsql, cancellable, -1);
 
 	/* Start a read transaction, it's important our two queries are atomic */
-	if (!ebsql_start_transaction (ebsql, EBSQL_LOCK_WRITE, cancellable, error)) {
+	if (!ebsql_start_transaction (ebsql, EBSQL_LOCK_READ, cancellable, error)) {
 		EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 		return FALSE;
 	}
