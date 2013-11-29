@@ -1222,17 +1222,19 @@ e_book_backend_set_locale (EBookBackend *backend,
 			   GCancellable *cancellable,
 			   GError      **error)
 {
+	/* If the backend does not support locales, just happily return */
+	gboolean success = TRUE;
+
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
 	g_object_ref (backend);
 
 	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale)
-		return (* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale,
-									   cancellable, error);
+		success = (* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale,
+									      cancellable, error);
 	g_object_unref (backend);
 
-	/* Backend does not support locales, just happily return */
-	return TRUE;
+	return success;
 }
 
 /**
