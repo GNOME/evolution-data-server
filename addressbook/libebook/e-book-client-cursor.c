@@ -1403,7 +1403,7 @@ book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
 			/* Load initial locale */
 			if (priv->direct_cursor &&
 			    !e_data_book_cursor_load_locale (priv->direct_cursor,
-							     &freeme, &error)) {
+							     &freeme, NULL, &error)) {
 				g_warning ("Error loading locale in direct read access cursor: %s",
 					   error->message);
 				g_clear_error (&error);
@@ -1464,7 +1464,7 @@ book_client_cursor_set_locale (EBookClientCursor *cursor,
 	 * explicitly load the new locale for DRA cursors.
 	 */
 	if (priv->direct_cursor &&
-	    !e_data_book_cursor_load_locale (priv->direct_cursor, NULL, &error)) {
+	    !e_data_book_cursor_load_locale (priv->direct_cursor, NULL, NULL, &error)) {
 		g_warning ("Error loading locale in direct read access cursor: %s",
 			   error->message);
 		g_clear_error (&error);
@@ -1496,7 +1496,7 @@ book_client_cursor_set_revision (EBookClientCursor    *cursor,
 		if (priv->direct_cursor) {
 			GError *error = NULL;
 
-			if (!e_data_book_cursor_recalculate (priv->direct_cursor, &error)) {
+			if (!e_data_book_cursor_recalculate (priv->direct_cursor, NULL, &error)) {
 				g_warning ("Error calcualting cursor position: %s", error->message);
 			} else {
 				g_object_freeze_notify (G_OBJECT (cursor));
@@ -1840,7 +1840,7 @@ set_sexp_sync_internal (EBookClientCursor   *cursor,
 	if (priv->direct_cursor) {
 
 		if (!e_data_book_cursor_set_sexp (priv->direct_cursor,
-						  sexp, error))
+						  sexp, cancellable, error))
 			return FALSE;
 
 		*new_total = e_data_book_cursor_get_total (priv->direct_cursor);
@@ -1944,6 +1944,7 @@ step_sync_internal (EBookClientCursor   *cursor,
 						     origin,
 						     count,
 						     &results,
+						     cancellable,
 						     error);
 		if (n_results < 0)
 			return n_results;
@@ -2074,6 +2075,7 @@ set_alphabetic_index_sync_internal (EBookClientCursor   *cursor,
 		if (!e_data_book_cursor_set_alphabetic_index (priv->direct_cursor,
 							      index,
 							      locale,
+							      cancellable,
 							      error))
 			return FALSE;
 
