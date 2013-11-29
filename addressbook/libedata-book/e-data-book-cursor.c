@@ -242,9 +242,8 @@ static void e_data_book_cursor_set_property (GObject *object,
 static void     data_book_cursor_set_values      (EDataBookCursor  *cursor,
 						  gint              total,
 						  gint              position);
-static gboolean data_book_cursor_compare_contact (EDataBookCursor  *cursor,
+static gint     data_book_cursor_compare_contact (EDataBookCursor  *cursor,
 						  EContact         *contact,
-						  gint             *result,
 						  gboolean         *matches_sexp);
 static void     calculate_step_position          (EDataBookCursor  *cursor,
 						  EBookCursorOrigin origin,
@@ -355,7 +354,7 @@ e_data_book_cursor_constructed (GObject *object)
   GError *error = NULL;
 
   /* Get the initial cursor values */
-  if (!e_data_book_cursor_recalculate (cursor, &error)) {
+  if (!e_data_book_cursor_recalculate (cursor, NULL, &error)) {
 	  g_warning ("Failed to calculate initial cursor position: %s", error->message);
 	  g_clear_error (&error);
   }
@@ -468,22 +467,26 @@ data_book_cursor_set_values (EDataBookCursor *cursor,
 	}
 }
 
-static gboolean
+static gint
 data_book_cursor_compare_contact (EDataBookCursor     *cursor,
 				  EContact            *contact,
-				  gint                *result,
 				  gboolean            *matches_sexp)
 {
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact)
-		return FALSE;
+	gint result;
+
+	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) {
+		g_critical ("EDataBookCursor.compare_contact() unimplemented on type '%s'",
+			    G_OBJECT_TYPE_NAME (cursor));
+		return 0;
+	}
 
 	g_object_ref (cursor);
-	*result = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) (cursor,
-									      contact,
-									      matches_sexp);
+	result = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) (cursor,
+									     contact,
+									     matches_sexp);
 	g_object_unref (cursor);
 
-	return TRUE;
+	return result;
 }
 
 static void
@@ -555,6 +558,7 @@ data_book_cursor_handle_step (EDBusAddressBookCursor *dbus_object,
 					     origin,
 					     count,
 					     &results,
+					     NULL,
 					     &error);
 
 	if (n_results < 0) {
@@ -607,6 +611,7 @@ data_book_cursor_handle_set_alphabetic_index (EDBusAddressBookCursor *dbus_objec
 	if (!e_data_book_cursor_set_alphabetic_index (cursor,
 						      index,
 						      locale,
+						      NULL,
 						      &error)) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_clear_error (&error);
@@ -628,7 +633,7 @@ data_book_cursor_handle_set_query (EDBusAddressBookCursor *dbus_object,
 {
 	GError *error = NULL;
 
-	if (!e_data_book_cursor_set_sexp (cursor, query, &error)) {
+	if (!e_data_book_cursor_set_sexp (cursor, query, NULL, &error)) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_clear_error (&error);
 	} else {
@@ -733,6 +738,7 @@ e_data_book_cursor_get_position (EDataBookCursor *cursor)
  * e_data_book_cursor_set_sexp:
  * @cursor: an #EDataBookCursor
  * @sexp: (allow-none): the search expression to set
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Sets the search expression for the cursor
@@ -744,6 +750,7 @@ e_data_book_cursor_get_position (EDataBookCursor *cursor)
 gboolean
 e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 			     const gchar         *sexp,
+			     GCancellable        *cancellable,
 			     GError             **error)
 {
 	GError *local_error = NULL;
@@ -769,7 +776,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 	 * we can't fail anymore so just fire a warning
 	 */
 	if (success &&
-	    !e_data_book_cursor_recalculate (cursor, &local_error)) {
+	    !e_data_book_cursor_recalculate (cursor, cancellable, &local_error)) {
 		g_warning ("Failed to recalculate the cursor value "
 			   "after setting the search expression: %s",
 			   local_error->message);
@@ -790,6 +797,7 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
  * @count: a positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type utf8) (transfer full):
  *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in %flags
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Steps @cursor through it's sorted query by a maximum of @count contacts
@@ -829,6 +837,7 @@ e_data_book_cursor_step (EDataBookCursor     *cursor,
 			 EBookCursorOrigin    origin,
 			 gint                 count,
 			 GSList             **results,
+			 GCancellable        *cancellable,
 			 GError             **error)
 {
 	gint retval;
@@ -852,6 +861,7 @@ e_data_book_cursor_step (EDataBookCursor     *cursor,
 								  origin,
 								  count,
 								  results,
+								  cancellable,
 								  error);
 	g_object_unref (cursor);
 
@@ -868,6 +878,7 @@ e_data_book_cursor_step (EDataBookCursor     *cursor,
  * @cursor: an #EDataBookCursor
  * @index: the alphabetic index
  * @locale: the locale in which @index is expected to be a valid alphabetic index
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Sets the @cursor position to an
@@ -892,6 +903,7 @@ gboolean
 e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
 					 gint                 index,
 					 const gchar         *locale,
+					 GCancellable        *cancellable,
 					 GError             **error)
 {
 	GError *local_error = NULL;
@@ -908,7 +920,7 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
 											   error);
 
 		/* We already set the new cursor value, we can't fail anymore so just fire a warning */
-		if (!e_data_book_cursor_recalculate (cursor, &local_error)) {
+		if (!e_data_book_cursor_recalculate (cursor, cancellable, &local_error)) {
 			g_warning ("Failed to recalculate the cursor value "
 				   "after setting the alphabetic index: %s",
 				   local_error->message);
@@ -931,6 +943,7 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
 /**
  * e_data_book_cursor_recalculate:
  * @cursor: an #EDataBookCursor
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Recalculates the cursor's total and position, this is meant
@@ -944,6 +957,7 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
  */
 gboolean
 e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
+				GCancellable        *cancellable,
 				GError             **error)
 {
 	gint total = 0;
@@ -964,6 +978,7 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
 	success =  (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->get_position) (cursor,
 									    &total,
 									    &position,
+									    cancellable,
 									    error);
 	g_object_unref (cursor);
 
@@ -977,6 +992,7 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
  * e_data_book_cursor_load_locale:
  * @cursor: an #EDataBookCursor
  * @locale: (out) (allow-none): return location for the locale
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Load the current locale setting from the cursor's underlying database.
@@ -993,6 +1009,7 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
 gboolean
 e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 				gchar              **locale,
+				GCancellable        *cancellable,
 				GError             **error)
 {
 	EDataBookCursorPrivate *priv;
@@ -1023,12 +1040,12 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 		if (e_data_book_cursor_step (cursor, NULL,
 					     E_BOOK_CURSOR_STEP_MOVE,
 					     E_BOOK_CURSOR_ORIGIN_BEGIN,
-					     0, NULL, &local_error) < 0) {
+					     0, NULL, cancellable, &local_error) < 0) {
 			g_warning ("Error resetting cursor position after locale change: %s",
 				   local_error->message);
 			g_clear_error (&local_error);
 		} else if (!e_data_book_cursor_recalculate (E_DATA_BOOK_CURSOR (cursor),
-							    &local_error)) {
+							    cancellable, &local_error)) {
 			g_warning ("Error recalculating cursor position after locale change: %s",
 				   local_error->message);
 			g_clear_error (&local_error);
@@ -1067,19 +1084,7 @@ e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
 
 	priv = cursor->priv;
 
-	if (!data_book_cursor_compare_contact (cursor, contact, &comparison, &matches_sexp)) {
-		GError *error = NULL;
-
-		/* Comparisons not supported, must recalculate entirely */
-		if (!e_data_book_cursor_recalculate (cursor, &error)) {
-			g_warning ("Failed to recalculate the cursor value "
-				   "after a contact was added: %s",
-				   error->message);
-			g_clear_error (&error);
-		}
-
-		return;
-	}
+	comparison = data_book_cursor_compare_contact (cursor, contact, &matches_sexp);
 
 	/* The added contact doesn't match the cursor search expression, no need
 	 * to change the position & total values
@@ -1125,19 +1130,7 @@ e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
 
 	priv = cursor->priv;
 
-	if (!data_book_cursor_compare_contact (cursor, contact, &comparison, &matches_sexp)) {
-		GError *error = NULL;
-
-		/* Comparisons not supported, must recalculate entirely */
-		if (!e_data_book_cursor_recalculate (cursor, &error)) {
-			g_warning ("Failed to recalculate the cursor value "
-				   "after a contact was added: %s",
-				   error->message);
-			g_clear_error (&error);
-		}
-
-		return;
-	}
+	comparison = data_book_cursor_compare_contact (cursor, contact, &matches_sexp);
 
 	/* The removed contact did not match the cursor search expression, no need
 	 * to change the position & total values
