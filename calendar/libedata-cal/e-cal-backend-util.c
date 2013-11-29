@@ -167,7 +167,7 @@ is_attendee_declined (icalcomponent *icalcomp,
 	     prop != NULL;
 	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
 		gchar *attendee;
-		gchar *text = NULL;
+		gchar *text;
 
 		attendee = icalproperty_get_value_as_string_r (prop);
 		if (!attendee)
@@ -175,6 +175,9 @@ is_attendee_declined (icalcomponent *icalcomp,
 
 		if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
 			text = g_strdup (attendee + 7);
+		else
+			text = g_strdup (attendee);
+
 		text = g_strstrip (text);
 
 		if (!g_ascii_strcasecmp (email, text)) {
