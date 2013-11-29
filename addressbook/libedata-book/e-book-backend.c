@@ -1205,25 +1205,34 @@ e_book_backend_sync (EBookBackend *backend)
  * e_book_backend_set_locale:
  * @backend: an #EBookbackend
  * @locale: the new locale for the addressbook
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Notify the addressbook backend that the current locale has
  * changed, this is important for backends which support
  * ordered result lists which are locale sensitive.
  *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
  * Since: 3.12
  */
-void
+gboolean
 e_book_backend_set_locale (EBookBackend *backend,
-			   const gchar  *locale)
+			   const gchar  *locale,
+			   GCancellable *cancellable,
+			   GError      **error)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
 	g_object_ref (backend);
 
 	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale)
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale);
-
+		return (* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale,
+									   cancellable, error);
 	g_object_unref (backend);
+
+	/* Backend does not support locales, just happily return */
+	return TRUE;
 }
 
 /**

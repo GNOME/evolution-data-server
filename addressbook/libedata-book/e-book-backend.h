@@ -203,8 +203,10 @@ struct _EBookBackendClass {
 			(*get_direct_book)	(EBookBackend *backend);
 	void		(*configure_direct)	(EBookBackend *backend,
 						 const gchar *config);
-	void            (*set_locale)           (EBookBackend *backend,
-						 const gchar  *locale);
+	gboolean        (*set_locale)           (EBookBackend *backend,
+						 const gchar  *locale,
+						 GCancellable *cancellable,
+						 GError **error);
 	gchar          *(*dup_locale)           (EBookBackend *backend);
 	EDataBookCursor *
 	                (*create_cursor)	(EBookBackend *backend,
@@ -316,8 +318,10 @@ EDataBookDirect *
 void            e_book_backend_configure_direct (EBookBackend *backend, const gchar *config);
 
 void		e_book_backend_sync		(EBookBackend *backend);
-void            e_book_backend_set_locale       (EBookBackend *backend,
-						 const gchar  *locale);
+gboolean        e_book_backend_set_locale       (EBookBackend *backend,
+						 const gchar  *locale,
+						 GCancellable *cancellable,
+						 GError      **error);
 gchar          *e_book_backend_dup_locale       (EBookBackend *backend);
 
 EDataBookCursor *
