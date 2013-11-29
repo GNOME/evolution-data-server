@@ -299,6 +299,7 @@ book_client_load_direct_backend (ESourceRegistry *registry,
 		}
 
 		g_clear_object (&data_book);
+
 	}
 
 	return backend;
@@ -3802,6 +3803,31 @@ sort_param_to_strv (gpointer param,
 
 	return array;
 }
+
+/* This is ugly and should change yes, currently EBookClientCursor
+ * needs to keep a strong reference to the EBookClient to keep it alive
+ * long enough to ask the EBookClient to delete a direct cursor on
+ * the EBookClientCursor's behalf, otherwise direct cursors are leaked.
+ */
+void book_client_delete_direct_cursor (EBookClient *client,
+				       EDataBookCursor *cursor);
+
+void
+book_client_delete_direct_cursor (EBookClient *client,
+				  EDataBookCursor *cursor)
+{
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (E_IS_DATA_BOOK_CURSOR (cursor));
+
+	if (!client->priv->direct_backend) {
+		g_warning ("Tried to delete a cursor in DRA mode but the direct backend is missing");
+		return;
+	}
+
+	e_book_backend_delete_cursor (client->priv->direct_backend,
+				      cursor, NULL);
+}
+
 
 static void
 book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,

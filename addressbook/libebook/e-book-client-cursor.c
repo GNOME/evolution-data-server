@@ -605,10 +605,10 @@ struct _Notification {
 };
 
 struct _EBookClientCursorPrivate {
-	/* Weak reference to the EBookClient and
+	/* Strong reference to the EBookClient and
 	 * to the GMainContext in which notifications
 	 * should be delivered to the EBookClientCursor user */
-	GWeakRef      client;
+	EBookClient  *client;
 	GMainContext *main_context;
 	GMutex        main_context_lock;
 
@@ -963,9 +963,9 @@ book_client_cursor_dispose (GObject *object)
 	EBookClientCursorPrivate *priv = cursor->priv;
 	gint i;
 
+	book_client_cursor_set_direct_cursor (cursor, NULL);
 	book_client_cursor_set_client (cursor, NULL);
 	book_client_cursor_set_proxy (cursor, NULL);
-	book_client_cursor_set_direct_cursor (cursor, NULL);
 	book_client_cursor_set_connection (cursor, NULL);
 	book_client_cursor_set_context (cursor, NULL);
 
@@ -1152,31 +1152,29 @@ book_client_cursor_set_client (EBookClientCursor *cursor,
 			       EBookClient *client)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
-	EBookClient *current_client;
 
 	g_return_if_fail (client == NULL || E_IS_BOOK_CLIENT (client));
-
-	current_client = e_book_client_cursor_ref_client (cursor);
 
 	/* Clients can't really change, but we set up this
 	 * mutator style code just to manage the signal connections
 	 * we watch on the client, we need to disconnect them properly.
 	 */
-	if (current_client != client) {
+	if (priv->client != client) {
 
-		if (current_client) {
+		if (priv->client) {
 
 			/* Disconnect signals */
-			g_signal_handler_disconnect (current_client, priv->revision_changed_id);
-			g_signal_handler_disconnect (current_client, priv->locale_changed_id);
+			g_signal_handler_disconnect (priv->client, priv->revision_changed_id);
+			g_signal_handler_disconnect (priv->client, priv->locale_changed_id);
 			priv->revision_changed_id = 0;
 			priv->locale_changed_id = 0;
+			g_object_unref (priv->client);
 		}
 
 		/* Set the new client */
-		g_weak_ref_set (&priv->client, client);
+		priv->client = client;
 
-		if (client) {
+		if (priv->client) {
 			gchar *revision = NULL;
 
 			/* Connect signals */
@@ -1194,19 +1192,18 @@ book_client_cursor_set_client (EBookClientCursor *cursor,
 						       0);
 
 			/* Load initial locale & revision */
-			book_client_cursor_set_locale (cursor, e_book_client_get_locale (client));
+			book_client_cursor_set_locale (cursor, e_book_client_get_locale (priv->client));
 
 			/* This loads a cached D-Bus property, no D-Bus activity */
-			e_client_get_backend_property_sync (E_CLIENT (client),
+			e_client_get_backend_property_sync (E_CLIENT (priv->client),
 							    CLIENT_BACKEND_PROPERTY_REVISION,
 							    &revision, NULL, NULL);
 			book_client_cursor_set_revision (cursor, revision);
 			g_free (revision);
+
+			g_object_ref (priv->client);
 		}
 	}
-
-	/* e_book_client_cursor_ref_client() gave us a ref */
-	g_clear_object (&current_client);
 }
 
 static void
@@ -1364,6 +1361,10 @@ book_client_cursor_context_is_current (EBookClientCursor *cursor)
 	return is_current;
 }
 
+/* Secretly shared API */
+void book_client_delete_direct_cursor (EBookClient *client,
+				       EDataBookCursor *cursor);
+
 static void
 book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
 				      EDataBookCursor   *direct_cursor)
@@ -1380,6 +1381,15 @@ book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
 			g_signal_handler_disconnect (priv->direct_cursor, priv->dra_position_changed_id);
 			priv->dra_total_changed_id = 0;
 			priv->dra_position_changed_id = 0;
+
+			/* Tell EBookClient to delete the cursor
+			 *
+			 * This should only happen in ->dispose()
+			 * before releasing our strong reference to the EBookClient
+			 */
+			g_warn_if_fail (priv->client != NULL);
+			book_client_delete_direct_cursor (priv->client,
+							  priv->direct_cursor);
 
 			g_object_unref (priv->direct_cursor);
 		}
@@ -2147,7 +2157,7 @@ e_book_client_cursor_ref_client (EBookClientCursor *cursor)
 {
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), NULL);
 
-	return g_weak_ref_get (&cursor->priv->client);
+	return g_object_ref (cursor->priv->client);
 }
 
 /**
