@@ -667,6 +667,7 @@ data_book_cursor_handle_dispose (EDBusAddressBookCursor *dbus_object,
 		g_warning ("Error trying to delete cursor: %s", error->message);
 		g_clear_error (&error);
 	}
+
 	e_dbus_address_book_cursor_complete_dispose (dbus_object, invocation);
 
 	g_object_unref (cursor);

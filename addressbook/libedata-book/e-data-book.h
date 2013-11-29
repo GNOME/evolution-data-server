@@ -106,6 +106,10 @@ GDBusConnection *
 		e_data_book_get_connection	(EDataBook *book);
 const gchar *	e_data_book_get_object_path	(EDataBook *book);
 
+gboolean        e_data_book_set_locale          (EDataBook *book,
+						 const gchar *locale,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_data_book_respond_open	(EDataBook *book,
 						 guint32 opid,
 						 GError *error);
@@ -151,6 +155,7 @@ void		e_data_book_report_backend_property_changed
 
 gchar *		e_data_book_string_slist_to_comma_string
 						(const GSList *strings);
+
 
 G_END_DECLS
 
