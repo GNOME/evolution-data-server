@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2013-11-23 17:14+0000\n"
-"PO-Revision-Date: 2013-11-25 10:42+0100\n"
+"POT-Creation-Date: 2013-11-29 13:09+0000\n"
+"PO-Revision-Date: 2013-11-29 18:14+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -26,72 +26,73 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Gtranslator 2.91.5\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:117
+#: ../addressbook/backends/file/e-book-backend-file.c:119
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Falló al quitar el archivo «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:145
+#: ../addressbook/backends/file/e-book-backend-file.c:147
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Falló al crear la carpeta %s: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:396
+#: ../addressbook/backends/file/e-book-backend-file.c:398
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Falló al crear el enlace duro para el recurso «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:501
-#: ../addressbook/backends/file/e-book-backend-file.c:1245
+#: ../addressbook/backends/file/e-book-backend-file.c:503
+#: ../addressbook/backends/file/e-book-backend-file.c:1224
 msgid "No UID in the contact"
 msgstr "El contacto no tiene ningún UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:845
+#: ../addressbook/backends/file/e-book-backend-file.c:830
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Encontrados UID en conflicto en los contactos añadidos"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:960
+#: ../addressbook/backends/file/e-book-backend-file.c:969
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:962
+#: ../addressbook/backends/file/e-book-backend-file.c:971
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4422
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1275
+#: ../addressbook/backends/file/e-book-backend-file.c:1252
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr ""
 "Se intentó modificar el contacto «%s» sin la revisión de la sincronización"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1449
-#: ../addressbook/backends/file/e-book-backend-file.c:1540
+#: ../addressbook/backends/file/e-book-backend-file.c:1430
+#: ../addressbook/backends/file/e-book-backend-file.c:1512
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3004
+#: ../addressbook/libedata-book/e-book-sqlite.c:6904
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Contacto «%s» no encontrado"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1582
-#: ../addressbook/backends/file/e-book-backend-file.c:1649
+#: ../addressbook/backends/file/e-book-backend-file.c:1565
+#: ../addressbook/backends/file/e-book-backend-file.c:1640
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "Consulta «%s» no soportada"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1591
-#: ../addressbook/backends/file/e-book-backend-file.c:1658
+#: ../addressbook/backends/file/e-book-backend-file.c:1574
+#: ../addressbook/backends/file/e-book-backend-file.c:1649
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "Consulta «%s» no válida"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1910
+#: ../addressbook/backends/file/e-book-backend-file.c:1889
 msgid "Requested to delete an unrelated cursor"
 msgstr "Se ha pedido eliminar un cursor no relacionado"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1980
+#: ../addressbook/backends/file/e-book-backend-file.c:1956
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
@@ -137,7 +138,7 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../calendar/libecal/e-cal-client.c:5908
 #: ../calendar/libecal/e-cal-client.c:6103
 #: ../calendar/libecal/e-cal-client.c:6465
-#: ../calendar/libecal/e-cal-client.c:6678 ../camel/camel-session.c:563
+#: ../calendar/libecal/e-cal-client.c:6678 ../camel/camel-session.c:593
 #: ../camel/providers/imapx/camel-imapx-command.c:655
 #: ../libedataserver/e-client.c:177
 msgid "Unknown error"
@@ -968,16 +969,18 @@ msgid "Unable to connect to '%s': "
 msgstr "No se pudo conectar a «%s: "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:894
+#: ../addressbook/libedata-book/e-book-sqlite.c:2078
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Error al hacer la introspección del campo de resumen «%s» no válido"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1504
+#: ../addressbook/libedata-book/e-book-sqlite.c:1261
 msgid "Error parsing regular expression"
 msgstr "Error al analizar la expresión regular"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1549
-#: ../camel/camel-db.c:547
+#: ../addressbook/libedata-book/e-book-sqlite.c:1737 ../camel/camel-db.c:547
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
@@ -988,6 +991,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo de contacto «%d» no válido especificado en el resumen"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1720
+#: ../addressbook/libedata-book/e-book-sqlite.c:519
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1007,6 +1011,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4205
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4286
+#: ../addressbook/libedata-book/e-book-sqlite.c:5563
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "La consulta contiene elementos no soportados"
@@ -1027,7 +1032,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4290
 #: ../addressbook/libedata-book/e-data-book.c:380
-#: ../addressbook/libedata-book/e-data-book.c:1014
+#: ../addressbook/libedata-book/e-data-book.c:1015
 #: ../calendar/libedata-cal/e-data-cal.c:412
 #: ../calendar/libedata-cal/e-data-cal.c:1299 ../libedataserver/e-client.c:164
 #, c-format
@@ -1070,6 +1075,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "No se puede ordenar por un campo que tiene varios valores"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:5949
+#: ../addressbook/libedata-book/e-book-sqlite.c:7570
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1079,6 +1085,7 @@ msgstr ""
 "lista de contactos"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:5956
+#: ../addressbook/libedata-book/e-book-sqlite.c:7578
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1086,6 +1093,43 @@ msgid ""
 msgstr ""
 "Se ha intentado recorrer hacia adelante, pero el cursor ya está al final de "
 "la lista de contactos"
+
+#: ../addressbook/libedata-book/e-book-sqlite.c:487
+#, c-format
+#| msgid "Invalid contact field '%d' specified in summary"
+msgid "Unsupported contact field '%d' specified in summary"
+msgstr "Campo de contacto «%d» especificado en el resumen no soportado"
+
+#: ../addressbook/libedata-book/e-book-sqlite.c:1806
+msgid ""
+"Cannot upgrade contacts database from a legacy database with more than one "
+"addressbook. Delete one of the entries in the 'folders' table first."
+msgstr ""
+"No se puede actualizar la base de datos de contactos desde una base de datos "
+"heredada con más de una libreta de direcciones. Elimine primero una de las "
+"entradas de la tabla «carpetas»."
+
+#: ../addressbook/libedata-book/e-book-sqlite.c:5557
+#, c-format
+#| msgid "Invalid query: "
+msgid "Invalid query: %s"
+msgstr "Consulta no válida: %s"
+
+#: ../addressbook/libedata-book/e-book-sqlite.c:5729
+#| msgid "Invalid query: "
+msgid "Invalid query for EbSqlCursor"
+msgstr "Consulta no válida para EbSqlCursor"
+
+#: ../addressbook/libedata-book/e-book-sqlite.c:7397
+#| msgid "At least one sort field must be specified to use an EbSdbCursor"
+msgid "At least one sort field must be specified to use an EbSqlCursor"
+msgstr ""
+"Se debe especificar al menos un campo de ordenación para usar un EbSdbCursor"
+
+#: ../addressbook/libedata-book/e-book-sqlite.c:7413
+#| msgid "Cannot sort by a field that is not in the summary"
+msgid "Cannot sort by a field that is not a string type"
+msgstr "No se puede ordenar por un campo que no es de tipo cadena"
 
 #: ../addressbook/libedata-book/e-data-book.c:364
 #: ../calendar/libedata-cal/e-data-cal.c:393
@@ -1204,72 +1248,72 @@ msgstr "Objeto no sincronizado"
 msgid "Other error"
 msgstr "Otro error"
 
-#: ../addressbook/libedata-book/e-data-book.c:1039
+#: ../addressbook/libedata-book/e-data-book.c:1040
 #: ../calendar/libedata-cal/e-data-cal.c:1324
 msgid "Invalid query: "
 msgstr "Consulta no válida: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1258
+#: ../addressbook/libedata-book/e-data-book.c:1259
 msgid "Cannot open book: "
 msgstr "No se puede abrir la libreta: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1295
+#: ../addressbook/libedata-book/e-data-book.c:1296
 msgid "Cannot refresh address book: "
 msgstr "No se puede actualizar la libreta de direcciones: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1326
+#: ../addressbook/libedata-book/e-data-book.c:1327
 msgid "Cannot get contact: "
 msgstr "No se puede obtener el contacto: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1364
+#: ../addressbook/libedata-book/e-data-book.c:1365
 msgid "Cannot get contact list: "
 msgstr "No se puede obtener la lista de contactos: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1416
+#: ../addressbook/libedata-book/e-data-book.c:1417
 msgid "Cannot get contact list uids: "
 msgstr "No se puede obtener la lista de UID de los contactos: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1463
+#: ../addressbook/libedata-book/e-data-book.c:1464
 msgid "Cannot add contact: "
 msgstr "No se puede añadir el contacto: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1512
+#: ../addressbook/libedata-book/e-data-book.c:1513
 msgid "Cannot modify contacts: "
 msgstr "No se pueden modificar los contactos: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1554
+#: ../addressbook/libedata-book/e-data-book.c:1555
 msgid "Cannot remove contacts: "
 msgstr "No se pueden quitar los contactos: "
 
-#: ../addressbook/libedata-book/e-data-book-cursor.c:764
+#: ../addressbook/libedata-book/e-data-book-cursor.c:772
 msgid "Cursor does not support setting the search expression"
 msgstr "El cursor no soporta establecer la expresión de búsqueda"
 
-#: ../addressbook/libedata-book/e-data-book-cursor.c:843
+#: ../addressbook/libedata-book/e-data-book-cursor.c:853
 msgid "Cursor does not support step"
 msgstr "El cursor no se puede recorrer"
 
-#: ../addressbook/libedata-book/e-data-book-cursor.c:921
+#: ../addressbook/libedata-book/e-data-book-cursor.c:934
 msgid "Cursor does not support alphabetic indexes"
 msgstr "El cursor no soporta los índices alfabéticos"
 
-#: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:267
+#: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:268
 msgid "Unrecognized cursor origin"
 msgstr "Origen del cursor no reconocido"
 
-#: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:332
+#: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:334
 msgid "Out of sync revision while moving cursor"
 msgstr "Fuera de la sincronización de la revisión al mover el cursor"
 
-#: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:423
+#: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:424
 msgid "Alphabetic index was set for incorrect locale"
 msgstr ""
 "Se ha establecido el índice alfabético para la configuración regional "
@@ -1447,14 +1491,12 @@ msgstr "Meteorología: Tormenta"
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:330
 #, c-format
-#| msgid "%.1f°F - %s"
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:333
 #, c-format
-#| msgid "%.1f°C - %s"
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
@@ -1804,14 +1846,15 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"«%s» espera que todos los argumentos sean cadenas o que uno y sólo uno de los "
-"argumentos sea un booleano falso (#f)"
+"«%s» espera que todos los argumentos sean cadenas o que uno y sólo uno de "
+"los argumentos sea un booleano falso (#f)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1389
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/hora"
+"«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/"
+"hora"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1450
 #, c-format
@@ -1937,7 +1980,7 @@ msgstr "No se pudo crear la ruta a la caché"
 msgid "Empty cache file"
 msgstr "Vaciar caché de archivos"
 
-#: ../camel/camel-data-cache.c:523
+#: ../camel/camel-data-cache.c:524
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "No se pudo quitar la entrada de caché: %s: %s"
@@ -2407,7 +2450,6 @@ msgid "Host lookup '%s' failed: %s"
 msgstr "Falló al resolver el servidor %s: %s"
 
 #: ../camel/camel-network-service.c:1006
-#| msgid "No quota information available for folder '%s'"
 msgid "No host information available"
 msgstr "Información del equipo no disponible"
 
@@ -2450,7 +2492,7 @@ msgstr "No se pudo cargar %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "No se pudo cargar %s: No hay código de inicialización en el módulo."
 
-#: ../camel/camel-provider.c:429 ../camel/camel-session.c:394
+#: ../camel/camel-provider.c:429 ../camel/camel-session.c:424
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "No hay proveedor disponible para el protocolo «%s»"
@@ -2689,13 +2731,13 @@ msgstr "Se intentó la autenticación POP antes de SMTP con un servicio %s"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Falló la compilación de la expresión regular: %s: %s"
 
-#: ../camel/camel-session.c:403
+#: ../camel/camel-session.c:433
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "El GType registrado no es válido para el protocolo «%s»"
 
-#: ../camel/camel-session.c:472
-#: ../camel/providers/imapx/camel-imapx-server.c:4509
+#: ../camel/camel-session.c:502
+#: ../camel/providers/imapx/camel-imapx-server.c:4516
 #: ../camel/providers/pop3/camel-pop3-store.c:313
 #: ../camel/providers/pop3/camel-pop3-store.c:759
 #: ../camel/providers/smtp/camel-smtp-transport.c:517
@@ -2703,12 +2745,12 @@ msgstr "El GType registrado no es válido para el protocolo «%s»"
 msgid "No support for %s authentication"
 msgstr "No hay soporte para la autenticación %s"
 
-#: ../camel/camel-session.c:487
+#: ../camel/camel-session.c:517
 #, c-format
 msgid "%s authentication failed"
 msgstr "Falló la autenticación %s"
 
-#: ../camel/camel-session.c:627
+#: ../camel/camel-session.c:657
 msgid "Forwarding messages is not supported"
 msgstr "El reenvío de mensajes no está soportado"
 
@@ -3172,187 +3214,178 @@ msgstr "Servidor desconectado"
 msgid "Error writing to cache stream"
 msgstr "Error al escribir al flujo de caché"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2765
-#, c-format
-msgid ""
-"Alert from IMAP server %s:\n"
-"%s"
-msgstr ""
-"Alerta del servidor IMAP %s:\n"
-"%s"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3371
+#: ../camel/providers/imapx/camel-imapx-server.c:3378
 #, c-format
 msgid "Not authenticated"
 msgstr "No está autenticado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3449
+#: ../camel/providers/imapx/camel-imapx-server.c:3456
 msgid "Error performing IDLE"
 msgstr "Error al estar inactivo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4370
+#: ../camel/providers/imapx/camel-imapx-server.c:4377
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4371
+#: ../camel/providers/imapx/camel-imapx-server.c:4378
 #: ../camel/providers/smtp/camel-smtp-transport.c:217
 msgid "STARTTLS not supported"
 msgstr "No se soporta STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4418
+#: ../camel/providers/imapx/camel-imapx-server.c:4425
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4498
+#: ../camel/providers/imapx/camel-imapx-server.c:4505
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "El servidor IMAP %s no soporta la autenticación %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4528
+#: ../camel/providers/imapx/camel-imapx-server.c:4535
 #: ../camel/providers/nntp/camel-nntp-store.c:396
 #: ../camel/providers/nntp/camel-nntp-store.c:533
 msgid "Cannot authenticate without a username"
 msgstr "No se pudo autenticar sin un nombre de usuario"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4537
+#: ../camel/providers/imapx/camel-imapx-server.c:4544
 #: ../camel/providers/nntp/camel-nntp-store.c:542
 #: ../camel/providers/pop3/camel-pop3-store.c:680
 #: ../camel/providers/pop3/camel-pop3-store.c:701
 msgid "Authentication password not available"
 msgstr "La contraseña de la autenticación no está disponible"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4757
+#: ../camel/providers/imapx/camel-imapx-server.c:4764
 msgid "Error fetching message"
 msgstr "Error al obtener el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4805
 #: ../camel/providers/imapx/camel-imapx-server.c:4812
+#: ../camel/providers/imapx/camel-imapx-server.c:4819
 msgid "Failed to close the tmp stream"
 msgstr "Falló al cerrar el flujo temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4847
+#: ../camel/providers/imapx/camel-imapx-server.c:4854
 msgid "Failed to copy the tmp file"
 msgstr "Falló al copiar el archivo temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4973
+#: ../camel/providers/imapx/camel-imapx-server.c:4980
 msgid "Error moving messages"
 msgstr "Error al mover los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4977
+#: ../camel/providers/imapx/camel-imapx-server.c:4984
 msgid "Error copying messages"
 msgstr "Error al copiar los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5136
+#: ../camel/providers/imapx/camel-imapx-server.c:5143
 msgid "Error appending message"
 msgstr "Error al añadir el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5338
+#: ../camel/providers/imapx/camel-imapx-server.c:5345
 msgid "Error fetching message headers"
 msgstr "Error al obtener las cabeceras de los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5514
+#: ../camel/providers/imapx/camel-imapx-server.c:5521
 msgid "Error retrieving message"
 msgstr "Error al obtener el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5644
-#: ../camel/providers/imapx/camel-imapx-server.c:5891
+#: ../camel/providers/imapx/camel-imapx-server.c:5651
+#: ../camel/providers/imapx/camel-imapx-server.c:5898
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr ""
 "Obteniendo recopilación de información sobre los mensajes nuevos en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5713
+#: ../camel/providers/imapx/camel-imapx-server.c:5720
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Buscando mensajes modificados en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5772
+#: ../camel/providers/imapx/camel-imapx-server.c:5779
 msgid "Error fetching new messages"
 msgstr "Error al obtener mensajes nuevos"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6002
+#: ../camel/providers/imapx/camel-imapx-server.c:6009
 msgid "Error while fetching messages"
 msgstr "Error al obtener los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6010
-#: ../camel/providers/imapx/camel-imapx-server.c:6043
+#: ../camel/providers/imapx/camel-imapx-server.c:6017
+#: ../camel/providers/imapx/camel-imapx-server.c:6050
 #, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Obteniendo recopilación de información sobre %d mensaje en «%s»"
 msgstr[1] "Obteniendo recopilación de información sobre %d mensajes en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6189
-#: ../camel/providers/imapx/camel-imapx-server.c:6225
+#: ../camel/providers/imapx/camel-imapx-server.c:6196
+#: ../camel/providers/imapx/camel-imapx-server.c:6232
 msgid "Error refreshing folder"
 msgstr "Error al actualizar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6361
+#: ../camel/providers/imapx/camel-imapx-server.c:6368
 msgid "Error expunging message"
 msgstr "Error al compactar el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6470
-#: ../camel/providers/imapx/camel-imapx-server.c:6495
+#: ../camel/providers/imapx/camel-imapx-server.c:6477
+#: ../camel/providers/imapx/camel-imapx-server.c:6502
 msgid "Error fetching folders"
 msgstr "Error al obtener las carpetas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6575
+#: ../camel/providers/imapx/camel-imapx-server.c:6582
 msgid "Error creating folder"
 msgstr "Error al crear la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6627
+#: ../camel/providers/imapx/camel-imapx-server.c:6634
 msgid "Error deleting folder"
 msgstr "Error al eliminar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6694
+#: ../camel/providers/imapx/camel-imapx-server.c:6701
 msgid "Error renaming folder"
 msgstr "Error al renombrar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6781
+#: ../camel/providers/imapx/camel-imapx-server.c:6788
 msgid "Error subscribing to folder"
 msgstr "Error al suscribirse a las carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6841
+#: ../camel/providers/imapx/camel-imapx-server.c:6848
 msgid "Error unsubscribing from folder"
 msgstr "Error al desuscribirse de la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6897
+#: ../camel/providers/imapx/camel-imapx-server.c:6904
 msgid "Error retrieving quota information"
 msgstr "Error al obtener la información de la cuota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6949
+#: ../camel/providers/imapx/camel-imapx-server.c:6956
 msgid "Search failed"
 msgstr "Falló al buscar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7011
+#: ../camel/providers/imapx/camel-imapx-server.c:7018
 msgid "Error performing NOOP"
 msgstr "Error realizar la no operación"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7124
+#: ../camel/providers/imapx/camel-imapx-server.c:7131
 msgid "Error syncing changes"
 msgstr "Error al sincronizar los cambios"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7434
+#: ../camel/providers/imapx/camel-imapx-server.c:7441
 msgid "Lost connection to IMAP server"
 msgstr "Se ha perdido la conexión con el servidor IMAP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8184
+#: ../camel/providers/imapx/camel-imapx-server.c:8191
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8185
+#: ../camel/providers/imapx/camel-imapx-server.c:8192
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8384
-#: ../camel/providers/imapx/camel-imapx-server.c:8399
+#: ../camel/providers/imapx/camel-imapx-server.c:8391
+#: ../camel/providers/imapx/camel-imapx-server.c:8406
 msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9179
+#: ../camel/providers/imapx/camel-imapx-server.c:9186
 msgid "IMAP server does not support quotas"
 msgstr "El servidor IMAP no soporta cuotas"
 
@@ -3867,7 +3900,7 @@ msgstr "No se puede crear la carpeta «%s»: %s"
 msgid "Cannot get folder '%s': not a directory."
 msgstr "No se puede acceder a la carpeta: «%s»: no es una carpeta."
 
-#: ../camel/providers/local/camel-mh-summary.c:233
+#: ../camel/providers/local/camel-mh-summary.c:238
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "No se pudo abrir el directorio MH en la ruta: %s: %s"
@@ -4674,8 +4707,8 @@ msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
-"Unidades para el recordatorio de cumpleaños o aniversarios, «minutes», «hours» "
-"o «days»"
+"Unidades para el recordatorio de cumpleaños o aniversarios, «minutes», "
+"«hours» o «days»"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -4836,12 +4869,12 @@ msgstr "El origen de datos %s no soporta la autenticación OAuth 2.0"
 msgid "File must have a '.source' extension"
 msgstr "El archivo debe tener una extensión «.source»"
 
-#: ../libebackend/e-source-registry-server.c:521
+#: ../libebackend/e-source-registry-server.c:532
 #: ../libedataserver/e-source-registry.c:1879
 msgid "The user declined to authenticate"
 msgstr "El usuario ha rechazado autenticarse"
 
-#: ../libebackend/e-source-registry-server.c:790
+#: ../libebackend/e-source-registry-server.c:801
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "el UID «%s» ya está en uso"
@@ -5078,8 +5111,8 @@ msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
 "wish to accept it?"
 msgstr ""
-"El certificado SSL para «%s», usado por el calendario «%s» no es de confianza. "
-"¿Quiere aceptarlo?"
+"El certificado SSL para «%s», usado por el calendario «%s» no es de "
+"confianza. ¿Quiere aceptarlo?"
 
 #: ../libedataserver/e-source-webdav.c:1570
 #, c-format
@@ -5228,13 +5261,13 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:129
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:131
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:365
 #, c-format
 msgid "No such data source for UID '%s'"
 msgstr "No existe una fuente para el UID «%s»"
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:141
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:143
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5243,7 +5276,7 @@ msgstr ""
 "No se puede encontrar una cuenta correspondiente en el servicio org.gnome."
 "OnlineAccounts de la que obtener una contraseña para «%s»"
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:213
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:219
 #, c-format
 msgid "Invalid password for '%s'"
 msgstr "Contraseña no válida para «%s»"
@@ -5443,7 +5476,6 @@ msgid "Didn't find 'emails.account' in JSON data"
 msgstr "No se ha encontrado «emails.account» en los datos JSON"
 
 #: ../modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
-#| msgid "Wants HTML Mail"
 msgid "Windows Live Mail"
 msgstr "Correo-e de Windows Live"
 
@@ -5515,6 +5547,13 @@ msgstr ""
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:122
 msgid "_Dismiss"
 msgstr "_Descartar"
+
+#~ msgid ""
+#~ "Alert from IMAP server %s:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Alerta del servidor IMAP %s:\n"
+#~ "%s"
 
 #~ msgid ""
 #~ "Could not write log entry: %s\n"
@@ -5969,8 +6008,8 @@ msgstr "_Descartar"
 #~ "Falló al conectar a un servidor usando SSL. Una posible razón es que el "
 #~ "servidor use un certificado no válido. Si esto se espera, al igual que "
 #~ "usar un certificado firmado por el propio servidor, desactive las pruebas "
-#~ "de validez del certificado seleccionando la opción «Ignorar el certificado "
-#~ "SSL no válido» en las propiedades"
+#~ "de validez del certificado seleccionando la opción «Ignorar el "
+#~ "certificado SSL no válido» en las propiedades"
 
 #~ msgid "Cannot create local store"
 #~ msgstr "No se puede crear el almacén local"
@@ -7010,8 +7049,8 @@ msgstr "_Descartar"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: Error "
-#~ "desconocido"
+#~ "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: "
+#~ "Error desconocido"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
@@ -7071,8 +7110,8 @@ msgstr "_Descartar"
 
 #~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 #~ msgstr ""
-#~ "No se puede obtener la información LIST para «%s» en el servidor IMAP %s: %"
-#~ "s"
+#~ "No se puede obtener la información LIST para «%s» en el servidor IMAP %s: "
+#~ "%s"
 
 #~ msgid "Bad command"
 #~ msgstr "Comando erróneo"
