@@ -2778,7 +2778,7 @@ e_book_client_cursor_get_contact_alphabetic_index (EBookClientCursor   *cursor,
 		 */
 		field = e_contact_field_id (priv->sort_fields[0]);
 		value = e_contact_get_const (contact, field);
-		index = e_collator_get_index (priv->collator, value);
+		index = e_collator_get_index (priv->collator, value ? value : "");
 	}
 
 	return index;
