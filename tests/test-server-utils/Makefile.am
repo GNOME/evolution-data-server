@@ -4,13 +4,6 @@ SUBDIRS = services
 
 @GNOME_CODE_COVERAGE_RULES@
 
-# The registry modules used to point here:
-#   -DEDS_TEST_REGISTRY_DIR=\""$(abs_top_builddir)/modules/cache-reaper/.libs"
-#
-# But this causes ./tests/libebook/client/test-client-cursor-operations to race
-# against the cache reaper, now we're just ensuring there is no cache reaper 
-# in the test environment, note that the above test runs fine with
-# TEST_INSTALLED_SERVICES=1
 common_cflags = \
 	$(AM_CPPFLAGS) \
 	-I$(top_srcdir) \
@@ -25,7 +18,7 @@ common_cflags = \
 	-DEDS_TEST_SCHEMA_DIR=\""$(abs_top_builddir)/data"\" \
 	-DEDS_TEST_ADDRESS_BOOK_DIR=\""$(abs_top_builddir)/addressbook/backends/file/.libs"\" \
 	-DEDS_TEST_CALENDAR_DIR=\""$(abs_top_builddir)/calendar/backends/file/.libs"\" \
-	-DEDS_TEST_REGISTRY_DIR=\""$(abs_top_builddir)/"\" \
+	-DEDS_TEST_REGISTRY_DIR=\""$(abs_top_builddir)/modules/cache-reaper/.libs"\" \
 	-DEDS_TEST_CAMEL_DIR=\""$(abs_top_builddir)/camel/providers/local/.libs"\" \
 	$(E_DATA_SERVER_CFLAGS) \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
