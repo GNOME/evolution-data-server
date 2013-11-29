@@ -60,7 +60,7 @@ test_cursor_create_empty_query_sync (ETestServerFixture *fixture,
 }
 
 static void
-test_cursor_create_valid_query_sync (ETestServerFixture *fixture,
+test_cursor_create_with_query_sync (ETestServerFixture *fixture,
 				     gconstpointer user_data)
 {
 	EBookClient *book_client;
@@ -84,42 +84,6 @@ test_cursor_create_valid_query_sync (ETestServerFixture *fixture,
 	  g_error ("Failed to create a cursor with an empty query: %s", error->message);
 
 	g_object_unref (cursor);
-	g_free (sexp);
-	e_book_query_unref (query);
-}
-
-static void
-test_cursor_create_invalid_query_sync (ETestServerFixture *fixture,
-				       gconstpointer user_data)
-{
-	EBookClient *book_client;
-	EBookClientCursor *cursor = NULL;
-	GError *error = NULL;
-	EBookQuery *query;
-	gchar *sexp;
-
-	query = e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_CONTAINS, "888");
-	sexp  = e_book_query_to_string (query);
-
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-
-	if (e_book_client_get_cursor_sync (book_client,
-					   sexp,
-					   valid_sort_fields,
-					   valid_sort_types,
-					   N_VALID_SORT_FIELDS,
-					   &cursor,
-					   NULL, &error))
-		g_error ("Expected invalid query but successfully created cursor");
-	else if (!g_error_matches (error, 
-				   E_CLIENT_ERROR,
-				   E_CLIENT_ERROR_INVALID_QUERY)) {
-		g_error ("Unexpected error: Domain '%s' Code '%d' Message: %s\n",
-			 g_quark_to_string (error->domain), error->code,
-			 error->message);
-	}
-
-	g_error_free (error);
 	g_free (sexp);
 	e_book_query_unref (query);
 }
@@ -213,7 +177,7 @@ test_cursor_create_empty_query_async (ETestServerFixture *fixture,
 }
 
 static void
-test_cursor_create_valid_query_async (ETestServerFixture *fixture,
+test_cursor_create_with_query_async (ETestServerFixture *fixture,
 				      gconstpointer user_data)
 {
 	EBookClient *book_client;
@@ -231,33 +195,6 @@ test_cursor_create_valid_query_async (ETestServerFixture *fixture,
 				  N_VALID_SORT_FIELDS,
 				  NULL,
 				  cursor_create_success_ready_cb,
-				  fixture->loop);
-
-	g_free (sexp);
-	e_book_query_unref (query);
-
-	g_main_loop_run (fixture->loop);
-}
-
-static void
-test_cursor_create_invalid_query_async (ETestServerFixture *fixture,
-					gconstpointer user_data)
-{
-	EBookClient *book_client;
-	EBookQuery *query;
-	gchar *sexp;
-
-	query = e_book_query_field_test (E_CONTACT_TEL, E_BOOK_QUERY_CONTAINS, "888");
-	sexp  = e_book_query_to_string (query);
-	
-	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
-	e_book_client_get_cursor (book_client,
-				  sexp,
-				  valid_sort_fields,
-				  valid_sort_types,
-				  N_VALID_SORT_FIELDS,
-				  NULL,
-				  cursor_create_invalid_query_ready_cb,
 				  fixture->loop);
 
 	g_free (sexp);
@@ -301,17 +238,11 @@ static const TestClosure test_closures[] = {
 	{ "/EBookClientCursor/Create/EmptyQuery/Async", FALSE,
 	  test_cursor_create_empty_query_async
 	},
-	{ "/EBookClientCursor/Create/ValidQuery/Sync", TRUE,
-	  test_cursor_create_valid_query_sync
+	{ "/EBookClientCursor/Create/WithQuery/Sync", TRUE,
+	  test_cursor_create_with_query_sync
 	},
-	{ "/EBookClientCursor/Create/ValidQuery/Async", FALSE,
-	  test_cursor_create_valid_query_async
-	},
-	{ "/EBookClientCursor/Create/InvalidQuery/Sync", TRUE,
-	  test_cursor_create_invalid_query_sync
-	},
-	{ "/EBookClientCursor/Create/InvalidQuery/Async", FALSE,
-	  test_cursor_create_invalid_query_async
+	{ "/EBookClientCursor/Create/WithQuery/Async", FALSE,
+	  test_cursor_create_with_query_async
 	},
 	{ "/EBookClientCursor/Create/InvalidSort/Sync", TRUE,
 	  test_cursor_create_invalid_sort_sync
