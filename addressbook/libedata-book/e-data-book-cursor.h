@@ -83,6 +83,7 @@ typedef gboolean (*EDataBookCursorSetSexpFunc) (EDataBookCursor     *cursor,
  * @count: a positive or negative amount of contacts to try and fetch
  * @results: (out) (allow-none) (element-type utf8) (transfer full):
  *   A return location to store the results, or %NULL if %E_BOOK_CURSOR_STEP_FETCH is not specified in %flags
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.step()
@@ -115,6 +116,7 @@ typedef gint (*EDataBookCursorStepFunc) (EDataBookCursor     *cursor,
 					 EBookCursorOrigin    origin,
 					 gint                 count,
 					 GSList             **results,
+					 GCancellable        *cancellable,
 					 GError             **error);
 
 /**
@@ -148,6 +150,7 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  * @cursor: an #EDataBookCursor
  * @total: (out): The total number of contacts matching @cursor's query expression
  * @position: (out): The current position of @cursor in it's result list
+ * @cancellable: (allow-none): A #GCancellable
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Method type for #EDataBookCursorClass.get_position()
@@ -181,6 +184,7 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
 typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
 						    gint                *total,
 						    gint                *position,
+						    GCancellable        *cancellable,
 						    GError             **error);
 
 /**
@@ -191,15 +195,12 @@ typedef gboolean (*EDataBookCursorGetPositionFunc) (EDataBookCursor     *cursor,
  *
  * Method type for #EDataBookCursorClass.compare_contact()
  *
- * Cursor implementations should implement this in order to compare a
+ * Cursor implementations must implement this in order to compare a
  * contact with the current cursor state.
  *
  * This is called when the addressbook backends notify active cursors
  * that the addressbook has been modified with e_data_book_cursor_contact_added() and
- * e_data_book_cursor_contact_removed(). Comparing the changed contact details is usually
- * much less of an intensive operation than calling #EDataBookCursorClass.get_position(),
- * however if this method is left unimplemented then #EDataBookCursorClass.get_position()
- * will be used in it's place to recalculate the cursor position and total from scratch.
+ * e_data_book_cursor_contact_removed().
  *
  * Returns: A value that is less than, equal to, or greater than zero if @contact is found,
  * respectively, to be less than, to match, or be greater than the current value of @cursor.
@@ -283,6 +284,7 @@ gint                    e_data_book_cursor_get_total             (EDataBookCurso
 gint                    e_data_book_cursor_get_position          (EDataBookCursor     *cursor);
 gboolean                e_data_book_cursor_set_sexp              (EDataBookCursor     *cursor,
 								  const gchar         *sexp,
+								  GCancellable        *cancellable,
 								  GError             **error);
 gint                    e_data_book_cursor_step                  (EDataBookCursor     *cursor,
 								  const gchar         *revision_guard,
@@ -290,15 +292,19 @@ gint                    e_data_book_cursor_step                  (EDataBookCurso
 								  EBookCursorOrigin    origin,
 								  gint                 count,
 								  GSList             **results,
+								  GCancellable        *cancellable,
 								  GError             **error);
 gboolean                e_data_book_cursor_set_alphabetic_index  (EDataBookCursor     *cursor,
 								  gint                 index,
 								  const gchar         *locale,
+								  GCancellable        *cancellable,
 								  GError             **error);
 gboolean                e_data_book_cursor_recalculate           (EDataBookCursor     *cursor,
+								  GCancellable        *cancellable,
 								  GError             **error);
 gboolean                e_data_book_cursor_load_locale           (EDataBookCursor     *cursor,
 								  gchar              **locale,
+								  GCancellable        *cancellable,
 								  GError             **error);
 void                    e_data_book_cursor_contact_added         (EDataBookCursor     *cursor,
 								  EContact            *contact);
