@@ -140,21 +140,13 @@ system_timezone_read_key_file (const gchar *filename,
 
 			len = strlen (value);
 
-			if (value[0] == '\"') {
-				if (value[len - 1] == '\"') {
-					if (retval)
-						g_free (retval);
-
-					retval = g_strndup (
-						value + 1, len - 2);
-				}
-			} else {
-				if (retval)
-					g_free (retval);
-
-				retval = g_strdup (line + strlen (key_eq));
+			if (value[0] == '\"' && value[len - 1] == '\"') {
+				value += 1;
+				len -= 2;
 			}
 
+			g_free (retval);
+			retval = g_strndup (value, len);
 			g_strstrip (retval);
 		}
 
