@@ -1923,8 +1923,6 @@ camel_session_authenticate_finish
 camel_session_forward_to_sync
 camel_session_forward_to
 camel_session_forward_to_finish
-<SUBSECTION Deprecated>
-camel_session_get_main_context
 <SUBSECTION Standard>
 CAMEL_SESSION
 CAMEL_IS_SESSION

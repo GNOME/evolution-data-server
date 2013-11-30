@@ -875,27 +875,6 @@ camel_session_init (CamelSession *session)
 }
 
 /**
- * camel_session_get_main_context:
- * @session: a #CamelSession
- *
- * Returns the #GMainContext on which event sources for @session are to
- * be attached.
- *
- * Returns: a #GMainContext
- *
- * Since: 3.6
- *
- * Deprecated: 3.8: Use camel_session_ref_main_context() instead.
- **/
-GMainContext *
-camel_session_get_main_context (CamelSession *session)
-{
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
-
-	return session->priv->main_context;
-}
-
-/**
  * camel_session_ref_main_context:
  * @session: a #CamelSession
  *

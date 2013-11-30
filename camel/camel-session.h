@@ -273,10 +273,6 @@ gboolean	camel_session_forward_to_finish	(CamelSession *session,
 						 GAsyncResult *result,
 						 GError **error);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-GMainContext *	camel_session_get_main_context	(CamelSession *session);
-#endif /* CAMEL_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* CAMEL_SESSION_H */
