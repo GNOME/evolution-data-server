@@ -162,7 +162,9 @@ CamelSettings *	camel_service_ref_settings	(CamelService *service);
 void		camel_service_set_settings	(CamelService *service,
 						 CamelSettings *settings);
 const gchar *	camel_service_get_uid		(CamelService *service);
-
+void		camel_service_queue_task	(CamelService *service,
+						 GTask *task,
+						 GTaskThreadFunc task_func);
 gboolean	camel_service_connect_sync	(CamelService *service,
 						 GCancellable *cancellable,
 						 GError **error);

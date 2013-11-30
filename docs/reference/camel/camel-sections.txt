@@ -1871,6 +1871,7 @@ camel_service_ref_session
 camel_service_ref_settings
 camel_service_set_settings
 camel_service_get_uid
+camel_service_queue_task
 camel_service_connect_sync
 camel_service_connect
 camel_service_connect_finish
