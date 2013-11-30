@@ -36,9 +36,6 @@
 
 #include "e-book-backend-sexp.h"
 
-
-
-
 /******************************************************
  *                 Debugging Macros                   *
  ******************************************************
@@ -62,6 +59,7 @@ typedef enum {
 	EBSQL_DEBUG_CONVERT_E164  = 1 << 8,  /* Print information e164 phone number conversions in vcards */
 	EBSQL_DEBUG_REF_COUNTS    = 1 << 9,  /* Print about shared EBookSqlite instances, print when finalized */
 	EBSQL_DEBUG_CANCEL        = 1 << 10, /* Print information about GCancellable cancellations */
+	EBSQL_DEBUG_PREFLIGHT     = 1 << 11, /* Print information about query preflighting */
 } EbSqlDebugFlag;
 
 static const GDebugKey ebsql_debug_keys[] = {
@@ -76,6 +74,7 @@ static const GDebugKey ebsql_debug_keys[] = {
 	{ "e164",           EBSQL_DEBUG_CONVERT_E164 },
 	{ "ref-counts",     EBSQL_DEBUG_REF_COUNTS   },
 	{ "cancel",         EBSQL_DEBUG_CANCEL       },
+	{ "preflight",      EBSQL_DEBUG_PREFLIGHT    },
 };
 
 static EbSqlDebugFlag ebsql_debug_flags = 0;
@@ -220,9 +219,16 @@ ebsql_init_debug (void)
 #define FOLDER_VERSION                8
 #define INSERT_MULTI_STMT_BYTES       128
 #define COLUMN_DEFINITION_BYTES       32
-#define GENERATED_QUERY_BYTES         2048
+#define GENERATED_QUERY_BYTES         1024
 
 #define DEFAULT_FOLDER_ID            "folder_id"
+
+/* We use a 64 bitmask to track which auxiliary tables
+ * are needed to satisfy a query, it's doubtful that
+ * anyone will need an addressbook with 64 fields configured
+ * in the summary.
+ */
+#define EBSQL_MAX_SUMMARY_FIELDS      64
 
 /* The number of SQLite virtual machine instructions that are
  * evaluated at a time, the user passed GCancellable is
@@ -569,16 +575,29 @@ summary_fields_add_indexes (GArray *array,
 	}
 }
 
-static SummaryField *
-summary_field_get (EBookSqlite *ebsql,
-		   EContactField field_id)
+static inline gint
+summary_field_get_index (EBookSqlite *ebsql,
+			 EContactField field_id)
 {
 	gint i;
 
 	for (i = 0; i < ebsql->priv->n_summary_fields; i++) {
 		if (ebsql->priv->summary_fields[i].field_id == field_id)
-			return &(ebsql->priv->summary_fields[i]);
+			return i;
 	}
+
+	return -1;
+}
+
+static inline SummaryField *
+summary_field_get (EBookSqlite *ebsql,
+		   EContactField field_id)
+{
+	gint index;
+
+	index = summary_field_get_index (ebsql, field_id);
+	if (index >= 0)
+		return &(ebsql->priv->summary_fields[index]);
 
 	return NULL;
 }
@@ -2365,6 +2384,28 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 					     field->aux_table, ebsql->priv->folderid);
 		g_string_free (string, TRUE);
 
+
+		if (success) {
+
+			/* Create an index on the implied 'uid' column, this is important
+			 * when replacing (modifying) contacts, since we need to remove
+			 * all rows in an auxiliary table which matches a given UID.
+			 *
+			 * This index speeds up the constraint in a statement such as:
+			 *
+			 *   DELETE from email_list WHERE email_list.uid = 'contact uid'
+			 */
+			tmp = g_strconcat ("UID_INDEX",
+					   "_", field->dbname,
+					   "_", ebsql->priv->folderid,
+					   NULL);
+			ebsql_exec_printf (ebsql,
+					   "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)",
+					   NULL, NULL, NULL, error,
+					   tmp, field->aux_table, "uid");
+			g_free (tmp);
+		}
+
 		/* Add indexes to columns in this auxiliary table
 		 */
 		for (l = aux_columns; success && l; l = l->next) {
@@ -3571,6 +3612,32 @@ ebsql_insert_contact (EBookSqlite *ebsql,
  * Structures and utilities for preflight and query generation *
  ***************************************************************/
 
+/* This enumeration is ordered by severity, higher values
+ * of PreflightStatus take precedence in error reporting.
+ */
+typedef enum {
+	PREFLIGHT_OK = 0,
+	PREFLIGHT_LIST_ALL,
+	PREFLIGHT_NOT_SUMMARIZED,
+	PREFLIGHT_INVALID,
+	PREFLIGHT_UNSUPPORTED,
+} PreflightStatus;
+
+#define EBSQL_STATUS_STR(status)					\
+	((status) == PREFLIGHT_OK             ? "Ok"             :	\
+	 (status) == PREFLIGHT_LIST_ALL       ? "List all"       :	\
+	 (status) == PREFLIGHT_NOT_SUMMARIZED ? "Not Summarized" :	\
+	 (status) == PREFLIGHT_INVALID        ? "Invalid"        :	\
+	 (status) == PREFLIGHT_UNSUPPORTED    ? "Unsupported"    : "(unknown status)")
+
+/* Whether we can satisfy the constraints or whether we
+ * need to do a fallback, we still need to call
+ * ebsql_generate_constraints()
+ */
+#define EBSQL_STATUS_GEN_CONSTRAINTS(status)	\
+	((status) == PREFLIGHT_OK ||		\
+	 (status) == PREFLIGHT_NOT_SUMMARIZED)
+
 /* Internal extension of the EBookQueryTest enumeration */
 enum {
 	/* 'exists' is a supported query on a field, but not part of EBookQueryTest */
@@ -3584,6 +3651,27 @@ enum {
 
 	BOOK_QUERY_SUB_FIRST = BOOK_QUERY_SUB_AND,
 };
+
+#define EBSQL_QUERY_TYPE_STR(query)					\
+	((query) == BOOK_QUERY_EXISTS          ? "exists"        :	\
+	 (query) == BOOK_QUERY_SUB_AND         ? "AND"           :	\
+	 (query) == BOOK_QUERY_SUB_OR          ? "OR"            :	\
+	 (query) == BOOK_QUERY_SUB_NOT         ? "NOT"           :	\
+	 (query) == BOOK_QUERY_SUB_END         ? "END"           :	\
+	 (query) == E_BOOK_QUERY_IS            ? "is"            :	\
+	 (query) == E_BOOK_QUERY_CONTAINS      ? "contains"      :	\
+	 (query) == E_BOOK_QUERY_BEGINS_WITH   ? "begins-with"   :	\
+	 (query) == E_BOOK_QUERY_ENDS_WITH     ? "ends-with"     :	\
+	 (query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER   ? "eqphone" :	\
+	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER   ? "eqphone-national" : \
+	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER      ? "eqphone-short" : \
+	 (query) == E_BOOK_QUERY_REGEX_NORMAL   ? "regex-normal" :	\
+	 (query) == E_BOOK_QUERY_REGEX_NORMAL   ? "regex-raw"    : "(unknown)")
+
+#define EBSQL_FIELD_ID_STR(field_id)					\
+	((field_id) == E_CONTACT_FIELD_LAST ? "x-evolution-any-field" :	\
+	 (field_id) == 0 ? "(not an EContactField)" :			\
+	 e_contact_field_name (field_id))
 
 #define IS_QUERY_PHONE(query)						\
 	((query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER          ||	\
@@ -3605,9 +3693,6 @@ typedef struct {
 	SummaryField  *field;          /* The summary field for 'field' */
 	gchar         *value;          /* The value to compare with */
 
-	/* For preflighting without collecting strings */
-	guint          has_value : 1;
-	guint          has_extra : 1;
 } QueryFieldTest;
 
 typedef struct {
@@ -3617,8 +3702,6 @@ typedef struct {
 	EContactField  field_id;       /* The EContactField to compare */
 	SummaryField  *field;          /* The summary field for 'field' */
 	gchar         *value;          /* The value to compare with */
-	guint          has_value : 1;
-	guint          has_extra : 1;
 
 	/* Extension */
 	gchar         *region;   /* Region code from the query input */
@@ -3626,30 +3709,13 @@ typedef struct {
 	gint           country;  /* Parsed country code */
 } QueryPhoneTest;
 
-/* This enumeration is ordered by severity, higher values
- * of PreflightStatus take precedence in error reporting.
- */
-typedef enum {
-	PREFLIGHT_OK = 0,
-	PREFLIGHT_NOT_SUMMARIZED,
-	PREFLIGHT_INVALID,
-	PREFLIGHT_UNSUPPORTED,
-} PreflightStatus;
-
-typedef struct {
-	EContactField  field_id;    /* multi string field id */
-	GPtrArray     *constraints; /* segmented query, if applicable */
-} PreflightAuxData;
-
 /* Stack initializer for the PreflightContext struct below */
-#define PREFLIGHT_CONTEXT_INIT { PREFLIGHT_OK, NULL, FALSE, NULL }
+#define PREFLIGHT_CONTEXT_INIT { PREFLIGHT_OK, NULL, 0 }
 
 typedef struct {
-	PreflightStatus  status;       /* result status */
-	GPtrArray       *constraints;  /* main query */
-	gboolean         list_all;     /* TRUE if all results should be returned */
-
-	GSList          *aux_fields;   /* List of PreflightAuxData */
+	PreflightStatus  status;         /* result status */
+	GPtrArray       *constraints;    /* main query */
+	guint64          aux_mask;       /* Bitmask of which auxiliary tables are needed in the query */
 } PreflightContext;
 
 static QueryElement *
@@ -3681,8 +3747,6 @@ query_field_test_new (guint          query,
 	/* Instead of g_slice_new0, NULL them out manually */
 	test->field     = NULL;
 	test->value     = NULL;
-	test->has_value = FALSE;
-	test->has_extra = FALSE;
 
 	return test;
 }
@@ -3702,8 +3766,6 @@ query_phone_test_new (guint          query,
 	/* Instead of g_slice_new0, NULL them out manually */
 	test->field     = NULL;
 	test->value     = NULL;
-	test->has_value = FALSE;
-	test->has_extra = FALSE;
 
 	/* Extra QueryPhoneTest fields */
 	test->region    = NULL;
@@ -3801,65 +3863,8 @@ constraints_insert_field_test (GPtrArray      *array,
 	test            = query_field_test_new (query, field->field_id);
 	test->field     = field;
 	test->value     = g_strdup (value);
-	test->has_value = (value && value[0]);
 
 	constraints_insert (array, idx, test);
-}
-
-static PreflightAuxData *
-preflight_aux_data_new (EContactField field_id)
-{
-	PreflightAuxData *aux_data = g_slice_new (PreflightAuxData);
-
-	aux_data->field_id = field_id;
-	aux_data->constraints = NULL;
-
-	return aux_data;
-}
-
-static void
-preflight_aux_data_free (PreflightAuxData *aux_data)
-{
-	if (aux_data) {
-		if (aux_data->constraints)
-			g_ptr_array_free (aux_data->constraints, TRUE);
-
-		g_slice_free (PreflightAuxData, aux_data);
-	}
-}
-
-static gint
-preflight_aux_data_find (PreflightAuxData *aux_data,
-			 gpointer          data)
-{
-	EContactField  field_id = GPOINTER_TO_UINT (data);
-
-	/* Unsigned comparison, just to be safe, 
-	 * let's not return something like:
-	 *   'aux_data->field_id - field_id'
-	 */
-	if (aux_data->field_id > field_id)
-		return 1;
-	else if (aux_data->field_id < field_id)
-		return -1;
-
-	return 0;
-}
-
-static PreflightAuxData *
-preflight_context_search_aux (PreflightContext *context,
-			      EContactField     field_id)
-{
-	PreflightAuxData *aux_data = NULL;
-	GSList *link;
-
-	link = g_slist_find_custom (context->aux_fields,
-				    GUINT_TO_POINTER (field_id),
-				    (GCompareFunc)preflight_aux_data_find);
-	if (link)
-		aux_data = link->data;
-
-	return aux_data;
 }
 
 static void
@@ -3869,11 +3874,6 @@ preflight_context_clear (PreflightContext *context)
 		/* Free any allocated data, but leave the context values in place */
 		if (context->constraints)
 			g_ptr_array_free (context->constraints, TRUE);
-
-		g_slist_free_full (context->aux_fields,
-				   (GDestroyNotify)preflight_aux_data_free);
-
-		context->aux_fields = NULL;
 		context->constraints = NULL;
 	}
 }
@@ -4048,6 +4048,10 @@ func_check_subset (ESExp *f,
 	element      = query_delimiter_new (query_type);
 	g_ptr_array_add (result_array, element);
 
+	EBSQL_NOTE (PREFLIGHT,
+		    g_printerr ("PREFLIGHT INIT: Open sub: %s\n",
+				EBSQL_QUERY_TYPE_STR (query_type)));
+
 	for (i = 0; i < argc; i++) {
 		sub_result = e_sexp_term_eval (f, argv[i]);
 
@@ -4065,6 +4069,10 @@ func_check_subset (ESExp *f,
 		}
 		e_sexp_result_free (f, sub_result);
 	}
+
+	EBSQL_NOTE (PREFLIGHT,
+		    g_printerr ("PREFLIGHT INIT: Close sub: %s\n",
+				EBSQL_QUERY_TYPE_STR (query_type)));
 
 	/* The last element in this return array is the sub end delimiter */
 	element = query_delimiter_new (BOOK_QUERY_SUB_END);
@@ -4085,7 +4093,7 @@ func_check (struct _ESExp *f,
 	ESExpResult *result;
 	GPtrArray *result_array;
 	QueryElement *element = NULL;
-	EContactField field = 0;
+	EContactField field_id = 0;
 	const gchar *query_name = NULL;
 	const gchar *query_value = NULL;
 	const gchar *query_extra = NULL;
@@ -4096,15 +4104,14 @@ func_check (struct _ESExp *f,
 	if (argc == 2 &&
 	    argv[0]->type == ESEXP_RES_STRING &&
 	    argv[1]->type == ESEXP_RES_STRING) {
-
 		query_name  = argv[0]->value.string;
 		query_value = argv[1]->value.string;
 
 		/* We use E_CONTACT_FIELD_LAST to hold the special case of "x-evolution-any-field" */
 		if (g_strcmp0 (query_name, "x-evolution-any-field") == 0)
-			field = E_CONTACT_FIELD_LAST;
-		else 
-			field = e_contact_field_id (query_name);
+			field_id = E_CONTACT_FIELD_LAST;
+		else
+			field_id = e_contact_field_id (query_name);
 
 	} else if (argc == 3 &&
 		   argv[0]->type == ESEXP_RES_STRING &&
@@ -4114,31 +4121,34 @@ func_check (struct _ESExp *f,
 		query_value = argv[1]->value.string;
 		query_extra = argv[2]->value.string;
 
-		field = e_contact_field_id (query_name);
+		field_id = e_contact_field_id (query_name);
 	}
 
 	if (IS_QUERY_PHONE (query_type)) {
 		QueryPhoneTest *test;
 
 		/* Collect data from this field test */
-		test = query_phone_test_new (query_type, field);
-		test->has_value = (query_value && query_value[0]);
-		test->has_extra = (query_extra && query_extra[0]);
-		test->value     = g_strdup (query_value);
-		test->region    = g_strdup (query_extra);
+		test         = query_phone_test_new (query_type, field_id);
+		test->value  = g_strdup (query_value);
+		test->region = g_strdup (query_extra);
 
 		element = (QueryElement *)test;
 	} else {
 		QueryFieldTest *test;
 
 		/* Collect data from this field test */
-		test = query_field_test_new (query_type, field);
-		test->has_value = (query_value && query_value[0]);
-		test->has_extra = (query_extra && query_extra[0]);
-		test->value     = g_strdup (query_value);
+		test        = query_field_test_new (query_type, field_id);
+		test->value = g_strdup (query_value);
 
 		element = (QueryElement *)test;
 	}
+
+	EBSQL_NOTE (PREFLIGHT,
+		    g_printerr ("PREFLIGHT INIT: Adding field test: `%s' on field `%s' "
+				"(field name: %s query value: %s query extra: %s)\n",
+				EBSQL_QUERY_TYPE_STR (query_type),
+				EBSQL_FIELD_ID_STR (field_id),
+				query_name, query_value, query_extra));
 
 	/* Return an array with only one element, for lack of a pointer type ESExpResult */
 	result_array = g_ptr_array_new_with_free_func ((GDestroyNotify)query_element_free);
@@ -4150,8 +4160,10 @@ func_check (struct _ESExp *f,
 	return result;
 }
 
-/* Initial stage of preflighting, parse the search
- * expression and generate our array of QueryElements
+/* Initial stage of preflighting:
+ *
+ *  o Parse the search expression and generate our array of QueryElements
+ *  o Collect lengths of query terms
  */
 static void
 query_preflight_initialize (PreflightContext *context,
@@ -4162,7 +4174,7 @@ query_preflight_initialize (PreflightContext *context,
 	gint esexp_error, i;
 
 	if (sexp == NULL || *sexp == '\0') {
-		context->list_all = TRUE;
+		context->status = PREFLIGHT_LIST_ALL;
 		return;
 	}
 
@@ -4187,6 +4199,9 @@ query_preflight_initialize (PreflightContext *context,
 
 	if (esexp_error == -1) {
 		context->status = PREFLIGHT_INVALID;
+
+		EBSQL_NOTE (PREFLIGHT,
+			    g_printerr ("PREFLIGHT INIT: Sexp parse error\n"));
 	} else {
 
 		result = e_sexp_eval (sexp_parser);
@@ -4200,6 +4215,9 @@ query_preflight_initialize (PreflightContext *context,
 
 			} else {
 				context->status = PREFLIGHT_INVALID;
+
+				EBSQL_NOTE (PREFLIGHT,
+					    g_printerr ("PREFLIGHT INIT: ERROR, Did not get GPtrArray\n"));
 			}
 		}
 
@@ -4207,6 +4225,10 @@ query_preflight_initialize (PreflightContext *context,
 	}
 
 	e_sexp_unref (sexp_parser);
+
+	EBSQL_NOTE (PREFLIGHT,
+		    g_printerr ("PREFLIGHT INIT: Completed with status %s\n",
+				EBSQL_STATUS_STR (context->status)));
 }
 
 typedef struct {
@@ -4234,9 +4256,10 @@ check_has_attr_list_cb (QueryElement *element,
 	return (data->has_attr_list == FALSE);
 }
 
-/* This pass resolves values on the QueryElements useful
- * for actually performing the query, furthermore it resolves
- * whether the query can be performed on the SQLite tables or not.
+/* What is done in this pass:
+ *  o Viability of the query is analyzed, i.e. can it be done with the summary columns.
+ *  o Phone numbers are parsed and loaded onto QueryPhoneTests
+ *  o Bitmask of auxiliary tables is collected
  */
 static void
 query_preflight_check (PreflightContext  *context,
@@ -4254,9 +4277,11 @@ query_preflight_check (PreflightContext  *context,
 		QueryFieldTest *test;
 		guint           field_test;
 
-		/* We don't care about the subquery delimiters at this point */
-		if (elements[i]->query >= BOOK_QUERY_SUB_FIRST) {
+		EBSQL_NOTE (PREFLIGHT,
+			    g_printerr ("PREFLIGHT CHECK: Encountered: %s\n",
+					EBSQL_QUERY_TYPE_STR (elements[i]->query)));
 
+		if (elements[i]->query >= BOOK_QUERY_SUB_FIRST) {
 			/* It's too complicated to properly perform
 			 * the unary NOT operator on a constraint which
 			 * accesses attribute lists.
@@ -4278,11 +4303,16 @@ query_preflight_check (PreflightContext  *context,
 							     check_has_attr_list_cb,
 							     &data);
 
-				if (data.has_attr_list)
+				if (data.has_attr_list) {
 					context->status = MAX (context->status,
 							       PREFLIGHT_NOT_SUMMARIZED);
+					EBSQL_NOTE (PREFLIGHT,
+						    g_printerr ("PREFLIGHT CHECK: "
+								"Setting invalid for NOT (mutli-attribute), "
+								"new status: %s\n",
+								EBSQL_STATUS_STR (context->status)));
+				}
 			}
-
 			continue;
 		}
 
@@ -4312,28 +4342,44 @@ query_preflight_check (PreflightContext  *context,
 				 * This is only true if the 'any field contains' query is
 				 * the only test in the constraints, however.
 				 */
-				if (!test->has_value && n_elements == 1) {
+				if (n_elements == 1 && (!test->value || !test->value[0])) {
 
-					context->list_all = TRUE;
-
+					context->status = MAX (context->status, PREFLIGHT_LIST_ALL);
+					EBSQL_NOTE (PREFLIGHT,
+						    g_printerr ("PREFLIGHT CHECK: "
+								"Encountered lonesome 'x-evolution-any-field' with empty value, "
+								"new status: %s\n",
+								EBSQL_STATUS_STR (context->status)));
 				} else {
 
 					/* Searching for a value with 'x-evolution-any-field' is
 					 * not a summary query.
 					 */
 					context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
+					EBSQL_NOTE (PREFLIGHT,
+						    g_printerr ("PREFLIGHT CHECK: "
+								"Encountered 'x-evolution-any-field', "
+								"new status: %s\n",
+								EBSQL_STATUS_STR (context->status)));
 				}
 
 			} else {
 
 				/* Couldnt resolve the field, it's not a summary query */
 				context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
+				EBSQL_NOTE (PREFLIGHT,
+					    g_printerr ("PREFLIGHT CHECK: "
+							"Field `%s' not in the summary, new status: %s\n",
+							EBSQL_FIELD_ID_STR (test->field_id),
+							EBSQL_STATUS_STR (context->status)));
 			}
 		}
 
 		switch (field_test) {
-		case BOOK_QUERY_EXISTS:
 		case E_BOOK_QUERY_IS:
+			break;
+
+		case BOOK_QUERY_EXISTS:
 		case E_BOOK_QUERY_CONTAINS:
 		case E_BOOK_QUERY_BEGINS_WITH:
 		case E_BOOK_QUERY_ENDS_WITH:
@@ -4343,10 +4389,15 @@ query_preflight_check (PreflightContext  *context,
 			 * or fields which hold multiple strings 
 			 */
 			if (test->field) {
-
 				if (test->field->type != G_TYPE_STRING &&
-				    test->field->type != E_TYPE_CONTACT_ATTR_LIST)
+				    test->field->type != E_TYPE_CONTACT_ATTR_LIST) {
 					context->status = MAX (context->status, PREFLIGHT_INVALID);
+					EBSQL_NOTE (PREFLIGHT,
+						    g_printerr ("PREFLIGHT CHECK: "
+								"Refusing pattern match on boolean field `%s', new status: %s\n",
+								EBSQL_FIELD_ID_STR (test->field_id),
+								EBSQL_STATUS_STR (context->status)));
+				}
 			}
 
 			break;
@@ -4354,6 +4405,10 @@ query_preflight_check (PreflightContext  *context,
 		case E_BOOK_QUERY_REGEX_RAW:
 			/* Raw regex queries only supported in the fallback */
 			context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
+			EBSQL_NOTE (PREFLIGHT,
+				    g_printerr ("PREFLIGHT CHECK: "
+						"Raw regexp requires full data, new status: %s\n",
+						EBSQL_STATUS_STR (context->status)));
 			break;
 
 		case E_BOOK_QUERY_EQUALS_PHONE_NUMBER:
@@ -4366,7 +4421,10 @@ query_preflight_check (PreflightContext  *context,
 			if (!e_phone_number_is_supported ()) {
 
 				context->status = MAX (context->status, PREFLIGHT_UNSUPPORTED);
-
+				EBSQL_NOTE (PREFLIGHT,
+					    g_printerr ("PREFLIGHT CHECK: "
+							"Usupported phone number query, new status: %s\n",
+							EBSQL_STATUS_STR (context->status)));
 			} else {
 				QueryPhoneTest *phone_test = (QueryPhoneTest *)test;
 				EPhoneNumberCountrySource source;
@@ -4384,7 +4442,11 @@ query_preflight_check (PreflightContext  *context,
 				if (number == NULL) {
 
 					context->status = MAX (context->status, PREFLIGHT_INVALID);
-
+					EBSQL_NOTE (PREFLIGHT,
+						    g_printerr ("PREFLIGHT CHECK: "
+								"Invalid phone number `%s', new status: %s\n",
+								phone_test->value,
+								EBSQL_STATUS_STR (context->status)));
 				} else {
 					/* Collect values we'll need later while generating field
 					 * tests, no need to parse the phone number more than once
@@ -4403,24 +4465,18 @@ query_preflight_check (PreflightContext  *context,
 
 		if (test->field &&
 		    test->field->type == E_TYPE_CONTACT_ATTR_LIST) {
+			gint aux_index = summary_field_get_index (ebsql, test->field_id);
 
-			PreflightAuxData *aux_data;
-
-			aux_data = preflight_context_search_aux (context, test->field_id);
-			if (!aux_data) {
-				aux_data = preflight_aux_data_new (test->field_id);
-				context->aux_fields = 
-					g_slist_prepend (context->aux_fields, aux_data);
-			}
+			/* It's really improbable that we ever get 64 fields in the summary
+			 * In any case we warn about this in e_book_sqlite_new_full().
+			 */
+			g_warn_if_fail (aux_index < EBSQL_MAX_SUMMARY_FIELDS);
+			context->aux_mask |= (1 << aux_index);
+			EBSQL_NOTE (PREFLIGHT,
+				    g_printerr ("PREFLIGHT CHECK: "
+						"Adding auxiliary field `%s' to the mask\n",
+						EBSQL_FIELD_ID_STR (test->field_id)));
 		}
-	}
-
-	/* If we cannot satisfy this query with the summary, there is no point
-	 * to return the allocated list */
-	if (context->status > PREFLIGHT_OK) {
-		g_slist_free_full (context->aux_fields,
-				   (GDestroyNotify)preflight_aux_data_free);
-		context->aux_fields = NULL;
 	}
 }
 
@@ -4485,391 +4541,15 @@ query_preflight_substitute_full_name (PreflightContext *context,
 	}
 }
 
-/* Migrates the chunk of the constraints at 'offset' into one of the
- * PreflightAuxData indicated by aux_field.
- *
- * Returns the number of QueryElements which have been removed from
- * the main constraints
- */
-static gint
-query_preflight_migrate_offset (PreflightContext     *context,
-				EContactField         aux_field,
-				gint                  offset)
-{
-	PreflightAuxData *aux_data;
-	QueryElement **elements;
-	gint sub_counter = 0;
-	gint dest_offset = 0;
-	gint n_migrated = 0;
-
-	aux_data = preflight_context_search_aux (context, aux_field);
-	g_return_val_if_fail (aux_data != NULL, 0);
-
-	if (!aux_data->constraints) {
-
-		/* We created a new batch for 'aux_field',
-		 * we'll be adding this batch directly to the beginning
-		 */
-		aux_data->constraints = g_ptr_array_new_with_free_func ((GDestroyNotify)query_element_free);
-
-	} else {
-		elements = (QueryElement **)aux_data->constraints->pdata;
-
-		/* If we're migrating a second or third constraint, we must ensure that
-		 * it's encapsulated with an AND
-		 */
-		if (elements[0]->query != BOOK_QUERY_SUB_AND) {
-			constraints_insert_delimiter (aux_data->constraints,  0, BOOK_QUERY_SUB_AND);
-			constraints_insert_delimiter (aux_data->constraints, -1, BOOK_QUERY_SUB_END);
-		}
-
-		/* We're going to insert this starting at position 1 (directly after opening the AND)
-		 * The order of AND statements in the query is inconsequential.
-		 */
-		dest_offset = 1;
-	}
-
-	elements = (QueryElement **)context->constraints->pdata;
-	do {
-		QueryElement *element;
-
-		/* Migrate one element */
-		element = constraints_take (context->constraints, offset);
-		constraints_insert (aux_data->constraints, dest_offset++, element);
-
-		n_migrated++;
-
-		/* If we migrated a group... migrate the whole group */
-		if (element->query == BOOK_QUERY_SUB_END)
-			sub_counter--;
-		else if (element->query >= BOOK_QUERY_SUB_FIRST)
-			sub_counter++;
-
-	} while (context->constraints->len > offset && sub_counter > 0);
-
-
-	/* Return the number of elements removed from the main constraints */
-	return n_migrated;
-}
-
-/* Will set the EContactField to 0 if it's completely isolated
- * to the summary table, E_CONTACT_FIELD_LAST if it's not isolated,
- * or another attribute list type EContactField if it's isolated
- * to that field.
- *
- * Expects the initial value to be 'E_CONTACT_FIELD_LAST + 1'
- */
-static gboolean
-check_isolated_cb (QueryElement *element,
-		   gint          sub_level,
-		   gint          offset,
-		   gpointer      user_data)
-{
-	EContactField *field_id = (EContactField *)user_data;
-	QueryFieldTest *test = (QueryFieldTest *)element;
-
-	if (*field_id > E_CONTACT_FIELD_LAST) {
-
-		/* First field encountered, let's see what it is... */
-		if (test->field->type == E_TYPE_CONTACT_ATTR_LIST)
-			*field_id = test->field_id;
-		else
-			*field_id = 0;
-
-		return TRUE;
-
-	} else if (*field_id == 0) {
-
-		if (test->field->type == E_TYPE_CONTACT_ATTR_LIST) {
-
-			/* Oops, summary and auxiliary encountered */
-			*field_id = E_CONTACT_FIELD_LAST;
-			return FALSE;
-		}
-
-	} else if (test->field_id != *field_id) {
-		/* Auxiliary and something else encountered */
-		*field_id = E_CONTACT_FIELD_LAST;
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/* fetch_sub_groups_cb will list the index of each component of a sub,
- * unless not every subgroup was isolated, in which case the
- * PreflightAndData->isolated will be set to FALSE.
- */
-typedef struct {
-	QueryElement **elements;
-	gint           n_elements;
-
-	gboolean       isolated;
-	gboolean       checked;
-
-	GSList        *offsets;
-	GSList        *fields;
-} PreflightAndData;
-
-static gboolean
-fetch_sub_groups_cb (QueryElement *element,
-		     gint          sub_level,
-		     gint          offset,
-		     gpointer      user_data)
-{
-	PreflightAndData *data = (PreflightAndData *)user_data;
-
-	data->checked = TRUE;
-
-	if (sub_level == 1 && element->query < BOOK_QUERY_SUB_FIRST) {
-
-		QueryFieldTest *test = (QueryFieldTest *)element;
-
-		data->offsets =
-			g_slist_prepend (data->offsets,
-					 GINT_TO_POINTER (offset));
-		data->fields =
-			g_slist_prepend (data->fields,
-					 GUINT_TO_POINTER (test->field_id));
-
-	} else if (sub_level == 2 &&
-		   element->query >= BOOK_QUERY_SUB_FIRST &&
-		   element->query != BOOK_QUERY_SUB_END) {
-
-		EContactField field_id = E_CONTACT_FIELD_LAST + 1;
-
-		query_preflight_foreach_sub (data->elements,
-					     data->n_elements,
-					     offset, FALSE,
-					     check_isolated_cb,
-					     &field_id);
-
-		if (field_id == E_CONTACT_FIELD_LAST) {
-			data->isolated = FALSE;
-		} else {
-			data->offsets =
-				g_slist_prepend (data->offsets,
-						 GINT_TO_POINTER (offset));
-			data->fields =
-				g_slist_prepend (data->fields,
-						 GUINT_TO_POINTER (field_id));
-		}
-	}
-
-	return (data->isolated != FALSE);
-}
-
-static void
-query_preflight_optimize_and (PreflightContext  *context,
-			      EBookSqlite       *ebsql,
-			      QueryElement     **elements,
-			      gint               n_elements)
-{
-	PreflightAndData data = { elements, n_elements, TRUE, FALSE, NULL, NULL };
-
-	/* First, find the indexes to the various toplevel elements */
-	query_preflight_foreach_sub (elements,
-				     n_elements,
-				     0, TRUE,
-				     fetch_sub_groups_cb,
-				     &data);
-
-	if (data.checked && data.isolated) {
-		GSList *l, *ll;
-		gint n_migrated = 0;
-		gint remaining;
-
-		/* Lists are created in reverse, with higher offsets
-		 * comming first, let's keep it this way.
-		 *
-		 * We can now migrate them one by one and the later
-		 * offsets (i.e. lower offsets) in the list will not
-		 * be invalid. This order should also reduce calls
-		 * to memmove().
-		 */
-		for (l = data.offsets, ll = data.fields;
-		     l && ll;
-		     l = l->next, ll = ll->next) {
-			gint          offset   = GPOINTER_TO_INT (l->data);
-			EContactField field_id = GPOINTER_TO_UINT (ll->data);
-			SummaryField *field;
-
-			field = summary_field_get (ebsql, field_id);
-
-			if (field && field->type == E_TYPE_CONTACT_ATTR_LIST) {
-				n_migrated++;
-				query_preflight_migrate_offset (context, field_id, offset);
-			}
-		}
-
-		/* If there is only one statement left inside the AND clause
-		 * in context->constraints, we need to remove the encapsulating
-		 * AND statement.
-		 */
-		remaining = g_slist_length (data.offsets) - n_migrated;
-		if (remaining < 2) {
-			g_ptr_array_remove_index (context->constraints, 0);
-			g_ptr_array_remove_index (context->constraints,
-						  context->constraints->len - 1);
-		}
-	}
-
-	g_slist_free (data.offsets);
-	g_slist_free (data.fields);
-}
-
-static void
-query_preflight_optimize_toplevel (PreflightContext   *context,
-				   EBookSqlite        *ebsql,
-				   QueryElement      **elements,
-				   gint                n_elements)
-{
-	EContactField field_id;
-
-	if (elements[0]->query >= BOOK_QUERY_SUB_FIRST) {
-
-		switch (elements[0]->query) {
-		case BOOK_QUERY_SUB_AND:
-
-			/* AND components at the toplevel can be migrated, so long
-			 * as each component is isolated
-			 */
-			query_preflight_optimize_and (context, ebsql, elements, n_elements);
-			break;
-
-		case BOOK_QUERY_SUB_OR:
-
-			/* OR at the toplevel can be migrated if limited to one table */
-			field_id = E_CONTACT_FIELD_LAST + 1;
-			query_preflight_foreach_sub (elements,
-						     n_elements,
-						     0, FALSE,
-						     check_isolated_cb,
-						     &field_id);
-
-			if (field_id != 0 &&
-			    field_id != E_CONTACT_FIELD_LAST) {
-
-				/* Isolated to an auxiliary table, let's migrate it */
-				query_preflight_migrate_offset (context, field_id, 0);
-			}
-			break;
-
-		case BOOK_QUERY_SUB_NOT:
-
-			/* We dont support NOT operations on attribute lists as
-			 * summarized queries, so there can not be any optimization
-			 * made here.
-			 */
-			break;
-
-		case BOOK_QUERY_SUB_END:
-		default:
-			g_warn_if_reached ();
-			break;
-		}
-
-	} else {
-
-		QueryFieldTest *test = (QueryFieldTest *)elements[0];
-
-		/* Toplevel field test should stand alone at the first position */
-
-		/* Special case of 'x-evolution-any-field' will have no SummaryField
-		 * resolved in test->field
-		 */
-		if (test->field && test->field->type == E_TYPE_CONTACT_ATTR_LIST)
-			query_preflight_migrate_offset (context, test->field_id, 0);
-	}
-}
-
-/* In this phase, we attempt to pull out field tests from the main constraints array
- * which touch auxiliary tables and place them instead into their PreflightAuxData
- * constraint arrays respectively.
- *
- * This will result in queries being generated using nested select statements before joining,
- * allowing us to leverage the indexes we created in those.
- *
- * A query which would normally generate like this:
- * ================================================
- * SELECT DISTINCT summary.uid, summary.vcard FROM 'folder_id' AS summary
- * LEFT OUTER JOIN 'folder_id_phone_list' AS phone_list ON phone_list.uid = summary.uid
- * LEFT OUTER JOIN 'folder_id_email_list' AS email_list ON email_list.uid = summary.uid
- *    WHERE (phone_list.value_reverse IS NOT NULL AND phone_list.value_reverse LIKE '0505%')
- *    AND (email_list.value IS NOT NULL AND email_list.value LIKE 'eddie%')
- *
- * After optimization, will be generated instead like so:
- * ================================================
- * SELECT DISTINCT summary.uid, summary.vcard FROM (
- *      SELECT DISTINCT phone_list.uid FROM 'folder_id_phone_list' AS phone_list
- *      WHERE (phone_list.value_reverse IS NOT NULL AND phone_list.value_reverse LIKE '0505%') 
- *    ) AS phone_list_results
- * LEFT OUTER JOIN (
- *      SELECT DISTINCT email_list.uid FROM 'folder_id_email_list' AS email_list
- *      WHERE (email_list.value IS NOT NULL AND email_list.value LIKE 'eddie%') 
- *    ) AS email_list_results ON email_list_results.uid = phone_list_results.uid 
- * LEFT OUTER JOIN 'folder_id' AS summary ON summary.uid = email_list_results.uid
- *     WHERE summary.uid IS NOT NULL
- *
- * Currently we make the following assumptions when optimizing the query:
- *
- *   o Any shallow query with only one auxiliary table constraint can have
- *     the auxiliary constraint migrated into the nested select
- *
- *   o Any grouped query which contains constraints which access the same
- *     table can be considered an atomic constraint and is a suitable target
- *     for migration.
- *
- *   o Any toplevel AND query which contains one or more summary table constraints
- *     and one or more auxiliary table constraints, can have the auxiliary
- *     table constraints migrated into the nested select.
- *
- */
-static void
-query_preflight_optimize (PreflightContext *context,
-			  EBookSqlite      *ebsql)
-{
-	QueryElement **elements;
-	gint n_elements;
-
-	if (context->constraints &&
-	    context->constraints->len > 0) {
-
-		elements   = (QueryElement **)context->constraints->pdata;
-		n_elements = context->constraints->len;
-
-		query_preflight_optimize_toplevel (context, ebsql, elements, n_elements);
-	}
-
-
-	/* In any case that we did have constraints, add an (exists "uid") constraint
-	 * to the end, this is because it's possible for the optimization above to return
-	 * some NULL rows
-	 */
-	if (context->constraints &&
-	    context->constraints->len == 0) {
-		constraints_insert_field_test (context->constraints, 0,
-					       summary_field_get (ebsql, E_CONTACT_UID),
-					       BOOK_QUERY_EXISTS, NULL);
-	} else {
-		/* AND it with the remaining constraints */
-		constraints_insert_delimiter (context->constraints,  0, BOOK_QUERY_SUB_AND);
-		constraints_insert_field_test (context->constraints, -1,
-					       summary_field_get (ebsql, E_CONTACT_UID),
-					       BOOK_QUERY_EXISTS, NULL);
-		constraints_insert_delimiter (context->constraints, -1, BOOK_QUERY_SUB_END);
-	}
-}
-
 static void
 query_preflight (PreflightContext   *context,
 		 EBookSqlite        *ebsql,
 		 const gchar        *sexp)
 {
+	EBSQL_NOTE (PREFLIGHT, g_printerr ("PREFLIGHT BEGIN\n"));
 	query_preflight_initialize (context, sexp);
 
-	if (context->list_all == FALSE &&
-	    context->status == PREFLIGHT_OK) {
+	if (context->status == PREFLIGHT_OK) {
 
 		query_preflight_check (context, ebsql);
 
@@ -4877,13 +4557,14 @@ query_preflight (PreflightContext   *context,
 		 * going to generate statements with it
 		 */
 		if (context->status == PREFLIGHT_OK) {
+			EBSQL_NOTE (PREFLIGHT,
+				    g_printerr ("PREFLIGHT: Substituting full name\n"));
 
 			/* Handle E_CONTACT_FULL_NAME substitutions */
 			query_preflight_substitute_full_name (context, ebsql);
 
-			/* Optimize queries which touch auxiliary columns */
-			query_preflight_optimize (context, ebsql);
 		} else {
+			EBSQL_NOTE (PREFLIGHT, g_printerr ("PREFLIGHT: Clearing context\n"));
 
 			/* We might use this context to perform a fallback query,
 			 * so let's clear out all the constraints now
@@ -4892,8 +4573,9 @@ query_preflight (PreflightContext   *context,
 		}
 	}
 
-	if (context->status > PREFLIGHT_NOT_SUMMARIZED)
-		context->list_all = FALSE;
+	EBSQL_NOTE (PREFLIGHT,
+		    g_printerr ("PREFLIGHT END (status: %s)\n",
+				EBSQL_STATUS_STR (context->status)));
 }
 
 /**********************************************************
@@ -5354,9 +5036,9 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
 	sub_query_context_free (ctx);
 }
 
-/* Generates the SELECT portion of the query, this will possibly add some
- * of the constraints into nested selects. Constraints that could not be
- * nested will have their symbolic table names in context.
+/* Generates the SELECT portion of the query, this will take care of
+ * preparing the context of the query, and add the needed JOIN statements
+ * based on which fields are referenced in the query expression.
  *
  * This also handles getting the correct callback and asking for the
  * right data depending on the 'search_type'
@@ -5368,12 +5050,16 @@ ebsql_generate_select (EBookSqlite *ebsql,
 		       PreflightContext *context,
 		       GError **error)
 {
-	GSList *l;
 	EbSqlRowFunc callback = NULL;
-	gchar *previous_field = NULL;
+	gboolean add_auxiliary_tables = FALSE;
+	gint i;
+
+	if (context->status == PREFLIGHT_OK &&
+	    context->aux_mask != 0)
+		add_auxiliary_tables = TRUE;
 
 	g_string_append (string, "SELECT ");
-	if (context->aux_fields)
+	if (add_auxiliary_tables)
 		g_string_append (string, "DISTINCT ");
  
 	switch (search_type) {
@@ -5393,75 +5079,44 @@ ebsql_generate_select (EBookSqlite *ebsql,
 		break;
 	case SEARCH_COUNT:
 		callback = get_count_cb;
-		if (context->aux_fields)
+		if (context->aux_mask != 0)
 			g_string_append (string, "count (DISTINCT summary.uid) ");
 		else
 			g_string_append (string, "count (*) ");
 		break;
 	}
 
-	g_string_append (string, "FROM ");
+	ebsql_string_append_printf (string, "FROM %Q AS summary", ebsql->priv->folderid);
 
-	for (l = context->aux_fields; l; l = l->next) {
-		PreflightAuxData *aux_data = (PreflightAuxData *)l->data;
-		SummaryField     *field    = summary_field_get (ebsql, aux_data->field_id);
+	/* Add any required auxiliary tables into the query context */
+	if (add_auxiliary_tables) {
+		for (i = 0; i < ebsql->priv->n_summary_fields; i++) {
 
-		/* For every other query, start with the JOIN */
-		if (previous_field)
-			g_string_append (string, "LEFT OUTER JOIN ");
+			/* We cap this at EBSQL_MAX_SUMMARY_FIELDS (64 bits) at creation time */
+			if ((context->aux_mask & (1 << i)) != 0) {
+				SummaryField *field = &(ebsql->priv->summary_fields[i]);
 
-		if (aux_data->constraints) {
-			/* Each nested select must be outer left joined on to
-			 * the previous one, in this way the collection of joined
-			 * tables is equal to a logical AND.
-			 *
-			 * See query_preflight_optimize() for more details.
-			 */
-			ebsql_string_append_printf (string,
-						    "( SELECT DISTINCT %s.uid FROM %Q AS %s WHERE ",
-						    field->aux_table_symbolic,
-						    field->aux_table,
-						    field->aux_table_symbolic);
-			ebsql_generate_constraints (ebsql, string,
-								  aux_data->constraints,
-								  NULL);
-			ebsql_string_append_printf (string, " ) AS %s_results ",
-						    field->aux_table_symbolic);
-
-			if (previous_field)
-				ebsql_string_append_printf (string, "ON %s_results.uid = %s ",
+				/* Note the '+' in the JOIN statement.
+				 *
+				 * This plus makes the uid's index ineligable to participate
+				 * in any indexing.
+				 *
+				 * Without this, the indexes which we prefer for prefix or
+				 * suffix matching in the auxiliary tables are ignored and
+				 * only considered on exact matches.
+				 *
+				 * This is crucial to ensure that the uid index does not
+				 * compete with the value index in constraints such as:
+				 *
+				 *     WHERE email_list.value LIKE "boogieman%"
+				 */
+				ebsql_string_append_printf (string, " JOIN %Q AS %s ON +%s.uid = summary.uid",
+							    field->aux_table,
 							    field->aux_table_symbolic,
-							    previous_field);
-
-			g_free (previous_field);
-			previous_field = g_strconcat (field->aux_table_symbolic,
-						      "_results.uid", NULL);
-
-		} else {
-			/* Join the table in the normal way and leave the constraints for later */
-			ebsql_string_append_printf (string, "%Q AS %s ",
-						    field->aux_table,
-						    field->aux_table_symbolic);
-
-			if (previous_field)
-				ebsql_string_append_printf (string, "ON %s.uid = %s ",
-							    field->aux_table_symbolic,
-							    previous_field);
-
-			g_free (previous_field);
-			previous_field = g_strconcat (field->aux_table_symbolic,
-						      ".uid", NULL);
+							    field->aux_table_symbolic);
+			}
 		}
 	}
-
-	if (previous_field)
-		g_string_append (string, "LEFT OUTER JOIN ");
-
-	ebsql_string_append_printf (string, "%Q AS summary ", ebsql->priv->folderid);
-	if (previous_field)
-		ebsql_string_append_printf (string, "ON summary.uid = %s ", previous_field);
-
-	g_free (previous_field);
 
 	return callback;
 }
@@ -5491,11 +5146,11 @@ ebsql_do_search_query (EBookSqlite *ebsql,
 					  error);
 
 	if (callback &&
-	    context->list_all == FALSE) {
+	    EBSQL_STATUS_GEN_CONSTRAINTS (context->status)) {
 		/*
 		 * Now generate the search expression on the main contacts table
 		 */
-		g_string_append (string, "WHERE ");
+		g_string_append (string, " WHERE ");
 		ebsql_generate_constraints (ebsql,
 					    string,
 					    context->constraints,
@@ -5540,6 +5195,7 @@ ebsql_search_query (EBookSqlite *ebsql,
 
 	switch (context.status) {
 	case PREFLIGHT_OK:
+	case PREFLIGHT_LIST_ALL:
 	case PREFLIGHT_NOT_SUMMARIZED:
 		/* No errors, let's really search */
 		success = ebsql_do_search_query (ebsql,
@@ -5749,13 +5405,11 @@ ebsql_cursor_setup_query (EBookSqlite  *ebsql,
 	ebsql_generate_select (ebsql, string, SEARCH_COUNT, &context, NULL);
 	cursor->select_count = g_string_free (string, FALSE);
 
-	if (sexp == NULL || context.list_all) {
+	if (sexp == NULL || context.status == PREFLIGHT_LIST_ALL) {
 		cursor->query = NULL;
 		cursor->sexp  = NULL;
 	} else {
 		/* Generate the constraints for our queries
-		 *
-		 * It can be that they are optimized into the select segment
 		 */
 		string = g_string_new (NULL);
 		ebsql_generate_constraints (ebsql,
@@ -6326,7 +5980,12 @@ e_book_sqlite_new_full (const gchar *path,
 	indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);
 
 	/* No specified summary fields indicates the default summary configuration should be used */
-	if (n_fields <= 0) {
+	if (n_fields <= 0 || n_fields >= EBSQL_MAX_SUMMARY_FIELDS) {
+
+		if (n_fields)
+			g_warning ("EBookSqlite refused to create addressbook with over %d summary fields",
+				   EBSQL_MAX_SUMMARY_FIELDS);
+
 		ebsql = ebsql_new_default (path,
 					   vcard_callback,
 					   change_callback,
