@@ -1473,37 +1473,6 @@ camel_service_ref_session (CamelService *service)
 }
 
 /**
- * camel_service_get_session:
- * @service: a #CamelService
- *
- * Returns the #CamelSession associated with the service.
- *
- * Note this function is not thread-safe.  The returned #CamelSession could
- * be finalized by another thread while the caller is still using it.
- *
- * Returns: the #CamelSession
- *
- * Deprecated: 3.8: Use camel_service_ref_session() instead.
- **/
-CamelSession *
-camel_service_get_session (CamelService *service)
-{
-	CamelSession *session;
-
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-
-	session = camel_service_ref_session (service);
-
-	/* XXX Drop the CamelSession reference for backward-compatibility.
-	 *     This is risky.  Without a reference, the CamelSession could
-	 *     be finalized while the caller is still using it. */
-	if (session != NULL)
-		g_object_unref (session);
-
-	return session;
-}
-
-/**
  * camel_service_ref_settings:
  * @service: a #CamelService
  *

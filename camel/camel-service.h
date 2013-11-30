@@ -217,11 +217,6 @@ GList *		camel_service_query_auth_types_finish
 						 GAsyncResult *result,
 						 GError **error);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-struct _CamelSession *
-		camel_service_get_session	(CamelService *service);
-#endif /* CAMEL_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* CAMEL_SERVICE_H */
