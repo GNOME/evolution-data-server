@@ -2765,13 +2765,14 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 					g_strdup (alert_message));
 
 				service = CAMEL_SERVICE (store);
-				session = camel_service_get_session (service);
+				session = camel_service_ref_session (service);
 
 				camel_session_user_alert (
 					session, service,
 					CAMEL_SESSION_ALERT_WARNING,
 					alert_message);
 
+				g_object_unref (session);
 				g_object_unref (store);
 			}
 
