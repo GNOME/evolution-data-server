@@ -137,6 +137,108 @@ client_weak_notify (gpointer data,
 }
 
 static void
+registry_weak_notify_loop_quit (gpointer data,
+				GObject *where_the_object_was)
+{
+	ETestServerFixture *fixture = (ETestServerFixture *) data;
+
+	fixture->registry_finalized = TRUE;
+	g_main_loop_quit (fixture->loop);
+}
+
+static void
+client_weak_notify_loop_quit (gpointer data,
+			      GObject *where_the_object_was)
+{
+	ETestServerFixture *fixture = (ETestServerFixture *) data;
+
+	fixture->client_finalized = TRUE;
+	g_main_loop_quit (fixture->loop);
+}
+
+static void
+add_weak_ref (ETestServerFixture *fixture,
+	      ETestServiceType    service_type,
+	      gboolean            loop_quit)
+{
+	GObject *object;
+
+	switch (service_type) {
+	case E_TEST_SERVER_NONE:
+		if (loop_quit)
+			g_object_weak_ref (
+				G_OBJECT (fixture->registry),
+				registry_weak_notify_loop_quit,
+				fixture);
+		else
+			g_object_weak_ref (
+				G_OBJECT (fixture->registry),
+				registry_weak_notify,
+				fixture);
+		break;
+
+	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
+	case E_TEST_SERVER_CALENDAR:
+	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
+	case E_TEST_SERVER_DEPRECATED_CALENDAR:
+		/* They're all the same object pointer */
+		object = E_TEST_SERVER_UTILS_SERVICE (fixture, GObject);
+
+		if (loop_quit)
+			g_object_weak_ref (object,
+					   client_weak_notify_loop_quit,
+					   fixture);
+		else
+			g_object_weak_ref (object,
+					   client_weak_notify,
+					   fixture);
+		break;
+	}
+}
+
+static void
+remove_weak_ref (ETestServerFixture *fixture,
+		 ETestServiceType    service_type,
+		 gboolean            loop_quit)
+{
+	GObject *object;
+
+	switch (service_type) {
+	case E_TEST_SERVER_NONE:
+		if (loop_quit)
+			g_object_weak_unref (
+				G_OBJECT (fixture->registry),
+				registry_weak_notify_loop_quit,
+				fixture);
+		else
+			g_object_weak_unref (
+				G_OBJECT (fixture->registry),
+				registry_weak_notify,
+				fixture);
+		break;
+
+	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
+	case E_TEST_SERVER_CALENDAR:
+	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
+	case E_TEST_SERVER_DEPRECATED_CALENDAR:
+		/* They're all the same object pointer */
+		object = E_TEST_SERVER_UTILS_SERVICE (fixture, GObject);
+
+		if (loop_quit)
+			g_object_weak_unref (object,
+					     client_weak_notify_loop_quit,
+					     fixture);
+		else
+			g_object_weak_unref (object,
+					     client_weak_notify,
+					     fixture);
+		break;
+	}
+}
+
+static void
 e_test_server_utils_client_ready (GObject *source_object,
                                   GAsyncResult *res,
                                   gpointer user_data)
@@ -152,9 +254,6 @@ e_test_server_utils_client_ready (GObject *source_object,
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.book_client),
-			client_weak_notify, pair->fixture);
 		break;
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
 		pair->fixture->service.book_client = (EBookClient *)
@@ -163,9 +262,6 @@ e_test_server_utils_client_ready (GObject *source_object,
 		if (!pair->fixture->service.book_client)
 			g_error ("Unable to create the test book: %s", error->message);
 
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.book_client),
-			client_weak_notify, pair->fixture);
 		break;
 	case E_TEST_SERVER_CALENDAR:
 		pair->fixture->service.calendar_client = (ECalClient *)
@@ -174,15 +270,15 @@ e_test_server_utils_client_ready (GObject *source_object,
 		if (!pair->fixture->service.calendar_client)
 			g_error ("Unable to create the test calendar: %s", error->message);
 
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.calendar_client),
-			client_weak_notify, pair->fixture);
 		break;
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 	case E_TEST_SERVER_NONE:
 		g_assert_not_reached ();
 	}
+
+	/* Track ref counts */
+	add_weak_ref (pair->fixture, pair->closure->type, FALSE);
 
 	g_main_loop_quit (pair->fixture->loop);
 }
@@ -218,14 +314,9 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 					e_book_client_connect_sync (source, NULL, &error);
 		}
 
-		if (!pair->closure->use_async_connect) {
-			if (!pair->fixture->service.book_client)
-				g_error ("Unable to create the test book: %s", error->message);
-
-			g_object_weak_ref (
-				G_OBJECT (pair->fixture->service.book_client),
-				client_weak_notify, pair->fixture);
-		}
+		if (!pair->closure->use_async_connect &&
+		    !pair->fixture->service.book_client)
+			g_error ("Unable to create the test book: %s", error->message);
 
 		break;
 
@@ -238,10 +329,6 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		if (!e_book_open (pair->fixture->service.book, FALSE, &error))
 			g_error ("Unable to open book: %s", error->message);
-
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.book),
-			client_weak_notify, pair->fixture);
 
 		break;
 
@@ -260,10 +347,6 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 					pair->closure->calendar_source_type, NULL, &error);
 			if (!pair->fixture->service.calendar_client)
 				g_error ("Unable to create the test calendar: %s", error->message);
-
-			g_object_weak_ref (
-				G_OBJECT (pair->fixture->service.calendar_client),
-				client_weak_notify, pair->fixture);
 		}
 
 		break;
@@ -278,15 +361,16 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 		if (!e_cal_open (pair->fixture->service.calendar, FALSE, &error))
 			g_error ("Unable to open calendar: %s", error->message);
 
-		g_object_weak_ref (
-			G_OBJECT (pair->fixture->service.calendar),
-			client_weak_notify, pair->fixture);
-
 		break;
 
 	case E_TEST_SERVER_NONE:
 		return;
 	}
+
+	/* Add the weak ref now if we just created it */
+	if (pair->closure->type != E_TEST_SERVER_NONE &&
+	    pair->closure->use_async_connect == FALSE)
+		add_weak_ref (pair->fixture, pair->closure->type, FALSE);
 
 	if (!pair->closure->use_async_connect)
 		g_main_loop_quit (pair->fixture->loop);
@@ -304,9 +388,8 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	if (!pair->fixture->registry)
 		g_error ("Unable to create the test registry: %s", error->message);
 
-	g_object_weak_ref (
-		G_OBJECT (pair->fixture->registry),
-		registry_weak_notify, pair->fixture);
+	/* Add weak ref for the registry */
+	add_weak_ref (pair->fixture, E_TEST_SERVER_NONE, FALSE);
 
 	g_signal_connect (
 		pair->fixture->registry, "source-added",
@@ -435,6 +518,16 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	g_signal_handlers_disconnect_by_func (fixture->registry, e_test_server_utils_source_added, &pair);
 }
 
+static gboolean
+timeout_client_shutdown (gpointer user_data)
+{
+	const gchar *message = (const gchar *)user_data;
+
+	g_error ("%s", message);
+
+	return FALSE;
+}
+
 /**
  * e_test_server_utils_teardown:
  * @fixture: A #ETestServerFixture
@@ -449,6 +542,7 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	ETestServerClosure *closure = (ETestServerClosure *) user_data;
 	GError             *error = NULL;
 
+	/* Try to finalize the EClient */
 	switch (closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
@@ -490,20 +584,46 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 	}
 
+	/* Give her a second chance */
 	if (closure->type != E_TEST_SERVER_NONE &&
-	    fixture->client_finalized == FALSE)
-		g_error ("Failed to destroy client while tearing down test case; reference count imbalance");
+	    fixture->client_finalized == FALSE) {
+		guint timeout_id;
 
-	g_free (fixture->source_name);
+		timeout_id =
+			g_timeout_add_seconds (10, timeout_client_shutdown,
+					       (gpointer)"Timed out waiting for EClient to finalize");
+
+		remove_weak_ref (fixture, closure->type, FALSE);
+		add_weak_ref (fixture, closure->type, TRUE);
+
+		g_main_loop_run (fixture->loop);
+		g_source_remove (timeout_id);
+	}
+
+	/* Try to finalize the registry */
 	g_object_run_dispose (G_OBJECT (fixture->registry));
 	g_object_unref (fixture->registry);
-	fixture->registry = NULL;
 
-	if (fixture->registry_finalized == FALSE)
-		g_error ("Failed to destroy registry while tearing down test case; reference count imbalance");
+	/* Give her a second chance */
+	if (fixture->registry_finalized == FALSE) {
+		guint timeout_id;
 
+		timeout_id =
+			g_timeout_add_seconds (10, timeout_client_shutdown,
+					       (gpointer)"Timed out waiting for source registery to finalize");
+
+		remove_weak_ref (fixture, E_TEST_SERVER_NONE, FALSE);
+		add_weak_ref (fixture, E_TEST_SERVER_NONE, TRUE);
+
+		g_main_loop_run (fixture->loop);
+		g_source_remove (timeout_id);
+	}
+
+	g_free (fixture->source_name);
 	g_main_loop_unref (fixture->loop);
+	fixture->registry = NULL;
 	fixture->loop = NULL;
+	fixture->service.generic = NULL;
 
 	if (!test_installed_services ()) {
 #if !GLOBAL_DBUS_DAEMON
