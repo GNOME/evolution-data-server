@@ -399,6 +399,28 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
+		/* Special case should not be a fallback query */
+		add_client_test (
+			suites[i].prefix,
+			"/AnyFieldContains/NULL",
+			suites[i].func,
+			e_book_query_any_field_contains (NULL),
+			N_CONTACTS,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		/* Special case should not be a fallback query */
+		add_client_test (
+			suites[i].prefix,
+			"/AnyFieldContains/\"\"",
+			suites[i].func,
+			e_book_query_any_field_contains (""),
+			N_CONTACTS,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 		/* Add search tests that fetch contacts */
 		add_client_test (
 			suites[i].prefix,
