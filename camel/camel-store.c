@@ -1788,19 +1788,9 @@ camel_store_get_inbox_folder_sync (CamelStore *store,
 	class = CAMEL_STORE_GET_CLASS (store);
 	g_return_val_if_fail (class->get_inbox_folder_sync != NULL, NULL);
 
-	camel_store_lock (store);
-
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store);
-		return NULL;
-	}
-
 	folder = class->get_inbox_folder_sync (store, cancellable, error);
 	CAMEL_CHECK_GERROR (
 		store, get_inbox_folder_sync, folder != NULL, error);
-
-	camel_store_unlock (store);
 
 	return folder;
 }
