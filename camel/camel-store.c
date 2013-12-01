@@ -34,6 +34,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-async-closure.h"
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-folder.h"
@@ -56,8 +57,6 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;
 
 struct _CamelStorePrivate {
-	GRecMutex folder_lock;	/* for locking folder operations */
-
 	GMutex signal_emission_lock;
 	gboolean folder_info_stale_scheduled;
 };
@@ -339,8 +338,6 @@ store_finalize (GObject *object)
 
 	if (store->folders != NULL)
 		camel_object_bag_destroy (store->folders);
-
-	g_rec_mutex_clear (&store->priv->folder_lock);
 
 	if (store->cdb_r != NULL) {
 		camel_db_close (store->cdb_r);
@@ -668,8 +665,6 @@ camel_store_init (CamelStore *store)
 		CAMEL_STORE_CAN_EDIT_FOLDERS;
 
 	store->mode = CAMEL_STORE_READ | CAMEL_STORE_WRITE;
-
-	g_rec_mutex_init (&store->priv->folder_lock);
 }
 
 G_DEFINE_QUARK (camel-store-error-quark, camel_store_error)
@@ -1173,38 +1168,6 @@ camel_store_can_refresh_folder (CamelStore *store,
 	g_return_val_if_fail (class->can_refresh_folder != NULL, FALSE);
 
 	return class->can_refresh_folder (store, info, error);
-}
-
-/**
- * camel_store_lock:
- * @store: a #CamelStore
- *
- * Locks @store. Unlock it with camel_store_unlock().
- *
- * Since: 2.32
- **/
-void
-camel_store_lock (CamelStore *store)
-{
-	g_return_if_fail (CAMEL_IS_STORE (store));
-
-	g_rec_mutex_lock (&store->priv->folder_lock);
-}
-
-/**
- * camel_store_unlock:
- * @store: a #CamelStore
- *
- * Unlocks @store, previously locked with camel_store_lock().
- *
- * Since: 2.32
- **/
-void
-camel_store_unlock (CamelStore *store)
-{
-	g_return_if_fail (CAMEL_IS_STORE (store));
-
-	g_rec_mutex_unlock (&store->priv->folder_lock);
 }
 
 /**
@@ -2147,46 +2110,27 @@ camel_store_create_folder_sync (CamelStore *store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	CamelStoreClass *class;
-	CamelFolderInfo *fi;
+	CamelAsyncClosure *closure;
+	GAsyncResult *result;
+	CamelFolderInfo *folder_info;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 	g_return_val_if_fail (folder_name != NULL, NULL);
 
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->create_folder_sync != NULL, NULL);
+	closure = camel_async_closure_new ();
 
-	if ((parent_name == NULL || parent_name[0] == 0)
-	    && (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
-		|| ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0))) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_INVALID,
-			_("Cannot create folder: %s: folder exists"),
-			folder_name);
-		return NULL;
-	}
+	camel_store_create_folder (
+		store, parent_name, folder_name,
+		G_PRIORITY_DEFAULT, cancellable,
+		camel_async_closure_callback, closure);
 
-	camel_store_lock (store);
+	result = camel_async_closure_wait (closure);
 
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store);
-		return NULL;
-	}
+	folder_info = camel_store_create_folder_finish (store, result, error);
 
-	camel_operation_push_message (
-		cancellable, _("Creating folder '%s'"), folder_name);
+	camel_async_closure_free (closure);
 
-	fi = class->create_folder_sync (
-		store, parent_name, folder_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, create_folder_sync, fi != NULL, error);
-
-	camel_operation_pop_message (cancellable);
-
-	camel_store_unlock (store);
-
-	return fi;
+	return folder_info;
 }
 
 /* Helper for camel_store_create_folder() */
@@ -2196,17 +2140,51 @@ store_create_folder_thread (GTask *task,
                             gpointer task_data,
                             GCancellable *cancellable)
 {
-	CamelFolderInfo *folder_info;
+	CamelStore *store;
+	CamelStoreClass *class;
 	AsyncContext *async_context;
+	CamelFolderInfo *folder_info;
+	const gchar *parent_name;
+	const gchar *folder_name;
 	GError *local_error = NULL;
 
+	store = CAMEL_STORE (source_object);
 	async_context = (AsyncContext *) task_data;
 
-	folder_info = camel_store_create_folder_sync (
-		CAMEL_STORE (source_object),
-		async_context->folder_name_1,
-		async_context->folder_name_2,
-		cancellable, &local_error);
+	parent_name = async_context->folder_name_1;
+	folder_name = async_context->folder_name_2;
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->create_folder_sync != NULL);
+
+	if (parent_name == NULL || *parent_name == '\0') {
+		gboolean reserved_vfolder_name;
+
+		reserved_vfolder_name =
+			((store->flags & CAMEL_STORE_VJUNK) &&
+			g_str_equal (folder_name, CAMEL_VJUNK_NAME)) ||
+			((store->flags & CAMEL_STORE_VTRASH) &&
+			g_str_equal (folder_name, CAMEL_VTRASH_NAME));
+
+		if (reserved_vfolder_name) {
+			g_task_return_new_error (
+				task, CAMEL_STORE_ERROR,
+				CAMEL_STORE_ERROR_INVALID,
+				_("Cannot create folder: %s: folder exists"),
+				folder_name);
+			return;
+		}
+	}
+
+	camel_operation_push_message (
+		cancellable, _("Creating folder '%s'"), folder_name);
+
+	folder_info = class->create_folder_sync (
+		store, parent_name, folder_name, cancellable, &local_error);
+	CAMEL_CHECK_LOCAL_GERROR (
+		store, create_folder_sync, folder_info != NULL, local_error);
+
+	camel_operation_pop_message (cancellable);
 
 	if (local_error != NULL) {
 		g_warn_if_fail (folder_info == NULL);
@@ -2246,10 +2224,13 @@ camel_store_create_folder (CamelStore *store,
                            gpointer user_data)
 {
 	GTask *task;
+	CamelService *service;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (folder_name != NULL);
+
+	service = CAMEL_SERVICE (store);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->folder_name_1 = g_strdup (parent_name);
@@ -2263,7 +2244,8 @@ camel_store_create_folder (CamelStore *store,
 		task, async_context,
 		(GDestroyNotify) async_context_free);
 
-	g_task_run_in_thread (task, store_create_folder_thread);
+	camel_service_queue_task (
+		service, task, store_create_folder_thread);
 
 	g_object_unref (task);
 }
@@ -2316,52 +2298,25 @@ camel_store_delete_folder_sync (CamelStore *store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	CamelStoreClass *class;
+	CamelAsyncClosure *closure;
+	GAsyncResult *result;
 	gboolean success;
-	GError *local_error = NULL, **check_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 	g_return_val_if_fail (folder_name != NULL, FALSE);
 
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->delete_folder_sync != NULL, FALSE);
+	closure = camel_async_closure_new ();
 
-	/* TODO: should probably be a parameter/bit on the storeinfo */
-	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0)
-	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot delete folder: %s: Invalid operation"),
-			folder_name);
-		return FALSE;
-	}
+	camel_store_delete_folder (
+		store, folder_name,
+		G_PRIORITY_DEFAULT, cancellable,
+		camel_async_closure_callback, closure);
 
-	camel_store_lock (store);
+	result = camel_async_closure_wait (closure);
 
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store);
-		return FALSE;
-	}
+	success = camel_store_delete_folder_finish (store, result, error);
 
-	success = class->delete_folder_sync (
-		store, folder_name, cancellable, &local_error);
-	if (local_error)
-		check_error = &local_error;
-	CAMEL_CHECK_GERROR (store, delete_folder_sync, success, check_error);
-
-	/* ignore 'no such table' errors */
-	if (local_error != NULL &&
-	    g_ascii_strncasecmp (local_error->message, "no such table", 13) == 0)
-		g_clear_error (&local_error);
-
-	if (local_error == NULL)
-		cs_delete_cached_folder (store, folder_name);
-	else
-		g_propagate_error (error, local_error);
-
-	camel_store_unlock (store);
+	camel_async_closure_free (closure);
 
 	return success;
 }
@@ -2373,20 +2328,51 @@ store_delete_folder_thread (GTask *task,
                             gpointer task_data,
                             GCancellable *cancellable)
 {
-	gboolean success;
+	CamelStore *store;
+	CamelStoreClass *class;
 	AsyncContext *async_context;
+	const gchar *folder_name;
+	gboolean reserved_vfolder_name;
+	gboolean success;
 	GError *local_error = NULL;
 
+	store = CAMEL_STORE (source_object);
 	async_context = (AsyncContext *) task_data;
 
-	success = camel_store_delete_folder_sync (
-		CAMEL_STORE (source_object),
-		async_context->folder_name_1,
-		cancellable, &local_error);
+	folder_name = async_context->folder_name_1;
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->delete_folder_sync != NULL);
+
+	reserved_vfolder_name =
+		((store->flags & CAMEL_STORE_VJUNK) &&
+		g_str_equal (folder_name, CAMEL_VJUNK_NAME)) ||
+		((store->flags & CAMEL_STORE_VTRASH) &&
+		g_str_equal (folder_name, CAMEL_VTRASH_NAME));
+
+	if (reserved_vfolder_name) {
+		g_task_return_new_error (
+			task, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot delete folder: %s: Invalid operation"),
+			folder_name);
+		return;
+	}
+
+	success = class->delete_folder_sync (
+		store, folder_name, cancellable, &local_error);
+	CAMEL_CHECK_LOCAL_GERROR (
+		store, delete_folder_sync, success, local_error);
+
+	/* ignore 'no such table' errors */
+	if (local_error != NULL &&
+	    g_ascii_strncasecmp (local_error->message, "no such table", 13) == 0)
+		g_clear_error (&local_error);
 
 	if (local_error != NULL) {
 		g_task_return_error (task, local_error);
 	} else {
+		cs_delete_cached_folder (store, folder_name);
 		g_task_return_boolean (task, success);
 	}
 }
@@ -2417,10 +2403,13 @@ camel_store_delete_folder (CamelStore *store,
                            gpointer user_data)
 {
 	GTask *task;
+	CamelService *service;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (folder_name != NULL);
+
+	service = CAMEL_SERVICE (store);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->folder_name_1 = g_strdup (folder_name);
@@ -2433,7 +2422,8 @@ camel_store_delete_folder (CamelStore *store,
 		task, async_context,
 		(GDestroyNotify) async_context_free);
 
-	g_task_run_in_thread (task, store_delete_folder_thread);
+	camel_service_queue_task (
+		service, task, store_delete_folder_thread);
 
 	g_object_unref (task);
 }
@@ -2481,129 +2471,31 @@ camel_store_delete_folder_finish (CamelStore *store,
  **/
 gboolean
 camel_store_rename_folder_sync (CamelStore *store,
-                                const gchar *old_namein,
+                                const gchar *old_name,
                                 const gchar *new_name,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	CamelStoreClass *class;
-	CamelFolder *folder;
-	gint i, oldlen, namelen;
-	GPtrArray *folders = NULL;
-	gchar *old_name;
+	CamelAsyncClosure *closure;
+	GAsyncResult *result;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (old_namein != NULL, FALSE);
+	g_return_val_if_fail (old_name != NULL, FALSE);
 	g_return_val_if_fail (new_name != NULL, FALSE);
 
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->rename_folder_sync != NULL, FALSE);
+	closure = camel_async_closure_new ();
 
-	if (strcmp (old_namein, new_name) == 0)
-		return TRUE;
+	camel_store_rename_folder (
+		store, old_name, new_name,
+		G_PRIORITY_DEFAULT, cancellable,
+		camel_async_closure_callback, closure);
 
-	if (((store->flags & CAMEL_STORE_VTRASH) && strcmp (old_namein, CAMEL_VTRASH_NAME) == 0)
-	    || ((store->flags & CAMEL_STORE_VJUNK) && strcmp (old_namein, CAMEL_VJUNK_NAME) == 0)) {
-		g_set_error (
-			error, CAMEL_STORE_ERROR,
-			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot rename folder: %s: Invalid operation"),
-			old_namein);
-		return FALSE;
-	}
+	result = camel_async_closure_wait (closure);
 
-	/* need to save this, since old_namein might be folder->full_name, which could go away */
-	old_name = g_strdup (old_namein);
-	oldlen = strlen (old_name);
+	success = camel_store_rename_folder_finish (store, result, error);
 
-	camel_store_lock (store);
-
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store);
-		return FALSE;
-	}
-
-	/* If the folder is open (or any subfolders of the open folder)
-	 * We need to rename them atomically with renaming the actual
-	 * folder path. */
-	folders = camel_object_bag_list (store->folders);
-	for (i = 0; folders && i < folders->len; i++) {
-		const gchar *full_name;
-
-		folder = folders->pdata[i];
-		full_name = camel_folder_get_full_name (folder);
-
-		namelen = strlen (full_name);
-		if ((namelen == oldlen &&
-		     strcmp (full_name, old_name) == 0)
-		    || ((namelen > oldlen)
-			&& strncmp (full_name, old_name, oldlen) == 0
-			&& full_name[oldlen] == '/')) {
-			camel_folder_lock (folder);
-		} else {
-			g_ptr_array_remove_index_fast (folders, i);
-			i--;
-			g_object_unref (folder);
-		}
-	}
-
-	/* Now try the real rename (will emit renamed signal) */
-	success = class->rename_folder_sync (
-		store, old_name, new_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, rename_folder_sync, success, error);
-
-	/* If it worked, update all open folders/unlock them */
-	if (folders) {
-		if (success) {
-			CamelStoreGetFolderInfoFlags flags;
-			CamelFolderInfo *folder_info;
-
-			flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
-
-			for (i = 0; i < folders->len; i++) {
-				const gchar *full_name;
-				gchar *new;
-
-				folder = folders->pdata[i];
-				full_name = camel_folder_get_full_name (folder);
-
-				new = g_strdup_printf ("%s%s", new_name, full_name + strlen (old_name));
-				camel_object_bag_rekey (store->folders, folder, new);
-				camel_folder_rename (folder, new);
-				g_free (new);
-
-				camel_folder_unlock (folder);
-				g_object_unref (folder);
-			}
-
-			/* Emit renamed signal */
-			if (CAMEL_IS_SUBSCRIBABLE (store))
-				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
-
-			folder_info = class->get_folder_info_sync (
-				store, new_name, flags, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_folder_info, folder_info != NULL, error);
-
-			if (folder_info != NULL) {
-				camel_store_folder_renamed (store, old_name, folder_info);
-				camel_folder_info_free (folder_info);
-			}
-		} else {
-			/* Failed, just unlock our folders for re-use */
-			for (i = 0; i < folders->len; i++) {
-				folder = folders->pdata[i];
-				camel_folder_unlock (folder);
-				g_object_unref (folder);
-			}
-		}
-	}
-
-	camel_store_unlock (store);
-
-	g_ptr_array_free (folders, TRUE);
-	g_free (old_name);
+	camel_async_closure_free (closure);
 
 	return success;
 }
@@ -2615,17 +2507,128 @@ store_rename_folder_thread (GTask *task,
                             gpointer task_data,
                             GCancellable *cancellable)
 {
+	CamelStore *store;
+	CamelStoreClass *class;
+	CamelFolder *folder;
+	GPtrArray *folders;
+	const gchar *old_name;
+	const gchar *new_name;
+	gboolean reserved_vfolder_name;
 	gboolean success;
+	gsize old_name_len;
+	guint ii;
 	AsyncContext *async_context;
 	GError *local_error = NULL;
 
+	store = CAMEL_STORE (source_object);
 	async_context = (AsyncContext *) task_data;
 
-	success = camel_store_rename_folder_sync (
-		CAMEL_STORE (source_object),
-		async_context->folder_name_1,
-		async_context->folder_name_2,
-		cancellable, &local_error);
+	old_name = async_context->folder_name_1;
+	new_name = async_context->folder_name_2;
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class->rename_folder_sync != NULL);
+
+	if (g_str_equal (old_name, new_name)) {
+		g_task_return_boolean (task, TRUE);
+		return;
+	}
+
+	reserved_vfolder_name =
+		((store->flags & CAMEL_STORE_VJUNK) &&
+		g_str_equal (old_name, CAMEL_VJUNK_NAME) == 0) ||
+		((store->flags & CAMEL_STORE_VTRASH) &&
+		g_str_equal (old_name, CAMEL_VTRASH_NAME) == 0);
+
+	if (reserved_vfolder_name) {
+		g_task_return_new_error (
+			task, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Cannot rename folder: %s: Invalid operation"),
+			old_name);
+		return;
+	}
+
+	old_name_len = strlen (old_name);
+
+	/* If the folder is open (or any subfolders of the open folder)
+	 * We need to rename them atomically with renaming the actual
+	 * folder path. */
+	folders = camel_object_bag_list (store->folders);
+	for (ii = 0; ii < folders->len; ii++) {
+		const gchar *full_name;
+		gsize full_name_len;
+
+		folder = folders->pdata[ii];
+		full_name = camel_folder_get_full_name (folder);
+		full_name_len = strlen (full_name);
+
+		if ((full_name_len == old_name_len &&
+		     strcmp (full_name, old_name) == 0)
+		    || ((full_name_len > old_name_len)
+			&& strncmp (full_name, old_name, old_name_len) == 0
+			&& full_name[old_name_len] == '/')) {
+			camel_folder_lock (folder);
+		} else {
+			g_ptr_array_remove_index_fast (folders, ii);
+			ii--;
+			g_object_unref (folder);
+		}
+	}
+
+	/* Now try the real rename (will emit renamed signal) */
+	success = class->rename_folder_sync (
+		store, old_name, new_name, cancellable, &local_error);
+	CAMEL_CHECK_LOCAL_GERROR (
+		store, rename_folder_sync, success, local_error);
+
+	/* If it worked, update all open folders/unlock them */
+	if (success) {
+		CamelStoreGetFolderInfoFlags flags;
+		CamelFolderInfo *folder_info;
+
+		flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
+
+		for (ii = 0; ii < folders->len; ii++) {
+			const gchar *full_name;
+			gchar *new;
+
+			folder = folders->pdata[ii];
+			full_name = camel_folder_get_full_name (folder);
+
+			new = g_strdup_printf ("%s%s", new_name, full_name + strlen (old_name));
+			camel_object_bag_rekey (store->folders, folder, new);
+			camel_folder_rename (folder, new);
+			g_free (new);
+
+			camel_folder_unlock (folder);
+			g_object_unref (folder);
+		}
+
+		/* Emit renamed signal */
+		if (CAMEL_IS_SUBSCRIBABLE (store))
+			flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
+
+		folder_info = class->get_folder_info_sync (
+			store, new_name, flags, cancellable, &local_error);
+		CAMEL_CHECK_LOCAL_GERROR (
+			store, get_folder_info,
+			folder_info != NULL, local_error);
+
+		if (folder_info != NULL) {
+			camel_store_folder_renamed (store, old_name, folder_info);
+			camel_folder_info_free (folder_info);
+		}
+	} else {
+		/* Failed, just unlock our folders for re-use */
+		for (ii = 0; ii < folders->len; ii++) {
+			folder = folders->pdata[ii];
+			camel_folder_unlock (folder);
+			g_object_unref (folder);
+		}
+	}
+
+	g_ptr_array_free (folders, TRUE);
 
 	if (local_error != NULL) {
 		g_task_return_error (task, local_error);
@@ -2661,11 +2664,14 @@ camel_store_rename_folder (CamelStore *store,
                            gpointer user_data)
 {
 	GTask *task;
+	CamelService *service;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (old_name != NULL);
 	g_return_if_fail (new_name != NULL);
+
+	service = CAMEL_SERVICE (store);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->folder_name_1 = g_strdup (old_name);
@@ -2679,7 +2685,8 @@ camel_store_rename_folder (CamelStore *store,
 		task, async_context,
 		(GDestroyNotify) async_context_free);
 
-	g_task_run_in_thread (task, store_rename_folder_thread);
+	camel_service_queue_task (
+		service, task, store_rename_folder_thread);
 
 	g_object_unref (task);
 }
