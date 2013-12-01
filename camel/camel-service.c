@@ -35,6 +35,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-async-closure.h"
 #include "camel-debug.h"
 #include "camel-enumtypes.h"
 #include "camel-local-settings.h"
@@ -51,7 +52,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SERVICE, CamelServicePrivate))
 
-typedef struct _AsyncClosure AsyncClosure;
 typedef struct _AsyncContext AsyncContext;
 typedef struct _ConnectionOp ConnectionOp;
 
@@ -75,15 +75,6 @@ struct _CamelServicePrivate {
 	CamelServiceConnectionStatus status;
 
 	gboolean network_service_inited;
-};
-
-/* This is copied from EAsyncClosure in libedataserver.
- * If this proves useful elsewhere in Camel we may want
- * to split this out and make it part of the public API. */
-struct _AsyncClosure {
-	GMainLoop *loop;
-	GMainContext *context;
-	GAsyncResult *result;
 };
 
 struct _AsyncContext {
@@ -123,67 +114,6 @@ static void camel_service_initable_init (GInitableIface *interface);
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	CamelService, camel_service, CAMEL_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, camel_service_initable_init))
-
-static AsyncClosure *
-async_closure_new (void)
-{
-	AsyncClosure *closure;
-
-	closure = g_slice_new0 (AsyncClosure);
-	closure->context = g_main_context_new ();
-	closure->loop = g_main_loop_new (closure->context, FALSE);
-
-	g_main_context_push_thread_default (closure->context);
-
-	return closure;
-}
-
-static GAsyncResult *
-async_closure_wait (AsyncClosure *closure)
-{
-	g_return_val_if_fail (closure != NULL, NULL);
-
-	g_main_loop_run (closure->loop);
-
-	return closure->result;
-}
-
-static void
-async_closure_free (AsyncClosure *closure)
-{
-	g_return_if_fail (closure != NULL);
-
-	g_main_context_pop_thread_default (closure->context);
-
-	g_main_loop_unref (closure->loop);
-	g_main_context_unref (closure->context);
-
-	if (closure->result != NULL)
-		g_object_unref (closure->result);
-
-	g_slice_free (AsyncClosure, closure);
-}
-
-static void
-async_closure_callback (GObject *object,
-                        GAsyncResult *result,
-                        gpointer closure)
-{
-	AsyncClosure *real_closure;
-
-	g_return_if_fail (G_IS_OBJECT (object));
-	g_return_if_fail (G_IS_ASYNC_RESULT (result));
-	g_return_if_fail (closure != NULL);
-
-	real_closure = closure;
-
-	/* Replace any previous result. */
-	if (real_closure->result != NULL)
-		g_object_unref (real_closure->result);
-	real_closure->result = g_object_ref (result);
-
-	g_main_loop_quit (real_closure->loop);
-}
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -1599,23 +1529,23 @@ camel_service_connect_sync (CamelService *service,
                             GCancellable *cancellable,
                             GError **error)
 {
-	AsyncClosure *closure;
+	CamelAsyncClosure *closure;
 	GAsyncResult *result;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
 
-	closure = async_closure_new ();
+	closure = camel_async_closure_new ();
 
 	camel_service_connect (
 		service, G_PRIORITY_DEFAULT, cancellable,
-		async_closure_callback, closure);
+		camel_async_closure_callback, closure);
 
-	result = async_closure_wait (closure);
+	result = camel_async_closure_wait (closure);
 
 	success = camel_service_connect_finish (service, result, error);
 
-	async_closure_free (closure);
+	camel_async_closure_free (closure);
 
 	return success;
 }
@@ -1771,23 +1701,23 @@ camel_service_disconnect_sync (CamelService *service,
                                GCancellable *cancellable,
                                GError **error)
 {
-	AsyncClosure *closure;
+	CamelAsyncClosure *closure;
 	GAsyncResult *result;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
 
-	closure = async_closure_new ();
+	closure = camel_async_closure_new ();
 
 	camel_service_disconnect (
-		service, clean, G_PRIORITY_DEFAULT,
-		cancellable, async_closure_callback, closure);
+		service, clean, G_PRIORITY_DEFAULT, cancellable,
+		camel_async_closure_callback, closure);
 
-	result = async_closure_wait (closure);
+	result = camel_async_closure_wait (closure);
 
 	success = camel_service_disconnect_finish (service, result, error);
 
-	async_closure_free (closure);
+	camel_async_closure_free (closure);
 
 	return success;
 }
