@@ -186,7 +186,6 @@ camel_subscribable_folder_is_subscribed (CamelSubscribable *subscribable,
                                          const gchar *folder_name)
 {
 	CamelSubscribableInterface *interface;
-	gboolean is_subscribed;
 
 	g_return_val_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable), FALSE);
 	g_return_val_if_fail (folder_name != NULL, FALSE);
@@ -194,14 +193,7 @@ camel_subscribable_folder_is_subscribed (CamelSubscribable *subscribable,
 	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
 	g_return_val_if_fail (interface->folder_is_subscribed != NULL, FALSE);
 
-	camel_store_lock (CAMEL_STORE (subscribable));
-
-	is_subscribed = interface->folder_is_subscribed (
-		subscribable, folder_name);
-
-	camel_store_unlock (CAMEL_STORE (subscribable));
-
-	return is_subscribed;
+	return interface->folder_is_subscribed (subscribable, folder_name);
 }
 
 /**
