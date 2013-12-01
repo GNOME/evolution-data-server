@@ -101,8 +101,7 @@ static void           cursor_test_step_free           (CursorTest         *test)
 
 /* Set Sexp Tests */
 static void           cursor_closure_set_sexp         (CursorClosure      *closure,
-						       EBookQuery         *query,
-						       gboolean            expect_success);
+						       EBookQuery         *query);
 static void           cursor_test_set_sexp            (CursorFixture      *fixture,
 						       CursorClosure      *closure,
 						       CursorTest         *test);
@@ -989,7 +988,6 @@ typedef struct {
 	CursorTestType    type;
 
 	gchar            *sexp;
-	gboolean          expect_success;
 } CursorTestSetSexp;
 
 typedef struct {
@@ -999,8 +997,7 @@ typedef struct {
 
 static void
 cursor_closure_set_sexp (CursorClosure      *closure,
-			 EBookQuery         *query,
-			 gboolean            expect_success)
+			 EBookQuery         *query)
 {
 	CursorTestSetSexp *test = g_slice_new0 (CursorTestSetSexp);
 
@@ -1008,8 +1005,6 @@ cursor_closure_set_sexp (CursorClosure      *closure,
 
 	test->type           = CURSOR_TEST_SET_SEXP;
 	test->sexp           = e_book_query_to_string (query);
-	test->expect_success = expect_success;
-
 	e_book_query_unref (query);
 
 	closure->tests = g_list_append (closure->tests, test);
@@ -1020,24 +1015,9 @@ cursor_test_set_sexp_assert (CursorTestSetSexp  *test,
 			     gboolean            success,
 			     GError             *error)
 {
-	if (test->expect_success) {
-		if (!success)
-			g_error ("Failed to set sexp '%s': %s",
-				 test->sexp, error->message);
-	} else {
-
-		if (success)
-			g_error ("Unexpected success setting sexp '%s'",
-				 test->sexp);
-		else if (!g_error_matches (error,
-					   E_CLIENT_ERROR,
-					   E_CLIENT_ERROR_INVALID_QUERY))
-			g_error ("Wrong error message when failing to set a search expression: "
-				 "Domain '%s' Code '%d' Message: %s",
-				 g_quark_to_string (error->domain),
-				 error->code,
-				 error->message);
-	}
+	if (!success)
+		g_error ("Failed to set sexp '%s': %s",
+			 test->sexp, error->message);
 }
 
 static void
@@ -2395,16 +2375,6 @@ main (gint argc,
 		 *           BASIC SEARCH EXPRESSION TESTS          *
 		 ****************************************************/
 
-		/* Invalid Query */
-		closure = cursor_closure_new (&base_params[i], "POSIX");
-		cursor_closure_set_sexp (closure,
-					 e_book_query_field_test (
-						E_CONTACT_WANTS_HTML,
-						E_BOOK_QUERY_IS,
-						"1"),
-					 FALSE);
-		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/Invalid%s", base_params[i].base_path);
-
 		/* Query Changes Position */
 		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
@@ -2419,8 +2389,7 @@ main (gint argc,
 					 e_book_query_field_test (
 						E_CONTACT_EMAIL,
 						E_BOOK_QUERY_ENDS_WITH,
-						".com"),
-					 TRUE);
+						".com"));
 
 		/* In POSIX Locale, the 10th contact out of 20 becomes the 6th contact out of
 		 * 13 contacts bearing a '.com' email address
