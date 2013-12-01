@@ -26,6 +26,16 @@ CamelAddressPrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-async-closure</FILE>
+<TITLE>CamelAsyncClosure</TITLE>
+CamelAsyncClosure
+camel_async_closure_new
+camel_async_closure_wait
+camel_async_closure_free
+camel_async_closure_callback
+</SECTION>
+
+<SECTION>
 <FILE>camel-block-file</FILE>
 <TITLE>CamelBlockFile</TITLE>
 <TITLE>CamelKeyFile</TITLE>

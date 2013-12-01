@@ -171,6 +171,7 @@
 
     <chapter id="Utilities">
       <title>Utilities</title>
+      <xi:include href="xml/camel-async-closure.xml"/>
       <xi:include href="xml/camel-charset-map.xml"/>
       <xi:include href="xml/camel-file-utils.xml"/>
       <xi:include href="xml/camel-iconv.xml"/>
