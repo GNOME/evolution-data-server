@@ -905,7 +905,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 	for (l = id_list; l != NULL && success; l = l->next) {
 		const gchar *id;
-		EContact *contact;
+		EContact *contact = NULL;
 
 		id = l->data;
 
@@ -922,7 +922,6 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			removed_ids      = g_slist_prepend (removed_ids, g_strdup (id));
 			removed_contacts = g_slist_prepend (removed_contacts, contact);
 		} else {
-			g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
 
 			if (g_error_matches (local_error,
 					     E_BOOK_SQLITE_ERROR,
@@ -933,6 +932,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 					_("Contact '%s' not found"), id);
 				g_error_free (local_error);
 			} else {
+				g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
 				g_propagate_error (perror, local_error);
 				local_error = NULL;
 			}
@@ -1011,7 +1011,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 
 	for (l = vcards; l != NULL; l = l->next) {
 		gchar *id;
-		EContact *contact, *old_contact;
+		EContact *contact, *old_contact = NULL;
 		const gchar *contact_rev, *old_contact_rev;
 
 		contact = e_contact_new_from_vcard (l->data);
