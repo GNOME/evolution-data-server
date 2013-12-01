@@ -306,10 +306,10 @@ e_book_backend_file_maybe_upgrade_db (DB *db)
 }
 
 static gboolean
-migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
-                         const gchar *sqlite_folder_id,
-                         DB *db,
-                         GError **error)
+migrate_bdb_to_sqlite (EBookSqlite *sqlitedb,
+		       DB *db,
+		       GCancellable *cancellable,
+		       GError **error)
 {
 	DBC            *dbc;
 	DBT             id_dbt, vcard_dbt;
@@ -363,9 +363,7 @@ migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
 
 	/* Add the contacts to the SQLite (only if there are any contacts to add) */
 	if (contacts &&
-	    !e_book_backend_sqlitedb_add_contacts (sqlitedb,
-						   sqlite_folder_id,
-						   contacts, FALSE, error)) {
+	    !e_book_sqlite_add_contacts (sqlitedb, contacts, NULL, TRUE, cancellable, error)) {
 		if (error && *error) {
 			g_warning ("Failed to add contacts to sqlite db: %s", (*error)->message);
 		} else {
@@ -378,7 +376,10 @@ migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
 
 	e_util_free_object_slist (contacts);
 
-	if (!e_book_backend_sqlitedb_set_is_populated (sqlitedb, sqlite_folder_id, TRUE, error)) {
+	if (!e_book_sqlite_set_key_value_int (sqlitedb,
+					      E_BOOK_SQL_IS_POPULATED_KEY,
+					      TRUE,
+					      error)) {
 		if (error && *error) {
 			g_warning ("Failed to set the sqlitedb populated flag: %s", (*error)->message);
 		} else {
@@ -391,10 +392,10 @@ migrate_bdb_to_sqlitedb (EBookBackendSqliteDB *sqlitedb,
 }
 
 gboolean
-e_book_backend_file_migrate_bdb (EBookBackendSqliteDB *sqlitedb,
-                                 const gchar *sqlite_folder_id,
+e_book_backend_file_migrate_bdb (EBookSqlite *sqlitedb,
                                  const gchar *dirname,
                                  const gchar *filename,
+				 GCancellable *cancellable,
                                  GError **error)
 {
 	DB        *db = NULL;
@@ -517,7 +518,7 @@ e_book_backend_file_migrate_bdb (EBookBackendSqliteDB *sqlitedb,
 	/* Now we have our old BDB up and running and migrated to the latest known BDB version,
 	 * lets go ahead and now migrate it to the sqlite DB
 	 */
-	if (migrate_bdb_to_sqlitedb (sqlitedb, sqlite_folder_id, db, error))
+	if (migrate_bdb_to_sqlite (sqlitedb, db, cancellable, error))
 		status = TRUE;
 
  close_db:
