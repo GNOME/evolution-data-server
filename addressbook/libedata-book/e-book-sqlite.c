@@ -3666,7 +3666,11 @@ enum {
 	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER   ? "eqphone-national" : \
 	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER      ? "eqphone-short" : \
 	 (query) == E_BOOK_QUERY_REGEX_NORMAL   ? "regex-normal" :	\
-	 (query) == E_BOOK_QUERY_REGEX_NORMAL   ? "regex-raw"    : "(unknown)")
+	 (query) == E_BOOK_QUERY_REGEX_RAW      ? "regex-raw"    :	\
+	 (query) == E_BOOK_QUERY_TRANSLIT_IS    ? "translit-is" :	\
+	 (query) == E_BOOK_QUERY_TRANSLIT_CONTAINS ? "translit-contains" : \
+	 (query) == E_BOOK_QUERY_TRANSLIT_BEGINS_WITH ? "translit-begins-with" : \
+	 (query) == E_BOOK_QUERY_TRANSLIT_ENDS_WITH ? "translit-ends-with" :  "(unknown)")
 
 #define EBSQL_FIELD_ID_STR(field_id)					\
 	((field_id) == E_CONTACT_FIELD_LAST ? "x-evolution-any-field" :	\
@@ -4011,22 +4015,24 @@ static const struct {
 	gboolean     subset;  /* TRUE for the subset ESExpIFunc, otherwise the field check ESExpFunc */
 	guint        test;    /* Extended EBookQueryTest value */
 } check_symbols[] = {
-	{ "and",              TRUE, BOOK_QUERY_SUB_AND },
-	{ "or",               TRUE, BOOK_QUERY_SUB_OR },
-	{ "not",              TRUE, BOOK_QUERY_SUB_NOT },
-
-	{ "contains",         FALSE, E_BOOK_QUERY_CONTAINS },
-	{ "is",               FALSE, E_BOOK_QUERY_IS },
-	{ "beginswith",       FALSE, E_BOOK_QUERY_BEGINS_WITH },
-	{ "endswith",         FALSE, E_BOOK_QUERY_ENDS_WITH },
-	{ "eqphone",          FALSE, E_BOOK_QUERY_EQUALS_PHONE_NUMBER },
-	{ "eqphone_national", FALSE, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER },
-	{ "eqphone_short",    FALSE, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER },
-	{ "regex_normal",     FALSE, E_BOOK_QUERY_REGEX_NORMAL },
-	{ "regex_raw",        FALSE, E_BOOK_QUERY_REGEX_RAW },
-	{ "exists",           FALSE, BOOK_QUERY_EXISTS },
+	{ "and",                 TRUE, BOOK_QUERY_SUB_AND },
+	{ "or",                  TRUE, BOOK_QUERY_SUB_OR },
+	{ "not",                 TRUE, BOOK_QUERY_SUB_NOT },
+	{ "contains",            FALSE, E_BOOK_QUERY_CONTAINS },
+	{ "is",                  FALSE, E_BOOK_QUERY_IS },
+	{ "beginswith",          FALSE, E_BOOK_QUERY_BEGINS_WITH },
+	{ "endswith",            FALSE, E_BOOK_QUERY_ENDS_WITH },
+	{ "eqphone",             FALSE, E_BOOK_QUERY_EQUALS_PHONE_NUMBER },
+	{ "eqphone_national",    FALSE, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER },
+	{ "eqphone_short",       FALSE, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER },
+	{ "regex_normal",        FALSE, E_BOOK_QUERY_REGEX_NORMAL },
+	{ "regex_raw",           FALSE, E_BOOK_QUERY_REGEX_RAW },
+	{ "translit_is",         FALSE, E_BOOK_QUERY_TRANSLIT_IS },
+	{ "translit_contains",   FALSE, E_BOOK_QUERY_TRANSLIT_CONTAINS },
+	{ "translit_beginswith", FALSE, E_BOOK_QUERY_TRANSLIT_BEGINS_WITH },
+	{ "translit_endswith",   FALSE, E_BOOK_QUERY_TRANSLIT_ENDS_WITH },
+	{ "exists",              FALSE, BOOK_QUERY_EXISTS }
 };
-
 
 /* Cheat our way into passing mode data to these funcs */
 static ESExpResult *
@@ -4403,11 +4409,31 @@ query_preflight_check (PreflightContext  *context,
 			break;
 
 		case E_BOOK_QUERY_REGEX_RAW:
-			/* Raw regex queries only supported in the fallback */
+
+			/* These queries only supported in the fallback */
 			context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
 			EBSQL_NOTE (PREFLIGHT,
 				    g_printerr ("PREFLIGHT CHECK: "
-						"Raw regexp requires full data, new status: %s\n",
+						"Query `%s' needs fallback search, new status: %s\n",
+						EBSQL_QUERY_TYPE_STR (field_test),
+						EBSQL_STATUS_STR (context->status)));
+			break;
+
+		case E_BOOK_QUERY_TRANSLIT_IS:
+		case E_BOOK_QUERY_TRANSLIT_CONTAINS:
+		case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:
+		case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
+
+			/* These queries are not supported via the SQLite at all,
+			 * This is a bug and needs investigation, the compare_vcard()
+			 * function is not called, I suspect because of character encoding
+			 * issues.
+			 */
+			context->status = MAX (context->status, PREFLIGHT_UNSUPPORTED);
+			EBSQL_NOTE (PREFLIGHT,
+				    g_printerr ("PREFLIGHT CHECK: "
+						"Query `%s' needs fallback search, new status: %s\n",
+						EBSQL_QUERY_TYPE_STR (field_test),
 						EBSQL_STATUS_STR (context->status)));
 			break;
 
@@ -4910,6 +4936,10 @@ static const GenerateFieldTest field_test_func_table[] = {
 	field_test_query_eqphone_short,    /* E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER */
 	field_test_query_regex_normal,     /* E_BOOK_QUERY_REGEX_NORMAL */
 	NULL /* Requires fallback */,      /* E_BOOK_QUERY_REGEX_RAW  */
+	NULL /* Requires fallback */,      /* E_BOOK_QUERY_TRANSLIT_IS  */
+	NULL /* Requires fallback */,      /* E_BOOK_QUERY_TRANSLIT_CONTAINS  */
+	NULL /* Requires fallback */,      /* E_BOOK_QUERY_TRANSLIT_BEGINS_WITH  */
+	NULL /* Requires fallback */,      /* E_BOOK_QUERY_TRANSLIT_ENDS_WITH  */
 	field_test_query_exists,           /* BOOK_QUERY_EXISTS */
 };
 
