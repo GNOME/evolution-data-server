@@ -2359,6 +2359,9 @@ main (gint argc,
 		cursor_closure_position (closure, 13, 6, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/EffectsPosition%s", base_params[i].base_path);
 
+#if 0
+		/* Transliterated queries not supported right now */
+
 		/* Supports transliterated queries */
 		closure = cursor_closure_new (base_params[i].async, base_params[i].dra, "POSIX");
 		cursor_closure_position (closure, 20, 0, TRUE);
@@ -2399,6 +2402,7 @@ main (gint argc,
 		cursor_closure_position (closure, 3, 2, TRUE);
 		cursor_closure_add (closure, "/EBookClientCursor/SearchExpression/Translit/Email/Prefix/ji%s",
 				    base_params[i].base_path);
+#endif
 
 		/****************************************************
 		 *             Address Book Modifications           *
