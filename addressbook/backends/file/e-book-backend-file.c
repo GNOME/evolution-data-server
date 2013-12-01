@@ -1411,7 +1411,7 @@ book_view_thread (gpointer data)
 	EBookBackendFile *bf;
 	EBookBackendSExp *sexp;
 	const gchar *query;
-	GSList *summary_list, *l;
+	GSList *summary_list = NULL, *l;
 	GHashTable *fields_of_interest;
 	GError *local_error = NULL;
 	gboolean meta_contact, success;
