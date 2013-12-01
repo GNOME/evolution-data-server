@@ -63,15 +63,10 @@ struct _CamelStorePrivate {
 };
 
 struct _AsyncContext {
-	/* arguments */
 	gchar *folder_name_1;
 	gchar *folder_name_2;
 	gboolean expunge;
 	guint32 flags;
-
-	/* results */
-	CamelFolder *folder;
-	CamelFolderInfo *folder_info;
 };
 
 struct _SignalClosure {
@@ -106,11 +101,6 @@ async_context_free (AsyncContext *async_context)
 {
 	g_free (async_context->folder_name_1);
 	g_free (async_context->folder_name_2);
-
-	if (async_context->folder != NULL)
-		g_object_unref (async_context->folder);
-
-	camel_folder_info_free (async_context->folder_info);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -1367,21 +1357,31 @@ camel_store_get_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_get_folder() */
 static void
-store_get_folder_thread (GSimpleAsyncResult *simple,
-                         GObject *object,
+store_get_folder_thread (GTask *task,
+                         gpointer source_object,
+                         gpointer task_data,
                          GCancellable *cancellable)
 {
+	CamelFolder *folder;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	async_context->folder = camel_store_get_folder_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		async_context->flags, cancellable, &error);
+	folder = camel_store_get_folder_sync (
+		CAMEL_STORE (source_object),
+		async_context->folder_name_1,
+		async_context->flags,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (folder == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, folder,
+			(GDestroyNotify) g_object_unref);
+	}
 }
 
 /**
@@ -1410,7 +1410,7 @@ camel_store_get_folder (CamelStore *store,
                         GAsyncReadyCallback callback,
                         gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
@@ -1420,20 +1420,17 @@ camel_store_get_folder (CamelStore *store,
 	async_context->folder_name_1 = g_strdup (folder_name);
 	async_context->flags = flags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_get_folder);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_get_folder);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, store_get_folder_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_get_folder_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1453,20 +1450,14 @@ camel_store_get_folder_finish (CamelStore *store,
                                GAsyncResult *result,
                                GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, store), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_get_folder), NULL);
+		g_async_result_is_tagged (
+		result, camel_store_get_folder), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	return g_object_ref (async_context->folder);
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -1651,21 +1642,31 @@ camel_store_get_folder_info_sync (CamelStore *store,
 
 /* Helper for camel_store_get_folder_info() */
 static void
-store_get_folder_info_thread (GSimpleAsyncResult *simple,
-                              GObject *object,
+store_get_folder_info_thread (GTask *task,
+                              gpointer source_object,
+                              gpointer task_data,
                               GCancellable *cancellable)
 {
+	CamelFolderInfo *folder_info;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	async_context->folder_info = camel_store_get_folder_info_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		async_context->flags, cancellable, &error);
+	folder_info = camel_store_get_folder_info_sync (
+		CAMEL_STORE (source_object),
+		async_context->folder_name_1,
+		async_context->flags,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (folder_info == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, folder_info,
+			(GDestroyNotify) camel_folder_info_free);
+	}
 }
 
 /**
@@ -1697,7 +1698,7 @@ camel_store_get_folder_info (CamelStore *store,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
@@ -1706,21 +1707,17 @@ camel_store_get_folder_info (CamelStore *store,
 	async_context->folder_name_1 = g_strdup (top);
 	async_context->flags = flags;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_get_folder_info);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_get_folder_info);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, store_get_folder_info_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_get_folder_info_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1742,24 +1739,14 @@ camel_store_get_folder_info_finish (CamelStore *store,
                                     GAsyncResult *result,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	CamelFolderInfo *folder_info;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, store), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_get_folder_info), NULL);
+		g_async_result_is_tagged (
+		result, camel_store_get_folder_info), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	folder_info = async_context->folder_info;
-	async_context->folder_info = NULL;
-
-	return folder_info;
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -1797,20 +1784,26 @@ camel_store_get_inbox_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_get_inbox_folder() */
 static void
-store_get_inbox_folder_thread (GSimpleAsyncResult *simple,
-                               GObject *object,
+store_get_inbox_folder_thread (GTask *task,
+                               gpointer source_object,
+                               gpointer task_data,
                                GCancellable *cancellable)
 {
-	AsyncContext *async_context;
-	GError *error = NULL;
+	CamelFolder *folder;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	folder = camel_store_get_inbox_folder_sync (
+		CAMEL_STORE (source_object),
+		cancellable, &local_error);
 
-	async_context->folder = camel_store_get_inbox_folder_sync (
-		CAMEL_STORE (object), cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (folder == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, folder,
+			(GDestroyNotify) g_object_unref);
+	}
 }
 
 /**
@@ -1836,28 +1829,17 @@ camel_store_get_inbox_folder (CamelStore *store,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_get_inbox_folder);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_get_inbox_folder);
+	g_task_run_in_thread (task, store_get_inbox_folder_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, store_get_inbox_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1878,20 +1860,14 @@ camel_store_get_inbox_folder_finish (CamelStore *store,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, store), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_get_inbox_folder), NULL);
+		g_async_result_is_tagged (
+		result, camel_store_get_inbox_folder), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	return g_object_ref (async_context->folder);
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -1934,20 +1910,26 @@ camel_store_get_junk_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_get_junk_folder() */
 static void
-store_get_junk_folder_thread (GSimpleAsyncResult *simple,
-                              GObject *object,
+store_get_junk_folder_thread (GTask *task,
+                              gpointer source_object,
+                              gpointer task_data,
                               GCancellable *cancellable)
 {
-	AsyncContext *async_context;
-	GError *error = NULL;
+	CamelFolder *folder;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	folder = camel_store_get_junk_folder_sync (
+		CAMEL_STORE (source_object),
+		cancellable, &local_error);
 
-	async_context->folder = camel_store_get_junk_folder_sync (
-		CAMEL_STORE (object), cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (folder == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, folder,
+			(GDestroyNotify) g_object_unref);
+	}
 }
 
 /**
@@ -1973,28 +1955,17 @@ camel_store_get_junk_folder (CamelStore *store,
                              GAsyncReadyCallback callback,
                              gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_get_junk_folder);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_get_junk_folder);
+	g_task_run_in_thread (task, store_get_junk_folder_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, store_get_junk_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2015,20 +1986,14 @@ camel_store_get_junk_folder_finish (CamelStore *store,
                                     GAsyncResult *result,
                                     GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, store), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_get_junk_folder), NULL);
+		g_async_result_is_tagged (
+		result, camel_store_get_junk_folder), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	return g_object_ref (async_context->folder);
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -2072,20 +2037,26 @@ camel_store_get_trash_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_get_trash_folder() */
 static void
-store_get_trash_folder_thread (GSimpleAsyncResult *simple,
-                               GObject *object,
+store_get_trash_folder_thread (GTask *task,
+                               gpointer source_object,
+                               gpointer task_data,
                                GCancellable *cancellable)
 {
-	AsyncContext *async_context;
-	GError *error = NULL;
+	CamelFolder *folder;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	folder = camel_store_get_trash_folder_sync (
+		CAMEL_STORE (source_object),
+		cancellable, &local_error);
 
-	async_context->folder = camel_store_get_trash_folder_sync (
-		CAMEL_STORE (object), cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (folder == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, folder,
+			(GDestroyNotify) g_object_unref);
+	}
 }
 
 /**
@@ -2111,28 +2082,17 @@ camel_store_get_trash_folder (CamelStore *store,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_get_trash_folder);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_get_trash_folder);
+	g_task_run_in_thread (task, store_get_trash_folder_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, store_get_trash_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2153,20 +2113,14 @@ camel_store_get_trash_folder_finish (CamelStore *store,
                                      GAsyncResult *result,
                                      GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, store), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_get_trash_folder), NULL);
+		g_async_result_is_tagged (
+		result, camel_store_get_trash_folder), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	return g_object_ref (async_context->folder);
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -2237,21 +2191,31 @@ camel_store_create_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_create_folder() */
 static void
-store_create_folder_thread (GSimpleAsyncResult *simple,
-                            GObject *object,
+store_create_folder_thread (GTask *task,
+                            gpointer source_object,
+                            gpointer task_data,
                             GCancellable *cancellable)
 {
+	CamelFolderInfo *folder_info;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	async_context->folder_info = camel_store_create_folder_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		async_context->folder_name_2, cancellable, &error);
+	folder_info = camel_store_create_folder_sync (
+		CAMEL_STORE (source_object),
+		async_context->folder_name_1,
+		async_context->folder_name_2,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (folder_info == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, folder_info,
+			(GDestroyNotify) camel_folder_info_free);
+	}
 }
 
 /**
@@ -2281,7 +2245,7 @@ camel_store_create_folder (CamelStore *store,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
@@ -2291,20 +2255,17 @@ camel_store_create_folder (CamelStore *store,
 	async_context->folder_name_1 = g_strdup (parent_name);
 	async_context->folder_name_2 = g_strdup (folder_name);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_create_folder);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_create_folder);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, store_create_folder_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_create_folder_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2326,24 +2287,14 @@ camel_store_create_folder_finish (CamelStore *store,
                                   GAsyncResult *result,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	CamelFolderInfo *folder_info;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, store), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_create_folder), NULL);
+		g_async_result_is_tagged (
+		result, camel_store_create_folder), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	folder_info = async_context->folder_info;
-	async_context->folder_info = NULL;
-
-	return folder_info;
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -2417,21 +2368,27 @@ camel_store_delete_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_delete_folder() */
 static void
-store_delete_folder_thread (GSimpleAsyncResult *simple,
-                            GObject *object,
+store_delete_folder_thread (GTask *task,
+                            gpointer source_object,
+                            gpointer task_data,
                             GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	camel_store_delete_folder_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		cancellable, &error);
+	success = camel_store_delete_folder_sync (
+		CAMEL_STORE (source_object),
+		async_context->folder_name_1,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -2459,7 +2416,7 @@ camel_store_delete_folder (CamelStore *store,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
@@ -2468,20 +2425,17 @@ camel_store_delete_folder (CamelStore *store,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->folder_name_1 = g_strdup (folder_name);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_delete_folder);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_delete_folder);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, store_delete_folder_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_delete_folder_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2501,16 +2455,14 @@ camel_store_delete_folder_finish (CamelStore *store,
                                   GAsyncResult *result,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_delete_folder), FALSE);
+		g_async_result_is_tagged (
+		result, camel_store_delete_folder), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -2658,21 +2610,28 @@ camel_store_rename_folder_sync (CamelStore *store,
 
 /* Helper for camel_store_rename_folder() */
 static void
-store_rename_folder_thread (GSimpleAsyncResult *simple,
-                            GObject *object,
+store_rename_folder_thread (GTask *task,
+                            gpointer source_object,
+                            gpointer task_data,
                             GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	camel_store_rename_folder_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		async_context->folder_name_2, cancellable, &error);
+	success = camel_store_rename_folder_sync (
+		CAMEL_STORE (source_object),
+		async_context->folder_name_1,
+		async_context->folder_name_2,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -2701,7 +2660,7 @@ camel_store_rename_folder (CamelStore *store,
                            GAsyncReadyCallback callback,
                            gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
@@ -2712,20 +2671,17 @@ camel_store_rename_folder (CamelStore *store,
 	async_context->folder_name_1 = g_strdup (old_name);
 	async_context->folder_name_2 = g_strdup (new_name);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_rename_folder);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_rename_folder);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, store_rename_folder_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_rename_folder_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2745,16 +2701,14 @@ camel_store_rename_folder_finish (CamelStore *store,
                                   GAsyncResult *result,
                                   GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_rename_folder), FALSE);
+		g_async_result_is_tagged (
+		result, camel_store_rename_folder), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -2793,21 +2747,27 @@ camel_store_synchronize_sync (CamelStore *store,
 
 /* Helper for camel_store_synchronize() */
 static void
-store_synchronize_thread (GSimpleAsyncResult *simple,
-                          GObject *object,
+store_synchronize_thread (GTask *task,
+                          gpointer source_object,
+                          gpointer task_data,
                           GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	camel_store_synchronize_sync (
-		CAMEL_STORE (object), async_context->expunge,
-		cancellable, &error);
+	success = camel_store_synchronize_sync (
+		CAMEL_STORE (source_object),
+		async_context->expunge,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -2835,7 +2795,7 @@ camel_store_synchronize (CamelStore *store,
                          GAsyncReadyCallback callback,
                          gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
@@ -2843,20 +2803,17 @@ camel_store_synchronize (CamelStore *store,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->expunge = expunge;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_synchronize);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_synchronize);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, store_synchronize_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_synchronize_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2876,16 +2833,14 @@ camel_store_synchronize_finish (CamelStore *store,
                                 GAsyncResult *result,
                                 GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_synchronize), FALSE);
+		g_async_result_is_tagged (
+		result, camel_store_synchronize), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -2921,16 +2876,23 @@ camel_store_noop_sync (CamelStore *store,
 
 /* Helper for camel_store_noop() */
 static void
-store_noop_thread (GSimpleAsyncResult *simple,
-                   GObject *object,
+store_noop_thread (GTask *task,
+                   gpointer source_object,
+                   gpointer task_data,
                    GCancellable *cancellable)
 {
-	GError *error = NULL;
+	gboolean success;
+	GError *local_error = NULL;
 
-	camel_store_noop_sync (CAMEL_STORE (object), cancellable, &error);
+	success = camel_store_noop_sync (
+		CAMEL_STORE (source_object),
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -2955,21 +2917,17 @@ camel_store_noop (CamelStore *store,
                   GAsyncReadyCallback callback,
                   gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (store),
-		callback, user_data,
-		camel_store_noop);
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_noop);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_run_in_thread (task, store_noop_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, store_noop_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2989,14 +2947,12 @@ camel_store_noop_finish (CamelStore *store,
                          GAsyncResult *result,
                          GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), camel_store_noop), FALSE);
+		g_async_result_is_tagged (
+		result, camel_store_noop), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
