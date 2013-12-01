@@ -10,4 +10,4 @@ Color=#becedd
 
 [Backend Summary Setup]
 SummaryFields=full_name:family_name:nickname:given_name:phone:email
-IndexedFields=full_name,prefix:family_name,prefix:nickname,prefix:given_name,prefix:phone,prefix:phone,phone:email,prefix
+IndexedFields=full_name,prefix:full_name,sort-key:family_name,prefix:family_name,sort-key:nickname,prefix:given_name,prefix:given_name,sort-key:phone,prefix:phone,phone:email,prefix
