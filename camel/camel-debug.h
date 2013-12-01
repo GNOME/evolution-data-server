@@ -80,6 +80,42 @@ void camel_debug_end (void);
 	} G_STMT_END
 
 /**
+ * CAMEL_CHECK_LOCAL_GERROR:
+ *
+ * Same as CAMEL_CHECK_GERROR, but for direct #GError pointers.
+ *
+ * Example:
+ *
+ *     success = class->foo (object, some_data, &local_error);
+ *     CAMEL_CHECK_LOCAL_GERROR (object, foo, success, local_error);
+ *     return success;
+ *
+ * Since: 3.12
+ */
+#define CAMEL_CHECK_LOCAL_GERROR(object, method, expr, error) \
+	G_STMT_START { \
+	if (expr) { \
+		if ((error) != NULL) { \
+			g_warning ( \
+				"%s::%s() set its GError " \
+				"but then reported success", \
+				G_OBJECT_TYPE_NAME (object), \
+				G_STRINGIFY (method)); \
+			g_warning ( \
+				"Error message was: %s", \
+				((error))->message); \
+		} \
+	} else { \
+		if ((error) != NULL) { \
+			g_warning ( \
+				"%s::%s() reported failure " \
+				"without setting its GError", \
+				G_OBJECT_TYPE_NAME (object), \
+				G_STRINGIFY (method)); \
+		} \
+	} \
+	} G_STMT_END
+/**
  * camel_pointer_tracker_track:
  * @ptr: pointer to add to pointer tracker
  *

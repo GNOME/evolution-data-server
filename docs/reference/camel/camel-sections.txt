@@ -2607,6 +2607,7 @@ camel_debug
 camel_debug_start
 camel_debug_end
 CAMEL_CHECK_GERROR
+CAMEL_CHECK_LOCAL_GERROR
 camel_pointer_tracker_track
 camel_pointer_tracker_track_with_info
 camel_pointer_tracker_untrack
