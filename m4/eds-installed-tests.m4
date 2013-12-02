@@ -79,7 +79,8 @@ ifeq ($(EDS_INSTALLED_TESTS_ENABLED),yes)
 install-exec-am: installed-tests-exec-hook
 install-data-am: installed-tests-data-hook
 
-META_DIRECTORY=${prefix}/share/installed-tests/${PACKAGE}
+META_DIRECTORY=${DESTDIR}/${datadir}/share/installed-tests/${PACKAGE}
+EXEC_DIRECTORY=${DESTDIR}/${pkglibexecdir}/installed-tests
 
 FINAL_TEST_ENVIRONMENT=
 ifneq ($(INSTALLED_TESTS_ENVIRONMENT),)
@@ -87,9 +88,9 @@ ifneq ($(INSTALLED_TESTS_ENVIRONMENT),)
 endif
 
 installed-tests-exec-hook:
-	@$(MKDIR_P) $(pkglibexecdir)/installed-tests;
-	@for test in $(INSTALLED_TESTS); do							\
-	    $(LIBTOOL) --mode=install $(INSTALL) --mode=777 $$test $(pkglibexecdir)/installed-tests;	\
+	@$(MKDIR_P) $(EXEC_DIRECTORY);
+	@for test in $(INSTALLED_TESTS); do						\
+	    $(LIBTOOL) --mode=install $(INSTALL) --mode=777 $$test $(EXEC_DIRECTORY);	\
 	done
 
 installed-tests-data-hook:
