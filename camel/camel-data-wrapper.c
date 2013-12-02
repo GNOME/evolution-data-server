@@ -48,11 +48,7 @@ struct _CamelDataWrapperPrivate {
 };
 
 struct _AsyncContext {
-	/* arguments */
 	CamelStream *stream;
-
-	/* results */
-	gssize bytes_written;
 };
 
 G_DEFINE_TYPE (CamelDataWrapper, camel_data_wrapper, G_TYPE_OBJECT)
@@ -470,7 +466,7 @@ camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
                                          GError **error)
 {
 	CamelDataWrapperClass *class;
-	gssize n_bytes;
+	gssize bytes_written;
 
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -478,33 +474,38 @@ camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->write_to_stream_sync != NULL, -1);
 
-	n_bytes = class->write_to_stream_sync (
+	bytes_written = class->write_to_stream_sync (
 		data_wrapper, stream, cancellable, error);
 	CAMEL_CHECK_GERROR (
-		data_wrapper, write_to_stream_sync, n_bytes >= 0, error);
+		data_wrapper, write_to_stream_sync,
+		bytes_written >= 0, error);
 
-	return n_bytes;
+	return bytes_written;
 }
 
 /* Helper for camel_data_wrapper_write_to_stream() */
 static void
-data_wrapper_write_to_stream_thread (GSimpleAsyncResult *simple,
-                                     GObject *object,
+data_wrapper_write_to_stream_thread (GTask *task,
+                                     gpointer source_object,
+                                     gpointer task_data,
                                      GCancellable *cancellable)
 {
+	gssize bytes_written;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	async_context->bytes_written =
-		camel_data_wrapper_write_to_stream_sync (
-			CAMEL_DATA_WRAPPER (object),
-			async_context->stream,
-			cancellable, &error);
+	bytes_written = camel_data_wrapper_write_to_stream_sync (
+		CAMEL_DATA_WRAPPER (source_object),
+		async_context->stream,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_int (task, bytes_written);
+	}
 }
 
 /**
@@ -535,7 +536,7 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
                                     GAsyncReadyCallback callback,
                                     gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
@@ -544,20 +545,17 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->stream = g_object_ref (stream);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (data_wrapper), callback, user_data,
-		camel_data_wrapper_write_to_stream);
+	task = g_task_new (data_wrapper, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_data_wrapper_write_to_stream);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, data_wrapper_write_to_stream_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, data_wrapper_write_to_stream_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -577,21 +575,14 @@ camel_data_wrapper_write_to_stream_finish (CamelDataWrapper *data_wrapper,
                                            GAsyncResult *result,
                                            GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (g_task_is_valid (result, data_wrapper), -1);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (data_wrapper),
-		camel_data_wrapper_write_to_stream), -1);
+		g_async_result_is_tagged (
+		result, camel_data_wrapper_write_to_stream), -1);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return -1;
-
-	return async_context->bytes_written;
+	return g_task_propagate_int (G_TASK (result), error);
 }
 
 /**
@@ -622,7 +613,7 @@ camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
                                           GError **error)
 {
 	CamelDataWrapperClass *class;
-	gssize n_bytes;
+	gssize bytes_written;
 
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -630,33 +621,38 @@ camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
 	g_return_val_if_fail (class->decode_to_stream_sync != NULL, -1);
 
-	n_bytes = class->decode_to_stream_sync (
+	bytes_written = class->decode_to_stream_sync (
 		data_wrapper, stream, cancellable, error);
 	CAMEL_CHECK_GERROR (
-		data_wrapper, decode_to_stream_sync, n_bytes >= 0, error);
+		data_wrapper, decode_to_stream_sync,
+		bytes_written >= 0, error);
 
-	return n_bytes;
+	return bytes_written;
 }
 
 /* Helper for camel_data_wrapper_decode_to_stream() */
 static void
-data_wrapper_decode_to_stream_thread (GSimpleAsyncResult *simple,
-                                      GObject *object,
+data_wrapper_decode_to_stream_thread (GTask *task,
+                                      gpointer source_object,
+                                      gpointer task_data,
                                       GCancellable *cancellable)
 {
+	gssize bytes_written;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	async_context->bytes_written =
-		camel_data_wrapper_decode_to_stream_sync (
-			CAMEL_DATA_WRAPPER (object),
-			async_context->stream,
-			cancellable, &error);
+	bytes_written = camel_data_wrapper_decode_to_stream_sync (
+		CAMEL_DATA_WRAPPER (source_object),
+		async_context->stream,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_int (task, bytes_written);
+	}
 }
 
 /**
@@ -684,7 +680,7 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
                                      GAsyncReadyCallback callback,
                                      gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
@@ -693,20 +689,17 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->stream = g_object_ref (stream);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (data_wrapper), callback, user_data,
-		camel_data_wrapper_decode_to_stream);
+	task = g_task_new (data_wrapper, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_data_wrapper_decode_to_stream);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, data_wrapper_decode_to_stream_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, data_wrapper_decode_to_stream_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -726,21 +719,14 @@ camel_data_wrapper_decode_to_stream_finish (CamelDataWrapper *data_wrapper,
                                             GAsyncResult *result,
                                             GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+	g_return_val_if_fail (g_task_is_valid (result, data_wrapper), -1);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (data_wrapper),
-		camel_data_wrapper_decode_to_stream), -1);
+		g_async_result_is_tagged (
+		result, camel_data_wrapper_decode_to_stream), -1);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return -1;
-
-	return async_context->bytes_written;
+	return g_task_propagate_int (G_TASK (result), error);
 }
 
 /**
@@ -781,21 +767,27 @@ camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 
 /* Helper for camel_data_wrapper_construct_from_stream() */
 static void
-data_wrapper_construct_from_stream_thread (GSimpleAsyncResult *simple,
-                                           GObject *object,
+data_wrapper_construct_from_stream_thread (GTask *task,
+                                           gpointer source_object,
+                                           gpointer task_data,
                                            GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	camel_data_wrapper_construct_from_stream_sync (
-		CAMEL_DATA_WRAPPER (object), async_context->stream,
-		cancellable, &error);
+	success = camel_data_wrapper_construct_from_stream_sync (
+		CAMEL_DATA_WRAPPER (source_object),
+		async_context->stream,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -824,7 +816,7 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
                                           GAsyncReadyCallback callback,
                                           gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
@@ -833,20 +825,17 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->stream = g_object_ref (stream);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (data_wrapper), callback, user_data,
-		camel_data_wrapper_construct_from_stream);
+	task = g_task_new (data_wrapper, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_data_wrapper_construct_from_stream);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, data_wrapper_construct_from_stream_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, data_wrapper_construct_from_stream_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -867,15 +856,12 @@ camel_data_wrapper_construct_from_stream_finish (CamelDataWrapper *data_wrapper,
                                                  GAsyncResult *result,
                                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, data_wrapper), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (data_wrapper),
-		camel_data_wrapper_construct_from_stream), FALSE);
+		g_async_result_is_tagged (
+		result, camel_data_wrapper_construct_from_stream), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
