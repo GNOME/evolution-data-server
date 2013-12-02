@@ -27,6 +27,8 @@
 #define ADDRESS_BOOK_SOURCE_UID "test-address-book"
 #define CALENDAR_SOURCE_UID     "test-calendar"
 
+#define FINALIZE_SECONDS         10
+
 /* FIXME, currently we are unable to achieve server activation
  * twice in a single test case, so we're using one D-Bus server
  * throughout an entire test suite.
@@ -49,6 +51,132 @@ static GTestDBus *global_test_dbus = NULL;
  */
 static gint global_test_source_id = 0;
 
+/*****************************************************************
+ *                    Reference management                       *
+ *****************************************************************
+ *
+ * We need to test that an EClient actually finalizes properly
+ * at the end of every test, however these EClient's have a 
+ * habit of finalizing asynchronously, not even in the same thread
+ * in which they were created.
+ *
+ * This is why we do this crazy stuff below to ensure asyncrhonous
+ * finalization of the client actually happens.
+ */
+static void
+add_weak_ref (ETestServerFixture *fixture,
+	      ETestServiceType    service_type)
+{
+	GObject *object;
+
+	switch (service_type) {
+	case E_TEST_SERVER_NONE:
+		g_weak_ref_set (&fixture->registry_ref, fixture->registry);
+		break;
+
+	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
+	case E_TEST_SERVER_CALENDAR:
+	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
+	case E_TEST_SERVER_DEPRECATED_CALENDAR:
+
+		/* They're all the same object pointer */
+		object = E_TEST_SERVER_UTILS_SERVICE (fixture, GObject);
+		g_weak_ref_set (&fixture->client_ref, object);
+		break;
+	}
+}
+
+static gboolean
+object_finalize_timeout (gpointer user_data)
+{
+	const gchar *message = (const gchar *)user_data;
+
+	g_error ("%s", message);
+
+	return FALSE;
+}
+
+static gboolean
+object_unref_idle (gpointer user_data)
+{
+	g_object_unref (user_data);
+
+	return FALSE;
+}
+
+static void
+weak_notify_loop_quit (gpointer data,
+		       GObject *where_the_object_was)
+{
+	ETestServerFixture *fixture = (ETestServerFixture *) data;
+
+	g_main_loop_quit (fixture->loop);
+}
+
+static void
+assert_object_finalized (ETestServerFixture *fixture,
+			 ETestServiceType    service_type)
+{
+	const gchar *message = NULL;
+	GObject *object = NULL;
+	GWeakRef *ref = NULL;
+
+	switch (service_type) {
+	case E_TEST_SERVER_NONE:
+		message = "Timed out waiting for source registery to finalize";
+		ref = &fixture->registry_ref;
+		break;
+	case E_TEST_SERVER_ADDRESS_BOOK:
+	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
+	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
+		message = "Timed out waiting for addressbook client to finalize";
+		ref = &fixture->client_ref;
+		break;
+	case E_TEST_SERVER_CALENDAR:
+	case E_TEST_SERVER_DEPRECATED_CALENDAR:
+		message = "Timed out waiting for calendar client to finalize";
+		ref = &fixture->client_ref;
+		break;
+	}
+
+	/* Give her a second chance */
+	object = g_weak_ref_get (ref);
+	if (object) {
+		guint timeout_id;
+
+		/* Add a finalize callback while we have a strong reference */
+		g_object_weak_ref (object, weak_notify_loop_quit, fixture);
+
+		/* Fail the test if we reach the timeout */
+		timeout_id = g_timeout_add_seconds (FINALIZE_SECONDS,
+						    object_finalize_timeout,
+						    (gpointer)message);
+
+		/* We can't release the strong reference yet, it might try
+		 * to quit the main loop before we've started it.
+		 *
+		 * Instead release it in the loop (no need to track the source id,
+		 * it's guaranteed to be removed in the scope of this test).
+		 */
+		g_idle_add (object_unref_idle, object);
+
+		/* Wait for asynchronous finalization, if this loop
+		 * returns then we finalized properly, if the timeout
+		 * is reached then we've aborted with an error message
+		 */
+		g_main_loop_run (fixture->loop);
+
+		/* If we reached here, better remove the timeout source to
+		 * avoid it timing out in following tests
+		 */
+		g_source_remove (timeout_id);
+	}
+}
+
+/*****************************************************************
+ * Bootstrapping, manage work directory and create test ESource  *
+ *****************************************************************/
 typedef struct {
 	ETestServerFixture *fixture;
 	ETestServerClosure *closure;
@@ -119,126 +247,6 @@ e_test_server_utils_bootstrap_timeout (FixturePair *pair)
 }
 
 static void
-registry_weak_notify (gpointer data,
-                      GObject *where_the_object_was)
-{
-	ETestServerFixture *fixture = (ETestServerFixture *) data;
-
-	fixture->registry_finalized = TRUE;
-}
-
-static void
-client_weak_notify (gpointer data,
-                    GObject *where_the_object_was)
-{
-	ETestServerFixture *fixture = (ETestServerFixture *) data;
-
-	fixture->client_finalized = TRUE;
-}
-
-static void
-registry_weak_notify_loop_quit (gpointer data,
-				GObject *where_the_object_was)
-{
-	ETestServerFixture *fixture = (ETestServerFixture *) data;
-
-	fixture->registry_finalized = TRUE;
-	g_main_loop_quit (fixture->loop);
-}
-
-static void
-client_weak_notify_loop_quit (gpointer data,
-			      GObject *where_the_object_was)
-{
-	ETestServerFixture *fixture = (ETestServerFixture *) data;
-
-	fixture->client_finalized = TRUE;
-	g_main_loop_quit (fixture->loop);
-}
-
-static void
-add_weak_ref (ETestServerFixture *fixture,
-	      ETestServiceType    service_type,
-	      gboolean            loop_quit)
-{
-	GObject *object;
-
-	switch (service_type) {
-	case E_TEST_SERVER_NONE:
-		if (loop_quit)
-			g_object_weak_ref (
-				G_OBJECT (fixture->registry),
-				registry_weak_notify_loop_quit,
-				fixture);
-		else
-			g_object_weak_ref (
-				G_OBJECT (fixture->registry),
-				registry_weak_notify,
-				fixture);
-		break;
-
-	case E_TEST_SERVER_ADDRESS_BOOK:
-	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
-	case E_TEST_SERVER_CALENDAR:
-	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		/* They're all the same object pointer */
-		object = E_TEST_SERVER_UTILS_SERVICE (fixture, GObject);
-
-		if (loop_quit)
-			g_object_weak_ref (object,
-					   client_weak_notify_loop_quit,
-					   fixture);
-		else
-			g_object_weak_ref (object,
-					   client_weak_notify,
-					   fixture);
-		break;
-	}
-}
-
-static void
-remove_weak_ref (ETestServerFixture *fixture,
-		 ETestServiceType    service_type,
-		 gboolean            loop_quit)
-{
-	GObject *object;
-
-	switch (service_type) {
-	case E_TEST_SERVER_NONE:
-		if (loop_quit)
-			g_object_weak_unref (
-				G_OBJECT (fixture->registry),
-				registry_weak_notify_loop_quit,
-				fixture);
-		else
-			g_object_weak_unref (
-				G_OBJECT (fixture->registry),
-				registry_weak_notify,
-				fixture);
-		break;
-
-	case E_TEST_SERVER_ADDRESS_BOOK:
-	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
-	case E_TEST_SERVER_CALENDAR:
-	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		/* They're all the same object pointer */
-		object = E_TEST_SERVER_UTILS_SERVICE (fixture, GObject);
-
-		if (loop_quit)
-			g_object_weak_unref (object,
-					     client_weak_notify_loop_quit,
-					     fixture);
-		else
-			g_object_weak_unref (object,
-					     client_weak_notify,
-					     fixture);
-		break;
-	}
-}
-
-static void
 e_test_server_utils_client_ready (GObject *source_object,
                                   GAsyncResult *res,
                                   gpointer user_data)
@@ -277,8 +285,8 @@ e_test_server_utils_client_ready (GObject *source_object,
 		g_assert_not_reached ();
 	}
 
-	/* Track ref counts */
-	add_weak_ref (pair->fixture, pair->closure->type, FALSE);
+	/* Track ref counts now that we have a client */
+	add_weak_ref (pair->fixture, pair->closure->type);
 
 	g_main_loop_quit (pair->fixture->loop);
 }
@@ -370,7 +378,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 	/* Add the weak ref now if we just created it */
 	if (pair->closure->type != E_TEST_SERVER_NONE &&
 	    pair->closure->use_async_connect == FALSE)
-		add_weak_ref (pair->fixture, pair->closure->type, FALSE);
+		add_weak_ref (pair->fixture, pair->closure->type);
 
 	if (!pair->closure->use_async_connect)
 		g_main_loop_quit (pair->fixture->loop);
@@ -389,7 +397,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 		g_error ("Unable to create the test registry: %s", error->message);
 
 	/* Add weak ref for the registry */
-	add_weak_ref (pair->fixture, E_TEST_SERVER_NONE, FALSE);
+	add_weak_ref (pair->fixture, E_TEST_SERVER_NONE);
 
 	g_signal_connect (
 		pair->fixture->registry, "source-added",
@@ -469,6 +477,9 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	return FALSE;
 }
 
+/*****************************************************************
+ *                  Fixture setup and teardown                   *
+ *****************************************************************/
 /**
  * e_test_server_utils_setup:
  * @fixture: A #ETestServerFixture
@@ -485,6 +496,10 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 
 	/* Create work directory */
 	g_assert (g_mkdir_with_parents (EDS_TEST_WORK_DIR, 0755) == 0);
+
+	/* Init refs */
+	g_weak_ref_init (&fixture->registry_ref, NULL);
+	g_weak_ref_init (&fixture->client_ref, NULL);
 
 	fixture->loop = g_main_loop_new (NULL, FALSE);
 
@@ -518,16 +533,6 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	g_signal_handlers_disconnect_by_func (fixture->registry, e_test_server_utils_source_added, &pair);
 }
 
-static gboolean
-timeout_client_shutdown (gpointer user_data)
-{
-	const gchar *message = (const gchar *)user_data;
-
-	g_error ("%s", message);
-
-	return FALSE;
-}
-
 /**
  * e_test_server_utils_teardown:
  * @fixture: A #ETestServerFixture
@@ -546,7 +551,8 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	switch (closure->type) {
 	case E_TEST_SERVER_ADDRESS_BOOK:
 	case E_TEST_SERVER_DIRECT_ADDRESS_BOOK:
-		if (!closure->keep_work_directory && !e_client_remove_sync (E_CLIENT (fixture->service.book_client), NULL, &error)) {
+		if (!closure->keep_work_directory &&
+		    !e_client_remove_sync (E_CLIENT (fixture->service.book_client), NULL, &error)) {
 			g_message ("Failed to remove test book: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -555,7 +561,8 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
-		if (!closure->keep_work_directory && !e_book_remove (fixture->service.book, &error)) {
+		if (!closure->keep_work_directory &&
+		    !e_book_remove (fixture->service.book, &error)) {
 			g_message ("Failed to remove test book: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -564,7 +571,8 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 
 	case E_TEST_SERVER_CALENDAR:
-		if (!closure->keep_work_directory && !e_client_remove_sync (E_CLIENT (fixture->service.calendar_client), NULL, &error)) {
+		if (!closure->keep_work_directory &&
+		    !e_client_remove_sync (E_CLIENT (fixture->service.calendar_client), NULL, &error)) {
 			g_message ("Failed to remove test calendar: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -573,7 +581,8 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
-		if (!closure->keep_work_directory && !e_cal_remove (fixture->service.calendar, &error)) {
+		if (!closure->keep_work_directory &&
+		    !e_cal_remove (fixture->service.calendar, &error)) {
 			g_message ("Failed to remove test calendar: %s (ignoring)", error->message);
 			g_clear_error (&error);
 		}
@@ -584,46 +593,27 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 		break;
 	}
 
-	/* Give her a second chance */
-	if (closure->type != E_TEST_SERVER_NONE &&
-	    fixture->client_finalized == FALSE) {
-		guint timeout_id;
+	/* Assert that our EClient has finalized */
+	if (closure->type != E_TEST_SERVER_NONE)
+		assert_object_finalized (fixture, closure->type);
 
-		timeout_id =
-			g_timeout_add_seconds (10, timeout_client_shutdown,
-					       (gpointer)"Timed out waiting for EClient to finalize");
-
-		remove_weak_ref (fixture, closure->type, FALSE);
-		add_weak_ref (fixture, closure->type, TRUE);
-
-		g_main_loop_run (fixture->loop);
-		g_source_remove (timeout_id);
-	}
-
-	/* Try to finalize the registry */
+	/* Try to finalize the registry now */
 	g_object_run_dispose (G_OBJECT (fixture->registry));
 	g_object_unref (fixture->registry);
 
-	/* Give her a second chance */
-	if (fixture->registry_finalized == FALSE) {
-		guint timeout_id;
-
-		timeout_id =
-			g_timeout_add_seconds (10, timeout_client_shutdown,
-					       (gpointer)"Timed out waiting for source registery to finalize");
-
-		remove_weak_ref (fixture, E_TEST_SERVER_NONE, FALSE);
-		add_weak_ref (fixture, E_TEST_SERVER_NONE, TRUE);
-
-		g_main_loop_run (fixture->loop);
-		g_source_remove (timeout_id);
-	}
+	/* Assert that the registry finalizes */
+	assert_object_finalized (fixture, E_TEST_SERVER_NONE);
 
 	g_free (fixture->source_name);
 	g_main_loop_unref (fixture->loop);
 	fixture->registry = NULL;
 	fixture->loop = NULL;
 	fixture->service.generic = NULL;
+
+	/* Clear refs */
+	g_weak_ref_clear (&fixture->registry_ref);
+	g_weak_ref_clear (&fixture->client_ref);
+
 
 	if (!test_installed_services ()) {
 #if !GLOBAL_DBUS_DAEMON

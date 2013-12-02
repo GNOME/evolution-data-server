@@ -132,8 +132,8 @@ struct _ETestServerFixture {
 	ETestService     service;
 	gchar           *source_name;
 	guint            timeout_source_id;
-	guint            client_finalized : 1;
-	guint            registry_finalized : 1;
+	GWeakRef         registry_ref;
+	GWeakRef         client_ref;
 };
 
 /**
