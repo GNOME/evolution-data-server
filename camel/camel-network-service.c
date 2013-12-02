@@ -1021,17 +1021,23 @@ camel_network_service_can_reach_sync (CamelNetworkService *service,
 
 /* Helper for camel_network_service_can_reach() */
 static void
-network_service_can_reach_thread (GSimpleAsyncResult *simple,
-                                  GObject *object,
+network_service_can_reach_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
+	gboolean success;
 	GError *local_error = NULL;
 
-	camel_network_service_can_reach_sync (
-		CAMEL_NETWORK_SERVICE (object), cancellable, &local_error);
+	success = camel_network_service_can_reach_sync (
+		CAMEL_NETWORK_SERVICE (source_object),
+		cancellable, &local_error);
 
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -1059,19 +1065,16 @@ camel_network_service_can_reach (CamelNetworkService *service,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service), callback, user_data,
-		camel_network_service_can_reach);
+	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (service, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_network_service_can_reach);
 
-	g_simple_async_result_run_in_thread (
-		simple, network_service_can_reach_thread,
-		G_PRIORITY_DEFAULT, cancellable);
+	g_task_run_in_thread (task, network_service_can_reach_thread);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1091,16 +1094,13 @@ camel_network_service_can_reach_finish (CamelNetworkService *service,
                                         GAsyncResult *result,
                                         GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, service), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (service),
-		camel_network_service_can_reach), FALSE);
+		g_async_result_is_tagged (
+		result, camel_network_service_can_reach), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
