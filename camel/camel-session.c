@@ -573,77 +573,6 @@ retry:
 	return (result == CAMEL_AUTHENTICATION_ACCEPTED);
 }
 
-static void
-session_authenticate_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
-                             GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (!camel_session_authenticate_sync (
-		CAMEL_SESSION (object),
-		async_context->service,
-		async_context->auth_mechanism,
-		cancellable, &error)) {
-
-		if (!error)
-			error = g_error_new_literal (CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Unknown error"));
-	}
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-session_authenticate (CamelSession *session,
-                      CamelService *service,
-                      const gchar *mechanism,
-                      gint io_priority,
-                      GCancellable *cancellable,
-                      GAsyncReadyCallback callback,
-                      gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->service = g_object_ref (service);
-	async_context->auth_mechanism = g_strdup (mechanism);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (session), callback, user_data, session_authenticate);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, session_authenticate_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-session_authenticate_finish (CamelSession *session,
-                             GAsyncResult *result,
-                             GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (session), session_authenticate), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
 static gboolean
 session_forward_to_sync (CamelSession *session,
                          CamelFolder *folder,
@@ -657,76 +586,6 @@ session_forward_to_sync (CamelSession *session,
 		_("Forwarding messages is not supported"));
 
 	return FALSE;
-}
-
-static void
-session_forward_to_thread (GSimpleAsyncResult *simple,
-                           GObject *object,
-                           GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_session_forward_to_sync (
-		CAMEL_SESSION (object),
-		async_context->folder,
-		async_context->message,
-		async_context->address,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-session_forward_to (CamelSession *session,
-                    CamelFolder *folder,
-                    CamelMimeMessage *message,
-                    const gchar *address,
-                    gint io_priority,
-                    GCancellable *cancellable,
-                    GAsyncReadyCallback callback,
-                    gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->folder = g_object_ref (folder);
-	async_context->message = g_object_ref (message);
-	async_context->address = g_strdup (address);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (session), callback, user_data, session_forward_to);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, session_forward_to_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-session_forward_to_finish (CamelSession *session,
-                           GAsyncResult *result,
-                           GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (session), session_forward_to), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 static void
@@ -747,11 +606,6 @@ camel_session_class_init (CamelSessionClass *class)
 
 	class->authenticate_sync = session_authenticate_sync;
 	class->forward_to_sync = session_forward_to_sync;
-
-	class->authenticate = session_authenticate;
-	class->authenticate_finish = session_authenticate_finish;
-	class->forward_to = session_forward_to;
-	class->forward_to_finish = session_forward_to_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1687,6 +1541,120 @@ camel_session_authenticate_sync (CamelSession *session,
 	return success;
 }
 
+/* Helper for camel_session_authenticate() */
+static void
+session_authenticate_thread (GSimpleAsyncResult *simple,
+                             GObject *object,
+                             GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (!camel_session_authenticate_sync (
+		CAMEL_SESSION (object),
+		async_context->service,
+		async_context->auth_mechanism,
+		cancellable, &error)) {
+
+		if (!error)
+			error = g_error_new_literal (CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Unknown error"));
+	}
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+/**
+ * camel_session_authenticate:
+ * @session: a #CamelSession
+ * @service: a #CamelService
+ * @mechanism: a SASL mechanism name, or %NULL
+ * @io_priority: the I/O priority for the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously authenticates @service, which may involve repeated calls
+ * to camel_service_authenticate() or camel_service_authenticate_sync().
+ * A #CamelSession subclass is largely responsible for implementing this,
+ * and should handle things like user prompts and secure password storage.
+ * These issues are out-of-scope for Camel.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_session_authenticate_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.4
+ **/
+void
+camel_session_authenticate (CamelSession *session,
+                            CamelService *service,
+                            const gchar *mechanism,
+                            gint io_priority,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->service = g_object_ref (service);
+	async_context->auth_mechanism = g_strdup (mechanism);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (session), callback, user_data,
+		camel_session_authenticate);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, session_authenticate_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * camel_session_authenticate_finish:
+ * @session: a #CamelSession
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_session_authenticate().
+ *
+ * If an error occurred, or if authentication was aborted, the function
+ * sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_session_authenticate_finish (CamelSession *session,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (session),
+		camel_session_authenticate), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
 /**
  * camel_session_forward_to_sync:
  * @session: a #CamelSession
@@ -1730,79 +1698,26 @@ camel_session_forward_to_sync (CamelSession *session,
 	return success;
 }
 
-/**
- * camel_session_authenticate:
- * @session: a #CamelSession
- * @service: a #CamelService
- * @mechanism: a SASL mechanism name, or %NULL
- * @io_priority: the I/O priority for the request
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Asynchronously authenticates @service, which may involve repeated calls
- * to camel_service_authenticate() or camel_service_authenticate_sync().
- * A #CamelSession subclass is largely responsible for implementing this,
- * and should handle things like user prompts and secure password storage.
- * These issues are out-of-scope for Camel.
- *
- * When the operation is finished, @callback will be called.  You can
- * then call camel_session_authenticate_finish() to get the result of
- * the operation.
- *
- * Since: 3.4
- **/
-void
-camel_session_authenticate (CamelSession *session,
-                            CamelService *service,
-                            const gchar *mechanism,
-                            gint io_priority,
-                            GCancellable *cancellable,
-                            GAsyncReadyCallback callback,
-                            gpointer user_data)
+/* Helper for camel_session_forward_to() */
+static void
+session_forward_to_thread (GSimpleAsyncResult *simple,
+                           GObject *object,
+                           GCancellable *cancellable)
 {
-	CamelSessionClass *class;
+	AsyncContext *async_context;
+	GError *error = NULL;
 
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_if_fail (class->authenticate != NULL);
+	camel_session_forward_to_sync (
+		CAMEL_SESSION (object),
+		async_context->folder,
+		async_context->message,
+		async_context->address,
+		cancellable, &error);
 
-	class->authenticate (
-		session, service, mechanism, io_priority,
-		cancellable, callback, user_data);
-}
-
-/**
- * camel_session_authenticate_finish:
- * @session: a #CamelSession
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with camel_session_authenticate().
- *
- * If an error occurred, or if authentication was aborted, the function
- * sets @error and returns %FALSE.
- *
- * Returns: %TRUE on success, %FALSE on failure
- *
- * Since: 3.4
- **/
-gboolean
-camel_session_authenticate_finish (CamelSession *session,
-                                   GAsyncResult *result,
-                                   GError **error)
-{
-	CamelSessionClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->authenticate_finish != NULL, FALSE);
-
-	return class->authenticate_finish (session, result, error);
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1835,19 +1750,32 @@ camel_session_forward_to (CamelSession *session,
                           GAsyncReadyCallback callback,
                           gpointer user_data)
 {
-	CamelSessionClass *class;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
 	g_return_if_fail (address != NULL);
 
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_if_fail (class->forward_to != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder = g_object_ref (folder);
+	async_context->message = g_object_ref (message);
+	async_context->address = g_strdup (address);
 
-	class->forward_to (
-		session, folder, message, address,
-		io_priority, cancellable, callback, user_data);
+	simple = g_simple_async_result_new (
+		G_OBJECT (session), callback, user_data,
+		camel_session_forward_to);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, session_forward_to_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1869,14 +1797,16 @@ camel_session_forward_to_finish (CamelSession *session,
                                  GAsyncResult *result,
                                  GError **error)
 {
-	CamelSessionClass *class;
+	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (session),
+		camel_session_forward_to), FALSE);
 
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->forward_to_finish != NULL, FALSE);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
 
-	return class->forward_to_finish (session, result, error);
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 

@@ -137,28 +137,8 @@ struct _CamelSessionClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*authenticate)		(CamelSession *session,
-						 CamelService *service,
-						 const gchar *mechanism,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*authenticate_finish)	(CamelSession *session,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*forward_to)		(CamelSession *session,
-						 CamelFolder *folder,
-						 CamelMimeMessage *message,
-						 const gchar *address,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*forward_to_finish)	(CamelSession *session,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots for methods. */
+	gpointer reserved_for_methods[4];
 
 	/* Signals */
 	void		(*job_started)		(CamelSession *session,
