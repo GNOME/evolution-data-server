@@ -196,6 +196,31 @@ test_installed_services (void)
 	return use_installed_services;
 }
 
+static gchar *
+generate_source_name (void)
+{
+	gchar *source_name = NULL;
+
+	if (test_installed_services()) {
+		gchar buffer[128] = "eds-source-XXXXXX";
+		gint  fd;
+
+		fd = g_mkstemp (buffer);
+		if (fd < 0)
+			g_error ("Failed to generate source ID with temporary file");
+		close (fd);
+
+		source_name = g_strdup (buffer);
+
+	} else {
+		source_name = g_strdup_printf ("%s-%d",
+					       ADDRESS_BOOK_SOURCE_UID,
+					       global_test_source_id++);
+	}
+
+	return source_name;
+}
+
 static void
 setup_environment (void)
 {
@@ -410,7 +435,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	case E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK:
 
 		if (!pair->fixture->source_name)
-			pair->fixture->source_name = g_strdup_printf ("%s-%d", ADDRESS_BOOK_SOURCE_UID, global_test_source_id++);
+			pair->fixture->source_name = generate_source_name ();
 
 		scratch = e_source_new_with_uid (pair->fixture->source_name, NULL, &error);
 		if (!scratch)
@@ -425,7 +450,7 @@ e_test_server_utils_bootstrap_idle (FixturePair *pair)
 	case E_TEST_SERVER_DEPRECATED_CALENDAR:
 
 		if (!pair->fixture->source_name)
-			pair->fixture->source_name = g_strdup_printf ("%s-%d", CALENDAR_SOURCE_UID, global_test_source_id++);
+			pair->fixture->source_name = generate_source_name ();
 
 		scratch = e_source_new_with_uid (pair->fixture->source_name, NULL, &error);
 		if (!scratch)
