@@ -66,7 +66,6 @@ struct _CamelMimePartPrivate {
 };
 
 struct _AsyncContext {
-	/* arguments */
 	CamelMimeParser *parser;
 };
 
@@ -1374,21 +1373,27 @@ camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 
 /* Helper for camel_mime_part_construct_from_parser() */
 static void
-mime_part_construct_from_parser_thread (GSimpleAsyncResult *simple,
-                                        GObject *object,
+mime_part_construct_from_parser_thread (GTask *task,
+                                        gpointer source_object,
+                                        gpointer task_data,
                                         GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	camel_mime_part_construct_from_parser_sync (
-		CAMEL_MIME_PART (object), async_context->parser,
-		cancellable, &error);
+	success = camel_mime_part_construct_from_parser_sync (
+		CAMEL_MIME_PART (source_object),
+		async_context->parser,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -1416,7 +1421,7 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
                                        GAsyncReadyCallback callback,
                                        gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
@@ -1425,20 +1430,17 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->parser = g_object_ref (parser);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (mime_part), callback, user_data,
-		camel_mime_part_construct_from_parser);
+	task = g_task_new (mime_part, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_mime_part_construct_from_parser);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, mime_part_construct_from_parser_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, mime_part_construct_from_parser_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1458,15 +1460,12 @@ camel_mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
                                               GAsyncResult *result,
                                               GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, mime_part), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (mime_part),
-		camel_mime_part_construct_from_parser), FALSE);
+		g_async_result_is_tagged (
+		result, camel_mime_part_construct_from_parser), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
