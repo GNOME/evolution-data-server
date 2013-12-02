@@ -162,52 +162,8 @@ struct _CamelCipherContextClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*sign)			(CamelCipherContext *context,
-						 const gchar *userid,
-						 CamelCipherHash hash,
-						 CamelMimePart *ipart,
-						 CamelMimePart *opart,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*sign_finish)		(CamelCipherContext *context,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*verify)		(CamelCipherContext *context,
-						 CamelMimePart *ipart,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	CamelCipherValidity *
-			(*verify_finish)	(CamelCipherContext *context,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*encrypt)		(CamelCipherContext *context,
-						 const gchar *user_id,
-						 GPtrArray *recipients,
-						 CamelMimePart *ipart,
-						 CamelMimePart *opart,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*encrypt_finish)	(CamelCipherContext *context,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*decrypt)		(CamelCipherContext *context,
-						 CamelMimePart *ipart,
-						 CamelMimePart *opart,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	CamelCipherValidity *
-			(*decrypt_finish)	(CamelCipherContext *context,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[8];
 };
 
 GType		camel_cipher_context_get_type	(void);
