@@ -98,38 +98,8 @@ struct _CamelDataWrapperClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asyncrhonous I/O Methods (all have defaults) */
-	void		(*write_to_stream)	(CamelDataWrapper *data_wrapper,
-						 CamelStream *stream,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gssize		(*write_to_stream_finish)
-						(CamelDataWrapper *data_wrapper,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*decode_to_stream)	(CamelDataWrapper *data_wrapper,
-						 CamelStream *stream,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gssize		(*decode_to_stream_finish)
-						(CamelDataWrapper *data_wrapper,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*construct_from_stream)
-						(CamelDataWrapper *data_wrapper,
-						 CamelStream *stream,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*construct_from_stream_finish)
-						(CamelDataWrapper *data_wrapper,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[6];
 };
 
 GType		camel_data_wrapper_get_type	(void);
