@@ -786,72 +786,6 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 }
 
 static void
-mime_part_construct_from_parser_thread (GSimpleAsyncResult *simple,
-                                        GObject *object,
-                                        GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_mime_part_construct_from_parser_sync (
-		CAMEL_MIME_PART (object), async_context->parser,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-mime_part_construct_from_parser (CamelMimePart *mime_part,
-                                 CamelMimeParser *parser,
-                                 gint io_priority,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->parser = g_object_ref (parser);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (mime_part), callback, user_data,
-		mime_part_construct_from_parser);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, mime_part_construct_from_parser_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
-                                        GAsyncResult *result,
-                                        GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (mime_part),
-		mime_part_construct_from_parser), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
 camel_mime_part_class_init (CamelMimePartClass *class)
 {
 	GObjectClass *object_class;
@@ -879,8 +813,6 @@ camel_mime_part_class_init (CamelMimePartClass *class)
 	data_wrapper_class->construct_from_stream_sync = mime_part_construct_from_stream_sync;
 
 	class->construct_from_parser_sync = mime_part_construct_from_parser_sync;
-	class->construct_from_parser = mime_part_construct_from_parser;
-	class->construct_from_parser_finish = mime_part_construct_from_parser_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1440,6 +1372,25 @@ camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	return success;
 }
 
+/* Helper for camel_mime_part_construct_from_parser() */
+static void
+mime_part_construct_from_parser_thread (GSimpleAsyncResult *simple,
+                                        GObject *object,
+                                        GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_mime_part_construct_from_parser_sync (
+		CAMEL_MIME_PART (object), async_context->parser,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * camel_mime_part_construct_from_parser:
  * @mime_part: a #CamelMimePart
@@ -1465,17 +1416,29 @@ camel_mime_part_construct_from_parser (CamelMimePart *mime_part,
                                        GAsyncReadyCallback callback,
                                        gpointer user_data)
 {
-	CamelMimePartClass *class;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_MIME_PART (mime_part));
 	g_return_if_fail (CAMEL_IS_MIME_PARSER (parser));
 
-	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
-	g_return_if_fail (class->construct_from_parser != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->parser = g_object_ref (parser);
 
-	class->construct_from_parser (
-		mime_part, parser, io_priority,
-		cancellable, callback, user_data);
+	simple = g_simple_async_result_new (
+		G_OBJECT (mime_part), callback, user_data,
+		camel_mime_part_construct_from_parser);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, mime_part_construct_from_parser_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -1495,13 +1458,15 @@ camel_mime_part_construct_from_parser_finish (CamelMimePart *mime_part,
                                               GAsyncResult *result,
                                               GError **error)
 {
-	CamelMimePartClass *class;
+	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (mime_part),
+		camel_mime_part_construct_from_parser), FALSE);
 
-	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
-	g_return_val_if_fail (class->construct_from_parser_finish != NULL, FALSE);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
 
-	return class->construct_from_parser_finish (mime_part, result, error);
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }

@@ -76,18 +76,8 @@ struct _CamelMimePartClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*construct_from_parser)
-						(CamelMimePart *mime_part,
-						 CamelMimeParser *parser,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*construct_from_parser_finish)
-						(CamelMimePart *mime_part,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[2];
 };
 
 GType		camel_mime_part_get_type	(void);
