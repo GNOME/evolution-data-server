@@ -287,135 +287,6 @@ sasl_finalize (GObject *object)
 }
 
 static void
-sasl_challenge_thread (GSimpleAsyncResult *simple,
-                       GObject *object,
-                       GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	async_context->response = camel_sasl_challenge_sync (
-		CAMEL_SASL (object), async_context->token,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-sasl_challenge (CamelSasl *sasl,
-                GByteArray *token,
-                gint io_priority,
-                GCancellable *cancellable,
-                GAsyncReadyCallback callback,
-                gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->token = g_byte_array_new ();
-
-	g_byte_array_append (async_context->token, token->data, token->len);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (sasl), callback, user_data, sasl_challenge);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, sasl_challenge_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static GByteArray *
-sasl_challenge_finish (CamelSasl *sasl,
-                       GAsyncResult *result,
-                       GError **error)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	GByteArray *response;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (sasl), sasl_challenge), NULL);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	response = async_context->response;
-	async_context->response = NULL;
-
-	return response;
-}
-
-static void
-sasl_try_empty_password_thread (GSimpleAsyncResult *simple,
-                                GObject *object,
-                                GCancellable *cancellable)
-{
-	gboolean res;
-	GError *error = NULL;
-
-	res = camel_sasl_try_empty_password_sync (
-		CAMEL_SASL (object), cancellable, &error);
-	g_simple_async_result_set_op_res_gboolean (simple, res);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-sasl_try_empty_password (CamelSasl *sasl,
-                         gint io_priority,
-                         GCancellable *cancellable,
-                         GAsyncReadyCallback callback,
-                         gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (sasl), callback, user_data, sasl_try_empty_password);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_run_in_thread (
-		simple, sasl_try_empty_password_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-sasl_try_empty_password_finish (CamelSasl *sasl,
-                                GAsyncResult *result,
-                                GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (sasl), sasl_try_empty_password), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
-}
-
-static void
 camel_sasl_class_init (CamelSaslClass *class)
 {
 	GObjectClass *object_class;
@@ -427,11 +298,6 @@ camel_sasl_class_init (CamelSaslClass *class)
 	object_class->get_property = sasl_get_property;
 	object_class->dispose = sasl_dispose;
 	object_class->finalize = sasl_finalize;
-
-	class->challenge = sasl_challenge;
-	class->challenge_finish = sasl_challenge_finish;
-	class->try_empty_password = sasl_try_empty_password;
-	class->try_empty_password_finish = sasl_try_empty_password_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -570,6 +436,23 @@ camel_sasl_try_empty_password_sync (CamelSasl *sasl,
 	return class->try_empty_password_sync (sasl, cancellable, error);
 }
 
+/* Helpder for camel_sasl_try_empty_password() */
+static void
+sasl_try_empty_password_thread (GSimpleAsyncResult *simple,
+                                GObject *object,
+                                GCancellable *cancellable)
+{
+	gboolean res;
+	GError *error = NULL;
+
+	res = camel_sasl_try_empty_password_sync (
+		CAMEL_SASL (object), cancellable, &error);
+	g_simple_async_result_set_op_res_gboolean (simple, res);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * camel_sasl_try_empty_password:
  * @sasl: a #CamelSasl
@@ -594,15 +477,21 @@ camel_sasl_try_empty_password (CamelSasl *sasl,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	CamelSaslClass *class;
+	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (CAMEL_IS_SASL (sasl));
 
-	class = CAMEL_SASL_GET_CLASS (sasl);
-	g_return_if_fail (class->try_empty_password != NULL);
+	simple = g_simple_async_result_new (
+		G_OBJECT (sasl), callback, user_data,
+		camel_sasl_try_empty_password);
 
-	class->try_empty_password (
-		sasl, io_priority, cancellable, callback, user_data);
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_run_in_thread (
+		simple, sasl_try_empty_password_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -622,15 +511,19 @@ camel_sasl_try_empty_password_finish (CamelSasl *sasl,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	CamelSaslClass *class;
+	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CAMEL_IS_SASL (sasl), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (sasl),
+		camel_sasl_try_empty_password), FALSE);
 
-	class = CAMEL_SASL_GET_CLASS (sasl);
-	g_return_val_if_fail (class->try_empty_password_finish != NULL, FALSE);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
 
-	return class->try_empty_password_finish (sasl, result, error);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
 }
 
 /**
@@ -735,6 +628,25 @@ camel_sasl_challenge_sync (CamelSasl *sasl,
 	return response;
 }
 
+/* Helper for camel_sasl_challenge() */
+static void
+sasl_challenge_thread (GSimpleAsyncResult *simple,
+                       GObject *object,
+                       GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->response = camel_sasl_challenge_sync (
+		CAMEL_SASL (object), async_context->token,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * camel_sasl_challenge:
  * @sasl: a #CamelSasl
@@ -762,15 +674,29 @@ camel_sasl_challenge (CamelSasl *sasl,
                       GAsyncReadyCallback callback,
                       gpointer user_data)
 {
-	CamelSaslClass *class;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SASL (sasl));
 
-	class = CAMEL_SASL_GET_CLASS (sasl);
-	g_return_if_fail (class->challenge != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->token = g_byte_array_new ();
 
-	class->challenge (
-		sasl, token, io_priority, cancellable, callback, user_data);
+	g_byte_array_append (async_context->token, token->data, token->len);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (sasl), callback, user_data,
+		camel_sasl_challenge);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, sasl_challenge_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -792,15 +718,24 @@ camel_sasl_challenge_finish (CamelSasl *sasl,
                              GAsyncResult *result,
                              GError **error)
 {
-	CamelSaslClass *class;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GByteArray *response;
 
-	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (sasl), camel_sasl_challenge), NULL);
 
-	class = CAMEL_SASL_GET_CLASS (sasl);
-	g_return_val_if_fail (class->challenge_finish != NULL, NULL);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	return class->challenge_finish (sasl, result, error);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	response = async_context->response;
+	async_context->response = NULL;
+
+	return response;
 }
 
 /**

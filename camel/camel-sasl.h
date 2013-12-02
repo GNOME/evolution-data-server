@@ -75,25 +75,8 @@ struct _CamelSaslClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*challenge)		(CamelSasl *sasl,
-						 GByteArray *token,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	GByteArray *	(*challenge_finish)	(CamelSasl *sasl,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*try_empty_password)	(CamelSasl *sasl,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*try_empty_password_finish)
-						(CamelSasl *sasl,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[4];
 };
 
 GType		camel_sasl_get_type		(void);
