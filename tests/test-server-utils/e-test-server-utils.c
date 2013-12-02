@@ -520,7 +520,8 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
 	FixturePair         pair    = { fixture, closure };
 
 	/* Create work directory */
-	g_assert (g_mkdir_with_parents (EDS_TEST_WORK_DIR, 0755) == 0);
+	if (!test_installed_services())
+		g_assert (g_mkdir_with_parents (EDS_TEST_WORK_DIR, 0755) == 0);
 
 	/* Init refs */
 	g_weak_ref_init (&fixture->registry_ref, NULL);
