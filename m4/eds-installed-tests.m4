@@ -79,7 +79,7 @@ ifeq ($(EDS_INSTALLED_TESTS_ENABLED),yes)
 install-exec-am: installed-tests-exec-hook
 install-data-am: installed-tests-data-hook
 
-META_DIRECTORY=${DESTDIR}/${datadir}/share/installed-tests/${PACKAGE}
+META_DIRECTORY=${DESTDIR}/${datadir}/installed-tests/${PACKAGE}
 EXEC_DIRECTORY=${DESTDIR}/${pkglibexecdir}/installed-tests
 
 FINAL_TEST_ENVIRONMENT=
@@ -96,6 +96,7 @@ installed-tests-exec-hook:
 installed-tests-data-hook:
 	@$(MKDIR_P) $(META_DIRECTORY);
 	@for test in $(INSTALLED_TESTS); do							\
+	    echo "Installing $$test.test to $(META_DIRECTORY)";					\
 	    echo m4_escape([[Test]]) > $(META_DIRECTORY)/$$test.test;				\
 	    echo "Exec=$(FINAL_TEST_ENVIRONMENT) $(pkglibexecdir)/installed-tests/$$test"	\
 	                                           >> $(META_DIRECTORY)/$$test.test;		\
