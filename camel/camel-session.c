@@ -164,71 +164,73 @@ job_data_free (JobData *job_data)
 }
 
 static void
-session_finish_job_cb (CamelSession *session,
-                       GSimpleAsyncResult *simple)
+session_finish_job_cb (GObject *source_object,
+                       GAsyncResult *result,
+                       gpointer unused)
 {
-	JobData *job_data;
-	GError *error = NULL;
+	GCancellable *cancellable;
+	GError *local_error = NULL;
 
-	if (!g_simple_async_result_propagate_error (simple, &error))
-		error = NULL;
+	cancellable = g_task_get_cancellable (G_TASK (result));
 
-	job_data = g_simple_async_result_get_op_res_gpointer (simple);
+	/* XXX Ignore the return value, this is just
+	 *     to extract the GError if there is one. */
+	g_task_propagate_boolean (G_TASK (result), &local_error);
 
 	g_signal_emit (
-		job_data->session,
+		CAMEL_SESSION (source_object),
 		signals[JOB_FINISHED], 0,
-		job_data->cancellable, error);
+		cancellable, local_error);
 
-	g_clear_error (&error);
+	g_clear_error (&local_error);
 }
 
 static void
-session_do_job_cb (GSimpleAsyncResult *simple,
-                   CamelSession *session,
+session_do_job_cb (GTask *task,
+                   gpointer source_object,
+                   gpointer task_data,
                    GCancellable *cancellable)
 {
 	JobData *job_data;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	job_data = g_simple_async_result_get_op_res_gpointer (simple);
+	job_data = (JobData *) task_data;
 
 	job_data->callback (
-		session, cancellable,
-		job_data->user_data, &error);
+		CAMEL_SESSION (source_object),
+		cancellable,
+		job_data->user_data,
+		&local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, TRUE);
+	}
 }
 
 static gboolean
 session_start_job_cb (gpointer user_data)
 {
 	JobData *job_data = user_data;
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
 	g_signal_emit (
 		job_data->session,
 		signals[JOB_STARTED], 0,
 		job_data->cancellable);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (job_data->session),
-		(GAsyncReadyCallback) session_finish_job_cb,
-		NULL, camel_session_submit_job);
+	task = g_task_new (
+		job_data->session,
+		job_data->cancellable,
+		session_finish_job_cb, NULL);
 
-	g_simple_async_result_set_check_cancellable (
-		simple, job_data->cancellable);
+	g_task_set_task_data (
+		task, job_data, (GDestroyNotify) job_data_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, job_data, (GDestroyNotify) job_data_free);
+	g_task_run_in_thread (task, session_do_job_cb);
 
-	g_simple_async_result_run_in_thread (
-		simple, (GSimpleAsyncThreadFunc)
-		session_do_job_cb, JOB_PRIORITY,
-		job_data->cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 
 	return FALSE;
 }
@@ -1543,27 +1545,28 @@ camel_session_authenticate_sync (CamelSession *session,
 
 /* Helper for camel_session_authenticate() */
 static void
-session_authenticate_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
+session_authenticate_thread (GTask *task,
+                             gpointer source_object,
+                             gpointer task_data,
                              GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	if (!camel_session_authenticate_sync (
-		CAMEL_SESSION (object),
+	success = camel_session_authenticate_sync (
+		CAMEL_SESSION (source_object),
 		async_context->service,
 		async_context->auth_mechanism,
-		cancellable, &error)) {
+		cancellable, &local_error);
 
-		if (!error)
-			error = g_error_new_literal (CAMEL_ERROR, CAMEL_ERROR_GENERIC, _("Unknown error"));
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
 	}
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
 }
 
 /**
@@ -1597,7 +1600,7 @@ camel_session_authenticate (CamelSession *session,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
@@ -1607,19 +1610,17 @@ camel_session_authenticate (CamelSession *session,
 	async_context->service = g_object_ref (service);
 	async_context->auth_mechanism = g_strdup (mechanism);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (session), callback, user_data,
-		camel_session_authenticate);
+	task = g_task_new (session, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_session_authenticate);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, session_authenticate_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, session_authenticate_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1642,17 +1643,14 @@ camel_session_authenticate_finish (CamelSession *session,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, session), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (session),
-		camel_session_authenticate), FALSE);
+		g_async_result_is_tagged (
+		result, camel_session_authenticate), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -1700,24 +1698,29 @@ camel_session_forward_to_sync (CamelSession *session,
 
 /* Helper for camel_session_forward_to() */
 static void
-session_forward_to_thread (GSimpleAsyncResult *simple,
-                           GObject *object,
+session_forward_to_thread (GTask *task,
+                           gpointer source_object,
+                           gpointer task_data,
                            GCancellable *cancellable)
 {
+	gboolean success;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	camel_session_forward_to_sync (
-		CAMEL_SESSION (object),
+	success = camel_session_forward_to_sync (
+		CAMEL_SESSION (source_object),
 		async_context->folder,
 		async_context->message,
 		async_context->address,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
@@ -1750,7 +1753,7 @@ camel_session_forward_to (CamelSession *session,
                           GAsyncReadyCallback callback,
                           gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
@@ -1763,19 +1766,17 @@ camel_session_forward_to (CamelSession *session,
 	async_context->message = g_object_ref (message);
 	async_context->address = g_strdup (address);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (session), callback, user_data,
-		camel_session_forward_to);
+	task = g_task_new (session, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_session_forward_to);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, session_forward_to_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, session_forward_to_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1797,16 +1798,13 @@ camel_session_forward_to_finish (CamelSession *session,
                                  GAsyncResult *result,
                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, session), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (session),
-		camel_session_forward_to), FALSE);
+		g_async_result_is_tagged (
+		result, camel_session_forward_to), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
