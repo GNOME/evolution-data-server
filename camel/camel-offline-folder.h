@@ -68,16 +68,8 @@ struct _CamelOfflineFolderClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Asynchronous I/O Methods (all have defaults) */
-	void		(*downsync)		(CamelOfflineFolder *folder,
-						 const gchar *expression,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*downsync_finish)	(CamelOfflineFolder *folder,
-						 GAsyncResult *result,
-						 GError **error);
+	/* Reserved slots. */
+	gpointer reserved[2];
 };
 
 GType		camel_offline_folder_get_type	(void);

@@ -248,71 +248,6 @@ done:
 }
 
 static void
-offline_folder_downsync_thread (GSimpleAsyncResult *simple,
-                                GObject *object,
-                                GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_offline_folder_downsync_sync (
-		CAMEL_OFFLINE_FOLDER (object), async_context->expression,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static void
-offline_folder_downsync (CamelOfflineFolder *folder,
-                         const gchar *expression,
-                         gint io_priority,
-                         GCancellable *cancellable,
-                         GAsyncReadyCallback callback,
-                         gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->expression = g_strdup (expression);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (folder), callback,
-		user_data, offline_folder_downsync);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, offline_folder_downsync_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-offline_folder_downsync_finish (CamelOfflineFolder *folder,
-                                GAsyncResult *result,
-                                GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (folder), offline_folder_downsync), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
 camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 {
 	GObjectClass *object_class;
@@ -324,8 +259,6 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 	object_class->get_property = offline_folder_get_property;
 
 	class->downsync_sync = offline_folder_downsync_sync;
-	class->downsync = offline_folder_downsync;
-	class->downsync_finish = offline_folder_downsync_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -420,6 +353,25 @@ camel_offline_folder_downsync_sync (CamelOfflineFolder *folder,
 	return success;
 }
 
+/* Helper for camel_offline_folder_downsync() */
+static void
+offline_folder_downsync_thread (GSimpleAsyncResult *simple,
+                                GObject *object,
+                                GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_offline_folder_downsync_sync (
+		CAMEL_OFFLINE_FOLDER (object), async_context->expression,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
 /**
  * camel_offline_folder_downsync:
  * @folder: a #CamelOfflineFolder
@@ -447,16 +399,28 @@ camel_offline_folder_downsync (CamelOfflineFolder *folder,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	CamelOfflineFolderClass *class;
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder));
 
-	class = CAMEL_OFFLINE_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->downsync != NULL);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->expression = g_strdup (expression);
 
-	class->downsync (
-		folder, expression, io_priority,
-		cancellable, callback, user_data);
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data,
+		camel_offline_folder_downsync);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, offline_folder_downsync_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
 }
 
 /**
@@ -476,13 +440,15 @@ camel_offline_folder_downsync_finish (CamelOfflineFolder *folder,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	CamelOfflineFolderClass *class;
+	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder),
+		camel_offline_folder_downsync), FALSE);
 
-	class = CAMEL_OFFLINE_FOLDER_GET_CLASS (folder);
-	g_return_val_if_fail (class->downsync_finish != NULL, FALSE);
+	simple = G_SIMPLE_ASYNC_RESULT (result);
 
-	return class->downsync_finish (folder, result, error);
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
