@@ -98,4 +98,12 @@ test_sqlite_cursor_set_sexp_CPPFLAGS=$(TEST_CPPFLAGS)
 test_sqlite_cursor_change_locale_LDADD=$(TEST_LIBS)
 test_sqlite_cursor_change_locale_CPPFLAGS=$(TEST_CPPFLAGS)
 
+#####################################
+#     Optionally Install Tests      #
+#####################################
+@EDS_INSTALLED_TESTS_RULE@
+INSTALLED_TESTS = $(TESTS)
+INSTALLED_TESTS_TYPE = session-exclusive
+INSTALLED_TESTS_ENVIRONMENT = "TEST_INSTALLED_SERVICES=1"
+
 -include $(top_srcdir)/git.mk

@@ -322,6 +322,9 @@ dnl This relies on $SED, which is defined in ltmain.sh, which
 dnl is invoked by LT_INIT (at least I think that's how it works).
 GNOME_CODE_COVERAGE
 
+dnl Add the option install unit tests
+EDS_INSTALLED_TESTS
+
 dnl ******************************
 dnl Gtk Doc stuff
 dnl ******************************
@@ -1857,4 +1860,5 @@ echo "
 	Examples:  		$enable_examples
 	Code coverage (gcov):	$enable_code_coverage
 	Strict building:	$enable_strict
+	Installed tests:        $enable_installed_tests
 "

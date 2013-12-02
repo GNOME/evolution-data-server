@@ -42,7 +42,8 @@ cursor_example_CPPFLAGS = \
 cursor_example_CFLAGS =
 cursor_example_LDFLAGS = \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
-	$(top_builddir)/tests/test-server-utils/libetestserverutils.la \
+	$(top_builddir)/addressbook/libebook-contacts/libebook-contacts-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/private/libedbus-private.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(EXAMPLES_LIBS) $(CAMEL_LIBS) \

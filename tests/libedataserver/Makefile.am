@@ -67,3 +67,11 @@ e_user_prompter_test_LDADD = $(test_LDADD) $(GTK_LIBS)
 endif
 
 -include $(top_srcdir)/git.mk
+
+#####################################
+#     Optionally Install Tests      #
+#####################################
+@EDS_INSTALLED_TESTS_RULE@
+INSTALLED_TESTS = $(TESTS)
+INSTALLED_TESTS_TYPE = session-exclusive
+INSTALLED_TESTS_ENVIRONMENT = "TEST_INSTALLED_SERVICES=1"

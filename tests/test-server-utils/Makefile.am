@@ -37,7 +37,11 @@ common_libs = \
 ######################################
 #         Utility Library            #
 ######################################
+if EDS_INSTALLED_TESTS_ENABLED
+lib_LTLIBRARIES = libetestserverutils.la
+else
 noinst_LTLIBRARIES = libetestserverutils.la
+endif
 
 libetestserverutils_la_CPPFLAGS = $(common_cflags)
 libetestserverutils_la_LIBADD = $(common_libs)
@@ -67,3 +71,11 @@ clean-local-check:
 	-rm -rf $(abs_top_builddir)/tests/test-server-utils/cache
 
 -include $(top_srcdir)/git.mk
+
+#####################################
+#     Optionally Install Tests      #
+#####################################
+@EDS_INSTALLED_TESTS_RULE@
+INSTALLED_TESTS = $(TESTS)
+INSTALLED_TESTS_TYPE = session-exclusive
+INSTALLED_TESTS_ENVIRONMENT = "TEST_INSTALLED_SERVICES=1"

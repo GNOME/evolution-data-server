@@ -128,3 +128,45 @@ test_client_cursor_operations_LDADD=$(TEST_LIBS)
 test_client_cursor_operations_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+
+#####################################
+#     Optionally Install Tests      #
+#####################################
+@EDS_INSTALLED_TESTS_RULE@
+
+# Here we list all the $(TESTS) except
+# for test-client-cursor-operations, that
+# test requires that we set the locale
+# on the system bus, or set EDS_TESTING=1
+# both in the test environment AND the D-Bus
+# session environment.
+#
+# test-client-self also fails for some reason
+# when running installed, not sure why.
+INSTALLED_TESTS = \
+	test-client-refresh \
+	test-client-add-contact \
+	test-client-get-contact \
+	test-client-get-contact-uids \
+	test-client-modify-contact \
+	test-client-remove-contact \
+	test-client-remove-contact-by-uid \
+	test-client-remove-contacts \
+	test-client-add-and-get-sync \
+	test-client-add-and-get-async \
+	test-client-preserve-uid \
+	test-client-photo-is-uri \
+	test-client-e164-param \
+        test-client-custom-summary \
+	test-client-get-revision \
+	test-client-write-write \
+	test-client-get-view \
+	test-client-uid-only-view \
+	test-client-revision-view \
+	test-client-view-operations \
+	test-client-suppress-notifications \
+	test-client-cursor-create \
+	$(NULL)
+
+INSTALLED_TESTS_TYPE = session-exclusive
+INSTALLED_TESTS_ENVIRONMENT = "TEST_INSTALLED_SERVICES=1"

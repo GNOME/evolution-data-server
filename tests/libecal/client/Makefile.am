@@ -17,6 +17,7 @@ TEST_CPPFLAGS= \
 TEST_LIBS = \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la \
 	$(top_builddir)/tests/test-server-utils/libetestserverutils.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
 	$(CAMEL_LIBS) \
 	$(NULL)
@@ -79,3 +80,11 @@ test_client_send_objects_LDADD=$(TEST_LIBS)
 test_client_send_objects_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+
+#####################################
+#     Optionally Install Tests      #
+#####################################
+@EDS_INSTALLED_TESTS_RULE@
+INSTALLED_TESTS = $(TESTS)
+INSTALLED_TESTS_TYPE = session-exclusive
+INSTALLED_TESTS_ENVIRONMENT = "TEST_INSTALLED_SERVICES=1"

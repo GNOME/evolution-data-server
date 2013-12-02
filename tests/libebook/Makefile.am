@@ -127,3 +127,11 @@ test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
 test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
+
+#####################################
+#     Optionally Install Tests      #
+#####################################
+@EDS_INSTALLED_TESTS_RULE@
+INSTALLED_TESTS = $(TESTS)
+INSTALLED_TESTS_TYPE = session-exclusive
+INSTALLED_TESTS_ENVIRONMENT = "TEST_INSTALLED_SERVICES=1"
