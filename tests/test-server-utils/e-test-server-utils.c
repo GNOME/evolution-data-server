@@ -687,10 +687,13 @@ e_test_server_utils_run_full (ETestServerFlags flags)
 	gint tests_ret;
 
 	/* Cleanup work directory */
-	if ((flags & E_TEST_SERVER_KEEP_WORK_DIRECTORY) == 0)
-		delete_work_directory ();
+	if (!test_installed_services()) {
 
-	setup_environment ();
+		if ((flags & E_TEST_SERVER_KEEP_WORK_DIRECTORY) == 0)
+			delete_work_directory ();
+
+		setup_environment ();
+	}
 
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
