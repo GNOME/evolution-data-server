@@ -35,7 +35,15 @@ new_vcard_from_test_case (const gchar *case_name)
 	gchar *vcard;
 
 	case_filename = g_strdup_printf ("%s.vcf", case_name);
-	filename = g_build_filename (SRCDIR, "..", "libebook", "data", "vcards", case_filename, NULL);
+
+	/* In the case of installed tests, they run in ${pkglibexecdir}/installed-tests
+	 * and the vcards are installed in ${pkglibexecdir}/installed-tests/vcards
+	 */
+	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL)
+		filename = g_build_filename (INSTALLED_TEST_DIR, "vcards", case_filename, NULL);
+	else
+		filename = g_build_filename (SRCDIR, "..", "libebook", "data", "vcards", case_filename, NULL);
+
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error))
 		g_error ("failed to read test contact file '%s': %s",
@@ -188,11 +196,10 @@ e_sqlite_fixture_setup (EbSqlFixture  *fixture,
 				       g_object_unref);
 
 	/* Cleanup from last test */
-	directory  = g_build_filename (SRCDIR, "cache", NULL);
+	directory  = g_build_filename (g_get_tmp_dir (), "test-sqlite-cache", NULL);
 	delete_work_directory (directory);
 	g_free (directory);
-
-	filename = g_build_filename (SRCDIR, "cache", "contacts.db", NULL);
+	filename = g_build_filename (g_get_tmp_dir (), "test-sqlite-cache", "contacts.db", NULL);
 
 	if (closure->setup_summary)
 		setup = closure->setup_summary ();

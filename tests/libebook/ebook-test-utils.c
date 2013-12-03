@@ -48,7 +48,15 @@ ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 	gchar *vcard;
 
 	case_filename = g_strdup_printf ("%s.vcf", case_name);
-	filename = g_build_filename (SRCDIR, EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
+
+	/* In the case of installed tests, they run in ${pkglibexecdir}/installed-tests
+	 * and the vcards are installed in ${pkglibexecdir}/installed-tests/vcards
+	 */
+	if (g_getenv ("TEST_INSTALLED_SERVICES") != NULL)
+		filename = g_build_filename (INSTALLED_TEST_DIR, "vcards", case_filename, NULL);
+	else
+		filename = g_build_filename (SRCDIR, EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
+
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
 		g_warning (

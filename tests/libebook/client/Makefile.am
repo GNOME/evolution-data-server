@@ -18,6 +18,7 @@ libclient_test_utils_la_CPPFLAGS = \
 	-I$(top_srcdir)/private \
 	-I$(top_builddir)/private \
 	-DSRCDIR=\""$(abs_srcdir)"\" \
+	-DINSTALLED_TEST_DIR=\""$(pkglibexecdir)/installed-tests"\" \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(CAMEL_CFLAGS) \

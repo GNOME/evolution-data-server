@@ -21,6 +21,7 @@ libebook_test_utils_la_CPPFLAGS = \
 	-I$(top_srcdir)/tests/test-server-utils \
 	-I$(top_builddir)/tests/test-server-utils \
 	-DSRCDIR=\""$(abs_srcdir)"\" \
+	-DINSTALLED_TEST_DIR=\""$(pkglibexecdir)/installed-tests"\" \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(CAMEL_CFLAGS) \
@@ -62,7 +63,7 @@ TESTS = \
 
 noinst_PROGRAMS = $(TESTS)
 
-EXTRA_DIST = \
+TEST_VCARDS = \
 	$(srcdir)/data/vcards/name-only.vcf \
 	$(srcdir)/data/vcards/simple-1.vcf \
 	$(srcdir)/data/vcards/simple-2.vcf \
@@ -102,6 +103,15 @@ EXTRA_DIST = \
 	$(srcdir)/data/vcards/custom-14.vcf \
 	$(srcdir)/data/vcards/custom-15.vcf \
 	$(NULL)
+
+if EDS_INSTALLED_TESTS_ENABLED
+vcardsdir   = ${pkglibexecdir}/installed-tests/vcards
+vcards_DATA = $(TEST_VCARDS)
+endif
+
+EXTRA_DIST = $(TEST_VCARDS)
+
+
 
 test_ebook_commit_contact_LDADD=$(TEST_LIBS)
 test_ebook_commit_contact_CPPFLAGS=$(TEST_CPPFLAGS)
