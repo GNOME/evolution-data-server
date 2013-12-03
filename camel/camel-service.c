@@ -78,9 +78,8 @@ struct _CamelServicePrivate {
 };
 
 struct _AsyncContext {
-	GList *auth_types;
 	gchar *auth_mechanism;
-	CamelAuthenticationResult auth_result;
+	gboolean clean;
 };
 
 /* The GQueue is only modified while CamelService's
@@ -89,8 +88,8 @@ struct _AsyncContext {
 struct _ConnectionOp {
 	volatile gint ref_count;
 	GQueue pending;
-	GMutex simple_lock;
-	GSimpleAsyncResult *simple;
+	GMutex task_lock;
+	GTask *task;
 	GCancellable *cancellable;
 	gulong cancel_id;
 };
@@ -118,23 +117,21 @@ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 static void
 async_context_free (AsyncContext *async_context)
 {
-	g_list_free (async_context->auth_types);
-
 	g_free (async_context->auth_mechanism);
 
 	g_slice_free (AsyncContext, async_context);
 }
 
 static ConnectionOp *
-connection_op_new (GSimpleAsyncResult *simple,
+connection_op_new (GTask *task,
                    GCancellable *cancellable)
 {
 	ConnectionOp *op;
 
 	op = g_slice_new0 (ConnectionOp);
 	op->ref_count = 1;
-	g_mutex_init (&op->simple_lock);
-	op->simple = g_object_ref (simple);
+	g_mutex_init (&op->task_lock);
+	op->task = g_object_ref (task);
 
 	if (G_IS_CANCELLABLE (cancellable))
 		op->cancellable = g_object_ref (cancellable);
@@ -164,10 +161,10 @@ connection_op_unref (ConnectionOp *op)
 		/* The pending queue should be empty. */
 		g_warn_if_fail (g_queue_is_empty (&op->pending));
 
-		g_mutex_clear (&op->simple_lock);
+		g_mutex_clear (&op->task_lock);
 
-		if (op->simple != NULL)
-			g_object_unref (op->simple);
+		if (op->task != NULL)
+			g_object_unref (op->task);
 
 		if (op->cancel_id > 0)
 			g_cancellable_disconnect (
@@ -184,39 +181,45 @@ static void
 connection_op_complete (ConnectionOp *op,
                         const GError *error)
 {
-	g_mutex_lock (&op->simple_lock);
+	g_mutex_lock (&op->task_lock);
 
-	if (op->simple != NULL && error != NULL)
-		g_simple_async_result_set_from_error (op->simple, error);
+	if (op->task != NULL) {
+		if (error != NULL) {
+			g_task_return_error (op->task, g_error_copy (error));
+		} else {
+			g_task_return_boolean (op->task, TRUE);
+		}
 
-	if (op->simple != NULL) {
-		g_simple_async_result_complete_in_idle (op->simple);
-		g_object_unref (op->simple);
-		op->simple = NULL;
+		g_clear_object (&op->task);
 	}
 
-	g_mutex_unlock (&op->simple_lock);
+	g_mutex_unlock (&op->task_lock);
 }
 
 static void
 connection_op_cancelled (GCancellable *cancellable,
                          ConnectionOp *op)
 {
-	/* Because we called g_simple_async_result_set_check_cancellable()
-	 * we don't need to explicitly set a G_IO_ERROR_CANCELLED here. */
-	connection_op_complete (op, NULL);
+	/* A cancelled GTask will always propagate an error, so we
+	 * don't need to explicitly set a G_IO_ERROR_CANCELLED here. */
+
+	g_mutex_lock (&op->task_lock);
+
+	g_clear_object (&op->task);
+
+	g_mutex_unlock (&op->task_lock);
 }
 
 static void
 connection_op_add_pending (ConnectionOp *op,
-                           GSimpleAsyncResult *simple,
+                           GTask *task,
                            GCancellable *cancellable)
 {
 	ConnectionOp *pending_op;
 
 	g_return_if_fail (op != NULL);
 
-	pending_op = connection_op_new (simple, cancellable);
+	pending_op = connection_op_new (task, cancellable);
 
 	if (pending_op->cancellable != NULL)
 		pending_op->cancel_id = g_cancellable_connect (
@@ -363,16 +366,12 @@ service_shared_connect_cb (GObject *source_object,
                            gpointer user_data)
 {
 	CamelService *service;
-	GSimpleAsyncResult *simple;
 	ConnectionOp *op = user_data;
-	gboolean success = TRUE;
-	GError *error = NULL;
+	gboolean success;
+	GError *local_error = NULL;
 
 	service = CAMEL_SERVICE (source_object);
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, &error))
-		success = FALSE;
+	success = g_task_propagate_boolean (G_TASK (result), &local_error);
 
 	g_mutex_lock (&service->priv->connection_lock);
 
@@ -386,35 +385,39 @@ service_shared_connect_cb (GObject *source_object,
 		service_queue_notify_connection_status (service);
 	}
 
-	connection_op_complete (op, error);
-	connection_op_complete_pending (op, error);
+	connection_op_complete (op, local_error);
+	connection_op_complete_pending (op, local_error);
 
 	g_mutex_unlock (&service->priv->connection_lock);
 
 	connection_op_unref (op);
-	g_clear_error (&error);
+	g_clear_error (&local_error);
 }
 
 static void
-service_shared_connect_thread (GSimpleAsyncResult *simple,
-                               GObject *object,
+service_shared_connect_thread (GTask *task,
+                               gpointer source_object,
+                               gpointer task_data,
                                GCancellable *cancellable)
 {
-	CamelService *service;
 	CamelServiceClass *class;
-	GError *error = NULL;
+	gboolean success;
+	GError *local_error = NULL;
 
 	/* Note we call the class method directly here. */
 
-	service = CAMEL_SERVICE (object);
-
-	class = CAMEL_SERVICE_GET_CLASS (service);
+	class = CAMEL_SERVICE_GET_CLASS (source_object);
 	g_return_if_fail (class->connect_sync != NULL);
 
-	class->connect_sync (service, cancellable, &error);
+	success = class->connect_sync (
+		CAMEL_SERVICE (source_object),
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 static void
@@ -422,19 +425,19 @@ service_shared_connect (CamelService *service,
                         gint io_priority,
                         ConnectionOp *op)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service), service_shared_connect_cb,
-		connection_op_ref (op), service_shared_connect);
+	task = g_task_new (
+		service, op->cancellable,
+		service_shared_connect_cb,
+		connection_op_ref (op));
 
-	g_simple_async_result_set_check_cancellable (simple, op->cancellable);
+	g_task_set_source_tag (task, service_shared_connect);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_run_in_thread (
-		simple, service_shared_connect_thread,
-		io_priority, op->cancellable);
+	g_task_run_in_thread (task, service_shared_connect_thread);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 static void
@@ -443,16 +446,12 @@ service_shared_disconnect_cb (GObject *source_object,
                               gpointer user_data)
 {
 	CamelService *service;
-	GSimpleAsyncResult *simple;
 	ConnectionOp *op = user_data;
-	gboolean success = TRUE;
-	GError *error = NULL;
+	gboolean success;
+	GError *local_error = NULL;
 
 	service = CAMEL_SERVICE (source_object);
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, &error))
-		success = FALSE;
+	success = g_task_propagate_boolean (G_TASK (result), &local_error);
 
 	g_mutex_lock (&service->priv->connection_lock);
 
@@ -466,37 +465,43 @@ service_shared_disconnect_cb (GObject *source_object,
 		service_queue_notify_connection_status (service);
 	}
 
-	connection_op_complete (op, error);
-	connection_op_complete_pending (op, error);
+	connection_op_complete (op, local_error);
+	connection_op_complete_pending (op, local_error);
 
 	g_mutex_unlock (&service->priv->connection_lock);
 
 	connection_op_unref (op);
-	g_clear_error (&error);
+	g_clear_error (&local_error);
 }
 
 static void
-service_shared_disconnect_thread (GSimpleAsyncResult *simple,
-                                  GObject *object,
+service_shared_disconnect_thread (GTask *task,
+                                  gpointer source_object,
+                                  gpointer task_data,
                                   GCancellable *cancellable)
 {
-	CamelService *service;
 	CamelServiceClass *class;
-	gboolean clean;
-	GError *error = NULL;
+	AsyncContext *async_context;
+	gboolean success;
+	GError *local_error = NULL;
 
 	/* Note we call the class method directly here. */
 
-	service = CAMEL_SERVICE (object);
-	clean = g_simple_async_result_get_op_res_gboolean (simple);
+	async_context = (AsyncContext *) task_data;
 
-	class = CAMEL_SERVICE_GET_CLASS (service);
+	class = CAMEL_SERVICE_GET_CLASS (source_object);
 	g_return_if_fail (class->disconnect_sync != NULL);
 
-	class->disconnect_sync (service, clean, cancellable, &error);
+	success = class->disconnect_sync (
+		CAMEL_SERVICE (source_object),
+		async_context->clean,
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 static void
@@ -505,21 +510,27 @@ service_shared_disconnect (CamelService *service,
                            gint io_priority,
                            ConnectionOp *op)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
+	AsyncContext *async_context;
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service), service_shared_disconnect_cb,
-		connection_op_ref (op), service_shared_disconnect);
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->clean = clean;
 
-	g_simple_async_result_set_check_cancellable (simple, op->cancellable);
+	task = g_task_new (
+		service, op->cancellable,
+		service_shared_disconnect_cb,
+		connection_op_ref (op));
 
-	g_simple_async_result_set_op_res_gboolean (simple, clean);
+	g_task_set_source_tag (task, service_shared_disconnect);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_run_in_thread (
-		simple, service_shared_disconnect_thread,
-		io_priority, op->cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_object_unref (simple);
+	g_task_run_in_thread (task, service_shared_disconnect_thread);
+
+	g_object_unref (task);
 }
 
 static void
@@ -1580,17 +1591,14 @@ camel_service_connect (CamelService *service,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
+	GTask *task;
 	ConnectionOp *op;
-	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service),
-		callback, user_data,
-		camel_service_connect);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (service, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_service_connect);
+	g_task_set_priority (task, io_priority);
 
 	g_mutex_lock (&service->priv->connection_lock);
 
@@ -1602,12 +1610,12 @@ camel_service_connect (CamelService *service,
 		case CAMEL_SERVICE_CONNECTING:
 			connection_op_add_pending (
 				service->priv->connection_op,
-				simple, cancellable);
+				task, cancellable);
 			break;
 
 		/* If we're already connected, just report success. */
 		case CAMEL_SERVICE_CONNECTED:
-			g_simple_async_result_complete_in_idle (simple);
+			g_task_return_boolean (task, TRUE);
 			break;
 
 		/* If a disconnect operation is currently in progress,
@@ -1628,7 +1636,7 @@ camel_service_connect (CamelService *service,
 			g_return_if_fail (
 				service->priv->connection_op == NULL);
 
-			op = connection_op_new (simple, cancellable);
+			op = connection_op_new (task, cancellable);
 			service->priv->connection_op = op;
 
 			service->priv->status = CAMEL_SERVICE_CONNECTING;
@@ -1643,7 +1651,7 @@ camel_service_connect (CamelService *service,
 
 	g_mutex_unlock (&service->priv->connection_lock);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1663,16 +1671,14 @@ camel_service_connect_finish (CamelService *service,
                               GAsyncResult *result,
                               GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, service), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (service), camel_service_connect), FALSE);
+		g_async_result_is_tagged (
+		result, camel_service_connect), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -1751,17 +1757,14 @@ camel_service_disconnect (CamelService *service,
                           GAsyncReadyCallback callback,
                           gpointer user_data)
 {
+	GTask *task;
 	ConnectionOp *op;
-	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service),
-		callback, user_data,
-		camel_service_disconnect);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	task = g_task_new (service, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_service_disconnect);
+	g_task_set_priority (task, io_priority);
 
 	g_mutex_lock (&service->priv->connection_lock);
 
@@ -1785,7 +1788,7 @@ camel_service_disconnect (CamelService *service,
 			g_return_if_fail (
 				service->priv->connection_op == NULL);
 
-			op = connection_op_new (simple, cancellable);
+			op = connection_op_new (task, cancellable);
 			service->priv->connection_op = op;
 
 			/* Do not change the status if CONNECTING, in case a
@@ -1808,12 +1811,12 @@ camel_service_disconnect (CamelService *service,
 		case CAMEL_SERVICE_DISCONNECTING:
 			connection_op_add_pending (
 				service->priv->connection_op,
-				simple, cancellable);
+				task, cancellable);
 			break;
 
 		/* If we're already disconnected, just report success. */
 		case CAMEL_SERVICE_DISCONNECTED:
-			g_simple_async_result_complete_in_idle (simple);
+			g_task_return_boolean (task, TRUE);
 			break;
 
 		default:
@@ -1822,7 +1825,7 @@ camel_service_disconnect (CamelService *service,
 
 	g_mutex_unlock (&service->priv->connection_lock);
 
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -1842,16 +1845,14 @@ camel_service_disconnect_finish (CamelService *service,
                                  GAsyncResult *result,
                                  GError **error)
 {
-	GSimpleAsyncResult *simple;
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, service), FALSE);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (service), camel_service_disconnect), FALSE);
+		g_async_result_is_tagged (
+		result, camel_service_disconnect), FALSE);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
@@ -1911,22 +1912,27 @@ camel_service_authenticate_sync (CamelService *service,
 
 /* Helper for camel_service_authenticate() */
 static void
-service_authenticate_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
+service_authenticate_thread (GTask *task,
+                             gpointer source_object,
+                             gpointer task_data,
                              GCancellable *cancellable)
 {
+	CamelAuthenticationResult auth_result;
 	AsyncContext *async_context;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	async_context = (AsyncContext *) task_data;
 
-	async_context->auth_result = camel_service_authenticate_sync (
-		CAMEL_SERVICE (object),
+	auth_result = camel_service_authenticate_sync (
+		CAMEL_SERVICE (source_object),
 		async_context->auth_mechanism,
-		cancellable, &error);
+		cancellable, &local_error);
 
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_int (task, auth_result);
+	}
 }
 
 /**
@@ -1959,7 +1965,7 @@ camel_service_authenticate (CamelService *service,
                             GAsyncReadyCallback callback,
                             gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
+	GTask *task;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
@@ -1967,20 +1973,17 @@ camel_service_authenticate (CamelService *service,
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->auth_mechanism = g_strdup (mechanism);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service),
-		callback, user_data,
-		camel_service_authenticate);
+	task = g_task_new (service, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_service_authenticate);
+	g_task_set_priority (task, io_priority);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
 
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
+	g_task_run_in_thread (task, service_authenticate_thread);
 
-	g_simple_async_result_run_in_thread (
-		simple, service_authenticate_thread, io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2010,21 +2013,29 @@ camel_service_authenticate_finish (CamelService *service,
                                    GAsyncResult *result,
                                    GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	CamelAuthenticationResult auth_result;
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (service), camel_service_authenticate),
+		CAMEL_IS_SERVICE (service),
+		CAMEL_AUTHENTICATION_REJECTED);
+	g_return_val_if_fail (
+		g_task_is_valid (result, service),
 		CAMEL_AUTHENTICATION_REJECTED);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, camel_service_authenticate),
+		CAMEL_AUTHENTICATION_REJECTED);
 
-	if (g_simple_async_result_propagate_error (simple, error))
+	/* XXX A little hackish, but best way to return enum values
+	 *     from GTask in GLib 2.36.  Recommended by Dan Winship. */
+
+	auth_result = g_task_propagate_int (G_TASK (result), error);
+
+	if (auth_result == (CamelAuthenticationResult) -1)
 		return CAMEL_AUTHENTICATION_ERROR;
 
-	return async_context->auth_result;
+	return auth_result;
 }
 
 /**
@@ -2055,20 +2066,26 @@ camel_service_query_auth_types_sync (CamelService *service,
 
 /* Helper for camel_service_query_auth_types() */
 static void
-service_query_auth_types_thread (GSimpleAsyncResult *simple,
-                                 GObject *object,
+service_query_auth_types_thread (GTask *task,
+                                 gpointer source_object,
+                                 gpointer task_data,
                                  GCancellable *cancellable)
 {
-	AsyncContext *async_context;
-	GError *error = NULL;
+	GList *auth_types;
+	GError *local_error = NULL;
 
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	auth_types = camel_service_query_auth_types_sync (
+		CAMEL_SERVICE (source_object),
+		cancellable, &local_error);
 
-	async_context->auth_types = camel_service_query_auth_types_sync (
-		CAMEL_SERVICE (object), cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
+	if (local_error != NULL) {
+		g_warn_if_fail (auth_types == NULL);
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (
+			task, auth_types,
+			(GDestroyNotify) g_list_free);
+	}
 }
 
 /**
@@ -2095,28 +2112,17 @@ camel_service_query_auth_types (CamelService *service,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	async_context = g_slice_new0 (AsyncContext);
+	task = g_task_new (service, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_service_query_auth_types);
+	g_task_set_priority (task, io_priority);
 
-	simple = g_simple_async_result_new (
-		G_OBJECT (service),
-		callback, user_data,
-		camel_service_query_auth_types);
+	g_task_run_in_thread (task, service_query_auth_types_thread);
 
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, service_query_auth_types_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
+	g_object_unref (task);
 }
 
 /**
@@ -2137,20 +2143,13 @@ camel_service_query_auth_types_finish (CamelService *service,
                                        GAsyncResult *result,
                                        GError **error)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (g_task_is_valid (result, service), NULL);
 
 	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (service),
-		camel_service_query_auth_types), NULL);
+		g_async_result_is_tagged (
+		result, camel_service_query_auth_types), NULL);
 
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	return g_list_copy (async_context->auth_types);
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
