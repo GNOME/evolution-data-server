@@ -702,7 +702,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	message = camel_mime_message_new ();
-	if (!camel_data_wrapper_construct_from_stream_sync (
+	if (stream != NULL && !camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (message), stream, cancellable, error)) {
 		g_prefix_error (error, _("Cannot get message %s: "), uid);
 		g_object_unref (message);
@@ -712,7 +712,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		camel_medium_add_header (CAMEL_MEDIUM (message), "X-Evolution-POP3-UID", uid);
 	}
 done:
-	g_object_unref (stream);
+	g_clear_object (&stream);
 fail:
 	g_clear_object (&pop3_cache);
 	g_clear_object (&pop3_engine);
