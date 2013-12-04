@@ -4766,7 +4766,6 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_prefix_error (
 			&local_error, "%s: ",
 			_("Error fetching message"));
-		camel_imapx_job_take_error (job, local_error);
 		data->body_len = -1;
 
 	} else if (data->use_multi_fetch) {
@@ -4863,13 +4862,13 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_free (tmp_filename);
 	}
 
-	if (local_error != NULL)
-		camel_imapx_job_take_error (job, local_error);
-
 	camel_data_cache_remove (data->message_cache, "tmp", data->uid, NULL);
 	imapx_unregister_job (is, job);
 
 exit:
+	if (local_error != NULL)
+		camel_imapx_job_take_error (job, local_error);
+
 	g_object_unref (mailbox);
 }
 
