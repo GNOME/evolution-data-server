@@ -21,6 +21,11 @@
 #error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
+/* Do not generate bindings. */
+#ifndef __GI_SCANNER__
+
 #ifndef E_CANCELLABLE_LOCKS_H
 #define E_CANCELLABLE_LOCKS_H
 
@@ -67,3 +72,7 @@ struct _ECancellableRecMutex {
 G_END_DECLS
 
 #endif /* E_CANCELLABLE_LOCKS_H */
+
+#endif /* __GI_SCANNER__ */
+
+#endif /* EDS_DISABLE_DEPRECATED */

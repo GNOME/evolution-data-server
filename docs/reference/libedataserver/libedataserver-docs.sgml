@@ -68,6 +68,7 @@
 
   <chapter>
     <title>Deprecated Classes</title>
+    <xi:include href="xml/e-cancellable-locks.xml"/>
     <xi:include href="xml/e-credentials.xml"/>
     <xi:include href="xml/e-iterator.xml"/>
     <xi:include href="xml/e-list.xml"/>

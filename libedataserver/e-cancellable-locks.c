@@ -24,7 +24,7 @@
 #include "e-cancellable-locks.h"
 
 /**
- * SECTION:cancellable_locks
+ * SECTION: e-cancellable-locks
  * @title: Cancellable Locks
  * @short_description: locks, which can listen for a #GCancellable during lock call
  *
@@ -53,6 +53,8 @@ cancellable_locks_cancelled_cb (GCancellable *cancellable,
  * Initializes @mutex structure.
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 void
 e_cancellable_mutex_init (ECancellableMutex *mutex)
@@ -71,6 +73,8 @@ e_cancellable_mutex_init (ECancellableMutex *mutex)
  * Frees memory allocated by e_cancellable_mutex_init().
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 void
 e_cancellable_mutex_clear (ECancellableMutex *mutex)
@@ -95,6 +99,8 @@ e_cancellable_mutex_clear (ECancellableMutex *mutex)
  * Returns: %TRUE, if lock had been acquired, %FALSE otherwise
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 gboolean
 e_cancellable_mutex_lock (ECancellableMutex *mutex,
@@ -149,6 +155,8 @@ e_cancellable_mutex_lock (ECancellableMutex *mutex,
  * %FALSE in e_cancellable_mutex_lock().
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 void
 e_cancellable_mutex_unlock (ECancellableMutex *mutex)
@@ -174,6 +182,8 @@ e_cancellable_mutex_unlock (ECancellableMutex *mutex)
  * Returns: Internal #GMutex, used in @mutex
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 GMutex *
 e_cancellable_mutex_get_internal_mutex (ECancellableMutex *mutex)
@@ -190,6 +200,8 @@ e_cancellable_mutex_get_internal_mutex (ECancellableMutex *mutex)
  * Initializes @rec_mutex structure.
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 void
 e_cancellable_rec_mutex_init (ECancellableRecMutex *rec_mutex)
@@ -208,6 +220,8 @@ e_cancellable_rec_mutex_init (ECancellableRecMutex *rec_mutex)
  * Frees memory allocated by e_cancellable_rec_mutex_init().
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 void
 e_cancellable_rec_mutex_clear (ECancellableRecMutex *rec_mutex)
@@ -232,6 +246,8 @@ e_cancellable_rec_mutex_clear (ECancellableRecMutex *rec_mutex)
  * Returns: %TRUE, if lock had been acquired, %FALSE otherwise
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 gboolean
 e_cancellable_rec_mutex_lock (ECancellableRecMutex *rec_mutex,
@@ -286,6 +302,8 @@ e_cancellable_rec_mutex_lock (ECancellableRecMutex *rec_mutex,
  * %FALSE in e_cancellable_rec_mutex_lock().
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: If you think you need this, you're using mutexes wrong.
  **/
 void
 e_cancellable_rec_mutex_unlock (ECancellableRecMutex *rec_mutex)
