@@ -412,6 +412,7 @@ camel_imapx_job_take_error (CamelIMAPXJob *job,
 	g_return_if_fail (error != NULL);
 
 	real_job = (CamelIMAPXRealJob *) job;
+	g_return_if_fail (real_job->error != error);
 
 	g_clear_error (&real_job->error);
 
