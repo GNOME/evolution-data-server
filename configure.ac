@@ -235,30 +235,7 @@ dnl Permits linking of C++ based libraries using the C linker if needed.
 AC_SUBST([predeps_CXX])
 AC_SUBST([postdeps_CXX])
 
-dnl *******************************
-dnl Check for --enable-strict
-dnl *******************************
-AC_ARG_ENABLE([strict],
-	[AS_HELP_STRING([--enable-strict],
-	[enable strict building, like without deprecated symbols (default=auto); auto enables strict building only if .git subdirectory exists])],
-	[enable_strict=$enableval], [enable_strict=auto])
-
-AC_MSG_CHECKING([if strict building is enabled])
-if test "x$enable_strict" = xauto; then
-	dnl Be strict when compiling with .git subdirectory
-	if test -d .git ; then
-		enable_strict=yes
-	else
-		enable_strict=no
-	fi
-fi
-AC_MSG_RESULT([$enable_strict])
-
 AM_CPPFLAGS=
-
-if test "x$enable_strict" = xyes; then
-	AM_CPPFLAGS="$AM_CPPFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
-fi
 
 dnl Warn about API usage that violates our minimum requirements.
 AM_CPPFLAGS="$AM_CPPFLAGS -DGLIB_VERSION_MAX_ALLOWED=glib_encoded_version"
@@ -1797,5 +1774,4 @@ echo "
 	Google Contacts		$enable_google
 	GTK+:  			$enable_gtk
 	Code coverage (gcov):	$enable_code_coverage
-	Strict building:	$enable_strict
 "
