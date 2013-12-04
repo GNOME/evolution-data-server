@@ -132,7 +132,7 @@ trust_prompt_show_trust_prompt (EUserPrompterServerExtension *extension,
 	GcrParsed *parsed = NULL;
 	guchar *data;
 	gsize data_length;
-	gboolean success;
+	gboolean success = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (extension != NULL, FALSE);
