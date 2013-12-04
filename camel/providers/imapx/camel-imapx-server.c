@@ -3844,9 +3844,9 @@ imapx_command_select_done (CamelIMAPXServer *is,
 	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
-		GQueue failed = G_QUEUE_INIT;
+		CamelIMAPXCommandQueue *failed;
 		GQueue trash = G_QUEUE_INIT;
-		GList *link;
+		GList *list, *link;
 
 		c (is->tagprefix, "Select failed\n");
 
@@ -3858,6 +3858,8 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		g_weak_ref_set (&is->priv->select_pending, NULL);
 		is->state = IMAPX_INITIALISED;
 		g_mutex_unlock (&is->priv->select_lock);
+
+		failed = camel_imapx_command_queue_new ();
 
 		QUEUE_LOCK (is);
 
@@ -3886,17 +3888,20 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 		while ((link = g_queue_pop_head (&trash)) != NULL) {
 			CamelIMAPXCommand *cw = link->data;
+			camel_imapx_command_ref (cw);
 			camel_imapx_command_queue_delete_link (is->queue, link);
-			g_queue_push_tail (&failed, cw);
+			camel_imapx_command_queue_push_tail (failed, cw);
+			camel_imapx_command_unref (cw);
 		}
 
 		QUEUE_UNLOCK (is);
 
-		while (!g_queue_is_empty (&failed)) {
-			CamelIMAPXCommand *cw;
+		list = camel_imapx_command_queue_peek_head_link (failed);
+
+		for (link = list; link != NULL; link = g_list_next (link)) {
+			CamelIMAPXCommand *cw = link->data;
 			CamelIMAPXJob *failed_job;
 
-			cw = g_queue_pop_head (&failed);
 			failed_job = camel_imapx_command_get_job (cw);
 
 			if (!CAMEL_IS_IMAPX_JOB (failed_job)) {
@@ -3911,6 +3916,8 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 			cw->complete (is, cw);
 		}
+
+		camel_imapx_command_queue_free (failed);
 
 		camel_imapx_job_take_error (job, local_error);
 		imapx_unregister_job (is, job);
