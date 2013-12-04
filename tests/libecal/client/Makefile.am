@@ -24,60 +24,60 @@ TEST_LIBS = \
 
 # ordered by relative complexity
 TESTS = \
-	test-client-refresh \
-	test-client-add-timezone \
-	test-client-create-object \
-	test-client-remove-object \
-	test-client-get-object-list \
-	test-client-modify-object \
-	test-client-send-objects \
-	test-client-receive-objects \
-        test-client-bulk-methods \
-	test-client-get-attachment-uris \
-	test-client-get-view \
-	test-client-revision-view \
-	test-client-get-revision \
+	test-cal-client-refresh \
+	test-cal-client-add-timezone \
+	test-cal-client-create-object \
+	test-cal-client-remove-object \
+	test-cal-client-get-object-list \
+	test-cal-client-modify-object \
+	test-cal-client-send-objects \
+	test-cal-client-receive-objects \
+        test-cal-client-bulk-methods \
+	test-cal-client-get-attachment-uris \
+	test-cal-client-get-view \
+	test-cal-client-revision-view \
+	test-cal-client-get-revision \
 	$(NULL)
 
-# test-client-get-free-busy:
+# test-cal-client-get-free-busy:
 #   broken by design, the API needs to be fixed.
 #
 BROKEN_TESTS = \
-	test-client-get-free-busy \
+	test-cal-client-get-free-busy \
 	$(NULL)
 
 # The test program
 noinst_PROGRAMS = $(TESTS) $(BROKEN_TESTS)
 
 # ordered alphanumerically
-test_client_add_timezone_LDADD=$(TEST_LIBS)
-test_client_add_timezone_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_create_object_LDADD=$(TEST_LIBS)
-test_client_create_object_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_get_attachment_uris_LDADD=$(TEST_LIBS)
-test_client_get_attachment_uris_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_get_free_busy_LDADD=$(TEST_LIBS)
-test_client_get_free_busy_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_get_object_list_LDADD=$(TEST_LIBS)
-test_client_get_object_list_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_get_view_LDADD=$(TEST_LIBS)
-test_client_get_view_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_revision_view_LDADD=$(TEST_LIBS)
-test_client_revision_view_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_modify_object_LDADD=$(TEST_LIBS)
-test_client_modify_object_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_get_revision_LDADD=$(TEST_LIBS)
-test_client_get_revision_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_receive_objects_LDADD=$(TEST_LIBS)
-test_client_receive_objects_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_bulk_methods_LDADD=$(TEST_LIBS)
-test_client_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_refresh_LDADD=$(TEST_LIBS)
-test_client_refresh_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_remove_object_LDADD=$(TEST_LIBS)
-test_client_remove_object_CPPFLAGS=$(TEST_CPPFLAGS)
-test_client_send_objects_LDADD=$(TEST_LIBS)
-test_client_send_objects_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_add_timezone_LDADD=$(TEST_LIBS)
+test_cal_client_add_timezone_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_create_object_LDADD=$(TEST_LIBS)
+test_cal_client_create_object_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_get_attachment_uris_LDADD=$(TEST_LIBS)
+test_cal_client_get_attachment_uris_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_get_free_busy_LDADD=$(TEST_LIBS)
+test_cal_client_get_free_busy_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_get_object_list_LDADD=$(TEST_LIBS)
+test_cal_client_get_object_list_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_get_view_LDADD=$(TEST_LIBS)
+test_cal_client_get_view_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_revision_view_LDADD=$(TEST_LIBS)
+test_cal_client_revision_view_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_modify_object_LDADD=$(TEST_LIBS)
+test_cal_client_modify_object_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_get_revision_LDADD=$(TEST_LIBS)
+test_cal_client_get_revision_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_receive_objects_LDADD=$(TEST_LIBS)
+test_cal_client_receive_objects_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_bulk_methods_LDADD=$(TEST_LIBS)
+test_cal_client_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_refresh_LDADD=$(TEST_LIBS)
+test_cal_client_refresh_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_remove_object_LDADD=$(TEST_LIBS)
+test_cal_client_remove_object_CPPFLAGS=$(TEST_CPPFLAGS)
+test_cal_client_send_objects_LDADD=$(TEST_LIBS)
+test_cal_client_send_objects_CPPFLAGS=$(TEST_CPPFLAGS)
 
 -include $(top_srcdir)/git.mk
 
