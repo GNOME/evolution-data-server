@@ -28,6 +28,7 @@
 #endif
 
 #include "camel-address.h"
+#include "camel-async-closure.h"
 #include "camel-debug.h"
 #include "camel-mime-message.h"
 #include "camel-transport.h"
@@ -39,11 +40,10 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelTransportPrivate {
-	GMutex send_lock;   /* for locking send operations */
+	gint placeholder;
 };
 
 struct _AsyncContext {
-	/* arguments */
 	CamelAddress *from;
 	CamelAddress *recipients;
 	CamelMimeMessage *message;
@@ -67,35 +67,15 @@ async_context_free (AsyncContext *async_context)
 }
 
 static void
-transport_finalize (GObject *object)
-{
-	CamelTransportPrivate *priv;
-
-	priv = CAMEL_TRANSPORT_GET_PRIVATE (object);
-
-	g_mutex_clear (&priv->send_lock);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_transport_parent_class)->finalize (object);
-}
-
-static void
 camel_transport_class_init (CamelTransportClass *class)
 {
-	GObjectClass *object_class;
-
 	g_type_class_add_private (class, sizeof (CamelTransportPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = transport_finalize;
 }
 
 static void
 camel_transport_init (CamelTransport *transport)
 {
 	transport->priv = CAMEL_TRANSPORT_GET_PRIVATE (transport);
-
-	g_mutex_init (&transport->priv->send_lock);
 }
 
 /**
@@ -123,7 +103,8 @@ camel_transport_send_to_sync (CamelTransport *transport,
                               GCancellable *cancellable,
                               GError **error)
 {
-	CamelTransportClass *class;
+	CamelAsyncClosure *closure;
+	GAsyncResult *result;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_TRANSPORT (transport), FALSE);
@@ -131,22 +112,18 @@ camel_transport_send_to_sync (CamelTransport *transport,
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (from), FALSE);
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (recipients), FALSE);
 
-	class = CAMEL_TRANSPORT_GET_CLASS (transport);
-	g_return_val_if_fail (class->send_to_sync != NULL, FALSE);
+	closure = camel_async_closure_new ();
 
-	g_mutex_lock (&transport->priv->send_lock);
+	camel_transport_send_to (
+		transport, message, from, recipients,
+		G_PRIORITY_DEFAULT, cancellable,
+		camel_async_closure_callback, closure);
 
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		g_mutex_unlock (&transport->priv->send_lock);
-		return FALSE;
-	}
+	result = camel_async_closure_wait (closure);
 
-	success = class->send_to_sync (
-		transport, message, from, recipients, cancellable, error);
-	CAMEL_CHECK_GERROR (transport, send_to_sync, success, error);
+	success = camel_transport_send_to_finish (transport, result, error);
 
-	g_mutex_unlock (&transport->priv->send_lock);
+	camel_async_closure_free (closure);
 
 	return success;
 }
@@ -158,18 +135,26 @@ transport_send_to_thread (GTask *task,
                           gpointer task_data,
                           GCancellable *cancellable)
 {
-	gboolean success;
+	CamelTransport *transport;
+	CamelTransportClass *class;
 	AsyncContext *async_context;
+	gboolean success;
 	GError *local_error = NULL;
 
+	transport = CAMEL_TRANSPORT (source_object);
 	async_context = (AsyncContext *) task_data;
 
-	success = camel_transport_send_to_sync (
+	class = CAMEL_TRANSPORT_GET_CLASS (transport);
+	g_return_if_fail (class->send_to_sync != NULL);
+
+	success = class->send_to_sync (
 		CAMEL_TRANSPORT (source_object),
 		async_context->message,
 		async_context->from,
 		async_context->recipients,
 		cancellable, &local_error);
+	CAMEL_CHECK_LOCAL_GERROR (
+		transport, send_to_sync, success, local_error);
 
 	if (local_error != NULL) {
 		g_task_return_error (task, local_error);
@@ -209,12 +194,15 @@ camel_transport_send_to (CamelTransport *transport,
                          gpointer user_data)
 {
 	GTask *task;
+	CamelService *service;
 	AsyncContext *async_context;
 
 	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
 	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
 	g_return_if_fail (CAMEL_IS_ADDRESS (from));
 	g_return_if_fail (CAMEL_IS_ADDRESS (recipients));
+
+	service = CAMEL_SERVICE (transport);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->from = g_object_ref (from);
@@ -229,7 +217,8 @@ camel_transport_send_to (CamelTransport *transport,
 		task, async_context,
 		(GDestroyNotify) async_context_free);
 
-	g_task_run_in_thread (task, transport_send_to_thread);
+	camel_service_queue_task (
+		service, task, transport_send_to_thread);
 
 	g_object_unref (task);
 }
