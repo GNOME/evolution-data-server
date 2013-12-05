@@ -2278,6 +2278,9 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 
 	cfs_schedule_info_release_timer (summary);
 
+	/* FIXME Convert this to a GTask, submitted through
+	 *       camel_service_queue_task().  Then it won't
+	 *       have to call camel_folder_lock/unlock(). */
 	if (summary->priv->need_preview)
 		camel_session_submit_job (
 			session,
