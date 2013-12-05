@@ -127,6 +127,7 @@ typedef struct {
  * stored in this index. The number "+9999999" for instance won't be stored because
  * the country calling code "+999" currently is not assigned.</para></note>
  * @E_BOOK_INDEX_SORT_KEY: Indicates that a given #EContactField should be usable as a sort key.
+ * @E_BOOK_INDEX_TRANSLIT: An index suitable for searching with the exact and prefix transliterated #EBookQueryTests
  *
  * The type of index defined by e_source_backend_summary_setup_set_indexed_fields()
  */
@@ -134,7 +135,8 @@ typedef enum {
 	E_BOOK_INDEX_PREFIX = 0,
 	E_BOOK_INDEX_SUFFIX,
 	E_BOOK_INDEX_PHONE,
-	E_BOOK_INDEX_SORT_KEY
+	E_BOOK_INDEX_SORT_KEY,
+	E_BOOK_INDEX_TRANSLIT
 } EBookIndexType;
 
 /**
