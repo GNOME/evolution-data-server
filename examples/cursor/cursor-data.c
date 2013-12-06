@@ -22,14 +22,12 @@
 
 #define CURSOR_DATA_SOURCE_ID "cursor-example-book"
 
-static void                  load_contacts (EBookClient          *client,
-					    const gchar          *vcard_directory);
-static EBookClientCursor    *get_cursor    (EBookClient          *book_client);
-
-/* Just an example, we need to spin the main loop
- * a bit to wait for the ESource to be created,
+/* We need to spin the main loop a bit to wait for the ESource
+ * to be created. This particular API is admittedly cumbersome,
+ * hopefully this will be fixed in a later version so that
+ * the ESource can be synchronously created.
  *
- * So lets just use some global variables here
+ * Just an example so lets just use some global variables here...
  */
 static EBookClient *address_book = NULL;
 static ESource     *address_book_source = NULL;
@@ -64,142 +62,9 @@ cursor_data_source_timeout (gpointer user_data)
 	return FALSE;
 }
 
-static void
-setup_custom_book (ESource *scratch)
-{
-	ESourceBackendSummarySetup *setup;
-
-	g_type_ensure (E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP);
-	setup = e_source_get_extension (scratch, E_SOURCE_EXTENSION_BACKEND_SUMMARY_SETUP);
-	e_source_backend_summary_setup_set_summary_fields (
-		setup,
-		E_CONTACT_FULL_NAME,
-		E_CONTACT_FAMILY_NAME,
-		E_CONTACT_GIVEN_NAME,
-		E_CONTACT_NICKNAME,
-		E_CONTACT_TEL,
-		E_CONTACT_EMAIL,
-		0);
-	e_source_backend_summary_setup_set_indexed_fields (
-		setup,
-		E_CONTACT_FULL_NAME, E_BOOK_INDEX_PREFIX,
-		E_CONTACT_FAMILY_NAME, E_BOOK_INDEX_PREFIX,
-		E_CONTACT_GIVEN_NAME, E_BOOK_INDEX_PREFIX,
-		E_CONTACT_NICKNAME, E_BOOK_INDEX_PREFIX,
-		E_CONTACT_TEL, E_BOOK_INDEX_PREFIX,
-		E_CONTACT_TEL, E_BOOK_INDEX_PHONE,
-		E_CONTACT_EMAIL, E_BOOK_INDEX_PREFIX,
-		0);
-}
-
-/* This ensures that all of the test contacts are
- * installed in the CURSOR_DATA_SOURCE_ID test book.
- *
- * Then it opens an EBookClientCursor.
- *
- * The cursor has no filter on the results and is
- * ordered by family name (ascending) and then given name (ascending).
+/*
+ * Helper function to load a contact from a vcard file.
  */
-EBookClient *
-cursor_load_data (const gchar        *vcard_path,
-		  EBookClientCursor **ret_cursor)
-{
-	ESourceRegistry *registry;
-	ESource *scratch;
-	ESourceBackend *backend = NULL;
-	GMainLoop *loop;
-	GError  *error = NULL;
-	GSList *contacts = NULL;
-	EBookClient *ret_book;
-
-	g_return_val_if_fail (vcard_path != NULL, NULL);
-	g_return_val_if_fail (ret_cursor != NULL, NULL);
-
-	loop = g_main_loop_new (NULL, FALSE);
-
-	registry = e_source_registry_new_sync (NULL, &error);
-	if (!registry)
-		g_error ("Unable to create the registry: %s", error->message);
-
-	/* Listen to the registry for our added source */
-	g_signal_connect (registry, "source-added",
-			  G_CALLBACK (cursor_data_source_added), loop);
-
-	/* Now create a scratch source for our addressbook */
-	scratch = e_source_new_with_uid (CURSOR_DATA_SOURCE_ID, NULL, &error);
-
-	/* Ensure the new ESource will be a local addressbook source */
-	backend = e_source_get_extension (scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
-	e_source_backend_set_backend_name (backend, "local");
-
-	/* Setup custom summary fields, so that we can use those fields with the cursor */
-	setup_custom_book (scratch);
-
-	/* Commit the source to the registry */
-	if (!e_source_registry_commit_source_sync (registry, scratch, NULL, &error)) {
-
-		/* It's possible the source already exists if we already ran the example with this data server */
-		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-			/* If so... then just call our callback early */
-			ESource *source = e_source_registry_ref_source (registry, CURSOR_DATA_SOURCE_ID);
-
-			g_clear_error (&error);
-			g_assert (E_IS_SOURCE (source));
-
-			/* Run the callback which creates the addressbook client connection */
-			cursor_data_source_added (registry, source, NULL);
-			g_object_unref (source);
-		} else
-			g_error ("Unable to add new addressbook source to the registry: %s", error->message);
-	}
-
-	g_object_unref (scratch);
-
-	if (address_book == NULL) {
-		g_timeout_add_seconds (20, cursor_data_source_timeout, NULL);
-		g_main_loop_run (loop);
-
-		/* By now we aborted or we have an addressbook created */
-		g_assert (address_book != NULL);
-	}
-
-	/**********************************************************
-	 * Ok, done with creating an addressbook, let's add data  *
-	 **********************************************************/
-
-	/* First check if there are already some contacts, if so then
-	 * avoid adding them again
-	 */
-	if (!e_book_client_get_contacts_uids_sync (address_book,
-						   "", &contacts, NULL, &error))
-		g_error ("Failed to query addressbook for existing contacts");
-
-	if (contacts != NULL) {
-		/* We already have contacts, no need to add them */
-		g_slist_free_full (contacts, (GDestroyNotify)g_free);
-		contacts = NULL;
-	} else {
-		load_contacts (address_book, vcard_path);
-	}
-
-	/* Addressbook should have contacts now, let's create the cursor */
-	*ret_cursor = get_cursor (address_book);
-
-	/* Cleanup some resources we used to populate the addressbook */
-	g_main_loop_unref (loop);
-	g_object_unref (address_book_source);
-	g_object_unref (registry);
-
-	/* Give the ref through the return value*/
-	ret_book = address_book;
-
-	address_book_source = NULL;
-	address_book = NULL;
-
-	/* Return the addressbook */
-	return ret_book;
-}
-
 static EContact *
 contact_from_file (const gchar *vcard_file)
 {
@@ -216,6 +81,9 @@ contact_from_file (const gchar *vcard_file)
 	return contact;
 }
 
+/*
+ * Load all the contacts from 'vcard_directory', and add them to 'client'.
+ */
 static void
 load_contacts (EBookClient *client,
 	       const gchar *vcard_directory)
@@ -235,8 +103,6 @@ load_contacts (EBookClient *client,
 			gchar *fullpath = g_build_filename (vcard_directory, filename, NULL);
 			EContact *contact;
 
-			g_print ("Loading contact from: %s\n", fullpath);
-
 			contact = contact_from_file (fullpath);
 			contacts = g_slist_prepend (contacts, contact);
 
@@ -248,12 +114,22 @@ load_contacts (EBookClient *client,
 
 	if (contacts != NULL) {
 
-		if (!e_book_client_add_contacts_sync (client, contacts, NULL, NULL, &error))
-			g_error ("Failed to add contacts");
-	} else
-		g_error ("No contacts found in vcard directory: %s", vcard_directory);
+		if (!e_book_client_add_contacts_sync (client, contacts, NULL, NULL, &error)) {
+
+			/* If they were already added, ignore the error */
+			if (g_error_matches (error, E_BOOK_CLIENT_ERROR,
+					     E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS))
+				g_clear_error (&error);
+			else
+				g_error ("Failed to add test contacts: %s", error->message);
+		}
+	}
 }
 
+/*
+ * Create an EBookClient cursor sorted by family name, and then by given name as
+ * the secondary sort key.
+ */
 static EBookClientCursor *
 get_cursor (EBookClient *book_client)
 {
@@ -275,4 +151,101 @@ get_cursor (EBookClient *book_client)
   }
 
   return cursor;
+}
+
+/* Entry point for this file, here we take care of
+ * creating the addressbook if it doesnt exist,
+ * getting an EBookClient, and creating our EBookClientCursor.
+ */
+EBookClient *
+cursor_load_data (const gchar        *vcard_path,
+		  EBookClientCursor **ret_cursor)
+{
+	ESourceRegistry *registry;
+	ESource *scratch;
+	ESourceBackend *backend = NULL;
+	GMainLoop *loop;
+	GError  *error = NULL;
+	EBookClient *ret_book;
+
+	g_return_val_if_fail (vcard_path != NULL, NULL);
+	g_return_val_if_fail (ret_cursor != NULL, NULL);
+
+	g_print ("Cursor loading data from %s\n", vcard_path);
+
+	loop = g_main_loop_new (NULL, FALSE);
+
+	registry = e_source_registry_new_sync (NULL, &error);
+	if (!registry)
+		g_error ("Unable to create the registry: %s", error->message);
+
+	/* Listen to the registry for our added source */
+	g_signal_connect (registry, "source-added",
+			  G_CALLBACK (cursor_data_source_added), loop);
+
+	/* Now create a scratch source for our addressbook */
+	scratch = e_source_new_with_uid (CURSOR_DATA_SOURCE_ID, NULL, &error);
+
+	/* Ensure the new ESource will be a local addressbook source */
+	backend = e_source_get_extension (scratch, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	e_source_backend_set_backend_name (backend, "local");
+
+	/* Now is the right time to use the ESourceBackendSummarySetup to configure
+	 * your newly created addressbook. This configuration should happen on the
+	 * scratch source before calling e_source_registry_commit_source_sync().
+	 */
+
+	/* Commit the source to the registry */
+	if (!e_source_registry_commit_source_sync (registry, scratch, NULL, &error)) {
+
+		/* It's possible the source already exists if we already ran the example with this data server */
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+			/* If so... then just call our callback early */
+			ESource *source = e_source_registry_ref_source (registry, CURSOR_DATA_SOURCE_ID);
+
+			g_clear_error (&error);
+			g_assert (E_IS_SOURCE (source));
+
+			/* Run the callback which creates the addressbook client connection */
+			cursor_data_source_added (registry, source, NULL);
+			g_object_unref (source);
+		} else
+			g_error ("Unable to add new addressbook source to the registry: %s", error->message);
+	}
+
+	g_object_unref (scratch);
+
+	/* Give EDS a little time to actually create the ESource remotely and
+	 * also have a copy if it cached locally, wait for the "source-added"
+	 * signal.
+	 */
+	if (address_book == NULL) {
+		g_timeout_add_seconds (20, cursor_data_source_timeout, NULL);
+		g_main_loop_run (loop);
+
+		/* By now we aborted or we have an addressbook created */
+		g_assert (address_book != NULL);
+	}
+
+	/**********************************************************
+	 * Ok, done with creating an addressbook, let's add data  *
+	 **********************************************************/
+	load_contacts (address_book, vcard_path);
+
+	/* Addressbook should have contacts now, let's create the cursor */
+	*ret_cursor = get_cursor (address_book);
+
+	/* Cleanup some resources we used to populate the addressbook */
+	g_main_loop_unref (loop);
+	g_object_unref (address_book_source);
+	g_object_unref (registry);
+
+	/* Give the ref through the return value*/
+	ret_book = address_book;
+
+	address_book_source = NULL;
+	address_book = NULL;
+
+	/* Return the addressbook */
+	return ret_book;
 }

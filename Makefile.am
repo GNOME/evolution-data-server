@@ -25,6 +25,10 @@ SUBDIRS = \
 	po \
 	$(NULL)
 
+if BUILD_EXAMPLES
+SUBDIRS += examples
+endif
+
 if HAVE_INTROSPECTION
 if HAVE_VALA
 SUBDIRS += vala

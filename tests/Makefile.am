@@ -9,10 +9,6 @@ SUBDIRS = \
 	libedata-cal \
 	$(NULL)
 
-if BUILD_EXAMPLES
-SUBDIRS += cursor-example
-endif
-
 @GNOME_CODE_COVERAGE_RULES@
 
 -include $(top_srcdir)/git.mk
