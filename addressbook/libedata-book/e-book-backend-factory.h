@@ -54,14 +54,34 @@ typedef struct _EBookBackendFactory EBookBackendFactory;
 typedef struct _EBookBackendFactoryClass EBookBackendFactoryClass;
 typedef struct _EBookBackendFactoryPrivate EBookBackendFactoryPrivate;
 
+/**
+ * EBookBackendFactory:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ */
 struct _EBookBackendFactory {
+	/*< private >*/
 	EBackendFactory parent;
 	EBookBackendFactoryPrivate *priv;
 };
 
+/**
+ * EBookBackendFactoryClass:
+ * @factory_name: The string identifier for this book backend type
+ * @backend_type: The #GType to use to build #EBookBackends for this factory
+ *
+ * Class structure for the #EBookBackendFactory class.
+ *
+ * Subclasses need to set the factory name and backend type
+ * at initialization, the base class will take care of creating
+ * backends of the specified type on demand.
+ */
 struct _EBookBackendFactoryClass {
+	/*< private >*/
 	EBackendFactoryClass parent_class;
 
+	/*< public >*/
 	/* Subclasses just need to set these
 	 * class members, we handle the rest. */
 	const gchar *factory_name;

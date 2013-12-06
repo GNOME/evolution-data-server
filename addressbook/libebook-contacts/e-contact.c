@@ -23,6 +23,16 @@
  *   Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+/**
+ * SECTION:e-contact
+ * @short_description: A convenience interface for interacting with contacts
+ * @include: libebook-contacts/libebook-contacts.h
+ *
+ * This subclass of #EVCard is a convenient interface for interacting with
+ * vCards. The #EBookClient, #EBookClientView and #EBookClientCursor return
+ * vCards in the form of an #EContact for your convenience.
+ **/
+
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif

@@ -22,6 +22,15 @@
  * Copyright (C) 2012 Intel Corporation
  */
 
+/**
+ * SECTION: e-book-backend
+ * @include: libedata-book/libedata-book.h
+ * @short_description: An abstract class for implementing addressbook backends
+ *
+ * This is the main server facing API for interfacing with addressbook backends,
+ * addressbook backends must implement methods on this class.
+ **/
+
 #include <config.h>
 
 #include <glib/gi18n-lib.h>

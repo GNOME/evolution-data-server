@@ -20,6 +20,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-book-sqlite
+ * @include: libedata-book/libedata-book.h
+ * @short_description: An SQLite storage facility for addressbooks
+ *
+ * The #EBookSqlite is an API for storing and looking up #EContacts
+ * in an SQLite database. It also supports a lean index mode via
+ * the #EbSqlVCardCallback, if you are in a situation where it is
+ * not convenient to store the vCards directly in the SQLite. It is
+ * however recommended to avoid storing contacts in separate storage
+ * if at all possible, as this will decrease performance of searches
+ * an also contribute to flash wear.
+ *
+ * The API is thread safe, with special considerations to be made
+ * around e_book_sqlite_lock() and e_book_sqlite_unlock() for
+ * the sake of isolating transactions across threads.
+ *
+ * Any operations which can take a lot of time to complete (depending
+ * on the size of your addressbook) can be cancelled using a #GCancellable.
+ *
+ * Depending on your summary configuration, your mileage will vary. Refer
+ * to the #ESourceBackendSummarySetup for configuring your addressbook
+ * for the type of usage you mean to make of it.
+ */
+
 #include "e-book-sqlite.h"
 
 #include <locale.h>
@@ -6454,7 +6479,7 @@ e_book_sqlite_has_contact (EBookSqlite *ebsql,
  * @ebsql: An #EBookSqlite
  * @uid: The uid of the contact to fetch
  * @meta_contact: Whether an entire contact is desired, or only the metadata
- * @contact: (out) (transfer full): Return location to store the fetched contact
+ * @ret_contact: (out) (transfer full): Return location to store the fetched contact
  * @error: (allow-none): A location to store any error that may have occurred.
  *
  * Fetch the #EContact specified by @uid in @ebsql.
@@ -6470,7 +6495,7 @@ gboolean
 e_book_sqlite_get_contact (EBookSqlite *ebsql,
 			   const gchar *uid,
 			   gboolean meta_contact,	
-			   EContact **contact,
+			   EContact **ret_contact,
 			   GError **error)
 {
 	gboolean success = FALSE;
@@ -6478,7 +6503,7 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
 
 	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (contact != NULL && *contact == NULL, FALSE);
+	g_return_val_if_fail (ret_contact != NULL && *ret_contact == NULL, FALSE);
 
 	success = e_book_sqlite_get_vcard (ebsql,
 					   uid,
@@ -6487,7 +6512,7 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
 					   error);
 
 	if (success && vcard) {
-		*contact = e_contact_new_from_vcard_with_uid (vcard, uid);
+		*ret_contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 		g_free (vcard);
 	}
 
@@ -6641,7 +6666,7 @@ e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
  * e_book_sqlite_search:
  * @ebsql: An #EBookSqlite
  * @sexp: (allow-none): search expression; use %NULL or an empty string to list all stored contacts.
- * @meta_contact: Whether entire contacts are desired, or only the metadata
+ * @meta_contacts: Whether entire contacts are desired, or only the metadata
  * @ret_list: (out) (transfer full) (element-type EbSqlSearchData): Return location
  * to store a #GSList of #EbSqlSearchData structures
  * @cancellable: (allow-none): A #GCancellable
@@ -7015,7 +7040,6 @@ e_book_sqlite_get_locale (EBookSqlite  *ebsql,
 /**
  * e_book_sqlite_cursor_new:
  * @ebsql: An #EBookSqlite
- * @folderid: folder id of the address-book
  * @sexp: search expression; use NULL or an empty string to get all stored contacts.
  * @sort_fields: (array length=n_sort_fields): An array of #EContactFields as sort keys in order of priority
  * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields

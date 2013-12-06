@@ -20,6 +20,18 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+/**
+ * SECTION: e-data-book-view
+ * @include: libedata-book/libedata-book.h
+ * @short_description: A server side object for issuing view notifications
+ *
+ * This class communicates with #EBookClientViews over the bus.
+ *
+ * Addressbook backends can automatically own a number of views requested
+ * by the client, this API can be used by the backend to issue notifications
+ * which will be delivered to the #EBookClientView
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

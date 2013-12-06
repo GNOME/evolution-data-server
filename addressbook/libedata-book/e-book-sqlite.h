@@ -188,7 +188,7 @@ typedef enum {
 } EbSqlUnlockAction;
 
 /**
- * EbSdbSearchData:
+ * EbSqlSearchData:
  * @uid: The %E_CONTACT_UID field of this contact
  * @vcard: The the vcard string
  * @extra: Any extra data associated to the vcard

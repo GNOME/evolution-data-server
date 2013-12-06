@@ -19,6 +19,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-book-backend-db-cache
+ * @include: libedata-book/libedata-book.h
+ * @short_description: A Berkeley DB cache facility for addressbooks
+ *
+ * This API is deprecated, use #EBookSqlite instead.
+ */
+
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,6 +73,8 @@ get_filename_from_uri (const gchar *uri)
  * @filename: filename to be set
  *
  * Set the filename for db cacahe file.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 
 void
@@ -89,6 +99,8 @@ e_book_backend_db_cache_set_filename (DB *db,
  * @db:  DB Handle
  *
  * Get the filename for db cacahe file.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 
 gchar *
@@ -124,6 +136,8 @@ e_book_backend_db_cache_get_filename (DB *db)
  * needed.
  *
  * Returns: A cached #EContact, or %NULL if @uid is not cached.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 EContact *
 e_book_backend_db_cache_get_contact (DB *db,
@@ -158,6 +172,8 @@ e_book_backend_db_cache_get_contact (DB *db,
  * Adds @contact to @cache.
  *
  * Returns: %TRUE if the contact was cached successfully, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_db_cache_add_contact (DB *db,
@@ -203,6 +219,8 @@ e_book_backend_db_cache_add_contact (DB *db,
  * Removes the contact identified by @uid from @cache.
  *
  * Returns: %TRUE if the contact was found and removed, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_db_cache_remove_contact (DB *db,
@@ -234,6 +252,8 @@ e_book_backend_db_cache_remove_contact (DB *db,
  * Checks if the contact identified by @uid exists in @cache.
  *
  * Returns: %TRUE if the cache contains the contact, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_db_cache_check_contact (DB *db,
@@ -267,6 +287,8 @@ e_book_backend_db_cache_check_contact (DB *db,
  * free the list.
  *
  * Returns: A #GList of pointers to #EContact.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 GList *
 e_book_backend_db_cache_get_contacts (DB *db,
@@ -329,6 +351,8 @@ e_book_backend_db_cache_get_contacts (DB *db,
  * free the ID strings and the array.
  *
  * Returns: A #GPtrArray of pointers to contact ID strings.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 GPtrArray *
 e_book_backend_db_cache_search (DB *db,
@@ -357,6 +381,8 @@ e_book_backend_db_cache_search (DB *db,
  * Checks if an #EBookBackendCache exists at @uri.
  *
  * Returns: %TRUE if cache exists, %FALSE if not.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_db_cache_exists (const gchar *uri)
@@ -379,6 +405,8 @@ e_book_backend_db_cache_exists (const gchar *uri)
  *
  * Flags @cache as being populated - that is, it is up-to-date on the
  * contents of the book it's caching.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 void
 e_book_backend_db_cache_set_populated (DB *db)
@@ -402,6 +430,8 @@ e_book_backend_db_cache_set_populated (DB *db)
  * Checks if @cache is populated.
  *
  * Returns: %TRUE if @cache is populated, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_db_cache_is_populated (DB *db)
@@ -425,8 +455,12 @@ e_book_backend_db_cache_is_populated (DB *db)
 
 /**
  * e_book_backend_db_cache_set_time:
+ * @db: A Berkeley DB handle
+ * @t: The time in string format
  *
  * Since: 2.26
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 void
 e_book_backend_db_cache_set_time (DB *db,
@@ -446,8 +480,11 @@ e_book_backend_db_cache_set_time (DB *db,
 
 /**
  * e_book_backend_db_cache_get_time:
+ * @db: A Berkeley DB handle
  *
  * Since: 2.26
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gchar *
 e_book_backend_db_cache_get_time (DB *db)

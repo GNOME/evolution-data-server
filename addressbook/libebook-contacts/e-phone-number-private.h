@@ -22,15 +22,10 @@
 /* NOTE: Keeping API documentation in this header file because gtkdoc-mkdb
  * explicitly only scans .h and .c files, but ignores .cpp files. */
 
-/**
- * SECTION: e-phone-utils
- * @include: libedataserver/libedataserver.h
- * @short_description: Phone number support
- *
+/*
  * This modules provides utility functions for parsing and formatting
  * phone numbers. Under the hood it uses Google's libphonenumber.
- **/
-
+ */
 #if !defined (__LIBEBOOK_CONTACTS_H_INSIDE__) && !defined (LIBEBOOK_CONTACTS_COMPILATION)
 #error "Only <libebook-contacts/libebook-contacts.h> should be included directly."
 #endif

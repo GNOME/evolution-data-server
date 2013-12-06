@@ -26,6 +26,9 @@
  * The #EBookClientCursor is an iteration based interface for browsing
  * a sorted list of contacts in the addressbook.
  *
+ * Aside from the documentation found here, a fully functional example
+ * progrem <link linkend="eds-cursor-example">can be found here</link>.
+ *
  * <refsect2 id="cursor-sort-keys">
  * <title>Sort Keys</title>
  * <para>
@@ -450,23 +453,6 @@
  * </para>
  * </refsect2>
  *
- * <refsect2 id="cursor-example-program">
- * <title>Example Contact Browser</title>
- * <para>
- * Evolution Data Server comes with an example implementation of a
- * contact browser using the cursor features, the main portion of
- * this example is included here below.
- * </para>
- * <informalexample>
- *   <programlisting>
- *     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
- *                 parse="text"
- *                 href="../../../../../tests/cursor-example/cursor-example.c">
- *       <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
- *     </xi:include>
- *   </programlisting>
- * </informalexample>
- * </refsect2>
  */
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -26,6 +26,8 @@
 #ifndef E_BOOK_BACKEND_DB_CACHE_H
 #define E_BOOK_BACKEND_DB_CACHE_H
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #include <libebook-contacts/libebook-contacts.h>
 
 G_BEGIN_DECLS
@@ -67,6 +69,8 @@ gchar *		e_book_backend_db_cache_get_time
 						(struct __db *db);
 
 G_END_DECLS
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* E_BOOK_BACKEND_DB_CACHE_H */
 

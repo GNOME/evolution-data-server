@@ -57,12 +57,25 @@ typedef struct _EBookBackendSExp EBookBackendSExp;
 typedef struct _EBookBackendSExpClass EBookBackendSExpClass;
 typedef struct _EBookBackendSExpPrivate EBookBackendSExpPrivate;
 
+/**
+ * EBookBackendSexp:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ */
 struct _EBookBackendSExp {
+	/*< private >*/
 	GObject parent;
 	EBookBackendSExpPrivate *priv;
 };
 
+/**
+ * EBookBackendSexpClass:
+ *
+ * Class structure for the #EBookBackendSexp class.
+ */
 struct _EBookBackendSExpClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 

@@ -29,6 +29,8 @@
 #ifndef E_BOOK_BACKEND_SQLITEDB_H
 #define E_BOOK_BACKEND_SQLITEDB_H
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
@@ -56,6 +58,8 @@
  * Error domain for #EBookBackendSqliteDB operations.
  *
  * Since: 3.8
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 #define E_BOOK_SDB_ERROR (e_book_backend_sqlitedb_error_quark ())
 
@@ -77,6 +81,8 @@ typedef struct _EBookBackendSqliteDBPrivate EBookBackendSqliteDBPrivate;
  * @E_BOOK_SDB_ERROR_END_OF_LIST: An attempt was made to fetch results past the end of a contact list
  *
  * Defines the types of possible errors reported by the #EBookBackendSqliteDB
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  */
 typedef enum {
 	E_BOOK_SDB_ERROR_CONSTRAINT,
@@ -94,22 +100,45 @@ typedef enum {
  * functions below.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 struct _EBookBackendSqliteDB {
+	/*< private >*/
 	GObject parent;
 	EBookBackendSqliteDBPrivate *priv;
 };
 
+/**
+ * EBookBackendSqliteDBClass:
+ *
+ * Class structure for the #EBookBackendSqlite class.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
+ */
 struct _EBookBackendSqliteDBClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 
 /**
  * EbSdbSearchData:
+ * @vcard: The the vcard string
+ * @uid: The %E_CONTACT_UID field of this contact
+ * @bdata: Extra data set for this contact.
  *
- * FIXME: Document me.
+ * This structure is used to represent contacts returned
+ * by the EBookBackendSqliteDB from various functions
+ * such as e_book_backend_sqlitedb_search().
+ *
+ * The @bdata parameter will contain any data previously
+ * set for the given contact with e_book_backend_sqlitedb_set_contact_bdata().
+ *
+ * These should be freed with e_book_backend_sqlitedb_search_data_free().
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 typedef struct {
 	gchar *vcard;
@@ -123,6 +152,8 @@ typedef struct {
  * An opaque cursor pointer
  *
  * Since: 3.12
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  */
 typedef struct _EbSdbCursor EbSdbCursor;
 
@@ -139,6 +170,8 @@ typedef struct _EbSdbCursor EbSdbCursor;
  * is the same as %EBSDB_CURSOR_ORIGIN_BEGIN.
  *
  * Since: 3.12
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  */
 typedef enum {
 	EBSDB_CURSOR_ORIGIN_CURRENT = 0,
@@ -154,6 +187,8 @@ typedef enum {
  * Defines the behaviour of e_book_backend_sqlitedb_cursor_step().
  *
  * Since: 3.12
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  */
 typedef enum {
 	EBSDB_CURSOR_STEP_MOVE  = (1 << 0),
@@ -378,7 +413,6 @@ gint            e_book_backend_sqlitedb_cursor_compare_contact
 						 EContact             *contact,
 						 gboolean             *matches_sexp);
 
-#ifndef EDS_DISABLE_DEPRECATED
 gboolean	e_book_backend_sqlitedb_is_summary_query
 						(const gchar *query);
 gboolean	e_book_backend_sqlitedb_is_summary_fields
@@ -395,8 +429,9 @@ gboolean	e_book_backend_sqlitedb_add_contacts
 						 GSList *contacts,
 						 gboolean partial_content,
 						 GError **error);
-#endif
 
 G_END_DECLS
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* E_BOOK_BACKEND_SQLITEDB_H */

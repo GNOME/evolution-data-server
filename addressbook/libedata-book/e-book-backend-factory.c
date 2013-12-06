@@ -7,6 +7,15 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+/**
+ * SECTION: e-book-backend-factory
+ * @include: libedata-book/libedata-book.h
+ * @short_description: The factory for creating new addressbooks
+ *
+ * This class handles creation of new addressbooks of various
+ * backend types.
+ **/
+
 #include <config.h>
 
 #include "e-book-backend.h"

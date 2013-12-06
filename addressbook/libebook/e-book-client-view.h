@@ -64,13 +64,28 @@ struct _EBookClient;
  * Since: 3.2
  **/
 struct _EBookClientView {
+	/*< private >*/
 	GObject parent;
 	EBookClientViewPrivate *priv;
 };
 
+/**
+ * EBookClientViewClass:
+ * @objects_added: Signal emitted when contacts are added in the view
+ * @objects_removed: Signal emitted when contacts are removed from the view
+ * @objects_modified: Signal emitted when contacts in the view are modified
+ * @progress: Signal emitted intermittently while loading a view after calling e_book_client_view_start()
+ * @complete: Notification that loading a view has completed, after calling e_book_client_view_start()
+ *
+ * Class structure for the #EBookClient class.
+ *
+ * Since: 3.2
+ **/
 struct _EBookClientViewClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
+	/*< public >*/
 	/* Signals */
 	void		(*objects_added)	(EBookClientView *client_view,
 						 const GSList *objects);

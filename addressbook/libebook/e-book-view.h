@@ -50,14 +50,33 @@ typedef struct _EBookViewPrivate EBookViewPrivate;
 
 struct _EBook;
 
+/**
+ * EBookView:
+ *
+ * Deprecated: 3.2: Use #EBookClientView instead.
+ */
 struct _EBookView {
+	/*< private >*/
 	GObject parent;
 	EBookViewPrivate *priv;
 };
 
+/**
+ * EBookViewClass:
+ * @contacts_changed: Signal emitted when contacts in the view are modified
+ * @contacts_removed: Signal emitted when contacts are removed from the view
+ * @contacts_added: Signal emitted when contacts are added in the view
+ * @sequence_complete: Notification that loading a view has completed, after calling e_book_view_start()
+ * @view_complete: Notification that loading a view has completed, after calling e_book_view_start()
+ * @status_message: Signal emitted intermittently while loading a view after calling e_book_view_start()
+ *
+ * Deprecated: 3.2: Use #EBookClientView instead.
+ */
 struct _EBookViewClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
+	/*< public >*/
 	/* Signals */
 	void		(*contacts_changed)	(EBookView *book_view,
 						 const GList *contacts);
@@ -73,6 +92,7 @@ struct _EBookViewClass {
 	void		(*status_message)	(EBookView *book_view,
 						 const gchar *message);
 
+	/*< private >*/
 	/* Padding for future expansion */
 	void		(*_ebook_reserved0)	(void);
 	void		(*_ebook_reserved1)	(void);

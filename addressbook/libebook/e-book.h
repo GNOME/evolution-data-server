@@ -48,6 +48,8 @@ typedef void (*EBookCallback) (EBook *book, EBookStatus status, gpointer closure
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead 
  **/
 typedef void (*EBookAsyncCallback) (EBook *book, const GError *error, gpointer closure);
 
@@ -59,6 +61,8 @@ typedef void (*EBookAsyncCallback) (EBook *book, const GError *error, gpointer c
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead
  **/
 typedef void (*EBookOpenProgressCallback)     (EBook          *book,
 					       const gchar     *status_message,
@@ -78,6 +82,8 @@ typedef void (*EBookEListCallback)   (EBook *book, EBookStatus status, EList *li
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead
  **/
 typedef void (*EBookIdAsyncCallback)       (EBook *book, const GError *error, const gchar *id, gpointer closure);
 
@@ -89,6 +95,8 @@ typedef void (*EBookIdAsyncCallback)       (EBook *book, const GError *error, co
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead
  **/
 typedef void (*EBookContactAsyncCallback)  (EBook *book, const GError *error, EContact *contact, gpointer closure);
 
@@ -100,6 +108,8 @@ typedef void (*EBookContactAsyncCallback)  (EBook *book, const GError *error, EC
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead
  **/
 typedef void (*EBookListAsyncCallback)     (EBook *book, const GError *error, GList *list, gpointer closure);
 
@@ -111,6 +121,8 @@ typedef void (*EBookListAsyncCallback)     (EBook *book, const GError *error, GL
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead
  **/
 typedef void (*EBookBookViewAsyncCallback) (EBook *book, const GError *error, EBookView *book_view, gpointer closure);
 
@@ -122,18 +134,43 @@ typedef void (*EBookBookViewAsyncCallback) (EBook *book, const GError *error, EB
  * @closure: the callback closure
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead
  **/
 typedef void (*EBookEListAsyncCallback)   (EBook *book, const GError *error, EList *list, gpointer closure);
 
+/**
+ * EBook:
+ *
+ * The deprecated API for accessing the addressbook
+ *
+ * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead 
+ */
 struct _EBook {
-	GObject       parent;
 	/*< private >*/
+	GObject       parent;
 	EBookPrivate *priv;
 };
 
+/**
+ * EBookClass:
+ * @writable_status: deprecated
+ * @connection_status: deprecated
+ * @backend_died: deprecated
+ *
+ * Class structure for the deprecated API for accessing the addressbook
+ *
+ * Since: 2.32
+ *
+ * Deprecated: 3.2: Use #EBookClient instead 
+ */
 struct _EBookClass {
+	/*< private >*/
 	GObjectClass parent;
 
+	/*< public >*/
 	/*
 	 * Signals.
 	 */
@@ -141,6 +178,7 @@ struct _EBookClass {
 	void (* connection_status) (EBook *book, gboolean connected);
 	void (* backend_died)    (EBook *book);
 
+	/*< private >*/
 	/* Padding for future expansion */
 	void (*_ebook_reserved0) (void);
 	void (*_ebook_reserved1) (void);

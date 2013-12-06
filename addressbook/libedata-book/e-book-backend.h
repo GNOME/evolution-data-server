@@ -100,13 +100,66 @@ typedef struct _EBookBackend EBookBackend;
 typedef struct _EBookBackendClass EBookBackendClass;
 typedef struct _EBookBackendPrivate EBookBackendPrivate;
 
+/**
+ * EBookBackend:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ */
 struct _EBookBackend {
+	/*< private >*/
 	EBackend parent;
 	EBookBackendPrivate *priv;
 };
 
+
+/**
+ * EBookBackendClass:
+ * @use_serial_dispatch_queue: Whether a serial dispatch queue should
+ *                             be used for this backend or not.
+ * @get_backend_property: Fetch a property value by name from the backend
+ * @open_sync: Open the backend
+ * @refresh_sync: Refresh the backend
+ * @create_contacts_sync: Add and store the passed vcards
+ * @modify_contacts_sync: Modify the existing contacts using the passed vcards
+ * @remove_contacts_sync: Remove the contacts specified by the passed UIDs
+ * @get_contact_sync: Fetch a contact by UID
+ * @get_contact_list_sync: Fetch a list of contacts based on a search expression
+ * @get_contact_list_uids_sync: Fetch a list of contact UIDs based on a search expression (optional)
+ * @start_view: Start up the specified view
+ * @stop_view: Stop the specified view
+ * @notify_update: Notify changes which might have occured for a given contact
+ * @get_direct_book: For addressbook backends which support Direct Read Access,
+ *                   report some information on how to access the addressbook persistance directly
+ * @configure_direct: For addressbook backends which support Direct Read Access, configure a
+ *                    backend instantiated on the client side for Direct Read Access, using data
+ *                    reported from the server via the @get_direct_book method.
+ * @sync: Sync the backend's persistance
+ * @set_locale: Store & remember the passed locale setting
+ * @dup_locale: Return the currently set locale setting (must be a string duplicate, for thread safety).
+ * @create_cursor: Create an #EDataBookCursor
+ * @delete_cursor: Delete an #EDataBookCursor previously created by this backend
+ * @closed: A signal notifying that the backend was closed
+ * @shutdown: A signal notifying that the backend is being shut down
+ * @open: Deprecated method
+ * @refresh: Deprecated method
+ * @create_contacts: Deprecated method
+ * @remove_contacts: Deprecated method
+ * @modify_contacts: Deprecated method
+ * @get_contact: Deprecated method
+ * @get_contact_list: Deprecated method
+ * @get_contact_list_uids: Deprecated method
+ *
+ * Class structure for the #EBookBackend class.
+ *
+ * These virtual methods must be implemented when writing
+ * an addressbook backend.
+ */
 struct _EBookBackendClass {
+	/*< private >*/
 	EBackendClass parent_class;
+
+	/*< public >*/
 
 	/* Set this to TRUE to use a serial dispatch queue, instead
 	 * of a concurrent dispatch queue.  A serial dispatch queue

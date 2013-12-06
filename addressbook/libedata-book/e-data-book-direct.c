@@ -18,6 +18,20 @@
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+/**
+ * SECTION: e-data-book-direct
+ * @include: libedata-book/libedata-book.h
+ * @short_description: An interface for implementing Direct Read Access
+ *
+ * This class should be created by an #EBookBackendClass.get_direct_book()
+ * implementation of a backend which supports direct read access.
+ *
+ * This will only be asked of the backend when instantiated on the server
+ * side. If the server side instance of an #EBookBackend does return
+ * an #EDataBookDirect, then a client side instance of the same backend
+ * will be created and #EBookBackendClass.configure_direct() will be
+ * called on the corresponding client side instance.
+ **/
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

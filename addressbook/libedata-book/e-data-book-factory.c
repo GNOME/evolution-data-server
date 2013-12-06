@@ -20,6 +20,15 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+/**
+ * SECTION: e-data-book-factory
+ * @include: libedata-book/libedata-book.h
+ * @short_description: The main addressbook server object
+ *
+ * This class handles incomming D-Bus connections and creates
+ * the #EDataBook layer for server side addressbooks to communicate
+ * with client side #EBookClient objects.
+ **/
 #include <config.h>
 #include <locale.h>
 #include <stdlib.h>

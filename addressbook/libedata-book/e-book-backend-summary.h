@@ -28,6 +28,8 @@
 #ifndef E_BOOK_BACKEND_SUMMARY_H
 #define E_BOOK_BACKEND_SUMMARY_H
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
@@ -55,12 +57,29 @@ typedef struct _EBookBackendSummary EBookBackendSummary;
 typedef struct _EBookBackendSummaryClass EBookBackendSummaryClass;
 typedef struct _EBookBackendSummaryPrivate EBookBackendSummaryPrivate;
 
-struct _EBookBackendSummary{
+/**
+ * EBookBackendSummary:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead 
+ */
+struct _EBookBackendSummary {
+	/*< private >*/
 	GObject parent_object;
 	EBookBackendSummaryPrivate *priv;
 };
 
+/**
+ * EBookBackendSummaryClass:
+ *
+ * Class structure for the deprecated API for accessing the addressbook
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead 
+ */
 struct _EBookBackendSummaryClass{
+	/*< private >*/
 	GObjectClass parent_class;
 };
 
@@ -102,5 +121,7 @@ gchar *		e_book_backend_summary_get_summary_vcard
 						 const gchar *id);
 
 G_END_DECLS
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* E_BOOK_BACKEND_SUMMARY_H */

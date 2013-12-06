@@ -16,6 +16,15 @@
  *
  */
 
+/**
+ * SECTION: e-data-book
+ * @include: libedata-book/libedata-book.h
+ * @short_description: Server side D-Bus layer to communicate with addressbooks
+ *
+ * This class communicates with #EBookClients over the bus and accesses
+ * an #EBookBackend to satisfy client requests.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -439,6 +448,13 @@ e_data_book_error_quark (void)
 
 /**
  * e_data_book_create_error:
+ * @status: #EDataBookStatus code
+ * @custom_msg: Custom message to use for the error. When NULL,
+ *              then uses a default message based on the @status code.
+ *
+ * Returns: NULL, when the @status is E_DATA_BOOK_STATUS_SUCCESS,
+ *          or a newly allocated GError, which should be freed
+ *          with g_error_free() call.
  *
  * Since: 2.32
  **/
@@ -454,6 +470,9 @@ e_data_book_create_error (EDataBookStatus status,
 
 /**
  * e_data_book_create_error_fmt:
+ *
+ * Similar as e_data_book_create_error(), only here, instead of custom_msg,
+ * is used a printf() format to create a custom_msg for the error.
  *
  * Since: 2.32
  **/

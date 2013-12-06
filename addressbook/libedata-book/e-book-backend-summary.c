@@ -21,6 +21,13 @@
  * 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-book-backend-summary
+ * @include: libedata-book/libedata-book.h
+ * @short_description: A utility for storing contact data and searching for contacts
+ *
+ * The #EBookBackendSummary is deprecated, use #EBookSqlite instead.
+ */
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -153,6 +160,8 @@ clear_items (EBookBackendSummary *summary)
  * the summary is changed until it is flushed to disk.
  *
  * Returns: A new #EBookBackendSummary.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 EBookBackendSummary *
 e_book_backend_summary_new (const gchar *summary_path,
@@ -483,6 +492,8 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
  * not out of date.
  *
  * Returns: %TRUE if the load succeeded, %FALSE if it failed.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_summary_load (EBookBackendSummary *summary)
@@ -640,6 +651,8 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary,
  * Attempts to save @summary to disk.
  *
  * Returns: %TRUE if the save succeeded, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_summary_save (EBookBackendSummary *summary)
@@ -723,6 +736,8 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
  *
  * Adds a summary of @contact to @summary. Does not check if
  * the contact already has a summary.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 void
 e_book_backend_summary_add_contact (EBookBackendSummary *summary,
@@ -788,6 +803,8 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary,
  * @id: a unique contact ID string
  *
  * Removes the summary of the contact identified by @id from @summary.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 void
 e_book_backend_summary_remove_contact (EBookBackendSummary *summary,
@@ -819,6 +836,8 @@ e_book_backend_summary_remove_contact (EBookBackendSummary *summary,
  * exists in @summary.
  *
  * Returns: %TRUE if the summary exists, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_summary_check_contact (EBookBackendSummary *summary,
@@ -860,6 +879,8 @@ summary_flush_func (gpointer data)
  * @summary: an #EBookBackendSummary
  *
  * Indicates that @summary has changed and should be flushed to disk.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 void
 e_book_backend_summary_touch (EBookBackendSummary *summary)
@@ -883,6 +904,8 @@ e_book_backend_summary_touch (EBookBackendSummary *summary)
  * Checks if @summary is more recent than @t.
  *
  * Returns: %TRUE if the summary is up to date, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_summary_is_up_to_date (EBookBackendSummary *summary,
@@ -955,6 +978,8 @@ static const struct {
  * stored by @summary.
  *
  * Returns: %TRUE if the query can be satisfied, %FALSE otherwise.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gboolean
 e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
@@ -1201,6 +1226,8 @@ static const struct {
  * Searches @summary for contacts matching @query.
  *
  * Returns: A #GPtrArray of pointers to contact ID strings.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 GPtrArray *
 e_book_backend_summary_search (EBookBackendSummary *summary,
@@ -1261,6 +1288,8 @@ e_book_backend_summary_search (EBookBackendSummary *summary,
  * by @id.
  *
  * Returns: A new VCard, or %NULL if the contact summary didn't exist.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
  **/
 gchar *
 e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary,

@@ -20,6 +20,16 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+/**
+ * SECTION: e-book-client-view
+ * @include: libebook/libebook.h
+ * @short_description: Recieving change notifications on addressbooks 
+ *
+ * This class provides functionality for watching for changes on a
+ * given addressbook opened with an #EBookClient. Use e_book_client_get_view()
+ * to create an #EBookClientView.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

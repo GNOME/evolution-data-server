@@ -20,11 +20,32 @@
 
 G_BEGIN_DECLS
 
+#ifndef EDS_DISABLE_DEPRECATED
+
+/**
+ * E_BOOK_ERROR:
+ *
+ * Error domain for the deprecated #EBook
+ *
+ * Deprecated: 3.2: Use #EBookClient and it's error codes instead
+ */
 #define E_BOOK_ERROR e_book_error_quark()
 
 GQuark e_book_error_quark (void) G_GNUC_CONST;
 
+/**
+ * EBookStatus:
+ *
+ * Error codes for the #E_BOOK_ERROR error
+ *
+ * Deprecated: 3.2: Use #EBookClient and it's error codes instead
+ */
+
+/* Marked these all as private, since they are deprecated
+ * and we just avoid gtk-doc warnings this way
+ */
 typedef enum {
+	/*< private >*/
 	E_BOOK_ERROR_OK,
 	E_BOOK_ERROR_INVALID_ARG,
 	E_BOOK_ERROR_BUSY,
@@ -52,9 +73,16 @@ typedef enum {
 	E_BOOK_ERROR_NOT_SUPPORTED
 } EBookStatus;
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
+/**
+ * E_BOOK_ERROR_CORBA_EXCEPTION:
+ *
+ * A deprecated #EBookStatus
+ *
+ * Deprecated
+ */
 #define E_BOOK_ERROR_CORBA_EXCEPTION E_BOOK_ERROR_DBUS_EXCEPTION
-#endif
+
+#endif /* EDS_DISABLE_DEPRECATED  */
 
 G_END_DECLS
 

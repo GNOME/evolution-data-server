@@ -27,6 +27,8 @@
 #ifndef E_BOOK_BACKEND_CACHE_H
 #define E_BOOK_BACKEND_CACHE_H
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #include <libebook-contacts/libebook-contacts.h>
 #include <libebackend/libebackend.h>
 
@@ -55,12 +57,29 @@ typedef struct _EBookBackendCache EBookBackendCache;
 typedef struct _EBookBackendCacheClass EBookBackendCacheClass;
 typedef struct _EBookBackendCachePrivate EBookBackendCachePrivate;
 
+/**
+ * EBookBackendCache:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
+ */
 struct _EBookBackendCache {
+	/*< private >*/
 	EFileCache parent;
 	EBookBackendCachePrivate *priv;
 };
 
+/**
+ * EBookBackendCacheClass:
+ *
+ * Class structure for the #EBookBackendCache class.
+ *
+ * Deprecated: 3.12: Use #EBookSqlite instead
+ */
 struct _EBookBackendCacheClass {
+	/*< private >*/
 	EFileCacheClass parent_class;
 };
 
@@ -91,5 +110,7 @@ GPtrArray *	e_book_backend_cache_search	(EBookBackendCache *cache,
 						 const gchar *query);
 
 G_END_DECLS
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
 #endif /* E_BOOK_BACKEND_CACHE_H */

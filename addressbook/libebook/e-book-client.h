@@ -85,11 +85,20 @@ typedef struct _EBookClientPrivate EBookClientPrivate;
  * Since: 3.2
  **/
 struct _EBookClient {
+	/*< private >*/
 	EClient parent;
 	EBookClientPrivate *priv;
 };
 
+/**
+ * EBookClientClass:
+ *
+ * Class structure for the #EBookClient class.
+ *
+ * Since: 3.2
+ **/
 struct _EBookClientClass {
+	/*< private >*/
 	EClientClass parent_class;
 };
 

@@ -26,7 +26,7 @@
  * SECTION:e-vcard
  * @short_description: vCard parsing and interpretation
  * @stability: Stable
- * @include: libebook-contacts/e-vcard.h
+ * @include: libebook-contacts/libebook-contacts.h
  *
  * #EVCard is a low-level representation of a vCard, as specified in RFCs
  * 2425 and 2426 (for vCard version 3.0); this class only supports versions 2.1

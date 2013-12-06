@@ -20,6 +20,15 @@
  *
  */
 
+/**
+ * SECTION: e-book-client
+ * @include: libebook/libebook.h
+ * @short_description: Accessing and modifying an addressbook 
+ *
+ * This class is the main user facing API for accessing and modifying
+ * the addressbook.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -1121,8 +1130,8 @@ e_book_client_class_init (EBookClientClass *class)
 		PROP_LOCALE,
 		g_param_spec_string (
 			"locale",
-			NULL,
-			NULL,
+			"Locale",
+			"The currently active locale for this addressbook",
 			NULL,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));

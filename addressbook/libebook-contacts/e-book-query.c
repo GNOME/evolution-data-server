@@ -24,6 +24,16 @@
  *    Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+/**
+ * SECTION: e-book-query
+ * @include: libebook-contacts/libebook-contacts.h
+ * @short_description: Querying and filtering contacts in an addressbook
+ *
+ * This utility can be used to conveniently create search expressions
+ * which can later be used to query and filter results in the #EBookClient,
+ * #EBookClientView and #EBookClientCursor interfaces.
+ **/
+
 #include "e-book-query.h"
 
 #include <config.h>

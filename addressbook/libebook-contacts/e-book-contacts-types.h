@@ -21,7 +21,7 @@
 /**
  * E_BOOK_CLIENT_ERROR:
  *
- * FIXME: Document me.
+ * Error domain for #EBookClient errors
  *
  * Since: 3.2
  **/
@@ -49,8 +49,13 @@ typedef enum {
 
 /**
  * EBookClientError:
+ * @E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK: Requested book did not exist
+ * @E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND: Contact referred to was not found
+ * @E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS: Tried to add a contact which already exists
+ * @E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE: Referred #ESource does not exist
+ * @E_BOOK_CLIENT_ERROR_NO_SPACE: Out of disk space
  *
- * FIXME: Document me.
+ * Error codes returned by #EBookClient APIs, if an #EClientError was not available.
  *
  * Since: 3.2
  **/
@@ -64,8 +69,35 @@ typedef enum {
 
 /**
  * EDataBookStatus:
+ * @E_DATA_BOOK_STATUS_SUCCESS: No error
+ * @E_DATA_BOOK_STATUS_BUSY: Backend was busy
+ * @E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE: Offsite repository was not online
+ * @E_DATA_BOOK_STATUS_PERMISSION_DENIED: Permission denied
+ * @E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND: Contact referred to was not found
+ * @E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS: Tried to add a contact which already exists
+ * @E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED: Authentication failure
+ * @E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED: Authentication required for this operation
+ * @E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD: An unsupported #EContactField was specified for a given operation
+ * @E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD: The authentication method is unsupported
+ * @E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE: TLS was not available
+ * @E_DATA_BOOK_STATUS_NO_SUCH_BOOK: Book did not exist
+ * @E_DATA_BOOK_STATUS_BOOK_REMOVED: Book was removed
+ * @E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE: XXX Document me
+ * @E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED: Exceeded limit of seach size
+ * @E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED: Exceeded time limit for seach
+ * @E_DATA_BOOK_STATUS_INVALID_QUERY: Given search espression is invalid
+ * @E_DATA_BOOK_STATUS_QUERY_REFUSED: Given search espression was refused
+ * @E_DATA_BOOK_STATUS_COULD_NOT_CANCEL: Unable to cancel an operation
+ * @E_DATA_BOOK_STATUS_OTHER_ERROR: An other error occurred
+ * @E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION: Invalid server version
+ * @E_DATA_BOOK_STATUS_NO_SPACE: Disk space insufficient
+ * @E_DATA_BOOK_STATUS_INVALID_ARG: Invalid argument
+ * @E_DATA_BOOK_STATUS_NOT_SUPPORTED: Unsupported operation
+ * @E_DATA_BOOK_STATUS_NOT_OPENED: Tried to access a book which is not yet open
+ * @E_DATA_BOOK_STATUS_OUT_OF_SYNC: Out of sync state
  *
- * XXX Document me!
+ * Error codes for the #E_DATA_BOOK_ERROR domain, these are used
+ * in the backend.
  *
  * Since: 3.6
  **/
@@ -97,26 +129,6 @@ typedef enum {
 	E_DATA_BOOK_STATUS_NOT_OPENED,
 	E_DATA_BOOK_STATUS_OUT_OF_SYNC
 } EDataBookStatus;
-
-typedef enum {
-	E_BOOK_VIEW_STATUS_OK,
-	E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED,
-	E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED,
-	E_BOOK_VIEW_ERROR_INVALID_QUERY,
-	E_BOOK_VIEW_ERROR_QUERY_REFUSED,
-	E_BOOK_VIEW_ERROR_OTHER_ERROR
-} EBookViewStatus;
-
-typedef enum {
-	E_BOOK_CHANGE_CARD_ADDED,
-	E_BOOK_CHANGE_CARD_DELETED,
-	E_BOOK_CHANGE_CARD_MODIFIED
-} EBookChangeType;
-
-typedef struct {
-	EBookChangeType  change_type;
-	EContact        *contact;
-} EBookChange;
 
 /**
  * EBookIndexType:
@@ -189,9 +201,62 @@ GQuark		e_book_client_error_quark	(void) G_GNUC_CONST;
 const gchar *	e_book_client_error_to_string	(EBookClientError code);
 
 #ifndef EDS_DISABLE_DEPRECATED
+
+/**
+ * EBookViewStatus:
+ * @E_BOOK_VIEW_STATUS_OK: Ok
+ * @E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED: Time limit exceeded
+ * @E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED: Size limit exceeded
+ * @E_BOOK_VIEW_ERROR_INVALID_QUERY: Invalid search expression
+ * @E_BOOK_VIEW_ERROR_QUERY_REFUSED: Search expression refused
+ * @E_BOOK_VIEW_ERROR_OTHER_ERROR: Another error occurred
+ *
+ * Status messages used in notifications in the deprecated #EBookView class
+ *
+ * Deprecated: 3.2: Use #EBookClientView instead.
+ */
+typedef enum {
+	E_BOOK_VIEW_STATUS_OK,
+	E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED,
+	E_BOOK_VIEW_STATUS_SIZE_LIMIT_EXCEEDED,
+	E_BOOK_VIEW_ERROR_INVALID_QUERY,
+	E_BOOK_VIEW_ERROR_QUERY_REFUSED,
+	E_BOOK_VIEW_ERROR_OTHER_ERROR
+} EBookViewStatus;
+
+/**
+ * EBookChangeType:
+ * @E_BOOK_CHANGE_CARD_ADDED: A vCard was added
+ * @E_BOOK_CHANGE_CARD_DELETED: A vCard was deleted
+ * @E_BOOK_CHANGE_CARD_MODIFIED: A vCard was modified
+ *
+ * The type of change in an #EBookChange
+ *
+ * Deprecated: 3.2
+ */
+typedef enum {
+	E_BOOK_CHANGE_CARD_ADDED,
+	E_BOOK_CHANGE_CARD_DELETED,
+	E_BOOK_CHANGE_CARD_MODIFIED
+} EBookChangeType;
+
+/**
+ * EBookChange:
+ * @change_type: The #EBookChangeType
+ * @contact: The #EContact which changed
+ *
+ * This is a part of the deprecated #EBook API.
+ *
+ * Deprecated: 3.2
+ */
+typedef struct {
+	EBookChangeType  change_type;
+	EContact        *contact;
+} EBookChange;
+
 GError *	e_book_client_error_create	(EBookClientError code,
 						 const gchar *custom_msg);
-#endif /* E_BOOK_DISABLE_DEPRECATED */
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

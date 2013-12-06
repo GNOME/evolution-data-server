@@ -9,6 +9,18 @@
 
 G_BEGIN_DECLS
 
+/**
+ * EAddressWestern:
+ * @po_box: PO Box.
+ * @extended: TODO, we're not sure what this is.
+ * @street: Street name
+ * @locality: City or town
+ * @region: State or province
+ * @postal_code: Postal Code
+ * @country: Country
+ *
+ * Western address structure.
+ */
 typedef struct {
 
 	/* Public */
