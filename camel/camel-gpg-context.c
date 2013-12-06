@@ -1667,10 +1667,11 @@ gpg_sign_sync (CamelCipherContext *context,
 		CamelStream *out;
 
 		name = g_strdup_printf ("camel-gpg.%d.sign-data", logid++);
-		out = camel_stream_fs_new_with_name (name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+		out = camel_stream_fs_new_with_name (
+			name, O_CREAT | O_TRUNC | O_WRONLY, 0666, NULL);
 		if (out) {
 			printf ("Writing gpg signing data to '%s'\n", name);
-			camel_stream_write_to_stream (istream, out);
+			camel_stream_write_to_stream (istream, out, NULL, NULL);
 			g_seekable_seek (
 				G_SEEKABLE (istream), 0,
 				G_SEEK_SET, NULL, NULL);
@@ -1837,10 +1838,11 @@ gpg_verify_sync (CamelCipherContext *context,
 		CamelStream *out;
 
 		name = g_strdup_printf ("camel-gpg.%d.verify.data", logid);
-		out = camel_stream_fs_new_with_name (name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+		out = camel_stream_fs_new_with_name (
+			name, O_CREAT | O_TRUNC | O_WRONLY, 0666, NULL);
 		if (out) {
 			printf ("Writing gpg verify data to '%s'\n", name);
-			camel_stream_write_to_stream (istream, out);
+			camel_stream_write_to_stream (istream, out, NULL, NULL);
 			g_seekable_seek (
 				G_SEEKABLE (istream),
 				0, G_SEEK_SET, NULL, NULL);
@@ -1851,10 +1853,13 @@ gpg_verify_sync (CamelCipherContext *context,
 
 		if (sigpart) {
 			name = g_strdup_printf ("camel-gpg.%d.verify.signature", logid++);
-			out = camel_stream_fs_new_with_name (name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+			out = camel_stream_fs_new_with_name (
+				name, O_CREAT | O_TRUNC | O_WRONLY, 0666, NULL);
 			if (out) {
 				printf ("Writing gpg verify signature to '%s'\n", name);
-				camel_data_wrapper_write_to_stream ((CamelDataWrapper *) sigpart, out);
+				camel_data_wrapper_write_to_stream_sync (
+					CAMEL_DATA_WRAPPER (sigpart),
+					out, NULL, NULL);
 				g_object_unref (out);
 			}
 			g_free (name);
