@@ -31,9 +31,9 @@ struct _EOperationPool {
 
 /**
  * e_operation_pool_new: (skip)
- * @max_threads:
- * @thread_func:
- * @user_data:
+ * @max_threads: Maximum number of threads for this pool
+ * @thread_func: Function to run for a given thread
+ * @user_data: The user data to pass to @thread_func
  *
  * FIXME: Document me.
  *

@@ -27,6 +27,16 @@
  *      and kill e-client-private.h.  Would simplify things.  --mbarnes
  */
 
+
+/**
+ * SECTION: e-client
+ * @include: libedataserver/libedataserver.h
+ * @short_description: Base class for client handles
+ *
+ * This class provides some base functionality for clients
+ * such as #EBookClient and #ECalClient.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -781,16 +791,27 @@ e_client_class_init (EClientClass *class)
 	class->refresh = client_refresh;
 	class->refresh_finish = client_refresh_finish;
 
+	/**
+	 * EClient:capabilities:
+	 *
+	 * The capabilities of this client
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_CAPABILITIES,
 		g_param_spec_pointer (
 			"capabilities",
-			NULL,
-			NULL,
+			"Capabilities",
+			"The capabilities of this client",
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EClient:main-context:
+	 *
+	 * The main loop context in which notifications for
+	 * this client will be delivered.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_MAIN_CONTEXT,
@@ -803,46 +824,70 @@ e_client_class_init (EClientClass *class)
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EClient:online:
+	 *
+	 * Whether this client's backing data is online.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_ONLINE,
 		g_param_spec_boolean (
 			"online",
-			NULL,
-			NULL,
+			"Online",
+			"Whether this client is online",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EClient:opened:
+	 *
+	 * Whether this client is open and ready to use.
+	 *
+	 * Deprecated: 3.8: This property is no longer relevant and
+	 * will always be %TRUE after successfully creating any concrete
+	 * type of #EClient.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_OPENED,
 		g_param_spec_boolean (
 			"opened",
-			NULL,
-			NULL,
+			"Opened",
+			"Whether this client is open and ready to use",
 			FALSE,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EClient:readonly:
+	 *
+	 * Whether this client's backing data is readonly.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_READONLY,
 		g_param_spec_boolean (
 			"readonly",
-			NULL,
-			NULL,
+			"Read only",
+			"Whether this client's backing data is readonly",
 			FALSE,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * EClient:source:
+	 *
+	 * The #ESource for which this client was created.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_SOURCE,
 		g_param_spec_object (
 			"source",
-			NULL,
-			NULL,
+			"Source",
+			"The ESource for which this client was created",
 			E_TYPE_SOURCE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |

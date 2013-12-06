@@ -285,7 +285,7 @@ convert_to_ustring (const gchar  *string,
 /**
  * e_collator_new:
  * @locale: The locale under which to sort
- * @error: (allow none): A location to store a #GError from the #E_COLLATOR_ERROR domain
+ * @error: (allow-none): A location to store a #GError from the #E_COLLATOR_ERROR domain
  *
  * Creates a new #ECollator for the given @locale,
  * the returned collator should be freed with e_collator_unref().
@@ -445,7 +445,7 @@ e_collator_unref (ECollator *collator)
  * e_collator_generate_key:
  * @collator: An #ECollator
  * @str: The string to generate a collation key for
- * @error: (allow none): A location to store a #GError from the #E_COLLATOR_ERROR domain
+ * @error: (allow-none): A location to store a #GError from the #E_COLLATOR_ERROR domain
  *
  * Generates a collation key for @str, the result of comparing
  * two collation keys with strcmp() will be the same result
@@ -577,10 +577,10 @@ e_collator_generate_key_for_index (ECollator       *collator,
 /**
  * e_collator_collate:
  * @collator: An #ECollator
- * @str_a: (allow none): A string to compare
- * @str_b: (allow none): The string to compare with @str_a
+ * @str_a: (allow-none): A string to compare
+ * @str_b: (allow-none): The string to compare with @str_a
  * @result: (out): A location to store the comparison result
- * @error: (allow none): A location to store a #GError from the #E_COLLATOR_ERROR domain
+ * @error: (allow-none): A location to store a #GError from the #E_COLLATOR_ERROR domain
  *
  * Compares @str_a with @str_b, the order of strings is determined by the parameters of @collator.
  *

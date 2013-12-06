@@ -24,7 +24,7 @@
 #include "e-cancellable-locks.h"
 
 /**
- * SECTION: e-cancellable-locks
+ * SECTION:e-cancellable-locks
  * @title: Cancellable Locks
  * @short_description: locks, which can listen for a #GCancellable during lock call
  *

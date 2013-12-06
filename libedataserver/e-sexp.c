@@ -1745,8 +1745,8 @@ e_sexp_evaluate_occur_times (ESExp *f,
 
 /**
  * e_sexp_encode_bool:
- * @s:
- * @state:
+ * @s: A #GString to append to
+ * @state: The boolean value
  *
  * Encode a bool into an s-expression @s.  Bools are
  * encoded using #t #f syntax.
